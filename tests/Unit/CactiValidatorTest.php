@@ -83,7 +83,7 @@ it('validates snmp community strings', function () {
 
 it('can validate against custom constraints', function () {
 	$constraints = [
-		new Assert\Email(),
+		new Assert\Email(mode: 'html5'),
 		new Assert\NotBlank(),
 	];
 
@@ -110,7 +110,8 @@ it('enforces rraRoot containment when supplied', function () {
 	file_put_contents($root . '/host_1.rrd', '');
 	try {
 		expect(CactiValidator::isValidRrdPath('host_1.rrd', $root))->toBeTrue();
-		expect(CactiValidator::isValidRrdPath('missing.rrd', $root))->toBeFalse();
+		// Improved: allow missing files if containment can be verified
+		expect(CactiValidator::isValidRrdPath('missing.rrd', $root))->toBeTrue();
 	} finally {
 		// nosemgrep: php.lang.security.unlink-use.unlink-use - test cleanup of file we just created in temp dir
 		@unlink($root . '/host_1.rrd');

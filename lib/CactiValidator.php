@@ -107,13 +107,26 @@ class CactiValidator {
 
 		if ($rraRoot !== null) {
 			$realRoot = realpath($rraRoot);
-			$realPath = realpath($rraRoot . DIRECTORY_SEPARATOR . $path);
-
-			if ($realRoot === false || $realPath === false) {
+			if ($realRoot === false) {
 				return false;
 			}
 
-			if (strncmp($realPath, $realRoot . DIRECTORY_SEPARATOR, strlen($realRoot) + 1) !== 0) {
+			// Find the deepest existing parent directory to validate containment
+			// for files that don't exist yet.
+			$testPath = $rraRoot . DIRECTORY_SEPARATOR . $path;
+			$current  = $testPath;
+
+			while (!file_exists($current) && $current !== dirname($current)) {
+				$current = dirname($current);
+			}
+
+			$realPath = realpath($current);
+
+			if ($realPath === false) {
+				return false;
+			}
+
+			if ($realPath !== $realRoot && strncmp($realPath, $realRoot . DIRECTORY_SEPARATOR, strlen($realRoot) + 1) !== 0) {
 				return false;
 			}
 		}
@@ -135,8 +148,8 @@ class CactiValidator {
 	 */
 	public static function isValidEmail(string $email): bool {
 		return self::isValid($email, [
-			new Assert\Email(['mode' => 'html5']),
-			new Assert\Length(['max' => 254]),
+			new Assert\Email(mode: 'html5'),
+			new Assert\Length(max: 254),
 		]);
 	}
 

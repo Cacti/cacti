@@ -153,21 +153,25 @@ if (POLLER_ID == 1 || read_config_option('storage_location')) { // @phpstan-igno
 
 	$output = call_remote_data_collector(1, $url);
 
-	if (is_array($output) && isset($output['image'])) {
-		$output = $output['image'];
-	}
-
 	if ($output !== false && $output != '') {
-		// Find the beginning of the image definition row
-		$image_begin_pos = strpos($output, 'image = ');
+		$decoded = json_decode($output, true);
 
-		if ($image_begin_pos !== false) {
-			// Find the end of the line of the image definition row, after this the raw image data will come
-			$image_data_pos = strpos($output, "\n", $image_begin_pos);
+		if (is_array($decoded) && isset($decoded['image'])) {
+			$output = base64_decode($decoded['image']);
+		} elseif (str_contains($output, 'image = ')) {
+			// Find the beginning of the image definition row
+			$image_begin_pos = strpos($output, 'image = ');
 
-			if ($image_data_pos !== false) {
-				// Insert the raw image data to the array
-				$output = substr($output, $image_data_pos + 1);
+			if ($image_begin_pos !== false) {
+				// Find the end of the line of the image definition row, after this the raw image data will come
+				$image_data_line_end = strpos($output, "\n", $image_begin_pos);
+
+				if ($image_data_line_end !== false) {
+					// Insert the raw image data to the array
+					$output = substr($output, $image_data_line_end + 1);
+				} else {
+					$output = false;
+				}
 			} else {
 				$output = false;
 			}

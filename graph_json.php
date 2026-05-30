@@ -175,62 +175,88 @@ if (POLLER_ID == 1 || read_config_option('storage_location')) { // @phpstan-igno
 	$url .= '&rra_id=' . $rra_id;
 
 	foreach ($graph_data_array as $variable => $value) {
-		$url .= '&' . $variable . '=' . $value;
+		$url .= '&' . rawurlencode((string)$variable) . '=' . rawurlencode((string)$value);
 	}
 
 	$output = call_remote_data_collector(1, $url);
 }
 
-$output = trim($output);
 $oarray = ['type' => $gtype, 'local_graph_id' => grv('local_graph_id'), 'rra_id' => $rra_id];
 
-// Check if we received back something populated from rrdtool
-if ($output != false && $output != '' && str_contains($output, 'image = ')) {
-	// Find the beginning of the image definition row
-	$image_begin_pos = strpos($output, 'image = ');
+if ($output !== false && $output != '') {
+	$decoded = json_decode($output, true);
 
-	// Parse and populate everything before the image definition row
-	$header_lines = explode("\n", substr($output, 0, $image_begin_pos - 1));
+	if (is_array($decoded) && isset($decoded['image'])) {
+		$oarray = array_merge($oarray, $decoded);
+		// No further parsing needed if it was already JSON
+	} elseif (str_contains($output, 'image = ')) {
+		// Find the beginning of the image definition row
+		$image_begin_pos = strpos($output, 'image = ');
 
-	// Check for additional data points from graphv output
-	$graph_start_pos = strpos($output, 'graph_start =', $image_begin_pos);
-
-	if (!$graph_start_pos) {
-		// Find the end of the line of the image definition row, after this the raw image data will come
-		$image_data_pos = strpos($output, "\n" , $image_begin_pos) + 1;
-
-		// Insert the raw image data to the array
-		$oarray['image'] = base64_encode(substr($output, $image_data_pos));
-	} else {
-		// Find the end of the line of the image definition row, after this the raw image data will come
-		$image_data_pos = strpos($output, "\n" , $image_begin_pos) + 1;
-
-		// Insert the raw image data to the array
-		$oarray['image'] = base64_encode(substr($output, $image_data_pos, $graph_start_pos - $image_data_pos));
-
-		// Get the datapoints to the end of the file.
-		$datapoints_start_pos = strpos($output, 'datapoints =');
-
-		$datapoints = substr($output, $datapoints_start_pos);
-
-		// Get rid of the 'datapoints =' line
-		$dp_output = explode("\n", $datapoints);
-		unset($dp_output[0]);
-
-		$datapoints = json_decode(implode("\n", $dp_output), true);
-
-		foreach ($datapoints as $name => $value) {
-			$oarray[$name] = $value;
+		// Parse and populate everything before the image definition row
+		if ($image_begin_pos > 0) {
+			$header_lines = explode("\n", substr($output, 0, $image_begin_pos));
+		} else {
+			$header_lines = [];
 		}
-	}
 
-	foreach ($header_lines as $line) {
-		$parts             = explode(' = ', $line);
-		$oarray[$parts[0]] = trim($parts[1]);
-	}
+		// Check for additional data points from graphv output
+		$graph_start_pos = strpos($output, 'graph_start =', $image_begin_pos);
 
+		if (!$graph_start_pos) {
+			// Find the end of the line of the image definition row, after this the raw image data will come
+			$image_data_line_end = strpos($output, "\n", $image_begin_pos);
+
+			if ($image_data_line_end !== false) {
+				$image_data_pos = $image_data_line_end + 1;
+
+				// Insert the raw image data to the array
+				$oarray['image'] = base64_encode(substr($output, $image_data_pos));
+			}
+		} else {
+			// Find the end of the line of the image definition row, after this the raw image data will come
+			$image_data_line_end = strpos($output, "\n", $image_begin_pos);
+
+			if ($image_data_line_end !== false) {
+				$image_data_pos = $image_data_line_end + 1;
+
+				// Insert the raw image data to the array
+				$oarray['image'] = base64_encode(substr($output, $image_data_pos, $graph_start_pos - $image_data_pos));
+			}
+
+			// Get the datapoints to the end of the file.
+			$datapoints_start_pos = strpos($output, 'datapoints =');
+
+			if ($datapoints_start_pos !== false) {
+				$datapoints = substr($output, $datapoints_start_pos);
+
+				// Get rid of the 'datapoints =' line
+				$dp_output = explode("\n", $datapoints);
+				unset($dp_output[0]);
+
+				$datapoints = json_decode(implode("\n", $dp_output), true);
+
+				if (is_array($datapoints)) {
+					foreach ($datapoints as $name => $value) {
+						$oarray[$name] = $value;
+					}
+				}
+			}
+		}
+
+		foreach ($header_lines as $line) {
+			if (str_contains($line, ' = ')) {
+				$parts             = explode(' = ', $line);
+				$oarray[$parts[0]] = trim($parts[1]);
+			}
+		}
+	} else {
+		$output = false;
+	}
+}
+
+if ($output !== false && $output != '') {
 	if (isset($oarray['meta'])) {
-		if (isset($oarray['meta']['legend']) & isset($xport_meta['legend'])) {
 			foreach ($oarray['meta']['legend'] as $key => $value) {
 				$legend = trim(preg_replace('/[^a-z0-9 _()]/i', '', $value));
 
