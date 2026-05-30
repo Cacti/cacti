@@ -14,11 +14,12 @@ test('sort order uses normalized column helper before session sql generation', f
 	expect($htmlUtilitySource)->toContain('cacti_build_sort_fragment($column, $direction)');
 });
 
-test('get_order_string rebuilds ORDER BY from validated session sort_data', function () use ($htmlUtilitySource) {
+test('get_order_string hardens the sort column via normalize and build_sort_fragment', function () use ($htmlUtilitySource) {
 	$start = strpos($htmlUtilitySource, 'function get_order_string()');
 	expect($start)->not->toBeFalse();
 
 	$body = substr($htmlUtilitySource, $start, 1800);
-	expect($body)->toContain("if (isset(\$_SESSION['sort_data'][\$page]) && is_array(\$_SESSION['sort_data'][\$page]))");
-	expect($body)->toContain("\$_SESSION['sort_string'][\$page] = 'ORDER BY ' . implode(', ', \$order_parts);");
+	expect($body)->toContain("cacti_normalize_sort_column(get_nfilter_request_var('sort_column'))");
+	expect($body)->toContain('cacti_build_sort_fragment($sort_column, $sort_dir)');
+	expect($body)->toContain('validate_sort_column($request_column, $page)');
 });
