@@ -44,6 +44,10 @@ function clear_auth_cookie() : void {
 			$realm_id = -1;
 			$token    = $parts[1];
 		} else {
+			if (cacti_sizeof($parts) != 3) {
+				return;
+			}
+
 			$user_id  = $parts[0];
 			$realm_id = $parts[1];
 			$token    = $parts[2];
@@ -125,12 +129,12 @@ function check_auth_cookie() : int|false {
 
 		if ($user_id > 0 && $user_id !== get_guest_account()) {
 			if ($realm_id == -1) {
-				$user_info = db_fetch_row_prepared('SELECT id, realm, username
+				$user_info = db_fetch_row_prepared('SELECT *
 					FROM user_auth
 					WHERE id = ?',
 					[$user_id]);
 			} else {
-				$user_info = db_fetch_row_prepared('SELECT id, realm, username
+				$user_info = db_fetch_row_prepared('SELECT *
 					FROM user_auth
 					WHERE id = ?
 					AND realm = ?',
@@ -138,6 +142,14 @@ function check_auth_cookie() : int|false {
 			}
 
 			if (cacti_sizeof($user_info)) {
+				if (!auth_cookie_user_currently_allowed($user_info)) {
+					db_execute_prepared('DELETE FROM user_auth_cache
+						WHERE user_id = ?',
+						[$user_info['id']]);
+
+					return false;
+				}
+
 				$secret = hash('sha512', $token, false);
 
 				$found  = db_fetch_cell_prepared('SELECT user_id
@@ -168,6 +180,22 @@ function check_auth_cookie() : int|false {
 	}
 
 	return false;
+}
+
+/**
+ * Confirms that a remember-me cookie still belongs to an enabled account
+ * with current access before the cookie is allowed to create a new session.
+ *
+ * @param array $user_info The user_auth row loaded from the cookie identity.
+ *
+ * @return bool True when the account can still authenticate with the cookie.
+ */
+function auth_cookie_user_currently_allowed(array $user_info) : bool {
+	if (($user_info['enabled'] ?? '') != 'on') {
+		return false;
+	}
+
+	return auth_user_has_access($user_info);
 }
 
 /**

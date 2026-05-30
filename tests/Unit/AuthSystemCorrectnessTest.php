@@ -16,9 +16,14 @@ $root = dirname(__DIR__, 2);
 
 test('remember-me restored sessions still require 2fa when enabled', function () use ($root) {
 	$auth = file_get_contents($root . '/include/auth.php');
+	$auth_lib = file_get_contents($root . '/lib/auth.php');
 
 	expect($auth)->toContain('if (empty($_SESSION[SESS_USER_2FA]) && db_column_exists(\'user_auth\', \'tfa_enabled\'))')
-		->and($auth)->not->toContain('if (!$cookie_user && empty($_SESSION[SESS_USER_2FA])');
+		->and($auth)->not->toContain('if (!$cookie_user && empty($_SESSION[SESS_USER_2FA])')
+		->and($auth_lib)->toContain('auth_cookie_user_currently_allowed($user_info)')
+		->and($auth_lib)->toContain('function auth_cookie_user_currently_allowed(array $user_info) : bool')
+		->and($auth_lib)->toContain("if ((\$user_info['enabled'] ?? '') != 'on')")
+		->and($auth_lib)->toContain('return auth_user_has_access($user_info);');
 });
 
 test('2fa lifetime uses configured token lifetime in minutes', function () use ($root) {
