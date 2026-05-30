@@ -23,6 +23,9 @@
 */
 
 require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 set_default_action();
 
@@ -504,14 +507,14 @@ function form_save() : void {
 		}
 
 		$save['id']             = gnrv('id');
-		$save['name']           = form_input_validate(gnrv('name'), 'name', '', false, 3);
-		$save['description']    = form_input_validate(gnrv('description'), 'description', '', true, 3);
-		$save['show_tree']      = form_input_validate(gnrv('show_tree', ''), 'show_tree', '', true, 3);
-		$save['show_list']      = form_input_validate(gnrv('show_list', ''), 'show_list', '', true, 3);
-		$save['show_preview']   = form_input_validate(gnrv('show_preview', ''), 'show_preview', '', true, 3);
-		$save['graph_settings'] = form_input_validate(gnrv('graph_settings', ''), 'graph_settings', '', true, 3);
-		$save['login_opts']     = form_input_validate(gnrv('login_opts'), 'login_opts', '', true, 3);
-		$save['enabled']        = form_input_validate(gnrv('enabled', ''), 'enabled', '', true, 3);
+		$save['name']           = CactiValidator::validateInput(gnrv('name'), 'name', [new Assert\NotBlank()], 3);
+		$save['description']    = CactiValidator::validateInput(gnrv('description'), 'description', [], 3);
+		$save['show_tree']      = CactiValidator::validateInput(gnrv('show_tree', ''), 'show_tree', [], 3);
+		$save['show_list']      = CactiValidator::validateInput(gnrv('show_list', ''), 'show_list', [], 3);
+		$save['show_preview']   = CactiValidator::validateInput(gnrv('show_preview', ''), 'show_preview', [], 3);
+		$save['graph_settings'] = CactiValidator::validateInput(gnrv('graph_settings', ''), 'graph_settings', [], 3);
+		$save['login_opts']     = CactiValidator::validateInput(gnrv('login_opts'), 'login_opts', [], 3);
+		$save['enabled']        = CactiValidator::validateInput(gnrv('enabled', ''), 'enabled', [], 3);
 
 		$save = api_plugin_hook_function('user_group_admin_setup_sql_save', $save);
 
