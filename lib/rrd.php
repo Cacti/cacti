@@ -2842,7 +2842,7 @@ function rrdtool_function_info($local_data_id) {
 	   Only normalize the value to the right of '= ' when it is numeric so we
 	   don't corrupt commas inside DS names, cf strings or filenames. */
 	if (strpos($output, ',') !== false) {
-		$output = preg_replace_callback('/^(\s*\S+ = )("?)([0-9]+,[0-9]+(?:e[+-]?[0-9]+)?)("?)$/mi', function($matches) {
+		$output = preg_replace_callback('/^(\s*\S+ = )("?)(-?[0-9]+,[0-9]+(?:e[+-]?[0-9]+)?)("?)$/mi', function($matches) {
 			return $matches[1] . $matches[2] . str_replace(',', '.', $matches[3]) . $matches[4];
 		}, $output);
 	}
@@ -3434,8 +3434,16 @@ function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 				}
 			} else {
 				rrdtool_execute("resize $line", true, RRDTOOL_OUTPUT_STDOUT);
-				/* rrdtool writes resize.rrd to its working directory, which is the PHP process cwd */
-				rename(getcwd() . '/resize.rrd', $rrd_file);
+
+				/* when run locally rrdtool writes resize.rrd to the PHP process cwd; under a
+				   storage_location proxy it runs remotely, so keep the legacy path next to the rrd */
+				if (read_config_option('storage_location')) {
+					$resize_rrd = dirname($rrd_file) . '/resize.rrd';
+				} else {
+					$resize_rrd = getcwd() . '/resize.rrd';
+				}
+
+				rename($resize_rrd, $rrd_file);
 			}
 		}
 	}
