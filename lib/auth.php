@@ -142,14 +142,6 @@ function check_auth_cookie() : int|false {
 			}
 
 			if (cacti_sizeof($user_info)) {
-				if (!auth_cookie_user_currently_allowed($user_info)) {
-					db_execute_prepared('DELETE FROM user_auth_cache
-						WHERE user_id = ?',
-						[$user_info['id']]);
-
-					return false;
-				}
-
 				$secret = hash('sha512', $token, false);
 
 				$found  = db_fetch_cell_prepared('SELECT user_id
@@ -161,20 +153,28 @@ function check_auth_cookie() : int|false {
 
 				if (empty($found)) {
 					return false;
-				} else {
-					set_auth_cookie($user_info);
-
-					cacti_log(sprintf('LOGIN: User %s Authenticated via Authentication Cookie from IP Address %s', $user_info['username'], get_client_addr()), false, 'AUTH');
-
-					db_execute_prepared('INSERT IGNORE INTO user_log
-						(username, user_id, result, ip, time)
-						VALUES
-						(?, ?, 2, ?, NOW())',
-						[$user_info['username'], $user_info['id'], get_client_addr()]
-					);
-
-					return $user_info['id'];
 				}
+
+				if (!auth_cookie_user_currently_allowed($user_info)) {
+					db_execute_prepared('DELETE FROM user_auth_cache
+						WHERE user_id = ?',
+						[$user_info['id']]);
+
+					return false;
+				}
+
+				set_auth_cookie($user_info);
+
+				cacti_log(sprintf('LOGIN: User %s Authenticated via Authentication Cookie from IP Address %s', $user_info['username'], get_client_addr()), false, 'AUTH');
+
+				db_execute_prepared('INSERT IGNORE INTO user_log
+					(username, user_id, result, ip, time)
+					VALUES
+					(?, ?, 2, ?, NOW())',
+					[$user_info['username'], $user_info['id'], get_client_addr()]
+				);
+
+				return $user_info['id'];
 			}
 		}
 	}

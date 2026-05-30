@@ -46,6 +46,16 @@ if (!function_exists('db_fetch_cell_prepared')) {
 			return $GLOBALS['auth_integration_group_realms'] ?? 0;
 		}
 
+		if (str_contains($sql, 'FROM user_auth_cache')) {
+			$cache = $GLOBALS['auth_integration_cache'] ?? [];
+
+			foreach ($cache as $row) {
+				if ($row['user_id'] == $params[0] && $row['token'] == $params[1]) {
+					return $row['user_id'];
+				}
+			}
+		}
+
 		return 0;
 	}
 }
@@ -53,6 +63,35 @@ if (!function_exists('db_fetch_cell_prepared')) {
 if (!function_exists('db_fetch_assoc_prepared')) {
 	function db_fetch_assoc_prepared($sql, $params = []) {
 		return $GLOBALS['auth_integration_groups'] ?? [];
+	}
+}
+
+if (!function_exists('db_fetch_row_prepared')) {
+	function db_fetch_row_prepared($sql, $params = []) {
+		return $GLOBALS['auth_integration_users'][$params[0]] ?? [];
+	}
+}
+
+if (!function_exists('db_execute_prepared')) {
+	function db_execute_prepared($sql, $params = []) {
+		$GLOBALS['auth_integration_executed'][] = [
+			'sql'    => $sql,
+			'params' => $params,
+		];
+
+		return true;
+	}
+}
+
+if (!function_exists('db_table_exists')) {
+	function db_table_exists($table) {
+		return $table == 'user_auth_cache';
+	}
+}
+
+if (!function_exists('get_guest_account')) {
+	function get_guest_account() {
+		return (int) read_config_option('guest_user');
 	}
 }
 
@@ -116,4 +155,45 @@ test('remember-me cookie authorization rejects disabled and permissionless accou
 		'show_list'    => '',
 		'show_preview' => '',
 	]))->toBeTrue();
+});
+
+test('remember-me cookie authorization verifies token before deleting cache rows', function () {
+	$GLOBALS['auth_integration_config'] = [
+		'auth_cache_enabled' => 'on',
+		'guest_user'         => 0,
+	];
+	$GLOBALS['auth_integration_realms']  = 1;
+	$GLOBALS['auth_integration_groups']  = [];
+	$GLOBALS['auth_integration_users']   = [
+		42 => [
+			'id'           => 42,
+			'username'     => 'disabled',
+			'realm'        => 0,
+			'enabled'      => '',
+			'show_tree'    => '',
+			'show_list'    => '',
+			'show_preview' => '',
+		],
+	];
+	$GLOBALS['auth_integration_cache']    = [
+		[
+			'user_id' => 42,
+			'token'   => hash('sha512', 'valid-token', false),
+		],
+	];
+	$GLOBALS['auth_integration_executed'] = [];
+
+	$_COOKIE['cacti_remembers'] = '42,-1,forged-token';
+
+	expect(check_auth_cookie())->toBeFalse()
+		->and($GLOBALS['auth_integration_executed'])->toBeEmpty();
+
+	$_COOKIE['cacti_remembers'] = '42,-1,valid-token';
+
+	expect(check_auth_cookie())->toBeFalse()
+		->and($GLOBALS['auth_integration_executed'])->toHaveCount(1)
+		->and($GLOBALS['auth_integration_executed'][0]['sql'])->toContain('DELETE FROM user_auth_cache')
+		->and($GLOBALS['auth_integration_executed'][0]['params'])->toBe([42]);
+
+	unset($_COOKIE['cacti_remembers']);
 });
