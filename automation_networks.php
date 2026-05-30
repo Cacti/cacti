@@ -27,6 +27,9 @@ require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/api_scheduler.php');
 require_once(CACTI_PATH_LIBRARY . '/snmp.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 $actions = [
 	1 => __('Delete'),
@@ -360,28 +363,28 @@ function api_networks_discover(int $network_id, bool $discover_debug, bool $disc
 
 function api_networks_save(array $post) : mixed {
 	if (empty($post['network_id'])) {
-		$save['id']            = form_input_validate($post['id'], 'id', '^[0-9]+$', false, 3);
+		$save['id']            = automation_validate_input($post['id'], 'id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
 		$save['hash']          = get_hash_automation($post['id'], 'automation_networks');
 
 		// general information
-		$save['name']          = form_input_validate($post['name'], 'name', '', false, 3);
-		$save['poller_id']     = form_input_validate($post['poller_id'], 'poller_id', '^[0-9]+$', false, 3);
-		$save['site_id']       = form_input_validate($post['site_id'], 'site_id', '^[0-9]+$', false, 3);
-		$save['subnet_range']  = form_input_validate($post['subnet_range'], 'subnet_range', '', false, 3);
-		$save['ignore_ips']    = form_input_validate($post['ignore_ips'], 'ignore_ips', '', true, 3);
-		$save['dns_servers']   = form_input_validate($post['dns_servers'], 'dns_servers', '', true, 3);
+		$save['name']          = automation_validate_input($post['name'], 'name', [new Assert\NotBlank()]);
+		$save['poller_id']     = automation_validate_input($post['poller_id'], 'poller_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['site_id']       = automation_validate_input($post['site_id'], 'site_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['subnet_range']  = automation_validate_input($post['subnet_range'], 'subnet_range', [new Assert\NotBlank()]);
+		$save['ignore_ips']    = automation_validate_input($post['ignore_ips'], 'ignore_ips', []);
+		$save['dns_servers']   = automation_validate_input($post['dns_servers'], 'dns_servers', []);
 
-		$save['threads']       = form_input_validate($post['threads'], 'threads', '^[0-9]+$', false, 3);
-		$save['run_limit']     = form_input_validate($post['run_limit'], 'run_limit', '^[0-9]+$', false, 3);
+		$save['threads']       = automation_validate_input($post['threads'], 'threads', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['run_limit']     = automation_validate_input($post['run_limit'], 'run_limit', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
 
 		$save['enabled']              = (isset($post['enabled']) ? 'on' : '');
 
 		// notification settings
 		$save['notification_enabled'] = (isset($post['notification_enabled']) ? 'on' : '');
-		$save['notification_email']   = form_input_validate($post['notification_email'], 'notification_email', '', true, 3);
+		$save['notification_email']   = automation_validate_input($post['notification_email'], 'notification_email', [new Assert\Email(mode: 'html5')]);
 
-		$save['notification_fromname']  = form_input_validate($post['notification_fromname'], 'notification_fromname', '', true, 3);
-		$save['notification_fromemail'] = form_input_validate($post['notification_fromemail'], 'notification_fromemail', '', true, 3);
+		$save['notification_fromname']  = automation_validate_input($post['notification_fromname'], 'notification_fromname', []);
+		$save['notification_fromemail'] = automation_validate_input($post['notification_fromemail'], 'notification_fromemail', [new Assert\Email(mode: 'html5')]);
 
 		$save['enable_netbios']       = (isset($post['enable_netbios']) ? 'on' : '');
 		$save['add_to_cacti']         = (isset($post['add_to_cacti']) ? 'on' : '');
@@ -389,11 +392,11 @@ function api_networks_save(array $post) : mixed {
 		$save['rerun_data_queries']   = (isset($post['rerun_data_queries']) ? 'on' : '');
 
 		// discovery connectivity settings
-		$save['snmp_id']       = form_input_validate($post['snmp_id'], 'snmp_id', '^[0-9]+$', false, 3);
-		$save['ping_method']   = form_input_validate($post['ping_method'], 'ping_method', '^[0-9]+$', false, 3);
-		$save['ping_port']     = form_input_validate($post['ping_port'], 'ping_port', '^[0-9]+$', false, 3);
-		$save['ping_timeout']  = form_input_validate($post['ping_timeout'], 'ping_timeout', '^[0-9]+$', false, 3);
-		$save['ping_retries']  = form_input_validate($post['ping_retries'], 'ping_retries', '^[0-9]+$', false, 3);
+		$save['snmp_id']       = automation_validate_input($post['snmp_id'], 'snmp_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['ping_method']   = automation_validate_input($post['ping_method'], 'ping_method', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['ping_port']     = automation_validate_input($post['ping_port'], 'ping_port', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['ping_timeout']  = automation_validate_input($post['ping_timeout'], 'ping_timeout', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['ping_retries']  = automation_validate_input($post['ping_retries'], 'ping_retries', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
 
 		$save = api_scheduler_augment_save($save, $post);
 
