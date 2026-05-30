@@ -2577,8 +2577,6 @@ function rrdtool_function_format_graph_date(&$graph_data_array) {
 	$dateCharSetting = read_user_setting('default_datechar',read_config_option('default_datechar'));
 	$datecharacter = $datechar[$dateCharSetting];
 
-	$graph_date = 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s';
-
 	switch ($date_fmt) {
 		case GD_MO_D_Y:
 			$graph_date = 'm' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
@@ -2597,6 +2595,9 @@ function rrdtool_function_format_graph_date(&$graph_data_array) {
 			break;
 		case GD_Y_MN_D:
 			$graph_date = 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s';
+			break;
+		default:
+			$graph_date = 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s';
 			break;
 	}
 
