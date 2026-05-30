@@ -34,6 +34,9 @@ require_once(CACTI_PATH_LIBRARY . '/snmp.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 // set default action
 set_default_action();
@@ -242,7 +245,16 @@ function host_new_graphs_save(int $host_id) : void {
 				WHERE id = ?',
 				[$input_field_id]);
 
-			$val = form_input_validate($val, $var, $idata['regexp_match'], $idata['allow_nulls'], 3);
+			$constraints = [];
+			if ($idata['allow_nulls'] != 'on') {
+				$constraints[] = new Assert\NotBlank();
+			}
+
+			if (!empty($idata['regexp_match'])) {
+				$constraints[] = new Assert\Regex('/' . $idata['regexp_match'] . '/');
+			}
+
+			$val = CactiValidator::validateInput($val, $var, $constraints, 3);
 
 			if (empty($matches[1])) { // this is a new graph from template field
 				$values['cg'][$matches[2]]['custom_data'][$matches[3]][$matches[4]] = $val;
