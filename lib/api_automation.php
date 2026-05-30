@@ -6438,3 +6438,27 @@ function automation_log(string $string, int $level = AUTOMATION_LOG_LOW) : void 
 		cacti_log($string, false, 'AUTOMATION');
 	}
 }
+
+/**
+ * Common input validation helper for the automation subsystem.
+ * Populates $_SESSION with the value and any error states.
+ *
+ * @param mixed  $value       The value to validate.
+ * @param string $name        The field name (used in $_SESSION).
+ * @param array  $constraints The Symfony Validator constraints.
+ * @param mixed  $message_id  The Cacti message ID to raise on failure.
+ *
+ * @return mixed The original value.
+ */
+function automation_validate_input(mixed $value, string $name, array $constraints, mixed $message_id = 3) : mixed {
+	$_SESSION[SESS_FIELD_VALUES][$name] = $value;
+
+	$violations = CactiValidator::validate($value, $constraints);
+
+	if ($violations->count() > 0) {
+		$_SESSION[SESS_ERROR_FIELDS][$name] = $message_id;
+		raise_message($message_id);
+	}
+
+	return $value;
+}

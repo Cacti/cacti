@@ -14,6 +14,7 @@
 
 require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
 require_once dirname(__DIR__, 2) . '/lib/CactiValidator.php';
+require_once dirname(__DIR__, 2) . '/lib/api_automation.php';
 
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -53,4 +54,31 @@ it('validates operator field (Regex allowing empty)', function () {
 	expect(CactiValidator::isValid('', $constraints))->toBeTrue();
 	expect(CactiValidator::isValid(null, $constraints))->toBeTrue();
 	expect(CactiValidator::isValid('abc', $constraints))->toBeFalse();
+});
+
+it('verifies automation_validate_input populates session and raises message on failure', function () {
+    // Define constants if not present
+    if (!defined('SESS_FIELD_VALUES')) define('SESS_FIELD_VALUES', 'sess_field_values');
+    if (!defined('SESS_ERROR_FIELDS')) define('SESS_ERROR_FIELDS', 'sess_error_fields');
+    
+    // Mock raise_message if it doesn't exist
+    if (!function_exists('raise_message')) {
+        function raise_message($id) { $GLOBALS['raised_message'] = $id; }
+    }
+
+    $_SESSION = [];
+    $constraints = [new Assert\NotBlank()];
+    
+    // Test valid input
+    automation_validate_input('valid', 'test_field', $constraints);
+    expect($_SESSION[SESS_FIELD_VALUES]['test_field'])->toBe('valid');
+    expect(isset($_SESSION[SESS_ERROR_FIELDS]['test_field']))->toBeFalse();
+
+    // Test invalid input
+    $_SESSION = [];
+    $GLOBALS['raised_message'] = null;
+    automation_validate_input('', 'test_field', $constraints, 999);
+    expect($_SESSION[SESS_FIELD_VALUES]['test_field'])->toBe('');
+    expect($_SESSION[SESS_ERROR_FIELDS]['test_field'])->toBe(999);
+    expect($GLOBALS['raised_message'])->toBe(999);
 });

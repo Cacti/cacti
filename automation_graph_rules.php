@@ -29,19 +29,6 @@ require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-function automation_validate_input(mixed $value, string $name, array $constraints, mixed $message_id = 3) : mixed {
-	$_SESSION[SESS_FIELD_VALUES][$name] = $value;
-
-	$violations = CactiValidator::validate($value, $constraints);
-
-	if ($violations->count() > 0) {
-		$_SESSION[SESS_ERROR_FIELDS][$name] = $message_id;
-		raise_message($message_id);
-	}
-
-	return $value;
-}
-
 $actions = [
 	AUTOMATION_ACTION_GRAPH_DUPLICATE => __('Duplicate'),
 	AUTOMATION_ACTION_GRAPH_ENABLE    => __('Enable'),
