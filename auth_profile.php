@@ -61,16 +61,19 @@ switch (grv('action')) {
 
 		break;
 	case 'disable_2fa':
+		auth_profile_require_post();
 		print disable_2fa($_SESSION[SESS_USER_ID]);
 
 		exit;
 
 	case 'enable_2fa':
+		auth_profile_require_post();
 		print enable_2fa($_SESSION[SESS_USER_ID]);
 
 		exit;
 
 	case 'verify_2fa':
+		auth_profile_require_post();
 		print verify_2fa($_SESSION[SESS_USER_ID], substr('000000' . gnrv('code'), -6));
 
 		exit;
@@ -137,6 +140,15 @@ switch (grv('action')) {
 		bottom_footer();
 
 		break;
+}
+
+function auth_profile_require_post() : void {
+	if (strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+		http_response_code(405);
+		print json_encode(['status' => 405, 'text' => __('Method not allowed')]);
+
+		exit;
+	}
 }
 
 function api_auth_logout_everywhere() : void {
@@ -635,7 +647,7 @@ function settings_2fa() : bool {
 				if ($('#tfa_enabled').is(':checked')) {
 					if (!tfa_verified) {
 						set2FAText(tfa_enabling);
-						$.getJSON('auth_profile.php?action=enable_2fa', function(data) {
+						$.post('auth_profile.php?action=enable_2fa', {__csrf_magic: csrfMagicToken}, function(data) {
 							$('#tfa_enabled').prop('disabled', false);
 
 							if (data.status == 200) {
@@ -646,21 +658,21 @@ function settings_2fa() : bool {
 							} else {
 								set2FAText(data.status + ' - ' + data.text);
 							}
-						});
+						}, 'json');
 					} else {
 						$('#tfa_enabled').prop('disabled', false);
 					}
 				} else {
-					$.getJSON('auth_profile.php?action=disable_2fa', function(data) {
+					$.post('auth_profile.php?action=disable_2fa', {__csrf_magic: csrfMagicToken}, function(data) {
 						$('#tfa_enabled').prop('disabled', false);
 						set2FAText('<?php print __('Disabled') ?>');
 						$('#row_tfa_token,#row_tfa_verify').hide();
-					});
+					}, 'json');
 				}
 			});
 			$('#tfa_verify').click(function(e) {
 				var code = $('#tfa_token').val();
-				$.getJSON('auth_profile.php?action=verify_2fa&code=' + code, function(data) {
+				$.post('auth_profile.php?action=verify_2fa', {code: code, __csrf_magic: csrfMagicToken}, function(data) {
 					var tfa_error = $('#tfa_error');
 					if (!(tfa_error.length > 0)) {}
 					$('#tfa_token').val('');
@@ -670,7 +682,7 @@ function settings_2fa() : bool {
 						data.text = '';
 					}
 					set2FAText(data.text, 'tfa_error', 'textError');
-				});
+				}, 'json');
 			});
 		});
 	</script>
