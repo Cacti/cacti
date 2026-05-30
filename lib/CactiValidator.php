@@ -162,4 +162,28 @@ class CactiValidator {
 			new Assert\Regex('/^[a-zA-Z0-9_\-\.]+$/'),
 		]);
 	}
+
+	/**
+	 * Common input validation helper.
+	 * Populates $_SESSION with the value and any error states.
+	 *
+	 * @param mixed  $value       The value to validate.
+	 * @param string $name        The field name (used in $_SESSION).
+	 * @param array  $constraints The Symfony Validator constraints.
+	 * @param mixed  $message_id  The Cacti message ID to raise on failure.
+	 *
+	 * @return mixed The original value.
+	 */
+	public static function validateInput(mixed $value, string $name, array $constraints, mixed $message_id = 3): mixed {
+		$_SESSION[SESS_FIELD_VALUES][$name] = $value;
+
+		$violations = self::validate($value, $constraints);
+
+		if ($violations->count() > 0) {
+			$_SESSION[SESS_ERROR_FIELDS][$name] = $message_id;
+			raise_message($message_id);
+		}
+
+		return $value;
+	}
 }
