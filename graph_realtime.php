@@ -234,17 +234,25 @@ switch (grv('action')) {
 
 		$error = '';
 
-		if (file_exists($graph_rrd)) {
-			$graph_contents = file_get_contents($graph_rrd);
+			if (file_exists($graph_rrd)) {
+				$graph_contents = file_get_contents($graph_rrd);
 
-			if (preg_match('/^ERROR/',$graph_contents)) {
-				$error  = $graph_contents;
-				$output = '';
+				if (preg_match('/^ERROR/',$graph_contents)) {
+					$error  = $graph_contents;
+					$output = '';
+				}
 			}
-		}
 
-		if (empty($output) && empty($error)) {
-			$graph_data_array['get_error'] = true;
+			if (!isset($graph_contents) && $output !== false && $output != '') {
+				if (preg_match('/^(ERROR|GRAPH ACCESS DENIED)/', $output)) {
+					$error = $output;
+				} else {
+					$graph_contents = $output;
+				}
+			}
+
+			if (empty($output) && empty($error)) {
+				$graph_data_array['get_error'] = true;
 			$null_param                    = [];
 			rrdtool_function_graph(grv('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
 
