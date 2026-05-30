@@ -1,6 +1,8 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-feature: Harden authentication system correctness including 2FA logic, password reset token security, and basic auth status checks
+-feature: Improve remote agent authorization to prevent FCrDNS lockouts by allowing IP-based fallback
 -issue#7131: Fix data_input_data column-expansion bugs in change_data_template and api_data_source_duplicate
 -issue#7137: Fix eleven PHPStan Level 6 errors in form_save error-redirect URLs and lib/html.php right-tab block
 -issue#6762: Harden lib/ping.php: apply cacti_escapeshellarg() to hostname in native ping and fping shell commands
