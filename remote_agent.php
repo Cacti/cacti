@@ -177,9 +177,9 @@ function remote_client_authorized() : bool {
 
 		if (!$forward_match) {
 			$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);
-			cacti_log('WARNING: PTR record for ' . $client_addr . ' resolves to ' . $safe_name . ' but forward lookup does not match. Rejecting.', false, 'SECURITY');
+			cacti_log('WARNING: PTR record for ' . $client_addr . ' resolves to ' . $safe_name . ' but forward lookup does not match. Hostname checks will be ignored for this request.', false, 'SECURITY');
 
-			return false;
+			$client_name = $client_addr;
 		}
 	}
 

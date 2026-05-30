@@ -75,3 +75,11 @@ test('2fa profile mutations require post requests and csrf-bearing ajax calls', 
 		->and($profile)->not->toContain('$.getJSON(\'auth_profile.php?action=disable_2fa')
 		->and($profile)->not->toContain('$.getJSON(\'auth_profile.php?action=verify_2fa');
 });
+
+test('remote agent authorization handles fcrdns failures gracefully', function () use ($root) {
+	$remote_agent = file_get_contents($root . '/remote_agent.php');
+
+	expect($remote_agent)->toContain('Hostname checks will be ignored for this request.')
+		->and($remote_agent)->toContain('$client_name = $client_addr;')
+		->and($remote_agent)->not->toMatch('/if\s*\(!\$forward_match\)\s*\{[^}]*return\s*false;/');
+});
