@@ -488,7 +488,7 @@ function form_actions() {
 
 	form_start('data_sources.php');
 
-	html_start_box(html_escape(cacti_form_action_label($ds_actions, get_nfilter_request_var('drp_action'))), '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($ds_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($ds_array) && cacti_sizeof($ds_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */

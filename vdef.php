@@ -265,7 +265,7 @@ function vdef_form_actions() {
 
 	form_start('vdef.php', 'vdef_actions');
 
-	html_start_box(html_escape(cacti_form_action_label($vdef_actions, get_nfilter_request_var('drp_action'))), '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($vdef_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($vdef_array)) {
 		if (get_nfilter_request_var('drp_action') === '1') { // delete

@@ -262,7 +262,7 @@ function form_actions() {
 
 	form_start('cdef.php');
 
-	html_start_box(html_escape(cacti_form_action_label($cdef_actions, get_nfilter_request_var('drp_action'))), '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($cdef_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($cdef_array) && cacti_sizeof($cdef_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */

@@ -8413,38 +8413,26 @@ function cacti_validate_sort_column(string $column, array $allowed, string $defa
 }
 
 /**
- * cacti_form_action_label - Look up a drp_action key in an actions array and
- * return the corresponding server-defined label.
+ * escape_page_action - Look up a drp_action key in an actions array and return
+ * the matching label, html_escape()'d and ready for direct output.
  *
- * Safety comes from the return value: the function always returns a label
- * from $actions (a server-controlled array), never the key itself. The key
- * is used only for an array lookup, so a malicious key value cannot inject
- * HTML through this function's return value.
- *
- * Input validation on $action_key is not required for XSS safety here, but
- * callers should prefer get_request_var() over get_nfilter_request_var()
- * when a prior get_filter_request_var() guard has already run, to read from
- * the already-sanitized $_CACTI_REQUEST cache.
- *
- * Callers that pass the return value to html_start_box() or any other
- * function that outputs to HTML MUST wrap the return value with
- * html_escape(), because plugin hooks (api_plugin_hook_function) may
- * substitute labels that contain HTML.
+ * The key is used only for the array lookup, so a non-scalar or unknown key
+ * yields $default. Plugin hooks (api_plugin_hook_function) may substitute
+ * labels containing HTML, so the result is escaped here; callers output it
+ * directly without a second html_escape().
  *
  * @param array  $actions     Associative array mapping drp_action values to labels.
- * @param mixed  $drp_action  The drp_action key to look up. Read straight from the
- *                            request on most pages, so it may be an array; non-scalar
- *                            keys yield $default rather than a fatal type error.
+ * @param mixed  $drp_action  The drp_action key to look up; non-scalar keys yield $default.
  * @param string $default     Label to return when the key is absent from the array.
  *
- * @return string  The matched label, or $default. Always html_escape() the return value before output.
+ * @return string  The html_escape()'d matched label, or $default.
  */
-function cacti_form_action_label(array $actions, $drp_action, string $default = ''): string {
+function escape_page_action(array $actions, $drp_action, string $default = ''): string {
 	if (!is_string($drp_action) && !is_int($drp_action)) {
 		return $default;
 	}
 
-	return isset($actions[$drp_action]) ? (string) $actions[$drp_action] : $default;
+	return html_escape(isset($actions[$drp_action]) ? $actions[$drp_action] : $default);
 }
 
 /**
