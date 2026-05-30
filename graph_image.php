@@ -148,7 +148,7 @@ if (POLLER_ID == 1 || read_config_option('storage_location')) { // @phpstan-igno
 	$url .= '&effective_user=' . $_SESSION['sess_user_id'];
 
 	foreach ($graph_data_array as $variable => $value) {
-		$url .= '&' . $variable . '=' . $value;
+		$url .= '&' . rawurlencode((string) $variable) . '=' . rawurlencode((string) $value);
 	}
 
 	$output = call_remote_data_collector(1, $url);

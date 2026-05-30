@@ -44,6 +44,12 @@ graph_probe_assert(
 );
 
 graph_probe_assert(
+	graph_probe_file_contains($root . '/graph_image.php', 'rawurlencode((string) $variable)') &&
+	graph_probe_file_contains($root . '/graph_image.php', 'rawurlencode((string) $value)'),
+	'remote graph image request parameters must be URL encoded'
+);
+
+graph_probe_assert(
 	graph_probe_file_contains($root . '/graph_image.php', '$image_begin_pos !== false') &&
 	graph_probe_file_contains($root . '/graph_image.php', '$image_data_pos !== false'),
 	'remote graph image responses must reject output without an image marker'
@@ -55,8 +61,8 @@ graph_probe_assert(
 );
 
 graph_probe_assert(
-	graph_probe_file_contains($root . '/graph_realtime.php', '!isset($graph_contents) && $output !== false'),
-	'realtime graph output must fall back to returned graph bytes when the cache file is unavailable'
+	graph_probe_file_contains($root . '/graph_realtime.php', '$graph_contents === false && $output !== false'),
+	'realtime graph output must fall back to returned graph bytes when the cache file is unavailable or unreadable'
 );
 
 graph_probe_assert(
