@@ -27,6 +27,9 @@ require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 $actions = [
 	1 => __('Delete'),
@@ -94,9 +97,9 @@ function form_save() : void {
 
 		$save['id']           = gnrv('id');
 		$save['hash']         = get_hash_data_input(gnrv('id'));
-		$save['name']         = form_input_validate(gnrv('name'), 'name', '', false, 3);
-		$save['input_string'] = form_input_validate(gnrv('input_string'), 'input_string', '', true, 3);
-		$save['type_id']      = form_input_validate(gnrv('type_id'), 'type_id', '^[0-9]+$', true, 3);
+		$save['name']         = CactiValidator::validateInput(gnrv('name'), 'name', [new Assert\NotBlank()], 3);
+		$save['input_string'] = CactiValidator::validateInput(gnrv('input_string'), 'input_string', [], 3);
+		$save['type_id']      = CactiValidator::validateInput(gnrv('type_id'), 'type_id', [new Assert\Regex('/^[0-9]+$/')], 3);
 
 		if (!is_error_message()) {
 			$data_input_id = sql_save($save, 'data_input');
@@ -131,14 +134,14 @@ function form_save() : void {
 		$save['id']            = grv('id');
 		$save['hash']          = get_hash_data_input(gnrv('id'), 'data_input_field');
 		$save['data_input_id'] = grv('data_input_id');
-		$save['name']          = form_input_validate(gnrv('fname'), 'fname', '', false, 3);
-		$save['data_name']     = form_input_validate(gnrv('data_name'), 'data_name', '', false, 3);
+		$save['name']          = CactiValidator::validateInput(gnrv('fname'), 'fname', [new Assert\NotBlank()], 3);
+		$save['data_name']     = CactiValidator::validateInput(gnrv('data_name'), 'data_name', [new Assert\NotBlank()], 3);
 		$save['input_output']  = gnrv('input_output');
-		$save['update_rra']    = form_input_validate((isrv('update_rra') ? gnrv('update_rra') : ''), 'update_rra', '', true, 3);
+		$save['update_rra']    = CactiValidator::validateInput((isrv('update_rra') ? gnrv('update_rra') : ''), 'update_rra', [], 3);
 		$save['sequence']      = grv('sequence');
-		$save['type_code']     = form_input_validate((isrv('type_code') ? gnrv('type_code') : ''), 'type_code', '', true, 3);
-		$save['regexp_match']  = form_input_validate((isrv('regexp_match') ? gnrv('regexp_match') : ''), 'regexp_match', '', true, 3);
-		$save['allow_nulls']   = form_input_validate((isrv('allow_nulls') ? gnrv('allow_nulls') : ''), 'allow_nulls', '', true, 3);
+		$save['type_code']     = CactiValidator::validateInput((isrv('type_code') ? gnrv('type_code') : ''), 'type_code', [], 3);
+		$save['regexp_match']  = CactiValidator::validateInput((isrv('regexp_match') ? gnrv('regexp_match') : ''), 'regexp_match', [], 3);
+		$save['allow_nulls']   = CactiValidator::validateInput((isrv('allow_nulls') ? gnrv('allow_nulls') : ''), 'allow_nulls', [], 3);
 
 		if (is_error_message() === false) {
 			$data_input_field_id = sql_save($save, 'data_input_fields');
