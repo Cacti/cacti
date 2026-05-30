@@ -697,12 +697,12 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 				} else {
 					$data_source['rrd_maximum'] = substitute_snmp_query_data($data_source['rrd_maximum'], $data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
 				}
-			} elseif ($data_source['rrd_maximum'] != 'U' && (int)$data_source['rrd_maximum'] <= (int)$data_source['rrd_minimum']) {
+			} elseif ($data_source['rrd_maximum'] != 'U' && (float)$data_source['rrd_maximum'] <= (float)$data_source['rrd_minimum']) {
 				/* max > min required, but take care of an "Undef" value */
 				if ($data_source['data_source_type_id'] == 1 || $data_source['data_source_type_id'] == 4) {
 					$data_source['rrd_maximum'] = 'U';
 				} else {
-					$data_source['rrd_maximum'] = (int)$data_source['rrd_minimum'] + 1;
+					$data_source['rrd_maximum'] = (float)$data_source['rrd_minimum'] + 1;
 				}
 			}
 
@@ -2838,9 +2838,13 @@ function rrdtool_function_info($local_data_id) {
 		return false;
 	}
 
-	/* Hack for i18n */
+	/* Hack for i18n: some locales emit a decimal comma in numeric values.
+	   Only normalize the value to the right of '= ' when it is numeric so we
+	   don't corrupt commas inside DS names, cf strings or filenames. */
 	if (strpos($output, ',') !== false) {
-		$output = str_replace(',', '.', $output);
+		$output = preg_replace_callback('/^(\s*\S+ = )("?)([0-9]+,[0-9]+(?:e[+-]?[0-9]+)?)("?)$/mi', function($matches) {
+			return $matches[1] . $matches[2] . str_replace(',', '.', $matches[3]) . $matches[4];
+		}, $output);
 	}
 
 	/* Parse the output */
@@ -3141,17 +3145,14 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 			foreach($info['rra'] as $index => $rra) {
 				$cf    = $rra['cf'];
 				$steps = $rra['pdp_per_row'];
-				$i     = 0;
 
 				foreach($info['rra'] as $file_rra_id => $file_rra) {
 					if (($cf == $file_rra['cf']) && ($steps == $file_rra['pdp_per_row']) && ($index != $file_rra_id)) {
-						$diff['rra'][$i]['error']           = __("File RRA '%s' has same CF/steps (%s, %s) as '%s'", $index, $cf, $steps, $file_rra_id);
+						$diff['rra'][$index]['error']       = __("File RRA '%s' has same CF/steps (%s, %s) as '%s'", $index, $cf, $steps, $file_rra_id);
 						$diff['rra'][$file_rra_id]['error'] = __("File RRA '%s' has same CF/steps (%s, %s) as '%s'", $file_rra_id, $cf, $steps, $index);
 
 						$resize = false;
 					}
-
-					$i++;
 				}
 			}
 
@@ -3170,7 +3171,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 					/* correct issue with older rrdtools */
 					$file_rra['cf'] = trim($file_rra['cf'], '"');
 
-					if ($cacti_rra['cf'] == $file_rra['cf'] && $cacti_rra_id == $file_rra_id) {
+					if ($cacti_rra['cf'] == $file_rra['cf'] && $cacti_rra['steps'] == $file_rra['pdp_per_row']) {
 						if (isset($info['rra'][$file_rra_id]['seen'])) {
 							continue;
 						}
@@ -3197,16 +3198,16 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 						}
 					}
 				}
-			}
 
-			/* if cacti knows an rra that has no match, consider this as an error */
-			if (!isset($cacti_info['rra'][$cacti_rra_id]['seen'])) {
-				/* add to info array for printing, the index $cacti_rra_id has no real meaning */
-				$info['rra']['cacti_' . $cacti_rra_id]['cf']    = $cacti_rra['cf'];
-				$info['rra']['cacti_' . $cacti_rra_id]['steps'] = $cacti_rra['steps'];
-				$info['rra']['cacti_' . $cacti_rra_id]['xff']   = $cacti_rra['xff'];
-				$info['rra']['cacti_' . $cacti_rra_id]['rows']  = $cacti_rra['rows'];
-				$diff['rra']['cacti_' . $cacti_rra_id]['error'] = __("The RRA '%s' missing in the existing Cacti RRDfile", $cacti_rra_id);
+				/* if cacti knows an rra that has no match, consider this as an error */
+				if (!isset($cacti_info['rra'][$cacti_rra_id]['seen'])) {
+					/* add to info array for printing, the index $cacti_rra_id has no real meaning */
+					$info['rra']['cacti_' . $cacti_rra_id]['cf']    = $cacti_rra['cf'];
+					$info['rra']['cacti_' . $cacti_rra_id]['steps'] = $cacti_rra['steps'];
+					$info['rra']['cacti_' . $cacti_rra_id]['xff']   = $cacti_rra['xff'];
+					$info['rra']['cacti_' . $cacti_rra_id]['rows']  = $cacti_rra['rows'];
+					$diff['rra']['cacti_' . $cacti_rra_id]['error'] = __("The RRA '%s' missing in the existing Cacti RRDfile", $cacti_rra_id);
+				}
 			}
 		}
 
@@ -3433,7 +3434,8 @@ function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 				}
 			} else {
 				rrdtool_execute("resize $line", true, RRDTOOL_OUTPUT_STDOUT);
-				rename(dirname($rrd_file) . '/resize.rrd', $rrd_file);
+				/* rrdtool writes resize.rrd to its working directory, which is the PHP process cwd */
+				rename(getcwd() . '/resize.rrd', $rrd_file);
 			}
 		}
 	}
@@ -3493,8 +3495,7 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
 	foreach ($file_array as $file) {
 		/* create a DOM object from an rrdtool dump */
 		$dom = new domDocument;
-		$dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
-		if (!$dom) {
+		if ($dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL')) === false) {
 			$check['err_msg'] = __('Error while parsing the XML of rrdtool dump');
 			return $check;
 		}
@@ -3566,8 +3567,7 @@ function rrd_rra_delete($file_array, $rra_array, $debug) {
 	foreach ($file_array as $file) {
 		/* create a DOM document from an rrdtool dump */
 		$dom = new domDocument;
-		$dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
-		if (!$dom) {
+		if ($dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL')) === false) {
 			$check['err_msg'] = __('Error while parsing the XML of RRDtool dump');
 			return $check;
 		}
@@ -3625,8 +3625,7 @@ function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
 	foreach ($file_array as $file) {
 		/* create a DOM document from an rrdtool dump */
 		$dom = new domDocument;
-		$dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
-		if (!$dom) {
+		if ($dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL')) === false) {
 			$check['err_msg'] = __('Error while parsing the XML of RRDtool dump');
 			return $check;
 		}
