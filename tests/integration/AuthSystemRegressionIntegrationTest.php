@@ -105,6 +105,7 @@ test('auth subsystem regression coverage spans cookie login, 2fa, reset tokens, 
 		'auth_profile.php'       => file_get_contents($root . '/auth_profile.php'),
 		'lib/auth.php'           => file_get_contents($root . '/lib/auth.php'),
 		'lib/functions.php'      => file_get_contents($root . '/lib/functions.php'),
+		'lib/auth.php'           => file_get_contents($root . '/lib/auth.php'),
 	];
 
 	foreach ($files as $path => $contents) {
@@ -120,7 +121,8 @@ test('auth subsystem regression coverage spans cookie login, 2fa, reset tokens, 
 		->and($files['auth_profile.php'])->toContain('auth_profile_require_post();')
 		->and($files['auth_profile.php'])->toContain('__csrf_magic: csrfMagicToken')
 		->and($files['include/auth.php'])->toContain('auth_user_has_access($current_user)')
-		->and($files['lib/auth.php'])->toContain('auth_cookie_user_currently_allowed($user_info)');
+		->and($files['lib/auth.php'])->toContain('auth_cookie_user_currently_allowed($user_info)')
+		->and($files['lib/auth.php'])->not->toContain('$result[\'secret\']');
 });
 
 test('remember-me cookie authorization rejects disabled and permissionless accounts at runtime', function () {

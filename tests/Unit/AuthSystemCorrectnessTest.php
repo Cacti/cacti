@@ -65,6 +65,7 @@ test('basic auth shortcut checks disabled accounts and effective access before c
 
 test('2fa profile mutations require post requests and csrf-bearing ajax calls', function () use ($root) {
 	$profile = file_get_contents($root . '/auth_profile.php');
+	$auth    = file_get_contents($root . '/lib/auth.php');
 
 	expect($profile)->toContain('function auth_profile_require_post()')
 		->and($profile)->toContain('REQUEST_METHOD')
@@ -73,7 +74,8 @@ test('2fa profile mutations require post requests and csrf-bearing ajax calls', 
 		->and($profile)->toContain('$.post(\'auth_profile.php?action=verify_2fa\', {code: code, __csrf_magic: csrfMagicToken}')
 		->and($profile)->not->toContain('$.getJSON(\'auth_profile.php?action=enable_2fa')
 		->and($profile)->not->toContain('$.getJSON(\'auth_profile.php?action=disable_2fa')
-		->and($profile)->not->toContain('$.getJSON(\'auth_profile.php?action=verify_2fa');
+		->and($profile)->not->toContain('$.getJSON(\'auth_profile.php?action=verify_2fa')
+		->and($auth)->not->toContain('$result[\'secret\']');
 });
 
 test('remote agent authorization handles fcrdns failures gracefully', function () use ($root) {

@@ -4955,9 +4955,8 @@ function verify_2fa(int $user_id, string $code) : string {
 		$result['status'] = 404;
 		$result['text']   = __('ERROR: Unable to find user');
 	} else {
-		$result['secret'] = $current_user['tfa_secret'];
-		$g                = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
-		$isValid          = $g->checkCode($current_user['tfa_secret'], $code);
+		$g       = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
+		$isValid = $g->checkCode($current_user['tfa_secret'], $code);
 
 		if (!$isValid) {
 			$result['status'] = 301;
