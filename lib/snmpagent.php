@@ -932,7 +932,7 @@ function snmpagent_notification(string $notification, string $mib, array $varbin
 
 					if ($notification_manager['snmp_password'] && $notification_manager['snmp_priv_passphrase']) {
 						$snmp_security_level = 'authPriv';
-					} elseif ($notification_manager['snmp_password'] && !$notification_manager['snmp_priv_passphrase']) {
+					} elseif ($notification_manager['snmp_password']) {
 						$snmp_security_level = 'authNoPriv';
 					} else {
 						$snmp_security_level = 'noAuthNoPriv';
