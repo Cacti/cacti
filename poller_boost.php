@@ -718,7 +718,7 @@ function boost_output_rrd_data(int $child) : mixed {
 	$max_per_select = intval(read_config_option('boost_rrd_update_max_records_per_select'));
 
 	if ($max_per_select <= 0) {
-		$max_per_select = 1000;
+		$max_per_select = 50000;
 	}
 
 	$data_ids = db_fetch_cell_prepared('SELECT
@@ -828,6 +828,10 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 	$rrd_update_interval = intval(read_config_option('boost_rrd_update_interval'));
 	$data_ids_to_get     = intval(read_config_option('boost_rrd_update_max_records_per_select'));
 	$rrd_field_names     = [];
+
+	if ($data_ids_to_get <= 0) {
+		$data_ids_to_get = 50000;
+	}
 
 	if ($archive_tables === false) {
 		$archive_tables = boost_get_arch_table_names($archive_table);

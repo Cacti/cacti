@@ -241,7 +241,23 @@ test('boost_output_rrd_data guards against zero max_per_select', function () use
 
 	// A zero or unconfigured max_per_select would produce division-by-zero in ceil().
 	expect($func_body)->toMatch('/if\s*\(\s*\$max_per_select\s*<=\s*0\s*\)/');
-	expect($func_body)->toContain('$max_per_select = 1000;');
+	expect($func_body)->toContain('$max_per_select = 50000;');
+});
+
+test('boost_process_local_data_ids guards against zero records per select', function () use ($boostPollerPath) {
+	$contents = file_get_contents($boostPollerPath);
+
+	$func_pos = strpos($contents, 'function boost_process_local_data_ids(');
+	expect($func_pos)->not->toBeFalse();
+
+	$func_end  = strpos($contents, "\nfunction ", $func_pos + 1);
+	$func_body = substr($contents, $func_pos, $func_end - $func_pos);
+
+	// The same setting controls the batched SELECT LIMIT in this worker path.
+	// Empty or invalid configuration must fall back before LIMIT construction.
+	expect($func_body)->toContain("intval(read_config_option('boost_rrd_update_max_records_per_select'))");
+	expect($func_body)->toMatch('/if\s*\(\s*\$data_ids_to_get\s*<=\s*0\s*\)/');
+	expect($func_body)->toContain('$data_ids_to_get = 50000;');
 });
 
 test('parent waits for child registration before entering monitoring loop', function () use ($boostPollerPath) {
