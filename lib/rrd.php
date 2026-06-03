@@ -383,7 +383,10 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 			break;
 		case RRDTOOL_OUTPUT_STDERR:
 		case RRDTOOL_OUTPUT_RETURN_STDERR:
-			$output = fgets($fp, 1000000);
+			$output = '';
+			while (!feof($fp)) {
+				$output .= fgets($fp, 4096);
+			}
 
 			if (isset($process)) {
 				fclose($fp);
@@ -531,6 +534,7 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 			return rtrim(substr($output, 0, strpos($output, 'OK u')));
 			break;
 		case RRDTOOL_OUTPUT_STDERR:
+		case RRDTOOL_OUTPUT_RETURN_STDERR:
 			if (substr($output, 1, 3) == 'PNG') {
 				return 'OK';
 			}
@@ -540,7 +544,11 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 			if (substr($output, 0, 5) == '<?xml') {
 			    return 'SVG/XML Output OK';
             }
-			print $output;
+			if ($output_flag == RRDTOOL_OUTPUT_RETURN_STDERR) {
+				return $output;
+			} else {
+				print $output;
+			}
 			break;
 		case RRDTOOL_OUTPUT_BOOLEAN :
 			return (substr_count($output, 'OK u')) ? true : false;
@@ -1324,11 +1332,6 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	/* Replace "|query_*|" in the graph command to replace e.g. vertical_label.  */
 	$graph_opts = rrd_substitute_host_query_data($graph_opts, $graph, array());
 
-	/* provide smooth lines */
-	if ($graph['slope_mode'] == 'on') {
-		$graph_opts .= '--slope-mode' . RRD_NL;
-	}
-
 	/* if the user desires a watermark set it */
 	$watermark = str_replace("'", '"', read_config_option('graph_watermark'));
 	if ($watermark != '') {
@@ -1599,7 +1602,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					/* remember the last CF for this data source for use with GPRINT
 					 * if e.g. an AREA/AVERAGE and a LINE/MAX is used
 					 * we will have AVERAGE first and then MAX, depending on GPRINT sequence */
-					$last_graph_cf['data_source_name']['local_data_template_rrd_id'] = $graph_cf;
+					$last_graph_cf[$graph_item['data_source_name']][$graph_item['local_data_template_rrd_id']] = $graph_cf;
 
 					/* remember this for second foreach loop */
 					$graph_items[$key]['cf_reference'] = $graph_cf;
@@ -1612,8 +1615,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					 * see 'man rrdgraph_data' for the correct VDEF based notation
 					 * so our task now is to 'guess' the very graph_item, this GPRINT is related to
 					 * and to use that graph_item's CF */
-					if (isset($last_graph_cf['data_source_name']['local_data_template_rrd_id'])) {
-						$graph_cf = $last_graph_cf['data_source_name']['local_data_template_rrd_id'];
+					if (isset($last_graph_cf[$graph_item['data_source_name']][$graph_item['local_data_template_rrd_id']])) {
+						$graph_cf = $last_graph_cf[$graph_item['data_source_name']][$graph_item['local_data_template_rrd_id']];
 						/* remember this for second foreach loop */
 						$graph_items[$key]['cf_reference'] = $graph_cf;
 					} else {
@@ -2592,6 +2595,9 @@ function rrdtool_function_format_graph_date(&$graph_data_array) {
 			break;
 		case GD_Y_MN_D:
 			$graph_date = 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s';
+			break;
+		default:
+			$graph_date = 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s';
 			break;
 	}
 
@@ -3660,7 +3666,7 @@ function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
 					rrdtool_execute("restore -f $xml_file $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
 					/* scratch that XML file to avoid filling up the disk */
 					unlink($xml_file);
-					cacti_log('Deleted RRA(s) from RRDfile: ' . $file, false, 'UTIL');
+					cacti_log('Cloned RRA(s) in RRDfile: ' . $file, false, 'UTIL');
 				} else {
 					$check['err_msg'] = __('ERROR: RRDfile %s not writeable', $file);
 					return $check;
@@ -4115,7 +4121,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 		imagecopyresized($nimage, $image, 0, 0, 0, 0, $width, $height, 450, 200);
 
 		/* create the image */
-		imagepng($image);
+		imagepng($nimage);
 	} else {
 		/* create the image */
 		imagepng($image);
