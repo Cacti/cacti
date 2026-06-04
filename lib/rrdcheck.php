@@ -252,7 +252,7 @@ function do_rrdcheck($thread_id = 1) {
 						VALUES (?, NOW(), ?)',
 						array(
 							$local_data_id,
-							"The RRDfile step of {$step} does not match the Data Source Profile step {$rrdval['profile_step']}.  File '$file'."
+							"The RRDfile step of {$rrd_step} does not match the Data Source Profile step {$rrdval['profile_step']}.  File '$file'."
 						)
 					);
 				}
