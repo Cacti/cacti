@@ -516,7 +516,7 @@ function reports_form_actions() {
 
 	form_start(get_reports_page(), 'report');
 
-	html_start_box($reports_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($reports_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (!isset($reports_array)) {
 		raise_message(40);

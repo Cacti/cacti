@@ -8409,6 +8409,29 @@ function cacti_validate_sort_column(string $column, array $allowed, string $defa
 }
 
 /**
+ * escape_page_action - Look up a drp_action key in an actions array and return
+ * the matching label, html_escape()'d and ready for direct output.
+ *
+ * The key is used only for the array lookup, so a non-scalar or unknown key
+ * yields $default. Plugin hooks (api_plugin_hook_function) may substitute
+ * labels containing HTML, so the result is escaped here; callers output it
+ * directly without a second html_escape().
+ *
+ * @param array  $actions     Associative array mapping drp_action values to labels.
+ * @param mixed  $drp_action  The drp_action key to look up; non-scalar keys yield $default.
+ * @param string $default     Label to return when the key is absent from the array.
+ *
+ * @return string  The html_escape()'d matched label, or $default.
+ */
+function escape_page_action(array $actions, $drp_action, string $default = ''): string {
+	if (!is_string($drp_action) && !is_int($drp_action)) {
+		return $default;
+	}
+
+	return html_escape(isset($actions[$drp_action]) ? $actions[$drp_action] : $default);
+}
+
+/**
  * cacti_http - SSRF-hardened HTTP GET.
  *
  * Wraps file_get_contents() with a stream context that enables TLS peer

@@ -221,7 +221,7 @@ function form_actions() {
 
 	form_start('user_domains.php');
 
-	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($d_array) && cacti_sizeof($d_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { // delete

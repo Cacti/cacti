@@ -341,7 +341,7 @@ function form_actions() {
 
 	form_start('aggregate_graphs.php');
 
-	html_start_box($graph_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($graph_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	$save_html = '';
 
@@ -536,7 +536,7 @@ function form_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='local_graph_id' value='" . (isset_request_var('local_graph_id') ? get_nfilter_request_var('local_graph_id'):0) . "'>
 			<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>";
