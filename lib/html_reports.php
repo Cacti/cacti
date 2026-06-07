@@ -408,7 +408,7 @@ function reports_form_actions() : void {
 	$reports_admin   = is_reports_admin();
 	$reportit_exists = db_table_exists('plugin_reportit_reports');
 
-	$can_manage_report = static function(string $type, int $report_id) use ($current_user_id, $reports_admin, $reportit_exists) : bool {
+	$can_manage_report = static function (string $type, int $report_id) use ($current_user_id, $reports_admin, $reportit_exists) : bool {
 		if ($reports_admin) {
 			return true;
 		}

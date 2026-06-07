@@ -251,6 +251,7 @@ function kill_spikes(array $templates, int &$found) : int {
 	global $debug;
 
 	$templates_sanitized = array_map('intval', $templates);
+
 	if (cacti_sizeof($templates_sanitized)) {
 		$rrdfiles = array_rekey(db_fetch_assoc('SELECT DISTINCT rrd_path
 			FROM graph_templates AS gt
@@ -261,19 +262,20 @@ function kill_spikes(array $templates, int &$found) : int {
 			INNER JOIN poller_item AS pi ON pi.local_data_id=dtr.local_data_id
 			WHERE gt.id IN (' . implode(',', $templates_sanitized) . ')'), 'rrd_path', 'rrd_path');
 	} else {
-		$rrdfiles = array();
+		$rrdfiles = [];
 	}
 
 	if (cacti_sizeof($rrdfiles)) {
 		foreach ($rrdfiles as $f) {
 			debug("Removing Spikes from '$f'");
 
-			$args = array('-q', CACTI_PATH_CLI . '/removespikes.php', '--rrdfile=' . $f);
+			$args = ['-q', CACTI_PATH_CLI . '/removespikes.php', '--rrdfile=' . $f];
+
 			if ($debug) {
 				$args[] = '--debug';
 			}
 
-			$out = array();
+			$out = [];
 			cacti_exec(read_config_option('path_php_binary'), $args, $out);
 			$response = (isset($out[0]) ? $out[0] : '');
 

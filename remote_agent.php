@@ -214,7 +214,7 @@ function remote_client_authorized() : bool {
 	$cache_seed = $client_addr . '|' . implode(',', $allowed_hostnames);
 	$cache_hash = md5($cache_seed);
 	$cache_key  = 'remote_agent_auth:' . $cache_hash;
-	$cached    = remote_agent_auth_cache_get($cache_key);
+	$cached     = remote_agent_auth_cache_get($cache_key);
 
 	if ($cached !== null) {
 		return $cached;

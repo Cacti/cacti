@@ -33,7 +33,7 @@ set_time_limit(0);
 chdir(__DIR__);
 
 // translate well-known textual conventions and SNMP base types to net-snmp
-$smi_base_datatypes = array(
+$smi_base_datatypes = [
 	'integer'           => 'INTEGER',
 	'integer32'         => 'Integer32',
 	'unsigned32'        => 'Unsigned32',
@@ -64,11 +64,11 @@ $smi_base_datatypes = array(
 	'storagetype'       => 'INTEGER',
 	'tdomain'           => 'OBJECT IDENTIFIER',
 	'taddress'          => 'OCTET STRING'
-);
+];
 
 $data               = false;
 $eol                = "\n";
-$cache              = array();
+$cache              = [];
 $cache_last_refresh = false;
 
 // process command line options
@@ -79,21 +79,23 @@ $php_binary = read_config_option('path_php_binary');
 $script     = './snmpagent_mibcache.php';
 
 if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-	exec_background($php_binary, array('-q', $script));
+	exec_background($php_binary, ['-q', $script]);
 } else {
-	$output = array();
-	cacti_exec('pgrep', array('-a', 'php'), $output);
-	
+	$output = [];
+	cacti_exec('pgrep', ['-a', 'php'], $output);
+
 	$running = false;
+
 	foreach ($output as $line) {
 		if (strpos($line, 'snmpagent_mibcache.php') !== false) {
 			$running = true;
+
 			break;
 		}
 	}
 
 	if (!$running) {
-		exec_background($php_binary, array('-q', $script));
+		exec_background($php_binary, ['-q', $script]);
 	}
 }
 
@@ -191,17 +193,17 @@ function get_options() : array {
 	$parms = $_SERVER['argv'];
 	array_shift($parms);
 
-	$options = array();
+	$options = [];
 
 	if (sizeof($parms)) {
 		$shortopts = 'VvHh';
 
-		$longopts = array(
+		$longopts = [
 			'foreground',
 			'debug',
 			'version',
 			'help'
-		);
+		];
 
 		$options = getopt($shortopts, $longopts);
 
