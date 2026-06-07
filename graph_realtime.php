@@ -232,34 +232,34 @@ switch (grv('action')) {
 
 		$output = rrdtool_function_graph(grv('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
 
-			$error          = '';
-			$graph_contents = false;
+		$error          = '';
+		$graph_contents = false;
 
-			if (file_exists($graph_rrd)) {
-				$cached_graph_contents = file_get_contents($graph_rrd);
+		if (file_exists($graph_rrd)) {
+			$cached_graph_contents = file_get_contents($graph_rrd);
 
-				if ($cached_graph_contents !== false && $cached_graph_contents !== '') {
-					$graph_contents = $cached_graph_contents;
+			if ($cached_graph_contents !== false && $cached_graph_contents !== '') {
+				$graph_contents = $cached_graph_contents;
 
-					if (preg_match('/^ERROR/', $graph_contents)) {
-						$error  = $graph_contents;
-						$output = '';
-					}
+				if (preg_match('/^ERROR/', $graph_contents)) {
+					$error  = $graph_contents;
+					$output = '';
 				}
 			}
+		}
 
-			if ($graph_contents === false && $output !== false && $output != '') {
-				if (preg_match('/^(ERROR|GRAPH ACCESS DENIED)/', $output)) {
-					$error = $output;
-				} else {
-					$graph_contents = $output;
-				}
+		if ($graph_contents === false && $output !== false && $output != '') {
+			if (preg_match('/^(ERROR|GRAPH ACCESS DENIED)/', $output)) {
+				$error = $output;
+			} else {
+				$graph_contents = $output;
 			}
+		}
 
-			if (empty($output) && empty($error)) {
-				$graph_data_array['get_error'] = true;
-				$null_param                    = [];
-				rrdtool_function_graph(grv('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
+		if (empty($output) && empty($error)) {
+			$graph_data_array['get_error'] = true;
+			$null_param                    = [];
+			rrdtool_function_graph(grv('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
 
 			$error = ob_get_contents();
 
@@ -284,10 +284,10 @@ switch (grv('action')) {
 			}
 		}
 
-			if ($graph_contents !== false) {
-				$data = base64_encode($graph_contents);
-			} else {
-				$data = '';
+		if ($graph_contents !== false) {
+			$data = base64_encode($graph_contents);
+		} else {
+			$data = '';
 		}
 
 		// save user preferences
