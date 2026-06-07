@@ -189,9 +189,8 @@ while (1) {
 	if (empty($input_string)) {
 		if (!empty($parent_pid)) {
 			if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-				$out  = [];
-				$args = ['/FO', 'LIST', '/FI', 'PID eq ' . (int)$parent_pid];
-				cacti_exec('TASKLIST', $args, $out);
+				$out = [];
+				exec("TASKLIST /FO LIST /FI \"PID eq $parent_pid\"", $out);
 
 				$isParentRunning = (cacti_count($out) > 1);
 			} elseif (function_exists('posix_kill')) {

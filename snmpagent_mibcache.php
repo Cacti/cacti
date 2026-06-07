@@ -46,11 +46,15 @@ if (file_exists($path_mibcache_lock) && is_writable($path_mibcache_lock)) {
 }
 
 // start background caching process if not running
-$php_binary = read_config_option('path_php_binary');
-$script     = './snmpagent_mibcachechild.php';
+$php        = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+$extra_args = ' ' . cacti_escapeshellarg('./snmpagent_mibcachechild.php');
 
 while (true) {
-	exec_background($php_binary, [$script]);
+	if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+		popen('start "CactiSNMPCacheChild" /I ' . $php . ' ' . $extra_args, 'r');
+	} else {
+		exec($php . ' ' . $extra_args . ' > /dev/null &');
+	}
 
 	sleep(30 - time() % 30);
 }
