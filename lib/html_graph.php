@@ -252,7 +252,7 @@ function create_graphs_preview_filter(string $session_var) : array {
 					'method'         => 'drop_multi',
 					'friendly_name'  => __('Template'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(cg_[0-9]|dq_[0-9]|[\-0-9])']],
+					'filter_options' => ['options' => ['regexp' => '/^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)$/']],
 					'default'        => '-1',
 					'dynamic'        => false,
 					'class'          => 'graph-multiselect',
@@ -284,7 +284,7 @@ function create_graphs_preview_filter(string $session_var) : array {
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Thumbnails'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(true|false)']],
+					'filter_options' => ['options' => ['regexp' => '/^(true|false)$/']],
 					'default'        => read_user_setting('thumbnail_section_preview') == 'on' ? 'true' : 'false',
 					'value'          => $thumbnails
 				],
@@ -292,7 +292,7 @@ function create_graphs_preview_filter(string $session_var) : array {
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Business Hours'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(true|false)']],
+					'filter_options' => ['options' => ['regexp' => '/^(true|false)$/']],
 					'default'        => read_user_setting('show_business_hours') == 'on' ? 'true' : 'false',
 					'value'          => $business_hours
 				]
@@ -726,8 +726,8 @@ function html_save_graph_settings() : void {
 		gfrv('predefined_timespan');
 		gfrv('predefined_timeshift');
 		gfrv('graphs');
-		gfrv('thumbnails', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '(true|false)']]);
-		gfrv('business_hours', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '(true|false)']]);
+		gfrv('thumbnails', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^(true|false)$/']]);
+		gfrv('business_hours', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^(true|false)$/']]);
 
 		if (isrv('predefined_timespan')) {
 			set_user_setting('default_timespan', grv('predefined_timespan'));
@@ -1049,7 +1049,7 @@ function create_listview_filter(string $session_var) : array {
 					'method'         => 'drop_multi',
 					'friendly_name'  => __('Template'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(cg_[0-9]|dq_[0-9]|[\-0-9])']],
+					'filter_options' => ['options' => ['regexp' => '/^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)$/']],
 					'default'        => '-1',
 					'dynamic'        => false,
 					'class'          => 'graph-multiselect',
