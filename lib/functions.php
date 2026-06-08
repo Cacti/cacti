@@ -5684,7 +5684,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		$smtp_host = read_config_option('settings_smtp_host');
 		$smtp_port = intval(read_config_option('settings_smtp_port'));
 		$secure    = read_config_option('settings_smtp_secure');
-		$tls       = ($secure == 'ssl') ? true : (($secure == 'tls') ? false : null);
+		$tls       = ($secure == 'ssl') ? true : (($secure == 'tls') ? null : false);
 
 		$transport = new EsmtpTransport($smtp_host, $smtp_port, $tls);
 		$transport->getStream()->setTimeout((float) $timeout);
@@ -5731,7 +5731,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 			}
 
 			$secure    = read_config_option('settings_oauth2_secure');
-			$tls       = ($secure == 'ssl') ? true : (($secure == 'tls') ? false : null);
+			$tls       = ($secure == 'ssl') ? true : (($secure == 'tls') ? null : false);
 			$transport = new EsmtpTransport(
 				read_config_option('settings_oauth2_host'),
 				intval(read_config_option('settings_oauth2_port')),
@@ -5796,7 +5796,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 
 	$result    = false;
 	$fromText  = add_email_details([$from], $result, function (string $address, string $name) use ($emailMessage): bool {
-		$emailMessage->from(new Address($address, $name));
+		$emailMessage->addFrom(new Address($address, $name));
 
 		return true;
 	});
@@ -6195,7 +6195,7 @@ function ping_mail_server(string $host, int $port, string $user, string $passwor
 	$results = true;
 
 	try {
-		$tls       = ($secure == 'ssl') ? true : (($secure == 'tls') ? false : null);
+		$tls       = ($secure == 'ssl') ? true : (($secure == 'tls') ? null : false);
 		$transport = new EsmtpTransport($host, $port, $tls);
 		$transport->getStream()->setTimeout((float) $timeout);
 
