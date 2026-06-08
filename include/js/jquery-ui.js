@@ -18,6 +18,8 @@
 } )( function( $ ) {
 "use strict";
 
+$.uiBackCompat = true;
+
 $.ui = $.ui || {};
 
 var version = $.ui.version = "1.14.2";
