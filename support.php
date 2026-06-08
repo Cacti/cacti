@@ -1193,7 +1193,12 @@ function show_tech_summary() : void {
 		if ($lockout !=  '') {
 			$lockout = json_decode($lockout, true);
 
-			$unlock_time = $lockout['time'] + (30 * 60);
+			if (is_array($lockout) && isset($lockout['time'])) {
+				$unlock_time = $lockout['time'] + (30 * 60);
+			} else {
+				$unlock_time = time() + (30 * 60);
+			}
+
 			$unlock_hms  = date('H:i', $unlock_time);
 
 			print '<td><button class="deviceDown" type="button" id="lockout" title="' . __('To Unlock, press this button again.') . '">' . __('Cacti in Maintenance Mode until approximately %s!', $unlock_hms) . '</button></td>';
