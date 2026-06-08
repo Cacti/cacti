@@ -5677,8 +5677,8 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	if ($how == 0) {
 		$transport = Transport::fromDsn('native://default');
 	} elseif ($how == 1) {
-		$sendmail = trim((string) read_config_option('settings_sendmail_path'));
-		$command  = ($sendmail != '' ? $sendmail : '/usr/sbin/sendmail') . ' -oi -t';
+		$sendmail  = trim((string) read_config_option('settings_sendmail_path'));
+		$command   = ($sendmail != '' ? $sendmail : '/usr/sbin/sendmail') . ' -oi -t';
 		$transport = Transport::fromDsn('sendmail://default?command=' . rawurlencode($command));
 	} elseif ($how == 2) {
 		$smtp_host = read_config_option('settings_smtp_host');
@@ -5795,7 +5795,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	}
 
 	$result    = false;
-	$fromText  = add_email_details([$from], $result, function(string $address, string $name) use ($emailMessage): bool {
+	$fromText  = add_email_details([$from], $result, function (string $address, string $name) use ($emailMessage): bool {
 		$emailMessage->from(new Address($address, $name));
 
 		return true;
@@ -5807,7 +5807,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 
 	// Convert $to variable to proper array structure
 	$to     = parse_email_details($to);
-	$toText = add_email_details($to, $result, function(string $address, string $name) use ($emailMessage): bool {
+	$toText = add_email_details($to, $result, function (string $address, string $name) use ($emailMessage): bool {
 		$emailMessage->addTo(new Address($address, $name));
 
 		return true;
@@ -5818,7 +5818,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	}
 
 	$cc     = parse_email_details($cc);
-	$ccText = add_email_details($cc, $result, function(string $address, string $name) use ($emailMessage): bool {
+	$ccText = add_email_details($cc, $result, function (string $address, string $name) use ($emailMessage): bool {
 		$emailMessage->addCc(new Address($address, $name));
 
 		return true;
@@ -5829,7 +5829,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	}
 
 	$bcc     = parse_email_details($bcc);
-	$bccText = add_email_details($bcc, $result, function(string $address, string $name) use ($emailMessage): bool {
+	$bccText = add_email_details($bcc, $result, function (string $address, string $name) use ($emailMessage): bool {
 		$emailMessage->addBcc(new Address($address, $name));
 
 		return true;
@@ -5848,7 +5848,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	}
 
 	$replyto   = parse_email_details($replyto);
-	$replyText = add_email_details($replyto, $result, function(string $address, string $name) use ($emailMessage): bool {
+	$replyText = add_email_details($replyto, $result, function (string $address, string $name) use ($emailMessage): bool {
 		$emailMessage->addReplyTo(new Address($address, $name));
 
 		return true;
