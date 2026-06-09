@@ -697,6 +697,8 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 				}
 
 				if (cacti_sizeof($diff_array)) {
+					// $diff_array entries are pre-escaped at source in lib/import.php via html_escape();
+					// do NOT wrap with array_map('html_escape') here — that would double-encode color spans.
 					$diff_details .= __('Differences') . '<br>' . implode('<br>', $diff_array);
 				}
 
