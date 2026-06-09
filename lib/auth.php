@@ -254,6 +254,14 @@ function is_template_account($user_id) {
  * @return (string) the new username, or false if one was not passed
  */
 function get_basic_auth_username() {
+	/* Only trust Remote-User / PHP_AUTH_USER headers when Basic Auth is the
+	 * configured auth method (auth_method == 2).  Accepting these headers
+	 * unconditionally allows any proxy or client to spoof arbitrary usernames.
+	 * GHSA-9ffc-rr2g-c8hh */
+	if (read_config_option('auth_method') != 2) {
+		return false;
+	}
+
 	if (isset($_SERVER['PHP_AUTH_USER'])) {
 		$username = str_replace("\\", "\\\\", $_SERVER['PHP_AUTH_USER']);
 	} elseif (isset($_SERVER['REMOTE_USER'])) {
@@ -3865,7 +3873,10 @@ function domains_login_process($username) {
 
 	$user = array();
 
-	if ($realm > 3 && $password != '') {
+	/* realm 3 is LDAP; the original > 3 missed realm == 3 and allowed an
+	 * unauthenticated session when a non-empty password was supplied.
+	 * GHSA-3jj2-v5ch-wmq5 */
+	if ($realm >= 3 && $password != '') {
 		/* get user DN */
 		$ldap_dn_search_response = domains_ldap_search_dn($username, $realm);
 		if ($ldap_dn_search_response['error_num'] == '0') {
@@ -3978,7 +3989,10 @@ function domains_login_process($username) {
 
 				cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
 
-				if ($ldap_auth_response['error_text'] == 1) {
+				/* error_text is a string; the correct field for the numeric
+				 * bind-failure code is error_num (mirrors the check in
+				 * ldap_login_process at line ~3818).  GHSA-2px8-gvmq-85f3 */
+				if ($ldap_auth_response['error_num'] == 1) {
 					auth_process_lockout($username, $realm);
 				}
 			}
