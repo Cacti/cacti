@@ -150,7 +150,7 @@ class Net_Ping
 
 				if (!$this->is_ipaddress($host_ip)) {
 					cacti_log('WARNING: ICMP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname']);
-					$this->ping_response = 'ICMP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname'];
+					$this->ping_response = 'ICMP Ping Error: cacti_gethostbyname failed for ' . html_escape($this->host['hostname']);
 					return false;
 				}
 			}
@@ -368,7 +368,7 @@ class Net_Ping
 
 				if (!$this->is_ipaddress($host_ip)) {
 					cacti_log('WARNING: UDP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname']);
-					$this->ping_response = 'UDP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname'];
+					$this->ping_response = 'UDP Ping Error: cacti_gethostbyname failed for ' . html_escape($this->host['hostname']);
 					$this->restore_cacti_error_handler();
 
 					return false;
@@ -505,7 +505,7 @@ class Net_Ping
 
 				if (!$this->is_ipaddress($host_ip)) {
 					cacti_log('WARNING: TCP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname']);
-					$this->ping_response = 'TCP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname'];
+					$this->ping_response = 'TCP Ping Error: cacti_gethostbyname failed for ' . html_escape($this->host['hostname']);
 					$this->restore_cacti_error_handler();
 
 					return false;

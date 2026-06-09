@@ -1636,7 +1636,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 		}
 
 		print __('Ping Results') . "<br>\n";
-		print "<span class='" . $class . "'>" . $ping->ping_response . "</span>\n";
+		print "<span class='" . $class . "'>" . html_escape($ping->ping_response) . "</span>\n";
 	}
 
 	if ($anym == false && $host['disabled'] != 'on') {

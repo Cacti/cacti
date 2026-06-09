@@ -609,6 +609,16 @@ function get_data_query_array($snmp_query_id) {
 		$replace       = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
 		$xml_file_path = str_replace($search, $replace, $xml_file_path);
 
+		/* Reject paths that resolve outside the Cacti resource tree.
+		 * xml_path may be absolute after <path_cacti> substitution above,
+		 * so we validate against the actual filesystem location rather than
+		 * just the token value. */
+		$allowed_base = $config['base_path'] . '/resource';
+		if (!cacti_path_is_within($xml_file_path, $allowed_base)) {
+			cacti_log("SECURITY: xml_path '$xml_file_path' for snmp_query id $snmp_query_id resolves outside '$allowed_base' -- access denied.", false, 'SYSTEM');
+			return array();
+		}
+
 		if (!file_exists($xml_file_path)) {
 			query_debug_timer_offset('data_query', __esc('Could not find data query XML file at \'%s\'', $xml_file_path));
 			return array();
