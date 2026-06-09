@@ -453,7 +453,12 @@ function import_read_package_data($xmlfile, &$public_key) {
 	/* SECURITY: Reject keys below 2048 bits before attempting signature verification.
 	 * 512-bit RSA keys are practically factorable (GHSA-8w9r-xmpr-5q3v), allowing
 	 * an attacker to forge signatures and achieve RCE via crafted package imports. */
-	$key_details = openssl_pkey_get_details(openssl_pkey_get_public($public_key));
+	$pkey = openssl_pkey_get_public($public_key);
+	if ($pkey === false) {
+		cacti_log('SECURITY: Package rejected - public key is invalid or unparseable (GHSA-8w9r-xmpr-5q3v)', false, 'IMPORT');
+		return false;
+	}
+	$key_details = openssl_pkey_get_details($pkey);
 	if ($key_details === false || $key_details['bits'] < 2048) {
 		cacti_log('SECURITY: Package rejected - signing key is ' . ($key_details ? $key_details['bits'] : 'unknown') . ' bits (minimum 2048 required). GHSA-8w9r-xmpr-5q3v', false, 'IMPORT');
 		return false;
