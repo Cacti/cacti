@@ -24,6 +24,9 @@
 
 require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 // performing a full sync can take a lot of memory and time
 ini_set('memory_limit', '-1');
@@ -312,31 +315,31 @@ function form_save() : void {
 	if (isrv('save_component_poller')) {
 		// Common data
 		$save['id']        = gfrv('id');
-		$save['name']      = form_input_validate(gnrv('name'), 'name', '', false, 3);
-		$save['hostname']  = form_input_validate(gnrv('hostname'), 'hostname', '', false, 3);
-		$save['log_level'] = form_input_validate(gnrv('log_level'), 'log_level', '', false, 3);
-		$save['timezone']  = form_input_validate(gnrv('timezone'), 'timezone', '', false, 3);
-		$save['notes']     = form_input_validate(gnrv('notes'), 'notes', '', true, 3);
+		$save['name']      = CactiValidator::validateInput(gnrv('name'), 'name', [new Assert\NotBlank()]);
+		$save['hostname']  = CactiValidator::validateInput(gnrv('hostname'), 'hostname', [new Assert\NotBlank()]);
+		$save['log_level'] = CactiValidator::validateInput(gnrv('log_level'), 'log_level', [new Assert\NotBlank()]);
+		$save['timezone']  = CactiValidator::validateInput(gnrv('timezone'), 'timezone', [new Assert\NotBlank()]);
+		$save['notes']     = CactiValidator::validateInput(gnrv('notes'), 'notes', []);
 
 		// Process settings
-		$save['processes'] = form_input_validate(gnrv('processes'), 'processes', '^[0-9]+$', false, 3);
-		$save['threads']   = form_input_validate(gnrv('threads'), 'threads', '^[0-9]+$', false, 3);
+		$save['processes'] = CactiValidator::validateInput(gnrv('processes'), 'processes', [new Assert\NotBlank(), new Assert\Regex(pattern: '/^[0-9]+$/')]);
+		$save['threads']   = CactiValidator::validateInput(gnrv('threads'), 'threads', [new Assert\NotBlank(), new Assert\Regex(pattern: '/^[0-9]+$/')]);
 
 		if ($save['id'] != 1) {
-			$save['sync_interval'] = form_input_validate(gnrv('sync_interval'), 'sync_interval', '^[0-9]+$', false, 3);
+			$save['sync_interval'] = CactiValidator::validateInput(gnrv('sync_interval'), 'sync_interval', [new Assert\NotBlank(), new Assert\Regex(pattern: '/^[0-9]+$/')]);
 
 			// Database settings
-			$save['dbdefault']             = form_input_validate(gnrv('dbdefault'), 'dbdefault', '', true, 3);
-			$save['dbhost']                = form_input_validate(gnrv('dbhost'),    'dbhost',    '', true, 3);
-			$save['dbuser']                = form_input_validate(gnrv('dbuser'),    'dbuser',    '', true, 3);
-			$save['dbpass']                = form_input_validate(gnrv('dbpass'),    'dbpass',    '', true, 3);
-			$save['dbport']                = form_input_validate(gnrv('dbport'),    'dbport',    '^[0-9]+$', true, 3);
-			$save['dbretries']             = form_input_validate(gnrv('dbretries'), 'dbretries', '^[0-9]+$', true, 3);
+			$save['dbdefault']             = CactiValidator::validateInput(gnrv('dbdefault'), 'dbdefault', []);
+			$save['dbhost']                = CactiValidator::validateInput(gnrv('dbhost'),    'dbhost',    []);
+			$save['dbuser']                = CactiValidator::validateInput(gnrv('dbuser'),    'dbuser',    []);
+			$save['dbpass']                = CactiValidator::validateInput(gnrv('dbpass'),    'dbpass',    []);
+			$save['dbport']                = CactiValidator::validateInput(gnrv('dbport'),    'dbport',    [new Assert\Regex(pattern: '/^[0-9]+$/')]);
+			$save['dbretries']             = CactiValidator::validateInput(gnrv('dbretries'), 'dbretries', [new Assert\Regex(pattern: '/^[0-9]+$/')]);
 			$save['dbssl']                 = isrv('dbssl') ? 'on' : '';
-			$save['dbsslkey']              = form_input_validate(gnrv('dbsslkey'),  'dbsslkey',  '', true, 3);
-			$save['dbsslcert']             = form_input_validate(gnrv('dbsslcert'), 'dbsslcert', '', true, 3);
-			$save['dbsslca']               = form_input_validate(gnrv('dbsslca'),   'dbsslca',   '', true, 3);
-			$save['dbsslcapath']           = form_input_validate(gnrv('dbsslcapath'), 'dbsslcapath',   '', true, 3);
+			$save['dbsslkey']              = CactiValidator::validateInput(gnrv('dbsslkey'),  'dbsslkey',  []);
+			$save['dbsslcert']             = CactiValidator::validateInput(gnrv('dbsslcert'), 'dbsslcert', []);
+			$save['dbsslca']               = CactiValidator::validateInput(gnrv('dbsslca'),   'dbsslca',   []);
+			$save['dbsslcapath']           = CactiValidator::validateInput(gnrv('dbsslcapath'), 'dbsslcapath',   []);
 			$save['dbsslverifyservercert'] = isrv('dbsslverifyservercert') ? 'on' : '';
 		}
 
