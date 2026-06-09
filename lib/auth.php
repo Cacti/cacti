@@ -3873,9 +3873,7 @@ function domains_login_process($username) {
 
 	$user = array();
 
-	/* realm 3 is LDAP; the original > 3 missed realm == 3 and allowed an
-	 * unauthenticated session when a non-empty password was supplied.
-	 * GHSA-3jj2-v5ch-wmq5 */
+	// realm >= 3: domain realms start at 3; > 3 allowed realm=3 to skip LDAP bind (GHSA-3jj2-v5ch-wmq5)
 	if ($realm >= 3 && $password != '') {
 		/* get user DN */
 		$ldap_dn_search_response = domains_ldap_search_dn($username, $realm);
