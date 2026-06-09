@@ -450,6 +450,15 @@ function import_read_package_data($xmlfile, &$public_key) {
 	}
 
 	// Verify Signature
+	/* SECURITY: Reject keys below 2048 bits before attempting signature verification.
+	 * 512-bit RSA keys are practically factorable (GHSA-8w9r-xmpr-5q3v), allowing
+	 * an attacker to forge signatures and achieve RCE via crafted package imports. */
+	$key_details = openssl_pkey_get_details(openssl_pkey_get_public($public_key));
+	if ($key_details === false || $key_details['bits'] < 2048) {
+		cacti_log('SECURITY: Package rejected - signing key is ' . ($key_details ? $key_details['bits'] : 'unknown') . ' bits (minimum 2048 required). GHSA-8w9r-xmpr-5q3v', false, 'IMPORT');
+		return false;
+	}
+
 	if (strlen($public_key) < 200) {
 		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
 	} else {
@@ -622,7 +631,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 
 				if (is_writeable(dirname($filename))) {
 					if (file_exists($filename) && is_writable($filename)) {
-						if ($new == $existing) {
+						if ($new === $existing) {
 							$filestatus[$filename] = 'writable, identical';
 						} else {
 							$filestatus[$filename] = 'writable, differences';
@@ -630,7 +639,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 					} elseif (file_exists($filename) && is_writeable($filename)) {
 						$filestatus[$filename] = 'writable, new';
 					} elseif (file_exists($filename) && !is_writeable($filename)) {
-						if ($new == $existing) {
+						if ($new === $existing) {
 							$filestatus[$filename] = 'not writable, identical';
 						} else {
 							$filestatus[$filename] = 'not writable, differences';
@@ -639,7 +648,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 						$filestatus[$filename] = 'writable, new';
 					}
 				} elseif (file_exists($filename)) {
-					if ($new == $existing) {
+					if ($new === $existing) {
 						$filestatus[$filename] = 'not writable, identical';
 					} else {
 						$filestatus[$filename] = 'not writable, differences';
