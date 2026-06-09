@@ -697,7 +697,7 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 				}
 
 				if (cacti_sizeof($diff_array)) {
-					$diff_details .= __('Differences') . '<br>' . implode('<br>', array_map('html_escape', $diff_array));
+					$diff_details .= __('Differences') . '<br>' . implode('<br>', $diff_array);
 				}
 
 				if (cacti_sizeof($orphan_array)) {
