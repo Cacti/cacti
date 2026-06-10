@@ -2431,17 +2431,17 @@ function html_transform_graph_template_ids(mixed $ids) : string {
 
 	foreach ($ids as $id) {
 		if (is_numeric($id)) {
-			$return_ids[] = $id;
+			$return_ids[] = intval($id);
 		} elseif (str_contains($id, 'cg_')) {
-			$new_id       = str_replace('cg_', '', $id);
-			$return_ids[] = $new_id;
+			// only the leading integer is meaningful; intval() drops any trailing injection
+			$return_ids[] = intval(str_replace('cg_', '', $id));
 		} else {
 			$id = str_replace('dq_', '', $id);
 
-			$return_ids[] = db_fetch_cell_prepared('SELECT graph_template_id
+			$return_ids[] = intval(db_fetch_cell_prepared('SELECT graph_template_id
 				FROM snmp_query_graph
 				WHERE id = ?',
-				[$id]);
+				[$id]));
 		}
 	}
 
