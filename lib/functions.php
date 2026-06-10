@@ -4132,14 +4132,14 @@ function move_item_up(string $table_name, int $current_id, string|array $group_q
  * an array
  *
  * @param string $command_line The command to execute
+ * @param int    $return_code  Receives the command exit code so callers can branch on failure
  *
  * @return array An array containing the command output
  */
-function exec_into_array(string $command_line) : array {
+function exec_into_array(string $command_line, int &$return_code = 0) : array {
 	$out = [];
-	$err = 0;
 
-	exec($command_line, $out, $err);
+	exec($command_line, $out, $return_code);
 
 	return $out;
 }
@@ -5005,6 +5005,28 @@ function debug_log_return(string $type) : string {
 	}
 
 	return $log_text;
+}
+
+/**
+ * cacti_csv_cell - encode a single value for safe inclusion in a CSV file.
+ * Doubles embedded double-quotes (RFC 4180) and prefixes a single quote when
+ * the value opens with a spreadsheet formula trigger (= + - @ and the tab/CR
+ * control characters), so the cell cannot be interpreted as a formula when the
+ * file is opened in Excel or LibreOffice. The result includes the surrounding
+ * double-quotes.
+ *
+ * @param mixed $value The raw cell value
+ *
+ * @return string The quoted, escaped cell ready to concatenate into a CSV row
+ */
+function cacti_csv_cell(mixed $value) : string {
+	$value = (string) $value;
+
+	if ($value !== '' && strpbrk($value[0], "=+-@\t\r") !== false) {
+		$value = "'" . $value;
+	}
+
+	return '"' . str_replace('"', '""', $value) . '"';
 }
 
 /**

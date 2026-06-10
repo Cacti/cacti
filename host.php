@@ -628,9 +628,13 @@ function host_export() : void {
 		fputcsv($stdout, $columns);
 
 		foreach ($hosts as $h) {
+			// Prefix any leading character that a spreadsheet would treat as a
+			// formula so device data round-trips as literal text.
 			foreach (array_keys($h) as $hc) {
-				if ($h[$hc] != '' && (str_contains($h[$hc], "\n") || str_contains($h[$hc], "\r"))) {
-					$h[$hc] = str_replace(["\n", "\r"], ' ', $h[$hc]);
+				$v = (string) $h[$hc];
+
+				if ($v !== '' && strpbrk($v[0], "=+-@\t\r") !== false) {
+					$h[$hc] = "'" . $v;
 				}
 			}
 

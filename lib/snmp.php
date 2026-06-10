@@ -204,11 +204,13 @@ function cacti_snmp_get(string $hostname, mixed $community, string $oid, mixed $
 			debug_log_insert('data_query', __esc('SNMP Command is: %s', $command));
 		}
 
-		exec($command, $snmp_value);
+		$return_var = 0;
+		exec($command, $snmp_value, $return_var);
 
 		$snmp_value = trim(implode(' ', $snmp_value));
 
-		if (str_contains($snmp_value, 'Timeout')) {
+		// a non-zero exit signals snmpget failure even when the output omits 'Timeout'
+		if (str_contains($snmp_value, 'Timeout') || $return_var != 0) {
 			cacti_log("WARNING: SNMP Error:'Timeout', Device:'$hostname', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
 			$snmp_value = 'U';
 		} else {
@@ -300,12 +302,14 @@ function cacti_snmp_get_raw(string $hostname, mixed $community, string $oid, mix
 			debug_log_insert('data_query', __esc('SNMP Command is: %s', $command));
 		}
 
-		exec($command, $snmp_value);
+		$return_var = 0;
+		exec($command, $snmp_value, $return_var);
 
 		// fix for multi-line snmp output
 		$snmp_value = trim(implode(' ', $snmp_value));
 
-		if (str_contains($snmp_value, 'Timeout')) {
+		// a non-zero exit signals snmpget failure even when the output omits 'Timeout'
+		if (str_contains($snmp_value, 'Timeout') || $return_var != 0) {
 			cacti_log("WARNING: SNMP Error:'Timeout', Device:'$hostname', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
 			$snmp_value = 'U';
 		}
@@ -391,11 +395,13 @@ function cacti_snmp_getnext(string $hostname, mixed $community, mixed $oid, mixe
 			debug_log_insert('data_query', __esc('SNMP Command is: %s', $command));
 		}
 
-		exec($command, $snmp_value);
+		$return_var = 0;
+		exec($command, $snmp_value, $return_var);
 
 		$snmp_value = trim(implode(' ', $snmp_value));
 
-		if (str_contains($snmp_value, 'Timeout')) {
+		// a non-zero exit signals snmpgetnext failure even when the output omits 'Timeout'
+		if (str_contains($snmp_value, 'Timeout') || $return_var != 0) {
 			cacti_log("WARNING: SNMP Error:'Timeout', Device:'$hostname', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
 		}
 

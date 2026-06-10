@@ -798,6 +798,14 @@ function rrdcheck_rrdtool_init() : array {
 
 	$process = proc_open($command, $fds, $pipes);
 
+	// proc_open returns false if RRDtool could not be spawned; without a process
+	// the pipes are not populated, so bail out before touching them
+	if (!is_resource($process)) {
+		cacti_log('ERROR: Unable to start RRDtool process for rrdcheck', false, 'RRDCHECK');
+
+		return [false, false];
+	}
+
 	// make stdin/stdout/stderr non-blocking
 	stream_set_blocking($pipes[0], false);
 	stream_set_blocking($pipes[1], false);
