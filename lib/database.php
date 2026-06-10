@@ -2218,7 +2218,7 @@ function db_qstr(mixed $s, mixed $db_conn = false) : string {
 		return $db_conn->quote($s);
 	}
 
-	$s = str_replace(['\\', "\0", "'"], ['\\\\', "\\\0", "\\'"], $s);
+	$s = str_replace(['\\', "\0", "\x1a", "'"], ['\\\\', "\\\0", "\\\x1a", "\\'"], $s);
 
 	return "'" . $s . "'";
 }

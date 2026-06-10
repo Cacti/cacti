@@ -2378,6 +2378,10 @@ function strip_alpha(mixed $string) : mixed {
  * @return bool Either true or false
  */
 function is_valid_pathname($path) {
+	if (strpos(trim($path), '..') !== false) {
+		return false;
+	}
+
 	if (preg_match('/^([a-zA-Z0-9\_\.\-\\\:\/]+)$/', trim($path))) {
 		return true;
 	} else {
@@ -5070,6 +5074,10 @@ function sanitize_uri(string $uri) : string {
 		'', '',
 		''
 	];
+
+	if (strncmp(ltrim($uri), '//', 2) === 0) {
+		return '/';
+	}
 
 	if (is_urlencoded($uri)) {
 		$uri = urldecode($uri);

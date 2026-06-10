@@ -1291,17 +1291,19 @@ function update_order_string(bool $inplace = false) : void {
 			unset($_SESSION['sort_data'][$page]);
 			unset($_SESSION['sort_string'][$page]);
 
-			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_request_var('sort_direction');
+			$direction = strtoupper(get_request_var('sort_direction'));
+			$direction = in_array($direction, ['ASC', 'DESC'], true) ? $direction : 'ASC';
 
-			$column    = get_request_var('sort_column');
-			$direction = get_request_var('sort_direction');
+			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = $direction;
+
+			$column = get_request_var('sort_column');
 
 			if ($column == 'ip' || $column == 'ip_address') {
 				$_SESSION['sort_string'][$page] = 'ORDER BY INET_ATON(' . $column . ') ' . $direction;
 			} elseif ($column == 'hostname' && $natural) {
-				$_SESSION['sort_string'][$page] = 'ORDER BY NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ') ' . get_request_var('sort_direction');
+				$_SESSION['sort_string'][$page] = 'ORDER BY NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ') ' . $direction;
 			} else {
-				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
+				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . $direction;
 			}
 		} elseif (isset_request_var('sort_column')) {
 			if (isset_request_var('reset')) {
@@ -1309,7 +1311,10 @@ function update_order_string(bool $inplace = false) : void {
 				unset($_SESSION['sort_string'][$page]);
 			}
 
-			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_nfilter_request_var('sort_direction');
+			$direction = strtoupper(get_nfilter_request_var('sort_direction'));
+			$direction = in_array($direction, ['ASC', 'DESC'], true) ? $direction : 'ASC';
+
+			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = $direction;
 
 			$_SESSION['sort_string'][$page] = 'ORDER BY ';
 
