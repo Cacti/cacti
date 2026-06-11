@@ -234,112 +234,112 @@ function color_import_processor(&$colors) {
 				$update_suffix = '';
 
 				if (cacti_sizeof($line_array)) {
-				foreach($line_array as $line_item) {
-					$line_item = trim(str_replace("'", '', $line_item));
-					$line_item = trim(str_replace('"', '', $line_item));
+					foreach($line_array as $line_item) {
+						$line_item = trim(str_replace("'", '', $line_item));
+						$line_item = trim(str_replace('"', '', $line_item));
 
-					switch ($line_item) {
-						case 'hex':
-							$hexcol = $j;
+						switch ($line_item) {
+							case 'hex':
+								$hexcol = $j;
 
-						case 'name':
-							if (!$first_column) {
-								$save_order .= ', ';
-							}
+							case 'name':
+								if (!$first_column) {
+									$save_order .= ', ';
+								}
 
-							$save_order .= $line_item;
+								$save_order .= $line_item;
 
-							$insert_columns[] = $j;
-							$first_column = false;
+								$insert_columns[] = $j;
+								$first_column = false;
 
-							if ($update_suffix != '') {
-								$update_suffix .= ", $line_item=VALUES($line_item)";
-							} else {
-								$update_suffix .= " ON DUPLICATE KEY UPDATE $line_item=VALUES($line_item)";
-							}
+								if ($update_suffix != '') {
+									$update_suffix .= ", $line_item=VALUES($line_item)";
+								} else {
+									$update_suffix .= " ON DUPLICATE KEY UPDATE $line_item=VALUES($line_item)";
+								}
 
-							$required++;
+								$required++;
 
-							break;
-						default:
-							/* ignore unknown columns */
-					}
+								break;
+							default:
+								/* ignore unknown columns */
+						}
 
-					$j++;
-				}
-			}
-
-			$save_order .= ')';
-
-			if ($required >= 2) {
-				array_push($return_array, '<b>HEADER LINE PROCESSED OK</b>:  <br>Columns found where: ' . $save_order . '<br>');
-			} else {
-				array_push($return_array, '<b>HEADER LINE PROCESSING ERROR</b>: Missing required field <br>Columns found where:' . $save_order . '<br>');
-				break;
-			}
-		} else {
-			$save_value = '(';
-			$j = 0;
-			$first_column = true;
-			$sql_where = '';
-
-			if (cacti_sizeof($line_array)) {
-			foreach($line_array as $line_item) {
-				if (in_array($j, $insert_columns)) {
-					$line_item = trim(str_replace("'", '', $line_item));
-					$line_item = trim(str_replace('"', '', $line_item));
-
-					if (!$first_column) {
-						$save_value .= ',';
-					} else {
-						$first_column = false;
-					}
-
-					$save_value .= "'" . $line_item . "'";
-
-					if ($j == $hexcol) {
-						$sql_where = "WHERE hex='$line_item'";
+						$j++;
 					}
 				}
 
-				$j++;
-			}
-			}
+				$save_order .= ')';
 
-			$save_value .= ')';
-
-			if ($j > 0) {
-				if (isset_request_var('allow_update')) {
-					$sql_execute = 'INSERT INTO colors ' . $save_order .
-						' VALUES ' . $save_value . $update_suffix;
-
-					if (db_execute($sql_execute)) {
-						array_push($return_array,"INSERT SUCCEEDED: $save_value");
-					} else {
-						array_push($return_array,"INSERT FAILED: $save_value");
-					}
+				if ($required >= 2) {
+					array_push($return_array, '<b>HEADER LINE PROCESSED OK</b>:  <br>Columns found where: ' . $save_order . '<br>');
 				} else {
-					/* perform check to see if the row exists */
-					$existing_row = db_fetch_row("SELECT * FROM colors $sql_where");
+					array_push($return_array, '<b>HEADER LINE PROCESSING ERROR</b>: Missing required field <br>Columns found where:' . $save_order . '<br>');
+					break;
+				}
+			} else {
+				$save_value = '(';
+				$j = 0;
+				$first_column = true;
+				$sql_where = '';
 
-					if (cacti_sizeof($existing_row)) {
-						array_push($return_array,"<strong>INSERT SKIPPED, EXISTING:</strong> $save_value");
-					} else {
+				if (cacti_sizeof($line_array)) {
+					foreach($line_array as $line_item) {
+						if (in_array($j, $insert_columns)) {
+							$line_item = trim(str_replace("'", '', $line_item));
+							$line_item = trim(str_replace('"', '', $line_item));
+
+							if (!$first_column) {
+								$save_value .= ',';
+							} else {
+								$first_column = false;
+							}
+
+							$save_value .= "'" . $line_item . "'";
+
+							if ($j == $hexcol) {
+								$sql_where = "WHERE hex='$line_item'";
+							}
+						}
+
+						$j++;
+					}
+				}
+
+				$save_value .= ')';
+
+				if ($j > 0) {
+					if (isset_request_var('allow_update')) {
 						$sql_execute = 'INSERT INTO colors ' . $save_order .
-							' VALUES ' . $save_value;
+							' VALUES ' . $save_value . $update_suffix;
 
 						if (db_execute($sql_execute)) {
 							array_push($return_array,"INSERT SUCCEEDED: $save_value");
 						} else {
 							array_push($return_array,"INSERT FAILED: $save_value");
 						}
+					} else {
+						/* perform check to see if the row exists */
+						$existing_row = db_fetch_row("SELECT * FROM colors $sql_where");
+
+						if (cacti_sizeof($existing_row)) {
+							array_push($return_array,"<strong>INSERT SKIPPED, EXISTING:</strong> $save_value");
+						} else {
+							$sql_execute = 'INSERT INTO colors ' . $save_order .
+								' VALUES ' . $save_value;
+
+							if (db_execute($sql_execute)) {
+								array_push($return_array,"INSERT SUCCEEDED: $save_value");
+							} else {
+								array_push($return_array,"INSERT FAILED: $save_value");
+							}
+						}
 					}
 				}
 			}
-		}
 
-		$i++;
-	}
+			$i++;
+		}
 	}
 
 	return $return_array;
