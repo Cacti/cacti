@@ -1387,7 +1387,7 @@ function plugin_clean_old_plugin_info() {
 		WHERE pc.directory IS NULL
 		AND pd.plugin != "internal"');
 
-	$realms = db_fetch_assoc('SELECT *
+	$realms = db_fetch_assoc('SELECT pr.id
 		FROM plugin_realms AS pr
 		LEFT JOIN plugin_config AS pc
 		ON pr.plugin = pc.directory
