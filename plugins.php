@@ -39,7 +39,8 @@ $status_names = array(
 	1  => __('Active'),
 	2  => __('Awaiting Configuration'),
 	3  => __('Awaiting Upgrade'),
-	4  => __('Installed')
+	4  => __('Installed'),
+	5  => __('Directory Missing')
 );
 
 /* get the comprehensive list of plugins */
@@ -721,6 +722,11 @@ function update_show_current () {
 function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 	global $status_names, $config;
 	static $first_plugin = true;
+
+	if (empty($plugin['infoname'])) {
+		$plugin['infoname'] = ucfirst($plugin['directory']);
+		$plugin['status'] = -5;
+	}
 
 	$row = plugin_actions($plugin, $table);
 
