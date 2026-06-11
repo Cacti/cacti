@@ -389,6 +389,9 @@ function plugins_load_temp_table() {
 function update_show_current () {
 	global $plugins, $pluginslist, $config, $status_names, $actions, $item_rows;
 
+	/* clean from the database any invalid entries */
+	plugin_clean_old_plugin_info();
+
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
