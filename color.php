@@ -108,7 +108,9 @@ function form_save() {
 			header('Location: color.php?header=false');
 		}
 	} elseif (isset_request_var('save_component_import')) {
+
 		if (isset($_FILES['import_file']['tmp_name'])) {
+
 			if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
 				$csv_data = file($_FILES['import_file']['tmp_name']);
 				$debug_data = color_import_processor($csv_data);
@@ -239,6 +241,7 @@ function color_import_processor(&$colors) {
 					switch ($line_item) {
 						case 'hex':
 							$hexcol = $j;
+
 						case 'name':
 							if (!$first_column) {
 								$save_order .= ', ';
@@ -398,11 +401,11 @@ function color_import() {
 		</td>
 	</tr><?php
 
-	form_hidden_box('save_component_import','1','');
-
 	html_end_box();
 
-	form_save_button('color.php', 'import');
+	form_hidden_box('save_component_import','1','');
+
+	form_save_button('', 'import', 'import', false);
 }
 
 function color_edit() {
