@@ -389,6 +389,9 @@ function plugins_load_temp_table() {
 function update_show_current () {
 	global $plugins, $pluginslist, $config, $status_names, $actions, $item_rows;
 
+	/* clean from the database any invalid entries */
+	plugin_clean_old_plugin_info();
+
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
@@ -718,6 +721,11 @@ function update_show_current () {
 function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 	global $status_names, $config;
 	static $first_plugin = true;
+
+	if (empty($plugin['infoname'])) {
+		$plugin['infoname'] = ucfirst($plugin['directory']);
+		$plugin['status'] = -5;
+	}
 
 	$row = plugin_actions($plugin, $table);
 

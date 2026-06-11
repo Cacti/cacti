@@ -1372,6 +1372,43 @@ function plugin_load_info_defaults($file, $info, $defaults = array()) {
 	return $result;
 }
 
+function plugin_clean_old_plugin_info() {
+	db_execute_prepared('DELETE ph
+		FROM plugin_hooks AS ph
+		LEFT JOIN plugin_config AS pc
+		ON ph.name = pc.directory
+		WHERE pc.directory IS NULL
+		AND ph.name != ?',
+		array('internal'));
+
+	db_execute_prepared('DELETE pd
+		FROM plugin_db_changes AS pd
+		LEFT JOIN plugin_config AS pc
+		ON pd.plugin = pc.directory
+		WHERE pc.directory IS NULL
+		AND pd.plugin != ?',
+		array('internal'));
+
+	$realms = db_fetch_assoc_prepared('SELECT pr.id
+		FROM plugin_realms AS pr
+		LEFT JOIN plugin_config AS pc
+		ON pr.plugin = pc.directory
+		WHERE pc.directory IS NULL
+		AND pr.plugin != ?',
+		array('internal'));
+
+	if (cacti_sizeof($realms)) {
+		foreach($realms as $r) {
+			$id = $r['id'] + 100;
+
+			db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($id));
+			db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', array($id));
+
+			db_execute_prepared('DELETE FROM plugin_realms WHERE id = ?', array($r['id']));
+		}
+	}
+}
+
 function plugin_load_info_file($file) {
 	$info = false;
 	if (file_exists($file)) {

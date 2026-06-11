@@ -354,10 +354,10 @@ dynamic_include	./lib/boost.php:1529			include_once($config['library_path'] . '/
 dynamic_include	./lib/boost.php:272			include_once($config['library_path'] . '/poller.php');
 dynamic_include	./lib/boost.php:334		include_once($config['library_path'] . '/poller.php');
 dynamic_include	./lib/boost.php:696		include_once($config['library_path'] . '/rrd.php');
-dynamic_include	./lib/data_query.php:1953		include_once($config['library_path'] . '/sort.php');
-dynamic_include	./lib/data_query.php:2362		include_once($config['library_path'] . '/variables.php');
+dynamic_include	./lib/data_query.php:1963		include_once($config['library_path'] . '/sort.php');
+dynamic_include	./lib/data_query.php:2372		include_once($config['library_path'] . '/variables.php');
 dynamic_include	./lib/data_query.php:602		include_once($config['library_path'] . '/xml.php');
-dynamic_include	./lib/data_query.php:805		include_once($config['library_path'] . '/snmp.php');
+dynamic_include	./lib/data_query.php:815		include_once($config['library_path'] . '/snmp.php');
 dynamic_include	./lib/data_query.php:83		include_once($config['library_path'] . '/poller.php');
 dynamic_include	./lib/data_query.php:84		include_once($config['library_path'] . '/api_data_source.php');
 dynamic_include	./lib/data_query.php:85		include_once($config['library_path'] . '/utility.php');
@@ -384,7 +384,7 @@ dynamic_include	./lib/html_tree.php:823		include($config['include_path'] . '/glo
 dynamic_include	./lib/html_tree.php:824		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/html_tree.php:825		include_once($config['library_path'] . '/html_utility.php');
 dynamic_include	./lib/html_tree.php:93		include_once($config['library_path'] . '/data_query.php');
-dynamic_include	./lib/import.php:1986		include_once($config['library_path'] . '/vdef.php');
+dynamic_include	./lib/import.php:2000		include_once($config['library_path'] . '/vdef.php');
 dynamic_include	./lib/import.php:29		include_once($config['library_path'] . '/xml.php');
 dynamic_include	./lib/installer.php:3429					include_once($upgrade_file);
 dynamic_include	./lib/mib_cache.php:57			include_once($config['include_path'] . '/vendor/phpsnmp/mib_parser.php');
@@ -422,8 +422,8 @@ dynamic_include	./lib/rrd.php:1350		include_once($config['library_path'] . '/boo
 dynamic_include	./lib/rrd.php:1351		include_once($config['library_path'] . '/xml.php');
 dynamic_include	./lib/rrd.php:1352		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/rrd.php:2636			include($rrdtheme);
-dynamic_include	./lib/rrd.php:3241		include_once($config['library_path'] . '/time.php');
-dynamic_include	./lib/rrd.php:4012			include($themefile);
+dynamic_include	./lib/rrd.php:3242		include_once($config['library_path'] . '/time.php');
+dynamic_include	./lib/rrd.php:4019			include($themefile);
 dynamic_include	./lib/rrd.php:598		include ($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/rrd.php:917		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/rrd.php:991		include_once($config['library_path'] . '/boost.php');
@@ -571,7 +571,7 @@ fs_write	./lib/functions.php:710				file_put_contents(sys_get_temp_dir() . '/cac
 fs_write	./lib/functions.php:7125				file_put_contents($tmp_file, 'cacti');
 fs_write	./lib/functions.php:719					file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
 fs_write	./lib/import.php:425		$f   = fopen($filename, 'r');
-fs_write	./lib/import.php:592							$file = fopen($filename, 'wb');
+fs_write	./lib/import.php:606							$file = fopen($filename, 'wb');
 fs_write	./lib/installer.php:2889				$file = fopen($cacheFile, "r");
 fs_write	./lib/poller.php:1299									if (file_put_contents($tmpfile, $contents) !== false) {
 fs_write	./lib/poller.php:1306												file_put_contents($mypath, $contents);
@@ -861,14 +861,14 @@ header_redirect	./include/themes/sunrise/images/index.php:25	header("Location:..
 header_redirect	./include/themes/sunrise/index.php:25	header("Location:../index.php");
 header_redirect	./include/vendor/index.php:25	header("Location:../index.php");
 header_redirect	./install/upgrades/index.php:25	header("Location:../../index.php");
-header_redirect	./lib/auth.php:4298				header('Location: auth_changepassword.php?header=false');
-header_redirect	./lib/auth.php:4758					header('Location: ' . $referer);
-header_redirect	./lib/auth.php:4762					header('Location: graph_view.php');
-header_redirect	./lib/auth.php:4766					header('Location: index.php');
-header_redirect	./lib/auth.php:4772					header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
-header_redirect	./lib/auth.php:4774					header('Location: ' . $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':''));
-header_redirect	./lib/auth.php:4779				header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
-header_redirect	./lib/auth.php:4974			header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php')));
+header_redirect	./lib/auth.php:4310				header('Location: auth_changepassword.php?header=false');
+header_redirect	./lib/auth.php:4770					header('Location: ' . $referer);
+header_redirect	./lib/auth.php:4774					header('Location: graph_view.php');
+header_redirect	./lib/auth.php:4778					header('Location: index.php');
+header_redirect	./lib/auth.php:4784					header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
+header_redirect	./lib/auth.php:4786					header('Location: ' . $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':''));
+header_redirect	./lib/auth.php:4791				header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
+header_redirect	./lib/auth.php:4986			header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php')));
 header_redirect	./lib/clog_webapi.php:99			header('Location: ' . get_current_page());
 header_redirect	./lib/functions.php:8121		header('Location: ' . $save_url);
 header_redirect	./lib/functions.php:8144		header('Location: ' . $safe_url, true, $status);
@@ -1000,4 +1000,4 @@ header_redirect	./vdef.php:57			header('Location: vdef.php?header=false&action=e
 header_redirect	./vdef.php:64			header('Location: vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
 xml_parse	./install/functions.php:514				$xmlget = simplexml_load_string($xml);
 xml_parse	./lib/import.php:366		$xmlget = simplexml_load_string($data);
-xml_parse	./lib/import.php:478		$xmlget = simplexml_load_string($xml);
+xml_parse	./lib/import.php:492		$xmlget = simplexml_load_string($xml);
