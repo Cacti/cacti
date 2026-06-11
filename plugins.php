@@ -39,8 +39,7 @@ $status_names = array(
 	1  => __('Active'),
 	2  => __('Awaiting Configuration'),
 	3  => __('Awaiting Upgrade'),
-	4  => __('Installed'),
-	5  => __('Directory Missing')
+	4  => __('Installed')
 );
 
 /* get the comprehensive list of plugins */
