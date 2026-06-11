@@ -84,6 +84,7 @@ Cacti CHANGELOG
 -issue#7121: Restore valid quoted and digit-suffixed placeholders in input_string templates
 -issue#7133: Fix poller cache integrity bugs in update_poller_cache, push_out_data_input_method, and push_out_host
 -issue#7135: Reset loop-scoped $oid and $script_path between iterations in poller cache builders and test_data_source
+-issue#7199: Importing a color CSV file fails
 -issue#7202: Removed plugins may leave orphan entries in plugin tables
 -feature#6523: When disabling users, ensure that their authentication cookies and sessions cleared
 -feature#6524: When changing your password, log off from all sessions
