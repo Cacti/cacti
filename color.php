@@ -373,11 +373,11 @@ function color_import() : void {
 		</td>
 	</tr><?php
 
-	form_hidden_box('save_component_import','1','');
-
 	html_end_box();
 
-	form_save_button('color.php', 'import');
+	form_hidden_box('save_component_import','1','');
+
+	form_save_button('', 'import', 'import', false);
 }
 
 function color_edit() : void {
