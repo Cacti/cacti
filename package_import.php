@@ -662,6 +662,18 @@ function package_diff_file() : void {
 	$target = realpath(CACTI_PATH_BASE . '/' . $filename);
 	$base   = realpath(CACTI_PATH_BASE);
 
+	if ($target === false) {
+		// The package may contain files that do not exist locally yet.
+		// Resolve the parent directory instead and re-attach the leaf so
+		// the containment check below still applies.
+		$parent = realpath(dirname(CACTI_PATH_BASE . '/' . $filename));
+		$leaf   = basename($filename);
+
+		if ($parent !== false && $leaf !== '.' && $leaf !== '..') {
+			$target = $parent . DIRECTORY_SEPARATOR . $leaf;
+		}
+	}
+
 	if ($target === false || $base === false ||
 		!str_starts_with($target . DIRECTORY_SEPARATOR, $base . DIRECTORY_SEPARATOR)) {
 		print __('Invalid filename specified.');

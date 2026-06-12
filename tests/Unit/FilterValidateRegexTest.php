@@ -20,16 +20,24 @@ test('FILTER_VALIDATE_REGEXP requires delimiters and works for true/false parame
 	$broken_regex = '^(true|false)$';
 	
 	$warning_emitted = false;
-	set_error_handler(function ($errno, $errstr) use (&$warning_emitted) {
-		if ($errno === E_WARNING && strpos($errstr, 'No ending delimiter') !== false) {
+	set_error_handler(function ($errno) use (&$warning_emitted) {
+		// The exact warning text varies across PHP/PCRE builds, so only
+		// check the severity
+		if ($errno === E_WARNING) {
 			$warning_emitted = true;
+
 			return true;
 		}
+
 		return false;
 	});
-	$broken_result = filter_var('true', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => $broken_regex]]);
-	restore_error_handler();
-	
+
+	try {
+		$broken_result = filter_var('true', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => $broken_regex]]);
+	} finally {
+		restore_error_handler();
+	}
+
 	expect($broken_result)->toBeFalse()
 		->and($warning_emitted)->toBeTrue();
 
