@@ -5022,7 +5022,11 @@ function debug_log_return(string $type) : string {
 function cacti_csv_cell(mixed $value) : string {
 	$value = (string) $value;
 
-	if ($value !== '' && strpbrk($value[0], "=+-@\t\r") !== false) {
+	// inspect the first non-blank character so leading spaces or newlines cannot
+	// hide a formula trigger; tab and CR are triggers themselves so not skipped
+	$lead = ltrim($value, " \n");
+
+	if ($lead !== '' && strpbrk($lead[0], "=+-@\t\r") !== false) {
 		$value = "'" . $value;
 	}
 

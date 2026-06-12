@@ -273,7 +273,7 @@ function get_basic_auth_username() : string|false {
 						continue;
 					}
 
-					if (trim($basic ?? '') == $username) {
+					if (trim($basic) == $username) {
 						$username = trim($shortform ?? '');
 						$found    = true;
 

@@ -450,6 +450,7 @@ function poll_for_data() : mixed {
 									cacti_log('WARNING: Unable to start PHP Script Server, falling back to direct execution', false, 'POLLER', POLLER_VERBOSITY_LOW);
 
 									$using_proc_function = false;
+									$pipes               = false;
 								} else {
 									$output = fgets($pipes[1], 1024);
 

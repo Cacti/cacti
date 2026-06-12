@@ -628,14 +628,19 @@ function host_export() : void {
 		fputcsv($stdout, $columns);
 
 		foreach ($hosts as $h) {
-			// Prefix any leading character that a spreadsheet would treat as a
+			// Flatten embedded newlines as the previous export format did, then
+			// prefix any leading character that a spreadsheet would treat as a
 			// formula so device data round-trips as literal text.
 			foreach (array_keys($h) as $hc) {
-				$v = (string) $h[$hc];
+				$v = str_replace(["\n", "\r"], ' ', (string) $h[$hc]);
 
-				if ($v !== '' && strpbrk($v[0], "=+-@\t\r") !== false) {
-					$h[$hc] = "'" . $v;
+				$lead = ltrim($v, " \n");
+
+				if ($lead !== '' && strpbrk($lead[0], "=+-@\t\r") !== false) {
+					$v = "'" . $v;
 				}
+
+				$h[$hc] = $v;
 			}
 
 			fputcsv($stdout, $h);

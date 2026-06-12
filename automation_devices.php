@@ -647,7 +647,7 @@ function export_discovery_results() : void {
 
 	header('Content-type: application/csv');
 	header('Content-Disposition: attachment; filename=discovery_results.csv');
-	print implode(',', array(
+	print implode(',', [
 		cacti_csv_cell('Host'),
 		cacti_csv_cell('IP'),
 		cacti_csv_cell('System Name'),
@@ -658,7 +658,7 @@ function export_discovery_results() : void {
 		cacti_csv_cell('Uptime'),
 		cacti_csv_cell('SNMP'),
 		cacti_csv_cell('Status')
-	)) . "\n";
+	]) . "\n";
 
 	if (cacti_sizeof($results)) {
 		foreach ($results as $host) {
@@ -670,7 +670,7 @@ function export_discovery_results() : void {
 				$uptime = '';
 			}
 
-			print implode(',', array(
+			print implode(',', [
 				cacti_csv_cell($host['hostname'] == '' ? __('Not Detected') : $host['hostname']),
 				cacti_csv_cell($host['ip']),
 				cacti_csv_cell(export_data($host['sysName'])),
@@ -681,7 +681,7 @@ function export_discovery_results() : void {
 				cacti_csv_cell(export_data($uptime)),
 				cacti_csv_cell($host['snmp'] == 1 ? __('Up') : __('Down')),
 				cacti_csv_cell($host['up'] == 1 ? __('Up') : __('Down'))
-			)) . "\n";
+			]) . "\n";
 		}
 	}
 }
