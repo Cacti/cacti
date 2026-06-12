@@ -61,7 +61,7 @@ jobs:
 
       - name: Upload Semgrep SARIF
         if: always()
-        uses: github/codeql-action/upload-sarif@ce28f5bb42b7a342e9c1c977301c0a1aca3958b1 # v3.28.10
+        uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v4.36.2
         with:
           sarif_file: semgrep.sarif
           category: semgrep
@@ -87,9 +87,9 @@ jobs:
       - name: Install Scorecard CLI
         run: |
           set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y golang-go
-          GOBIN="${HOME}/.local/bin" go install github.com/ossf/scorecard/v5/cmd/scorecard@v5.1.2
+          # Use the runner's preinstalled Go; the apt golang-go package is too
+          # old to build scorecard and disables toolchain auto-download.
+          GOBIN="${HOME}/.local/bin" go install github.com/ossf/scorecard/v5@v5.5.0
           echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
 
       - name: Run Scorecard

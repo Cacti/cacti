@@ -48,10 +48,12 @@ jobs:
         run: |
           set -euo pipefail
           # Always use the baseline/commands from the target branch (e.g. develop)
-          # to prevent PR contributors from running arbitrary commands.
-          if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
-            echo "Sourcing trusted baseline from origin/${{ github.base_ref }}..."
-            git show "origin/${{ github.base_ref }}:.github/perf-baseline.json" > .github/trusted-perf-baseline.json
+          # to prevent PR contributors from running arbitrary commands. Fall back
+          # to the PR's copy until the baseline first lands on the target branch.
+          if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]] \
+            && git cat-file -e "origin/${GITHUB_BASE_REF}:.github/perf-baseline.json" 2>/dev/null; then
+            echo "Sourcing trusted baseline from origin/${GITHUB_BASE_REF}..."
+            git show "origin/${GITHUB_BASE_REF}:.github/perf-baseline.json" > .github/trusted-perf-baseline.json
           else
             cp .github/perf-baseline.json .github/trusted-perf-baseline.json
           fi
