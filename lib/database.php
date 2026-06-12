@@ -2007,11 +2007,11 @@ function array_to_sql_or(array $array, string $sql_column) : mixed {
 
 /**
  * db_in_clause - build a safe "column IN (...)" predicate from caller-supplied
- * values. Numeric mode coerces every element with intval(), which neutralises
- * any injected text (e.g. "1) UNION SELECT" becomes 1) without losing the
- * legitimate id. String mode quotes each element with db_qstr(). An empty list
- * yields "column IN (NULL)" so the predicate matches nothing rather than
- * producing invalid SQL.
+ * values. Numeric mode keeps only numeric elements and casts them with
+ * intval(), so injected text such as '1) UNION SELECT' or 'abc' is dropped
+ * rather than coerced to a real id. String mode quotes each element with
+ * db_qstr(). An empty list yields "column IN (NULL)" so the predicate matches
+ * nothing rather than producing invalid SQL.
  *
  * @param string $sql_column The column to test
  * @param mixed  $values     An array, or a comma-separated string, of values
@@ -2024,10 +2024,13 @@ function db_in_clause(string $sql_column, mixed $values, bool $numeric = true) :
 		$values = ($values === '' || $values === null) ? [] : explode(',', (string) $values);
 	}
 
-	$values = array_filter($values, fn($v) => $v !== '' && $v !== null);
+	$values = array_filter($values, fn ($v) => $v !== '' && $v !== null);
 
 	if ($numeric) {
-		$list = array_values(array_unique(array_map('intval', $values)));
+		// drop non-numeric garbage instead of letting intval() coerce it to 0,
+		// which is a meaningful id in the graph_template_id codepaths
+		$values = array_filter(array_map('trim', $values), 'is_numeric');
+		$list   = array_values(array_unique(array_map('intval', $values)));
 	} else {
 		$list = array_map('db_qstr', $values);
 	}

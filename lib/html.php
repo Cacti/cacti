@@ -2438,10 +2438,15 @@ function html_transform_graph_template_ids(mixed $ids) : string {
 		} else {
 			$id = str_replace('dq_', '', $id);
 
-			$return_ids[] = intval(db_fetch_cell_prepared('SELECT graph_template_id
+			$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
 				FROM snmp_query_graph
 				WHERE id = ?',
-				[$id]));
+				[$id]);
+
+			// a missing row returns false; skip it so id 0 (not templated) is not injected
+			if (is_numeric($graph_template_id)) {
+				$return_ids[] = intval($graph_template_id);
+			}
 		}
 	}
 
