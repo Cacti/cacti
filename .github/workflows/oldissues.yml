@@ -37,8 +37,8 @@ jobs:
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-        days-before-stale: 60
-        days-before-close: 7
+        days-before-stale: 365
+        days-before-close: 30
         remove-stale-when-updated: true
 
         exempt-issue-labels: 'pinned, security, enhancement, future release'
