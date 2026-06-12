@@ -2378,7 +2378,7 @@ function strip_alpha(mixed $string) : mixed {
  * @return bool Either true or false
  */
 function is_valid_pathname($path) {
-	if (strpos(trim($path), '..') !== false) {
+	if (preg_match('/(^|[\/\\\\])\.\.([\/\\\\]|$)/', trim($path))) {
 		return false;
 	}
 
@@ -5075,12 +5075,16 @@ function sanitize_uri(string $uri) : string {
 		''
 	];
 
-	if (strncmp(ltrim($uri), '//', 2) === 0) {
-		return '/';
-	}
-
 	if (is_urlencoded($uri)) {
 		$uri = urldecode($uri);
+	}
+
+	/* a network-path reference (//host or /\host) would redirect off-site;
+	 * collapse the leading slashes so the URI stays a local path */
+	$trimmed = ltrim($uri);
+
+	if (preg_match('/^[\/\\\\]{2,}/', $trimmed)) {
+		$uri = '/' . ltrim($trimmed, '/\\');
 	}
 
 	if (str_contains($uri, 'graph_view.php')) {

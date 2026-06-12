@@ -1291,12 +1291,12 @@ function update_order_string(bool $inplace = false) : void {
 			unset($_SESSION['sort_data'][$page]);
 			unset($_SESSION['sort_string'][$page]);
 
-			$direction = strtoupper(get_request_var('sort_direction'));
+			$column    = get_request_var('sort_column');
+			$direction = get_request_var('sort_direction');
+			$direction = is_string($direction) ? strtoupper($direction) : 'ASC';
 			$direction = in_array($direction, ['ASC', 'DESC'], true) ? $direction : 'ASC';
 
-			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = $direction;
-
-			$column = get_request_var('sort_column');
+			$_SESSION['sort_data'][$page][$column] = $direction;
 
 			if ($column == 'ip' || $column == 'ip_address') {
 				$_SESSION['sort_string'][$page] = 'ORDER BY INET_ATON(' . $column . ') ' . $direction;
@@ -1311,7 +1311,8 @@ function update_order_string(bool $inplace = false) : void {
 				unset($_SESSION['sort_string'][$page]);
 			}
 
-			$direction = strtoupper(get_nfilter_request_var('sort_direction'));
+			$direction = get_nfilter_request_var('sort_direction');
+			$direction = is_string($direction) ? strtoupper($direction) : 'ASC';
 			$direction = in_array($direction, ['ASC', 'DESC'], true) ? $direction : 'ASC';
 
 			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = $direction;
