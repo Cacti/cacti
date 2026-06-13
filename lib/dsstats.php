@@ -148,6 +148,15 @@ function dsstats_get_and_store_ds_avgpeak_values(string $interval, string $type,
 		$rrd_process = rrd_init(false);
 	} else {
 		$rrd_process = dsstats_rrdtool_init();
+
+		// dsstats_rrdtool_init() returns [false, false] when RRDtool could not be
+		// spawned; without live pipes the execute path would fwrite() to null and
+		// crash the poller, so bail out of this run gracefully
+		if (!is_resource($rrd_process[0])) {
+			cacti_log('ERROR: DSStats unable to obtain RRDtool process, skipping run', false, 'DSSTATS');
+
+			return;
+		}
 	}
 
 	if (cacti_sizeof($rrdfiles)) {

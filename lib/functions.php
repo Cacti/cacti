@@ -5022,15 +5022,35 @@ function debug_log_return(string $type) : string {
 function cacti_csv_cell(mixed $value) : string {
 	$value = (string) $value;
 
-	// inspect the first non-blank character so leading spaces or newlines cannot
-	// hide a formula trigger; tab and CR are triggers themselves so not skipped
-	$lead = ltrim($value, " \n");
-
-	if ($lead !== '' && strpbrk($lead[0], "=+-@\t\r") !== false) {
+	if (cacti_csv_needs_formula_guard($value)) {
 		$value = "'" . $value;
 	}
 
 	return '"' . str_replace('"', '""', $value) . '"';
+}
+
+/**
+ * cacti_csv_needs_formula_guard - decide whether a CSV cell opens with a
+ * spreadsheet formula trigger and therefore needs a leading single quote.
+ * A value that is a plain number (including a leading + or -) is data, not a
+ * formula, so it is left untouched and exports round-trip as the original
+ * number rather than gaining a stray apostrophe.
+ *
+ * @param string $value The raw cell value
+ *
+ * @return bool True when the cell must be quoted to neutralise a formula
+ */
+function cacti_csv_needs_formula_guard(string $value) : bool {
+	// inspect the first non-blank character so leading spaces or newlines cannot
+	// hide a formula trigger; tab and CR are triggers themselves so not skipped
+	$lead = ltrim($value, " \n");
+
+	if ($lead === '' || strpbrk($lead[0], "=+-@\t\r") === false) {
+		return false;
+	}
+
+	// a numeric value such as -1.234 or +5 is data, not a formula
+	return !is_numeric($lead);
 }
 
 /**

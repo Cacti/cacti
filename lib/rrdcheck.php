@@ -132,6 +132,15 @@ function do_rrdcheck(int $thread_id = 1) : void {
 		$process_pipes = rrdcheck_rrdtool_init();
 		$process       = $process_pipes[0];
 		$pipes         = $process_pipes[1];
+
+		// rrdcheck_rrdtool_init() returns [false, false] when RRDtool could not be
+		// spawned; without live pipes the execute path would fwrite() to null and
+		// crash the poller, so bail out of this run gracefully
+		if (!is_resource($process)) {
+			cacti_log('ERROR: rrdcheck unable to obtain RRDtool process, skipping run', false, 'RRDCHECK');
+
+			return;
+		}
 	}
 
 	if (cacti_sizeof($rrdfiles)) {

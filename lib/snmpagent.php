@@ -989,9 +989,16 @@ function snmpagent_notification(string $notification, string $mib, array $varbin
 					], $snmp_notification_varbinds);
 				}
 
-				// execute net-snmp to generate this notification in the background;
-				// exec_background escapes each array element with cacti_escapeshellarg()
-				exec_background(cacti_escapeshellcmd($path_snmptrap), $args);
+				// execute net-snmp to generate this notification in the background.
+				// snmptrap relies on fixed positional arguments (agent address and
+				// uptime placeholders) that are passed empty here; escape each token
+				// directly so empty positions survive as quoted '' rather than being
+				// swallowed when exec_background joins the arguments with spaces.
+				$escaped_args = implode(' ', array_map(static function ($arg) {
+					return $arg === '' ? "''" : cacti_escapeshellarg($arg);
+				}, $args));
+
+				exec_background(cacti_escapeshellcmd($path_snmptrap), $escaped_args);
 
 				// insert a new entry into the notification log for that SNMP receiver
 				$save                 = [];

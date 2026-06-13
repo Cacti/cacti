@@ -634,9 +634,7 @@ function host_export() : void {
 			foreach (array_keys($h) as $hc) {
 				$v = str_replace(["\n", "\r"], ' ', (string) $h[$hc]);
 
-				$lead = ltrim($v, " \n");
-
-				if ($lead !== '' && strpbrk($lead[0], "=+-@\t\r") !== false) {
+				if (cacti_csv_needs_formula_guard($v)) {
 					$v = "'" . $v;
 				}
 
