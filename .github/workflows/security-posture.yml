@@ -60,7 +60,10 @@ jobs:
           semgrep scan --config p/ci --sarif --output semgrep.sarif . || true
 
       - name: Upload Semgrep SARIF
-        if: always()
+        # Fork PRs get a read-only GITHUB_TOKEN without security-events: write, so
+        # the upload fails with "Resource not accessible by integration". Skip it
+        # there; the SARIF is still kept as an artifact below.
+        if: always() && github.event.pull_request.head.repo.fork == false
         uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v4.36.2
         with:
           sarif_file: semgrep.sarif
@@ -68,7 +71,7 @@ jobs:
 
       - name: Upload Semgrep artifact
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: semgrep-report
           path: semgrep.sarif
@@ -101,7 +104,7 @@ jobs:
 
       - name: Upload Scorecard artifact
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: scorecard-report
           path: scorecard.json
@@ -124,11 +127,14 @@ jobs:
       - name: Run Composer audit
         run: |
           set -euo pipefail
-          composer audit --locked --no-interaction --format=json > composer-audit.json || true
+          # Cacti ships composer.json but no composer.lock; resolve dependencies
+          # without downloading them so audit has a lockfile to inspect.
+          composer update --lock --no-install --no-interaction
+          composer audit --locked --no-interaction --format=json | tee composer-audit.json
 
       - name: Upload Composer audit artifact
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: composer-audit-report
           path: composer-audit.json

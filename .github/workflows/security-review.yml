@@ -25,23 +25,27 @@ jobs:
   security-review:
     name: security review
     runs-on: ubuntu-latest
-    # Skip drafts and skip when the secret is absent (fork PRs)
-    if: >
-      github.event.pull_request.draft == false &&
-      secrets.ANTHROPIC_API_KEY != ''
+    # Skip drafts. The secret check cannot live in a job-level `if:` because the
+    # `secrets` context is not available there; it is evaluated per step via env.
+    if: github.event.pull_request.draft == false
+    env:
+      HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
 
     steps:
       - name: Checkout
+        if: env.HAS_KEY == 'true'
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
 
       - name: Fetch base branch
+        if: env.HAS_KEY == 'true'
         run: |
           set -euo pipefail
           git fetch origin "${GITHUB_BASE_REF}" --depth=1
 
       - name: Collect PR diff
+        if: env.HAS_KEY == 'true'
         run: |
           set -euo pipefail
           git diff "origin/${GITHUB_BASE_REF}...HEAD" > /tmp/pr.diff
@@ -49,6 +53,7 @@ jobs:
 
       - name: Collect changed PHP files
         id: changed
+        if: env.HAS_KEY == 'true'
         run: |
           set -euo pipefail
           git diff --name-only "origin/${GITHUB_BASE_REF}...HEAD" \
@@ -62,6 +67,7 @@ jobs:
           printf 'count=%d\n' "$count" >> "$GITHUB_OUTPUT"
 
       - name: Run grep patterns on changed files
+        if: env.HAS_KEY == 'true'
         run: |
           set -euo pipefail
           out=/tmp/grep_hits.txt
@@ -125,6 +131,7 @@ jobs:
           printf 'Grep complete: %d lines\n' "$(wc -l < "$out")"
 
       - name: Collect hotspot file excerpts
+        if: env.HAS_KEY == 'true'
         run: |
           set -euo pipefail
           out=/tmp/hotspot_contents.txt
@@ -155,6 +162,7 @@ jobs:
           printf 'Hotspot content: %d bytes\n' "$(wc -c < "$out")"
 
       - name: Run security review
+        if: env.HAS_KEY == 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
