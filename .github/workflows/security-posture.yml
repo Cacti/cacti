@@ -127,9 +127,10 @@ jobs:
       - name: Run Composer audit
         run: |
           set -euo pipefail
-          # Cacti ships composer.json but no composer.lock; resolve dependencies
-          # without downloading them so audit has a lockfile to inspect.
-          composer update --lock --no-install --no-interaction
+          # Cacti ships composer.json but no composer.lock; write a fresh lock
+          # from composer.json without downloading packages so audit has a
+          # lockfile to inspect. --lock requires an existing lock and exits 3.
+          composer update --no-install --no-interaction
           composer audit --locked --no-interaction --format=json | tee composer-audit.json
 
       - name: Upload Composer audit artifact
