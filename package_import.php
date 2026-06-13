@@ -614,7 +614,7 @@ function package_file_get_contents(string $package_location, string $package_fil
 
 			$binary_signature = '';
 
-			$xmlfile = $tmp_dir . '/' . $package_file;
+			$xmlfile = $tmp_dir . '/' . basename($package_file);
 
 			file_put_contents($xmlfile, $data);
 
