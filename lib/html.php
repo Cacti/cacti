@@ -2433,8 +2433,12 @@ function html_transform_graph_template_ids(mixed $ids) : string {
 		if (is_numeric($id)) {
 			$return_ids[] = intval($id);
 		} elseif (str_contains($id, 'cg_')) {
-			// only the leading integer is meaningful; intval() drops any trailing injection
-			$return_ids[] = intval(str_replace('cg_', '', $id));
+			$cg_id = str_replace('cg_', '', $id);
+
+			// non-numeric remainder would coerce to 0 (not templated); skip it instead
+			if (is_numeric($cg_id)) {
+				$return_ids[] = intval($cg_id);
+			}
 		} else {
 			$id = str_replace('dq_', '', $id);
 
