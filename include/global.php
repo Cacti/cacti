@@ -123,7 +123,18 @@ if (file_exists(__DIR__ . '/config.php')) {
 	include(__DIR__ . '/config.php');
 }
 
-if (defined('PHP_TESTING') && file_exists(__DIR__ . '/config.php.dist')) {
+// Combined test-bootstrap gate: PHP_TESTING alone is not enough. The
+// CACTI_TEST_BOOTSTRAP env var (local_only so per-request SAPI params under
+// FPM/FastCGI cannot set it) must also be present. A stray PHP_TESTING define
+// in a deployed environment therefore cannot swap to the default config, skip
+// schema validation, or disable real DB connection logic. Fail-closed.
+if (!function_exists('cacti_is_test_bootstrap')) {
+	function cacti_is_test_bootstrap(): bool {
+		return defined('PHP_TESTING') && getenv('CACTI_TEST_BOOTSTRAP', true) === '1';
+	}
+}
+
+if (cacti_is_test_bootstrap() && file_exists(__DIR__ . '/config.php.dist')) {
 	if (!is_readable(__DIR__ . '/config.php.dist')) {
 		die('Configuration file include/config.php is present, but unreadable.' . PHP_EOL);
 	}
@@ -308,6 +319,11 @@ if ($config['is_web'] && ini_get('session.auto_start') == 1) {
 // Pass false to class_exists() so this guard never triggers autoload.
 if (!class_exists('Cacti_TestDbSentinel', false)) {
 	final class Cacti_TestDbSentinel {
+		/**
+		 * @param  string           $name
+		 * @param  array<int,mixed> $args
+		 * @return never
+		 */
 		public function __call($name, $args) {
 			throw new \RuntimeException('PHP_TESTING DB sentinel called: ' . $name);
 		}
@@ -317,14 +333,14 @@ if (!class_exists('Cacti_TestDbSentinel', false)) {
 // Helper for "is this a real DB handle" checks that must reject the sentinel.
 // Defined inline so include/global.php remains self-contained.
 if (!function_exists('_cacti_is_real_db_conn')) {
-	function _cacti_is_real_db_conn($x) {
+	function _cacti_is_real_db_conn(mixed $x): bool {
 		return is_object($x) && !($x instanceof Cacti_TestDbSentinel);
 	}
 }
 
 // Resolve the test-bootstrap predicate once; both PHP_TESTING and
 // CACTI_TEST_BOOTSTRAP=1 must be set for the sentinel branches to engage.
-$is_test_bootstrap = (defined('PHP_TESTING') && getenv('CACTI_TEST_BOOTSTRAP') === '1');
+$is_test_bootstrap = cacti_is_test_bootstrap();
 
 // set poller mode
 global $local_db_cnn_id, $remote_db_cnn_id, $conn_mode;
@@ -383,7 +399,12 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		}
 	}
 
-	// gather the existing cactidb version (skip when running under the test sentinel)
+	// gather the existing cactidb version (skip when running under the test sentinel).
+	// Seed '' first so the key is always set, matching pre-sentinel behavior where a
+	// failed db_fetch_cell returned ''; a remote poller with the local DB down then
+	// reads a defined value instead of raising an 'Undefined array key' warning.
+	$config['cacti_db_version'] = '';
+
 	if (_cacti_is_real_db_conn($local_db_cnn_id)) {
 		$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1', '', false, $local_db_cnn_id);
 	}
@@ -466,7 +487,10 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		}
 	}
 
-	// gather the existing cactidb version (skip when running under the test sentinel)
+	// gather the existing cactidb version (skip when running under the test sentinel).
+	// Seed '' first so the key is always set even under the test bootstrap.
+	$config['cacti_db_version'] = '';
+
 	if (!$is_test_bootstrap) {
 		$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
 	}
