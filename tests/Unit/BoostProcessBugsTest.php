@@ -204,11 +204,10 @@ test('boost_prepare_process_table guards against misconfigured parallel count', 
 	$func_end  = strpos($contents, "\nfunction ", $func_pos + 1);
 	$func_body = substr($contents, $func_pos, $func_end - $func_pos);
 
-	// Must cast to int so empty string / null from read_config_option compares correctly.
-	expect($func_body)->toContain("intval(read_config_option('boost_parallel'))");
-
-	// Must guard before the ceil() division.
-	expect($func_body)->toMatch('/if\s*\(\s*\$processes\s*<=\s*0\s*\)/');
+	// The clamp now lives in the shared boost_clamp_parallel() helper so this
+	// call site and boost_launch_children() can never disagree on the count
+	// before the ceil() division.
+	expect($func_body)->toContain("boost_clamp_parallel(read_config_option('boost_parallel'))");
 });
 
 test('boost_output_rrd_data returns 0 not false when no rows are assigned', function () use ($boostPollerPath) {
@@ -260,21 +259,22 @@ test('boost_process_local_data_ids guards against zero records per select', func
 	expect($func_body)->toContain('$data_ids_to_get = 50000;');
 });
 
-test('parent waits for child registration before entering monitoring loop', function () use ($boostPollerPath) {
+test('parent waits for all children to register before entering monitoring loop', function () use ($boostPollerPath) {
 	$contents = file_get_contents($boostPollerPath);
 
-	// exec_background() is non-blocking; children need time to call
-	// register_process_start() before the monitoring while-loop runs its first
-	// check. Without the barrier the parent sees 0 registered and exits early.
-	$launch_pos = strpos($contents, 'boost_launch_children();');
+	// exec_background() is non-blocking; the barrier must wait for every launched
+	// child, not just the first. Releasing on the first registration lets a fast
+	// child finish, drop the running count to 0, and trip the drain exit while
+	// siblings are still booting.
+	$launch_pos = strpos($contents, '$expected_children = boost_launch_children();');
 	expect($launch_pos)->not->toBeFalse();
 
-	$barrier_pos = strpos($contents, 'boost_processes_running() < 1', $launch_pos);
+	$barrier_pos = strpos($contents, 'boost_all_children_registered($expected_children', $launch_pos);
 	expect($barrier_pos)->not->toBeFalse();
 
 	// A time-bounded deadline must accompany the barrier so the parent can't
 	// spin forever if children crash before registering.
-	$barrier_segment = substr($contents, $barrier_pos - 100, 200);
+	$barrier_segment = substr($contents, $launch_pos, $barrier_pos - $launch_pos + 100);
 	expect($barrier_segment)->toContain('$startup_deadline');
 });
 
