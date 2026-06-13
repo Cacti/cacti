@@ -23,6 +23,35 @@
 */
 
 /**
+ * Safely deserialize the bulk-action selected_items payload.
+ *
+ * Bulk report items carry a 'type_id' shape (e.g. 'reports_3'), so the
+ * numeric-only sanitize_unserialize_selected_items() cannot be used here:
+ * it rejects every non-numeric element and discards the whole batch. Object
+ * deserialization is blocked the same way the numeric variant blocks it;
+ * each element's type and id are validated by the caller.
+ *
+ * @param mixed $items A serialized array of items from a post
+ *
+ * @return array|false The deserialized items array, or false when input is absent/invalid
+ */
+function reports_unserialize_selected_items(mixed $items) : array|false {
+	if (empty($items) || !is_string($items)) {
+		return false;
+	}
+
+	$unstripped = stripslashes($items);
+
+	if (!preg_match('/^a:[0-9]+:{/', $unstripped) || preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
+		return false;
+	}
+
+	$items = unserialize($unstripped, ['allowed_classes' => false]);
+
+	return is_array($items) ? $items : false;
+}
+
+/**
  * duplicate_reports - duplicates a report and all items
  *
  * @param int    $_id    Id of the report

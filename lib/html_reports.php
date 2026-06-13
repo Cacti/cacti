@@ -438,11 +438,19 @@ function reports_form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
+		$selected_items = reports_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {
 			foreach ($selected_items as $report) {
-				[$type, $report_id] = explode('_', $report);
+				if (!is_string($report) || strpos($report, '_') === false) {
+					continue;
+				}
+
+				[$type, $report_id] = explode('_', $report, 2);
+
+				if (!in_array($type, ['reports', 'reportit'], true)) {
+					continue;
+				}
 
 				if (!is_numeric($report_id) || (int) $report_id <= 0) {
 					continue;

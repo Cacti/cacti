@@ -845,8 +845,15 @@ function cacti_validate_theme(string $requested) : string {
 	}
 
 	$requested = basename($requested);
+	$default   = basename($default);
 
-	return isset($valid_themes[$requested]) ? $requested : $default;
+	if (isset($valid_themes[$requested])) {
+		return $requested;
+	}
+
+	// the configured default can itself be stale or poisoned, so re-validate
+	// it before it reaches an include path; fall back to a theme that ships
+	return isset($valid_themes[$default]) ? $default : 'modern';
 }
 
 /**
