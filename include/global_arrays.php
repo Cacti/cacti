@@ -1051,6 +1051,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 		),
 		__('Troubleshooting') => array(
 			'data_debug.php' => __('Data Sources'),
+			'support.php'    => __('Technical Support'),
 		)
 	);
 } else {
@@ -1304,6 +1305,7 @@ $user_auth_realm_filenames = array(
 	'rrdcleaner.php' => 15,
 	'rrdcheck.php' => 15,
 	'settings.php' => 15,
+	'support.php' => 15,
 	'links.php' => 15,
 	'data_queries.php' => 13,
 	'templates_export.php' => 16,

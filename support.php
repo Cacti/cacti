@@ -43,6 +43,15 @@ switch(grv('action')) {
 }
 
 function support_lockout() : void {
+	/* csrf-magic only validates the token on POST. A tokenless GET would let a
+	 * CSRF gadget toggle the maintenance lockout, so reject anything but POST. */
+	if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+		cacti_log('WARNING: Rejected non-POST request to support.php?action=lockout', false, 'AUTH');
+
+		header('Location: support.php?tab=summary');
+		exit;
+	}
+
 	$admin = read_config_option('admin_user', true);
 
 	if (read_config_option('admin_user') != $_SESSION[SESS_USER_ID]) {
@@ -144,7 +153,7 @@ function support_view_tech() : void {
 
 		foreach ($tabs as $id => $name) {
 			print "<li class='subTab'><a class='tab pic " . ($id == $current_tab ? " selected'" : "'") .
-				" href='" . htmle(CACTI_PATH_URL .
+				" href='" . html_escape(CACTI_PATH_URL .
 				'support.php?' .
 				'tab=' . $id) .
 				"'>" . $name['display'] . '</a></li>';
@@ -221,7 +230,10 @@ function support_view_tech() : void {
 		});
 
 		$('#lockout').click(function() {
-			loadUrl({ url: 'support.php?action=lockout' });
+			loadPageUsingPost('support.php', {
+				action: 'lockout',
+				__csrf_magic: csrfMagicToken
+			});
 		});
 	});
 	</script>
@@ -676,7 +688,7 @@ function show_cacti_processes() : void {
 				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
 					"SELECT process_id AS pid, '$name' AS tasktype,
 						CONCAT('" . __('Device:') . "', device_id) AS taskname, device_id AS taskid, 'N/A' AS timeout,
-						start_date AS started, 'N/A' AS last_updated,
+						start_date AS started, 'N/A' AS last_update,
 						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(start_date) AS runtime
 						FROM mac_track_processes";
 
@@ -807,7 +819,7 @@ function show_cacti_processes() : void {
 				$timeout_date = $p['timeout'];
 			}
 
-			form_selectable_cell($p['tasktype'], $p['pid']);
+			form_selectable_ecell($p['tasktype'], $p['pid']);
 			form_selectable_cell(filter_value(cacti_strtoupper($p['taskname']), ''), $p['pid']);
 			form_selectable_cell($p['taskid'], $p['pid'], '', 'right');
 			form_selectable_cell($p['runtime'], $p['pid'], '', 'right');
@@ -881,7 +893,7 @@ function show_cacti_poller() : void {
 
 		foreach ($problematic as $host) {
 			form_alternate_row();
-			print '<td>' . htmle($host['description']) . '</td>';
+			print '<td>' . html_escape($host['description']) . '</td>';
 			print '<td class="right">' . $host['id'] . '</td>';
 			print '<td class="right">' . number_format_i18n($host['avg_time'],3) . '</td>';
 			print '<td class="right">' . number_format_i18n($host['polling_time'],3) . '</td>';
@@ -923,7 +935,7 @@ function show_cacti_poller() : void {
 
 		foreach ($problematic as $host) {
 			form_alternate_row();
-			print '<td>' . htmle($host['description']) . '</td>';
+			print '<td>' . html_escape($host['description']) . '</td>';
 			print '<td class="right">' . $host['id'] . '</td>';
 			print '<td class="right">' . number_format_i18n($host['ratio'],3) . '</td>';
 			form_end_row();
@@ -975,15 +987,15 @@ function show_database_tables() : void {
 
 		foreach ($tables as $table) {
 			form_alternate_row();
-			print '<td>' . $table['TABLE_NAME'] . '</td>';
-			print '<td>' . $table['ENGINE'] . '</td>';
+			print '<td>' . html_escape($table['TABLE_NAME']) . '</td>';
+			print '<td>' . html_escape($table['ENGINE']) . '</td>';
 			print '<td class="right">' . number_format_i18n($table['TABLE_ROWS'], -1) . '</td>';
 			print '<td class="right">' . number_format_i18n($table['AVG_ROW_LENGTH'], -1) . '</td>';
 			print '<td class="right">' . number_format_i18n($table['DATA_LENGTH'], -1) . '</td>';
 			print '<td class="right">' . number_format_i18n($table['INDEX_LENGTH'], -1) . '</td>';
-			print '<td>' . $table['TABLE_COLLATION'] . '</td>';
-			print '<td>' . $table['ROW_FORMAT'] . '</td>';
-			print '<td>' . $table['TABLE_COMMENT'] . '</td>';
+			print '<td>' . html_escape($table['TABLE_COLLATION']) . '</td>';
+			print '<td>' . html_escape($table['ROW_FORMAT']) . '</td>';
+			print '<td>' . html_escape($table['TABLE_COMMENT']) . '</td>';
 			form_end_row();
 		}
 
@@ -1010,7 +1022,7 @@ function show_cacti_changelog() : void {
 				html_section_header(__('Version %s', $s), 2);
 			} else {
 				form_alternate_row();
-				print '<td>' . $s . '</td>';
+				print '<td>' . html_escape($s) . '</td>';
 				form_end_row();
 			}
 		}
@@ -1030,13 +1042,13 @@ function show_database_settings() : void {
 
 	foreach ($status as $s) {
 		form_alternate_row();
-		print '<td>' . htmle($s['Variable_name']) . '</td>';
+		print '<td>' . html_escape($s['Variable_name']) . '</td>';
 
 		if (strlen($s['Value']) > 70) {
 			$s['Value'] = str_replace(',', ', ', $s['Value']);
 		}
 
-		print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1) : htmle($s['Value'])) . '</td>';
+		print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1) : html_escape($s['Value'])) . '</td>';
 		form_end_row();
 	}
 }
@@ -1098,8 +1110,8 @@ function show_database_status() : void {
 
 	foreach ($status as $s) {
 		form_alternate_row();
-		print '<td>' . htmle($s['Variable_name']) . '</td>';
-		print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1) : htmle($s['Value'])) . '</td>';
+		print '<td>' . html_escape($s['Variable_name']) . '</td>';
+		print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1) : html_escape($s['Value'])) . '</td>';
 		form_end_row();
 	}
 }
@@ -1150,7 +1162,7 @@ function show_tech_summary() : void {
 	if ((file_exists(read_config_option('path_snmpget'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_snmpget'))))) {
 		$out = array();
 		cacti_exec(read_config_option('path_snmpget'), array('-V'), $out);
-		$snmp_version = implode("\n", $out);
+		$snmp_version = html_escape(implode("\n", $out));
 	} else {
 		$snmp_version = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . '</span>';
 	}
@@ -1159,7 +1171,7 @@ function show_tech_summary() : void {
 	$rrdtool_errors = array();
 
 	if (cacti_version_compare($rrdtool_version, get_rrdtool_version(), '<')) {
-		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . htmle('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . '</span>';
+		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . html_escape('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . '</span>';
 	}
 
 	$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
@@ -1229,7 +1241,7 @@ function show_tech_summary() : void {
 
 	form_alternate_row();
 	print '<td>' . __('RSA Fingerprint') . '</td>';
-	print '<td>' . read_config_option('rsa_fingerprint') . '</td>';
+	print '<td>' . html_escape(read_config_option('rsa_fingerprint')) . '</td>';
 	form_end_row();
 
 	form_alternate_row();
@@ -1355,7 +1367,7 @@ function show_tech_summary() : void {
 
 	form_alternate_row();
 	print '<td>' . __('PHP Servers') . '</td>';
-	print '<td>' . htmle($script_servers) . '</td>';
+	print '<td>' . html_escape($script_servers) . '</td>';
 	form_end_row();
 
 	if (POLLER_ID == 1) {
@@ -1690,7 +1702,7 @@ function show_tech_summary() : void {
 	print '<td>';
 
 	if (function_exists('php_uname')) {
-		print php_uname();
+		print html_escape(php_uname());
 	} else {
 		print __('N/A');
 	}
