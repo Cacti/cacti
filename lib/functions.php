@@ -30,6 +30,9 @@ use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
 use Symfony\Component\Mailer\Transport\Smtp\Stream\SocketStream;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Exception\RfcComplianceException;
+use Symfony\Component\Mime\Part\DataPart;
+use Symfony\Component\Mime\Part\File;
 
 /**
  * Takes a string of text, truncates it to $max_length and appends
@@ -5581,6 +5584,47 @@ function send_mail(mixed $to, mixed $from = null, string $subject = '',
 }
 
 /**
+ * Map the configured SMTP security mode to the EsmtpTransport $tls argument.
+ *
+ * 'ssl'  => true  (implicit TLS, e.g. port 465)
+ * 'tls'  => false (start plaintext; STARTTLS upgrade is enforced separately)
+ * 'none' => false (no TLS attempted)
+ *
+ * 'tls' must not map to null. A null $tls makes STARTTLS opportunistic, which
+ * silently downgrades to plaintext when the server omits the STARTTLS
+ * capability. Mandatory STARTTLS is enforced by CactiRequireTlsEsmtpTransport.
+ *
+ * @param string $secure One of 'ssl', 'tls', 'none'
+ *
+ * @return bool
+ */
+function mailer_secure_tls_flag(string $secure) : bool {
+	return $secure == 'ssl';
+}
+
+/**
+ * Build an SMTP transport that honours the configured security mode.
+ *
+ * @param string     $host           SMTP host
+ * @param int        $port           SMTP port
+ * @param string     $secure         One of 'ssl', 'tls', 'none'
+ * @param null|array $authenticators Optional SMTP authenticators (OAuth2)
+ *
+ * @return EsmtpTransport
+ */
+function mailer_build_esmtp_transport(string $host, int $port, string $secure, ?array $authenticators = null) : EsmtpTransport {
+	require_once(CACTI_PATH_LIBRARY . '/CactiMailerTransport.php');
+
+	$tls = mailer_secure_tls_flag($secure);
+
+	if ($secure == 'tls') {
+		return new CactiRequireTlsEsmtpTransport($host, $port, $tls, null, null, null, $authenticators);
+	}
+
+	return new EsmtpTransport($host, $port, $tls, null, null, null, $authenticators);
+}
+
+/**
  * function to send mails to users
  *
  * For contact parameters, they can accept arrays containing zero or more values in the forms of:
@@ -5685,9 +5729,8 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		$smtp_host = read_config_option('settings_smtp_host');
 		$smtp_port = intval(read_config_option('settings_smtp_port'));
 		$secure    = read_config_option('settings_smtp_secure');
-		$tls       = ($secure == 'ssl') ? true : (($secure == 'tls') ? null : false);
 
-		$transport = new EsmtpTransport($smtp_host, $smtp_port, $tls);
+		$transport = mailer_build_esmtp_transport($smtp_host, $smtp_port, (string) $secure);
 		$stream    = $transport->getStream();
 
 		if ($stream instanceof SocketStream) {
@@ -5736,14 +5779,10 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 			}
 
 			$secure    = read_config_option('settings_oauth2_secure');
-			$tls       = ($secure == 'ssl') ? true : (($secure == 'tls') ? null : false);
-			$transport = new EsmtpTransport(
+			$transport = mailer_build_esmtp_transport(
 				read_config_option('settings_oauth2_host'),
 				intval(read_config_option('settings_oauth2_port')),
-				$tls,
-				null,
-				null,
-				null,
+				(string) $secure,
 				[new XOAuth2Authenticator()]
 			);
 			$stream = $transport->getStream();
@@ -5948,11 +5987,19 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 						$emailMessage->attach($attachment['attachment'], $attachment['filename'], $attachment['mime_type'] ?: null);
 					}
 				} else {
+					/* Embed inline with an explicit Content-ID so the cid referenced
+					 * in the HTML body matches the part exactly. embed()/embedFromPath()
+					 * return the Email, not a cid string, so build the DataPart here. */
+					$mime_type = $attachment['mime_type'] ?: null;
+
 					if (!empty($attachment['attachment']) && @file_exists($attachment['attachment'])) {
-						$cid = $emailMessage->embedFromPath($attachment['attachment'], $attachment['filename'], $attachment['mime_type'] ?: null);
+						$part = new DataPart(new File($attachment['attachment']), $attachment['filename'], $mime_type);
 					} else {
-						$cid = $emailMessage->embed($attachment['attachment'], $attachment['filename'], $attachment['mime_type'] ?: null);
+						$part = new DataPart($attachment['attachment'], $attachment['filename'], $mime_type);
 					}
+
+					$part->asInline()->setContentId($cid);
+					$emailMessage->addPart($part);
 				}
 
 				$i++;
@@ -6058,7 +6105,14 @@ function add_email_details(array $emails, bool &$result, callable $addFunc) : st
 
 	foreach ($emails as $e) {
 		if (!empty($e['email'])) {
-			$result = $addFunc($e['email'], $e['name']);
+			try {
+				$result = $addFunc($e['email'], $e['name']);
+			} catch (RfcComplianceException $ex) {
+				// new Address() rejects malformed recipients; surface it as an error string
+				$result = false;
+
+				return 'Bad email format: ' . $e['email'] . ' - ' . $ex->getMessage();
+			}
 
 			if (!$result) {
 				return '';
@@ -6205,8 +6259,7 @@ function ping_mail_server(string $host, int $port, string $user, string $passwor
 	$results = true;
 
 	try {
-		$tls       = ($secure == 'ssl') ? true : (($secure == 'tls') ? null : false);
-		$transport = new EsmtpTransport($host, $port, $tls);
+		$transport = mailer_build_esmtp_transport($host, $port, $secure);
 		$stream    = $transport->getStream();
 
 		if ($stream instanceof SocketStream) {
