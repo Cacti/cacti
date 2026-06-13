@@ -39,19 +39,19 @@ jobs:
       - name: Fetch base branch
         run: |
           set -euo pipefail
-          git fetch origin "${{ github.base_ref }}" --depth=1
+          git fetch origin "${GITHUB_BASE_REF}" --depth=1
 
       - name: Collect PR diff
         run: |
           set -euo pipefail
-          git diff "origin/${{ github.base_ref }}...HEAD" > /tmp/pr.diff
+          git diff "origin/${GITHUB_BASE_REF}...HEAD" > /tmp/pr.diff
           printf 'Diff: %d bytes\n' "$(wc -c < /tmp/pr.diff)"
 
       - name: Collect changed PHP files
         id: changed
         run: |
           set -euo pipefail
-          git diff --name-only "origin/${{ github.base_ref }}...HEAD" \
+          git diff --name-only "origin/${GITHUB_BASE_REF}...HEAD" \
             | grep '\.php$' \
             | grep -v '^include/vendor/' \
             | grep -v '^locales/' \
