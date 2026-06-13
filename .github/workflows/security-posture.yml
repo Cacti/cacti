@@ -113,6 +113,11 @@ jobs:
   composer-audit:
     name: Composer dependency audit
     runs-on: ubuntu-24.04
+    # Advisories are reported as non-blocking: a newly published upstream CVE
+    # must not red every open PR. The audit still runs and writes
+    # composer-audit.json (uploaded below), and any advisory is surfaced as a
+    # ::warning:: annotation. Fixes land via separate dependency-bump PRs.
+    continue-on-error: true
 
     steps:
       - name: Checkout
@@ -131,7 +136,16 @@ jobs:
           # from composer.json without downloading packages so audit has a
           # lockfile to inspect. --lock requires an existing lock and exits 3.
           composer update --no-install --no-interaction
-          composer audit --locked --no-interaction --format=json | tee composer-audit.json
+          # composer audit exits non-zero when it finds advisories. Capture that
+          # exit code without tripping set -e so the JSON is always written, then
+          # report the advisory count as a warning and exit 0. Advisories stay
+          # visible (annotation + artifact) but do not fail the job.
+          audit_rc=0
+          composer audit --locked --no-interaction --format=json | tee composer-audit.json || audit_rc=$?
+          if [ "${audit_rc}" -ne 0 ]; then
+            count="$(jq '(.advisories // {}) | map(length) | add // 0' composer-audit.json 2>/dev/null || echo '?')"
+            echo "::warning title=Composer advisories::composer audit found ${count} advisory record(s); see composer-audit.json artifact. Tracked via separate dependency-bump PRs."
+          fi
 
       - name: Upload Composer audit artifact
         if: always()
