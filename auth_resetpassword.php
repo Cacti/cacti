@@ -122,8 +122,7 @@ switch ($action) {
 			FROM user_auth
 			WHERE id = ?
 			AND realm = 0
-			AND enabled = "on"
-			AND password_change = "on"',
+			AND enabled = "on"',
 			[$hash['user_id']]);
 
 		if (!cacti_sizeof($user)) {

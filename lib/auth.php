@@ -4992,3 +4992,28 @@ function is_2fa_enabled(int $user_id) : bool {
 		return false;
 	}
 }
+
+/** remote_agent_fcrdns_confirmed - forward-confirm a reverse DNS (PTR) result.
+ *
+ * Given the PTR-resolved name for a client address and the address' forward
+ * (A/AAAA) records, return true only when one forward record resolves back to
+ * the same address. A PTR that exists but does not forward-confirm is the
+ * spoofing/misconfiguration signal: callers MUST reject rather than fall back
+ * to source-IP matching, because get_client_addr() can honor an attacker
+ * supplied X-Forwarded-For when proxy_headers is enabled.
+ *
+ * @param string $client_addr     the source address being authorized
+ * @param array  $forward_records dns_get_record() output for the PTR name
+ *
+ * @return bool true when forward confirmation matches the source address */
+function remote_agent_fcrdns_confirmed(string $client_addr, array $forward_records) : bool {
+	foreach ($forward_records as $record) {
+		$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
+
+		if ($ip === $client_addr) {
+			return true;
+		}
+	}
+
+	return false;
+}

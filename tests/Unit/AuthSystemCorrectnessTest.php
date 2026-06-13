@@ -42,8 +42,20 @@ test('password reset token validation rejects expired and invalid hashes before 
 	expect($reset)->toContain('AND expiry > NOW()')
 		->and($reset)->toContain('$action       = \'formidentity\';' . "\n\n\t\t\tbreak;")
 		->and($reset)->toContain('Password reset is not available for this account.')
-		->and($reset)->toContain('AND realm = 0')
-		->and($reset)->toContain('AND password_change = "on"');
+		->and($reset)->toContain('AND realm = 0');
+});
+
+test('reset-link consumption does not gate the account lookup on password_change', function () use ($root) {
+	$reset = file_get_contents($root . '/auth_resetpassword.php');
+
+	// admin-issued links (user_admin.php) target accounts without password_change set;
+	// the consumption query must accept any account that legitimately received a link.
+	$consume = substr($reset, strpos($reset, "case 'resetpassword'"));
+	$consume = substr($consume, 0, strpos($consume, '// Get passwords entered for change'));
+
+	expect($consume)->toContain('FROM user_auth')
+		->and($consume)->toContain('AND enabled = "on"')
+		->and($consume)->not->toContain('AND password_change = "on"');
 });
 
 test('logout clears the remember-me and otp cookies by their actual names', function () use ($root) {
@@ -78,10 +90,13 @@ test('2fa profile mutations require post requests and csrf-bearing ajax calls', 
 		->and($auth)->not->toContain('$result[\'secret\']');
 });
 
-test('remote agent authorization handles fcrdns failures gracefully', function () use ($root) {
+test('remote agent authorization fails closed on fcrdns mismatch', function () use ($root) {
 	$remote_agent = file_get_contents($root . '/remote_agent.php');
 
-	expect($remote_agent)->toContain('Hostname checks will be ignored for this request.')
-		->and($remote_agent)->toContain('$client_name = $client_addr;')
-		->and($remote_agent)->not->toMatch('/if\s*\(!\$forward_match\)\s*\{[^}]*return\s*false;/');
+	// a PTR that exists but does not forward-confirm must reject, never fall back
+	// to source-IP matching (get_client_addr honors X-Forwarded-For under proxy_headers).
+	expect($remote_agent)->toContain('but forward lookup does not match. Rejecting.')
+		->and($remote_agent)->toContain('remote_agent_fcrdns_confirmed($client_addr, $forward_records)')
+		->and($remote_agent)->not->toContain('Hostname checks will be ignored for this request.')
+		->and($remote_agent)->not->toContain('$client_name = $client_addr;');
 });

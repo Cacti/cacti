@@ -116,7 +116,6 @@ test('auth subsystem regression coverage spans cookie login, 2fa, reset tokens, 
 		->and($files['include/auth.php'])->toContain('if (empty($_SESSION[SESS_USER_2FA])')
 		->and($files['auth_2fa.php'])->toContain("read_config_option('secpass_2fatime')")
 		->and($files['auth_resetpassword.php'])->toContain('AND expiry > NOW()')
-		->and($files['auth_resetpassword.php'])->toContain('AND password_change = "on"')
 		->and($files['lib/functions.php'])->toContain("'cacti_remembers'")
 		->and($files['auth_profile.php'])->toContain('auth_profile_require_post();')
 		->and($files['auth_profile.php'])->toContain('__csrf_magic: csrfMagicToken')
