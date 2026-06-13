@@ -937,7 +937,8 @@ header_redirect	./settings.php:303			header('Location: settings.php?tab=' . get_
 header_redirect	./sites.php:266			header('Location: sites.php?header=false&action=edit&id=' . (empty($site_id) ? get_nfilter_request_var('id') : $site_id));
 header_redirect	./sites.php:347			header('Location: sites.php?header=false');
 header_redirect	./sites.php:397			header('Location: sites.php?header=false');
-header_redirect	./support.php:64		header('Location: support.php?tab=summary');
+header_redirect	./support.php:51			header('Location: support.php?tab=summary');
+header_redirect	./support.php:73		header('Location: support.php?tab=summary');
 header_redirect	./templates_export.php:72					header('Location: templates_export.php');
 header_redirect	./templates_import.php:122				header('Location: templates_import.php');
 header_redirect	./templates_import.php:71				header('Location: templates_import.php'); exit;
