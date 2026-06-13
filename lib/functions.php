@@ -27,6 +27,7 @@ use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Transport\Smtp\Auth\XOAuth2Authenticator;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
+use Symfony\Component\Mailer\Transport\Smtp\Stream\SocketStream;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 
@@ -5687,7 +5688,11 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		$tls       = ($secure == 'ssl') ? true : (($secure == 'tls') ? null : false);
 
 		$transport = new EsmtpTransport($smtp_host, $smtp_port, $tls);
-		$transport->getStream()->setTimeout((float) $timeout);
+		$stream    = $transport->getStream();
+
+		if ($stream instanceof SocketStream) {
+			$stream->setTimeout((float) $timeout);
+		}
 
 		if (read_config_option('settings_smtp_username') != '') {
 			$transport->setUsername(read_config_option('settings_smtp_username'));
@@ -5741,7 +5746,12 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 				null,
 				[new XOAuth2Authenticator()]
 			);
-			$transport->getStream()->setTimeout((float) $timeout);
+			$stream = $transport->getStream();
+
+			if ($stream instanceof SocketStream) {
+				$stream->setTimeout((float) $timeout);
+			}
+
 			$transport->setUsername($email);
 			$transport->setPassword($accessToken->getToken());
 		} else {
@@ -6197,7 +6207,11 @@ function ping_mail_server(string $host, int $port, string $user, string $passwor
 	try {
 		$tls       = ($secure == 'ssl') ? true : (($secure == 'tls') ? null : false);
 		$transport = new EsmtpTransport($host, $port, $tls);
-		$transport->getStream()->setTimeout((float) $timeout);
+		$stream    = $transport->getStream();
+
+		if ($stream instanceof SocketStream) {
+			$stream->setTimeout((float) $timeout);
+		}
 
 		if ($user != '') {
 			$transport->setUsername($user);
