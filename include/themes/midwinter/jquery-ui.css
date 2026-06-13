@@ -695,10 +695,27 @@ button.ui-button::-moz-focus-inner {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+button.ui-multiselect,
 .ui-selectmenu-button.ui-button {
-	text-align: left;
 	white-space: nowrap;
-	width: 14em;
+	width: 100% !important;
+	max-width: 25rem !important;
+	border-radius: 4px;
+	display: inline-flex;
+	flex-direction: row-reverse;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.4rem 0.5em !important;
+
+	&:active,
+	&:focus-within,
+	&:focus-visible {
+		outline: none !important;
+		box-shadow: none !important;
+		background: var(--background-content);
+		border: 1px solid var(--border-color-highlight);
+		-webkit-tap-highlight-color: 1px solid var(--border-color-highlight);
+	}
 }
 .ui-selectmenu-icon.ui-icon {
 	float: right;
