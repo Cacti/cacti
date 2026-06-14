@@ -901,14 +901,14 @@ function show_cacti_poller() : void {
 
 	form_end_row();
 
-	$problematic = db_fetch_assoc('SELECT h.id, h.description, h.failed_polls/h.total_polls AS ratio
+	$problematic = db_fetch_assoc("SELECT h.id, h.description, h.failed_polls/h.total_polls AS ratio
 		FROM host h
 		LEFT JOIN sites s
 		ON h.site_id = s.id
-		WHERE IFNULL(h.disabled,"") != "on"
-		AND IFNULL(s.disabled,"") != "on"
+		WHERE IFNULL(h.disabled, '') != 'on'
+		$sql_where
 		ORDER BY ratio DESC
-		LIMIT 20');
+		LIMIT 20");
 
 	html_section_header(__('Worst 20 failed/total polls ratio'), 2);
 
