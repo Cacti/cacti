@@ -60,6 +60,8 @@ global $boost_debug, $boost_log, $cacti_log;
 // these may be dropped at the end; tables from a later rotation or an older
 // crashed run can still hold unprocessed rows.
 global $boost_run_arch_tables;
+
+/** @var array<int, string> $boost_run_arch_tables Populated by boost_prepare_process_table() through the global. */
 $boost_run_arch_tables = [];
 
 if (cacti_sizeof($parms)) {
