@@ -387,7 +387,7 @@ function show_database_processes() : void {
 		$sql_params);
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (max(1, (int) get_request_var('page')) - 1)) . ',' . $rows;
 	$info_len  = get_request_var('length');
 
 	$version   = db_get_global_variable('innodb_version');
@@ -730,7 +730,7 @@ function show_cacti_processes() : void {
 		$sql_params);
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (max(1, (int) get_request_var('page')) - 1)) . ',' . $rows;
 
 	$processes = db_fetch_assoc_prepared("SELECT *
 		FROM ($sql_inner) AS rs
