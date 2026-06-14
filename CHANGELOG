@@ -3,7 +3,6 @@ Cacti CHANGELOG
 1.2.31
 
 -security#GHSA-6RVG-2VM8-5WRF: CVE-2026-22802 Authentication Bypass leads to information disclosure [fix: #6579, eff2d086c6]
--security#GHSA-9wvp-cfx6-hj7p: CVE-2026-24482 1st argument to preg_replace is not sanitized and given from user_inputs [status: affects <= 1.2.8; no code change for supported versions]
 -security#GHSA-j3p9-q28q-8j33: CVE-2026-24483 Unsafe serialization usage in the maint plugin on user supplied POST data [status: maint plugin only; no cacti core code change]
 -security#GHSA-23g4-vf2j-94w4: CVE-2026-39894 RRDtool metric shift via LC_NUMERIC locale comma decimal formatting
 -security#GHSA-wpjq-m269-mghj: CVE-2026-39895 Second-order RCE via unescaped log path in exec_background shell redirection [fix: #7016, 8ae654c3ab]
