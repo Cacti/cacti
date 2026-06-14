@@ -1092,7 +1092,7 @@ function show_tech_summary() : void {
 
 	if ($storage_location == 0) {
 		if ((file_exists(read_config_option('path_rrdtool'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_rrdtool'))))) {
-			cacti_exec(read_config_option('path_rrdtool'), array(), $out_array);
+			exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
 		}
 	} else {
 		$rrdtool_pipe = rrd_init();
@@ -1110,9 +1110,7 @@ function show_tech_summary() : void {
 
 	// Get SNMP cli version
 	if ((file_exists(read_config_option('path_snmpget'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_snmpget'))))) {
-		$out = array();
-		cacti_exec(read_config_option('path_snmpget'), array('-V'), $out);
-		$snmp_version = html_escape(implode("\n", $out));
+		$snmp_version = html_escape(shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1'));
 	} else {
 		$snmp_version = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . '</span>';
 	}
@@ -1135,7 +1133,7 @@ function show_tech_summary() : void {
 
 	if ((file_exists(read_config_option('path_spine'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_spine'))))) {
 		$out_array = array();
-		cacti_exec(read_config_option('path_spine'), array('--version'), $out_array);
+		exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
 
 		if (cacti_sizeof($out_array) > 0) {
 			$spine_version = $out_array[0];
