@@ -98,6 +98,9 @@ cmd_exec	./snmpagent_mibcache.php:52			exec($php . ' ' . $extra_args . ' > /dev/
 cmd_exec	./snmpagent_persist.php:82		pclose(popen('start "CactiSNMPCache" /I /B ' . $php . ' ' . $extra_args, 'r'));
 cmd_exec	./snmpagent_persist.php:84		exec('ps -ef | grep -v grep | grep -v "sh -c" | grep snmpagent_mibcache.php', $output);
 cmd_exec	./snmpagent_persist.php:86			exec($php . ' ' . $extra_args . ' > /dev/null &');
+cmd_exec	./support.php:1095				exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
+cmd_exec	./support.php:1113			$snmp_version = html_escape(shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1'));
+cmd_exec	./support.php:1136			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
 cmd_exec	./utilities.php:219					exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
 cmd_exec	./utilities.php:237				$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
 cmd_exec	./utilities.php:257				exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
