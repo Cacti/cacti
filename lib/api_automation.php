@@ -176,10 +176,12 @@ function display_matching_hosts(array $rule, int $rule_type, string $url) : void
 		'host_id', 'data_sources'
 	);
 
-	$total_rows = cacti_sizeof(db_fetch_assoc($details['rows_query'], false));
-	$sortby     = $details['sortby'];
+	$total_rows     = cacti_sizeof(db_fetch_assoc($details['rows_query'], false));
+	$sort_column    = api_automation_column_exists(grv('sort_column'), ['host', 'graph_local', 'sites', 'graph_templates', 'graph_templates_graph', 'host_template']) ? grv('sort_column') : 'description';
+	$sort_direction = in_array(strtoupper((string) grv('sort_direction')), ['ASC', 'DESC'], true) ? strtoupper((string) grv('sort_direction')) : 'ASC';
+	$sortby         = str_ends_with($sort_column, 'hostname') ? 'INET_ATON(' . $sort_column . ')' : $sort_column;
 	$sql_query  = $details['rows_query'] .
-		' ORDER BY ' . $sortby . ' ' . grv('sort_direction') .
+		' ORDER BY ' . $sortby . ' ' . $sort_direction .
 		' LIMIT ' . ($details['rows'] * (grv('page') - 1)) . ',' . $details['rows'];
 
 	$hosts = db_fetch_assoc($sql_query, false);
@@ -314,7 +316,7 @@ function automation_get_matching_device_sql(array &$rule, int $rule_type) : arra
 	} elseif (grv('host_template_id') == '0') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'h.host_template_id=0';
 	} elseif (!ierv('host_template_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'h.host_template_id=' . grv('host_template_id');
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'h.host_template_id=' . (int) grv('host_template_id');
 	}
 
 	// build magic query, for matching hosts JOIN tables host and host_template
@@ -1175,7 +1177,7 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
 	} elseif (grv('host_template_id') == '0') {
 		$sql_where .= ' AND h.host_template_id=0';
 	} elseif (!ierv('host_template_id')) {
-		$sql_where .= ' AND h.host_template_id=' . grv('host_template_id');
+		$sql_where .= ' AND h.host_template_id=' . (int) grv('host_template_id');
 	}
 
 	// get the WHERE clause for matching hosts
@@ -1206,14 +1208,12 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
 
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-	$sortby = grv('sort_column');
-
-	if ($sortby == 'h.hostname') {
-		$sortby = 'INET_ATON(h.hostname)';
-	}
+	$sort_column    = api_automation_column_exists(grv('sort_column'), ['host', 'graph_local', 'sites', 'graph_templates', 'graph_templates_graph', 'host_template']) ? grv('sort_column') : 'description';
+	$sort_direction = in_array(strtoupper((string) grv('sort_direction')), ['ASC', 'DESC'], true) ? strtoupper((string) grv('sort_direction')) : 'ASC';
+	$sortby         = str_ends_with($sort_column, 'hostname') ? 'INET_ATON(' . $sort_column . ')' : $sort_column;
 
 	$sql_query = "$rows_query ORDER BY $sortby " .
-		grv('sort_direction') . ' LIMIT ' .
+		$sort_direction . ' LIMIT ' .
 		($rows * (grv('page') - 1)) . ',' . $rows;
 
 	$templates = db_fetch_assoc($sql_query, false);
