@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.x
+-issue: #7212: Address a few small memory leaks in realtime graphing
+
 1.2.31
 
 -security#GHSA-6RVG-2VM8-5WRF: CVE-2026-22802 Authentication Bypass leads to information disclosure [fix: #6579, eff2d086c6]
