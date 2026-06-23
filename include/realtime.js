@@ -325,6 +325,10 @@ function realtimeGrapher() {
 }
 
 function destroy(obj) {
+	if (obj == null) {
+		return;
+	}
+
 	for (var prop in obj){
 		var property = obj[prop];
 
