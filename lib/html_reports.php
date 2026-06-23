@@ -358,7 +358,16 @@ function reports_form_save() : void {
 		$save['tree_id']           = (isrv('tree_id') ? form_input_validate(gnrv('tree_id'), 'tree_id', '^[-0-9]+$', true, 3) : 0);
 		$save['branch_id']         = (isrv('branch_id') ? form_input_validate(gnrv('branch_id'), 'branch_id', '^[-0-9]+$', true, 3) : 0);
 		$save['tree_cascade']      = (isrv('tree_cascade') ? 'on' : '');
-		$save['graph_name_regexp'] = gnrv('graph_name_regexp');
+		$save['graph_name_regexp'] = form_input_validate(gnrv('graph_name_regexp'), 'graph_name_regexp', '', true, 3);
+
+		if ($save['graph_name_regexp'] != '') {
+			$regex_valid = validate_is_regex($save['graph_name_regexp']);
+
+			if ($regex_valid !== true) {
+				$_SESSION[SESS_ERROR_FIELDS]['graph_name_regexp'] = 3;
+				raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', htmle($save['graph_name_regexp']), htmle($regex_valid)), MESSAGE_LEVEL_ERROR);
+			}
+		}
 		$save['site_id']           = (isrv('site_id') ? form_input_validate(gnrv('site_id'), 'site_id', '^[-0-9]+$', true, 3) : 0);
 		$save['host_template_id']  = (isrv('host_template_id') ? form_input_validate(gnrv('host_template_id'), 'host_template_id', '^[-0-9]+$', true, 3) : 0);
 		$save['host_id']           = (isrv('host_id') ? form_input_validate(gnrv('host_id'), 'host_id', '^[-0-9]+$', true, 3) : 0);
