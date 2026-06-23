@@ -180,7 +180,7 @@ function display_matching_hosts(array $rule, int $rule_type, string $url) : void
 	$sort_column    = api_automation_column_exists(grv('sort_column'), ['host', 'graph_local', 'sites', 'graph_templates', 'graph_templates_graph', 'host_template']) ? grv('sort_column') : 'description';
 	$sort_direction = in_array(strtoupper((string) grv('sort_direction')), ['ASC', 'DESC'], true) ? strtoupper((string) grv('sort_direction')) : 'ASC';
 	$sortby         = str_ends_with($sort_column, 'hostname') ? 'INET_ATON(' . $sort_column . ')' : $sort_column;
-	$sql_query  = $details['rows_query'] .
+	$sql_query      = $details['rows_query'] .
 		' ORDER BY ' . $sortby . ' ' . $sort_direction .
 		' LIMIT ' . ($details['rows'] * (grv('page') - 1)) . ',' . $details['rows'];
 
