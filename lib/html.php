@@ -2433,7 +2433,7 @@ function html_transform_graph_template_ids(mixed $ids) : string {
 		if (is_numeric($id)) {
 			$return_ids[] = $id;
 		} elseif (str_contains($id, 'cg_')) {
-			$new_id       = str_replace('cg_', '', $id);
+			$new_id       = (int) str_replace('cg_', '', $id);
 			$return_ids[] = $new_id;
 		} else {
 			$id = str_replace('dq_', '', $id);
