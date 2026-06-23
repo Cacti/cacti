@@ -190,8 +190,10 @@ jobs:
         cp -p ${{ github.workspace }}/plugins/syslog/config.php.dist ${{ github.workspace }}/plugins/syslog/config.php
         sed -i 's/\/\/\$/\$/g' ${{ github.workspace }}/plugins/syslog/config.php
 
-    - name: Run apt-get update
-      run: sudo apt-get -y update
+    - name: Add ondrej PHP PPA and apt-get update
+      run: |
+        sudo add-apt-repository -y ppa:ondrej/php
+        sudo apt-get -y update
 
     - name: Install Apache and Tools
       run: sudo apt-get install apache2 snmp snmpd rrdtool fping libapache2-mod-php${{ matrix.php }}
