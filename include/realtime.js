@@ -153,6 +153,7 @@ function setRealtimeWindowSize() {
 
 function countRealtimeGraphs() {
 	var graphs = 0;
+	var key;
 
 	for (key in realtimeArray) {
 		if (realtimeArray[key] == true) {
@@ -165,6 +166,7 @@ function countRealtimeGraphs() {
 
 function stopRealtime() {
 	var graph;
+	var key;
 
 	for (key in realtimeArray) {
 		var graph_id = key;
