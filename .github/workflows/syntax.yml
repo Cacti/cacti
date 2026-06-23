@@ -40,7 +40,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-22.04]
         php: ${{ fromJSON((github.base_ref == '1.2.x' || github.ref_name == '1.2.x') && '["8.2","8.3","8.4"]' || '["8.2","8.3","8.4"]') }}
         experimental: [false]
         
@@ -145,7 +145,7 @@ jobs:
         sudo apt-get install \
         -o Acquire::http::Timeout="10" \
         -o Acquire::https::Timeout="10" \
-        -o Acquire::Retries="30" apache2 snmp snmpd rrdtool libapache2-mod-php${{ matrix.php }}
+        -o Acquire::Retries="30" apache2 snmp snmpd rrdtool libapache2-mod-php
 
     - name: Start SNMPD Agent and Test Agent
       run: |
