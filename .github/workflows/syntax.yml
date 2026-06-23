@@ -194,7 +194,7 @@ jobs:
       run: sudo apt-get -y update
 
     - name: Install Apache and Tools
-      run: sudo apt-get install apache2 snmp snmpd rrdtool fping libapache2-mod-php${{ matrix.php }}
+      run: sudo apt-get install apache2 snmp snmpd rrdtool fping libapache2-mod-php
 
     - name: Start SNMPD Agent and Test Agent
       run: |
