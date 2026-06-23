@@ -298,7 +298,7 @@ function profile_import_execute(mixed $json_data) : array {
 			// next do the removal of non-found cfs
 			db_execute_prepared('DELETE FROM data_source_profiles_cf
 				WHERE data_source_profile_id = ?
-				AND consolidation_function_id NOT IN (' . implode(',', array_values($data['cfs'])) . ')',
+				AND consolidation_function_id NOT IN (' . implode(',', array_map('intval', array_values($data['cfs']))) . ')',
 				[$data_source_profile_id]);
 
 			/**
@@ -604,7 +604,7 @@ function form_save() : void {
 
 						db_execute_prepared('DELETE FROM data_source_profiles_cf
 							WHERE data_source_profile_id = ?
-							AND consolidation_function_id NOT IN (' . implode(',', $cfs) . ')', [$profile_id]);
+							AND consolidation_function_id NOT IN (' . implode(',', array_map('intval', $cfs)) . ')', [$profile_id]);
 					}
 
 					// Validate consolidation functions
