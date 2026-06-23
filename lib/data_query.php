@@ -2588,7 +2588,7 @@ function get_ordered_index_type_list(int $host_id, int $data_query_id) : array {
 							continue;
 						}
 
-						if ($must_be_alpha && is_numeric($value)) {
+						if ($must_be_alpha && is_numeric($value)) { // @phpstan-ignore-line
 							if (read_config_option('data_source_trace') == 'on') {
 								cacti_log("Field Name '$field_name' found not suitable.  Must be alphabetic and alphabetic data found during Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
 							}
