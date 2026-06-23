@@ -117,21 +117,23 @@ function api_device_purge_from_remote(array|int $device_ids, int $poller_id = 0)
 	if ($poller_id > 1) {
 		if (remote_poller_up($poller_id)) {
 			if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-				db_execute('DELETE FROM host             WHERE      id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM host_graph       WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM host_snmp_query  WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM host_snmp_cache  WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM host_value_cache WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM poller_item      WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM poller_reindex   WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM graph_tree_items WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM reports_items    WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+				$int_device_ids = array_map('intval', $device_ids);
+
+				db_execute('DELETE FROM host             WHERE      id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM host_graph       WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM host_snmp_query  WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM host_snmp_cache  WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM host_value_cache WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM poller_item      WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM poller_reindex   WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM graph_tree_items WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM reports_items    WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
 
 				db_execute('DELETE FROM poller_command
-					WHERE SUBSTRING_INDEX(command, ":", 1) IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+					WHERE SUBSTRING_INDEX(command, ":", 1) IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
 
-				db_execute('DELETE FROM data_local       WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM graph_local      WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM data_local       WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM graph_local      WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
 			} else {
 				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 			}
@@ -207,26 +209,28 @@ function api_device_remove_multi(array $device_ids, int $delete_type = 2) : void
 		$data_sources = [];
 		$graphs       = [];
 
+		$int_device_ids = array_map('intval', $device_ids);
+
 		$data_sources = array_rekey(
 			db_fetch_assoc('SELECT id
 				FROM data_local
-				WHERE host_id IN (' . implode(', ', $device_ids) . ')'),
+				WHERE host_id IN (' . implode(', ', $int_device_ids) . ')'),
 			'id', 'id'
 		);
 
 		$graphs = array_rekey(
 			db_fetch_assoc('SELECT id
 				FROM graph_local
-				WHERE host_id IN (' . implode(', ', $device_ids) . ')'),
+				WHERE host_id IN (' . implode(', ', $int_device_ids) . ')'),
 			'id', 'id'
 		);
 
 		// build the list
 		foreach ($device_ids as $device_id) {
 			if ($i == 0) {
-				$devices_to_delete .= $device_id;
+				$devices_to_delete .= intval($device_id);
 			} else {
-				$devices_to_delete .= ', ' . $device_id;
+				$devices_to_delete .= ', ' . intval($device_id);
 			}
 
 			// poller commands go one at a time due to trashy logic
