@@ -2431,17 +2431,26 @@ function html_transform_graph_template_ids(mixed $ids) : string {
 
 	foreach ($ids as $id) {
 		if (is_numeric($id)) {
-			$return_ids[] = $id;
+			$return_ids[] = intval($id);
 		} elseif (str_contains($id, 'cg_')) {
-			$new_id       = str_replace('cg_', '', $id);
-			$return_ids[] = $new_id;
+			$cg_id = str_replace('cg_', '', $id);
+
+			// non-numeric remainder would coerce to 0 (not templated); skip it instead
+			if (is_numeric($cg_id)) {
+				$return_ids[] = intval($cg_id);
+			}
 		} else {
 			$id = str_replace('dq_', '', $id);
 
-			$return_ids[] = db_fetch_cell_prepared('SELECT graph_template_id
+			$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
 				FROM snmp_query_graph
 				WHERE id = ?',
 				[$id]);
+
+			// a missing row returns false; skip it so id 0 (not templated) is not injected
+			if (is_numeric($graph_template_id)) {
+				$return_ids[] = intval($graph_template_id);
+			}
 		}
 	}
 

@@ -1153,7 +1153,6 @@ function validate_store_request_vars(array $filters, string $sess_prefix = '') :
 					if (is_base64_encoded($_REQUEST[$variable])) {
 						$_REQUEST[$variable] = mb_convert_encoding(base64_decode($_REQUEST[$variable], true), 'UTF-8');
 					}
-
 					$valid = validate_is_regex($_REQUEST[$variable]);
 
 					if ($valid === true) {
@@ -1202,12 +1201,28 @@ function validate_store_request_vars(array $filters, string $sess_prefix = '') :
 				} elseif (!isset($options['options'])) {
 					$value = filter_var($_REQUEST[$variable], $options['filter']);
 				} else {
-					$value = filter_var($_REQUEST[$variable], $options['filter'], $options['options']);
+					// Handle FILTER_VALIDATE_REGEXP specially to ensure proper delimiters
+					if ($options['filter'] == FILTER_VALIDATE_REGEXP && isset($options['options']['regexp'])) {
+						$regex = $options['options']['regexp'];
+
+						// Only add delimiters if they're not already present
+						if (!preg_match('/^\/.*\/[imsuxADJUX]*$/', $regex)) {
+							$options['options']['regexp'] = '/' . $regex . '/';
+						}
+					}
+
+					// Special handling for graph_template_id to allow -1
+					if ($variable === 'graph_template_id' && get_nfilter_request_var($variable) == '-1') {
+						$value = '-1';
+					} else {
+						$value = filter_var($_REQUEST[$variable], $options['filter'], $options['options']);
+					}
 				}
 
 				if ($value === false) {
 					if ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
-						raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', htmle(get_nfilter_request_var($variable)), htmle($custom_error)), MESSAGE_LEVEL_ERROR);
+						raise_message('custom', __('The regular expression "%s" is not valid. Error is %s',
+							htmle(get_nfilter_request_var($variable)), htmle($custom_error)), MESSAGE_LEVEL_ERROR);
 						set_request_var($variable, '');
 					} else {
 						die_html_input_error($variable, get_nfilter_request_var($variable), htmle($custom_error));
@@ -1291,17 +1306,19 @@ function update_order_string(bool $inplace = false) : void {
 			unset($_SESSION['sort_data'][$page]);
 			unset($_SESSION['sort_string'][$page]);
 
-			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_request_var('sort_direction');
-
 			$column    = get_request_var('sort_column');
 			$direction = get_request_var('sort_direction');
+			$direction = is_string($direction) ? strtoupper($direction) : 'ASC';
+			$direction = in_array($direction, ['ASC', 'DESC'], true) ? $direction : 'ASC';
+
+			$_SESSION['sort_data'][$page][$column] = $direction;
 
 			if ($column == 'ip' || $column == 'ip_address') {
 				$_SESSION['sort_string'][$page] = 'ORDER BY INET_ATON(' . $column . ') ' . $direction;
 			} elseif ($column == 'hostname' && $natural) {
-				$_SESSION['sort_string'][$page] = 'ORDER BY NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ') ' . get_request_var('sort_direction');
+				$_SESSION['sort_string'][$page] = 'ORDER BY NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ') ' . $direction;
 			} else {
-				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
+				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . $direction;
 			}
 		} elseif (isset_request_var('sort_column')) {
 			if (isset_request_var('reset')) {
@@ -1309,7 +1326,11 @@ function update_order_string(bool $inplace = false) : void {
 				unset($_SESSION['sort_string'][$page]);
 			}
 
-			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_nfilter_request_var('sort_direction');
+			$direction = get_nfilter_request_var('sort_direction');
+			$direction = is_string($direction) ? strtoupper($direction) : 'ASC';
+			$direction = in_array($direction, ['ASC', 'DESC'], true) ? $direction : 'ASC';
+
+			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = $direction;
 
 			$_SESSION['sort_string'][$page] = 'ORDER BY ';
 

@@ -54,7 +54,6 @@ $quietMode     = false;
 
 // Migration output files
 $migration_log_file = CACTI_PATH_LOG . '/migration_log_' . date('Y-m-d_H-i-s') . '.txt';
-$migration_csv_file = CACTI_PATH_LOG . '/migration_list_' . date('Y-m-d_H-i-s') . '.csv';
 
 foreach ($parms as $parameter) {
 	if (str_contains($parameter, '=')) {
@@ -380,9 +379,9 @@ function migrate_all_devices(int $source_poller, int $dest_poller, bool $quietMo
 		print "Failed migrations: $error_count device(s)" . PHP_EOL;
 
 		if ($success_count > 0) {
-			global $migration_log_file, $migration_csv_file;
+			global $migration_log_file;
 			print "Migration log written to: $migration_log_file" . PHP_EOL;
-			print "Rollback CSV written to: $migration_csv_file" . PHP_EOL;
+			print "Rollback data recorded in: $migration_log_file" . PHP_EOL;
 		}
 	}
 
@@ -475,9 +474,9 @@ function migrate_from_host_ids(string $host_ids_string, int $source_poller, int 
 		print "Failed migrations: $error_count device(s)" . PHP_EOL;
 
 		if ($success_count > 0) {
-			global $migration_log_file, $migration_csv_file;
+			global $migration_log_file;
 			print "Migration log written to: $migration_log_file" . PHP_EOL;
-			print "Rollback CSV written to: $migration_csv_file" . PHP_EOL;
+			print "Rollback data recorded in: $migration_log_file" . PHP_EOL;
 		}
 	}
 
@@ -522,8 +521,8 @@ function display_help() : void {
 	print '    --version, -v          Display version information' . PHP_EOL . PHP_EOL;
 
 	print 'Output Files:' . PHP_EOL;
-	print '    migration_log.txt      Timestamped log of all migration activities' . PHP_EOL;
-	print '    migration_list.csv     Rollback data with original poller assignments' . PHP_EOL . PHP_EOL;
+	print '    migration_log.txt      Timestamped log of all migration activities,' . PHP_EOL;
+	print '                           including rollback data with original poller assignments' . PHP_EOL . PHP_EOL;
 
 	print 'Examples:' . PHP_EOL;
 	print '    # Migrate all devices from poller 1 to poller 2:' . PHP_EOL;
