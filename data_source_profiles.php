@@ -1386,7 +1386,7 @@ function profile() : void {
 			'display' => __('Data Source Profile Name'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
-			'tip'     => __('The name of this CDEF.')
+			'tip'     => __('The name of this Data Source Profile.')
 		],
 		'nosort00' => [
 			'display' => __('Default'),
