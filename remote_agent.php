@@ -214,6 +214,7 @@ function remote_client_authorized() : bool {
 	if ($client_name === false || $client_name == $client_addr) {
 		cacti_log('NOTE: Unable to resolve hostname from address ' . $client_addr, false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
 		cacti_log("Unauthorized remote agent access attempt from $client_addr", false, 'SECURITY');
+
 		return false;
 	}
 
@@ -221,6 +222,7 @@ function remote_client_authorized() : bool {
 
 	if (!in_array($normalized_client_name, $allowed_hostnames, true)) {
 		cacti_log("Unauthorized remote agent access attempt from $client_name ($client_addr)", false, 'SECURITY');
+
 		return false;
 	}
 
@@ -242,6 +244,7 @@ function remote_client_authorized() : bool {
 	if (!$forward_match) {
 		$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);
 		cacti_log('WARNING: PTR record for ' . $client_addr . ' resolves to ' . $safe_name . ' but forward lookup does not match. Rejecting.', false, 'SECURITY');
+
 		return false;
 	}
 
