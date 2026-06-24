@@ -628,10 +628,17 @@ function host_export() : void {
 		fputcsv($stdout, $columns);
 
 		foreach ($hosts as $h) {
+			// Flatten embedded newlines as the previous export format did, then
+			// prefix any leading character that a spreadsheet would treat as a
+			// formula so device data round-trips as literal text.
 			foreach (array_keys($h) as $hc) {
-				if ($h[$hc] != '' && (str_contains($h[$hc], "\n") || str_contains($h[$hc], "\r"))) {
-					$h[$hc] = str_replace(["\n", "\r"], ' ', $h[$hc]);
+				$v = str_replace(["\n", "\r"], ' ', (string) $h[$hc]);
+
+				if (cacti_csv_needs_formula_guard($v)) {
+					$v = "'" . $v;
 				}
+
+				$h[$hc] = $v;
 			}
 
 			fputcsv($stdout, $h);

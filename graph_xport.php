@@ -128,34 +128,34 @@ if (isrv('format') && gnrv('format') == 'table') {
 
 if (isset($xport_array['meta']['start'])) {
 	if (!$html) {
-		$output  = '"' . __('Title') . '","' . $xport_array['meta']['title_cache'] . '"' . "\n";
-		$output .= '"' . __('Vertical Label') . '","' . $xport_array['meta']['vertical_label'] . '"' . "\n";
+		$output  = cacti_csv_cell(__('Title')) . ',' . cacti_csv_cell($xport_array['meta']['title_cache']) . "\n";
+		$output .= cacti_csv_cell(__('Vertical Label')) . ',' . cacti_csv_cell($xport_array['meta']['vertical_label']) . "\n";
 
-		$output .= '"' . __('Start Date') . '","' . date('Y-m-d H:i:s', $xport_array['meta']['start']) . '"' . "\n";
-		$output .= '"' . __('End Date') . '","' . date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step'] * ($xport_array['meta']['rows'] - 1) : $xport_array['meta']['end']) . '"' . "\n";
-		$output .= '"' . __('Step') . '","' . $xport_array['meta']['step'] . '"' . "\n";
-		$output .= '"' . __('Total Rows') . '","' . $xport_array['meta']['rows'] . '"' . "\n";
-		$output .= '"' . __('Graph ID') . '","' . $xport_array['meta']['local_graph_id'] . '"' . "\n";
-		$output .= '"' . __('Host ID') . '","' . $xport_array['meta']['host_id'] . '"' . "\n";
+		$output .= cacti_csv_cell(__('Start Date')) . ',' . cacti_csv_cell(date('Y-m-d H:i:s', $xport_array['meta']['start'])) . "\n";
+		$output .= cacti_csv_cell(__('End Date')) . ',' . cacti_csv_cell(date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step'] * ($xport_array['meta']['rows'] - 1) : $xport_array['meta']['end'])) . "\n";
+		$output .= cacti_csv_cell(__('Step')) . ',' . cacti_csv_cell($xport_array['meta']['step']) . "\n";
+		$output .= cacti_csv_cell(__('Total Rows')) . ',' . cacti_csv_cell($xport_array['meta']['rows']) . "\n";
+		$output .= cacti_csv_cell(__('Graph ID')) . ',' . cacti_csv_cell($xport_array['meta']['local_graph_id']) . "\n";
+		$output .= cacti_csv_cell(__('Host ID')) . ',' . cacti_csv_cell($xport_array['meta']['host_id']) . "\n";
 
 		if (isset($xport_meta['NthPercentile'])) {
 			foreach ($xport_meta['NthPercentile'] as $item) {
-				$output .= '"' . __('Nth Percentile') . '","' . $item['value'] . '","' . $item['format'] . '"' . "\n";
+				$output .= cacti_csv_cell(__('Nth Percentile')) . ',' . cacti_csv_cell($item['value']) . ',' . cacti_csv_cell($item['format']) . "\n";
 			}
 		}
 
 		if (isset($xport_meta['Summation'])) {
 			foreach ($xport_meta['Summation'] as $item) {
-				$output .= '"' . __('Summation') . '","' . $item['value'] . '","' . $item['format'] . '"' . "\n";
+				$output .= cacti_csv_cell(__('Summation')) . ',' . cacti_csv_cell($item['value']) . ',' . cacti_csv_cell($item['format']) . "\n";
 			}
 		}
 
 		$output .= '""' . "\n";
 
-		$header = '"' . __('Date') . '"';
+		$header = cacti_csv_cell(__('Date'));
 
 		for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
-			$header .= ',"' . $xport_array['meta']['legend']['col' . $i] . '"';
+			$header .= ',' . cacti_csv_cell($xport_array['meta']['legend']['col' . $i]);
 		}
 
 		$output .= $header . "\n";
@@ -164,10 +164,10 @@ if (isset($xport_array['meta']['start'])) {
 			$j = 0;
 
 			foreach ($xport_array['data'] as $row) {
-				$data = '"' . date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j * $xport_array['meta']['step'])) . '"';
+				$data = cacti_csv_cell(date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j * $xport_array['meta']['step'])));
 
 				for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
-					$data .= ',"' . $row['col' . $i] . '"';
+					$data .= ',' . cacti_csv_cell($row['col' . $i]);
 				}
 
 				$output .= $data . "\n";
@@ -288,7 +288,7 @@ if (isset($xport_array['meta']['start'])) {
 			<th class='tableSubHeaderColumn left ui-resizable'>" . __('Date') . '</th>';
 
 		for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
-			print "<th class='{sorter: \"numberFormat\"} tableSubHeaderColumn right ui-resizable'>" . $xport_array['meta']['legend']['col' . $i] . '</th>';
+			print "<th class='{sorter: \"numberFormat\"} tableSubHeaderColumn right ui-resizable'>" . htmle($xport_array['meta']['legend']['col' . $i]) . '</th>';
 		}
 
 		print '</tr></thead>';
@@ -308,7 +308,7 @@ if (isset($xport_array['meta']['start'])) {
 						$row_data = '-';
 
 						if (!is_numeric($row['col' . $i])) {
-							$row_data .= '(unexpected: ' . $row['col' . $i] . ')';
+							$row_data .= '(unexpected: ' . htmle($row['col' . $i]) . ')';
 						}
 					} else {
 						$row_data = trim(number_format_i18n(round($row_data, 5), 4));

@@ -2416,7 +2416,7 @@ function reports_run(int $id) : bool {
 
 	$return_code = 0;
 	$output      = [];
-	$command     = $report['run_command'] . ' --report-id=' . $report['source_id'] . ' --queue-id=' . $id;
+	$command     = cacti_escapeshellcmd($report['run_command']) . ' --report-id=' . $report['source_id'] . ' --queue-id=' . $id;
 	$timeout     = $report['run_timeout'];
 	$source      = cacti_strtoupper($report['source']);
 

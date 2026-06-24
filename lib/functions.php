@@ -2429,6 +2429,13 @@ function strip_alpha(mixed $string) : mixed {
  * @return bool Either true or false
  */
 function is_valid_pathname($path) {
+	/* treat ':' as a boundary as well so the Windows drive-relative form
+	 * "C:..\rra" is rejected; a slash, backslash, drive separator or string
+	 * edge before/after '..' all denote traversal */
+	if (preg_match('/(^|[\/\\\\:])\.\.([\/\\\\:]|$)/', trim($path))) {
+		return false;
+	}
+
 	if (preg_match('/^([a-zA-Z0-9\_\.\-\\\:\/]+)$/', trim($path))) {
 		return true;
 	} else {
@@ -4183,14 +4190,14 @@ function move_item_up(string $table_name, int $current_id, string|array $group_q
  * an array
  *
  * @param string $command_line The command to execute
+ * @param int    $return_code  Receives the command exit code so callers can branch on failure
  *
  * @return array An array containing the command output
  */
-function exec_into_array(string $command_line) : array {
+function exec_into_array(string $command_line, int &$return_code = 0) : array {
 	$out = [];
-	$err = 0;
 
-	exec($command_line, $out, $err);
+	exec($command_line, $out, $return_code);
 
 	return $out;
 }
@@ -5059,6 +5066,52 @@ function debug_log_return(string $type) : string {
 }
 
 /**
+ * cacti_csv_cell - encode a single value for safe inclusion in a CSV file.
+ * Doubles embedded double-quotes (RFC 4180) and prefixes a single quote when
+ * the value opens with a spreadsheet formula trigger (= + - @ and the tab/CR
+ * control characters), so the cell cannot be interpreted as a formula when the
+ * file is opened in Excel or LibreOffice. The result includes the surrounding
+ * double-quotes.
+ *
+ * @param mixed $value The raw cell value
+ *
+ * @return string The quoted, escaped cell ready to concatenate into a CSV row
+ */
+function cacti_csv_cell(mixed $value) : string {
+	$value = (string) $value;
+
+	if (cacti_csv_needs_formula_guard($value)) {
+		$value = "'" . $value;
+	}
+
+	return '"' . str_replace('"', '""', $value) . '"';
+}
+
+/**
+ * cacti_csv_needs_formula_guard - decide whether a CSV cell opens with a
+ * spreadsheet formula trigger and therefore needs a leading single quote.
+ * A value that is a plain number (including a leading + or -) is data, not a
+ * formula, so it is left untouched and exports round-trip as the original
+ * number rather than gaining a stray apostrophe.
+ *
+ * @param string $value The raw cell value
+ *
+ * @return bool True when the cell must be quoted to neutralise a formula
+ */
+function cacti_csv_needs_formula_guard(string $value) : bool {
+	// inspect the first non-blank character so leading spaces or newlines cannot
+	// hide a formula trigger; tab and CR are triggers themselves so not skipped
+	$lead = ltrim($value, " \n");
+
+	if ($lead === '' || strpbrk($lead[0], "=+-@\t\r") === false) {
+		return false;
+	}
+
+	// a numeric value such as -1.234 or +5 is data, not a formula
+	return !is_numeric($lead);
+}
+
+/**
  * sanitize_search_string - cleans up a search string submitted by the user to be passed
  * to the database. NOTE: some of the code for this function came from the phpBB project.
  *
@@ -5124,6 +5177,20 @@ function sanitize_uri(string $uri) : string {
 
 	if (is_urlencoded($uri)) {
 		$uri = urldecode($uri);
+	}
+
+	/* a network-path reference (//host or /\host) would redirect off-site.
+	 * Browsers strip leading C0 controls and whitespace (WHATWG: tab, LF, FF,
+	 * CR and space) before resolving the URL, so "\x0C//evil.com" reaches the
+	 * browser as "//evil.com". Drop those leading bytes ourselves before the
+	 * slash-collapse check, then collapse any leading slash/backslash run to a
+	 * single '/' so the URI stays a local path. */
+	$trimmed = preg_replace('/^[\x00-\x20]+/', '', $uri);
+
+	if (preg_match('/^[\/\\\\]{2,}/', $trimmed)) {
+		$uri = '/' . ltrim($trimmed, '/\\');
+	} else {
+		$uri = $trimmed;
 	}
 
 	if (str_contains($uri, 'graph_view.php')) {
