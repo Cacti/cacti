@@ -2076,6 +2076,43 @@ function array_to_sql_or(array $array, string $sql_column) : mixed {
 }
 
 /**
+ * db_in_clause - build a safe "column IN (...)" predicate from caller-supplied
+ * values. Numeric mode keeps only numeric elements and casts them with
+ * intval(), so injected text such as '1) UNION SELECT' or 'abc' is dropped
+ * rather than coerced to a real id. String mode quotes each element with
+ * db_qstr(). An empty list yields "column IN (NULL)" so the predicate matches
+ * nothing rather than producing invalid SQL.
+ *
+ * @param string $sql_column The column to test
+ * @param mixed  $values     An array, or a comma-separated string, of values
+ * @param bool   $numeric    Treat values as integer ids (default) or strings
+ *
+ * @return string A parenthesised IN() predicate
+ */
+function db_in_clause(string $sql_column, mixed $values, bool $numeric = true) : string {
+	if (!is_array($values)) {
+		$values = ($values === '' || $values === null) ? [] : explode(',', (string) $values);
+	}
+
+	$values = array_filter($values, fn ($v) => $v !== '' && $v !== null);
+
+	if ($numeric) {
+		// drop non-numeric garbage instead of letting intval() coerce it to 0,
+		// which is a meaningful id in the graph_template_id codepaths
+		$values = array_filter(array_map('trim', $values), 'is_numeric');
+		$list   = array_values(array_unique(array_map('intval', $values)));
+	} else {
+		$list = array_map('db_qstr', $values);
+	}
+
+	if (cacti_sizeof($list) == 0) {
+		return '(' . $sql_column . ' IN (NULL))';
+	}
+
+	return '(' . $sql_column . ' IN (' . implode(',', $list) . '))';
+}
+
+/**
  * db_replace - replaces the data contained in a particular row
  *
  * @param string $table_name  The name of the table to make the replacement in
