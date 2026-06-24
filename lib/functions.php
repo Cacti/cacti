@@ -6105,8 +6105,18 @@ function add_email_details(array $emails, bool &$result, callable $addFunc) : st
 
 	foreach ($emails as $e) {
 		if (!empty($e['email'])) {
+			$address = $e['email'];
+
+			/* Sendmail accepts a bare local address (e.g. "root") and appends
+			 * the local host itself. Symfony's Address requires a domain, so
+			 * qualify the address the same way rather than rejecting it. */
+			if (strpos($address, '@') === false) {
+				$host    = gethostname();
+				$address = $address . '@' . ($host !== false ? $host : 'localhost');
+			}
+
 			try {
-				$result = $addFunc($e['email'], $e['name']);
+				$result = $addFunc($address, $e['name']);
 			} catch (RfcComplianceException $ex) {
 				// new Address() rejects malformed recipients; surface it as an error string
 				$result = false;
