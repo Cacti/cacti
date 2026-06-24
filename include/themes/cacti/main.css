@@ -1536,7 +1536,7 @@ th.secondarySort {
 
 .tableHeader th div {
 	display: block;
-	padding-right: 8px;
+	padding-right: 0px;
 	font-size: 11px;
 }
 
