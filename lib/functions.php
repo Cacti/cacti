@@ -5066,6 +5066,23 @@ function debug_log_return(string $type) : string {
 }
 
 /**
+ * Strips any character that cannot safely appear in a SQL identifier.
+ * Allows word characters, dots (table.column), parentheses and INET_ATON-style
+ * wrappers already used by the sort helpers.  Use before concatenating a
+ * user-supplied sort column into an ORDER BY clause.
+ *
+ * @param string $column  Raw sort-column value from user input.
+ * @param string $default Fallback returned when all characters are stripped (default 'id').
+ *
+ * @return string Sanitized column name safe to embed in ORDER BY.
+ */
+function sanitize_sql_column(string $column, string $default = 'id') : string {
+	$result = preg_replace('/[^a-zA-Z0-9_().]/', '', $column) ?? '';
+
+	return $result !== '' ? $result : $default;
+}
+
+/**
  * cacti_csv_cell - encode a single value for safe inclusion in a CSV file.
  * Doubles embedded double-quotes (RFC 4180) and prefixes a single quote when
  * the value opens with a spreadsheet formula trigger (= + - @ and the tab/CR

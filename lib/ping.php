@@ -160,7 +160,7 @@ class Net_Ping {
 			if ($fping != '' && file_exists($fping) && is_executable($fping)) {
 				$using_fping = true;
 
-				if (filter_var($host_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+				if (filter_var($this->host['hostname'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
 					if (file_exists('/usr/sbin/fping6')) {
 						$fping = '/usr/sbin/fping6';
 					} elseif (file_exists('/usr/bin/fping6')) {

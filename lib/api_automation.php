@@ -358,7 +358,7 @@ function automation_get_matching_device_sql(array &$rule, int $rule_type) : arra
 	$rows_query = $sql_query . $sql_where . $sql_filter;
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-	$sortby = grv('sort_column');
+	$sortby = sanitize_sql_column(grv('sort_column'));
 
 	if ($sortby == 'hostname') {
 		$sortby = 'INET_ATON(hostname)';

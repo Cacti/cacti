@@ -2179,7 +2179,7 @@ function reports() : void {
 				FROM plugin_reportit_reports AS report
 				$sql_join
 				$sql_where
-				ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') .
+				ORDER BY " . sanitize_sql_column(grv('sort_column')) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
 				' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 		} elseif (grv('report_type') == 'reports') {
 			$total_rows = db_fetch_cell("SELECT COUNT(report.id)
@@ -2194,7 +2194,7 @@ function reports() : void {
 				FROM reports AS report
 				$sql_join
 				$sql_where
-				ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') .
+				ORDER BY " . sanitize_sql_column(grv('sort_column')) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
 				' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 		} else {
 			$total_rows = db_fetch_cell("SELECT COUNT(report.id)
@@ -2209,7 +2209,7 @@ function reports() : void {
 				FROM plugin_reportit_reports AS report
 				$sql_join
 				$sql_where
-				ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') .
+				ORDER BY " . sanitize_sql_column(grv('sort_column')) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
 				' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 		}
 	} else {
@@ -2225,7 +2225,7 @@ function reports() : void {
 			FROM reports AS report
 			$sql_join
 			$sql_where
-			ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') .
+			ORDER BY " . sanitize_sql_column(grv('sort_column')) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
 			' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 	}
 
