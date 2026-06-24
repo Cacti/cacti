@@ -1815,7 +1815,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 					/* remember the last CF for this data source for use with GPRINT
 					 * if e.g. an AREA/AVERAGE and a LINE/MAX is used
 					 * we will have AVERAGE first and then MAX, depending on GPRINT sequence */
-					$last_graph_cf['data_source_name']['local_data_template_rrd_id'] = $graph_cf;
+					$last_graph_cf[$graph_item['data_source_name']][$graph_item['data_template_rrd_id']] = $graph_cf;
 					// remember this for second foreach loop
 					$graph_items[$key]['cf_reference'] = $graph_cf;
 
@@ -1827,8 +1827,8 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 					 * see 'man rrdgraph_data' for the correct VDEF based notation
 					 * so our task now is to 'guess' the very graph_item, this GPRINT is related to
 					 * and to use that graph_item's CF */
-					if (isset($last_graph_cf['data_source_name']['local_data_template_rrd_id'])) {
-						$graph_cf = $last_graph_cf['data_source_name']['local_data_template_rrd_id'];
+					if (isset($last_graph_cf[$graph_item['data_source_name']][$graph_item['data_template_rrd_id']])) {
+						$graph_cf = $last_graph_cf[$graph_item['data_source_name']][$graph_item['data_template_rrd_id']];
 						// remember this for second foreach loop
 						$graph_items[$key]['cf_reference'] = $graph_cf;
 					} else {
