@@ -132,6 +132,15 @@ function do_rrdcheck(int $thread_id = 1) : void {
 		$process_pipes = rrdcheck_rrdtool_init();
 		$process       = $process_pipes[0];
 		$pipes         = $process_pipes[1];
+
+		// rrdcheck_rrdtool_init() returns [false, false] when RRDtool could not be
+		// spawned; without live pipes the execute path would fwrite() to null and
+		// crash the poller, so bail out of this run gracefully
+		if (!is_resource($process)) {
+			cacti_log('ERROR: rrdcheck unable to obtain RRDtool process, skipping run', false, 'RRDCHECK');
+
+			return;
+		}
 	}
 
 	if (cacti_sizeof($rrdfiles)) {
@@ -797,6 +806,14 @@ function rrdcheck_rrdtool_init() : array {
 	$command = read_config_option('path_rrdtool') . ' - ';
 
 	$process = proc_open($command, $fds, $pipes);
+
+	// proc_open returns false if RRDtool could not be spawned; without a process
+	// the pipes are not populated, so bail out before touching them
+	if (!is_resource($process)) {
+		cacti_log('ERROR: Unable to start RRDtool process for rrdcheck', false, 'RRDCHECK');
+
+		return [false, false];
+	}
 
 	// make stdin/stdout/stderr non-blocking
 	stream_set_blocking($pipes[0], false);

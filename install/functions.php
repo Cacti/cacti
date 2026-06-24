@@ -1393,8 +1393,18 @@ function import_colors() : bool {
 
 	if (is_array($contents) && cacti_count($contents)) {
 		foreach ($contents as $line) {
-			$line    = trim($line);
-			$parts   = explode(',',$line);
+			$line = trim($line);
+
+			if ($line == '') {
+				continue;
+			}
+
+			$parts = str_getcsv($line);
+
+			if (cacti_sizeof($parts) < 3) {
+				continue;
+			}
+
 			$natural = $parts[0];
 			$hex     = $parts[1];
 			$name    = $parts[2];
@@ -1406,9 +1416,9 @@ function import_colors() : bool {
 			$id = db_fetch_cell_prepared('SELECT hex FROM colors WHERE hex = ?', [$hex]);
 
 			if (!empty($id)) {
-				db_execute_prepared('UPDATE colors SET name = ?, read_only = \'on\' WHERE hex = ?', [$name, $hex]);
+				db_execute_prepared('UPDATE colors SET name = ?, read_only = ? WHERE hex = ?', [$name, 'on', $hex]);
 			} else {
-				db_execute_prepared('INSERT IGNORE INTO colors (name, hex, read_only) VALUES (?, ?, \'on\')', [$name, $hex]);
+				db_execute_prepared('INSERT IGNORE INTO colors (name, hex, read_only) VALUES (?, ?, ?)', [$name, $hex, 'on']);
 			}
 		}
 	}

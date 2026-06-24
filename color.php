@@ -634,10 +634,10 @@ function color_export() : void {
 		header('Content-type: application/csv');
 		header('Content-Disposition: attachment; filename=colors.csv');
 
-		print '"name","hex"' . "\n";
+		print cacti_csv_cell('name') . ',' . cacti_csv_cell('hex') . "\n";
 
 		foreach ($colors as $color) {
-			print '"' . $color['name'] . '","' . $color['hex'] . '"' . "\n";
+			print cacti_csv_cell($color['name']) . ',' . cacti_csv_cell($color['hex']) . "\n";
 		}
 	}
 }

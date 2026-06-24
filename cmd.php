@@ -349,13 +349,23 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 			' --mode=' . CACTI_CONNECTION;
 
 		$cactiphp = proc_open($command, $cactides, $pipes);
-		$output   = fgets($pipes[1], 1024);
 
-		if (substr_count($output, 'Started') != 0) {
-			cacti_log('PHP Script Server Started Properly', $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_HIGH);
+		// proc_open returns false if the child could not be spawned; fall back to
+		// the non-proc path rather than reading from non-existent pipes
+		if (!is_resource($cactiphp)) {
+			cacti_log('WARNING: Unable to start PHP Script Server, falling back to direct execution', $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_LOW);
+
+			$using_proc_function = false;
+			$cactiphp            = false;
+		} else {
+			$output = fgets($pipes[1], 1024);
+
+			if (substr_count($output, 'Started') != 0) {
+				cacti_log('PHP Script Server Started Properly', $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_HIGH);
+			}
+
+			$using_proc_function = true;
 		}
-
-		$using_proc_function = true;
 	} else {
 		$using_proc_function = false;
 		$cactiphp            = false;

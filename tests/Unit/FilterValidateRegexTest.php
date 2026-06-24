@@ -22,6 +22,8 @@ test('FILTER_VALIDATE_REGEXP requires delimiters and works for true/false parame
 	// The warning text varies across PHP/PCRE builds, so any E_WARNING counts
 	$warning_emitted = false;
 	set_error_handler(function ($errno) use (&$warning_emitted) {
+		// The exact warning text varies across PHP/PCRE builds, so only
+		// check the severity
 		if ($errno === E_WARNING) {
 			$warning_emitted = true;
 
