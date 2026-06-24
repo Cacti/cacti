@@ -4997,10 +4997,8 @@ function is_2fa_enabled(int $user_id) : bool {
  *
  * Given the PTR-resolved name for a client address and the address' forward
  * (A/AAAA) records, return true only when one forward record resolves back to
- * the same address. A PTR that exists but does not forward-confirm is the
- * spoofing/misconfiguration signal: callers MUST reject rather than fall back
- * to source-IP matching, because get_client_addr() can honor an attacker
- * supplied X-Forwarded-For when proxy_headers is enabled.
+ * the same address. This wraps the forward-confirmation loop that previously
+ * lived inline in remote_agent.php so the matching logic has a single home.
  *
  * @param string $client_addr     the source address being authorized
  * @param array  $forward_records dns_get_record() output for the PTR name

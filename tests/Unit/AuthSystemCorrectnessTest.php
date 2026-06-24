@@ -93,8 +93,8 @@ test('2fa profile mutations require post requests and csrf-bearing ajax calls', 
 test('remote agent authorization fails closed on fcrdns mismatch', function () use ($root) {
 	$remote_agent = file_get_contents($root . '/remote_agent.php');
 
-	// a PTR that exists but does not forward-confirm must reject, never fall back
-	// to source-IP matching (get_client_addr honors X-Forwarded-For under proxy_headers).
+	// a PTR that exists but does not forward-confirm must still reject after the
+	// inline loop was extracted into remote_agent_fcrdns_confirmed().
 	expect($remote_agent)->toContain('but forward lookup does not match. Rejecting.')
 		->and($remote_agent)->toContain('remote_agent_fcrdns_confirmed($client_addr, $forward_records)')
 		->and($remote_agent)->not->toContain('Hostname checks will be ignored for this request.')
