@@ -161,8 +161,14 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 				'database_persist'                  => $persist,
 			];
 
-			// test if cacti database is imported from SQL file
-			if (!defined('PHP_TESTING')) {
+			// test if cacti database is imported from SQL file. Skip only under the
+			// combined test bootstrap (PHP_TESTING + CACTI_TEST_BOOTSTRAP=1, local_only);
+			// PHP_TESTING alone must not bypass schema validation in a deployed setup.
+			$skip_schema_check = function_exists('cacti_is_test_bootstrap')
+				? cacti_is_test_bootstrap()
+				: (defined('PHP_TESTING') && getenv('CACTI_TEST_BOOTSTRAP', true) === '1');
+
+			if (!$skip_schema_check) {
 				$table_exists = db_fetch_cell("SELECT count(*) FROM information_schema.tables
 					WHERE table_schema = DATABASE() and TABLE_NAME = 'version'");
 
