@@ -34,7 +34,7 @@ DIFF_FILE    = os.environ.get("PR_DIFF_FILE",    "/tmp/pr.diff")
 GREP_FILE    = os.environ.get("GREP_HITS_FILE",  "/tmp/grep_hits.txt")
 HOTSPOT_FILE = os.environ.get("HOTSPOT_FILE",    "/tmp/hotspot_contents.txt")
 
-MODEL          = "claude-opus-4-6"
+MODEL          = "claude-opus-4-8"
 MAX_TOKENS     = 4096
 MAX_DIFF       = 40_000
 MAX_GREP       = 20_000

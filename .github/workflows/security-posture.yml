@@ -174,4 +174,5 @@ jobs:
           python3 .github/scripts/check-workflow-policy.py \
             --workflows \
             .github/workflows/security-posture.yml \
-            .github/workflows/perf-regression.yml
+            .github/workflows/perf-regression.yml \
+            .github/workflows/security-review.yml
