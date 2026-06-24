@@ -23,13 +23,31 @@ test.describe('JS bundle smoke', () => {
 		await page.addScriptTag({ url: '/cacti/include/js/jquery-ui.js' });
 	});
 
-	test('3 tablesorter plugin loads', async ({ page }) => {
+	test('3 jquery ui controlgroup initializes', async ({ page }) => {
+		const state = await page.evaluate(() => {
+			const $ = window.jQuery;
+			document.body.insertAdjacentHTML('beforeend', '<fieldset id="cg"><input type="checkbox" id="a"><label for="a">A</label><input type="checkbox" id="b"><label for="b">B</label></fieldset>');
+			$('#cg').controlgroup();
+
+			return {
+				version: $.ui.version,
+				controlgroup: typeof $.fn.controlgroup,
+				initialized: $('#cg').hasClass('ui-controlgroup')
+			};
+		});
+
+		expect(state.version).toBe('1.14.2');
+		expect(state.controlgroup).toBe('function');
+		expect(state.initialized).toBeTruthy();
+	});
+
+	test('4 tablesorter plugin loads', async ({ page }) => {
 		await page.addScriptTag({ url: '/cacti/include/js/jquery.tablesorter.js' });
 		const ok = await page.evaluate(() => typeof window.jQuery?.fn?.tablesorter === 'function');
 		expect(ok).toBeTruthy();
 	});
 
-	test('4 tablesorter basic sort init works', async ({ page }) => {
+	test('5 tablesorter basic sort init works', async ({ page }) => {
 		await page.addScriptTag({ url: '/cacti/include/js/jquery.tablesorter.js' });
 		const first = await page.evaluate(() => {
 			const $ = window.jQuery;
@@ -42,14 +60,14 @@ test.describe('JS bundle smoke', () => {
 		expect(first).toBe('1');
 	});
 
-	test('5 tablesorter pager plugin loads', async ({ page }) => {
+	test('6 tablesorter pager plugin loads', async ({ page }) => {
 		await page.addScriptTag({ url: '/cacti/include/js/jquery.tablesorter.js' });
 		await page.addScriptTag({ url: '/cacti/include/js/jquery.tablesorter.pager.js' });
 		const ok = await page.evaluate(() => !!window.jQuery?.tablesorterPager && typeof window.jQuery.tablesorterPager.construct === 'function');
 		expect(ok).toBeTruthy();
 	});
 
-	test('6 tablesorter pager init works', async ({ page }) => {
+	test('7 tablesorter pager init works', async ({ page }) => {
 		await page.addScriptTag({ url: '/cacti/include/js/jquery.tablesorter.js' });
 		await page.addScriptTag({ url: '/cacti/include/js/jquery.tablesorter.pager.js' });
 		const ok = await page.evaluate(() => {
@@ -63,13 +81,13 @@ test.describe('JS bundle smoke', () => {
 		expect(ok).toBeTruthy();
 	});
 
-	test('7 jquery validation plugin loads', async ({ page }) => {
+	test('8 jquery validation plugin loads', async ({ page }) => {
 		await page.addScriptTag({ url: '/cacti/include/js/jquery.validate/jquery.validate.js' });
 		const ok = await page.evaluate(() => typeof window.jQuery?.fn?.validate === 'function');
 		expect(ok).toBeTruthy();
 	});
 
-	test('8 jquery validation behavior works', async ({ page }) => {
+	test('9 jquery validation behavior works', async ({ page }) => {
 		await page.addScriptTag({ url: '/cacti/include/js/jquery.validate/jquery.validate.js' });
 		const values = await page.evaluate(() => {
 			const $ = window.jQuery;
@@ -85,7 +103,7 @@ test.describe('JS bundle smoke', () => {
 		expect(values.full).toBeTruthy();
 	});
 
-	test('9 dropdown plugin initializes', async ({ page }) => {
+	test('10 dropdown plugin initializes', async ({ page }) => {
 		await page.addScriptTag({ url: '/cacti/include/js/jquery.dropdown.js' });
 		const ok = await page.evaluate(() => {
 			const $ = window.jQuery;
@@ -101,7 +119,7 @@ test.describe('JS bundle smoke', () => {
 		expect(ok).toBeTruthy();
 	});
 
-	test('10 touch punch patch loads', async ({ page }) => {
+	test('11 touch punch patch loads', async ({ page }) => {
 		await page.addScriptTag({ url: '/cacti/include/js/jquery.ui.touch.punch.js' });
 		const state = await page.evaluate(() => {
 			const touchCapable = 'ontouchend' in document;
