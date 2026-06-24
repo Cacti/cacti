@@ -105,7 +105,6 @@ test('auth subsystem regression coverage spans cookie login, 2fa, reset tokens, 
 		'auth_profile.php'       => file_get_contents($root . '/auth_profile.php'),
 		'lib/auth.php'           => file_get_contents($root . '/lib/auth.php'),
 		'lib/functions.php'      => file_get_contents($root . '/lib/functions.php'),
-		'lib/auth.php'           => file_get_contents($root . '/lib/auth.php'),
 	];
 
 	foreach ($files as $path => $contents) {
