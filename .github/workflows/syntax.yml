@@ -99,7 +99,7 @@ jobs:
 
     - name: Cache Composer packages
       id: composer-cache
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: include/vendor
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
