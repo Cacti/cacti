@@ -93,7 +93,7 @@ switch (grv('action')) {
 		gfrv('id');
 		gfrv('cfs');
 		gfrv('rows');
-		print get_size(grv('id'), gnrv('type'), grv('cfs'), grv('rows'));
+		print get_size(intval(grv('id')), gnrv('type'), grv('cfs'), intval(grv('rows')));
 
 		break;
 	case 'item_edit':
@@ -1386,7 +1386,7 @@ function profile() : void {
 			'display' => __('Data Source Profile Name'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
-			'tip'     => __('The name of this CDEF.')
+			'tip'     => __('The name of this Data Source Profile.')
 		],
 		'nosort00' => [
 			'display' => __('Default'),
