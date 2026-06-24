@@ -94,7 +94,13 @@ function __rrd_init(bool $output_to_term = true) : mixed {
 		$command = read_config_option('path_rrdtool') . ' - > /dev/null 2>&1';
 	}
 
-	return popen($command, 'w');
+	$process = popen($command, 'w');
+
+	if ($process === false) {
+		cacti_log('ERROR: Unable to launch RRDtool using command: ' . $command, false, 'RRDTOOL');
+	}
+
+	return $process;
 }
 
 function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {

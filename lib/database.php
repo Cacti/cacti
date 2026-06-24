@@ -191,6 +191,9 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 				}
 			}
 
+			$database_details[$object_hash]['database_server']  = $srv;
+			$database_details[$object_hash]['database_version'] = $ver;
+
 			// Get rid of bad modes
 			$modes     = explode(',', db_fetch_cell('SELECT @@sql_mode', '', false));
 			$new_modes = [];
@@ -481,16 +484,61 @@ function db_close(mixed &$db_conn = false) : bool {
 }
 
 /**
+ * db_sql_apply_timeout - wrap a statement so the server enforces a per-statement
+ *   execution limit.  MariaDB (>= 10.1) uses 'SET STATEMENT MAX_STATEMENT_TIME='
+ *   in seconds; MySQL (>= 5.7.8) uses the MAX_EXECUTION_TIME() optimizer hint in
+ *   milliseconds and only on a top-level SELECT.  Anything that cannot honor the
+ *   limit is returned unchanged so the caller can run it untimed.
+ *
+ * @param string $sql     The statement to wrap
+ * @param float  $timeout The limit in seconds, decimals allowed; <= 0 is a no-op
+ * @param string $server  The server family, 'MariaDB' or 'MySQL'
+ * @param string $version The server version, e.g. '10.6.12'
+ *
+ * @return string The wrapped statement, or the original when no limit applies
+ */
+function db_sql_apply_timeout(string $sql, float $timeout, string $server, string $version) : string {
+	if ($timeout <= 0) {
+		return $sql;
+	}
+
+	if (!is_finite($timeout)) {
+		return $sql;
+	}
+
+	if ($server === 'MariaDB') {
+		if (version_compare($version, '10.1', '>=')) {
+			// number_format forces a '.' decimal separator regardless of locale;
+			// trim trailing zeros so a whole number reads '5', not '5.000'.
+			// Clamp to 1ms floor: MAX_STATEMENT_TIME=0 means no limit in MariaDB,
+			// so sub-millisecond values must not round down to zero.
+			$seconds = rtrim(rtrim(number_format(max($timeout, 0.001), 3, '.', ''), '0'), '.');
+
+			return 'SET STATEMENT MAX_STATEMENT_TIME=' . $seconds . ' FOR ' . $sql;
+		}
+	} elseif ($server === 'MySQL') {
+		if (version_compare($version, '5.7.8', '>=') && preg_match('/^\s*SELECT\b/i', $sql) && !preg_match('/^\s*SELECT\s*\/\*\+/i', $sql)) {
+			$ms = max(1, (int) round($timeout * 1000));
+
+			return preg_replace('/^(\s*SELECT)\b/i', '$1 /*+ MAX_EXECUTION_TIME(' . $ms . ') */', $sql, 1);
+		}
+	}
+
+	return $sql;
+}
+
+/**
  * db_execute - run an sql query and do not return any output
  *
  * @param string $sql     The SQL query to execute
  * @param bool   $log     Whether to log error messages, defaults to true
  * @param mixed  $db_conn The connection to use or false for the default
+ * @param float  $timeout Server-side statement timeout in seconds, 0 disables
  *
  * @return mixed '1' for success, false on error
  */
-function db_execute(string $sql, bool $log = true, mixed $db_conn = false) : mixed {
-	return db_execute_prepared($sql, [], $log, $db_conn);
+function db_execute(string $sql, bool $log = true, mixed $db_conn = false, float $timeout = 0) : mixed {
+	return db_execute_prepared($sql, [], $log, $db_conn, 'Exec', true, 'no_return_function', [], $timeout);
 }
 
 /**
@@ -504,10 +552,11 @@ function db_execute(string $sql, bool $log = true, mixed $db_conn = false) : mix
  * @param mixed  $default_value To Be Completed
  * @param string $return_func   To Be Completed
  * @param mixed  $return_params To Be Completed
+ * @param float  $timeout       Server-side statement timeout in seconds, 0 disables
  *
  * @return mixed '1' for success, false for failed, or the return value of the return function
  */
-function db_execute_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, string $execute_name = 'Exec', mixed $default_value = true, string $return_func = 'no_return_function', mixed $return_params = []) : mixed {
+function db_execute_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, string $execute_name = 'Exec', mixed $default_value = true, string $return_func = 'no_return_function', mixed $return_params = [], float $timeout = 0) : mixed {
 	global $database_sessions, $error_logged, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log, $affected_rows, $database_details;
 
 	$database_total_queries++;
@@ -554,6 +603,21 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 	}
 
 	$sql = db_strip_control_chars($sql);
+
+	if ($timeout > 0) {
+		$timeout_hash    = spl_object_hash($db_conn);
+		$timeout_server  = $database_details[$timeout_hash]['database_server'] ?? '';
+		$timeout_version = $database_details[$timeout_hash]['database_version'] ?? '';
+		$timeout_sql     = db_sql_apply_timeout($sql, $timeout, $timeout_server, $timeout_version);
+
+		if ($timeout_sql === $sql) {
+			$timeout_secs = rtrim(rtrim(number_format($timeout, 3, '.', ''), '0'), '.');
+
+			cacti_log(sprintf('DEBUG: SQL statement timeout of %s seconds not applied for %s %s (unsupported engine/version or non-SELECT)', $timeout_secs, $timeout_server, $timeout_version), false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+		} else {
+			$sql = $timeout_sql;
+		}
+	}
 
 	if (!empty($config['DEBUG_SQL_CMD'])) {
 		db_echo_sql('db_' . $execute_name . ': "' . $sql . "\"\n");
@@ -714,17 +778,18 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
  * @param string $col_name Use this column name instead of the first one
  * @param bool   $log      Whether to log error messages, defaults to true
  * @param mixed  $db_conn  The connection to use or false to use the default
+ * @param float  $timeout  Server-side statement timeout in seconds, 0 disables
  *
  * @return mixed The output of the sql query as a single variable
  */
-function db_fetch_cell(string $sql, string $col_name = '', bool $log = true, mixed $db_conn = false) : mixed {
+function db_fetch_cell(string $sql, string $col_name = '', bool $log = true, mixed $db_conn = false, float $timeout = 0) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
 		db_echo_sql('db_fetch_cell($sql, $col_name = \'' . $col_name . '\', $log = true, $db_conn = false)' . "\n");
 	}
 
-	return db_fetch_cell_prepared($sql, [], $col_name, $log, $db_conn);
+	return db_fetch_cell_prepared($sql, [], $col_name, $log, $db_conn, $timeout);
 }
 
 /**
@@ -736,17 +801,18 @@ function db_fetch_cell(string $sql, string $col_name = '', bool $log = true, mix
  * @param string $col_name Use this column name instead of the first one
  * @param bool   $log      Whether to log error messages, defaults to true
  * @param mixed  $db_conn  The connection to use or false to use the default
+ * @param float  $timeout  Server-side statement timeout in seconds, 0 disables
  *
  * @return mixed output of the sql query as a single variable
  */
-function db_fetch_cell_prepared(string $sql, array $params = [], string $col_name = '', bool $log = true, mixed $db_conn = false) : mixed {
+function db_fetch_cell_prepared(string $sql, array $params = [], string $col_name = '', bool $log = true, mixed $db_conn = false, float $timeout = 0) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
 		db_echo_sql('db_fetch_cell_prepared($sql, $params = ' . clean_up_lines(var_export($params, true)) . ', $col_name = \'' . $col_name . '\', $log = true, $db_conn = false)' . "\n");
 	}
 
-	return db_execute_prepared($sql, $params, $log, $db_conn, 'Cell', false, 'db_fetch_cell_return', $col_name);
+	return db_execute_prepared($sql, $params, $log, $db_conn, 'Cell', false, 'db_fetch_cell_return', $col_name, $timeout);
 }
 
 /**
@@ -785,17 +851,18 @@ function db_fetch_cell_return(PDOStatement $query, string $col_name = '') : mixe
  * @param string $sql     The SQL query to execute
  * @param bool   $log     Whether to log error messages, defaults to true
  * @param mixed  $db_conn The connection to use or false to use the default
+ * @param float  $timeout Server-side statement timeout in seconds, 0 disables
  *
  * @return bool|array The first row of the result or false if failed
  */
-function db_fetch_row(string $sql, bool $log = true, mixed $db_conn = false) : bool|array {
+function db_fetch_row(string $sql, bool $log = true, mixed $db_conn = false, float $timeout = 0) : bool|array {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
 		db_echo_sql('db_fetch_row(\'' . clean_up_lines($sql) . '\', $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') . ')' . "\n");
 	}
 
-	return db_fetch_row_prepared($sql, [], $log, $db_conn);
+	return db_fetch_row_prepared($sql, [], $log, $db_conn, $timeout);
 }
 
 /**
@@ -805,17 +872,18 @@ function db_fetch_row(string $sql, bool $log = true, mixed $db_conn = false) : b
  * @param array  $params  An array of values to be prepared into the SQL
  * @param bool   $log     Whether to log error messages, defaults to true
  * @param mixed  $db_conn The connection to use or false to use the default
+ * @param float  $timeout Server-side statement timeout in seconds, 0 disables
  *
  * @return bool|array The first row of the result or false if failed
  */
-function db_fetch_row_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false) : bool|array {
+function db_fetch_row_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, float $timeout = 0) : bool|array {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
 		db_echo_sql('db_fetch_row_prepared(\'' . clean_up_lines($sql) . '\', $params = (\'' . implode('\', \'', $params) . '\'), $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') . ')' . "\n");
 	}
 
-	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', false, 'db_fetch_row_return');
+	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', false, 'db_fetch_row_return', [], $timeout);
 }
 
 /**
@@ -846,17 +914,18 @@ function db_fetch_row_return(PDOStatement $query) : array {
  * @param string $sql     The SQL query to execute
  * @param bool   $log     Whether to log error messages, defaults to true
  * @param mixed  $db_conn The connection to use or false to use the default
+ * @param float  $timeout Server-side statement timeout in seconds, 0 disables
  *
  * @return bool|array The entire result set or false on error
  */
-function db_fetch_assoc(string $sql, bool $log = true, mixed $db_conn = false) : mixed {
+function db_fetch_assoc(string $sql, bool $log = true, mixed $db_conn = false, float $timeout = 0) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
 		db_echo_sql('db_fetch_assoc($sql, $log = true, $db_conn = false)' . "\n");
 	}
 
-	return db_fetch_assoc_prepared($sql, [], $log, $db_conn);
+	return db_fetch_assoc_prepared($sql, [], $log, $db_conn, $timeout);
 }
 
 /**
@@ -866,17 +935,18 @@ function db_fetch_assoc(string $sql, bool $log = true, mixed $db_conn = false) :
  * @param array  $params  An array of values to be prepared into the SQL
  * @param bool   $log     Whether to log error messages, defaults to true
  * @param mixed  $db_conn The connection to use or false to use the default
+ * @param float  $timeout Server-side statement timeout in seconds, 0 disables
  *
  * @return mixed The entire result or false on error
  */
-function db_fetch_assoc_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false) : mixed {
+function db_fetch_assoc_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, float $timeout = 0) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
 		db_echo_sql('db_fetch_assoc_prepared($sql, $params = array(), $log = true, $db_conn = false)' . "\n");
 	}
 
-	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', [], 'db_fetch_assoc_return');
+	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', [], 'db_fetch_assoc_return', [], $timeout);
 }
 
 /**
@@ -2006,6 +2076,43 @@ function array_to_sql_or(array $array, string $sql_column) : mixed {
 }
 
 /**
+ * db_in_clause - build a safe "column IN (...)" predicate from caller-supplied
+ * values. Numeric mode keeps only numeric elements and casts them with
+ * intval(), so injected text such as '1) UNION SELECT' or 'abc' is dropped
+ * rather than coerced to a real id. String mode quotes each element with
+ * db_qstr(). An empty list yields "column IN (NULL)" so the predicate matches
+ * nothing rather than producing invalid SQL.
+ *
+ * @param string $sql_column The column to test
+ * @param mixed  $values     An array, or a comma-separated string, of values
+ * @param bool   $numeric    Treat values as integer ids (default) or strings
+ *
+ * @return string A parenthesised IN() predicate
+ */
+function db_in_clause(string $sql_column, mixed $values, bool $numeric = true) : string {
+	if (!is_array($values)) {
+		$values = ($values === '' || $values === null) ? [] : explode(',', (string) $values);
+	}
+
+	$values = array_filter($values, fn ($v) => $v !== '' && $v !== null);
+
+	if ($numeric) {
+		// drop non-numeric garbage instead of letting intval() coerce it to 0,
+		// which is a meaningful id in the graph_template_id codepaths
+		$values = array_filter(array_map('trim', $values), 'is_numeric');
+		$list   = array_values(array_unique(array_map('intval', $values)));
+	} else {
+		$list = array_map('db_qstr', $values);
+	}
+
+	if (cacti_sizeof($list) == 0) {
+		return '(' . $sql_column . ' IN (NULL))';
+	}
+
+	return '(' . $sql_column . ' IN (' . implode(',', $list) . '))';
+}
+
+/**
  * db_replace - replaces the data contained in a particular row
  *
  * @param string $table_name  The name of the table to make the replacement in
@@ -2218,7 +2325,7 @@ function db_qstr(mixed $s, mixed $db_conn = false) : string {
 		return $db_conn->quote($s);
 	}
 
-	$s = str_replace(['\\', "\0", "'"], ['\\\\', "\\\0", "\\'"], $s);
+	$s = str_replace(['\\', "\0", "\x1a", "'"], ['\\\\', "\\\0", '\\Z', "\\'"], $s);
 
 	return "'" . $s . "'";
 }

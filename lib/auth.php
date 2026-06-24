@@ -291,9 +291,17 @@ function get_basic_auth_username() : string|false {
 
 			if (cacti_sizeof($records)) {
 				foreach ($records as $r) {
+					if (trim($r) === '') {
+						continue;
+					}
+
 					[$basic, $shortform] = str_getcsv($r);
 
-					if (trim($basic ?? '') == $username) {
+					if ($basic === null || trim($basic) === '') {
+						continue;
+					}
+
+					if (trim($basic) == $username) {
 						$username = trim($shortform ?? '');
 						$found    = true;
 
