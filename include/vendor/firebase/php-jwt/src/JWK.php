@@ -31,6 +31,15 @@ class JWK
         // 'P-521' => '1.3.132.0.35', // Len: 132 (not supported)
     ];
 
+    // Known standard curves from the IANA JOSE registry which are not supported
+    private const KNOWN_UNSUPPORTED_EC_CURVES = [
+        'P-521',   // RFC 7518
+        'Ed25519', // RFC 8037
+        'Ed448',   // RFC 8037
+        'X25519',  // RFC 8037
+        'X448'     // RFC 8037
+    ];
+
     // For keys with "kty" equal to "OKP" (Octet Key Pair), the "crv" parameter must contain the key subtype.
     // This library supports the following subtypes:
     private const OKP_SUBTYPES = [
@@ -52,7 +61,7 @@ class JWK
      *
      * @uses parseKey
      */
-    public static function parseKeySet(array $jwks, ?string $defaultAlg = null): array
+    public static function parseKeySet(#[\SensitiveParameter] array $jwks, ?string $defaultAlg = null): array
     {
         $keys = [];
 
@@ -93,7 +102,7 @@ class JWK
      *
      * @uses createPemFromModulusAndExponent
      */
-    public static function parseKey(array $jwk, ?string $defaultAlg = null): ?Key
+    public static function parseKey(#[\SensitiveParameter] array $jwk, ?string $defaultAlg = null): ?Key
     {
         if (empty($jwk)) {
             throw new InvalidArgumentException('JWK must not be empty');
@@ -142,7 +151,10 @@ class JWK
                 }
 
                 if (!isset(self::EC_CURVES[$jwk['crv']])) {
-                    throw new DomainException('Unrecognised or unsupported EC curve');
+                    if (!\in_array($jwk['crv'], self::KNOWN_UNSUPPORTED_EC_CURVES)) {
+                        throw new DomainException('Unrecognised EC curve');
+                    }
+                    return null;
                 }
 
                 if (empty($jwk['x']) || empty($jwk['y'])) {
@@ -240,6 +252,14 @@ class JWK
     ): string {
         $mod = JWT::urlsafeB64Decode($n);
         $exp = JWT::urlsafeB64Decode($e);
+        // Correct encoding for ASN1, as ints are represented as unsigned in jwk
+        // but signed in ASN1. Prepending null byte makes it unsigned.
+        if (\strlen($mod) > 0 && \ord($mod[0]) >= 128) {
+            $mod = \chr(0) . $mod;
+        }
+        if (\strlen($exp) > 0 && \ord($exp[0]) >= 128) {
+            $exp = \chr(0) . $exp;
+        }
 
         $modulus = \pack('Ca*a*', 2, self::encodeLength(\strlen($mod)), $mod);
         $publicExponent = \pack('Ca*a*', 2, self::encodeLength(\strlen($exp)), $exp);

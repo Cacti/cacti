@@ -60,7 +60,7 @@ trait OffersHooks
      */
     public function registerLoopEventHandler(\Closure $callback): MqttClient
     {
-        $this->loopEventHandlers->attach($callback);
+        $this->loopEventHandlers->offsetSet($callback);
 
         /** @var MqttClient $this */
         return $this;
@@ -78,7 +78,7 @@ trait OffersHooks
         if ($callback === null) {
             $this->loopEventHandlers->removeAll($this->loopEventHandlers);
         } else {
-            $this->loopEventHandlers->detach($callback);
+            $this->loopEventHandlers->offsetUnset($callback);
         }
 
         /** @var MqttClient $this */
@@ -126,7 +126,7 @@ trait OffersHooks
      */
     public function registerPublishEventHandler(\Closure $callback): MqttClient
     {
-        $this->publishEventHandlers->attach($callback);
+        $this->publishEventHandlers->offsetSet($callback);
 
         /** @var MqttClient $this */
         return $this;
@@ -144,7 +144,7 @@ trait OffersHooks
         if ($callback === null) {
             $this->publishEventHandlers->removeAll($this->publishEventHandlers);
         } else {
-            $this->publishEventHandlers->detach($callback);
+            $this->publishEventHandlers->offsetUnset($callback);
         }
 
         /** @var MqttClient $this */
@@ -193,7 +193,7 @@ trait OffersHooks
      */
     public function registerMessageReceivedEventHandler(\Closure $callback): MqttClient
     {
-        $this->messageReceivedEventHandlers->attach($callback);
+        $this->messageReceivedEventHandlers->offsetSet($callback);
 
         /** @var MqttClient $this */
         return $this;
@@ -210,7 +210,7 @@ trait OffersHooks
         if ($callback === null) {
             $this->messageReceivedEventHandlers->removeAll($this->messageReceivedEventHandlers);
         } else {
-            $this->messageReceivedEventHandlers->detach($callback);
+            $this->messageReceivedEventHandlers->offsetUnset($callback);
         }
 
         /** @var MqttClient $this */
@@ -260,7 +260,7 @@ trait OffersHooks
      */
     public function registerConnectedEventHandler(\Closure $callback): MqttClient
     {
-        $this->connectedEventHandlers->attach($callback);
+        $this->connectedEventHandlers->offsetSet($callback);
 
         /** @var MqttClient $this */
         return $this;
@@ -277,7 +277,7 @@ trait OffersHooks
         if ($callback === null) {
             $this->connectedEventHandlers->removeAll($this->connectedEventHandlers);
         } else {
-            $this->connectedEventHandlers->detach($callback);
+            $this->connectedEventHandlers->offsetUnset($callback);
         }
 
         /** @var MqttClient $this */
