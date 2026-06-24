@@ -881,9 +881,9 @@ function html_graph_preview_view() : void {
 	if (!ierv('graph_template_id') && grv('graph_template_id') != '-1' && grv('graph_template_id') != '0') {
 		$graph_templates = html_transform_graph_template_ids(grv('graph_template_id'));
 
-		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . $graph_templates . '))';
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' ' . db_in_clause('gl.graph_template_id', $graph_templates);
 	} elseif (grv('graph_template_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . grv('graph_template_id') . '))';
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' ' . db_in_clause('gl.graph_template_id', 0);
 	}
 
 	if (grv('graphs') == '-1') {
@@ -1255,9 +1255,9 @@ function html_graph_list_view() : void {
 	if (!ierv('graph_template_id') && grv('graph_template_id') != '-1' && grv('graph_template_id') != '0') {
 		$graph_templates = html_transform_graph_template_ids(grv('graph_template_id'));
 
-		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . $graph_templates . '))';
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' ' . db_in_clause('gl.graph_template_id', $graph_templates);
 	} elseif (grv('graph_template_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . grv('graph_template_id') . '))';
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' ' . db_in_clause('gl.graph_template_id', 0);
 	}
 
 	$total_rows = 0;

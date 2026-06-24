@@ -1017,7 +1017,7 @@ function create_tree_filter() : array {
 					'method'         => 'drop_multi',
 					'friendly_name'  => __('Template'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)(,(cg_[0-9]+|dq_[0-9]+|-?[0-9]+))*$']],
+					'filter_options' => ['options' => ['regexp' => '/^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)(,(cg_[0-9]+|dq_[0-9]+|-?[0-9]+))*$/']],
 					'default'        => '-1',
 					'dynamic'        => false,
 					'class'          => 'graph-multiselect',
@@ -1435,7 +1435,7 @@ function grow_right_pane_tree(int $tree_id, int $leaf_id, string $host_group_dat
 		if (isrv('graph_template_id') && grv('graph_template_id') != '' && grv('graph_template_id') != -1) {
 			$graph_templates = html_transform_graph_template_ids(grv('graph_template_id'));
 
-			$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . $graph_templates . '))';
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' ' . db_in_clause('gl.graph_template_id', $graph_templates);
 		}
 
 		$graph_list = get_allowed_tree_header_graphs($tree_id, $leaf_id, $sql_where);
@@ -1492,7 +1492,7 @@ function grow_right_pane_tree(int $tree_id, int $leaf_id, string $host_group_dat
 		if (isrv('graph_template_id') && grv('graph_template_id') != '') {
 			$graph_templates = html_transform_graph_template_ids(grv('graph_template_id'));
 
-			$sql_where .= ($sql_where != '' ? ' AND ' : '') . '(gl.graph_template_id IN (' . $graph_template_id . '))';
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . db_in_clause('gl.graph_template_id', $graph_templates);
 		}
 
 		if (read_config_option('dsstats_enable') == 'on' && grv('graph_source') != '' && grv('graph_order') != '') {

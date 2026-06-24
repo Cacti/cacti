@@ -226,6 +226,11 @@ function nth_percentile_fetch_statistics(int $percentile, array &$local_data_ids
 			foreach ($fetch_array[$ldi]['data_source_names'] as $index => $ds_name) {
 				if (isset($fetch_array[$ldi]['values'][$index]) && cacti_sizeof($fetch_array[$ldi]['values'][$index])) {
 					foreach ($fetch_array[$ldi]['values'][$index] as $timestamp => $data) {
+						// rrdtool emits 'U'/NaN for gaps; skip them so they do not poison the sum
+						if (!is_numeric($data) || !is_finite((float) $data)) {
+							continue;
+						}
+
 						if (isset($asum_array[$ds_name]) && isset($asum_array[$ds_name][$timestamp])) {
 							$asum_array[$ds_name][$timestamp] += $data;
 						} else {
@@ -367,7 +372,7 @@ function cacti_stats_calc(array $array, int $ptile = 95) : array {
 	];
 
 	if ($var != '') {
-		$results[$var] = $array[$ptile_index];
+		$results[$var] = $array[$ptile_index] ?? 0;
 	}
 
 	return $results;
