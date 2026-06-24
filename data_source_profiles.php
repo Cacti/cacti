@@ -93,7 +93,7 @@ switch (grv('action')) {
 		gfrv('id');
 		gfrv('cfs');
 		gfrv('rows');
-		print get_size(grv('id'), gnrv('type'), grv('cfs'), grv('rows'));
+		print get_size(intval(grv('id')), gnrv('type'), grv('cfs'), intval(grv('rows')));
 
 		break;
 	case 'item_edit':
