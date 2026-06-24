@@ -25,7 +25,7 @@ jobs:
 
 #    steps:
 #      - name: Checkout
-#        uses: actions/checkout@v4
+#        uses: actions/checkout@v7
 
 #      - name: Install actionlint dependencies
 #        run: |
@@ -50,7 +50,7 @@ jobs:
 #
 #    steps:
 #      - name: Checkout
-#        uses: actions/checkout@v4
+#        uses: actions/checkout@v7
 #
 #      - name: Install shell lint dependencies
 #        run: |
@@ -91,7 +91,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup PHP 8.4 with Xdebug
         uses: shivammathur/setup-php@v2
