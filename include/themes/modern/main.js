@@ -49,11 +49,11 @@ function themeReady() {
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 
 	$('.checkboxgroup').children('br').remove();
-	$('.checkboxgroup').buttonset();
+	$('.checkboxgroup').controlgroup();
 
 	// Turn file buttons into jQueryUI buttons
 	$('.import_label').button();
-	$('.import_button').change(function() {
+	$('.import_button').on('change', function() {
 		text=this.value;
 		setImportFile(text);
 	});
@@ -65,7 +65,7 @@ function themeReady() {
 
 	maxWidth = 480;
 
-	$('#drp_action').change(function() {
+	$('#drp_action').on('change', function() {
 		if ($(this).val() != '0') {
 			$('#submit').button('enable');
 		} else {
@@ -73,7 +73,7 @@ function themeReady() {
 		}
 	});
 
-	$('#graph_type_id').change(function() {
+	$('#graph_type_id').on('change', function() {
 		switch($(this).val()) {
 		case '4':
 		case '5':
@@ -122,7 +122,7 @@ function setMenuVisibility() {
 	});
 
 	// Function to give life to the Navigation pane
-	$('#nav li:has(ul) a.active').unbind().click(function(event) {
+	$('#nav li:has(ul) a.active').off('click').on('click', function(event) {
 		event.preventDefault();
 
 		id = $(this).closest('.menuitem').attr('id');

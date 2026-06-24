@@ -47,7 +47,7 @@ function themeReady() {
 
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 
-	$('.colordropdown').change(function() {
+	$('.colordropdown').on('change', function() {
 		id=$(this).attr('id');
 		color=$('#'+id+' option:selected').attr('data-color');
 		$('<span>', {
@@ -57,11 +57,11 @@ function themeReady() {
 	});
 
 	$('.checkboxgroup').children('br').remove();
-	$('.checkboxgroup').buttonset();
+	$('.checkboxgroup').controlgroup();
 
 	// Turn file buttons into jQueryUI buttons
 	$('.import_label').button();
-	$('.import_button').change(function() {
+	$('.import_button').on('change', function() {
 		text=this.value;
 		setImportFile(text);
 	});
@@ -73,7 +73,7 @@ function themeReady() {
 
 	maxWidth = 300;
 
-	$('#drp_action').change(function() {
+	$('#drp_action').on('change', function() {
 		if ($(this).val() != '0') {
 			$('#submit').button('enable');
 		} else {
@@ -81,7 +81,7 @@ function themeReady() {
 		}
 	});
 
-	$('#graph_type_id').change(function() {
+	$('#graph_type_id').on('change', function() {
 		switch($(this).val()) {
 		case '4':
 		case '5':
@@ -93,8 +93,7 @@ function themeReady() {
 	});
 
 	// Hide the graph icons until you hover
-	$('.graphDrillDown').hover(
-		function() {
+	$('.graphDrillDown').on('mouseenter', function() {
 			element = $(this);
 
 			// hide the previously shown element
@@ -104,8 +103,7 @@ function themeReady() {
 
 			clearTimeout(graphMenuTimer);
 			graphMenuTimer = setTimeout(function() { showGraphMenu(element); }, 400);
-		},
-		function() {
+		}).on('mouseleave', function() {
 			element = $(this);
 			clearTimeout(graphMenuTimer);
 			graphMenuTimer = setTimeout(function() { hideGraphMenu(element); }, 400);
@@ -113,8 +111,7 @@ function themeReady() {
 			if (typeof spikeKillClose == 'function') {
 				spikeKillClose();
 			}
-		}
-	);
+		});
 
 	function showGraphMenu(element) {
 		element.find('.spikekillMenu').menu('disable');
@@ -169,7 +166,7 @@ function setMenuVisibility() {
 	});
 
 	// Function to give life to the Navigation pane
-	$('#nav li:has(ul) a.active').unbind().click(function(event) {
+	$('#nav li:has(ul) a.active').off('click').on('click', function(event) {
 		event.preventDefault();
 
 		id = $(this).closest('.menuitem').attr('id');

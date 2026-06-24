@@ -806,6 +806,57 @@ function get_selected_theme() : string {
 }
 
 /**
+ * Returns a validated theme name for graph rendering.
+ *
+ * @param string $requested Requested theme from input
+ *
+ * @return string
+ */
+function cacti_validate_theme(string $requested) : string {
+	static $valid_themes = null;
+
+	$default = (string) read_config_option('selected_theme');
+
+	if ($default === '') {
+		$default = 'modern';
+	}
+
+	if ($valid_themes === null) {
+		$valid_themes = [];
+		$themes_dir   = CACTI_PATH_INCLUDE . '/themes';
+
+		if (is_dir($themes_dir)) {
+			$entries = scandir($themes_dir);
+
+			if ($entries !== false) {
+				foreach ($entries as $entry) {
+					if ($entry === '.' || $entry === '..') {
+						continue;
+					}
+
+					$full = $themes_dir . '/' . $entry;
+
+					if (is_dir($full) && is_file($full . '/rrdtheme.php')) {
+						$valid_themes[$entry] = true;
+					}
+				}
+			}
+		}
+	}
+
+	$requested = basename($requested);
+	$default   = basename($default);
+
+	if (isset($valid_themes[$requested])) {
+		return $requested;
+	}
+
+	// the configured default can itself be stale or poisoned, so re-validate
+	// it before it reaches an include path; fall back to a theme that ships
+	return isset($valid_themes[$default]) ? $default : 'modern';
+}
+
+/**
  * Returns true if a theme is valid
  *
  * @param mixed $theme
@@ -5015,6 +5066,23 @@ function debug_log_return(string $type) : string {
 }
 
 /**
+ * Strips any character that cannot safely appear in a SQL identifier.
+ * Allows word characters, dots (table.column), parentheses and INET_ATON-style
+ * wrappers already used by the sort helpers.  Use before concatenating a
+ * user-supplied sort column into an ORDER BY clause.
+ *
+ * @param string $column  Raw sort-column value from user input.
+ * @param string $default Fallback returned when all characters are stripped (default 'id').
+ *
+ * @return string Sanitized column name safe to embed in ORDER BY.
+ */
+function sanitize_sql_column(string $column, string $default = 'id') : string {
+	$result = preg_replace('/[^a-zA-Z0-9_().]/', '', $column) ?? '';
+
+	return $result !== '' ? $result : $default;
+}
+
+/**
  * cacti_csv_cell - encode a single value for safe inclusion in a CSV file.
  * Doubles embedded double-quotes (RFC 4180) and prefixes a single quote when
  * the value opens with a spreadsheet formula trigger (= + - @ and the tab/CR
@@ -7175,10 +7243,9 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 		}
 
 		return false;
+	} finally {
+		restore_error_handler();
 	}
-
-	// restore the two original error handlers
-	restore_error_handler();
 
 	return $output;
 }

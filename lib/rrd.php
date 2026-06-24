@@ -108,14 +108,6 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 	$terminator = "_EOT_\r\n";
 	$encryption = true;
 
-	$rrdp_socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-
-	if ($rrdp_socket === false) {
-		cacti_log('CACTI2RRDP ERROR: Unable to create socket to connect to RRDtool Proxy Server', false, $logopt, POLLER_VERBOSITY_LOW);
-
-		return false;
-	}
-
 	$load_balancing = read_config_option('rrdp_load_balancing') == 'on' ? true : false;
 
 	$portp   = intval(read_config_option('rrdp_port'));
@@ -127,26 +119,53 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 		$rrdp_id = random_int(1,2);
 		$server  = ($rrdp_id == 1) ? $servera : $serverb;
 		$port    = ($rrdp_id == 1) ? $portp : $portb;
-
-		$rrdp    = socket_connect($rrdp_socket, $server, $port);
 	} else {
 		$server  = read_config_option('rrdp_server');
 		$port    = intval(read_config_option('rrdp_port'));
 		$rrdp_id = 1;
-
-		$rrdp    = socket_connect($rrdp_socket, $server, $port);
 	}
+
+	// Detect address family based on server address for IPv6 support
+	$socket_family = filter_var(trim($server, '[]'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? AF_INET6 : AF_INET;
+
+	$rrdp_socket = @socket_create($socket_family, SOCK_STREAM, SOL_TCP);
+
+	if ($rrdp_socket === false) {
+		cacti_log('CACTI2RRDP ERROR: Unable to create socket to connect to RRDtool Proxy Server', false, $logopt, POLLER_VERBOSITY_LOW);
+
+		return false;
+	}
+
+	// Strip brackets from IPv6 addresses for socket_connect
+	$connect_server = trim($server, '[]');
+
+	$rrdp = socket_connect($rrdp_socket, $connect_server, $port);
 
 	if ($rrdp === false) {
 		// log entry ...
 		cacti_log('CACTI2RRDP ERROR: Unable to connect to RRDtool Proxy Server #' . $rrdp_id, false, $logopt, POLLER_VERBOSITY_LOW);
 
 		if ($load_balancing) {
-			$rrdp_id = ($rrdp_id % 2) + 1;
+			// Close the failed socket before creating a new one for the backup server
+			@socket_close($rrdp_socket);
+
+			$rrdp_id = ($rrdp_id == 1) ? 2 : 1;
 			$server  = ($rrdp_id == 1) ? $servera : $serverb;
 			$port    = ($rrdp_id == 1) ? $portp : $portb;
 
-			$rrdp    = socket_connect($rrdp_socket, $server, $port);
+			// Re-detect address family for backup server (may differ from primary)
+			$socket_family  = filter_var(trim($server, '[]'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? AF_INET6 : AF_INET;
+			$connect_server = trim($server, '[]');
+
+			$rrdp_socket = @socket_create($socket_family, SOCK_STREAM, SOL_TCP);
+
+			if ($rrdp_socket === false) {
+				cacti_log('CACTI2RRDP ERROR: Unable to create socket to connect to RRDtool Proxy Server #' . $rrdp_id, false, $logopt, POLLER_VERBOSITY_LOW);
+
+				return false;
+			}
+
+			$rrdp = socket_connect($rrdp_socket, $connect_server, $port);
 
 			if ($rrdp === false) {
 				cacti_log('CACTI2RRDP ERROR: Unable to connect to RRDtool Proxy Server #' . $rrdp_id, false, $logopt, POLLER_VERBOSITY_LOW);
@@ -1815,7 +1834,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 					/* remember the last CF for this data source for use with GPRINT
 					 * if e.g. an AREA/AVERAGE and a LINE/MAX is used
 					 * we will have AVERAGE first and then MAX, depending on GPRINT sequence */
-					$last_graph_cf['data_source_name']['local_data_template_rrd_id'] = $graph_cf;
+					$last_graph_cf[$graph_item['data_source_name']][$graph_item['data_template_rrd_id']] = $graph_cf;
 					// remember this for second foreach loop
 					$graph_items[$key]['cf_reference'] = $graph_cf;
 
@@ -1827,8 +1846,8 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 					 * see 'man rrdgraph_data' for the correct VDEF based notation
 					 * so our task now is to 'guess' the very graph_item, this GPRINT is related to
 					 * and to use that graph_item's CF */
-					if (isset($last_graph_cf['data_source_name']['local_data_template_rrd_id'])) {
-						$graph_cf = $last_graph_cf['data_source_name']['local_data_template_rrd_id'];
+					if (isset($last_graph_cf[$graph_item['data_source_name']][$graph_item['data_template_rrd_id']])) {
+						$graph_cf = $last_graph_cf[$graph_item['data_source_name']][$graph_item['data_template_rrd_id']];
 						// remember this for second foreach loop
 						$graph_items[$key]['cf_reference'] = $graph_cf;
 					} else {
@@ -3015,16 +3034,12 @@ function rrdtool_function_theme_font_options(array &$graph_data_array) : string 
 	$themeborder = 'rrdborder';
 
 	if (isset($graph_data_array['graph_theme'])) {
-		$theme = basename($graph_data_array['graph_theme']);
-
-		if ($theme === '' || $theme === '.' || $theme === '..') {
-			$theme = get_selected_theme();
-		}
-
-		$rrdtheme = CACTI_PATH_INCLUDE . '/themes/' . $theme . '/rrdtheme.php';
+		$theme = cacti_validate_theme((string) $graph_data_array['graph_theme']);
 	} else {
-		$rrdtheme = CACTI_PATH_INCLUDE . '/themes/' . get_selected_theme() . '/rrdtheme.php';
+		$theme = cacti_validate_theme(get_selected_theme());
 	}
+
+	$rrdtheme = CACTI_PATH_INCLUDE . '/themes/' . $theme . '/rrdtheme.php';
 
 	if (file_exists($rrdtheme) && is_readable($rrdtheme)) {
 		$rrdversion = get_rrdtool_version();
