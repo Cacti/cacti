@@ -9034,7 +9034,7 @@ function cacti_cookie_logout() : void {
 
 	$secure = cacti_is_https();
 
-	$cookies = [(string) session_name(), (string) session_name() . '_opt', 'cacti_rembers'];
+	$cookies = [(string) session_name(), (string) session_name() . '_opt', (string) session_name() . '_otp', 'cacti_remembers'];
 
 	if (version_compare(PHP_VERSION, '7.3', '>=')) {
 		$options = [
@@ -9056,6 +9056,8 @@ function cacti_cookie_logout() : void {
 	}
 
 	unset($_COOKIE[$config[CACTI_SESSION_NAME]]);
+	unset($_COOKIE[(string) session_name() . '_otp']);
+	unset($_COOKIE['cacti_remembers']);
 }
 
 /**
