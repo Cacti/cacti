@@ -546,10 +546,17 @@ function reports_form_actions() : void {
 		// loop through each of the graphs selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([a-z_0-9]+)$/', $var, $matches)) {
-				[$type, $id] = explode('_', $matches[1]);
-				// ================= input validation =================
-				input_validate_input_number($id);
-				// ====================================================
+				[$type, $id] = explode('_', $matches[1], 2);
+
+				// Parse and validate identically to the action branch so the
+				// confirmed item list cannot diverge from what is acted on.
+				if (!in_array($type, ['reports', 'reportit'], true)) {
+					continue;
+				}
+
+				if (!is_numeric($id) || (int) $id <= 0) {
+					continue;
+				}
 
 				if (!$can_manage_report($type, (int) $id)) {
 					continue;
