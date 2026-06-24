@@ -125,25 +125,6 @@ function debug(string $message) : void {
 	}
 }
 
-function remote_agent_auth_cache_get(string $key) : ?bool {
-	if (function_exists('apcu_fetch')) {
-		$success = false;
-		$result  = apcu_fetch($key, $success);
-
-		if ($success) {
-			return (bool) $result;
-		}
-	}
-
-	return null;
-}
-
-function remote_agent_auth_cache_set(string $key, bool $value, int $ttl = 30) : void {
-	if (function_exists('apcu_store')) {
-		apcu_store($key, $value, $ttl);
-	}
-}
-
 function remote_client_authorized() : bool {
 	global $poller_db_cnn_id, $remote_agent_whitelist;
 
@@ -210,19 +191,7 @@ function remote_client_authorized() : bool {
 		return false;
 	}
 
-	sort($allowed_hostnames);
-	$cache_seed = $client_addr . '|' . implode(',', $allowed_hostnames);
-	$cache_hash = md5($cache_seed);
-	$cache_key  = 'remote_agent_auth:' . $cache_hash;
-	$cached     = remote_agent_auth_cache_get($cache_key);
-
-	if ($cached !== null) {
-		return $cached;
-	}
-
 	if ($direct_match) {
-		remote_agent_auth_cache_set($cache_key, true);
-
 		return true;
 	}
 
@@ -234,8 +203,6 @@ function remote_client_authorized() : bool {
 				$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
 
 				if ($ip === $client_addr) {
-					remote_agent_auth_cache_set($cache_key, true);
-
 					return true;
 				}
 			}
@@ -247,8 +214,6 @@ function remote_client_authorized() : bool {
 	if ($client_name === false || $client_name == $client_addr) {
 		cacti_log('NOTE: Unable to resolve hostname from address ' . $client_addr, false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
 		cacti_log("Unauthorized remote agent access attempt from $client_addr", false, 'SECURITY');
-		remote_agent_auth_cache_set($cache_key, false);
-
 		return false;
 	}
 
@@ -256,8 +221,6 @@ function remote_client_authorized() : bool {
 
 	if (!in_array($normalized_client_name, $allowed_hostnames, true)) {
 		cacti_log("Unauthorized remote agent access attempt from $client_name ($client_addr)", false, 'SECURITY');
-		remote_agent_auth_cache_set($cache_key, false);
-
 		return false;
 	}
 
@@ -279,12 +242,8 @@ function remote_client_authorized() : bool {
 	if (!$forward_match) {
 		$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);
 		cacti_log('WARNING: PTR record for ' . $client_addr . ' resolves to ' . $safe_name . ' but forward lookup does not match. Rejecting.', false, 'SECURITY');
-		remote_agent_auth_cache_set($cache_key, false);
-
 		return false;
 	}
-
-	remote_agent_auth_cache_set($cache_key, true);
 
 	return true;
 }
