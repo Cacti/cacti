@@ -85,14 +85,14 @@ class MibCache {
 
 					if ($object_params['otype'] == 'NOTIFICATION-TYPE') {
 						foreach ($object_params['objects'] as $notification_object_index => $notification_object) {
-							db_execute_prepared('INSERT INTO `snmpagent_cache_notifications`
+							db_execute_prepared('INSERT IGNORE INTO `snmpagent_cache_notifications`
 								(`name`, `mib`, `attribute`, `sequence_id`)
 								VALUES (?, ?, ?, ?)',
 								[$object_name, $object_params['mib'], $notification_object, $notification_object_index]);
 						}
 					}
 				} else {
-					db_execute_prepared('INSERT INTO `snmpagent_cache_textual_conventions`
+					db_execute_prepared('INSERT IGNORE INTO `snmpagent_cache_textual_conventions`
 						(`name`, `mib`, `type`, `description`)
 						VALUES (?, ?, ?, ?)',
 						[$object_name, $object_params['mib'], $object_params['syntax'], nl2br($object_params['description'])]);
