@@ -444,9 +444,18 @@ function poll_for_data() : mixed {
 							if (function_exists('proc_open')) {
 								$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 
-								$output = fgets($pipes[1], 1024);
+								// proc_open returns false if the child could not be spawned; fall back to
+								// the non-proc path rather than reading from non-existent pipes
+								if (!is_resource($cactiphp)) {
+									cacti_log('WARNING: Unable to start PHP Script Server, falling back to direct execution', false, 'POLLER', POLLER_VERBOSITY_LOW);
 
-								$using_proc_function = true;
+									$using_proc_function = false;
+									$pipes               = false;
+								} else {
+									$output = fgets($pipes[1], 1024);
+
+									$using_proc_function = true;
+								}
 							} else {
 								$using_proc_function = false;
 							}

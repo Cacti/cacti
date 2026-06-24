@@ -148,6 +148,15 @@ function dsstats_get_and_store_ds_avgpeak_values(string $interval, string $type,
 		$rrd_process = rrd_init(false);
 	} else {
 		$rrd_process = dsstats_rrdtool_init();
+
+		// dsstats_rrdtool_init() returns [false, false] when RRDtool could not be
+		// spawned; without live pipes the execute path would fwrite() to null and
+		// crash the poller, so bail out of this run gracefully
+		if (!is_resource($rrd_process[0])) {
+			cacti_log('ERROR: DSStats unable to obtain RRDtool process, skipping run', false, 'DSSTATS');
+
+			return;
+		}
 	}
 
 	if (cacti_sizeof($rrdfiles)) {
@@ -1240,6 +1249,14 @@ function dsstats_rrdtool_init() : array {
 	$command = read_config_option('path_rrdtool') . ' - ';
 
 	$process = proc_open($command, $fds, $pipes);
+
+	// proc_open returns false if RRDtool could not be spawned; without a process
+	// the pipes are not populated, so bail out before touching them
+	if (!is_resource($process)) {
+		cacti_log('ERROR: Unable to start RRDtool process for DSStats', false, 'DSSTATS');
+
+		return [false, false];
+	}
 
 	// make stdin/stdout/stderr non-blocking
 	stream_set_blocking($pipes[0], false);

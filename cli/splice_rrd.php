@@ -270,7 +270,7 @@ if (!file_exists($rrdtool)) {
 	}
 }
 
-$response = shell_exec($rrdtool);
+$response = shell_exec(cacti_escapeshellcmd($rrdtool));
 
 if (strlen($response)) {
 	$response_array = explode(' ', $response);
@@ -302,10 +302,10 @@ if ($finrrd === '') {
 
 // execute the dump commands
 debug("Creating XML file '$oldxmlfile' from '$oldrrd'");
-shell_exec("$rrdtool dump $oldrrd > $oldxmlfile");
+shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($oldrrd) . ' > ' . cacti_escapeshellarg($oldxmlfile));
 
 debug("Creating XML file '$newxmlfile' from '$newrrd'");
-shell_exec("$rrdtool dump $newrrd > $newxmlfile");
+shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($newrrd) . ' > ' . cacti_escapeshellarg($newxmlfile));
 
 // read the xml files into arrays
 if (file_exists($oldxmlfile)) {

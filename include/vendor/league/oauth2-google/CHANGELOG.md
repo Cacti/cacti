@@ -1,6 +1,12 @@
 OAuth 2.0 Google Provider Changelog
 
 
+## 4.2.0 - 2026-03-09
+
+### Added
+
+- Allow `oauth2-client` version 2 or 3, #140 by @garak
+
 ## 4.1.0 - 2025-12-15
 
 ### Added
