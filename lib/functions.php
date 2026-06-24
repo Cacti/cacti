@@ -7243,10 +7243,9 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 		}
 
 		return false;
+	} finally {
+		restore_error_handler();
 	}
-
-	// restore the two original error handlers
-	restore_error_handler();
 
 	return $output;
 }
