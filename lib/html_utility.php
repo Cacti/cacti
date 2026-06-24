@@ -1101,141 +1101,148 @@ function get_request_var_post(string $name, mixed $default = '') : mixed {
  * @return void
  */
 function validate_store_request_vars(array $filters, string $sess_prefix = '') : void {
-	$changed          = 0;
-	$custom_error     = '';
-	$session_variable = 'sess_fallback';
+    $changed          = 0;
+    $custom_error     = '';
+    $session_variable = 'sess_fallback';
 
-	if (cacti_sizeof($filters)) {
-		foreach ($filters as $variable => $options) {
-			// Establish the session variable first
-			if ($sess_prefix != '') {
-				if (isset($options['session'])) {
-					$session_variable = $options['session'];
-				} elseif ($variable != 'rows') {
-					$session_variable = $sess_prefix . '_' . $variable;
-				} else {
-					$session_variable = 'sess_default_rows';
-				}
+    if (cacti_sizeof($filters)) {
+        foreach ($filters as $variable => $options) {
+            // Establish the session variable first
+            if ($sess_prefix != '') {
+                if (isset($options['session'])) {
+                    $session_variable = $options['session'];
+                } elseif ($variable != 'rows') {
+                    $session_variable = $sess_prefix . '_' . $variable;
+                } else {
+                    $session_variable = 'sess_default_rows';
+                }
 
-				// Check for special cases 'clear' and 'reset'
-				if (isset_request_var('clear')) {
-					kill_session_var($session_variable);
-					unset_request_var($variable);
-				} elseif (isset_request_var('reset')) {
-					kill_session_var($session_variable);
-				} elseif (isset($options['pageset']) && $options['pageset'] == true) {
-					$changed += check_changed($variable, (string) $session_variable);
-				}
-			}
+                // Check for special cases 'clear' and 'reset'
+                if (isset_request_var('clear')) {
+                    kill_session_var($session_variable);
+                    unset_request_var($variable);
+                } elseif (isset_request_var('reset')) {
+                    kill_session_var($session_variable);
+                } elseif (isset($options['pageset']) && $options['pageset'] == true) {
+                    $changed += check_changed($variable, (string) $session_variable);
+                }
+            }
 
-			if (!isset_request_var($variable)) {
-				if ($sess_prefix != '' && isset($_SESSION[$session_variable])) {
-					set_request_var($variable, $_SESSION[$session_variable]);
-				} elseif (isset($options['default'])) {
-					set_request_var($variable, $options['default']);
-				} else {
-					cacti_log("WARNING: Filter Variable: $variable, Must have a default and none is set", false, 'FILTER');
-					cacti_debug_backtrace('FILTER');
-					set_request_var($variable, '');
-				}
-			} else {
-				if (get_nfilter_request_var($variable) == '0') {
-					$value = '0';
-				} elseif (get_nfilter_request_var($variable) == 'undefined') {
-					if (isset($options['default'])) {
-						$value = $options['default'];
-					} else {
-						$value = '';
-					}
-				} elseif (isempty_request_var($variable)) {
-					$value = '';
-				} elseif ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
-					if (is_base64_encoded($_REQUEST[$variable])) {
-						$_REQUEST[$variable] = mb_convert_encoding(base64_decode($_REQUEST[$variable], true), 'UTF-8');
-					}
+            if (!isset_request_var($variable)) {
+                if ($sess_prefix != '' && isset($_SESSION[$session_variable])) {
+                    set_request_var($variable, $_SESSION[$session_variable]);
+                } elseif (isset($options['default'])) {
+                    set_request_var($variable, $options['default']);
+                } else {
+                    cacti_log("WARNING: Filter Variable: $variable, Must have a default and none is set", false, 'FILTER');
+                    cacti_debug_backtrace('FILTER');
+                    set_request_var($variable, '');
+                }
+            } else {
+                if (get_nfilter_request_var($variable) == '0') {
+                    $value = '0';
+                } elseif (get_nfilter_request_var($variable) == 'undefined') {
+                    if (isset($options['default'])) {
+                        $value = $options['default'];
+                    } else {
+                        $value = '';
+                    }
+                } elseif (isempty_request_var($variable)) {
+                    $value = '';
+                } elseif ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
+                    if (is_base64_encoded($_REQUEST[$variable])) {
+                        $_REQUEST[$variable] = mb_convert_encoding(base64_decode($_REQUEST[$variable], true), 'UTF-8');
+                    }
+                    $valid = validate_is_regex($_REQUEST[$variable]);
+                    if ($valid === true) {
+                        $value = $_REQUEST[$variable];
+                    } else {
+                        $value        = false;
+                        $custom_error = $valid;
+                    }
+                } elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
+                    $valid = true;
+                    if (is_array($_REQUEST[$variable])) {
+                        foreach ($_REQUEST[$variable] as $number) {
+                            if (!is_numeric($number)) {
+                                $valid = false;
+                                break;
+                            }
+                        }
+                    } else {
+                        $valid = false;
+                    }
+                    if ($valid == true) {
+                        $value = $_REQUEST[$variable];
+                    } else {
+                        $value = false;
+                    }
+                } elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_LIST) {
+                    $valid  = true;
+                    $values = preg_split('/,/', $_REQUEST[$variable], -1, PREG_SPLIT_NO_EMPTY);
+                    foreach ($values as $number) {
+                        if (!is_numeric($number)) {
+                            $valid = false;
+                            break;
+                        }
+                    }
+                    if ($valid == true) {
+                        $value = $_REQUEST[$variable];
+                    } else {
+                        $value = false;
+                    }
+                } elseif (!isset($options['options'])) {
+                    $value = filter_var($_REQUEST[$variable], $options['filter']);
+                } else {
+                    // Handle FILTER_VALIDATE_REGEXP specially to ensure proper delimiters
+                    if ($options['filter'] == FILTER_VALIDATE_REGEXP && isset($options['options']['regexp'])) {
+                        $regex = $options['options']['regexp'];
+                        // Only add delimiters if they're not already present
+                        if (!preg_match('/^\/.*\/[imsuxADJUX]*$/', $regex)) {
+                            $options['options']['regexp'] = '/' . $regex . '/';
+                        }
+                    }
 
-					$valid = validate_is_regex($_REQUEST[$variable]);
+                    // Special handling for graph_template_id to allow -1
+                    if ($variable === 'graph_template_id' && get_nfilter_request_var($variable) == '-1') {
+                        $value = '-1';
+                    } else {
+                        $value = filter_var($_REQUEST[$variable], $options['filter'], $options['options']);
+                    }
+                }
 
-					if ($valid === true) {
-						$value = $_REQUEST[$variable];
-					} else {
-						$value        = false;
-						$custom_error = $valid;
-					}
-				} elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
-					$valid = true;
+                if ($value === false) {
+                    if ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
+                        raise_message('custom', __('The regular expression "%s" is not valid. Error is %s',
+                            htmle(get_nfilter_request_var($variable)), htmle($custom_error)), MESSAGE_LEVEL_ERROR);
+                        set_request_var($variable, '');
+                    } else {
+                        die_html_input_error($variable, get_nfilter_request_var($variable), htmle($custom_error));
+                    }
+                } else {
+                    set_request_var($variable, $value);
+                }
+            }
 
-					if (is_array($_REQUEST[$variable])) {
-						foreach ($_REQUEST[$variable] as $number) {
-							if (!is_numeric($number)) {
-								$valid = false;
+            if ($sess_prefix != '') {
+                if (isset_request_var($variable)) {
+                    $_SESSION[$session_variable] = get_request_var($variable);
+                } elseif (isset($_SESSION[$session_variable])) {
+                    set_request_var($variable, $_SESSION[$session_variable]);
+                }
+            }
+        }
 
-								break;
-							}
-						}
-					} else {
-						$valid = false;
-					}
+        update_order_string();
+    }
 
-					if ($valid == true) {
-						$value = $_REQUEST[$variable];
-					} else {
-						$value = false;
-					}
-				} elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_LIST) {
-					$valid  = true;
-					$values = preg_split('/,/', $_REQUEST[$variable], -1, PREG_SPLIT_NO_EMPTY);
-
-					foreach ($values as $number) {
-						if (!is_numeric($number)) {
-							$valid = false;
-
-							break;
-						}
-					}
-
-					if ($valid == true) {
-						$value = $_REQUEST[$variable];
-					} else {
-						$value = false;
-					}
-				} elseif (!isset($options['options'])) {
-					$value = filter_var($_REQUEST[$variable], $options['filter']);
-				} else {
-					$value = filter_var($_REQUEST[$variable], $options['filter'], $options['options']);
-				}
-
-				if ($value === false) {
-					if ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
-						raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', htmle(get_nfilter_request_var($variable)), htmle($custom_error)), MESSAGE_LEVEL_ERROR);
-						set_request_var($variable, '');
-					} else {
-						die_html_input_error($variable, get_nfilter_request_var($variable), htmle($custom_error));
-					}
-				} else {
-					set_request_var($variable, $value);
-				}
-			}
-
-			if ($sess_prefix != '') {
-				if (isset_request_var($variable)) {
-					$_SESSION[$session_variable] = get_request_var($variable);
-				} elseif (isset($_SESSION[$session_variable])) {
-					set_request_var($variable, $_SESSION[$session_variable]);
-				}
-			}
-		}
-
-		update_order_string();
-	}
-
-	if ($changed) {
-		set_request_var('page', 1);
-		set_request_var('changed', 1);
-		$_SESSION[$sess_prefix . '_page'] = 1;
-	} elseif (!isset_request_var('page') && isset($_SESSION[$sess_prefix . '_page'])) {
-		set_request_var('page', $_SESSION[$sess_prefix . '_page']);
-	}
+    if ($changed) {
+        set_request_var('page', 1);
+        set_request_var('changed', 1);
+        $_SESSION[$sess_prefix . '_page'] = 1;
+    } elseif (!isset_request_var('page') && isset($_SESSION[$sess_prefix . '_page'])) {
+        set_request_var('page', $_SESSION[$sess_prefix . '_page']);
+    }
 }
 
 /**
