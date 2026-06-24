@@ -101,10 +101,10 @@ function boost_file_size_display(float|int $file_size, int $digits = 2) : string
  */
 function boost_get_total_rows() : int {
 	return (int) db_fetch_cell("SELECT SUM(TABLE_ROWS)
-		FROM information_schema.tables
-		WHERE table_schema = SCHEMA()
-		AND (table_name LIKE 'poller_output_boost_arch_%'
-		OR table_name LIKE 'poller_output_boost')");
+		FROM information_schema.TABLES
+		WHERE TABLE_SCHEMA = SCHEMA()
+		AND (TABLE_NAME LIKE 'poller_output_boost_arch_%'
+		OR TABLE_NAME = 'poller_output_boost')");
 }
 
 /**
@@ -267,11 +267,12 @@ function boost_poller_on_demand(array &$results) : bool {
 
 				foreach ($results as $result) {
 					$tmp_buffer =
-						"('" .
-						$result['local_data_id'] . "','" .
-						$result['rrd_name'] . "','" .
-						$result['time'] . "','" .
-						$result['output'] . "')";
+						'(' .
+						(int) $result['local_data_id'] . ',' .
+						db_qstr($result['rrd_name'], $conn) . ',' .
+						db_qstr($result['time'], $conn) . ',' .
+						db_qstr($result['output'], $conn) .
+						')';
 
 					$tmp_length = strlen($tmp_buffer);
 
@@ -744,7 +745,7 @@ function boost_graph_set_file(string|null &$output, int $local_graph_id, int|nul
 						if ($fileptr = fopen($cache_file, 'w')) {
 							fwrite($fileptr, $output, strlen($output));
 							fclose($fileptr);
-							chmod($cache_file, 0666);
+							chmod($cache_file, 0644);
 
 							// count the number of images that had to be cached
 							$mc->object('boostStatsTotalsImagesCacheWrites')->count();
@@ -824,6 +825,82 @@ function boost_timer_get_overhead() : float {
 }
 
 /**
+ * Clamps the configured boost_parallel value to a sane process count.
+ *
+ * read_config_option() may return '', null, a negative value, or a non-numeric
+ * string. All of those mean "run a single child"; anything else is the integer
+ * process count. Both call sites in poller_boost.php must agree on this so the
+ * parent spawns exactly as many children as it later waits for.
+ *
+ * @param mixed $value Raw boost_parallel option value.
+ *
+ * @return int Process count >= 1.
+ */
+function boost_clamp_parallel(mixed $value) : int {
+	$processes = intval($value);
+
+	return $processes > 0 ? $processes : 1;
+}
+
+/**
+ * Validates an archive table name against the expected boost pattern.
+ *
+ * The name is interpolated into DDL/DML without parameter binding, so it must
+ * match poller_output_boost_arch_<digits> exactly before any use.
+ *
+ * @param mixed $table Candidate table name.
+ *
+ * @return bool True when the name is a well-formed boost archive table.
+ */
+function boost_is_valid_archive_table(mixed $table) : bool {
+	return is_string($table) && preg_match('/^poller_output_boost_arch_\d+$/', $table) === 1;
+}
+
+/**
+ * Decides whether a boost log path is safe to splice into a shell redirect.
+ *
+ * redirect_args bypasses per-argument escaping, so the path must contain no
+ * shell metacharacters. A plain character allow-list is too strict on Windows,
+ * where legitimate paths carry a drive colon, backslashes, and spaces, so those
+ * are permitted on win32 only.
+ *
+ * @param mixed $path Candidate log path.
+ *
+ * @return bool True when the path is safe to use unescaped in a redirect.
+ */
+function boost_log_path_is_safe(mixed $path) : bool {
+	if (!is_string($path) || $path === '') {
+		return false;
+	}
+
+	if (defined('PHP_OS_FAMILY') && PHP_OS_FAMILY === 'Windows') {
+		// Allow drive colon, backslash, and space; still reject shell metacharacters.
+		return preg_match('/[^A-Za-z0-9_.\/\\\\: -]/', $path) === 0;
+	}
+
+	return preg_match('/[^A-Za-z0-9_.\/\-]/', $path) === 0;
+}
+
+/**
+ * Reports whether every launched boost child has registered.
+ *
+ * exec_background() is non-blocking, so the parent must not enter its drain loop
+ * (and the unconditional archive-table DROP that follows) until all $expected
+ * children are accounted for. A child counts as accounted for once it is either
+ * still running or has already recorded a completion row, which closes the race
+ * where a fast child registers and exits before its siblings boot.
+ *
+ * @param int $expected  Number of children launched.
+ * @param int $running   Children currently in the processes table.
+ * @param int $completed Completion rows in poller_output_boost_processes.
+ *
+ * @return bool True once running + completed covers every launched child.
+ */
+function boost_all_children_registered(int $expected, int $running, int $completed) : bool {
+	return ($running + $completed) >= $expected;
+}
+
+/**
  * Retrieves the names of the archive tables related to poller output boost.
  *
  * @param mixed $latest_table - Optional. The name of the latest table to check
@@ -850,14 +927,17 @@ function boost_get_arch_table_names(mixed $latest_table = '') : mixed {
 			db_fetch_assoc("SELECT TABLE_NAME AS name
 				FROM information_schema.TABLES
 				WHERE TABLE_SCHEMA = SCHEMA()
-				AND TABLE_NAME LIKE 'poller_output_boost_arch_%'
-				AND TABLE_ROWS > 0"),
+				AND TABLE_NAME LIKE 'poller_output_boost_arch_%'"),
 			'name', 'name'
 		);
 	}
 
 	if (!cacti_sizeof($tableNames)) {
-		if ($latest_table != '' && db_table_exists($latest_table)) {
+		// Both lookups above read metadata (SHOW TABLES / information_schema),
+		// which can lag the data on a replica long enough to miss a table the
+		// parent just created. Fall back to the validated name the parent passed
+		// and confirm it with a data-plane read, which replicates with the rows.
+		if (boost_is_valid_archive_table($latest_table) && boost_archive_table_readable($latest_table)) {
 			$tableNames[$latest_table] = $latest_table;
 
 			return $tableNames;
@@ -867,6 +947,31 @@ function boost_get_arch_table_names(mixed $latest_table = '') : mixed {
 	} else {
 		return $tableNames;
 	}
+}
+
+/**
+ * Confirms an archive table exists by reading from it, not from metadata.
+ *
+ * SHOW TABLES and information_schema are metadata-plane lookups that can lag on
+ * a replica; a SELECT against the table itself replicates with the row data, so
+ * it reflects the table the parent just created. The name must already be a
+ * validated boost archive table before it reaches the interpolated query.
+ *
+ * @param string $table A name that passed boost_is_valid_archive_table().
+ *
+ * @return bool True when the table can be read.
+ */
+function boost_archive_table_readable(string $table) : bool {
+	if (!boost_is_valid_archive_table($table)) {
+		return false;
+	}
+
+	// COUNT(*) returns a numeric row even for an empty table, so a non-null,
+	// non-false result means the table exists; a query error (missing table)
+	// yields false. $log = false: a fallback miss is expected, not an error.
+	$result = db_fetch_cell("SELECT COUNT(*) FROM `$table`", '', false);
+
+	return $result !== false && $result !== null;
 }
 
 /**
@@ -889,9 +994,8 @@ function boost_get_arch_table_names(mixed $latest_table = '') : mixed {
  * @return int
  */
 function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = []) : int {
-	global $database_default, $boost_sock, $boost_timeout, $get_memory, $memory_used;
+	global $database_default, $boost_sock, $boost_timeout, $get_memory, $memory_used, $archive_table;
 
-	static $archive_table = false;
 	static $warning_issued;
 	static $rrdtool_version = null;
 
@@ -936,21 +1040,21 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 	$temp_table          = false;
 
 	if (cacti_count($archive_tables)) {
-		$temp_table = 'poller_output_boost_temp_' . $local_data_id . '_' . mt_rand();
+		$temp_table = 'poller_output_boost_temp_' . $local_data_id . '_' . random_int(0, PHP_INT_MAX);
 
-		db_execute("CREATE TEMPORARY TABLE $temp_table LIKE poller_output_boost");
+		db_execute("CREATE TEMPORARY TABLE `{$temp_table}` LIKE poller_output_boost");
 
 		foreach ($archive_tables as $table) {
-			db_execute_prepared("INSERT INTO $temp_table
+			db_execute_prepared("INSERT INTO `{$temp_table}`
 				SELECT *
-				FROM $table
+				FROM `{$table}`
 				WHERE local_data_id = ?",
 				[$local_data_id], false);
 		}
 	}
 
 	if ($temp_table !== false) {
-		db_execute_prepared("INSERT INTO $temp_table
+		db_execute_prepared("INSERT INTO `{$temp_table}`
 			SELECT *
 			FROM poller_output_boost
 			WHERE local_data_id = ?
@@ -959,7 +1063,7 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 
 		$query_string = "SELECT po.local_data_id, dl.data_template_id,
 			UNIX_TIMESTAMP(po.time) AS timestamp, po.rrd_name, po.output
-			FROM $temp_table AS po
+			FROM `{$temp_table}` AS po
 			INNER JOIN data_local AS dl
 			ON po.local_data_id = dl.id
 			WHERE po.local_data_id = ?
@@ -1186,6 +1290,8 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 						$unused_data_source_names = array_rekey(
 							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
 								FROM data_template_rrd AS dtr
+								LEFT JOIN graph_templates_item AS gti
+								ON dtr.id = gti.task_item_id
 								WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
 								[$item['local_data_id']]),
 							'data_source_name', 'data_source_name'
@@ -1283,6 +1389,8 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 						$unused_data_source_names = array_rekey(
 							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
 								FROM data_template_rrd AS dtr
+								LEFT JOIN graph_templates_item AS gti
+								ON dtr.id = gti.task_item_id
 								WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
 								[$item['local_data_id']]),
 							'data_source_name', 'data_source_name'

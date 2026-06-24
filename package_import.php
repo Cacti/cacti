@@ -197,7 +197,7 @@ function form_actions() : void {
 							}
 						}
 
-						$xmlfile = $tmp_dir . '/' . $filename;
+						$xmlfile = $tmp_dir . '/' . basename($filename);
 
 						file_put_contents($xmlfile, $data);
 
@@ -614,7 +614,7 @@ function package_file_get_contents(string $package_location, string $package_fil
 
 			$binary_signature = '';
 
-			$xmlfile = $tmp_dir . '/' . $package_file;
+			$xmlfile = $tmp_dir . '/' . basename($package_file);
 
 			file_put_contents($xmlfile, $data);
 
@@ -659,6 +659,28 @@ function package_diff_file() : void {
 	$package_file     = grv('package_file');
 	$filename         = grv('filename');
 
+	$target = realpath(CACTI_PATH_BASE . '/' . $filename);
+	$base   = realpath(CACTI_PATH_BASE);
+
+	if ($target === false) {
+		// The package may contain files that do not exist locally yet.
+		// Resolve the parent directory instead and re-attach the leaf so
+		// the containment check below still applies.
+		$parent = realpath(dirname(CACTI_PATH_BASE . '/' . $filename));
+		$leaf   = basename($filename);
+
+		if ($parent !== false && $leaf !== '.' && $leaf !== '..') {
+			$target = $parent . DIRECTORY_SEPARATOR . $leaf;
+		}
+	}
+
+	if ($target === false || $base === false ||
+		!str_starts_with($target . DIRECTORY_SEPARATOR, $base . DIRECTORY_SEPARATOR)) {
+		print __('Invalid filename specified.');
+
+		return;
+	}
+
 	$options = [
 		'ignoreWhitespace' => true,
 		'ignoreCase'       => false
@@ -671,7 +693,7 @@ function package_diff_file() : void {
 		$newfile = explode("\n", $newfile);
 	}
 
-	$oldfile = file_get_contents(CACTI_PATH_BASE . '/' . $filename);
+	$oldfile = file_get_contents($target);
 
 	if ($oldfile !== false) {
 		$oldfile = str_replace("\n\r", "\n", $oldfile);
@@ -721,7 +743,7 @@ function package_verify_key() : void {
 						mkdir($tmp_dir);
 					}
 
-					$xmlfile = $tmp_dir . '/' . $filename;
+					$xmlfile = $tmp_dir . '/' . basename($filename);
 
 					file_put_contents($xmlfile, $data);
 
@@ -826,7 +848,7 @@ function package_accept_key() : void {
 						mkdir($tmp_dir);
 					}
 
-					$xmlfile = $tmp_dir . '/' . $filename;
+					$xmlfile = $tmp_dir . '/' . basename($filename);
 
 					file_put_contents($xmlfile, $data);
 
@@ -883,7 +905,7 @@ function package_get_details() : void {
 					mkdir($tmp_dir);
 				}
 
-				$xmlfile = $tmp_dir . '/' . $filename;
+				$xmlfile = $tmp_dir . '/' . basename($filename);
 
 				file_put_contents($xmlfile, $data);
 

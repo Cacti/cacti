@@ -80,7 +80,7 @@ function api_plugin_hook(string $name) : array {
 			$plugin_file = $hdata['file'];
 
 			// Security check
-			if (str_contains($plugin_file, '..')) {
+			if (str_contains($plugin_file, '..') || str_contains($plugin_name, '..')) {
 				cacti_log("ERROR: Attempted inclusion of not plugin file $plugin_file from $plugin_name with the hook name $name", false, 'SECURITY');
 
 				continue;
@@ -148,6 +148,12 @@ function api_plugin_hook_function(string $name, mixed $parm = null) : mixed {
 	if (cacti_sizeof($result)) {
 		foreach ($result as $hdata) {
 			if (!in_array($hdata['name'], $plugins_integrated, true)) {
+				if (str_contains($hdata['file'], '..') || str_contains($hdata['name'], '..')) {
+					cacti_log("ERROR: Attempted inclusion of not plugin file {$hdata['file']} from {$hdata['name']}", false, 'SECURITY');
+
+					continue;
+				}
+
 				$message = '';
 
 				if (api_plugin_can_install($hdata['name'], $message)) {
