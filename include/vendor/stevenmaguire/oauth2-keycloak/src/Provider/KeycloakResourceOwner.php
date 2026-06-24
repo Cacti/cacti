@@ -9,14 +9,14 @@ class KeycloakResourceOwner implements ResourceOwnerInterface
     /**
      * Raw response
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $response;
 
     /**
      * Creates new resource owner.
      *
-     * @param array  $response
+     * @param array<string, mixed>  $response
      */
     public function __construct(array $response = array())
     {
@@ -28,9 +28,16 @@ class KeycloakResourceOwner implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getId()
+    public function getId(): ?string
     {
-        return \array_key_exists('sub', $this->response) ? $this->response['sub'] : null;
+        if (!\array_key_exists('sub', $this->response)) {
+            return null;
+        }
+        if (!is_scalar($this->response['sub'])) {
+            return null;
+        }
+
+        return (string) $this->response['sub'];
     }
 
     /**
@@ -38,9 +45,13 @@ class KeycloakResourceOwner implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getEmail()
+    public function getEmail(): ?string
     {
-        return \array_key_exists('email', $this->response) ? $this->response['email'] : null;
+        if (!\array_key_exists('email', $this->response) || !is_string($this->response['email'])) {
+            return null;
+        }
+
+        return $this->response['email'];
     }
 
     /**
@@ -48,9 +59,13 @@ class KeycloakResourceOwner implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getName()
+    public function getName(): ?string
     {
-        return \array_key_exists('name', $this->response) ? $this->response['name'] : null;
+        if (!\array_key_exists('name', $this->response) || !is_string($this->response['name'])) {
+            return null;
+        }
+
+        return $this->response['name'];
     }
 
     /**
@@ -58,9 +73,13 @@ class KeycloakResourceOwner implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getUsername()
+    public function getUsername(): ?string
     {
-        return \array_key_exists('preferred_username', $this->response) ? $this->response['preferred_username'] : null;
+        if (!\array_key_exists('preferred_username', $this->response) || !is_string($this->response['preferred_username'])) {
+            return null;
+        }
+
+        return $this->response['preferred_username'];
     }
 
     /**
@@ -68,9 +87,13 @@ class KeycloakResourceOwner implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getFirstName()
+    public function getFirstName(): ?string
     {
-        return \array_key_exists('given_name', $this->response) ? $this->response['given_name'] : null;
+        if (!\array_key_exists('given_name', $this->response) || !is_string($this->response['given_name'])) {
+            return null;
+        }
+
+        return $this->response['given_name'];
     }
 
     /**
@@ -78,17 +101,21 @@ class KeycloakResourceOwner implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getLastName()
+    public function getLastName(): ?string
     {
-        return \array_key_exists('family_name', $this->response) ? $this->response['family_name'] : null;
+        if (!\array_key_exists('family_name', $this->response) || !is_string($this->response['family_name'])) {
+            return null;
+        }
+
+        return $this->response['family_name'];
     }
 
     /**
      * Return all of the owner details available as an array.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->response;
     }

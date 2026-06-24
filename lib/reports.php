@@ -713,7 +713,7 @@ function reports_tree_has_graphs(int $tree_id,int  $branch_id,int  $effective_us
 	$new_graphs = [];
 
 	if ($search_key != '') {
-		$sql_swhere = " AND gtg.title_cache REGEXP '" . $search_key . "'";
+		$sql_swhere = ' AND gtg.title_cache REGEXP ' . db_qstr($search_key);
 	}
 
 	$device_id = db_fetch_cell_prepared('SELECT host_id
@@ -1233,7 +1233,7 @@ function reports_expand_device(array &$report, array $item, int $device_id, int 
 	if (cacti_sizeof($graph_templates)) {
 		foreach ($graph_templates as $id => $name) {
 			if ($item['graph_name_regexp'] != '') {
-				$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+				$sql_where .= ' AND title_cache REGEXP ' . db_qstr($item['graph_name_regexp']);
 			}
 
 			$graphs = db_fetch_assoc_prepared("SELECT
@@ -1424,7 +1424,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 			}
 
 			if ($item['graph_name_regexp'] != '') {
-				$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+				$sql_where .= ' AND title_cache REGEXP ' . db_qstr($item['graph_name_regexp']);
 			}
 
 			if ($leaf_type == 'header' && $nested) {
@@ -1470,7 +1470,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 				$gr_where = '';
 
 				if ($item['graph_name_regexp'] != '') {
-					$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+					$gr_where .= ' AND title_cache REGEXP ' . db_qstr($item['graph_name_regexp']);
 				}
 
 				$graph = db_fetch_row('SELECT local_graph_id, title_cache
@@ -1486,7 +1486,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 				$gr_where = '';
 
 				if ($item['graph_name_regexp'] != '') {
-					$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+					$gr_where .= ' AND title_cache REGEXP ' . db_qstr($item['graph_name_regexp']);
 				}
 
 				$graph = db_fetch_cell('SELECT count(*)
@@ -2387,7 +2387,7 @@ function reports_run(int $id) : bool {
 
 	$return_code = 0;
 	$output      = [];
-	$command     = $report['run_command'] . ' --report-id=' . $report['source_id'] . ' --queue-id=' . $id;
+	$command     = cacti_escapeshellcmd($report['run_command']) . ' --report-id=' . $report['source_id'] . ' --queue-id=' . $id;
 	$timeout     = $report['run_timeout'];
 	$source      = cacti_strtoupper($report['source']);
 
