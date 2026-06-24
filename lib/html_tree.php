@@ -1017,7 +1017,7 @@ function create_tree_filter() : array {
 					'method'         => 'drop_multi',
 					'friendly_name'  => __('Template'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)(,(cg_[0-9]+|dq_[0-9]+|-?[0-9]+))*$']],
+					'filter_options' => ['options' => ['regexp' => '/^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)(,(cg_[0-9]+|dq_[0-9]+|-?[0-9]+))*$/']],
 					'default'        => '-1',
 					'dynamic'        => false,
 					'class'          => 'graph-multiselect',
