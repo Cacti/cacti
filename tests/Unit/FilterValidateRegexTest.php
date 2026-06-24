@@ -18,7 +18,8 @@
 test('FILTER_VALIDATE_REGEXP requires delimiters and works for true/false parameters', function () {
 	// Without delimiters, filter_var returns false (and emits a warning in strict environments)
 	$broken_regex = '^(true|false)$';
-	
+
+	// The warning text varies across PHP/PCRE builds, so any E_WARNING counts
 	$warning_emitted = false;
 	set_error_handler(function ($errno) use (&$warning_emitted) {
 		// The exact warning text varies across PHP/PCRE builds, so only
@@ -42,7 +43,7 @@ test('FILTER_VALIDATE_REGEXP requires delimiters and works for true/false parame
 		->and($warning_emitted)->toBeTrue();
 
 	// With delimiters, it works correctly
-	$fixed_regex = '/^(true|false)$/';
+	$fixed_regex  = '/^(true|false)$/';
 	$fixed_result = filter_var('true', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => $fixed_regex]]);
 	expect($fixed_result)->toBe('true');
 

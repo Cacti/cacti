@@ -2378,6 +2378,13 @@ function strip_alpha(mixed $string) : mixed {
  * @return bool Either true or false
  */
 function is_valid_pathname($path) {
+	/* treat ':' as a boundary as well so the Windows drive-relative form
+	 * "C:..\rra" is rejected; a slash, backslash, drive separator or string
+	 * edge before/after '..' all denote traversal */
+	if (preg_match('/(^|[\/\\\\:])\.\.([\/\\\\:]|$)/', trim($path))) {
+		return false;
+	}
+
 	if (preg_match('/^([a-zA-Z0-9\_\.\-\\\:\/]+)$/', trim($path))) {
 		return true;
 	} else {
@@ -5119,6 +5126,20 @@ function sanitize_uri(string $uri) : string {
 
 	if (is_urlencoded($uri)) {
 		$uri = urldecode($uri);
+	}
+
+	/* a network-path reference (//host or /\host) would redirect off-site.
+	 * Browsers strip leading C0 controls and whitespace (WHATWG: tab, LF, FF,
+	 * CR and space) before resolving the URL, so "\x0C//evil.com" reaches the
+	 * browser as "//evil.com". Drop those leading bytes ourselves before the
+	 * slash-collapse check, then collapse any leading slash/backslash run to a
+	 * single '/' so the URI stays a local path. */
+	$trimmed = preg_replace('/^[\x00-\x20]+/', '', $uri);
+
+	if (preg_match('/^[\/\\\\]{2,}/', $trimmed)) {
+		$uri = '/' . ltrim($trimmed, '/\\');
+	} else {
+		$uri = $trimmed;
 	}
 
 	if (str_contains($uri, 'graph_view.php')) {
