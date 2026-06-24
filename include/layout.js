@@ -956,7 +956,7 @@ function applySkin() {
 		$('input[type="submit"], input[type="button"], button').button();
 
 		// Handle re-index changes
-		$('fieldset.reindex_methods').buttonset();
+		$('fieldset.reindex_methods').controlgroup();
 
 		// debounce submits
 		$('form').submit(function () {

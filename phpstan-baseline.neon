@@ -107,3 +107,9 @@ parameters:
 			identifier: isset.offset
 			count: 1
 			path: lib/html.php
+
+		-
+			message: '#^Call to function is_numeric\(\) with float\|int\|numeric\-string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: lib/data_query.php

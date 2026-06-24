@@ -3015,16 +3015,12 @@ function rrdtool_function_theme_font_options(array &$graph_data_array) : string 
 	$themeborder = 'rrdborder';
 
 	if (isset($graph_data_array['graph_theme'])) {
-		$theme = basename($graph_data_array['graph_theme']);
-
-		if ($theme === '' || $theme === '.' || $theme === '..') {
-			$theme = get_selected_theme();
-		}
-
-		$rrdtheme = CACTI_PATH_INCLUDE . '/themes/' . $theme . '/rrdtheme.php';
+		$theme = cacti_validate_theme((string) $graph_data_array['graph_theme']);
 	} else {
-		$rrdtheme = CACTI_PATH_INCLUDE . '/themes/' . get_selected_theme() . '/rrdtheme.php';
+		$theme = cacti_validate_theme(get_selected_theme());
 	}
+
+	$rrdtheme = CACTI_PATH_INCLUDE . '/themes/' . $theme . '/rrdtheme.php';
 
 	if (file_exists($rrdtheme) && is_readable($rrdtheme)) {
 		$rrdversion = get_rrdtool_version();

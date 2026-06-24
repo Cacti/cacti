@@ -20,3 +20,9 @@
  */
 
 define('PHP_TESTING', true);
+
+// Arm the combined test-bootstrap gate in include/global.php. PHP_TESTING alone
+// no longer engages the DB short-circuit; CACTI_TEST_BOOTSTRAP must also be set
+// so a stray define in production cannot bypass real connection logic.
+putenv('CACTI_TEST_BOOTSTRAP=1');
+$_ENV['CACTI_TEST_BOOTSTRAP'] = '1';
