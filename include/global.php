@@ -123,7 +123,18 @@ if (file_exists(__DIR__ . '/config.php')) {
 	include(__DIR__ . '/config.php');
 }
 
-if (defined('PHP_TESTING') && file_exists(__DIR__ . '/config.php.dist')) {
+// Combined test-bootstrap gate: PHP_TESTING alone is not enough. The
+// CACTI_TEST_BOOTSTRAP env var (local_only so per-request SAPI params under
+// FPM/FastCGI cannot set it) must also be present. A stray PHP_TESTING define
+// in a deployed environment therefore cannot swap to the default config, skip
+// schema validation, or disable real DB connection logic. Fail-closed.
+if (!function_exists('cacti_is_test_bootstrap')) {
+	function cacti_is_test_bootstrap(): bool {
+		return defined('PHP_TESTING') && getenv('CACTI_TEST_BOOTSTRAP', true) === '1';
+	}
+}
+
+if (cacti_is_test_bootstrap() && file_exists(__DIR__ . '/config.php.dist')) {
 	if (!is_readable(__DIR__ . '/config.php.dist')) {
 		die('Configuration file include/config.php is present, but unreadable.' . PHP_EOL);
 	}
@@ -136,7 +147,7 @@ if (isset($config['cacti_version'])) { // @phpstan-ignore-line
 }
 
 // Define global paths
-include_once(__DIR__ . '/global_path.php');
+require_once(__DIR__ . '/global_path.php');
 
 // Should we allow proxy ip headers?
 $config['proxy_headers'] = $proxy_headers ?? [];
@@ -270,17 +281,17 @@ if (isset($i18n_text_log)) {
 }
 
 // include base modules
-include_once(CACTI_PATH_LIBRARY . '/database.php');
-include_once(CACTI_PATH_LIBRARY . '/functions.php');
-include_once(CACTI_PATH_INCLUDE . '/global_constants.php');
+require_once(CACTI_PATH_LIBRARY . '/database.php');
+require_once(CACTI_PATH_LIBRARY . '/functions.php');
+require_once(CACTI_PATH_INCLUDE . '/global_constants.php');
 
 define('CACTI_VERSION', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_SHORT));
 define('CACTI_VERSION_FULL', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_FULL));
 
-include_once(CACTI_PATH_LIBRARY . '/html.php');
-include_once(CACTI_PATH_LIBRARY . '/html_utility.php');
-include_once(CACTI_PATH_LIBRARY . '/html_validate.php');
-include_once(CACTI_PATH_LIBRARY . '/html_filter.php');
+require_once(CACTI_PATH_LIBRARY . '/html.php');
+require_once(CACTI_PATH_LIBRARY . '/html_utility.php');
+require_once(CACTI_PATH_LIBRARY . '/html_validate.php');
+require_once(CACTI_PATH_LIBRARY . '/html_filter.php');
 
 $filename = get_current_page();
 
@@ -300,6 +311,37 @@ if ($config['is_web'] && ini_get('session.auto_start') == 1) {
 	exit;
 }
 
+// Test-mode DB sentinel: any method invocation on the sentinel throws,
+// so production-mode code paths can never silently treat a non-handle as
+// a real connection. Gated by the PHP_TESTING constant AND the
+// CACTI_TEST_BOOTSTRAP env var so a stale define alone cannot disable
+// real DB connection logic in a deployed environment.
+// Pass false to class_exists() so this guard never triggers autoload.
+if (!class_exists('Cacti_TestDbSentinel', false)) {
+	final class Cacti_TestDbSentinel {
+		/**
+		 * @param  string           $name
+		 * @param  array<int,mixed> $args
+		 * @return never
+		 */
+		public function __call($name, $args) {
+			throw new \RuntimeException('PHP_TESTING DB sentinel called: ' . $name);
+		}
+	}
+}
+
+// Helper for "is this a real DB handle" checks that must reject the sentinel.
+// Defined inline so include/global.php remains self-contained.
+if (!function_exists('_cacti_is_real_db_conn')) {
+	function _cacti_is_real_db_conn(mixed $x): bool {
+		return is_object($x) && !($x instanceof Cacti_TestDbSentinel);
+	}
+}
+
+// Resolve the test-bootstrap predicate once; both PHP_TESTING and
+// CACTI_TEST_BOOTSTRAP=1 must be set for the sentinel branches to engage.
+$is_test_bootstrap = cacti_is_test_bootstrap();
+
 // set poller mode
 global $local_db_cnn_id, $remote_db_cnn_id, $conn_mode;
 
@@ -313,8 +355,10 @@ $lu = $config['is_web'] ? '</ul>' : '';
 $il = $config['is_web'] ? '</li>' : '';
 
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
-	if (!defined('PHP_TESTING')) {
+	if (!$is_test_bootstrap) {
 		$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert);
+	} else {
+		$local_db_cnn_id = new Cacti_TestDbSentinel();
 	}
 
 	if (!isset($rdatabase_retries)) {
@@ -346,7 +390,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	}
 
 	// Check for recovery
-	if (is_object($local_db_cnn_id)) {
+	if (_cacti_is_real_db_conn($local_db_cnn_id)) {
 		$boost_records = db_fetch_cell('SELECT COUNT(*)
 			FROM poller_output_boost', '', true, $local_db_cnn_id);
 
@@ -355,20 +399,29 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		}
 	}
 
-	// gather the existing cactidb version
-	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1', '', false, $local_db_cnn_id);
+	// gather the existing cactidb version (skip when running under the test sentinel).
+	// Seed '' first so the key is always set, matching pre-sentinel behavior where a
+	// failed db_fetch_cell returned ''; a remote poller with the local DB down then
+	// reads a defined value instead of raising an 'Undefined array key' warning.
+	$config['cacti_db_version'] = '';
+
+	if (_cacti_is_real_db_conn($local_db_cnn_id)) {
+		$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1', '', false, $local_db_cnn_id);
+	}
 
 	/**
 	 * If we have not been forced offline by the $conn_mode global and since we are
 	 * a remote poller, let's attempt to get back online.
 	 */
 	if ($conn_mode != 'offline') {
-		if (!defined('PHP_TESTING')) {
+		if (!$is_test_bootstrap) {
 			$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert);
+		} else {
+			$remote_db_cnn_id = new Cacti_TestDbSentinel();
 		}
 	}
 
-	if ($config['is_web'] && is_object($remote_db_cnn_id) && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install' && !defined('IN_CACTI_INSTALL')) {
+	if ($config['is_web'] && _cacti_is_real_db_conn($remote_db_cnn_id) && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install' && !defined('IN_CACTI_INSTALL')) {
 		// Connection worked, so now override the default settings so that it will always utilize the remote connection
 		$database_default                = $rdatabase_default;
 		$database_hostname               = $rdatabase_hostname;
@@ -381,7 +434,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$database_ssl_ca                 = $rdatabase_ssl_ca;
 		$database_ssl_capath             = $rdatabase_ssl_capath;
 		$database_ssl_verify_server_cert = $rdatabase_ssl_verify_server_cert;
-	} elseif (is_object($remote_db_cnn_id)) {
+	} elseif (_cacti_is_real_db_conn($remote_db_cnn_id)) {
 		if ($config['connection'] != 'recovery') {
 			$config['connection'] = 'online';
 		}
@@ -389,7 +442,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$config['connection'] = 'offline';
 	}
 } else {
-	if (!defined('PHP_TESTING')) {
+	if (!$is_test_bootstrap) {
 		if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert)) {
 			print $ps . 'FATAL: Connection to Cacti database failed. Please ensure: ' . $ul;
 			print $li . 'the PHP MySQL module is installed and enabled.' . $il;
@@ -397,7 +450,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 			print $li . 'the credentials in config.php are valid.' . $il;
 			print $lu . $sp;
 
-			if (isset($_REQUEST['display_db_errors']) && !empty($config['DATABASE_ERROR'])) { // @phpstan-ignore-line
+			if (isrv('display_db_errors') && !empty($config['DATABASE_ERROR'])) { // @phpstan-ignore-line
 				print $ps . 'The following database errors occurred: ' . $ul;
 
 				foreach ($config['DATABASE_ERROR'] as $e) { // @phpstan-ignore-line
@@ -408,9 +461,11 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 
 			exit;
 		}
+	} else {
+		$local_db_cnn_id = new Cacti_TestDbSentinel();
 	}
 
-	if (!defined('PHP_TESTING')) {
+	if (!$is_test_bootstrap) {
 		if (!db_table_exists('settings') || !db_table_exists('version')) {
 			print $ps . 'FATAL: Connection to Cacti database succeeded but `settings` table not found. Please ensure: ' . $ul;
 			print $li . 'the PHP MySQL module is installed and enabled.' . $il;
@@ -419,7 +474,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 			print $li . 'the credentials in config.php are valid and correct.' . $il;
 			print $lu . $sp;
 
-			if (isset($_REQUEST['display_db_errors']) && !empty($config['DATABASE_ERROR'])) { // @phpstan-ignore-line
+			if (isrv('display_db_errors') && !empty($config['DATABASE_ERROR'])) { // @phpstan-ignore-line
 				print $ps . 'The following database errors occurred: ' . $ul;
 
 				foreach ($config['DATABASE_ERROR'] as $e) { // @phpstan-ignore-line
@@ -432,8 +487,13 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		}
 	}
 
-	// gather the existing cactidb version
-	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
+	// gather the existing cactidb version (skip when running under the test sentinel).
+	// Seed '' first so the key is always set even under the test bootstrap.
+	$config['cacti_db_version'] = '';
+
+	if (!$is_test_bootstrap) {
+		$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
+	}
 }
 
 define('CACTI_CONNECTION', $config['connection']);
@@ -610,7 +670,7 @@ if ((bool)ini_get('register_globals')) {
 
 define('CACTI_DATE_TIME_FORMAT', date_time_format());
 
-include_once(CACTI_PATH_INCLUDE . '/global_languages.php');
+require_once(CACTI_PATH_INCLUDE . '/global_languages.php');
 
 define('CACTI_VERSION_BRIEF', get_cacti_version_text(false, CACTI_VERSION));
 define('CACTI_VERSION_BRIEF_FULL', get_cacti_version_text(false, CACTI_VERSION_FULL));
@@ -618,25 +678,24 @@ define('CACTI_VERSION_TEXT', get_cacti_version_text(true, CACTI_VERSION));
 define('CACTI_VERSION_TEXT_FULL', get_cacti_version_text(true, CACTI_VERSION_FULL));
 define('CACTI_VERSION_TEXT_CLI', get_cacti_cli_version(true, CACTI_VERSION_FULL)); // @phpstan-ignore-line
 
-include_once(CACTI_PATH_LIBRARY . '/auth.php');
-include_once(CACTI_PATH_LIBRARY . '/plugins.php');
-include_once(CACTI_PATH_INCLUDE . '/plugins.php');
-include_once(CACTI_PATH_INCLUDE . '/global_arrays.php');
-include_once(CACTI_PATH_INCLUDE . '/global_settings.php');
-include_once(CACTI_PATH_INCLUDE . '/global_form.php');
-include_once(CACTI_PATH_LIBRARY . '/html_form.php');
-include_once(CACTI_PATH_LIBRARY . '/html_filter.php');
-include_once(CACTI_PATH_LIBRARY . '/variables.php');
-include_once(CACTI_PATH_LIBRARY . '/mib_cache.php');
-include_once(CACTI_PATH_LIBRARY . '/poller.php');
-include_once(CACTI_PATH_LIBRARY . '/snmpagent.php');
-include_once(CACTI_PATH_LIBRARY . '/aggregate.php');
-include_once(CACTI_PATH_LIBRARY . '/api_automation.php');
-include_once(CACTI_PATH_INCLUDE . '/vendor/autoload.php');
+require_once(CACTI_PATH_LIBRARY . '/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/plugins.php');
+require_once(CACTI_PATH_INCLUDE . '/plugins.php');
+require_once(CACTI_PATH_INCLUDE . '/global_arrays.php');
+require_once(CACTI_PATH_INCLUDE . '/global_settings.php');
+require_once(CACTI_PATH_INCLUDE . '/global_form.php');
+require_once(CACTI_PATH_LIBRARY . '/html_form.php');
+require_once(CACTI_PATH_LIBRARY . '/html_filter.php');
+require_once(CACTI_PATH_LIBRARY . '/variables.php');
+require_once(CACTI_PATH_LIBRARY . '/mib_cache.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/snmpagent.php');
+require_once(CACTI_PATH_LIBRARY . '/aggregate.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
+require_once(CACTI_PATH_INCLUDE . '/csrf.php');
+require_once(CACTI_PATH_INCLUDE . '/vendor/autoload.php');
 
 if ($config['is_web']) {
-	include_once(CACTI_PATH_INCLUDE . '/csrf.php');
-
 	// raise a message and perform a page refresh if we've changed modes
 	if ($config['poller_id'] > 1) {
 		if (isset($_SESSION['connection_mode'])) {

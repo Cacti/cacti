@@ -252,7 +252,7 @@ function create_graphs_preview_filter(string $session_var) : array {
 					'method'         => 'drop_multi',
 					'friendly_name'  => __('Template'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(cg_[0-9]|dq_[0-9]|[\-0-9])']],
+					'filter_options' => ['options' => ['regexp' => '/^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)$/']],
 					'default'        => '-1',
 					'dynamic'        => false,
 					'class'          => 'graph-multiselect',
@@ -284,7 +284,7 @@ function create_graphs_preview_filter(string $session_var) : array {
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Thumbnails'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(true|false)']],
+					'filter_options' => ['options' => ['regexp' => '/^(true|false)$/']],
 					'default'        => read_user_setting('thumbnail_section_preview') == 'on' ? 'true' : 'false',
 					'value'          => $thumbnails
 				],
@@ -292,7 +292,7 @@ function create_graphs_preview_filter(string $session_var) : array {
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Business Hours'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(true|false)']],
+					'filter_options' => ['options' => ['regexp' => '/^(true|false)$/']],
 					'default'        => read_user_setting('show_business_hours') == 'on' ? 'true' : 'false',
 					'value'          => $business_hours
 				]
@@ -462,8 +462,8 @@ function html_graph_preview_filter(string $page, string $action, string $devices
 	var graph_start     = <?php print get_current_graph_start(); ?>;
 	var graph_end       = <?php print get_current_graph_end(); ?>;
 	var timeOffset      = <?php print date('Z'); ?>;
-	var pageAction      = '<?php print $action; ?>';
-	var graphPage       = '<?php print $page; ?>';
+	var pageAction      = <?php print json_encode($action); ?>;
+	var graphPage       = <?php print json_encode($page); ?>;
 	var date1Open       = false;
 	var date2Open       = false;
 
@@ -726,8 +726,8 @@ function html_save_graph_settings() : void {
 		gfrv('predefined_timespan');
 		gfrv('predefined_timeshift');
 		gfrv('graphs');
-		gfrv('thumbnails', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '(true|false)']]);
-		gfrv('business_hours', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '(true|false)']]);
+		gfrv('thumbnails', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^(true|false)$/']]);
+		gfrv('business_hours', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^(true|false)$/']]);
 
 		if (isrv('predefined_timespan')) {
 			set_user_setting('default_timespan', grv('predefined_timespan'));
@@ -855,7 +855,7 @@ function html_graph_preview_view() : void {
 	$sql_where  = '';
 
 	if (!ierv('rfilter')) {
-		$sql_where .= " gtg.title_cache RLIKE '" . grv('rfilter') . "'";
+		$sql_where .= ' gtg.title_cache RLIKE ' . db_qstr(grv('rfilter'));
 	}
 
 	$sql_where .= ($sql_or != '' && $sql_where != '' ? ' AND ' : '') . $sql_or;
@@ -881,9 +881,9 @@ function html_graph_preview_view() : void {
 	if (!ierv('graph_template_id') && grv('graph_template_id') != '-1' && grv('graph_template_id') != '0') {
 		$graph_templates = html_transform_graph_template_ids(grv('graph_template_id'));
 
-		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . $graph_templates . '))';
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' ' . db_in_clause('gl.graph_template_id', $graph_templates);
 	} elseif (grv('graph_template_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . grv('graph_template_id') . '))';
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' ' . db_in_clause('gl.graph_template_id', 0);
 	}
 
 	if (grv('graphs') == '-1') {
@@ -1049,7 +1049,7 @@ function create_listview_filter(string $session_var) : array {
 					'method'         => 'drop_multi',
 					'friendly_name'  => __('Template'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(cg_[0-9]|dq_[0-9]|[\-0-9])']],
+					'filter_options' => ['options' => ['regexp' => '/^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)$/']],
 					'default'        => '-1',
 					'dynamic'        => false,
 					'class'          => 'graph-multiselect',
@@ -1231,7 +1231,7 @@ function html_graph_list_view() : void {
 	$sql_where  = '';
 
 	if (!ierv('rfilter')) {
-		$sql_where .= " gtg.title_cache RLIKE '" . grv('rfilter') . "'";
+		$sql_where .= ' gtg.title_cache RLIKE ' . db_qstr(grv('rfilter'));
 	}
 
 	if (!ierv('site_id') && grv('site_id') > 0) {
@@ -1255,9 +1255,9 @@ function html_graph_list_view() : void {
 	if (!ierv('graph_template_id') && grv('graph_template_id') != '-1' && grv('graph_template_id') != '0') {
 		$graph_templates = html_transform_graph_template_ids(grv('graph_template_id'));
 
-		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . $graph_templates . '))';
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' ' . db_in_clause('gl.graph_template_id', $graph_templates);
 	} elseif (grv('graph_template_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . grv('graph_template_id') . '))';
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' ' . db_in_clause('gl.graph_template_id', 0);
 	}
 
 	$total_rows = 0;
@@ -1428,12 +1428,19 @@ function html_graph_list_view() : void {
 		<div style='float:left'><img src='images/arrow.gif' alt=''>&nbsp;</div>
 		<div style='float:right'><button type='button' class='ui-button ui-corner-all ui-widget' title='<?php print __esc('View Graphs'); ?>' onClick='viewGraphs()'><?php print __esc('View'); ?></button></div>
 	</div>
-	<?php print $report_text; ?>
+	<?php
+	print $report_text;
+
+	$graph_list_js  = [];
+	$graph_list_js  = sanitize_graph_id_list((string) grv('graph_list'));
+	$graph_list_csv = implode(',', $graph_list_js);
+
+	?>
 	<script type='text/javascript'>
 		refreshMSeconds=999999999;
 		refreshFunction = 'refreshGraphs()';
 
-		var graph_list_array = new Array(<?php print grv('graph_list'); ?>);
+		var graph_list_array = <?php print json_encode($graph_list_js); ?>;
 
 		function initializeChecks() {
 			for (var i = 0; i < graph_list_array.length; i++) {
@@ -1496,7 +1503,7 @@ function html_graph_list_view() : void {
 					}
 				});
 
-				strURL = '&demon=1&graph_list=<?php print grv('graph_list'); ?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
+				strURL = '&demon=1&graph_list=<?php print $graph_list_csv; ?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
 
 				return strNavURL + strURL;
 			} else {
@@ -1815,7 +1822,7 @@ function html_graph_single_view() : void {
 
 	?>
 	<script type='text/javascript'>
-		var suffix = '<?php print $suffix; ?>';
+		var suffix = <?php print json_encode((string) $suffix); ?>;
 		var originalWidth = null;
 		var refreshTime = <?php print read_user_setting('page_refresh') * 1000; ?>;
 		var graphTimeout = null;
@@ -1945,6 +1952,31 @@ function html_graph_single_view() : void {
 	bottom_footer();
 }
 
+/**
+ * Parse and sanitize a comma-separated graph list into validated integer IDs.
+ *
+ * @param string $csv_list Comma-separated list of graph IDs (from request var)
+ *
+ * @return array Array of unique positive integer graph IDs
+ */
+function sanitize_graph_id_list(string $csv_list): array {
+	$result = [];
+
+	foreach (explode(',', $csv_list) as $item) {
+		$item = trim($item);
+
+		if ($item !== '' && ctype_digit($item)) {
+			$graph_id = (int) $item;
+
+			if ($graph_id > 0) {
+				$result[] = $graph_id;
+			}
+		}
+	}
+
+	return array_values(array_unique($result));
+}
+
 function html_graph_zoom() : void {
 	html_graph_single_validate();
 
@@ -2001,7 +2033,9 @@ function html_graph_zoom() : void {
 		AND data_template_rrd.local_data_id = data_template_data.local_data_id
 		AND graph_templates_item.local_graph_id = ?
 		LIMIT 0,1', [grv('local_graph_id')]);
-	$ds_step                       = empty($ds_step) ? 300 : $ds_step;
+
+	$ds_step = empty($ds_step) ? 300 : $ds_step;
+
 	$seconds_between_graph_updates = ($ds_step * $rra['steps']);
 
 	$now = time();
@@ -2106,9 +2140,9 @@ function html_graph_zoom() : void {
 	?>
 	<div class='cactiTable'><div id='data'></div></div>
 	<script type='text/javascript'>
-		var suffix = '<?php print $suffix; ?>';
-		var graph_id = <?php print grv('local_graph_id') . ";\n"; ?>
-		var rra_id = <?php print grv('rra_id') . ";\n"; ?>
+		var suffix = <?php print json_encode((string) $suffix); ?>;
+		var graph_id = <?php print (int) grv('local_graph_id') . ";\n"; ?>
+		var rra_id = <?php print (int) grv('rra_id') . ";\n"; ?>
 		var graph_start = 0;
 		var graph_end = 0;
 		var graph_height = 0;
@@ -2120,8 +2154,8 @@ function html_graph_zoom() : void {
 			loadUrl({
 				url: urlPath + '<?php print $current_page; ?>' + '?action=properties-' + suffix +
 					'&local_graph_id=' + graph_id +
-					'&rra_id=<?php print grv('rra_id'); ?>' +
-					'&view_type=<?php print grv('view_type'); ?>' +
+					'&rra_id=<?php print (int) grv('rra_id'); ?>' +
+					'&view_type=<?php print rawurlencode((string) grv('view_type')); ?>' +
 					'&business_hours=' + $('#business_hours').val() +
 					'&thumbnails=' + $('#thumbnails').val(),
 				noState: true,

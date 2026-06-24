@@ -1230,7 +1230,7 @@ function utilities_get_mysql_recommendations() : int {
 			'value'   => 'ON',
 			'measure' => 'equalint',
 			'class'   => 'error',
-			'comment' => __('This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance.')
+			'comment' => __('This setting should remain ON unless your Cacti instances are running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance.')
 		],
 		'innodb_additional_mem_pool_size' => [
 			'value'   => '80M',
@@ -1359,6 +1359,20 @@ function utilities_get_mysql_recommendations() : int {
 			'measure' => 'equalint',
 			'class'   => 'error',
 			'comment' => __('When using MariaDB 10.2.4 and above, you can use atomic writes over the doublewrite buffer to increase performance.')
+		];
+	}
+
+	if ($database == 'MariaDB' && version_compare($version, '11.8', '>=')) {
+		// MariaDB 11.8 enabled innodb_snapshot_isolation=ON by default (MDEV-39628).
+		// Under this mode, concurrent UPDATE statements on any InnoDB table can block
+		// for tens of thousands of seconds even when the table has only a handful of
+		// rows. Cacti's poller cycle issues many rapid UPDATEs; this setting makes
+		// those updates contend in ways that can freeze the entire poller.
+		$recommendations['innodb_snapshot_isolation'] = [
+			'value'   => 'OFF',
+			'measure' => 'equalint',
+			'class'   => 'error',
+			'comment' => __('MariaDB 11.8 enabled innodb_snapshot_isolation=ON by default. This causes severe lock contention: UPDATE statements can block for tens of thousands of seconds on small tables under concurrent load, which stalls the Cacti poller. Set innodb_snapshot_isolation=OFF in your [mysqld] configuration. See MDEV-39628.')
 		];
 	}
 
@@ -2032,7 +2046,7 @@ function utility_php_set_installed(array &$extensions) : void {
 }
 
 /**
- * object_cache_get_totals - This function get's the count of objects
+ * object_cache_get_totals - This function gets the count of objects
  *   for a set of object types.  The object types include:
  *
  *   - device_state  - Load the object database with the current state

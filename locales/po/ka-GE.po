@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-12-11 06:18+0000\n"
+"PO-Revision-Date: 2026-04-27 16:32+0000\n"
 "Last-Translator: Ekaterine papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
@@ -2618,7 +2618,7 @@ msgstr ""
 
 #: automation_snmp.php:417
 msgid "Duplicate SNMP Option"
-msgstr ""
+msgstr "გამეორებული SNMP-ის პარამეტრი"
 
 #: automation_snmp.php:418
 msgid "Duplicate SNMP Options"
@@ -3055,7 +3055,7 @@ msgstr "მინიჭებული გრაფიკის წესებ�
 
 #: automation_templates.php:1012
 msgid "Graph Rule Name"
-msgstr ""
+msgstr "გრაფიკის წესის სახელი"
 
 #: automation_templates.php:1020 automation_templates.php:1125 host.php:920
 #: include/global_arrays.php:2235 include/global_arrays.php:2301
@@ -5429,7 +5429,7 @@ msgstr "გრაფიკები სრული სინქრონიზ�
 
 #: graph_templates.php:41
 msgid "Quick Sync Graphs"
-msgstr ""
+msgstr "გრაფიკების სწრაფი სინქრონიზაცია"
 
 #: graph_templates.php:339 graph_templates.php:365 graphs.php:568
 msgid "Cur:"
@@ -8414,7 +8414,7 @@ msgstr "ბოლო დღე"
 #: include/global_arrays.php:1572
 #, php-format
 msgid "Last %d Days"
-msgstr ""
+msgstr "ბოლო %d დღე"
 
 #: include/global_arrays.php:1573
 msgid "Last Week"
@@ -10191,7 +10191,7 @@ msgstr ""
 
 #: include/global_form.php:1082
 msgid "Text Alignment (TEXTALIGN)"
-msgstr ""
+msgstr "ტექსტის სწორება (TEXALIGN)"
 
 #: include/global_form.php:1087
 msgid "All subsequent legend line(s) will be aligned as given here.  You may use this command multiple times in a single graph.  This command does not produce tabular layout.<br/><strong>Note: </strong>You may want to insert a &lt;HR&gt; on the preceding graph item.<br/> <strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete this setting!"
@@ -10728,7 +10728,7 @@ msgstr "გადალაგების ტიპი"
 #: include/global_form.php:2011 include/global_form.php:2099
 #: include/global_form.php:2204
 msgid "Reordering of Graphs."
-msgstr ""
+msgstr "გრაფიკების გადალაგება."
 
 #: include/global_form.php:2031
 msgid "Please name this Aggregate Graph."
@@ -11674,7 +11674,7 @@ msgstr "100 მბ/წმ Ethernet"
 
 #: include/global_settings.php:842
 msgid "1 Gbps Ethernet"
-msgstr ""
+msgstr "1 გბ/წმ Ethernet"
 
 #: include/global_settings.php:843
 msgid "10 Gbps Ethernet"
@@ -11718,7 +11718,7 @@ msgstr ""
 
 #: include/global_settings.php:878
 msgid "Auth Protocol (v3)"
-msgstr ""
+msgstr "ავთ. პროტოკოლი (v3)"
 
 #: include/global_settings.php:879
 msgid "Default SNMPv3 Authorization Protocol for all new Devices."
@@ -19213,7 +19213,7 @@ msgstr "მონიტორინგის ქვეშ"
 
 #: managers.php:624
 msgid "No SNMP Notifications"
-msgstr ""
+msgstr "SNMP გაფრთხილებების გარეშე"
 
 #: managers.php:752 managers.php:755 utilities.php:2191 utilities.php:2194
 msgid "Severity"
@@ -20518,7 +20518,7 @@ msgstr ""
 
 #: plugins.php:1897
 msgid "Enable Plugin Locally"
-msgstr ""
+msgstr "დამატების ჩართვა ლოკალურად"
 
 #: poller.php:405
 #, php-format
@@ -21099,7 +21099,7 @@ msgstr "ბოლო სკანირება:"
 
 #: rrdcleaner.php:516 rrdcleaner.php:519
 msgid "Time Since Update"
-msgstr ""
+msgstr "დრო განახლების შემდეგ"
 
 #: rrdcleaner.php:532 rrdcleaner.php:535
 msgid "RRDfiles"
@@ -21444,7 +21444,7 @@ msgstr ""
 
 #: sites.php:697
 msgid "No Sites Found"
-msgstr ""
+msgstr "საიტები აღმოჩენილი არაა"
 
 #: spikekill.php:40
 #, php-format

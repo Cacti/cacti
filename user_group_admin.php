@@ -1546,7 +1546,7 @@ function user_group_realms_edit(string $header_label) : void {
 
 			unset($all_realms[$realm]);
 
-			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->') + 2 : 0);
+			$pos = (str_contains($user_auth_realms[$realm], '->') ? strpos($user_auth_realms[$realm], '->') + 2 : 0);
 
 			if ($i == 0) {
 				print "<tr class='tableHeader'><th colspan='2'>" . __('Plugin Permissions') . '</th></tr>';
@@ -1582,7 +1582,7 @@ function user_group_realms_edit(string $header_label) : void {
 				$old_value = '';
 			}
 
-			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->') + 2 : 0);
+			$pos = (str_contains($user_auth_realms[$realm], '->') ? strpos($user_auth_realms[$realm], '->') + 2 : 0);
 
 			print '<div class="flexChild">';
 			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', '', $name, true);

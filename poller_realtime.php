@@ -70,7 +70,7 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case '--poller_id':
-				$poller_id = intval($value);
+				$poller_id = (string) $value;
 
 				break;
 			case '--version':
@@ -109,6 +109,13 @@ if ($interval === false || $interval < 0) {
 	exit(1);
 }
 
+if (!preg_match('/^(?:[0-9]+|[A-Fa-f0-9]{64})$/', $poller_id)) {
+	print "ERROR: No valid --poller_id=ID specified\n\n";
+	display_help();
+
+	exit(1);
+}
+
 // record the start time
 $poller_start         = microtime(true);
 
@@ -139,7 +146,7 @@ $max_threads = read_config_option('max_threads');
 
 // Determine Command Name
 $command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
-$extra_args     = '-q ' . cacti_escapeshellarg(CACTI_PATH_BASE . '/cmd_realtime.php') . " $poller_id $graph_id $interval";
+$extra_args     = '-q ' . cacti_escapeshellarg(CACTI_PATH_BASE . '/cmd_realtime.php') . ' ' . cacti_escapeshellarg($poller_id) . " $graph_id $interval";
 
 // Determine if Realtime will work or not
 $cache_dir = read_config_option('realtime_cache_path');
@@ -192,7 +199,7 @@ function display_help() : void {
 }
 
 // process_poller_output REAL TIME MODIFIED
-function process_poller_output_rt(mixed $rrdtool_pipe, int $poller_id, int $interval) : int {
+function process_poller_output_rt(mixed $rrdtool_pipe, string $poller_id, int $interval) : int {
 	require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	// let's count the number of rrd files we processed

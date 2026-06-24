@@ -69,6 +69,7 @@ var isHover = false;
 var hoverTimer = false;
 var previousMainWidth = null;
 var previousColumns = null;
+var pinnedTooltipElement = null;
 var faIcons = {
 	open: {
 		icon: '<i class="ti ti-caret-down-filled" aria-hidden="true"></i>'
@@ -120,6 +121,22 @@ function renderLoading() {
 	Pace.stop();
 	Pace.bar.render();
 	setCactiTabCookie();
+}
+
+function clearPinnedTooltip() {
+	if (pinnedTooltipElement && pinnedTooltipElement.length) {
+		var target = pinnedTooltipElement;
+
+		pinnedTooltipElement = null;
+		target.removeData('cacti-tooltip-pinned');
+
+		if ($(document).tooltip('instance')) {
+			$(document).tooltip('close', $.Event('click', {
+				target: target[0],
+				currentTarget: target[0]
+			}));
+		}
+	}
 }
 
 var isMobile = {
@@ -939,7 +956,7 @@ function applySkin() {
 		$('input[type="submit"], input[type="button"], button').button();
 
 		// Handle re-index changes
-		$('fieldset.reindex_methods').buttonset();
+		$('fieldset.reindex_methods').controlgroup();
 
 		// debounce submits
 		$('form').on('submit', function () {
@@ -1042,6 +1059,56 @@ function applySkin() {
 			return text;
 		}
 	});
+
+	$(document)
+		.off('.cactiTooltipPin')
+		.on('click.cactiTooltipPin', 'div.cactiTooltipHint, span.cactiTooltipHint', function (event) {
+			var target = $(this);
+			var isPinned = target.data('cacti-tooltip-pinned') === true;
+
+			event.preventDefault();
+			event.stopPropagation();
+
+			if (pinnedTooltipElement && !target.is(pinnedTooltipElement)) {
+				clearPinnedTooltip();
+			}
+
+			if (isPinned) {
+				clearPinnedTooltip();
+				return;
+			}
+
+			pinnedTooltipElement = target;
+			target.data('cacti-tooltip-pinned', true);
+
+			$(document).tooltip('open', $.Event('mouseover', {
+				target: this,
+				currentTarget: this
+			}));
+		})
+		.on('click.cactiTooltipPinDismiss', function (event) {
+			var tooltipId, tooltip;
+
+			if (!pinnedTooltipElement || !pinnedTooltipElement.length) {
+				return;
+			}
+
+			tooltipId = pinnedTooltipElement.data('ui-tooltip-id');
+			tooltip = tooltipId ? $('#' + tooltipId) : $();
+
+			if (pinnedTooltipElement.is(event.target) ||
+				pinnedTooltipElement.has(event.target).length ||
+				(tooltip.length && (tooltip.is(event.target) || tooltip.has(event.target).length))) {
+				return;
+			}
+
+			clearPinnedTooltip();
+		})
+		.on('keyup.cactiTooltipPinDismiss', function (event) {
+			if (event.keyCode === $.ui.keyCode.ESCAPE) {
+				clearPinnedTooltip();
+			}
+		});
 
 	$(document).on('keyup keydown', function (event) {
 		shiftPressed = event.shiftKey;
@@ -4347,11 +4414,16 @@ function refreshGraphs() {
 		__csrf_magic: csrfMagicToken
 	};
 
-	$.post(document.location.pathname + '?action=update_timespan', post, function(data) {
+	$.ajax({
+		type: 'POST',
+		url: document.location.pathname + '?action=update_timespan',
+		data: post,
+		dataType: 'json'
+	}).done(function(data) {
 		$('#date1').val(data.date1);
 		$('#date2').val(data.date2);
 		initializeGraphs();
-	}, 'json');
+	});
 }
 
 function initializeGraphs(disable_cache) {
@@ -4663,6 +4735,15 @@ $.widget('ui.tooltip', $.ui.tooltip, {
 		}
 		this.disabledTitles = $( [] );
 	},
+	close: function( event ) {
+		var target = $( event ? event.currentTarget : this.element );
+
+		if ( target.length && target.data( 'cacti-tooltip-pinned' ) === true ) {
+			return;
+		}
+
+		return this._super( event );
+	},
 	_open: function( event, target, content ) {
 		var tooltipData, tooltip, delayedShow, a11yContent,
 			positionOption = $.extend( {}, this.options.position );
@@ -4795,8 +4876,8 @@ $.widget('custom.dropcolor', {
 			.autocomplete({
 				delay: 0,
 				minLength: 0,
-				source: $.proxy(this, '_source'),
-				select: $.proxy(this, '_select'),
+				source: this._source.bind(this),
+				select: this._select.bind(this),
 				search: function () {
 					$(this).data('ui-autocomplete').menu.bindings = $();
 				},

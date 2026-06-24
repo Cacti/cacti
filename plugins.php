@@ -389,7 +389,15 @@ function plugins_load_temp_table() : string {
 
 			db_execute("CREATE TEMPORARY TABLE IF NOT EXISTS $table LIKE plugin_config");
 			db_execute("TRUNCATE $table");
+
+			// Cacti strips NO_AUTO_VALUE_ON_ZERO on connect (database.php). Without it,
+			// a row with id=0 in plugin_config (e.g. from a plugin upgrade script) is
+			// reassigned by AUTO_INCREMENT to the next sequence value, causing a 1062
+			// collision when another row already holds that id.
+			$orig_sql_mode = db_fetch_cell('SELECT @@SESSION.sql_mode');
+			db_execute("SET SESSION sql_mode = CONCAT_WS(',', @@SESSION.sql_mode, 'NO_AUTO_VALUE_ON_ZERO')");
 			db_execute("INSERT INTO $table SELECT * FROM plugin_config");
+			db_execute_prepared('SET SESSION sql_mode = ?', [$orig_sql_mode]);
 
 			break;
 		} else {
@@ -777,9 +785,9 @@ function update_show_current() : void {
 			}
 
 			$(function() {
-				var sortColumn = '<?php print grv('sort_column'); ?>';
+				var sortColumn = <?php print json_encode((string) grv('sort_column')); ?>;
 				var dndActive  = <?php print read_config_option('drag_and_drop') == 'on' ? 'true' : 'false'; ?>;
-				var tableState = <?php print grv('state'); ?>
+				var tableState = <?php print (int) grv('state'); ?>;
 
 				$('#refresh').click(function() {
 					applyFilter();

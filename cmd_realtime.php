@@ -44,6 +44,12 @@ $poller_id = $_SERVER['argv'][1];
 $graph_id  = (int)$_SERVER['argv'][2];
 $interval  = (int)$_SERVER['argv'][3];
 
+if (!preg_match('/^(?:[0-9]+|[A-Fa-f0-9]{64})$/', $poller_id)) {
+	print "Invalid poller_id specified.\n\n";
+
+	exit(-1);
+}
+
 if ($graph_id <= 0) {
 	print "Invalid graph_id specified.\n\n";
 
@@ -118,9 +124,19 @@ if (cacti_sizeof($idbyhost)) {
 		];
 
 		if (function_exists('proc_open')) {
-			$cactiphp            = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . $poller_id, $cactides, $pipes);
-			$output              = fgets($pipes[1], 1024);
-			$using_proc_function = true;
+			$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
+
+			// proc_open returns false if the child could not be spawned; fall back to
+			// the non-proc path rather than reading from non-existent pipes
+			if (!is_resource($cactiphp)) {
+				cacti_log('WARNING: Unable to start PHP Script Server, falling back to direct execution', false, 'POLLER', POLLER_VERBOSITY_LOW);
+
+				$using_proc_function = false;
+				$pipes               = false;
+			} else {
+				$output              = fgets($pipes[1], 1024);
+				$using_proc_function = true;
+			}
 		} else {
 			$using_proc_function = false;
 			$pipes               = false;
@@ -269,7 +285,7 @@ if (cacti_sizeof($idbyhost)) {
 	if (($using_proc_function == true) && ($script_server_calls > 0)) {
 		if ($cactiphp) {
 			// close php server process
-			if ($pipes !== false) {
+			if (cacti_sizeof($pipes)) {
 				fwrite($pipes[0], "quit\r\n");
 				fclose($pipes[0]);
 				fclose($pipes[1]);

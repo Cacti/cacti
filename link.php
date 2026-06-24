@@ -32,9 +32,10 @@ $page = db_fetch_row_prepared('SELECT
 
 // Prevent redirect loops
 if (isset($_SERVER['HTTP_REFERER'])) {
-	if (!str_contains($_SERVER['HTTP_REFERER'], 'link.php')) {
-		$referer                  = $_SERVER['HTTP_REFERER'];
-		$_SESSION['link_referer'] = $referer;
+	if (strpos($_SERVER['HTTP_REFERER'], 'link.php') === false) {
+		$_SESSION['link_referer'] = validate_redirect_url($_SERVER['HTTP_REFERER'], 'index.php');
+
+		$referer = $_SESSION['link_referer'];
 	} elseif (isset($_SESSION['link_referer'])) {
 		$referer = sanitize_uri($_SESSION['link_referer']);
 	} else {

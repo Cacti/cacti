@@ -177,7 +177,7 @@ function stopRealtime() {
 			return false;
 		});
 
-		$(`graph_${graph_id}`).zoom({
+		$('#graph_'+graph_id).zoom({
 			inputfieldStartTime : 'date1',
 			inputfieldEndTime : 'date2',
 			serverTimeOffset : timeOffset
@@ -272,7 +272,7 @@ function realtimeGrapher() {
 
 					$.get(`${urlPath}graph_realtime.php?action=countdown&top=${parseInt(position.top)}&left=${parseInt(position.left)}${isThumb ? '&graph_nolegend=true':'&graph_nolegend=false'}&graph_end=0&graph_start=-${parseInt(graph_start) > 0 ? graph_start:'60'}&local_graph_id=${local_graph_id}&ds_step=${ds_step}&count=${count}&size=${size}`)
 						.done(function(data) {
-							const results = JSON.parse(data);
+							var results = (typeof data === 'string') ? JSON.parse(data) : data;
 
 							if (realtimeArray[results.local_graph_id] === true) {
 								const image_format = (results.image_format === 'svg+xml') ? 'svg+xml' : 'png';

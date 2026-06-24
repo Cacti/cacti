@@ -263,9 +263,17 @@ function get_basic_auth_username() : string|false {
 
 			if (cacti_sizeof($records)) {
 				foreach ($records as $r) {
+					if (trim($r) === '') {
+						continue;
+					}
+
 					[$basic, $shortform] = str_getcsv($r);
 
-					if (trim($basic ?? '') == $username) {
+					if ($basic === null || trim($basic) === '') {
+						continue;
+					}
+
+					if (trim($basic) == $username) {
 						$username = trim($shortform ?? '');
 						$found    = true;
 
@@ -4259,7 +4267,7 @@ function secpass_check_history(int $id, string $password) : bool {
 
 		$passes = explode('|', is_string($user['password_history']) ? $user['password_history'] : '');
 
-		// Double check this incase the password history setting was changed
+		// Double check this in case the password history setting was changed
 		while (cacti_count($passes) > $history) {
 			array_shift($passes);
 		}
@@ -4630,7 +4638,7 @@ function auth_login_redirect(string $login_opts = '') : void {
 }
 
 /**
- * Provides a URL knowledgable basename function
+ * Provides a URL-knowledgeable basename function
  *
  * @param string $referer The referer URL or file path to extract the base name from.
  *

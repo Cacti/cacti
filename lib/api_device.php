@@ -117,21 +117,23 @@ function api_device_purge_from_remote(array|int $device_ids, int $poller_id = 0)
 	if ($poller_id > 1) {
 		if (remote_poller_up($poller_id)) {
 			if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-				db_execute('DELETE FROM host             WHERE      id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM host_graph       WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM host_snmp_query  WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM host_snmp_cache  WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM host_value_cache WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM poller_item      WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM poller_reindex   WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM graph_tree_items WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM reports_items    WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+				$int_device_ids = array_map('intval', $device_ids);
+
+				db_execute('DELETE FROM host             WHERE      id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM host_graph       WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM host_snmp_query  WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM host_snmp_cache  WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM host_value_cache WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM poller_item      WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM poller_reindex   WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM graph_tree_items WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM reports_items    WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
 
 				db_execute('DELETE FROM poller_command
-					WHERE SUBSTRING_INDEX(command, ":", 1) IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+					WHERE SUBSTRING_INDEX(command, ":", 1) IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
 
-				db_execute('DELETE FROM data_local       WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
-				db_execute('DELETE FROM graph_local      WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM data_local       WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM graph_local      WHERE host_id IN (' . implode(', ', $int_device_ids) . ')', true, $rcnn_id);
 			} else {
 				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 			}
@@ -207,26 +209,28 @@ function api_device_remove_multi(array $device_ids, int $delete_type = 2) : void
 		$data_sources = [];
 		$graphs       = [];
 
+		$int_device_ids = array_map('intval', $device_ids);
+
 		$data_sources = array_rekey(
 			db_fetch_assoc('SELECT id
 				FROM data_local
-				WHERE host_id IN (' . implode(', ', $device_ids) . ')'),
+				WHERE host_id IN (' . implode(', ', $int_device_ids) . ')'),
 			'id', 'id'
 		);
 
 		$graphs = array_rekey(
 			db_fetch_assoc('SELECT id
 				FROM graph_local
-				WHERE host_id IN (' . implode(', ', $device_ids) . ')'),
+				WHERE host_id IN (' . implode(', ', $int_device_ids) . ')'),
 			'id', 'id'
 		);
 
 		// build the list
 		foreach ($device_ids as $device_id) {
 			if ($i == 0) {
-				$devices_to_delete .= $device_id;
+				$devices_to_delete .= intval($device_id);
 			} else {
-				$devices_to_delete .= ', ' . $device_id;
+				$devices_to_delete .= ', ' . intval($device_id);
 			}
 
 			// poller commands go one at a time due to trashy logic
@@ -891,6 +895,8 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 	if ($poller_id > 1) {
 		replicate_table_to_poller($rcnn_id, $data, 'data_input_data', $poller_id);
 	}
+
+	api_plugin_hook_function('replicate_out', ['remote_poller_id' => $poller_id, 'rcnn_id' => $rcnn_id, 'class' => 'all']);
 
 	$stats = db_fetch_row_prepared('SELECT
 		SUM(CASE WHEN action=0 THEN 1 ELSE 0 END) AS snmp,
@@ -1633,7 +1639,10 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 						$snmp_system = str_replace(':', ' ', $snmp_system);
 					}
 
-					if ($snmp_system == '') {
+					// Some devices (Dell iDRAC, Fortigate, etc.) may have an empty system value. This causes a false down status
+					$snmp_uptime = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
+
+					if ($snmp_system == '' && empty($snmp_uptime)) {
 						print "<span class='hostDown'>" . __('Host') . ' ' . __('SNMP error');
 
 						if ($snmp_error != '') {

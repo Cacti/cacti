@@ -2299,6 +2299,8 @@ function html_show_tabs_left() : void {
 			$tabs_left[$i]['selected'] = true;
 		} elseif ($tab_base == $me_base) {
 			$tabs_left[$i]['selected'] = true;
+		} else {
+			$tabs_left[$i]['selected'] = false;
 		}
 
 		$i++;
@@ -2316,7 +2318,7 @@ function html_show_tabs_left() : void {
 			$i++;
 		}
 
-		print "<li><a id='$id' role='tab' class='lefttab" . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . htmle($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . htmle($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='ti ti-chevron-down'></i></a></li>";
+		print "<li><a id='$id' role='tab' class='lefttab" . ($tab['selected'] === true ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . htmle($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . htmle($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='ti ti-chevron-down'></i></a></li>";
 	}
 
 	print "<li class='ellipsis maintabs-submenu-ellipsis'><a id='menu-ellipsis' role='tab' aria-selected='false' class='submenu-ellipsis' href='#'><i class='ti ti-chevron-down'></i></a></li>";
@@ -2377,6 +2379,10 @@ function html_graph_tabs_right() : void {
 			$tabs_right[$i]['selected'] = true;
 		}
 
+		if (!isset($tabs_right[$i]['selected'])) {
+			$tabs_right[$i]['selected'] = false;
+		}
+
 		$i++;
 	}
 
@@ -2385,26 +2391,26 @@ function html_graph_tabs_right() : void {
 	foreach ($tabs_right as $tab) {
 		switch($tab['id']) {
 			case 'tree':
-				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a id='treeview' role='tab' title='" . htmle($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+				if ($tab['image'] != '') {
+					print "<li><a id='treeview' role='tab' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] === true ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 				} else {
-					print "<li><a role='tab' title='" . htmle($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+					print "<li><a role='tab' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] === true ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
 
 				break;
 			case 'list':
-				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a id='listview' role='tab' title='" . htmle($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+				if ($tab['image'] != '') {
+					print "<li><a id='listview' role='tab' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] === true ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 				} else {
-					print "<li><a role='tab' title='" . htmle($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+					print "<li><a role='tab' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] === true ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
 
 				break;
 			case 'preview':
-				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a role='tab' id='preview' title='" . htmle($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+				if ($tab['image'] != '') {
+					print "<li><a role='tab' id='preview' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] === true ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 				} else {
-					print "<li><a role='tab' title='" . htmle($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+					print "<li><a role='tab' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] === true ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
 
 				break;
@@ -2425,17 +2431,26 @@ function html_transform_graph_template_ids(mixed $ids) : string {
 
 	foreach ($ids as $id) {
 		if (is_numeric($id)) {
-			$return_ids[] = $id;
+			$return_ids[] = intval($id);
 		} elseif (str_contains($id, 'cg_')) {
-			$new_id       = str_replace('cg_', '', $id);
-			$return_ids[] = $new_id;
+			$cg_id = str_replace('cg_', '', $id);
+
+			// non-numeric remainder would coerce to 0 (not templated); skip it instead
+			if (is_numeric($cg_id)) {
+				$return_ids[] = intval($cg_id);
+			}
 		} else {
 			$id = str_replace('dq_', '', $id);
 
-			$return_ids[] = db_fetch_cell_prepared('SELECT graph_template_id
+			$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
 				FROM snmp_query_graph
 				WHERE id = ?',
 				[$id]);
+
+			// a missing row returns false; skip it so id 0 (not templated) is not injected
+			if (is_numeric($graph_template_id)) {
+				$return_ids[] = intval($graph_template_id);
+			}
 		}
 	}
 
@@ -3511,7 +3526,7 @@ function html_auth_footer(string $section, string $error = '', string $html = ''
 			</form>
 			<hr />
 			<div class='cactiAuthErrors'>
-				<?php print $error; ?>
+				<?php print htmle($error); ?>
 			</div>
 			<div class='versionInfo'>
 				<?php print __('Version %s | %s', CACTI_VERSION_BRIEF, COPYRIGHT_YEARS_SHORT); ?>

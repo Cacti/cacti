@@ -80,7 +80,7 @@ function api_plugin_hook(string $name) : array {
 			$plugin_file = $hdata['file'];
 
 			// Security check
-			if (str_contains($plugin_file, '..')) {
+			if (str_contains($plugin_file, '..') || str_contains($plugin_name, '..')) {
 				cacti_log("ERROR: Attempted inclusion of not plugin file $plugin_file from $plugin_name with the hook name $name", false, 'SECURITY');
 
 				continue;
@@ -148,13 +148,19 @@ function api_plugin_hook_function(string $name, mixed $parm = null) : mixed {
 	if (cacti_sizeof($result)) {
 		foreach ($result as $hdata) {
 			if (!in_array($hdata['name'], $plugins_integrated, true)) {
+				if (str_contains($hdata['file'], '..') || str_contains($hdata['name'], '..')) {
+					cacti_log("ERROR: Attempted inclusion of not plugin file {$hdata['file']} from {$hdata['name']}", false, 'SECURITY');
+
+					continue;
+				}
+
 				$message = '';
 
 				if (api_plugin_can_install($hdata['name'], $message)) {
 					$p[] = $hdata['name'];
 
 					if (file_exists(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file'])) {
-						include_once(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file']);
+						require_once(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file']);
 					}
 
 					$function = $hdata['function'];
@@ -705,7 +711,14 @@ function api_plugin_install(string $plugin) : bool {
 		exit;
 	}
 
-	include_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
+	if (!file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")) {
+		cacti_log('ERROR: Plugin \'' . preg_replace('/[^a-zA-Z0-9_\-]/', '', $plugin) . '\' setup.php not found, cannot install', false, 'PLUGIN');
+		raise_message('plugin_missing', __('Plugin setup file not found.'), MESSAGE_LEVEL_ERROR);
+		header('Location: plugins.php');
+		exit;
+	}
+
+	require_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
 
 	$exists = db_fetch_assoc_prepared('SELECT id
 		FROM plugin_config
@@ -851,7 +864,8 @@ function api_plugin_uninstall(string $plugin, bool $tables = true) : void {
 	$plugin_found = false;
 
 	if (file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")) {
-		include_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
+		cacti_log(sprintf('NOTE: Loading setup.php for plugin %s (uninstall)', $plugin), false, 'PLUGIN', POLLER_VERBOSITY_DEBUG);
+		require_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
 
 		// Run the Plugin's Uninstall Function first
 		$function = "plugin_{$plugin}_uninstall";
@@ -894,7 +908,8 @@ function api_plugin_check_config(string $plugin) : bool {
 	clearstatcache();
 
 	if (file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")) {
-		include_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
+		cacti_log(sprintf('NOTE: Loading setup.php for plugin %s (check_config)', $plugin), false, 'PLUGIN', POLLER_VERBOSITY_DEBUG);
+		require_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
 
 		$function = "plugin_{$plugin}_check_config";
 
@@ -1045,31 +1060,41 @@ function api_plugin_moveup(string $plugin) : void {
 		[$plugin]);
 
 	if (!empty($id)) {
-		$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config') + 1;
-
 		$prior_id = db_fetch_cell_prepared('SELECT MAX(id)
 			FROM plugin_config
 			WHERE id < ?',
 			[$id]);
 
-		// update the above plugin to the prior temp id
-		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$temp_id, $prior_id]);
-		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$prior_id, $id]);
-		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$id, $temp_id]);
+		// MAX() on an empty set returns NULL; without a guard, the UPDATE
+		// below would set id = NULL on the current plugin, which non-strict
+		// MariaDB/MySQL silently stores as 0, corrupting the primary key.
+		if (!empty($prior_id)) {
+			$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config') + 1;
+
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$temp_id, $prior_id]);
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$prior_id, $id]);
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$id, $temp_id]);
+		}
 	}
 
 	api_plugin_replicate_config();
 }
 
 function api_plugin_movedown(string $plugin) : void {
-	$id      = db_fetch_cell_prepared('SELECT id FROM plugin_config WHERE directory = ?', [$plugin]);
-	$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config') + 1;
-	$next_id = db_fetch_cell_prepared('SELECT MIN(id) FROM plugin_config WHERE id > ?', [$id]);
+	$id = db_fetch_cell_prepared('SELECT id FROM plugin_config WHERE directory = ?', [$plugin]);
 
-	// update the above plugin to the prior temp id
-	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$temp_id, $next_id]);
-	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$next_id, $id]);
-	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$id, $temp_id]);
+	if (!empty($id)) {
+		$next_id = db_fetch_cell_prepared('SELECT MIN(id) FROM plugin_config WHERE id > ?', [$id]);
+
+		// MIN() on an empty set returns NULL; same NULL→0 corruption risk as moveup.
+		if (!empty($next_id)) {
+			$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config') + 1;
+
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$temp_id, $next_id]);
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$next_id, $id]);
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$id, $temp_id]);
+		}
+	}
 
 	api_plugin_replicate_config();
 }

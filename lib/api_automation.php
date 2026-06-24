@@ -176,10 +176,12 @@ function display_matching_hosts(array $rule, int $rule_type, string $url) : void
 		'host_id', 'data_sources'
 	);
 
-	$total_rows = cacti_sizeof(db_fetch_assoc($details['rows_query'], false));
-	$sortby     = $details['sortby'];
-	$sql_query  = $details['rows_query'] .
-		' ORDER BY ' . $sortby . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
+	$total_rows     = cacti_sizeof(db_fetch_assoc($details['rows_query'], false));
+	$sort_column    = api_automation_column_exists(grv('sort_column'), ['host', 'graph_local', 'sites', 'graph_templates', 'graph_templates_graph', 'host_template']) ? grv('sort_column') : 'description';
+	$sort_direction = in_array(strtoupper((string) grv('sort_direction')), ['ASC', 'DESC'], true) ? strtoupper((string) grv('sort_direction')) : 'ASC';
+	$sortby         = str_ends_with($sort_column, 'hostname') ? 'INET_ATON(' . $sort_column . ')' : $sort_column;
+	$sql_query      = $details['rows_query'] .
+		' ORDER BY ' . $sortby . ' ' . $sort_direction .
 		' LIMIT ' . ($details['rows'] * (grv('page') - 1)) . ',' . $details['rows'];
 
 	$hosts = db_fetch_assoc($sql_query, false);
@@ -314,7 +316,7 @@ function automation_get_matching_device_sql(array &$rule, int $rule_type) : arra
 	} elseif (grv('host_template_id') == '0') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'h.host_template_id=0';
 	} elseif (!ierv('host_template_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'h.host_template_id=' . grv('host_template_id');
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'h.host_template_id=' . (int) grv('host_template_id');
 	}
 
 	// build magic query, for matching hosts JOIN tables host and host_template
@@ -448,6 +450,9 @@ function automation_get_matching_graphs_sql(array $rule, int $rule_type) : array
 		$sdisabled = "'' AS site_disabled,";
 	}
 
+	$sort_column    = api_automation_column_exists(grv('sort_column'), ['host', 'graph_local', 'sites', 'graph_templates', 'graph_templates_graph', 'host_template']) ? grv('sort_column') : 'title_cache';
+	$sort_direction = in_array(strtoupper((string) grv('sort_direction')), ['ASC', 'DESC'], true) ? strtoupper((string) grv('sort_direction')) : 'ASC';
+
 	$rows_query = "SELECT h.id AS host_id, h.hostname, h.description,
 		h.disabled AS disabled, $sdisabled
 		h.status, ht.name AS host_template_name,
@@ -465,16 +470,8 @@ function automation_get_matching_graphs_sql(array $rule, int $rule_type) : array
 		ON gl.id = gtg.local_graph_id
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id = ht.id
-		$sql_where";
-
-	$sortby = sanitize_sql_column(grv('sort_column'));
-
-	if ($sortby == 'h.hostname') {
-		$sortby = 'INET_ATON(h.hostname)';
-	}
-
-	$rows_query .= '
-		ORDER BY ' . $sortby . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') . '
+		$sql_where
+		ORDER BY " . $sort_column . ' ' . $sort_direction . '
 		LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	return [
@@ -1180,7 +1177,7 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
 	} elseif (grv('host_template_id') == '0') {
 		$sql_where .= ' AND h.host_template_id=0';
 	} elseif (!ierv('host_template_id')) {
-		$sql_where .= ' AND h.host_template_id=' . grv('host_template_id');
+		$sql_where .= ' AND h.host_template_id=' . (int) grv('host_template_id');
 	}
 
 	// get the WHERE clause for matching hosts
@@ -1211,14 +1208,12 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
 
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-	$sortby = sanitize_sql_column(grv('sort_column'));
-
-	if ($sortby == 'h.hostname') {
-		$sortby = 'INET_ATON(h.hostname)';
-	}
+	$sort_column    = api_automation_column_exists(grv('sort_column'), ['host', 'graph_local', 'sites', 'graph_templates', 'graph_templates_graph', 'host_template']) ? grv('sort_column') : 'description';
+	$sort_direction = in_array(strtoupper((string) grv('sort_direction')), ['ASC', 'DESC'], true) ? strtoupper((string) grv('sort_direction')) : 'ASC';
+	$sortby         = str_ends_with($sort_column, 'hostname') ? 'INET_ATON(' . $sort_column . ')' : $sort_column;
 
 	$sql_query = "$rows_query ORDER BY $sortby " .
-		(strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') . ' LIMIT ' .
+		$sort_direction . ' LIMIT ' .
 		($rows * (grv('page') - 1)) . ',' . $rows;
 
 	$templates = db_fetch_assoc($sql_query, false);
@@ -3316,7 +3311,7 @@ function create_all_header_nodes(int $item_id, array $rule) : int {
 				// for a fixed string, use the given text
 				$sql    = '';
 				$target = $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING];
-			} else {
+			} elseif (api_automation_column_exists($tree_item['field'], ['host', 'host_template', 'graph_local', 'graph_templates_graph', 'graph_templates'])) {
 				$sql_field = $tree_item['field'] . ' AS source ';
 
 				// now we build up a new query for counting the rows
@@ -3326,6 +3321,12 @@ function create_all_header_nodes(int $item_id, array $rule) : int {
 				$sql_where . ' AND (' . $sql_filter . ')';
 
 				$target = db_fetch_cell($sql, '', false);
+			} else {
+				cacti_log("Attempted SQL Injection found in Tree Automation for the field variable {$tree_item['field']}.", false, 'AUTOM8');
+				raise_message('sql_injection', __("Attempted SQL Injection found in Tree Automation for the field variable {$tree_item['field']}."), MESSAGE_LEVEL_ERROR);
+
+				$sql    = '';
+				$target = '';
 			}
 
 			cacti_log($function . ' Item ' . $item_id . ' - sql: ' . str_replace("\m",'',$sql) . ' matches: ' . $target, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);

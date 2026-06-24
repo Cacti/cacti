@@ -373,11 +373,11 @@ function color_import() : void {
 		</td>
 	</tr><?php
 
-	form_hidden_box('save_component_import','1','');
-
 	html_end_box();
 
-	form_save_button('color.php', 'import');
+	form_hidden_box('save_component_import','1','');
+
+	form_save_button('', 'import', 'import', false);
 }
 
 function color_edit() : void {
@@ -634,10 +634,10 @@ function color_export() : void {
 		header('Content-type: application/csv');
 		header('Content-Disposition: attachment; filename=colors.csv');
 
-		print '"name","hex"' . "\n";
+		print cacti_csv_cell('name') . ',' . cacti_csv_cell('hex') . "\n";
 
 		foreach ($colors as $color) {
-			print '"' . $color['name'] . '","' . $color['hex'] . '"' . "\n";
+			print cacti_csv_cell($color['name']) . ',' . cacti_csv_cell($color['hex']) . "\n";
 		}
 	}
 }

@@ -799,16 +799,33 @@ function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, 
 
 	// create new entry(s): data_input_data
 	if (cacti_sizeof($data_input_datas)) {
+		/* Stamp the duplicated rows with the new entity's identity, not
+		 * the source row's. For a duplicated data source the new rows
+		 * point at $local_data_id and that source's host_id; for a
+		 * duplicated template they point at the new $data_template_id
+		 * with local_data_id = 0 and host_id = 0 (templates have no
+		 * device of their own). Mirrors the data_template_data save at
+		 * line 759 above which branches the same way. */
+		if (!empty($_local_data_id)) {
+			$bound_data_template_id = $data_template_data['data_template_id'];
+			$bound_local_data_id    = $local_data_id;
+			$bound_host_id          = $data_local['host_id'];
+		} else {
+			$bound_data_template_id = $data_template_id;
+			$bound_local_data_id    = 0;
+			$bound_host_id          = 0;
+		}
+
 		foreach ($data_input_datas as $data_input_data) {
 			db_execute_prepared('INSERT IGNORE INTO data_input_data
 				(data_input_field_id, data_template_data_id, data_template_id, local_data_id, host_id, t_value, value)
-				VALUES (?, ?, ?, ?)',
+				VALUES (?, ?, ?, ?, ?, ?, ?)',
 				[
 					$data_input_data['data_input_field_id'],
 					$data_template_data_id,
-					$data_input_data['data_template_id'],
-					$data_input_data['local_data_id'],
-					$data_input_data['host_id'],
+					$bound_data_template_id,
+					$bound_local_data_id,
+					$bound_host_id,
 					$data_input_data['t_value'],
 					$data_input_data['value']
 				]

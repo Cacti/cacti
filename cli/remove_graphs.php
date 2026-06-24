@@ -220,7 +220,7 @@ if (cacti_sizeof($graph_template_ids)) {
 
 if (cacti_sizeof($host_ids)) {
 	foreach ($host_ids as $id) {
-		if (!is_numeric($id) || $id <= 0) {
+		if (!is_numeric($id) || $id < 0) {
 			print "FATAL: Host ID $id is invalid" . PHP_EOL;
 
 			exit(1);
@@ -269,9 +269,15 @@ if ($listGraphTemplates) {
 		$all_option = false;
 	}
 
+	/* Only join the host table when --host-template-id filtering is active,
+	 * since that is the only clause that references the h alias.  An INNER JOIN
+	 * would silently exclude graphs with host_id=0 (no matching host row). */
+	$sql_join = '';
+
 	if (cacti_sizeof($host_template_ids) && $all === false) {
+		$sql_join    = 'INNER JOIN host AS h ON h.id = gl.host_id';
 		$sql_where .= ' AND h.host_template_id IN (' . implode(',', $host_template_ids) . ')';
-		$all_option = false;
+		$all_option  = false;
 	}
 
 	if (cacti_sizeof($graph_template_ids) && $all === false) {
@@ -301,8 +307,7 @@ if ($listGraphTemplates) {
 		FROM graph_local AS gl
 		INNER JOIN graph_templates_graph AS gtg
 		ON gl.id=gtg.local_graph_id
-		INNER JOIN host AS h
-		ON h.id = gl.host_id
+		$sql_join
 		$sql_where");
 
 	if ($graphs != false && cacti_sizeof($graphs)) {

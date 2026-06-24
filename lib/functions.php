@@ -782,7 +782,7 @@ function get_selected_theme() : string {
 		}
 	}
 
-	if (!file_exists(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css')) {
+	if (isset($_SESSION[SESS_USER_ID]) && !file_exists(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css')) {
 		foreach ($themes as $t => $name) {
 			if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $t . '/main.css')) {
 				$theme = $t;
@@ -803,6 +803,57 @@ function get_selected_theme() : string {
 	}
 
 	return (string) $theme;
+}
+
+/**
+ * Returns a validated theme name for graph rendering.
+ *
+ * @param string $requested Requested theme from input
+ *
+ * @return string
+ */
+function cacti_validate_theme(string $requested) : string {
+	static $valid_themes = null;
+
+	$default = (string) read_config_option('selected_theme');
+
+	if ($default === '') {
+		$default = 'modern';
+	}
+
+	if ($valid_themes === null) {
+		$valid_themes = [];
+		$themes_dir   = CACTI_PATH_INCLUDE . '/themes';
+
+		if (is_dir($themes_dir)) {
+			$entries = scandir($themes_dir);
+
+			if ($entries !== false) {
+				foreach ($entries as $entry) {
+					if ($entry === '.' || $entry === '..') {
+						continue;
+					}
+
+					$full = $themes_dir . '/' . $entry;
+
+					if (is_dir($full) && is_file($full . '/rrdtheme.php')) {
+						$valid_themes[$entry] = true;
+					}
+				}
+			}
+		}
+	}
+
+	$requested = basename($requested);
+	$default   = basename($default);
+
+	if (isset($valid_themes[$requested])) {
+		return $requested;
+	}
+
+	// the configured default can itself be stale or poisoned, so re-validate
+	// it before it reaches an include path; fall back to a theme that ships
+	return isset($valid_themes[$default]) ? $default : 'modern';
 }
 
 /**
@@ -2378,6 +2429,13 @@ function strip_alpha(mixed $string) : mixed {
  * @return bool Either true or false
  */
 function is_valid_pathname($path) {
+	/* treat ':' as a boundary as well so the Windows drive-relative form
+	 * "C:..\rra" is rejected; a slash, backslash, drive separator or string
+	 * edge before/after '..' all denote traversal */
+	if (preg_match('/(^|[\/\\\\:])\.\.([\/\\\\:]|$)/', trim($path))) {
+		return false;
+	}
+
 	if (preg_match('/^([a-zA-Z0-9\_\.\-\\\:\/]+)$/', trim($path))) {
 		return true;
 	} else {
@@ -2939,7 +2997,7 @@ function get_full_test_script_path(int $data_template_id, int $host_id) : mixed 
 			} elseif ($item['data_name'] == 'host_id' || $item['data_name'] == 'hostid') {
 				$value = cacti_escapeshellarg($host['id']);
 			} else {
-				$value = "'" . $item['value'] . "'";
+				$value = cacti_escapeshellarg((string) $item['value']);
 			}
 
 			$full_path = str_replace('<' . $item['data_name'] . '>', $value, $full_path);
@@ -3956,10 +4014,36 @@ function get_graph_parent(int $graph_template_item_id, string $direction) : int 
  *
  * @return int The ID of the next or previous item id
  */
-function get_item(string $tblname, string $field, int $startid, string $lmt_query, string $direction) : int {
+/**
+ * build_where_from_array - builds a SQL WHERE clause fragment from an associative array
+ *
+ * @param array $filters An associative array of field => value
+ * @param array $params  A reference to the params array for prepared statements
+ *
+ * @return string The SQL WHERE fragment
+ */
+function build_where_from_array(array $filters, array &$params) : string {
+	$where = [];
+
+	foreach ($filters as $field => $value) {
+		if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $field)) {
+			cacti_log('ERROR: Invalid field name in build_where_from_array: ' . $field, false, 'SECURITY');
+
+			continue;
+		}
+
+		$where[]  = "`$field` = ?";
+		$params[] = $value;
+	}
+
+	return implode(' AND ', $where);
+}
+
+function get_item(string $tblname, string $field, int $startid, string|array $lmt_query, string $direction) : int {
 	$sql_operator = '';
 	$sql_order    = '';
 	$new_item_id  = 0;
+	$params       = [];
 
 	if ($direction == 'next') {
 		$sql_operator = '>';
@@ -3975,11 +4059,18 @@ function get_item(string $tblname, string $field, int $startid, string $lmt_quer
 		[$startid]);
 
 	if ($sql_operator != '') {
-		$new_item_id = db_fetch_cell("SELECT id
-			FROM $tblname
-			WHERE $field $sql_operator $current_sequence " . ($lmt_query != '' ? " AND $lmt_query" : '') . "
-			ORDER BY $field $sql_order
-			LIMIT 1");
+		$where_clause = '';
+
+		if (is_array($lmt_query)) {
+			$where_clause = build_where_from_array($lmt_query, $params);
+		} else {
+			$where_clause = $lmt_query;
+		}
+
+		$sql_query = "SELECT id FROM $tblname WHERE $field $sql_operator ? " . ($where_clause != '' ? " AND $where_clause" : '') . " ORDER BY $field $sql_order LIMIT 1";
+		array_unshift($params, $current_sequence);
+
+		$new_item_id = db_fetch_cell_prepared($sql_query, $params);
 	}
 
 	if (empty($new_item_id)) {
@@ -3999,11 +4090,19 @@ function get_item(string $tblname, string $field, int $startid, string $lmt_quer
  *
  * @return int The next available sequence id
  */
-function get_sequence(mixed $id, string $field, string $table_name, string $group_query) : int {
+function get_sequence(mixed $id, string $field, string $table_name, string|array $group_query) : int {
 	if (empty($id)) {
-		$data = db_fetch_row("SELECT max($field)+1 AS seq
+		$params = [];
+
+		if (is_array($group_query)) {
+			$where_clause = build_where_from_array($group_query, $params);
+		} else {
+			$where_clause = $group_query;
+		}
+
+		$data = db_fetch_row_prepared("SELECT max($field)+1 AS seq
 			FROM $table_name
-			WHERE $group_query");
+			WHERE $where_clause", $params);
 
 		if (!is_array($data) || $data['seq'] == '') {
 			return 1;
@@ -4029,7 +4128,7 @@ function get_sequence(mixed $id, string $field, string $table_name, string $grou
  *
  * @return void
  */
-function move_item_down(string $table_name, int $current_id, string $group_query = '') : void {
+function move_item_down(string $table_name, int $current_id, string|array $group_query = '') : void {
 	$next_item = get_item($table_name, 'sequence', $current_id, $group_query, 'next');
 
 	$sequence = db_fetch_cell_prepared("SELECT sequence
@@ -4062,7 +4161,7 @@ function move_item_down(string $table_name, int $current_id, string $group_query
  *
  * @return void
  */
-function move_item_up(string $table_name, int $current_id, string $group_query = '') : void {
+function move_item_up(string $table_name, int $current_id, string|array $group_query = '') : void {
 	$last_item = get_item($table_name, 'sequence', $current_id, $group_query, 'previous');
 
 	$sequence = db_fetch_cell_prepared("SELECT sequence
@@ -4091,14 +4190,14 @@ function move_item_up(string $table_name, int $current_id, string $group_query =
  * an array
  *
  * @param string $command_line The command to execute
+ * @param int    $return_code  Receives the command exit code so callers can branch on failure
  *
  * @return array An array containing the command output
  */
-function exec_into_array(string $command_line) : array {
+function exec_into_array(string $command_line, int &$return_code = 0) : array {
 	$out = [];
-	$err = 0;
 
-	exec($command_line, $out, $err);
+	exec($command_line, $out, $return_code);
 
 	return $out;
 }
@@ -4983,6 +5082,52 @@ function sanitize_sql_column(string $column, string $default = 'id') : string {
 }
 
 /**
+ * cacti_csv_cell - encode a single value for safe inclusion in a CSV file.
+ * Doubles embedded double-quotes (RFC 4180) and prefixes a single quote when
+ * the value opens with a spreadsheet formula trigger (= + - @ and the tab/CR
+ * control characters), so the cell cannot be interpreted as a formula when the
+ * file is opened in Excel or LibreOffice. The result includes the surrounding
+ * double-quotes.
+ *
+ * @param mixed $value The raw cell value
+ *
+ * @return string The quoted, escaped cell ready to concatenate into a CSV row
+ */
+function cacti_csv_cell(mixed $value) : string {
+	$value = (string) $value;
+
+	if (cacti_csv_needs_formula_guard($value)) {
+		$value = "'" . $value;
+	}
+
+	return '"' . str_replace('"', '""', $value) . '"';
+}
+
+/**
+ * cacti_csv_needs_formula_guard - decide whether a CSV cell opens with a
+ * spreadsheet formula trigger and therefore needs a leading single quote.
+ * A value that is a plain number (including a leading + or -) is data, not a
+ * formula, so it is left untouched and exports round-trip as the original
+ * number rather than gaining a stray apostrophe.
+ *
+ * @param string $value The raw cell value
+ *
+ * @return bool True when the cell must be quoted to neutralise a formula
+ */
+function cacti_csv_needs_formula_guard(string $value) : bool {
+	// inspect the first non-blank character so leading spaces or newlines cannot
+	// hide a formula trigger; tab and CR are triggers themselves so not skipped
+	$lead = ltrim($value, " \n");
+
+	if ($lead === '' || strpbrk($lead[0], "=+-@\t\r") === false) {
+		return false;
+	}
+
+	// a numeric value such as -1.234 or +5 is data, not a formula
+	return !is_numeric($lead);
+}
+
+/**
  * sanitize_search_string - cleans up a search string submitted by the user to be passed
  * to the database. NOTE: some of the code for this function came from the phpBB project.
  *
@@ -5021,9 +5166,48 @@ function sanitize_search_string(string $string) : string {
  *
  * @return string The sanitized uri
  */
-function sanitize_uri($uri) {
-	static $drop_char_match   =   ['^', '$', '<', '>', '`', "'", '"', '|', '+', '[', ']', '{', '}', ';', '!', '(', ')'];
-	static $drop_char_replace = [ '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  ''];
+function sanitize_uri(string $uri) : string {
+	static $drop_char_match = [
+		'^', '$',
+		'<', '>',
+		'`', "'",
+		'"', '|',
+		'+', '[',
+		']', '{',
+		'}', ';',
+		'!', '(',
+		')'
+	];
+
+	static $drop_char_replace = [
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		''
+	];
+
+	if (is_urlencoded($uri)) {
+		$uri = urldecode($uri);
+	}
+
+	/* a network-path reference (//host or /\host) would redirect off-site.
+	 * Browsers strip leading C0 controls and whitespace (WHATWG: tab, LF, FF,
+	 * CR and space) before resolving the URL, so "\x0C//evil.com" reaches the
+	 * browser as "//evil.com". Drop those leading bytes ourselves before the
+	 * slash-collapse check, then collapse any leading slash/backslash run to a
+	 * single '/' so the URI stays a local path. */
+	$trimmed = preg_replace('/^[\x00-\x20]+/', '', $uri);
+
+	if (preg_match('/^[\/\\\\]{2,}/', $trimmed)) {
+		$uri = '/' . ltrim($trimmed, '/\\');
+	} else {
+		$uri = $trimmed;
+	}
 
 	if (str_contains($uri, 'graph_view.php')) {
 		if (!strpos($uri, 'action=')) {
@@ -5031,7 +5215,22 @@ function sanitize_uri($uri) {
 		}
 	}
 
-	return str_replace($drop_char_match, $drop_char_replace, strip_tags(urldecode($uri)));
+	return str_replace($drop_char_match, $drop_char_replace, strip_tags($uri));
+}
+
+/**
+ * Checks to see if a string is urlencoded
+ *
+ * @param string $string the string to be validated
+ *
+ * @return boolean - true is the string is urlencoded otherwise false
+ */
+function is_urlencoded(string $string) : bool {
+	if ($string != urldecode($string)) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 /**
@@ -5041,7 +5240,7 @@ function sanitize_uri($uri) {
  *
  * @return bool true is the string is base64 otherwise false
  */
-function is_base64_encoded($data) {
+function is_base64_encoded(string $data) : bool {
 	// Perform a simple check first
 	if (!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $data)) {
 		return false;
@@ -5545,39 +5744,21 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 			return __('No OAuth2 refresh token is specified. Configure OAuth2 correctly.');
 		}
 
-		switch (read_config_option('settings_oauth2_provider')) {
-			case 'google':
-				$provider = new League\OAuth2\Client\Provider\Google([
-					'clientId'     => $clientId,
-					'clientSecret' => $clientSecret,
-				]);
+		require_once(CACTI_PATH_LIBRARY . '/CactiOAuth.php');
 
-				break;
-			case 'azure':
-				$provider = new Greew\OAuth2\Client\Provider\Azure([
-					'clientId'     => $clientId,
-					'clientSecret' => $clientSecret,
-					'tenantId'     => $tenantId,
-				]);
+		$providerName = read_config_option('settings_oauth2_provider');
+		$params       = [
+			'clientId'     => $clientId,
+			'clientSecret' => $clientSecret,
+		];
 
-				break;
-			case 'yahoo':
-				$provider = new Hayageek\OAuth2\Client\Provider\Yahoo([
-					'clientId'     => $clientId,
-					'clientSecret' => $clientSecret,
-				]);
-
-				break;
-			case 'microsoft':
-				$provider = new Stevenmaguire\OAuth2\Client\Provider\Microsoft([
-					'clientId'     => $clientId,
-					'clientSecret' => $clientSecret,
-				]);
-
-				break;
+		if ($providerName == 'azure') {
+			$params['tenantId'] = $tenantId;
 		}
 
-		if ($provider !== false) {
+		$provider = CactiOAuth::getProvider($providerName, $params);
+
+		if ($provider !== null) {
 			$mail->setOAuth(
 				new PHPMailer\PHPMailer\OAuth([
 					'provider'     => $provider,
@@ -6806,7 +6987,7 @@ function CactiErrorHandler(int $level, string $message, string $file, int $line,
 
 	preg_match("/.*\/plugins\/([\w-]*)\/.*/", $file, $output_array);
 
-	$plugin = ($output_array != null && isset($output_array[1]) ? $output_array[1] : '');
+	$plugin = $output_array[1] ?? '';
 	$error  = 'Unknown error occurred';
 
 	if ($level != null && isset($phperrors[$level])) {
@@ -8994,7 +9175,7 @@ function cacti_browser_zone_enabled() : bool {
 }
 
 /**
- * cacti_time_zone_set - Givin an offset in minutes, attempt
+ * cacti_time_zone_set - Given an offset in minutes, attempt
  * to set a PHP date.timezone.  There are some oddballs that
  * we have to accommodate.
  *

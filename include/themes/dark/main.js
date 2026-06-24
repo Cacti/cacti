@@ -57,7 +57,7 @@ function themeReady() {
 	});
 
 	$('.checkboxgroup').children('br').remove();
-	$('.checkboxgroup').buttonset();
+	$('.checkboxgroup').controlgroup();
 
 	// Turn file buttons into jQueryUI buttons
 	$('.import_label').button();

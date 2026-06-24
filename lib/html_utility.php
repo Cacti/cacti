@@ -1153,7 +1153,6 @@ function validate_store_request_vars(array $filters, string $sess_prefix = '') :
 					if (is_base64_encoded($_REQUEST[$variable])) {
 						$_REQUEST[$variable] = mb_convert_encoding(base64_decode($_REQUEST[$variable], true), 'UTF-8');
 					}
-
 					$valid = validate_is_regex($_REQUEST[$variable]);
 
 					if ($valid === true) {
@@ -1202,12 +1201,28 @@ function validate_store_request_vars(array $filters, string $sess_prefix = '') :
 				} elseif (!isset($options['options'])) {
 					$value = filter_var($_REQUEST[$variable], $options['filter']);
 				} else {
-					$value = filter_var($_REQUEST[$variable], $options['filter'], $options['options']);
+					// Handle FILTER_VALIDATE_REGEXP specially to ensure proper delimiters
+					if ($options['filter'] == FILTER_VALIDATE_REGEXP && isset($options['options']['regexp'])) {
+						$regex = $options['options']['regexp'];
+
+						// Only add delimiters if they're not already present
+						if (!preg_match('/^\/.*\/[imsuxADJUX]*$/', $regex)) {
+							$options['options']['regexp'] = '/' . $regex . '/';
+						}
+					}
+
+					// Special handling for graph_template_id to allow -1
+					if ($variable === 'graph_template_id' && get_nfilter_request_var($variable) == '-1') {
+						$value = '-1';
+					} else {
+						$value = filter_var($_REQUEST[$variable], $options['filter'], $options['options']);
+					}
 				}
 
 				if ($value === false) {
 					if ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
-						raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', htmle(get_nfilter_request_var($variable)), htmle($custom_error)), MESSAGE_LEVEL_ERROR);
+						raise_message('custom', __('The regular expression "%s" is not valid. Error is %s',
+							htmle(get_nfilter_request_var($variable)), htmle($custom_error)), MESSAGE_LEVEL_ERROR);
 						set_request_var($variable, '');
 					} else {
 						die_html_input_error($variable, get_nfilter_request_var($variable), htmle($custom_error));
@@ -1437,6 +1452,8 @@ function remove_column_from_order_string(string $column) : void {
  * such as 'action' and 'tab'. The page count is incremented with each call to
  * ensure uniqueness.
  *
+ * @param bool $increment Increment the page counter if true
+ *
  * @return string A unique order string for the current page.
  */
 function get_order_string_page(bool $increment = true) : string {
@@ -1460,6 +1477,76 @@ function get_order_string_page(bool $increment = true) : string {
 }
 
 /**
+ * Validate the redirect url provider by the HTTP_REFERER from PHP
+ *
+ * @param string $url     The regular expression to validate.
+ * @param string $default The URL to travel to upon failure
+ *
+ * @return string The validated URL, or the provided $default if invalid
+ */
+function validate_redirect_url($url = '', $default = 'index.php') {
+	if ($url === '') {
+		return $default;
+	}
+
+	$url = trim($url);
+
+	// Decode the url to make it readable if encoded
+	if (is_urlencoded($url)) {
+		$url = urldecode($url);
+	}
+
+	// reject URLs with protocol schemes (external redirects, javascript:, data:)
+	$bad_strings = [
+		'javascript:',
+		'data:',
+		'vbscript:',
+		'mailto:',
+		'file:'
+	];
+
+	foreach ($bad_strings as $bstring) {
+		if (stripos($url, $bstring) !== false) {
+			return $default;
+		}
+	}
+
+	// reject protocol-relative URLs
+	if (strpos($url, '//') === 0) {
+		return $default;
+	}
+
+	// reject URLs with newlines (header injection)
+	if (preg_match('/[\r\n]/', $url)) {
+		return $default;
+	}
+
+	// reject path traversal sequences
+	if (stripos($url, '..') !== false) {
+		return $default;
+	}
+
+	// Prevent referring off site
+	$ref_host = parse_url($url, PHP_URL_HOST);
+	$srv_host = null;
+
+	if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '') {
+		$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
+	}
+
+	if ($ref_host === null || ($srv_host !== null && $ref_host === $srv_host)) {
+		$ref_path  = parse_url($url, PHP_URL_PATH) ?: '';
+		$ref_query = parse_url($url, PHP_URL_QUERY);
+
+		$safe = sanitize_uri($ref_path . ($ref_query !== null ? '?' . $ref_query : ''));
+
+		return $safe;
+	} else {
+		return $default;
+	}
+}
+
+/**
  * Validates if the given string is a valid regular expression.
  *
  * This function checks if the provided regular expression is valid and safe to use.
@@ -1468,9 +1555,9 @@ function get_order_string_page(bool $increment = true) : string {
  *
  * @param string $regex The regular expression to validate.
  *
- * @return mixed Returns true if the regular expression is valid, otherwise returns an error message.
+ * @return bool|string Returns true if the regular expression is valid, otherwise returns an error message string.
  */
-function validate_is_regex(string $regex) : mixed {
+function validate_is_regex(string $regex) : bool|string {
 	if ($regex == '') {
 		return true;
 	}

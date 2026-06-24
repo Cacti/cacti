@@ -49,7 +49,7 @@ function themeReady() {
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 
 	$('.checkboxgroup').children('br').remove();
-	$('.checkboxgroup').buttonset();
+	$('.checkboxgroup').controlgroup();
 
 	// Turn file buttons into jQueryUI buttons
 	$('.import_label').button();

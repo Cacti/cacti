@@ -1017,7 +1017,7 @@ function create_tree_filter() : array {
 					'method'         => 'drop_multi',
 					'friendly_name'  => __('Template'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(cg_[0-9]|dq_[0-9]|[\-0-9])']],
+					'filter_options' => ['options' => ['regexp' => '/^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)(,(cg_[0-9]+|dq_[0-9]+|-?[0-9]+))*$/']],
 					'default'        => '-1',
 					'dynamic'        => false,
 					'class'          => 'graph-multiselect',
@@ -1429,13 +1429,13 @@ function grow_right_pane_tree(int $tree_id, int $leaf_id, string $host_group_dat
 		$sql_where = '';
 
 		if (grv('rfilter') != '') {
-			$sql_where .= " (gtg.title_cache RLIKE '" . grv('rfilter') . "' OR gtg.title RLIKE '" . grv('rfilter') . "')";
+			$sql_where .= ' (gtg.title_cache RLIKE ' . db_qstr(grv('rfilter')) . ' OR gtg.title RLIKE ' . db_qstr(grv('rfilter')) . ')';
 		}
 
 		if (isrv('graph_template_id') && grv('graph_template_id') != '' && grv('graph_template_id') != -1) {
 			$graph_templates = html_transform_graph_template_ids(grv('graph_template_id'));
 
-			$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . $graph_templates . '))';
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' ' . db_in_clause('gl.graph_template_id', $graph_templates);
 		}
 
 		$graph_list = get_allowed_tree_header_graphs($tree_id, $leaf_id, $sql_where);
@@ -1486,13 +1486,13 @@ function grow_right_pane_tree(int $tree_id, int $leaf_id, string $host_group_dat
 		}
 
 		if (grv('rfilter') != '') {
-			$sql_where .= ($sql_where != '' ? ' AND ' : '') . "(gtg.title_cache RLIKE '" . grv('rfilter') . "')";
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . '(gtg.title_cache RLIKE ' . db_qstr(grv('rfilter')) . ')';
 		}
 
 		if (isrv('graph_template_id') && grv('graph_template_id') != '') {
 			$graph_templates = html_transform_graph_template_ids(grv('graph_template_id'));
 
-			$sql_where .= ($sql_where != '' ? ' AND ' : '') . '(gl.graph_template_id IN (' . $graph_template_id . '))';
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . db_in_clause('gl.graph_template_id', $graph_templates);
 		}
 
 		if (read_config_option('dsstats_enable') == 'on' && grv('graph_source') != '' && grv('graph_order') != '') {
@@ -1637,7 +1637,7 @@ function get_host_graph_list(int $host_id, int $graph_template_id, int $data_que
 			$sql_where = '';
 
 			if (grv('rfilter') != '') {
-				$sql_where .= " (gtg.title_cache RLIKE '" . grv('rfilter') . "')";
+				$sql_where .= ' (gtg.title_cache RLIKE ' . db_qstr(grv('rfilter')) . ')';
 			}
 
 			if ($host_id > 0) {
@@ -1721,7 +1721,7 @@ function get_host_graph_list(int $host_id, int $graph_template_id, int $data_que
 				$sfd = get_formatted_data_query_indexes($host_id, $data_query['id']);
 
 				if (grv('rfilter') != '') {
-					$sql_where = " (gtg.title_cache RLIKE '" . grv('rfilter') . "')";
+					$sql_where = ' (gtg.title_cache RLIKE ' . db_qstr(grv('rfilter')) . ')';
 				}
 
 				// grab a list of all graphs for this host/data query combination

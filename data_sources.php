@@ -87,8 +87,8 @@ switch (grv('action')) {
 	case 'ajax_hosts':
 		$sql_where = '';
 
-		if (grv('site_id') > 0) {
-			$sql_where = 'site_id = ' . grv('site_id');
+		if (gfrv('site_id') > 0) {
+			$sql_where = 'site_id = ' . gfrv('site_id');
 		}
 
 		get_allowed_ajax_hosts(true, true, $sql_where);
@@ -97,8 +97,8 @@ switch (grv('action')) {
 	case 'ajax_hosts_noany':
 		$sql_where = '';
 
-		if (grv('site_id') > 0) {
-			$sql_where = 'site_id = ' . grv('site_id');
+		if (gfrv('site_id') > 0) {
+			$sql_where = 'site_id = ' . gfrv('site_id');
 		}
 
 		get_allowed_ajax_hosts(false, true, $sql_where);
@@ -476,25 +476,25 @@ function form_actions() : void {
 						}
 
 						// Get current step value
-						$current_step = db_fetch_cell_prepared('SELECT rrd_step 
-							FROM data_template_data 
+						$current_step = db_fetch_cell_prepared('SELECT rrd_step
+							FROM data_template_data
 							WHERE local_data_id = ?',
 							[$local_data_id]);
 
 						// Update all database tables
-						db_execute_prepared('UPDATE data_template_data 
+						db_execute_prepared('UPDATE data_template_data
 							SET data_source_profile_id = ?, rrd_step = ?
 							WHERE local_data_id = ?',
 							[get_request_var('data_source_profile_id'), $new_profile['step'], $local_data_id]
 						);
 
-						db_execute_prepared('UPDATE data_template_rrd 
+						db_execute_prepared('UPDATE data_template_rrd
 							SET rrd_heartbeat = ?
 							WHERE local_data_id = ?',
 							[$new_profile['heartbeat'], $local_data_id]
 						);
 
-						db_execute_prepared('UPDATE poller_item 
+						db_execute_prepared('UPDATE poller_item
 							SET rrd_step = ?
 							WHERE local_data_id = ?',
 							[$new_profile['step'], $local_data_id]
@@ -503,19 +503,19 @@ function form_actions() : void {
 						if ($data['poller_id'] > 1 && $remote_conns[$data['poller_id']] !== false) {
 							$conn = $remote_conns[$data['poller_id']];
 
-							db_execute_prepared('UPDATE data_template_data 
+							db_execute_prepared('UPDATE data_template_data
 								SET data_source_profile_id = ?, rrd_step = ?
 								WHERE local_data_id = ?',
 								[get_request_var('data_source_profile_id'), $new_profile['step'], $local_data_id], true, $conn
 							);
 
-							db_execute_prepared('UPDATE data_template_rrd 
+							db_execute_prepared('UPDATE data_template_rrd
 								SET rrd_heartbeat = ?
 								WHERE local_data_id = ?',
 								[$new_profile['heartbeat'], $local_data_id], true, $conn
 							);
 
-							db_execute_prepared('UPDATE poller_item 
+							db_execute_prepared('UPDATE poller_item
 								SET rrd_step = ?
 								WHERE local_data_id = ?',
 								[$new_profile['step'], $local_data_id], true, $conn
@@ -1098,7 +1098,7 @@ function ds_edit() : void {
 	$pageFilter->set_filter_array($filters);
 	$pageFilter->render();
 
-	html_start_box(__(''), '100%', true, 3, 'center', '');
+	html_start_box('', '100%', true, 3, 'center', '');
 
 	$form_array = [
 		'data_template_id' => [

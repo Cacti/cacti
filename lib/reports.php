@@ -23,6 +23,35 @@
 */
 
 /**
+ * Safely deserialize the bulk-action selected_items payload.
+ *
+ * Bulk report items carry a 'type_id' shape (e.g. 'reports_3'), so the
+ * numeric-only sanitize_unserialize_selected_items() cannot be used here:
+ * it rejects every non-numeric element and discards the whole batch. Object
+ * deserialization is blocked the same way the numeric variant blocks it;
+ * each element's type and id are validated by the caller.
+ *
+ * @param mixed $items A serialized array of items from a post
+ *
+ * @return array|false The deserialized items array, or false when input is absent/invalid
+ */
+function reports_unserialize_selected_items(mixed $items) : array|false {
+	if (empty($items) || !is_string($items)) {
+		return false;
+	}
+
+	$unstripped = stripslashes($items);
+
+	if (!preg_match('/^a:[0-9]+:{/', $unstripped) || preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
+		return false;
+	}
+
+	$items = unserialize($unstripped, ['allowed_classes' => false]);
+
+	return is_array($items) ? $items : false;
+}
+
+/**
  * duplicate_reports - duplicates a report and all items
  *
  * @param int    $_id    Id of the report
@@ -323,7 +352,7 @@ function reports_interval_start(int $interval, int $count, int $offset, int $tim
 		case REPORTS_SCHED_INTVL_MONTH_WEEKDAY:
 			// add $count months to current mailtime, but if this is the nth weekday, it must be the same nth weekday in the new month
 			// e.g. if this is currently the 3rd Monday of current month
-			// ist must be the 3rd Monday of the new month as well
+			// it must be the 3rd Monday of the new month as well
 			$weekday      = date('l', $timestamp);
 			$day_of_month = date('j', $timestamp);
 			$nth_weekday  = ceil($day_of_month / 7);
@@ -392,7 +421,7 @@ function utime_add(int $timestamp, int $yr = 0, int $mon = 0,
  * @param string $string  The string to append to the log file
  * @param bool   $output  Whether to output the log line to the browser using pring() or not
  * @param string $environ Tell's from where the script was called from
- * @param int    $level   The loging verbosity to use
+ * @param int    $level   The logging verbosity to use
  *
  * @return void
  */
@@ -648,7 +677,7 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 }
 
 /**
- * reports_load_format_file  read the format file from disk and determines it's formatting
+ * reports_load_format_file  read the format file from disk and determines its formatting
  *
  * @param string $format_file The file to read from the formats directory
  * @param string $output      The html and css output from that file
@@ -713,7 +742,7 @@ function reports_tree_has_graphs(int $tree_id,int  $branch_id,int  $effective_us
 	$new_graphs = [];
 
 	if ($search_key != '') {
-		$sql_swhere = " AND gtg.title_cache REGEXP '" . $search_key . "'";
+		$sql_swhere = ' AND gtg.title_cache REGEXP ' . db_qstr($search_key);
 	}
 
 	$device_id = db_fetch_cell_prepared('SELECT host_id
@@ -1233,7 +1262,7 @@ function reports_expand_device(array &$report, array $item, int $device_id, int 
 	if (cacti_sizeof($graph_templates)) {
 		foreach ($graph_templates as $id => $name) {
 			if ($item['graph_name_regexp'] != '') {
-				$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+				$sql_where .= ' AND title_cache REGEXP ' . db_qstr($item['graph_name_regexp']);
 			}
 
 			$graphs = db_fetch_assoc_prepared("SELECT
@@ -1424,7 +1453,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 			}
 
 			if ($item['graph_name_regexp'] != '') {
-				$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+				$sql_where .= ' AND title_cache REGEXP ' . db_qstr($item['graph_name_regexp']);
 			}
 
 			if ($leaf_type == 'header' && $nested) {
@@ -1470,7 +1499,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 				$gr_where = '';
 
 				if ($item['graph_name_regexp'] != '') {
-					$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+					$gr_where .= ' AND title_cache REGEXP ' . db_qstr($item['graph_name_regexp']);
 				}
 
 				$graph = db_fetch_row('SELECT local_graph_id, title_cache
@@ -1486,7 +1515,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 				$gr_where = '';
 
 				if ($item['graph_name_regexp'] != '') {
-					$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+					$gr_where .= ' AND title_cache REGEXP ' . db_qstr($item['graph_name_regexp']);
 				}
 
 				$graph = db_fetch_cell('SELECT count(*)
@@ -2387,7 +2416,7 @@ function reports_run(int $id) : bool {
 
 	$return_code = 0;
 	$output      = [];
-	$command     = $report['run_command'] . ' --report-id=' . $report['source_id'] . ' --queue-id=' . $id;
+	$command     = cacti_escapeshellcmd($report['run_command']) . ' --report-id=' . $report['source_id'] . ' --queue-id=' . $id;
 	$timeout     = $report['run_timeout'];
 	$source      = cacti_strtoupper($report['source']);
 

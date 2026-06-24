@@ -23,6 +23,7 @@
 */
 
 require('./include/global.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiOAuth.php');
 
 if (read_config_option('settings_how') != 3) {
 	cacti_log('WARNING: Trying get OAuth2 token but different mail method is configured');
@@ -47,49 +48,19 @@ $options = [];
 
 $providerName = read_config_option('settings_oauth2_provider');
 
-switch ($providerName) {
-	case 'google':
-		$provider = new League\OAuth2\Client\Provider\Google($params);
-		$options  = [
-			'scope' => [
-				'https://mail.google.com/'
-			]
-		];
-
-		break;
-	case 'yahoo':
-		$provider = new Hayageek\OAuth2\Client\Provider\Yahoo($params);
-
-		break;
-	case 'microsoft':
-		$provider = new Stevenmaguire\OAuth2\Client\Provider\Microsoft($params);
-		$options  = [
-			'scope' => [
-				'wl.imap',
-				'wl.offline_access'
-			]
-		];
-
-		break;
-	case 'azure':
-		$params['tenantId'] = $tenantId;
-
-		$provider = new Greew\OAuth2\Client\Provider\Azure($params);
-		$options  = [
-			'scope' => [
-				'https://outlook.office.com/SMTP.Send',
-				'offline_access'
-			]
-		];
-
-		break;
-	default:
-		cacti_log('ERROR: Unknown OAuth2 provider');
-
-		die('Provider missing');
+if ($providerName == 'azure') {
+	$params['tenantId'] = $tenantId;
 }
 
-if (!isset($_GET['code'])) { // If we don't have an authorization code then get one
+$provider = CactiOAuth::getProvider($providerName, $params);
+$options  = CactiOAuth::getDefaultOptions($providerName);
+
+if ($provider === null) {
+	cacti_log('ERROR: Unknown OAuth2 provider');
+	die('Provider missing');
+}
+
+if (!isrv('code')) { // If we don't have an authorization code then get one
 	$authUrl                 = $provider->getAuthorizationUrl($options);
 	$_SESSION['oauth2state'] = $provider->getState();
 	header('Location: ' . $authUrl);
@@ -99,7 +70,7 @@ if (!isset($_GET['code'])) { // If we don't have an authorization code then get 
 	// Check given state against previously stored one to mitigate CSRF attack
 }
 
-if (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && ($_GET['state'] !== $_SESSION['oauth2state']))) {
+if (isempty_request_var('state') || (isset($_SESSION['oauth2state']) && (grv('state') !== $_SESSION['oauth2state']))) {
 	unset($_SESSION['oauth2state']);
 
 	exit('Invalid state');
@@ -107,7 +78,7 @@ if (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && ($_GET['state']
 	$token = $provider->getAccessToken(
 		'authorization_code',
 		[
-			'code' => $_GET['code']
+			'code' => grv('code')
 		]
 	);
 

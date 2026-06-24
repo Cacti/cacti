@@ -99,6 +99,12 @@ include/vendor/csrf/csrf-secret.php
 # Ignore visual studio code
 .vscode/**
 
+# Ignore local developer tooling state (Claude Code, oh-my-claudecode, git worktrees, local notes)
+.claude/
+.omc/
+.worktrees/
+notepad.md
+
 # Ignore vendor folders
 include/vendor/**
 vendor/**
@@ -108,3 +114,23 @@ vendor/**
 .env.local
 .env.*.local
 docker-compose.override.yml
+
+# Ignore Claude and Worktrees
+.worktrees/**
+.claude/**
+
+# Security research artifacts (never commit)
+CLAUDE.md
+reproduce_ghsa_*.php
+verify_task*.php
+.gemini_security/
+
+# Test/build artifacts
+/tests/composer.lock
+/tests/e2e/playwright-report/
+/tests/e2e/test-results/
+/tests/.phpunit.result.cache
+
+# Local autopilot/session data
+/.omc/
+/docs/superpowers/
