@@ -1947,7 +1947,7 @@ function boost_poller_bottom() : void {
 			}
 		}
 
-		$command_string = read_config_option('path_php_binary');
+		$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 
 		if ($boost_debug && $boost_log != '') {
 			if (CACTI_SERVER_OS == 'unix') {

@@ -386,8 +386,15 @@ class spikekill {
 			return false;
 		}
 
-		// determine the temporary file name
-		$this->seed = mt_rand();
+		// determine the temporary file name; a non-predictable component keeps
+		// concurrent spikekill runs from colliding on the same temp file
+		try {
+			$this->seed = bin2hex(random_bytes(8));
+		} catch (Exception $e) {
+			$this->set_error(__('FATAL: Unable to generate a random temporary file name.  Check the system entropy source!'));
+
+			return false;
+		}
 
 		if (CACTI_SERVER_OS == 'win32') {
 			$this->tempdir  = read_config_option('spikekill_backupdir');
@@ -436,7 +443,9 @@ class spikekill {
 			cacti_log($mes, false, 'SPIKEKILL');
 		}
 
-		shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' > ' . cacti_escapeshellarg($xmlfile));
+		// '2>&1' before the file redirection leaves stderr on the captured stream
+		// while stdout still goes to the xml file
+		$dump_output = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' 2>&1 > ' . cacti_escapeshellarg($xmlfile));
 
 		// read the xml file into an array
 		if (file_exists($xmlfile)) {
@@ -445,6 +454,9 @@ class spikekill {
 			// remove the temp file
 			unlink($xmlfile);
 		} else {
+			// the dump produced no file; capture any diagnostic output for the log
+			cacti_log(sprintf("ERROR: RRDtool dump of '%s' produced no output file. Output:'%s'", $this->rrdfile, trim((string) $dump_output)), false, 'SPIKEKILL');
+
 			$this->set_error(__('FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!'));
 
 			return false;

@@ -1153,7 +1153,6 @@ function validate_store_request_vars(array $filters, string $sess_prefix = '') :
 					if (is_base64_encoded($_REQUEST[$variable])) {
 						$_REQUEST[$variable] = mb_convert_encoding(base64_decode($_REQUEST[$variable], true), 'UTF-8');
 					}
-
 					$valid = validate_is_regex($_REQUEST[$variable]);
 
 					if ($valid === true) {
@@ -1202,12 +1201,28 @@ function validate_store_request_vars(array $filters, string $sess_prefix = '') :
 				} elseif (!isset($options['options'])) {
 					$value = filter_var($_REQUEST[$variable], $options['filter']);
 				} else {
-					$value = filter_var($_REQUEST[$variable], $options['filter'], $options['options']);
+					// Handle FILTER_VALIDATE_REGEXP specially to ensure proper delimiters
+					if ($options['filter'] == FILTER_VALIDATE_REGEXP && isset($options['options']['regexp'])) {
+						$regex = $options['options']['regexp'];
+
+						// Only add delimiters if they're not already present
+						if (!preg_match('/^\/.*\/[imsuxADJUX]*$/', $regex)) {
+							$options['options']['regexp'] = '/' . $regex . '/';
+						}
+					}
+
+					// Special handling for graph_template_id to allow -1
+					if ($variable === 'graph_template_id' && get_nfilter_request_var($variable) == '-1') {
+						$value = '-1';
+					} else {
+						$value = filter_var($_REQUEST[$variable], $options['filter'], $options['options']);
+					}
 				}
 
 				if ($value === false) {
 					if ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
-						raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', htmle(get_nfilter_request_var($variable)), htmle($custom_error)), MESSAGE_LEVEL_ERROR);
+						raise_message('custom', __('The regular expression "%s" is not valid. Error is %s',
+							htmle(get_nfilter_request_var($variable)), htmle($custom_error)), MESSAGE_LEVEL_ERROR);
 						set_request_var($variable, '');
 					} else {
 						die_html_input_error($variable, get_nfilter_request_var($variable), htmle($custom_error));
