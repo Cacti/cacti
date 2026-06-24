@@ -106,6 +106,18 @@ if ($auth_method == AUTH_METHOD_BASIC && !isset($_SESSION[SESS_USER_ID])) {
 			[$username]);
 
 		if (cacti_sizeof($current_user)) {
+			if ($current_user['enabled'] != 'on') {
+				auth_display_custom_error_message(__('Access Denied!  User account disabled.'));
+
+				exit;
+			}
+
+			if (!auth_user_has_access($current_user)) {
+				auth_display_custom_error_message(__('You do not have access to any area of Cacti.  Contact your administrator.'));
+
+				exit;
+			}
+
 			$_SESSION[SESS_USER_ID]     = $current_user['id'];
 			$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];
 			$_SESSION[SESS_CLIENT_ADDR] = get_client_addr();
@@ -208,7 +220,7 @@ if (empty($_SESSION[SESS_USER_ID])) {
 
 	exit;
 } else {
-	if (!$cookie_user && empty($_SESSION[SESS_USER_2FA]) && db_column_exists('user_auth', 'tfa_enabled')) {
+	if (empty($_SESSION[SESS_USER_2FA]) && db_column_exists('user_auth', 'tfa_enabled')) {
 		if (read_config_option('secpass_2fa_enabled') == 'on') {
 			if (is_2fa_enabled($_SESSION[SESS_USER_ID])) {
 				header('Location: ' . CACTI_PATH_URL . 'auth_2fa.php');

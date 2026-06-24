@@ -44,6 +44,10 @@ function clear_auth_cookie() : void {
 			$realm_id = -1;
 			$token    = $parts[1];
 		} else {
+			if (cacti_sizeof($parts) != 3) {
+				return;
+			}
+
 			$user_id  = $parts[0];
 			$realm_id = $parts[1];
 			$token    = $parts[2];
@@ -125,12 +129,12 @@ function check_auth_cookie() : int|false {
 
 		if ($user_id > 0 && $user_id !== get_guest_account()) {
 			if ($realm_id == -1) {
-				$user_info = db_fetch_row_prepared('SELECT id, realm, username
+				$user_info = db_fetch_row_prepared('SELECT *
 					FROM user_auth
 					WHERE id = ?',
 					[$user_id]);
 			} else {
-				$user_info = db_fetch_row_prepared('SELECT id, realm, username
+				$user_info = db_fetch_row_prepared('SELECT *
 					FROM user_auth
 					WHERE id = ?
 					AND realm = ?',
@@ -149,25 +153,49 @@ function check_auth_cookie() : int|false {
 
 				if (empty($found)) {
 					return false;
-				} else {
-					set_auth_cookie($user_info);
-
-					cacti_log(sprintf('LOGIN: User %s Authenticated via Authentication Cookie from IP Address %s', $user_info['username'], get_client_addr()), false, 'AUTH');
-
-					db_execute_prepared('INSERT IGNORE INTO user_log
-						(username, user_id, result, ip, time)
-						VALUES
-						(?, ?, 2, ?, NOW())',
-						[$user_info['username'], $user_info['id'], get_client_addr()]
-					);
-
-					return $user_info['id'];
 				}
+
+				if (!auth_cookie_user_currently_allowed($user_info)) {
+					db_execute_prepared('DELETE FROM user_auth_cache
+						WHERE user_id = ?',
+						[$user_info['id']]);
+
+					return false;
+				}
+
+				set_auth_cookie($user_info);
+
+				cacti_log(sprintf('LOGIN: User %s Authenticated via Authentication Cookie from IP Address %s', $user_info['username'], get_client_addr()), false, 'AUTH');
+
+				db_execute_prepared('INSERT IGNORE INTO user_log
+					(username, user_id, result, ip, time)
+					VALUES
+					(?, ?, 2, ?, NOW())',
+					[$user_info['username'], $user_info['id'], get_client_addr()]
+				);
+
+				return $user_info['id'];
 			}
 		}
 	}
 
 	return false;
+}
+
+/**
+ * Confirms that a remember-me cookie still belongs to an enabled account
+ * with current access before the cookie is allowed to create a new session.
+ *
+ * @param array $user_info The user_auth row loaded from the cookie identity.
+ *
+ * @return bool True when the account can still authenticate with the cookie.
+ */
+function auth_cookie_user_currently_allowed(array $user_info) : bool {
+	if (($user_info['enabled'] ?? '') != 'on') {
+		return false;
+	}
+
+	return auth_user_has_access($user_info);
 }
 
 /**
@@ -4935,9 +4963,8 @@ function verify_2fa(int $user_id, string $code) : string {
 		$result['status'] = 404;
 		$result['text']   = __('ERROR: Unable to find user');
 	} else {
-		$result['secret'] = $current_user['tfa_secret'];
-		$g                = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
-		$isValid          = $g->checkCode($current_user['tfa_secret'], $code);
+		$g       = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
+		$isValid = $g->checkCode($current_user['tfa_secret'], $code);
 
 		if (!$isValid) {
 			$result['status'] = 301;
@@ -4972,4 +4999,27 @@ function is_2fa_enabled(int $user_id) : bool {
 	} else {
 		return false;
 	}
+}
+
+/** remote_agent_fcrdns_confirmed - forward-confirm a reverse DNS (PTR) result.
+ *
+ * Given the PTR-resolved name for a client address and the address' forward
+ * (A/AAAA) records, return true only when one forward record resolves back to
+ * the same address. This wraps the forward-confirmation loop that previously
+ * lived inline in remote_agent.php so the matching logic has a single home.
+ *
+ * @param string $client_addr     the source address being authorized
+ * @param array  $forward_records dns_get_record() output for the PTR name
+ *
+ * @return bool true when forward confirmation matches the source address */
+function remote_agent_fcrdns_confirmed(string $client_addr, array $forward_records) : bool {
+	foreach ($forward_records as $record) {
+		$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
+
+		if ($ip === $client_addr) {
+			return true;
+		}
+	}
+
+	return false;
 }

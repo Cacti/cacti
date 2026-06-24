@@ -47,6 +47,7 @@ switch ($action) {
 		$hash = db_fetch_row_prepared('SELECT *
 			FROM user_auth_reset_hashes
 			WHERE hash = ?
+			AND expiry > NOW()
 			LIMIT 1',
 			[$user_hash]);
 
@@ -63,7 +64,12 @@ switch ($action) {
 		if (filter_var($identity, FILTER_VALIDATE_EMAIL) ||
 			gfrv('identity', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^[a-zA-Z0-9]+$/']])) {
 			$user = db_fetch_row_prepared('SELECT id, username, email_address
-				FROM user_auth WHERE username = ? or email_address = ? LIMIT 1',
+				FROM user_auth
+				WHERE (username = ? OR email_address = ?)
+				AND realm = 0
+				AND enabled = "on"
+				AND password_change = "on"
+				LIMIT 1',
 				[$identity, $identity]);
 		}
 
@@ -101,18 +107,30 @@ switch ($action) {
 		$hash = db_fetch_row_prepared('SELECT *
 			FROM user_auth_reset_hashes
 			WHERE hash = ?
+			AND expiry > NOW()
 			LIMIT 1',
 			[$user_hash]);
 
 		if (!$hash || $hash['hash'] != $user_hash) {
 			$errorMessage = "<span class='badpassword_message'>" . __('Incorrect resetlink hash') . '</span>';
 			$action       = 'formidentity';
+
+			break;
 		}
 
 		$user = db_fetch_row_prepared('SELECT *
 			FROM user_auth
-			WHERE id = ?',
+			WHERE id = ?
+			AND realm = 0
+			AND enabled = "on"',
 			[$hash['user_id']]);
+
+		if (!cacti_sizeof($user)) {
+			$errorMessage = "<span class='badpassword_message'>" . __('Password reset is not available for this account.') . '</span>';
+			$action       = 'formidentity';
+
+			break;
+		}
 
 		// Get passwords entered for change
 		$password         = gnrv('password');

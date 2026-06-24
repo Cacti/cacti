@@ -39,18 +39,24 @@ $user = db_fetch_row_prepared('SELECT id, username, tfa_enabled, tfa_secret, log
 	[$_SESSION[SESS_USER_ID]]);
 
 $message = '';
-$tfaMins = intval(read_config_option('secpass_mfatime'));
+$tfaMins = intval(read_config_option('secpass_2fatime'));
 
 if ($tfaMins <= 0) {
 	$tfaMins = 60;
 }
 
-$tfaBase = intval(floor((time() / (60 * $tfaMins))));
-$tfaTime = time() - $tfaBase;
+$tfaTime = time() - ($tfaMins * 60);
 
 // See if we have no 2FA time set, and if so, lets try and get it from the cookie
 if (empty($_SESSION[SESS_USER_2FA]) && isset($_COOKIE[session_name() . '_otp'])) {
-	[$tfaCookieTime, $tfaCookeHash] = explode(':', $_COOKIE[session_name() . '_otp']);
+	$tfaCookie = explode(':', $_COOKIE[session_name() . '_otp'], 2);
+
+	if (cacti_count($tfaCookie) == 2) {
+		[$tfaCookieTime, $tfaCookeHash] = $tfaCookie;
+	} else {
+		$tfaCookieTime = false;
+		$tfaCookeHash  = false;
+	}
 
 	if ($tfaCookieTime && $tfaCookeHash === hash_hmac('sha1', $user['username'] . ':' . $tfaMins . ':' . $tfaCookieTime . ':' . $_SERVER['HTTP_USER_AGENT'], $user['tfa_secret'])) {
 		$_SESSION[SESS_USER_2FA] = $tfaCookieTime;
