@@ -114,20 +114,20 @@ const FIELDS_TEMPLATES = {
 var installTimer;
 
 function setSNMPOverride() {
-	element = $('#automation_override');
-	if (element != null && element.length > 0) {
-		enabled = ($(element[0]).is(':checked'));
+	const element = $('#automation_override');
+	if (element !== null && element.length > 0) {
+		const enabled = ($(element[0]).is(':checked'));
 		toggleSection('#automation_snmp_options', enabled);
 	}
 }
 
 function setButtonData(buttonName, buttonData) {
-	button = $('#button'+buttonName);
-	if (button != null) {
+	var button = $(`#button${buttonName}`);
+	if (button !== null) {
 		button.button();
 		button.data('buttonData', buttonData);
 		if (buttonData != null) {
-			buttonCheck = button.data('buttonData');
+			var buttonCheck = button.data('buttonData');
 			if (buttonData.Enabled) {
 				button.button('enable');
 			} else {
@@ -146,32 +146,32 @@ function setButtonData(buttonName, buttonData) {
 }
 
 function setFieldData(fields, fieldData) {
-	if (fieldData === null) {
+	if (fieldData == null) {
 		return;
 	}
 
-	for (var fieldId in fields) {
+	for (const fieldId in fields) {
 		if (!fields.hasOwnProperty(fieldId)) {
 			continue;
 		}
 
-		var field = fields[fieldId];
+		const field = fields[fieldId];
 
 		if (field.type == "checkbox") {
 			for (var propName in fieldData) {
 				if (fieldData.hasOwnProperty(propName)) {
 					propValue = fieldData[propName];
 					if (propValue !== undefined) {
-						element = $('#' + propName);
-						if (element != null && element.length > 0) {
+						element = $(`#${propName}`);
+						if (element !== null && element.length > 0) {
 							element.prop('checked', propValue != 0);
 						}
 					}
 				}
 			}
 		} else if (fieldData[field.name]) {
-			element = $("#" + fieldId);
-			if (element != null && element.length > 0) {
+			element = $(`#${fieldId}`);
+			if (element !== null && element.length > 0) {
 				if (field.type == 'textbox') {
 					element[0].value = fieldData[field.name];
 				} else if (field.type == 'dropdown' ) {
@@ -183,16 +183,16 @@ function setFieldData(fields, fieldData) {
 }
 
 function getFieldData(fields, fieldData) {
-	if (fieldData === null) {
+	if (fieldData == null) {
 		return;
 	}
 
-	for (var fieldId in fields) {
+	for (const fieldId in fields) {
 		if (!fields.hasOwnProperty(fieldId)) {
 			continue;
 		}
 
-		var field = fields[fieldId];
+		const field = fields[fieldId];
 
 		if (field.type == 'checkbox') {
 			if (field.name) {
@@ -203,18 +203,18 @@ function getFieldData(fields, fieldData) {
 					prefix = field.prefix;
 				}
 
-				$('input[name^="' + prefix + '"]').each(function(index,element) {
+				$(`input[name^="${prefix}"]`).each(function(index,element) {
 					fieldData[element.id] = $(element).is(':checked');
 				});
 			}
 		} else {
 			if (field.prefix) {
-				$('input[name^="' + field.prefix + '"]').each(function(index, element) {
+				$(`input[name^="${field.prefix}"]`).each(function(index, element) {
 					fieldData[element.id] = element.value;
 				});
 			} else {
-				element = $('#' + fieldId);
-				if (element != null && element.length > 0) {
+				element = $(`#${fieldId}`);
+				if (element !== null && element.length > 0) {
 					if (field.type == 'textbox') {
 						fieldData[field.name] = element[0].value;
 					} else if (field.type == 'dropdown') {
@@ -231,16 +231,16 @@ function getDefaultInstallData() {
 }
 
 function toggleHeader(key, initial) {
-	if (typeof initial == 'undefined') {
+	if (typeof initial === 'undefined') {
 		initial = null;
 	}
 
 	if (key != null) {
 		header = $(key);
-		if (header != null && header.length > 0) {
+		if (header !== null && header.length > 0) {
 			firstSibling = header.next();
 
-			if (initial != null) {
+			if (initial !== null) {
 				firstSibling.hide();
 			} else {
 				if (firstSibling.is(':visible')) {
@@ -254,15 +254,15 @@ function toggleHeader(key, initial) {
 }
 
 function toggleSection(key, initial) {
-	if (typeof initial == 'undefined') {
+	if (typeof initial === 'undefined') {
 		initial = null;
 	}
 
 	if (key != null) {
 		header = $(key);
-		if (header != null && header.length > 0) {
+		if (header !== null && header.length > 0) {
 
-			if (initial == null) {
+			if (initial === null) {
 				initial = !header.visible;
 			}
 
@@ -279,29 +279,29 @@ function toggleSection(key, initial) {
 }
 
 function disableButton(buttonName) {
-	button = $('#button'+buttonName);
-	if (button != null) {
+	button = $(`#button${buttonName}`);
+	if (button !== null) {
 		button.button();
 		button.button('disable');
 	}
 }
 
 function enableButton(buttonName) {
-	button = $('#button'+buttonName);
-	if (button != null) {
+	button = $(`#button${buttonName}`);
+	if (button !== null) {
 		button.button();
 		button.button('enable');
 	}
 }
 
 function collapseHeadings(headingStates) {
-	for (var key in headingStates) {
+	for (const key in headingStates) {
 		// skip loop if the property is from prototype
 		if (!headingStates.hasOwnProperty(key)) continue;
 
-		var enabled = headingStates[key];
-		var element = $('#' + key);
-		if (element != null && element.length > 0) {
+		const enabled = headingStates[key];
+		const element = $(`#${key}`);
+		if (element !== null && element.length > 0) {
 			fa_icon = 'ti ti-alert-triangle-filled';
 			if (enabled == DB_STATUS_ERROR) {
 				fa_icon = 'ti ti-thumb-down cactiInstallSqlFailure';
@@ -317,27 +317,27 @@ function collapseHeadings(headingStates) {
 				toggleHeader(element, false);
 			}
 
-			element.append('<div class="cactiInstallValid"><i class="' + fa_icon + '"></i></div>');
+			element.append(`<div class="cactiInstallValid"><i class="${fa_icon}"></i></div>`);
 
-			element.click(function(e) {
+			element.on('click', function(e) {
 				toggleHeader(e.currentTarget);
 			});
 		} else {
-			window.alert('missing section "' + key + '"');
+			window.alert(`missing section "${key}"`);
 		}
 	}
 }
 
 function hideHeadings(headingStates) {
-	for (var key in headingStates) {
+	for (const key in headingStates) {
 		// skip loop if the property is from prototype
 		if (!headingStates.hasOwnProperty(key)) {
 			continue;
 		}
 
-		var enabled = headingStates[key];
-		var element = $('#' + key);
-		if (element != null && element.length > 0) {
+		const enabled = headingStates[key];
+		const element = $(`#${key}`);
+		if (element !== null && element.length > 0) {
 			if (!enabled) {
 				element.hide();
 				toggleHeader(element, true);
@@ -346,7 +346,7 @@ function hideHeadings(headingStates) {
 				toggleHeader(element, false);
 			}
 		} else {
-			window.alert('missing section "' + key + '"');
+			window.alert(`missing section "${key}"`);
 		}
 	}
 }
@@ -387,7 +387,7 @@ function processStepWelcome(StepData) {
 	}).iconselectmenu( "menuWidget" ).addClass( "ui-menu-icons customicons" );
 
 	if ($('#accept').length) {
-		$('#accept').click(function() {
+		$('#accept').on('click', function() {
 			performStep(STEP_WELCOME);
 			if ($('#accept').is(':checked')) {
 				$('#buttonNext').button('enable');
@@ -399,13 +399,12 @@ function processStepWelcome(StepData) {
 }
 
 function processStepCheckDependencies(StepData) {
-console.log(StepData);
 	collapseHeadings(StepData.Sections);
 }
 
 function processStepInstallType(StepData) {
 	if (StepData != null) {
-		var sections = (StepData.Sections == null) ? [] : StepData.Sections;
+		const sections = (StepData.Sections == null) ? [] : StepData.Sections;
 		hideHeadings(sections);
 
 		$('.cactiInstallSectionTitle').each(function() {
@@ -445,8 +444,8 @@ function processStepProfileAndAutomation(StepData) {
 	applySkin();
 
 	element = $('#automation_override');
-	if (element != null && element.length > 0) {
-		element.change(function() {
+	if (element !== null && element.length > 0) {
+		element.on('change', function() {
 			setSNMPOverride();
 		});
 	}
@@ -455,11 +454,11 @@ function processStepProfileAndAutomation(StepData) {
 }
 
 function processStepTemplateInstall(StepData) {
-	var templates = StepData.Templates;
+	const templates = StepData.Templates;
 	if (templates.all) {
 		element = $('#selectall');
-		if (element != null && element.length > 0) {
-			element.click();
+		if (element !== null && element.length > 0) {
+			element.trigger('click');
 		}
 	} else {
 		setFieldData(FIELDS_TEMPLATES, StepData.Templates);
@@ -468,11 +467,11 @@ function processStepTemplateInstall(StepData) {
 }
 
 function processStepCheckTables(StepData) {
-	var tables = StepData.Tables;
+	const tables = StepData.Tables;
 	if (tables.all) {
 		element = $('#selectall');
-		if (element != null && element.length > 0) {
-			element.click();
+		if (element !== null && element.length > 0) {
+			element.trigger('click');
 		}
 	} else {
 		setFieldData(FIELDS_CHECK_TABLES, StepData.Tables);
@@ -482,7 +481,7 @@ function processStepCheckTables(StepData) {
 
 function processStepNoticesRecommendations(StepData) {
 	if ($('#confirm').length) {
-		$('#confirm').click(function() {
+		$('#confirm').on('click', function() {
 			if ($(this).is(':checked')) {
 				$('#buttonNext').button('enable');
 			} else {
@@ -500,7 +499,7 @@ function processStepNoticesRecommendations(StepData) {
 
 function processStepInstallConfirm(StepData) {
 	if ($('#confirm').length) {
-		$('#confirm').click(function() {
+		$('#confirm').on('click', function() {
 			if ($(this).is(':checked')) {
 				$('#buttonNext').button('enable');
 			} else {
@@ -530,7 +529,7 @@ function processStepInstall(StepData) {
 }
 
 function processStepComplete(Step, StepData) {
-	if (StepData !== null) {
+	if (StepData != null) {
 		collapseHeadings(StepData.Sections);
 	}
 }
@@ -555,12 +554,12 @@ function progress(timeleft, timetotal, $element, fnComplete, fnStatus) {
 
 function prepareInstallData(installStep, stepOnly) {
 	installData = $('#installData').data('installData');
-	if (typeof installData == 'undefined' || installData == null) {
+	if (typeof installData === 'undefined' || installData === null) {
 		installData = getDefaultInstallData();
 	}
 
 	// No installation step if we have never started.
-	if (typeof installStep == 'undefined' && installData.Step == STEP_NONE) {
+	if (typeof installStep === 'undefined' && installData.Step == STEP_NONE) {
 		newData = [];
 	} else {
 		newData = getDefaultInstallData();
@@ -573,12 +572,12 @@ function prepareInstallData(installStep, stepOnly) {
 			}
 		}
 
-		if (typeof installStep != 'undefined') {
+		if (typeof installStep !== 'undefined') {
 			step = installData.Step;
 			if (step == STEP_WELCOME) prepareStepWelcome(newData);
 
 			// Assume we want all data if stepOnly not set
-			if (typeof stepOnly == 'undefined') {
+			if (typeof stepOnly === 'undefined') {
 				if (step == STEP_INSTALL_TYPE) prepareStepInstallType(newData);
 				else if (step == STEP_BINARY_LOCATIONS) prepareStepBinaryLocations(newData);
 				else if (step == STEP_PROFILE_AND_AUTOMATION) prepareStepProfileAndAutomation(newData);
@@ -628,9 +627,9 @@ function prepareStepTemplateInstall(installData) {
 
 function setAddressBar(data, replace) {
 	if (replace) {
-		window.history.replaceState('' , 'Cacti Installation - Step ' + data.Step, 'install.php?data=' + prepareInstallData(data.Step, true));
+		window.history.replaceState('', `Cacti Installation - Step ${data.Step}`, `install.php?data=${prepareInstallData(data.Step, true)}`);
 	} else {
-		window.history.pushState('' , 'Cacti Installation - Step ' + data.Step, 'install.php?data=' + prepareInstallData(data.Step, true));
+		window.history.pushState('', `Cacti Installation - Step ${data.Step}`, `install.php?data=${prepareInstallData(data.Step, true)}`);
 	}
 }
 
@@ -643,7 +642,7 @@ function performStep(installStep, suppressRefresh, forceReload) {
 	}
 
 	installData = prepareInstallData(installStep);
-	installJson = JSON.parse('{"data":'+installData+', "__csrf_magic":"'+csrfMagicToken+'"}');
+	installJson = JSON.parse(`{"data":${installData}, "__csrf_magic":"${csrfMagicToken}"}`);
 	url = 'step_json.php'; //?data=' + installData;
 
 	$.post(url, installJson)
@@ -655,7 +654,7 @@ function performStep(installStep, suppressRefresh, forceReload) {
 			$('#installData').data('installData', data);
 
 			if (forceReload) {
-				document.location = location.pathname + '?reload=' + Date.now();
+				document.location = `${location.pathname}?reload=${Date.now()}`;
 			}
 
 			setAddressBar(data, false);
@@ -665,12 +664,12 @@ function performStep(installStep, suppressRefresh, forceReload) {
 			$('#installContent').html(data.Html);
 			$('#installContent').show();
 
-			if (typeof $('#installData').data('debug') != 'undefined') {
+			if (typeof $('#installData').data('debug') !== 'undefined') {
 				debugData = data;
 				debugData.Html = '';
 				debug = $('#installDebug');
 				debug.empty();
-				debug.html('<h5 style="border: 1px dashed grey">' + JSON.stringify(debugData) + '</h5>');
+				debug.html(`<h5 style="border: 1px dashed grey">${JSON.stringify(debugData)}</h5>`);
  			}
 
 			setButtonData('Previous',data.Prev);
@@ -708,7 +707,6 @@ function performStep(installStep, suppressRefresh, forceReload) {
 
 			$('input[id^="chk_template"]').each(function() {
 				if ($(this).is(':checked')) {
-					console.log('checked');
 					$(this).closest('tr').addClass('selected');
 				}
 			});
@@ -737,9 +735,9 @@ function performStep(installStep, suppressRefresh, forceReload) {
 							for (var propName in propArray) {
 								if (propArray.hasOwnProperty(propName)) {
 									propValue = propArray[propName];
-									element = $("#" + propName.replace(/\//g,'_').replace(/\./g,'_'));
-									if (element != null && element.length > 0) {
-										element.focus();
+									element = $(`#${propName.replace(/\//g,'_').replace(/\./g,'_')}`);
+									if (element !== null && element.length > 0) {
+										element.trigger('focus');
 										break;
 									}
 								}
@@ -770,7 +768,7 @@ function performTestConnection() {
 		$('#buttonTest').after('<label id="labelTest" class="installTestLabel"></label>');
 	}
 
-	installJson = JSON.parse('{"data":{"step":"' + STEP_TEST_REMOTE + '"}, "__csrf_magic":"'+csrfMagicToken+'"}');
+	installJson = JSON.parse(`{"data":{"step":"${STEP_TEST_REMOTE}"}, "__csrf_magic":"${csrfMagicToken}"}`);
 	url = 'step_json.php'; //?data=' + installData;
 
 	$.post(url, installJson)
@@ -781,7 +779,7 @@ function performTestConnection() {
 			$('#installContent').removeClass('cactiInstallLoaderBlur');
 
 			var isSuccessful = false, statusText = testFailed;
-			if (typeof data.status != 'undefined') {
+			if (typeof data.status !== 'undefined') {
 				if (data.status == 'true') {
 					isSuccessful = true;
 					statusText = testSuccessful;
@@ -811,7 +809,7 @@ function createItemSelectMenu() {
 }
 
 $.urlParam = function(name){
-    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    var results = new RegExp(`[\\?&]${name}=([^&#]*)`).exec(window.location.href);
     if (results==null){
        return null;
     }
@@ -842,9 +840,9 @@ $(function() {
 		$('#installData').data('debug', true);
 	}
 
-	$('.installButton').click(function(e) {
+	$('.installButton').on('click', function(e) {
 		button = $(e.currentTarget);
-		if (button != null) {
+		if (button !== null) {
 			buttonData = button.data('buttonData');
 			if (buttonData != null) {
 				if (buttonData.Step == STEP_GO_SITE) {
@@ -868,7 +866,7 @@ $(function() {
 
 	waitForFinalEvent(function() {
 		installTimer = setTimeout(function() {
-			$('#installRefresh').click(function() {
+			$('#installRefresh').on('click', function() {
 				performStep();
 			});
 

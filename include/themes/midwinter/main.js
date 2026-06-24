@@ -448,11 +448,17 @@ function setupTheme() {
 				'<div class="compact_nav_icon hint--info hint--right hint--rounded" data-subtitle="Console" id="navBackdrop" aria-label="Console" role="button" tabindex="0">' +
 				'<div class="navBackdrop"></div>' +
 				'</div></div>');
-
-			$("#navBackdrop").on('click', function() {
-				$('[class^="cactiConsoleNavigation"]').removeClass('visible');
-				cactiConsoleAllowed ? loadUrl({url: urlPath + 'index.php'}) : window.open('https://cacti.net', '_blank');
-			});
+			if (cactiConsoleAllowed) {
+				$("#navBackdrop").on('click', function() {
+					/* hide open menu boxes first and remove menu selection */
+					$('[class^="cactiConsoleNavigation"]').removeClass('visible');
+					loadUrl({url:urlPath+'index.php'});
+				});
+			} else {
+				$("#navBackdrop").on('click', function() {
+					window.open('https://cacti.net', '_blank');
+				});
+			}
 		}
 
 		if ($('#compact_tab_menu').length === 0 && $('#compact_user_menu').length === 0) {
@@ -547,6 +553,118 @@ function setNavigationBoxColumns(event) {
 	let value = event.target.getAttribute('data-value');
 	$('[class^="mdw-ConsoleNavigationBox"][data-helper="' + helper + '"]').attr('data-width', value);
 	storage.set('midWinter_widthNavigationBox_'+helper, value);
+}
+
+function toggleCactiNavigationBox(event) {
+	let caller = $(event.currentTarget);
+	let helper = caller.attr('data-helper');
+	let param = event.data.param;
+
+	/* hide open dropdown menu */
+	hideDropDownMenu();
+
+	$('#mdw-ConsoleNavigation .compact_nav_icon:not([data-helper="' + helper + '"])').removeClass('selected');
+	$('#mdw-SideBarContainer [class^="mdw-ConsoleNavigationBox"]:not([data-helper="' + helper + '"]) > div').scrollTop(0);
+	$('#mdw-SideBarContainer [class^="mdw-ConsoleNavigationBox"]:not([data-helper="' + helper + '"])').removeClass('visible');
+
+	let navigationBox = $('[class^="mdw-ConsoleNavigationBox"][data-helper="' + helper + '"]');
+	let compact_nav_icon = $('[class^="compact_nav_icon"][data-helper="' + helper + '"]');
+
+	if(param === 'on') {
+		caller.toggleClass('selected');
+		navigationBox.toggleClass('visible');
+	}else if(param === 'force_open') {
+		caller.addClass('selected');
+		navigationBox.addClass('visible');
+		compact_nav_icon.addClass('selected');
+
+		if(event.data && event.data.filter) {
+			let navBox_input_field = $("input[name=navBox-header-search]", navigationBox);
+			$('.navBox-header-search', navigationBox).removeClass('hide');
+			if(event.data.filter !== 'reset') {
+				navBox_input_field.trigger('focus').val(event.data.filter).trigger('input');
+			}else {
+				navBox_input_field.val('').trigger('input').trigger('blur');
+			}
+		}
+	}else if(param === 'force_close') {
+		caller.removeClass('selected').trigger('blur');
+		navigationBox.removeClass('visible');
+	}
+}
+
+function toggleCactiNavigationBoxPin(event) {
+	let caller = $(event.currentTarget);
+	let helper = caller.attr('data-helper');
+	let navigationBox = $('[class^="mdw-ConsoleNavigationBox"][data-helper="' + helper + '"]');
+	let compact_nav_icon = $('[class^="compact_nav_icon"][data-helper="' + helper + '"]');
+
+	if(event.data && event.data.dock) {
+		event.data.dock = event.data.dock.replace(/^./, str => str.toUpperCase());
+	}
+
+	if(/^(?:Left|Right|Top|Bottom)$/.test(event.data.dock)) {
+        let destination = $("#mdw-Dock" + event.data.dock + " > .mdw-DockInnerTop");
+        let make_resizeable = true;
+        if ( destination.is(':not(:empty)') ) {
+            destination = $("#mdw-Dock" + event.data.dock + " > .mdw-DockInnerBottom");
+            make_resizeable = false;
+        }
+
+        navigationBox.detach().appendTo(destination);
+
+		$("#mdw-Dock" + event.data.dock).removeClass('invisible');
+        if(make_resizeable) {
+            $("#mdw-Dock" + event.data.dock).resizable({
+                handles: 'w'
+            });
+
+            destination.resizable({
+                handles: 's',
+                resize: function (event, ui) {
+                    let parentHeight = $(this).parent().innerHeight();
+                    let newHeight = $(this).outerHeight() * 100 / parentHeight;
+                    $(this).css("height", newHeight + '%');
+                    /* update sibling */
+                    $(this).siblings('.mdw-DockInnerBottom').css('height', 100 - newHeight + '%');
+                }
+            });
+        }
+
+
+       // resize: function() {
+          //  $('.test:first-of-type').css('width', $('.test:first-of-type').outerWidth() * 100 / $(window).innerWidth() + '%');
+    //$('.test:nth-of-type(2)').css('width', 100 - ($('.test:first-of-type').outerWidth() * 100 / $(window).innerWidth()) + '%');
+
+    }
+
+}
+
+function toggleCactiDockNavigationBox(event) {
+	let caller = $(event.currentTarget);
+	let helper = caller.attr('data-helper');
+
+	if(event.data && event.data.param) {
+		event.data.param = 'on';
+	}
+
+	if(event.data.param === 'on') {
+		$(this).toggleClass('selected');
+	}
+
+	$('[class^="mdw-Dock"][data-helper="' + helper + '"]').toggleClass('invisible');
+}
+
+function toggleDropDownMenu(event) {
+	let caller = $(event.currentTarget);
+	let helper = caller.attr('data-helper');
+
+	$('[class^="navBox-header-button"][data-action="dropdown"][data-helper="' + helper + '"]').toggleClass('show');
+	return false;
+}
+
+function hideDropDownMenu() {
+	$('[class^="navBox-header-button"][data-action="dropdown"]').removeClass('show');
 }
 
 function toggleTableColumn(event) {
@@ -690,13 +808,11 @@ function setupDefaultElements() {
 		$('.tableHeader th').has('i.fa-sort').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
 		$('.tableHeader th').has('i.fa-sort-up').addClass('tableHeaderColumnSelected');
 		$('.tableHeader th').has('i.fa-sort-down').addClass('tableHeaderColumnSelected');
-		$('.tableHeader th').has('i.fa-sort').hover(
-			function () {
+		$('.tableHeader th').has('i.fa-sort').on('mouseenter', function () {
 				$(this).addClass("tableHeaderColumnHover");
-			}, function () {
+			}).on('mouseleave', function () {
 				$(this).removeClass("tableHeaderColumnHover");
-			}
-		);
+			});
 
 
 		//$('td:nth-child(2), th:nth-child(2)').addClass('hide');
@@ -713,7 +829,7 @@ function setupDefaultElements() {
 
 		// Turn file buttons into jQueryUI buttons
 		$('.import_label').button();
-		$('.import_button').change(function () {
+		$('.import_button').on('change', function () {
 			text = this.value;
 			setImportFile(text);
 		});
@@ -725,8 +841,7 @@ function setupDefaultElements() {
 		}
 
 		// Hide the graph icons until you hover
-		$('.graphDrillDown').hover(
-			function () {
+		$('.graphDrillDown').on('mouseenter', function () {
 				element = $(this);
 
 				// hide the previously shown element
@@ -738,8 +853,7 @@ function setupDefaultElements() {
 				graphMenuTimer = setTimeout(function () {
 					showGraphMenu(element);
 				}, 400);
-			},
-			function () {
+			}).on('mouseleave', function () {
 				element = $(this);
 				clearTimeout(graphMenuTimer);
 				graphMenuTimer = setTimeout(function () {
@@ -749,8 +863,7 @@ function setupDefaultElements() {
 				if (typeof spikeKillClose == 'function') {
 					spikeKillClose();
 				}
-			}
-		);
+			});
 
 		function showGraphMenu(element) {
 			element.find('.spikekillMenu').menu('disable');
