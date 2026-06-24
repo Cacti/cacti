@@ -5078,6 +5078,7 @@ function debug_log_return(string $type) : string {
  */
 function sanitize_sql_column(string $column, string $default = 'id') : string {
 	$result = preg_replace('/[^a-zA-Z0-9_().]/', '', $column) ?? '';
+
 	return $result !== '' ? $result : $default;
 }
 
