@@ -125,7 +125,7 @@ if (isrv('disable_cache')) {
 
 // set the theme
 if (isrv('graph_theme')) {
-	$graph_data_array['graph_theme'] = grv('graph_theme');
+	$graph_data_array['graph_theme'] = cacti_validate_theme(grv('graph_theme'));
 }
 
 if (isrv('rra_id')) {

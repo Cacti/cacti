@@ -125,16 +125,6 @@ function debug(string $message) : void {
 	}
 }
 
-function remote_agent_strip_domain(string $host) : string {
-	if (str_contains($host, '.')) {
-		$parts = explode('.', $host);
-
-		return $parts[0];
-	} else {
-		return $host;
-	}
-}
-
 function remote_client_authorized() : bool {
 	global $poller_db_cnn_id, $remote_agent_whitelist;
 
@@ -151,59 +141,114 @@ function remote_client_authorized() : bool {
 		return false;
 	}
 
-	$client_name = gethostbyaddr($client_addr);
-
-	if ($client_name == $client_addr) {
-		cacti_log('NOTE: Unable to resolve hostname from address ' . $client_addr, false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
-	} else {
-		$client_name = remote_agent_strip_domain($client_name);
+	// Whitelist check runs before the poller-count guard so single-poller
+	// installs that rely on the whitelist are not incorrectly rejected.
+	if (is_array($remote_agent_whitelist) && in_array($client_addr, $remote_agent_whitelist, true)) {
+		return true;
 	}
 
-	if ($client_name != $client_addr) {
-		$forward_records = @dns_get_record($client_name, DNS_A | DNS_AAAA);
-		$forward_match   = false;
+	$pollers = db_fetch_assoc_prepared('SELECT hostname
+		FROM poller
+		WHERE disabled = ?',
+		[''],
+		true,
+		$poller_db_cnn_id
+	);
 
-		if (is_array($forward_records)) {
-			foreach ($forward_records as $record) {
+	if (cacti_sizeof($pollers) <= 1) {
+		cacti_log("Unauthorized remote agent access attempt from $client_addr", false, 'SECURITY');
+
+		return false;
+	}
+
+	$allowed_hostnames = [];
+	$poller_hostnames  = [];
+	$direct_match      = false;
+
+	foreach ($pollers as $poller) {
+		$poller_host = trim($poller['hostname']);
+
+		if ($poller_host === '') {
+			continue;
+		}
+
+		if ($poller_host === $client_addr) {
+			$direct_match = true;
+
+			continue;
+		}
+
+		if (!filter_var($poller_host, FILTER_VALIDATE_IP)) {
+			$normalized_host     = cacti_strtolower(rtrim($poller_host, '.'));
+			$allowed_hostnames[] = $normalized_host;
+			$poller_hostnames[]  = $poller_host;
+		}
+	}
+
+	if (!cacti_sizeof($allowed_hostnames)) {
+		cacti_log("Unauthorized remote agent access attempt from $client_addr", false, 'SECURITY');
+
+		return false;
+	}
+
+	if ($direct_match) {
+		return true;
+	}
+
+	foreach ($poller_hostnames as $poller_host) {
+		$poller_forward_records = @dns_get_record($poller_host, DNS_A | DNS_AAAA);
+
+		if (is_array($poller_forward_records)) {
+			foreach ($poller_forward_records as $record) {
 				$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
 
 				if ($ip === $client_addr) {
-					$forward_match = true;
-
-					break;
+					return true;
 				}
 			}
 		}
+	}
 
-		if (!$forward_match) {
-			$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);
-			cacti_log('WARNING: PTR record for ' . $client_addr . ' resolves to ' . $safe_name . ' but forward lookup does not match. Rejecting.', false, 'SECURITY');
+	$client_name = gethostbyaddr($client_addr);
 
-			return false;
+	if ($client_name === false || $client_name == $client_addr) {
+		cacti_log('NOTE: Unable to resolve hostname from address ' . $client_addr, false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
+		cacti_log("Unauthorized remote agent access attempt from $client_addr", false, 'SECURITY');
+
+		return false;
+	}
+
+	$normalized_client_name = cacti_strtolower(rtrim($client_name, '.'));
+
+	if (!in_array($normalized_client_name, $allowed_hostnames, true)) {
+		cacti_log("Unauthorized remote agent access attempt from $client_name ($client_addr)", false, 'SECURITY');
+
+		return false;
+	}
+
+	$forward_records = @dns_get_record($client_name, DNS_A | DNS_AAAA);
+	$forward_match   = false;
+
+	if (is_array($forward_records)) {
+		foreach ($forward_records as $record) {
+			$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
+
+			if ($ip === $client_addr) {
+				$forward_match = true;
+
+				break;
+			}
 		}
 	}
 
-	$pollers = db_fetch_assoc('SELECT * FROM poller WHERE disabled = ""', true, $poller_db_cnn_id);
+	if (!$forward_match) {
+		$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);
+		cacti_log('WARNING: PTR record for ' . $client_addr . ' resolves to ' . $safe_name . ' but forward lookup does not match. Rejecting.', false, 'SECURITY');
 
-	if (cacti_sizeof($pollers) > 1) {
-		foreach ($pollers as $poller) {
-			if (remote_agent_strip_domain($poller['hostname']) == $client_name) {
-				return true;
-			}
-
-			if ($poller['hostname'] == $client_addr) {
-				return true;
-			}
-
-			if (in_array($client_addr,$remote_agent_whitelist, true)) {
-				return true;
-			}
-		}
+		return false;
 	}
 
-	cacti_log("Unauthorized remote agent access attempt from $client_name ($client_addr)");
-
-	return false;
+	return true;
 }
 
 function get_graph_data() : bool {
@@ -259,7 +304,7 @@ function get_graph_data() : bool {
 
 	// set the theme
 	if (isrv('graph_theme')) {
-		$graph_data_array['graph_theme'] = grv('graph_theme');
+		$graph_data_array['graph_theme'] = cacti_validate_theme(grv('graph_theme'));
 	}
 
 	// set the effective user

@@ -806,6 +806,57 @@ function get_selected_theme() : string {
 }
 
 /**
+ * Returns a validated theme name for graph rendering.
+ *
+ * @param string $requested Requested theme from input
+ *
+ * @return string
+ */
+function cacti_validate_theme(string $requested) : string {
+	static $valid_themes = null;
+
+	$default = (string) read_config_option('selected_theme');
+
+	if ($default === '') {
+		$default = 'modern';
+	}
+
+	if ($valid_themes === null) {
+		$valid_themes = [];
+		$themes_dir   = CACTI_PATH_INCLUDE . '/themes';
+
+		if (is_dir($themes_dir)) {
+			$entries = scandir($themes_dir);
+
+			if ($entries !== false) {
+				foreach ($entries as $entry) {
+					if ($entry === '.' || $entry === '..') {
+						continue;
+					}
+
+					$full = $themes_dir . '/' . $entry;
+
+					if (is_dir($full) && is_file($full . '/rrdtheme.php')) {
+						$valid_themes[$entry] = true;
+					}
+				}
+			}
+		}
+	}
+
+	$requested = basename($requested);
+	$default   = basename($default);
+
+	if (isset($valid_themes[$requested])) {
+		return $requested;
+	}
+
+	// the configured default can itself be stale or poisoned, so re-validate
+	// it before it reaches an include path; fall back to a theme that ships
+	return isset($valid_themes[$default]) ? $default : 'modern';
+}
+
+/**
  * Returns true if a theme is valid
  *
  * @param mixed $theme

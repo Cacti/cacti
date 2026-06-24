@@ -413,16 +413,61 @@ function reports_form_actions() : void {
 	gfrv('drp_action');
 	// ====================================================
 
+	$current_user_id = (int) $_SESSION[SESS_USER_ID];
+	$reports_admin   = is_reports_admin();
+	$reportit_exists = db_table_exists('plugin_reportit_reports');
+
+	$can_manage_report = static function (string $type, int $report_id) use ($current_user_id, $reports_admin, $reportit_exists) : bool {
+		if ($reports_admin) {
+			return true;
+		}
+
+		if ($type === 'reports') {
+			$owner_id = db_fetch_cell_prepared('SELECT user_id
+				FROM reports
+				WHERE id = ?',
+				[$report_id]
+			);
+
+			return ((int) $owner_id === $current_user_id);
+		}
+
+		if ($type === 'reportit' && $reportit_exists) {
+			$owner_id = db_fetch_cell_prepared('SELECT user_id
+				FROM plugin_reportit_reports
+				WHERE id = ?',
+				[$report_id]
+			);
+
+			return ((int) $owner_id === $current_user_id);
+		}
+
+		return false;
+	};
+
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
-		$reference_items = gnrv('selected_items');
-		$selected_items  = unserialize(stripslashes($reference_items), ['allowed_classes' => false]);
+		$selected_items = reports_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {
 			foreach ($selected_items as $report) {
-				[$type, $report_id] = explode('_', $report);
+				if (!is_string($report) || strpos($report, '_') === false) {
+					continue;
+				}
 
-				$report_id = intval($report_id);
+				[$type, $report_id] = explode('_', $report, 2);
+
+				if (!in_array($type, ['reports', 'reportit'], true)) {
+					continue;
+				}
+
+				if (!is_numeric($report_id) || (int) $report_id <= 0) {
+					continue;
+				}
+
+				if (!$can_manage_report($type, (int) $report_id)) {
+					continue;
+				}
 
 				if (gnrv('drp_action') == REPORTS_DELETE) { // delete
 					if ($type == 'reports') {
@@ -447,7 +492,7 @@ function reports_form_actions() : void {
 					}
 				} elseif (gnrv('drp_action') == REPORTS_DUPLICATE) { // duplicate
 					if ($type == 'reports') {
-						duplicate_reports($report_id, gnrv('name_format'));
+						duplicate_reports((int) $report_id, gnrv('name_format'));
 					} elseif ($type == 'reportit') {
 						if (function_exists('api_reportit_duplicate_report')) {
 							api_reportit_duplicate_report($report_id);
@@ -479,7 +524,7 @@ function reports_form_actions() : void {
 					}
 				} elseif (gnrv('drp_action') == REPORTS_SEND_NOW) { // send now
 					if ($type == 'reports') {
-						reports_send($report_id);
+						reports_send((int) $report_id);
 					} elseif ($type == 'reportit') {
 						if (function_exists('api_reportit_run_report')) {
 							api_reportit_run_report($report_id);
@@ -501,10 +546,21 @@ function reports_form_actions() : void {
 		// loop through each of the graphs selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([a-z_0-9]+)$/', $var, $matches)) {
-				[$type, $id] = explode('_', $matches[1]);
-				// ================= input validation =================
-				input_validate_input_number($id);
-				// ====================================================
+				[$type, $id] = explode('_', $matches[1], 2);
+
+				// Parse and validate identically to the action branch so the
+				// confirmed item list cannot diverge from what is acted on.
+				if (!in_array($type, ['reports', 'reportit'], true)) {
+					continue;
+				}
+
+				if (!is_numeric($id) || (int) $id <= 0) {
+					continue;
+				}
+
+				if (!$can_manage_report($type, (int) $id)) {
+					continue;
+				}
 
 				if ($type == 'reports') {
 					$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT name FROM reports WHERE id = ?', [$id])) . '</li>';
