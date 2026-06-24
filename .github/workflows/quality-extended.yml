@@ -25,7 +25,7 @@ jobs:
 
 #    steps:
 #      - name: Checkout
-#        uses: actions/checkout@v4
+#        uses: actions/checkout@v7
 
 #      - name: Install actionlint dependencies
 #        run: |
@@ -50,7 +50,7 @@ jobs:
 #
 #    steps:
 #      - name: Checkout
-#        uses: actions/checkout@v4
+#        uses: actions/checkout@v7
 #
 #      - name: Install shell lint dependencies
 #        run: |
@@ -91,7 +91,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup PHP 8.4 with Xdebug
         uses: shivammathur/setup-php@v2
@@ -105,7 +105,7 @@ jobs:
         run: composer validate --strict
 
       - name: Cache Composer packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: include/vendor
           key: ${{ runner.os }}-php-coverage-${{ hashFiles('**/composer.lock') }}
@@ -154,7 +154,7 @@ jobs:
 
       - name: Upload coverage artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: php-coverage-report
           path: |
