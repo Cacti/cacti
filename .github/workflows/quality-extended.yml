@@ -105,7 +105,7 @@ jobs:
         run: composer validate --strict
 
       - name: Cache Composer packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: include/vendor
           key: ${{ runner.os }}-php-coverage-${{ hashFiles('**/composer.lock') }}
