@@ -1884,7 +1884,7 @@ function user_group() : void {
 		ON uag.id = uagm.group_id
 		$sql_where
 		GROUP BY uag.id
-		ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') .
+		ORDER BY " . sanitize_sql_column(grv('sort_column'), 'name') . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
 		' LIMIT ' . ($rows * (grv('page') - 1) . ',' . $rows),
 		$sql_params);
 

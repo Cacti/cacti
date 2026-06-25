@@ -101,7 +101,7 @@ function view_user_log() : void {
 		ON ua.username = ul.username
 		AND ua.id = ul.user_id
 		$sql_where
-		ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') . '
+		ORDER BY " . sanitize_sql_column(grv('sort_column'), 'time') . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') . '
 		LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	$user_log = db_fetch_assoc_prepared($user_log_sql, $sql_params);
