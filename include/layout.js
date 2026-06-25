@@ -408,7 +408,7 @@ $.fn.enableOptions = function (values, valueCheckFunc) {
  */
 $.fn.textWidth = function (text) {
 	var org = $(this);
-	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.text()) + '</span>');
+	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px"></span>').text(text || org.text());
 	if (!text) {
 		html.css('font-family', org.css('font-family'));
 		html.css('font-weight', org.css('font-weight'));
