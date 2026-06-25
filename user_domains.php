@@ -617,7 +617,7 @@ function domains() : void {
 	$domains = db_fetch_assoc_prepared("SELECT *
 		FROM user_domains
 		$sql_where
-		ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') . '
+		ORDER BY " . sanitize_sql_column(grv('sort_column'), 'domain_name') . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') . '
 		LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows,
 		$sql_params);
 
