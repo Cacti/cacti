@@ -593,7 +593,7 @@ function utilities_view_poller_cache() : void {
 		LEFT JOIN host AS h
 		ON pi.host_id = h.id
 		$sql_where
-		ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') . ', action ASC
+		ORDER BY " . sanitize_sql_column(grv('sort_column'), 'dtd.name_cache') . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') . ', action ASC
 		LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	$items = db_fetch_assoc_prepared($poller_sql, $sql_params);

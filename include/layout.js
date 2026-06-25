@@ -408,7 +408,7 @@ $.fn.enableOptions = function (values, valueCheckFunc) {
  */
 $.fn.textWidth = function (text) {
 	var org = $(this);
-	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.text()) + '</span>');
+	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px"></span>').text(text || org.text());
 	if (!text) {
 		html.css('font-family', org.css('font-family'));
 		html.css('font-weight', org.css('font-weight'));
@@ -1534,7 +1534,7 @@ function makeFiltersResponsive() {
 
 				if (filterContents.find('#export').length) {
 					title = $('#export').attr('title');
-					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterExport"><i class="ti ti-chevron-down"></i></span>');
+					filterHeader.find('div.cactiTableButton').append($('<span style="display:none;" class="cactiFilterExport"><i class="ti ti-chevron-down"></i></span>').attr('title', title));
 
 					$('.cactiFilterExport').off('click').on('click', function (event) {
 						event.stopPropagation();
@@ -1544,7 +1544,7 @@ function makeFiltersResponsive() {
 
 				if (filterContents.find('#import').length) {
 					title = $('#import').attr('title');
-					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterImport"><i class="ti ti-chevron-up"></i></span>');
+					filterHeader.find('div.cactiTableButton').append($('<span style="display:none;" class="cactiFilterImport"><i class="ti ti-chevron-up"></i></span>').attr('title', title));
 
 					$('.cactiFilterImport').off('click').on('click', function (event) {
 						event.stopPropagation();
@@ -3997,9 +3997,9 @@ function hideCurrentTab(id, shrinking) {
 		var text = $('#' + id).text();
 
 		if (shrinking) {
-			$('#submenu-ellipsis').prepend('<li><a class="lefttab' + (selected ? ' selected' : '') + '" id="' + myid + '" href="' + href + '">' + text + '</a></li>');
+			$('#submenu-ellipsis').prepend($('<li>').append($('<a class="lefttab">').toggleClass('selected', !!selected).attr({id: myid, href: href}).text(text)));
 		} else {
-			$('#submenu-ellipsis').append('<li><a class="lefttab' + (selected ? ' selected' : '') + '" id="' + myid + '" href="' + href + '">' + text + '</a></li>');
+			$('#submenu-ellipsis').append($('<li>').append($('<a class="lefttab">').toggleClass('selected', !!selected).attr({id: myid, href: href}).text(text)));
 		}
 
 		setupResponsiveMenuAndTabs();
@@ -4893,9 +4893,9 @@ $.widget('custom.dropcolor', {
 
 						if (hex !== null) {
 							color = hex[1];
-							return $('<li>').attr('data-value', item.value).html('<div><span style="background-color:#' + color + ';" class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
+							return $('<li>').attr('data-value', item.value).append($('<div>').append($('<span class="ui-icon color-icon">').css('background-color', '#' + color), document.createTextNode(label))).appendTo(ul);
 						} else {
-							return $('<li>').attr('data-value', item.value).html('<div><span class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
+							return $('<li>').attr('data-value', item.value).append($('<div>').append($('<span class="ui-icon color-icon"></span>'), document.createTextNode(label))).appendTo(ul);
 						}
 					}
 
@@ -5040,14 +5040,13 @@ function makeCallbacks() {
 			value = title;
 		}
 
-		var dialogForm = "<span id='" + dcWrapId + "' class='ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-button ui-widget" + (dcDisable ? ' ui-selectmenu-disabled ui-state-disabled':'') + "'>";
-		dialogForm    += "<span id='" + dcClickId + "' style='z-index:4' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>";
-		dialogForm    += "<span class='ui-select-text'>";
-		dialogForm    += "<input type='text' class='ui-state-default ui-corner-all' id='" + dcInputId + "' value='" + value + "'>";
-		dialogForm    += "</span>";
-		dialogForm    += "</span>&nbsp;";
+		var dialogForm = $('<span class="ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-button ui-widget">')
+			.attr('id', dcWrapId)
+			.toggleClass('ui-selectmenu-disabled ui-state-disabled', !!dcDisable);
+		dialogForm.append($('<span style="z-index:4" class="ui-selectmenu-icon ui-icon ui-icon-triangle-1-s">').attr('id', dcClickId));
+		dialogForm.append($('<span class="ui-select-text">').append($('<input type="text" class="ui-state-default ui-corner-all">').attr('id', dcInputId).val(value)));
 
-		$(this).after(dialogForm);
+		$(this).after(dialogForm, document.createTextNode(' '));
 		$(this).hide();
 
 		$(dcInput).autocomplete({

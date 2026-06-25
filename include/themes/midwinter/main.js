@@ -316,7 +316,7 @@ function midWinterNavigation(element) {
 	$('#navBreadCrumb .rubric').html( '<span>'+rubric+'</span>').attr('data-helper', helper).off().on(
 		"click", {param: 'force_open', filter: 'reset'}, btnManager.toggleConsoleNavigationBox
 	);
-	$('#navBreadCrumb .category').html( '<span>'+category+'</span>' ).attr('data-helper', helper).off().on(
+	$('#navBreadCrumb .category').empty().append($('<span>').text(category)).attr('data-helper', helper).off().on(
 		"click", {param: 'force_open', filter: category}, btnManager.toggleConsoleNavigationBox
 	);
 	$('#navBreadCrumb .action').html( action );
