@@ -793,11 +793,11 @@ function package_verify_key() : void {
 		}
 
 		foreach ($authors as $author => $email) {
-			$message .= ($message != '' ? '<br>' : '') . __('<b>Author:</b> &lt;%s&gt; %s.<br>', $author, $email);
+			$message .= ($message != '' ? '<br>' : '') . __('<b>Author:</b> &lt;%s&gt; %s.<br>', htmle($author), htmle($email));
 		}
 
 		foreach ($packages as $package) {
-			$message .= ($message != '' ? '<br>' : '') . __('<b>Package:</b> %s', $package['name']);
+			$message .= ($message != '' ? '<br>' : '') . __('<b>Package:</b> %s', htmle($package));
 		}
 
 		$message .= '<br><br>' . __('Press \'Ok\' to start Trusting the Signer.  Press \'Cancel\' or hit escape to Cancel.');
