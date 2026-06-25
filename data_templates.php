@@ -121,11 +121,11 @@ function form_save() : void {
 
 		$save3['t_rrd_maximum']         = form_input_validate((isrv('t_rrd_maximum') ? gnrv('t_rrd_maximum') : ''), 't_rrd_maximum', '', true, 3);
 
-		$save3['rrd_maximum']           = form_input_validate(gnrv('rrd_maximum'), 'rrd_maximum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U|\|query_ifSpeed\|$', (isrv('t_rrd_maximum') ? true : false), 3);
+		$save3['rrd_maximum']           = form_input_validate(gnrv('rrd_maximum'), 'rrd_maximum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U|\|query_ifSpeed\|)\z', (isrv('t_rrd_maximum') ? true : false), 3);
 
 		$save3['t_rrd_minimum']         = form_input_validate((isrv('t_rrd_minimum') ? gnrv('t_rrd_minimum') : ''), 't_rrd_minimum', '', true, 3);
 
-		$save3['rrd_minimum']           = form_input_validate(gnrv('rrd_minimum'), 'rrd_minimum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', (isrv('t_rrd_minimum') ? true : false), 3);
+		$save3['rrd_minimum']           = form_input_validate(gnrv('rrd_minimum'), 'rrd_minimum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U)\z', (isrv('t_rrd_minimum') ? true : false), 3);
 
 		$save3['rrd_heartbeat']         = $rrd_heartbeat;
 

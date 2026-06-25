@@ -290,9 +290,9 @@ function form_save() : void {
 
 						$save3['data_template_id'] = gfrv('data_template_id');
 
-						$save3['rrd_maximum'] = form_input_validate(gnrv("rrd_maximum$name_modifier"), "rrd_maximum$name_modifier", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$|\|query_ifSpeed\||\|query_ifHighSpeed\|", false, 3);
+						$save3['rrd_maximum'] = form_input_validate(gnrv("rrd_maximum$name_modifier"), "rrd_maximum$name_modifier", '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U|\|query_ifSpeed\||\|query_ifHighSpeed\|)\z', false, 3);
 
-						$save3['rrd_minimum'] = form_input_validate(gnrv("rrd_minimum$name_modifier"), "rrd_minimum$name_modifier", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$|\|query_ifSpeed\||\|query_ifHighSpeed\|", false, 3);
+						$save3['rrd_minimum'] = form_input_validate(gnrv("rrd_minimum$name_modifier"), "rrd_minimum$name_modifier", '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U|\|query_ifSpeed\||\|query_ifHighSpeed\|)\z', false, 3);
 
 						$save3['rrd_heartbeat'] = form_input_validate(gnrv("rrd_heartbeat$name_modifier"), "rrd_heartbeat$name_modifier", '^[0-9]+$', false, 3);
 
