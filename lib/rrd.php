@@ -920,8 +920,8 @@ function rrdtool_function_create(int $local_data_id, bool $show_source, mixed $r
 	 */
 	if (read_config_option('extended_paths') == 'on') {
 		if (read_config_option('storage_location')) {
-			if (rrdtool_execute('is_dir ' . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER') === false) {
-				if (rrdtool_execute('mkdir ' . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER') === false) {
+			if (rrdtool_execute('is_dir ' . cacti_escapeshellarg(dirname($data_source_path)), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER') === false) {
+				if (rrdtool_execute('mkdir ' . cacti_escapeshellarg(dirname($data_source_path)), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER') === false) {
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
 			}
@@ -968,9 +968,9 @@ function rrdtool_function_create(int $local_data_id, bool $show_source, mixed $r
 	}
 
 	if ($show_source == true) {
-		return read_config_option('path_rrdtool') . ' create' . RRD_NL . "$data_source_path$create_ds$create_rra";
+		return read_config_option('path_rrdtool') . ' create' . RRD_NL . cacti_escapeshellarg($data_source_path) . $create_ds . $create_rra;
 	} else {
-		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+		$success = rrdtool_execute('create ' . cacti_escapeshellarg($data_source_path) . " $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 
 		if (CACTI_SERVER_OS != 'win32' && posix_getuid() == 0) {
 			if (file_exists($data_source_path)) {
@@ -1059,7 +1059,7 @@ function rrdtool_function_update(array $update_cache_array, mixed $rrdtool_pipe 
 					$update_options = '';
 				}
 
-				rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+				rrdtool_execute('update ' . cacti_escapeshellarg($rrd_path) . " $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 				$rrds_processed++;
 			}
 		}
@@ -1179,8 +1179,13 @@ function rrdtool_function_fetch(int $local_data_id, int $start_time, int $end_ti
 	// update the rrdfile if performing a fetch
 	boost_fetch_cache_check($local_data_id, $rrdtool_pipe);
 
+	// rrdtool consolidation function is a fixed keyword set; never pass it through unchecked
+	if (!in_array($cf, ['AVERAGE', 'MIN', 'MAX', 'LAST'], true)) {
+		$cf = 'AVERAGE';
+	}
+
 	// build and run the rrdtool fetch command with all of our data
-	$cmd_line = "fetch $data_source_path $cf -s $start_time -e $end_time";
+	$cmd_line = 'fetch ' . cacti_escapeshellarg($data_source_path) . " $cf -s $start_time -e $end_time";
 
 	if ($resolution > 0) {
 		$cmd_line .= " -r $resolution";
@@ -3241,7 +3246,7 @@ function rrdtool_function_get_resstep(mixed $local_data_ids, int $graph_start, i
  */
 function rrdtool_file_exists(string $data_source_path, mixed $rrdtool_pipe = null) : bool {
 	if (read_config_option('storage_location')) {
-		if (!rrdtool_execute("file_exists $data_source_path", true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER')) {
+		if (!rrdtool_execute('file_exists ' . cacti_escapeshellarg($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER')) {
 			return false;
 		}
 	} elseif (!file_exists($data_source_path)) {
@@ -3268,7 +3273,7 @@ function rrdtool_function_info(int $local_data_id, mixed $rrdtool_pipe = null) :
 	}
 
 	// Execute rrdtool info command
-	$cmd_line = ' info ' . $data_source_path;
+	$cmd_line = ' info ' . cacti_escapeshellarg($data_source_path);
 	$output   = rrdtool_execute($cmd_line, RRDTOOL_OUTPUT_NULL, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe);
 
 	if (!is_string($output) || $output == '') {

@@ -237,9 +237,9 @@ function form_save() : void {
 		$save2['t_width']                       = form_input_validate((isrv('t_width') ? gnrv('t_width') : ''), 't_width', '', true, 3);
 		$save2['width']                         = form_input_validate(gnrv('width'), 'width', '^[0-9]+$', (isrv('t_width') ? true : false), 3);
 		$save2['t_upper_limit']                 = form_input_validate((isrv('t_upper_limit') ? gnrv('t_upper_limit') : ''), 't_upper_limit', '', true, 3);
-		$save2['upper_limit']                   = form_input_validate(gnrv('upper_limit'), 'upper_limit', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', ((isrv('t_upper_limit') || (strlen(gnrv('upper_limit')) === 0)) ? true : false), 3);
+		$save2['upper_limit']                   = form_input_validate(gnrv('upper_limit'), 'upper_limit', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U)\z', ((isrv('t_upper_limit') || (strlen(gnrv('upper_limit')) === 0)) ? true : false), 3);
 		$save2['t_lower_limit']                 = form_input_validate((isrv('t_lower_limit') ? gnrv('t_lower_limit') : ''), 't_lower_limit', '', true, 3);
-		$save2['lower_limit']                   = form_input_validate(gnrv('lower_limit'), 'lower_limit', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', ((isrv('t_lower_limit') || (strlen(gnrv('lower_limit')) === 0)) ? true : false), 3);
+		$save2['lower_limit']                   = form_input_validate(gnrv('lower_limit'), 'lower_limit', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U)\z', ((isrv('t_lower_limit') || (strlen(gnrv('lower_limit')) === 0)) ? true : false), 3);
 		$save2['t_vertical_label']              = form_input_validate((isrv('t_vertical_label') ? gnrv('t_vertical_label') : ''), 't_vertical_label', '', true, 3);
 		$save2['vertical_label']                = form_input_validate(gnrv('vertical_label'), 'vertical_label', '', true, 3);
 		$save2['t_slope_mode']                  = form_input_validate((isrv('t_slope_mode') ? gnrv('t_slope_mode') : ''), 't_slope_mode', '', true, 3);

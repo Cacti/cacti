@@ -389,8 +389,8 @@ function form_save() : void {
 			$save2['title']                         = form_input_validate(gnrv('title'), 'title', '', false, 3);
 			$save2['height']                        = form_input_validate(gnrv('height'), 'height', '^[0-9]+$', false, 3);
 			$save2['width']                         = form_input_validate(gnrv('width'), 'width', '^[0-9]+$', false, 3);
-			$save2['upper_limit']                   = form_input_validate(gnrv('upper_limit'), 'upper_limit', "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", ((strlen(gnrv('upper_limit')) === 0) ? true : false), 3);
-			$save2['lower_limit']                   = form_input_validate(gnrv('lower_limit'), 'lower_limit', "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", ((strlen(gnrv('lower_limit')) === 0) ? true : false), 3);
+			$save2['upper_limit']                   = form_input_validate(gnrv('upper_limit'), 'upper_limit', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U)\z', ((strlen(gnrv('upper_limit')) === 0) ? true : false), 3);
+			$save2['lower_limit']                   = form_input_validate(gnrv('lower_limit'), 'lower_limit', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U)\z', ((strlen(gnrv('lower_limit')) === 0) ? true : false), 3);
 			$save2['vertical_label']                = form_input_validate(gnrv('vertical_label'), 'vertical_label', '', true, 3);
 			$save2['slope_mode']                    = form_input_validate((isrv('slope_mode') ? gnrv('slope_mode') : ''), 'slope_mode', '', true, 3);
 			$save2['auto_scale']                    = form_input_validate((isrv('auto_scale') ? gnrv('auto_scale') : ''), 'auto_scale', '', true, 3);
