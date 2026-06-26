@@ -78,8 +78,8 @@ function form_save() : void {
 
 	if (isrv('save_component_repo')) {
 		// ================= input validation =================
-		$save['id']            = CactiValidator::validateInput(gnrv('id'), 'id', [new Assert\Type('numeric')], 3);
-		$save['repo_type']     = CactiValidator::validateInput(gnrv('repo_type'), 'repo_type', [new Assert\Regex('/^[0-2]$/')], 3);
+		$save['id']            = CactiValidator::validateInput(gnrv('id'), 'id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3);
+		$save['repo_type']     = CactiValidator::validateInput(gnrv('repo_type'), 'repo_type', [new Assert\NotBlank(), new Assert\Regex('/^[0-2]$/')], 3);
 		$save['name']          = CactiValidator::validateInput(gnrv('name'), 'name', [new Assert\NotBlank(), new Assert\Length(max: 32)], 3);
 		$save['repo_location'] = CactiValidator::validateInput(gnrv('repo_location'), 'repo_location', [new Assert\NotBlank(), new Assert\Length(max: 128)], 3);
 		$save['repo_branch']   = CactiValidator::validateInput(gnrv('repo_branch'), 'repo_branch', [new Assert\Length(max: 128)], 3);

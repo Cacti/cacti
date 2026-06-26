@@ -87,7 +87,7 @@ if (!cacti_sizeof($page)) {
 			$basepath = realpath(CACTI_PATH_INCLUDE . '/content');
 			$file     = ($basepath !== false) ? realpath($basepath . '/' . $page['contentfile']) : false;
 
-			if ($file !== false && $basepath !== false && ($file === $basepath || str_starts_with($file, $basepath . DIRECTORY_SEPARATOR))) {
+			if ($file !== false && $basepath !== false && is_file($file) && str_starts_with($file, $basepath . DIRECTORY_SEPARATOR)) {
 				require_once($file);
 			} else {
 				print '<h1>The file \'' . htmle($page['contentfile']) . '\' does not exist!!</h1>';

@@ -18,17 +18,17 @@ require_once dirname(__DIR__, 2) . '/lib/CactiValidator.php';
 use Symfony\Component\Validator\Constraints as Assert;
 
 beforeEach(function () {
-    CactiValidator::reset();
+	CactiValidator::reset();
 });
 
 it('validates user group name (NotBlank)', function () {
-    $constraints = [new Assert\NotBlank()];
-    expect(CactiValidator::isValid('Admins', $constraints))->toBeTrue();
-    expect(CactiValidator::isValid('', $constraints))->toBeFalse();
+	$constraints = [new Assert\NotBlank()];
+	expect(CactiValidator::isValid('Admins', $constraints))->toBeTrue();
+	expect(CactiValidator::isValid('', $constraints))->toBeFalse();
 });
 
 it('validates optional description', function () {
-    $constraints = [];
-    expect(CactiValidator::isValid('Some group', $constraints))->toBeTrue();
-    expect(CactiValidator::isValid('', $constraints))->toBeTrue();
+	$constraints = [];
+	expect(CactiValidator::isValid('Some group', $constraints))->toBeTrue();
+	expect(CactiValidator::isValid('', $constraints))->toBeTrue();
 });
