@@ -29,12 +29,15 @@ it('validates data source name (Regex)', function () {
 });
 
 it('validates rrd limits with ifSpeed (Regex)', function () {
-    $constraints = [new Assert\Regex('/^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$|\|query_ifSpeed\||\|query_ifHighSpeed\|/')];
+    $constraints = [new Assert\Regex('/^((-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U|\|query_ifSpeed\||\|query_ifHighSpeed\|)$/')];
     expect(CactiValidator::isValid('100', $constraints))->toBeTrue();
     expect(CactiValidator::isValid('U', $constraints))->toBeTrue();
     expect(CactiValidator::isValid('|query_ifSpeed|', $constraints))->toBeTrue();
     expect(CactiValidator::isValid('|query_ifHighSpeed|', $constraints))->toBeTrue();
     expect(CactiValidator::isValid('invalid', $constraints))->toBeFalse();
+    expect(CactiValidator::isValid('100;payload', $constraints))->toBeFalse();
+    expect(CactiValidator::isValid('abcU', $constraints))->toBeFalse();
+    expect(CactiValidator::isValid('x|query_ifSpeed|y', $constraints))->toBeFalse();
 });
 
 it('validates data source profile id (NotBlank + Regex)', function () {

@@ -159,7 +159,8 @@ class CactiValidator {
 	public static function isValidSnmpCommunity(string $community): bool {
 		return self::isValid($community, [
 			new Assert\NotBlank(),
-			new Assert\Regex('/^[a-zA-Z0-9_\-\.]+$/'),
+			new Assert\Length(max: 255),
+			new Assert\Regex('/^[^\x00-\x1F\x7F]+$/'),
 		]);
 	}
 

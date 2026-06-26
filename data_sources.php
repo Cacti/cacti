@@ -35,7 +35,6 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
 
 use Symfony\Component\Validator\Constraints as Assert;
-use CactiValidator;
 
 $actions = [
 	1 => __('Delete'),

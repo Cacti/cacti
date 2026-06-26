@@ -34,13 +34,15 @@ it('validates numeric fields (Regex)', function () {
 });
 
 it('validates floating point limits (Regex)', function () {
-    $constraints = [new Assert\Regex('/^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$/')];
+    $constraints = [new Assert\Regex('/^((-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U)$/')];
     expect(CactiValidator::isValid('100', $constraints))->toBeTrue();
     expect(CactiValidator::isValid('100.5', $constraints))->toBeTrue();
     expect(CactiValidator::isValid('-50.2', $constraints))->toBeTrue();
     expect(CactiValidator::isValid('1.2e10', $constraints))->toBeTrue();
     expect(CactiValidator::isValid('U', $constraints))->toBeTrue();
     expect(CactiValidator::isValid('abc', $constraints))->toBeFalse();
+    expect(CactiValidator::isValid('100;payload', $constraints))->toBeFalse();
+    expect(CactiValidator::isValid('abcU', $constraints))->toBeFalse();
 });
 
 it('validates dashes pattern (Regex)', function () {

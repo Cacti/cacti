@@ -35,11 +35,14 @@ it('validates data source name (Regex)', function () {
 });
 
 it('validates rrd_maximum with ifSpeed macro (Regex)', function () {
-    $constraints = [new Assert\Regex('/^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U|\|query_ifSpeed\|$/')];
+    $constraints = [new Assert\Regex('/^((-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U|\|query_ifSpeed\|)$/')];
     expect(CactiValidator::isValid('100', $constraints))->toBeTrue();
     expect(CactiValidator::isValid('U', $constraints))->toBeTrue();
     expect(CactiValidator::isValid('|query_ifSpeed|', $constraints))->toBeTrue();
     expect(CactiValidator::isValid('abc', $constraints))->toBeFalse();
+    expect(CactiValidator::isValid('100;payload', $constraints))->toBeFalse();
+    expect(CactiValidator::isValid('abcU', $constraints))->toBeFalse();
+    expect(CactiValidator::isValid('x|query_ifSpeed|y', $constraints))->toBeFalse();
 });
 
 it('validates dynamic regex from database', function () {

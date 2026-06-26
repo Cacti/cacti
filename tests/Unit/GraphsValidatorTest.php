@@ -34,11 +34,13 @@ it('validates graph height and width (Regex)', function () {
 });
 
 it('validates graph limits (Regex)', function () {
-    $constraints = [new Assert\Regex('/^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$/')];
+    $constraints = [new Assert\Regex('/^((-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U)$/')];
     expect(CactiValidator::isValid('1000', $constraints))->toBeTrue();
     expect(CactiValidator::isValid('0.001', $constraints))->toBeTrue();
     expect(CactiValidator::isValid('U', $constraints))->toBeTrue();
     expect(CactiValidator::isValid('invalid', $constraints))->toBeFalse();
+    expect(CactiValidator::isValid('100;payload', $constraints))->toBeFalse();
+    expect(CactiValidator::isValid('abcU', $constraints))->toBeFalse();
 });
 
 it('validates right axis (Regex)', function () {

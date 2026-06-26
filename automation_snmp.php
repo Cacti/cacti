@@ -302,7 +302,7 @@ function form_save() : void {
 		$save['hash']                 = get_hash_automation(grv('item_id'), 'automation_snmp_items');
 		$save['snmp_id']              = automation_validate_input(gnrv('id'), 'snmp_id', [new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThanOrEqual(0)]);
 		$save['sequence']             = automation_validate_input(gnrv('sequence'), 'sequence', [new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThanOrEqual(0)]);
-		$save['snmp_community']       = automation_validate_input(gnrv('snmp_community'), 'snmp_community', [new Assert\NotBlank(), new Assert\Regex('/^[a-zA-Z0-9_\-\.]+$/')]);
+		$save['snmp_community']       = automation_validate_input(gnrv('snmp_community'), 'snmp_community', [new Assert\NotBlank()]);
 		$save['snmp_version']         = automation_validate_input(gnrv('snmp_version'), 'snmp_version', [new Assert\NotBlank(), new Assert\Choice(['1', '2', '3'])]);
 		$save['snmp_username']        = automation_validate_input(gnrv('snmp_username'), 'snmp_username', []);
 		$save['snmp_password']        = automation_validate_input(gnrv('snmp_password'), 'snmp_password', []);

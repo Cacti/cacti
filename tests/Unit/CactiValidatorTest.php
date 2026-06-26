@@ -75,10 +75,12 @@ it('validates email addresses', function () {
 it('validates snmp community strings', function () {
 	expect(CactiValidator::isValidSnmpCommunity('public'))->toBeTrue();
 	expect(CactiValidator::isValidSnmpCommunity('my-community_123'))->toBeTrue();
+	expect(CactiValidator::isValidSnmpCommunity('public@site'))->toBeTrue();
+	expect(CactiValidator::isValidSnmpCommunity('read only/community:1'))->toBeTrue();
 
 	expect(CactiValidator::isValidSnmpCommunity(''))->toBeFalse();
-	expect(CactiValidator::isValidSnmpCommunity('comm;unity'))->toBeFalse();
-	expect(CactiValidator::isValidSnmpCommunity('comm"unity'))->toBeFalse();
+	expect(CactiValidator::isValidSnmpCommunity("comm\nunity"))->toBeFalse();
+	expect(CactiValidator::isValidSnmpCommunity("comm\x7funity"))->toBeFalse();
 });
 
 it('can validate against custom constraints', function () {
