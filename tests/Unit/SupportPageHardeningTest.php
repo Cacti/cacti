@@ -99,7 +99,7 @@ test('support.php does not call the undefined htmle() helper', function () use (
 
 test('php_uname, snmp banner and rsa fingerprint are escaped', function () use ($support) {
 	expect($support)->toContain('html_escape(php_uname())');
-	expect($support)->toContain('html_escape(implode("\n", $out))');
+	expect($support)->toContain('html_escape(shell_exec(');
 	expect($support)->toContain("html_escape(read_config_option('rsa_fingerprint'))");
 });
 

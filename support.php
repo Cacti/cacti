@@ -126,6 +126,12 @@ function support_view_tech() : void {
 	load_current_session_value('tab', 'sess_ts_tabs', 'summary');
 	$current_tab = get_nfilter_request_var('tab');
 
+	// A regex-valid but unknown tab would dereference an undefined $tabs key
+	// below (header label and tab loop); fall back to the default tab.
+	if (!isset($tabs[$current_tab])) {
+		$current_tab = 'summary';
+	}
+
 	// the processes and background will set their own timeouts
 	$page = 'support.php?tab=' . $current_tab;
 
@@ -388,11 +394,17 @@ function show_database_processes() : void {
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (max(1, (int) get_request_var('page')) - 1)) . ',' . $rows;
-	$info_len  = get_request_var('length');
+	$info_len  = (int) get_request_var('length');
 
 	$version   = db_get_global_variable('innodb_version');
 
-	if (db_column_exists('information_schema`.`processlist', 'query_id')) {
+	$has_query_id = db_fetch_cell("SELECT COUNT(*)
+		FROM information_schema.columns
+		WHERE table_schema = 'information_schema'
+		AND table_name = 'PROCESSLIST'
+		AND column_name = 'QUERY_ID'");
+
+	if ($has_query_id) {
 		$query_id = 'query_id';
 		$time_ms  = 'ROUND(time_ms/1000,2) AS runtime';
 	} else {
@@ -724,20 +736,27 @@ function show_cacti_processes() : void {
 		}
 	}
 
-	$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
-		FROM ($sql_inner) AS rs
-		$sql_where",
-		$sql_params);
+	if ($sql_inner == '') {
+		// No known process tables exist (or the selected task type matched
+		// none); skip the query that would otherwise become "FROM () AS rs".
+		$total_rows = 0;
+		$processes  = [];
+	} else {
+		$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
+			FROM ($sql_inner) AS rs
+			$sql_where",
+			$sql_params);
 
-	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (max(1, (int) get_request_var('page')) - 1)) . ',' . $rows;
+		$sql_order = get_order_string();
+		$sql_limit = ' LIMIT ' . ($rows * (max(1, (int) get_request_var('page')) - 1)) . ',' . $rows;
 
-	$processes = db_fetch_assoc_prepared("SELECT *
-		FROM ($sql_inner) AS rs
-		$sql_where
-		$sql_order
-		$sql_limit",
-		$sql_params);
+		$processes = db_fetch_assoc_prepared("SELECT *
+			FROM ($sql_inner) AS rs
+			$sql_where
+			$sql_order
+			$sql_limit",
+			$sql_params);
+	}
 
 	$display_text = [
 		'tasktype' => [
@@ -1006,6 +1025,10 @@ function show_cacti_changelog() : void {
 
 	$changelog = file($config['base_path'] . '/CHANGELOG');
 
+	if ($changelog === false) {
+		$changelog = [];
+	}
+
 	foreach ($changelog as $s) {
 		if (trim($s) == '') {
 			continue;
@@ -1125,7 +1148,7 @@ function show_tech_summary() : void {
 	$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
 
 	if ($graph_gif_count > 0) {
-		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d" graph(s) and/or templates have GIF set as the image format.', $graph_gif_count) . '</span>';
+		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d graph(s) and/or templates have GIF set as the image format.', $graph_gif_count) . '</span>';
 	}
 
 	// Get spine version
@@ -1311,7 +1334,7 @@ function show_tech_summary() : void {
 	print '<td>' . $threads . '</td>';
 	form_end_row();
 
-	$script_servers = read_config_option('php_servers');
+	$script_servers = (int) read_config_option('php_servers');
 
 	form_alternate_row();
 	print '<td>' . __('PHP Servers') . '</td>';
