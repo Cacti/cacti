@@ -4185,7 +4185,10 @@ function automation_valid_snmp_device(array &$device) : bool {
 			$snmp_sysName = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
 
 			if ($snmp_sysName != '') {
-				$snmp_sysName           = trim(strtr($snmp_sysName,'"',' '));
+				// Strip control characters; strtr() previously only removed double-quotes.
+				// The rrdtool sink already strips \n/\r via cacti_escapeshellarg(), but
+				// removing them at input keeps malformed values out of the database.
+				$snmp_sysName           = trim(strtr($snmp_sysName, "\"\n\r\t", '    '));
 				$device['snmp_sysName'] = $snmp_sysName;
 				automation_debug($snmp_sysName);
 			} else {

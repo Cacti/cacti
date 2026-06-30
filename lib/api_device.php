@@ -1003,8 +1003,11 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 	$save['site_id']              = form_input_validate($site_id, 'site_id', '^[0-9]+$', true, 3);
 	$save['external_id']          = form_input_validate($external_id, 'external_id', '', true, 3);
 
-	$save['description']          = form_input_validate($description, 'description', '', false, 3);
-	$save['hostname']             = form_input_validate(trim($hostname), 'hostname', '', false, 3);
+	// Strip control characters before storage. The rrdtool pipe sink already strips
+	// \n/\r via cacti_escapeshellarg() (since c7e4ee798), but removing them here
+	// prevents them reaching title_cache and other consumers that bypass that function.
+	$save['description']          = form_input_validate(str_replace(["\n", "\r", "\t"], ' ', $description), 'description', '', false, 3);
+	$save['hostname']             = form_input_validate(str_replace(["\n", "\r", "\t"], ' ', trim($hostname)), 'hostname', '', false, 3);
 	$save['notes']                = form_input_validate($notes, 'notes', '', true, 3);
 	$save['location']             = form_input_validate($location, 'location', '', true, 3);
 
