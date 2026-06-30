@@ -31,6 +31,12 @@ jobs:
   php-cli-benchmark:
     name: PHP CLI CPU/RSS benchmark
     runs-on: ubuntu-24.04
+    # Benchmarks execute baseline-defined shell commands. On pull_request the
+    # trusted baseline is sourced from the base branch, but until it first lands
+    # there the job falls back to the PR's copy. Skip fork PRs so an untrusted
+    # fork can never run arbitrary commands on the runner during that bootstrap
+    # window; same-repo PRs, pushes, schedules and manual dispatch still run.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false
 
     steps:
       - name: Checkout

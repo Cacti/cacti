@@ -33,7 +33,14 @@ def normalize_steps(job: dict) -> list[dict]:
 
 
 def check_uses(path: str, step_name: str, uses_value: str, violations: list[str]) -> None:
-    if uses_value.startswith("./") or uses_value.startswith("docker://"):
+    # Local composite actions (./...) ship in-repo and need no pin.
+    if uses_value.startswith("./"):
+        return
+
+    # Container actions must be pinned to an immutable @sha256: digest, not a tag.
+    if uses_value.startswith("docker://"):
+        if "@sha256:" not in uses_value:
+            violations.append(f"{path}:{step_name}: docker:// reference must be pinned by @sha256 digest: {uses_value}")
         return
 
     if "@" not in uses_value:
@@ -97,6 +104,12 @@ def main() -> int:
         for job_name, job in jobs.items():
             if not isinstance(job, dict):
                 continue
+
+            # Reusable-workflow calls live at the job level (jobs.<id>.uses) and
+            # must be pinned just like step actions.
+            job_uses = job.get("uses")
+            if isinstance(job_uses, str):
+                check_uses(rel, f"{job_name} (job)", job_uses.strip(), violations)
 
             for idx, step in enumerate(normalize_steps(job), start=1):
                 if not isinstance(step, dict):

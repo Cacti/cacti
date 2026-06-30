@@ -124,6 +124,35 @@ def post_pr_comment(body: str) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Decision parsing
+# ---------------------------------------------------------------------------
+
+# The review prompt requires the model to END with exactly one of these markers.
+DECISION_BLOCK  = "BLOCK PR"
+DECISION_REVIEW = "REVIEW REQUIRED"
+DECISION_PASS   = "NO BLOCKING SECURITY ISSUES FOUND"
+DECISIONS = (DECISION_BLOCK, DECISION_REVIEW, DECISION_PASS)
+
+
+def final_decision(review: str) -> "str | None":
+    """Return the review's final decision marker, or None when absent.
+
+    We gate on the decision marker rather than substring-matching "BLOCK PR":
+    a substring match misfires on prose ("I would not BLOCK PR") and, worse, on
+    the attacker-controlled diff echoing the instruction text back into the
+    review body. Scan from the bottom and return the first line that, once
+    stripped of markdown decoration, equals one of the markers.
+    """
+    for raw in reversed(review.splitlines()):
+        line = raw.strip().strip("`*_# ").strip().rstrip(".:").strip().upper()
+
+        if line in DECISIONS:
+            return line
+
+    return None
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -192,8 +221,12 @@ def main() -> None:
         print("\n--- REVIEW OUTPUT ---\n")
         print(review)
 
-    # Gate the merge when the model recommends blocking
-    if "BLOCK PR" in review:
+    # Gate the merge on the model's *final decision*, not a substring match.
+    decision = final_decision(review)
+
+    if decision is None:
+        print("::warning::Security review produced no recognizable final decision; not gating.", file=sys.stderr)
+    elif decision == DECISION_BLOCK:
         print("::error::Security review recommends blocking this PR.", file=sys.stderr)
         sys.exit(1)
 
