@@ -47,6 +47,10 @@ GITHUB_TIMEOUT = 30
 # Helpers
 # ---------------------------------------------------------------------------
 
+class EmptyReviewError(RuntimeError):
+    """API responded but carried no usable review text; gate must fail closed."""
+
+
 def read_truncated(path: str, max_chars: int) -> str:
     """Return up to max_chars of a file, appending a truncation notice."""
     try:
@@ -82,7 +86,18 @@ def call_claude(system_prompt: str, user_message: str) -> str:
     )
     with urllib.request.urlopen(req, timeout=API_TIMEOUT) as resp:
         body = json.loads(resp.read())
-    return body["content"][0]["text"]
+
+    # The Messages API returns a list of content blocks; only some are text
+    # (e.g. tool_use blocks have no "text"). Concatenate every text block.
+    blocks = body.get("content", [])
+    text = "".join(
+        block.get("text", "")
+        for block in blocks
+        if isinstance(block, dict) and block.get("type") == "text"
+    )
+    if not text.strip():
+        raise EmptyReviewError(f"no text content in API response (stop_reason={body.get('stop_reason')})")
+    return text
 
 
 def post_pr_comment(body: str) -> None:
@@ -153,6 +168,11 @@ def main() -> None:
         body = exc.read().decode(errors="replace")
         print(f"::warning::Anthropic API error {exc.code}: {body[:500]}", file=sys.stderr)
         sys.exit(0)
+    except EmptyReviewError as exc:
+        # A malformed/empty response means the gate did not actually run; fail
+        # closed rather than letting the PR pass without a review.
+        print(f"::error::Security review failed: {exc}", file=sys.stderr)
+        sys.exit(1)
     except Exception as exc:  # noqa: BLE001
         print(f"::warning::Security review skipped: {exc}", file=sys.stderr)
         sys.exit(0)

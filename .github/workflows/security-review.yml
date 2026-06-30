@@ -16,6 +16,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  issues: write   # security_review.py posts via the issues comments endpoint
 
 concurrency:
   group: security-review-${{ github.event.pull_request.number }}
