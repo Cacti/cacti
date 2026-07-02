@@ -590,14 +590,24 @@ function form_actions() {
 				}
 			} elseif (get_request_var('drp_action') == '5') { // change host
 				get_filter_request_var('host_id');
-				$failures = false;
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
-					if (!api_graph_change_device($selected_items[$i], get_request_var('host_id'))) {
-						$failures = true;
-					}
+				$failures = 0;
+				$success  = 0;
+				$host_id  = get_filter_request_var('host_id');
 
-					if ($failures) {
-						raise_message(33);
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
+					$local_graph_id = $selected_items[$i];
+
+					$title = db_fetch_cell_prepared('SELECT title_cache
+						FROM graph_templates_graph
+						WHERE local_graph_id = ?',
+						array($local_graph_id));
+
+					if (!api_graph_change_device($local_graph_id, $host_id)) {
+						raise_message('moved_' . $local_graph_id, __('Graph %s Moved to new Device', $title), MESSAGE_LEVEL_INFO);
+						$failures++;
+					} else {
+						raise_message('notmoved_' . $local_graph_id, __('Graph %s not Moved.  Device missing Data Query', $title), MESSAGE_LEVEL_WARN);
+						$success++;
 					}
 				}
 			} elseif (get_request_var('drp_action') == '6') { // reapply suggested naming
