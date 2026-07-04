@@ -589,7 +589,6 @@ function form_actions() {
 					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_GRAPH, get_nfilter_request_var('tree_item_id'), '', $selected_items[$i], 0, 0, 0, 0, false);
 				}
 			} elseif (get_request_var('drp_action') == '5') { // change host
-				get_filter_request_var('host_id');
 				$failures = 0;
 				$success  = 0;
 				$host_id  = get_filter_request_var('host_id');
