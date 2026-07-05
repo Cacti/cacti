@@ -606,7 +606,7 @@ function api_graph_change_device($local_graph_id, $host_id) {
 		WHERE id = ?',
 		array($local_graph_id));
 
-	if (sizeof($graph)) {
+	if (cacti_sizeof($graph)) {
 		if ($graph['snmp_query_id'] > 0) {
 			$exists = db_fetch_cell_prepared('SELECT snmp_query_id
 				FROM host_snmp_query
