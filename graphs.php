@@ -601,12 +601,12 @@ function form_actions() {
 						WHERE local_graph_id = ?',
 						array($local_graph_id));
 
-					if (!api_graph_change_device($local_graph_id, $host_id)) {
+					if (api_graph_change_device($local_graph_id, $host_id)) {
 						raise_message('moved_' . $local_graph_id, __('Graph %s Moved to new Device', $title), MESSAGE_LEVEL_INFO);
-						$failures++;
+						$success++;
 					} else {
 						raise_message('notmoved_' . $local_graph_id, __('Graph %s not Moved.  Device missing Data Query', $title), MESSAGE_LEVEL_WARN);
-						$success++;
+						$failures++;
 					}
 				}
 			} elseif (get_request_var('drp_action') == '6') { // reapply suggested naming
