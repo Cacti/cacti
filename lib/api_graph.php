@@ -599,12 +599,30 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 }
 
 function api_graph_change_device($local_graph_id, $host_id) {
-	$dqgraph = db_fetch_cell_prepared('SELECT snmp_query_id
+	$proceed = false;
+
+	$graph = db_fetch_row_prepared('SELECT *
 		FROM graph_local
 		WHERE id = ?',
 		array($local_graph_id));
 
-	if (empty($dqgraph)) {
+	if (cacti_sizeof($graph)) {
+		if ($graph['snmp_query_id'] > 0) {
+			$exists = db_fetch_cell_prepared('SELECT snmp_query_id
+				FROM host_snmp_query
+				WHERE snmp_query_id = ?
+				AND host_id = ?',
+				array($graph['snmp_query_id'], $host_id));
+
+			if ($exists > 0) {
+				$proceed = true;
+			}
+		} else {
+			$proceed = true;
+		}
+	}
+
+	if ($proceed) {
 		db_execute_prepared('UPDATE graph_local
 			SET host_id = ?
 			WHERE id = ?',
@@ -616,7 +634,7 @@ function api_graph_change_device($local_graph_id, $host_id) {
 		$data_ids = db_fetch_assoc_prepared('SELECT DISTINCT dtr.local_data_id
 			FROM graph_templates_item AS gti
 			INNER JOIN data_template_rrd AS dtr
-			ON gti.task_item_id=dtr.id
+			ON gti.task_item_id = dtr.id
 			WHERE gti.local_graph_id = ?',
 			array($local_graph_id));
 
