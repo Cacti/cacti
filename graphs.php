@@ -1396,13 +1396,13 @@ function form_actions() : void {
 				$success  = 0;
 				$host_id  = gfrv('host_id');
 
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0; ($i < cacti_count($selected_items)); $i++) {
 					$local_graph_id = $selected_items[$i];
 
 					$title = db_fetch_cell_prepared('SELECT title_cache
 						FROM graph_templates_graph
 						WHERE local_graph_id = ?',
-						array($local_graph_id));
+						[$local_graph_id]);
 
 					if (api_graph_change_device($local_graph_id, $host_id)) {
 						raise_message('moved_' . $local_graph_id, __('Graph %s Moved to new Device', $title), MESSAGE_LEVEL_INFO);
