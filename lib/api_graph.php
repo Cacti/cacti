@@ -705,12 +705,30 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
  * @return bool Returns true if the device was successfully changed, false otherwise.
  */
 function api_graph_change_device(int $local_graph_id, int $host_id) : bool {
-	$dqgraph = db_fetch_cell_prepared('SELECT snmp_query_id
+	$proceed = false;
+
+	$graph = db_fetch_row_prepared('SELECT *
 		FROM graph_local
 		WHERE id = ?',
 		[$local_graph_id]);
 
-	if (empty($dqgraph)) {
+	if (cacti_sizeof($graph)) {
+		if ($graph['snmp_query_id'] > 0) {
+			$exists = db_fetch_cell_prepared('SELECT snmp_query_id
+				FROM host_snmp_query
+				WHERE snmp_query_id = ?
+				AND host_id = ?',
+				[$graph['snmp_query_id'], $host_id]);
+
+			if ($exists > 0) {
+				$proceed = true;
+			}
+		} else {
+			$proceed = true;
+		}
+	}
+
+	if ($proceed) {
 		db_execute_prepared('UPDATE graph_local
 			SET host_id = ?
 			WHERE id = ?',
@@ -722,7 +740,7 @@ function api_graph_change_device(int $local_graph_id, int $host_id) : bool {
 		$data_ids = db_fetch_assoc_prepared('SELECT DISTINCT dtr.local_data_id
 			FROM graph_templates_item AS gti
 			INNER JOIN data_template_rrd AS dtr
-			ON gti.task_item_id=dtr.id
+			ON gti.task_item_id = dtr.id
 			WHERE gti.local_graph_id = ?',
 			[$local_graph_id]);
 
