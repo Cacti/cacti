@@ -212,6 +212,10 @@ Cacti CHANGELOG
 -feature: Fortigate firewall template extension with SDWAN tests
 -feature: Continue to support MD5() for the password verifications but also support SHA256
 
+1.2.x
+-issue: #7212: Address a few small memory leaks in realtime graphing
+-feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
+
 1.2.31
 -security#GHSA-6RVG-2VM8-5WRF: CVE-2026-22802 Authentication Bypass leads to information disclosure
 -security#GHSA-9wvp-cfx6-hj7p: CVE-2026-24482 1st argument to preg_replace is not sanitized and given from user_inputs

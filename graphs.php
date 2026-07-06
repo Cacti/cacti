@@ -1392,16 +1392,24 @@ function form_actions() : void {
 					api_tree_item_save(0, gnrv('tree_id'), TREE_ITEM_TYPE_GRAPH, gnrv('tree_item_id'), '', $selected_items[$i], 0, 0, 0, 0, false);
 				}
 			} elseif (grv('drp_action') == '5') { // change host
-				gfrv('host_id');
-				$failures = false;
+				$failures = 0;
+				$success  = 0;
+				$host_id  = gfrv('host_id');
 
-				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-					if (!api_graph_change_device($selected_items[$i], grv('host_id'))) {
-						$failures = true;
-					}
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
+					$local_graph_id = $selected_items[$i];
 
-					if ($failures) {
-						raise_message(33);
+					$title = db_fetch_cell_prepared('SELECT title_cache
+						FROM graph_templates_graph
+						WHERE local_graph_id = ?',
+						array($local_graph_id));
+
+					if (api_graph_change_device($local_graph_id, $host_id)) {
+						raise_message('moved_' . $local_graph_id, __('Graph %s Moved to new Device', $title), MESSAGE_LEVEL_INFO);
+						$success++;
+					} else {
+						raise_message('notmoved_' . $local_graph_id, __('Graph %s not Moved.  Device missing Data Query', $title), MESSAGE_LEVEL_WARN);
+						$failures++;
 					}
 				}
 			} elseif (grv('drp_action') == '6') { // reapply suggested naming
