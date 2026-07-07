@@ -1,0 +1,134 @@
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+*/
+
+$options = getopt('', ['base:', 'head:']);
+$base    = $options['base'] ?? '';
+$head    = $options['head'] ?? 'HEAD';
+$files   = cli_file_args($argv);
+
+if ($files === []) {
+	$files = changed_php_files($base, $head);
+}
+
+$patterns = [
+	'raw-superglobal-request' => [
+		'pattern' => '/\$_(?:GET|POST|REQUEST)\s*\[/',
+		'message' => 'Use Cacti request helpers or typed filter objects instead of raw request superglobals.',
+		'allow'   => [
+			'lib/PackageListFilter.php',
+		]
+	],
+	'manual-request-query-url' => [
+		'pattern' => '/[?&][A-Za-z0-9_-]+=\s*[\'"]?\s*\.\s*g(?:r|fr|nr)v\s*\(/',
+		'message' => 'Use a URL builder or typed page-state URL method instead of concatenating request values into query strings.'
+	],
+	'inline-js-php-string' => [
+		'pattern' => '/(?:var|let|const)\s+[A-Za-z0-9_$]+\s*=\s*[\'"][^\'"]*<\?php\s+print\s+/',
+		'message' => 'Use JSON encoding for PHP values injected into JavaScript.'
+	],
+	'raw-request-value-attribute' => [
+		'pattern' => '/value\s*=\s*[\'"][^\'"]*<\?php\s+print\s+g(?:r|fr|nr)v\s*\(/',
+		'message' => 'Use form rendering helpers for request-backed input values.'
+	],
+	'serialized-hidden-state' => [
+		'pattern' => '/(?:type\s*=\s*[\'"]hidden[\'"].*serialize\s*\(|html_hidden_input\s*\([^;]*serialize\s*\()/',
+		'message' => 'Do not round-trip serialized PHP state through hidden fields.'
+	],
+];
+
+$violations = [];
+
+foreach ($files as $file) {
+	if (!is_file($file) || pathinfo($file, PATHINFO_EXTENSION) !== 'php') {
+		continue;
+	}
+
+	$lines = file($file, FILE_IGNORE_NEW_LINES);
+
+	foreach ($lines as $index => $line) {
+		foreach ($patterns as $name => $rule) {
+			if (isset($rule['allow']) && in_array($file, $rule['allow'], true)) {
+				continue;
+			}
+
+			if (preg_match($rule['pattern'], $line) === 1) {
+				$violations[] = sprintf('%s:%d: %s: %s', $file, $index + 1, $name, $rule['message']);
+			}
+		}
+	}
+}
+
+if ($violations !== []) {
+	fwrite(STDERR, "Hardening pattern guard found unsafe changed-file patterns:\n");
+	fwrite(STDERR, implode("\n", $violations) . "\n");
+
+	exit(1);
+}
+
+exit(0);
+
+function changed_php_files(string $base, string $head) : array {
+	if ($base === '') {
+		$base = trim((string) shell_exec('git merge-base HEAD upstream/develop 2>/dev/null'));
+	}
+
+	if ($base === '') {
+		$base = trim((string) shell_exec('git merge-base HEAD origin/develop 2>/dev/null'));
+	}
+
+	if ($base === '') {
+		return [];
+	}
+
+	$command = sprintf(
+		'git diff --name-only --diff-filter=ACMR %s...%s -- %s 2>/dev/null',
+		escapeshellarg($base),
+		escapeshellarg($head),
+		escapeshellarg('*.php')
+	);
+
+	$output = shell_exec($command);
+
+	if (!is_string($output) || trim($output) === '') {
+		return [];
+	}
+
+	return preg_split('/\R/', trim($output)) ?: [];
+}
+
+function cli_file_args(array $argv) : array {
+	$files = [];
+
+	for ($i = 1; $i < count($argv); $i++) {
+		$arg = $argv[$i];
+
+		if ($arg === '--base' || $arg === '--head') {
+			$i++;
+
+			continue;
+		}
+
+		if (str_starts_with($arg, '--base=') || str_starts_with($arg, '--head=')) {
+			continue;
+		}
+
+		if (str_starts_with($arg, '--')) {
+			continue;
+		}
+
+		$files[] = $arg;
+	}
+
+	return $files;
+}

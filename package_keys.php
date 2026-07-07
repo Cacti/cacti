@@ -23,6 +23,7 @@
 */
 
 require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/PackageListFilter.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
@@ -53,7 +54,7 @@ function form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
+		$selected_items = PackageListFilter::decodeSelectedIds(gnrv('selected_items'));
 
 		if ($selected_items != false) {
 			if (gnrv('drp_action') == '1') { // delete
@@ -72,16 +73,9 @@ function form_actions() : void {
 	$p_list  = '';
 	$p_array = [];
 
-	// loop through each of the data queries and process them
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			// ================= input validation =================
-			input_validate_input_number($matches[1]);
-			// ====================================================
-
-			$p_list .= '<li>' . htmle(db_fetch_cell_prepared('SELECT author FROM package_public_keys WHERE id = ?', [$matches[1]])) . '</li>';
-			$p_array[] = $matches[1];
-		}
+	foreach (PackageListFilter::selectedIdsFromPost() as $id) {
+		$p_list .= '<li>' . htmle(db_fetch_cell_prepared('SELECT author FROM package_public_keys WHERE id = ?', [$id])) . '</li>';
+		$p_array[] = $id;
 	}
 
 	top_header();
@@ -113,7 +107,7 @@ function form_actions() : void {
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . serialize($p_array) . "'>
+			<input type='hidden' name='selected_items' value='" . htmle(PackageListFilter::encodeSelectedIds($p_array)) . "'>
 			<input type='hidden' name='drp_action' value='" . htmle(gnrv('drp_action')) . "'>
 			$save_html
 		</td>
@@ -140,27 +134,23 @@ function public_keys() : void {
 	$pageFilter->set_sort_array('author', 'ASC');
 	$pageFilter->render();
 
-	if (grv('rows') == '-1') {
-		$rows = read_config_option('num_rows_table');
-	} else {
-		$rows = grv('rows');
-	}
+	$filter = PackageListFilter::fromRequest((int) read_config_option('num_rows_table'));
 
 	$sql_where  = '';
 	$sql_params = [];
 
 	// form the 'where' clause for our main sql query
-	if (grv('filter') != '') {
+	if ($filter->hasFilter()) {
 		$sql_where = ($sql_where != '' ? ' AND ' : 'WHERE ') .
 			'(author LIKE ? OR homepage LIKE ? OR email_address LIKE ?)';
 
-		$sql_params[] = '%' . grv('filter') . '%';
-		$sql_params[] = '%' . grv('filter') . '%';
-		$sql_params[] = '%' . grv('filter') . '%';
+		$sql_params[] = '%' . $filter->filter() . '%';
+		$sql_params[] = '%' . $filter->filter() . '%';
+		$sql_params[] = '%' . $filter->filter() . '%';
 	}
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . $filter->offset() . ',' . $filter->rows();
 
 	$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
 		FROM package_public_keys
@@ -197,7 +187,7 @@ function public_keys() : void {
 		],
 	];
 
-	$nav = html_nav_bar('package_keys.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Package Public Keys'), 'page', 'main');
+	$nav = html_nav_bar($filter->paginationUrl('package_keys.php'), MAX_DISPLAY_PAGES, $filter->page(), $filter->rows(), $total_rows, cacti_sizeof($display_text) + 1, __('Package Public Keys'), 'page', 'main');
 
 	form_start('package_keys.php', 'chk');
 
@@ -205,7 +195,7 @@ function public_keys() : void {
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
+	html_header_sort_checkbox($display_text, $filter->sortColumn(), $filter->sortDirection(), false);
 
 	$i = 0;
 
@@ -215,10 +205,10 @@ function public_keys() : void {
 
 			$pkey = $key['public_key'];
 
-			form_selectable_cell(filter_value($key['author'], grv('filter')), $key['id']);
+			form_selectable_cell(filter_value($key['author'], $filter->filter()), $key['id']);
 			form_selectable_cell($key['id'], $key['id']);
-			form_selectable_cell(filter_value($key['homepage'], grv('filter')), $key['id']);
-			form_selectable_cell(filter_value($key['email_address'], grv('filter')), $key['id']);
+			form_selectable_cell(filter_value($key['homepage'], $filter->filter()), $key['id']);
+			form_selectable_cell(filter_value($key['email_address'], $filter->filter()), $key['id']);
 			form_selectable_cell(strlen($pkey) < 200 ? 'SHA1' : 'SHA256', $key['id']);
 
 			form_checkbox_cell($key['author'], $key['id']);
