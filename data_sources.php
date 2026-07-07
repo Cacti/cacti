@@ -193,6 +193,7 @@ function form_save() : void {
 
 					// run regexp match on input string
 					$constraints = [];
+
 					if ($allow_nulls === false) {
 						$constraints[] = new Assert\NotBlank();
 					}

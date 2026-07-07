@@ -246,6 +246,7 @@ function host_new_graphs_save(int $host_id) : void {
 				[$input_field_id]);
 
 			$constraints = [];
+
 			if ($idata['allow_nulls'] != 'on') {
 				$constraints[] = new Assert\NotBlank();
 			}

@@ -190,6 +190,7 @@ function form_save() : void {
 					}
 
 					$constraints = [];
+
 					if (!$not_required) {
 						$constraints[] = new Assert\NotBlank();
 					}

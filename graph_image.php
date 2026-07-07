@@ -157,7 +157,7 @@ if (POLLER_ID == 1 || read_config_option('storage_location')) { // @phpstan-igno
 		$decoded = json_decode($output, true);
 
 		if (is_array($decoded) && isset($decoded['image'])) {
-			$output = base64_decode($decoded['image']);
+			$output = base64_decode($decoded['image'], true);
 		} elseif (str_contains($output, 'image = ')) {
 			// Find the beginning of the image definition row
 			$image_begin_pos = strpos($output, 'image = ');

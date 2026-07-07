@@ -107,6 +107,7 @@ class CactiValidator {
 
 		if ($rraRoot !== null) {
 			$realRoot = realpath($rraRoot);
+
 			if ($realRoot === false) {
 				return false;
 			}
