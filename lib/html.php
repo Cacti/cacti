@@ -662,7 +662,8 @@ function html_nav_bar(string $base_url, int $max_pages, int $current_page, int $
 				$return_to = 'main';
 			}
 
-			$url  = $base_url . $page_var;
+			$url       = cacti_js_encode($base_url . $page_var);
+			$return_to = cacti_js_encode($return_to);
 			$nav .= "<script type='text/javascript'>
 			function goto$page_var(pageNo) {
 				if (typeof url_graph === 'function') {
@@ -671,11 +672,11 @@ function html_nav_bar(string $base_url, int $max_pages, int $current_page, int $
 					var url_add='';
 				};
 
-				strURL = '$url='+pageNo+url_add;
+				strURL = $url+'='+pageNo+url_add;
 
 				loadUrl({
 					url: strURL,
-					elementId: '$return_to',
+					elementId: $return_to,
 				});
 			}</script>";
 		}

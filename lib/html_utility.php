@@ -1837,7 +1837,8 @@ function get_page_list(int $current_page, int $pages_per_screen, int $rows_per_p
 		$return_to = 'main';
 	}
 
-	$url .= $page_var;
+	$url       = cacti_js_encode($url . $page_var);
+	$return_to = cacti_js_encode($return_to);
 	$url_page_select .= "<script type='text/javascript'>
 	function goto$page_var(pageNo) {
 		if (typeof url_graph === 'function') {
@@ -1846,11 +1847,11 @@ function get_page_list(int $current_page, int $pages_per_screen, int $rows_per_p
 			var url_add='';
 		};
 
-		strURL = '$url='+pageNo+url_add;
+		strURL = $url+'='+pageNo+url_add;
 
 		loadUrl({
 			url: strURL,
-			elementId: '$return_to',
+			elementId: $return_to,
 		});
 	}</script>";
 

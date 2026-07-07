@@ -106,6 +106,25 @@ test('cacti_script_data renders JSON without exposing script delimiters', functi
 		->and($result)->not->toContain('</script><img');
 });
 
+test('html_nav_bar encodes URL and target values for JavaScript context', function () {
+	$result = html_nav_bar(
+		"foo.php?filter=</script><img src=x onerror='alert(1)'>",
+		10,
+		1,
+		10,
+		100,
+		5,
+		'Rows',
+		'page',
+		"main');alert(1)//"
+	);
+
+	expect($result)->toContain('\u003C\/script\u003E')
+		->and($result)->toContain('\u0027')
+		->and($result)->not->toContain("</script><img")
+		->and($result)->not->toContain("main');alert(1)//");
+});
+
 // =====================================================================
 // html_split_string tests
 // =====================================================================
