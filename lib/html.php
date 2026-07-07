@@ -1364,7 +1364,7 @@ function html_escape(mixed $string = '') : string {
 	}
 
 	// Grave Accent character can lead to xss
-	if ($string != '') {
+	if ($string !== null && $string !== '') {
 		$string = str_replace('`', '&#96;', $string);
 
 		return htmlspecialchars($string, ENT_QUOTES | ENT_HTML5, $charset, false);
@@ -1388,9 +1388,9 @@ function html_attributes(array $attributes) : string {
 			continue;
 		}
 
-		$name = preg_replace('/[^a-zA-Z0-9_:-]/', '', (string) $name) ?? '';
+		$name = (string) $name;
 
-		if ($name == '') {
+		if (preg_match('/^[A-Za-z][A-Za-z0-9_:-]*$/', $name) !== 1) {
 			continue;
 		}
 

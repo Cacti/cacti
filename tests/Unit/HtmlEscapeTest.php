@@ -47,6 +47,11 @@ test('html_escape returns empty string for empty input', function () {
 	expect(html_escape(''))->toBe('');
 });
 
+test('html_escape preserves zero values', function () {
+	expect(html_escape('0'))->toBe('0')
+		->and(html_escape(0))->toBe('0');
+});
+
 test('html_escape returns empty string for null input', function () {
 	expect(html_escape(null))->toBe('');
 });
@@ -74,7 +79,12 @@ test('html_text_input escapes value and additional attributes', function () {
 
 	expect($result)->toContain("value='a&apos; autofocus'")
 		->and($result)->toContain("onChange='applyFilter()'")
-		->and($result)->toContain("badattr='drop'");
+		->and($result)->not->toContain("badattr='drop'");
+});
+
+test('html input helpers preserve zero values', function () {
+	expect(html_hidden_input('selected_id', 0))->toContain("value='0'")
+		->and(html_text_input('rfilter', '0'))->toContain("value='0'");
 });
 
 // =====================================================================

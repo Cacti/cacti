@@ -414,6 +414,7 @@ function form_actions() : void {
 }
 
 function package_import_store_state(array $selected_items, array $selected_hashes, array $selected_files) : string {
+	$state_limit = 10;
 	$token = generate_hash();
 
 	if (!isset($_SESSION['sess_package_import_state']) || !is_array($_SESSION['sess_package_import_state'])) {
@@ -425,6 +426,10 @@ function package_import_store_state(array $selected_items, array $selected_hashe
 		'selected_hashes' => $selected_hashes,
 		'selected_files'  => $selected_files,
 	];
+
+	while (cacti_sizeof($_SESSION['sess_package_import_state']) > $state_limit) {
+		array_shift($_SESSION['sess_package_import_state']);
+	}
 
 	return $token;
 }
