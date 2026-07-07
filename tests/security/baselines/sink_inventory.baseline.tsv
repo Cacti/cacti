@@ -406,14 +406,14 @@ header_redirect	./graph_templates.php:627				header('Location: graph_templates.p
 header_redirect	./graph_templates.php:700				header('Location: graph_templates.php?action=input_edit&graph_template_input_id=' . (empty($graph_template_input_id) ? gnrv('graph_template_input_id') : $graph_template_input_id) . '&graph_template_id=' . gnrv('graph_template_id'));
 header_redirect	./graph_templates.php:709				header('Location: graph_templates.php?action=template_edit&id=' . gnrv('graph_template_id'));
 header_redirect	./graph_templates.php:715		header('Location: graph_templates.php?action=template_edit&id=' . (empty($graph_template_id) ? gnrv('graph_template_id') : $graph_template_id));
-header_redirect	./graphs.php:1572					header("Location: aggregate_graphs.php?action=edit&tab=details&id=$local_graph_id");
-header_redirect	./graphs.php:1608				header('Location: graphs.php?template_id=-1');
-header_redirect	./graphs.php:1610				header('Location: graphs.php');
+header_redirect	./graphs.php:1580					header("Location: aggregate_graphs.php?action=edit&tab=details&id=$local_graph_id");
+header_redirect	./graphs.php:1616				header('Location: graphs.php?template_id=-1');
+header_redirect	./graphs.php:1618				header('Location: graphs.php');
 header_redirect	./graphs.php:165			header('Location: graphs.php?action=graph_edit&id=' . gfrv('id'));
 header_redirect	./graphs.php:173			header('Location: graphs.php?action=graph_edit&id=' . grv('local_graph_id'));
 header_redirect	./graphs.php:189			header('Location: graphs.php?action=graph_edit&id=' . grv('local_graph_id'));
 header_redirect	./graphs.php:197			header('Location: graphs.php?action=graph_edit&id=' . grv('local_graph_id'));
-header_redirect	./graphs.php:2309				header('Location: graphs.php');
+header_redirect	./graphs.php:2317				header('Location: graphs.php');
 header_redirect	./graphs.php:364					header('Location: graphs.php?action=graph_edit&id=' . $local_graph_id);
 header_redirect	./graphs.php:366					header('Location: graphs.php');
 header_redirect	./graphs.php:720				header('Location: graphs.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? gnrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gnrv('local_graph_id'));
