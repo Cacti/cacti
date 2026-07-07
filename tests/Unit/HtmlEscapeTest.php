@@ -59,6 +59,24 @@ test('html_escape handles ampersand in plain text', function () {
 	expect(html_escape('a&b'))->toBe('a&amp;b');
 });
 
+test('html_hidden_input escapes name and value attributes', function () {
+	$result = html_hidden_input('selected_hashes', "a' onfocus='alert(1)");
+
+	expect($result)->toBe("<input type='hidden' name='selected_hashes' value='a&apos; onfocus=&apos;alert(1)'>");
+});
+
+test('html_text_input escapes value and additional attributes', function () {
+	$result = html_text_input('rfilter', "a' autofocus", [
+		'class'    => 'ui-state-default',
+		'onChange' => 'applyFilter()',
+		'bad attr' => 'drop',
+	]);
+
+	expect($result)->toContain("value='a&apos; autofocus'")
+		->and($result)->toContain("onChange='applyFilter()'")
+		->and($result)->toContain("badattr='drop'");
+});
+
 // =====================================================================
 // html_split_string tests
 // =====================================================================

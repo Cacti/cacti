@@ -1374,6 +1374,63 @@ function html_escape(mixed $string = '') : string {
 }
 
 /**
+ * Renders HTML attributes with escaped values.
+ *
+ * @param array $attributes Attribute name/value pairs
+ *
+ * @return string Rendered attributes with a leading space when not empty
+ */
+function html_attributes(array $attributes) : string {
+	$output = '';
+
+	foreach ($attributes as $name => $value) {
+		if ($value === null || $value === false) {
+			continue;
+		}
+
+		$name = preg_replace('/[^a-zA-Z0-9_:-]/', '', (string) $name) ?? '';
+
+		if ($name == '') {
+			continue;
+		}
+
+		if ($value === true) {
+			$output .= ' ' . $name;
+		} else {
+			$output .= ' ' . $name . "='" . html_escape($value) . "'";
+		}
+	}
+
+	return $output;
+}
+
+/**
+ * Renders a hidden input with escaped attributes.
+ *
+ * @param string $name       Input name
+ * @param mixed  $value      Input value
+ * @param array  $attributes Additional attributes
+ *
+ * @return string The rendered hidden input
+ */
+function html_hidden_input(string $name, mixed $value, array $attributes = []) : string {
+	return '<input' . html_attributes(['type' => 'hidden', 'name' => $name, 'value' => $value] + $attributes) . '>';
+}
+
+/**
+ * Renders a text input with escaped attributes.
+ *
+ * @param string $name       Input name
+ * @param mixed  $value      Input value
+ * @param array  $attributes Additional attributes
+ *
+ * @return string The rendered text input
+ */
+function html_text_input(string $name, mixed $value, array $attributes = []) : string {
+	return '<input' . html_attributes(['type' => 'text', 'name' => $name, 'value' => $value] + $attributes) . '>';
+}
+
+/**
  * html_split_string - takes a string and breaks it into a number of <br> separated segments
  *
  * @param string $string      - string to be modified and returned
