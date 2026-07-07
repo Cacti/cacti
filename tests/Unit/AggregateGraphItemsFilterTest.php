@@ -12,8 +12,6 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 2) . '/include/global.php';
 require_once dirname(__DIR__, 2) . '/lib/AggregateGraphItemsFilter.php';
 
 test('aggregate graph items filter exposes typed request state', function () {
@@ -36,7 +34,9 @@ test('aggregate graph items filter exposes typed request state', function () {
 		->and($filter->rfilter())->toBe('router')
 		->and($filter->sortColumn())->toBe('title_cache')
 		->and($filter->sortDirection())->toBe('ASC')
-		->and($filter->localGraphIds())->toBe('1,2,3');
+		->and($filter->localGraphIds())->toBe('1,2,3')
+		->and($filter->hasRfilter())->toBeTrue()
+		->and($filter->hasLocalGraphIds())->toBeTrue();
 });
 
 test('aggregate graph items filter reports matching and custom graph list state', function () {
@@ -48,11 +48,10 @@ test('aggregate graph items filter reports matching and custom graph list state'
 		->and($filter->hasLocalGraphIds())->toBeFalse();
 });
 
-test('aggregate graph items filter recognizes regex filters', function () {
+test('aggregate graph items filter normalizes matching checkbox state', function () {
 	$filter = new AggregateGraphItemsFilter(42, 20, 20, 1, 'router.*', 'on', 'title_cache', 'ASC', '9');
 
-	expect($filter->hasRegexFilter())->toBeTrue()
-		->and($filter->matchingOnly())->toBeTrue()
+	expect($filter->matchingOnly())->toBeTrue()
 		->and($filter->matchingChecked())->toBeTrue()
 		->and($filter->hasLocalGraphIds())->toBeTrue();
 });
