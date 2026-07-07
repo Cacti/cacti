@@ -5621,7 +5621,13 @@ function mailer_build_esmtp_transport(string $host, int $port, string $secure, ?
 		return new CactiRequireTlsEsmtpTransport($host, $port, $tls, null, null, null, $authenticators);
 	}
 
-	return new EsmtpTransport($host, $port, $tls, null, null, null, $authenticators);
+	$transport = new EsmtpTransport($host, $port, $tls, null, null, null, $authenticators);
+
+	if ($secure == 'none') {
+		$transport->setAutoTls(false);
+	}
+
+	return $transport;
 }
 
 /**
@@ -6266,7 +6272,8 @@ function create_emailtext(array $e) : string {
 }
 
 function ping_mail_server(string $host, int $port, string $user, string $password, int $timeout = 10, string $secure = 'none') : mixed {
-	$results = true;
+	$results   = true;
+	$transport = null;
 
 	try {
 		$transport = mailer_build_esmtp_transport($host, $port, $secure);
@@ -6282,10 +6289,13 @@ function ping_mail_server(string $host, int $port, string $user, string $passwor
 		}
 
 		$transport->start();
-		$transport->stop();
 	} catch (TransportExceptionInterface $e) {
 		$results = __('SMTP error: ') . $e->getMessage();
 		cacti_log($results);
+	} finally {
+		if ($transport instanceof EsmtpTransport) {
+			$transport->stop();
+		}
 	}
 
 	return $results;

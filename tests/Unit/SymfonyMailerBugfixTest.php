@@ -163,5 +163,7 @@ test('mailer helpers map secure modes without the opportunistic STARTTLS downgra
 	expect($src)->toContain('function mailer_secure_tls_flag')
 		->toContain('function mailer_build_esmtp_transport')
 		->toContain('CactiRequireTlsEsmtpTransport')
+		->toContain('setAutoTls(false)')
+		->toContain('finally')
 		->toContain('catch (RfcComplianceException');
 });
