@@ -1346,6 +1346,40 @@ function htmle(mixed $string) : string {
 }
 
 /**
+ * html_escape_attr - sanitizes a string for display in an HTML attribute
+ *
+ * @param mixed $string String the attribute value to escape
+ *
+ * @return string The escaped attribute value to be returned.
+ */
+function html_escape_attr(mixed $string = '') : string {
+	return html_escape($string);
+}
+
+/**
+ * html_escape_url - sanitizes a URL for display in an HTML attribute
+ *
+ * @param mixed $url URL the attribute value to escape
+ *
+ * @return string The escaped URL value to be returned.
+ */
+function html_escape_url(mixed $url = '') : string {
+	return html_escape_attr($url);
+}
+
+/**
+ * cacti_script_data - renders JSON data for scripts to read from the DOM
+ *
+ * @param string $id   HTML id for the script element
+ * @param mixed  $data Data to encode as a JavaScript-safe JSON literal
+ *
+ * @return string The script tag containing JSON data.
+ */
+function cacti_script_data(string $id, mixed $data) : string {
+	return "<script type='application/json' id='" . html_escape_attr($id) . "'>" . cacti_js_encode($data) . '</script>';
+}
+
+/**
  * html_escape - sanitizes a string for display
  *
  * @param mixed $string String the string to escape

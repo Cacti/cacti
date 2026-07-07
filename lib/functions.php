@@ -5066,6 +5066,44 @@ function debug_log_return(string $type) : string {
 }
 
 /**
+ * Encodes a PHP value for direct inclusion in JavaScript.
+ *
+ * @param mixed $value The value to encode
+ *
+ * @return string The JavaScript-safe JSON literal
+ */
+function cacti_js_encode(mixed $value) : string {
+	$encoded = json_encode(
+		$value,
+		JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE
+	);
+
+	return $encoded !== false ? $encoded : 'null';
+}
+
+/**
+ * Builds a URL with RFC3986-encoded query parameters.
+ *
+ * @param string $path   The base URL or relative path
+ * @param array  $params Query parameters to append
+ *
+ * @return string The encoded URL
+ */
+function cacti_url(string $path, array $params = []) : string {
+	if (cacti_sizeof($params) == 0) {
+		return $path;
+	}
+
+	$query = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+
+	if ($query == '') {
+		return $path;
+	}
+
+	return $path . (str_contains($path, '?') ? '&' : '?') . $query;
+}
+
+/**
  * Strips any character that cannot safely appear in a SQL identifier.
  * Allows word characters, dots (table.column), parentheses and INET_ATON-style
  * wrappers already used by the sort helpers.  Use before concatenating a
