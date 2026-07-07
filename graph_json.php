@@ -257,15 +257,14 @@ if ($output !== false && $output != '') {
 
 if ($output !== false && $output != '') {
 	if (isset($oarray['meta'])) {
-			foreach ($oarray['meta']['legend'] as $key => $value) {
-				$legend = trim(preg_replace('/[^a-z0-9 _()]/i', '', $value));
+		foreach ($oarray['meta']['legend'] as $key => $value) {
+			$legend = trim(preg_replace('/[^a-z0-9 _()]/i', '', $value));
 
-				if ($legend) {
-					$color                          = (isset($xport_meta['legend'][$legend])) ? $xport_meta['legend'][$legend] : '';
-					$oarray['meta']['legend'][$key] = ['legend' => $legend, 'color' => $color];
-				} else {
-					unset($oarray['meta']['legend'][$key]);
-				}
+			if ($legend) {
+				$color                          = (isset($xport_meta['legend'][$legend])) ? $xport_meta['legend'][$legend] : '';
+				$oarray['meta']['legend'][$key] = ['legend' => $legend, 'color' => $color];
+			} else {
+				unset($oarray['meta']['legend'][$key]);
 			}
 		}
 	}
