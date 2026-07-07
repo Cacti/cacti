@@ -381,15 +381,15 @@ function form_actions() : void {
 
 	print "<tr>
 		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='package_location' value='" . grv('package_location') . "'>
-			<input type='hidden' name='data_source_profile' value='" . grv('data_source_profile') . "'>
-			<input type='hidden' name='remove_orphans' value='" . (isrv('remove_orphans') ? 'on' : '') . "'>
-			<input type='hidden' name='replace_svalues' value='" . (isrv('replace_svalues') ? 'on' : '') . "'>
-			<input type='hidden' name='selected_items' value='" . serialize($pkg_array) . "'>
-			<input type='hidden' name='selected_hashes' value='" . serialize($pkg_import_array) . "'>
-			<input type='hidden' name='selected_files' value='" . serialize($pkg_file_array) . "'>
-			<input type='hidden' name='drp_action' value='" . htmle(gnrv('drp_action')) . "'>
+			" . html_hidden_input('action', 'actions') . '
+			' . html_hidden_input('package_location', grv('package_location')) . '
+			' . html_hidden_input('data_source_profile', grv('data_source_profile')) . '
+			' . html_hidden_input('remove_orphans', isrv('remove_orphans') ? 'on' : '') . '
+			' . html_hidden_input('replace_svalues', isrv('replace_svalues') ? 'on' : '') . '
+			' . html_hidden_input('selected_items', serialize($pkg_array)) . '
+			' . html_hidden_input('selected_hashes', serialize($pkg_import_array)) . '
+			' . html_hidden_input('selected_files', serialize($pkg_file_array)) . '
+			' . html_hidden_input('drp_action', gnrv('drp_action')) . "
 			$save_html
 		</td>
 	</tr>";
