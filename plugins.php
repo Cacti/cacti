@@ -1094,7 +1094,7 @@ function update_show_current() : void {
 
 	$plugins = db_fetch_assoc($sql);
 
-	$nav = html_nav_bar('plugins.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8, __('Plugins'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('plugins.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8, __('Plugins'), 'page', 'main');
 
 	form_start('plugins.php', 'chk');
 

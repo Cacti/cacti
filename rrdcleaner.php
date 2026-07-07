@@ -326,7 +326,7 @@ function list_rrd() : void {
 		$sql_limit",
 		$sql_params);
 
-	$nav = html_nav_bar(CACTI_PATH_URL . 'rrdcleaner.php?filter' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8, __('RRDfiles'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url(CACTI_PATH_URL . 'rrdcleaner.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8, __('RRDfiles'), 'page', 'main');
 
 	form_start('rrdcleaner.php');
 

@@ -1146,7 +1146,7 @@ function data_templates() : void {
 		]
 	];
 
-	$nav = html_nav_bar('data_templates.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Data Templates'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('data_templates.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Data Templates'), 'page', 'main');
 
 	form_start('data_templates.php', 'chk');
 

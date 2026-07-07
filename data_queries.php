@@ -1354,7 +1354,7 @@ function data_query() : void {
 		]
 	];
 
-	$nav = html_nav_bar('data_queries.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Data Queries'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('data_queries.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Data Queries'), 'page', 'main');
 
 	form_start('data_queries.php', 'chk');
 

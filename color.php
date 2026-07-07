@@ -492,7 +492,7 @@ function color() : void {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('color.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8, __('Colors'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('color.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8, __('Colors'), 'page', 'main');
 
 	form_start('color.php', 'chk');
 

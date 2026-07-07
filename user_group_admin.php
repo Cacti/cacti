@@ -654,7 +654,7 @@ function user_group_members_edit(string $header_label) : void {
 		__('Realm')
 	];
 
-	$nav = html_nav_bar('user_group_admin.php?action=edit&tab=members&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Users'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('user_group_admin.php', ['action' => 'edit', 'tab' => 'members', 'id' => grv('id')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Users'), 'page', 'main');
 
 	form_start('user_group_admin.php?tab=members&id=' . grv('id'), 'chk');
 
@@ -866,7 +866,7 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 				ON h.id = gl.host_id
 				$sql_where");
 
-			$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permsg&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 7, __('Graphs'), 'page', 'main');
+			$nav = html_nav_bar(cacti_url('user_group_admin.php', ['action' => 'edit', 'tab' => 'permsg', 'id' => grv('id')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 7, __('Graphs'), 'page', 'main');
 
 			form_start('user_group_admin.php?tab=permsg&id=' . grv('id'), 'chk');
 
@@ -1042,7 +1042,7 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 				__('Hostname')
 			];
 
-			$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permsd&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Devices'), 'page', 'main');
+			$nav = html_nav_bar(cacti_url('user_group_admin.php', ['action' => 'edit', 'tab' => 'permsd', 'id' => grv('id')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Devices'), 'page', 'main');
 
 			form_start('user_group_admin.php?tab=permsd&id=' . grv('id'), 'chk');
 
@@ -1188,7 +1188,7 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 
 			$graphs = db_fetch_assoc_prepared($sql_query, [grv('id')]);
 
-			$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permste&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 11, __('Graph Templates'), 'page', 'main');
+			$nav = html_nav_bar(cacti_url('user_group_admin.php', ['action' => 'edit', 'tab' => 'permste', 'id' => grv('id')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 11, __('Graph Templates'), 'page', 'main');
 
 			form_start('user_group_admin.php?tab=permste&id=' . grv('id'), 'chk');
 
@@ -1322,7 +1322,7 @@ function user_group_graph_perms_edit(string $tab, string $header_label) : void {
 
 			$trees = db_fetch_assoc($sql_query);
 
-			$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permstr&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 11, __('Trees'), 'page', 'main');
+			$nav = html_nav_bar(cacti_url('user_group_admin.php', ['action' => 'edit', 'tab' => 'permstr', 'id' => grv('id')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 11, __('Trees'), 'page', 'main');
 
 			form_start('user_group_admin.php?tab=permstr&id=' . grv('id'), 'chk');
 
@@ -1919,7 +1919,7 @@ function user_group() : void {
 		]
 	];
 
-	$nav = html_nav_bar('user_group_admin.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Groups'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('user_group_admin.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Groups'), 'page', 'main');
 
 	form_start('user_group_admin.php', 'chk');
 

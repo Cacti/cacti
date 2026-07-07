@@ -115,7 +115,7 @@ function view_user_log() : void {
 		'ip'        => [__('IP Address'), 'DESC']
 	];
 
-	$nav = html_nav_bar('user_log.php?user_id=' . grv('user_id') . '&filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 6, __('Login Attempts'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('user_log.php', ['user_id' => grv('user_id'), 'filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 6, __('Login Attempts'), 'page', 'main');
 
 	print $nav;
 

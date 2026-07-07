@@ -446,7 +446,7 @@ function show_database_processes() : void {
 		]
 	];
 
-	$nav = html_nav_bar('support.php?tab=processes', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 7, __('Queries'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('support.php', ['tab' => 'processes']), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 7, __('Queries'), 'page', 'main');
 
 	print $nav;
 
@@ -784,7 +784,7 @@ function show_cacti_processes() : void {
 		]
 	];
 
-	$nav = html_nav_bar('support.php?tab=background', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8, __('Processes'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('support.php', ['tab' => 'background']), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8, __('Processes'), 'page', 'main');
 
 	print $nav;
 

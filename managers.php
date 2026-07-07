@@ -127,7 +127,7 @@ function manager() : void {
 	];
 
 	// generate page list
-	$nav = html_nav_bar('managers.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 11, __('Receivers'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('managers.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 11, __('Receivers'), 'page', 'main');
 
 	form_start('managers.php', 'chk');
 
@@ -431,7 +431,7 @@ function manager_notifications(int $id, string $header_label) : void {
 	];
 
 	// generate page list
-	$nav = html_nav_bar('managers.php?action=edit&id=' . $id . '&tab=notifications&mib=' . grv('mib') . '&filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Notifications'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('managers.php', ['action' => 'edit', 'id' => $id, 'tab' => 'notifications', 'mib' => grv('mib'), 'filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Notifications'), 'page', 'main');
 
 	print $nav;
 
@@ -629,7 +629,7 @@ function manager_logs(int $id, string $header_label) : void {
 		__('Varbinds')
 	];
 
-	$nav = html_nav_bar('managers.php?action=exit&id=' . $id . '&tab=logs&mib=' . grv('mib') . '&filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text), __('Receivers'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('managers.php', ['action' => 'exit', 'id' => $id, 'tab' => 'logs', 'mib' => grv('mib'), 'filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text), __('Receivers'), 'page', 'main');
 
 	print $nav;
 

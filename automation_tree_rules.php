@@ -1105,7 +1105,7 @@ function automation_tree_rules() : void {
 		$sql_limit",
 		$sql_params);
 
-	$nav = html_nav_bar('automation_tree_rules.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 11, __('Tree Rules'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('automation_tree_rules.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 11, __('Tree Rules'), 'page', 'main');
 
 	form_start('automation_tree_rules.php', 'chk');
 

@@ -1429,7 +1429,7 @@ function profile() : void {
 		]
 	];
 
-	$nav = html_nav_bar('data_source_profiles.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Profiles'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('data_source_profiles.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Profiles'), 'page', 'main');
 
 	form_start('data_source_profiles.php', 'chk');
 

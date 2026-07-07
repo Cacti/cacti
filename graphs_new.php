@@ -849,7 +849,7 @@ function graphs() : void {
 							load_current_session_value('page' . $snmp_query['id'], 'sess_grn_page' . $snmp_query['id'], '1');
 						}
 
-						$nav = html_nav_bar('graphs_new.php?host_id=' . grv('host_id'), MAX_DISPLAY_PAGES, $page, $rows, $total_rows, 15, __('Items'), 'page' . $snmp_query['id']);
+						$nav = html_nav_bar(cacti_url('graphs_new.php', ['host_id' => grv('host_id')]), MAX_DISPLAY_PAGES, $page, $rows, $total_rows, 15, __('Items'), 'page' . $snmp_query['id']);
 
 						print $nav;
 

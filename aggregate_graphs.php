@@ -1653,20 +1653,33 @@ function aggregate_items() : void {
 	?>
 	<script type='text/javascript'>
 		var totalItems = <?php print $total_items; ?>;
+		var aggregateItemsFilter = <?php print cacti_js_encode([
+			'url'    => 'aggregate_graphs.php',
+			'action' => 'edit',
+			'tab'    => 'items'
+		]); ?>;
 
 		function applyFilter() {
-			strURL = 'aggregate_graphs.php' +
-				'?action=edit&tab=items&id=' + $('#id').val() +
-				'&rows=' + $('#rows').val() +
-				'&rfilter=' + base64_encode($('#rfilter').val()) +
-				'&matching=' + $('#matching').is(':checked');
+			strURL = aggregateItemsFilter.url + '?' + $.param({
+				action: aggregateItemsFilter.action,
+				tab: aggregateItemsFilter.tab,
+				id: $('#id').val(),
+				rows: $('#rows').val(),
+				rfilter: base64_encode($('#rfilter').val()),
+				matching: $('#matching').is(':checked')
+			});
 			loadUrl({
 				url: strURL
 			})
 		}
 
 		function clearFilter() {
-			strURL = 'aggregate_graphs.php?action=edit&tab=items&id=' + $('#id').val() + '&clear=true';
+			strURL = aggregateItemsFilter.url + '?' + $.param({
+				action: aggregateItemsFilter.action,
+				tab: aggregateItemsFilter.tab,
+				id: $('#id').val(),
+				clear: true
+			});
 			loadUrl({
 				url: strURL
 			})
@@ -1756,7 +1769,7 @@ function aggregate_items() : void {
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	$nav = html_nav_bar('aggregate_graphs.php?action=edit&tab=items&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('aggregate_graphs.php', ['action' => 'edit', 'tab' => 'items', 'id' => grv('id')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
 
 	print $nav;
 

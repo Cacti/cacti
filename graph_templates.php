@@ -1711,7 +1711,7 @@ function graph_templates() : void {
 		]
 	];
 
-	$nav = html_nav_bar('graph_templates.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Graph Templates'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('graph_templates.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Graph Templates'), 'page', 'main');
 
 	form_start('graph_templates.php', 'chk');
 

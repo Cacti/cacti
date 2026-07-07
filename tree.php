@@ -2100,7 +2100,7 @@ function tree() : void {
 
 	$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, $sql_params, 'tree');
 
-	$nav = html_nav_bar('tree.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 11, __('Trees'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('tree.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 11, __('Trees'), 'page', 'main');
 
 	form_start('tree.php', 'chk');
 

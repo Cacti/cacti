@@ -1090,7 +1090,7 @@ function device_templates() : void {
 		]
 	];
 
-	$nav = html_nav_bar('host_templates.php?action=templates', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Device Templates'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('host_templates.php', ['action' => 'templates']), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Device Templates'), 'page', 'main');
 
 	form_start('host_templates.php?action=templates', 'chk');
 
@@ -1494,7 +1494,7 @@ function device_archives() : void {
 		]
 	];
 
-	$nav = html_nav_bar('host_templates.php?action=archives', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Device Templates'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('host_templates.php', ['action' => 'archives']), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Device Templates'), 'page', 'main');
 
 	form_start('host_templates.php?action=archives', 'chk');
 

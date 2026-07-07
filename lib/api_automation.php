@@ -942,7 +942,7 @@ function display_new_graphs(array $rule, string $url) : void {
 		$rows = $details['rows'];
 		$name = $details['name'];
 
-		$nav = html_nav_bar('automation_graph_rules.php?action=edit&id=' . $rule['id'], MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 30, __('Matching Indexes'), 'page', 'main');
+		$nav = html_nav_bar(cacti_url('automation_graph_rules.php', ['action' => 'edit', 'id' => $rule['id']]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 30, __('Matching Indexes'), 'page', 'main');
 
 		print $nav;
 

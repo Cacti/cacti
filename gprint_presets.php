@@ -254,7 +254,7 @@ function gprint_presets() : void {
 		]
 	];
 
-	$nav = html_nav_bar('gprint_presets.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('GPRINTs'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('gprint_presets.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('GPRINTs'), 'page', 'main');
 
 	form_start('gprint_presets.php', 'chk');
 

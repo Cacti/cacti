@@ -945,7 +945,7 @@ function pollers() : void {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('pollers.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Pollers'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('pollers.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Pollers'), 'page', 'main');
 
 	form_start('pollers.php', 'chk');
 

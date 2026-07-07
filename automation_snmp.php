@@ -930,7 +930,7 @@ function automation_snmp() : void {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('automation_snmp.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 12, __('SNMP Option Sets'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('automation_snmp.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 12, __('SNMP Option Sets'), 'page', 'main');
 
 	form_start('automation_snmp.php', 'chk');
 

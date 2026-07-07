@@ -652,7 +652,7 @@ function domains() : void {
 		]
 	];
 
-	$nav = html_nav_bar('user_user_domains.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8, __('User Domains'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('user_user_domains.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8, __('User Domains'), 'page', 'main');
 
 	form_start('user_domains.php', 'chk');
 

@@ -766,7 +766,7 @@ function data() : void {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('data_input.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 6, __('Input Methods'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('data_input.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 6, __('Input Methods'), 'page', 'main');
 
 	form_start('data_input.php', 'chk');
 

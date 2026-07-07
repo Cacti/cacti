@@ -736,7 +736,7 @@ function vdef(bool $refresh = true) : void {
 
 	$vdefs = get_vdef_records($total_rows, $rows);
 
-	$nav = html_nav_bar('vdef.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('VDEFs'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('vdef.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('VDEFs'), 'page', 'main');
 
 	form_start('vdef.php', 'chk');
 

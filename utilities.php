@@ -463,7 +463,7 @@ function utilities_view_snmp_cache() : void {
 		__('OID')
 	];
 
-	$nav = html_nav_bar('utilities.php?action=view_snmp_cache&host_id=' . grv('host_id') . '&filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 6, __('Entries'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('utilities.php', ['action' => 'view_snmp_cache', 'host_id' => grv('host_id'), 'filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 6, __('Entries'), 'page', 'main');
 
 	print $nav;
 
@@ -604,7 +604,7 @@ function utilities_view_poller_cache() : void {
 		'nosort'         => [__('Details'), 'ASC']
 	];
 
-	$nav = html_nav_bar('utilities.php?action=view_poller_cache&filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 3, __('Entries'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('utilities.php', ['action' => 'view_poller_cache', 'filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 3, __('Entries'), 'page', 'main');
 
 	print $nav;
 
@@ -1632,7 +1632,7 @@ function snmpagent_utilities_run_cache() : void {
 	];
 
 	// generate page list
-	$nav = html_nav_bar('utilities.php?action=view_snmpagent_cache&mib=' . grv('mib') . '&filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 11, __('Entries'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('utilities.php', ['action' => 'view_snmpagent_cache', 'mib' => grv('mib'), 'filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 11, __('Entries'), 'page', 'main');
 
 	print $nav;
 
@@ -1848,7 +1848,7 @@ function snmpagent_utilities_run_eventlog() : void {
 
 	$logs = db_fetch_assoc_prepared($sql_query, $sql_params);
 
-	$nav = html_nav_bar('utilities.php?action=view_snmpagent_events&severity=' . grv('severity') . '&receiver=' . grv('receiver') . '&filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 11, __('Log Entries'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('utilities.php', ['action' => 'view_snmpagent_events', 'severity' => grv('severity'), 'receiver' => grv('receiver'), 'filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 11, __('Log Entries'), 'page', 'main');
 
 	form_start('managers.php', 'chk');
 

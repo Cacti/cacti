@@ -733,7 +733,7 @@ function cdef() : void {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('cdef.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('CDEFs'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('cdef.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('CDEFs'), 'page', 'main');
 
 	form_start('cdef.php', 'chk');
 

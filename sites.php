@@ -525,7 +525,7 @@ function sites() : void {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('sites.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Sites'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('sites.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Sites'), 'page', 'main');
 
 	form_start('sites.php', 'chk');
 

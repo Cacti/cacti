@@ -1531,7 +1531,7 @@ function grow_right_pane_tree(int $tree_id, int $leaf_id, string $host_group_dat
 	$total_rows = cacti_sizeof($graph_list);
 
 	// generate page list
-	$nav = html_nav_bar(CACTI_PATH_URL . 'graph_view.php?action=tree_content&tree_id=' . $tree_id . '&leaf_id=' . $leaf_id . '&node=' . grv('node') . '&hgd=' . $host_group_data, MAX_DISPLAY_PAGES, grv('page'), $graph_rows, $total_rows, grv('columns'), __('Graphs'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url(CACTI_PATH_URL . 'graph_view.php', ['action' => 'tree_content', 'tree_id' => $tree_id, 'leaf_id' => $leaf_id, 'node' => grv('node'), 'hgd' => $host_group_data]), MAX_DISPLAY_PAGES, grv('page'), $graph_rows, $total_rows, grv('columns'), __('Graphs'), 'page', 'main');
 
 	print $nav;
 

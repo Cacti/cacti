@@ -975,7 +975,7 @@ function automation_graph_rules() : void {
 		$sql_limit",
 		$sql_params);
 
-	$nav = html_nav_bar('automation_graph_rules.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 7, __('Graph Rules'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('automation_graph_rules.php', ['filter' => grv('filter')]), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 7, __('Graph Rules'), 'page', 'main');
 
 	form_start('automation_graph_rules.php', 'chk');
 

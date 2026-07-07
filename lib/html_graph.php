@@ -1265,7 +1265,7 @@ function html_graph_list_view() : void {
 
 	$graphs = get_allowed_graphs($sql_where, 'gtg.title_cache', $sql_limit, $total_rows);
 
-	$nav = html_nav_bar('graph_view.php?action=list', MAX_DISPLAY_PAGES, grv('page'), $graph_rows, $total_rows, 5, __('Graphs'), 'page', 'main');
+	$nav = html_nav_bar(cacti_url('graph_view.php', ['action' => 'list']), MAX_DISPLAY_PAGES, grv('page'), $graph_rows, $total_rows, 5, __('Graphs'), 'page', 'main');
 
 	print $nav;
 
