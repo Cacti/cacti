@@ -106,6 +106,10 @@ function form_actions() : void {
 	gfrv('package_location');
 	gfrv('remove_orphans', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/(on)/']]);
 	gfrv('replace_svalues', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/(on)/']]);
+
+	if (isrv('import_state')) {
+		gfrv('import_state', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^[a-f0-9]{32}$/']]);
+	}
 	// ====================================================
 
 	$package_location = gfrv('package_location');
@@ -119,11 +123,19 @@ function form_actions() : void {
 	$manifest = $package['manifest'];
 
 	// Import Execution
-	if (isrv('selected_items')) {
-		$selected_items  = sanitize_unserialize_selected_items(gnrv('selected_items'));
+	if (isrv('import_state')) {
+		$import_state = package_import_take_state(grv('import_state'));
 
-		$hashes = unserialize(stripslashes(gnrv('selected_hashes')), ['allowed_classes' => false]);
-		$files  = unserialize(stripslashes(gnrv('selected_files')), ['allowed_classes' => false]);
+		if ($import_state === false) {
+			raise_message('invalid_import_state', __('The selected package import state has expired or is invalid. Please review the package and try again.'), MESSAGE_LEVEL_ERROR);
+			header('Location: package_import.php');
+
+			exit;
+		}
+
+		$selected_items = $import_state['selected_items'];
+		$hashes         = $import_state['selected_hashes'];
+		$files          = $import_state['selected_files'];
 
 		$import_packages = [];
 		$import_hashes   = [];
@@ -379,6 +391,8 @@ function form_actions() : void {
 		exit;
 	}
 
+	$import_state = package_import_store_state($pkg_array, $pkg_import_array, $pkg_file_array);
+
 	print "<tr>
 		<td class='saveRow'>
 			" . html_hidden_input('action', 'actions') . '
@@ -386,9 +400,7 @@ function form_actions() : void {
 			' . html_hidden_input('data_source_profile', grv('data_source_profile')) . '
 			' . html_hidden_input('remove_orphans', isrv('remove_orphans') ? 'on' : '') . '
 			' . html_hidden_input('replace_svalues', isrv('replace_svalues') ? 'on' : '') . '
-			' . html_hidden_input('selected_items', serialize($pkg_array)) . '
-			' . html_hidden_input('selected_hashes', serialize($pkg_import_array)) . '
-			' . html_hidden_input('selected_files', serialize($pkg_file_array)) . '
+			' . html_hidden_input('import_state', $import_state) . '
 			' . html_hidden_input('drp_action', gnrv('drp_action')) . "
 			$save_html
 		</td>
@@ -399,6 +411,45 @@ function form_actions() : void {
 	form_end();
 
 	bottom_footer();
+}
+
+function package_import_store_state(array $selected_items, array $selected_hashes, array $selected_files) : string {
+	$token = generate_hash();
+
+	if (!isset($_SESSION['sess_package_import_state']) || !is_array($_SESSION['sess_package_import_state'])) {
+		$_SESSION['sess_package_import_state'] = [];
+	}
+
+	$_SESSION['sess_package_import_state'][$token] = [
+		'selected_items'  => $selected_items,
+		'selected_hashes' => $selected_hashes,
+		'selected_files'  => $selected_files,
+	];
+
+	return $token;
+}
+
+function package_import_take_state(string $token) : array|false {
+	if ($token === '' || !isset($_SESSION['sess_package_import_state'][$token]) || !is_array($_SESSION['sess_package_import_state'][$token])) {
+		return false;
+	}
+
+	$import_state = $_SESSION['sess_package_import_state'][$token];
+
+	unset($_SESSION['sess_package_import_state'][$token]);
+
+	if (
+		!isset($import_state['selected_items']) ||
+		!isset($import_state['selected_hashes']) ||
+		!isset($import_state['selected_files']) ||
+		!is_array($import_state['selected_items']) ||
+		!is_array($import_state['selected_hashes']) ||
+		!is_array($import_state['selected_files'])
+	) {
+		return false;
+	}
+
+	return $import_state;
 }
 
 function form_save() : void {
