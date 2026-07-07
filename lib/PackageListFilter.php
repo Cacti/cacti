@@ -29,10 +29,15 @@ final class PackageListFilter {
 
 	public static function fromRequest(int $defaultRows) : self {
 		$rows = (string) grv('rows');
+		$rows = $rows === '-1' ? $defaultRows : (int) $rows;
+
+		if ($rows < 1) {
+			$rows = $defaultRows;
+		}
 
 		return new self(
 			(string) grv('filter'),
-			$rows === '-1' ? $defaultRows : (int) $rows,
+			$rows,
 			(int) grv('page'),
 			(string) grv('sort_column'),
 			(string) grv('sort_direction')

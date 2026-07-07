@@ -56,6 +56,10 @@ foreach ($files as $file) {
 
 	$lines = file($file, FILE_IGNORE_NEW_LINES);
 
+	if ($lines === false) {
+		continue;
+	}
+
 	foreach ($lines as $index => $line) {
 		foreach ($patterns as $name => $rule) {
 			if (isset($rule['allow']) && in_array($file, $rule['allow'], true)) {

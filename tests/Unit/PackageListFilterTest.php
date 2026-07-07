@@ -20,6 +20,8 @@ beforeEach(function () {
 	global $_CACTI_REQUEST;
 
 	$_REQUEST       = [];
+	$_GET           = [];
+	$_POST          = [];
 	$_CACTI_REQUEST = [];
 });
 
@@ -35,6 +37,19 @@ test('package list filter uses default row count when rows are defaulted', funct
 	expect($filter->filter())->toBe('alpha')
 		->and($filter->rows())->toBe(25)
 		->and($filter->page())->toBe(2)
+			->and($filter->offset())->toBe(25);
+});
+
+test('package list filter clamps non-positive rows to the default row count', function () {
+	set_request_var('filter', 'alpha');
+	set_request_var('rows', '0');
+	set_request_var('page', '2');
+	set_request_var('sort_column', 'name');
+	set_request_var('sort_direction', 'ASC');
+
+	$filter = PackageListFilter::fromRequest(25);
+
+	expect($filter->rows())->toBe(25)
 		->and($filter->offset())->toBe(25);
 });
 
