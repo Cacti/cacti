@@ -1614,7 +1614,7 @@ function aggregate_items() : void {
 	);
 
 	if (!empty($graph_template)) {
-		$sql_where          .= ($sql_where != '' ? ' AND' : 'WHERE') . ' (gtg.graph_template_id=?)';
+		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' (gtg.graph_template_id=?)';
 		$sql_where_params[] = $graph_template;
 	}
 
