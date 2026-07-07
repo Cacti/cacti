@@ -59,6 +59,53 @@ test('html_escape handles ampersand in plain text', function () {
 	expect(html_escape('a&b'))->toBe('a&amp;b');
 });
 
+test('html_escape_attr encodes attribute delimiters', function () {
+	$result = html_escape_attr('" onmouseover="alert(1)');
+
+	expect($result)->toBe('&quot; onmouseover=&quot;alert(1)');
+});
+
+test('html_escape_attr encodes backticks', function () {
+	expect(html_escape_attr('` autofocus onfocus=alert(1)'))->toBe('&#96; autofocus onfocus=alert(1)');
+});
+
+test('html_escape_url encodes URL attribute delimiters', function () {
+	expect(html_escape_url('https://example.invalid/?q=" onmouseover="alert(1)'))
+		->toBe('https://example.invalid/?q=&quot; onmouseover=&quot;alert(1)');
+});
+
+test('cacti_js_encode escapes script-sensitive characters', function () {
+	$result = cacti_js_encode("</script><img src=x onerror='alert(1)'>");
+
+	expect($result)->toContain('\u003C')
+		->and($result)->toContain('\u0027')
+		->and($result)->not->toContain('</script>');
+});
+
+test('cacti_url appends encoded query parameters', function () {
+	expect(cacti_url('foo.php', [
+		'filter' => "a b&c'",
+		'page'   => 2,
+	]))->toBe('foo.php?filter=a%20b%26c%27&page=2');
+});
+
+test('cacti_url preserves existing query strings', function () {
+	expect(cacti_url('foo.php?action=view', [
+		'filter' => 'a+b',
+	]))->toBe('foo.php?action=view&filter=a%2Bb');
+});
+
+test('cacti_script_data renders JSON without exposing script delimiters', function () {
+	$result = cacti_script_data('ctx" onmouseover="alert(1)', [
+		'message' => "</script><img src=x onerror='alert(1)'>",
+	]);
+
+	expect($result)->toContain("type='application/json'")
+		->and($result)->toContain("id='ctx&quot; onmouseover=&quot;alert(1)'")
+		->and($result)->toContain('\u003C\/script\u003E')
+		->and($result)->not->toContain('</script><img');
+});
+
 // =====================================================================
 // html_split_string tests
 // =====================================================================
