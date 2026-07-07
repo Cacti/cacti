@@ -23,60 +23,46 @@ EXCLUDE=(
 )
 RG_COMMON=(--no-config --no-ignore --no-ignore-vcs --no-ignore-parent)
 
+emit_hotspot_matches() {
+	local class="$1"
+	local pattern="$2"
+	local rg_status
+
+	rg -n --pcre2 "${RG_COMMON[@]}" "$pattern" "${EXCLUDE[@]}" --glob '*.php' . | while IFS= read -r line; do
+		file="${line%%:*}"
+		rest="${line#*:}"
+		lineno="${rest%%:*}"
+		case "$file" in
+			./*) ;;
+			*) file="./$file" ;;
+		esac
+		match="${line#*:*:}"
+		printf '%s\t%s:%s\t%s\n' "$class" "$file" "$lineno" "$match"
+	done
+	rg_status="${PIPESTATUS[0]}"
+
+	if [ "$rg_status" -gt 1 ]; then
+		echo "ERROR: ripgrep failed while scanning $class hotspots." >&2
+		return "$rg_status"
+	fi
+
+	return 0
+}
+
 hotspots() {
 	printf 'class\tlocation\tmatch\n'
 
 	# Raw command execution boundaries.
-	rg -n --pcre2 "${RG_COMMON[@]}" '(?<!->)(?<!::)\b(exec|system|shell_exec|passthru|popen|proc_open)\s*\(' "${EXCLUDE[@]}" --glob '*.php' . | while IFS= read -r line; do
-		file="${line%%:*}"
-		rest="${line#*:}"
-		lineno="${rest%%:*}"
-		case "$file" in
-			./*) ;;
-			*) file="./$file" ;;
-		esac
-		match="${line#*:*:}"
-		printf 'cmd_exec\t%s:%s\t%s\n' "$file" "$lineno" "$match"
-	done
+	emit_hotspot_matches 'cmd_exec' '(?<!->)(?<!::)\b(exec|system|shell_exec|passthru|popen|proc_open)\s*\(' || return $?
 
 	# Dynamic include/require with variables.
-	rg -n --pcre2 "${RG_COMMON[@]}" '\b(include|include_once|require|require_once)\s*\(?\s*\$' "${EXCLUDE[@]}" --glob '*.php' . | while IFS= read -r line; do
-		file="${line%%:*}"
-		rest="${line#*:}"
-		lineno="${rest%%:*}"
-		case "$file" in
-			./*) ;;
-			*) file="./$file" ;;
-		esac
-		match="${line#*:*:}"
-		printf 'dynamic_include\t%s:%s\t%s\n' "$file" "$lineno" "$match"
-	done
+	emit_hotspot_matches 'dynamic_include' '\b(include|include_once|require|require_once)\s*\(?\s*\$' || return $?
 
 	# Host header trust boundaries.
-	rg -n --pcre2 "${RG_COMMON[@]}" '\$_SERVER\s*\[\s*["'"'"']HTTP_HOST["'"'"']\s*\]' "${EXCLUDE[@]}" --glob '*.php' . | while IFS= read -r line; do
-		file="${line%%:*}"
-		rest="${line#*:}"
-		lineno="${rest%%:*}"
-		case "$file" in
-			./*) ;;
-			*) file="./$file" ;;
-		esac
-		match="${line#*:*:}"
-		printf 'host_header\t%s:%s\t%s\n' "$file" "$lineno" "$match"
-	done
+	emit_hotspot_matches 'host_header' '\$_SERVER\s*\[\s*["'"'"']HTTP_HOST["'"'"']\s*\]' || return $?
 
 	# ORDER BY user-input boundary.
-	rg -n --pcre2 "${RG_COMMON[@]}" 'ORDER\s+BY[^\n]*(get_request_var|get_nfilter_request_var|\$_(GET|POST|REQUEST))' "${EXCLUDE[@]}" --glob '*.php' . | while IFS= read -r line; do
-		file="${line%%:*}"
-		rest="${line#*:}"
-		lineno="${rest%%:*}"
-		case "$file" in
-			./*) ;;
-			*) file="./$file" ;;
-		esac
-		match="${line#*:*:}"
-		printf 'sort_order_input\t%s:%s\t%s\n' "$file" "$lineno" "$match"
-	done
+	emit_hotspot_matches 'sort_order_input' 'ORDER\s+BY[^\n]*(get_request_var|get_nfilter_request_var|\$_(GET|POST|REQUEST))' || return $?
 }
 
 summary() {

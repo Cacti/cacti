@@ -28,5 +28,5 @@ echo "ERROR: new architectural hotspots detected:"
 cat "$TMP_NEW"
 echo
 echo "If this is intentional and reviewed, refresh baseline:"
-echo "  tests/security/build_architectural_helper_report.sh --hotspots | LC_ALL=C sort > tests/security/baselines/architectural_hotspots.baseline.tsv"
+echo "  tests/security/build_architectural_helper_report.sh --hotspots | tr -d '\\r' | LC_ALL=C sort -u > tests/security/baselines/architectural_hotspots.baseline.tsv"
 exit 1
