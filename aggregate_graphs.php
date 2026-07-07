@@ -1578,10 +1578,13 @@ function aggregate_items() : void {
 	$rows   = $filter->rowsPerPage();
 
 	// form the 'where' clause for our main sql query
+	$sql_where_params = [];
+
 	if (!$filter->hasRfilter()) {
 		$sql_where = '';
 	} elseif ($filter->hasRegexFilter()) {
-		$sql_where = "WHERE gtg.title_cache RLIKE '" . $filter->rfilter() . "'";
+		$sql_where          = 'WHERE gtg.title_cache RLIKE ?';
+		$sql_where_params[] = $filter->rfilter();
 	} else {
 		$filters   = explode(' ', $filter->rfilter());
 		$sql_where = '';
@@ -1611,12 +1614,15 @@ function aggregate_items() : void {
 	);
 
 	if (!empty($graph_template)) {
-		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . " (gtg.graph_template_id=$graph_template)";
+		$sql_where          .= ($sql_where != '' ? ' AND' : 'WHERE') . ' (gtg.graph_template_id=?)';
+		$sql_where_params[] = $graph_template;
 	}
 
 	if ($filter->hasLocalGraphIds()) {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' agi.local_graph_id IN(' . $filter->localGraphIds() . ')';
 	}
+
+	$sql_params = array_merge([$aggregate_id], $sql_where_params);
 
 	$sql = "SELECT COUNT(DISTINCT gl.id) AS total
 		FROM graph_templates_graph AS gtg
@@ -1625,16 +1631,16 @@ function aggregate_items() : void {
 		LEFT JOIN (
 			SELECT DISTINCT local_graph_id
 			FROM aggregate_graphs_items
-			WHERE aggregate_graph_id=$aggregate_id) AS agi
+			WHERE aggregate_graph_id=?) AS agi
 		ON gtg.local_graph_id=agi.local_graph_id
 		$sql_where";
 
-	$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, [], 'aggregate_graph');
+	$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, $sql_params, 'aggregate_graph');
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * ($filter->page() - 1)) . ',' . $rows;
 
-	$graph_list = db_fetch_assoc("SELECT
+	$graph_list = db_fetch_assoc_prepared("SELECT
 		gtg.id, gtg.local_graph_id, gtg.height, gtg.width, gtg.title_cache, agi.local_graph_id AS agg_graph_id
 		FROM graph_templates_graph AS gtg
 		INNER JOIN graph_local AS gl
@@ -1642,11 +1648,13 @@ function aggregate_items() : void {
 		LEFT JOIN (
 			SELECT DISTINCT local_graph_id
 			FROM aggregate_graphs_items
-			WHERE aggregate_graph_id=$aggregate_id) AS agi
+			WHERE aggregate_graph_id=?) AS agi
 		ON gtg.local_graph_id=agi.local_graph_id
 		$sql_where
 		$sql_order
-		$sql_limit");
+		$sql_limit",
+		$sql_params
+	);
 
 	?>
 	<script type='text/javascript'>
