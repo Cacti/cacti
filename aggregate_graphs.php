@@ -27,6 +27,7 @@ require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
 require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
 require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 require_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
+require_once(CACTI_PATH_LIBRARY . '/AggregateGraphItemsFilter.php');
 require_once(CACTI_PATH_LIBRARY . '/data_query.php');
 require_once(CACTI_PATH_LIBRARY . '/html_tree.php');
 require_once(CACTI_PATH_LIBRARY . '/html_form_template.php');
@@ -1573,37 +1574,34 @@ function aggregate_items() : void {
 	validate_store_request_vars($filters, 'sess_agraph_item');
 	// ================= input validation =================
 
-	if (grv('rows') == -1) {
-		$rows = read_config_option('num_rows_table');
-	} else {
-		$rows = grv('rows');
-	}
+	$filter = AggregateGraphItemsFilter::fromRequest((int) read_config_option('num_rows_table'));
+	$rows   = $filter->rowsPerPage();
 
 	// form the 'where' clause for our main sql query
-	if (grv('rfilter') == '') {
+	if (!$filter->hasRfilter()) {
 		$sql_where = '';
-	} elseif (validate_is_regex(grv('rfilter'))) {
-		$sql_where = "WHERE gtg.title_cache RLIKE '" . grv('rfilter') . "'";
+	} elseif ($filter->hasRegexFilter()) {
+		$sql_where = "WHERE gtg.title_cache RLIKE '" . $filter->rfilter() . "'";
 	} else {
-		$filters   = explode(' ', grv('rfilter'));
+		$filters   = explode(' ', $filter->rfilter());
 		$sql_where = '';
 		$sql_where = aggregate_make_sql_where($sql_where, $filters, 'gtg.title_cache');
 	}
 
-	if (grv('matching') != 'false') {
+	if ($filter->matchingOnly()) {
 		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' (agi.local_graph_id IS NOT NULL)';
 	}
 
 	$graph_template = db_fetch_cell_prepared('SELECT graph_template_id
 		FROM aggregate_graphs AS ag
 		WHERE ag.local_graph_id = ?',
-		[grv('id')]
+		[$filter->aggregateGraphLocalId()]
 	);
 
 	$aggregate_id = db_fetch_cell_prepared('SELECT id
 		FROM aggregate_graphs
 		WHERE local_graph_id = ?',
-		[grv('id')]
+		[$filter->aggregateGraphLocalId()]
 	);
 
 	$total_items = db_fetch_cell_prepared('SELECT COUNT(*)
@@ -1616,8 +1614,8 @@ function aggregate_items() : void {
 		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . " (gtg.graph_template_id=$graph_template)";
 	}
 
-	if (grv('local_graph_ids') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' agi.local_graph_id IN(' . grv('local_graph_ids') . ')';
+	if ($filter->hasLocalGraphIds()) {
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' agi.local_graph_id IN(' . $filter->localGraphIds() . ')';
 	}
 
 	$sql = "SELECT COUNT(DISTINCT gl.id) AS total
@@ -1634,7 +1632,7 @@ function aggregate_items() : void {
 	$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, [], 'aggregate_graph');
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * ($filter->page() - 1)) . ',' . $rows;
 
 	$graph_list = db_fetch_assoc("SELECT
 		gtg.id, gtg.local_graph_id, gtg.height, gtg.width, gtg.title_cache, agi.local_graph_id AS agg_graph_id
@@ -1705,20 +1703,20 @@ function aggregate_items() : void {
 							<?php print __('Search'); ?>
 						</td>
 						<td>
-							<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='45' onChange='applyFilter()' value='<?php print grv('rfilter'); ?>'>
+							<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='45' onChange='applyFilter()' value='<?php print $filter->rfilter(); ?>'>
 						</td>
 						<td>
 							<?php print __('Graphs'); ?>
 						</td>
 						<td>
 							<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Graphs'); ?>'>
-								<option value='-1' <?php print (grv('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
+								<option value='-1' <?php print ($filter->rowSelection() == -1 ? ' selected>' : '>') . __('Default'); ?></option>
 								<?php
 								if (cacti_sizeof($item_rows) > 0) {
 									foreach ($item_rows as $key => $value) {
 										print "<option value='" . $key . "'";
 
-										if (grv('rows') == $key) {
+										if ($filter->rowSelection() == $key) {
 											print ' selected';
 										}
 										print '>' . htmle($value) . '</option>';
@@ -1729,7 +1727,7 @@ function aggregate_items() : void {
 						</td>
 						<td>
 							<span>
-								<input type='checkbox' id='matching' onChange='applyFilter()' <?php print(grv('matching') == 'on' || grv('matching') == 'true' ? ' checked' : ''); ?>>
+								<input type='checkbox' id='matching' onChange='applyFilter()' <?php print($filter->matchingChecked() ? ' checked' : ''); ?>>
 								<label for='matching'><?php print __('Part of Aggregate'); ?></label>
 							</span>
 						</td>
@@ -1743,7 +1741,7 @@ function aggregate_items() : void {
 				</table>
 				<input type='hidden' name='action' value='edit'>
 				<input type='hidden' name='tab' value='items'>
-				<input type='hidden' id='id' value='<?php print grv('id'); ?>'>
+				<input type='hidden' id='id' value='<?php print $filter->aggregateGraphLocalId(); ?>'>
 			</form>
 		</td>
 	</tr>
@@ -1756,7 +1754,7 @@ function aggregate_items() : void {
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	$nav = html_nav_bar('aggregate_graphs.php?action=edit&tab=items&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
+	$nav = html_nav_bar('aggregate_graphs.php?action=edit&tab=items&id=' . $filter->aggregateGraphLocalId(), MAX_DISPLAY_PAGES, $filter->page(), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
 
 	print $nav;
 
@@ -1783,17 +1781,17 @@ function aggregate_items() : void {
 		]
 	];
 
-	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false, 'aggregate_graphs.php?action=edit&id=' . grv('id'));
+	html_header_sort_checkbox($display_text, $filter->sortColumn(), $filter->sortDirection(), false, 'aggregate_graphs.php?action=edit&id=' . $filter->aggregateGraphLocalId());
 
 	if (cacti_sizeof($graph_list) > 0) {
 		foreach ($graph_list as $graph) {
 			// we're escaping strings here, so no need to escape them on form_selectable_cell
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 
-			if (validate_is_regex(grv('rfilter'))) {
-				form_selectable_cell(filter_value($graph['title_cache'], grv('rfilter')), $graph['local_graph_id']);
+			if ($filter->hasRegexFilter()) {
+				form_selectable_cell(filter_value($graph['title_cache'], $filter->rfilter()), $graph['local_graph_id']);
 			} else {
-				form_selectable_ecell(grv('rfilter') != '' ? aggregate_format_text($graph['title_cache'], grv('rfilter')) : $graph['title_cache'], $graph['local_graph_id']);
+				form_selectable_ecell($filter->hasRfilter() ? aggregate_format_text($graph['title_cache'], $filter->rfilter()) : $graph['title_cache'], $graph['local_graph_id']);
 			}
 
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'right');
@@ -1815,7 +1813,7 @@ function aggregate_items() : void {
 	add_tree_names_to_actions_array();
 
 	// draw the dropdown containing a list of available actions for this form
-	form_hidden_box('local_graph_id', grv('id'), '');
+	form_hidden_box('local_graph_id', $filter->aggregateGraphLocalId(), '');
 
 	draw_actions_dropdown($agg_item_actions);
 
