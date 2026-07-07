@@ -119,7 +119,7 @@ switch (grv('action')) {
 
 			foreach ($tabs as $tab_short_name => $attribs) {
 				print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
-					" href='" . htmle($attribs['url']) .
+					" href='" . html_escape_url($attribs['url']) .
 					"'>" . $attribs['display'] . '</a></li>';
 
 				$i++;
@@ -617,12 +617,19 @@ function settings_2fa() : bool {
 
 	form_save_buttons($buttons, $_SESSION['profile_referer']);
 
+	print cacti_script_data('auth-profile-2fa-context', [
+		'enabled'  => $current_user['tfa_enabled'] != '',
+		'enabling' => __('Enabling...'),
+		'text'     => $current_user['tfa_enabled'] != '' ? __('Enabled') : __('Disabled'),
+	]);
+
 	?>
 	<script type='text/javascript'>
-		var tfa_enabled = <?php print $current_user['tfa_enabled'] != '' ? 'true' : 'false'; ?>;
-		var tfa_text = '<?php print $current_user['tfa_enabled']   != '' ? __('Enabled') : __('Disabled'); ?>';
+		var authProfile2fa = JSON.parse(document.getElementById('auth-profile-2fa-context').textContent);
+		var tfa_enabled = authProfile2fa.enabled;
+		var tfa_text = authProfile2fa.text;
 		var tfa_verified = false;
-		var tfa_enabling = '<?php print __('Enabling...'); ?>';
+		var tfa_enabling = authProfile2fa.enabling;
 
 		function set2FAText(text, id, cls) {
 			if (id === undefined) {
@@ -662,13 +669,13 @@ function settings_2fa() : bool {
 					} else {
 						$('#tfa_enabled').prop('disabled', false);
 					}
-				} else {
-					$.post('auth_profile.php?action=disable_2fa', {__csrf_magic: csrfMagicToken}, function(data) {
-						$('#tfa_enabled').prop('disabled', false);
-						set2FAText('<?php print __('Disabled') ?>');
-						$('#row_tfa_token,#row_tfa_verify').hide();
-					}, 'json');
-				}
+					} else {
+						$.post('auth_profile.php?action=disable_2fa', {__csrf_magic: csrfMagicToken}, function(data) {
+							$('#tfa_enabled').prop('disabled', false);
+							set2FAText(<?php print cacti_js_encode(__('Disabled')); ?>);
+							$('#row_tfa_token,#row_tfa_verify').hide();
+						}, 'json');
+					}
 			});
 			$('#tfa_verify').click(function(e) {
 				var code = $('#tfa_token').val();
@@ -694,13 +701,35 @@ function settings_2fa() : bool {
 }
 
 function settings_javascript() : void {
+	print cacti_script_data('auth-profile-settings-context', [
+		'authMethod'         => read_config_option('auth_method'),
+		'authMethodBasic'    => AUTH_METHOD_BASIC,
+		'currentLang'        => read_config_option('user_language'),
+		'currentTab'         => (string) grv('tab'),
+		'currentTheme'       => get_selected_theme(),
+		'privateDataCleared' => __('Private Data Cleared'),
+		'privateDataMessage' => __('Your Private Data has been cleared.'),
+		'reset'              => __('Reset'),
+		'sessionsCleared'    => __('User Sessions Cleared'),
+		'sessionsMessage'    => __('All your login sessions have been cleared.'),
+		'themeFonts'         => read_config_option('font_method'),
+	]);
 	?>
 	<script type='text/javascript'>
-		var themeFonts = <?php print read_config_option('font_method'); ?>;
-		var currentTab = <?php print json_encode((string) grv('tab')); ?>;
-		var currentTheme = '<?php print get_selected_theme(); ?>';
-		var currentLang = '<?php print read_config_option('user_language'); ?>';
-		var authMethod = '<?php print read_config_option('auth_method'); ?>';
+		var authProfileSettings = JSON.parse(document.getElementById('auth-profile-settings-context').textContent);
+		var themeFonts = authProfileSettings.themeFonts;
+		var currentTab = authProfileSettings.currentTab;
+		var currentTheme = authProfileSettings.currentTheme;
+		var currentLang = authProfileSettings.currentLang;
+		var authMethod = authProfileSettings.authMethod;
+
+		function appendProfileDialog(id, title, message) {
+			$('<div>', {
+				style: 'display:none;',
+				id: id,
+				title: title
+			}).append($('<p>').text(message)).appendTo('body');
+		}
 
 		function clearUserSettings() {
 			$('#clear_settings').blur();
@@ -715,7 +744,7 @@ function settings_javascript() : void {
 			Storages.localStorage.removeAll();
 			Storages.sessionStorage.removeAll();
 
-			$('body').append('<div style="display:none;" id="cleared" title="<?php print __esc('Private Data Cleared'); ?>"><p><?php print __('Your Private Data has been cleared.'); ?></p></div>');
+			appendProfileDialog('cleared', authProfileSettings.privateDataCleared, authProfileSettings.privateDataMessage);
 
 			$('#private_data').blur();
 			$('#cleared').dialog({
@@ -737,7 +766,7 @@ function settings_javascript() : void {
 		function logoutEverywhere() {
 			$('#logout_everywhere').blur();
 			$.get('auth_profile.php?action=logout_everywhere', function(data) {
-				$('body').append('<div style="display:none;" id="cleared" title="<?php print __esc('User Sessions Cleared'); ?>"><p><?php print __('All your login sessions have been cleared.'); ?></p></div>');
+				appendProfileDialog('cleared', authProfileSettings.sessionsCleared, authProfileSettings.sessionsMessage);
 
 				$('#cleared').dialog({
 					modal: true,
@@ -796,7 +825,7 @@ function settings_javascript() : void {
 			$('#navigation, #navigation_right').show();
 			$('#tabs').find('li a.selected').removeClass('selected');
 
-			if (authMethod == <?= AUTH_METHOD_BASIC ?>) {
+			if (authMethod == authProfileSettings.authMethodBasic) {
 				$('#row_logout_everywhere').hide();
 			}
 
@@ -806,7 +835,13 @@ function settings_javascript() : void {
 						function() {
 							var id = $(this).find('select, input[type!="button"]').attr('id');
 
-							$('<a class="resetHover" data-id="' + id + '" style="padding-left:10px" href="#"><?php print __('Reset'); ?></a>').appendTo($(this));
+							$('<a>', {
+								class: 'resetHover',
+								'data-id': id,
+								style: 'padding-left:10px',
+								href: '#',
+								text: authProfileSettings.reset
+							}).appendTo($(this));
 							$('.resetHover').on('click', function(event) {
 								event.preventDefault();
 
@@ -814,7 +849,11 @@ function settings_javascript() : void {
 
 								if (id != undefined) {
 									var resetOptions = {
-										url: 'auth_profile.php?tab=' + currentTab + '&action=reset_default&name=' + id,
+										url: 'auth_profile.php?' + $.param({
+											tab: currentTab,
+											action: 'reset_default',
+											name: id
+										}),
 										noState: true,
 									};
 
@@ -849,7 +888,10 @@ function settings_javascript() : void {
 				}
 
 				var options = {
-					url: 'auth_profile.php?tab=' + currentTab + '&action=update_data',
+					url: 'auth_profile.php?' + $.param({
+						tab: currentTab,
+						action: 'update_data'
+					}),
 					handle: false
 				}
 
@@ -874,7 +916,10 @@ function settings_javascript() : void {
 				}
 
 				var options = {
-					url: 'auth_profile.php?tab=' + currentTab + '&action=update_data',
+					url: 'auth_profile.php?' + $.param({
+						tab: currentTab,
+						action: 'update_data'
+					}),
 					handle: false
 				}
 

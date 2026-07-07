@@ -29,9 +29,25 @@ $dataDebugPath = __DIR__ . '/../../data_debug.php';
 test('auth_profile encodes tab for JavaScript and redirect URL', function () use ($authProfilePath) {
 	$contents = file_get_contents($authProfilePath);
 
-	expect($contents)->toContain("json_encode((string) grv('tab'))");
+	expect($contents)->toContain("cacti_script_data('auth-profile-settings-context'");
+	expect($contents)->toContain("'currentTab'         => (string) grv('tab')");
+	expect($contents)->toContain("JSON.parse(document.getElementById('auth-profile-settings-context').textContent)");
+	expect($contents)->toContain("url: 'auth_profile.php?' + $.param({");
 	expect($contents)->toContain("gfrv('tab', FILTER_VALIDATE_REGEXP");
 	expect($contents)->toContain('rawurlencode($currentTab)');
+});
+
+test('auth_profile does not interpolate profile settings directly into JavaScript strings', function () use ($authProfilePath) {
+	$contents = file_get_contents($authProfilePath);
+
+	expect($contents)->toContain("cacti_script_data('auth-profile-2fa-context'");
+	expect($contents)->toContain("JSON.parse(document.getElementById('auth-profile-2fa-context').textContent)");
+	expect($contents)->not->toContain("var currentTheme = '<?php print get_selected_theme(); ?>';");
+	expect($contents)->not->toContain("var currentLang = '<?php print read_config_option('user_language'); ?>';");
+	expect($contents)->not->toContain("var authMethod = '<?php print read_config_option('auth_method'); ?>';");
+	expect($contents)->not->toContain("var tfa_text = '<?php print");
+	expect($contents)->not->toContain("var tfa_enabling = '<?php print");
+	expect($contents)->not->toContain("<?php print __('Reset'); ?></a>");
 });
 
 test('plugins page normalizes state and encodes sort column in JavaScript', function () use ($pluginsPath) {
