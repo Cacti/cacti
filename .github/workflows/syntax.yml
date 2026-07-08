@@ -80,6 +80,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
 
     - name: Install PHP ${{ matrix.php }}
       uses: shivammathur/setup-php@v2
@@ -111,6 +113,11 @@ jobs:
 
     - name: Run Linter on base code
       run: composer run-script lint
+      working-directory: .
+
+    - name: Run hardening pattern guard
+      if: github.event_name == 'pull_request'
+      run: composer run-script hardening-patterns -- --base="${{ github.event.pull_request.base.sha }}" --head=HEAD
       working-directory: .
 
     - name: Checking coding standards on base code

@@ -23,6 +23,7 @@
 */
 
 require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/PackageListFilter.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
@@ -164,7 +165,7 @@ function form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
+		$selected_items = PackageListFilter::decodeSelectedIds(gnrv('selected_items'));
 
 		if ($selected_items != false) {
 			if (gnrv('drp_action') == '1') { // delete
@@ -199,16 +200,9 @@ function form_actions() : void {
 	$p_list  = '';
 	$p_array = [];
 
-	// loop through each of the data queries and process them
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			// ================= input validation =================
-			input_validate_input_number($matches[1]);
-			// ====================================================
-
-			$p_list .= '<li>' . htmle(db_fetch_cell_prepared('SELECT name FROM package_repositories WHERE id = ?', [$matches[1]])) . '</li>';
-			$p_array[] = $matches[1];
-		}
+	foreach (PackageListFilter::selectedIdsFromPost() as $id) {
+		$p_list .= '<li>' . htmle(db_fetch_cell_prepared('SELECT name FROM package_repositories WHERE id = ?', [$id])) . '</li>';
+		$p_array[] = $id;
 	}
 
 	top_header();
@@ -271,7 +265,7 @@ function form_actions() : void {
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . serialize($p_array) . "'>
+			<input type='hidden' name='selected_items' value='" . htmle(PackageListFilter::encodeSelectedIds($p_array)) . "'>
 			<input type='hidden' name='drp_action' value='" . htmle(gnrv('drp_action')) . "'>
 			$save_html
 		</td>
@@ -438,27 +432,23 @@ function repos() : void {
 	$pageFilter->rows_label = __('Repos');
 	$pageFilter->render();
 
-	if (grv('rows') == '-1') {
-		$rows = read_config_option('num_rows_table');
-	} else {
-		$rows = grv('rows');
-	}
+	$filter = PackageListFilter::fromRequest((int) read_config_option('num_rows_table'));
 
 	$sql_where  = '';
 	$sql_params = [];
 
 	// form the 'where' clause for our main sql query
-	if (grv('filter') != '') {
+	if ($filter->hasFilter()) {
 		$sql_where = ($sql_where != '' ? ' AND ' : 'WHERE ') .
 			'(name LIKE ? OR repo_branch LIKE ? OR repo_location LIKE ?)';
 
-		$sql_params[] = '%' . grv('filter') . '%';
-		$sql_params[] = '%' . grv('filter') . '%';
-		$sql_params[] = '%' . grv('filter') . '%';
+		$sql_params[] = '%' . $filter->filter() . '%';
+		$sql_params[] = '%' . $filter->filter() . '%';
+		$sql_params[] = '%' . $filter->filter() . '%';
 	}
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . $filter->offset() . ',' . $filter->rows();
 
 	$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
 		FROM package_repositories
@@ -502,7 +492,7 @@ function repos() : void {
 		],
 	];
 
-	$nav = html_nav_bar('package_repos.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Package Repositories'), 'page', 'main');
+	$nav = html_nav_bar($filter->paginationUrl('package_repos.php'), MAX_DISPLAY_PAGES, $filter->page(), $filter->rows(), $total_rows, cacti_sizeof($display_text) + 1, __('Package Repositories'), 'page', 'main');
 
 	form_start('package_repos.php', 'chk');
 
@@ -510,15 +500,15 @@ function repos() : void {
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
+	html_header_sort_checkbox($display_text, $filter->sortColumn(), $filter->sortDirection(), false);
 
 	if (cacti_sizeof($repos)) {
 		foreach ($repos as $repo) {
 			form_alternate_row('line' . $repo['id'], true);
 
-			form_selectable_cell(filter_value($repo['name'], grv('filter'), 'package_repos.php?action=edit&id=' . $repo['id']), $repo['id']);
+			form_selectable_cell(filter_value($repo['name'], $filter->filter(), 'package_repos.php?action=edit&id=' . $repo['id']), $repo['id']);
 			form_selectable_cell($types[$repo['repo_type']], $repo['id']);
-			form_selectable_cell(filter_value($repo['repo_location'], grv('filter')), $repo['id']);
+			form_selectable_cell(filter_value($repo['repo_location'], $filter->filter()), $repo['id']);
 			form_selectable_ecell($repo['repo_type'] == 0 ? ($repo['repo_branch'] != '' ? $repo['repo_branch'] : __('default')) : __('N/A'), $repo['id'], '', 'center');
 			form_selectable_cell($repo['enabled'] == 'on' ? __('Yes') : __('No'), $repo['id'], '', 'center');
 			form_selectable_cell($repo['default'] == 'on' ? __('Yes') : __('No'), $repo['id'], '', 'center');
