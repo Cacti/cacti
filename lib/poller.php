@@ -799,7 +799,7 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 					$k++;
 
 					if ($k % 10000 == 0) {
-						db_execute('DELETE FROM poller_output WHERE local_data_id IN (' . implode(',', $data_ids) . ')');
+						db_execute('DELETE FROM poller_output WHERE ' . array_to_sql_or(array_map('intval', $data_ids), 'local_data_id'));
 						$data_ids = [];
 						$k        = 0;
 					}
@@ -810,7 +810,7 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 		}
 
 		if ($k > 0) {
-			db_execute('DELETE FROM poller_output WHERE local_data_id IN (' . implode(',', $data_ids) . ')');
+			db_execute('DELETE FROM poller_output WHERE ' . array_to_sql_or(array_map('intval', $data_ids), 'local_data_id'));
 		}
 
 		// process dsstats information
@@ -866,7 +866,7 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 							cacti_log(sprintf('WARNING: Data Template \'%s\' is impacted by lack of complete information', $item['name']), false, 'POLLER');
 							$prevName = $item['name'];
 
-							db_execute('DELETE FROM poller_output WHERE local_data_id IN(' . $item['local_data_ids'] . ')');
+							db_execute('DELETE FROM poller_output WHERE ' . array_to_sql_or(array_map('intval', explode(',', $item['local_data_ids'])), 'local_data_id'));
 						}
 					}
 				}
