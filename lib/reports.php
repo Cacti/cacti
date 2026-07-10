@@ -739,7 +739,6 @@ function reports_tree_has_graphs(int $tree_id,int  $branch_id,int  $effective_us
 	$sql_where  = '';
 	$sql_swhere = '';
 	$graphs     = [];
-	$new_graphs = [];
 
 	if ($search_key != '') {
 		$sql_swhere = ' AND gtg.title_cache REGEXP ' . db_qstr($search_key);
@@ -752,12 +751,12 @@ function reports_tree_has_graphs(int $tree_id,int  $branch_id,int  $effective_us
 		[$branch_id, $tree_id]);
 
 	if ($device_id > 0) {
-		$graphs = array_rekey(db_fetch_assoc("SELECT gl.id
+		$graphs = array_rekey(db_fetch_assoc_prepared("SELECT gl.id
 			FROM graph_local AS gl
 			INNER JOIN graph_templates_graph AS gtg
 			ON gtg.local_graph_id=gl.id
-			WHERE gl.host_id = $device_id
-			$sql_swhere"), 'id', 'id');
+			WHERE gl.host_id = ?
+			$sql_swhere", [$device_id]), 'id', 'id');
 	} else {
 		if ($branch_id > 0) {
 			$sql_where .= ' AND gti.parent=' . $branch_id;
@@ -765,38 +764,32 @@ function reports_tree_has_graphs(int $tree_id,int  $branch_id,int  $effective_us
 			$sql_where .= ' AND parent=0';
 		}
 
-		$graphs = array_rekey(db_fetch_assoc("SELECT gl.id
+		$graphs = array_rekey(db_fetch_assoc_prepared("SELECT gl.id
 			FROM graph_local AS gl
 			INNER JOIN graph_tree_items AS gti
 			ON gti.local_graph_id=gl.id
 			INNER JOIN graph_templates_graph AS gtg
 			ON gtg.local_graph_id=gti.local_graph_id
 			WHERE gti.local_graph_id>0
-			AND graph_tree_id=$tree_id
+			AND graph_tree_id = ?
 			$sql_where
-			$sql_swhere"), 'id', 'id');
+			$sql_swhere", [$tree_id]), 'id', 'id');
 
 		// get host graphs first
-		$graphs = array_merge($graphs, array_rekey(db_fetch_assoc("SELECT gl.id
+		$graphs = array_merge($graphs, array_rekey(db_fetch_assoc_prepared("SELECT gl.id
 			FROM graph_local AS gl
 			INNER JOIN graph_tree_items AS gti
 			ON gl.host_id=gti.host_id
 			INNER JOIN graph_templates_graph AS gtg
 			ON gtg.local_graph_id=gl.id
-			WHERE gti.graph_tree_id=$tree_id
+			WHERE gti.graph_tree_id = ?
 			AND gti.host_id>0
 			$sql_where
-			$sql_swhere"), 'id', 'id'));
+			$sql_swhere", [$tree_id]), 'id', 'id'));
 	}
 
 	// verify permissions
-	if (cacti_sizeof($graphs)) {
-		foreach ($graphs as $key => $id) {
-			if (!is_graph_allowed($id, $effective_user)) {
-				unset($graphs[$key]);
-			}
-		}
-	}
+	$graphs = array_filter($graphs, fn ($id) => is_graph_allowed($id, $effective_user));
 
 	return cacti_sizeof($graphs);
 }
@@ -1459,18 +1452,18 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 			if ($leaf_type == 'header' && $nested) {
 				$mygraphs = [];
 
-				$graphs = db_fetch_assoc("SELECT DISTINCT
+				$graphs = db_fetch_assoc_prepared("SELECT DISTINCT
 					gti.local_graph_id, gtg.title_cache
 					FROM graph_tree_items AS gti
 					INNER JOIN graph_local AS gl
 					ON gl.id=gti.local_graph_id
 					INNER JOIN graph_templates_graph AS gtg
 					ON gtg.local_graph_id=gl.id
-					WHERE gti.graph_tree_id=$tree_id
-					AND gti.parent=$parent
+					WHERE gti.graph_tree_id = ?
+					AND gti.parent = ?
 					AND gti.local_graph_id>0
 					$sql_where
-					ORDER BY gti.position");
+					ORDER BY gti.position", [$tree_id, $parent]);
 
 				foreach ($graphs as $graph) {
 					if (is_graph_allowed($graph['local_graph_id'], $user)) {
@@ -1502,9 +1495,9 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 					$gr_where .= ' AND title_cache REGEXP ' . db_qstr($item['graph_name_regexp']);
 				}
 
-				$graph = db_fetch_row('SELECT local_graph_id, title_cache
+				$graph = db_fetch_row_prepared('SELECT local_graph_id, title_cache
 					FROM graph_templates_graph
-					WHERE local_graph_id=' . $leaf['local_graph_id'] . $gr_where);
+					WHERE local_graph_id = ?' . $gr_where, [$leaf['local_graph_id']]);
 
 				if (cacti_sizeof($graph)) {
 					if (is_graph_allowed($graph['local_graph_id'], $user)) {
@@ -1518,9 +1511,9 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 					$gr_where .= ' AND title_cache REGEXP ' . db_qstr($item['graph_name_regexp']);
 				}
 
-				$graph = db_fetch_cell('SELECT count(*)
+				$graph = db_fetch_cell_prepared('SELECT count(*)
 					FROM graph_templates_graph
-					WHERE local_graph_id=' . $leaf['local_graph_id'] . $gr_where);
+					WHERE local_graph_id = ?' . $gr_where, [$leaf['local_graph_id']]);
 
 				// start graph display
 				if ($graph > 0) {
@@ -1579,15 +1572,15 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 
 						if (cacti_sizeof($graph_templates)) {
 							foreach ($graph_templates as $id => $name) {
-								$graphs = db_fetch_assoc('SELECT
+								$graphs = db_fetch_assoc_prepared("SELECT
 									gtg.local_graph_id, gtg.title_cache
 									FROM graph_local AS gl
 									INNER JOIN graph_templates_graph AS gtg
 									ON gtg.local_graph_id=gl.id
-									WHERE gl.graph_template_id=' . $id . '
-									AND gl.host_id=' . $leaf['host_id'] . "
+									WHERE gl.graph_template_id = ?
+									AND gl.host_id = ?
 									$sql_where
-									ORDER BY gtg.title_cache");
+									ORDER BY gtg.title_cache", [$id, $leaf['host_id']]);
 
 								if (cacti_sizeof($graphs)) {
 									foreach ($graphs as $key => $graph) {
@@ -1651,15 +1644,15 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 								$sort_field_data = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
 
 								// grab a list of all graphs for this host/data query combination
-								$graphs = db_fetch_assoc('SELECT
+								$graphs = db_fetch_assoc_prepared("SELECT
 									gtg.title_cache, gtg.local_graph_id, gl.snmp_index
 									FROM graph_local AS gl
 									INNER JOIN graph_templates_graph AS gtg
 									ON gl.id=gtg.local_graph_id
-									WHERE gl.snmp_query_id=' . $data_query['id'] . '
-									AND gl.host_id=' . $leaf['host_id'] . "
+									WHERE gl.snmp_query_id = ?
+									AND gl.host_id = ?
 									$sql_where
-									ORDER BY gtg.title_cache");
+									ORDER BY gtg.title_cache", [$data_query['id'], $leaf['host_id']]);
 
 								if (cacti_sizeof($graphs)) {
 									foreach ($graphs as $key => $graph) {
@@ -1728,14 +1721,14 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 						}
 					}
 				} else {
-					$graphs = db_fetch_assoc('SELECT
+					$graphs = db_fetch_assoc_prepared("SELECT
 						gtg.local_graph_id, gtg.title_cache
 						FROM graph_local AS gl
 						INNER JOIN graph_templates_graph AS gtg
 						ON gtg.local_graph_id=gl.id
-						WHERE gl.host_id=' . $leaf['host_id'] . "
+						WHERE gl.host_id = ?
 						$sql_where
-						ORDER BY gtg.title_cache");
+						ORDER BY gtg.title_cache", [$leaf['host_id']]);
 
 					if (cacti_sizeof($graphs)) {
 						foreach ($graphs as $key => $graph) {
