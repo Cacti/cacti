@@ -191,9 +191,6 @@ function api_device_purge_deleted_devices() : void {
  * @return void
  */
 function api_device_remove_multi(array $device_ids, int $delete_type = 2) : void {
-	$devices_to_delete = '';
-	$i                 = 0;
-
 	if (cacti_sizeof($device_ids)) {
 		/**
 		 * Get the object totals by object type for later updating
@@ -209,7 +206,8 @@ function api_device_remove_multi(array $device_ids, int $delete_type = 2) : void
 		$data_sources = [];
 		$graphs       = [];
 
-		$int_device_ids = array_map('intval', $device_ids);
+		$int_device_ids    = array_map('intval', $device_ids);
+		$devices_to_delete = implode(', ', $int_device_ids);
 
 		$data_sources = array_rekey(
 			db_fetch_assoc('SELECT id
@@ -225,26 +223,13 @@ function api_device_remove_multi(array $device_ids, int $delete_type = 2) : void
 			'id', 'id'
 		);
 
-		// build the list
+		// poller commands go one at a time due to trashy logic
 		foreach ($device_ids as $device_id) {
-			if ($i == 0) {
-				$devices_to_delete .= intval($device_id);
-			} else {
-				$devices_to_delete .= ', ' . intval($device_id);
-			}
-
-			// poller commands go one at a time due to trashy logic
-			db_execute_prepared('DELETE FROM poller_item    WHERE host_id = ?', [$device_id]);
-			db_execute_prepared('DELETE FROM poller_reindex WHERE host_id = ?', [$device_id]);
 			db_execute_prepared('DELETE FROM poller_command WHERE command LIKE ?', [$device_id . ':%']);
-
-			$poller_id = db_fetch_cell_prepared('SELECT poller_id
-				FROM host
-				WHERE id = ?',
-				[$device_id]);
-
-			$i++;
 		}
+
+		db_execute('DELETE FROM poller_item    WHERE ' . array_to_sql_or($int_device_ids, 'host_id'));
+		db_execute('DELETE FROM poller_reindex WHERE ' . array_to_sql_or($int_device_ids, 'host_id'));
 
 		$poller_ids = get_remote_poller_ids_from_devices($devices_to_delete);
 
