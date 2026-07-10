@@ -246,53 +246,26 @@ function api_graph_remove_multi(array $local_graph_ids) : void {
 		return;
 	}
 
-	// initialize variables
-	$ids_to_delete = '';
-	$i             = 0;
+	api_plugin_hook_function('graphs_remove', $local_graph_ids);
 
-	// build the array
-	if (cacti_sizeof($local_graph_ids)) {
-		api_plugin_hook_function('graphs_remove', $local_graph_ids);
+	// Delete in chunks so the IN list stays bounded on large removals.
+	foreach (array_chunk($local_graph_ids, 1000) as $chunk) {
+		$chunk = array_map('intval', $chunk);
 
-		foreach ($local_graph_ids as $local_graph_id) {
-			if ($i == 0) {
-				$ids_to_delete .= $local_graph_id;
-			} else {
-				$ids_to_delete .= ', ' . $local_graph_id;
-			}
+		api_graph_remove_aggregate_items($chunk);
 
-			$i++;
-
-			if (($i % 1000) == 0) {
-				api_graph_remove_aggregate_items($ids_to_delete);
-
-				db_execute("DELETE FROM graph_templates_graph WHERE local_graph_id IN ($ids_to_delete)");
-				db_execute("DELETE FROM graph_templates_item WHERE local_graph_id IN ($ids_to_delete)");
-				db_execute("DELETE FROM graph_tree_items WHERE local_graph_id IN ($ids_to_delete)");
-				db_execute("DELETE FROM reports_items WHERE local_graph_id IN ($ids_to_delete)");
-				db_execute("DELETE FROM graph_local WHERE id IN ($ids_to_delete)");
-
-				$i             = 0;
-				$ids_to_delete = '';
-			}
-		}
-
-		if ($i > 0) {
-			api_graph_remove_aggregate_items($ids_to_delete);
-
-			db_execute("DELETE FROM graph_templates_graph WHERE local_graph_id IN ($ids_to_delete)");
-			db_execute("DELETE FROM graph_templates_item WHERE local_graph_id IN ($ids_to_delete)");
-			db_execute("DELETE FROM graph_tree_items WHERE local_graph_id IN ($ids_to_delete)");
-			db_execute("DELETE FROM reports_items WHERE local_graph_id IN ($ids_to_delete)");
-			db_execute("DELETE FROM graph_local WHERE id IN ($ids_to_delete)");
-		}
-
-		/**
-		 * Save the last time a graph was created/updated
-		 * for Caching.
-		 */
-		set_config_option('time_last_change_graph', time());
+		db_execute('DELETE FROM graph_templates_graph WHERE ' . array_to_sql_or($chunk, 'local_graph_id'));
+		db_execute('DELETE FROM graph_templates_item WHERE ' . array_to_sql_or($chunk, 'local_graph_id'));
+		db_execute('DELETE FROM graph_tree_items WHERE ' . array_to_sql_or($chunk, 'local_graph_id'));
+		db_execute('DELETE FROM reports_items WHERE ' . array_to_sql_or($chunk, 'local_graph_id'));
+		db_execute('DELETE FROM graph_local WHERE ' . array_to_sql_or($chunk, 'id'));
 	}
+
+	/**
+	 * Save the last time a graph was created/updated
+	 * for Caching.
+	 */
+	set_config_option('time_last_change_graph', time());
 }
 
 /**
