@@ -31,17 +31,17 @@ if (!defined('SQL_AUDIT_LIB_ONLY')) {
 
 const BASELINE = 'tests/tools/sql_interpolation_baseline.json';
 
-$db_functions = array(
+$db_functions = [
 	'db_execute', 'db_execute_prepared',
 	'db_fetch_cell', 'db_fetch_cell_prepared',
 	'db_fetch_row', 'db_fetch_row_prepared',
 	'db_fetch_assoc', 'db_fetch_assoc_prepared',
 	'db_fetch_insert_id',
-);
+];
 
 // Escaping helpers: if the only calls injected into the SQL are these, the
 // dynamic parts are already escaped.
-$escaping_helpers = array('db_qstr', 'array_to_sql_or', 'array_to_sql');
+$escaping_helpers = ['db_qstr', 'array_to_sql_or', 'array_to_sql'];
 
 function list_php_files(): array {
 	// Tracked files only: matches what ships and avoids nested worktrees,
@@ -53,7 +53,7 @@ function list_php_files(): array {
 		exit(2);
 	}
 
-	$out = array();
+	$out = [];
 
 	foreach (explode("\0", implode("\n", $lines)) as $path) {
 		if ($path === '') {
@@ -61,9 +61,9 @@ function list_php_files(): array {
 		}
 
 		// Skip vendored code and the test tree; we audit shipped source.
-		if (strpos($path, 'include/vendor/') === 0 ||
-			strpos($path, 'tests/') === 0 ||
-			strpos($path, 'scripts/') === 0) {
+		if (str_starts_with($path, 'include/vendor/') ||
+			str_starts_with($path, 'tests/') ||
+			str_starts_with($path, 'scripts/')) {
 			continue;
 		}
 
@@ -84,8 +84,8 @@ function list_php_files(): array {
 function inspect_first_arg(array $tokens, int $start, int $end, array $escaping_helpers): array {
 	$text      = '';
 	$has_var   = false;
-	$helpers   = array();
-	$raw_names = array();     // name behind each § in order
+	$helpers   = [];
+	$raw_names = [];     // name behind each § in order
 	$only_helper_vars = true; // every dynamic fragment came from a helper call
 
 	for ($i = $start; $i < $end; $i++) {
@@ -96,7 +96,7 @@ function inspect_first_arg(array $tokens, int $start, int $end, array $escaping_
 			continue;
 		}
 
-		list($id, $val) = $tok;
+		[$id, $val] = $tok;
 
 		if ($id === T_CONSTANT_ENCAPSED_STRING) {
 			$text .= substr($val, 1, -1);
@@ -153,7 +153,7 @@ function inspect_first_arg(array $tokens, int $start, int $end, array $escaping_
 		// whitespace, comments: ignore
 	}
 
-	return array($text, $has_var, $helpers, $only_helper_vars, $raw_names);
+	return [$text, $has_var, $helpers, $only_helper_vars, $raw_names];
 }
 
 /**
@@ -196,7 +196,7 @@ function marker_position(string $before): string {
 }
 
 function classify(string $func, string $text, bool $has_var, array $helpers, bool $only_helper_vars, array $raw_names): string {
-	if (substr($func, -9) === '_prepared') {
+	if (str_ends_with($func, '_prepared')) {
 		return 'prepared';
 	}
 
@@ -205,14 +205,14 @@ function classify(string $func, string $text, bool $has_var, array $helpers, boo
 	}
 
 	// No raw markers: every dynamic fragment passed through an escaping helper.
-	if (strpos($text, '§') === false) {
+	if (!str_contains($text, '§')) {
 		return 'qstr';
 	}
 
 	// The argument is just a variable (or variables) holding a prebuilt query;
 	// there is no inline SQL to anchor against. Needs data-flow tracing, not a
 	// mechanical prepared-statement rewrite.
-	if (trim(str_replace(array('§', '¤'), '', $text)) === '') {
+	if (trim(str_replace(['§', '¤'], '', $text)) === '') {
 		return 'opaque';
 	}
 
@@ -249,17 +249,17 @@ function classify(string $func, string $text, bool $has_var, array $helpers, boo
 
 /**
  * Scan one PHP source string and return every db_* call site it contains as
- * array('line' => int, 'func' => string, 'category' => string). Split out so it
+ * ['line' => int, 'func' => string, 'category' => string]. Split out so it
  * can be unit tested against snippets without touching the filesystem.
  */
 function scan_source(string $src, array $db_functions, array $escaping_helpers): array {
-	if (strpos($src, 'db_') === false) {
-		return array();
+	if (!str_contains($src, 'db_')) {
+		return [];
 	}
 
 	$tokens = @token_get_all($src);
 	$n = count($tokens);
-	$sites = array();
+	$sites = [];
 
 	for ($i = 0; $i < $n; $i++) {
 		$tok = $tokens[$i];
@@ -315,14 +315,14 @@ function scan_source(string $src, array $db_functions, array $escaping_helpers):
 			continue;
 		}
 
-		list($text, $has_var, $helpers, $only_helper_vars, $raw_names) =
+		[$text, $has_var, $helpers, $only_helper_vars, $raw_names] =
 			inspect_first_arg($tokens, $arg_start, $arg_end, $escaping_helpers);
 
-		$sites[] = array(
+		$sites[] = [
 			'line'     => $line,
 			'func'     => $func,
 			'category' => classify($func, $text, $has_var, $helpers, $only_helper_vars, $raw_names),
-		);
+		];
 
 		$i = $call_end; // resume after this call
 	}
@@ -336,7 +336,7 @@ if (defined('SQL_AUDIT_LIB_ONLY')) {
 }
 
 $files   = list_php_files();
-$results = array();  // path => array of sites
+$results = [];  // path => array of sites
 
 foreach ($files as $path) {
 	$src = file_get_contents($path);
@@ -347,14 +347,14 @@ foreach ($files as $path) {
 
 	$sites = scan_source($src, $db_functions, $escaping_helpers);
 
-	if ($sites !== array()) {
+	if ($sites !== []) {
 		$results[$path] = $sites;
 	}
 }
 
 // ---- aggregate ----
-$per_file  = array();     // path => category => count
-$totals    = array('prepared' => 0, 'static' => 0, 'qstr' => 0, 'fragment' => 0, 'opaque' => 0, 'identifier' => 0, 'value' => 0);
+$per_file  = [];     // path => category => count
+$totals    = ['prepared' => 0, 'static' => 0, 'qstr' => 0, 'fragment' => 0, 'opaque' => 0, 'identifier' => 0, 'value' => 0];
 
 foreach ($results as $path => $sites) {
 	foreach ($sites as $s) {
@@ -380,20 +380,20 @@ if ($mode === '--list') {
 }
 
 if ($mode === '--json') {
-	$out = array('totals' => $totals, 'files' => array());
+	$out = ['totals' => $totals, 'files' => []];
 	ksort($per_file);
 	foreach ($per_file as $path => $cats) {
-		$out['files'][$path] = array(
+		$out['files'][$path] = [
 			'value'      => $cats['value'] ?? 0,
 			'identifier' => $cats['identifier'] ?? 0,
-		);
+		];
 	}
 	print json_encode($out, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL;
 	exit(0);
 }
 
 if ($mode === '--write-baseline') {
-	$baseline = array();
+	$baseline = [];
 	ksort($per_file);
 	foreach ($per_file as $path => $cats) {
 		$v = $cats['value'] ?? 0;
@@ -418,8 +418,8 @@ if ($mode === '--check') {
 		exit(2);
 	}
 
-	$regressions = array();
-	$current = array();
+	$regressions = [];
+	$current = [];
 	foreach ($per_file as $path => $cats) {
 		if (($cats['value'] ?? 0) > 0) {
 			$current[$path] = $cats['value'];
@@ -433,7 +433,7 @@ if ($mode === '--check') {
 		}
 	}
 
-	if ($regressions !== array()) {
+	if ($regressions !== []) {
 		fwrite(STDERR, "SQL interpolation ratchet failed. New unparameterised value interpolation:\n");
 		fwrite(STDERR, implode("\n", $regressions) . "\n");
 		fwrite(STDERR, "\nUse db_*_prepared() with a parameter array, then update the baseline\n");
@@ -442,7 +442,7 @@ if ($mode === '--check') {
 	}
 
 	// Nudge the baseline down when sites are fixed but the file is stale.
-	$stale = array();
+	$stale = [];
 	foreach ($baseline as $path => $allowed) {
 		$now = $current[$path] ?? 0;
 		if ($now < $allowed) {
@@ -453,7 +453,7 @@ if ($mode === '--check') {
 	printf("SQL interpolation ratchet passed. %d value site(s) across %d file(s).\n",
 		array_sum($current), count($current));
 
-	if ($stale !== array()) {
+	if ($stale !== []) {
 		printf("%d file(s) improved below baseline; refresh with --write-baseline:\n%s\n",
 			count($stale), implode("\n", $stale));
 	}
@@ -469,12 +469,12 @@ foreach ($totals as $cat => $n) {
 printf("  %-11s %5d\n", 'TOTAL', array_sum($totals));
 
 printf("\nMigration target (value) and review target (identifier) by file:\n\n");
-$rows = array();
+$rows = [];
 foreach ($per_file as $path => $cats) {
 	$v = $cats['value'] ?? 0;
 	$id = $cats['identifier'] ?? 0;
 	if ($v || $id) {
-		$rows[$path] = array($v, $id);
+		$rows[$path] = [$v, $id];
 	}
 }
 uasort($rows, function ($a, $b) { return $b[0] <=> $a[0]; });
