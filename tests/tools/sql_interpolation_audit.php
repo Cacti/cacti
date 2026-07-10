@@ -23,7 +23,11 @@
  *   php tests/tools/sql_interpolation_audit.php --write-baseline
  */
 
-chdir(__DIR__ . '/../../');
+// Relocate to the repo root for CLI runs only; a library include (the unit
+// tests) must not inherit a working-directory side effect.
+if (!defined('SQL_AUDIT_LIB_ONLY')) {
+	chdir(__DIR__ . '/../../');
+}
 
 const BASELINE = 'tests/tools/sql_interpolation_baseline.json';
 
