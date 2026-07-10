@@ -72,14 +72,17 @@ function list_php_files(): array {
 }
 
 /**
- * Reconstruct the text of a call's first argument, mapping every variable and
- * embedded expression to the marker §. Returns array(text, has_var, helpers).
+ * Reconstruct the text of a call's first argument. Raw (unescaped) fragments
+ * become §, escaped-helper fragments become ¤. Also returns, in order, the
+ * source variable name behind each § (null when it is not a plain variable),
+ * so a prebuilt SQL fragment can be told apart from a scalar value.
  */
 function inspect_first_arg(array $tokens, int $start, int $end, array $escaping_helpers): array {
-	$text     = '';
-	$has_var  = false;
-	$helpers  = array();
-	$only_helper_vars = true; // every § came from an escaping helper call
+	$text      = '';
+	$has_var   = false;
+	$helpers   = array();
+	$raw_names = array();     // name behind each § in order
+	$only_helper_vars = true; // every dynamic fragment came from a helper call
 
 	for ($i = $start; $i < $end; $i++) {
 		$tok = $tokens[$i];
@@ -98,10 +101,12 @@ function inspect_first_arg(array $tokens, int $start, int $end, array $escaping_
 		} elseif ($id === T_VARIABLE) {
 			// A bare variable is a raw, unescaped interpolation (§).
 			$text .= '§';
+			$raw_names[] = ltrim($val, '$');
 			$has_var = true;
 			$only_helper_vars = false;
 		} elseif ($id === T_CURLY_OPEN || $id === T_DOLLAR_OPEN_CURLY_BRACES) {
 			$text .= '§';
+			$raw_names[] = null;
 			$has_var = true;
 			$only_helper_vars = false;
 		} elseif ($id === T_STRING) {
@@ -134,6 +139,7 @@ function inspect_first_arg(array $tokens, int $start, int $end, array $escaping_
 				} else {
 					$only_helper_vars = false; // unknown escaping: treat as raw
 					$text .= '§';
+					$raw_names[] = null;    // call result, not a plain variable
 				}
 
 				$i = $m; // resume after the call
@@ -143,7 +149,23 @@ function inspect_first_arg(array $tokens, int $start, int $end, array $escaping_
 		// whitespace, comments: ignore
 	}
 
-	return array($text, $has_var, $helpers, $only_helper_vars);
+	return array($text, $has_var, $helpers, $only_helper_vars, $raw_names);
+}
+
+/**
+ * A variable named like one of Cacti's prebuilt SQL fragments (sql_where,
+ * sql_join, ...). Such a value is a SQL snippet, not a scalar, so it cannot be
+ * bound to a placeholder; its construction has to be traced separately.
+ */
+function is_fragment_name(?string $name): bool {
+	if ($name === null) {
+		return false;
+	}
+
+	return (bool) preg_match(
+		'/(^sql$|^sql_|_sql$|where|having|_join$|^join$|orderby|order_by|groupby|group_by|_filter$|_clause$|_sql_|limit_sql)/i',
+		$name
+	);
 }
 
 /**
@@ -169,7 +191,7 @@ function marker_position(string $before): string {
 	return 'value';
 }
 
-function classify(string $func, string $text, bool $has_var, array $helpers, bool $only_helper_vars): string {
+function classify(string $func, string $text, bool $has_var, array $helpers, bool $only_helper_vars, array $raw_names): string {
 	if (substr($func, -9) === '_prepared') {
 		return 'prepared';
 	}
@@ -190,33 +212,50 @@ function classify(string $func, string $text, bool $has_var, array $helpers, boo
 		return 'opaque';
 	}
 
-	// Classify each raw marker by position; value dominates identifier.
+	// Classify each raw marker. A scalar in value position is the migration
+	// target and dominates. A prebuilt SQL fragment is tracked separately.
 	$saw_identifier = false;
+	$saw_fragment   = false;
 	$offset = 0;
+	$idx = 0;
 
 	while (($pos = strpos($text, '§', $offset)) !== false) {
+		$name = $raw_names[$idx] ?? null;
+		$offset = $pos + strlen('§');
+		$idx++;
+
+		if (is_fragment_name($name)) {
+			$saw_fragment = true;
+			continue;
+		}
+
 		if (marker_position(substr($text, 0, $pos)) === 'value') {
 			return 'value';
 		}
+
 		$saw_identifier = true;
-		$offset = $pos + strlen('§');
 	}
 
-	return $saw_identifier ? 'identifier' : 'value';
+	if ($saw_identifier) {
+		return 'identifier';
+	}
+
+	return $saw_fragment ? 'fragment' : 'value';
 }
 
-$files   = list_php_files();
-$results = array();  // path => array of sites
-
-foreach ($files as $path) {
-	$src = file_get_contents($path);
-
-	if ($src === false || strpos($src, 'db_') === false) {
-		continue;
+/**
+ * Scan one PHP source string and return every db_* call site it contains as
+ * array('line' => int, 'func' => string, 'category' => string). Split out so it
+ * can be unit tested against snippets without touching the filesystem.
+ */
+function scan_source(string $src, array $db_functions, array $escaping_helpers): array {
+	if (strpos($src, 'db_') === false) {
+		return array();
 	}
 
 	$tokens = @token_get_all($src);
 	$n = count($tokens);
+	$sites = array();
 
 	for ($i = 0; $i < $n; $i++) {
 		$tok = $tokens[$i];
@@ -227,7 +266,7 @@ foreach ($files as $path) {
 
 		$func = $tok[1];
 
-		if (!in_array($func, $GLOBALS['db_functions'], true)) {
+		if (!in_array($func, $db_functions, true)) {
 			continue;
 		}
 
@@ -272,24 +311,46 @@ foreach ($files as $path) {
 			continue;
 		}
 
-		list($text, $has_var, $helpers, $only_helper_vars) =
+		list($text, $has_var, $helpers, $only_helper_vars, $raw_names) =
 			inspect_first_arg($tokens, $arg_start, $arg_end, $escaping_helpers);
 
-		$category = classify($func, $text, $has_var, $helpers, $only_helper_vars);
-
-		$results[$path][] = array(
+		$sites[] = array(
 			'line'     => $line,
 			'func'     => $func,
-			'category' => $category,
+			'category' => classify($func, $text, $has_var, $helpers, $only_helper_vars, $raw_names),
 		);
 
 		$i = $call_end; // resume after this call
+	}
+
+	return $sites;
+}
+
+// Stop here when included as a library (tests require the functions only).
+if (defined('SQL_AUDIT_LIB_ONLY')) {
+	return;
+}
+
+$files   = list_php_files();
+$results = array();  // path => array of sites
+
+foreach ($files as $path) {
+	$src = file_get_contents($path);
+
+	if ($src === false) {
+		continue;
+	}
+
+	$sites = scan_source($src, $db_functions, $escaping_helpers);
+
+	if ($sites !== array()) {
+		$results[$path] = $sites;
 	}
 }
 
 // ---- aggregate ----
 $per_file  = array();     // path => category => count
-$totals    = array('prepared' => 0, 'static' => 0, 'qstr' => 0, 'opaque' => 0, 'identifier' => 0, 'value' => 0);
+$totals    = array('prepared' => 0, 'static' => 0, 'qstr' => 0, 'fragment' => 0, 'opaque' => 0, 'identifier' => 0, 'value' => 0);
 
 foreach ($results as $path => $sites) {
 	foreach ($sites as $s) {
