@@ -15,8 +15,6 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
-  issues: write   # security_review.py posts via the issues comments endpoint
 
 concurrency:
   group: security-review-${{ github.event.pull_request.number }}
@@ -26,6 +24,10 @@ jobs:
   security-review:
     name: security review
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write   # security_review.py posts via the issues comments endpoint
     # Skip drafts. The secret check cannot live in a job-level `if:` because the
     # `secrets` context is not available there; it is evaluated per step via env.
     if: github.event.pull_request.draft == false
