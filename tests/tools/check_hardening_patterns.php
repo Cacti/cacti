@@ -107,10 +107,10 @@ function changed_php_lines(string $base, string $head) : array {
 	}
 
 	/* -U0 keeps hunk headers tight so only added/modified new-side lines
-	   are recorded; --no-ext-diff guards against local external diff
-	   drivers breaking the parse. */
+	   are recorded; --no-ext-diff and the explicit prefixes guard against
+	   local diff drivers or diff.noprefix breaking the parse. */
 	$command = sprintf(
-		'git diff -U0 --no-ext-diff --diff-filter=ACMR %s...%s -- %s 2>/dev/null',
+		'git diff -U0 --no-ext-diff --src-prefix=a/ --dst-prefix=b/ --diff-filter=ACMR %s...%s -- %s 2>/dev/null',
 		escapeshellarg($base),
 		escapeshellarg($head),
 		escapeshellarg('*.php')
