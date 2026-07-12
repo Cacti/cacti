@@ -17,12 +17,14 @@ tr -d '\r' < "$BASELINE" | LC_ALL=C sort -u > "$TMP_BASELINE"
 "${ROOT_DIR}/tests/security/build_sink_inventory.sh" | tr -d '\r' | LC_ALL=C sort -u > "$TMP_CUR"
 
 if diff -u "$TMP_BASELINE" "$TMP_CUR" > "$TMP_DIFF"; then
+	rm -f "$TMP_DIFF"
 	echo "OK: sink inventory matches baseline"
 	exit 0
 fi
 
+# $TMP_DIFF is deliberately left behind on failure so the drift can be inspected.
 echo "ERROR: sink inventory drift detected."
 echo "See: $TMP_DIFF"
 echo "If intentional, review and refresh baseline:"
-echo "  tests/security/build_sink_inventory.sh | tr -d '\\r' | LC_ALL=C sort -u > tests/security/baselines/sink_inventory.baseline.tsv"
+printf '%s\n' "  tests/security/build_sink_inventory.sh | tr -d '\\r' | LC_ALL=C sort -u > tests/security/baselines/sink_inventory.baseline.tsv"
 exit 1

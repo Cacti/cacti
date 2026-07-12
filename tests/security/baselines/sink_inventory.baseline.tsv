@@ -559,11 +559,11 @@ header_redirect	./package_import.php:377			header('Location: package_import.php'
 header_redirect	./package_import.php:424				header('Location: package_import.php');
 header_redirect	./package_import.php:538				header('Location: package_import.php?package_location=0');
 header_redirect	./package_import.php:860						header('Location: package_import.php');
-header_redirect	./package_keys.php:108			header('Location: package_keys.php?header=false');
-header_redirect	./package_keys.php:66			header('Location: package_keys.php?header=false');
-header_redirect	./package_repos.php:159		header('Location: package_repos.php?header=false&action=edit&id=' . (empty($id) ? gnrv('id') : $id));
-header_redirect	./package_repos.php:193			header('Location: package_repos.php?header=false');
-header_redirect	./package_repos.php:266			header('Location: package_repos.php?header=false');
+header_redirect	./package_keys.php:102			header('Location: package_keys.php?header=false');
+header_redirect	./package_keys.php:67			header('Location: package_keys.php?header=false');
+header_redirect	./package_repos.php:160		header('Location: package_repos.php?header=false&action=edit&id=' . (empty($id) ? gnrv('id') : $id));
+header_redirect	./package_repos.php:194			header('Location: package_repos.php?header=false');
+header_redirect	./package_repos.php:260			header('Location: package_repos.php?header=false');
 header_redirect	./plugins.php:168			header('Location: plugins.php');
 header_redirect	./plugins.php:175			header('Location: plugins.php');
 header_redirect	./plugins.php:198			header('Location: plugins.php');
