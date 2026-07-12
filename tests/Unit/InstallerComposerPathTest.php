@@ -1,0 +1,54 @@
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+*/
+
+/*
+ * Source-scan tests for the composer binary path setting (#6456).
+ *
+ * Cacti 1.3 requires composer for installs whose include/vendor is not
+ * pre-packaged.  The setting gives the installer a place to record the
+ * binary location; the installer seeds it, marks it optional so packaged
+ * releases install unchanged, and verifies the binary runs when a path
+ * is supplied.
+ */
+
+test('path_composer setting exists with binary filepath validation', function () {
+	$src = file_get_contents(__DIR__ . '/../../include/global_settings.php');
+	expect($src)->not->toBeFalse('Failed to read include/global_settings.php');
+
+	$pos = strpos($src, "'path_composer' => [");
+	expect($pos)->not->toBeFalse('path_composer setting must exist');
+
+	$block = substr($src, $pos, 400);
+	expect(strpos($block, "'method'        => 'filepath'"))->not->toBeFalse('path_composer must use the filepath method')
+		->and(strpos($block, "'file_type'     => 'binary'"))->not->toBeFalse('path_composer must be a binary file type');
+});
+
+test('installer seeds path_composer as optional', function () {
+	$src = file_get_contents(__DIR__ . '/../../install/functions.php');
+	expect($src)->not->toBeFalse('Failed to read install/functions.php');
+
+	expect(strpos($src, "install_tool_path('composer'"))->not->toBeFalse('install_file_paths must seed path_composer')
+		->and(strpos($src, "\$input['path_composer']['install_optional'] = true;"))->not->toBeFalse('path_composer must be optional so packaged releases install unchanged');
+});
+
+test('composer version probe accepts real output and rejects noise', function () {
+	$probe = function (?string $output): bool {
+		return !($output === null || !str_contains($output, 'Composer'));
+	};
+
+	expect($probe('Composer version 2.7.7 2024-06-10 22:11:12'))->toBeTrue()
+		->and($probe(null))->toBeFalse()
+		->and($probe('sh: composer: command not found'))->toBeFalse()
+		->and($probe(''))->toBeFalse();
+});
