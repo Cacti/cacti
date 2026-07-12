@@ -1,0 +1,86 @@
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# |                                                                         |
+# | This program is free software; you can redistribute it and/or           |
+# | modify it under the terms of the GNU General Public License             |
+# | as published by the Free Software Foundation; either version 2          |
+# | of the License, or (at your option) any later version.                  |
+# +-------------------------------------------------------------------------+
+# | Cacti: The Complete RRDtool-based Graphing Solution                     |
+# +-------------------------------------------------------------------------+
+
+name: Security SAST
+
+on:
+  push:
+    branches: [develop, 1.2.x]
+  pull_request:
+    branches: [develop, 1.2.x]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-sast-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  semgrep:
+    name: Semgrep taint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install Semgrep
+        run: python3 -m pip install semgrep==1.152.0
+
+      - name: Run Semgrep
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          if [ -n "${BASE_SHA:-}" ]; then
+            semgrep --config .semgrep.yml --error --baseline-commit "$BASE_SHA" .
+          else
+            semgrep --config .semgrep.yml --error .
+          fi
+
+  psalm:
+    name: Psalm taint
+    runs-on: ubuntu-latest
+    env:
+      COMPOSER_ALLOW_SUPERUSER: 1
+      PSALM_VERSION: '6.16.1'
+      PSALM_PHAR_SHA256: '7ace71e4f698466e7e16810679a1895ea623060579aff46fcf9fd0f1c09abe00'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4
+
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Download and verify pinned Psalm phar
+        run: |
+          set -euo pipefail
+          curl -fsSL -o psalm.phar \
+            "https://github.com/vimeo/psalm/releases/download/${PSALM_VERSION}/psalm.phar"
+          echo "${PSALM_PHAR_SHA256}  psalm.phar" | sha256sum -c -
+
+      - name: Run Psalm taint analysis
+        run: php psalm.phar --taint-analysis --no-progress
