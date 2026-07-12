@@ -975,7 +975,7 @@ class Installer implements JsonSerializable {
 				}
 
 				if ($should_set && $name == 'path_composer' && !empty($path) && file_exists($path)) {
-					/* cacti_escapeshellcmd() replaces backslashes on Windows; normalize first */
+					// cacti_escapeshellcmd() replaces backslashes on Windows; normalize first
 					$output = shell_exec(cacti_escapeshellcmd(str_replace('\\', '/', $path)) . ' --version 2>&1');
 
 					if ($output === null || !str_contains($output, 'Composer')) {
