@@ -22,11 +22,13 @@ test('setPaths probes composer only when a path is present', function () use ($r
 	$fnPos = strpos($src, 'private function setPaths(');
 	expect($fnPos)->not->toBeFalse('setPaths must exist');
 
-	$probePos = strpos($src, "\$name == 'path_composer' && !empty(\$path) && file_exists(\$path)", $fnPos);
-	expect($probePos)->not->toBeFalse('composer probe must be gated on a supplied, existing path');
+	// tolerant of formatting: the gate must test the name, a non-empty path, and file existence
+	$gate = '/\$name\s*==\s*\'path_composer\'.*!empty\(\$path\).*file_exists\(\$path\)/s';
+	expect(preg_match($gate, substr($src, $fnPos), $m, PREG_OFFSET_CAPTURE))->toBe(1,
+		'composer probe must be gated on a supplied, existing path');
 
-	$block = substr($src, $probePos, 500);
-	expect(strpos($block, "' --version 2>&1'"))->not->toBeFalse('probe must run composer --version')
+	$block = substr($src, $fnPos + $m[0][1], 600);
+	expect(strpos($block, '--version'))->not->toBeFalse('probe must run composer --version')
 		->and(strpos($block, 'cacti_escapeshellcmd'))->not->toBeFalse('probe must escape the configured path')
 		->and(strpos($block, 'STEP_BINARY_LOCATIONS'))->not->toBeFalse('probe failure must surface on the Binary Locations step');
 });

@@ -230,7 +230,7 @@ $settings['path'] = [
 	],
 	'path_composer' => [
 		'friendly_name' => __('Composer Binary Path'),
-		'description'   => __('The path to the composer binary.  Composer is required when installing or upgrading a Cacti instance whose include/vendor directory is not pre-packaged, for example a git checkout.'),
+		'description'   => __('The path to the composer binary.  Composer is required when installing or upgrading a Cacti instance whose include/vendor directory is not pre-packaged, for example a Git checkout.'),
 		'method'        => 'filepath',
 		'file_type'     => 'binary',
 		'max_length'    => '255'

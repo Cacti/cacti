@@ -26,12 +26,15 @@ test('path_composer setting exists with binary filepath validation', function ()
 	$src = file_get_contents(__DIR__ . '/../../include/global_settings.php');
 	expect($src)->not->toBeFalse('Failed to read include/global_settings.php');
 
-	$pos = strpos($src, "'path_composer' => [");
+	$pos = strpos($src, "'path_composer'");
 	expect($pos)->not->toBeFalse('path_composer setting must exist');
 
-	$block = substr($src, $pos, 400);
-	expect(strpos($block, "'method'        => 'filepath'"))->not->toBeFalse('path_composer must use the filepath method')
-		->and(strpos($block, "'file_type'     => 'binary'"))->not->toBeFalse('path_composer must be a binary file type');
+	// tolerant of alignment: scan the setting block up to the next path_ entry
+	$end   = strpos($src, "'path_fping'", $pos);
+	$block = substr($src, $pos, ($end === false ? 1000 : $end - $pos));
+
+	expect(preg_match("/'method'\s*=>\s*'filepath'/", $block))->toBe(1, 'path_composer must use the filepath method')
+		->and(preg_match("/'file_type'\s*=>\s*'binary'/", $block))->toBe(1, 'path_composer must be a binary file type');
 });
 
 test('installer seeds path_composer as optional', function () {
