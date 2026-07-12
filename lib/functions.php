@@ -3077,7 +3077,9 @@ function get_full_script_path(int $local_data_id) : mixed {
 	/* sometimes a certain input value will not have anything entered... null out these fields
 	in the input string so we don't mess up the script */
 	if (preg_match_all('/<[A-Za-z0-9_]+>/', $full_path, $matches)) {
-		cacti_log(sprintf('WARNING: Command for Data Source[%d] contains unresolved substitution variables %s.  Positional arguments may be misaligned.  Check the Data Input Method and its field values.', $local_data_id, implode(', ', array_unique($matches[0]))), false, 'POLLER');
+		$host_id = db_fetch_cell_prepared('SELECT host_id FROM data_local WHERE id = ?', [$local_data_id]);
+
+		cacti_log(sprintf('WARNING: Command for Data Source[%d] on Device[%d] contains unresolved substitution variables %s.  Positional arguments may be misaligned.  Check the Data Input Method and its field values.', $local_data_id, (int)$host_id, implode(', ', array_unique($matches[0]))), false, 'POLLER');
 
 		$full_path = preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path) ?? '';
 	}

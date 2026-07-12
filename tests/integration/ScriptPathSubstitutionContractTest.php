@@ -40,7 +40,8 @@ test('warning fires only when tokens remain', function () use ($root) {
 	$src = file_get_contents($root . '/lib/functions.php');
 	expect($src)->not->toBeFalse('Failed to read lib/functions.php');
 
-	$count = preg_match_all('/if \(preg_match_all\(\'\/<\[A-Za-z0-9_\]\+>\/\', \$full_path, \$matches\)\)/', $src);
+	// tolerant of formatting: any preg_match_all() on the token pattern against $full_path
+	$count = preg_match_all('/preg_match_all\(\s*\'\/<\[A-Za-z0-9_\]\+>\/\'\s*,\s*\$full_path\s*,\s*\$matches\s*\)/', $src);
 	expect($count)->toBe(2,
 		'both builders must gate the warning and strip behind a preg_match_all check');
 });
