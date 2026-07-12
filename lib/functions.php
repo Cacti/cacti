@@ -5592,7 +5592,8 @@ function send_mail(mixed $to, mixed $from = null, string $subject = '',
  *
  * 'tls' must not map to null. A null $tls makes STARTTLS opportunistic, which
  * silently downgrades to plaintext when the server omits the STARTTLS
- * capability. Mandatory STARTTLS is enforced by CactiRequireTlsEsmtpTransport.
+ * capability. Mandatory STARTTLS is enforced by CactiRequireTlsEsmtpTransport;
+ * opportunistic STARTTLS is suppressed by CactiNoTlsEsmtpTransport.
  *
  * @param string $secure One of 'ssl', 'tls', 'none'
  *
@@ -5621,13 +5622,11 @@ function mailer_build_esmtp_transport(string $host, int $port, string $secure, ?
 		return new CactiRequireTlsEsmtpTransport($host, $port, $tls, null, null, null, $authenticators);
 	}
 
-	$transport = new EsmtpTransport($host, $port, $tls, null, null, null, $authenticators);
-
 	if ($secure == 'none') {
-		$transport->setAutoTls(false);
+		return new CactiNoTlsEsmtpTransport($host, $port, $tls, null, null, null, $authenticators);
 	}
 
-	return $transport;
+	return new EsmtpTransport($host, $port, $tls, null, null, null, $authenticators);
 }
 
 /**

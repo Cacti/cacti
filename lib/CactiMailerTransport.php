@@ -41,3 +41,29 @@ class CactiRequireTlsEsmtpTransport extends EsmtpTransport {
 		}
 	}
 }
+
+/**
+ * EsmtpTransport that never upgrades to STARTTLS.
+ *
+ * The base EsmtpTransport upgrades to STARTTLS whenever the server advertises
+ * it, even when no encryption was requested. This matches PHPMailer's
+ * SMTPAutoTLS = false behaviour for the 'none' security mode: the STARTTLS
+ * capability is stripped from the EHLO response before the base class can act
+ * on it. This Symfony release has no setAutoTls(), so the filtering is done
+ * here.
+ */
+class CactiNoTlsEsmtpTransport extends EsmtpTransport {
+	/**
+	 * @param int[] $codes
+	 */
+	public function executeCommand(string $command, array $codes): string {
+		$response = parent::executeCommand($command, $codes);
+
+		// Hide the STARTTLS capability so the base class never upgrades.
+		if (str_starts_with($command, 'EHLO ')) {
+			$response = preg_replace('/^\d{3}[ -]STARTTLS\r\n/mi', '', $response) ?? $response;
+		}
+
+		return $response;
+	}
+}
