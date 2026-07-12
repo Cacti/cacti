@@ -3524,6 +3524,75 @@ class Installer implements JsonSerializable {
 
 	// The following functions perform the leg work for installation
 
+	/**
+	 * refreshVendorDependencies() - runs composer install when the configured
+	 * composer binary reports the committed lock file is ahead of the
+	 * include/vendor tree.  A missing or failing composer is never fatal:
+	 * the vendor tree was complete enough to boot the installer, so the
+	 * outcome is logged and the install continues.
+	 *
+	 * @return void
+	 */
+	private function refreshVendorDependencies() : void {
+		$composer = read_config_option('path_composer', true);
+
+		if (empty($composer) || !file_exists($composer)) {
+			return;
+		}
+
+		// composer refuses to run without a home for its cache
+		if (getenv('COMPOSER_HOME') == '' && getenv('HOME') == '') {
+			putenv('COMPOSER_HOME=' . sys_get_temp_dir() . '/cacti-composer');
+		}
+
+		$composer = cacti_escapeshellcmd(str_replace('\\', '/', $composer));
+		$base     = cacti_escapeshellarg(CACTI_PATH_BASE);
+		$check    = shell_exec("$composer install --dry-run --no-interaction --working-dir=$base 2>&1");
+
+		if ($check === null || str_contains($check, 'Nothing to install, update or remove')) {
+			log_install_always('', __('Composer dependencies are current, no vendor refresh needed.'));
+
+			return;
+		}
+
+		/* only a dry-run that lists package operations proves the vendor tree
+		   is stale; any other output means composer itself has a problem */
+		if (!preg_match('/Package operations: (\d+) installs?, (\d+) updates?, (\d+) removals?/', $check, $ops)) {
+			log_install_always('', __('WARNING: Composer could not determine the vendor state.  Run \'composer install\' from the Cacti directory manually and check its output.'));
+
+			return;
+		}
+
+		/* a checkout without vendor produces installs only.  Updates or
+		   removals mean the committed tree differs from the lock file; that
+		   is a repository question, not something to change during install */
+		if ($ops[1] == 0 || $ops[2] > 0 || $ops[3] > 0) {
+			log_install_always('', __('NOTE: Composer reports the vendor state as \'%s\'.  No refresh was attempted.', trim($ops[0])));
+
+			return;
+		}
+
+		if (!is_resource_writable(CACTI_PATH_INCLUDE . '/vendor/')) {
+			log_install_always('', __('WARNING: Composer reports include/vendor is missing packages, but it is not writable by the web server.  Run \'composer install\' from the Cacti directory manually.'));
+
+			return;
+		}
+
+		log_install_always('', __('Refreshing Composer dependencies in include/vendor.'));
+
+		$output = shell_exec("$composer install --no-interaction --no-progress --working-dir=$base 2>&1");
+
+		if ($output !== null) {
+			log_install_debug('composer', $output);
+		}
+
+		if (!is_file(CACTI_PATH_INCLUDE . '/vendor/autoload.php')) {
+			log_install_always('', __('WARNING: Composer refresh did not complete.  Run \'composer install\' from the Cacti directory manually.'));
+		} else {
+			log_install_always('', __('Composer dependencies refreshed.'));
+		}
+	}
+
 	private function install() : void {
 		$failure = '';
 
@@ -3547,6 +3616,8 @@ class Installer implements JsonSerializable {
 		$this->setProgress(Installer::PROGRESS_START);
 
 		$this->setCSRFSecret();
+
+		$this->refreshVendorDependencies();
 
 		$this->convertDatabase();
 

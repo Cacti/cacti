@@ -354,6 +354,16 @@ $li = $config['is_web'] ? '<li>' : PHP_EOL . '  - ';
 $lu = $config['is_web'] ? '</ul>' : '';
 $il = $config['is_web'] ? '</li>' : '';
 
+/* Git checkouts and interrupted upgrades do not ship include/vendor.  Without
+   this check the autoload require below produces a bare fatal error. */
+if (!is_file(CACTI_PATH_INCLUDE . '/vendor/autoload.php')) {
+	print $ps . 'FATAL: The include/vendor directory is not populated.  Cacti requires its Composer dependencies before it can start.  From the Cacti directory, run:' . $sp;
+	print $ps . 'composer install' . $sp;
+	print $ps . 'Then reload this page.  See the README for details.' . $sp;
+
+	exit(1);
+}
+
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	if (!$is_test_bootstrap) {
 		$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert);
