@@ -10,7 +10,7 @@
  * into boost (#7214).
  *
  * lib/reports.php passes '' for $rra_id.  rrdtool_function_graph() must
- * therefore normalize before handing the value to boost_graph_set_file(),
+ * therefore validate the value before handing it to boost_graph_set_file(),
  * whose signature is int|null and rejects strings with a TypeError.
  */
 
@@ -34,15 +34,18 @@ test('reports.php still passes a non-int rra_id into rrdtool_function_graph', fu
 		"reports.php passes '' as rra_id; the normalization in rrdtool_function_graph must stay");
 });
 
-test('rrd.php normalization guards every boost consumer of rra_id', function () use ($root) {
+test('rrd.php validation guards every boost consumer of rra_id', function () use ($root) {
 	$src = file_get_contents($root . '/lib/rrd.php');
 	expect($src)->not->toBeFalse('Failed to read lib/rrd.php');
 
-	$normPos = strpos($src, "\$rra_id = is_numeric(\$rra_id) ? (int)\$rra_id : null;");
-	expect($normPos)->not->toBeFalse('normalization missing from lib/rrd.php');
+	$fnPos = strpos($src, 'function rrdtool_function_graph(');
+	expect($fnPos)->not->toBeFalse('rrdtool_function_graph must exist');
+
+	$normPos = strpos($src, 'ctype_digit', $fnPos);
+	expect($normPos)->not->toBeFalse('integer validation of rra_id missing from rrdtool_function_graph');
 
 	foreach (['boost_graph_cache_check(', 'boost_graph_set_file('] as $consumer) {
 		$pos = strpos($src, $consumer, $normPos);
-		expect($pos)->not->toBeFalse("$consumer must appear after the normalization");
+		expect($pos)->not->toBeFalse("$consumer must appear after the validation");
 	}
 });
