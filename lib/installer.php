@@ -3549,7 +3549,13 @@ class Installer implements JsonSerializable {
 		$base     = cacti_escapeshellarg(CACTI_PATH_BASE);
 		$check    = shell_exec("$composer install --dry-run --no-interaction --working-dir=$base 2>&1");
 
-		if ($check === null || str_contains($check, 'Nothing to install, update or remove')) {
+		if ($check === null) {
+			log_install_always('', __('WARNING: Composer could not be executed.  Run \'composer install\' from the Cacti directory manually and check its output.'));
+
+			return;
+		}
+
+		if (str_contains($check, 'Nothing to install, update or remove')) {
 			log_install_always('', __('Composer dependencies are current, no vendor refresh needed.'));
 
 			return;
@@ -3572,7 +3578,11 @@ class Installer implements JsonSerializable {
 			return;
 		}
 
-		if (!is_resource_writable(CACTI_PATH_INCLUDE . '/vendor/')) {
+		// composer writes into include/vendor, or creates it under include/
+		$vendor_dir = CACTI_PATH_INCLUDE . '/vendor';
+		$write_path = is_dir($vendor_dir) ? $vendor_dir . '/' : CACTI_PATH_INCLUDE . '/';
+
+		if (!is_resource_writable($write_path)) {
 			log_install_always('', __('WARNING: Composer reports include/vendor is missing packages, but it is not writable by the web server.  Run \'composer install\' from the Cacti directory manually.'));
 
 			return;
