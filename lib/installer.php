@@ -3605,7 +3605,7 @@ class Installer implements JsonSerializable {
 	}
 
 	private function installTemplate() : string {
-		$failure = '';
+		$failure   = '';
 		$templates = db_fetch_assoc("SELECT value
 			FROM settings
 			WHERE name LIKE 'install_tp_%'
