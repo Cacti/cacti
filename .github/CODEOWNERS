@@ -25,6 +25,7 @@
 /lib/import.php            @Cacti/cacti-developers @Cacti/cacti-security
 /lib/package.php           @Cacti/cacti-developers @Cacti/cacti-security
 
-# CI, supply chain, and dependency configuration.
+# GitHub metadata, CI, supply chain, and dependency configuration.
 /.github/                  @Cacti/cacti-developers @Cacti/cacti-security
 /composer.json             @Cacti/cacti-developers @Cacti/cacti-security
+/api/composer.json         @Cacti/cacti-developers @Cacti/cacti-security

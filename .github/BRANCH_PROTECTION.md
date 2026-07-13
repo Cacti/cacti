@@ -33,10 +33,12 @@ current checks:
 - `PHP 8.3 Test on ubuntu-latest`
 - `PHP 8.4 Test on ubuntu-latest`
 - `pest coverage gate`
-- `CodeQL`
+- `Analyze (javascript-typescript)`
+- `Analyze (python)`
 
 Confirm the exact context names against a recent run before saving; a misspelled
-context is treated as never-run and silently blocks nothing.
+context is treated as never-run and blocks merges until that exact context is
+reported.
 
 ### 2. Require signed commits
 
