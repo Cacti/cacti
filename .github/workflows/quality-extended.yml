@@ -85,6 +85,23 @@ jobs:
 #          shfmt -d -i 0 -ci "${shell_files[@]}"
 #          shellcheck -x "${shell_files[@]}"
 
+  sql-interpolation-ratchet:
+    name: sql interpolation ratchet
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@0f7f1d08e3e32076e51cae65eb0b0c871405b16e # 2.34.1
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - name: Block new unparameterised SQL value interpolation
+        run: php tests/tools/sql_interpolation_audit.php --check
+
   unit-coverage:
     name: pest coverage gate
     runs-on: ubuntu-latest
@@ -94,7 +111,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Setup PHP 8.4 with Xdebug
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@0f7f1d08e3e32076e51cae65eb0b0c871405b16e # 2.34.1
         with:
           php-version: '8.4'
           coverage: xdebug
