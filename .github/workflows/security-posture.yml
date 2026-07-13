@@ -1,0 +1,178 @@
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# +-------------------------------------------------------------------------+
+
+name: Security Posture
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 5 * * 1'
+
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  trufflehog:
+    name: TruffleHog secret scan
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog scan
+        uses: trufflesecurity/trufflehog@c3e599b7163e8198a55467f3133db0e7b2a492cb # v3.93.7
+        with:
+          extra_args: --only-verified
+
+  semgrep:
+    name: Semgrep security scan
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install Semgrep
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check semgrep==1.114.0
+
+      - name: Run Semgrep
+        run: |
+          set -euo pipefail
+          semgrep scan --config p/ci --sarif --output semgrep.sarif . || true
+
+      - name: Upload Semgrep SARIF
+        # Fork PRs get a read-only GITHUB_TOKEN without security-events: write, so
+        # the upload fails with "Resource not accessible by integration". Skip it
+        # there; the SARIF is still kept as an artifact below.
+        if: always() && github.event.pull_request.head.repo.fork == false
+        uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v4.36.2
+        with:
+          sarif_file: semgrep.sarif
+          category: semgrep
+
+      - name: Upload Semgrep artifact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: semgrep-report
+          path: semgrep.sarif
+          if-no-files-found: ignore
+
+  scorecard:
+    name: OpenSSF Scorecard
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Install Scorecard CLI
+        run: |
+          set -euo pipefail
+          # Use the runner's preinstalled Go; the apt golang-go package is too
+          # old to build scorecard and disables toolchain auto-download.
+          GOBIN="${HOME}/.local/bin" go install github.com/ossf/scorecard/v5@v5.5.0
+          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+
+      - name: Run Scorecard
+        env:
+          GITHUB_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          scorecard --repo="github.com/${{ github.repository }}" --format json --show-details > scorecard.json
+
+      - name: Upload Scorecard artifact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: scorecard-report
+          path: scorecard.json
+          if-no-files-found: ignore
+
+  composer-audit:
+    name: Composer dependency audit
+    runs-on: ubuntu-24.04
+    # Advisories are reported as non-blocking: a newly published upstream CVE
+    # must not red every open PR. The audit still runs and writes
+    # composer-audit.json (uploaded below), and any advisory is surfaced as a
+    # ::warning:: annotation. Fixes land via separate dependency-bump PRs.
+    continue-on-error: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install Composer
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y composer
+
+      - name: Run Composer audit
+        run: |
+          set -euo pipefail
+          # Cacti ships composer.json but no composer.lock; write a fresh lock
+          # from composer.json without downloading packages so audit has a
+          # lockfile to inspect. --lock requires an existing lock and exits 3.
+          composer update --no-install --no-interaction
+          # composer audit exits non-zero when it finds advisories. Capture that
+          # exit code without tripping set -e so the JSON is always written, then
+          # report the advisory count as a warning and exit 0. Advisories stay
+          # visible (annotation + artifact) but do not fail the job.
+          audit_rc=0
+          composer audit --locked --no-interaction --format=json | tee composer-audit.json || audit_rc=$?
+          if [ "${audit_rc}" -ne 0 ]; then
+            count="$(jq '(.advisories // {}) | map(length) | add // 0' composer-audit.json 2>/dev/null || echo '?')"
+            echo "::warning title=Composer advisories::composer audit found ${count} advisory record(s); see composer-audit.json artifact. Tracked via separate dependency-bump PRs."
+          fi
+
+      - name: Upload Composer audit artifact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: composer-audit-report
+          path: composer-audit.json
+          if-no-files-found: ignore
+
+  workflow-policy:
+    name: Workflow policy checks
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install policy checker dependencies
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check pyyaml==6.0.2
+
+      - name: Enforce workflow policy
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/check-workflow-policy.py \
+            --workflows \
+            .github/workflows/security-posture.yml \
+            .github/workflows/perf-regression.yml \
+            .github/workflows/security-review.yml
