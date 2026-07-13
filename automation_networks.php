@@ -27,6 +27,9 @@ require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/api_scheduler.php');
 require_once(CACTI_PATH_LIBRARY . '/snmp.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 $actions = [
 	1 => __('Delete'),
@@ -356,87 +359,6 @@ function api_networks_discover(int $network_id, bool $discover_debug, bool $disc
 	}
 
 	force_session_data();
-}
-
-function api_networks_save(array $post) : mixed {
-	if (empty($post['network_id'])) {
-		$save['id']            = form_input_validate($post['id'], 'id', '^[0-9]+$', false, 3);
-		$save['hash']          = get_hash_automation($post['id'], 'automation_networks');
-
-		// general information
-		$save['name']          = form_input_validate($post['name'], 'name', '', false, 3);
-		$save['poller_id']     = form_input_validate($post['poller_id'], 'poller_id', '^[0-9]+$', false, 3);
-		$save['site_id']       = form_input_validate($post['site_id'], 'site_id', '^[0-9]+$', false, 3);
-		$save['subnet_range']  = form_input_validate($post['subnet_range'], 'subnet_range', '', false, 3);
-		$save['ignore_ips']    = form_input_validate($post['ignore_ips'], 'ignore_ips', '', true, 3);
-		$save['dns_servers']   = form_input_validate($post['dns_servers'], 'dns_servers', '', true, 3);
-
-		$save['threads']       = form_input_validate($post['threads'], 'threads', '^[0-9]+$', false, 3);
-		$save['run_limit']     = form_input_validate($post['run_limit'], 'run_limit', '^[0-9]+$', false, 3);
-
-		$save['enabled']              = (isset($post['enabled']) ? 'on' : '');
-
-		// notification settings
-		$save['notification_enabled'] = (isset($post['notification_enabled']) ? 'on' : '');
-		$save['notification_email']   = form_input_validate($post['notification_email'], 'notification_email', '', true, 3);
-
-		$save['notification_fromname']  = form_input_validate($post['notification_fromname'], 'notification_fromname', '', true, 3);
-		$save['notification_fromemail'] = form_input_validate($post['notification_fromemail'], 'notification_fromemail', '', true, 3);
-
-		$save['enable_netbios']       = (isset($post['enable_netbios']) ? 'on' : '');
-		$save['add_to_cacti']         = (isset($post['add_to_cacti']) ? 'on' : '');
-		$save['same_sysname']         = (isset($post['same_sysname']) ? 'on' : '');
-		$save['rerun_data_queries']   = (isset($post['rerun_data_queries']) ? 'on' : '');
-
-		// discovery connectivity settings
-		$save['snmp_id']       = form_input_validate($post['snmp_id'], 'snmp_id', '^[0-9]+$', false, 3);
-		$save['ping_method']   = form_input_validate($post['ping_method'], 'ping_method', '^[0-9]+$', false, 3);
-		$save['ping_port']     = form_input_validate($post['ping_port'], 'ping_port', '^[0-9]+$', false, 3);
-		$save['ping_timeout']  = form_input_validate($post['ping_timeout'], 'ping_timeout', '^[0-9]+$', false, 3);
-		$save['ping_retries']  = form_input_validate($post['ping_retries'], 'ping_retries', '^[0-9]+$', false, 3);
-
-		$save = api_scheduler_augment_save($save, $post);
-
-		// validate the network definitions and rais error if failed
-		$continue  = true;
-		$total_ips = 0;
-		$networks  = explode(',', $save['subnet_range']);
-
-		if (cacti_sizeof($networks)) {
-			foreach ($networks as $net) {
-				$ips = automation_calculate_total_ips($net);
-
-				if ($ips !== false) {
-					$total_ips += $ips;
-				} else {
-					$continue = false;
-					raise_message('automation_message', __esc('ERROR: Network \'%s\' is Invalid.', $net), MESSAGE_LEVEL_ERROR);
-
-					break;
-				}
-			}
-		}
-
-		if ($continue) {
-			$save['total_ips'] = $total_ips;
-
-			$network_id = 0;
-
-			if (!is_error_message()) {
-				$network_id = sql_save($save, 'automation_networks');
-
-				if ($network_id) {
-					raise_message(1);
-				} else {
-					raise_message(2);
-				}
-			}
-
-			return $network_id;
-		}
-	}
-
-	return false;
 }
 
 function form_actions() : void {

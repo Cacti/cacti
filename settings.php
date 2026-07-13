@@ -1349,6 +1349,51 @@ function save_settings() : void {
 	$errors  = [];
 	$inserts = [];
 
+	require_once(CACTI_PATH_LIBRARY . '/CactiSettings.php');
+
+	// Build a snapshot of posted values keyed by setting name using Cacti's
+	// request-var helpers (gnrv) instead of touching $_POST directly. Only
+	// fields declared in the active tab are forwarded; the validator already
+	// ignores unknown keys so no behavior changes.
+	$tab      = (string) grv('tab');
+	$snapshot = [];
+
+	if (isset($settings[$tab]) && is_array($settings[$tab])) {
+		foreach ($settings[$tab] as $field_name => $field_array) {
+			if (!is_string($field_name)) {
+				continue;
+			}
+
+			$snapshot[$field_name] = gnrv($field_name);
+
+			if (isset($field_array['items']) && is_array($field_array['items'])) {
+				foreach ($field_array['items'] as $sub_name => $sub_def) {
+					if (is_string($sub_name)) {
+						$snapshot[$sub_name] = gnrv($sub_name);
+					}
+				}
+			}
+		}
+	}
+
+	$violations = CactiSettings::validate($snapshot, $settings);
+
+	if (cacti_sizeof($violations) > 0) {
+		foreach ($violations as $name => $message) {
+			$_SESSION['sess_error_fields'][$name] = $name;
+			$_SESSION['sess_field_values'][$name] = isset($snapshot[$name]) && is_scalar($snapshot[$name]) ? $snapshot[$name] : '';
+
+			raise_message(
+				'cacti_settings_' . $name,
+				__esc('Setting \'%s\': %s', $name, $message),
+				MESSAGE_LEVEL_ERROR
+			);
+		}
+
+		header('Location: settings.php?tab=' . urlencode($tab));
+		exit;
+	}
+
 	foreach ($settings[grv('tab')] as $field_name => $field_array) {
 		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer')) {
 			// do nothing
