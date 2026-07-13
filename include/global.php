@@ -27,7 +27,7 @@
 
    The following defaults are not to be altered.  Please refer to
    include/config.php for user configurable settings.
-
+test
 */
 global $config;
 $config = [];
