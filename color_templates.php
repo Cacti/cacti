@@ -23,6 +23,9 @@
 */
 
 require_once('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 $actions = [
 	1 => __('Delete'),
@@ -190,7 +193,7 @@ function form_save() : void {
 			$save1['color_template_id'] = 0;
 		}
 
-		$save1['name'] = form_input_validate(gfrv('name', FILTER_SANITIZE_SPECIAL_CHARS), 'name', '', false, 3);
+		$save1['name'] = CactiValidator::validateInput(gfrv('name', FILTER_SANITIZE_SPECIAL_CHARS), 'name', [new Assert\NotBlank()], 3);
 
 		cacti_log('Saved ID: ' . $save1['color_template_id'] . ' Name: ' . $save1['name'], false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -232,7 +235,7 @@ function form_save() : void {
 
 			$save['color_template_item_id'] = gfrv('color_template_item_id');
 			$save['color_template_id']      = gfrv('color_template_id');
-			$save['color_id']               = form_input_validate(gnrv('color_id'), 'color_id', '', true, 3);
+			$save['color_id']               = CactiValidator::validateInput(gnrv('color_id'), 'color_id', [new Assert\Type('numeric')], 3);
 			$save['sequence']               = $sequence;
 
 			if (!is_error_message()) {

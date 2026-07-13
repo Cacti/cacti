@@ -22,6 +22,16 @@
  +-------------------------------------------------------------------------+
 */
 
+// Symfony Validator is an optional composer dependency. global_settings.php is
+// included by global.php before vendor/autoload.php is registered (line 625 vs
+// 636). Guard the require so that the autoloader is available when the closures
+// in the constraints arrays are eventually invoked by CactiSettings::validate().
+if (file_exists(CACTI_PATH_INCLUDE . '/vendor/autoload.php')) {
+	require_once(CACTI_PATH_INCLUDE . '/vendor/autoload.php');
+}
+
+use Symfony\Component\Validator\Constraints as Assert;
+
 $dir = dir(CACTI_PATH_INCLUDE . '/themes/');
 
 // Work around issue where phpstan is not detecting globals
@@ -184,14 +194,20 @@ $settings['path'] = [
 		'description'   => __('The path to your snmpwalk binary.'),
 		'method'        => 'filepath',
 		'file_type'     => 'binary',
-		'max_length'    => '255'
+		'max_length'    => '255',
+		'constraints'   => [
+			fn () => new Assert\Length(min: 1, max: 255, minMessage: __('must not be empty.'), maxMessage: __('must be 255 characters or fewer.')),
+		],
 	],
 	'path_snmpget' => [
 		'friendly_name' => __('snmpget Binary Path'),
 		'description'   => __('The path to your snmpget binary.'),
 		'method'        => 'filepath',
 		'file_type'     => 'binary',
-		'max_length'    => '255'
+		'max_length'    => '255',
+		'constraints'   => [
+			fn () => new Assert\Length(min: 1, max: 255, minMessage: __('must not be empty.'), maxMessage: __('must be 255 characters or fewer.')),
+		],
 	],
 	'path_snmpbulkwalk' => [
 		'friendly_name' => __('snmpbulkwalk Binary Path'),
@@ -219,14 +235,22 @@ $settings['path'] = [
 		'description'   => __('The path to the rrdtool binary.'),
 		'method'        => 'filepath',
 		'file_type'     => 'binary',
-		'max_length'    => '255'
+		'max_length'    => '255',
+		'constraints'   => [
+			fn () => new Assert\NotBlank(message: __('must not be empty.')),
+			fn () => new Assert\Length(min: 1, max: 255, minMessage: __('must not be empty.'), maxMessage: __('must be 255 characters or fewer.')),
+		],
 	],
 	'path_php_binary' => [
 		'friendly_name' => __('PHP Binary Path'),
 		'description'   => __('The path to your PHP binary file (may require a php recompile to get this file).'),
 		'method'        => 'filepath',
 		'file_type'     => 'binary',
-		'max_length'    => '255'
+		'max_length'    => '255',
+		'constraints'   => [
+			fn () => new Assert\NotBlank(message: __('must not be empty.')),
+			fn () => new Assert\Length(min: 1, max: 255, minMessage: __('must not be empty.'), maxMessage: __('must be 255 characters or fewer.')),
+		],
 	],
 	'path_composer' => [
 		'friendly_name' => __('Composer Binary Path'),
@@ -1008,7 +1032,11 @@ $settings['snmp'] = [
 		'method'        => 'textbox',
 		'default'       => '500',
 		'max_length'    => '10',
-		'size'          => '5'
+		'size'          => '5',
+		'constraints'   => [
+			fn () => new Assert\Regex(pattern: '/^\d+$/', message: __('must be a positive integer (milliseconds).')),
+			fn () => new Assert\Range(min: 1, max: 600000, notInRangeMessage: __('must be between {{ min }} and {{ max }}.')),
+		],
 	],
 	'snmp_retries' => [
 		'friendly_name' => __('Retries'),
@@ -1016,7 +1044,11 @@ $settings['snmp'] = [
 		'method'        => 'textbox',
 		'default'       => '3',
 		'max_length'    => '10',
-		'size'          => '5'
+		'size'          => '5',
+		'constraints'   => [
+			fn () => new Assert\Regex(pattern: '/^\d+$/', message: __('must be a non-negative integer.')),
+			fn () => new Assert\Range(min: 0, max: 100, notInRangeMessage: __('must be between {{ min }} and {{ max }}.')),
+		],
 	],
 	'snmp_bulk_walk_size' => [
 		'friendly_name' => __('Bulkwalk Fetch Size'),
@@ -1395,6 +1427,11 @@ $settings['visual'] = [
 		'default'       => CACTI_PATH_CACHE . '/realtime/',
 		'max_length'    => 255,
 		'size'          => 40,
+		'constraints'   => [
+			fn () => new Assert\NotBlank(message: __('must not be empty.')),
+			fn () => new Assert\Regex(pattern: '#^([A-Za-z]:\\\\|/)#', message: __('must be an absolute path.')),
+			fn () => new Assert\Length(max: 255, maxMessage: __('must be 255 characters or fewer.')),
+		],
 	],
 	'rrdtool_header' => [
 		'friendly_name' => __('RRDtool Graph Options'),
@@ -1534,6 +1571,18 @@ $settings['poller'] = [
 		'method'        => 'drop_array',
 		'default'       => 300,
 		'array'         => $poller_intervals,
+		// Choices derive from $poller_intervals (keys are interval seconds).
+		// Both string and int forms are accepted because $_POST values arrive
+		// as strings while the canonical keys are int.
+		'constraints'   => [
+			fn () => new Assert\Choice(
+				choices: array_merge(
+					array_keys($GLOBALS['poller_intervals']),
+					array_map('strval', array_keys($GLOBALS['poller_intervals']))
+				),
+				message: __('is not a valid choice.')
+			),
+		],
 	],
 	'cron_interval' => [
 		'friendly_name' => __('Cron/Daemon Interval'),
@@ -1541,6 +1590,16 @@ $settings['poller'] = [
 		'method'        => 'drop_array',
 		'default'       => 300,
 		'array'         => $cron_intervals,
+		// Choices derive from $cron_intervals (keys are interval seconds).
+		'constraints'   => [
+			fn () => new Assert\Choice(
+				choices: array_merge(
+					array_keys($GLOBALS['cron_intervals']),
+					array_map('strval', array_keys($GLOBALS['cron_intervals']))
+				),
+				message: __('is not a valid choice.')
+			),
+		],
 	],
 	'process_leveling' => [
 		'friendly_name' => __('Balance Process Load'),
@@ -2275,6 +2334,13 @@ $settings['mail'] = [
 		'method'        => 'textbox',
 		'default'       => 'localhost',
 		'max_length'    => 255,
+		// NotBlank is intentionally NOT applied: SMTP hostname is only
+		// load-bearing when settings_how is CACTI_MAIL_SMTP. Sites using
+		// PHP's mail() / sendmail can leave this empty without harm.
+		// Length cap is still enforced to keep DB inserts well-formed.
+		'constraints'   => [
+			fn () => new Assert\Length(max: 255, maxMessage: __('must be 255 characters or fewer.')),
+		],
 	],
 	'settings_smtp_port' => [
 		'friendly_name' => __('SMTP Port'),
@@ -2282,7 +2348,11 @@ $settings['mail'] = [
 		'method'        => 'textbox',
 		'max_length'    => 255,
 		'default'       => 25,
-		'size'          => 5
+		'size'          => 5,
+		'constraints'   => [
+			fn () => new Assert\Regex(pattern: '/^\d+$/', message: __('must be a positive integer.')),
+			fn () => new Assert\Range(min: 1, max: 65535, notInRangeMessage: __('must be between {{ min }} and {{ max }}.')),
+		],
 	],
 	'settings_smtp_username' => [
 		'friendly_name' => __('SMTP Username'),
@@ -3137,7 +3207,11 @@ $settings_user = [
 			'description'   => __('The default RRA to use in rare occasions.'),
 			'method'        => 'drop_sql',
 			'sql'           => 'SELECT id, name FROM data_source_profiles_rra ORDER BY steps',
-			'default'       => '1'
+			'default'       => '1',
+			'constraints'   => [
+				fn () => new Assert\Regex(pattern: '/^\d+$/', message: __('must be a positive integer id.')),
+				fn () => new Assert\Positive(message: __('must be a positive number.')),
+			],
 		],
 		'default_timespan' => [
 			'friendly_name' => __('Default Timespan'),
