@@ -252,6 +252,13 @@ $settings['path'] = [
 			fn () => new Assert\Length(min: 1, max: 255, minMessage: __('must not be empty.'), maxMessage: __('must be 255 characters or fewer.')),
 		],
 	],
+	'path_composer' => [
+		'friendly_name' => __('Composer Binary Path'),
+		'description'   => __('The path to the composer binary.  Composer is required when installing or upgrading a Cacti instance whose include/vendor directory is not pre-packaged, for example a Git checkout.'),
+		'method'        => 'filepath',
+		'file_type'     => 'binary',
+		'max_length'    => '255'
+	],
 	'path_fping' => [
 		'friendly_name' => __('FPing Binary Path'),
 		'description'   => __('The path to the FPing binary file which provides for a more precise ping command.'),
