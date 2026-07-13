@@ -62,13 +62,15 @@ it('rejects absolute template names', function () {
 
 it('rejects template traversal outside the template path', function () {
 	$dir = cacti_renderer_fixture_dir();
+	$filename = sprintf('cacti-renderer-outside-%d-%s.php', getmypid(), bin2hex(random_bytes(8)));
+	$outside = dirname($dir) . '/' . $filename;
 
-	file_put_contents(dirname($dir) . '/cacti-renderer-outside.php', 'outside');
+	file_put_contents($outside, 'outside');
 
 	try {
 		$renderer = new CactiRenderer($dir);
-		$renderer->render('../cacti-renderer-outside.php');
+		$renderer->render('../' . $filename);
 	} finally {
-		unlink(dirname($dir) . '/cacti-renderer-outside.php');
+		unlink($outside);
 	}
 })->throws(InvalidArgumentException::class);
