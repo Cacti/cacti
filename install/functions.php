@@ -1113,6 +1113,16 @@ function install_file_paths() : array {
 		}
 	}
 
+	// Composer Binary Path, optional since packaged releases ship include/vendor
+	$input['path_composer'] = install_tool_path('composer',
+		[
+			'unix'  => '/usr/local/bin/composer',
+			'win32' => 'c:/composer/composer.bat'
+		]
+	);
+
+	$input['path_composer']['install_optional'] = true;
+
 	// RRDtool Binary Path
 	$input['path_rrdtool'] = install_tool_path('rrdtool',
 		[
