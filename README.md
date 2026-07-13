@@ -58,6 +58,7 @@ Notes:
 - A web server with PHP support is required.
 - PHP should be available as CLI or CGI for scheduled polling and maintenance scripts.
 - `php-snmp` is optional; validate behavior carefully if you depend on IPv6 and SNMPv3.
+- To force the Net-SNMP binaries while `php-snmp` remains installed, set `$php_snmp_support = false;` in `include/config.php`.
 
 Operating system guidance:
 
