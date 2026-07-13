@@ -1,0 +1,20 @@
+{
+  "sample_size": 15,
+  "commands": {
+    "php -l poller.php": {
+      "median_seconds": 0.30,
+      "allowed_regression_factor": 3.0,
+      "max_rss_kb": 98304
+    },
+    "php -l cli/version.php": {
+      "median_seconds": 0.20,
+      "allowed_regression_factor": 3.0,
+      "max_rss_kb": 98304
+    },
+    "php tests/tools/check_xml_syntax.php >/dev/null": {
+      "median_seconds": 1.50,
+      "allowed_regression_factor": 3.0,
+      "max_rss_kb": 131072
+    }
+  }
+}

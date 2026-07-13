@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * Creates a filter for tree devices.
  *
@@ -6437,4 +6439,92 @@ function automation_log(string $string, int $level = AUTOMATION_LOG_LOW) : void 
 	if (AUTOMATION_LEVEL >= $level) {
 		cacti_log($string, false, 'AUTOMATION');
 	}
+}
+
+/**
+ * api_networks_save - Saves an automation network.
+ *
+ * @param array $post The post variables from the form.
+ *
+ * @return mixed The ID of the saved network or false on failure.
+ */
+function api_networks_save(array $post) : mixed {
+	if (empty($post['network_id'])) {
+		$save['id']            = CactiValidator::validateInput($post['id'], 'id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['hash']          = get_hash_automation($post['id'], 'automation_networks');
+
+		// general information
+		$save['name']          = CactiValidator::validateInput($post['name'], 'name', [new Assert\NotBlank()]);
+		$save['poller_id']     = CactiValidator::validateInput($post['poller_id'], 'poller_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['site_id']       = CactiValidator::validateInput($post['site_id'], 'site_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['subnet_range']  = CactiValidator::validateInput($post['subnet_range'], 'subnet_range', [new Assert\NotBlank()]);
+		$save['ignore_ips']    = CactiValidator::validateInput($post['ignore_ips'], 'ignore_ips', []);
+		$save['dns_servers']   = CactiValidator::validateInput($post['dns_servers'], 'dns_servers', []);
+
+		$save['threads']       = CactiValidator::validateInput($post['threads'], 'threads', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['run_limit']     = CactiValidator::validateInput($post['run_limit'], 'run_limit', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+
+		$save['enabled']              = (isset($post['enabled']) ? 'on' : '');
+
+		// notification settings
+		$save['notification_enabled'] = (isset($post['notification_enabled']) ? 'on' : '');
+		$save['notification_email']   = CactiValidator::validateInput($post['notification_email'], 'notification_email', [new Assert\Email(mode: 'html5')]);
+
+		$save['notification_fromname']  = CactiValidator::validateInput($post['notification_fromname'], 'notification_fromname', []);
+		$save['notification_fromemail'] = CactiValidator::validateInput($post['notification_fromemail'], 'notification_fromemail', [new Assert\Email(mode: 'html5')]);
+
+		$save['enable_netbios']       = (isset($post['enable_netbios']) ? 'on' : '');
+		$save['add_to_cacti']         = (isset($post['add_to_cacti']) ? 'on' : '');
+		$save['same_sysname']         = (isset($post['same_sysname']) ? 'on' : '');
+		$save['rerun_data_queries']   = (isset($post['rerun_data_queries']) ? 'on' : '');
+
+		// discovery connectivity settings
+		$save['snmp_id']       = CactiValidator::validateInput($post['snmp_id'], 'snmp_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['ping_method']   = CactiValidator::validateInput($post['ping_method'], 'ping_method', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['ping_port']     = CactiValidator::validateInput($post['ping_port'], 'ping_port', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['ping_timeout']  = CactiValidator::validateInput($post['ping_timeout'], 'ping_timeout', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['ping_retries']  = CactiValidator::validateInput($post['ping_retries'], 'ping_retries', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+
+		$save = api_scheduler_augment_save($save, $post);
+
+		// validate the network definitions and rais error if failed
+		$continue  = true;
+		$total_ips = 0;
+		$networks  = explode(',', $save['subnet_range']);
+
+		if (cacti_sizeof($networks)) {
+			foreach ($networks as $net) {
+				$ips = automation_calculate_total_ips($net);
+
+				if ($ips !== false) {
+					$total_ips += $ips;
+				} else {
+					$continue = false;
+					raise_message('automation_message', __esc('ERROR: Network \'%s\' is Invalid.', $net), MESSAGE_LEVEL_ERROR);
+
+					break;
+				}
+			}
+		}
+
+		if ($continue) {
+			$save['total_ips'] = $total_ips;
+
+			$network_id = 0;
+
+			if (!is_error_message()) {
+				$network_id = sql_save($save, 'automation_networks');
+
+				if ($network_id) {
+					raise_message(1);
+				} else {
+					raise_message(2);
+				}
+			}
+
+			return $network_id;
+		}
+	}
+
+	return false;
 }
