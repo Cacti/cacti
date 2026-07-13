@@ -339,7 +339,7 @@ dynamic_include	./install/upgrades/0_8_7h.php:28		require_once($config['base_pat
 dynamic_include	./install/upgrades/1_2_20.php:28		include_once($config['base_path'] . '/lib/data_query.php');
 dynamic_include	./lib/aggregate.php:583		include_once($config['base_path'] . '/lib/cdef.php');
 dynamic_include	./lib/aggregate.php:638		include_once($config['base_path'] . '/lib/cdef.php');
-dynamic_include	./lib/aggregate.php:834		include_once($config['base_path'] . '/lib/api_graph.php');
+dynamic_include	./lib/aggregate.php:825		include_once($config['base_path'] . '/lib/api_graph.php');
 dynamic_include	./lib/api_aggregate.php:1677		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/api_aggregate.php:203		include_once($config['base_path'] . '/lib/api_aggregate.php');
 dynamic_include	./lib/api_aggregate.php:671		include_once($config['base_path'] . '/lib/api_aggregate.php');
