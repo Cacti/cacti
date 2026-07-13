@@ -33,6 +33,8 @@ $patterns = [
 		'pattern' => '/\$_(?:GET|POST|REQUEST)\s*\[/',
 		'message' => 'Use Cacti request helpers or typed filter objects instead of raw request superglobals.',
 		'allow'   => [
+			// pre-boot code; the request helper layer is not loaded yet
+			'include/global.php',
 			'lib/PackageListFilter.php',
 		]
 	],

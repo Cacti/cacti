@@ -27,7 +27,7 @@
 
    The following defaults are not to be altered.  Please refer to
    include/config.php for user configurable settings.
-
+test
 */
 global $config;
 $config = [];
@@ -353,6 +353,16 @@ $ul = $config['is_web'] ? '<ul>' : PHP_EOL;
 $li = $config['is_web'] ? '<li>' : PHP_EOL . '  - ';
 $lu = $config['is_web'] ? '</ul>' : '';
 $il = $config['is_web'] ? '</li>' : '';
+
+/* Git checkouts and interrupted upgrades do not ship include/vendor.  Without
+   this check the autoload require below produces a bare fatal error. */
+if (!is_file(CACTI_PATH_INCLUDE . '/vendor/autoload.php')) {
+	print $ps . 'FATAL: The include/vendor directory is not populated.  Cacti requires its Composer dependencies before it can start.  From the Cacti directory, run:' . $sp;
+	print $ps . 'composer install' . $sp;
+	print $ps . 'Then reload this page.  See the README for details.' . $sp;
+
+	exit(1);
+}
 
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	if (!$is_test_bootstrap) {
