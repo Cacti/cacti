@@ -1,0 +1,31 @@
+# Code ownership for review routing on the protected branches (main, develop, 1.2.x).
+# Teams: https://github.com/orgs/Cacti/teams
+#
+# Ownership only requests review automatically. It becomes a merge requirement
+# once "Require review from Code Owners" is enabled on the branch ruleset, and
+# each listed team must have write access for GitHub to accept it as an owner.
+
+# Default owner for everything not matched below.
+*                          @Cacti/cacti-developers
+
+# Authentication and identity.
+/lib/auth.php              @Cacti/cacti-developers @Cacti/cacti-security
+/lib/ldap.php              @Cacti/cacti-developers @Cacti/cacti-security
+/auth_login.php            @Cacti/cacti-developers @Cacti/cacti-security
+/auth_changepassword.php   @Cacti/cacti-developers @Cacti/cacti-security
+/auth_profile.php          @Cacti/cacti-developers @Cacti/cacti-security
+/remote_agent.php          @Cacti/cacti-developers @Cacti/cacti-security
+
+# Database and query layer.
+/lib/database.php          @Cacti/cacti-developers @Cacti/cacti-security
+
+# Package and template import (untrusted archive handling).
+/package_import.php        @Cacti/cacti-developers @Cacti/cacti-security
+/templates_import.php      @Cacti/cacti-developers @Cacti/cacti-security
+/lib/import.php            @Cacti/cacti-developers @Cacti/cacti-security
+/lib/package.php           @Cacti/cacti-developers @Cacti/cacti-security
+
+# GitHub metadata, CI, supply chain, and dependency configuration.
+/.github/                  @Cacti/cacti-developers @Cacti/cacti-security
+/composer.json             @Cacti/cacti-developers @Cacti/cacti-security
+/api/composer.json         @Cacti/cacti-developers @Cacti/cacti-security
