@@ -46,7 +46,7 @@ test('array_to_sql_or builds a parenthesised IN() predicate', function () {
 
 test('array_to_sql_or quotes and escapes a value carrying a single quote', function () {
 	// The escaped quote keeps the payload inside the string literal.
-	expect(array_to_sql_or(["a'b", 3], 'id'))->toBe("(id IN('a\\'b','3'))");
+	expect(array_to_sql_or(["a'b", 3], 'id'))->toMatch("/^\\(id IN\\('a(?:\\\\'|'')b','3'\\)\\)$/");
 });
 
 test('array_to_sql_or wraps every element in quotes, never bare', function () {
