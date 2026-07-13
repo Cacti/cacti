@@ -84,10 +84,10 @@ if (!cacti_sizeof($page)) {
 		} else {
 			print '<div id="content">';
 
-			$basepath = CACTI_PATH_INCLUDE . '/content';
-			$file     = realpath($basepath . '/' . $page['contentfile']);
+			$basepath = realpath(CACTI_PATH_INCLUDE . '/content');
+			$file     = ($basepath !== false) ? realpath($basepath . '/' . $page['contentfile']) : false;
 
-			if ($file !== false && str_starts_with($file, $basepath)) {
+			if ($file && is_file($file) && str_starts_with($file, $basepath . DIRECTORY_SEPARATOR)) {
 				require_once($file);
 			} else {
 				print '<h1>The file \'' . htmle($page['contentfile']) . '\' does not exist!!</h1>';
