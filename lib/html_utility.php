@@ -1296,6 +1296,8 @@ function update_order_string(bool $inplace = false) : void {
 				continue;
 			}
 
+			$direction = strtoupper($direction) === 'DESC' ? 'DESC' : 'ASC';
+
 			if ($column == 'ip' || $column == 'ip_address') {
 				$order .= ($order != '' ? ', ' : '') . 'INET_ATON(' . $column . ') ' . $direction;
 			} elseif ($column == 'hostname' && $natural) {
@@ -1371,6 +1373,8 @@ function update_order_string(bool $inplace = false) : void {
 				if ($column === '') {
 					continue;
 				}
+
+				$direction = strtoupper($direction) === 'DESC' ? 'DESC' : 'ASC';
 
 				if ($column == 'ip' || $column == 'ip_address') {
 					$order .= ($order != '' ? ', ' : '') . 'INET_ATON(' . $column . ') ' . $direction;
