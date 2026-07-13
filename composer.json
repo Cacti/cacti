@@ -58,7 +58,8 @@
         "stevenmaguire/oauth2-keycloak": "^6.1.0",
         "stevenmaguire/oauth2-microsoft": "^2.2",
         "symfony/filesystem": "^6.0",
-        "symfony/http-foundation": "^6.0"
+        "symfony/http-foundation": "^6.0",
+        "symfony/validator": "^6.4"
     },
     "require-dev": {
         "composer/xdebug-handler": "^3.0",
@@ -100,7 +101,8 @@
             "block-insecure": false
         },
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "infection/extension-installer": true
         }
     }
 }

@@ -24,6 +24,10 @@
 
 require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
+
+use Symfony\Component\Validator\Constraints as Assert;
+
 require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
@@ -658,9 +662,9 @@ function form_save() : void {
 		$redirect_back = false;
 
 		$save['id']                   = gnrv('id');
-		$save['hash']                 = get_hash_automation(grv('id'), 'automation_templates');
-		$save['host_template']        = form_input_validate(gnrv('host_template'), 'host_template', '', false, 3);
-		$save['availability_method']  = form_input_validate(gnrv('availability_method'), 'availability_method', '', false, 3);
+		$save['hash']                 = get_hash_automation(gnrv('id'), 'automation_templates');
+		$save['host_template']        = CactiValidator::validateInput(gnrv('host_template'), 'host_template', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3);
+		$save['availability_method']  = CactiValidator::validateInput(gnrv('availability_method'), 'availability_method', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3);
 		$save['sysDescr']             = gnrv('sysDescr');
 		$save['sysName']              = gnrv('sysName');
 		$save['sysOid']               = gnrv('sysOid');

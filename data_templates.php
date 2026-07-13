@@ -29,6 +29,9 @@ require_once(CACTI_PATH_LIBRARY . '/html_tree.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 $actions = [
 	1 => __('Delete'),
@@ -85,18 +88,18 @@ function form_save() : void {
 		// save: data_template
 		$save1['id']   = grv('data_template_id');
 		$save1['hash'] = get_hash_data_template(grv('data_template_id'));
-		$save1['name'] = form_input_validate(gnrv('template_name'), 'template_name', '', false, 3);
+		$save1['name'] = CactiValidator::validateInput(gnrv('template_name'), 'template_name', [new Assert\NotBlank()], 3);
 
 		// save: data_template_data
 		$save2['id']                          = grv('data_template_data_id');
 		$save2['local_data_template_data_id'] = 0;
 		$save2['local_data_id']               = 0;
 
-		$save2['data_input_id'] = form_input_validate(grv('data_input_id'), 'data_input_id', '^[0-9]+$', true, 3);
-		$save2['t_name']        = form_input_validate((isrv('t_name') ? gnrv('t_name') : ''), 't_name', '', true, 3);
-		$save2['name']          = form_input_validate(gnrv('name'), 'name', '', (isrv('t_name') ? true : false), 3);
-		$save2['t_active']      = form_input_validate((isrv('t_active') ? gnrv('t_active') : ''), 't_active', '', true, 3);
-		$save2['active']        = form_input_validate((isrv('active') ? gnrv('active') : ''), 'active', '', true, 3);
+		$save2['data_input_id'] = CactiValidator::validateInput(grv('data_input_id'), 'data_input_id', [new Assert\Regex('/^[0-9]+$/')], 3);
+		$save2['t_name']        = CactiValidator::validateInput((isrv('t_name') ? gnrv('t_name') : ''), 't_name', [], 3);
+		$save2['name']          = CactiValidator::validateInput(gnrv('name'), 'name', (isrv('t_name') ? [] : [new Assert\NotBlank()]), 3);
+		$save2['t_active']      = CactiValidator::validateInput((isrv('t_active') ? gnrv('t_active') : ''), 't_active', [], 3);
+		$save2['active']        = CactiValidator::validateInput((isrv('active') ? gnrv('active') : ''), 'active', [], 3);
 
 		$rrd_step = db_fetch_cell_prepared('SELECT step
 			FROM data_source_profiles
@@ -110,8 +113,8 @@ function form_save() : void {
 
 		$save2['rrd_step'] = $rrd_step;
 
-		$save2['t_data_source_profile_id'] = form_input_validate((isrv('t_data_source_profile_id') ? gnrv('t_data_source_profile_id') : ''), 't_data_source_profile_id', '', true, 3);
-		$save2['data_source_profile_id']   = form_input_validate(grv('data_source_profile_id'), 'data_source_profile_id', '^[0-9]+$', (isrv('data_source_profile_id') ? true : false), 3);
+		$save2['t_data_source_profile_id'] = CactiValidator::validateInput((isrv('t_data_source_profile_id') ? gnrv('t_data_source_profile_id') : ''), 't_data_source_profile_id', [], 3);
+		$save2['data_source_profile_id']   = CactiValidator::validateInput(grv('data_source_profile_id'), 'data_source_profile_id', [new Assert\Regex('/^[0-9]+$/')], 3);
 
 		// save: data_template_rrd
 		$save3['id']                         = grv('data_template_rrd_id');
@@ -119,27 +122,27 @@ function form_save() : void {
 		$save3['local_data_template_rrd_id'] = 0;
 		$save3['local_data_id']              = 0;
 
-		$save3['t_rrd_maximum']         = form_input_validate((isrv('t_rrd_maximum') ? gnrv('t_rrd_maximum') : ''), 't_rrd_maximum', '', true, 3);
+		$save3['t_rrd_maximum']         = CactiValidator::validateInput((isrv('t_rrd_maximum') ? gnrv('t_rrd_maximum') : ''), 't_rrd_maximum', [], 3);
 
-		$save3['rrd_maximum']           = form_input_validate(gnrv('rrd_maximum'), 'rrd_maximum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U|\|query_ifSpeed\|)\z', (isrv('t_rrd_maximum') ? true : false), 3);
+		$save3['rrd_maximum']           = CactiValidator::validateInput(gnrv('rrd_maximum'), 'rrd_maximum', [new Assert\Regex('/^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U|\|query_ifSpeed\|)\z/')], 3);
 
-		$save3['t_rrd_minimum']         = form_input_validate((isrv('t_rrd_minimum') ? gnrv('t_rrd_minimum') : ''), 't_rrd_minimum', '', true, 3);
+		$save3['t_rrd_minimum']         = CactiValidator::validateInput((isrv('t_rrd_minimum') ? gnrv('t_rrd_minimum') : ''), 't_rrd_minimum', [], 3);
 
-		$save3['rrd_minimum']           = form_input_validate(gnrv('rrd_minimum'), 'rrd_minimum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U)\z', (isrv('t_rrd_minimum') ? true : false), 3);
+		$save3['rrd_minimum']           = CactiValidator::validateInput(gnrv('rrd_minimum'), 'rrd_minimum', [new Assert\Regex('/^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U)\z/')], 3);
 
 		$save3['rrd_heartbeat']         = $rrd_heartbeat;
 
-		$save3['t_data_source_type_id'] = form_input_validate((isrv('t_data_source_type_id') ? gnrv('t_data_source_type_id') : ''), 't_data_source_type_id', '', true, 3);
+		$save3['t_data_source_type_id'] = CactiValidator::validateInput((isrv('t_data_source_type_id') ? gnrv('t_data_source_type_id') : ''), 't_data_source_type_id', [], 3);
 
-		$save3['data_source_type_id']   = form_input_validate(grv('data_source_type_id'), 'data_source_type_id', '^[0-9]+$', true, 3);
+		$save3['data_source_type_id']   = CactiValidator::validateInput(grv('data_source_type_id'), 'data_source_type_id', [new Assert\Regex('/^[0-9]+$/')], 3);
 
-		$save3['t_data_source_name']    = form_input_validate((isrv('t_data_source_name') ? gnrv('t_data_source_name') : ''), 't_data_source_name', '', true, 3);
+		$save3['t_data_source_name']    = CactiValidator::validateInput((isrv('t_data_source_name') ? gnrv('t_data_source_name') : ''), 't_data_source_name', [], 3);
 
-		$save3['data_source_name']      = form_input_validate(gnrv('data_source_name'), 'data_source_name', '^[a-zA-Z0-9_]{1,19}$', (isrv('t_data_source_name') ? true : false), 3);
+		$save3['data_source_name']      = CactiValidator::validateInput(gnrv('data_source_name'), 'data_source_name', [new Assert\Regex('/^[a-zA-Z0-9_]{1,19}$/')], 3);
 
-		$save3['t_data_input_field_id'] = form_input_validate((isrv('t_data_input_field_id') ? gnrv('t_data_input_field_id') : ''), 't_data_input_field_id', '', true, 3);
+		$save3['t_data_input_field_id'] = CactiValidator::validateInput((isrv('t_data_input_field_id') ? gnrv('t_data_input_field_id') : ''), 't_data_input_field_id', [], 3);
 
-		$save3['data_input_field_id']   = form_input_validate((isrv('data_input_field_id') ? gnrv('data_input_field_id') : '0'), 'data_input_field_id', '', true, 3);
+		$save3['data_input_field_id']   = CactiValidator::validateInput((isrv('data_input_field_id') ? gnrv('data_input_field_id') : '0'), 'data_input_field_id', [], 3);
 
 		if ($save3['rrd_minimum'] != 'U' && $save3['rrd_maximum'] != 'U') {
 			if ($save3['rrd_minimum'] >= $save3['rrd_maximum']) {
@@ -186,7 +189,17 @@ function form_save() : void {
 						$not_required = false;
 					}
 
-					form_input_validate(gnrv($form_value), 'value_' . $input_field['data_name'], $input_field['regexp_match'], $not_required, 3);
+					$constraints = [];
+
+					if (!$not_required) {
+						$constraints[] = new Assert\NotBlank();
+					}
+
+					if (!empty($input_field['regexp_match'])) {
+						$constraints[] = new Assert\Regex('/' . $input_field['regexp_match'] . '/');
+					}
+
+					CactiValidator::validateInput(gnrv($form_value), 'value_' . $input_field['data_name'], $constraints, 3);
 				}
 			}
 		}

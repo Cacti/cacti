@@ -1,0 +1,38 @@
+services:
+  db:
+    image: mariadb:11.8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cacti
+      MYSQL_USER: cacti
+      MYSQL_PASSWORD: cacti
+    volumes:
+      - snmpv3_db:/var/lib/mysql
+      - ../../cacti.sql:/docker-entrypoint-initdb.d/cacti.sql:ro
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --max-connections=200
+      - --max-heap-table-size=128M
+      - --tmp-table-size=128M
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  spine:
+    build:
+      context: ../..
+      dockerfile: tests/snmpv3/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ../../:/var/www/html/cacti:ro
+      - ./spine.conf:/etc/spine/spine.conf:ro
+    command: ["--conf=/etc/spine/spine.conf", "-f", "1", "-l", "1", "-S"]
+
+volumes:
+  snmpv3_db:
