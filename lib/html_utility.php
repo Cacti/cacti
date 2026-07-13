@@ -1374,7 +1374,7 @@ function update_order_string(bool $inplace = false) : void {
 					continue;
 				}
 
-				$direction = strtoupper($direction) === 'DESC' ? 'DESC' : 'ASC';
+				$direction = strtoupper((string)$direction) === 'DESC' ? 'DESC' : 'ASC';
 
 				if ($column == 'ip' || $column == 'ip_address') {
 					$order .= ($order != '' ? ', ' : '') . 'INET_ATON(' . $column . ') ' . $direction;
