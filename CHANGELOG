@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.x
 -issue: #7212: Address a few small memory leaks in realtime graphing
+-issue#7216: Aggregate totalling legend printed untotalled single data source values
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 
 1.2.31
