@@ -2091,7 +2091,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 		case 'device_delete':
 			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
 				FROM data_local AS dl
-				WHERE host_id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'host_id') . '
 				GROUP BY host_id');
 
 			if (cacti_sizeof($data)) {
@@ -2100,7 +2100,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 
 			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
 				FROM graph_local AS gl
-				WHERE host_id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'host_id') . '
 				GROUP BY host_id');
 
 			if (cacti_sizeof($data)) {
@@ -2109,7 +2109,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 
 			$data = db_fetch_assoc('SELECT site_id AS id, COUNT(*) AS totals
 				FROM host AS h
-				WHERE id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'id') . '
 				GROUP BY site_id');
 
 			if (cacti_sizeof($data)) {
@@ -2118,7 +2118,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 
 			$data = db_fetch_assoc('SELECT host_template_id AS id, COUNT(*) AS totals
 				FROM host AS h
-				WHERE id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'id') . '
 				GROUP BY host_template_id');
 
 			if (cacti_sizeof($data)) {
@@ -2127,7 +2127,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 
 			$data = db_fetch_assoc('SELECT graph_template_id AS id, COUNT(*) AS totals
 				FROM graph_local AS gl
-				WHERE host_id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'host_id') . '
 				GROUP BY graph_template_id');
 
 			if (cacti_sizeof($data)) {
@@ -2136,7 +2136,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 
 			$data = db_fetch_assoc('SELECT data_template_id AS id, COUNT(*) AS totals
 				FROM data_local AS dl
-				WHERE host_id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'host_id') . '
 				GROUP BY data_template_id');
 
 			if (cacti_sizeof($data)) {
@@ -2145,7 +2145,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 
 			$data = db_fetch_assoc('SELECT snmp_query_id AS id, COUNT(*) AS totals
 				FROM data_local AS dl
-				WHERE host_id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'host_id') . '
 				GROUP BY snmp_query_id');
 
 			if (cacti_sizeof($data)) {
@@ -2157,7 +2157,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN graph_local AS gl
 				ON gl.id = gti.local_graph_id
 				WHERE cdef_id > 0
-				AND host_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'host_id') . '
 				GROUP BY cdef_id');
 
 			if (cacti_sizeof($data)) {
@@ -2169,7 +2169,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN graph_local AS gl
 				ON gl.id = gti.local_graph_id
 				WHERE vdef_id > 0
-				AND host_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'host_id') . '
 				GROUP BY vdef_id');
 
 			if (cacti_sizeof($data)) {
@@ -2181,7 +2181,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN graph_local AS gl
 				ON gl.id = gti.local_graph_id
 				WHERE color_id > 0
-				AND host_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'host_id') . '
 				GROUP BY color_id');
 
 			if (cacti_sizeof($data)) {
@@ -2193,7 +2193,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN graph_local AS gl
 				ON gl.id = gti.local_graph_id
 				WHERE gprint_id > 0
-				AND host_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'host_id') . '
 				GROUP BY gprint_id');
 
 			if (cacti_sizeof($data)) {
@@ -2205,7 +2205,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN data_local AS dl
 				ON dl.id = dtd.local_data_id
 				WHERE data_input_id > 0
-				AND host_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'host_id') . '
 				GROUP BY data_input_id');
 
 			if (cacti_sizeof($data)) {
@@ -2217,7 +2217,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN data_local AS dl
 				ON dl.id = dtd.local_data_id
 				WHERE data_source_profile_id > 0
-				AND host_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'host_id') . '
 				GROUP BY data_source_profile_id');
 
 			if (cacti_sizeof($data)) {
@@ -2228,7 +2228,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 		case 'device_leave':
 			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
 				FROM data_local AS dl
-				WHERE host_id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'host_id') . '
 				GROUP BY host_id');
 
 			if (cacti_sizeof($data)) {
@@ -2237,7 +2237,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 
 			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
 				FROM graph_local AS gl
-				WHERE host_id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'host_id') . '
 				GROUP BY host_id');
 
 			if (cacti_sizeof($data)) {
@@ -2246,7 +2246,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 
 			$data = db_fetch_assoc('SELECT site_id AS id, COUNT(*) AS totals
 				FROM host AS h
-				WHERE id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'id') . '
 				GROUP BY site_id');
 
 			if (cacti_sizeof($data)) {
@@ -2255,7 +2255,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 
 			$data = db_fetch_assoc('SELECT host_template_id AS id, COUNT(*) AS totals
 				FROM host AS h
-				WHERE id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'id') . '
 				GROUP BY host_template_id');
 
 			if (cacti_sizeof($data)) {
@@ -2266,7 +2266,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 		case 'graph_delete':
 			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
 				FROM graph_local AS gl
-				WHERE id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'id') . '
 				GROUP BY host_id');
 
 			if (cacti_sizeof($data)) {
@@ -2279,7 +2279,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				ON dl.id = dtr.local_data_id
 				INNER JOIN graph_templates_item AS gti
 				ON dtr.id = gti.task_item_id
-				WHERE local_graph_id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'local_graph_id') . '
 				GROUP BY host_id');
 
 			if (cacti_sizeof($data)) {
@@ -2288,7 +2288,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 
 			$data = db_fetch_assoc('SELECT graph_template_id AS id, COUNT(*) AS totals
 				FROM graph_local AS gl
-				WHERE id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'id') . '
 				GROUP BY graph_template_id');
 
 			if (cacti_sizeof($data)) {
@@ -2299,7 +2299,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				FROM data_template_rrd AS dtr
 				INNER JOIN graph_templates_item AS gti
 				ON dtr.id = gti.task_item_id
-				WHERE local_graph_id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'local_graph_id') . '
 				GROUP BY data_template_id');
 
 			if (cacti_sizeof($data)) {
@@ -2312,7 +2312,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				ON dl.id = dtr.local_data_id
 				INNER JOIN graph_templates_item AS gti
 				ON dtr.id = gti.task_item_id
-				WHERE local_graph_id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'local_graph_id') . '
 				GROUP BY snmp_query_id');
 
 			if (cacti_sizeof($data)) {
@@ -2324,7 +2324,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN graph_local AS gl
 				ON gl.id = gti.local_graph_id
 				WHERE cdef_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'local_graph_id') . '
 				GROUP BY cdef_id');
 
 			if (cacti_sizeof($data)) {
@@ -2336,7 +2336,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN graph_local AS gl
 				ON gl.id = gti.local_graph_id
 				WHERE vdef_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'local_graph_id') . '
 				GROUP BY vdef_id');
 
 			if (cacti_sizeof($data)) {
@@ -2348,7 +2348,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN graph_local AS gl
 				ON gl.id = gti.local_graph_id
 				WHERE color_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'local_graph_id') . '
 				GROUP BY color_id');
 
 			if (cacti_sizeof($data)) {
@@ -2360,7 +2360,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN graph_local AS gl
 				ON gl.id = gti.local_graph_id
 				WHERE gprint_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'local_graph_id') . '
 				GROUP BY gprint_id');
 
 			if (cacti_sizeof($data)) {
@@ -2374,7 +2374,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN graph_templates_item AS gti
 				ON dtd.id = gti.task_item_id
 				WHERE data_input_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'local_graph_id') . '
 				GROUP BY data_input_id');
 
 			if (cacti_sizeof($data)) {
@@ -2388,7 +2388,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN graph_templates_item AS gti
 				ON dtd.id = gti.task_item_id
 				WHERE data_input_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'local_graph_id') . '
 				GROUP BY data_source_profile_id');
 
 			if (cacti_sizeof($data)) {
@@ -2399,7 +2399,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 		case 'graph_leave':
 			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
 				FROM graph_local AS gl
-				WHERE id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'id') . '
 				GROUP BY host_id');
 
 			if (cacti_sizeof($data)) {
@@ -2408,7 +2408,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 
 			$data = db_fetch_assoc('SELECT graph_template_id AS id, COUNT(*) AS totals
 				FROM graph_local AS gl
-				WHERE id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'id') . '
 				GROUP BY graph_template_id');
 
 			if (cacti_sizeof($data)) {
@@ -2420,7 +2420,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN graph_local AS gl
 				ON gl.id = gti.local_graph_id
 				WHERE cdef_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'local_graph_id') . '
 				GROUP BY cdef_id');
 
 			if (cacti_sizeof($data)) {
@@ -2432,7 +2432,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN graph_local AS gl
 				ON gl.id = gti.local_graph_id
 				WHERE vdef_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'local_graph_id') . '
 				GROUP BY vdef_id');
 
 			if (cacti_sizeof($data)) {
@@ -2444,7 +2444,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN graph_local AS gl
 				ON gl.id = gti.local_graph_id
 				WHERE color_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'local_graph_id') . '
 				GROUP BY color_id');
 
 			if (cacti_sizeof($data)) {
@@ -2456,7 +2456,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 				INNER JOIN graph_local AS gl
 				ON gl.id = gti.local_graph_id
 				WHERE gprint_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'local_graph_id') . '
 				GROUP BY gprint_id');
 
 			if (cacti_sizeof($data)) {
@@ -2467,7 +2467,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 		case 'data_source':
 			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
 				FROM data_local AS dl
-				WHERE id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'id') . '
 				GROUP BY host_id');
 
 			if (cacti_sizeof($data)) {
@@ -2476,7 +2476,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 
 			$data = db_fetch_assoc('SELECT data_template_id AS id, COUNT(*) AS totals
 				FROM data_template_data AS dtd
-				WHERE local_data_id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'local_data_id') . '
 				GROUP BY data_template_id');
 
 			if (cacti_sizeof($data)) {
@@ -2485,7 +2485,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 
 			$data = db_fetch_assoc('SELECT snmp_query_id AS id, COUNT(*) AS totals
 				FROM data_local AS dl
-				WHERE id IN(' . implode(', ', $object_ids) . ')
+				WHERE ' . array_to_sql_or($object_ids, 'id') . '
 				GROUP BY snmp_query_id');
 
 			if (cacti_sizeof($data)) {
@@ -2495,7 +2495,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 			$data = db_fetch_assoc('SELECT data_input_id AS id, COUNT(*) AS totals
 				FROM data_template_data AS dtd
 				WHERE data_input_id > 0
-				AND local_data_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'local_data_id') . '
 				GROUP BY data_input_id');
 
 			if (cacti_sizeof($data)) {
@@ -2505,7 +2505,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 			$data = db_fetch_assoc('SELECT data_source_profile_id AS id, COUNT(*) AS totals
 				FROM data_template_data AS dtd
 				WHERE data_source_profile_id > 0
-				AND local_data_id IN(' . implode(', ', $object_ids) . ')
+				AND ' . array_to_sql_or($object_ids, 'local_data_id') . '
 				GROUP BY data_source_profile_id');
 
 			if (cacti_sizeof($data)) {
