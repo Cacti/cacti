@@ -277,7 +277,7 @@ function form_save() : void {
 
 		$save['id']     = grv('id');
 		$save['hash']   = get_hash_automation(grv('id'), 'automation_snmp');
-		$save['name']   = automation_validate_input(gnrv('name'), 'name', [new Assert\NotBlank()]);
+		$save['name']   = CactiValidator::validateInput(gnrv('name'), 'name', [new Assert\NotBlank()]);
 
 		if (!is_error_message()) {
 			$id = sql_save($save, 'automation_snmp');
@@ -298,24 +298,24 @@ function form_save() : void {
 
 		$save = [];
 
-		$save['id']                   = automation_validate_input(grv('item_id'), 'item_id', [new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThanOrEqual(0)]);
+		$save['id']                   = CactiValidator::validateInput(grv('item_id'), 'item_id', [new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThanOrEqual(0)]);
 		$save['hash']                 = get_hash_automation(grv('item_id'), 'automation_snmp_items');
-		$save['snmp_id']              = automation_validate_input(gnrv('id'), 'snmp_id', [new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThanOrEqual(0)]);
-		$save['sequence']             = automation_validate_input(gnrv('sequence'), 'sequence', [new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThanOrEqual(0)]);
-		$save['snmp_community']       = automation_validate_input(gnrv('snmp_community'), 'snmp_community', [new Assert\NotBlank()]);
-		$save['snmp_version']         = automation_validate_input(gnrv('snmp_version'), 'snmp_version', [new Assert\NotBlank(), new Assert\Choice(['1', '2', '3'])]);
-		$save['snmp_username']        = automation_validate_input(gnrv('snmp_username'), 'snmp_username', []);
-		$save['snmp_password']        = automation_validate_input(gnrv('snmp_password'), 'snmp_password', []);
-		$save['snmp_auth_protocol']   = automation_validate_input(gnrv('snmp_auth_protocol'), 'snmp_auth_protocol', []);
-		$save['snmp_priv_passphrase'] = automation_validate_input(gnrv('snmp_priv_passphrase'), 'snmp_priv_passphrase', []);
-		$save['snmp_priv_protocol']   = automation_validate_input(gnrv('snmp_priv_protocol'), 'snmp_priv_protocol', []);
-		$save['snmp_context']         = automation_validate_input(gnrv('snmp_context'), 'snmp_context', []);
-		$save['snmp_engine_id']       = automation_validate_input(gnrv('snmp_engine_id'), 'snmp_engine_id', []);
-		$save['snmp_port']            = automation_validate_input(gnrv('snmp_port'), 'snmp_port', [new Assert\NotBlank(), new Assert\Range(min: 1, max: 65535)]);
-		$save['snmp_timeout']         = automation_validate_input(gnrv('snmp_timeout'), 'snmp_timeout', [new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThan(0)]);
-		$save['snmp_retries']         = automation_validate_input(gnrv('snmp_retries'), 'snmp_retries', [new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThanOrEqual(0)]);
-		$save['max_oids']             = automation_validate_input(gnrv('max_oids'), 'max_oids', [new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThan(0)]);
-		$save['bulk_walk_size']       = automation_validate_input(gnrv('bulk_walk_size'), 'bulk_walk_size', [new Assert\NotBlank(), new Assert\Type('numeric')]);
+		$save['snmp_id']              = CactiValidator::validateInput(gnrv('id'), 'snmp_id', [new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThanOrEqual(0)]);
+		$save['sequence']             = CactiValidator::validateInput(gnrv('sequence'), 'sequence', [new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThanOrEqual(0)]);
+		$save['snmp_community']       = CactiValidator::validateInput(gnrv('snmp_community'), 'snmp_community', [new Assert\NotBlank()]);
+		$save['snmp_version']         = CactiValidator::validateInput(gnrv('snmp_version'), 'snmp_version', [new Assert\NotBlank(), new Assert\Choice(['1', '2', '3'])]);
+		$save['snmp_username']        = CactiValidator::validateInput(gnrv('snmp_username'), 'snmp_username', []);
+		$save['snmp_password']        = CactiValidator::validateInput(gnrv('snmp_password'), 'snmp_password', []);
+		$save['snmp_auth_protocol']   = CactiValidator::validateInput(gnrv('snmp_auth_protocol'), 'snmp_auth_protocol', []);
+		$save['snmp_priv_passphrase'] = CactiValidator::validateInput(gnrv('snmp_priv_passphrase'), 'snmp_priv_passphrase', []);
+		$save['snmp_priv_protocol']   = CactiValidator::validateInput(gnrv('snmp_priv_protocol'), 'snmp_priv_protocol', []);
+		$save['snmp_context']         = CactiValidator::validateInput(gnrv('snmp_context'), 'snmp_context', []);
+		$save['snmp_engine_id']       = CactiValidator::validateInput(gnrv('snmp_engine_id'), 'snmp_engine_id', []);
+		$save['snmp_port']            = CactiValidator::validateInput(gnrv('snmp_port'), 'snmp_port', [new Assert\NotBlank(), new Assert\Range(min: 1, max: 65535)]);
+		$save['snmp_timeout']         = CactiValidator::validateInput(gnrv('snmp_timeout'), 'snmp_timeout', [new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThan(0)]);
+		$save['snmp_retries']         = CactiValidator::validateInput(gnrv('snmp_retries'), 'snmp_retries', [new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThanOrEqual(0)]);
+		$save['max_oids']             = CactiValidator::validateInput(gnrv('max_oids'), 'max_oids', [new Assert\NotBlank(), new Assert\Type('numeric'), new Assert\GreaterThan(0)]);
+		$save['bulk_walk_size']       = CactiValidator::validateInput(gnrv('bulk_walk_size'), 'bulk_walk_size', [new Assert\NotBlank(), new Assert\Type('numeric')]);
 
 		$item_id = null;
 

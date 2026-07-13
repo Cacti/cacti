@@ -268,9 +268,9 @@ function form_save() : void {
 
 		$save['id']            = gnrv('id');
 		$save['hash']          = get_hash_automation(grv('id'), 'automation_graph_rules');
-		$save['name']          = automation_validate_input(gnrv('name'), 'name', [new Assert\NotBlank()]);
-		$save['snmp_query_id'] = automation_validate_input(gnrv('snmp_query_id'), 'snmp_query_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
-		$save['graph_type_id'] = (isrv('graph_type_id')) ? automation_validate_input(gnrv('graph_type_id'), 'graph_type_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]) : 0;
+		$save['name']          = CactiValidator::validateInput(gnrv('name'), 'name', [new Assert\NotBlank()]);
+		$save['snmp_query_id'] = CactiValidator::validateInput(gnrv('snmp_query_id'), 'snmp_query_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['graph_type_id'] = (isrv('graph_type_id')) ? CactiValidator::validateInput(gnrv('graph_type_id'), 'graph_type_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]) : 0;
 		$save['enabled']       = (isrv('enabled') ? 'on' : '');
 
 		if (!is_error_message()) {
@@ -291,14 +291,14 @@ function form_save() : void {
 		// ====================================================
 
 		$save              = [];
-		$save['id']        = automation_validate_input(grv('item_id'), 'item_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['id']        = CactiValidator::validateInput(grv('item_id'), 'item_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
 		$save['hash']      = get_hash_automation(grv('id_item'), 'automation_graph_rule_items');
-		$save['rule_id']   = automation_validate_input(grv('id'), 'id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
-		$save['sequence']  = automation_validate_input(gnrv('sequence'), 'sequence', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
-		$save['operation'] = automation_validate_input(gnrv('operation'), 'operation', [new Assert\Regex('/^[-0-9]+$/')]);
-		$save['field']     = automation_validate_input(((isrv('field') && gnrv('field') != '0') ? gnrv('field') : ''), 'field', []);
-		$save['operator']  = automation_validate_input((isrv('operator') ? gnrv('operator') : ''), 'operator', [new Assert\Regex('/^[0-9]+$/')]);
-		$save['pattern']   = automation_validate_input((isrv('pattern') ? gnrv('pattern') : ''), 'pattern', []);
+		$save['rule_id']   = CactiValidator::validateInput(grv('id'), 'id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['sequence']  = CactiValidator::validateInput(gnrv('sequence'), 'sequence', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['operation'] = CactiValidator::validateInput(gnrv('operation'), 'operation', [new Assert\Regex('/^[-0-9]+$/')]);
+		$save['field']     = CactiValidator::validateInput(((isrv('field') && gnrv('field') != '0') ? gnrv('field') : ''), 'field', []);
+		$save['operator']  = CactiValidator::validateInput((isrv('operator') ? gnrv('operator') : ''), 'operator', [new Assert\Regex('/^[0-9]+$/')]);
+		$save['pattern']   = CactiValidator::validateInput((isrv('pattern') ? gnrv('pattern') : ''), 'pattern', []);
 
 		// Test for SQL injections
 		$field_name = str_replace(['ht.', 'h.', 'gt.', 'gtg.'], '', $save['field']);
@@ -349,15 +349,15 @@ function form_save() : void {
 
 		$save = [];
 
-		$save['id']        = automation_validate_input(grv('item_id'), 'item_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['id']        = CactiValidator::validateInput(grv('item_id'), 'item_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
 		$save['hash']      = get_hash_automation(grv('item_idid'), 'automation_match_rule_items');
-		$save['rule_id']   = automation_validate_input(grv('id'), 'id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['rule_id']   = CactiValidator::validateInput(grv('id'), 'id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
 		$save['rule_type'] = AUTOMATION_RULE_TYPE_GRAPH_MATCH;
-		$save['sequence']  = automation_validate_input(gnrv('sequence'), 'sequence', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
-		$save['operation'] = automation_validate_input(gnrv('operation'), 'operation', [new Assert\Regex('/^[-0-9]+$/')]);
-		$save['field']     = automation_validate_input(((isrv('field') && gnrv('field') != '0') ? gnrv('field') : ''), 'field', []);
-		$save['operator']  = automation_validate_input((isrv('operator') ? gnrv('operator') : ''), 'operator', [new Assert\Regex('/^[0-9]+$/')]);
-		$save['pattern']   = automation_validate_input((isrv('pattern') ? gnrv('pattern') : ''), 'pattern', []);
+		$save['sequence']  = CactiValidator::validateInput(gnrv('sequence'), 'sequence', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['operation'] = CactiValidator::validateInput(gnrv('operation'), 'operation', [new Assert\Regex('/^[-0-9]+$/')]);
+		$save['field']     = CactiValidator::validateInput(((isrv('field') && gnrv('field') != '0') ? gnrv('field') : ''), 'field', []);
+		$save['operator']  = CactiValidator::validateInput((isrv('operator') ? gnrv('operator') : ''), 'operator', [new Assert\Regex('/^[0-9]+$/')]);
+		$save['pattern']   = CactiValidator::validateInput((isrv('pattern') ? gnrv('pattern') : ''), 'pattern', []);
 
 		// Test for SQL injections
 		$field_name = str_replace(['ht.', 'h.', 'gt.'], '', $save['field']);

@@ -663,8 +663,8 @@ function form_save() : void {
 
 		$save['id']                   = gnrv('id');
 		$save['hash']                 = get_hash_automation(gnrv('id'), 'automation_templates');
-		$save['host_template']        = automation_validate_input(gnrv('host_template'), 'host_template', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3);
-		$save['availability_method']  = automation_validate_input(gnrv('availability_method'), 'availability_method', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3);
+		$save['host_template']        = CactiValidator::validateInput(gnrv('host_template'), 'host_template', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3);
+		$save['availability_method']  = CactiValidator::validateInput(gnrv('availability_method'), 'availability_method', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3);
 		$save['sysDescr']             = gnrv('sysDescr');
 		$save['sysName']              = gnrv('sysName');
 		$save['sysOid']               = gnrv('sysOid');

@@ -62,7 +62,7 @@ it('validates search_pattern (NotBlank)', function () {
 	expect(CactiValidator::isValid(null, $constraints))->toBeFalse();
 });
 
-it('verifies automation_validate_input populates session and raises message on failure', function () {
+it('verifies CactiValidator::validateInput populates session and raises message on failure', function () {
     // Define constants if not present
     if (!defined('SESS_FIELD_VALUES')) define('SESS_FIELD_VALUES', 'sess_field_values');
     if (!defined('SESS_ERROR_FIELDS')) define('SESS_ERROR_FIELDS', 'sess_error_fields');
@@ -76,14 +76,14 @@ it('verifies automation_validate_input populates session and raises message on f
     $constraints = [new Assert\NotBlank()];
     
     // Test valid input
-    automation_validate_input('valid', 'test_field', $constraints);
+    CactiValidator::validateInput('valid', 'test_field', $constraints);
     expect($_SESSION[SESS_FIELD_VALUES]['test_field'])->toBe('valid');
     expect(isset($_SESSION[SESS_ERROR_FIELDS]['test_field']))->toBeFalse();
 
     // Test invalid input
     $_SESSION = [];
     $GLOBALS['raised_message'] = null;
-    automation_validate_input('', 'test_field', $constraints, 999);
+    CactiValidator::validateInput('', 'test_field', $constraints, 999);
     expect($_SESSION[SESS_FIELD_VALUES]['test_field'])->toBe('');
     expect($_SESSION[SESS_ERROR_FIELDS]['test_field'])->toBe(999);
     expect($GLOBALS['raised_message'])->toBe(999);

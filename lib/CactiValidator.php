@@ -69,7 +69,11 @@ class CactiValidator {
 	}
 
 	/**
-	 * Specifically validate a Host ID.
+	 * Specifically validate a Host ID (numeric and >= 0).
+	 *
+	 * @param mixed $value The value to validate.
+	 *
+	 * @return bool True if the value is a valid host id, false otherwise.
 	 */
 	public static function isValidHostId(mixed $value): bool {
 		return self::isValid($value, [
@@ -87,6 +91,11 @@ class CactiValidator {
 	 * exist on disk for this branch to succeed; callers validating a
 	 * not-yet-created file should pass $rraRoot = null and check
 	 * containment after creation.
+	 *
+	 * @param string      $path    The relative RRD path to validate.
+	 * @param string|null $rraRoot Optional real RRA root to enforce containment against.
+	 *
+	 * @return bool True if the path is safe and (when $rraRoot is set) contained, false otherwise.
 	 */
 	public static function isValidRrdPath(string $path, ?string $rraRoot = null): bool {
 		if ($path === '' || strpos($path, "\0") !== false) {
@@ -137,6 +146,10 @@ class CactiValidator {
 
 	/**
 	 * Validate an IP address (v4 or v6).
+	 *
+	 * @param string $ip The IP address to validate.
+	 *
+	 * @return bool True if the value is a valid IPv4 or IPv6 address, false otherwise.
 	 */
 	public static function isValidIpAddress(string $ip): bool {
 		return self::isValid($ip, [
@@ -145,7 +158,11 @@ class CactiValidator {
 	}
 
 	/**
-	 * Validate an email address.
+	 * Validate an email address (HTML5 syntax, max 254 chars).
+	 *
+	 * @param string $email The email address to validate.
+	 *
+	 * @return bool True if the value is a valid email address, false otherwise.
 	 */
 	public static function isValidEmail(string $email): bool {
 		return self::isValid($email, [
@@ -155,7 +172,11 @@ class CactiValidator {
 	}
 
 	/**
-	 * Validate an SNMP community string.
+	 * Validate an SNMP community string (non-blank, max 255 chars, no control bytes).
+	 *
+	 * @param string $community The SNMP community string to validate.
+	 *
+	 * @return bool True if the value is a valid community string, false otherwise.
 	 */
 	public static function isValidSnmpCommunity(string $community): bool {
 		return self::isValid($community, [

@@ -73,7 +73,7 @@ it('validates bulk_walk_size (NotBlank + numeric)', function () {
 	expect(CactiValidator::isValid('abc', $constraints))->toBeFalse();
 });
 
-it('verifies automation_validate_input behavior for SNMP', function () {
+it('verifies CactiValidator::validateInput behavior for SNMP', function () {
 	if (!defined('SESS_FIELD_VALUES')) define('SESS_FIELD_VALUES', 'sess_field_values');
 	if (!defined('SESS_ERROR_FIELDS')) define('SESS_ERROR_FIELDS', 'sess_error_fields');
 	
@@ -84,13 +84,13 @@ it('verifies automation_validate_input behavior for SNMP', function () {
 	$_SESSION = [];
 	$constraints = [new Assert\NotBlank()];
 	
-	automation_validate_input('snmp_opt', 'name', $constraints);
+	CactiValidator::validateInput('snmp_opt', 'name', $constraints);
 	expect($_SESSION[SESS_FIELD_VALUES]['name'])->toBe('snmp_opt');
 	expect(isset($_SESSION[SESS_ERROR_FIELDS]['name']))->toBeFalse();
 
 	$_SESSION = [];
 	$GLOBALS['raised_message'] = null;
-	automation_validate_input('', 'name', $constraints, 3);
+	CactiValidator::validateInput('', 'name', $constraints, 3);
 	expect($_SESSION[SESS_FIELD_VALUES]['name'])->toBe('');
 	expect($_SESSION[SESS_ERROR_FIELDS]['name'])->toBe(3);
 	expect($GLOBALS['raised_message'])->toBe(3);

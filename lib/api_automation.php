@@ -6442,30 +6442,6 @@ function automation_log(string $string, int $level = AUTOMATION_LOG_LOW) : void 
 }
 
 /**
- * Common input validation helper for the automation subsystem.
- * Populates $_SESSION with the value and any error states.
- *
- * @param mixed  $value       The value to validate.
- * @param string $name        The field name (used in $_SESSION).
- * @param array  $constraints The Symfony Validator constraints.
- * @param mixed  $message_id  The Cacti message ID to raise on failure.
- *
- * @return mixed The original value.
- */
-function automation_validate_input(mixed $value, string $name, array $constraints, mixed $message_id = 3) : mixed {
-	$_SESSION[SESS_FIELD_VALUES][$name] = $value;
-
-	$violations = CactiValidator::validate($value, $constraints);
-
-	if ($violations->count() > 0) {
-		$_SESSION[SESS_ERROR_FIELDS][$name] = $message_id;
-		raise_message($message_id);
-	}
-
-	return $value;
-}
-
-/**
  * api_networks_save - Saves an automation network.
  *
  * @param array $post The post variables from the form.
@@ -6474,28 +6450,28 @@ function automation_validate_input(mixed $value, string $name, array $constraint
  */
 function api_networks_save(array $post) : mixed {
 	if (empty($post['network_id'])) {
-		$save['id']            = automation_validate_input($post['id'], 'id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['id']            = CactiValidator::validateInput($post['id'], 'id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
 		$save['hash']          = get_hash_automation($post['id'], 'automation_networks');
 
 		// general information
-		$save['name']          = automation_validate_input($post['name'], 'name', [new Assert\NotBlank()]);
-		$save['poller_id']     = automation_validate_input($post['poller_id'], 'poller_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
-		$save['site_id']       = automation_validate_input($post['site_id'], 'site_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
-		$save['subnet_range']  = automation_validate_input($post['subnet_range'], 'subnet_range', [new Assert\NotBlank()]);
-		$save['ignore_ips']    = automation_validate_input($post['ignore_ips'], 'ignore_ips', []);
-		$save['dns_servers']   = automation_validate_input($post['dns_servers'], 'dns_servers', []);
+		$save['name']          = CactiValidator::validateInput($post['name'], 'name', [new Assert\NotBlank()]);
+		$save['poller_id']     = CactiValidator::validateInput($post['poller_id'], 'poller_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['site_id']       = CactiValidator::validateInput($post['site_id'], 'site_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['subnet_range']  = CactiValidator::validateInput($post['subnet_range'], 'subnet_range', [new Assert\NotBlank()]);
+		$save['ignore_ips']    = CactiValidator::validateInput($post['ignore_ips'], 'ignore_ips', []);
+		$save['dns_servers']   = CactiValidator::validateInput($post['dns_servers'], 'dns_servers', []);
 
-		$save['threads']       = automation_validate_input($post['threads'], 'threads', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
-		$save['run_limit']     = automation_validate_input($post['run_limit'], 'run_limit', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['threads']       = CactiValidator::validateInput($post['threads'], 'threads', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['run_limit']     = CactiValidator::validateInput($post['run_limit'], 'run_limit', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
 
 		$save['enabled']              = (isset($post['enabled']) ? 'on' : '');
 
 		// notification settings
 		$save['notification_enabled'] = (isset($post['notification_enabled']) ? 'on' : '');
-		$save['notification_email']   = automation_validate_input($post['notification_email'], 'notification_email', [new Assert\Email(mode: 'html5')]);
+		$save['notification_email']   = CactiValidator::validateInput($post['notification_email'], 'notification_email', [new Assert\Email(mode: 'html5')]);
 
-		$save['notification_fromname']  = automation_validate_input($post['notification_fromname'], 'notification_fromname', []);
-		$save['notification_fromemail'] = automation_validate_input($post['notification_fromemail'], 'notification_fromemail', [new Assert\Email(mode: 'html5')]);
+		$save['notification_fromname']  = CactiValidator::validateInput($post['notification_fromname'], 'notification_fromname', []);
+		$save['notification_fromemail'] = CactiValidator::validateInput($post['notification_fromemail'], 'notification_fromemail', [new Assert\Email(mode: 'html5')]);
 
 		$save['enable_netbios']       = (isset($post['enable_netbios']) ? 'on' : '');
 		$save['add_to_cacti']         = (isset($post['add_to_cacti']) ? 'on' : '');
@@ -6503,11 +6479,11 @@ function api_networks_save(array $post) : mixed {
 		$save['rerun_data_queries']   = (isset($post['rerun_data_queries']) ? 'on' : '');
 
 		// discovery connectivity settings
-		$save['snmp_id']       = automation_validate_input($post['snmp_id'], 'snmp_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
-		$save['ping_method']   = automation_validate_input($post['ping_method'], 'ping_method', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
-		$save['ping_port']     = automation_validate_input($post['ping_port'], 'ping_port', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
-		$save['ping_timeout']  = automation_validate_input($post['ping_timeout'], 'ping_timeout', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
-		$save['ping_retries']  = automation_validate_input($post['ping_retries'], 'ping_retries', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['snmp_id']       = CactiValidator::validateInput($post['snmp_id'], 'snmp_id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['ping_method']   = CactiValidator::validateInput($post['ping_method'], 'ping_method', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['ping_port']     = CactiValidator::validateInput($post['ping_port'], 'ping_port', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['ping_timeout']  = CactiValidator::validateInput($post['ping_timeout'], 'ping_timeout', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
+		$save['ping_retries']  = CactiValidator::validateInput($post['ping_retries'], 'ping_retries', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')]);
 
 		$save = api_scheduler_augment_save($save, $post);
 

@@ -45,7 +45,7 @@ it('validates notification email (Email)', function () {
 	expect(CactiValidator::isValid('', $constraints))->toBeTrue(); // Symfony Email allows empty if not combined with NotBlank
 });
 
-it('verifies automation_validate_input populates session for networks', function () {
+it('verifies CactiValidator::validateInput populates session for networks', function () {
 	if (!defined('SESS_FIELD_VALUES')) define('SESS_FIELD_VALUES', 'sess_field_values');
 	if (!defined('SESS_ERROR_FIELDS')) define('SESS_ERROR_FIELDS', 'sess_error_fields');
 	
@@ -56,13 +56,13 @@ it('verifies automation_validate_input populates session for networks', function
 	$_SESSION = [];
 	$constraints = [new Assert\NotBlank()];
 	
-	automation_validate_input('valid_net', 'name', $constraints);
+	CactiValidator::validateInput('valid_net', 'name', $constraints);
 	expect($_SESSION[SESS_FIELD_VALUES]['name'])->toBe('valid_net');
 	expect(isset($_SESSION[SESS_ERROR_FIELDS]['name']))->toBeFalse();
 
 	$_SESSION = [];
 	$GLOBALS['raised_message'] = null;
-	automation_validate_input('', 'name', $constraints, 3);
+	CactiValidator::validateInput('', 'name', $constraints, 3);
 	expect($_SESSION[SESS_FIELD_VALUES]['name'])->toBe('');
 	expect($_SESSION[SESS_ERROR_FIELDS]['name'])->toBe(3);
 	expect($GLOBALS['raised_message'])->toBe(3);
