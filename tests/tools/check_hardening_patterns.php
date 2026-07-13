@@ -17,8 +17,15 @@ $base    = $options['base'] ?? '';
 $head    = $options['head'] ?? 'HEAD';
 $files   = cli_file_args($argv);
 
+/* Explicit file arguments get a whole-file scan for local use.  CI runs
+   derive the file list from the diff and must only flag lines a PR added
+   or modified, so legacy patterns elsewhere in a touched file do not
+   block unrelated work. */
+$changed_lines = null;
+
 if ($files === []) {
-	$files = changed_php_files($base, $head);
+	$changed_lines = changed_php_lines($base, $head);
+	$files         = array_keys($changed_lines);
 }
 
 $patterns = [
@@ -63,6 +70,10 @@ foreach ($files as $file) {
 	}
 
 	foreach ($lines as $index => $line) {
+		if ($changed_lines !== null && !isset($changed_lines[$file][$index + 1])) {
+			continue;
+		}
+
 		foreach ($patterns as $name => $rule) {
 			if (isset($rule['allow']) && in_array($file, $rule['allow'], true)) {
 				continue;
@@ -84,7 +95,7 @@ if ($violations !== []) {
 
 exit(0);
 
-function changed_php_files(string $base, string $head) : array {
+function changed_php_lines(string $base, string $head) : array {
 	if ($base === '') {
 		$base = trim((string) shell_exec('git merge-base HEAD upstream/develop 2>/dev/null'));
 	}
@@ -97,8 +108,11 @@ function changed_php_files(string $base, string $head) : array {
 		return [];
 	}
 
+	/* -U0 keeps hunk headers tight so only added/modified new-side lines
+	   are recorded; --no-ext-diff and the explicit prefixes guard against
+	   local diff drivers or diff.noprefix breaking the parse. */
 	$command = sprintf(
-		'git diff --name-only --diff-filter=ACMR %s...%s -- %s 2>/dev/null',
+		'git diff -U0 --no-ext-diff --src-prefix=a/ --dst-prefix=b/ --diff-filter=ACMR %s...%s -- %s 2>/dev/null',
 		escapeshellarg($base),
 		escapeshellarg($head),
 		escapeshellarg('*.php')
@@ -110,7 +124,23 @@ function changed_php_files(string $base, string $head) : array {
 		return [];
 	}
 
-	return preg_split('/\R/', trim($output)) ?: [];
+	$changed = [];
+	$file    = '';
+
+	foreach (preg_split('/\R/', $output) as $line) {
+		if (preg_match('/^\+\+\+ b\/(.+)$/', $line, $matches) === 1) {
+			$file = $matches[1];
+		} elseif ($file !== '' && preg_match('/^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@/', $line, $matches) === 1) {
+			$start = (int) $matches[1];
+			$count = isset($matches[2]) ? (int) $matches[2] : 1;
+
+			for ($i = 0; $i < $count; $i++) {
+				$changed[$file][$start + $i] = true;
+			}
+		}
+	}
+
+	return $changed;
 }
 
 function cli_file_args(array $argv) : array {

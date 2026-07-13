@@ -37,8 +37,8 @@ Cacti CHANGELOG
 -issue#6177: autodiscovery use dns name in description field
 -issue#6210: Fix Error: You have an error in your SQL syntax due to using table field without backtick.
 -issue#6240: Fix sorting exception in rrdtool_function_create function
--issue#6258: Rename 'Data' to 'Data/Statistics' per customer request
 -issue#6255: Fix not showing any graphs in the subtree if there are only graphs without devices
+-issue#6258: Rename 'Data' to 'Data/Statistics' per customer request
 -issue#6545: Add 30 and 60 second timeout options for Remote Agent and Poller settings
 -issue#6669: Show on the Technical Support page whether php-snmp is in use or disabled by $php_snmp_support
 -issue#6682: Fix column exclusion silently skipping first element due to loose array_search comparison
@@ -194,7 +194,7 @@ Cacti CHANGELOG
 -feature#6191: Adding Natural sorting options for Hostname
 -feature#6228: Add admin's email to installer and enable "Notify primary admin of issues" 
 -feature#6454: Create a logging recursion ticket that helps against recusion loops in cacti_log
--feature#6456: Guard startup on a missing vendor directory and repair incomplete vendor trees at install time
+-feature#6456: Add Composer binary path setting with installer detection
 -feature#6495: Add bulk change data source profile functionality with automatic RRD rebuild
 -feature#6539: Allow Standard Cacti Log Files to be Rotated on Demand from the Cacti UI
 -feature: Allow messages to be popup notifications

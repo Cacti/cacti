@@ -974,6 +974,16 @@ class Installer implements JsonSerializable {
 					}
 				}
 
+				if ($should_set && $name == 'path_composer' && !empty($path) && file_exists($path)) {
+					// cacti_escapeshellcmd() replaces backslashes on Windows; normalize first
+					$output = shell_exec(cacti_escapeshellcmd(str_replace('\\', '/', $path)) . ' --version 2>&1');
+
+					if ($output === null || !str_contains($output, 'Composer')) {
+						$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $name, __('Composer did not return expected result'));
+						$should_set = false;
+					}
+				}
+
 				if ($should_set) {
 					unset($this->errors['Paths'][$name]);
 					set_install_config_option($name, empty($path) ? '' : $path);
