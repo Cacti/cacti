@@ -72,8 +72,8 @@ jobs:
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
           coverage: none
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+      - name: Verify committed Cacti autoloader
+        run: test -f include/vendor/autoload.php
 
       - name: Download and verify pinned Psalm phar
         run: |
