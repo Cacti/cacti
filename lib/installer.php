@@ -784,7 +784,7 @@ class Installer implements JsonSerializable {
 	private function setCSRFSecret() : void {
 		$this->setProgress(Installer::PROGRESS_CSRF_BEGIN);
 
-		if (!CACTI_CSRF_SECRET != '') {
+		if (CACTI_CSRF_SECRET != '') {
 			log_install_debug('csrf', 'setCSRFSecret(): secret ' . CACTI_CSRF_SECRET);
 
 			$secret = @file_exists(CACTI_CSRF_SECRET) ? file_get_contents(CACTI_CSRF_SECRET) : '';
@@ -1774,7 +1774,11 @@ class Installer implements JsonSerializable {
 	private function setAdminEmailAddress(string $admin_email_address = '') : void {
 		if ($admin_email_address != '') {
 			if (filter_var($admin_email_address, FILTER_VALIDATE_EMAIL)) {
-				db_execute("UPDATE user_auth SET email_address = '" . $admin_email_address . "'");
+				db_execute_prepared('UPDATE user_auth
+					SET email_address = ?
+					WHERE username = \'admin\'',
+					[$admin_email_address]
+				);
 				log_install_always('email', 'Admin email address set to ' . $admin_email_address);
 			} else {
 				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Email', __('Incorrect email address'));
@@ -3601,6 +3605,7 @@ class Installer implements JsonSerializable {
 	}
 
 	private function installTemplate() : string {
+		$failure   = '';
 		$templates = db_fetch_assoc("SELECT value
 			FROM settings
 			WHERE name LIKE 'install_tp_%'
@@ -3636,6 +3641,7 @@ class Installer implements JsonSerializable {
 				if ($result === false) {
 					log_install_always('', __('Import of Package #%s \'%s\' under Profile \'%s\' failed', $i, $package, $this->profile));
 					$this->addError(Installer::STEP_ERROR, 'Package:' . $package, 'FAIL: XML version code error');
+					$failure = __('One or more template packages failed to import');
 				}
 			}
 
@@ -3676,7 +3682,7 @@ class Installer implements JsonSerializable {
 
 		$this->setProgress(Installer::PROGRESS_TEMPLATES_END);
 
-		return '';
+		return $failure;
 	}
 
 	private function installPoller() : string {
@@ -4118,6 +4124,8 @@ class Installer implements JsonSerializable {
 		Installer::setPhpOption('max_execution_time', 0);
 		Installer::setPhpOption('memory_limit', -1);
 
+		$completed = false;
+
 		try {
 			$backgroundTime = (string) microtime(true);
 
@@ -4126,20 +4134,34 @@ class Installer implements JsonSerializable {
 			}
 			$installer->setDefaults();
 			$installer->install();
-		} catch (Exception $e) {
-			log_install_always('', __('Exception occurred during installation: #%s - %s', $e->getCode(), $e->getMessage()));
+			$completed = $installer->getStep() == Installer::STEP_COMPLETE;
+		} catch (Throwable $e) {
+			$error = __('Exception occurred during installation: #%s - %s', $e->getCode(), $e->getMessage());
+			log_install_always('', $error);
+			set_install_config_option('install_error', $error);
+
+			if ($installer != null) {
+				$installer->addError(Installer::STEP_ERROR, 'Install', 'Exception', $error);
+			}
 		}
 
 		$backgroundDone = (string) microtime(true);
-		set_install_config_option('install_complete', $backgroundDone);
-		set_install_config_option('install_step', Installer::STEP_COMPLETE);
 
 		$dateBack = DateTime::createFromFormat('U.u', $backgroundTime);
 		$dateTime = DateTime::createFromFormat('U.u', $backgroundDone);
 
-		log_install_always('', __('Installation was started at %s, completed at %s', (string) $dateBack->format('Y-m-d H:i:s'), (string) $dateTime->format('Y-m-d H:i:s')));
+		if ($completed) {
+			set_install_config_option('install_complete', $backgroundDone);
+			set_install_config_option('install_step', Installer::STEP_COMPLETE);
+			log_install_always('', __('Installation was started at %s, completed at %s', (string) $dateBack->format('Y-m-d H:i:s'), (string) $dateTime->format('Y-m-d H:i:s')));
 
-		return true;
+			return true;
+		}
+
+		set_install_config_option('install_step', Installer::STEP_ERROR);
+		log_install_always('', __('Installation failed after starting at %s', (string) $dateBack->format('Y-m-d H:i:s')));
+
+		return false;
 	}
 
 	public static function getInstallLog() : string {
