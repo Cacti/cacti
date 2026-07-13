@@ -59,7 +59,7 @@ test('lib/html_reports.php defines reports_redirect_url', function () use ($repo
 test('reports_redirect_url casts the id to int', function () use ($reportsPath) {
 	$contents = file_get_contents($reportsPath);
 
-	expect($contents)->toContain('$base . \'?action=edit&id=\' . (int) $id');
+	expect($contents)->toMatch('/\\$base\\s*\\.\\s*\'\\?action=edit&id=\'\\s*\\.\\s*\\(int\\)\\s*\\$id/');
 });
 
 test('the save redirect routes through reports_redirect_url', function () use ($reportsPath) {
