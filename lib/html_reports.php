@@ -326,7 +326,7 @@ function reports_form_save() : void {
 			}
 		}
 
-		header('Location: ' . get_reports_page() . '?action=edit&id=' . (empty($id) ? $post['id'] : $id));
+		header('Location: ' . reports_redirect_url(get_reports_page(), (empty($id) ? $post['id'] : $id)));
 
 		exit;
 	}
@@ -1893,6 +1893,16 @@ function display_reports_items(int $report_id) : void {
  */
 function get_reports_page() : string {
 	return 'reports.php';
+}
+
+/**
+ * Builds the edit redirect target for a report. The report id is always an
+ * integer, so the value is cast to int before it reaches the Location header.
+ * This keeps any query or parameter injection out of the header (Psalm taint
+ * finding; PHP already blocks CRLF and the host is fixed, so defence-in-depth).
+ */
+function reports_redirect_url(string $base, mixed $id) : string {
+	return $base . '?action=edit&id=' . (int) $id;
 }
 
 /**
