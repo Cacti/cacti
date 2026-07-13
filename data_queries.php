@@ -26,6 +26,9 @@ require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/data_query.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 $actions = [
 	1 => __('Delete'),
@@ -119,9 +122,9 @@ function form_save() : void {
 
 		$save['id']            = grv('id');
 		$save['hash']          = get_hash_data_query(gnrv('id'));
-		$save['name']          = form_input_validate(gnrv('name'), 'name', '', false, 3);
-		$save['description']   = form_input_validate(gnrv('description'), 'description', '', true, 3);
-		$save['xml_path']      = form_input_validate(trim(gnrv('xml_path')), 'xml_path', '', false, 3);
+		$save['name']          = CactiValidator::validateInput(gnrv('name'), 'name', [new Assert\NotBlank()], 3);
+		$save['description']   = CactiValidator::validateInput(gnrv('description'), 'description', [], 3);
+		$save['xml_path']      = CactiValidator::validateInput(trim(gnrv('xml_path')), 'xml_path', [new Assert\NotBlank()], 3);
 		$save['data_input_id'] = grv('data_input_id');
 
 		// Detect changing input id
@@ -159,7 +162,7 @@ function form_save() : void {
 		$save['id']                = grv('id');
 		$save['hash']              = get_hash_data_query(gnrv('id'), 'data_query_graph');
 		$save['snmp_query_id']     = grv('snmp_query_id');
-		$save['name']              = form_input_validate(gnrv('name'), 'name', '', false, 3);
+		$save['name']              = CactiValidator::validateInput(gnrv('name'), 'name', [new Assert\NotBlank()], 3);
 		$save['graph_template_id'] = grv('graph_template_id');
 
 		$errors = false;

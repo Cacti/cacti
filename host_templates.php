@@ -35,6 +35,9 @@ require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/xml.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 if (!isrv('action') || gnrv('action') == 'templates' || gnrv('action_type') == 'templates') {
 	$actions = [
@@ -142,15 +145,15 @@ function form_save() : void {
 	if (isrv('save_component_template')) {
 		$save['id']           = gnrv('id');
 		$save['hash']         = get_hash_host_template(gnrv('id'));
-		$save['name']         = form_input_validate(gnrv('name'), 'name', '', false, 3);
-		$save['version']      = form_input_validate(gnrv('version'), 'version', '', false, 3);
-		$save['class']        = form_input_validate(gnrv('class'), 'class', '', false, 3);
-		$save['tags']         = form_input_validate(gnrv('tags'), 'tags', '', true, 3);
-		$save['author']       = form_input_validate(gnrv('author'), 'author', '', true, 3);
-		$save['email']        = form_input_validate(gnrv('email'), 'email', '', true, 3);
-		$save['homepage']     = form_input_validate(gnrv('homepage'), 'homepage', '', true, 3);
-		$save['copyright']    = form_input_validate(gnrv('copyright'), 'copyright', '', false, 3);
-		$save['installation'] = form_input_validate(gnrv('installation'), 'installation', '', true, 3);
+		$save['name']         = CactiValidator::validateInput(gnrv('name'), 'name', [new Assert\NotBlank()], 3);
+		$save['version']      = CactiValidator::validateInput(gnrv('version'), 'version', [new Assert\NotBlank()], 3);
+		$save['class']        = CactiValidator::validateInput(gnrv('class'), 'class', [new Assert\NotBlank()], 3);
+		$save['tags']         = CactiValidator::validateInput(gnrv('tags'), 'tags', [], 3);
+		$save['author']       = CactiValidator::validateInput(gnrv('author'), 'author', [], 3);
+		$save['email']        = CactiValidator::validateInput(gnrv('email'), 'email', [new Assert\Email(mode: 'html5')], 3);
+		$save['homepage']     = CactiValidator::validateInput(gnrv('homepage'), 'homepage', [], 3);
+		$save['copyright']    = CactiValidator::validateInput(gnrv('copyright'), 'copyright', [new Assert\NotBlank()], 3);
+		$save['installation'] = CactiValidator::validateInput(gnrv('installation'), 'installation', [], 3);
 
 		if (!is_error_message()) {
 			$host_template_id = sql_save($save, 'host_template');

@@ -65,7 +65,7 @@ test('sanitize_sql_column: column with underscore and digits passes', function (
 // --- sanitize_sql_column: injection payloads stripped ---
 
 test('sanitize_sql_column: UNION SELECT payload: spaces and dashes stripped', function () {
-	$input  = "name UNION SELECT password FROM user_auth-- ";
+	$input  = 'name UNION SELECT password FROM user_auth-- ';
 	$output = stub_sanitize_sql_column($input);
 	// Spaces removed: SQL keywords cannot be parsed as separate tokens without spaces
 	expect($output)->not->toContain(' ');
@@ -123,7 +123,7 @@ test('safe_direction: mixed case Desc normalised to DESC', function () {
 // --- Direction enforcement: injection payloads default to ASC ---
 
 test('safe_direction: SQL payload defaults to ASC', function () {
-	expect(stub_safe_direction("ASC; DROP TABLE reports-- "))->toBe('ASC');
+	expect(stub_safe_direction('ASC; DROP TABLE reports-- '))->toBe('ASC');
 });
 
 test('safe_direction: UNION payload defaults to ASC', function () {
@@ -145,8 +145,8 @@ test('safe_direction: null-byte payload defaults to ASC', function () {
 // --- Combined: verify sanitized column + direction cannot form injected SQL ---
 
 test('combined: injection payload in column and direction produces safe ORDER BY', function () {
-	$raw_col = "name UNION SELECT password FROM user_auth-- ";
-	$raw_dir = "ASC; DROP TABLE reports";
+	$raw_col = 'name UNION SELECT password FROM user_auth-- ';
+	$raw_dir = 'ASC; DROP TABLE reports';
 
 	$col    = stub_sanitize_sql_column($raw_col);
 	$dir    = stub_safe_direction($raw_dir);
@@ -161,6 +161,30 @@ test('combined: injection payload in column and direction produces safe ORDER BY
 	// Direction is strictly ASC or DESC regardless of payload
 	expect($dir)->toBe('ASC');
 	// The assembled clause has no injected semicolons or comment markers
+	expect($clause)->not->toContain(';');
+	expect($clause)->not->toContain('--');
+});
+
+// --- Stale-session READ path (mirror of update_order_string() read loops) ---
+//
+// This mirrors the read-loop direction normalization in the same stub style as
+// the rest of this file, without a database, session, or full Cacti bootstrap.
+// It does not execute update_order_string(); the enforcement lives in that
+// function's two read loops:
+//
+//     $direction = strtoupper($direction) === 'DESC' ? 'DESC' : 'ASC';
+//
+// which re-normalize a direction left in $_SESSION['sort_data'][$page] by a
+// session poisoned before the write-time fix shipped, symmetric with the column
+// re-validation already applied there. Direction passthrough and injection
+// defaults are covered above; here the stored value flows into an ORDER BY clause.
+
+test('read path: poisoned stored direction yields a safe ORDER BY clause', function () {
+	$column = stub_sanitize_sql_column('report.name');
+	$dir    = stub_safe_direction('ASC; DROP TABLE reports-- ');
+	$clause = 'ORDER BY ' . $column . ' ' . $dir;
+
+	expect($dir)->toBe('ASC');
 	expect($clause)->not->toContain(';');
 	expect($clause)->not->toContain('--');
 });
