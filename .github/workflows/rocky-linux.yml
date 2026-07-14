@@ -1,0 +1,34 @@
+name: Rocky Linux compatibility
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * 6"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rocky-linux-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rocky-linux:
+    name: Rocky Linux 9 PHP compatibility
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Run PHP checks in Rocky Linux 9
+        run: |
+          docker run --rm \\
+            --volume "$GITHUB_WORKSPACE:/workspace:ro" \\
+            --workdir /workspace \\
+            rockylinux:9 \\
+            bash -euo pipefail -c '
+              dnf -y install php-cli php-common php-curl php-gd php-intl php-mbstring php-mysqlnd php-xml php-zip
+              php --version
+              find . -path ./vendor -prune -o -type f -name "*.php" -print0 | xargs -0 -r -n1 php -l
+            '
