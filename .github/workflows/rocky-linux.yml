@@ -23,10 +23,10 @@ jobs:
 
       - name: Run PHP checks in Rocky Linux 9
         run: |
-          docker run --rm \\
-            --volume "$GITHUB_WORKSPACE:/workspace:ro" \\
-            --workdir /workspace \\
-            rockylinux:9 \\
+          docker run --rm \
+            --volume "$GITHUB_WORKSPACE:/workspace:ro" \
+            --workdir /workspace \
+            rockylinux:9 \
             bash -euo pipefail -c '
               dnf -y install php-cli php-common php-curl php-gd php-intl php-mbstring php-mysqlnd php-xml php-zip
               php --version
