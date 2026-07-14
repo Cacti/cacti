@@ -41,9 +41,4 @@
       <code><![CDATA['Message: ' . trim($string) . PHP_EOL]]></code>
     </TaintedTextWithQuotes>
   </file>
-  <file src="lib/html_reports.php">
-    <TaintedHeader>
-      <code><![CDATA['Location: ' . get_reports_page() . '?action=edit&id=' . (empty($id) ? $post['id'] : $id)]]></code>
-    </TaintedHeader>
-  </file>
 </files>
