@@ -250,15 +250,13 @@ function api_graph_remove_multi(array $local_graph_ids) : void {
 
 	// Delete in chunks so the IN list stays bounded on large removals.
 	foreach (array_chunk($local_graph_ids, 1000) as $chunk) {
-		$chunk = array_map('intval', $chunk);
-
 		api_graph_remove_aggregate_items($chunk);
 
-		db_execute('DELETE FROM graph_templates_graph WHERE ' . array_to_sql_or($chunk, 'local_graph_id'));
-		db_execute('DELETE FROM graph_templates_item WHERE ' . array_to_sql_or($chunk, 'local_graph_id'));
-		db_execute('DELETE FROM graph_tree_items WHERE ' . array_to_sql_or($chunk, 'local_graph_id'));
-		db_execute('DELETE FROM reports_items WHERE ' . array_to_sql_or($chunk, 'local_graph_id'));
-		db_execute('DELETE FROM graph_local WHERE ' . array_to_sql_or($chunk, 'id'));
+		db_execute('DELETE FROM graph_templates_graph WHERE ' . db_in_clause('local_graph_id', $chunk));
+		db_execute('DELETE FROM graph_templates_item WHERE ' . db_in_clause('local_graph_id', $chunk));
+		db_execute('DELETE FROM graph_tree_items WHERE ' . db_in_clause('local_graph_id', $chunk));
+		db_execute('DELETE FROM reports_items WHERE ' . db_in_clause('local_graph_id', $chunk));
+		db_execute('DELETE FROM graph_local WHERE ' . db_in_clause('id', $chunk));
 	}
 
 	/**
