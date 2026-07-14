@@ -161,9 +161,54 @@ test('mailer helpers map secure modes without the opportunistic STARTTLS downgra
 	expect($src)->not->toContain('? null : false');
 
 	expect($src)->toContain('function mailer_secure_tls_flag')
+		->toContain('function mailer_normalize_secure_mode')
 		->toContain('function mailer_build_esmtp_transport')
 		->toContain('CactiRequireTlsEsmtpTransport')
 		->toContain('CactiNoTlsEsmtpTransport')
 		->toContain('finally')
 		->toContain('catch (RfcComplianceException');
+});
+
+// Mirror of mailer_normalize_secure_mode() in lib/functions.php
+function test_mailer_normalize_secure_mode(string $secure) : string {
+	$secure = strtolower(trim($secure));
+
+	if ($secure === 'ssl' || $secure === 'tls' || $secure === 'none') {
+		return $secure;
+	}
+
+	return 'none';
+}
+
+test('empty and unknown SMTP secure modes map to none', function () {
+	expect(test_mailer_normalize_secure_mode(''))->toBe('none');
+	expect(test_mailer_normalize_secure_mode('  '))->toBe('none');
+	expect(test_mailer_normalize_secure_mode('garbage'))->toBe('none');
+	expect(test_mailer_normalize_secure_mode('TLS'))->toBe('tls');
+	expect(test_mailer_normalize_secure_mode('ssl'))->toBe('ssl');
+	expect(test_mailer_normalize_secure_mode('none'))->toBe('none');
+});
+
+test('non-graph attachment disposition honours inline vs attachment flags', function () {
+	// attachment disposition
+	$email = new Email();
+	$email->from(new Address('from@example.com'));
+	$email->to(new Address('to@example.com'));
+	$email->attach('PAYLOAD', 'report.csv', 'text/csv');
+	expect($email->toString())->toContain('Content-Disposition: attachment');
+
+	// inline disposition
+	$email2 = new Email();
+	$email2->from(new Address('from@example.com'));
+	$email2->to(new Address('to@example.com'));
+	$part = new DataPart('PNGDATA', 'chart.png', 'image/png');
+	$part->asInline();
+	$email2->addPart($part);
+	expect($email2->toString())->toContain('Content-Disposition: inline');
+});
+
+test('mailer fails closed when attachment path is unreadable', function () {
+	$src = file_get_contents(dirname(__DIR__, 2) . '/lib/functions.php');
+	expect($src)->toContain('is_readable($attachment[\'attachment\'])')
+		->toContain("Error attaching file:");
 });

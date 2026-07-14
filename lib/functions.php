@@ -5584,6 +5584,26 @@ function send_mail(mixed $to, mixed $from = null, string $subject = '',
 }
 
 /**
+ * Normalize configured SMTP security mode.
+ *
+ * Empty or unknown values fall back to 'none' so Symfony cannot opportunistically
+ * upgrade to STARTTLS (PHPMailer SMTPAutoTLS = false for the same cases).
+ *
+ * @param string $secure Configured value (ssl|tls|none or empty/garbage)
+ *
+ * @return string One of 'ssl', 'tls', 'none'
+ */
+function mailer_normalize_secure_mode(string $secure) : string {
+	$secure = strtolower(trim($secure));
+
+	if ($secure === 'ssl' || $secure === 'tls' || $secure === 'none') {
+		return $secure;
+	}
+
+	return 'none';
+}
+
+/**
  * Map the configured SMTP security mode to the EsmtpTransport $tls argument.
  *
  * 'ssl'  => true  (implicit TLS, e.g. port 465)
@@ -5595,12 +5615,12 @@ function send_mail(mixed $to, mixed $from = null, string $subject = '',
  * capability. Mandatory STARTTLS is enforced by CactiRequireTlsEsmtpTransport;
  * opportunistic STARTTLS is suppressed by CactiNoTlsEsmtpTransport.
  *
- * @param string $secure One of 'ssl', 'tls', 'none'
+ * @param string $secure One of 'ssl', 'tls', 'none' (empty/unknown treated as none)
  *
  * @return bool
  */
 function mailer_secure_tls_flag(string $secure) : bool {
-	return $secure == 'ssl';
+	return mailer_normalize_secure_mode($secure) === 'ssl';
 }
 
 /**
@@ -5608,7 +5628,7 @@ function mailer_secure_tls_flag(string $secure) : bool {
  *
  * @param string     $host           SMTP host
  * @param int        $port           SMTP port
- * @param string     $secure         One of 'ssl', 'tls', 'none'
+ * @param string     $secure         One of 'ssl', 'tls', 'none' (empty/unknown → none)
  * @param null|array $authenticators Optional SMTP authenticators (OAuth2)
  *
  * @return EsmtpTransport
@@ -5616,16 +5636,18 @@ function mailer_secure_tls_flag(string $secure) : bool {
 function mailer_build_esmtp_transport(string $host, int $port, string $secure, ?array $authenticators = null) : EsmtpTransport {
 	require_once(CACTI_PATH_LIBRARY . '/CactiMailerTransport.php');
 
-	$tls = mailer_secure_tls_flag($secure);
+	$secure = mailer_normalize_secure_mode($secure);
+	$tls    = mailer_secure_tls_flag($secure);
 
-	if ($secure == 'tls') {
+	if ($secure === 'tls') {
 		return new CactiRequireTlsEsmtpTransport($host, $port, $tls, null, null, null, $authenticators);
 	}
 
-	if ($secure == 'none') {
+	if ($secure === 'none') {
 		return new CactiNoTlsEsmtpTransport($host, $port, $tls, null, null, null, $authenticators);
 	}
 
+	// ssl: implicit TLS on connect
 	return new EsmtpTransport($host, $port, $tls, null, null, null, $authenticators);
 }
 
@@ -5984,33 +6006,82 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 					$attachment['filename'] = $attachment['attachment'];
 				}
 
-				// attempt to attach
-				if (!($graph_mode || $graph_ids)) {
-					if (!empty($attachment['attachment']) && @file_exists($attachment['attachment'])) {
-						$emailMessage->attachFromPath($attachment['attachment'], $attachment['filename'], $attachment['mime_type'] ?: null);
+				$mime_type   = $attachment['mime_type'] ?: null;
+				$is_file     = !empty($attachment['attachment']) && @is_file($attachment['attachment']);
+				$want_inline = ($attachment['inline'] === 'inline');
+
+				// Graph mode defaults to inline with a Content-ID so <img src="cid:…"> works.
+				// Explicit 'attachment' disposition must still strip the GRAPH tag without embedding.
+				if ($graph_mode || $graph_ids) {
+					if ($want_inline) {
+						try {
+							if ($is_file) {
+								if (!is_readable($attachment['attachment'])) {
+									return __('Error attaching file: %s', $attachment['attachment']);
+								}
+
+								$part = new DataPart(new File($attachment['attachment']), $attachment['filename'], $mime_type);
+							} else {
+								$part = new DataPart($attachment['attachment'], $attachment['filename'], $mime_type);
+							}
+
+							$part->asInline()->setContentId($cid);
+							$emailMessage->addPart($part);
+						} catch (Throwable $e) {
+							return __('Error attaching file: %s', $e->getMessage());
+						}
 					} else {
-						$emailMessage->attach($attachment['attachment'], $attachment['filename'], $attachment['mime_type'] ?: null);
+						try {
+							if ($is_file) {
+								if (!is_readable($attachment['attachment'])) {
+									return __('Error attaching file: %s', $attachment['attachment']);
+								}
+
+								$emailMessage->attachFromPath($attachment['attachment'], $attachment['filename'], $mime_type);
+							} else {
+								$emailMessage->attach($attachment['attachment'], $attachment['filename'], $mime_type);
+							}
+						} catch (Throwable $e) {
+							return __('Error attaching file: %s', $e->getMessage());
+						}
 					}
 				} else {
-					/* Embed inline with an explicit Content-ID so the cid referenced
-					 * in the HTML body matches the part exactly. embed()/embedFromPath()
-					 * return the Email, not a cid string, so build the DataPart here. */
-					$mime_type = $attachment['mime_type'] ?: null;
+					// Non-graph attachments honour the inline flag (PHPMailer parity).
+					try {
+						if ($is_file) {
+							if (!is_readable($attachment['attachment'])) {
+								return __('Error attaching file: %s', $attachment['attachment']);
+							}
 
-					if (!empty($attachment['attachment']) && @file_exists($attachment['attachment'])) {
-						$part = new DataPart(new File($attachment['attachment']), $attachment['filename'], $mime_type);
-					} else {
-						$part = new DataPart($attachment['attachment'], $attachment['filename'], $mime_type);
+							if ($want_inline) {
+								$part = new DataPart(new File($attachment['attachment']), $attachment['filename'], $mime_type);
+								$part->asInline();
+								$emailMessage->addPart($part);
+							} else {
+								$emailMessage->attachFromPath($attachment['attachment'], $attachment['filename'], $mime_type);
+							}
+						} else {
+							if ($want_inline) {
+								$part = new DataPart($attachment['attachment'], $attachment['filename'], $mime_type);
+								$part->asInline();
+								$emailMessage->addPart($part);
+							} else {
+								$emailMessage->attach($attachment['attachment'], $attachment['filename'], $mime_type);
+							}
+						}
+					} catch (Throwable $e) {
+						return __('Error attaching file: %s', $e->getMessage());
 					}
-
-					$part->asInline()->setContentId($cid);
-					$emailMessage->addPart($part);
 				}
 
 				$i++;
 
 				if ($graph_mode) {
-					$body = str_replace('<GRAPH>', "<br><br><img src='cid:$cid'>", $body);
+					if ($want_inline) {
+						$body = str_replace('<GRAPH>', "<br><br><img src='cid:$cid'>", $body);
+					} else {
+						$body = str_replace('<GRAPH>', '', $body);
+					}
 				} elseif ($graph_ids) {
 					// handle the body text
 					switch ($attachment['inline']) {
