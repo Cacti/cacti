@@ -1,12 +1,22 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 10
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 10
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: develop
+    schedule: {interval: weekly, day: friday}
+    open-pull-requests-limit: 5
+    cooldown: {default-days: 7}
+    groups:
+      github-actions: {patterns: ["*"]}
+    labels: [dependencies, github-actions]
+    commit-message: {prefix: ci, include: scope}
+  - package-ecosystem: composer
+    directory: /
+    target-branch: develop
+    schedule: {interval: weekly, day: monday}
+    open-pull-requests-limit: 5
+    cooldown: {default-days: 7}
+    groups:
+      composer: {patterns: ["*"]}
+    labels: [dependencies, composer]
+    commit-message: {prefix: deps, include: scope}
