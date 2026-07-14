@@ -8,7 +8,7 @@ updates:
     cooldown: {default-days: 7}
     groups:
       github-actions: {patterns: ["*"]}
-    labels: [dependencies, github-actions]
+    labels: [dependencies, github_actions]
     commit-message: {prefix: ci, include: scope}
   - package-ecosystem: composer
     directory: /
@@ -18,5 +18,15 @@ updates:
     cooldown: {default-days: 7}
     groups:
       composer: {patterns: ["*"]}
+    labels: [dependencies, composer]
+    commit-message: {prefix: deps, include: scope}
+  - package-ecosystem: composer
+    directory: /api
+    target-branch: develop
+    schedule: {interval: weekly, day: monday}
+    open-pull-requests-limit: 5
+    cooldown: {default-days: 7}
+    groups:
+      composer-api: {patterns: ["*"]}
     labels: [dependencies, composer]
     commit-message: {prefix: deps, include: scope}
