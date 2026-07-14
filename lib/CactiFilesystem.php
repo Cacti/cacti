@@ -103,7 +103,13 @@ class CactiFilesystem {
 	}
 
 	public function read(string $filename): string {
-		return $this->filesystem->readFile($filename);
+		$contents = file_get_contents($filename);
+
+		if ($contents === false) {
+			throw new RuntimeException("Unable to read file: $filename");
+		}
+
+		return $contents;
 	}
 
 	public function copyFile(string $originFile, string $targetFile, bool $overwriteNewerFiles = false): void {
