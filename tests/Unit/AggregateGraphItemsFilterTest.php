@@ -55,3 +55,10 @@ test('aggregate graph items filter normalizes matching checkbox state', function
 		->and($filter->matchingChecked())->toBeTrue()
 		->and($filter->hasLocalGraphIds())->toBeTrue();
 });
+
+// Search text is reflected into a value attribute; must be HTML-escaped.
+test('aggregate items rfilter input escapes attribute context', function () {
+	$src = file_get_contents(dirname(__DIR__, 2) . '/aggregate_graphs.php');
+	expect($src)->toContain("html_escape(\$filter->rfilter())");
+	expect($src)->not->toMatch("/value='<\?php print \\\$filter->rfilter\(\); \?>'/");
+});
