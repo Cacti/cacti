@@ -463,9 +463,14 @@ function variable_nth_percentile(array &$regexp_match_array, array &$graph, arra
 	}
 
 	if ($graph['base_value'] == 1024) {
-		$base = 10.24;
+		/* the divisor must be 1024^(power/3), the binary analogue of
+		   10^power; dividing by 10.24^power printed values about
+		   1.024^(2*power/3) too low (#7211) */
+		$base      = 2;
+		$exp_scale = 10 / 3;
 	} else {
-		$base = 10;
+		$base      = 10;
+		$exp_scale = 1;
 	}
 
 	// Convert the regex matches to human readable
@@ -591,7 +596,7 @@ function variable_nth_percentile(array &$regexp_match_array, array &$graph, arra
 			if (!empty($nth_cache[$graph_item['data_source_name']])) {
 				$nth = $nth_cache[$graph_item['data_source_name']];
 				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
-				$nth /= $base ** $power;
+				$nth /= $base ** ($power * $exp_scale);
 			}
 
 			break;
@@ -602,7 +607,7 @@ function variable_nth_percentile(array &$regexp_match_array, array &$graph, arra
 			if (!empty($nth_cache['nth_percentile_sum'])) {
 				$nth = $nth_cache['nth_percentile_sum'];
 				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
-				$nth /= $base ** $power;
+				$nth /= $base ** ($power * $exp_scale);
 			}
 
 			break;
@@ -615,7 +620,7 @@ function variable_nth_percentile(array &$regexp_match_array, array &$graph, arra
 			if (!empty($nth_cache['nth_percentile_maximum'])) {
 				$nth = $nth_cache['nth_percentile_maximum'];
 				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
-				$nth /= $base ** $power;
+				$nth /= $base ** ($power * $exp_scale);
 			}
 
 			break;
@@ -624,7 +629,7 @@ function variable_nth_percentile(array &$regexp_match_array, array &$graph, arra
 			if (!empty($nth_cache['nth_percentile_aggregate_total'])) {
 				$nth = $nth_cache['nth_percentile_aggregate_total'];
 				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
-				$nth /= $base ** $power;
+				$nth /= $base ** ($power * $exp_scale);
 			}
 
 			break;
@@ -671,9 +676,13 @@ function variable_bandwidth_summation(array &$regexp_match_array, array &$graph,
 	}
 
 	if ($graph['base_value'] == 1024) {
-		$base = 10.24;
+		/* the divisor must be 1024^(power/3), the binary analogue of
+		   10^power; the auto path below already uses true powers of 1024 */
+		$base      = 2;
+		$exp_scale = 10 / 3;
 	} else {
-		$base = 10;
+		$base      = 10;
+		$exp_scale = 1;
 	}
 
 	if (is_numeric($regexp_match_array[4])) {
@@ -730,7 +739,7 @@ function variable_bandwidth_summation(array &$regexp_match_array, array &$graph,
 	}
 
 	if (preg_match('/\d+/', $regexp_match_array[1])) {
-		$summation /= $base ** $regexp_match_array[1];
+		$summation /= $base ** ($regexp_match_array[1] * $exp_scale);
 	} elseif ($regexp_match_array[1] == 'auto') {
 		if ($graph['base_value'] == 1000) {
 			if ($summation < 1000) {

@@ -361,7 +361,7 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 		[$new_user, $new_realm]);
 
 	if (cacti_sizeof($user_exist)) {
-		if ($overwrite) {
+		if ($overwrite === true) {
 			// Overwrite existing user
 			$user_auth['id']                   = $user_exist['id'];
 			$user_auth['username']             = $user_exist['username'];
@@ -400,7 +400,7 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 	$new_id = sql_save($user_auth, 'user_auth');
 
 	// Create/Update permissions and settings
-	if (cacti_sizeof($user_exist) && $overwrite) {
+	if (cacti_sizeof($user_exist) && $overwrite === true) {
 		db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ?', [$user_exist['id']]);
 		db_execute_prepared('DELETE FROM user_auth_realm WHERE user_id = ?', [$user_exist['id']]);
 		db_execute_prepared('DELETE FROM settings_user WHERE user_id = ?', [$user_exist['id']]);
