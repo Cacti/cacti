@@ -271,6 +271,9 @@ function get_basic_auth_username() : string|false {
 	} elseif (isset($_SERVER['HTTP_REDIRECT_REMOTE_USER'])) {
 		$raw      = is_array($_SERVER['HTTP_REDIRECT_REMOTE_USER']) ? ($_SERVER['HTTP_REDIRECT_REMOTE_USER'][0] ?? '') : $_SERVER['HTTP_REDIRECT_REMOTE_USER'];
 		$username = str_replace('\\', '\\\\', $raw);
+	} elseif (isset($_SERVER['HTTP_X_FORWARDED_USER'])) {
+		$raw      = is_array($_SERVER['HTTP_X_FORWARDED_USER']) ? ($_SERVER['HTTP_X_FORWARDED_USER'][0] ?? '') : $_SERVER['HTTP_X_FORWARDED_USER'];
+		$username = str_replace('\\', '\\\\', $raw);
 	} else {
 		$username = false;
 	}
