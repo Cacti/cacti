@@ -51,7 +51,6 @@
         "lipis/flag-icons": "^7.5.0",
         "mikepultz/netdns2": "^2.0",
         "php-mqtt/client": "^2.2",
-        "phpmailer/phpmailer": "^7.0.2",
         "phpseclib/phpseclib": "^3.0",
         "psr/log": "^1.1",
         "slim/slim": "^4.14",
@@ -59,6 +58,7 @@
         "stevenmaguire/oauth2-microsoft": "^2.2",
         "symfony/filesystem": "^6.0",
         "symfony/http-foundation": "^6.0",
+        "symfony/mailer": "^6.4",
         "symfony/validator": "^6.4"
     },
     "require-dev": {
