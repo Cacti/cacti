@@ -59,6 +59,10 @@
   - Must have an `INFO` file (INI format).
   - Use `top_header()`/`bottom_footer()` (no direct includes).
   - Add `&header=false` to URLs for AJAX requests.
+- **CHANGELOG**:
+  - Within each release section, keep `-issue` entries first and `-feature` entries after them.
+  - Append new issue entries at the end of the issue block and new feature entries at the end of the feature block.
+  - Preserve the existing entry prefixes, release headings, and blank-line spacing.
 
 ## Workflows you’ll actually use
 - Install deps: `composer install` (CI validates via `.github/workflows/syntax.yml`).
@@ -88,4 +92,3 @@
 - **Formatting**: Enforce tabs for indentation (no spaces for indentation).
 - **Legacy**: Avoid `preg_*` if simple string functions work. Use `preg_*` over `ereg_*`.
 - Avoid drive-by rewrites: no repo-wide formatting, no unrelated cleanup, and preserve existing file conventions (keep the GPL header blocks).
-
