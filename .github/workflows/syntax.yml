@@ -333,3 +333,13 @@ jobs:
 
     - name: View Contents of Logs
       run: sudo cat ${{ github.workspace }}/log/cacti.log
+
+  changelog:
+    name: CHANGELOG format
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Validate CHANGELOG ordering and entry format
+        run: python3 .github/scripts/check-changelog.py
