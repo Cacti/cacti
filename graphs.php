@@ -635,7 +635,7 @@ function form_save() : void {
 
 		$sequence = gnrv('sequence');
 
-		$graph_template_item_id = '';
+		$graph_template_item_id = null;
 
 		if (empty($sequence) || !is_numeric($sequence)) {
 			$sequence = 1;
@@ -720,7 +720,7 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: graphs.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? gnrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gnrv('local_graph_id'));
+			header('Location: graphs.php?action=item_edit&graph_template_item_id=' . ($graph_template_item_id === null ? gnrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gnrv('local_graph_id'));
 
 			exit;
 		} else {
