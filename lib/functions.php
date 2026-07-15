@@ -22,7 +22,17 @@
  +-------------------------------------------------------------------------+
 */
 
-use PHPMailer\PHPMailer\Exception;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Transport\Smtp\Auth\XOAuth2Authenticator;
+use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
+use Symfony\Component\Mailer\Transport\Smtp\Stream\SocketStream;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Exception\RfcComplianceException;
+use Symfony\Component\Mime\Part\DataPart;
+use Symfony\Component\Mime\Part\File;
 
 /**
  * Takes a string of text, truncates it to $max_length and appends
@@ -5588,6 +5598,74 @@ function send_mail(mixed $to, mixed $from = null, string $subject = '',
 }
 
 /**
+ * Normalize configured SMTP security mode.
+ *
+ * Empty or unknown values fall back to 'none' so Symfony cannot opportunistically
+ * upgrade to STARTTLS (PHPMailer SMTPAutoTLS = false for the same cases).
+ *
+ * @param string $secure Configured value (ssl|tls|none or empty/garbage)
+ *
+ * @return string One of 'ssl', 'tls', 'none'
+ */
+function mailer_normalize_secure_mode(string $secure) : string {
+	$secure = strtolower(trim($secure));
+
+	if ($secure === 'ssl' || $secure === 'tls' || $secure === 'none') {
+		return $secure;
+	}
+
+	return 'none';
+}
+
+/**
+ * Map the configured SMTP security mode to the EsmtpTransport $tls argument.
+ *
+ * 'ssl'  => true  (implicit TLS, e.g. port 465)
+ * 'tls'  => false (start plaintext; STARTTLS upgrade is enforced separately)
+ * 'none' => false (no TLS attempted)
+ *
+ * 'tls' must not map to null. A null $tls makes STARTTLS opportunistic, which
+ * silently downgrades to plaintext when the server omits the STARTTLS
+ * capability. Mandatory STARTTLS is enforced by CactiRequireTlsEsmtpTransport;
+ * opportunistic STARTTLS is suppressed by CactiNoTlsEsmtpTransport.
+ *
+ * @param string $secure One of 'ssl', 'tls', 'none' (empty/unknown treated as none)
+ *
+ * @return bool
+ */
+function mailer_secure_tls_flag(string $secure) : bool {
+	return mailer_normalize_secure_mode($secure) === 'ssl';
+}
+
+/**
+ * Build an SMTP transport that honours the configured security mode.
+ *
+ * @param string     $host           SMTP host
+ * @param int        $port           SMTP port
+ * @param string     $secure         One of 'ssl', 'tls', 'none' (empty/unknown → none)
+ * @param null|array $authenticators Optional SMTP authenticators (OAuth2)
+ *
+ * @return EsmtpTransport
+ */
+function mailer_build_esmtp_transport(string $host, int $port, string $secure, ?array $authenticators = null) : EsmtpTransport {
+	require_once(CACTI_PATH_LIBRARY . '/CactiMailerTransport.php');
+
+	$secure = mailer_normalize_secure_mode($secure);
+	$tls    = mailer_secure_tls_flag($secure);
+
+	if ($secure === 'tls') {
+		return new CactiRequireTlsEsmtpTransport($host, $port, $tls, null, null, null, $authenticators);
+	}
+
+	if ($secure === 'none') {
+		return new CactiNoTlsEsmtpTransport($host, $port, $tls, null, null, null, $authenticators);
+	}
+
+	// ssl: implicit TLS on connect
+	return new EsmtpTransport($host, $port, $tls, null, null, null, $authenticators);
+}
+
+/**
  * function to send mails to users
  *
  * For contact parameters, they can accept arrays containing zero or more values in the forms of:
@@ -5660,33 +5738,18 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	null|array|string $bcc = null, null|array|string $replyto = null, null|string $subject = null,
 	null|string $body = null, null|string $body_text = null, null|array|string $attachments = [],
 	null|array $headers = [], bool $html = true, bool $expandIds = false) : string {
-	global $cacti_locale, $mail_methods;
+	global $mail_methods;
 
 	$start_time = microtime(true);
 
 	$subject ??= '';
 	$body ??= '';
 
-	// Create the PHPMailer instance
-	$mail = new PHPMailer\PHPMailer\PHPMailer;
-
 	// Set a reasonable timeout of 5 seconds
 	$timeout = intval(read_config_option('settings_smtp_timeout'));
 
 	if (empty($timeout) || $timeout < 0 || $timeout > 300) {
-		$mail->Timeout = 5;
-	} else {
-		$mail->Timeout = $timeout;
-	}
-
-	// Support SMTPUTF8
-	$mail::$validator = 'eai';
-
-	// Setup i18n
-	$langparts = explode('-', $cacti_locale);
-
-	if (file_exists(CACTI_PATH_INCLUDE . '/vendor/phpmailer/phpmailer/language/phpmailer.lang-' . $langparts[0] . '.php')) {
-		$mail->setLanguage($langparts[0], CACTI_PATH_INCLUDE . '/vendor/phpmailer/phpmailer/language/');
+		$timeout = 5;
 	}
 
 	$how = read_config_option('settings_how');
@@ -5695,60 +5758,34 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		$how = 0;
 	}
 
+	$transport = null;
+
 	if ($how == 0) {
-		$mail->isMail();
+		$transport = Transport::fromDsn('native://default');
 	} elseif ($how == 1) {
-		$mail->Sendmail = read_config_option('settings_sendmail_path');
-		$mail->isSendmail();
+		$sendmail  = trim((string) read_config_option('settings_sendmail_path'));
+		$command   = ($sendmail != '' ? $sendmail : '/usr/sbin/sendmail') . ' -oi -t';
+		$transport = Transport::fromDsn('sendmail://default?command=' . rawurlencode($command));
 	} elseif ($how == 2) {
-		$mail->isSMTP();
-		$mail->Host = read_config_option('settings_smtp_host');
-		$mail->Port = intval(read_config_option('settings_smtp_port'));
+		$smtp_host = read_config_option('settings_smtp_host');
+		$smtp_port = intval(read_config_option('settings_smtp_port'));
+		$secure    = read_config_option('settings_smtp_secure');
+
+		$transport = mailer_build_esmtp_transport($smtp_host, $smtp_port, (string) $secure);
+		$stream    = $transport->getStream();
+
+		if ($stream instanceof SocketStream) {
+			$stream->setTimeout((float) $timeout);
+		}
 
 		if (read_config_option('settings_smtp_username') != '') {
-			$mail->SMTPAuth = true;
-			$mail->Username = read_config_option('settings_smtp_username');
+			$transport->setUsername(read_config_option('settings_smtp_username'));
 
 			if (read_config_option('settings_smtp_password') != '') {
-				$mail->Password = read_config_option('settings_smtp_password');
+				$transport->setPassword(read_config_option('settings_smtp_password'));
 			}
-		} else {
-			$mail->SMTPAuth = false;
-		}
-
-		$secure  = read_config_option('settings_smtp_secure');
-
-		if (!empty($secure) && $secure != 'none') {
-			if ($secure == 'tls') {
-				$mail->SMTPSecure = $mail::ENCRYPTION_STARTTLS;
-			} else {
-				$mail->SMTPSecure = $mail::ENCRYPTION_SMTPS;
-			}
-
-			if (substr_count($mail->Host, ':') == 0) {
-				$mail->Host = $secure . '://' . $mail->Host;
-			}
-		} else {
-			$mail->SMTPAutoTLS = false;
 		}
 	} elseif ($how == 3) {
-		$mail->isSMTP();
-		$mail->Host = read_config_option('settings_oauth2_host');
-		$mail->Port = intval(read_config_option('settings_oauth2_port'));
-
-		$secure = read_config_option('settings_oauth2_secure');
-
-		if (!empty($secure) && $secure != 'none') {
-			$mail->SMTPSecure = cacti_strtolower($secure);
-		} else {
-			$mail->SMTPAutoTLS = false;
-		}
-
-		$mail->SMTPAuth = true;
-		$mail->AuthType = 'XOAUTH2';
-
-		$provider = false;
-
 		$email        = read_config_option('settings_oauth2_from_email');
 		$clientId     = read_config_option('settings_oauth2_client_id');
 		$clientSecret = read_config_option('settings_oauth2_client_secret');
@@ -5774,17 +5811,35 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		$provider = CactiOAuth::getProvider($providerName, $params);
 
 		if ($provider !== null) {
-			$mail->setOAuth(
-				new PHPMailer\PHPMailer\OAuth([
-					'provider'     => $provider,
-					'clientId'     => $clientId,
-					'clientSecret' => $clientSecret,
-					'refreshToken' => $refreshToken,
-					'userName'     => $email,
-				])
+			try {
+				$accessToken = $provider->getAccessToken('refresh_token', [
+					'refresh_token' => $refreshToken,
+				]);
+			} catch (\Throwable $e) {
+				return __('OAuth2 token refresh failed: %s', $e->getMessage());
+			}
+
+			$secure    = read_config_option('settings_oauth2_secure');
+			$transport = mailer_build_esmtp_transport(
+				read_config_option('settings_oauth2_host'),
+				intval(read_config_option('settings_oauth2_port')),
+				(string) $secure,
+				[new XOAuth2Authenticator()]
 			);
+			$stream = $transport->getStream();
+
+			if ($stream instanceof SocketStream) {
+				$stream->setTimeout((float) $timeout);
+			}
+
+			$transport->setUsername($email);
+			$transport->setPassword($accessToken->getToken());
+		} else {
+			return __('Unsupported OAuth2 provider: %s', $providerName);
 		}
 	}
+
+	$emailMessage = new Email();
 
 	// perform data substitution
 	if (str_contains($subject, '|date_time|')) {
@@ -5830,32 +5885,48 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	}
 
 	$result    = false;
-	$fromText  = add_email_details([$from], $result, [$mail, 'setFrom']);
+	$fromText  = add_email_details([$from], $result, function (string $address, string $name) use ($emailMessage): bool {
+		$emailMessage->addFrom(new Address($address, $name));
+
+		return true;
+	});
 
 	if ($result == false) {
-		return record_mailer_error($fromText, $mail->ErrorInfo);
+		return record_mailer_error($fromText, '');
 	}
 
 	// Convert $to variable to proper array structure
-	$to        = parse_email_details($to);
-	$toText    = add_email_details($to, $result, [$mail, 'addAddress']);
+	$to     = parse_email_details($to);
+	$toText = add_email_details($to, $result, function (string $address, string $name) use ($emailMessage): bool {
+		$emailMessage->addTo(new Address($address, $name));
+
+		return true;
+	});
 
 	if ($result == false) {
-		return record_mailer_error($toText, $mail->ErrorInfo);
+		return record_mailer_error($toText, '');
 	}
 
-	$cc        = parse_email_details($cc);
-	$ccText    = add_email_details($cc, $result, [$mail, 'addCC']);
+	$cc     = parse_email_details($cc);
+	$ccText = add_email_details($cc, $result, function (string $address, string $name) use ($emailMessage): bool {
+		$emailMessage->addCc(new Address($address, $name));
+
+		return true;
+	});
 
 	if ($result == false) {
-		return record_mailer_error($ccText, $mail->ErrorInfo);
+		return record_mailer_error($ccText, '');
 	}
 
-	$bcc       = parse_email_details($bcc);
-	$bccText   = add_email_details($bcc, $result, [$mail, 'addBCC']);
+	$bcc     = parse_email_details($bcc);
+	$bccText = add_email_details($bcc, $result, function (string $address, string $name) use ($emailMessage): bool {
+		$emailMessage->addBcc(new Address($address, $name));
+
+		return true;
+	});
 
 	if ($result == false) {
-		return record_mailer_error($bccText, $mail->ErrorInfo);
+		return record_mailer_error($bccText, '');
 	}
 
 	// This is a failsafe, should never happen now
@@ -5867,10 +5938,14 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	}
 
 	$replyto   = parse_email_details($replyto);
-	$replyText = add_email_details($replyto, $result, [$mail, 'addReplyTo']);
+	$replyText = add_email_details($replyto, $result, function (string $address, string $name) use ($emailMessage): bool {
+		$emailMessage->addReplyTo(new Address($address, $name));
+
+		return true;
+	});
 
 	if ($result == false) {
-		return record_mailer_error($replyText, $mail->ErrorInfo);
+		return record_mailer_error($replyText, '');
 	}
 
 	$conversion_array = [
@@ -5885,11 +5960,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	$body_text = text_substitute($body_text, false, $expandIds, $conversion_array);
 
 	// Set the subject
-	$mail->Subject = $subject;
-
-	// Support i18n
-	$mail->CharSet  = 'UTF-8';
-	$mail->Encoding = 'base64';
+	$emailMessage->subject($subject);
 
 	// Set the wordwrap limits
 	$wordwrap = read_config_option('settings_wordwrap');
@@ -5900,15 +5971,6 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		$wordwrap = 9999;
 	} elseif ($wordwrap < 0) {
 		$wordwrap = 76;
-	}
-
-	$mail->WordWrap = $wordwrap;
-	$mail->setWordWrap();
-
-	if (!$html) {
-		$mail->ContentType = 'text/plain';
-	} else {
-		$mail->ContentType = 'text/html';
 	}
 
 	$i = 0;
@@ -5958,31 +6020,82 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 					$attachment['filename'] = $attachment['attachment'];
 				}
 
-				// attempt to attach
-				if (!($graph_mode || $graph_ids)) {
-					if (!empty($attachment['attachment']) && @file_exists($attachment['attachment'])) {
-						$result = $mail->addAttachment($attachment['attachment'], $attachment['filename'], $attachment['encoding'], $attachment['mime_type'], $attachment['inline']);
+				$mime_type   = $attachment['mime_type'] ?: null;
+				$is_file     = !empty($attachment['attachment']) && @is_file($attachment['attachment']);
+				$want_inline = ($attachment['inline'] === 'inline');
+
+				// Graph mode defaults to inline with a Content-ID so <img src="cid:…"> works.
+				// Explicit 'attachment' disposition must still strip the GRAPH tag without embedding.
+				if ($graph_mode || $graph_ids) {
+					if ($want_inline) {
+						try {
+							if ($is_file) {
+								if (!is_readable($attachment['attachment'])) {
+									return __('Error attaching file: %s', $attachment['attachment']);
+								}
+
+								$part = new DataPart(new File($attachment['attachment']), $attachment['filename'], $mime_type);
+							} else {
+								$part = new DataPart($attachment['attachment'], $attachment['filename'], $mime_type);
+							}
+
+							$part->asInline()->setContentId($cid);
+							$emailMessage->addPart($part);
+						} catch (Throwable $e) {
+							return __('Error attaching file: %s', $e->getMessage());
+						}
 					} else {
-						$result = $mail->addStringAttachment($attachment['attachment'], $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']);
+						try {
+							if ($is_file) {
+								if (!is_readable($attachment['attachment'])) {
+									return __('Error attaching file: %s', $attachment['attachment']);
+								}
+
+								$emailMessage->attachFromPath($attachment['attachment'], $attachment['filename'], $mime_type);
+							} else {
+								$emailMessage->attach($attachment['attachment'], $attachment['filename'], $mime_type);
+							}
+						} catch (Throwable $e) {
+							return __('Error attaching file: %s', $e->getMessage());
+						}
 					}
 				} else {
-					if (!empty($attachment['attachment']) && @file_exists($attachment['attachment'])) {
-						$result = $mail->addEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], $attachment['encoding'], $attachment['mime_type'], $attachment['inline']);
-					} else {
-						$result = $mail->addStringEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']);
+					// Non-graph attachments honour the inline flag (PHPMailer parity).
+					try {
+						if ($is_file) {
+							if (!is_readable($attachment['attachment'])) {
+								return __('Error attaching file: %s', $attachment['attachment']);
+							}
+
+							if ($want_inline) {
+								$part = new DataPart(new File($attachment['attachment']), $attachment['filename'], $mime_type);
+								$part->asInline();
+								$emailMessage->addPart($part);
+							} else {
+								$emailMessage->attachFromPath($attachment['attachment'], $attachment['filename'], $mime_type);
+							}
+						} else {
+							if ($want_inline) {
+								$part = new DataPart($attachment['attachment'], $attachment['filename'], $mime_type);
+								$part->asInline();
+								$emailMessage->addPart($part);
+							} else {
+								$emailMessage->attach($attachment['attachment'], $attachment['filename'], $mime_type);
+							}
+						}
+					} catch (Throwable $e) {
+						return __('Error attaching file: %s', $e->getMessage());
 					}
-				}
-
-				if ($result == false) {
-					cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
-
-					return $mail->ErrorInfo;
 				}
 
 				$i++;
 
 				if ($graph_mode) {
-					$body = str_replace('<GRAPH>', "<br><br><img src='cid:$cid'>", $body);
+					if ($want_inline) {
+						$body = str_replace('<GRAPH>', "<br><br><img src='cid:$cid'>", $body);
+					} else {
+						$body = str_replace('<GRAPH>', '', $body);
+					}
 				} elseif ($graph_ids) {
 					// handle the body text
 					switch ($attachment['inline']) {
@@ -6003,7 +6116,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	// process custom headers
 	if (cacti_sizeof($headers)) {
 		foreach ($headers as $name => $value) {
-			$mail->addCustomHeader($name, $value);
+			$emailMessage->getHeaders()->addTextHeader($name, $value);
 		}
 	}
 
@@ -6018,16 +6131,31 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		$body_text = strip_tags(str_ireplace($brs, "\n", $body));
 	}
 
-	$mail->isHTML($html);
-	$mail->Body = ($html ? $body : $body_text);
-
-	if ($html && $body_text != '') {
-		$mail->AltBody = $body_text;
+	if ($wordwrap > 0) {
+		$body_text = wordwrap($body_text, $wordwrap);
 	}
 
-	$result   = $mail->send();
-	$error    = $mail->ErrorInfo; // $result ? '' : $mail->ErrorInfo;
-	$method   = $mail_methods[intval(read_config_option('settings_how'))];
+	if ($html) {
+		$emailMessage->html($body);
+
+		if ($body_text != '') {
+			$emailMessage->text($body_text);
+		}
+	} else {
+		$emailMessage->text($body_text);
+	}
+
+	$error = '';
+
+	try {
+		(new Mailer($transport))->send($emailMessage);
+		$result = true;
+	} catch (TransportExceptionInterface $e) {
+		$result = false;
+		$error  = $e->getMessage();
+	}
+
+	$method   = $mail_methods[intval($how)];
 	$rtype    = $result ? 'INFO' : 'WARNING';
 	$rmsg     = $result ? 'successfully sent' : 'failed';
 	$end_time = microtime(true);
@@ -6067,7 +6195,24 @@ function add_email_details(array $emails, bool &$result, callable $addFunc) : st
 
 	foreach ($emails as $e) {
 		if (!empty($e['email'])) {
-			$result = $addFunc($e['email'], $e['name']);
+			$address = $e['email'];
+
+			/* Sendmail accepts a bare local address (e.g. "root") and appends
+			 * the local host itself. Symfony's Address requires a domain, so
+			 * qualify the address the same way rather than rejecting it. */
+			if (strpos($address, '@') === false) {
+				$host    = gethostname();
+				$address = $address . '@' . ($host !== false ? $host : 'localhost');
+			}
+
+			try {
+				$result = $addFunc($address, $e['name']);
+			} catch (RfcComplianceException $ex) {
+				// new Address() rejects malformed recipients; surface it as an error string
+				$result = false;
+
+				return 'Bad email format: ' . $e['email'] . ' - ' . $ex->getMessage();
+			}
 
 			if (!$result) {
 				return '';
@@ -6173,7 +6318,7 @@ function split_emaildetail(mixed $email) : array {
 
 	if (!is_array($email)) {
 		/**
-		 * Borrowing eai validation from PHPMailer
+		 * Borrowing EAI validation from the HTML email input specification.
 		 *
 		 * @see https://html.spec.whatwg.org/#e-mail-state-(type=email)
 		 * @see https://en.wikipedia.org/wiki/International_email
@@ -6211,47 +6356,31 @@ function create_emailtext(array $e) : string {
 }
 
 function ping_mail_server(string $host, int $port, string $user, string $password, int $timeout = 10, string $secure = 'none') : mixed {
-	// Create a new SMTP instance
-	$smtp = new PHPMailer\PHPMailer\SMTP;
-
-	if (!empty($secure) && $secure != 'none') {
-		if (substr_count($host, ':') == 0) {
-			$host = $secure . '://' . $host;
-		}
-	}
-
-	// Enable connection-level debug output
-	$smtp->do_debug = 0;
-	// $smtp->do_debug = SMTP::DEBUG_LOWLEVEL;
-
-	$results = true;
+	$results   = true;
+	$transport = null;
 
 	try {
-		// Connect to an SMTP server
-		if ($smtp->connect($host, $port, $timeout)) {
-			// Say hello
-			if ($smtp->hello(gethostbyname((string) (gethostname() ?: 'localhost')))) { // Put your host name in here
-				// Authenticate
-				if ($user != '') {
-					if ($smtp->authenticate($user, $password)) {
-						$results = true;
-					} else {
-						throw new Exception(__('Authentication failed: %s', $smtp->getLastReply()));
-					}
-				}
-			} else {
-				throw new Exception(__('HELO failed: %s', $smtp->getLastReply()));
-			}
-		} else {
-			throw new Exception(__('Connect failed: %s', $smtp->getLastReply()));
+		$transport = mailer_build_esmtp_transport($host, $port, $secure);
+		$stream    = $transport->getStream();
+
+		if ($stream instanceof SocketStream) {
+			$stream->setTimeout((float) $timeout);
 		}
-	} catch (Exception $e) {
+
+		if ($user != '') {
+			$transport->setUsername($user);
+			$transport->setPassword($password);
+		}
+
+		$transport->start();
+	} catch (TransportExceptionInterface $e) {
 		$results = __('SMTP error: ') . $e->getMessage();
 		cacti_log($results);
+	} finally {
+		if ($transport instanceof EsmtpTransport) {
+			$transport->stop();
+		}
 	}
-
-	// Whatever happened, close the connection.
-	$smtp->quit(true);
 
 	return $results;
 }
