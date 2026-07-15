@@ -1,7 +1,6 @@
 Cacti CHANGELOG
 
 1.3.0-dev
--feature#3744: Warn when data input commands contain unresolved substitution variables
 -issue#2205: Allow admins to disable RRDtool watermark
 -issue#3066: Enable the secure flag on cookies when HTTPS is enabled.
 -issue#3074: ss_net_snmp_disk_bytes.php and ss_net_snmp_disk_io.php do now report mmcblk data.
@@ -214,6 +213,7 @@ Cacti CHANGELOG
 -feature: Continue to support MD5() for the password verifications but also support SHA256
 -feature: Harden authentication system correctness including 2FA logic, password reset token security, and basic auth status checks
 -feature: Extract remote agent reverse DNS forward-confirmation into the remote_agent_fcrdns_confirmed() helper
+-feature#3744: Warn when data input commands contain unresolved substitution variables
 
 1.2.x
 -issue: #7212: Address a few small memory leaks in realtime graphing
