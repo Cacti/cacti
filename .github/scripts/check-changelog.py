@@ -4,12 +4,15 @@
 from __future__ import annotations
 
 import re
+import os
+import subprocess
 import sys
 from pathlib import Path
 
 
 RELEASE_HEADING = re.compile(r"^(?:\d+\.\d+\.\d+(?:-[\w.]+)?|\d+\.\d+\.x)$")
 ENTRY = re.compile(r"^-(issue|feature)(?:#\d+)?:\s+\S.*$")
+NUMBERED_ENTRY = re.compile(r"^-(?:issue|feature)#\d+:")
 
 
 def main() -> int:
@@ -55,6 +58,24 @@ def main() -> int:
 
 	if end < len(lines) and lines[end - 1].strip():
 		errors.append(f"line {end + 1}: release headings must be separated by a blank line")
+
+	# Existing releases contain legacy unnumbered entries. New entries must be
+	# traceable to an issue or pull request, so enforce that only on PR additions.
+	base_ref = os.environ.get("GITHUB_BASE_REF")
+	if base_ref:
+		result = subprocess.run(
+			["git", "diff", "--unified=0", f"origin/{base_ref}...HEAD", "--", "CHANGELOG"],
+			capture_output=True,
+			text=True,
+			check=False,
+		)
+		if result.returncode == 0:
+			for added in result.stdout.splitlines():
+				if added.startswith(("+++", "---")):
+					continue
+				line = added[1:] if added.startswith("+") else ""
+				if line.startswith(("-issue", "-feature")) and not NUMBERED_ENTRY.match(line):
+					errors.append(f"new CHANGELOG entries must include an issue or pull-request number: {line}")
 
 	if errors:
 		print("CHANGELOG validation failed:", file=sys.stderr)

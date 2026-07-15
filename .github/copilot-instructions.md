@@ -62,6 +62,7 @@
 - **CHANGELOG**:
   - Within each release section, keep `-issue` entries first and `-feature` entries after them.
   - Append new issue entries at the end of the issue block and new feature entries at the end of the feature block.
+  - Keep numbered entries in their existing numeric order; every new entry must include an issue or pull-request number (`#1234`).
   - Preserve the existing entry prefixes, release headings, and blank-line spacing.
 
 ## Workflows you’ll actually use
