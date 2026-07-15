@@ -214,6 +214,7 @@ Cacti CHANGELOG
 -feature: Continue to support MD5() for the password verifications but also support SHA256
 -feature: Harden authentication system correctness including 2FA logic, password reset token security, and basic auth status checks
 -feature: Extract remote agent reverse DNS forward-confirmation into the remote_agent_fcrdns_confirmed() helper
+-feature#3744: Warn when data input commands contain unresolved substitution variables
 
 1.2.x
 -issue: #7212: Address a few small memory leaks in realtime graphing
