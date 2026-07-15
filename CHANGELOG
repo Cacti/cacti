@@ -83,7 +83,7 @@ Cacti CHANGELOG
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#3518: Allow for 2 Levels of Poller sync
 -feature#3558: Allow copy_user cli script to set various additional fields
--feature#3568; Allow exclusion of snmp fields / value(s) when adding graphs via CLI
+-feature#3568: Allow exclusion of snmp fields / value(s) when adding graphs via CLI
 -feature#3584: Verify passwords against Pwned databases using API
 -feature#3585: CLI script to show database permissions that Cacti has
 -feature#3608: Graphs should be able to use |input_field_name| replacement variables
