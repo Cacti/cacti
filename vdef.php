@@ -143,7 +143,11 @@ function vdef_form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: vdef.php?action=item_edit&vdef_id=' . grv('vdef_id') . '&id=' . ($vdef_item_id === null ? grv('id') : $vdef_item_id));
+			cacti_redirect('vdef.php', [
+				'action'  => 'item_edit',
+				'vdef_id' => grv('vdef_id'),
+				'id'      => $vdef_item_id === null ? grv('id') : $vdef_item_id,
+			]);
 		} else {
 			header('Location: vdef.php?action=edit&id=' . grv('vdef_id'));
 		}

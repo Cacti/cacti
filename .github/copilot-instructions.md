@@ -57,6 +57,7 @@
 - **Plugins**:
   - Hooks via `api_plugin_hook(...)` in `lib/plugins.php`.
   - Must have an `INFO` file (INI format).
+  - Cacti plugins must not require a root `composer.json`; plugin installation and runtime remain independent of Composer unless a plugin explicitly documents an optional development-only dependency.
   - Use `top_header()`/`bottom_footer()` (no direct includes).
   - Add `&header=false` to URLs for AJAX requests.
 - **CHANGELOG**:
@@ -64,6 +65,11 @@
   - Append new issue entries at the end of the issue block and new feature entries at the end of the feature block.
   - Keep numbered entries in their existing numeric order; every new entry must include an issue or pull-request number (`#1234`).
   - Preserve the existing entry prefixes, release headings, and blank-line spacing.
+
+- **URLs and redirects**:
+  - Use `html_url($page, $args)` to build query strings; it encodes values with RFC 3986 semantics and handles existing query strings.
+  - Use `cacti_redirect($page, $args)` for local redirects. It rejects absolute and protocol-relative destinations and terminates the request.
+  - Escape URLs with `htmle()` when embedding them in HTML attributes. URL construction and HTML escaping are separate responsibilities.
 
 ## Workflows you’ll actually use
 - Install deps: `composer install` (CI validates via `.github/workflows/syntax.yml`).

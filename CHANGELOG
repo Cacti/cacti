@@ -215,6 +215,7 @@ Cacti CHANGELOG
 -feature: Harden authentication system correctness including 2FA logic, password reset token security, and basic auth status checks
 -feature: Extract remote agent reverse DNS forward-confirmation into the remote_agent_fcrdns_confirmed() helper
 -feature#3744: Warn when data input commands contain unresolved substitution variables
+-feature#7323: Add a shared URL builder and local redirect helper
 
 1.2.x
 -issue: #7212: Address a few small memory leaks in realtime graphing

@@ -5182,6 +5182,52 @@ function sanitize_search_string(string $string) : string {
 }
 
 /**
+ * Build a local URL with an RFC 3986-encoded query string.
+ *
+ * @param string               $page The local page or path
+ * @param array<string, mixed> $args Query parameters
+ *
+ * @return string
+ */
+function html_url(string $page, array $args = []) : string {
+	$query = http_build_query($args, '', '&', PHP_QUERY_RFC3986);
+
+	if ($query === '') {
+		return $page;
+	}
+
+	$separator = str_contains($page, '?') ? '&' : '?';
+
+	if (str_ends_with($page, '?') || str_ends_with($page, '&')) {
+		$separator = '';
+	}
+
+	return $page . $separator . $query;
+}
+
+/**
+ * Redirect to a local Cacti page and terminate the request.
+ *
+ * Absolute, protocol-relative, and control-character-prefixed destinations
+ * fail closed to index.php so request data cannot create an open redirect.
+ *
+ * @param string               $page The local page or path
+ * @param array<string, mixed> $args Query parameters
+ *
+ * @return never
+ */
+function cacti_redirect(string $page, array $args = []) : never {
+	$page = (string) (preg_replace('/^[\\x00-\\x20]+/', '', $page) ?? '');
+
+	if ($page === '' || preg_match('#^(?:[a-z][a-z0-9+.\\-]*:|[\\/\\\\]{2})#i', $page) === 1) {
+		$page = 'index.php';
+	}
+
+	header('Location: ' . html_url($page, $args));
+	exit;
+}
+
+/**
  * cleans up a URI, e.g. from REQUEST_URI and/or QUERY_STRING
  * in case of XSS attack, expect the result to be broken
  * we do NOT sanitize in a way, that attacks are converted to valid HTML
