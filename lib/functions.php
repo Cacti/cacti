@@ -5740,6 +5740,13 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	null|array $headers = [], bool $html = true, bool $expandIds = false) : string {
 	global $mail_methods;
 
+	// A deployment may have an autoloader generated from a different
+	// composer.lock (or no vendor tree at all).  Fail gracefully instead of
+	// turning a notification attempt into a fatal error.
+	if (!class_exists(Mailer::class) || !class_exists(Email::class)) {
+		return __('Composer mail dependencies are missing or stale. Run composer install and try again.');
+	}
+
 	$start_time = microtime(true);
 
 	$subject ??= '';
