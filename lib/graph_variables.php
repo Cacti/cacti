@@ -39,7 +39,10 @@ function nth_percentile(mixed $local_data_ids, int $start_seconds, int $end_seco
 	$stats = json_decode(rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile, $resolution, $peak), true);
 
 	if ($peak) {
-		if (array_key_exists('peak', $stats)) {
+		/* rrdtool_function_stats() emits an empty peak when the RRDfile
+		 * lacks a MAX consolidation function, so treat it as absent and
+		 * fall back to the AVERAGE based statistics */
+		if (array_key_exists('peak', $stats) && cacti_sizeof($stats['peak'])) {
 			return $stats['peak'];
 		}
 
