@@ -761,7 +761,7 @@ function reports_tree_has_graphs(int $tree_id,int  $branch_id,int  $effective_us
 		if ($branch_id > 0) {
 			$sql_where .= ' AND gti.parent=' . $branch_id;
 		} else {
-			$sql_where .= ' AND parent=0';
+			$sql_where .= ' AND gti.parent=0';
 		}
 
 		$graphs = array_rekey(db_fetch_assoc_prepared("SELECT gl.id
@@ -1224,12 +1224,7 @@ function reports_expand_device(array &$report, array $item, int $device_id, int 
 		);
 
 		// for graphs without a template
-		array_push($graph_templates,
-			[
-				'id'   => '0',
-				'name' => __('(No Graph Template)')
-			]
-		);
+		$graph_templates[0] = __('(No Graph Template)');
 	} else {
 		$graph_templates = array_rekey(
 			db_fetch_assoc_prepared('SELECT DISTINCT
@@ -1561,12 +1556,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 						}
 
 						// for graphs without a template
-						array_push($graph_templates,
-							[
-								'id'   => '0',
-								'name' => __('(No Graph Template)')
-							]
-						);
+						$graph_templates[0] = __('(No Graph Template)');
 
 						$outgraphs = [];
 
