@@ -85,6 +85,11 @@ function api_aggregate_convert_template(array $graphs) : void {
 		WHERE id = ?',
 		[$aggregate_template_id]);
 
+	// without a valid template the saves below would write null template fields
+	if (!cacti_sizeof($aggregate_template)) {
+		return;
+	}
+
 	foreach ($graphs as $graph) {
 		$save                          = [];
 		$save['id']                    = '';

@@ -117,7 +117,7 @@ function add_tree_names_to_actions_array() : void {
 }
 
 function form_save() : void {
-	if (!isrv('save_component_graph') && !isrv('save_component_input')) {
+	if (!isrv('save_component_graph') && !isrv('save_component_input') && !isrv('save_component_item')) {
 		header('Location: aggregate_graphs.php?action=edit&id=' . gnrv('id'));
 
 		exit();
@@ -917,7 +917,7 @@ function form_actions() : void {
 					'scont'    => __('Migrate to Aggregate Graph'),
 					'pcont'    => __('Migrate to Aggregate Graphs'),
 					'extra'    => [
-						'title_format' => [
+						'aggregate_template_id' => [
 							'method'  => 'drop_array',
 							'array'   => $aggregate_templates,
 							'title'   => __('Aggregate Template'),
@@ -929,7 +929,7 @@ function form_actions() : void {
 					'message'  => __('Click \'Continue\' to Combine the following Aggregates into an Aggregate Graph.'),
 					'cont'     => __('Combine Aggregate Graphs'),
 					'extra'    => [
-						'title_format' => [
+						'aggregate_name' => [
 							'method'  => 'textbox',
 							'title'   => __('Aggregate Name'),
 							'default' => __('New Aggregate'),
