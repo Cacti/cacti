@@ -119,21 +119,21 @@ function api_device_purge_from_remote(array|int $device_ids, int $poller_id = 0)
 			if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 				$int_device_ids = array_map('intval', $device_ids);
 
-				db_execute('DELETE FROM host             WHERE      ' . array_to_sql_or($int_device_ids, 'id'), true, $rcnn_id);
-				db_execute('DELETE FROM host_graph       WHERE ' . array_to_sql_or($int_device_ids, 'host_id'), true, $rcnn_id);
-				db_execute('DELETE FROM host_snmp_query  WHERE ' . array_to_sql_or($int_device_ids, 'host_id'), true, $rcnn_id);
-				db_execute('DELETE FROM host_snmp_cache  WHERE ' . array_to_sql_or($int_device_ids, 'host_id'), true, $rcnn_id);
-				db_execute('DELETE FROM host_value_cache WHERE ' . array_to_sql_or($int_device_ids, 'host_id'), true, $rcnn_id);
-				db_execute('DELETE FROM poller_item      WHERE ' . array_to_sql_or($int_device_ids, 'host_id'), true, $rcnn_id);
-				db_execute('DELETE FROM poller_reindex   WHERE ' . array_to_sql_or($int_device_ids, 'host_id'), true, $rcnn_id);
-				db_execute('DELETE FROM graph_tree_items WHERE ' . array_to_sql_or($int_device_ids, 'host_id'), true, $rcnn_id);
-				db_execute('DELETE FROM reports_items    WHERE ' . array_to_sql_or($int_device_ids, 'host_id'), true, $rcnn_id);
+				db_execute('DELETE FROM host             WHERE      ' . db_in_clause('id', $int_device_ids), true, $rcnn_id);
+				db_execute('DELETE FROM host_graph       WHERE ' . db_in_clause('host_id', $int_device_ids), true, $rcnn_id);
+				db_execute('DELETE FROM host_snmp_query  WHERE ' . db_in_clause('host_id', $int_device_ids), true, $rcnn_id);
+				db_execute('DELETE FROM host_snmp_cache  WHERE ' . db_in_clause('host_id', $int_device_ids), true, $rcnn_id);
+				db_execute('DELETE FROM host_value_cache WHERE ' . db_in_clause('host_id', $int_device_ids), true, $rcnn_id);
+				db_execute('DELETE FROM poller_item      WHERE ' . db_in_clause('host_id', $int_device_ids), true, $rcnn_id);
+				db_execute('DELETE FROM poller_reindex   WHERE ' . db_in_clause('host_id', $int_device_ids), true, $rcnn_id);
+				db_execute('DELETE FROM graph_tree_items WHERE ' . db_in_clause('host_id', $int_device_ids), true, $rcnn_id);
+				db_execute('DELETE FROM reports_items    WHERE ' . db_in_clause('host_id', $int_device_ids), true, $rcnn_id);
 
 				db_execute('DELETE FROM poller_command
-					WHERE ' . array_to_sql_or($int_device_ids, 'SUBSTRING_INDEX(command, ":", 1)'), true, $rcnn_id);
+					WHERE ' . db_in_clause('SUBSTRING_INDEX(command, ":", 1)', $int_device_ids), true, $rcnn_id);
 
-				db_execute('DELETE FROM data_local       WHERE ' . array_to_sql_or($int_device_ids, 'host_id'), true, $rcnn_id);
-				db_execute('DELETE FROM graph_local      WHERE ' . array_to_sql_or($int_device_ids, 'host_id'), true, $rcnn_id);
+				db_execute('DELETE FROM data_local       WHERE ' . db_in_clause('host_id', $int_device_ids), true, $rcnn_id);
+				db_execute('DELETE FROM graph_local      WHERE ' . db_in_clause('host_id', $int_device_ids), true, $rcnn_id);
 			} else {
 				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 			}
@@ -212,14 +212,14 @@ function api_device_remove_multi(array $device_ids, int $delete_type = 2) : void
 		$data_sources = array_rekey(
 			db_fetch_assoc('SELECT id
 				FROM data_local
-				WHERE ' . array_to_sql_or($int_device_ids, 'host_id')),
+				WHERE ' . db_in_clause('host_id', $int_device_ids)),
 			'id', 'id'
 		);
 
 		$graphs = array_rekey(
 			db_fetch_assoc('SELECT id
 				FROM graph_local
-				WHERE ' . array_to_sql_or($int_device_ids, 'host_id')),
+				WHERE ' . db_in_clause('host_id', $int_device_ids)),
 			'id', 'id'
 		);
 
@@ -228,29 +228,29 @@ function api_device_remove_multi(array $device_ids, int $delete_type = 2) : void
 			db_execute_prepared('DELETE FROM poller_command WHERE command LIKE ?', [$device_id . ':%']);
 		}
 
-		db_execute('DELETE FROM poller_item    WHERE ' . array_to_sql_or($int_device_ids, 'host_id'));
-		db_execute('DELETE FROM poller_reindex WHERE ' . array_to_sql_or($int_device_ids, 'host_id'));
+		db_execute('DELETE FROM poller_item    WHERE ' . db_in_clause('host_id', $int_device_ids));
+		db_execute('DELETE FROM poller_reindex WHERE ' . db_in_clause('host_id', $int_device_ids));
 
 		$poller_ids = get_remote_poller_ids_from_devices($devices_to_delete);
 
 		// handle removal or mark for removal as required
-		db_execute('DELETE FROM host WHERE ' . array_to_sql_or($int_device_ids, 'id') . ' AND poller_id = 1');
-		db_execute("UPDATE host SET deleted = 'on' WHERE " . array_to_sql_or($int_device_ids, 'id') . ' AND poller_id != 1');
+		db_execute('DELETE FROM host WHERE ' . db_in_clause('id', $int_device_ids) . ' AND poller_id = 1');
+		db_execute("UPDATE host SET deleted = 'on' WHERE " . db_in_clause('id', $int_device_ids) . ' AND poller_id != 1');
 
-		db_execute('DELETE FROM host_graph       WHERE ' . array_to_sql_or($int_device_ids, 'host_id'));
-		db_execute('DELETE FROM host_snmp_query  WHERE ' . array_to_sql_or($int_device_ids, 'host_id'));
-		db_execute('DELETE FROM host_snmp_cache  WHERE ' . array_to_sql_or($int_device_ids, 'host_id'));
-		db_execute('DELETE FROM host_value_cache WHERE ' . array_to_sql_or($int_device_ids, 'host_id'));
-		db_execute('DELETE FROM graph_tree_items WHERE ' . array_to_sql_or($int_device_ids, 'host_id'));
-		db_execute('DELETE FROM reports_items    WHERE ' . array_to_sql_or($int_device_ids, 'host_id'));
+		db_execute('DELETE FROM host_graph       WHERE ' . db_in_clause('host_id', $int_device_ids));
+		db_execute('DELETE FROM host_snmp_query  WHERE ' . db_in_clause('host_id', $int_device_ids));
+		db_execute('DELETE FROM host_snmp_cache  WHERE ' . db_in_clause('host_id', $int_device_ids));
+		db_execute('DELETE FROM host_value_cache WHERE ' . db_in_clause('host_id', $int_device_ids));
+		db_execute('DELETE FROM graph_tree_items WHERE ' . db_in_clause('host_id', $int_device_ids));
+		db_execute('DELETE FROM reports_items    WHERE ' . db_in_clause('host_id', $int_device_ids));
 
 		if ($delete_type == 2) {
 			api_delete_graphs($graphs, $delete_type, false);
 		} else {
 			api_data_source_disable_multi($data_sources);
 
-			db_execute('UPDATE graph_local SET host_id = 0 WHERE ' . array_to_sql_or($int_device_ids, 'host_id'));
-			db_execute('UPDATE data_local  SET host_id = 0 WHERE ' . array_to_sql_or($int_device_ids, 'host_id'));
+			db_execute('UPDATE graph_local SET host_id = 0 WHERE ' . db_in_clause('host_id', $int_device_ids));
+			db_execute('UPDATE data_local  SET host_id = 0 WHERE ' . db_in_clause('host_id', $int_device_ids));
 		}
 
 		if (cacti_sizeof($poller_ids)) {

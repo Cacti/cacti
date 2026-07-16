@@ -100,20 +100,21 @@ test('api_data_source.php purge action binds the method as a placeholder', funct
 // lib/api_device.php source guards
 // =====================================================================
 
-test('api_device.php routes device and data-query id lists through array_to_sql_or', function () use ($libDir) {
+test('api_device.php routes device id lists through db_in_clause', function () use ($libDir) {
 	$src = file_get_contents($libDir . '/api_device.php');
 
-	expect($src)->toContain('array_to_sql_or($int_device_ids, ');
+	expect($src)->toContain("db_in_clause('host_id', \$int_device_ids)");
+	expect($src)->toContain("db_in_clause('id', \$int_device_ids)");
 	expect($src)->toContain("array_to_sql_or(array_keys(\$objects['data_queries']), ");
 });
 
 test('api_device.php drops the raw imploded/interpolated device IN() clauses', function () use ($libDir) {
 	$src = file_get_contents($libDir . '/api_device.php');
 
-	expect($src)->not->toContain("implode(', ', \$int_device_ids)");
 	expect($src)->not->toContain("implode(',', array_keys(\$objects['data_queries']))");
 	expect($src)->not->toContain('IN ($devices_to_delete)');
 	expect($src)->not->toContain('IN($devices_to_delete)');
+	expect($src)->not->toContain('array_to_sql_or($int_device_ids,');
 });
 
 // =====================================================================
