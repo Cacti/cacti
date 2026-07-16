@@ -49,17 +49,11 @@ function prune_deprecated_files() : void {
 		'include/js/jquery',
 		'include/js/dygraph-combined.js',
 		'include/js/jquery.sparkline.js',
-		'include/vendor/phpmailer/src',
-		'include/vendor/phpmailer/languages',
-		'include/vendor/phpmailer/composer.json',
-		'include/vendor/phpmailer/get_oauth_token.php',
-		'include/vendor/phpmailer/VERSION',
-		'include/vendor/phpmailer/COMMITMENT',
-		'include/vendor/phpmailer/LICENSE',
-		'include/vendor/phpmailer/README.md',
-		'include/vendor/phpmailer/SECURITY.md',
-		'include/vendor/phpmailer/.editorconfig',
 		'include/vendor/flag-icons',
+		// PHPMailer was replaced by Symfony Mailer; remove the whole vendored tree
+		// (covers both the legacy include/vendor/phpmailer/* layout and the
+		// composer include/vendor/phpmailer/phpmailer/ layout) on upgrade.
+		'include/vendor/phpmailer',
 		'install/0_8_1_to_0_8_2.php',
 		'install/0_8_2a_to_0_8_3.php',
 		'install/0_8_2_to_0_8_2a.php',
