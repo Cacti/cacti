@@ -378,7 +378,7 @@ function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $out
 
 	// an empty $rrdtool_pipe array means no fp is available
 	if ($rrdtool_pipe === null || $rrdtool_pipe === false || !is_resource($rrdtool_pipe)) {
-		if (str_starts_with($command_line, 'fetch') || str_starts_with($command_line, 'info')) {
+		if (str_starts_with($command_line, 'fetch') || str_starts_with($command_line, 'info') || str_starts_with($command_line, 'xport')) {
 			$dograph = false;
 			rrdtool_set_language('en');
 		} else {
