@@ -18,7 +18,7 @@
 
 // Old form: accumulate a CSV, flush every 1000 plus a tail flush. Returns the
 // list of flushed batches (as arrays of ids) in order.
-function legacy_flush_batches(array $ids): array {
+function issue7264_legacy_flush_batches(array $ids): array {
 	$batches = [];
 	$current = [];
 	$i       = 0;
@@ -43,7 +43,7 @@ function legacy_flush_batches(array $ids): array {
 
 test('array_chunk reproduces the legacy flush batches', function () {
 	foreach ([[], range(1, 1), range(1, 999), range(1, 1000), range(1, 1001), range(1, 2500)] as $ids) {
-		expect(array_chunk($ids, 1000))->toBe(legacy_flush_batches($ids));
+		expect(array_chunk($ids, 1000))->toBe(issue7264_legacy_flush_batches($ids));
 	}
 });
 
