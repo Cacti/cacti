@@ -271,9 +271,6 @@ function get_basic_auth_username() : string|false {
 	} elseif (isset($_SERVER['HTTP_REDIRECT_REMOTE_USER'])) {
 		$raw      = is_array($_SERVER['HTTP_REDIRECT_REMOTE_USER']) ? ($_SERVER['HTTP_REDIRECT_REMOTE_USER'][0] ?? '') : $_SERVER['HTTP_REDIRECT_REMOTE_USER'];
 		$username = str_replace('\\', '\\\\', $raw);
-	} elseif (isset($_SERVER['HTTP_X_FORWARDED_USER'])) {
-		$raw      = is_array($_SERVER['HTTP_X_FORWARDED_USER']) ? ($_SERVER['HTTP_X_FORWARDED_USER'][0] ?? '') : $_SERVER['HTTP_X_FORWARDED_USER'];
-		$username = str_replace('\\', '\\\\', $raw);
 	} else {
 		$username = false;
 	}
@@ -5016,10 +5013,16 @@ function is_2fa_enabled(int $user_id) : bool {
  *
  * @return bool true when forward confirmation matches the source address */
 function remote_agent_fcrdns_confirmed(string $client_addr, array $forward_records) : bool {
+	$client_binary = filter_var($client_addr, FILTER_VALIDATE_IP) !== false ? inet_pton($client_addr) : false;
+
+	if ($client_binary === false) {
+		return false;
+	}
+
 	foreach ($forward_records as $record) {
 		$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
 
-		if ($ip === $client_addr) {
+		if ($ip !== '' && filter_var($ip, FILTER_VALIDATE_IP) !== false && inet_pton($ip) === $client_binary) {
 			return true;
 		}
 	}
