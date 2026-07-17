@@ -2265,8 +2265,7 @@ function sql_save(array $array_items, string $table_name, mixed $key_cols = 'id'
 			str_contains($cols[$key]['type'], 'decimal')) {
 			if ($value == '') {
 				if ($cols[$key]['null'] == 'YES') {
-					// TODO: We should make 'NULL', but there are issues that need to be addressed first
-					$array_items[$key] = 0;
+					$array_items[$key] = 'NULL';
 				} elseif (str_contains($cols[$key]['extra'], 'auto_increment')) {
 					$array_items[$key] = 0;
 				} elseif ($cols[$key]['default'] == '') {
