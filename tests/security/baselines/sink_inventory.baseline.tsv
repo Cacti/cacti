@@ -19,28 +19,28 @@ cmd_exec	./cmd.php:351			$cactiphp = proc_open($command, $cactides, $pipes);
 cmd_exec	./cmd_realtime.php:127				$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 cmd_exec	./graph_realtime.php:226			shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
 cmd_exec	./host.php:203		shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
-cmd_exec	./install/functions.php:964				$shell_output       = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
+cmd_exec	./install/functions.php:958				$shell_output       = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
 cmd_exec	./install/install.php:135			print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') . '</li>';
 cmd_exec	./lib/database.php:2626			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
 cmd_exec	./lib/database.php:2628			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ' version >/dev/null 2>&1', $output, $retval);
 cmd_exec	./lib/database.php:2631				exec("$dump_esc $options $credentials_string --user=" . cacti_escapeshellarg($username) . ' --password=' . cacti_escapeshellarg($password) . ' ' . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
 cmd_exec	./lib/database.php:2633				exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
 cmd_exec	./lib/dsstats.php:1251		$process = proc_open($command, $fds, $pipes);
-cmd_exec	./lib/functions.php:2634					$output = shell_exec($script_path);
-cmd_exec	./lib/functions.php:2649						$output = shell_exec("$php -q $script");
-cmd_exec	./lib/functions.php:2933							$output = shell_exec($script_path);
-cmd_exec	./lib/functions.php:3492		return exec('whoami') ?: '';
-cmd_exec	./lib/functions.php:4200		exec($command_line, $out, $return_code);
-cmd_exec	./lib/functions.php:7524			$processExists   = trim((string) shell_exec($checkProcessCmd));
-cmd_exec	./lib/functions.php:7534					shell_exec($killCmd);
-cmd_exec	./lib/functions.php:8196					$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
-cmd_exec	./lib/functions.php:8198					$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
-cmd_exec	./lib/functions.php:8594				exec('id -nu', $o, $r);
-cmd_exec	./lib/functions.php:9853			$output = shell_exec('powershell -Command "Get-WmiObject Win32_Processor | Select-Object NumberOfLogicalProcessors"');
-cmd_exec	./lib/functions.php:9860			$cpu_cores = shell_exec('sysctl -n hw.ncpu');
-cmd_exec	./lib/functions.php:9863				$cpu_cores = shell_exec('/usr/bin/nproc');
-cmd_exec	./lib/functions.php:9865				$cpu_cores = shell_exec('/bin/nproc');
-cmd_exec	./lib/functions.php:9867				$output = shell_exec('nproc');
+cmd_exec	./lib/functions.php:10003			$cpu_cores = shell_exec('sysctl -n hw.ncpu');
+cmd_exec	./lib/functions.php:10006				$cpu_cores = shell_exec('/usr/bin/nproc');
+cmd_exec	./lib/functions.php:10008				$cpu_cores = shell_exec('/bin/nproc');
+cmd_exec	./lib/functions.php:10010				$output = shell_exec('nproc');
+cmd_exec	./lib/functions.php:2644					$output = shell_exec($script_path);
+cmd_exec	./lib/functions.php:2659						$output = shell_exec("$php -q $script");
+cmd_exec	./lib/functions.php:2943							$output = shell_exec($script_path);
+cmd_exec	./lib/functions.php:3516		return exec('whoami') ?: '';
+cmd_exec	./lib/functions.php:4224		exec($command_line, $out, $return_code);
+cmd_exec	./lib/functions.php:7667			$processExists   = trim((string) shell_exec($checkProcessCmd));
+cmd_exec	./lib/functions.php:7677					shell_exec($killCmd);
+cmd_exec	./lib/functions.php:8339					$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
+cmd_exec	./lib/functions.php:8341					$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
+cmd_exec	./lib/functions.php:8737				exec('id -nu', $o, $r);
+cmd_exec	./lib/functions.php:9996			$output = shell_exec('powershell -Command "Get-WmiObject Win32_Processor | Select-Object NumberOfLogicalProcessors"');
 cmd_exec	./lib/installer.php:3564			$check    = shell_exec("$composer install --dry-run --no-interaction --working-dir=$base 2>&1");
 cmd_exec	./lib/installer.php:3607			$output = shell_exec("$composer install --no-interaction --no-progress --working-dir=$base 2>&1");
 cmd_exec	./lib/installer.php:3949				$last_line = exec($command, $output, $return);
@@ -111,9 +111,9 @@ cmd_exec	./snmpagent_persist.php:88			exec($php . ' ' . $extra_args . ' > /dev/n
 cmd_exec	./support.php:1133				exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
 cmd_exec	./support.php:1151			$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
 cmd_exec	./support.php:1174			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
-deserialize	./lib/functions.php:5295				$items = unserialize($unstripped, ['allowed_classes' => false]);
-deserialize	./lib/functions.php:5335				$items = unserialize($unstripped, ['allowed_classes' => false]);
-deserialize	./lib/functions.php:9846		return unserialize($strobj, ['allowed_classes' => false]);
+deserialize	./lib/functions.php:5319				$items = unserialize($unstripped, ['allowed_classes' => false]);
+deserialize	./lib/functions.php:5359				$items = unserialize($unstripped, ['allowed_classes' => false]);
+deserialize	./lib/functions.php:9989		return unserialize($strobj, ['allowed_classes' => false]);
 deserialize	./lib/reports.php:49		$items = unserialize($unstripped, ['allowed_classes' => false]);
 deserialize	./package_import.php:125			$hashes = unserialize(stripslashes(gnrv('selected_hashes')), ['allowed_classes' => false]);
 deserialize	./package_import.php:126			$files  = unserialize(stripslashes(gnrv('selected_files')), ['allowed_classes' => false]);
@@ -159,11 +159,11 @@ fs_write	./host.php:620		$stdout = fopen('php://output', 'w');
 fs_write	./include/global_languages.php:1168			file_put_contents($config['i18n_log'], $text . $eol, $mode);
 fs_write	./include/global_languages.php:1185			file_put_contents($config['i18n_text_log'], $text . $eol, $mode);
 fs_write	./include/themes/midwinter/update_hash.php:64			file_put_contents($cssFile, $fileUpdated);
-fs_write	./install/functions.php:1331						$fp = fopen($config_file, 'w');
-fs_write	./install/functions.php:1567			file_put_contents(CACTI_PATH_LOG . '/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
-fs_write	./install/functions.php:1568			file_put_contents(CACTI_PATH_LOG . '/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
-fs_write	./install/functions.php:281				$fh = fopen($file, 'w');
-fs_write	./install/functions.php:786			file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
+fs_write	./install/functions.php:1325						$fp = fopen($config_file, 'w');
+fs_write	./install/functions.php:1561			file_put_contents(CACTI_PATH_LOG . '/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
+fs_write	./install/functions.php:1562			file_put_contents(CACTI_PATH_LOG . '/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
+fs_write	./install/functions.php:275				$fh = fopen($file, 'w');
+fs_write	./install/functions.php:780			file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
 fs_write	./lib/api_device.php:2695							file_put_contents($new_xmlfile, $data);
 fs_write	./lib/boost.php:595								if ($fileptr = fopen($cache_file, 'rb')) {
 fs_write	./lib/boost.php:745							if ($fileptr = fopen($cache_file, 'w')) {
@@ -171,16 +171,16 @@ fs_write	./lib/clog_webapi.php:182					$log_fh = fopen($logfile, 'w');
 fs_write	./lib/database.php:241					file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
 fs_write	./lib/database.php:2459		file_put_contents(sys_get_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
 fs_write	./lib/database.php:79					file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
-fs_write	./lib/functions.php:1605			$fp = @fopen($logfile, 'a');
-fs_write	./lib/functions.php:1733		$fp = fopen($file_name, 'r');
-fs_write	./lib/functions.php:477			file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
-fs_write	./lib/functions.php:698			file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
-fs_write	./lib/functions.php:710				file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
-fs_write	./lib/functions.php:719					file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
-fs_write	./lib/functions.php:7615		$f = fopen($file, 'r');
-fs_write	./lib/functions.php:8436			if ($f = @fopen($path, 'a')) {
-fs_write	./lib/functions.php:8448			if ($f = @fopen($path, 'w')) {
-fs_write	./lib/functions.php:8571				file_put_contents($tmp_file, 'cacti');
+fs_write	./lib/functions.php:1615			$fp = @fopen($logfile, 'a');
+fs_write	./lib/functions.php:1743		$fp = fopen($file_name, 'r');
+fs_write	./lib/functions.php:487			file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
+fs_write	./lib/functions.php:708			file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
+fs_write	./lib/functions.php:720				file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
+fs_write	./lib/functions.php:729					file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
+fs_write	./lib/functions.php:7758		$f = fopen($file, 'r');
+fs_write	./lib/functions.php:8579			if ($f = @fopen($path, 'a')) {
+fs_write	./lib/functions.php:8591			if ($f = @fopen($path, 'w')) {
+fs_write	./lib/functions.php:8714				file_put_contents($tmp_file, 'cacti');
 fs_write	./lib/import.php:505		$f   = fopen($filename, 'r');
 fs_write	./lib/import.php:718							$file = fopen($filename, 'wb');
 fs_write	./lib/installer.php:3428				$file          = fopen($cacheFile, 'r');
@@ -192,8 +192,8 @@ fs_write	./lib/plugins.php:2325				$fh = fopen($file, 'w');
 fs_write	./lib/poller.php:1316									if (file_put_contents($tmpfile, $contents) !== false) {
 fs_write	./lib/poller.php:1323												file_put_contents($mypath, $contents);
 fs_write	./lib/poller.php:1352								file_put_contents($mypath, $contents);
-fs_write	./lib/reports.php:1890			$f = fopen($fn, 'wb');
-fs_write	./lib/reports.php:1932			$f = fopen($fn, 'wb');
+fs_write	./lib/reports.php:1873			$f = fopen($fn, 'wb');
+fs_write	./lib/reports.php:1915			$f = fopen($fn, 'wb');
 fs_write	./lib/rrd.php:2913					if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
 fs_write	./lib/spikekill.php:806			return file_put_contents($xmlfile, $output);
 fs_write	./package_import.php:202							file_put_contents($xmlfile, $data);
@@ -218,7 +218,7 @@ header_redirect	./aggregate_graphs.php:121			header('Location: aggregate_graphs.
 header_redirect	./aggregate_graphs.php:135				header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 header_redirect	./aggregate_graphs.php:155				header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 header_redirect	./aggregate_graphs.php:290			header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
-header_redirect	./aggregate_graphs.php:386				header('Location: ' . CACTI_PATH_URL . 'aggregate_graphs.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? gfrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gfrv('local_graph_id'));
+header_redirect	./aggregate_graphs.php:386				header('Location: ' . CACTI_PATH_URL . 'aggregate_graphs.php?action=item_edit&graph_template_item_id=' . ($graph_template_item_id === null ? gfrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gfrv('local_graph_id'));
 header_redirect	./aggregate_graphs.php:390				header('Location: ' . CACTI_PATH_URL . 'aggregate_graphs.php?action=edit&id=' . gfrv('local_graph_id'));
 header_redirect	./aggregate_graphs.php:463			header('Location: ' . CACTI_PATH_URL . $location_failure);
 header_redirect	./aggregate_graphs.php:467			header('Location: ' . CACTI_PATH_URL . $location_success);
@@ -336,11 +336,11 @@ header_redirect	./color.php:104				header('Location: color.php');
 header_redirect	./color.php:116					header('Location: color.php?action=import');
 header_redirect	./color.php:121				header('Location: color.php?action=import');
 header_redirect	./color.php:145			header('Location: color.php');
-header_redirect	./color_templates.php:212			header('Location: color_templates.php?action=template_edit&color_template_id=' . (empty($color_template_id) ? gnrv('color_template_id') : $color_template_id));
-header_redirect	./color_templates.php:255				header('Location: color_templates.php?action=item_edit&color_template_item_id=' . (empty($color_template_item_id) ? gnrv('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . gnrv('color_template_id'));
-header_redirect	./color_templates.php:259				header('Location: color_templates.php?action=template_edit&color_template_id=' . gnrv('color_template_id'));
-header_redirect	./color_templates.php:296			header('Location: color_templates.php');
-header_redirect	./color_templates.php:386		header('Location: color_templates.php?action=template_edit&color_template_id=' . grv('id'));
+header_redirect	./color_templates.php:214			header('Location: color_templates.php?action=template_edit&color_template_id=' . ($color_template_id === null ? gfrv('color_template_id') : $color_template_id));
+header_redirect	./color_templates.php:257				header('Location: color_templates.php?action=item_edit&color_template_item_id=' . (empty($color_template_item_id) ? gnrv('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . gnrv('color_template_id'));
+header_redirect	./color_templates.php:261				header('Location: color_templates.php?action=template_edit&color_template_id=' . gnrv('color_template_id'));
+header_redirect	./color_templates.php:298			header('Location: color_templates.php');
+header_redirect	./color_templates.php:388		header('Location: color_templates.php?action=template_edit&color_template_id=' . grv('id'));
 header_redirect	./color_templates.php:67			header('Location: color_templates.php?action=template_edit&color_template_id=' . grv('id'));
 header_redirect	./color_templates.php:75			header('Location: color_templates.php?action=template_edit&color_template_id=' . grv('color_template_id'));
 header_redirect	./color_templates.php:83			header('Location: color_templates.php?action=template_edit&color_template_id=' . grv('color_template_id'));
@@ -350,7 +350,7 @@ header_redirect	./data_debug.php:254					header('Location: data_debug.php?debug=
 header_redirect	./data_debug.php:53				header('Location: data_debug.php?action=view&id=' . gfrv('id'));
 header_redirect	./data_debug.php:76				header('Location: data_debug.php?action=view&id=' . gfrv('id'));
 header_redirect	./data_input.php:125			header('Location: data_input.php?action=edit&id=' . (empty($data_input_id) ? gnrv('id') : $data_input_id));
-header_redirect	./data_input.php:165				header('Location: data_input.php?action=field_edit&data_input_id=' . grv('data_input_id') . '&id=' . (empty($data_input_field_id) ? grv('id') : $data_input_field_id) . (!ierv('input_output') ? '&type=' . grv('input_output') : ''));
+header_redirect	./data_input.php:165				header('Location: data_input.php?action=field_edit&data_input_id=' . grv('data_input_id') . '&id=' . ($data_input_field_id === null ? grv('id') : $data_input_field_id) . (!ierv('input_output') ? '&type=' . grv('input_output') : ''));
 header_redirect	./data_input.php:167				header('Location: data_input.php?action=edit&id=' . grv('data_input_id'));
 header_redirect	./data_input.php:222			header('Location: data_input.php');
 header_redirect	./data_input.php:437			header('Location: data_input.php?action=edit&id=' . gfrv('data_input_id'));
@@ -375,7 +375,7 @@ header_redirect	./data_queries.php:83			header('Location: data_queries.php?actio
 header_redirect	./data_queries.php:93			header('Location: data_queries.php?action=edit&id=' . gfrv('snmp_query_id'));
 header_redirect	./data_source_profiles.php:423		header('Location: data_source_profiles.php?action=import');
 header_redirect	./data_source_profiles.php:647			header('Location: data_source_profiles.php?action=edit&id=' . (empty($profile_id) ? grv('id') : $profile_id));
-header_redirect	./data_source_profiles.php:689				header('Location: data_source_profiles.php?action=item_edit&profile_id=' . grv('profile_id') . '&id=' . (empty($profile_rra_id) ? grv('id') : $profile_rra_id));
+header_redirect	./data_source_profiles.php:689				header('Location: data_source_profiles.php?action=item_edit&profile_id=' . grv('profile_id') . '&id=' . ($profile_rra_id === null ? grv('id') : $profile_rra_id));
 header_redirect	./data_source_profiles.php:691				header('Location: data_source_profiles.php?action=edit&id=' . grv('profile_id'));
 header_redirect	./data_source_profiles.php:739			header('Location: data_source_profiles.php');
 header_redirect	./data_sources.php:324									header('Location: data_sources.php?action=ds_edit&id=' . (empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) . '&host_id=' . grv('host_id') . '&view_rrd=' . (isrv('current_rrd') ? gnrv('current_rrd') : '0'));
@@ -396,7 +396,7 @@ header_redirect	./data_templates.php:632		header('Location: data_templates.php?a
 header_redirect	./docs/index.php:34		header('Location: https://github.com/Cacti/documentation/blob/develop/README.md');
 header_redirect	./formats/index.php:25	header('Location:../index.php');
 header_redirect	./gprint_presets.php:113			header('Location: gprint_presets.php');
-header_redirect	./gprint_presets.php:85				header('Location: gprint_presets.php?action=edit&id=' . (empty($gprint_preset_id) ? gnrv('id') : $gprint_preset_id));
+header_redirect	./gprint_presets.php:85				header('Location: gprint_presets.php?action=edit&id=' . ($gprint_preset_id === null ? gnrv('id') : $gprint_preset_id));
 header_redirect	./gprint_presets.php:89				header('Location: gprint_presets.php');
 header_redirect	./graph_templates.php:119			header('Location: graph_templates.php?action=template_edit&id=' . gfrv('id'));
 header_redirect	./graph_templates.php:1249			header('Location: graph_templates.php');
@@ -404,7 +404,7 @@ header_redirect	./graph_templates.php:127			header('Location: graph_templates.ph
 header_redirect	./graph_templates.php:135			header('Location: graph_templates.php?action=template_edit&id=' . grv('graph_template_id'));
 header_redirect	./graph_templates.php:143			header('Location: graph_templates.php?action=template_edit&id=' . grv('graph_template_id'));
 header_redirect	./graph_templates.php:167			header('Location: graph_templates.php?action=template_edit&id=' . grv('graph_template_id'));
-header_redirect	./graph_templates.php:621				header('Location: graph_templates.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? gnrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gnrv('graph_template_id'));
+header_redirect	./graph_templates.php:621				header('Location: graph_templates.php?action=item_edit&graph_template_item_id=' . ($graph_template_item_id === null ? gnrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gnrv('graph_template_id'));
 header_redirect	./graph_templates.php:630				header('Location: graph_templates.php?action=template_edit&id=' . gnrv('graph_template_id'));
 header_redirect	./graph_templates.php:703				header('Location: graph_templates.php?action=input_edit&graph_template_input_id=' . (empty($graph_template_input_id) ? gnrv('graph_template_input_id') : $graph_template_input_id) . '&graph_template_id=' . gnrv('graph_template_id'));
 header_redirect	./graph_templates.php:712				header('Location: graph_templates.php?action=template_edit&id=' . gnrv('graph_template_id'));
@@ -419,7 +419,7 @@ header_redirect	./graphs.php:200			header('Location: graphs.php?action=graph_edi
 header_redirect	./graphs.php:2320				header('Location: graphs.php');
 header_redirect	./graphs.php:367					header('Location: graphs.php?action=graph_edit&id=' . $local_graph_id);
 header_redirect	./graphs.php:369					header('Location: graphs.php');
-header_redirect	./graphs.php:723				header('Location: graphs.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? gnrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gnrv('local_graph_id'));
+header_redirect	./graphs.php:723				header('Location: graphs.php?action=item_edit&graph_template_item_id=' . ($graph_template_item_id === null ? gnrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gnrv('local_graph_id'));
 header_redirect	./graphs.php:727				header('Location: graphs.php?action=graph_edit&id=' . gnrv('local_graph_id'));
 header_redirect	./graphs.php:734			header('Location: graphs.php?action=graph_edit&host_id=' . gnrv('host_id') . '&new=1');
 header_redirect	./graphs.php:736			header('Location: graphs.php?action=graph_edit&id=' . (empty($local_graph_id) ? gnrv('local_graph_id') : $local_graph_id) . (isrv('host_id') ? '&host_id=' . gnrv('host_id') : ''));
@@ -503,14 +503,14 @@ header_redirect	./include/themes/sunrise/images/index.php:25	header('Location:..
 header_redirect	./include/themes/sunrise/index.php:25	header('Location:../index.php');
 header_redirect	./include/vendor/index.php:25	header("Location:../index.php");
 header_redirect	./install/upgrades/index.php:25	header('Location:../../index.php');
-header_redirect	./lib/auth.php:4181				header('Location: auth_changepassword.php');
-header_redirect	./lib/auth.php:4637					header('Location: ' . $referer);
-header_redirect	./lib/auth.php:4641					header('Location: graph_view.php');
-header_redirect	./lib/auth.php:4645					header('Location: index.php');
-header_redirect	./lib/auth.php:4651					header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
-header_redirect	./lib/auth.php:4653					header('Location: ' . CACTI_PATH_URL . 'index.php' . ($newtheme ? '?newtheme=1' : ''));
-header_redirect	./lib/auth.php:4658				header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
-header_redirect	./lib/auth.php:4849			header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
+header_redirect	./lib/auth.php:4184				header('Location: auth_changepassword.php');
+header_redirect	./lib/auth.php:4640					header('Location: ' . $referer);
+header_redirect	./lib/auth.php:4644					header('Location: graph_view.php');
+header_redirect	./lib/auth.php:4648					header('Location: index.php');
+header_redirect	./lib/auth.php:4654					header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
+header_redirect	./lib/auth.php:4656					header('Location: ' . CACTI_PATH_URL . 'index.php' . ($newtheme ? '?newtheme=1' : ''));
+header_redirect	./lib/auth.php:4661				header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
+header_redirect	./lib/auth.php:4852			header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
 header_redirect	./lib/clog_webapi.php:124			header('Location: ' . get_current_page());
 header_redirect	./lib/clog_webapi.php:244				header('Location: clog.php?filename=' . basename($logfile));
 header_redirect	./lib/html_form.php:1550				header('Location: ' . $page);
@@ -656,7 +656,7 @@ header_redirect	./utilities.php:123			header('Location: utilities.php?action=vie
 header_redirect	./utilities.php:53			header('Location: utilities.php?action=view_poller_cache');
 header_redirect	./utilities.php:58			header('Location: utilities.php');
 header_redirect	./vdef.php:122			header('Location: vdef.php?action=edit&id=' . (empty($vdef_id) ? grv('id') : $vdef_id));
-header_redirect	./vdef.php:146				header('Location: vdef.php?action=item_edit&vdef_id=' . grv('vdef_id') . '&id=' . (empty($vdef_item_id) ? grv('id') : $vdef_item_id));
+header_redirect	./vdef.php:146				header('Location: vdef.php?action=item_edit&vdef_id=' . grv('vdef_id') . '&id=' . ($vdef_item_id === null ? grv('id') : $vdef_item_id));
 header_redirect	./vdef.php:148				header('Location: vdef.php?action=edit&id=' . grv('vdef_id'));
 header_redirect	./vdef.php:228			header('Location: vdef.php');
 header_redirect	./vdef.php:532		header('Location: vdef.php?action=edit&id=' . grv('id'));
@@ -664,6 +664,6 @@ header_redirect	./vdef.php:57			header('Location: vdef.php?action=edit&id=' . gr
 header_redirect	./vdef.php:65			header('Location: vdef.php?action=edit&id=' . grv('vdef_id'));
 xml_parse	./cli/genmanifest.php:143							$xmldata = simplexml_load_string($data);
 xml_parse	./cli/rrdresize.php:559						$rrd_data = json_decode(json_encode(simplexml_load_string($file_dump)), true);
-xml_parse	./install/functions.php:940				$xmlget = simplexml_load_string($xml);
+xml_parse	./install/functions.php:934				$xmlget = simplexml_load_string($xml);
 xml_parse	./lib/import.php:370		$xmlget = simplexml_load_string($data);
 xml_parse	./lib/import.php:559		$xmlget = simplexml_load_string($xml);
