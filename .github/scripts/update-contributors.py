@@ -5,10 +5,10 @@ This is a best-effort daily heuristic, not a re-run of the manual audit that
 seeded .all-contributorsrc. Known limitations:
 
 - Author matching is done by comparing git commit author name/email against
-  each contributor's stored "login"/"name" fields. Contributors whose git
-  identity doesn't resemble either field (e.g. historical founders using an
-  old alias) will not get their badges refreshed automatically; those stay
-  as manually curated.
+  each contributor's stored "login"/"name" fields, plus any variants listed
+  in FOUNDER_ALIASES below. Contributors whose git identity doesn't resemble
+  either field and isn't listed there will not get their badges refreshed
+  automatically; those stay as manually curated.
 - The manually curated ordering (founders/emeritus, active developers,
   honorable mentions, then by contribution count) is preserved as-is. New
   contributors are appended at the end, not re-sorted into a tier.
@@ -73,6 +73,34 @@ PATH_BADGES = [
 ]
 
 SECURITY_MESSAGE_RE = re.compile(r"CVE-|GHSA|security|XSS|SQLi|vulnerab", re.IGNORECASE)
+
+# login -> known git-author-name variants, for founders/long-time
+# contributors who commit under a real-name alias that doesn't match
+# their login or their stored "name" field. Compiled from about.php
+# credits and verified email evidence during the manual audit that
+# seeded .all-contributorsrc.
+FOUNDER_ALIASES = {
+    "Rax": ["Ian Berry"],
+    "gan-dalf": ["Reinhard Scheck"],
+    "rony": ["Tony Roman"],
+    "ablyler": ["Andy Blyler"],
+    "TheWitness": ["TheWitness", "Larry Adams"],
+    "netniV": ["netniV", "Mark Brugnoli-Vinten"],
+    "cigamit": ["cigamit", "Jimmy Conner"],
+    "xmacan": ["Petr Macek"],
+    "browniebraun": ["browniebraun", "Browniebraun", "Andreas Braun"],
+    "ddb4github": ["Jing Chen", "ddb4github"],
+    "somethingwithproof": ["Thomas Vincent", "somethingwithproof"],
+    "bmfmancini": ["Sean Mancini"],
+    "Linegod": ["Linegod", "Jeff Pasnak"],
+    "BSOD2600": ["Chris Bell"],
+    "paulgevers": ["Paul Gevers"],
+    "mortenstevens": ["Morten Stevens"],
+    "jpobeda": ["Javier", "jpobeda"],
+    "nerosketch": ["Dmitry", "nerosketch"],
+    "zersh01": ["Сергей", "zersh01"],
+    "nakayama1869": ["Nakayama Kito", "nakayama1869"],
+}
 
 
 def run(cmd: list[str]) -> str:
@@ -161,6 +189,15 @@ def refresh_path_badges(config: dict) -> bool:
         login = contributor["login"].lower()
         name = contributor.get("name", "").lower()
         activity = by_author.get(login) or by_author.get(name)
+        for alias in FOUNDER_ALIASES.get(contributor["login"], []):
+            alias_activity = by_author.get(alias.lower())
+            if alias_activity is None or alias_activity is activity:
+                continue
+            if activity is None:
+                activity = alias_activity
+            else:
+                activity["paths"] |= alias_activity["paths"]
+                activity["messages"] += alias_activity["messages"]
         if activity is None:
             continue
         new_badges = badges_for(activity)
