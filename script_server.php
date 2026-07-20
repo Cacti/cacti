@@ -260,25 +260,21 @@ while (1) {
 			 * passthru, exec satisfy function_exists() without ever loading a
 			 * script file, so the path guard cannot be gated on the function
 			 * being undefined. include_once() is idempotent, so re-running it
-			 * on cached entries is a no-op. */
+			 * on cached entries is a no-op. The scripts_path setting is an
+			 * explicitly configured Cacti script root and may live outside the
+			 * web root, so it is an allowed containment root as well. */
 			$real_include = realpath($include_file);
-			$base_real    = realpath($config['base_path']);
+			$allowed_roots = [$config['base_path']];
 
-			if ($real_include !== false) {
-				$real_include = str_replace('\\', '/', $real_include);
-			}
-			if ($base_real !== false) {
-				$base_real = str_replace('\\', '/', $base_real);
+			if (!empty($config['scripts_path'])) {
+				$allowed_roots[] = $config['scripts_path'];
 			}
 
-			/* On Windows, realpath() may return mixed-case drive letters; use
-			 * case-insensitive comparison to avoid false rejections. */
-			$path_cmp = (DIRECTORY_SEPARATOR === '\\') ? 'stripos' : 'strpos';
-			$path_ok  = ($real_include !== false && $base_real !== false && $path_cmp($real_include, $base_real . '/') === 0);
+			$path_ok = script_server_path_is_allowed($real_include, $allowed_roots);
 
 			if (!$path_ok) {
 				if ($real_include !== false) {
-					cacti_log("WARNING: Script file '$include_file' resolves outside base path. Rejected.", false, 'PHPSVR');
+					cacti_log("WARNING: Script file '$include_file' resolves outside the allowed script roots. Rejected.", false, 'PHPSVR');
 				} else {
 					cacti_log("WARNING: Script file '$include_file' could not be resolved. Rejected.", false, 'PHPSVR');
 				}
@@ -354,8 +350,8 @@ while (1) {
 				$fn_real = str_replace('\\', '/', $fn_real);
 			}
 
-			if ($fn_real === false || $path_cmp($fn_real, $base_real . '/') !== 0) {
-				cacti_log("WARNING: Function '$function' defined outside base path ('$fn_file'). Rejected.", false, 'PHPSVR');
+			if (!script_server_path_is_allowed($fn_real, $allowed_roots)) {
+				cacti_log("WARNING: Function '$function' defined outside the allowed script roots ('$fn_file'). Rejected.", false, 'PHPSVR');
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
 				continue;
@@ -494,6 +490,52 @@ function parseArgs($string, &$str_list, $debug = false) {
 }
 
 /**
+ * Check whether a resolved script path is below one of the configured roots.
+ *
+ * @param mixed $resolved_path The realpath() result for the candidate file.
+ * @param array $roots         Configured Cacti path roots.
+ *
+ * @return bool
+ */
+function script_server_path_is_allowed($resolved_path, array $roots) {
+	static $normalized_roots = [];
+
+	if ($resolved_path === false || !is_string($resolved_path)) {
+		return false;
+	}
+
+	$resolved_path = rtrim(str_replace('\\', '/', $resolved_path), '/');
+	$case_insensitive = (DIRECTORY_SEPARATOR === '\\');
+	$cache_key = implode("\0", $roots);
+
+	if (!isset($normalized_roots[$cache_key])) {
+		$normalized_roots[$cache_key] = [];
+
+		foreach ($roots as $root) {
+			$root = realpath($root);
+
+			if ($root !== false) {
+				$normalized_roots[$cache_key][] = rtrim(str_replace('\\', '/', $root), '/');
+			}
+		}
+	}
+
+	foreach ($normalized_roots[$cache_key] as $root) {
+		$prefix = $root . '/';
+
+		if ($case_insensitive) {
+			if (stripos($resolved_path, $prefix) === 0) {
+				return true;
+			}
+		} elseif (strpos($resolved_path, $prefix) === 0) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
  * sig_handler - properly handle signals and shutdown
  */
 function sig_handler($signo) {
@@ -559,4 +601,3 @@ function display_help () {
 	print 'Script Server.  When doing so you should see the output you expect printed to standard output.  When' . PHP_EOL;
 	print 'running the Script Server, simply enter \'quit\' to exit.' . PHP_EOL . PHP_EOL;
 }
-
