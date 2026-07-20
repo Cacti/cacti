@@ -271,6 +271,9 @@ function get_basic_auth_username() : string|false {
 	} elseif (isset($_SERVER['HTTP_REDIRECT_REMOTE_USER'])) {
 		$raw      = is_array($_SERVER['HTTP_REDIRECT_REMOTE_USER']) ? ($_SERVER['HTTP_REDIRECT_REMOTE_USER'][0] ?? '') : $_SERVER['HTTP_REDIRECT_REMOTE_USER'];
 		$username = str_replace('\\', '\\\\', $raw);
+	} elseif (isset($_SERVER['HTTP_X_FORWARDED_USER'])) {
+		$raw      = is_array($_SERVER['HTTP_X_FORWARDED_USER']) ? ($_SERVER['HTTP_X_FORWARDED_USER'][0] ?? '') : $_SERVER['HTTP_X_FORWARDED_USER'];
+		$username = str_replace('\\', '\\\\', $raw);
 	} else {
 		$username = false;
 	}
@@ -358,7 +361,7 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 		[$new_user, $new_realm]);
 
 	if (cacti_sizeof($user_exist)) {
-		if ($overwrite) {
+		if ($overwrite === true) {
 			// Overwrite existing user
 			$user_auth['id']                   = $user_exist['id'];
 			$user_auth['username']             = $user_exist['username'];
@@ -397,7 +400,7 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 	$new_id = sql_save($user_auth, 'user_auth');
 
 	// Create/Update permissions and settings
-	if (cacti_sizeof($user_exist) && $overwrite) {
+	if (cacti_sizeof($user_exist) && $overwrite === true) {
 		db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ?', [$user_exist['id']]);
 		db_execute_prepared('DELETE FROM user_auth_realm WHERE user_id = ?', [$user_exist['id']]);
 		db_execute_prepared('DELETE FROM settings_user WHERE user_id = ?', [$user_exist['id']]);
