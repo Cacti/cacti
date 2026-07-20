@@ -174,6 +174,11 @@ function form_save() {
 		$save['regexp_match']  = form_input_validate((isset_request_var('regexp_match') ? get_nfilter_request_var('regexp_match') : ''), 'regexp_match', '', true, 3);
 		$save['allow_nulls']   = form_input_validate((isset_request_var('allow_nulls') ? get_nfilter_request_var('allow_nulls') : ''), 'allow_nulls', '', true, 3);
 
+		if (!is_error_message() && $save['input_output'] == 'in' && $save['type_code'] == '' && defined('VALID_HOST_FIELDS') && preg_match('/^(?:' . VALID_HOST_FIELDS . ')$/i', $save['data_name']) === 1) {
+			$_SESSION[SESS_ERROR_FIELDS]['type_code'] = 'type_code';
+			raise_message('validation_error', __esc('Input field <%s> requires Special Type Code "%s".', $save['data_name'], $save['data_name']), MESSAGE_LEVEL_ERROR);
+		}
+
 		if (!is_error_message()) {
 			$data_input_field_id = sql_save($save, 'data_input_fields');
 
@@ -988,4 +993,3 @@ function data() {
 
 	form_end();
 }
-
