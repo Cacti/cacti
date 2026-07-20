@@ -1,0 +1,104 @@
+name: End-to-end installation
+
+on:
+  workflow_call:
+    inputs:
+      php-version:
+        required: true
+        type: string
+      mysql-image:
+        required: true
+        type: string
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  install:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    services:
+      mysql:
+        image: ${{ inputs['mysql-image'] || 'mysql:8.4' }}
+        env:
+          MYSQL_DATABASE: cacti
+          MYSQL_USER: cactiuser
+          MYSQL_PASSWORD: cactiuser
+          MYSQL_ROOT_PASSWORD: cactiroot
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -pcactiroot"
+          --health-interval=10s --health-timeout=5s --health-retries=12
+    env:
+      PHP_VERSION: ${{ inputs['php-version'] || '8.4' }}
+      MYSQL_HOST: 127.0.0.1
+      MYSQL_DATABASE: cacti
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, mbstring
+          ini-values: post_max_size=256M, max_execution_time=60, date.timezone=America/New_York
+          coverage: none
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes apache2 snmp rrdtool
+      - name: Install Cacti plugins used by integration tests
+        run: |
+          declare -A plugin_refs=(
+            [thold]=948c22953ead999ca32b4954d3b97f2b92098411
+            [monitor]=11c7b6c6422d7ffaba9c2dcac25b729d9cb6ff12
+            [mactrack]=87d92a1e79d867b8632dd4b384a1ab2f9f4cdc22
+            [audit]=5bf7a4f8def975e0fa1ec233f71522721b26ead7
+            [flowview]=0fa732fc5fed91ead08f4d32ff502402c138e1eb
+            [syslog]=713da14ff5afac062363bd5311f2c52f2eef2d82
+          )
+          for plugin in thold monitor mactrack audit flowview syslog; do
+            git init "plugins/${plugin}"
+            git -C "plugins/${plugin}" remote add origin "https://github.com/Cacti/plugin_${plugin}.git"
+            git -C "plugins/${plugin}" fetch --depth=1 origin "${plugin_refs[$plugin]}"
+            git -C "plugins/${plugin}" checkout --detach FETCH_HEAD
+          done
+          cp -p plugins/syslog/config.php.dist plugins/syslog/config.php
+          sed -i "s|//\\$syslog_install_options|\\$syslog_install_options|" plugins/syslog/config.php
+      - name: Configure Apache and Cacti
+        run: |
+          sudo a2enmod proxy_fcgi setenvif actions alias
+          sudo service "php${PHP_VERSION}-fpm" start
+          sed -r "s#GITHUB_WORKSPACE#${GITHUB_WORKSPACE}#g" tests/tools/cacti.conf |
+            sudo tee /etc/apache2/sites-available/000-default.conf >/dev/null
+          sudo systemctl restart apache2
+          sed 's/localhost/127.0.0.1/g' include/config.php.dist > include/config.php
+          sudo chgrp www-data include/config.php
+          sudo chmod 664 include/config.php
+          sudo chgrp -R www-data cache log rra resource
+          sudo chmod -R g+rwX cache log rra resource
+      - name: Initialise database and install Cacti
+        env:
+          MYSQL_PWD: cactiroot
+        run: |
+          mysql --host="$MYSQL_HOST" --user=root "$MYSQL_DATABASE" < cacti.sql
+          sql="INSERT INTO settings (name, value) VALUES ('path_php_binary', '/usr/bin/php')"
+          mysql --host="$MYSQL_HOST" --user=root "$MYSQL_DATABASE" --execute="$sql"
+          php -q tests/tools/check_install_code.php
+          bash tests/tools/check_cli_version.sh
+          php cli/install_cacti.php --accept-eula --install --force
+      - name: Upload diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cacti-e2e-diagnostics-${{ github.run_id }}
+          if-no-files-found: ignore
+          path: |
+            log/cacti.log
+            /var/log/apache2/error.log
+            /var/log/apache2/access.log

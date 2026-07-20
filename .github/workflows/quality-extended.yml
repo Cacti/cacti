@@ -118,7 +118,8 @@ jobs:
 #      - name: Run Pest with coverage
 #        run: |
 #          set -euo pipefail
-#          include/vendor/bin/pest --display-warnings --coverage-clover=coverage.xml --coverage-text | tee coverage-summary.txt
+#          include/vendor/bin/pest --display-warnings --coverage-clover=coverage.xml \
+#            --coverage-text | tee coverage-summary.txt
 #
 #      - name: Enforce minimum line coverage
 #        run: |

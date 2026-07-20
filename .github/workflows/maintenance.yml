@@ -1,0 +1,43 @@
+name: Maintain inactive issues and pull requests
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: maintenance-inactive-issues-and-prs
+  cancel-in-progress: false
+
+jobs:
+  stale:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/stale@v10
+        with:
+          repo-token: ${{ github.token }}
+          days-before-issue-stale: 120
+          days-before-issue-close: 30
+          days-before-pr-stale: 90
+          days-before-pr-close: 30
+          remove-stale-when-updated: true
+          exempt-issue-labels: pinned, security, enhancement, future release
+          exempt-pr-labels: pinned, security, enhancement, future release
+          stale-issue-label: outdated
+          stale-pr-label: outdated
+  lock:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: dessant/lock-threads@v6
+        with:
+          github-token: ${{ github.token }}
+          issue-inactive-days: 365
+          pr-inactive-days: 365
+          exclude-any-issue-labels: future release
+          exclude-any-pr-labels: future release

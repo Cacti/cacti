@@ -1,0 +1,42 @@
+name: Installer tests
+
+on:
+  pull_request:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: installer-tests-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  installer:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.4']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer
+          key: composer-${{ runner.os }}-${{ matrix.php }}-${{ hashFiles('composer.lock', 'composer.json') }}
+          restore-keys: composer-${{ runner.os }}-${{ matrix.php }}-
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Run installer tests when the bounded context is present
+        if: ${{ hashFiles('phpunit.installer.xml') != '' }}
+        run: include/vendor/bin/phpunit --configuration phpunit.installer.xml
+      - name: Analyse the installer when the bounded context is present
+        if: ${{ hashFiles('phpstan.installer.neon') != '' }}
+        run: include/vendor/bin/phpstan analyse --configuration phpstan.installer.neon --no-progress

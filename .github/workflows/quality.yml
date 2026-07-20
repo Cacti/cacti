@@ -1,0 +1,45 @@
+name: Quality
+
+on:
+  pull_request:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, mbstring
+          coverage: none
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer
+          key: composer-${{ runner.os }}-${{ hashFiles('composer.lock', 'composer.json') }}
+          restore-keys: composer-${{ runner.os }}-
+      - name: Install locked dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Validate the dependency contract
+        run: composer validate --strict
+      - name: Check production platform requirements
+        run: composer check-platform-reqs --no-dev
+      - name: Lint tracked PHP files
+        run: git ls-files -z -- '*.php' | xargs -0 -n1 -P2 php -l
+      - name: Run project lint and static analysis
+        run: |
+          composer lint
+          composer phpstan
+      - name: Lint GitHub Actions
+        uses: raven-actions/actionlint@v2
