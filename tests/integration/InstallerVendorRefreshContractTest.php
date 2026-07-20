@@ -46,6 +46,14 @@ test('vendor refresh bails out without a configured composer binary', function (
 		->and(strpos($body, 'addError'))->toBeFalse('refresh must never fail the install');
 });
 
+test('global bootstrap permits the installer to repair a missing vendor tree', function () use ($root) {
+	$src = file_get_contents($root . '/include/global.php');
+
+	expect($src)->not->toBeFalse()
+		->and(strpos($src, "!defined('IN_CACTI_INSTALL')"))->not->toBeFalse()
+		->and(strpos($src, 'if (is_file($vendor_autoload))'))->not->toBeFalse();
+});
+
 test('refresh gating requires pure installs', function () use ($root) {
 	$src = file_get_contents($root . '/lib/installer.php');
 
