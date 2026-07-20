@@ -682,11 +682,11 @@ function form_save() : void {
 				raise_message(2);
 			}
 		} else {
-			$profile_rra_id = 0;
+			$profile_rra_id = null;
 		}
 
 		if (is_error_message()) {
-			header('Location: data_source_profiles.php?action=item_edit&profile_id=' . grv('profile_id') . '&id=' . (empty($profile_rra_id) ? grv('id') : $profile_rra_id));
+			header('Location: data_source_profiles.php?action=item_edit&profile_id=' . grv('profile_id') . '&id=' . ($profile_rra_id === null ? grv('id') : $profile_rra_id));
 		} else {
 			header('Location: data_source_profiles.php?action=edit&id=' . grv('profile_id'));
 		}

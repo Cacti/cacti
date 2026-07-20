@@ -130,7 +130,7 @@ function vdef_form_save() : void {
 		$save['type']     = gnrv('type');
 		$save['value']    = gnrv('value');
 
-		$vdef_item_id     = 0;
+		$vdef_item_id     = null;
 
 		if (!is_error_message()) {
 			$vdef_item_id = sql_save($save, 'vdef_items');
@@ -143,7 +143,7 @@ function vdef_form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: vdef.php?action=item_edit&vdef_id=' . grv('vdef_id') . '&id=' . (empty($vdef_item_id) ? grv('id') : $vdef_item_id));
+			header('Location: vdef.php?action=item_edit&vdef_id=' . grv('vdef_id') . '&id=' . ($vdef_item_id === null ? grv('id') : $vdef_item_id));
 		} else {
 			header('Location: vdef.php?action=edit&id=' . grv('vdef_id'));
 		}

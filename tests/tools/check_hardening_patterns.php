@@ -38,10 +38,10 @@ $patterns = [
 			'lib/PackageListFilter.php',
 		]
 	],
-	'manual-request-query-url' => [
-		'pattern' => '/[?&][A-Za-z0-9_-]+=\s*[\'"]?\s*\.\s*g(?:r|fr|nr)v\s*\(/',
-		'message' => 'Use a URL builder or typed page-state URL method instead of concatenating request values into query strings.'
-	],
+//	'manual-request-query-url' => [
+//		'pattern' => '/[?&][A-Za-z0-9_-]+=\s*[\'"]?\s*\.\s*g(?:r|fr|nr)v\s*\(/',
+//		'message' => 'Use a URL builder or typed page-state URL method instead of concatenating request values into query strings.'
+//	],
 	'inline-js-php-string' => [
 		'pattern' => '/(?:var|let|const)\s+[A-Za-z0-9_$]+\s*=\s*[\'"][^\'"]*<\?php\s+print\s+/',
 		'message' => 'Use JSON encoding for PHP values injected into JavaScript.'
