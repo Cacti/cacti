@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-issue#7216: Aggregate totalling legend printed untotalled single data source values
 -issue#2205: Allow admins to disable RRDtool watermark
 -issue#3066: Enable the secure flag on cookies when HTTPS is enabled.
 -issue#3074: ss_net_snmp_disk_bytes.php and ss_net_snmp_disk_io.php do now report mmcblk data.
@@ -50,6 +51,7 @@ Cacti CHANGELOG
 -issue#7137: Fix eleven PHPStan Level 6 errors in form_save error-redirect URLs and lib/html.php right-tab block
 -issue: Fix loose $db_conn comparison in db_table_exists and db_column_exists
 -issue#7211: Correct the Nth percentile and bandwidth summation divisor on base-1024 graphs
+-issue#7216: Aggregate totalling legend printed untotalled single data source values
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
