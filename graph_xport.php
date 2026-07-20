@@ -104,6 +104,24 @@ if (!is_array($xport_array) || !isset($xport_array['meta']['start'])) {
 	exit;
 }
 
+// Percentile summaries use the observed finite samples. Expose the expected
+// row count so sparse periods are visible instead of being mistaken for zero.
+$xport_array['meta']['expected_rows'] = 0;
+$xport_array['meta']['missing_rows']  = 0;
+
+if ($xport_array['meta']['step'] > 0) {
+	$effective_end = $xport_array['meta']['end'];
+
+	if ($effective_end == $xport_array['meta']['start'] && $xport_array['meta']['rows'] > 0) {
+		$effective_end = $xport_array['meta']['start'] + $xport_array['meta']['step'] * ($xport_array['meta']['rows'] - 1);
+	}
+
+	$xport_array['meta']['expected_rows'] = (int) floor(
+		($effective_end - $xport_array['meta']['start']) / $xport_array['meta']['step']
+	) + 1;
+	$xport_array['meta']['missing_rows'] = max(0, $xport_array['meta']['expected_rows'] - $xport_array['meta']['rows']);
+}
+
 // Make graph title the suggested file name
 $filename = $xport_array['meta']['title_cache'] . '.csv';
 
@@ -135,6 +153,8 @@ if (isset($xport_array['meta']['start'])) {
 		$output .= cacti_csv_cell(__('End Date')) . ',' . cacti_csv_cell(date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step'] * ($xport_array['meta']['rows'] - 1) : $xport_array['meta']['end'])) . "\n";
 		$output .= cacti_csv_cell(__('Step')) . ',' . cacti_csv_cell($xport_array['meta']['step']) . "\n";
 		$output .= cacti_csv_cell(__('Total Rows')) . ',' . cacti_csv_cell($xport_array['meta']['rows']) . "\n";
+		$output .= cacti_csv_cell(__('Expected Rows')) . ',' . cacti_csv_cell($xport_array['meta']['expected_rows']) . "\n";
+		$output .= cacti_csv_cell(__('Missing Rows')) . ',' . cacti_csv_cell($xport_array['meta']['missing_rows']) . "\n";
 		$output .= cacti_csv_cell(__('Graph ID')) . ',' . cacti_csv_cell($xport_array['meta']['local_graph_id']) . "\n";
 		$output .= cacti_csv_cell(__('Host ID')) . ',' . cacti_csv_cell($xport_array['meta']['host_id']) . "\n";
 
@@ -210,6 +230,13 @@ if (isset($xport_array['meta']['start'])) {
 		print '<td style="width:25%">' . $xport_array['meta']['step'] . '</td>';
 		print '<td style="width:25%">' . __('Total Rows') . '</td>';
 		print '<td style="width:25%">' . $xport_array['meta']['rows'] . '</td>';
+		print '</tr>';
+
+		print "<tr class='odd'>";
+		print '<td style="width:25%">' . __('Expected Rows') . '</td>';
+		print '<td style="width:25%">' . $xport_array['meta']['expected_rows'] . '</td>';
+		print '<td style="width:25%">' . __('Missing Rows') . '</td>';
+		print '<td style="width:25%">' . $xport_array['meta']['missing_rows'] . '</td>';
 		print '</tr>';
 
 		print "<tr class='odd'>";
