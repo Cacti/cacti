@@ -41,8 +41,11 @@ test('rrd.php validation guards every boost consumer of rra_id', function () use
 	$fnPos = strpos($src, 'function rrdtool_function_graph(');
 	expect($fnPos)->not->toBeFalse('rrdtool_function_graph must exist');
 
-	$normPos = strpos($src, 'ctype_digit', $fnPos);
-	expect($normPos)->not->toBeFalse('integer validation of rra_id missing from rrdtool_function_graph');
+	// Anchor on the integer-validation call by shape, not an exact line, so
+	// ctype_digit() or filter_var(FILTER_VALIDATE_INT) both satisfy it.
+	$matched = preg_match('/ctype_digit\s*\(|filter_var\s*\([^)]*FILTER_VALIDATE_INT/', $src, $m, PREG_OFFSET_CAPTURE, $fnPos);
+	expect($matched)->toBe(1, 'integer validation of rra_id missing from rrdtool_function_graph');
+	$normPos = $m[0][1];
 
 	foreach (['boost_graph_cache_check(', 'boost_graph_set_file('] as $consumer) {
 		$pos = strpos($src, $consumer, $normPos);

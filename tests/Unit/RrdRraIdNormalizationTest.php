@@ -37,8 +37,11 @@ test('rrdtool_function_graph validates rra_id before the first boost call', func
 	$fnPos = strpos($src, 'function rrdtool_function_graph(');
 	expect($fnPos)->not->toBeFalse('rrdtool_function_graph must exist in lib/rrd.php');
 
-	$normPos = strpos($src, 'ctype_digit', $fnPos);
-	expect($normPos)->not->toBeFalse('integer validation of rra_id must exist inside rrdtool_function_graph');
+	// Anchor on the integer-validation call by shape so a switch between
+	// ctype_digit() and filter_var(FILTER_VALIDATE_INT) keeps passing.
+	$matched = preg_match('/ctype_digit\s*\(|filter_var\s*\([^)]*FILTER_VALIDATE_INT/', $src, $m, PREG_OFFSET_CAPTURE, $fnPos);
+	expect($matched)->toBe(1, 'integer validation of rra_id must exist inside rrdtool_function_graph');
+	$normPos = $m[0][1];
 
 	$boostPos = strpos($src, 'boost_graph_cache_check(', $fnPos);
 	expect($boostPos)->not->toBeFalse('boost_graph_cache_check call must exist');
