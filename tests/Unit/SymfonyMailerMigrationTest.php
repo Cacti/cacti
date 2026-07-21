@@ -13,6 +13,7 @@ test('mailer implementation uses Symfony Mailer instead of PHPMailer', function 
 		->not->toContain('"phpmailer/phpmailer"');
 
 	expect($functions)->toContain('use Symfony\\Component\\Mailer\\Mailer')
+		->toContain('Composer mail dependencies are missing or stale')
 		->toContain('new Email()')
 		->toContain('new Mailer($transport)')
 		->toContain('new XOAuth2Authenticator()')
