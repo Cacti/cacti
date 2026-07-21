@@ -43,14 +43,30 @@ switch(grv('action')) {
 }
 
 function support_lockout() : void {
+	// this toggles a system-wide state, so require POST. csrf_check() only
+	// validates the token on POST, so a GET would slip past CSRF protection.
+	if (strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+		header('Location: support.php?tab=summary');
+
+		exit;
+	}
+
 	$admin = read_config_option('admin_user', true);
 
 	if (read_config_option('admin_user') != $_SESSION[SESS_USER_ID]) {
 		raise_message('lockout_user', __('Only the Primary Cacti Administrator \'%s\' can lockout the Cacti system.', get_username($admin)), MESSAGE_LEVEL_ERROR);
 	} else {
-		$status = read_config_option('cacti_lockout_status', true);
+		$status    = read_config_option('cacti_lockout_status', true);
+		$is_locked = ($status != '');
 
-		if ($status == '') {
+		// 'expected' reflects the state the button showed when the page was
+		// rendered. Only toggle if the stored state still matches it, so two
+		// administrators acting at once cannot flip each other's change.
+		$expected_locked = (gnrv('expected') == 'locked');
+
+		if ($is_locked !== $expected_locked) {
+			raise_message('lockout', __('The Cacti maintenance lockout state was changed by another administrator since this page was loaded.  Please review the current status and try again.'), MESSAGE_LEVEL_INFO);
+		} elseif (!$is_locked) {
 			raise_message('lockout', __('Cacti has been locked out by \'%s\'.  Press the button again after Cacti maintenance is over.', get_username($admin)), MESSAGE_LEVEL_WARN);
 			cacti_log('WARNING: Cacti has been locked out by the primary administrator!');
 			set_config_option('cacti_lockout_status', json_encode(['session' => session_id(), 'time' => time()]));
@@ -221,7 +237,10 @@ function support_view_tech() : void {
 		});
 
 		$('#lockout').click(function() {
-			loadUrl({ url: 'support.php?action=lockout' });
+			postUrl({ url: 'support.php?action=lockout' }, {
+				__csrf_magic: csrfMagicToken,
+				expected: $(this).attr('data-expected')
+			});
 		});
 	});
 	</script>
@@ -1194,9 +1213,9 @@ function show_tech_summary() : void {
 			$unlock_time = $lockout['time'] + (30 * 60);
 			$unlock_hms  = date('H:i', $unlock_time);
 
-			print '<td><button class="deviceDown" type="button" id="lockout" title="' . __('To Unlock, press this button again.') . '">' . __('Cacti in Maintenance Mode until approximately %s!', $unlock_hms) . '</button></td>';
+			print '<td><button class="deviceDown" type="button" id="lockout" data-expected="locked" title="' . __('To Unlock, press this button again.') . '">' . __('Cacti in Maintenance Mode until approximately %s!', $unlock_hms) . '</button></td>';
 		} else {
-			print '<td><button type="button" id="lockout" title="' . __('Press this button to Lockout Cacti for 30 minutes for maintenance.') . '">' . __('Lockout Cacti for Maintenance') . '</button></td>';
+			print '<td><button type="button" id="lockout" data-expected="unlocked" title="' . __('Press this button to Lockout Cacti for 30 minutes for maintenance.') . '">' . __('Lockout Cacti for Maintenance') . '</button></td>';
 		}
 	} else {
 		print '<td><button class="deviceDisabled" type="button" id="lockout" disabled="disabled" title="' . __('To enable this feature, goto Settings > Authentication.') . '">' . __('Cacti Maintenance Mode feature is disabled') . '</button></td>';
