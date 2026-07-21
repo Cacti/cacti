@@ -122,7 +122,7 @@ def is_bot(login: str, avatar_url: str) -> bool:
 
 
 def load_contributors() -> dict:
-    return json.loads(CONTRIBUTORSRC.read_text())
+    return json.loads(CONTRIBUTORSRC.read_text(encoding="utf-8"))
 
 
 def fetch_current_contributors() -> list[dict]:
@@ -257,7 +257,7 @@ def refresh_review_badges(config: dict) -> bool:
 
 def cell_html(contributor: dict, width_pct: str) -> str:
     links = "".join(
-        f'<a href="#" title="{EMOJI[badge][1]}">{EMOJI[badge][0]}</a>'
+        f'<span title="{EMOJI[badge][1]}">{EMOJI[badge][0]}</span>'
         for badge in BADGE_ORDER if badge in contributor["contributions"]
     )
     return (
@@ -292,7 +292,7 @@ def render_table(config: dict) -> str:
 
 
 def update_readme(config: dict) -> bool:
-    text = README.read_text()
+    text = README.read_text(encoding="utf-8")
     start_marker = "<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->"
     end_marker = "<!-- ALL-CONTRIBUTORS-LIST:END -->"
     start = text.index(start_marker) + len(start_marker)
@@ -300,7 +300,7 @@ def update_readme(config: dict) -> bool:
     new_text = text[:start] + "\n" + render_table(config) + "\n\n" + text[end:]
     if new_text == text:
         return False
-    README.write_text(new_text)
+    README.write_text(new_text, encoding="utf-8")
     return True
 
 
@@ -316,7 +316,7 @@ def main() -> int:
         print("no contributor changes detected")
         return 0
 
-    CONTRIBUTORSRC.write_text(json.dumps(config, indent=2, ensure_ascii=False) + "\n")
+    CONTRIBUTORSRC.write_text(json.dumps(config, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     update_readme(config)
     print("contributors updated")
     return 0
