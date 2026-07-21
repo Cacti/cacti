@@ -198,14 +198,8 @@ function remote_client_authorized() : bool {
 	foreach ($poller_hostnames as $poller_host) {
 		$poller_forward_records = @dns_get_record($poller_host, DNS_A | DNS_AAAA);
 
-		if (is_array($poller_forward_records)) {
-			foreach ($poller_forward_records as $record) {
-				$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
-
-				if ($ip === $client_addr) {
-					return true;
-				}
-			}
+		if (is_array($poller_forward_records) && remote_agent_fcrdns_confirmed($client_addr, $poller_forward_records)) {
+			return true;
 		}
 	}
 
@@ -227,19 +221,7 @@ function remote_client_authorized() : bool {
 	}
 
 	$forward_records = @dns_get_record($client_name, DNS_A | DNS_AAAA);
-	$forward_match   = false;
-
-	if (is_array($forward_records)) {
-		foreach ($forward_records as $record) {
-			$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
-
-			if ($ip === $client_addr) {
-				$forward_match = true;
-
-				break;
-			}
-		}
-	}
+	$forward_match   = is_array($forward_records) && remote_agent_fcrdns_confirmed($client_addr, $forward_records);
 
 	if (!$forward_match) {
 		$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);

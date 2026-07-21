@@ -248,11 +248,41 @@ function is_template_account(null|int|string $user_id) : bool {
 }
 
 /**
+ * Whether the current request originates from a reverse proxy that config.php
+ * lists in $trusted_proxies. Only such proxies may assert a pre-authenticated
+ * user via forwarded HTTP headers. An exact REMOTE_ADDR match is required; an
+ * empty or unset list trusts no proxy.
+ *
+ * @return bool true when REMOTE_ADDR exactly matches a trusted proxy entry.
+ */
+function is_trusted_proxy() : bool {
+	global $config;
+
+	if (!isset($_SERVER['REMOTE_ADDR'])) {
+		return false;
+	}
+
+	$trusted = $config['trusted_proxies'] ?? [];
+
+	if (!is_array($trusted) || !cacti_sizeof($trusted)) {
+		return false;
+	}
+
+	return in_array($_SERVER['REMOTE_ADDR'], $trusted, true);
+}
+
+/**
  * If basic auth is used, return the valid username
  *
  * @return string|false The username if found and processed, or false if no username is found.
  */
 function get_basic_auth_username() : string|false {
+	/* Headers arriving with an HTTP_ prefix are client-supplied and spoofable.
+	 * Only honor a forwarded identity when the request comes from a trusted
+	 * reverse proxy. The unprefixed REMOTE_USER / REDIRECT_REMOTE_USER vars are
+	 * set by the web server's own auth module and are always honored. */
+	$trusted = is_trusted_proxy();
+
 	if (isset($_SERVER['PHP_AUTH_USER'])) {
 		$raw      = is_array($_SERVER['PHP_AUTH_USER']) ? ($_SERVER['PHP_AUTH_USER'][0] ?? '') : $_SERVER['PHP_AUTH_USER'];
 		$username = str_replace('\\', '\\\\', $raw);
@@ -262,17 +292,17 @@ function get_basic_auth_username() : string|false {
 	} elseif (isset($_SERVER['REDIRECT_REMOTE_USER'])) {
 		$raw      = is_array($_SERVER['REDIRECT_REMOTE_USER']) ? ($_SERVER['REDIRECT_REMOTE_USER'][0] ?? '') : $_SERVER['REDIRECT_REMOTE_USER'];
 		$username = str_replace('\\', '\\\\', $raw);
-	} elseif (isset($_SERVER['HTTP_PHP_AUTH_USER'])) {
+	} elseif ($trusted && isset($_SERVER['HTTP_X_FORWARDED_USER'])) {
+		$raw      = is_array($_SERVER['HTTP_X_FORWARDED_USER']) ? ($_SERVER['HTTP_X_FORWARDED_USER'][0] ?? '') : $_SERVER['HTTP_X_FORWARDED_USER'];
+		$username = str_replace('\\', '\\\\', $raw);
+	} elseif ($trusted && isset($_SERVER['HTTP_PHP_AUTH_USER'])) {
 		$raw      = is_array($_SERVER['HTTP_PHP_AUTH_USER']) ? ($_SERVER['HTTP_PHP_AUTH_USER'][0] ?? '') : $_SERVER['HTTP_PHP_AUTH_USER'];
 		$username = str_replace('\\', '\\\\', $raw);
-	} elseif (isset($_SERVER['HTTP_REMOTE_USER'])) {
+	} elseif ($trusted && isset($_SERVER['HTTP_REMOTE_USER'])) {
 		$raw      = is_array($_SERVER['HTTP_REMOTE_USER']) ? ($_SERVER['HTTP_REMOTE_USER'][0] ?? '') : $_SERVER['HTTP_REMOTE_USER'];
 		$username = str_replace('\\', '\\\\', $raw);
-	} elseif (isset($_SERVER['HTTP_REDIRECT_REMOTE_USER'])) {
+	} elseif ($trusted && isset($_SERVER['HTTP_REDIRECT_REMOTE_USER'])) {
 		$raw      = is_array($_SERVER['HTTP_REDIRECT_REMOTE_USER']) ? ($_SERVER['HTTP_REDIRECT_REMOTE_USER'][0] ?? '') : $_SERVER['HTTP_REDIRECT_REMOTE_USER'];
-		$username = str_replace('\\', '\\\\', $raw);
-	} elseif (isset($_SERVER['HTTP_X_FORWARDED_USER'])) {
-		$raw      = is_array($_SERVER['HTTP_X_FORWARDED_USER']) ? ($_SERVER['HTTP_X_FORWARDED_USER'][0] ?? '') : $_SERVER['HTTP_X_FORWARDED_USER'];
 		$username = str_replace('\\', '\\\\', $raw);
 	} else {
 		$username = false;
@@ -5016,10 +5046,16 @@ function is_2fa_enabled(int $user_id) : bool {
  *
  * @return bool true when forward confirmation matches the source address */
 function remote_agent_fcrdns_confirmed(string $client_addr, array $forward_records) : bool {
+	$client_binary = filter_var($client_addr, FILTER_VALIDATE_IP) !== false ? inet_pton($client_addr) : false;
+
+	if ($client_binary === false) {
+		return false;
+	}
+
 	foreach ($forward_records as $record) {
 		$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
 
-		if ($ip === $client_addr) {
+		if ($ip !== '' && filter_var($ip, FILTER_VALIDATE_IP) !== false && inet_pton($ip) === $client_binary) {
 			return true;
 		}
 	}
