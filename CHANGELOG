@@ -220,7 +220,8 @@ Cacti CHANGELOG
 -feature: Extract remote agent reverse DNS forward-confirmation into the remote_agent_fcrdns_confirmed() helper
 
 1.2.x
--issue: #7212: Address a few small memory leaks in realtime graphing
+-issue#7212: Address a few small memory leaks in realtime graphing
+-issue#7359: Undefined variables detected with legacy plugins
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 
 1.2.31
