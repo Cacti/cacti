@@ -227,7 +227,7 @@ function form_save() : void {
 		$items[0] = [];
 		$sequence = gnrv('sequence');
 
-		$color_template_item_id = '';
+		$color_template_item_id = null;
 
 		foreach ($items as $item) {
 			// generate a new sequence if needed
@@ -254,7 +254,7 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: color_templates.php?action=item_edit&color_template_item_id=' . (empty($color_template_item_id) ? gnrv('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . gnrv('color_template_id'));
+			header('Location: color_templates.php?action=item_edit&color_template_item_id=' . ($color_template_item_id === null ? gnrv('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . gnrv('color_template_id'));
 
 			exit;
 		} else {

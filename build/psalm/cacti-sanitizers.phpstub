@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * Psalm taint-analysis stubs for Cacti's output escapers.
+ *
+ * These declarations exist only to teach Psalm where tainted data is made
+ * safe. The real implementations live in lib/html.php and lib/functions.php;
+ * the signatures below must stay in sync with them. Without these escape
+ * markers Psalm reports XSS taint on every value that is correctly passed
+ * through htmlspecialchars() by way of these helpers.
+ */
+
+/**
+ * html_escape() runs the value through htmlspecialchars() with ENT_QUOTES.
+ *
+ * @psalm-taint-escape html
+ */
+function html_escape(mixed $string = '') : string {}
+
+/**
+ * htmle() is a thin alias for html_escape().
+ *
+ * @psalm-taint-escape html
+ */
+function htmle(mixed $string) : string {}
+
+/**
+ * sanitize_uri() strips the characters used to break out of HTML and URL
+ * contexts (angle brackets, quotes, backticks, parentheses, etc.), so both
+ * the html sink and the quote-bearing text sink are satisfied.
+ *
+ * @psalm-taint-escape html
+ * @psalm-taint-escape has_quotes
+ */
+function sanitize_uri(string $uri) : string {}

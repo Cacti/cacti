@@ -378,7 +378,7 @@ function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $out
 
 	// an empty $rrdtool_pipe array means no fp is available
 	if ($rrdtool_pipe === null || $rrdtool_pipe === false || !is_resource($rrdtool_pipe)) {
-		if (str_starts_with($command_line, 'fetch') || str_starts_with($command_line, 'info')) {
+		if (str_starts_with($command_line, 'fetch') || str_starts_with($command_line, 'info') || str_starts_with($command_line, 'xport')) {
 			$dograph = false;
 			rrdtool_set_language('en');
 		} else {
@@ -2455,10 +2455,9 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 			// +++++++++++++++++++++++ GRAPH ITEMS: VDEFs START +++++++++++++++++++++++
 
 			$vdef_graph_defs = '';
-			$vdef_cache      = [];
 			$vdef_cache_key  = "{$graph_item['vdef_id']}:{$graph_item['cdef_id']}:{$graph_item['data_template_rrd_id']}:{$cf_id}";
 
-			if ($graph_item['vdef_id'] > 0 && isset($vdef_cache[$vdef_cache_key])) { // @phpstan-ignore-line
+			if ($graph_item['vdef_id'] > 0 && !isset($vdef_cache[$vdef_cache_key])) {
 				$vdef_string = $graph_variables['vdef_cache'][$graph_item['graph_templates_item_id']];
 
 				// do we refer to a CDEF within this VDEF?
@@ -2517,8 +2516,8 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 			 * If this graph item has a data source... get a DEF name for it, or the vdef if that applies
 			 * to this graph item .
 			 */
-			if ($graph_item['vdef_id'] > 0) {
-				$data_source_name = 'vdef' . generate_graph_def_name($vdef_cache[$vdef_cache_key]); // @phpstan-ignore-line
+			if ($graph_item['vdef_id'] > 0 && isset($vdef_cache[$vdef_cache_key])) {
+				$data_source_name = 'vdef' . generate_graph_def_name($vdef_cache[$vdef_cache_key]);
 			}
 
 			// to make things easier... if there is no text format set; set blank text
@@ -2827,7 +2826,9 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 						$need_rrd_nl = false;
 				}
 			} else {
-				if (preg_match('/^(AREA|AREA:STACK|LINE[123]|STACK)$/', $graph_item_types[$graph_item['graph_type_id']])) {
+				/* rrdtool xport only accepts DEF/CDEF references; a VDEF backed
+				 * item would emit XPORT:vdefNN and fail the whole command */
+				if ($graph_item['vdef_id'] == 0 && preg_match('/^(AREA|AREA:STACK|LINE[123]|STACK)$/', $graph_item_types[$graph_item['graph_type_id']])) {
 					$legend_name = '';
 
 					// give all export items a name
