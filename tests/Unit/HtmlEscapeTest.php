@@ -35,7 +35,7 @@ test('html_escape encodes double quotes', function () {
 test('html_escape encodes single quotes', function () {
 	$result = html_escape("it's");
 
-	/* ENT_QUOTES | ENT_HTML5 produces &apos; */
+	// ENT_QUOTES | ENT_HTML5 produces &apos;
 	expect($result)->toContain('&apos;');
 });
 
@@ -104,7 +104,7 @@ test('html_split_string breaks long string at word boundary', function () {
 });
 
 test('html_split_string respects forgiveness parameter', function () {
-	/* 40 chars no space, then a space, then more */
+	// 40 chars no space, then a space, then more
 	$str = str_repeat('a', 35) . ' ' . str_repeat('b', 20);
 
 	$result = html_split_string($str, 40, 10);
@@ -119,6 +119,6 @@ test('html_split_string limits iterations to 5 maximum', function () {
 
 	$breaks = substr_count($result, '<br>');
 
-	/* loop runs j=0..4 (5 iterations), breaks when j>4, so up to 5 <br> tags */
+	// loop runs j=0..4 (5 iterations), breaks when j>4, so up to 5 <br> tags
 	expect($breaks)->toBeLessThanOrEqual(5);
 });
