@@ -2263,7 +2263,7 @@ function sql_save(array $array_items, string $table_name, mixed $key_cols = 'id'
 			str_contains($cols[$key]['type'], 'float') ||
 			str_contains($cols[$key]['type'], 'double') ||
 			str_contains($cols[$key]['type'], 'decimal')) {
-			if ($value == '') {
+			if ($value === '' || is_null($value)) {
 				if ($cols[$key]['null'] == 'YES') {
 					$array_items[$key] = 'NULL';
 				} elseif (str_contains($cols[$key]['extra'], 'auto_increment')) {
