@@ -198,14 +198,8 @@ function remote_client_authorized() : bool {
 	foreach ($poller_hostnames as $poller_host) {
 		$poller_forward_records = @dns_get_record($poller_host, DNS_A | DNS_AAAA);
 
-		if (is_array($poller_forward_records)) {
-			foreach ($poller_forward_records as $record) {
-				$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
-
-				if ($ip === $client_addr) {
-					return true;
-				}
-			}
+		if (is_array($poller_forward_records) && remote_agent_fcrdns_confirmed($client_addr, $poller_forward_records)) {
+			return true;
 		}
 	}
 
