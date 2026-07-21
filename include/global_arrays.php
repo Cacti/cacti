@@ -2462,6 +2462,12 @@ $navigation = array(
 		'url' => 'rrdcheck.php',
 		'level' => '2'
 	),
+	'support.php:' => array(
+		'title' => __('Technical Support'),
+		'mapping' => 'index.php:,support.php:',
+		'url' => 'support.php',
+		'level' => '2'
+	),
 	'utilities.php:' => array(
 		'title' => __('Utilities'),
 		'mapping' => 'index.php:',
@@ -2506,12 +2512,6 @@ $navigation = array(
 	),
 	'utilities.php:clear_user_log' => array(
 		'title' => __('Clear User Log'),
-		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'utilities.php',
-		'level' => '2'
-	),
-	'utilities.php:view_tech' => array(
-		'title' => __('Technical Support'),
 		'mapping' => 'index.php:,utilities.php:',
 		'url' => 'utilities.php',
 		'level' => '2'
