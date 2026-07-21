@@ -1,0 +1,7 @@
+# Third-party and generated assets. CLI scripts are not listed here on
+# purpose: they take filenames from argv, which the web-sink rules in
+# .semgrep.yml do not match, so no blanket ignore is needed for them.
+include/vendor/
+include/fa/
+node_modules/
+tests/e2e/node_modules/

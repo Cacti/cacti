@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<psalm
+	errorLevel="8"
+	resolveFromConfigFile="true"
+	autoloader="include/vendor/autoload.php"
+	errorBaseline="psalm-baseline.xml"
+	xmlns="https://getpsalm.org/schema/config"
+>
+	<projectFiles>
+		<directory name="lib" />
+		<directory name="install" />
+		<directory name="cli" />
+		<directory name="include" />
+		<file name="managers.php" />
+		<file name="package_import.php" />
+		<file name="graphs.php" />
+		<file name="host.php" />
+		<file name="reports.php" />
+		<file name="graph_view.php" />
+		<file name="data_sources.php" />
+		<file name="aggregate_graphs.php" />
+		<ignoreFiles>
+			<directory name="include/vendor" />
+			<directory name="include/fa" />
+		</ignoreFiles>
+	</projectFiles>
+
+	<stubs>
+		<file name="build/psalm/cacti-sanitizers.phpstub" />
+	</stubs>
+</psalm>
