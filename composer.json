@@ -56,7 +56,6 @@
         "slim/slim": "^4.14",
         "stevenmaguire/oauth2-keycloak": "^6.1.0",
         "stevenmaguire/oauth2-microsoft": "^2.2",
-        "symfony/clock": "^7.4",
         "symfony/filesystem": "^7.4",
         "symfony/http-foundation": "^7.4",
         "symfony/mailer": "^7.4",
