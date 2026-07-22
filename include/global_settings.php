@@ -920,6 +920,12 @@ $settings = array(
 			'max_length' => '5',
 			'size' => '7'
 		),
+		'tree_site_includes_templates' => array(
+			'friendly_name' => __('Site Graph Template Expansion'),
+			'description' => __('When viewing Site Trees, should the Graph Templates branch be included as a Site sub-branch?'),
+			'method' => 'checkbox',
+			'default' => 'on'
+		),
 		'filter_header' => array(
 			'friendly_name' => __('Filter Settings'),
 			'collapsible' => 'true',
@@ -2792,6 +2798,12 @@ $settings_user = array(
 			'description' => __('Choose whether to expand the Graph Templates and Data Queries used by a Device on Tree.'),
 			'method' => 'checkbox',
 			'default' => ''
+		),
+		'tree_site_includes_templates' => array(
+			'friendly_name' => __('Site Graph Template Expansion'),
+			'description' => __('When viewing Site Trees, should the Graph Templates branch be included as a Site sub-branch?'),
+			'method' => 'checkbox',
+			'default' => read_config_option('tree_site_includes_templates')
 		),
 		'tree_history' => array(
 			'friendly_name' => __('Tree History'),

@@ -380,9 +380,9 @@ dynamic_include	./lib/functions.php:5524	    require_once($config['include_path'
 dynamic_include	./lib/graph_variables.php:65		include_once($config['library_path'] . '/rrd.php');
 dynamic_include	./lib/html.php:1243		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/html_tree.php:479		include_once($config['base_path'] . '/lib/data_query.php');
-dynamic_include	./lib/html_tree.php:823		include($config['include_path'] . '/global_arrays.php');
-dynamic_include	./lib/html_tree.php:824		include_once($config['library_path'] . '/data_query.php');
-dynamic_include	./lib/html_tree.php:825		include_once($config['library_path'] . '/html_utility.php');
+dynamic_include	./lib/html_tree.php:829		include($config['include_path'] . '/global_arrays.php');
+dynamic_include	./lib/html_tree.php:830		include_once($config['library_path'] . '/data_query.php');
+dynamic_include	./lib/html_tree.php:831		include_once($config['library_path'] . '/html_utility.php');
 dynamic_include	./lib/html_tree.php:93		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/import.php:2000		include_once($config['library_path'] . '/vdef.php');
 dynamic_include	./lib/import.php:29		include_once($config['library_path'] . '/xml.php');
