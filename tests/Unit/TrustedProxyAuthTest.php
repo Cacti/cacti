@@ -67,9 +67,34 @@ test('is_trusted_proxy is false when REMOTE_ADDR is unset', function () {
 	expect(is_trusted_proxy())->toBeFalse();
 });
 
+test('is_trusted_proxy matches an IPv6 proxy across text representations', function () {
+	reset_identity_env(['REMOTE_ADDR' => '0:0:0:0:0:0:0:1'], ['::1']);
+	expect(is_trusted_proxy())->toBeTrue();
+});
+
+test('is_trusted_proxy matches when REMOTE_ADDR is the compact IPv6 form', function () {
+	reset_identity_env(['REMOTE_ADDR' => '::1'], ['0:0:0:0:0:0:0:1']);
+	expect(is_trusted_proxy())->toBeTrue();
+});
+
+test('is_trusted_proxy rejects a different IPv6 address', function () {
+	reset_identity_env(['REMOTE_ADDR' => '::2'], ['::1']);
+	expect(is_trusted_proxy())->toBeFalse();
+});
+
+test('is_trusted_proxy does not equate IPv4-mapped and bare IPv4 forms', function () {
+	reset_identity_env(['REMOTE_ADDR' => '::ffff:10.0.0.1'], ['10.0.0.1']);
+	expect(is_trusted_proxy())->toBeFalse();
+});
+
+test('is_trusted_proxy still matches a malformed non-IP entry by exact string', function () {
+	reset_identity_env(['REMOTE_ADDR' => 'not-an-ip'], ['not-an-ip']);
+	expect(is_trusted_proxy())->toBeTrue();
+});
+
 test('forwarded X-Forwarded-User is ignored from an untrusted client', function () {
 	reset_identity_env([
-		'REMOTE_ADDR'          => '203.0.113.9',
+		'REMOTE_ADDR'           => '203.0.113.9',
 		'HTTP_X_FORWARDED_USER' => 'admin',
 	], []);
 	expect(get_basic_auth_username())->toBeFalse();
@@ -77,7 +102,7 @@ test('forwarded X-Forwarded-User is ignored from an untrusted client', function 
 
 test('forwarded HTTP_REMOTE_USER is ignored from an untrusted client', function () {
 	reset_identity_env([
-		'REMOTE_ADDR'     => '203.0.113.9',
+		'REMOTE_ADDR'      => '203.0.113.9',
 		'HTTP_REMOTE_USER' => 'admin',
 	], ['10.0.0.1']);
 	expect(get_basic_auth_username())->toBeFalse();
@@ -85,7 +110,7 @@ test('forwarded HTTP_REMOTE_USER is ignored from an untrusted client', function 
 
 test('forwarded X-Forwarded-User is honored from a trusted proxy', function () {
 	reset_identity_env([
-		'REMOTE_ADDR'          => '10.0.0.1',
+		'REMOTE_ADDR'           => '10.0.0.1',
 		'HTTP_X_FORWARDED_USER' => 'admin',
 	], ['10.0.0.1']);
 	expect(get_basic_auth_username())->toBe('admin');
@@ -93,7 +118,7 @@ test('forwarded X-Forwarded-User is honored from a trusted proxy', function () {
 
 test('forwarded HTTP_REMOTE_USER is honored from a trusted proxy', function () {
 	reset_identity_env([
-		'REMOTE_ADDR'     => '10.0.0.1',
+		'REMOTE_ADDR'      => '10.0.0.1',
 		'HTTP_REMOTE_USER' => 'proxyuser',
 	], ['10.0.0.1']);
 	expect(get_basic_auth_username())->toBe('proxyuser');
@@ -109,8 +134,8 @@ test('web-server-set REMOTE_USER is honored regardless of proxy trust', function
 
 test('an untrusted client cannot override the web-server REMOTE_USER via a forwarded header', function () {
 	reset_identity_env([
-		'REMOTE_ADDR'          => '203.0.113.9',
-		'REMOTE_USER'          => 'svcaccount',
+		'REMOTE_ADDR'           => '203.0.113.9',
+		'REMOTE_USER'           => 'svcaccount',
 		'HTTP_X_FORWARDED_USER' => 'attacker',
 	], []);
 	expect(get_basic_auth_username())->toBe('svcaccount');
