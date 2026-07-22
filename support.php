@@ -716,6 +716,11 @@ function support_process_tables() : array {
 
 	$definitions = api_plugin_hook_function('support_process_tables', $defaults);
 
+	// a misbehaving plugin can return a non-array; fall back to the built-in set
+	if (!is_array($definitions)) {
+		$definitions = $defaults;
+	}
+
 	// discard anything a plugin registered that is not a well formed definition
 	// so a broken hook cannot fatal the process view or corrupt the UNION.
 	foreach ($definitions as $key => $definition) {
@@ -775,20 +780,27 @@ function show_cacti_processes() : void {
 		$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') . $definitions[$table]['select'];
 	}
 
-	$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
-		FROM ($sql_inner) AS rs
-		$sql_where",
-		$sql_params);
+	if ($sql_inner == '') {
+		// no process tables available; render the empty result rather than
+		// building a broken 'FROM ()' UNION
+		$total_rows = 0;
+		$processes  = [];
+	} else {
+		$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
+			FROM ($sql_inner) AS rs
+			$sql_where",
+			$sql_params);
 
-	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ((int) $rows * ((int) grv('page') - 1)) . ',' . (int) $rows;
+		$sql_order = get_order_string();
+		$sql_limit = ' LIMIT ' . ((int) $rows * ((int) grv('page') - 1)) . ',' . (int) $rows;
 
-	$processes = db_fetch_assoc_prepared("SELECT *
-		FROM ($sql_inner) AS rs
-		$sql_where
-		$sql_order
-		$sql_limit",
-		$sql_params);
+		$processes = db_fetch_assoc_prepared("SELECT *
+			FROM ($sql_inner) AS rs
+			$sql_where
+			$sql_order
+			$sql_limit",
+			$sql_params);
+	}
 
 	$display_text = [
 		'tasktype' => [
