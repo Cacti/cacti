@@ -250,10 +250,14 @@ function is_template_account(null|int|string $user_id) : bool {
 /**
  * Whether the current request originates from a reverse proxy that config.php
  * lists in $trusted_proxies. Only such proxies may assert a pre-authenticated
- * user via forwarded HTTP headers. An exact REMOTE_ADDR match is required; an
- * empty or unset list trusts no proxy.
+ * user via forwarded HTTP headers. Matching is IP-normalized: when both
+ * REMOTE_ADDR and a trusted entry parse as IP addresses, they are compared by
+ * packed binary form, so equivalent spellings (for example ::1 and
+ * 0:0:0:0:0:0:0:1) match regardless of text representation. A malformed or
+ * non-IP entry falls back to exact string equality. An empty or unset list
+ * trusts no proxy.
  *
- * @return bool true when REMOTE_ADDR exactly matches a trusted proxy entry.
+ * @return bool true when REMOTE_ADDR matches a trusted proxy entry.
  */
 function is_trusted_proxy() : bool {
 	global $config;
@@ -268,7 +272,29 @@ function is_trusted_proxy() : bool {
 		return false;
 	}
 
-	return in_array($_SERVER['REMOTE_ADDR'], $trusted, true);
+	$remote        = (string) $_SERVER['REMOTE_ADDR'];
+	$remote_packed = @inet_pton($remote);
+
+	foreach ($trusted as $entry) {
+		$entry = (string) $entry;
+
+		/* Compare valid IPs by packed form so alternate spellings of the same
+		 * address match. inet_pton yields 4 bytes for IPv4 and 16 for IPv6, so
+		 * an IPv4-mapped entry never silently matches its bare IPv4 form. */
+		if ($remote_packed !== false) {
+			$entry_packed = @inet_pton($entry);
+
+			if ($entry_packed !== false && hash_equals($entry_packed, $remote_packed)) {
+				return true;
+			}
+		}
+
+		if (hash_equals($entry, $remote)) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 /**
