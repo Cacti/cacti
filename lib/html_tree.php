@@ -551,9 +551,13 @@ function create_site_branch($leaf) {
 	// suppress total rows collection
 	$total_rows = -1;
 
-	$graph_templates = get_allowed_graph_templates('h.site_id=' . $leaf['site_id'], 'name', '', $total_rows);
+	$tree_expansion = read_user_setting('tree_site_includes_templates', read_config_option('tree_site_includes_templates')) == 'on' ? true : false;
 
-	$tree_expansion  = read_user_setting('tree_site_includes_templates', read_config_option('tree_site_includes_templates')) == 'on' ? true : false;
+	if ($tree_expansion) {
+		$graph_templates = get_allowed_graph_templates('h.site_id=' . $leaf['site_id'], 'name', '', $total_rows);
+	} else {
+		$graph_templates = [];
+	}
 
 	if (cacti_sizeof($graph_templates) && $tree_expansion) {
 		$dhtml_tree[] = "\t\t\t\t\t\t<ul>\n";
