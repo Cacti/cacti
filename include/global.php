@@ -152,6 +152,9 @@ require_once(__DIR__ . '/global_path.php');
 // Should we allow proxy ip headers?
 $config['proxy_headers'] = $proxy_headers ?? [];
 
+// Reverse proxies allowed to assert a forwarded, pre-authenticated user
+$config['trusted_proxies'] = $trusted_proxies ?? [];
+
 // Set the poller_id
 if (isset($poller_id)) {
 	$config['poller_id'] = $poller_id;

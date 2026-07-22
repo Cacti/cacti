@@ -100,3 +100,9 @@ test('remote agent authorization fails closed on fcrdns mismatch', function () u
 		->and($remote_agent)->not->toContain('Hostname checks will be ignored for this request.')
 		->and($remote_agent)->not->toContain('$client_name = $client_addr;');
 });
+
+test('basic authentication does not trust a client-supplied forwarded user header', function () use ($root) {
+	$auth = file_get_contents($root . '/lib/auth.php');
+
+	expect($auth)->not->toContain('HTTP_X_FORWARDED_USER');
+});
