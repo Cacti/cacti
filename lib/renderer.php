@@ -26,6 +26,12 @@ final class CactiRenderer {
 	private string $template_path;
 
 	public function __construct(string $template_path) {
+		// realpath() raises a ValueError on a null byte, so reject it up front
+		// and fail through the same "does not exist" path.
+		if (str_contains($template_path, "\0")) {
+			throw new InvalidArgumentException('Renderer template path does not exist');
+		}
+
 		$real_path = realpath($template_path);
 
 		if ($real_path === false || !is_dir($real_path)) {
@@ -68,6 +74,12 @@ final class CactiRenderer {
 	}
 
 	private function validateTemplateFile(string $template_file) : string {
+		// renderFile() reaches here with a caller-supplied path that never passed
+		// through resolveTemplate()'s null-byte check, so guard realpath() here too.
+		if (str_contains($template_file, "\0")) {
+			throw new InvalidArgumentException('Renderer template file does not exist');
+		}
+
 		$real_path = realpath($template_file);
 
 		if ($real_path === false || !is_file($real_path)) {
@@ -97,6 +109,10 @@ function cacti_renderer(?string $template_path = null) : CactiRenderer {
 
 	if ($template_path === null) {
 		$template_path = CACTI_PATH_INCLUDE . '/views';
+	}
+
+	if (str_contains($template_path, "\0")) {
+		throw new InvalidArgumentException('Renderer template path does not exist');
 	}
 
 	$key = realpath($template_path);
