@@ -172,7 +172,7 @@ class CactiValidator {
 	}
 
 	/**
-	 * Validate an SNMP community string (non-blank, max 255 chars, no control bytes).
+	 * Validate an SNMP community string (non-blank, max 255 chars, printable ASCII only).
 	 *
 	 * @param string $community The SNMP community string to validate.
 	 *
@@ -182,7 +182,7 @@ class CactiValidator {
 		return self::isValid($community, [
 			new Assert\NotBlank(),
 			new Assert\Length(max: 255),
-			new Assert\Regex('/^[^\x00-\x1F\x7F]+$/'),
+			new Assert\Regex('/\A[\x20-\x7E]+\z/'),
 		]);
 	}
 
