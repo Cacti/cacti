@@ -614,7 +614,7 @@ function draw_cacti_process_filter(bool $render = false, array $tables = []) : v
  * @return array<string,array{label:string,table:string,select:string}>
  */
 function support_process_tables() : array {
-	$poller_interval = read_config_option('poller_interval');
+	$poller_interval = (int) read_config_option('poller_interval');
 
 	// the full set of process tables known to Cacti.  the key is the table name
 	// for core entries so the db_table_exists() gate below matches prior behavior.
@@ -634,7 +634,7 @@ function support_process_tables() : array {
 			'table'  => 'poller_time',
 			'select' => 'SELECT pid, ' . db_qstr($poller_label) . " AS tasktype,
 					CONCAT('PollerID:', poller_id) AS taskname,
-					id AS taskid, '$poller_interval' AS timeout,
+					id AS taskid, $poller_interval AS timeout,
 					start_time AS started,
 					start_time AS last_update,
 					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(start_time) AS runtime
@@ -722,9 +722,15 @@ function support_process_tables() : array {
 	}
 
 	// discard anything a plugin registered that is not a well formed definition
-	// so a broken hook cannot fatal the process view or corrupt the UNION.
+	// so a broken hook cannot fatal the process view or corrupt the UNION.  the
+	// three members are used directly in SQL and markup, so each must be a string;
+	// a plugin passing an array/object for any of them gets the entry skipped.
 	foreach ($definitions as $key => $definition) {
-		if (!is_array($definition) || !isset($definition['label'], $definition['table'], $definition['select'])) {
+		if (!is_array($definition) ||
+			!isset($definition['label'], $definition['table'], $definition['select']) ||
+			!is_string($definition['label']) ||
+			!is_string($definition['table']) ||
+			!is_string($definition['select'])) {
 			unset($definitions[$key]);
 		}
 	}
