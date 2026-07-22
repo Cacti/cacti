@@ -39,6 +39,12 @@ test('fcrdns confirms when a forward AAAA record matches the source address', fu
 	]))->toBeTrue();
 });
 
+test('fcrdns compares IPv6 addresses by binary value', function () {
+	expect(remote_agent_fcrdns_confirmed('2001:0db8:0:0:0:0:0:1', [
+		['type' => 'AAAA', 'ipv6' => '2001:db8::1'],
+	]))->toBeTrue();
+});
+
 test('fcrdns rejects when forward records resolve to a different address', function () {
 	// PTR exists but forward lookup points elsewhere: the spoofing/inconsistency
 	// signal. The caller must reject rather than fall back to IP matching.

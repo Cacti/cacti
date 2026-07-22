@@ -39,7 +39,10 @@ function nth_percentile(mixed $local_data_ids, int $start_seconds, int $end_seco
 	$stats = json_decode(rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile, $resolution, $peak), true);
 
 	if ($peak) {
-		if (array_key_exists('peak', $stats)) {
+		/* rrdtool_function_stats() emits an empty peak when the RRDfile
+		 * lacks a MAX consolidation function, so treat it as absent and
+		 * fall back to the AVERAGE based statistics */
+		if (array_key_exists('peak', $stats) && cacti_sizeof($stats['peak'])) {
 			return $stats['peak'];
 		}
 
@@ -309,6 +312,18 @@ function nth_percentile_fetch_statistics(int $percentile, array &$local_data_ids
 	return $stats;
 }
 
+function cacti_percentile_index(int $elements, int $percentile) : int {
+	if ($elements <= 0 || $percentile <= 0 || $percentile >= 100) {
+		return 0;
+	}
+
+	// Values are sorted descending. Return the zero-based index of the
+	// percentile value after discarding the upper (100 - percentile)%.
+	$discard_count = intdiv($elements * (100 - $percentile) + 99, 100);
+
+	return max(0, $discard_count - 1);
+}
+
 function cacti_stats_calc(array $array, int $ptile = 95) : array {
 	rsort($array, SORT_NUMERIC);
 
@@ -350,12 +365,12 @@ function cacti_stats_calc(array $array, int $ptile = 95) : array {
 
 	$variance = $rsquared / $elements;
 
-	$ptile_index = intval(ceil($elements * (1 - ($ptile / 100))));
-	$p95n_index  = intval(ceil($elements * 0.05));
-	$p90n_index  = intval(ceil($elements * 0.1));
-	$p75n_index  = intval(ceil($elements * 0.25));
-	$p50n_index  = intval(ceil($elements * 0.50));
-	$p25n_index  = intval(ceil($elements * 0.75));
+	$ptile_index = cacti_percentile_index($elements, $ptile);
+	$p95n_index  = cacti_percentile_index($elements, 95);
+	$p90n_index  = cacti_percentile_index($elements, 90);
+	$p75n_index  = cacti_percentile_index($elements, 75);
+	$p50n_index  = cacti_percentile_index($elements, 50);
+	$p25n_index  = cacti_percentile_index($elements, 25);
 
 	$results = [
 		'p95n'     => $array[$p95n_index] ?? 0,
@@ -463,9 +478,14 @@ function variable_nth_percentile(array &$regexp_match_array, array &$graph, arra
 	}
 
 	if ($graph['base_value'] == 1024) {
-		$base = 10.24;
+		/* the divisor must be 1024^(power/3), the binary analogue of
+		   10^power; dividing by 10.24^power printed values about
+		   1.024^(2*power/3) too low (#7211) */
+		$base      = 2;
+		$exp_scale = 10 / 3;
 	} else {
-		$base = 10;
+		$base      = 10;
+		$exp_scale = 1;
 	}
 
 	// Convert the regex matches to human readable
@@ -591,7 +611,7 @@ function variable_nth_percentile(array &$regexp_match_array, array &$graph, arra
 			if (!empty($nth_cache[$graph_item['data_source_name']])) {
 				$nth = $nth_cache[$graph_item['data_source_name']];
 				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
-				$nth /= $base ** $power;
+				$nth /= $base ** ($power * $exp_scale);
 			}
 
 			break;
@@ -602,7 +622,7 @@ function variable_nth_percentile(array &$regexp_match_array, array &$graph, arra
 			if (!empty($nth_cache['nth_percentile_sum'])) {
 				$nth = $nth_cache['nth_percentile_sum'];
 				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
-				$nth /= $base ** $power;
+				$nth /= $base ** ($power * $exp_scale);
 			}
 
 			break;
@@ -615,7 +635,7 @@ function variable_nth_percentile(array &$regexp_match_array, array &$graph, arra
 			if (!empty($nth_cache['nth_percentile_maximum'])) {
 				$nth = $nth_cache['nth_percentile_maximum'];
 				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
-				$nth /= $base ** $power;
+				$nth /= $base ** ($power * $exp_scale);
 			}
 
 			break;
@@ -624,7 +644,7 @@ function variable_nth_percentile(array &$regexp_match_array, array &$graph, arra
 			if (!empty($nth_cache['nth_percentile_aggregate_total'])) {
 				$nth = $nth_cache['nth_percentile_aggregate_total'];
 				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
-				$nth /= $base ** $power;
+				$nth /= $base ** ($power * $exp_scale);
 			}
 
 			break;
@@ -671,9 +691,13 @@ function variable_bandwidth_summation(array &$regexp_match_array, array &$graph,
 	}
 
 	if ($graph['base_value'] == 1024) {
-		$base = 10.24;
+		/* the divisor must be 1024^(power/3), the binary analogue of
+		   10^power; the auto path below already uses true powers of 1024 */
+		$base      = 2;
+		$exp_scale = 10 / 3;
 	} else {
-		$base = 10;
+		$base      = 10;
+		$exp_scale = 1;
 	}
 
 	if (is_numeric($regexp_match_array[4])) {
@@ -730,7 +754,7 @@ function variable_bandwidth_summation(array &$regexp_match_array, array &$graph,
 	}
 
 	if (preg_match('/\d+/', $regexp_match_array[1])) {
-		$summation /= $base ** $regexp_match_array[1];
+		$summation /= $base ** ($regexp_match_array[1] * $exp_scale);
 	} elseif ($regexp_match_array[1] == 'auto') {
 		if ($graph['base_value'] == 1000) {
 			if ($summation < 1000) {

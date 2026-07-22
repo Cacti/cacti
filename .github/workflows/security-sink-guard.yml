@@ -1,0 +1,42 @@
+name: Security Sink Guard
+
+# Architectural guardrail for develop: fails a PR when the inventory of
+# dangerous sinks (command execution, dynamic include, unserialize, XML parse,
+# header redirect, filesystem write) drifts from the reviewed baseline, or when
+# a new architectural hotspot is introduced. This blocks whole vulnerability
+# classes at the door instead of relying on per-site review. Refresh the
+# baselines intentionally with tests/security/build_sink_inventory.sh and
+# tests/security/build_architectural_helper_report.sh --hotspots.
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-sink-guard-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sink-inventory-guard:
+    name: sink and architectural hotspot guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install ripgrep
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ripgrep
+
+      - name: Verify tracked sink baseline
+        run: tests/security/verify_sink_inventory.sh
+
+      - name: Verify no new architectural hotspots
+        run: tests/security/verify_architectural_hotspots.sh

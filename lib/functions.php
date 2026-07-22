@@ -3022,7 +3022,13 @@ function get_full_test_script_path(int $data_template_id, int $host_id) : mixed 
 	 * sometimes a certain input value will not have anything entered... null out these fields
 	 * in the input string so we don't mess up the script
 	 */
-	return preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path) ?? '';
+	if (preg_match_all('/<[A-Za-z0-9_]+>/', $full_path, $matches)) {
+		cacti_log(sprintf('WARNING: Test command for Data Template[%d] and Device[%d] contains unresolved substitution variables %s.  Positional arguments may be misaligned.', $data_template_id, $host_id, implode(', ', array_unique($matches[0]))), false, 'POLLER');
+
+		$full_path = preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path) ?? '';
+	}
+
+	return $full_path;
 }
 
 /**
@@ -3080,7 +3086,15 @@ function get_full_script_path(int $local_data_id) : mixed {
 
 	/* sometimes a certain input value will not have anything entered... null out these fields
 	in the input string so we don't mess up the script */
-	return preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path) ?? '';
+	if (preg_match_all('/<[A-Za-z0-9_]+>/', $full_path, $matches)) {
+		$host_id = db_fetch_cell_prepared('SELECT host_id FROM data_local WHERE id = ?', [$local_data_id]);
+
+		cacti_log(sprintf('WARNING: Command for Data Source[%d] on Device[%d] contains unresolved substitution variables %s.  Positional arguments may be misaligned.  Check the Data Input Method and its field values.', $local_data_id, (int)$host_id, implode(', ', array_unique($matches[0]))), false, 'POLLER');
+
+		$full_path = preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path) ?? '';
+	}
+
+	return $full_path;
 }
 
 /**
@@ -5725,6 +5739,13 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	null|string $body = null, null|string $body_text = null, null|array|string $attachments = [],
 	null|array $headers = [], bool $html = true, bool $expandIds = false) : string {
 	global $mail_methods;
+
+	// A deployment may have an autoloader generated from a different
+	// composer.lock (or no vendor tree at all).  Fail gracefully instead of
+	// turning a notification attempt into a fatal error.
+	if (!class_exists(Mailer::class) || !class_exists(Email::class)) {
+		return __('Composer mail dependencies are missing or stale. Run composer install and try again.');
+	}
 
 	$start_time = microtime(true);
 

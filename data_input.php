@@ -158,11 +158,11 @@ function form_save() : void {
 				raise_message(2);
 			}
 		} else {
-			$data_input_field_id = 0;
+			$data_input_field_id = null;
 		}
 
 		if (is_error_message()) {
-			header('Location: data_input.php?action=field_edit&data_input_id=' . grv('data_input_id') . '&id=' . (empty($data_input_field_id) ? grv('id') : $data_input_field_id) . (!ierv('input_output') ? '&type=' . grv('input_output') : ''));
+			header('Location: data_input.php?action=field_edit&data_input_id=' . grv('data_input_id') . '&id=' . ($data_input_field_id === null ? grv('id') : $data_input_field_id) . (!ierv('input_output') ? '&type=' . grv('input_output') : ''));
 		} else {
 			header('Location: data_input.php?action=edit&id=' . grv('data_input_id'));
 		}
