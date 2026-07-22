@@ -62,9 +62,11 @@ function support_lockout() : void {
 		// 'expected' reflects the state the button showed when the page was
 		// rendered. Only toggle if the stored state still matches it, so two
 		// administrators acting at once cannot flip each other's change.
-		$expected_locked = (gnrv('expected') == 'locked');
+		$expected = gnrv('expected');
 
-		if ($is_locked !== $expected_locked) {
+		if ($expected !== 'locked' && $expected !== 'unlocked') {
+			raise_message('lockout', __('The Cacti maintenance lockout request did not specify a valid expected state.  Please review the current status and try again.'), MESSAGE_LEVEL_INFO);
+		} elseif ($is_locked !== ($expected === 'locked')) {
 			raise_message('lockout', __('The Cacti maintenance lockout state was changed by another administrator since this page was loaded.  Please review the current status and try again.'), MESSAGE_LEVEL_INFO);
 		} elseif (!$is_locked) {
 			raise_message('lockout', __('Cacti has been locked out by \'%s\'.  Press the button again after Cacti maintenance is over.', get_username($admin)), MESSAGE_LEVEL_WARN);
