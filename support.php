@@ -360,7 +360,7 @@ function show_database_processes() : void {
 		$rows = grv('rows');
 	}
 
-	$sql_where  = 'WHERE info NOT LIKE "%FROM processlist%" AND info IS NOT NULL';
+	$sql_where  = 'WHERE info NOT LIKE \'%FROM processlist%\' AND info IS NOT NULL';
 	$sql_params = [];
 
 	// form the 'where' clause for our main sql query
@@ -373,8 +373,8 @@ function show_database_processes() : void {
 	}
 
 	if (grv('poller') == '0') {
-		$sql_where .= ' AND ' . 'info NOT LIKE "%poller_output%" AND ' .
-			'info NOT LIKE "%poller_item%" AND info NOT LIKE "%SQL_NO_CACHE%"';
+		$sql_where .= ' AND ' . 'info NOT LIKE \'%poller_output%\' AND ' .
+			'info NOT LIKE \'%poller_item%\' AND info NOT LIKE \'%SQL_NO_CACHE%\'';
 	}
 
 	$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
