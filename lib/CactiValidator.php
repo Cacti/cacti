@@ -182,7 +182,7 @@ class CactiValidator {
 		return self::isValid($community, [
 			new Assert\NotBlank(),
 			new Assert\Length(max: 255),
-			new Assert\Regex('/^[\x20-\x7E]+$/'),
+			new Assert\Regex('/\A[\x20-\x7E]+\z/'),
 		]);
 	}
 
