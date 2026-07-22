@@ -78,11 +78,11 @@ function form_save() : void {
 				raise_message(2);
 			}
 		} else {
-			$gprint_preset_id = 0;
+			$gprint_preset_id = null;
 		}
 
 		if (is_error_message()) {
-			header('Location: gprint_presets.php?action=edit&id=' . (empty($gprint_preset_id) ? gnrv('id') : $gprint_preset_id));
+			header('Location: gprint_presets.php?action=edit&id=' . ($gprint_preset_id === null ? gnrv('id') : $gprint_preset_id));
 
 			exit;
 		} else {

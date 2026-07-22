@@ -188,7 +188,7 @@ function draw_color_template_items_list(array $item_list, string $filename, stri
 function form_save() : void {
 	if (isrv('save_component_color')) {
 		if (isrv('color_template_id')) {
-			$save1['color_template_id'] = gnrv('color_template_id');
+			$save1['color_template_id'] = gfrv('color_template_id');
 		} else {
 			$save1['color_template_id'] = 0;
 		}
@@ -196,6 +196,8 @@ function form_save() : void {
 		$save1['name'] = CactiValidator::validateInput(gfrv('name', FILTER_SANITIZE_SPECIAL_CHARS), 'name', [new Assert\NotBlank()], 3);
 
 		cacti_log('Saved ID: ' . $save1['color_template_id'] . ' Name: ' . $save1['name'], false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+
+		$color_template_id = null;
 
 		if (!is_error_message()) {
 			$color_template_id = sql_save($save1, 'color_templates', 'color_template_id');
@@ -209,7 +211,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: color_templates.php?action=template_edit&color_template_id=' . (empty($color_template_id) ? gnrv('color_template_id') : $color_template_id));
+		header('Location: color_templates.php?action=template_edit&color_template_id=' . ($color_template_id === null ? gfrv('color_template_id') : $color_template_id));
 	} elseif (isrv('save_component_item')) {
 		// ================= input validation =================
 		gfrv('color_template_id');
@@ -225,7 +227,7 @@ function form_save() : void {
 		$items[0] = [];
 		$sequence = gnrv('sequence');
 
-		$color_template_item_id = '';
+		$color_template_item_id = null;
 
 		foreach ($items as $item) {
 			// generate a new sequence if needed
@@ -252,7 +254,7 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: color_templates.php?action=item_edit&color_template_item_id=' . (empty($color_template_item_id) ? gnrv('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . gnrv('color_template_id'));
+			header('Location: color_templates.php?action=item_edit&color_template_item_id=' . ($color_template_item_id === null ? gnrv('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . gnrv('color_template_id'));
 
 			exit;
 		} else {

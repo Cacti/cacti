@@ -338,7 +338,7 @@ function form_save() : void {
 			];
 		}
 
-		$graph_template_item_id = '';
+		$graph_template_item_id = null;
 
 		foreach ($items as $item) {
 			// generate a new sequence if needed
@@ -383,7 +383,7 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: ' . CACTI_PATH_URL . 'aggregate_graphs.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? gfrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gfrv('local_graph_id'));
+			header('Location: ' . CACTI_PATH_URL . 'aggregate_graphs.php?action=item_edit&graph_template_item_id=' . ($graph_template_item_id === null ? gfrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gfrv('local_graph_id'));
 
 			exit;
 		} else {
