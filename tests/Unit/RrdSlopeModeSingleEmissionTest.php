@@ -22,7 +22,12 @@ declare(strict_types = 1);
  */
 
 test('lib/rrd.php emits --slope-mode from exactly one site', function () {
-	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/rrd.php');
+	$path   = dirname(__DIR__, 2) . '/lib/rrd.php';
+	$source = file_get_contents($path);
+
+	if ($source === false) {
+		$this->fail("Unable to read $path");
+	}
 
 	expect(substr_count($source, "'--slope-mode'"))->toBe(1);
 });
