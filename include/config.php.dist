@@ -213,6 +213,25 @@ $disable_log_rotation = false;
  */
 $proxy_headers = null;
 
+/**
+ * List the REMOTE_ADDR values of the reverse proxies that are
+ * permitted to assert a pre-authenticated user via forwarded
+ * headers such as:
+ *		'X-Forwarded-User',
+ *		'PHP-Auth-User',
+ *		'Remote-User',
+ *		'Redirect-Remote-User',
+ *
+ * When a request arrives from one of these addresses, Cacti will
+ * honor the forwarded identity header. Requests from any other
+ * address have their forwarded identity headers ignored.
+ *
+ * Empty (the default) means no proxy is trusted, so all forwarded
+ * identity headers are ignored. Only entries that exactly match
+ * REMOTE_ADDR are trusted.
+ */
+$trusted_proxies = [];
+
 /*
  * Set this to define the default i18n handler if not set
  * in the database.  For valid values, see CACTI_LANGUAGE_HANDLER
