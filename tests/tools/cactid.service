@@ -24,11 +24,11 @@ Description=Cacti Daemon Main Poller Service
 After=network.target
 
 [Service]
-Type=forking
+Type=simple
 User=www-data
 Group=www-data
 #EnvironmentFile=/etc/sysconfig/cactid
-ExecStart=/var/www/html/cacti/cactid.php
+ExecStart=/var/www/html/cacti/cactid.php --foreground
 Restart=always
 RestartSec=5s
 
