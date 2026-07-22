@@ -1,0 +1,69 @@
+# Cacti-aware Semgrep rules.
+#
+# Taint-mode rules that understand Cacti's own escapers, so findings are
+# limited to request input that reaches a browser sink without passing through
+# one of them. htmle()/html_escape() run htmlspecialchars(); htmlerv() and
+# html_escape_request_var() are their request-var wrappers; sanitize_uri()
+# cleans redirect targets. get_request_var() and get_nfilter_request_var()
+# both return $_REQUEST values untouched (the filtering variant is
+# get_filter_request_var()), so they are unsanitized sources.
+rules:
+  - id: cacti-reflected-xss
+    mode: taint
+    languages: [php]
+    severity: ERROR
+    message: >-
+      Request input reaches echo/print without an HTML escaper. Wrap the value
+      in htmle()/html_escape() (or htmlerv()/html_escape_request_var() for
+      request vars) before output to prevent reflected XSS.
+    metadata:
+      cwe: "CWE-79: Improper Neutralization of Input During Web Page Generation (Cross-site Scripting)"
+      owasp: "A03:2021 - Injection"
+      category: security
+      confidence: MEDIUM
+    pattern-sources:
+      - pattern: $_GET[...]
+      - pattern: $_POST[...]
+      - pattern: $_REQUEST[...]
+      - pattern: get_request_var(...)
+      - pattern: get_nfilter_request_var(...)
+    pattern-sanitizers:
+      - pattern: htmle(...)
+      - pattern: html_escape(...)
+      - pattern: html_escape_request_var(...)
+      - pattern: htmlerv(...)
+      - pattern: sanitize_uri(...)
+    pattern-sinks:
+      - pattern: echo $SINK;
+      - pattern: print $SINK;
+
+  - id: cacti-header-injection
+    mode: taint
+    languages: [php]
+    severity: ERROR
+    message: >-
+      Request input reaches header() without sanitization. Validate or escape
+      the value (e.g. sanitize_uri() for redirect targets) before setting a
+      response header to prevent header injection and open redirects.
+    metadata:
+      cwe: "CWE-113: Improper Neutralization of CRLF Sequences in HTTP Headers (HTTP Response Splitting)"
+      owasp: "A03:2021 - Injection"
+      category: security
+      confidence: MEDIUM
+    # Only raw superglobals are sources here. The get_*_request_var() helpers
+    # feed the standard redirect idiom (header('Location: page.php?id=' .
+    # get_request_var('id'))) where 'id' is separately int-validated via
+    # get_filter_request_var(), so treating them as header sinks is low signal.
+    # A raw superglobal concatenated into header() is the genuine injection.
+    pattern-sources:
+      - pattern: $_GET[...]
+      - pattern: $_POST[...]
+      - pattern: $_REQUEST[...]
+    pattern-sanitizers:
+      - pattern: htmle(...)
+      - pattern: html_escape(...)
+      - pattern: html_escape_request_var(...)
+      - pattern: htmlerv(...)
+      - pattern: sanitize_uri(...)
+    pattern-sinks:
+      - pattern: header(...)
