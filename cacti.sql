@@ -21,12 +21,6 @@
   +-------------------------------------------------------------------------+
 */
 
---
--- Allow MySQL to handle Cacti's legacy syntax
---
-
-DELIMITER //
-
 SET @sqlmode= "";
 SET SESSION sql_mode = @sqlmode;
 

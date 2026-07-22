@@ -152,6 +152,9 @@ require_once(__DIR__ . '/global_path.php');
 // Should we allow proxy ip headers?
 $config['proxy_headers'] = $proxy_headers ?? [];
 
+// Reverse proxies allowed to assert a forwarded, pre-authenticated user
+$config['trusted_proxies'] = $trusted_proxies ?? [];
+
 // Set the poller_id
 if (isset($poller_id)) {
 	$config['poller_id'] = $poller_id;
@@ -356,7 +359,12 @@ $il = $config['is_web'] ? '</li>' : '';
 
 /* Git checkouts and interrupted upgrades do not ship include/vendor.  Without
    this check the autoload require below produces a bare fatal error. */
-if (!is_file(CACTI_PATH_INCLUDE . '/vendor/autoload.php')) {
+// The installer can repair a missing vendor tree before application classes
+// are loaded.  All normal entry points still fail closed with an actionable
+// message rather than emitting a raw require() fatal.
+$vendor_autoload = CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+
+if (!is_file($vendor_autoload) && !defined('IN_CACTI_INSTALL')) {
 	print $ps . 'FATAL: The include/vendor directory is not populated.  Cacti requires its Composer dependencies before it can start.  From the Cacti directory, run:' . $sp;
 	print $ps . 'composer install' . $sp;
 	print $ps . 'Then reload this page.  See the README for details.' . $sp;
@@ -703,7 +711,10 @@ require_once(CACTI_PATH_LIBRARY . '/snmpagent.php');
 require_once(CACTI_PATH_LIBRARY . '/aggregate.php');
 require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
 require_once(CACTI_PATH_INCLUDE . '/csrf.php');
-require_once(CACTI_PATH_INCLUDE . '/vendor/autoload.php');
+
+if (is_file($vendor_autoload)) {
+	require_once($vendor_autoload);
+}
 
 if ($config['is_web']) {
 	// raise a message and perform a page refresh if we've changed modes
