@@ -553,7 +553,9 @@ function create_site_branch($leaf) {
 
 	$graph_templates = get_allowed_graph_templates('h.site_id=' . $leaf['site_id'], 'name', '', $total_rows);
 
-	if (cacti_sizeof($graph_templates)) {
+	$tree_expansion  = read_user_setting('tree_site_includes_templates', read_config_option('tree_site_includes_templates')) == 'on' ? true : false;
+
+	if (cacti_sizeof($graph_templates) && $tree_expansion) {
 		$dhtml_tree[] = "\t\t\t\t\t\t<ul>\n";
 		$dhtml_tree[] = "\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-site-' . $leaf['site_id'] . '-gts' . "' data-jstree='{ \"type\" : \"graph_templates\" }'><a href='" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=' . $leaf['site_id'] . '&gti=-1&host_id=-1&host_template_id=-1&hgd=') . "'>" . __('Graph Templates') . "</a>\n";
 		$dhtml_tree[] = "\t\t\t\t\t\t\t<ul>\n";
