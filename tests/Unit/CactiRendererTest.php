@@ -73,9 +73,9 @@ it('rejects absolute template names', function () {
 })->throws(InvalidArgumentException::class);
 
 it('rejects template traversal outside the template path', function () {
-	$dir = cacti_renderer_fixture_dir();
+	$dir      = cacti_renderer_fixture_dir();
 	$filename = sprintf('cacti-renderer-outside-%d-%s.php', getmypid(), bin2hex(random_bytes(8)));
-	$outside = dirname($dir) . '/' . $filename;
+	$outside  = dirname($dir) . '/' . $filename;
 
 	file_put_contents($outside, 'outside');
 
@@ -85,4 +85,25 @@ it('rejects template traversal outside the template path', function () {
 	} finally {
 		unlink($outside);
 	}
+})->throws(InvalidArgumentException::class);
+
+it('rejects a null byte in the constructor template path', function () {
+	new CactiRenderer(cacti_renderer_fixture_dir() . "\0/evil");
+})->throws(InvalidArgumentException::class);
+
+it('rejects a null byte in the template name', function () {
+	$renderer = new CactiRenderer(cacti_renderer_fixture_dir());
+
+	$renderer->render("hello.php\0.txt");
+})->throws(InvalidArgumentException::class);
+
+it('rejects a null byte in an explicit template file', function () {
+	$dir      = cacti_renderer_fixture_dir();
+	$renderer = new CactiRenderer($dir);
+
+	$renderer->renderFile($dir . "/hello.php\0.txt");
+})->throws(InvalidArgumentException::class);
+
+it('rejects a null byte in the cacti_renderer path', function () {
+	cacti_renderer(cacti_renderer_fixture_dir() . "\0/evil");
 })->throws(InvalidArgumentException::class);
