@@ -108,9 +108,9 @@ cmd_exec	./snmpagent_mibcache.php:56			exec($php . ' ' . $extra_args . ' > /dev/
 cmd_exec	./snmpagent_persist.php:83		pclose(popen('start "CactiSNMPCache" /I /B ' . $php . ' ' . $extra_args, 'r'));
 cmd_exec	./snmpagent_persist.php:85		exec('ps -ef | grep -v grep | grep -v "sh -c" | grep snmpagent_mibcache.php', $output);
 cmd_exec	./snmpagent_persist.php:88			exec($php . ' ' . $extra_args . ' > /dev/null &');
-cmd_exec	./support.php:1133				exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
-cmd_exec	./support.php:1151			$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
-cmd_exec	./support.php:1174			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
+cmd_exec	./support.php:1206				exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
+cmd_exec	./support.php:1224			$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
+cmd_exec	./support.php:1247			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
 dynamic_include	./cli/audit_database.php:232							require_once($plugin . '/setup.php');
 dynamic_include	./cli/audit_database.php:235								require_once($plugin . '/includes/database.php');
 dynamic_include	./cli/upgrade_database.php:152			include($upgrade_file);
