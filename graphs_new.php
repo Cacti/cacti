@@ -35,6 +35,8 @@ include_once('./lib/poller.php');
 include_once('./lib/template.php');
 include_once('./lib/utility.php');
 
+ini_set('max_execution_time', '0');
+
 /* set default action */
 set_default_action();
 switch (get_request_var('action')) {
