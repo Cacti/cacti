@@ -1584,7 +1584,7 @@ function aggregate_items() : void {
 
 	if (grv('rfilter') == '') {
 		$sql_where = '';
-	} elseif (validate_is_regex(grv('rfilter'))) {
+	} elseif (validate_is_regex(grv('rfilter')) === true) {
 		$sql_where          = 'WHERE gtg.title_cache RLIKE ?';
 		$sql_where_params[] = grv('rfilter');
 	} else {
@@ -1764,7 +1764,7 @@ function aggregate_items() : void {
 			// we're escaping strings here, so no need to escape them on form_selectable_cell
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 
-			if (validate_is_regex(grv('rfilter'))) {
+			if (validate_is_regex(grv('rfilter')) === true) {
 				form_selectable_cell(filter_value($graph['title_cache'], grv('rfilter')), $graph['local_graph_id']);
 			} else {
 				form_selectable_ecell(grv('rfilter') != '' ? aggregate_format_text($graph['title_cache'], grv('rfilter')) : $graph['title_cache'], $graph['local_graph_id']);
