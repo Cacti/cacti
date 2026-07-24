@@ -1543,9 +1543,9 @@ function aggregate_items() : void {
 			'default' => '1'
 		],
 		'matching' => [
-			'filter'  => FILTER_CALLBACK,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'default' => 'on',
-			'options' => ['options' => 'sanitize_search_string']
+			'options' => ['options' => ['regexp' => '/^(on|true|false)$/']]
 		],
 		'sort_column' => [
 			'filter'  => FILTER_CALLBACK,
@@ -1621,7 +1621,7 @@ function aggregate_items() : void {
 	}
 
 	if (grv('local_graph_ids') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' agi.local_graph_id IN(' . grv('local_graph_ids') . ')';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . db_in_clause('agi.local_graph_id', grv('local_graph_ids'));
 	}
 
 	$sql_params = array_merge([$aggregate_id], $sql_where_params);
@@ -1696,8 +1696,8 @@ function aggregate_items() : void {
 				'matching' => [
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Part of Aggregate'),
-					'filter'         => FILTER_CALLBACK,
-					'filter_options' => ['options' => 'sanitize_search_string'],
+					'filter'         => FILTER_VALIDATE_REGEXP,
+					'filter_options' => ['options' => ['regexp' => '/^(on|true|false)$/']],
 					'default'        => 'on',
 					'value'          => gnrv('matching')
 				]
