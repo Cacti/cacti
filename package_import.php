@@ -106,6 +106,10 @@ function form_actions() : void {
 	gfrv('package_location');
 	gfrv('remove_orphans', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/(on)/']]);
 	gfrv('replace_svalues', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/(on)/']]);
+
+	if (isrv('import_state')) {
+		gfrv('import_state', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^[a-f0-9]{32}$/']]);
+	}
 	// ====================================================
 
 	$package_location = gfrv('package_location');
@@ -114,16 +118,36 @@ function form_actions() : void {
 	$replace_svalues  = isrv('replace_svalues') ? true : false;
 	$preview          = false;
 
+	// A stored token carries the parameters that produced the preview. Bind every
+	// import-affecting input to that state so a valid token cannot be replayed with
+	// mismatched request values.
+	$import_state = false;
+
+	if (isrv('import_state')) {
+		$import_state = package_import_take_state(grv('import_state'));
+
+		if ($import_state === false) {
+			raise_message('invalid_import_state', __('The selected package import state has expired or is invalid. Please review the package and try again.'), MESSAGE_LEVEL_ERROR);
+			header('Location: package_import.php');
+
+			exit;
+		}
+
+		$package_location = $import_state['package_location'];
+		$profile_id       = $import_state['data_source_profile'];
+		$remove_orphans   = $import_state['remove_orphans'];
+		$replace_svalues  = $import_state['replace_svalues'];
+	}
+
 	$package = json_decode(get_repo_manifest_file($package_location), true);
 
 	$manifest = $package['manifest'];
 
 	// Import Execution
-	if (isrv('selected_items')) {
-		$selected_items  = sanitize_unserialize_selected_items(gnrv('selected_items'));
-
-		$hashes = unserialize(stripslashes(gnrv('selected_hashes')), ['allowed_classes' => false]);
-		$files  = unserialize(stripslashes(gnrv('selected_files')), ['allowed_classes' => false]);
+	if ($import_state !== false) {
+		$selected_items = $import_state['selected_items'];
+		$hashes         = $import_state['selected_hashes'];
+		$files          = $import_state['selected_files'];
 
 		$import_packages = [];
 		$import_hashes   = [];
@@ -379,17 +403,18 @@ function form_actions() : void {
 		exit;
 	}
 
+	$import_state = package_import_store_state($pkg_array, $pkg_import_array, $pkg_file_array, [
+		'package_location'    => $package_location,
+		'data_source_profile' => $profile_id,
+		'remove_orphans'      => $remove_orphans,
+		'replace_svalues'     => $replace_svalues,
+	]);
+
 	print "<tr>
 		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='package_location' value='" . grv('package_location') . "'>
-			<input type='hidden' name='data_source_profile' value='" . grv('data_source_profile') . "'>
-			<input type='hidden' name='remove_orphans' value='" . (isrv('remove_orphans') ? 'on' : '') . "'>
-			<input type='hidden' name='replace_svalues' value='" . (isrv('replace_svalues') ? 'on' : '') . "'>
-			<input type='hidden' name='selected_items' value='" . serialize($pkg_array) . "'>
-			<input type='hidden' name='selected_hashes' value='" . serialize($pkg_import_array) . "'>
-			<input type='hidden' name='selected_files' value='" . serialize($pkg_file_array) . "'>
-			<input type='hidden' name='drp_action' value='" . htmle(gnrv('drp_action')) . "'>
+			" . html_hidden_input('action', 'actions') . '
+			' . html_hidden_input('import_state', $import_state) . '
+			' . html_hidden_input('drp_action', gnrv('drp_action')) . "
 			$save_html
 		</td>
 	</tr>";
@@ -399,6 +424,58 @@ function form_actions() : void {
 	form_end();
 
 	bottom_footer();
+}
+
+function package_import_store_state(array $selected_items, array $selected_hashes, array $selected_files, array $context) : string {
+	$state_limit = 10;
+	$token       = generate_hash();
+
+	if (!isset($_SESSION['sess_package_import_state']) || !is_array($_SESSION['sess_package_import_state'])) {
+		$_SESSION['sess_package_import_state'] = [];
+	}
+
+	$_SESSION['sess_package_import_state'][$token] = [
+		'selected_items'      => $selected_items,
+		'selected_hashes'     => $selected_hashes,
+		'selected_files'      => $selected_files,
+		'package_location'    => $context['package_location'],
+		'data_source_profile' => $context['data_source_profile'],
+		'remove_orphans'      => $context['remove_orphans'],
+		'replace_svalues'     => $context['replace_svalues'],
+	];
+
+	while (cacti_sizeof($_SESSION['sess_package_import_state']) > $state_limit) {
+		array_shift($_SESSION['sess_package_import_state']);
+	}
+
+	return $token;
+}
+
+function package_import_take_state(string $token) : array|false {
+	if ($token === '' || !isset($_SESSION['sess_package_import_state'][$token]) || !is_array($_SESSION['sess_package_import_state'][$token])) {
+		return false;
+	}
+
+	$import_state = $_SESSION['sess_package_import_state'][$token];
+
+	unset($_SESSION['sess_package_import_state'][$token]);
+
+	if (
+		!isset($import_state['selected_items']) ||
+		!isset($import_state['selected_hashes']) ||
+		!isset($import_state['selected_files']) ||
+		!is_array($import_state['selected_items']) ||
+		!is_array($import_state['selected_hashes']) ||
+		!is_array($import_state['selected_files']) ||
+		!isset($import_state['package_location']) ||
+		!isset($import_state['data_source_profile']) ||
+		!array_key_exists('remove_orphans', $import_state) ||
+		!array_key_exists('replace_svalues', $import_state)
+	) {
+		return false;
+	}
+
+	return $import_state;
 }
 
 function form_save() : void {

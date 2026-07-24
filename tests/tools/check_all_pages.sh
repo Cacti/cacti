@@ -724,6 +724,7 @@ FILTERED_LOG="$(grep -v \
   -e "REINDEX Poller" \
   -e "DSDEBUG Bad Data" \
   -e "PUSHOUT Child Started" \
+  -e "io_uring_queue_init() failed" \
   "$CACTI_LOG")" || true
 
 # ------------------------------------------------------------------------------
