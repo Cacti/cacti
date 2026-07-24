@@ -35,6 +35,11 @@ require_once($config['base_path'] . '/lib/snmp.php');
 require_once($config['base_path'] . '/lib/template.php');
 require_once($config['base_path'] . '/lib/utility.php');
 
+/* administrative changes must always be made against the main database */
+if ($config['poller_id'] > 1) {
+	db_switch_remote_to_main();
+}
+
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
@@ -50,9 +55,7 @@ $device_ids  = array();
 $file        = '';
 $force       = false;
 
-$displayHostTemplates = false;
-$displayCommunities   = false;
-$quietMode            = false;
+$quietMode = false;
 
 $overrides = array();
 foreach($parms as $parameter) {
@@ -82,7 +85,9 @@ foreach($parms as $parameter) {
 			}
 
 			foreach ($device_ids as $id) {
-				if (!is_numeric($id)) {
+				$id = trim($id);
+
+				if (!is_valid_device_id($id)) {
 					print "ERROR: Invalid device id: ($id)\n\n";
 					display_help();
 					exit(1);
@@ -107,7 +112,14 @@ foreach($parms as $parameter) {
 			break;
 
 		case '--template':
-			$overrides['host_template_id'] = $value;
+			$converted = convert_override_value('template', $value);
+
+			if ($converted === false) {
+				display_help();
+				exit(1);
+			}
+
+			$overrides['host_template_id'] = $converted;
 			break;
 
 		case '--community':
@@ -119,7 +131,14 @@ foreach($parms as $parameter) {
 				display_version();
 				exit(0);
 			} else {
-				$overrides['snmp_version'] = trim($value);
+				$converted = convert_override_value('version', trim($value));
+
+				if ($converted === false) {
+					display_help();
+					exit(1);
+				}
+
+				$overrides['snmp_version'] = $converted;
 			}
 			break;
 
@@ -132,20 +151,36 @@ foreach($parms as $parameter) {
 			break;
 
 		case '--site':
-			$overrides['site_id'] = trim($value);
+			$converted = convert_override_value('site', trim($value));
+
+			if ($converted === false) {
+				display_help();
+				exit(1);
+			}
+
+			$overrides['site_id'] = $converted;
 			break;
 
 		case '--poller':
-			$overrides['poller_id'] = trim($value);
+			$converted = convert_override_value('poller', trim($value));
+
+			if ($converted === false) {
+				display_help();
+				exit(1);
+			}
+
+			$overrides['poller_id'] = $converted;
 			break;
 
 		case '--disable':
-			$value = trim($value);
-			if (is_numeric($value)) {
-				$overrides['disabled'] = intval($value) == 0 ? 'on' : '';
-			} else {
-				$overrides['disabled'] = $value == 'on' ? 'on': '';
+			$converted = convert_override_value('disable', trim($value));
+
+			if ($converted === false) {
+				display_help();
+				exit(1);
 			}
+
+			$overrides['disabled'] = $converted;
 			break;
 
 		case '--external-id':
@@ -191,10 +226,6 @@ foreach($parms as $parameter) {
 			$overrides['snmp_port'] = $converted;
 			break;
 
-		case '--proxy':
-			$proxy = true;
-			break;
-
 		case '--timeout':
 			$converted = convert_override_value('timeout', $value);
 
@@ -229,52 +260,25 @@ foreach($parms as $parameter) {
 			break;
 
 		case '--avail':
-			switch($value) {
-				case 'none':
-					$overrides['availability_method'] = '0'; /* tried to use AVAIL_NONE, but then preg_match failes on validation, sigh */
-					break;
-				case 'ping':
-					$overrides['availability_method'] = AVAIL_PING;
-					break;
+			$converted = convert_override_value('avail', $value);
 
-				case 'snmp':
-					$overrides['availability_method'] = AVAIL_SNMP;
-					break;
-
-				case 'pingsnmp':
-					$overrides['availability_method'] = AVAIL_SNMP_AND_PING;
-					break;
-
-				case 'pingorsnmp':
-					$overrides['availability_method'] = AVAIL_SNMP_OR_PING;
-					break;
-
-				default:
-					print "ERROR: Invalid Availability Parameter: ($value)\n\n";
-					display_help();
-					exit(1);
+			if ($converted === false) {
+				display_help();
+				exit(1);
 			}
+
+			$overrides['availability_method'] = $converted;
 			break;
 
 		case '--ping_method':
-			switch(strtolower($value)) {
-				case 'icmp':
-					$overrides['ping_method'] = PING_ICMP;
-					break;
+			$converted = convert_override_value('ping_method', $value);
 
-				case 'tcp':
-					$overrides['ping_method'] = PING_TCP;
-					break;
-
-				case 'udp':
-					$overrides['ping_method'] = PING_UDP;
-					break;
-
-				default:
-					print "ERROR: Invalid Ping Method: ($value)\n\n";
-					display_help();
-					exit(1);
+			if ($converted === false) {
+				display_help();
+				exit(1);
 			}
+
+			$overrides['ping_method'] = $converted;
 			break;
 
 		case '--ping_port':
@@ -321,7 +325,6 @@ foreach($parms as $parameter) {
 			$overrides['bulk_walk_size'] = $converted;
 			break;
 
-		case '--version':
 		case '-V':
 		case '-v':
 			display_version();
@@ -332,10 +335,6 @@ foreach($parms as $parameter) {
 		case '-h':
 			display_help();
 			exit(0);
-
-		case '--quiet':
-			$quietMode = true;
-			break;
 
 		default:
 			print "ERROR: Invalid Argument: ($arg)\n\n";
@@ -376,13 +375,24 @@ if ($file != '') {
 		exit(1);
 	}
 } else {
+	$seen_ids = array();
+
 	foreach ($device_ids as $id) {
-		$device_list[] = array(trim($id), array());
+		$id = trim($id);
+
+		if (isset($seen_ids[$id])) {
+			print "ERROR: duplicate device id ($id).\n";
+			exit(1);
+		}
+
+		$seen_ids[$id] = true;
+		$device_list[] = array($id, array());
 	}
 }
 
 /* preview changes and confirm before processing */
-$valid_list = array();
+$valid_list        = array();
+$no_change_devices = array();
 
 foreach ($device_list as $entry) {
 	$device_id     = $entry[0];
@@ -391,19 +401,39 @@ foreach ($device_list as $entry) {
 	/* per-row overrides win over global CLI overrides */
 	$merged = array_merge($overrides, $row_overrides);
 
-	$host = load_and_validate_device($device_id, $merged, $host_templates);
+	$original = array();
+	$host     = load_and_validate_device($device_id, $merged, $host_templates, false, $original);
 
 	if ($host === false) {
 		$validation_failed++;
 		continue;
 	}
 
-	$valid_list[] = array($device_id, $merged, $host);
+	if (!device_has_requested_changes($original, $merged)) {
+		$no_change_devices[] = $device_id;
+		continue;
+	}
+
+	$valid_list[] = array($device_id, $merged, $host, $original);
+}
+
+if (!$quietMode && cacti_sizeof($no_change_devices)) {
+	foreach ($no_change_devices as $no_change_id) {
+		print "Device ID $no_change_id already has the requested settings; no changes are needed.\n";
+	}
 }
 
 if (!cacti_sizeof($valid_list)) {
-	print "ERROR: no valid devices to process.\n";
-	exit(1);
+	if ($validation_failed) {
+		print "ERROR: no valid devices to process.\n";
+		exit(1);
+	}
+
+	if (!$quietMode) {
+		print "No devices require changes.\n";
+	}
+
+	exit(0);
 }
 
 /* show preview of what will change */
@@ -413,8 +443,9 @@ if (!$quietMode) {
 	foreach ($valid_list as $entry) {
 		$device_id = $entry[0];
 		$host      = $entry[2];
+		$original  = $entry[3];
 
-		preview_device_changes($device_id, $host);
+		preview_device_changes($device_id, $original, $host);
 	}
 
 	/* only CSV bulk changes require confirmation */
@@ -437,7 +468,22 @@ $save_failed = 0;
 
 foreach ($valid_list as $entry) {
 	$device_id = $entry[0];
-	$host      = $entry[2];
+	$merged    = $entry[1];
+	$original  = $entry[3];
+	$current   = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($device_id));
+
+	if (!cacti_sizeof($current) || device_editable_state_changed($original, $current)) {
+		print "ERROR: device-id $device_id changed after preview; it was not saved.\n";
+		$save_failed++;
+		continue;
+	}
+
+	$host = load_and_validate_device($device_id, $merged, $host_templates, $current);
+
+	if ($host === false) {
+		$save_failed++;
+		continue;
+	}
 
 	if (save_device($device_id, $host, $quietMode, $host_templates)) {
 		$success++;
@@ -451,19 +497,29 @@ $processed = $success + $failed;
 
 if (!$quietMode) {
 	print "\nProcessed $processed device(s): $success succeeded, $failed failed\n";
+
+	if (cacti_sizeof($no_change_devices)) {
+		print 'Skipped ' . cacti_count($no_change_devices) . " device(s) that already had the requested settings.\n";
+	}
 }
 
 exit($failed > 0 ? 1 : 0);
 
 
 /* load_and_validate_device - fetch a device, apply overrides, and validate */
-function load_and_validate_device($device_id, $overrides, $host_templates) {
-	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($device_id));
+function load_and_validate_device($device_id, $overrides, $host_templates, $source_host = false, &$original = null) {
+	if ($source_host === false) {
+		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($device_id));
+	} else {
+		$host = $source_host;
+	}
 
 	if (!cacti_sizeof($host)) {
 		print "ERROR: device-id $device_id not found.\n";
 		return false;
 	}
+
+	$original = $host;
 
 	/* merge overridden parameters onto host */
 	$host = array_merge($host, $overrides);
@@ -474,7 +530,7 @@ function load_and_validate_device($device_id, $overrides, $host_templates) {
 	}
 
 	/* process templates */
-	if (!isset($host_templates[$host['host_template_id']])) {
+	if (!is_unsigned_integer($host['host_template_id']) || !isset($host_templates[$host['host_template_id']])) {
 		print "ERROR: Unknown template id (" . $host['host_template_id'] . ")\n";
 		return false;
 	}
@@ -489,32 +545,46 @@ function load_and_validate_device($device_id, $overrides, $host_templates) {
 		return false;
 	}
 
-	if ($host['snmp_version'] > 3 || $host['snmp_version'] < 0 || !is_numeric($host['snmp_version'])) {
+	if (!is_unsigned_integer($host['snmp_version']) || $host['snmp_version'] > 3) {
 		print "ERROR: The snmp version must be between 0 and 3.  If you did not specify one, goto Configuration > Settings > Device Defaults and resave your defaults.\n";
 		return false;
 	}
 
-	if (!is_numeric($host['site_id']) || $host['site_id'] < 0) {
+	/* api_device_save clears SNMPv3-only fields for lower SNMP versions */
+	if (cacti_sizeof($overrides) && $host['snmp_version'] < 3) {
+		$snmpv3_fields = array(
+			'snmp_username',
+			'snmp_password',
+			'snmp_auth_protocol',
+			'snmp_priv_passphrase',
+			'snmp_priv_protocol',
+			'snmp_context',
+			'snmp_engine_id',
+		);
+
+		foreach ($snmpv3_fields as $field) {
+			$host[$field] = '';
+		}
+	}
+
+	if (!is_unsigned_integer($host['site_id']) || ($host['site_id'] > 0 && !reference_id_exists('sites', $host['site_id']))) {
 		print "ERROR: You have specified an invalid site id!\n";
 		return false;
 	}
 
-	if (!is_numeric($host['poller_id']) || $host['poller_id'] < 0) {
+	if (!is_unsigned_integer($host['poller_id']) || ($host['poller_id'] > 0 && !reference_id_exists('poller', $host['poller_id']))) {
 		print "ERROR: You have specified an invalid poller id!\n";
 		return false;
 	}
 
 	/* process snmp information */
-	if ($host['snmp_version'] < 0 || $host['snmp_version'] > 3) {
-		print "ERROR: Invalid snmp version ({$host['snmp_version']})\n";
-		return false;
-	} elseif ($host['snmp_version'] > 0) {
-		if ($host['snmp_port'] < 1 || $host['snmp_port'] > 65534) {
+	if ($host['snmp_version'] > 0) {
+		if (!is_unsigned_integer($host['snmp_port']) || $host['snmp_port'] < 1 || $host['snmp_port'] > 65534) {
 			print "ERROR: Invalid port.  Valid values are from 1-65534\n";
 			return false;
 		}
 
-		if ($host['snmp_timeout'] <= 0 || $host['snmp_timeout'] > 20000) {
+		if (!is_unsigned_integer($host['snmp_timeout']) || $host['snmp_timeout'] < 1 || $host['snmp_timeout'] > 20000) {
 			print "ERROR: Invalid timeout.  Valid values are from 1 to 20000\n";
 			return false;
 		}
@@ -530,49 +600,174 @@ function load_and_validate_device($device_id, $overrides, $host_templates) {
 		}
 	}
 
+	if (!validate_device_field_values($host)) {
+		return false;
+	}
+
 	return $host;
 }
 
-/* preview_device_changes - show what fields will change for a device */
-function preview_device_changes($device_id, $host) {
-	global $host_templates;
+/* is_unsigned_integer - validates a non-negative base-10 integer */
+function is_unsigned_integer($value) {
+	return ctype_digit((string) $value);
+}
 
-	$original = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($device_id));
+/* is_valid_device_id - validates a positive device id */
+function is_valid_device_id($value) {
+	return is_unsigned_integer($value) && intval($value) > 0;
+}
 
-	if (!cacti_sizeof($original)) {
-		return;
+/* reference_id_exists - validates fixed device relation tables */
+function reference_id_exists($table, $id) {
+	static $cache = array();
+
+	if ($table != 'sites' && $table != 'poller') {
+		return false;
 	}
 
-	/* fields to compare, in display order */
-	$fields = array(
-		'description'        => 'Description',
-		'hostname'           => 'IP/Hostname',
-		'host_template_id'  => 'Template',
-		'snmp_version'      => 'SNMP Version',
-		'snmp_community'    => 'SNMP Community',
-		'snmp_port'         => 'SNMP Port',
-		'snmp_timeout'      => 'SNMP Timeout',
-		'snmp_username'     => 'SNMP Username',
-		'snmp_auth_protocol' => 'SNMP Auth Protocol',
-		'snmp_priv_protocol' => 'SNMP Priv Protocol',
-		'snmp_priv_passphrase' => 'SNMP Priv Passphrase',
-		'snmp_context'      => 'SNMP Context',
-		'snmp_engine_id'    => 'SNMP Engine ID',
-		'availability_method' => 'Availability Method',
-		'ping_method'       => 'Ping Method',
-		'ping_port'         => 'Ping Port',
-		'ping_timeout'      => 'Ping Timeout',
-		'ping_retries'     => 'Ping Retries',
-		'max_oids'          => 'Max OIDs',
-		'device_threads'    => 'Threads',
-		'poller_id'         => 'Poller ID',
-		'site_id'           => 'Site ID',
-		'external_id'       => 'External ID',
-		'location'          => 'Location',
-		'notes'             => 'Notes',
-		'disabled'          => 'Disabled',
-		'bulk_walk_size'    => 'Bulk Walk Size',
+	$key = $table . ':' . $id;
+
+	if (isset($cache[$key])) {
+		return $cache[$key];
+	}
+
+	$found = db_fetch_cell_prepared("SELECT id FROM $table WHERE id = ?", array($id));
+
+	$cache[$key] = (string) $found === (string) $id;
+
+	return $cache[$key];
+}
+
+/* validate_device_field_values - validates values not fully constrained by api_device_save */
+function validate_device_field_values($host) {
+	$lengths = array(
+		'description'          => 150,
+		'hostname'             => 100,
+		'location'             => 40,
+		'external_id'          => 40,
+		'snmp_community'       => 100,
+		'snmp_username'        => 50,
+		'snmp_password'        => 50,
+		'snmp_auth_protocol'   => 6,
+		'snmp_priv_passphrase' => 200,
+		'snmp_priv_protocol'   => 7,
+		'snmp_context'         => 64,
+		'snmp_engine_id'       => 64,
 	);
+
+	foreach ($lengths as $field => $max_length) {
+		if (isset($host[$field]) && strlen($host[$field]) > $max_length) {
+			print "ERROR: $field exceeds its maximum length of $max_length characters.\n";
+			return false;
+		}
+	}
+
+	if ($host['snmp_version'] == 3) {
+		$auth_protocols = array('[None]', 'MD5', 'SHA', 'SHA224', 'SHA256', 'SHA384', 'SHA512');
+		$priv_protocols = array('[None]', 'DES', 'AES', 'AES128', 'AES192', 'AES192C', 'AES256', 'AES256C');
+
+		if (!in_array($host['snmp_auth_protocol'], $auth_protocols, true)) {
+			print "ERROR: Invalid SNMP authentication protocol ({$host['snmp_auth_protocol']}).\n";
+			return false;
+		}
+
+		if (!in_array($host['snmp_priv_protocol'], $priv_protocols, true)) {
+			print "ERROR: Invalid SNMP privacy protocol ({$host['snmp_priv_protocol']}).\n";
+			return false;
+		}
+	}
+
+	if (!is_unsigned_integer($host['device_threads']) || $host['device_threads'] < 1 || $host['device_threads'] > 10) {
+		print "ERROR: Device threads must be between 1 and 10.\n";
+		return false;
+	}
+
+	return true;
+}
+
+/* device_editable_fields - fields persisted by save_device */
+function device_editable_fields() {
+	return array(
+		'description'          => 'Description',
+		'hostname'             => 'IP/Hostname',
+		'host_template_id'     => 'Template',
+		'snmp_version'         => 'SNMP Version',
+		'snmp_community'       => 'SNMP Community',
+		'snmp_port'            => 'SNMP Port',
+		'snmp_timeout'         => 'SNMP Timeout',
+		'snmp_username'        => 'SNMP Username',
+		'snmp_password'        => 'SNMP Password',
+		'snmp_auth_protocol'   => 'SNMP Auth Protocol',
+		'snmp_priv_protocol'   => 'SNMP Priv Protocol',
+		'snmp_priv_passphrase' => 'SNMP Priv Passphrase',
+		'snmp_context'         => 'SNMP Context',
+		'snmp_engine_id'       => 'SNMP Engine ID',
+		'availability_method'  => 'Availability Method',
+		'ping_method'          => 'Ping Method',
+		'ping_port'            => 'Ping Port',
+		'ping_timeout'         => 'Ping Timeout',
+		'ping_retries'         => 'Ping Retries',
+		'max_oids'             => 'Max OIDs',
+		'device_threads'       => 'Threads',
+		'poller_id'            => 'Poller ID',
+		'site_id'              => 'Site ID',
+		'external_id'          => 'External ID',
+		'location'             => 'Location',
+		'notes'                => 'Notes',
+		'disabled'             => 'Disabled',
+		'bulk_walk_size'       => 'Bulk Walk Size',
+	);
+}
+
+/* device_has_changes - checks whether the proposed editable fields differ */
+function device_has_changes($original, $proposed) {
+	foreach (device_editable_fields() as $field => $label) {
+		$old_value = isset($original[$field]) ? $original[$field] : '';
+		$new_value = isset($proposed[$field]) ? $proposed[$field] : '';
+
+		if ((string) $old_value !== (string) $new_value) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/* device_has_requested_changes - compares only explicitly requested overrides */
+function device_has_requested_changes($original, $overrides) {
+	$editable_fields = device_editable_fields();
+
+	foreach ($overrides as $field => $new_value) {
+		if ($field == 'ip') {
+			$field = 'hostname';
+		}
+
+		if (!isset($editable_fields[$field])) {
+			continue;
+		}
+
+		$old_value = isset($original[$field]) ? $original[$field] : '';
+
+		if ((string) $old_value !== (string) $new_value) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/* device_editable_state_changed - detects concurrent edits after preview */
+function device_editable_state_changed($original, $current) {
+	return device_has_changes($original, $current);
+}
+
+/* preview_device_changes - show what fields will change for a device */
+function preview_device_changes($device_id, $original, $host) {
+	global $host_templates;
+
+	/* fields to compare, in display order */
+	$fields    = device_editable_fields();
+	$sensitive = array('snmp_community', 'snmp_password', 'snmp_priv_passphrase');
 
 	$changed = false;
 
@@ -595,7 +790,12 @@ function preview_device_changes($device_id, $host) {
 		}
 
 		if ($old_val != $new_val) {
-			print "  $label: '$old_val' -> '$new_val'\n";
+			if (in_array($field, $sensitive, true)) {
+				print "  $label: [redacted] -> [redacted]\n";
+			} else {
+				print "  $label: '$old_val' -> '$new_val'\n";
+			}
+
 			$changed = true;
 		}
 	}
@@ -610,8 +810,10 @@ function preview_device_changes($device_id, $host) {
 /* save_device - save a validated device and report the result */
 function save_device($device_id, $host, $quietMode, $host_templates) {
 	if (!$quietMode) {
-		print "Changing device-id: $device_id to {$host['description']} ({$host['hostname']}) as \"{$host_templates[$host['host_template_id']]}\" using SNMP v{$host['snmp_version']} with community \"{$host['snmp_community']}\"\n";
+		print "Changing device-id: $device_id to {$host['description']} ({$host['hostname']}) as \"{$host_templates[$host['host_template_id']]}\" using SNMP v{$host['snmp_version']}\n";
 	}
+
+	clear_cli_messages();
 
 	$host_id = api_device_save($device_id, $host['host_template_id'], $host['description'], $host['hostname'],
 		$host['snmp_community'], $host['snmp_version'], $host['snmp_username'], $host['snmp_password'],
@@ -621,8 +823,14 @@ function save_device($device_id, $host, $quietMode, $host_templates) {
 		$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['max_oids'], $host['device_threads'],
 		$host['poller_id'], $host['site_id'], $host['external_id'], $host['location'], $host['bulk_walk_size']);
 
-	if (is_error_message() || $host_id != $device_id) {
-		print "ERROR: Failed to change this device ($device_id-$host_id)\n";
+	$has_error    = is_error_message();
+	$error_fields = isset($_SESSION['sess_error_fields']) ? array_keys($_SESSION['sess_error_fields']) : array();
+
+	clear_cli_messages();
+
+	if ($has_error || $host_id != $device_id) {
+		$details = cacti_sizeof($error_fields) ? ' Invalid field(s): ' . implode(', ', $error_fields) . '.' : '';
+		print "ERROR: Failed to change this device ($device_id-$host_id).$details\n";
 		return false;
 	} else {
 		if (!$quietMode) {
@@ -632,19 +840,25 @@ function save_device($device_id, $host, $quietMode, $host_templates) {
 	}
 }
 
+/* clear_cli_messages - isolate API validation state without starting a web session */
+function clear_cli_messages() {
+	kill_session_var('sess_error_fields');
+	kill_session_var('sess_messages');
+}
+
 /* device_override_definitions - defines CSV aliases and shared numeric validation */
 function device_override_definitions() {
 	return array(
 		'id'           => array('key' => 'id'),
 		'description'  => array('key' => 'description'),
 		'ip'           => array('key' => 'ip'),
-		'template'     => array('key' => 'host_template_id'),
+		'template'     => array('key' => 'host_template_id', 'min' => 0),
 		'community'    => array('key' => 'snmp_community'),
-		'version'      => array('key' => 'snmp_version'),
+		'version'      => array('key' => 'snmp_version', 'min' => 0, 'max' => 3),
 		'notes'        => array('key' => 'notes'),
 		'location'     => array('key' => 'location'),
-		'site'         => array('key' => 'site_id'),
-		'poller'       => array('key' => 'poller_id'),
+		'site'         => array('key' => 'site_id', 'min' => 0),
+		'poller'       => array('key' => 'poller_id', 'min' => 0),
 		'disable'      => array('key' => 'disabled'),
 		'external-id'  => array('key' => 'external_id'),
 		'username'     => array('key' => 'snmp_username'),
@@ -657,11 +871,11 @@ function device_override_definitions() {
 		'port'         => array('key' => 'snmp_port', 'min' => 1, 'max' => 65534),
 		'timeout'      => array('key' => 'snmp_timeout', 'min' => 1, 'max' => 20000),
 		'ping_timeout' => array('key' => 'ping_timeout', 'min' => 1),
-		'threads'      => array('key' => 'device_threads', 'min' => 1),
+		'threads'      => array('key' => 'device_threads', 'min' => 1, 'max' => 10),
 		'avail'        => array('key' => 'availability_method'),
 		'ping_method'  => array('key' => 'ping_method'),
 		'ping_port'    => array('key' => 'ping_port', 'min' => 1, 'max' => 65534),
-		'ping_retries' => array('key' => 'ping_retries', 'min' => 1),
+		'ping_retries' => array('key' => 'ping_retries', 'min' => 0),
 		'max_oids'     => array('key' => 'max_oids', 'min' => 1, 'max' => 60),
 		'bulk_walk'    => array('key' => 'bulk_walk_size', 'min' => 1, 'max' => 60, 'allow' => array(-1)),
 	);
@@ -746,12 +960,17 @@ function convert_override_value($column, $value) {
 			break;
 
 		case 'disable':
-			if (is_numeric($value)) {
-				return intval($value) == 0 ? 'on' : '';
-			} else {
-				return $value == 'on' ? 'on' : '';
+			switch (strtolower($value)) {
+				case '1':
+				case 'on':
+					return 'on';
+				case '0':
+				case 'off':
+					return '';
+				default:
+					print "ERROR: Invalid disable value ($value). Valid values are 0, 1, off, or on.\n";
+					return false;
 			}
-			break;
 
 		default:
 			return $value;
@@ -774,7 +993,7 @@ function parse_csv_file($file, &$failed) {
 	$map = csv_column_map();
 
 	/* read header row */
-	$header = fgetcsv($fh);
+	$header = read_csv_row($fh);
 	if ($header === false || !cacti_sizeof($header)) {
 		print "ERROR: file '$file' is empty or has no header row.\n";
 		fclose($fh);
@@ -784,6 +1003,11 @@ function parse_csv_file($file, &$failed) {
 	/* trim header names */
 	$header = array_map('trim', $header);
 
+	/* strip an optional UTF-8 byte order mark */
+	if (isset($header[0]) && substr($header[0], 0, 3) === "\xEF\xBB\xBF") {
+		$header[0] = substr($header[0], 3);
+	}
+
 	/* validate that the id column is first */
 	if ($header[0] !== 'id') {
 		print "ERROR: the first CSV column must be 'id'.\n";
@@ -791,15 +1015,36 @@ function parse_csv_file($file, &$failed) {
 		return false;
 	}
 
+	if (cacti_count(array_unique($header)) != cacti_count($header)) {
+		print "ERROR: CSV column names must be unique.\n";
+		fclose($fh);
+		return false;
+	}
+
+	foreach ($header as $column) {
+		if (!isset($map[$column])) {
+			print "ERROR: Unknown CSV column '$column'.\n";
+			fclose($fh);
+			return false;
+		}
+	}
+
 	$device_list = array();
+	$seen_ids    = array();
 	$line        = 1;
 
-	while (($row = fgetcsv($fh)) !== false) {
+	while (($row = read_csv_row($fh)) !== false) {
 		$line++;
 
 		/* skip empty rows */
-		if (cacti_count($row) == 1 && $row[0] === '') {
+		if (cacti_count($row) == 1 && ($row[0] === null || trim($row[0]) === '')) {
 			continue;
+		}
+
+		if (cacti_count($row) != cacti_count($header)) {
+			print "ERROR: CSV line $line has " . cacti_count($row) . ' field(s); expected ' . cacti_count($header) . ".\n";
+			fclose($fh);
+			return false;
 		}
 
 		$overrides = array();
@@ -807,18 +1052,22 @@ function parse_csv_file($file, &$failed) {
 		$skip_row  = false;
 
 		foreach ($header as $index => $column) {
-			if (!isset($row[$index])) {
-				continue;
-			}
-
 			$value = trim($row[$index]);
 
 			if ($column == 'id') {
-				if (!is_numeric($value)) {
+				if (!is_valid_device_id($value)) {
 					print "ERROR: Invalid device id on line $line: ($value)\n";
 					fclose($fh);
 					return false;
 				}
+
+				if (isset($seen_ids[$value])) {
+					print "ERROR: Duplicate device id on line $line: ($value)\n";
+					fclose($fh);
+					return false;
+				}
+
+				$seen_ids[$value] = true;
 				$device_id = $value;
 				continue;
 			}
@@ -826,12 +1075,6 @@ function parse_csv_file($file, &$failed) {
 			/* skip empty cells - preserve existing value */
 			if ($value === '') {
 				continue;
-			}
-
-			if (!isset($map[$column])) {
-				print "ERROR: Unknown CSV column '$column' on line $line.\n";
-				fclose($fh);
-				return false;
 			}
 
 			$override_key = $map[$column];
@@ -865,6 +1108,15 @@ function parse_csv_file($file, &$failed) {
 	return $device_list;
 }
 
+/* read_csv_row - reads standards-compliant CSV across supported PHP versions */
+function read_csv_row($fh) {
+	if (PHP_VERSION_ID >= 70400) {
+		return fgetcsv($fh, 0, ',', '"', '');
+	}
+
+	return fgetcsv($fh, 0, ',', '"', '\\');
+}
+
 
 /*  display_version - displays version information */
 function display_version() {
@@ -875,9 +1127,9 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	print "\nusage: change_device.php --id=<device-id> [--description=[description]] [--ip=[IP]] [--template=[ID]] [--notes=\"[]\"] [--disable]\n";
-	print "    [--poller=[id]] [--site=[id] [--external-id=[S]] [--proxy] [--threads=[1]\n";
-	print "    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_timeout=[N] --ping_retries=[2]\n";
+	print "\nusage: change_device.php --id=<device-id> [--description=[description]] [--ip=[IP]] [--template=[ID]] [--notes=\"[]\"] [--disable=[0|1|off|on]]\n";
+	print "    [--poller=[id]] [--site=[id]] [--external-id=[S]] [--threads=[1]]\n";
+	print "    [--avail=[ping]] [--ping_method=[icmp]] [--ping_port=[N/A, 1-65534]] [--ping_timeout=[N]] [--ping_retries=[2]]\n";
 	print "    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500]\n";
 	print "    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=] [--engineid=]\n";
 	print "    [--file=<path>] [--force] [--quiet]\n\n";
@@ -891,12 +1143,11 @@ function display_help() {
 	print "Optional:\n";
 	print "    --description  the name that will be displayed by Cacti in the graphs\n";
 	print "    --ip           self explanatory (can also be a FQDN)\n\n";
-	print "    --proxy        if specified, allows adding a second host with same ip address\n";
 	print "    --template     0, is a number (read below to get a list of templates)\n";
 	print "    --location     '', The physical location of the Device.\n";
 	print "    --notes        '', General information about this host.  Must be enclosed using double quotes.\n";
 	print "    --external-id  '', An external ID to align Cacti devices with devices from other systems.\n";
-	print "    --disable      0, 1 to add this host but to disable checks and 0 to enable it\n";
+	print "    --disable      1 or on to disable checks; 0 or off to enable checks\n";
 	print "    --poller       0, numeric poller id that will perform data collection for the device.\n";
 	print "    --site         0, numeric site id that will be associated with the device.\n";
 	print "    --threads      1, numeric number of threads to poll device with.\n";
@@ -918,14 +1169,17 @@ function display_help() {
 	print "    --engineid     '', snmp engineid for snmpv3\n";
 	print "    --max_oids     10, 1-60, the number of OIDs that can be obtained in a single SNMP Get request\n\n";
 	print "    --bulk_walk    -1, 1-60, the bulk walk chunk size that will be used for bulk walks.  Use -1 for auto-tune.\n\n";
-	print "    --force        skip the confirmation prompt (for automated use)\n";
-	print "    --quiet - batch mode value return\n\n";
+	print "    --force        skip CSV confirmation (for automated use)\n";
+	print "    --quiet        suppress normal output and skip CSV confirmation\n\n";
 	print "CSV File Format (--file):\n";
 	print "    The file must be a CSV with a header row.  The first column must be 'id'.\n";
-	print "    Remaining columns use the same names as the CLI flags above (without the -- prefix).\n";
+	print "    Column names must be unique and every row must contain the same number of fields.\n";
+	print "    Supported columns: " . implode(', ', array_keys(device_override_definitions())) . ".\n";
 	print "    Only include columns you want to override; missing columns preserve existing values.\n";
-	print "    Empty cells are treated as 'no override' for that row.\n";
+	print "    Empty cells are treated as 'no override' and cannot be used to clear a field.\n";
 	print "    Values containing commas must be enclosed in double quotes per CSV standard.\n\n";
+	print "    Rows are saved individually.  Successful changes remain applied if a later row fails.\n";
+	print "    Duplicate device ids are rejected and rows with no changes are skipped.\n\n";
 	print "    Example CSV:\n";
 	print "        id,description,ip,community\n";
 	print "        1,Core Router,10.0.0.1,private\n";
