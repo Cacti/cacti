@@ -118,11 +118,11 @@ function form_actions() : void {
 	$replace_svalues  = isrv('replace_svalues') ? true : false;
 	$preview          = false;
 
-	$package = json_decode(get_repo_manifest_file($package_location), true);
+	// A stored token carries the parameters that produced the preview. Bind every
+	// import-affecting input to that state so a valid token cannot be replayed with
+	// mismatched request values.
+	$import_state = false;
 
-	$manifest = $package['manifest'];
-
-	// Import Execution
 	if (isrv('import_state')) {
 		$import_state = package_import_take_state(grv('import_state'));
 
@@ -133,6 +133,18 @@ function form_actions() : void {
 			exit;
 		}
 
+		$package_location = $import_state['package_location'];
+		$profile_id       = $import_state['data_source_profile'];
+		$remove_orphans   = $import_state['remove_orphans'];
+		$replace_svalues  = $import_state['replace_svalues'];
+	}
+
+	$package = json_decode(get_repo_manifest_file($package_location), true);
+
+	$manifest = $package['manifest'];
+
+	// Import Execution
+	if ($import_state !== false) {
 		$selected_items = $import_state['selected_items'];
 		$hashes         = $import_state['selected_hashes'];
 		$files          = $import_state['selected_files'];
@@ -391,15 +403,16 @@ function form_actions() : void {
 		exit;
 	}
 
-	$import_state = package_import_store_state($pkg_array, $pkg_import_array, $pkg_file_array);
+	$import_state = package_import_store_state($pkg_array, $pkg_import_array, $pkg_file_array, [
+		'package_location'    => $package_location,
+		'data_source_profile' => $profile_id,
+		'remove_orphans'      => $remove_orphans,
+		'replace_svalues'     => $replace_svalues,
+	]);
 
 	print "<tr>
 		<td class='saveRow'>
 			" . html_hidden_input('action', 'actions') . '
-			' . html_hidden_input('package_location', grv('package_location')) . '
-			' . html_hidden_input('data_source_profile', grv('data_source_profile')) . '
-			' . html_hidden_input('remove_orphans', isrv('remove_orphans') ? 'on' : '') . '
-			' . html_hidden_input('replace_svalues', isrv('replace_svalues') ? 'on' : '') . '
 			' . html_hidden_input('import_state', $import_state) . '
 			' . html_hidden_input('drp_action', gnrv('drp_action')) . "
 			$save_html
@@ -413,7 +426,7 @@ function form_actions() : void {
 	bottom_footer();
 }
 
-function package_import_store_state(array $selected_items, array $selected_hashes, array $selected_files) : string {
+function package_import_store_state(array $selected_items, array $selected_hashes, array $selected_files, array $context) : string {
 	$state_limit = 10;
 	$token       = generate_hash();
 
@@ -422,9 +435,13 @@ function package_import_store_state(array $selected_items, array $selected_hashe
 	}
 
 	$_SESSION['sess_package_import_state'][$token] = [
-		'selected_items'  => $selected_items,
-		'selected_hashes' => $selected_hashes,
-		'selected_files'  => $selected_files,
+		'selected_items'      => $selected_items,
+		'selected_hashes'     => $selected_hashes,
+		'selected_files'      => $selected_files,
+		'package_location'    => $context['package_location'],
+		'data_source_profile' => $context['data_source_profile'],
+		'remove_orphans'      => $context['remove_orphans'],
+		'replace_svalues'     => $context['replace_svalues'],
 	];
 
 	while (cacti_sizeof($_SESSION['sess_package_import_state']) > $state_limit) {
@@ -449,7 +466,11 @@ function package_import_take_state(string $token) : array|false {
 		!isset($import_state['selected_files']) ||
 		!is_array($import_state['selected_items']) ||
 		!is_array($import_state['selected_hashes']) ||
-		!is_array($import_state['selected_files'])
+		!is_array($import_state['selected_files']) ||
+		!isset($import_state['package_location']) ||
+		!isset($import_state['data_source_profile']) ||
+		!array_key_exists('remove_orphans', $import_state) ||
+		!array_key_exists('replace_svalues', $import_state)
 	) {
 		return false;
 	}
