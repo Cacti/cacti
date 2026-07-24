@@ -181,7 +181,14 @@ foreach($parms as $parameter) {
 			break;
 
 		case '--port':
-			$overrides['snmp_port'] = $value;
+			$converted = convert_override_value('port', $value);
+
+			if ($converted === false) {
+				display_help();
+				exit(1);
+			}
+
+			$overrides['snmp_port'] = $converted;
 			break;
 
 		case '--proxy':
@@ -189,15 +196,36 @@ foreach($parms as $parameter) {
 			break;
 
 		case '--timeout':
-			$overrides['snmp_timeout'] = $value;
+			$converted = convert_override_value('timeout', $value);
+
+			if ($converted === false) {
+				display_help();
+				exit(1);
+			}
+
+			$overrides['snmp_timeout'] = $converted;
 			break;
 
 		case '--ping_timeout':
-			$overrides['ping_timeout'] = $value;
+			$converted = convert_override_value('ping_timeout', $value);
+
+			if ($converted === false) {
+				display_help();
+				exit(1);
+			}
+
+			$overrides['ping_timeout'] = $converted;
 			break;
 
 		case '--threads':
-			$overrides['device_threads'] = $value;
+			$converted = convert_override_value('threads', $value);
+
+			if ($converted === false) {
+				display_help();
+				exit(1);
+			}
+
+			$overrides['device_threads'] = $converted;
 			break;
 
 		case '--avail':
@@ -250,43 +278,48 @@ foreach($parms as $parameter) {
 			break;
 
 		case '--ping_port':
-			if (is_numeric($value) && ($value > 0)) {
-				$overrides['ping_port'] = $value;
-			} else {
-				print "ERROR: Invalid Ping Port: ($value)\n\n";
+			$converted = convert_override_value('ping_port', $value);
+
+			if ($converted === false) {
 				display_help();
 				exit(1);
 			}
+
+			$overrides['ping_port'] = $converted;
 			break;
 
 		case '--ping_retries':
-			if (is_numeric($value) && ($value > 0)) {
-				$overrides['ping_retries'] = $value;
-			} else {
-				print "ERROR: Invalid Ping Retries: ($value)\n\n";
+			$converted = convert_override_value('ping_retries', $value);
+
+			if ($converted === false) {
 				display_help();
 				exit(1);
 			}
+
+			$overrides['ping_retries'] = $converted;
 			break;
 
 		case '--max_oids':
-			if (is_numeric($value) && ($value > 0)) {
-				$overrides['max_oids'] = $value;
-			} else {
-				print "ERROR: Invalid Max OIDS: ($value)\n\n";
+			$converted = convert_override_value('max_oids', $value);
+
+			if ($converted === false) {
 				display_help();
 				exit(1);
 			}
+
+			$overrides['max_oids'] = $converted;
 			break;
 
 		case '--bulk_walk':
-			if (is_numeric($value) && $value >= -1 && $value != 0) {
-				$overrides['bulk_walk_size'] = $value;
-			} else {
-				print "ERROR: Invalid Bulk Walk Size: ($value)\n\n";
+			$converted = convert_override_value('bulk_walk', $value);
+
+			if ($converted === false) {
 				display_help();
 				exit(1);
 			}
+
+			$overrides['bulk_walk_size'] = $converted;
+			break;
 
 		case '--version':
 		case '-V':
@@ -328,10 +361,11 @@ if ($device_id != '' && $file != '') {
 $host_templates = getHostTemplates();
 
 /* build the list of devices to process */
-$device_list = array();
+$device_list       = array();
+$validation_failed = 0;
 
 if ($file != '') {
-	$device_list = parse_csv_file($file);
+	$device_list = parse_csv_file($file, $validation_failed);
 
 	if ($device_list === false) {
 		exit(1);
@@ -349,7 +383,6 @@ if ($file != '') {
 
 /* preview changes and confirm before processing */
 $valid_list = array();
-$failed     = 0;
 
 foreach ($device_list as $entry) {
 	$device_id     = $entry[0];
@@ -361,7 +394,7 @@ foreach ($device_list as $entry) {
 	$host = load_and_validate_device($device_id, $merged, $host_templates);
 
 	if ($host === false) {
-		$failed++;
+		$validation_failed++;
 		continue;
 	}
 
@@ -384,11 +417,12 @@ if (!$quietMode) {
 		preview_device_changes($device_id, $host);
 	}
 
-	/* prompt for confirmation unless --force or --quiet */
-	if (!$force) {
+	/* only CSV bulk changes require confirmation */
+	if ($file != '' && !$force) {
 		print "\nDo you want to proceed? (y/N): ";
 
-		$answer = trim(fgets(STDIN));
+		$input  = fgets(STDIN);
+		$answer = $input === false ? '' : trim($input);
 
 		if (strtolower($answer) != 'y' && strtolower($answer) != 'yes') {
 			print "Aborted.\n";
@@ -398,8 +432,8 @@ if (!$quietMode) {
 }
 
 /* process each device */
-$success = 0;
-$failed  = 0;
+$success     = 0;
+$save_failed = 0;
 
 foreach ($valid_list as $entry) {
 	$device_id = $entry[0];
@@ -408,12 +442,15 @@ foreach ($valid_list as $entry) {
 	if (save_device($device_id, $host, $quietMode, $host_templates)) {
 		$success++;
 	} else {
-		$failed++;
+		$save_failed++;
 	}
 }
 
+$failed    = $validation_failed + $save_failed;
+$processed = $success + $failed;
+
 if (!$quietMode) {
-	print "\nProcessed " . cacti_count($valid_list) . " device(s): $success succeeded, $failed failed\n";
+	print "\nProcessed $processed device(s): $success succeeded, $failed failed\n";
 }
 
 exit($failed > 0 ? 1 : 0);
@@ -472,7 +509,7 @@ function load_and_validate_device($device_id, $overrides, $host_templates) {
 		print "ERROR: Invalid snmp version ({$host['snmp_version']})\n";
 		return false;
 	} elseif ($host['snmp_version'] > 0) {
-		if ($host['snmp_port'] <= 1 || $host['snmp_port'] > 65534) {
+		if ($host['snmp_port'] < 1 || $host['snmp_port'] > 65534) {
 			print "ERROR: Invalid port.  Valid values are from 1-65534\n";
 			return false;
 		}
@@ -595,43 +632,86 @@ function save_device($device_id, $host, $quietMode, $host_templates) {
 	}
 }
 
+/* device_override_definitions - defines CSV aliases and shared numeric validation */
+function device_override_definitions() {
+	return array(
+		'id'           => array('key' => 'id'),
+		'description'  => array('key' => 'description'),
+		'ip'           => array('key' => 'ip'),
+		'template'     => array('key' => 'host_template_id'),
+		'community'    => array('key' => 'snmp_community'),
+		'version'      => array('key' => 'snmp_version'),
+		'notes'        => array('key' => 'notes'),
+		'location'     => array('key' => 'location'),
+		'site'         => array('key' => 'site_id'),
+		'poller'       => array('key' => 'poller_id'),
+		'disable'      => array('key' => 'disabled'),
+		'external-id'  => array('key' => 'external_id'),
+		'username'     => array('key' => 'snmp_username'),
+		'password'     => array('key' => 'snmp_password'),
+		'authproto'    => array('key' => 'snmp_auth_protocol'),
+		'privproto'    => array('key' => 'snmp_priv_protocol'),
+		'privpass'     => array('key' => 'snmp_priv_passphrase'),
+		'context'      => array('key' => 'snmp_context'),
+		'engineid'     => array('key' => 'snmp_engine_id'),
+		'port'         => array('key' => 'snmp_port', 'min' => 1, 'max' => 65534),
+		'timeout'      => array('key' => 'snmp_timeout', 'min' => 1, 'max' => 20000),
+		'ping_timeout' => array('key' => 'ping_timeout', 'min' => 1),
+		'threads'      => array('key' => 'device_threads', 'min' => 1),
+		'avail'        => array('key' => 'availability_method'),
+		'ping_method'  => array('key' => 'ping_method'),
+		'ping_port'    => array('key' => 'ping_port', 'min' => 1, 'max' => 65534),
+		'ping_retries' => array('key' => 'ping_retries', 'min' => 1),
+		'max_oids'     => array('key' => 'max_oids', 'min' => 1, 'max' => 60),
+		'bulk_walk'    => array('key' => 'bulk_walk_size', 'min' => 1, 'max' => 60, 'allow' => array(-1)),
+	);
+}
+
 /* csv_column_map - maps CSV header names to override keys */
 function csv_column_map() {
-	return array(
-		'id'           => 'id',
-		'description'  => 'description',
-		'ip'           => 'ip',
-		'template'     => 'host_template_id',
-		'community'    => 'snmp_community',
-		'version'      => 'snmp_version',
-		'notes'        => 'notes',
-		'location'     => 'location',
-		'site'         => 'site_id',
-		'poller'       => 'poller_id',
-		'disable'      => 'disabled',
-		'external-id'  => 'external_id',
-		'username'     => 'snmp_username',
-		'password'     => 'snmp_password',
-		'authproto'    => 'snmp_auth_protocol',
-		'privproto'    => 'snmp_priv_protocol',
-		'privpass'     => 'snmp_priv_passphrase',
-		'context'      => 'snmp_context',
-		'engineid'     => 'snmp_engine_id',
-		'port'         => 'snmp_port',
-		'timeout'      => 'snmp_timeout',
-		'ping_timeout' => 'ping_timeout',
-		'threads'      => 'device_threads',
-		'avail'        => 'availability_method',
-		'ping_method'  => 'ping_method',
-		'ping_port'    => 'ping_port',
-		'ping_retries' => 'ping_retries',
-		'max_oids'     => 'max_oids',
-		'bulk_walk'    => 'bulk_walk_size',
-	);
+	$map = array();
+
+	foreach (device_override_definitions() as $column => $definition) {
+		$map[$column] = $definition['key'];
+	}
+
+	return $map;
 }
 
 /* convert_override_value - converts CSV string values to the expected override format */
 function convert_override_value($column, $value) {
+	$definitions = device_override_definitions();
+
+	if (isset($definitions[$column]['min'])) {
+		$definition = $definitions[$column];
+		$allowed    = isset($definition['allow']) ? $definition['allow'] : array();
+		$valid      = ctype_digit($value);
+
+		if ($valid) {
+			$number = intval($value);
+			$valid  = $number >= $definition['min'];
+
+			if (isset($definition['max'])) {
+				$valid = $valid && $number <= $definition['max'];
+			}
+		} elseif (in_array(intval($value), $allowed, true) && (string) intval($value) === $value) {
+			$valid = true;
+		}
+
+		if (!$valid) {
+			$range = isset($definition['max']) ? $definition['min'] . '-' . $definition['max'] : $definition['min'] . ' or greater';
+
+			if (cacti_sizeof($allowed)) {
+				$range .= ', or ' . implode(', ', $allowed);
+			}
+
+			print "ERROR: Invalid $column value ($value). Valid values are $range.\n";
+			return false;
+		}
+
+		return $value;
+	}
+
 	switch ($column) {
 		case 'avail':
 			switch ($value) {
@@ -679,7 +759,7 @@ function convert_override_value($column, $value) {
 }
 
 /* parse_csv_file - reads a CSV file and returns an array of [device_id, overrides] pairs */
-function parse_csv_file($file) {
+function parse_csv_file($file, &$failed) {
 	if (!is_readable($file)) {
 		print "ERROR: file '$file' is not readable or does not exist.\n";
 		return false;
@@ -704,10 +784,9 @@ function parse_csv_file($file) {
 	/* trim header names */
 	$header = array_map('trim', $header);
 
-	/* validate that the id column exists */
-	$id_index = array_search('id', $header);
-	if ($id_index === false) {
-		print "ERROR: CSV file must contain an 'id' column.\n";
+	/* validate that the id column is first */
+	if ($header[0] !== 'id') {
+		print "ERROR: the first CSV column must be 'id'.\n";
 		fclose($fh);
 		return false;
 	}
@@ -760,6 +839,7 @@ function parse_csv_file($file) {
 
 			if ($converted === false) {
 				print "WARNING: skipping line $line due to invalid value for column '$column'.\n";
+				$failed++;
 				$skip_row = true;
 				break;
 			}
@@ -773,6 +853,7 @@ function parse_csv_file($file) {
 
 		if ($device_id == '') {
 			print "WARNING: skipping line $line - missing device id.\n";
+			$failed++;
 			continue;
 		}
 
