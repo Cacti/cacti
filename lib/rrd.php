@@ -1605,6 +1605,11 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 		putenv('LANG=' . str_replace('-', '_', CACTI_LOCALE) . '.UTF-8');
 	}
 
+	/* several callers pass '' when no rra is selected; boost_graph_set_file()
+	   expects int|null and throws a TypeError on a string. Only whole numbers
+	   are archive ids; anything else falls back to best-fit selection */
+	$rra_id = (is_int($rra_id) || ctype_digit((string)$rra_id)) ? (int)$rra_id : null;
+
 	// check the purge the boost poller output cache, and check for a live image file if caching is enabled
 	$graph_data = boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, $graph_data_array, false);
 
