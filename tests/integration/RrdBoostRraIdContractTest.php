@@ -16,13 +16,15 @@
 
 $root = dirname(__DIR__, 2);
 
-test('boost_graph_set_file still declares int|null for rra_id', function () use ($root) {
+test('boost_graph_set_file still declares a nullable int for rra_id', function () use ($root) {
 	$src = file_get_contents($root . '/lib/boost.php');
 	expect($src)->not->toBeFalse('Failed to read lib/boost.php');
 
-	$pattern = '/function\s+boost_graph_set_file\s*\([^)]*int\|null\s+\$rra_id/s';
+	// Accept either spelling of the nullable int so an int|null <-> ?int refactor
+	// does not break the contract check.
+	$pattern = '/function\s+boost_graph_set_file\s*\([^)]*(?:int\|null|\?int)\s+\$rra_id/s';
 	expect(preg_match($pattern, $src))->toBe(1,
-		'boost_graph_set_file must declare int|null $rra_id; if this changed, revisit the normalization in lib/rrd.php');
+		'boost_graph_set_file must declare a nullable int $rra_id; if this changed, revisit the normalization in lib/rrd.php');
 });
 
 test('reports.php still passes a non-int rra_id into rrdtool_function_graph', function () use ($root) {
