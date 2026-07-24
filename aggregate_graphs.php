@@ -1545,6 +1545,7 @@ function aggregate_items() : void {
 		'matching' => [
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'default' => 'on',
+			'pageset' => true,
 			'options' => ['options' => ['regexp' => '/^(on|true|false)$/']]
 		],
 		'sort_column' => [
