@@ -35,7 +35,7 @@ test('html_escape encodes double quotes', function () {
 test('html_escape encodes single quotes', function () {
 	$result = html_escape("it's");
 
-	/* ENT_QUOTES | ENT_HTML5 produces &apos; */
+	// ENT_QUOTES | ENT_HTML5 produces &apos;
 	expect($result)->toContain('&apos;');
 });
 
@@ -45,6 +45,11 @@ test('html_escape replaces backtick with entity', function () {
 
 test('html_escape returns empty string for empty input', function () {
 	expect(html_escape(''))->toBe('');
+});
+
+test('html_escape preserves zero values', function () {
+	expect(html_escape('0'))->toBe('0')
+		->and(html_escape(0))->toBe('0');
 });
 
 test('html_escape returns empty string for null input', function () {
@@ -57,6 +62,29 @@ test('html_escape does not double-encode existing entities', function () {
 
 test('html_escape handles ampersand in plain text', function () {
 	expect(html_escape('a&b'))->toBe('a&amp;b');
+});
+
+test('html_hidden_input escapes name and value attributes', function () {
+	$result = html_hidden_input('selected_hashes', "a' onfocus='alert(1)");
+
+	expect($result)->toBe("<input type='hidden' name='selected_hashes' value='a&apos; onfocus=&apos;alert(1)'>");
+});
+
+test('html_text_input escapes value and additional attributes', function () {
+	$result = html_text_input('rfilter', "a' autofocus", [
+		'class'    => 'ui-state-default',
+		'onChange' => 'applyFilter()',
+		'bad attr' => 'drop',
+	]);
+
+	expect($result)->toContain("value='a&apos; autofocus'")
+		->and($result)->toContain("onChange='applyFilter()'")
+		->and($result)->not->toContain("badattr='drop'");
+});
+
+test('html input helpers preserve zero values', function () {
+	expect(html_hidden_input('selected_id', 0))->toContain("value='0'")
+		->and(html_text_input('rfilter', '0'))->toContain("value='0'");
 });
 
 // =====================================================================
@@ -76,7 +104,7 @@ test('html_split_string breaks long string at word boundary', function () {
 });
 
 test('html_split_string respects forgiveness parameter', function () {
-	/* 40 chars no space, then a space, then more */
+	// 40 chars no space, then a space, then more
 	$str = str_repeat('a', 35) . ' ' . str_repeat('b', 20);
 
 	$result = html_split_string($str, 40, 10);
@@ -91,6 +119,6 @@ test('html_split_string limits iterations to 5 maximum', function () {
 
 	$breaks = substr_count($result, '<br>');
 
-	/* loop runs j=0..4 (5 iterations), breaks when j>4, so up to 5 <br> tags */
+	// loop runs j=0..4 (5 iterations), breaks when j>4, so up to 5 <br> tags
 	expect($breaks)->toBeLessThanOrEqual(5);
 });
