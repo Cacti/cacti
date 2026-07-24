@@ -101,9 +101,6 @@ cmd_exec	./snmpagent_persist.php:86			exec($php . ' ' . $extra_args . ' > /dev/n
 cmd_exec	./support.php:1118				exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
 cmd_exec	./support.php:1136			$snmp_version = html_escape(shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1'));
 cmd_exec	./support.php:1159			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
-cmd_exec	./utilities.php:219					exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
-cmd_exec	./utilities.php:237				$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
-cmd_exec	./utilities.php:257				exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
 deserialize	./lib/functions.php:4701				$items = unserialize($unstripped, array('allowed_classes' => false));
 deserialize	./lib/functions.php:8016		return @unserialize($strobj, array('allowed_classes' => false));
 dynamic_include	./automation_tree_rules.php:538		include_once($config['base_path'].'/lib/html_tree.php');
@@ -592,7 +589,7 @@ fs_write	./scripts/ss_net_snmp_disk_io.php:226			file_put_contents("$tmpdir/$tmp
 fs_write	./snmpagent_mibcachechild.php:90		$lock = fopen($path_mibcache_lock, 'w');
 fs_write	./snmpagent_mibcachechild.php:94			file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
 fs_write	./templates_import.php:67				$fp = fopen($_FILES['import_file']['tmp_name'],'r');
-fs_write	./utilities.php:1619				$log_fh = fopen($logfile, 'w');
+fs_write	./utilities.php:826				$log_fh = fopen($logfile, 'w');
 header_redirect	./aggregate_graphs.php:102			header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
 header_redirect	./aggregate_graphs.php:121			header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
 header_redirect	./aggregate_graphs.php:248		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
@@ -990,9 +987,10 @@ header_redirect	./user_group_admin.php:574			header('Location: user_group_admin.
 header_redirect	./user_group_admin.php:595			header('Location: user_group_admin.php?action=edit&header=false&tab=settings&id=' . get_nfilter_request_var('id'));
 header_redirect	./user_group_admin.php:602		header('Location: user_group_admin.php?action=edit&header=false&tab=general&id=' .  get_nfilter_request_var('id'));
 header_redirect	./user_group_admin.php:625		header('Location: user_group_admin.php?action=edit&header=false&tab=gperms&id=' . get_request_var('group_id'));
-header_redirect	./utilities.php:1285			header('Location: utilities.php?action=view_logfile&filename=' . $logbase);
 header_redirect	./utilities.php:43			header('Location: utilities.php?action=view_poller_cache');exit;
 header_redirect	./utilities.php:47			header('Location: utilities.php?header=false');exit;
+header_redirect	./utilities.php:492			header('Location: utilities.php?action=view_logfile&filename=' . $logbase);
+header_redirect	./utilities.php:80			header('Location: support.php?tab=summary');exit;
 header_redirect	./utilities.php:95			header('Location: utilities.php');
 header_redirect	./utilities.php:99			header('Location: utilities.php?action=view_snmpagent_cache');exit;
 header_redirect	./vdef.php:128			header('Location: vdef.php?action=edit&header=false&id=' . (empty($vdef_id) ? get_request_var('id') : $vdef_id));
