@@ -103,7 +103,7 @@ class CactiFilesystem {
 	}
 
 	public function read(string $filename): string {
-		$contents = file_get_contents($filename);
+		$contents = @file_get_contents($filename);
 
 		if ($contents === false) {
 			throw new RuntimeException("Unable to read file: $filename");

@@ -12,10 +12,10 @@
  +-------------------------------------------------------------------------+
 */
 
-test('CactiFilesystem wraps Symfony filesystem operations', function () {
-	require_once __DIR__ . '/../../include/vendor/autoload.php';
-	require_once __DIR__ . '/../../lib/CactiFilesystem.php';
+require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
+require_once dirname(__DIR__, 2) . '/lib/CactiFilesystem.php';
 
+test('CactiFilesystem wraps Symfony filesystem operations', function () {
 	$filesystem = new CactiFilesystem();
 	$dir        = sys_get_temp_dir() . '/cacti-filesystem-' . bin2hex(random_bytes(4));
 	$file       = CactiFilesystem::join($dir, 'nested', 'settings.txt');
@@ -29,7 +29,7 @@ test('CactiFilesystem wraps Symfony filesystem operations', function () {
 
 		expect($filesystem->has([$file, $copy]))->toBeTrue();
 		expect($filesystem->read($file))->toBe("alpha\nbeta");
-		expect(CactiFilesystem::canonicalize($dir . '/nested/../nested/settings.txt'))->toBe($file);
+		expect(CactiFilesystem::canonicalize(CactiFilesystem::join($dir, 'nested', '..', 'nested', 'settings.txt')))->toBe($file);
 	} finally {
 		$filesystem->delete($dir);
 	}
