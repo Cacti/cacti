@@ -34,3 +34,18 @@ test('CactiFilesystem wraps Symfony filesystem operations', function () {
 		$filesystem->delete($dir);
 	}
 });
+
+test('CactiFilesystem read throws when the file is missing', function () {
+	$filesystem = new CactiFilesystem();
+	$missing    = sys_get_temp_dir() . '/cacti-filesystem-missing-' . bin2hex(random_bytes(4));
+
+	expect(fn () => $filesystem->read($missing))
+		->toThrow(RuntimeException::class);
+});
+
+test('CactiFilesystem read rejects a path containing a null byte', function () {
+	$filesystem = new CactiFilesystem();
+
+	expect(fn () => $filesystem->read("/tmp/foo\0bar"))
+		->toThrow(RuntimeException::class, 'null byte');
+});

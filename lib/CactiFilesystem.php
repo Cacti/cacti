@@ -79,7 +79,7 @@ class CactiFilesystem {
 	}
 
 	public static function isAbsolutePath(string $path): bool {
-		return self::default()->isAbsolute($path);
+		return Path::isAbsolute($path);
 	}
 
 	public function has(string|array $files): bool {
@@ -103,10 +103,17 @@ class CactiFilesystem {
 	}
 
 	public function read(string $filename): string {
+		// file_get_contents() throws a ValueError on a null byte in PHP 8+,
+		// which would escape this method's RuntimeException contract.
+		if (str_contains($filename, "\0")) {
+			throw new RuntimeException("Unable to read file $filename: path contains a null byte");
+		}
+
 		$contents = @file_get_contents($filename);
 
 		if ($contents === false) {
-			throw new RuntimeException("Unable to read file: $filename");
+			$reason = error_get_last()['message'] ?? 'unknown error';
+			throw new RuntimeException("Unable to read file $filename: $reason");
 		}
 
 		return $contents;
