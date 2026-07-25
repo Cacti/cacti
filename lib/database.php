@@ -946,7 +946,11 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 			$sql .= ' AFTER ' . $column['after'];
 		}
 
-		return db_execute($sql, $log, $db_conn);
+		$result = db_execute($sql, $log, $db_conn);
+
+		db_column_type_cache_reset();
+
+		return $result;
 	}
 
 	return true;
@@ -982,7 +986,11 @@ function db_remove_column($table, $column, $log = true, $db_conn = false) {
 
 	if (isset($column) && in_array($column, $columns)) {
 		$sql = 'ALTER TABLE `' . $table . '` DROP `' . $column . '`';
-		return db_execute($sql, $log, $db_conn);
+		$result = db_execute($sql, $log, $db_conn);
+
+		db_column_type_cache_reset();
+
+		return $result;
 	}
 
 	return true;
@@ -1227,7 +1235,7 @@ function db_column_exists($table, $column, $log = true, $db_conn = false) {
  * @return (array) An array of column types indexed by the column names
  */
 function db_get_table_column_types($table, $db_conn = false) {
-	global $database_sessions, $database_default, $database_hostname, $database_port;
+	global $database_sessions, $database_default, $database_hostname, $database_port, $db_column_type_cache;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
@@ -1238,15 +1246,33 @@ function db_get_table_column_types($table, $db_conn = false) {
 		}
 	}
 
+	/* column metadata is invariant within a request, so memoize the SHOW COLUMNS
+	 * lookup. sql_save() calls this for every write, and a bulk operation (e.g.
+	 * creating many graphs) otherwise re-queries the same tables hundreds of
+	 * times. The cache is cleared by the DDL helpers whenever a column changes. */
+	$key = spl_object_id($db_conn) . ':' . $table;
+
+	if (isset($db_column_type_cache[$key])) {
+		return $db_column_type_cache[$key];
+	}
+
 	$columns = db_fetch_assoc("SHOW COLUMNS FROM $table", false, $db_conn);
 	$cols    = array();
 	if (cacti_sizeof($columns)) {
 		foreach($columns as $col) {
 			$cols[$col['Field']] = array('type' => $col['Type'], 'null' => $col['Null'], 'default' => $col['Default'], 'extra' => $col['Extra']);;
 		}
+
+		$db_column_type_cache[$key] = $cols;
 	}
 
 	return $cols;
+}
+
+function db_column_type_cache_reset() {
+	global $db_column_type_cache;
+
+	$db_column_type_cache = array();
 }
 
 /**
