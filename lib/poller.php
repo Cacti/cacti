@@ -2402,10 +2402,19 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 
 		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
 	} elseif ($r['timeout_exceeded']) {
-		if ($r['pid'] > 0) {
+		$timeout_pid = (int) $r['pid'];
+
+		if (is_system_pid($timeout_pid)) {
+			// mirror timeout_kill_registered_processes(): never signal a reserved
+			// system PID from the registry, but still clear and re-register
+			cacti_log(sprintf('WARNING: Refusing to kill registered process with a reserved system PID! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $r['pid']), false, 'POLLER');
+
+			unregister_process($tasktype, $taskname, $taskid);
+			register_process($tasktype, $taskname, $taskid, $pid, $timeout);
+		} elseif ($timeout_pid > 0) {
 			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceeded'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
 
-			posix_kill($r['pid'], SIGTERM);
+			posix_kill($timeout_pid, SIGTERM);
 
 			unregister_process($tasktype, $taskname, $taskid);
 			register_process($tasktype, $taskname, $taskid, $pid, $timeout);
