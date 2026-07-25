@@ -71,8 +71,15 @@ test('combine confirmation posts aggregate_name', function () {
 });
 
 test('no confirmation extra input is misnamed title_format', function () {
-	$source  = getAggregateGraphsSource();
-	$pattern = "/'extra'\s*=>\s*\[\s*'title_format'/";
+	$source = getAggregateGraphsSource();
+
+	// Match title_format used as an extra-input field name (a key mapping to a
+	// definition array) anywhere, not just as the first key of an 'extra'
+	// block. Anchoring to the first key let the bug slip back in as a
+	// later/second key. The '=> [' shape still excludes the legitimate scalar
+	// uses (gnrv('title_format'), $aginfo['title_format'], SQL), and key order
+	// and whitespace stay unpinned.
+	$pattern = "/'title_format'\s*=>\s*\[/";
 
 	expect(preg_match($pattern, $source))->toBe(0,
 		'no bulk-action dialog may post its input as title_format'
