@@ -87,6 +87,8 @@ function api_aggregate_convert_template(array $graphs) : void {
 
 	// without a valid template the saves below would write null template fields
 	if (!cacti_sizeof($aggregate_template)) {
+		raise_message('aggregate_template_error', __('The selected Aggregate Template was not found! No Graphs were migrated.'), MESSAGE_LEVEL_ERROR);
+
 		return;
 	}
 
