@@ -12,10 +12,10 @@
  +-------------------------------------------------------------------------+
 */
 
-test('CactiClock exposes a DI-friendly Symfony clock wrapper', function () {
-	require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-	require_once dirname(__DIR__, 2) . '/lib/CactiClock.php';
+require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
+require_once dirname(__DIR__, 2) . '/lib/CactiClock.php';
 
+test('CactiClock exposes a DI-friendly Symfony clock wrapper', function () {
 	$clock = new CactiClock();
 
 	expect($clock->now())->toBeInstanceOf(DateTimeImmutable::class);
@@ -25,9 +25,6 @@ test('CactiClock exposes a DI-friendly Symfony clock wrapper', function () {
 });
 
 test('CactiClock uses an injected clock instead of the default', function () {
-	require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-	require_once dirname(__DIR__, 2) . '/lib/CactiClock.php';
-
 	$fixed = new DateTimeImmutable('2020-01-02 03:04:05', new DateTimeZone('UTC'));
 
 	$injected = new class($fixed) implements Symfony\Component\Clock\ClockInterface {

@@ -12,10 +12,10 @@
  +-------------------------------------------------------------------------+
 */
 
-test('CactiForm creates injectable Symfony form builders', function () {
-	require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-	require_once dirname(__DIR__, 2) . '/lib/CactiForm.php';
+require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
+require_once dirname(__DIR__, 2) . '/lib/CactiForm.php';
 
+test('CactiForm creates injectable Symfony form builders', function () {
 	$form = CactiForm::createNamedBuilder('settings')
 		->add('name')
 		->getForm();
@@ -25,9 +25,6 @@ test('CactiForm creates injectable Symfony form builders', function () {
 });
 
 test('CactiForm retains an injected form factory', function () {
-	require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-	require_once dirname(__DIR__, 2) . '/lib/CactiForm.php';
-
 	$injected = Symfony\Component\Form\Forms::createFormFactory();
 
 	expect((new CactiForm($injected))->formFactory())->toBe($injected);

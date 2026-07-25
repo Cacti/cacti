@@ -12,6 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\Forms;
@@ -25,6 +26,8 @@ use Symfony\Component\Form\Forms;
  * inject a form factory without spreading Forms::createFormFactory() calls.
  */
 class CactiForm {
+	private const DEFAULT_FORM_TYPE = FormType::class;
+
 	private FormFactoryInterface $factory;
 
 	public function __construct(?FormFactoryInterface $factory = null) {
@@ -35,11 +38,11 @@ class CactiForm {
 		return (new self())->formFactory();
 	}
 
-	public static function createBuilder(string $type = Symfony\Component\Form\Extension\Core\Type\FormType::class, mixed $data = null, array $options = []): FormBuilderInterface {
+	public static function createBuilder(string $type = self::DEFAULT_FORM_TYPE, mixed $data = null, array $options = []): FormBuilderInterface {
 		return (new self())->builder($type, $data, $options);
 	}
 
-	public static function createNamedBuilder(string $name, string $type = Symfony\Component\Form\Extension\Core\Type\FormType::class, mixed $data = null, array $options = []): FormBuilderInterface {
+	public static function createNamedBuilder(string $name, string $type = self::DEFAULT_FORM_TYPE, mixed $data = null, array $options = []): FormBuilderInterface {
 		return (new self())->namedBuilder($name, $type, $data, $options);
 	}
 
@@ -47,11 +50,11 @@ class CactiForm {
 		return $this->factory;
 	}
 
-	public function builder(string $type = Symfony\Component\Form\Extension\Core\Type\FormType::class, mixed $data = null, array $options = []): FormBuilderInterface {
+	public function builder(string $type = self::DEFAULT_FORM_TYPE, mixed $data = null, array $options = []): FormBuilderInterface {
 		return $this->factory->createBuilder($type, $data, $options);
 	}
 
-	public function namedBuilder(string $name, string $type = Symfony\Component\Form\Extension\Core\Type\FormType::class, mixed $data = null, array $options = []): FormBuilderInterface {
+	public function namedBuilder(string $name, string $type = self::DEFAULT_FORM_TYPE, mixed $data = null, array $options = []): FormBuilderInterface {
 		return $this->factory->createNamedBuilder($name, $type, $data, $options);
 	}
 }
