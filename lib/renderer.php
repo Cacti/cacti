@@ -38,12 +38,14 @@ final class CactiRenderer {
 			throw new InvalidArgumentException('Renderer template path does not exist');
 		}
 
-		// A renderer rooted at a filesystem root ("/") makes the containment
-		// prefix collapse to "/", which str_starts_with() matches for every
-		// absolute path. Refuse that root so the check stays fail-closed.
-		$trimmed = rtrim($real_path, DIRECTORY_SEPARATOR);
+		// A renderer rooted at a filesystem root makes the containment prefix
+		// collapse to that root, which str_starts_with() then matches for every
+		// absolute path. Trim both separators so the test holds regardless of the
+		// OS running it, and refuse a POSIX root ("/" -> "") or a Windows drive
+		// root ("C:\" -> "C:") so the check stays fail-closed on either platform.
+		$trimmed = rtrim($real_path, "/\\");
 
-		if ($trimmed === '') {
+		if ($trimmed === '' || preg_match('/^[A-Za-z]:$/', $trimmed) === 1) {
 			throw new InvalidArgumentException('Renderer template path does not exist');
 		}
 
@@ -97,6 +99,8 @@ final class CactiRenderer {
 
 		// Anchor containment with a trailing separator so a sibling directory
 		// sharing the prefix (".../tmpl-evil" against ".../tmpl") cannot match.
+		// str_starts_with() is case-sensitive, which on a case-insensitive
+		// Windows volume only ever over-rejects (fail-closed), so leave it.
 		$base_path = rtrim($this->template_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
 		if ($real_path !== $this->template_path && !str_starts_with($real_path, $base_path)) {

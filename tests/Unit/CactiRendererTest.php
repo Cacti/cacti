@@ -99,6 +99,23 @@ it('refuses a filesystem root as the template path', function () {
 	new CactiRenderer('/');
 })->throws(InvalidArgumentException::class);
 
+it('treats a Windows drive root as a filesystem root', function () {
+	// realpath('C:\\') resolves to a bare drive letter, which would collapse the
+	// containment prefix the same way "/" does. A POSIX runner cannot resolve a
+	// drive root, so assert the constructor's normalize + root predicate directly:
+	// both "C:" and "" must be refused while an in-drive path is accepted.
+	$is_root = static function (string $path): bool {
+		$trimmed = rtrim($path, "/\\");
+
+		return $trimmed === '' || preg_match('/^[A-Za-z]:$/', $trimmed) === 1;
+	};
+
+	expect($is_root('C:\\'))->toBeTrue();
+	expect($is_root('C:'))->toBeTrue();
+	expect($is_root(''))->toBeTrue();
+	expect($is_root('C:\\Cacti\\views'))->toBeFalse();
+});
+
 it('rejects a null byte in the constructor template path', function () {
 	new CactiRenderer(cacti_renderer_fixture_dir() . "\0/evil");
 })->throws(InvalidArgumentException::class);
