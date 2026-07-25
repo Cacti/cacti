@@ -53,7 +53,7 @@ function support_lockout() : void {
 
 	$admin = read_config_option('admin_user', true);
 
-	if (read_config_option('admin_user') != $_SESSION[SESS_USER_ID]) {
+	if ($admin != $_SESSION[SESS_USER_ID]) {
 		raise_message('lockout_user', __('Only the Primary Cacti Administrator \'%s\' can lockout the Cacti system.', get_username($admin)), MESSAGE_LEVEL_ERROR);
 	} else {
 		$status    = read_config_option('cacti_lockout_status', true);
@@ -61,8 +61,11 @@ function support_lockout() : void {
 
 		// 'expected' reflects the state the button showed when the page was
 		// rendered. Only toggle if the stored state still matches it, so two
-		// administrators acting at once cannot flip each other's change.
-		$expected_locked = (gnrv('expected') == 'locked');
+		// administrators acting at once cannot flip each other's change.  the
+		// request var is unfiltered and may arrive as an array, so compare
+		// only when it is a string to avoid an array-to-string coercion.
+		$expected        = gnrv('expected');
+		$expected_locked = (is_string($expected) && $expected == 'locked');
 
 		if ($is_locked !== $expected_locked) {
 			raise_message('lockout', __('The Cacti maintenance lockout state was changed by another administrator since this page was loaded.  Please review the current status and try again.'), MESSAGE_LEVEL_INFO);
@@ -782,7 +785,7 @@ function show_cacti_processes() : void {
 
 	$sql_inner = '';
 
-	foreach ($tables as $table => $name) {
+	foreach (array_keys($tables) as $table) {
 		$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') . $definitions[$table]['select'];
 	}
 
