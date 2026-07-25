@@ -25,6 +25,14 @@
 // This directory doubles as the renderer's template path, so only redirect
 // when the file is requested directly. When included as a template it must
 // stay side-effect free and emit no headers.
-if (isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
-	header('Location:../index.php');
+//
+// Canonicalize both sides so a symlinked script path compares equal to this
+// file. When SCRIPT_FILENAME is unset or unresolvable, treat the access as an
+// include rather than a direct request and skip the redirect.
+if (!empty($_SERVER['SCRIPT_FILENAME'])) {
+	$requested = realpath($_SERVER['SCRIPT_FILENAME']);
+
+	if ($requested !== false && $requested === realpath(__FILE__)) {
+		header('Location:../index.php');
+	}
 }
