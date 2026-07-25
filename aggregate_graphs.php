@@ -1543,9 +1543,10 @@ function aggregate_items() : void {
 			'default' => '1'
 		],
 		'matching' => [
-			'filter'  => FILTER_CALLBACK,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'default' => 'on',
-			'options' => ['options' => 'sanitize_search_string']
+			'pageset' => true,
+			'options' => ['options' => ['regexp' => '/^(on|true|false)$/']]
 		],
 		'sort_column' => [
 			'filter'  => FILTER_CALLBACK,
@@ -1580,10 +1581,13 @@ function aggregate_items() : void {
 	}
 
 	// form the 'where' clause for our main sql query
+	$sql_where_params = [];
+
 	if (grv('rfilter') == '') {
 		$sql_where = '';
-	} elseif (validate_is_regex(grv('rfilter'))) {
-		$sql_where = "WHERE gtg.title_cache RLIKE '" . grv('rfilter') . "'";
+	} elseif (validate_is_regex(grv('rfilter')) === true) {
+		$sql_where          = 'WHERE gtg.title_cache RLIKE ?';
+		$sql_where_params[] = grv('rfilter');
 	} else {
 		$filters   = explode(' ', grv('rfilter'));
 		$sql_where = '';
@@ -1613,12 +1617,15 @@ function aggregate_items() : void {
 	);
 
 	if (!empty($graph_template)) {
-		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . " (gtg.graph_template_id=$graph_template)";
+		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' (gtg.graph_template_id=?)';
+		$sql_where_params[] = $graph_template;
 	}
 
 	if (grv('local_graph_ids') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' agi.local_graph_id IN(' . grv('local_graph_ids') . ')';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . db_in_clause('agi.local_graph_id', grv('local_graph_ids'));
 	}
+
+	$sql_params = array_merge([$aggregate_id], $sql_where_params);
 
 	$sql = "SELECT COUNT(DISTINCT gl.id) AS total
 		FROM graph_templates_graph AS gtg
@@ -1627,16 +1634,16 @@ function aggregate_items() : void {
 		LEFT JOIN (
 			SELECT DISTINCT local_graph_id
 			FROM aggregate_graphs_items
-			WHERE aggregate_graph_id=$aggregate_id) AS agi
+			WHERE aggregate_graph_id=?) AS agi
 		ON gtg.local_graph_id=agi.local_graph_id
 		$sql_where";
 
-	$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, [], 'aggregate_graph');
+	$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, $sql_params, 'aggregate_graph');
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
-	$graph_list = db_fetch_assoc("SELECT
+	$graph_list = db_fetch_assoc_prepared("SELECT
 		gtg.id, gtg.local_graph_id, gtg.height, gtg.width, gtg.title_cache, agi.local_graph_id AS agg_graph_id
 		FROM graph_templates_graph AS gtg
 		INNER JOIN graph_local AS gl
@@ -1644,112 +1651,80 @@ function aggregate_items() : void {
 		LEFT JOIN (
 			SELECT DISTINCT local_graph_id
 			FROM aggregate_graphs_items
-			WHERE aggregate_graph_id=$aggregate_id) AS agi
+			WHERE aggregate_graph_id=?) AS agi
 		ON gtg.local_graph_id=agi.local_graph_id
 		$sql_where
 		$sql_order
-		$sql_limit");
+		$sql_limit",
+		$sql_params
+	);
 
 	?>
 	<script type='text/javascript'>
 		var totalItems = <?php print $total_items; ?>;
 
-		function applyFilter() {
-			strURL = 'aggregate_graphs.php' +
-				'?action=edit&tab=items&id=' + $('#id').val() +
-				'&rows=' + $('#rows').val() +
-				'&rfilter=' + base64_encode($('#rfilter').val()) +
-				'&matching=' + $('#matching').is(':checked');
-			loadUrl({
-				url: strURL
-			})
-		}
-
-		function clearFilter() {
-			strURL = 'aggregate_graphs.php?action=edit&tab=items&id=' + $('#id').val() + '&clear=true';
-			loadUrl({
-				url: strURL
-			})
-		}
-
 		$(function() {
 			if (totalItems == 0) {
 				$('#agg_preview').hide();
 			}
-
-			$('#clear').click(function() {
-				clearFilter();
-			});
-
-			$('#rfilter').change(function() {
-				applyFilter();
-			});
-
-			$('#forms').submit(function(event) {
-				event.preventDefault();
-				applyFilter();
-			});
 		});
 	</script>
 	<?php
 
-	html_filter_start_box(__('Matching Graphs'));
+	$filter_array = [
+		'rows' => [
+			[
+				'rfilter' => [
+					'method'        => 'textbox',
+					'friendly_name' => __('Search'),
+					'filter'        => FILTER_VALIDATE_IS_REGEX,
+					'placeholder'   => __('Enter a search term'),
+					'size'          => '45',
+					'default'       => '',
+					'pageset'       => true,
+					'max_length'    => '120',
+					'value'         => ''
+				],
+				'rows' => [
+					'method'        => 'drop_array',
+					'friendly_name' => __('Graphs'),
+					'filter'        => FILTER_VALIDATE_INT,
+					'default'       => '-1',
+					'pageset'       => true,
+					'array'         => $item_rows,
+					'value'         => '-1'
+				],
+				'matching' => [
+					'method'         => 'filter_checkbox',
+					'friendly_name'  => __('Part of Aggregate'),
+					'filter'         => FILTER_VALIDATE_REGEXP,
+					'filter_options' => ['options' => ['regexp' => '/^(on|true|false)$/']],
+					'default'        => 'on',
+					'value'          => gnrv('matching')
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
+				'method'  => 'submit',
+				'display' => __('Go'),
+				'title'   => __('Apply filter to table'),
+			],
+			'clear' => [
+				'method'  => 'button',
+				'display' => __('Clear'),
+				'title'   => __('Reset filter to default values'),
+			]
+		],
+		'sort' => [
+			'sort_column'    => 'title_cache',
+			'sort_direction' => 'ASC'
+		]
+	];
 
-	?>
-	<tr class='even'>
-		<td>
-			<form id='forms' action='aggregate_graphs.php'>
-				<table class='filterTable'>
-					<tr>
-						<td>
-							<?php print __('Search'); ?>
-						</td>
-						<td>
-							<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='45' onChange='applyFilter()' value='<?php print grv('rfilter'); ?>'>
-						</td>
-						<td>
-							<?php print __('Graphs'); ?>
-						</td>
-						<td>
-							<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Graphs'); ?>'>
-								<option value='-1' <?php print (grv('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
-								<?php
-								if (cacti_sizeof($item_rows) > 0) {
-									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'";
-
-										if (grv('rows') == $key) {
-											print ' selected';
-										}
-										print '>' . htmle($value) . '</option>';
-									}
-								}
-	?>
-							</select>
-						</td>
-						<td>
-							<span>
-								<input type='checkbox' id='matching' onChange='applyFilter()' <?php print(grv('matching') == 'on' || grv('matching') == 'true' ? ' checked' : ''); ?>>
-								<label for='matching'><?php print __('Part of Aggregate'); ?></label>
-							</span>
-						</td>
-						<td>
-							<span>
-								<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' id='go' value='go' title='<?php print __esc('Set/Refresh Filters'); ?>'><?php print __esc('Go'); ?></button>
-								<button type='button' class='ui-button ui-corner-all ui-widget' id='clear' onClick='clearFilter()' value='clear' title='<?php print __esc('Clear Filters'); ?>'><?php print __esc('Clear'); ?></button>
-							</span>
-						</td>
-					</tr>
-				</table>
-				<input type='hidden' name='action' value='edit'>
-				<input type='hidden' name='tab' value='items'>
-				<input type='hidden' id='id' value='<?php print grv('id'); ?>'>
-			</form>
-		</td>
-	</tr>
-	<?php
-
-	html_end_box(false);
+	$pageFilter = new CactiTableFilter(__('Matching Graphs'), 'aggregate_graphs.php?action=edit&tab=items&id=' . grv('id'), 'form_aggregate_items', 'sess_agraph_item', '', '', false);
+	$pageFilter->set_filter_array($filter_array);
+	$pageFilter->render();
 
 	// print checkbox form for validation
 	form_start('aggregate_graphs.php', 'chk');
@@ -1790,7 +1765,7 @@ function aggregate_items() : void {
 			// we're escaping strings here, so no need to escape them on form_selectable_cell
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 
-			if (validate_is_regex(grv('rfilter'))) {
+			if (validate_is_regex(grv('rfilter')) === true) {
 				form_selectable_cell(filter_value($graph['title_cache'], grv('rfilter')), $graph['local_graph_id']);
 			} else {
 				form_selectable_ecell(grv('rfilter') != '' ? aggregate_format_text($graph['title_cache'], grv('rfilter')) : $graph['title_cache'], $graph['local_graph_id']);

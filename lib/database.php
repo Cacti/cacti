@@ -1106,7 +1106,11 @@ function db_add_column(string $table, array $column, bool $log = true, mixed $db
 				$sql .= ' FIRST';
 			}
 
-			return db_execute($sql, $log, $db_conn);
+			$result = db_execute($sql, $log, $db_conn);
+
+			db_column_type_cache_reset();
+
+			return $result;
 		}
 
 		return true;
@@ -1200,7 +1204,11 @@ function db_change_column(string $table, array $column, bool $log = true, mixed 
 					$sql .= ' AFTER ' . $column['after'];
 				}
 
-				return db_execute($sql, $log, $db_conn);
+				$result = db_execute($sql, $log, $db_conn);
+
+				db_column_type_cache_reset();
+
+				return $result;
 			}
 		}
 	}
@@ -1242,7 +1250,11 @@ function db_remove_column(string $table, string $column, bool $log = true, mixed
 	if (in_array($column, $columns, true)) {
 		$sql = 'ALTER TABLE `' . $table . '` DROP `' . $column . '`';
 
-		return db_execute($sql, $log, $db_conn);
+		$result = db_execute($sql, $log, $db_conn);
+
+		db_column_type_cache_reset();
+
+		return $result;
 	}
 
 	return true;
@@ -1497,7 +1509,7 @@ function db_column_exists(string $table, string $column, bool $log = true, mixed
  * @return mixed An array of column types indexed by the column names or false if failed
  */
 function db_get_table_column_types(string $table, mixed $db_conn = false) : mixed {
-	global $database_sessions, $database_default, $database_hostname, $database_port;
+	global $database_sessions, $database_default, $database_hostname, $database_port, $db_column_type_cache;
 
 	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
@@ -1510,6 +1522,16 @@ function db_get_table_column_types(string $table, mixed $db_conn = false) : mixe
 		}
 	}
 
+	/* column metadata is invariant within a request, so memoize the SHOW COLUMNS
+	 * lookup. sql_save() calls this for every write, and a bulk operation (e.g.
+	 * creating many graphs) otherwise re-queries the same tables hundreds of
+	 * times. The cache is cleared by the DDL helpers whenever a column changes. */
+	$key = spl_object_id($db_conn) . ':' . $table;
+
+	if (isset($db_column_type_cache[$key])) {
+		return $db_column_type_cache[$key];
+	}
+
 	$columns = db_fetch_assoc("SHOW COLUMNS FROM $table", false, $db_conn);
 	$cols    = [];
 
@@ -1517,9 +1539,25 @@ function db_get_table_column_types(string $table, mixed $db_conn = false) : mixe
 		foreach ($columns as $col) {
 			$cols[$col['Field']] = ['type' => $col['Type'], 'null' => $col['Null'], 'default' => $col['Default'], 'extra' => $col['Extra']];
 		}
+
+		$db_column_type_cache[$key] = $cols;
 	}
 
 	return $cols;
+}
+
+/**
+ * db_column_type_cache_reset - clear the memoized column-type cache
+ *
+ * Called by the DDL helpers when a table's columns change so that a later
+ * sql_save() in the same request sees the new schema.
+ *
+ * @return void
+ */
+function db_column_type_cache_reset() : void {
+	global $db_column_type_cache;
+
+	$db_column_type_cache = [];
 }
 
 /**

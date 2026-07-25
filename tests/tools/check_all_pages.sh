@@ -559,7 +559,7 @@ echo "---------------------------------------------------------------------"
 echo "NOTE: Starting Web Based Page Validation"
 echo "---------------------------------------------------------------------"
 echo "NOTE: Saving Cookie Data"
-wget -q --keep-session-cookies --save-cookies "$cookieFile" --output-document="$tmpFile1" "$WEBHOST"/index.php >/dev/null 2>&1
+wget -q --timeout=30 --tries=1 --keep-session-cookies --save-cookies "$cookieFile" --output-document="$tmpFile1" "$WEBHOST"/index.php >/dev/null 2>&1
 
 if [ -f "$tmpFile1" ]; then
   magic=$(grep "name='__csrf_magic' value=" "$tmpFile1" | sed "s/.*__csrf_magic' value=\"//" | sed "s/\" \/>//")
@@ -581,7 +581,7 @@ postData="action=login&login_username=${WAUSER}&login_password=${WAPASS}&__csrf_
 
 echo "NOTE: Logging into the Cacti User Interface"
 # shellcheck disable=SC2086 # $loadSaveCookie is intentionally word-split (multi-word option string)
-wget $loadSaveCookie --post-data="${postData}" --output-document="${tmpFile2}" "${WEBHOST}"/index.php >/dev/null 2>&1
+wget --timeout=30 --tries=1 $loadSaveCookie --post-data="${postData}" --output-document="${tmpFile2}" "${WEBHOST}"/index.php >/dev/null 2>&1
 
 if [ "$DEBUG" -eq 1 ]; then
   echo "---------------------------------------------------------------------"
@@ -618,7 +618,7 @@ start_time=$(date +%s)
 
 echo "NOTE: Recursively Checking all Base Pages - Note this will take several minutes!!!"
 # shellcheck disable=SC2086 # $loadSaveCookie and $progress are intentionally word-split (multi-word option strings)
-wget $loadSaveCookie --directory-prefix=/tmp/check-all-output --output-file="${logFile1}" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" $progress --recursive --level=0 --execute=robots=off "${WEBHOST}"/index.php >/dev/null 2>&1
+wget --timeout=30 --tries=1 $loadSaveCookie --directory-prefix=/tmp/check-all-output --output-file="${logFile1}" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" $progress --recursive --level=0 --execute=robots=off "${WEBHOST}"/index.php >/dev/null 2>&1
 error=$?
 
 end_time=$(date +%s)
@@ -724,6 +724,7 @@ FILTERED_LOG="$(grep -v \
   -e "REINDEX Poller" \
   -e "DSDEBUG Bad Data" \
   -e "PUSHOUT Child Started" \
+  -e "io_uring_queue_init() failed" \
   "$CACTI_LOG")" || true
 
 # ------------------------------------------------------------------------------
