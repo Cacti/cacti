@@ -317,11 +317,14 @@ function cacti_percentile_index(int $elements, int $percentile) : int {
 		return 0;
 	}
 
-	// Values are sorted descending. Return the zero-based index of the
-	// percentile value after discarding the upper (100 - percentile)%.
-	$discard_count = intdiv($elements * (100 - $percentile) + 99, 100);
+	// Values are sorted descending. rrdtool's VDEF PERCENT selects the ascending
+	// rank round(percentile/100 * N), so the matching zero-based descending index
+	// is N - round(percentile/100 * N). PHP round() is half-away-from-zero, which
+	// matches rrdtool's C round() on the .5 ties. Verified against rrdtool for
+	// 28/29/30/31-day months (N = 8064/8352/8640/8928).
+	$index = $elements - (int) round($elements * $percentile / 100);
 
-	return max(0, $discard_count - 1);
+	return max(0, min($elements - 1, $index));
 }
 
 function cacti_stats_calc(array $array, int $ptile = 95) : array {
