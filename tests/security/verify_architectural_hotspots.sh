@@ -19,7 +19,7 @@ fi
 # so identical signatures are kept as a multiset; an added same-signature
 # hotspot still changes the comparison and is caught.
 strip_line_numbers() {
-	awk -F'\t' 'BEGIN{OFS="\t"} {sub(/:[0-9]+$/,"",$2); print}'
+	awk 'BEGIN{FS="\t";OFS="\t"} {sub(/:[0-9]+$/,"",$2); print}'
 }
 
 tr -d '\r' < "$BASELINE" | strip_line_numbers | LC_ALL=C sort > "$TMP_BASELINE"
