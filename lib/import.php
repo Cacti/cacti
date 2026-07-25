@@ -464,11 +464,9 @@ function import_read_package_data($xmlfile, &$public_key) {
 		return false;
 	}
 
-	if (strlen($public_key) < 200) {
-		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
-	} else {
-		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
-	}
+	/* SECURITY: SHA-256 only. SHA-1 is vulnerable to chosen-prefix collisions and is
+	 * no longer accepted for package signature verification (#7026). */
+	$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
 
 	if ($ok == 1) {
 		cacti_log('NOTE: File is Signed Correctly', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
@@ -571,11 +569,8 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 		$binary_signature = base64_decode($f['filesignature']);
 		$fdata = base64_decode($f['data']);
 
-		if (strlen($public_key) < 200) {
-			$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
-		} else {
-			$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
-		}
+		/* SECURITY: SHA-256 only (#7026). */
+		$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
 
 		if ($ok == 1) {
 			cacti_log('NOTE: File OK: ' . $f['name'], false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
