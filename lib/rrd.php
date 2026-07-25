@@ -1554,11 +1554,6 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 	// Replace "|query_*|" in the graph command to replace e.g. vertical_label.
 	$graph_opts = rrd_substitute_host_query_data($graph_opts, $graph, []);
 
-	// provide smooth lines
-	if ($graph['slope_mode'] == 'on') {
-		$graph_opts .= '--slope-mode' . RRD_NL;
-	}
-
 	$watermark = str_replace("'", '"', read_config_option('graph_watermark'));
 
 	if ($watermark != '') {
