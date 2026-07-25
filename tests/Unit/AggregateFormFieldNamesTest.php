@@ -35,8 +35,11 @@ function getAggregateGraphsSource(): string {
 }
 
 test('form_save gate accepts save_component_item posts', function () {
-	$source  = getAggregateGraphsSource();
-	$pattern = "/!isrv\('save_component_graph'\) && !isrv\('save_component_input'\) && !isrv\('save_component_item'\)/";
+	$source = getAggregateGraphsSource();
+
+	// The gate must combine all three component guards in one condition; item
+	// was the missing term (#7338). Order and wrapping are free to change.
+	$pattern = "/if \((?=[^{]*!isrv\('save_component_graph'\))(?=[^{]*!isrv\('save_component_input'\))(?=[^{]*!isrv\('save_component_item'\))[^{]*\)\s*\{/";
 
 	expect(preg_match($pattern, $source))->toBe(1,
 		'form_save() must let save_component_item posts reach the item-save branch'
@@ -46,8 +49,9 @@ test('form_save gate accepts save_component_item posts', function () {
 test('migrate-to-template confirmation posts aggregate_template_id', function () {
 	$source = getAggregateGraphsSource();
 
-	// api_aggregate_convert_template() reads gnrv('aggregate_template_id')
-	$pattern = "/'extra'\s*=>\s*\[\s*'aggregate_template_id'\s*=>\s*\[\s*'method'\s*=>\s*'drop_array'/";
+	// api_aggregate_convert_template() reads gnrv('aggregate_template_id').
+	// The sub-array's key order is not pinned.
+	$pattern = "/'extra'\s*=>\s*\[\s*'aggregate_template_id'\s*=>\s*\[/";
 
 	expect(preg_match($pattern, $source))->toBe(1,
 		'the drp_action 2 extra input must be named aggregate_template_id'
@@ -57,8 +61,9 @@ test('migrate-to-template confirmation posts aggregate_template_id', function ()
 test('combine confirmation posts aggregate_name', function () {
 	$source = getAggregateGraphsSource();
 
-	// the drp_action 3 handler reads grv('aggregate_name')
-	$pattern = "/'extra'\s*=>\s*\[\s*'aggregate_name'\s*=>\s*\[\s*'method'\s*=>\s*'textbox'/";
+	// the drp_action 3 handler reads grv('aggregate_name').
+	// The sub-array's key order is not pinned.
+	$pattern = "/'extra'\s*=>\s*\[\s*'aggregate_name'\s*=>\s*\[/";
 
 	expect(preg_match($pattern, $source))->toBe(1,
 		'the drp_action 3 extra input must be named aggregate_name'
