@@ -360,21 +360,21 @@ function show_database_processes() : void {
 		$rows = grv('rows');
 	}
 
-	$sql_where  = 'WHERE info NOT LIKE "%FROM processlist%" AND info != "NULL"';
+	$sql_where  = 'WHERE info NOT LIKE \'%FROM processlist%\' AND info IS NOT NULL';
 	$sql_params = [];
 
 	// form the 'where' clause for our main sql query
 	if (grv('filter') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') .
-			'(command LIKE ? OR info LIKE ?';
+		$sql_where .= ' AND ' .
+			'(command LIKE ? OR info LIKE ?)';
 
 		$sql_params[] = '%' . grv('filter') . '%';
 		$sql_params[] = '%' . grv('filter') . '%';
 	}
 
 	if (grv('poller') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'info NOT LIKE "%poller_output%" AND ' .
-			'info NOT LIKE "%poller_item%" AND info NOT LIKE "%SQL_NO_CACHE%"';
+		$sql_where .= ' AND ' . 'info NOT LIKE \'%poller_output%\' AND ' .
+			'info NOT LIKE \'%poller_item%\' AND info NOT LIKE \'%SQL_NO_CACHE%\'';
 	}
 
 	$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
@@ -383,8 +383,8 @@ function show_database_processes() : void {
 		$sql_params);
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
-	$info_len  = grv('length');
+	$sql_limit = ' LIMIT ' . ((int) $rows * ((int) grv('page') - 1)) . ',' . (int) $rows;
+	$info_len  = (int) grv('length');
 
 	$version   = db_get_global_variable('innodb_version');
 
@@ -588,10 +588,10 @@ function show_cacti_processes() : void {
 		'grid_processes'                => __('RTM Process'),           // RTM process table
 		'automation_processes'          => __('Automation Process'),    // Automation process table
 		'plugin_hmib_processes'         => __('HMIB Process'),          // HMIB process table
-		'plugin_microtik_processes'     => __('MikroTik Process'),      // Mikrotik process table
+		'plugin_mikrotik_processes'     => __('MikroTik Process'),      // MikroTik process table
 		'plugin_webseer_processes'      => __('WebSeer Process'),       // WebSeer process table
 		'plugin_servcheck_processes'    => __('Service Check Process'), // Service Check process table
-		'mac_track_processes'           => __('MacTrack Process'),      // WebSeer process table
+		'mac_track_processes'           => __('MacTrack Process'),      // MacTrack process table
 	];
 
 	// reduce the set of tables based if they exist
@@ -616,38 +616,38 @@ function show_cacti_processes() : void {
 
 	// form the 'where' clause for our main sql query
 	if (grv('filter') != '') {
-		$sql_where = ($sql_where != '' ? ' AND ' : 'WHERE ') .
-			'(taskname LIKE ? OR tasktype LIKE ?)';
+		$sql_where = 'WHERE (taskname LIKE ? OR tasktype LIKE ?)';
 
 		$sql_params[] = '%' . grv('filter') . '%';
 		$sql_params[] = '%' . grv('filter') . '%';
 	}
 
-	if (grv('tasks') != 'all') {
+	// restrict to a single task table, but fail closed to 'all' if the
+	// requested key is not one of the known/available process tables
+	if (grv('tasks') != 'all' && array_key_exists(grv('tasks'), $tables)) {
 		$tables = [
 			grv('tasks') => $tables[grv('tasks')]
 		];
 	}
 
-	$total_rows_sql = 'SELECT COUNT(*) FROM (';
-	$sql_inner      = '';
+	$sql_inner = '';
 
 	foreach ($tables as $table => $name) {
 		switch($table) {
 			case 'poller_time':
 				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					"SELECT pid, '" . __('Cacti Poller') . "' AS tasktype,
+					'SELECT pid, ' . db_qstr(__('Cacti Poller')) . " AS tasktype,
 						CONCAT('PollerID:', poller_id) AS taskname,
 						id AS taskid, '$poller_interval' AS timeout,
 						start_time AS started,
 						start_time AS last_update,
 						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(start_time) AS runtime
-						FROM poller_time WHERE end_time = '0000-00-00'";
+						FROM poller_time WHERE UNIX_TIMESTAMP(end_time) = 0";
 
 				break;
 			case 'processes':
 				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					"SELECT pid, CONCAT('$name (', tasktype, ')') AS tasktype,
+					'SELECT pid, CONCAT(' . db_qstr($name) . ", ' (', tasktype, ')') AS tasktype,
 						taskname, taskid, timeout,
 						started, last_update,
 						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started) AS runtime
@@ -656,17 +656,17 @@ function show_cacti_processes() : void {
 				break;
 			case 'grid_processes':
 				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					"SELECT pid, '$name' AS tasktype,
+					'SELECT pid, ' . db_qstr($name) . " AS tasktype,
 						taskname, taskid, 'N/A' AS timeout,
 						'-' AS started, heartbeat AS last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_updated) AS runtime
+						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(heartbeat) AS runtime
 						FROM grid_processes";
 
 				break;
 			case 'automation_processes':
 				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					"SELECT pid, '$name' AS tasktype,
-						CONCAT('" . __('Poller:') . "', an.poller_id) AS taskname,
+					'SELECT pid, ' . db_qstr($name) . ' AS tasktype,
+						CONCAT(' . db_qstr(__('Poller:')) . ", an.poller_id) AS taskname,
 						network_id AS taskid, 'N/A' AS timeout, an.last_started AS started, ap.heartbeat AS last_update,
 						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(an.last_started) AS runtime
 						FROM automation_processes AS ap INNER JOIN automation_networks AS an ON an.id = ap.network_id";
@@ -674,26 +674,26 @@ function show_cacti_processes() : void {
 				break;
 			case 'mac_track_processes':
 				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					"SELECT process_id AS pid, '$name' AS tasktype,
-						CONCAT('" . __('Device:') . "', device_id) AS taskname, device_id AS taskid, 'N/A' AS timeout,
-						start_date AS started, 'N/A' AS last_updated,
+					'SELECT process_id AS pid, ' . db_qstr($name) . ' AS tasktype,
+						CONCAT(' . db_qstr(__('Device:')) . ", device_id) AS taskname, device_id AS taskid, 'N/A' AS timeout,
+						start_date AS started, 'N/A' AS last_update,
 						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(start_date) AS runtime
 						FROM mac_track_processes";
 
 				break;
 			case 'plugin_hmib_processes':
 				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					"SELECT pid, '$name' AS tasktype,
-						'" . __('Collector') . "' AS taskname, taskid, 'N/A' AS timeout,
+					'SELECT pid, ' . db_qstr($name) . ' AS tasktype,
+						' . db_qstr(__('Collector')) . " AS taskname, taskid, 'N/A' AS timeout,
 						started, 'N/A' AS last_update,
 						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started) AS runtime
 						FROM plugin_hmib_processes";
 
 				break;
-			case 'plugin_microtik_processes':
+			case 'plugin_mikrotik_processes':
 				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					"SELECT pid, '$name' AS tasktype,
-					'" . __('Collector') . "' AS taskname, taskid, 'N/A' AS timeout,
+					'SELECT pid, ' . db_qstr($name) . ' AS tasktype,
+					' . db_qstr(__('Collector')) . " AS taskname, taskid, 'N/A' AS timeout,
 					started, 'N/A' AS last_update,
 					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started) AS runtime
 					FROM plugin_mikrotik_processes";
@@ -701,8 +701,8 @@ function show_cacti_processes() : void {
 				break;
 			case 'plugin_webseer_processes':
 				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					"SELECT pid, '$name' AS tasktype,
-						CONCAT('" . __('Poller:') . "', poller_id) AS taskname, url_id AS taskid, 'N/A' AS timeout,
+					'SELECT pid, ' . db_qstr($name) . ' AS tasktype,
+						CONCAT(' . db_qstr(__('Poller:')) . ", poller_id) AS taskname, url_id AS taskid, 'N/A' AS timeout,
 						time AS started, 'N/A' AS last_update,
 						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(time) AS runtime
 						FROM plugin_webseer_processes";
@@ -710,8 +710,8 @@ function show_cacti_processes() : void {
 				break;
 			case 'plugin_servcheck_processes':
 				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					"SELECT pid, '$name' AS tasktype,
-						CONCAT('" . __('Poller:') . "', poller_id) AS taskname, test_id AS taskid, 'N/A' AS timeout,
+					'SELECT pid, ' . db_qstr($name) . ' AS tasktype,
+						CONCAT(' . db_qstr(__('Poller:')) . ", poller_id) AS taskname, test_id AS taskid, 'N/A' AS timeout,
 						time AS started, 'N/A' AS last_update,
 						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(time) AS runtime
 						FROM plugin_servcheck_processes";
@@ -726,7 +726,7 @@ function show_cacti_processes() : void {
 		$sql_params);
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ((int) $rows * ((int) grv('page') - 1)) . ',' . (int) $rows;
 
 	$processes = db_fetch_assoc_prepared("SELECT *
 		FROM ($sql_inner) AS rs
@@ -975,15 +975,15 @@ function show_database_tables() : void {
 
 		foreach ($tables as $table) {
 			form_alternate_row();
-			print '<td>' . $table['TABLE_NAME'] . '</td>';
-			print '<td>' . $table['ENGINE'] . '</td>';
+			print '<td>' . htmle($table['TABLE_NAME']) . '</td>';
+			print '<td>' . htmle($table['ENGINE']) . '</td>';
 			print '<td class="right">' . number_format_i18n($table['TABLE_ROWS'], -1) . '</td>';
 			print '<td class="right">' . number_format_i18n($table['AVG_ROW_LENGTH'], -1) . '</td>';
 			print '<td class="right">' . number_format_i18n($table['DATA_LENGTH'], -1) . '</td>';
 			print '<td class="right">' . number_format_i18n($table['INDEX_LENGTH'], -1) . '</td>';
-			print '<td>' . $table['TABLE_COLLATION'] . '</td>';
-			print '<td>' . $table['ROW_FORMAT'] . '</td>';
-			print '<td>' . $table['TABLE_COMMENT'] . '</td>';
+			print '<td>' . htmle($table['TABLE_COLLATION']) . '</td>';
+			print '<td>' . htmle($table['ROW_FORMAT']) . '</td>';
+			print '<td>' . htmle($table['TABLE_COMMENT']) . '</td>';
 			form_end_row();
 		}
 

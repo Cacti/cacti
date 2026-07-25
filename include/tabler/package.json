@@ -23,7 +23,7 @@
   "style": "./tabler-icons.min.css",
   "dependencies": {
     "@tabler/icons": "3.35.0",
-    "sharp": "^0.33.5"
+    "sharp": "^0.35.3"
   },
   "keywords": [
     "icons",
