@@ -17,10 +17,14 @@ test('percentile index is based on observed samples', function () use ($graphVar
 	$source = preg_replace('/^function cacti_percentile_index\(/m', 'function issue7070_percentile_index(', $matches[0]);
 	eval($source);
 
-	// 8,640 observed samples discard 432 high values; index 431 is the 432nd.
-	expect(issue7070_percentile_index(8640, 95))->toBe(431);
-	expect(issue7070_percentile_index(8664, 95))->toBe(433);
-	// A missing sample is visible in coverage, not converted to a zero value.
+	// Verified against rrdtool VDEF PERCENT for 28/29/30/31-day months
+	// (N = 8064/8352/8640/8928): the index is N - round(0.95 * N).
+	expect(issue7070_percentile_index(8064, 95))->toBe(403);
+	expect(issue7070_percentile_index(8352, 95))->toBe(418);
+	expect(issue7070_percentile_index(8640, 95))->toBe(432);
+	expect(issue7070_percentile_index(8928, 95))->toBe(446);
+	// A single sample returns the only value, not a zero; the empty set stays zero.
+	expect(issue7070_percentile_index(1, 95))->toBe(0);
 	expect(issue7070_percentile_index(0, 95))->toBe(0);
 });
 
