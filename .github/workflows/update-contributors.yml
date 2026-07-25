@@ -1,0 +1,63 @@
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# |                                                                         |
+# | This program is free software; you can redistribute it and/or           |
+# | modify it under the terms of the GNU General Public License             |
+# | as published by the Free Software Foundation; either version 2          |
+# | of the License, or (at your option) any later version.                  |
+# |                                                                         |
+# | This program is distributed in the hope that it will be useful,         |
+# | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+# | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+# | GNU General Public License for more details.                            |
+# +-------------------------------------------------------------------------+
+# | Cacti: The Complete RRDtool-based Graphing Solution                     |
+# +-------------------------------------------------------------------------+
+# | This code is designed, written, and maintained by the Cacti Group. See  |
+# | about.php and/or the AUTHORS file for specific developer information.   |
+# +-------------------------------------------------------------------------+
+# | http://www.cacti.net/                                                   |
+# +-------------------------------------------------------------------------+
+
+name: Update Contributors
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+# This workflow is meant to live on develop and push straight back to it.
+# The checkout ref below is pinned to develop for that reason; if it's ever
+# backported to 1.2.x, change the ref (and the push target) to match.
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Refresh contributors
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 .github/scripts/update-contributors.py
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+
+          if git diff --quiet -- .all-contributorsrc README.md; then
+            echo "no changes to commit"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .all-contributorsrc README.md
+          git commit -s -m "chore(contributors): update contributor list"
+          git push origin HEAD:develop
