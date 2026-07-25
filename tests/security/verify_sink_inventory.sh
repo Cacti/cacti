@@ -36,5 +36,5 @@ echo "ERROR: sink inventory drift detected."
 echo "See: $TMP_DIFF"
 echo "Line-number-only drift no longer fails here; refresh only for a genuine"
 echo "sink add, remove, or code change:"
-printf '%s\n' "  tests/security/build_sink_inventory.sh | tr -d '\\r' | LC_ALL=C sort -u > tests/security/baselines/sink_inventory.baseline.tsv"
+printf '%s\n' "  tests/security/build_sink_inventory.sh | tr -d '\\r' | LC_ALL=C sort > tests/security/baselines/sink_inventory.baseline.tsv"
 exit 1

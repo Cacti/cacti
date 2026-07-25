@@ -38,5 +38,5 @@ cat "$TMP_NEW"
 echo
 echo "Line-number-only drift no longer fails here; refresh only when a genuine"
 echo "new hotspot is intentional and reviewed:"
-printf '%s\n' "  tests/security/build_architectural_helper_report.sh --hotspots | tr -d '\\r' | LC_ALL=C sort -u > tests/security/baselines/architectural_hotspots.baseline.tsv"
+printf '%s\n' "  tests/security/build_architectural_helper_report.sh --hotspots | tr -d '\\r' | LC_ALL=C sort > tests/security/baselines/architectural_hotspots.baseline.tsv"
 exit 1
