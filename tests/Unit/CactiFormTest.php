@@ -17,7 +17,7 @@ require_once dirname(__DIR__, 2) . '/lib/CactiForm.php';
 
 test('CactiForm creates injectable Symfony form builders', function () {
 	$form = CactiForm::createNamedBuilder('settings')
-		->add('name')
+		->add('name', Symfony\Component\Form\Extension\Core\Type\TextType::class)
 		->getForm();
 
 	expect($form->getName())->toBe('settings');

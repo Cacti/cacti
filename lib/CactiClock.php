@@ -19,6 +19,8 @@ use Symfony\Component\Clock\NativeClock;
  * DI-friendly clock wrapper for code that needs testable time access.
  */
 class CactiClock {
+	private static ?self $instance = null;
+
 	private ClockInterface $clock;
 
 	public function __construct(?ClockInterface $clock = null) {
@@ -26,7 +28,7 @@ class CactiClock {
 	}
 
 	public static function default(): self {
-		return new self();
+		return self::$instance ??= new self();
 	}
 
 	public static function currentTime(): \DateTimeImmutable {

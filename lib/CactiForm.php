@@ -28,6 +28,8 @@ use Symfony\Component\Form\Forms;
 class CactiForm {
 	private const DEFAULT_FORM_TYPE = FormType::class;
 
+	private static ?self $instance = null;
+
 	private FormFactoryInterface $factory;
 
 	public function __construct(?FormFactoryInterface $factory = null) {
@@ -35,15 +37,19 @@ class CactiForm {
 	}
 
 	public static function factory(): FormFactoryInterface {
-		return (new self())->formFactory();
+		return self::instance()->formFactory();
 	}
 
 	public static function createBuilder(string $type = self::DEFAULT_FORM_TYPE, mixed $data = null, array $options = []): FormBuilderInterface {
-		return (new self())->builder($type, $data, $options);
+		return self::instance()->builder($type, $data, $options);
 	}
 
 	public static function createNamedBuilder(string $name, string $type = self::DEFAULT_FORM_TYPE, mixed $data = null, array $options = []): FormBuilderInterface {
-		return (new self())->namedBuilder($name, $type, $data, $options);
+		return self::instance()->namedBuilder($name, $type, $data, $options);
+	}
+
+	private static function instance(): self {
+		return self::$instance ??= new self();
 	}
 
 	public function formFactory(): FormFactoryInterface {

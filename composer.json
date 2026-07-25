@@ -57,9 +57,9 @@
         "stevenmaguire/oauth2-keycloak": "^6.1.0",
         "stevenmaguire/oauth2-microsoft": "^2.2",
         "symfony/clock": "^6.4",
-        "symfony/filesystem": "^6.0",
+        "symfony/filesystem": "^6.4",
         "symfony/form": "^6.4",
-        "symfony/http-foundation": "^6.0",
+        "symfony/http-foundation": "^6.4",
         "symfony/mailer": "^6.4",
         "symfony/validator": "^6.4"
     },
