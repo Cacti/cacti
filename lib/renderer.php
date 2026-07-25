@@ -38,7 +38,11 @@ final class CactiRenderer {
 			throw new InvalidArgumentException('Renderer template path does not exist');
 		}
 
-		$this->template_path = rtrim($real_path, DIRECTORY_SEPARATOR);
+		// Preserve a non-empty base path so a filesystem root ("/") does not
+		// collapse to "" and turn the prefix check into an always-true match.
+		$trimmed = rtrim($real_path, DIRECTORY_SEPARATOR);
+
+		$this->template_path = $trimmed !== '' ? $trimmed : $real_path;
 	}
 
 	public function render(string $template, array $context = []) : string {
