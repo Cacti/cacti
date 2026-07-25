@@ -13,8 +13,17 @@ if [ ! -f "$BASELINE" ]; then
 	exit 1
 fi
 
-tr -d '\r' < "$BASELINE" | LC_ALL=C sort -u > "$TMP_BASELINE"
-"${ROOT_DIR}/tests/security/build_architectural_helper_report.sh" --hotspots | tr -d '\r' | LC_ALL=C sort -u > "$TMP_CUR"
+# Compare on the line-agnostic signature (class + file + code): strip the
+# trailing :LINE from field 2 (location) so pure line-number drift from an
+# unrelated edit or a develop merge no longer trips the gate. Sort without -u
+# so identical signatures are kept as a multiset; an added same-signature
+# hotspot still changes the comparison and is caught.
+strip_line_numbers() {
+	awk -F'\t' 'BEGIN{OFS="\t"} {sub(/:[0-9]+$/,"",$2); print}'
+}
+
+tr -d '\r' < "$BASELINE" | strip_line_numbers | LC_ALL=C sort > "$TMP_BASELINE"
+"${ROOT_DIR}/tests/security/build_architectural_helper_report.sh" --hotspots | tr -d '\r' | strip_line_numbers | LC_ALL=C sort > "$TMP_CUR"
 
 # Detect only newly introduced hotspots (existing baseline debt is tolerated).
 comm -13 "$TMP_BASELINE" "$TMP_CUR" > "$TMP_NEW" || true
@@ -27,6 +36,7 @@ fi
 echo "ERROR: new architectural hotspots detected:"
 cat "$TMP_NEW"
 echo
-echo "If this is intentional and reviewed, refresh baseline:"
+echo "Line-number-only drift no longer fails here; refresh only when a genuine"
+echo "new hotspot is intentional and reviewed:"
 printf '%s\n' "  tests/security/build_architectural_helper_report.sh --hotspots | tr -d '\\r' | LC_ALL=C sort -u > tests/security/baselines/architectural_hotspots.baseline.tsv"
 exit 1

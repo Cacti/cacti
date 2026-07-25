@@ -13,8 +13,17 @@ if [ ! -f "$BASELINE" ]; then
 	exit 1
 fi
 
-tr -d '\r' < "$BASELINE" | LC_ALL=C sort -u > "$TMP_BASELINE"
-"${ROOT_DIR}/tests/security/build_sink_inventory.sh" | tr -d '\r' | LC_ALL=C sort -u > "$TMP_CUR"
+# Compare on the line-agnostic signature (type + file + code): strip the
+# trailing :LINE from field 2 (location) so pure line-number drift from an
+# unrelated edit or a develop merge no longer trips the gate. Sort without -u
+# so identical signatures are kept as a multiset; adding or removing one of
+# several same-signature sinks still changes the comparison and is caught.
+strip_line_numbers() {
+	awk -F'\t' 'BEGIN{OFS="\t"} {sub(/:[0-9]+$/,"",$2); print}'
+}
+
+tr -d '\r' < "$BASELINE" | strip_line_numbers | LC_ALL=C sort > "$TMP_BASELINE"
+"${ROOT_DIR}/tests/security/build_sink_inventory.sh" | tr -d '\r' | strip_line_numbers | LC_ALL=C sort > "$TMP_CUR"
 
 if diff -u "$TMP_BASELINE" "$TMP_CUR" > "$TMP_DIFF"; then
 	rm -f "$TMP_DIFF"
@@ -25,6 +34,7 @@ fi
 # $TMP_DIFF is deliberately left behind on failure so the drift can be inspected.
 echo "ERROR: sink inventory drift detected."
 echo "See: $TMP_DIFF"
-echo "If intentional, review and refresh baseline:"
+echo "Line-number-only drift no longer fails here; refresh only for a genuine"
+echo "sink add, remove, or code change:"
 printf '%s\n' "  tests/security/build_sink_inventory.sh | tr -d '\\r' | LC_ALL=C sort -u > tests/security/baselines/sink_inventory.baseline.tsv"
 exit 1
