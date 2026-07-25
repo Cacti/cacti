@@ -90,7 +90,9 @@ final class CactiRenderer {
 			throw new InvalidArgumentException('Renderer template file does not exist');
 		}
 
-		$base_path = $this->template_path . DIRECTORY_SEPARATOR;
+		// Append exactly one separator so a root template path ("/") does not
+		// produce "//" and reject files that are genuinely inside the root.
+		$base_path = rtrim($this->template_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
 		if ($real_path !== $this->template_path && !str_starts_with($real_path, $base_path)) {
 			throw new InvalidArgumentException('Renderer template file is outside the template path');
