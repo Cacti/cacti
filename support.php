@@ -60,8 +60,9 @@ function support_lockout() : void {
 		$is_locked = ($status != '');
 
 		// 'expected' reflects the state the button showed when the page was
-		// rendered. Only toggle if the stored state still matches it, so two
-		// administrators acting at once cannot flip each other's change.
+		// rendered. Only toggle if the stored state still matches it, so
+		// concurrent sessions of the Primary Administrator cannot flip each
+		// other's change.
 		$expected = gnrv('expected');
 
 		if ($expected !== 'locked' && $expected !== 'unlocked') {
@@ -239,7 +240,7 @@ function support_view_tech() : void {
 		});
 
 		$('#lockout').click(function() {
-			postUrl({ url: 'support.php?action=lockout' }, {
+			postUrl({ url: 'support.php?action=lockout', noState: true }, {
 				__csrf_magic: csrfMagicToken,
 				expected: $(this).attr('data-expected')
 			});
@@ -404,7 +405,7 @@ function show_database_processes() : void {
 		$sql_params);
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ((int) $rows * ((int) grv('page') - 1)) . ',' . (int) $rows;
+	$sql_limit = ' LIMIT ' . ((int) $rows * (max(1, (int) grv('page')) - 1)) . ',' . (int) $rows;
 	$info_len  = (int) grv('length');
 
 	$version   = db_get_global_variable('innodb_version');
@@ -747,7 +748,7 @@ function show_cacti_processes() : void {
 		$sql_params);
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ((int) $rows * ((int) grv('page') - 1)) . ',' . (int) $rows;
+	$sql_limit = ' LIMIT ' . ((int) $rows * (max(1, (int) grv('page')) - 1)) . ',' . (int) $rows;
 
 	$processes = db_fetch_assoc_prepared("SELECT *
 		FROM ($sql_inner) AS rs
