@@ -27,7 +27,7 @@
  *    gnrv('aggregate_template_id') and grv('aggregate_name').
  */
 
-function getAggregateGraphsSource(): string {
+function getAggregateGraphsSource() : string {
 	$src = file_get_contents(__DIR__ . '/../../aggregate_graphs.php');
 	expect($src)->not->toBeFalse('Failed to read aggregate_graphs.php');
 
