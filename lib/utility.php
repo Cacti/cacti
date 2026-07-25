@@ -1920,7 +1920,7 @@ function utility_get_formatted_bytes(mixed $input_value, string $wanted_type, mi
 		$output_value = $input_value . 'B';
 	}
 
-	cacti_log("Input values $input_value, Wanted Type $wanted_type, Output Value $output_value");
+	cacti_log("Input values $input_value, Wanted Type $wanted_type, Output Value $output_value", false, 'SYSTEM', POLLER_VERBOSITY_DEBUG);
 
 	return $input_value;
 }
