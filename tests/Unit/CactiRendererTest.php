@@ -93,6 +93,12 @@ it('rejects template traversal outside the template path', function () {
 	}
 })->throws(InvalidArgumentException::class);
 
+it('refuses a filesystem root as the template path', function () {
+	// A "/"-rooted renderer would make the containment prefix match every
+	// absolute path, so construction must fail closed.
+	new CactiRenderer('/');
+})->throws(InvalidArgumentException::class);
+
 it('rejects a null byte in the constructor template path', function () {
 	new CactiRenderer(cacti_renderer_fixture_dir() . "\0/evil");
 })->throws(InvalidArgumentException::class);

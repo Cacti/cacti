@@ -38,11 +38,16 @@ final class CactiRenderer {
 			throw new InvalidArgumentException('Renderer template path does not exist');
 		}
 
-		// Preserve a non-empty base path so a filesystem root ("/") does not
-		// collapse to "" and turn the prefix check into an always-true match.
+		// A renderer rooted at a filesystem root ("/") makes the containment
+		// prefix collapse to "/", which str_starts_with() matches for every
+		// absolute path. Refuse that root so the check stays fail-closed.
 		$trimmed = rtrim($real_path, DIRECTORY_SEPARATOR);
 
-		$this->template_path = $trimmed !== '' ? $trimmed : $real_path;
+		if ($trimmed === '') {
+			throw new InvalidArgumentException('Renderer template path does not exist');
+		}
+
+		$this->template_path = $trimmed;
 	}
 
 	public function render(string $template, array $context = []) : string {
@@ -90,8 +95,8 @@ final class CactiRenderer {
 			throw new InvalidArgumentException('Renderer template file does not exist');
 		}
 
-		// Append exactly one separator so a root template path ("/") does not
-		// produce "//" and reject files that are genuinely inside the root.
+		// Anchor containment with a trailing separator so a sibling directory
+		// sharing the prefix (".../tmpl-evil" against ".../tmpl") cannot match.
 		$base_path = rtrim($this->template_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
 		if ($real_path !== $this->template_path && !str_starts_with($real_path, $base_path)) {
