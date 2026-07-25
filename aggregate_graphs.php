@@ -118,7 +118,7 @@ function add_tree_names_to_actions_array() : void {
 
 function form_save() : void {
 	if (!isrv('save_component_graph') && !isrv('save_component_input') && !isrv('save_component_item')) {
-		header('Location: aggregate_graphs.php?action=edit&id=' . gnrv('id'));
+		header('Location: aggregate_graphs.php?action=edit&id=' . gfrv('id'));
 
 		exit();
 	}
@@ -724,8 +724,11 @@ function form_actions() : void {
 			} elseif (grv('drp_action') == '2') { // migrate to template
 				api_aggregate_convert_template($selected_items);
 			} elseif (grv('drp_action') == '3') { // create aggregate from aggregate
-				$aggregate_name = grv('aggregate_name');
-				api_aggregate_create($aggregate_name, $selected_items);
+				$aggregate_name = form_input_validate(grv('aggregate_name'), 'aggregate_name', '', false, 3);
+
+				if (!is_error_message()) {
+					api_aggregate_create($aggregate_name, $selected_items);
+				}
 			} elseif (grv('drp_action') == '4') { // add graphs to report
 				$good = true;
 
