@@ -15,14 +15,20 @@
 require_once dirname(__DIR__, 2) . '/lib/renderer.php';
 
 function cacti_renderer_fixture_dir() : string {
-	return sys_get_temp_dir() . '/cacti-renderer-test-' . getmypid();
+	static $dir = null;
+
+	if ($dir === null) {
+		$dir = sys_get_temp_dir() . '/cacti-renderer-test-' . getmypid() . '-' . bin2hex(random_bytes(8));
+	}
+
+	return $dir;
 }
 
 beforeEach(function () {
 	$dir = cacti_renderer_fixture_dir();
 
 	if (!is_dir($dir)) {
-		mkdir($dir, 0777, true);
+		mkdir($dir, 0700, true);
 	}
 
 	file_put_contents($dir . '/hello.php', 'Hello <?php print $name; ?>');
