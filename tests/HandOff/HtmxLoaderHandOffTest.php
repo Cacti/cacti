@@ -32,6 +32,7 @@
 if (!file_exists(dirname(__DIR__, 2) . '/lib/htmx.php')) {
 	test('htmx loader hand-off: feature not present on this branch', function () {})
 		->skip('lib/htmx.php absent — feature PR #7066 not merged into develop yet');
+
 	return;
 }
 
@@ -56,7 +57,7 @@ test('htmx_script_tag prefixes the src with CACTI_PATH_URL', function () {
 	$tag = htmx_script_tag();
 	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.min.js');
 
-	expect($tag)->toContain("src='" . CACTI_PATH_URL . "include/js/htmx.min.js?v=" . $md5 . "'");
+	expect($tag)->toContain("src='" . CACTI_PATH_URL . 'include/js/htmx.min.js?v=' . $md5 . "'");
 });
 
 test('htmx_script_tag src carries the deployment url root so subdir installs resolve', function () {
@@ -75,7 +76,7 @@ test('htmx_script_tag src carries the deployment url root so subdir installs res
 	 * from $config['url_path'], so the tag reflects the install prefix, not a
 	 * per-request value.
 	 */
-	expect($tag)->toContain("src='" . CACTI_PATH_URL . "include/js/htmx.min.js?v=" . $md5 . "'");
+	expect($tag)->toContain("src='" . CACTI_PATH_URL . 'include/js/htmx.min.js?v=' . $md5 . "'");
 });
 
 test('htmx.min.js.version content matches version pinned by the integrity attribute', function () {
