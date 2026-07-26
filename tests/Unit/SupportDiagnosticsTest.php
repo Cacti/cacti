@@ -81,7 +81,7 @@ test('show_tech_environment flags a directory that is not writable', function ()
 		chmod($dir, $mode);
 		clearstatcache(true, $dir);
 	}
-})->skip(posix_getuid() === 0, 'root bypasses directory write permissions');
+})->skip(function_exists('posix_getuid') && posix_getuid() === 0, 'root bypasses directory write permissions');
 
 /*
  * The redacted report is assembled inside show_tech_summary(), which runs a long

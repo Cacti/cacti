@@ -248,20 +248,28 @@ function support_view_tech() : void {
 
 			if (navigator.clipboard && navigator.clipboard.writeText) {
 				navigator.clipboard.writeText(report).then(function() {
-					$('#copy_diag_status').text(done);
+					$('#copy_diag_status').attr('class', 'deviceUp').text(done);
 				}, function() {
-					$('#copy_diag_status').text(failed);
+					$('#copy_diag_status').attr('class', 'deviceDown').text(failed);
 				});
 			} else {
 				var el = document.getElementById('diag_report');
 				el.style.display = 'block';
+				el.focus();
 				el.select();
 
+				var ok = false;
+
 				try {
-					document.execCommand('copy');
-					$('#copy_diag_status').text(done);
+					ok = document.execCommand('copy');
 				} catch (e) {
-					$('#copy_diag_status').text(failed);
+					ok = false;
+				}
+
+				if (ok) {
+					$('#copy_diag_status').attr('class', 'deviceUp').text(done);
+				} else {
+					$('#copy_diag_status').attr('class', 'deviceDown').text(failed);
 				}
 
 				el.style.display = 'none';
@@ -1226,7 +1234,7 @@ function show_tech_summary() : void {
 
 	form_alternate_row();
 	print '<td>' . __('Diagnostics Export') . '</td>';
-	print '<td><button type="button" id="copy_diag" title="' . __esc('Copy a redacted, shareable diagnostics report to the clipboard.') . '">' . __('Copy Diagnostics') . '</button> <span id="copy_diag_status" class="deviceUp"></span></td>';
+	print '<td><button type="button" id="copy_diag" title="' . __esc('Copy a redacted, shareable diagnostics report to the clipboard.') . '">' . __('Copy Diagnostics') . '</button> <span id="copy_diag_status" aria-live="polite"></span></td>';
 	form_end_row();
 
 	$lockout = read_config_option('cacti_lockout_status', true);
@@ -1801,7 +1809,7 @@ function show_tech_summary() : void {
 	// Deliberately excludes hostnames, IP addresses, the DB host, credentials,
 	// absolute paths and the full RSA fingerprint so it is safe to paste into
 	// a public issue.  Versions, counts and settings only.
-	$snmp_line     = trim(explode("\n", strip_tags($snmp_version))[0]);
+	$snmp_line     = trim(explode("\n", strip_tags((string) $snmp_version))[0]);
 	$web_server    = $_SERVER['SERVER_SOFTWARE'] ?? __('Unknown');
 	$poller_report = $poller_options[read_config_option('poller_type')] ?? __('Unknown');
 
