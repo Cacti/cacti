@@ -113,6 +113,7 @@ final class CactiRenderer {
 	private function includeTemplate(string $template_file, array $context) : void {
 		(static function (string $__cacti_template_file, array $__cacti_template_context) : void {
 			extract($__cacti_template_context, EXTR_SKIP);
+			unset($__cacti_template_context);
 
 			include $__cacti_template_file;
 		})($template_file, $context);
