@@ -108,9 +108,9 @@ cmd_exec	./snmpagent_mibcache.php:56			exec($php . ' ' . $extra_args . ' > /dev/
 cmd_exec	./snmpagent_persist.php:83		pclose(popen('start "CactiSNMPCache" /I /B ' . $php . ' ' . $extra_args, 'r'));
 cmd_exec	./snmpagent_persist.php:85		exec('ps -ef | grep -v grep | grep -v "sh -c" | grep snmpagent_mibcache.php', $output);
 cmd_exec	./snmpagent_persist.php:88			exec($php . ' ' . $extra_args . ' > /dev/null &');
-cmd_exec	./support.php:1154				exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
-cmd_exec	./support.php:1172			$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
-cmd_exec	./support.php:1195			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
+cmd_exec	./support.php:1155				exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
+cmd_exec	./support.php:1173			$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
+cmd_exec	./support.php:1196			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
 deserialize	./lib/functions.php:5319				$items = unserialize($unstripped, ['allowed_classes' => false]);
 deserialize	./lib/functions.php:5359				$items = unserialize($unstripped, ['allowed_classes' => false]);
 deserialize	./lib/functions.php:9996		return unserialize($strobj, ['allowed_classes' => false]);
@@ -607,7 +607,7 @@ header_redirect	./settings.php:1668			header('Location: settings.php?tab=' . grv
 header_redirect	./sites.php:280			header('Location: sites.php?action=edit&id=' . (empty($site_id) ? gnrv('id') : $site_id));
 header_redirect	./sites.php:393			header('Location: sites.php');
 header_redirect	./support.php:49			header('Location: support.php?tab=summary');
-header_redirect	./support.php:82		header('Location: support.php?tab=summary');
+header_redirect	./support.php:83		header('Location: support.php?tab=summary');
 header_redirect	./templates_export.php:72					header('Location: templates_export.php');
 header_redirect	./templates_import.php:118				header('Location: templates_import.php');
 header_redirect	./templates_import.php:67				header('Location: templates_import.php');
