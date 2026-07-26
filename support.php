@@ -2036,8 +2036,13 @@ function support_redact(string $value) : string {
 		$value = str_ireplace($node, '<host>', $value);
 	}
 
-	// IPv6 before IPv4 so the longer pattern wins.
-	$value = preg_replace('/\b(?:[0-9a-fA-F]{1,4}:){2,7}[0-9a-fA-F]{1,4}\b/', '<ipv6>', $value);
+	// IPv6 before IPv4 so the longer pattern wins. The candidate pattern is
+	// deliberately loose (it also matches "::" compression and would catch
+	// non-addresses like MACs or "1:2:3"); filter_var() gates the replacement
+	// so only strings that are genuinely IPv6 get masked.
+	$value = preg_replace_callback('/(?:[0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}/', function ($m) {
+		return filter_var($m[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false ? '<ipv6>' : $m[0];
+	}, $value);
 	$value = preg_replace('/\b(?:\d{1,3}\.){3}\d{1,3}\b/', '<ipv4>', $value);
 
 	// FQDNs (foo.bar.example).  The alphabetic TLD requirement leaves version
