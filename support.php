@@ -22,6 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
+// A test bootstrap includes this file only to reach the function definitions
+// below; it cannot satisfy the auth and database dispatch that follows. Return
+// before that runs. Top-level function declarations are hoisted at compile time
+// so they stay callable after this early return. The predicate matches
+// include/global.php's test-bootstrap gate, so production always falls through.
+if (defined('PHP_TESTING') && getenv('CACTI_TEST_BOOTSTRAP', true) === '1') {
+	return;
+}
+
 require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 require_once(CACTI_PATH_LIBRARY . '/boost.php');
