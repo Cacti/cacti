@@ -1605,6 +1605,87 @@ function data_source_to_data_template(int $local_data_id, string $data_source_ti
  *
  * @return mixed False if failing, otherwise the local_data_id data in a cache array
  */
+/**
+ * graph_template_connect_task_items - wire each new graph item to its new data
+ * source item (task_item_id) after a graph is created from a template.
+ *
+ * The two per-item id lookups are pre-fetched in bulk so this runs one UPDATE
+ * per item instead of two SELECTs plus an UPDATE for each (see #7380). The maps
+ * keep the first match per key to mirror the original db_fetch_cell() behaviour,
+ * so the resulting task_item_id wiring is identical to the per-item version.
+ *
+ * @param int   $graph_template_id The graph template the graph was created from
+ * @param array $cache_array       The create cache (local_graph_id + local_data_id map)
+ * @param mixed $db_conn           The connection to use or false for the default
+ *
+ * @return void
+ */
+function graph_template_connect_task_items(int $graph_template_id, array $cache_array, mixed $db_conn = false) : void {
+	if (!isset($cache_array['local_graph_id'])) {
+		return;
+	}
+
+	$template_item_list = db_fetch_assoc_prepared('SELECT
+		gti.id, dtr.id AS data_template_rrd_id, dtr.data_template_id
+		FROM graph_templates_item AS gti
+		INNER JOIN data_template_rrd AS dtr
+		ON gti.task_item_id=dtr.id
+		WHERE gti.graph_template_id = ?
+		AND local_graph_id=0
+		AND task_item_id>0',
+		[$graph_template_id], true, $db_conn);
+
+	if (!cacti_sizeof($template_item_list)) {
+		return;
+	}
+
+	// new graph_templates_item ids for this graph, keyed by template item id
+	$new_graph_items = [];
+
+	foreach (db_fetch_assoc_prepared('SELECT id, local_graph_template_item_id
+		FROM graph_templates_item
+		WHERE local_graph_id = ?',
+		[$cache_array['local_graph_id']], true, $db_conn) as $row) {
+		if (!isset($new_graph_items[$row['local_graph_template_item_id']])) {
+			$new_graph_items[$row['local_graph_template_item_id']] = $row['id'];
+		}
+	}
+
+	// new data_template_rrd ids for the created data sources, keyed by
+	// "<template rrd id>:<local data id>"
+	$new_rrd_items  = [];
+	$local_data_ids = array_values($cache_array['local_data_id'] ?? []);
+
+	if (cacti_sizeof($local_data_ids)) {
+		foreach (db_fetch_assoc('SELECT id, local_data_template_rrd_id, local_data_id
+			FROM data_template_rrd
+			WHERE local_data_id IN (' . implode(', ', array_map('intval', $local_data_ids)) . ')',
+			true, $db_conn) as $row) {
+			$key = $row['local_data_template_rrd_id'] . ':' . $row['local_data_id'];
+
+			if (!isset($new_rrd_items[$key])) {
+				$new_rrd_items[$key] = $row['id'];
+			}
+		}
+	}
+
+	foreach ($template_item_list as $template_item) {
+		if (isset($cache_array['local_data_id'][$template_item['data_template_id']])) {
+			$local_data_id = $cache_array['local_data_id'][$template_item['data_template_id']];
+
+			$graph_template_item_id = $new_graph_items[$template_item['id']] ?? 0;
+			$data_template_rrd_id   = $new_rrd_items[$template_item['data_template_rrd_id'] . ':' . $local_data_id] ?? 0;
+
+			if (!empty($data_template_rrd_id) && !empty($graph_template_item_id)) {
+				db_execute_prepared('UPDATE graph_templates_item
+					SET task_item_id = ?
+					WHERE id = ?',
+					[$data_template_rrd_id, $graph_template_item_id], true, $db_conn);
+			}
+		}
+	}
+}
+
 function create_complete_graph_from_template(int $graph_template_id, int $host_id, array $snmp_query_array, mixed &$suggested_vals) : mixed {
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
@@ -1940,43 +2021,7 @@ function create_complete_graph_from_template(int $graph_template_id, int $host_i
 	}
 
 	// connect the dots: graph -> data source(s)
-	$template_item_list = db_fetch_assoc_prepared('SELECT
-		gti.id, dtr.id AS data_template_rrd_id, dtr.data_template_id
-		FROM graph_templates_item AS gti
-		INNER JOIN data_template_rrd AS dtr
-		ON gti.task_item_id=dtr.id
-		WHERE gti.graph_template_id = ?
-		AND local_graph_id=0
-		AND task_item_id>0',
-		[$graph_template_id]);
-
-	// loop through each item affected and update column data
-	if (cacti_sizeof($template_item_list)) {
-		foreach ($template_item_list as $template_item) {
-			if (isset($cache_array['local_data_id'][$template_item['data_template_id']])) {
-				$local_data_id = $cache_array['local_data_id'][$template_item['data_template_id']];
-
-				$graph_template_item_id = db_fetch_cell_prepared('SELECT id
-					FROM graph_templates_item
-					WHERE local_graph_template_item_id = ?
-					AND local_graph_id = ?',
-					[ $template_item['id'], $cache_array['local_graph_id']]);
-
-				$data_template_rrd_id = db_fetch_cell_prepared('SELECT id
-					FROM data_template_rrd
-					WHERE local_data_template_rrd_id = ?
-					AND local_data_id = ?',
-					[$template_item['data_template_rrd_id'], $local_data_id]);
-
-				if (!empty($data_template_rrd_id)) {
-					db_execute_prepared('UPDATE graph_templates_item
-						SET task_item_id = ?
-						WHERE id = ?',
-						[$data_template_rrd_id, $graph_template_item_id]);
-				}
-			}
-		}
-	}
+	graph_template_connect_task_items($graph_template_id, $cache_array);
 
 	// this will not work until the ds->graph dots are connected
 	if (cacti_sizeof($snmp_query_array)) {
