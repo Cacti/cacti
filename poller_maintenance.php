@@ -1038,10 +1038,10 @@ function phpversion_check(bool $force = false) : void {
 	$date_next = clone $date_last;
 	$date_next->modify('+1day');
 
-	$phpbad_ver = version_compare(PHP_VERSION,'7.4','<');
+	$phpbad_ver = version_compare(PHP_VERSION,'8.4','<');
 
 	if ($phpbad_ver && ($date_next < $date_now || $force)) {
-		cacti_log('WARNING: PHP Version "' . PHP_VERSION . '"will not be supported by the develop branch in the future.  If you cannot upgrade to PHP 7.1 or higher, please switch branches', false, 'CACTI');
+		cacti_log('WARNING: PHP Version "' . PHP_VERSION . '"will not be supported by the develop branch in the future.  If you cannot upgrade to PHP 8.4 or higher, please switch branches', false, 'CACTI');
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("phpver_last", ?)', [$now]);
 	}
 }

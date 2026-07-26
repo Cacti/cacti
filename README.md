@@ -47,7 +47,7 @@ Minimum supported dependencies by branch:
 |---|---|---|
 | MariaDB | 5.6+ | 10.2.x+ |
 | MySQL | 5.6+ | 8.0+ |
-| PHP | 8.1+ | 8.1+ |
+| PHP | 8.1+ | 8.4+ |
 | RRDtool | 1.4+ | 1.8+ |
 | Net-SNMP | 5.5+ | 5.8+ |
 

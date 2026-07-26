@@ -6,7 +6,7 @@
 - **Core Purpose**: Polls devices (SNMP, scripts), stores time-series data in **RRDtool**, and renders historical graphs for network operations.
 
 - **Architecture**:
-  - **Frontend**: PHP 8.1+ web UI for configuration and visualization.
+  - **Frontend**: PHP 8.4+ web UI for configuration and visualization.
   - **Backend**: MySQL/MariaDB for metadata/state/configuration/statistics; 
                  RRD files for metrics.
   - **Polling**: Scalable data collection via `cmd.php` (PHP) or `spine` (C), supporting remote pollers.

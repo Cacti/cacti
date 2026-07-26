@@ -75,7 +75,7 @@ The API uses URL path versioning. All endpoints are prefixed with a version numb
 
 ## Requirements
 
-- PHP 8.1 or higher
+- PHP 8.4 or higher
 - Composer
 - Cacti database and configuration
 
