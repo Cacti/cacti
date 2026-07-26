@@ -27,13 +27,6 @@ DB_PORT=13310
 CONFIG_EXISTED=0
 CONFIG_BACKUP=""
 
-if [ -f "$REPO_DIR/include/config.php" ]; then
-	CONFIG_EXISTED=1
-	CONFIG_BACKUP="$(mktemp "${TMPDIR:-/tmp}/cacti-config.XXXXXX")"
-	cp "$REPO_DIR/include/config.php" "$CONFIG_BACKUP"
-	rm -f "$REPO_DIR/include/config.php"
-fi
-
 cleanup() {
 	cd "$REPO_DIR"
 	docker compose -p "$COMPOSE_PROJECT" --env-file "$ENV_FILE" down -v --remove-orphans 2>/dev/null || true
@@ -47,7 +40,16 @@ cleanup() {
 	fi
 }
 
+# install the trap before touching config.php so a failure during backup still
+# restores the developer's real config on exit
 trap cleanup EXIT
+
+if [ -f "$REPO_DIR/include/config.php" ]; then
+	CONFIG_EXISTED=1
+	CONFIG_BACKUP="$(mktemp "${TMPDIR:-/tmp}/cacti-config.XXXXXX")"
+	cp "$REPO_DIR/include/config.php" "$CONFIG_BACKUP"
+	rm -f "$REPO_DIR/include/config.php"
+fi
 
 cd "$REPO_DIR"
 
