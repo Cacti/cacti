@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-final readonly class CactiRenderer {
-	private string $template_path;
+final class CactiRenderer {
+	private readonly string $template_path;
 
 	public function __construct(string $template_path) {
 		// realpath() raises a ValueError on a null byte, so reject it up front

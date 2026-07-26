@@ -111,7 +111,7 @@ it('treats a Windows drive root as a filesystem root', function () {
 	// drive root, so assert the constructor's normalize + root predicate directly:
 	// both "C:" and "" must be refused while an in-drive path is accepted.
 	$is_root = static function (string $path): bool {
-		$trimmed = rtrim($path, "/\\");
+		$trimmed = rtrim($path, '/\\');
 
 		return $trimmed === '' || preg_match('/^[A-Za-z]:$/', $trimmed) === 1;
 	};
