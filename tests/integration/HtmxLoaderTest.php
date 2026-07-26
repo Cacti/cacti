@@ -33,11 +33,11 @@
 /**
  * Starts a PHP built-in server on a free port and returns [proc, port].
  *
- * @param array<string,string> $env
+ * @param  array<string,string>       $env
  * @return array{0: resource, 1: int}
  */
 function htmx_loader_start_server(array $env = []): array {
-	$port   = htmx_loader_pick_port();
+	$port    = htmx_loader_pick_port();
 	$fixture = dirname(__DIR__) . '/integration/fixtures/htmx_fixture.php';
 
 	// stdout/stderr go to /dev/null: the built-in server logs every request,
@@ -63,7 +63,7 @@ function htmx_loader_start_server(array $env = []): array {
 		throw new RuntimeException('failed to start php -S');
 	}
 
-	/* wait for the listener to bind before issuing the first curl */
+	// wait for the listener to bind before issuing the first curl
 	set_error_handler(static function (): bool { return true; });
 
 	try {

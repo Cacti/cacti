@@ -39,7 +39,7 @@ $cacti_base = realpath(__DIR__ . '/../../..');
 
 if ($cacti_base === false) {
 	http_response_code(500);
-	echo 'htmx_fixture: cannot resolve the Cacti base path';
+	print 'htmx_fixture: cannot resolve the Cacti base path';
 	exit(1);
 }
 
@@ -62,11 +62,11 @@ require_once CACTI_PATH_BASE . '/lib/htmx.php';
 header('Content-Type: text/html; charset=UTF-8');
 
 if (getenv('FIXTURE_EMIT_FRAGMENT_FLAG') === '1') {
-	echo htmx_is_fragment_request() ? 'FRAGMENT=true' : 'FRAGMENT=false';
+	print htmx_is_fragment_request() ? 'FRAGMENT=true' : 'FRAGMENT=false';
 
 	return;
 }
 
-echo "<!doctype html><html><head>\n";
-echo htmx_script_tag();
-echo "</head><body>ok</body></html>\n";
+print "<!doctype html><html><head>\n";
+print htmx_script_tag();
+print "</head><body>ok</body></html>\n";
