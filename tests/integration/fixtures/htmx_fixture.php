@@ -35,7 +35,15 @@
  * the environment so the harness can drive the two branches.
  */
 
-define('CACTI_PATH_BASE', realpath(__DIR__ . '/../../..'));
+$cacti_base = realpath(__DIR__ . '/../../..');
+
+if ($cacti_base === false) {
+	http_response_code(500);
+	echo 'htmx_fixture: cannot resolve the Cacti base path';
+	exit(1);
+}
+
+define('CACTI_PATH_BASE', $cacti_base);
 
 if (!function_exists('read_config_option')) {
 	function read_config_option(string $name, bool $force = false): mixed {

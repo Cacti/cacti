@@ -50,11 +50,10 @@ function cacti_htmx_enabled(): bool {
 	// when the cached value is explicitly empty (or no default is registered,
 	// as in stripped-down test bootstraps). Treat that as disabled so
 	// half-initialised installs are safe.
-	if ($value === '' || $value === false || $value === null) {
-		return false;
-	}
-
-	return $value !== 'off';
+	// The setting is a drop_array with explicit 'on'/'off' values, so treat only
+	// an exact 'on' as enabled. Anything else (an empty cached value, a stray
+	// '0'/'1', or an explicit 'off') leaves htmx disabled.
+	return $value === 'on';
 }
 
 /**

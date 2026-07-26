@@ -124,13 +124,20 @@ function htmx_loader_http_get(int $port, array $headers = []): string {
 		),
 	]);
 
-	$body = curl_exec($ch);
-	$err  = curl_error($ch);
+	$body   = curl_exec($ch);
+	$err    = curl_error($ch);
+	$status = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
 
 	curl_close($ch);
 
 	if ($body === false) {
 		throw new RuntimeException('curl failed: ' . $err);
+	}
+
+	// A 4xx/5xx error page can still contain the substrings the tests look for,
+	// so reject it here rather than assert against an error body.
+	if ($status >= 400) {
+		throw new RuntimeException('fixture returned HTTP ' . $status);
 	}
 
 	return (string) $body;
