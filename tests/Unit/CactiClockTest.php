@@ -28,13 +28,15 @@ test('CactiClock uses an injected clock instead of the default', function () {
 	$fixed = new DateTimeImmutable('2020-01-02 03:04:05', new DateTimeZone('UTC'));
 
 	$injected = new class($fixed) implements Symfony\Component\Clock\ClockInterface {
-		public function __construct(private DateTimeImmutable $now) {}
+		public function __construct(private DateTimeImmutable $now) {
+		}
 
 		public function now(): DateTimeImmutable {
 			return $this->now;
 		}
 
-		public function sleep(float|int $seconds): void {}
+		public function sleep(float|int $seconds): void {
+		}
 
 		public function withTimeZone(DateTimeZone|string $timezone): static {
 			return $this;
