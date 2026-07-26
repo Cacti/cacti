@@ -1220,8 +1220,10 @@ function show_tech_summary() : void {
 	// Get SNMP cli version.  $snmp_installed distinguishes raw tool output
 	// (must be escaped when printed) from the pre-built status span below
 	// (already markup, must not be escaped).
-	if ((file_exists(read_config_option('path_snmpget'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_snmpget'))))) {
-		$snmp_version   = (string) shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
+	$snmpget_path = (string) read_config_option('path_snmpget');
+
+	if ($snmpget_path !== '' && !str_contains($snmpget_path, "\0") && is_file($snmpget_path) && is_executable($snmpget_path)) {
+		$snmp_version   = (string) shell_exec(cacti_escapeshellcmd($snmpget_path) . ' -V 2>&1');
 		$snmp_installed = true;
 	} else {
 		$snmp_version   = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . '</span>';
