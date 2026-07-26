@@ -5114,7 +5114,7 @@ function cacti_js_encode(mixed $value) : string {
 
 	// U+2028 and U+2029 are valid JSON but are line terminators in JavaScript;
 	// left literal by JSON_UNESCAPED_UNICODE they break an inline <script> parse.
-	return str_replace(["\u{2028}", "\u{2029}"], ["\\u2028", "\\u2029"], $encoded);
+	return str_replace(["\u{2028}", "\u{2029}"], ['\\u2028', '\\u2029'], $encoded);
 }
 
 /**
@@ -5170,11 +5170,11 @@ function cacti_redirect(string $path, array $params = []) : never {
 	$control   = '/[\\x00-\\x1f\\x7f]/';
 	$absolute  = '#^(?:[a-z][a-z0-9+.\\-]*:|[\\/\\\\]{2})#i';
 
-	if ($candidate === ''
-		|| preg_match($control, $candidate) === 1
-		|| preg_match($control, $decoded) === 1
+	if ($candidate                        === ''
+		|| preg_match($control, $candidate)  === 1
+		|| preg_match($control, $decoded)    === 1
 		|| preg_match($absolute, $candidate) === 1
-		|| preg_match($absolute, $decoded) === 1) {
+		|| preg_match($absolute, $decoded)   === 1) {
 		$candidate = 'index.php';
 	}
 
