@@ -54,17 +54,21 @@ switch (grv('action')) {
 
 		item_movedown();
 
-		header('Location: vdef.php?action=edit&id=' . grv('vdef_id'));
+		cacti_redirect('vdef.php', [
+			'action' => 'edit',
+			'id'     => grv('vdef_id'),
+		]);
 
-		break;
 	case 'item_moveup':
 		gfrv('vdef_id');
 
 		item_moveup();
 
-		header('Location: vdef.php?action=edit&id=' . grv('vdef_id'));
+		cacti_redirect('vdef.php', [
+			'action' => 'edit',
+			'id'     => grv('vdef_id'),
+		]);
 
-		break;
 	case 'item_edit':
 		top_header();
 		vdef_item_edit();
@@ -119,7 +123,10 @@ function vdef_form_save() : void {
 			}
 		}
 
-		header('Location: vdef.php?action=edit&id=' . (empty($vdef_id) ? grv('id') : $vdef_id));
+		cacti_redirect('vdef.php', [
+			'action' => 'edit',
+			'id'     => empty($vdef_id) ? grv('id') : $vdef_id,
+		]);
 	} elseif (isrv('save_component_item')) {
 		$sequence = get_sequence(gfrv('id'), 'sequence', 'vdef_items', 'vdef_id=' . gfrv('vdef_id'));
 
@@ -143,9 +150,16 @@ function vdef_form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: vdef.php?action=item_edit&vdef_id=' . grv('vdef_id') . '&id=' . ($vdef_item_id === null ? grv('id') : $vdef_item_id));
+			cacti_redirect('vdef.php', [
+				'action'  => 'item_edit',
+				'vdef_id' => grv('vdef_id'),
+				'id'      => $vdef_item_id ?? grv('id'),
+			]);
 		} else {
-			header('Location: vdef.php?action=edit&id=' . grv('vdef_id'));
+			cacti_redirect('vdef.php', [
+				'action' => 'edit',
+				'id'     => grv('vdef_id'),
+			]);
 		}
 	}
 }
@@ -225,9 +239,7 @@ function vdef_form_actions() : void {
 			}
 		}
 
-		header('Location: vdef.php');
-
-		exit;
+		cacti_redirect('vdef.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];
@@ -529,7 +541,10 @@ function vdef_item_dnd() : void {
 		}
 	}
 
-	header('Location: vdef.php?action=edit&id=' . grv('id'));
+	cacti_redirect('vdef.php', [
+		'action' => 'edit',
+		'id'     => grv('id'),
+	]);
 }
 
 function vdef_edit() : void {

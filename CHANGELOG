@@ -254,6 +254,7 @@ Cacti CHANGELOG
 -feature: Extract remote agent reverse DNS forward-confirmation into the remote_agent_fcrdns_confirmed() helper
 -feature#7190: Replace PHPMailer with Symfony Mailer for native mail, sendmail, and SMTP (including OAuth2)
 -feature#7370: Allow plugins to register process tables for the technical support view
+-feature#7252: Add output-context helpers and a safe local URL builder
 
 1.2.x
 -issue#7212: Address a few small memory leaks in realtime graphing
