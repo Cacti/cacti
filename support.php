@@ -43,7 +43,7 @@ switch(grv('action')) {
 }
 
 function support_lockout() : void {
-	// this toggles a system-wide state, so require POST. csrf_check() only
+	// This toggles a system-wide state, so require POST. csrf_check() only
 	// validates the token on POST, so a GET would slip past CSRF protection.
 	if (strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
 		header('Location: support.php?tab=summary');
