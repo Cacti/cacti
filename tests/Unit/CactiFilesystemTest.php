@@ -89,5 +89,6 @@ test('CactiFilesystem instance moves, renames and reports absolute paths', funct
 });
 
 test('CactiFilesystem is a readonly value wrapper', function () {
-	expect((new ReflectionClass(CactiFilesystem::class))->isReadOnly())->toBeTrue();
+	$property = (new ReflectionClass(CactiFilesystem::class))->getProperty('filesystem');
+	expect($property->isReadOnly())->toBeTrue();
 });
