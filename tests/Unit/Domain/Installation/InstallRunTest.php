@@ -88,3 +88,51 @@ it('rejects invalid and terminal state transitions', function () {
 
 	expect(fn () => $run->retry())->toThrow(InvalidInstallRunTransition::class);
 });
+
+it('treats a cancelled run as terminal for every transition', function () {
+	$run = new InstallRun(new InstallRunId('run-123'));
+
+	$run->cancel();
+
+	expect(fn () => $run->start())->toThrow(InvalidInstallRunTransition::class)
+		->and(fn () => $run->retry())->toThrow(InvalidInstallRunTransition::class);
+});
+
+it('reports ready and running as non-terminal states', function () {
+	$run = new InstallRun(new InstallRunId('run-123'));
+
+	expect($run->state->isTerminal())->toBeFalse();
+
+	$run->start();
+
+	expect($run->state->isTerminal())->toBeFalse();
+});
+
+it('names the offending run in the transition error message', function () {
+	$run = new InstallRun(new InstallRunId('run-123'));
+
+	try {
+		$run->succeed();
+		$this->fail('expected InvalidInstallRunTransition');
+	} catch (InvalidInstallRunTransition $e) {
+		expect($e->getMessage())->toContain('run-123')
+			->and($e->getMessage())->toContain('ready')
+			->and($e->getMessage())->toContain('succeeded');
+	}
+});
+
+it('exposes the run identifier as readonly', function () {
+	$run = new InstallRun(new InstallRunId('run-123'));
+
+	expect(function () use ($run) {
+		$run->id = new InstallRunId('other');
+	})->toThrow(Error::class);
+});
+
+it('forbids setting the run state from outside the aggregate', function () {
+	$run = new InstallRun(new InstallRunId('run-123'));
+
+	expect(function () use ($run) {
+		$run->state = InstallRunState::Running;
+	})->toThrow(Error::class);
+});
