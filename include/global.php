@@ -714,6 +714,7 @@ require_once(CACTI_PATH_LIBRARY . '/snmpagent.php');
 require_once(CACTI_PATH_LIBRARY . '/aggregate.php');
 require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
 require_once(CACTI_PATH_INCLUDE . '/csrf.php');
+require_once(CACTI_PATH_INCLUDE . '/domain.php');
 
 if (is_file($vendor_autoload)) {
 	require_once($vendor_autoload);
