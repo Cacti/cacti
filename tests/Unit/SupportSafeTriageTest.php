@@ -96,7 +96,7 @@ test('show_tech_environment flags a directory that is not writable', function ()
 		chmod($dir, $mode);
 		clearstatcache(true, $dir);
 	}
-})->skip(posix_getuid() === 0, 'root bypasses directory write permissions');
+})->skip(function_exists('posix_getuid') && posix_getuid() === 0, 'root bypasses directory write permissions');
 
 function safe_triage_seed_summary(): void {
 	global $config, $poller_options, $database_hostname;
@@ -331,4 +331,4 @@ test('support_tail_severity returns nothing when the file cannot be opened', fun
 		chmod($file, 0644);
 		unlink($file);
 	}
-})->skip(posix_getuid() === 0, 'root bypasses file read permissions');
+})->skip(function_exists('posix_getuid') && posix_getuid() === 0, 'root bypasses file read permissions');

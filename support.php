@@ -1309,7 +1309,7 @@ function show_tech_summary() : void {
 
 	form_alternate_row();
 	print '<td>' . __('RSA Fingerprint') . '</td>';
-	print '<td>' . $rsa_fingerprint . '</td>';
+	print '<td>' . html_escape($rsa_fingerprint) . '</td>';
 	form_end_row();
 
 	form_alternate_row();
@@ -1848,7 +1848,7 @@ function show_tech_summary() : void {
 	// the report is safe to paste into a public issue.
 	$snmp_line     = trim(explode("\n", strip_tags($snmp_version))[0]);
 	$web_server    = (string) ($_SERVER['SERVER_SOFTWARE'] ?? __('Unknown'));
-	$poller_report = $poller_options[read_config_option('poller_type')];
+	$poller_report = $poller_options[read_config_option('poller_type')] ?? __('Unknown');
 
 	if ($redact) {
 		$snmp_line  = support_redact($snmp_line);
