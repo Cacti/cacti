@@ -23,7 +23,7 @@ use Symfony\Component\Filesystem\Path;
  * keep procedural callers simple; the instance API lets future services and
  * commands receive a filesystem dependency in their constructors.
  */
-class CactiFilesystem {
+readonly class CactiFilesystem {
 	private Filesystem $filesystem;
 
 	public function __construct(?Filesystem $filesystem = null) {
