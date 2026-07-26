@@ -1644,7 +1644,8 @@ function graph_template_connect_task_items(int $graph_template_id, array $cache_
 
 	foreach (db_fetch_assoc_prepared('SELECT id, local_graph_template_item_id
 		FROM graph_templates_item
-		WHERE local_graph_id = ?',
+		WHERE local_graph_id = ?
+		ORDER BY id',
 		[$cache_array['local_graph_id']], true, $db_conn) as $row) {
 		if (!isset($new_graph_items[$row['local_graph_template_item_id']])) {
 			$new_graph_items[$row['local_graph_template_item_id']] = $row['id'];
@@ -1659,7 +1660,8 @@ function graph_template_connect_task_items(int $graph_template_id, array $cache_
 	if (cacti_sizeof($local_data_ids)) {
 		foreach (db_fetch_assoc('SELECT id, local_data_template_rrd_id, local_data_id
 			FROM data_template_rrd
-			WHERE ' . db_in_clause('local_data_id', $local_data_ids),
+			WHERE ' . db_in_clause('local_data_id', $local_data_ids) . '
+			ORDER BY id',
 			true, $db_conn) as $row) {
 			$key = $row['local_data_template_rrd_id'] . ':' . $row['local_data_id'];
 
