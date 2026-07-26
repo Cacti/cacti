@@ -58,8 +58,6 @@ switch (grv('action')) {
 			'action' => 'edit',
 			'id'     => grv('vdef_id'),
 		]);
-
-		break;
 	case 'item_moveup':
 		gfrv('vdef_id');
 
@@ -69,8 +67,6 @@ switch (grv('action')) {
 			'action' => 'edit',
 			'id'     => grv('vdef_id'),
 		]);
-
-		break;
 	case 'item_edit':
 		top_header();
 		vdef_item_edit();
@@ -155,7 +151,7 @@ function vdef_form_save() : void {
 			cacti_redirect('vdef.php', [
 				'action'  => 'item_edit',
 				'vdef_id' => grv('vdef_id'),
-				'id'      => $vdef_item_id ?? grv('id'),
+				'id'      => $vdef_item_id === null ? grv('id') : $vdef_item_id,
 			]);
 		} else {
 			cacti_redirect('vdef.php', [
