@@ -185,7 +185,7 @@ function support_view_tech() : void {
 	}
 
 	// Display tech information
-	if (!isset($tabs[$current_tab]['header']) || $tabs[$current_tab]['header'] === true) {
+	if ($tabs[$current_tab]['header'] === true) {
 		html_start_box($header_label, '100%', false, 3, 'center', '');
 	}
 
@@ -240,7 +240,7 @@ function support_view_tech() : void {
 			break;
 	}
 
-	if (!isset($tabs[$current_tab]['header']) || $tabs[$current_tab]['header'] === true) {
+	if ($tabs[$current_tab]['header'] === true) {
 		html_end_box();
 	}
 
