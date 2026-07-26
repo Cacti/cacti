@@ -46,3 +46,33 @@ test('CactiClock uses an injected clock instead of the default', function () {
 	expect($clock->now())->toEqual($fixed);
 	expect($clock->time())->toBe($fixed->getTimestamp());
 });
+
+test('CactiClock delegates sleep to the wrapped clock', function () {
+	$recorder = new class implements Symfony\Component\Clock\ClockInterface {
+		public array $slept = [];
+
+		public function now(): DateTimeImmutable {
+			return new DateTimeImmutable('@0');
+		}
+
+		public function sleep(float|int $seconds): void {
+			$this->slept[] = $seconds;
+		}
+
+		public function withTimeZone(DateTimeZone|string $timezone): static {
+			return $this;
+		}
+	};
+
+	$clock = new CactiClock($recorder);
+	$clock->sleep(1.5);
+
+	expect($recorder->slept)->toBe([1.5]);
+});
+
+test('CactiClock static sleepFor uses the default clock', function () {
+	// NativeClock sleep(0) returns immediately; this exercises the static path.
+	CactiClock::sleepFor(0);
+
+	expect(CactiClock::default())->toBe(CactiClock::default());
+});

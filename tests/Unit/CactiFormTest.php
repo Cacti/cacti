@@ -29,3 +29,21 @@ test('CactiForm retains an injected form factory', function () {
 
 	expect((new CactiForm($injected))->formFactory())->toBe($injected);
 });
+
+test('CactiForm exposes the shared factory statically', function () {
+	expect(CactiForm::factory())->toBeInstanceOf(Symfony\Component\Form\FormFactoryInterface::class);
+});
+
+test('CactiForm creates an unnamed builder from the default form type', function () {
+	$builder = CactiForm::createBuilder();
+
+	expect($builder)->toBeInstanceOf(Symfony\Component\Form\FormBuilderInterface::class);
+});
+
+test('CactiForm instance builder honours an injected factory', function () {
+	$injected = Symfony\Component\Form\Forms::createFormFactory();
+	$form     = new CactiForm($injected);
+
+	expect($form->builder())->toBeInstanceOf(Symfony\Component\Form\FormBuilderInterface::class)
+		->and($form->namedBuilder('inner'))->toBeInstanceOf(Symfony\Component\Form\FormBuilderInterface::class);
+});
