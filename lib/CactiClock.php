@@ -21,7 +21,7 @@ use Symfony\Component\Clock\NativeClock;
 class CactiClock {
 	private static ?self $instance = null;
 
-	private ClockInterface $clock;
+	private readonly ClockInterface $clock;
 
 	public function __construct(?ClockInterface $clock = null) {
 		$this->clock = $clock ?? new NativeClock();
