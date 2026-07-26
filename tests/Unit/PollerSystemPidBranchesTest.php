@@ -73,8 +73,9 @@ beforeEach(function () {
 	$GLOBALS['__poller_procs']        = array();
 });
 
-// A pid that never exists on this platform, so posix_kill() is a safe no-op.
-const POLLER_DEAD_PID = 999999;
+// A pid beyond any platform's pid_max, so posix_kill() fails with ESRCH and
+// can never signal a real process (999999 is reachable where pid_max is high).
+const POLLER_DEAD_PID = PHP_INT_MAX;
 
 test('register_process_start refuses to kill a reserved system pid on timeout', function () {
 	$GLOBALS['__poller_row'] = array(
