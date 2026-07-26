@@ -29,7 +29,7 @@
 // Canonicalize both sides so a symlinked script path compares equal to this
 // file. When SCRIPT_FILENAME is unset or unresolvable, treat the access as an
 // include rather than a direct request and skip the redirect.
-if (!empty($_SERVER['SCRIPT_FILENAME'])) {
+if (!empty($_SERVER['SCRIPT_FILENAME']) && !str_contains($_SERVER['SCRIPT_FILENAME'], "\0")) {
 	$requested = realpath($_SERVER['SCRIPT_FILENAME']);
 
 	if ($requested !== false && $requested === realpath(__FILE__)) {

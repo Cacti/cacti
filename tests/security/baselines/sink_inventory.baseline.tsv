@@ -127,7 +127,7 @@ dynamic_include	./index.php:49							require_once($file);
 dynamic_include	./lib/installer.php:4103					include_once($upgrade_file);
 dynamic_include	./lib/plugins.php:96						include_once($full_path);
 dynamic_include	./lib/plugins.php:981			require_once($setup_file);
-dynamic_include	./lib/renderer.php:102				include $__cacti_template_file;
+dynamic_include	./lib/renderer.php:117				include $__cacti_template_file;
 dynamic_include	./lib/rrd.php:3049			include($rrdtheme);
 dynamic_include	./lib/rrd.php:4601			include($themefile);
 dynamic_include	./link.php:91					require_once($file);
@@ -504,7 +504,7 @@ header_redirect	./include/themes/sunrise/default/index.php:25	header('Location:.
 header_redirect	./include/themes/sunrise/images/index.php:25	header('Location:../index.php');
 header_redirect	./include/themes/sunrise/index.php:25	header('Location:../index.php');
 header_redirect	./include/vendor/index.php:25	header("Location:../index.php");
-header_redirect	./include/views/index.php:25	header('Location:../index.php');
+header_redirect	./include/views/index.php:36			header('Location:../index.php');
 header_redirect	./install/upgrades/index.php:25	header('Location:../../index.php');
 header_redirect	./lib/auth.php:4241				header('Location: auth_changepassword.php');
 header_redirect	./lib/auth.php:4707					header('Location: ' . $referer);
