@@ -79,6 +79,10 @@ function support_view_tech() : void {
 			'display' => __('Summary'),
 			'header'  => true
 		],
+		'environment' => [
+			'display' => __('Environment'),
+			'header'  => true
+		],
 		'database' => [
 			'display' => __('Database Tables'),
 			'header'  => true
@@ -165,6 +169,10 @@ function support_view_tech() : void {
 			show_tech_summary();
 
 			break;
+		case 'environment':
+			show_tech_environment();
+
+			break;
 		case 'dbstatus':
 			show_database_status();
 
@@ -223,8 +231,35 @@ function support_view_tech() : void {
 		$('#lockout').click(function() {
 			loadUrl({ url: 'support.php?action=lockout' });
 		});
+
+		$('#copy_diag').click(function() {
+			var report = $('#diag_report').val();
+			var done   = <?php print json_encode(__('Copied to clipboard')); ?>;
+			var failed = <?php print json_encode(__('Copy failed, select the text manually')); ?>;
+
+			if (navigator.clipboard && navigator.clipboard.writeText) {
+				navigator.clipboard.writeText(report).then(function() {
+					$('#copy_diag_status').text(done);
+				}, function() {
+					$('#copy_diag_status').text(failed);
+				});
+			} else {
+				var el = document.getElementById('diag_report');
+				el.style.display = 'block';
+				el.select();
+
+				try {
+					document.execCommand('copy');
+					$('#copy_diag_status').text(done);
+				} catch (e) {
+					$('#copy_diag_status').text(failed);
+				}
+
+				el.style.display = 'none';
+			}
+		});
 	});
-	</script>
+</script>
 	<?php
 
 	bottom_footer();
@@ -1180,6 +1215,11 @@ function show_tech_summary() : void {
 
 	html_section_header(__('General Information'), 2);
 
+	form_alternate_row();
+	print '<td>' . __('Diagnostics Export') . '</td>';
+	print '<td><button type="button" id="copy_diag" title="' . __esc('Copy a redacted, shareable diagnostics report to the clipboard.') . '">' . __('Copy Diagnostics') . '</button> <span id="copy_diag_status" class="deviceUp"></span></td>';
+	form_end_row();
+
 	$lockout = read_config_option('cacti_lockout_status', true);
 	$enabled = read_config_option('auth_maint_lockout_type', true);
 
@@ -1747,4 +1787,167 @@ function show_tech_summary() : void {
 	form_end_row();
 
 	utilities_get_mysql_recommendations();
+
+	// Redacted, shareable diagnostics report (Feature: Copy Diagnostics).
+	// Deliberately excludes hostnames, IP addresses, the DB host, credentials,
+	// absolute paths and the full RSA fingerprint so it is safe to paste into
+	// a public issue.  Versions, counts and settings only.
+	$snmp_line     = trim(explode("\n", strip_tags($snmp_version))[0]);
+	$web_server    = $_SERVER['SERVER_SOFTWARE'] ?? __('Unknown');
+	$poller_report = $poller_options[read_config_option('poller_type')] ?? __('Unknown');
+
+	if ($poller_report == 'spine' && $spine_version != 'Unknown') {
+		$poller_report = $spine_version;
+	}
+
+	$rsa           = read_config_option('rsa_fingerprint');
+	$rsa_report    = ($rsa != '' ? substr($rsa, 0, 8) . '… (' . __('masked') . ')' : __('N/A'));
+
+	$report  = "### Cacti Diagnostics\n";
+	$report .= '- ' . __('Cacti Version') . ': ' . CACTI_VERSION . "\n";
+	$report .= '- ' . __('Cacti OS') . ': ' . CACTI_SERVER_OS . "\n";
+	$report .= '- ' . __('Web Server') . ': ' . $web_server . "\n";
+	$report .= '- ' . __('PHP Version') . ': ' . PHP_VERSION . "\n";
+	$report .= '- ' . __('PHP OS') . ': ' . PHP_OS . "\n";
+	$report .= '- ' . __('Database') . ': ' . trim($database . ' ' . $version) . "\n";
+	$report .= '- ' . __('RRDtool Version Configured') . ': ' . get_rrdtool_version() . "+\n";
+	$report .= '- ' . __('RRDtool Version Found') . ': ' . $rrdtool_release . "\n";
+	$report .= '- ' . __('NET-SNMP Version') . ': ' . $snmp_line . "\n";
+	$report .= '- ' . __('Poller Interval') . ': ' . read_config_option('poller_interval') . "\n";
+	$report .= '- ' . __('Poller Type') . ': ' . $poller_report . "\n";
+	$report .= '- ' . __('Last Run Statistics') . ': ' . read_config_option('stats_poller') . "\n";
+	$report .= '- ' . 'memory_limit: ' . ini_get('memory_limit') . "\n";
+	$report .= '- ' . 'max_execution_time: ' . ini_get('max_execution_time') . "\n";
+	$report .= '- ' . __('System Memory') . ': ' . ($total_memory > 0 ? number_format_i18n($total_memory, 2, 1000) . ' GB' : __('N/A')) . "\n";
+	$report .= '- ' . __('RSA Fingerprint') . ': ' . $rsa_report . "\n";
+
+	form_alternate_row();
+	print "<td colspan='2'><textarea id='diag_report' style='display:none' readonly='readonly'>" . html_escape($report) . '</textarea></td>';
+	form_end_row();
+}
+
+function show_tech_environment() : void {
+	// Required PHP extensions, cross-checked against install/cli_check.php.
+	$extensions = false;
+	utility_php_verify_extensions($extensions, 'web');
+
+	html_section_header(__('Required PHP Extensions'), 2);
+
+	foreach ($extensions as $name => $extension) {
+		$loaded = !empty($extension['web']);
+
+		form_alternate_row();
+		print '<td>' . html_escape($name) . '</td>';
+		print '<td>' . tech_env_status($loaded ? DB_STATUS_SUCCESS : DB_STATUS_ERROR, $loaded ? __('Installed') : __('Missing')) . '</td>';
+		form_end_row();
+	}
+
+	// Recommended (optional) extensions such as php-snmp.
+	$optionals = false;
+	utility_php_verify_optionals($optionals, 'web');
+
+	html_section_header(__('Recommended PHP Extensions'), 2);
+
+	foreach ($optionals as $name => $optional) {
+		$loaded = !empty($optional['web']);
+
+		form_alternate_row();
+		print '<td>' . html_escape($name) . '</td>';
+		print '<td>' . tech_env_status($loaded ? DB_STATUS_SUCCESS : DB_STATUS_WARNING, $loaded ? __('Installed') : __('Not installed')) . '</td>';
+		form_end_row();
+	}
+
+	// Key php.ini values and thresholds (reuses the installer's recommendations).
+	$recommends = false;
+	utility_php_verify_recommends($recommends, 'web');
+
+	html_section_header(__('PHP Configuration'), 2);
+
+	foreach ($recommends as $recommend) {
+		if ($recommend['name'] == 'location' || $recommend['name'] == 'version') {
+			continue;
+		}
+
+		form_alternate_row();
+		print '<td>' . html_escape($recommend['name']) . '</td>';
+		print '<td>' . tech_env_status((int) $recommend['status'], __('Current: %s, Recommended: %s', html_escape($recommend['current']), html_escape($recommend['value']))) . '</td>';
+		form_end_row();
+	}
+
+	$file_uploads = (bool) ini_get('file_uploads');
+
+	form_alternate_row();
+	print '<td>file_uploads</td>';
+	print '<td>' . tech_env_status($file_uploads ? DB_STATUS_SUCCESS : DB_STATUS_ERROR, $file_uploads ? __('On') : __('Off')) . '</td>';
+	form_end_row();
+
+	// Required binaries: existence + version.
+	$binaries = [
+		'path_php_binary' => '-v',
+		'path_rrdtool'    => '--version',
+		'path_snmpget'    => '-V',
+	];
+
+	html_section_header(__('Required Binaries'), 2);
+
+	foreach ($binaries as $option => $arg) {
+		$path = read_config_option($option);
+
+		form_alternate_row();
+		print '<td>' . html_escape($option) . '</td>';
+
+		if ($path != '' && file_exists($path) && function_exists('is_executable') && is_executable($path)) {
+			if (is_function_enabled('shell_exec')) {
+				$out     = shell_exec(cacti_escapeshellarg($path) . ' ' . $arg . ' 2>&1');
+				$version = ($out != '' ? trim(explode("\n", $out)[0]) : __('Unknown version'));
+
+				print '<td>' . tech_env_status(DB_STATUS_SUCCESS, html_escape($version)) . '</td>';
+			} else {
+				print '<td>' . tech_env_status(DB_STATUS_WARNING, __('Version unavailable: shell_exec() is disabled')) . '</td>';
+			}
+		} else {
+			print '<td>' . tech_env_status(DB_STATUS_ERROR, __('Not found or not executable: %s', html_escape($path))) . '</td>';
+		}
+
+		form_end_row();
+	}
+
+	// Writable directories.  cache/rra/log must be writable; scripts/resource
+	// are usually read-only so a non-writable result is only a warning.
+	$directories = [
+		CACTI_PATH_CACHE    => true,
+		CACTI_PATH_RRA      => true,
+		CACTI_PATH_LOG      => true,
+		CACTI_PATH_SCRIPTS  => false,
+		CACTI_PATH_RESOURCE => false,
+	];
+
+	html_section_header(__('Writable Directories'), 2);
+
+	foreach ($directories as $directory => $required) {
+		$writable = is_writable($directory);
+
+		if ($writable) {
+			$status = DB_STATUS_SUCCESS;
+			$text   = __('Writable');
+		} else {
+			$status = ($required ? DB_STATUS_ERROR : DB_STATUS_WARNING);
+			$text   = __('Not writable');
+		}
+
+		form_alternate_row();
+		print '<td>' . html_escape($directory) . '</td>';
+		print '<td>' . tech_env_status($status, $text) . '</td>';
+		form_end_row();
+	}
+}
+
+function tech_env_status(int $status, string $text) : string {
+	[$class, $icon] = match ($status) {
+		DB_STATUS_SUCCESS => ['deviceUp', 'fa-check-circle'],
+		DB_STATUS_ERROR   => ['deviceDown', 'fa-times-circle'],
+		default           => ['deviceRecovering', 'fa-exclamation-triangle'],
+	};
+
+	return "<span class='$class'><i class='fa $icon'></i> " . $text . '</span>';
 }
