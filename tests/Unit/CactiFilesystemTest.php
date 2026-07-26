@@ -49,3 +49,45 @@ test('CactiFilesystem read rejects a path containing a null byte', function () {
 	expect(fn () => $filesystem->read("/tmp/foo\0bar"))
 		->toThrow(RuntimeException::class, 'null byte');
 });
+
+test('CactiFilesystem accepts an injected Symfony filesystem', function () {
+	$injected   = new Symfony\Component\Filesystem\Filesystem();
+	$filesystem = new CactiFilesystem($injected);
+	$dir        = sys_get_temp_dir() . '/cacti-fs-inject-' . bin2hex(random_bytes(4));
+
+	try {
+		$filesystem->ensureDirectory($dir);
+
+		expect($filesystem->has($dir))->toBeTrue();
+	} finally {
+		$filesystem->delete($dir);
+	}
+});
+
+test('CactiFilesystem instance moves, renames and reports absolute paths', function () {
+	$filesystem = new CactiFilesystem();
+	$dir        = sys_get_temp_dir() . '/cacti-fs-move-' . bin2hex(random_bytes(4));
+	$origin     = CactiFilesystem::join($dir, 'origin.txt');
+	$target     = CactiFilesystem::join($dir, 'target.txt');
+
+	try {
+		$filesystem->ensureDirectory($dir);
+		$filesystem->writeFile($origin, 'payload');
+		$filesystem->move($origin, $target);
+
+		expect($filesystem->has($origin))->toBeFalse()
+			->and($filesystem->read($target))->toBe('payload');
+
+		$temp = $filesystem->temporaryName($dir, 'tmp');
+		expect($filesystem->has($temp))->toBeTrue();
+
+		expect($filesystem->isAbsolute($target))->toBeTrue()
+			->and($filesystem->isAbsolute('relative/path'))->toBeFalse();
+	} finally {
+		$filesystem->delete($dir);
+	}
+});
+
+test('CactiFilesystem is a readonly value wrapper', function () {
+	expect((new ReflectionClass(CactiFilesystem::class))->isReadOnly())->toBeTrue();
+});
