@@ -71,12 +71,18 @@ function support_view_tech() : void {
 
 	// ================= input validation =================
 	gfrv('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-z_A-Z]+)$/']]);
+	// redact is a display-only toggle; coerce to a strict 0/1 and never fail on bad input
+	set_request_var('redact', gnrv('redact') == 1 ? 1 : 0);
 	// ====================================================
 
 	// present a tabbed interface
 	$tabs = [
 		'summary' => [
 			'display' => __('Summary'),
+			'header'  => true
+		],
+		'environment' => [
+			'display' => __('Environment'),
 			'header'  => true
 		],
 		'database' => [
@@ -111,6 +117,10 @@ function support_view_tech() : void {
 			'display' => __('PHP Info'),
 			'header'  => true
 		],
+		'log' => [
+			'display' => __('Recent Log'),
+			'header'  => true
+		],
 		'changelog' => [
 			'display' => __('ChangeLog'),
 			'header'  => true
@@ -120,6 +130,16 @@ function support_view_tech() : void {
 	// set the default tab
 	load_current_session_value('tab', 'sess_ts_tabs', 'summary');
 	$current_tab = gnrv('tab');
+
+	// the regex above only guarantees the shape of the value; fall back to the
+	// default when it is not one of the tabs this page actually renders
+	if (!isset($tabs[$current_tab])) {
+		$current_tab = 'summary';
+		set_request_var('tab', $current_tab);
+	}
+
+	// carried on the tab links so redaction stays in effect while navigating
+	$redact = (grv('redact') == 1);
 
 	// the processes and background will set their own timeouts
 	$page = 'support.php?tab=' . $current_tab;
@@ -146,7 +166,7 @@ function support_view_tech() : void {
 			print "<li class='subTab'><a class='tab pic " . ($id == $current_tab ? " selected'" : "'") .
 				" href='" . htmle(CACTI_PATH_URL .
 				'support.php?' .
-				'tab=' . $id) .
+				'tab=' . $id . ($redact ? '&redact=1' : '')) .
 				"'>" . $name['display'] . '</a></li>';
 		}
 
@@ -163,6 +183,10 @@ function support_view_tech() : void {
 	switch (grv('tab')) {
 		case 'summary':
 			show_tech_summary();
+
+			break;
+		case 'environment':
+			show_tech_environment();
 
 			break;
 		case 'dbstatus':
@@ -191,6 +215,10 @@ function support_view_tech() : void {
 			break;
 		case 'phpinfo':
 			show_php_modules();
+
+			break;
+		case 'log':
+			show_tech_log();
 
 			break;
 		case 'processes':
@@ -223,8 +251,39 @@ function support_view_tech() : void {
 		$('#lockout').click(function() {
 			loadUrl({ url: 'support.php?action=lockout' });
 		});
+
+		$('#redact_toggle').change(function() {
+			loadUrl({ url: 'support.php?tab=summary&redact=' + ($(this).is(':checked') ? 1 : 0) });
+		});
+
+		$('#copy_diag').click(function() {
+			var report = $('#diag_report').val();
+			var done   = <?php print json_encode(__('Copied to clipboard')); ?>;
+			var failed = <?php print json_encode(__('Copy failed, select the text manually')); ?>;
+
+			if (navigator.clipboard && navigator.clipboard.writeText) {
+				navigator.clipboard.writeText(report).then(function() {
+					$('#copy_diag_status').text(done);
+				}, function() {
+					$('#copy_diag_status').text(failed);
+				});
+			} else {
+				var el = document.getElementById('diag_report');
+				el.style.display = 'block';
+				el.select();
+
+				try {
+					document.execCommand('copy');
+					$('#copy_diag_status').text(done);
+				} catch (e) {
+					$('#copy_diag_status').text(failed);
+				}
+
+				el.style.display = 'none';
+			}
+		});
 	});
-	</script>
+</script>
 	<?php
 
 	bottom_footer();
@@ -1107,6 +1166,9 @@ function show_database_status() : void {
 function show_tech_summary() : void {
 	global $database_hostname, $poller_options, $input_types, $local_db_cnn_id;
 
+	// When on, identifying values on this tab and in the copied report are masked.
+	$redact = (grv('redact') == 1);
+
 	// Get poller stats
 	$poller_item = db_fetch_assoc('SELECT action, count(action) AS total
 		FROM poller_item
@@ -1146,11 +1208,15 @@ function show_tech_summary() : void {
 		}
 	}
 
-	// Get SNMP cli version
+	// Get SNMP cli version.  $snmp_installed distinguishes raw tool output
+	// (must be escaped when printed) from the pre-built status span below
+	// (already markup, must not be escaped).
 	if ((file_exists(read_config_option('path_snmpget'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_snmpget'))))) {
-		$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
+		$snmp_version   = (string) shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
+		$snmp_installed = true;
 	} else {
-		$snmp_version = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . '</span>';
+		$snmp_version   = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . '</span>';
+		$snmp_installed = false;
 	}
 
 	// Check RRDtool issues
@@ -1179,6 +1245,12 @@ function show_tech_summary() : void {
 	}
 
 	html_section_header(__('General Information'), 2);
+
+	form_alternate_row();
+	print '<td>' . __('Diagnostics Export') . '</td>';
+	print '<td><button type="button" id="copy_diag" title="' . __esc('Copy a diagnostics report to the clipboard.  Enable the redact toggle to mask identifying details before sharing.') . '">' . __('Copy Diagnostics') . '</button> <span id="copy_diag_status" class="deviceUp"></span>' .
+		'<label style="margin-left:12px"><input type="checkbox" id="redact_toggle"' . ($redact ? ' checked="checked"' : '') . '> ' . __('Redact for sharing') . '</label></td>';
+	form_end_row();
 
 	$lockout = read_config_option('cacti_lockout_status', true);
 	$enabled = read_config_option('auth_maint_lockout_type', true);
@@ -1220,14 +1292,27 @@ function show_tech_summary() : void {
 	print '<td>' . CACTI_SERVER_OS . '</td>';
 	form_end_row();
 
+	$rsa_fingerprint = read_config_option('rsa_fingerprint');
+
+	if ($redact && $rsa_fingerprint != '') {
+		$rsa_fingerprint = substr($rsa_fingerprint, 0, 8) . '… (' . __('masked') . ')';
+	}
+
 	form_alternate_row();
 	print '<td>' . __('RSA Fingerprint') . '</td>';
-	print '<td>' . read_config_option('rsa_fingerprint') . '</td>';
+	print '<td>' . $rsa_fingerprint . '</td>';
 	form_end_row();
 
 	form_alternate_row();
 	print '<td>' . __('NET-SNMP Version') . '</td>';
-	print '<td>' . $snmp_version . '</td>';
+
+	if (!$snmp_installed) {
+		// Pre-built status span; already markup, render as-is.
+		print '<td>' . $snmp_version . '</td>';
+	} else {
+		print '<td>' . ($redact ? html_escape(support_redact(strip_tags($snmp_version))) : html_escape($snmp_version)) . '</td>';
+	}
+
 	form_end_row();
 
 	form_alternate_row();
@@ -1683,7 +1768,7 @@ function show_tech_summary() : void {
 	print '<td>';
 
 	if (function_exists('php_uname')) {
-		print php_uname();
+		print $redact ? html_escape(support_redact(php_uname())) : php_uname();
 	} else {
 		print __('N/A');
 	}
@@ -1747,4 +1832,320 @@ function show_tech_summary() : void {
 	form_end_row();
 
 	utilities_get_mysql_recommendations();
+
+	// Shareable diagnostics report (Feature: Copy Diagnostics).
+	// When the redact toggle is on, hostnames, IP addresses, the DB host,
+	// credentials, absolute paths and the full RSA fingerprint are masked so
+	// the report is safe to paste into a public issue.
+	$snmp_line     = trim(explode("\n", strip_tags($snmp_version))[0]);
+	$web_server    = (string) ($_SERVER['SERVER_SOFTWARE'] ?? __('Unknown'));
+	$poller_report = $poller_options[read_config_option('poller_type')];
+
+	if ($redact) {
+		$snmp_line  = support_redact($snmp_line);
+		$web_server = support_redact($web_server);
+	}
+
+	if ($poller_report == 'spine' && $spine_version != 'Unknown') {
+		$poller_report = $spine_version;
+	}
+
+	$rsa = read_config_option('rsa_fingerprint');
+
+	if ($rsa == '') {
+		$rsa_report = __('N/A');
+	} elseif ($redact) {
+		$rsa_report = substr($rsa, 0, 8) . '… (' . __('masked') . ')';
+	} else {
+		$rsa_report = $rsa;
+	}
+
+	$report  = "### Cacti Diagnostics\n";
+	$report .= '- ' . __('Cacti Version') . ': ' . CACTI_VERSION . "\n";
+	$report .= '- ' . __('Cacti OS') . ': ' . CACTI_SERVER_OS . "\n";
+	$report .= '- ' . __('Web Server') . ': ' . $web_server . "\n";
+	$report .= '- ' . __('PHP Version') . ': ' . PHP_VERSION . "\n";
+	$report .= '- ' . __('PHP OS') . ': ' . PHP_OS . "\n";
+	$report .= '- ' . __('Database') . ': ' . trim($database . ' ' . $version) . "\n";
+	$report .= '- ' . __('RRDtool Version Configured') . ': ' . get_rrdtool_version() . "+\n";
+	$report .= '- ' . __('RRDtool Version Found') . ': ' . $rrdtool_release . "\n";
+	$report .= '- ' . __('NET-SNMP Version') . ': ' . $snmp_line . "\n";
+	$report .= '- ' . __('Poller Interval') . ': ' . read_config_option('poller_interval') . "\n";
+	$report .= '- ' . __('Poller Type') . ': ' . $poller_report . "\n";
+	$report .= '- ' . __('Last Run Statistics') . ': ' . read_config_option('stats_poller') . "\n";
+	$report .= '- ' . 'memory_limit: ' . ini_get('memory_limit') . "\n";
+	$report .= '- ' . 'max_execution_time: ' . ini_get('max_execution_time') . "\n";
+	$report .= '- ' . __('System Memory') . ': ' . ($total_memory > 0 ? number_format_i18n($total_memory, 2, 1000) . ' GB' : __('N/A')) . "\n";
+	$report .= '- ' . __('RSA Fingerprint') . ': ' . $rsa_report . "\n";
+
+	form_alternate_row();
+	print "<td colspan='2'><textarea id='diag_report' style='display:none' readonly='readonly'>" . html_escape($report) . '</textarea></td>';
+	form_end_row();
+}
+
+function show_tech_environment() : void {
+	// Required PHP extensions, cross-checked against install/cli_check.php.
+	$extensions = false;
+	utility_php_verify_extensions($extensions, 'web');
+
+	html_section_header(__('Required PHP Extensions'), 2);
+
+	foreach ($extensions as $name => $extension) {
+		$loaded = !empty($extension['web']);
+
+		form_alternate_row();
+		print '<td>' . html_escape($name) . '</td>';
+		print '<td>' . tech_env_status($loaded ? DB_STATUS_SUCCESS : DB_STATUS_ERROR, $loaded ? __('Installed') : __('Missing')) . '</td>';
+		form_end_row();
+	}
+
+	// Recommended (optional) extensions such as php-snmp.
+	$optionals = false;
+	utility_php_verify_optionals($optionals, 'web');
+
+	html_section_header(__('Recommended PHP Extensions'), 2);
+
+	foreach ($optionals as $name => $optional) {
+		$loaded = !empty($optional['web']);
+
+		form_alternate_row();
+		print '<td>' . html_escape($name) . '</td>';
+		print '<td>' . tech_env_status($loaded ? DB_STATUS_SUCCESS : DB_STATUS_WARNING, $loaded ? __('Installed') : __('Not installed')) . '</td>';
+		form_end_row();
+	}
+
+	// Key php.ini values and thresholds (reuses the installer's recommendations).
+	$recommends = false;
+	utility_php_verify_recommends($recommends, 'web');
+
+	html_section_header(__('PHP Configuration'), 2);
+
+	foreach ($recommends as $recommend) {
+		if ($recommend['name'] == 'location' || $recommend['name'] == 'version') {
+			continue;
+		}
+
+		form_alternate_row();
+		print '<td>' . html_escape($recommend['name']) . '</td>';
+		print '<td>' . tech_env_status((int) $recommend['status'], __('Current: %s, Recommended: %s', $recommend['current'], $recommend['value'])) . '</td>';
+		form_end_row();
+	}
+
+	$file_uploads = (bool) ini_get('file_uploads');
+
+	form_alternate_row();
+	print '<td>file_uploads</td>';
+	print '<td>' . tech_env_status($file_uploads ? DB_STATUS_SUCCESS : DB_STATUS_ERROR, $file_uploads ? __('On') : __('Off')) . '</td>';
+	form_end_row();
+
+	// Required binaries: existence + version.
+	$binaries = [
+		'path_php_binary' => '-v',
+		'path_rrdtool'    => '--version',
+		'path_snmpget'    => '-V',
+	];
+
+	html_section_header(__('Required Binaries'), 2);
+
+	foreach ($binaries as $option => $arg) {
+		$path = read_config_option($option);
+
+		form_alternate_row();
+		print '<td>' . html_escape($option) . '</td>';
+
+		if ($path != '' && !str_contains($path, chr(0)) && file_exists($path) && function_exists('is_executable') && is_executable($path)) {
+			$out     = shell_exec(cacti_escapeshellcmd($path) . ' ' . $arg . ' 2>&1');
+			$version = ($out != '' ? trim(explode("\n", $out)[0]) : __('Unknown version'));
+
+			print '<td>' . tech_env_status(DB_STATUS_SUCCESS, $version) . '</td>';
+		} else {
+			print '<td>' . tech_env_status(DB_STATUS_ERROR, __('Not found or not executable: %s', $path)) . '</td>';
+		}
+
+		form_end_row();
+	}
+
+	// Writable directories.  cache/rra/log must be writable; scripts/resource
+	// are usually read-only so a non-writable result is only a warning.
+	$directories = [
+		CACTI_PATH_CACHE    => true,
+		CACTI_PATH_RRA      => true,
+		CACTI_PATH_LOG      => true,
+		CACTI_PATH_SCRIPTS  => false,
+		CACTI_PATH_RESOURCE => false,
+	];
+
+	html_section_header(__('Writable Directories'), 2);
+
+	foreach ($directories as $directory => $required) {
+		$writable = is_writable($directory);
+
+		if ($writable) {
+			$status = DB_STATUS_SUCCESS;
+			$text   = __('Writable');
+		} else {
+			$status = ($required ? DB_STATUS_ERROR : DB_STATUS_WARNING);
+			$text   = __('Not writable');
+		}
+
+		form_alternate_row();
+		print '<td>' . html_escape($directory) . '</td>';
+		print '<td>' . tech_env_status($status, $text) . '</td>';
+		form_end_row();
+	}
+}
+
+/**
+ * tech_env_status - render a status badge for the technical support report.
+ * $text is treated as plain text and escaped here, so callers pass raw values
+ * and must not pre-escape (doing so would double-encode).
+ */
+function tech_env_status(int $status, string $text) : string {
+	[$class, $icon] = match ($status) {
+		DB_STATUS_SUCCESS => ['deviceUp', 'fa-check-circle'],
+		DB_STATUS_ERROR   => ['deviceDown', 'fa-times-circle'],
+		default           => ['deviceRecovering', 'fa-exclamation-triangle'],
+	};
+
+	return "<span class='$class'><i class='fa $icon'></i> " . html_escape($text) . '</span>';
+}
+
+/**
+ * support_redact - mask identifying details in a display string so a support
+ * report can be shared publicly.  Display-only and deliberately conservative:
+ * it prefers to over-mask rather than leak.  Not applied to version numbers.
+ */
+function support_redact(string $value) : string {
+	if ($value === '') {
+		return $value;
+	}
+
+	// Replace this host's own node name wherever it appears (php_uname, SNMP banner, etc.).
+	$node = function_exists('php_uname') ? php_uname('n') : '';
+
+	if ($node != '' && strlen($node) > 1) {
+		$value = str_ireplace($node, '<host>', $value);
+	}
+
+	// IPv6 before IPv4 so the longer pattern wins.
+	$value = preg_replace('/\b(?:[0-9a-fA-F]{1,4}:){2,7}[0-9a-fA-F]{1,4}\b/', '<ipv6>', $value);
+	$value = preg_replace('/\b(?:\d{1,3}\.){3}\d{1,3}\b/', '<ipv4>', $value);
+
+	// FQDNs (foo.bar.example).  The alphabetic TLD requirement leaves version
+	// numbers such as 1.7.2 untouched.
+	$value = preg_replace('/\b(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}\b/', '<host>', $value);
+
+	// /home/<user>/ and /Users/<user>/ path segments.
+	$value = preg_replace('#/(?:home|Users)/[^/\s]+#', '/home/<redacted>', $value);
+
+	return $value;
+}
+
+/**
+ * support_tail_severity - read the last WARN/ERROR/SECURITY lines from a log
+ * file without loading the whole file.  Seeks to the end and reads at most
+ * $cap_bytes so a multi-gigabyte log cannot exhaust memory.
+ *
+ * @return array<int,string>
+ */
+function support_tail_severity(string $file, int $max_lines, int $cap_bytes) : array {
+	$size = filesize($file);
+
+	if ($size === false || $size == 0) {
+		return [];
+	}
+
+	$fp = fopen($file, 'rb');
+
+	if ($fp === false) {
+		return [];
+	}
+
+	$read = ($size < $cap_bytes ? $size : $cap_bytes);
+
+	if (fseek($fp, -$read, SEEK_END) !== 0) {
+		fclose($fp);
+
+		return [];
+	}
+
+	$buffer = fread($fp, $read);
+	fclose($fp);
+
+	if ($buffer === false) {
+		return [];
+	}
+
+	$all = explode("\n", $buffer);
+
+	// The byte cap can slice through the first line; drop that partial fragment,
+	// but only when the file was actually larger than the cap.
+	if ($size > $cap_bytes) {
+		array_shift($all);
+	}
+
+	$matched = [];
+
+	foreach ($all as $line) {
+		$line = rtrim($line, "\r");
+
+		if ($line === '') {
+			continue;
+		}
+
+		if (str_contains($line, 'WARN') || str_contains($line, 'ERROR') || str_contains($line, 'SECURITY')) {
+			$matched[] = $line;
+		}
+	}
+
+	if (cacti_sizeof($matched) > $max_lines) {
+		$matched = array_slice($matched, -$max_lines);
+	}
+
+	return $matched;
+}
+
+function show_tech_log() : void {
+	$redact    = (grv('redact') == 1);
+	$max_lines = 100;
+	$cap_bytes = 256 * 1024;
+
+	// Only ever the configured Cacti log is read.  The path comes from
+	// read_config_option('path_cactilog'); no request variable can influence it.
+	$logfile = read_config_option('path_cactilog');
+
+	html_section_header(__('Recent Log (WARN / ERROR / SECURITY)'), 2);
+
+	if ($logfile == '' || str_contains($logfile, chr(0)) || !file_exists($logfile) || !is_file($logfile) || !is_readable($logfile)) {
+		form_alternate_row();
+		print "<td colspan='2'>" . __('Log not available.') . '</td>';
+		form_end_row();
+
+		return;
+	}
+
+	$lines = support_tail_severity($logfile, $max_lines, $cap_bytes);
+
+	if (!cacti_sizeof($lines)) {
+		form_alternate_row();
+		print "<td colspan='2'>" . __('No recent WARN, ERROR or SECURITY log entries found.') . '</td>';
+		form_end_row();
+
+		return;
+	}
+
+	form_alternate_row();
+	print "<td colspan='2' class='left'>";
+	print "<pre style='white-space:pre-wrap;margin:0'>";
+
+	foreach ($lines as $line) {
+		if ($redact) {
+			$line = support_redact($line);
+		}
+
+		print html_escape($line) . "\n";
+	}
+
+	print '</pre></td>';
+	form_end_row();
 }
