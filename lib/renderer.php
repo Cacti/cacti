@@ -77,7 +77,7 @@ final readonly class CactiRenderer {
 			throw new InvalidArgumentException('Renderer template name is invalid');
 		}
 
-		if (str_starts_with($template, '/') || preg_match('/^[A-Za-z]:[\/\\\\]/', $template) === 1) {
+		if (str_starts_with($template, '/') || str_starts_with($template, '\\') || preg_match('/^[A-Za-z]:[\/\\\\]/', $template) === 1) {
 			throw new InvalidArgumentException('Renderer template name must be relative');
 		}
 

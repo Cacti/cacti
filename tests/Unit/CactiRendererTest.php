@@ -78,6 +78,12 @@ it('rejects absolute template names', function () {
 	$renderer->render('/tmp/hello.php');
 })->throws(InvalidArgumentException::class);
 
+it('rejects UNC-style template names with a leading backslash', function () {
+	$renderer = new CactiRenderer(cacti_renderer_fixture_dir());
+
+	$renderer->render('\\\\server\\share\\hello.php');
+})->throws(InvalidArgumentException::class);
+
 it('rejects template traversal outside the template path', function () {
 	$dir      = cacti_renderer_fixture_dir();
 	$filename = sprintf('cacti-renderer-outside-%d-%s.php', getmypid(), bin2hex(random_bytes(8)));
