@@ -44,7 +44,9 @@ function process_tables_define_probe(): void {
 
 	$src = file_get_contents(dirname(__DIR__, 2) . '/support.php');
 
-	preg_match('/function support_process_tables\(\) : array \{.*?^\}/sm', $src, $m);
+	if (preg_match('/function support_process_tables\(\) : array \{.*?^\}/sm', $src, $m) !== 1) {
+		throw new RuntimeException('could not locate support_process_tables() in support.php');
+	}
 
 	$body = $m[0];
 
