@@ -750,6 +750,16 @@ $settings['general'] = [
 		'size'          => '100',
 		'max_length'    => '255',
 	],
+	'htmx_enabled' => [
+		'friendly_name' => __('Enable htmx for in-place filter updates'),
+		'description'   => __('When enabled, the htmx loader is included so pages that opt in can refresh their filter results without a full page reload. Disable only if plugins misbehave.'),
+		'method'        => 'drop_array',
+		'default'       => 'on',
+		'array'         => [
+			'on'  => __('On (default)'),
+			'off' => __('Off'),
+		],
+	],
 	'remote_agent_header' => [
 		'friendly_name' => __('Remote Agent'),
 		'description'   => __('When using multiple Data Collectors, there are the Settings for Communicating between Data Collectors'),

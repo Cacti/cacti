@@ -1,0 +1,55 @@
+#
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# |                                                                         |
+# | This program is free software; you can redistribute it and/or           |
+# | modify it under the terms of the GNU General Public License             |
+# | as published by the Free Software Foundation; either version 2          |
+# | of the License, or (at your option) any later version.                  |
+# +-------------------------------------------------------------------------+
+# | Cacti: The Complete RRDtool-based Graphing Solution                     |
+# +-------------------------------------------------------------------------+
+# | http://www.cacti.net/                                                   |
+# +-------------------------------------------------------------------------+
+#
+
+services:
+  mariadb:
+    image: mariadb:10.11
+    environment:
+      MYSQL_ROOT_PASSWORD: cactiroot
+      MYSQL_DATABASE: cacti
+      MYSQL_USER: cactiuser
+      MYSQL_PASSWORD: cactiuser
+    command: >
+      --max-allowed-packet=500M
+      --innodb-file-format=Barracuda
+      --innodb-large-prefix=1
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-pcactiroot"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    tmpfs:
+      - /var/lib/mysql
+
+  cacti:
+    build:
+      context: ../..
+      dockerfile: tests/e2e/Dockerfile
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      CACTI_DB_HOST: mariadb
+      CACTI_DB_NAME: cacti
+      CACTI_DB_USER: cactiuser
+      CACTI_DB_PASS: cactiuser
+      CACTI_DB_ROOT_PASS: cactiroot
+    ports:
+      - "8080:80"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1/"]
+      interval: 5s
+      timeout: 3s
+      retries: 30

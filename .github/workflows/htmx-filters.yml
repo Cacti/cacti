@@ -1,0 +1,189 @@
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# |                                                                         |
+# | This program is free software; you can redistribute it and/or           |
+# | modify it under the terms of the GNU General Public License             |
+# | as published by the Free Software Foundation; either version 2          |
+# | of the License, or (at your option) any later version.                  |
+# +-------------------------------------------------------------------------+
+# | Cacti: The Complete RRDtool-based Graphing Solution                     |
+# +-------------------------------------------------------------------------+
+# | http://www.cacti.net/                                                   |
+# +-------------------------------------------------------------------------+
+
+name: htmx filters
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'lib/htmx.php'
+      - 'include/global.php'
+      - 'include/js/htmx.min.js'
+      - 'include/js/htmx.min.js.version'
+      - 'lib/html.php'
+      - 'include/global_settings.php'
+      - 'tests/Unit/HtmxTest.php'
+      - 'tests/integration/HtmxLoaderTest.php'
+      - 'tests/integration/fixtures/htmx_fixture.php'
+      - 'tests/e2e/tests/htmx-loader.spec.ts'
+      - 'tests/e2e/tests/login-smoke.spec.ts'
+      - 'tests/e2e/Dockerfile'
+      - 'tests/e2e/docker-compose.yml'
+      - 'tests/e2e/entrypoint.sh'
+      - 'tests/e2e/playwright.config.ts'
+      - 'tests/e2e/package.json'
+      - 'tests/e2e/package-lock.json'
+      - '.github/workflows/htmx-filters.yml'
+  pull_request:
+    branches: [develop]
+    paths:
+      - 'lib/htmx.php'
+      - 'include/global.php'
+      - 'include/js/htmx.min.js'
+      - 'include/js/htmx.min.js.version'
+      - 'lib/html.php'
+      - 'include/global_settings.php'
+      - 'tests/Unit/HtmxTest.php'
+      - 'tests/integration/HtmxLoaderTest.php'
+      - 'tests/integration/fixtures/htmx_fixture.php'
+      - 'tests/e2e/tests/htmx-loader.spec.ts'
+      - 'tests/e2e/tests/login-smoke.spec.ts'
+      - 'tests/e2e/Dockerfile'
+      - 'tests/e2e/docker-compose.yml'
+      - 'tests/e2e/entrypoint.sh'
+      - 'tests/e2e/playwright.config.ts'
+      - 'tests/e2e/package.json'
+      - 'tests/e2e/package-lock.json'
+      - '.github/workflows/htmx-filters.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: htmx-filters-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit:
+    name: Pest unit (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2', '8.3', '8.4']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@2.31.1
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: intl, gd, ldap, gmp, xml, mbstring, pdo_mysql, curl, json
+          tools: composer:v2
+          coverage: none
+
+      - name: Cache Composer packages
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+        with:
+          path: include/vendor
+          key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-${{ matrix.php }}-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run Pest unit suite
+        run: include/vendor/bin/pest --testsuite=Unit --filter=HtmxTest
+
+  integration:
+    name: Pest integration (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.4']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@2.31.1
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: intl, gd, ldap, gmp, xml, mbstring, pdo_mysql, curl, json
+          tools: composer:v2
+          coverage: none
+
+      - name: Cache Composer packages
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+        with:
+          path: include/vendor
+          key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-${{ matrix.php }}-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run Pest integration suite
+        run: include/vendor/bin/pest --testsuite=Integration --filter=HtmxLoaderTest
+
+  e2e:
+    name: Playwright e2e
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup Node
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6
+        with:
+          node-version: '20'
+
+      - name: Build and start the Cacti stack
+        working-directory: tests/e2e
+        run: |
+          docker compose up -d --build
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:8080/ >/dev/null 2>&1; then
+              echo "cacti is reachable"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "cacti never became reachable; dumping compose logs"
+          docker compose logs --no-color
+          exit 1
+
+      - name: Install Playwright
+        working-directory: tests/e2e
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Run Playwright specs
+        working-directory: tests/e2e
+        env:
+          CACTI_BASE_URL: http://127.0.0.1:8080
+        run: npx playwright test tests/htmx-loader.spec.ts tests/login-smoke.spec.ts
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874
+        with:
+          name: playwright-report
+          path: tests/e2e/playwright-report
+          retention-days: 7
+
+      - name: Dump compose logs on failure
+        if: failure()
+        working-directory: tests/e2e
+        run: docker compose logs --no-color
+
+      - name: Tear down compose stack
+        if: always()
+        working-directory: tests/e2e
+        run: docker compose down -v

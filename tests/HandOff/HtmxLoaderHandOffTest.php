@@ -48,34 +48,34 @@ beforeEach(function () {
 	);
 });
 
-test('htmx_script_tag emits relative include/js/htmx.min.js src under root url_path', function () {
+test('htmx_script_tag prefixes the src with CACTI_PATH_URL', function () {
 	global $config;
 
 	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
-	$config['url_path']                  = '/';
 
 	$tag = htmx_script_tag();
 	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.min.js');
 
-	expect($tag)->toContain("src='include/js/htmx.min.js?v=" . $md5 . "'");
+	expect($tag)->toContain("src='" . CACTI_PATH_URL . "include/js/htmx.min.js?v=" . $md5 . "'");
 });
 
-test('htmx_script_tag emits relative include/js/htmx.min.js src under subdir url_path', function () {
+test('htmx_script_tag src carries the deployment url root so subdir installs resolve', function () {
 	global $config;
 
 	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
-	$config['url_path']                  = '/cacti/';
 
 	$tag = htmx_script_tag();
 	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.min.js');
 
 	/*
-	 * The loader emits a path relative to the rendered page so the browser
-	 * resolves it against the document's base URL. This keeps the same tag
-	 * valid for both root and subdirectory deployments without the loader
-	 * having to know the deployment prefix.
+	 * The loader builds the src from CACTI_PATH_URL (the deployment's URL root),
+	 * matching get_md5_include_js() in lib/functions.php. This keeps the asset
+	 * resolvable from plugin pages served below the Cacti root, where a
+	 * document-relative src would 404. CACTI_PATH_URL is frozen at bootstrap
+	 * from $config['url_path'], so the tag reflects the install prefix, not a
+	 * per-request value.
 	 */
-	expect($tag)->toContain("src='include/js/htmx.min.js?v=" . $md5 . "'");
+	expect($tag)->toContain("src='" . CACTI_PATH_URL . "include/js/htmx.min.js?v=" . $md5 . "'");
 });
 
 test('htmx.min.js.version content matches version pinned by the integrity attribute', function () {
@@ -163,11 +163,11 @@ test('include/global.php requires lib/htmx.php before any caller can invoke htmx
 		->and($htmx_pos)->toBeInt();
 
 	/*
-	 * htmx.php must be loaded immediately after html.php so every code path
-	 * that html.php exposes (including the page render that calls
-	 * htmx_script_tag()) sees the loader already defined.
+	 * htmx.php is a dependency of html.php: html.php's render path calls
+	 * htmx_script_tag(), while htmx.php itself pulls nothing from html.php. The
+	 * dependency loads first, so htmx.php must be required before html.php.
 	 */
-	expect($htmx_pos)->toBeGreaterThan($html_pos);
+	expect($htmx_pos)->toBeLessThan($html_pos);
 
 	$dispatch_pos = strpos($global, '$filename = get_current_page();');
 
