@@ -267,12 +267,12 @@ jobs:
     - name: Check install code for validity
       run: |
         cd ${{ github.workspace }}
-        sudo php -q tests/tools/check_install_code.php
+        sudo "$(which php)" -q tests/tools/check_install_code.php
 
     - name: Check All Resource XML File Syntax
       run: |
         cd ${{ github.workspace }}
-        sudo php tests/tools/check_xml_syntax.php
+        sudo "$(which php)" tests/tools/check_xml_syntax.php
 
     - name: Check Poller Script Syntax after Package Import
       run: 
@@ -286,7 +286,7 @@ jobs:
     - name: Install Cacti through the CLI
       run: |
         cd ${{ github.workspace }}
-        sudo php cli/install_cacti.php --accept-eula --install --force
+        sudo "$(which php)" cli/install_cacti.php --accept-eula --install --force
 
     - name: Install Cacti Packages through CLI
       run: |
@@ -296,7 +296,7 @@ jobs:
     - name: Check All Resource XML File Syntax Post Package Install
       run: |
         cd ${{ github.workspace }}
-        sudo php tests/tools/check_xml_syntax.php
+        sudo "$(which php)" tests/tools/check_xml_syntax.php
     
     - name: Check all perl scripts for syntax errors
       run: |
@@ -306,23 +306,23 @@ jobs:
     - name: Audit the Installation Schema
       run: |
         cd ${{ github.workspace }}
-        sudo php cli/audit_database.php --report
+        sudo "$(which php)" cli/audit_database.php --report
 
     - name: Install and Enable Plugins
       run: |
         cd ${{ github.workspace }}
-        sudo php cli/plugin_manage.php --plugin=thold --plugin=intropage --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
+        sudo "$(which php)" cli/plugin_manage.php --plugin=thold --plugin=intropage --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
 
     - name: Add Device for Moc Test, Check CLI scripts for Errors
       run: |
         cd ${{ github.workspace }}
-        sudo php cli/add_device.php --description=test_device --ip=127.0.0.1 --template=25
-        sudo php cli/rebuild_poller_cache.php --debug
-        sudo php cli/poller_reindex_hosts.php --id=all --debug
+        sudo "$(which php)" cli/add_device.php --description=test_device --ip=127.0.0.1 --template=25
+        sudo "$(which php)" cli/rebuild_poller_cache.php --debug
+        sudo "$(which php)" cli/poller_reindex_hosts.php --id=all --debug
 
     - name: Run Cacti poller
       run: |
-        sudo php ${{ github.workspace }}/poller.php --poller=1 --force --debug
+        sudo "$(which php)" ${{ github.workspace }}/poller.php --poller=1 --force --debug
         if ! $(grep -q "SYSTEM STATS" ${{ github.workspace }}/log/cacti.log); then exit 1; fi
 
     - name: Check All Pages Using Recursive wget
