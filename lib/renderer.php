@@ -43,7 +43,7 @@ final readonly class CactiRenderer {
 		// absolute path. Trim both separators so the test holds regardless of the
 		// OS running it, and refuse a POSIX root ("/" -> "") or a Windows drive
 		// root ("C:\" -> "C:") so the check stays fail-closed on either platform.
-		$trimmed = rtrim($real_path, "/\\");
+		$trimmed = rtrim($real_path, '/\\');
 
 		if ($trimmed === '' || preg_match('/^[A-Za-z]:$/', $trimmed) === 1) {
 			throw new InvalidArgumentException('Renderer template path does not exist');
