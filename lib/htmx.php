@@ -35,7 +35,12 @@
  */
 function cacti_htmx_enabled(): bool {
 	if (!function_exists('read_config_option')) {
+		// @codeCoverageIgnoreStart
+		// Reached only before include/global.php declares read_config_option
+		// (early CLI bootstrap). Every test loads global.php, which declares it
+		// process-wide, so this guard cannot be exercised under the test suite.
 		return false;
+		// @codeCoverageIgnoreEnd
 	}
 
 	$value = read_config_option('htmx_enabled');

@@ -112,6 +112,26 @@ test('htmx_script_tag returns empty string when disabled', function () {
 	expect(htmx_script_tag())->toBe('');
 });
 
+test('htmx_script_tag returns empty string when the vendored file is missing', function () {
+	global $config;
+
+	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
+
+	$path   = CACTI_PATH_BASE . '/include/js/htmx.min.js';
+	$backup = $path . '.bak.' . getmypid();
+
+	$moved = rename($path, $backup);
+	expect($moved)->toBeTrue();
+
+	try {
+		expect(htmx_script_tag())->toBe('');
+	} finally {
+		if ($moved && file_exists($backup)) {
+			expect(rename($backup, $path))->toBeTrue();
+		}
+	}
+});
+
 test('htmx_script_tag carries src, integrity, and crossorigin when enabled', function () {
 	global $config;
 
