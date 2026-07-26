@@ -45,7 +45,9 @@ function lockout_csrf_define_probe(): void {
 
 	$src = file_get_contents(dirname(__DIR__, 2) . '/support.php');
 
-	preg_match('/function support_lockout\(\) : void \{.*?^\}/sm', $src, $m);
+	if (preg_match('/function support_lockout\(\) : void \{.*?^\}/sm', $src, $m) !== 1) {
+		throw new RuntimeException('could not locate support_lockout() in support.php');
+	}
 
 	$body = $m[0];
 	$body = preg_replace('/^\s*header\([^;]*\);\s*$/m', '', $body);

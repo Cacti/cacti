@@ -21,7 +21,8 @@
  * Runs inside the Cacti web container. Verifies the maintenance-lockout CSRF/POST
  * guard (support.php, #7352) over real HTTP: a GET to action=lockout, and a POST
  * without a valid __csrf_magic token, must both be refused without changing
- * cacti_lockout_status. Only a POST carrying the CSRF token may toggle it.
+ * cacti_lockout_status. The probe asserts only these refusal cases; it does not
+ * perform a real toggle, so it never leaves the system in a locked-out state.
  *
  * Usage (inside the container):
  *   BASE_URL=http://localhost/cacti php support_lockout_probe.php
