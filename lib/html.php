@@ -1353,7 +1353,24 @@ function htmle(mixed $string) : string {
  * @return string The escaped attribute value to be returned.
  */
 function html_escape_attr(mixed $string = '') : string {
-	return html_escape($string);
+	if ($string === null || $string === '') {
+		return '';
+	}
+
+	$charset = ini_get('default_charset');
+
+	if ($charset == '') {
+		$charset = 'UTF-8';
+	}
+
+	// double_encode is enabled here (unlike html_escape) so that an
+	// already-encoded entity in the input cannot survive into an attribute
+	// value and be decoded back into a quote by the HTML parser.
+	$string = htmlspecialchars((string) $string, ENT_QUOTES | ENT_HTML5, $charset, true);
+
+	// Grave accent can lead to xss; htmlspecialchars leaves it untouched, so
+	// replace it after escaping to avoid double-encoding the entity itself.
+	return str_replace('`', '&#96;', $string);
 }
 
 /**
