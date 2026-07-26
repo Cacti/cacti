@@ -106,7 +106,9 @@ readonly class CactiFilesystem {
 		// file_get_contents() throws a ValueError on a null byte in PHP 8+,
 		// which would escape this method's RuntimeException contract.
 		if (str_contains($filename, "\0")) {
-			throw new RuntimeException("Unable to read file $filename: path contains a null byte");
+			// Do not interpolate the raw path here: the null byte would truncate
+			// or garble the message in logs.
+			throw new RuntimeException('Unable to read file: path contains a null byte');
 		}
 
 		$contents = @file_get_contents($filename);

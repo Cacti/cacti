@@ -47,7 +47,7 @@ it('drives the static filesystem API against a real temp tree', function () {
 	expect(CactiFilesystem::exists($dir))->toBeFalse();
 });
 
-it('collapses a directory-traversal path back inside the tree', function () {
+it('normalizes redundant .. segments lexically', function () {
 	$dir       = sys_get_temp_dir() . '/cacti-fs-trav-' . bin2hex(random_bytes(4));
 	$file      = CactiFilesystem::join($dir, 'nested', 'settings.txt');
 	$traversal = CactiFilesystem::join($dir, 'nested', 'sub', '..', '..', 'nested', 'settings.txt');
@@ -56,7 +56,9 @@ it('collapses a directory-traversal path back inside the tree', function () {
 		CactiFilesystem::mkdir(dirname($file));
 		CactiFilesystem::dumpFile($file, 'guarded');
 
-		// canonicalize() resolves the ../.. escape attempt back to the real file.
+		// canonicalize() normalizes the .. segments lexically. It is not a
+		// containment boundary: a path with leading ../.. would resolve outside
+		// the tree, so callers must not rely on it to sandbox paths.
 		expect(CactiFilesystem::canonicalize($traversal))->toBe($file)
 			->and(CactiFilesystem::readFile(CactiFilesystem::canonicalize($traversal)))->toBe('guarded');
 	} finally {
