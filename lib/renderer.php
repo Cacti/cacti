@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-final class CactiRenderer {
+final readonly class CactiRenderer {
 	private string $template_path;
 
 	public function __construct(string $template_path) {
