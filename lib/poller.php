@@ -158,15 +158,19 @@ function exec_background($filename, $args = '', $redirect_args = '') {
 				pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args . ' ' . $redirect_args, 'r'));
 			}
 		} elseif ($redirect_args == '') {
-			exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
+			$safe_filename = cacti_escapeshellarg($filename);
+			exec($safe_filename . ' ' . $args . ' > /dev/null 2>&1 &');
 		} else {
-			exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
+			$safe_filename = cacti_escapeshellarg($filename);
+			exec($safe_filename . ' ' . $args . ' ' . $redirect_args . ' &');
 		}
 	} elseif (file_exists_2gb($filename)) {
 		if ($redirect_args == '') {
-			exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
+			$safe_filename = cacti_escapeshellarg($filename);
+			exec($safe_filename . ' ' . $args . ' > /dev/null 2>&1 &');
 		} else {
-			exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
+			$safe_filename = cacti_escapeshellarg($filename);
+			exec($safe_filename . ' ' . $args . ' ' . $redirect_args . ' &');
 		}
 	}
 }
@@ -338,112 +342,115 @@ function update_reindex_cache($host_id, $data_query_id) {
 
 	if (cacti_sizeof($data_query)) {
 		switch ($data_query['reindex_method']) {
-		case DATA_QUERY_AUTOINDEX_NONE:
-			break;
-		case DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME:
-			/* the uptime backwards method requires snmp, so make sure snmp is actually enabled
-			 * on this device first */
-			if ($host['snmp_version'] > 0) {
-				if (isset($data_query_xml['oid_uptime'])) {
-					$oid_uptime = $data_query_xml['oid_uptime'];
-				} elseif (isset($data_query_xml['uptime_oid'])) {
-					$oid_uptime = $data_query_xml['uptime_oid'];
-				} else {
-					$oid_uptime = '.1.3.6.1.2.1.1.3.0';
-				}
-
-				$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
-					$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
-					$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
-					$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
-
-				if ($session !== false) {
-					if ($oid_uptime == '.1.3.6.1.2.1.1.3.0') {
-						$checks = array(
-							'.1.3.6.1.6.3.10.2.1.3.0',
-							'.1.3.6.1.2.1.1.3.0'
-						);
-
-						foreach($checks as $oid_uptime) {
-							$assert_value = cacti_snmp_session_get($session, $oid_uptime);
-
-							if (is_numeric($assert_value)) {
-								if ($oid_uptime == '.1.3.6.1.6.3.10.2.1.3.0') {
-									$assert_value *= 100;
-								}
-
-								break;
-							}
-						}
-
-						$oid_uptime = '.1.3.6.1.2.1.1.3.0';
+			case DATA_QUERY_AUTOINDEX_NONE:
+				break;
+			case DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME:
+				/* the uptime backwards method requires snmp, so make sure snmp is actually enabled
+				 * on this device first */
+				if ($host['snmp_version'] > 0) {
+					if (isset($data_query_xml['oid_uptime'])) {
+						$oid_uptime = $data_query_xml['oid_uptime'];
+					} elseif (isset($data_query_xml['uptime_oid'])) {
+						$oid_uptime = $data_query_xml['uptime_oid'];
 					} else {
-						$assert_value = cacti_snmp_session_get($session, $oid_uptime);
+						$oid_uptime = '.1.3.6.1.2.1.1.3.0';
 					}
+
+					$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
+						$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
+						$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
+						$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
+
+					if ($session !== false) {
+						if ($oid_uptime == '.1.3.6.1.2.1.1.3.0') {
+							$checks = [
+								'.1.3.6.1.6.3.10.2.1.3.0',
+								'.1.3.6.1.2.1.1.3.0'
+							];
+
+							foreach ($checks as $oid_uptime) {
+								$assert_value = cacti_snmp_session_get($session, $oid_uptime);
+
+								if (is_numeric($assert_value)) {
+									if ($oid_uptime == '.1.3.6.1.6.3.10.2.1.3.0') {
+										$assert_value *= 100;
+									}
+
+									break;
+								}
+							}
+
+							$oid_uptime = '.1.3.6.1.2.1.1.3.0';
+						} else {
+							$assert_value = cacti_snmp_session_get($session, $oid_uptime);
+						}
+					}
+
+					$session->close();
+
+					$recache_stack[] = "('$host_id', '$data_query_id'," . POLLER_ACTION_SNMP . ", '<', '$assert_value', '$oid_uptime', 1)";
 				}
 
-				$session->close();
+				break;
+			case DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE:
+				/* this method requires that some command/oid can be used to determine the
+				 * current number of indexes in the data query
+				 * pay ATTENTION to quoting!
+				 * the script parameters are usually enclosed in single tics: '
+				 * so we have to enclose the whole list of parameters in double tics: "
+				 * */
 
-				$recache_stack[] = "('$host_id', '$data_query_id'," .  POLLER_ACTION_SNMP . ", '<', '$assert_value', '$oid_uptime', 1)";
-			}
-
-			break;
-		case DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE:
-			/* this method requires that some command/oid can be used to determine the
-			 * current number of indexes in the data query
-			 * pay ATTENTION to quoting!
-			 * the script parameters are usually enclosed in single tics: '
-			 * so we have to enclose the whole list of parameters in double tics: "
-			 * */
-
-			/* the assert_value counts the number of distinct indexes currently available in host_snmp_cache
-			 * we do NOT make use of <oid_num_indexes> or the like!
-			 * this works, even if no <oid_num_indexes> was given
-			 */
-			$assert_value = cacti_sizeof(db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . ' snmp_index
+				/* the assert_value counts the number of distinct indexes currently available in host_snmp_cache
+				 * we do NOT make use of <oid_num_indexes> or the like!
+				 * this works, even if no <oid_num_indexes> was given
+				 */
+				$assert_value = cacti_sizeof(db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . ' snmp_index
 				FROM host_snmp_cache
 				WHERE host_id = ?
 				AND snmp_query_id = ?
 				AND snmp_index != ""',
 				array($host_id, $data_query_id)));
 
-			/* now, we have to build the (list of) commands that are later used on a recache event
-			 * the result of those commands will be compared to the assert_value we have just computed
-			 * on a comparison failure, a reindex event will be generated
-			 */
-			switch ($data_query_type) {
-				case DATA_INPUT_TYPE_SNMP_QUERY:
-					if (isset($data_query_xml['oid_num_indexes'])) { /* we have a specific OID for counting indexes */
-						$recache_stack[] = "($host_id, $data_query_id," .  POLLER_ACTION_SNMP . ", '=', " . db_qstr($assert_value) . ", " . db_qstr($data_query_xml['oid_num_indexes']) . ", 1)";
-					} else { /* count all indexes found */
-						$recache_stack[] = "($host_id, $data_query_id, " .  POLLER_ACTION_SNMP_COUNT . ", '=', " . db_qstr($assert_value) . ", " . db_qstr($data_query_xml['oid_index']) . ", 1)";
-					}
-					break;
-				case DATA_INPUT_TYPE_SCRIPT_QUERY:
-					if (isset($data_query_xml['arg_num_indexes'])) { /* we have a specific request for counting indexes */
-						/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
-						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT . ", '=', " . db_qstr($assert_value) . ", " . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_num_indexes'], $data_query_xml['script_path'], $host_id)) . ", 1)";
-					} else { /* count all indexes found */
-						/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
-						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_COUNT . ", '=', " . db_qstr($assert_value) . ", " . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_index'], $data_query_xml['script_path'], $host_id)) . ", 1)";
-					}
-					break;
-				case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
-					if (isset($data_query_xml['arg_num_indexes'])) { /* we have a specific request for counting indexes */
-						/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
-						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP . ", '=', " . db_qstr($assert_value) . ", " . db_qstr(get_script_query_path($data_query_xml['script_function'] . ' ' . (isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_num_indexes'], $data_query_xml['script_path'], $host_id)) . ", 1)";
-					} else { /* count all indexes found */
-						# TODO: push the correct assert value
-						/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
-						#$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', " . db_qstr($assert_value) . ", " . db_qstr(get_script_query_path($data_query_xml['script_function'] . ' ' . (isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_index'], $data_query_xml['script_path'], $host_id)) . ", 1)";
-						# omit the assert value until we are able to run an 'index' command through script server
-					}
-					break;
-			}
+				/* now, we have to build the (list of) commands that are later used on a recache event
+				 * the result of those commands will be compared to the assert_value we have just computed
+				 * on a comparison failure, a reindex event will be generated
+				 */
+				switch ($data_query_type) {
+					case DATA_INPUT_TYPE_SNMP_QUERY:
+						if (isset($data_query_xml['oid_num_indexes'])) { // we have a specific OID for counting indexes
+							$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SNMP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr($data_query_xml['oid_num_indexes']) . ', 1)';
+						} else { // count all indexes found
+							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SNMP_COUNT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr($data_query_xml['oid_index']) . ', 1)';
+						}
 
-			break;
-		case DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION:
-			$primary_indexes = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' snmp_index, oid, field_value
+						break;
+					case DATA_INPUT_TYPE_SCRIPT_QUERY:
+						if (isset($data_query_xml['arg_num_indexes'])) { // we have a specific request for counting indexes
+							// escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string?
+							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ' : '') . $data_query_xml['arg_num_indexes'], $data_query_xml['script_path'], $host_id)) . ', 1)';
+						} else { // count all indexes found
+							// escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string?
+							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_COUNT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ' : '') . $data_query_xml['arg_index'], $data_query_xml['script_path'], $host_id)) . ', 1)';
+						}
+
+						break;
+					case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
+						if (isset($data_query_xml['arg_num_indexes'])) { // we have a specific request for counting indexes
+							// escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string?
+							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path($data_query_xml['script_function'] . ' ' . (isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ' : '') . $data_query_xml['arg_num_indexes'], $data_query_xml['script_path'], $host_id)) . ', 1)';
+						} else { // count all indexes found
+							// TODO: push the correct assert value
+							// escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string?
+							// $recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', " . db_qstr($assert_value) . ", " . db_qstr(get_script_query_path($data_query_xml['script_function'] . ' ' . (isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_index'], $data_query_xml['script_path'], $host_id)) . ", 1)";
+							// omit the assert value until we are able to run an 'index' command through script server
+						}
+
+						break;
+				}
+
+				break;
+			case DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION:
+				$primary_indexes = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' snmp_index, oid, field_value
 				FROM host_snmp_cache
 				WHERE host_id = ?
 				AND snmp_query_id = ?
@@ -454,13 +461,13 @@ function update_reindex_cache($host_id, $data_query_id) {
 				foreach ($primary_indexes as $index) {
 					$assert_value = $index['field_value'];
 
-					if ($data_query_type == DATA_INPUT_TYPE_SNMP_QUERY) {
-						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SNMP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(($data_query_xml['fields'][$data_query['sort_field']]['source'] == 'index') ? $data_query_xml['oid_index'] . '.' . $index['snmp_index']:$data_query_xml['fields'][$data_query['sort_field']]['oid'] . '.' . $index['snmp_index']) . ", 1)";
-					} elseif ($data_query_type == DATA_INPUT_TYPE_SCRIPT_QUERY) {
-						$recache_stack[] = '(' . $host_id . ', ' . $data_query_id . ', ' . POLLER_ACTION_SCRIPT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_get'] . ' ' . $data_query_xml['fields'][$data_query['sort_field']]['query_name'] . ' "' . $index['snmp_index'] . '"', $data_query_xml['script_path'], $host_id)) . ", 1)";
+						if ($data_query_type == DATA_INPUT_TYPE_SNMP_QUERY) {
+							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SNMP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(($data_query_xml['fields'][$data_query['sort_field']]['source'] == 'index') ? $data_query_xml['oid_index'] . '.' . $index['snmp_index'] : $data_query_xml['fields'][$data_query['sort_field']]['oid'] . '.' . $index['snmp_index']) . ', 1)';
+						} elseif ($data_query_type == DATA_INPUT_TYPE_SCRIPT_QUERY) {
+							$recache_stack[] = '(' . $host_id . ', ' . $data_query_id . ', ' . POLLER_ACTION_SCRIPT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ' : '') . $data_query_xml['arg_get'] . ' ' . $data_query_xml['fields'][$data_query['sort_field']]['query_name'] . ' "' . $index['snmp_index'] . '"', $data_query_xml['script_path'], $host_id)) . ', 1)';
+						}
 					}
 				}
-			}
 
 			break;
 		}
@@ -885,7 +892,9 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 function update_resource_cache($poller_id = 1) {
 	global $config, $remote_db_cnn_id;
 
-	if ($config['cacti_server_os'] == 'win32') return;
+	if ($config['cacti_server_os'] == 'win32') {
+		return;
+	}
 
 	if ($poller_id == 1) {
 		$conn = false;
@@ -940,7 +949,7 @@ function update_resource_cache($poller_id = 1) {
 					cache_in_path($path['path'], $type, $path['recursive']);
 				}
 			} else {
-				cacti_log("ERROR: Unable to read the " . $type . " path '" . $path['path'] . "'", false, 'REPLICATE');
+				cacti_log('ERROR: Unable to read the ' . $type . " path '" . $path['path'] . "'", false, 'REPLICATE');
 			}
 		}
 
@@ -1041,7 +1050,7 @@ function update_resource_cache($poller_id = 1) {
 			if (is_writable($path['path'])) {
 				resource_cache_out($type, $path);
 			} else {
-				cacti_log("FATAL: Unable to write to the " . $type . " path '" . $path['path'] . "'", false, 'REPLICATE');
+				cacti_log('FATAL: Unable to write to the ' . $type . " path '" . $path['path'] . "'", false, 'REPLICATE');
 			}
 		}
 	}
@@ -1273,9 +1282,9 @@ function resource_cache_out($type, $path) {
 						// If for some reason, the attributes are empty, assume 0644
 						$attributes = empty($e['attributes']) ? 33188 : $e['attributes'];
 
-						$extension = substr(strrchr($e['path'], "."), 1);
-						$exit = -1;
-						$contents = base64_decode(db_fetch_cell_prepared('SELECT contents
+						$extension = substr(strrchr($e['path'], '.'), 1);
+						$exit      = -1;
+						$contents  = base64_decode(db_fetch_cell_prepared('SELECT contents
 							FROM poller_resource_cache
 							WHERE id = ?',
 							array($e['id']), '', true, $remote_db_cnn_id));

@@ -132,11 +132,11 @@ function form_save() {
 
 		$save3['t_rrd_maximum']         = form_input_validate((isset_request_var('t_rrd_maximum') ? get_nfilter_request_var('t_rrd_maximum') : ''), 't_rrd_maximum', '', true, 3);
 
-		$save3['rrd_maximum']           = form_input_validate(get_nfilter_request_var('rrd_maximum'), 'rrd_maximum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U|\|query_ifSpeed\|$', (isset_request_var('t_rrd_maximum') ? true : false), 3);
+		$save3['rrd_maximum']           = form_input_validate(get_nfilter_request_var('rrd_maximum'), 'rrd_maximum', '^((-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U|\|query_ifSpeed\|)$', (isset_request_var('t_rrd_maximum') ? true : false), 3);
 
 		$save3['t_rrd_minimum']         = form_input_validate((isset_request_var('t_rrd_minimum') ? get_nfilter_request_var('t_rrd_minimum') : ''), 't_rrd_minimum', '', true, 3);
 
-		$save3['rrd_minimum']           = form_input_validate(get_nfilter_request_var('rrd_minimum'), 'rrd_minimum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', (isset_request_var('t_rrd_minimum') ? true : false), 3);
+		$save3['rrd_minimum']           = form_input_validate(get_nfilter_request_var('rrd_minimum'), 'rrd_minimum', '^((-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U)$', (isset_request_var('t_rrd_minimum') ? true : false), 3);
 
 		$save3['rrd_heartbeat']         = $rrd_heartbeat;
 
@@ -485,8 +485,8 @@ function form_actions() {
 					$available_profiles = db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name');
 					form_dropdown('data_source_profile_id',$available_profiles, 'name', 'id', '', '', '');
 
-			print "</p>
-				<p>" . __('NOTE: This change only will affect future Data Sources and does not alter existing Data Sources.') . "</p>
+			print '</p>
+				<p>' . __('NOTE: This change only will affect future Data Sources and does not alter existing Data Sources.') . "</p>
 				</td>
 			</tr>\n";
 
@@ -565,7 +565,9 @@ function template_rrd_add() {
 			$i++;
 			$dsname = 'ds (' . $i . ')';
 
-			if ($i > 100) break;
+			if ($i > 100) {
+				break;
+			}
 		}
 	}
 
@@ -645,17 +647,19 @@ function template_edit() {
 				<td class='textInfo right' style='vertical-align:top;'>
 					<?php
 						$data_input_id = 0;
-						if (!empty($template_data['data_input_id'])) {
-							$data_input_id = get_nonsystem_data_input($template_data['data_input_id']);
-							if (!isset($data_input_id) || $data_input_id == NULL) {
-								$data_input_id = 0;
-							}
-						}
 
-						if ($data_input_id > 0) {
-							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_input.php?action=edit&id=' . $data_input_id);?>'><?php print __('Edit Data Input Method.');?></a><br><?php
-						}
-					?>
+		if (!empty($template_data['data_input_id'])) {
+			$data_input_id = get_nonsystem_data_input($template_data['data_input_id']);
+
+			if (!isset($data_input_id) || $data_input_id == null) {
+				$data_input_id = 0;
+			}
+		}
+
+		if ($data_input_id > 0) {
+			?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_input.php?action=edit&id=' . $data_input_id); ?>'><?php print __('Edit Data Input Method.'); ?></a><br><?php
+		}
+		?>
 				</td>
 			</tr>
 		</table>
@@ -745,7 +749,7 @@ function template_edit() {
 			print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
 
 			foreach ($template_data_rrds as $template_data_rrd) {
-				print "<li class='subTab'><a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . html_escape('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i+1) . ": " . html_escape($template_data_rrd['data_source_name']) . "</a>" . ($template_data['data_sources'] == 0 ? "<a class='pic deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a>":"<a class='deleteMarkerDisabled fa fa-times' href='#' title='" . __esc('Data Templates in use can not be modified') . "'></a>") . "</li>\n";
+				print "<li class='subTab'><a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . html_escape('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i + 1) . ': ' . html_escape($template_data_rrd['data_source_name']) . '</a>' . ($template_data['data_sources'] == 0 ? "<a class='pic deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a>" : "<a class='deleteMarkerDisabled fa fa-times' href='#' title='" . __esc('Data Templates in use can not be modified') . "'></a>") . "</li>\n";
 
 				$i++;
 			}
@@ -909,7 +913,7 @@ function template_edit() {
 					<?php form_text_box('value_' . $field['data_name'], $old_value, '', '', 30, 'text', 0, '', $title);?>
 				</div>
 				<?php
-				print "</div>";
+				print '</div>';
 
 				$i++;
 			}
