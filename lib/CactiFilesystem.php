@@ -115,6 +115,7 @@ readonly class CactiFilesystem {
 
 		if ($contents === false) {
 			$reason = error_get_last()['message'] ?? 'unknown error';
+
 			throw new RuntimeException("Unable to read file $filename: $reason");
 		}
 
