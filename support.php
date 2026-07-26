@@ -246,17 +246,25 @@ function support_view_tech() : void {
 			var done   = <?php print json_encode(__('Copied to clipboard')); ?>;
 			var failed = <?php print json_encode(__('Copy failed, select the text manually')); ?>;
 
+			var el = document.getElementById('diag_report');
+
+			// Reveal the textarea and select its contents so the "select the text
+			// manually" fallback message is actionable when copying fails.
+			var reveal = function() {
+				el.style.display = 'block';
+				el.focus();
+				el.select();
+			};
+
 			if (navigator.clipboard && navigator.clipboard.writeText) {
 				navigator.clipboard.writeText(report).then(function() {
 					$('#copy_diag_status').attr('class', 'deviceUp').text(done);
 				}, function() {
 					$('#copy_diag_status').attr('class', 'deviceDown').text(failed);
+					reveal();
 				});
 			} else {
-				var el = document.getElementById('diag_report');
-				el.style.display = 'block';
-				el.focus();
-				el.select();
+				reveal();
 
 				var ok = false;
 
@@ -268,11 +276,10 @@ function support_view_tech() : void {
 
 				if (ok) {
 					$('#copy_diag_status').attr('class', 'deviceUp').text(done);
+					el.style.display = 'none';
 				} else {
 					$('#copy_diag_status').attr('class', 'deviceDown').text(failed);
 				}
-
-				el.style.display = 'none';
 			}
 		});
 	});
@@ -1851,7 +1858,10 @@ function show_tech_environment() : void {
 	html_section_header(__('Required PHP Extensions'), 2);
 
 	foreach ($extensions as $name => $extension) {
-		$loaded = !empty($extension['web']);
+		// utility_php_verify_extensions() seeds CLI-only extensions such as
+		// pcntl with 'web' => true (meaning "not required in web"), so the flag
+		// does not track whether the module is actually loaded. Check directly.
+		$loaded = extension_loaded($name);
 
 		form_alternate_row();
 		print '<td>' . html_escape($name) . '</td>';
