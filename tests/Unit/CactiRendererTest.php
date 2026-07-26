@@ -136,3 +136,35 @@ it('rejects a null byte in an explicit template file', function () {
 it('rejects a null byte in the cacti_renderer path', function () {
 	cacti_renderer(cacti_renderer_fixture_dir() . "\0/evil");
 })->throws(InvalidArgumentException::class);
+
+it('rejects a template path that does not exist', function () {
+	new CactiRenderer(cacti_renderer_fixture_dir() . '/does-not-exist');
+})->throws(InvalidArgumentException::class);
+
+it('rejects a template path that is a file rather than a directory', function () {
+	new CactiRenderer(cacti_renderer_fixture_dir() . '/hello.php');
+})->throws(InvalidArgumentException::class);
+
+it('rejects an empty template name', function () {
+	$renderer = new CactiRenderer(cacti_renderer_fixture_dir());
+
+	$renderer->render('');
+})->throws(InvalidArgumentException::class);
+
+it('cleans the output buffer and rethrows when a template errors', function () {
+	$dir = cacti_renderer_fixture_dir();
+	file_put_contents($dir . '/boom.php', '<?php throw new RuntimeException("template failure");');
+
+	$renderer = new CactiRenderer($dir);
+	$depth    = ob_get_level();
+
+	try {
+		expect(fn () => $renderer->render('boom.php'))
+			->toThrow(RuntimeException::class, 'template failure');
+
+		// The catch block must unwind its own buffer, leaving the level intact.
+		expect(ob_get_level())->toBe($depth);
+	} finally {
+		unlink($dir . '/boom.php');
+	}
+});
