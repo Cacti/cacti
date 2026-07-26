@@ -60,25 +60,6 @@ test('htmx_script_tag prefixes the src with CACTI_PATH_URL', function () {
 	expect($tag)->toContain("src='" . CACTI_PATH_URL . 'include/js/htmx.min.js?v=' . $md5 . "'");
 });
 
-test('htmx_script_tag src carries the deployment url root so subdir installs resolve', function () {
-	global $config;
-
-	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
-
-	$tag = htmx_script_tag();
-	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.min.js');
-
-	/*
-	 * The loader builds the src from CACTI_PATH_URL (the deployment's URL root),
-	 * matching get_md5_include_js() in lib/functions.php. This keeps the asset
-	 * resolvable from plugin pages served below the Cacti root, where a
-	 * document-relative src would 404. CACTI_PATH_URL is frozen at bootstrap
-	 * from $config['url_path'], so the tag reflects the install prefix, not a
-	 * per-request value.
-	 */
-	expect($tag)->toContain("src='" . CACTI_PATH_URL . 'include/js/htmx.min.js?v=' . $md5 . "'");
-});
-
 test('htmx.min.js.version content matches version pinned by the integrity attribute', function () {
 	global $config;
 
