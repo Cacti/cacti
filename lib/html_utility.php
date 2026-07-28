@@ -22,6 +22,10 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once __DIR__ . '/CactiValidator.php';
+
+use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * Replaces all variables contained in $form_array with their actual values
  *
@@ -1429,6 +1433,23 @@ function get_order_string() : string {
 }
 
 /**
+ * Backing enum for the dsstats measure columns that get_dsstats_order_string()
+ * is allowed to sort by. Cases are the single source of truth for both the
+ * enum and the Assert\Choice constraint's `choices` list below, so a new
+ * measure only needs to be added in one place.
+ */
+enum DsstatsMeasure : string {
+	case Average = 'average';
+	case Peak    = 'peak';
+	case P25n    = 'p25n';
+	case P50n    = 'p50n';
+	case P75n    = 'p75n';
+	case P90n    = 'p90n';
+	case P95n    = 'p95n';
+	case Sum     = 'sum';
+}
+
+/**
  * Builds the validated ORDER BY clause used by get_allowed_graphs() when
  * sorting graphs by a dsstats measure (see the 'rs' derived table it joins
  * in). The measure and order values come from unauthenticated request
@@ -1442,14 +1463,16 @@ function get_order_string() : string {
  * @return string The 'ORDER BY rs.<measure> <ASC|DESC>' clause.
  */
 function get_dsstats_order_string(array $sql_order) : string {
-	$measures = ['average', 'peak', 'p25n', 'p50n', 'p75n', 'p90n', 'p95n', 'sum'];
+	$measure_choices = array_map(static fn (DsstatsMeasure $case) => $case->value, DsstatsMeasure::cases());
 
-	$measure = isset($sql_order['measure']) && in_array($sql_order['measure'], $measures, true)
+	$measure = isset($sql_order['measure']) && CactiValidator::isValid($sql_order['measure'], [new Assert\Choice(choices: $measure_choices)])
 		? $sql_order['measure']
-		: 'average';
+		: DsstatsMeasure::Average->value;
 
-	$direction = isset($sql_order['order']) && strtoupper((string) $sql_order['order']) === 'DESC'
-		? 'DESC'
+	$order = isset($sql_order['order']) ? strtoupper((string) $sql_order['order']) : '';
+
+	$direction = CactiValidator::isValid($order, [new Assert\Choice(choices: ['ASC', 'DESC'])])
+		? $order
 		: 'ASC';
 
 	return 'ORDER BY rs.' . $measure . ' ' . $direction;
