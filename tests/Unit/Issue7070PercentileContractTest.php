@@ -16,6 +16,8 @@ $graphVariables = file_get_contents(__DIR__ . '/../../lib/graph_variables.php');
 $graphXport     = file_get_contents(__DIR__ . '/../../graph_xport.php');
 
 test('percentile index is based on observed samples', function () use ($graphVariables) {
+	expect($graphVariables)->not->toBeFalse();
+
 	preg_match('/^function cacti_percentile_index\([^)]*\).*?\{.*?^\}/sm', $graphVariables, $matches);
 	expect($matches)->not->toBeEmpty();
 
@@ -34,6 +36,7 @@ test('percentile index is based on observed samples', function () use ($graphVar
 });
 
 test('CSV export exposes sparse-period coverage', function () use ($graphXport) {
+	expect($graphXport)->not->toBeFalse();
 	expect($graphXport)->toContain("__('Expected Rows')");
 	expect($graphXport)->toContain("__('Missing Rows')");
 	expect($graphXport)->toContain("['meta']['missing_rows']");
