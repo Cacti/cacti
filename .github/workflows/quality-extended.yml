@@ -102,6 +102,23 @@ jobs:
       - name: Block new unparameterised SQL value interpolation
         run: php tests/tools/sql_interpolation_audit.php --check
 
+  validator-constraint-ratchet:
+    name: validator constraint ratchet
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@0f7f1d08e3e32076e51cae65eb0b0c871405b16e # 2.34.1
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - name: Block new undocumented no-op input validation
+        run: php tests/tools/validator_constraint_audit.php --check
+
   unit-coverage:
     name: pest coverage gate
     runs-on: ubuntu-latest
