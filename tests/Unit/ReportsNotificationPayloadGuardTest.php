@@ -13,7 +13,7 @@
  */
 
 function getReportsNotificationSource(): string {
-	$source = file_get_contents(__DIR__ . '/../../lib/reports.php');
+	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/reports.php');
 
 	expect($source)->not->toBeFalse('Failed to read lib/reports.php');
 
