@@ -1759,6 +1759,33 @@ function db_format_index_create($indexes) {
 	} else {
 		$indexes = trim($indexes);
 
+		// several plugins (thold, mactrack) pass a compound key as a single
+		// string in the form 'col1`,`col2`,`col3' instead of an array; split
+		// on the backtick-quoted comma and validate each column individually
+		$parts = preg_split('/`\s*,\s*`/', $indexes);
+
+		if (cacti_sizeof($parts) > 1) {
+			$outindex = '';
+
+			foreach ($parts as $part) {
+				$part = trim($part, " \t\n\r\0\x0B`");
+
+				if (!db_is_safe_index_column($part)) {
+					return false;
+				}
+
+				if (substr($part, -1) == ')') {
+					$part_name = substr($part, 0, strpos($part, '('));
+					$part_len  = substr($part, strpos($part, '('));
+					$outindex .= ($outindex != '' ? ',' : '') . '`' . trim($part_name, ' `') . '`' . $part_len;
+				} else {
+					$outindex .= ($outindex != '' ? ',' : '') . '`' . $part . '`';
+				}
+			}
+
+			return $outindex;
+		}
+
 		if (!db_is_safe_index_column($indexes)) {
 			return false;
 		}
