@@ -3802,10 +3802,10 @@ function calculateNextStart($net) {
 	/* Evaluate this year first; when every selected date has already passed,
 	   roll over to the next year so a valid monthly schedule never resolves to
 	   false (which the caller would otherwise store as a 1970 next_start). */
-	$next = calculateNextStartForYear($net, (int) date('Y'), $now);
+	$next = calculateNextStartForYear($net, (int) date('Y', $now), $now);
 
 	if ($next === false) {
-		$next = calculateNextStartForYear($net, (int) date('Y') + 1, $now);
+		$next = calculateNextStartForYear($net, (int) date('Y', $now) + 1, $now);
 	}
 
 	return $next;
