@@ -2198,7 +2198,18 @@ function reports_log_and_notify(int $id, int $start_time, string $report_type, s
 		if ($report['notification'] != '') {
 			$notifications = json_decode($report['notification'], true);
 
+			if (!is_array($notifications)) {
+				cacti_log(sprintf("WARNING: Report '%s' has an invalid notification payload; notifications were skipped", $report['name']), false, 'REPORTS');
+				$notifications = [];
+			}
+
 			foreach ($notifications as $type => $data) {
+				if (!is_array($data)) {
+					cacti_log(sprintf("WARNING: Report '%s' has invalid notification data for type '%s'; notification was skipped", $report['name'], $type), false, 'REPORTS');
+
+					continue;
+				}
+
 				switch($type) {
 					case 'email':
 						if (!isset($data['to_email'])) {
