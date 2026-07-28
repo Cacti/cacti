@@ -46,7 +46,8 @@ if (!function_exists('ss_counter_step')) {
 	 * fall back to float (with documented precision loss) only when gmp is
 	 * unavailable.
 	 *
-	 * Returns a numeric string ('U' is sticky once set).
+	 * Returns a numeric string. If $running is 'U' or non-numeric, the
+	 * first computed delta replaces it -- 'U' does not persist.
 	 * @param mixed $running
 	 */
 	function ss_counter_step($running, string $current, string $previous, string $modulus) : string {
