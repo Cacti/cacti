@@ -643,7 +643,9 @@ class Net_Ping
 			return true;
 		}
 
+		$sockets_fallback = false;
 		if ((!function_exists('socket_create')) && ($avail_method != AVAIL_NONE)) {
+			$sockets_fallback = true;
 			$avail_method = AVAIL_SNMP;
 			cacti_log('WARNING: sockets support not enabled in PHP, falling back to SNMP ping');
 		}
@@ -696,14 +698,22 @@ class Net_Ping
 			if (!$ping_result && $avail_method == AVAIL_SNMP_AND_PING) {
 				$snmp_result = $ping_result;
 			} else {
-				/* Lets assume the host is up because if we are in OR mode then we have already
-				* pinged the host successfully, or some when silly people have not entered an
-				* snmp_community under v1/2, we assume that this was successfully anyway */
-				$snmp_result = true;
-				$this->snmp_status = 0.000;
-				if ($avail_method != AVAIL_SNMP_OR_PING &&
-				   (strlen($this->host['snmp_community']) > 0 || $this->host['snmp_version'] >= 3)) {
+				$have_snmp = (strlen($this->host['snmp_community']) > 0 || $this->host['snmp_version'] >= 3);
+
+				if ($have_snmp && !($avail_method == AVAIL_SNMP_OR_PING && $ping_result)) {
+					/* Run the real SNMP test whenever a community (or v3) is configured. In OR
+					 * mode this includes the case where the ping failed, so an unreachable host
+					 * is only reported up if SNMP actually responds. */
 					$snmp_result = $this->ping_snmp();
+				} elseif ($sockets_fallback && !$have_snmp) {
+					/* SNMP was forced by the missing-socket fallback and no community is
+					 * configured: there is nothing to test, so do not report the host up. */
+					$snmp_result = false;
+				} else {
+					/* Nothing to test against (a v1/v2 host with no snmp_community, or an OR-mode
+					 * host already proven up by a successful ping): assume up as before. */
+					$snmp_result = true;
+					$this->snmp_status = 0.000;
 				}
 			}
 		}
