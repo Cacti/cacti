@@ -202,6 +202,23 @@ function string_literal_emptiness(array $tokens, int $start, int $end): array {
 }
 
 /**
+ * True when the comment is the first thing on its source line, i.e. it
+ * isn't a trailing comment tacked onto a preceding code line. The token
+ * immediately before it (T_WHITESPACE, T_OPEN_TAG, another comment, ...)
+ * carries a newline in its text whenever a line break separates the two.
+ */
+function comment_starts_its_line(array $tokens, int $comment_token_index): bool {
+	if ($comment_token_index === 0) {
+		return true;
+	}
+
+	$prev      = $tokens[$comment_token_index - 1];
+	$prev_text = is_array($prev) ? $prev[1] : $prev;
+
+	return str_contains($prev_text, "\n");
+}
+
+/**
  * A same-line trailing comment or an immediately-preceding standalone
  * comment line, matching NO_VALIDATION_COMMENT, exempts a call from the
  * ratchet. $call_line is the 1-based line the call's function name token
@@ -222,7 +239,16 @@ function has_no_validation_comment(array $tokens, int $call_token_index, int $ca
 		if ($tok[0] === T_COMMENT || $tok[0] === T_DOC_COMMENT) {
 			$comment_line = $tok[2];
 
-			if ($comment_line >= $call_line - 1 && preg_match(NO_VALIDATION_COMMENT, $tok[1])) {
+			// A comment on the line immediately before the call only
+			// counts as a standalone exemption if it starts that line;
+			// a trailing comment after code (e.g. "$x = 1; // no-validation: ...")
+			// must not exempt the following call.
+			$is_previous_line_trailing_comment = $comment_line === $call_line - 1
+				&& !comment_starts_its_line($tokens, $i);
+
+			if (!$is_previous_line_trailing_comment
+				&& $comment_line >= $call_line - 1
+				&& preg_match(NO_VALIDATION_COMMENT, $tok[1])) {
 				return true;
 			}
 
@@ -319,7 +345,7 @@ function scan_source(string $src): array {
 
 		$j = $i + 1;
 
-		while ($j < $n && is_array($tokens[$j]) && ($tokens[$j][0] === T_WHITESPACE || $tokens[$j][0] === T_COMMENT)) {
+		while ($j < $n && is_array($tokens[$j]) && ($tokens[$j][0] === T_WHITESPACE || $tokens[$j][0] === T_COMMENT || $tokens[$j][0] === T_DOC_COMMENT)) {
 			$j++;
 		}
 

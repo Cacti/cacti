@@ -70,6 +70,13 @@ test('a no-validation comment on an unrelated earlier line does not exempt a lat
 	))->toBe('empty');
 });
 
+test('a trailing no-validation comment on the previous line does not exempt the call', function () {
+	expect(validator_category_of(
+		"\$other = 1; // no-validation: this is attached to \$other, not the call below\n" .
+		"CactiValidator::validateInput(gnrv('notes'), 'notes', [], 3);"
+	))->toBe('empty');
+});
+
 test('a plain non-Cacti validateInput() call is not matched at all', function () {
 	expect(validator_scan("SomeOtherClass::validateInput(\$v, 'x', [], 3);"))->toBe([]);
 });
