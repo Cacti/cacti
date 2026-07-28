@@ -40,6 +40,9 @@ RUN apt-get update \
 		snmp \
 		unzip \
 	&& docker-php-ext-configure gd --with-freetype --with-jpeg \
+	# sqlite3 ships built-in on php:8.2-apache (php -m already lists it) and its
+	# ext/sqlite3 only carries config0.m4, not config.m4, so docker-php-ext-install
+	# can't build it standalone; pdo_sqlite stays since libsqlite3-dev backs it.
 	&& docker-php-ext-install -j"$(nproc)" \
 		gd \
 		gmp \
@@ -51,7 +54,6 @@ RUN apt-get update \
 		pdo_sqlite \
 		snmp \
 		sockets \
-		sqlite3 \
 		zip \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
