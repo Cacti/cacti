@@ -143,7 +143,7 @@ function ss_host_disk($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'ind
 					$snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, SNMP_POLLER);
 
 				if ($snmp_data != '' && $snmp_data < 0) {
-					return (abs($snmp_data) + 2147483647) * $sau;
+					return ($snmp_data + 4294967296) * $sau;
 				} elseif (is_numeric($snmp_data) && is_numeric($sau)) {
 					return $snmp_data * $sau;
 				} elseif (is_numeric($snmp_data) && !$sau) {
