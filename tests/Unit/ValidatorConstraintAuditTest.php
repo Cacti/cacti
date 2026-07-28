@@ -20,7 +20,7 @@ if (!defined('VALIDATOR_AUDIT_LIB_ONLY')) {
 require_once __DIR__ . '/../tools/validator_constraint_audit.php';
 
 function validator_scan(string $php): array {
-	return scan_source("<?php\n" . $php);
+	return validator_scan_source("<?php\n" . $php);
 }
 
 // Classify the single validator call in a snippet.

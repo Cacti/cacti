@@ -39,7 +39,7 @@ const BASELINE = 'tests/tools/validator_constraint_baseline.json';
 
 const NO_VALIDATION_COMMENT = '/no-validation\s*:/i';
 
-function list_php_files(): array {
+function validator_list_php_files(): array {
 	// Tracked files only: matches what ships and avoids nested worktrees,
 	// vendored copies and other untracked noise in a working tree.
 	exec('git ls-files -z -- "*.php"', $lines, $rc);
@@ -302,7 +302,7 @@ function has_no_validation_comment(array $tokens, int $call_token_index, int $ca
  * Scan one PHP source string and return every validateInput()/
  * form_input_validate() call site as ['line'=>int, 'func'=>string, 'category'=>string].
  */
-function scan_source(string $src): array {
+function validator_scan_source(string $src): array {
 	if (!str_contains($src, 'validateInput') && !str_contains($src, 'form_input_validate')) {
 		return [];
 	}
@@ -403,7 +403,7 @@ if (defined('VALIDATOR_AUDIT_LIB_ONLY')) {
 	return;
 }
 
-$files   = list_php_files();
+$files   = validator_list_php_files();
 $results = [];  // path => array of sites
 
 foreach ($files as $path) {
@@ -413,7 +413,7 @@ foreach ($files as $path) {
 		continue;
 	}
 
-	$sites = scan_source($src);
+	$sites = validator_scan_source($src);
 
 	if ($sites !== []) {
 		$results[$path] = $sites;
