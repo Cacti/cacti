@@ -26,7 +26,7 @@ use Symfony\Component\Form\Forms;
  * inject a form factory without spreading Forms::createFormFactory() calls.
  */
 class CactiForm {
-	private const string DEFAULT_FORM_TYPE = FormType::class;
+	private const DEFAULT_FORM_TYPE = FormType::class;
 
 	private static ?self $instance = null;
 
