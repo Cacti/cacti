@@ -86,6 +86,7 @@ Cacti CHANGELOG
 -issue#6606: When using SpikeKill, actions would not always lead to expected results
 -issue#6706: Some hosts may show as down incorrectly by xmacan
 -issue#6945: Improve PHP 8.5 support
+-issue#7070: Align percentile rank with observed samples and expose missing export rows
 -issue#7121: When using data input methods, unexpected log entries may appear
 -issue#7133: When attempting to push out items, offline data sources can have unexpected results
 -issue#7135: Fix issue with locally scoped OID/Script path not being correctly cleared
