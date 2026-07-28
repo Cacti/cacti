@@ -56,6 +56,14 @@ test('array_values drops the associative keys PDO would misbind', function () {
 // Sort URLs with an active non-numeric filter would die_html_input_error().
 test('aggregate graph list sort URL keeps text filter via grv not gfrv', function () {
 	$src = file_get_contents(dirname(__DIR__, 2) . '/aggregate_graphs.php');
-	expect($src)->toContain("rawurlencode(grv('filter'))");
-	expect($src)->not->toContain("rawurlencode(gfrv('filter'))");
+	expect($src)->not->toBeFalse('Failed to read aggregate_graphs.php');
+
+	// Whitespace-tolerant so reformatting the call site doesn't break the test;
+	// still pins that the sort URL passes the filter through grv(), not gfrv()
+	// (which applies FILTER_VALIDATE_INT and would die_html_input_error() on a
+	// non-numeric filter).
+	expect(preg_match("/rawurlencode\(\s*grv\(\s*'filter'\s*\)\s*\)/", $src))->toBe(1,
+		"the sort URL must build its filter param via grv('filter')");
+	expect(preg_match("/rawurlencode\(\s*gfrv\(\s*'filter'\s*\)\s*\)/", $src))->toBe(0,
+		"the sort URL must not switch to gfrv('filter')");
 });
