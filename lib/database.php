@@ -1736,7 +1736,7 @@ function db_commit_transaction($db_conn = false) {
 		}
 	}
 
-	if (db_fetch_cell('SELECT @@in_transaction') > 0) {
+	if (db_fetch_cell('SELECT @@in_transaction', '', true, $db_conn) > 0) {
 		return $db_conn->commit();
 	}
 }
