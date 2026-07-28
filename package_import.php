@@ -135,14 +135,12 @@ function form_save() {
 			exit;
 		}
 
-		if (isset_request_var('trust_signer') && get_request_var('trust_signer') == 'on') {
-			import_validate_public_key($xmlfile, true);
-		} elseif (!package_validate_signature($xmlfile)) {
+		if (!package_validate_signature($xmlfile)) {
 			if ($session_tmpfile) {
 				@unlink($xmlfile);
 			}
 
-			raise_message('verify_warning', __('You have not Trusted this Package Author.  If you wish to import, check the Automatically Trust Author checkbox'), MESSAGE_LEVEL_ERROR);
+			raise_message('verify_warning', __('The package signature could not be verified against a trusted author.'), MESSAGE_LEVEL_ERROR);
 			header('Location: package_import?package_location=0');
 			exit;
 		}
@@ -787,11 +785,6 @@ function validate_request_vars() {
 			'options' => array('options' => array('regexp' => '(on|true|false)')),
 			'default' => 'on'
 		),
-		'trust_signer' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
-			'options' => array('options' => array('regexp' => '(on|true|false)')),
-			'default' => 'on'
-		),
 		'data_source_profile' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => $default_profile
@@ -837,12 +830,6 @@ function get_import_form($default_profile) {
 		$remove_orphans = '';
 	}
 
-	if (isset_request_var('trust_signer') && get_nfilter_request_var('trust_signer') == 'on') {
-		$trust_signer = 'on';
-	} else {
-		$trust_signer = '';
-	}
-
 	if (isset_request_var('image_format')) {
 		$image_format = get_filter_request_var('image_format');
 	} else {
@@ -867,13 +854,6 @@ function get_import_form($default_profile) {
 			'description' => __('The *.xml.gz file located on your Local machine to Upload and Import.'),
 			'accept' => '.xml.gz',
 			'method' => 'file'
-		),
-		'trust_signer' => array(
-			'friendly_name' => __('Automatically Trust Signer'),
-			'method' => 'hidden',
-			'description' => __('If checked, Cacti will automatically Trust the Signer for this and any future Packages by that author.'),
-			'value' => 'on',
-			'default' => ''
 		),
 	);
 
@@ -1014,10 +994,6 @@ function package_import() {
 
 			if ($('#replace_svalues').is(':checked')) {
 				formExtra += '&replace_svalues=on';
-			}
-
-			if ($('#trust_signer').is(':checked')) {
-				formExtra += '&trust_signer=on';
 			}
 
 			Pace.start();
