@@ -1465,11 +1465,11 @@ enum DsstatsMeasure : string {
 function get_dsstats_order_string(array $sql_order) : string {
 	$measure_choices = array_map(static fn (DsstatsMeasure $case) => $case->value, DsstatsMeasure::cases());
 
-	$measure = isset($sql_order['measure']) && CactiValidator::isValid($sql_order['measure'], [new Assert\Choice(choices: $measure_choices)])
+	$measure = isset($sql_order['measure']) && is_scalar($sql_order['measure']) && CactiValidator::isValid($sql_order['measure'], [new Assert\Choice(choices: $measure_choices)])
 		? $sql_order['measure']
 		: DsstatsMeasure::Average->value;
 
-	$order = isset($sql_order['order']) ? strtoupper((string) $sql_order['order']) : '';
+	$order = isset($sql_order['order']) && is_scalar($sql_order['order']) ? strtoupper((string) $sql_order['order']) : '';
 
 	$direction = CactiValidator::isValid($order, [new Assert\Choice(choices: ['ASC', 'DESC'])])
 		? $order

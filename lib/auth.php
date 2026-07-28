@@ -1520,6 +1520,7 @@ function get_allowed_graphs(string $sql_where = '', mixed $sql_order = 'gtg.titl
 
 	if (is_array($sql_order)) {
 		require_once(CACTI_PATH_LIBRARY . '/dsstats.php');
+		require_once(CACTI_PATH_LIBRARY . '/html_utility.php');
 
 		$table = dsstats_get_best_partition($sql_order['start_time'], $sql_order['end_time']);
 
