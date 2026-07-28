@@ -37,7 +37,10 @@ test('offset crossing two octet boundaries stays a valid quad', function () {
 });
 
 test('offset of a full /8 increments the leading octet', function () {
-	expect(next_host('10.0.0.0', 16777216))->toBe('11.0.0.0');
+	/* $total must match the range so $count < $total, as real callers pass it;
+	 * a /8 offset against a /8 total would hit the $count == $total early
+	 * return, so use a /7 (33554432 addresses) to keep the offset in range. */
+	expect(automation_get_next_host('10.0.0.0', 33554432, 16777216, '10.0.0.0/7'))->toBe('11.0.0.0');
 });
 
 test('carry normalizes an overflowing final octet', function () {
