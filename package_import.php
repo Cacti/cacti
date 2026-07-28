@@ -141,7 +141,7 @@ function form_save() {
 			}
 
 			raise_message('verify_warning', __('The package signature could not be verified against a trusted author.'), MESSAGE_LEVEL_ERROR);
-			header('Location: package_import?package_location=0');
+			header('Location: package_import.php?package_location=0');
 			exit;
 		}
 

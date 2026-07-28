@@ -581,7 +581,7 @@ fs_write	./lib/reports.php:1704			$f = fopen($fn, 'wb');
 fs_write	./lib/reports.php:1745			$f = fopen($fn, 'wb');
 fs_write	./lib/rrd.php:2520					if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
 fs_write	./lib/spikekill.php:780			return file_put_contents($xmlfile, $output);
-fs_write	./package_import.php:385					file_put_contents($xmlfile, $data);
+fs_write	./package_import.php:383					file_put_contents($xmlfile, $data);
 fs_write	./package_import.php:96		if (file_put_contents($xmlfile, $_SESSION['sess_import_package']) === false) {
 fs_write	./script_server.php:49		define('STDIN', fopen('php://stdin', 'r'));
 fs_write	./script_server.php:50		define('STDOUT', fopen('php://stdout', 'w'));
@@ -903,8 +903,8 @@ header_redirect	./managers.php:995				header('Location: managers.php?action=edit
 header_redirect	./mibs/index.php:25	header("Location:../index.php");
 header_redirect	./package_import.php:128					header('Location: package_import.php');
 header_redirect	./package_import.php:134				header('Location: package_import.php');
-header_redirect	./package_import.php:146				header('Location: package_import?package_location=0');
-header_redirect	./package_import.php:251				header('Location: package_import.php');
+header_redirect	./package_import.php:144				header('Location: package_import.php?package_location=0');
+header_redirect	./package_import.php:249				header('Location: package_import.php');
 header_redirect	./plugins.php:100				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 header_redirect	./plugins.php:111				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 header_redirect	./plugins.php:124				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
