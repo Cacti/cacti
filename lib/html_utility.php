@@ -1429,6 +1429,33 @@ function get_order_string() : string {
 }
 
 /**
+ * Builds the validated ORDER BY clause used by get_allowed_graphs() when
+ * sorting graphs by a dsstats measure (see the 'rs' derived table it joins
+ * in). The measure and order values come from unauthenticated request
+ * variables ('measure', 'graph_order'), so they are checked against the
+ * actual data_source_stats_* columns and asc/desc before being concatenated
+ * into SQL, the same way get_order_string() checks sort_column/sort_direction.
+ *
+ * @param array $sql_order Expects 'measure' and 'order' keys; see
+ *                         get_allowed_graphs() for the full array shape.
+ *
+ * @return string The 'ORDER BY rs.<measure> <ASC|DESC>' clause.
+ */
+function get_dsstats_order_string(array $sql_order) : string {
+	$measures = ['average', 'peak', 'p25n', 'p50n', 'p75n', 'p90n', 'p95n', 'sum'];
+
+	$measure = isset($sql_order['measure']) && in_array($sql_order['measure'], $measures, true)
+		? $sql_order['measure']
+		: 'average';
+
+	$direction = isset($sql_order['order']) && strtoupper((string) $sql_order['order']) === 'DESC'
+		? 'DESC'
+		: 'ASC';
+
+	return 'ORDER BY rs.' . $measure . ' ' . $direction;
+}
+
+/**
  * Removes a specified column from the order string in the session data.
  *
  * This function retrieves the current page's order string and checks if the specified
