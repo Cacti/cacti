@@ -28,8 +28,10 @@ require_once dirname(__DIR__, 2) . '/include/global.php';
 /*
  * support_process_tables() (support.php, #7353) publishes the built-in process
  * tables through the 'support_process_tables' plugin hook, then discards any
- * definition a plugin returns that is not well formed so a broken plugin cannot
- * fatal the process view or corrupt the UNION.
+ * definition a plugin returns whose label/table/select are not all strings.
+ * That is a type check only -- it does not validate that 'select' is
+ * syntactically valid SQL, so a malformed plugin SELECT can still break the
+ * UNION in show_cacti_processes().
  *
  * The function is extracted from support.php and evaluated with its hook call
  * redirected to a test-controlled value, so the plugin return can be driven
@@ -52,11 +54,19 @@ function process_tables_define_probe(): void {
 
 	// Redirect the hook call to a global the test controls. When the global is
 	// unset the real hook runs (no registered plugins, so it returns $defaults).
-	$body = str_replace(
-		"\$definitions = api_plugin_hook_function('support_process_tables', \$defaults);",
+	// A regex (rather than an exact-string match) tolerates minor reformatting
+	// of the call, and the count check catches the rewrite silently no-op'ing.
+	$body = preg_replace(
+		'/\$definitions\s*=\s*api_plugin_hook_function\(\s*\'support_process_tables\'\s*,\s*\$defaults\s*\)\s*;/',
 		"\$definitions = array_key_exists('__test_process_hook', \$GLOBALS) ? \$GLOBALS['__test_process_hook'] : api_plugin_hook_function('support_process_tables', \$defaults);",
-		$body
+		$body,
+		-1,
+		$hook_call_count
 	);
+
+	if ($hook_call_count !== 1) {
+		throw new RuntimeException("expected exactly one support_process_tables() hook call to rewrite, found $hook_call_count");
+	}
 
 	$body = preg_replace('/^function support_process_tables\(\)/m', 'function support_process_tables_probe()', $body);
 
