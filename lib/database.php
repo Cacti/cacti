@@ -480,7 +480,7 @@ function db_close(mixed &$db_conn = false) : bool {
 
 	// forcibly close connection if not persistent
 	if (!$database_persist) {
-		db_execute('KILL CONNECTION CONNECTIION_ID()', false, $db_conn);
+		db_execute('KILL CONNECTION CONNECTION_ID()', false, $db_conn);
 	}
 
 	// unset the variables which should do the same
