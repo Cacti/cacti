@@ -25,12 +25,26 @@ test('global.php guards the autoload require with instructions', function () {
 	$src = file_get_contents(__DIR__ . '/../../include/global.php');
 	expect($src)->not->toBeFalse('Failed to read include/global.php');
 
-	$guardPos = strpos($src, "is_file(CACTI_PATH_INCLUDE . '/vendor/autoload.php')");
-	expect($guardPos)->not->toBeFalse('vendor guard must exist');
+	// The path is now computed once into $vendor_autoload and reused by both
+	// the fatal-exit guard and the require below, rather than being spelled
+	// out inline at each call site.
+	$pathPos = strpos($src, "\$vendor_autoload = CACTI_PATH_INCLUDE . '/vendor/autoload.php';");
+	expect($pathPos)->not->toBeFalse('vendor autoload path must be computed');
 
-	$requirePos = strpos($src, "require_once(CACTI_PATH_INCLUDE . '/vendor/autoload.php')");
+	$guardPos = strpos($src, "if (!is_file(\$vendor_autoload) && !defined('IN_CACTI_INSTALL'))");
+	expect($guardPos)->not->toBeFalse('vendor guard must exist')
+		->and($pathPos)->toBeLessThan($guardPos, 'path must be computed before the guard checks it');
+
+	$requirePos = strpos($src, 'require_once($vendor_autoload);');
 	expect($requirePos)->not->toBeFalse('autoload require must exist')
 		->and($guardPos)->toBeLessThan($requirePos, 'guard must run before the require');
+
+	// The require itself stays wrapped in its own is_file() check so the
+	// installer's IN_CACTI_INSTALL path (where vendor may legitimately not
+	// exist yet) never reaches a bare require() fatal either.
+	$requireGuardPos = strpos($src, 'if (is_file($vendor_autoload)) {');
+	expect($requireGuardPos)->not->toBeFalse('require must itself be guarded')
+		->and($requireGuardPos)->toBeLessThan($requirePos, 'require guard must precede the require');
 
 	$dbPos = strpos($src, 'db_connect_real(');
 	expect($dbPos)->not->toBeFalse('db connect must exist')
