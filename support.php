@@ -1851,17 +1851,38 @@ function show_tech_summary() : void {
 }
 
 function show_tech_environment() : void {
-	// Required PHP extensions, cross-checked against install/cli_check.php.
+	// utility_php_verify_extensions() alone can't tell whether a module is
+	// really loaded in both contexts: it seeds CLI-only extensions such as
+	// pcntl with 'web' => true (not required in web), so checking either the
+	// seeded flag or a bare extension_loaded() in isolation misreports one
+	// context or the other. Verify web in-process, shell out to cli_check.php
+	// for the real CLI state (same path_php_binary lookup already used below
+	// for rrdtool/snmpget), and combine with the web && cli rule from
+	// utility_php_set_installed(), the same one lib/installer.php relies on.
 	$extensions = false;
 	utility_php_verify_extensions($extensions, 'web');
+
+	$php_binary = read_config_option('path_php_binary');
+
+	if ($php_binary != '' && file_exists($php_binary) && is_executable($php_binary)) {
+		$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions');
+		$cli_ext  = @json_decode($cli_json, true);
+
+		if (is_array($cli_ext)) {
+			foreach ($cli_ext as $name => $ext) {
+				if (isset($extensions[$name])) {
+					$extensions[$name]['cli'] = !empty($ext['cli']);
+				}
+			}
+		}
+	}
+
+	utility_php_set_installed($extensions);
 
 	html_section_header(__('Required PHP Extensions'), 2);
 
 	foreach ($extensions as $name => $extension) {
-		// utility_php_verify_extensions() seeds CLI-only extensions such as
-		// pcntl with 'web' => true (meaning "not required in web"), so the flag
-		// does not track whether the module is actually loaded. Check directly.
-		$loaded = extension_loaded($name);
+		$loaded = !empty($extension['installed']);
 
 		form_alternate_row();
 		print '<td>' . html_escape($name) . '</td>';

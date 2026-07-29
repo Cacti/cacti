@@ -92,12 +92,31 @@ test('show_tech_environment flags a directory that is not writable', function ()
  * source-extraction convention in Issue7070PercentileContractTest.
  */
 function support_diag_build_report(array $vars): string {
-	$src = file_get_contents(dirname(__DIR__, 2) . '/support.php');
+	$path = dirname(__DIR__, 2) . '/support.php';
+	$src  = file_get_contents($path);
+
+	if ($src === false) {
+		throw new RuntimeException("support_diag_build_report(): unable to read $path");
+	}
 
 	// The block runs from the first assignment to the last $report line.
 	$start = strpos($src, '$snmp_line     = trim(');
-	$end   = strpos($src, "\$report .= '- ' . __('RSA Fingerprint')");
-	$end   = strpos($src, "\n", $end);
+
+	if ($start === false) {
+		throw new RuntimeException('support_diag_build_report(): start marker not found in support.php; has the report block moved?');
+	}
+
+	$end = strpos($src, "\$report .= '- ' . __('RSA Fingerprint')");
+
+	if ($end === false) {
+		throw new RuntimeException('support_diag_build_report(): end marker not found in support.php; has the report block moved?');
+	}
+
+	$end = strpos($src, "\n", $end);
+
+	if ($end === false) {
+		throw new RuntimeException('support_diag_build_report(): no newline after end marker in support.php');
+	}
 
 	$block = substr($src, $start, $end - $start);
 

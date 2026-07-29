@@ -50,9 +50,23 @@ function support_diag_probe_report(): string {
 	$rrdtool_release = get_installed_rrdtool_version() ?: 'Unknown';
 	$total_memory    = 0;
 
-	$src   = file_get_contents(dirname(__DIR__, 2) . '/support.php');
+	$path = dirname(__DIR__, 2) . '/support.php';
+	$src  = file_get_contents($path);
+
+	support_diag_probe_assert($src !== false, "unable to read $path");
+
 	$start = strpos($src, '$snmp_line     = trim(');
-	$end   = strpos($src, "\n", strpos($src, "\$report .= '- ' . __('RSA Fingerprint')"));
+
+	support_diag_probe_assert($start !== false, 'start marker not found in support.php; has the report block moved?');
+
+	$marker = strpos($src, "\$report .= '- ' . __('RSA Fingerprint')");
+
+	support_diag_probe_assert($marker !== false, 'end marker not found in support.php; has the report block moved?');
+
+	$end = strpos($src, "\n", $marker);
+
+	support_diag_probe_assert($end !== false, 'no newline after end marker in support.php');
+
 	$block = substr($src, $start, $end - $start);
 
 	eval($block);
