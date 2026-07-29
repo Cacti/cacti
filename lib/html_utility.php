@@ -22,9 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once __DIR__ . '/CactiValidator.php';
-
 use Symfony\Component\Validator\Constraints as Assert;
+
+require_once __DIR__ . '/CactiValidator.php';
 
 /**
  * Replaces all variables contained in $form_array with their actual values
