@@ -83,14 +83,20 @@ class CactiFilesystem {
 	}
 
 	public function has(string|array $files): bool {
+		$this->rejectNullBytes($files, 'check');
+
 		return $this->filesystem->exists($files);
 	}
 
 	public function ensureDirectory(string|array $dirs, int $mode = 0777): void {
+		$this->rejectNullBytes($dirs, 'create');
+
 		$this->filesystem->mkdir($dirs, $mode);
 	}
 
 	public function delete(string|array $files): void {
+		$this->rejectNullBytes($files, 'delete');
+
 		$this->filesystem->remove($files);
 	}
 
@@ -105,11 +111,7 @@ class CactiFilesystem {
 	public function read(string $filename): string {
 		// file_get_contents() throws a ValueError on a null byte in PHP 8+,
 		// which would escape this method's RuntimeException contract.
-		if (str_contains($filename, "\0")) {
-			// Do not interpolate the raw path here: the null byte would truncate
-			// or garble the message in logs.
-			throw new RuntimeException('Unable to read file: path contains a null byte');
-		}
+		$this->rejectNullBytes($filename, 'read');
 
 		$contents = @file_get_contents($filename);
 
@@ -136,5 +138,18 @@ class CactiFilesystem {
 
 	public function isAbsolute(string $path): bool {
 		return $this->filesystem->isAbsolutePath($path);
+	}
+
+	// PHP 8's filesystem functions throw a ValueError on a null byte instead of
+	// failing gracefully, which would escape this class's RuntimeException
+	// contract. Reject null bytes up front so every entry point fails the same way.
+	private function rejectNullBytes(string|array $paths, string $action): void {
+		foreach ((array) $paths as $path) {
+			if (str_contains($path, "\0")) {
+				// Do not interpolate the raw path here: the null byte would
+				// truncate or garble the message in logs.
+				throw new RuntimeException("Unable to $action: path contains a null byte");
+			}
+		}
 	}
 }

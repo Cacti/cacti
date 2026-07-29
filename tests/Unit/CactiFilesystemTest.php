@@ -50,6 +50,18 @@ test('CactiFilesystem read rejects a path containing a null byte', function () {
 		->toThrow(RuntimeException::class, 'null byte');
 });
 
+test('CactiFilesystem rejects a null byte in has, ensureDirectory and delete', function () {
+	$filesystem = new CactiFilesystem();
+	$tainted    = "/tmp/foo\0bar";
+
+	expect(fn () => $filesystem->has($tainted))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->has([$tainted]))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->ensureDirectory($tainted))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->ensureDirectory([$tainted]))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->delete($tainted))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->delete([$tainted]))->toThrow(RuntimeException::class, 'null byte');
+});
+
 test('CactiFilesystem accepts an injected Symfony filesystem', function () {
 	$injected   = new Symfony\Component\Filesystem\Filesystem();
 	$filesystem = new CactiFilesystem($injected);
