@@ -57,7 +57,7 @@ test('htmx_script_tag prefixes the src with CACTI_PATH_URL', function () {
 	$tag = htmx_script_tag();
 	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.min.js');
 
-	expect($tag)->toContain("src='" . CACTI_PATH_URL . 'include/js/htmx.min.js?v=' . $md5 . "'");
+	expect($tag)->toContain("src='" . CACTI_PATH_URL . 'include/js/htmx.min.js?' . $md5 . "'");
 });
 
 test('htmx.min.js.version content matches version pinned by the integrity attribute', function () {
@@ -85,7 +85,9 @@ test('htmx_script_tag cache-busts the src with the md5 of the vendored file', fu
 
 	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.min.js');
 
-	expect(htmx_script_tag())->toContain('?v=' . $md5);
+	// No 'v=' parameter name: matches the path + '?' + hash shape used by
+	// get_md5_include_js()/get_theme_paths() in lib/functions.php.
+	expect(htmx_script_tag())->toContain('/htmx.min.js?' . $md5);
 });
 
 test('htmx_script_tag renders a script tag when htmx_enabled is on', function () {
