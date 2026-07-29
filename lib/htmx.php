@@ -114,7 +114,12 @@ const HTMX_2_0_6_SRI = 'sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z
  * The src is root-absolute (prefixed with CACTI_PATH_URL) so the asset
  * resolves the same way on plugin pages served from subdirectories, matching
  * get_md5_include_js() in lib/functions.php. A document-relative src 404s
- * whenever the current page lives below the Cacti root.
+ * whenever the current page lives below the Cacti root. The cache-buster
+ * query string matches that helper's shape too (path + '?' + hash, no
+ * parameter name), and is recomputed on every call rather than cached in a
+ * static: get_md5_include_js()/get_theme_paths() do the same, since a static
+ * cache would leave long-lived PHP processes (FPM, script_server) serving a
+ * stale hash after include/js/htmx.min.js changes.
  *
  * Two wiring pieces precede the script element:
  *   - an htmx-config meta that disables allowEval/allowScriptTags. htmx 2.0.6
@@ -141,19 +146,17 @@ function htmx_script_tag(): string {
 		return '';
 	}
 
-	// md5 is a cache-buster for the asset URL only. Integrity is the pinned
-	// constant, never derived from the served file (see HTMX_2_0_6_SRI).
-	static $md5 = null;
-
-	if ($md5 === null) {
-		$md5 = md5_file($js_path);
-	}
+	// md5 is a cache-buster for the asset URL only, recomputed on every call
+	// (not cached in a static) so an htmx.min.js upgrade is visible without a
+	// process restart. Integrity is the pinned constant, never derived from
+	// the served file (see HTMX_2_0_6_SRI).
+	$md5 = md5_file($js_path);
 
 	// CACTI_PATH_URL is defined by include/global_path.php during a normal
 	// bootstrap. Fall back to '/' when the constant is absent (lightweight
 	// fixtures that load lib/htmx.php without the full path bootstrap).
 	$base = defined('CACTI_PATH_URL') ? CACTI_PATH_URL : '/';
-	$url  = $base . 'include/js/htmx.min.js?v=' . $md5;
+	$url  = $base . 'include/js/htmx.min.js?' . $md5;
 
 	$config_meta = "<meta name='htmx-config' content='"
 		. htmlspecialchars('{"allowEval":false,"allowScriptTags":false}', ENT_QUOTES, 'UTF-8')
