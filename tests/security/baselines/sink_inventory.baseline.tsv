@@ -533,6 +533,7 @@ dynamic_include	./snmpagent_persist.php:165				include( $path_mibcache );
 dynamic_include	./spikekill.php:26	include_once($config['base_path'] . '/lib/spikekill.php');
 fs_write	./cactid.php:110		$STDERR = fopen('null', 'wb');
 fs_write	./cactid.php:99		$STDERR = fopen('/dev/null', 'wb');
+fs_write	./cli/change_device.php:987		$fh = fopen($file, 'r');
 fs_write	./cli/float_rrdfiles.php:342				$fp = fopen($tmp_file, 'w');
 fs_write	./cli/float_rrdfiles.php:345					$lf = fopen('/tmp/clearer.log', 'a');
 fs_write	./cli/import_package.php:159				$fp   = fopen($filename, 'r');
