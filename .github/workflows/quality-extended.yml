@@ -147,7 +147,7 @@ jobs:
           include/vendor/bin/pest --display-warnings --coverage-clover=coverage.xml \
             --coverage-text --testsuite=Unit,Integration | tee coverage-summary.txt
 
-      - name: Enforce minimum line coverage
+      - name: Enforce minimum statement coverage
         run: |
           set -euo pipefail
           php -r '
@@ -173,7 +173,7 @@ jobs:
               exit(1);
           }
           $pct = ($covered / $statements) * 100.0;
-          printf("Line coverage: %.2f%% (minimum %.2f%%)\n", $pct, $min);
+          printf("Statement coverage: %.2f%% (minimum %.2f%%)\n", $pct, $min);
           if ($pct + 1e-9 < $min) {
               fwrite(STDERR, "Coverage gate failed.\n");
               exit(1);
