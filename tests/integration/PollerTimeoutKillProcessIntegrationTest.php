@@ -67,8 +67,9 @@ test('timeout_kill_registered_processes delivers SIGTERM to a live child', funct
 	expect($pid)->not->toBe(-1);
 
 	if ($pid === 0) {
-		// Child: block until the parent signals us, fail loudly if it never does.
-		sleep(30);
+		// Child: block until the parent signals us. Short enough that a kill
+		// regression fails fast instead of stalling the suite for 30s.
+		sleep(5);
 		exit(0);
 	}
 

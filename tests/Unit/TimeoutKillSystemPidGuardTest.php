@@ -53,6 +53,6 @@ test('timeout_kill_registered_processes gates posix_kill behind is_system_pid', 
 	// The SIGTERM kill must sit on the elseif branch, reachable only after the
 	// is_system_pid() check has excluded the reserved range.
 	expect(strpos($body, 'if (is_system_pid($pid))'))->not->toBeFalse();
-	expect(strpos($body, '} elseif (posix_kill($pid, 0)) {'))->not->toBeFalse();
+	expect(preg_match('/}\s*elseif\s*\(\s*posix_kill\s*\(\s*\$pid\s*,\s*0\s*\)\s*\)\s*{/', $body))->toBe(1);
 	expect(strpos($body, 'posix_kill($pid, SIGTERM)'))->not->toBeFalse();
 });
