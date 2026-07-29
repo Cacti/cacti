@@ -2532,19 +2532,19 @@ function timeout_kill_registered_processes($tasktype = '', $taskname = '', $task
 		$params[] = $taskname;
 	}
 
-	if ($taskid != '') {
+	if ($taskid != 0) {
 		$sql_where .= ' AND taskid = ?';
 		$params[] = $taskid;
 	}
 
-	if ($pid != '') {
+	if ($pid != -1) {
 		$sql_where .= ' AND pid = ?';
 		$params[] = $pid;
 	}
 
 	$processes = db_fetch_assoc_prepared("SELECT *
 		FROM processes
-		WHERE UNIX_TIMESTAMP() > FROM_UNIXTIME(started) + timeout
+		WHERE UNIX_TIMESTAMP() > UNIX_TIMESTAMP(started) + timeout
 		$sql_where", $params);
 
 	if (cacti_sizeof($processes)) {
