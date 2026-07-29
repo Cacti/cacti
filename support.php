@@ -81,7 +81,7 @@ function support_view_tech() : void {
 	// ================= input validation =================
 	gfrv('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-z_A-Z]+)$/']]);
 	// redact is a display-only toggle; coerce to a strict 0/1 and never fail on bad input
-	set_request_var('redact', gnrv('redact') == 1 ? 1 : 0);
+	set_request_var('redact', gnrv('redact') === '1' ? 1 : 0);
 	// ====================================================
 
 	// present a tabbed interface
@@ -151,7 +151,7 @@ function support_view_tech() : void {
 	$redact = (grv('redact') == 1);
 
 	// the processes and background will set their own timeouts
-	$page = 'support.php?tab=' . $current_tab;
+	$page = 'support.php?tab=' . $current_tab . ($redact ? '&redact=1' : '');
 
 	if ($current_tab != 'processes' && $current_tab != 'background') {
 		$refresh = [
@@ -1321,7 +1321,7 @@ function show_tech_summary() : void {
 		// Pre-built status span; already markup, render as-is.
 		print '<td>' . $snmp_version . '</td>';
 	} else {
-		print '<td>' . ($redact ? html_escape(support_redact(strip_tags($snmp_version))) : html_escape($snmp_version)) . '</td>';
+		print '<td>' . ($redact ? html_escape(support_redact($snmp_version)) : html_escape($snmp_version)) . '</td>';
 	}
 
 	form_end_row();
@@ -1845,10 +1845,11 @@ function show_tech_summary() : void {
 	utilities_get_mysql_recommendations();
 
 	// Shareable diagnostics report (Feature: Copy Diagnostics).
-	// When the redact toggle is on, hostnames, IP addresses, the DB host,
-	// credentials, absolute paths and the full RSA fingerprint are masked so
-	// the report is safe to paste into a public issue.
-	$snmp_line     = trim(explode("\n", strip_tags($snmp_version))[0]);
+	// When the redact toggle is on, hostnames/IPs embedded in the SNMP version
+	// line and web server string are masked via support_redact(), and the RSA
+	// fingerprint is truncated. The report does not include the DB host,
+	// credentials or absolute paths.
+	$snmp_line     = $snmp_installed ? trim(explode("\n", $snmp_version)[0]) : trim(strip_tags($snmp_version));
 	$web_server    = (string) ($_SERVER['SERVER_SOFTWARE'] ?? __('Unknown'));
 	$poller_report = $poller_options[read_config_option('poller_type')] ?? __('Unknown');
 
@@ -2031,13 +2032,6 @@ function support_redact(string $value) : string {
 		return $value;
 	}
 
-	// Replace this host's own node name wherever it appears (php_uname, SNMP banner, etc.).
-	$node = function_exists('php_uname') ? php_uname('n') : '';
-
-	if ($node != '' && strlen($node) > 1) {
-		$value = str_ireplace($node, '<host>', $value);
-	}
-
 	// IPv6 before IPv4 so the longer pattern wins. The candidate pattern is
 	// deliberately loose (it also matches "::" compression and would catch
 	// non-addresses like MACs or "1:2:3"); filter_var() gates the replacement
@@ -2048,8 +2042,19 @@ function support_redact(string $value) : string {
 	$value = preg_replace('/\b(?:\d{1,3}\.){3}\d{1,3}\b/', '<ipv4>', $value);
 
 	// FQDNs (foo.bar.example).  The alphabetic TLD requirement leaves version
-	// numbers such as 1.7.2 untouched.
+	// numbers such as 1.7.2 untouched.  This must run before the node-name
+	// replacement below: if the node name is a prefix of the FQDN (e.g. "db01"
+	// in "db01.local"), masking the node name first would strip the prefix and
+	// leave a bare suffix ("local") that no longer looks like an FQDN, leaking
+	// part of the domain.
 	$value = preg_replace('/\b(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}\b/', '<host>', $value);
+
+	// Replace this host's own node name wherever it appears (php_uname, SNMP banner, etc.).
+	$node = function_exists('php_uname') ? php_uname('n') : '';
+
+	if ($node != '' && strlen($node) > 1) {
+		$value = str_ireplace($node, '<host>', $value);
+	}
 
 	// /home/<user>/ and /Users/<user>/ path segments.
 	$value = preg_replace('#/(?:home|Users)/[^/\s]+#', '/home/<redacted>', $value);
