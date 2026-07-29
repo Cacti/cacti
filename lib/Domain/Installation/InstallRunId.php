@@ -26,8 +26,8 @@ namespace Cacti\Domain\Installation;
 
 use InvalidArgumentException;
 
-final readonly class InstallRunId {
-	public string $value;
+final class InstallRunId {
+	public readonly string $value;
 
 	public function __construct(string $value) {
 		$value = trim($value);
