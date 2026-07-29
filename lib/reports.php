@@ -1869,7 +1869,14 @@ function png2jpeg(string $png_data) : string {
 	if ($png_data != '') {
 		// Decode the in-memory graph directly.  A predictable temporary file
 		// can collide with concurrent reports and is vulnerable to symlink races.
-		$im = imagecreatefromstring($png_data);
+		// Only accept real PNG data here; imagecreatefromstring() would also
+		// happily decode a JPEG/GIF/WebP payload if GD supports it, and the
+		// fallback image below is meant to run for anything that isn't PNG.
+		$im = false;
+
+		if (substr($png_data, 0, 8) === "\x89PNG\r\n\x1a\n") {
+			$im = imagecreatefromstring($png_data);
+		}
 
 		if (!$im) {								// check for errors
 			$im  = imagecreate(150, 30);		// create an empty image
@@ -1903,7 +1910,14 @@ function png2gif(string $png_data) : string {
 	if ($png_data != '') {
 		// Decode the in-memory graph directly.  A predictable temporary file
 		// can collide with concurrent reports and is vulnerable to symlink races.
-		$im = imagecreatefromstring($png_data);
+		// Only accept real PNG data here; imagecreatefromstring() would also
+		// happily decode a JPEG/GIF/WebP payload if GD supports it, and the
+		// fallback image below is meant to run for anything that isn't PNG.
+		$im = false;
+
+		if (substr($png_data, 0, 8) === "\x89PNG\r\n\x1a\n") {
+			$im = imagecreatefromstring($png_data);
+		}
 
 		if (!$im) {								// check for errors
 			$im  = imagecreate(150, 30);		// create an empty image
