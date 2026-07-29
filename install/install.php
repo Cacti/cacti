@@ -46,10 +46,11 @@ set_default_action();
 prime_default_settings();
 
 // SAFETY CHECKS FOR OLDER OR SECURED SYSTEMS
+$hasPhpVersion = version_compare(PHP_VERSION, CACTI_PHP_VERSION_MINIMUM, '>=');
 $hasShellExec  = is_function_enabled('shell_exec');
 $hasExec       = is_function_enabled('exec');
 $hasJson       = interface_exists('JsonSerializable');
-$hasEverything = $hasJson && $hasShellExec && $hasExec;
+$hasEverything = $hasPhpVersion && $hasJson && $hasShellExec && $hasExec;
 
 global $config;
 
@@ -123,8 +124,13 @@ if ($hasEverything) {
 } else {
 	print '<div class="installErrorImage"><img src=\'../images/cacti_logo.svg\'></div>';
 	print '<div class="installErrorText">';
-	print '<p>' . __('FATAL: We are unable to continue with this installation. In order to install Cacti, PHP must be at version 8.4 or later.') . '</p>';
+	print '<p>' . __('FATAL: We are unable to continue with this installation. The following prerequisites are not met:') . '</p>';
 	print '<ul>';
+
+	if (!$hasPhpVersion) {
+		print '<li>' . __('PHP must be at version %s or later.', CACTI_PHP_VERSION_MINIMUM) . '</li>';
+		print '<br>';
+	}
 
 	if (!$hasJson) {
 		print '<li>' . __('The php-json module must also be installed.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/book.json.php">JavaScript Object Notation</a>.') . '</li>';
