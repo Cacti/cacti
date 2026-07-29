@@ -120,7 +120,7 @@ dynamic_include	./index.php:49							require_once($file);
 dynamic_include	./lib/installer.php:4103					include_once($upgrade_file);
 dynamic_include	./lib/plugins.php:96						include_once($full_path);
 dynamic_include	./lib/plugins.php:981			require_once($setup_file);
-dynamic_include	./lib/renderer.php:118				include $__cacti_template_file;
+dynamic_include	./lib/renderer.php:138				include $__cacti_template_file;
 dynamic_include	./lib/rrd.php:3052			include($rrdtheme);
 dynamic_include	./lib/rrd.php:4604			include($themefile);
 dynamic_include	./link.php:91					require_once($file);
