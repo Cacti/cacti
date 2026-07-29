@@ -12,6 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
 require_once dirname(__DIR__, 2) . '/lib/CactiClock.php';
 require_once dirname(__DIR__, 2) . '/lib/CactiForm.php';
 

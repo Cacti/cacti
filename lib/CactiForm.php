@@ -52,6 +52,15 @@ class CactiForm {
 		return self::$instance ??= new self();
 	}
 
+	/**
+	 * Overrides the factory backing the static facade (factory/createBuilder/
+	 * createNamedBuilder) so legacy call sites can be tested against a
+	 * DI-provided factory. Pass null to drop back to a fresh default factory.
+	 */
+	public static function setDefault(?FormFactoryInterface $factory): void {
+		self::$instance = $factory !== null ? new self($factory) : null;
+	}
+
 	public function formFactory(): FormFactoryInterface {
 		return $this->factory;
 	}

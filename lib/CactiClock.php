@@ -31,6 +31,15 @@ class CactiClock {
 		return self::$instance ??= new self();
 	}
 
+	/**
+	 * Overrides the clock backing the static facade (currentTime/unixTime/
+	 * sleepFor) so legacy call sites can be tested against a fixed or fake
+	 * clock. Pass null to drop back to a fresh NativeClock.
+	 */
+	public static function setDefault(?ClockInterface $clock): void {
+		self::$instance = $clock !== null ? new self($clock) : null;
+	}
+
 	public static function currentTime(): \DateTimeImmutable {
 		return self::default()->now();
 	}
