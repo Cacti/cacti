@@ -54,6 +54,16 @@ function bug5679_ping($icmp_up, $snmp_up, $community = 'public', $version = 2) {
 	return $p;
 }
 
+/* Net_Ping::ping() forces $avail_method to AVAIL_SNMP whenever socket_create()
+ * doesn't exist, regardless of what the caller asked for. CI's PHP build
+ * doesn't enable the sockets extension, which would collapse every mode
+ * below to the SNMP-only path and make these assertions meaningless. */
+beforeEach(function () {
+	if (!function_exists('socket_create')) {
+		test()->markTestSkipped('sockets extension not available; ping() forces AVAIL_SNMP and the ICMP branch is unreachable.');
+	}
+});
+
 test('OR mode reports down when ping fails and SNMP does not respond', function () {
 	$p = bug5679_ping(false, false);
 	expect($p->ping(AVAIL_SNMP_OR_PING))->toBeFalse();
