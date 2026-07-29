@@ -1383,14 +1383,16 @@ function show_tech_summary() : void {
 	print '<td>' . __('Interval') . '</td>';
 	print '<td>' . read_config_option('poller_interval') . '</td>';
 
-	if (file_exists(read_config_option('path_spine')) && $poller_options[read_config_option('poller_type')] == 'spine') {
+	$poller_type_name = $poller_options[read_config_option('poller_type')] ?? __('Unknown');
+
+	if (file_exists(read_config_option('path_spine')) && $poller_type_name == 'spine') {
 		$type = $spine_version;
 
 		if (!strpos($spine_version, CACTI_VERSION)) {
 			$type .= '<span class="textError"> (' . __('Different version of Cacti and Spine!') . ')</span>';
 		}
 	} else {
-		$type = $poller_options[read_config_option('poller_type')];
+		$type = $poller_type_name;
 	}
 	form_end_row();
 
@@ -1960,12 +1962,12 @@ function show_tech_environment() : void {
 	html_section_header(__('Required Binaries'), 2);
 
 	foreach ($binaries as $option => $arg) {
-		$path = read_config_option($option);
+		$path = (string) read_config_option($option);
 
 		form_alternate_row();
 		print '<td>' . html_escape($option) . '</td>';
 
-		if ($path != '' && !str_contains($path, chr(0)) && file_exists($path) && function_exists('is_executable') && is_executable($path)) {
+		if ($path !== '' && !str_contains($path, chr(0)) && is_file($path) && function_exists('is_executable') && is_executable($path)) {
 			$out     = shell_exec(cacti_escapeshellcmd($path) . ' ' . $arg . ' 2>&1');
 			$version = ($out != '' ? trim(explode("\n", $out)[0]) : __('Unknown version'));
 
@@ -2070,13 +2072,16 @@ function support_redact(string $value) : string {
  * @return array<int,string>
  */
 function support_tail_severity(string $file, int $max_lines, int $cap_bytes) : array {
-	$size = filesize($file);
+	// The path is checked by the caller, but the file can still vanish or
+	// become unreadable between that check and here; suppress the warning
+	// PHP would otherwise emit into the rendered page and fail closed.
+	$size = @filesize($file);
 
 	if ($size === false || $size == 0) {
 		return [];
 	}
 
-	$fp = fopen($file, 'rb');
+	$fp = @fopen($file, 'rb');
 
 	if ($fp === false) {
 		return [];
