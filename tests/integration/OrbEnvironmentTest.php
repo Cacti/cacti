@@ -38,7 +38,7 @@ it('has all required PHP extensions in the Orb machine', function () use ($orb_a
 		$cmd = ($has_timeout() ? 'timeout 30 ' : '') . 'orb php -m | grep -i ^' . escapeshellarg($ext) . '$';
 		// nosemgrep: php.lang.security.exec-use.exec-use - allowlisted ext names, integration test
 		$output = shell_exec($cmd);
-		expect(trim((string)$output))->toBeIgnoringCase($ext);
+		expect(strtolower(trim((string)$output)))->toBe(strtolower($ext));
 	}
 });
 
@@ -51,5 +51,5 @@ it('can run a Cacti CLI command in the Orb machine', function () use ($orb_avail
 	// nosemgrep: php.lang.security.exec-use.exec-use - constant command, integration test
 	$output = shell_exec($cmd);
 	// Just verify it doesn't crash and returns something sensible
-	expect($output)->toContain('Cacti');
+	expect((string)$output)->toContain('Cacti');
 });
