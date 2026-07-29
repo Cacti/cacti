@@ -100,6 +100,32 @@ test('CactiFilesystem instance moves, renames and reports absolute paths', funct
 	}
 });
 
+test('CactiFilesystem static facade renames, creates temp files with a suffix, and reports absolute paths', function () {
+	$dir    = sys_get_temp_dir() . '/cacti-fs-static-' . bin2hex(random_bytes(4));
+	$origin = CactiFilesystem::join($dir, 'origin.txt');
+	$target = CactiFilesystem::join($dir, 'target.txt');
+
+	try {
+		CactiFilesystem::mkdir($dir);
+		CactiFilesystem::dumpFile($origin, 'payload');
+		CactiFilesystem::rename($origin, $target);
+
+		expect(CactiFilesystem::exists($origin))->toBeFalse()
+			->and(CactiFilesystem::exists($target))->toBeTrue();
+
+		// The suffix must land at the end of the generated filename: this is
+		// the Symfony Filesystem::tempnam() argument position, not a file mode.
+		$temp = CactiFilesystem::tempnam($dir, 'tmp', '.suffix');
+		expect(CactiFilesystem::exists($temp))->toBeTrue()
+			->and($temp)->toEndWith('.suffix');
+
+		expect(CactiFilesystem::isAbsolutePath($target))->toBeTrue()
+			->and(CactiFilesystem::isAbsolutePath('relative/path'))->toBeFalse();
+	} finally {
+		CactiFilesystem::remove($dir);
+	}
+});
+
 test('CactiFilesystem is a readonly value wrapper', function () {
 	$property = (new ReflectionClass(CactiFilesystem::class))->getProperty('filesystem');
 	expect($property->isReadOnly())->toBeTrue();
