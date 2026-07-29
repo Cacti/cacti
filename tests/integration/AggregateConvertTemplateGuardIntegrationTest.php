@@ -46,6 +46,36 @@ function issue7338_wire_default_connection(PDO $conn): void {
 	$database_sessions["$database_hostname:$database_port:$database_default"] = $conn;
 }
 
+/*
+ * issue7338_wire_default_connection() overwrites the process-global
+ * $database_hostname/$database_port/$database_default (read by every db_*
+ * helper in lib/database.php) and leaves a fake connection sitting in
+ * $database_sessions. Left in place, later test files in the same Pest
+ * process resolve db_* calls against this stale sqlite handle instead of
+ * their own fixture -- snapshot the globals here and put them back exactly
+ * as found.
+ */
+beforeEach(function () {
+	global $database_hostname, $database_port, $database_default, $database_sessions;
+
+	$this->issue7338_prior_globals = [
+		'database_hostname' => $database_hostname ?? null,
+		'database_port'     => $database_port ?? null,
+		'database_default'  => $database_default ?? null,
+		'database_sessions' => $database_sessions ?? [],
+	];
+});
+
+afterEach(function () {
+	global $database_hostname, $database_port, $database_default, $database_sessions;
+
+	$prior             = $this->issue7338_prior_globals;
+	$database_hostname = $prior['database_hostname'];
+	$database_port     = $prior['database_port'];
+	$database_default  = $prior['database_default'];
+	$database_sessions = $prior['database_sessions'];
+});
+
 function issue7338_seed(PDO $conn): void {
 	$conn->exec('DROP TABLE IF EXISTS aggregate_graph_templates');
 	$conn->exec('DROP TABLE IF EXISTS aggregate_graphs');
