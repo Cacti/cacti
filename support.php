@@ -724,10 +724,10 @@ function support_process_tables() : array {
 		$definitions = $defaults;
 	}
 
-	// discard anything a plugin registered that is not a well formed definition
-	// so a broken hook cannot fatal the process view or corrupt the UNION.  the
-	// three members are used directly in SQL and markup, so each must be a string;
-	// a plugin passing an array/object for any of them gets the entry skipped.
+	// discard anything a plugin registered that is not a well formed definition.
+	// this only enforces that label/table/select are present and are strings; it
+	// does not validate that 'select' is syntactically valid SQL or returns the
+	// expected columns, so a malformed plugin SELECT can still break the UNION.
 	foreach ($definitions as $key => $definition) {
 		if (!is_array($definition) ||
 			!isset($definition['label'], $definition['table'], $definition['select']) ||
@@ -870,7 +870,10 @@ function show_cacti_processes() : void {
 
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {
-			form_alternate_row('line' . $p['pid'], false);
+			// pid backs the SELECT fragments plugins register, so cast it before
+			// using it to build the row id -- a non-numeric value could otherwise
+			// break out of the id='...' attribute in form_alternate_row().
+			form_alternate_row('line' . (int) $p['pid'], false);
 
 			if ($p['timeout'] != 'N/A') {
 				$timeout_time = $p['timeout'];
@@ -885,18 +888,20 @@ function show_cacti_processes() : void {
 
 			// escape every column: plugins can contribute the SELECT fragments
 			// behind these rows via the support_process_tables hook, so the
-			// values are not trusted (taskname is already escaped by filter_value)
-			form_selectable_cell(html_escape($p['tasktype']), $p['pid']);
+			// values are not trusted (taskname is already escaped by filter_value).
+			// use form_selectable_ecell(), the file's existing escaping helper,
+			// rather than hand-wrapping form_selectable_cell() with html_escape().
+			form_selectable_ecell($p['tasktype'], $p['pid']);
 			form_selectable_cell(filter_value(cacti_strtoupper($p['taskname']), ''), $p['pid']);
-			form_selectable_cell(html_escape($p['taskid']), $p['pid'], '', 'right');
-			form_selectable_cell(html_escape($p['runtime']), $p['pid'], '', 'right');
-			form_selectable_cell(html_escape($p['pid']), $p['pid'], '', 'right');
+			form_selectable_ecell($p['taskid'], $p['pid'], '', 'right');
+			form_selectable_ecell($p['runtime'], $p['pid'], '', 'right');
+			form_selectable_ecell($p['pid'], $p['pid'], '', 'right');
 
 			// form_selectable_cell($p['timeout'], $p['pid'], '', 'right');
 
-			form_selectable_cell(html_escape($timeout_date), $p['pid'], '', 'right');
-			form_selectable_cell(html_escape($p['started']), $p['pid'], '', 'right');
-			form_selectable_cell(html_escape($p['last_update']), $p['pid'], '', 'right');
+			form_selectable_ecell($timeout_date, $p['pid'], '', 'right');
+			form_selectable_ecell($p['started'], $p['pid'], '', 'right');
+			form_selectable_ecell($p['last_update'], $p['pid'], '', 'right');
 
 			form_end_row();
 		}
