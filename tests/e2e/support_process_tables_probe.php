@@ -38,10 +38,10 @@ function process_tables_probe_fail(string $message): void {
 // and evaluate it here. It still calls the real plugin hook and db_table_exists()
 // against the container database. eval() runs only Cacti's own extracted source.
 $src = file_get_contents(dirname(__DIR__, 2) . '/support.php');
-preg_match('/function support_process_tables\(\) : array \{.*?^\}/sm', $src, $m);
+$matched = preg_match('/function\s+support_process_tables\s*\(\s*\)\s*:\s*array\s*\{.*?^\}/sm', $src, $m);
 
-if (empty($m)) {
-	process_tables_probe_fail('could not extract support_process_tables()');
+if ($matched !== 1) {
+	process_tables_probe_fail("could not extract support_process_tables() (preg_match returned $matched)");
 }
 
 eval(preg_replace('/^function support_process_tables\(\)/m', 'function support_process_tables_probe()', $m[0]));
