@@ -59,17 +59,33 @@ final class CactiRenderer {
 	public function renderFile(string $template_file, array $context = []) : string {
 		$template_file = $this->validateTemplateFile($template_file);
 
+		$start_level = ob_get_level();
+
 		ob_start();
 
 		try {
 			$this->includeTemplate($template_file, $context);
 
-			return (string) ob_get_clean();
+			return $this->drainOutputBuffers($start_level);
 		} catch (Throwable $e) {
-			ob_end_clean();
+			$this->drainOutputBuffers($start_level);
 
 			throw $e;
 		}
+	}
+
+	// A template should close any buffer it opens, but a stray ob_start() must
+	// not leak a level or scramble output order. Pop innermost-first (the only
+	// order ob_get_clean() allows), then replay outermost-first so the result
+	// matches the order the template actually wrote it in.
+	private function drainOutputBuffers(int $start_level) : string {
+		$chunks = [];
+
+		while (ob_get_level() > $start_level) {
+			$chunks[] = (string) ob_get_clean();
+		}
+
+		return implode('', array_reverse($chunks));
 	}
 
 	private function resolveTemplate(string $template) : string {
@@ -101,9 +117,13 @@ final class CactiRenderer {
 		// sharing the prefix (".../tmpl-evil" against ".../tmpl") cannot match.
 		// str_starts_with() is case-sensitive, which on a case-insensitive
 		// Windows volume only ever over-rejects (fail-closed), so leave it.
+		//
+		// (No separate $real_path !== $this->template_path check: the is_file()
+		// check above and the is_dir() check in the constructor already make
+		// that comparison unreachable, since the same real path can't be both.)
 		$base_path = rtrim($this->template_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
-		if ($real_path !== $this->template_path && !str_starts_with($real_path, $base_path)) {
+		if (!str_starts_with($real_path, $base_path)) {
 			throw new InvalidArgumentException('Renderer template file is outside the template path');
 		}
 

@@ -174,3 +174,20 @@ it('cleans the output buffer and rethrows when a template errors', function () {
 		unlink($dir . '/boom.php');
 	}
 });
+
+it('collects output from a stray buffer a template leaves open', function () {
+	$dir = cacti_renderer_fixture_dir();
+	file_put_contents($dir . '/leaky.php', '<?php print "before "; ob_start(); print "after";');
+
+	$renderer = new CactiRenderer($dir);
+	$depth    = ob_get_level();
+
+	try {
+		expect($renderer->render('leaky.php'))->toBe('before after');
+
+		// The leaked buffer must be unwound along with the renderer's own.
+		expect(ob_get_level())->toBe($depth);
+	} finally {
+		unlink($dir . '/leaky.php');
+	}
+});
