@@ -32,6 +32,10 @@
 
 $source = file_get_contents(__DIR__ . '/../../scripts/ss_host_disk.php');
 
+if ($source === false) {
+	throw new RuntimeException('Unable to read scripts/ss_host_disk.php');
+}
+
 preg_match('/if \(\$snmp_data != \'\'.*?\n\t\t\t\t\}\n(?=\t\t\t\} else \{)/s', $source, $matches);
 
 test('the negative-size reconstruction chain is present in the source', function () use ($matches) {

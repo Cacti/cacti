@@ -31,6 +31,10 @@
 
 $source = file_get_contents(__DIR__ . '/../../lib/poller.php');
 
+if ($source === false) {
+	throw new RuntimeException('Unable to read lib/poller.php');
+}
+
 preg_match(
 	"/if \(\\\$tasktype != ''\).*?\n\t\}\n\n\tif \(\\\$taskname.*?\n\t\}\n\n\tif \(\\\$taskid.*?\n\t\}\n\n\tif \(\\\$pid.*?\n\t\}/s",
 	$source,
