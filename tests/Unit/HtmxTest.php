@@ -51,6 +51,12 @@ test('htmx_version returns empty string when the version file is missing', funct
 	$moved = rename($path, $backup);
 	expect($moved)->toBeTrue();
 
+	// The preceding test already called file_exists()/file_get_contents() on
+	// $path, so PHP's stat cache can still report it as present right after
+	// the rename above. Clear it or htmx_version() reads stale cached stat
+	// data instead of the now-missing file, making this assertion flaky.
+	clearstatcache(true, $path);
+
 	try {
 		expect(htmx_version())->toBe('');
 	} finally {
@@ -58,6 +64,10 @@ test('htmx_version returns empty string when the version file is missing', funct
 		// restore does not land so a dirty repo never leaks into later tests.
 		if ($moved && file_exists($backup)) {
 			expect(rename($backup, $path))->toBeTrue();
+
+			// Same stat-cache hazard in reverse: clear it so the next test's
+			// file_exists()/file_get_contents() sees the restored file.
+			clearstatcache(true, $path);
 		}
 	}
 });
@@ -123,11 +133,17 @@ test('htmx_script_tag returns empty string when the vendored file is missing', f
 	$moved = rename($path, $backup);
 	expect($moved)->toBeTrue();
 
+	// Every later 'enabled' test re-reads $path via file_exists()/md5_file();
+	// clear the stat cache so this rename is visible immediately rather than
+	// leaving stale "still present" data behind.
+	clearstatcache(true, $path);
+
 	try {
 		expect(htmx_script_tag())->toBe('');
 	} finally {
 		if ($moved && file_exists($backup)) {
 			expect(rename($backup, $path))->toBeTrue();
+			clearstatcache(true, $path);
 		}
 	}
 });
@@ -162,7 +178,9 @@ test('htmx_script_tag cache-busts with md5 of the vendored file', function () {
 
 	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.min.js');
 
-	expect(htmx_script_tag())->toContain('?v=' . $md5);
+	// No 'v=' parameter name: matches the path + '?' + hash shape used by
+	// get_md5_include_js()/get_theme_paths() in lib/functions.php.
+	expect(htmx_script_tag())->toContain('/htmx.min.js?' . $md5);
 });
 
 test('htmx_script_tag emits a root-absolute src prefixed with CACTI_PATH_URL', function () {
