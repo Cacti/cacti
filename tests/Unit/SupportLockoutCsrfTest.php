@@ -147,6 +147,7 @@ test('the process-list page offset is clamped against negative LIMIT offsets', f
 	$src = file_get_contents(dirname(__DIR__, 2) . '/support.php');
 
 	// Both process tables must clamp the page number to at least 1 so a page=0
-	// or negative page cannot produce a negative SQL LIMIT offset.
-	expect(substr_count($src, "max(1, (int) grv('page'))"))->toBe(2);
+	// or negative page cannot produce a negative SQL LIMIT offset. Matched with
+	// tolerant whitespace so reformatting doesn't break this on exact spacing.
+	expect(preg_match_all('/max\(\s*1\s*,\s*\(int\)\s*grv\(\s*\'page\'\s*\)\s*\)/', $src))->toBe(2);
 });
