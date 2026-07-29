@@ -36,6 +36,9 @@ $patterns = [
 			// pre-boot code; the request helper layer is not loaded yet
 			'include/global.php',
 			'lib/PackageListFilter.php',
+			// tests/integration/AggregateConvertTemplateGuardIntegrationTest.php: simulates request
+			// state to exercise the real request-consuming function, not a production sanitization bypass
+			'tests/integration/AggregateConvertTemplateGuardIntegrationTest.php',
 		]
 	],
 //	'manual-request-query-url' => [
