@@ -37,12 +37,16 @@ test('every touched file passes a syntactic shebang/PHP-tag check', function () 
 	}
 });
 
-test('the four form_save inits are present and precede their empty() consumers', function () use ($repoRoot) {
+test('the four form_save inits are present and precede their null-guarded consumers', function () use ($repoRoot) {
+	/* PR #7317/#7348 replaced the empty()-based fallback with a null
+	 * sentinel: init to null right before the items foreach, then check
+	 * `=== null` in the error-redirect URL. empty() would have mistreated
+	 * a legitimately-falsy 0 id as "absent"; === null does not. */
 	$cases = [
-		'aggregate_graphs.php' => ['$graph_template_item_id = 0;', 'empty($graph_template_item_id)'],
-		'color_templates.php'  => ['$color_template_item_id = 0;', 'empty($color_template_item_id)'],
-		'graph_templates.php'  => ['$graph_template_item_id = 0;', 'empty($graph_template_item_id)'],
-		'graphs.php'           => ['$graph_template_item_id = 0;', 'empty($graph_template_item_id)'],
+		'aggregate_graphs.php' => ['$graph_template_item_id = null;', '$graph_template_item_id === null'],
+		'color_templates.php'  => ['$color_template_item_id = null;', '$color_template_item_id === null'],
+		'graph_templates.php'  => ['$graph_template_item_id = null;', '$graph_template_item_id === null'],
+		'graphs.php'           => ['$graph_template_item_id = null;', '$graph_template_item_id === null'],
 	];
 	foreach ($cases as $rel => [$init, $consumer]) {
 		$src       = file_get_contents("$repoRoot/$rel");

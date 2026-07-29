@@ -24,7 +24,10 @@
  *       at static-analysis time. Affected: aggregate_graphs.php:378,
  *       color_templates.php:245, graph_templates.php:611, graphs.php:713.
  *       Each was fixed by initialising the variable to 0 at the top of the
- *       relevant `elseif (isrv('save_component_item'))` branch.
+ *       relevant `elseif (isrv('save_component_item'))` branch. PR #7317
+ *       and #7348 later superseded the empty() consumer with a `=== null`
+ *       check against a null sentinel set just before the items foreach,
+ *       since empty() also matches a legitimately-falsy 0 id.
  *
  *   (B) `isset($tab['image'])` at lib/html.php:2388 / 2396 / 2404. PHPStan
  *       infers from the right-tab array constructor that 'image' is always
@@ -109,15 +112,17 @@ test('graphs.php save_component_item branch initialises $graph_template_item_id'
 	expect($initPos < $foreachPos)->toBeTrue('init must precede the items foreach');
 });
 
-test('the empty() fallback in the error-redirect URL still uses the variable', function () use ($sources) {
-	/* The init is a no-op if the redirect ever stops calling empty() on
-	 * the variable. Guard the call site so this PR does not silently
-	 * regress to a different shape. */
+test('the null-guarded fallback in the error-redirect URL still uses the variable', function () use ($sources) {
+	/* The init is a no-op if the redirect ever stops checking the
+	 * variable. Guard the call site so this PR does not silently
+	 * regress to a different shape. PR #7317/#7348 replaced the original
+	 * empty() consumer with a `=== null` check, since empty() also
+	 * matches a legitimately-falsy 0 id. */
 	$expected = [
-		'aggregate_graphs.php' => '(empty($graph_template_item_id) ? gfrv(\'graph_template_item_id\') : $graph_template_item_id)',
-		'color_templates.php'  => '(empty($color_template_item_id) ? gnrv(\'color_template_item_id\') : $color_template_item_id)',
-		'graph_templates.php'  => '(empty($graph_template_item_id) ? gnrv(\'graph_template_item_id\') : $graph_template_item_id)',
-		'graphs.php'           => '(empty($graph_template_item_id) ? gnrv(\'graph_template_item_id\') : $graph_template_item_id)',
+		'aggregate_graphs.php' => '($graph_template_item_id === null ? gfrv(\'graph_template_item_id\') : $graph_template_item_id)',
+		'color_templates.php'  => '($color_template_item_id === null ? gnrv(\'color_template_item_id\') : $color_template_item_id)',
+		'graph_templates.php'  => '($graph_template_item_id === null ? gnrv(\'graph_template_item_id\') : $graph_template_item_id)',
+		'graphs.php'           => '($graph_template_item_id === null ? gnrv(\'graph_template_item_id\') : $graph_template_item_id)',
 	];
 	foreach ($expected as $file => $needle) {
 		expect($sources[$file])->toContain($needle);
@@ -154,11 +159,11 @@ test('every PHPStan-flagged file:line shows the post-fix shape', function () use
 	 * shape. If a future refactor moves the line, this test still helps:
 	 * the assertion focuses on the offending pattern, not just position. */
 	$cases = [
-		// (A) empty()/undefined-variable sites
-		['aggregate_graphs.php', '$graph_template_item_id', 'empty('],
-		['color_templates.php',  '$color_template_item_id', 'empty('],
-		['graph_templates.php',  '$graph_template_item_id', 'empty('],
-		['graphs.php',           '$graph_template_item_id', 'empty('],
+		// (A) undefined-variable sites, now guarded by a null sentinel
+		['aggregate_graphs.php', '$graph_template_item_id', '=== null'],
+		['color_templates.php',  '$color_template_item_id', '=== null'],
+		['graph_templates.php',  '$graph_template_item_id', '=== null'],
+		['graphs.php',           '$graph_template_item_id', '=== null'],
 		// (B) right-tab isset removal
 		['lib/html.php',         "\$tab['image'] != ''", "isset(\$tab['image'])"],
 	];
@@ -193,25 +198,26 @@ test('PHP empty() on undefined variable is silent at runtime; PHPStan flags it',
 
 /* --- Defect-class scan: catch any future reintroduction --------------- */
 
-test('no other empty($x_template_item_id) lookups happen against an undefined var', function () use ($sources) {
-	/* Cross-cutting check: every empty($...template_item_id) call across
-	 * the touched files must be reachable via either an init in scope or
-	 * a prior assignment in the same branch. We approximate "in scope"
-	 * by ensuring an init ($x = 0) appears earlier in the same file. */
+test('no other $x_template_item_id === null lookups happen against an undefined var', function () use ($sources) {
+	/* Cross-cutting check: every "=== null" consumer of a *_template_item_id
+	 * variable across the touched files must be reachable via a null-sentinel
+	 * init earlier in the same file (PR #7317/#7348 replaced the original
+	 * empty()-based consumer with this shape). We approximate "in scope" by
+	 * ensuring an init ($x = null) appears earlier in the same file. */
 	foreach ($sources as $file => $src) {
-		if (!preg_match_all('/empty\(\$(\w*template_item_id)\)/', $src, $m, PREG_OFFSET_CAPTURE)) {
+		if (!preg_match_all('/\$(\w*template_item_id)\s*===\s*null/', $src, $m, PREG_OFFSET_CAPTURE)) {
 			continue;
 		}
 		foreach ($m[1] as $hit) {
 			$varName = $hit[0];
-			$emptyOffset = $hit[1];
-			$initPattern = '$' . $varName . ' = 0;';
+			$consumeOffset = $hit[1];
+			$initPattern = '$' . $varName . ' = null;';
 			$initOffset  = strpos($src, $initPattern);
 			expect($initOffset)->not->toBeFalse(
-				"$file: empty(\$$varName) at offset $emptyOffset must be backed by an earlier '\$$varName = 0;' init"
+				"$file: \$$varName === null at offset $consumeOffset must be backed by an earlier '\$$varName = null;' init"
 			);
-			expect($initOffset < $emptyOffset)->toBeTrue(
-				"$file: '\$$varName = 0;' must precede the empty(\$$varName) consumer"
+			expect($initOffset < $consumeOffset)->toBeTrue(
+				"$file: '\$$varName = null;' must precede the \$$varName === null consumer"
 			);
 		}
 	}
