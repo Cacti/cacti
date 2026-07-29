@@ -7,7 +7,7 @@ set -eu
 
 VENDOR_BIN="include/vendor/bin"
 REQUIRED_PHP_MAJOR=8
-MAX_PHP_MINOR=4
+MIN_PHP_MINOR=4
 
 # ---- Environment checks (run before any tool) ----
 
@@ -17,10 +17,9 @@ check_php_version() {
     minor=$(echo "$php_ver" | cut -d. -f2)
 
     if [ "$major" != "$REQUIRED_PHP_MAJOR" ]; then
-        echo "WARNING: PHP $php_ver detected. Cacti requires PHP 8.x"
-    elif [ "$minor" -gt "$MAX_PHP_MINOR" ] 2>/dev/null; then
-        echo "WARNING: PHP $php_ver detected. Cacti targets PHP 8.1-8.4."
-        echo "  Some type features (true|string) are not available on PHP 8.1."
+        echo "WARNING: PHP $php_ver detected. Cacti requires PHP 8.4+"
+    elif [ "$minor" -lt "$MIN_PHP_MINOR" ] 2>/dev/null; then
+        echo "WARNING: PHP $php_ver detected. Cacti 1.3 targets PHP 8.4+."
         echo "  Consider: export PATH=\"/opt/homebrew/opt/php@8.4/bin:\${PATH}\""
     fi
 }
