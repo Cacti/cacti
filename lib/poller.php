@@ -2400,7 +2400,11 @@ function cacti_process_still_running($pid) {
 		return trim($self) === trim($other);
 	}
 
-	return true;
+	/* /proc is unavailable (non-Linux or restricted): fall back to the bare
+	 * existence test, but re-check it here rather than trusting the result
+	 * from the top of the function, which can now be stale if the pid exited
+	 * in the window between that check and these file reads. */
+	return posix_kill($pid, 0);
 }
 
 /**
