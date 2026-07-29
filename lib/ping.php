@@ -698,7 +698,7 @@ class Net_Ping
 			if (!$ping_result && $avail_method == AVAIL_SNMP_AND_PING) {
 				$snmp_result = $ping_result;
 			} else {
-				$have_snmp = (strlen($this->host['snmp_community']) > 0 || $this->host['snmp_version'] >= 3);
+				$have_snmp = (strlen($this->host['snmp_community'] ?? '') > 0 || ($this->host['snmp_version'] ?? 0) >= 3);
 
 				if ($have_snmp && !($avail_method == AVAIL_SNMP_OR_PING && $ping_result)) {
 					/* Run the real SNMP test whenever a community (or v3) is configured. In OR
