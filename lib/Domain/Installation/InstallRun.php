@@ -25,9 +25,13 @@
 namespace Cacti\Domain\Installation;
 
 final class InstallRun {
-	public private(set) InstallRunState $state = InstallRunState::Ready;
+	private InstallRunState $state = InstallRunState::Ready;
 
 	public function __construct(public readonly InstallRunId $id) {
+	}
+
+	public function state(): InstallRunState {
+		return $this->state;
 	}
 
 	public function start(): void {

@@ -32,7 +32,7 @@ require_once dirname(__DIR__, 4) . '/include/domain.php';
 it('starts a new run in the ready state', function () {
 	$run = new InstallRun(new InstallRunId('run-123'));
 
-	expect($run->state)->toBe(InstallRunState::Ready)
+	expect($run->state())->toBe(InstallRunState::Ready)
 		->and((string) $run->id)->toBe('run-123');
 });
 
@@ -42,7 +42,7 @@ it('allows a run to complete through the running state', function () {
 	$run->start();
 	$run->succeed();
 
-	expect($run->state)->toBe(InstallRunState::Succeeded);
+	expect($run->state())->toBe(InstallRunState::Succeeded);
 });
 
 it('allows a failed run to be retried explicitly', function () {
@@ -51,12 +51,12 @@ it('allows a failed run to be retried explicitly', function () {
 	$run->start();
 	$run->fail();
 
-	expect($run->state)->toBe(InstallRunState::Failed)
-		->and($run->state->isTerminal())->toBeFalse();
+	expect($run->state())->toBe(InstallRunState::Failed)
+		->and($run->state()->isTerminal())->toBeFalse();
 
 	$run->retry();
 
-	expect($run->state)->toBe(InstallRunState::Ready);
+	expect($run->state())->toBe(InstallRunState::Ready);
 });
 
 it('allows a ready run to be cancelled', function () {
@@ -64,8 +64,8 @@ it('allows a ready run to be cancelled', function () {
 
 	$run->cancel();
 
-	expect($run->state)->toBe(InstallRunState::Cancelled)
-		->and($run->state->isTerminal())->toBeTrue();
+	expect($run->state())->toBe(InstallRunState::Cancelled)
+		->and($run->state()->isTerminal())->toBeTrue();
 });
 
 it('allows a running run to be cancelled', function () {
@@ -74,8 +74,8 @@ it('allows a running run to be cancelled', function () {
 	$run->start();
 	$run->cancel();
 
-	expect($run->state)->toBe(InstallRunState::Cancelled)
-		->and($run->state->isTerminal())->toBeTrue();
+	expect($run->state())->toBe(InstallRunState::Cancelled)
+		->and($run->state()->isTerminal())->toBeTrue();
 });
 
 it('rejects invalid and terminal state transitions', function () {
@@ -101,11 +101,11 @@ it('treats a cancelled run as terminal for every transition', function () {
 it('reports ready and running as non-terminal states', function () {
 	$run = new InstallRun(new InstallRunId('run-123'));
 
-	expect($run->state->isTerminal())->toBeFalse();
+	expect($run->state()->isTerminal())->toBeFalse();
 
 	$run->start();
 
-	expect($run->state->isTerminal())->toBeFalse();
+	expect($run->state()->isTerminal())->toBeFalse();
 });
 
 it('names the offending run in the transition error message', function () {

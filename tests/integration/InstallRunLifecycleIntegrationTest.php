@@ -34,20 +34,20 @@ require_once dirname(__DIR__, 2) . '/include/domain.php';
 it('drives a full install run lifecycle through the domain bootstrap', function () {
 	$run = new InstallRun(new InstallRunId('bootstrap-run'));
 
-	expect($run->state)->toBe(InstallRunState::Ready);
+	expect($run->state())->toBe(InstallRunState::Ready);
 
 	$run->start();
-	expect($run->state)->toBe(InstallRunState::Running);
+	expect($run->state())->toBe(InstallRunState::Running);
 
 	$run->fail();
-	expect($run->state)->toBe(InstallRunState::Failed);
+	expect($run->state())->toBe(InstallRunState::Failed);
 
 	$run->retry();
 	$run->start();
 	$run->succeed();
 
-	expect($run->state)->toBe(InstallRunState::Succeeded)
-		->and($run->state->isTerminal())->toBeTrue();
+	expect($run->state())->toBe(InstallRunState::Succeeded)
+		->and($run->state()->isTerminal())->toBeTrue();
 
 	expect(fn () => $run->cancel())->toThrow(InvalidInstallRunTransition::class);
 });
