@@ -101,8 +101,14 @@ test('remote agent authorization fails closed on fcrdns mismatch', function () u
 		->and($remote_agent)->not->toContain('$client_name = $client_addr;');
 });
 
-test('basic authentication does not trust a client-supplied forwarded user header', function () use ($root) {
+test('basic authentication only trusts a forwarded user header behind a configured trusted-proxy check', function () use ($root) {
 	$auth = file_get_contents($root . '/lib/auth.php');
 
-	expect($auth)->not->toContain('HTTP_X_FORWARDED_USER');
+	// HTTP_X_FORWARDED_USER is client-supplied and must never be honored on its
+	// own; it's only read when $trusted is true, and $trusted comes from
+	// is_trusted_proxy(), which matches REMOTE_ADDR against the server-side
+	// $config['trusted_proxies'] list -- never from request input.
+	expect($auth)->toContain("elseif (\$trusted && isset(\$_SERVER['HTTP_X_FORWARDED_USER']))")
+		->and($auth)->toContain('$trusted = is_trusted_proxy();')
+		->and($auth)->toContain("\$trusted = \$config['trusted_proxies'] ?? [];");
 });
