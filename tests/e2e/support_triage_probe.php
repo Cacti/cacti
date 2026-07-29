@@ -21,8 +21,8 @@
  * Runs inside the Cacti web container. Drives the safe-triage redaction flow
  * (support.php, #7358) over real HTTP: with redact=1 the rendered Summary tab
  * must mask the RSA fingerprint and must not contain the live database host or
- * password, and the Recent Log tab must render. Without the flag the same
- * values appear unmasked.
+ * password (when non-default), and the Recent Log tab must render. Without
+ * the flag, the report contains the full RSA fingerprint.
  *
  * Usage (inside the container):
  *   BASE_URL=http://localhost/cacti php support_triage_probe.php

@@ -13,7 +13,8 @@
 # End-to-end check for the safe-triage redaction flow (#7358). Boots the Cacti
 # Docker stack, then runs support_triage_probe.php inside the web container to
 # confirm the redacted diagnostics report masks the RSA fingerprint and never
-# leaks the database host or password, while the unredacted report shows them.
+# leaks the database host or password (when non-default), while the
+# unredacted report contains the full RSA fingerprint.
 #
 # Requires Docker. Run from a checkout: tests/e2e/support_triage_docker.sh
 set -euo pipefail
