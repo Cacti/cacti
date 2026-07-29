@@ -37,6 +37,17 @@ $user = getenv('CACTI_USER') ?: 'admin';
 $pass = getenv('CACTI_PASS') ?: 'admin';
 $jar  = tempnam(sys_get_temp_dir(), 'cacticookie');
 
+if ($jar === false) {
+	fwrite(STDERR, "FAIL: could not create a cookie-jar temp file\n");
+	exit(1);
+}
+
+// Runs on every exit path, including lockout_probe_fail()'s exit(1), so the
+// jar never lingers in the temp directory after a failed run.
+register_shutdown_function(static function () use ($jar): void {
+	@unlink($jar);
+});
+
 function lockout_probe_fail(string $message): void {
 	fwrite(STDERR, "FAIL: $message\n");
 	exit(1);
@@ -82,12 +93,26 @@ function lockout_probe_csrf(string $html): string {
 // Authenticate.
 [, $loginHtml] = lockout_probe_request("$base/index.php", $jar);
 $token = lockout_probe_csrf($loginHtml);
+
+if ($token === '') {
+	lockout_probe_fail('could not extract a CSRF token from the login page');
+}
+
 lockout_probe_request("$base/index.php", $jar, [
 	'__csrf_magic' => $token,
 	'action'       => 'login',
 	'login_username' => $user,
 	'login_password' => $pass,
 ]);
+
+// Without this, a failed login (bad credentials, CSRF rejected) would still
+// "pass" below: the lockout requests would just bounce off auth instead of
+// the guard under test, leaving cacti_lockout_status untouched either way.
+[, $sessionHtml] = lockout_probe_request("$base/index.php", $jar);
+
+if (str_contains($sessionHtml, 'name="login_username"')) {
+	lockout_probe_fail('login did not authenticate the session (login form still shown)');
+}
 
 $before = read_config_option('cacti_lockout_status', true);
 
@@ -104,7 +129,5 @@ $after_post = read_config_option('cacti_lockout_status', true);
 if ($after_post !== $before) {
 	lockout_probe_fail('POST without a CSRF token changed the lockout state');
 }
-
-@unlink($jar);
 
 print "PASS support lockout csrf docker probe\n";
