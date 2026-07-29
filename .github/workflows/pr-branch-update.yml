@@ -1,0 +1,69 @@
+name: Update stale pull request branches
+
+# Open PRs drift behind develop/1.2.x the longer they sit unreviewed, and a
+# large gap turns an otherwise clean PR into a merge conflict once someone
+# finally looks at it. This walks every open PR and, for any that GitHub
+# reports as BEHIND its base, calls the same update-branch endpoint behind
+# the PR page's "Update branch" button (a merge, not a rebase, so it never
+# needs a force-push). PRs that are DIRTY (a real conflict) or already
+# current are left alone; fork PRs whose author hasn't enabled "Allow edits
+# from maintainers" will fail the API call, which is expected and logged,
+# not treated as a job failure.
+
+on:
+  schedule:
+    - cron: '40 8,20 * * *'
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+
+concurrency:
+  group: pr-branch-update
+  cancel-in-progress: false
+
+jobs:
+  update-branches:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Update PRs that are behind their base branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          prs=$(gh pr list --state open --json number,mergeStateStatus --limit 200)
+
+          updated=0
+          skipped=0
+          failed=0
+
+          for row in $(echo "$prs" | jq -c '.[]'); do
+            number=$(echo "$row" | jq -r '.number')
+            status=$(echo "$row" | jq -r '.mergeStateStatus')
+
+            if [ "$status" != "BEHIND" ]; then
+              echo "skip #$number: mergeStateStatus=$status"
+              skipped=$((skipped + 1))
+              continue
+            fi
+
+            echo "updating #$number (behind base branch)"
+            if gh api -X PUT \
+                -H "Accept: application/vnd.github+json" \
+                "repos/${GITHUB_REPOSITORY}/pulls/${number}/update-branch"; then
+              updated=$((updated + 1))
+            else
+              echo "failed #$number: update-branch call rejected (real conflict, or fork author hasn't enabled maintainer edits)"
+              failed=$((failed + 1))
+            fi
+
+            sleep 2
+          done
+
+          echo "updated=$updated skipped=$skipped failed=$failed"
