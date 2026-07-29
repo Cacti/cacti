@@ -81,6 +81,21 @@ test('a plain non-Cacti validateInput() call is not matched at all', function ()
 	expect(validator_scan("SomeOtherClass::validateInput(\$v, 'x', [], 3);"))->toBe([]);
 });
 
+test('a multi-constraint array literal is constrained, not split by its internal comma', function () {
+	expect(validator_category_of(
+		"CactiValidator::validateInput(gnrv('id'), 'id', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+\$/')], 3);"
+	))->toBe('constrained');
+});
+
+test('a nested empty array ahead of a real constraint is still constrained', function () {
+	// Regression case: split_call_args() must track [] nesting too, or the
+	// comma after the inner [] gets mistaken for the outer array's boundary
+	// and the real Assert\NotBlank() constraint that follows never gets seen.
+	expect(validator_category_of(
+		"CactiValidator::validateInput(gnrv('id'), 'id', [[], new Assert\NotBlank()], 3);"
+	))->toBe('constrained');
+});
+
 test('a dynamic (variable) constraints argument is dynamic, not empty', function () {
 	expect(validator_category_of(
 		"CactiValidator::validateInput(gnrv('id'), 'id', \$constraints, 3);"

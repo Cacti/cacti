@@ -75,6 +75,12 @@ function validator_list_php_files(): array {
  * Walk from token index $i to the matching close-paren of the call whose
  * open-paren is at $i, returning [argStarts, argEnds] pairs (one per
  * top-level comma-separated argument) and the index of the close-paren.
+ *
+ * $depth counts ()/[]/{} together, not just parens: a comma is only a
+ * top-level separator when it sits outside every bracket kind, e.g. a
+ * constraints array argument like [new Assert\NotBlank(), new Assert\Regex(...)]
+ * has a comma between its elements that must NOT split the outer call.
+ * Only ')' can end the call itself -- ']' and '}' just pop the shared depth.
  */
 function split_call_args(array $tokens, int $open): array {
 	$n         = count($tokens);
@@ -86,7 +92,7 @@ function split_call_args(array $tokens, int $open): array {
 	for ($k = $open; $k < $n; $k++) {
 		$t = $tokens[$k];
 
-		if ($t === '(') {
+		if ($t === '(' || $t === '[' || $t === '{') {
 			$depth++;
 		} elseif ($t === ')') {
 			$depth--;
@@ -97,6 +103,8 @@ function split_call_args(array $tokens, int $open): array {
 
 				break;
 			}
+		} elseif ($t === ']' || $t === '}') {
+			$depth--;
 		} elseif ($t === ',' && $depth === 1) {
 			$args[]    = [$arg_start, $k];
 			$arg_start = $k + 1;
