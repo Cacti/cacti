@@ -891,9 +891,9 @@ function db_affected_rows($db_conn = false) {
 /**
  * db_is_safe_identifier - validate table and column names used in DDL
  *
- * @param  (string) Identifier to validate
+ * @param  string $identifier Identifier to validate
  *
- * @return (bool)   True when safe for backtick-quoted DDL
+ * @return bool True when safe for backtick-quoted DDL
  */
 function db_is_safe_identifier($identifier) {
 	return is_string($identifier) && preg_match('/^[A-Za-z0-9_]+$/', $identifier) === 1;
@@ -902,9 +902,9 @@ function db_is_safe_identifier($identifier) {
 /**
  * db_is_safe_column_type - validate column type clauses used in DDL
  *
- * @param  (string) Column type clause
+ * @param  string $type Column type clause
  *
- * @return (bool)   True when the type clause contains no unsafe SQL separators
+ * @return bool True when the type clause contains no unsafe SQL separators
  */
 function db_is_safe_column_type($type) {
 	if (!is_string($type) || cacti_has_control_chars($type)) {
@@ -942,9 +942,9 @@ function db_is_safe_column_type($type) {
 /**
  * db_is_safe_table_option - validate storage engine, charset, collation, and row format tokens
  *
- * @param  (string) Table option token
+ * @param  string $option Table option token
  *
- * @return (bool)   True when safe for DDL option clauses
+ * @return bool True when safe for DDL option clauses
  */
 function db_is_safe_table_option($option) {
 	return is_string($option) && preg_match('/^[A-Za-z0-9_]+$/', $option) === 1;
@@ -953,9 +953,9 @@ function db_is_safe_table_option($option) {
 /**
  * db_is_safe_index_column - validate index column names with optional prefix lengths
  *
- * @param  (string) Index column definition
+ * @param  string $column Index column definition
  *
- * @return (bool)   True when safe for index DDL
+ * @return bool True when safe for index DDL
  */
 function db_is_safe_index_column($column) {
 	return is_string($column) && preg_match('/^`?[A-Za-z0-9_]+`?(?:\([0-9]+\))?$/', trim($column)) === 1;
@@ -964,9 +964,9 @@ function db_is_safe_index_column($column) {
 /**
  * db_is_safe_column_definition - validate a db_add_column column definition
  *
- * @param  (array) Column definition
+ * @param  array $column Column definition
  *
- * @return (bool)  True when safe to compose into an ALTER TABLE statement
+ * @return bool True when safe to compose into an ALTER TABLE statement
  */
 function db_is_safe_column_definition($column) {
 	if (!isset($column['name']) || !db_is_safe_identifier($column['name'])) {
@@ -997,11 +997,11 @@ function db_is_safe_column_definition($column) {
 /**
  * db_build_column_definition_sql - build a validated column definition fragment
  *
- * @param  (array)         Column definition
- * @param  (bool|resource) The connection to use or false to use the default
- * @param  (bool)          Include the AFTER clause when present
+ * @param  array         $column        Column definition
+ * @param  bool|resource $db_conn       The connection to use or false to use the default
+ * @param  bool          $include_after Include the AFTER clause when present
  *
- * @return (string|bool)   SQL fragment on success, false when validation fails
+ * @return string|bool SQL fragment on success, false when validation fails
  */
 function db_build_column_definition_sql($column, $db_conn = false, $include_after = true) {
 	if (!db_is_safe_column_definition($column)) {
@@ -1056,9 +1056,9 @@ function db_build_column_definition_sql($column, $db_conn = false, $include_afte
 /**
  * db_is_safe_table_definition - validate table creation/update arrays
  *
- * @param  (array) Table definition
+ * @param  array $data Table definition
  *
- * @return (bool)  True when safe to compose into CREATE/ALTER TABLE statements
+ * @return bool True when safe to compose into CREATE/ALTER TABLE statements
  */
 function db_is_safe_table_definition($data) {
 	if (!is_array($data) || !isset($data['columns']) || !is_array($data['columns']) || !isset($data['type']) || !db_is_safe_table_option($data['type'])) {

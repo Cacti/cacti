@@ -2849,9 +2849,9 @@ function clean_up_path($path) {
 /**
  * cacti_has_control_chars - test whether a string contains control characters
  *
- * @param  (string) String to test
+ * @param  string $value String to test
  *
- * @return (bool)   True when a control character is present
+ * @return bool True when a control character is present
  */
 function cacti_has_control_chars($value) {
 	return preg_match('/[\x00-\x1F\x7F]/', (string) $value) === 1;
@@ -2860,9 +2860,9 @@ function cacti_has_control_chars($value) {
 /**
  * cacti_log_safe_value - escape control characters before logging rejected values
  *
- * @param  (mixed)  Value to format for logs
+ * @param  mixed $value Value to format for logs
  *
- * @return (string) Log-safe representation
+ * @return string Log-safe representation
  */
 function cacti_log_safe_value($value) {
 	$encoded = json_encode((string) $value);
@@ -2877,9 +2877,9 @@ function cacti_log_safe_value($value) {
 /**
  * cacti_rrdtool_valid_path - validate a path before sending it to RRDtool stdin
  *
- * @param  (string) Path to validate
+ * @param  string $path Path to validate
  *
- * @return (bool)   True when the path is safe for a single RRDtool stdin command
+ * @return bool True when the path is safe for a single RRDtool stdin command
  */
 function cacti_rrdtool_valid_path($path) {
 	return is_string($path) && $path !== '' && !cacti_has_control_chars($path);
@@ -2888,9 +2888,9 @@ function cacti_rrdtool_valid_path($path) {
 /**
  * cacti_rrdtool_valid_path_token - validate a single RRDtool stdin path token
  *
- * @param  (string) Path token to validate
+ * @param  string $path Path token to validate
  *
- * @return (bool)   True when the path is safe as one whitespace-delimited token
+ * @return bool True when the path is safe as one whitespace-delimited token
  */
 function cacti_rrdtool_valid_path_token($path) {
 	return cacti_rrdtool_valid_path($path) && preg_match('/\s/', $path) !== 1;
@@ -2899,9 +2899,9 @@ function cacti_rrdtool_valid_path_token($path) {
 /**
  * cacti_rrdtool_valid_bound - validate a numeric RRDtool DS bound
  *
- * @param  (string) Value to validate
+ * @param  string $value Value to validate
  *
- * @return (bool)   True when the value is U or an RRDtool numeric value
+ * @return bool True when the value is U or an RRDtool numeric value
  */
 function cacti_rrdtool_valid_bound($value) {
 	$value = trim((string) $value);
@@ -2912,9 +2912,9 @@ function cacti_rrdtool_valid_bound($value) {
 /**
  * cacti_rrdtool_valid_ds_name - validate an RRDtool data source name
  *
- * @param  (string) Data source name
+ * @param  string $name Data source name
  *
- * @return (bool)   True when valid for RRDtool DS syntax
+ * @return bool True when valid for RRDtool DS syntax
  */
 function cacti_rrdtool_valid_ds_name($name) {
 	return is_string($name) && preg_match('/^[a-zA-Z0-9_-]{1,19}$/', $name) === 1;
@@ -2923,9 +2923,9 @@ function cacti_rrdtool_valid_ds_name($name) {
 /**
  * cacti_rrdtool_valid_ds_template - validate an RRDtool update template
  *
- * @param  (string) Colon-delimited data source names
+ * @param  string $template Colon-delimited data source names
  *
- * @return (bool)   True when every template member is a safe DS name
+ * @return bool True when every template member is a safe DS name
  */
 function cacti_rrdtool_valid_ds_template($template) {
 	if (!is_string($template) || $template === '' || cacti_has_control_chars($template)) {
