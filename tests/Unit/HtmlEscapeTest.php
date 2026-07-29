@@ -113,6 +113,7 @@ test('cacti_url inserts query parameters before fragments', function () {
 test('cacti_redirect is used for constructed local page redirects', function () {
 	foreach (['graph_templates.php', 'graphs.php', 'vdef.php'] as $page) {
 		$source = file_get_contents(__DIR__ . '/../../' . $page);
+		expect($source)->not->toBeFalse();
 		expect($source)->toContain('cacti_redirect(');
 	}
 });
