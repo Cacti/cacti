@@ -253,6 +253,21 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 	return($stats);
 }
 
+function cacti_percentile_index($elements, $percentile) {
+	if ($elements <= 0 || $percentile <= 0 || $percentile >= 100) {
+		return 0;
+	}
+
+	// Values are sorted descending. rrdtool's VDEF PERCENT selects the ascending
+	// rank round(percentile/100 * N), so the matching zero-based descending index
+	// is N - round(percentile/100 * N). PHP round() is half-away-from-zero, which
+	// matches rrdtool's C round() on the .5 ties. Verified against rrdtool for
+	// 28/29/30/31-day months (N = 8064/8352/8640/8928).
+	$index = $elements - (int) round($elements * $percentile / 100);
+
+	return max(0, min($elements - 1, $index));
+}
+
 function cacti_stats_calc($array, $ptile = 95) {
 	rsort($array, SORT_NUMERIC);
 
@@ -290,12 +305,12 @@ function cacti_stats_calc($array, $ptile = 95) {
 		$variance += pow(abs($number - $average), 2);
 	}
 
-	$ptile_index = ceil($elements * (1 - ($ptile/100)));
-	$p95n_index  = ceil($elements * 0.05);
-	$p90n_index  = ceil($elements * 0.1);
-	$p75n_index  = ceil($elements * 0.25);
-	$p50n_index  = ceil($elements * 0.50);
-	$p25n_index  = ceil($elements * 0.75);
+	$ptile_index = cacti_percentile_index($elements, $ptile);
+	$p95n_index  = cacti_percentile_index($elements, 95);
+	$p90n_index  = cacti_percentile_index($elements, 90);
+	$p75n_index  = cacti_percentile_index($elements, 75);
+	$p50n_index  = cacti_percentile_index($elements, 50);
+	$p25n_index  = cacti_percentile_index($elements, 25);
 
 	$results = array(
 		'p95n'     => (isset($array[$p95n_index]) ? $array[$p95n_index] : 0),
