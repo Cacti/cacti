@@ -91,7 +91,9 @@ jobs:
         ini-values: "post_max_size=256M, max_execution_time=60, date.timezone=America/New_York" #optional
 
     - name: Capture matrix PHP binary path
-      run: echo "PHP_BIN=$(command -v php)" >> "$GITHUB_ENV"
+      run: |
+        echo "PHP_BIN=$(command -v php)" >> "$GITHUB_ENV"
+        echo "COMPOSER_BIN=$(command -v composer)" >> "$GITHUB_ENV"
 
     - name: Check PHP version
       run: php -v
@@ -100,7 +102,7 @@ jobs:
       run: sudo fc-cache
 
     - name: Validate composer.json and composer.lock
-      run: sudo composer validate --strict
+      run: sudo "$PHP_BIN" "$COMPOSER_BIN" validate --strict
 
     - name: Cache Composer packages
       id: composer-cache
@@ -112,7 +114,7 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: sudo composer install 
+      run: sudo "$PHP_BIN" "$COMPOSER_BIN" install
 
     - name: Run Linter on base code
       run: composer run-script lint
