@@ -43,9 +43,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout develop
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
         with:
           ref: develop
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@0f7f1d08e3e32076e51cae65eb0b0c871405b16e # 2.34.1
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: none
 
       - name: Install ripgrep
         run: |
@@ -94,7 +101,9 @@ jobs:
         run: |
           set -euo pipefail
           existing="$(gh pr list --repo "${{ github.repository }}" --head "$REFRESH_BRANCH" --base develop --state open --json number --jq '.[0].number // empty')"
-          body="Automated baseline refresh, triggered by a push to develop.
+          body_file="$(mktemp)"
+          cat > "$body_file" <<'BODY'
+          Automated baseline refresh, triggered by a push to develop.
 
           Regenerates:
           - tests/security/baselines/sink_inventory.baseline.tsv
@@ -102,12 +111,13 @@ jobs:
           - tests/tools/sql_interpolation_baseline.json
 
           If your open PR is blocked on one of these baselines, rebase onto
-          develop after this merges instead of regenerating it yourself."
+          develop after this merges instead of regenerating it yourself.
+          BODY
 
           if [ -n "$existing" ]; then
-            gh pr edit "$existing" --repo "${{ github.repository }}" --body "$body"
+            gh pr edit "$existing" --repo "${{ github.repository }}" --body-file "$body_file"
           else
             gh pr create --repo "${{ github.repository }}" --base develop --head "$REFRESH_BRANCH" \
               --title "ci: refresh security/SQL-interpolation baselines" \
-              --body "$body"
+              --body-file "$body_file"
           fi
