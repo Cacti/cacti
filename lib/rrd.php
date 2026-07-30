@@ -2547,29 +2547,27 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		$xport_array = rrdxport2array(rrdtool_execute("xport $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe));
 
-			if (!isset($xport_array['meta'])) {
-				cacti_log('WARNING: RRDtool xport returned no valid data for Local Graph ID ' . $local_graph_id, false, 'EXPORT');
+		if (!isset($xport_array['meta'])) {
+			$xport_start = $graph_start < 0 ? time() + $graph_start : $graph_start;
+			$xport_end   = $graph_end < 0 ? time() + $graph_end : $graph_end;
 
-				$xport_start = $graph_start < 0 ? time() + $graph_start : $graph_start;
-				$xport_end   = $graph_end < 0 ? time() + $graph_end : $graph_end;
-
-				return array(
-					'meta' => array(
-						'start'          => $xport_start,
-						'end'            => $xport_end,
-						'step'           => max(1, (int) $rra_seconds),
-						'rows'           => 0,
-						'columns'        => 0,
-						'legend'         => array(),
-						'stacked_columns' => $stacked_columns,
-						'title_cache'    => $graph['title_cache'],
-						'vertical_label' => $graph['vertical_label'],
-						'local_graph_id' => $local_graph_id,
-						'host_id'        => $graph['host_id'],
-					),
-					'data' => array(),
-				);
-			}
+			return array(
+				'meta' => array(
+					'start'           => $xport_start,
+					'end'             => $xport_end,
+					'step'            => max(1, (int) $rra_seconds),
+					'rows'            => 0,
+					'columns'         => 0,
+					'legend'          => array(),
+					'stacked_columns' => $stacked_columns,
+					'title_cache'     => $graph['title_cache'],
+					'vertical_label'  => $graph['vertical_label'],
+					'local_graph_id'  => $local_graph_id,
+					'host_id'         => $graph['host_id'],
+				),
+				'data' => array(),
+			);
+		}
 
 		/* add host and graph information */
 		$xport_array['meta']['stacked_columns']= $stacked_columns;

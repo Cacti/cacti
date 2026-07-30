@@ -24,6 +24,6 @@ test('xport skips VDEF backed graph items', function () use ($rrdSource) {
 test('xport returns a controlled empty result when rrdtool emits no metadata', function () use ($rrdSource) {
 	expect($rrdSource)->not->toBeFalse();
 	expect($rrdSource)->toContain("if (!isset(\$xport_array['meta']))");
-	expect($rrdSource)->toContain("cacti_log('WARNING: RRDtool xport returned no valid data for Local Graph ID ' . \$local_graph_id, false, 'EXPORT')");
+	expect($rrdSource)->not->toContain("cacti_log('WARNING: RRDtool xport returned no valid data for Local Graph ID ' . \$local_graph_id, false, 'EXPORT')");
 	expect($rrdSource)->toMatch("/if \\(!isset\\(\\$xport_array\\['meta'\\]\\)\\) \\{.*'meta' => array\\(.*'start'\\s+=> \\$xport_start,.*'columns'\\s+=> 0,.*'legend'\\s+=> array\\(\\),.*'title_cache'\\s+=> \\$graph\\['title_cache'\\],.*'data' => array\\(\\),/s");
 });
