@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-security: Harden advisory command execution and database DDL sink validation
 -issue#7212: Address a few small memory leaks in realtime graphing
 -issue#7216: Aggregate totalling legend printed untotalled single data source values
 -issue#7359: Undefined variables detected with legacy plugins
