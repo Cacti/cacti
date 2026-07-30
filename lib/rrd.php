@@ -2903,9 +2903,9 @@ function rrdtool_file_exists($data_source_path, $rrdtool_pipe = null) {
 /**
  * rrdtool_build_path_command - build a validated RRDtool command with a path argument
  *
- * @param  string $command RRDtool command verb
- * @param  string $path    RRDtool file or directory path
- * @param  string $suffix  Optional validated command suffix
+ * @param string $command RRDtool command verb
+ * @param string $path    RRDtool file or directory path
+ * @param string $suffix  Optional validated command suffix
  *
  * @return string|bool RRDtool command string or false when unsafe
  */
@@ -2920,13 +2920,13 @@ function rrdtool_build_path_command($command, $path, $suffix = '') {
 /**
  * rrdtool_execute_path_command - execute a validated RRDtool command with a path argument
  *
- * @param  string $command       RRDtool command verb
- * @param  string $path          RRDtool file or directory path
- * @param  string $suffix        Optional validated command suffix
- * @param  bool   $log_to_stdout Whether to log to stdout
- * @param  int    $output_flag   RRDtool output flag
- * @param  mixed  $rrdtool_pipe  RRDtool pipe
- * @param  string $logopt        Log facility
+ * @param string $command       RRDtool command verb
+ * @param string $path          RRDtool file or directory path
+ * @param string $suffix        Optional validated command suffix
+ * @param bool   $log_to_stdout Whether to log to stdout
+ * @param int    $output_flag   RRDtool output flag
+ * @param mixed  $rrdtool_pipe  RRDtool pipe
+ * @param string $logopt        Log facility
  *
  * @return mixed RRDtool output or false when validation fails
  */
@@ -2943,12 +2943,12 @@ function rrdtool_execute_path_command($command, $path, $suffix = '', $log_to_std
 /**
  * rrdtool_execute_restore_command - execute a validated RRDtool restore command
  *
- * @param  string $xml_file      XML dump path
- * @param  string $rrd_file      RRD output path
- * @param  bool   $log_to_stdout Whether to log to stdout
- * @param  int    $output_flag   RRDtool output flag
- * @param  mixed  $rrdtool_pipe  RRDtool pipe
- * @param  string $logopt        Log facility
+ * @param string $xml_file      XML dump path
+ * @param string $rrd_file      RRD output path
+ * @param bool   $log_to_stdout Whether to log to stdout
+ * @param int    $output_flag   RRDtool output flag
+ * @param mixed  $rrdtool_pipe  RRDtool pipe
+ * @param string $logopt        Log facility
  *
  * @return mixed RRDtool output or false when validation fails
  */
@@ -4530,4 +4530,3 @@ function add_business_hours($data) {
 
     return $data;
 }
-

@@ -891,7 +891,7 @@ function db_affected_rows($db_conn = false) {
 /**
  * db_is_safe_identifier - validate table and column names used in DDL
  *
- * @param  string $identifier Identifier to validate
+ * @param string $identifier Identifier to validate
  *
  * @return bool True when safe for backtick-quoted DDL
  */
@@ -902,7 +902,7 @@ function db_is_safe_identifier($identifier) {
 /**
  * db_is_safe_column_type - validate column type clauses used in DDL
  *
- * @param  string $type Column type clause
+ * @param string $type Column type clause
  *
  * @return bool True when the type clause contains no unsafe SQL separators
  */
@@ -942,7 +942,7 @@ function db_is_safe_column_type($type) {
 /**
  * db_is_safe_table_option - validate storage engine, charset, collation, and row format tokens
  *
- * @param  string $option Table option token
+ * @param string $option Table option token
  *
  * @return bool True when safe for DDL option clauses
  */
@@ -953,7 +953,7 @@ function db_is_safe_table_option($option) {
 /**
  * db_is_safe_index_column - validate index column names with optional prefix lengths
  *
- * @param  string $column Index column definition
+ * @param string $column Index column definition
  *
  * @return bool True when safe for index DDL
  */
@@ -964,7 +964,7 @@ function db_is_safe_index_column($column) {
 /**
  * db_is_safe_column_definition - validate a db_add_column column definition
  *
- * @param  array $column Column definition
+ * @param array $column Column definition
  *
  * @return bool True when safe to compose into an ALTER TABLE statement
  */
@@ -997,9 +997,9 @@ function db_is_safe_column_definition($column) {
 /**
  * db_build_column_definition_sql - build a validated column definition fragment
  *
- * @param  array         $column        Column definition
- * @param  bool|resource $db_conn       The connection to use or false to use the default
- * @param  bool          $include_after Include the AFTER clause when present
+ * @param array         $column        Column definition
+ * @param bool|resource $db_conn       The connection to use or false to use the default
+ * @param bool          $include_after Include the AFTER clause when present
  *
  * @return string|bool SQL fragment on success, false when validation fails
  */
@@ -1056,7 +1056,7 @@ function db_build_column_definition_sql($column, $db_conn = false, $include_afte
 /**
  * db_is_safe_table_definition - validate table creation/update arrays
  *
- * @param  array $data Table definition
+ * @param array $data Table definition
  *
  * @return bool True when safe to compose into CREATE/ALTER TABLE statements
  */
@@ -2658,4 +2658,3 @@ function cacti_fetch_by_id($table, $id, $columns = '*', $id_column = 'id', $db_c
 
 	return $row;
 }
-
