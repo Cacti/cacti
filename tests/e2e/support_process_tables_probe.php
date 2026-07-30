@@ -44,7 +44,13 @@ if ($matched !== 1) {
 	process_tables_probe_fail("could not extract support_process_tables() (preg_match returned $matched)");
 }
 
-eval(preg_replace('/^function support_process_tables\(\)/m', 'function support_process_tables_probe()', $m[0]));
+$body = preg_replace('/^function\s+support_process_tables\s*\(\s*\)/m', 'function support_process_tables_probe()', $m[0], 1, $rename_count);
+
+if ($rename_count !== 1) {
+	process_tables_probe_fail("could not rename support_process_tables() (preg_replace count $rename_count)");
+}
+
+eval($body);
 
 $tables = support_process_tables_probe();
 

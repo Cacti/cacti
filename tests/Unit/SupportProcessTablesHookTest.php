@@ -28,10 +28,9 @@ require_once dirname(__DIR__, 2) . '/include/global.php';
 /*
  * support_process_tables() (support.php, #7353) publishes the built-in process
  * tables through the 'support_process_tables' plugin hook, then discards any
- * definition a plugin returns whose label/table/select are not all strings.
- * That is a type check only -- it does not validate that 'select' is
- * syntactically valid SQL, so a malformed plugin SELECT can still break the
- * UNION in show_cacti_processes().
+ * definition a plugin returns whose key/table shape and label/table/select
+ * values are not safe strings. That is still not a SQL parser -- a malformed
+ * plugin SELECT can still break the UNION in show_cacti_processes().
  *
  * The function is extracted from support.php and evaluated with its hook call
  * redirected to a test-controlled value, so the plugin return can be driven
@@ -46,7 +45,7 @@ function process_tables_define_probe(): void {
 
 	$src = file_get_contents(dirname(__DIR__, 2) . '/support.php');
 
-	if (preg_match('/function support_process_tables\(\) : array \{.*?^\}/sm', $src, $m) !== 1) {
+	if (preg_match('/function\s+support_process_tables\s*\(\s*\)\s*:\s*array\s*\{.*?^\}/sm', $src, $m) !== 1) {
 		throw new RuntimeException('could not locate support_process_tables() in support.php');
 	}
 
@@ -68,7 +67,11 @@ function process_tables_define_probe(): void {
 		throw new RuntimeException("expected exactly one support_process_tables() hook call to rewrite, found $hook_call_count");
 	}
 
-	$body = preg_replace('/^function support_process_tables\(\)/m', 'function support_process_tables_probe()', $body);
+	$body = preg_replace('/^function\s+support_process_tables\s*\(\s*\)/m', 'function support_process_tables_probe()', $body, 1, $rename_count);
+
+	if ($rename_count !== 1) {
+		throw new RuntimeException("expected exactly one support_process_tables() function rename, found $rename_count");
+	}
 
 	eval($body);
 }
@@ -118,6 +121,13 @@ test('malformed plugin definitions are discarded and valid ones kept', function 
 		'array_label'    => ['label' => ['x'], 'table' => 'y', 'select' => 'z'],
 		'array_table'    => ['label' => 'x', 'table' => ['y'], 'select' => 'z'],
 		'array_select'   => ['label' => 'x', 'table' => 'y', 'select' => ['z']],
+		'empty_label'    => ['label' => '', 'table' => 'y', 'select' => 'z'],
+		'empty_table'    => ['label' => 'x', 'table' => ' ', 'select' => 'z'],
+		'empty_select'   => ['label' => 'x', 'table' => 'y', 'select' => "\t"],
+		'all'            => ['label' => 'Reserved', 'table' => 'reserved_processes', 'select' => 'SELECT 1'],
+		'bad-key'        => ['label' => 'Bad Key', 'table' => 'bad_key_processes', 'select' => 'SELECT 1'],
+		'bad_table'      => ['label' => 'Bad Table', 'table' => 'bad-table', 'select' => 'SELECT 1'],
+		123              => ['label' => 'Integer Key', 'table' => 'int_key_processes', 'select' => 'SELECT 1'],
 	];
 
 	$tables = support_process_tables_probe();
@@ -134,4 +144,11 @@ test('the process query is skipped when no tables are available', function () {
 
 	expect($src)->toContain("if (\$sql_inner == '') {")
 		->and($src)->toContain('$processes  = [];');
+});
+
+test('poller_time timeout stays string typed for the UNION', function () {
+	$tables = support_process_tables_probe();
+
+	expect($tables['poller_time']['select'])->toContain(" AS taskid, '")
+		->and($tables['poller_time']['select'])->toContain("' AS timeout");
 });

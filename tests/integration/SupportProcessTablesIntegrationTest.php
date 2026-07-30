@@ -48,14 +48,18 @@ function support_process_tables_integration_define(): void {
 
 	$src = file_get_contents(dirname(__DIR__, 2) . '/support.php');
 
-	if (preg_match('/function support_process_tables\(\) : array \{.*?^\}/sm', $src, $m) !== 1) {
+	if (preg_match('/function\s+support_process_tables\s*\(\s*\)\s*:\s*array\s*\{.*?^\}/sm', $src, $m) !== 1) {
 		test('support process tables integration: feature not present on this branch', function () {})
 			->skip('support_process_tables() absent -- PR #7353 not merged into develop yet');
 
 		return;
 	}
 
-	$body = preg_replace('/^function support_process_tables\(\)/m', 'function support_process_tables_integ_probe()', $m[0]);
+	$body = preg_replace('/^function\s+support_process_tables\s*\(\s*\)/m', 'function support_process_tables_integ_probe()', $m[0], 1, $rename_count);
+
+	if ($rename_count !== 1) {
+		throw new RuntimeException("expected exactly one support_process_tables() function rename, found $rename_count");
+	}
 
 	eval($body);
 }

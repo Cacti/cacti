@@ -637,7 +637,7 @@ function support_process_tables() : array {
 			'table'  => 'poller_time',
 			'select' => 'SELECT pid, ' . db_qstr($poller_label) . " AS tasktype,
 					CONCAT('PollerID:', poller_id) AS taskname,
-					id AS taskid, $poller_interval AS timeout,
+					id AS taskid, " . db_qstr((string) $poller_interval) . " AS timeout,
 					start_time AS started,
 					start_time AS last_update,
 					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(start_time) AS runtime
@@ -725,15 +725,23 @@ function support_process_tables() : array {
 	}
 
 	// discard anything a plugin registered that is not a well formed definition.
-	// this only enforces that label/table/select are present and are strings; it
-	// does not validate that 'select' is syntactically valid SQL or returns the
-	// expected columns, so a malformed plugin SELECT can still break the UNION.
+	// this only enforces stable filter keys and non-empty label/table/select
+	// strings; it does not validate that 'select' is syntactically valid SQL or
+	// returns the expected columns, so a malformed plugin SELECT can still break
+	// the UNION.
 	foreach ($definitions as $key => $definition) {
-		if (!is_array($definition) ||
+		if (!is_string($key) ||
+			$key === 'all' ||
+			preg_match('/^[A-Za-z0-9_]+$/', $key) !== 1 ||
+			!is_array($definition) ||
 			!isset($definition['label'], $definition['table'], $definition['select']) ||
 			!is_string($definition['label']) ||
 			!is_string($definition['table']) ||
-			!is_string($definition['select'])) {
+			!is_string($definition['select']) ||
+			trim($definition['label']) === '' ||
+			trim($definition['table']) === '' ||
+			trim($definition['select']) === '' ||
+			preg_match('/^[A-Za-z0-9_]+$/', $definition['table']) !== 1) {
 			unset($definitions[$key]);
 		}
 	}
