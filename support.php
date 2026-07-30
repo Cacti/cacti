@@ -637,11 +637,11 @@ function support_process_tables() : array {
 			'table'  => 'poller_time',
 			'select' => 'SELECT pid, ' . db_qstr($poller_label) . " AS tasktype,
 					CONCAT('PollerID:', poller_id) AS taskname,
-					id AS taskid, " . db_qstr((string) $poller_interval) . " AS timeout,
+					id AS taskid, " . db_qstr((string) $poller_interval) . ' AS timeout,
 					start_time AS started,
 					start_time AS last_update,
 					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(start_time) AS runtime
-					FROM poller_time WHERE UNIX_TIMESTAMP(end_time) = 0",
+					FROM poller_time WHERE UNIX_TIMESTAMP(end_time) = 0',
 		],
 		'processes' => [
 			'label'  => $process_label,
@@ -738,8 +738,8 @@ function support_process_tables() : array {
 			!is_string($definition['label']) ||
 			!is_string($definition['table']) ||
 			!is_string($definition['select']) ||
-			trim($definition['label']) === '' ||
-			trim($definition['table']) === '' ||
+			trim($definition['label'])  === '' ||
+			trim($definition['table'])  === '' ||
 			trim($definition['select']) === '' ||
 			preg_match('/^[A-Za-z0-9_]+$/', $definition['table']) !== 1) {
 			unset($definitions[$key]);
