@@ -2456,7 +2456,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$need_rrd_nl = false;
 				}
 			} else {
-				if (preg_match('/^(AREA|AREA:STACK|LINE[123]|STACK)$/', $graph_item_types[$graph_item['graph_type_id']])) {
+				/* rrdtool xport only accepts DEF/CDEF references; a VDEF backed
+				 * item would emit XPORT:vdefNN and fail the whole command */
+				if ($graph_item['vdef_id'] == '0' && preg_match('/^(AREA|AREA:STACK|LINE[123]|STACK)$/', $graph_item_types[$graph_item['graph_type_id']])) {
 					/* give all export items a name */
 					if (trim($graph_variables['text_format'][$graph_item_id]) == '') {
 						$legend_name = 'col' . $j . '-' . $data_source_name;
@@ -2544,6 +2546,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		$output_flag = RRDTOOL_OUTPUT_STDOUT;
 
 		$xport_array = rrdxport2array(rrdtool_execute("xport $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe));
+
+		if (!isset($xport_array['meta'])) {
+			cacti_log('WARNING: RRDtool xport returned no valid data for Local Graph ID ' . $local_graph_id, false, 'EXPORT');
+
+			return array();
+		}
 
 		/* add host and graph information */
 		$xport_array['meta']['stacked_columns']= $stacked_columns;
@@ -4361,4 +4369,3 @@ function add_business_hours($data) {
 
     return $data;
 }
-
