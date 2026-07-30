@@ -52,7 +52,7 @@ Cacti CHANGELOG
 -issue#7211: Correct the Nth percentile and bandwidth summation divisor on base-1024 graphs
 -issue#7214: Fix TypeError in boost_graph_set_file when sending reports
 -issue#7216: Aggregate totalling legend printed untotalled single data source values
--issue: Require PHP 8.3 or newer for Cacti 1.3
+-issue#7401: Require PHP 8.3 or newer for Cacti 1.3
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
