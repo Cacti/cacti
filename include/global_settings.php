@@ -1275,7 +1275,9 @@ $settings = array(
 				5 => __('%d Seconds', 5),
 				10 => __('%d Seconds', 10),
 				15 => __('%d Seconds', 15),
-				20 => __('%d Seconds', 20)
+				20 => __('%d Seconds', 20),
+				30 => __('%d Seconds', 30),
+				60 => __('%d Seconds', 60)
 			)
 		),
 		'snmp_bulk_walk_size' => array(
@@ -2949,4 +2951,3 @@ if (!$config['is_web'] || is_realm_allowed(8)) {
 }
 
 api_plugin_hook('config_settings');
-
