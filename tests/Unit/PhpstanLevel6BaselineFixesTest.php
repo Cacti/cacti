@@ -21,8 +21,8 @@
  *       URL builder, but only assigned inside a foreach + !is_error_message
  *       branch. When the loop body skips, the variable is undefined; PHP
  *       silently treats it as empty() at runtime, so the bug surfaces only
- *       at static-analysis time. Affected: aggregate_graphs.php:378,
- *       color_templates.php:245, graph_templates.php:611, graphs.php:713.
+ *       at static-analysis time. Affected files: aggregate_graphs.php,
+ *       color_templates.php, graph_templates.php, and graphs.php.
  *       The original fix initialised the variable in the relevant
  *       `elseif (isrv('save_component_item'))` branch. PR #7317 and #7348
  *       later superseded the empty() consumer with a `=== null` check
@@ -37,8 +37,8 @@
  *       and keeping only the `!= ''` check.
  *
  * Each test below extracts the relevant source slice and asserts the fix
- * is in place. A final guard test re-asserts that the eleven flagged sites
- * (file:line tuples reported by PHPStan) all contain the post-fix shape.
+ * is in place. A final guard test re-asserts that the flagged patterns
+ * reported by PHPStan all contain the post-fix shape.
  */
 
 $repoRoot = __DIR__ . '/../..';
@@ -168,10 +168,10 @@ test('lib/html.php right-tab block drops the isset($tab[image]) guard', function
 /* --- Final structural guard: PHPStan-flagged tuples are gone ----------- */
 
 test('every PHPStan-flagged file:line shows the post-fix shape', function () use ($sources) {
-	/* Snapshot of the eleven file:line tuples PHPStan flagged at Level 6.
-	 * For each, assert the *current* line content matches the post-fix
-	 * shape. If a future refactor moves the line, this test still helps:
-	 * the assertion focuses on the offending pattern, not just position. */
+	/* Snapshot of the patterns PHPStan flagged at Level 6.
+	 * For each, assert the current source matches the post-fix shape. If a
+	 * future refactor moves the code, this test still helps: the assertion
+	 * focuses on the offending pattern, not just position. */
 	$cases = [
 		// (A) undefined-variable sites, now guarded by a null sentinel
 		['aggregate_graphs.php', '$graph_template_item_id', '=== null'],
