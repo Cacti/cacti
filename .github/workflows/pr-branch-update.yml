@@ -16,6 +16,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  contents: write
   pull-requests: write
 
 concurrency:
@@ -37,15 +38,27 @@ jobs:
         run: |
           set -euo pipefail
 
-          prs=$(gh pr list --state open --json number,mergeStateStatus --limit 200)
+          pr_numbers='[]'
+          page=1
+
+          while true; do
+            page_prs=$(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100&page=${page}" --jq '[.[] | .number]')
+
+            pr_numbers=$(jq -s '.[0] + .[1]' <(echo "$pr_numbers") <(echo "$page_prs"))
+
+            if [ "$(echo "$page_prs" | jq 'length')" -lt 100 ]; then
+              break
+            fi
+
+            page=$((page + 1))
+          done
 
           updated=0
           skipped=0
           failed=0
 
-          for row in $(echo "$prs" | jq -c '.[]'); do
-            number=$(echo "$row" | jq -r '.number')
-            status=$(echo "$row" | jq -r '.mergeStateStatus')
+          for number in $(echo "$pr_numbers" | jq -r '.[]'); do
+            status=$(gh pr view "$number" --json mergeStateStatus --jq '.mergeStateStatus')
 
             if [ "$status" != "BEHIND" ]; then
               echo "skip #$number: mergeStateStatus=$status"
