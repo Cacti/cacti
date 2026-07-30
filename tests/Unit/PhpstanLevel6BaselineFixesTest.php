@@ -23,11 +23,13 @@
  *       silently treats it as empty() at runtime, so the bug surfaces only
  *       at static-analysis time. Affected: aggregate_graphs.php:378,
  *       color_templates.php:245, graph_templates.php:611, graphs.php:713.
- *       Each was fixed by initialising the variable to 0 at the top of the
- *       relevant `elseif (isrv('save_component_item'))` branch. PR #7317
- *       and #7348 later superseded the empty() consumer with a `=== null`
- *       check against a null sentinel set just before the items foreach,
- *       since empty() also matches a legitimately-falsy 0 id.
+ *       The original fix initialised the variable in the relevant
+ *       `elseif (isrv('save_component_item'))` branch. PR #7317 and #7348
+ *       later superseded the empty() consumer with a `=== null` check
+ *       against a null sentinel set just before the assignment path, since
+ *       empty() also matches a legitimately-falsy 0 id. These tests assert
+ *       the null sentinel so the guard remains stable if the older bootstrap
+ *       assignment is removed.
  *
  *   (B) `isset($tab['image'])` at lib/html.php:2388 / 2396 / 2404. PHPStan
  *       infers from the right-tab array constructor that 'image' is always
@@ -50,66 +52,78 @@ $sources  = [
 
 /* --- Defect class A: undefined *_template_item_id in empty() ------------ */
 
-test('aggregate_graphs.php save_component_item branch initialises $graph_template_item_id', function () use ($sources) {
+test('aggregate_graphs.php save_component_item branch sets $graph_template_item_id null sentinel', function () use ($sources) {
 	$src = $sources['aggregate_graphs.php'];
 	$branchPos = strpos($src, "elseif (isrv('save_component_item'))");
 	expect($branchPos)->not->toBeFalse();
-	$branchSlice = substr($src, $branchPos, 4000);
+	$branchSlice = substr($src, $branchPos, 8000);
 
-	expect($branchSlice)->toContain('$graph_template_item_id = 0;');
+	expect($branchSlice)->toContain('$graph_template_item_id = null;');
 
-	/* The init must precede the foreach($items as ...) that conditionally
-	 * assigns it via sql_save(). */
-	$initPos    = strpos($branchSlice, '$graph_template_item_id = 0;');
+	/* The sentinel must precede the foreach($items as ...) that conditionally
+	 * assigns it via sql_save(), and the redirect fallback that consumes it. */
+	$initPos     = strpos($branchSlice, '$graph_template_item_id = null;');
 	$foreachPos = strpos($branchSlice, 'foreach ($items as $item)');
+	$redirectPos = strpos($branchSlice, '$graph_template_item_id === null');
 	expect($initPos)->not->toBeFalse();
 	expect($foreachPos)->not->toBeFalse();
-	expect($initPos < $foreachPos)->toBeTrue('$graph_template_item_id init must precede the items foreach');
+	expect($redirectPos)->not->toBeFalse();
+	expect($initPos < $foreachPos)->toBeTrue('$graph_template_item_id null sentinel must precede the items foreach');
+	expect($initPos < $redirectPos)->toBeTrue('$graph_template_item_id null sentinel must precede the redirect fallback');
 });
 
-test('color_templates.php save_component_item branch initialises $color_template_item_id', function () use ($sources) {
+test('color_templates.php save_component_item branch sets $color_template_item_id null sentinel', function () use ($sources) {
 	$src = $sources['color_templates.php'];
 	$branchPos = strpos($src, "elseif (isrv('save_component_item'))");
 	expect($branchPos)->not->toBeFalse();
 	$branchSlice = substr($src, $branchPos, 2000);
 
-	expect($branchSlice)->toContain('$color_template_item_id = 0;');
+	expect($branchSlice)->toContain('$color_template_item_id = null;');
 
-	$initPos    = strpos($branchSlice, '$color_template_item_id = 0;');
+	$initPos    = strpos($branchSlice, '$color_template_item_id = null;');
 	$foreachPos = strpos($branchSlice, 'foreach ($items as $item)');
+	$redirectPos = strpos($branchSlice, '$color_template_item_id === null');
 	expect($initPos)->not->toBeFalse();
 	expect($foreachPos)->not->toBeFalse();
-	expect($initPos < $foreachPos)->toBeTrue('$color_template_item_id init must precede the items foreach');
+	expect($redirectPos)->not->toBeFalse();
+	expect($initPos < $foreachPos)->toBeTrue('$color_template_item_id null sentinel must precede the items foreach');
+	expect($initPos < $redirectPos)->toBeTrue('$color_template_item_id null sentinel must precede the redirect fallback');
 });
 
-test('graph_templates.php save_component_item branch initialises $graph_template_item_id', function () use ($sources) {
+test('graph_templates.php save_component_item branch sets $graph_template_item_id null sentinel', function () use ($sources) {
 	$src = $sources['graph_templates.php'];
 	$branchPos = strpos($src, "elseif (isrv('save_component_item'))");
 	expect($branchPos)->not->toBeFalse();
-	$branchSlice = substr($src, $branchPos, 12000);
+	$branchSlice = substr($src, $branchPos, 18000);
 
-	expect($branchSlice)->toContain('$graph_template_item_id = 0;');
+	expect($branchSlice)->toContain('$graph_template_item_id = null;');
 
-	$initPos    = strpos($branchSlice, '$graph_template_item_id = 0;');
-	$sqlSavePos = strpos($branchSlice, "sql_save(\$save, 'graph_templates_item')");
+	$initPos     = strpos($branchSlice, '$graph_template_item_id = null;');
+	$sqlSavePos  = strpos($branchSlice, "sql_save(\$save, 'graph_templates_item')");
+	$redirectPos = strpos($branchSlice, '$graph_template_item_id === null');
 	expect($initPos)->not->toBeFalse();
 	expect($sqlSavePos)->not->toBeFalse();
-	expect($initPos < $sqlSavePos)->toBeTrue('init must precede the conditional sql_save assignment');
+	expect($redirectPos)->not->toBeFalse();
+	expect($initPos < $sqlSavePos)->toBeTrue('null sentinel must precede the conditional sql_save assignment');
+	expect($initPos < $redirectPos)->toBeTrue('null sentinel must precede the redirect fallback');
 });
 
-test('graphs.php save_component_item branch initialises $graph_template_item_id', function () use ($sources) {
+test('graphs.php save_component_item branch sets $graph_template_item_id null sentinel', function () use ($sources) {
 	$src = $sources['graphs.php'];
 	$branchPos = strpos($src, "elseif (isrv('save_component_item'))");
 	expect($branchPos)->not->toBeFalse();
-	$branchSlice = substr($src, $branchPos, 6000);
+	$branchSlice = substr($src, $branchPos, 10000);
 
-	expect($branchSlice)->toContain('$graph_template_item_id = 0;');
+	expect($branchSlice)->toContain('$graph_template_item_id = null;');
 
-	$initPos    = strpos($branchSlice, '$graph_template_item_id = 0;');
+	$initPos    = strpos($branchSlice, '$graph_template_item_id = null;');
 	$foreachPos = strpos($branchSlice, 'foreach ($items as $item)');
+	$redirectPos = strpos($branchSlice, '$graph_template_item_id === null');
 	expect($initPos)->not->toBeFalse();
 	expect($foreachPos)->not->toBeFalse();
-	expect($initPos < $foreachPos)->toBeTrue('init must precede the items foreach');
+	expect($redirectPos)->not->toBeFalse();
+	expect($initPos < $foreachPos)->toBeTrue('null sentinel must precede the items foreach');
+	expect($initPos < $redirectPos)->toBeTrue('null sentinel must precede the redirect fallback');
 });
 
 test('the null-guarded fallback in the error-redirect URL still uses the variable', function () use ($sources) {
