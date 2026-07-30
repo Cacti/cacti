@@ -1,6 +1,8 @@
 Cacti CHANGELOG
 
 1.2.x
+-issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
+-issue#6684: Prevent VDEF-backed aggregate graph items from being emitted as XPORT data sources
 -issue#7212: Address a few small memory leaks in realtime graphing
 -issue#7216: Aggregate totalling legend printed untotalled single data source values
 -issue#7359: Undefined variables detected with legacy plugins
