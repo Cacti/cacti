@@ -160,7 +160,7 @@ function ss_nimble_alletra_volumes(int $host_id = 0, string $cmd = 'index', stri
 			}
 
 			foreach ($low as $key => $value) {
-				$long = isset($high[$key]) ? $high[$key] : '' . $value;
+				$long = isset($high[$key]) ? ($high[$key] . $value) : $value;
 
 				if ($what == 'data' || $what == 'snapshot') {
 					print $key . ':' . bindec($long) . PHP_EOL;
