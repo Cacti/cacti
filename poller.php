@@ -222,7 +222,7 @@ $poller_lastrun  = intval(read_config_option('poller_lastrun_' . $poller_id));
 $boost_enabled   = read_config_option('boost_rrd_update_enable') == 'on' ? true : false;
 
 // collect the system mibs every 4 hours
-if ($poller_lastrun % 14440 < $current_time % 14440 || empty($poller_lastrun)) {
+if ($poller_lastrun % 14440 > $current_time % 14440 || empty($poller_lastrun)) {
 	$mibs = true;
 }
 
