@@ -1010,7 +1010,7 @@ class spikekill {
 								number_format_i18n($ds['numsamples'] ?? 0),
 								($ds['average']         != 'N/A' ? round($ds['average'], 2) : 'N/A'),
 								($ds['stddev']          != 'N/A' ? round($ds['stddev'], 2) : 'N/A'),
-								($ds['variance']        != 'N/A' ? round($ds['stddev'] ^ 2, 2) : 'N/A'),
+								($ds['stddev']          != 'N/A' ? round($ds['stddev'] ** 2, 2) : 'N/A'),
 								($ds['max_value']       != 'N/A' ? round($ds['max_value'], 2) : 'N/A'),
 								($ds['min_value']       != 'N/A' ? round($ds['min_value'], 2) : 'N/A'),
 								($ds['max_cutoff']      != 'N/A' ? round($ds['max_cutoff'], 2) : 'N/A'),
