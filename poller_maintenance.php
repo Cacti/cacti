@@ -1038,7 +1038,7 @@ function phpversion_check(bool $force = false) : void {
 	$date_next = clone $date_last;
 	$date_next->modify('+1day');
 
-	$rec_version = defined('CACTI_PHP_VERSION_MINIMUM') ? CACTI_PHP_VERSION_MINIMUM : '8.4';
+	$rec_version = defined('CACTI_PHP_VERSION_MINIMUM') ? CACTI_PHP_VERSION_MINIMUM : '8.3';
 	$phpbad_ver  = version_compare(PHP_VERSION, $rec_version, '<');
 
 	if ($phpbad_ver && ($date_next < $date_now || $force)) {

@@ -1928,7 +1928,7 @@ function utility_get_formatted_bytes(mixed $input_value, string $wanted_type, mi
 function utility_php_verify_recommends(mixed &$recommends, string $source) : void {
 	global $original_memory_limit;
 
-	$rec_version    = defined('CACTI_PHP_VERSION_MINIMUM') ? CACTI_PHP_VERSION_MINIMUM : '8.4.0';
+	$rec_version    = defined('CACTI_PHP_VERSION_MINIMUM') ? CACTI_PHP_VERSION_MINIMUM : '8.3.0';
 	$rec_memory_mb  = 800;
 	$rec_execute_m  = 1;
 	$memory_ini     = ($original_memory_limit ?? ini_get('memory_limit'));

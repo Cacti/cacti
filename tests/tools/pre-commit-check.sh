@@ -17,10 +17,10 @@ check_php_version() {
     minor=$(echo "$php_ver" | cut -d. -f2)
 
     if [ "$major" != "$REQUIRED_PHP_MAJOR" ]; then
-        echo "WARNING: PHP $php_ver detected. Cacti requires PHP 8.4+"
+        echo "WARNING: PHP $php_ver detected. Cacti requires PHP 8.3+"
     elif [ "$minor" -lt "$MIN_PHP_MINOR" ] 2>/dev/null; then
-        echo "WARNING: PHP $php_ver detected. Cacti 1.3 targets PHP 8.4+."
-        echo "  Consider: export PATH=\"/opt/homebrew/opt/php@8.4/bin:\${PATH}\""
+        echo "WARNING: PHP $php_ver detected. Cacti 1.3 targets PHP 8.3+."
+        echo "  Consider: export PATH=\"/opt/homebrew/opt/php@8.3/bin:\${PATH}\""
     fi
 }
 

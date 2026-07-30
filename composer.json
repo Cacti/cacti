@@ -26,7 +26,7 @@
     "type": "composer-plugin",
     "license": "GPL-2.0-only",
     "require": {
-        "php": "^8.4",
+        "php": "^8.3",
         "ext-PDO": "*",
         "ext-Phar": "*",
         "ext-dom": "*",

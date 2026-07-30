@@ -28,7 +28,7 @@ failing CI. Add a **Require status checks to pass** rule with
 **Require branches to be up to date before merging** enabled, listing the
 current checks:
 
-- `PHP 8.4 Test on ubuntu-latest`
+- `PHP 8.3 Test on ubuntu-latest`
 - `pest coverage gate`
 - `Analyze (javascript-typescript)`
 - `Analyze (python)`
