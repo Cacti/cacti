@@ -2402,10 +2402,19 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 
 		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
 	} elseif ($r['timeout_exceeded']) {
-		if ($r['pid'] > 0) {
+		$timeout_pid = (int) $r['pid'];
+
+		if (is_system_pid($timeout_pid)) {
+			// mirror timeout_kill_registered_processes(): never signal a reserved
+			// system PID from the registry, but still clear and re-register
+			cacti_log(sprintf('WARNING: Refusing to kill registered process with a reserved system PID! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $r['pid']), false, 'POLLER');
+
+			unregister_process($tasktype, $taskname, $taskid);
+			register_process($tasktype, $taskname, $taskid, $pid, $timeout);
+		} elseif ($timeout_pid > 0) {
 			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceeded'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
 
-			posix_kill($r['pid'], SIGTERM);
+			posix_kill($timeout_pid, SIGTERM);
 
 			unregister_process($tasktype, $taskname, $taskid);
 			register_process($tasktype, $taskname, $taskid, $pid, $timeout);
@@ -2504,6 +2513,19 @@ function heartbeat_process($tasktype, $taskname, $taskid = 0) {
 }
 
 /**
+ * is_system_pid - test whether a PID falls in the reserved low range that Cacti
+ *   must never signal. init (1), systemd, and kernel threads live here, so a
+ *   tampered or reused pid column could otherwise take down a host service.
+ *
+ * @param  (int) $pid  - The process id to test
+ *
+ * @return (bool) true when the PID is a low/system PID that must be skipped
+ */
+function is_system_pid($pid) {
+	return (int) $pid <= 100;
+}
+
+/**
  * timeout_kill_registered_processes - allow a Cacti plugin or scheduled task to
  *   be bulk cleaned.
  *
@@ -2549,9 +2571,13 @@ function timeout_kill_registered_processes($tasktype = '', $taskname = '', $task
 
 	if (cacti_sizeof($processes)) {
 		foreach($processes as $r) {
-			if ($r['pid'] > 0 && posix_kill($r['pid'], 0)) {
+			$pid = (int) $r['pid'];
+
+			if (is_system_pid($pid)) {
+				cacti_log(sprintf('WARNING: Refusing to kill registered process with a reserved system PID! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
+			} elseif (posix_kill($pid, 0)) {
 				cacti_log(sprintf('ERROR: Process killed due to timeout! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
-				posix_kill($r['pid'], SIGTERM);
+				posix_kill($pid, SIGTERM);
 			} else {
 				cacti_log(sprintf('ERROR: Detected process that is gone and did not unregister first! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
 			}
