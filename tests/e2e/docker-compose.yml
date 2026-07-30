@@ -23,8 +23,6 @@ services:
       MYSQL_PASSWORD: cactiuser
     command: >
       --max-allowed-packet=500M
-      --innodb-file-format=Barracuda
-      --innodb-large-prefix=1
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-pcactiroot"]
       interval: 5s
