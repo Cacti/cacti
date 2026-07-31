@@ -2072,7 +2072,7 @@ function show_tech_environment() : void {
 
 		form_alternate_row();
 		print '<td>' . html_escape($recommend['name']) . '</td>';
-		print '<td>' . tech_env_status((int) $recommend['status'], __('Current: %s, Recommended: %s', html_escape($recommend['current']), html_escape($recommend['value']))) . '</td>';
+		print '<td>' . tech_env_status((int) $recommend['status'], __('Current: %s, Recommended: %s', $recommend['current'], $recommend['value'])) . '</td>';
 		form_end_row();
 	}
 
@@ -2103,12 +2103,12 @@ function show_tech_environment() : void {
 				$out     = shell_exec(cacti_escapeshellarg($path) . ' ' . $arg . ' 2>&1');
 				$version = ($out != '' ? trim(explode("\n", $out)[0]) : __('Unknown version'));
 
-				print '<td>' . tech_env_status(DB_STATUS_SUCCESS, html_escape($version)) . '</td>';
+				print '<td>' . tech_env_status(DB_STATUS_SUCCESS, $version) . '</td>';
 			} else {
 				print '<td>' . tech_env_status(DB_STATUS_WARNING, __('Version unavailable: shell_exec() is disabled')) . '</td>';
 			}
 		} else {
-			print '<td>' . tech_env_status(DB_STATUS_ERROR, __('Not found or not executable: %s', html_escape($path))) . '</td>';
+			print '<td>' . tech_env_status(DB_STATUS_ERROR, __('Not found or not executable: %s', $path)) . '</td>';
 		}
 
 		form_end_row();
@@ -2144,6 +2144,11 @@ function show_tech_environment() : void {
 	}
 }
 
+/**
+ * tech_env_status - render a status badge for the technical support report.
+ * $text is treated as plain text and escaped here, so callers pass raw values
+ * and must not pre-escape (doing so would double-encode).
+ */
 function tech_env_status(int $status, string $text) : string {
 	[$class, $icon] = match ($status) {
 		DB_STATUS_SUCCESS => ['deviceUp', 'fa-check-circle'],
@@ -2151,7 +2156,7 @@ function tech_env_status(int $status, string $text) : string {
 		default           => ['deviceRecovering', 'fa-exclamation-triangle'],
 	};
 
-	return "<span class='$class'><i class='fa $icon'></i> " . $text . '</span>';
+	return "<span class='$class'><i class='fa $icon'></i> " . html_escape($text) . '</span>';
 }
 
 /**

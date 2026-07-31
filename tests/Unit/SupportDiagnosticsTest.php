@@ -100,7 +100,7 @@ function support_diag_build_report(array $vars): string {
 	}
 
 	// The block runs from the first assignment to the last $report line.
-	$start = strpos($src, '$snmp_line     = trim(');
+	$start = strpos($src, '$snmp_line     = $snmp_installed');
 
 	if ($start === false) {
 		throw new RuntimeException('support_diag_build_report(): start marker not found in support.php; has the report block moved?');
@@ -137,6 +137,8 @@ test('diagnostics report masks the RSA fingerprint and hides infrastructure', fu
 
 	$report = support_diag_build_report([
 		'snmp_version'    => "NET-SNMP 5.9\nextra line",
+		'snmp_installed'  => true,
+		'redact'          => true,
 		'poller_options'  => [1 => 'cactid', 2 => 'spine'],
 		'spine_version'   => 'Spine 1.2.99',
 		'database'        => 'MariaDB',
@@ -169,6 +171,8 @@ test('diagnostics report reports N/A when RSA and memory are absent', function (
 
 	$report = support_diag_build_report([
 		'snmp_version'    => 'NET-SNMP 5.9',
+		'snmp_installed'  => true,
+		'redact'          => false,
 		'poller_options'  => [1 => 'cactid'],
 		'spine_version'   => 'Unknown',
 		'database'        => 'MySQL',
