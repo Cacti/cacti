@@ -53,7 +53,7 @@ function support_lockout() : void {
 
 	$admin = read_config_option('admin_user', true);
 
-	if (read_config_option('admin_user') != $_SESSION[SESS_USER_ID]) {
+	if ($admin != $_SESSION[SESS_USER_ID]) {
 		raise_message('lockout_user', __('Only the Primary Cacti Administrator \'%s\' can lockout the Cacti system.', get_username($admin)), MESSAGE_LEVEL_ERROR);
 	} else {
 		$status    = read_config_option('cacti_lockout_status', true);
@@ -600,26 +600,167 @@ function draw_cacti_process_filter(bool $render = false, array $tables = []) : v
 	}
 }
 
+/**
+ * support_process_tables - return the process-table definitions used to build
+ * the background process view.  Core registers the tables it ships with, then
+ * exposes the set through the 'support_process_tables' plugin hook so a plugin
+ * can add its own process table (or override a core one) instead of core having
+ * to carry every plugin's schema.
+ *
+ * Definitions are keyed by a unique task key (also the value used by the 'tasks'
+ * filter).  Each definition contains:
+ *   'label'  - task label shown in the filter and the Task Type column
+ *   'table'  - database table probed with db_table_exists() before inclusion
+ *   'select' - a SELECT fragment returning the common process columns in order:
+ *              pid, tasktype, taskname, taskid, timeout, started, last_update, runtime
+ *
+ * @return array<string,array{label:string,table:string,select:string}>
+ */
+function support_process_tables() : array {
+	$poller_interval = (int) read_config_option('poller_interval');
+
+	// the full set of process tables known to Cacti.  the key is the table name
+	// for core entries so the db_table_exists() gate below matches prior behavior.
+	$poller_label     = __('Cacti Poller');
+	$process_label    = __('Cacti Process');
+	$grid_label       = __('RTM Process');
+	$automation_label = __('Automation Process');
+	$hmib_label       = __('HMIB Process');
+	$mikrotik_label   = __('MikroTik Process');
+	$webseer_label    = __('WebSeer Process');
+	$servcheck_label  = __('Service Check Process');
+	$mactrack_label   = __('MacTrack Process');
+
+	$defaults = [
+		'poller_time' => [
+			'label'  => $poller_label,
+			'table'  => 'poller_time',
+			'select' => 'SELECT pid, ' . db_qstr($poller_label) . " AS tasktype,
+					CONCAT('PollerID:', poller_id) AS taskname,
+					id AS taskid, " . db_qstr((string) $poller_interval) . ' AS timeout,
+					start_time AS started,
+					start_time AS last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(start_time) AS runtime
+					FROM poller_time WHERE UNIX_TIMESTAMP(end_time) = 0',
+		],
+		'processes' => [
+			'label'  => $process_label,
+			'table'  => 'processes',
+			'select' => 'SELECT pid, CONCAT(' . db_qstr($process_label) . ", ' (', tasktype, ')') AS tasktype,
+					taskname, taskid, timeout,
+					started, last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started) AS runtime
+					FROM processes",
+		],
+		'grid_processes' => [
+			'label'  => $grid_label,
+			'table'  => 'grid_processes',
+			'select' => 'SELECT pid, ' . db_qstr($grid_label) . " AS tasktype,
+					taskname, taskid, 'N/A' AS timeout,
+					'-' AS started, heartbeat AS last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(heartbeat) AS runtime
+					FROM grid_processes",
+		],
+		'automation_processes' => [
+			'label'  => $automation_label,
+			'table'  => 'automation_processes',
+			'select' => 'SELECT pid, ' . db_qstr($automation_label) . ' AS tasktype,
+					CONCAT(' . db_qstr(__('Poller:')) . ", an.poller_id) AS taskname,
+					network_id AS taskid, 'N/A' AS timeout, an.last_started AS started, ap.heartbeat AS last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(an.last_started) AS runtime
+					FROM automation_processes AS ap INNER JOIN automation_networks AS an ON an.id = ap.network_id",
+		],
+		'plugin_hmib_processes' => [
+			'label'  => $hmib_label,
+			'table'  => 'plugin_hmib_processes',
+			'select' => 'SELECT pid, ' . db_qstr($hmib_label) . ' AS tasktype,
+					' . db_qstr(__('Collector')) . " AS taskname, taskid, 'N/A' AS timeout,
+					started, 'N/A' AS last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started) AS runtime
+					FROM plugin_hmib_processes",
+		],
+		'plugin_mikrotik_processes' => [
+			'label'  => $mikrotik_label,
+			'table'  => 'plugin_mikrotik_processes',
+			'select' => 'SELECT pid, ' . db_qstr($mikrotik_label) . ' AS tasktype,
+				' . db_qstr(__('Collector')) . " AS taskname, taskid, 'N/A' AS timeout,
+				started, 'N/A' AS last_update,
+				UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started) AS runtime
+				FROM plugin_mikrotik_processes",
+		],
+		'plugin_webseer_processes' => [
+			'label'  => $webseer_label,
+			'table'  => 'plugin_webseer_processes',
+			'select' => 'SELECT pid, ' . db_qstr($webseer_label) . ' AS tasktype,
+					CONCAT(' . db_qstr(__('Poller:')) . ", poller_id) AS taskname, url_id AS taskid, 'N/A' AS timeout,
+					time AS started, 'N/A' AS last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(time) AS runtime
+					FROM plugin_webseer_processes",
+		],
+		'plugin_servcheck_processes' => [
+			'label'  => $servcheck_label,
+			'table'  => 'plugin_servcheck_processes',
+			'select' => 'SELECT pid, ' . db_qstr($servcheck_label) . ' AS tasktype,
+					CONCAT(' . db_qstr(__('Poller:')) . ", poller_id) AS taskname, test_id AS taskid, 'N/A' AS timeout,
+					time AS started, 'N/A' AS last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(time) AS runtime
+					FROM plugin_servcheck_processes",
+		],
+		'mac_track_processes' => [
+			'label'  => $mactrack_label,
+			'table'  => 'mac_track_processes',
+			'select' => 'SELECT process_id AS pid, ' . db_qstr($mactrack_label) . ' AS tasktype,
+					CONCAT(' . db_qstr(__('Device:')) . ", device_id) AS taskname, device_id AS taskid, 'N/A' AS timeout,
+					start_date AS started, 'N/A' AS last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(start_date) AS runtime
+					FROM mac_track_processes",
+		],
+	];
+
+	$definitions = api_plugin_hook_function('support_process_tables', $defaults);
+
+	// a misbehaving plugin can return a non-array; fall back to the built-in set
+	if (!is_array($definitions)) {
+		$definitions = $defaults;
+	}
+
+	// discard anything a plugin registered that is not a well formed definition.
+	// this only enforces stable filter keys and non-empty label/table/select
+	// strings; it does not validate that 'select' is syntactically valid SQL or
+	// returns the expected columns, so a malformed plugin SELECT can still break
+	// the UNION.
+	foreach ($definitions as $key => $definition) {
+		if (!is_string($key) ||
+			$key === 'all' ||
+			preg_match('/^[A-Za-z0-9_]+$/', $key) !== 1 ||
+			!is_array($definition) ||
+			!isset($definition['label'], $definition['table'], $definition['select']) ||
+			!is_string($definition['label']) ||
+			!is_string($definition['table']) ||
+			!is_string($definition['select']) ||
+			trim($definition['label'])  === '' ||
+			trim($definition['table'])  === '' ||
+			trim($definition['select']) === '' ||
+			preg_match('/^[A-Za-z0-9_]+$/', $definition['table']) !== 1) {
+			unset($definitions[$key]);
+		}
+	}
+
+	return $definitions;
+}
+
 function show_cacti_processes() : void {
 	global $item_rows;
 
-	// the full set of process tables known to Cacti
-	$tables = [
-		'poller_time'                   => __('Cacti Poller'),          // Core Cacti poller table
-		'processes'                     => __('Cacti Process'),         // Cacti process table
-		'grid_processes'                => __('RTM Process'),           // RTM process table
-		'automation_processes'          => __('Automation Process'),    // Automation process table
-		'plugin_hmib_processes'         => __('HMIB Process'),          // HMIB process table
-		'plugin_mikrotik_processes'     => __('MikroTik Process'),      // MikroTik process table
-		'plugin_webseer_processes'      => __('WebSeer Process'),       // WebSeer process table
-		'plugin_servcheck_processes'    => __('Service Check Process'), // Service Check process table
-		'mac_track_processes'           => __('MacTrack Process'),      // MacTrack process table
-	];
+	$definitions = support_process_tables();
 
-	// reduce the set of tables based if they exist
-	foreach ($tables as $table => $name) {
-		if (!db_table_exists($table)) {
-			unset($tables[$table]);
+	// reduce the set of tables to those that actually exist, preserving the
+	// registration order so the generated UNION is unchanged.
+	$tables = [];
+
+	foreach ($definitions as $key => $definition) {
+		if (db_table_exists($definition['table'])) {
+			$tables[$key] = $definition['label'];
 		}
 	}
 
@@ -630,8 +771,6 @@ function show_cacti_processes() : void {
 	} else {
 		$rows = grv('rows');
 	}
-
-	$poller_interval = read_config_option('poller_interval');
 
 	$sql_where  = '';
 	$sql_params = [];
@@ -654,108 +793,31 @@ function show_cacti_processes() : void {
 
 	$sql_inner = '';
 
-	foreach ($tables as $table => $name) {
-		switch($table) {
-			case 'poller_time':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, ' . db_qstr(__('Cacti Poller')) . " AS tasktype,
-						CONCAT('PollerID:', poller_id) AS taskname,
-						id AS taskid, '$poller_interval' AS timeout,
-						start_time AS started,
-						start_time AS last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(start_time) AS runtime
-						FROM poller_time WHERE UNIX_TIMESTAMP(end_time) = 0";
-
-				break;
-			case 'processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, CONCAT(' . db_qstr($name) . ", ' (', tasktype, ')') AS tasktype,
-						taskname, taskid, timeout,
-						started, last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started) AS runtime
-						FROM processes";
-
-				break;
-			case 'grid_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, ' . db_qstr($name) . " AS tasktype,
-						taskname, taskid, 'N/A' AS timeout,
-						'-' AS started, heartbeat AS last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(heartbeat) AS runtime
-						FROM grid_processes";
-
-				break;
-			case 'automation_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, ' . db_qstr($name) . ' AS tasktype,
-						CONCAT(' . db_qstr(__('Poller:')) . ", an.poller_id) AS taskname,
-						network_id AS taskid, 'N/A' AS timeout, an.last_started AS started, ap.heartbeat AS last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(an.last_started) AS runtime
-						FROM automation_processes AS ap INNER JOIN automation_networks AS an ON an.id = ap.network_id";
-
-				break;
-			case 'mac_track_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT process_id AS pid, ' . db_qstr($name) . ' AS tasktype,
-						CONCAT(' . db_qstr(__('Device:')) . ", device_id) AS taskname, device_id AS taskid, 'N/A' AS timeout,
-						start_date AS started, 'N/A' AS last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(start_date) AS runtime
-						FROM mac_track_processes";
-
-				break;
-			case 'plugin_hmib_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, ' . db_qstr($name) . ' AS tasktype,
-						' . db_qstr(__('Collector')) . " AS taskname, taskid, 'N/A' AS timeout,
-						started, 'N/A' AS last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started) AS runtime
-						FROM plugin_hmib_processes";
-
-				break;
-			case 'plugin_mikrotik_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, ' . db_qstr($name) . ' AS tasktype,
-					' . db_qstr(__('Collector')) . " AS taskname, taskid, 'N/A' AS timeout,
-					started, 'N/A' AS last_update,
-					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started) AS runtime
-					FROM plugin_mikrotik_processes";
-
-				break;
-			case 'plugin_webseer_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, ' . db_qstr($name) . ' AS tasktype,
-						CONCAT(' . db_qstr(__('Poller:')) . ", poller_id) AS taskname, url_id AS taskid, 'N/A' AS timeout,
-						time AS started, 'N/A' AS last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(time) AS runtime
-						FROM plugin_webseer_processes";
-
-				break;
-			case 'plugin_servcheck_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, ' . db_qstr($name) . ' AS tasktype,
-						CONCAT(' . db_qstr(__('Poller:')) . ", poller_id) AS taskname, test_id AS taskid, 'N/A' AS timeout,
-						time AS started, 'N/A' AS last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(time) AS runtime
-						FROM plugin_servcheck_processes";
-
-				break;
-		}
+	foreach (array_keys($tables) as $table) {
+		$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') . $definitions[$table]['select'];
 	}
 
-	$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
-		FROM ($sql_inner) AS rs
-		$sql_where",
-		$sql_params);
+	if ($sql_inner == '') {
+		// no process tables available; render the empty result rather than
+		// building a broken 'FROM ()' UNION
+		$total_rows = 0;
+		$processes  = [];
+	} else {
+		$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
+			FROM ($sql_inner) AS rs
+			$sql_where",
+			$sql_params);
 
-	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ((int) $rows * (max(1, (int) grv('page')) - 1)) . ',' . (int) $rows;
+		$sql_order = get_order_string();
+		$sql_limit = ' LIMIT ' . ((int) $rows * (max(1, (int) grv('page')) - 1)) . ',' . (int) $rows;
 
-	$processes = db_fetch_assoc_prepared("SELECT *
-		FROM ($sql_inner) AS rs
-		$sql_where
-		$sql_order
-		$sql_limit",
-		$sql_params);
+		$processes = db_fetch_assoc_prepared("SELECT *
+			FROM ($sql_inner) AS rs
+			$sql_where
+			$sql_order
+			$sql_limit",
+			$sql_params);
+	}
 
 	$display_text = [
 		'tasktype' => [
@@ -816,7 +878,10 @@ function show_cacti_processes() : void {
 
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {
-			form_alternate_row('line' . $p['pid'], false);
+			// pid backs the SELECT fragments plugins register, so cast it before
+			// using it to build the row id -- a non-numeric value could otherwise
+			// break out of the id='...' attribute in form_alternate_row().
+			form_alternate_row('line' . (int) $p['pid'], false);
 
 			if ($p['timeout'] != 'N/A') {
 				$timeout_time = $p['timeout'];
@@ -829,17 +894,22 @@ function show_cacti_processes() : void {
 				$timeout_date = $p['timeout'];
 			}
 
-			form_selectable_cell($p['tasktype'], $p['pid']);
+			// escape every column: plugins can contribute the SELECT fragments
+			// behind these rows via the support_process_tables hook, so the
+			// values are not trusted (taskname is already escaped by filter_value).
+			// use form_selectable_ecell(), the file's existing escaping helper,
+			// rather than hand-wrapping form_selectable_cell() with html_escape().
+			form_selectable_ecell($p['tasktype'], $p['pid']);
 			form_selectable_cell(filter_value(cacti_strtoupper($p['taskname']), ''), $p['pid']);
-			form_selectable_cell($p['taskid'], $p['pid'], '', 'right');
-			form_selectable_cell($p['runtime'], $p['pid'], '', 'right');
-			form_selectable_cell($p['pid'], $p['pid'], '', 'right');
+			form_selectable_ecell($p['taskid'], $p['pid'], '', 'right');
+			form_selectable_ecell($p['runtime'], $p['pid'], '', 'right');
+			form_selectable_ecell($p['pid'], $p['pid'], '', 'right');
 
 			// form_selectable_cell($p['timeout'], $p['pid'], '', 'right');
 
-			form_selectable_cell($timeout_date, $p['pid'], '', 'right');
-			form_selectable_cell($p['started'], $p['pid'], '', 'right');
-			form_selectable_cell($p['last_update'], $p['pid'], '', 'right');
+			form_selectable_ecell($timeout_date, $p['pid'], '', 'right');
+			form_selectable_ecell($p['started'], $p['pid'], '', 'right');
+			form_selectable_ecell($p['last_update'], $p['pid'], '', 'right');
 
 			form_end_row();
 		}
