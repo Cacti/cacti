@@ -703,22 +703,28 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: graph_templates.php?action=input_edit&graph_template_input_id=' . (empty($graph_template_input_id) ? gnrv('graph_template_input_id') : $graph_template_input_id) . '&graph_template_id=' . gnrv('graph_template_id'));
-
-			exit;
+			cacti_redirect('graph_templates.php', [
+				'action'                  => 'input_edit',
+				'graph_template_input_id' => empty($graph_template_input_id) ? gnrv('graph_template_input_id') : $graph_template_input_id,
+				'graph_template_id'       => gnrv('graph_template_id'),
+			]);
 		} else {
 			db_execute_prepared('UPDATE graph_templates
 				SET last_updated = NOW()
 				WHERE id = ?',
 				[gnrv('graph_template_id')]);
 
-			header('Location: graph_templates.php?action=template_edit&id=' . gnrv('graph_template_id'));
-
-			exit;
+			cacti_redirect('graph_templates.php', [
+				'action' => 'template_edit',
+				'id'     => gnrv('graph_template_id'),
+			]);
 		}
 	}
 
-	header('Location: graph_templates.php?action=template_edit&id=' . (empty($graph_template_id) ? gnrv('graph_template_id') : $graph_template_id));
+	cacti_redirect('graph_templates.php', [
+		'action' => 'template_edit',
+		'id'     => empty($graph_template_id) ? gnrv('graph_template_id') : $graph_template_id,
+	]);
 }
 
 function item_movedown() : void {
