@@ -74,6 +74,13 @@ test('html_escape_attr encodes backticks', function () {
 	expect(html_escape_attr('` autofocus onfocus=alert(1)'))->toBe('&#96; autofocus onfocus=alert(1)');
 });
 
+test('html_escape_attr double-encodes a pre-encoded entity', function () {
+	// an attacker-supplied literal &quot; must not survive into the attribute
+	// and be decoded back into a quote by the browser; double_encode turns
+	// the leading '&' of the existing entity into '&amp;' so it stays inert.
+	expect(html_escape_attr('&quot; onmouseover="alert(1)'))->toBe('&amp;quot; onmouseover=&quot;alert(1)');
+});
+
 test('html_escape_url encodes URL attribute delimiters', function () {
 	expect(html_escape_url('https://example.invalid/?q=" onmouseover="alert(1)'))
 		->toBe('https://example.invalid/?q=&quot; onmouseover=&quot;alert(1)');
@@ -85,6 +92,19 @@ test('cacti_js_encode escapes script-sensitive characters', function () {
 	expect($result)->toContain('\u003C')
 		->and($result)->toContain('\u0027')
 		->and($result)->not->toContain('</script>');
+});
+
+test('cacti_js_encode escapes U+2028 and U+2029 line terminators', function () {
+	// left literal, these are valid JSON but JavaScript treats them as line
+	// terminators, breaking parsing of a JSON literal embedded inline in <script>
+	$result = cacti_js_encode("line1\u{2028}line2\u{2029}line3");
+
+	$backslash = chr(92);
+
+	expect($result)->toContain($backslash . 'u2028')
+		->and($result)->toContain($backslash . 'u2029')
+		->and($result)->not->toContain("\u{2028}")
+		->and($result)->not->toContain("\u{2029}");
 });
 
 test('cacti_url appends encoded query parameters', function () {
@@ -116,6 +136,36 @@ test('cacti_redirect is used for constructed local page redirects', function () 
 		expect($source)->not->toBeFalse();
 		expect($source)->toContain('cacti_redirect(');
 	}
+});
+
+test('sanitize_redirect_path leaves an ordinary local path unchanged', function () {
+	expect(sanitize_redirect_path('graph_templates.php?action=template_edit&id=1'))
+		->toBe('graph_templates.php?action=template_edit&id=1');
+});
+
+test('sanitize_redirect_path fails closed on an embedded CR/LF', function () {
+	// header injection: a control byte anywhere in the path, not just leading,
+	// must not reach the Location header. A trailing-only control run is
+	// harmless (trim() removes it and nothing injected follows), so this
+	// only asserts on control bytes that have injected content after them.
+	expect(sanitize_redirect_path("graph_templates.php\r\nSet-Cookie: pwned=1"))->toBe('index.php')
+		->and(sanitize_redirect_path("graph_templates.php?id=1\r\nSet-Cookie: pwned=1"))->toBe('index.php')
+		->and(sanitize_redirect_path("graph_templates.php?id=1\nEvil"))->toBe('index.php');
+});
+
+test('sanitize_redirect_path fails closed on a percent-encoded open redirect', function () {
+	// '/%2F%2Fevil.example' decodes to '///evil.example', a protocol-relative
+	// off-site redirect that a raw-string-only scheme check would miss; and
+	// '%68%74%74%70%3A%2F%2F...' decodes to 'http://evil.example'
+	expect(sanitize_redirect_path('/%2F%2Fevil.example'))->toBe('index.php')
+		->and(sanitize_redirect_path('%68%74%74%70%3A%2F%2Fevil.example'))->toBe('index.php')
+		->and(sanitize_redirect_path('http://evil.example'))->toBe('index.php')
+		->and(sanitize_redirect_path('//evil.example'))->toBe('index.php');
+});
+
+test('sanitize_redirect_path does not reject a legitimate literal percent sign', function () {
+	expect(sanitize_redirect_path('graph_templates.php?filter=100%25'))
+		->toBe('graph_templates.php?filter=100%25');
 });
 
 test('cacti_script_data renders JSON without exposing script delimiters', function () {

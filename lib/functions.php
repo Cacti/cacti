@@ -5149,17 +5149,18 @@ function cacti_url(string $path, array $params = []) : string {
 }
 
 /**
- * Redirect to a local Cacti page and terminate the request.
+ * sanitize_redirect_path - validate a local-redirect destination, failing
+ * closed to index.php so request data cannot create an open redirect or
+ * inject headers.
  *
- * Absolute, protocol-relative, and mixed-slash destinations fail closed to
- * index.php so request data cannot create an open redirect.
+ * Split out of cacti_redirect() so the validation can be unit tested without
+ * triggering that function's exit().
  *
- * @param string $path   The local page or path
- * @param array  $params Query parameters to append
+ * @param string $path The requested local page or path
  *
- * @return never
+ * @return string The path itself when safe, otherwise 'index.php'
  */
-function cacti_redirect(string $path, array $params = []) : never {
+function sanitize_redirect_path(string $path) : string {
 	// Fail closed to index.php when the destination is empty, carries a control
 	// byte anywhere (CR/LF header injection), or resolves to an absolute or
 	// protocol-relative URL in either its raw or percent-decoded form. Checking
@@ -5175,10 +5176,25 @@ function cacti_redirect(string $path, array $params = []) : never {
 		|| preg_match($control, $decoded)    === 1
 		|| preg_match($absolute, $candidate) === 1
 		|| preg_match($absolute, $decoded)   === 1) {
-		$candidate = 'index.php';
+		return 'index.php';
 	}
 
-	header('Location: ' . cacti_url($candidate, $params));
+	return $candidate;
+}
+
+/**
+ * Redirect to a local Cacti page and terminate the request.
+ *
+ * Absolute, protocol-relative, and mixed-slash destinations fail closed to
+ * index.php so request data cannot create an open redirect.
+ *
+ * @param string $path   The local page or path
+ * @param array  $params Query parameters to append
+ *
+ * @return never
+ */
+function cacti_redirect(string $path, array $params = []) : never {
+	header('Location: ' . cacti_url(sanitize_redirect_path($path), $params));
 	exit;
 }
 
