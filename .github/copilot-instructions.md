@@ -64,6 +64,10 @@
   - Append new issue entries at the end of the issue block and new feature entries at the end of the feature block.
   - Keep numbered entries in their existing numeric order; every new entry must include an issue or pull-request number (`#1234`).
   - Preserve the existing entry prefixes, release headings, and blank-line spacing.
+- **URLs and redirects**:
+  - Use `cacti_url($path, $params)` for RFC 3986 query-string construction, including URLs with fragments.
+  - Use `cacti_redirect($path, $params)` for local redirects; it rejects absolute and protocol-relative destinations (checking both raw and percent-decoded forms) and terminates the request.
+  - Escape output for HTML attribute contexts with `html_escape_attr()`, not `htmle()`/`html_escape()`; only the attribute helper double-encodes to stop pre-encoded entities from breaking out of the attribute.
 
 ## Workflows you’ll actually use
 - Install deps: `composer install` (CI validates via `.github/workflows/syntax.yml`).
