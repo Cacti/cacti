@@ -1660,7 +1660,7 @@ function graph_template_connect_task_items(int $graph_template_id, array $cache_
 	if (cacti_sizeof($local_data_ids)) {
 		foreach (db_fetch_assoc('SELECT id, local_data_template_rrd_id, local_data_id
 			FROM data_template_rrd
-			WHERE ' . db_in_clause('local_data_id', $local_data_ids) . '
+			WHERE local_data_id IN (' . implode(', ', array_map('intval', $local_data_ids)) . ')
 			ORDER BY id',
 			true, $db_conn) as $row) {
 			$key = $row['local_data_template_rrd_id'] . ':' . $row['local_data_id'];

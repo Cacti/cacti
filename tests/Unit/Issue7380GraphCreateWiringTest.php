@@ -149,6 +149,6 @@ test('create path calls the bulk connect helper and uses a bulk rrd fetch', func
 	$fn = strstr($src, 'function graph_template_connect_task_items');
 	$fn = substr($fn, 0, strpos($fn, "\nfunction ", 1));
 
-	expect($fn)->toContain("db_in_clause('local_data_id'"); // bulk pre-fetch
-	expect($fn)->not->toContain('AND local_data_id = ?');   // no per-item rrd SELECT remains
+	expect($fn)->toContain('WHERE local_data_id IN ('); // bulk pre-fetch
+	expect($fn)->not->toContain('AND local_data_id = ?'); // no per-item rrd SELECT remains
 });
