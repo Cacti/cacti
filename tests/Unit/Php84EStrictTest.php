@@ -10,9 +10,9 @@
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
- |
- | E_STRICT can no longer be raised as of PHP 8.0 and reading the constant
- | is deprecated as of PHP 8.4, so the error handlers must not name it.
+ |                                                                         |
+ | E_STRICT can no longer be raised as of PHP 8.0 and reading the constant |
+ | is deprecated as of PHP 8.4, so the error handlers must not name it.    |
  +-------------------------------------------------------------------------+
 */
 
