@@ -537,8 +537,32 @@ function run_data_query(int $host_id, int $snmp_query_id, bool $automation = fal
  */
 function data_query_remove_disabled_items(array $orphaned_ids) : void {
 	if (cacti_sizeof($orphaned_ids)) {
-		db_execute_prepared('DELETE FROM poller_item
-			WHERE local_data_id IN (' . implode(', ', $orphaned_ids) . ')');
+		// resolve which pollers currently hold these items before the local
+		// delete removes the rows we'd need to look that up from
+		$poller_ids = array_rekey(
+			db_fetch_assoc_prepared('SELECT DISTINCT poller_id
+				FROM poller_item
+				WHERE local_data_id IN (' . implode(', ', $orphaned_ids) . ')'),
+			'poller_id', 'poller_id'
+		);
+
+		poller_item_delete_for_data_source($orphaned_ids);
+
+		if (cacti_sizeof($poller_ids)) {
+			foreach ($poller_ids as $poller_id) {
+				if ($poller_id > 1) {
+					if (remote_poller_up($poller_id)) {
+						if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+							poller_item_delete_for_data_source($orphaned_ids, $rcnn_id, false);
+						} else {
+							raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+						}
+					} else {
+						raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					}
+				}
+			}
+		}
 
 		db_execute_prepared('DELETE FROM poller_output_boost
 			WHERE local_data_id IN (' . implode(', ', $orphaned_ids) . ')');

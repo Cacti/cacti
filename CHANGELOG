@@ -56,6 +56,9 @@ Cacti CHANGELOG
 -issue#7523: Fix dead duplicate-record guard in boost_process_poller_output
 -issue#7520: Gate Boost archive-table drop on shard completeness instead of the partial-success status sum
 -issue#7526: Apply Boost's child-completion startup barrier to dsstats and rrdcheck launch loops
+-issue#7521: Purge the old remote poller's poller_item row when api_data_source_change_host() moves a data source to a new device
+-issue#7524: Mirror poller_item deletes to the remote poller in data_query_remove_disabled_items() and data_source_to_data_template()
+-issue#7535: Consolidate the poller_item delete call sites behind poller_item_delete_for_data_source() and poller_item_delete_for_host()
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors

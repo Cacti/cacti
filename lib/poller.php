@@ -1531,6 +1531,87 @@ function poller_connect_to_remote(int $poller_id) : mixed {
 }
 
 /**
+ * poller_item_delete_for_data_source - deletes poller_item rows for one or
+ * more data sources, optionally mirroring the delete to an already-open
+ * remote Data Collector connection. This is the single chokepoint for
+ * "DELETE FROM poller_item ... WHERE local_data_id ..." so a data source
+ * being disabled, removed, or reassigned can't accidentally leave a stale
+ * row behind on its former remote poller.
+ *
+ * Connection resolution (poller_push_to_remote_db_connect(), remote_poller_up()
+ * checks, etc.) stays with the caller, which already knows whether it holds
+ * an open remote connection or needs to open one.
+ *
+ * @param int|array $local_data_ids One or more local_data_id values
+ * @param mixed     $rcnn_id        An open remote connection to mirror the
+ *                                  delete to, or false to skip the mirror
+ * @param bool      $delete_local   Whether to delete the local row too. Pass
+ *                                  false when the caller already deleted it
+ *                                  (or intentionally handles it elsewhere)
+ *                                  and only the remote mirror is needed.
+ *
+ * @return void
+ */
+function poller_item_delete_for_data_source(int|array $local_data_ids, mixed $rcnn_id = false, bool $delete_local = true) : void {
+	if (!is_array($local_data_ids)) {
+		$local_data_ids = [$local_data_ids];
+	}
+
+	$local_data_ids = array_map('intval', $local_data_ids);
+
+	if (!cacti_sizeof($local_data_ids)) {
+		return;
+	}
+
+	$sql_where = db_in_clause('local_data_id', $local_data_ids);
+
+	if ($delete_local) {
+		db_execute("DELETE FROM poller_item WHERE $sql_where");
+	}
+
+	if ($rcnn_id !== false && $rcnn_id !== null) {
+		db_execute("DELETE FROM poller_item WHERE $sql_where", true, $rcnn_id);
+	}
+}
+
+/**
+ * poller_item_delete_for_host - deletes poller_item rows for one or more
+ * devices, optionally mirroring the delete to an already-open remote Data
+ * Collector connection. Sibling of poller_item_delete_for_data_source() for
+ * the host_id-keyed delete sites (device removal/purge).
+ *
+ * @param int|array $host_ids     One or more host_id values
+ * @param mixed     $rcnn_id      An open remote connection to mirror the
+ *                                delete to, or false to skip the mirror
+ * @param bool      $delete_local Whether to delete the local row too. Pass
+ *                                false when the caller already deleted it
+ *                                and only the remote mirror is needed.
+ *
+ * @return void
+ */
+function poller_item_delete_for_host(int|array $host_ids, mixed $rcnn_id = false, bool $delete_local = true) : void {
+	if (!is_array($host_ids)) {
+		$host_ids = [$host_ids];
+	}
+
+	$host_ids = array_map('intval', $host_ids);
+
+	if (!cacti_sizeof($host_ids)) {
+		return;
+	}
+
+	$sql_where = db_in_clause('host_id', $host_ids);
+
+	if ($delete_local) {
+		db_execute("DELETE FROM poller_item WHERE $sql_where");
+	}
+
+	if ($rcnn_id !== false && $rcnn_id !== null) {
+		db_execute("DELETE FROM poller_item WHERE $sql_where", true, $rcnn_id);
+	}
+}
+
+/**
  * replicate_out - this function sends table changes from the resource
  * cache to the remote database.  This happens as a result of a full
  * sync within Cacti.
