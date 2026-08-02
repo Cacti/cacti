@@ -52,6 +52,9 @@ Cacti CHANGELOG
 -issue#7211: Correct the Nth percentile and bandwidth summation divisor on base-1024 graphs
 -issue#7214: Fix TypeError in boost_graph_set_file when sending reports
 -issue#7216: Aggregate totalling legend printed untotalled single data source values
+-issue#7522: Fix cmd.php SELECT * poller_item/host join defeating poller_item's SNMP-credential caching
+-issue#7525: Fix cmd.php --allhost invocation ignoring cron_interval when resetting rrd_next_step
+-issue#7528: Replace cmd.php's redundant script-server-call COUNT(*) join with an in-PHP count
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
