@@ -1100,6 +1100,26 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 
 	if (cacti_count($archive_tables)) {
 		foreach ($archive_tables as $table) {
+			// rows with time >= $timestamp belong to a poll round that was
+			// still open when $results was built above, so they were not
+			// written to RRD; carry them forward into the live table instead
+			// of deleting them out of the archive table, which gets dropped
+			// wholesale once this run completes (see issue #7519)
+			db_execute_prepared("INSERT IGNORE INTO poller_output_boost
+				SELECT *
+				FROM $table
+				WHERE local_data_id = ?
+				AND time >= FROM_UNIXTIME(?)",
+				[$local_data_id, $timestamp], false);
+
+			// Now that every row for this local_data_id has either been
+			// written to RRD (time < $timestamp) or forwarded to the live
+			// table above (time >= $timestamp), the whole archive slice for
+			// this local_data_id is safe to remove. Leaving the forwarded
+			// rows behind here would duplicate them into the unfiltered
+			// archive-side SELECT that seeds $temp_table on the next call
+			// for this local_data_id, which is not INSERT IGNORE and would
+			// fail on the resulting primary-key collision.
 			db_execute_prepared("DELETE IGNORE
 				FROM $table
 				WHERE local_data_id = ?",
@@ -1426,6 +1446,10 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 				$vals_in_buffer++;
 				$multi_vals_set = true;
 			}
+
+			// remember what we actually processed so the duplicate
+			// check above has something real to compare against
+			$last_item = $item;
 		}
 
 		// process the last rrdupdate if applicable

@@ -285,20 +285,30 @@ if ($child == false) {
 			if ($rrd_updates > 0) {
 				cacti_log('INFO: Boost removing archive tables ...', true, 'BOOST');
 
-				// Drop only the tables this run owned. A table created by a later
-				// rotation, or left by an earlier crashed run, may still hold rows
-				// that have not been processed; matching on the LIKE pattern would
-				// destroy those too.
-				if (cacti_sizeof($boost_run_arch_tables)) {
-					foreach ($boost_run_arch_tables as $table) {
-						if (!boost_is_valid_archive_table($table)) {
-							continue;
+				// $rrd_updates is a SUM() across whatever completion rows landed;
+				// it goes positive as soon as one shard succeeds, even if a sibling
+				// shard's child crashed before writing a completion row at all. Gate
+				// the drop on the same completeness check the drain loop above uses,
+				// not on "some shard made progress" -- otherwise a crashed child's
+				// entire unprocessed shard of staged RRD data is destroyed with it.
+				if (boost_completed_children() >= $expected_children) {
+					// Drop only the tables this run owned. A table created by a later
+					// rotation, or left by an earlier crashed run, may still hold rows
+					// that have not been processed; matching on the LIKE pattern would
+					// destroy those too.
+					if (cacti_sizeof($boost_run_arch_tables)) {
+						foreach ($boost_run_arch_tables as $table) {
+							if (!boost_is_valid_archive_table($table)) {
+								continue;
+							}
+
+							cacti_log('INFO: Boost removing archive table: ' . $table, true, 'BOOST');
+
+							db_execute("DROP TABLE IF EXISTS `$table`");
 						}
-
-						cacti_log('INFO: Boost removing archive table: ' . $table, true, 'BOOST');
-
-						db_execute("DROP TABLE IF EXISTS `$table`");
 					}
+				} else {
+					cacti_log(sprintf('WARNING: Boost run only completed %d of %d shards; leaving archive tables in place for the next run to pick up.', boost_completed_children(), $expected_children), true, 'BOOST');
 				}
 
 				dsstats_boost_bottom();
