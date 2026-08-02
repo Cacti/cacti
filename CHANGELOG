@@ -54,6 +54,7 @@ Cacti CHANGELOG
 -issue#7216: Aggregate totalling legend printed untotalled single data source values
 -issue#7519: Fix Boost archive-table cleanup deleting still-open-round rows instead of forwarding them to the live table
 -issue#7523: Fix dead duplicate-record guard in boost_process_poller_output
+-issue#7520: Gate Boost archive-table drop on shard completeness instead of the partial-success status sum
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
