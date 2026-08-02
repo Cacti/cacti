@@ -52,6 +52,8 @@ Cacti CHANGELOG
 -issue#7211: Correct the Nth percentile and bandwidth summation divisor on base-1024 graphs
 -issue#7214: Fix TypeError in boost_graph_set_file when sending reports
 -issue#7216: Aggregate totalling legend printed untotalled single data source values
+-issue#7521: Purge the old remote poller's poller_item row when api_data_source_change_host() moves a data source to a new device
+-issue#7524: Mirror poller_item deletes to the remote poller in data_query_remove_disabled_items() and data_source_to_data_template()
 -issue#7535: Consolidate the poller_item delete call sites behind poller_item_delete_for_data_source() and poller_item_delete_for_host()
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php

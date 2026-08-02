@@ -532,7 +532,19 @@ function api_data_source_get_interface_speed(array $data_local) : int {
  */
 function api_data_source_change_host(array $data_sources, int $device_id) : void {
 	if (cacti_sizeof($data_sources)) {
+		$new_poller_id = db_fetch_cell_prepared('SELECT poller_id
+			FROM host
+			WHERE id = ?',
+			[$device_id]);
+
 		foreach ($data_sources as $data_source) {
+			$old_poller_id = db_fetch_cell_prepared('SELECT h.poller_id
+				FROM data_local AS dl
+				INNER JOIN host AS h
+				ON h.id = dl.host_id
+				WHERE dl.id = ?',
+				[$data_source]);
+
 			db_execute_prepared('UPDATE data_local
 				SET host_id = ?
 				WHERE id = ?',
@@ -543,6 +555,20 @@ function api_data_source_change_host(array $data_sources, int $device_id) : void
 					SET host_id = ?
 					WHERE id = ?',
 					[$device_id, $data_source], true, $rcnn_id);
+			}
+
+			// the data source just left $old_poller_id for a different poller;
+			// purge it there too, or that Collector keeps polling it forever
+			if ($old_poller_id > 1 && $old_poller_id != $new_poller_id) {
+				if (remote_poller_up($old_poller_id)) {
+					if (($old_rcnn_id = poller_push_to_remote_db_connect($old_poller_id, true)) !== false) {
+						poller_item_delete_for_data_source($data_source, $old_rcnn_id, false);
+					} else {
+						raise_message('poller_down_' . $old_poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $old_poller_id), MESSAGE_LEVEL_WARN);
+					}
+				} else {
+					raise_message('poller_down_' . $old_poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $old_poller_id), MESSAGE_LEVEL_WARN);
+				}
 			}
 
 			push_out_host($device_id, $data_source);
