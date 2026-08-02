@@ -381,7 +381,9 @@ function api_device_enable_devices(array $device_ids) : void {
 			if (cacti_sizeof($data_sources)) {
 				foreach ($data_sources as $data_source) {
 					$local_data_ids[] = $data_source['id'];
-					$poller_items     = array_merge($poller_items, update_poller_cache($data_source['id']));
+
+					// $poller_id was already looked up above for this $device_id
+					$poller_items = array_merge($poller_items, update_poller_cache($data_source['id'], false, $poller_id));
 				}
 			}
 
