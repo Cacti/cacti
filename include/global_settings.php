@@ -703,12 +703,6 @@ $settings['general'] = [
 		'method'        => 'drop_array',
 		'array'         => []
 	],
-	'trust_signer' => [
-		'friendly_name' => __('Automatically Trust Signer'),
-		'description'   => __('If checked, Cacti will automatically Trust the Signer for this and any future Packages by that author.'),
-		'method'        => 'checkbox',
-		'default'       => ''
-	],
 	'remove_orphans' => [
 		'friendly_name' => __('Remove Orphaned Graph Items'),
 		'description'   => __('If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template.'),

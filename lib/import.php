@@ -400,7 +400,17 @@ function import_package_get_details(string $xmlfile) : array {
 	return $return;
 }
 
-function import_validate_signature(string $xmlfile) : mixed {
+/**
+ * import_validate_signature - Report whether a Package is signed by a key that
+ * Cacti trusts.  The verdict is the return value itself, so a caller can not
+ * treat a populated result as a pass.  Callers that need to name the failing
+ * Package take its details from import_get_package_info().
+ *
+ * @param string $xmlfile The Package to check
+ *
+ * @return bool True when the Package key is an official or an accepted key
+ */
+function import_validate_signature(string $xmlfile) : bool {
 	// Cacti public key first
 	$cacti_key1   = get_public_key_sha1();
 	$cacti_key2   = get_public_key_sha256();
@@ -408,30 +418,20 @@ function import_validate_signature(string $xmlfile) : mixed {
 
 	$info = import_get_package_info($xmlfile);
 
-	if ($info === false) {
+	if ($info === false || !isset($info['pubkey'])) {
 		return false;
-	} else {
-		if (!isset($info['pubkey'])) {
-			return false;
-		}
-
-		// Other trusted keys next
-		$keys = array_rekey(
-			db_fetch_assoc('SELECT public_key FROM package_public_keys'),
-			'public_key', 'public_key'
-		);
-
-		$keys[$cacti_key1] = $cacti_key1;
-		$keys[$cacti_key2] = $cacti_key2;
-
-		if (in_array($public_key, $keys, true)) {
-			$info['valid'] = true;
-		} else {
-			$info['valid'] = false;
-		}
-
-		return $info;
 	}
+
+	// Other trusted keys next
+	$keys = array_rekey(
+		db_fetch_assoc('SELECT public_key FROM package_public_keys'),
+		'public_key', 'public_key'
+	);
+
+	$keys[$cacti_key1] = $cacti_key1;
+	$keys[$cacti_key2] = $cacti_key2;
+
+	return in_array($public_key, $keys, true);
 }
 
 function import_get_package_info(string $xmlfile) : mixed {
@@ -496,7 +496,9 @@ function import_read_package_data(string $xmlfile, string &$public_key, bool $pr
 
 	$filename = "compress.zlib://$xmlfile";
 
-	if (!import_validate_signature($xmlfile) && !$preview) {
+	// A preview neither writes files nor touches the database, so an untrusted
+	// Package may still be inspected.  A real import may not.
+	if (!$preview && !import_validate_signature($xmlfile)) {
 		cacti_log('FATAL: Package Public Key is not Official Cacti Public Key for Package ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);
 
 		return false;
