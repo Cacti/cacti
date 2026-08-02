@@ -13,16 +13,18 @@
 */
 
 /*
- * We set a testing variable such that Cacti will not attempt
- * to connect to a database when the tests are called, or to call
- * any function that will result in the failure due to the lack
- * of a real database connection.
+ * Marks the process as a test run.
+ *
+ * Nothing on 1.2.x reads PHP_TESTING or CACTI_TEST_BOOTSTRAP, so neither one
+ * suppresses a database connection here. The unit tests avoid the database by
+ * requiring individual lib files instead of include/global.php. Both are set
+ * for parity with develop, where include/global.php and lib/database.php gate
+ * their connection short-circuit on the pair.
  */
 
-define('PHP_TESTING', true);
+if (!defined('PHP_TESTING')) {
+	define('PHP_TESTING', true);
+}
 
-// Arm the combined test-bootstrap gate in include/global.php. PHP_TESTING alone
-// no longer engages the DB short-circuit; CACTI_TEST_BOOTSTRAP must also be set
-// so a stray define in production cannot bypass real connection logic.
 putenv('CACTI_TEST_BOOTSTRAP=1');
 $_ENV['CACTI_TEST_BOOTSTRAP'] = '1';

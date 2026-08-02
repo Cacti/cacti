@@ -44,7 +44,10 @@ class CactiSecureType {
 	}
 
 	/**
-	 * Safely casts a value to a boolean.
+	 * Parses a value as a boolean using FILTER_VALIDATE_BOOLEAN rules, not a
+	 * (bool) cast. '1', 'true', 'on' and 'yes' are true, in any case and with
+	 * surrounding whitespace ignored; everything else is false, including
+	 * unrecognised strings such as 'banana' and numbers other than 1.
 	 */
 	public static function toBool(mixed $value): bool {
 		return filter_var($value, FILTER_VALIDATE_BOOLEAN);
