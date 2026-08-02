@@ -504,7 +504,7 @@ function import_read_package_data(string $xmlfile, string &$public_key, bool $pr
 	// A preview neither writes files nor touches the database, so an untrusted
 	// Package may still be inspected.  A real import may not.
 	if (!$preview && !import_validate_signature($xmlfile)) {
-		cacti_log('FATAL: Package Public Key is not Official Cacti Public Key for Package ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);
+		cacti_log('FATAL: Package Public Key is not a Trusted Public Key for Package ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);
 
 		return false;
 	}
