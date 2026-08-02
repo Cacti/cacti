@@ -130,8 +130,7 @@ function api_data_source_remove(int $local_data_id, bool $update_totals = true) 
 	db_execute_prepared('DELETE FROM data_template_rrd
 		WHERE local_data_id = ?', [$local_data_id]);
 
-	db_execute_prepared('DELETE FROM poller_item
-		WHERE local_data_id = ?', [$local_data_id]);
+	poller_item_delete_for_data_source($local_data_id);
 
 	db_execute_prepared('DELETE FROM data_local
 		WHERE id = ?', [$local_data_id]);
@@ -179,8 +178,7 @@ function api_data_source_remove(int $local_data_id, bool $update_totals = true) 
 		db_execute_prepared('DELETE FROM data_template_rrd
 			WHERE local_data_id = ?', [$local_data_id], true, $rcnn_id);
 
-		db_execute_prepared('DELETE FROM poller_item
-			WHERE local_data_id = ?', [$local_data_id], true, $rcnn_id);
+		poller_item_delete_for_data_source($local_data_id, $rcnn_id, false);
 
 		db_execute_prepared('DELETE FROM data_local
 			WHERE id = ?', [$local_data_id], true, $rcnn_id);
@@ -290,8 +288,7 @@ function api_data_source_remove_multi(array $local_data_ids, bool $update_totals
 		db_execute('DELETE FROM data_template_rrd
 			WHERE ' . array_to_sql_or($ids_to_delete, 'local_data_id'));
 
-		db_execute('DELETE FROM poller_item
-			WHERE ' . array_to_sql_or($ids_to_delete, 'local_data_id'));
+		poller_item_delete_for_data_source($ids_to_delete);
 
 		db_execute('DELETE FROM data_local
 			WHERE ' . array_to_sql_or($ids_to_delete, 'id'));
@@ -338,8 +335,7 @@ function api_data_source_remove_multi(array $local_data_ids, bool $update_totals
 					db_execute('DELETE FROM data_template_rrd
 						WHERE ' . array_to_sql_or($ids_to_delete, 'local_data_id'), true, $rcnn_id);
 
-					db_execute('DELETE FROM poller_item
-						WHERE ' . array_to_sql_or($ids_to_delete, 'local_data_id'), true, $rcnn_id);
+					poller_item_delete_for_data_source($ids_to_delete, $rcnn_id, false);
 
 					db_execute('DELETE FROM data_local
 						WHERE ' . array_to_sql_or($ids_to_delete, 'id'), true, $rcnn_id);
@@ -398,9 +394,7 @@ function api_data_source_enable(int $local_data_id) : void {
  * @return void
  */
 function api_data_source_disable(int $local_data_id) : void {
-	db_execute_prepared('DELETE FROM poller_item
-		WHERE local_data_id = ?',
-		[$local_data_id]);
+	poller_item_delete_for_data_source($local_data_id);
 
 	db_execute_prepared("UPDATE data_template_data
 		SET active=''
@@ -413,9 +407,7 @@ function api_data_source_disable(int $local_data_id) : void {
 		[$local_data_id]);
 
 	if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
-		db_execute_prepared('DELETE FROM poller_item
-			WHERE local_data_id = ?',
-			[$local_data_id], true, $rcnn_id);
+		poller_item_delete_for_data_source($local_data_id, $rcnn_id, false);
 
 		db_execute_prepared("UPDATE data_template_data
 			SET active=''
@@ -448,13 +440,13 @@ function api_data_source_disable_multi(array $local_data_ids) : void {
 			'poller_id', 'poller_id'
 		);
 
-		db_execute('DELETE FROM poller_item WHERE ' . array_to_sql_or($ids_to_disable, 'local_data_id'));
+		poller_item_delete_for_data_source($ids_to_disable);
 		db_execute("UPDATE data_template_data SET active='' WHERE " . array_to_sql_or($ids_to_disable, 'local_data_id'));
 
 		if (cacti_sizeof($poller_ids)) {
 			foreach ($poller_ids as $poller_id) {
 				if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-					db_execute('DELETE FROM poller_item WHERE ' . array_to_sql_or($ids_to_disable, 'local_data_id'), true, $rcnn_id);
+					poller_item_delete_for_data_source($ids_to_disable, $rcnn_id, false);
 					db_execute("UPDATE data_template_data SET active='' WHERE " . array_to_sql_or($ids_to_disable, 'local_data_id'), true, $rcnn_id);
 				}
 			}
