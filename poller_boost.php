@@ -814,6 +814,29 @@ function boost_output_rrd_data(int $child) : mixed {
 }
 
 /**
+ * boost_archive_select_sql - builds the per-archive-table SELECT fragment
+ * used by boost_process_local_data_ids() to pull pending output rows for a
+ * single boost child process. Shared by both the single-table fast path and
+ * the multi-table UNION ALL fallback so the join/filter shape stays in sync.
+ *
+ * @param string $table    The archive (or live poller_output_boost) table to read from
+ * @param int    $last_id  Only rows with local_data_id <= this value
+ * @param int    $child    The boost child process handle owning these rows
+ *
+ * @return string The SELECT fragment (no trailing ORDER BY)
+ */
+function boost_archive_select_sql(string $table, int $last_id, int $child) : string {
+	return "SELECT $table.local_data_id, dl.data_template_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
+		FROM $table
+		INNER JOIN poller_output_boost_local_data_ids AS bpt
+		ON $table.local_data_id = bpt.local_data_id
+		INNER JOIN data_local AS dl
+		ON $table.local_data_id = dl.id
+		WHERE bpt.local_data_id <= $last_id
+		AND bpt.process_handler = $child";
+}
+
+/**
  * boost_process_local_data_ids - grabs data from the 'poller_output' table and feeds the *completed*
  * results to RRDTool for processing
  *
@@ -888,24 +911,27 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 			'keyname', ['data_source_name']);
 	}
 
-	$query_string        = 'SELECT * FROM (';
-	$query_string_suffix = 'ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC';
+	$query_string_order = 'ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC';
 
-	$sub_query_string = '';
+	if (cacti_sizeof($archive_tables) === 1) {
+		// steady state: exactly one archive table (old ones are dropped at
+		// the end of each cycle), so query it directly and let the ORDER BY
+		// use the table's own PK (local_data_id, time, rrd_name) instead of
+		// paying for a filesort over an indexless derived table.
+		$table        = reset($archive_tables);
+		$query_string = boost_archive_select_sql($table, $last_id, $child) . ' ' . $query_string_order;
+	} else {
+		// fallback: a prior crashed run left more than one archive table
+		// behind. UNION ALL results can't be merged by the optimizer, so
+		// they're wrapped in a derived table and sorted once at the end.
+		$sub_query_string = '';
 
-	foreach ($archive_tables as $table) {
-		$sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ' : '') .
-			" SELECT $table.local_data_id, dl.data_template_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
-			FROM $table
-			INNER JOIN poller_output_boost_local_data_ids AS bpt
-			ON $table.local_data_id = bpt.local_data_id
-			INNER JOIN data_local AS dl
-			ON $table.local_data_id = dl.id
-			WHERE bpt.local_data_id <= $last_id
-			AND bpt.process_handler = $child";
+		foreach ($archive_tables as $table) {
+			$sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ' : '') . boost_archive_select_sql($table, $last_id, $child);
+		}
+
+		$query_string = 'SELECT * FROM (' . $sub_query_string . ') t ' . $query_string_order;
 	}
-
-	$query_string = $query_string . $sub_query_string . ') t ' . $query_string_suffix;
 
 	boost_timer('get_records', BOOST_TIMER_START);
 	$results = db_fetch_assoc($query_string);
