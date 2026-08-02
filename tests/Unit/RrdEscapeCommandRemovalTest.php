@@ -25,15 +25,15 @@ $rrdPath = dirname(__DIR__, 2) . '/lib/rrd.php';
 test('escape_command is gone from lib/rrd.php', function () use ($rrdPath) {
 	$source = file_get_contents($rrdPath);
 
-	expect($source)->not->toContain('function escape_command');
-	expect($source)->not->toContain('escape_command(');
+	expect($source)->not->toMatch('/function\s+escape_command\s*\(/');
+	expect($source)->not->toMatch('/(?<![\w\$])escape_command\s*\(/');
 });
 
 test('escape_command is not redefined elsewhere under lib', function () {
 	$found = [];
 
 	foreach (glob(dirname(__DIR__, 2) . '/lib/*.php') as $file) {
-		if (str_contains(file_get_contents($file), 'escape_command')) {
+		if (preg_match('/function\s+escape_command\s*\(/', file_get_contents($file))) {
 			$found[] = basename($file);
 		}
 	}

@@ -327,9 +327,10 @@ function rrdtool_execute() : mixed {
 /**
  * Execute an RRDtool command and return the output.
  *
- * @param string|array $command_line  The RRDtool command to execute.  An array is escaped
- *                                    argument by argument; a string must already have been
- *                                    escaped by the caller with cacti_escapeshellarg()
+ * @param string|array $command_line  The RRDtool command to execute.  An array is quoted here,
+ *                                    one element per argument.  A caller passing a string quotes
+ *                                    each variable argument with cacti_escapeshellarg() as it
+ *                                    builds the line; the assembled line is never quoted
  * @param bool         $log_to_stdout Whether to echo output to stdout
  * @param int          $output_flag   Output format constant (RRDTOOL_OUTPUT_*)
  * @param mixed        $rrdtool_pipe  An open RRDtool pipe resource, or null
