@@ -58,6 +58,7 @@ Cacti CHANGELOG
 -issue#7528: Replace cmd.php's redundant script-server-call COUNT(*) join with an in-PHP count
 -issue#7529: Scope poller.php's global aggregate scans to the central poller
 -issue#7530: Rewrite poller.php's process-leveling rrd_next_step predicate to be sargable
+-issue#7531: Batch update_data_query_cache()'s poller cache writes instead of committing per row
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
