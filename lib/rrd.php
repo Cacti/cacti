@@ -30,12 +30,6 @@ if (read_config_option('storage_location')) {
 	$encryption = true;
 }
 
-function escape_command(string $command) : string {
-	return $command;		// we escape every single argument now, no need for 'special' escaping
-	// return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
-	// TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
-}
-
 /**
  * set the language environment variable for rrdtool functions
  *
@@ -333,7 +327,9 @@ function rrdtool_execute() : mixed {
 /**
  * Execute an RRDtool command and return the output.
  *
- * @param string|array $command_line  The RRDtool command to execute
+ * @param string|array $command_line  The RRDtool command to execute.  An array is escaped
+ *                                    argument by argument; a string must already have been
+ *                                    escaped by the caller with cacti_escapeshellarg()
  * @param bool         $log_to_stdout Whether to echo output to stdout
  * @param int          $output_flag   Output format constant (RRDTOOL_OUTPUT_*)
  * @param mixed        $rrdtool_pipe  An open RRDtool pipe resource, or null
@@ -400,7 +396,7 @@ function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $out
 
 			$attempts = 0;
 
-			$full_commandline = read_config_option('path_rrdtool') . $debug . ' ' . escape_command($command_line);
+			$full_commandline = read_config_option('path_rrdtool') . $debug . ' ' . $command_line;
 
 			while ($attempts < 5) {
 				if (0 == 1) { // @phpstan-ignore-line
@@ -420,7 +416,7 @@ function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $out
 
 						unset($process);
 					} else {
-						fwrite($pipes[0], escape_command($command_line) . "\r\nquit\r\n");
+						fwrite($pipes[0], $command_line . "\r\nquit\r\n");
 						fclose($pipes[0]);
 						$fp = $pipes[1];
 					}
@@ -521,7 +517,7 @@ function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $out
 		$i = 0;
 
 		while (true) {
-			if (fwrite($rrdtool_pipe, escape_command(" $command_line") . "\r\n") === false) {
+			if (fwrite($rrdtool_pipe, " $command_line\r\n") === false) {
 				cacti_log("ERROR: Detected RRDtool Crash on '$command_line'.  Last command was '$last_command'", false, 'RRDTOOL');
 
 				// close the invalid pipe
