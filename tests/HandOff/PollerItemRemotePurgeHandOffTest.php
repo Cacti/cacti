@@ -72,6 +72,17 @@ require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
 require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
 require_once dirname(__DIR__, 2) . '/lib/database.php';
 
+// push_out_host() (exercised via api_data_source_change_host()) needs
+// CACTI_PATH_LIBRARY to include_once() a sibling lib/ file. This file never
+// requires include/global.php (which normally defines it via
+// include/global_path.php), so define it directly rather than depending on
+// some other test file in the suite having bootstrapped it first as a
+// process-wide side effect -- that ordering isn't guaranteed when this file
+// runs standalone or alongside a different subset of tests.
+if (!defined('CACTI_PATH_LIBRARY')) {
+	define('CACTI_PATH_LIBRARY', dirname(__DIR__, 2) . '/lib');
+}
+
 function handoffMysqlDsnParts(): array {
 	return [
 		'host' => getenv('CACTI_HANDOFF_MYSQL_HOST') ?: '127.0.0.1',

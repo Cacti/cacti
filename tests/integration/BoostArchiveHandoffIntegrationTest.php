@@ -113,7 +113,7 @@ test('a row from a still-open poll round survives the archive cleanup by moving 
 	$contents = file_get_contents($boostLibPath);
 
 	$insert_sql = str_replace('$table', 'poller_output_boost_arch_handoff_test',
-		boost_handoff_extract_sql($contents, 'INSERT IGNORE INTO poller_output_boost', 'AND time >= FROM_UNIXTIME(?)'));
+		boost_handoff_extract_sql($contents, "INSERT IGNORE INTO poller_output_boost\n\t\t\t\tSELECT *", 'AND time >= FROM_UNIXTIME(?)'));
 
 	$delete_sql = str_replace('$table', 'poller_output_boost_arch_handoff_test',
 		boost_handoff_extract_sql($contents, 'DELETE IGNORE', 'WHERE local_data_id = ?'));
@@ -167,7 +167,7 @@ test('closed-round rows are removed from the archive table and not duplicated in
 	$contents = file_get_contents($boostLibPath);
 
 	$insert_sql = str_replace('$table', 'poller_output_boost_arch_handoff_test',
-		boost_handoff_extract_sql($contents, 'INSERT IGNORE INTO poller_output_boost', 'AND time >= FROM_UNIXTIME(?)'));
+		boost_handoff_extract_sql($contents, "INSERT IGNORE INTO poller_output_boost\n\t\t\t\tSELECT *", 'AND time >= FROM_UNIXTIME(?)'));
 
 	$delete_sql = str_replace('$table', 'poller_output_boost_arch_handoff_test',
 		boost_handoff_extract_sql($contents, 'DELETE IGNORE', 'WHERE local_data_id = ?'));
@@ -255,7 +255,7 @@ test('forwarding a row already present in the live table does not raise a PK col
 	$contents = file_get_contents($boostLibPath);
 
 	$insert_sql = str_replace('$table', 'poller_output_boost_arch_handoff_test',
-		boost_handoff_extract_sql($contents, 'INSERT IGNORE INTO poller_output_boost', 'AND time >= FROM_UNIXTIME(?)'));
+		boost_handoff_extract_sql($contents, "INSERT IGNORE INTO poller_output_boost\n\t\t\t\tSELECT *", 'AND time >= FROM_UNIXTIME(?)'));
 
 	$local_data_id = 7;
 	$cutoff        = 1_700_000_000;
