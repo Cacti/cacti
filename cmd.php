@@ -28,6 +28,7 @@ require_once(CACTI_PATH_LIBRARY . '/snmp.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 require_once(CACTI_PATH_LIBRARY . '/ping.php');
+require_once(CACTI_PATH_LIBRARY . '/boost.php');
 
 if (function_exists('pcntl_async_signals')) {
 	pcntl_async_signals(true);
@@ -392,9 +393,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 						VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
 
 					if (read_config_option('boost_redirect') == 'on' && read_config_option('boost_rrd_update_enable') == 'on') {
-						db_execute('INSERT IGNORE INTO poller_output_boost
-							(local_data_id, rrd_name, time, output)
-							VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
+						boost_flush_output_batch($output_array, $poller_db_cnn_id);
 					}
 
 					$output_array = [];
@@ -474,9 +473,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 					VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
 
 				if (read_config_option('boost_redirect') == 'on' && read_config_option('boost_rrd_update_enable') == 'on') {
-					db_execute('INSERT IGNORE INTO poller_output_boost
-						(local_data_id, rrd_name, time, output)
-						VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
+					boost_flush_output_batch($output_array, $poller_db_cnn_id);
 				}
 
 				$output_array = [];
@@ -508,9 +505,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 			VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
 
 		if (read_config_option('boost_redirect') == 'on' && read_config_option('boost_rrd_update_enable') == 'on') {
-			db_execute('INSERT IGNORE INTO poller_output_boost
-				(local_data_id, rrd_name, time, output)
-				VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
+			boost_flush_output_batch($output_array, $poller_db_cnn_id);
 		}
 	}
 
