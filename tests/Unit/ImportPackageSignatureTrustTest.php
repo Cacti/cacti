@@ -26,19 +26,26 @@
  * trust_signer=on inserted the Package's own key into package_public_keys
  * before the gate ran, so even a corrected gate would have passed.  The
  * control is gone; a key becomes trusted only through the accept action.
+ *
+ * The gate compares PEM against PEM, and the two sides do not agree on the
+ * trailing newline: a Package carries the key as OpenSSL exported it, the
+ * built in keys are written into lib/import.php without one.  A strict compare
+ * of the raw bytes therefore rejects every Package Cacti signs itself, which is
+ * why the shipped Device Packages are exercised here too.
  */
 
 require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
 require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
 require_once dirname(__DIR__, 2) . '/include/global.php';
 require_once dirname(__DIR__, 2) . '/lib/import.php';
+require_once dirname(__DIR__, 2) . '/lib/xml.php';
 
 /*
  * Build a Package the way lib/package.php does, but signed with a throwaway
  * key rather than the Cacti key.  Returns the .xml.gz path; $public_key
  * receives the PEM that the Package carries.
  */
-function selfSignedPackage(string &$public_key): string {
+function selfSignedPackage(string &$public_key, bool $names_key = true): string {
 	$key = openssl_pkey_new(['private_key_bits' => 2048, 'private_key_type' => OPENSSL_KEYTYPE_RSA]);
 	openssl_pkey_export($key, $private_key);
 	$public_key = openssl_pkey_get_details($key)['key'];
@@ -68,7 +75,10 @@ function selfSignedPackage(string &$public_key): string {
 	$xml .= "       </file>\n";
 	$xml .= "   </files>\n";
 	$xml .= "   <publickeyname>Mallory</publickeyname>\n";
-	$xml .= '   <publickey>' . base64_encode($public_key) . "</publickey>\n";
+
+	if ($names_key) {
+		$xml .= '   <publickey>' . base64_encode($public_key) . "</publickey>\n";
+	}
 
 	openssl_sign($xml . "   <signature></signature>\n</xml>", $base_sig, $private_key, OPENSSL_ALGO_SHA256);
 
@@ -112,6 +122,42 @@ test('a package signed with its own key is not trusted', function () {
 	expect(import_validate_signature($this->package))->toBeFalse();
 });
 
+test('a package that names no key is not trusted', function () {
+	// import_package_get_public_key() substitutes the built in Cacti key when
+	// the element is absent, so the gate must not ask it for the verdict.
+	$key     = '';
+	$package = selfSignedPackage($key, false);
+
+	try {
+		expect(import_get_package_info($package)['pubkey'])->toBe('');
+		expect(import_validate_signature($package))->toBeFalse();
+	} finally {
+		unlink($package);
+	}
+});
+
+test('the shipped device packages pass the trust gate', function () {
+	// Every install/templates Package is signed with the Cacti key and is
+	// imported by cli/import_package.php on a fresh install.  Rejecting them
+	// breaks the install, so the whole set is checked rather than a sample.
+	$packages = glob(dirname(__DIR__, 2) . '/install/templates/*.xml.gz');
+
+	expect($packages)->not->toBeEmpty();
+
+	foreach ($packages as $package) {
+		expect(import_validate_signature($package))->toBeTrue(basename($package) . ' is not trusted');
+	}
+});
+
+test('a shipped package key differs from the built in key only in trailing whitespace', function () {
+	// This is what a strict compare of the raw bytes tripped over.
+	$package = dirname(__DIR__, 2) . '/install/templates/Local_Linux_Machine.xml.gz';
+	$pubkey  = import_get_package_info($package)['pubkey'];
+
+	expect($pubkey)->not->toBe(get_public_key_sha256());
+	expect(trim($pubkey))->toBe(get_public_key_sha256());
+});
+
 test('a real import of a self-signed package is refused', function () {
 	$public_key = '';
 
@@ -143,6 +189,10 @@ test('a key in package_public_keys makes the same package importable', function 
 	$conn    = new FakeMySQLPDO();
 
 	$conn->exec('CREATE TABLE package_public_keys (id INTEGER PRIMARY KEY AUTOINCREMENT, public_key TEXT)');
+
+	// import_validate_public_key() stores the pubkey off the Package verbatim,
+	// so an already accepted row carries the trailing newline.
+	expect(str_ends_with($this->package_key, "\n"))->toBeTrue();
 
 	$insert = $conn->prepare('INSERT INTO package_public_keys (public_key) VALUES (?)');
 	$insert->execute([$this->package_key]);

@@ -408,28 +408,33 @@ function import_package_get_details(string $xmlfile) : array {
  *
  * @param string $xmlfile The Package to check
  *
- * @return bool True when the Package key is an official or an accepted key
+ * @return bool True when the Package carries an official or an accepted key
  */
 function import_validate_signature(string $xmlfile) : bool {
-	// Cacti public key first
-	$cacti_key1   = get_public_key_sha1();
-	$cacti_key2   = get_public_key_sha256();
-	$public_key   = import_package_get_public_key($xmlfile);
-
 	$info = import_get_package_info($xmlfile);
 
-	if ($info === false || !isset($info['pubkey'])) {
+	// The key the Package carries, not the one import_package_get_public_key()
+	// substitutes when the element is absent.  A Package that names no key
+	// names no signer, so there is nothing to trust.
+	if ($info === false || $info['pubkey'] == '') {
 		return false;
 	}
 
+	// A Package carries the PEM with its trailing newline, the built in keys
+	// are written without one, and package_public_keys stores whatever the
+	// accepted Package carried.
+	$public_key = trim($info['pubkey']);
+
+	// Cacti public key first
+	if (is_cacti_public_key($public_key)) {
+		return true;
+	}
+
 	// Other trusted keys next
-	$keys = array_rekey(
+	$keys = array_map('trim', array_rekey(
 		db_fetch_assoc('SELECT public_key FROM package_public_keys'),
 		'public_key', 'public_key'
-	);
-
-	$keys[$cacti_key1] = $cacti_key1;
-	$keys[$cacti_key2] = $cacti_key2;
+	));
 
 	return in_array($public_key, $keys, true);
 }
