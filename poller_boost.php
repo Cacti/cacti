@@ -526,9 +526,9 @@ function boost_prepare_process_table() : bool {
 	db_execute('CREATE TABLE IF NOT EXISTS poller_output_boost_local_data_ids (
 		local_data_id int unsigned default "0",
 		process_handler int unsigned default "0",
-		PRIMARY KEY (local_data_id),
-		INDEX process_handler(process_handler))
-		ENGINE=InnoDB');
+		PRIMARY KEY USING BTREE (local_data_id),
+		INDEX process_handler USING BTREE (process_handler))
+		ENGINE=MEMORY');
 
 	db_execute('TRUNCATE poller_output_boost_local_data_ids');
 
