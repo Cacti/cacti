@@ -203,20 +203,21 @@ $active_profiles = read_config_option('active_profiles');
 // check arguments
 if ($allhost) {
 	$sql_where1 = '';
-	$sql_where2 = '';
 	$sql_where3 = '';
 
 	$params1    = [$poller_id];
-	$params2    = [$poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT];
-	$params3    = [$poller_interval, $poller_interval, 0, $poller_interval, $poller_id];
+
+	if ($cron_interval == $poller_interval) {
+		$params3    = [$poller_interval, $poller_interval, 0, $poller_interval, $poller_id];
+	} else {
+		$params3    = [$poller_interval, $poller_interval, $poller_interval, $poller_interval, $poller_id];
+	}
 } else {
 	$sql_where0 = 'WHERE poller_id > ?';
 	$sql_where1 = ' AND ((h.id >= ? AND h.id <= ?) OR h.id IS NULL)';
-	$sql_where2 = ' AND pi.host_id >= ? AND pi.host_id <= ?';
 	$sql_where3 = ' AND pi.host_id >= ? AND pi.host_id <= ?';
 
 	$params1    = [$poller_id, $first, $last];
-	$params2    = [$poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT, $first, $last];
 
 	if ($cron_interval == $poller_interval) {
 		$params3    = [$poller_interval, $poller_interval, 0, $poller_interval, $poller_id, $first, $last];
@@ -250,7 +251,14 @@ if (db_column_exists('sites', 'disabled')) {
 }
 
 if ($active_profiles != 1) {
-	$poller_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " *
+	// pi.* only: poller_item and host share ~13 identically-named snmp_*/hostname
+	// columns, and FETCH_ASSOC collapses them to one key (last table wins). Selecting
+	// pi.* keeps poller_item's cached copies authoritative instead of silently reading
+	// host's live values. h./s.disabled are only referenced in the WHERE below, not in
+	// PHP, but are aliased distinctly here in case that changes.
+	$poller_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " pi.*,
+			h.disabled AS host_disabled,
+			s.disabled AS site_disabled
 			FROM poller_item AS pi
 			LEFT JOIN host AS h
 			ON h.id = pi.host_id
@@ -265,20 +273,10 @@ if ($active_profiles != 1) {
 		$params1
 	);
 
-	$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . " COUNT(*)
-			FROM poller_item AS pi
-			LEFT JOIN host AS h
-			ON h.id = pi.host_id
-			LEFT JOIN sites AS s
-			ON s.id = h.site_id
-			WHERE pi.poller_id = ?
-			$sql_where
-			AND IFNULL(TRIM(h.disabled),'') != 'on'
-			AND pi.action IN(?, ?)
-			$sql_where2
-			AND pi.rrd_next_step <= 0",
-		$params2
-	);
+	// count in PHP over the rows already fetched above instead of re-running the join
+	$script_server_calls = count(array_filter($poller_items, function ($item) {
+		return in_array($item['action'], [POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT]);
+	}));
 
 	// setup next polling interval
 	db_execute_prepared("UPDATE poller_item AS pi
@@ -287,7 +285,9 @@ if ($active_profiles != 1) {
 		$sql_where3",
 		$params3);
 } else {
-	$poller_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " *
+	$poller_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " pi.*,
+		h.disabled AS host_disabled,
+		s.disabled AS site_disabled
 		FROM poller_item AS pi
 		LEFT JOIN host AS h
 		ON h.id = pi.host_id
@@ -301,19 +301,9 @@ if ($active_profiles != 1) {
 		$params1
 	);
 
-	$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . " COUNT(*)
-		FROM poller_item AS pi
-		LEFT JOIN host AS h
-		ON h.id = pi.host_id
-		LEFT JOIN sites AS s
-		ON s.id = h.site_id
-		WHERE pi.poller_id = ?
-		$sql_where
-		AND IFNULL(TRIM(h.disabled),'') != 'on'
-		AND pi.action IN(?, ?)
-		$sql_where2",
-		$params2
-	);
+	$script_server_calls = count(array_filter($poller_items, function ($item) {
+		return in_array($item['action'], [POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT]);
+	}));
 }
 
 if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on') {

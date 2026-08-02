@@ -2164,12 +2164,24 @@ function update_data_query_cache(int $host_id, int $data_query_id) : void {
 		[$host_id, $data_query_id]);
 
 	if (cacti_sizeof($data_sources) > 0) {
+		// every row here shares $host_id, so there's a single poller_id boundary
+		// for the whole loop; accumulate and flush once instead of committing
+		// the poller cache write (present/insert/delete) per changed row
+		$poller_id        = db_fetch_cell_prepared('SELECT poller_id FROM host WHERE id = ?', [$host_id]);
+		$poller_items     = [];
+		$changed_data_ids = [];
+
 		foreach ($data_sources as $data_source) {
 			$changed = update_data_source_data_query_cache($data_source['id'], $host_id, $data_query_id, $data_source['snmp_index']);
 
 			if ($changed) {
-				update_poller_cache($data_source, true);
+				$changed_data_ids[] = $data_source['id'];
+				$poller_items       = array_merge($poller_items, update_poller_cache($data_source, false, $poller_id));
 			}
+		}
+
+		if (cacti_sizeof($changed_data_ids)) {
+			poller_update_poller_cache_from_buffer($changed_data_ids, $poller_items, $poller_id);
 		}
 	}
 
