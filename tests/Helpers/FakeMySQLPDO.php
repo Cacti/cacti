@@ -71,10 +71,25 @@ class FakeMySQLPDO extends PDO {
 		if (preg_match('/^INSERT\s+INTO\s+`?([A-Za-z0-9_]+)`?\s*\(([^)]+)\)\s*VALUES\s*(.+?)\s+ON\s+DUPLICATE\s+KEY\s+UPDATE\b.*$/is', $trim, $m)) {
 			return "INSERT OR REPLACE INTO `{$m[1]}` ({$m[2]}) VALUES {$m[3]}";
 		}
+		// INSERT IGNORE INTO ...  -> INSERT OR IGNORE INTO ...
+		if (preg_match('/^INSERT\s+IGNORE\s+INTO\b/is', $trim)) {
+			return preg_replace('/^INSERT\s+IGNORE\s+INTO\b/is', 'INSERT OR IGNORE INTO', $trim);
+		}
 		// SHOW INDEXES FROM table
 		if (preg_match('/^SHOW\s+(?:INDEX|INDEXES|KEYS)\s+FROM\s+`?([A-Za-z0-9_]+)`?\s*;?\s*$/i', $trim, $m)) {
 			return "SELECT name AS Key_name FROM sqlite_master WHERE type='index' AND tbl_name='{$m[1]}'";
 		}
-		return $sql;
+		// SHOW VARIABLES LIKE '...'  -> a synthetic single-row result so callers
+		// that read $row['Value'] (e.g. max_allowed_packet lookups) get a value
+		// instead of an unhandled syntax error against sqlite.
+		if (preg_match('/^SHOW\s+VARIABLES\s+LIKE\s+/is', $trim)) {
+			return "SELECT 'max_allowed_packet' AS Variable_name, '4194304' AS Value";
+		}
+		// UNIX_TIMESTAMP(col) -> strftime('%s', col), wherever it appears in
+		// the statement (not just at the start), so queries mixing it with
+		// other columns (e.g. boost's archive-table SELECT) still translate.
+		$trim = preg_replace('/UNIX_TIMESTAMP\s*\(([^)]+)\)/i', "strftime('%s', $1)", $trim);
+
+		return $trim;
 	}
 }

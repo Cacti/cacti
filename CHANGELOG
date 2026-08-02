@@ -66,6 +66,10 @@ Cacti CHANGELOG
 -issue#7529: Scope poller.php's global aggregate scans to the central poller
 -issue#7530: Rewrite poller.php's process-leveling rrd_next_step predicate to be sargable
 -issue#7531: Batch update_data_query_cache()'s poller cache writes instead of committing per row
+-issue#7532: Add USING BTREE to poller_output_boost_local_data_ids indexes to prevent filesort in Boost
+-issue#7533: Skip the UNION ALL derived table wrapper in Boost's flush query when only one archive table exists
+-issue#7534: Batch-prefetch RRD field name lookups in Boost and poller output processing instead of querying per row
+-issue#7536: Consolidate the four hand-written poller_output_boost inserts into one shared helper
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors

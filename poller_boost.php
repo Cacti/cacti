@@ -536,9 +536,9 @@ function boost_prepare_process_table() : bool {
 	db_execute('CREATE TABLE IF NOT EXISTS poller_output_boost_local_data_ids (
 		local_data_id int unsigned default "0",
 		process_handler int unsigned default "0",
-		PRIMARY KEY (local_data_id),
-		INDEX process_handler(process_handler))
-		ENGINE=InnoDB');
+		PRIMARY KEY USING BTREE (local_data_id),
+		INDEX process_handler USING BTREE (process_handler))
+		ENGINE=MEMORY');
 
 	db_execute('TRUNCATE poller_output_boost_local_data_ids');
 
@@ -824,6 +824,29 @@ function boost_output_rrd_data(int $child) : mixed {
 }
 
 /**
+ * boost_archive_select_sql - builds the per-archive-table SELECT fragment
+ * used by boost_process_local_data_ids() to pull pending output rows for a
+ * single boost child process. Shared by both the single-table fast path and
+ * the multi-table UNION ALL fallback so the join/filter shape stays in sync.
+ *
+ * @param string $table    The archive (or live poller_output_boost) table to read from
+ * @param int    $last_id  Only rows with local_data_id <= this value
+ * @param int    $child    The boost child process handle owning these rows
+ *
+ * @return string The SELECT fragment (no trailing ORDER BY)
+ */
+function boost_archive_select_sql(string $table, int $last_id, int $child) : string {
+	return "SELECT $table.local_data_id, dl.data_template_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
+		FROM $table
+		INNER JOIN poller_output_boost_local_data_ids AS bpt
+		ON $table.local_data_id = bpt.local_data_id
+		INNER JOIN data_local AS dl
+		ON $table.local_data_id = dl.id
+		WHERE bpt.local_data_id <= $last_id
+		AND bpt.process_handler = $child";
+}
+
+/**
  * boost_process_local_data_ids - grabs data from the 'poller_output' table and feeds the *completed*
  * results to RRDTool for processing
  *
@@ -898,24 +921,27 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 			'keyname', ['data_source_name']);
 	}
 
-	$query_string        = 'SELECT * FROM (';
-	$query_string_suffix = 'ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC';
+	$query_string_order = 'ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC';
 
-	$sub_query_string = '';
+	if (cacti_sizeof($archive_tables) === 1) {
+		// steady state: exactly one archive table (old ones are dropped at
+		// the end of each cycle), so query it directly and let the ORDER BY
+		// use the table's own PK (local_data_id, time, rrd_name) instead of
+		// paying for a filesort over an indexless derived table.
+		$table        = reset($archive_tables);
+		$query_string = boost_archive_select_sql($table, $last_id, $child) . ' ' . $query_string_order;
+	} else {
+		// fallback: a prior crashed run left more than one archive table
+		// behind. UNION ALL results can't be merged by the optimizer, so
+		// they're wrapped in a derived table and sorted once at the end.
+		$sub_query_string = '';
 
-	foreach ($archive_tables as $table) {
-		$sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ' : '') .
-			" SELECT $table.local_data_id, dl.data_template_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
-			FROM $table
-			INNER JOIN poller_output_boost_local_data_ids AS bpt
-			ON $table.local_data_id = bpt.local_data_id
-			INNER JOIN data_local AS dl
-			ON $table.local_data_id = dl.id
-			WHERE bpt.local_data_id <= $last_id
-			AND bpt.process_handler = $child";
+		foreach ($archive_tables as $table) {
+			$sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ' : '') . boost_archive_select_sql($table, $last_id, $child);
+		}
+
+		$query_string = 'SELECT * FROM (' . $sub_query_string . ') t ' . $query_string_order;
 	}
-
-	$query_string = $query_string . $sub_query_string . ') t ' . $query_string_suffix;
 
 	boost_timer('get_records', BOOST_TIMER_START);
 	$results = db_fetch_assoc($query_string);
@@ -931,6 +957,21 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 	}
 
 	if (cacti_sizeof($results)) {
+		// batch-prefetch the RRD field-name metadata the loop below needs on
+		// every local_data_id boundary, rather than re-querying it per
+		// boundary (or per row, in the multi-value branch).
+		boost_timer('prefetch_rrd_field_names', BOOST_TIMER_START);
+
+		$prefetch_field_names = poller_prefetch_rrd_field_names(
+			array_values(array_unique(array_map('intval', array_column($results, 'local_data_id')))),
+			array_column($results, 'data_template_id', 'local_data_id')
+		);
+
+		$unused_data_source_names_by_id = $prefetch_field_names['unused'];
+		$nt_rrd_field_names_by_id       = $prefetch_field_names['nt'];
+
+		boost_timer('prefetch_rrd_field_names', BOOST_TIMER_END);
+
 		// create an array keyed off of each .rrd file
 		$local_data_id  = -1;
 		$time           = -1;
@@ -981,16 +1022,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 			 * and discover the template for the next RRDfile.
 			 */
 			if ($local_data_id != $item['local_data_id']) {
-				$unused_data_source_names = array_rekey(
-					db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-						FROM data_template_rrd AS dtr
-						LEFT JOIN graph_templates_item AS gti
-						ON dtr.id = gti.task_item_id
-						WHERE dtr.local_data_id = ?
-						AND gti.task_item_id IS NULL',
-						[$item['local_data_id']]),
-					'data_source_name', 'data_source_name'
-				);
+				$unused_data_source_names = $unused_data_source_names_by_id[$item['local_data_id']] ?? [];
 
 				if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$item['rrd_name']])) {
 					continue;
@@ -1122,15 +1154,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 					$rrd_tmpl = '';
 				} else {
 					if ($item['data_template_id'] > 0) {
-						$unused_data_source_names = array_rekey(
-							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-								FROM data_template_rrd AS dtr
-								LEFT JOIN graph_templates_item AS gti
-								ON dtr.id = gti.task_item_id
-								WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
-								[$item['local_data_id']]),
-							'data_source_name', 'data_source_name'
-						);
+						$unused_data_source_names = $unused_data_source_names_by_id[$item['local_data_id']] ?? [];
 					} else {
 						$unused_data_source_names = [];
 					}
@@ -1171,29 +1195,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 							 * We have to check for Non-Templated Data Source first as they may not include
 							 * a graph.  So, for that case, we need the RRDfile to include all data sources
 							 */
-							if ($item['data_template_id'] > 0) {
-								$nt_rrd_field_names = array_rekey(
-									db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
-										FROM graph_templates_item AS gti
-										INNER JOIN data_template_rrd AS dtr
-										ON gti.task_item_id = dtr.id
-										INNER JOIN data_input_fields AS dif
-										ON dtr.data_input_field_id=dif.id
-										WHERE dtr.local_data_id = ?',
-										[$item['local_data_id']]),
-									'data_name', 'data_source_name'
-								);
-							} else {
-								$nt_rrd_field_names = array_rekey(
-									db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
-										FROM data_template_rrd AS dtr
-										INNER JOIN data_input_fields AS dif
-										ON dtr.data_input_field_id=dif.id
-										WHERE dtr.local_data_id = ?',
-										[$item['local_data_id']]),
-									'data_name', 'data_source_name'
-								);
-							}
+							$nt_rrd_field_names = $nt_rrd_field_names_by_id[$item['local_data_id']] ?? [];
 
 							if (cacti_sizeof($nt_rrd_field_names)) {
 								if (isset($nt_rrd_field_names[$matches[0]])) {
@@ -1231,49 +1233,8 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 				}
 			} else {
 				if ($reset_template) {
-					if ($item['data_template_id'] > 0) {
-						$unused_data_source_names = array_rekey(
-							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-								FROM data_template_rrd AS dtr
-								LEFT JOIN graph_templates_item AS gti
-								ON dtr.id = gti.task_item_id
-								WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
-								[$item['local_data_id']]),
-							'data_source_name', 'data_source_name'
-						);
-
-						$nt_rrd_field_names = array_rekey(
-							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
-								FROM graph_templates_item AS gti
-								INNER JOIN data_template_rrd AS dtr
-								ON gti.task_item_id = dtr.id
-								INNER JOIN data_input_fields AS dif
-								ON dtr.data_input_field_id=dif.id
-								WHERE dtr.local_data_id = ?',
-								[$item['local_data_id']]),
-							'data_name', 'data_source_name'
-						);
-					} else {
-						$unused_data_source_names = array_rekey(
-							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-								FROM data_template_rrd AS dtr
-								LEFT JOIN graph_templates_item AS gti
-								ON dtr.id = gti.task_item_id
-								WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
-								[$item['local_data_id']]),
-							'data_source_name', 'data_source_name'
-						);
-
-						$nt_rrd_field_names = array_rekey(
-							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
-								FROM data_template_rrd AS dtr
-								INNER JOIN data_input_fields AS dif
-								ON dtr.data_input_field_id=dif.id
-								WHERE dtr.local_data_id = ?',
-								[$item['local_data_id']]),
-							'data_name', 'data_source_name'
-						);
-					}
+					$unused_data_source_names = $unused_data_source_names_by_id[$item['local_data_id']] ?? [];
+					$nt_rrd_field_names       = $nt_rrd_field_names_by_id[$item['local_data_id']] ?? [];
 				}
 
 				$expected = '';

@@ -330,9 +330,33 @@ test('boost_process_local_data_ids non-templated reset_template branch joins gti
 		'/FROM data_template_rrd AS dtr\s+WHERE dtr\.local_data_id = \? AND gti\.task_item_id IS NULL/'
 	);
 
-	// The LEFT JOIN must be present in at least the two corrected sites.
-	$join_needle = 'LEFT JOIN graph_templates_item AS gti';
-	expect(substr_count($func_body, $join_needle))->toBeGreaterThanOrEqual(2);
+	// issue#7534 moved every unused_data_source_names/nt_rrd_field_names lookup
+	// out of this function and into the shared, batched poller_prefetch_rrd_field_names()
+	// helper (lib/poller.php), so the join no longer lives inline here at all —
+	// the function now delegates to the prefetch call instead.
+	expect($func_body)->not->toContain('LEFT JOIN graph_templates_item AS gti');
+	expect($func_body)->toContain('poller_prefetch_rrd_field_names(');
+});
+
+test('poller_prefetch_rrd_field_names joins graph_templates_item for the unused-names lookup', function () {
+	$contents = file_get_contents(__DIR__ . '/../../lib/poller.php');
+
+	$func_pos = strpos($contents, 'function poller_prefetch_rrd_field_names(');
+	expect($func_pos)->not->toBeFalse();
+
+	$func_end  = strpos($contents, "\nfunction ", $func_pos + 1);
+	$func_body = substr($contents, $func_pos, $func_end - $func_pos);
+
+	// The shared prefetch helper's unused_data_source_names query must join
+	// graph_templates_item before filtering on gti.task_item_id, unlike the
+	// bug this batching fix replaced (queries referencing gti with no JOIN).
+	expect($func_body)->toContain('LEFT JOIN graph_templates_item AS gti');
+
+	$join_pos  = strpos($func_body, 'LEFT JOIN graph_templates_item AS gti');
+	$where_pos = strpos($func_body, 'AND gti.task_item_id IS NULL');
+
+	expect($where_pos)->not->toBeFalse();
+	expect($join_pos)->toBeLessThan($where_pos);
 });
 
 test('boost_output_rrd_data returns 0 not false when arch tables are not found', function () use ($boostPollerPath) {

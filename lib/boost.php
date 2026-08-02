@@ -203,6 +203,67 @@ function boost_check_correct_enabled() : bool {
 }
 
 /**
+ * boost_flush_output_batch - writes a batch of pre-built poller_output_boost
+ * VALUE tuples, chunking on max_allowed_packet so a single INSERT statement
+ * never exceeds it. Shared by cmd.php's boost_redirect writes and
+ * boost_poller_on_demand() so the batched-insert logic and the duplicate-key
+ * handling live in exactly one place.
+ *
+ * Duplicate (local_data_id, rrd_name, time) keys are ignored (first write
+ * wins) rather than updated. In practice a collision here means the same
+ * already-collected sample is being (re)written -- e.g. a batch retried
+ * after a partial failure, or two writers racing on the same rounded
+ * second -- not two independently meaningful readings, since RRD only
+ * keeps one value per timestamp regardless. This also matches the sibling
+ * poller_output insert, which this table shadows and which has always used
+ * INSERT IGNORE.
+ *
+ * @param array $value_tuples Pre-built "(local_data_id,rrd_name,time,output)"
+ *                            VALUES tuples, e.g. "(1,'ds',NOW(),'1.23')"
+ * @param mixed $conn         DB connection to use, or false for the default
+ *
+ * @return void
+ */
+function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : void {
+	if (!cacti_sizeof($value_tuples)) {
+		return;
+	}
+
+	static $max_allowed_packet = null;
+
+	if ($max_allowed_packet === null) {
+		$row                = db_fetch_row("SHOW VARIABLES LIKE 'max_allowed_packet'", true, $conn);
+		$max_allowed_packet = !empty($row['Value']) ? (int) $row['Value'] : 1048576;
+	}
+
+	$sql_prefix = 'INSERT IGNORE INTO poller_output_boost (local_data_id, rrd_name, time, output) VALUES ';
+
+	// account for the prefix and the ',' delimiter ahead of each tuple
+	// after the first when sizing the buffer against max_allowed_packet
+	$overhead   = strlen($sql_prefix) + 1;
+	$out_buffer = '';
+	$out_length = 0;
+
+	foreach ($value_tuples as $tuple) {
+		$tuple_length = strlen($tuple);
+
+		if ($out_length > 0 && ($out_length + $overhead + $tuple_length) > $max_allowed_packet) {
+			db_execute($sql_prefix . $out_buffer, true, $conn);
+
+			$out_buffer = $tuple;
+			$out_length = $tuple_length;
+		} else {
+			$out_buffer .= ($out_buffer != '' ? ',' : '') . $tuple;
+			$out_length += $tuple_length + ($out_length > 0 ? 1 : 0);
+		}
+	}
+
+	if ($out_buffer != '') {
+		db_execute($sql_prefix . $out_buffer, true, $conn);
+	}
+}
+
+/**
  * Handles the on-demand poller boost functionality for Cacti.
  *
  * This function processes the results of a poller run and inserts the data
@@ -242,13 +303,6 @@ function boost_poller_on_demand(array &$results) : bool {
 		// install the boost error handler
 		set_error_handler('boost_error_handler');
 
-		$out_buffer  = '';
-		$sql_prefix  = 'INSERT INTO poller_output_boost (local_data_id, rrd_name, time, output) VALUES ';
-		$sql_suffix  = ' ON DUPLICATE KEY UPDATE output=VALUES(output)';
-
-		// Add 1 here for potential delimiter
-		$overhead    = strlen($sql_prefix) + strlen($sql_suffix) + 1;
-
 		if (boost_check_correct_enabled()) {
 			// if boost redirect is on, rows are being inserted directly
 			if (read_config_option('boost_redirect') == 'on') {
@@ -257,60 +311,20 @@ function boost_poller_on_demand(array &$results) : bool {
 				return false;
 			}
 
-			$max_allowed_packet = db_fetch_row("SHOW VARIABLES LIKE 'max_allowed_packet'");
-			$max_allowed_packet = $max_allowed_packet['Value'];
-
 			if (cacti_sizeof($results)) {
-				$delim      = '';
-				$delim_len  = 0;
-				$out_length = 0;
+				$value_tuples = [];
 
 				foreach ($results as $result) {
-					$tmp_buffer =
+					$value_tuples[] =
 						'(' .
 						(int) $result['local_data_id'] . ',' .
 						db_qstr($result['rrd_name'], $conn) . ',' .
 						db_qstr($result['time'], $conn) . ',' .
 						db_qstr($result['output'], $conn) .
 						')';
-
-					$tmp_length = strlen($tmp_buffer);
-
-					// Calculate length of output buffer, plus overhead, plus the temp buffer
-					// is it greater than what SQL allows?
-					if (($out_length + $overhead + $tmp_length) > $max_allowed_packet) {
-						// Overall length was greater, but do we actually have anything
-						// already buffered? Or was it just the temp buffer that overflowed
-						// things?
-						if ($out_length > 0) {
-							db_execute($sql_prefix . $out_buffer . $sql_suffix, true, $conn);
-						}
-
-						// Make the temp buffer the starting point for the output buffer, but
-						// we don't need a delimiter at this point, so don't include it
-						$out_buffer = $tmp_buffer;
-						$out_length = $tmp_length;
-					} else {
-						// We didn't overflow so lets add the temp buffer to the output buffer
-						// and include the delimiter string/length.  This will be a blank
-						// delimiter on the first iteration as the output buffer will always
-						// be blank.
-						$out_buffer .= $delim . $tmp_buffer;
-						$out_length += $delim_len + $tmp_length;
-					}
-
-					// Only on the first iteration do we need to set the delimiter as
-					// after that, we will always need it when we are not overflowing
-					if ($delim_len == 0) {
-						$delim     = ',';
-						$delim_len = strlen($delim);
-					}
 				}
 
-				// output buffer had something left, lets flush it
-				if ($out_buffer != '') {
-					db_execute($sql_prefix . $out_buffer . $sql_suffix, true, $conn);
-				}
+				boost_flush_output_batch($value_tuples, $conn);
 			}
 
 			$return_value = false;
