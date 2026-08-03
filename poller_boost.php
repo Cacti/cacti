@@ -829,9 +829,9 @@ function boost_output_rrd_data(int $child) : mixed {
  * single boost child process. Shared by both the single-table fast path and
  * the multi-table UNION ALL fallback so the join/filter shape stays in sync.
  *
- * @param string $table    The archive (or live poller_output_boost) table to read from
- * @param int    $last_id  Only rows with local_data_id <= this value
- * @param int    $child    The boost child process handle owning these rows
+ * @param string $table   The archive (or live poller_output_boost) table to read from
+ * @param int    $last_id Only rows with local_data_id <= this value
+ * @param int    $child   The boost child process handle owning these rows
  *
  * @return string The SELECT fragment (no trailing ORDER BY)
  */
@@ -921,15 +921,17 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 			'keyname', ['data_source_name']);
 	}
 
-	$query_string_order = 'ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC';
-
 	if (cacti_sizeof($archive_tables) === 1) {
 		// steady state: exactly one archive table (old ones are dropped at
-		// the end of each cycle), so query it directly and let the ORDER BY
-		// use the table's own PK (local_data_id, time, rrd_name) instead of
-		// paying for a filesort over an indexless derived table.
+		// the end of each cycle), so query it directly and sort on the
+		// table's own PK columns (local_data_id, time, rrd_name) instead of
+		// paying for a filesort over an indexless derived table. Sorting on
+		// time rather than on the UNIX_TIMESTAMP(time) alias yields the same
+		// row order -- UNIX_TIMESTAMP is monotonic in time -- but an ORDER BY
+		// over the function result can't use the index.
 		$table        = reset($archive_tables);
-		$query_string = boost_archive_select_sql($table, $last_id, $child) . ' ' . $query_string_order;
+		$query_string = boost_archive_select_sql($table, $last_id, $child) .
+			" ORDER BY $table.local_data_id ASC, $table.time ASC, $table.rrd_name ASC";
 	} else {
 		// fallback: a prior crashed run left more than one archive table
 		// behind. UNION ALL results can't be merged by the optimizer, so
@@ -940,7 +942,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 			$sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ' : '') . boost_archive_select_sql($table, $last_id, $child);
 		}
 
-		$query_string = 'SELECT * FROM (' . $sub_query_string . ') t ' . $query_string_order;
+		$query_string = 'SELECT * FROM (' . $sub_query_string . ') t ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC';
 	}
 
 	boost_timer('get_records', BOOST_TIMER_START);
