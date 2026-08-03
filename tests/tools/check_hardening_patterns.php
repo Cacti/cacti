@@ -36,6 +36,8 @@ $patterns = [
 			// pre-boot code; the request helper layer is not loaded yet
 			'include/global.php',
 			'lib/PackageListFilter.php',
+			// test fixture standing in for the request helper itself
+			'tests/HandOff/fixtures/cacti_dispatch_probe.php',
 		]
 	],
 //	'manual-request-query-url' => [
