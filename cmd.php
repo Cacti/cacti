@@ -276,7 +276,7 @@ if ($active_profiles != 1) {
 
 	// count in PHP over the rows already fetched above instead of re-running the join
 	$script_server_calls = count(array_filter($poller_items, function ($item) {
-		return in_array($item['action'], [POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT]);
+		return in_array((int) $item['action'], [POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT], true);
 	}));
 
 	// setup next polling interval
@@ -303,7 +303,7 @@ if ($active_profiles != 1) {
 	);
 
 	$script_server_calls = count(array_filter($poller_items, function ($item) {
-		return in_array($item['action'], [POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT]);
+		return in_array((int) $item['action'], [POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT], true);
 	}));
 }
 
