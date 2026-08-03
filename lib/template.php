@@ -1579,33 +1579,6 @@ function data_source_to_data_template(int $local_data_id, string $data_source_ti
 }
 
 /**
- * create_complete_graph_from_template - creates a graph and all necessary data sources based on a
- * graph template.
- *
- * @param int   $graph_template_id The id of the graph template that will be used to create the new graph.
- * @param int   $host_id           The id of the host to associate the new graph and data sources with
- * @param array $snmp_query_array  If the new data sources are to be based on a data query, specify the
- *                                 necessary data query information here. it must contain the following information:
- *
- * $snmp_query_array['snmp_query_id']
- * $snmp_query_array['snmp_index_on']
- * $snmp_query_array['snmp_query_graph_id']
- * $snmp_query_array['snmp_index']
- *
- * @param mixed $suggested_vals Any additional information to be included in the new graphs or
- *                              data sources must be included in the array. data is to be included in the following format:
- *
- * $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
- * $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
- * $values['cg'][data_template_id]['data_template'][field_name] = $value  // data template
- * $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item
- * $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value  // graph template (w/ data query)
- * $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
- * $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
- *
- * @return mixed False if failing, otherwise the local_data_id data in a cache array
- */
-/**
  * graph_template_connect_task_items - wire each new graph item to its new data
  * source item (task_item_id) after a graph is created from a template.
  *
@@ -1642,11 +1615,13 @@ function graph_template_connect_task_items(int $graph_template_id, array $cache_
 	// new graph_templates_item ids for this graph, keyed by template item id
 	$new_graph_items = [];
 
-	foreach (db_fetch_assoc_prepared('SELECT id, local_graph_template_item_id
+	$graph_item_list = db_fetch_assoc_prepared('SELECT id, local_graph_template_item_id
 		FROM graph_templates_item
 		WHERE local_graph_id = ?
 		ORDER BY id',
-		[$cache_array['local_graph_id']], true, $db_conn) as $row) {
+		[$cache_array['local_graph_id']], true, $db_conn);
+
+	foreach ($graph_item_list as $row) {
 		if (!isset($new_graph_items[$row['local_graph_template_item_id']])) {
 			$new_graph_items[$row['local_graph_template_item_id']] = $row['id'];
 		}
@@ -1658,11 +1633,13 @@ function graph_template_connect_task_items(int $graph_template_id, array $cache_
 	$local_data_ids = array_values($cache_array['local_data_id'] ?? []);
 
 	if (cacti_sizeof($local_data_ids)) {
-		foreach (db_fetch_assoc('SELECT id, local_data_template_rrd_id, local_data_id
+		$rrd_item_list = db_fetch_assoc('SELECT id, local_data_template_rrd_id, local_data_id
 			FROM data_template_rrd
 			WHERE local_data_id IN (' . implode(', ', array_map('intval', $local_data_ids)) . ')
 			ORDER BY id',
-			true, $db_conn) as $row) {
+			true, $db_conn);
+
+		foreach ($rrd_item_list as $row) {
 			$key = $row['local_data_template_rrd_id'] . ':' . $row['local_data_id'];
 
 			if (!isset($new_rrd_items[$key])) {
@@ -1688,6 +1665,33 @@ function graph_template_connect_task_items(int $graph_template_id, array $cache_
 	}
 }
 
+/**
+ * create_complete_graph_from_template - creates a graph and all necessary data sources based on a
+ * graph template.
+ *
+ * @param int   $graph_template_id The id of the graph template that will be used to create the new graph.
+ * @param int   $host_id           The id of the host to associate the new graph and data sources with
+ * @param array $snmp_query_array  If the new data sources are to be based on a data query, specify the
+ *                                 necessary data query information here. it must contain the following information:
+ *
+ * $snmp_query_array['snmp_query_id']
+ * $snmp_query_array['snmp_index_on']
+ * $snmp_query_array['snmp_query_graph_id']
+ * $snmp_query_array['snmp_index']
+ *
+ * @param mixed $suggested_vals Any additional information to be included in the new graphs or
+ *                              data sources must be included in the array. data is to be included in the following format:
+ *
+ * $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
+ * $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
+ * $values['cg'][data_template_id]['data_template'][field_name] = $value  // data template
+ * $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item
+ * $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value  // graph template (w/ data query)
+ * $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
+ * $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
+ *
+ * @return mixed False if failing, otherwise the local_data_id data in a cache array
+ */
 function create_complete_graph_from_template(int $graph_template_id, int $host_id, array $snmp_query_array, mixed &$suggested_vals) : mixed {
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
