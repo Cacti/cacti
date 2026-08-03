@@ -338,11 +338,6 @@ function aggregate_error_handler(int $errno, string $errmsg, string $filename, i
 		return true;
 	}
 
-	// legacy guard; E_RECOVERABLE_ERROR is defined on every supported PHP version
-	if (!defined('E_RECOVERABLE_ERROR')) {
-		define('E_RECOVERABLE_ERROR', 4096);
-	}
-
 	if (error_reporting() == 0) {
 		return true;
 	}

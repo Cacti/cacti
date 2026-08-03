@@ -33,3 +33,36 @@ test('lib/aggregate.php names no E_STRICT constant', function () use ($basePath)
 test('lib/rrdcheck.php names no E_STRICT constant', function () use ($basePath) {
 	expect(file_get_contents($basePath . '/lib/rrdcheck.php'))->not->toContain('E_STRICT');
 });
+
+test('lib/boost.php names no E_STRICT constant', function () use ($basePath) {
+	expect(file_get_contents($basePath . '/lib/boost.php'))->not->toContain('E_STRICT');
+});
+
+test('lib/dsstats.php names no E_STRICT constant', function () use ($basePath) {
+	expect(file_get_contents($basePath . '/lib/dsstats.php'))->not->toContain('E_STRICT');
+});
+
+test('lib/dsdebug.php names no E_STRICT constant', function () use ($basePath) {
+	expect(file_get_contents($basePath . '/lib/dsdebug.php'))->not->toContain('E_STRICT');
+});
+
+test('userland cannot raise E_STRICT, so the removed key is unreachable', function () {
+	/* 2048 is the E_STRICT level, spelled numerically because naming the
+	   constant is itself deprecated on PHP 8.4 */
+	$strict = 2048;
+	$raised = false;
+
+	try {
+		trigger_error('probe', $strict);
+	} catch (\ValueError $e) {
+		$raised = true;
+	}
+
+	expect($raised)->toBeTrue();
+});
+
+test('the error handlers no longer guard a constant that always exists', function () use ($basePath) {
+	expect(constant('E_RECOVERABLE_ERROR'))->toBe(4096)
+		->and(file_get_contents($basePath . '/lib/aggregate.php'))->not->toContain("defined('E_RECOVERABLE_ERROR')")
+		->and(file_get_contents($basePath . '/lib/rrdcheck.php'))->not->toContain("defined('E_RECOVERABLE_ERROR')");
+});
