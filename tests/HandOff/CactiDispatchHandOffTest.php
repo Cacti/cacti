@@ -39,7 +39,7 @@ require_once dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
 function cdho_dispatch(array $scenario): array {
 	return cacti_test_isolated_probe(
 		__DIR__ . '/fixtures/cacti_dispatch_probe.php',
-		[json_encode($scenario)]
+		[json_encode($scenario, JSON_THROW_ON_ERROR)]
 	);
 }
 

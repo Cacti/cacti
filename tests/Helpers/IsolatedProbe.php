@@ -39,17 +39,17 @@ if (!function_exists('cacti_test_isolated_probe')) {
 		// display_errors=stderr keeps PHP diagnostics (the GoogleAuthenticator
 		// deprecations lib/auth.php emits on PHP 8.4, for one) out of the JSON
 		// the probe writes to stdout.
-		$command = escapeshellarg(PHP_BINARY)
-			. ' -d display_errors=stderr'
-			. ' ' . escapeshellarg($script);
+		// argv form, so the child is executed directly and no shell parses
+		// the scenario payload
+		$argv = [PHP_BINARY, '-d', 'display_errors=stderr', $script];
 
 		foreach ($args as $arg) {
-			$command .= ' ' . escapeshellarg((string) $arg);
+			$argv[] = (string) $arg;
 		}
 
 		$pipes   = [];
 		$process = proc_open(
-			$command,
+			$argv,
 			[1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
 			$pipes
 		);
