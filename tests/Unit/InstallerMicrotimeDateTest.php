@@ -37,7 +37,7 @@ test('installer preserves microseconds when the value carries them', function ()
 	$date = Installer::dateFromMicrotime('1785703138.123456');
 
 	expect($date->getTimestamp())->toBe(1785703138)
-		->and($date->format('Y-m-d H:i:s.u'))->toBe('2026-08-02 20:38:58.123456');
+		->and($date->format('u'))->toBe('123456');
 });
 
 test('both timestamps of the completion message survive fraction-less values', function () {
@@ -51,8 +51,10 @@ test('both timestamps of the completion message survive fraction-less values', f
 
 	$message = __('Installation was started at %s, completed at %s', $started->format('Y-m-d H:i:s'), $completed->format('Y-m-d H:i:s'));
 
-	expect($message)->toContain('2026-08-02 20:38:58')
-		->and($message)->toContain('2026-08-02 20:40:00');
+	expect($started->getTimestamp())->toBe(1785703138)
+		->and($completed->getTimestamp())->toBe(1785703200)
+		->and($message)->toContain($started->format('Y-m-d H:i:s'))
+		->and($message)->toContain($completed->format('Y-m-d H:i:s'));
 });
 
 test('installer falls back to now for values it cannot parse', function () {
