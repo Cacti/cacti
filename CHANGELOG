@@ -1,7 +1,6 @@
 Cacti CHANGELOG
 
 1.3.0-dev
--issue: Replace the DsstatsMeasure backed enum in lib/html_utility.php with plain const arrays so the file stays parseable on PHP 8.0 (stock Rocky Linux 9), fixing the weekly Rocky Linux compatibility check
 -issue#2205: Allow admins to disable RRDtool watermark
 -issue#3066: Enable the secure flag on cookies when HTTPS is enabled.
 -issue#3074: ss_net_snmp_disk_bytes.php and ss_net_snmp_disk_io.php do now report mmcblk data.
@@ -53,6 +52,7 @@ Cacti CHANGELOG
 -issue#7211: Correct the Nth percentile and bandwidth summation divisor on base-1024 graphs
 -issue#7214: Fix TypeError in boost_graph_set_file when sending reports
 -issue#7216: Aggregate totalling legend printed untotalled single data source values
+-issue#7518: Replace the DsstatsMeasure enum in lib/html_utility.php with const arrays for PHP 8.0 compatibility
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
