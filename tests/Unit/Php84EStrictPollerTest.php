@@ -31,11 +31,14 @@ test('lib/dsdebug.php names no E_STRICT constant', function () use ($basePath) {
 	expect(file_get_contents($basePath . '/lib/dsdebug.php'))->not->toContain('E_STRICT');
 });
 
-test('userland can not raise E_STRICT, so the removed key is unreachable', function () {
+test('userland cannot raise E_STRICT, so the removed key is unreachable', function () {
+	/* 2048 is the E_STRICT level, spelled numerically because naming the
+	   constant is itself deprecated on PHP 8.4 */
+	$strict = 2048;
 	$raised = false;
 
 	try {
-		trigger_error('probe', 2048);
+		trigger_error('probe', $strict);
 	} catch (\ValueError $e) {
 		$raised = true;
 	}
