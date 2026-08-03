@@ -1481,7 +1481,7 @@ function get_allowed_tree_header_graphs(int $tree_id, int $leaf_id = 0, string $
  *                          'start_time'  => unix_timestamp,
  *                          'end_time'    => unix_timestamp,
  *                          'cf'          => avg (0) | max (1)
- *                          'measure'     => average | peak | sum | p25 | p50 | p75 | p90 | p95
+ *                          'measure'     => average | peak | sum | p25n | p50n | p75n | p90n | p95n
  *                      )
  *
  * @param string $sql_limit   SQL LIMIT clause.
@@ -1520,6 +1520,7 @@ function get_allowed_graphs(string $sql_where = '', mixed $sql_order = 'gtg.titl
 
 	if (is_array($sql_order)) {
 		require_once(CACTI_PATH_LIBRARY . '/dsstats.php');
+		require_once(CACTI_PATH_LIBRARY . '/html_utility.php');
 
 		$table = dsstats_get_best_partition($sql_order['start_time'], $sql_order['end_time']);
 
@@ -1545,7 +1546,7 @@ function get_allowed_graphs(string $sql_where = '', mixed $sql_order = 'gtg.titl
 			) AS rs
 			ON gl.id = rs.local_graph_id";
 
-			$sql_order = 'ORDER BY rs.' . $sql_order['measure'] . ' ' . $sql_order['order'];
+			$sql_order = get_dsstats_order_string($sql_order);
 		} elseif ($sql_order['data_source'] == '') {
 			cacti_log('WARNING: Graph Order missing Data Source name for ordering.', false, 'AUTH');
 			cacti_log('ORDER, DETAIL: ' . json_encode($sql_order), false, 'AUTH');
