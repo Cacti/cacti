@@ -19,7 +19,14 @@
  * source-scan suite in tests/Unit/CactiDispatchTest.php pins the literal
  * shape of each guard; the tests here pin the runtime contract so a
  * refactor that keeps the source markers but swaps the semantics still
- * fails. */
+ * fails.
+ *
+ * cacti_dispatch() reaches the Cacti runtime through global functions that
+ * lib/ owns, so the stubs standing in for them live in a probe script that
+ * runs in its own process (see fixtures/cacti_dispatch_probe.php). Each
+ * test below states a scenario, the probe runs it, and the JSON verdict
+ * carries back the handler calls, the log lines, the AJAX denial flag and
+ * the HTTP status. */
 
 if (!file_exists(__DIR__ . '/../../lib/cacti_dispatch.php')) {
 	test('cacti_dispatch hand-off: feature not present on this branch', function () {})
@@ -27,78 +34,13 @@ if (!file_exists(__DIR__ . '/../../lib/cacti_dispatch.php')) {
 	return;
 }
 
-/* --------------------------------------------------------------------- */
-/* Stubs for the Cacti runtime functions cacti_dispatch() depends on.    */
-/* They are declared once and shared across every test in this file via  */
-/* the $GLOBALS['cdho_*'] mailbox so each test can read what was logged, */
-/* whether the AJAX denial helper fired, and which handlers ran.         */
-/* --------------------------------------------------------------------- */
+require_once dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
 
-if (!function_exists('get_nfilter_request_var')) {
-	function get_nfilter_request_var($name, $default = '') {
-		if (!isset($_REQUEST[$name])) {
-			return $default;
-		}
-
-		return $_REQUEST[$name];
-	}
-}
-
-if (!function_exists('cacti_log')) {
-	function cacti_log($message, $output = false, $environ = 'CMDPHP', $level = -1) {
-		$GLOBALS['cdho_logs'][] = ['message' => $message, 'env' => $environ];
-	}
-}
-
-if (!function_exists('cacti_strtoupper')) {
-	function cacti_strtoupper($s) {
-		return strtoupper((string) $s);
-	}
-}
-
-if (!function_exists('cacti_strtolower')) {
-	function cacti_strtolower($s) {
-		return strtolower((string) $s);
-	}
-}
-
-if (!function_exists('is_realm_allowed')) {
-	function is_realm_allowed($realm) {
-		return !empty($GLOBALS['cdho_allowed_realms'][$realm]);
-	}
-}
-
-if (!function_exists('get_client_addr')) {
-	function get_client_addr() {
-		return '127.0.0.1';
-	}
-}
-
-if (!function_exists('raise_ajax_permission_denied')) {
-	function raise_ajax_permission_denied() {
-		$GLOBALS['cdho_ajax_denied'] = true;
-	}
-}
-
-require_once __DIR__ . '/../../lib/cacti_dispatch.php';
-
-beforeEach(function () {
-	$_REQUEST                       = [];
-	$_SERVER                        = [];
-	$GLOBALS['cdho_logs']           = [];
-	$GLOBALS['cdho_handler_calls']  = [];
-	$GLOBALS['cdho_allowed_realms'] = [];
-	$GLOBALS['cdho_ajax_denied']    = false;
-	http_response_code(200);
-});
-
-/* Helper that records the action name a handler was invoked with. Used
- * to prove the dispatch table actually reached (or did not reach) a
- * specific entry rather than relying on global side effects. */
-function cdho_make_handler(string $tag): callable {
-	return function () use ($tag) {
-		$GLOBALS['cdho_handler_calls'][] = $tag;
-	};
+function cdho_dispatch(array $scenario): array {
+	return cacti_test_isolated_probe(
+		__DIR__ . '/fixtures/cacti_dispatch_probe.php',
+		[json_encode($scenario)]
+	);
 }
 
 /* --------------------------------------------------------------------- */
@@ -106,44 +48,50 @@ function cdho_make_handler(string $tag): callable {
 /* --------------------------------------------------------------------- */
 
 test('string action resolves to its handler entry', function () {
-	$_REQUEST['action']        = 'save';
-	$_SERVER['REQUEST_METHOD'] = 'GET';
+	$verdict = cdho_dispatch([
+		'request' => ['action' => 'save'],
+		'server'  => ['REQUEST_METHOD' => 'GET'],
+		'default' => 'edit',
+		'actions' => [
+			'save' => ['handler' => 'save'],
+			'edit' => ['handler' => 'edit'],
+		],
+	]);
 
-	cacti_dispatch([
-		'save' => ['callback' => cdho_make_handler('save')],
-		'edit' => ['callback' => cdho_make_handler('edit')],
-	], 'edit');
-
-	expect($GLOBALS['cdho_handler_calls'])->toBe(['save']);
+	expect($verdict['handler_calls'])->toBe(['save']);
 });
 
 test('array action input is normalized to the default action', function () {
-	$_REQUEST['action']        = ['x'];
-	$_SERVER['REQUEST_METHOD'] = 'GET';
+	$verdict = cdho_dispatch([
+		'request' => ['action' => ['x']],
+		'server'  => ['REQUEST_METHOD' => 'GET'],
+		'default' => 'edit',
+		'actions' => [
+			'edit' => ['handler' => 'edit'],
+		],
+	]);
 
-	cacti_dispatch([
-		'edit' => ['callback' => cdho_make_handler('edit')],
-	], 'edit');
-
-	expect($GLOBALS['cdho_handler_calls'])->toBe(['edit']);
+	expect($verdict['handler_calls'])->toBe(['edit']);
 });
 
 test('action with shell metacharacters is rejected before table lookup', function () {
 	/* The hostile key is also present in the table so a missed
 	 * sanitisation step would invoke its handler. Rejection must
 	 * happen before the isset() lookup. */
-	$_REQUEST['action']        = 'save;rm -rf /';
-	$_SERVER['REQUEST_METHOD'] = 'GET';
+	$verdict = cdho_dispatch([
+		'request' => ['action' => 'save;rm -rf /'],
+		'server'  => ['REQUEST_METHOD' => 'GET'],
+		'default' => '',
+		'actions' => [
+			'save'          => ['handler' => 'save'],
+			'save;rm -rf /' => ['handler' => 'hostile'],
+		],
+	]);
 
-	cacti_dispatch([
-		'save'         => ['callback' => cdho_make_handler('save')],
-		'save;rm -rf /' => ['callback' => cdho_make_handler('hostile')],
-	], '');
+	expect($verdict['handler_calls'])->toBe([]);
+	expect($verdict['http_code'])->toBe(403);
 
-	expect($GLOBALS['cdho_handler_calls'])->toBe([]);
-	expect(http_response_code())->toBe(403);
-
-	$messages = array_column($GLOBALS['cdho_logs'], 'message');
+	$messages = array_column($verdict['logs'], 'message');
 	expect($messages)->toContain('WARNING: cacti_dispatch: unknown action "" from 127.0.0.1');
 });
 
@@ -152,34 +100,32 @@ test('action with shell metacharacters is rejected before table lookup', functio
 /* --------------------------------------------------------------------- */
 
 test('GET request against a POST entry is rejected with method-mismatch log', function () {
-	$_REQUEST['action']        = 'save';
-	$_SERVER['REQUEST_METHOD'] = 'GET';
-
-	cacti_dispatch([
-		'save' => [
-			'callback' => cdho_make_handler('save'),
-			'method'   => 'POST',
+	$verdict = cdho_dispatch([
+		'request' => ['action' => 'save'],
+		'server'  => ['REQUEST_METHOD' => 'GET'],
+		'default' => '',
+		'actions' => [
+			'save' => ['handler' => 'save', 'method' => 'POST'],
 		],
-	], '');
+	]);
 
-	expect($GLOBALS['cdho_handler_calls'])->toBe([]);
+	expect($verdict['handler_calls'])->toBe([]);
 
-	$messages = array_column($GLOBALS['cdho_logs'], 'message');
+	$messages = array_column($verdict['logs'], 'message');
 	expect($messages)->toContain('WARNING: cacti_dispatch: method mismatch for action "save" (expected POST, got GET)');
 });
 
 test('absent REQUEST_METHOD with ANY entry still dispatches', function () {
-	$_REQUEST['action'] = 'save';
-	unset($_SERVER['REQUEST_METHOD']);
-
-	cacti_dispatch([
-		'save' => [
-			'callback' => cdho_make_handler('save'),
-			'method'   => 'ANY',
+	$verdict = cdho_dispatch([
+		'request' => ['action' => 'save'],
+		'server'  => [],
+		'default' => '',
+		'actions' => [
+			'save' => ['handler' => 'save', 'method' => 'ANY'],
 		],
-	], '');
+	]);
 
-	expect($GLOBALS['cdho_handler_calls'])->toBe(['save']);
+	expect($verdict['handler_calls'])->toBe(['save']);
 });
 
 /* --------------------------------------------------------------------- */
@@ -187,33 +133,30 @@ test('absent REQUEST_METHOD with ANY entry still dispatches', function () {
 /* --------------------------------------------------------------------- */
 
 test('object_acl returning false suppresses handler and runs the deny path', function () {
-	$_REQUEST['action']        = 'save';
-	$_SERVER['REQUEST_METHOD'] = 'GET';
-
-	cacti_dispatch([
-		'save' => [
-			'callback'   => cdho_make_handler('save'),
-			'object_acl' => function () { return false; },
+	$verdict = cdho_dispatch([
+		'request' => ['action' => 'save'],
+		'server'  => ['REQUEST_METHOD' => 'GET'],
+		'default' => '',
+		'actions' => [
+			'save' => ['handler' => 'save', 'object_acl' => false],
 		],
-	], '');
+	]);
 
-	expect($GLOBALS['cdho_handler_calls'])->toBe([]);
-	expect(http_response_code())->toBe(403);
+	expect($verdict['handler_calls'])->toBe([]);
+	expect($verdict['http_code'])->toBe(403);
 });
 
 test('object_acl returning true invokes the handler exactly once', function () {
-	$_REQUEST['action']        = 'save';
-	$_SERVER['REQUEST_METHOD'] = 'GET';
-	$seen                      = [];
-
-	cacti_dispatch([
-		'save' => [
-			'callback'   => function () use (&$seen) { $seen[] = 'save'; },
-			'object_acl' => function () { return true; },
+	$verdict = cdho_dispatch([
+		'request' => ['action' => 'save'],
+		'server'  => ['REQUEST_METHOD' => 'GET'],
+		'default' => '',
+		'actions' => [
+			'save' => ['handler' => 'save', 'object_acl' => true],
 		],
-	], '');
+	]);
 
-	expect($seen)->toBe(['save']);
+	expect($verdict['handler_calls'])->toBe(['save']);
 });
 
 /* --------------------------------------------------------------------- */
@@ -221,21 +164,20 @@ test('object_acl returning true invokes the handler exactly once', function () {
 /* --------------------------------------------------------------------- */
 
 test('non-callable object_acl logs ERROR and denies instead of silently allowing', function () {
-	$_REQUEST['action']        = 'save';
-	$_SERVER['REQUEST_METHOD'] = 'GET';
-
-	cacti_dispatch([
-		'save' => [
-			'callback'   => cdho_make_handler('save'),
-			'object_acl' => 'not_a_real_function_anywhere',
+	$verdict = cdho_dispatch([
+		'request' => ['action' => 'save'],
+		'server'  => ['REQUEST_METHOD' => 'GET'],
+		'default' => '',
+		'actions' => [
+			'save' => ['handler' => 'save', 'object_acl' => 'not_a_real_function_anywhere'],
 		],
-	], '');
+	]);
 
-	expect($GLOBALS['cdho_handler_calls'])->toBe([]);
-	expect(http_response_code())->toBe(403);
+	expect($verdict['handler_calls'])->toBe([]);
+	expect($verdict['http_code'])->toBe(403);
 
 	$errors = array_filter(
-		$GLOBALS['cdho_logs'],
+		$verdict['logs'],
 		fn ($entry) => str_starts_with($entry['message'], 'ERROR: cacti_dispatch: object_acl')
 	);
 	expect($errors)->not->toBeEmpty();
@@ -246,31 +188,31 @@ test('non-callable object_acl logs ERROR and denies instead of silently allowing
 /* --------------------------------------------------------------------- */
 
 test('AJAX denial calls raise_ajax_permission_denied', function () {
-	$_REQUEST['action']                  = 'save';
-	$_SERVER['REQUEST_METHOD']           = 'GET';
-	$_SERVER['HTTP_X_REQUESTED_WITH']    = 'XMLHttpRequest';
-
-	cacti_dispatch([
-		'save' => [
-			'callback'   => cdho_make_handler('save'),
-			'object_acl' => function () { return false; },
+	$verdict = cdho_dispatch([
+		'request' => ['action' => 'save'],
+		'server'  => [
+			'REQUEST_METHOD'        => 'GET',
+			'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest',
 		],
-	], '');
+		'default' => '',
+		'actions' => [
+			'save' => ['handler' => 'save', 'object_acl' => false],
+		],
+	]);
 
-	expect($GLOBALS['cdho_ajax_denied'])->toBeTrue();
+	expect($verdict['ajax_denied'])->toBeTrue();
 });
 
 test('non-AJAX denial sets an explicit 403 instead of falling through to 200', function () {
-	$_REQUEST['action']        = 'save';
-	$_SERVER['REQUEST_METHOD'] = 'GET';
-
-	cacti_dispatch([
-		'save' => [
-			'callback'   => cdho_make_handler('save'),
-			'object_acl' => function () { return false; },
+	$verdict = cdho_dispatch([
+		'request' => ['action' => 'save'],
+		'server'  => ['REQUEST_METHOD' => 'GET'],
+		'default' => '',
+		'actions' => [
+			'save' => ['handler' => 'save', 'object_acl' => false],
 		],
-	], '');
+	]);
 
-	expect($GLOBALS['cdho_ajax_denied'])->toBeFalse();
-	expect(http_response_code())->toBe(403);
+	expect($verdict['ajax_denied'])->toBeFalse();
+	expect($verdict['http_code'])->toBe(403);
 });
