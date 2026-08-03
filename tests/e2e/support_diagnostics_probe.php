@@ -50,20 +50,41 @@ function support_diag_probe_report(): string {
 	$rrdtool_release = get_installed_rrdtool_version() ?: 'Unknown';
 	$total_memory    = 0;
 
+	// $snmp_version above is raw snmpget output, and the shareable report is the
+	// redacted one, so drive the two branches the block reads.
+	$snmp_installed  = true;
+	$redact          = true;
+
 	$path = dirname(__DIR__, 2) . '/support.php';
 	$src  = file_get_contents($path);
 
 	support_diag_probe_assert($src !== false, "unable to read $path");
 
-	$start = strpos($src, '$snmp_line     = trim(');
+	// support.php runs an authenticated dispatch on include, so extract the
+	// helper the redacted branch calls. eval() runs only Cacti's own source.
+	support_diag_probe_assert(
+		preg_match('/^function support_redact\(.*?^\}/sm', $src, $m) === 1,
+		'support_redact() not found in support.php'
+	);
 
-	support_diag_probe_assert($start !== false, 'start marker not found in support.php; has the report block moved?');
+	eval($m[0]);
 
-	$marker = strpos($src, "\$report .= '- ' . __('RSA Fingerprint')");
+	// Anchor on the assignment target rather than its right-hand side: the SNMP
+	// branch has already changed shape once, and a literal marker stops matching
+	// without saying so.
+	support_diag_probe_assert(
+		preg_match('/^\s*\$snmp_line\s*=/m', $src, $m, PREG_OFFSET_CAPTURE) === 1,
+		'start marker not found in support.php; has the report block moved?'
+	);
 
-	support_diag_probe_assert($marker !== false, 'end marker not found in support.php; has the report block moved?');
+	$start = $m[0][1];
 
-	$end = strpos($src, "\n", $marker);
+	support_diag_probe_assert(
+		preg_match("/\\\$report\s*\.=\s*'- '\s*\.\s*__\('RSA Fingerprint'\)/", $src, $m, PREG_OFFSET_CAPTURE) === 1,
+		'end marker not found in support.php; has the report block moved?'
+	);
+
+	$end = strpos($src, "\n", $m[0][1]);
 
 	support_diag_probe_assert($end !== false, 'no newline after end marker in support.php');
 
