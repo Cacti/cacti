@@ -143,12 +143,25 @@ if (!function_exists('boost_handoff_connect_processes_table')) {
 }
 
 beforeEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
 	require_once __DIR__ . '/../../lib/database.php';
+
+	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
 
 	$this->pdo = new PDO('sqlite::memory:');
 	$this->pdo->exec('CREATE TABLE processes (pid INTEGER, tasktype TEXT, taskname TEXT, taskid INTEGER)');
 
 	boost_handoff_connect_processes_table($this->pdo);
+});
+
+// Put the default db_* connection back. Left in place, the sqlite handle
+// answers every later read_config_option() in the run and throws on Cacti's
+// MySQL SQL, aborting the suite.
+afterEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
+	[$database_sessions, $database_hostname, $database_port, $database_default] = $this->db_globals;
 });
 
 test('dsstats_processes_running counts only matching tasktype/taskname rows', function () {

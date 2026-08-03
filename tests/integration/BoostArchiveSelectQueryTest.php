@@ -49,6 +49,8 @@ eval($func_src);
 beforeEach(function () {
 	global $database_sessions, $database_hostname, $database_port, $database_default;
 
+	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
+
 	$conn = new FakeMySQLPDO();
 
 	$conn->exec('CREATE TABLE poller_output_boost_arch_1 (
@@ -76,6 +78,15 @@ beforeEach(function () {
 	$database_sessions["$database_hostname:$database_port:$database_default"] = $conn;
 
 	$this->conn = $conn;
+});
+
+// Put the default db_* connection back. Left in place, the fake handle answers
+// every later read_config_option() in the run and throws on Cacti's MySQL SQL,
+// aborting the suite.
+afterEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
+	[$database_sessions, $database_hostname, $database_port, $database_default] = $this->db_globals;
 });
 
 function boost_test_seed_common(PDO $conn): void {

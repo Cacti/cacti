@@ -29,6 +29,8 @@ require_once dirname(__DIR__, 2) . '/lib/poller.php';
 beforeEach(function () {
 	global $database_hostname, $database_port, $database_default, $database_sessions;
 
+	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
+
 	$database_hostname = 'unit-local';
 	$database_port     = 0;
 	$database_default  = 'unit-local';
@@ -40,6 +42,15 @@ beforeEach(function () {
 
 	$this->remote = new PDO('sqlite::memory:');
 	$this->remote->exec('CREATE TABLE poller_item (local_data_id INTEGER, host_id INTEGER, poller_id INTEGER)');
+});
+
+// Put the default db_* connection back. Left in place, the sqlite handle
+// answers every later read_config_option() in the run and throws on Cacti's
+// MySQL SQL, aborting the suite.
+afterEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
+	[$database_sessions, $database_hostname, $database_port, $database_default] = $this->db_globals;
 });
 
 function seedPollerItem(PDO $conn, int $localDataId, int $hostId, int $pollerId): void {

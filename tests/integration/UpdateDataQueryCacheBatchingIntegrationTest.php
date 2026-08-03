@@ -54,6 +54,21 @@ function batching_seed_poller_item_table() : FakeMySQLPDO {
 	return $conn;
 }
 
+beforeEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
+	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
+});
+
+// Put the default db_* connection back. Left in place, the fake handle answers
+// every later read_config_option() in the run and throws on Cacti's MySQL SQL,
+// aborting the suite.
+afterEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
+	[$database_sessions, $database_hostname, $database_port, $database_default] = $this->db_globals;
+});
+
 function batching_wire_default_connection(PDO $conn) : void {
 	$GLOBALS['database_hostname']      = 'unittest';
 	$GLOBALS['database_port']          = 0;

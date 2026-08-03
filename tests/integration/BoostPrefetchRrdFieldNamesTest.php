@@ -31,6 +31,8 @@ require_once dirname(__DIR__, 2) . '/lib/poller.php';
 beforeEach(function () {
 	global $database_sessions, $database_hostname, $database_port, $database_default, $database_total_queries;
 
+	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
+
 	$conn = new PDO('sqlite::memory:');
 
 	$conn->exec('CREATE TABLE data_template_rrd (
@@ -62,6 +64,15 @@ beforeEach(function () {
 	$database_total_queries = 0;
 
 	$this->conn = $conn;
+});
+
+// Put the default db_* connection back. Left in place, the sqlite handle
+// answers every later read_config_option() in the run and throws on Cacti's
+// MySQL SQL, aborting the suite.
+afterEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
+	[$database_sessions, $database_hostname, $database_port, $database_default] = $this->db_globals;
 });
 
 test('unused_data_source_names excludes the graphed data source and includes the un-graphed one', function () {

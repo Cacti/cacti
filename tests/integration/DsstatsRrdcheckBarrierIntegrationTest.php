@@ -91,6 +91,10 @@ if (!function_exists('barrier_handoff_spawn_late_child')) {
 }
 
 beforeEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
+	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
+
 	if (!function_exists('pcntl_fork')) {
 		test()->markTestSkipped('ext-pcntl not available; cannot fork a real late-registering child.');
 
@@ -113,6 +117,13 @@ beforeEach(function () {
 });
 
 afterEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
+	// Put the default db_* connection back. Left in place, the sqlite handle
+	// answers every later read_config_option() in the run and throws on
+	// Cacti's MySQL SQL, aborting the suite.
+	[$database_sessions, $database_hostname, $database_port, $database_default] = $this->db_globals;
+
 	if (isset($this->dbFile) && is_file($this->dbFile)) {
 		unlink($this->dbFile);
 	}

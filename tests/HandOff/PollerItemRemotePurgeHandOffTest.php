@@ -242,6 +242,8 @@ function handoffPollerItemCount(PDO $conn, string $where = '1=1'): int {
 beforeEach(function () {
 	global $database_hostname, $database_port, $database_default, $database_sessions;
 
+	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
+
 	$parts = handoffMysqlDsnParts();
 
 	$database_hostname = $parts['host'];
@@ -257,6 +259,15 @@ beforeEach(function () {
 		"$database_hostname:$database_port:$database_default"                             => $this->central,
 		HANDOFF_OLD_POLLER_DBHOST . ':' . HANDOFF_OLD_POLLER_DBPORT . ':' . HANDOFF_OLD_POLLER_DBNAME => $this->oldRemote,
 	];
+});
+
+// Put the default db_* connection back. Left in place, the test handles answer
+// every later read_config_option() in the run and throw on Cacti's MySQL SQL,
+// aborting the suite.
+afterEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
+	[$database_sessions, $database_hostname, $database_port, $database_default] = $this->db_globals;
 });
 
 // ---------------------------------------------------------------------

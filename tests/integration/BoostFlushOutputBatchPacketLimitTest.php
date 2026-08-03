@@ -55,6 +55,20 @@ class BoostPacketLookupPDO extends FakeMySQLPDO {
 	}
 }
 
+beforeEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
+	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
+});
+
+// Put the default db_* connection back. Left cleared, every later
+// read_config_option() in the run loses its connection and the suite aborts.
+afterEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
+	[$database_sessions, $database_hostname, $database_port, $database_default] = $this->db_globals;
+});
+
 test('max_allowed_packet is read once per connection, not once per process', function () {
 	global $database_sessions, $database_hostname, $database_port, $database_default;
 

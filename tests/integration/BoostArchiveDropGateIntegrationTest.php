@@ -38,6 +38,10 @@ require_once __DIR__ . '/../Helpers/UnitStubs.php';
 require_once dirname(__DIR__, 2) . '/lib/database.php';
 
 beforeEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
+	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
+
 	$dsn  = getenv('CACTI_TEST_MYSQL_DSN')  ?: 'mysql:host=127.0.0.1;port=33061;dbname=cacti_test';
 	$user = getenv('CACTI_TEST_MYSQL_USER') ?: 'root';
 	$pass = getenv('CACTI_TEST_MYSQL_PASS') ?: 'root';
@@ -64,9 +68,15 @@ beforeEach(function () {
 });
 
 afterEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
 	if (isset($this->pdo) && $this->pdo instanceof PDO) {
 		$this->pdo->exec('DROP TABLE IF EXISTS poller_output_boost_processes');
 	}
+
+	// Put the default db_* connection back so the test handle does not answer
+	// every later read_config_option() in the run.
+	[$database_sessions, $database_hostname, $database_port, $database_default] = $this->db_globals;
 });
 
 test('3 of 4 shards completing makes the old SUM(status)>0 gate say "drop", real data', function () {

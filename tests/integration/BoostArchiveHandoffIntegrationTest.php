@@ -68,6 +68,10 @@ if (!function_exists('boost_handoff_connect_default_session')) {
 }
 
 beforeEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
+	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
+
 	$dsn  = getenv('CACTI_TEST_MYSQL_DSN')  ?: 'mysql:host=127.0.0.1;port=33061;dbname=cacti_test';
 	$user = getenv('CACTI_TEST_MYSQL_USER') ?: 'root';
 	$pass = getenv('CACTI_TEST_MYSQL_PASS') ?: 'root';
@@ -99,10 +103,16 @@ beforeEach(function () {
 });
 
 afterEach(function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
 	if (isset($this->pdo) && $this->pdo instanceof PDO) {
 		$this->pdo->exec('DROP TABLE IF EXISTS poller_output_boost');
 		$this->pdo->exec('DROP TABLE IF EXISTS poller_output_boost_arch_handoff_test');
 	}
+
+	// Put the default db_* connection back so the test handle does not answer
+	// every later read_config_option() in the run.
+	[$database_sessions, $database_hostname, $database_port, $database_default] = $this->db_globals;
 });
 
 test('a row from a still-open poll round survives the archive cleanup by moving to the live table', function () use ($boostLibPath) {
