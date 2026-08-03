@@ -803,87 +803,87 @@ function dsstats_poller_output(&$rrd_update_array) {
 									$max_value = $ds_types[$result['rrd_name']]['rrd_maximum'];
 
 										// possible overflow, see if its 32bit or 64bit
-										if ($ds_last > 4294967295) {
-											$currentval = (18446744073709551615 - $ds_last) + $result['output'];
-										} else {
-											$currentval = (4294967295 - $ds_last) + $result['output'];
-										}
-
-										if ($max_value != 'U' && $currentval > $max_value) {
-											$currentval = 'NULL';
-										}
+									if ($ds_last > 4294967295) {
+										$currentval = (18446744073709551615 - $ds_last) + $result['output'];
+									} else {
+										$currentval = (4294967295 - $ds_last) + $result['output'];
 									}
 
-									if ($currentval != 'NULL') {
-										$currentval = $currentval / $polling_interval;
-
-										if ($ds_type == 6) {
-											$currentval = round($currentval, 0);
-										}
+									if ($max_value != 'U' && $currentval > $max_value) {
+										$currentval = 'NULL';
 									}
+								}
 
-									$lastval = $result['output'];
+								if ($currentval != 'NULL') {
+									$currentval = $currentval / $polling_interval;
 
 									if ($ds_type == 6) {
-										$lastval = round($lastval, 0);
+										$currentval = round($currentval, 0);
 									}
+								}
 
-									break;
-								case 3:	// DERIVE
-								case 7:	// DDERIVE
-									// get the last values from the database for COUNTER and DERIVE data sources
-									$ds_last = db_fetch_cell_prepared('SELECT SQL_NO_CACHE `value`
+								$lastval = $result['output'];
+
+								if ($ds_type == 6) {
+									$lastval = round($lastval, 0);
+								}
+
+								break;
+							case 3:	// DERIVE
+							case 7:	// DDERIVE
+								// get the last values from the database for COUNTER and DERIVE data sources
+								$ds_last = db_fetch_cell_prepared('SELECT SQL_NO_CACHE `value`
 									FROM data_source_stats_hourly_last
 									WHERE local_data_id = ?
 									AND rrd_name = ?', [$result['local_data_id'], $result['rrd_name']]);
 
-									if ($ds_last == '') {
-										$currentval = 'NULL';
-									} elseif ($result['output'] != 'NULL') {
-										$currentval = ($result['output'] - $ds_last) / $polling_interval;
-
-										if ($ds_type == 7) {
-											$currentval = round($currentval, 0);
-										}
-									} else {
-										$currentval = 'NULL';
-									}
-
-									$lastval = $result['output'];
+								if ($ds_last == '') {
+									$currentval = 'NULL';
+								} elseif ($result['output'] != 'NULL') {
+									$currentval = ($result['output'] - $ds_last) / $polling_interval;
 
 									if ($ds_type == 7) {
-										$lastval = round($lastval, 0);
+										$currentval = round($currentval, 0);
 									}
+								} else {
+									$currentval = 'NULL';
+								}
 
-									break;
-								case 4:	// ABSOLUTE
-									if ($result['output']          != 'NULL' &&
-										$result['output']             != 'U' &&
-										strtolower($result['output']) != 'nan') {
-										$currentval = abs($result['output']);
-										$lastval    = $currentval;
-									} else {
-										$currentval = 'NULL';
-										$lastval    = $currentval;
-									}
+								$lastval = $result['output'];
 
-									break;
-								case 1:	// GAUGE
-									if ($result['output']          != 'NULL' &&
-										$result['output']             != 'U' &&
-										strtolower($result['output']) != 'nan') {
-										$currentval = $result['output'];
-										$lastval    = $result['output'];
-									} else {
-										$currentval = 'NULL';
-										$lastval    = $currentval;
-									}
+								if ($ds_type == 7) {
+									$lastval = round($lastval, 0);
+								}
 
-									break;
-								default:
-									cacti_log("WARNING: Unknown RRDtool Data Type '" . $ds_types[$result['rrd_name']]['data_source_type_id'] . "', For '" . $result['rrd_name'] . "'", false, 'DSSTATS');
+								break;
+							case 4:	// ABSOLUTE
+								if ($result['output'] != 'NULL' &&
+									$result['output'] != 'U' &&
+									strtolower($result['output']) != 'nan') {
+									$currentval = abs($result['output']);
+									$lastval    = $currentval;
+								} else {
+									$currentval = 'NULL';
+									$lastval    = $currentval;
+								}
 
-									break;
+								break;
+							case 1:	// GAUGE
+								if ($result['output'] != 'NULL' &&
+									$result['output'] != 'U' &&
+									strtolower($result['output']) != 'nan') {
+									$currentval = $result['output'];
+									$lastval    = $result['output'];
+								} else {
+									$currentval = 'NULL';
+									$lastval    = $currentval;
+								}
+
+								break;
+							default:
+								cacti_log("WARNING: Unknown RRDtool Data Type '" . $ds_types[$result['rrd_name']]['data_source_type_id'] . "', For '" . $result['rrd_name'] . "'", false, 'DSSTATS');
+
+								break;
 							}
 
 							/* when doing bulk inserts, the second record is different */

@@ -648,18 +648,18 @@ function template_edit() {
 					<?php
 						$data_input_id = 0;
 
-		if (!empty($template_data['data_input_id'])) {
-			$data_input_id = get_nonsystem_data_input($template_data['data_input_id']);
+						if (!empty($template_data['data_input_id'])) {
+							$data_input_id = get_nonsystem_data_input($template_data['data_input_id']);
 
-			if (!isset($data_input_id) || $data_input_id == null) {
-				$data_input_id = 0;
-			}
-		}
+							if (!isset($data_input_id) || $data_input_id == null) {
+								$data_input_id = 0;
+							}
+						}
 
-		if ($data_input_id > 0) {
-			?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_input.php?action=edit&id=' . $data_input_id); ?>'><?php print __('Edit Data Input Method.'); ?></a><br><?php
-		}
-		?>
+						if ($data_input_id > 0) {
+							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_input.php?action=edit&id=' . $data_input_id); ?>'><?php print __('Edit Data Input Method.'); ?></a><br><?php
+						}
+					?>
 				</td>
 			</tr>
 		</table>
