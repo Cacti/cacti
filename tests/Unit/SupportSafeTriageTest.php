@@ -109,6 +109,14 @@ function safe_triage_seed_summary(): void {
 	$config[OPTIONS_CLI]['stats_poller']    = '';
 }
 
+function safe_triage_uname_cell(string $html): string {
+	$found = preg_match('#' . preg_quote(__('PHP uname'), '#') . '</td>\s*<td>(.*?)</td>#s', $html, $m);
+
+	expect($found)->toBe(1);
+
+	return $m[1];
+}
+
 test('show_tech_summary masks and escapes an installed SNMP banner when redacting', function () {
 	global $config;
 
@@ -146,6 +154,62 @@ test('show_tech_summary shows the full fingerprint and raw SNMP status when not 
 	$html = ob_get_clean();
 
 	expect($html)->toContain('abcdef0123456789feedface');
+});
+
+test('show_tech_summary escapes the PHP uname value when redacting', function () {
+	global $config;
+
+	safe_triage_seed_summary();
+
+	$config[OPTIONS_CLI]['path_snmpget'] = PHP_BINARY;
+	$config[OPTIONS_CLI]['poller_type']  = '1';
+
+	$_REQUEST['redact'] = '1';
+
+	ob_start();
+	show_tech_summary();
+	$html = ob_get_clean();
+
+	// support_redact() substitutes the literal <host> for this node's name, so a
+	// redacted uname always carries markup characters that must not reach the
+	// browser raw.
+	$redacted = support_redact(php_uname());
+
+	expect($redacted)->toContain('<host>')
+		->and(safe_triage_uname_cell($html))->toBe(html_escape($redacted));
+});
+
+test('show_tech_summary escapes the PHP uname value when not redacting', function () {
+	global $config;
+
+	safe_triage_seed_summary();
+
+	$config[OPTIONS_CLI]['path_snmpget'] = PHP_BINARY;
+	$config[OPTIONS_CLI]['poller_type']  = '1';
+
+	ob_start();
+	show_tech_summary();
+	$html = ob_get_clean();
+
+	expect(safe_triage_uname_cell($html))->toBe(html_escape(php_uname()));
+});
+
+test('support.php escapes every php_uname() value it prints', function () {
+	$src = file_get_contents(dirname(__DIR__, 2) . '/support.php');
+
+	// The redact toggle only decides whether the value is masked first; both
+	// branches still have to reach html_escape(). A host whose uname carries no
+	// markup characters cannot show that from the rendered page, so pin it on
+	// the statement instead. Deleting each html_escape() call along with its
+	// balanced argument list leaves behind only the values that reach the page
+	// raw, which keeps this tolerant of how the conditional is shaped.
+	$found = preg_match_all('/print\s+[^;]*\bphp_uname\(\)[^;]*;/', $src, $m);
+
+	expect($found)->toBeGreaterThan(0);
+
+	foreach ($m[0] as $statement) {
+		expect(preg_replace('/html_escape(\((?:[^()]++|(?1))*\))/', '', $statement))->not->toContain('php_uname(');
+	}
 });
 
 test('show_tech_summary reports N/A when no RSA fingerprint is set', function () {

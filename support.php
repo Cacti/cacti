@@ -1888,7 +1888,7 @@ function show_tech_summary() : void {
 	print '<td>';
 
 	if (function_exists('php_uname')) {
-		print $redact ? html_escape(support_redact(php_uname())) : php_uname();
+		print html_escape($redact ? support_redact(php_uname()) : php_uname());
 	} else {
 		print __('N/A');
 	}
@@ -1911,12 +1911,12 @@ function show_tech_summary() : void {
 
 	form_alternate_row();
 	print '<td>max_execution_time</td>';
-	print '<td>' . ini_get('max_execution_time') . '</td>';
+	print '<td>' . html_escape(ini_get('max_execution_time')) . '</td>';
 	form_end_row();
 
 	form_alternate_row();
 	print '<td>memory_limit</td>';
-	print '<td>' . ini_get('memory_limit');
+	print '<td>' . html_escape(ini_get('memory_limit'));
 
 	// Calculate memory suggestion based off of data source count
 	$memory_suggestion = $data_total * 32768;
