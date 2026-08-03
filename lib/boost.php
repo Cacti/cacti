@@ -229,12 +229,21 @@ function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : vo
 		return;
 	}
 
-	static $max_allowed_packet = null;
+	// max_allowed_packet is a per-server setting and this helper is called with
+	// both the local and the remote poller connection, so the lookup is cached
+	// per connection rather than once for the whole process. spl_object_id() is
+	// how lib/database.php already identifies a connection; the default (false)
+	// connection gets key 0, which spl_object_id() never returns.
+	static $packet_limits = [];
 
-	if ($max_allowed_packet === null) {
-		$row                = db_fetch_row("SHOW VARIABLES LIKE 'max_allowed_packet'", true, $conn);
-		$max_allowed_packet = !empty($row['Value']) ? (int) $row['Value'] : 1048576;
+	$conn_key = is_object($conn) ? spl_object_id($conn) : 0;
+
+	if (!isset($packet_limits[$conn_key])) {
+		$row                      = db_fetch_row("SHOW VARIABLES LIKE 'max_allowed_packet'", true, $conn);
+		$packet_limits[$conn_key] = !empty($row['Value']) ? (int) $row['Value'] : 1048576;
 	}
+
+	$max_allowed_packet = $packet_limits[$conn_key];
 
 	$sql_prefix = 'INSERT IGNORE INTO poller_output_boost (local_data_id, rrd_name, time, output) VALUES ';
 
