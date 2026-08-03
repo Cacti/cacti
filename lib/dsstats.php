@@ -774,12 +774,9 @@ function dsstats_error_handler(int $errno, string $errmsg, string $filename, int
 			E_COMPILE_WARNING   => 'Compile Warning',
 			E_USER_ERROR        => 'User Error',
 			E_USER_WARNING      => 'User Warning',
-			E_USER_NOTICE       => 'User Notice'
+			E_USER_NOTICE       => 'User Notice',
+			E_RECOVERABLE_ERROR => 'Catchable Fatal Error'
 		];
-
-		if (defined('E_RECOVERABLE_ERROR')) {
-			$errortype[E_RECOVERABLE_ERROR] = 'Catchable Fatal Error';
-		}
 
 		// create an error string for the log
 		$err = "ERRNO:'" . $errno . "' TYPE:'" . $errortype[$errno] .

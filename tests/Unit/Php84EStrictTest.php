@@ -61,8 +61,20 @@ test('userland cannot raise E_STRICT, so the removed key is unreachable', functi
 	expect($raised)->toBeTrue();
 });
 
-test('the error handlers no longer guard a constant that always exists', function () use ($basePath) {
+test('the error maps name their levels directly instead of patching them in', function () use ($basePath) {
+	$files = ['lib/aggregate.php', 'lib/rrdcheck.php', 'lib/boost.php', 'lib/dsstats.php', 'lib/dsdebug.php'];
+
 	expect(constant('E_RECOVERABLE_ERROR'))->toBe(4096)
-		->and(file_get_contents($basePath . '/lib/aggregate.php'))->not->toContain("defined('E_RECOVERABLE_ERROR')")
-		->and(file_get_contents($basePath . '/lib/rrdcheck.php'))->not->toContain("defined('E_RECOVERABLE_ERROR')");
+		->and(constant('E_DEPRECATED'))->toBe(8192);
+
+	foreach ($files as $file) {
+		$source = file_get_contents($basePath . '/' . $file);
+
+		expect($source)->not->toContain('$errortype[E_RECOVERABLE_ERROR]')
+			->and($source)->not->toContain('$errortype[E_DEPRECATED]');
+	}
+});
+
+test('aggregate no longer polyfills a constant that always exists', function () use ($basePath) {
+	expect(file_get_contents($basePath . '/lib/aggregate.php'))->not->toContain("define('E_RECOVERABLE_ERROR'");
 });
