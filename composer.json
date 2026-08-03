@@ -67,7 +67,7 @@
         "overtrue/phplint": "^9.6",
         "pestphp/pest": "^2",
         "pestphp/pest-plugin-drift": "^2.0",
-        "phpstan/phpstan": "2.2.5",
+        "phpstan/phpstan": "2.2.6",
         "rector/rector": "^2.1.2"
     },
     "scripts": {
