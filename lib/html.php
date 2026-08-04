@@ -1160,7 +1160,32 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
  * @return string The sanitized string
  */
 function html_purify($string) {
-	$purifier = new HTMLPurifier();
+	global $config;
+
+	static $purifier = null;
+
+	if ($purifier === null) {
+		$settings = HTMLPurifier_Config::createDefault();
+
+		/* HTMLPurifier defaults its definition cache to a directory inside its
+		 * own library tree.  Packaged installs mount the web root read-only, so
+		 * that write fails and every purify() call raises an E_USER_WARNING.
+		 * Keep the cache with Cacti's other writable caches, and fall back to
+		 * no serializer at all when even that is not writable. */
+		if (isset($config['purifier_cache_path'])) {
+			$cache_path = $config['purifier_cache_path'];
+		} else {
+			$cache_path = $config['base_path'] . '/cache/purifier';
+		}
+
+		if (is_dir($cache_path) && is_resource_writable($cache_path . '/')) {
+			$settings->set('Cache.SerializerPath', $cache_path);
+		} else {
+			$settings->set('Cache.DefinitionImpl', null);
+		}
+
+		$purifier = new HTMLPurifier($settings);
+	}
 
 	return $purifier->purify($string);
 }
