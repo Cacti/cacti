@@ -421,9 +421,9 @@ dynamic_include	./lib/rrd.php:1349		include_once($config['library_path'] . '/gra
 dynamic_include	./lib/rrd.php:1350		include_once($config['library_path'] . '/boost.php');
 dynamic_include	./lib/rrd.php:1351		include_once($config['library_path'] . '/xml.php');
 dynamic_include	./lib/rrd.php:1352		include($config['include_path'] . '/global_arrays.php');
-dynamic_include	./lib/rrd.php:2636			include($rrdtheme);
-dynamic_include	./lib/rrd.php:3242		include_once($config['library_path'] . '/time.php');
-dynamic_include	./lib/rrd.php:4019			include($themefile);
+dynamic_include	./lib/rrd.php:2660			include($rrdtheme);
+dynamic_include	./lib/rrd.php:3266		include_once($config['library_path'] . '/time.php');
+dynamic_include	./lib/rrd.php:4043			include($themefile);
 dynamic_include	./lib/rrd.php:598		include ($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/rrd.php:917		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/rrd.php:991		include_once($config['library_path'] . '/boost.php');
@@ -579,14 +579,14 @@ fs_write	./lib/poller.php:1306												file_put_contents($mypath, $contents);
 fs_write	./lib/poller.php:1335								file_put_contents($mypath, $contents);
 fs_write	./lib/reports.php:1704			$f = fopen($fn, 'wb');
 fs_write	./lib/reports.php:1745			$f = fopen($fn, 'wb');
-fs_write	./lib/rrd.php:2520					if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
+fs_write	./lib/rrd.php:2522					if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
 fs_write	./lib/spikekill.php:780			return file_put_contents($xmlfile, $output);
 fs_write	./package_import.php:383					file_put_contents($xmlfile, $data);
 fs_write	./package_import.php:96		if (file_put_contents($xmlfile, $_SESSION['sess_import_package']) === false) {
 fs_write	./script_server.php:49		define('STDIN', fopen('php://stdin', 'r'));
 fs_write	./script_server.php:50		define('STDOUT', fopen('php://stdout', 'w'));
-fs_write	./scripts/ss_net_snmp_disk_bytes.php:227			file_put_contents("$tmpdir/$tmpfile", $data);
-fs_write	./scripts/ss_net_snmp_disk_io.php:226			file_put_contents("$tmpdir/$tmpfile", $data);
+fs_write	./scripts/ss_net_snmp_disk_bytes.php:251			file_put_contents("$tmpdir/$tmpfile", $data);
+fs_write	./scripts/ss_net_snmp_disk_io.php:250			file_put_contents("$tmpdir/$tmpfile", $data);
 fs_write	./snmpagent_mibcachechild.php:90		$lock = fopen($path_mibcache_lock, 'w');
 fs_write	./snmpagent_mibcachechild.php:94			file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
 fs_write	./templates_import.php:67				$fp = fopen($_FILES['import_file']['tmp_name'],'r');
