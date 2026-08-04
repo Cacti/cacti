@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#7425: Guard process registration and cleanup against PID reuse
 -issue#7426: Stop tracking the generated CSRF secret so each install creates its own
 -issue#7427: Update device status by host id instead of non-unique hostname
+-issue#7429: Prevent monthly automation schedules from resetting next_start to 1970
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
