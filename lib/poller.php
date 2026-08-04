@@ -2369,6 +2369,45 @@ function get_remote_poller_ids_from_devices(&$devices) {
 }
 
 /**
+ * cacti_process_still_running - determine whether a registered pid is still
+ *   alive and still belongs to the process that registered it.
+ *
+ *   A bare posix_kill($pid, 0) only proves that *some* process owns the pid.
+ *   After a registered process dies without unregistering, the OS can recycle
+ *   its pid for an unrelated program; trusting the bare pid then blocks a
+ *   legitimate task from starting or sends SIGTERM to the wrong process.  On
+ *   Linux we compare /proc/<pid>/comm against our own command name as a
+ *   no-schema identity check (the processes table stores no start-time).  When
+ *   /proc is unavailable (non-Linux or restricted) we fall back to the bare
+ *   existence test, preserving prior behaviour.
+ *
+ * @param  (int)  $pid - the pid recorded in the processes table
+ *
+ * @return (bool) true if the pid is running and cannot be shown to be a reused
+ *                pid belonging to a different program
+ */
+function cacti_process_still_running($pid) {
+	$pid = intval($pid);
+
+	if ($pid <= 0 || !function_exists('posix_kill') || !posix_kill($pid, 0)) {
+		return false;
+	}
+
+	$self  = @file_get_contents('/proc/' . getmypid() . '/comm');
+	$other = @file_get_contents('/proc/' . $pid . '/comm');
+
+	if ($self !== false && $other !== false) {
+		return trim($self) === trim($other);
+	}
+
+	/* /proc is unavailable (non-Linux or restricted): fall back to the bare
+	 * existence test, but re-check it here rather than trusting the result
+	 * from the top of the function, which can now be stale if the pid exited
+	 * in the window between that check and these file reads. */
+	return posix_kill($pid, 0);
+}
+
+/**
  * register_process_start - public function to register a process
  *   in Cacti's process table
  *
@@ -2397,34 +2436,36 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		AND taskid = ?',
 		array($tasktype, $taskname, $taskid));
 
-	if (!cacti_sizeof($r)) {
-		cacti_log(sprintf('NOTE: Registering process! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+		if (!cacti_sizeof($r)) {
+			cacti_log(sprintf('NOTE: Registering process! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 
-		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
-	} elseif ($r['timeout_exceeded']) {
-		$timeout_pid = (int) $r['pid'];
-
-		if (is_system_pid($timeout_pid)) {
-			// mirror timeout_kill_registered_processes(): never signal a reserved
-			// system PID from the registry, but still clear and re-register
-			cacti_log(sprintf('WARNING: Refusing to kill registered process with a reserved system PID! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $r['pid']), false, 'POLLER');
-
-			unregister_process($tasktype, $taskname, $taskid);
 			register_process($tasktype, $taskname, $taskid, $pid, $timeout);
-		} elseif ($timeout_pid > 0) {
-			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceeded'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
+		} elseif ($r['timeout_exceeded']) {
+			$timeout_pid = (int) $r['pid'];
 
-			posix_kill($timeout_pid, SIGTERM);
+			if (is_system_pid($timeout_pid)) {
+				// mirror timeout_kill_registered_processes(): never signal a reserved
+				// system PID from the registry, but still clear and re-register
+				cacti_log(sprintf('WARNING: Refusing to kill registered process with a reserved system PID! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $r['pid']), false, 'POLLER');
 
-			unregister_process($tasktype, $taskname, $taskid);
-			register_process($tasktype, $taskname, $taskid, $pid, $timeout);
+				unregister_process($tasktype, $taskname, $taskid);
+				register_process($tasktype, $taskname, $taskid, $pid, $timeout);
+			} elseif ($timeout_pid > 0) {
+				if (cacti_process_still_running($timeout_pid)) {
+					cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceeded'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
+
+					posix_kill($timeout_pid, SIGTERM);
+				}
+
+				unregister_process($tasktype, $taskname, $taskid);
+				register_process($tasktype, $taskname, $taskid, $pid, $timeout);
 		} else {
 			// Should never be reached
 			cacti_log(sprintf('ERROR: Failed registering process.  Invalid pid found.  Unable to kill! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $r['pid']), false, 'POLLER');
 
 			return false;
 		}
-	} elseif ($r['pid'] > 0 && posix_kill($r['pid'], 0)) {
+	} elseif (cacti_process_still_running($r['pid'])) {
 		cacti_log(sprintf('NOTE: Failed registering process.  Old process still running and has not timed out! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 
 		return false;
@@ -2575,7 +2616,7 @@ function timeout_kill_registered_processes($tasktype = '', $taskname = '', $task
 
 			if (is_system_pid($pid)) {
 				cacti_log(sprintf('WARNING: Refusing to kill registered process with a reserved system PID! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
-			} elseif (posix_kill($pid, 0)) {
+			} elseif (cacti_process_still_running($pid)) {
 				cacti_log(sprintf('ERROR: Process killed due to timeout! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
 				posix_kill($pid, SIGTERM);
 			} else {
@@ -2586,4 +2627,3 @@ function timeout_kill_registered_processes($tasktype = '', $taskname = '', $task
 		}
 	}
 }
-

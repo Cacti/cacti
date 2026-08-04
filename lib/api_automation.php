@@ -3383,11 +3383,14 @@ function automation_get_next_host($start, $total, $count, $range) {
 
 		for ($x = 0; $x < 4; $x++) {
 			$ip[$x] += intval($count/$y);
-			$count -= ((intval($count/$y))*256);
+			$count -= (intval($count/$y) * $y);
 			$y = $y / 256;
-			if ($ip[$x] == 256 && $x > 0) {
-				$ip[$x] = 0;
-				$ip[$x-1] += 1;
+		}
+
+		for ($x = 3; $x > 0; $x--) {
+			if ($ip[$x] >= 256) {
+				$ip[$x-1] += intval($ip[$x] / 256);
+				$ip[$x]    = $ip[$x] % 256;
 			}
 		}
 
