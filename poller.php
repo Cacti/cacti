@@ -213,7 +213,7 @@ $poller_interval = read_config_option('poller_interval');
 $poller_lastrun  = read_config_option('poller_lastrun_' . $poller_id);
 
 // collect the system mibs every 4 hours
-if ($poller_lastrun % 14440 < $current_time % 14440 || empty($poller_lastrun)) {
+if (intdiv($current_time, 14400) !== intdiv($poller_lastrun, 14400)) {
 	$mibs = true;
 }
 
