@@ -2456,7 +2456,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$need_rrd_nl = false;
 				}
 			} else {
-				if (preg_match('/^(AREA|AREA:STACK|LINE[123]|STACK)$/', $graph_item_types[$graph_item['graph_type_id']])) {
+				/* rrdtool xport only accepts DEF/CDEF references; a VDEF backed
+				 * item would emit XPORT:vdefNN and fail the whole command */
+				if ($graph_item['vdef_id'] == '0' && preg_match('/^(AREA|AREA:STACK|LINE[123]|STACK)$/', $graph_item_types[$graph_item['graph_type_id']])) {
 					/* give all export items a name */
 					if (trim($graph_variables['text_format'][$graph_item_id]) == '') {
 						$legend_name = 'col' . $j . '-' . $data_source_name;
@@ -2544,6 +2546,28 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		$output_flag = RRDTOOL_OUTPUT_STDOUT;
 
 		$xport_array = rrdxport2array(rrdtool_execute("xport $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe));
+
+		if (!isset($xport_array['meta'])) {
+			$xport_start = $graph_start < 0 ? time() + $graph_start : $graph_start;
+			$xport_end   = $graph_end < 0 ? time() + $graph_end : $graph_end;
+
+			return array(
+				'meta' => array(
+					'start'           => $xport_start,
+					'end'             => $xport_end,
+					'step'            => max(1, (int) $rra_seconds),
+					'rows'            => 0,
+					'columns'         => 0,
+					'legend'          => array(),
+					'stacked_columns' => $stacked_columns,
+					'title_cache'     => $graph['title_cache'],
+					'vertical_label'  => $graph['vertical_label'],
+					'local_graph_id'  => $local_graph_id,
+					'host_id'         => $graph['host_id'],
+				),
+				'data' => array(),
+			);
+		}
 
 		/* add host and graph information */
 		$xport_array['meta']['stacked_columns']= $stacked_columns;
@@ -4361,4 +4385,3 @@ function add_business_hours($data) {
 
     return $data;
 }
-
