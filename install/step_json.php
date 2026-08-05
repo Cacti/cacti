@@ -79,7 +79,20 @@ if (isset($initialData['step']) && $initialData['step'] == Installer::STEP_TEST_
 	}
 }
 
+$response = json_decode($json, true);
+
+if (is_array($response)) {
+	$response['csrfMagicToken'] = csrf_get_tokens();
+	$encoded_response           = json_encode($response);
+
+	if ($encoded_response !== false) {
+		$json = $encoded_response;
+	}
+}
+
 log_install_high('json','  End: ' . clean_up_lines($json_debug) . PHP_EOL);
 header('Content-Type: application/json');
+header('Cache-Control: no-store');
+header('X-Content-Type-Options: nosniff');
 header('Content-Length: ' . strlen($json));
 print $json;
