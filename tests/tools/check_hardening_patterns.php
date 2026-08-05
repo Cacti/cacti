@@ -36,8 +36,9 @@ $patterns = [
 			// pre-boot code; the request helper layer is not loaded yet
 			'include/global.php',
 			'lib/PackageListFilter.php',
-			// test fixture standing in for the request helper itself
-			'tests/HandOff/fixtures/cacti_dispatch_probe.php',
+			// tests/integration/AggregateConvertTemplateGuardIntegrationTest.php: simulates request
+			// state to exercise the real request-consuming function, not a production sanitization bypass
+			'tests/integration/AggregateConvertTemplateGuardIntegrationTest.php',
 		]
 	],
 //	'manual-request-query-url' => [

@@ -79,11 +79,18 @@ function aggregate_build_children_url(int $local_graph_id, int $graph_start = -1
  * @return void
  */
 function api_aggregate_convert_template(array $graphs) : void {
-	$aggregate_template_id = gnrv('aggregate_template_id');
+	$aggregate_template_id = gfrv('aggregate_template_id');
 	$aggregate_template    = db_fetch_row_prepared('SELECT *
 		FROM aggregate_graph_templates
 		WHERE id = ?',
 		[$aggregate_template_id]);
+
+	// without a valid template the saves below would write null template fields
+	if (!cacti_sizeof($aggregate_template)) {
+		raise_message('aggregate_template_error', __('The selected Aggregate Template was not found! No graphs were migrated.'), MESSAGE_LEVEL_ERROR);
+
+		return;
+	}
 
 	foreach ($graphs as $graph) {
 		$save                          = [];
