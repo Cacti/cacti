@@ -1091,14 +1091,6 @@ function number_format_i18n(mixed $number, mixed $decimals = null, mixed $baseu 
 	setlocale(LC_ALL, $cacti_locale);
 	$locale = localeconv();
 
-	if (!isset($locale['decimal_point']) || $locale['decimal_point'] == '') {
-		$locale['decimal_point'] = '.';
-	}
-
-	if (!isset($locale['thousands_sep']) || $locale['thousands_sep'] == '') {
-		$locale['thousands_sep'] = ',';
-	}
-
 	if ($decimals == -1 || $decimals == null) {
 		$number = number_format($number, 0, $locale['decimal_point'], $locale['thousands_sep']);
 	} elseif ($number >= $baseu ** 4) {

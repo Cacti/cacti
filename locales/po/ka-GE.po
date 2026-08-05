@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-04-27 16:32+0000\n"
+"PO-Revision-Date: 2026-08-04 05:18+0000\n"
 "Last-Translator: Ekaterine papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
@@ -2642,7 +2642,7 @@ msgstr ""
 
 #: automation_snmp.php:432
 msgid "Export SNMP Options"
-msgstr ""
+msgstr "SNMP-ის პარამეტრების გატანა"
 
 #: automation_snmp.php:468
 msgid "SNMP Options has been Duplicated."
@@ -3557,7 +3557,7 @@ msgstr ""
 #: color.php:398
 #, php-format
 msgid "Colors [edit: %s]"
-msgstr ""
+msgstr "ფერები [ჩასწორება: %s]"
 
 #: color.php:400
 msgid "Colors [new]"
@@ -4828,7 +4828,7 @@ msgstr ""
 
 #: data_sources.php:568
 msgid "Disable Data Source"
-msgstr ""
+msgstr "მონაცემთა წყაროს გათიშვა"
 
 #: data_sources.php:569
 msgid "Disable Data Sources"
@@ -5047,7 +5047,7 @@ msgstr "მიტოვებული"
 
 #: data_sources.php:1643 utilities.php:1148
 msgid "Data Source Name"
-msgstr ""
+msgstr "მონაცემთა წყაროს სახელი"
 
 #: data_sources.php:1646
 msgid "The name of this Data Source. Generally programmatically generated from the Data Template definition."
@@ -5516,7 +5516,7 @@ msgstr "გრაფიკის საბლონის ზომის შე
 
 #: graph_templates.php:1238
 msgid "Resize Graph Templates"
-msgstr ""
+msgstr "გრაფიკის ნიმუშების ზომის შეცვლა"
 
 #: graph_templates.php:1242
 msgid "Template Class"
@@ -5844,7 +5844,7 @@ msgstr ""
 
 #: graphs.php:68 graphs.php:1855 graphs.php:1866
 msgid "Create Aggregate Graph"
-msgstr ""
+msgstr "აგრეგატული გრაფიკის შექმნა"
 
 #: graphs.php:69
 msgid "Create Aggregate from Template"
@@ -8167,7 +8167,7 @@ msgstr "UPS"
 
 #: include/global_arrays.php:1211
 msgid "Amon Server Stats"
-msgstr ""
+msgstr "სტატისტიკა მითითებული არაა"
 
 #: include/global_arrays.php:1212
 msgid "AMQP Stats"
@@ -9220,7 +9220,7 @@ msgstr "RRD-ების გამსუფთავებელი"
 
 #: include/global_arrays.php:2583
 msgid "List unused Files"
-msgstr ""
+msgstr "გამოუყენებელი ფაილების სია"
 
 #: include/global_arrays.php:2589
 msgid "RRD Check"
@@ -10611,7 +10611,7 @@ msgstr ""
 #: include/global_form.php:1860 include/global_settings.php:763
 #: package_import.php:1484
 msgid "Graph Template Height"
-msgstr ""
+msgstr "გრაფიკის ნიმუშის სიმაღლე"
 
 #: include/global_form.php:1861 package_import.php:1485
 msgid "The Height to be used when importing or updating Graph Templates."
@@ -10947,7 +10947,7 @@ msgstr "დროის ინტერვალი/წანაცვლებ�
 
 #: include/global_settings.php:55
 msgid "Graph Thumbnail Settings"
-msgstr ""
+msgstr "გრაფიკის მინიატურის მორგება"
 
 #: include/global_settings.php:56 include/global_settings.php:1088
 msgid "Tree Settings"
@@ -11408,7 +11408,7 @@ msgstr ""
 
 #: include/global_settings.php:562
 msgid "Hide Cacti Dashboard"
-msgstr ""
+msgstr "Cacti-ის სამუშაო დაფის დამალვა"
 
 #: include/global_settings.php:563
 msgid "For use with Cacti's External Link Support.  Using this setting, you can hide the Cacti Dashboard, so you can display just your own page."
@@ -14243,7 +14243,7 @@ msgstr "გრაფიკის წესის შექმნა"
 
 #: lib/api_automation.php:2354
 msgid "Graph Match Rule"
-msgstr ""
+msgstr "გრაფიკის დამთხვევის წესი"
 
 #: lib/api_automation.php:2386
 msgid "Create Tree Rule (Device)"
@@ -15491,7 +15491,7 @@ msgstr ""
 #: lib/functions.php:7247
 #, php-format
 msgid "- Dev %s"
-msgstr ""
+msgstr "- მოწყ %s"
 
 #: lib/functions.php:7249
 #, php-format
@@ -18600,7 +18600,7 @@ msgstr ""
 
 #: lib/rrd.php:3536
 msgid "Data Source Items"
-msgstr ""
+msgstr "მონაცემთა წყაროს ელემენტები"
 
 #: lib/rrd.php:3538
 msgid "Minimal Heartbeat"
@@ -18991,7 +18991,7 @@ msgstr ""
 
 #: links.php:213
 msgid "Enable External Link"
-msgstr ""
+msgstr "გარე ბმულის ჩართვა"
 
 #: links.php:214
 msgid "Enable External Links"
@@ -20100,7 +20100,7 @@ msgstr "დამატებების მართვა"
 
 #: plugins.php:611
 msgid "Loaded on Disk"
-msgstr ""
+msgstr "ჩატვირთულია დისკზე"
 
 #: plugins.php:612
 msgid "Loaded and Not Installed"
@@ -22325,7 +22325,7 @@ msgstr ""
 
 #: tree.php:2340
 msgid "No Trees Found"
-msgstr ""
+msgstr "ხეები აღმოჩენილი არაა"
 
 #: user_admin.php:32
 msgid "Batch Copy"
@@ -22772,7 +22772,7 @@ msgstr "მომხმარებლის დომენის ჩართ�
 
 #: user_domains.php:243
 msgid "Enable User Domains"
-msgstr ""
+msgstr "მომხმარებლის დომენების ჩართვა"
 
 #: user_domains.php:246
 msgid "Click 'Continue' to make the following the following User Domain the default one."
@@ -23085,7 +23085,7 @@ msgstr ""
 
 #: user_group_admin.php:457
 msgid "Delete User Group"
-msgstr ""
+msgstr "მომხმარებლის ჯგუფის წაშლა"
 
 #: user_group_admin.php:458
 msgid "Delete User Groups"
@@ -23129,7 +23129,7 @@ msgstr ""
 
 #: user_group_admin.php:478
 msgid "Enable User Groups"
-msgstr ""
+msgstr "მომხმარებლის ჯგუფების ჩართვა"
 
 #: user_group_admin.php:481
 msgid "Click 'Continue' to Disable the following User Group."
@@ -23678,7 +23678,7 @@ msgstr "ერთდროული პროცესები:"
 
 #: utilities.php:1796
 msgid "Next Start Time:"
-msgstr ""
+msgstr "შემდეგი დაწყების დრო:"
 
 #: utilities.php:1799
 msgid "Maximum Records:"
@@ -23797,7 +23797,7 @@ msgstr ""
 
 #: vdef.php:396
 msgid "VDEF Items [new]"
-msgstr ""
+msgstr "VDEF-ის ელემენტები [ახალი]"
 
 #: vdef.php:414
 msgid "VDEF Item Type"
