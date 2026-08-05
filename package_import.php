@@ -503,10 +503,6 @@ function form_save() : void {
 			exit;
 		}
 
-		if (isrv('trust_signer') && gnrv('trust_signer') == 'on') {
-			import_validate_public_key($xmlfile, true);
-		}
-
 		if (gfrv('data_source_profile') == '0') {
 			$import_as_new = true;
 			$profile_id    = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
@@ -824,9 +820,13 @@ function package_verify_key() : void {
 
 					file_put_contents($xmlfile, $data);
 
-					$info = import_validate_signature($xmlfile);
+					if (!import_validate_signature($xmlfile)) {
+						$info = import_get_package_info($xmlfile);
 
-					if ($info === false || $info['valid'] === false) {
+						if ($info === false) {
+							$info = ['name' => $package_name, 'author' => '', 'email' => ''];
+						}
+
 						$failed[$package_name] = $info;
 					}
 
@@ -849,10 +849,15 @@ function package_verify_key() : void {
 		$xmlfile = sys_get_temp_dir() . '/package_import_' . rand();
 
 		file_put_contents($xmlfile, $_SESSION['sess_import_package']);
-		$vsig  = import_validate_signature($xmlfile);
 
-		if ($vsig === false || empty($vsig['valid'])) {
-			$failed[$vsig['name']] = $vsig;
+		if (!import_validate_signature($xmlfile)) {
+			$info = import_get_package_info($xmlfile);
+
+			if ($info === false) {
+				$info = ['name' => __('Unknown'), 'author' => '', 'email' => ''];
+			}
+
+			$failed[$info['name']] = $info;
 		}
 
 		unlink($xmlfile);
@@ -1367,11 +1372,6 @@ function validate_request_vars() : void {
 			'options' => ['options' => ['regexp' => '(on|true|false)']],
 			'default' => read_config_option('remove_orphans') ?? ''
 		],
-		'trust_signer' => [
-			'filter'  => FILTER_VALIDATE_REGEXP,
-			'options' => ['options' => ['regexp' => '(on|true|false)']],
-			'default' => read_config_option('trust_signer') ?? ''
-		],
 		'package_location' => [
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_config_option('package_location') ?? ''
@@ -1421,12 +1421,6 @@ function get_import_form(int $repo_id, int $default_profile) : array {
 		$remove_orphans = '';
 	}
 
-	if (isrv('trust_signer') && gnrv('trust_signer') == 'on') {
-		$trust_signer = 'on';
-	} else {
-		$trust_signer = '';
-	}
-
 	if (isrv('image_format')) {
 		$image_format = gfrv('image_format');
 	} else {
@@ -1451,18 +1445,6 @@ function get_import_form(int $repo_id, int $default_profile) : array {
 			'description'   => __('The *.xml.gz file located on your Local machine to Upload and Import.'),
 			'accept'        => '.xml.gz',
 			'method'        => 'file'
-		],
-		'trust_header' => [
-			'friendly_name' => __('Package Signature'),
-			'collapsible'   => 'true',
-			'method'        => 'spacer',
-		],
-		'trust_signer' => [
-			'friendly_name' => __('Automatically Trust Signer'),
-			'description'   => __('If checked, Cacti will automatically Trust the Signer for this and any future Packages by that author.'),
-			'method'        => 'checkbox',
-			'value'         => $trust_signer,
-			'default'       => ''
 		],
 	];
 
@@ -1899,12 +1881,6 @@ function package_import() : void {
 				formExtra += '&replace_svalues=on';
 			} else {
 				formExtra += '&replace_svalues=';
-			}
-
-			if ($('#trust_signer').is(':checked')) {
-				formExtra += '&trust_signer=on';
-			} else {
-				formExtra += '&trust_signer=';
 			}
 
 			Pace.start();
