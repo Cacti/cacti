@@ -531,6 +531,7 @@ class Installer implements JsonSerializable {
 			'log'       => $config['base_path'] . '/log',
 			'boost'     => $config['base_path'] . '/cache/boost',
 			'mibcache'  => $config['base_path'] . '/cache/mibcache',
+			'purifier'  => $config['base_path'] . '/cache/purifier',
 			'realtime'  => $config['base_path'] . '/cache/realtime',
 			'spikekill' => $config['base_path'] . '/cache/spikekill'
 		);

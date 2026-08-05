@@ -1836,7 +1836,7 @@ function update_host_status($status, $host_id, &$ping, $ping_availability, $prin
 		total_polls = ?,
 		failed_polls = ?,
 		availability = ?
-		WHERE hostname = ?
+		WHERE id = ?
 		AND deleted = ""',
 		array(
 			$host['status'],
@@ -1851,7 +1851,7 @@ function update_host_status($status, $host_id, &$ping, $ping_availability, $prin
 			$host['total_polls'],
 			$host['failed_polls'],
 			$host['availability'],
-			$host['hostname']
+			$host['id']
 		)
 
 	);

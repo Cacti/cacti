@@ -3383,11 +3383,14 @@ function automation_get_next_host($start, $total, $count, $range) {
 
 		for ($x = 0; $x < 4; $x++) {
 			$ip[$x] += intval($count/$y);
-			$count -= ((intval($count/$y))*256);
+			$count -= (intval($count/$y) * $y);
 			$y = $y / 256;
-			if ($ip[$x] == 256 && $x > 0) {
-				$ip[$x] = 0;
-				$ip[$x-1] += 1;
+		}
+
+		for ($x = 3; $x > 0; $x--) {
+			if ($ip[$x] >= 256) {
+				$ip[$x-1] += intval($ip[$x] / 256);
+				$ip[$x]    = $ip[$x] % 256;
 			}
 		}
 
@@ -3766,7 +3769,14 @@ function api_automation_is_time_to_start($network_id) {
 		break;
 	case '4':
 	case '5':
-		$next = calculateNextStart($net, $now);
+		$next = calculateNextStart($net);
+
+		/* No schedulable date was found (e.g. an incomplete schedule). Leave
+		   next_start untouched instead of writing a 1970 timestamp, which the
+		   run check below would then treat as due every poller cycle. */
+		if (empty($next)) {
+			return false;
+		}
 
 		db_execute_prepared('UPDATE automation_networks
 			SET next_start = ?
@@ -3790,8 +3800,22 @@ function api_automation_is_time_to_start($network_id) {
 }
 
 function calculateNextStart($net) {
-	$now    = time();
-	$dates  = array();
+	$now = time();
+
+	/* Evaluate this year first; when every selected date has already passed,
+	   roll over to the next year so a valid monthly schedule never resolves to
+	   false (which the caller would otherwise store as a 1970 next_start). */
+	$next = calculateNextStartForYear($net, (int) date('Y', $now), $now);
+
+	if ($next === false) {
+		$next = calculateNextStartForYear($net, (int) date('Y', $now) + 1, $now);
+	}
+
+	return $next;
+}
+
+function calculateNextStartForYear($net, $year, $now) {
+	$dates = array();
 
 	switch($net['sched_type']) {
 	case '4':
@@ -3840,9 +3864,9 @@ function calculateNextStart($net) {
 				}
 
 				if ($day == '32') {
-					$dates[] = strtotime('last day of ' . $smonth);;
+					$dates[] = strtotime("last day of $smonth $year");
 				} else {
-					$dates[] = strtotime("$smonth $day");
+					$dates[] = strtotime("$smonth $day $year");
 				}
 			}
 		}
@@ -3852,8 +3876,6 @@ function calculateNextStart($net) {
 		$months = explode(',', $net['month']);
 		$weeks  = explode(',', $net['monthly_week']);
 		$days   = explode(',', $net['monthly_day']);
-		$now    = time();
-		$dates  = array();
 
 		foreach($months as $month) {
 			foreach($weeks as $week) {
@@ -3908,7 +3930,7 @@ function calculateNextStart($net) {
 						$sweek = 'third';
 						break;
 					case '4':
-						$sweek = 'forth';
+						$sweek = 'fourth';
 						break;
 					case '32':
 						$sweek = 'last';
@@ -3939,7 +3961,7 @@ function calculateNextStart($net) {
 						break;
 					}
 
-					$dates[] = strtotime("$sweek $sday of $smonth", strtotime($net['start_at']));
+					$dates[] = strtotime("$sweek $sday of $smonth $year");
 				}
 			}
 		}
@@ -3952,6 +3974,10 @@ function calculateNextStart($net) {
 	$newdates = array();
 
 	foreach($dates as $date) {
+		if ($date === false) {
+			continue;
+		}
+
 		$ndate = date('Y-m-d', $date) . ' ' . date('H:i:s', strtotime($net['start_at']));
 		$ntime = strtotime($ndate);
 

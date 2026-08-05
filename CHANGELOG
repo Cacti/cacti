@@ -2,9 +2,20 @@ Cacti CHANGELOG
 
 1.2.x
 -security: Harden advisory command execution and database DDL sink validation
+-issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
+-issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
+-issue#6684: Prevent VDEF-backed aggregate graph items from being emitted as XPORT data sources
 -issue#7212: Address a few small memory leaks in realtime graphing
 -issue#7216: Aggregate totalling legend printed untotalled single data source values
 -issue#7359: Undefined variables detected with legacy plugins
+-issue#7424: Correct SNMP disk counter wrap delta calculations
+-issue#7425: Guard process registration and cleanup against PID reuse
+-issue#7426: Stop tracking the generated CSRF secret so each install creates its own
+-issue#7427: Update device status by host id instead of non-unique hostname
+-issue#7429: Prevent monthly automation schedules from resetting next_start to 1970
+-issue#7493: SNMP walk for output_format fields used max OIDs instead of the device bulk walk size
+-issue#7552: HTMLPurifier definition cache written inside the read-only library tree
+-issue#7553: Drop down menus do not update page content after upgrading to 1.2.31
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes

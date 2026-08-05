@@ -582,8 +582,8 @@ fs_write	./package_import.php:383					file_put_contents($xmlfile, $data);
 fs_write	./package_import.php:96		if (file_put_contents($xmlfile, $_SESSION['sess_import_package']) === false) {
 fs_write	./script_server.php:49		define('STDIN', fopen('php://stdin', 'r'));
 fs_write	./script_server.php:50		define('STDOUT', fopen('php://stdout', 'w'));
-fs_write	./scripts/ss_net_snmp_disk_bytes.php:227			file_put_contents("$tmpdir/$tmpfile", $data);
-fs_write	./scripts/ss_net_snmp_disk_io.php:226			file_put_contents("$tmpdir/$tmpfile", $data);
+fs_write	./scripts/ss_net_snmp_disk_bytes.php:251			file_put_contents("$tmpdir/$tmpfile", $data);
+fs_write	./scripts/ss_net_snmp_disk_io.php:250			file_put_contents("$tmpdir/$tmpfile", $data);
 fs_write	./snmpagent_mibcachechild.php:90		$lock = fopen($path_mibcache_lock, 'w');
 fs_write	./snmpagent_mibcachechild.php:94			file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
 fs_write	./templates_import.php:67				$fp = fopen($_FILES['import_file']['tmp_name'],'r');
