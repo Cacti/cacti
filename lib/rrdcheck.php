@@ -167,7 +167,7 @@ function do_rrdcheck(int $thread_id = 1) : void {
 			$file = $rrdval['data_source_path'];
 
 			if ($use_proxy) {
-				$file_exists = rrdtool_execute("file_exists $file", true, RRDTOOL_OUTPUT_BOOLEAN, false, 'RRDCHECK');
+				$file_exists = rrdtool_execute('file_exists ' . cacti_escapeshellarg($file), true, RRDTOOL_OUTPUT_BOOLEAN, false, 'RRDCHECK');
 			} else {
 				clearstatcache();
 				$file_exists = file_exists($file);
@@ -218,9 +218,9 @@ function do_rrdcheck(int $thread_id = 1) : void {
 				}
 
 				if ($use_proxy) {
-					$output = rrdtool_execute("info $file", false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
+					$output = rrdtool_execute('info ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
 				} else {
-					$output = rrdcheck_rrdtool_execute("info $file", $pipes);
+					$output = rrdcheck_rrdtool_execute(['info', $file], $pipes);
 				}
 
 				$matches     = [];
@@ -374,9 +374,9 @@ function do_rrdcheck(int $thread_id = 1) : void {
 				$one_hour_limit = ($duration - 3600) / $step;
 
 				if ($use_proxy) {
-					$info_array = rrdtool_execute("fetch $file LAST -s $pstart -e $pend ", false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
+					$info_array = rrdtool_execute('fetch ' . cacti_escapeshellarg($file) . " LAST -s $pstart -e $pend", false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
 				} else {
-					$info_array = rrdcheck_rrdtool_execute("fetch $file LAST -s $pstart -e $pend", $pipes);
+					$info_array = rrdcheck_rrdtool_execute(['fetch', $file, 'LAST', '-s', $pstart, '-e', $pend], $pipes);
 				}
 
 				// don't do anything if RRDfile did not return data
@@ -691,12 +691,8 @@ function rrdcheck_error_handler(int $errno, string $errmsg, string $filename, in
 			E_USER_ERROR        => 'User Error',
 			E_USER_WARNING      => 'User Warning',
 			E_USER_NOTICE       => 'User Notice',
-			E_STRICT            => 'Runtime Notice'
+			E_RECOVERABLE_ERROR => 'Catchable Fatal Error'
 		];
-
-		if (defined('E_RECOVERABLE_ERROR')) {
-			$errortype[E_RECOVERABLE_ERROR] = 'Catchable Fatal Error';
-		}
 
 		// create an error string for the log
 		$err = "ERRNO:'" . $errno . "' TYPE:'" . $errortype[$errno] .
@@ -829,13 +825,25 @@ function rrdcheck_rrdtool_init() : array {
  * This may not be the best method and may be changed after I have a conversation with a few
  * developers.
  *
- * @param string $command The rrdtool command to execute
- * @param array  $pipes   An array of stdin and stdout pipes to read and write data from
+ * @param array|string $command The rrdtool command to execute.  When passed as an array
+ *                              the first element is the sub-command and the remaining
+ *                              elements are escaped before being joined
+ * @param array        $pipes   An array of stdin and stdout pipes to read and write data from
  *
  * @return mixed The output from RRDtool
  */
-function rrdcheck_rrdtool_execute(string $command, mixed &$pipes) : mixed {
+function rrdcheck_rrdtool_execute(array|string $command, mixed &$pipes) : mixed {
 	static $broken = false;
+
+	if (is_array($command)) {
+		// RRDtool needs the sub-command verbatim, so only its arguments are quoted
+		$args    = $command;
+		$command = (string) array_shift($args);
+
+		if (cacti_sizeof($args)) {
+			$command .= ' ' . implode(' ', array_map('cacti_escapeshellarg', $args));
+		}
+	}
 
 	$stdout = '';
 

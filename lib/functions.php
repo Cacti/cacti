@@ -7182,11 +7182,6 @@ function CactiErrorHandler(int $level, string $message, string $file, int $line,
 			cacti_debug_backtrace('PHP ERROR NOTICE', false, true, 0, 1);
 
 			break;
-		case E_STRICT:
-			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR STRICT', false, true, 0, 1);
-
-			break;
 		default:
 			cacti_log($error, false, 'ERROR');
 			cacti_debug_backtrace('PHP ERROR', false, true, 0, 1);
@@ -7210,7 +7205,6 @@ function CactiShutdownHandler() : bool {
 		E_USER_ERROR         => 'USER_ERROR',
 		E_USER_WARNING       => 'USER_WARNING',
 		E_USER_NOTICE        => 'USER_NOTICE',
-		E_STRICT             => 'STRICT',
 		E_RECOVERABLE_ERROR  => 'RECOVERABLE_ERROR',
 		E_DEPRECATED         => 'DEPRECATED',
 		E_USER_DEPRECATED    => 'USER_DEPRECATED',

@@ -34,7 +34,7 @@ RUN a2enmod rewrite headers proxy proxy_fcgi setenvif \
     && a2dismod mpm_prefork \
     && a2enmod mpm_event
 
-COPY docker/apache.conf /etc/apache2/sites-available/cacti.conf
+COPY apache.conf /etc/apache2/sites-available/cacti.conf
 RUN a2dissite 000-default && a2ensite cacti
 
 # Static PHP settings (runtime-tunable values are set in entrypoint.sh)
@@ -72,7 +72,7 @@ RUN mkdir -p /var/www/html/cacti/cache \
              /var/www/html/cacti/log \
     && chown -R www-data:www-data /var/www/html/cacti
 
-COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # App code comes from the docker-compose bind mount, not from this image.

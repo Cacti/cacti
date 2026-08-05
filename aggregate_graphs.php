@@ -530,7 +530,7 @@ function item_edit() : void {
 	// remember these search fields in session vars so we don't have to keep passing them around
 	load_current_session_value('local_graph_id', 'sess_local_graph_id', '');
 
-	$id = (!ierv('id') ? '&id=' . grv('id') : '');
+	$id = (!ierv('id') ? '&id=' . gfrv('id') : '');
 
 	// this editor can work on aggregate template graph item or aggregate item
 	if (!ierv('aggregate_graph_id')) {
@@ -639,7 +639,7 @@ function item_edit() : void {
 
 	html_end_box(true, true);
 
-	form_save_button(CACTI_PATH_URL . "$page_name?action=edit&id=" . grv('local_graph_id'));
+	form_save_button(CACTI_PATH_URL . "$page_name?action=edit&id=" . gfrv('local_graph_id'));
 
 	// Now we need some javascript to make it dynamic
 	?>
@@ -809,22 +809,20 @@ function form_actions() : void {
 					}
 				}
 
-				$lgid = implode(',', $local_graph_ids);
-
 				/**
 				 * for whatever reason,  subquery performance in mysql is sub-optimal.
 				 * Therefore, let's do this as a few queries instead.
 				 */
-				$task_items = array_rekey(db_fetch_assoc("SELECT DISTINCT task_item_id
+				$task_items = array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT task_item_id
 					FROM graph_templates_item
-					WHERE local_graph_id IN($lgid)"), 'task_item_id', 'task_item_id');
+					WHERE local_graph_id IN (' . trim(str_repeat('?, ', cacti_sizeof($local_graph_ids)), ', ') . ')',
+					$local_graph_ids), 'task_item_id', 'task_item_id');
 
 				if (cacti_sizeof($task_items)) {
-					$task_items = implode(',', $task_items);
-
-					$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_template_id
+					$graph_templates = db_fetch_assoc_prepared('SELECT DISTINCT graph_template_id
 						FROM graph_templates_item
-						WHERE task_item_id IN ($task_items) AND graph_template_id>0");
+						WHERE task_item_id IN (' . trim(str_repeat('?, ', cacti_sizeof($task_items)), ', ') . ') AND graph_template_id>0',
+						array_values($task_items));
 				} else {
 					$graph_templates = [];
 				}
@@ -1131,7 +1129,7 @@ function graph_edit() : bool {
 		foreach ($aggregate_tabs as $id => $name) {
 			if ($id == 'details' || (!ierv('id'))) {
 				print "<li class='subTab'><a id='agg_" . $id . "' class='tab " . ($id == $current_tab ? "selected'" : "'") .
-					" href='" . htmle(CACTI_PATH_URL . 'aggregate_graphs.php?action=edit&id=' . grv('id') . "&tab=$id") .
+					" href='" . htmle(CACTI_PATH_URL . 'aggregate_graphs.php?action=edit&id=' . gfrv('id') . "&tab=$id") .
 					"'>" . htmle($name) . '</a></li>';
 			}
 		}
@@ -1155,7 +1153,7 @@ function graph_edit() : bool {
 	}
 
 	if (!ierv('id') && $current_tab == 'preview') {
-		print "<ul style='float:right;'><li><a class='pic' href='" . htmle('aggregate_graphs.php?action=edit&id=' . grv('id') . '&tab=' . grv('tab') . '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>" . $message . '</a></li></ul></nav></div></div>';
+		print "<ul style='float:right;'><li><a class='pic' href='" . htmle('aggregate_graphs.php?action=edit&id=' . gfrv('id') . '&tab=' . rawurlencode(grv('tab')) . '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>" . $message . '</a></li></ul></nav></div></div>';
 	} elseif (!ierv('id') && $current_tab == 'details' && (!cacti_sizeof($template))) {
 		print "<ul style='float:right;'><li><a id='toggle_items' class='pic' href='#'>" . __('Show Item Details') . '</a></li></ul></nav></div></div>';
 	} else {
@@ -1182,7 +1180,7 @@ function graph_edit() : bool {
 		?>
 		<tr>
 			<td id='imagewindow' class='center'>
-				<img src='<?php print htmle(CACTI_PATH_URL . 'graph_image.php?action=edit&disable_cache=1&local_graph_id=' . grv('id') . '&rra_id=' . read_user_setting('default_rra_id') . '&random=' . mt_rand()); ?>' alt=''>
+				<img src='<?php print htmle(CACTI_PATH_URL . 'graph_image.php?action=edit&disable_cache=1&local_graph_id=' . gfrv('id') . '&rra_id=' . read_user_setting('default_rra_id') . '&random=' . mt_rand()); ?>' alt=''>
 				<script type='text/javascript'>
 					$(function() {
 						$('#agg_preview').show();
@@ -1734,7 +1732,7 @@ function aggregate_items() : void {
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	$nav = html_nav_bar('aggregate_graphs.php?action=edit&tab=items&id=' . grv('id'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
+	$nav = html_nav_bar('aggregate_graphs.php?action=edit&tab=items&id=' . gfrv('id'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
 
 	print $nav;
 
@@ -1761,7 +1759,7 @@ function aggregate_items() : void {
 		]
 	];
 
-	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false, 'aggregate_graphs.php?action=edit&id=' . grv('id'));
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false, 'aggregate_graphs.php?action=edit&id=' . gfrv('id'));
 
 	if (cacti_sizeof($graph_list) > 0) {
 		foreach ($graph_list as $graph) {
@@ -2076,7 +2074,7 @@ function aggregate_graph() : void {
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false, 'aggregate_graphs.php?filter=' . grv('filter'));
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false, 'aggregate_graphs.php?filter=' . rawurlencode(grv('filter')));
 
 	if (cacti_sizeof($graph_list)) {
 		foreach ($graph_list as $graph) {
@@ -2126,8 +2124,9 @@ function purge_old_graphs() : void {
 		AND local_graph_id > 0'), 'local_graph_id',  'local_graph_id');
 
 	if (cacti_sizeof($old_graphs)) {
-		db_execute('DELETE FROM aggregate_graphs_items
-			WHERE local_graph_id IN (' . implode(',', $old_graphs) . ')');
+		db_execute_prepared('DELETE FROM aggregate_graphs_items
+			WHERE local_graph_id IN (' . trim(str_repeat('?, ', cacti_sizeof($old_graphs)), ', ') . ')',
+			array_values($old_graphs));
 	}
 
 	$old_aggregates = array_rekey(db_fetch_assoc('SELECT DISTINCT local_graph_id
@@ -2144,20 +2143,25 @@ function purge_old_graphs() : void {
 		WHERE gl.id IS NULL'), 'id', 'id');
 
 	if (cacti_sizeof($old_aggregates)) {
-		db_execute('DELETE FROM graph_templates_item
-			WHERE local_graph_id IN (' . implode(',', $old_aggregates) . ')
-			AND local_graph_id > 0');
+		$placeholders = trim(str_repeat('?, ', cacti_sizeof($old_aggregates)), ', ');
 
-		db_execute('DELETE FROM graph_templates_graph
-			WHERE local_graph_id IN (' . implode(',', $old_aggregates) . ')
-			AND local_graph_id > 0');
+		$aggregate_ids = array_values($old_aggregates);
 
-		db_execute('DELETE FROM aggregate_graphs
-			WHERE local_graph_id IN (' . implode(',', $old_aggregates) . ')');
+		db_execute_prepared("DELETE FROM graph_templates_item
+			WHERE local_graph_id IN ($placeholders)
+			AND local_graph_id > 0", $aggregate_ids);
+
+		db_execute_prepared("DELETE FROM graph_templates_graph
+			WHERE local_graph_id IN ($placeholders)
+			AND local_graph_id > 0", $aggregate_ids);
+
+		db_execute_prepared("DELETE FROM aggregate_graphs
+			WHERE local_graph_id IN ($placeholders)", $aggregate_ids);
 	}
 
 	if (cacti_sizeof($old_agg_ids)) {
-		db_execute('DELETE FROM aggregate_graphs_items
-			WHERE aggregate_graph_id IN (' . implode(',', $old_agg_ids) . ')');
+		db_execute_prepared('DELETE FROM aggregate_graphs_items
+			WHERE aggregate_graph_id IN (' . trim(str_repeat('?, ', cacti_sizeof($old_agg_ids)), ', ') . ')',
+			array_values($old_agg_ids));
 	}
 }

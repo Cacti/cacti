@@ -1,0 +1,123 @@
+name: Security Baseline Refresh
+
+# Regenerates the three whole-tree security/SQL ratchet baselines whenever
+# develop changes, so individual PRs stop having to carry baseline diffs of
+# their own (line-number churn from an unrelated merged PR was repeatedly
+# clobbering sibling PRs' baseline refreshes and blocking otherwise-unrelated
+# work). The develop ruleset requires PR review with no bypass actors (see
+# .github/BRANCH_PROTECTION.md), so this cannot push straight to develop; it
+# opens or updates a dedicated PR instead, for a human to merge like any other
+# change.
+#
+# Baselines covered:
+#   tests/security/baselines/sink_inventory.baseline.tsv
+#   tests/security/baselines/architectural_hotspots.baseline.tsv
+#   tests/tools/sql_interpolation_baseline.json
+#
+# Loop safety: the branch this pushes to (ci/auto-refresh-baselines) is not
+# develop, so pushing it does not re-trigger this workflow. Once a maintainer
+# merges the PR, that merge push to develop *does* re-run this workflow, but
+# by then the baselines already match the regenerated output, so the drift
+# check is clean and the job no-ops.
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: security-baseline-refresh
+  cancel-in-progress: false
+
+env:
+  REFRESH_BRANCH: ci/auto-refresh-baselines
+
+jobs:
+  refresh:
+    name: refresh security/SQL baselines
+    if: github.repository == 'Cacti/cacti'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout develop
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        with:
+          ref: develop
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@0f7f1d08e3e32076e51cae65eb0b0c871405b16e # 2.34.1
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: none
+
+      - name: Install ripgrep
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y ripgrep
+
+      - name: Regenerate baselines
+        run: |
+          set -euo pipefail
+          tests/security/build_sink_inventory.sh | tr -d '\r' | LC_ALL=C sort > tests/security/baselines/sink_inventory.baseline.tsv
+          tests/security/build_architectural_helper_report.sh --hotspots | tr -d '\r' | LC_ALL=C sort > tests/security/baselines/architectural_hotspots.baseline.tsv
+          php tests/tools/sql_interpolation_audit.php --write-baseline
+
+      - name: Check for drift
+        id: drift
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- \
+            tests/security/baselines/sink_inventory.baseline.tsv \
+            tests/security/baselines/architectural_hotspots.baseline.tsv \
+            tests/tools/sql_interpolation_baseline.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push refresh branch
+        if: steps.drift.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$REFRESH_BRANCH"
+          git add \
+            tests/security/baselines/sink_inventory.baseline.tsv \
+            tests/security/baselines/architectural_hotspots.baseline.tsv \
+            tests/tools/sql_interpolation_baseline.json
+          git commit -s -m "ci: refresh security/SQL-interpolation baselines"
+          git push --force origin "HEAD:refs/heads/${REFRESH_BRANCH}"
+
+      - name: Open or update refresh pull request
+        if: steps.drift.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          existing="$(gh pr list --repo "${{ github.repository }}" --head "$REFRESH_BRANCH" --base develop --state open --json number --jq '.[0].number // empty')"
+          body_file="$(mktemp)"
+          cat > "$body_file" <<'BODY'
+          Automated baseline refresh, triggered by a push to develop.
+
+          Regenerates:
+          - tests/security/baselines/sink_inventory.baseline.tsv
+          - tests/security/baselines/architectural_hotspots.baseline.tsv
+          - tests/tools/sql_interpolation_baseline.json
+
+          If your open PR is blocked on one of these baselines, rebase onto
+          develop after this merges instead of regenerating it yourself.
+          BODY
+
+          if [ -n "$existing" ]; then
+            gh pr edit "$existing" --repo "${{ github.repository }}" --body-file "$body_file"
+          else
+            gh pr create --repo "${{ github.repository }}" --base develop --head "$REFRESH_BRANCH" \
+              --title "ci: refresh security/SQL-interpolation baselines" \
+              --body-file "$body_file"
+          fi
