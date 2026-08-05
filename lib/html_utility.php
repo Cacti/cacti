@@ -1433,21 +1433,17 @@ function get_order_string() : string {
 }
 
 /**
- * Backing enum for the dsstats measure columns that get_dsstats_order_string()
- * is allowed to sort by. Cases are the single source of truth for both the
- * enum and the Assert\Choice constraint's `choices` list below, so a new
- * measure only needs to be added in one place.
+ * Whitelist of the dsstats measure columns that get_dsstats_order_string()
+ * is allowed to sort by. This is the single source of truth for both the
+ * Assert\Choice constraint's `choices` list below and the fallback default,
+ * so a new measure only needs to be added in one place.
+ *
+ * Kept as plain const arrays rather than a backed enum so this file stays
+ * parseable on PHP 8.0 (see .github/workflows/rocky-linux.yml, which lints
+ * against Rocky Linux 9's stock php-cli package).
  */
-enum DsstatsMeasure : string {
-	case Average = 'average';
-	case Peak    = 'peak';
-	case P25n    = 'p25n';
-	case P50n    = 'p50n';
-	case P75n    = 'p75n';
-	case P90n    = 'p90n';
-	case P95n    = 'p95n';
-	case Sum     = 'sum';
-}
+const DSSTATS_MEASURES        = ['average', 'peak', 'p25n', 'p50n', 'p75n', 'p90n', 'p95n', 'sum'];
+const DSSTATS_MEASURE_DEFAULT = 'average';
 
 /**
  * Builds the validated ORDER BY clause used by get_allowed_graphs() when
@@ -1463,11 +1459,9 @@ enum DsstatsMeasure : string {
  * @return string The 'ORDER BY rs.<measure> <ASC|DESC>' clause.
  */
 function get_dsstats_order_string(array $sql_order) : string {
-	$measure_choices = array_map(static fn (DsstatsMeasure $case) => $case->value, DsstatsMeasure::cases());
-
-	$measure = isset($sql_order['measure']) && is_scalar($sql_order['measure']) && CactiValidator::isValid($sql_order['measure'], [new Assert\Choice(choices: $measure_choices)])
+	$measure = isset($sql_order['measure']) && is_scalar($sql_order['measure']) && CactiValidator::isValid($sql_order['measure'], [new Assert\Choice(choices: DSSTATS_MEASURES)])
 		? $sql_order['measure']
-		: DsstatsMeasure::Average->value;
+		: DSSTATS_MEASURE_DEFAULT;
 
 	$order = isset($sql_order['order']) && is_scalar($sql_order['order']) ? strtoupper((string) $sql_order['order']) : '';
 

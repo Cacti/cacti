@@ -25,10 +25,17 @@ test('global.php guards the autoload require with instructions', function () {
 	$src = file_get_contents(__DIR__ . '/../../include/global.php');
 	expect($src)->not->toBeFalse('Failed to read include/global.php');
 
-	$guardPos = strpos($src, "is_file(CACTI_PATH_INCLUDE . '/vendor/autoload.php')");
-	expect($guardPos)->not->toBeFalse('vendor guard must exist');
+	/* #7325 hoisted the path into $vendor_autoload so the installer can
+	 * repair the tree before the require.  Pin the assignment as well as
+	 * the guard, otherwise the variable could point anywhere. */
+	$pathPos = strpos($src, "\$vendor_autoload = CACTI_PATH_INCLUDE . '/vendor/autoload.php';");
+	expect($pathPos)->not->toBeFalse('vendor autoload path must be defined');
 
-	$requirePos = strpos($src, "require_once(CACTI_PATH_INCLUDE . '/vendor/autoload.php')");
+	$guardPos = strpos($src, 'if (!is_file($vendor_autoload)');
+	expect($guardPos)->not->toBeFalse('vendor guard must exist')
+		->and($pathPos)->toBeLessThan($guardPos, 'path must be set before the guard');
+
+	$requirePos = strpos($src, 'require_once($vendor_autoload)');
 	expect($requirePos)->not->toBeFalse('autoload require must exist')
 		->and($guardPos)->toBeLessThan($requirePos, 'guard must run before the require');
 
