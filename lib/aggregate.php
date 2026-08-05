@@ -338,15 +338,6 @@ function aggregate_error_handler(int $errno, string $errmsg, string $filename, i
 		return true;
 	}
 
-	// define constants not available with PHP 4
-	if (!defined('E_STRICT')) {
-		define('E_STRICT', 2048);
-	}
-
-	if (!defined('E_RECOVERABLE_ERROR')) {
-		define('E_RECOVERABLE_ERROR', 4096);
-	}
-
 	if (error_reporting() == 0) {
 		return true;
 	}
@@ -365,7 +356,6 @@ function aggregate_error_handler(int $errno, string $errmsg, string $filename, i
 			E_USER_ERROR        => 'User Error',
 			E_USER_WARNING      => 'User Warning',
 			E_USER_NOTICE       => 'User Notice',
-			E_STRICT            => 'Runtime Notice',
 			E_RECOVERABLE_ERROR => 'Catchable Fatal Error'
 		];
 

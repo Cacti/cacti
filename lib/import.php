@@ -400,38 +400,43 @@ function import_package_get_details(string $xmlfile) : array {
 	return $return;
 }
 
-function import_validate_signature(string $xmlfile) : mixed {
-	// Cacti public key first
-	$cacti_key1   = get_public_key_sha1();
-	$cacti_key2   = get_public_key_sha256();
-	$public_key   = import_package_get_public_key($xmlfile);
-
+/**
+ * import_validate_signature - Report whether a Package is signed by a key that
+ * Cacti trusts.  The verdict is the return value itself, so a caller can not
+ * treat a populated result as a pass.  Callers that need to name the failing
+ * Package take its details from import_get_package_info().
+ *
+ * @param string $xmlfile The Package to check
+ *
+ * @return bool True when the Package carries an official or an accepted key
+ */
+function import_validate_signature(string $xmlfile) : bool {
 	$info = import_get_package_info($xmlfile);
 
-	if ($info === false) {
+	// The key the Package carries, not the one import_package_get_public_key()
+	// substitutes when the element is absent.  A Package that names no key
+	// names no signer, so there is nothing to trust.
+	if ($info === false || $info['pubkey'] == '') {
 		return false;
-	} else {
-		if (!isset($info['pubkey'])) {
-			return false;
-		}
-
-		// Other trusted keys next
-		$keys = array_rekey(
-			db_fetch_assoc('SELECT public_key FROM package_public_keys'),
-			'public_key', 'public_key'
-		);
-
-		$keys[$cacti_key1] = $cacti_key1;
-		$keys[$cacti_key2] = $cacti_key2;
-
-		if (in_array($public_key, $keys, true)) {
-			$info['valid'] = true;
-		} else {
-			$info['valid'] = false;
-		}
-
-		return $info;
 	}
+
+	// A Package carries the PEM with its trailing newline, the built in keys
+	// are written without one, and package_public_keys stores whatever the
+	// accepted Package carried.
+	$public_key = trim($info['pubkey']);
+
+	// Cacti public key first
+	if (is_cacti_public_key($public_key)) {
+		return true;
+	}
+
+	// Other trusted keys next
+	$keys = array_map('trim', array_rekey(
+		db_fetch_assoc('SELECT public_key FROM package_public_keys'),
+		'public_key', 'public_key'
+	));
+
+	return in_array($public_key, $keys, true);
 }
 
 function import_get_package_info(string $xmlfile) : mixed {
@@ -496,8 +501,10 @@ function import_read_package_data(string $xmlfile, string &$public_key, bool $pr
 
 	$filename = "compress.zlib://$xmlfile";
 
-	if (!import_validate_signature($xmlfile) && !$preview) {
-		cacti_log('FATAL: Package Public Key is not Official Cacti Public Key for Package ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);
+	// A preview neither writes files nor touches the database, so an untrusted
+	// Package may still be inspected.  A real import may not.
+	if (!$preview && !import_validate_signature($xmlfile)) {
+		cacti_log('FATAL: Package Public Key is not a Trusted Public Key for Package ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);
 
 		return false;
 	}

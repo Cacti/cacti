@@ -52,7 +52,10 @@ Cacti CHANGELOG
 -issue#7211: Correct the Nth percentile and bandwidth summation divisor on base-1024 graphs
 -issue#7214: Fix TypeError in boost_graph_set_file when sending reports
 -issue#7216: Aggregate totalling legend printed untotalled single data source values
+-issue#7261: Parameterize aggregate_graphs.php SQL and harden reflected request values
+-issue#7343: Install wizard silently fails to advance after CSRF token expires
 -issue#7380: Batch graph-create task_item_id wiring to reduce template graph creation queries
+-issue#7518: Replace the DsstatsMeasure enum in lib/html_utility.php with const arrays for PHP 8.0 compatibility
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
