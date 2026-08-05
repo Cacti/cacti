@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -issue#5481: Attempting to edit a Data Query that does not exist throws warnings and not an GUI error
 -issue#5511: Allow automation network to be saved when the IP Addresses to ignore box is empty
 -issue#5517: Cacti 1.3.x will not support 'Remember me' functionality without using https
+-issue#5565: Unable to change a device's community at command line
 -issue#5567: Incorrect variable name in change_device cli script
 -issue#5570: RRDChecker is started very often
 -issue#5573: Incorrect URL for editing graph template
@@ -40,6 +41,7 @@ Cacti CHANGELOG
 -issue#6255: Fix not showing any graphs in the subtree if there are only graphs without devices
 -issue#6258: Rename 'Data' to 'Data/Statistics' per customer request
 -issue#6545: Add 30 and 60 second timeout options for Remote Agent and Poller settings
+-issue#6573: Create new device_change_javascript hook for THOLD plugin by xmacan
 -issue#6669: Show on the Technical Support page whether php-snmp is in use or disabled by $php_snmp_support
 -issue#6682: Fix column exclusion silently skipping first element due to loose array_search comparison
 -issue#6742: Fix loose $db_conn comparison in db_table_exists and db_column_exists
@@ -52,6 +54,7 @@ Cacti CHANGELOG
 -issue#7211: Correct the Nth percentile and bandwidth summation divisor on base-1024 graphs
 -issue#7214: Fix TypeError in boost_graph_set_file when sending reports
 -issue#7216: Aggregate totalling legend printed untotalled single data source values
+-issue#7424: Correct SNMP disk counter wrap delta calculations
 -issue#7519: Fix Boost archive-table cleanup deleting still-open-round rows instead of forwarding them to the live table
 -issue#7523: Fix dead duplicate-record guard in boost_process_poller_output
 -issue#7520: Gate Boost archive-table drop on shard completeness instead of the partial-success status sum
