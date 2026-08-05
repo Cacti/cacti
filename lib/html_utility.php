@@ -22,6 +22,10 @@
  +-------------------------------------------------------------------------+
 */
 
+use Symfony\Component\Validator\Constraints as Assert;
+
+require_once __DIR__ . '/CactiValidator.php';
+
 /**
  * Replaces all variables contained in $form_array with their actual values
  *
@@ -1426,6 +1430,52 @@ function get_order_string() : string {
 	}
 
 	return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ' ' . $sort_dir;
+}
+
+/**
+ * Backing enum for the dsstats measure columns that get_dsstats_order_string()
+ * is allowed to sort by. Cases are the single source of truth for both the
+ * enum and the Assert\Choice constraint's `choices` list below, so a new
+ * measure only needs to be added in one place.
+ */
+enum DsstatsMeasure : string {
+	case Average = 'average';
+	case Peak    = 'peak';
+	case P25n    = 'p25n';
+	case P50n    = 'p50n';
+	case P75n    = 'p75n';
+	case P90n    = 'p90n';
+	case P95n    = 'p95n';
+	case Sum     = 'sum';
+}
+
+/**
+ * Builds the validated ORDER BY clause used by get_allowed_graphs() when
+ * sorting graphs by a dsstats measure (see the 'rs' derived table it joins
+ * in). The measure and order values come from unauthenticated request
+ * variables ('measure', 'graph_order'), so they are checked against the
+ * actual data_source_stats_* columns and asc/desc before being concatenated
+ * into SQL, the same way get_order_string() checks sort_column/sort_direction.
+ *
+ * @param array $sql_order Expects 'measure' and 'order' keys; see
+ *                         get_allowed_graphs() for the full array shape.
+ *
+ * @return string The 'ORDER BY rs.<measure> <ASC|DESC>' clause.
+ */
+function get_dsstats_order_string(array $sql_order) : string {
+	$measure_choices = array_map(static fn (DsstatsMeasure $case) => $case->value, DsstatsMeasure::cases());
+
+	$measure = isset($sql_order['measure']) && is_scalar($sql_order['measure']) && CactiValidator::isValid($sql_order['measure'], [new Assert\Choice(choices: $measure_choices)])
+		? $sql_order['measure']
+		: DsstatsMeasure::Average->value;
+
+	$order = isset($sql_order['order']) && is_scalar($sql_order['order']) ? strtoupper((string) $sql_order['order']) : '';
+
+	$direction = CactiValidator::isValid($order, [new Assert\Choice(choices: ['ASC', 'DESC'])])
+		? $order
+		: 'ASC';
+
+	return 'ORDER BY rs.' . $measure . ' ' . $direction;
 }
 
 /**
