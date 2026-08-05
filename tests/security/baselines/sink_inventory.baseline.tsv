@@ -15,7 +15,7 @@ cmd_exec	./cli/splice_rrd.php:305	shell_exec(cacti_escapeshellcmd($rrdtool) . ' 
 cmd_exec	./cli/splice_rrd.php:308	shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($newrrd) . ' > ' . cacti_escapeshellarg($newxmlfile));
 cmd_exec	./cli/splice_rrd.php:921		$result      = exec($command, $output, $return_var);
 cmd_exec	./cli/update_heartbeat.php:274				$result = exec($command, $output, $return_code);
-cmd_exec	./cmd.php:351			$cactiphp = proc_open($command, $cactides, $pipes);
+cmd_exec	./cmd.php:342			$cactiphp = proc_open($command, $cactides, $pipes);
 cmd_exec	./cmd_realtime.php:127				$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 cmd_exec	./graph_realtime.php:226			shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
 cmd_exec	./host.php:203		shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
@@ -25,7 +25,7 @@ cmd_exec	./lib/database.php:2663			exec("$dump_esc $options $credentials_string 
 cmd_exec	./lib/database.php:2665			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ' version >/dev/null 2>&1', $output, $retval);
 cmd_exec	./lib/database.php:2668				exec("$dump_esc $options $credentials_string --user=" . cacti_escapeshellarg($username) . ' --password=' . cacti_escapeshellarg($password) . ' ' . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
 cmd_exec	./lib/database.php:2670				exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
-cmd_exec	./lib/dsstats.php:1247		$process = proc_open($command, $fds, $pipes);
+cmd_exec	./lib/dsstats.php:1280		$process = proc_open($command, $fds, $pipes);
 cmd_exec	./lib/functions.php:10004			$cpu_cores = shell_exec('sysctl -n hw.ncpu');
 cmd_exec	./lib/functions.php:10007				$cpu_cores = shell_exec('/usr/bin/nproc');
 cmd_exec	./lib/functions.php:10009				$cpu_cores = shell_exec('/bin/nproc');
@@ -61,7 +61,7 @@ cmd_exec	./lib/ping.php:204						$result = shell_exec('chcp 437 && ping -w ' . $
 cmd_exec	./lib/ping.php:213							$result = shell_exec('ping -6 -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg($this->host['hostname']));
 cmd_exec	./lib/ping.php:215							$result = shell_exec('ping -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg($this->host['hostname']) . ' 2>&1');
 cmd_exec	./lib/poller.php:105				$output = shell_exec($command);
-cmd_exec	./lib/poller.php:1317										$output = system($php_path . ' -l ' . $tmpfile, $exit);
+cmd_exec	./lib/poller.php:1344										$output = system($php_path . ' -l ' . $tmpfile, $exit);
 cmd_exec	./lib/poller.php:146						pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args, 'r'));
 cmd_exec	./lib/poller.php:148						pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args . ' ' . $redirect_args, 'r'));
 cmd_exec	./lib/poller.php:151					exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
@@ -77,24 +77,24 @@ cmd_exec	./lib/rrd.php:1104					$fp = popen($rrd_cmd, 'r');
 cmd_exec	./lib/rrd.php:413						$process = proc_open(read_config_option('path_rrdtool') . ' - ' . $debug, $descriptorspec, $pipes);
 cmd_exec	./lib/rrd.php:443						$output = shell_exec($full_commandline);
 cmd_exec	./lib/rrd.php:91		$process = popen($command, 'w');
-cmd_exec	./lib/rrdcheck.php:804		$process = proc_open($command, $fds, $pipes);
+cmd_exec	./lib/rrdcheck.php:837		$process = proc_open($command, $fds, $pipes);
 cmd_exec	./lib/snmp.php:208			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmp.php:308			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmp.php:403			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmpagent.php:633		// add pollers of a distributed system (future)
 cmd_exec	./lib/spikekill.php:448			$dump_output = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' 2>&1 > ' . cacti_escapeshellarg($xmlfile));
 cmd_exec	./lib/spikekill.php:798			$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
-cmd_exec	./lib/utility.php:1616							$nproc = system('nproc');
-cmd_exec	./lib/utility.php:1736			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
-cmd_exec	./lib/utility.php:1737			exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
-cmd_exec	./lib/utility.php:1738			exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
-cmd_exec	./lib/utility.php:1739			exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
-cmd_exec	./lib/utility.php:1740			exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
-cmd_exec	./lib/utility.php:1741			exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
-cmd_exec	./lib/utility.php:1776				exec('/usr/bin/free', $output, $exit_code);
-cmd_exec	./lib/utility.php:1821		$json     = shell_exec($php . ' -q ' . $php_file);
-cmd_exec	./lib/utility.php:1882		$json       = shell_exec($php . ' -q ' . $php_file);
-cmd_exec	./lib/utility.php:2009		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:1626							$nproc = system('nproc');
+cmd_exec	./lib/utility.php:1746			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
+cmd_exec	./lib/utility.php:1747			exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
+cmd_exec	./lib/utility.php:1748			exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
+cmd_exec	./lib/utility.php:1749			exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
+cmd_exec	./lib/utility.php:1750			exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
+cmd_exec	./lib/utility.php:1751			exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
+cmd_exec	./lib/utility.php:1786				exec('/usr/bin/free', $output, $exit_code);
+cmd_exec	./lib/utility.php:1831		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:1892		$json       = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:2019		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./poller_realtime.php:166	shell_exec("$command_string $extra_args");
 cmd_exec	./poller_realtime.php:252					shell_exec($command);
 cmd_exec	./poller_spikekill.php:266				$response = exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
@@ -166,9 +166,9 @@ fs_write	./install/functions.php:1561			file_put_contents(CACTI_PATH_LOG . '/' .
 fs_write	./install/functions.php:1562			file_put_contents(CACTI_PATH_LOG . '/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
 fs_write	./install/functions.php:275				$fh = fopen($file, 'w');
 fs_write	./install/functions.php:780			file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
-fs_write	./lib/api_device.php:2680							file_put_contents($new_xmlfile, $data);
-fs_write	./lib/boost.php:588								if ($fileptr = fopen($cache_file, 'rb')) {
-fs_write	./lib/boost.php:738							if ($fileptr = fopen($cache_file, 'w')) {
+fs_write	./lib/api_device.php:2682							file_put_contents($new_xmlfile, $data);
+fs_write	./lib/boost.php:611								if ($fileptr = fopen($cache_file, 'rb')) {
+fs_write	./lib/boost.php:761							if ($fileptr = fopen($cache_file, 'w')) {
 fs_write	./lib/clog_webapi.php:182					$log_fh = fopen($logfile, 'w');
 fs_write	./lib/database.php:241					file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
 fs_write	./lib/database.php:2496		file_put_contents(sys_get_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
@@ -191,9 +191,9 @@ fs_write	./lib/package.php:751		$f = fopen("compress.zlib://$tmpdir/" . clean_up
 fs_write	./lib/plugins.php:1505				file_put_contents($tmpfile, $file_data);
 fs_write	./lib/plugins.php:1629						file_put_contents($restore_path . '/' . $basefile, $output);
 fs_write	./lib/plugins.php:2325				$fh = fopen($file, 'w');
-fs_write	./lib/poller.php:1316									if (file_put_contents($tmpfile, $contents) !== false) {
-fs_write	./lib/poller.php:1323												file_put_contents($mypath, $contents);
-fs_write	./lib/poller.php:1352								file_put_contents($mypath, $contents);
+fs_write	./lib/poller.php:1343									if (file_put_contents($tmpfile, $contents) !== false) {
+fs_write	./lib/poller.php:1350												file_put_contents($mypath, $contents);
+fs_write	./lib/poller.php:1379								file_put_contents($mypath, $contents);
 fs_write	./lib/reports.php:1873			$f = fopen($fn, 'wb');
 fs_write	./lib/reports.php:1915			$f = fopen($fn, 'wb');
 fs_write	./lib/rrd.php:2911					if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
