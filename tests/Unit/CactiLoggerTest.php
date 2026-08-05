@@ -10,7 +10,12 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/lib/CactiLogger.php';
+/*
+ * Cacti\Log\CactiLogger does not exist on 1.2.x. These tests were merged
+ * without lib/CactiLogger.php, so requiring it aborted the whole Unit suite
+ * at load time. They are kept as a specification of the intended API and
+ * skipped until the helper is actually backported.
+ */
 
 test('CactiLogger falls back to cacti_log when no PSR-3 logger is set', function () {
 	// Since we can't easily capture cacti_log global output here, we ensure it doesn't crash
@@ -18,7 +23,7 @@ test('CactiLogger falls back to cacti_log when no PSR-3 logger is set', function
 	\Cacti\Log\CactiLogger::error('Testing CactiLogger error fallback');
 	
 	expect(true)->toBeTrue();
-});
+})->skip('lib/CactiLogger.php is not present on 1.2.x');
 
 test('CactiLogger can use a custom PSR-3 logger', function () {
 	$mockLogger = new class implements \Psr\Log\LoggerInterface {
@@ -37,4 +42,4 @@ test('CactiLogger can use a custom PSR-3 logger', function () {
 	
 	// Reset for other tests
 	// \Cacti\Log\CactiLogger::setLogger(null); // would need static reset helper
-});
+})->skip('lib/CactiLogger.php is not present on 1.2.x');
