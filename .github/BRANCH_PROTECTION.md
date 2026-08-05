@@ -19,6 +19,19 @@ so the change is reviewable.
 - Force-push and branch deletion are blocked.
 - No bypass actors: the rules apply to everyone, admins included.
 
+Because there is no bypass actor, `github-actions[bot]` cannot push straight to
+develop either (confirmed: the daily `Update Contributors` workflow, which
+does exactly that, has failed with `GH013: Repository rule violations` on every
+run). Any automation that needs to land a change on develop has to open a PR
+like a human contributor and wait for review.
+
+The `Security Baseline Refresh` workflow (`.github/workflows/security-baseline-refresh.yml`)
+follows this: it regenerates the three security/SQL ratchet baselines on every
+push to develop and opens or updates a PR from `ci/auto-refresh-baselines`
+instead of pushing directly. If your own PR is only blocked by one of those
+baselines, rebase onto develop once that PR merges rather than regenerating
+the baseline yourself.
+
 ## Recommended, admin-applied
 
 ### 1. Require status checks (highest priority)

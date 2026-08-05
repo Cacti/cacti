@@ -71,6 +71,9 @@ Cacti CHANGELOG
 -issue#7534: Batch-prefetch RRD field name lookups in Boost and poller output processing instead of querying per row
 -issue#7536: Consolidate the four hand-written poller_output_boost inserts into one shared helper
 -issue#7261: Parameterize aggregate_graphs.php SQL and harden reflected request values
+-issue#7343: Install wizard silently fails to advance after CSRF token expires
+-issue#7380: Batch graph-create task_item_id wiring to reduce template graph creation queries
+-issue#7518: Replace the DsstatsMeasure enum in lib/html_utility.php with const arrays for PHP 8.0 compatibility
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
@@ -239,6 +242,7 @@ Cacti CHANGELOG
 -feature: Harden authentication system correctness including 2FA logic, password reset token security, and basic auth status checks
 -feature: Extract remote agent reverse DNS forward-confirmation into the remote_agent_fcrdns_confirmed() helper
 -feature#7190: Replace PHPMailer with Symfony Mailer for native mail, sendmail, and SMTP (including OAuth2)
+-feature#7370: Allow plugins to register process tables for the technical support view
 
 1.2.x
 -issue#7212: Address a few small memory leaks in realtime graphing

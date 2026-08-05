@@ -79,11 +79,18 @@ function aggregate_build_children_url(int $local_graph_id, int $graph_start = -1
  * @return void
  */
 function api_aggregate_convert_template(array $graphs) : void {
-	$aggregate_template_id = gnrv('aggregate_template_id');
+	$aggregate_template_id = gfrv('aggregate_template_id');
 	$aggregate_template    = db_fetch_row_prepared('SELECT *
 		FROM aggregate_graph_templates
 		WHERE id = ?',
 		[$aggregate_template_id]);
+
+	// without a valid template the saves below would write null template fields
+	if (!cacti_sizeof($aggregate_template)) {
+		raise_message('aggregate_template_error', __('The selected Aggregate Template was not found! No graphs were migrated.'), MESSAGE_LEVEL_ERROR);
+
+		return;
+	}
 
 	foreach ($graphs as $graph) {
 		$save                          = [];
@@ -338,15 +345,6 @@ function aggregate_error_handler(int $errno, string $errmsg, string $filename, i
 		return true;
 	}
 
-	// define constants not available with PHP 4
-	if (!defined('E_STRICT')) {
-		define('E_STRICT', 2048);
-	}
-
-	if (!defined('E_RECOVERABLE_ERROR')) {
-		define('E_RECOVERABLE_ERROR', 4096);
-	}
-
 	if (error_reporting() == 0) {
 		return true;
 	}
@@ -365,7 +363,6 @@ function aggregate_error_handler(int $errno, string $errmsg, string $filename, i
 			E_USER_ERROR        => 'User Error',
 			E_USER_WARNING      => 'User Warning',
 			E_USER_NOTICE       => 'User Notice',
-			E_STRICT            => 'Runtime Notice',
 			E_RECOVERABLE_ERROR => 'Catchable Fatal Error'
 		];
 
