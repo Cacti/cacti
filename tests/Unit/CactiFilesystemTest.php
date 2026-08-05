@@ -10,7 +10,12 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/lib/CactiFilesystem.php';
+/*
+ * Cacti\Filesystem\CactiFilesystem does not exist on 1.2.x. This test was
+ * merged without lib/CactiFilesystem.php, so requiring it aborted the whole
+ * Unit suite at load time. It is kept as a specification of the intended API
+ * and skipped until the helper is actually backported.
+ */
 
 test('CactiFilesystem operations work correctly', function () {
 	$temp_dir = sys_get_temp_dir() . '/cacti_fs_test_' . mt_rand();
@@ -25,4 +30,4 @@ test('CactiFilesystem operations work correctly', function () {
 	
 	\Cacti\Filesystem\CactiFilesystem::remove($temp_dir);
 	expect(\Cacti\Filesystem\CactiFilesystem::exists($temp_dir))->toBeFalse();
-});
+})->skip('lib/CactiFilesystem.php is not present on 1.2.x');

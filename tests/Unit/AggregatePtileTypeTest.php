@@ -30,7 +30,10 @@
  */
 
 require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 2) . '/include/global.php';
+
+// Only AGGREGATE_TOTAL_TYPE_* is needed here. global.php opens a database
+// connection and aborts the whole suite when one is not available.
+require_once dirname(__DIR__, 2) . '/include/global_constants.php';
 
 /**
  * Mimics the text_format :current: / :max: replacement logic from
