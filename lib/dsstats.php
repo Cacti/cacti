@@ -1160,17 +1160,50 @@ function dsstats_boost_bottom() : void {
 		set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', time()));
 
 		// run the daily stats
-		dsstats_launch_children('bmaster');
+		$expected_children = dsstats_launch_children('bmaster');
 
-		// Wait for all processes to continue
-		while ($running = dsstats_processes_running('bmaster')) {
-			dsstats_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
-			sleep(2);
-		}
+		dsstats_wait_for_children('bmaster', $expected_children);
 
 		dsstats_get_and_store_ds_avgpeak_values('daily', 'child', 1);
 
 		dsstats_log_statistics('DAILY');
+	}
+}
+
+/**
+ * dsstats_wait_for_children - waits for launched dsstats children of the given
+ * type to finish. exec_background() is non-blocking, so a bare
+ * `while (dsstats_processes_running($type))` can observe zero registered
+ * children before any of them have started, mistaking "not started yet" for
+ * "already done" and returning immediately -- the same startup race Boost's
+ * boost_all_children_registered() barrier was added to close (see
+ * poller_boost.php). This applies the same shape: wait for the running count
+ * to reach the launched count before trusting it can fall back to zero.
+ *
+ * @param string $type              The process type (e.g. 'bmaster')
+ * @param int    $expected_children Number of children dsstats_launch_children() launched
+ *
+ * @return void
+ */
+function dsstats_wait_for_children(string $type, int $expected_children) : void {
+	if ($expected_children <= 0) {
+		return;
+	}
+
+	$startup_deadline = time() + 30;
+
+	while (dsstats_processes_running($type) < $expected_children && time() < $startup_deadline) {
+		sleep(1);
+	}
+
+	if (dsstats_processes_running($type) < $expected_children) {
+		cacti_log(sprintf('WARNING: DSStats startup barrier timed out; %d of %d %s children registered before draining.', dsstats_processes_running($type), $expected_children, $type), false, 'DSSTATS');
+	}
+
+	// Wait for all processes to continue
+	while ($running = dsstats_processes_running($type)) {
+		dsstats_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
+		sleep(2);
 	}
 }
 
@@ -1333,9 +1366,9 @@ function dsstats_rrdtool_close(array $rrd_process) : void {
  *
  * @param string $type The process type
  *
- * @return void
+ * @return int The number of children launched
  */
-function dsstats_launch_children(string $type) : void {
+function dsstats_launch_children(string $type) : int {
 	global $debug;
 
 	$processes = read_config_option('dsstats_parallel');
@@ -1359,6 +1392,8 @@ function dsstats_launch_children(string $type) : void {
 	}
 
 	sleep(2);
+
+	return (int) $processes;
 }
 
 /**

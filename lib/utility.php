@@ -140,7 +140,9 @@ function update_poller_cache_from_query(int $host_id, int $data_query_id, array 
 
 	if (cacti_sizeof($poller_data)) {
 		foreach ($poller_data as $data) {
-			$poller_items     = array_merge($poller_items, update_poller_cache($data));
+			// every row here shares $host_id, so the poller_id computed once above
+			// applies to all of them; no need for update_poller_cache() to re-derive it
+			$poller_items     = array_merge($poller_items, update_poller_cache($data, false, $poller_id));
 			$local_data_ids[] = $data['id'];
 			$i++;
 
@@ -162,7 +164,7 @@ function update_poller_cache_from_query(int $host_id, int $data_query_id, array 
 	}
 }
 
-function update_poller_cache(mixed $data_source, bool $commit = false) : array {
+function update_poller_cache(mixed $data_source, bool $commit = false, ?int $poller_id = null) : array {
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 	include_once(CACTI_PATH_LIBRARY . '/api_poller.php');
 
@@ -186,12 +188,17 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 		return $poller_items;
 	}
 
-	$poller_id = db_fetch_cell_prepared('SELECT poller_id
-		FROM host AS h
-		INNER JOIN data_local AS dl
-		ON h.id = dl.host_id
-		WHERE dl.id = ?',
-		[$data_source['id']]);
+	// callers that already know the poller_id (via an explicit argument, or a
+	// 'poller_id' key on an array $data_source they joined against host themselves)
+	// can skip this per-row lookup entirely
+	if ($poller_id === null) {
+		$poller_id = $data_source['poller_id'] ?? db_fetch_cell_prepared('SELECT poller_id
+			FROM host AS h
+			INNER JOIN data_local AS dl
+			ON h.id = dl.host_id
+			WHERE dl.id = ?',
+			[$data_source['id']]);
+	}
 
 	$data_input = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
 		di.id, di.type_id, dtd.id AS data_template_data_id,
@@ -954,6 +961,9 @@ function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_
 			// create a new compatible structure
 			$data       = $data_source;
 			$data['id'] = $data['local_data_id'];
+
+			// $host was already looked up above for this data source's host_id
+			$data['poller_id'] = $host['poller_id'];
 
 			$poller_items = array_merge($poller_items, update_poller_cache($data));
 		}

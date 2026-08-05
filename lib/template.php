@@ -1573,9 +1573,31 @@ function data_source_to_data_template(int $local_data_id, string $data_source_ti
 			[get_hash_data_template($items[$j]['id'], 'data_template_item'), $items[$j]['id']]);
 	}
 
+	// resolve the owning poller before the data_local row (needed for the
+	// join) is deleted below
+	$poller_id = db_fetch_cell_prepared('SELECT h.poller_id
+		FROM data_local AS dl
+		INNER JOIN host AS h
+		ON h.id = dl.host_id
+		WHERE dl.id = ?',
+		[$local_data_id]);
+
 	// delete the old graph local entry
 	db_execute_prepared('DELETE FROM data_local WHERE id = ?', [$local_data_id]);
-	db_execute_prepared('DELETE FROM poller_item WHERE local_data_id= ?', [$local_data_id]);
+
+	poller_item_delete_for_data_source($local_data_id);
+
+	if ($poller_id > 1) {
+		if (remote_poller_up($poller_id)) {
+			if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+				poller_item_delete_for_data_source($local_data_id, $rcnn_id, false);
+			} else {
+				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+			}
+		} else {
+			raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+		}
+	}
 }
 
 /**

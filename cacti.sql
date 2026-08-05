@@ -2562,8 +2562,8 @@ CREATE TABLE `poller_output_boost` (
 CREATE TABLE `poller_output_boost_local_data_ids` (
   `local_data_id` int(10) unsigned NOT NULL default 0,
   `process_handler` int(10) unsigned default 0,
-  PRIMARY KEY (`local_data_id`),
-  KEY `process_handler` (`process_handler`)
+  PRIMARY KEY USING BTREE (`local_data_id`),
+  KEY `process_handler` USING BTREE (`process_handler`)
 ) ENGINE=MEMORY;
 
 --

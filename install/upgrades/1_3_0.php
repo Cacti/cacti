@@ -88,6 +88,41 @@ function upgrade_to_1_3_0() : void {
 
 	db_install_add_key('poller_output_boost', 'INDEX', 'time', ['time']);
 
+	// poller_output_boost_local_data_ids is a MEMORY table; its indexes default
+	// to HASH unless USING BTREE is specified. Range/ORDER BY access against
+	// local_data_id (boost_output_rrd_data(), boost_process_local_data_ids())
+	// can't use a HASH index, forcing a filesort on every boost worker pass.
+	// db_install_add_key() only compares index columns, not algorithm, so an
+	// existing HASH index with matching columns would be skipped; check
+	// INDEX_TYPE directly and rebuild only when it isn't already BTREE.
+	if (db_table_exists('poller_output_boost_local_data_ids')) {
+		$index_type = db_fetch_cell("SELECT INDEX_TYPE
+			FROM information_schema.STATISTICS
+			WHERE TABLE_SCHEMA = SCHEMA()
+			AND TABLE_NAME = 'poller_output_boost_local_data_ids'
+			AND INDEX_NAME = 'PRIMARY'
+			LIMIT 1");
+
+		if ($index_type != '' && $index_type != 'BTREE') {
+			db_install_execute('ALTER TABLE poller_output_boost_local_data_ids
+				DROP PRIMARY KEY,
+				ADD PRIMARY KEY USING BTREE (local_data_id)');
+		}
+
+		$index_type = db_fetch_cell("SELECT INDEX_TYPE
+			FROM information_schema.STATISTICS
+			WHERE TABLE_SCHEMA = SCHEMA()
+			AND TABLE_NAME = 'poller_output_boost_local_data_ids'
+			AND INDEX_NAME = 'process_handler'
+			LIMIT 1");
+
+		if ($index_type != '' && $index_type != 'BTREE') {
+			db_install_execute('ALTER TABLE poller_output_boost_local_data_ids
+				DROP INDEX process_handler,
+				ADD INDEX process_handler USING BTREE (process_handler)');
+		}
+	}
+
 	db_install_add_column('host_snmp_query', ['name' => 'reindex_last_runtime', 'type' => 'timestamp', 'null' => false, 'default' => 'CURRENT_TIMESTAMP']);
 	db_install_add_column('host_snmp_query', ['name' => 'reindex_last_duration', 'type' => 'double', 'unsigned' => true, 'null' => false, 'default' => '0']);
 

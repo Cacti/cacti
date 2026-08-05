@@ -730,16 +730,49 @@ function rrdcheck_boost_bottom() : void {
 		set_config_option('rrdcheck_last_run_time', time());
 
 		// run the daily stats
-		rrdcheck_launch_children('bmaster');
+		$expected_children = rrdcheck_launch_children('bmaster');
 
-		// Wait for all processes to continue
-		while ($running = rrdcheck_processes_running('bmaster')) {
-			rrdcheck_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
-
-			sleep(2);
-		}
+		rrdcheck_wait_for_children('bmaster', $expected_children);
 
 		rrdcheck_log_statistics('BOOST');
+	}
+}
+
+/**
+ * rrdcheck_wait_for_children - waits for launched rrdcheck children of the given
+ * type to finish. exec_background() is non-blocking, so a bare
+ * `while (rrdcheck_processes_running($type))` can observe zero registered
+ * children before any of them have started, mistaking "not started yet" for
+ * "already done" and returning immediately -- the same startup race Boost's
+ * boost_all_children_registered() barrier was added to close (see
+ * poller_boost.php). This applies the same shape: wait for the running count
+ * to reach the launched count before trusting it can fall back to zero.
+ *
+ * @param string $type              The process type (e.g. 'bmaster')
+ * @param int    $expected_children Number of children rrdcheck_launch_children() launched
+ *
+ * @return void
+ */
+function rrdcheck_wait_for_children(string $type, int $expected_children) : void {
+	if ($expected_children <= 0) {
+		return;
+	}
+
+	$startup_deadline = time() + 30;
+
+	while (rrdcheck_processes_running($type) < $expected_children && time() < $startup_deadline) {
+		sleep(1);
+	}
+
+	if (rrdcheck_processes_running($type) < $expected_children) {
+		cacti_log(sprintf('WARNING: rrdcheck startup barrier timed out; %d of %d %s children registered before draining.', rrdcheck_processes_running($type), $expected_children, $type), false, 'RRDCHECK');
+	}
+
+	// Wait for all processes to continue
+	while ($running = rrdcheck_processes_running($type)) {
+		rrdcheck_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
+
+		sleep(2);
 	}
 }
 
@@ -897,9 +930,9 @@ function rrdcheck_rrdtool_close($process) : int {
  *
  * @param string $type The process type
  *
- * @return void
+ * @return int The number of children launched
  */
-function rrdcheck_launch_children(string $type) : void {
+function rrdcheck_launch_children(string $type) : int {
 	global $debug;
 
 	$processes = read_config_option('rrdcheck_parallel');
@@ -923,6 +956,8 @@ function rrdcheck_launch_children(string $type) : void {
 	}
 
 	sleep(2);
+
+	return (int) $processes;
 }
 
 /**

@@ -537,8 +537,32 @@ function run_data_query(int $host_id, int $snmp_query_id, bool $automation = fal
  */
 function data_query_remove_disabled_items(array $orphaned_ids) : void {
 	if (cacti_sizeof($orphaned_ids)) {
-		db_execute_prepared('DELETE FROM poller_item
-			WHERE local_data_id IN (' . implode(', ', $orphaned_ids) . ')');
+		// resolve which pollers currently hold these items before the local
+		// delete removes the rows we'd need to look that up from
+		$poller_ids = array_rekey(
+			db_fetch_assoc_prepared('SELECT DISTINCT poller_id
+				FROM poller_item
+				WHERE local_data_id IN (' . implode(', ', $orphaned_ids) . ')'),
+			'poller_id', 'poller_id'
+		);
+
+		poller_item_delete_for_data_source($orphaned_ids);
+
+		if (cacti_sizeof($poller_ids)) {
+			foreach ($poller_ids as $poller_id) {
+				if ($poller_id > 1) {
+					if (remote_poller_up($poller_id)) {
+						if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+							poller_item_delete_for_data_source($orphaned_ids, $rcnn_id, false);
+						} else {
+							raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+						}
+					} else {
+						raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					}
+				}
+			}
+		}
 
 		db_execute_prepared('DELETE FROM poller_output_boost
 			WHERE local_data_id IN (' . implode(', ', $orphaned_ids) . ')');
@@ -2140,12 +2164,24 @@ function update_data_query_cache(int $host_id, int $data_query_id) : void {
 		[$host_id, $data_query_id]);
 
 	if (cacti_sizeof($data_sources) > 0) {
+		// every row here shares $host_id, so there's a single poller_id boundary
+		// for the whole loop; accumulate and flush once instead of committing
+		// the poller cache write (present/insert/delete) per changed row
+		$poller_id        = db_fetch_cell_prepared('SELECT poller_id FROM host WHERE id = ?', [$host_id]);
+		$poller_items     = [];
+		$changed_data_ids = [];
+
 		foreach ($data_sources as $data_source) {
 			$changed = update_data_source_data_query_cache($data_source['id'], $host_id, $data_query_id, $data_source['snmp_index']);
 
 			if ($changed) {
-				update_poller_cache($data_source, true);
+				$changed_data_ids[] = $data_source['id'];
+				$poller_items       = array_merge($poller_items, update_poller_cache($data_source, false, $poller_id));
 			}
+		}
+
+		if (cacti_sizeof($changed_data_ids)) {
+			poller_update_poller_cache_from_buffer($changed_data_ids, $poller_items, $poller_id);
 		}
 	}
 
