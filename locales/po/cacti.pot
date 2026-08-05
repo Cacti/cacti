@@ -7045,6 +7045,14 @@ msgstr ""
 msgid "There is an Installation or Upgrade in progress."
 msgstr ""
 
+#: include/csrf.php:55
+msgid "Session Expired"
+msgstr ""
+
+#: include/csrf.php:56
+msgid "Your installer session expired due to inactivity. Reload the installer and try again."
+msgstr ""
+
 #: include/global.php:650
 msgid "The Main Data Collector has returned to an Online Status"
 msgstr ""

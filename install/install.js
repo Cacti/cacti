@@ -633,7 +633,42 @@ function setAddressBar(data, replace) {
 	}
 }
 
-function performStep(installStep, suppressRefresh, forceReload) {
+function refreshCsrfMagicToken(data) {
+	if (typeof data == 'object' &&
+		data !== null &&
+		typeof data.csrfMagicToken == 'string' &&
+		data.csrfMagicToken != '') {
+		csrfMagicToken = data.csrfMagicToken;
+		delete data.csrfMagicToken;
+
+		return true;
+	}
+
+	return false;
+}
+
+function handleCsrfTimeout(data, retryAttempted, retryCallback) {
+	if (typeof data.responseJSON == 'object' &&
+		data.responseJSON !== null &&
+		data.responseJSON.error == 'csrf_timeout') {
+		var response = data.responseJSON;
+		var tokenRefreshed = refreshCsrfMagicToken(response);
+
+		if (!retryAttempted && tokenRefreshed) {
+			retryCallback();
+		} else {
+			$('#installContent').removeClass('cactiInstallLoaderBlur');
+			$('#installLoader').hide();
+			PopupError(response.message, response.title);
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+function performStep(installStep, suppressRefresh, forceReload, csrfRetry) {
 	$.ajaxQ.abortAll();
 
 	if (!suppressRefresh) {
@@ -647,6 +682,7 @@ function performStep(installStep, suppressRefresh, forceReload) {
 
 	$.post(url, installJson)
 		.done(function(data) {
+			refreshCsrfMagicToken(data);
 			checkForLogout(data);
 
 			$('#installLoader').hide();
@@ -750,6 +786,12 @@ function performStep(installStep, suppressRefresh, forceReload) {
 			});
 		})
 		.fail(function(data) {
+			if (handleCsrfTimeout(data, csrfRetry, function() {
+				performStep(installStep, suppressRefresh, forceReload, true);
+			})) {
+				return;
+			}
+
 			$('#installContent').removeClass('cactiInstallLoaderBlur');
 			$('#installLoader').hide();
 			getPresentHTTPError(data);
@@ -757,7 +799,7 @@ function performStep(installStep, suppressRefresh, forceReload) {
 	);
 }
 
-function performTestConnection() {
+function performTestConnection(csrfRetry) {
 	$.ajaxQ.abortAll();
 
 	$('#installContent').addClass('cactiInstallLoaderBlur');
@@ -773,6 +815,7 @@ function performTestConnection() {
 
 	$.post(url, installJson)
 		.done(function(data) {
+			refreshCsrfMagicToken(data);
 			checkForLogout(data);
 
 			$('#installLoader').hide();
@@ -797,6 +840,12 @@ function performTestConnection() {
 			}
 		})
 		.fail(function(data) {
+			if (handleCsrfTimeout(data, csrfRetry, function() {
+				performTestConnection(true);
+			})) {
+				return;
+			}
+
 			$('#installContent').removeClass('cactiInstallLoaderBlur');
 			$('#installLoader').hide();
 			getPresentHTTPError(data);

@@ -452,7 +452,7 @@ header_redirect	./include/auth.php:226					header('Location: ' . CACTI_PATH_URL 
 header_redirect	./include/auth.php:56		header('Location: ' . CACTI_PATH_URL . 'install/');
 header_redirect	./include/auth.php:77			header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?ref=' . rawurlencode(validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php')));
 header_redirect	./include/content/index.php:25	header('Location:../index.php');
-header_redirect	./include/csrf.php:49		header('Location: ' . sanitize_uri($_SERVER['REQUEST_URI']));
+header_redirect	./include/csrf.php:80		header('Location: ' . sanitize_uri($_SERVER['REQUEST_URI']));
 header_redirect	./include/fa/css/index.php:25	header('Location:../index.php');
 header_redirect	./include/fa/index.php:25	header('Location:../index.php');
 header_redirect	./include/fa/js/index.php:25	header('Location:../index.php');
