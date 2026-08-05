@@ -210,7 +210,7 @@ if ($config['connection'] == 'online') {
 $poller_interval = read_config_option('poller_interval');
 
 // retrieve the last time the poller ran
-$poller_lastrun  = read_config_option('poller_lastrun_' . $poller_id);
+$poller_lastrun  = intval(read_config_option('poller_lastrun_' . $poller_id));
 
 // collect the system mibs every 4 hours
 if (intdiv($current_time, 14400) !== intdiv($poller_lastrun, 14400)) {
