@@ -79,7 +79,7 @@ function aggregate_build_children_url(int $local_graph_id, int $graph_start = -1
  * @return void
  */
 function api_aggregate_convert_template(array $graphs) : void {
-	$aggregate_template_id = (int) gnrv('aggregate_template_id');
+	$aggregate_template_id = gfrv('aggregate_template_id');
 	$aggregate_template    = db_fetch_row_prepared('SELECT *
 		FROM aggregate_graph_templates
 		WHERE id = ?',
