@@ -42,8 +42,10 @@ Cacti CHANGELOG
 -issue#6258: Rename 'Data' to 'Data/Statistics' per customer request
 -issue#6545: Add 30 and 60 second timeout options for Remote Agent and Poller settings
 -issue#6573: Create new device_change_javascript hook for THOLD plugin by xmacan
+-issue#6598: Improve PHP 8 support by TheWitness
 -issue#6669: Show on the Technical Support page whether php-snmp is in use or disabled by $php_snmp_support
 -issue#6682: Fix column exclusion silently skipping first element due to loose array_search comparison
+-issue#6706: Some hosts may show as down incorrectly by xmacan
 -issue#6742: Fix loose $db_conn comparison in db_table_exists and db_column_exists
 -issue#6760: Harden link.php: apply sanitize_uri() to HTTP_REFERER before redirect
 -issue#6761: Harden auth_changepassword.php: apply sanitize_uri() to HTTP_REFERER in all redirect paths
