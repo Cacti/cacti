@@ -140,6 +140,10 @@ function upgrade_to_1_3_0() : void {
 	// remove all the legacy debounce entries
 	db_install_execute('DELETE FROM settings WHERE name LIKE "debounce_%" AND value > 0');
 
+	// the Automatically Trust Signer control is gone; a Package key is only
+	// trusted through the accept action now
+	db_install_execute('DELETE FROM settings WHERE name = "trust_signer"');
+
 	$data               = [];
 	$data['columns'][]  = ['name' => 'plugin', 'type' => 'varchar(32)', 'NULL' => false, 'default' => ''];
 	$data['columns'][]  = ['name' => 'description', 'type' => 'varchar(128)', 'NULL' => false, 'default' => ''];

@@ -70,6 +70,7 @@ Cacti CHANGELOG
 -issue#7533: Skip the UNION ALL derived table wrapper in Boost's flush query when only one archive table exists
 -issue#7534: Batch-prefetch RRD field name lookups in Boost and poller output processing instead of querying per row
 -issue#7536: Consolidate the four hand-written poller_output_boost inserts into one shared helper
+-issue#7261: Parameterize aggregate_graphs.php SQL and harden reflected request values
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors

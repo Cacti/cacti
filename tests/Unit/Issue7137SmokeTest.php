@@ -37,12 +37,15 @@ test('every touched file passes a syntactic shebang/PHP-tag check', function () 
 	}
 });
 
-test('the four form_save inits are present and precede their empty() consumers', function () use ($repoRoot) {
+test('the four form_save inits are present and precede their null-fallback consumers', function () use ($repoRoot) {
+	/* #7317 and #7348 retyped the sql_save() result from '' to null, so the
+	 * redirect fallback now tests === null rather than empty().  The init
+	 * still has to reach the fallback on every path through form_save(). */
 	$cases = [
-		'aggregate_graphs.php' => ['$graph_template_item_id = 0;', 'empty($graph_template_item_id)'],
-		'color_templates.php'  => ['$color_template_item_id = 0;', 'empty($color_template_item_id)'],
-		'graph_templates.php'  => ['$graph_template_item_id = 0;', 'empty($graph_template_item_id)'],
-		'graphs.php'           => ['$graph_template_item_id = 0;', 'empty($graph_template_item_id)'],
+		'aggregate_graphs.php' => ['$graph_template_item_id = 0;', '$graph_template_item_id === null'],
+		'color_templates.php'  => ['$color_template_item_id = 0;', '$color_template_item_id === null'],
+		'graph_templates.php'  => ['$graph_template_item_id = 0;', '$graph_template_item_id === null'],
+		'graphs.php'           => ['$graph_template_item_id = 0;', '$graph_template_item_id === null'],
 	];
 	foreach ($cases as $rel => [$init, $consumer]) {
 		$src       = file_get_contents("$repoRoot/$rel");

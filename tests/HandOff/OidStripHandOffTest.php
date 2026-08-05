@@ -120,34 +120,59 @@ describe('OID strip hand-off pipeline', function () {
 		});
 	});
 
-	describe('single-.0 boundary: conservative gate', function () use ($defaultRegex) {
-		it('detection returns false when every OID ends in a single .0', function () use ($defaultRegex) {
-			// Every OID ends in exactly one .0, so the regex captures '0'
-			// for every row.  This is the ambiguous case the gate guards
-			// against: we cannot tell a scalar-style trailing .0 apart from
-			// a real trailing-zero pad without more rows of evidence.
+	describe('single-.0 boundary: gated on unique stripped indexes', function () use ($defaultRegex, $parseLastOctet) {
+		it('detection returns true when single-.0 padding resolves to unique indexes', function () use ($defaultRegex, $parseLastOctet) {
+			// Every OID ends in exactly one .0, so the default regex captures
+			// '0' for every row -- all three rows collapse onto one index.
+			// That collapse is the bug, and a single pad octet is enough to
+			// cause it, so the gate must repair this walk too.
 			$snmp_indexes = [
 				'.1.3.6.1.2.1.2.2.1.1.1.0' => 'eth0',
 				'.1.3.6.1.2.1.2.2.1.1.2.0' => 'eth1',
 				'.1.3.6.1.2.1.2.2.1.1.3.0' => 'lo0',
 			];
 
-			// The conservative gate: detection must NOT enable stripping
-			// when only a single .0 is present, because the production
-			// caller treats the detection helper's verdict as final.
+			expect(oid_index_should_strip_trailing_zero_padding($snmp_indexes, $defaultRegex))->toBeTrue();
+
+			$stripped = oid_index_strip_trailing_zero_padding($snmp_indexes);
+
+			// No row may be merged or dropped by the rewrite.
+			expect($stripped)->toHaveCount(count($snmp_indexes))
+				->and(array_values($stripped))->toBe(['eth0', 'eth1', 'lo0']);
+
+			$indexes = $parseLastOctet($stripped, $defaultRegex);
+
+			expect(array_values($indexes))->toBe(['1', '2', '3'])
+				->and(array_unique(array_values($indexes)))->toHaveCount(3);
+		});
+
+		it('detection returns false when single-.0 stripping leaves duplicate indexes', function () use ($defaultRegex) {
+			// Stripping produces two distinct keys, so the helper's own
+			// collision guard does not fire, but both stripped OIDs parse to
+			// index '5'.  Rewriting here would cross-wire two rows onto one
+			// data query index, so detection has to refuse.
+			$snmp_indexes = [
+				'.1.2.3.5.0' => 'first',
+				'.1.9.9.5.0' => 'second',
+			];
+
+			expect(oid_index_strip_trailing_zero_padding($snmp_indexes))->not->toBe($snmp_indexes);
+
 			expect(oid_index_should_strip_trailing_zero_padding($snmp_indexes, $defaultRegex))->toBeFalse();
 		});
 
-		it('strip helper, called directly with single-.0 input, is identity', function () {
-			// Even if the strip helper were invoked outside the gate, it
-			// must not mangle single-.0 input.  This locks in the helper's
-			// own conservative behaviour as a defence in depth.
+		it('strip helper, called directly with single-.0 input, strips and keeps every row', function () {
 			$snmp_indexes = [
 				'.1.3.6.1.2.1.2.2.1.1.1.0' => 'eth0',
 				'.1.3.6.1.2.1.2.2.1.1.2.0' => 'eth1',
 			];
 
-			expect(oid_index_strip_trailing_zero_padding($snmp_indexes))->toBe($snmp_indexes);
+			$stripped = oid_index_strip_trailing_zero_padding($snmp_indexes);
+
+			expect($stripped)->toBe([
+				'.1.3.6.1.2.1.2.2.1.1.1' => 'eth0',
+				'.1.3.6.1.2.1.2.2.1.1.2' => 'eth1',
+			]);
 		});
 	});
 
