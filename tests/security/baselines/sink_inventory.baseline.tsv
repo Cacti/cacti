@@ -108,9 +108,12 @@ cmd_exec	./snmpagent_mibcache.php:56			exec($php . ' ' . $extra_args . ' > /dev/
 cmd_exec	./snmpagent_persist.php:83		pclose(popen('start "CactiSNMPCache" /I /B ' . $php . ' ' . $extra_args, 'r'));
 cmd_exec	./snmpagent_persist.php:85		exec('ps -ef | grep -v grep | grep -v "sh -c" | grep snmpagent_mibcache.php', $output);
 cmd_exec	./snmpagent_persist.php:88			exec($php . ' ' . $extra_args . ' > /dev/null &');
-cmd_exec	./support.php:1133				exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
-cmd_exec	./support.php:1151			$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
-cmd_exec	./support.php:1174			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
+cmd_exec	./support.php:1311				exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
+cmd_exec	./support.php:1333			$snmp_version   = (string) shell_exec(cacti_escapeshellcmd($snmpget_path) . ' -V 2>&1');
+cmd_exec	./support.php:1358			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
+cmd_exec	./support.php:2022			$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions');
+cmd_exec	./support.php:2103					$out     = shell_exec(cacti_escapeshellarg($path) . ' ' . $arg . ' 2>&1');
+cmd_exec	./support.php:2108					print '<td>' . tech_env_status(DB_STATUS_WARNING, __('Version unavailable: shell_exec() is disabled')) . '</td>';
 deserialize	./lib/functions.php:5319				$items = unserialize($unstripped, ['allowed_classes' => false]);
 deserialize	./lib/functions.php:5359				$items = unserialize($unstripped, ['allowed_classes' => false]);
 deserialize	./lib/functions.php:9990		return unserialize($strobj, ['allowed_classes' => false]);
@@ -210,6 +213,7 @@ fs_write	./scripts/ss_net_snmp_disk_bytes.php:288				file_put_contents("$tmpdir/
 fs_write	./scripts/ss_net_snmp_disk_io.php:289				file_put_contents("$tmpdir/$tmpfile", $data);
 fs_write	./snmpagent_mibcachechild.php:90		$lock = fopen($path_mibcache_lock, 'w');
 fs_write	./snmpagent_mibcachechild.php:94			file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
+fs_write	./support.php:2219		$fp = @fopen($file, 'rb');
 fs_write	./templates_import.php:63				$fp       = fopen($_FILES['import_file']['tmp_name'],'r');
 fs_write	./utilities.php:191				$log_fh = fopen($logfile, 'w');
 header_redirect	./aggregate_graphs.php:1094			header('Location: ' . $referer);
@@ -606,7 +610,8 @@ header_redirect	./settings.php:1666			header('Location: settings.php?header=fals
 header_redirect	./settings.php:1668			header('Location: settings.php?tab=' . grv('tab'));
 header_redirect	./sites.php:280			header('Location: sites.php?action=edit&id=' . (empty($site_id) ? gnrv('id') : $site_id));
 header_redirect	./sites.php:393			header('Location: sites.php');
-header_redirect	./support.php:64		header('Location: support.php?tab=summary');
+header_redirect	./support.php:58			header('Location: support.php?tab=summary');
+header_redirect	./support.php:92		header('Location: support.php?tab=summary');
 header_redirect	./templates_export.php:72					header('Location: templates_export.php');
 header_redirect	./templates_import.php:118				header('Location: templates_import.php');
 header_redirect	./templates_import.php:67				header('Location: templates_import.php');

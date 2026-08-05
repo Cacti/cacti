@@ -66,6 +66,13 @@ foreach ($files as $file) {
 		continue;
 	}
 
+	/* The guard protects product code.  Test fixtures legitimately assign
+	   request superglobals and embed inline patterns to exercise the code
+	   under test, so the tests tree is out of scope. */
+	if (str_starts_with(preg_replace('#^\./#', '', $file), 'tests/')) {
+		continue;
+	}
+
 	$lines = file($file, FILE_IGNORE_NEW_LINES);
 
 	if ($lines === false) {

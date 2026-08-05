@@ -108,9 +108,12 @@ cmd_exec	./snmpagent_mibcache.php:56			exec($php . ' ' . $extra_args . ' > /dev/
 cmd_exec	./snmpagent_persist.php:83		pclose(popen('start "CactiSNMPCache" /I /B ' . $php . ' ' . $extra_args, 'r'));
 cmd_exec	./snmpagent_persist.php:85		exec('ps -ef | grep -v grep | grep -v "sh -c" | grep snmpagent_mibcache.php', $output);
 cmd_exec	./snmpagent_persist.php:88			exec($php . ' ' . $extra_args . ' > /dev/null &');
-cmd_exec	./support.php:1133				exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
-cmd_exec	./support.php:1151			$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
-cmd_exec	./support.php:1174			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
+cmd_exec	./support.php:1311				exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
+cmd_exec	./support.php:1333			$snmp_version   = (string) shell_exec(cacti_escapeshellcmd($snmpget_path) . ' -V 2>&1');
+cmd_exec	./support.php:1358			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
+cmd_exec	./support.php:2022			$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions');
+cmd_exec	./support.php:2103					$out     = shell_exec(cacti_escapeshellarg($path) . ' ' . $arg . ' 2>&1');
+cmd_exec	./support.php:2108					print '<td>' . tech_env_status(DB_STATUS_WARNING, __('Version unavailable: shell_exec() is disabled')) . '</td>';
 dynamic_include	./cli/audit_database.php:232							require_once($plugin . '/setup.php');
 dynamic_include	./cli/audit_database.php:235								require_once($plugin . '/includes/database.php');
 dynamic_include	./cli/upgrade_database.php:152			include($upgrade_file);
@@ -132,5 +135,5 @@ dynamic_include	./snmpagent_persist.php:177				require($path_mibcache);
 host_header	./include/global.php:580			if (!cacti_is_https() && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
 host_header	./include/global.php:581				header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 host_header	./lib/auth.php:4998				$result['link']   = \Sonata\GoogleAuthenticator\GoogleQrUrl::generate($current_user['username'] . '@' . $_SERVER['HTTP_HOST'], $current_user['tfa_secret'], 'Cacti');
-host_header	./lib/html_utility.php:1581		if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '') {
-host_header	./lib/html_utility.php:1582			$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
+host_header	./lib/html_utility.php:1587		if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '') {
+host_header	./lib/html_utility.php:1588			$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
