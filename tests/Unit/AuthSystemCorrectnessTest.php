@@ -102,7 +102,25 @@ test('remote agent authorization fails closed on fcrdns mismatch', function () u
 });
 
 test('basic authentication does not trust a client-supplied forwarded user header', function () use ($root) {
-	$auth = file_get_contents($root . '/lib/auth.php');
+	$auth  = file_get_contents($root . '/lib/auth.php');
+	$start = strpos($auth, 'function get_basic_auth_username()');
+	$body  = substr($auth, $start, strpos($auth, "\n}\n", $start) - $start);
 
-	expect($auth)->not->toContain('HTTP_X_FORWARDED_USER');
+	expect($auth)->toContain('function is_trusted_proxy() : bool')
+		->and($body)->toContain('$trusted = is_trusted_proxy();');
+
+	// HTTP_-prefixed server vars are built from request headers, so every read of
+	// one has to sit behind the trusted-proxy gate or an unauthenticated client
+	// can name whichever account it likes.
+	preg_match_all('/\$_SERVER\[\'(HTTP_[A-Z_]+)\'\]/', $body, $vars);
+
+	foreach (array_unique($vars[1]) as $var) {
+		expect($body)->toContain('$trusted && isset($_SERVER[\'' . $var . '\'])');
+	}
+
+	preg_match_all('/isset\(\$_SERVER\[\'HTTP_[A-Z_]+\'\]\)/', $body, $reads, PREG_OFFSET_CAPTURE);
+
+	foreach ($reads[0] as $read) {
+		expect(substr($body, 0, $read[1]))->toEndWith('$trusted && ');
+	}
 });

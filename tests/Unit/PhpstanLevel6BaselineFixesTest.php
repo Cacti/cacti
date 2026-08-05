@@ -109,15 +109,16 @@ test('graphs.php save_component_item branch initialises $graph_template_item_id'
 	expect($initPos < $foreachPos)->toBeTrue('init must precede the items foreach');
 });
 
-test('the empty() fallback in the error-redirect URL still uses the variable', function () use ($sources) {
-	/* The init is a no-op if the redirect ever stops calling empty() on
-	 * the variable. Guard the call site so this PR does not silently
-	 * regress to a different shape. */
+test('the null fallback in the error-redirect URL still uses the variable', function () use ($sources) {
+	/* The init is a no-op if the redirect ever stops reading the variable.
+	 * Guard the call site so this PR does not silently regress to a
+	 * different shape.  #7317 and #7348 moved the sentinel from '' to null,
+	 * so the test is === null rather than empty(). */
 	$expected = [
-		'aggregate_graphs.php' => '(empty($graph_template_item_id) ? gfrv(\'graph_template_item_id\') : $graph_template_item_id)',
-		'color_templates.php'  => '(empty($color_template_item_id) ? gnrv(\'color_template_item_id\') : $color_template_item_id)',
-		'graph_templates.php'  => '(empty($graph_template_item_id) ? gnrv(\'graph_template_item_id\') : $graph_template_item_id)',
-		'graphs.php'           => '(empty($graph_template_item_id) ? gnrv(\'graph_template_item_id\') : $graph_template_item_id)',
+		'aggregate_graphs.php' => '($graph_template_item_id === null ? gfrv(\'graph_template_item_id\') : $graph_template_item_id)',
+		'color_templates.php'  => '($color_template_item_id === null ? gnrv(\'color_template_item_id\') : $color_template_item_id)',
+		'graph_templates.php'  => '($graph_template_item_id === null ? gnrv(\'graph_template_item_id\') : $graph_template_item_id)',
+		'graphs.php'           => '($graph_template_item_id === null ? gnrv(\'graph_template_item_id\') : $graph_template_item_id)',
 	];
 	foreach ($expected as $file => $needle) {
 		expect($sources[$file])->toContain($needle);
