@@ -108,7 +108,7 @@ if (isset($_SESSION[SESS_USER_ID]) && $_SESSION[SESS_USER_ID] == read_config_opt
 }
 
 // basic auth times out when the auth provider times out
-if (read_config_option('auth_method') == 2) {
+if (read_config_option('auth_method') == AUTH_METHOD_BASIC) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = sanitize_uri($request_uri);
 	$refreshIsLogout      = 'false';
