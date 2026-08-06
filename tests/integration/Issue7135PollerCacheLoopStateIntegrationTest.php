@@ -51,7 +51,9 @@ foreach ([
 	'CACTI_PATH_BASE'    => dirname(__DIR__, 2),
 	'CACTI_PATH_LIBRARY' => dirname(__DIR__, 2) . '/lib',
 	'CACTI_PATH_RRA'     => dirname(__DIR__, 2) . '/rra',
-	'CACTI_PATH_LOG'     => sys_get_temp_dir() . '/cacti-issue-7135-test.log',
+	/* a directory, as include/global_path.php defines it, so anything that
+	   appends a filename to it still resolves */
+	'CACTI_PATH_LOG'     => sys_get_temp_dir(),
 ] as $name => $value) {
 	if (!defined($name)) {
 		define($name, $value);
@@ -98,7 +100,7 @@ class PollerCacheStatement extends PDOStatement {
 class PollerCachePDO extends FakeMySQLPDO {
 	public function __construct() {
 		parent::__construct();
-		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [PollerCacheStatement::class]);
+		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [PollerCacheStatement::class, []]);
 	}
 }
 
