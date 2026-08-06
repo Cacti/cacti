@@ -126,13 +126,20 @@ test('without /proc the check falls back to plain existence', function () {
 });
 
 test('every registry kill site checks the pid before signalling it', function () {
-	$poller  = file_get_contents(dirname(__DIR__, 2) . '/lib/poller.php');
-	$dsstats = file_get_contents(dirname(__DIR__, 2) . '/lib/dsstats.php');
+	$poller     = file_get_contents(dirname(__DIR__, 2) . '/lib/poller.php');
+	$dsstats    = file_get_contents(dirname(__DIR__, 2) . '/lib/dsstats.php');
+	$batchgapfix = file_get_contents(dirname(__DIR__, 2) . '/cli/batchgapfix.php');
+
+	expect($poller)->not->toBeFalse('lib/poller.php must be readable')
+		->and($dsstats)->not->toBeFalse('lib/dsstats.php must be readable')
+		->and($batchgapfix)->not->toBeFalse('cli/batchgapfix.php must be readable');
 
 	// the bare existence test is what the fix removed; a reappearance means a
 	// call site went back to trusting a recycled pid
 	expect($poller)->not->toContain("posix_kill(\$r['pid'], 0)")
-		->and($dsstats)->not->toContain("posix_kill(\$p['pid'], 0)");
+		->and($dsstats)->not->toContain("posix_kill(\$p['pid'], 0)")
+		->and($batchgapfix)->toContain("cacti_process_still_running((int) \$r['pid'])")
+		->and($batchgapfix)->not->toContain("posix_kill(\$r['pid'], 0)");
 });
 
 /**
