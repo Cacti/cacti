@@ -24,23 +24,42 @@
  * this per-row-vs-batched shape in the first place.
  */
 
+/* poller_update_poller_cache_from_buffer() records a last-changed timestamp on
+   every flush. That used to be stubbed out behind function_exists(), but the
+   stub only applied when nothing had already loaded lib/functions.php, and the
+   unit suite always has by the time this file runs. The real function then ran
+   instead, dereferenced CACTI_PATH_LIBRARY and fataled, and its extra query
+   changed the counts below. Load the real one deliberately and give it what it
+   needs, so this file behaves the same whatever ran before it. */
+foreach ([
+	'CACTI_WEB'          => false,
+	'POLLER_ID'          => 1,
+	'CACTI_PATH_BASE'    => dirname(__DIR__, 2),
+	'CACTI_PATH_LIBRARY' => dirname(__DIR__, 2) . '/lib',
+	'CACTI_PATH_LOG'     => sys_get_temp_dir(),
+	'OPTIONS_CLI'        => 'config_options_array',
+	'OPTIONS_WEB'        => 'sess_config_array',
+] as $name => $value) {
+	if (!defined($name)) {
+		define($name, $value);
+	}
+}
+
+require_once dirname(__DIR__, 2) . '/lib/functions.php';
+
+/* after lib/functions.php: UnitStubs guards with function_exists(), so loading
+   it first would make the real definitions a redeclaration fatal */
 require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
 require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
 require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
 require_once dirname(__DIR__, 2) . '/lib/database.php';
 require_once dirname(__DIR__, 2) . '/lib/utility.php';
 
-if (!function_exists('set_config_option')) {
-	// poller_update_poller_cache_from_buffer() records a last-changed
-	// timestamp on every flush; not relevant to the batching behavior under
-	// test, so this is a no-op stub rather than a real settings write.
-	function set_config_option($name, $value) {
-		return true;
-	}
-}
-
 function batching_seed_poller_item_table() : FakeMySQLPDO {
 	$conn = new FakeMySQLPDO();
+
+	// set_config_option() writes the last-changed timestamp here
+	$conn->exec('CREATE TABLE settings (name TEXT PRIMARY KEY, value TEXT)');
 
 	$conn->exec('CREATE TABLE poller_item (
 		local_data_id INTEGER PRIMARY KEY, poller_id INTEGER, host_id INTEGER, action INTEGER,
@@ -115,10 +134,11 @@ test('batching 3 changed rows into a single poller_update_poller_cache_from_buff
 
 	expect($batchedQueries)->toBeLessThan($perRowQueries);
 
-	// each flush does a present=0 UPDATE, an INSERT, and a stale-row DELETE;
-	// 3 separate flushes -> 9 statements, 1 batched flush -> 3
-	expect($perRowQueries)->toBe(9)
-		->and($batchedQueries)->toBe(3);
+	/* each flush does a present=0 UPDATE, an INSERT, a stale-row DELETE and the
+	   set_config_option() last-changed write, so 3 separate flushes cost 12
+	   statements and 1 batched flush costs 4 */
+	expect($perRowQueries)->toBe(12)
+		->and($batchedQueries)->toBe(4);
 });
 
 test('the batched flush leaves the same end-state as 3 per-row flushes would', function () {
