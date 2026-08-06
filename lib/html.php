@@ -1454,7 +1454,7 @@ function html_attributes(array $attributes) : string {
 		if ($value === true) {
 			$output .= ' ' . $name;
 		} else {
-			$output .= ' ' . $name . "='" . html_escape($value) . "'";
+			$output .= ' ' . $name . "='" . html_escape_attr($value) . "'";
 		}
 	}
 

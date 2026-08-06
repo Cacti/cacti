@@ -81,6 +81,11 @@ test('html_escape_attr double-encodes a pre-encoded entity', function () {
 	expect(html_escape_attr('&quot; onmouseover="alert(1)'))->toBe('&amp;quot; onmouseover=&quot;alert(1)');
 });
 
+test('html_attributes makes pre-encoded quotes inert', function () {
+	expect(html_attributes(['value' => '&apos; autofocus onfocus=alert(1)']))
+		->toBe(" value='&amp;apos; autofocus onfocus=alert(1)'");
+});
+
 test('html_escape_url encodes URL attribute delimiters', function () {
 	expect(html_escape_url('https://example.invalid/?q=" onmouseover="alert(1)'))
 		->toBe('https://example.invalid/?q=&quot; onmouseover=&quot;alert(1)');
