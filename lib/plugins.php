@@ -1948,11 +1948,15 @@ function plugin_clean_old_plugin_info() : void {
 		// plugin realms are offset by 100 in the user tables
 		$granted = array_map(static fn ($id) => $id + 100, $realm_ids);
 
-		/* three statements whatever the number of orphans, rather than three
-		   per orphan: this runs on every render of the plugin page */
-		db_execute('DELETE FROM user_auth_realm WHERE ' . db_in_clause('realm_id', $granted));
-		db_execute('DELETE FROM user_auth_group_realm WHERE ' . db_in_clause('realm_id', $granted));
-		db_execute('DELETE FROM plugin_realms WHERE ' . db_in_clause('id', $realm_ids));
+		/* Three statements whatever the number of orphans, rather than three per
+		   orphan: this runs on every render of the plugin page. The placeholder
+		   list is sized to the values so the ids stay bound rather than
+		   interpolated. */
+		$holders = implode(',', array_fill(0, cacti_sizeof($realm_ids), '?'));
+
+		db_execute_prepared("DELETE FROM user_auth_realm WHERE realm_id IN ($holders)", $granted);
+		db_execute_prepared("DELETE FROM user_auth_group_realm WHERE realm_id IN ($holders)", $granted);
+		db_execute_prepared("DELETE FROM plugin_realms WHERE id IN ($holders)", $realm_ids);
 	}
 }
 
