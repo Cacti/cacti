@@ -59,7 +59,6 @@ switch (grv('action')) {
 			'id'     => grv('vdef_id'),
 		]);
 
-		break; // @phpstan-ignore-line
 	case 'item_moveup':
 		gfrv('vdef_id');
 
@@ -70,7 +69,6 @@ switch (grv('action')) {
 			'id'     => grv('vdef_id'),
 		]);
 
-		break; // @phpstan-ignore-line
 	case 'item_edit':
 		top_header();
 		vdef_item_edit();
