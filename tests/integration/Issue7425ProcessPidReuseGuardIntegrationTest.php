@@ -40,7 +40,7 @@ require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
 foreach ([
 	'CACTI_WEB'      => false,
 	'POLLER_ID'      => 1,
-	'CACTI_PATH_LOG' => sys_get_temp_dir() . '/cacti-issue-7425-test.log',
+	'CACTI_PATH_LOG' => sys_get_temp_dir(),
 ] as $name => $value) {
 	if (!defined($name)) {
 		define($name, $value);
@@ -57,7 +57,7 @@ require_once dirname(__DIR__, 2) . '/lib/poller.php';
 class ProcessRegistryPDO extends FakeMySQLPDO {
 	public function __construct() {
 		parent::__construct();
-		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [ProcessRegistryStatement::class]);
+		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [ProcessRegistryStatement::class, []]);
 	}
 
 	public function prepare(string $query, array $options = []) : PDOStatement|false {
