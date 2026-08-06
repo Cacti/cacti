@@ -35,7 +35,13 @@ if (!defined('CACTI_PATH_LOG')) {
 	define('CACTI_PATH_LOG', sys_get_temp_dir() . '/cacti-issue-7429-test.log');
 }
 
-/** A monthly-on-a-date schedule: 15 March, 09:30. */
+/**
+ * Builds a monthly-on-a-date schedule: 15 March, 09:30.
+ *
+ * @param array $overrides Schedule keys to replace in the default.
+ *
+ * @return array The schedule row api_scheduler_calculate_next_start() reads.
+ */
 function scheduler_monthly_schedule(array $overrides = []) : array {
 	return array_merge([
 		'sched_type'   => SCHEDULE_MONTHLY,
@@ -45,7 +51,13 @@ function scheduler_monthly_schedule(array $overrides = []) : array {
 	], $overrides);
 }
 
-/** A monthly-on-a-weekday schedule: fourth Wednesday of March, 09:30. */
+/**
+ * Builds a monthly-on-a-weekday schedule: fourth Wednesday of March, 09:30.
+ *
+ * @param array $overrides Schedule keys to replace in the default.
+ *
+ * @return array The schedule row api_scheduler_calculate_next_start() reads.
+ */
 function scheduler_monthly_on_day_schedule(array $overrides = []) : array {
 	return array_merge([
 		'sched_type'   => SCHEDULE_MONTHLY_ON_DAY,

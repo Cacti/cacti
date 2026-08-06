@@ -35,6 +35,14 @@ if (!defined('CACTI_PATH_LOG')) {
 	define('CACTI_PATH_LOG', sys_get_temp_dir() . '/cacti-issue-7429-test.log');
 }
 
+/**
+ * Seeds one schedule row in the given table.
+ *
+ * @param string $table    Either automation_networks or reports.
+ * @param array  $schedule The schedule values to store.
+ *
+ * @return FakeMySQLPDO A connection holding the seeded schema.
+ */
 function scheduler_seed(string $table, array $schedule) : FakeMySQLPDO {
 	$conn = new FakeMySQLPDO();
 
@@ -58,6 +66,13 @@ function scheduler_seed(string $table, array $schedule) : FakeMySQLPDO {
 	return $conn;
 }
 
+/**
+ * Builds a monthly schedule whose date has already passed this year.
+ *
+ * @param array $overrides Schedule keys to replace in the default.
+ *
+ * @return array The values scheduler_seed() stores.
+ */
 function scheduler_schedule(array $overrides = []) : array {
 	return array_merge([
 		'sched_type'   => SCHEDULE_MONTHLY,
@@ -88,6 +103,13 @@ function scheduler_cycle(PDO $conn, string $table) : array {
 	];
 }
 
+/**
+ * Points lib/database.php's default connection at the seeded handle.
+ *
+ * @param PDO $conn The connection the scheduler should read and write.
+ *
+ * @return void
+ */
 function scheduler_wire(PDO $conn) : void {
 	$GLOBALS['database_hostname']      = 'unittest';
 	$GLOBALS['database_port']          = 0;
