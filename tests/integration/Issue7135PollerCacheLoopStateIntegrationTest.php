@@ -134,6 +134,15 @@ class PollerCachePDO extends FakeMySQLPDO {
 		parent::__construct();
 		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [PollerCacheStatement::class, []]);
 	}
+
+	public function prepare(string $query, array $options = []): PDOStatement|false {
+		/* global_constants.php defines SQL_NO_CACHE from database_type at file
+		   discovery time. A full test run can therefore inherit MySQL syntax
+		   even though this test deliberately uses sqlite. */
+		$query = preg_replace('/\bSQL_NO_CACHE\b/', '', $query);
+
+		return parent::prepare($query, $options);
+	}
 }
 
 /**
@@ -261,7 +270,7 @@ afterEach(function () {
 test('the counting statement preserves fetch and fetchColumn after execute', function () {
 	$conn = new PollerCachePDO();
 
-	$statement = $conn->prepare("SELECT 'alpha' AS value");
+	$statement = $conn->prepare("SELECT SQL_NO_CACHE 'alpha' AS value");
 	$statement->execute();
 	expect($statement->fetch(PDO::FETCH_ASSOC))->toBe(['value' => 'alpha']);
 
