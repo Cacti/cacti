@@ -218,21 +218,13 @@ function run_poller() : void {
 
 	debug('Cacti Data Collector');
 
-	$command = ' -q ' . CACTI_PATH_BASE . '/poller.php --force' . ($debug ? ' --debug' : '');
+	$php_binary = poller_php_binary(read_config_option('path_php_binary'));
+	$command    = poller_cactid_arguments(CACTI_PATH_BASE, $debug);
 
-	$php_binary = read_config_option('path_php_binary');
+	debug('Command Line is: ' . implode(' ', $command));
 
-	if (empty($php_binary)) {
-		if (CACTI_SERVER_OS == 'win32') {
-			$php_binary = 'php';
-		} else {
-			$php_binary = '/usr/bin/php';
-		}
-	}
-
-	debug('Command Line is: ' . $command);
-
-	exec_background($php_binary, $command);
+	poller_enable_child_reaping();
+	exec_background_process($php_binary, $command);
 }
 
 /**
