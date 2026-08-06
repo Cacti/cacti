@@ -10,7 +10,7 @@ DC=(docker compose -f docker-compose.yml)
 PROBE_OUT=$("${DC[@]}" exec -T cacti-master php /var/www/html/tests/e2e/docker/probes/probe_private_advisory_hardening.php 2>&1 || true)
 printf '%s\n' "$PROBE_OUT"
 
-if ! printf '%s\n' "$PROBE_OUT" | grep -q 'Tests: 30, Passed: 30, Failed: 0'; then
+if ! printf '%s\n' "$PROBE_OUT" | grep -q 'Tests: 33, Passed: 33, Failed: 0'; then
 	echo "FAIL: private advisory hardening probe did not report all tests passing" >&2
 	exit 1
 fi

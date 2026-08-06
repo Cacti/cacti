@@ -79,6 +79,25 @@ test('plugin ddl helpers validate identifiers and route through db_add_column', 
 	expect($pluginsSource)->toContain('DROP TABLE IF EXISTS `$table`');
 });
 
+test('db_update_table batches schema changes into one alter statement', function () use ($databaseSource) {
+	$start = strpos($databaseSource, 'function db_update_table(');
+	$end   = strpos($databaseSource, 'function db_format_index_create(', $start);
+
+	expect($start)->not->toBeFalse()
+		->and($end)->not->toBeFalse();
+
+	$body = substr($databaseSource, $start, $end - $start);
+
+	expect(substr_count($body, 'db_execute('))->toBe(1)
+		->and($body)->toContain("implode(', ', \$alter_clauses)")
+		->and($body)->toContain("'ADD ' . \$definition")
+		->and($body)->toContain("'DROP COLUMN `'")
+		->and($body)->toContain("'ADD INDEX `'")
+		->and($body)->not->toContain('db_add_column(')
+		->and($body)->not->toContain('db_remove_column(')
+		->and($body)->not->toContain('db_add_index(');
+});
+
 test('realtime poller avoids direct rrdtool shell create', function () use ($realtimeSource) {
 	expect($realtimeSource)->toContain('cacti_exec(read_config_option(\'path_php_binary\'), array(');
 	expect($realtimeSource)->toContain('rrdtool_execute($command, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, \'POLLER\')');

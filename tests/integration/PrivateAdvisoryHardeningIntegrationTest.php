@@ -16,6 +16,7 @@
 */
 
 define('CACTI_CLI_ONLY', true);
+define('IN_PLUGIN_INSTALL', true);
 chdir('/var/www/html');
 
 require_once 'include/global.php';
@@ -91,9 +92,41 @@ private_advisory_assert_true('safe db_table_create executes', db_table_create($d
 private_advisory_assert_true('safe db_add_index executes', db_add_index($ddl_table, 'UNIQUE INDEX', 'idx_name', array('name'), false));
 private_advisory_assert_true('existing db_add_index replacement uses safe drop', db_add_index($ddl_table, 'UNIQUE INDEX', 'idx_name', array('name'), false));
 private_advisory_assert_false('db_add_index rejects injected index column', db_add_index($ddl_table, 'INDEX', 'idx_bad', array('name); DROP TABLE colors; --'), false));
+
+$table_updated = db_update_table($ddl_table, array(
+	'type'    => 'InnoDB',
+	'charset' => 'utf8mb4',
+	'collate' => 'utf8mb4_unicode_ci',
+	'comment' => 'compound alter test',
+	'columns' => array(
+		array('name' => 'id', 'type' => 'int', 'NULL' => false, 'auto_increment' => true),
+		array('name' => 'name', 'type' => 'varchar(128)', 'NULL' => false),
+		array('name' => 'enabled', 'type' => 'tinyint', 'NULL' => false, 'default' => '1', 'after' => 'name')
+	),
+	'primary' => array('id'),
+	'keys'    => array(
+		array('name' => 'idx_name', 'columns' => array('name')),
+		array('name' => 'idx_enabled', 'columns' => array('enabled'))
+	)
+), true, false);
+
+private_advisory_assert_true('db_update_table executes a compound alter' . ($table_updated ? '' : ': ' . db_error()), $table_updated);
+
+$name_column    = db_fetch_row("SHOW COLUMNS FROM `$ddl_table` LIKE 'name'", false);
+$enabled_column = db_fetch_row("SHOW COLUMNS FROM `$ddl_table` LIKE 'enabled'", false);
+private_advisory_assert_true('compound alter changes and adds columns',
+	isset($name_column['Type'], $enabled_column['Type']) && $name_column['Type'] === 'varchar(128)' && $enabled_column['Type'] === 'tinyint(4)');
+
+$table_info = db_fetch_row('SELECT TABLE_COMMENT
+	FROM information_schema.TABLES
+	WHERE TABLE_SCHEMA = SCHEMA()
+	AND TABLE_NAME = ' . db_qstr($ddl_table), false);
+private_advisory_assert_true('compound alter applies indexes and table options',
+	db_index_exists($ddl_table, 'idx_enabled', false) && ($table_info['TABLE_COMMENT'] ?? '') === 'compound alter test');
+
 db_execute("DROP TABLE IF EXISTS `$ddl_table`", false);
 
-$total  = 30;
+$total  = 33;
 $passed = $total - $failures;
 
 echo PHP_EOL . "Tests: {$total}, Passed: {$passed}, Failed: {$failures}" . PHP_EOL;
