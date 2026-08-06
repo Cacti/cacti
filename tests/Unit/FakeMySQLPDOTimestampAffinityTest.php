@@ -37,7 +37,7 @@ require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
  *
  * @return FakeMySQLPDO A connection holding the row.
  */
-function affinity_seed(int $age) : FakeMySQLPDO {
+function fake_mysql_pdo_timestamp_affinity_seed(int $age) : FakeMySQLPDO {
 	$conn = new FakeMySQLPDO();
 
 	$conn->exec('CREATE TABLE t (started TEXT, timeout INTEGER)');
@@ -47,7 +47,7 @@ function affinity_seed(int $age) : FakeMySQLPDO {
 }
 
 test('a row inside its timeout is not reported as expired', function () {
-	$conn = affinity_seed(10);
+	$conn = fake_mysql_pdo_timestamp_affinity_seed(10);
 
 	$row = $conn->query('SELECT UNIX_TIMESTAMP(started) + timeout < UNIX_TIMESTAMP() AS expired FROM t')
 		->fetch(PDO::FETCH_ASSOC);
@@ -58,7 +58,7 @@ test('a row inside its timeout is not reported as expired', function () {
 });
 
 test('a row past its timeout is reported as expired', function () {
-	$conn = affinity_seed(600);
+	$conn = fake_mysql_pdo_timestamp_affinity_seed(600);
 
 	$row = $conn->query('SELECT UNIX_TIMESTAMP(started) + timeout < UNIX_TIMESTAMP() AS expired FROM t')
 		->fetch(PDO::FETCH_ASSOC);
@@ -67,7 +67,7 @@ test('a row past its timeout is reported as expired', function () {
 });
 
 test('a translated timestamp compares as a number, not as text', function () {
-	$conn = affinity_seed(10);
+	$conn = fake_mysql_pdo_timestamp_affinity_seed(10);
 
 	$row = $conn->query('SELECT UNIX_TIMESTAMP(started) AS ts, typeof(UNIX_TIMESTAMP(started)) AS kind FROM t')
 		->fetch(PDO::FETCH_ASSOC);
@@ -77,7 +77,7 @@ test('a translated timestamp compares as a number, not as text', function () {
 });
 
 test('the bare UNIX_TIMESTAMP() form translates as well', function () {
-	$conn = affinity_seed(10);
+	$conn = fake_mysql_pdo_timestamp_affinity_seed(10);
 
 	// left untranslated this raised "no such function: UNIX_TIMESTAMP"
 	$row = $conn->query('SELECT UNIX_TIMESTAMP() AS now FROM t')->fetch(PDO::FETCH_ASSOC);
@@ -90,7 +90,7 @@ test('the bare UNIX_TIMESTAMP() form translates as well', function () {
  * casts in PHP afterwards, so this pins that the change did not disturb it.
  */
 test('reading a translated timestamp back into php still works', function () {
-	$conn = affinity_seed(0);
+	$conn = fake_mysql_pdo_timestamp_affinity_seed(0);
 
 	$row = $conn->query('SELECT UNIX_TIMESTAMP(started) AS ts FROM t')->fetch(PDO::FETCH_ASSOC);
 
