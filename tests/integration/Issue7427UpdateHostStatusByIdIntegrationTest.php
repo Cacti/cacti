@@ -187,8 +187,6 @@ afterEach(function () {
 	[$database_sessions, $database_hostname, $database_port, $database_default] = $this->db_globals;
 
 	$config = $this->config;
-
-	unset($GLOBALS['config'][OPTIONS_CLI]);
 });
 
 test('marking one device down leaves its hostname twin alone', function () {
