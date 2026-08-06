@@ -114,29 +114,10 @@ cmd_exec	./support.php:1358			exec(cacti_escapeshellcmd(read_config_option('path
 cmd_exec	./support.php:2022			$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions');
 cmd_exec	./support.php:2103					$out     = shell_exec(cacti_escapeshellarg($path) . ' ' . $arg . ' 2>&1');
 cmd_exec	./support.php:2108					print '<td>' . tech_env_status(DB_STATUS_WARNING, __('Version unavailable: shell_exec() is disabled')) . '</td>';
-cmd_exec	./vendor/nikic/php-parser/lib/PhpParser/Node/Expr/ShellExec.php:13	     * Constructs a shell exec (backtick) node.
-cmd_exec	./vendor/phpstan/phpstan-strict-rules/src/Rules/DisallowedConstructs/DisallowedBacktickRule.php:25				RuleErrorBuilder::message('Backtick operator is not allowed. Use shell_exec() instead.')
-cmd_exec	./vendor/phpunit/phpunit/src/Util/PHP/JobRunner.php:153	        $process = proc_open(
-cmd_exec	./vendor/sebastian/environment/src/Console.php:149	        if (function_exists('shell_exec') && preg_match('#\d+ (\d+)#', shell_exec('stty size') ?: '', $match) === 1) {
-cmd_exec	./vendor/sebastian/environment/src/Console.php:155	        if (function_exists('shell_exec') && preg_match('#columns = (\d+);#', shell_exec('stty') ?: '', $match) === 1) {
-cmd_exec	./vendor/sebastian/environment/src/Console.php:175	            $process = proc_open(
-cmd_exec	./vendor/sebastian/version/src/Version.php:85	        $process = proc_open(
 deserialize	./lib/functions.php:5319				$items = unserialize($unstripped, ['allowed_classes' => false]);
 deserialize	./lib/functions.php:5359				$items = unserialize($unstripped, ['allowed_classes' => false]);
 deserialize	./lib/functions.php:9990		return unserialize($strobj, ['allowed_classes' => false]);
 deserialize	./lib/reports.php:49		$items = unserialize($unstripped, ['allowed_classes' => false]);
-deserialize	./vendor/phpunit/php-code-coverage/src/Report/PHP.php:30	return \unserialize(<<<'END_OF_COVERAGE_SERIALIZATION'" . PHP_EOL . serialize($coverage) . PHP_EOL . 'END_OF_COVERAGE_SERIALIZATION' . PHP_EOL . ');';
-deserialize	./vendor/phpunit/php-code-coverage/src/StaticAnalysis/CachingFileAnalyser.php:153	        return unserialize(
-deserialize	./vendor/phpunit/phpunit/src/Framework/TestRunner/ChildProcessResultProcessor.php:55	        $childResult = @unserialize($serializedProcessResult);
-deserialize	./vendor/phpunit/phpunit/src/Framework/TestRunner/SeparateProcessTestRunner.php:98	        // must do these fixes because TestCaseMethod.tpl has unserialize('{data}') in it, and we can't break BC
-deserialize	./vendor/phpunit/phpunit/src/Runner/PHPT/PhptTestCase.php:791	            $coverage = @unserialize(
-deserialize	./vendor/phpunit/phpunit/src/TextUI/Configuration/Registry.php:64	        self::$instance = unserialize(
-deserialize	./vendor/phpunit/phpunit/src/TextUI/Configuration/SourceMapper.php:51	        $map = unserialize($content, ['allowed_classes' => false]);
-deserialize	./vendor/phpunit/phpunit/src/Util/GlobalState.php:308	        return 'unserialize(' . var_export(serialize($variable), true) . ')';
-deserialize	./vendor/sebastian/global-state/src/CodeExporter.php:85	        return 'unserialize(' . var_export(serialize($variable), true) . ')';
-deserialize	./vendor/sebastian/global-state/src/Snapshot.php:296	                $this->globalVariables[$key] = unserialize(serialize($GLOBALS[$key]));
-deserialize	./vendor/sebastian/global-state/src/Snapshot.php:308	                $this->superGlobalVariables[$superGlobalArray][$key] = unserialize(serialize($value));
-deserialize	./vendor/sebastian/global-state/src/Snapshot.php:335	                        $snapshot[$name] = unserialize(serialize($value));
 dynamic_include	./cli/audit_database.php:232							require_once($plugin . '/setup.php');
 dynamic_include	./cli/audit_database.php:235								require_once($plugin . '/includes/database.php');
 dynamic_include	./cli/upgrade_database.php:152			include($upgrade_file);
@@ -155,15 +136,6 @@ dynamic_include	./script_server.php:293						require_once($include_file);
 dynamic_include	./scripts/ss_mikrotik_snmpget.php:37		include_once($config['base_path'] . '/lib/snmp.php');
 dynamic_include	./scripts/ss_netsnmp_lmsensors.php:26		include($config['base_path'] . '/lib/snmp.php');
 dynamic_include	./snmpagent_persist.php:177				require($path_mibcache);
-dynamic_include	./vendor/composer/ClassLoader.php:576	            include $file;
-dynamic_include	./vendor/composer/InstalledVersions.php:310	     * `require $CWD/vendor/composer/installed.php` (or similar) as input to make sure
-dynamic_include	./vendor/composer/InstalledVersions.php:364	                    $required = require $vendorDir.'/composer/installed.php';
-dynamic_include	./vendor/composer/autoload_real.php:41	                require $file;
-dynamic_include	./vendor/nikic/php-parser/lib/PhpParser/PrettyPrinterAbstract.php:30	    protected const FIXUP_VAR_BRACED_NAME = 7; // Name operand that may require ${} bracing
-dynamic_include	./vendor/phpstan/phpstan/bootstrap.php:141			require $filepath;
-dynamic_include	./vendor/phpunit/phpunit/src/Runner/Extension/PharLoader.php:108	                @require $file;
-dynamic_include	./vendor/phpunit/phpunit/src/Runner/TestSuiteLoader.php:116	        require_once $suiteClassFile;
-dynamic_include	./vendor/phpunit/phpunit/src/TextUI/Application.php:352	            include_once $filename;
 fs_write	./cactid.php:81		$STDERR = fopen('/dev/null', 'wb');
 fs_write	./cactid.php:93		$STDERR = fopen('null', 'wb');
 fs_write	./cli/clone_device_template.php:261			$fin = fopen('php://stdin', 'r');
@@ -242,25 +214,6 @@ fs_write	./snmpagent_mibcachechild.php:94			file_put_contents($path_mibcache, '<
 fs_write	./support.php:2219		$fp = @fopen($file, 'rb');
 fs_write	./templates_import.php:63				$fp       = fopen($_FILES['import_file']['tmp_name'],'r');
 fs_write	./utilities.php:191				$log_fh = fopen($logfile, 'w');
-fs_write	./vendor/phar-io/manifest/src/ManifestSerializer.php:27	        file_put_contents(
-fs_write	./vendor/phpunit/php-code-coverage/src/StaticAnalysis/CachingFileAnalyser.php:161	        file_put_contents(
-fs_write	./vendor/phpunit/php-code-coverage/src/Util/Filesystem.php:53	        if (@file_put_contents($target, $buffer) === false) {
-fs_write	./vendor/phpunit/php-text-template/src/Template.php:87	        if (!@file_put_contents($target, $this->render())) {
-fs_write	./vendor/phpunit/phpunit/src/Logging/EventLogger.php:53	        file_put_contents(
-fs_write	./vendor/phpunit/phpunit/src/Runner/Baseline/Writer.php:76	        file_put_contents($baselineFile, $writer->outputMemory());
-fs_write	./vendor/phpunit/phpunit/src/Runner/CodeCoverage.php:325	                file_put_contents($configuration->coverageText(), $textReport);
-fs_write	./vendor/phpunit/phpunit/src/Runner/PHPT/PhptTestCase.php:764	        file_put_contents($files['job'], $job);
-fs_write	./vendor/phpunit/phpunit/src/Runner/ResultCache/DefaultResultCache.php:160	        file_put_contents(
-fs_write	./vendor/phpunit/phpunit/src/TextUI/Command/Commands/GenerateConfigurationCommand.php:81	        $result = @file_put_contents(
-fs_write	./vendor/phpunit/phpunit/src/TextUI/Command/Commands/ListTestsAsXmlCommand.php:131	        file_put_contents($this->filename, $writer->outputMemory());
-fs_write	./vendor/phpunit/phpunit/src/TextUI/Command/Commands/MigrateConfigurationCommand.php:40	            file_put_contents($this->filename, $migrated);
-fs_write	./vendor/phpunit/phpunit/src/TextUI/Configuration/Registry.php:37	        $result = file_put_contents(
-fs_write	./vendor/phpunit/phpunit/src/TextUI/Configuration/SourceMapper.php:37	        return file_put_contents($path, serialize($map)) !== false;
-fs_write	./vendor/phpunit/phpunit/src/TextUI/Output/Printer/DefaultPrinter.php:103	        $stream = fopen($out, 'wb');
-fs_write	./vendor/phpunit/phpunit/src/Util/PHP/JobRunner.php:93	                file_put_contents($temporaryFile, $job->code()) === false) {
-fs_write	./vendor/sebastian/diff/src/Output/DiffOnlyOutputBuilder.php:35	        $buffer = fopen('php://memory', 'r+b');
-fs_write	./vendor/sebastian/diff/src/Output/StrictUnifiedDiffOutputBuilder.php:101	        $buffer = fopen('php://memory', 'r+b');
-fs_write	./vendor/sebastian/diff/src/Output/UnifiedDiffOutputBuilder.php:47	        $buffer = fopen('php://memory', 'r+b');
 header_redirect	./aggregate_graphs.php:1092			header('Location: ' . $referer);
 header_redirect	./aggregate_graphs.php:121			header('Location: aggregate_graphs.php?action=edit&id=' . gfrv('id'));
 header_redirect	./aggregate_graphs.php:135				header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
