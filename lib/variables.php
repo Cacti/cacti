@@ -321,7 +321,7 @@ function expand_title(int $host_id, int $snmp_query_id, string $snmp_index, stri
  */
 function substitute_script_query_path(string $path) : string {
 	$path = clean_up_path(str_replace('|path_cacti|', CACTI_PATH_BASE, $path));
-	$path = clean_up_path(str_replace('|path_php_binary|', read_config_option('path_php_binary'), $path));
+	$path = clean_up_path(str_replace('|path_php_binary|', (string) read_config_option('path_php_binary'), $path));
 
 	return $path;
 }
