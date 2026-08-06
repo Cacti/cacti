@@ -131,10 +131,34 @@ test('cacti_url inserts query parameters before fragments', function () {
 });
 
 test('cacti_redirect is used for constructed local page redirects', function () {
-	foreach (['graph_templates.php', 'graphs.php', 'vdef.php'] as $page) {
+	$legacyHeaders = [
+		'graph_templates.php' => [
+			"header('Location: graph_templates.php?action=input_edit&graph_template_input_id='",
+			"header('Location: graph_templates.php?action=template_edit&id=' . (empty(",
+		],
+		'graphs.php' => [
+			"header('Location: graphs.php?action=graph_edit&host_id='",
+			"header('Location: graphs.php?action=graph_edit&id=' . (empty(",
+			"header('Location: graphs.php?action=graph_edit&id=' . \$local_graph_id)",
+		],
+	];
+
+	foreach ($legacyHeaders as $page => $patterns) {
 		$source = file_get_contents(__DIR__ . '/../../' . $page);
-		expect($source)->not->toBeFalse();
-		expect($source)->toContain('cacti_redirect(');
+		expect($source)->not->toBeFalse("$page must be readable")
+			->and($source)->toContain('cacti_redirect(');
+
+		$start = strpos($source, 'function form_save()');
+		expect($start)->not->toBeFalse("$page must define form_save()");
+
+		$end = strpos($source, "\nfunction ", $start + 1);
+		expect($end)->not->toBeFalse("$page form_save() must have a following function");
+
+		$formSave = substr($source, $start, $end - $start);
+
+		foreach ($patterns as $pattern) {
+			expect($formSave)->not->toContain($pattern);
+		}
 	}
 });
 

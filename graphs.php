@@ -364,12 +364,13 @@ function form_save() : void {
 
 			if (isset($return_array['local_graph_id'])) {
 				$local_graph_id = $return_array['local_graph_id'];
-				header('Location: graphs.php?action=graph_edit&id=' . $local_graph_id);
+				cacti_redirect('graphs.php', [
+					'action' => 'graph_edit',
+					'id'     => $local_graph_id,
+				]);
 			} else {
-				header('Location: graphs.php');
+				cacti_redirect('graphs.php');
 			}
-
-			exit;
 		}
 
 		if (isrv('save_component_graph')) {

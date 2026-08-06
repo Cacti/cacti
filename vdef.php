@@ -58,6 +58,7 @@ switch (grv('action')) {
 			'action' => 'edit',
 			'id'     => grv('vdef_id'),
 		]);
+		// cacti_redirect() terminates execution, so this cannot fall through.
 
 	case 'item_moveup':
 		gfrv('vdef_id');
@@ -68,6 +69,7 @@ switch (grv('action')) {
 			'action' => 'edit',
 			'id'     => grv('vdef_id'),
 		]);
+		// cacti_redirect() terminates execution, so this cannot fall through.
 
 	case 'item_edit':
 		top_header();

@@ -413,8 +413,6 @@ header_redirect	./graphs.php:176			header('Location: graphs.php?action=graph_edi
 header_redirect	./graphs.php:192			header('Location: graphs.php?action=graph_edit&id=' . grv('local_graph_id'));
 header_redirect	./graphs.php:200			header('Location: graphs.php?action=graph_edit&id=' . grv('local_graph_id'));
 header_redirect	./graphs.php:2337				header('Location: graphs.php');
-header_redirect	./graphs.php:367					header('Location: graphs.php?action=graph_edit&id=' . $local_graph_id);
-header_redirect	./graphs.php:369					header('Location: graphs.php');
 header_redirect	./graphs_new.php:174			header('Location: graphs_new.php?host_id=' . $host_id);
 header_redirect	./graphs_new.php:180			header('Location: graphs_new.php?host_id=' . gfrv('host_id'));
 header_redirect	./graphs_new.php:52			header('Location: graphs_new.php?host_id=' . grv('host_id'));
