@@ -62,6 +62,23 @@ test('CactiFilesystem rejects a null byte in has, ensureDirectory and delete', f
 		->and(fn () => $filesystem->delete([$tainted]))->toThrow(RuntimeException::class, 'null byte');
 });
 
+test('CactiFilesystem rejects null bytes across write, copy, move and temporary paths', function () {
+	$filesystem = new CactiFilesystem();
+	$clean      = sys_get_temp_dir() . '/clean';
+	$tainted    = "/tmp/foo\0bar";
+
+	expect(fn () => $filesystem->writeFile($tainted, 'data'))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->appendFile($tainted, 'data'))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->copyFile($tainted, $clean))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->copyFile($clean, $tainted))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->move($tainted, $clean))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->move($clean, $tainted))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->temporaryName($tainted, 'tmp'))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->temporaryName($clean, "tmp\0"))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->temporaryName($clean, 'tmp', ".tmp\0"))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->isAbsolute($tainted))->toThrow(RuntimeException::class, 'null byte');
+});
+
 test('CactiFilesystem accepts an injected Symfony filesystem', function () {
 	$injected   = new Symfony\Component\Filesystem\Filesystem();
 	$filesystem = new CactiFilesystem($injected);

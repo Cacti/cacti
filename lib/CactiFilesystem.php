@@ -101,10 +101,14 @@ class CactiFilesystem {
 	}
 
 	public function writeFile(string $filename, string $content): void {
+		$this->rejectNullBytes($filename, 'write');
+
 		$this->filesystem->dumpFile($filename, $content);
 	}
 
 	public function appendFile(string $filename, string $content, bool $lock = false): void {
+		$this->rejectNullBytes($filename, 'append');
+
 		$this->filesystem->appendToFile($filename, $content, $lock);
 	}
 
@@ -113,6 +117,7 @@ class CactiFilesystem {
 		// which would escape this method's RuntimeException contract.
 		$this->rejectNullBytes($filename, 'read');
 
+		error_clear_last();
 		$contents = @file_get_contents($filename);
 
 		if ($contents === false) {
@@ -125,18 +130,26 @@ class CactiFilesystem {
 	}
 
 	public function copyFile(string $originFile, string $targetFile, bool $overwriteNewerFiles = false): void {
+		$this->rejectNullBytes([$originFile, $targetFile], 'copy');
+
 		$this->filesystem->copy($originFile, $targetFile, $overwriteNewerFiles);
 	}
 
 	public function move(string $origin, string $target, bool $overwrite = false): void {
+		$this->rejectNullBytes([$origin, $target], 'move');
+
 		$this->filesystem->rename($origin, $target, $overwrite);
 	}
 
 	public function temporaryName(string $dir, string $prefix, string $suffix = ''): string {
+		$this->rejectNullBytes([$dir, $prefix, $suffix], 'create temporary file');
+
 		return $this->filesystem->tempnam($dir, $prefix, $suffix);
 	}
 
 	public function isAbsolute(string $path): bool {
+		$this->rejectNullBytes($path, 'inspect');
+
 		return $this->filesystem->isAbsolutePath($path);
 	}
 
