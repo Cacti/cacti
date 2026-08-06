@@ -62,6 +62,16 @@ test('the running process recognises itself', function () {
 	expect(cacti_process_still_running(getmypid()))->toBeTrue();
 });
 
+test('a permissions failure still means the pid exists', function () {
+	$eperm = defined('SOCKET_EPERM') ? SOCKET_EPERM : 1;
+
+	if (posix_kill(1, 0) || posix_get_last_error() !== $eperm) {
+		test()->markTestSkipped('pid 1 does not produce EPERM for this user');
+	}
+
+	expect(cacti_process_pid_exists(1))->toBeTrue();
+});
+
 test('a pid that has already exited is not reported running', function () {
 	$pipes  = [];
 	$handle = proc_open(['true'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);

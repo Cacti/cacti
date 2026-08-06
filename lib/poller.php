@@ -2697,7 +2697,7 @@ function is_process_running(string $tasktype, string $taskname, int $taskid = 0)
  *              different program.
  */
 function cacti_process_still_running(int $pid) : bool {
-	if ($pid <= 0 || !function_exists('posix_kill') || !posix_kill($pid, 0)) {
+	if (!cacti_process_pid_exists($pid)) {
 		return false;
 	}
 
@@ -2723,7 +2723,32 @@ function cacti_process_still_running(int $pid) : bool {
 
 	/* Re-test rather than trusting the check above, which the reads have had
 	   time to make stale. */
-	return posix_kill($pid, 0);
+	return cacti_process_pid_exists($pid);
+}
+
+/**
+ * Tests whether a pid exists without treating a permissions failure as exit.
+ *
+ * POSIX kill(2) reports EPERM when the process exists but the caller cannot
+ * signal it. PHP exposes errno through posix_get_last_error(), while the
+ * numeric EPERM constant is supplied by ext-sockets rather than ext-posix.
+ *
+ * @param int $pid The pid to check.
+ *
+ * @return bool True when the process exists or signalling it is forbidden.
+ */
+function cacti_process_pid_exists(int $pid) : bool {
+	if ($pid <= 0 || !function_exists('posix_kill')) {
+		return false;
+	}
+
+	if (posix_kill($pid, 0)) {
+		return true;
+	}
+
+	$eperm = defined('SOCKET_EPERM') ? SOCKET_EPERM : 1;
+
+	return function_exists('posix_get_last_error') && posix_get_last_error() === $eperm;
 }
 
 /**
