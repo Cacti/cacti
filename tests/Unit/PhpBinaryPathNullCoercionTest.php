@@ -18,7 +18,7 @@
 */
 
 /*
- * Binary path settings historically had no 'default' key, so
+ * The six binary path settings covered by #7584 had no 'default' key, so
  * read_default_config_option() returned null whenever the settings row was
  * absent. That happens on a fresh install and after a partial one.
  *
@@ -50,7 +50,7 @@ function php_binary_body(string $file, string $function) : string {
 	return substr($source, $start, ($end === false ? strlen($source) : $end) - $start);
 }
 
-test('binary path settings default to an empty string rather than null', function () {
+test('the six affected binary path settings default to an empty string rather than null', function () {
 	$settings = file_get_contents(dirname(__DIR__, 2) . '/include/global_settings.php');
 	expect($settings)->not->toBeFalse('include/global_settings.php must be readable');
 
