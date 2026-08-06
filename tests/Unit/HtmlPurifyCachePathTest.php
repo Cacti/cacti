@@ -127,7 +127,8 @@ test('the alternate cache path is documented in the distributed config', functio
 
 	expect($config)->not->toBeFalse()
 		->and($config)->toContain("\$config['purifier_cache_path'] = '/var/cache/cacti/purifier';")
-		->and($config)->toContain('The directory must already exist and be writable');
+		->and($config)->toContain('The directory must already exist and be writable')
+		->and($config)->toContain('If unset, Cacti uses cache/purifier');
 });
 
 test('the definition cache lands in the configured path, not the library tree', function () {
