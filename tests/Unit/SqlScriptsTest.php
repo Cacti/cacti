@@ -141,7 +141,7 @@ test('ss_sql() returns U when shell_exec produces no output', function () use ($
 	}
 
 	/* Provide dummy globals so the function can build its command string. */
-	$GLOBALS['database_hostname'] = '127.0.0.1';
+	$GLOBALS['database_hostname'] = '0.0.0.0';
 	$GLOBALS['database_username'] = 'cacti_test_no_such_user';
 	$GLOBALS['database_password'] = '';
 
