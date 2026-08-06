@@ -7,6 +7,13 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Creates a private-advisory proof matrix containing one test-backed row.
+ *
+ * @param int $changelog_hits Number of exact GHSA references found in CHANGELOG.
+ *
+ * @return string Absolute path to the temporary matrix fixture.
+ */
 function advisory_matrix_fixture(int $changelog_hits) : string {
 	$path = tempnam(sys_get_temp_dir(), 'cacti_advisory_matrix_');
 
@@ -18,6 +25,13 @@ function advisory_matrix_fixture(int $changelog_hits) : string {
 	return $path;
 }
 
+/**
+ * Runs the strict private-advisory verification gate for a matrix fixture.
+ *
+ * @param string $matrix Absolute path to the proof matrix fixture.
+ *
+ * @return array{0: int, 1: string} Exit status and combined command output.
+ */
 function run_advisory_matrix_gate(string $matrix) : array {
 	$root   = dirname(__DIR__, 2);
 	$output = [];
