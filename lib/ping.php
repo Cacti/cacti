@@ -677,7 +677,8 @@ class Net_Ping {
 
 		$sockets_fallback = false;
 
-		if ((!function_exists('socket_create')) && ($avail_method != AVAIL_NONE)) {
+		// AVAIL_NONE already returned above, so it needs no second test here
+		if (!function_exists('socket_create')) {
 			$avail_method     = AVAIL_SNMP;
 			$sockets_fallback = true;
 
