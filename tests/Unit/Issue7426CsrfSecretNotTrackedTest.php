@@ -88,11 +88,13 @@ test('the secret path is still ignored so it cannot be committed again', functio
  */
 test('csrf-magic still generates and stores a secret when none exists', function () {
 	$source = file_get_contents(dirname(__DIR__, 2) . '/include/vendor/csrf/csrf-magic.php');
+	expect($source)->not->toBeFalse('csrf-magic.php must be readable');
 
 	$start = strpos($source, 'function csrf_get_secret(');
 	expect($start)->not->toBeFalse();
 
-	$body = substr($source, $start, strpos($source, "\nfunction ", $start + 1) - $start);
+	$end  = strpos($source, "\nfunction ", $start + 1);
+	$body = substr($source, $start, ($end === false ? strlen($source) : $end) - $start);
 
 	expect($body)->toContain('csrf_generate_secret()')
 		->and($body)->toContain('csrf_writable(')
