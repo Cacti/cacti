@@ -73,6 +73,7 @@ require_once dirname(__DIR__, 2) . '/lib/plugins.php';
 class PollerCacheStatement extends PDOStatement {
 	/** @var array<int,array<string,mixed>>|null rows of a SELECT, null otherwise */
 	private ?array $rows = null;
+	private int $cursor = 0;
 
 	protected function __construct() {
 	}
@@ -81,6 +82,7 @@ class PollerCacheStatement extends PDOStatement {
 		$executed = parent::execute($params);
 
 		$this->rows = $this->columnCount() > 0 ? parent::fetchAll(PDO::FETCH_ASSOC) : null;
+		$this->cursor = 0;
 
 		return $executed;
 	}
@@ -91,6 +93,36 @@ class PollerCacheStatement extends PDOStatement {
 
 	public function fetchAll(int $mode = PDO::FETCH_DEFAULT, mixed ...$args) : array {
 		return $this->rows ?? parent::fetchAll($mode, ...$args);
+	}
+
+	public function fetch(int $mode = PDO::FETCH_DEFAULT, int $cursorOrientation = PDO::FETCH_ORI_NEXT, int $cursorOffset = 0) : mixed {
+		if ($this->rows === null) {
+			return parent::fetch($mode, $cursorOrientation, $cursorOffset);
+		}
+
+		$row = $this->rows[$this->cursor++] ?? null;
+
+		if ($row === null) {
+			return false;
+		}
+
+		return match ($mode) {
+			PDO::FETCH_NUM    => array_values($row),
+			PDO::FETCH_BOTH   => $row + array_values($row),
+			PDO::FETCH_COLUMN => reset($row),
+			PDO::FETCH_OBJ    => (object) $row,
+			default           => $row,
+		};
+	}
+
+	public function fetchColumn(int $column = 0) : mixed {
+		if ($this->rows === null) {
+			return parent::fetchColumn($column);
+		}
+
+		$row = $this->rows[$this->cursor++] ?? null;
+
+		return $row === null ? false : (array_values($row)[$column] ?? false);
 	}
 }
 
@@ -203,9 +235,11 @@ function poller_cache_wire(PDO $conn) : void {
 }
 
 beforeEach(function () {
-	global $database_sessions, $database_hostname, $database_port, $database_default;
+	$this->global_state = [];
 
-	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
+	foreach (['database_sessions', 'database_hostname', 'database_port', 'database_default', 'database_total_queries', 'data_query_xml_arrays', 'config'] as $name) {
+		$this->global_state[$name] = [array_key_exists($name, $GLOBALS), $GLOBALS[$name] ?? null];
+	}
 
 	/* get_data_query_array() memoizes by snmp_query_id, so without this the
 	   second fixture would be served the first one's parsed XML. */
@@ -215,9 +249,41 @@ beforeEach(function () {
 /* Left in place, the fake handle answers every later read_config_option() in
    the run and throws on Cacti's MySQL SQL, aborting the suite. */
 afterEach(function () {
-	global $database_sessions, $database_hostname, $database_port, $database_default;
+	foreach ($this->global_state as $name => [$existed, $value]) {
+		if ($existed) {
+			$GLOBALS[$name] = $value;
+		} else {
+			unset($GLOBALS[$name]);
+		}
+	}
+});
 
-	[$database_sessions, $database_hostname, $database_port, $database_default] = $this->db_globals;
+test('the counting statement preserves fetch and fetchColumn after execute', function () {
+	$conn = new PollerCachePDO();
+
+	$statement = $conn->prepare("SELECT 'alpha' AS value");
+	$statement->execute();
+	expect($statement->fetch(PDO::FETCH_ASSOC))->toBe(['value' => 'alpha']);
+
+	$statement = $conn->prepare("SELECT 'beta' AS value");
+	$statement->execute();
+	expect($statement->fetchColumn())->toBe('beta');
+});
+
+test('test_data_source resets output-specific state on every iteration', function () {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/functions.php');
+	expect($source)->not->toBeFalse('lib/functions.php must be readable');
+
+	$start = strpos($source, 'function test_data_source(');
+	expect($start)->not->toBeFalse('test_data_source() must exist');
+
+	$end = strpos($source, "\nfunction ", $start + 1);
+	expect($end)->not->toBeFalse('test_data_source() must have a following function');
+
+	$body = substr($source, $start, $end - $start);
+
+	expect($body)->toContain("foreach (\$outputs as \$output) {\n\t\t\t\t\t\$oid = null;")
+		->and($body)->toContain("foreach (\$outputs as \$output) {\n\t\t\t\t\t\$script_path = null;");
 });
 
 test('an output with no oid mapping produces no poller item at all', function () {
