@@ -52,7 +52,27 @@ Cacti CHANGELOG
 -issue#7211: Correct the Nth percentile and bandwidth summation divisor on base-1024 graphs
 -issue#7214: Fix TypeError in boost_graph_set_file when sending reports
 -issue#7216: Aggregate totalling legend printed untotalled single data source values
+-issue#7519: Fix Boost archive-table cleanup deleting still-open-round rows instead of forwarding them to the live table
+-issue#7523: Fix dead duplicate-record guard in boost_process_poller_output
+-issue#7520: Gate Boost archive-table drop on shard completeness instead of the partial-success status sum
+-issue#7526: Apply Boost's child-completion startup barrier to dsstats and rrdcheck launch loops
+-issue#7521: Purge the old remote poller's poller_item row when api_data_source_change_host() moves a data source to a new device
+-issue#7524: Mirror poller_item deletes to the remote poller in data_query_remove_disabled_items() and data_source_to_data_template()
+-issue#7535: Consolidate the poller_item delete call sites behind poller_item_delete_for_data_source() and poller_item_delete_for_host()
+-issue#7522: Fix cmd.php SELECT * poller_item/host join defeating poller_item's SNMP-credential caching
+-issue#7525: Fix cmd.php --allhost invocation ignoring cron_interval when resetting rrd_next_step
+-issue#7527: Skip update_poller_cache()'s poller_id JOIN query when callers already know it
+-issue#7528: Replace cmd.php's redundant script-server-call COUNT(*) join with an in-PHP count
+-issue#7529: Scope poller.php's global aggregate scans to the central poller
+-issue#7530: Rewrite poller.php's process-leveling rrd_next_step predicate to be sargable
+-issue#7531: Batch update_data_query_cache()'s poller cache writes instead of committing per row
+-issue#7532: Add USING BTREE to poller_output_boost_local_data_ids indexes to prevent filesort in Boost
+-issue#7533: Skip the UNION ALL derived table wrapper in Boost's flush query when only one archive table exists
+-issue#7534: Batch-prefetch RRD field name lookups in Boost and poller output processing instead of querying per row
+-issue#7536: Consolidate the four hand-written poller_output_boost inserts into one shared helper
 -issue#7261: Parameterize aggregate_graphs.php SQL and harden reflected request values
+-issue#7343: Install wizard silently fails to advance after CSRF token expires
+-issue#7380: Batch graph-create task_item_id wiring to reduce template graph creation queries
 -issue#7518: Replace the DsstatsMeasure enum in lib/html_utility.php with const arrays for PHP 8.0 compatibility
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
@@ -222,6 +242,7 @@ Cacti CHANGELOG
 -feature: Harden authentication system correctness including 2FA logic, password reset token security, and basic auth status checks
 -feature: Extract remote agent reverse DNS forward-confirmation into the remote_agent_fcrdns_confirmed() helper
 -feature#7190: Replace PHPMailer with Symfony Mailer for native mail, sendmail, and SMTP (including OAuth2)
+-feature#7370: Allow plugins to register process tables for the technical support view
 
 1.2.x
 -issue#7212: Address a few small memory leaks in realtime graphing

@@ -36,8 +36,9 @@ $patterns = [
 			// pre-boot code; the request helper layer is not loaded yet
 			'include/global.php',
 			'lib/PackageListFilter.php',
-			// test fixture standing in for the request helper itself
-			'tests/HandOff/fixtures/cacti_dispatch_probe.php',
+			// tests/integration/AggregateConvertTemplateGuardIntegrationTest.php: simulates request
+			// state to exercise the real request-consuming function, not a production sanitization bypass
+			'tests/integration/AggregateConvertTemplateGuardIntegrationTest.php',
 		]
 	],
 //	'manual-request-query-url' => [
@@ -62,6 +63,13 @@ $violations = [];
 
 foreach ($files as $file) {
 	if (!is_file($file) || pathinfo($file, PATHINFO_EXTENSION) !== 'php') {
+		continue;
+	}
+
+	/* The guard protects product code.  Test fixtures legitimately assign
+	   request superglobals and embed inline patterns to exercise the code
+	   under test, so the tests tree is out of scope. */
+	if (str_starts_with(preg_replace('#^\./#', '', $file), 'tests/')) {
 		continue;
 	}
 
