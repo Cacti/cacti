@@ -34,5 +34,7 @@ if (!empty($_SERVER['SCRIPT_FILENAME']) && !str_contains($_SERVER['SCRIPT_FILENA
 
 	if ($requested !== false && $requested === realpath(__FILE__)) {
 		header('Location:../index.php');
+
+		exit;
 	}
 }

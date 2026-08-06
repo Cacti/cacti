@@ -40,12 +40,13 @@ function htmx_loader_start_server(array $env = []): array {
 	$port    = htmx_loader_pick_port();
 	$fixture = dirname(__DIR__) . '/integration/fixtures/htmx_fixture.php';
 
-	// stdout/stderr go to /dev/null: the built-in server logs every request,
+	// stdout/stderr go to the platform null sink: the server logs every request,
 	// and an unread pipe buffer would eventually fill and block it mid-test.
+	$null = PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null';
 	$descriptors = [
-		0 => ['file', '/dev/null', 'r'],
-		1 => ['file', '/dev/null', 'w'],
-		2 => ['file', '/dev/null', 'w'],
+		0 => ['file', $null, 'r'],
+		1 => ['file', $null, 'w'],
+		2 => ['file', $null, 'w'],
 	];
 
 	$env = array_merge($_ENV ?: [], $env);
@@ -104,7 +105,33 @@ function htmx_loader_pick_port(): int {
 function htmx_loader_stop_server($proc): void {
 	if (is_resource($proc)) {
 		proc_terminate($proc);
-		proc_close($proc);
+
+		$deadline = microtime(true) + 1.0;
+
+		do {
+			$status = proc_get_status($proc);
+
+			if (!$status['running']) {
+				proc_close($proc);
+
+				return;
+			}
+
+			usleep(20_000);
+		} while (microtime(true) < $deadline);
+
+		proc_terminate($proc, defined('SIGKILL') ? SIGKILL : 9);
+
+		$deadline = microtime(true) + 1.0;
+		do {
+			$status = proc_get_status($proc);
+			if (!$status['running']) {
+				proc_close($proc);
+
+				return;
+			}
+			usleep(20_000);
+		} while (microtime(true) < $deadline);
 	}
 }
 

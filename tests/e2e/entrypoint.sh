@@ -20,11 +20,10 @@ DB_USER="${CACTI_DB_USER:-cactiuser}"
 DB_PASS="${CACTI_DB_PASS:-cactiuser}"
 DB_ROOT_PASS="${CACTI_DB_ROOT_PASS:-cactiroot}"
 
-# Wait for MariaDB to accept connections before we seed the schema. The
-# MariaDB 11 client (Debian trixie base) defaults to TLS server-cert
-# verification, so a plain ping against the container never succeeds and the
-# loop spins forever. --skip-ssl disables the client TLS handshake for this
-# private, container-to-container link.
+# Wait for MariaDB to accept connections before we seed the schema. Some
+# MariaDB/MySQL clients default to TLS certificate verification, so a plain
+# ping against the private test container can fail indefinitely. --skip-ssl
+# disables that handshake for this container-to-container link.
 until mysqladmin ping -h "$DB_HOST" -uroot -p"$DB_ROOT_PASS" --skip-ssl --silent; do
 	echo "waiting for mariadb at ${DB_HOST}..."
 	sleep 2
