@@ -198,11 +198,13 @@ function run_poller() {
 
 	debug('Cacti Data Collector');
 
-	$command = ' -q ' . $config['base_path'] . '/poller.php --force' . ($debug ? ' --debug':'');
+	$php_binary = poller_php_binary(read_config_option('path_php_binary'));
+	$command    = poller_cactid_arguments($config['base_path'], $debug);
 
-	debug('Command Line is: ' . $command);
+	debug('Command Line is: ' . implode(' ', $command));
 
-	exec_background(read_config_option('path_php_binary'), $command);
+	poller_enable_child_reaping();
+	exec_background_process($php_binary, $command);
 }
 
 function get_options() {
@@ -275,4 +277,3 @@ function display_help () {
 	print '  --foreground       Run cactid in foreground mode, otherwise this is a forking daemon.' . PHP_EOL;
 	print '  --debug            Used for debugging in --foreground mode.' . PHP_EOL;
 }
-
