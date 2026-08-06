@@ -508,6 +508,13 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
 		case SCHEDULE_MONTHLY_ON_DAY:
 			$next = api_scheduler_calculate_next_start($schedule);
 
+			/* An unschedulable configuration returns false, and date() would
+			   turn that into 1970, which the run check below then reads as
+			   overdue on every poller cycle. Leave next_start alone. */
+			if (empty($next)) {
+				return false;
+			}
+
 			db_execute_prepared("UPDATE $table
 				SET next_start = ?
 				WHERE id = ?",
@@ -537,8 +544,31 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
  * @return mixed - The timestamp of the next start time, or false if no valid next start time is found.
  */
 function api_scheduler_calculate_next_start(array $schedule) : mixed {
-	$now    = time();
-	$dates  = [];
+	$now = time();
+
+	/* Try this year, then next. Without the rollover every selected date is in
+	   the past by December and the schedule resolves to false for the rest of
+	   the year. */
+	$next = api_scheduler_calculate_next_start_for_year($schedule, (int) date('Y', $now), $now);
+
+	if ($next === false) {
+		$next = api_scheduler_calculate_next_start_for_year($schedule, (int) date('Y', $now) + 1, $now);
+	}
+
+	return $next;
+}
+
+/**
+ * Calculate the next start time for a given schedule within one calendar year.
+ *
+ * @param array $schedule The schedule configuration array.
+ * @param int   $year     The calendar year to resolve the schedule against.
+ * @param int   $now      The timestamp a candidate date has to be later than.
+ *
+ * @return mixed - The timestamp of the next start time, or false if no valid next start time is found.
+ */
+function api_scheduler_calculate_next_start_for_year(array $schedule, int $year, int $now) : mixed {
+	$dates = [];
 
 	// Some defaults
 	$smonth = 'January';
@@ -606,9 +636,9 @@ function api_scheduler_calculate_next_start(array $schedule) : mixed {
 					}
 
 					if ($day == '32') {
-						$dates[] = strtotime('last day of ' . $smonth);
+						$dates[] = strtotime("last day of $smonth $year");
 					} else {
-						$dates[] = strtotime("$smonth $day");
+						$dates[] = strtotime("$smonth $day $year");
 					}
 				}
 			}
@@ -618,8 +648,6 @@ function api_scheduler_calculate_next_start(array $schedule) : mixed {
 			$months = explode(',', $schedule['month']);
 			$weeks  = explode(',', $schedule['monthly_week']);
 			$days   = explode(',', $schedule['monthly_day']);
-			$now    = time();
-			$dates  = [];
 
 			foreach ($months as $month) {
 				foreach ($weeks as $week) {
@@ -674,7 +702,7 @@ function api_scheduler_calculate_next_start(array $schedule) : mixed {
 
 								break;
 							default:
-								$Smonth = 'January';
+								$smonth = 'January';
 
 								break;
 						}
@@ -693,7 +721,7 @@ function api_scheduler_calculate_next_start(array $schedule) : mixed {
 
 								break;
 							case '4':
-								$sweek = 'forth';
+								$sweek = 'fourth';
 
 								break;
 							case '32':
@@ -741,7 +769,7 @@ function api_scheduler_calculate_next_start(array $schedule) : mixed {
 								break;
 						}
 
-						$dates[] = strtotime("$sweek $sday of $smonth", strtotime($schedule['start_at']));
+						$dates[] = strtotime("$sweek $sday of $smonth $year");
 					}
 				}
 			}
@@ -755,6 +783,11 @@ function api_scheduler_calculate_next_start(array $schedule) : mixed {
 		$newdates = [];
 
 		foreach ($dates as $date) {
+			// an unparsable month/week/day combination yields false, not a date
+			if ($date === false) {
+				continue;
+			}
+
 			$ndate = date('Y-m-d', $date) . ' ' . date('H:i:s', strtotime($schedule['start_at']));
 			$ntime = strtotime($ndate);
 
