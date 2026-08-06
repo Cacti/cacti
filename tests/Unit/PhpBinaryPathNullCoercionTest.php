@@ -59,7 +59,7 @@ test('path_php_binary really has no default to fall back on', function () {
 	$start = strpos($settings, "'path_php_binary' => [");
 	expect($start)->not->toBeFalse();
 
-	$end = strpos($settings, '],', $start);
+	$end = strpos($settings, "\n\t],", $start);
 	expect($end)->not->toBeFalse('path_php_binary settings block must have a closing delimiter');
 
 	$block = substr($settings, $start, $end - $start);
@@ -104,7 +104,11 @@ test('poller maintenance casts the binary path before escaping it', function () 
 test('no shipped file escapes the binary path without casting it first', function () {
 	$root = dirname(__DIR__, 2);
 
-	exec('git -C ' . escapeshellarg($root) . ' ls-files "*.php" 2>/dev/null', $tracked, $status);
+	if (!function_exists('exec') || str_contains((string) ini_get('disable_functions'), 'exec')) {
+		test()->markTestSkipped('exec is disabled, so the shipped file list is unavailable');
+	}
+
+	exec('git -C ' . escapeshellarg($root) . ' ls-files "*.php"', $tracked, $status);
 
 	if ($status !== 0 || $tracked === []) {
 		test()->markTestSkipped('not a git checkout, so the shipped file list is unknown');
@@ -120,7 +124,7 @@ test('no shipped file escapes the binary path without casting it first', functio
 		$source = file_get_contents($root . '/' . $file);
 
 		if ($source !== false && preg_match(
-			'/cacti_escapeshellcmd\s*\(\s*(?!\(\s*string\s*\)\s*)read_config_option\s*\(\s*[\'\"]path_php_binary[\'\"]\s*\)/',
+			'/cacti_escapeshellcmd\s*\(\s*(?!\(\s*string\s*\)\s*)read_config_option\s*\(\s*[\'\"]path_php_binary[\'\"](?:\s*,[^)]*)?\)/',
 			$source
 		)) {
 			$unguarded[] = $file;
