@@ -4421,12 +4421,12 @@ function rsa_check_keypair() {
 }
 
 /**
- * reset_group_perms - sets a flag for all users of a group logged in that their perms
- *   need to be reloaded from the database
+ * Expires persistent authentication tokens and reloads permissions for users
+ * who are members of the changed group.
  *
- * @param  (int) $group_id - the id of the group to check
+ * @param int $group_id ID of the group whose user permissions changed.
  *
- * @return (void)
+ * @return void
  */
 function reset_group_perms($group_id) {
 	$users = array_rekey(db_fetch_assoc_prepared('SELECT user_id
@@ -4435,21 +4435,30 @@ function reset_group_perms($group_id) {
 		array($group_id)), 'user_id', 'user_id');
 
 	if (cacti_sizeof($users)) {
-		db_execute('UPDATE user_auth
+		$user_ids     = array_values($users);
+		$placeholders = implode(',', array_fill(0, count($user_ids), '?'));
+
+		db_execute_prepared("DELETE FROM user_auth_cache
+			WHERE user_id IN ($placeholders)",
+			$user_ids);
+
+		db_execute_prepared("UPDATE user_auth
 			SET reset_perms=FLOOR(RAND() * 4294967295) + 1
-			WHERE id IN (' . implode(',', $users) . ')');
+			WHERE id IN ($placeholders)",
+			$user_ids);
 	}
 }
 
 /**
- * reset_user_perms - sets a flag for all users logged in as this user that their perms
- *   need to be reloaded from the database
+ * Expires persistent authentication tokens and reloads permissions for a user.
  *
- * @param  (int) $user_id - the id of the current user
+ * @param int $user_id ID of the user whose permissions changed.
  *
- * @return (void)
+ * @return void
  */
 function reset_user_perms($user_id) {
+	db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', array($user_id));
+
 	db_execute_prepared('UPDATE user_auth
 		SET reset_perms=FLOOR(RAND() * 4294967295) + 1
 		WHERE id = ?',
