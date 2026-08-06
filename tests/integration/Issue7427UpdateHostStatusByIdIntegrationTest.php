@@ -44,7 +44,7 @@ if (!defined('CACTI_WEB')) {
 }
 
 if (!defined('CACTI_PATH_LOG')) {
-	define('CACTI_PATH_LOG', sys_get_temp_dir() . '/cacti-issue-7427-test.log');
+	define('CACTI_PATH_LOG', sys_get_temp_dir());
 }
 
 /**
@@ -83,7 +83,7 @@ class HostStatusStatement extends PDOStatement {
 class HostStatusPDO extends FakeMySQLPDO {
 	public function __construct() {
 		parent::__construct();
-		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [HostStatusStatement::class]);
+		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [HostStatusStatement::class, []]);
 	}
 
 	public function prepare(string $query, array $options = []) : PDOStatement|false {
