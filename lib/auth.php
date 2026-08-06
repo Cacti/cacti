@@ -4407,21 +4407,31 @@ function reset_group_perms(int $group_id) : void {
 		[$group_id]), 'user_id', 'user_id');
 
 	if (cacti_sizeof($users)) {
-		db_execute('UPDATE user_auth
+		$user_ids     = array_values($users);
+		$placeholders = implode(',', array_fill(0, count($user_ids), '?'));
+
+		db_execute_prepared("DELETE FROM user_auth_cache
+			WHERE user_id IN ($placeholders)",
+			$user_ids);
+
+		db_execute_prepared("UPDATE user_auth
 			SET reset_perms=FLOOR(RAND() * 4294967295) + 1
-			WHERE id IN (' . implode(',', $users) . ')');
+			WHERE id IN ($placeholders)",
+			$user_ids);
 	}
 }
 
 /**
- * Sets a flag for all users logged in as this user that their perms
- * need to be reloaded from the database
+ * Expires persistent authentication tokens and sets a flag for all users logged
+ * in as this user that their permissions need to be reloaded from the database.
  *
  * @param int $user_id The ID of the user whose permissions are to be reset.
  *
  * @return void
  */
 function reset_user_perms(int $user_id) : void {
+	db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', [$user_id]);
+
 	db_execute_prepared('UPDATE user_auth
 		SET reset_perms=FLOOR(RAND() * 4294967295) + 1
 		WHERE id = ?',
