@@ -40,7 +40,9 @@
 function csrf_secret_git(string $arguments) : array {
 	$root = dirname(__DIR__, 2);
 
-	if (!is_dir($root . '/.git')) {
+	/* In a worktree or a submodule .git is a file pointing at the real gitdir,
+	   so testing for a directory would skip where tracking is inspectable. */
+	if (!file_exists($root . '/.git')) {
 		test()->markTestSkipped('not a git checkout, so tracking cannot be inspected');
 	}
 
