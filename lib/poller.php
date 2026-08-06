@@ -2687,8 +2687,9 @@ function is_process_running(string $tasktype, string $taskname, int $taskid = 0)
  * its pid for an unrelated program, and trusting the bare pid then either
  * blocks a legitimate task from starting or sends SIGTERM to a stranger. On
  * Linux the command name under /proc gives an identity check the processes
- * table cannot (it records no start time). Where /proc is unavailable, the
- * bare existence test stands, which is the behaviour this replaces.
+ * table cannot (it records no start time). Where /proc is unavailable, or
+ * where the caller is not itself a CLI process, the bare existence test
+ * stands, which is the behaviour this replaces.
  *
  * @param int $pid The pid recorded in the processes table.
  *
@@ -2698,6 +2699,14 @@ function is_process_running(string $tasktype, string $taskname, int $taskid = 0)
 function cacti_process_still_running(int $pid) : bool {
 	if ($pid <= 0 || !function_exists('posix_kill') || !posix_kill($pid, 0)) {
 		return false;
+	}
+
+	/* Only compare identities between processes of the same kind. The registry
+	   holds CLI tasks; when the web UI asks about one, our own comm is php-fpm
+	   or httpd and would never match, so the check would call a live task dead
+	   and let a second copy start. Under any other SAPI, fall back. */
+	if (PHP_SAPI !== 'cli') {
+		return true;
 	}
 
 	$self  = '/proc/' . getmypid() . '/comm';

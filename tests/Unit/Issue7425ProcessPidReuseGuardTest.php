@@ -75,6 +75,10 @@ test('a live pid belonging to a different program is not reported running', func
 		test()->markTestSkipped('no /proc, so command names cannot be compared');
 	}
 
+	if (PHP_SAPI !== 'cli') {
+		test()->markTestSkipped('the identity check only applies to CLI callers');
+	}
+
 	$handle = null;
 	$pid    = pid_guard_spawn_foreign($handle);
 
@@ -113,4 +117,24 @@ test('every registry kill site checks the pid before signalling it', function ()
 	// call site went back to trusting a recycled pid
 	expect($poller)->not->toContain("posix_kill(\$r['pid'], 0)")
 		->and($dsstats)->not->toContain("posix_kill(\$p['pid'], 0)");
+});
+
+/**
+ * The registry holds CLI tasks. A web request asking whether one is alive has a
+ * different command name by definition, so comparing identities there would
+ * report a running poller dead and let a second copy start.
+ */
+test('the identity check is limited to CLI callers', function () {
+	$body = file_get_contents(dirname(__DIR__, 2) . '/lib/poller.php');
+
+	$start = strpos($body, 'function cacti_process_still_running(');
+	expect($start)->not->toBeFalse();
+
+	$function = substr($body, $start, strpos($body, "\nfunction ", $start + 1) - $start);
+
+	$sapi_guard = strpos($function, "PHP_SAPI !== 'cli'");
+	$proc_read  = strpos($function, '/proc/');
+
+	expect($sapi_guard)->not->toBeFalse()
+		->and($sapi_guard)->toBeLessThan($proc_read);
 });
