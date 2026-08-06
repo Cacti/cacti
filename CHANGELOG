@@ -67,6 +67,7 @@ Cacti CHANGELOG
 -issue#7493: SNMP walk for output_format fields used max OIDs instead of the device bulk walk size
 -issue#7518: Replace the DsstatsMeasure enum in lib/html_utility.php with const arrays for PHP 8.0 compatibility
 -issue#7425: Guard process registration and cleanup against PID reuse
+-issue#7425: Guard process registration and cleanup against PID reuse
 -issue#7519: Fix Boost archive-table cleanup deleting still-open-round rows instead of forwarding them to the live table
 -issue#7520: Gate Boost archive-table drop on shard completeness instead of the partial-success status sum
 -issue#7521: Purge the old remote poller's poller_item row when api_data_source_change_host() moves a data source to a new device
@@ -86,6 +87,15 @@ Cacti CHANGELOG
 -issue#7536: Consolidate the four hand-written poller_output_boost inserts into one shared helper
 -issue#7535: Consolidate the poller_item delete call sites behind poller_item_delete_for_data_source() and poller_item_delete_for_host()
 -issue#7576: Stop passing an unset path_php_binary into string parameters
+-issue#7261: Parameterize aggregate_graphs.php SQL and harden reflected request values
+-issue#7343: Install wizard silently fails to advance after CSRF token expires
+-issue#7380: Batch graph-create task_item_id wiring to reduce template graph creation queries
+-issue#7518: Replace the DsstatsMeasure enum in lib/html_utility.php with const arrays for PHP 8.0 compatibility
+-issue#7261: Parameterize aggregate_graphs.php SQL and harden reflected request values
+-issue#7343: Install wizard silently fails to advance after CSRF token expires
+-issue#7380: Batch graph-create task_item_id wiring to reduce template graph creation queries
+-issue#7518: Replace the DsstatsMeasure enum in lib/html_utility.php with const arrays for PHP 8.0 compatibility
+-issue#7425: Guard process registration and cleanup against PID reuse
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
