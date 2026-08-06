@@ -89,7 +89,7 @@ if (isset($_SESSION['refresh'])) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = 'index.php';
 	$refreshIsLogout      = 'false';
-} elseif (!isset($_SESSION[SESS_USER_ID]) && isset($_SERVER['REQUEST_URL']) && str_contains($_SERVER['REQUEST_URI'], 'index.php')) {
+} elseif (!isset($_SESSION[SESS_USER_ID]) && isset($_SERVER['REQUEST_URI']) && str_contains($_SERVER['REQUEST_URI'], 'index.php')) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
 	$refreshIsLogout      = 'false';
