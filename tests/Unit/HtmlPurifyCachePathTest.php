@@ -122,6 +122,14 @@ function _html_purify_count($dir) {
 	));
 }
 
+test('the alternate cache path is documented in the distributed config', function () {
+	$config = file_get_contents(dirname(__DIR__, 2) . '/include/config.php.dist');
+
+	expect($config)->not->toBeFalse()
+		->and($config)->toContain("\$config['purifier_cache_path'] = '/var/cache/cacti/purifier';")
+		->and($config)->toContain('The directory must already exist and be writable');
+});
+
 test('the definition cache lands in the configured path, not the library tree', function () {
 	$cache  = _html_purify_tmpdir();
 	$before = _html_purify_count(_html_purify_library_cache());
