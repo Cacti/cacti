@@ -18,6 +18,9 @@ test('global session handles a missing request URI consistently', function () {
 	expect($source)->not->toBeFalse()
 		->and($source)->toContain("\$request_uri = \$_SERVER['REQUEST_URI'] ?? '';")
 		->and(substr_count($source, "\$_SERVER['REQUEST_URI']"))->toBe(1)
+		->and(substr_count($source, 'sanitize_uri($request_uri)'))->toBe(5)
 		->and($source)->not->toContain("\$_SERVER['REQUEST_URL']")
-		->and($source)->toContain("str_contains(\$request_uri, 'index.php')");
+		->and($source)->toContain("str_contains(\$request_uri, 'index.php')")
+		->and(substr_count($source, "read_config_option('auth_method') == AUTH_METHOD_BASIC"))->toBe(2)
+		->and($source)->not->toContain("read_config_option('auth_method') == 2");
 });
