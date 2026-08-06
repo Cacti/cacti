@@ -21,7 +21,6 @@ Cacti CHANGELOG
 -issue#5573: Incorrect URL for editing graph template
 -issue#5639: Add tooltip info about IPv6 address
 -issue#5657: Consolidation Functions must be available in COMMENT for nth percentile and bandwidth summations comment types
--issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#5680: Fix Spikekill not following correct time in schedule
 -issue#5776: Undefined array key "description" in file settings.php
 -issue#5844: Automation fails when using MySQL 8
@@ -75,6 +74,7 @@ Cacti CHANGELOG
 -issue#7343: Install wizard silently fails to advance after CSRF token expires
 -issue#7380: Batch graph-create task_item_id wiring to reduce template graph creation queries
 -issue#7518: Replace the DsstatsMeasure enum in lib/html_utility.php with const arrays for PHP 8.0 compatibility
+-issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
