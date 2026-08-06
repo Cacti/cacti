@@ -101,6 +101,7 @@
         "code",
         "security",
         "doc",
+        "infra",
         "translation",
         "test",
         "design",
@@ -181,7 +182,9 @@
       "profile": "https://github.com/Linegod",
       "contributions": [
         "code",
+        "security",
         "doc",
+        "translation",
         "test"
       ]
     },
@@ -328,7 +331,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/2353530?v=4",
       "profile": "https://github.com/earendilfr",
       "contributions": [
-        "code"
+        "code",
+        "doc"
       ]
     },
     {
@@ -343,7 +347,7 @@
     },
     {
       "login": "zersh01",
-      "name": "\u0421\u0435\u0440\u0433\u0435\u0439",
+      "name": "Сергей",
       "avatar_url": "https://avatars.githubusercontent.com/u/12559114?v=4",
       "profile": "https://github.com/zersh01",
       "contributions": [
@@ -359,7 +363,8 @@
       "contributions": [
         "code",
         "security",
-        "doc"
+        "doc",
+        "translation"
       ]
     },
     {
@@ -530,6 +535,7 @@
       "profile": "https://github.com/jpobeda",
       "contributions": [
         "code",
+        "doc",
         "translation"
       ]
     },
@@ -604,7 +610,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/17087236?v=4",
       "profile": "https://github.com/interduo",
       "contributions": [
-        "code"
+        "code",
+        "translation"
       ]
     },
     {
@@ -997,7 +1004,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/36817012?v=4",
       "profile": "https://github.com/snsupersharp",
       "contributions": [
-        "code"
+        "code",
+        "translation"
       ]
     },
     {
@@ -1114,7 +1122,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/3439365?v=4",
       "profile": "https://github.com/jkbzh",
       "contributions": [
-        "code"
+        "code",
+        "doc"
       ]
     },
     {
@@ -1444,7 +1453,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/28870447?v=4",
       "profile": "https://github.com/JonBogan",
       "contributions": [
-        "code"
+        "code",
+        "doc"
       ]
     },
     {
@@ -1543,6 +1553,9 @@
       "avatar_url": "https://www.gravatar.com/avatar/3614e9492b8064f42cbcf90007c958f2?d=identicon&s=100",
       "profile": "mailto:patrick@patrickrademaker.nl",
       "contributions": [
+        "code",
+        "security",
+        "doc",
         "translation"
       ]
     },
@@ -1552,6 +1565,7 @@
       "avatar_url": "https://www.gravatar.com/avatar/e23cdd77f5402b2a5cacb2603d30b162?d=identicon&s=100",
       "profile": "mailto:daniel@danielnylander.se",
       "contributions": [
+        "code",
         "translation"
       ]
     },
@@ -1561,6 +1575,7 @@
       "avatar_url": "https://www.gravatar.com/avatar/932b32707ab10a8e56dfb43d10c751b8?d=identicon&s=100",
       "profile": "mailto:baka109g@gmail.com",
       "contributions": [
+        "code",
         "translation"
       ]
     },
@@ -1570,6 +1585,7 @@
       "avatar_url": "https://www.gravatar.com/avatar/99e2704c0e671f6c8213ddb93e549d9a?d=identicon&s=100",
       "profile": "mailto:john.horne@plymouth.ac.uk",
       "contributions": [
+        "code",
         "translation"
       ]
     },
@@ -1579,6 +1595,7 @@
       "avatar_url": "https://www.gravatar.com/avatar/d83b6588c547b1d30c4c8d6744348dd3?d=identicon&s=100",
       "profile": "mailto:akapulko@gmail.com",
       "contributions": [
+        "code",
         "translation"
       ]
     },
@@ -1588,6 +1605,7 @@
       "avatar_url": "https://www.gravatar.com/avatar/78c98a1f8223839cf818a0b7263c3f4e?d=identicon&s=100",
       "profile": "mailto:ronny.preiss@gmail.com",
       "contributions": [
+        "code",
         "translation"
       ]
     },
@@ -1597,6 +1615,7 @@
       "avatar_url": "https://www.gravatar.com/avatar/b933bcb2e004a82603245b5c39ec3f1f?d=identicon&s=100",
       "profile": "mailto:info@ubilling.net.ua",
       "contributions": [
+        "code",
         "translation"
       ]
     },
@@ -1606,7 +1625,35 @@
       "avatar_url": "https://www.gravatar.com/avatar/5c1bd0c348440ee9bce2040407b1ad0b?d=identicon&s=100",
       "profile": "mailto:nb1dev@free.fr",
       "contributions": [
+        "code",
         "translation"
+      ]
+    },
+    {
+      "login": "olafhering",
+      "name": "olafhering",
+      "avatar_url": "https://avatars.githubusercontent.com/u/942324?v=4",
+      "profile": "https://github.com/olafhering",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Mojo-OG",
+      "name": "Mojo-OG",
+      "avatar_url": "https://avatars.githubusercontent.com/u/57604549?v=4",
+      "profile": "https://github.com/Mojo-OG",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "abdulm5",
+      "name": "abdulm5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/154353563?v=4",
+      "profile": "https://github.com/abdulm5",
+      "contributions": [
+        "code"
       ]
     }
   ]
