@@ -66,6 +66,7 @@ Cacti CHANGELOG
 -issue#7429: Prevent monthly automation schedules from resetting next_start to 1970
 -issue#7493: SNMP walk for output_format fields used max OIDs instead of the device bulk walk size
 -issue#7518: Replace the DsstatsMeasure enum in lib/html_utility.php with const arrays for PHP 8.0 compatibility
+-issue#7425: Guard process registration and cleanup against PID reuse
 -issue#7519: Fix Boost archive-table cleanup deleting still-open-round rows instead of forwarding them to the live table
 -issue#7520: Gate Boost archive-table drop on shard completeness instead of the partial-success status sum
 -issue#7521: Purge the old remote poller's poller_item row when api_data_source_change_host() moves a data source to a new device
