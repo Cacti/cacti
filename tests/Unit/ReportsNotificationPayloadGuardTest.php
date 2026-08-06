@@ -20,30 +20,31 @@ $getReportsNotificationSource = static function () : string {
 	return $source;
 };
 
-test('queued report notifications validate the decoded payload before iteration', function () use ($getReportsNotificationSource) {
+$findReportsPattern = static function (string $pattern, string $source, int $offset, string $label) : int {
+	$matched = preg_match($pattern, $source, $matches, PREG_OFFSET_CAPTURE, $offset);
+	expect($matched)->toBe(1, "$label must exist in lib/reports.php");
+
+	return $matches[0][1];
+};
+
+test('queued report notifications validate the decoded payload before iteration', function () use ($getReportsNotificationSource, $findReportsPattern) {
 	$source = $getReportsNotificationSource();
 
-	$decode = strpos($source, '$notifications = json_decode(');
-	$guard  = strpos($source, 'if (!is_array($notifications))', $decode);
-	$loop   = strpos($source, 'foreach ($notifications as $type => $data)', $decode);
+	$decode = $findReportsPattern('/\$notifications\s*=\s*json_decode\s*\(/', $source, 0, 'notification decode');
+	$guard  = $findReportsPattern('/if\s*\(\s*!is_array\s*\(\s*\$notifications\s*\)\s*\)/', $source, $decode, 'payload guard');
+	$loop   = $findReportsPattern('/foreach\s*\(\s*\$notifications\s+as\s+\$type\s*=>\s*\$data\s*\)/', $source, $decode, 'notification loop');
 
-	expect($decode)->not->toBeFalse()
-		->and($guard)->not->toBeFalse()
-		->and($loop)->not->toBeFalse()
-		->and($decode)->toBeLessThan($guard)
+	expect($decode)->toBeLessThan($guard)
 		->and($guard)->toBeLessThan($loop);
 });
 
-test('each notification entry is validated before dispatch', function () use ($getReportsNotificationSource) {
+test('each notification entry is validated before dispatch', function () use ($getReportsNotificationSource, $findReportsPattern) {
 	$source = $getReportsNotificationSource();
 
-	$loop   = strpos($source, 'foreach ($notifications as $type => $data)');
-	$guard  = strpos($source, 'if (!is_array($data))', $loop);
-	$branch = strpos($source, 'switch($type)', $loop);
+	$loop   = $findReportsPattern('/foreach\s*\(\s*\$notifications\s+as\s+\$type\s*=>\s*\$data\s*\)/', $source, 0, 'notification loop');
+	$guard  = $findReportsPattern('/if\s*\(\s*!is_array\s*\(\s*\$data\s*\)\s*\)/', $source, $loop, 'entry guard');
+	$branch = $findReportsPattern('/switch\s*\(\s*\$type\s*\)/', $source, $loop, 'dispatch switch');
 
-	expect($loop)->not->toBeFalse()
-		->and($guard)->not->toBeFalse()
-		->and($branch)->not->toBeFalse()
-		->and($loop)->toBeLessThan($guard)
+	expect($loop)->toBeLessThan($guard)
 		->and($guard)->toBeLessThan($branch);
 });

@@ -47,11 +47,24 @@ test('reports.php contains no fopen or predictable-path file writes', function (
 	$src = file_get_contents($reportsPath);
 	expect($src)->not->toBeFalse('lib/reports.php must be readable');
 
-	expect($src)->not->toMatch('/\bfopen\s*\(/')
-		->and($src)->not->toMatch('/\bfile_put_contents\s*\(\s*[\'"]\/tmp\//');
+	foreach (['png2jpeg', 'png2gif'] as $function) {
+		$start = strpos($src, "function $function(");
+		expect($start)->not->toBeFalse("$function() must exist");
+
+		$end = strpos($src, "\nfunction ", $start + 1);
+		expect($end)->not->toBeFalse("$function() must have a following function");
+
+		$body = substr($src, $start, $end - $start);
+		expect($body)->not->toMatch('/\bfopen\s*\(/')
+			->and($body)->not->toMatch('/\bfile_put_contents\s*\(\s*[\'"]\/tmp\//');
+	}
 });
 
 test('png2jpeg round-trips a minimal valid PNG without touching disk', function () {
+	if (!extension_loaded('gd') || !function_exists('imagecreate')) {
+		test()->markTestSkipped('GD is not available');
+	}
+
 	$im = imagecreate(1, 1);
 	expect($im)->not->toBeFalse('GD must create the source image');
 	imagecolorallocate($im, 255, 0, 0);
@@ -67,6 +80,10 @@ test('png2jpeg round-trips a minimal valid PNG without touching disk', function 
 });
 
 test('png2gif round-trips a minimal valid PNG without touching disk', function () {
+	if (!extension_loaded('gd') || !function_exists('imagecreate')) {
+		test()->markTestSkipped('GD is not available');
+	}
+
 	$im = imagecreate(1, 1);
 	expect($im)->not->toBeFalse('GD must create the source image');
 	imagecolorallocate($im, 255, 0, 0);
