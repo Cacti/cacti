@@ -1575,7 +1575,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 		$table_encoding = isset($data['charset']) ? 'DEFAULT CHARSET = ' . $data['charset'] : '';
 
 		if (isset($data['collate'])) {
-			$table_encoding .= ($table_encoding !== '' ? ' ' : 'DEFAULT ') . 'COLLATE = ' . $data['collate'];
+			$table_encoding .= ($table_encoding !== '' ? ' ' : '') . 'COLLATE = ' . $data['collate'];
 		}
 
 		$alter_clauses[] = $table_encoding;

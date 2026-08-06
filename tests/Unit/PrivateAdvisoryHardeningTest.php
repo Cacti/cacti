@@ -90,6 +90,7 @@ test('db_update_table batches schema changes into one alter statement', function
 
 	expect(substr_count($body, 'db_execute('))->toBe(1)
 		->and($body)->toContain("implode(', ', \$alter_clauses)")
+		->and($body)->not->toContain("\$table_encoding !== '' ? ' ' : 'DEFAULT '")
 		->and($body)->toContain("'ADD ' . \$definition")
 		->and($body)->toContain("'DROP COLUMN `'")
 		->and($body)->toContain("'ADD INDEX `'")
