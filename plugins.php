@@ -553,6 +553,9 @@ function plugins_load_temp_table() : string {
 function update_show_current() : void {
 	global $plugins, $pluginslist, $status_names, $actions, $item_rows;
 
+	// drop anything left behind by plugins that are no longer installed
+	plugin_clean_old_plugin_info();
+
 	// ================= input validation and session storage =================
 	$filters = [
 		'rows' => [

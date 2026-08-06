@@ -1479,7 +1479,7 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 				$data = cacti_snmp_walk($host['hostname'], $host['snmp_community'], $field_array['oid'], $host['snmp_version'],
 					$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'],
 					$host['snmp_priv_passphrase'], $host['snmp_priv_protocol'], $host['snmp_context'],
-					$host['snmp_port'], $host['snmp_timeout'], $host['ping_retries'], $host['max_oids'], 'SNMP',
+					$host['snmp_port'], $host['snmp_timeout'], $host['ping_retries'], $walk_size, 'SNMP',
 					$host['snmp_engine_id'], $value_output_format);
 
 				$snmp_data = [];

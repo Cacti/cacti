@@ -1844,7 +1844,7 @@ function utility_php_sort_extensions(mixed $a, mixed $b) : int {
 }
 
 function utility_php_extensions() : array {
-	$php      = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
+	$php      = cacti_escapeshellcmd((string) read_config_option('path_php_binary', true));
 	$php_file = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions';
 	$json     = shell_exec($php . ' -q ' . $php_file);
 
@@ -1905,7 +1905,7 @@ function utility_php_verify_extensions(mixed &$extensions, string $source) : voi
 }
 
 function utility_php_recommends() : array {
-	$php        = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
+	$php        = cacti_escapeshellcmd((string) read_config_option('path_php_binary', true));
 	$php_file   = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' recommends';
 	$json       = shell_exec($php . ' -q ' . $php_file);
 	$ext        = ['web' => '', 'cli' => ''];
@@ -2032,7 +2032,7 @@ function utility_php_set_recommends_text(mixed &$recs) : void {
 }
 
 function utility_php_optionals() : array {
-	$php      = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
+	$php      = cacti_escapeshellcmd((string) read_config_option('path_php_binary', true));
 	$php_file = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' optionals';
 	$json     = shell_exec($php . ' -q ' . $php_file);
 	$opt      = [];

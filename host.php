@@ -200,7 +200,7 @@ function host_reindex() : void {
 	$start = microtime(true);
 
 	$host_id = gfrv('host_id');
-	shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
+	shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
 
 	$end = microtime(true);
 
