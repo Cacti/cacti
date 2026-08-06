@@ -67,6 +67,9 @@ class HostStatusStatement extends PDOStatement {
 	}
 }
 
+/**
+ * A FakeMySQLPDO that hands out counting statements and rewrites FROM_UNIXTIME.
+ */
 class HostStatusPDO extends FakeMySQLPDO {
 	public function __construct() {
 		parent::__construct();
@@ -82,7 +85,13 @@ class HostStatusPDO extends FakeMySQLPDO {
 	}
 }
 
-/** Two devices behind one hostname, which is what the bug needs to show. */
+/**
+ * Seeds two devices behind one hostname, which is what the bug needs to show.
+ *
+ * @param string $hostname The hostname both devices share.
+ *
+ * @return HostStatusPDO A connection holding the seeded schema.
+ */
 function host_status_seed(string $hostname = 'dup.example.net') : HostStatusPDO {
 	$conn = new HostStatusPDO();
 
@@ -112,6 +121,12 @@ function host_status_seed(string $hostname = 'dup.example.net') : HostStatusPDO 
 	return $conn;
 }
 
+/**
+ * Builds a Net_Ping carrying a successful result, since update_host_status()
+ * reads the response strings and timings straight off it.
+ *
+ * @return Net_Ping A ping object with both SNMP and ICMP results filled in.
+ */
 function host_status_ping() : Net_Ping {
 	$ping = new Net_Ping();
 
@@ -123,6 +138,13 @@ function host_status_ping() : Net_Ping {
 	return $ping;
 }
 
+/**
+ * Reads back the columns update_host_status() writes, ordered by device id.
+ *
+ * @param PDO $conn The connection to read from.
+ *
+ * @return array One row per device.
+ */
 function host_status_rows(PDO $conn) : array {
 	return $conn->query('SELECT id, status, total_polls, failed_polls, status_last_error
 		FROM host ORDER BY id')->fetchAll(PDO::FETCH_ASSOC);
