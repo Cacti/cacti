@@ -92,6 +92,12 @@ test('a live pid belonging to a different program is not reported running', func
 	$handle = null;
 	$pid    = pid_guard_spawn_foreign($handle);
 
+	if (!is_readable('/proc/' . getmypid() . '/comm') || !is_readable('/proc/' . $pid . '/comm')) {
+		proc_terminate($handle);
+		proc_close($handle);
+		test()->markTestSkipped('process command names are not readable under /proc');
+	}
+
 	// the pid is alive, so the bare existence test the fix replaced said yes
 	expect(posix_kill($pid, 0))->toBeTrue()
 		->and(cacti_process_still_running($pid))->toBeFalse();

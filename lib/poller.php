@@ -2679,8 +2679,8 @@ function is_process_running(string $tasktype, string $taskname, int $taskid = 0)
 }
 
 /**
- * Determines whether a registered pid is still alive and still belongs to the
- * process that registered it.
+ * Determines whether a registered pid is still alive and, where observable,
+ * has the same command identity as the current CLI process.
  *
  * A bare posix_kill($pid, 0) only proves that some process owns the pid. Once a
  * registered process dies without unregistering, the system is free to recycle

@@ -225,17 +225,26 @@ function registry_wire(PDO $conn) : void {
 }
 
 beforeEach(function () {
-	global $database_sessions, $database_hostname, $database_port, $database_default;
+	$this->db_globals = [];
 
-	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
+	foreach (['database_sessions', 'database_hostname', 'database_port', 'database_default'] as $name) {
+		$this->db_globals[$name] = [
+			'exists' => array_key_exists($name, $GLOBALS),
+			'value'  => $GLOBALS[$name] ?? null,
+		];
+	}
 });
 
 /* Left in place, the fake handle answers every later read_config_option() in
    the run and throws on Cacti's MySQL SQL, aborting the suite. */
 afterEach(function () {
-	global $database_sessions, $database_hostname, $database_port, $database_default;
-
-	[$database_sessions, $database_hostname, $database_port, $database_default] = $this->db_globals;
+	foreach ($this->db_globals as $name => $snapshot) {
+		if ($snapshot['exists']) {
+			$GLOBALS[$name] = $snapshot['value'];
+		} else {
+			unset($GLOBALS[$name]);
+		}
+	}
 });
 
 test('a registration held by a live process of ours still blocks a new start', function () {

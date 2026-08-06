@@ -1427,6 +1427,11 @@ function dsstats_get_subtype(string $type) : string {
 function dsstats_kill_running_processes() : void {
 	global $type;
 
+	// This function has always used unregister_process() from poller.php. Load
+	// that dependency explicitly so the newer identity check is available too,
+	// regardless of which entry point loaded dsstats.php.
+	require_once CACTI_PATH_LIBRARY . '/poller.php';
+
 	if ($type == 'bmaster') {
 		$processes = db_fetch_assoc_prepared('SELECT *
 			FROM processes
