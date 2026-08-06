@@ -510,8 +510,10 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
 
 			/* An unschedulable configuration returns false, and date() would
 			   turn that into 1970, which the run check below then reads as
-			   overdue on every poller cycle. Leave next_start alone. */
-			if (empty($next)) {
+			   overdue on every poller cycle. Leave next_start alone. The test
+			   is strict: a calculated timestamp of 0 is a different thing from
+			   "nothing to schedule", and should not be silently equated. */
+			if ($next === false) {
 				return false;
 			}
 
