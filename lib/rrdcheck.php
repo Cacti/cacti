@@ -167,7 +167,7 @@ function do_rrdcheck(int $thread_id = 1) : void {
 			$file = $rrdval['data_source_path'];
 
 			if ($use_proxy) {
-				$file_exists = rrdtool_execute("file_exists $file", true, RRDTOOL_OUTPUT_BOOLEAN, false, 'RRDCHECK');
+				$file_exists = rrdtool_execute('file_exists ' . cacti_escapeshellarg($file), true, RRDTOOL_OUTPUT_BOOLEAN, false, 'RRDCHECK');
 			} else {
 				clearstatcache();
 				$file_exists = file_exists($file);
@@ -218,9 +218,9 @@ function do_rrdcheck(int $thread_id = 1) : void {
 				}
 
 				if ($use_proxy) {
-					$output = rrdtool_execute("info $file", false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
+					$output = rrdtool_execute('info ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
 				} else {
-					$output = rrdcheck_rrdtool_execute("info $file", $pipes);
+					$output = rrdcheck_rrdtool_execute(['info', $file], $pipes);
 				}
 
 				$matches     = [];
@@ -374,9 +374,9 @@ function do_rrdcheck(int $thread_id = 1) : void {
 				$one_hour_limit = ($duration - 3600) / $step;
 
 				if ($use_proxy) {
-					$info_array = rrdtool_execute("fetch $file LAST -s $pstart -e $pend ", false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
+					$info_array = rrdtool_execute('fetch ' . cacti_escapeshellarg($file) . " LAST -s $pstart -e $pend", false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
 				} else {
-					$info_array = rrdcheck_rrdtool_execute("fetch $file LAST -s $pstart -e $pend", $pipes);
+					$info_array = rrdcheck_rrdtool_execute(['fetch', $file, 'LAST', '-s', $pstart, '-e', $pend], $pipes);
 				}
 
 				// don't do anything if RRDfile did not return data
@@ -691,12 +691,8 @@ function rrdcheck_error_handler(int $errno, string $errmsg, string $filename, in
 			E_USER_ERROR        => 'User Error',
 			E_USER_WARNING      => 'User Warning',
 			E_USER_NOTICE       => 'User Notice',
-			E_STRICT            => 'Runtime Notice'
+			E_RECOVERABLE_ERROR => 'Catchable Fatal Error'
 		];
-
-		if (defined('E_RECOVERABLE_ERROR')) {
-			$errortype[E_RECOVERABLE_ERROR] = 'Catchable Fatal Error';
-		}
 
 		// create an error string for the log
 		$err = "ERRNO:'" . $errno . "' TYPE:'" . $errortype[$errno] .
@@ -734,16 +730,49 @@ function rrdcheck_boost_bottom() : void {
 		set_config_option('rrdcheck_last_run_time', time());
 
 		// run the daily stats
-		rrdcheck_launch_children('bmaster');
+		$expected_children = rrdcheck_launch_children('bmaster');
 
-		// Wait for all processes to continue
-		while ($running = rrdcheck_processes_running('bmaster')) {
-			rrdcheck_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
-
-			sleep(2);
-		}
+		rrdcheck_wait_for_children('bmaster', $expected_children);
 
 		rrdcheck_log_statistics('BOOST');
+	}
+}
+
+/**
+ * rrdcheck_wait_for_children - waits for launched rrdcheck children of the given
+ * type to finish. exec_background() is non-blocking, so a bare
+ * `while (rrdcheck_processes_running($type))` can observe zero registered
+ * children before any of them have started, mistaking "not started yet" for
+ * "already done" and returning immediately -- the same startup race Boost's
+ * boost_all_children_registered() barrier was added to close (see
+ * poller_boost.php). This applies the same shape: wait for the running count
+ * to reach the launched count before trusting it can fall back to zero.
+ *
+ * @param string $type              The process type (e.g. 'bmaster')
+ * @param int    $expected_children Number of children rrdcheck_launch_children() launched
+ *
+ * @return void
+ */
+function rrdcheck_wait_for_children(string $type, int $expected_children) : void {
+	if ($expected_children <= 0) {
+		return;
+	}
+
+	$startup_deadline = time() + 30;
+
+	while (rrdcheck_processes_running($type) < $expected_children && time() < $startup_deadline) {
+		sleep(1);
+	}
+
+	if (rrdcheck_processes_running($type) < $expected_children) {
+		cacti_log(sprintf('WARNING: rrdcheck startup barrier timed out; %d of %d %s children registered before draining.', rrdcheck_processes_running($type), $expected_children, $type), false, 'RRDCHECK');
+	}
+
+	// Wait for all processes to continue
+	while ($running = rrdcheck_processes_running($type)) {
+		rrdcheck_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
+
+		sleep(2);
 	}
 }
 
@@ -829,13 +858,25 @@ function rrdcheck_rrdtool_init() : array {
  * This may not be the best method and may be changed after I have a conversation with a few
  * developers.
  *
- * @param string $command The rrdtool command to execute
- * @param array  $pipes   An array of stdin and stdout pipes to read and write data from
+ * @param array|string $command The rrdtool command to execute.  When passed as an array
+ *                              the first element is the sub-command and the remaining
+ *                              elements are escaped before being joined
+ * @param array        $pipes   An array of stdin and stdout pipes to read and write data from
  *
  * @return mixed The output from RRDtool
  */
-function rrdcheck_rrdtool_execute(string $command, mixed &$pipes) : mixed {
+function rrdcheck_rrdtool_execute(array|string $command, mixed &$pipes) : mixed {
 	static $broken = false;
+
+	if (is_array($command)) {
+		// RRDtool needs the sub-command verbatim, so only its arguments are quoted
+		$args    = $command;
+		$command = (string) array_shift($args);
+
+		if (cacti_sizeof($args)) {
+			$command .= ' ' . implode(' ', array_map('cacti_escapeshellarg', $args));
+		}
+	}
 
 	$stdout = '';
 
@@ -889,9 +930,9 @@ function rrdcheck_rrdtool_close($process) : int {
  *
  * @param string $type The process type
  *
- * @return void
+ * @return int The number of children launched
  */
-function rrdcheck_launch_children(string $type) : void {
+function rrdcheck_launch_children(string $type) : int {
 	global $debug;
 
 	$processes = read_config_option('rrdcheck_parallel');
@@ -915,6 +956,8 @@ function rrdcheck_launch_children(string $type) : void {
 	}
 
 	sleep(2);
+
+	return (int) $processes;
 }
 
 /**

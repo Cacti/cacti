@@ -221,8 +221,13 @@ $poller_lastrun  = intval(read_config_option('poller_lastrun_' . $poller_id));
 // is boost enabled
 $boost_enabled   = read_config_option('boost_rrd_update_enable') == 'on' ? true : false;
 
+// check the last time a mibs run was executed
+$poller_mibsrun  = read_config_option('poller_mibsrun_' . $poller_id);
+
 // collect the system mibs every 4 hours
-if ($poller_lastrun % 14440 < $current_time % 14440 || empty($poller_lastrun)) {
+if (empty($poller_mibsrun) || ($current_time - $poller_mibsrun > 14400)) {
+	set_config_option('poller_mibsrun_' . $poller_id, $current_time);
+
 	$mibs = true;
 }
 
@@ -287,11 +292,16 @@ if (cacti_sizeof($ds_needing_fixes)) {
  * needs to occur if your are talking to more than one snmp
  * agent on a host.
  */
-$total_ports = db_fetch_cell('SELECT COUNT(DISTINCT snmp_port)
-	FROM poller_item
-	WHERE snmp_port > 0');
+// these results are global (not scoped by poller_id) and only need computing
+// once; every remote poller recomputing them independently is redundant, and
+// the snmp_port scan in particular is a full table scan
+if ($poller_id == 1) {
+	$total_ports = db_fetch_cell('SELECT COUNT(DISTINCT snmp_port)
+		FROM poller_item
+		WHERE snmp_port > 0');
 
-set_config_option('total_snmp_ports', $total_ports);
+	set_config_option('total_snmp_ports', $total_ports);
+}
 
 /**
  * determine the number of active profiles to improve poller performance
@@ -299,24 +309,29 @@ set_config_option('total_snmp_ports', $total_ports);
  * In the case where the $max_step does not equal the poller interval
  * we have to artificially set the $active_profiles > 1
  */
-if ($poller_interval != $max_step) {
-	$active_profiles = 2;
-} elseif ($cron_interval == $poller_interval) {
-	$active_profiles = db_fetch_cell('SELECT COUNT(DISTINCT data_source_profile_id)
-		FROM data_template_data
-		WHERE local_data_id > 0');
-} else {
-	$active_profiles = db_fetch_cell('SELECT COUNT(DISTINCT rrd_next_step) FROM poller_item');
-}
+if ($poller_id == 1) {
+	if ($poller_interval != $max_step) {
+		$active_profiles = 2;
+	} elseif ($cron_interval == $poller_interval) {
+		$active_profiles = db_fetch_cell('SELECT COUNT(DISTINCT data_source_profile_id)
+			FROM data_template_data
+			WHERE local_data_id > 0');
+	} else {
+		$active_profiles = db_fetch_cell('SELECT COUNT(DISTINCT rrd_next_step) FROM poller_item');
+	}
 
-set_config_option('active_profiles', $active_profiles);
+	set_config_option('active_profiles', $active_profiles);
+} else {
+	// remote pollers read the value the central poller already computed and stored
+	$active_profiles = read_config_option('active_profiles');
+}
 
 // assume a scheduled task of either 60 or 300 seconds
 if (!empty($poller_interval)) {
 	$poller_runs = intval($cron_interval / $poller_interval);
 
 	if ($active_profiles != 1) {
-		$sql_where   = "WHERE rrd_next_step - $poller_interval <= 0 AND h.disabled = '' AND pi.poller_id = $poller_id";
+		$sql_where   = "WHERE rrd_next_step <= $poller_interval AND h.disabled = '' AND pi.poller_id = $poller_id";
 	} else {
 		$sql_where   = "WHERE pi.poller_id = $poller_id AND h.disabled = ''";
 	}

@@ -139,16 +139,9 @@ function boost_error_handler(int $errno, string $errmsg, string $filename, int $
 			E_USER_ERROR        => 'User Error',
 			E_USER_WARNING      => 'User Warning',
 			E_USER_NOTICE       => 'User Notice',
-			E_STRICT            => 'Runtime Notice'
+			E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
+			E_DEPRECATED        => 'Deprecated Warning'
 		];
-
-		if (defined('E_RECOVERABLE_ERROR')) {
-			$errortype[E_RECOVERABLE_ERROR] = 'Catchable Fatal Error';
-		}
-
-		if (defined('E_DEPRECATED')) {
-			$errortype[E_DEPRECATED] = 'Deprecated Warning';
-		}
 
 		// create an error string for the log
 		$err = "ERRNO:'" . $errno . "' TYPE:'" . $errortype[$errno] .
@@ -203,6 +196,76 @@ function boost_check_correct_enabled() : bool {
 }
 
 /**
+ * boost_flush_output_batch - writes a batch of pre-built poller_output_boost
+ * VALUE tuples, chunking on max_allowed_packet so a single INSERT statement
+ * never exceeds it. Shared by cmd.php's boost_redirect writes and
+ * boost_poller_on_demand() so the batched-insert logic and the duplicate-key
+ * handling live in exactly one place.
+ *
+ * Duplicate (local_data_id, rrd_name, time) keys are ignored (first write
+ * wins) rather than updated. In practice a collision here means the same
+ * already-collected sample is being (re)written -- e.g. a batch retried
+ * after a partial failure, or two writers racing on the same rounded
+ * second -- not two independently meaningful readings, since RRD only
+ * keeps one value per timestamp regardless. This also matches the sibling
+ * poller_output insert, which this table shadows and which has always used
+ * INSERT IGNORE.
+ *
+ * @param array $value_tuples Pre-built "(local_data_id,rrd_name,time,output)"
+ *                            VALUES tuples, e.g. "(1,'ds',NOW(),'1.23')"
+ * @param mixed $conn         DB connection to use, or false for the default
+ *
+ * @return void
+ */
+function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : void {
+	if (!cacti_sizeof($value_tuples)) {
+		return;
+	}
+
+	// max_allowed_packet is a per-server setting and this helper is called with
+	// both the local and the remote poller connection, so the lookup is cached
+	// per connection rather than once for the whole process. spl_object_id() is
+	// how lib/database.php already identifies a connection; the default (false)
+	// connection gets key 0, which spl_object_id() never returns.
+	static $packet_limits = [];
+
+	$conn_key = is_object($conn) ? spl_object_id($conn) : 0;
+
+	if (!isset($packet_limits[$conn_key])) {
+		$row                      = db_fetch_row("SHOW VARIABLES LIKE 'max_allowed_packet'", true, $conn);
+		$packet_limits[$conn_key] = !empty($row['Value']) ? (int) $row['Value'] : 1048576;
+	}
+
+	$max_allowed_packet = $packet_limits[$conn_key];
+
+	$sql_prefix = 'INSERT IGNORE INTO poller_output_boost (local_data_id, rrd_name, time, output) VALUES ';
+
+	// account for the prefix and the ',' delimiter ahead of each tuple
+	// after the first when sizing the buffer against max_allowed_packet
+	$overhead   = strlen($sql_prefix) + 1;
+	$out_buffer = '';
+	$out_length = 0;
+
+	foreach ($value_tuples as $tuple) {
+		$tuple_length = strlen($tuple);
+
+		if ($out_length > 0 && ($out_length + $overhead + $tuple_length) > $max_allowed_packet) {
+			db_execute($sql_prefix . $out_buffer, true, $conn);
+
+			$out_buffer = $tuple;
+			$out_length = $tuple_length;
+		} else {
+			$out_buffer .= ($out_buffer != '' ? ',' : '') . $tuple;
+			$out_length += $tuple_length + ($out_length > 0 ? 1 : 0);
+		}
+	}
+
+	if ($out_buffer != '') {
+		db_execute($sql_prefix . $out_buffer, true, $conn);
+	}
+}
+
+/**
  * Handles the on-demand poller boost functionality for Cacti.
  *
  * This function processes the results of a poller run and inserts the data
@@ -242,13 +305,6 @@ function boost_poller_on_demand(array &$results) : bool {
 		// install the boost error handler
 		set_error_handler('boost_error_handler');
 
-		$out_buffer  = '';
-		$sql_prefix  = 'INSERT INTO poller_output_boost (local_data_id, rrd_name, time, output) VALUES ';
-		$sql_suffix  = ' ON DUPLICATE KEY UPDATE output=VALUES(output)';
-
-		// Add 1 here for potential delimiter
-		$overhead    = strlen($sql_prefix) + strlen($sql_suffix) + 1;
-
 		if (boost_check_correct_enabled()) {
 			// if boost redirect is on, rows are being inserted directly
 			if (read_config_option('boost_redirect') == 'on') {
@@ -257,60 +313,20 @@ function boost_poller_on_demand(array &$results) : bool {
 				return false;
 			}
 
-			$max_allowed_packet = db_fetch_row("SHOW VARIABLES LIKE 'max_allowed_packet'");
-			$max_allowed_packet = $max_allowed_packet['Value'];
-
 			if (cacti_sizeof($results)) {
-				$delim      = '';
-				$delim_len  = 0;
-				$out_length = 0;
+				$value_tuples = [];
 
 				foreach ($results as $result) {
-					$tmp_buffer =
+					$value_tuples[] =
 						'(' .
 						(int) $result['local_data_id'] . ',' .
 						db_qstr($result['rrd_name'], $conn) . ',' .
 						db_qstr($result['time'], $conn) . ',' .
 						db_qstr($result['output'], $conn) .
 						')';
-
-					$tmp_length = strlen($tmp_buffer);
-
-					// Calculate length of output buffer, plus overhead, plus the temp buffer
-					// is it greater than what SQL allows?
-					if (($out_length + $overhead + $tmp_length) > $max_allowed_packet) {
-						// Overall length was greater, but do we actually have anything
-						// already buffered? Or was it just the temp buffer that overflowed
-						// things?
-						if ($out_length > 0) {
-							db_execute($sql_prefix . $out_buffer . $sql_suffix, true, $conn);
-						}
-
-						// Make the temp buffer the starting point for the output buffer, but
-						// we don't need a delimiter at this point, so don't include it
-						$out_buffer = $tmp_buffer;
-						$out_length = $tmp_length;
-					} else {
-						// We didn't overflow so lets add the temp buffer to the output buffer
-						// and include the delimiter string/length.  This will be a blank
-						// delimiter on the first iteration as the output buffer will always
-						// be blank.
-						$out_buffer .= $delim . $tmp_buffer;
-						$out_length += $delim_len + $tmp_length;
-					}
-
-					// Only on the first iteration do we need to set the delimiter as
-					// after that, we will always need it when we are not overflowing
-					if ($delim_len == 0) {
-						$delim     = ',';
-						$delim_len = strlen($delim);
-					}
 				}
 
-				// output buffer had something left, lets flush it
-				if ($out_buffer != '') {
-					db_execute($sql_prefix . $out_buffer . $sql_suffix, true, $conn);
-				}
+				boost_flush_output_batch($value_tuples, $conn);
 			}
 
 			$return_value = false;
@@ -1100,6 +1116,26 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 
 	if (cacti_count($archive_tables)) {
 		foreach ($archive_tables as $table) {
+			// rows with time >= $timestamp belong to a poll round that was
+			// still open when $results was built above, so they were not
+			// written to RRD; carry them forward into the live table instead
+			// of deleting them out of the archive table, which gets dropped
+			// wholesale once this run completes (see issue #7519)
+			db_execute_prepared("INSERT IGNORE INTO poller_output_boost
+				SELECT *
+				FROM $table
+				WHERE local_data_id = ?
+				AND time >= FROM_UNIXTIME(?)",
+				[$local_data_id, $timestamp], false);
+
+			// Now that every row for this local_data_id has either been
+			// written to RRD (time < $timestamp) or forwarded to the live
+			// table above (time >= $timestamp), the whole archive slice for
+			// this local_data_id is safe to remove. Leaving the forwarded
+			// rows behind here would duplicate them into the unfiltered
+			// archive-side SELECT that seeds $temp_table on the next call
+			// for this local_data_id, which is not INSERT IGNORE and would
+			// fail on the resulting primary-key collision.
 			db_execute_prepared("DELETE IGNORE
 				FROM $table
 				WHERE local_data_id = ?",
@@ -1426,6 +1462,10 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 				$vals_in_buffer++;
 				$multi_vals_set = true;
 			}
+
+			// remember what we actually processed so the duplicate
+			// check above has something real to compare against
+			$last_item = $item;
 		}
 
 		// process the last rrdupdate if applicable

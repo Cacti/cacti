@@ -22,6 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
+// A test bootstrap includes this file only to reach the function definitions
+// below; it cannot satisfy the auth and database dispatch that follows. Return
+// before that runs. Top-level function declarations are hoisted at compile time
+// so they stay callable after this early return. The predicate matches
+// include/global.php's test-bootstrap gate, so production always falls through.
+if (defined('PHP_TESTING') && getenv('CACTI_TEST_BOOTSTRAP', true) === '1') {
+	return;
+}
+
 require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 require_once(CACTI_PATH_LIBRARY . '/boost.php');
@@ -43,14 +52,33 @@ switch(grv('action')) {
 }
 
 function support_lockout() : void {
+	// This toggles a system-wide state, so require POST. csrf_check() only
+	// validates the token on POST, so a GET would slip past CSRF protection.
+	if (strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+		header('Location: support.php?tab=summary');
+
+		exit;
+	}
+
 	$admin = read_config_option('admin_user', true);
 
-	if (read_config_option('admin_user') != $_SESSION[SESS_USER_ID]) {
+	if ($admin != $_SESSION[SESS_USER_ID]) {
 		raise_message('lockout_user', __('Only the Primary Cacti Administrator \'%s\' can lockout the Cacti system.', get_username($admin)), MESSAGE_LEVEL_ERROR);
 	} else {
-		$status = read_config_option('cacti_lockout_status', true);
+		$status    = read_config_option('cacti_lockout_status', true);
+		$is_locked = ($status != '');
 
-		if ($status == '') {
+		// 'expected' reflects the state the button showed when the page was
+		// rendered. Only toggle if the stored state still matches it, so
+		// concurrent sessions of the Primary Administrator cannot flip each
+		// other's change.
+		$expected = gnrv('expected');
+
+		if ($expected !== 'locked' && $expected !== 'unlocked') {
+			raise_message('lockout', __('The Cacti maintenance lockout request did not specify a valid expected state.  Please review the current status and try again.'), MESSAGE_LEVEL_INFO);
+		} elseif ($is_locked !== ($expected === 'locked')) {
+			raise_message('lockout', __('The Cacti maintenance lockout state was changed by another administrator since this page was loaded.  Please review the current status and try again.'), MESSAGE_LEVEL_INFO);
+		} elseif (!$is_locked) {
 			raise_message('lockout', __('Cacti has been locked out by \'%s\'.  Press the button again after Cacti maintenance is over.', get_username($admin)), MESSAGE_LEVEL_WARN);
 			cacti_log('WARNING: Cacti has been locked out by the primary administrator!');
 			set_config_option('cacti_lockout_status', json_encode(['session' => session_id(), 'time' => time()]));
@@ -71,12 +99,18 @@ function support_view_tech() : void {
 
 	// ================= input validation =================
 	gfrv('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-z_A-Z]+)$/']]);
+	// redact is a display-only toggle; coerce to a strict 0/1 and never fail on bad input
+	set_request_var('redact', gnrv('redact') === '1' ? 1 : 0);
 	// ====================================================
 
 	// present a tabbed interface
 	$tabs = [
 		'summary' => [
 			'display' => __('Summary'),
+			'header'  => true
+		],
+		'environment' => [
+			'display' => __('Environment'),
 			'header'  => true
 		],
 		'database' => [
@@ -111,6 +145,10 @@ function support_view_tech() : void {
 			'display' => __('PHP Info'),
 			'header'  => true
 		],
+		'log' => [
+			'display' => __('Recent Log'),
+			'header'  => true
+		],
 		'changelog' => [
 			'display' => __('ChangeLog'),
 			'header'  => true
@@ -121,8 +159,18 @@ function support_view_tech() : void {
 	load_current_session_value('tab', 'sess_ts_tabs', 'summary');
 	$current_tab = gnrv('tab');
 
+	// the regex above only guarantees the shape of the value; fall back to the
+	// default when it is not one of the tabs this page actually renders
+	if (!isset($tabs[$current_tab])) {
+		$current_tab = 'summary';
+		set_request_var('tab', $current_tab);
+	}
+
+	// carried on the tab links so redaction stays in effect while navigating
+	$redact = (grv('redact') == 1);
+
 	// the processes and background will set their own timeouts
-	$page = 'support.php?tab=' . $current_tab;
+	$page = 'support.php?tab=' . $current_tab . ($redact ? '&redact=1' : '');
 
 	if ($current_tab != 'processes' && $current_tab != 'background') {
 		$refresh = [
@@ -146,7 +194,7 @@ function support_view_tech() : void {
 			print "<li class='subTab'><a class='tab pic " . ($id == $current_tab ? " selected'" : "'") .
 				" href='" . htmle(CACTI_PATH_URL .
 				'support.php?' .
-				'tab=' . $id) .
+				'tab=' . $id . ($redact ? '&redact=1' : '')) .
 				"'>" . $name['display'] . '</a></li>';
 		}
 
@@ -156,13 +204,17 @@ function support_view_tech() : void {
 	}
 
 	// Display tech information
-	if (!isset($tabs[$current_tab]['header']) || $tabs[$current_tab]['header'] === true) {
+	if ($tabs[$current_tab]['header'] === true) {
 		html_start_box($header_label, '100%', false, 3, 'center', '');
 	}
 
 	switch (grv('tab')) {
 		case 'summary':
 			show_tech_summary();
+
+			break;
+		case 'environment':
+			show_tech_environment();
 
 			break;
 		case 'dbstatus':
@@ -193,6 +245,10 @@ function support_view_tech() : void {
 			show_php_modules();
 
 			break;
+		case 'log':
+			show_tech_log();
+
+			break;
 		case 'processes':
 			show_database_processes();
 
@@ -203,7 +259,7 @@ function support_view_tech() : void {
 			break;
 	}
 
-	if (!isset($tabs[$current_tab]['header']) || $tabs[$current_tab]['header'] === true) {
+	if ($tabs[$current_tab]['header'] === true) {
 		html_end_box();
 	}
 
@@ -221,10 +277,59 @@ function support_view_tech() : void {
 		});
 
 		$('#lockout').click(function() {
-			loadUrl({ url: 'support.php?action=lockout' });
+			postUrl({ url: 'support.php?action=lockout', noState: true }, {
+				__csrf_magic: csrfMagicToken,
+				expected: $(this).attr('data-expected')
+			});
+		});
+
+		$('#copy_diag').click(function() {
+			var report = $('#diag_report').val();
+			var done   = <?php print json_encode(__('Copied to clipboard')); ?>;
+			var failed = <?php print json_encode(__('Copy failed, select the text manually')); ?>;
+
+			var el = document.getElementById('diag_report');
+
+			// Reveal the textarea and select its contents so the "select the text
+			// manually" fallback message is actionable when copying fails.
+			var reveal = function() {
+				el.style.display = 'block';
+				el.focus();
+				el.select();
+			};
+
+			if (navigator.clipboard && navigator.clipboard.writeText) {
+				navigator.clipboard.writeText(report).then(function() {
+					$('#copy_diag_status').attr('class', 'deviceUp').text(done);
+				}, function() {
+					$('#copy_diag_status').attr('class', 'deviceDown').text(failed);
+					reveal();
+				});
+			} else {
+				reveal();
+
+				var ok = false;
+
+				try {
+					ok = document.execCommand('copy');
+				} catch (e) {
+					ok = false;
+				}
+
+				if (ok) {
+					$('#copy_diag_status').attr('class', 'deviceUp').text(done);
+					el.style.display = 'none';
+				} else {
+					$('#copy_diag_status').attr('class', 'deviceDown').text(failed);
+				}
+			}
+		});
+
+		$('#redact_toggle').change(function() {
+			loadUrl({ url: 'support.php?tab=summary&redact=' + ($(this).is(':checked') ? 1 : 0) });
 		});
 	});
-	</script>
+</script>
 	<?php
 
 	bottom_footer();
@@ -383,7 +488,7 @@ function show_database_processes() : void {
 		$sql_params);
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ((int) $rows * ((int) grv('page') - 1)) . ',' . (int) $rows;
+	$sql_limit = ' LIMIT ' . ((int) $rows * (max(1, (int) grv('page')) - 1)) . ',' . (int) $rows;
 	$info_len  = (int) grv('length');
 
 	$version   = db_get_global_variable('innodb_version');
@@ -578,26 +683,167 @@ function draw_cacti_process_filter(bool $render = false, array $tables = []) : v
 	}
 }
 
+/**
+ * support_process_tables - return the process-table definitions used to build
+ * the background process view.  Core registers the tables it ships with, then
+ * exposes the set through the 'support_process_tables' plugin hook so a plugin
+ * can add its own process table (or override a core one) instead of core having
+ * to carry every plugin's schema.
+ *
+ * Definitions are keyed by a unique task key (also the value used by the 'tasks'
+ * filter).  Each definition contains:
+ *   'label'  - task label shown in the filter and the Task Type column
+ *   'table'  - database table probed with db_table_exists() before inclusion
+ *   'select' - a SELECT fragment returning the common process columns in order:
+ *              pid, tasktype, taskname, taskid, timeout, started, last_update, runtime
+ *
+ * @return array<string,array{label:string,table:string,select:string}>
+ */
+function support_process_tables() : array {
+	$poller_interval = (int) read_config_option('poller_interval');
+
+	// the full set of process tables known to Cacti.  the key is the table name
+	// for core entries so the db_table_exists() gate below matches prior behavior.
+	$poller_label     = __('Cacti Poller');
+	$process_label    = __('Cacti Process');
+	$grid_label       = __('RTM Process');
+	$automation_label = __('Automation Process');
+	$hmib_label       = __('HMIB Process');
+	$mikrotik_label   = __('MikroTik Process');
+	$webseer_label    = __('WebSeer Process');
+	$servcheck_label  = __('Service Check Process');
+	$mactrack_label   = __('MacTrack Process');
+
+	$defaults = [
+		'poller_time' => [
+			'label'  => $poller_label,
+			'table'  => 'poller_time',
+			'select' => 'SELECT pid, ' . db_qstr($poller_label) . " AS tasktype,
+					CONCAT('PollerID:', poller_id) AS taskname,
+					id AS taskid, " . db_qstr((string) $poller_interval) . ' AS timeout,
+					start_time AS started,
+					start_time AS last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(start_time) AS runtime
+					FROM poller_time WHERE UNIX_TIMESTAMP(end_time) = 0',
+		],
+		'processes' => [
+			'label'  => $process_label,
+			'table'  => 'processes',
+			'select' => 'SELECT pid, CONCAT(' . db_qstr($process_label) . ", ' (', tasktype, ')') AS tasktype,
+					taskname, taskid, timeout,
+					started, last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started) AS runtime
+					FROM processes",
+		],
+		'grid_processes' => [
+			'label'  => $grid_label,
+			'table'  => 'grid_processes',
+			'select' => 'SELECT pid, ' . db_qstr($grid_label) . " AS tasktype,
+					taskname, taskid, 'N/A' AS timeout,
+					'-' AS started, heartbeat AS last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(heartbeat) AS runtime
+					FROM grid_processes",
+		],
+		'automation_processes' => [
+			'label'  => $automation_label,
+			'table'  => 'automation_processes',
+			'select' => 'SELECT pid, ' . db_qstr($automation_label) . ' AS tasktype,
+					CONCAT(' . db_qstr(__('Poller:')) . ", an.poller_id) AS taskname,
+					network_id AS taskid, 'N/A' AS timeout, an.last_started AS started, ap.heartbeat AS last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(an.last_started) AS runtime
+					FROM automation_processes AS ap INNER JOIN automation_networks AS an ON an.id = ap.network_id",
+		],
+		'plugin_hmib_processes' => [
+			'label'  => $hmib_label,
+			'table'  => 'plugin_hmib_processes',
+			'select' => 'SELECT pid, ' . db_qstr($hmib_label) . ' AS tasktype,
+					' . db_qstr(__('Collector')) . " AS taskname, taskid, 'N/A' AS timeout,
+					started, 'N/A' AS last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started) AS runtime
+					FROM plugin_hmib_processes",
+		],
+		'plugin_mikrotik_processes' => [
+			'label'  => $mikrotik_label,
+			'table'  => 'plugin_mikrotik_processes',
+			'select' => 'SELECT pid, ' . db_qstr($mikrotik_label) . ' AS tasktype,
+				' . db_qstr(__('Collector')) . " AS taskname, taskid, 'N/A' AS timeout,
+				started, 'N/A' AS last_update,
+				UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started) AS runtime
+				FROM plugin_mikrotik_processes",
+		],
+		'plugin_webseer_processes' => [
+			'label'  => $webseer_label,
+			'table'  => 'plugin_webseer_processes',
+			'select' => 'SELECT pid, ' . db_qstr($webseer_label) . ' AS tasktype,
+					CONCAT(' . db_qstr(__('Poller:')) . ", poller_id) AS taskname, url_id AS taskid, 'N/A' AS timeout,
+					time AS started, 'N/A' AS last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(time) AS runtime
+					FROM plugin_webseer_processes",
+		],
+		'plugin_servcheck_processes' => [
+			'label'  => $servcheck_label,
+			'table'  => 'plugin_servcheck_processes',
+			'select' => 'SELECT pid, ' . db_qstr($servcheck_label) . ' AS tasktype,
+					CONCAT(' . db_qstr(__('Poller:')) . ", poller_id) AS taskname, test_id AS taskid, 'N/A' AS timeout,
+					time AS started, 'N/A' AS last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(time) AS runtime
+					FROM plugin_servcheck_processes",
+		],
+		'mac_track_processes' => [
+			'label'  => $mactrack_label,
+			'table'  => 'mac_track_processes',
+			'select' => 'SELECT process_id AS pid, ' . db_qstr($mactrack_label) . ' AS tasktype,
+					CONCAT(' . db_qstr(__('Device:')) . ", device_id) AS taskname, device_id AS taskid, 'N/A' AS timeout,
+					start_date AS started, 'N/A' AS last_update,
+					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(start_date) AS runtime
+					FROM mac_track_processes",
+		],
+	];
+
+	$definitions = api_plugin_hook_function('support_process_tables', $defaults);
+
+	// a misbehaving plugin can return a non-array; fall back to the built-in set
+	if (!is_array($definitions)) {
+		$definitions = $defaults;
+	}
+
+	// discard anything a plugin registered that is not a well formed definition.
+	// this only enforces stable filter keys and non-empty label/table/select
+	// strings; it does not validate that 'select' is syntactically valid SQL or
+	// returns the expected columns, so a malformed plugin SELECT can still break
+	// the UNION.
+	foreach ($definitions as $key => $definition) {
+		if (!is_string($key) ||
+			$key === 'all' ||
+			preg_match('/^[A-Za-z0-9_]+$/', $key) !== 1 ||
+			!is_array($definition) ||
+			!isset($definition['label'], $definition['table'], $definition['select']) ||
+			!is_string($definition['label']) ||
+			!is_string($definition['table']) ||
+			!is_string($definition['select']) ||
+			trim($definition['label'])  === '' ||
+			trim($definition['table'])  === '' ||
+			trim($definition['select']) === '' ||
+			preg_match('/^[A-Za-z0-9_]+$/', $definition['table']) !== 1) {
+			unset($definitions[$key]);
+		}
+	}
+
+	return $definitions;
+}
+
 function show_cacti_processes() : void {
 	global $item_rows;
 
-	// the full set of process tables known to Cacti
-	$tables = [
-		'poller_time'                   => __('Cacti Poller'),          // Core Cacti poller table
-		'processes'                     => __('Cacti Process'),         // Cacti process table
-		'grid_processes'                => __('RTM Process'),           // RTM process table
-		'automation_processes'          => __('Automation Process'),    // Automation process table
-		'plugin_hmib_processes'         => __('HMIB Process'),          // HMIB process table
-		'plugin_mikrotik_processes'     => __('MikroTik Process'),      // MikroTik process table
-		'plugin_webseer_processes'      => __('WebSeer Process'),       // WebSeer process table
-		'plugin_servcheck_processes'    => __('Service Check Process'), // Service Check process table
-		'mac_track_processes'           => __('MacTrack Process'),      // MacTrack process table
-	];
+	$definitions = support_process_tables();
 
-	// reduce the set of tables based if they exist
-	foreach ($tables as $table => $name) {
-		if (!db_table_exists($table)) {
-			unset($tables[$table]);
+	// reduce the set of tables to those that actually exist, preserving the
+	// registration order so the generated UNION is unchanged.
+	$tables = [];
+
+	foreach ($definitions as $key => $definition) {
+		if (db_table_exists($definition['table'])) {
+			$tables[$key] = $definition['label'];
 		}
 	}
 
@@ -608,8 +854,6 @@ function show_cacti_processes() : void {
 	} else {
 		$rows = grv('rows');
 	}
-
-	$poller_interval = read_config_option('poller_interval');
 
 	$sql_where  = '';
 	$sql_params = [];
@@ -632,108 +876,31 @@ function show_cacti_processes() : void {
 
 	$sql_inner = '';
 
-	foreach ($tables as $table => $name) {
-		switch($table) {
-			case 'poller_time':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, ' . db_qstr(__('Cacti Poller')) . " AS tasktype,
-						CONCAT('PollerID:', poller_id) AS taskname,
-						id AS taskid, '$poller_interval' AS timeout,
-						start_time AS started,
-						start_time AS last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(start_time) AS runtime
-						FROM poller_time WHERE UNIX_TIMESTAMP(end_time) = 0";
-
-				break;
-			case 'processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, CONCAT(' . db_qstr($name) . ", ' (', tasktype, ')') AS tasktype,
-						taskname, taskid, timeout,
-						started, last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started) AS runtime
-						FROM processes";
-
-				break;
-			case 'grid_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, ' . db_qstr($name) . " AS tasktype,
-						taskname, taskid, 'N/A' AS timeout,
-						'-' AS started, heartbeat AS last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(heartbeat) AS runtime
-						FROM grid_processes";
-
-				break;
-			case 'automation_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, ' . db_qstr($name) . ' AS tasktype,
-						CONCAT(' . db_qstr(__('Poller:')) . ", an.poller_id) AS taskname,
-						network_id AS taskid, 'N/A' AS timeout, an.last_started AS started, ap.heartbeat AS last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(an.last_started) AS runtime
-						FROM automation_processes AS ap INNER JOIN automation_networks AS an ON an.id = ap.network_id";
-
-				break;
-			case 'mac_track_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT process_id AS pid, ' . db_qstr($name) . ' AS tasktype,
-						CONCAT(' . db_qstr(__('Device:')) . ", device_id) AS taskname, device_id AS taskid, 'N/A' AS timeout,
-						start_date AS started, 'N/A' AS last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(start_date) AS runtime
-						FROM mac_track_processes";
-
-				break;
-			case 'plugin_hmib_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, ' . db_qstr($name) . ' AS tasktype,
-						' . db_qstr(__('Collector')) . " AS taskname, taskid, 'N/A' AS timeout,
-						started, 'N/A' AS last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started) AS runtime
-						FROM plugin_hmib_processes";
-
-				break;
-			case 'plugin_mikrotik_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, ' . db_qstr($name) . ' AS tasktype,
-					' . db_qstr(__('Collector')) . " AS taskname, taskid, 'N/A' AS timeout,
-					started, 'N/A' AS last_update,
-					UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started) AS runtime
-					FROM plugin_mikrotik_processes";
-
-				break;
-			case 'plugin_webseer_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, ' . db_qstr($name) . ' AS tasktype,
-						CONCAT(' . db_qstr(__('Poller:')) . ", poller_id) AS taskname, url_id AS taskid, 'N/A' AS timeout,
-						time AS started, 'N/A' AS last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(time) AS runtime
-						FROM plugin_webseer_processes";
-
-				break;
-			case 'plugin_servcheck_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
-					'SELECT pid, ' . db_qstr($name) . ' AS tasktype,
-						CONCAT(' . db_qstr(__('Poller:')) . ", poller_id) AS taskname, test_id AS taskid, 'N/A' AS timeout,
-						time AS started, 'N/A' AS last_update,
-						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(time) AS runtime
-						FROM plugin_servcheck_processes";
-
-				break;
-		}
+	foreach (array_keys($tables) as $table) {
+		$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') . $definitions[$table]['select'];
 	}
 
-	$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
-		FROM ($sql_inner) AS rs
-		$sql_where",
-		$sql_params);
+	if ($sql_inner == '') {
+		// no process tables available; render the empty result rather than
+		// building a broken 'FROM ()' UNION
+		$total_rows = 0;
+		$processes  = [];
+	} else {
+		$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
+			FROM ($sql_inner) AS rs
+			$sql_where",
+			$sql_params);
 
-	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ((int) $rows * ((int) grv('page') - 1)) . ',' . (int) $rows;
+		$sql_order = get_order_string();
+		$sql_limit = ' LIMIT ' . ((int) $rows * (max(1, (int) grv('page')) - 1)) . ',' . (int) $rows;
 
-	$processes = db_fetch_assoc_prepared("SELECT *
-		FROM ($sql_inner) AS rs
-		$sql_where
-		$sql_order
-		$sql_limit",
-		$sql_params);
+		$processes = db_fetch_assoc_prepared("SELECT *
+			FROM ($sql_inner) AS rs
+			$sql_where
+			$sql_order
+			$sql_limit",
+			$sql_params);
+	}
 
 	$display_text = [
 		'tasktype' => [
@@ -794,7 +961,10 @@ function show_cacti_processes() : void {
 
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {
-			form_alternate_row('line' . $p['pid'], false);
+			// pid backs the SELECT fragments plugins register, so cast it before
+			// using it to build the row id -- a non-numeric value could otherwise
+			// break out of the id='...' attribute in form_alternate_row().
+			form_alternate_row('line' . (int) $p['pid'], false);
 
 			if ($p['timeout'] != 'N/A') {
 				$timeout_time = $p['timeout'];
@@ -807,17 +977,22 @@ function show_cacti_processes() : void {
 				$timeout_date = $p['timeout'];
 			}
 
-			form_selectable_cell($p['tasktype'], $p['pid']);
+			// escape every column: plugins can contribute the SELECT fragments
+			// behind these rows via the support_process_tables hook, so the
+			// values are not trusted (taskname is already escaped by filter_value).
+			// use form_selectable_ecell(), the file's existing escaping helper,
+			// rather than hand-wrapping form_selectable_cell() with html_escape().
+			form_selectable_ecell($p['tasktype'], $p['pid']);
 			form_selectable_cell(filter_value(cacti_strtoupper($p['taskname']), ''), $p['pid']);
-			form_selectable_cell($p['taskid'], $p['pid'], '', 'right');
-			form_selectable_cell($p['runtime'], $p['pid'], '', 'right');
-			form_selectable_cell($p['pid'], $p['pid'], '', 'right');
+			form_selectable_ecell($p['taskid'], $p['pid'], '', 'right');
+			form_selectable_ecell($p['runtime'], $p['pid'], '', 'right');
+			form_selectable_ecell($p['pid'], $p['pid'], '', 'right');
 
 			// form_selectable_cell($p['timeout'], $p['pid'], '', 'right');
 
-			form_selectable_cell($timeout_date, $p['pid'], '', 'right');
-			form_selectable_cell($p['started'], $p['pid'], '', 'right');
-			form_selectable_cell($p['last_update'], $p['pid'], '', 'right');
+			form_selectable_ecell($timeout_date, $p['pid'], '', 'right');
+			form_selectable_ecell($p['started'], $p['pid'], '', 'right');
+			form_selectable_ecell($p['last_update'], $p['pid'], '', 'right');
 
 			form_end_row();
 		}
@@ -1107,6 +1282,9 @@ function show_database_status() : void {
 function show_tech_summary() : void {
 	global $database_hostname, $poller_options, $input_types, $local_db_cnn_id;
 
+	// When on, identifying values on this tab and in the copied report are masked.
+	$redact = (grv('redact') == 1);
+
 	// Get poller stats
 	$poller_item = db_fetch_assoc('SELECT action, count(action) AS total
 		FROM poller_item
@@ -1146,11 +1324,17 @@ function show_tech_summary() : void {
 		}
 	}
 
-	// Get SNMP cli version
-	if ((file_exists(read_config_option('path_snmpget'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_snmpget'))))) {
-		$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
+	// Get SNMP cli version.  $snmp_installed distinguishes raw tool output
+	// (must be escaped when printed) from the pre-built status span below
+	// (already markup, must not be escaped).
+	$snmpget_path = (string) read_config_option('path_snmpget');
+
+	if ($snmpget_path !== '' && !str_contains($snmpget_path, "\0") && is_file($snmpget_path) && is_executable($snmpget_path)) {
+		$snmp_version   = (string) shell_exec(cacti_escapeshellcmd($snmpget_path) . ' -V 2>&1');
+		$snmp_installed = true;
 	} else {
-		$snmp_version = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . '</span>';
+		$snmp_version   = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . '</span>';
+		$snmp_installed = false;
 	}
 
 	// Check RRDtool issues
@@ -1180,6 +1364,12 @@ function show_tech_summary() : void {
 
 	html_section_header(__('General Information'), 2);
 
+	form_alternate_row();
+	print '<td>' . __('Diagnostics Export') . '</td>';
+	print '<td><button type="button" id="copy_diag" title="' . __esc('Copy a diagnostics report to the clipboard.  Enable the redact toggle to mask identifying details before sharing.') . '">' . __('Copy Diagnostics') . '</button> <span id="copy_diag_status" aria-live="polite"></span>' .
+		'<label style="margin-left:12px"><input type="checkbox" id="redact_toggle"' . ($redact ? ' checked="checked"' : '') . '> ' . __('Redact for sharing') . '</label></td>';
+	form_end_row();
+
 	$lockout = read_config_option('cacti_lockout_status', true);
 	$enabled = read_config_option('auth_maint_lockout_type', true);
 
@@ -1194,9 +1384,9 @@ function show_tech_summary() : void {
 			$unlock_time = $lockout['time'] + (30 * 60);
 			$unlock_hms  = date('H:i', $unlock_time);
 
-			print '<td><button class="deviceDown" type="button" id="lockout" title="' . __('To Unlock, press this button again.') . '">' . __('Cacti in Maintenance Mode until approximately %s!', $unlock_hms) . '</button></td>';
+			print '<td><button class="deviceDown" type="button" id="lockout" data-expected="locked" title="' . __('To Unlock, press this button again.') . '">' . __('Cacti in Maintenance Mode until approximately %s!', $unlock_hms) . '</button></td>';
 		} else {
-			print '<td><button type="button" id="lockout" title="' . __('Press this button to Lockout Cacti for 30 minutes for maintenance.') . '">' . __('Lockout Cacti for Maintenance') . '</button></td>';
+			print '<td><button type="button" id="lockout" data-expected="unlocked" title="' . __('Press this button to Lockout Cacti for 30 minutes for maintenance.') . '">' . __('Lockout Cacti for Maintenance') . '</button></td>';
 		}
 	} else {
 		print '<td><button class="deviceDisabled" type="button" id="lockout" disabled="disabled" title="' . __('To enable this feature, goto Settings > Authentication.') . '">' . __('Cacti Maintenance Mode feature is disabled') . '</button></td>';
@@ -1220,14 +1410,27 @@ function show_tech_summary() : void {
 	print '<td>' . CACTI_SERVER_OS . '</td>';
 	form_end_row();
 
+	$rsa_fingerprint = read_config_option('rsa_fingerprint');
+
+	if ($redact && $rsa_fingerprint != '') {
+		$rsa_fingerprint = substr($rsa_fingerprint, 0, 8) . '… (' . __('masked') . ')';
+	}
+
 	form_alternate_row();
 	print '<td>' . __('RSA Fingerprint') . '</td>';
-	print '<td>' . read_config_option('rsa_fingerprint') . '</td>';
+	print '<td>' . html_escape($rsa_fingerprint) . '</td>';
 	form_end_row();
 
 	form_alternate_row();
 	print '<td>' . __('NET-SNMP Version') . '</td>';
-	print '<td>' . $snmp_version . '</td>';
+
+	if (!$snmp_installed) {
+		// Pre-built status span; already markup, render as-is.
+		print '<td>' . $snmp_version . '</td>';
+	} else {
+		print '<td>' . ($redact ? html_escape(support_redact($snmp_version)) : html_escape($snmp_version)) . '</td>';
+	}
+
 	form_end_row();
 
 	form_alternate_row();
@@ -1287,14 +1490,16 @@ function show_tech_summary() : void {
 	print '<td>' . __('Interval') . '</td>';
 	print '<td>' . read_config_option('poller_interval') . '</td>';
 
-	if (file_exists(read_config_option('path_spine')) && $poller_options[read_config_option('poller_type')] == 'spine') {
+	$poller_type_name = $poller_options[read_config_option('poller_type')] ?? __('Unknown');
+
+	if (file_exists(read_config_option('path_spine')) && $poller_type_name == 'spine') {
 		$type = $spine_version;
 
 		if (!strpos($spine_version, CACTI_VERSION)) {
 			$type .= '<span class="textError"> (' . __('Different version of Cacti and Spine!') . ')</span>';
 		}
 	} else {
-		$type = $poller_options[read_config_option('poller_type')];
+		$type = $poller_type_name;
 	}
 	form_end_row();
 
@@ -1683,7 +1888,7 @@ function show_tech_summary() : void {
 	print '<td>';
 
 	if (function_exists('php_uname')) {
-		print php_uname();
+		print html_escape($redact ? support_redact(php_uname()) : php_uname());
 	} else {
 		print __('N/A');
 	}
@@ -1706,12 +1911,12 @@ function show_tech_summary() : void {
 
 	form_alternate_row();
 	print '<td>max_execution_time</td>';
-	print '<td>' . ini_get('max_execution_time') . '</td>';
+	print '<td>' . html_escape(ini_get('max_execution_time')) . '</td>';
 	form_end_row();
 
 	form_alternate_row();
 	print '<td>memory_limit</td>';
-	print '<td>' . ini_get('memory_limit');
+	print '<td>' . html_escape(ini_get('memory_limit'));
 
 	// Calculate memory suggestion based off of data source count
 	$memory_suggestion = $data_total * 32768;
@@ -1747,4 +1952,361 @@ function show_tech_summary() : void {
 	form_end_row();
 
 	utilities_get_mysql_recommendations();
+
+	// Shareable diagnostics report (Feature: Copy Diagnostics).
+	// When the redact toggle is on, hostnames/IPs embedded in the SNMP version
+	// line and web server string are masked via support_redact(), and the RSA
+	// fingerprint is truncated. The report does not include the DB host,
+	// credentials or absolute paths.
+	$snmp_line     = $snmp_installed ? trim(explode("\n", $snmp_version)[0]) : trim(strip_tags($snmp_version));
+	$web_server    = (string) ($_SERVER['SERVER_SOFTWARE'] ?? __('Unknown'));
+	$poller_report = $poller_options[read_config_option('poller_type')] ?? __('Unknown');
+
+	if ($redact) {
+		$snmp_line  = support_redact($snmp_line);
+		$web_server = support_redact($web_server);
+	}
+
+	if ($poller_report == 'spine' && $spine_version != 'Unknown') {
+		$poller_report = $spine_version;
+	}
+
+	$rsa = read_config_option('rsa_fingerprint');
+
+	if ($rsa == '') {
+		$rsa_report = __('N/A');
+	} elseif ($redact) {
+		$rsa_report = substr($rsa, 0, 8) . '… (' . __('masked') . ')';
+	} else {
+		$rsa_report = $rsa;
+	}
+
+	$report  = "### Cacti Diagnostics\n";
+	$report .= '- ' . __('Cacti Version') . ': ' . CACTI_VERSION . "\n";
+	$report .= '- ' . __('Cacti OS') . ': ' . CACTI_SERVER_OS . "\n";
+	$report .= '- ' . __('Web Server') . ': ' . $web_server . "\n";
+	$report .= '- ' . __('PHP Version') . ': ' . PHP_VERSION . "\n";
+	$report .= '- ' . __('PHP OS') . ': ' . PHP_OS . "\n";
+	$report .= '- ' . __('Database') . ': ' . trim($database . ' ' . $version) . "\n";
+	$report .= '- ' . __('RRDtool Version Configured') . ': ' . get_rrdtool_version() . "+\n";
+	$report .= '- ' . __('RRDtool Version Found') . ': ' . $rrdtool_release . "\n";
+	$report .= '- ' . __('NET-SNMP Version') . ': ' . $snmp_line . "\n";
+	$report .= '- ' . __('Poller Interval') . ': ' . read_config_option('poller_interval') . "\n";
+	$report .= '- ' . __('Poller Type') . ': ' . $poller_report . "\n";
+	$report .= '- ' . __('Last Run Statistics') . ': ' . read_config_option('stats_poller') . "\n";
+	$report .= '- ' . 'memory_limit: ' . ini_get('memory_limit') . "\n";
+	$report .= '- ' . 'max_execution_time: ' . ini_get('max_execution_time') . "\n";
+	$report .= '- ' . __('System Memory') . ': ' . ($total_memory > 0 ? number_format_i18n($total_memory, 2, 1000) . ' GB' : __('N/A')) . "\n";
+	$report .= '- ' . __('RSA Fingerprint') . ': ' . $rsa_report . "\n";
+
+	form_alternate_row();
+	print "<td colspan='2'><textarea id='diag_report' style='display:none' readonly='readonly'>" . html_escape($report) . '</textarea></td>';
+	form_end_row();
+}
+
+function show_tech_environment() : void {
+	// utility_php_verify_extensions() alone can't tell whether a module is
+	// really loaded in both contexts: it seeds CLI-only extensions such as
+	// pcntl with 'web' => true (not required in web), so checking either the
+	// seeded flag or a bare extension_loaded() in isolation misreports one
+	// context or the other. Verify web in-process, shell out to cli_check.php
+	// for the real CLI state (same path_php_binary lookup already used below
+	// for rrdtool/snmpget), and combine with the web && cli rule from
+	// utility_php_set_installed(), the same one lib/installer.php relies on.
+	$extensions = false;
+	utility_php_verify_extensions($extensions, 'web');
+
+	$php_binary = read_config_option('path_php_binary');
+
+	if ($php_binary != '' && file_exists($php_binary) && is_executable($php_binary)) {
+		$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions');
+		$cli_ext  = @json_decode($cli_json, true);
+
+		if (is_array($cli_ext)) {
+			foreach ($cli_ext as $name => $ext) {
+				if (isset($extensions[$name])) {
+					$extensions[$name]['cli'] = !empty($ext['cli']);
+				}
+			}
+		}
+	}
+
+	utility_php_set_installed($extensions);
+
+	html_section_header(__('Required PHP Extensions'), 2);
+
+	foreach ($extensions as $name => $extension) {
+		$loaded = !empty($extension['installed']);
+
+		form_alternate_row();
+		print '<td>' . html_escape($name) . '</td>';
+		print '<td>' . tech_env_status($loaded ? DB_STATUS_SUCCESS : DB_STATUS_ERROR, $loaded ? __('Installed') : __('Missing')) . '</td>';
+		form_end_row();
+	}
+
+	// Recommended (optional) extensions such as php-snmp.
+	$optionals = false;
+	utility_php_verify_optionals($optionals, 'web');
+
+	html_section_header(__('Recommended PHP Extensions'), 2);
+
+	foreach ($optionals as $name => $optional) {
+		$loaded = !empty($optional['web']);
+
+		form_alternate_row();
+		print '<td>' . html_escape($name) . '</td>';
+		print '<td>' . tech_env_status($loaded ? DB_STATUS_SUCCESS : DB_STATUS_WARNING, $loaded ? __('Installed') : __('Not installed')) . '</td>';
+		form_end_row();
+	}
+
+	// Key php.ini values and thresholds (reuses the installer's recommendations).
+	$recommends = false;
+	utility_php_verify_recommends($recommends, 'web');
+
+	html_section_header(__('PHP Configuration'), 2);
+
+	foreach ($recommends as $recommend) {
+		if ($recommend['name'] == 'location' || $recommend['name'] == 'version') {
+			continue;
+		}
+
+		form_alternate_row();
+		print '<td>' . html_escape($recommend['name']) . '</td>';
+		print '<td>' . tech_env_status((int) $recommend['status'], __('Current: %s, Recommended: %s', $recommend['current'], $recommend['value'])) . '</td>';
+		form_end_row();
+	}
+
+	$file_uploads = (bool) ini_get('file_uploads');
+
+	form_alternate_row();
+	print '<td>file_uploads</td>';
+	print '<td>' . tech_env_status($file_uploads ? DB_STATUS_SUCCESS : DB_STATUS_ERROR, $file_uploads ? __('On') : __('Off')) . '</td>';
+	form_end_row();
+
+	// Required binaries: existence + version.
+	$binaries = [
+		'path_php_binary' => '-v',
+		'path_rrdtool'    => '--version',
+		'path_snmpget'    => '-V',
+	];
+
+	html_section_header(__('Required Binaries'), 2);
+
+	foreach ($binaries as $option => $arg) {
+		$path = read_config_option($option);
+
+		form_alternate_row();
+		print '<td>' . html_escape($option) . '</td>';
+
+		if ($path != '' && file_exists($path) && function_exists('is_executable') && is_executable($path)) {
+			if (is_function_enabled('shell_exec')) {
+				$out     = shell_exec(cacti_escapeshellarg($path) . ' ' . $arg . ' 2>&1');
+				$version = ($out != '' ? trim(explode("\n", $out)[0]) : __('Unknown version'));
+
+				print '<td>' . tech_env_status(DB_STATUS_SUCCESS, $version) . '</td>';
+			} else {
+				print '<td>' . tech_env_status(DB_STATUS_WARNING, __('Version unavailable: shell_exec() is disabled')) . '</td>';
+			}
+		} else {
+			print '<td>' . tech_env_status(DB_STATUS_ERROR, __('Not found or not executable: %s', $path)) . '</td>';
+		}
+
+		form_end_row();
+	}
+
+	// Writable directories.  cache/rra/log must be writable; scripts/resource
+	// are usually read-only so a non-writable result is only a warning.
+	$directories = [
+		CACTI_PATH_CACHE    => true,
+		CACTI_PATH_RRA      => true,
+		CACTI_PATH_LOG      => true,
+		CACTI_PATH_SCRIPTS  => false,
+		CACTI_PATH_RESOURCE => false,
+	];
+
+	html_section_header(__('Writable Directories'), 2);
+
+	foreach ($directories as $directory => $required) {
+		$writable = is_writable($directory);
+
+		if ($writable) {
+			$status = DB_STATUS_SUCCESS;
+			$text   = __('Writable');
+		} else {
+			$status = ($required ? DB_STATUS_ERROR : DB_STATUS_WARNING);
+			$text   = __('Not writable');
+		}
+
+		form_alternate_row();
+		print '<td>' . html_escape($directory) . '</td>';
+		print '<td>' . tech_env_status($status, $text) . '</td>';
+		form_end_row();
+	}
+}
+
+/**
+ * tech_env_status - render a status badge for the technical support report.
+ * $text is treated as plain text and escaped here, so callers pass raw values
+ * and must not pre-escape (doing so would double-encode).
+ */
+function tech_env_status(int $status, string $text) : string {
+	[$class, $icon] = match ($status) {
+		DB_STATUS_SUCCESS => ['deviceUp', 'fa-check-circle'],
+		DB_STATUS_ERROR   => ['deviceDown', 'fa-times-circle'],
+		default           => ['deviceRecovering', 'fa-exclamation-triangle'],
+	};
+
+	return "<span class='$class'><i class='fa $icon'></i> " . html_escape($text) . '</span>';
+}
+
+/**
+ * support_redact - mask identifying details in a display string so a support
+ * report can be shared publicly.  Display-only and deliberately conservative:
+ * it prefers to over-mask rather than leak.  Not applied to version numbers.
+ */
+function support_redact(string $value) : string {
+	if ($value === '') {
+		return $value;
+	}
+
+	// IPv6 before IPv4 so the longer pattern wins. The candidate pattern is
+	// deliberately loose (it also matches "::" compression and would catch
+	// non-addresses like MACs or "1:2:3"); filter_var() gates the replacement
+	// so only strings that are genuinely IPv6 get masked.
+	$value = preg_replace_callback('/(?:[0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}/', function ($m) {
+		return filter_var($m[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false ? '<ipv6>' : $m[0];
+	}, $value);
+	$value = preg_replace('/\b(?:\d{1,3}\.){3}\d{1,3}\b/', '<ipv4>', $value);
+
+	// FQDNs (foo.bar.example).  The alphabetic TLD requirement leaves version
+	// numbers such as 1.7.2 untouched.  This must run before the node-name
+	// replacement below: if the node name is a prefix of the FQDN (e.g. "db01"
+	// in "db01.local"), masking the node name first would strip the prefix and
+	// leave a bare suffix ("local") that no longer looks like an FQDN, leaking
+	// part of the domain.
+	$value = preg_replace('/\b(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}\b/', '<host>', $value);
+
+	// Replace this host's own node name wherever it appears (php_uname, SNMP banner, etc.).
+	$node = function_exists('php_uname') ? php_uname('n') : '';
+
+	if ($node != '' && strlen($node) > 1) {
+		$value = str_ireplace($node, '<host>', $value);
+	}
+
+	// /home/<user>/ and /Users/<user>/ path segments.
+	$value = preg_replace('#/(?:home|Users)/[^/\s]+#', '/home/<redacted>', $value);
+
+	return $value;
+}
+
+/**
+ * support_tail_severity - read the last WARN/ERROR/SECURITY lines from a log
+ * file without loading the whole file.  Seeks to the end and reads at most
+ * $cap_bytes so a multi-gigabyte log cannot exhaust memory.
+ *
+ * @return array<int,string>
+ */
+function support_tail_severity(string $file, int $max_lines, int $cap_bytes) : array {
+	// The path is checked by the caller, but the file can still vanish or
+	// become unreadable between that check and here; suppress the warning
+	// PHP would otherwise emit into the rendered page and fail closed.
+	$size = @filesize($file);
+
+	if ($size === false || $size == 0) {
+		return [];
+	}
+
+	$fp = @fopen($file, 'rb');
+
+	if ($fp === false) {
+		return [];
+	}
+
+	$read = ($size < $cap_bytes ? $size : $cap_bytes);
+
+	if (fseek($fp, -$read, SEEK_END) !== 0) {
+		fclose($fp);
+
+		return [];
+	}
+
+	$buffer = fread($fp, $read);
+	fclose($fp);
+
+	if ($buffer === false) {
+		return [];
+	}
+
+	$all = explode("\n", $buffer);
+
+	// The byte cap can slice through the first line; drop that partial fragment,
+	// but only when the file was actually larger than the cap.
+	if ($size > $cap_bytes) {
+		array_shift($all);
+	}
+
+	$matched = [];
+
+	foreach ($all as $line) {
+		$line = rtrim($line, "\r");
+
+		if ($line === '') {
+			continue;
+		}
+
+		if (str_contains($line, 'WARN') || str_contains($line, 'ERROR') || str_contains($line, 'SECURITY')) {
+			$matched[] = $line;
+		}
+	}
+
+	if (cacti_sizeof($matched) > $max_lines) {
+		$matched = array_slice($matched, -$max_lines);
+	}
+
+	return $matched;
+}
+
+function show_tech_log() : void {
+	$redact    = (grv('redact') == 1);
+	$max_lines = 100;
+	$cap_bytes = 256 * 1024;
+
+	// Only ever the configured Cacti log is read.  The path comes from
+	// read_config_option('path_cactilog'); no request variable can influence it.
+	$logfile = read_config_option('path_cactilog');
+
+	html_section_header(__('Recent Log (WARN / ERROR / SECURITY)'), 2);
+
+	if ($logfile == '' || str_contains($logfile, chr(0)) || !file_exists($logfile) || !is_file($logfile) || !is_readable($logfile)) {
+		form_alternate_row();
+		print "<td colspan='2'>" . __('Log not available.') . '</td>';
+		form_end_row();
+
+		return;
+	}
+
+	$lines = support_tail_severity($logfile, $max_lines, $cap_bytes);
+
+	if (!cacti_sizeof($lines)) {
+		form_alternate_row();
+		print "<td colspan='2'>" . __('No recent WARN, ERROR or SECURITY log entries found.') . '</td>';
+		form_end_row();
+
+		return;
+	}
+
+	form_alternate_row();
+	print "<td colspan='2' class='left'>";
+	print "<pre style='white-space:pre-wrap;margin:0'>";
+
+	foreach ($lines as $line) {
+		if ($redact) {
+			$line = support_redact($line);
+		}
+
+		print html_escape($line) . "\n";
+	}
+
+	print '</pre></td>';
+	form_end_row();
 }
