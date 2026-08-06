@@ -34,7 +34,7 @@ test('htmx script tag appears in the login page HTML', async ({ page }) => {
 
 	const src = await page.locator('script[src*="htmx.js"]').first().getAttribute('src');
 
-	expect(src).toMatch(/include\/js\/htmx\.min\.js/);
+	expect(src).toMatch(/include\/js\/htmx\.js/);
 });
 
 test('htmx.js loads with a 200 response', async ({ page }) => {
