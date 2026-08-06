@@ -29,12 +29,14 @@ beforeEach(function () use ($reportsPath) {
 
 test('reports.php decodes PNG data in memory via imagecreatefromstring', function () use ($reportsPath) {
 	$src = file_get_contents($reportsPath);
+	expect($src)->not->toBeFalse('lib/reports.php must be readable');
 
 	expect($src)->toContain('imagecreatefromstring($png_data)');
 });
 
 test('png2jpeg no longer writes a predictable temp file', function () use ($reportsPath) {
 	$src = file_get_contents($reportsPath);
+	expect($src)->not->toBeFalse('lib/reports.php must be readable');
 
 	expect($src)->not->toContain("'/tmp/' . time() . '.png'")
 		->and($src)->not->toMatch('/\bfopen\s*\(\s*\$fn\b/')
@@ -43,6 +45,7 @@ test('png2jpeg no longer writes a predictable temp file', function () use ($repo
 
 test('reports.php contains no fopen or predictable-path file writes', function () use ($reportsPath) {
 	$src = file_get_contents($reportsPath);
+	expect($src)->not->toBeFalse('lib/reports.php must be readable');
 
 	expect($src)->not->toMatch('/\bfopen\s*\(/')
 		->and($src)->not->toMatch('/\bfile_put_contents\s*\(\s*[\'"]\/tmp\//');
@@ -50,6 +53,7 @@ test('reports.php contains no fopen or predictable-path file writes', function (
 
 test('png2jpeg round-trips a minimal valid PNG without touching disk', function () {
 	$im = imagecreate(1, 1);
+	expect($im)->not->toBeFalse('GD must create the source image');
 	imagecolorallocate($im, 255, 0, 0);
 	ob_start();
 	imagepng($im);
@@ -64,6 +68,7 @@ test('png2jpeg round-trips a minimal valid PNG without touching disk', function 
 
 test('png2gif round-trips a minimal valid PNG without touching disk', function () {
 	$im = imagecreate(1, 1);
+	expect($im)->not->toBeFalse('GD must create the source image');
 	imagecolorallocate($im, 255, 0, 0);
 	ob_start();
 	imagepng($im);

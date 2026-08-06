@@ -12,16 +12,16 @@
  +-------------------------------------------------------------------------+
  */
 
-function getReportsNotificationSource(): string {
+$getReportsNotificationSource = static function () : string {
 	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/reports.php');
 
 	expect($source)->not->toBeFalse('Failed to read lib/reports.php');
 
 	return $source;
-}
+};
 
-test('queued report notifications validate the decoded payload before iteration', function () {
-	$source = getReportsNotificationSource();
+test('queued report notifications validate the decoded payload before iteration', function () use ($getReportsNotificationSource) {
+	$source = $getReportsNotificationSource();
 
 	$decode = strpos($source, '$notifications = json_decode(');
 	$guard  = strpos($source, 'if (!is_array($notifications))', $decode);
@@ -34,8 +34,8 @@ test('queued report notifications validate the decoded payload before iteration'
 		->and($guard)->toBeLessThan($loop);
 });
 
-test('each notification entry is validated before dispatch', function () {
-	$source = getReportsNotificationSource();
+test('each notification entry is validated before dispatch', function () use ($getReportsNotificationSource) {
+	$source = $getReportsNotificationSource();
 
 	$loop   = strpos($source, 'foreach ($notifications as $type => $data)');
 	$guard  = strpos($source, 'if (!is_array($data))', $loop);
