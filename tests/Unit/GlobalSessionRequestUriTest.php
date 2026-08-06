@@ -18,6 +18,8 @@ test('global session handles a missing request URI consistently', function () {
 	expect($source)->not->toBeFalse()
 		->and($source)->toContain("\$request_uri = \$_SERVER['REQUEST_URI'] ?? '';")
 		->and(substr_count($source, "\$_SERVER['REQUEST_URI']"))->toBe(1)
+		->and(substr_count($source, 'sanitize_uri($request_uri)'))->toBe(4)
+		->and(substr_count($source, 'sanitize_uri(appendHeaderSuppression($request_uri))'))->toBe(1)
 		->and($source)->not->toContain("\$_SERVER['REQUEST_URL']")
 		->and($source)->toContain("strpos(\$request_uri, 'index.php') !== false");
 });
