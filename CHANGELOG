@@ -60,6 +60,7 @@ Cacti CHANGELOG
 -issue#7343: Install wizard silently fails to advance after CSRF token expires
 -issue#7380: Batch graph-create task_item_id wiring to reduce template graph creation queries
 -issue#7424: Correct SNMP disk counter wrap delta calculations
+-issue#7426: Stop tracking the generated CSRF secret so each install creates its own
 -issue#7427: Update device status by host id instead of non-unique hostname
 -issue#7429: Prevent monthly automation schedules from resetting next_start to 1970
 -issue#7493: SNMP walk for output_format fields used max OIDs instead of the device bulk walk size
