@@ -18,8 +18,8 @@ cmd_exec	./cli/update_heartbeat.php:274				$result = exec($command, $output, $re
 cmd_exec	./cmd.php:342			$cactiphp = proc_open($command, $cactides, $pipes);
 cmd_exec	./cmd_realtime.php:127				$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 cmd_exec	./graph_realtime.php:226			shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
-cmd_exec	./host.php:203		shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
-cmd_exec	./install/functions.php:958				$shell_output       = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
+cmd_exec	./host.php:203		shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
+cmd_exec	./install/functions.php:958				$shell_output       = shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
 cmd_exec	./install/install.php:135			print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') . '</li>';
 cmd_exec	./lib/database.php:2663			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
 cmd_exec	./lib/database.php:2665			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ' version >/dev/null 2>&1', $output, $retval);
@@ -44,8 +44,8 @@ cmd_exec	./lib/functions.php:9997			$output = shell_exec('powershell -Command "G
 cmd_exec	./lib/installer.php:3564			$check    = shell_exec("$composer install --dry-run --no-interaction --working-dir=$base 2>&1");
 cmd_exec	./lib/installer.php:3607			$output = shell_exec("$composer install --no-interaction --no-progress --working-dir=$base 2>&1");
 cmd_exec	./lib/installer.php:3949				$last_line = exec($command, $output, $return);
-cmd_exec	./lib/installer.php:3988						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-cmd_exec	./lib/installer.php:4046						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./lib/installer.php:3988						shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./lib/installer.php:4046						$results = shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:965						$output = shell_exec(
 cmd_exec	./lib/installer.php:979						$output = shell_exec(cacti_escapeshellcmd(str_replace('\\', '/', $path)) . ' --version 2>&1');
 cmd_exec	./lib/ping.php:175					$result = shell_exec(cacti_escapeshellarg($fping) . ' -q -t ' . $this->timeout . ' -c 1 -r ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']) . ' 2>&1');
@@ -97,7 +97,7 @@ cmd_exec	./lib/utility.php:1892		$json       = shell_exec($php . ' -q ' . $php_f
 cmd_exec	./lib/utility.php:2019		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./poller_realtime.php:166	shell_exec("$command_string $extra_args");
 cmd_exec	./poller_realtime.php:252					shell_exec($command);
-cmd_exec	./poller_spikekill.php:266				$response = exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./poller_spikekill.php:266				$response = exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./remote_agent.php:472									$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 cmd_exec	./script_server.php:194					exec("TASKLIST /FO LIST /FI \"PID eq $ppid\"", $out);
 cmd_exec	./scripts/sql.php:17	$sql = shell_exec($cmd);

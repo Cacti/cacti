@@ -54,11 +54,15 @@ function php_binary_body(string $file, string $function) : string {
 
 test('path_php_binary really has no default to fall back on', function () {
 	$settings = file_get_contents(dirname(__DIR__, 2) . '/include/global_settings.php');
+	expect($settings)->not->toBeFalse('include/global_settings.php must be readable');
 
 	$start = strpos($settings, "'path_php_binary' => [");
 	expect($start)->not->toBeFalse();
 
-	$block = substr($settings, $start, strpos($settings, '],', $start) - $start);
+	$end = strpos($settings, '],', $start);
+	expect($end)->not->toBeFalse('path_php_binary settings block must have a closing delimiter');
+
+	$block = substr($settings, $start, $end - $start);
 
 	// if a default is ever added, these casts stop being load-bearing
 	expect($block)->toContain("'method'")
@@ -66,7 +70,8 @@ test('path_php_binary really has no default to fall back on', function () {
 });
 
 test('a null option is what PHP deprecates, so the guard is not theoretical', function () {
-	$raised = null;
+	$raised                  = null;
+	$previousErrorReporting = error_reporting(E_ALL);
 
 	set_error_handler(function ($number, $string) use (&$raised) {
 		$raised = $string;
@@ -80,6 +85,7 @@ test('a null option is what PHP deprecates, so the guard is not theoretical', fu
 		// restore before asserting, so a failure here cannot leave the custom
 		// handler installed for the rest of the run
 		restore_error_handler();
+		error_reporting($previousErrorReporting);
 	}
 
 	expect($raised)->toContain('Passing null to parameter');
@@ -113,7 +119,10 @@ test('no shipped file escapes the binary path without casting it first', functio
 
 		$source = file_get_contents($root . '/' . $file);
 
-		if ($source !== false && str_contains($source, "cacti_escapeshellcmd(read_config_option('path_php_binary'))")) {
+		if ($source !== false && preg_match(
+			'/cacti_escapeshellcmd\s*\(\s*(?!\(\s*string\s*\)\s*)read_config_option\s*\(\s*[\'\"]path_php_binary[\'\"]\s*\)/',
+			$source
+		)) {
 			$unguarded[] = $file;
 		}
 	}
