@@ -71,13 +71,13 @@ function htmx_is_fragment_request(): bool {
 }
 
 /**
- * Returns the vendored htmx version string (reads include/js/htmx.min.js.version).
+ * Returns the vendored htmx version string (reads include/js/htmx.js.version).
  * Empty string when the version file is missing.
  *
  * @return string
  */
 function htmx_version(): string {
-	$path = CACTI_PATH_BASE . '/include/js/htmx.min.js.version';
+	$path = CACTI_PATH_BASE . '/include/js/htmx.js.version';
 
 	if (!file_exists($path)) {
 		return '';
@@ -88,18 +88,18 @@ function htmx_version(): string {
 
 /**
  * Subresource Integrity hash pinned to the exact vendored htmx 2.0.6 build
- * (include/js/htmx.min.js). This is a constant, not a value recomputed from the
+ * (include/js/htmx.js). This is a constant, not a value recomputed from the
  * served file at runtime: a self-referential hash gives no supply-chain
- * protection, since swapping htmx.min.js would simply re-hash to match it. With
+ * protection, since swapping htmx.js would simply re-hash to match it. With
  * a fixed constant the browser rejects any vendored file that no longer matches.
  *
  * On an htmx upgrade, replace the vendored file and recompute this value:
- *   php -r 'echo "sha384-".base64_encode(hash_file("sha384","include/js/htmx.min.js",true));'
+ *   php -r 'echo "sha384-".base64_encode(hash_file("sha384","include/js/htmx.js",true));'
  */
-const HTMX_2_0_6_SRI = 'sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm';
+const HTMX_2_0_6_SRI = 'sha384-ksKjJrwjL5VxqAkAZAVOPXvMkwAykMaNYegdixAESVr+KqLkKE8XBDoZuwyWVUDv';
 
 /**
- * Returns a <script> tag that loads the vendored htmx.min.js with an SRI
+ * Returns a <script> tag that loads the vendored htmx.js with an SRI
  * integrity attribute and crossorigin="anonymous". Returns empty string when
  * htmx is disabled or the vendored file is absent.
  *
@@ -119,7 +119,7 @@ const HTMX_2_0_6_SRI = 'sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z
  * parameter name), and is recomputed on every call rather than cached in a
  * static: get_md5_include_js()/get_theme_paths() do the same, since a static
  * cache would leave long-lived PHP processes (FPM, script_server) serving a
- * stale hash after include/js/htmx.min.js changes.
+ * stale hash after include/js/htmx.js changes.
  *
  * Two wiring pieces precede the script element:
  *   - an htmx-config meta that disables allowEval/allowScriptTags. htmx 2.0.6
@@ -140,14 +140,14 @@ function htmx_script_tag(): string {
 		return '';
 	}
 
-	$js_path = CACTI_PATH_BASE . '/include/js/htmx.min.js';
+	$js_path = CACTI_PATH_BASE . '/include/js/htmx.js';
 
 	if (!file_exists($js_path)) {
 		return '';
 	}
 
 	// md5 is a cache-buster for the asset URL only, recomputed on every call
-	// (not cached in a static) so an htmx.min.js upgrade is visible without a
+	// (not cached in a static) so an htmx.js upgrade is visible without a
 	// process restart. Integrity is the pinned constant, never derived from
 	// the served file (see HTMX_2_0_6_SRI).
 	$md5 = md5_file($js_path);
@@ -156,7 +156,7 @@ function htmx_script_tag(): string {
 	// bootstrap. Fall back to '/' when the constant is absent (lightweight
 	// fixtures that load lib/htmx.php without the full path bootstrap).
 	$base = defined('CACTI_PATH_URL') ? CACTI_PATH_URL : '/';
-	$url  = $base . 'include/js/htmx.min.js?' . $md5;
+	$url  = $base . 'include/js/htmx.js?' . $md5;
 
 	$config_meta = "<meta name='htmx-config' content='"
 		. htmlspecialchars('{"allowEval":false,"allowScriptTags":false}', ENT_QUOTES, 'UTF-8')

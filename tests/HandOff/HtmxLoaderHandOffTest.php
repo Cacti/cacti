@@ -55,12 +55,12 @@ test('htmx_script_tag prefixes the src with CACTI_PATH_URL', function () {
 	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
 
 	$tag = htmx_script_tag();
-	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.min.js');
+	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.js');
 
-	expect($tag)->toContain("src='" . CACTI_PATH_URL . 'include/js/htmx.min.js?' . $md5 . "'");
+	expect($tag)->toContain("src='" . CACTI_PATH_URL . 'include/js/htmx.js?' . $md5 . "'");
 });
 
-test('htmx.min.js.version content matches version pinned by the integrity attribute', function () {
+test('htmx.js.version content matches version pinned by the integrity attribute', function () {
 	global $config;
 
 	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
@@ -74,7 +74,7 @@ test('htmx.min.js.version content matches version pinned by the integrity attrib
 	expect(htmx_version())->toBe('2.0.6');
 
 	expect(htmx_script_tag())->toContain(
-		"integrity='sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm'"
+		"integrity='sha384-ksKjJrwjL5VxqAkAZAVOPXvMkwAykMaNYegdixAESVr+KqLkKE8XBDoZuwyWVUDv'"
 	);
 });
 
@@ -83,11 +83,11 @@ test('htmx_script_tag cache-busts the src with the md5 of the vendored file', fu
 
 	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
 
-	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.min.js');
+	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.js');
 
 	// No 'v=' parameter name: matches the path + '?' + hash shape used by
 	// get_md5_include_js()/get_theme_paths() in lib/functions.php.
-	expect(htmx_script_tag())->toContain('/htmx.min.js?' . $md5);
+	expect(htmx_script_tag())->toContain('/htmx.js?' . $md5);
 });
 
 test('htmx_script_tag renders a script tag when htmx_enabled is on', function () {
@@ -98,7 +98,7 @@ test('htmx_script_tag renders a script tag when htmx_enabled is on', function ()
 	$tag = htmx_script_tag();
 
 	expect($tag)->toContain('<script')
-		->and($tag)->toContain('include/js/htmx.min.js');
+		->and($tag)->toContain('include/js/htmx.js');
 });
 
 test('htmx_script_tag renders nothing when htmx_enabled is absent', function () {
@@ -110,7 +110,7 @@ test('htmx_script_tag renders nothing when htmx_enabled is absent', function () 
 
 	expect($tag)->toBe('')
 		->and($tag)->not->toContain('<script')
-		->and($tag)->not->toContain('htmx.min.js');
+		->and($tag)->not->toContain('htmx.js');
 });
 
 test('htmx_script_tag renders nothing when htmx_enabled is off', function () {
@@ -122,7 +122,7 @@ test('htmx_script_tag renders nothing when htmx_enabled is off', function () {
 
 	expect($tag)->toBe('')
 		->and($tag)->not->toContain('<script')
-		->and($tag)->not->toContain('htmx.min.js');
+		->and($tag)->not->toContain('htmx.js');
 });
 
 test('include/global.php requires lib/htmx.php before any caller can invoke htmx_script_tag', function () {

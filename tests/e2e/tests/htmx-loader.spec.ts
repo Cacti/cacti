@@ -32,14 +32,14 @@ import { test, expect } from '@playwright/test';
 test('htmx script tag appears in the login page HTML', async ({ page }) => {
 	await page.goto('/');
 
-	const src = await page.locator('script[src*="htmx.min.js"]').first().getAttribute('src');
+	const src = await page.locator('script[src*="htmx.js"]').first().getAttribute('src');
 
 	expect(src).toMatch(/include\/js\/htmx\.min\.js/);
 });
 
-test('htmx.min.js loads with a 200 response', async ({ page }) => {
+test('htmx.js loads with a 200 response', async ({ page }) => {
 	const response = await Promise.all([
-		page.waitForResponse((r) => r.url().includes('htmx.min.js')),
+		page.waitForResponse((r) => r.url().includes('htmx.js')),
 		page.goto('/'),
 	]);
 
@@ -57,7 +57,7 @@ test('window.htmx global is defined after page load', async ({ page }) => {
 test('integrity attribute is present on the htmx script tag', async ({ page }) => {
 	await page.goto('/');
 
-	const integrity = await page.locator('script[src*="htmx.min.js"]').first().getAttribute('integrity');
+	const integrity = await page.locator('script[src*="htmx.js"]').first().getAttribute('integrity');
 
 	expect(integrity).toMatch(/^sha384-[A-Za-z0-9+/=]+$/);
 });

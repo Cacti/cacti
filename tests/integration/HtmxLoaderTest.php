@@ -158,7 +158,7 @@ test('GET / emits an htmx script tag when enabled', function () {
 		$body = htmx_loader_http_get($port);
 
 		expect($body)->toContain('<script')
-			->and($body)->toMatch('/src=[\'"][^\'"]*htmx\.min\.js/');
+			->and($body)->toMatch('/src=[\'"][^\'"]*htmx\.js/');
 	} finally {
 		htmx_loader_stop_server($proc);
 	}
@@ -194,7 +194,7 @@ test('no htmx reference in body when the setting is off', function () {
 	try {
 		$body = htmx_loader_http_get($port);
 
-		expect($body)->not->toContain('htmx.min.js');
+		expect($body)->not->toContain('htmx.js');
 	} finally {
 		htmx_loader_stop_server($proc);
 	}

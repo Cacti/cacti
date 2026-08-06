@@ -19,8 +19,8 @@ on:
     paths:
       - 'lib/htmx.php'
       - 'include/global.php'
-      - 'include/js/htmx.min.js'
-      - 'include/js/htmx.min.js.version'
+      - 'include/js/htmx.js'
+      - 'include/js/htmx.js.version'
       - 'lib/html.php'
       - 'include/global_settings.php'
       - 'tests/Unit/HtmxTest.php'
@@ -40,8 +40,8 @@ on:
     paths:
       - 'lib/htmx.php'
       - 'include/global.php'
-      - 'include/js/htmx.min.js'
-      - 'include/js/htmx.min.js.version'
+      - 'include/js/htmx.js'
+      - 'include/js/htmx.js.version'
       - 'lib/html.php'
       - 'include/global_settings.php'
       - 'tests/Unit/HtmxTest.php'

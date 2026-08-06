@@ -45,7 +45,7 @@ test('htmx_version reads the version file', function () {
 });
 
 test('htmx_version returns empty string when the version file is missing', function () {
-	$path   = CACTI_PATH_BASE . '/include/js/htmx.min.js.version';
+	$path   = CACTI_PATH_BASE . '/include/js/htmx.js.version';
 	$backup = $path . '.bak.' . getmypid();
 
 	$moved = rename($path, $backup);
@@ -127,7 +127,7 @@ test('htmx_script_tag returns empty string when the vendored file is missing', f
 
 	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
 
-	$path   = CACTI_PATH_BASE . '/include/js/htmx.min.js';
+	$path   = CACTI_PATH_BASE . '/include/js/htmx.js';
 	$backup = $path . '.bak.' . getmypid();
 
 	$moved = rename($path, $backup);
@@ -156,7 +156,7 @@ test('htmx_script_tag carries src, integrity, and crossorigin when enabled', fun
 	$tag = htmx_script_tag();
 
 	expect($tag)->toContain('src=')
-		->and($tag)->toContain('include/js/htmx.min.js')
+		->and($tag)->toContain('include/js/htmx.js')
 		->and($tag)->toMatch('/integrity=.sha384-[A-Za-z0-9+\/=]+./')
 		->and($tag)->toContain("crossorigin='anonymous'");
 });
@@ -166,7 +166,7 @@ test('htmx_script_tag integrity matches the sha384 of the vendored file', functi
 
 	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
 
-	$expected = 'sha384-' . base64_encode((string) hash_file('sha384', CACTI_PATH_BASE . '/include/js/htmx.min.js', true));
+	$expected = 'sha384-' . base64_encode((string) hash_file('sha384', CACTI_PATH_BASE . '/include/js/htmx.js', true));
 
 	expect(htmx_script_tag())->toContain("integrity='" . $expected . "'");
 });
@@ -176,11 +176,11 @@ test('htmx_script_tag cache-busts with md5 of the vendored file', function () {
 
 	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
 
-	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.min.js');
+	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.js');
 
 	// No 'v=' parameter name: matches the path + '?' + hash shape used by
 	// get_md5_include_js()/get_theme_paths() in lib/functions.php.
-	expect(htmx_script_tag())->toContain('/htmx.min.js?' . $md5);
+	expect(htmx_script_tag())->toContain('/htmx.js?' . $md5);
 });
 
 test('htmx_script_tag emits a root-absolute src prefixed with CACTI_PATH_URL', function () {
@@ -191,10 +191,10 @@ test('htmx_script_tag emits a root-absolute src prefixed with CACTI_PATH_URL', f
 	$tag = htmx_script_tag();
 
 	// extract the src attribute and assert it is not document-relative
-	expect($tag)->toMatch('/src=\'' . preg_quote(CACTI_PATH_URL, '/') . 'include\/js\/htmx\.min\.js/');
+	expect($tag)->toMatch('/src=\'' . preg_quote(CACTI_PATH_URL, '/') . 'include\/js\/htmx\.js/');
 
 	// a document-relative src would start the path with the bare filename
-	expect($tag)->not->toContain("src='include/js/htmx.min.js");
+	expect($tag)->not->toContain("src='include/js/htmx.js");
 });
 
 test('htmx_script_tag emits the htmx-config meta disabling eval and script tags', function () {
@@ -239,7 +239,7 @@ test('htmx_script_tag orders the config meta before the htmx script element', fu
 	$tag = htmx_script_tag();
 
 	$meta_pos   = strpos($tag, "name='htmx-config'");
-	$script_pos = strpos($tag, 'htmx.min.js');
+	$script_pos = strpos($tag, 'htmx.js');
 
 	expect($meta_pos)->not->toBeFalse()
 		->and($script_pos)->not->toBeFalse()
