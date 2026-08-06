@@ -1599,7 +1599,7 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 		$table_encoding = isset($data['charset']) ? 'DEFAULT CHARSET = ' . $data['charset'] : '';
 
 		if (isset($data['collate'])) {
-			$table_encoding .= ($table_encoding !== '' ? ' ' : 'DEFAULT ') . 'COLLATE = ' . $data['collate'];
+			$table_encoding .= ($table_encoding !== '' ? ' ' : '') . 'COLLATE = ' . $data['collate'];
 		}
 
 		$alter_clauses[] = $table_encoding;
@@ -1638,9 +1638,8 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 		}
 
 		if (isset($column['default'])) {
-			$current_timestamp = $include_position
-				? in_array(cacti_strtolower($column['type']), ['timestamp', 'datetime', 'date'], true) && str_contains($column['default'], 'CURRENT_TIMESTAMP')
-				: cacti_strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP';
+			$current_timestamp = in_array(cacti_strtolower($column['type']), ['timestamp', 'datetime', 'date'], true)
+				&& preg_match('/^CURRENT_TIMESTAMP(?:\(\d*\))?$/i', (string) $column['default']);
 
 			if ($current_timestamp) {
 				$sql .= ' default ' . $column['default'];

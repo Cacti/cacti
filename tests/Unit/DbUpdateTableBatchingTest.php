@@ -17,25 +17,47 @@
  +-------------------------------------------------------------------------+
 */
 
-$source = file_get_contents(dirname(__DIR__, 2) . '/lib/database.php');
-expect($source)->not->toBeFalse('lib/database.php must be readable');
+require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
+require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
+require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
+require_once dirname(__DIR__, 2) . '/lib/database.php';
 
-$start = strpos($source, 'function db_update_table(');
-expect($start)->not->toBeFalse('db_update_table() must exist');
+class DbUpdateTableRecordingPDO extends FakeMySQLPDO {
+	public array $alterStatements = [];
 
-$end = strpos($source, 'function db_format_index_create(', $start);
-expect($end)->not->toBeFalse('db_format_index_create() must follow db_update_table()');
+	public function prepare(string $query, array $options = []): PDOStatement|false {
+		if (str_starts_with(ltrim($query), 'ALTER TABLE')) {
+			$this->alterStatements[] = $query;
 
-$body = substr($source, $start, $end - $start);
+			return parent::prepare('SELECT 1', $options);
+		}
 
-test('db_update_table batches every schema change into one alter statement', function () use ($body) {
-	expect(substr_count($body, 'db_execute('))->toBe(1)
-		->and($body)->toContain("implode(', ', \$alter_clauses)")
-		->and($body)->toContain("'ADD ' . \$column_definition")
-		->and($body)->toContain("'CHANGE `'")
-		->and($body)->toContain("'DROP COLUMN `'")
-		->and($body)->toContain("'ADD' . (isset(\$k['unique'])")
-		->and($body)->toContain("'DROP PRIMARY KEY'")
-		->and($body)->not->toContain('db_add_column(')
-		->and($body)->not->toContain('db_remove_column(');
+		if (str_contains($query, 'information_schema.TABLES')) {
+			return parent::prepare("SELECT 'InnoDB' AS ENGINE, '' AS TABLE_COMMENT", $options);
+		}
+
+		return parent::prepare($query, $options);
+	}
+}
+
+test('db_update_table batches schema changes and preserves timestamp expressions', function () {
+	$connection = new DbUpdateTableRecordingPDO();
+	$connection->exec('CREATE TABLE test_table (id INTEGER NOT NULL, changed TEXT, obsolete TEXT)');
+
+	$result = db_update_table('test_table', [
+		'collate' => 'utf8mb4_unicode_ci',
+		'columns' => [
+			['name' => 'id', 'type' => 'INTEGER', 'NULL' => false],
+			['name' => 'changed', 'type' => 'datetime', 'NULL' => false, 'default' => 'CURRENT_TIMESTAMP(6)'],
+			['name' => 'created_at', 'type' => 'timestamp', 'NULL' => false, 'default' => 'CURRENT_TIMESTAMP'],
+		],
+	], true, false, $connection);
+
+	expect($result)->toBeTrue()
+		->and($connection->alterStatements)->toHaveCount(1)
+		->and($connection->alterStatements[0])->toContain('COLLATE = utf8mb4_unicode_ci')
+		->and($connection->alterStatements[0])->not->toContain('DEFAULT COLLATE')
+		->and($connection->alterStatements[0])->toContain('CHANGE `changed` `changed` datetime NOT NULL default CURRENT_TIMESTAMP(6)')
+		->and($connection->alterStatements[0])->toContain('ADD `created_at` timestamp NOT NULL default CURRENT_TIMESTAMP')
+		->and($connection->alterStatements[0])->toContain('DROP COLUMN `obsolete`');
 });
