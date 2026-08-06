@@ -459,6 +459,78 @@ function cacti_get_snmpv3_auth(mixed $auth_proto, mixed $auth_user, mixed $auth_
 		' ' . $engineid);
 }
 
+/**
+ * Calls a native SNMP session method and captures its suppressed warning.
+ *
+ * Some PHP SNMP failures emit their only useful diagnostic as a warning while
+ * leaving the session error number and message empty.
+ *
+ * @param object $session Native SNMP session wrapper.
+ * @param string $method  Native SNMP method name.
+ * @param array  $args    Method arguments.
+ * @param string $warning Captured warning message.
+ *
+ * @return mixed Native SNMP method result.
+ */
+function cacti_snmp_session_call(object $session, string $method, array $args, string &$warning) : mixed {
+	$warning = '';
+
+	$previous_handler = set_error_handler(function (int $level, string $message, string $file = '', int $line = 0, array $context = []) use (&$warning, &$previous_handler) : bool {
+		if (($level & (E_WARNING | E_USER_WARNING)) !== 0) {
+			if ($warning === '') {
+				$warning = $message;
+			}
+
+			return true;
+		}
+
+		if (is_callable($previous_handler)) {
+			return (bool) call_user_func($previous_handler, $level, $message, $file, $line, $context);
+		}
+
+		return false;
+	});
+
+	try {
+		return @call_user_func_array([$session, $method], $args);
+	} finally {
+		restore_error_handler();
+	}
+}
+
+/**
+ * Logs the error reported by a native SNMP session operation.
+ *
+ * @param object       $session Native SNMP session wrapper.
+ * @param array        $info    Session connection metadata.
+ * @param string|array $oid     OID or OID list used by the failed operation.
+ * @param string       $warning Warning captured while calling the operation.
+ *
+ * @return void
+ */
+function cacti_snmp_log_session_error(object $session, array $info, string|array $oid, string $warning = '') : void {
+	$error_number = $session->getErrno();
+
+	if ($error_number == SNMP::ERRNO_TIMEOUT) {
+		$error = 'Timeout (' . round($info['timeout'] / 1000, 0) . ' ms)';
+	} else {
+		$error = trim((string) $session->getError());
+
+		if ($error === '') {
+			$error = trim($warning);
+		}
+
+		if ($error === '') {
+			$error = 'Error Number ' . $error_number;
+		}
+	}
+
+	$error = str_replace(["\r", "\n"], ' ', $error);
+	$oid   = is_array($oid) ? implode(',', $oid) : $oid;
+
+	cacti_log("WARNING: SNMP Error:'$error', Device:'" . $info['hostname'] . "', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
+}
+
 function cacti_snmp_session_walk(object $session, mixed $oid, bool $dummy = false, mixed $max_repetitions = null,
 	mixed $non_repeaters = null, int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : mixed {
 	$info = $session->info;
@@ -492,10 +564,13 @@ function cacti_snmp_session_walk(object $session, mixed $oid, bool $dummy = fals
 		$max_repetitions = 10;
 	}
 
+	$warning = '';
+
 	try {
-		$out = $session->walk($oid, false, $max_repetitions, $non_repeaters);
-	} catch (Exception) {
-		$out = false;
+		$out = cacti_snmp_session_call($session, 'walk', [$oid, false, $max_repetitions, $non_repeaters], $warning);
+	} catch (Exception $e) {
+		$out     = false;
+		$warning = $e->getMessage();
 	}
 
 	if ($out === false) {
@@ -505,8 +580,8 @@ function cacti_snmp_session_walk(object $session, mixed $oid, bool $dummy = fals
 			$oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.14' ||
 			$oid == '.1.3.6.1.4.1.9.9.23.1.2.1.1.6') {
 			// do nothing
-		} elseif ($session->getErrno() == SNMP::ERRNO_TIMEOUT) {
-			cacti_log('WARNING: SNMP Error:\'Timeout (' . ($info['timeout'] / 1000) . " ms)', Device:'" . $info['hostname'] . "', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
+		} else {
+			cacti_snmp_log_session_error($session, $info, $oid, $warning);
 		}
 
 		return [];
@@ -547,10 +622,13 @@ function cacti_snmp_session_get(object $session, mixed $oid, bool $strip_alpha =
 		$oid = trim($oid);
 	}
 
+	$warning = '';
+
 	try {
-		$out = $session->get($oid);
-	} catch (Exception) {
-		$out = false;
+		$out = cacti_snmp_session_call($session, 'get', [$oid], $warning);
+	} catch (Exception $e) {
+		$out     = false;
+		$warning = $e->getMessage();
 	}
 
 	if (is_array($oid)) {
@@ -558,9 +636,7 @@ function cacti_snmp_session_get(object $session, mixed $oid, bool $strip_alpha =
 	}
 
 	if ($out === false) {
-		if ($session->getErrno() == SNMP::ERRNO_TIMEOUT) {
-			cacti_log('WARNING: SNMP Error:\'Timeout (' . round($info['timeout'] / 1000,0) . " ms)', Device:'" . $info['hostname'] . "', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
-		}
+		cacti_snmp_log_session_error($session, $info, $oid, $warning);
 
 		return false;
 	}
@@ -594,18 +670,21 @@ function cacti_snmp_session_getnext(object $session, mixed $oid) : mixed {
 		$oid = trim($oid);
 	}
 
+	$warning = '';
+
 	try {
-		$out = @$session->getnext($oid);
-	} catch (Exception) {
-		$out = false;
+		$out = cacti_snmp_session_call($session, 'getnext', [$oid], $warning);
+	} catch (Exception $e) {
+		$out     = false;
+		$warning = $e->getMessage();
 	}
 
 	if (is_array($oid)) {
 		$oid = implode(',', $oid);
-	} elseif ($out === false) {
-		if ($session->getErrno() == SNMP::ERRNO_TIMEOUT) {
-			cacti_log('WARNING: SNMP Error:\'Timeout (' . round($info['timeout'] / 1000, 0) . " ms)', Device:'" . $info['hostname'] . "', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
-		}
+	}
+
+	if ($out === false) {
+		cacti_snmp_log_session_error($session, $info, $oid, $warning);
 
 		return false;
 	}
