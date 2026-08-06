@@ -323,7 +323,7 @@ function reindex_devices() : bool {
 	// 2 - Weekly on Sunday
 	// 3 - Monthly on Sunday
 
-	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+	$command_string = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 	$extra_args     = CACTI_PATH_CLI . '/poller_reindex_hosts.php --id=all --qid=all';
 
 	if ($schedule == 0) {

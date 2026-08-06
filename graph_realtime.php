@@ -219,7 +219,7 @@ switch (grv('action')) {
 		$local_graph_id = (int) gfrv('local_graph_id');
 		$poller_id      = hash('sha256', session_id());
 		$graph_rrd      = read_config_option('realtime_cache_path') . '/user_' . $poller_id . '_lgi_' . $local_graph_id . '.png';
-		$php_binary     = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+		$php_binary     = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 		$script_path    = cacti_escapeshellarg(CACTI_PATH_BASE . '/poller_realtime.php');
 		$args           = '--graph=' . $local_graph_id . ' --interval=' . ((int) $graph_data_array['ds_step']) . ' --poller_id=' . cacti_escapeshellarg($poller_id);
 
