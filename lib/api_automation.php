@@ -3539,7 +3539,7 @@ function create_graph_node(int $graph_id, int $parent, array $rule) : int {
  * @return void
  */
 function automation_poller_bottom() : void {
-	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+	$command_string = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 
 	// If its not set, just assume its in the path
 	if (trim($command_string) == '') {

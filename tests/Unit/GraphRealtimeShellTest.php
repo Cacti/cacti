@@ -27,7 +27,7 @@ $graphRealtimePath = __DIR__ . '/../../graph_realtime.php';
 test('graph_realtime.php uses cacti_escapeshellcmd for PHP binary', function () use ($graphRealtimePath) {
 	$contents = file_get_contents($graphRealtimePath);
 
-	expect($contents)->toContain("cacti_escapeshellcmd(read_config_option('path_php_binary')");
+	expect($contents)->toContain("cacti_escapeshellcmd((string) read_config_option('path_php_binary')");
 });
 
 test('graph_realtime.php uses cacti_escapeshellarg for poller_realtime script path', function () use ($graphRealtimePath) {
