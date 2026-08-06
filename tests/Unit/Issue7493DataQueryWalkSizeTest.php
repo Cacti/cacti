@@ -61,7 +61,9 @@ function walk_size_split(string $list) : array {
 		if ($quote !== '') {
 			$parts[count($parts) - 1] .= $char;
 
-			if ($char === $quote && $list[$pos - 1] !== '\\') {
+			// $pos is never 0 here (the opening quote consumed that turn), but
+			// read defensively rather than let a negative offset wrap around
+			if ($char === $quote && ($pos === 0 || $list[$pos - 1] !== '\\')) {
 				$quote = '';
 			}
 
@@ -93,9 +95,14 @@ function walk_size_split(string $list) : array {
  */
 function walk_size_snmp_parameters() : array {
 	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/snmp.php');
-	$open   = strpos($source, '(', strpos($source, 'function cacti_snmp_walk('));
 
-	return walk_size_split(walk_size_balanced($source, $open));
+	$declaration = strpos($source, 'function cacti_snmp_walk(');
+
+	// without this the strpos below would start from offset 0 and read some
+	// unrelated parenthesis group, so the test would pass on the wrong text
+	expect($declaration)->not->toBeFalse('cacti_snmp_walk() must exist in lib/snmp.php');
+
+	return walk_size_split(walk_size_balanced($source, strpos($source, '(', $declaration)));
 }
 
 /**
@@ -106,13 +113,18 @@ function walk_size_snmp_parameters() : array {
 function walk_size_walk_arguments() : array {
 	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/data_query.php');
 
-	$host  = strpos($source, 'function query_snmp_host(');
+	$host = strpos($source, 'function query_snmp_host(');
+
+	expect($host)->not->toBeFalse('query_snmp_host() must exist in lib/data_query.php');
+
 	$after = strpos($source, "\nfunction ", $host + 1);
 	$body  = substr($source, $host, ($after === false ? strlen($source) : $after) - $host);
 
-	$open = strpos($body, '(', strpos($body, 'cacti_snmp_walk('));
+	$call = strpos($body, 'cacti_snmp_walk(');
 
-	return walk_size_split(walk_size_balanced($body, $open));
+	expect($call)->not->toBeFalse('query_snmp_host() must still walk for output_format fields');
+
+	return walk_size_split(walk_size_balanced($body, strpos($body, '(', $call)));
 }
 
 test('cacti_snmp_walk still declares a bulk walk size and no max_oids', function () {
@@ -149,8 +161,13 @@ test('the walk size is normalized before the output_format walk reads it', funct
 	$after = strpos($source, "\nfunction ", $host + 1);
 	$body  = substr($source, $host, ($after === false ? strlen($source) : $after) - $host);
 
-	expect(strpos($body, '$walk_size = $host[\'bulk_walk_size\']'))->not->toBeFalse()
-		->and(strpos($body, '$walk_size'))->toBeLessThan(strpos($body, 'cacti_snmp_walk('));
+	$normalization = strpos($body, '$walk_size = $host[\'bulk_walk_size\']');
+
+	// anchor on the normalization itself: strpos($body, '$walk_size') would
+	// find the auto-tuning branch's "$walk_size = 5" and pass even if the
+	// normalization moved below the walk
+	expect($normalization)->not->toBeFalse()
+		->and($normalization)->toBeLessThan(strpos($body, 'cacti_snmp_walk('));
 });
 
 test('max_oids is still passed to the session calls that take it', function () {
