@@ -27,7 +27,7 @@
     "lib/aggregate.php": 5,
     "lib/api_aggregate.php": 5,
     "lib/api_automation.php": 9,
-    "lib/api_device.php": 26,
+    "lib/api_device.php": 24,
     "lib/api_graph.php": 8,
     "lib/auth.php": 3,
     "lib/boost.php": 3,
