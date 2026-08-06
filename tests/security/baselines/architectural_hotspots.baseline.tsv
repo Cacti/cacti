@@ -126,7 +126,7 @@ dynamic_include	./lib/plugins.php:981			require_once($setup_file);
 dynamic_include	./lib/rrd.php:3049			include($rrdtheme);
 dynamic_include	./lib/rrd.php:4601			include($themefile);
 dynamic_include	./link.php:91					require_once($file);
-dynamic_include	./plugins.php:1829				require_once($setup_file);
+dynamic_include	./plugins.php:1832				require_once($setup_file);
 dynamic_include	./reports.php:35		require_once($reportit_api);
 dynamic_include	./script_server.php:293						require_once($include_file);
 dynamic_include	./scripts/ss_mikrotik_snmpget.php:37		include_once($config['base_path'] . '/lib/snmp.php');
