@@ -173,7 +173,9 @@ function registry_register(PDO $conn, int $pid, int $age, int $timeout = 300) : 
  */
 function registry_spawn_php(&$handle) : int {
 	$pipes  = [];
-	$handle = proc_open(PHP_BINARY . ' -r "sleep(30);"', [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	/* The array form matters: a string command is run through sh, so the child
+	   would be sh and its /proc comm would not match the runner's. */
+	$handle = proc_open([PHP_BINARY, '-r', 'sleep(30);'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
 
 	$pid = (int) proc_get_status($handle)['pid'];
 
@@ -191,7 +193,7 @@ function registry_spawn_php(&$handle) : int {
  */
 function registry_dead_pid() : int {
 	$pipes  = [];
-	$handle = proc_open(PHP_BINARY . ' -r "exit(0);"', [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$handle = proc_open([PHP_BINARY, '-r', 'exit(0);'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
 	$pid    = (int) proc_get_status($handle)['pid'];
 
 	foreach ($pipes as $pipe) {

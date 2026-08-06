@@ -30,7 +30,8 @@ require_once dirname(__DIR__, 2) . '/lib/poller.php';
  */
 function pid_guard_spawn_foreign(&$handle) : int {
 	$pipes  = [];
-	$handle = proc_open('sleep 30', [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	// array form, so the child is sleep itself rather than a wrapping shell
+	$handle = proc_open(['sleep', '30'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
 
 	$status = proc_get_status($handle);
 
@@ -53,7 +54,7 @@ test('the running process recognises itself', function () {
 
 test('a pid that has already exited is not reported running', function () {
 	$pipes  = [];
-	$handle = proc_open('exit 0', [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$handle = proc_open(['true'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
 	$pid    = (int) proc_get_status($handle)['pid'];
 
 	foreach ($pipes as $pipe) {
