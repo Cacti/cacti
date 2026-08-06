@@ -1,0 +1,161 @@
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+*/
+
+/*
+ * query_snmp_host() normalizes the device's bulk walk size into $walk_size and
+ * hands that to cacti_snmp_session() for the index walk. The output_format
+ * branch instead passed $host['max_oids'] in the slot cacti_snmp_walk() reads
+ * as $bulk_walk_size, so snmpbulkwalk ran with -Cr taken from max OIDs per get.
+ * Devices that reject large bulk walks returned nothing for those fields.
+ *
+ * The call needs a live SNMP session to reach, so this checks the wiring rather
+ * than the traffic: it reads the argument position out of cacti_snmp_walk()'s
+ * own declaration, so it keeps holding if that signature is ever reordered.
+ */
+
+/**
+ * Reads the text between one pair of balanced parentheses.
+ *
+ * @param string $source The PHP source to read from.
+ * @param int    $open   The offset of the opening parenthesis.
+ *
+ * @return string The contents, or an empty string when the pair never closes.
+ */
+function walk_size_balanced(string $source, int $open) : string {
+	$depth = 0;
+
+	for ($pos = $open; $pos < strlen($source); $pos++) {
+		if ($source[$pos] === '(') {
+			$depth++;
+		} elseif ($source[$pos] === ')') {
+			$depth--;
+
+			if ($depth === 0) {
+				return substr($source, $open + 1, $pos - $open - 1);
+			}
+		}
+	}
+
+	return '';
+}
+
+/**
+ * Split an argument or parameter list on its top-level commas.
+ *
+ * @return string[]
+ */
+function walk_size_split(string $list) : array {
+	$parts = [''];
+	$depth = 0;
+	$quote = '';
+
+	for ($pos = 0; $pos < strlen($list); $pos++) {
+		$char = $list[$pos];
+
+		if ($quote !== '') {
+			$parts[count($parts) - 1] .= $char;
+
+			if ($char === $quote && $list[$pos - 1] !== '\\') {
+				$quote = '';
+			}
+
+			continue;
+		}
+
+		if ($char === "'" || $char === '"') {
+			$quote = $char;
+		} elseif ($char === '(' || $char === '[') {
+			$depth++;
+		} elseif ($char === ')' || $char === ']') {
+			$depth--;
+		} elseif ($char === ',' && $depth === 0) {
+			$parts[] = '';
+
+			continue;
+		}
+
+		$parts[count($parts) - 1] .= $char;
+	}
+
+	return array_map('trim', $parts);
+}
+
+/**
+ * Reads cacti_snmp_walk()'s declared parameter list out of lib/snmp.php.
+ *
+ * @return string[] One entry per declared parameter, in order.
+ */
+function walk_size_snmp_parameters() : array {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/snmp.php');
+	$open   = strpos($source, '(', strpos($source, 'function cacti_snmp_walk('));
+
+	return walk_size_split(walk_size_balanced($source, $open));
+}
+
+/**
+ * Reads the arguments query_snmp_host() passes to cacti_snmp_walk().
+ *
+ * @return string[] One entry per argument, in order.
+ */
+function walk_size_walk_arguments() : array {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/data_query.php');
+
+	$host  = strpos($source, 'function query_snmp_host(');
+	$after = strpos($source, "\nfunction ", $host + 1);
+	$body  = substr($source, $host, ($after === false ? strlen($source) : $after) - $host);
+
+	$open = strpos($body, '(', strpos($body, 'cacti_snmp_walk('));
+
+	return walk_size_split(walk_size_balanced($body, $open));
+}
+
+test('cacti_snmp_walk still declares a bulk walk size and no max_oids', function () {
+	$names = array_map(
+		fn ($parameter) => preg_match('/\$(\w+)/', $parameter, $m) ? $m[1] : '',
+		walk_size_snmp_parameters()
+	);
+
+	// the whole defect was reading this slot as if it were max OIDs per get
+	expect($names)->toContain('bulk_walk_size')
+		->and($names)->not->toContain('max_oids');
+});
+
+test('the output_format walk passes the normalized walk size in the bulk walk size slot', function () {
+	$names = array_map(
+		fn ($parameter) => preg_match('/\$(\w+)/', $parameter, $m) ? $m[1] : '',
+		walk_size_snmp_parameters()
+	);
+
+	$slot = array_search('bulk_walk_size', $names, true);
+	$args = walk_size_walk_arguments();
+
+	expect($slot)->not->toBeFalse()
+		->and($args)->toHaveCount(count($names));
+
+	// pre-fix this slot held $host['max_oids'], which is max OIDs per get
+	expect($args[$slot])->toBe('$walk_size');
+});
+
+test('the walk size is normalized before the output_format walk reads it', function () {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/data_query.php');
+
+	$host  = strpos($source, 'function query_snmp_host(');
+	$after = strpos($source, "\nfunction ", $host + 1);
+	$body  = substr($source, $host, ($after === false ? strlen($source) : $after) - $host);
+
+	expect(strpos($body, '$walk_size = $host[\'bulk_walk_size\']'))->not->toBeFalse()
+		->and(strpos($body, '$walk_size'))->toBeLessThan(strpos($body, 'cacti_snmp_walk('));
+});
+
+test('max_oids is still passed to the session calls that take it', function () {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/data_query.php');
+
+	// the fix must not have swapped every max_oids in the file
+	expect(substr_count($source, "\$host['max_oids']"))->toBeGreaterThan(0);
+});
