@@ -1378,7 +1378,9 @@ function html_escape_attr(mixed $string = '') : string {
 }
 
 /**
- * html_escape_url - sanitizes a URL for display in an HTML attribute
+ * html_escape_url - escapes a URL for display in an HTML attribute. This
+ *   function does not validate or restrict URL schemes; callers accepting
+ *   untrusted navigation targets must validate them separately.
  *
  * @param mixed $url URL the attribute value to escape
  *

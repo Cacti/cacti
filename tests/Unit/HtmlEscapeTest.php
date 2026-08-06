@@ -148,13 +148,10 @@ test('cacti_redirect is used for constructed local page redirects', function () 
 		expect($source)->not->toBeFalse("$page must be readable")
 			->and($source)->toContain('cacti_redirect(');
 
-		$start = strpos($source, 'function form_save()');
-		expect($start)->not->toBeFalse("$page must define form_save()");
+		$matched = preg_match('/function\s+form_save\s*\([^)]*\)\s*(?::\s*[^\s{]+\s*)?\{.*?^\}/ms', $source, $matches);
+		expect($matched)->toBe(1, "$page must define form_save()");
 
-		$end = strpos($source, "\nfunction ", $start + 1);
-		expect($end)->not->toBeFalse("$page form_save() must have a following function");
-
-		$formSave = substr($source, $start, $end - $start);
+		$formSave = $matches[0];
 
 		foreach ($patterns as $pattern) {
 			expect($formSave)->not->toContain($pattern);
