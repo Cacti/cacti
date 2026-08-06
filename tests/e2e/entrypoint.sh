@@ -60,7 +60,11 @@ if ! mysql -h "$DB_HOST" -u"$DB_USER" -p"$DB_PASS" --skip-ssl "$DB_NAME" \
 	# is_install_needed() reads as older than the develop target and so forces
 	# the installer redirect. Stamp the version row with CACTI_DEV_VERSION (the
 	# constant the comparison runs against) so the login page renders instead.
-	dev_version="$(sed -n "s/.*CACTI_DEV_VERSION'[^']*'\\([^']*\\)'.*/\\1/p" /var/www/html/include/global_constants.php)"
+	dev_version="$(php -r "require '/var/www/html/include/global_constants.php'; if (!defined('CACTI_DEV_VERSION')) { fwrite(STDERR, 'CACTI_DEV_VERSION is not defined' . PHP_EOL); exit(1); } echo CACTI_DEV_VERSION;")"
+	if [ -z "$dev_version" ]; then
+		echo "CACTI_DEV_VERSION resolved to an empty value" >&2
+		exit 1
+	fi
 	mysql -h "$DB_HOST" -u"$DB_USER" -p"$DB_PASS" --skip-ssl "$DB_NAME" -e \
 		"UPDATE version SET cacti = '${dev_version}'"
 
