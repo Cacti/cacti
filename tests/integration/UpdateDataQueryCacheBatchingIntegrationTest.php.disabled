@@ -31,6 +31,11 @@
    instead, dereferenced CACTI_PATH_LIBRARY and fataled, and its extra query
    changed the counts below. Load the real one deliberately and give it what it
    needs, so this file behaves the same whatever ran before it. */
+/* Guarded defines rather than require_once of include/global_constants.php:
+   that file defines unconditionally, and sibling tests (Helpers/UnitStubs.php,
+   CmdPhpPollerItemColumnCollisionIntegrationTest) already define a subset of
+   the same names, so requiring it here emits "already defined" warnings on any
+   ordering where one of those ran first. Guarded defines emit none either way. */
 foreach ([
 	'CACTI_WEB'          => false,
 	'POLLER_ID'          => 1,
