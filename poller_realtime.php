@@ -145,7 +145,7 @@ $change_files = false;
 $max_threads = read_config_option('max_threads');
 
 // Determine Command Name
-$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+$command_string = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 $extra_args     = '-q ' . cacti_escapeshellarg(CACTI_PATH_BASE . '/cmd_realtime.php') . ' ' . cacti_escapeshellarg($poller_id) . " $graph_id $interval";
 
 // Determine if Realtime will work or not

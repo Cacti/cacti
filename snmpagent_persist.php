@@ -75,7 +75,7 @@ $cache_last_refresh = false;
 get_options();
 
 // start background caching process if not running
-$php            = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+$php            = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 $extra_args     = '-q ' . cacti_escapeshellarg('./snmpagent_mibcache.php');
 
 if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {

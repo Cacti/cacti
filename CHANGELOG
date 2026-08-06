@@ -16,11 +16,13 @@ Cacti CHANGELOG
 -issue#5481: Attempting to edit a Data Query that does not exist throws warnings and not an GUI error
 -issue#5511: Allow automation network to be saved when the IP Addresses to ignore box is empty
 -issue#5517: Cacti 1.3.x will not support 'Remember me' functionality without using https
+-issue#5565: Unable to change a device's community at command line
 -issue#5567: Incorrect variable name in change_device cli script
 -issue#5570: RRDChecker is started very often
 -issue#5573: Incorrect URL for editing graph template
 -issue#5639: Add tooltip info about IPv6 address
 -issue#5657: Consolidation Functions must be available in COMMENT for nth percentile and bandwidth summations comment types
+-issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#5680: Fix Spikekill not following correct time in schedule
 -issue#5776: Undefined array key "description" in file settings.php
 -issue#5844: Automation fails when using MySQL 8
@@ -40,6 +42,7 @@ Cacti CHANGELOG
 -issue#6255: Fix not showing any graphs in the subtree if there are only graphs without devices
 -issue#6258: Rename 'Data' to 'Data/Statistics' per customer request
 -issue#6545: Add 30 and 60 second timeout options for Remote Agent and Poller settings
+-issue#6573: Create new device_change_javascript hook for THOLD plugin by xmacan
 -issue#6669: Show on the Technical Support page whether php-snmp is in use or disabled by $php_snmp_support
 -issue#6682: Fix column exclusion silently skipping first element due to loose array_search comparison
 -issue#6742: Fix loose $db_conn comparison in db_table_exists and db_column_exists
@@ -49,18 +52,26 @@ Cacti CHANGELOG
 -issue#7070: Align percentile rank with observed samples and expose missing export rows
 -issue#7131: Fix data_input_data column-expansion bugs in change_data_template and api_data_source_duplicate
 -issue#7137: Fix eleven PHPStan Level 6 errors in form_save error-redirect URLs and lib/html.php right-tab block
+-issue#7202: Removed plugins may leave orphan entries in plugin tables
 -issue#7211: Correct the Nth percentile and bandwidth summation divisor on base-1024 graphs
 -issue#7214: Fix TypeError in boost_graph_set_file when sending reports
 -issue#7216: Aggregate totalling legend printed untotalled single data source values
+-issue#7261: Parameterize aggregate_graphs.php SQL and harden reflected request values
+-issue#7343: Install wizard silently fails to advance after CSRF token expires
+-issue#7380: Batch graph-create task_item_id wiring to reduce template graph creation queries
+-issue#7424: Correct SNMP disk counter wrap delta calculations
+-issue#7427: Update device status by host id instead of non-unique hostname
+-issue#7429: Prevent monthly automation schedules from resetting next_start to 1970
+-issue#7493: SNMP walk for output_format fields used max OIDs instead of the device bulk walk size
+-issue#7518: Replace the DsstatsMeasure enum in lib/html_utility.php with const arrays for PHP 8.0 compatibility
 -issue#7519: Fix Boost archive-table cleanup deleting still-open-round rows instead of forwarding them to the live table
--issue#7523: Fix dead duplicate-record guard in boost_process_poller_output
 -issue#7520: Gate Boost archive-table drop on shard completeness instead of the partial-success status sum
--issue#7526: Apply Boost's child-completion startup barrier to dsstats and rrdcheck launch loops
 -issue#7521: Purge the old remote poller's poller_item row when api_data_source_change_host() moves a data source to a new device
--issue#7524: Mirror poller_item deletes to the remote poller in data_query_remove_disabled_items() and data_source_to_data_template()
--issue#7535: Consolidate the poller_item delete call sites behind poller_item_delete_for_data_source() and poller_item_delete_for_host()
 -issue#7522: Fix cmd.php SELECT * poller_item/host join defeating poller_item's SNMP-credential caching
+-issue#7523: Fix dead duplicate-record guard in boost_process_poller_output
+-issue#7524: Mirror poller_item deletes to the remote poller in data_query_remove_disabled_items() and data_source_to_data_template()
 -issue#7525: Fix cmd.php --allhost invocation ignoring cron_interval when resetting rrd_next_step
+-issue#7526: Apply Boost's child-completion startup barrier to dsstats and rrdcheck launch loops
 -issue#7527: Skip update_poller_cache()'s poller_id JOIN query when callers already know it
 -issue#7528: Replace cmd.php's redundant script-server-call COUNT(*) join with an in-PHP count
 -issue#7529: Scope poller.php's global aggregate scans to the central poller
@@ -70,11 +81,8 @@ Cacti CHANGELOG
 -issue#7533: Skip the UNION ALL derived table wrapper in Boost's flush query when only one archive table exists
 -issue#7534: Batch-prefetch RRD field name lookups in Boost and poller output processing instead of querying per row
 -issue#7536: Consolidate the four hand-written poller_output_boost inserts into one shared helper
--issue#7261: Parameterize aggregate_graphs.php SQL and harden reflected request values
--issue#7343: Install wizard silently fails to advance after CSRF token expires
--issue#7380: Batch graph-create task_item_id wiring to reduce template graph creation queries
--issue#7518: Replace the DsstatsMeasure enum in lib/html_utility.php with const arrays for PHP 8.0 compatibility
--issue#7202: Removed plugins may leave orphan entries in plugin tables
+-issue#7535: Consolidate the poller_item delete call sites behind poller_item_delete_for_data_source() and poller_item_delete_for_host()
+-issue#7576: Stop passing an unset path_php_binary into string parameters
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors

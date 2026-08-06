@@ -543,7 +543,7 @@ function run_remote_data_query() : void {
 function run_remote_discovery() : void {
 	$poller_id = cacti_escapeshellarg((string) POLLER_ID);
 	$network   = cacti_escapeshellarg(gfrv('network'));
-	$php       = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+	$php       = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 	$path      = cacti_escapeshellarg(read_config_option('path_webroot') . '/poller_automation.php');
 
 	$options   = ' --poller=' . $poller_id . ' --network=' . $network . ' --force';

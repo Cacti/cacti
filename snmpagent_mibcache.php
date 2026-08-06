@@ -46,7 +46,7 @@ if (file_exists($path_mibcache_lock) && is_writable($path_mibcache_lock)) {
 }
 
 // start background caching process if not running
-$php        = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+$php        = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 $extra_args = ' ' . cacti_escapeshellarg('./snmpagent_mibcachechild.php');
 
 while (true) {

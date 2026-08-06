@@ -724,12 +724,12 @@ while ($poller_runs_completed < $poller_runs) {
 			$total_procs    = $concurrent_processes * $max_threads;
 			chdir(dirname(read_config_option('path_spine')));
 		} elseif (CACTI_SERVER_OS == 'unix') {
-			$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+			$command_string = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 			$extra_args     = '-q ' . cacti_escapeshellarg(CACTI_PATH_BASE . '/cmd.php');
 			$method         = 'cmd.php';
 			$total_procs    = $concurrent_processes;
 		} else {
-			$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+			$command_string = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 			$extra_args     = '-q ' . cacti_escapeshellarg(cacti_strtolower(CACTI_PATH_BASE . '/cmd.php'));
 			$method         = 'cmd.php';
 			$total_procs    = $concurrent_processes;
@@ -902,7 +902,7 @@ while ($poller_runs_completed < $poller_runs) {
 			[$poller_id], '', true, $poller_db_cnn_id);
 
 		if ($commands > 0) {
-			$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+			$command_string = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 			$extra_args     = '-q ' . cacti_escapeshellarg(CACTI_PATH_BASE . '/poller_commands.php') . ' --poller=' . $poller_id;
 			exec_background($command_string, $extra_args);
 		} else {
@@ -1173,7 +1173,7 @@ function poller_replicate_check() : void {
 
 	if (cacti_sizeof($pollers)) {
 		foreach ($pollers as $poller) {
-			$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+			$command_string = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 			$extra_args     = '-q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_replicate.php') . ' --poller=' . $poller['id'];
 			exec_background($command_string, $extra_args);
 		}
@@ -1450,7 +1450,7 @@ function multiple_poller_boost_check() : void {
 function spikekill_poller_bottom() : void {
 	require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
-	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+	$command_string = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 	$extra_args     = '-q ' . cacti_escapeshellarg(CACTI_PATH_BASE . '/poller_spikekill.php');
 	exec_background($command_string, $extra_args);
 }
