@@ -1592,14 +1592,17 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 		return db_table_create($table, $data, $log, $db_conn);
 	}
 
-	if (isset($data['charset'])) {
-		$charset = ' DEFAULT CHARSET = ' . $data['charset'];
-		db_execute("ALTER TABLE `$table` " . $charset, $log, $db_conn);
-	}
+	$alter_clauses   = [];
+	$columns_changed = false;
 
-	if (isset($data['collate'])) {
-		$charset = ' COLLATE = ' . $data['collate'];
-		db_execute("ALTER TABLE `$table` " . $charset, $log, $db_conn);
+	if (isset($data['charset']) || isset($data['collate'])) {
+		$table_encoding = isset($data['charset']) ? 'DEFAULT CHARSET = ' . $data['charset'] : '';
+
+		if (isset($data['collate'])) {
+			$table_encoding .= ($table_encoding !== '' ? ' ' : 'DEFAULT ') . 'COLLATE = ' . $data['collate'];
+		}
+
+		$alter_clauses[] = $table_encoding;
 	}
 
 	$info = db_fetch_row("SELECT ENGINE, TABLE_COMMENT
@@ -1608,14 +1611,66 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 		AND TABLE_NAME = '$table'", $log, $db_conn);
 
 	if (isset($info['ENGINE']) && isset($data['type']) && cacti_strtolower($info['ENGINE']) != cacti_strtolower($data['type'])) {
-		if (!db_execute("ALTER TABLE `$table` ENGINE = " . $data['type'], $log, $db_conn)) {
-			return false;
-		}
+		$alter_clauses[] = 'ENGINE = ' . $data['type'];
 	}
 
 	if (isset($data['row_format']) && cacti_strtolower(db_get_global_variable('innodb_file_format', $db_conn)) == 'barracuda') {
-		db_execute("ALTER TABLE `$table` ROW_FORMAT = " . $data['row_format'], $log, $db_conn);
+		$alter_clauses[] = 'ROW_FORMAT = ' . $data['row_format'];
 	}
+
+	$column_definition = static function (array $column, bool $include_position = true) : string {
+		$sql = '`' . $column['name'] . '`';
+
+		if (isset($column['type'])) {
+			$sql .= ' ' . $column['type'];
+		}
+
+		if (isset($column['unsigned'])) {
+			$sql .= ' unsigned';
+		}
+
+		if (isset($column['NULL']) && $column['NULL'] === false) {
+			$sql .= ' NOT NULL';
+		}
+
+		if (isset($column['NULL']) && $column['NULL'] === true && !isset($column['default'])) {
+			$sql .= ' default NULL';
+		}
+
+		if (isset($column['default'])) {
+			$current_timestamp = $include_position
+				? in_array(cacti_strtolower($column['type']), ['timestamp', 'datetime', 'date'], true) && str_contains($column['default'], 'CURRENT_TIMESTAMP')
+				: cacti_strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP';
+
+			if ($current_timestamp) {
+				$sql .= ' default ' . $column['default'];
+			} else {
+				$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+			}
+		}
+
+		if (isset($column['on_update'])) {
+			$sql .= ' ON UPDATE ' . $column['on_update'];
+		}
+
+		if (isset($column['auto_increment'])) {
+			$sql .= ' auto_increment';
+		}
+
+		if (isset($column['comment'])) {
+			$sql .= " COMMENT '" . $column['comment'] . "'";
+		}
+
+		if ($include_position) {
+			if (isset($column['after'])) {
+				$sql .= ' AFTER ' . $column['after'];
+			} elseif (isset($column['first'])) {
+				$sql .= ' FIRST';
+			}
+		}
+
+		return $sql;
+	};
 
 	$allcolumns  = [];
 	$prev_column = false;
@@ -1630,9 +1685,8 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 				$column['first'] = true;
 			}
 
-			if (!db_add_column($table, $column, $log, $db_conn)) {
-				return false;
-			}
+			$alter_clauses[] = 'ADD ' . $column_definition($column);
+			$columns_changed = true;
 		} else {
 			// Check that column is correct and fix it
 			// FIXME: Need to still check default value
@@ -1647,47 +1701,8 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 				|| (((!isset($column['unsigned']) || !$column['unsigned']) && isset($arr['unsigned']))
 					|| (isset($column['unsigned']) && $column['unsigned'] && !isset($arr['unsigned'])))
 				|| (isset($column['auto_increment']) && ($column['auto_increment'] ? 'auto_increment' : '') != $arr['Extra'])) {
-				$sql = 'ALTER TABLE `' . $table . '` CHANGE `' . $column['name'] . '` `' . $column['name'] . '`';
-
-				if (isset($column['type'])) {
-					$sql .= ' ' . $column['type'];
-				}
-
-				if (isset($column['unsigned'])) {
-					$sql .= ' unsigned';
-				}
-
-				if (isset($column['NULL']) && $column['NULL'] == false) {
-					$sql .= ' NOT NULL';
-				}
-
-				if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default'])) {
-					$sql .= ' default NULL';
-				}
-
-				if (isset($column['default'])) {
-					if (cacti_strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
-						$sql .= ' default CURRENT_TIMESTAMP';
-					} else {
-						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-					}
-				}
-
-				if (isset($column['on_update'])) {
-					$sql .= ' ON UPDATE ' . $column['on_update'];
-				}
-
-				if (isset($column['auto_increment'])) {
-					$sql .= ' auto_increment';
-				}
-
-				if (isset($column['comment'])) {
-					$sql .= " COMMENT '" . $column['comment'] . "'";
-				}
-
-				if (!db_execute($sql, $log, $db_conn)) {
-					return false;
-				}
+				$alter_clauses[] = 'CHANGE `' . $column['name'] . '` ' . $column_definition($column, false);
+				$columns_changed = true;
 			}
 		}
 
@@ -1699,17 +1714,14 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 
 		foreach ($result as $arr) {
 			if (!in_array($arr['Field'], $allcolumns, true)) {
-				if (!db_remove_column($table, $arr['Field'], $log, $db_conn)) {
-					return false;
-				}
+				$alter_clauses[] = 'DROP COLUMN `' . $arr['Field'] . '`';
+				$columns_changed = true;
 			}
 		}
 	}
 
 	if (isset($info['TABLE_COMMENT']) && isset($data['comment']) && str_replace("'", '', $info['TABLE_COMMENT']) != str_replace("'", '', $data['comment'])) {
-		if (!db_execute("ALTER TABLE `$table` COMMENT '" . str_replace("'", '', $data['comment']) . "'", $log, $db_conn)) {
-			return false;
-		}
+		$alter_clauses[] = "COMMENT '" . str_replace("'", '', $data['comment']) . "'";
 	}
 
 	// Correct any indexes
@@ -1731,10 +1743,8 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 					$del         = array_diff($index, $k['columns']);
 
 					if (!empty($add) || !empty($del)) {
-						if (!db_execute("ALTER TABLE `$table` DROP INDEX `$n`", $log, $db_conn) ||
-							!db_execute("ALTER TABLE `$table` ADD" . (isset($k['unique']) ? ' UNIQUE' : '') . " INDEX `$n` (" . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
-							return false;
-						}
+						$alter_clauses[] = "DROP INDEX `$n`";
+						$alter_clauses[] = 'ADD' . (isset($k['unique']) ? ' UNIQUE' : '') . ' INDEX `' . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')';
 					}
 
 					break;
@@ -1742,9 +1752,7 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 			}
 
 			if ($removeindex) {
-				if (!db_execute("ALTER TABLE `$table` DROP INDEX `$n`", $log, $db_conn)) {
-					return false;
-				}
+				$alter_clauses[] = "DROP INDEX `$n`";
 			}
 		}
 	}
@@ -1753,9 +1761,7 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 	if (isset($data['keys'])) {
 		foreach ($data['keys'] as $k) {
 			if (!isset($allindexes[$k['name']])) {
-				if (!db_execute("ALTER TABLE `$table` ADD" . (isset($k['unique']) ? ' UNIQUE' : '') . ' INDEX `' . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
-					return false;
-				}
+				$alter_clauses[] = 'ADD' . (isset($k['unique']) ? ' UNIQUE' : '') . ' INDEX `' . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')';
 			}
 		}
 	}
@@ -1764,18 +1770,14 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 
 	// Check Primary Key
 	if (!isset($data['primary']) && isset($allindexes['PRIMARY'])) {
-		if (!db_execute("ALTER TABLE `$table` DROP PRIMARY KEY", $log, $db_conn)) {
-			return false;
-		}
+		$alter_clauses[] = 'DROP PRIMARY KEY';
 		unset($allindexes['PRIMARY']);
 	}
 
 	if (isset($data['primary'])) {
 		if (!isset($allindexes['PRIMARY'])) {
 			// No current primary key, so add it
-			if (!db_execute("ALTER TABLE `$table` ADD PRIMARY KEY(" . db_format_index_create($data['primary']) . ')', $log, $db_conn)) {
-				return false;
-			}
+			$alter_clauses[] = 'ADD PRIMARY KEY (' . db_format_index_create($data['primary']) . ')';
 		} else {
 			if (!is_array($data['primary'])) {
 				$data['primary'] = [$data['primary']];
@@ -1785,12 +1787,18 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 			$del = array_diff($allindexes['PRIMARY'], $data['primary']);
 
 			if (!empty($add) || !empty($del)) {
-				if (!db_execute("ALTER TABLE `$table` DROP PRIMARY KEY", $log, $db_conn) ||
-					!db_execute("ALTER TABLE `$table` ADD PRIMARY KEY(" . db_format_index_create($data['primary']) . ')', $log, $db_conn)) {
-					return false;
-				}
+				$alter_clauses[] = 'DROP PRIMARY KEY';
+				$alter_clauses[] = 'ADD PRIMARY KEY (' . db_format_index_create($data['primary']) . ')';
 			}
 		}
+	}
+
+	if (cacti_sizeof($alter_clauses) && !db_execute("ALTER TABLE `$table` " . implode(', ', $alter_clauses), $log, $db_conn)) {
+		return false;
+	}
+
+	if ($columns_changed) {
+		db_column_type_cache_reset();
 	}
 
 	return true;
