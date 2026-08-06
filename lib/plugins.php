@@ -1907,6 +1907,59 @@ function plugin_load_info_defaults(string $file, mixed $info, array $defaults = 
 	return $result;
 }
 
+/**
+ * Removes rows left behind by plugins that are no longer installed.
+ *
+ * A plugin directory can disappear without its uninstall ever running, and the
+ * rows keyed on that directory then outlive it. The realm rows matter most:
+ * they carry user and group grants, and a later plugin taking the same realm id
+ * would inherit them.
+ *
+ * @return void
+ */
+function plugin_clean_old_plugin_info() : void {
+	db_execute_prepared('DELETE ph
+		FROM plugin_hooks AS ph
+		LEFT JOIN plugin_config AS pc
+		ON ph.name = pc.directory
+		WHERE pc.directory IS NULL
+		AND ph.name != ?',
+		['internal']);
+
+	db_execute_prepared('DELETE pd
+		FROM plugin_db_changes AS pd
+		LEFT JOIN plugin_config AS pc
+		ON pd.plugin = pc.directory
+		WHERE pc.directory IS NULL
+		AND pd.plugin != ?',
+		['internal']);
+
+	$realms = db_fetch_assoc_prepared('SELECT pr.id
+		FROM plugin_realms AS pr
+		LEFT JOIN plugin_config AS pc
+		ON pr.plugin = pc.directory
+		WHERE pc.directory IS NULL
+		AND pr.plugin != ?',
+		['internal']);
+
+	if (cacti_sizeof($realms)) {
+		$realm_ids = array_column($realms, 'id');
+
+		// plugin realms are offset by 100 in the user tables
+		$granted = array_map(static fn ($id) => $id + 100, $realm_ids);
+
+		/* Three statements whatever the number of orphans, rather than three per
+		   orphan: this runs on every render of the plugin page. The placeholder
+		   list is sized to the values so the ids stay bound rather than
+		   interpolated. */
+		$holders = implode(',', array_fill(0, cacti_sizeof($realm_ids), '?'));
+
+		db_execute_prepared("DELETE FROM user_auth_realm WHERE realm_id IN ($holders)", $granted);
+		db_execute_prepared("DELETE FROM user_auth_group_realm WHERE realm_id IN ($holders)", $granted);
+		db_execute_prepared("DELETE FROM plugin_realms WHERE id IN ($holders)", $realm_ids);
+	}
+}
+
 function plugin_load_info_file(string $file) : mixed {
 	$info = false;
 

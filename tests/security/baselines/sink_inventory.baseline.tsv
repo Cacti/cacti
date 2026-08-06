@@ -18,8 +18,8 @@ cmd_exec	./cli/update_heartbeat.php:274				$result = exec($command, $output, $re
 cmd_exec	./cmd.php:342			$cactiphp = proc_open($command, $cactides, $pipes);
 cmd_exec	./cmd_realtime.php:127				$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 cmd_exec	./graph_realtime.php:226			shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
-cmd_exec	./host.php:203		shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
-cmd_exec	./install/functions.php:958				$shell_output       = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
+cmd_exec	./host.php:203		shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
+cmd_exec	./install/functions.php:958				$shell_output       = shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
 cmd_exec	./install/install.php:135			print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') . '</li>';
 cmd_exec	./lib/database.php:2663			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
 cmd_exec	./lib/database.php:2665			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ' version >/dev/null 2>&1', $output, $retval);
@@ -44,8 +44,8 @@ cmd_exec	./lib/functions.php:9997			$output = shell_exec('powershell -Command "G
 cmd_exec	./lib/installer.php:3564			$check    = shell_exec("$composer install --dry-run --no-interaction --working-dir=$base 2>&1");
 cmd_exec	./lib/installer.php:3607			$output = shell_exec("$composer install --no-interaction --no-progress --working-dir=$base 2>&1");
 cmd_exec	./lib/installer.php:3949				$last_line = exec($command, $output, $return);
-cmd_exec	./lib/installer.php:3988						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-cmd_exec	./lib/installer.php:4046						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./lib/installer.php:3988						shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./lib/installer.php:4046						$results = shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:965						$output = shell_exec(
 cmd_exec	./lib/installer.php:979						$output = shell_exec(cacti_escapeshellcmd(str_replace('\\', '/', $path)) . ' --version 2>&1');
 cmd_exec	./lib/ping.php:175					$result = shell_exec(cacti_escapeshellarg($fping) . ' -q -t ' . $this->timeout . ' -c 1 -r ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']) . ' 2>&1');
@@ -97,7 +97,7 @@ cmd_exec	./lib/utility.php:1892		$json       = shell_exec($php . ' -q ' . $php_f
 cmd_exec	./lib/utility.php:2019		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./poller_realtime.php:166	shell_exec("$command_string $extra_args");
 cmd_exec	./poller_realtime.php:252					shell_exec($command);
-cmd_exec	./poller_spikekill.php:266				$response = exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./poller_spikekill.php:266				$response = exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./remote_agent.php:472									$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 cmd_exec	./script_server.php:194					exec("TASKLIST /FO LIST /FI \"PID eq $ppid\"", $out);
 cmd_exec	./scripts/sql.php:17	$sql = shell_exec($cmd);
@@ -130,7 +130,7 @@ dynamic_include	./lib/plugins.php:981			require_once($setup_file);
 dynamic_include	./lib/rrd.php:3049			include($rrdtheme);
 dynamic_include	./lib/rrd.php:4601			include($themefile);
 dynamic_include	./link.php:91					require_once($file);
-dynamic_include	./plugins.php:1829				require_once($setup_file);
+dynamic_include	./plugins.php:1832				require_once($setup_file);
 dynamic_include	./reports.php:35		require_once($reportit_api);
 dynamic_include	./script_server.php:293						require_once($include_file);
 dynamic_include	./scripts/ss_mikrotik_snmpget.php:37		include_once($config['base_path'] . '/lib/snmp.php');
@@ -190,7 +190,7 @@ fs_write	./lib/package.php:573		file_put_contents($xmlfile, $template);
 fs_write	./lib/package.php:751		$f = fopen("compress.zlib://$tmpdir/" . clean_up_name($name) . '.xml.gz','wb');
 fs_write	./lib/plugins.php:1505				file_put_contents($tmpfile, $file_data);
 fs_write	./lib/plugins.php:1629						file_put_contents($restore_path . '/' . $basefile, $output);
-fs_write	./lib/plugins.php:2325				$fh = fopen($file, 'w');
+fs_write	./lib/plugins.php:2378				$fh = fopen($file, 'w');
 fs_write	./lib/poller.php:1343									if (file_put_contents($tmpfile, $contents) !== false) {
 fs_write	./lib/poller.php:1350												file_put_contents($mypath, $contents);
 fs_write	./lib/poller.php:1379								file_put_contents($mypath, $contents);
@@ -528,13 +528,13 @@ header_redirect	./lib/html_reports.php:539			header('Location: ' . get_reports_p
 header_redirect	./lib/html_tree.php:1981			header('Location: permission_denied.php');
 header_redirect	./lib/html_tree.php:2059				header('Location: permission_denied.php');
 header_redirect	./lib/index.php:25	header('Location:../index.php');
-header_redirect	./lib/plugins.php:1959				header('Location: plugins.php');
-header_redirect	./lib/plugins.php:1992						header('Location: plugins.php');
-header_redirect	./lib/plugins.php:2051											header('Location: plugins.php');
-header_redirect	./lib/plugins.php:2072											header('Location: plugins.php');
-header_redirect	./lib/plugins.php:2142						header('Location: plugins.php');
-header_redirect	./lib/plugins.php:2196										header('Location: plugins.php');
-header_redirect	./lib/plugins.php:2217										header('Location: plugins.php');
+header_redirect	./lib/plugins.php:2012				header('Location: plugins.php');
+header_redirect	./lib/plugins.php:2045						header('Location: plugins.php');
+header_redirect	./lib/plugins.php:2104											header('Location: plugins.php');
+header_redirect	./lib/plugins.php:2125											header('Location: plugins.php');
+header_redirect	./lib/plugins.php:2195						header('Location: plugins.php');
+header_redirect	./lib/plugins.php:2249										header('Location: plugins.php');
+header_redirect	./lib/plugins.php:2270										header('Location: plugins.php');
 header_redirect	./lib/plugins.php:709			header('Location: plugins.php');
 header_redirect	./lib/plugins.php:717			header('Location: plugins.php');
 header_redirect	./link.php:102			header('Location: ' . $referer);

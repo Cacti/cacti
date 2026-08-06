@@ -2209,7 +2209,7 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 		total_polls = ?,
 		failed_polls = ?,
 		availability = ?
-		WHERE hostname = ?
+		WHERE id = ?
 		AND deleted = ""',
 		[
 			$host['status'],
@@ -2224,7 +2224,7 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 			$host['total_polls'],
 			$host['failed_polls'],
 			$host['availability'],
-			$host['hostname']
+			$host['id']
 		]
 	);
 }
@@ -6600,7 +6600,7 @@ function get_dns_from_ip(string $ip, string $dns, int $timeout = 1000) : string 
 }
 
 function poller_maintenance() : void {
-	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+	$command_string = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 
 	// If its not set, just assume its in the path
 	if (empty($command_string) || trim($command_string) == '') {
