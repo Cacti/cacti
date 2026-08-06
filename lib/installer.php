@@ -3364,7 +3364,7 @@ class Installer implements JsonSerializable {
 		}
 
 		if ($backgroundNeeded) {
-			$php      = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
+			$php      = cacti_escapeshellcmd((string) read_config_option('path_php_binary', true));
 			$php_file = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/background.php') . ' ' . $backgroundTime;
 
 			log_install_always('', __('Spawning background process: %s %s', $php, $php_file));
@@ -3931,7 +3931,7 @@ class Installer implements JsonSerializable {
 			$this->setProgress(Installer::PROGRESS_DEVICE_TEMPLATE);
 			log_install_always('', __('Device Template for First Cacti Device is %s', $host_template_id));
 
-			$command = cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+			$command = cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
 				cacti_escapeshellarg(CACTI_PATH_CLI . '/add_device.php') .
 				' --description=' . cacti_escapeshellarg($description) .
 				' --ip=' . cacti_escapeshellarg($ip) .
@@ -3985,7 +3985,7 @@ class Installer implements JsonSerializable {
 
 					$this->setProgress(Installer::PROGRESS_DEVICE_TREE);
 					log_install_always('', __('Adding Device to Default Tree'));
-					shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+					shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
 						cacti_escapeshellarg(CACTI_PATH_CLI . '/add_tree.php') .
 						' --type=node' .
 						' --node-type=host' .
@@ -4043,7 +4043,7 @@ class Installer implements JsonSerializable {
 
 				if (!empty($name)) {
 					log_install_always('', __('Converting Table #%s \'%s\'', $i, $name), true);
-					$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+					$results = shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
 						cacti_escapeshellarg(CACTI_PATH_CLI . '/convert_tables.php') .
 						' --table=' . cacti_escapeshellarg($name) .
 						' --utf8 --innodb --dynamic');
