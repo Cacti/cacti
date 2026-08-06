@@ -1943,14 +1943,16 @@ function plugin_clean_old_plugin_info() : void {
 		['internal']);
 
 	if (cacti_sizeof($realms)) {
-		foreach ($realms as $r) {
-			// plugin realms are offset by 100 in the user tables
-			$id = $r['id'] + 100;
+		$realm_ids = array_column($realms, 'id');
 
-			db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', [$id]);
-			db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', [$id]);
-			db_execute_prepared('DELETE FROM plugin_realms WHERE id = ?', [$r['id']]);
-		}
+		// plugin realms are offset by 100 in the user tables
+		$granted = array_map(static fn ($id) => $id + 100, $realm_ids);
+
+		/* three statements whatever the number of orphans, rather than three
+		   per orphan: this runs on every render of the plugin page */
+		db_execute('DELETE FROM user_auth_realm WHERE ' . db_in_clause('realm_id', $granted));
+		db_execute('DELETE FROM user_auth_group_realm WHERE ' . db_in_clause('realm_id', $granted));
+		db_execute('DELETE FROM plugin_realms WHERE ' . db_in_clause('id', $realm_ids));
 	}
 }
 
