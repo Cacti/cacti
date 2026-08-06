@@ -79,6 +79,7 @@ Cacti CHANGELOG
 -issue#7427: Update device status by host id instead of non-unique hostname
 -issue#7429: Prevent monthly automation schedules from resetting next_start to 1970
 -issue#7518: Replace the DsstatsMeasure enum in lib/html_utility.php with const arrays for PHP 8.0 compatibility
+-issue#7493: SNMP walk for output_format fields used max OIDs instead of the device bulk walk size
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
