@@ -164,6 +164,15 @@ function update_poller_cache_from_query(int $host_id, int $data_query_id, array 
 	}
 }
 
+/**
+ * Rebuilds the poller cache entries for a single data source.
+ *
+ * @param mixed    $data_source A data_local row, or the local_data_id to read one with.
+ * @param bool     $commit      Whether to write the rebuilt entries straight to poller_item.
+ * @param int|null $poller_id   The poller the data source belongs to, or null to look it up.
+ *
+ * @return array The rebuilt poller items, or an empty array when they were committed.
+ */
 function update_poller_cache(mixed $data_source, bool $commit = false, ?int $poller_id = null) : array {
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 	include_once(CACTI_PATH_LIBRARY . '/api_poller.php');
@@ -429,6 +438,11 @@ function update_poller_cache(mixed $data_source, bool $commit = false, ?int $pol
 
 				if (cacti_sizeof($outputs) && cacti_sizeof($snmp_queries)) {
 					foreach ($outputs as $output) {
+						/* $oid is assigned inside the guard below but read after
+						   it, so an output with no 'oid' mapping would otherwise
+						   be cached against the previous output's OID. */
+						unset($oid);
+
 						if (isset($snmp_queries['fields'][$output['snmp_field_name']]['oid'])) {
 							$oid = $snmp_queries['fields'][$output['snmp_field_name']]['oid'] . '.' . $data_source['snmp_index'];
 
@@ -512,6 +526,10 @@ function update_poller_cache(mixed $data_source, bool $commit = false, ?int $pol
 				if (cacti_sizeof($outputs) && cacti_sizeof($script_queries)) {
 					foreach ($outputs as $output) {
 						$action = POLLER_ACTION_NONE;
+
+						/* Same leak as the SNMP branch: the post-guard read is
+						   isset($script_path), so unset() rather than a null. */
+						unset($script_path);
 
 						if (isset($script_queries['fields'][$output['snmp_field_name']]['query_name'])) {
 							$identifier = $script_queries['fields'][$output['snmp_field_name']]['query_name'];
