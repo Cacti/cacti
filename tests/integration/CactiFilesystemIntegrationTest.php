@@ -12,6 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
 require_once dirname(__DIR__, 2) . '/lib/CactiFilesystem.php';
 
 it('drives the static filesystem API against a real temp tree', function () {
