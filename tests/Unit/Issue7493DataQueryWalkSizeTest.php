@@ -105,6 +105,7 @@ function walk_size_split(string $list) : array {
  */
 function walk_size_snmp_parameters() : array {
 	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/snmp.php');
+	expect($source)->not->toBeFalse('lib/snmp.php must be readable');
 
 	$declaration = strpos($source, 'function cacti_snmp_walk(');
 
@@ -112,7 +113,10 @@ function walk_size_snmp_parameters() : array {
 	// unrelated parenthesis group, so the test would pass on the wrong text
 	expect($declaration)->not->toBeFalse('cacti_snmp_walk() must exist in lib/snmp.php');
 
-	return walk_size_split(walk_size_balanced($source, strpos($source, '(', $declaration)));
+	$opening = strpos($source, '(', $declaration);
+	expect($opening)->not->toBeFalse('cacti_snmp_walk() must have an opening parenthesis');
+
+	return walk_size_split(walk_size_balanced($source, $opening));
 }
 
 /**
@@ -122,6 +126,7 @@ function walk_size_snmp_parameters() : array {
  */
 function walk_size_walk_arguments() : array {
 	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/data_query.php');
+	expect($source)->not->toBeFalse('lib/data_query.php must be readable');
 
 	$host = strpos($source, 'function query_snmp_host(');
 
@@ -134,7 +139,10 @@ function walk_size_walk_arguments() : array {
 
 	expect($call)->not->toBeFalse('query_snmp_host() must still walk for output_format fields');
 
-	return walk_size_split(walk_size_balanced($body, strpos($body, '(', $call)));
+	$opening = strpos($body, '(', $call);
+	expect($opening)->not->toBeFalse('cacti_snmp_walk() call must have an opening parenthesis');
+
+	return walk_size_split(walk_size_balanced($body, $opening));
 }
 
 test('cacti_snmp_walk still declares a bulk walk size and no max_oids', function () {
