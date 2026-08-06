@@ -68,15 +68,17 @@ test('no file under the csrf vendor directory holds a bare secret', function () 
 	expect($tracked['output'])->not->toBe('');
 
 	foreach (explode("\n", $tracked['output']) as $file) {
-		$contents = trim((string) file_get_contents(dirname(__DIR__, 2) . '/' . $file));
+		$contents = file_get_contents(dirname(__DIR__, 2) . '/' . $file);
+		expect($contents)->not->toBeFalse("$file must be readable");
 
 		// the secret is written as a bare 40 character hex digest, no php tags
-		expect($contents)->not->toMatch('/^[0-9a-f]{40}$/');
+		expect(trim($contents))->not->toMatch('/^[0-9a-f]{40}$/');
 	}
 });
 
 test('the secret path is still ignored so it cannot be committed again', function () {
 	$gitignore = file_get_contents(dirname(__DIR__, 2) . '/.gitignore');
+	expect($gitignore)->not->toBeFalse('.gitignore must be readable');
 
 	expect($gitignore)->toContain('include/vendor/csrf/csrf-secret.php');
 });
