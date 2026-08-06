@@ -42,7 +42,7 @@ if (!defined('CACTI_WEB')) {
 }
 
 if (!defined('CACTI_PATH_LOG')) {
-	define('CACTI_PATH_LOG', sys_get_temp_dir() . '/cacti-issue-7429-test.log');
+	define('CACTI_PATH_LOG', sys_get_temp_dir());
 }
 
 /**
