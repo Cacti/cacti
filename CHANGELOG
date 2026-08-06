@@ -48,7 +48,6 @@ Cacti CHANGELOG
 -issue#6762: Harden lib/ping.php: apply cacti_escapeshellarg() to hostname in native ping and fping shell commands
 -issue#7070: Align percentile rank with observed samples and expose missing export rows
 -issue#7131: Fix data_input_data column-expansion bugs in change_data_template and api_data_source_duplicate
--issue#7135: Reset loop-scoped $oid and $script_path between iterations when building the poller cache
 -issue#7137: Fix eleven PHPStan Level 6 errors in form_save error-redirect URLs and lib/html.php right-tab block
 -issue#7211: Correct the Nth percentile and bandwidth summation divisor on base-1024 graphs
 -issue#7214: Fix TypeError in boost_graph_set_file when sending reports
@@ -75,6 +74,7 @@ Cacti CHANGELOG
 -issue#7343: Install wizard silently fails to advance after CSRF token expires
 -issue#7380: Batch graph-create task_item_id wiring to reduce template graph creation queries
 -issue#7518: Replace the DsstatsMeasure enum in lib/html_utility.php with const arrays for PHP 8.0 compatibility
+-issue#7135: Reset loop-scoped $oid and $script_path between iterations when building the poller cache
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
