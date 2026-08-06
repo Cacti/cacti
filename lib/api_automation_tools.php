@@ -42,6 +42,53 @@ function getHostTemplates() : array {
 }
 
 /**
+ * Normalizes database IDs and builds placeholders for a prepared IN clause.
+ *
+ * @param mixed $ids A positive integer ID, an array of positive integer IDs, or false/an empty array for no filter.
+ *
+ * @return array{placeholders: string, params: array<int, int>}|false Prepared placeholders and integer parameters,
+ *                                                                    or false when validation fails.
+ */
+function automation_prepare_id_list(mixed $ids) : array|false {
+	if ($ids === false || $ids === []) {
+		return [
+			'placeholders' => '',
+			'params'       => []
+		];
+	}
+
+	if (!is_array($ids)) {
+		$ids = [$ids];
+	}
+
+	$params = [];
+
+	foreach ($ids as $id) {
+		if (is_string($id) && ctype_digit($id)) {
+			$normalized_id = ltrim($id, '0');
+			$normalized_id = $normalized_id === '' ? '0' : $normalized_id;
+			$max_id        = (string) PHP_INT_MAX;
+
+			if (strlen($normalized_id) > strlen($max_id) ||
+				(strlen($normalized_id) === strlen($max_id) && strcmp($normalized_id, $max_id) > 0)) {
+				return false;
+			}
+		}
+
+		if (!(is_int($id) || (is_string($id) && ctype_digit($id))) || (int) $id < 1) {
+			return false;
+		}
+
+		$params[] = (int) $id;
+	}
+
+	return [
+		'placeholders' => implode(', ', array_fill(0, count($params), '?')),
+		'params'       => $params
+	];
+}
+
+/**
  * Retrieves hosts based on their description.
  *
  * @param mixed $hostTemplateIds An array of host template IDs to filter the hosts by, or false to retrieve all hosts.
@@ -49,32 +96,25 @@ function getHostTemplates() : array {
  * @return mixed - Returns an array of hosts that match the given description, or false on failure.
  */
 function getHostsByDescription(mixed $hostTemplateIds = false) : mixed {
-	$hosts = [];
+	$hosts  = [];
+	$filter = automation_prepare_id_list($hostTemplateIds);
 
-	if ($hostTemplateIds !== false) {
-		if (!is_array($hostTemplateIds)) {
-			$hostTemplateIds = [$hostTemplateIds];
-		}
+	if ($filter === false) {
+		return false;
 	}
 
-	if ($hostTemplateIds !== false && cacti_sizeof($hostTemplateIds)) {
-		foreach ($hostTemplateIds as $id) {
-			if (!is_numeric($id)) {
-				return false;
-			}
-		}
-
-		$sql_where = 'WHERE ht.id IN (' . implode(',', $hostTemplateIds) . ')';
+	if ($filter['placeholders'] !== '') {
+		$sql_where = 'WHERE ht.id IN (' . $filter['placeholders'] . ')';
 	} else {
 		$sql_where = '';
 	}
 
-	$tmpArray = db_fetch_assoc("SELECT h.id, h.description
+	$tmpArray = db_fetch_assoc_prepared("SELECT h.id, h.description
 		FROM host AS h
 		INNER JOIN host_template AS ht
 		ON h.host_template_id = ht.id
 		$sql_where
-		ORDER BY h.description");
+		ORDER BY h.description", $filter['params']);
 
 	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $tmp) {
@@ -112,32 +152,25 @@ function getSites() : array {
  * @return mixed - Returns an array of hosts if successful, or false on failure.
  */
 function getHosts(mixed $hostTemplateIds = false) : mixed {
-	$hosts = [];
+	$hosts  = [];
+	$filter = automation_prepare_id_list($hostTemplateIds);
 
-	if ($hostTemplateIds !== false) {
-		if (!is_array($hostTemplateIds)) {
-			$hostTemplateIds = [$hostTemplateIds];
-		}
+	if ($filter === false) {
+		return false;
 	}
 
-	if ($hostTemplateIds !== false && cacti_sizeof($hostTemplateIds)) {
-		foreach ($hostTemplateIds as $id) {
-			if (!is_numeric($id)) {
-				return false;
-			}
-		}
-
-		$sql_where = 'WHERE ht.id IN (' . implode(',', $hostTemplateIds) . ')';
+	if ($filter['placeholders'] !== '') {
+		$sql_where = 'WHERE ht.id IN (' . $filter['placeholders'] . ')';
 	} else {
 		$sql_where = '';
 	}
 
-	$tmpArray = db_fetch_assoc("SELECT h.id, h.hostname, h.description, h.host_template_id
+	$tmpArray = db_fetch_assoc_prepared("SELECT h.id, h.hostname, h.description, h.host_template_id
 		FROM host AS h
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id = ht.id
 		$sql_where
-		ORDER BY h.id");
+		ORDER BY h.id", $filter['params']);
 
 	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $host) {
@@ -359,21 +392,14 @@ function getGraphTemplates() : array {
  */
 function getGraphTemplatesByHostTemplate(mixed $host_template_ids = false) : mixed {
 	$graph_templates = [];
+	$filter          = automation_prepare_id_list($host_template_ids);
 
-	if ($host_template_ids !== false) {
-		if (!is_array($host_template_ids)) {
-			$host_template_ids = [$host_template_ids];
-		}
+	if ($filter === false) {
+		return false;
 	}
 
-	if ($host_template_ids !== false && cacti_sizeof($host_template_ids)) {
-		foreach ($host_template_ids as $id) {
-			if (!is_numeric($id)) {
-				return false;
-			}
-		}
-
-		$sql_where = 'WHERE htg.host_template_id IN (' . implode(',', $host_template_ids) . ')';
+	if ($filter['placeholders'] !== '') {
+		$sql_where = 'WHERE htg.host_template_id IN (' . $filter['placeholders'] . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -383,7 +409,7 @@ function getGraphTemplatesByHostTemplate(mixed $host_template_ids = false) : mix
 		LEFT JOIN graph_templates AS gt
 		ON htg.graph_template_id = gt.id
 		$sql_where
-		ORDER by gt.name ASC");
+		ORDER by gt.name ASC", $filter['params']);
 
 	if (cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $t) {
