@@ -40,7 +40,10 @@
  */
 function php_binary_body(string $file, string $function) : string {
 	$source = file_get_contents(dirname(__DIR__, 2) . '/' . $file);
-	$start  = strpos($source, 'function ' . $function . '(');
+
+	expect($source)->not->toBeFalse("$file must be readable");
+
+	$start = strpos($source, 'function ' . $function . '(');
 
 	expect($start)->not->toBeFalse("$function must exist in $file");
 
@@ -71,9 +74,13 @@ test('a null option is what PHP deprecates, so the guard is not theoretical', fu
 		return true;
 	});
 
-	str_replace('|path_php_binary|', null, '|path_php_binary|/x');
-
-	restore_error_handler();
+	try {
+		str_replace('|path_php_binary|', null, '|path_php_binary|/x');
+	} finally {
+		// restore before asserting, so a failure here cannot leave the custom
+		// handler installed for the rest of the run
+		restore_error_handler();
+	}
 
 	expect($raised)->toContain('Passing null to parameter');
 });
@@ -88,11 +95,31 @@ test('poller maintenance casts the binary path before escaping it', function () 
 		->toContain("cacti_escapeshellcmd((string) read_config_option('path_php_binary'))");
 });
 
-test('the boost launcher casts the binary path before escaping it', function () {
-	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/boost.php');
+test('no shipped file escapes the binary path without casting it first', function () {
+	$root = dirname(__DIR__, 2);
 
-	expect($source)->toContain("cacti_escapeshellcmd((string) read_config_option('path_php_binary'))")
-		->and($source)->not->toContain("cacti_escapeshellcmd(read_config_option('path_php_binary'))");
+	exec('git -C ' . escapeshellarg($root) . ' ls-files "*.php" 2>/dev/null', $tracked, $status);
+
+	if ($status !== 0 || $tracked === []) {
+		test()->markTestSkipped('not a git checkout, so the shipped file list is unknown');
+	}
+
+	$unguarded = [];
+
+	foreach ($tracked as $file) {
+		if (str_starts_with($file, 'tests/') || str_contains($file, 'vendor/')) {
+			continue;
+		}
+
+		$source = file_get_contents($root . '/' . $file);
+
+		if ($source !== false && str_contains($source, "cacti_escapeshellcmd(read_config_option('path_php_binary'))")) {
+			$unguarded[] = $file;
+		}
+	}
+
+	// there were 21 of these; a new one is easier to add than to notice
+	expect($unguarded)->toBe([]);
 });
 
 /**

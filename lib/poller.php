@@ -2324,7 +2324,7 @@ function replicate_table_to_poller(mixed $db_conn, array &$data, string $table, 
 function poller_recovery_flush_boost(int $poller_id) : void {
 	if ($poller_id > 1) {
 		if (CACTI_CONNECTION == 'recovery') {
-			$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+			$command_string = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 			$extra_args     = '-q ' . cacti_escapeshellarg(CACTI_PATH_BASE . '/poller_recovery.php');
 			exec_background($command_string, $extra_args);
 		}
