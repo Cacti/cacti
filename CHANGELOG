@@ -51,6 +51,7 @@ Cacti CHANGELOG
 -issue#7137: Fix eleven PHPStan Level 6 errors in form_save error-redirect URLs and lib/html.php right-tab block
 -issue#7211: Correct the Nth percentile and bandwidth summation divisor on base-1024 graphs
 -issue#7214: Fix TypeError in boost_graph_set_file when sending reports
+-issue#7202: Removed plugins may leave orphan entries in plugin tables
 -issue#7216: Aggregate totalling legend printed untotalled single data source values
 -issue#7519: Fix Boost archive-table cleanup deleting still-open-round rows instead of forwarding them to the live table
 -issue#7523: Fix dead duplicate-record guard in boost_process_poller_output
