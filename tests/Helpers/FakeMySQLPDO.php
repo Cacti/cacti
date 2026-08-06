@@ -93,9 +93,9 @@ class FakeMySQLPDO extends PDO {
 		if (preg_match('/^SHOW\s+VARIABLES\s+LIKE\s+/is', $trim)) {
 			return "SELECT 'max_allowed_packet' AS Variable_name, '4194304' AS Value";
 		}
-		// UNIX_TIMESTAMP(col) -> strftime('%s', col), wherever it appears in
-		// the statement (not just at the start), so queries mixing it with
-		// other columns (e.g. boost's archive-table SELECT) still translate.
+		// UNIX_TIMESTAMP(col) and UNIX_TIMESTAMP() become integer-cast
+		// strftime() expressions wherever they appear in the statement, so
+		// queries mixing them with other columns still translate faithfully.
 		//
 		// The CAST is load-bearing rather than tidy: strftime() returns TEXT,
 		// and sqlite orders every integer before every string, so an in-SQL
