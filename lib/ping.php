@@ -675,8 +675,12 @@ class Net_Ping {
 			return true;
 		}
 
+		$sockets_fallback = false;
+
 		if ((!function_exists('socket_create')) && ($avail_method != AVAIL_NONE)) {
-			$avail_method = AVAIL_SNMP;
+			$avail_method     = AVAIL_SNMP;
+			$sockets_fallback = true;
+
 			cacti_log('WARNING: sockets support not enabled in PHP, falling back to SNMP ping');
 		}
 
@@ -722,15 +726,25 @@ class Net_Ping {
 			if (!$ping_result && $avail_method == AVAIL_SNMP_AND_PING) {
 				$snmp_result = $ping_result;
 			} else {
-				/* Lets assume the host is up because if we are in OR mode then we have already
-				 * pinged the host successfully, or some when silly people have not entered an
-				 * snmp_community under v1/2, we assume that this was successfully anyway */
-				$snmp_result       = true;
-				$this->snmp_status = 0.000;
+				/* cmd.php and other reduced-host callers can omit these keys entirely,
+				   so a missing one counts the same as an unconfigured one. */
+				$have_snmp = (strlen($this->host['snmp_community'] ?? '') > 0 || ($this->host['snmp_version'] ?? 0) >= 3);
 
-				if ($avail_method != AVAIL_SNMP_OR_PING &&
-				   (strlen($this->host['snmp_community']) > 0 || $this->host['snmp_version'] >= 3)) {
+				if ($have_snmp && !($avail_method == AVAIL_SNMP_OR_PING && $ping_result)) {
+					/* Run the real SNMP test whenever a community (or v3) is configured. In OR
+					   mode that includes the case where the ping failed, so an unreachable
+					   host is only reported up if SNMP actually answers. */
 					$snmp_result = $this->ping_snmp();
+				} elseif ($sockets_fallback) {
+					/* The fallback rewrote $avail_method to AVAIL_SNMP, so reaching here means
+					   no community is configured and there is nothing to test against. Do not
+					   report the device up on the strength of a check that never ran. */
+					$snmp_result = false;
+				} else {
+					/* Nothing left to test: either a v1/v2 host with no snmp_community, or an
+					   OR-mode host a successful ping has already proven up. */
+					$snmp_result       = true;
+					$this->snmp_status = 0.000;
 				}
 			}
 		}

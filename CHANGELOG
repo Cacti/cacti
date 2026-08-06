@@ -21,6 +21,7 @@ Cacti CHANGELOG
 -issue#5573: Incorrect URL for editing graph template
 -issue#5639: Add tooltip info about IPv6 address
 -issue#5657: Consolidation Functions must be available in COMMENT for nth percentile and bandwidth summations comment types
+-issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#5680: Fix Spikekill not following correct time in schedule
 -issue#5776: Undefined array key "description" in file settings.php
 -issue#5844: Automation fails when using MySQL 8
