@@ -37,7 +37,7 @@ require_once dirname(__DIR__, 2) . '/lib/database.php';
 require_once dirname(__DIR__, 2) . '/lib/functions.php';
 require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
 
-foreach (['CACTI_WEB' => false, 'POLLER_ID' => 1, 'CACTI_PATH_LOG' => sys_get_temp_dir() . '/cacti-issue-7202-test.log'] as $name => $value) {
+foreach (['CACTI_WEB' => false, 'POLLER_ID' => 1, 'CACTI_PATH_LOG' => sys_get_temp_dir()] as $name => $value) {
 	if (!defined($name)) {
 		define($name, $value);
 	}
@@ -53,7 +53,7 @@ require_once dirname(__DIR__, 2) . '/lib/plugins.php';
 class PluginCleanupPDO extends FakeMySQLPDO {
 	public function __construct() {
 		parent::__construct();
-		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [PluginCleanupStatement::class]);
+		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [PluginCleanupStatement::class, []]);
 	}
 
 	public function prepare(string $query, array $options = []) : PDOStatement|false {
