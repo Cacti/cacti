@@ -32,7 +32,7 @@
     "lib/auth.php": 2,
     "lib/boost.php": 3,
     "lib/data_query.php": 2,
-    "lib/database.php": 19,
+    "lib/database.php": 9,
     "lib/dsstats.php": 2,
     "lib/functions.php": 1,
     "lib/html_form.php": 2,
