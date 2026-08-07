@@ -47,6 +47,8 @@ foreach ([
 ] as $name => $value) {
 	if (!defined($name)) {
 		define($name, $value);
+	} elseif (constant($name) !== $value) {
+		throw new RuntimeException("$name has an incompatible value for the batching integration test");
 	}
 }
 
