@@ -14,7 +14,15 @@
 
 $orb_available = static function (): bool {
 	// nosemgrep: php.lang.security.exec-use.exec-use - constant command, integration test
-	return trim((string)shell_exec('command -v orb 2>/dev/null')) !== '';
+	if (trim((string) shell_exec('command -v orb 2>/dev/null')) === '') {
+		return false;
+	}
+
+	// These tests invoke a running machine named "php", not merely the CLI.
+	// nosemgrep: php.lang.security.exec-use.exec-use - constant command, integration test
+	$machines = preg_split('/\R/', trim((string) shell_exec('orb list --running --quiet 2>/dev/null')));
+
+	return in_array('php', $machines, true);
 };
 
 $has_timeout = static function (): bool {
@@ -24,7 +32,7 @@ $has_timeout = static function (): bool {
 
 it('has all required PHP extensions in the Orb machine', function () use ($orb_available, $has_timeout) {
 	if (!$orb_available()) {
-		test()->markTestSkipped('orb CLI not available');
+		test()->markTestSkipped('orb CLI or running "php" machine not available');
 	}
 
 	$required_exts = [
@@ -44,7 +52,7 @@ it('has all required PHP extensions in the Orb machine', function () use ($orb_a
 
 it('can run a Cacti CLI command in the Orb machine', function () use ($orb_available, $has_timeout) {
 	if (!$orb_available()) {
-		test()->markTestSkipped('orb CLI not available');
+		test()->markTestSkipped('orb CLI or running "php" machine not available');
 	}
 
 	$cmd = ($has_timeout() ? 'timeout 30 ' : '') . 'orb php cli/check_cli_version.sh';
