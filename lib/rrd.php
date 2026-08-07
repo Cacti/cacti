@@ -880,7 +880,7 @@ function rrdtool_trim_output(string &$output) : void {
 /**
  * Execute an RRDtool command through the remote proxy.
  *
- * @param string|array $command_line  RRDtool command string, or one argument per array element
+ * @param string|array $command_line  RRDtool command string, or one string argument per array element
  * @param bool         $log_to_stdout Whether to echo log output
  * @param int          $output_flag   Requested RRDTOOL_OUTPUT_* result mode
  * @param mixed        $rrdp          Existing proxy connection tuple, or an empty value
@@ -890,6 +890,12 @@ function rrdtool_trim_output(string &$output) : void {
  */
 function __rrd_proxy_execute(string|array $command_line, bool $log_to_stdout, int $output_flag = RRDTOOL_OUTPUT_STDOUT, mixed $rrdp = '', string $logopt = 'WEBLOG') : mixed {
 	if (is_array($command_line)) {
+		if ($command_line === [] || array_filter($command_line, 'is_string') !== $command_line) {
+			cacti_log('CACTI2RRDP ERROR: Invalid proxy command argument list.', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
+
+			return false;
+		}
+
 		$command_line = implode(' ', array_map('cacti_escapeshellarg', $command_line));
 	}
 

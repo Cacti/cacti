@@ -328,6 +328,12 @@ it('accepts array commands through the proxy execution handoff', function () {
 	socket_close($server);
 });
 
+it('rejects empty or non-string proxy command argument lists without throwing', function () {
+	expect(__rrd_proxy_execute([], false))->toBeFalse()
+		->and(__rrd_proxy_execute(['info', 42], false))->toBeFalse()
+		->and(__rrd_proxy_execute(['info', null], false))->toBeFalse();
+});
+
 it('normalizes successful proxy output modes', function () {
 	$ok       = 'OK u:0.01';
 	$payload  = 'payload' . RRD_PROXY_END_OF_PACKET . $ok;
