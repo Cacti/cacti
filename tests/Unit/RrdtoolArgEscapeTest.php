@@ -93,6 +93,9 @@ test('tune and resize recommendations are quoted where they are built', function
 
 test('no RRDtool caller interpolates a bare path into the command line', function () use ($rrdSource, $boostSource, $dsstatsSource, $functionsSource) {
 	$offenders = [];
+	$pattern   = '/rrdtool_execute\(\s*"[^"\r\n]*\$(rrd_path|rrdfile|data_source_path|xml_file|file)\b/';
+
+	expect(preg_match($pattern, 'rrdtool_execute("update --start -1h $rrdfile")'))->toBe(1);
 
 	foreach ([
 		'lib/rrd.php'       => $rrdSource,
@@ -100,7 +103,7 @@ test('no RRDtool caller interpolates a bare path into the command line', functio
 		'lib/dsstats.php'   => $dsstatsSource,
 		'lib/functions.php' => $functionsSource
 	] as $name => $source) {
-		if (preg_match_all('/rrdtool_execute\("[a-z_ \-]*\$(rrd_path|rrdfile|data_source_path|xml_file|file)\b/', $source, $m)) {
+		if (preg_match_all($pattern, $source, $m)) {
 			foreach ($m[0] as $hit) {
 				$offenders[] = $name . ': ' . $hit;
 			}
