@@ -71,6 +71,17 @@ class FakeSnmpSession {
 
 		return false;
 	}
+
+	/**
+	 * Emits a transport warning before throwing an operation exception.
+	 *
+	 * @throws \RuntimeException Always, after emitting the warning.
+	 */
+	public function warningThenThrow() : never {
+		trigger_error('Specific transport warning', E_USER_WARNING);
+
+		throw new \RuntimeException('Generic operation exception');
+	}
 }
 
 /**
@@ -134,7 +145,7 @@ test('non-warning errors are delegated to the previous handler', function () {
 	$session   = new FakeSnmpSession(0, '');
 	$warning   = '';
 
-	set_error_handler(function(int $level, string $message) use (&$delegated) : bool {
+	set_error_handler(function (int $level, string $message) use (&$delegated) : bool {
 		$delegated[] = [$level, $message];
 
 		return true;
@@ -148,6 +159,20 @@ test('non-warning errors are delegated to the previous handler', function () {
 
 	expect($delegated[0][0])->toBe(E_USER_NOTICE)
 		->and($warning)->toBe('');
+});
+
+test('a warning captured before an exception remains the preferred diagnostic', function () use ($source) {
+	$session = new FakeSnmpSession(0, '');
+	$warning = '';
+
+	try {
+		cacti_snmp_session_call($session, 'warningThenThrow', [], $warning);
+	} catch (\RuntimeException $e) {
+		expect($e->getMessage())->toBe('Generic operation exception');
+	}
+
+	expect($warning)->toBe('Specific transport warning')
+		->and(substr_count($source, "if (\$warning === '')"))->toBeGreaterThanOrEqual(3);
 });
 
 test('empty native errors retain their numeric diagnostic and all callers use the helper', function () use ($source) {
