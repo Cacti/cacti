@@ -92,7 +92,7 @@ function html_log_input_error(string $variable) : void {
  */
 function security_log_input_validation_failure(mixed $variable) : string {
 	$event_id       = bin2hex(random_bytes(16));
-	$source_address = get_client_addr();
+	$source_address = CACTI_CLI ? '' : get_client_addr();
 	$event          = [
 		'event'          => 'input_validation_failure',
 		'event_id'       => $event_id,
@@ -139,7 +139,7 @@ function die_html_input_error(mixed $variable = null, mixed $value = null, strin
 	}
 
 	if (isrv('json')) {
-		cacti_debug_backtrace('Validation Error, Event: ' . $event_id . ($variable != '' ? ', Variable:' . htmle($variable) : '') . ($value != '' ? ', Value:' . htmle($value) : '') . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), false);
+		cacti_debug_backtrace('Validation Error, Event: ' . $event_id . $variable . $value . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), false);
 
 		print json_encode(
 			[
@@ -149,7 +149,7 @@ function die_html_input_error(mixed $variable = null, mixed $value = null, strin
 			]
 		);
 	} else {
-		cacti_debug_backtrace('Validation Error, Event: ' . $event_id . ($variable != '' ? ', Variable:' . htmle($variable) : '') . ($value != '' ? ', Value:' . htmle($value) : '') . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), true);
+		cacti_debug_backtrace('Validation Error, Event: ' . $event_id . $variable . $value . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), true);
 
 		print "<table style='width:100%;text-align:center;'><tr><td>$message</td></tr></table>";
 

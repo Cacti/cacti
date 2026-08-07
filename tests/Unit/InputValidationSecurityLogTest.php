@@ -9,6 +9,8 @@
 
 namespace InputValidationSecurityLogTest;
 
+const CACTI_CLI = false;
+
 $GLOBALS['validation_security_logs'] = [];
 $GLOBALS['validation_client_addr']   = '192.0.2.10';
 
@@ -60,8 +62,8 @@ if (preg_match('/function security_log_input_validation_failure\(.*?^}\R/ms', $s
 eval('namespace InputValidationSecurityLogTest;' . $matches[0]);
 
 beforeEach(function () : void {
-	$GLOBALS['validation_security_logs'] = [];
-	$GLOBALS['validation_client_addr']   = '192.0.2.10';
+	$GLOBALS['validation_security_logs']  = [];
+	$GLOBALS['validation_client_addr']    = '192.0.2.10';
 	$_SERVER['REQUEST_METHOD']            = 'POST';
 	$_SERVER['SCRIPT_NAME']               = '/cacti/graphs.php';
 });
@@ -101,5 +103,7 @@ test('validation diagnostics include the structured event correlation ID', funct
 	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/html_validate.php');
 
 	expect($source)->toContain('$event_id = security_log_input_validation_failure($variable)')
-		->and(substr_count($source, "'Validation Error, Event: ' . \$event_id"))->toBe(3);
+		->and(substr_count($source, "'Validation Error, Event: ' . \$event_id"))->toBe(3)
+		->and(substr_count($source, ". \$variable . \$value . ', Source: '"))->toBe(2)
+		->and($source)->toContain("\$source_address = CACTI_CLI ? '' : get_client_addr();");
 });
