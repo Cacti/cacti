@@ -32,7 +32,8 @@ $functionsSource = file_get_contents(dirname(__DIR__, 2) . '/lib/functions.php')
 // --- the RRDtool binary itself ---
 
 test('rrd_init quotes the RRDtool binary before popen', function () use ($rrdSource) {
-	expect($rrdSource)->toContain("\$rrdtool = cacti_escapeshellcmd((string) read_config_option('path_rrdtool'));");
+	expect($rrdSource)->toContain("\$rrdtool = cacti_escapeshellarg((string) read_config_option('path_rrdtool'));");
+	expect($rrdSource)->not->toContain("\$rrdtool = cacti_escapeshellcmd((string) read_config_option('path_rrdtool'));");
 	expect($rrdSource)->not->toContain("\$command = read_config_option('path_rrdtool') . ' - ';");
 });
 

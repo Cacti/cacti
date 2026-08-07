@@ -107,7 +107,7 @@ function __rrd_init(bool $output_to_term = true) : mixed {
 
 	rrdtool_set_language();
 
-	$rrdtool = cacti_escapeshellcmd((string) read_config_option('path_rrdtool'));
+	$rrdtool = cacti_escapeshellarg((string) read_config_option('path_rrdtool'));
 
 	if ($output_to_term) {
 		$command = $rrdtool . ' - ';
