@@ -101,6 +101,16 @@ test('process creation failures are logged without a shell fallback', function (
 		->and($GLOBALS['shellless_process_logs'][0][0])->toContain('Unable to start');
 });
 
+test('background launches do not wait for the child to exit', function () {
+	$started_at = microtime(true);
+
+	$started = exec_background_process(PHP_BINARY, array('-r', 'usleep(1000000);'));
+	$elapsed = microtime(true) - $started_at;
+
+	expect($started)->toBeTrue()
+		->and($elapsed)->toBeLessThan(0.5);
+});
+
 test('cactid poller options cover configured and fallback binaries', function () {
 	expect(poller_php_binary('/configured/php'))->toBe('/configured/php')
 		->and(poller_php_binary(''))->toBe(PHP_BINARY)

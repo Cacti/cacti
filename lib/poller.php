@@ -185,6 +185,16 @@ function exec_background($filename, $args = '', $redirect_args = '') {
  */
 function exec_background_process($filename, $args = array()) {
 	global $config;
+	static $processes = array();
+
+	foreach ($processes as $index => $background_process) {
+		$status = @proc_get_status($background_process);
+
+		if (!is_array($status) || empty($status['running'])) {
+			@proc_close($background_process);
+			unset($processes[$index]);
+		}
+	}
 
 	$filename = realpath($filename);
 
@@ -209,7 +219,7 @@ function exec_background_process($filename, $args = array()) {
 		return false;
 	}
 
-	unset($process);
+	$processes[] = $process;
 
 	return true;
 }
