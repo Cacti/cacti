@@ -982,28 +982,23 @@ function format_snmp_string(string $string, bool $snmp_oid_included, int $value_
 		$parts  = explode(' ', $string);
 
 		if (cacti_sizeof($parts) == 4) {
-			$possible_ip = true;
-
 			$ip_address = '';
 
 			// convert the hex string into an ascii string
 			foreach ($parts as $part) {
-				if (hexdec($part) >= 0 && hexdec($part) <= 255) {
-					$ip_address .= ($ip_address != '' ? '.' : '') . hexdec($part);
-				}
+				$decimal = hexdec($part);
 
-				$output .= chr(hexdec($part));
+				$ip_address .= ($ip_address != '' ? '.' : '') . $decimal;
+				$output .= chr($decimal);
 			}
 
-			if ($possible_ip && is_ipaddress($ip_address)) {
+			if (is_ipaddress($ip_address)) {
 				$string = $ip_address;
 			} else {
 				$string = $output;
 			}
 			// hex string is mac-address
 		} elseif (cacti_sizeof($parts) == 6) {
-			$possible_ip = false;
-
 			// convert the hex string into an ascii string
 			foreach ($parts as $part) {
 				$output .= ($output != '' ? ':' : '');
@@ -1016,8 +1011,6 @@ function format_snmp_string(string $string, bool $snmp_oid_included, int $value_
 			}
 
 			$string = $output;
-		} else {
-			$possible_ip = false;
 		}
 	} elseif (str_starts_with(cacti_strtolower($string), 'hex:')) {
 		// strip off the 'Hex:'
