@@ -51,9 +51,9 @@ function run_advisory_matrix_gate(string $matrix) : array {
 }
 
 test('the strict advisory gate requires a CHANGELOG GHSA reference', function () {
-	$missing = advisory_matrix_fixture(0);
-	$linked  = advisory_matrix_fixture(1);
-	$invalid = advisory_matrix_fixture(1);
+	$missing  = advisory_matrix_fixture(0);
+	$linked   = advisory_matrix_fixture(1);
+	$invalid  = advisory_matrix_fixture(1);
 	$contents = file_get_contents($invalid);
 
 	expect($contents)->not->toBeFalse();
