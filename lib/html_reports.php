@@ -1975,7 +1975,7 @@ function create_preview_filter() : array {
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Apply Report Style'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(true|false)']],
+					'filter_options' => ['options' => ['regexp' => '/^(true|false)$/']],
 					'default'        => '',
 					'value'          => $value
 				]
