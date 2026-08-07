@@ -115,7 +115,7 @@ jobs:
         with:
           php-version: '8.4'
           coverage: xdebug
-          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring, snmp
           ini-values: post_max_size=256M, max_execution_time=60
 
       - name: Validate composer.json and composer.lock
@@ -131,6 +131,44 @@ jobs:
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Start SNMP coverage fixture
+        run: |
+          set -euo pipefail
+          docker build --tag cacti-snmp-coverage tests/fixtures/snmp-coverage
+          docker run --detach --name cacti-snmp-coverage \
+            --publish 127.0.0.1:21161:161/udp cacti-snmp-coverage
+
+          ready=0
+          for attempt in {1..30}; do
+            if php -r '$value = @snmp2_get("127.0.0.1:21161", "public", ".1.3.6.1.2.1.1.1.0", 500000, 0); exit($value === false ? 1 : 0);'; then
+              ready=1
+              break
+            fi
+
+            sleep 1
+          done
+
+          if [[ "${ready}" -ne 1 ]]; then
+            docker logs cacti-snmp-coverage
+            exit 1
+          fi
+
+      - name: Enforce 100% lib/snmp.php line coverage
+        env:
+          XDEBUG_MODE: coverage
+        run: |
+          set -euo pipefail
+          include/vendor/bin/pest --colors=never \
+            --configuration=phpunit-snmp.xml \
+            --coverage \
+            --coverage-clover=coverage-snmp.xml \
+            --coverage-text=coverage-snmp.txt \
+            --min=100
+
+      - name: Stop SNMP coverage fixture
+        if: always()
+        run: docker rm --force cacti-snmp-coverage >/dev/null 2>&1 || true
 
 #      - name: Run Pest with coverage
 #        run: |
@@ -177,4 +215,6 @@ jobs:
           path: |
             coverage.xml
             coverage-summary.txt
+            coverage-snmp.xml
+            coverage-snmp.txt
           if-no-files-found: ignore
