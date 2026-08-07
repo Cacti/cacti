@@ -227,11 +227,11 @@ function poller_enable_child_reaping(?string $server_os = null, ?callable $signa
 /**
  * Selects the configured PHP executable or the currently running PHP binary.
  *
- * @param string $configured_binary Configured PHP executable path.
+ * @param string|null $configured_binary Configured PHP executable path.
  *
  * @return string PHP executable path.
  */
-function poller_php_binary(string $configured_binary) : string {
+function poller_php_binary(?string $configured_binary) : string {
 	return empty($configured_binary) ? PHP_BINARY : $configured_binary;
 }
 

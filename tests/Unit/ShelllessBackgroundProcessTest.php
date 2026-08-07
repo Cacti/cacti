@@ -11,7 +11,7 @@ namespace ShelllessBackgroundProcessTest;
 
 define('CACTI_SERVER_OS', 'unix');
 
-$GLOBALS['shellless_force_proc_failure'] = false;
+$GLOBALS['shellless_force_proc_failure']  = false;
 $GLOBALS['shellless_process_calls']       = [];
 $GLOBALS['shellless_process_logs']        = [];
 
@@ -31,12 +31,12 @@ function cacti_log(string $message, bool $output, string $environ) : void {
 /**
  * Captures process options and delegates successful launches to PHP.
  *
- * @param array      $command     Executable and argument list.
- * @param array      $descriptors Child file-descriptor configuration.
- * @param array      $pipes       Child pipes populated by proc_open.
- * @param string|null $cwd        Child working directory.
- * @param array|null $environment Child environment.
- * @param array      $options     Process creation options.
+ * @param array       $command     Executable and argument list.
+ * @param array       $descriptors Child file-descriptor configuration.
+ * @param array       $pipes       Child pipes populated by proc_open.
+ * @param string|null $cwd         Child working directory.
+ * @param array|null  $environment Child environment.
+ * @param array       $options     Process creation options.
  *
  * @return resource|false Process resource, or false for a forced failure.
  */
@@ -61,7 +61,7 @@ preg_match('/function poller_cactid_arguments\(.*?^}\R/ms', $source, $matches);
 eval('namespace ShelllessBackgroundProcessTest;' . $matches[0]);
 
 beforeEach(function () : void {
-	$GLOBALS['shellless_force_proc_failure'] = false;
+	$GLOBALS['shellless_force_proc_failure']  = false;
 	$GLOBALS['shellless_process_calls']       = [];
 	$GLOBALS['shellless_process_logs']        = [];
 });
@@ -103,6 +103,7 @@ test('process creation failures are logged without a shell fallback', function (
 test('cactid poller options cover configured and fallback binaries', function () : void {
 	expect(poller_php_binary('/configured/php'))->toBe('/configured/php')
 		->and(poller_php_binary(''))->toBe(PHP_BINARY)
+		->and(poller_php_binary(null))->toBe(PHP_BINARY)
 		->and(poller_cactid_arguments('/srv/cacti', false))->toBe(['-q', '/srv/cacti/poller.php', '--force'])
 		->and(poller_cactid_arguments('/srv/cacti', true))->toBe(['-q', '/srv/cacti/poller.php', '--force', '--debug']);
 });
@@ -130,7 +131,7 @@ test('invalid executables fail closed', function () : void {
 test('cactid supplies the poller command as discrete arguments', function () : void {
 	$source = file_get_contents(dirname(__DIR__, 2) . '/cactid.php');
 
-	expect($source)->toContain("exec_background_process(\$php_binary, \$command)")
+	expect($source)->toContain('exec_background_process($php_binary, $command)')
 		->and($source)->toContain('poller_enable_child_reaping()')
 		->and($source)->toContain("poller_php_binary(read_config_option('path_php_binary'))")
 		->and($source)->toContain('poller_cactid_arguments(CACTI_PATH_BASE, $debug)');
