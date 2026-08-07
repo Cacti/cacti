@@ -153,3 +153,25 @@ test('empty groups do not issue invalidation queries', function () {
 
 	expect($GLOBALS['auth_cache_queries'])->toBe(array());
 });
+
+test('all direct user permission mutation paths reset the affected user', function () {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/user_admin.php');
+
+	expect($source)->not->toBeFalse()
+		->and(substr_count($source, "reset_user_perms(get_nfilter_request_var('id'));"))->toBeGreaterThanOrEqual(8)
+		->and($source)->toContain("if (\$add_button_clicked == true) {\n\t\t\treset_user_perms(get_nfilter_request_var('id'));")
+		->and($source)->toContain("reset_user_perms(get_filter_request_var('id'));\n\n\theader('Location: user_admin.php?action=user_edit")
+		->and($source)->toContain("reset_user_perms(get_request_var('user_id'));\n\n\theader('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit");
+});
+
+test('all direct group permission mutation paths reset current and removed members', function () {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/user_group_admin.php');
+
+	expect($source)->not->toBeFalse()
+		->and(substr_count($source, "reset_group_perms(get_nfilter_request_var('id'));"))->toBeGreaterThanOrEqual(4)
+		->and($source)->toContain("reset_group_perms(get_filter_request_var('id'));\n\n\theader('Location: user_group_admin.php?action=edit")
+		->and($source)->toContain("reset_group_perms(get_request_var('group_id'));\n\n\theader('Location: user_group_admin.php?action=edit&header=false&tab=gperms")
+		->and($source)->toContain("SELECT user_id\n\t\tFROM user_auth_group_members")
+		->and($source)->toContain("foreach (\$users as \$user_id) {\n\t\treset_user_perms(\$user_id);")
+		->and($source)->toContain('reset_user_perms($matches[1]);');
+});
