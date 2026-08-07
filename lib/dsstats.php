@@ -347,7 +347,7 @@ function dsstats_obtain_data_source_avgpeak_values(int $local_data_id, string $r
 	$use_proxy = (read_config_option('storage_location') ? true : false);
 
 	if ($use_proxy) {
-		$file_exists = rrdtool_execute("file_exists $rrdfile", true, RRDTOOL_OUTPUT_BOOLEAN, $rrd_process, 'DSSTATS');
+		$file_exists = rrdtool_execute('file_exists ' . cacti_escapeshellarg($rrdfile), true, RRDTOOL_OUTPUT_BOOLEAN, $rrd_process, 'DSSTATS');
 	} else {
 		clearstatcache();
 		$file_exists = file_exists($rrdfile);
@@ -479,9 +479,9 @@ function dsstats_get_stats_command(int $local_data_id, string $rrdfile, bool $us
 
 	// high speed or snail speed
 	if ($use_proxy) {
-		$info = rrdtool_execute("info $rrdfile", false, RRDTOOL_OUTPUT_STDOUT, $rrd_process, 'DSSTATS');
+		$info = rrdtool_execute('info ' . cacti_escapeshellarg($rrdfile), false, RRDTOOL_OUTPUT_STDOUT, $rrd_process, 'DSSTATS');
 	} else {
-		$info = dsstats_rrdtool_execute("info $rrdfile", $rrd_process);
+		$info = dsstats_rrdtool_execute('info ' . cacti_escapeshellarg($rrdfile), $rrd_process);
 	}
 
 	/**

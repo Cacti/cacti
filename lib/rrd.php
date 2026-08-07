@@ -107,12 +107,14 @@ function __rrd_init(bool $output_to_term = true) : mixed {
 
 	rrdtool_set_language();
 
+	$rrdtool = cacti_escapeshellcmd((string) read_config_option('path_rrdtool'));
+
 	if ($output_to_term) {
-		$command = read_config_option('path_rrdtool') . ' - ';
+		$command = $rrdtool . ' - ';
 	} elseif (CACTI_SERVER_OS == 'win32') {
-		$command = read_config_option('path_rrdtool') . ' - > nul';
+		$command = $rrdtool . ' - > nul';
 	} else {
-		$command = read_config_option('path_rrdtool') . ' - > /dev/null 2>&1';
+		$command = $rrdtool . ' - > /dev/null 2>&1';
 	}
 
 	$process = popen($command, 'w');
@@ -248,7 +250,7 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 
 		// set the rrdtool default font
 		if (read_config_option('path_rrdtool_default_font')) {
-			rrdtool_execute("setenv RRD_DEFAULT_FONT '" . read_config_option('path_rrdtool_default_font') . "'", false, RRDTOOL_OUTPUT_NULL, $rrdproxy, $logopt = 'WEBLOG');
+			rrdtool_execute('setenv RRD_DEFAULT_FONT ' . cacti_escapeshellarg((string) read_config_option('path_rrdtool_default_font')), false, RRDTOOL_OUTPUT_NULL, $rrdproxy, $logopt = 'WEBLOG');
 		}
 
 		// disable encryption
@@ -3580,13 +3582,13 @@ function rrdtool_cacti_compare(int $data_source_id, array &$info) : array {
 				// check the data source type
 				if ($data_source['type'] != $info['ds'][$data_source_name]['type']) {
 					$diff['ds'][$data_source_name]['type'] = __("Type for Data Source '%s' should be '%s'", $data_source_name, $data_source['type']);
-					$diff['tune'][]                        = $info['filename'] . ' ' . '--data-source-type ' . $data_source_name . ':' . $data_source['type'];
+					$diff['tune'][]                        = cacti_escapeshellarg($info['filename']) . ' --data-source-type ' . cacti_escapeshellarg($data_source_name . ':' . $data_source['type']);
 				}
 
 				// check the minimal heartbeat
 				if ($data_source['minimal_heartbeat'] != $info['ds'][$data_source_name]['minimal_heartbeat']) {
 					$diff['ds'][$data_source_name]['minimal_heartbeat'] = __("Heartbeat for Data Source '%s' should be '%s'", $data_source_name, $data_source['minimal_heartbeat']);
-					$diff['tune'][]                                     = $info['filename'] . ' ' . '--heartbeat ' . $data_source_name . ':' . $data_source['minimal_heartbeat'];
+					$diff['tune'][]                                     = cacti_escapeshellarg($info['filename']) . ' --heartbeat ' . cacti_escapeshellarg($data_source_name . ':' . $data_source['minimal_heartbeat']);
 				}
 
 				// check the minimums and maximums and correct for legacy behavior
@@ -3598,7 +3600,7 @@ function rrdtool_cacti_compare(int $data_source_id, array &$info) : array {
 
 				if ($data_source['min'] != $info['ds'][$data_source_name]['min']) {
 					$diff['ds'][$data_source_name]['min'] = __("RRD minimum for Data Source '%s' should be '%s'", $data_source_name, $data_source['min']);
-					$diff['tune'][]                       = $info['filename'] . ' ' . '--minimum ' . $data_source_name . ':' . $data_source['min'];
+					$diff['tune'][]                       = cacti_escapeshellarg($info['filename']) . ' --minimum ' . cacti_escapeshellarg($data_source_name . ':' . $data_source['min']);
 				}
 			}
 		}
@@ -3681,9 +3683,9 @@ function rrdtool_cacti_compare(int $data_source_id, array &$info) : array {
 							$diff['rra'][$file_rra_id]['rows'] = __("The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'", $cacti_rra_id, $file_rra['rows'], $cacti_rra['rows']);
 
 							if ($cacti_rra['rows'] > $file_rra['rows']) {
-								$diff['resize'][] = $info['filename'] . ' ' . $cacti_rra_id . ' GROW ' . ($cacti_rra['rows'] - $file_rra['rows']);
+								$diff['resize'][] = cacti_escapeshellarg($info['filename']) . ' ' . $cacti_rra_id . ' GROW ' . ($cacti_rra['rows'] - $file_rra['rows']);
 							} else {
-								$diff['resize'][] = $info['filename'] . ' ' . $cacti_rra_id . ' SHRINK ' . ($file_rra['rows'] - $cacti_rra['rows']);
+								$diff['resize'][] = cacti_escapeshellarg($info['filename']) . ' ' . $cacti_rra_id . ' SHRINK ' . ($file_rra['rows'] - $cacti_rra['rows']);
 							}
 						}
 					}
@@ -3996,7 +3998,7 @@ function rrd_datasource_add(array $file_array, array $ds_array, bool $debug) : m
 		// create a DOM object from an rrdtool dump
 		$dom = new domDocument;
 
-		$success = $dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
+		$success = $dom->loadXML(rrdtool_execute('dump ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
 
 		if (!$success) {
 			$check['err_msg'] = __('Error while parsing the XML of rrdtool dump');
@@ -4041,7 +4043,7 @@ function rrd_datasource_add(array $file_array, array $ds_array, bool $debug) : m
 				// are we allowed to write the rrd file?
 				if (is_writable($file)) {
 					// restore the modified XML to rrd
-					rrdtool_execute("restore -f $xml_file $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
+					rrdtool_execute('restore -f ' . cacti_escapeshellarg($xml_file) . ' ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
 					// scratch that XML file to avoid filling up the disk
 					unlink($xml_file);
 					cacti_log('Added Data Source(s) to RRDfile: ' . $file, false, 'UTIL');
@@ -4076,7 +4078,7 @@ function rrd_rra_delete(array $file_array, array $rra_array, bool $debug) : mixe
 		// create a DOM document from an rrdtool dump
 		$dom = new domDocument;
 
-		$success = $dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
+		$success = $dom->loadXML(rrdtool_execute('dump ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
 
 		if (!$success) {
 			$check['err_msg'] = __('Error while parsing the XML of RRDtool dump');
@@ -4105,7 +4107,7 @@ function rrd_rra_delete(array $file_array, array $rra_array, bool $debug) : mixe
 				// are we allowed to write the rrd file?
 				if (is_writable($file)) {
 					// restore the modified XML to rrd
-					rrdtool_execute("restore -f $xml_file $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
+					rrdtool_execute('restore -f ' . cacti_escapeshellarg($xml_file) . ' ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
 					// scratch that XML file to avoid filling up the disk
 					unlink($xml_file);
 					cacti_log('Deleted RRA(s) from RRDfile: ' . $file, false, 'UTIL');
@@ -4141,7 +4143,7 @@ function rrd_rra_clone(array $file_array, string $cf, array $rra_array, bool $de
 		// create a DOM document from an rrdtool dump
 		$dom = new domDocument;
 
-		$success = $dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
+		$success = $dom->loadXML(rrdtool_execute('dump ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
 
 		if (!$success) {
 			$check['err_msg'] = __('Error while parsing the XML of RRDtool dump');
@@ -4170,7 +4172,7 @@ function rrd_rra_clone(array $file_array, string $cf, array $rra_array, bool $de
 				// are we allowed to write the rrd file?
 				if (is_writable($file)) {
 					// restore the modified XML to rrd
-					rrdtool_execute("restore -f $xml_file $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
+					rrdtool_execute('restore -f ' . cacti_escapeshellarg($xml_file) . ' ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
 					// scratch that XML file to avoid filling up the disk
 					unlink($xml_file);
 					cacti_log('Deleted RRA(s) from RRDfile: ' . $file, false, 'UTIL');
