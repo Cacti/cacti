@@ -223,7 +223,8 @@ function comment_starts_its_line(array $tokens, int $comment_token_index): bool 
 	$prev      = $tokens[$comment_token_index - 1];
 	$prev_text = is_array($prev) ? $prev[1] : $prev;
 
-	return str_contains($prev_text, "\n");
+	return (is_array($prev) && $prev[0] === T_OPEN_TAG)
+		|| str_contains($prev_text, "\n");
 }
 
 /**
@@ -245,22 +246,23 @@ function has_no_validation_comment(array $tokens, int $call_token_index, int $ca
 		}
 
 		if ($tok[0] === T_COMMENT || $tok[0] === T_DOC_COMMENT) {
-			$comment_line = $tok[2];
+			$comment_start_line = $tok[2];
+			$comment_end_line   = $comment_start_line + substr_count($tok[1], "\n");
 
 			// A comment on the line immediately before the call only
 			// counts as a standalone exemption if it starts that line;
 			// a trailing comment after code (e.g. "$x = 1; // no-validation: ...")
 			// must not exempt the following call.
-			$is_previous_line_trailing_comment = $comment_line === $call_line - 1
+			$is_previous_line_trailing_comment = $comment_end_line === $call_line - 1
 				&& !comment_starts_its_line($tokens, $i);
 
 			if (!$is_previous_line_trailing_comment
-				&& $comment_line >= $call_line - 1
+				&& $comment_end_line >= $call_line - 1
 				&& preg_match(NO_VALIDATION_COMMENT, $tok[1])) {
 				return true;
 			}
 
-			if ($comment_line < $call_line - 1) {
+			if ($comment_end_line < $call_line - 1) {
 				break;
 			}
 

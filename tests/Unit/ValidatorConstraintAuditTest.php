@@ -56,6 +56,23 @@ test('CactiValidator::validateInput preceded by a no-validation comment is docum
 	))->toBe('documented-empty');
 });
 
+test('a top-of-file no-validation comment after the open tag is standalone', function () {
+	$sites = validator_scan_source(
+		"<?php // no-validation: free-text notes field, never reaches a sink\n" .
+		"CactiValidator::validateInput(gnrv('notes'), 'notes', [], 3);"
+	);
+
+	expect($sites)->toHaveCount(1)
+		->and($sites[0]['category'])->toBe('documented-empty');
+});
+
+test('a multiline no-validation comment ending above the call is documented-empty', function () {
+	expect(validator_category_of(
+		"/*\n * no-validation: free-text notes field, never reaches a sink\n */\n" .
+		"CactiValidator::validateInput(gnrv('notes'), 'notes', [], 3);"
+	))->toBe('documented-empty');
+});
+
 test('a same-line trailing no-validation comment also documents the exemption', function () {
 	expect(validator_category_of(
 		"CactiValidator::validateInput(gnrv('notes'), 'notes', [], 3); // no-validation: free text, no sink reads it raw"
