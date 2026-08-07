@@ -142,7 +142,7 @@ class CactiSecureHeaders {
 			. "font-src 'self' {$alternates}; "
 			. "connect-src 'self' {$alternates}; "
 			. "frame-src 'self' {$alternates}; "
-			. "frame-ancestors 'self'; "
+			. "frame-ancestors 'self' {$alternates}; "
 			. "worker-src 'self' {$alternates}; "
 			. "object-src 'none'; "
 			. "base-uri 'self'; "
