@@ -1,0 +1,105 @@
+name: SNMP Coverage
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/snmp-coverage.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'lib/snmp.php'
+      - 'phpunit-snmp.xml'
+      - 'tests/Unit/SnmpCoverageTest.php'
+      - 'tests/Unit/SnmpSessionErrorLoggingTest.php'
+      - 'tests/fixtures/snmp-coverage/**'
+      - 'tests/fixtures/snmp_command_probe.php'
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/snmp-coverage.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'lib/snmp.php'
+      - 'phpunit-snmp.xml'
+      - 'tests/Unit/SnmpCoverageTest.php'
+      - 'tests/Unit/SnmpSessionErrorLoggingTest.php'
+      - 'tests/fixtures/snmp-coverage/**'
+      - 'tests/fixtures/snmp_command_probe.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: snmp-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMPOSER_ALLOW_SUPERUSER: 1
+
+jobs:
+  coverage:
+    name: lib/snmp.php 100% coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Setup PHP 8.4 with Xdebug
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.4'
+          coverage: xdebug
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring, snmp
+
+      - name: Cache Composer packages
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: include/vendor
+          key: ${{ runner.os }}-php-snmp-coverage-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-snmp-coverage-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+
+      - name: Start fixture
+        run: |
+          set -euo pipefail
+          docker build --tag cacti-snmp-coverage tests/fixtures/snmp-coverage
+          docker run --detach --name cacti-snmp-coverage \
+            --publish 127.0.0.1:21161:161/udp cacti-snmp-coverage
+
+          ready=0
+          for attempt in {1..30}; do
+            echo "SNMP fixture probe ${attempt}/30"
+            # shellcheck disable=SC2016
+            if php -r '$value = @snmp2_get("127.0.0.1:21161", "public", ".1.3.6.1.2.1.1.1.0", 500000, 0); exit($value === false ? 1 : 0);'; then
+              ready=1
+              break
+            fi
+
+            sleep 1
+          done
+
+          if [[ "${ready}" -ne 1 ]]; then
+            docker logs cacti-snmp-coverage
+            exit 1
+          fi
+
+      - name: Enforce line coverage
+        env:
+          XDEBUG_MODE: coverage
+        run: |
+          set -euo pipefail
+          include/vendor/bin/pest --colors=never \
+            --configuration=phpunit-snmp.xml \
+            --coverage \
+            --coverage-text \
+            --min=100
+
+      - name: Stop fixture
+        if: always()
+        run: docker rm --force cacti-snmp-coverage >/dev/null 2>&1 || true
