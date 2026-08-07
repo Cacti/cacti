@@ -128,6 +128,13 @@ test('invalid executables fail closed', function () : void {
 		->and($GLOBALS['shellless_process_logs'][0][0])->toContain('Refusing to start');
 });
 
+test('executable paths containing null bytes fail closed', function () : void {
+	expect(exec_background_process("/path/to/php\0suffix", []))->toBeFalse()
+		->and($GLOBALS['shellless_process_calls'])->toBeEmpty()
+		->and($GLOBALS['shellless_process_logs'])->toHaveCount(1)
+		->and($GLOBALS['shellless_process_logs'][0][0])->toContain('Refusing to start');
+});
+
 test('cactid supplies the poller command as discrete arguments', function () : void {
 	$source = file_get_contents(dirname(__DIR__, 2) . '/cactid.php');
 

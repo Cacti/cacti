@@ -221,7 +221,7 @@ function run_poller() : void {
 	$php_binary = poller_php_binary(read_config_option('path_php_binary'));
 	$command    = poller_cactid_arguments(CACTI_PATH_BASE, $debug);
 
-	debug('Command Line is: ' . implode(' ', $command));
+	debug('Command Line is: ' . implode(' ', array_merge([$php_binary], $command)));
 
 	poller_enable_child_reaping();
 	exec_background_process($php_binary, $command);

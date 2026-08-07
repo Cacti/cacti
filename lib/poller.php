@@ -169,6 +169,12 @@ function exec_background(string $filename, string|array $args = '', string|array
  * @return bool True when the child process was started, otherwise false.
  */
 function exec_background_process(string $filename, array $args = [], ?string $server_os = null) : bool {
+	if (str_contains($filename, "\0")) {
+		cacti_log('WARNING: Refusing to start an invalid background executable', false, 'POLLER');
+
+		return false;
+	}
+
 	$filename = realpath($filename);
 
 	if ($filename === false || !is_file($filename) || !is_executable($filename)) {
