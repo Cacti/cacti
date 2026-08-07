@@ -40,6 +40,20 @@ class DbUpdateTableRecordingPDO extends FakeMySQLPDO {
 	}
 }
 
+class DbUpdateTableInvalidMetadataPDO extends DbUpdateTableRecordingPDO {
+	public int $showColumnCalls = 0;
+
+	public function prepare(string $query, array $options = []): PDOStatement|false {
+		if (preg_match('/^SHOW\s+columns\b/i', ltrim($query))) {
+			$this->showColumnCalls++;
+
+			return parent::prepare("SELECT 'id' AS Field", $options);
+		}
+
+		return parent::prepare($query, $options);
+	}
+}
+
 test('db_update_table batches schema changes and preserves timestamp expressions', function () {
 	$connection = new DbUpdateTableRecordingPDO();
 	$connection->exec('CREATE TABLE test_table (id INTEGER NOT NULL, changed TEXT, obsolete TEXT)');
@@ -60,4 +74,27 @@ test('db_update_table batches schema changes and preserves timestamp expressions
 		->and($connection->alterStatements[0])->toContain('CHANGE `changed` `changed` datetime NOT NULL default CURRENT_TIMESTAMP(6)')
 		->and($connection->alterStatements[0])->toContain('ADD `created_at` timestamp NOT NULL default CURRENT_TIMESTAMP')
 		->and($connection->alterStatements[0])->toContain('DROP COLUMN `obsolete`');
+});
+
+test('db_update_table fails closed when existing column metadata has no type', function () {
+	$connection = new DbUpdateTableInvalidMetadataPDO();
+	$connection->exec('CREATE TABLE malformed_metadata_query (id INTEGER NOT NULL)');
+
+	expect(db_update_table('malformed_metadata_query', [
+		'columns' => [
+			['name' => 'id', 'type' => 'INTEGER', 'NULL' => false],
+		],
+	], false, false, $connection))->toBeFalse();
+});
+
+test('db_update_table normalizes unsigned column metadata case-insensitively', function () {
+	$connection = new DbUpdateTableRecordingPDO();
+	$connection->exec('CREATE TABLE unsigned_metadata (value "INTEGER unsigned" NOT NULL)');
+
+	expect(db_update_table('unsigned_metadata', [
+		'columns' => [
+			['name' => 'value', 'type' => 'INTEGER', 'unsigned' => true, 'NULL' => false],
+		],
+	], false, false, $connection))->toBeTrue()
+		->and($connection->alterStatements)->toBe([]);
 });

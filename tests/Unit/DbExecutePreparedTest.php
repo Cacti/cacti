@@ -16,14 +16,6 @@ require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
 require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
 require_once dirname(__DIR__, 2) . '/lib/database.php';
 
-// One test below remains skipped: 'fetches a row by primary key as an
-// associative array'. db_fetch_row_return at lib/database.php:836 gates
-// the result on PDOStatement::rowCount(), and the PDO sqlite driver
-// always returns 0 from rowCount() on a SELECT (PDO behaviour, not a
-// Cacti bug). The same insert/select path is covered by the sibling
-// 'fetches a single row via db_fetch_assoc_prepared by primary key'
-// case, which uses fetchAll() and is unaffected by the rowCount quirk.
-
 beforeEach(function () {
 	$this->conn = new PDO('sqlite::memory:');
 	// Default ERRMODE_SILENT keeps prepare() failures from bubbling up as
@@ -53,10 +45,6 @@ it('fetches a single cell value via prepared parameters', function () {
 });
 
 it('fetches a row by primary key as an associative array', function () {
-	// db_fetch_row_return uses PDOStatement::rowCount() which the SQLite
-	// driver leaves at 0 for SELECT statements. The return path therefore
-	// emits []. db_fetch_assoc_prepared works around the rowCount quirk
-	// and is asserted in a sibling test below.
 	db_execute("INSERT INTO host (hostname) VALUES ('h1')", true, $this->conn);
 
 	$row = db_fetch_row_prepared(
@@ -65,14 +53,6 @@ it('fetches a row by primary key as an associative array', function () {
 		true,
 		$this->conn
 	);
-
-	if ($row === []) {
-		test()->markTestSkipped(
-			'db_fetch_row_prepared relies on PDOStatement::rowCount(), which '
-			. 'returns 0 for SELECT under the PDO sqlite driver. The function '
-			. 'is exercised against MySQL in integration tests.'
-		);
-	}
 
 	expect($row)->toBeArray()
 		->and($row)->toHaveKey('hostname')

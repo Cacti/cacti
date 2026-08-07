@@ -14,7 +14,15 @@
 
 $orb_available = static function (): bool {
 	// nosemgrep: php.lang.security.exec-use.exec-use - constant command, integration test
-	return trim((string)shell_exec('command -v orb 2>/dev/null')) !== '';
+	if (trim((string) shell_exec('command -v orb 2>/dev/null')) === '') {
+		return false;
+	}
+
+	// These tests invoke a running machine named "php", not merely the CLI.
+	// nosemgrep: php.lang.security.exec-use.exec-use - constant command, integration test
+	$machines = preg_split('/\R/', trim((string) shell_exec('orb list --running --quiet 2>/dev/null')));
+
+	return in_array('php', $machines, true);
 };
 
 $has_timeout = static function (): bool {
@@ -38,7 +46,7 @@ it('has all required PHP extensions in the Orb machine', function () use ($orb_a
 		$cmd = ($has_timeout() ? 'timeout 30 ' : '') . 'orb php -m | grep -i ^' . escapeshellarg($ext) . '$';
 		// nosemgrep: php.lang.security.exec-use.exec-use - allowlisted ext names, integration test
 		$output = shell_exec($cmd);
-		expect(trim((string)$output))->toBeIgnoringCase($ext);
+		expect(strtolower(trim((string) $output)))->toBe(strtolower($ext));
 	}
 });
 
@@ -51,5 +59,5 @@ it('can run a Cacti CLI command in the Orb machine', function () use ($orb_avail
 	// nosemgrep: php.lang.security.exec-use.exec-use - constant command, integration test
 	$output = shell_exec($cmd);
 	// Just verify it doesn't crash and returns something sensible
-	expect($output)->toContain('Cacti');
+	expect((string) $output)->toContain('Cacti');
 });
