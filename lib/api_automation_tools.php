@@ -56,13 +56,12 @@ function automation_prepare_id_list($ids) {
 	}
 
 	$params = array();
+	$max_id = (string) PHP_INT_MAX;
 
 	foreach ($ids as $id) {
 		if (is_string($id) && ctype_digit($id)) {
 			$normalized_id = ltrim($id, '0');
 			$normalized_id = $normalized_id === '' ? '0' : $normalized_id;
-			$max_id        = (string) PHP_INT_MAX;
-
 			if (strlen($normalized_id) > strlen($max_id) ||
 				(strlen($normalized_id) === strlen($max_id) && strcmp($normalized_id, $max_id) > 0)) {
 				return false;
@@ -77,7 +76,7 @@ function automation_prepare_id_list($ids) {
 	}
 
 	return array(
-		'placeholders' => implode(', ', array_fill(0, count($params), '?')),
+		'placeholders' => implode(', ', array_fill(0, cacti_sizeof($params), '?')),
 		'params'       => $params
 	);
 }

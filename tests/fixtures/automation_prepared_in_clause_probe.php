@@ -26,14 +26,14 @@ function db_fetch_assoc_prepared($sql, $params = array()) {
 }
 
 /**
- * Returns the size of a countable probe value.
+ * Returns the size of an array probe value.
  *
  * @param mixed $value Value to count.
  *
  * @return int Number of elements.
  */
 function cacti_sizeof($value) {
-	return is_countable($value) ? count($value) : 0;
+	return is_array($value) ? count($value) : 0;
 }
 
 require_once dirname(__DIR__, 2) . '/lib/api_automation_tools.php';

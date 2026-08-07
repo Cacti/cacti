@@ -9,14 +9,14 @@
 
 if (!function_exists('cacti_sizeof')) {
 	/**
-	 * Returns the size of a countable test value.
+	 * Returns the size of an array test value.
 	 *
 	 * @param mixed $value Value to count.
 	 *
 	 * @return int Number of elements.
 	 */
 	function cacti_sizeof($value) {
-		return is_countable($value) ? count($value) : 0;
+		return is_array($value) ? count($value) : 0;
 	}
 }
 
@@ -57,7 +57,8 @@ function automation_run_prepared_probe() {
 }
 
 test('ID list normalization is strict and fail closed', function () {
-	expect(automation_prepare_id_list(false))->toBe(array('placeholders' => '', 'params' => array()))
+	expect(cacti_sizeof(new ArrayObject(array(1))))->toBe(0)
+		->and(automation_prepare_id_list(false))->toBe(array('placeholders' => '', 'params' => array()))
 		->and(automation_prepare_id_list(array()))->toBe(array('placeholders' => '', 'params' => array()))
 		->and(automation_prepare_id_list('7'))->toBe(array('placeholders' => '?', 'params' => array(7)))
 		->and(automation_prepare_id_list(array(2, '9')))->toBe(array('placeholders' => '?, ?', 'params' => array(2, 9)))
