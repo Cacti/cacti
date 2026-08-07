@@ -200,6 +200,11 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 			}
 		}
 
+		if (!$error && !cacti_auth_transition((int) $user['id'], 'login')) {
+			$error     = true;
+			$error_msg = __('Access Denied! User account locked.');
+		}
+
 		if (!$error) {
 			// set the php session
 			$_SESSION[SESS_USER_ID]     = $user['id'];

@@ -82,7 +82,7 @@ if ($auth_method != AUTH_METHOD_BASIC) {
 	if (!isset($_SESSION[SESS_USER_ID])) {
 		$cookie_user = check_auth_cookie();
 
-		if ($cookie_user !== false) {
+		if ($cookie_user !== false && cacti_auth_transition((int) $cookie_user, 'cookie_restore')) {
 			$_SESSION[SESS_USER_ID]     = $cookie_user;
 			$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];
 			$_SESSION[SESS_CLIENT_ADDR] = get_client_addr();
@@ -114,6 +114,12 @@ if ($auth_method == AUTH_METHOD_BASIC && !isset($_SESSION[SESS_USER_ID])) {
 
 			if (!auth_user_has_access($current_user)) {
 				auth_display_custom_error_message(__('You do not have access to any area of Cacti.  Contact your administrator.'));
+
+				exit;
+			}
+
+			if (!cacti_auth_transition((int) $current_user['id'], 'basic_auth')) {
+				auth_display_custom_error_message(__('Access Denied! User account locked.'));
 
 				exit;
 			}

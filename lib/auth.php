@@ -199,6 +199,46 @@ function auth_cookie_user_currently_allowed(array $user_info) : bool {
 }
 
 /**
+ * cacti_auth_transition - move a session from unauthenticated to authenticated.
+ *
+ * Issues a new session id so an id an attacker planted before the login cannot
+ * be ridden afterwards, and drops the permission caches so the new identity is
+ * evaluated from scratch rather than inheriting the previous one.
+ *
+ * Call this at every point that first sets the session user id, apart from the
+ * guest account, which is not a privilege gain.
+ *
+ * @param int    $user_id The account the session is becoming.
+ * @param string $reason  Where the transition came from, for the log.
+ *
+ * @return bool False when the account is locked and must not be let in.
+ */
+function cacti_auth_transition(int $user_id, string $reason = 'login') : bool {
+	$locked = db_fetch_cell_prepared('SELECT locked
+		FROM user_auth
+		WHERE id = ?',
+		[$user_id]);
+
+	if ($locked == 'on') {
+		cacti_log(sprintf('SECURITY: auth transition blocked for locked user %d, reason %s', $user_id, $reason), false, 'AUTH');
+
+		return false;
+	}
+
+	if (session_status() === PHP_SESSION_ACTIVE) {
+		session_regenerate_id(true);
+	}
+
+	kill_session_var(SESS_USER_REALMS);
+	kill_session_var(OPTIONS_USER);
+	kill_session_var(OPTIONS_WEB);
+
+	cacti_log(sprintf('NOTE: auth transition completed for user %d, reason %s', $user_id, $reason), false, 'AUTH', POLLER_VERBOSITY_MEDIUM);
+
+	return true;
+}
+
+/**
  * Given a username or user_id test if this is a template account
  * Template accounts could be accounts used for the administrative email, for both
  * the guest and template accounts, or a user that is specified by a plugin as a
