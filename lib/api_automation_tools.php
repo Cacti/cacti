@@ -911,7 +911,7 @@ function displayUsers(bool $quietMode = false) : void {
  *
  * @return void
  */
-function displayGroups(bool $quietMode = false) {
+function displayGroups(bool $quietMode = false) : void {
 	if (!$quietMode) {
 		print 'Known Groups: (id, name, description)' . PHP_EOL;
 	}
@@ -931,6 +931,4 @@ function displayGroups(bool $quietMode = false) {
 	if (!$quietMode) {
 		print PHP_EOL;
 	}
-
-	exit(1);
 }
