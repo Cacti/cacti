@@ -34,9 +34,9 @@ test('the transition helper issues a new session id', function () use ($authSour
 	expect($authSource)->toContain('session_regenerate_id(true);');
 });
 
-test('the transition helper refuses a locked account', function () use ($authSource) {
-	expect($authSource)->toContain("if (\$locked == 'on') {");
-	expect($authSource)->toContain('SECURITY: auth transition blocked for locked user');
+test('the transition helper fails closed for a missing or locked account', function () use ($authSource) {
+	expect($authSource)->toContain("if (\$locked === false || \$locked == 'on') {");
+	expect($authSource)->toContain('SECURITY: auth transition blocked for unavailable or locked user');
 });
 
 test('the transition helper drops the cached permissions', function () use ($authSource) {

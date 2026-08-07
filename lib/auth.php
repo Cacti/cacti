@@ -223,8 +223,8 @@ function cacti_auth_transition(int $user_id, string $reason = 'login') : bool {
 		WHERE id = ?',
 		[$user_id]);
 
-	if ($locked == 'on') {
-		cacti_log(sprintf('SECURITY: auth transition blocked for locked user %d, reason %s', $user_id, $reason), false, 'AUTH');
+	if ($locked === false || $locked == 'on') {
+		cacti_log(sprintf('SECURITY: auth transition blocked for unavailable or locked user %d, reason %s', $user_id, $reason), false, 'AUTH');
 
 		return false;
 	}
