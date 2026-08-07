@@ -9,14 +9,14 @@
 
 if (!function_exists('cacti_sizeof')) {
 	/**
-	 * Returns the size of a countable test value.
+	 * Returns the size of an array test value.
 	 *
 	 * @param mixed $value Value to count.
 	 *
 	 * @return int Number of elements.
 	 */
 	function cacti_sizeof(mixed $value) : int {
-		return is_countable($value) ? count($value) : 0;
+		return is_array($value) ? count($value) : 0;
 	}
 }
 
@@ -24,7 +24,8 @@ require_once dirname(__DIR__, 2) . '/lib/api_automation_tools.php';
 require_once dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
 
 test('ID list normalization is strict and fail closed', function () : void {
-	expect(automation_prepare_id_list(false))->toBe(['placeholders' => '', 'params' => []])
+	expect(cacti_sizeof(new ArrayObject([1])))->toBe(0)
+		->and(automation_prepare_id_list(false))->toBe(['placeholders' => '', 'params' => []])
 		->and(automation_prepare_id_list([]))->toBe(['placeholders' => '', 'params' => []])
 		->and(automation_prepare_id_list('7'))->toBe(['placeholders' => '?', 'params' => [7]])
 		->and(automation_prepare_id_list([2, '9']))->toBe(['placeholders' => '?, ?', 'params' => [2, 9]])
