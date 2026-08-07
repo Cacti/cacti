@@ -4393,8 +4393,8 @@ function rsa_check_keypair() : void {
 }
 
 /**
- * Sets a flag for all users of a group logged in that their perms
- * need to be reloaded from the database
+ * Expires persistent authentication tokens and sets a flag for all users of a
+ * group logged in that their permissions need to be reloaded from the database.
  *
  * @param int $group_id The ID of the group whose users' permissions need to be reset.
  *
