@@ -1001,8 +1001,11 @@ function __rrd_proxy_execute(string|array $command_line, bool $log_to_stdout, in
 		case RRDTOOL_OUTPUT_NULL:
 			return $response['success'] ? 'OK' : false;
 		case RRDTOOL_OUTPUT_STDOUT:
-		case RRDTOOL_OUTPUT_GRAPH_DATA:
 			return $response['success'] ? rtrim($response['output']) : false;
+		case RRDTOOL_OUTPUT_GRAPH_DATA:
+			// Graph output is binary. The proxy decoder has already removed the
+			// protocol terminator, so trimming here could corrupt valid image bytes.
+			return $response['success'] ? $response['output'] : false;
 		case RRDTOOL_OUTPUT_STDERR:
 			if (!$response['success']) {
 				print $response['raw'];
