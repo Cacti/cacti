@@ -10,7 +10,7 @@
     </source>
     <testsuites>
         <testsuite name="API automation tools coverage">
-            <file>tests/Unit/ApiAutomationToolsCoverageTest.php</file>
+            <file>tests/Coverage/ApiAutomationToolsCoverageTest.php</file>
             <file>tests/Unit/AutomationPreparedInClauseTest.php</file>
         </testsuite>
     </testsuites>
