@@ -24,6 +24,11 @@
 
 define('RRD_NL', " \\\n");
 define('MAX_FETCH_CACHE_SIZE', 5);
+define('RRD_PROXY_END_OF_PACKET', "_EOP_\r\n");
+define('RRD_PROXY_END_OF_SEQUENCE', "_EOT_\r\n");
+define('RRD_PROXY_TIMEOUT_SECONDS', 10);
+define('RRD_PROXY_MAX_KEY_SIZE', 1048576);
+define('RRD_PROXY_MAX_RESPONSE_SIZE', 67108864);
 
 if (read_config_option('storage_location')) {
 	global $encryption;
@@ -97,9 +102,245 @@ function __rrd_init(bool $output_to_term = true) : mixed {
 	return $process;
 }
 
+/**
+ * Configure bounded blocking I/O for an RRDtool proxy socket.
+ *
+ * @param Socket $socket  Connected or unconnected proxy socket
+ * @param int    $seconds Read and write timeout in seconds
+ *
+ * @return bool Whether both socket options were applied
+ */
+function rrdtool_proxy_set_timeouts(Socket $socket, int $seconds = RRD_PROXY_TIMEOUT_SECONDS) : bool {
+	if ($seconds < 1) {
+		return false;
+	}
+
+	$timeout = ['sec' => $seconds, 'usec' => 0];
+
+	return @socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, $timeout)
+		&& @socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, $timeout);
+}
+
+/**
+ * Connect to an RRDtool proxy with an explicit deadline.
+ *
+ * @param Socket $socket  Proxy socket
+ * @param string $server  IPv4 or IPv6 address
+ * @param int    $port    TCP port
+ * @param int    $seconds Connection timeout in seconds
+ *
+ * @return bool Whether the connection completed successfully
+ */
+function rrdtool_proxy_connect(Socket $socket, string $server, int $port, int $seconds = RRD_PROXY_TIMEOUT_SECONDS) : bool {
+	if ($seconds < 1 || !@socket_set_nonblock($socket)) {
+		return false;
+	}
+
+	$connected = @socket_connect($socket, $server, $port);
+
+	if (!$connected) {
+		$error       = socket_last_error($socket);
+		$in_progress = [];
+
+		foreach (['SOCKET_EINPROGRESS', 'SOCKET_EALREADY', 'SOCKET_EWOULDBLOCK', 'SOCKET_EAGAIN'] as $constant) {
+			if (defined($constant)) {
+				$in_progress[] = constant($constant);
+			}
+		}
+
+		if (!in_array($error, array_unique($in_progress), true)) {
+			@socket_set_block($socket);
+
+			return false;
+		}
+
+		$read   = [];
+		$write  = [$socket];
+		$except = [$socket];
+		$ready  = @socket_select($read, $write, $except, $seconds, 0);
+
+		if ($ready !== 1 || $except !== []) {
+			@socket_set_block($socket);
+
+			return false;
+		}
+
+		$socket_error = @socket_get_option($socket, SOL_SOCKET, SO_ERROR);
+
+		if ($socket_error !== 0) {
+			@socket_set_block($socket);
+
+			return false;
+		}
+	}
+
+	return @socket_set_block($socket);
+}
+
+/**
+ * Write an entire RRDtool proxy frame.
+ *
+ * socket_write() may complete only part of a write.  This helper retries until
+ * all bytes are transferred, and treats zero-byte or failed writes as errors.
+ *
+ * @param Socket $socket Proxy socket
+ * @param string $data   Complete encoded frame
+ *
+ * @return bool Whether every byte was written
+ */
+function rrdtool_proxy_write(Socket $socket, string $data) : bool {
+	$length  = strlen($data);
+	$written = 0;
+
+	while ($written < $length) {
+		set_error_handler(static fn () : bool => true);
+
+		try {
+			$result = socket_write($socket, substr($data, $written));
+		} finally {
+			restore_error_handler();
+		}
+
+		if ($result === false || $result === 0) {
+			return false;
+		}
+
+		$written += $result;
+	}
+
+	return true;
+}
+
+/**
+ * Read one bounded, terminator-delimited RRDtool proxy frame.
+ *
+ * @param Socket $socket     Proxy socket
+ * @param string $terminator Protocol frame terminator
+ * @param int    $max_size   Maximum buffered frame size
+ *
+ * @return string|false Frame contents without the terminator, or false
+ */
+function rrdtool_proxy_read_frame(Socket $socket, string $terminator, int $max_size) : string|false {
+	if ($terminator === '' || $max_size < 1) {
+		return false;
+	}
+
+	$input = '';
+
+	while (true) {
+		$remaining = $max_size + strlen($terminator) - strlen($input);
+		$recv      = @socket_read($socket, min(100000, $remaining), PHP_BINARY_READ);
+
+		if ($recv === false || $recv === '') {
+			return false;
+		}
+
+		$input .= $recv;
+		$position = strpos($input, $terminator);
+
+		if ($position !== false) {
+			return substr($input, 0, $position);
+		}
+
+		if (strlen($input) > $max_size) {
+			return false;
+		}
+	}
+}
+
+/**
+ * Decode gzip data without leaking malformed-peer warnings into graph output.
+ *
+ * @param string $input    Compressed packet
+ * @param int    $max_size Maximum decoded size
+ *
+ * @return string|false Decoded packet, or false when invalid or oversized
+ */
+function rrdtool_proxy_gzdecode(string $input, int $max_size) : string|false {
+	if ($max_size < 1) {
+		return false;
+	}
+
+	set_error_handler(static fn () : bool => true);
+
+	try {
+		return gzdecode($input, $max_size);
+	} finally {
+		restore_error_handler();
+	}
+}
+
+/**
+ * Decode and validate a complete RRDtool proxy response.
+ *
+ * The terminal status must occur at the end of the final protocol packet.
+ * Status-like text in graph or xport payload data is therefore not treated as
+ * a protocol boundary.
+ *
+ * @param string $frame    Encoded frame without the sequence terminator
+ * @param int    $max_size Maximum decoded response size
+ *
+ * @return array{output:string,status:string,success:bool,raw:string}|false
+ */
+function rrdtool_proxy_decode_response(string $frame, int $max_size = RRD_PROXY_MAX_RESPONSE_SIZE) : array|false {
+	if ($max_size < 1 || strlen($frame) > $max_size) {
+		return false;
+	}
+
+	$packets = explode(RRD_PROXY_END_OF_PACKET, $frame);
+
+	if (end($packets) === '') {
+		array_pop($packets);
+	}
+
+	if ($packets === []) {
+		return false;
+	}
+
+	$decoded_size = 0;
+	$decoded      = [];
+
+	foreach ($packets as $packet) {
+		$transaction = decrypt($packet);
+
+		if ($transaction === false) {
+			return false;
+		}
+
+		if (str_starts_with($transaction, "\x1f\x8b")) {
+			$transaction = rrdtool_proxy_gzdecode($transaction, $max_size - $decoded_size);
+
+			if ($transaction === false) {
+				return false;
+			}
+		}
+
+		$decoded_size += strlen($transaction);
+		$decoded[] = $transaction;
+	}
+
+	$last_packet = array_pop($decoded);
+
+	if (!preg_match('/(?:^|\r?\n)(OK u(?::[^\r\n]*)?|ERROR:[^\r\n]*)\r?\n?\z/D', $last_packet, $matches, PREG_OFFSET_CAPTURE)) {
+		return false;
+	}
+
+	$status_offset = $matches[1][1];
+	$status        = $matches[1][0];
+	$packet_output = substr($last_packet, 0, $status_offset);
+	$output        = implode('', $decoded) . rtrim($packet_output, "\r\n");
+	$raw           = $output . ($output === '' ? '' : "\n") . $status;
+
+	return [
+		'output'  => $output,
+		'status'  => $status,
+		'success' => str_starts_with($status, 'OK u'),
+		'raw'     => $raw
+	];
+}
+
 function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 	global $encryption;
-	$terminator = "_EOT_\r\n";
 	$encryption = true;
 
 	$load_balancing = read_config_option('rrdp_load_balancing') == 'on' ? true : false;
@@ -130,10 +371,17 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 		return false;
 	}
 
+	if (!rrdtool_proxy_set_timeouts($rrdp_socket)) {
+		cacti_log('CACTI2RRDP ERROR: Unable to configure socket time-outs.', false, $logopt, POLLER_VERBOSITY_LOW);
+		@socket_close($rrdp_socket);
+
+		return false;
+	}
+
 	// Strip brackets from IPv6 addresses for socket_connect
 	$connect_server = trim($server, '[]');
 
-	$rrdp = socket_connect($rrdp_socket, $connect_server, $port);
+	$rrdp = rrdtool_proxy_connect($rrdp_socket, $connect_server, $port);
 
 	if ($rrdp === false) {
 		// log entry ...
@@ -159,61 +407,63 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 				return false;
 			}
 
-			$rrdp = socket_connect($rrdp_socket, $connect_server, $port);
-
-			if ($rrdp === false) {
-				cacti_log('CACTI2RRDP ERROR: Unable to connect to RRDtool Proxy Server #' . $rrdp_id, false, $logopt, POLLER_VERBOSITY_LOW);
+			if (!rrdtool_proxy_set_timeouts($rrdp_socket)) {
+				cacti_log('CACTI2RRDP ERROR: Unable to configure backup socket time-outs.', false, $logopt, POLLER_VERBOSITY_LOW);
+				@socket_close($rrdp_socket);
 
 				return false;
 			}
+
+			$rrdp = rrdtool_proxy_connect($rrdp_socket, $connect_server, $port);
+
+			if ($rrdp === false) {
+				cacti_log('CACTI2RRDP ERROR: Unable to connect to RRDtool Proxy Server #' . $rrdp_id, false, $logopt, POLLER_VERBOSITY_LOW);
+				@socket_close($rrdp_socket);
+
+				return false;
+			}
+		} else {
+			@socket_close($rrdp_socket);
+
+			return false;
 		}
 	}
 
 	$rrdp_fingerprint = ($rrdp_id == 1) ? read_config_option('rrdp_fingerprint') : read_config_option('rrdp_fingerprint_backup');
 
-	socket_write($rrdp_socket, read_config_option('rsa_public_key') . $terminator);
-
-	// read public key being returned by the proxy server
-	$rrdp_public_key = '';
-
-	while (1) {
-		$recv = socket_read($rrdp_socket, 1000, PHP_BINARY_READ);
-
-		if ($recv === false) {
-			// timeout
-			cacti_log('CACTI2RRDP ERROR: Public RSA Key Exchange - Time-out while reading', false, $logopt, POLLER_VERBOSITY_LOW);
-			$rrdp_public_key = false;
-
-			break;
-		}
-
-		if ($recv == '') {
-			cacti_log('CACTI2RRDP ERROR: Session closed by Proxy.', false, $logopt, POLLER_VERBOSITY_LOW);
-
-			// session closed by Proxy
-			break;
-		} else {
-			$rrdp_public_key .= $recv;
-
-			if (str_contains($rrdp_public_key, $terminator)) {
-				$rrdp_public_key = trim(trim($rrdp_public_key, $terminator));
-
-				break;
-			}
-		}
-	}
-
-	if ($rrdp_public_key === false || trim($rrdp_public_key) === '') {
-		cacti_log('CACTI2RRDP ERROR: Public RSA Key Exchange failed - no key received.', false, $logopt, POLLER_VERBOSITY_LOW);
+	if (!rrdtool_proxy_write($rrdp_socket, read_config_option('rsa_public_key') . RRD_PROXY_END_OF_SEQUENCE)) {
+		cacti_log('CACTI2RRDP ERROR: Public RSA Key Exchange - unable to send local key.', false, $logopt, POLLER_VERBOSITY_LOW);
+		@socket_close($rrdp_socket);
 
 		return false;
 	}
 
-	$public      = phpseclib3\Crypt\RSA::loadPublicKey($rrdp_public_key);
+	// read public key being returned by the proxy server
+	$rrdp_public_key = rrdtool_proxy_read_frame($rrdp_socket, RRD_PROXY_END_OF_SEQUENCE, RRD_PROXY_MAX_KEY_SIZE);
+
+	if ($rrdp_public_key === false || trim($rrdp_public_key) === '') {
+		cacti_log('CACTI2RRDP ERROR: Public RSA Key Exchange failed - no key received.', false, $logopt, POLLER_VERBOSITY_LOW);
+		@socket_close($rrdp_socket);
+
+		return false;
+	}
+
+	$rrdp_public_key = trim($rrdp_public_key);
+
+	try {
+		$public = phpseclib3\Crypt\RSA::loadPublicKey($rrdp_public_key);
+	} catch (Throwable $e) {
+		cacti_log('CACTI2RRDP ERROR: Public RSA Key Exchange returned an invalid key.', false, $logopt, POLLER_VERBOSITY_LOW);
+		@socket_close($rrdp_socket);
+
+		return false;
+	}
+
 	$fingerprint = $public->getFingerprint('md5');
 
-	if ($rrdp_fingerprint != $fingerprint) {
+	if (!is_string($rrdp_fingerprint) || !hash_equals($rrdp_fingerprint, $fingerprint)) {
 		cacti_log('CACTI2RRDP ERROR: Mismatch RSA Fingerprint.', false, $logopt, POLLER_VERBOSITY_LOW);
+		@socket_close($rrdp_socket);
 
 		return false;
 	} else {
@@ -253,13 +503,15 @@ function __rrd_close(mixed $rrdtool_pipe) : void {
 }
 
 function __rrd_proxy_close(mixed $rrdp) : void {
-	// close the rrdtool proxy server connection
-	$terminator = "_EOT_\r\n";
-
-	if ($rrdp) {
-		socket_write($rrdp[0], encrypt('quit', $rrdp[1]) . $terminator);
-		socket_shutdown($rrdp[0], 2);
-		socket_close($rrdp[0]);
+	if (is_array($rrdp) && isset($rrdp[0], $rrdp[1]) && $rrdp[0] instanceof Socket) {
+		try {
+			rrdtool_proxy_write($rrdp[0], encrypt('quit', $rrdp[1]) . RRD_PROXY_END_OF_SEQUENCE);
+		} catch (Throwable $e) {
+			// The connection still has to be closed when request encoding fails.
+		} finally {
+			@socket_shutdown($rrdp[0], 2);
+			@socket_close($rrdp[0]);
+		}
 	}
 }
 
@@ -267,13 +519,12 @@ function encrypt(string $output, string $rsa_key) : string {
 	global $encryption;
 
 	if ($encryption) {
-		$private = phpseclib3\Crypt\RSA::loadPrivateKey($rsa_key);
-		$public  = $private->getPublicKey();
-
-		$aes     = new \phpseclib3\Crypt\Rijndael('stream');
-		$aes_key = phpseclib3\Crypt\Random::string(192);
+		$public  = phpseclib3\Crypt\RSA::loadPublicKey($rsa_key);
+		$aes     = new \phpseclib3\Crypt\Rijndael('cbc');
+		$aes_key = phpseclib3\Crypt\Random::string(32);
 
 		$aes->setKey($aes_key);
+		$aes->setIV(str_repeat("\0", 16));
 		$ciphertext     = base64_encode($aes->encrypt($output));
 		$aes_key        = base64_encode($public->encrypt($aes_key));
 		$aes_key_length = str_pad(dechex(strlen($aes_key)), 3, '0', STR_PAD_LEFT);
@@ -284,32 +535,63 @@ function encrypt(string $output, string $rsa_key) : string {
 	}
 }
 
-function decrypt(string $input) : string {
-	global $encryption;
+/**
+ * Decrypt one encrypted RRDtool proxy packet.
+ *
+ * @param string $input           Encoded packet
+ * @param string $rsa_private_key Local RSA private key
+ *
+ * @return string|false Plaintext, or false when the packet is malformed
+ */
+function rrdtool_proxy_decrypt(string $input, string $rsa_private_key) : string|false {
+	if (strlen($input) < 4 || !ctype_xdigit(substr($input, 0, 3))) {
+		return false;
+	}
 
-	if ($encryption) {
-		$rsa_private_key = read_config_option('rsa_private_key');
-		$private         = phpseclib3\Crypt\RSA::loadPrivateKey($rsa_private_key);
-		$public          = $private->getPublicKey();
+	$aes_key_length = hexdec(substr($input, 0, 3));
 
-		$aes = new \phpseclib3\Crypt\Rijndael('stream');
+	if ($aes_key_length < 1 || strlen($input) <= 3 + $aes_key_length) {
+		return false;
+	}
 
-		$aes_key_length = (int) hexdec(substr($input, 0, 3));
-		$aes_key        = base64_decode(substr($input, 3, $aes_key_length), true);
-		$ciphertext     = base64_decode(substr($input, 3 + $aes_key_length), true);
+	$aes_key    = base64_decode(substr($input, 3, $aes_key_length), true);
+	$ciphertext = base64_decode(substr($input, 3 + $aes_key_length), true);
 
-		if ($aes_key === false || $ciphertext === false) {
-			return $input;
+	if ($aes_key === false || $aes_key === '' || $ciphertext === false) {
+		return false;
+	}
+
+	try {
+		$private = phpseclib3\Crypt\RSA::loadPrivateKey($rsa_private_key);
+		$aes     = new \phpseclib3\Crypt\Rijndael('cbc');
+		$aes_key = $private->decrypt($aes_key);
+
+		if (!is_string($aes_key) || $aes_key === '') {
+			return false;
 		}
 
-		$aes_key = $public->decrypt($aes_key);
-		$aes->setKey($aes_key);
-		$plaintext = $aes->decrypt($ciphertext);
+		// phpseclib 2 truncated oversized Rijndael keys to 256 bits.
+		if (strlen($aes_key) > 32) {
+			$aes_key = substr($aes_key, 0, 32);
+		}
 
-		return $plaintext;
-	} else {
+		$aes->setKey($aes_key);
+		$aes->setIV(str_repeat("\0", 16));
+
+		return $aes->decrypt($ciphertext);
+	} catch (Throwable $e) {
+		return false;
+	}
+}
+
+function decrypt(string $input) : string|false {
+	global $encryption;
+
+	if (!$encryption) {
 		return $input;
 	}
+
+	return rrdtool_proxy_decrypt($input, (string) read_config_option('rsa_private_key'));
 }
 
 function rrdtool_execute() : mixed {
@@ -595,12 +877,21 @@ function rrdtool_trim_output(string &$output) : void {
 	}
 }
 
-function __rrd_proxy_execute(string $command_line, bool $log_to_stdout, int $output_flag = RRDTOOL_OUTPUT_STDOUT, mixed $rrdp = '', string $logopt = 'WEBLOG') : mixed {
-	global $encryption;
-
-	static $last_command;
-	$end_of_packet   = "_EOP_\r\n";
-	$end_of_sequence = "_EOT_\r\n";
+/**
+ * Execute an RRDtool command through the remote proxy.
+ *
+ * @param string|array $command_line  RRDtool command string, or one argument per array element
+ * @param bool         $log_to_stdout Whether to echo log output
+ * @param int          $output_flag   Requested RRDTOOL_OUTPUT_* result mode
+ * @param mixed        $rrdp          Existing proxy connection tuple, or an empty value
+ * @param string       $logopt        Logging context identifier
+ *
+ * @return mixed Output in the requested mode, or false when transport/protocol validation fails
+ */
+function __rrd_proxy_execute(string|array $command_line, bool $log_to_stdout, int $output_flag = RRDTOOL_OUTPUT_STDOUT, mixed $rrdp = '', string $logopt = 'WEBLOG') : mixed {
+	if (is_array($command_line)) {
+		$command_line = implode(' ', array_map('cacti_escapeshellarg', $command_line));
+	}
 
 	/**
 	 * WIN32: before sending this command off to rrdtool, get rid
@@ -631,6 +922,12 @@ function __rrd_proxy_execute(string $command_line, bool $log_to_stdout, int $out
 		cacti_log('CACTI2RRDP NOTE: Connection to RRDtool proxy has already been established.', $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
 	}
 
+	if (!is_array($rrdp) || !isset($rrdp[0], $rrdp[1]) || !($rrdp[0] instanceof Socket) || !is_string($rrdp[1])) {
+		cacti_log('CACTI2RRDP ERROR: Invalid proxy connection state.', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
+
+		return false;
+	}
+
 	$rrdp_socket     = $rrdp[0];
 	$rrdp_public_key = $rrdp[1];
 
@@ -641,58 +938,54 @@ function __rrd_proxy_execute(string $command_line, bool $log_to_stdout, int $out
 			$command_line = $compressed;
 		}
 	}
-	socket_write($rrdp_socket, encrypt($command_line, $rrdp_public_key) . $end_of_sequence);
 
-	$input  = '';
-	$output = '';
+	try {
+		$frame = encrypt($command_line, $rrdp_public_key) . RRD_PROXY_END_OF_SEQUENCE;
+	} catch (Throwable $e) {
+		cacti_log('CACTI2RRDP ERROR: Unable to encode the proxy request.', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
 
-	while (1) {
-		$recv = socket_read($rrdp_socket, 100000, PHP_BINARY_READ);
-
-		if ($recv === false) {
-			cacti_log('CACTI2RRDP ERROR: Data Transfer - Time-out while reading.', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
-
-			break;
+		if ($rrdp_auto_close) {
+			__rrd_proxy_close($rrdp);
 		}
 
-		if ($recv == '') {
-			// session closed by Proxy
-			if ($output) {
-				cacti_log('CACTI2RRDP ERROR: Session closed by Proxy.', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
-			}
-
-			break;
-		} else {
-			$input .= $recv;
-
-			if (str_contains($input, $end_of_sequence)) {
-				$input        = str_replace($end_of_sequence, '', $input);
-				$transactions = explode($end_of_packet, $input);
-
-				foreach ($transactions as $transaction) {
-					$packet      = $transaction;
-					$transaction = decrypt($transaction);
-
-					if ($transaction === false) {
-						cacti_log('CACTI2RRDP ERROR: Proxy message decryption failed: ###' . $packet . '###', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
-
-						break 2;
-					}
-
-					if (str_starts_with($transaction, "\x1f\x8b")) {
-						$transaction = gzdecode($transaction);
-					}
-					$output .= $transaction;
-
-					if (substr_count($output, 'OK u') || substr_count($output, 'ERROR:')) {
-						cacti_log('RRDP: ' . $output, $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
-
-						break 2;
-					}
-				}
-			}
-		}
+		return false;
 	}
+
+	if (!rrdtool_proxy_write($rrdp_socket, $frame)) {
+		cacti_log('CACTI2RRDP ERROR: Data Transfer - unable to write complete request.', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
+
+		if ($rrdp_auto_close) {
+			__rrd_proxy_close($rrdp);
+		}
+
+		return false;
+	}
+
+	$frame = rrdtool_proxy_read_frame($rrdp_socket, RRD_PROXY_END_OF_SEQUENCE, RRD_PROXY_MAX_RESPONSE_SIZE);
+
+	if ($frame === false) {
+		cacti_log('CACTI2RRDP ERROR: Data Transfer - timed out, closed, or exceeded the response limit.', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
+
+		if ($rrdp_auto_close) {
+			__rrd_proxy_close($rrdp);
+		}
+
+		return false;
+	}
+
+	$response = rrdtool_proxy_decode_response($frame);
+
+	if ($response === false) {
+		cacti_log('CACTI2RRDP ERROR: Malformed, undecodable, or unterminated proxy response.', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
+
+		if ($rrdp_auto_close) {
+			__rrd_proxy_close($rrdp);
+		}
+
+		return false;
+	}
+
+	cacti_log('RRDP: ' . $response['raw'], $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
 
 	if ($rrdp_auto_close) {
 		__rrd_proxy_close($rrdp);
@@ -700,32 +993,38 @@ function __rrd_proxy_execute(string $command_line, bool $log_to_stdout, int $out
 
 	switch ($output_flag) {
 		case RRDTOOL_OUTPUT_NULL:
-			return false;
+			return $response['success'] ? 'OK' : false;
 		case RRDTOOL_OUTPUT_STDOUT:
 		case RRDTOOL_OUTPUT_GRAPH_DATA:
-			$ok_pos = strpos($output, 'OK u');
-
-			return rtrim(substr($output, 0, $ok_pos !== false ? $ok_pos : null));
+			return $response['success'] ? rtrim($response['output']) : false;
 		case RRDTOOL_OUTPUT_STDERR:
-			if (substr($output, 1, 3) == 'PNG') {
+			if (!$response['success']) {
+				print $response['raw'];
+
+				return false;
+			}
+
+			if (substr($response['output'], 1, 3) == 'PNG') {
 				return 'OK';
 			}
 
-			if (str_starts_with($output, 'GIF87')) {
+			if (str_starts_with($response['output'], 'GIF87')) {
 				return 'OK';
 			}
 
-			if (str_starts_with($output, '<?xml')) {
+			if (str_starts_with($response['output'], '<?xml')) {
 				return 'SVG/XML Output OK';
 			}
 
-			print $output;
+			print $response['output'];
 
 			return true;
+		case RRDTOOL_OUTPUT_RETURN_STDERR:
+			return $response['raw'];
 		case RRDTOOL_OUTPUT_BOOLEAN:
-			return (substr_count($output, 'OK u')) ? true : false;
+			return $response['success'];
 		default:
-			return 'ERROR';
+			return false;
 	}
 }
 

@@ -56,6 +56,12 @@ if (!function_exists('cacti_strtolower')) {
 
 if (!function_exists('read_config_option')) {
 	function read_config_option($name) {
+		global $unit_config_options;
+
+		if (is_array($unit_config_options) && array_key_exists($name, $unit_config_options)) {
+			return $unit_config_options[$name];
+		}
+
 		return false;
 	}
 }
