@@ -82,10 +82,15 @@ if ($auth_method != AUTH_METHOD_BASIC) {
 	if (!isset($_SESSION[SESS_USER_ID])) {
 		$cookie_user = check_auth_cookie();
 
-		if ($cookie_user !== false && cacti_auth_transition((int) $cookie_user, 'cookie_restore')) {
-			$_SESSION[SESS_USER_ID]     = $cookie_user;
-			$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];
-			$_SESSION[SESS_CLIENT_ADDR] = get_client_addr();
+		if ($cookie_user !== false) {
+			if (cacti_auth_transition((int) $cookie_user, 'cookie_restore')) {
+				$_SESSION[SESS_USER_ID]     = $cookie_user;
+				$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];
+				$_SESSION[SESS_CLIENT_ADDR] = get_client_addr();
+			} else {
+				// The account may have been locked after cookie validation.
+				clear_auth_cookie();
+			}
 		}
 	}
 }

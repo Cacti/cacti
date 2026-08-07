@@ -195,14 +195,18 @@ function auth_cookie_user_currently_allowed(array $user_info) : bool {
 		return false;
 	}
 
+	if (($user_info['locked'] ?? '') == 'on') {
+		return false;
+	}
+
 	return auth_user_has_access($user_info);
 }
 
 /**
  * cacti_auth_transition - move a session from unauthenticated to authenticated.
  *
- * Issues a new session id so an id an attacker planted before the login cannot
- * be ridden afterwards, and drops the permission caches so the new identity is
+ * Issues a new session id so a session identifier planted by an attacker before
+ * login cannot be reused afterwards, and drops the permission caches so the new identity is
  * evaluated from scratch rather than inheriting the previous one.
  *
  * Call this at every point that first sets the session user id, apart from the

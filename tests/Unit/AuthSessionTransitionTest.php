@@ -52,6 +52,15 @@ test('the remember-me restore transitions before trusting the cookie', function 
 	expect($includeSource)->not->toContain("if (\$cookie_user !== false) {\n\t\t\t\$_SESSION[SESS_USER_ID]");
 });
 
+test('remember-me authentication rejects locked users before rotation and clears a raced cookie', function () use ($authSource, $includeSource) {
+	expect($authSource)->toContain("(\$user_info['locked'] ?? '') == 'on'")
+		->and($authSource)->toContain('if (!auth_cookie_user_currently_allowed($user_info))')
+		->and($authSource)->toContain('set_auth_cookie($user_info);')
+		->and(strpos($authSource, 'auth_cookie_user_currently_allowed($user_info)'))
+		->toBeLessThan(strpos($authSource, 'set_auth_cookie($user_info);'))
+		->and($includeSource)->toContain("} else {\n\t\t\t\t// The account may have been locked after cookie validation.\n\t\t\t\tclear_auth_cookie();");
+});
+
 test('basic auth transitions before setting the session user', function () use ($includeSource) {
 	expect($includeSource)->toContain("cacti_auth_transition((int) \$current_user['id'], 'basic_auth')");
 });
