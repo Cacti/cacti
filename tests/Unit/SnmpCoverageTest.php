@@ -305,7 +305,10 @@ test('OID validation, escaping, method selection, options, and v3 auth cover all
 		->and(cacti_get_snmpv3_auth('SHA', 'user', 'secret', '[None]', '', '', ''))->toContain('authNoPriv')
 		->and(cacti_get_snmpv3_auth('SHA', 'user', 'secret', 'AES', 'private', 'ctx', 'engine'))->toContain('authPriv')
 		->toContain('-n')
-		->toContain('-e');
+		->toContain('-e')
+		->and(cacti_get_snmpv3_auth('invalid', 'user', 'secret', '[None]', '', '', ''))->toBe('')
+		->and(cacti_get_snmpv3_auth('SHA', 'user', 'secret', 'invalid', 'private', '', ''))->toBe('')
+		->and(cacti_get_snmpv3_auth('invalid', 'user', 'secret', 'AES', 'private', '', ''))->toBe('');
 });
 
 test('native sessions cover versions and security levels without network I/O', function () : void {

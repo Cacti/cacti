@@ -395,6 +395,10 @@ function cacti_get_snmpv3_auth(mixed $auth_proto, mixed $auth_user, mixed $auth_
 		if ($auth_pass == '' || $auth_proto == '[None]') {
 			$sec_level   = 'noAuthNoPriv';
 		} else {
+			if (!array_key_exists($auth_proto, $snmp_auth_protocols)) {
+				return '';
+			}
+
 			$sec_level   = 'authNoPriv';
 			$sec_details = ' -a ' . snmp_escape_string($snmp_auth_protocols[$auth_proto]) . ' -A ' . snmp_escape_string($auth_pass);
 		}
@@ -402,6 +406,10 @@ function cacti_get_snmpv3_auth(mixed $auth_proto, mixed $auth_user, mixed $auth_
 		$priv_proto = '';
 		$priv_pass  = '';
 	} else {
+		if (!array_key_exists($auth_proto, $snmp_auth_protocols) || !array_key_exists($priv_proto, $snmp_priv_protocols)) {
+			return '';
+		}
+
 		$sec_level   = 'authPriv';
 		$sec_details = ' -a ' . snmp_escape_string($snmp_auth_protocols[$auth_proto]) . ' -A ' . snmp_escape_string($auth_pass);
 		$priv_proto  = $snmp_priv_protocols[$priv_proto];
