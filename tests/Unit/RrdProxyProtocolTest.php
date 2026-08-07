@@ -337,6 +337,7 @@ it('rejects empty or non-string proxy command argument lists without throwing', 
 it('normalizes successful proxy output modes', function () {
 	$ok       = 'OK u:0.01';
 	$payload  = 'payload' . RRD_PROXY_END_OF_PACKET . $ok;
+	$binary   = "\x89PNGdata\0\r\n" . RRD_PROXY_END_OF_PACKET . $ok;
 	$png      = "\x89PNGdata" . RRD_PROXY_END_OF_PACKET . $ok;
 	$gif      = 'GIF87data' . RRD_PROXY_END_OF_PACKET . $ok;
 	$svg      = '<?xml version="1.0"?>' . RRD_PROXY_END_OF_PACKET . $ok;
@@ -346,6 +347,7 @@ it('normalizes successful proxy output modes', function () {
 	expect(rrd_proxy_execute_response($ok, RRDTOOL_OUTPUT_NULL))->toBe('OK')
 		->and(rrd_proxy_execute_response($payload, RRDTOOL_OUTPUT_STDOUT))->toBe('payload')
 		->and(rrd_proxy_execute_response($payload, RRDTOOL_OUTPUT_GRAPH_DATA))->toBe('payload')
+		->and(rrd_proxy_execute_response($binary, RRDTOOL_OUTPUT_GRAPH_DATA))->toBe("\x89PNGdata\0\r\n")
 		->and(rrd_proxy_execute_response($png, RRDTOOL_OUTPUT_STDERR))->toBe('OK')
 		->and(rrd_proxy_execute_response($gif, RRDTOOL_OUTPUT_STDERR))->toBe('OK')
 		->and(rrd_proxy_execute_response($svg, RRDTOOL_OUTPUT_STDERR))->toBe('SVG/XML Output OK')
