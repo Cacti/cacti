@@ -128,12 +128,9 @@ $change_files = false;
 /* obtain some defaults from the database */
 $max_threads = read_config_option('max_threads');
 
-/* Determine Command Name */
-$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
-$extra_args     = '-q ' . cacti_escapeshellarg($config['base_path'] . '/cmd_realtime.php') . ' ' . cacti_escapeshellarg($poller_id) . ' ' . (int)$graph_id . ' ' . (int)$interval;
-
-/* Determine if Realtime will work or not */
+// Determine if Realtime will work or not
 $cache_dir = read_config_option('realtime_cache_path');
+
 if (!is_dir($cache_dir)) {
 	cacti_log("FATAL: Realtime Cache Directory '$cache_dir' Does Not Exist!");
 	return -1;
@@ -142,9 +139,17 @@ if (!is_dir($cache_dir)) {
 	return -2;
 }
 
-shell_exec("$command_string $extra_args");
+$output = array();
 
-/* open a pipe to rrdtool for writing */
+cacti_exec(read_config_option('path_php_binary'), array(
+	'-q',
+	$config['base_path'] . '/cmd_realtime.php',
+	$poller_id,
+	(string) (int) $graph_id,
+	(string) (int) $interval
+), $output, false);
+
+// open a pipe to rrdtool for writing
 $rrdtool_pipe = rrd_init();
 
 /* process poller output */
@@ -204,12 +209,22 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 			$rt_graph_path    = read_config_option('realtime_cache_path') . '/user_' . $poller_id . '_' . $item['local_data_id'] . '.rrd';
 			$data_source_path = get_data_source_path($item['local_data_id'], true);
 
-			/* create rt rrd */
+			if (!cacti_rrdtool_valid_path($rt_graph_path) || !cacti_rrdtool_valid_path($data_source_path)) {
+				cacti_log('ERROR: Realtime rejected invalid RRD path for local_data_id ' . (int) $item['local_data_id'] . ', realtime path: ' . cacti_log_safe_value($rt_graph_path) . ', source path: ' . cacti_log_safe_value($data_source_path) . '.', false, 'POLLER');
+
+				continue;
+			}
+
+			// create rt rrd
 			if (!file_exists($rt_graph_path)) {
 				/* get the syntax */
 				$command = @rrdtool_function_create($item['local_data_id'], true);
 
-				/* replace path */
+				if ($command === false) {
+					continue;
+				}
+
+				// replace path
 				$command = str_replace($data_source_path, $rt_graph_path, $command);
 
 				/* minimum refresh interval */
@@ -223,12 +238,22 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 				Also make sure to replace all of the fancy "\"s at the end of the line,
 				but make sure not to get rid of the "\n"s that are supposed to be
 				in there (text format) */
-				$command = str_replace("\\\n", " ", $command);
+				$command = str_replace("\\\n", ' ', $command);
 
-				/* create the rrdfile */
-				shell_exec($command);
+				// create the rrdfile
+				$rrdtool = read_config_option('path_rrdtool') . ' ';
 
-				/* change permissions so that the poller can clear */
+				if (strpos($command, $rrdtool) === 0) {
+					$command = substr($command, strlen($rrdtool));
+				}
+
+				if (!cacti_has_control_chars($command)) {
+					rrdtool_execute($command, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+				} else {
+					cacti_log('ERROR: Realtime skipped RRD create with control characters for local_data_id ' . (int) $item['local_data_id'] . '.', false, 'POLLER');
+				}
+
+				// change permissions so that the poller can clear
 				@chmod($rt_graph_path, 0644);
 			} else {
 				/* change permissions so that the poller can clear */

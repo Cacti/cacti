@@ -109,11 +109,16 @@ function boost_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 			"' MESSAGE:'" . $errmsg  . "' IN FILE:'" . $filename .
 			"' LINE NO:'" . $linenum . "'";
 
-		/* let's ignore some lesser issues */
-		if (substr_count($errmsg, 'date_default_timezone')) return;
-		if (substr_count($errmsg, 'Only variables')) return;
+		// let's ignore some lesser issues
+		if (substr_count($errmsg, 'date_default_timezone')) {
+			return;
+		}
 
-		/* log the error to the Cacti log */
+		if (substr_count($errmsg, 'Only variables')) {
+			return;
+		}
+
+		// log the error to the Cacti log
 		cacti_log('PROGERR: ' . $err, false, 'BOOST');
 	}
 
@@ -757,14 +762,14 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 			AND po.time < FROM_UNIXTIME(?)
 			ORDER BY time ASC, rrd_name ASC";
 	} else {
-		$query_string = "SELECT po.local_data_id, dl.data_template_id,
+		$query_string = 'SELECT po.local_data_id, dl.data_template_id,
 			UNIX_TIMESTAMP(po.time) AS timestamp, po.rrd_name, po.output
 			FROM poller_output_boost AS po
 			INNER JOIN data_local AS dl
 			ON po.local_data_id = dl.id
 			WHERE po.local_data_id = ?
 			AND po.time < FROM_UNIXTIME(?)
-			ORDER BY time ASC, rrd_name ASC";
+			ORDER BY time ASC, rrd_name ASC';
 	}
 
 	$sql_params[] = $local_data_id;
@@ -1136,14 +1141,20 @@ function boost_rrdtool_get_last_update_time($rrd_path, &$rrdtool_pipe) {
 		return time();
 	}
 
+	if (!cacti_rrdtool_valid_path($rrd_path)) {
+		cacti_log('ERROR: Invalid RRD file path in boost cache.', false, 'BOOST');
+
+		return time();
+	}
+
 	if (read_config_option('storage_location')) {
-		$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST');
+		$file_exists = rrdtool_execute_path_command('file_exists', $rrd_path, '', true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST');
 	} else {
 		$file_exists = file_exists($rrd_path);
 	}
 
 	if ($file_exists == true) {
-		$return_value = rrdtool_execute("last $rrd_path", true, RRDTOOL_OUTPUT_STDOUT, false, 'BOOST');
+		$return_value = rrdtool_execute_path_command('last', $rrd_path, '', true, RRDTOOL_OUTPUT_STDOUT, false, 'BOOST');
 	}
 
 	return trim($return_value);
@@ -1255,11 +1266,17 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 
 	$data_source_path = get_data_source_path($local_data_id, true);
 
+	if (!cacti_rrdtool_valid_path($data_source_path)) {
+		cacti_log("ERROR: Invalid RRD file path for local_data_id: $local_data_id.", false, 'BOOST');
+
+		return false;
+	}
+
 	/* ok, if that passes lets check to make sure an rra does not already
 	exist, the last thing we want to do is overwrite data! */
 	if ($show_source != true) {
 		if (read_config_option('storage_location')) {
-			$file_exists = rrdtool_execute("file_exists $data_source_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER');
+			$file_exists = rrdtool_execute_path_command('file_exists', $data_source_path, '', true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER');
 		} else {
 			$file_exists = file_exists($data_source_path);
 		}
@@ -1341,6 +1358,12 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 			/* use the cacti ds name by default or the user defined one, if entered */
 			$data_source_name = get_data_source_item_name($data_source['id']);
 
+			if (!cacti_rrdtool_valid_ds_name($data_source_name)) {
+				cacti_log("ERROR: Invalid RRD data source name for local_data_id: $local_data_id.", false, 'BOOST');
+
+				return false;
+			}
+
 			if (empty($data_source['rrd_maximum'])) {
 				/* in case no maximum is given, use "Undef" value */
 				$data_source['rrd_maximum'] = 'U';
@@ -1364,6 +1387,12 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 				$data_source['rrd_maximum'] = 'U';
 			}
 
+			if (!cacti_rrdtool_valid_bound($data_source['rrd_minimum']) || !cacti_rrdtool_valid_bound($data_source['rrd_maximum'])) {
+				cacti_log("ERROR: Invalid RRD data source bounds for local_data_id: $local_data_id.", false, 'BOOST');
+
+				return false;
+			}
+
 			$create_ds .= "DS:$data_source_name:" . $data_source_types[$data_source['data_source_type_id']] . ':' . $data_source['rrd_heartbeat'] . ':' . $data_source['rrd_minimum'] . ':' . $data_source['rrd_maximum'] . RRD_NL;
 		}
 	}
@@ -1385,8 +1414,8 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 	 */
 	if (read_config_option('extended_paths') == 'on') {
 		if (read_config_option('storage_location') > 0) {
-			if (false === rrdtool_execute('is_dir ' . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST') ) {
-				if (false === rrdtool_execute('mkdir ' . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST') ) {
+			if (rrdtool_execute_path_command('is_dir', dirname($data_source_path), '', true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST') === false) {
+				if (rrdtool_execute_path_command('mkdir', dirname($data_source_path), '', true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST') === false) {
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
 			}
@@ -1473,9 +1502,15 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 		return 'OK';
 	}
 
-	/* create the rrd if one does not already exist */
+	if (!cacti_rrdtool_valid_path($rrd_path)) {
+		cacti_log("ERROR: Invalid RRD file path in boost update cache for local_data_id: $local_data_id.", false, 'BOOST');
+
+		return 'ERROR';
+	}
+
+	// create the rrd if one does not already exist
 	if (read_config_option('storage_location')) {
-		$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST');
+		$file_exists = rrdtool_execute_path_command('file_exists', $rrd_path, '', true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST');
 	} else {
 		$file_exists = file_exists($rrd_path);
 	}
@@ -1499,11 +1534,23 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 	if ($valid_entry) {
 		if ($rrd_update_template != '') {
-			cacti_log("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
+			if (!cacti_rrdtool_valid_ds_template($rrd_update_template) || cacti_has_control_chars($rrd_update_values)) {
+				cacti_log("ERROR: Invalid RRD update template or value set for local_data_id: $local_data_id.", false, 'BOOST');
+
+				return 'ERROR';
+			}
+
+			cacti_log("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
 
 			rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 		} else {
-			cacti_log("update $rrd_path $update_options $rrd_update_values", true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
+			if (cacti_has_control_chars($rrd_update_values)) {
+				cacti_log("ERROR: Invalid RRD update value set for local_data_id: $local_data_id.", false, 'BOOST');
+
+				return 'ERROR';
+			}
+
+			cacti_log("update $rrd_path $update_options $rrd_update_values", true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
 
 			rrdtool_execute("update $rrd_path $update_options $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 		}

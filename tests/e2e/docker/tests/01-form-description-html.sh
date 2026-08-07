@@ -20,7 +20,7 @@ run_curl() {
 
 # GET /index.php to prime the PHP session and collect the CSRF token.
 run_curl -L -o /tmp/c01_form 'http://127.0.0.1/index.php'
-CSRF=$("${DC[@]}" exec -T cacti-master sh -c "grep -oE 'name=.__csrf_magic. value=\"[^\"]+\"' /tmp/c01_form | head -1 | sed 's|.*value=\"\\([^\"]*\\)\"|\\1|'")
+CSRF=$("${DC[@]}" exec -T cacti-master php /var/www/html/tests/e2e/docker/probes/extract_csrf.php /tmp/c01_form || true)
 if [ -z "$CSRF" ]; then
     echo "FAIL: could not extract __csrf_magic token from index.php" >&2
     exit 1

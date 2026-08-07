@@ -44,7 +44,8 @@ fi
 
 worst=0
 shopt -s nullglob || true
-test_files=(tests/[0-9][0-9]-*)
+test_glob="${CACTI_E2E_TEST_GLOB:-tests/[0-9][0-9]-*}"
+test_files=($test_glob)
 # Use a portable lexical sort (no associative arrays).
 IFS=$'\n' sorted=($(printf '%s\n' "${test_files[@]}" | LC_ALL=C sort))
 unset IFS
