@@ -574,7 +574,10 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 		$out = cacti_snmp_session_call($session, 'walk', array($oid, false, $max_repetitions, $non_repeaters), $warning);
 	} catch (Exception $e) {
 		$out = false;
-		$warning = $e->getMessage();
+
+		if ($warning === '') {
+			$warning = $e->getMessage();
+		}
 	}
 
 	if ($out === false) {
@@ -628,7 +631,10 @@ function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
 		$out = cacti_snmp_session_call($session, 'get', array($oid), $warning);
 	} catch (Exception $e) {
 		$out = false;
-		$warning = $e->getMessage();
+
+		if ($warning === '') {
+			$warning = $e->getMessage();
+		}
 	}
 
 	if (is_array($oid)) {
@@ -673,7 +679,10 @@ function cacti_snmp_session_getnext($session, $oid) {
 		$out = cacti_snmp_session_call($session, 'getnext', array($oid), $warning);
 	} catch (Exception $e) {
 		$out = false;
-		$warning = $e->getMessage();
+
+		if ($warning === '') {
+			$warning = $e->getMessage();
+		}
 	}
 
 	if (is_array($oid)) {

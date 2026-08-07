@@ -2,6 +2,11 @@
 /*
  +-------------------------------------------------------------------------+
  | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
@@ -71,6 +76,17 @@ class FakeSnmpSession {
 
 		return false;
 	}
+
+	/**
+	 * Emits a transport warning before throwing an operation exception.
+	 *
+	 * @throws \RuntimeException Always, after emitting the warning.
+	 */
+	public function warningThenThrow() {
+		trigger_error('Specific transport warning', E_USER_WARNING);
+
+		throw new \RuntimeException('Generic operation exception');
+	}
 }
 
 /**
@@ -90,9 +106,21 @@ function cacti_log($message, $output, $environ, $level) {
 }
 
 $source = file_get_contents(dirname(__DIR__, 2) . '/lib/snmp.php');
-preg_match('/function cacti_snmp_log_session_error\(.*?^}\R/ms', $source, $matches);
+
+if ($source === false) {
+	throw new \RuntimeException('Unable to read lib/snmp.php for the SNMP error logging test.');
+}
+
+if (preg_match('/function cacti_snmp_log_session_error\(.*?^}\R/ms', $source, $matches) !== 1) {
+	throw new \RuntimeException('Unable to extract cacti_snmp_log_session_error() for the SNMP error logging test.');
+}
+
 eval('namespace SnmpSessionErrorLoggingTest;' . $matches[0]);
-preg_match('/function cacti_snmp_session_call\(.*?^}\R/ms', $source, $matches);
+
+if (preg_match('/function cacti_snmp_session_call\(.*?^}\R/ms', $source, $matches) !== 1) {
+	throw new \RuntimeException('Unable to extract cacti_snmp_session_call() for the SNMP error logging test.');
+}
+
 eval('namespace SnmpSessionErrorLoggingTest;' . $matches[0]);
 
 beforeEach(function () {
@@ -148,6 +176,20 @@ test('non-warning errors are delegated to the previous handler', function () {
 
 	expect($delegated[0][0])->toBe(E_USER_NOTICE)
 		->and($warning)->toBe('');
+});
+
+test('a warning captured before an exception remains the preferred diagnostic', function () use ($source) {
+	$session = new FakeSnmpSession(0, '');
+	$warning = '';
+
+	try {
+		cacti_snmp_session_call($session, 'warningThenThrow', array(), $warning);
+	} catch (\RuntimeException $e) {
+		expect($e->getMessage())->toBe('Generic operation exception');
+	}
+
+	expect($warning)->toBe('Specific transport warning')
+		->and(substr_count($source, "if (\$warning === '')"))->toBeGreaterThanOrEqual(3);
 });
 
 test('empty native errors retain their numeric diagnostic and all callers use the helper', function () use ($source) {
