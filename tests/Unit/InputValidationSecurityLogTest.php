@@ -9,8 +9,11 @@
 
 namespace InputValidationSecurityLogTest;
 
+const CACTI_CLI = false;
+
 $GLOBALS['validation_security_logs'] = array();
 $GLOBALS['validation_client_addr']   = '192.0.2.10';
+$GLOBALS['validation_random_failure'] = false;
 
 /**
  * Returns deterministic bytes for correlation-ID assertions.
@@ -20,6 +23,10 @@ $GLOBALS['validation_client_addr']   = '192.0.2.10';
  * @return string Deterministic byte string.
  */
 function random_bytes($length) {
+	if ($GLOBALS['validation_random_failure']) {
+		throw new \Exception('No entropy available');
+	}
+
 	return str_repeat("\x2a", $length);
 }
 
@@ -62,6 +69,7 @@ eval('namespace InputValidationSecurityLogTest;' . $matches[0]);
 beforeEach(function () {
 	$GLOBALS['validation_security_logs'] = array();
 	$GLOBALS['validation_client_addr']   = '192.0.2.10';
+	$GLOBALS['validation_random_failure'] = false;
 	$_SERVER['REQUEST_METHOD']            = 'POST';
 	$_SERVER['SCRIPT_NAME']               = '/cacti/graphs.php';
 });
@@ -97,9 +105,20 @@ test('non-scalar variables and missing request metadata are handled safely', fun
 		->and($GLOBALS['validation_security_logs'][0][0])->not->toContain('not logged');
 });
 
+test('entropy failures retain a usable correlation identifier', function () {
+	$GLOBALS['validation_random_failure'] = true;
+
+	$event_id = security_log_input_validation_failure('graph_id');
+	$event    = json_decode($GLOBALS['validation_security_logs'][0][0], true);
+
+	expect($event_id)->toMatch('/^[a-f0-9]{32}$/')
+		->and($event['event_id'])->toBe($event_id);
+});
+
 test('validation diagnostics include the structured event correlation ID', function () {
 	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/html_validate.php');
 
 	expect($source)->toContain('$event_id = security_log_input_validation_failure($variable)')
-		->and(substr_count($source, "'Validation Error, Event: ' . \$event_id"))->toBe(2);
+		->and(substr_count($source, "'Validation Error, Event: ' . \$event_id"))->toBe(2)
+		->and($source)->toContain("\$source_address = CACTI_CLI ? '' : get_client_addr();");
 });

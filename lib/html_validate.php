@@ -55,8 +55,13 @@ function html_log_input_error($variable) {
  * @return string Correlation identifier for related diagnostic log entries.
  */
 function security_log_input_validation_failure($variable) {
-	$event_id       = bin2hex(random_bytes(16));
-	$source_address = get_client_addr();
+	try {
+		$event_id = bin2hex(random_bytes(16));
+	} catch (\Exception $e) {
+		$event_id = substr(hash('sha256', uniqid('', true) . microtime(true)), 0, 32);
+	}
+
+	$source_address = CACTI_CLI ? '' : get_client_addr();
 	$event          = array(
 		'event'          => 'input_validation_failure',
 		'event_id'       => $event_id,
