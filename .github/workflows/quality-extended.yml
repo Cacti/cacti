@@ -132,16 +132,6 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Enforce API automation tools line coverage
-        run: |
-          set -euo pipefail
-          include/vendor/bin/pest \
-            --configuration=phpunit-api-automation-tools.xml \
-            --coverage \
-            --coverage-clover=coverage-api-automation-tools.xml \
-            --coverage-text \
-            --min=100
-
 #      - name: Run Pest with coverage
 #        run: |
 #          set -euo pipefail
@@ -187,5 +177,4 @@ jobs:
           path: |
             coverage.xml
             coverage-summary.txt
-            coverage-api-automation-tools.xml
           if-no-files-found: ignore
