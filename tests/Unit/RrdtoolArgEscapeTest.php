@@ -20,14 +20,25 @@
  * These callers interpolated the RRDfile path instead. The paths come from
  * data_template_data.data_source_path, which the web UI writes and an XML
  * template import can also set, so the value crossed into a shell it was never
- * quoted for. Every RRDtool call in the tree is checked here, so a new caller
- * that interpolates a path fails this test rather than reaching a shell.
+ * quoted for. The affected core RRDtool integration files are checked here, so
+ * a new unsafe interpolation in those files fails before reaching a shell.
  */
 
 $rrdSource       = file_get_contents(dirname(__DIR__, 2) . '/lib/rrd.php');
 $boostSource     = file_get_contents(dirname(__DIR__, 2) . '/lib/boost.php');
 $dsstatsSource   = file_get_contents(dirname(__DIR__, 2) . '/lib/dsstats.php');
 $functionsSource = file_get_contents(dirname(__DIR__, 2) . '/lib/functions.php');
+
+foreach ([
+	'lib/rrd.php'       => $rrdSource,
+	'lib/boost.php'     => $boostSource,
+	'lib/dsstats.php'   => $dsstatsSource,
+	'lib/functions.php' => $functionsSource,
+] as $path => $source) {
+	if ($source === false) {
+		throw new RuntimeException("Unable to read $path for RRDtool argument tests.");
+	}
+}
 
 // --- the RRDtool binary itself ---
 
