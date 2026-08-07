@@ -318,20 +318,29 @@ if ($child == 0) {
 
 	// Fork Child Binaries
 	for ($i = 1; $i <= $threads; $i++) {
-		$command = sprintf("%s/cli/batchgapfix.php --start='%s' --end='%s' --method=%s --avgnan=%s --child=%s" . ($force ? ' --force' : '') . ($debug ? ' --debug' : ''),
-			CACTI_PATH_BASE,
-			$start_date,
-			$end_date,
-			$method,
-			$avgnan,
-			$i
-		);
+		$args = [
+			CACTI_PATH_CLI . '/batchgapfix.php',
+			'--start=' . $start_date,
+			'--end=' . $end_date,
+			'--method=' . $method,
+			'--avgnan=' . $avgnan,
+			'--child=' . $i
+		];
+
+		if ($force) {
+			$args[] = '--force';
+		}
+
+		if ($debug) {
+			$args[] = '--debug';
+		}
 
 		$now = date('H:i:s');
 
-		printf('NOTE: %s, Exec in Background: %s %s' . PHP_EOL, $now, $php_bin, $command);
+		printf('NOTE: %s, Exec in Background: %s %s' . PHP_EOL, $now, $php_bin, implode(' ', $args));
 
-		exec_background($php_bin, $command);
+		// the array form has exec_background() escape each argument
+		exec_background($php_bin, $args);
 	}
 
 	$start = microtime(true);
@@ -401,14 +410,14 @@ if ($child == 0) {
 		$return_var = 0;
 
 		// Format the command
-		$command = sprintf("%s -q %s/cli/removespikes.php --rrdfile='%s' --outlier-start='%s' --outlier-end='%s' --method=%s --avgnan=%s",
-			$php_bin,
-			CACTI_PATH_BASE,
-			$rrdfile['data_source_path'],
-			$start_date,
-			$end_date,
-			$method,
-			$avgnan
+		$command = sprintf('%s -q %s --rrdfile=%s --outlier-start=%s --outlier-end=%s --method=%s --avgnan=%s',
+			cacti_escapeshellcmd($php_bin),
+			cacti_escapeshellarg(CACTI_PATH_CLI . '/removespikes.php'),
+			cacti_escapeshellarg($rrdfile['data_source_path']),
+			cacti_escapeshellarg($start_date),
+			cacti_escapeshellarg($end_date),
+			cacti_escapeshellarg($method),
+			cacti_escapeshellarg($avgnan)
 		);
 
 		db_execute_prepared('UPDATE graph_local_spikekill
