@@ -27,8 +27,8 @@
  * invoking the tool, which is not the account that wrote the path.
  */
 
-$batchgapfixSource    = file_get_contents(dirname(__DIR__, 2) . '/cli/batchgapfix.php');
-$floatRrdfilesSource  = file_get_contents(dirname(__DIR__, 2) . '/cli/float_rrdfiles.php');
+$batchgapfixSource     = file_get_contents(dirname(__DIR__, 2) . '/cli/batchgapfix.php');
+$floatRrdfilesSource   = file_get_contents(dirname(__DIR__, 2) . '/cli/float_rrdfiles.php');
 $updateHeartbeatSource = file_get_contents(dirname(__DIR__, 2) . '/cli/update_heartbeat.php');
 
 // --- batchgapfix ---
@@ -53,8 +53,13 @@ test('batchgapfix spawns its children with an argument array', function () use (
 // --- float_rrdfiles ---
 
 test('float_rrdfiles escapes the RRDfile path on dump', function () use ($floatRrdfilesSource) {
+	expect($floatRrdfilesSource)->toContain("(string) read_config_option('path_rrdtool')");
 	expect($floatRrdfilesSource)->toContain('cacti_escapeshellcmd($rrdtool_bin) . \' dump \' . cacti_escapeshellarg($rrd_path)');
 	expect($floatRrdfilesSource)->not->toContain('"$rrdtool_bin dump $rrd_path"');
+});
+
+test('batchgapfix normalizes an unset PHP binary path', function () use ($batchgapfixSource) {
+	expect($batchgapfixSource)->toContain("(string) read_config_option('path_php_binary')");
 });
 
 test('float_rrdfiles escapes both paths on restore', function () use ($floatRrdfilesSource) {

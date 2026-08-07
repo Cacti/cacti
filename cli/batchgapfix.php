@@ -64,7 +64,7 @@ $method     = 'fill';
 $avgnan     = 'last';
 $start_time = false;
 $end_time   = false;
-$php_bin    = read_config_option('path_php_binary');
+$php_bin    = (string) read_config_option('path_php_binary');
 
 // install signal handlers for UNIX types only
 if (function_exists('pcntl_signal')) {

@@ -332,7 +332,7 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 	static $tmp_dir     = false;
 
 	if ($rrdtool_bin === false) {
-		$rrdtool_bin = read_config_option('path_rrdtool');
+		$rrdtool_bin = (string) read_config_option('path_rrdtool');
 	}
 
 	if ($tmp_dir === false) {
