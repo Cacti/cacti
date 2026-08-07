@@ -4436,7 +4436,7 @@ function reset_group_perms($group_id) {
 
 	if (cacti_sizeof($users)) {
 		$user_ids     = array_values($users);
-		$placeholders = implode(',', array_fill(0, count($user_ids), '?'));
+		$placeholders = implode(',', array_fill(0, cacti_sizeof($user_ids), '?'));
 
 		db_execute_prepared("DELETE FROM user_auth_cache
 			WHERE user_id IN ($placeholders)",
