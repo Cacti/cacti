@@ -59,6 +59,16 @@ it('fetches a row by primary key as an associative array', function () {
 		->and($row['hostname'])->toBe('h1');
 });
 
+it('fetches only the first row when a query returns multiple rows', function () {
+	db_execute("INSERT INTO host (hostname) VALUES ('h1')", true, $this->conn);
+	db_execute("INSERT INTO host (hostname) VALUES ('h2')", true, $this->conn);
+
+	$row = db_fetch_row('SELECT * FROM host ORDER BY id', true, $this->conn);
+
+	expect($row)->toBeArray()
+		->and($row['hostname'])->toBe('h1');
+});
+
 it('fetches a single row via db_fetch_assoc_prepared by primary key', function () {
 	db_execute("INSERT INTO host (hostname) VALUES ('h1')", true, $this->conn);
 

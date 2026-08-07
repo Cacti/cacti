@@ -907,9 +907,9 @@ function db_fetch_row_return(PDOStatement $query) : array {
 		db_echo_sql('db_fetch_row_return($query)' . "\n");
 	}
 
-	$rows = $query->fetchAll(PDO::FETCH_ASSOC);
+	$row = $query->fetch(PDO::FETCH_ASSOC);
 
-	return $rows[0] ?? [];
+	return is_array($row) ? $row : [];
 }
 
 /**
