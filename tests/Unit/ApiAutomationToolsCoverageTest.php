@@ -12,9 +12,17 @@
  +-------------------------------------------------------------------------+
 */
 
-const TREE_ITEM_TYPE_HEADER = 1;
-const TREE_ITEM_TYPE_GRAPH  = 2;
-const TREE_ITEM_TYPE_HOST   = 3;
+if (!defined('TREE_ITEM_TYPE_HEADER')) {
+	define('TREE_ITEM_TYPE_HEADER', 1);
+}
+
+if (!defined('TREE_ITEM_TYPE_GRAPH')) {
+	define('TREE_ITEM_TYPE_GRAPH', 2);
+}
+
+if (!defined('TREE_ITEM_TYPE_HOST')) {
+	define('TREE_ITEM_TYPE_HOST', 3);
+}
 
 $GLOBALS['automation_assoc_results'] = [];
 $GLOBALS['automation_cell_results']  = [];
@@ -100,6 +108,10 @@ test('automation lookup helpers map database rows and bind optional filters', fu
 	expect($GLOBALS['automation_queries'][1][1])->toBe([2])
 		->and($GLOBALS['automation_queries'][6][1])->toBe([5, 8])
 		->and($GLOBALS['automation_queries'][7][1])->toBe([5, 'ifName', 8]);
+
+	expect(automation_prepare_id_list(2))->toBe(['placeholders' => '?', 'params' => [2]])
+		->and(automation_prepare_id_list('0002'))->toBe(['placeholders' => '?', 'params' => [2]])
+		->and(automation_prepare_id_list((string) PHP_INT_MAX . '0'))->toBeFalse();
 });
 
 test('automation display helpers render every supported record type', function () : void {
