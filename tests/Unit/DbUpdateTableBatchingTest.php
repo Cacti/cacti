@@ -84,7 +84,8 @@ test('db_update_table fails closed when existing column metadata has no type', f
 		'columns' => [
 			['name' => 'id', 'type' => 'INTEGER', 'NULL' => false],
 		],
-	], false, false, $connection))->toBeFalse();
+	], false, false, $connection))->toBeFalse()
+		->and($connection->showColumnCalls)->toBeGreaterThan(0);
 });
 
 test('db_update_table normalizes unsigned column metadata case-insensitively', function () {
