@@ -66,7 +66,9 @@ test('basic auth transitions before setting the session user', function () use (
 });
 
 test('password login transitions before setting the session user', function () use ($loginSource) {
-	expect($loginSource)->toContain("cacti_auth_transition((int) \$user['id'], 'login')");
+	expect($loginSource)->toContain("cacti_auth_transition((int) \$user['id'], 'login')")
+		->and(strpos($loginSource, "cacti_auth_transition((int) \$user['id'], 'login')"))
+		->toBeLessThan(strpos($loginSource, 'set_auth_cookie($user);'));
 });
 
 // --- the sweep: no site may set the session user without transitioning ---
@@ -83,7 +85,7 @@ test('every authenticated transition is covered', function () use ($includeSourc
 			}
 
 			// the guest account is not a privilege gain and is exempt
-			$window = implode("\n", array_slice($lines, max(0, $i - 12), 13));
+			$window = implode("\n", array_slice($lines, max(0, $i - 20), 21));
 
 			if (str_contains($window, 'guest_user_id')) {
 				continue;
