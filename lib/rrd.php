@@ -2001,14 +2001,14 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 				break;
 			case 'right_axis_format':
 				if (!empty($value)) {
-					$format = db_fetch_cell_prepared('SELECT gprint_text from graph_templates_gprint WHERE id = ?', [$value]);
+					$format = $graph['right_axis_format_text'];
 					$graph_opts .= '--right-axis-format ' . cacti_escapeshellarg(trim(str_replace('%s', '', $format))) . RRD_NL;
 				}
 
 				break;
 			case 'left_axis_format':
 				if (!empty($value)) {
-					$format = db_fetch_cell_prepared('SELECT gprint_text from graph_templates_gprint WHERE id = ?', [$value]);
+					$format = $graph['left_axis_format_text'];
 					$graph_opts .= '--left-axis-format ' . cacti_escapeshellarg(trim(str_replace('%s', '', $format))) . RRD_NL;
 				}
 
@@ -2276,10 +2276,16 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 		gtg.right_axis, gtg.right_axis_label, gtg.right_axis_format, gtg.no_gridfit,
 		gtg.unit_length, gtg.tab_width, gtg.dynamic_labels, gtg.force_rules_legend,
 		gtg.legend_position, gtg.legend_direction, gtg.right_axis_formatter,
-		gtg.left_axis_format, gtg.left_axis_formatter
+		gtg.left_axis_format, gtg.left_axis_formatter,
+		right_gprint.gprint_text AS right_axis_format_text,
+		left_gprint.gprint_text AS left_axis_format_text
 		FROM graph_templates_graph AS gtg
 		INNER JOIN graph_local AS gl
 		ON gl.id=gtg.local_graph_id
+		LEFT JOIN graph_templates_gprint AS right_gprint
+		ON right_gprint.id = gtg.right_axis_format
+		LEFT JOIN graph_templates_gprint AS left_gprint
+		ON left_gprint.id = gtg.left_axis_format
 		WHERE gtg.local_graph_id = ?',
 		[$local_graph_id]
 	);
@@ -2297,10 +2303,13 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 		gti.line_width, gti.dashes, gti.shift,
 		gti.dash_offset, gti.textalign, dl.snmp_query_id, dl.snmp_index, gti.legend,
 		dtr.id AS data_template_rrd_id, dl.id AS local_data_id,
-		dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_name, dtr.local_data_template_rrd_id
+		dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_name, dtr.local_data_template_rrd_id,
+		dtd.rrd_step
 		FROM graph_templates_item AS gti
 		LEFT JOIN data_template_rrd AS dtr
 		ON gti.task_item_id=dtr.id
+		LEFT JOIN data_template_data AS dtd
+		ON dtd.local_data_id = dtr.local_data_id
 		LEFT JOIN data_local AS dl
 		ON dl.id = dtr.local_data_id
 		LEFT JOIN colors
@@ -2834,19 +2843,17 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 
 				// allow automatic rate calculations on raw gauge data
 				if (isset($graph_item['local_data_id'])) {
-					$cdef_string = str_replace('CURRENT_DATA_SOURCE_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', [$graph_item['local_data_id']]), $cdef_string);
+					$polling_interval = $graph_item['rrd_step'];
 				} else {
-					$cdef_string = str_replace('CURRENT_DATA_SOURCE_PI', read_config_option('poller_interval'), $cdef_string);
+					$polling_interval = read_config_option('poller_interval');
 				}
+
+				$cdef_string = str_replace('CURRENT_DATA_SOURCE_PI', $polling_interval, $cdef_string);
 
 				$cdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name($cf_ds_cache[$cf_ds_key] ?? 0), $cdef_string);
 
 				// allow automatic rate calculations on raw gauge data
-				if (isset($graph_item['local_data_id'])) {
-					$cdef_string = str_replace('ALL_DATA_SOURCES_DUPS_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', [$graph_item['local_data_id']]), $cdef_string);
-				} else {
-					$cdef_string = str_replace('ALL_DATA_SOURCES_DUPS_PI', read_config_option('poller_interval'), $cdef_string);
-				}
+				$cdef_string = str_replace('ALL_DATA_SOURCES_DUPS_PI', $polling_interval, $cdef_string);
 
 				// ALL|SIMILAR_DATA_SOURCES(NO)?DUPS are to be replaced here
 				if (isset($magic_item['ALL_DATA_SOURCES_DUPS'])) {
@@ -2854,32 +2861,20 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				}
 
 				// allow automatic rate calculations on raw gauge data
-				if (isset($graph_item['local_data_id'])) {
-					$cdef_string = str_replace('ALL_DATA_SOURCES_NODUPS_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', [$graph_item['local_data_id']]), $cdef_string);
-				} else {
-					$cdef_string = str_replace('ALL_DATA_SOURCES_NODUPS_PI', read_config_option('poller_interval'), $cdef_string);
-				}
+				$cdef_string = str_replace('ALL_DATA_SOURCES_NODUPS_PI', $polling_interval, $cdef_string);
 
 				if (isset($magic_item['ALL_DATA_SOURCES_NODUPS'])) {
 					$cdef_string = str_replace('ALL_DATA_SOURCES_NODUPS', $magic_item['ALL_DATA_SOURCES_NODUPS'], $cdef_string);
 				}
 
 				// allow automatic rate calculations on raw gauge data
-				if (isset($graph_item['local_data_id'])) {
-					$cdef_string = str_replace('SIMILAR_DATA_SOURCES_DUPS_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', [$graph_item['local_data_id']]), $cdef_string);
-				} else {
-					$cdef_string = str_replace('SIMILAR_DATA_SOURCES_DUPS_PI', read_config_option('poller_interval'), $cdef_string);
-				}
+				$cdef_string = str_replace('SIMILAR_DATA_SOURCES_DUPS_PI', $polling_interval, $cdef_string);
 
 				if (isset($magic_item['SIMILAR_DATA_SOURCES_DUPS'])) {
 					$cdef_string = str_replace('SIMILAR_DATA_SOURCES_DUPS', $magic_item['SIMILAR_DATA_SOURCES_DUPS'], $cdef_string);
 				}
 
-				if (isset($graph_item['local_data_id'])) {
-					$cdef_string = str_replace('SIMILAR_DATA_SOURCES_NODUPS_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', [$graph_item['local_data_id']]), $cdef_string);
-				} else {
-					$cdef_string = str_replace('SIMILAR_DATA_SOURCES_NODUPS_PI', read_config_option('poller_interval'), $cdef_string);
-				}
+				$cdef_string = str_replace('SIMILAR_DATA_SOURCES_NODUPS_PI', $polling_interval, $cdef_string);
 
 				if (isset($magic_item['SIMILAR_DATA_SOURCES_NODUPS'])) {
 					$cdef_string = str_replace('SIMILAR_DATA_SOURCES_NODUPS', $magic_item['SIMILAR_DATA_SOURCES_NODUPS'], $cdef_string);
