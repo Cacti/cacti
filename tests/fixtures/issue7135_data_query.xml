@@ -1,0 +1,23 @@
+<query>
+   <name>Loop State Reset Fixture</name>
+   <description>Two output fields, only the first of which maps to an OID</description>
+   <oid_index>.1.3.6.1.4.1.9999.1.1.1</oid_index>
+   <index_order>withOid</index_order>
+   <index_order_type>numeric</index_order_type>
+   <index_title_format>|chosen_order_field|</index_title_format>
+   <fields>
+      <withOid>
+         <name>Has An OID</name>
+         <method>walk</method>
+         <source>value</source>
+         <direction>output</direction>
+         <oid>.1.3.6.1.4.1.9999.1.1.10</oid>
+      </withOid>
+      <withoutOid>
+         <name>Has No OID</name>
+         <method>walk</method>
+         <source>value</source>
+         <direction>output</direction>
+      </withoutOid>
+   </fields>
+</query>
