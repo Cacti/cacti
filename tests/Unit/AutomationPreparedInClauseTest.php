@@ -49,9 +49,9 @@ test('all three host-template filters bind dynamic IN clause values', function (
 	$queries = $verdict['queries'];
 
 	expect($queries)->toHaveCount(3)
-		->and($queries[0][0])->toContain('ht.id IN (?, ?)')
+		->and($queries[0][0])->toContain('h.host_template_id IN (?, ?)')
 		->and($queries[0][1])->toBe([1, 2])
-		->and($queries[1][0])->toContain('ht.id IN (?)')
+		->and($queries[1][0])->toContain('h.host_template_id IN (?)')
 		->and($queries[1][1])->toBe([3])
 		->and($queries[2][0])->toContain('htg.host_template_id IN (?, ?)')
 		->and($queries[2][1])->toBe([4, 5]);

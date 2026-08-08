@@ -111,6 +111,7 @@ test('automation lookup helpers map database rows and bind optional filters', fu
 
 	expect(automation_prepare_id_list(2))->toBe(['placeholders' => '?', 'params' => [2]])
 		->and(automation_prepare_id_list('0002'))->toBe(['placeholders' => '?', 'params' => [2]])
+		->and(automation_prepare_id_list([2, '02', 3]))->toBe(['placeholders' => '?, ?', 'params' => [2, 3]])
 		->and(automation_prepare_id_list((string) PHP_INT_MAX . '0'))->toBeFalse();
 });
 
@@ -119,23 +120,19 @@ test('automation display helpers render every supported record type', function (
 		[['snmp_community' => 'public']],
 		[['id' => 1, 'sort_type' => 1, 'name' => 'Main']],
 		[
-			['id' => 1, 'local_graph_id' => 0, 'title' => 'Network', 'host_id' => 0, 'host_grouping_type' => 1, 'sort_children_type' => 1],
-			['id' => 2, 'local_graph_id' => 22, 'title' => '', 'host_id' => 0, 'host_grouping_type' => 1, 'sort_children_type' => 1],
-			['id' => 3, 'local_graph_id' => 0, 'title' => '', 'host_id' => 33, 'host_grouping_type' => 1, 'sort_children_type' => 1]
+			['id' => 1, 'parent' => 0, 'local_graph_id' => 0, 'title' => 'Network', 'host_id' => 0, 'host_grouping_type' => 1, 'sort_children_type' => 1, 'graph_title' => null, 'host_name' => null],
+			['id' => 2, 'parent' => 0, 'local_graph_id' => 22, 'title' => '', 'host_id' => 0, 'host_grouping_type' => 1, 'sort_children_type' => 1, 'graph_title' => 'Root Graph', 'host_name' => null],
+			['id' => 3, 'parent' => 0, 'local_graph_id' => 0, 'title' => '', 'host_id' => 33, 'host_grouping_type' => 1, 'sort_children_type' => 1, 'graph_title' => null, 'host_name' => 'router-a'],
+			['id' => 4, 'parent' => 1, 'local_graph_id' => 0, 'title' => 'Subnet', 'host_id' => 0, 'host_grouping_type' => 1, 'sort_children_type' => 1, 'graph_title' => null, 'host_name' => null],
+			['id' => 5, 'parent' => 1, 'local_graph_id' => 44, 'title' => '', 'host_id' => 0, 'host_grouping_type' => 1, 'sort_children_type' => 1, 'graph_title' => 'Nested Graph', 'host_name' => null],
+			['id' => 6, 'parent' => 1, 'local_graph_id' => 0, 'title' => '', 'host_id' => 66, 'host_grouping_type' => 1, 'sort_children_type' => 1, 'graph_title' => null, 'host_name' => 'router-b'],
+			['id' => 1, 'parent' => 1, 'local_graph_id' => 0, 'title' => 'Cycle', 'host_id' => 0, 'host_grouping_type' => 1, 'sort_children_type' => 1, 'graph_title' => null, 'host_name' => null]
 		],
-		[
-			['id' => 4, 'local_graph_id' => 0, 'title' => 'Subnet', 'host_id' => 0, 'host_grouping_type' => 1, 'sort_children_type' => 1],
-			['id' => 5, 'local_graph_id' => 44, 'title' => '', 'host_id' => 0, 'host_grouping_type' => 1, 'sort_children_type' => 1],
-			['id' => 6, 'local_graph_id' => 0, 'title' => '', 'host_id' => 66, 'host_grouping_type' => 1, 'sort_children_type' => 1]
-		],
-		[],
 		[['id' => 1, 'steps' => 1, 'rows' => 600, 'name' => 'Daily']],
 		[['id' => 1, 'name' => 'Traffic', 'template_name' => 'Interface']],
 		[['id' => 1, 'username' => 'admin', 'full_name' => 'Administrator']],
 		[['id' => 1, 'name' => 'Operators', 'description' => 'Ops']]
 	];
-	$GLOBALS['automation_cell_results'] = ['Nested Graph', 'router-b', 'Root Graph', 'router-a'];
-
 	ob_start();
 	displayQueryTypes([1 => 'Interface']);
 	displayHostTemplates([2 => 'Linux']);
