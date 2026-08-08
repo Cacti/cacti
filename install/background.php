@@ -46,8 +46,9 @@ array_shift($params);
 
 global $cli_install;
 
-$cli_install = true;
-$now         = time();
+$cli_install             = true;
+$now                     = time();
+$installerProcessTimeout = 86400;
 
 if (cacti_sizeof($params) == 0) {
 	log_install_always('','no parameters passed' . PHP_EOL);
@@ -58,7 +59,10 @@ if (cacti_sizeof($params) == 0) {
 $registeredProcess = false;
 
 if (function_exists('register_process_start')) {
-	if (!register_process_start('install', 'master', 0, 600)) {
+	// Installer schema conversions can legitimately run longer than the
+	// generic process timeout. Dead processes are still reclaimed immediately
+	// by register_process_start() through its PID-liveness check.
+	if (!register_process_start('install', 'master', 0, $installerProcessTimeout)) {
 		exit(0);
 	}
 
