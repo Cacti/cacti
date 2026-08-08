@@ -23,6 +23,13 @@ final class SessionLookupIndexTest extends TestCase {
 		);
 	}
 
+	public function testFreshInstallSchemaIndexesHostTemplateFiltering(): void {
+		$this->assertMatchesRegularExpression(
+			'/CREATE TABLE `host` \(.*?KEY host_template_id \(host_template_id\).*?\) ENGINE=/s',
+			$this->schema
+		);
+	}
+
 	public function testUpgradeAddsSessionIndexesIdempotentlyThroughInstallerHelpers(): void {
 		$this->assertStringContainsString(
 			"db_install_add_key('sessions', 'INDEX', 'user_id', ['user_id']);",
@@ -30,6 +37,10 @@ final class SessionLookupIndexTest extends TestCase {
 		);
 		$this->assertStringContainsString(
 			"db_install_add_key('sessions', 'INDEX', 'access', ['access']);",
+			$this->upgrade
+		);
+		$this->assertStringContainsString(
+			"db_install_add_key('host', 'INDEX', 'host_template_id', ['host_template_id']);",
 			$this->upgrade
 		);
 	}

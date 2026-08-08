@@ -2072,6 +2072,7 @@ CREATE TABLE `host` (
   created timestamp default CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY poller_id_disabled (poller_id, disabled),
+  KEY host_template_id (host_template_id),
   KEY external_id (external_id),
   KEY disabled (disabled),
   KEY status (status),
