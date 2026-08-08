@@ -35,7 +35,7 @@ require_once($config['library_path'] . '/utility.php');
 ini_set('max_execution_time', '0');
 
 error_reporting(E_ALL);
-$dir = dirname(__FILE__);
+$dir = __DIR__;
 chdir($dir);
 
 global $config, $database_default, $archived, $purged, $disable_log_rotation, $poller_start;
@@ -319,12 +319,10 @@ function realtime_purge_cache() {
 		}
 	}
 
-	db_execute("DELETE FROM poller_output_realtime WHERE time < FROM_UNIXTIME(UNIX_TIMESTAMP()-300)");
+	db_execute('DELETE FROM poller_output_realtime WHERE time < FROM_UNIXTIME(UNIX_TIMESTAMP()-300)');
 }
 
-/*
- * logrotate_rotatenow - Rotates the cacti log
- */
+// logrotate_rotatenow - Rotates the cacti log
 function logrotate_rotatenow() {
 	global $config;
 
@@ -532,9 +530,7 @@ function secpass_check_expired () {
 	}
 }
 
-/*
- * remove_files - remove all unwanted files; the list is given by table data_source_purge_action
- */
+// remove_files - remove all unwanted files; the list is given by table data_source_purge_action
 function remove_files($file_array) {
 	global $config, $debug, $archived, $purged;
 
@@ -608,9 +604,15 @@ function remove_files($file_array) {
 					break;
 			}
 		} else {
+			if (!cacti_rrdtool_valid_path($file['name'])) {
+				cacti_log('WARNING RRDfile Maintenance rejected invalid RRDproxy path ' . cacti_log_safe_value($file['name']) . '!', true, 'MAINT');
+
+				break;
+			}
+
 			switch($file['action']) {
 				case '1':
-					if (rrdtool_execute('unlink ' . $file['name'], false, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, $logopt = 'MAINT')) {
+					if (rrdtool_execute_path_command('unlink', $file['name'], '', false, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, $logopt = 'MAINT')) {
 						maint_debug('Deleted: ' . $file['name']);
 					} else {
 						cacti_log("WARNING RRDfile Maintenance is unable to remove {$file['name']} from the RRDproxy!", true, 'MAINT');
@@ -620,7 +622,7 @@ function remove_files($file_array) {
 
 					break;
 				case '3':
-					if (rrdtool_execute('archive ' . $file['name'], false, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, $logopt = 'MAINT')) {
+					if (rrdtool_execute_path_command('archive', $file['name'], '', false, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, $logopt = 'MAINT')) {
 						maint_debug("Moved: {file['name']} to: RRDproxy Archive");
 					} else {
 						cacti_log("WARNING RRDfile Maintenance is unable to move {$file['name']} to the RRDproxy Archive!", true, 'MAINT');
@@ -704,9 +706,7 @@ function rrdclean_create_path($path) {
 	return is_dir($path) && is_writable($path);
 }
 
-/*
- * cleanup_ds_and_graphs - courtesy John Rembo
- */
+// cleanup_ds_and_graphs - courtesy John Rembo
 function cleanup_ds_and_graphs() {
 	global $config;
 
@@ -771,7 +771,7 @@ function maint_debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print "DEBUG: " . trim($message) . "\n";
+		print 'DEBUG: ' . trim($message) . "\n";
 	}
 }
 

@@ -44,6 +44,19 @@ jobs:
       - name: Verify no new architectural hotspots
         run: tests/security/verify_architectural_hotspots.sh
 
+  advisory-docker-probe:
+    name: private advisory Docker probe
+    runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_dispatch'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Run advisory Docker probe
+        env:
+          CACTI_E2E_TEST_GLOB: tests/05-private-advisory-hardening.sh
+        run: tests/e2e/docker/run.sh
+
   advisory-proof-matrix:
     name: private advisory proof matrix
     if: github.event_name == 'workflow_dispatch'
