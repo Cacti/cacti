@@ -291,7 +291,14 @@ function get_graph_data() : bool {
 
 	// set the effective user
 	if (isrv('effective_user')) {
-		$user = grv('effective_user');
+		$user = remote_agent_validate_effective_user(grv('effective_user'));
+
+		if ($user === false) {
+			http_response_code(403);
+			cacti_log('Rejected invalid Remote Agent effective-user delegation.', false, 'SECURITY');
+
+			return false;
+		}
 	} else {
 		$user = 0;
 	}

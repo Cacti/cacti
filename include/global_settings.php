@@ -788,6 +788,23 @@ $settings['general'] = [
 			60 => __('%d Seconds', 60)
 		]
 	],
+	'remote_agent_verify_tls' => [
+		'friendly_name' => __('Verify Remote Agent TLS Certificates'),
+		'description'   => __('Require a trusted certificate whose name matches the Remote Data Collector hostname. Disable only while replacing legacy self-signed certificates.'),
+		'method'        => 'drop_array',
+		'default'       => 'on',
+		'array'         => [
+			'on'  => __('Yes'),
+			'off' => __('No (Legacy Self-signed Certificate)')
+		]
+	],
+	'remote_agent_ca_file' => [
+		'friendly_name' => __('Remote Agent CA File'),
+		'description'   => __('Optional absolute path to a PEM CA bundle used to verify Remote Data Collector certificates. Leave blank to use the PHP/OpenSSL system trust store.'),
+		'method'        => 'filepath',
+		'default'       => '',
+		'max_length'    => 255
+	],
 	'automation_header' => [
 		'friendly_name' => __('Automation'),
 		'method'        => 'spacer',
