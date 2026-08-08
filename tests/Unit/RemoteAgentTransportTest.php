@@ -69,9 +69,10 @@ test('remote graph JSON accepts only strict supported image envelopes', function
 
 	expect(remote_graph_json_envelope(json_encode($envelope, JSON_THROW_ON_ERROR)))->toBe($envelope);
 })->with([
-	'png' => "\x89PNG\r\n\x1a\ndata",
-	'gif' => 'GIF89adata',
-	'svg' => '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
+	'png'                  => "\x89PNG\r\n\x1a\ndata",
+	'gif'                  => 'GIF89adata',
+	'svg'                  => '<svg xmlns="http://www.w3.org/2000/svg"></svg>',
+	'svg with declaration' => '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL . '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
 ]);
 
 test('remote graph JSON rejects malformed missing and unsupported images', function (string $response) {
@@ -83,7 +84,8 @@ test('remote graph JSON rejects malformed missing and unsupported images', funct
 	'non-string image' => '{"image":7}',
 	'invalid base64'   => '{"image":"%%%"}',
 	'empty image'      => '{"image":""}',
-	'unsupported data' => '{"image":"' . base64_encode('plain text') . '"}'
+	'unsupported data' => '{"image":"' . base64_encode('plain text') . '"}',
+	'non-SVG XML'      => '{"image":"' . base64_encode('<?xml version="1.0"?><html></html>') . '"}'
 ]);
 
 test('remote graph endpoints preserve local request identity over remote metadata', function () {

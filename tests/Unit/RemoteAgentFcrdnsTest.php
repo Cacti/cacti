@@ -85,11 +85,11 @@ test('effective-user delegation accepts only the exact enabled user', function (
 test('effective-user delegation rejects malformed missing and disabled users', function (mixed $value, callable $lookup) {
 	expect(remote_agent_validate_effective_user($value, $lookup))->toBeFalse();
 })->with([
-	'zero'          => [0, static fn () : array => ['id' => 0, 'enabled' => 'on']],
-	'negative'      => [-1, static fn () : array => ['id' => -1, 'enabled' => 'on']],
-	'signed string' => ['+7', static fn () : array => ['id' => 7, 'enabled' => 'on']],
-	'non-numeric'   => ['admin', static fn () : array => ['id' => 1, 'enabled' => 'on']],
-	'wrong row'     => [7, static fn () : array => ['id' => 8, 'enabled' => 'on']],
-	'disabled'      => [7, static fn () : array => ['id' => 7, 'enabled' => 'off']],
-	'missing'       => [7, static fn () : false => false]
+	'zero'          => [0, static fn (int $_id) : array => ['id' => 0, 'enabled' => 'on']],
+	'negative'      => [-1, static fn (int $_id) : array => ['id' => -1, 'enabled' => 'on']],
+	'signed string' => ['+7', static fn (int $_id) : array => ['id' => 7, 'enabled' => 'on']],
+	'non-numeric'   => ['admin', static fn (int $_id) : array => ['id' => 1, 'enabled' => 'on']],
+	'wrong row'     => [7, static fn (int $_id) : array => ['id' => 8, 'enabled' => 'on']],
+	'disabled'      => [7, static fn (int $_id) : array => ['id' => 7, 'enabled' => 'off']],
+	'missing'       => [7, static fn (int $_id) : bool => false]
 ]);

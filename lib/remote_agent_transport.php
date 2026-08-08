@@ -100,7 +100,7 @@ function remote_graph_json_envelope(string $response) : array|false {
 
 	$is_png = str_starts_with($image, "\x89PNG\r\n\x1a\n");
 	$is_gif = str_starts_with($image, 'GIF87a') || str_starts_with($image, 'GIF89a');
-	$is_svg = str_starts_with(ltrim($image), '<?xml') || str_starts_with(ltrim($image), '<svg');
+	$is_svg = preg_match('/\A(?:\xEF\xBB\xBF)?\s*(?:<\?xml[^>]*\?>\s*)?<svg(?:\s|>)/i', $image) === 1;
 
 	return $is_png || $is_gif || $is_svg ? $decoded : false;
 }

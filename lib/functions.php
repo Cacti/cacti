@@ -7457,7 +7457,7 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
  * get_url_type - Determines if remote communications are over
  * http or https for remote services.
  *
- * @return mixed http or https
+ * @return string http or https
  */
 function get_url_type() : string {
 	if (read_config_option('force_https') == 'on') {
