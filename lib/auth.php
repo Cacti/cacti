@@ -4579,6 +4579,7 @@ function auth_user_has_access(array $user) : bool {
 		LEFT JOIN user_auth_group_realm AS uagr
 		ON uagr.group_id = uagm.group_id
 		WHERE uagm.user_id = ?
+		AND uag.enabled = 'on'
 		AND (
 			uagr.realm_id IS NOT NULL
 			OR (? = 1 AND (uag.show_tree = 'on' OR uag.show_list = 'on' OR uag.show_preview = 'on'))

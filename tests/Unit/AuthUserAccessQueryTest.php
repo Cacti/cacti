@@ -5,6 +5,13 @@
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
@@ -94,6 +101,7 @@ test('group realms and graph flags are resolved in one query', function () {
 		->and($GLOBALS['auth_access_queries'])->toHaveCount(2)
 		->and($GLOBALS['auth_access_queries'][1][0])->toContain('user_auth_group_members AS uagm')
 		->toContain('user_auth_group_realm AS uagr')
+		->toContain("uag.enabled = 'on'")
 		->toContain('uag.show_tree')
 		->and($GLOBALS['auth_access_queries'][1][1])->toBe([42, 1]);
 });
