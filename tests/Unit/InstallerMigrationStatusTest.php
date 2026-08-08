@@ -35,6 +35,14 @@ test('the 1.3.0 upgrade records every database mutation', function () use ($root
 	expect($untracked)->toBe(0, 'Upgrade database mutations must use installer-aware helpers');
 });
 
+test('the plugin timestamp migration handles null values with SQL null semantics', function () use ($root) {
+	$source = file_get_contents($root . '/install/upgrades/1_3_0.php');
+
+	expect($source)->not->toBeFalse();
+	expect($source)->toContain('last_updated IS NULL');
+	expect($source)->not->toContain('last_updated = NULL');
+});
+
 test('table definition synchronization records its status', function () use ($root) {
 	$source = file_get_contents($root . '/install/functions.php');
 

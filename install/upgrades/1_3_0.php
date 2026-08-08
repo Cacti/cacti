@@ -69,7 +69,7 @@ function upgrade_to_1_3_0() : void {
 
 	db_install_add_column('plugin_config', ['name' => 'last_updated', 'type' => 'timestamp', 'NULL' => false, 'default' => 'CURRENT_TIMESTAMP', 'after' => 'version']);
 
-	db_install_execute('UPDATE plugin_config SET last_updated = NOW() WHERE status IN (1,2,3,4) AND (last_updated = NULL OR last_updated = "0000-00-00")');
+	db_install_execute('UPDATE plugin_config SET last_updated = NOW() WHERE status IN (1,2,3,4) AND (last_updated IS NULL OR last_updated = "0000-00-00")');
 
 	db_install_execute("UPDATE graph_templates SET class='unspecified' WHERE class = ''");
 	db_install_execute("UPDATE graph_templates SET version = '" . CACTI_VERSION . "' WHERE version = ''");
