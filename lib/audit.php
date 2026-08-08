@@ -2,8 +2,29 @@
 /*
  +-------------------------------------------------------------------------+
  | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
 */
+
+/**
+ * Quote a MySQL identifier used by the database audit repair builder.
+ *
+ * @param string $identifier Identifier from the canonical audit schema
+ *
+ * @return string Backtick-quoted identifier
+ */
+function audit_quote_identifier(string $identifier) : string {
+	return '`' . str_replace('`', '``', $identifier) . '`';
+}
 
 /**
  * Return the core schema tables that are absent from the live database.

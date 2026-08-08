@@ -2,10 +2,25 @@
 /*
  +-------------------------------------------------------------------------+
  | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
 */
 
 require_once dirname(__DIR__, 2) . '/lib/audit.php';
+
+test('legacy audit identifiers are safely quoted', function () {
+	expect(audit_quote_identifier('max-access'))->toBe('`max-access`')
+		->and(audit_quote_identifier('legacy`name'))->toBe('`legacy``name`');
+});
 
 test('missing core tables are deduplicated and sorted', function () {
 	expect(audit_missing_core_tables(
@@ -66,5 +81,7 @@ test('database audit query failures fail closed', function () {
 		->and($source)->toContain('if (!is_array($tables)) {')
 		->and($source)->toContain('if (!is_array($expected_tables)) {')
 		->and($source)->toContain('if ($alters === false) {')
+		->and(substr_count($source, "audit_quote_identifier(\$dbc['table_field'])"))->toBe(2)
+		->and($source)->toContain('audit_quote_identifier($after)')
 		->and($source)->toContain('$exit_code = report_audit_results() === false ? 1 : 0;');
 });

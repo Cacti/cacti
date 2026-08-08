@@ -820,7 +820,7 @@ function make_column_props(&$dbc) {
 }
 
 function make_column_alter($table, $dbc) {
-	$alter_cmd = 'MODIFY COLUMN `' . $dbc['table_field'] . '` ' .
+	$alter_cmd = 'MODIFY COLUMN ' . audit_quote_identifier($dbc['table_field']) . ' ' .
 		$dbc['table_type'] . ($dbc['table_null'] == 'NO' ? ' NOT NULL':'');
 
 	$alter_cmd .= make_column_props($dbc);
@@ -831,10 +831,10 @@ function make_column_alter($table, $dbc) {
 function make_column_add($table, $dbc) {
 	$after = get_previous_column($table, $dbc['table_field']);
 	if ($after != 'first') {
-		$after = 'AFTER `' . $after . '`';
+		$after = 'AFTER ' . audit_quote_identifier($after);
 	}
 
-	$alter_cmd = 'ADD COLUMN `' . $dbc['table_field'] . '` ' .
+	$alter_cmd = 'ADD COLUMN ' . audit_quote_identifier($dbc['table_field']) . ' ' .
 		$dbc['table_type'] . ($dbc['table_null'] == 'NO' ? ' NOT NULL':'');
 
 	$alter_cmd .= make_column_props($dbc);
