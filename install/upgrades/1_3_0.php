@@ -45,8 +45,8 @@ function upgrade_to_1_3_0() : void {
 
 	db_install_add_column('poller_item', ['name' => 'snmp_retries', 'type' => 'tinyint(3) unsigned', 'NULL' => false, 'default' => '3', 'after' => 'snmp_timeout']);
 
-	db_execute_prepared('UPDATE host SET snmp_retries = ?', [read_config_option('snmp_retries')]);
-	db_execute_prepared('UPDATE poller_item SET snmp_retries = ?', [read_config_option('snmp_retries')]);
+	db_install_execute('UPDATE host SET snmp_retries = ?', [read_config_option('snmp_retries')]);
+	db_install_execute('UPDATE poller_item SET snmp_retries = ?', [read_config_option('snmp_retries')]);
 
 	db_install_add_column('graph_templates_item', ['name' => 'legend', 'type' => 'varchar(30)', 'default' => '', 'after' => 'text_format']);
 	db_install_add_column('graph_templates_item', ['name' => 'color2_id', 'type' => 'mediumint(8)', 'unsigned' => true, 'default' => '0', 'after' => 'alpha']);
@@ -164,7 +164,7 @@ function upgrade_to_1_3_0() : void {
 	$data['charset']    = 'utf8mb4';
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('plugin_available', $data);
+	db_install_update_table('plugin_available', $data);
 
 	$data               = [];
 	$data['columns'][]  = ['name' => 'id', 'unsigned' => true, 'type' => 'mediumint(8)', 'NULL' => false, 'auto_increment' => true];
@@ -186,7 +186,7 @@ function upgrade_to_1_3_0() : void {
 	$data['charset']    = 'utf8mb4';
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('plugin_archive', $data);
+	db_install_update_table('plugin_archive', $data);
 
 	// Not sure why we were adding this...
 	// db_install_add_column('user_domains', array('name' => 'tls_verify', 'type' => 'int', 'null' => false, 'default' => '0'));
@@ -208,7 +208,7 @@ function upgrade_to_1_3_0() : void {
 	$data['charset']    = 'utf8mb4';
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('poller_time_stats', $data);
+	db_install_update_table('poller_time_stats', $data);
 
 	$ldap_converted = read_config_option('install_ldap_builtin');
 
@@ -229,7 +229,7 @@ function upgrade_to_1_3_0() : void {
 	$data['charset']    = 'utf8mb4';
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('host_value_cache', $data);
+	db_install_update_table('host_value_cache', $data);
 
 	$data               = [];
 	$data['columns'][]  = ['name' => 'local_data_id', 'unsigned' => true, 'type' => 'int(10)', 'NULL' => false, 'default' => '0'];
@@ -240,7 +240,7 @@ function upgrade_to_1_3_0() : void {
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['comment']    = 'Holds the RRDfile Stats Commands';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('data_source_stats_command_cache', $data);
+	db_install_update_table('data_source_stats_command_cache', $data);
 
 	install_unlink('aggregate_items.php');
 	install_unlink('color_template_items.php');
@@ -264,7 +264,7 @@ function upgrade_to_1_3_0() : void {
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['comment']    = 'Holds mappings of Automation Templates to Rules';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('automation_templates_rules', $data);
+	db_install_update_table('automation_templates_rules', $data);
 
 	// add automation hashes
 	$tables = [
@@ -292,7 +292,7 @@ function upgrade_to_1_3_0() : void {
 				foreach ($rows as $row) {
 					$hash = generate_hash();
 
-					db_execute_prepared("UPDATE $table
+					db_install_execute("UPDATE $table
 						SET hash = ?
 						WHERE id = ?",
 						[$hash, $row['id']]);
@@ -416,7 +416,7 @@ function upgrade_to_1_3_0() : void {
 		}
 
 		if ($alter != '') {
-			db_execute($alter);
+			db_install_execute($alter);
 		}
 	}
 
@@ -444,7 +444,7 @@ function upgrade_to_1_3_0() : void {
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['comment']    = 'Holds Repository Locations that hold Packages';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('package_repositories', $data);
+	db_install_update_table('package_repositories', $data);
 
 	$data               = [];
 	$data['columns'][]  = ['name' => 'id', 'unsigned' => true, 'type' => 'int(10)', 'NULL' => false, 'auto_increment' => true];
@@ -460,7 +460,7 @@ function upgrade_to_1_3_0() : void {
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['comment']    = 'Hold Trusted Package Public Keys';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('package_public_keys', $data);
+	db_install_update_table('package_public_keys', $data);
 
 	$repos[] = [1, 'Local Packages', 'on', 'on', 1, '/var/www/html/cacti/install/templates', '', ''];
 	$repos[] = [2, 'TheWitness Percona', 'on', '', 0, 'https://github.com/TheWitness/percona_packages', 'main', ''];
@@ -470,7 +470,7 @@ function upgrade_to_1_3_0() : void {
 	// example repositories
 	if ($repo_cnt == 0) {
 		foreach ($repos as $r) {
-			db_execute_prepared('INSERT INTO package_repositories
+			db_install_execute('INSERT INTO package_repositories
 				(id, name, enabled, `default`, repo_type, repo_location, repo_branch, repo_api_key)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?)', $r);
 		}
@@ -496,7 +496,7 @@ function upgrade_to_1_3_0() : void {
 	$data['charset']    = 'utf8mb4';
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('host_template', $data);
+	db_install_update_table('host_template', $data);
 
 	$data               = [];
 	$data['columns'][]  = ['name' => 'id', 'unsigned' => true, 'type' => 'int(10)', 'NULL' => false, 'auto_increment' => true];
@@ -522,13 +522,13 @@ function upgrade_to_1_3_0() : void {
 	$data['charset']    = 'utf8mb4';
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('host_template_archive', $data);
+	db_install_update_table('host_template_archive', $data);
 
 	// provide the primary admin access to packages
 	$admin = read_config_option('admin_user');
 
 	if ($admin > 0) {
-		db_execute_prepared('REPLACE INTO user_auth_realm
+		db_install_execute('REPLACE INTO user_auth_realm
 			(realm_id, user_id)
 			VALUES (29, ?)', [$admin]);
 	}
@@ -543,7 +543,7 @@ function upgrade_to_1_3_0() : void {
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['comment']    = 'Table that Contains User Password Reset Hashes';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('user_auth_reset_hashes', $data);
+	db_install_update_table('user_auth_reset_hashes', $data);
 
 	$data               = [];
 	$data['columns'][]  = ['name' => 'id', 'unsigned' => true, 'type' => 'int(10)', 'NULL' => false, 'auto_increment' => true];
@@ -570,7 +570,7 @@ function upgrade_to_1_3_0() : void {
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['comment']    = 'Holds All Cacti Report Output';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('reports_log', $data);
+	db_install_update_table('reports_log', $data);
 
 	$data               = [];
 	$data['columns'][]  = ['name' => 'id', 'unsigned' => true, 'type' => 'int(10)', 'NULL' => false, 'auto_increment' => true];
@@ -594,7 +594,7 @@ function upgrade_to_1_3_0() : void {
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['comment']    = 'Holds Scheduled Reports';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('reports_queued', $data);
+	db_install_update_table('reports_queued', $data);
 
 	$data               = [];
 	$data['columns'][]  = ['name' => 'host_id', 'unsigned' => true, 'type' => 'mediumint(8)', 'NULL' => false, 'default' => '0'];
@@ -608,7 +608,7 @@ function upgrade_to_1_3_0() : void {
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['comment']    = 'Holds Device Error buffer for Spine';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('host_errors', $data);
+	db_install_update_table('host_errors', $data);
 
 	$data               = [];
 	$data['columns'][]  = ['name' => 'id', 'unsigned' => true, 'type' => 'int(10)', 'NULL' => false, 'auto_increment' => true];
@@ -629,7 +629,7 @@ function upgrade_to_1_3_0() : void {
 	$data['charset']    = 'utf8mb4';
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('data_local', $data);
+	db_install_update_table('data_local', $data);
 
 	// clear up setting change
 	$exists = db_fetch_cell_prepared('SELECT name FROM settings WHERE name = "business_hours_hideWeekends"');
@@ -638,24 +638,24 @@ function upgrade_to_1_3_0() : void {
 		$exists = db_fetch_cell_prepared('SELECT name FROM settings WHERE name = "business_hours_hide_weekends"');
 
 		if ($exists != '') {
-			db_execute('DELETE FROM settings WHERE name = "business_hours_hideWeekends"');
+			db_install_execute('DELETE FROM settings WHERE name = "business_hours_hideWeekends"');
 		} else {
-			db_execute('UPDATE settings SET name = "business_hours_hide_weekends" WHERE name = "business_hours_hideWeekends"');
+			db_install_execute('UPDATE settings SET name = "business_hours_hide_weekends" WHERE name = "business_hours_hideWeekends"');
 		}
 	}
 
 	upgrade_reports();
 
 	if (!db_column_exists('user_domains', 'debug')) {
-		db_execute('ALTER TABLE user_domains ADD COLUMN debug CHAR(2) default "" AFTER enabled');
+		db_install_execute('ALTER TABLE user_domains ADD COLUMN debug CHAR(2) default "" AFTER enabled');
 	}
 
 	if (!db_column_exists('user_domains_ldap', 'network_timeout')) {
-		db_execute('ALTER TABLE user_domains_ldap ADD COLUMN network_timeout INT unsigned NOT NULL default 2 AFTER proto_version');
+		db_install_execute('ALTER TABLE user_domains_ldap ADD COLUMN network_timeout INT unsigned NOT NULL default 2 AFTER proto_version');
 	}
 
 	if (!db_column_exists('user_domains_ldap', 'bind_timeout')) {
-		db_execute('ALTER TABLE  user_domains_ldap ADD COLUMN bind_timeout INT unsigned NOT NULL default 2 AFTER network_timeout');
+		db_install_execute('ALTER TABLE  user_domains_ldap ADD COLUMN bind_timeout INT unsigned NOT NULL default 2 AFTER network_timeout');
 	}
 }
 
@@ -663,7 +663,7 @@ function upgrade_reports() : void {
 	require_once(CACTI_PATH_BASE . '/lib/api_scheduler.php');
 
 	if (!db_column_exists('reports', 'next_start')) {
-		db_execute("ALTER TABLE reports
+		db_install_execute("ALTER TABLE reports
 			ADD COLUMN `sched_type` int(10) unsigned NOT NULL default '0' AFTER name,
 			ADD COLUMN `run_limit` int(10) unsigned default '0' AFTER sched_type,
 			ADD COLUMN `start_at` varchar(20) default NULL AFTER run_limit,
@@ -704,15 +704,15 @@ function upgrade_reports() : void {
 				$enabled[$r['id']] = $r['enabled'];
 			}
 
-			db_execute('ALTER TABLE reports DROP COLUMN enabled');
-			db_execute('ALTER TABLE reports ADD COLUMN enabled char(2) NOT NULL default "" AFTER name');
+			db_install_execute('ALTER TABLE reports DROP COLUMN enabled');
+			db_install_execute('ALTER TABLE reports ADD COLUMN enabled char(2) NOT NULL default "" AFTER name');
 
 			foreach ($reports as $r) {
 				switch($r['intrvl']) {
 					case 10: // Minutes
 						cacti_log(sprintf('WARNING: Minute level Reports are no longer supported.  Disabling Report \'%s\'', $r['name']), false, 'INSTALL');
 
-						db_execute_prepared('UPDATE reports
+						db_install_execute('UPDATE reports
 							SET sched_type = 1,
 							enabled = "",
 							next_start = ?,
@@ -727,7 +727,7 @@ function upgrade_reports() : void {
 
 						break;
 					case 11: // Hours
-						db_execute_prepared('UPDATE reports
+						db_install_execute('UPDATE reports
 							SET sched_type = ?,
 							enabled = ?,
 							recur_every = ?,
@@ -747,7 +747,7 @@ function upgrade_reports() : void {
 						break;
 					case 1:  // Days
 					case 2:  // Weeks
-						db_execute_prepared('UPDATE reports
+						db_install_execute('UPDATE reports
 							SET sched_type = ?,
 							enabled = ?,
 							recur_every = ?,
@@ -766,7 +766,7 @@ function upgrade_reports() : void {
 
 						break;
 					case 3:  // Month, Day of Month
-						db_execute_prepared('UPDATE reports
+						db_install_execute('UPDATE reports
 							SET sched_type = ?,
 							enabled = ?,
 							day_of_month = ?,
@@ -787,7 +787,7 @@ function upgrade_reports() : void {
 
 						break;
 					case 4:  // Month, Day of Week
-						db_execute_prepared('UPDATE reports
+						db_install_execute('UPDATE reports
 							SET sched_type = ?,
 							enabled = ?,
 							day_of_week = ?,
@@ -812,7 +812,7 @@ function upgrade_reports() : void {
 					case 5:  // Yearly
 						cacti_log(sprintf('WARNING: Yearly Reports are no longer supported.  Disabling Report \'%s\'', $r['name']), false, 'INSTALL');
 
-						db_execute_prepared('UPDATE reports
+						db_install_execute('UPDATE reports
 							SET sched_type = 1,
 							enabled = "",
 							next_start = ?,
@@ -829,11 +829,11 @@ function upgrade_reports() : void {
 				}
 			}
 		} else {
-			db_execute('ALTER TABLE reports DROP COLUMN enabled');
-			db_execute('ALTER TABLE reports ADD COLUMN enabled char(2) NOT NULL default "" AFTER name');
+			db_install_execute('ALTER TABLE reports DROP COLUMN enabled');
+			db_install_execute('ALTER TABLE reports ADD COLUMN enabled char(2) NOT NULL default "" AFTER name');
 		}
 
-		db_execute('ALTER TABLE reports
+		db_install_execute('ALTER TABLE reports
 			DROP COLUMN `intrvl`,
 			DROP COLUMN `offset`,
 			DROP COLUMN `count`,
@@ -842,10 +842,10 @@ function upgrade_reports() : void {
 	}
 
 	// get rid of legacy Lotus Notes setting
-	db_execute_prepared('DELETE FROM settings WHERE name = ?', ['reports_allow_ln']);
-	db_execute_prepared('UPDATE reports SET attachment_type = ? WHERE attachment_type = ?', [REPORTS_TYPE_INLINE_PNG, 91]);
-	db_execute_prepared('UPDATE reports SET attachment_type = ? WHERE attachment_type = ?', [REPORTS_TYPE_INLINE_JPG, 92]);
-	db_execute_prepared('UPDATE reports SET attachment_type = ? WHERE attachment_type = ?', [REPORTS_TYPE_INLINE_GIF, 93]);
+	db_install_execute('DELETE FROM settings WHERE name = ?', ['reports_allow_ln']);
+	db_install_execute('UPDATE reports SET attachment_type = ? WHERE attachment_type = ?', [REPORTS_TYPE_INLINE_PNG, 91]);
+	db_install_execute('UPDATE reports SET attachment_type = ? WHERE attachment_type = ?', [REPORTS_TYPE_INLINE_JPG, 92]);
+	db_install_execute('UPDATE reports SET attachment_type = ? WHERE attachment_type = ?', [REPORTS_TYPE_INLINE_GIF, 93]);
 }
 
 function ldap_convert_1_3_0() : void {
@@ -871,7 +871,7 @@ function ldap_convert_1_3_0() : void {
 		'cn_email'               => 'cn_email',
 	];
 
-	db_execute('ALTER TABLE user_domains_ldap
+	db_install_execute('ALTER TABLE user_domains_ldap
 		MODIFY COLUMN dn varchar(128) NOT NULL default "",
 		MODIFY COLUMN group_require char(2) NOT NULL default "",
 		MODIFY COLUMN group_dn varchar(128) NOT NULL default "",
@@ -899,7 +899,7 @@ function ldap_convert_1_3_0() : void {
 			$domain_id = $domain['domain_id'];
 
 			// Reset LDAP users to the new LDAP domain
-			db_execute_prepared('UPDATE user_auth
+			db_install_execute('UPDATE user_auth
 				SET realm = ? + 1000
 				WHERE realm = 3',
 				[$domain['domain_id']]);

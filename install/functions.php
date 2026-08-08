@@ -525,6 +525,29 @@ function db_install_execute(string $sql, array $params = [], bool $log = true) :
 }
 
 /**
+ * Synchronizes a table definition and records the result in the installer
+ * upgrade-status ledger.
+ *
+ * @param string  $table         The table to synchronize
+ * @param array   $data          The Cacti table definition
+ * @param boolean $removecolumns Whether columns absent from the definition should be removed
+ *
+ * @return integer The installer database status
+ */
+function db_install_update_table(string $table, array $data, bool $removecolumns = false) : int {
+	global $database_last_error;
+
+	$database_last_error = false;
+
+	$status = db_update_table($table, $data, $removecolumns) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
+	$sql    = sprintf('Synchronize table definition for `%s`', str_replace('`', '``', $table));
+
+	db_install_add_cache($status, $sql);
+
+	return $status;
+}
+
+/**
  * Provides database fetch functions during install
  *
  * @param string  $func
