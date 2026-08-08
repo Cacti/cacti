@@ -3812,20 +3812,11 @@ class Installer implements JsonSerializable {
 	 */
 	private function validateRequiredSchema() : string {
 		$requiredTables = get_cacti_base_tables();
-		$missingTables  = [];
-
-		foreach ($requiredTables as $table) {
-			$exists = db_fetch_cell_prepared('SELECT COUNT(*)
-				FROM information_schema.TABLES
-				WHERE TABLE_SCHEMA = DATABASE()
-				AND TABLE_NAME = ?',
-				[$table]
-			);
-
-			if ((int) $exists !== 1) {
-				$missingTables[] = $table;
-			}
-		}
+		$tableRows      = db_fetch_assoc('SELECT TABLE_NAME
+			FROM information_schema.TABLES
+			WHERE TABLE_SCHEMA = DATABASE()');
+		$actualTables   = array_column($tableRows, 'TABLE_NAME');
+		$missingTables  = array_values(array_diff($requiredTables, $actualTables));
 
 		if ($missingTables === []) {
 			return '';
@@ -3855,10 +3846,9 @@ class Installer implements JsonSerializable {
 			return false;
 		}
 
-		$version = db_fetch_cell('SELECT cacti FROM version');
-		$count   = db_fetch_cell('SELECT COUNT(*) FROM version');
+		$version = db_fetch_row('SELECT COUNT(*) AS row_count, MAX(cacti) AS cacti FROM version');
 
-		return $version === CACTI_VERSION && (int) $count === 1;
+		return $version['cacti'] === CACTI_VERSION && (int) $version['row_count'] === 1;
 	}
 
 	private function installTemplate() : string {

@@ -53,8 +53,30 @@ test('installer completion is guarded by schema and version postconditions', fun
 	expect($source)->not->toBeFalse()
 		->and(substr_count($source, '$this->validateRequiredSchema()'))->toBe(2)
 		->and($source)->toContain('private function writeInstalledVersion() : bool')
-		->and($source)->toContain('SELECT COUNT(*) FROM version')
+		->and($source)->toContain('SELECT COUNT(*) AS row_count, MAX(cacti) AS cacti FROM version')
 		->and($source)->not->toContain('TRUNCATE TABLE version');
+});
+
+test('installer completion validates schema and version with one query each', function () {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/installer.php');
+
+	expect($source)->not->toBeFalse();
+
+	$schemaStart  = strpos($source, 'private function validateRequiredSchema()');
+	$schemaEnd    = strpos($source, 'private function writeInstalledVersion()', $schemaStart);
+	$schema       = substr($source, $schemaStart, $schemaEnd - $schemaStart);
+	$versionStart = strpos($source, 'private function writeInstalledVersion()');
+	$versionEnd   = strpos($source, 'private function installTemplate()', $versionStart);
+	$version      = substr($source, $versionStart, $versionEnd - $versionStart);
+
+	expect($schemaStart)->not->toBeFalse()
+		->and($schemaEnd)->not->toBeFalse()
+		->and(substr_count($schema, 'information_schema.TABLES'))->toBe(1)
+		->and($schema)->not->toContain('foreach ($requiredTables as $table)')
+		->and($schema)->toContain('array_diff($requiredTables, $actualTables)')
+		->and($versionStart)->not->toBeFalse()
+		->and($versionEnd)->not->toBeFalse()
+		->and(substr_count($version, 'SELECT '))->toBe(1);
 });
 
 test('table conversion loads schema metadata once instead of once per table', function () {
