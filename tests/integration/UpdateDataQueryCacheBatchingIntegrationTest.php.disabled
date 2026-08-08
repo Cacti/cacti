@@ -41,7 +41,6 @@ foreach ([
 	'POLLER_ID'          => 1,
 	'CACTI_PATH_BASE'    => dirname(__DIR__, 2),
 	'CACTI_PATH_LIBRARY' => dirname(__DIR__, 2) . '/lib',
-	'CACTI_PATH_LOG'     => sys_get_temp_dir(),
 	'OPTIONS_CLI'        => 'config_options_array',
 	'OPTIONS_WEB'        => 'sess_config_array',
 ] as $name => $value) {
@@ -50,6 +49,11 @@ foreach ([
 	} elseif (constant($name) !== $value) {
 		throw new RuntimeException("$name has an incompatible value for the batching integration test");
 	}
+}
+
+// An existing suite bootstrap may point logging at another valid directory.
+if (!defined('CACTI_PATH_LOG')) {
+	define('CACTI_PATH_LOG', sys_get_temp_dir());
 }
 
 require_once dirname(__DIR__, 2) . '/lib/functions.php';
