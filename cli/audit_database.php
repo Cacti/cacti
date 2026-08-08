@@ -24,6 +24,7 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
+require_once(__DIR__ . '/../lib/audit.php');
 chdir('..');
 
 if ($config['poller_id'] > 1) {
@@ -115,8 +116,10 @@ if (cacti_sizeof($parms)) {
 		upgrade_database();
 	}
 
+	$exit_code = 0;
+
 	if ($repair) {
-		repair_database();
+		$exit_code = repair_database() ? 0 : 1;
 	} elseif ($create) {
 		create_tables();
 	} elseif ($report) {
@@ -129,7 +132,7 @@ if (cacti_sizeof($parms)) {
 		display_help();
 	}
 
-	exit(0);
+	exit($exit_code);
 } else {
 	display_help();
 	exit(1);
@@ -319,31 +322,37 @@ function repair_database($run = true) {
 
 	if (cacti_sizeof($alters)) {
 		foreach($alters as $table => $changes) {
-			$tblinfo = db_fetch_row_prepared('SELECT ENGINE, SUBSTRING_INDEX(TABLE_COLLATION, "_", 1) AS COLLATION
-				FROM information_schema.tables
-				WHERE TABLE_SCHEMA = ?
-				AND TABLE_NAME = ?',
-				array($database_default, $table));
-
-			if (isset($tblinfo['COLLATION'])) {
-				$collation = $tblinfo['COLLATION'];
+			if (array_key_exists('__create_table__', $changes)) {
+				$sql       = $changes['__create_table__'];
+				$operation = 'Create';
 			} else {
-				$collation = 'utf8mb4';
-			}
+				$tblinfo = db_fetch_row_prepared('SELECT ENGINE, SUBSTRING_INDEX(TABLE_COLLATION, "_", 1) AS COLLATION
+					FROM information_schema.tables
+					WHERE TABLE_SCHEMA = ?
+					AND TABLE_NAME = ?',
+					array($database_default, $table));
 
-			if ($tblinfo['ENGINE'] == 'MyISAM') {
-				$suffix = ",\n   ENGINE=InnoDB ROW_FORMAT=Dynamic CHARSET=" . $collation;
-			} else {
-				$suffix = ",\n   ROW_FORMAT=Dynamic CHARSET=" . $collation;
-			}
+				if (isset($tblinfo['COLLATION'])) {
+					$collation = $tblinfo['COLLATION'];
+				} else {
+					$collation = 'utf8mb4';
+				}
 
-			$sql = 'ALTER TABLE `' . $table . "`\n   " . implode(",\n   ", $changes) . $suffix . ';';
+				if ($tblinfo['ENGINE'] == 'MyISAM') {
+					$suffix = ",\n   ENGINE=InnoDB ROW_FORMAT=Dynamic CHARSET=" . $collation;
+				} else {
+					$suffix = ",\n   ROW_FORMAT=Dynamic CHARSET=" . $collation;
+				}
+
+				$sql       = 'ALTER TABLE `' . $table . "`\n   " . implode(",\n   ", $changes) . $suffix . ';';
+				$operation = 'Alter';
+			}
 
 			if ($run) {
 				print '---------------------------------------------------------------------------------------------' . PHP_EOL;
-				print 'Executing Alter for Table : ' . $table;
+				print 'Executing ' . $operation . ' for Table : ' . $table;
 
-				$result = db_execute($sql);
+				$result = $sql !== false && db_execute($sql);
 
 				if ($result) {
 					$good++;
@@ -355,8 +364,8 @@ function repair_database($run = true) {
 				}
 			} else {
 				print '---------------------------------------------------------------------------------------------' . PHP_EOL;
-				print '-- Proposed Alter for Table : ' . $table . PHP_EOL . PHP_EOL;
-				print $sql . PHP_EOL . PHP_EOL;
+				print '-- Proposed ' . $operation . ' for Table : ' . $table . PHP_EOL . PHP_EOL;
+				print ($sql === false ? '-- Canonical CREATE TABLE statement unavailable' : $sql) . PHP_EOL . PHP_EOL;
 			}
 		}
 	}
@@ -365,14 +374,16 @@ function repair_database($run = true) {
 	if ($bad == 0 && $good == 0) {
 		print ($altersopt ? '-- ' : '') . 'Repair Completed!  No changes performed.' . PHP_EOL;
 	} elseif ($bad) {
-		print 'Repair Completed!  ' . $good . ' Alters succeeded and ' . $bad . ' failed!' . PHP_EOL;
+		print 'Repair Completed!  ' . $good . ' operations succeeded and ' . $bad . ' failed!' . PHP_EOL;
 	} else {
-		print 'Repair Completed!  All ' . $good . ' Alters succeeded!' . PHP_EOL;
+		print 'Repair Completed!  All ' . $good . ' operations succeeded!' . PHP_EOL;
 	}
+
+	return $bad === 0;
 }
 
 function report_audit_results($output = true) {
-	global $database_default, $altersopt;
+	global $config, $database_default, $altersopt;
 
 	$db_name = 'Tables_in_' . $database_default;
 
@@ -381,6 +392,29 @@ function report_audit_results($output = true) {
 	$tables = db_fetch_assoc('SHOW TABLES');
 
 	$alters  = array();
+	$actual_tables = array_column($tables, $db_name);
+	$expected_tables = db_fetch_assoc('SELECT DISTINCT table_name
+		FROM table_columns
+		ORDER BY table_name');
+	$expected_tables = array_column($expected_tables, 'table_name');
+	$missing_tables  = audit_missing_core_tables($expected_tables, $actual_tables);
+
+	if (cacti_sizeof($missing_tables)) {
+		$schema_sql = file_get_contents($config['base_path'] . '/cacti.sql');
+
+		foreach($missing_tables as $table_name) {
+			if ($output) {
+				print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+				printf("Checking Table: %-45s - Missing core table%s", '\'' . $table_name . '\'', PHP_EOL);
+			} else {
+				printf(($altersopt ? '-- ' : '') . "Scanning Table: %-45s - Missing core table%s", '\'' . $table_name . '\'', PHP_EOL);
+			}
+
+			$alters[$table_name] = array(
+				'__create_table__' => $schema_sql === false ? false : audit_extract_create_table($schema_sql, $table_name)
+			);
+		}
+	}
 
 	$cols = array(
 		'table_type'    => 'Type',
@@ -558,7 +592,7 @@ function report_audit_results($output = true) {
 
 				if (cacti_sizeof($db_columns)) {
 					foreach($db_columns as $dbc) {
-						if (!db_column_exists($table_name, $dbc['table_field'])) {
+						if (!audit_column_exists($columns, $dbc['table_field'])) {
 							if (array_search($dbc['table_field'], $col_added) === false) {
 								if ($output) {
 									print PHP_EOL . 'WARNING Col: \'' . $dbc['table_field'] . '\' is missing from \'' . $table_name . '\'';
@@ -1113,4 +1147,3 @@ function display_help() {
 	print '    --load    - Take a pristine Cacti install and create Audit Schema and file.' . PHP_EOL;
 	print '    --alters  - Print out all the alter commands vs. executing for debugging.' . PHP_EOL . PHP_EOL;
 }
-

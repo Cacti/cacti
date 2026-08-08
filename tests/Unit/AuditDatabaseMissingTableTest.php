@@ -1,0 +1,60 @@
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ +-------------------------------------------------------------------------+
+*/
+
+require_once dirname(__DIR__, 2) . '/lib/audit.php';
+
+test('missing core tables are deduplicated and sorted', function () {
+	expect(audit_missing_core_tables(
+		array('version', 'user_auth_row_cache', 'host', 'host', null),
+		array('version', 'host', 'plugin_table', false)
+	))->toBe(array('user_auth_row_cache'));
+});
+
+test('canonical schema table names support quoted and legacy unquoted declarations', function () {
+	$schema = "CREATE TABLE `host` (\n  `id` int NOT NULL\n);\n"
+		. "CREATE TABLE user_auth_row_cache (\n  `user_id` int NOT NULL\n);\n"
+		. "CREATE TABLE `host` (\n  `id` int NOT NULL\n);";
+
+	expect(audit_schema_table_names($schema))->toBe(array('host', 'user_auth_row_cache'))
+		->and(audit_schema_table_names('SELECT 1;'))->toBe(array());
+});
+
+test('legacy hyphenated columns are matched exactly', function () {
+	$columns = array(
+		array('Field' => 'kind'),
+		array('Field' => 'max-access'),
+		array('NotField' => 'ignored'),
+	);
+
+	expect(audit_column_exists($columns, 'max-access'))->toBeTrue()
+		->and(audit_column_exists($columns, 'max_access'))->toBeFalse();
+});
+
+test('the canonical row cache create statement can be extracted', function () {
+	$schema = file_get_contents(dirname(__DIR__, 2) . '/cacti.sql');
+
+	expect($schema)->not->toBeFalse();
+
+	if ($schema === false) {
+		throw new RuntimeException('Unable to read cacti.sql');
+	}
+
+	$create = audit_extract_create_table($schema, 'user_auth_row_cache');
+
+	expect($create)->toBeString()
+		->and($create)->toContain('CREATE TABLE user_auth_row_cache (')
+		->and($create)->toContain('PRIMARY KEY (`user_id`,`class`,`hash`)')
+		->and($create)->toEndWith('ROW_FORMAT=Dynamic;');
+});
+
+test('create statement extraction fails closed', function () {
+	$schema = "CREATE TABLE `host` (\n  `id` int NOT NULL\n) ENGINE=InnoDB;";
+
+	expect(audit_extract_create_table($schema, 'host'))->toBe($schema)
+		->and(audit_extract_create_table($schema, 'does_not_exist'))->toBeFalse()
+		->and(audit_extract_create_table($schema, 'host; DROP TABLE host'))->toBeFalse();
+});
