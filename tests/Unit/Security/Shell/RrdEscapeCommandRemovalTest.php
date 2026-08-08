@@ -44,21 +44,24 @@ test('escape_command is not redefined elsewhere under lib', function () {
 test('__rrd_execute escapes array arguments one at a time', function () use ($rrdPath) {
 	$source = file_get_contents($rrdPath);
 
-	expect($source)->toContain("\$command_line = implode(' ', array_map('cacti_escapeshellarg', \$command_line));");
+	expect($source)->toContain("array_map('cacti_escapeshellarg', \$command)")
+		->toContain('$command_line = rrdtool_build_command($command_line);');
 });
 
-test('the shell_exec command line is assembled without a whole-command escape', function () use ($rrdPath) {
+test('local RRDtool execution never invokes a command shell', function () use ($rrdPath) {
 	$source = file_get_contents($rrdPath);
 
-	expect($source)->toContain("\$full_commandline = read_config_option('path_rrdtool') . \$debug . ' ' . \$command_line;");
-	expect($source)->toContain('$output = shell_exec($full_commandline);');
+	expect($source)->toContain("proc_open([\$path, '-']")
+		->toContain("['bypass_shell' => true]")
+		->not->toContain('shell_exec(')
+		->not->toContain('popen(');
 });
 
-test('the pipe writers pass the command line through untouched', function () use ($rrdPath) {
+test('the pipe writer validates and converts each command before writing', function () use ($rrdPath) {
 	$source = file_get_contents($rrdPath);
 
-	expect($source)->toContain('fwrite($pipes[0], $command_line . "\r\nquit\r\n");');
-	expect($source)->toContain('if (fwrite($rrdtool_pipe, " $command_line\r\n") === false) {');
+	expect($source)->toContain('$prepared_command = rrdtool_prepare_stdin_command($command_line);')
+		->toContain('rrdtool_write_all($process->stdin, $prepared_command . "\n")');
 });
 
 test('per-argument escaping stops separators that a whole-command escape misses', function () {

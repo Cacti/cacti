@@ -31,6 +31,8 @@ define('RRD_PROXY_END_OF_SEQUENCE', "_EOT_\r\n");
 define('RRD_PROXY_TIMEOUT_SECONDS', 10);
 define('RRD_PROXY_MAX_KEY_SIZE', 1048576);
 define('RRD_PROXY_MAX_RESPONSE_SIZE', 67108864);
+define('RRDTOOL_MAX_COMMAND_BYTES', 16 * 1024 * 1024);
+define('RRDTOOL_MAX_RESPONSE_BYTES', 128 * 1024 * 1024);
 
 if (read_config_option('storage_location')) {
 	global $encryption;
@@ -104,31 +106,57 @@ function rrd_init(bool $output_to_term = true) : mixed {
 	return call_user_func_array($function, $args);
 }
 
-function __rrd_init(bool $output_to_term = true) : mixed {
+function __rrd_init(bool $output_to_term = true, mixed $lang = false) : mixed {
 	// set the rrdtool default font
 	if (read_config_option('path_rrdtool_default_font')) {
 		putenv('RRD_DEFAULT_FONT=' . read_config_option('path_rrdtool_default_font'));
 	}
 
-	rrdtool_set_language();
+	$path = (string) read_config_option('path_rrdtool');
 
-	$rrdtool = cacti_escapeshellarg((string) read_config_option('path_rrdtool'));
+	if (!is_file($path) || !is_executable($path)) {
+		cacti_log('ERROR: RRDtool executable was not found or is not executable.', false, 'RRDTOOL');
 
-	if ($output_to_term) {
-		$command = $rrdtool . ' - ';
-	} elseif (CACTI_SERVER_OS == 'win32') {
-		$command = $rrdtool . ' - > nul';
-	} else {
-		$command = $rrdtool . ' - > /dev/null 2>&1';
+		return false;
 	}
 
-	$process = popen($command, 'w');
+	$previous_language = getenv('LANG');
+	rrdtool_set_language($lang);
 
-	if ($process === false) {
-		cacti_log('ERROR: Unable to launch RRDtool using command: ' . $command, false, 'RRDTOOL');
+	$descriptors = [
+		0 => ['pipe', 'r'],
+		1 => ['pipe', 'w'],
+		2 => ['pipe', 'w']
+	];
+	$pipes   = [];
+
+	try {
+		$process = proc_open([$path, '-'], $descriptors, $pipes, null, null, ['bypass_shell' => true]);
+	} finally {
+		if ($previous_language === false) {
+			putenv('LANG');
+		} else {
+			putenv('LANG=' . $previous_language);
+		}
 	}
 
-	return $process;
+	if (!is_resource($process) || count($pipes) !== 3) {
+		cacti_log('ERROR: Unable to launch RRDtool without a command shell.', false, 'RRDTOOL');
+
+		return false;
+	}
+
+	stream_set_blocking($pipes[1], false);
+	stream_set_blocking($pipes[2], false);
+
+	return (object) [
+		'process'        => $process,
+		'stdin'          => $pipes[0],
+		'stdout'         => $pipes[1],
+		'stderr'         => $pipes[2],
+		'alive'          => true,
+		'output_to_term' => $output_to_term
+	];
 }
 
 /**
@@ -520,12 +548,143 @@ function rrd_close() : void {
 }
 
 function __rrd_close(mixed $rrdtool_pipe) : void {
-	// close the rrdtool file descriptor
-	if (is_resource($rrdtool_pipe)) {
+	if (rrdtool_is_process($rrdtool_pipe)) {
+		if ($rrdtool_pipe->alive && is_resource($rrdtool_pipe->stdin)) {
+			rrdtool_write_all($rrdtool_pipe->stdin, "quit\n");
+		}
+
+		foreach (['stdin', 'stdout', 'stderr'] as $stream) {
+			if (is_resource($rrdtool_pipe->{$stream})) {
+				fclose($rrdtool_pipe->{$stream});
+			}
+		}
+
+		if (is_resource($rrdtool_pipe->process)) {
+			proc_close($rrdtool_pipe->process);
+		}
+
+		$rrdtool_pipe->alive = false;
+	} elseif (is_resource($rrdtool_pipe)) {
+		// Compatibility with a pipe opened by an older plugin.
 		pclose($rrdtool_pipe);
 	}
+}
 
-	rrdtool_reset_language();
+/**
+ * Determine whether a value is a local RRDtool process handle.
+ *
+ * @param mixed $process Candidate process handle
+ *
+ * @return bool Whether the value contains every required process resource
+ */
+function rrdtool_is_process(mixed $process) : bool {
+	return is_object($process)
+		&& isset($process->process, $process->stdin, $process->stdout, $process->stderr, $process->alive);
+}
+
+/**
+ * Write a complete command to RRDtool, including when fwrite() is partial.
+ *
+ * @param mixed  $stream Writable process stream
+ * @param string $data   Complete bytes to write
+ *
+ * @return bool Whether every byte was written and flushed
+ */
+function rrdtool_write_all(mixed $stream, string $data) : bool {
+	if (!is_resource($stream)) {
+		return false;
+	}
+
+	$offset = 0;
+	$length = strlen($data);
+
+	while ($offset < $length) {
+		$written = @fwrite($stream, substr($data, $offset));
+
+		if ($written === false || $written === 0) {
+			return false;
+		}
+
+		$offset += $written;
+	}
+
+	return fflush($stream);
+}
+
+/**
+ * Convert Cacti's shell-quoted arguments to RRDtool stdin quoting.
+ *
+ * RRDtool's interactive parser accepts double-quoted arguments, but shell
+ * escaping for an apostrophe (for example, 'one'\''s') is not valid in that
+ * parser.  This converter recognizes only the single-quoted form produced by
+ * escapeshellarg(); it does not attempt to interpret arbitrary shell syntax.
+ *
+ * @return string|false The stdin-safe command, or false for an invalid command
+ */
+function rrdtool_prepare_stdin_command(string $command_line) : string|false {
+	if (strlen($command_line) > RRDTOOL_MAX_COMMAND_BYTES || strpbrk($command_line, "\0\r\n") !== false) {
+		return false;
+	}
+
+	if (!preg_match('/^\s*([A-Za-z][A-Za-z0-9-]*)\b/', $command_line, $matches)) {
+		return false;
+	}
+
+	$commands = [
+		'create', 'update', 'updatev', 'graph', 'graphv', 'dump', 'restore',
+		'last', 'lastupdate', 'first', 'info', 'list', 'fetch', 'tune',
+		'resize', 'xport', 'flushcached', 'ls', 'cd', 'mkdir', 'pwd'
+	];
+
+	if (!in_array(strtolower($matches[1]), $commands, true)) {
+		return false;
+	}
+
+	$prepared = '';
+	$length   = strlen($command_line);
+
+	for ($offset = 0; $offset < $length; $offset++) {
+		if ($command_line[$offset] !== "'") {
+			$prepared .= $command_line[$offset];
+
+			continue;
+		}
+
+		$value  = '';
+		$closed = false;
+		$offset++;
+
+		while ($offset < $length) {
+			$quote = strpos($command_line, "'", $offset);
+
+			if ($quote === false) {
+				return false;
+			}
+
+			$value .= substr($command_line, $offset, $quote - $offset);
+			$offset  = $quote + 1;
+
+			if (substr($command_line, $offset, 3) === "\\''") {
+				$value .= "'";
+				$offset += 3;
+
+				continue;
+			}
+
+			$closed = true;
+			$offset--;
+
+			break;
+		}
+
+		if (!$closed) {
+			return false;
+		}
+
+		$prepared .= '"' . addcslashes($value, '\\"') . '"';
+	}
+
+	return $prepared;
 }
 
 function __rrd_proxy_close(mixed $rrdp) : void {
@@ -633,6 +792,234 @@ function rrdtool_execute() : mixed {
 }
 
 /**
+ * Build a non-sensitive identifier for an RRDtool command.
+ *
+ * RRDtool command lines can contain paths, graph labels, device metadata, and
+ * credentials substituted by legacy templates.  Logging the complete command
+ * therefore exposes considerably more than is needed to correlate failures.
+ * The operation, byte count, and digest retain that correlation without
+ * copying command arguments into the log.
+ *
+ * @param string $command_line The complete RRDtool command line
+ *
+ * @return string A safe operation/length/digest tuple
+ */
+function rrdtool_command_log_context(string $command_line) : string {
+	$command = 'unknown';
+	$trimmed = ltrim($command_line, " \t");
+
+	if (preg_match('/^([A-Za-z0-9_-]+)/', $trimmed, $matches)) {
+		$command = strtolower($matches[1]);
+	}
+
+	return sprintf(
+		'command=%s bytes=%d sha256=%s',
+		$command,
+		strlen($command_line),
+		hash('sha256', $command_line)
+	);
+}
+
+/**
+ * Build an RRDtool command from a trusted operation and isolated arguments.
+ *
+ * @param array $command One operation followed by zero or more arguments
+ *
+ * @return string|false A command suitable for stdin conversion, or false
+ */
+function rrdtool_build_command(array $command) : string|false {
+	$operation = array_shift($command);
+
+	if (!is_string($operation) || $operation === '') {
+		return false;
+	}
+
+	foreach ($command as $argument) {
+		if (!is_string($argument)) {
+			return false;
+		}
+	}
+
+	return $operation . ($command === [] ? '' : ' ' . implode(' ', array_map('cacti_escapeshellarg', $command)));
+}
+
+/**
+ * Select the locale inherited by a newly launched RRDtool process.
+ *
+ * RRDtool formats fetch/info/xport numbers for the current locale.  Cacti's
+ * parsers require a decimal point for those machine-readable responses.
+ *
+ * @return string|false English for numeric output, otherwise the Cacti locale
+ */
+function rrdtool_command_language(string $command_line) : string|false {
+	$operation = strtolower(strtok(ltrim($command_line), " \t") ?: '');
+
+	return in_array($operation, ['fetch', 'info', 'xport'], true) ? 'en' : false;
+}
+
+/**
+ * Execute one command over an RRDtool stdin process and wait for its status.
+ *
+ * @return array{success: bool, output: string, error: string}
+ */
+function rrdtool_process_command(object $process, string $command_line, float $timeout = 60.0) : array {
+	$result = ['success' => false, 'output' => '', 'error' => 'RRDtool process is unavailable.'];
+
+	if (!rrdtool_is_process($process) || !$process->alive) {
+		return $result;
+	}
+
+	$prepared_command = rrdtool_prepare_stdin_command($command_line);
+
+	if ($prepared_command === false) {
+		$result['error'] = 'RRDtool command contains an invalid operation, quote, or framing character.';
+
+		return $result;
+	}
+
+	if (!rrdtool_write_all($process->stdin, $prepared_command . "\n")) {
+		$result['error'] = 'Unable to write the complete RRDtool command.';
+		$process->alive  = false;
+
+		return $result;
+	}
+
+	$deadline = microtime(true) + max(0.1, $timeout);
+	$stdout   = '';
+	$stderr   = '';
+	$status   = null;
+
+	while (microtime(true) < $deadline) {
+		$read = [];
+
+		if (is_resource($process->stdout) && !feof($process->stdout)) {
+			$read[] = $process->stdout;
+		}
+
+		if (is_resource($process->stderr) && !feof($process->stderr)) {
+			$read[] = $process->stderr;
+		}
+
+		if ($read === []) {
+			break;
+		}
+
+		$write  = null;
+		$except = null;
+		$ready  = @stream_select($read, $write, $except, 0, 200000);
+
+		if ($ready === false) {
+			$result['error'] = 'Unable to read the RRDtool response.';
+
+			break;
+		}
+
+		foreach ($read as $stream) {
+			$chunk = fread($stream, 1048576);
+
+			if ($chunk === false) {
+				continue;
+			}
+
+			if ($stream === $process->stdout) {
+				$stdout .= $chunk;
+			} else {
+				$stderr .= $chunk;
+			}
+		}
+
+		if (strlen($stdout) + strlen($stderr) > RRDTOOL_MAX_RESPONSE_BYTES) {
+			$result['error'] = 'RRDtool response exceeded the configured safety limit.';
+			$process->alive  = false;
+
+			if (is_resource($process->process)) {
+				proc_terminate($process->process);
+			}
+
+			return $result;
+		}
+
+		if (preg_match('/(OK(?: u:[^\r\n]*)?|ERROR:[^\r\n]*)\r?\n?$/', $stdout, $matches, PREG_OFFSET_CAPTURE)) {
+			$status = $matches[1][0];
+			$stdout = substr($stdout, 0, $matches[0][1]);
+
+			break;
+		}
+	}
+
+	$result['output'] = $stdout;
+	$result['error']  = trim($stderr);
+
+	if ($status === null) {
+		if ($result['error'] === '') {
+			$result['error'] = 'RRDtool did not return a terminal status before the timeout.';
+		}
+
+		$process->alive = false;
+
+		if (is_resource($process->process)) {
+			proc_terminate($process->process);
+		}
+
+		return $result;
+	}
+
+	if (str_starts_with($status, 'ERROR:')) {
+		$result['error'] = trim($status . ($result['error'] !== '' ? "\n" . $result['error'] : ''));
+
+		return $result;
+	}
+
+	$result['success'] = true;
+
+	return $result;
+}
+
+/**
+ * Convert a process result to the long-standing RRDTOOL_OUTPUT_* contract.
+ */
+function rrdtool_format_result(array $result, int $output_flag) : mixed {
+	if (!$result['success']) {
+		if ($output_flag === RRDTOOL_OUTPUT_RETURN_STDERR) {
+			return $result['error'];
+		}
+
+		if ($output_flag === RRDTOOL_OUTPUT_STDERR && $result['error'] !== '') {
+			print $result['error'];
+		}
+
+		return false;
+	}
+
+	switch ($output_flag) {
+		case RRDTOOL_OUTPUT_NULL:
+		case RRDTOOL_OUTPUT_BOOLEAN:
+			return true;
+		case RRDTOOL_OUTPUT_STDOUT:
+		case RRDTOOL_OUTPUT_GRAPH_DATA:
+			return $result['output'];
+		case RRDTOOL_OUTPUT_RETURN_STDERR:
+			return $result['error'] !== '' ? $result['error'] : $result['output'];
+		case RRDTOOL_OUTPUT_STDERR:
+			if ($result['error'] !== '') {
+				print $result['error'];
+			}
+
+			if (substr($result['output'], 1, 3) === 'PNG') {
+				return 'OK';
+			}
+
+			if (str_starts_with($result['output'], '<?xml')) {
+				return 'SVG/XML Output OK';
+			}
+
+			return true;
+		default:
+			return false;
+	}
+}
+
+/**
  * Execute an RRDtool command and return the output.
  *
  * @param string|array $command_line  The RRDtool command to execute.  An array is quoted here,
@@ -647,19 +1034,14 @@ function rrdtool_execute() : mixed {
  * @return mixed The command output in the requested format
  */
 function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $output_flag = RRDTOOL_OUTPUT_STDOUT, mixed $rrdtool_pipe = null, string $logopt = 'WEBLOG') : mixed {
-	static $last_command;
-
 	if (is_array($command_line)) {
-		$command_line = implode(' ', array_map('cacti_escapeshellarg', $command_line));
+		$command_line = rrdtool_build_command($command_line);
+
+		if ($command_line === false) {
+			return false;
+		}
 	}
 
-	/**
-	 * WIN32: before sending this command off to rrdtool, get rid
-	 * of all of the backslash (\) characters. Unix does not care; win32 does.
-	 * Also make sure to replace all of the backslashes at the end of the line,
-	 * but make sure not to get rid of newlines (\n) that are supposed to be
-	 * in there (text format)
-	 */
 	$command_line = str_replace("\\\n", ' ', $command_line);
 
 	/* Defense in depth: after all placeholder and title substitution, strip any
@@ -667,203 +1049,35 @@ function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $out
 	 * rrdtool pipe or executed. A CR/LF in a field value would otherwise inject
 	 * an independent rrdtool command over the line based pipe protocol. */
 	$command_line = rrd_strip_control_chars($command_line);
+	$context      = rrdtool_command_log_context($command_line);
 
-	// output information to the log file if appropriate
-	cacti_log('CACTI2RRD: ' . read_config_option('path_rrdtool') . " $command_line", $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
+	cacti_log('CACTI2RRD: ' . $context, $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
 
-	// if we want to see the error output from rrdtool; make sure to specify this
-	$debug = '';
+	$language = rrdtool_command_language($command_line);
 
-	if (CACTI_SERVER_OS != 'win32') {
-		if (($output_flag == RRDTOOL_OUTPUT_STDERR || $output_flag == RRDTOOL_OUTPUT_RETURN_STDERR) && !is_resource($rrdtool_pipe)) {
-			$debug .= ' 2>&1';
-		}
+	cacti_session_close();
+
+	$auto_close = !rrdtool_is_process($rrdtool_pipe);
+	$process    = $auto_close ? __rrd_init(true, $language) : $rrdtool_pipe;
+
+	if (!rrdtool_is_process($process)) {
+		cacti_log('ERROR: RRDtool process unavailable for ' . $context . '.', false, $logopt);
+
+		return false;
 	}
 
-	// use popen to eliminate the zombie issue
-	if (CACTI_SERVER_OS == 'unix') {
-		$pipe_mode = 'r';
-	} else {
-		$pipe_mode = 'rb';
+	$result = rrdtool_process_command($process, $command_line);
+
+	if ($auto_close) {
+		__rrd_close($process);
 	}
 
-	// an empty $rrdtool_pipe array means no fp is available
-	if ($rrdtool_pipe === null || $rrdtool_pipe === false || !is_resource($rrdtool_pipe)) {
-		if (str_starts_with($command_line, 'fetch') || str_starts_with($command_line, 'info') || str_starts_with($command_line, 'xport')) {
-			$dograph = false;
-			rrdtool_set_language('en');
-		} else {
-			$dograph = true;
-			rrdtool_set_language();
-		}
-
-		cacti_session_close();
-
-		if (is_file(read_config_option('path_rrdtool')) && is_executable(read_config_option('path_rrdtool'))) {
-			$descriptorspec = [
-				0 => ['pipe', 'r'],
-				1 => ['pipe', 'w']
-			];
-
-			if (CACTI_WEB) {
-				cacti_time_zone_set();
-			}
-
-			$attempts = 0;
-
-			$full_commandline = read_config_option('path_rrdtool') . $debug . ' ' . $command_line;
-
-			while ($attempts < 5) {
-				if (0 == 1) { // @phpstan-ignore-line
-					/**
-					 * For debugging issue associated with RRDtool, for now I'm commenting out this line
-					 * There are issues processing graphv output with the --add-jsontime option when
-					 * rrdtool is launched in the background.
-					 *
-					 * The reason for this difference is still to be determined.
-					 *
-					 * cacti_log($command_line);
-					 */
-					$process = proc_open(read_config_option('path_rrdtool') . ' - ' . $debug, $descriptorspec, $pipes);
-
-					if (!is_resource($process)) {
-						$attempts++;
-
-						unset($process);
-					} else {
-						fwrite($pipes[0], $command_line . "\r\nquit\r\n");
-						fclose($pipes[0]);
-						$fp = $pipes[1];
-					}
-
-					if (!isset($fp)) {
-						rrdtool_reset_language();
-
-						return 'Error';
-					}
-
-					// get the output regardless of the output type
-					$output = '';
-
-					while (!feof($fp)) {
-						$output .= fgets($fp, 10000);
-					}
-
-					if (isset($process)) {
-						fclose($fp);
-						proc_close($process);
-					}
-				} else {
-					$output = shell_exec($full_commandline);
-				}
-
-				if ($output_flag == RRDTOOL_OUTPUT_STDOUT || $output_flag == RRDTOOL_OUTPUT_GRAPH_DATA) {
-					if ($output == '' || $output === null) {
-						if (debounce_run_notification('rrdtool_command_crash', 28880)) {
-							$backtrace     = cacti_debug_backtrace('RRDTOOL Error');
-							$log_message   = sprintf('WARNING: RRDtool Crashed executing the following command line %s.  %s', $command_line, $backtrace);
-							$email_message = __('WARNING: RRDtool Crashed executing the following command line %s.  %s', $command_line, $backtrace);
-
-							cacti_log($log_message, false, 'RRDTOOL');
-							admin_email(__('RRDtool Command Crashed'), $email_message);
-						}
-
-						$attempts++;
-
-						continue;
-					}
-
-					rrdtool_trim_output($output);
-
-					rrdtool_reset_language();
-
-					return $output;
-				}
-
-				if ($output_flag == RRDTOOL_OUTPUT_STDERR || $output_flag == RRDTOOL_OUTPUT_RETURN_STDERR) {
-					rrdtool_reset_language();
-
-					if ($output != '') {
-						if (substr($output, 1, 3) == 'PNG') {
-							return 'OK';
-						}
-
-						if (str_starts_with($output, '<?xml')) {
-							return 'SVG/XML Output OK';
-						}
-
-						if ($output_flag == RRDTOOL_OUTPUT_RETURN_STDERR) {
-							rrdtool_reset_language();
-
-							return $output;
-						} else {
-							print $output;
-
-							break;
-						}
-					} else {
-						return 'Error';
-					}
-				} else {
-					rrdtool_reset_language();
-
-					return 'OK';
-				}
-			}
-
-			if ($attempts > 0) {
-				rrdtool_reset_language();
-
-				$backtrace = cacti_debug_backtrace('RRDTOOL Error');
-
-				cacti_log("WARNING: RRDtool failed after $attempts attempts for the following command $command_line.  $backtrace", false, 'RRDTOOL');
-
-				return 'Error';
-			}
-		} else {
-			cacti_log("ERROR: RRDtool executable not found, not executable or error in path '" . read_config_option('path_rrdtool') . "'.  No output written to RRDfile.", false, 'RRDTOOL');
-		}
-
-		rrdtool_reset_language();
-	} else {
-		/**
-		 * this path will generally always be taken with an rrdtool update command
-		 */
-		$i = 0;
-
-		while (true) {
-			if (fwrite($rrdtool_pipe, " $command_line\r\n") === false) {
-				cacti_log("ERROR: Detected RRDtool Crash on '$command_line'.  Last command was '$last_command'", false, 'RRDTOOL');
-
-				// close the invalid pipe
-				rrd_close($rrdtool_pipe);
-
-				// open a new rrdtool process
-				$rrdtool_pipe = rrd_init();
-
-				if ($i > 4) {
-					cacti_log("FATAL: RRDtool Restart Attempts Exceeded. Giving up on '$command_line'.", false, 'RRDTOOL');
-
-					break;
-				} else {
-					$i++;
-				}
-
-				continue;
-			} else {
-				fflush($rrdtool_pipe);
-
-				break;
-			}
-		}
+	if (!$result['success']) {
+		cacti_log('ERROR: RRDtool rejected ' . $context . ': ' . $result['error'], false, $logopt);
 	}
 
-	// store the last command to provide rrdtool segfault diagnostics
-	$last_command = $command_line;
-
-	return 'OK';
+	return rrdtool_format_result($result, $output_flag);
 }
-
 function rrdtool_trim_output(string &$output) : void {
 	global $user_time, $system_time, $real_time;
 
@@ -922,13 +1136,13 @@ function rrdtool_trim_output(string &$output) : void {
  */
 function __rrd_proxy_execute(string|array $command_line, bool $log_to_stdout, int $output_flag = RRDTOOL_OUTPUT_STDOUT, mixed $rrdp = '', string $logopt = 'WEBLOG') : mixed {
 	if (is_array($command_line)) {
-		if ($command_line === [] || array_filter($command_line, 'is_string') !== $command_line) {
+		$command_line = rrdtool_build_command($command_line);
+
+		if ($command_line === false) {
 			cacti_log('CACTI2RRDP ERROR: Invalid proxy command argument list.', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
 
 			return false;
 		}
-
-		$command_line = implode(' ', array_map('cacti_escapeshellarg', $command_line));
 	}
 
 	/**
@@ -946,7 +1160,7 @@ function __rrd_proxy_execute(string|array $command_line, bool $log_to_stdout, in
 	$command_line = rrd_strip_control_chars($command_line);
 
 	// output information to the log file if appropriate
-	cacti_log('CACTI2RRDP: ' . read_config_option('path_rrdtool') . " $command_line", $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
+	cacti_log('CACTI2RRDP: ' . rrdtool_command_log_context($command_line), $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
 
 	// store the last command to provide rrdtool segfault diagnostics
 	$last_command    = $command_line;
@@ -1319,7 +1533,7 @@ function rrdtool_function_create(int $local_data_id, bool $show_source, mixed $r
 				chown($data_source_path, (int) $owner_id);
 				chgrp($data_source_path, (int) $group_id);
 			} else {
-				cacti_log("WARNING: RRDCreate using command 'create $data_source_path $create_ds$create_rra' failed!", false, 'POLLER');
+				cacti_log('WARNING: RRDCreate failed for ' . rrdtool_command_log_context('create ' . $data_source_path), false, 'POLLER');
 			}
 		}
 
@@ -1373,8 +1587,13 @@ function rrdtool_function_update(array $update_cache_array, mixed $rrdtool_pipe 
 					$update_options = '';
 				}
 
-				rrdtool_execute('update ' . cacti_escapeshellarg($rrd_path) . " $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
-				$rrds_processed++;
+				$update_result = rrdtool_execute('update ' . cacti_escapeshellarg($rrd_path) . " $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+
+				if ($update_result !== false) {
+					$rrds_processed++;
+				} else {
+					cacti_log('ERROR: RRDtool update failed for ' . rrdtool_command_log_context('update ' . $rrd_path), false, 'POLLER');
+				}
 			}
 		}
 	}
@@ -1415,18 +1634,16 @@ function rrdtool_function_tune(array $rrd_tune_array) : void {
 
 	if ($rrd_tune != '') {
 		if (file_exists($data_source_path) == true) {
-			if (is_file(read_config_option('path_rrdtool')) && is_executable(read_config_option('path_rrdtool'))) {
-				$rrd_cmd = cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' tune ' . cacti_escapeshellarg($data_source_path) . $rrd_tune;
+			$result = rrdtool_execute(
+				'tune ' . cacti_escapeshellarg($data_source_path) . $rrd_tune,
+				false,
+				RRDTOOL_OUTPUT_BOOLEAN,
+				null,
+				'WEBLOG'
+			);
 
-				$fp = popen($rrd_cmd, 'r');
-
-				if ($fp !== false) {
-					pclose($fp);
-				}
-
-				cacti_log('CACTI2RRD: ' . $rrd_cmd, false, 'WEBLOG', POLLER_VERBOSITY_DEBUG);
-			} else {
-				cacti_log("ERROR: RRDtool executable not found, not executable or error in path '" . read_config_option('path_rrdtool') . "'.  No output written to RRDfile.");
+			if ($result === false) {
+				cacti_log('ERROR: Unable to tune ' . rrdtool_command_log_context('tune ' . $data_source_path) . '.', false, 'WEBLOG');
 			}
 		}
 	}
@@ -1664,12 +1881,12 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 
 	// export options
 	if (isset($graph_data_array['export'])) {
-		$graph_opts = $graph_data_array['export_filename'] . RRD_NL;
+		$graph_opts = cacti_escapeshellarg((string) $graph_data_array['export_filename']) . RRD_NL;
 	} else {
 		if (empty($graph_data_array['output_filename'])) {
 			$graph_opts = '-' . RRD_NL;
 		} else {
-			$graph_opts = $graph_data_array['output_filename'] . RRD_NL;
+			$graph_opts = cacti_escapeshellarg((string) $graph_data_array['output_filename']) . RRD_NL;
 		}
 	}
 
@@ -1699,6 +1916,10 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 	}
 
 	foreach ($graph as $key => $value) {
+		if (is_string($value)) {
+			$value = rrdtool_resolve_graph_text($value, $graph);
+		}
+
 		switch($key) {
 			case 'title_cache':
 				if (!empty($value)) {
@@ -1865,9 +2086,6 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 	// process theme and font styling options
 	$graph_opts .= rrdtool_function_theme_font_options($graph_data_array);
 
-	// Replace "|query_*|" in the graph command to replace e.g. vertical_label.
-	$graph_opts = rrd_substitute_host_query_data($graph_opts, $graph, []);
-
 	$watermark = str_replace("'", '"', read_config_option('graph_watermark'));
 
 	if ($watermark != '') {
@@ -1880,6 +2098,33 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 	}
 
 	return $graph_opts;
+}
+
+/**
+ * Resolve variables in one graph text value before the value is encoded for
+ * RRDtool or a process transport.
+ *
+ * Graph text must never expand monitoring credentials.  Apart from leaking
+ * secrets into graph output and debug logs, inserting a replacement after
+ * quoting would allow the replacement to escape its argument boundary.
+ *
+ * @param string        $value      Unresolved graph text
+ * @param array         $graph      Graph context
+ * @param array         $graph_item Optional graph-item context
+ * @param callable|null $resolver   Test seam for the substitution provider
+ *
+ * @return string Resolved graph text with sensitive variables removed
+ */
+function rrdtool_resolve_graph_text(string $value, array $graph, array $graph_item = [], ?callable $resolver = null) : string {
+	$value = preg_replace(
+		'/\|host_snmp_(?:community|username|password|priv_passphrase|context|engine_id)\|/i',
+		'',
+		$value
+	) ?? '';
+
+	$resolver ??= 'rrd_substitute_host_query_data';
+
+	return (string) $resolver($value, $graph, $graph_item);
 }
 
 function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph_data_array,
@@ -2302,7 +2547,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				}
 
 				// data query variables
-				$graph_variables[$field_name][$graph_item_id] = rrd_substitute_host_query_data($graph_variables[$field_name][$graph_item_id], $graph, $graph_item);
+				$graph_variables[$field_name][$graph_item_id] = rrdtool_resolve_graph_text($graph_variables[$field_name][$graph_item_id], $graph, $graph_item);
 
 				// Nth percentile
 				if (preg_match_all('/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_sum_peak|aggregate_current|aggregate_current_peak|aggregate_peak|aggregate):(\d)?\|/', $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
@@ -2735,7 +2980,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				}
 
 				// replace query variables in cdefs
-				$cdef_string = rrd_substitute_host_query_data($cdef_string, $graph, $graph_item);
+				$cdef_string = rrdtool_resolve_graph_text($cdef_string, $graph, $graph_item);
 
 				// aggregate graphs can produce an empty RPN expression for GPRINT items
 				// whose consolidation function does not match the data source; skip them
@@ -2894,7 +3139,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 						if (!isset($graph_data_array['graph_nolegend'])) {
 							$comments = [];
 
-							$comment_arg = rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
+							$comment_arg = rrdtool_resolve_graph_text($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
 
 							// Check for a wrapping comment
 							$max = read_config_option('max_title_length') - 20;
@@ -3131,9 +3376,9 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 						break;
 					case GRAPH_ITEM_TYPE_HRULE:
 						// perform variable substitution; if this does not return a number, rrdtool will FAIL!
-						$substitute = strip_alpha(rrd_substitute_host_query_data($graph_variables['value'][$graph_item_id], $graph, $graph_item));
+						$substitute = strip_alpha(rrdtool_resolve_graph_text($graph_variables['value'][$graph_item_id], $graph, $graph_item));
 
-						$text_format = rrdtool_escape_string(htmle(rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item)));
+						$text_format = rrdtool_escape_string(htmle(rrdtool_resolve_graph_text($graph_variables['text_format'][$graph_item_id], $graph, $graph_item)));
 
 						// don't break rrdtool if the strip_alpha() returns false
 						if ($substitute !== false) {
@@ -3258,10 +3503,14 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				$output_flag = RRDTOOL_OUTPUT_GRAPH_DATA;
 				$output      = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
 
-				if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
-					fwrite($fp, $output, strlen($output));
-					fclose($fp);
-					chmod($graph_data_array['export_realtime'], 0644);
+				if (!is_string($output) || !rrdtool_atomic_write(
+					(string) $graph_data_array['export_realtime'],
+					$output,
+					(string) read_config_option('realtime_cache_path')
+				)) {
+					cacti_log('ERROR: Unable to write realtime graph output safely.', false, 'RRDTOOL');
+
+					return false;
 				}
 
 				return $output;
@@ -3303,6 +3552,50 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 	}
 
 	return false;
+}
+
+/**
+ * Atomically write generated RRDtool output beneath an approved directory.
+ *
+ * @param string $path         Destination file
+ * @param string $contents     Complete generated output
+ * @param string $allowed_root Configured directory that owns the destination
+ *
+ * @return bool Whether the complete file was safely replaced
+ */
+function rrdtool_atomic_write(string $path, string $contents, string $allowed_root) : bool {
+	$root   = realpath($allowed_root);
+	$parent = realpath(dirname($path));
+
+	if ($root === false || $parent === false) {
+		return false;
+	}
+
+	$rootPrefix = rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
+	if ($parent !== $root && !str_starts_with($parent . DIRECTORY_SEPARATOR, $rootPrefix)) {
+		return false;
+	}
+
+	$temporary = tempnam($parent, '.cacti-rrd-');
+
+	if ($temporary === false) {
+		return false;
+	}
+
+	try {
+		$written = file_put_contents($temporary, $contents, LOCK_EX);
+
+		if ($written !== strlen($contents) || !chmod($temporary, 0644)) {
+			return false;
+		}
+
+		return rename($temporary, $path);
+	} finally {
+		if (is_file($temporary)) {
+			unlink($temporary);
+		}
+	}
 }
 
 function rrdtool_escape_string(string $text, bool $ignore_percent = true) : string {
