@@ -57,6 +57,25 @@ test('installer completion is guarded by schema and version postconditions', fun
 		->and($source)->not->toContain('TRUNCATE TABLE version');
 });
 
+test('table conversion loads schema metadata once instead of once per table', function () {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/install/functions.php');
+
+	expect($source)->not->toBeFalse();
+
+	$start = strpos($source, 'function install_setup_get_tables()');
+	$end   = strpos($source, "\n}\n", $start);
+
+	expect($start)->not->toBeFalse()
+		->and($end)->not->toBeFalse();
+
+	$function = substr($source, $start, $end - $start);
+
+	expect(substr_count($function, 'information_schema.TABLES'))->toBe(1)
+		->and($function)->toContain("'Name', ['Engine', 'Rows', 'Collation', 'Row_format']")
+		->and($function)->toContain('$table_status = $table_statuses[$table] ?? false;')
+		->and($function)->not->toContain('SHOW TABLE STATUS LIKE');
+});
+
 test('installer command-line adapters propagate failures and release locks', function () {
 	$cli        = file_get_contents(dirname(__DIR__, 2) . '/cli/install_cacti.php');
 	$background = file_get_contents(dirname(__DIR__, 2) . '/install/background.php');

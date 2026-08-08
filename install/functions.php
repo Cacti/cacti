@@ -1012,19 +1012,18 @@ function install_setup_get_tables() : array|false {
 		return false;
 	}
 
+	$table_statuses = array_rekey(db_fetch_assoc('SELECT TABLE_NAME AS Name,
+		ENGINE AS Engine,
+		TABLE_ROWS AS `Rows`,
+		TABLE_COLLATION AS Collation,
+		ROW_FORMAT AS Row_format
+		FROM information_schema.TABLES
+		WHERE TABLE_SCHEMA = DATABASE()'), 'Name', ['Engine', 'Rows', 'Collation', 'Row_format']);
+
 	$t = [];
 
 	foreach ($db_tables as $table) {
-		$table_status = db_fetch_row_prepared('SELECT TABLE_NAME AS Name,
-			ENGINE AS Engine,
-			TABLE_ROWS AS `Rows`,
-			TABLE_COLLATION AS Collation,
-			ROW_FORMAT AS Row_format
-			FROM information_schema.TABLES
-			WHERE TABLE_SCHEMA = DATABASE()
-			AND TABLE_NAME = ?',
-			[$table]
-		);
+		$table_status = $table_statuses[$table] ?? false;
 
 		$collation  = '';
 		$engine     = '';
