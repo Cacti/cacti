@@ -474,9 +474,6 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 			rrdtool_execute("setenv RRD_DEFAULT_FONT '" . read_config_option('path_rrdtool_default_font') . "'", false, RRDTOOL_OUTPUT_NULL, $rrdproxy, $logopt = 'WEBLOG');
 		}
 
-		// disable encryption
-		$encryption = rrdtool_execute('setcnn encryption off', false, RRDTOOL_OUTPUT_BOOLEAN, $rrdproxy, $logopt = 'WEBLOG') ? false : true;
-
 		return $rrdproxy;
 	}
 }
