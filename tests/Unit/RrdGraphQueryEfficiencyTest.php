@@ -34,3 +34,10 @@ test('CDEF polling intervals come from the graph item query', function () use ($
 		->toContain("\$polling_interval = \$graph_item['rrd_step'];")
 		->not->toContain("db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?'");
 });
+
+test('graph substitutions preload the data source host id', function () use ($source) {
+	expect($source)
+		->toContain('dl.host_id AS data_source_host_id')
+		->toContain("if (!empty(\$graph_item['data_source_host_id']))")
+		->toContain("\$host_id = \$graph_item['data_source_host_id'];");
+});

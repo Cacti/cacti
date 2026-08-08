@@ -1289,23 +1289,26 @@ function __rrd_proxy_execute(string|array $command_line, bool $log_to_stdout, in
 }
 
 function rrdtool_function_interface_speed(array $data_local) : string {
-	$ifHighSpeed = db_fetch_cell_prepared('SELECT field_value
-		FROM host_snmp_cache
-		WHERE host_id = ?
-		AND snmp_query_id = ?
-		AND snmp_index = ?
-		AND field_name="ifHighSpeed"',
-		[$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']]
-	);
+	static $speed_cache = [];
 
-	$ifSpeed = db_fetch_cell_prepared('SELECT field_value
+	$cache_key = implode(':', [$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']]);
+
+	if (isset($speed_cache[$cache_key])) {
+		return $speed_cache[$cache_key];
+	}
+
+	$fields = db_fetch_assoc_prepared('SELECT field_name, field_value
 		FROM host_snmp_cache
 		WHERE host_id = ?
 		AND snmp_query_id = ?
 		AND snmp_index = ?
-		AND field_name="ifSpeed"',
-		[$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']]
+		AND field_name IN (?, ?)',
+		[$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index'], 'ifHighSpeed', 'ifSpeed']
 	);
+	$speeds = array_rekey($fields, 'field_name', 'field_value');
+
+	$ifHighSpeed = $speeds['ifHighSpeed'] ?? false;
+	$ifSpeed     = $speeds['ifSpeed'] ?? false;
 
 	if (!empty($ifHighSpeed)) {
 		$speed = $ifHighSpeed * 1000000;
@@ -1321,7 +1324,9 @@ function rrdtool_function_interface_speed(array $data_local) : string {
 		}
 	}
 
-	return (string) $speed;
+	$speed_cache[$cache_key] = (string) $speed;
+
+	return $speed_cache[$cache_key];
 }
 
 function rrdtool_function_create(int $local_data_id, bool $show_source, mixed $rrdtool_pipe = null) : mixed {
@@ -2301,7 +2306,8 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 		gti.consolidation_function_id, gti.graph_type_id, gtgp.gprint_text,
 		colors.hex, colors2.hex AS hex2, gti.alpha, gti.alpha2, gti.gradheight,
 		gti.line_width, gti.dashes, gti.shift,
-		gti.dash_offset, gti.textalign, dl.snmp_query_id, dl.snmp_index, gti.legend,
+		gti.dash_offset, gti.textalign, dl.host_id AS data_source_host_id,
+		dl.snmp_query_id, dl.snmp_index, gti.legend,
 		dtr.id AS data_template_rrd_id, dl.id AS local_data_id,
 		dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_name, dtr.local_data_template_rrd_id,
 		dtd.rrd_step
@@ -3781,7 +3787,9 @@ function rrd_substitute_host_query_data(string $txt_graph_item, array $graph, ar
 
 	if (empty($graph['host_id'])) {
 		// if graph has no associated host determine host_id from graph item data source
-		if (isset($graph_item['local_data_id']) && !empty($graph_item['local_data_id'])) {
+		if (!empty($graph_item['data_source_host_id'])) {
+			$host_id = $graph_item['data_source_host_id'];
+		} elseif (isset($graph_item['local_data_id']) && !empty($graph_item['local_data_id'])) {
 			$host_id = db_fetch_cell_prepared('SELECT host_id
 				FROM data_local
 				WHERE id = ?',
