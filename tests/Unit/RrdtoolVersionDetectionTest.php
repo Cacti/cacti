@@ -5,6 +5,13 @@
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
  */
 
@@ -34,9 +41,21 @@ test('future and unsupported releases map safely', function () {
 });
 
 test('the configured capability list includes current rrdtool releases', function () {
-	$source = file_get_contents(dirname(__DIR__, 2) . '/include/global_arrays.php');
+	$rrdtool_versions = [];
+	require dirname(__DIR__, 2) . '/include/global_arrays.php';
 
-	expect($source)->not->toBeFalse()
-		->and($source)->toContain("'1.10.0' => 'RRDtool 1.10+'")
-		->and($source)->toContain("'1.11.0' => 'RRDtool 1.11+'");
+	expect($rrdtool_versions['1.10.0'])->toBe('RRDtool 1.10+')
+		->and($rrdtool_versions['1.11.0'])->toBe('RRDtool 1.11+');
+});
+
+test('typed callers retain the configured capability when detection fails', function () {
+	$installer = file_get_contents(dirname(__DIR__, 2) . '/lib/installer.php');
+	$boost     = file_get_contents(dirname(__DIR__, 2) . '/poller_boost.php');
+
+	expect($installer)->not->toBeFalse()
+		->and($installer)->toContain('if ($detected_version === false)')
+		->toContain('$rrdver = get_rrdtool_version();')
+		->and($boost)->not->toBeFalse()
+		->and($boost)->toContain('if ($rrdtool_ins_version !== false &&')
+		->toContain('retaining the configured capability level');
 });

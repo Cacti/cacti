@@ -8334,10 +8334,11 @@ function get_rrdtool_version() : string {
 
 function get_installed_rrdtool_version() : string|false {
 	global $rrdtool_versions;
-	static $version = '';
+	static $version = null;
 
-	if ($version == '') {
+	if ($version === null) {
 		$rrdtool = read_config_option('path_rrdtool');
+		$version = false;
 
 		if (!empty($rrdtool)) {
 			if (CACTI_SERVER_OS == 'win32') {
@@ -8345,8 +8346,6 @@ function get_installed_rrdtool_version() : string|false {
 			} else {
 				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
 			}
-
-			$version = false;
 
 			if (preg_match('/^RRDtool ([0-9.]+) /', (string) ($shell ?? ''), $matches)) {
 				$version = get_supported_rrdtool_version($matches[1], $rrdtool_versions);
