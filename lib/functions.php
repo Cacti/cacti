@@ -2824,6 +2824,8 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 
 			if (cacti_sizeof($outputs) && cacti_sizeof($snmp_queries)) {
 				foreach ($outputs as $output) {
+					$oid = null;
+
 					if (isset($snmp_queries['fields'][$output['snmp_field_name']]['oid'])) {
 						$oid = $snmp_queries['fields'][$output['snmp_field_name']]['oid'] . '.' . $snmp_index;
 
@@ -2920,6 +2922,8 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 
 			if (cacti_sizeof($outputs) && cacti_sizeof($script_queries)) {
 				foreach ($outputs as $output) {
+					$script_path = null;
+
 					if (isset($script_queries['fields'][$output['snmp_field_name']]['query_name'])) {
 						$identifier = $script_queries['fields'][$output['snmp_field_name']]['query_name'];
 
