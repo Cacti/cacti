@@ -84,6 +84,15 @@ test('buildCspPolicy empty mode has unsafe-inline in script-src', function () {
 	expect($policy)->toContain("'unsafe-inline'");
 });
 
+test('buildCspPolicy allows configured alternate frame ancestors', function () {
+	$policy = CactiSecureHeaders::buildCspPolicy('', '', 'https://dashboard.example.com');
+	$start  = strpos($policy, 'frame-ancestors');
+	$end    = strpos($policy, ';', $start);
+
+	expect(substr($policy, $start, $end - $start))
+		->toContain("'self' https://dashboard.example.com");
+});
+
 test('buildCspPolicy nonce mode has nonce token and no unsafe-inline in script-src', function () {
 	$policy = CactiSecureHeaders::buildCspPolicy('nonce', 'XYZ', '');
 	expect($policy)->toContain("'nonce-XYZ'");
