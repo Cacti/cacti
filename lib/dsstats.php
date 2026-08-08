@@ -661,30 +661,12 @@ function dsstats_log_statistics(string $type) : void {
 	$end = microtime(true);
 
 	if ($sub_type != '') {
-		$rrd_user = db_fetch_cell_prepared('SELECT SUM(value)
-			FROM settings
-			WHERE name LIKE ?',
-			['dsstats_rrd_user_%' . $sub_type . '%']);
-
-		$rrd_system = db_fetch_cell_prepared('SELECT SUM(value)
-			FROM settings
-			WHERE name LIKE ?',
-			['dsstats_rrd_system_%' . $sub_type . '%']);
-
-		$rrd_real = db_fetch_cell_prepared('SELECT SUM(value)
-			FROM settings
-			WHERE name LIKE ?',
-			['dsstats_rrd_real_%' . $sub_type . '%']);
-
-		$rrd_files = db_fetch_cell_prepared('SELECT SUM(value)
-			FROM settings
-			WHERE name LIKE ?',
-			['dsstats_total_rrds_%' . $sub_type . '%']);
-
-		$dsses = db_fetch_cell_prepared('SELECT SUM(value)
-			FROM settings
-			WHERE name LIKE ?',
-			['dsstats_total_dsses_%' . $sub_type . '%']);
+		$totals     = dsstats_fetch_statistics_totals('%' . $sub_type . '%');
+		$rrd_user   = $totals['rrd_user'];
+		$rrd_system = $totals['rrd_system'];
+		$rrd_real   = $totals['rrd_real'];
+		$rrd_files  = $totals['rrd_files'];
+		$dsses      = $totals['dsses'];
 
 		$processes  = read_config_option('dsstats_parallel');
 
@@ -718,34 +700,50 @@ function dsstats_log_statistics(string $type) : void {
  * @return void
  */
 function dsstats_log_child_stats(string $type, int $thread_id, float $total_time) : void {
-	$rrd_user = db_fetch_cell_prepared('SELECT SUM(value)
-		FROM settings
-		WHERE name LIKE ?',
-		['dsstats_rrd_user_%' . $type . '_' . $thread_id . '%']);
-
-	$rrd_system = db_fetch_cell_prepared('SELECT SUM(value)
-		FROM settings
-		WHERE name LIKE ?',
-		['dsstats_rrd_system_%' . $type . '_' . $thread_id . '%']);
-
-	$rrd_real = db_fetch_cell_prepared('SELECT SUM(value)
-		FROM settings
-		WHERE name LIKE ?',
-		['dsstats_rrd_real_%' . $type . '_' . $thread_id . '%']);
-
-	$rrd_files = db_fetch_cell_prepared('SELECT SUM(value)
-		FROM settings
-		WHERE name LIKE ?',
-		['dsstats_total_rrds_%' . $type . '_' . $thread_id . '%']);
-
-	$dsses = db_fetch_cell_prepared('SELECT SUM(value)
-		FROM settings
-		WHERE name LIKE ?',
-		['dsstats_total_dsses_%' . $type . '_' . $thread_id . '%']);
+	$totals     = dsstats_fetch_statistics_totals('%' . $type . '_' . $thread_id . '%');
+	$rrd_user   = $totals['rrd_user'];
+	$rrd_system = $totals['rrd_system'];
+	$rrd_real   = $totals['rrd_real'];
+	$rrd_files  = $totals['rrd_files'];
+	$dsses      = $totals['dsses'];
 
 	$cacti_stats = sprintf('Time:%01.2f Type:%s ProcessNumber:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $total_time, cacti_strtoupper($type), $thread_id, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
 
 	cacti_log('DSSTATS CHILD STATS: ' . $cacti_stats, true, 'SYSTEM');
+}
+
+/**
+ * Fetch all DSStats timing and count totals in one database round trip.
+ *
+ * @param string $suffix_pattern SQL LIKE pattern appended to each metric prefix.
+ *
+ * @return array{rrd_user: float, rrd_system: float, rrd_real: float, rrd_files: float, dsses: float}
+ */
+function dsstats_fetch_statistics_totals(string $suffix_pattern) : array {
+	$patterns = [
+		'dsstats_rrd_user_' . $suffix_pattern,
+		'dsstats_rrd_system_' . $suffix_pattern,
+		'dsstats_rrd_real_' . $suffix_pattern,
+		'dsstats_total_rrds_' . $suffix_pattern,
+		'dsstats_total_dsses_' . $suffix_pattern,
+	];
+	$totals = db_fetch_row_prepared('SELECT
+		COALESCE(SUM(CASE WHEN name LIKE ? THEN value END), 0) AS rrd_user,
+		COALESCE(SUM(CASE WHEN name LIKE ? THEN value END), 0) AS rrd_system,
+		COALESCE(SUM(CASE WHEN name LIKE ? THEN value END), 0) AS rrd_real,
+		COALESCE(SUM(CASE WHEN name LIKE ? THEN value END), 0) AS rrd_files,
+		COALESCE(SUM(CASE WHEN name LIKE ? THEN value END), 0) AS dsses
+		FROM settings
+		WHERE name LIKE \'dsstats_%\'',
+		$patterns);
+
+	return [
+		'rrd_user'   => (float) ($totals['rrd_user'] ?? 0),
+		'rrd_system' => (float) ($totals['rrd_system'] ?? 0),
+		'rrd_real'   => (float) ($totals['rrd_real'] ?? 0),
+		'rrd_files'  => (float) ($totals['rrd_files'] ?? 0),
+		'dsses'      => (float) ($totals['dsses'] ?? 0),
+	];
 }
 
 /**
