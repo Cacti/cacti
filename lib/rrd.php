@@ -3980,6 +3980,120 @@ function rrd_repair(int $data_source_id) : void {
 }
 
 /**
+ * Load an RRDtool dump as XML without network/entity access or PHP warnings.
+ *
+ * @param string        $file     Existing RRD file
+ * @param mixed         $pipe     Optional RRDtool pipe
+ * @param callable|null $executor Test seam for RRDtool execution
+ *
+ * @return DOMDocument|false Parsed dump, or false when execution/parsing fails
+ */
+function rrdtool_dump_document(string $file, mixed $pipe = null, ?callable $executor = null) : DOMDocument|false {
+	$executor ??= 'rrdtool_execute';
+	$output = $executor(
+		'dump ' . cacti_escapeshellarg($file),
+		false,
+		RRDTOOL_OUTPUT_STDOUT,
+		$pipe,
+		'UTIL'
+	);
+
+	if (!is_string($output) || trim($output) === '') {
+		return false;
+	}
+
+	$dom      = new DOMDocument();
+	$previous = libxml_use_internal_errors(true);
+
+	try {
+		return $dom->loadXML($output, LIBXML_NONET) ? $dom : false;
+	} finally {
+		libxml_clear_errors();
+		libxml_use_internal_errors($previous);
+	}
+}
+
+/**
+ * Restore a modified RRD XML document to a validated replacement file.
+ *
+ * The original RRD remains untouched until RRDtool has produced a non-empty
+ * replacement in a private sibling directory.  The final rename is atomic on
+ * supported local filesystems, and every temporary artifact is removed on
+ * both success and failure.
+ *
+ * @param DOMDocument   $dom      Modified RRDtool XML document
+ * @param string        $file     Existing RRD file to replace
+ * @param mixed         $pipe     Optional RRDtool pipe
+ * @param callable|null $executor Test seam for RRDtool execution
+ * @param callable|null $renamer  Test seam for the final atomic rename
+ *
+ * @return bool Whether a validated replacement was installed
+ */
+function rrdtool_restore_document(DOMDocument $dom, string $file, mixed $pipe = null, ?callable $executor = null, ?callable $renamer = null) : bool {
+	$directory = realpath(dirname($file));
+	$metadata  = @stat($file);
+
+	if ($directory === false || !is_array($metadata) || !is_writable($file) || !is_writable($directory)) {
+		return false;
+	}
+
+	$placeholder = tempnam($directory, '.cacti-rrd-restore-');
+
+	if ($placeholder === false || !unlink($placeholder) || !mkdir($placeholder, 0700)) {
+		return false;
+	}
+
+	$xml_file = $placeholder . DIRECTORY_SEPARATOR . 'source.xml';
+	$new_file = $placeholder . DIRECTORY_SEPARATOR . 'replacement.rrd';
+	$executor ??= 'rrdtool_execute';
+	$renamer ??= 'rename';
+
+	try {
+		$bytes = $dom->save($xml_file);
+
+		if ($bytes === false || $bytes < 1 || !chmod($xml_file, 0600)) {
+			return false;
+		}
+
+		$result = $executor(
+			'restore -f ' . cacti_escapeshellarg($xml_file) . ' ' . cacti_escapeshellarg($new_file),
+			false,
+			RRDTOOL_OUTPUT_STDOUT,
+			$pipe,
+			'UTIL'
+		);
+
+		if ($result === false || !is_file($new_file) || filesize($new_file) < 1) {
+			return false;
+		}
+
+		if (!chmod($new_file, $metadata['mode'] & 0777)) {
+			return false;
+		}
+
+		if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
+			if (!chown($new_file, $metadata['uid']) || !chgrp($new_file, $metadata['gid'])) {
+				return false;
+			}
+		}
+
+		return $renamer($new_file, $file) === true;
+	} finally {
+		if (is_file($xml_file)) {
+			unlink($xml_file);
+		}
+
+		if (is_file($new_file)) {
+			unlink($new_file);
+		}
+
+		if (is_dir($placeholder)) {
+			rmdir($placeholder);
+		}
+	}
+}
+
+/**
  * rrd_datasource_add - add a (list of) datasource(s) to an (array of) rrd file(s)
  *
  * @param array $file_array The array of rrd files
@@ -3993,70 +4107,51 @@ function rrd_datasource_add(array $file_array, array $ds_array, bool $debug) : m
 
 	$rrdtool_pipe = rrd_init();
 
-	// iterate all given rrd files
-	foreach ($file_array as $file) {
-		// create a DOM object from an rrdtool dump
-		$dom = new domDocument;
+	try {
+		// iterate all given rrd files
+		foreach ($file_array as $file) {
+			$dom = rrdtool_dump_document($file, $rrdtool_pipe);
 
-		$success = $dom->loadXML(rrdtool_execute('dump ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
+			if (!$dom instanceof DOMDocument) {
+				$check['err_msg'] = __('Error while parsing the XML of rrdtool dump');
 
-		if (!$success) {
-			$check['err_msg'] = __('Error while parsing the XML of rrdtool dump');
-
-			return $check;
-		}
-
-		/* rrdtool dump depends on rrd file version:
-		 * version 0001 => RRDtool 1.0.x
-		 * version 0003 => RRDtool 1.2.x, 1.3.x, 1.4.x, 1.5.x, 1.6.x
-		 */
-		$version_node = $dom->getElementsByTagName('version')->item(0);
-		$version      = $version_node !== null ? trim($version_node->nodeValue) : RRD_FILE_VERSION3;
-
-		// now start XML processing
-		foreach ($ds_array as $ds) {
-			// first, append the <DS> structure in the rrd header
-			if ($ds['type'] === $data_source_types[5]) {
-				rrd_append_compute_ds($dom, $version, $ds['name'], $ds['type'], $ds['cdef']);
-			} else {
-				rrd_append_ds($dom, $version, $ds['name'], $ds['type'], $ds['heartbeat'], $ds['min'], $ds['max']);
+				return $check;
 			}
-			// now work on the <DS> structure as part of the <cdp_prep> tree
-			rrd_append_cdp_prep_ds($dom, $version);
-			// add <V>alues to the <database> tree
-			rrd_append_value($dom);
-		}
 
-		if ($debug) {
-			print $dom->saveXML();
-		} else {
-			// for rrdtool restore, we need a file, so write the XML to disk
-			$xml_file = $file . '.xml';
-			$rc       = $dom->save($xml_file);
+			/* rrdtool dump depends on rrd file version:
+			 * version 0001 => RRDtool 1.0.x
+			 * version 0003 => RRDtool 1.2.x, 1.3.x, 1.4.x, 1.5.x, 1.6.x
+			 */
+			$version_node = $dom->getElementsByTagName('version')->item(0);
+			$version      = $version_node !== null ? trim($version_node->nodeValue) : RRD_FILE_VERSION3;
 
-			// verify, if write was successful
-			if ($rc === false) {
-				$check['err_msg'] = __('ERROR while writing XML file: %s', $xml_file);
+			// now start XML processing
+			foreach ($ds_array as $ds) {
+				// first, append the <DS> structure in the rrd header
+				if ($ds['type'] === $data_source_types[5]) {
+					rrd_append_compute_ds($dom, $version, $ds['name'], $ds['type'], $ds['cdef']);
+				} else {
+					rrd_append_ds($dom, $version, $ds['name'], $ds['type'], $ds['heartbeat'], $ds['min'], $ds['max']);
+				}
+				// now work on the <DS> structure as part of the <cdp_prep> tree
+				rrd_append_cdp_prep_ds($dom, $version);
+				// add <V>alues to the <database> tree
+				rrd_append_value($dom);
+			}
+
+			if ($debug) {
+				print $dom->saveXML();
+			} elseif (!rrdtool_restore_document($dom, $file, $rrdtool_pipe)) {
+				$check['err_msg'] = __('ERROR: Unable to install validated RRDfile replacement for %s', $file);
 
 				return $check;
 			} else {
-				// are we allowed to write the rrd file?
-				if (is_writable($file)) {
-					// restore the modified XML to rrd
-					rrdtool_execute('restore -f ' . cacti_escapeshellarg($xml_file) . ' ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
-					// scratch that XML file to avoid filling up the disk
-					unlink($xml_file);
-					cacti_log('Added Data Source(s) to RRDfile: ' . $file, false, 'UTIL');
-				} else {
-					$check['err_msg'] = __('ERROR: RRDfile %s not writeable', $file);
-
-					return $check;
-				}
+				cacti_log('Added Data Source(s) to RRDfile: ' . $file, false, 'UTIL');
 			}
 		}
+	} finally {
+		rrd_close($rrdtool_pipe);
 	}
-
-	rrd_close($rrdtool_pipe);
 
 	return true;
 }
@@ -4073,54 +4168,35 @@ function rrd_datasource_add(array $file_array, array $ds_array, bool $debug) : m
 function rrd_rra_delete(array $file_array, array $rra_array, bool $debug) : mixed {
 	$rrdtool_pipe = rrd_init();
 
-	// iterate all given rrd files
-	foreach ($file_array as $file) {
-		// create a DOM document from an rrdtool dump
-		$dom = new domDocument;
+	try {
+		// iterate all given rrd files
+		foreach ($file_array as $file) {
+			$dom = rrdtool_dump_document($file, $rrdtool_pipe);
 
-		$success = $dom->loadXML(rrdtool_execute('dump ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
+			if (!$dom instanceof DOMDocument) {
+				$check['err_msg'] = __('Error while parsing the XML of RRDtool dump');
 
-		if (!$success) {
-			$check['err_msg'] = __('Error while parsing the XML of RRDtool dump');
+				return $check;
+			}
 
-			return $check;
-		}
+			// now start XML processing
+			foreach ($rra_array as $rra) {
+				rrd_delete_rra($dom, $rra);
+			}
 
-		// now start XML processing
-		foreach ($rra_array as $rra) {
-			rrd_delete_rra($dom, $rra);
-		}
-
-		if ($debug) {
-			print $dom->saveXML();
-		} else {
-			// for rrdtool restore, we need a file, so write the XML to disk
-			$xml_file = $file . '.xml';
-			$rc       = $dom->save($xml_file);
-
-			// verify, if write was successful
-			if ($rc === false) {
-				$check['err_msg'] = __('ERROR while writing XML file: %s', $xml_file);
+			if ($debug) {
+				print $dom->saveXML();
+			} elseif (!rrdtool_restore_document($dom, $file, $rrdtool_pipe)) {
+				$check['err_msg'] = __('ERROR: Unable to install validated RRDfile replacement for %s', $file);
 
 				return $check;
 			} else {
-				// are we allowed to write the rrd file?
-				if (is_writable($file)) {
-					// restore the modified XML to rrd
-					rrdtool_execute('restore -f ' . cacti_escapeshellarg($xml_file) . ' ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
-					// scratch that XML file to avoid filling up the disk
-					unlink($xml_file);
-					cacti_log('Deleted RRA(s) from RRDfile: ' . $file, false, 'UTIL');
-				} else {
-					$check['err_msg'] = __('ERROR: RRDfile %s not writeable', $file);
-
-					return $check;
-				}
+				cacti_log('Deleted RRA(s) from RRDfile: ' . $file, false, 'UTIL');
 			}
 		}
+	} finally {
+		rrd_close($rrdtool_pipe);
 	}
-
-	rrd_close($rrdtool_pipe);
 
 	return true;
 }
@@ -4138,54 +4214,35 @@ function rrd_rra_delete(array $file_array, array $rra_array, bool $debug) : mixe
 function rrd_rra_clone(array $file_array, string $cf, array $rra_array, bool $debug) : mixed {
 	$rrdtool_pipe = rrd_init();
 
-	// iterate all given rrd files
-	foreach ($file_array as $file) {
-		// create a DOM document from an rrdtool dump
-		$dom = new domDocument;
+	try {
+		// iterate all given rrd files
+		foreach ($file_array as $file) {
+			$dom = rrdtool_dump_document($file, $rrdtool_pipe);
 
-		$success = $dom->loadXML(rrdtool_execute('dump ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
+			if (!$dom instanceof DOMDocument) {
+				$check['err_msg'] = __('Error while parsing the XML of RRDtool dump');
 
-		if (!$success) {
-			$check['err_msg'] = __('Error while parsing the XML of RRDtool dump');
+				return $check;
+			}
 
-			return $check;
-		}
+			// now start XML processing
+			foreach ($rra_array as $rra) {
+				rrd_copy_rra($dom, $cf, $rra);
+			}
 
-		// now start XML processing
-		foreach ($rra_array as $rra) {
-			rrd_copy_rra($dom, $cf, $rra);
-		}
-
-		if ($debug) {
-			print $dom->saveXML();
-		} else {
-			// for rrdtool restore, we need a file, so write the XML to disk
-			$xml_file = $file . '.xml';
-			$rc       = $dom->save($xml_file);
-
-			// verify, if write was successful
-			if ($rc === false) {
-				$check['err_msg'] = __('ERROR while writing XML file: %s', $xml_file);
+			if ($debug) {
+				print $dom->saveXML();
+			} elseif (!rrdtool_restore_document($dom, $file, $rrdtool_pipe)) {
+				$check['err_msg'] = __('ERROR: Unable to install validated RRDfile replacement for %s', $file);
 
 				return $check;
 			} else {
-				// are we allowed to write the rrd file?
-				if (is_writable($file)) {
-					// restore the modified XML to rrd
-					rrdtool_execute('restore -f ' . cacti_escapeshellarg($xml_file) . ' ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
-					// scratch that XML file to avoid filling up the disk
-					unlink($xml_file);
-					cacti_log('Deleted RRA(s) from RRDfile: ' . $file, false, 'UTIL');
-				} else {
-					$check['err_msg'] = __('ERROR: RRDfile %s not writeable', $file);
-
-					return $check;
-				}
+				cacti_log('Cloned RRA(s) in RRDfile: ' . $file, false, 'UTIL');
 			}
 		}
+	} finally {
+		rrd_close($rrdtool_pipe);
 	}
-
-	rrd_close($rrdtool_pipe);
 
 	return true;
 }

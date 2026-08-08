@@ -88,10 +88,11 @@ test('the data source info reader quotes the RRDfile path', function () use ($fu
 // --- dump, restore, tune and resize ---
 
 test('the RRDfile check quotes dump and restore paths', function () use ($rrdSource) {
-	expect($rrdSource)->toContain("rrdtool_execute('dump ' . cacti_escapeshellarg(\$file)");
-	expect($rrdSource)->toContain("'restore -f ' . cacti_escapeshellarg(\$xml_file) . ' ' . cacti_escapeshellarg(\$file)");
+	expect($rrdSource)->toContain("'dump ' . cacti_escapeshellarg(\$file)");
+	expect($rrdSource)->toContain("'restore -f ' . cacti_escapeshellarg(\$xml_file) . ' ' . cacti_escapeshellarg(\$new_file)");
 	expect($rrdSource)->not->toContain('rrdtool_execute("dump $file"');
 	expect($rrdSource)->not->toContain('rrdtool_execute("restore -f $xml_file $file"');
+	expect($rrdSource)->not->toContain("\$xml_file = \$file . '.xml'");
 });
 
 test('tune and resize recommendations are quoted where they are built', function () use ($rrdSource) {
