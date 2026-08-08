@@ -14,16 +14,33 @@
 
 $root = dirname(__DIR__, 2);
 
-test('installer binds ajax table controls before restoring checkbox state', function () use ($root) {
+function installer_select_all_javascript(string $root) : string {
 	$javascript = file_get_contents($root . '/install/install.js');
 
-	$content       = strpos($javascript, "$('#installContent').html(data.Html);");
-	$bindControls  = strpos($javascript, 'handleTableNav();', $content);
-	$restoreState  = strpos($javascript, 'processStepTemplateInstall(data.StepData);', $content);
-	$restoreTables = strpos($javascript, 'processStepCheckTables(data.StepData);', $content);
+	if ($javascript === false) {
+		throw new RuntimeException('Unable to read install/install.js');
+	}
 
-	expect($content)->not->toBeFalse()
-		->and($bindControls)->not->toBeFalse()
+	return $javascript;
+}
+
+test('installer binds ajax table controls before restoring checkbox state', function () use ($root) {
+	$javascript    = installer_select_all_javascript($root);
+	$contentMarker = "$('#installContent').html(data.Html);";
+	$content       = strpos($javascript, $contentMarker);
+
+	expect($content)->not->toBeFalse();
+
+	if ($content === false) {
+		throw new RuntimeException('Unable to find the installer content marker');
+	}
+
+	$contentOffset = $content + strlen($contentMarker);
+	$bindControls  = strpos($javascript, 'handleTableNav();', $contentOffset);
+	$restoreState  = strpos($javascript, 'processStepTemplateInstall(data.StepData);', $contentOffset);
+	$restoreTables = strpos($javascript, 'processStepCheckTables(data.StepData);', $contentOffset);
+
+	expect($bindControls)->not->toBeFalse()
 		->and($restoreState)->not->toBeFalse()
 		->and($restoreTables)->not->toBeFalse()
 		->and($content < $bindControls)->toBeTrue()
@@ -32,15 +49,27 @@ test('installer binds ajax table controls before restoring checkbox state', func
 });
 
 test('installer restores select all without relying on a synthetic click', function () use ($root) {
-	$javascript = file_get_contents($root . '/install/install.js');
+	$javascript = installer_select_all_javascript($root);
 
 	$start = strpos($javascript, 'function restoreInstallerSelection(');
-	$end   = strpos($javascript, 'function processStepTemplateInstall(', $start);
-	$body  = substr($javascript, $start, $end - $start);
 
-	expect($start)->not->toBeFalse()
-		->and($end)->not->toBeFalse()
-		->and($body)->toContain("element.prop('checked', true);")
+	expect($start)->not->toBeFalse();
+
+	if ($start === false) {
+		throw new RuntimeException('Unable to find restoreInstallerSelection()');
+	}
+
+	$end = strpos($javascript, 'function processStepTemplateInstall(', $start);
+
+	expect($end)->not->toBeFalse();
+
+	if ($end === false) {
+		throw new RuntimeException('Unable to find processStepTemplateInstall()');
+	}
+
+	$body = substr($javascript, $start, $end - $start);
+
+	expect($body)->toContain("element.prop('checked', true);")
 		->and($body)->toContain("selectAll(element.data('prefix'), true);")
 		->and($body)->not->toContain('element.click()');
 });
