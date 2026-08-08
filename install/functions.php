@@ -229,39 +229,37 @@ function prime_default_settings() : void {
 	global $settings;
 
 	if (is_array($settings) && !isset($_SESSION['settings_primed'])) {
+		$defaults = [];
+
 		foreach ($settings as $tab_array) {
 			if (cacti_sizeof($tab_array)) {
 				foreach ($tab_array as $setting => $attributes) {
 					if (isset($attributes['default'])) {
-						$current = db_fetch_cell_prepared('SELECT value
-							FROM settings
-							WHERE name = ?',
-							[$setting]);
-
-						if ($current == '' || $current == null) {
-							db_execute_prepared('INSERT IGNORE INTO settings
-								(name, value) VALUES (?, ?)',
-								[$setting, $attributes['default']]);
-						}
+						$defaults[$setting] = $attributes['default'];
 					} elseif (isset($attributes['items'])) {
 						foreach ($attributes['items'] as $isetting => $iattributes) {
 							if (isset($iattributes['default'])) {
-								$current = db_fetch_cell_prepared('SELECT value
-									FROM settings
-									WHERE name = ?',
-									[$isetting]);
-
-								if ($current == '' || $current == null) {
-									db_execute_prepared('INSERT IGNORE INTO settings
-										(name, value)
-										VALUES (?, ?)',
-										[$isetting, $iattributes['default']]);
-								}
+								$defaults[$isetting] = $iattributes['default'];
 							}
 						}
 					}
 				}
 			}
+		}
+
+		foreach (array_chunk($defaults, 250, true) as $chunk) {
+			$placeholders = [];
+			$params       = [];
+
+			foreach ($chunk as $name => $value) {
+				$placeholders[] = '(?, ?)';
+				$params[]       = $name;
+				$params[]       = $value;
+			}
+
+			db_execute_prepared('INSERT IGNORE INTO settings
+				(name, value) VALUES ' . implode(', ', $placeholders),
+				$params);
 		}
 	}
 
