@@ -230,10 +230,20 @@ function cacti_auth_transition(int $user_id, string $reason = 'login') : bool {
 	}
 
 	if (session_status() === PHP_SESSION_ACTIVE) {
-		session_regenerate_id(true);
+		if (!session_regenerate_id(true)) {
+			cacti_log(sprintf('SECURITY: auth transition blocked because session regeneration failed for user %d, reason %s', $user_id, $reason), false, 'AUTH');
+
+			return false;
+		}
 	}
 
 	kill_session_var(SESS_USER_REALMS);
+	kill_session_var(SESS_AUTH_NAMES);
+	kill_session_var(SESS_TREE_PERMS);
+	kill_session_var(SESS_SIMPLE_PERMS);
+	kill_session_var(SESS_SIMPLE_TEMPLATE_PERMS);
+	kill_session_var(SESS_USER_PERMS_KEY);
+	kill_session_var(SESS_USER_2FA);
 	kill_session_var(OPTIONS_USER);
 	kill_session_var(OPTIONS_WEB);
 

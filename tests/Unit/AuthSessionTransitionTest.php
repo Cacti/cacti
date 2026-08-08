@@ -31,7 +31,10 @@ $loginSource     = file_get_contents(dirname(__DIR__, 2) . '/auth_login.php');
 
 test('the transition helper issues a new session id', function () use ($authSource) {
 	expect($authSource)->toContain('function cacti_auth_transition(int $user_id, string $reason');
-	expect($authSource)->toContain('session_regenerate_id(true);');
+	expect($authSource)->toContain('if (!session_regenerate_id(true)) {')
+		->and($authSource)->toContain('SECURITY: auth transition blocked because session regeneration failed')
+		->and(strpos($authSource, 'return false;', strpos($authSource, 'if (!session_regenerate_id(true)) {')))
+		->toBeLessThan(strpos($authSource, 'kill_session_var(SESS_USER_REALMS);'));
 });
 
 test('the transition helper fails closed for a missing or locked account', function () use ($authSource) {
@@ -40,9 +43,19 @@ test('the transition helper fails closed for a missing or locked account', funct
 });
 
 test('the transition helper drops the cached permissions', function () use ($authSource) {
-	expect($authSource)->toContain('kill_session_var(SESS_USER_REALMS);');
-	expect($authSource)->toContain('kill_session_var(OPTIONS_USER);');
-	expect($authSource)->toContain('kill_session_var(OPTIONS_WEB);');
+	foreach ([
+		'SESS_USER_REALMS',
+		'SESS_AUTH_NAMES',
+		'SESS_TREE_PERMS',
+		'SESS_SIMPLE_PERMS',
+		'SESS_SIMPLE_TEMPLATE_PERMS',
+		'SESS_USER_PERMS_KEY',
+		'SESS_USER_2FA',
+		'OPTIONS_USER',
+		'OPTIONS_WEB',
+	] as $cache) {
+		expect($authSource)->toContain("kill_session_var($cache);");
+	}
 });
 
 // --- the call sites ---
