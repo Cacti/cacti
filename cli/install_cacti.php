@@ -39,8 +39,6 @@ display_version();
 
 error_reporting(E_ALL);
 
-db_execute("DELETE FROM settings WHERE name like 'log_install%' or name = 'install_eula'");
-
 define('log_install_echo', 'on');
 
 if (cacti_sizeof($parms)) {
@@ -199,6 +197,8 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
+db_execute("DELETE FROM settings WHERE name like 'log_install%' or name = 'install_eula'");
+
 include_once(CACTI_PATH_LIBRARY . '/api_automation.php');
 include_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
 include_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
@@ -256,12 +256,14 @@ if ($installer->getStep() == Installer::STEP_INSTALL_CONFIRM && $should_install)
 	log_install_always('cli', 'Finished installation...');
 }
 
-$step = $installer->getStep();
+$step     = $installer->getStep();
+$exitCode = 0;
 log_install_high('cli','getStep(): ' . $step);
 
 switch ($installer->getStep()) {
 	case Installer::STEP_INSTALL:
 		log_install_always('cli', 'An Installation was already in progress');
+		$exitCode = 1;
 
 		break;
 	case Installer::STEP_INSTALL_CONFIRM:
@@ -271,6 +273,7 @@ switch ($installer->getStep()) {
 	case Installer::STEP_ERROR:
 		log_install_always('cli', 'One or more errors occurred during install, please refer to log files');
 		process_install_errors(['Errors'=>$installer->getErrors()]);
+		$exitCode = 1;
 
 		break;
 	case Installer::STEP_COMPLETE:
@@ -279,11 +282,14 @@ switch ($installer->getStep()) {
 		break;
 	default:
 		log_install_always('cli', 'Unexpected step (' . $installer->getStep() . ')');
+		$exitCode = 1;
 
 		break;
 }
 
 print PHP_EOL;
+
+exit($exitCode);
 
 /**
  * get_install_option - gets the install options from a json file
@@ -372,6 +378,14 @@ function set_install_multioption(array &$options, string $key, string $display_n
 	$option_pos = strpos($value, ':');
 
 	if ($option_pos !== false) {
+		if (!isset($options[$key])) {
+			$options[$key] = [];
+		} elseif (!is_array($options[$key])) {
+			printf('ERROR: Invalid %s option group%s', $display_name, PHP_EOL);
+
+			exit(1);
+		}
+
 		$option_name = trim(substr($value, 0, $option_pos));
 
 		if ($replace_dots) {

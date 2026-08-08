@@ -434,7 +434,7 @@ function install_test_local_database_connection() : string|false {
 	}
 }
 
-function install_test_remote_database_connection() : string|false {
+function install_test_remote_database_connection() : string {
 	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default,
 	$rdatabase_type, $rdatabase_port, $rdatabase_retries, $rdatabase_ssl, $rdatabase_ssl_key,
 	$rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert;
@@ -481,23 +481,38 @@ function install_test_remote_database_connection() : string|false {
 
 	if (is_object($connection)) {
 		$version = db_fetch_cell('SELECT cacti FROM version', '', true, $connection);
-
-		if (cacti_version_compare($version, CACTI_VERSION, '<')) {
-			$failed  = true;
-			$message = __('Test Failed! Remote version newer than Primary.  Main Primary at %s and Remote at %s.', $version, CACTI_VERSION);
-		} else {
-			$failed  = false;
-			$message = __('Check ran successfully.');
-		}
+		$result  = install_remote_database_version_result((string) $version, CACTI_VERSION);
 
 		db_close($connection);
 
-		return json_encode(['status' => $failed, 'message' => $message]);
+		return json_encode($result, JSON_THROW_ON_ERROR);
 	} else {
 		$message = __('Unable to connect to the main Cacti server.');
 
-		return json_encode(['status' => 'false', 'message' => $message]);
+		return json_encode([
+			'status'  => 'false',
+			'message' => $message,
+		], JSON_THROW_ON_ERROR);
 	}
+}
+
+/**
+ * Compare the primary database version with the remote poller's code version.
+ *
+ * @return array{status: string, message: string}
+ */
+function install_remote_database_version_result(string $primaryVersion, string $remoteVersion) : array {
+	if (cacti_version_compare($primaryVersion, $remoteVersion, '<')) {
+		return [
+			'status'  => 'false',
+			'message' => __('Test Failed! Remote version newer than Primary.  Main Primary at %s and Remote at %s.', $primaryVersion, $remoteVersion),
+		];
+	}
+
+	return [
+		'status'  => 'true',
+		'message' => __('Check ran successfully.'),
+	];
 }
 
 function install_test_temporary_table() : bool {
@@ -989,7 +1004,7 @@ function install_setup_get_templates() : array {
 	return $info;
 }
 
-function install_setup_get_tables() : mixed {
+function install_setup_get_tables() : array|false {
 	// ensure all tables are utf8 enabled
 	$db_tables = get_cacti_base_tables();
 
@@ -1000,7 +1015,16 @@ function install_setup_get_tables() : mixed {
 	$t = [];
 
 	foreach ($db_tables as $table) {
-		$table_status = db_fetch_row("SHOW TABLE STATUS LIKE '$table'");
+		$table_status = db_fetch_row_prepared('SELECT TABLE_NAME AS Name,
+			ENGINE AS Engine,
+			TABLE_ROWS AS `Rows`,
+			TABLE_COLLATION AS Collation,
+			ROW_FORMAT AS Row_format
+			FROM information_schema.TABLES
+			WHERE TABLE_SCHEMA = DATABASE()
+			AND TABLE_NAME = ?',
+			[$table]
+		);
 
 		$collation  = '';
 		$engine     = '';
@@ -1025,12 +1049,12 @@ function install_setup_get_tables() : mixed {
 			}
 		}
 
-		if ($table_status === false || $collation != '' || $engine != '' || $row_format != '') {
+		if (!is_array($table_status) || $collation != '' || $engine != '' || $row_format != '') {
 			$t[$table]['Name']       = $table;
-			$t[$table]['Collation']  = is_array($table_status) ? $table_status['Collation'] : '';
-			$t[$table]['Engine']     = is_array($table_status) ? $table_status['Engine'] : '';
+			$t[$table]['Collation']  = is_array($table_status) ? ($table_status['Collation'] ?? '') : '';
+			$t[$table]['Engine']     = is_array($table_status) ? ($table_status['Engine'] ?? '') : '';
 			$t[$table]['Rows']       = $rows;
-			$t[$table]['Row_format'] = is_array($table_status) ? $table_status['Row_format'] : '';
+			$t[$table]['Row_format'] = is_array($table_status) ? ($table_status['Row_format'] ?? '') : '';
 		}
 	}
 

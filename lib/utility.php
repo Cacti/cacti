@@ -1969,7 +1969,9 @@ function utility_php_verify_recommends(mixed &$recommends, string $source) : voi
 	$execute_time   = ini_get('max_execution_time');
 	$timezone       = ini_get('date.timezone');
 
-	$cfg_values     = parse_ini_file(get_cfg_var('cfg_file_path'));
+	$config_file    = get_cfg_var('cfg_file_path');
+	$cfg_values     = is_string($config_file) && $config_file !== '' ? parse_ini_file($config_file) : [];
+	$cfg_values     = is_array($cfg_values) ? $cfg_values : [];
 	$cfg_mem_limit  = empty($cfg_values['memory_limit']) ? '' : $cfg_values['memory_limit'];
 	$cfg_timezone   = empty($cfg_values['date.timezone']) ? '' : $cfg_values['date.timezone'];
 	$cfg_max_exec   = empty($cfg_values['max_execution_time']) ? '' : $cfg_values['max_execution_time'];

@@ -692,6 +692,7 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 
 		if (strpos($name, chr(0)) !== false || preg_match('#(^|/)\.\.(/|$)#', $normalized_name)) {
 			cacti_log("WARNING: Skipping file with path traversal attempt: $name", false, 'IMPORT');
+			$filestatus[$name] = __('rejected');
 
 			continue;
 		}
@@ -699,6 +700,7 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 		// Reject absolute paths: Unix (/...), Windows (\... or C:\...).
 		if (preg_match('#^([/\\\\]|[A-Za-z]:)#', $name)) {
 			cacti_log("WARNING: Skipping file with absolute path: $name", false, 'IMPORT');
+			$filestatus[$name] = __('rejected');
 
 			continue;
 		}
@@ -725,6 +727,7 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 
 			if ($resolved_dir === false) {
 				cacti_log('FATAL: Package file destination outside allowed boundaries: ' . $name, true, 'IMPORT');
+				$filestatus[$name] = __('rejected');
 
 				continue;
 			}
@@ -737,6 +740,7 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 
 			if (!$in_scripts && !$in_resource) {
 				cacti_log('FATAL: Package file destination outside allowed boundaries: ' . $name, true, 'IMPORT');
+				$filestatus[$name] = __('rejected');
 
 				continue;
 			}
@@ -749,10 +753,12 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 						$file = fopen($filename, 'wb');
 
 						if (is_resource($file)) {
-							fwrite($file , $fdata, strlen($fdata));
+							$bytesWritten = fwrite($file, $fdata, strlen($fdata));
 							fclose($file);
 							clearstatcache();
-							$filestatus[$filename] = __('written');
+							$filestatus[$filename] = $bytesWritten === strlen($fdata)
+								? __('written')
+								: __('incomplete write');
 						} else {
 							$filestatus[$filename] = __('could not open');
 						}
