@@ -23,6 +23,9 @@ test('background installation always releases its lock and propagates failure', 
 	$source = file_get_contents($root . '/install/background.php');
 
 	expect($source)->not->toBeFalse();
+	expect($source)->toContain('$installer_process_timeout = 86400;');
+	expect($source)->toContain("register_process_start('install', 'master', '0', \$installer_process_timeout)");
+	expect($source)->not->toContain("register_process_start('install', 'master', '0', 600)");
 	expect($source)->toContain('$registered_process = false;');
 	expect($source)->toContain('$registered_process = true;');
 	expect($source)->toMatch('/try\s*\{.*Installer::beginInstall\(\$params\[0\]\).*\}\s*finally\s*\{/s');
