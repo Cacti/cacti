@@ -1351,14 +1351,11 @@ class Installer implements JsonSerializable {
 		}
 
 		$sysDescrMatch = CACTI_SERVER_OS == 'win32' ? 'Windows' : 'Linux';
+		$template_ids  = $this->getDefaultAutomationTemplateIds();
 
 		foreach ($this->defaultAutomation as $item) {
 			if ($item['sysDescrMatch'] == $sysDescrMatch || !empty($default_template)) {
-				$host_template_id = db_fetch_cell_prepared('SELECT id
-					FROM host_template
-					WHERE hash = ?',
-					[$item['hash']]
-				);
+				$host_template_id = $template_ids[$item['hash']] ?? 0;
 
 				if (!empty($host_template_id)) {
 					if ($host_template_id != $default_template) {
@@ -1386,11 +1383,10 @@ class Installer implements JsonSerializable {
 		$default_template = null;
 
 		if (!empty($param_default_template)) {
+			$template_ids = $this->getDefaultAutomationTemplateIds();
+
 			foreach ($this->defaultAutomation as $item) {
-				$id = db_fetch_cell_prepared('SELECT id
-					FROM host_template
-					WHERE hash = ?',
-					[$item['hash']]);
+				$id = $template_ids[$item['hash']] ?? 0;
 
 				if ($id == $param_default_template) {
 					$default_template = $param_default_template;
@@ -1412,6 +1408,30 @@ class Installer implements JsonSerializable {
 			log_install_always('templates', 'setDefaultTemplate(): Default Device Template is \'' . $default_template . '\'');
 			set_config_option('install_set_template_message_logged', 'on');
 		}
+	}
+
+	/**
+	 * Resolve the installer automation template hashes in one query.
+	 *
+	 * This intentionally does not cache results because package import can add
+	 * host templates between installer phases.
+	 *
+	 * @return array<string, int> Host template IDs keyed by template hash.
+	 */
+	private function getDefaultAutomationTemplateIds() : array {
+		$hashes = array_values(array_unique(array_column($this->defaultAutomation, 'hash')));
+
+		if (!cacti_sizeof($hashes)) {
+			return [];
+		}
+
+		$placeholders = implode(', ', array_fill(0, cacti_sizeof($hashes), '?'));
+		$templates    = db_fetch_assoc_prepared("SELECT id, hash
+			FROM host_template
+			WHERE hash IN ($placeholders)",
+			$hashes);
+
+		return array_map('intval', array_rekey($templates, 'hash', 'id'));
 	}
 
 	/**
@@ -3893,24 +3913,30 @@ class Installer implements JsonSerializable {
 
 			// Repair automation rules if broken
 			repair_automation();
+			$template_ids = $this->getDefaultAutomationTemplateIds();
+			$mapped_ids   = [];
+
+			if (cacti_sizeof($template_ids)) {
+				$host_template_ids = array_values($template_ids);
+				$placeholders      = implode(', ', array_fill(0, cacti_sizeof($host_template_ids), '?'));
+				$mapped_ids        = array_rekey(
+					db_fetch_assoc_prepared("SELECT host_template
+						FROM automation_templates
+						WHERE host_template IN ($placeholders)",
+						$host_template_ids
+					),
+					'host_template',
+					'host_template'
+				);
+			}
 
 			foreach ($this->defaultAutomation as $item) {
-				$host_template_id = db_fetch_cell_prepared('SELECT id
-					FROM host_template
-					WHERE hash = ?',
-					[$item['hash']]
-				);
+				$host_template_id = $template_ids[$item['hash']] ?? 0;
 
 				if (!empty($host_template_id)) {
 					log_install_always('', __('Mapping Automation Template for Device Template \'%s\'', $item['name']));
 
-					$exists = db_fetch_cell_prepared('SELECT host_template
-						FROM automation_templates
-						WHERE host_template = ?',
-						[$host_template_id]
-					);
-
-					if (empty($exists)) {
+					if (!isset($mapped_ids[$host_template_id])) {
 						db_execute_prepared('INSERT INTO automation_templates
 							(host_template, availability_method, sysDescr, sysName, sysOid, sequence)
 							VALUES (?, ?, ?, ?, ?, ?)',
@@ -4587,8 +4613,20 @@ class Installer implements JsonSerializable {
 
 	private static function fullSyncDataCollectorLog(array $poller_ids, string $format) : void {
 		if (cacti_sizeof($poller_ids) > 0) {
+			$unique_ids   = array_values(array_unique($poller_ids, SORT_REGULAR));
+			$placeholders = implode(', ', array_fill(0, cacti_sizeof($unique_ids), '?'));
+			$pollers      = array_rekey(
+				db_fetch_assoc_prepared("SELECT id, name
+					FROM poller
+					WHERE id IN ($placeholders)",
+					$unique_ids
+				),
+				'id',
+				'name'
+			);
+
 			foreach ($poller_ids as $id) {
-				$poller = db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', [$id]);
+				$poller = $pollers[$id] ?? false;
 
 				log_install_always('sync', __($format, $poller, $id));
 			}
