@@ -16,6 +16,7 @@ require_once dirname(__DIR__, 2) . '/lib/installer.php';
 test('installer accepts only complete browser selection payloads', function () {
 	$method   = new ReflectionMethod(Installer::class, 'isCompleteSelectionPayload');
 	$expected = array('chk_template_one', 'chk_template_two');
+	$method->setAccessible(true);
 
 	expect($method->invoke(null, array(
 		'chk_template_one' => true,
@@ -38,4 +39,15 @@ test('installer accepts only complete browser selection payloads', function () {
 			'chk_template_one' => true,
 			'chk_template_two' => 'unexpected',
 		), $expected))->toBeFalse();
+});
+
+test('installer requires payload keys only for rendered table controls', function () {
+	$method = new ReflectionMethod(Installer::class, 'isTableSelectable');
+	$method->setAccessible(true);
+
+	expect($method->invoke(null, array('Rows' => 0)))->toBeTrue()
+		->and($method->invoke(null, array('Rows' => '999999')))->toBeTrue()
+		->and($method->invoke(null, array('Rows' => 1000000)))->toBeFalse()
+		->and($method->invoke(null, array('Rows' => 'unknown')))->toBeFalse()
+		->and($method->invoke(null, array()))->toBeFalse();
 });
