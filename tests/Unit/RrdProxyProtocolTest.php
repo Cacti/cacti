@@ -518,39 +518,32 @@ it('negotiates an encrypted official-protocol connection end to end', function (
 			exit(14);
 		}
 
-		$setcnn_command = rrd_proxy_test_read_sequence($peer);
+		$command = rrd_proxy_test_read_sequence($peer);
 
-		if ($setcnn_command === false || rrdtool_proxy_decrypt($setcnn_command, (string) $server_private) !== 'setcnn encryption off') {
+		if ($command === false || rrdtool_proxy_decrypt($command, (string) $server_private) !== 'info test.rrd') {
 			exit(15);
 		}
 
-		$response = encrypt("% Encryption will be disabled.\nOK u:0.00", (string) $client_public);
+		$response = encrypt('OK u:0.00', (string) $client_public);
 
 		if (!rrdtool_proxy_write($peer, $response . RRD_PROXY_END_OF_SEQUENCE)) {
 			exit(16);
 		}
 
-		$encryption = false;
-		$command    = rrd_proxy_test_read_sequence($peer);
+		$quit = rrd_proxy_test_read_sequence($peer);
 
-		if ($command !== 'info test.rrd') {
+		if ($quit === false || rrdtool_proxy_decrypt($quit, (string) $server_private) !== 'quit') {
 			exit(17);
 		}
-
-		if (!rrdtool_proxy_write($peer, 'OK u:0.00' . RRD_PROXY_END_OF_SEQUENCE)) {
-			exit(18);
-		}
-
-		$quit = rrd_proxy_test_read_sequence($peer);
 		socket_close($peer);
 		socket_close($listener);
 
-		exit($quit === 'quit' ? 0 : 19);
+		exit(0);
 	}
 
 	$result = __rrd_proxy_execute('info test.rrd', false, RRDTOOL_OUTPUT_BOOLEAN, '', 'TEST');
 	expect($result)->toBeTrue()
-		->and($encryption)->toBeFalse();
+		->and($encryption)->toBeTrue();
 
 	socket_close($listener);
 	pcntl_waitpid($pid, $status);

@@ -503,9 +503,6 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 			rrdtool_execute('setenv RRD_DEFAULT_FONT ' . cacti_escapeshellarg((string) read_config_option('path_rrdtool_default_font')), false, RRDTOOL_OUTPUT_NULL, $rrdproxy, $logopt);
 		}
 
-		// disable encryption
-		$encryption = rrdtool_execute('setcnn encryption off', false, RRDTOOL_OUTPUT_BOOLEAN, $rrdproxy, $logopt) ? false : true;
-
 		return $rrdproxy;
 	}
 }
