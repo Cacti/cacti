@@ -1,4 +1,12 @@
 <?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ +-------------------------------------------------------------------------+
+ */
 
 declare(strict_types = 1);
 
@@ -9,11 +17,14 @@ final class SessionLookupIndexTest extends TestCase {
 	private string $upgrade;
 
 	protected function setUp(): void {
-		$this->schema  = file_get_contents(__DIR__ . '/../../cacti.sql');
-		$this->upgrade = file_get_contents(__DIR__ . '/../../install/upgrades/1_3_0.php');
+		$schema  = file_get_contents(__DIR__ . '/../../cacti.sql');
+		$upgrade = file_get_contents(__DIR__ . '/../../install/upgrades/1_3_0.php');
 
-		$this->assertIsString($this->schema);
-		$this->assertIsString($this->upgrade);
+		$this->assertIsString($schema, 'Unable to read cacti.sql');
+		$this->assertIsString($upgrade, 'Unable to read the 1.3.0 upgrade');
+
+		$this->schema  = $schema;
+		$this->upgrade = $upgrade;
 	}
 
 	public function testFreshInstallSchemaIndexesSessionInvalidationAndGarbageCollectionColumns(): void {
