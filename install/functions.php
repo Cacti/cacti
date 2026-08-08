@@ -1439,6 +1439,8 @@ function import_colors() : bool {
 
 	$contents = file(__DIR__ . '/colors.csv');
 
+	$colors = [];
+
 	if (is_array($contents) && cacti_count($contents)) {
 		foreach ($contents as $line) {
 			$line = trim($line);
@@ -1453,22 +1455,32 @@ function import_colors() : bool {
 				continue;
 			}
 
-			$natural = $parts[0];
-			$hex     = $parts[1];
-			$name    = $parts[2];
+			$hex  = $parts[1];
+			$name = $parts[2];
 
 			if (!preg_match('/^[0-9a-fA-F]{6}$/', $hex)) {
 				continue;
 			}
 
-			$id = db_fetch_cell_prepared('SELECT hex FROM colors WHERE hex = ?', [$hex]);
-
-			if (!empty($id)) {
-				db_execute_prepared('UPDATE colors SET name = ?, read_only = ? WHERE hex = ?', [$name, 'on', $hex]);
-			} else {
-				db_execute_prepared('INSERT IGNORE INTO colors (name, hex, read_only) VALUES (?, ?, ?)', [$name, $hex, 'on']);
-			}
+			$colors[$hex] = $name;
 		}
+	}
+
+	foreach (array_chunk($colors, 250, true) as $chunk) {
+		$placeholders = [];
+		$params       = [];
+
+		foreach ($chunk as $hex => $name) {
+			$placeholders[] = '(?, ?, ?)';
+			$params[]       = $name;
+			$params[]       = $hex;
+			$params[]       = 'on';
+		}
+
+		db_execute_prepared('INSERT INTO colors (name, hex, read_only) VALUES ' .
+			implode(', ', $placeholders) . '
+			ON DUPLICATE KEY UPDATE name = VALUES(name), read_only = VALUES(read_only)',
+			$params);
 	}
 
 	return true;
