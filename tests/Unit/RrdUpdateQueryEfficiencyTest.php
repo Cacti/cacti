@@ -10,6 +10,9 @@ declare(strict_types = 1);
 
 test('RRD updates do not query metadata that is never consumed', function () {
 	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/rrd.php');
+
+	expect($source)->not->toBeFalse();
+
 	$start  = strpos($source, 'function rrdtool_function_update(');
 	$end    = strpos($source, 'function rrdtool_function_tune(', $start);
 
@@ -18,7 +21,7 @@ test('RRD updates do not query metadata that is never consumed', function () {
 
 	$function = substr($source, $start, $end - $start);
 
-	expect($function)->not->toContain('db_fetch_')
+	expect($function)->not->toMatch('/\bdb_[a-z_]+\s*\(/i')
 		->not->toContain('$unused_data_source_names')
 		->not->toContain('$data_template_id')
 		->not->toContain('$create_rrd_file')
