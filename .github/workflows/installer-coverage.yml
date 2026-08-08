@@ -75,6 +75,7 @@ jobs:
             tests/Unit/InstallerMicrotimeDateTest.php \
             tests/Unit/InstallerResilienceTest.php \
             tests/Unit/InstallerSafetyTest.php \
+            tests/Unit/InstallerSelectionPayloadTest.php \
             tests/Unit/Issue7343InstallerCsrfRecoveryTest.php \
             tests/Unit/VendorBootGuardTest.php \
             --coverage \
