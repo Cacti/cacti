@@ -53,10 +53,14 @@ if (cacti_sizeof($params) == 0) {
 	exit(0);
 }
 
+$registered_process = false;
+
 if (function_exists('register_process_start')) {
 	if (!register_process_start('install', 'master', '0', 600)) {
 		exit(0);
 	}
+
+	$registered_process = true;
 } else {
 	$running = read_config_option('installer_running', true);
 
@@ -67,11 +71,16 @@ if (function_exists('register_process_start')) {
 	set_config_option('installer_running', $now);
 }
 
-Installer::beginInstall($params[0]);
+$completed = false;
 
-if (function_exists('register_process_start')) {
-	unregister_process('install', 'master', 0);
-} else {
-	set_config_option('installer_running', '');
+try {
+	$completed = Installer::beginInstall($params[0]);
+} finally {
+	if ($registered_process) {
+		unregister_process('install', 'master', 0);
+	} else {
+		set_config_option('installer_running', '');
+	}
 }
 
+exit($completed ? 0 : 1);
