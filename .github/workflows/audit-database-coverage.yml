@@ -50,15 +50,13 @@ jobs:
         with:
           php-version: '8.2'
           coverage: xdebug
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+          tools: pest:3
 
       - name: Enforce line coverage
         env:
           XDEBUG_MODE: coverage
         run: |
-          include/vendor/bin/pest --colors=never \
+          pest --colors=never \
             --configuration=phpunit-audit.xml \
             --coverage \
             --coverage-text \

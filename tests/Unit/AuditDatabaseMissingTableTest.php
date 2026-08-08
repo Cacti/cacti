@@ -58,3 +58,13 @@ test('create statement extraction fails closed', function () {
 		->and(audit_extract_create_table($schema, 'does_not_exist'))->toBeFalse()
 		->and(audit_extract_create_table($schema, 'host; DROP TABLE host'))->toBeFalse();
 });
+
+test('database audit query failures fail closed', function () {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/cli/audit_database.php');
+
+	expect($source)->not->toBeFalse()
+		->and($source)->toContain('if (!is_array($tables)) {')
+		->and($source)->toContain('if (!is_array($expected_tables)) {')
+		->and($source)->toContain('if ($alters === false) {')
+		->and($source)->toContain('$exit_code = report_audit_results() === false ? 1 : 0;');
+});

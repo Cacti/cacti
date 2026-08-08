@@ -28,7 +28,8 @@ test('installer validates the complete core schema before reporting success', fu
 
 	expect($validation)->toBeLessThan($version)
 		->and($validation)->toBeLessThan($complete)
-		->and($installerSource)->toContain('ERROR: Required core database tables are missing: %s');
+		->and($installerSource)->toContain('ERROR: Required core database tables are missing: %s')
+		->and($installerSource)->toContain('ERROR: Unable to query the installed database schema');
 });
 
 test('background and CLI installation paths preserve failure state', function () use ($installerSource, $cliSource) {

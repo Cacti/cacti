@@ -3091,6 +3091,11 @@ class Installer implements JsonSerializable {
 			FROM information_schema.TABLES
 			WHERE TABLE_SCHEMA = ?',
 			array($database_default));
+
+		if (!is_array($table_rows)) {
+			return __('ERROR: Unable to query the installed database schema');
+		}
+
 		$actual_tables = array_column($table_rows, 'TABLE_NAME');
 		$missing_tables = audit_missing_core_tables($expected_tables, $actual_tables);
 

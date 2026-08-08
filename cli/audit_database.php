@@ -123,9 +123,9 @@ if (cacti_sizeof($parms)) {
 	} elseif ($create) {
 		create_tables();
 	} elseif ($report) {
-		report_audit_results();
+		$exit_code = report_audit_results() === false ? 1 : 0;
 	} elseif ($altersopt) {
-		repair_database(false);
+		$exit_code = repair_database(false) ? 0 : 1;
 	} elseif ($loadopt) {
 		load_audit_database();
 	} else {
@@ -317,6 +317,10 @@ function repair_database($run = true) {
 
 	$alters = report_audit_results(false);
 
+	if ($alters === false) {
+		return false;
+	}
+
 	$good = 0;
 	$bad = 0;
 
@@ -391,16 +395,35 @@ function report_audit_results($output = true) {
 
 	$tables = db_fetch_assoc('SHOW TABLES');
 
+	if (!is_array($tables)) {
+		print 'FATAL: Unable to query the tables in the active Cacti database' . PHP_EOL;
+
+		return false;
+	}
+
 	$alters  = array();
 	$actual_tables = array_column($tables, $db_name);
 	$expected_tables = db_fetch_assoc('SELECT DISTINCT table_name
 		FROM table_columns
 		ORDER BY table_name');
+
+	if (!is_array($expected_tables)) {
+		print 'FATAL: Unable to query the canonical Cacti audit schema' . PHP_EOL;
+
+		return false;
+	}
+
 	$expected_tables = array_column($expected_tables, 'table_name');
 	$missing_tables  = audit_missing_core_tables($expected_tables, $actual_tables);
 
 	if (cacti_sizeof($missing_tables)) {
 		$schema_sql = file_get_contents($config['base_path'] . '/cacti.sql');
+
+		if ($schema_sql === false) {
+			print 'FATAL: Unable to read the canonical cacti.sql schema' . PHP_EOL;
+
+			return false;
+		}
 
 		foreach($missing_tables as $table_name) {
 			if ($output) {
@@ -411,7 +434,7 @@ function report_audit_results($output = true) {
 			}
 
 			$alters[$table_name] = array(
-				'__create_table__' => $schema_sql === false ? false : audit_extract_create_table($schema_sql, $table_name)
+				'__create_table__' => audit_extract_create_table($schema_sql, $table_name)
 			);
 		}
 	}
