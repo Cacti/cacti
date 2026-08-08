@@ -23,6 +23,7 @@
 */
 
 include_once(dirname(__FILE__) . '/../lib/poller.php');
+include_once(dirname(__FILE__) . '/../lib/audit.php');
 
 class Installer implements JsonSerializable {
 	const EXIT_DB_EMPTY = 1;
@@ -3106,6 +3107,10 @@ class Installer implements JsonSerializable {
 
 		log_install_always('', __('Finished %s Process for v%s', $which, CACTI_VERSION));
 
+		if (empty($failure)) {
+			$failure = $this->validateCoreSchema();
+		}
+
 		set_install_config_option('install_error', $failure);
 
 		if (empty($failure)) {
@@ -3130,6 +3135,40 @@ class Installer implements JsonSerializable {
 			$this->setProgress(Installer::PROGRESS_COMPLETE);
 			$this->setStep(Installer::STEP_ERROR);
 		}
+	}
+
+	private function validateCoreSchema() {
+		global $config, $database_default;
+
+		$schema_sql = file_get_contents($config['base_path'] . '/cacti.sql');
+
+		if ($schema_sql === false) {
+			return __('ERROR: Unable to validate the installed database because cacti.sql could not be read');
+		}
+
+		$expected_tables = audit_schema_table_names($schema_sql);
+
+		if (!cacti_sizeof($expected_tables)) {
+			return __('ERROR: Unable to validate the installed database because cacti.sql contains no table definitions');
+		}
+
+		$table_rows = db_fetch_assoc_prepared('SELECT TABLE_NAME
+			FROM information_schema.TABLES
+			WHERE TABLE_SCHEMA = ?',
+			array($database_default));
+
+		if (!is_array($table_rows)) {
+			return __('ERROR: Unable to query the installed database schema');
+		}
+
+		$actual_tables = array_column($table_rows, 'TABLE_NAME');
+		$missing_tables = audit_missing_core_tables($expected_tables, $actual_tables);
+
+		if (cacti_sizeof($missing_tables)) {
+			return __('ERROR: Required core database tables are missing: %s', implode(', ', $missing_tables));
+		}
+
+		return '';
 	}
 
 	private function installTemplate() {
@@ -3595,26 +3634,29 @@ class Installer implements JsonSerializable {
 
 		Installer::setPhpOption('max_execution_time', 0);
 		Installer::setPhpOption('memory_limit', -1);
+		$backgroundTime = microtime(true);
+		$success        = false;
+
 		try {
-			$backgroundTime = microtime(true);
 			if ($installer == null) {
 				$installer = new Installer();
 			}
 			$installer->setDefaults();
 			$installer->install();
-		} catch (Exception $e) {
+			$success = $installer->getStep() === Installer::STEP_COMPLETE;
+		} catch (Throwable $e) {
 			log_install_always('', __('Exception occurred during installation: #%s - %s', $e->getCode(), $e->getMessage()));
 		}
 
 		$backgroundDone = microtime(true);
 		set_install_config_option('install_complete', $backgroundDone);
-		set_install_config_option('install_step', Installer::STEP_COMPLETE);
 
 		$dateBack = DateTime::createFromFormat('U.u', $backgroundTime);
 		$dateTime = DateTime::createFromFormat('U.u', $backgroundDone);
 
 		log_install_always('', __('Installation was started at %s, completed at %s', (string) $dateBack->format('Y-m-d H:i:s'), (string) $dateTime->format('Y-m-d H:i:s')));
-		return true;
+
+		return $success;
 	}
 
 	public static function getInstallLog() {
