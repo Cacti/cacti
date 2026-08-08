@@ -8332,7 +8332,7 @@ function get_rrdtool_version() : string {
 	return $version;
 }
 
-function get_installed_rrdtool_version() : string {
+function get_installed_rrdtool_version() : string|false {
 	global $rrdtool_versions;
 	static $version = '';
 
@@ -8349,12 +8349,30 @@ function get_installed_rrdtool_version() : string {
 			$version = false;
 
 			if (preg_match('/^RRDtool ([0-9.]+) /', (string) ($shell ?? ''), $matches)) {
-				foreach ($rrdtool_versions as $rrdtool_version => $rrdtool_version_text) {
-					if (cacti_version_compare($rrdtool_version, $matches[1], '<=')) {
-						$version = $rrdtool_version;
-					}
-				}
+				$version = get_supported_rrdtool_version($matches[1], $rrdtool_versions);
 			}
+		}
+	}
+
+	return $version;
+}
+
+/**
+ * Map an installed RRDtool release to the newest capability level supported
+ * by Cacti.
+ *
+ * @param string $installed_version  The version reported by the RRDtool binary
+ * @param array  $supported_versions Ordered map of supported versions to labels
+ *
+ * @return string|false The supported capability level, or false when the
+ *                      installed release predates every supported version
+ */
+function get_supported_rrdtool_version(string $installed_version, array $supported_versions) : string|false {
+	$version = false;
+
+	foreach ($supported_versions as $supported_version => $label) {
+		if (cacti_version_compare($supported_version, $installed_version, '<=')) {
+			$version = $supported_version;
 		}
 	}
 
