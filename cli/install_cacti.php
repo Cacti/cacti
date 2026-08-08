@@ -159,7 +159,7 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case '--table':
-				set_install_multioption($options, 'Tables', 'Table', $value, '');
+				set_install_multioption($options, 'Tables', 'Table', $value, 'chk_table_');
 
 				break;
 			case '--template':

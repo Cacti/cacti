@@ -67,6 +67,7 @@ test('installer command-line adapters propagate failures and release locks', fun
 	expect($cli)->toContain('exit($exitCode);')
 		->and($cli)->toContain('if (!isset($options[$key])) {')
 		->and($cli)->toContain('$options[$key] = [];')
+		->and($cli)->toContain("set_install_multioption(\$options, 'Tables', 'Table', \$value, 'chk_table_');")
 		->and($background)->toContain('finally {')
 		->and($background)->toContain('exit($completed ? 0 : 1);')
 		->and($conversion)->toContain('exit($conversion_failed ? 1 : 0);')

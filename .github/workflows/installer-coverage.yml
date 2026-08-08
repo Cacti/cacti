@@ -1,0 +1,107 @@
+name: Installer coverage
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/installer-coverage.yml'
+      - 'cacti.sql'
+      - 'cli/convert_tables.php'
+      - 'cli/install_cacti.php'
+      - 'docker/**'
+      - 'install/**'
+      - 'lib/import.php'
+      - 'lib/installer.php'
+      - 'lib/utility.php'
+      - 'tests/Unit/Installer*.php'
+      - 'tests/e2e/installer_resilience_docker.sh'
+      - 'tests/fixtures/InstallerCliProbe.php'
+      - 'tests/integration/Installer*.php'
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/installer-coverage.yml'
+      - 'cacti.sql'
+      - 'cli/convert_tables.php'
+      - 'cli/install_cacti.php'
+      - 'docker/**'
+      - 'install/**'
+      - 'lib/import.php'
+      - 'lib/installer.php'
+      - 'lib/utility.php'
+      - 'tests/Unit/Installer*.php'
+      - 'tests/e2e/installer_resilience_docker.sh'
+      - 'tests/fixtures/InstallerCliProbe.php'
+      - 'tests/integration/Installer*.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: installer-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit:
+    name: installer unit and contract tests
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Set up PHP 8.1
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.1'
+          coverage: xdebug
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run installer unit tests
+        env:
+          XDEBUG_MODE: coverage
+        run: |
+          include/vendor/bin/pest --colors=never \
+            tests/Unit/InstallerComposerPathTest.php \
+            tests/Unit/InstallerMicrotimeDateTest.php \
+            tests/Unit/InstallerResilienceTest.php \
+            tests/Unit/InstallerSafetyTest.php \
+            tests/Unit/Issue7343InstallerCsrfRecoveryTest.php \
+            tests/Unit/VendorBootGuardTest.php \
+            --coverage-text \
+            --coverage-clover=installer-unit-coverage.xml
+
+      - name: Run installer integration contracts
+        run: |
+          include/vendor/bin/pest --colors=never \
+            tests/integration/InstallerComposerContractTest.php \
+            tests/integration/InstallerVendorRefreshContractTest.php \
+            tests/integration/Issue7343InstallerCsrfRecoveryIntegrationTest.php
+
+      - name: Upload unit coverage
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: installer-unit-coverage
+          path: installer-unit-coverage.xml
+          if-no-files-found: error
+
+  docker-integration:
+    name: installer Docker integration matrix
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Run fresh, upgrade, CLI, and background scenarios
+        run: tests/e2e/installer_resilience_docker.sh
