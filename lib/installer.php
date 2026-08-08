@@ -1215,6 +1215,28 @@ class Installer implements JsonSerializable {
 		return $selected;
 	}
 
+	/* isCompleteSelectionPayload - confirms that a browser submitted every
+	 * server-rendered checkbox and only supported boolean values. */
+	private static function isCompleteSelectionPayload($submitted, $expected) {
+		unset($submitted['all']);
+
+		$submitted_keys = array_keys($submitted);
+		sort($submitted_keys);
+		sort($expected);
+
+		if ($submitted_keys !== $expected) {
+			return false;
+		}
+
+		foreach ($submitted as $value) {
+			if (!in_array($value, array(true, false, 'true', 'false', 'on', '', 1, 0, '1', '0'), true)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	/* setTemplates() - sets a list of templates that should be installed
 	 *                  during the installServer() phase.
 	 * @param_templates - an array of templates to install in the form of
@@ -1224,8 +1246,26 @@ class Installer implements JsonSerializable {
 	 *         passed that is not expected */
 	private function setTemplates($param_templates = array()) {
 		if (is_array($param_templates)) {
-			db_execute('DELETE FROM settings WHERE name like \'install_tp_%\'');
 			$known_templates = install_setup_get_templates();
+			$expected_keys   = array();
+
+			if (!is_array($known_templates)) {
+				$this->addError(Installer::STEP_TEMPLATE_INSTALL, 'Templates', 'SelectionPayload', __('Unable to load the available templates'));
+
+				return;
+			}
+
+			foreach ($known_templates as $known) {
+				$expected_keys[] = 'chk_template_' . str_replace('.', '_', $known['filename']);
+			}
+
+			if ($this->runtime === 'Web' && !self::isCompleteSelectionPayload($param_templates, $expected_keys)) {
+				$this->addError(Installer::STEP_TEMPLATE_INSTALL, 'Templates', 'SelectionPayload', __('The template selection was incomplete. Reload this installer step and select the templates again.'));
+
+				return;
+			}
+
+			db_execute('DELETE FROM settings WHERE name like \'install_tp_%\'');
 
 			log_install_medium('templates',"setTemplates(): Updating templates");
 			log_install_debug('templates',"setTemplates(): Parameter data:" . clean_up_lines(var_export($param_templates, true)));
@@ -1331,9 +1371,26 @@ class Installer implements JsonSerializable {
 	 *         conversion list due to being converted elsewhere */
 	private function setTables($param_tables = array()) {
 		if (is_array($param_tables)) {
-			db_execute('DELETE FROM settings WHERE name like \'install_table_%\'');
-
 			$known_tables = install_setup_get_tables();
+			$expected_keys = array();
+
+			if (!is_array($known_tables)) {
+				$this->addError(Installer::STEP_CHECK_TABLES, 'Tables', 'SelectionPayload', __('Unable to load the tables requiring conversion'));
+
+				return;
+			}
+
+			foreach ($known_tables as $known) {
+				$expected_keys[] = 'chk_table_' . $known['Name'];
+			}
+
+			if ($this->runtime === 'Web' && !self::isCompleteSelectionPayload($param_tables, $expected_keys)) {
+				$this->addError(Installer::STEP_CHECK_TABLES, 'Tables', 'SelectionPayload', __('The table selection was incomplete. Reload this installer step and select the tables again.'));
+
+				return;
+			}
+
+			db_execute('DELETE FROM settings WHERE name like \'install_table_%\'');
 
 			log_install_medium('tables',"setTables(): Updating Tables");
 			log_install_debug('tables',"setTables(): Parameter data:" . clean_up_lines(var_export($param_tables, true)));
