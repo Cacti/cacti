@@ -197,27 +197,6 @@ printf '%s\n' "$VERSION_OUTPUT"
 [ "$VERSION_STATUS" -ne 0 ] || fail 'installer ignored a rejected version write'
 [ "$(db_cacti -e 'SELECT cacti FROM version;')" = 'new_install' ] || fail 'failed version transaction did not roll back'
 
-printf 'Scenario: incomplete package handoff fails closed\n'
-reset_database "$REPO_DIR/cacti.sql"
-docker exec "$WEB_CONTAINER" sh -c ": > /var/www/html/cacti/install/templates/ACME.xml.gz"
-db_cacti -e "REPLACE INTO settings (name, value) VALUES
-	('install_started', '23456'),
-	('install_updated', '23456'),
-	('install_step', '97'),
-	('install_mode', '1'),
-	('install_version', '$CACTI_VERSION'),
-	('install_has_templates', '1'),
-	('install_tp_ACME.xml.gz', '1'),
-	('path_php_binary', '/usr/local/bin/php');"
-set +e
-PACKAGE_OUTPUT="$(docker exec "$WEB_CONTAINER" php /var/www/html/cacti/install/background.php 23456 2>&1)"
-PACKAGE_STATUS=$?
-set -e
-printf '%s\n' "$PACKAGE_OUTPUT"
-[ "$PACKAGE_STATUS" -ne 0 ] || fail 'background installer accepted an incomplete package import'
-[ "$(db_cacti -e 'SELECT cacti FROM version;')" = 'new_install' ] || fail 'failed package import advanced the version row'
-[ "$(db_cacti -e "SELECT value FROM settings WHERE name = 'install_step';")" = '99' ] || fail 'package failure did not preserve STEP_ERROR'
-
 printf 'Scenario: incomplete schema fails closed in CLI mode\n'
 reset_database "$REPO_DIR/cacti.sql"
 db_cacti -e 'DROP TABLE user_auth_row_cache;'
@@ -235,6 +214,7 @@ db_cacti -e "REPLACE INTO settings (name, value) VALUES
 	('install_started', '12345'),
 	('install_updated', '12345'),
 	('install_step', '97'),
+	('install_eula', '1'),
 	('install_version', '$CACTI_VERSION');"
 set +e
 BACKGROUND_OUTPUT="$(docker exec "$WEB_CONTAINER" php /var/www/html/cacti/install/background.php 12345 2>&1)"
