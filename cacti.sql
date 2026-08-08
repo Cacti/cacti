@@ -3266,7 +3266,9 @@ CREATE TABLE `sessions` (
   `user_agent` varchar(128) NOT NULL default '',
   `start_time` timestamp NOT NULL default current_timestamp,
   `transactions` int(10) unsigned NOT NULL default '1',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `access` (`access`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Used for Database based Session Storage';
 
 --
