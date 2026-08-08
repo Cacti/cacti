@@ -18,16 +18,14 @@
 */
 
 /*
- * path_php_binary is the one path setting in include/global_settings.php with
- * no 'default' key, so read_default_config_option() returns null for it and
- * read_config_option() hands back null whenever the settings row is absent.
- * That happens on a fresh install and after a partial one.
+ * The six binary path settings covered by #7584 had no 'default' key, so
+ * read_default_config_option() returned null whenever the settings row was
+ * absent. That happens on a fresh install and after a partial one.
  *
- * Three callers then passed the null straight into a string parameter. PHP
- * coerces it to '' and raises a deprecation today; PHP 9 makes it a TypeError,
- * which would take out script query collection, poller maintenance and the
- * boost launcher. The callers already handle an empty path, so making the
- * coercion explicit changes nothing except the warning.
+ * Callers already treat an empty path as unset. An explicit empty-string
+ * default preserves that behavior at the source and prevents every current
+ * and future string-typed consumer from receiving null. Existing casts remain
+ * useful defense in depth for partially initialized test/bootstrap contexts.
  */
 
 /**
@@ -52,21 +50,21 @@ function php_binary_body(string $file, string $function) : string {
 	return substr($source, $start, ($end === false ? strlen($source) : $end) - $start);
 }
 
-test('path_php_binary really has no default to fall back on', function () {
+test('the six affected binary path settings default to an empty string rather than null', function () {
 	$settings = file_get_contents(dirname(__DIR__, 2) . '/include/global_settings.php');
 	expect($settings)->not->toBeFalse('include/global_settings.php must be readable');
 
-	$start = strpos($settings, "'path_php_binary' => [");
-	expect($start)->not->toBeFalse();
+	foreach (['path_php_binary', 'path_rrdtool', 'path_spine', 'path_snmpget', 'path_snmpgetnext', 'path_snmpwalk'] as $setting) {
+		$start = strpos($settings, "'$setting' => [");
+		expect($start)->not->toBeFalse("$setting settings block must exist");
 
-	$end = strpos($settings, "\n\t],", $start);
-	expect($end)->not->toBeFalse('path_php_binary settings block must have a closing delimiter');
+		$end = strpos($settings, "\n\t],", $start);
+		expect($end)->not->toBeFalse("$setting settings block must have a closing delimiter");
 
-	$block = substr($settings, $start, $end - $start);
+		$block = substr($settings, $start, $end - $start);
 
-	// if a default is ever added, these casts stop being load-bearing
-	expect($block)->toContain("'method'")
-		->and($block)->not->toContain("'default'");
+		expect($block)->toMatch("/'default'\\s*=>\\s*''/");
+	}
 });
 
 test('a null option is what PHP deprecates, so the guard is not theoretical', function () {
