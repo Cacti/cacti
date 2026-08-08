@@ -50,7 +50,12 @@ jobs:
         with:
           php-version: '8.2'
           coverage: xdebug
-          tools: pest:3
+
+      - name: Install Pest
+        run: |
+          composer global config allow-plugins.pestphp/pest-plugin true
+          composer global require pestphp/pest:^3 --no-interaction --no-progress
+          echo "$(composer global config bin-dir --absolute)" >> "$GITHUB_PATH"
 
       - name: Enforce line coverage
         env:
