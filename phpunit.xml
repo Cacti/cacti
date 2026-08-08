@@ -6,6 +6,8 @@
     <testsuites>
         <testsuite name="Unit">
             <directory>./tests/Unit</directory>
+            <!-- Defines dedicated SNMP stubs and must only run via phpunit-snmp.xml. -->
+            <exclude>./tests/Unit/SnmpCoverageTest.php</exclude>
         </testsuite>
         <testsuite name="Integration">
             <directory>./tests/integration</directory>
