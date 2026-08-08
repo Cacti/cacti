@@ -987,41 +987,13 @@ function rrdtool_function_update(array $update_cache_array, mixed $rrdtool_pipe 
 	$rrds_processed = 0;
 
 	foreach ($update_cache_array as $rrd_path => $rrd_fields) {
-		$create_rrd_file = false;
-
 		if (cacti_sizeof($rrd_fields['times'])) {
 			$file_exists = rrdtool_file_exists($rrd_path, $rrdtool_pipe);
 
 			ksort($rrd_fields['times']);
 
 			if ($file_exists === false) {
-				$times = array_keys($rrd_fields['times']);
 				rrdtool_function_create($rrd_fields['local_data_id'], false, $rrdtool_pipe);
-				$create_rrd_file = true;
-			}
-
-			if (isset($rrd_fields['data_template_id'])) {
-				$data_template_id = $rrd_fields['data_template_id'];
-			} else {
-				$data_template_id = db_fetch_cell_prepared('SELECT data_template_id
-					FROM data_local
-					WHERE id = ?',
-					[$rrd_fields['local_data_id']]);
-			}
-
-			if ($data_template_id > 0) {
-				$unused_data_source_names = array_rekey(
-					db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-						FROM data_template_rrd AS dtr
-						LEFT JOIN graph_templates_item AS gti
-						ON dtr.id = gti.task_item_id
-						WHERE dtr.local_data_id = ?
-						AND gti.task_item_id IS NULL',
-						[$rrd_fields['local_data_id']]),
-					'data_source_name', 'data_source_name'
-				);
-			} else {
-				$unused_data_source_names = [];
 			}
 
 			foreach ($rrd_fields['times'] as $update_time => $field_array) {
