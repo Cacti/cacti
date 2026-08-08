@@ -1,0 +1,25 @@
+<interface>
+	<name>Loop State Reset Script Fixture</name>
+	<script_path>|path_php_binary| -q |path_cacti|/scripts/issue7135_probe.php</script_path>
+	<arg_prepend>|host_hostname|</arg_prepend>
+	<arg_index>index</arg_index>
+	<arg_query>query</arg_query>
+	<arg_get>get</arg_get>
+	<arg_num_indexes>num_indexes</arg_num_indexes>
+	<output_delimiter>!</output_delimiter>
+	<index_order>withQueryName</index_order>
+	<index_order_type>numeric</index_order_type>
+	<index_title_format>|chosen_order_field|</index_title_format>
+
+	<fields>
+		<withQueryName>
+			<name>Has A Query Name</name>
+			<direction>output</direction>
+			<query_name>mapped</query_name>
+		</withQueryName>
+		<withoutQueryName>
+			<name>Has No Query Name</name>
+			<direction>output</direction>
+		</withoutQueryName>
+	</fields>
+</interface>

@@ -1867,15 +1867,16 @@ function png2jpeg(string $png_data) : string {
 	$ImageData = '';
 
 	if ($png_data != '') {
-		$fn = '/tmp/' . time() . '.png';
+		// Decode the in-memory graph directly.  A predictable temporary file
+		// can collide with concurrent reports and is vulnerable to symlink races.
+		// Only accept real PNG data here; imagecreatefromstring() would also
+		// happily decode a JPEG/GIF/WebP payload if GD supports it, and the
+		// fallback image below is meant to run for anything that isn't PNG.
+		$im = false;
 
-		// write rrdtool's png file to scratch dir
-		$f = fopen($fn, 'wb');
-		fwrite($f, $png_data);
-		fclose($f);
-
-		// create php-gd image object from file
-		$im = imagecreatefrompng($fn);
+		if (substr($png_data, 0, 8) === "\x89PNG\r\n\x1a\n") {
+			$im = imagecreatefromstring($png_data);
+		}
 
 		if (!$im) {								// check for errors
 			$im  = imagecreate(150, 30);		// create an empty image
@@ -1883,16 +1884,16 @@ function png2jpeg(string $png_data) : string {
 			$tc  = imagecolorallocate($im, 0, 0, 0);
 			imagefilledrectangle($im, 0, 0, 150, 30, $bgc);
 			// print error message
-			imagestring($im, 1, 5, 5, "Error while opening: $fn", $tc);
+			imagestring($im, 1, 5, 5, 'Error while decoding PNG data', $tc);
 		}
 
 		ob_start(); // start a new output buffer to capture jpeg image stream
 		imagejpeg($im);	// output to buffer
-		$ImageData       = ob_get_contents(); // fetch image from buffer
-		$ImageDataLength = ob_get_length();
+		$ImageData = ob_get_contents(); // fetch image from buffer
+		if (PHP_VERSION_ID < 80500) {
+			imagedestroy($im);
+		}
 		ob_end_clean(); // stop this output buffer
-
-		unlink($fn); // delete scratch file
 	}
 
 	return $ImageData;
@@ -1909,15 +1910,16 @@ function png2gif(string $png_data) : string {
 	$ImageData = '';
 
 	if ($png_data != '') {
-		$fn = '/tmp/' . time() . '.png';
+		// Decode the in-memory graph directly.  A predictable temporary file
+		// can collide with concurrent reports and is vulnerable to symlink races.
+		// Only accept real PNG data here; imagecreatefromstring() would also
+		// happily decode a JPEG/GIF/WebP payload if GD supports it, and the
+		// fallback image below is meant to run for anything that isn't PNG.
+		$im = false;
 
-		// write rrdtool's png file to scratch dir
-		$f = fopen($fn, 'wb');
-		fwrite($f, $png_data);
-		fclose($f);
-
-		// create php-gd image object from file
-		$im = imagecreatefrompng($fn);
+		if (substr($png_data, 0, 8) === "\x89PNG\r\n\x1a\n") {
+			$im = imagecreatefromstring($png_data);
+		}
 
 		if (!$im) {								// check for errors
 			$im  = imagecreate(150, 30);		// create an empty image
@@ -1925,16 +1927,16 @@ function png2gif(string $png_data) : string {
 			$tc  = imagecolorallocate($im, 0, 0, 0);
 			imagefilledrectangle($im, 0, 0, 150, 30, $bgc);
 			// print error message
-			imagestring($im, 1, 5, 5, "Error while opening: $fn", $tc);
+			imagestring($im, 1, 5, 5, 'Error while decoding PNG data', $tc);
 		}
 
 		ob_start(); // start a new output buffer to capture gif image stream
 		imagegif($im);	// output to buffer
-		$ImageData       = ob_get_contents(); // fetch image from buffer
-		$ImageDataLength = ob_get_length();
+		$ImageData = ob_get_contents(); // fetch image from buffer
+		if (PHP_VERSION_ID < 80500) {
+			imagedestroy($im);
+		}
 		ob_end_clean(); // stop this output buffer
-
-		unlink($fn); // delete scratch file
 	}
 
 	return $ImageData;
@@ -2198,7 +2200,18 @@ function reports_log_and_notify(int $id, int $start_time, string $report_type, s
 		if ($report['notification'] != '') {
 			$notifications = json_decode($report['notification'], true);
 
+			if (!is_array($notifications)) {
+				cacti_log(sprintf("WARNING: Report '%s' has an invalid notification payload; notifications were skipped", $report['name']), false, 'REPORTS');
+				$notifications = [];
+			}
+
 			foreach ($notifications as $type => $data) {
+				if (!is_array($data)) {
+					cacti_log(sprintf("WARNING: Report '%s' has invalid notification data for type '%s'; notification was skipped", $report['name'], $type), false, 'REPORTS');
+
+					continue;
+				}
+
 				switch($type) {
 					case 'email':
 						if (!isset($data['to_email'])) {
