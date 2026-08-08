@@ -106,6 +106,14 @@ $disable_log_rotation = false;
 //$resource_path = '/var/www/html/cacti/resource/';
 
 /**
+ * Optional parameter to define the HTMLPurifier definition cache path.
+ * The directory must already exist and be writable by the web server user.
+ * If unset, Cacti uses cache/purifier below the Cacti installation path.
+ */
+
+//$config['purifier_cache_path'] = '/var/cache/cacti/purifier';
+
+/**
  * Optional parameter to define a data input whitelist command string. This
  * whitelist file will help protect cacti from unauthorized changes to Cacti
  * data input command string.
