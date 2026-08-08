@@ -13,6 +13,7 @@ on:
       - 'lib/import.php'
       - 'lib/installer.php'
       - 'lib/utility.php'
+      - 'phpunit-installer.xml'
       - 'tests/Unit/Installer*.php'
       - 'tests/e2e/installer_resilience_docker.sh'
       - 'tests/fixtures/InstallerCliProbe.php'
@@ -29,6 +30,7 @@ on:
       - 'lib/import.php'
       - 'lib/installer.php'
       - 'lib/utility.php'
+      - 'phpunit-installer.xml'
       - 'tests/Unit/Installer*.php'
       - 'tests/e2e/installer_resilience_docker.sh'
       - 'tests/fixtures/InstallerCliProbe.php'
@@ -68,14 +70,15 @@ jobs:
           XDEBUG_MODE: coverage
         run: |
           include/vendor/bin/pest --colors=never \
+            --configuration=phpunit-installer.xml \
             tests/Unit/InstallerComposerPathTest.php \
             tests/Unit/InstallerMicrotimeDateTest.php \
             tests/Unit/InstallerResilienceTest.php \
             tests/Unit/InstallerSafetyTest.php \
             tests/Unit/Issue7343InstallerCsrfRecoveryTest.php \
             tests/Unit/VendorBootGuardTest.php \
-            --coverage-text \
-            --coverage-clover=installer-unit-coverage.xml
+            --coverage \
+            --coverage-clover installer-unit-coverage.xml
 
       - name: Run installer integration contracts
         run: |
