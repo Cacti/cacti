@@ -1501,6 +1501,17 @@ class Installer implements JsonSerializable {
 	}
 
 	/**
+	 * Determines whether the web installer renders a conversion checkbox for a table.
+	 *
+	 * @param array<string, mixed> $table The table metadata
+	 *
+	 * @return bool Whether the table can be selected in the web installer
+	 */
+	private static function isTableSelectable(array $table) : bool {
+		return isset($table['Rows']) && is_numeric($table['Rows']) && (int) $table['Rows'] < 1000000;
+	}
+
+	/**
 	 * setTemplates() - sets a list of templates that should be installed
 	 * during the installServer() phase.
 	 *
@@ -1667,7 +1678,9 @@ class Installer implements JsonSerializable {
 		}
 
 		foreach ($known_tables as $known) {
-			$expected_keys[] = 'chk_table_' . $known['Name'];
+			if (self::isTableSelectable($known)) {
+				$expected_keys[] = 'chk_table_' . $known['Name'];
+			}
 		}
 
 		if ($this->runtime === 'Web' && !self::isCompleteSelectionPayload($param_tables, $expected_keys)) {
@@ -3138,7 +3151,7 @@ class Installer implements JsonSerializable {
 				html_header_checkbox([__('Name'), __('Collation'), __('Row Format'), __('Engine'), __('Rows')]);
 
 				foreach ($tables as $id => $p) {
-					$enabled = ($p['Rows'] < 1000000 ? true : false);
+					$enabled = self::isTableSelectable($p);
 
 					$style = ($enabled ? '' : 'text-decoration: line-through;');
 

@@ -39,3 +39,13 @@ test('installer accepts only complete browser selection payloads', function () {
 			'chk_template_two' => 'unexpected',
 		], $expected))->toBeFalse();
 });
+
+test('installer requires payload keys only for rendered table controls', function () {
+	$method = new ReflectionMethod(Installer::class, 'isTableSelectable');
+
+	expect($method->invoke(null, ['Rows' => 0]))->toBeTrue()
+		->and($method->invoke(null, ['Rows' => '999999']))->toBeTrue()
+		->and($method->invoke(null, ['Rows' => 1000000]))->toBeFalse()
+		->and($method->invoke(null, ['Rows' => 'unknown']))->toBeFalse()
+		->and($method->invoke(null, []))->toBeFalse();
+});
