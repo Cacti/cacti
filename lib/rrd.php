@@ -3839,6 +3839,8 @@ function rrdtool_function_get_resstep(mixed $local_data_ids, int $graph_start, i
 		$local_data_ids = [$local_data_ids];
 	}
 
+	$local_data_ids = array_values(array_unique($local_data_ids, SORT_REGULAR));
+
 	$time = time();
 
 	if ($graph_start < 0) {
@@ -3849,28 +3851,33 @@ function rrdtool_function_get_resstep(mixed $local_data_ids, int $graph_start, i
 		$graph_end = $time + $graph_end;
 	}
 
-	if (cacti_sizeof($local_data_ids)) {
-		foreach ($local_data_ids as $local_data_id) {
-			$data_source_info = db_fetch_assoc_prepared('SELECT dsp.step, dspr.steps, dspr.rows, dspr.timespan
-				FROM data_source_profiles AS dsp
-				INNER JOIN data_source_profiles_rra AS dspr
-				ON dspr.data_source_profile_id=dsp.id
-				INNER JOIN data_template_data AS dtd
-				ON dtd.data_source_profile_id=dsp.id
-				WHERE dtd.local_data_id = ?
-				ORDER BY step, steps ASC',
-				[$local_data_id]);
+	if (!cacti_sizeof($local_data_ids)) {
+		return 0;
+	}
 
-			if (cacti_sizeof($data_source_info)) {
-				foreach ($data_source_info as $resolution) {
-					if ($graph_start > ($time - ($resolution['step'] * $resolution['steps'] * $resolution['rows']))) {
-						if ($type == 'res') {
-							return $resolution['step'] * $resolution['steps'];
-						} else {
-							return $resolution['step'];
-						}
-					}
-				}
+	$placeholders = implode(', ', array_fill(0, cacti_sizeof($local_data_ids), '?'));
+	$resolutions  = db_fetch_assoc_prepared("SELECT dtd.local_data_id, dsp.step, dspr.steps, dspr.rows, dspr.timespan
+		FROM data_source_profiles AS dsp
+		INNER JOIN data_source_profiles_rra AS dspr
+		ON dspr.data_source_profile_id = dsp.id
+		INNER JOIN data_template_data AS dtd
+		ON dtd.data_source_profile_id = dsp.id
+		WHERE dtd.local_data_id IN ($placeholders)
+		ORDER BY dtd.local_data_id, dsp.step, dspr.steps ASC",
+		$local_data_ids);
+
+	$resolutions_by_data_source = [];
+
+	foreach ($resolutions as $resolution) {
+		$resolutions_by_data_source[$resolution['local_data_id']][] = $resolution;
+	}
+
+	foreach ($local_data_ids as $local_data_id) {
+		foreach ($resolutions_by_data_source[$local_data_id] ?? [] as $resolution) {
+			if ($graph_start > ($time - ($resolution['step'] * $resolution['steps'] * $resolution['rows']))) {
+				return $type == 'res' ?
+					$resolution['step'] * $resolution['steps'] :
+					$resolution['step'];
 			}
 		}
 	}
