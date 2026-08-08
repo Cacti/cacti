@@ -756,9 +756,18 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 							$bytesWritten = fwrite($file, $fdata, strlen($fdata));
 							fclose($file);
 							clearstatcache();
-							$filestatus[$filename] = $bytesWritten === strlen($fdata)
-								? __('written')
-								: __('incomplete write');
+
+							if ($bytesWritten === strlen($fdata)) {
+								$filestatus[$filename] = __('written');
+							} else {
+								$filestatus[$filename] = __('incomplete write');
+
+								if (file_exists($filename) && !unlink($filename)) {
+									cacti_log('FATAL: Unable to remove incomplete package file: ' . $filename, true, 'IMPORT');
+								}
+
+								clearstatcache();
+							}
 						} else {
 							$filestatus[$filename] = __('could not open');
 						}

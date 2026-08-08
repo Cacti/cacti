@@ -62,6 +62,7 @@ test('installer command-line adapters propagate failures and release locks', fun
 	$background = file_get_contents(dirname(__DIR__, 2) . '/install/background.php');
 	$conversion = file_get_contents(dirname(__DIR__, 2) . '/cli/convert_tables.php');
 	$installer  = file_get_contents(dirname(__DIR__, 2) . '/lib/installer.php');
+	$import     = file_get_contents(dirname(__DIR__, 2) . '/lib/import.php');
 	$utility    = file_get_contents(dirname(__DIR__, 2) . '/lib/utility.php');
 
 	expect($cli)->toContain('exit($exitCode);')
@@ -72,7 +73,8 @@ test('installer command-line adapters propagate failures and release locks', fun
 		->and($background)->toContain('exit($completed ? 0 : 1);')
 		->and($conversion)->toContain('exit($conversion_failed ? 1 : 0);')
 		->and($installer)->toContain("['bypass_shell' => true]")
-		->and($utility)->toContain("is_string(\$config_file) && \$config_file !== '' ? parse_ini_file(\$config_file) : []")
+		->and($import)->toContain('if (file_exists($filename) && !unlink($filename)) {')
+		->and($utility)->toContain('is_file($config_file) && is_readable($config_file)')
 		->and(substr_count($installer, 'shell_exec('))->toBe(4)
 		->and($installer)->not->toContain("cacti_escapeshellarg(CACTI_PATH_CLI . '/add_tree.php')")
 		->and($installer)->not->toContain("cacti_escapeshellarg(CACTI_PATH_CLI . '/convert_tables.php')");
