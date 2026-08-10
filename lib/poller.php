@@ -176,6 +176,114 @@ function exec_background($filename, $args = '', $redirect_args = '') {
 }
 
 /**
+ * Starts a background process without invoking an operating-system shell.
+ *
+ * @param string $filename Absolute path to an executable file.
+ * @param array  $args     Individual command arguments passed directly to the executable.
+ *
+ * @return bool True when the child process was started, otherwise false.
+ */
+function exec_background_process($filename, $args = array()) {
+	global $config;
+	static $processes = array();
+
+	foreach ($processes as $index => $background_process) {
+		$status = @proc_get_status($background_process);
+
+		if (!is_array($status) || empty($status['running'])) {
+			@proc_close($background_process);
+			unset($processes[$index]);
+		}
+	}
+
+	$filename = realpath($filename);
+
+	if ($filename === false || !is_file($filename) || !is_executable($filename)) {
+		cacti_log('WARNING: Refusing to start an invalid background executable', false, 'POLLER');
+
+		return false;
+	}
+
+	$null_device = $config['cacti_server_os'] == 'win32' ? 'NUL' : '/dev/null';
+	$descriptors = array(
+		0 => array('file', $null_device, 'r'),
+		1 => array('file', $null_device, 'a'),
+		2 => array('file', $null_device, 'a')
+	);
+	$command = array_merge(array($filename), array_map('strval', $args));
+	$process = @proc_open($command, $descriptors, $pipes, null, null, array('bypass_shell' => true));
+
+	if (!is_resource($process)) {
+		cacti_log('WARNING: Unable to start a background process', false, 'POLLER');
+
+		return false;
+	}
+
+	$processes[] = $process;
+
+	return true;
+}
+
+/**
+ * Configures a long-running Unix parent to let the kernel reap child exits.
+ *
+ * @param string|null   $server_os     Server operating system, or null to use the Cacti runtime value.
+ * @param callable|null $signal_handler Optional signal handler used by tests.
+ *
+ * @return bool True when automatic child reaping was enabled, otherwise false.
+ */
+function poller_enable_child_reaping($server_os = null, $signal_handler = null) {
+	global $config;
+
+	if ($server_os === null) {
+		$server_os = $config['cacti_server_os'];
+	}
+
+	if ($server_os == 'win32' || !defined('SIGCHLD') || !defined('SIG_IGN')) {
+		return false;
+	}
+
+	if ($signal_handler === null) {
+		if (!function_exists('pcntl_signal')) {
+			return false;
+		}
+
+		$signal_handler = 'pcntl_signal';
+	}
+
+	return (bool) call_user_func($signal_handler, SIGCHLD, SIG_IGN);
+}
+
+/**
+ * Selects the configured PHP executable or the currently running PHP binary.
+ *
+ * @param string $configured_binary Configured PHP executable path.
+ *
+ * @return string PHP executable path.
+ */
+function poller_php_binary($configured_binary) {
+	return empty($configured_binary) ? PHP_BINARY : $configured_binary;
+}
+
+/**
+ * Builds the discrete arguments used to start the main poller from cactid.
+ *
+ * @param string $base_path Cacti installation path.
+ * @param bool   $debug     Whether debug output is enabled.
+ *
+ * @return array Poller command arguments.
+ */
+function poller_cactid_arguments($base_path, $debug) {
+	$args = array('-q', $base_path . '/poller.php', '--force');
+
+	if ($debug) {
+		$args[] = '--debug';
+	}
+
+	return $args;
+}
+
+/**
  * exec_with_timeout - Execute a command and return it's output. Either wait until the
  * command exits or the timeout has expired.
  *
