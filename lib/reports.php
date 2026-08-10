@@ -1891,10 +1891,6 @@ function png2jpeg(string $png_data) : string {
 		imagejpeg($im);	// output to buffer
 		$ImageData = ob_get_contents(); // fetch image from buffer
 
-		if (PHP_VERSION_ID < 80500) {
-			imagedestroy($im);
-		}
-
 		ob_end_clean(); // stop this output buffer
 	}
 
@@ -1936,11 +1932,7 @@ function png2gif(string $png_data) : string {
 		imagegif($im);	// output to buffer
 		$ImageData = ob_get_contents(); // fetch image from buffer
 
-		if (PHP_VERSION_ID < 80500) {
-			imagedestroy($im);
-		}
-
-    ob_end_clean(); // stop this output buffer
+		ob_end_clean(); // stop this output buffer
 	}
 
 	return $ImageData;
