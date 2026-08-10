@@ -4,7 +4,7 @@ cmd_exec	./cli/audit_database.php:1028				$db_shell = shell_exec('which mysql');
 cmd_exec	./cli/audit_database.php:1058				exec($cmd, $output, $error);
 cmd_exec	./cli/audit_database.php:168		exec('php ' . CACTI_PATH_CLI . '/upgrade_database.php --debug', $output, $return_var);
 cmd_exec	./cli/audit_database.php:259								exec('php ' . CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old, $output, $return_var);
-cmd_exec	./cli/batchgapfix.php:422			exec($command, $output, $return_var);
+cmd_exec	./cli/batchgapfix.php:431			exec($command, $output, $return_var);
 cmd_exec	./cli/float_rrdfiles.php:352				$response = exec($command, $output, $return);
 cmd_exec	./cli/float_rrdfiles.php:464					$response = exec($command, $output, $return);
 cmd_exec	./cli/push_out_hosts.php:50		passthru($php_binary . ' ' . CACTI_PATH_CLI . '/rebuild_poller_cache.php ' . $parameters);
@@ -14,17 +14,17 @@ cmd_exec	./cli/splice_rrd.php:273	$response = shell_exec(cacti_escapeshellcmd($r
 cmd_exec	./cli/splice_rrd.php:305	shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($oldrrd) . ' > ' . cacti_escapeshellarg($oldxmlfile));
 cmd_exec	./cli/splice_rrd.php:308	shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($newrrd) . ' > ' . cacti_escapeshellarg($newxmlfile));
 cmd_exec	./cli/splice_rrd.php:921		$result      = exec($command, $output, $return_var);
-cmd_exec	./cli/update_heartbeat.php:274				$result = exec($command, $output, $return_code);
+cmd_exec	./cli/update_heartbeat.php:281				$result = exec($command, $output, $return_code);
 cmd_exec	./cmd.php:342			$cactiphp = proc_open($command, $cactides, $pipes);
 cmd_exec	./cmd_realtime.php:127				$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 cmd_exec	./graph_realtime.php:226			shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
 cmd_exec	./host.php:203		shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
 cmd_exec	./install/functions.php:958				$shell_output       = shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
 cmd_exec	./install/install.php:135			print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') . '</li>';
-cmd_exec	./lib/database.php:2670			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
-cmd_exec	./lib/database.php:2672			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ' version >/dev/null 2>&1', $output, $retval);
-cmd_exec	./lib/database.php:2675				exec("$dump_esc $options $credentials_string --user=" . cacti_escapeshellarg($username) . ' --password=' . cacti_escapeshellarg($password) . ' ' . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
-cmd_exec	./lib/database.php:2677				exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
+cmd_exec	./lib/database.php:2705			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
+cmd_exec	./lib/database.php:2707			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ' version >/dev/null 2>&1', $output, $retval);
+cmd_exec	./lib/database.php:2710				exec("$dump_esc $options $credentials_string --user=" . cacti_escapeshellarg($username) . ' --password=' . cacti_escapeshellarg($password) . ' ' . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
+cmd_exec	./lib/database.php:2712				exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
 cmd_exec	./lib/dsstats.php:1280		$process = proc_open($command, $fds, $pipes);
 cmd_exec	./lib/functions.php:10001			$output = shell_exec('powershell -Command "Get-WmiObject Win32_Processor | Select-Object NumberOfLogicalProcessors"');
 cmd_exec	./lib/functions.php:10008			$cpu_cores = shell_exec('sysctl -n hw.ncpu');
@@ -121,7 +121,7 @@ deserialize	./lib/reports.php:49		$items = unserialize($unstripped, ['allowed_cl
 dynamic_include	./cli/audit_database.php:232							require_once($plugin . '/setup.php');
 dynamic_include	./cli/audit_database.php:235								require_once($plugin . '/includes/database.php');
 dynamic_include	./cli/upgrade_database.php:152			include($upgrade_file);
-dynamic_include	./include/global.php:718		require_once($vendor_autoload);
+dynamic_include	./include/global.php:719		require_once($vendor_autoload);
 dynamic_include	./include/global_languages.php:178				require_once($providerFull);
 dynamic_include	./index.php:49							require_once($file);
 dynamic_include	./lib/installer.php:4103					include_once($upgrade_file);
@@ -172,7 +172,7 @@ fs_write	./lib/boost.php:611								if ($fileptr = fopen($cache_file, 'rb')) {
 fs_write	./lib/boost.php:761							if ($fileptr = fopen($cache_file, 'w')) {
 fs_write	./lib/clog_webapi.php:182					$log_fh = fopen($logfile, 'w');
 fs_write	./lib/database.php:241					file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
-fs_write	./lib/database.php:2503		file_put_contents(sys_get_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
+fs_write	./lib/database.php:2538		file_put_contents(sys_get_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
 fs_write	./lib/database.php:79					file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
 fs_write	./lib/functions.php:1615			$fp = @fopen($logfile, 'a');
 fs_write	./lib/functions.php:1743		$fp = fopen($file_name, 'r');
