@@ -16,4 +16,9 @@
             <directory>./tests/HandOff</directory>
         </testsuite>
     </testsuites>
+    <source>
+        <include>
+            <directory>./lib</directory>
+        </include>
+    </source>
 </phpunit>
