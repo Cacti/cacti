@@ -48,44 +48,9 @@ if (!defined('CACTI_PATH_LOG')) {
 }
 
 /**
- * sqlite reports rowCount() as 0 for SELECT, which makes
- * db_fetch_row_return() discard every row, and it has no FROM_UNIXTIME().
- * Both gaps are local to reading a host row and writing its status dates, so
- * they are patched here rather than in the shared FakeMySQLPDO.
- */
-class HostStatusStatement extends PDOStatement {
-	/** @var array<int,array<string,mixed>>|null rows of a SELECT, null otherwise */
-	private ?array $rows = null;
-
-	protected function __construct() {
-	}
-
-	public function execute(?array $params = null) : bool {
-		$executed = parent::execute($params);
-
-		$this->rows = $this->columnCount() > 0 ? parent::fetchAll(PDO::FETCH_ASSOC) : null;
-
-		return $executed;
-	}
-
-	public function rowCount() : int {
-		return $this->rows === null ? parent::rowCount() : count($this->rows);
-	}
-
-	public function fetchAll(int $mode = PDO::FETCH_DEFAULT, mixed ...$args) : array {
-		return $this->rows ?? parent::fetchAll($mode, ...$args);
-	}
-}
-
-/**
- * A FakeMySQLPDO that hands out counting statements and rewrites FROM_UNIXTIME.
+ * A FakeMySQLPDO that rewrites MySQL's FROM_UNIXTIME() for SQLite.
  */
 class HostStatusPDO extends FakeMySQLPDO {
-	public function __construct() {
-		parent::__construct();
-		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [HostStatusStatement::class, []]);
-	}
-
 	public function prepare(string $query, array $options = []) : PDOStatement|false {
 		return parent::prepare(preg_replace(
 			'/FROM_UNIXTIME\s*\(([^)]+)\)/i',
