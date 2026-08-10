@@ -24,8 +24,9 @@
 
 global $config, $refresh, $messages;
 
-$script = get_current_script_name();
-$graphs = false;
+$script      = get_current_script_name();
+$graphs      = false;
+$request_uri = $_SERVER['REQUEST_URI'] ?? '';
 
 if ($script == 'graph_view.php' || $script == 'graph.php') {
 	$graphs = true;
@@ -75,11 +76,11 @@ if (isset($_SESSION['refresh'])) {
 	$refreshIsLogout      = 'false';
 } elseif (isset($refresh)) {
 	$myrefresh['seconds'] = $refresh;
-	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
+	$myrefresh['page']    = sanitize_uri($request_uri);
 	$refreshIsLogout      = 'false';
 } elseif (read_config_option('auth_cache_enabled') == 'on' && isset($_SESSION['cacti_remembers']) && $_SESSION['cacti_remembers'] == true) {
 	$myrefresh['seconds'] = 99999999;
-	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
+	$myrefresh['page']    = sanitize_uri($request_uri);
 	$refreshIsLogout      = 'false';
 } elseif (read_user_setting('user_auto_logout_time') > 0 && is_realm_allowed(8)) {
 	$myrefresh['seconds'] = read_user_setting('user_auto_logout_time');
@@ -89,9 +90,9 @@ if (isset($_SESSION['refresh'])) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = 'index.php';
 	$refreshIsLogout      = 'false';
-} elseif (!isset($_SESSION[SESS_USER_ID]) && isset($_SERVER['REQUEST_URI']) && str_contains($_SERVER['REQUEST_URI'], 'index.php')) {
+} elseif (!isset($_SESSION[SESS_USER_ID]) && str_contains($request_uri, 'index.php')) {
 	$myrefresh['seconds'] = 99999999;
-	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
+	$myrefresh['page']    = sanitize_uri($request_uri);
 	$refreshIsLogout      = 'false';
 } else {
 	$myrefresh['seconds'] = ini_get('session.gc_maxlifetime');
@@ -102,14 +103,14 @@ if (isset($_SESSION['refresh'])) {
 // guest account does not auto log off
 if (isset($_SESSION[SESS_USER_ID]) && $_SESSION[SESS_USER_ID] == read_config_option('guest_user')) {
 	$myrefresh['seconds'] = 99999999;
-	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
+	$myrefresh['page']    = sanitize_uri($request_uri);
 	$refreshIsLogout      = 'false';
 }
 
 // basic auth times out when the auth provider times out
-if (read_config_option('auth_method') == 2) {
+if (read_config_option('auth_method') == AUTH_METHOD_BASIC) {
 	$myrefresh['seconds'] = 99999999;
-	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
+	$myrefresh['page']    = sanitize_uri($request_uri);
 	$refreshIsLogout      = 'false';
 }
 

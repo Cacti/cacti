@@ -254,15 +254,22 @@ if (!$force) {
 
 $i = 0;
 
+// keep the historical binary name when the setting has never been filled in
+$rrdtool_bin = read_config_option('path_rrdtool');
+
+if ($rrdtool_bin == '') {
+	$rrdtool_bin = 'rrdtool';
+}
+
 if (cacti_sizeof($rrdfiles)) {
 	foreach ($rrdfiles as $f) {
 		if (file_exists($f['rrd'])) {
-			$command = sprintf('rrdtool tune %s ', $f['rrd']);
+			$command = cacti_escapeshellcmd($rrdtool_bin) . ' tune ' . cacti_escapeshellarg($f['rrd']);
 
 			$data_sources = explode(',', $f['data_sources']);
 
 			foreach ($data_sources as $ds) {
-				$command .= " --heartbeat $ds:$new_heartbeat";
+				$command .= ' --heartbeat ' . cacti_escapeshellarg($ds . ':' . $new_heartbeat);
 			}
 
 			$output      = [];
