@@ -286,11 +286,13 @@ if (isset($i18n_text_log)) {
 // include base modules
 require_once(CACTI_PATH_LIBRARY . '/database.php');
 require_once(CACTI_PATH_LIBRARY . '/functions.php');
+require_once(CACTI_PATH_LIBRARY . '/renderer.php');
 require_once(CACTI_PATH_INCLUDE . '/global_constants.php');
 
 define('CACTI_VERSION', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_SHORT));
 define('CACTI_VERSION_FULL', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_FULL));
 
+require_once(CACTI_PATH_LIBRARY . '/htmx.php');
 require_once(CACTI_PATH_LIBRARY . '/html.php');
 require_once(CACTI_PATH_LIBRARY . '/html_utility.php');
 require_once(CACTI_PATH_LIBRARY . '/html_validate.php');
@@ -641,8 +643,9 @@ if ($config['is_web']) {
 
 	// prevent IE from silently rejects cookies sent from third party sites.
 	header('P3P: CP="CAO PSA OUR"');
+	// header() replaces by default, so a second Cache-Control here would drop
+	// no-store and leave every authenticated page cacheable
 	header('Cache-Control: no-store, no-cache, must-revalidate');
-	header('Cache-Control: max-age=31536000');
 
 	cacti_session_start();
 

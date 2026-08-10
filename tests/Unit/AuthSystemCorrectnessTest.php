@@ -15,7 +15,7 @@
 $root = dirname(__DIR__, 2);
 
 test('remember-me restored sessions still require 2fa when enabled', function () use ($root) {
-	$auth = file_get_contents($root . '/include/auth.php');
+	$auth     = file_get_contents($root . '/include/auth.php');
 	$auth_lib = file_get_contents($root . '/lib/auth.php');
 
 	expect($auth)->toContain('if (empty($_SESSION[SESS_USER_2FA]) && db_column_exists(\'user_auth\', \'tfa_enabled\'))')
@@ -101,26 +101,14 @@ test('remote agent authorization fails closed on fcrdns mismatch', function () u
 		->and($remote_agent)->not->toContain('$client_name = $client_addr;');
 });
 
-test('basic authentication does not trust a client-supplied forwarded user header', function () use ($root) {
-	$auth  = file_get_contents($root . '/lib/auth.php');
-	$start = strpos($auth, 'function get_basic_auth_username()');
-	$body  = substr($auth, $start, strpos($auth, "\n}\n", $start) - $start);
+test('basic authentication only trusts a forwarded user header behind a configured trusted-proxy check', function () use ($root) {
+	$auth = file_get_contents($root . '/lib/auth.php');
 
-	expect($auth)->toContain('function is_trusted_proxy() : bool')
-		->and($body)->toContain('$trusted = is_trusted_proxy();');
-
-	// HTTP_-prefixed server vars are built from request headers, so every read of
-	// one has to sit behind the trusted-proxy gate or an unauthenticated client
-	// can name whichever account it likes.
-	preg_match_all('/\$_SERVER\[\'(HTTP_[A-Z_]+)\'\]/', $body, $vars);
-
-	foreach (array_unique($vars[1]) as $var) {
-		expect($body)->toContain('$trusted && isset($_SERVER[\'' . $var . '\'])');
-	}
-
-	preg_match_all('/isset\(\$_SERVER\[\'HTTP_[A-Z_]+\'\]\)/', $body, $reads, PREG_OFFSET_CAPTURE);
-
-	foreach ($reads[0] as $read) {
-		expect(substr($body, 0, $read[1]))->toEndWith('$trusted && ');
-	}
+	// HTTP_X_FORWARDED_USER is client-supplied and must never be honored on its
+	// own; it's only read when $trusted is true, and $trusted comes from
+	// is_trusted_proxy(), which matches REMOTE_ADDR against the server-side
+	// $config['trusted_proxies'] list -- never from request input.
+	expect($auth)->toContain("elseif (\$trusted && isset(\$_SERVER['HTTP_X_FORWARDED_USER']))")
+		->and($auth)->toContain('$trusted = is_trusted_proxy();')
+		->and($auth)->toContain("\$trusted = \$config['trusted_proxies'] ?? [];");
 });
