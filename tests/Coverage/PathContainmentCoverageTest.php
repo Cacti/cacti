@@ -7,8 +7,18 @@
  | modify it under the terms of the GNU General Public License             |
  | as published by the Free Software Foundation; either version 2          |
  | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
 
@@ -116,4 +126,12 @@ test('repository url rejects anything else', function () : void {
 	expect(plugin_validate_repository_url(''))->toBe('');
 	expect(plugin_validate_repository_url(null))->toBe('');
 	expect(plugin_validate_repository_url('http://'))->toBe('');
+});
+
+test('repository url rejects userinfo, query strings and fragments', function () : void {
+	// the value is concatenated with a path, so these produce malformed requests
+	expect(plugin_validate_repository_url('https://user:pw@api.github.com'))->toBe('');
+	expect(plugin_validate_repository_url('https://user@api.github.com'))->toBe('');
+	expect(plugin_validate_repository_url('https://api.github.com/?x=1'))->toBe('');
+	expect(plugin_validate_repository_url('https://api.github.com/#frag'))->toBe('');
 });

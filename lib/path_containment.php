@@ -7,8 +7,18 @@
  | modify it under the terms of the GNU General Public License             |
  | as published by the Free Software Foundation; either version 2          |
  | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
 
@@ -171,6 +181,17 @@ function plugin_validate_repository_url(mixed $url) : string {
 
 	if (!in_array(strtolower($parts['scheme']), ['http', 'https'], true)) {
 		return '';
+	}
+
+	/**
+	 * The value is concatenated with a path, so a query string or fragment
+	 * would produce a malformed request. Userinfo is not meaningful for an
+	 * API base and would leak credentials into the log.
+	 */
+	foreach (['user', 'pass', 'query', 'fragment'] as $part) {
+		if (isset($parts[$part])) {
+			return '';
+		}
 	}
 
 	return $url;
