@@ -7,10 +7,28 @@
  | modify it under the terms of the GNU General Public License             |
  | as published by the Free Software Foundation; either version 2          |
  | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
+ +-------------------------------------------------------------------------+
 */
+
+// Mirror include/global_constants.php so the module can be loaded on its own.
+foreach (['RRD_ALIGN_LEFT' => 'left', 'RRD_ALIGN_RIGHT' => 'right',
+	'RRD_ALIGN_JUSTIFIED'     => 'justified', 'RRD_ALIGN_CENTER' => 'center'] as $name => $value) {
+	if (!defined($name)) {
+		define($name, $value);
+	}
+}
 
 require_once dirname(__DIR__, 2) . '/lib/rrd_graph_item.php';
 
@@ -63,11 +81,13 @@ test('textalign accepts the RRDtool keywords', function () : void {
 	expect(rrd_graph_item_textalign('left'))->toBe('left');
 	expect(rrd_graph_item_textalign('right'))->toBe('right');
 	expect(rrd_graph_item_textalign('center'))->toBe('center');
-	expect(rrd_graph_item_textalign(' justify '))->toBe('justify');
+	// the editor stores RRD_ALIGN_JUSTIFIED, which is 'justified' not 'justify'
+	expect(rrd_graph_item_textalign(' justified '))->toBe('justified');
 });
 
 test('textalign rejects anything outside the keyword set', function () : void {
 	expect(rrd_graph_item_textalign('LEFT'))->toBe('');
+	expect(rrd_graph_item_textalign('justify'))->toBe('');
 	expect(rrd_graph_item_textalign('left;id'))->toBe('');
 	expect(rrd_graph_item_textalign(''))->toBe('');
 	expect(rrd_graph_item_textalign(null))->toBe('');

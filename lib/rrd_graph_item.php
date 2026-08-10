@@ -7,8 +7,18 @@
  | modify it under the terms of the GNU General Public License             |
  | as published by the Free Software Foundation; either version 2          |
  | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
 
@@ -67,6 +77,9 @@ function rrd_graph_item_number_list(mixed $value) : string {
 /**
  * rrd_graph_item_textalign - validates a graph item text alignment
  *
+ * The keywords come from the RRD_ALIGN_* constants so the validator cannot
+ * drift from what the graph item editor stores.
+ *
  * @param mixed $align The stored alignment
  *
  * @return string One of RRDtool's alignment keywords, or an empty string
@@ -74,5 +87,7 @@ function rrd_graph_item_number_list(mixed $value) : string {
 function rrd_graph_item_textalign(mixed $align) : string {
 	$align = trim((string) $align);
 
-	return in_array($align, ['left', 'right', 'center', 'justify'], true) ? $align : '';
+	$allowed = [RRD_ALIGN_LEFT, RRD_ALIGN_RIGHT, RRD_ALIGN_JUSTIFIED, RRD_ALIGN_CENTER];
+
+	return in_array($align, $allowed, true) ? $align : '';
 }
