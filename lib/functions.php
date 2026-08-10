@@ -1305,7 +1305,13 @@ function display_output_messages() : mixed {
 		}
 	}
 
-	return json_encode($final_messages);
+	/**
+	 * Emitted into an inline <script> by global_session.php, and message
+	 * text carries user supplied values such as device descriptions and
+	 * file names, so it needs the script-context encoder rather than a
+	 * plain json_encode().
+	 */
+	return cacti_js_encode($final_messages);
 }
 
 /**
