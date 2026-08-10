@@ -1,0 +1,17 @@
+<phpunit bootstrap="include/vendor/autoload.php" beStrictAboutOutputDuringTests="false">
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <env name="CACTI_TEST_BOOTSTRAP" value="1"/>
+    </php>
+    <source>
+        <include>
+            <file>lib/path_containment.php</file>
+        </include>
+    </source>
+    <testsuites>
+        <testsuite name="Path containment coverage">
+            <file>tests/Coverage/PathContainmentCoverageTest.php</file>
+            <file>tests/Unit/PluginArchiveContainmentTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>

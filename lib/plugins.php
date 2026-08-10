@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once(__DIR__ . '/path_containment.php');
+
 function do_hook(string $name) : array {
 	$data = func_get_args();
 	$data = api_plugin_hook($name, $data);
@@ -1611,6 +1613,17 @@ function api_plugin_archive_restore(string $plugin, string $id, string $type = '
 				if (strlen($output)) {
 					$rfile = ltrim($basefile, '/');
 
+					/**
+					 * Archive entry names are attacker controlled once the
+					 * repository URL is.  An entry that climbs out of the
+					 * plugin directory is skipped rather than written.
+					 */
+					if (validate_relative_path_within($rfile, $restore_path) === false) {
+						cacti_log(sprintf('WARNING: Plugin \'%s\' archive entry \'%s\' escapes the plugin directory and was skipped.', $plugin, $basefile), false, 'PLUGIN');
+
+						continue;
+					}
+
 					if (basename($rfile) != $rfile) {
 						if (!is_dir(dirname($rfile)) && !mkdir(dirname($rfile), 0755, true)) {
 							if ($type == 'archive') {
@@ -1987,7 +2000,7 @@ function plugin_fetch_latest_plugins() : mixed {
 
 	$start = microtime(true);
 
-	$repo = trim(read_config_option('github_repository'), "/\n\r ");
+	$repo = plugin_validate_repository_url(read_config_option('github_repository'));
 	$user = trim(read_config_option('github_user'));
 
 	if ($repo == '' || $user == '') {
