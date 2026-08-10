@@ -195,7 +195,61 @@ function auth_cookie_user_currently_allowed(array $user_info) : bool {
 		return false;
 	}
 
+	if (($user_info['locked'] ?? '') == 'on') {
+		return false;
+	}
+
 	return auth_user_has_access($user_info);
+}
+
+/**
+ * cacti_auth_transition - move a session from unauthenticated to authenticated.
+ *
+ * Issues a new session id so a session identifier planted by an attacker before
+ * login cannot be reused afterwards, and drops the permission caches so the new identity is
+ * evaluated from scratch rather than inheriting the previous one.
+ *
+ * Call this at every point that first sets the session user id, apart from the
+ * guest account, which is not a privilege gain.
+ *
+ * @param int    $user_id The account the session is becoming.
+ * @param string $reason  Where the transition came from, for the log.
+ *
+ * @return bool False when the account is locked and must not be let in.
+ */
+function cacti_auth_transition(int $user_id, string $reason = 'login') : bool {
+	$locked = db_fetch_cell_prepared('SELECT locked
+		FROM user_auth
+		WHERE id = ?',
+		[$user_id]);
+
+	if ($locked === false || $locked == 'on') {
+		cacti_log(sprintf('SECURITY: auth transition blocked for unavailable or locked user %d, reason %s', $user_id, $reason), false, 'AUTH');
+
+		return false;
+	}
+
+	if (session_status() === PHP_SESSION_ACTIVE) {
+		if (!session_regenerate_id(true)) {
+			cacti_log(sprintf('SECURITY: auth transition blocked because session regeneration failed for user %d, reason %s', $user_id, $reason), false, 'AUTH');
+
+			return false;
+		}
+	}
+
+	kill_session_var(SESS_USER_REALMS);
+	kill_session_var(SESS_AUTH_NAMES);
+	kill_session_var(SESS_TREE_PERMS);
+	kill_session_var(SESS_SIMPLE_PERMS);
+	kill_session_var(SESS_SIMPLE_TEMPLATE_PERMS);
+	kill_session_var(SESS_USER_PERMS_KEY);
+	kill_session_var(SESS_USER_2FA);
+	kill_session_var(OPTIONS_USER);
+	kill_session_var(OPTIONS_WEB);
+
+	cacti_log(sprintf('NOTE: auth transition completed for user %d, reason %s', $user_id, $reason), false, 'AUTH', POLLER_VERBOSITY_MEDIUM);
+
+	return true;
 }
 
 /**
@@ -4551,49 +4605,40 @@ function compat_password_needs_rehash(string $password, string|int $algo, array 
  */
 function auth_user_has_access(array $user) : bool {
 	// See if they have access to any realms
-	$realms = db_fetch_cell_prepared('SELECT COUNT(*)
+	$has_access = db_fetch_cell_prepared('SELECT EXISTS(
+		SELECT 1
 		FROM user_auth_realm
-		WHERE user_id = ?',
+		WHERE user_id = ?)',
 		[$user['id']]);
 
-	if ($realms > 0) {
+	if ($has_access) {
 		return true;
 	}
 
 	// See if they have general graph access as a guest account
-	if (read_config_option('guest_user') > 0) {
+	$guest_access = read_config_option('guest_user') > 0;
+
+	if ($guest_access) {
 		if ($user['show_tree'] == 'on' || $user['show_list'] == 'on' || $user['show_preview'] == 'on') {
 			return true;
 		}
 	}
 
-	// See if they have access to any group realms
-	$user_groups = db_fetch_assoc_prepared('SELECT *
-		FROM user_auth_group_members
-		WHERE user_id = ?',
-		[$user['id']]);
-
-	if (cacti_sizeof($user_groups)) {
-		foreach ($user_groups as $g) {
-			$realms = db_fetch_cell_prepared('SELECT COUNT(*)
-				FROM user_auth_group_realm
-				WHERE group_id = ?',
-				[$g['group_id']]);
-
-			if ($realms > 0) {
-				return true;
-			}
-
-			// See if they have general graph access as a guest account
-			if (read_config_option('guest_user') > 0) {
-				if ($g['show_tree'] == 'on' || $g['show_list'] == 'on' || $g['show_preview'] == 'on') {
-					return true;
-				}
-			}
-		}
-	}
-
-	return false;
+	// Resolve every group membership in one indexed existence query.
+	return (bool) db_fetch_cell_prepared("SELECT EXISTS(
+		SELECT 1
+		FROM user_auth_group_members AS uagm
+		INNER JOIN user_auth_group AS uag
+		ON uag.id = uagm.group_id
+		LEFT JOIN user_auth_group_realm AS uagr
+		ON uagr.group_id = uagm.group_id
+		WHERE uagm.user_id = ?
+		AND uag.enabled = 'on'
+		AND (
+			uagr.realm_id IS NOT NULL
+			OR (? = 1 AND (uag.show_tree = 'on' OR uag.show_list = 'on' OR uag.show_preview = 'on'))
+		))",
+		[$user['id'], $guest_access ? 1 : 0]);
 }
 
 /**

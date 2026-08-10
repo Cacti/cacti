@@ -42,6 +42,55 @@ function getHostTemplates() : array {
 }
 
 /**
+ * Normalizes database IDs and builds placeholders for a prepared IN clause.
+ *
+ * @param mixed $ids A positive integer ID, an array of positive integer IDs, or false/an empty array for no filter.
+ *
+ * @return array{placeholders: string, params: array<int, int>}|false Prepared placeholders and integer parameters,
+ *                                                                    or false when validation fails.
+ */
+function automation_prepare_id_list(mixed $ids) : array|false {
+	if ($ids === false || $ids === []) {
+		return [
+			'placeholders' => '',
+			'params'       => []
+		];
+	}
+
+	if (!is_array($ids)) {
+		$ids = [$ids];
+	}
+
+	$params = [];
+
+	foreach ($ids as $id) {
+		if (is_string($id) && ctype_digit($id)) {
+			$normalized_id = ltrim($id, '0');
+			$normalized_id = $normalized_id === '' ? '0' : $normalized_id;
+			$max_id        = (string) PHP_INT_MAX;
+
+			if (strlen($normalized_id) > strlen($max_id) ||
+				(strlen($normalized_id) === strlen($max_id) && strcmp($normalized_id, $max_id) > 0)) {
+				return false;
+			}
+		}
+
+		if (!(is_int($id) || (is_string($id) && ctype_digit($id))) || (int) $id < 1) {
+			return false;
+		}
+
+		$params[(int) $id] = (int) $id;
+	}
+
+	$params = array_values($params);
+
+	return [
+		'placeholders' => implode(', ', array_fill(0, count($params), '?')),
+		'params'       => $params
+	];
+}
+
+/**
  * Retrieves hosts based on their description.
  *
  * @param mixed $hostTemplateIds An array of host template IDs to filter the hosts by, or false to retrieve all hosts.
@@ -49,32 +98,23 @@ function getHostTemplates() : array {
  * @return mixed - Returns an array of hosts that match the given description, or false on failure.
  */
 function getHostsByDescription(mixed $hostTemplateIds = false) : mixed {
-	$hosts = [];
+	$hosts  = [];
+	$filter = automation_prepare_id_list($hostTemplateIds);
 
-	if ($hostTemplateIds !== false) {
-		if (!is_array($hostTemplateIds)) {
-			$hostTemplateIds = [$hostTemplateIds];
-		}
+	if ($filter === false) {
+		return false;
 	}
 
-	if ($hostTemplateIds !== false && cacti_sizeof($hostTemplateIds)) {
-		foreach ($hostTemplateIds as $id) {
-			if (!is_numeric($id)) {
-				return false;
-			}
-		}
-
-		$sql_where = 'WHERE ht.id IN (' . implode(',', $hostTemplateIds) . ')';
+	if ($filter['placeholders'] !== '') {
+		$sql_where = 'WHERE h.host_template_id IN (' . $filter['placeholders'] . ')';
 	} else {
 		$sql_where = '';
 	}
 
-	$tmpArray = db_fetch_assoc("SELECT h.id, h.description
+	$tmpArray = db_fetch_assoc_prepared("SELECT h.id, h.description
 		FROM host AS h
-		INNER JOIN host_template AS ht
-		ON h.host_template_id = ht.id
 		$sql_where
-		ORDER BY h.description");
+		ORDER BY h.description", $filter['params']);
 
 	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $tmp) {
@@ -112,32 +152,23 @@ function getSites() : array {
  * @return mixed - Returns an array of hosts if successful, or false on failure.
  */
 function getHosts(mixed $hostTemplateIds = false) : mixed {
-	$hosts = [];
+	$hosts  = [];
+	$filter = automation_prepare_id_list($hostTemplateIds);
 
-	if ($hostTemplateIds !== false) {
-		if (!is_array($hostTemplateIds)) {
-			$hostTemplateIds = [$hostTemplateIds];
-		}
+	if ($filter === false) {
+		return false;
 	}
 
-	if ($hostTemplateIds !== false && cacti_sizeof($hostTemplateIds)) {
-		foreach ($hostTemplateIds as $id) {
-			if (!is_numeric($id)) {
-				return false;
-			}
-		}
-
-		$sql_where = 'WHERE ht.id IN (' . implode(',', $hostTemplateIds) . ')';
+	if ($filter['placeholders'] !== '') {
+		$sql_where = 'WHERE h.host_template_id IN (' . $filter['placeholders'] . ')';
 	} else {
 		$sql_where = '';
 	}
 
-	$tmpArray = db_fetch_assoc("SELECT h.id, h.hostname, h.description, h.host_template_id
+	$tmpArray = db_fetch_assoc_prepared("SELECT h.id, h.hostname, h.description, h.host_template_id
 		FROM host AS h
-		LEFT JOIN host_template AS ht
-		ON h.host_template_id = ht.id
 		$sql_where
-		ORDER BY h.id");
+		ORDER BY h.id", $filter['params']);
 
 	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $host) {
@@ -359,31 +390,24 @@ function getGraphTemplates() : array {
  */
 function getGraphTemplatesByHostTemplate(mixed $host_template_ids = false) : mixed {
 	$graph_templates = [];
+	$filter          = automation_prepare_id_list($host_template_ids);
 
-	if ($host_template_ids !== false) {
-		if (!is_array($host_template_ids)) {
-			$host_template_ids = [$host_template_ids];
-		}
+	if ($filter === false) {
+		return false;
 	}
 
-	if ($host_template_ids !== false && cacti_sizeof($host_template_ids)) {
-		foreach ($host_template_ids as $id) {
-			if (!is_numeric($id)) {
-				return false;
-			}
-		}
-
-		$sql_where = 'WHERE htg.host_template_id IN (' . implode(',', $host_template_ids) . ')';
+	if ($filter['placeholders'] !== '') {
+		$sql_where = 'WHERE htg.host_template_id IN (' . $filter['placeholders'] . ')';
 	} else {
 		$sql_where = '';
 	}
 
-	$tmpArray = db_fetch_assoc_prepared("SELECT htg.graph_template_id AS id, gt.name AS name
+	$tmpArray = db_fetch_assoc_prepared("SELECT DISTINCT htg.graph_template_id AS id, gt.name AS name
 		FROM host_template_graph AS htg
-		LEFT JOIN graph_templates AS gt
+		INNER JOIN graph_templates AS gt
 		ON htg.graph_template_id = gt.id
 		$sql_where
-		ORDER by gt.name ASC");
+		ORDER by gt.name ASC", $filter['params']);
 
 	if (cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $t) {
@@ -684,23 +708,41 @@ function displayTrees(bool $quietMode = false) : void {
 function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode = 0, bool $quietMode = false) : void {
 	global $tree_sort_types, $tree_item_types, $host_group_types;
 
+	$nodes = db_fetch_assoc_prepared('SELECT gti.id, gti.parent, gti.local_graph_id, gti.title,
+		gti.host_id, gti.host_grouping_type, gti.sort_children_type,
+		gtg.title_cache AS graph_title, h.hostname AS host_name
+		FROM graph_tree_items AS gti
+		LEFT JOIN graph_templates_graph AS gtg
+		ON gtg.local_graph_id = gti.local_graph_id
+		LEFT JOIN host AS h
+		ON h.id = gti.host_id
+		WHERE gti.graph_tree_id = ?
+		ORDER BY gti.parent, gti.position, gti.id', [$tree_id]);
+
+	$nodesByParent = [];
+
+	foreach ($nodes ?: [] as $node) {
+		$nodesByParent[(int) ($node['parent'] ?? 0)][] = $node;
+	}
+
+	$visited = [];
+
 	if ($parentNode == 0) {
 		if (!$quietMode) {
 			print 'Known Tree Nodes: (type, id, parentid, title, attribs)' . PHP_EOL;
 		}
 	}
 
-	$parentID = 0;
+	$render = function (int $parent) use (&$render, &$visited, $nodesByParent, $nodeType, $tree_sort_types, $tree_item_types, $host_group_types) : void {
+		foreach ($nodesByParent[$parent] ?? [] as $node) {
+			$nodeId = (int) $node['id'];
 
-	$nodes = db_fetch_assoc_prepared('SELECT id, local_graph_id, title,
-		host_id, host_grouping_type, sort_children_type
-		FROM graph_tree_items
-		WHERE graph_tree_id = ?
-		AND parent = ?
-		ORDER BY position', [$tree_id, $parentNode]);
+			if (isset($visited[$nodeId])) {
+				continue;
+			}
 
-	if (cacti_sizeof($nodes)) {
-		foreach ($nodes as $node) {
+			$visited[$nodeId] = true;
+
 			// taken from tree.php, function item_edit()
 			$current_type = TREE_ITEM_TYPE_HEADER;
 
@@ -718,10 +760,10 @@ function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode =
 						print $tree_item_types[$current_type] . "\t";
 						print $node['id'] . "\t";
 
-						if ($parentNode == 0) {
+						if ($parent == 0) {
 							print "N/A\t";
 						} else {
-							print $parentNode . "\t";
+							print $parent . "\t";
 						}
 
 						print $node['title'] . "\t";
@@ -729,7 +771,7 @@ function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode =
 						print PHP_EOL;
 					}
 
-					displayTreeNodes($tree_id, $nodeType, $node['id'], $quietMode);
+					$render($nodeId);
 
 					break;
 				case TREE_ITEM_TYPE_GRAPH:
@@ -737,18 +779,13 @@ function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode =
 						print $tree_item_types[$current_type] . "\t";
 						print $node['id'] . "\t";
 
-						if ($parentNode == 0) {
+						if ($parent == 0) {
 							print "N/A\t";
 						} else {
-							print $parentNode . "\t";
+							print $parent . "\t";
 						}
 
-						// fetch the title for that graph
-						$graph_title = db_fetch_cell_prepared('SELECT gtg.title_cache AS name
-							FROM graph_templates_graph AS gtg
-							WHERE gtg.local_graph_id = ?', [$node['local_graph_id']]);
-
-						print $graph_title . "\t";
+						print $node['graph_title'] . "\t";
 						print PHP_EOL;
 					}
 
@@ -758,15 +795,13 @@ function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode =
 						print $tree_item_types[$current_type] . "\t";
 						print $node['id'] . "\t";
 
-						if ($parentNode == 0) {
+						if ($parent == 0) {
 							print "N/A\t";
 						} else {
-							print $parentNode . "\t";
+							print $parent . "\t";
 						}
 
-						$name = db_fetch_cell_prepared('SELECT hostname FROM host WHERE id = ?', [$node['host_id']]);
-
-						print $name . "\t";
+						print $node['host_name'] . "\t";
 						print $host_group_types[$node['host_grouping_type']] . "\t";
 						print PHP_EOL;
 					}
@@ -774,7 +809,9 @@ function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode =
 					break;
 			}
 		}
-	}
+	};
+
+	$render($parentNode);
 
 	if ($parentNode == 0) {
 		if (!$quietMode) {
@@ -885,7 +922,7 @@ function displayUsers(bool $quietMode = false) : void {
  *
  * @return void
  */
-function displayGroups(bool $quietMode = false) {
+function displayGroups(bool $quietMode = false) : void {
 	if (!$quietMode) {
 		print 'Known Groups: (id, name, description)' . PHP_EOL;
 	}
@@ -905,6 +942,4 @@ function displayGroups(bool $quietMode = false) {
 	if (!$quietMode) {
 		print PHP_EOL;
 	}
-
-	exit(1);
 }
