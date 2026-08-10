@@ -32,6 +32,7 @@
 if (!file_exists(dirname(__DIR__, 2) . '/lib/htmx.php')) {
 	test('htmx loader hand-off: feature not present on this branch', function () {})
 		->skip('lib/htmx.php absent — feature PR #7066 not merged into develop yet');
+
 	return;
 }
 
@@ -48,37 +49,18 @@ beforeEach(function () {
 	);
 });
 
-test('htmx_script_tag emits relative include/js/htmx.min.js src under root url_path', function () {
+test('htmx_script_tag prefixes the src with CACTI_PATH_URL', function () {
 	global $config;
 
 	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
-	$config['url_path']                  = '/';
 
 	$tag = htmx_script_tag();
-	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.min.js');
+	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.js');
 
-	expect($tag)->toContain("src='include/js/htmx.min.js?v=" . $md5 . "'");
+	expect($tag)->toContain("src='" . CACTI_PATH_URL . 'include/js/htmx.js?' . $md5 . "'");
 });
 
-test('htmx_script_tag emits relative include/js/htmx.min.js src under subdir url_path', function () {
-	global $config;
-
-	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
-	$config['url_path']                  = '/cacti/';
-
-	$tag = htmx_script_tag();
-	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.min.js');
-
-	/*
-	 * The loader emits a path relative to the rendered page so the browser
-	 * resolves it against the document's base URL. This keeps the same tag
-	 * valid for both root and subdirectory deployments without the loader
-	 * having to know the deployment prefix.
-	 */
-	expect($tag)->toContain("src='include/js/htmx.min.js?v=" . $md5 . "'");
-});
-
-test('htmx.min.js.version content matches version pinned by the integrity attribute', function () {
+test('htmx.js.version content matches version pinned by the integrity attribute', function () {
 	global $config;
 
 	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
@@ -92,7 +74,7 @@ test('htmx.min.js.version content matches version pinned by the integrity attrib
 	expect(htmx_version())->toBe('2.0.6');
 
 	expect(htmx_script_tag())->toContain(
-		"integrity='sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm'"
+		"integrity='sha384-ksKjJrwjL5VxqAkAZAVOPXvMkwAykMaNYegdixAESVr+KqLkKE8XBDoZuwyWVUDv'"
 	);
 });
 
@@ -101,9 +83,11 @@ test('htmx_script_tag cache-busts the src with the md5 of the vendored file', fu
 
 	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
 
-	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.min.js');
+	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.js');
 
-	expect(htmx_script_tag())->toContain('?v=' . $md5);
+	// No 'v=' parameter name: matches the path + '?' + hash shape used by
+	// get_md5_include_js()/get_theme_paths() in lib/functions.php.
+	expect(htmx_script_tag())->toContain('/htmx.js?' . $md5);
 });
 
 test('htmx_script_tag renders a script tag when htmx_enabled is on', function () {
@@ -114,7 +98,7 @@ test('htmx_script_tag renders a script tag when htmx_enabled is on', function ()
 	$tag = htmx_script_tag();
 
 	expect($tag)->toContain('<script')
-		->and($tag)->toContain('include/js/htmx.min.js');
+		->and($tag)->toContain('include/js/htmx.js');
 });
 
 test('htmx_script_tag renders nothing when htmx_enabled is absent', function () {
@@ -126,7 +110,7 @@ test('htmx_script_tag renders nothing when htmx_enabled is absent', function () 
 
 	expect($tag)->toBe('')
 		->and($tag)->not->toContain('<script')
-		->and($tag)->not->toContain('htmx.min.js');
+		->and($tag)->not->toContain('htmx.js');
 });
 
 test('htmx_script_tag renders nothing when htmx_enabled is off', function () {
@@ -138,7 +122,7 @@ test('htmx_script_tag renders nothing when htmx_enabled is off', function () {
 
 	expect($tag)->toBe('')
 		->and($tag)->not->toContain('<script')
-		->and($tag)->not->toContain('htmx.min.js');
+		->and($tag)->not->toContain('htmx.js');
 });
 
 test('include/global.php requires lib/htmx.php before any caller can invoke htmx_script_tag', function () {
@@ -163,11 +147,11 @@ test('include/global.php requires lib/htmx.php before any caller can invoke htmx
 		->and($htmx_pos)->toBeInt();
 
 	/*
-	 * htmx.php must be loaded immediately after html.php so every code path
-	 * that html.php exposes (including the page render that calls
-	 * htmx_script_tag()) sees the loader already defined.
+	 * htmx.php is a dependency of html.php: html.php's render path calls
+	 * htmx_script_tag(), while htmx.php itself pulls nothing from html.php. The
+	 * dependency loads first, so htmx.php must be required before html.php.
 	 */
-	expect($htmx_pos)->toBeGreaterThan($html_pos);
+	expect($htmx_pos)->toBeLessThan($html_pos);
 
 	$dispatch_pos = strpos($global, '$filename = get_current_page();');
 
