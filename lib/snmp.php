@@ -232,6 +232,8 @@ function cacti_snmp_get_raw(string $hostname, mixed $community, string $oid, mix
 	}
 
 	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format) == SNMP_METHOD_PHP) {
+		$snmp_value = false;
+
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
 		snmp_set_quick_print(false);
@@ -317,6 +319,8 @@ function cacti_snmp_getnext(string $hostname, mixed $community, mixed $oid, mixe
 	}
 
 	if (snmp_get_method('getnext', $version, $context, $engineid, $value_output_format) == SNMP_METHOD_PHP) {
+		$snmp_value = false;
+
 		// make sure snmp* is verbose so we can see what types of data we are getting back
 		snmp_set_quick_print(false);
 
