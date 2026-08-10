@@ -37,19 +37,21 @@ test('every touched file passes a syntactic shebang/PHP-tag check', function () 
 	}
 });
 
-test('the four form_save inits are present and precede their null-fallback consumers', function () use ($repoRoot) {
-	/* #7317 and #7348 retyped the sql_save() result from '' to null, so the
-	 * redirect fallback now tests === null rather than empty().  The init
-	 * still has to reach the fallback on every path through form_save(). */
+test('the four form_save inits are present and precede their null-guarded consumers', function () use ($repoRoot) {
+	/* PR #7317/#7348 replaced the empty()-based fallback with a null
+	 * sentinel: init to null right before the items foreach, then check
+	 * `=== null` in the error-redirect URL. empty() would have mistreated
+	 * a legitimately-falsy 0 id as "absent"; === null does not. */
 	$cases = [
-		'aggregate_graphs.php' => ['$graph_template_item_id = 0;', '$graph_template_item_id === null'],
-		'color_templates.php'  => ['$color_template_item_id = 0;', '$color_template_item_id === null'],
-		'graph_templates.php'  => ['$graph_template_item_id = 0;', '$graph_template_item_id === null'],
-		'graphs.php'           => ['$graph_template_item_id = 0;', '$graph_template_item_id === null'],
+		'aggregate_graphs.php' => ['$graph_template_item_id = null;', '$graph_template_item_id === null'],
+		'color_templates.php'  => ['$color_template_item_id = null;', '$color_template_item_id === null'],
+		'graph_templates.php'  => ['$graph_template_item_id = null;', '$graph_template_item_id === null'],
+		'graphs.php'           => ['$graph_template_item_id = null;', '$graph_template_item_id === null'],
 	];
+
 	foreach ($cases as $rel => [$init, $consumer]) {
-		$src       = file_get_contents("$repoRoot/$rel");
-		$initPos   = strpos($src, $init);
+		$src        = file_get_contents("$repoRoot/$rel");
+		$initPos    = strpos($src, $init);
 		$consumePos = strpos($src, $consumer);
 		expect($initPos)->not->toBeFalse("$rel must contain init: $init");
 		expect($consumePos)->not->toBeFalse("$rel must contain consumer: $consumer");
@@ -58,7 +60,7 @@ test('the four form_save inits are present and precede their null-fallback consu
 });
 
 test('lib/html.php right-tab block dropped the redundant isset guard', function () use ($repoRoot) {
-	$src = file_get_contents("$repoRoot/lib/html.php");
+	$src   = file_get_contents("$repoRoot/lib/html.php");
 	$start = strpos($src, 'foreach ($tabs_right as $tab)');
 	$slice = substr($src, $start, 4000);
 	expect($slice)->not->toBe('');
