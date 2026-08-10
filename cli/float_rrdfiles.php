@@ -332,7 +332,7 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 	static $tmp_dir     = false;
 
 	if ($rrdtool_bin === false) {
-		$rrdtool_bin = read_config_option('path_rrdtool');
+		$rrdtool_bin = (string) read_config_option('path_rrdtool');
 	}
 
 	if ($tmp_dir === false) {
@@ -344,7 +344,7 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 
 	$return     = 0;
 	$output     = [];
-	$command    = "$rrdtool_bin dump $rrd_path";
+	$command    = cacti_escapeshellcmd($rrdtool_bin) . ' dump ' . cacti_escapeshellarg($rrd_path);
 	$db_prefix  = '                       ';
 
 	if (file_exists($rrd_path)) {
@@ -459,7 +459,7 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 				// restore the file
 				$return  = 0;
 				$output  = [];
-				$command = "$rrdtool_bin restore -f $tmp_file $rrd_path";
+				$command = cacti_escapeshellcmd($rrdtool_bin) . ' restore -f ' . cacti_escapeshellarg($tmp_file) . ' ' . cacti_escapeshellarg($rrd_path);
 
 				$response = exec($command, $output, $return);
 

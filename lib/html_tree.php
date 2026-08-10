@@ -1049,7 +1049,7 @@ function create_tree_filter() : array {
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Thumbnails'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(true|false)']],
+					'filter_options' => ['options' => ['regexp' => '/^(true|false)$/']],
 					'default'        => read_user_setting('thumbnail_section_tree') == 'on' ? 'true' : 'false',
 					'value'          => $thumbnails
 				],
@@ -1057,7 +1057,7 @@ function create_tree_filter() : array {
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Business Hours'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(true|false)']],
+					'filter_options' => ['options' => ['regexp' => '/^(true|false)$/']],
 					'default'        => read_user_setting('show_business_hours') == 'on' ? 'true' : 'false',
 					'value'          => $business_hours
 				]
