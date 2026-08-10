@@ -90,6 +90,8 @@ function update_policies() {
 		}
 	}
 
+	reset_user_perms(get_filter_request_var('id'));
+
 	header('Location: user_admin.php?action=user_edit&header=false&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_filter_request_var('id'));
 	exit;
 }
@@ -120,6 +122,8 @@ function form_actions() {
 			}
 		}
 
+		reset_user_perms(get_nfilter_request_var('id'));
+
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('associate_graph')) {
@@ -143,6 +147,8 @@ function form_actions() {
 				}
 			}
 		}
+
+		reset_user_perms(get_nfilter_request_var('id'));
 
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
 		exit;
@@ -168,6 +174,8 @@ function form_actions() {
 			}
 		}
 
+		reset_user_perms(get_nfilter_request_var('id'));
+
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permste&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('associate_groups')) {
@@ -190,6 +198,8 @@ function form_actions() {
 				}
 			}
 		}
+
+		reset_user_perms(get_nfilter_request_var('id'));
 
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsgr&id=' . get_nfilter_request_var('id'));
 		exit;
@@ -214,6 +224,8 @@ function form_actions() {
 				}
 			}
 		}
+
+		reset_user_perms(get_nfilter_request_var('id'));
 
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permstr&id=' . get_nfilter_request_var('id'));
 		exit;
@@ -509,6 +521,8 @@ function form_save() {
 		}
 
 		if ($add_button_clicked == true) {
+			reset_user_perms(get_nfilter_request_var('id'));
+
 			header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_nfilter_request_var('id'));
 			exit;
 		}
@@ -666,6 +680,8 @@ function form_save() {
 				get_nfilter_request_var('id')
 			)
 		);
+
+		reset_user_perms(get_nfilter_request_var('id'));
 	} else {
 		api_plugin_hook('user_admin_user_save');
 
@@ -707,6 +723,8 @@ function perm_remove() {
 			AND item_id = ?',
 			array(get_request_var('user_id'), get_request_var('id')));
 	}
+
+	reset_user_perms(get_request_var('user_id'));
 
 	header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_request_var('user_id'));
 }
@@ -3175,4 +3193,3 @@ function member_filter($header_label) {
 
 	html_end_box();
 }
-
