@@ -200,13 +200,14 @@ switch ($installer->getMode()) {
 log_install_always('cli', 'Installer prepared for ' . $install_mode . ' action');
 
 $message = '';
+$install_failed = false;
 if ($installer->getStep() == Installer::STEP_INSTALL_CONFIRM && $should_install) {
 	$time = '';
 	if ($force_install) {
 		$time = '-b';
 	}
 	log_install_always('cli', 'Starting installation...');
-	Installer::beginInstall($time, $installer);
+	$install_failed = !Installer::beginInstall($time, $installer);
 	log_install_always('cli', 'Finished installation...');
 }
 
@@ -231,6 +232,10 @@ switch ($installer->getStep()) {
 		break;
 }
 print PHP_EOL;
+
+if ($install_failed || $installer->getStep() === Installer::STEP_ERROR) {
+	exit(1);
+}
 
 /*  get_install_option - gets the install options from a json file */
 function get_install_option(&$options, $file, $json = true) {

@@ -1,8 +1,8 @@
 category	location	match
 cmd_exec	./cactid.php:102		exec('pgrep -a php | grep cactid.php', $output);
-cmd_exec	./cli/audit_database.php:148		exec('php ' . $config['base_path'] . '/cli/upgrade_database.php --debug', $output, $return_var);
-cmd_exec	./cli/audit_database.php:980				$db_shell = shell_exec('which mysql');
-cmd_exec	./cli/audit_database.php:989				exec($db_shell .
+cmd_exec	./cli/audit_database.php:1037				$db_shell = shell_exec('which mysql');
+cmd_exec	./cli/audit_database.php:1046				exec($db_shell .
+cmd_exec	./cli/audit_database.php:151		exec('php ' . $config['base_path'] . '/cli/upgrade_database.php --debug', $output, $return_var);
 cmd_exec	./cli/batchgapfix.php:388			exec($command, $output, $return_var);
 cmd_exec	./cli/float_rrdfiles.php:335				$response = exec($command, $output, $return);
 cmd_exec	./cli/float_rrdfiles.php:443					$response = exec($command, $output, $return);
@@ -34,10 +34,10 @@ cmd_exec	./lib/functions.php:7272				exec(sprintf('grep :%s: /etc/passwd | cut -
 cmd_exec	./lib/functions.php:7564	 * shell_exec() callers that already assemble the command string.
 cmd_exec	./lib/functions.php:7604		$process = proc_open($argv, $descriptors, $pipes);
 cmd_exec	./lib/functions.php:7676	 * shell_exec() and expect a string return value.
-cmd_exec	./lib/installer.php:3289				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-cmd_exec	./lib/installer.php:3321						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-cmd_exec	./lib/installer.php:3377						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-cmd_exec	./lib/installer.php:823							$output = shell_exec(
+cmd_exec	./lib/installer.php:3328				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./lib/installer.php:3360						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./lib/installer.php:3416						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./lib/installer.php:824							$output = shell_exec(
 cmd_exec	./lib/ping.php:167					$result = shell_exec('ping ' . cacti_escapeshellarg($this->host['hostname']));
 cmd_exec	./lib/ping.php:169					$result = shell_exec('ping -m ' . ceil($this->timeout/1000) . ' -n ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
 cmd_exec	./lib/ping.php:171					$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
@@ -156,8 +156,8 @@ dynamic_include	./cli/apply_automation_rules.php:35	require_once($config['base_p
 dynamic_include	./cli/apply_automation_rules.php:36	require_once($config['base_path'] . '/lib/reports.php');
 dynamic_include	./cli/apply_automation_rules.php:37	require_once($config['base_path'] . '/lib/template.php');
 dynamic_include	./cli/apply_automation_rules.php:38	require_once($config['base_path'] . '/lib/utility.php');
-dynamic_include	./cli/audit_database.php:212							include_once($plugin . '/setup.php');
-dynamic_include	./cli/audit_database.php:214								include_once($plugin . '/includes/database.php');
+dynamic_include	./cli/audit_database.php:215							include_once($plugin . '/setup.php');
+dynamic_include	./cli/audit_database.php:217								include_once($plugin . '/includes/database.php');
 dynamic_include	./cli/batchgapfix.php:35	require_once($config['base_path'] . '/lib/poller.php');
 dynamic_include	./cli/change_device.php:27	require_once($config['base_path'] . '/lib/api_automation_tools.php');
 dynamic_include	./cli/change_device.php:28	require_once($config['base_path'] . '/lib/api_device.php');
@@ -385,7 +385,7 @@ dynamic_include	./lib/html_tree.php:831		include_once($config['library_path'] . 
 dynamic_include	./lib/html_tree.php:93		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/import.php:2000		include_once($config['library_path'] . '/vdef.php');
 dynamic_include	./lib/import.php:29		include_once($config['library_path'] . '/xml.php');
-dynamic_include	./lib/installer.php:3430					include_once($upgrade_file);
+dynamic_include	./lib/installer.php:3469					include_once($upgrade_file);
 dynamic_include	./lib/mib_cache.php:57			include_once($config['include_path'] . '/vendor/phpsnmp/mib_parser.php');
 dynamic_include	./lib/plugins.php:154							include_once($plugin_include);
 dynamic_include	./lib/plugins.php:464		include_once($config['library_path'] . '/database.php');
@@ -862,13 +862,13 @@ header_redirect	./include/themes/sunrise/index.php:25	header("Location:../index.
 header_redirect	./include/vendor/index.php:25	header("Location:../index.php");
 header_redirect	./install/upgrades/index.php:25	header("Location:../../index.php");
 header_redirect	./lib/auth.php:4310				header('Location: auth_changepassword.php?header=false');
-header_redirect	./lib/auth.php:4770					header('Location: ' . $referer);
-header_redirect	./lib/auth.php:4774					header('Location: graph_view.php');
-header_redirect	./lib/auth.php:4778					header('Location: index.php');
-header_redirect	./lib/auth.php:4784					header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
-header_redirect	./lib/auth.php:4786					header('Location: ' . $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':''));
-header_redirect	./lib/auth.php:4791				header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
-header_redirect	./lib/auth.php:4986			header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php')));
+header_redirect	./lib/auth.php:4779					header('Location: ' . $referer);
+header_redirect	./lib/auth.php:4783					header('Location: graph_view.php');
+header_redirect	./lib/auth.php:4787					header('Location: index.php');
+header_redirect	./lib/auth.php:4793					header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
+header_redirect	./lib/auth.php:4795					header('Location: ' . $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':''));
+header_redirect	./lib/auth.php:4800				header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
+header_redirect	./lib/auth.php:4995			header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php')));
 header_redirect	./lib/clog_webapi.php:99			header('Location: ' . get_current_page());
 header_redirect	./lib/functions.php:8235		header('Location: ' . $save_url);
 header_redirect	./lib/functions.php:8258		header('Location: ' . $safe_url, true, $status);
@@ -949,42 +949,42 @@ header_redirect	./tree.php:564			header("Location: tree.php?header=false&action=
 header_redirect	./tree.php:684			header('Location: tree.php?header=false');
 header_redirect	./tree.php:751			header('Location: tree.php?header=false');
 header_redirect	./tree.php:96			header('Location: tree.php?header=false');
-header_redirect	./user_admin.php:1038				header('Location: user_admin.php&header=false');
-header_redirect	./user_admin.php:1203				header('Location: user_admin.php&header=false');
-header_redirect	./user_admin.php:123			header('Location: user_admin.php?action=user_edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
-header_redirect	./user_admin.php:1347				header('Location: user_admin.php&header=false');
-header_redirect	./user_admin.php:147			header('Location: user_admin.php?action=user_edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
-header_redirect	./user_admin.php:171			header('Location: user_admin.php?action=user_edit&header=false&tab=permste&id=' . get_nfilter_request_var('id'));
-header_redirect	./user_admin.php:194			header('Location: user_admin.php?action=user_edit&header=false&tab=permsgr&id=' . get_nfilter_request_var('id'));
-header_redirect	./user_admin.php:218			header('Location: user_admin.php?action=user_edit&header=false&tab=permstr&id=' . get_nfilter_request_var('id'));
-header_redirect	./user_admin.php:305			header('Location: user_admin.php?header=false');
-header_redirect	./user_admin.php:432			header('Location: user_admin.php?header=false');
-header_redirect	./user_admin.php:512				header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_nfilter_request_var('id'));
-header_redirect	./user_admin.php:676		header('Location: user_admin.php?action=user_edit&header=false&id=' . (empty($user_id) ? get_filter_request_var('id') : $user_id));
-header_redirect	./user_admin.php:711		header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_request_var('user_id'));
-header_redirect	./user_admin.php:745				header('Location: user_admin.php&header=false');
-header_redirect	./user_admin.php:93		header('Location: user_admin.php?action=user_edit&header=false&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_filter_request_var('id'));
-header_redirect	./user_admin.php:941				header('Location: user_admin.php&header=false');
+header_redirect	./user_admin.php:1056				header('Location: user_admin.php&header=false');
+header_redirect	./user_admin.php:1221				header('Location: user_admin.php&header=false');
+header_redirect	./user_admin.php:127			header('Location: user_admin.php?action=user_edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
+header_redirect	./user_admin.php:1365				header('Location: user_admin.php&header=false');
+header_redirect	./user_admin.php:153			header('Location: user_admin.php?action=user_edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
+header_redirect	./user_admin.php:179			header('Location: user_admin.php?action=user_edit&header=false&tab=permste&id=' . get_nfilter_request_var('id'));
+header_redirect	./user_admin.php:204			header('Location: user_admin.php?action=user_edit&header=false&tab=permsgr&id=' . get_nfilter_request_var('id'));
+header_redirect	./user_admin.php:230			header('Location: user_admin.php?action=user_edit&header=false&tab=permstr&id=' . get_nfilter_request_var('id'));
+header_redirect	./user_admin.php:317			header('Location: user_admin.php?header=false');
+header_redirect	./user_admin.php:444			header('Location: user_admin.php?header=false');
+header_redirect	./user_admin.php:526				header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_nfilter_request_var('id'));
+header_redirect	./user_admin.php:692		header('Location: user_admin.php?action=user_edit&header=false&id=' . (empty($user_id) ? get_filter_request_var('id') : $user_id));
+header_redirect	./user_admin.php:729		header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_request_var('user_id'));
+header_redirect	./user_admin.php:763				header('Location: user_admin.php&header=false');
+header_redirect	./user_admin.php:95		header('Location: user_admin.php?action=user_edit&header=false&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_filter_request_var('id'));
+header_redirect	./user_admin.php:959				header('Location: user_admin.php&header=false');
 header_redirect	./user_domains.php:166		header('Location: user_domains.php?header=false&action=edit&domain_id=' . (empty($domain_id) ? get_nfilter_request_var('domain_id') : $domain_id));
 header_redirect	./user_domains.php:200			header('Location: user_domains.php?header=false');
 header_redirect	./user_domains.php:266			header('Location: user_domains.php?header=false');
-header_redirect	./user_group_admin.php:1795				header('Location: user_group_admin.php&header=false');
-header_redirect	./user_group_admin.php:1803				header('Location: user_group_admin.php&header=false');
-header_redirect	./user_group_admin.php:1814				header('Location: user_group_admin.php&header=false');
-header_redirect	./user_group_admin.php:1822				header('Location: user_group_admin.php&header=false');
-header_redirect	./user_group_admin.php:259		header('Location: user_group_admin.php?action=edit&header=false&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_filter_request_var('id'));
-header_redirect	./user_group_admin.php:289			header('Location: user_group_admin.php?action=edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
-header_redirect	./user_group_admin.php:313			header('Location: user_group_admin.php?action=edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
-header_redirect	./user_group_admin.php:337			header('Location: user_group_admin.php?action=edit&header=false&tab=permste&id=' . get_nfilter_request_var('id'));
-header_redirect	./user_group_admin.php:361			header('Location: user_group_admin.php?action=edit&header=false&tab=permstr&id=' . get_nfilter_request_var('id'));
-header_redirect	./user_group_admin.php:384			header('Location: user_group_admin.php?action=edit&header=false&tab=members&id=' . get_nfilter_request_var('id'));
-header_redirect	./user_group_admin.php:411			header('Location: user_group_admin.php?header=false');
-header_redirect	./user_group_admin.php:494			header('Location: user_group_admin.php?header=false');
-header_redirect	./user_group_admin.php:557			header('Location: user_group_admin.php?action=edit&header=false&tab=general&id=' . (isset($group_id) && $group_id > 0 ? $group_id : get_nfilter_request_var('id')));
-header_redirect	./user_group_admin.php:574			header('Location: user_group_admin.php?action=edit&header=false&tab=realms&id=' . get_request_var('id'));
-header_redirect	./user_group_admin.php:595			header('Location: user_group_admin.php?action=edit&header=false&tab=settings&id=' . get_nfilter_request_var('id'));
-header_redirect	./user_group_admin.php:602		header('Location: user_group_admin.php?action=edit&header=false&tab=general&id=' .  get_nfilter_request_var('id'));
-header_redirect	./user_group_admin.php:625		header('Location: user_group_admin.php?action=edit&header=false&tab=gperms&id=' . get_request_var('group_id'));
+header_redirect	./user_group_admin.php:1817				header('Location: user_group_admin.php&header=false');
+header_redirect	./user_group_admin.php:1825				header('Location: user_group_admin.php&header=false');
+header_redirect	./user_group_admin.php:1836				header('Location: user_group_admin.php&header=false');
+header_redirect	./user_group_admin.php:1844				header('Location: user_group_admin.php&header=false');
+header_redirect	./user_group_admin.php:269		header('Location: user_group_admin.php?action=edit&header=false&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_filter_request_var('id'));
+header_redirect	./user_group_admin.php:301			header('Location: user_group_admin.php?action=edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
+header_redirect	./user_group_admin.php:327			header('Location: user_group_admin.php?action=edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
+header_redirect	./user_group_admin.php:353			header('Location: user_group_admin.php?action=edit&header=false&tab=permste&id=' . get_nfilter_request_var('id'));
+header_redirect	./user_group_admin.php:379			header('Location: user_group_admin.php?action=edit&header=false&tab=permstr&id=' . get_nfilter_request_var('id'));
+header_redirect	./user_group_admin.php:404			header('Location: user_group_admin.php?action=edit&header=false&tab=members&id=' . get_nfilter_request_var('id'));
+header_redirect	./user_group_admin.php:431			header('Location: user_group_admin.php?header=false');
+header_redirect	./user_group_admin.php:514			header('Location: user_group_admin.php?header=false');
+header_redirect	./user_group_admin.php:577			header('Location: user_group_admin.php?action=edit&header=false&tab=general&id=' . (isset($group_id) && $group_id > 0 ? $group_id : get_nfilter_request_var('id')));
+header_redirect	./user_group_admin.php:594			header('Location: user_group_admin.php?action=edit&header=false&tab=realms&id=' . get_request_var('id'));
+header_redirect	./user_group_admin.php:615			header('Location: user_group_admin.php?action=edit&header=false&tab=settings&id=' . get_nfilter_request_var('id'));
+header_redirect	./user_group_admin.php:622		header('Location: user_group_admin.php?action=edit&header=false&tab=general&id=' .  get_nfilter_request_var('id'));
+header_redirect	./user_group_admin.php:647		header('Location: user_group_admin.php?action=edit&header=false&tab=gperms&id=' . get_request_var('group_id'));
 header_redirect	./utilities.php:1285			header('Location: utilities.php?action=view_logfile&filename=' . $logbase);
 header_redirect	./utilities.php:43			header('Location: utilities.php?action=view_poller_cache');exit;
 header_redirect	./utilities.php:47			header('Location: utilities.php?header=false');exit;

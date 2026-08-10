@@ -35,6 +35,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  installer-javascript:
+    name: Installer JavaScript contracts
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Test installer state handoff
+      run: node --test tests/js/installer_selection.test.js
+
   check:
     runs-on: ${{ matrix.os }}
     strategy:
