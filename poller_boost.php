@@ -878,13 +878,15 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 		$rrdtool_ins_version = get_installed_rrdtool_version();
 		$rrdtool_version     = get_rrdtool_version();
 
-		if ($rrdtool_ins_version != $rrdtool_version) {
+		if ($rrdtool_ins_version !== false && $rrdtool_ins_version != $rrdtool_version) {
 			boost_debug('Updating Stored RRDtool version to installed version ' . $rrdtool_ins_version);
 
 			cacti_log('NOTE: Updating Stored RRDtool version to installed version ' . $rrdtool_ins_version, true, 'BOOST');
 
 			set_config_option('rrdtool_version', $rrdtool_ins_version);
 			$rrdtool_version = $rrdtool_ins_version;
+		} elseif ($rrdtool_ins_version === false) {
+			cacti_log('WARNING: Unable to detect the installed RRDtool version; retaining the configured capability level.', true, 'BOOST');
 		}
 	}
 
