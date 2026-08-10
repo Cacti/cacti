@@ -7,7 +7,7 @@
   </file>
   <file src="include/global.php">
     <TaintedHeader>
-      <code><![CDATA["Content-Security-Policy: default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; script-src 'self' $script_policy 'unsafe-inline' $alternates; frame-ancestors 'self'; worker-src 'self' $alternates;"]]></code>
+      <code><![CDATA["Content-Security-Policy: default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; script-src 'self' $script_policy 'unsafe-inline' $alternates; frame-ancestors 'self' $alternates; worker-src 'self' $alternates;"]]></code>
     </TaintedHeader>
   </file>
   <file src="include/global_session.php">

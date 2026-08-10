@@ -195,7 +195,61 @@ function auth_cookie_user_currently_allowed(array $user_info) : bool {
 		return false;
 	}
 
+	if (($user_info['locked'] ?? '') == 'on') {
+		return false;
+	}
+
 	return auth_user_has_access($user_info);
+}
+
+/**
+ * cacti_auth_transition - move a session from unauthenticated to authenticated.
+ *
+ * Issues a new session id so a session identifier planted by an attacker before
+ * login cannot be reused afterwards, and drops the permission caches so the new identity is
+ * evaluated from scratch rather than inheriting the previous one.
+ *
+ * Call this at every point that first sets the session user id, apart from the
+ * guest account, which is not a privilege gain.
+ *
+ * @param int    $user_id The account the session is becoming.
+ * @param string $reason  Where the transition came from, for the log.
+ *
+ * @return bool False when the account is locked and must not be let in.
+ */
+function cacti_auth_transition(int $user_id, string $reason = 'login') : bool {
+	$locked = db_fetch_cell_prepared('SELECT locked
+		FROM user_auth
+		WHERE id = ?',
+		[$user_id]);
+
+	if ($locked === false || $locked == 'on') {
+		cacti_log(sprintf('SECURITY: auth transition blocked for unavailable or locked user %d, reason %s', $user_id, $reason), false, 'AUTH');
+
+		return false;
+	}
+
+	if (session_status() === PHP_SESSION_ACTIVE) {
+		if (!session_regenerate_id(true)) {
+			cacti_log(sprintf('SECURITY: auth transition blocked because session regeneration failed for user %d, reason %s', $user_id, $reason), false, 'AUTH');
+
+			return false;
+		}
+	}
+
+	kill_session_var(SESS_USER_REALMS);
+	kill_session_var(SESS_AUTH_NAMES);
+	kill_session_var(SESS_TREE_PERMS);
+	kill_session_var(SESS_SIMPLE_PERMS);
+	kill_session_var(SESS_SIMPLE_TEMPLATE_PERMS);
+	kill_session_var(SESS_USER_PERMS_KEY);
+	kill_session_var(SESS_USER_2FA);
+	kill_session_var(OPTIONS_USER);
+	kill_session_var(OPTIONS_WEB);
+
+	cacti_log(sprintf('NOTE: auth transition completed for user %d, reason %s', $user_id, $reason), false, 'AUTH', POLLER_VERBOSITY_MEDIUM);
+
+	return true;
 }
 
 /**
@@ -4393,8 +4447,8 @@ function rsa_check_keypair() : void {
 }
 
 /**
- * Sets a flag for all users of a group logged in that their perms
- * need to be reloaded from the database
+ * Expires persistent authentication tokens for all group members and sets a
+ * flag so logged-in members reload their permissions from the database.
  *
  * @param int $group_id The ID of the group whose users' permissions need to be reset.
  *

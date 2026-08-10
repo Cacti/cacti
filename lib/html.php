@@ -3381,6 +3381,13 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 	// Global scripts
 	print get_md5_include_js('include/js/screenfull.js', true);
 	print get_md5_include_js('include/js/jquery.js');
+
+	// htmx loads after jQuery so jQuery-based plugins initialised below remain
+	// the primary navigation/AJAX layer. htmx is opt-in per element via hx-*
+	// attributes; hx-boost is deliberately not set globally to avoid interfering
+	// with Cacti's existing form submission and loadUrl() patterns.
+	print htmx_script_tag();
+
 	print get_md5_include_js('include/js/jquery-ui.js');
 	print get_md5_include_js('include/js/jquery.ui.touch.punch.js', true);
 	print get_md5_include_js('include/js/jquery.cookie.js');

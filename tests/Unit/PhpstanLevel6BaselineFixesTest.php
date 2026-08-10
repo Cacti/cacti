@@ -21,10 +21,15 @@
  *       URL builder, but only assigned inside a foreach + !is_error_message
  *       branch. When the loop body skips, the variable is undefined; PHP
  *       silently treats it as empty() at runtime, so the bug surfaces only
- *       at static-analysis time. Affected: aggregate_graphs.php:378,
- *       color_templates.php:245, graph_templates.php:611, graphs.php:713.
- *       Each was fixed by initialising the variable to 0 at the top of the
- *       relevant `elseif (isrv('save_component_item'))` branch.
+ *       at static-analysis time. Affected files: aggregate_graphs.php,
+ *       color_templates.php, graph_templates.php, and graphs.php.
+ *       The original fix initialised the variable in the relevant
+ *       `elseif (isrv('save_component_item'))` branch. PR #7317 and #7348
+ *       later superseded the empty() consumer with a `=== null` check
+ *       against a null sentinel set just before the assignment path, since
+ *       empty() also matches a legitimately-falsy 0 id. These tests assert
+ *       the null sentinel so the guard remains stable if the older bootstrap
+ *       assignment is removed.
  *
  *   (B) `isset($tab['image'])` at lib/html.php:2388 / 2396 / 2404. PHPStan
  *       infers from the right-tab array constructor that 'image' is always
@@ -32,8 +37,8 @@
  *       and keeping only the `!= ''` check.
  *
  * Each test below extracts the relevant source slice and asserts the fix
- * is in place. A final guard test re-asserts that the eleven flagged sites
- * (file:line tuples reported by PHPStan) all contain the post-fix shape.
+ * is in place. A final guard test re-asserts that the flagged patterns
+ * reported by PHPStan all contain the post-fix shape.
  */
 
 $repoRoot = __DIR__ . '/../..';
@@ -45,87 +50,101 @@ $sources  = [
 	'lib/html.php'         => file_get_contents("$repoRoot/lib/html.php"),
 ];
 
-/* --- Defect class A: undefined *_template_item_id in empty() ------------ */
+// --- Defect class A: undefined *_template_item_id in empty() ------------
 
-test('aggregate_graphs.php save_component_item branch initialises $graph_template_item_id', function () use ($sources) {
-	$src = $sources['aggregate_graphs.php'];
+test('aggregate_graphs.php save_component_item branch sets $graph_template_item_id null sentinel', function () use ($sources) {
+	$src       = $sources['aggregate_graphs.php'];
 	$branchPos = strpos($src, "elseif (isrv('save_component_item'))");
 	expect($branchPos)->not->toBeFalse();
-	$branchSlice = substr($src, $branchPos, 4000);
+	$branchSlice = substr($src, $branchPos, 8000);
 
-	expect($branchSlice)->toContain('$graph_template_item_id = 0;');
+	expect($branchSlice)->toContain('$graph_template_item_id = null;');
 
-	/* The init must precede the foreach($items as ...) that conditionally
-	 * assigns it via sql_save(). */
-	$initPos    = strpos($branchSlice, '$graph_template_item_id = 0;');
-	$foreachPos = strpos($branchSlice, 'foreach ($items as $item)');
+	/* The sentinel must precede the foreach($items as ...) that conditionally
+	 * assigns it via sql_save(), and the redirect fallback that consumes it. */
+	$initPos     = strpos($branchSlice, '$graph_template_item_id = null;');
+	$foreachPos  = strpos($branchSlice, 'foreach ($items as $item)');
+	$redirectPos = strpos($branchSlice, '$graph_template_item_id === null');
 	expect($initPos)->not->toBeFalse();
 	expect($foreachPos)->not->toBeFalse();
-	expect($initPos < $foreachPos)->toBeTrue('$graph_template_item_id init must precede the items foreach');
+	expect($redirectPos)->not->toBeFalse();
+	expect($initPos < $foreachPos)->toBeTrue('$graph_template_item_id null sentinel must precede the items foreach');
+	expect($initPos < $redirectPos)->toBeTrue('$graph_template_item_id null sentinel must precede the redirect fallback');
 });
 
-test('color_templates.php save_component_item branch initialises $color_template_item_id', function () use ($sources) {
-	$src = $sources['color_templates.php'];
+test('color_templates.php save_component_item branch sets $color_template_item_id null sentinel', function () use ($sources) {
+	$src       = $sources['color_templates.php'];
 	$branchPos = strpos($src, "elseif (isrv('save_component_item'))");
 	expect($branchPos)->not->toBeFalse();
 	$branchSlice = substr($src, $branchPos, 2000);
 
-	expect($branchSlice)->toContain('$color_template_item_id = 0;');
+	expect($branchSlice)->toContain('$color_template_item_id = null;');
 
-	$initPos    = strpos($branchSlice, '$color_template_item_id = 0;');
-	$foreachPos = strpos($branchSlice, 'foreach ($items as $item)');
+	$initPos     = strpos($branchSlice, '$color_template_item_id = null;');
+	$foreachPos  = strpos($branchSlice, 'foreach ($items as $item)');
+	$redirectPos = strpos($branchSlice, '$color_template_item_id === null');
 	expect($initPos)->not->toBeFalse();
 	expect($foreachPos)->not->toBeFalse();
-	expect($initPos < $foreachPos)->toBeTrue('$color_template_item_id init must precede the items foreach');
+	expect($redirectPos)->not->toBeFalse();
+	expect($initPos < $foreachPos)->toBeTrue('$color_template_item_id null sentinel must precede the items foreach');
+	expect($initPos < $redirectPos)->toBeTrue('$color_template_item_id null sentinel must precede the redirect fallback');
 });
 
-test('graph_templates.php save_component_item branch initialises $graph_template_item_id', function () use ($sources) {
-	$src = $sources['graph_templates.php'];
+test('graph_templates.php save_component_item branch sets $graph_template_item_id null sentinel', function () use ($sources) {
+	$src       = $sources['graph_templates.php'];
 	$branchPos = strpos($src, "elseif (isrv('save_component_item'))");
 	expect($branchPos)->not->toBeFalse();
-	$branchSlice = substr($src, $branchPos, 12000);
+	$branchSlice = substr($src, $branchPos, 18000);
 
-	expect($branchSlice)->toContain('$graph_template_item_id = 0;');
+	expect($branchSlice)->toContain('$graph_template_item_id = null;');
 
-	$initPos    = strpos($branchSlice, '$graph_template_item_id = 0;');
-	$sqlSavePos = strpos($branchSlice, "sql_save(\$save, 'graph_templates_item')");
+	$initPos     = strpos($branchSlice, '$graph_template_item_id = null;');
+	$sqlSavePos  = strpos($branchSlice, "sql_save(\$save, 'graph_templates_item')");
+	$redirectPos = strpos($branchSlice, '$graph_template_item_id === null');
 	expect($initPos)->not->toBeFalse();
 	expect($sqlSavePos)->not->toBeFalse();
-	expect($initPos < $sqlSavePos)->toBeTrue('init must precede the conditional sql_save assignment');
+	expect($redirectPos)->not->toBeFalse();
+	expect($initPos < $sqlSavePos)->toBeTrue('null sentinel must precede the conditional sql_save assignment');
+	expect($initPos < $redirectPos)->toBeTrue('null sentinel must precede the redirect fallback');
 });
 
-test('graphs.php save_component_item branch initialises $graph_template_item_id', function () use ($sources) {
-	$src = $sources['graphs.php'];
+test('graphs.php save_component_item branch sets $graph_template_item_id null sentinel', function () use ($sources) {
+	$src       = $sources['graphs.php'];
 	$branchPos = strpos($src, "elseif (isrv('save_component_item'))");
 	expect($branchPos)->not->toBeFalse();
-	$branchSlice = substr($src, $branchPos, 6000);
+	$branchSlice = substr($src, $branchPos, 10000);
 
-	expect($branchSlice)->toContain('$graph_template_item_id = 0;');
+	expect($branchSlice)->toContain('$graph_template_item_id = null;');
 
-	$initPos    = strpos($branchSlice, '$graph_template_item_id = 0;');
-	$foreachPos = strpos($branchSlice, 'foreach ($items as $item)');
+	$initPos     = strpos($branchSlice, '$graph_template_item_id = null;');
+	$foreachPos  = strpos($branchSlice, 'foreach ($items as $item)');
+	$redirectPos = strpos($branchSlice, '$graph_template_item_id === null');
 	expect($initPos)->not->toBeFalse();
 	expect($foreachPos)->not->toBeFalse();
-	expect($initPos < $foreachPos)->toBeTrue('init must precede the items foreach');
+	expect($redirectPos)->not->toBeFalse();
+	expect($initPos < $foreachPos)->toBeTrue('null sentinel must precede the items foreach');
+	expect($initPos < $redirectPos)->toBeTrue('null sentinel must precede the redirect fallback');
 });
 
-test('the null fallback in the error-redirect URL still uses the variable', function () use ($sources) {
-	/* The init is a no-op if the redirect ever stops reading the variable.
-	 * Guard the call site so this PR does not silently regress to a
-	 * different shape.  #7317 and #7348 moved the sentinel from '' to null,
-	 * so the test is === null rather than empty(). */
+test('the null-guarded fallback in the error-redirect URL still uses the variable', function () use ($sources) {
+	/* The init is a no-op if the redirect ever stops checking the
+	 * variable. Guard the call site so this PR does not silently
+	 * regress to a different shape. PR #7317/#7348 replaced the original
+	 * empty() consumer with a `=== null` check, since empty() also
+	 * matches a legitimately-falsy 0 id. */
 	$expected = [
 		'aggregate_graphs.php' => '($graph_template_item_id === null ? gfrv(\'graph_template_item_id\') : $graph_template_item_id)',
 		'color_templates.php'  => '($color_template_item_id === null ? gnrv(\'color_template_item_id\') : $color_template_item_id)',
 		'graph_templates.php'  => '($graph_template_item_id === null ? gnrv(\'graph_template_item_id\') : $graph_template_item_id)',
 		'graphs.php'           => '($graph_template_item_id === null ? gnrv(\'graph_template_item_id\') : $graph_template_item_id)',
 	];
+
 	foreach ($expected as $file => $needle) {
 		expect($sources[$file])->toContain($needle);
 	}
 });
 
-/* --- Defect class B: redundant isset() on always-set offset ------------- */
+// --- Defect class B: redundant isset() on always-set offset -------------
 
 test('lib/html.php right-tab block drops the isset($tab[image]) guard', function () use ($sources) {
 	$src = $sources['lib/html.php'];
@@ -147,24 +166,26 @@ test('lib/html.php right-tab block drops the isset($tab[image]) guard', function
 	expect(substr_count($slice, "\$tab['image'] != ''"))->toBeGreaterThanOrEqual(3);
 });
 
-/* --- Final structural guard: PHPStan-flagged tuples are gone ----------- */
+// --- Final structural guard: PHPStan-flagged tuples are gone -----------
 
 test('every PHPStan-flagged file:line shows the post-fix shape', function () use ($sources) {
-	/* Snapshot of the eleven file:line tuples PHPStan flagged at Level 6.
-	 * For each, assert the *current* line content matches the post-fix
-	 * shape. If a future refactor moves the line, this test still helps:
-	 * the assertion focuses on the offending pattern, not just position. */
+	/* Snapshot of the patterns PHPStan flagged at Level 6.
+	 * For each, assert the current source matches the post-fix shape. If a
+	 * future refactor moves the code, this test still helps: the assertion
+	 * focuses on the offending pattern, not just position. */
 	$cases = [
-		// (A) empty()/undefined-variable sites
-		['aggregate_graphs.php', '$graph_template_item_id', 'empty('],
-		['color_templates.php',  '$color_template_item_id', 'empty('],
-		['graph_templates.php',  '$graph_template_item_id', 'empty('],
-		['graphs.php',           '$graph_template_item_id', 'empty('],
+		// (A) undefined-variable sites, now guarded by a null sentinel
+		['aggregate_graphs.php', '$graph_template_item_id', '=== null'],
+		['color_templates.php',  '$color_template_item_id', '=== null'],
+		['graph_templates.php',  '$graph_template_item_id', '=== null'],
+		['graphs.php',           '$graph_template_item_id', '=== null'],
 		// (B) right-tab isset removal
 		['lib/html.php',         "\$tab['image'] != ''", "isset(\$tab['image'])"],
 	];
+
 	foreach ($cases as [$file, $kept, $forbidden]) {
 		expect($sources[$file])->toContain($kept);
+
 		if ($file === 'lib/html.php') {
 			expect(strpos($sources[$file], $forbidden))->toBeFalse(
 				"$file must no longer contain the pre-fix guard: $forbidden"
@@ -173,7 +194,7 @@ test('every PHPStan-flagged file:line shows the post-fix shape', function () use
 	}
 });
 
-/* --- Behavioural fixture: empty() on undefined vs initialised --------- */
+// --- Behavioural fixture: empty() on undefined vs initialised ---------
 
 test('PHP empty() on undefined variable is silent at runtime; PHPStan flags it', function () {
 	/* Document the runtime semantics that hid the bug for years. PHP's
@@ -192,27 +213,29 @@ test('PHP empty() on undefined variable is silent at runtime; PHPStan flags it',
 	expect($value3)->toBe('present');
 });
 
-/* --- Defect-class scan: catch any future reintroduction --------------- */
+// --- Defect-class scan: catch any future reintroduction ---------------
 
-test('no other empty($x_template_item_id) lookups happen against an undefined var', function () use ($sources) {
-	/* Cross-cutting check: every empty($...template_item_id) call across
-	 * the touched files must be reachable via either an init in scope or
-	 * a prior assignment in the same branch. We approximate "in scope"
-	 * by ensuring an init ($x = 0) appears earlier in the same file. */
+test('no other $x_template_item_id === null lookups happen against an undefined var', function () use ($sources) {
+	/* Cross-cutting check: every "=== null" consumer of a *_template_item_id
+	 * variable across the touched files must be reachable via a null-sentinel
+	 * init earlier in the same file (PR #7317/#7348 replaced the original
+	 * empty()-based consumer with this shape). We approximate "in scope" by
+	 * ensuring an init ($x = null) appears earlier in the same file. */
 	foreach ($sources as $file => $src) {
-		if (!preg_match_all('/empty\(\$(\w*template_item_id)\)/', $src, $m, PREG_OFFSET_CAPTURE)) {
+		if (!preg_match_all('/\$(\w*template_item_id)\s*===\s*null/', $src, $m, PREG_OFFSET_CAPTURE)) {
 			continue;
 		}
+
 		foreach ($m[1] as $hit) {
-			$varName = $hit[0];
-			$emptyOffset = $hit[1];
-			$initPattern = '$' . $varName . ' = 0;';
-			$initOffset  = strpos($src, $initPattern);
+			$varName       = $hit[0];
+			$consumeOffset = $hit[1];
+			$initPattern   = '$' . $varName . ' = null;';
+			$initOffset    = strpos($src, $initPattern);
 			expect($initOffset)->not->toBeFalse(
-				"$file: empty(\$$varName) at offset $emptyOffset must be backed by an earlier '\$$varName = 0;' init"
+				"$file: \$$varName === null at offset $consumeOffset must be backed by an earlier '\$$varName = null;' init"
 			);
-			expect($initOffset < $emptyOffset)->toBeTrue(
-				"$file: '\$$varName = 0;' must precede the empty(\$$varName) consumer"
+			expect($initOffset < $consumeOffset)->toBeTrue(
+				"$file: '\$$varName = null;' must precede the \$$varName === null consumer"
 			);
 		}
 	}
