@@ -193,7 +193,13 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 			}
 		}
 
-		// remember me support.  Not for guest of basic auth
+		if (!$error && !cacti_auth_transition((int) $user['id'], 'login')) {
+			$error     = true;
+			$error_msg = __('Access Denied! User account locked.');
+		}
+
+		// remember me support.  Not for guest of basic auth. The transition
+		// gate must pass first so a locked or missing account cannot mint a token.
 		if ($auth_method != AUTH_METHOD_BASIC && $user['id'] !== get_guest_account()) {
 			if (!$error && isrv('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
 				set_auth_cookie($user);
