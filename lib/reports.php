@@ -1890,6 +1890,7 @@ function png2jpeg(string $png_data) : string {
 		ob_start(); // start a new output buffer to capture jpeg image stream
 		imagejpeg($im);	// output to buffer
 		$ImageData = ob_get_contents(); // fetch image from buffer
+
 		if (PHP_VERSION_ID < 80500) {
 			imagedestroy($im);
 		}
@@ -1933,6 +1934,7 @@ function png2gif(string $png_data) : string {
 		ob_start(); // start a new output buffer to capture gif image stream
 		imagegif($im);	// output to buffer
 		$ImageData = ob_get_contents(); // fetch image from buffer
+
 		if (PHP_VERSION_ID < 80500) {
 			imagedestroy($im);
 		}
