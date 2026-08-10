@@ -81,6 +81,33 @@ function html_log_input_error(string $variable) : void {
 }
 
 /**
+ * Writes a structured security event for an input validation failure.
+ *
+ * Rejected values and request payloads are deliberately excluded to avoid
+ * copying credentials or other sensitive input into the security log.
+ *
+ * @param mixed $variable Name of the rejected input variable.
+ *
+ * @return string Correlation identifier for related diagnostic log entries.
+ */
+function security_log_input_validation_failure(mixed $variable) : string {
+	$event_id       = bin2hex(random_bytes(16));
+	$source_address = CACTI_CLI ? '' : get_client_addr();
+	$event          = [
+		'event'          => 'input_validation_failure',
+		'event_id'       => $event_id,
+		'variable'       => is_scalar($variable) ? (string) $variable : gettype($variable),
+		'source_address' => $source_address === false ? '' : (string) $source_address,
+		'request_method' => isset($_SERVER['REQUEST_METHOD']) ? (string) $_SERVER['REQUEST_METHOD'] : PHP_SAPI,
+		'script'         => isset($_SERVER['SCRIPT_NAME']) ? basename((string) $_SERVER['SCRIPT_NAME']) : ''
+	];
+
+	cacti_log(json_encode($event, JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE), false, 'SECURITY');
+
+	return $event_id;
+}
+
+/**
  * Terminates the script execution and outputs an error message for HTML input validation errors.
  *
  * @param mixed  $variable - The name of the variable that caused the validation error.
@@ -90,7 +117,8 @@ function html_log_input_error(string $variable) : void {
  * @return void
  */
 function die_html_input_error(mixed $variable = null, mixed $value = null, string $message = '') : void {
-	$func = CACTI_CLI ? 'trim' : 'htmle';
+	$event_id = security_log_input_validation_failure($variable);
+	$func     = CACTI_CLI ? 'trim' : 'htmle';
 
 	$variable = ($variable !== null ? ', Variable:' . $func($variable) : '');
 	$value    = ($value !== null ? ', Value:' . $func($value) : '');
@@ -102,7 +130,7 @@ function die_html_input_error(mixed $variable = null, mixed $value = null, strin
 	}
 
 	$isWeb = CACTI_WEB || isrv('json');
-	cacti_debug_backtrace('Validation Error' . $variable . $value, $isWeb);
+	cacti_debug_backtrace('Validation Error, Event: ' . $event_id . $variable . $value, $isWeb);
 
 	if (!$isWeb) {
 		print $message . PHP_EOL;
@@ -111,7 +139,7 @@ function die_html_input_error(mixed $variable = null, mixed $value = null, strin
 	}
 
 	if (isrv('json')) {
-		cacti_debug_backtrace('Validation Error' . ($variable != '' ? ', Variable:' . htmle($variable) : '') . ($value != '' ? ', Value:' . htmle($value) : '') . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), false);
+		cacti_debug_backtrace('Validation Error, Event: ' . $event_id . $variable . $value . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), false);
 
 		print json_encode(
 			[
@@ -121,7 +149,7 @@ function die_html_input_error(mixed $variable = null, mixed $value = null, strin
 			]
 		);
 	} else {
-		cacti_debug_backtrace('Validation Error' . ($variable != '' ? ', Variable:' . htmle($variable) : '') . ($value != '' ? ', Value:' . htmle($value) : '') . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), true);
+		cacti_debug_backtrace('Validation Error, Event: ' . $event_id . $variable . $value . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), true);
 
 		print "<table style='width:100%;text-align:center;'><tr><td>$message</td></tr></table>";
 
