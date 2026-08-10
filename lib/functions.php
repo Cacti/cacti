@@ -7430,7 +7430,15 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 			REMOTE_AGENT_MAX_RESPONSE_BYTES + 1
 		);
 
-		$status = remote_agent_http_status($http_response_header ?? []);
+		if (version_compare(PHP_VERSION, '8.4.0', '>=')) {
+			if (function_exists('http_get_last_response_headers')) {
+				$http_response_header = http_get_last_response_headers();
+			} else {
+				$http_response_header = [];
+			}
+		}
+
+		$status = remote_agent_http_status($http_response_header);
 
 		if (!is_string($output) || strlen($output) > REMOTE_AGENT_MAX_RESPONSE_BYTES || $status === null || $status < 200 || $status >= 300) {
 			cacti_log(sprintf('WARNING: Remote Data Collector %d returned an invalid, oversized, or non-success response.', $poller_id), false, $logtype);
