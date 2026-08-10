@@ -571,7 +571,7 @@ fs_write	./lib/functions.php:719					file_put_contents(sys_get_temp_dir() . '/ca
 fs_write	./lib/functions.php:7239				file_put_contents($tmp_file, 'cacti');
 fs_write	./lib/import.php:425		$f   = fopen($filename, 'r');
 fs_write	./lib/import.php:606							$file = fopen($filename, 'wb');
-fs_write	./lib/installer.php:2890				$file = fopen($cacheFile, "r");
+fs_write	./lib/installer.php:2891				$file = fopen($cacheFile, "r");
 fs_write	./lib/poller.php:1416									if (file_put_contents($tmpfile, $contents) !== false) {
 fs_write	./lib/poller.php:1423												file_put_contents($mypath, $contents);
 fs_write	./lib/poller.php:1452								file_put_contents($mypath, $contents);
