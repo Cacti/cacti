@@ -79,9 +79,9 @@ cmd_exec	./lib/rrd.php:413						$process = proc_open(read_config_option('path_rr
 cmd_exec	./lib/rrd.php:443						$output = shell_exec($full_commandline);
 cmd_exec	./lib/rrd.php:91		$process = popen($command, 'w');
 cmd_exec	./lib/rrdcheck.php:837		$process = proc_open($command, $fds, $pipes);
-cmd_exec	./lib/snmp.php:208			exec($command, $snmp_value, $return_var);
-cmd_exec	./lib/snmp.php:308			exec($command, $snmp_value, $return_var);
-cmd_exec	./lib/snmp.php:403			exec($command, $snmp_value, $return_var);
+cmd_exec	./lib/snmp.php:203			exec($command, $snmp_value, $return_var);
+cmd_exec	./lib/snmp.php:291			exec($command, $snmp_value, $return_var);
+cmd_exec	./lib/snmp.php:375			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmpagent.php:633		// add pollers of a distributed system (future)
 cmd_exec	./lib/spikekill.php:448			$dump_output = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' 2>&1 > ' . cacti_escapeshellarg($xmlfile));
 cmd_exec	./lib/spikekill.php:798			$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
