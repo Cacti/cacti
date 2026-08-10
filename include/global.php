@@ -641,8 +641,9 @@ if ($config['is_web']) {
 
 	// prevent IE from silently rejects cookies sent from third party sites.
 	header('P3P: CP="CAO PSA OUR"');
+	// header() replaces by default, so a second Cache-Control here would drop
+	// no-store and leave every authenticated page cacheable
 	header('Cache-Control: no-store, no-cache, must-revalidate');
-	header('Cache-Control: max-age=31536000');
 
 	cacti_session_start();
 
