@@ -67,6 +67,7 @@ cmd_exec	./lib/poller.php:148						pclose(popen('start "Cactiplus" /I ' . $filen
 cmd_exec	./lib/poller.php:151					exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
 cmd_exec	./lib/poller.php:153					exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
 cmd_exec	./lib/poller.php:187			$setsid_path = trim(shell_exec('which setsid 2>/dev/null') ?? '');
+cmd_exec	./lib/poller.php:188		$process = @proc_open($command, $descriptors, $pipes, null, null, ['bypass_shell' => true]);
 cmd_exec	./lib/poller.php:197		$process = proc_open('exec ' . $cmd_full, $descriptors, $pipes);
 cmd_exec	./lib/poller.php:55	 *                                    of the proc_open() and proc_close() functions (php 4.3+)
 cmd_exec	./lib/poller.php:56	 * @param array  $pipes               The array of r/w pipes returned from proc_open()
