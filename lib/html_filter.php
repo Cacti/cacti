@@ -306,7 +306,7 @@ class CactiTableFilter {
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Has Graphs'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(true|false)']],
+					'filter_options' => ['options' => ['regexp' => '/^(true|false)$/']],
 					'default'        => read_config_option('default_has') == 'on' ? 'true' : 'false',
 					'pageset'        => true,
 					'value'          => $value
@@ -326,7 +326,7 @@ class CactiTableFilter {
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Has Data Sources'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(true|false)']],
+					'filter_options' => ['options' => ['regexp' => '/^(true|false)$/']],
 					'default'        => read_config_option('default_has') == 'on' ? 'true' : 'false',
 					'pageset'        => true,
 					'value'          => $value
@@ -346,7 +346,7 @@ class CactiTableFilter {
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Named Colors'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(true|false)']],
+					'filter_options' => ['options' => ['regexp' => '/^(true|false)$/']],
 					'default'        => read_config_option('default_has') == 'on' ? 'true' : 'false',
 					'pageset'        => true,
 					'value'          => $value
@@ -366,7 +366,7 @@ class CactiTableFilter {
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => ($this->associated_label != '' ? $this->associated_label : __('Associated')),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(true|false)']],
+					'filter_options' => ['options' => ['regexp' => '/^(true|false)$/']],
 					'default'        => read_config_option('default_has') == 'on' ? 'true' : 'false',
 					'pageset'        => true,
 					'value'          => $value

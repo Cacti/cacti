@@ -130,10 +130,8 @@ test('every public wrapper accepts a trailing timeout argument', function () {
 	expect(db_fetch_cell('SELECT hostname FROM host WHERE id = 1', '', true, $conn, 5))->toBe('h1');
 	expect(db_fetch_cell_prepared('SELECT hostname FROM host WHERE id = ?', [1], '', true, $conn, 5))->toBe('h1');
 
-	// SQLite's PDO driver reports rowCount()=0 for SELECT, so db_fetch_row* return [];
-	// this only verifies the wrapper accepts and forwards the trailing $timeout argument.
-	expect(db_fetch_row('SELECT * FROM host WHERE id = 1', true, $conn, 5))->toBeArray();
-	expect(db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [1], true, $conn, 5))->toBeArray();
+	expect(db_fetch_row('SELECT * FROM host WHERE id = 1', true, $conn, 5)['hostname'])->toBe('h1');
+	expect(db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [1], true, $conn, 5)['hostname'])->toBe('h1');
 
 	expect(db_fetch_assoc('SELECT hostname FROM host', true, $conn, 5)[0]['hostname'])->toBe('h1');
 	expect(db_fetch_assoc_prepared('SELECT hostname FROM host WHERE id = ?', [1], true, $conn, 5)[0]['hostname'])->toBe('h1');
