@@ -34,9 +34,9 @@ cmd_exec	./lib/functions.php:7272				exec(sprintf('grep :%s: /etc/passwd | cut -
 cmd_exec	./lib/functions.php:7564	 * shell_exec() callers that already assemble the command string.
 cmd_exec	./lib/functions.php:7604		$process = proc_open($argv, $descriptors, $pipes);
 cmd_exec	./lib/functions.php:7676	 * shell_exec() and expect a string return value.
-cmd_exec	./lib/installer.php:3328				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-cmd_exec	./lib/installer.php:3360						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-cmd_exec	./lib/installer.php:3416						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./lib/installer.php:3393				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./lib/installer.php:3425						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+cmd_exec	./lib/installer.php:3481						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:824							$output = shell_exec(
 cmd_exec	./lib/ping.php:167					$result = shell_exec('ping ' . cacti_escapeshellarg($this->host['hostname']));
 cmd_exec	./lib/ping.php:169					$result = shell_exec('ping -m ' . ceil($this->timeout/1000) . ' -n ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
@@ -385,7 +385,7 @@ dynamic_include	./lib/html_tree.php:831		include_once($config['library_path'] . 
 dynamic_include	./lib/html_tree.php:93		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/import.php:2000		include_once($config['library_path'] . '/vdef.php');
 dynamic_include	./lib/import.php:29		include_once($config['library_path'] . '/xml.php');
-dynamic_include	./lib/installer.php:3469					include_once($upgrade_file);
+dynamic_include	./lib/installer.php:3534					include_once($upgrade_file);
 dynamic_include	./lib/mib_cache.php:57			include_once($config['include_path'] . '/vendor/phpsnmp/mib_parser.php');
 dynamic_include	./lib/plugins.php:154							include_once($plugin_include);
 dynamic_include	./lib/plugins.php:464		include_once($config['library_path'] . '/database.php');
@@ -571,10 +571,10 @@ fs_write	./lib/functions.php:719					file_put_contents(sys_get_temp_dir() . '/ca
 fs_write	./lib/functions.php:7239				file_put_contents($tmp_file, 'cacti');
 fs_write	./lib/import.php:425		$f   = fopen($filename, 'r');
 fs_write	./lib/import.php:606							$file = fopen($filename, 'wb');
-fs_write	./lib/installer.php:2891				$file = fopen($cacheFile, "r");
-fs_write	./lib/poller.php:1416									if (file_put_contents($tmpfile, $contents) !== false) {
-fs_write	./lib/poller.php:1423												file_put_contents($mypath, $contents);
-fs_write	./lib/poller.php:1452								file_put_contents($mypath, $contents);
+fs_write	./lib/installer.php:2956				$file = fopen($cacheFile, "r");
+fs_write	./lib/poller.php:1308									if (file_put_contents($tmpfile, $contents) !== false) {
+fs_write	./lib/poller.php:1315												file_put_contents($mypath, $contents);
+fs_write	./lib/poller.php:1344								file_put_contents($mypath, $contents);
 fs_write	./lib/reports.php:1704			$f = fopen($fn, 'wb');
 fs_write	./lib/reports.php:1745			$f = fopen($fn, 'wb');
 fs_write	./lib/rrd.php:2592					if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
