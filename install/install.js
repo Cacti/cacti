@@ -468,30 +468,24 @@ function processStepProfileAndAutomation(StepData) {
 	setSNMPOverride();
 }
 
-function processStepTemplateInstall(StepData) {
-	var templates = StepData.Templates;
-	if (templates.all) {
-		element = $('#selectall');
+function restoreInstallerSelection(selection, fields) {
+	if (selection.all) {
+		var element = $('#selectall');
 		if (element != null && element.length > 0) {
-			element.click();
+			element.prop('checked', true);
+			selectAll(element.data('prefix'), true);
 		}
 	} else {
-		setFieldData(FIELDS_TEMPLATES, StepData.Templates);
+		setFieldData(fields, selection);
 	}
+}
 
+function processStepTemplateInstall(StepData) {
+	restoreInstallerSelection(StepData.Templates, FIELDS_TEMPLATES);
 }
 
 function processStepCheckTables(StepData) {
-	var tables = StepData.Tables;
-	if (tables.all) {
-		element = $('#selectall');
-		if (element != null && element.length > 0) {
-			element.click();
-		}
-	} else {
-		setFieldData(FIELDS_CHECK_TABLES, StepData.Tables);
-	}
-
+	restoreInstallerSelection(StepData.Tables, FIELDS_CHECK_TABLES);
 }
 
 function processStepInputValidation(StepData) {
@@ -678,6 +672,10 @@ function performStep(installStep, suppressRefresh, forceReload) {
 			$('div[class^="ui-"]').remove();
 			$('#installContent').html(data.Html);
 			$('#installContent').show();
+
+			// The installer replaces its tables through Ajax, so bind the table
+			// controls before applying the server-provided checkbox state.
+			handleTableNav();
 
 			if (typeof $('#installData').data('debug') != 'undefined') {
 				debugData = data;
