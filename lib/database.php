@@ -907,11 +907,9 @@ function db_fetch_row_return(PDOStatement $query) : array {
 		db_echo_sql('db_fetch_row_return($query)' . "\n");
 	}
 
-	if ($query->rowCount()) {
-		$r = $query->fetchAll(PDO::FETCH_ASSOC);
-	}
+	$row = $query->fetch(PDO::FETCH_ASSOC);
 
-	return $r[0] ?? [];
+	return is_array($row) ? $row : [];
 }
 
 /**
@@ -1397,11 +1395,7 @@ function db_index_matches(string $table, string $index, array $columns, bool $lo
 function db_table_exists(string $table, bool $log = true, mixed $db_conn = false) : bool {
 	static $results;
 
-	if ($db_conn === false) {
-		$index = '-1';
-	} else {
-		$index = md5(json_encode($db_conn));
-	}
+	$index = db_connection_cache_key($db_conn);
 
 	if (isset($results[$index][$table]) && !defined('IN_CACTI_INSTALL') && !defined('IN_PLUGIN_INSTALL')) {
 		return $results[$index][$table];
@@ -1485,11 +1479,7 @@ function db_cacti_initialized(bool $is_web = true) : bool {
 function db_column_exists(string $table, string $column, bool $log = true, mixed $db_conn = false) : bool {
 	static $results = [];
 
-	if ($db_conn === false) {
-		$index = '-1';
-	} else {
-		$index = md5(json_encode($db_conn));
-	}
+	$index = db_connection_cache_key($db_conn);
 
 	if (isset($results[$index][$table][$column]) && !defined('IN_CACTI_INSTALL') && !defined('IN_PLUGIN_INSTALL')) {
 		return $results[$index][$table][$column];
@@ -1498,6 +1488,45 @@ function db_column_exists(string $table, string $column, bool $log = true, mixed
 	$results[$index][$table][$column] = (db_fetch_cell("SHOW columns FROM `$table` LIKE '$column'", '', $log, $db_conn) ? true : false);
 
 	return $results[$index][$table][$column];
+}
+
+/**
+ * Returns a stable cache key that keeps database connections isolated.
+ *
+ * JSON encoding a PDO object produces the same empty object for every
+ * connection, allowing schema cache entries from one database to leak into
+ * another. Object identity avoids that collision while the WeakMap prevents
+ * stale connection references from accumulating.
+ *
+ * @param mixed $db_conn Database connection or the default-connection sentinel.
+ *
+ * @return string Connection-specific cache key.
+ */
+function db_connection_cache_key(mixed $db_conn) : string {
+	static $connection_ids = null;
+	static $next_id        = 0;
+
+	if ($db_conn === false) {
+		return '-1';
+	}
+
+	if (is_object($db_conn)) {
+		if ($connection_ids === null) {
+			$connection_ids = new WeakMap();
+		}
+
+		if (!isset($connection_ids[$db_conn])) {
+			$connection_ids[$db_conn] = ++$next_id;
+		}
+
+		return 'object:' . $connection_ids[$db_conn];
+	}
+
+	if (is_resource($db_conn)) {
+		return 'resource:' . get_resource_id($db_conn);
+	}
+
+	return 'value:' . hash('sha256', serialize($db_conn));
 }
 
 /**
@@ -1691,15 +1720,21 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 			// FIXME: Need to still check default value
 			$arr = db_fetch_row("SHOW columns FROM `$table` LIKE '" . $column['name'] . "'", $log, $db_conn);
 
-			if (str_contains(cacti_strtolower($arr['Type']), ' unsigned')) {
-				$arr['Type']     = str_ireplace(' unsigned', '', $arr['Type']);
+			$arr = array_change_key_case(is_array($arr) ? $arr : [], CASE_LOWER);
+
+			if (!isset($arr['type'])) {
+				return false;
+			}
+
+			if (str_contains(cacti_strtolower($arr['type']), ' unsigned')) {
+				$arr['type']     = str_ireplace(' unsigned', '', $arr['type']);
 				$arr['unsigned'] = true;
 			}
 
-			if ($column['type'] != $arr['Type'] || (isset($column['NULL']) && ($column['NULL'] ? 'YES' : 'NO') != $arr['Null'])
+			if ($column['type'] != $arr['type'] || (isset($column['NULL']) && ($column['NULL'] ? 'YES' : 'NO') != ($arr['null'] ?? ''))
 				|| (((!isset($column['unsigned']) || !$column['unsigned']) && isset($arr['unsigned']))
 					|| (isset($column['unsigned']) && $column['unsigned'] && !isset($arr['unsigned'])))
-				|| (isset($column['auto_increment']) && ($column['auto_increment'] ? 'auto_increment' : '') != $arr['Extra'])) {
+				|| (isset($column['auto_increment']) && ($column['auto_increment'] ? 'auto_increment' : '') != ($arr['extra'] ?? ''))) {
 				$alter_clauses[] = 'CHANGE `' . $column['name'] . '` ' . $column_definition($column, false);
 				$columns_changed = true;
 			}
