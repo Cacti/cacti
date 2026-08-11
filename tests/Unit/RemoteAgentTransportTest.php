@@ -60,7 +60,8 @@ test('remote collector handoff enforces path status and response-size contracts'
 
 	expect($source)->toContain('strpbrk($url, "\\0\\r\\n")')
 		->and($source)->toContain('REMOTE_AGENT_MAX_RESPONSE_BYTES + 1')
-		->and($source)->toContain('remote_agent_http_status($http_response_header ?? [])')
+		->and($source)->toContain('$http_response_header = [];')
+		->and($source)->toContain('remote_agent_http_status($http_response_header)')
 		->and($source)->toContain('$status < 200 || $status >= 300');
 });
 
