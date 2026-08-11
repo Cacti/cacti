@@ -734,13 +734,22 @@ $settings['general'] = [
 	],
 	'content_security_policy_script' => [
 		'method'        => 'drop_array',
-		'friendly_name' => __('Content-Security Allow Unsafe JavaScript eval() calls'),
-		'description'   => __('Certain Cacti plugins require the use of unsafe JavaScript eval() calls.  If you select this option, they will be allowed in Cacti.'),
+		'friendly_name' => __('Inline JavaScript Protection'),
+		'description'   => __('Controls how the Content-Security-Policy restricts inline JavaScript.  HTMX keeps the \'unsafe-inline\' policy that all current themes and plugins rely on and matches the behaviour of prior releases.  Nonce enforces a per-request nonce on Cacti inline scripts and allows scripts they load (plugins that emit their own inline scripts must adopt the nonce or they will be blocked).  None also permits unsafe eval() calls and is the least restrictive option.'),
 		'default'       => '',
 		'array'         => [
-			'0'           => __('No'),
-			'unsafe-eval' => __('Yes')
+			''            => __('HTMX (Default)'),
+			'nonce'       => __('Nonce'),
+			'unsafe-eval' => __('None')
 		]
+	],
+	'content_security_report_uri' => [
+		'friendly_name' => __('CSP Violation Report URI'),
+		'description'   => __('Only used in Nonce mode.  URL where browsers post Content-Security-Policy violation reports.  Leave blank to use the bundled csp_report.php handler under the configured Cacti URL path.'),
+		'method'        => 'textbox',
+		'default'       => '',
+		'size'          => '100',
+		'max_length'    => '255',
 	],
 	'content_security_alternate_sources' => [
 		'friendly_name' => __('Content-Security Alternate Sources'),
