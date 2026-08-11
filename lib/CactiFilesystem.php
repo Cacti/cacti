@@ -122,7 +122,7 @@ class CactiFilesystem {
 
 		if ($contents === false) {
 			$error  = error_get_last();
-			$reason = is_array($error) ? ($error['message'] ?? 'unknown error') : 'unknown error';
+			$reason = is_array($error) ? $error['message'] : 'unknown error';
 
 			throw new RuntimeException("Unable to read file $filename: $reason");
 		}
