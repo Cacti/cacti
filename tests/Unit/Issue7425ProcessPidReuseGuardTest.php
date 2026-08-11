@@ -44,12 +44,27 @@ function pid_guard_spawn_foreign(&$handle) : int {
 	$handle = proc_open(['sleep', '30'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
 
 	$status = proc_get_status($handle);
+	$pid    = (int) $status['pid'];
 
 	foreach ($pipes as $pipe) {
 		fclose($pipe);
 	}
 
-	return (int) $status['pid'];
+	/* proc_open forks, then the child execs sleep. Until the exec lands, the
+	   child still reports the parent's command name, so an identity check that
+	   runs in that window would see a false match. Wait for the exec to settle
+	   before returning so the test observes 'sleep', not the transient 'php'. */
+	$comm = '/proc/' . $pid . '/comm';
+
+	for ($i = 0; $i < 200; $i++) {
+		if (is_readable($comm) && trim((string) file_get_contents($comm)) === 'sleep') {
+			break;
+		}
+
+		usleep(5000);
+	}
+
+	return $pid;
 }
 
 test('a pid that cannot be valid is never reported running', function () {
@@ -136,8 +151,8 @@ test('without /proc the check falls back to plain existence', function () {
 });
 
 test('every registry kill site checks the pid before signalling it', function () {
-	$poller     = file_get_contents(dirname(__DIR__, 2) . '/lib/poller.php');
-	$dsstats    = file_get_contents(dirname(__DIR__, 2) . '/lib/dsstats.php');
+	$poller      = file_get_contents(dirname(__DIR__, 2) . '/lib/poller.php');
+	$dsstats     = file_get_contents(dirname(__DIR__, 2) . '/lib/dsstats.php');
 	$batchgapfix = file_get_contents(dirname(__DIR__, 2) . '/cli/batchgapfix.php');
 
 	expect($poller)->not->toBeFalse('lib/poller.php must be readable')
