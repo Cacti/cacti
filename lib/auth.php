@@ -5144,3 +5144,39 @@ function remote_agent_fcrdns_confirmed(string $client_addr, array $forward_recor
 
 	return false;
 }
+
+/**
+ * Validate an effective user delegated by a trusted Remote Agent peer.
+ *
+ * @param mixed         $value  Candidate user identifier from the request
+ * @param callable|null $lookup Optional lookup seam returning a user row
+ *
+ * @return int|false Enabled user identifier, or false when delegation is invalid
+ */
+function remote_agent_validate_effective_user(mixed $value, ?callable $lookup = null) : int|false {
+	if (is_int($value)) {
+		$user_id = $value;
+	} elseif (is_string($value) && ctype_digit($value)) {
+		$user_id = (int) $value;
+	} else {
+		return false;
+	}
+
+	if ($user_id < 1) {
+		return false;
+	}
+
+	$lookup ??= static fn (int $id) : array|false => db_fetch_row_prepared(
+		'SELECT id, enabled
+		FROM user_auth
+		WHERE id = ?',
+		[$id]
+	);
+	$user = $lookup($user_id);
+
+	if (!is_array($user) || (int) ($user['id'] ?? 0) !== $user_id || ($user['enabled'] ?? '') !== 'on') {
+		return false;
+	}
+
+	return $user_id;
+}

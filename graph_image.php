@@ -154,9 +154,9 @@ if (POLLER_ID == 1 || read_config_option('storage_location')) { // @phpstan-igno
 	$output = call_remote_data_collector(1, $url);
 
 	if ($output !== false && $output != '') {
-		$decoded = json_decode($output, true);
+		$decoded = remote_graph_json_envelope($output);
 
-		if (is_array($decoded) && isset($decoded['image'])) {
+		if (is_array($decoded)) {
 			$output = base64_decode($decoded['image'], true);
 		} elseif (str_contains($output, 'image = ')) {
 			// Find the beginning of the image definition row
