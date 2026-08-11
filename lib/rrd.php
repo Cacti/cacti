@@ -704,6 +704,7 @@ function encrypt(string $output, string $rsa_key) : string {
 	global $encryption;
 
 	if ($encryption) {
+		/** @var \phpseclib3\Crypt\RSA\PublicKey $public loadPublicKey() returns the RSA public key implementation, which exposes encrypt() */
 		$public  = phpseclib3\Crypt\RSA::loadPublicKey($rsa_key);
 		$aes     = new \phpseclib3\Crypt\Rijndael('cbc');
 		$aes_key = phpseclib3\Crypt\Random::string(32);
@@ -747,6 +748,7 @@ function rrdtool_proxy_decrypt(string $input, string $rsa_private_key) : string|
 	}
 
 	try {
+		/** @var \phpseclib3\Crypt\RSA\PrivateKey $private loadPrivateKey() returns the RSA private key implementation, which exposes decrypt() */
 		$private = phpseclib3\Crypt\RSA::loadPrivateKey($rsa_private_key);
 		$aes     = new \phpseclib3\Crypt\Rijndael('cbc');
 		$aes_key = $private->decrypt($aes_key);
