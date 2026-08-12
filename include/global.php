@@ -775,7 +775,11 @@ if ($config['is_web']) {
 	if (isrv('action')) {
 		$action = gnrv('action');
 
-		$bad_actions = ['save', 'update_data', 'changepassword'];
+		// State-changing actions must arrive by POST with a CSRF token. The
+		// delete actions below were reachable by GET, so a cross-origin <img>
+		// or link could delete a tree node, graph template, or data query using
+		// only the victim's session cookie.
+		$bad_actions = ['save', 'update_data', 'changepassword', 'delete_node', 'gt_remove', 'query_remove'];
 
 		foreach ($bad_actions as $bad) {
 			if ($action == $bad && !isset($_POST['__csrf_magic'])) {
