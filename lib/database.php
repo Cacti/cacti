@@ -2424,11 +2424,11 @@ function db_qstr(mixed $s, mixed $db_conn = false) : string {
  *   characters. db_qstr() would double-escape the backslashes. Wrap with the
  *   surrounding '%' wildcards after escaping, e.g. '%' . db_like_escape($v) . '%'.
  *
- * @param (string) $value The value to neutralise for a LIKE clause
+ * @param mixed $value The value to neutralise for a LIKE clause
  *
- * @return (string) The value with '\', '%' and '_' escaped for LIKE
+ * @return string The value with '\', '%' and '_' escaped for LIKE
  */
-function db_like_escape($value) : string {
+function db_like_escape(mixed $value) : string {
 	return str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], (string) $value);
 }
 
