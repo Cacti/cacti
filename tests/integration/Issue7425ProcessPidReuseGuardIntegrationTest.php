@@ -95,6 +95,11 @@ class ProcessRegistryPDO extends FakeMySQLPDO {
 		$sql = preg_replace('/\bNOW\s*\(\s*\)/i', "datetime('now')", $sql);
 		$sql = preg_replace('/FROM_UNIXTIME\s*\(([^)]+)\)/i', "datetime($1, 'unixepoch')", $sql);
 
+		/* db_table_exists() probes with SHOW TABLES LIKE 'x'; without this the
+		   registry's own table check throws on sqlite and every function returns
+		   its "no processes table" fast path, so nothing under test runs. */
+		$sql = preg_replace("/SHOW\s+TABLES\s+LIKE\s+('[^']*')/i", "SELECT name FROM sqlite_master WHERE type = 'table' AND name LIKE $1", $sql);
+
 		// IF(a, b, c); the word boundary keeps IFNULL and friends intact
 		return preg_replace('/\bIF\s*\(/i', 'iif(', $sql);
 	}
@@ -102,11 +107,17 @@ class ProcessRegistryPDO extends FakeMySQLPDO {
 
 /**
  * sqlite reports rowCount() as 0 for SELECT, which db_fetch_row_return() reads
- * as no rows at all.
+ * as no rows at all, so the result set is captured up front on execute().
+ * Because that capture drains the cursor, fetch() is served from the buffer
+ * too: db_fetch_row_return() reads a single row with fetch(), and without this
+ * it would see an exhausted cursor and report every registered row as missing.
  */
 class ProcessRegistryStatement extends PDOStatement {
 	/** @var array<int,array<string,mixed>>|null rows of a SELECT, null otherwise */
 	private ?array $rows = null;
+
+	/** @var int next row fetch() returns from the buffer */
+	private int $cursor = 0;
 
 	protected function __construct() {
 	}
@@ -114,13 +125,22 @@ class ProcessRegistryStatement extends PDOStatement {
 	public function execute(?array $params = null) : bool {
 		$executed = parent::execute($params);
 
-		$this->rows = $this->columnCount() > 0 ? parent::fetchAll(PDO::FETCH_ASSOC) : null;
+		$this->rows   = $this->columnCount() > 0 ? parent::fetchAll(PDO::FETCH_ASSOC) : null;
+		$this->cursor = 0;
 
 		return $executed;
 	}
 
 	public function rowCount() : int {
 		return $this->rows === null ? parent::rowCount() : count($this->rows);
+	}
+
+	public function fetch(int $mode = PDO::FETCH_DEFAULT, int $cursorOrientation = PDO::FETCH_ORI_NEXT, int $cursorOffset = 0) : mixed {
+		if ($this->rows === null) {
+			return parent::fetch($mode, $cursorOrientation, $cursorOffset);
+		}
+
+		return $this->rows[$this->cursor++] ?? false;
 	}
 
 	public function fetchAll(int $mode = PDO::FETCH_DEFAULT, mixed ...$args) : array {
