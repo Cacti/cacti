@@ -353,14 +353,21 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 						WHERE color_template_id = ?',
 						array($_color_templates[$i]));
 
-					# templating required, get color for current graph item
-					$sql = 'SELECT color_id
-						FROM color_template_items
-						WHERE color_template_id=' . $_color_templates[$i] . '
-						ORDER BY sequence
-						LIMIT ' . ($_selected_graph_index % $num_colors) . ',1';
+					# a color template with no items counts zero, and the round
+					# robin below divides by that count. PHP 8 raises
+					# DivisionByZeroError where PHP 7 warned and carried on.
+					if ($num_colors > 0) {
+						# templating required, get color for current graph item
+						$sql = 'SELECT color_id
+							FROM color_template_items
+							WHERE color_template_id=' . $_color_templates[$i] . '
+							ORDER BY sequence
+							LIMIT ' . ($_selected_graph_index % $num_colors) . ',1';
 
-					$save['color_id'] = db_fetch_cell($sql);
+						$save['color_id'] = db_fetch_cell($sql);
+					} else {
+						$save['color_id'] = $graph_item['color_id'];
+					}
 				} else {
 					/* set a color even if no color templating is required */
 					$save['color_id'] = $graph_item['color_id'];
