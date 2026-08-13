@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/lib/path_containment.php';
+require_once dirname(__DIR__, 2) . '/lib/functions.php';
 
 beforeEach(function () : void {
 	$this->base = sys_get_temp_dir() . '/cacti_containment_' . bin2hex(random_bytes(6));
@@ -110,28 +110,4 @@ test('windows path normalization folds case, separators and long prefixes', func
 	expect(cacti_normalize_windows_path('\\\\?\\UNC\\server\\share'))->toBe('//server/share');
 	expect(cacti_normalize_windows_path('/'))->toBe('/');
 	expect(cacti_normalize_windows_path(null))->toBe('');
-});
-
-test('repository url accepts http and https with a host', function () : void {
-	expect(plugin_validate_repository_url('https://api.github.com/'))->toBe('https://api.github.com');
-	expect(plugin_validate_repository_url('http://repo.internal:8080/api'))->toBe('http://repo.internal:8080/api');
-});
-
-test('repository url rejects anything else', function () : void {
-	// GHSA-pjmv-fxjm-29cx: an arbitrary URL redirects every plugin fetch
-	expect(plugin_validate_repository_url('file:///etc/passwd'))->toBe('');
-	expect(plugin_validate_repository_url('javascript:alert(1)'))->toBe('');
-	expect(plugin_validate_repository_url('ftp://example.com/'))->toBe('');
-	expect(plugin_validate_repository_url('not a url'))->toBe('');
-	expect(plugin_validate_repository_url(''))->toBe('');
-	expect(plugin_validate_repository_url(null))->toBe('');
-	expect(plugin_validate_repository_url('http://'))->toBe('');
-});
-
-test('repository url rejects userinfo, query strings and fragments', function () : void {
-	// the value is concatenated with a path, so these produce malformed requests
-	expect(plugin_validate_repository_url('https://user:pw@api.github.com'))->toBe('');
-	expect(plugin_validate_repository_url('https://user@api.github.com'))->toBe('');
-	expect(plugin_validate_repository_url('https://api.github.com/?x=1'))->toBe('');
-	expect(plugin_validate_repository_url('https://api.github.com/#frag'))->toBe('');
 });

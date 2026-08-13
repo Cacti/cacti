@@ -23,6 +23,8 @@ declare(strict_types = 1);
  +-------------------------------------------------------------------------+
 */
 
+require_once dirname(__DIR__, 2) . '/lib/plugins.php';
+
 /**
  * Regression test for GHSA-pjmv-fxjm-29cx.
  *
@@ -55,8 +57,32 @@ test('archive entries are contained before they are written', function () use ($
 	expect($guard)->toBeLessThan($write);
 });
 
-test('plugins.php loads the containment module', function () use ($pluginsPath) {
-	expect(file_get_contents($pluginsPath))
-		->toMatch("/require_once\(__DIR__ \. '\/path_containment\.php'\)/");
-	expect(file_exists(dirname(__DIR__, 2) . '/lib/path_containment.php'))->toBeTrue();
+test('the containment helpers live in lib/functions.php', function () {
+	expect(file_get_contents(dirname(__DIR__, 2) . '/lib/functions.php'))
+		->toContain('function validate_relative_path_within')
+		->toContain('function cacti_path_is_within');
+});
+
+test('repository url accepts http and https with a host', function () : void {
+	expect(plugin_validate_repository_url('https://api.github.com/'))->toBe('https://api.github.com');
+	expect(plugin_validate_repository_url('http://repo.internal:8080/api'))->toBe('http://repo.internal:8080/api');
+});
+
+test('repository url rejects anything else', function () : void {
+	// GHSA-pjmv-fxjm-29cx: an arbitrary URL redirects every plugin fetch
+	expect(plugin_validate_repository_url('file:///etc/passwd'))->toBe('');
+	expect(plugin_validate_repository_url('javascript:alert(1)'))->toBe('');
+	expect(plugin_validate_repository_url('ftp://example.com/'))->toBe('');
+	expect(plugin_validate_repository_url('not a url'))->toBe('');
+	expect(plugin_validate_repository_url(''))->toBe('');
+	expect(plugin_validate_repository_url(null))->toBe('');
+	expect(plugin_validate_repository_url('http://'))->toBe('');
+});
+
+test('repository url rejects userinfo, query strings and fragments', function () : void {
+	// the value is concatenated with a path, so these produce malformed requests
+	expect(plugin_validate_repository_url('https://user:pw@api.github.com'))->toBe('');
+	expect(plugin_validate_repository_url('https://user@api.github.com'))->toBe('');
+	expect(plugin_validate_repository_url('https://api.github.com/?x=1'))->toBe('');
+	expect(plugin_validate_repository_url('https://api.github.com/#frag'))->toBe('');
 });

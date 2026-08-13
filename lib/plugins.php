@@ -22,8 +22,6 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(__DIR__ . '/path_containment.php');
-
 function do_hook(string $name) : array {
 	$data = func_get_args();
 	$data = api_plugin_hook($name, $data);
@@ -2446,4 +2444,45 @@ function plugin_make_github_request(string $url, string $type = 'json') : mixed 
 	}
 
 	return false;
+}
+
+/**
+ * plugin_validate_repository_url - constrains the plugin repository API base
+ *
+ * The repository URL drives every plugin fetch, so an arbitrary value lets an
+ * administrator point plugin distribution at attacker controlled infrastructure.
+ *
+ * @param mixed $url The configured repository URL
+ *
+ * @return string The trimmed URL, or an empty string when unusable
+ */
+function plugin_validate_repository_url(mixed $url) : string {
+	$url = trim((string) $url, "/\n\r ");
+
+	if ($url === '') {
+		return '';
+	}
+
+	$parts = parse_url($url);
+
+	if ($parts === false || !isset($parts['scheme']) || !isset($parts['host'])) {
+		return '';
+	}
+
+	if (!in_array(strtolower($parts['scheme']), ['http', 'https'], true)) {
+		return '';
+	}
+
+	/**
+	 * The value is concatenated with a path, so a query string or fragment
+	 * would produce a malformed request. Userinfo is not meaningful for an
+	 * API base and would leak credentials into the log.
+	 */
+	foreach (['user', 'pass', 'query', 'fragment'] as $part) {
+		if (isset($parts[$part])) {
+			return '';
+		}
+	}
+
+	return $url;
 }
