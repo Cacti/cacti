@@ -23,7 +23,7 @@ foreach (array_slice($_SERVER['argv'], 1) as $argument) {
 	}
 
 	if (in_array($argument, array('--help', '-H', '-h'), true)) {
-		print 'Usage: audit_graph_template_inputs.php [--help|--version]' . PHP_EOL;
+		display_help();
 		exit(0);
 	}
 
@@ -95,3 +95,13 @@ if ($finding_count > 0) {
 
 print 'Graph template input integrity audit passed.' . PHP_EOL;
 exit(0);
+
+function display_version() {
+	print 'Cacti Graph Template Input Audit, Version ' . get_cacti_cli_version() . ', ' . COPYRIGHT_YEARS . PHP_EOL;
+}
+
+function display_help() {
+	display_version();
+	print PHP_EOL . 'Usage: audit_graph_template_inputs.php [--help|--version]' . PHP_EOL . PHP_EOL;
+	print 'Reports graph template input integrity findings without changing database state.' . PHP_EOL;
+}
