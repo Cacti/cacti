@@ -3715,6 +3715,56 @@ function auth_process_lockout_check(string $username, int $realm) : bool {
 }
 
 /**
+ * Emit a stable, machine-parseable authentication-failure line for external tools
+ * (e.g. fail2ban) alongside the existing human-readable AUTH log entries.  The
+ * grammar is fixed so a fail2ban failregex can key on it reliably across releases:
+ *
+ *   AUTH FAILURE user="<user>" realm="<realm>" ip="<ip>" reason="<reason>"
+ *
+ * The IP comes from get_client_addr(), which is already validated and honours the
+ * trusted-proxy configuration.  The username is attacker-influenced, so quotes and
+ * control characters are stripped to keep the grammar intact and prevent a crafted
+ * username from forging log lines or extra fields.
+ *
+ * @param string $username Username supplied by the client.
+ * @param string $realm    Realm token: local|ldap|domain.
+ * @param string $reason   Reason token: bad_password|no_such_user|2fa.
+ *
+ * @return void
+ */
+function auth_log_failure(string $username, string $realm, string $reason) : void {
+	$clean = static function (string $value) : string {
+		$stripped = preg_replace('/[\x00-\x1f\x7f"]/', '', $value);
+
+		return $stripped ?? '';
+	};
+
+	cacti_log(
+		sprintf(
+			'AUTH FAILURE user="%s" realm="%s" ip="%s" reason="%s"',
+			$clean($username), $clean($realm), get_client_addr(), $clean($reason)
+		),
+		false,
+		'AUTH'
+	);
+}
+
+/**
+ * Map a numeric authentication realm to the token used in auth_log_failure().
+ *
+ * @param int $realm The numeric realm id.
+ *
+ * @return string local|ldap|domain
+ */
+function auth_realm_token(int $realm) : string {
+	if ($realm <= 1) {
+		return 'local';
+	}
+
+	return $realm == 2 ? 'ldap' : 'domain';
+}
+
+/**
  * Called when a user login attempt fails to increment or lockout the user
  * if there is an error, the globals error and error_msg will be set to notify the caller
  * that a lockout is present and not to proceed with login.
@@ -3742,7 +3792,7 @@ function auth_process_lockout(string $username, int $realm) : void {
 
 			if (cacti_sizeof($user)) {
 				if ($user['enabled'] == '') {
-					cacti_log(sprintf('LOGIN FAILED: Local Login Failed for user %s from IP address %s. User account disabled.', $username, get_client_addr()), false, 'AUTH');
+					cacti_log(sprintf("LOGIN FAILED: Login failed for user '%s' from IP address '%s'. User account disabled.", $username, get_client_addr()), false, 'AUTH');
 
 					$error     = true;
 					$error_msg = __('Access Denied!  Login Disabled.');
@@ -3786,19 +3836,19 @@ function auth_process_lockout(string $username, int $realm) : void {
 					[$username, $user['id'] ?? 0, get_client_addr()]);
 
 				if ($user['locked'] == 'on') {
-					cacti_log(sprintf("LOGIN FAILED: Local Login Failed for user '%s' from IP Address '%s'. Account is locked out.", $username, get_client_addr()), false, 'AUTH');
+					cacti_log(sprintf("LOGIN FAILED: Login failed for user '%s' from IP address '%s'. Account is locked out.", $username, get_client_addr()), false, 'AUTH');
 
 					$error     = true;
 					$error_msg = __('Your account has been locked.  Please contact your Administrator.');
 				} else {
-					cacti_log(sprintf("LOGIN FAILED: Local Login Failed for user '%s' from IP Address '%s'", $username, get_client_addr()), false, 'AUTH');
+					cacti_log(sprintf("LOGIN FAILED: Login failed for user '%s' from IP address '%s'.", $username, get_client_addr()), false, 'AUTH');
 
 					// error
 					$error     = true;
 					$error_msg = __('Access Denied!  Login Failed.');
 				}
 			} else {
-				cacti_log(sprintf("LOGIN FAILED: Local Login Failed to find user '%s' from IP Address '%s'",  $username, get_client_addr()), false, 'AUTH');
+				cacti_log(sprintf("LOGIN FAILED: Login failed to find user '%s' from IP address '%s'.", $username, get_client_addr()), false, 'AUTH');
 
 				$error     = true;
 				$error_msg = __('Access Denied!  Login Failed.');

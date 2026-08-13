@@ -1,0 +1,18 @@
+# Example Fail2Ban jail for Cacti. Merge this into /etc/fail2ban/jail.local (or
+# drop it in /etc/fail2ban/jail.d/cacti.local) and adjust logpath to your install.
+#
+# Copy misc/fail2ban/cacti.conf to /etc/fail2ban/filter.d/cacti.conf first.
+
+[cacti]
+enabled  = true
+filter   = cacti
+port     = http,https
+
+# Path to Cacti's log. This is the file behind the "path_cactilog" setting,
+# by default <cacti>/log/cacti.log. Point this at your actual install.
+logpath  = /var/www/html/cacti/log/cacti.log
+
+# Ban an address after this many failures within findtime.
+maxretry = 5
+findtime = 10m
+bantime  = 1h
