@@ -24,11 +24,17 @@ require_once dirname(__DIR__, 2) . '/lib/html_utility.php';
 require_once dirname(__DIR__, 2) . '/lib/html.php';
 
 beforeEach(function () : void {
-	$_REQUEST['action'] = 'preview';
+	global $_CACTI_REQUEST;
+
+	$_REQUEST['action']       = 'preview';
+	$_CACTI_REQUEST['action'] = 'preview';
 });
 
 afterEach(function () : void {
+	global $_CACTI_REQUEST;
+
 	unset($_REQUEST['action']);
+	unset($_CACTI_REQUEST['action']);
 });
 
 test('an action at the head of the uri is not appended a second time', function () {
@@ -63,7 +69,9 @@ test('a uri that is not graph_view is left alone', function () {
 
 test('selected graphs refuses a nested array, as its contract states', function () {
 	expect(sanitize_unserialize_selected_graphs(serialize([1, 2, '3'])))->toBe([1, 2, '3'])
-		->and(sanitize_unserialize_selected_graphs(serialize([1, [2]])))->toBeFalse();
+		->and(sanitize_unserialize_selected_graphs(serialize([1, [2]])))->toBeFalse()
+		->and(sanitize_unserialize_selected_graphs(serialize([1, 'abc'])))->toBeFalse()
+		->and(sanitize_unserialize_selected_graphs(serialize([1, true])))->toBeFalse();
 });
 
 test('filter_value still escapes markup and the grave accent', function () {

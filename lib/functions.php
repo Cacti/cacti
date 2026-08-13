@@ -5342,7 +5342,7 @@ function sanitize_unserialize_selected_items(mixed $items) : mixed {
 }
 
 /**
- * verifies all selected graphs only contain numeric and string values
+ * verifies all selected graphs only contain numeric values
  *
  * @param mixed $items An array of serialized items from a post
  *
@@ -5361,12 +5361,8 @@ function sanitize_unserialize_selected_graphs(mixed $items) : array|false {
 			if (is_array($items)) {
 				$return_items = $items;
 
-				/* The docblock promised this and the code did not do it, so
-				 * every caller inherited a guarantee it never had. A nested
-				 * array reaching a caller that expects scalars is the case
-				 * worth refusing. */
 				foreach ($items as $item) {
-					if (!is_scalar($item)) {
+					if (!is_numeric($item)) {
 						$return_items = false;
 
 						break;
