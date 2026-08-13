@@ -4748,6 +4748,12 @@ function auth_login_redirect(string $login_opts = '') : void {
 			// Strip out the login from the referer if present
 			$referer  = str_replace('?action=login', '', $referer);
 
+			// Never emit an attacker-controlled Location. The HTTP_REFERER branch
+			// only checked str_contains(CACTI_PATH_URL), which an absolute URL such
+			// as https://evil.example/cacti/index.php satisfies. validate_redirect_url()
+			// rejects an off-host target and returns a safe local path instead.
+			$referer  = validate_redirect_url($referer);
+
 			if (api_user_realm_auth(auth_basename($referer))) {
 				header('Location: ' . $referer);
 			} elseif (!is_realm_allowed(8)) {
