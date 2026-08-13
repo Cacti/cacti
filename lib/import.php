@@ -691,6 +691,23 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 	/* track changes */
 	$status = 0;
 
+	/* Validate every dynamic graph-item field before the import writes any
+	 * template records. Import is a separate producer from the web form and must
+	 * enforce the same invariant at the data handoff boundary. */
+	if (isset($xml_array['inputs']) && is_array($xml_array['inputs'])) {
+		foreach ($xml_array['inputs'] as $item_array) {
+			$column_name = is_array($item_array) && isset($item_array['column_name'])
+				? xml_character_decode($item_array['column_name'])
+				: null;
+
+			if (!graph_template_input_column_is_allowed($column_name)) {
+				cacti_log('ERROR: Graph template import refused an invalid Graph Item Input field', false, 'SECURITY');
+
+				return false;
+			}
+		}
+	}
+
 	/* import into: graph_templates */
 	$_graph_template_id = db_fetch_cell_prepared('SELECT id
 		FROM graph_templates

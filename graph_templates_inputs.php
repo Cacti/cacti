@@ -64,6 +64,11 @@ function form_save() {
 		$save['description'] = form_input_validate(get_nfilter_request_var('description'), 'description', '', true, 3);
 		$save['column_name'] = form_input_validate(get_nfilter_request_var('column_name'), 'column_name', '', true, 3);
 
+		if (!graph_template_input_column_is_allowed($save['column_name'])) {
+			raise_message('column_name_invalid', __('The selected Field Type is not a valid Graph Item field.'), MESSAGE_LEVEL_ERROR);
+			$_SESSION['sess_error_fields']['column_name'] = 'column_name';
+		}
+
 		if (!is_error_message()) {
 			$graph_template_input_id = sql_save($save, 'graph_template_input');
 

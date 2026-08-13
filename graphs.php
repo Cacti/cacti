@@ -389,6 +389,13 @@ function form_save() {
 
 			if (cacti_sizeof($input_list)) {
 				foreach ($input_list as $input) {
+					if (!graph_template_input_column_is_allowed($input['column_name'])) {
+						cacti_log('ERROR: Graph save refused an invalid graph input field', false, 'SECURITY');
+						raise_message('column_name_invalid', __('A Graph Item Input contains an invalid Field Type.'), MESSAGE_LEVEL_ERROR);
+
+						continue;
+					}
+
 					/* we need to find out which graph items will be affected by saving this particular item */
 					$item_list = db_fetch_assoc_prepared('SELECT gti.id
 						FROM graph_template_input_defs AS gtid

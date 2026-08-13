@@ -402,6 +402,16 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 			WHERE graph_template_id = ?',
 			array($_graph_template_id));
 
+		if (cacti_sizeof($graph_template_inputs)) {
+			foreach ($graph_template_inputs as $graph_template_input) {
+				if (!graph_template_input_column_is_allowed($graph_template_input['column_name'])) {
+					cacti_log('ERROR: Graph template duplication refused an invalid Graph Item Input field', false, 'SECURITY');
+
+					return false;
+				}
+			}
+		}
+
 		/* create new entry: graph_templates */
 		$save['id']       = 0;
 		$save['hash']     = get_hash_graph_template(0);
@@ -657,4 +667,3 @@ function api_graph_change_device($local_graph_id, $host_id) {
 
 	return false;
 }
-
