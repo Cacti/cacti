@@ -219,11 +219,21 @@ test('a child started through another name for our interpreter is still ours', f
 	$mine   = trim((string) @file_get_contents('/proc/' . getmypid() . '/comm'));
 	$theirs = trim((string) @file_get_contents('/proc/' . $pid . '/comm'));
 
-	// the names differ, so the command-name check this replaced said "not ours"
-	expect($theirs)->not->toBe($mine)
-		->and(cacti_process_still_running($pid))->toBeTrue();
+	/* Whether a second path to the interpreter produces a second command name is
+	   the runner's business, not ours. Where php is already the plain name both
+	   sides read alike and there is no mismatch left to demonstrate, so skip
+	   rather than assert an environment detail. */
+	if ($theirs === $mine) {
+		proc_terminate($handle);
+		proc_close($handle);
+		unlink($alias);
+		test()->markTestSkipped('this interpreter reports one command name for both paths');
+	}
+
+	// the names differ here, so the check this replaced called the child a stranger
+	expect(cacti_process_still_running($pid))->toBeTrue();
 
 	proc_terminate($handle);
 	proc_close($handle);
-	@unlink($alias);
+	unlink($alias);
 });
