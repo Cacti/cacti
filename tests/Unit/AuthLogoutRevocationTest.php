@@ -46,7 +46,10 @@ test('logout revokes the token on every branch, not only the default one', funct
 
 test('logout everywhere terminates other sessions, not just remember-me tokens', function () use ($profileSrc) {
 	$start = strpos($profileSrc, 'function api_auth_logout_everywhere(');
-	$body  = substr($profileSrc, $start, strpos($profileSrc, "\n}", $start) - $start);
+	expect($start)->not->toBeFalse();
+	$end   = strpos($profileSrc, "\n}", $start);
+	expect($end)->not->toBeFalse();
+	$body  = substr($profileSrc, $start, $end - $start);
 
 	expect($body)->toContain('DELETE FROM user_auth_cache');
 	expect($body)->toContain('DELETE FROM sessions');
