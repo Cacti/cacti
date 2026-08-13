@@ -223,9 +223,22 @@ jobs:
         sudo cp ${{ github.workspace }}/tests/tools/cactid.service /etc/systemd/system/cactid.service
         sudo systemctl enable cactid
         sudo systemctl start cactid
-        sudo systemctl status cactid
+        # status exits 3 while the unit sits in auto-restart, and this step runs
+        # under bash -e, so it aborted before the deliberate check below could
+        # report anything. Keep it for the log and let that check decide.
+        sudo systemctl status cactid || true
+        # The service restarts on a timer, so allow it a moment to settle
+        # rather than reading the one instant between runs.
+        for attempt in 1 2 3 4 5 6 7 8 9 10; do
+          if systemctl is-active --quiet cactid; then
+            break
+          fi
+          sleep 2
+        done
         if ! systemctl is-active --quiet cactid; then
           echo "Cacti daemon failed to start"
+          sudo systemctl status cactid || true
+          sudo journalctl -u cactid --no-pager -n 50 || true
           exit 1
         fi
 
