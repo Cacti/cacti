@@ -3218,7 +3218,7 @@ function stri_replace(string $find, string $replace, string $string) : string {
  */
 function clean_up_lines(mixed $string) : mixed {
 	if ($string !== null && is_string($string)) {
-		$string = preg_replace('/\s*[\r\n]+\s*/',' ', $string);
+		$string = preg_replace('/\s*[\r\n]+\s*/', ' ', $string) ?? $string;
 	}
 
 	return $string;
@@ -5222,7 +5222,7 @@ function sanitize_uri(string $uri) : string {
 	 * browser as "//evil.com". Drop those leading bytes ourselves before the
 	 * slash-collapse check, then collapse any leading slash/backslash run to a
 	 * single '/' so the URI stays a local path. */
-	$trimmed = preg_replace('/^[\x00-\x20]+/', '', $uri);
+	$trimmed = preg_replace('/^[\x00-\x20]+/', '', $uri) ?? $uri;
 
 	if (preg_match('/^[\/\\\\]{2,}/', $trimmed)) {
 		$uri = '/' . ltrim($trimmed, '/\\');
