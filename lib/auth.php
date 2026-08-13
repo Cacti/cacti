@@ -3727,7 +3727,23 @@ function auth_process_lockout(string $username, int $realm) : void {
 					$error_msg = __('Access Denied!  Login Disabled.');
 				}
 
-				$failed = intval($user['failed_attempts']) + 1;
+				// Increment the counter in the database rather than reading it,
+				// adding one in PHP and writing it back. Concurrent failed logins
+				// would otherwise each read the same value and write the same +1,
+				// undercounting and letting an attacker exceed secpass_lockfailed
+				// before the account locks.
+				db_execute_prepared("UPDATE user_auth
+					SET lastfail = ?, failed_attempts = failed_attempts + 1
+					WHERE username = ?
+					AND realm = ?
+					AND enabled = 'on'",
+					[time(), $username, $realm]);
+
+				$failed = (int) db_fetch_cell_prepared('SELECT failed_attempts
+					FROM user_auth
+					WHERE username = ?
+					AND realm = ?',
+					[$username, $realm]);
 
 				cacti_log(sprintf('LOGIN FAILED: User \'%s\' failed authentication, incrementing lockout (%d of %d)',$username, $failed, $max), false, 'AUTH', POLLER_VERBOSITY_LOW);
 
@@ -3741,15 +3757,6 @@ function auth_process_lockout(string $username, int $realm) : void {
 
 					$user['locked'] = 'on';
 				}
-
-				$user['lastfail'] = time();
-
-				db_execute_prepared("UPDATE user_auth
-					SET lastfail = ?, failed_attempts = ?
-					WHERE username = ?
-					AND realm = ?
-					AND enabled = 'on'",
-					[$user['lastfail'], $failed, $username, $realm]);
 
 				// Log the invalid password attempt
 				db_execute_prepared('INSERT IGNORE INTO user_log
@@ -4266,6 +4273,13 @@ function secpass_login_process(string $username) : array {
 			return [];
 		}
 	} else {
+		// Run a throw-away verification against a fixed bcrypt hash so an unknown
+		// username costs the same as a known one. Without this, the valid-user path
+		// runs bcrypt (tens of ms) while the unknown-user path returns immediately,
+		// and the response-time delta lets an attacker enumerate valid usernames.
+		// No password matches this hash; the result is discarded.
+		compat_password_verify((string) $password, '$2y$10$VWBpVwPd5enH/FIf0bNNxO0d12/V8EZag/sNP.SQqsyYWyOFXvaV.');
+
 		// error
 		$error     = true;
 		$error_msg = __('Access Denied!  Login Failed.');
