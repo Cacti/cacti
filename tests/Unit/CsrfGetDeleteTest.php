@@ -25,7 +25,7 @@ test('the server rejects these delete actions on GET without a token', function 
 	$src = file_get_contents($root . '/include/global.php');
 
 	// the GET-method block now covers the delete actions
-	expect($src)->toContain("\$bad_actions = ['save', 'update_data', 'changepassword', 'delete_node', 'gt_remove', 'query_remove']");
+	expect($src)->toContain("\$bad_actions = ['save', 'update_data', 'changepassword', 'delete_node', 'gt_remove', 'query_remove', 'remove', 'change_leaf']");
 	// the block still requires the csrf token on POST
 	expect($src)->toContain("!isset(\$_POST['__csrf_magic'])");
 });
@@ -47,4 +47,23 @@ test('host.php removes graph templates and data queries via a token POST', funct
 	expect($src)->toContain("url: 'host.php?action=gt_remove'");
 	expect($src)->toContain("url: 'host.php?action=query_remove'");
 	expect(substr_count($src, '__csrf_magic: csrfMagicToken'))->toBeGreaterThanOrEqual(4);
+});
+
+test('the automation actions guarded here are not linked by GET anywhere', function () use ($root) {
+	/* 'remove' and 'change_leaf' can be required to post because no page emits
+	   either as a link. An action still reached by a GET link would break the
+	   moment it joined that list, which is why item_remove is not in it. */
+	$linked = [];
+
+	foreach (glob($root . '/*.php') as $page) {
+		$src = file_get_contents($page);
+
+		foreach (["action=remove'", 'action=remove"', 'action=remove&', 'action=change_leaf'] as $needle) {
+			if (str_contains($src, $needle)) {
+				$linked[] = basename($page) . ' => ' . $needle;
+			}
+		}
+	}
+
+	expect($linked)->toBe([]);
 });

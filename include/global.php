@@ -777,9 +777,16 @@ if ($config['is_web']) {
 
 		// State-changing actions must arrive by POST with a CSRF token. The
 		// delete actions below were reachable by GET, so a cross-origin <img>
-		// or link could delete a tree node, graph template, or data query using
-		// only the victim's session cookie.
-		$bad_actions = ['save', 'update_data', 'changepassword', 'delete_node', 'gt_remove', 'query_remove'];
+		// or link could delete a tree node, graph template, data query or
+		// automation rule using only the victim's session cookie.
+		//
+		// 'remove' and 'change_leaf' belong to the three automation pages and
+		// no page links either by GET, so a request carrying them was always a
+		// crafted one. item_remove, item_moveup and item_movedown are the same
+		// class but are still linked by GET from roughly fifteen pages; adding
+		// them here before those links post would break the delete they are
+		// meant to protect.
+		$bad_actions = ['save', 'update_data', 'changepassword', 'delete_node', 'gt_remove', 'query_remove', 'remove', 'change_leaf'];
 
 		foreach ($bad_actions as $bad) {
 			if ($action == $bad && !isset($_POST['__csrf_magic'])) {
