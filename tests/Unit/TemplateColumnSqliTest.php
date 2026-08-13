@@ -106,3 +106,17 @@ test('1.2.x XML import validates graph input fields before its first template wr
 	expect($save)->not->toBeFalse();
 	expect($gate)->toBeLessThan($save);
 });
+
+test('1.2.x graph saves preflight every input before updating graph items', function () {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/graphs.php');
+
+	$guard = strpos($source, 'graph_template_input_column_is_allowed(');
+	$abort = strpos($source, '$input_list = array();', $guard);
+	$write = strpos($source, 'UPDATE graph_templates_item', $guard);
+
+	expect($guard)->not->toBeFalse();
+	expect($abort)->not->toBeFalse();
+	expect($write)->not->toBeFalse();
+	expect($guard)->toBeLessThan($abort);
+	expect($abort)->toBeLessThan($write);
+});
