@@ -65,24 +65,14 @@ function title_trim(string $text, int $max_length) : string {
  * @return string the filtered string
  */
 function filter_value(mixed $value, string $filter, string $href = '', string $title = '') : string {
-	static $charset;
-
 	if ($value == '') {
 		return '';
 	}
 
-	if ($charset == '') {
-		$charset = ini_get('default_charset');
-	}
-
-	if ($charset == '') {
-		$charset = 'UTF-8';
-	}
-
-	$value =  htmle($value);
-
-	// Grave Accent character can lead to xss
-	$value = str_replace('`', '&#96;', $value);
+	/* html_escape() resolves the charset and replaces the grave accent itself,
+	 * so the copies that stood here were dead: the charset was never passed on
+	 * and no accent survives the escape for a second pass to find. */
+	$value = htmle($value);
 
 	if ($filter != '') {
 		$value = preg_replace('#(' . preg_quote($filter) . ')#i', "<span class='filteredValue'>\\1</span>", $value) ?? $value;
@@ -5241,8 +5231,12 @@ function sanitize_uri(string $uri) : string {
 	}
 
 	if (str_contains($uri, 'graph_view.php')) {
-		if (!strpos($uri, 'action=')) {
-			$uri = $uri . (strpos($uri, '?') ? '&' : '?') . 'action=' . gnrv('action');
+		/* Both tests were written against strpos(), which returns 0 for a match
+		 * at the start of the string. A URI beginning 'action=' therefore read
+		 * as having none and picked up a second one, and a URI beginning '?'
+		 * was given another '?' instead of an '&'. */
+		if (!str_contains($uri, 'action=')) {
+			$uri = $uri . (str_contains($uri, '?') ? '&' : '?') . 'action=' . gnrv('action');
 		}
 	}
 
@@ -5366,6 +5360,18 @@ function sanitize_unserialize_selected_graphs(mixed $items) : array|false {
 
 			if (is_array($items)) {
 				$return_items = $items;
+
+				/* The docblock promised this and the code did not do it, so
+				 * every caller inherited a guarantee it never had. A nested
+				 * array reaching a caller that expects scalars is the case
+				 * worth refusing. */
+				foreach ($items as $item) {
+					if (!is_scalar($item)) {
+						$return_items = false;
+
+						break;
+					}
+				}
 			}
 		}
 	}
