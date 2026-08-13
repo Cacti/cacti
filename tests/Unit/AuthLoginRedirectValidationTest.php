@@ -25,7 +25,10 @@ $htmlSrc = file_get_contents(dirname(__DIR__, 2) . '/lib/html_utility.php');
 
 test('the referer redirect is validated before it is emitted', function () use ($authSrc) {
 	$start = strpos($authSrc, 'function auth_login_redirect(');
-	$body  = substr($authSrc, $start, strpos($authSrc, "\nfunction ", $start + 1) - $start);
+	expect($start)->not->toBeFalse();
+	$end   = strpos($authSrc, "\nfunction ", $start + 1);
+	expect($end)->not->toBeFalse();
+	$body  = substr($authSrc, $start, $end - $start);
 
 	$validate = strpos($body, '$referer  = validate_redirect_url($referer);');
 	$emit     = strpos($body, "header('Location: ' . \$referer)");
@@ -38,7 +41,10 @@ test('the referer redirect is validated before it is emitted', function () use (
 
 test('validate_redirect_url enforces same-host and rejects off-site targets', function () use ($htmlSrc) {
 	$start = strpos($htmlSrc, 'function validate_redirect_url(');
-	$body  = substr($htmlSrc, $start, strpos($htmlSrc, "\n}", $start) - $start);
+	expect($start)->not->toBeFalse();
+	$end   = strpos($htmlSrc, "\n}", $start);
+	expect($end)->not->toBeFalse();
+	$body  = substr($htmlSrc, $start, $end - $start);
 
 	// off-host rejection: compares the referer host to the server host and returns
 	// the default when they differ
