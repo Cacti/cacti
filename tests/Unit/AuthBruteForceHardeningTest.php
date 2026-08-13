@@ -56,6 +56,6 @@ test('the timing dummy is a valid cost-matched bcrypt hash', function () use ($a
 	// same cost as the real password path (PASSWORD_DEFAULT bcrypt cost 10) so the
 	// throw-away verify actually costs the same as a genuine one
 	expect($info['options']['cost'])->toBe(10);
-	// and no password matches it
+	// and this common guess does not verify against the fixed dummy hash
 	expect(password_verify('anything at all', $m[1]))->toBeFalse();
 });

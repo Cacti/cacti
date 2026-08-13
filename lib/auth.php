@@ -4277,7 +4277,7 @@ function secpass_login_process(string $username) : array {
 		// username costs the same as a known one. Without this, the valid-user path
 		// runs bcrypt (tens of ms) while the unknown-user path returns immediately,
 		// and the response-time delta lets an attacker enumerate valid usernames.
-		// No password matches this hash; the result is discarded.
+		// The verify result is discarded; this fixed hash is tied to no account.
 		compat_password_verify((string) $password, '$2y$10$VWBpVwPd5enH/FIf0bNNxO0d12/V8EZag/sNP.SQqsyYWyOFXvaV.');
 
 		// error
