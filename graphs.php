@@ -435,8 +435,9 @@ function form_save() {
 								if (!graph_template_input_value_is_allowed($input['column_name'], $input_value)) {
 									cacti_log('ERROR: Graph save refused an invalid graph input value', false, 'SECURITY');
 									raise_message('column_value_invalid', __('A Graph Item Input contains an invalid value.'), MESSAGE_LEVEL_ERROR);
+									$mutation_failed = true;
 
-									continue;
+									break 2;
 								}
 
 								if (!db_execute_prepared('UPDATE graph_templates_item

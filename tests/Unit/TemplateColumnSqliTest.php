@@ -123,11 +123,48 @@ test('1.2.x graph saves preflight every input before updating graph items', func
 
 test('1.2.x graph input values are validated by field shape', function () {
 	expect(graph_template_input_value_is_allowed('task_item_id', '42'))->toBeTrue();
+	expect(graph_template_input_value_is_allowed('color_id', '12'))->toBeTrue();
+	expect(graph_template_input_value_is_allowed('color_id', '16777215'))->toBeTrue();
 	expect(graph_template_input_value_is_allowed('alpha', '7F'))->toBeTrue();
+	expect(graph_template_input_value_is_allowed('line_width', '1,25'))->toBeTrue();
+	expect(graph_template_input_value_is_allowed('dash_offset', '-8388608'))->toBeTrue();
+	expect(graph_template_input_value_is_allowed('sequence', '16777215'))->toBeTrue();
 	expect(graph_template_input_value_is_allowed('text_format', "safe\ttext"))->toBeTrue();
 	expect(graph_template_input_value_is_allowed('task_item_id', '1 OR 1=1'))->toBeFalse();
+	expect(graph_template_input_value_is_allowed('color_id', 'ABCDEF'))->toBeFalse();
+	expect(graph_template_input_value_is_allowed('color_id', '16777216'))->toBeFalse();
 	expect(graph_template_input_value_is_allowed('alpha', 'FFFF'))->toBeFalse();
+	expect(graph_template_input_value_is_allowed('dash_offset', '1.5'))->toBeFalse();
+	expect(graph_template_input_value_is_allowed('dash_offset', '8388608'))->toBeFalse();
+	expect(graph_template_input_value_is_allowed('sequence', '16777216'))->toBeFalse();
 	expect(graph_template_input_value_is_allowed('text_format', "bad\0text"))->toBeFalse();
+});
+
+test('1.2.x graph input propagation preflights every value before updating', function () {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/template.php');
+
+	expect(preg_match('/function push_out_graph_input\(.*?\n}\n/s', $source, $matches))->toBe(1);
+	$body = $matches[0];
+	$validation = strpos($body, 'graph_template_input_value_is_allowed(');
+	$abort      = strpos($body, 'return;', $validation);
+	$write      = strpos($body, 'UPDATE graph_templates_item', $validation);
+
+	expect($validation)->not->toBeFalse();
+	expect($abort)->not->toBeFalse();
+	expect($write)->not->toBeFalse();
+	expect($validation)->toBeLessThan($abort);
+	expect($abort)->toBeLessThan($write);
+});
+
+test('1.2.x graph input deletion requires a CSRF protected POST', function () {
+	$handler = file_get_contents(dirname(__DIR__, 2) . '/graph_templates_inputs.php');
+	$ui      = file_get_contents(dirname(__DIR__, 2) . '/graph_templates.php');
+
+	expect($handler)->toContain("\$_SERVER['REQUEST_METHOD'] !== 'POST'");
+	expect($ui)
+		->toContain("loadPageUsingPost('graph_templates_inputs.php'")
+		->toContain('__csrf_magic: csrfMagicToken')
+		->not->toContain('graph_templates_inputs.php?action=input_remove');
 });
 
 test('1.2.x input mutations validate ownership and use transactions', function () {

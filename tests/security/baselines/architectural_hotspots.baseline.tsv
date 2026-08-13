@@ -434,7 +434,7 @@ dynamic_include	./lib/snmp.php:49		include_once($config['include_path'] . '/vend
 dynamic_include	./lib/snmp.php:51		include_once($config['include_path'] . '/vendor/phpsnmp/classSNMP.php');
 dynamic_include	./lib/snmpagent.php:333			include_once($config['base_path'] . '/plugins/maint/functions.php');
 dynamic_include	./lib/snmpagent.php:890				include_once($config['library_path'] . '/poller.php');
-dynamic_include	./lib/template.php:1505		include_once($config['library_path'] . '/data_query.php');
+dynamic_include	./lib/template.php:1507		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/timespan_settings.php:32	include_once($config['base_path'] . '/lib/time.php');
 dynamic_include	./lib/utility.php:128		include_once($config['library_path'] . '/api_data_source.php');
 dynamic_include	./lib/utility.php:181		include_once($config['library_path'] . '/data_query.php');
@@ -540,8 +540,8 @@ host_header	./lib/html_utility.php:1078			$srv_host = preg_replace('/:\d+$/', ''
 sort_order_input	./automation_snmp.php:533				ORDER BY sequence', array(get_request_var('id')));
 sort_order_input	./data_queries.php:872						ORDER BY field_name, sequence', array(get_request_var('id'), $data_template['id']));
 sort_order_input	./graph_templates.php:504			ORDER BY name', array(get_request_var('id')));
-sort_order_input	./graph_templates_inputs.php:230			ORDER BY gti.sequence", array(get_request_var('id'), get_request_var('graph_template_id')));
-sort_order_input	./graphs.php:1419				ORDER BY gti.sequence", array(get_request_var('id')));
+sort_order_input	./graph_templates_inputs.php:236			ORDER BY gti.sequence", array(get_request_var('id'), get_request_var('graph_template_id')));
+sort_order_input	./graphs.php:1420				ORDER BY gti.sequence", array(get_request_var('id')));
 sort_order_input	./host_templates.php:467				ORDER BY graph_templates.name', array(get_request_var('id')));
 sort_order_input	./host_templates.php:505									ORDER BY gt.name', array(get_request_var('id'))),'name','id','','','');?>
 sort_order_input	./host_templates.php:524				ORDER BY snmp_query.name', array(get_request_var('id')));

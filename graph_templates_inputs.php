@@ -144,6 +144,12 @@ function form_save() {
    ------------------------------------ */
 
 function input_remove() {
+	if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+		cacti_log('WARNING: Rejected non-POST request to remove a Graph Item Input', false, 'AUTH');
+
+		return;
+	}
+
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	get_filter_request_var('graph_template_id');

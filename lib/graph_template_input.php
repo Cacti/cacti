@@ -58,7 +58,7 @@ function graph_template_input_value_is_allowed($column_name, $value) {
 	}
 
 	if ($column_name === 'color_id') {
-		return preg_match('/^(?:0|[A-Fa-f0-9]{6})$/D', $value) === 1;
+		return $value === '' || (preg_match('/^\d{1,8}$/D', $value) === 1 && (int) $value <= 16777215);
 	}
 
 	if ($column_name === 'alpha') {
@@ -70,15 +70,15 @@ function graph_template_input_value_is_allowed($column_name, $value) {
 	}
 
 	if ($column_name === 'line_width') {
-		return $value === '' || (strlen($value) <= 5 && preg_match('/^\d+(?:\.\d+)?$/D', $value) === 1);
+		return $value === '' || (strlen($value) <= 5 && preg_match('/^\d+(?:[.,]\d+)?$/D', $value) === 1);
 	}
 
 	if ($column_name === 'dash_offset') {
-		return $value === '' || (strlen($value) <= 4 && preg_match('/^-?\d+(?:\.\d+)?$/D', $value) === 1);
+		return $value === '' || (preg_match('/^-?\d{1,7}$/D', $value) === 1 && (int) $value >= -8388608 && (int) $value <= 8388607);
 	}
 
 	if ($column_name === 'sequence') {
-		return $value === '' || (strlen($value) <= 4 && preg_match('/^\d+$/D', $value) === 1);
+		return $value === '' || (preg_match('/^\d{1,8}$/D', $value) === 1 && (int) $value <= 16777215);
 	}
 
 	if ($column_name === 'dashes') {
