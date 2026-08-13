@@ -7398,7 +7398,7 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 		}
 	}
 
-	$target_ip = is_ipaddress($normalized_host) ? $normalized_host : ($ipaddress ?? '');
+	$target_ip = is_ipaddress($normalized_host) ? $normalized_host : $ipaddress;
 
 	/* Refuse loopback and link-local targets - 169.254.169.254 is the cloud
 	 * metadata endpoint - and other reserved ranges. RFC1918 private ranges are
