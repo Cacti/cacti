@@ -52,7 +52,7 @@ function render_external_links(string $style = 'FRONT') : void {
 					if ($file !== false && is_file($file) && str_starts_with($file, $basepath . DIRECTORY_SEPARATOR)) {
 						require_once($file);
 					} else {
-						print '<h1>' . html_escape('The file \'' . $page['contentfile'] . '\' does not exist!!') . '</h1>';
+						print '<h1>The file \'' . html_escape($page['contentfile']) . '\' does not exist!!</h1>';
 					}
 
 					print '</div>';

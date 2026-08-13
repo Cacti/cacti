@@ -23,9 +23,11 @@
 $src = file_get_contents(dirname(__DIR__, 2) . '/index.php');
 
 function _render_links_body(string $src): string {
+	expect($src)->not->toBeEmpty();
 	$start = strpos($src, 'function render_external_links(');
 	expect($start)->not->toBeFalse();
 	$end = strpos($src, "\n}", $start);
+	expect($end)->not->toBeFalse();
 
 	return substr($src, $start, $end - $start);
 }
@@ -76,4 +78,7 @@ test('the contentfile is escaped in the iframe src and error output', function (
 
 	expect($body)->toContain("src=\"' . html_escape(\$page['contentfile'])");
 	expect($body)->not->toContain("src=\"' . \$page['contentfile']");
+	// the not-found error output escapes only the filename, matching link.php
+	expect($body)->toContain("html_escape(\$page['contentfile']) . '\\' does not exist");
+	expect($body)->not->toContain("html_escape('The file");
 });
