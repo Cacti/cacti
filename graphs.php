@@ -389,9 +389,12 @@ function form_save() {
 
 			if (cacti_sizeof($input_list)) {
 				foreach ($input_list as $input) {
-					if (!graph_template_input_column_is_allowed($input['column_name'])) {
+					$input_var = $input['column_name'] . '_' . $input['id'];
+
+					if (!graph_template_input_column_is_allowed($input['column_name']) ||
+						(isset_request_var($input_var) && !graph_template_input_value_is_allowed($input['column_name'], get_nfilter_request_var($input_var)))) {
 						cacti_log('ERROR: Graph save refused an invalid graph input field', false, 'SECURITY');
-						raise_message('column_name_invalid', __('A Graph Item Input contains an invalid Field Type.'), MESSAGE_LEVEL_ERROR);
+						raise_message('graph_input_invalid', __('A Graph Item Input contains an invalid field or value.'), MESSAGE_LEVEL_ERROR);
 
 						$input_list = array();
 
@@ -399,7 +402,18 @@ function form_save() {
 					}
 				}
 
+				$transaction_started = cacti_sizeof($input_list) ? db_begin_transaction() : false;
+				$mutation_failed     = cacti_sizeof($input_list) && !$transaction_started;
+
+				if ($mutation_failed) {
+					raise_message('graph_input_update_failed', __('Graph Item Input changes could not be saved.'), MESSAGE_LEVEL_ERROR);
+				}
+
 				foreach ($input_list as $input) {
+					if ($mutation_failed) {
+						break;
+					}
+
 					/* we need to find out which graph items will be affected by saving this particular item */
 					$item_list = db_fetch_assoc_prepared('SELECT gti.id
 						FROM graph_template_input_defs AS gtid
@@ -416,12 +430,34 @@ function form_save() {
 							 this is because the db and form are out of sync here, but it is ok to just skip over saving
 							 the inputs in this case. */
 							if (isset_request_var($input['column_name'] . '_' . $input['id'])) {
-								db_execute_prepared('UPDATE graph_templates_item
+								$input_value = get_nfilter_request_var($input['column_name'] . '_' . $input['id']);
+
+								if (!graph_template_input_value_is_allowed($input['column_name'], $input_value)) {
+									cacti_log('ERROR: Graph save refused an invalid graph input value', false, 'SECURITY');
+									raise_message('column_value_invalid', __('A Graph Item Input contains an invalid value.'), MESSAGE_LEVEL_ERROR);
+
+									continue;
+								}
+
+								if (!db_execute_prepared('UPDATE graph_templates_item
 									SET ' . $input['column_name'] . ' = ?
 									WHERE id = ?',
-									array(get_nfilter_request_var($input['column_name'] . '_' . $input['id']), $item['id']));
+									array($input_value, $item['id']))) {
+									$mutation_failed = true;
+
+									break 2;
+								}
 							}
 						}
+					}
+				}
+
+				if ($transaction_started) {
+					if ($mutation_failed) {
+						db_rollback_transaction();
+						raise_message('graph_input_update_failed', __('Graph Item Input changes could not be saved.'), MESSAGE_LEVEL_ERROR);
+					} else {
+						db_commit_transaction();
 					}
 				}
 			}

@@ -523,6 +523,12 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 
 	if (cacti_sizeof($values_to_apply)) {
 		foreach ($values_to_apply as $value) {
+			if (!graph_template_input_value_is_allowed($column_name, $value[$column_name])) {
+				cacti_log('ERROR: push_out_graph_input() refused an invalid graph input value', false, 'SECURITY');
+
+				continue;
+			}
+
 			/* this is just an extra check that i threw in to prevent users' graphs from getting really messed up */
 			if (!(($column_name == 'task_item_id') && (empty($value[$column_name])))) {
 				db_execute_prepared('UPDATE graph_templates_item

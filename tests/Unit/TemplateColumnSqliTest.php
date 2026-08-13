@@ -120,3 +120,32 @@ test('1.2.x graph saves preflight every input before updating graph items', func
 	expect($guard)->toBeLessThan($abort);
 	expect($abort)->toBeLessThan($write);
 });
+
+test('1.2.x graph input values are validated by field shape', function () {
+	expect(graph_template_input_value_is_allowed('task_item_id', '42'))->toBeTrue();
+	expect(graph_template_input_value_is_allowed('alpha', '7F'))->toBeTrue();
+	expect(graph_template_input_value_is_allowed('text_format', "safe\ttext"))->toBeTrue();
+	expect(graph_template_input_value_is_allowed('task_item_id', '1 OR 1=1'))->toBeFalse();
+	expect(graph_template_input_value_is_allowed('alpha', 'FFFF'))->toBeFalse();
+	expect(graph_template_input_value_is_allowed('text_format', "bad\0text"))->toBeFalse();
+});
+
+test('1.2.x input mutations validate ownership and use transactions', function () {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/graph_templates_inputs.php');
+
+	expect($source)
+		->toContain('graph_template_input_relationships_are_valid(')
+		->toContain('db_begin_transaction()')
+		->toContain('db_rollback_transaction()')
+		->toContain('db_commit_transaction()')
+		->toContain('AND graph_template_id = ?');
+});
+
+test('1.2.x integrity audit is read only', function () {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/cli/audit_graph_template_inputs.php');
+
+	expect($source)
+		->toContain('cross-template definitions')
+		->toContain('orphaned definitions')
+		->not->toMatch('/\b(?:INSERT|UPDATE|DELETE|REPLACE)\b/');
+});

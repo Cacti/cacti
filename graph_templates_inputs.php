@@ -69,31 +69,30 @@ function form_save() {
 			$_SESSION['sess_error_fields']['column_name'] = 'column_name';
 		}
 
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^i_(\d+)$/', $var, $matches)) {
+				input_validate_input_number($matches[1]);
+				$selected_graph_items[$matches[1]] = $matches[1];
+			}
+		}
+
+		if (!graph_template_input_relationships_are_valid((int) $save['id'], (int) $save['graph_template_id'], array_values($selected_graph_items))) {
+			cacti_log('ERROR: Graph input save refused a cross-template relationship', false, 'SECURITY');
+			raise_message('graph_input_relationship_invalid', __('The Graph Item Input relationship is invalid.'), MESSAGE_LEVEL_ERROR);
+		}
+
 		if (!is_error_message()) {
-			$graph_template_input_id = sql_save($save, 'graph_template_input');
+			$transaction_started = db_begin_transaction();
+			$mutation_failed     = !$transaction_started;
+			$graph_template_input_id = $mutation_failed ? false : sql_save($save, 'graph_template_input');
 
 			if ($graph_template_input_id) {
-				raise_message(1);
-
 				/* list all graph items from the db so we can compare them with the current form */
 				$db_selected_graph_item = array_rekey(db_fetch_assoc_prepared('SELECT graph_template_item_id FROM graph_template_input_defs WHERE graph_template_input_id = ?', array($graph_template_input_id)), 'graph_template_item_id', 'graph_template_item_id');
 
-				/* list all select graph items for use down below */
-				foreach ($_POST as $var => $val) {
-					if (preg_match('/^i_(\d+)$/', $var, $matches)) {
-						/* ================= input validation ================= */
-						input_validate_input_number($matches[1]);
-						/* ==================================================== */
-
-						$selected_graph_items[$matches[1]] = $matches[1];
-
-						if (isset($db_selected_graph_item[$matches[1]])) {
-							/* is selected and exists in the db; old item */
-							$old_members[$matches[1]] = $matches[1];
-						} else {
-							/* is selected and does not exist the db; new item */
-							$new_members[$matches[1]] = $matches[1];
-						}
+				foreach ($selected_graph_items as $graph_template_item_id) {
+					if (!isset($db_selected_graph_item[$graph_template_item_id])) {
+						$new_members[$graph_template_item_id] = $graph_template_item_id;
 					}
 				}
 
@@ -103,15 +102,30 @@ function form_save() {
 					}
 				}
 
-				db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array($graph_template_input_id));
+				$mutation_failed = !db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array($graph_template_input_id));
 
-				if (cacti_sizeof($selected_graph_items) > 0) {
+				if (!$mutation_failed && cacti_sizeof($selected_graph_items) > 0) {
 					foreach ($selected_graph_items as $graph_template_item_id) {
-						db_execute_prepared('INSERT INTO graph_template_input_defs (graph_template_input_id, graph_template_item_id) VALUES (?, ?)', array($graph_template_input_id, $graph_template_item_id));
+						if (!db_execute_prepared('INSERT INTO graph_template_input_defs (graph_template_input_id, graph_template_item_id) VALUES (?, ?)', array($graph_template_input_id, $graph_template_item_id))) {
+							$mutation_failed = true;
+
+							break;
+						}
 					}
 				}
 			} else {
+				$mutation_failed = true;
+			}
+
+			if ($mutation_failed) {
+				if ($transaction_started) {
+					db_rollback_transaction();
+				}
+
 				raise_message(2);
+			} else {
+				db_commit_transaction();
+				raise_message(1);
 			}
 		}
 
@@ -135,8 +149,22 @@ function input_remove() {
 	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', array(get_request_var('id')));
-	db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array(get_request_var('id')));
+	if (!graph_template_input_relationships_are_valid((int) get_request_var('id'), (int) get_request_var('graph_template_id'), array())) {
+		cacti_log('ERROR: Graph input delete refused a cross-template relationship', false, 'SECURITY');
+
+		return;
+	}
+
+	if (db_begin_transaction()) {
+		$deleted_defs = db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array(get_request_var('id')));
+		$deleted_input = $deleted_defs && db_execute_prepared('DELETE FROM graph_template_input WHERE id = ? AND graph_template_id = ?', array(get_request_var('id'), get_request_var('graph_template_id')));
+
+		if ($deleted_input) {
+			db_commit_transaction();
+		} else {
+			db_rollback_transaction();
+		}
+	}
 }
 
 function input_edit() {
