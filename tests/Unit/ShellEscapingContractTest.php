@@ -130,7 +130,7 @@ test('no command construction bypasses the cacti helpers', function () {
 						return false;
 					}
 
-					return !in_array($name, ['include', 'vendor', 'tests', 'locales', 'log', 'cache'], true);
+					return !in_array($name, ['vendor', 'tests', 'locales', 'log', 'cache'], true);
 				}
 
 				return str_ends_with($name, '.php');
