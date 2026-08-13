@@ -2686,10 +2686,11 @@ function is_process_running(string $tasktype, string $taskname, int $taskid = 0)
  * registered process dies without unregistering, the system is free to recycle
  * its pid for an unrelated program, and trusting the bare pid then either
  * blocks a legitimate task from starting or sends SIGTERM to a stranger. On
- * Linux the command name under /proc gives an identity check the processes
- * table cannot (it records no start time). Where /proc is unavailable, or
- * where the caller is not itself a CLI process, the bare existence test
- * stands, which is the behaviour this replaces.
+ * Linux the executable behind /proc gives an identity check the processes
+ * table cannot (it records no start time), falling back to the command name
+ * where that link cannot be read. Where /proc is unavailable, or where the
+ * caller is not itself a CLI process, the bare existence test stands, which is
+ * the behaviour this replaces.
  *
  * @param int $pid The pid recorded in the processes table.
  *
@@ -2709,6 +2710,25 @@ function cacti_process_still_running(int $pid) : bool {
 		return true;
 	}
 
+	/* Compare the executable each process was started from, not its command
+	   name. Children are spawned from path_php_binary, so a /usr/bin/php8.1
+	   child and a parent started as plain php report php8.1 against php for the
+	   same interpreter; comparing names there calls a live task dead and lets a
+	   second copy start. The exe link resolves both spellings to one path. */
+	$self_exe  = '/proc/' . getmypid() . '/exe';
+	$other_exe = '/proc/' . $pid . '/exe';
+
+	if (is_link($self_exe) && is_link($other_exe)) {
+		$mine   = readlink($self_exe);
+		$theirs = readlink($other_exe);
+
+		if ($mine !== false && $theirs !== false) {
+			return $mine === $theirs;
+		}
+	}
+
+	/* The exe link is only readable for our own processes, so fall back to the
+	   command name where it is not. */
 	$self  = '/proc/' . getmypid() . '/comm';
 	$other = '/proc/' . $pid . '/comm';
 

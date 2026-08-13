@@ -186,3 +186,44 @@ test('the identity check is limited to CLI callers', function () {
 	expect($sapi_guard)->not->toBeFalse()
 		->and($sapi_guard)->toBeLessThan($proc_read);
 });
+
+/**
+ * The registry's children are spawned from path_php_binary, which is routinely a
+ * versioned path, while the parent may have been started as plain php. Both are
+ * the same interpreter but report different command names, so an identity check
+ * built on the name alone calls a live task dead and lets a second copy start.
+ */
+test('a child started through another name for our interpreter is still ours', function () {
+	if (!is_dir('/proc') || PHP_SAPI !== 'cli') {
+		test()->markTestSkipped('the identity check needs /proc and a CLI caller');
+	}
+
+	$alias = sys_get_temp_dir() . '/cacti_php_alias_' . bin2hex(random_bytes(6));
+
+	if (!@symlink(PHP_BINARY, $alias)) {
+		test()->markTestSkipped('cannot create a second name for the interpreter');
+	}
+
+	$pipes  = [];
+	$handle = proc_open([$alias, '-r', 'sleep(30);'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	$pid    = (int) proc_get_status($handle)['pid'];
+
+	foreach ($pipes as $pipe) {
+		fclose($pipe);
+	}
+
+	for ($wait = 0; $wait < 50 && !is_readable('/proc/' . $pid . '/comm'); $wait++) {
+		usleep(20000);
+	}
+
+	$mine   = trim((string) @file_get_contents('/proc/' . getmypid() . '/comm'));
+	$theirs = trim((string) @file_get_contents('/proc/' . $pid . '/comm'));
+
+	// the names differ, so the command-name check this replaced said "not ours"
+	expect($theirs)->not->toBe($mine)
+		->and(cacti_process_still_running($pid))->toBeTrue();
+
+	proc_terminate($handle);
+	proc_close($handle);
+	@unlink($alias);
+});
