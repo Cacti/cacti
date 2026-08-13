@@ -16,6 +16,21 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 
+foreach (array_slice($_SERVER['argv'], 1) as $argument) {
+	if (in_array($argument, array('--version', '-V', '-v'), true)) {
+		display_version();
+		exit(0);
+	}
+
+	if (in_array($argument, array('--help', '-H', '-h'), true)) {
+		print 'Usage: audit_graph_template_inputs.php [--help|--version]' . PHP_EOL;
+		exit(0);
+	}
+
+	print 'ERROR: Invalid Parameter ' . $argument . PHP_EOL;
+	exit(1);
+}
+
 if ($config['poller_id'] > 1) {
 	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
 	exit(1);
@@ -80,4 +95,3 @@ if ($finding_count > 0) {
 
 print 'Graph template input integrity audit passed.' . PHP_EOL;
 exit(0);
-
