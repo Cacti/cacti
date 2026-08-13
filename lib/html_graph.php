@@ -146,8 +146,13 @@ function create_graphs_preview_filter(string $session_var) : array {
 		}
 	}
 
+	/* The filter array below is what declares host_id, so nothing has validated
+	 * it at this point and get_request_var() would return $_REQUEST untouched.
+	 * The value reaches an interpolated SQL fragment further down, and '> 0'
+	 * does not gate it: PHP compares a non-numeric string against an int as a
+	 * string, so '1 AND ...' passes.  Filter it here, at the read. */
 	if (isrv('host_id')) {
-		$host_id = grv('host_id');
+		$host_id = gfrv('host_id');
 	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
 		$host_id = $_SESSION[$session_var . '_host_id'];
 	} else {
@@ -173,7 +178,7 @@ function create_graphs_preview_filter(string $session_var) : array {
 	if ($host_id == 0) {
 		$templates = get_allowed_graph_templates_normalized('gl.host_id=0', 'name', '', $total_rows);
 	} elseif ($host_id > 0) {
-		$templates = get_allowed_graph_templates_normalized('gl.host_id=' . $host_id, 'name', '', $total_rows);
+		$templates = get_allowed_graph_templates_normalized('gl.host_id=' . (int) $host_id, 'name', '', $total_rows);
 	} else {
 		$templates = get_allowed_graph_templates_normalized('', 'name', '', $total_rows);
 	}
@@ -955,8 +960,13 @@ function create_listview_filter(string $session_var) : array {
 	);
 	$locations = $any + $none + $locations;
 
+	/* The filter array below is what declares host_id, so nothing has validated
+	 * it at this point and get_request_var() would return $_REQUEST untouched.
+	 * The value reaches an interpolated SQL fragment further down, and '> 0'
+	 * does not gate it: PHP compares a non-numeric string against an int as a
+	 * string, so '1 AND ...' passes.  Filter it here, at the read. */
 	if (isrv('host_id')) {
-		$host_id = grv('host_id');
+		$host_id = gfrv('host_id');
 	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
 		$host_id = $_SESSION[$session_var . '_host_id'];
 	} else {
@@ -982,7 +992,7 @@ function create_listview_filter(string $session_var) : array {
 	if ($host_id == 0) {
 		$templates = get_allowed_graph_templates_normalized('gl.host_id=0', 'name', '', $total_rows);
 	} elseif ($host_id > 0) {
-		$templates = get_allowed_graph_templates_normalized('gl.host_id=' . $host_id, 'name', '', $total_rows);
+		$templates = get_allowed_graph_templates_normalized('gl.host_id=' . (int) $host_id, 'name', '', $total_rows);
 	} else {
 		$templates = get_allowed_graph_templates_normalized('', 'name', '', $total_rows);
 	}
