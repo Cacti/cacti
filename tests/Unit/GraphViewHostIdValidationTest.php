@@ -23,6 +23,8 @@
 
 $src = file_get_contents(dirname(__DIR__, 2) . '/lib/html_graph.php');
 
+expect($src)->not->toBeFalse();
+
 test('a non-numeric payload passes the > 0 guard that used to protect the query', function () {
 	/* the reason the read had to be filtered: PHP compares a non-numeric string
 	   to an int as a string, so the leading digit alone clears the guard */
@@ -50,7 +52,7 @@ test('the cast covers the session sourced value as well as the request', functio
 	   the request filter, so the cast has to sit at the sink, not only the read */
 	expect($src)->toContain("\$host_id = \$_SESSION[\$session_var . '_host_id'];");
 
-	$sink = strpos($src, "'gl.host_id=' . (int) \$host_id");
+	$sink    = strpos($src, "'gl.host_id=' . (int) \$host_id");
 	$session = strpos($src, "\$_SESSION[\$session_var . '_host_id']");
 
 	expect($session)->toBeLessThan($sink);
