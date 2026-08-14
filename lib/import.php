@@ -1514,10 +1514,13 @@ function xml_to_data_template(string $hash, array &$xml_array, array &$hash_cach
 						$save[$field_name] = xml_character_decode($item_array[$field_name]);
 
 						if (!import_validate_data_source_item($field_name, $save[$field_name])) {
-							cacti_log(sprintf('FATAL: Data Template \'%s\' rejected, the Data Source Item field \'%s\' holds the invalid value \'%s\'',
-								$xml_array['name'], $field_name, $save[$field_name]), false, 'IMPORT', POLLER_VERBOSITY_LOW);
+							/* the value is attacker supplied, so it does not get to add lines to the log */
+							$logged = substr(clean_up_lines($save[$field_name]), 0, 100);
 
-							$import_messages[] = 7; // xml parse error
+							cacti_log(sprintf('FATAL: Data Template \'%s\' rejected, the Data Source Item field \'%s\' holds the invalid value \'%s\'',
+								$xml_array['name'], $field_name, $logged), false, 'IMPORT', POLLER_VERBOSITY_LOW);
+
+							$import_messages[] = 45;
 
 							return false;
 						}

@@ -53,6 +53,12 @@ if (!function_exists('cacti_log')) {
 	}
 }
 
+if (!function_exists('clean_up_lines')) {
+	function clean_up_lines($string) {
+		return is_string($string) ? preg_replace('/\s*[\r\n]+\s*/', ' ', $string) : $string;
+	}
+}
+
 if (!function_exists('cacti_version_compare')) {
 	function cacti_version_compare($version1, $version2, $operator = '>') {
 		return version_compare($version1, $version2, $operator);
@@ -91,14 +97,21 @@ function shipped_data_source_item_values() : array {
 	$values = ['data_source_name' => [], 'rrd_minimum' => [], 'rrd_maximum' => []];
 
 	foreach (glob(dirname(__DIR__, 2) . '/install/templates/*.xml.gz') as $package) {
-		$raw = gzdecode(file_get_contents($package));
+		$blob = file_get_contents($package);
+
+		if ($blob === false) {
+			continue;
+		}
+
+		$raw = gzdecode($blob);
 
 		if ($raw === false || !preg_match_all('#<data>([A-Za-z0-9+/=\s]*)</data>#s', $raw, $blocks)) {
 			continue;
 		}
 
 		foreach ($blocks[1] as $encoded) {
-			$xml = base64_decode($encoded, true);
+			/* the capture allows the wrapping whitespace that strict decoding refuses */
+			$xml = base64_decode(preg_replace('/\s+/', '', $encoded), true);
 
 			if ($xml === false || strpos($xml, '<data_source_name>') === false) {
 				continue;
@@ -270,19 +283,19 @@ test('an injected data source name aborts the item loop', function () {
 	$result = import_one_data_template(import_item(['data_source_name' => 'ds;id;']));
 
 	expect($result)->toBeFalse();
-	expect($GLOBALS['import_messages'])->toContain(7);
+	expect($GLOBALS['import_messages'])->toContain(45);
 });
 
 test('an injected maximum aborts the item loop', function () {
 	$result = import_one_data_template(import_item(['rrd_maximum' => "U\n; touch /tmp/pwned"]));
 
 	expect($result)->toBeFalse();
-	expect($GLOBALS['import_messages'])->toContain(7);
+	expect($GLOBALS['import_messages'])->toContain(45);
 });
 
 test('an injected minimum aborts the item loop', function () {
 	$result = import_one_data_template(import_item(['rrd_minimum' => '0`id`']));
 
 	expect($result)->toBeFalse();
-	expect($GLOBALS['import_messages'])->toContain(7);
+	expect($GLOBALS['import_messages'])->toContain(45);
 });
