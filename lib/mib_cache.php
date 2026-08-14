@@ -254,13 +254,15 @@ class MibCache{
 					$filter = $oid_entry . '.%.' . $this->active_table_entry;
 
 					/* fetch all values of specific columns given for that MIB table row */
-					$entries = db_fetch_assoc_prepared("SELECT name, value
+					$placeholders = implode(',', array_fill(0, cacti_sizeof($column), '?'));
+
+				$entries = db_fetch_assoc_prepared("SELECT name, value
 						FROM snmpagent_cache
-						WHERE name IN ('" . implode("','", $column) . "')
+						WHERE name IN ($placeholders)
 						AND oid LIKE ?
 						GROUP BY name
 						ORDER BY oid",
-						array($filter));
+						array_merge(array_values($column), array($filter)));
 
 					if ($entries && cacti_sizeof($entries)>0) {
 						foreach($entries as $entry) { $result[$entry['name']] = $entry['value']; }
@@ -300,7 +302,7 @@ class MibCache{
 				/* fetch only the values of one single column */
 				$filter = $oid_entry . '.%.%';
 
-				return db_fetch_assoc_prepared("SELECT value AS '" . $column . "'
+				return db_fetch_assoc_prepared("SELECT value AS `" . sanitize_sql_column($column) . "`
 					FROM snmpagent_cache
 					WHERE name = ?
 					AND oid LIKE ?
@@ -310,11 +312,13 @@ class MibCache{
 				/* fetch values of specific columns given */
 				$filter = $oid_entry . '.%.%';
 
+				$placeholders = implode(',', array_fill(0, cacti_sizeof($column), '?'));
+
 				$entries = db_fetch_assoc_prepared("SELECT name, value
 					FROM snmpagent_cache
-					WHERE name IN ('" . implode("','", $column) . "')
+					WHERE name IN ($placeholders)
 					AND oid LIKE ?
-					ORDER BY oid", array($filter));
+					ORDER BY oid", array_merge(array_values($column), array($filter)));
 
 				if (cacti_sizeof($entries)) {
 					$num_objects = cacti_sizeof($column);
