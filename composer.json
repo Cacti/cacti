@@ -78,7 +78,8 @@
         "hardening-patterns": "php tests/tools/check_hardening_patterns.php",
         "php-cs-fixit": "php-cs-fixer fix ",
         "install-hooks": "bash -c 'install -m 755 tests/tools/pre-commit \"$(git rev-parse --git-path hooks/pre-commit)\"'",
-        "test": "include/vendor/bin/pest --display-warnings"
+        "test": "include/vendor/bin/pest --display-warnings",
+        "test-docker": "bash tests/tools/docker_pest.sh"
     },
     "authors": [
         {

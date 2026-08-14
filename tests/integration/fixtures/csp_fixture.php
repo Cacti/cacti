@@ -22,17 +22,24 @@
 
 require_once __DIR__ . '/../../../lib/headers_secure.php';
 
+if (!defined('CACTI_CSP_NONCE_ENFORCE')) {
+	define('CACTI_CSP_NONCE_ENFORCE', getenv('CSP_TEST_ENFORCE') === '1');
+}
+
 if (!function_exists('read_config_option')) {
 	function read_config_option($key) {
 		switch ($key) {
 			case 'content_security_policy_script':
 				$v = getenv('CSP_TEST_MODE');
+
 				return $v === false ? '' : $v;
 			case 'content_security_alternate_sources':
 				$v = getenv('CSP_TEST_ALTERNATES');
+
 				return $v === false ? '' : $v;
 			case 'content_security_report_uri':
 				$v = getenv('CSP_TEST_REPORT_URI');
+
 				return $v === false ? '' : $v;
 		}
 
@@ -42,17 +49,27 @@ if (!function_exists('read_config_option')) {
 
 $alternates = htmlspecialchars((string) read_config_option('content_security_alternate_sources'), ENT_QUOTES);
 $script_src = CactiSecureHeaders::scriptSrc($alternates);
-$report_uri = CactiSecureHeaders::reportUriDirective();
+$report_uri = CactiSecureHeaders::getCspMode() === 'nonce-enforce' ?
+	CactiSecureHeaders::reportUriDirective() : '';
 
-/* Mirrors the HTTP header emitted by include/global.php. */
+// Mirrors the HTTP header emitted by include/global.php.
 header("Content-Security-Policy: default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; $script_src; frame-ancestors 'self' $alternates; worker-src 'self' $alternates;$report_uri");
+
+$report_script_src = CactiSecureHeaders::reportOnlyScriptSrc($alternates);
+
+if ($report_script_src !== '') {
+	$report_uri = CactiSecureHeaders::reportUriDirective();
+	header("Content-Security-Policy-Report-Only: default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; $report_script_src; frame-ancestors 'self' $alternates; worker-src 'self' $alternates;$report_uri");
+}
 
 $nonce_attr = CactiSecureHeaders::getNonceAttribute();
 
-echo "<!doctype html>\n<html><head>\n";
+print "<!doctype html>\n<html><head>\n";
 /* Mirrors the <meta> policy in lib/html.php: no frame-ancestors/report-uri,
  * both of which are invalid inside a meta CSP. */
-echo "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; $script_src; worker-src 'self' $alternates;\">\n";
-echo "</head><body>\n";
-echo "<script type='text/javascript' $nonce_attr>var x = 1;</script>\n";
-echo "</body></html>\n";
+print "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; $script_src; worker-src 'self' $alternates;\">\n";
+print "</head><body>\n";
+print "<script type='text/javascript' $nonce_attr>var x = 1;</script>\n";
+print "<script type='text/javascript'>window.legacyInlineRan = true;</script>\n";
+print "<button type='button' onclick='window.legacyHandlerRan = true;'>Legacy handler</button>\n";
+print "</body></html>\n";

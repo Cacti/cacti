@@ -1230,7 +1230,7 @@ function raise_message(mixed $message_id, string $message = '', int $message_lev
  */
 function raise_message_javascript(string $title, string $header, string $message, int $level = MESSAGE_LEVEL_MIXED) : void {
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute(); ?>>
 	var mixedReasonTitle = DOMPurify.sanitize(<?php print json_encode($title, JSON_THROW_ON_ERROR); ?>);
 	var mixedOnPage      = DOMPurify.sanitize(<?php print json_encode($header, JSON_THROW_ON_ERROR); ?>);
 	var message          = DOMPurify.sanitize(<?php print json_encode($message, JSON_THROW_ON_ERROR); ?>);
@@ -8577,7 +8577,7 @@ function get_theme_paths(string $format, string $path, string|null $theme = null
  * @return string
  */
 function get_md5_include_js(string $path, bool $async = false, string|null $theme = null, string|null $file = null) : string {
-	$format = '<script type=\'text/javascript\' src=\'%s\'%s></script>';
+	$format = '<script type=\'text/javascript\' src=\'%s\'%s ' . CactiSecureHeaders::getNonceAttribute() . '></script>';
 
 	return get_theme_paths($format, $path, $theme, $file, true, $async ? ' async' : '');
 }

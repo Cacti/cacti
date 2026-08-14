@@ -36,6 +36,7 @@ beforeEach(function () {
 
 	unset(
 		$config[OPTIONS_CLI]['htmx_enabled'],
+		$config[OPTIONS_CLI]['content_security_policy_script'],
 		$_SERVER['HTTP_HX_REQUEST']
 	);
 });
@@ -159,6 +160,19 @@ test('htmx_script_tag carries src, integrity, and crossorigin when enabled', fun
 		->and($tag)->toContain('include/js/htmx.js')
 		->and($tag)->toMatch('/integrity=.sha384-[A-Za-z0-9+\/=]+./')
 		->and($tag)->toContain("crossorigin='anonymous'");
+});
+
+test('htmx loader and CSRF wiring share the request nonce in migration mode', function () {
+	global $config;
+
+	$config[OPTIONS_CLI]['htmx_enabled']                   = 'on';
+	$config[OPTIONS_CLI]['content_security_policy_script'] = 'nonce';
+	$tag                                                   = htmx_script_tag();
+
+	preg_match_all('/nonce="([A-Za-z0-9_-]{24})"/', $tag, $matches);
+
+	expect($matches[1])->toHaveCount(2);
+	expect(array_unique($matches[1]))->toHaveCount(1);
 });
 
 test('htmx_script_tag integrity matches the sha384 of the vendored file', function () {

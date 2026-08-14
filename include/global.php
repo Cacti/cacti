@@ -631,11 +631,19 @@ if ($config['is_web']) {
 	header('X-Frame-Options: SAMEORIGIN');
 
 	// increased web hardening
-	$alternates  = htmle(read_config_option('content_security_alternate_sources'));
-	$script_src  = CactiSecureHeaders::scriptSrc($alternates);
-	$report_uri  = CactiSecureHeaders::reportUriDirective();
+	$alternates = htmle(read_config_option('content_security_alternate_sources'));
+	$script_src = CactiSecureHeaders::scriptSrc($alternates);
+	$report_uri = CactiSecureHeaders::getCspMode() === 'nonce-enforce' ?
+		CactiSecureHeaders::reportUriDirective() : '';
 
 	header("Content-Security-Policy: default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; $script_src; frame-ancestors 'self' $alternates; worker-src 'self' $alternates;$report_uri");
+
+	$report_script_src = CactiSecureHeaders::reportOnlyScriptSrc($alternates);
+
+	if ($report_script_src !== '') {
+		$report_uri = CactiSecureHeaders::reportUriDirective();
+		header("Content-Security-Policy-Report-Only: default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; $report_script_src; frame-ancestors 'self' $alternates; worker-src 'self' $alternates;$report_uri");
+	}
 
 	// prevent IE from silently rejects cookies sent from third party sites.
 	header('P3P: CP="CAO PSA OUR"');
