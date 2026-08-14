@@ -341,8 +341,7 @@ function is_trusted_proxy() : bool {
 		 * 10.0.0.0/8 is not an address, so inet_pton refused it and the string
 		 * compare below could never match it either. The range went quietly
 		 * unmatched. checkIp reads both a single address and a range, over v4
-		 * and v6, and is what lib/client_address.php already uses for the same
-		 * list. */
+		 * and v6. */
 		if ($remote_packed !== false && IpUtils::checkIp($remote, $entry)) {
 			return true;
 		}

@@ -16,8 +16,8 @@
  * A proxy list is normally written with ranges. is_trusted_proxy() compared
  * entries as whole addresses, so 10.0.0.0/8 was not an address inet_pton would
  * accept and was not a string equal to the client either. The range matched
- * nothing and said nothing about it. lib/client_address.php already reads the
- * same list with IpUtils, so the two disagreed about what the setting means.
+ * nothing and said nothing about it, so the setting looked applied when it was
+ * not.
  */
 
 require_once dirname(__DIR__, 2) . '/lib/functions.php';
