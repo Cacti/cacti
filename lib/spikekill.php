@@ -998,7 +998,7 @@ class spikekill {
 							$this->strout .= sprintf('%10s %16s %10s %7s %7s ' .
 								($ds['average'] < 1E6 ? '%10s ' : '%10.2e ') .
 								($ds['stddev'] < 1E6 ? '%10s ' : '%10.2e ') .
-								($ds['stddev'] < 1E6 ? '%10s ' : '%10.2e ') .
+								($ds['stddev'] == 'N/A' || $ds['stddev'] ** 2 < 1E6 ? '%10s ' : '%10.2e ') .
 								($ds['max_value'] < 1E6 ? '%10s ' : '%10.2e ') .
 								($ds['min_value'] < 1E6 ? '%10s ' : '%10.2e ') .
 								($ds['max_cutoff'] < 1E6 ? '%10s ' : '%10.2e ') .
