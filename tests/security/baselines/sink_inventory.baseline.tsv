@@ -556,7 +556,9 @@ fs_write	./lib/api_device.php:2637							file_put_contents($new_xmlfile, $data);
 fs_write	./lib/boost.php:454								if ($fileptr = fopen($cache_file, 'rb')) {
 fs_write	./lib/boost.php:577							if ($fileptr = fopen($cache_file, 'w')) {
 fs_write	./lib/clog_webapi.php:119					$log_fh = fopen($logfile, 'w');
-fs_write	./lib/csp_report_endpoint.php:176		$fh = @fopen($bucket, 'c+');
+fs_write	./lib/csp_report_endpoint.php:164	$input   = @fopen('php://input', 'rb');
+fs_write	./lib/csp_report_endpoint.php:199		   leaving a symlink there gave fopen() somewhere else to write. */
+fs_write	./lib/csp_report_endpoint.php:229		$fh = @fopen($bucket, 'c+');
 fs_write	./lib/database.php:206					file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
 fs_write	./lib/database.php:2466		file_put_contents(sys_get_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
 fs_write	./lib/database.php:74					file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
