@@ -27,6 +27,8 @@ require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/CactiFilesystem.php');
 require_once(CACTI_PATH_LIBRARY . '/CactiMd5FileFinder.php');
 
+use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
+
 // process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
@@ -163,7 +165,12 @@ if (!$quiet && $debug) {
 	};
 }
 
-$file_array = $file_finder->findHashes($base_dir, $ignore_regex, $excluded_directories, $debug_callback);
+try {
+	$file_array = $file_finder->findHashes($base_dir, $ignore_regex, $excluded_directories, $debug_callback);
+} catch (DirectoryNotFoundException | InvalidArgumentException $e) {
+	printf('ERROR: %s' . PHP_EOL, $e->getMessage());
+	exit(6);
+}
 
 if ($create) {
 	$output = '';

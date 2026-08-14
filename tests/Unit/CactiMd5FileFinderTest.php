@@ -84,7 +84,9 @@ test('findHashes does not follow a sibling-prefix symlink target', function () {
 		$this->markTestSkipped('Symlink creation is not consistently available on Windows.');
 	}
 
-	symlink($this->outside, $this->directory . '/outside-link');
+	if (!@symlink($this->outside, $this->directory . '/outside-link')) {
+		$this->markTestSkipped('Symlink creation is not permitted in this environment.');
+	}
 
 	$finder = new CactiMd5FileFinder();
 	$hashes = $finder->findHashes($this->directory, cactiFinderIgnoreRegex(), ['cache', 'plugins']);
@@ -120,4 +122,12 @@ test('findHashes rejects an unreadable root directory', function () {
 	} finally {
 		chmod($this->directory, 0700);
 	}
+});
+
+test('findHashes rejects an ignore pattern that is not a valid regex', function () {
+	$finder = new CactiMd5FileFinder();
+
+	/* an unchecked preg_match() would return false here and ignore every file */
+	expect(fn () => $finder->findHashes($this->directory, '/unterminated'))
+		->toThrow(InvalidArgumentException::class);
 });

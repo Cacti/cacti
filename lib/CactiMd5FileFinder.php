@@ -21,6 +21,17 @@ final class CactiMd5FileFinder {
 			throw new DirectoryNotFoundException("The directory '$basePath' does not exist or is not readable.");
 		}
 
+		/* preg_match() returns false on a bad pattern, and false is not 0, so an
+		 * unchecked test would quietly ignore every file and write an empty manifest. */
+		/* the handler swallows the compile warning; the return value is the verdict */
+		set_error_handler(static fn () : bool => true);
+		$patternIsValid = preg_match($ignoreRegex, '') !== false;
+		restore_error_handler();
+
+		if (!$patternIsValid) {
+			throw new InvalidArgumentException("The ignore pattern '$ignoreRegex' is not a valid regular expression.");
+		}
+
 		$finder = (new Finder())
 			->files()
 			->ignoreDotFiles(false)
@@ -34,7 +45,7 @@ final class CactiMd5FileFinder {
 		foreach ($finder as $file) {
 			$relativePath = str_replace(DIRECTORY_SEPARATOR, '/', $file->getRelativePathname());
 
-			if (preg_match($ignoreRegex, '/' . $relativePath) !== 0) {
+			if (preg_match($ignoreRegex, '/' . $relativePath) === 1) {
 				if ($debug !== null) {
 					$debug('[                         Ignored] ' . $file->getFilename());
 				}
