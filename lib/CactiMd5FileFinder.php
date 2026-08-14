@@ -23,7 +23,7 @@ final class CactiMd5FileFinder {
 
 		/* preg_match() returns false on a bad pattern, and false is not 0, so an
 		 * unchecked test would quietly ignore every file and write an empty manifest. */
-		/* the handler swallows the compile warning; the return value is the verdict */
+		// the handler swallows the compile warning; the return value is the verdict
 		set_error_handler(static fn () : bool => true);
 		$patternIsValid = preg_match($ignoreRegex, '') !== false;
 		restore_error_handler();
