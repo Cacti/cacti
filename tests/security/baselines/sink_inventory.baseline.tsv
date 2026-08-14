@@ -146,13 +146,13 @@ fs_write	./cli/float_rrdfiles.php:363					$lf = fopen('/tmp/clearer.log', 'a');
 fs_write	./cli/genkey.php:207		file_put_contents("$keypair_path/package.info", $package_info);
 fs_write	./cli/genkey.php:316				if (file_put_contents("$keypair_path/package.key", $privKey)) {
 fs_write	./cli/genkey.php:330			if (file_put_contents("$keypair_path/package.pub", $pubKey)) {
-fs_write	./cli/genmanifest.php:199				file_put_contents("$dir/package.manifest", json_encode($package_manifest, JSON_PRETTY_PRINT));
+fs_write	./cli/genmanifest.php:202					$filesystem->writeFile("$dir/package.manifest", json_encode($package_manifest, JSON_PRETTY_PRINT));
 fs_write	./cli/import_package.php:171				$fp   = fopen($filename, 'r');
 fs_write	./cli/import_template.php:126				$fp       = fopen($filename,'r');
-fs_write	./cli/input_whitelist.php:170			file_put_contents($config['input_whitelist'], json_encode($input));
-fs_write	./cli/md5sum.php:171		if (file_put_contents($md5_file,$output) === false) {
+fs_write	./cli/input_whitelist.php:173				$filesystem->writeFile($config['input_whitelist'], json_encode($input));
+fs_write	./cli/md5sum.php:174			$filesystem->writeFile($md5_file, $output);
 fs_write	./cli/migrate_poller.php:240		$result = file_put_contents($migration_log_file, date('Y-m-d H:i:s') . " - $message" . PHP_EOL, FILE_APPEND);
-fs_write	./cli/refresh_csrf.php:84		$fh = fopen(CACTI_CSRF_SECRET, 'w');
+fs_write	./cli/refresh_csrf.php:85			$filesystem->writeFile(CACTI_CSRF_SECRET, '<?php $secret = "' . $new_secret . '";' . PHP_EOL);
 fs_write	./cli/rrdresize.php:247		$log_handle = fopen($tmp_backup_folder . 'tmp_rrdresize.log', 'w');
 fs_write	./cli/rrdresize.php:860					if (!file_put_contents($tmp_xml_file, $rrd_new_header . $rrd_new_body . '</rrd>')) {
 fs_write	./cli/splice_rrd.php:363	file_put_contents($newxmlfile, $new_xml);
@@ -168,6 +168,7 @@ fs_write	./install/functions.php:1584			file_put_contents(CACTI_PATH_LOG . '/' .
 fs_write	./install/functions.php:1585			file_put_contents(CACTI_PATH_LOG . '/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
 fs_write	./install/functions.php:275				$fh = fopen($file, 'w');
 fs_write	./install/functions.php:803			file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
+fs_write	./lib/CactiFilesystem.php:30			$this->filesystem->dumpFile($filename, $contents);
 fs_write	./lib/api_device.php:2682							file_put_contents($new_xmlfile, $data);
 fs_write	./lib/boost.php:611								if ($fileptr = fopen($cache_file, 'rb')) {
 fs_write	./lib/boost.php:761							if ($fileptr = fopen($cache_file, 'w')) {
@@ -668,7 +669,7 @@ header_redirect	./vdef.php:228			header('Location: vdef.php');
 header_redirect	./vdef.php:532		header('Location: vdef.php?action=edit&id=' . grv('id'));
 header_redirect	./vdef.php:57			header('Location: vdef.php?action=edit&id=' . grv('vdef_id'));
 header_redirect	./vdef.php:65			header('Location: vdef.php?action=edit&id=' . grv('vdef_id'));
-xml_parse	./cli/genmanifest.php:143							$xmldata = simplexml_load_string($data);
+xml_parse	./cli/genmanifest.php:144							$xmldata = simplexml_load_string($data);
 xml_parse	./cli/rrdresize.php:559						$rrd_data = json_decode(json_encode(simplexml_load_string($file_dump)), true);
 xml_parse	./install/functions.php:957				$xmlget = simplexml_load_string($xml);
 xml_parse	./lib/import.php:370		$xmlget = simplexml_load_string($data);
