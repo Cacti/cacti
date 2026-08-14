@@ -25,6 +25,7 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/CactiFilesystem.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiMd5FileFinder.php');
 
 // process calling arguments
 $parms = $_SERVER['argv'];
@@ -151,7 +152,18 @@ foreach ($ignore_files as $ignore) {
 }
 $ignore_regex = "~($ignore_regex)~";
 
-$file_array = dirToArray('', $base_dir, $ignore_regex);
+$excluded_directories = ['.git', 'cache', 'log', 'plugins', 'rra'];
+$file_finder          = new CactiMd5FileFinder();
+$debug_callback       = null;
+
+if (!$quiet && $debug) {
+	print PHP_EOL . "Searching '$base_dir' ..." . PHP_EOL;
+	$debug_callback = static function (string $message) : void {
+		print $message . PHP_EOL;
+	};
+}
+
+$file_array = $file_finder->findHashes($base_dir, $ignore_regex, $excluded_directories, $debug_callback);
 
 if ($create) {
 	$output = '';
@@ -235,65 +247,6 @@ if ($create) {
 			}
 		}
 	}
-}
-
-function dirToArray(mixed $dir, string $base, string $ignore) : array {
-	global $debug, $quiet;
-
-	$result = [];
-
-	$fulldir = $base;
-
-	if ($dir != '') {
-		$fulldir .= DIRECTORY_SEPARATOR . $dir;
-	}
-
-	$fulldir = realpath($fulldir);
-
-	if (str_contains($fulldir, $base)) {
-		if (is_dir($fulldir)) {
-			$cdir = scandir($fulldir);
-		} else {
-			$cdir = [];
-		}
-
-		if (!$quiet && $debug) {
-			print PHP_EOL . "Searching '$fulldir' ..." . PHP_EOL;
-		}
-
-		$dir_list = [];
-
-		foreach ($cdir as $key => $value) {
-			$fullpath = $fulldir . DIRECTORY_SEPARATOR . $value;
-			$partpath = substr($fullpath,strlen($base));
-
-			if (preg_match($ignore,$partpath) == 0) {
-				if (is_dir($fullpath)) {
-					$dir_list[] = $partpath;
-				} else {
-					$md5_sum = @md5_file($fullpath);
-
-					if (!$quiet && $debug) {
-						print "[$md5_sum] $value" . PHP_EOL;
-					}
-					$result[substr($partpath,1)] = $md5_sum;
-				}
-			} else {
-				if (!$quiet && $debug) {
-					print "[                         Ignored] $value" . PHP_EOL;
-				}
-			}
-		}
-
-		foreach ($dir_list as $partpath) {
-			$result = array_merge($result, dirToArray($partpath, $base, $ignore));
-		}
-	} elseif (!$quiet && ($debug || !strlen($dir))) {
-		$value = substr($dir,strlen(dirname($dir)) + 1);
-		print "[           Outside Base, Ignored] $value" . PHP_EOL;
-	}
-
-	return $result;
 }
 
 /**
