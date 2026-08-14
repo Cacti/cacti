@@ -302,7 +302,14 @@ class MibCache{
 				/* fetch only the values of one single column */
 				$filter = $oid_entry . '.%.%';
 
-				return db_fetch_assoc_prepared("SELECT value AS `" . sanitize_sql_column($column) . "`
+				$alias = sanitize_sql_column($column);
+
+				/* an all stripped name would leave an empty identifier and a syntax error */
+				if ($alias === '') {
+					return array();
+				}
+
+				return db_fetch_assoc_prepared("SELECT value AS `" . $alias . "`
 					FROM snmpagent_cache
 					WHERE name = ?
 					AND oid LIKE ?

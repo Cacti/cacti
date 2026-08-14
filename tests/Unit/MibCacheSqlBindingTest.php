@@ -37,7 +37,8 @@ test('column names are bound, not pasted into the IN list', function () use ($sr
 
 test('the alias is confined to identifier characters', function () use ($src) {
 	expect($src)->not->toContain('SELECT value AS \'" . $column . "\'')
-		->and($src)->toContain('sanitize_sql_column($column)');
+		->and($src)->toContain('$alias = sanitize_sql_column($column);')
+		->and($src)->toContain("if (\$alias === '') {");
 });
 
 test('a name carrying the delimiter cannot escape the alias', function () {
