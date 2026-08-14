@@ -29,6 +29,7 @@ include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleQrUrl.php');
 include(__DIR__ . '/../include/vendor/GoogleAuthenticator/RuntimeException.php');
 
 use phpseclib3\Crypt\RSA;
+use Symfony\Component\HttpFoundation\IpUtils;
 
 /**
  * Clears a users security token
@@ -332,9 +333,23 @@ function is_trusted_proxy() : bool {
 	foreach ($trusted as $entry) {
 		$entry = (string) $entry;
 
-		/* Compare valid IPs by packed form so alternate spellings of the same
-		 * address match. inet_pton yields 4 bytes for IPv4 and 16 for IPv6, so
-		 * an IPv4-mapped entry never silently matches its bare IPv4 form. */
+		if ($entry === '') {
+			continue;
+		}
+
+		/* A proxy list is normally written with ranges, and an entry such as
+		 * 10.0.0.0/8 is not an address, so inet_pton refused it and the string
+		 * compare below could never match it either. The range went quietly
+		 * unmatched. checkIp reads both a single address and a range, over v4
+		 * and v6, and is what lib/client_address.php already uses for the same
+		 * list. */
+		if ($remote_packed !== false && IpUtils::checkIp($remote, $entry)) {
+			return true;
+		}
+
+		/* Alternate spellings of one address still compare by packed form, so
+		 * ::1 and 0:0:0:0:0:0:0:1 match while an IPv4-mapped entry does not
+		 * silently match its bare IPv4 form. */
 		if ($remote_packed !== false) {
 			$entry_packed = @inet_pton($entry);
 
