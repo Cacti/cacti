@@ -139,6 +139,7 @@ Cacti CHANGELOG
 -issue#7536: Consolidate the four hand-written poller_output_boost inserts into one shared helper
 -issue#7535: Consolidate the poller_item delete call sites behind poller_item_delete_for_data_source() and poller_item_delete_for_host()
 -issue#7576: Stop passing an unset path_php_binary into string parameters
+-issue#7718: Discover files recursively for the MD5 listing with Symfony Finder
 -issue#7673: Require a POST and a CSRF token for the delete actions that were reachable over GET
 -issue#7674: Enforce tree access when creating, deleting and renaming tree nodes
 -issue#7682: Revoke the remember-me token and terminate other sessions on logout
