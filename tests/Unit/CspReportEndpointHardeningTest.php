@@ -51,9 +51,28 @@ test('a body at the cap is still measured, not truncated past the check', functi
 test('the endpoint keeps the byte that proves the body was too long', function () {
 	$src = file_get_contents(dirname(__DIR__, 2) . '/lib/csp_report_endpoint.php');
 
-	// slicing back to the cap is what made the check unreachable
+	/* Assert the cap and the absence of the truncating slice rather than the
+	   call used to read, so moving to another bounded read does not fail this
+	   for a change that preserves the behaviour. */
 	expect($src)->not->toContain('$rawBody = substr($rawBody, 0, 16384);')
-		->and($src)->toContain("file_get_contents('php://input', false, null, 0, 16385)");
+		->and($src)->toContain('16385');
+});
+
+test('the read is bounded rather than trusting a length argument', function () {
+	$src = file_get_contents(dirname(__DIR__, 2) . '/lib/csp_report_endpoint.php');
+
+	// the length argument is not honoured for php://input on every SAPI
+	expect($src)->toContain('while (!feof($input) && strlen($rawBody) <= 16384)');
+});
+
+test('an untrustworthy counter directory drops the report rather than uncapping it', function () {
+	$src = file_get_contents(dirname(__DIR__, 2) . '/lib/csp_report_endpoint.php');
+
+	/* Logging without a cap would let anyone on the network fill the disk
+	   through an endpoint that needs no credentials, and a local user can
+	   arrange the condition on purpose. */
+	expect($src)->not->toContain("if (is_link(\$dir)) {\n\t\treturn true;")
+		->and(substr_count($src, 'return false;'))->toBeGreaterThanOrEqual(4);
 });
 
 test('the request method is guarded like the other server values', function () {

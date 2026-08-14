@@ -153,11 +153,31 @@ if (isset($_SERVER['CONTENT_TYPE'])) {
 	$contentType = $_SERVER['HTTP_CONTENT_TYPE'];
 }
 
-/* Read one byte past the cap and keep it. Slicing back to the cap made the
- * size check below unable to fire, because the length could never exceed what
- * it was compared against, and an oversized body was reported as invalid JSON
- * once the truncation broke it. */
-$rawBody = (string) file_get_contents('php://input', false, null, 0, 16385);
+/* Read one byte past the cap and stop. The length argument to
+ * file_get_contents() is not honoured for php://input on every SAPI, so a
+ * large body could still be buffered whole before anything rejected it; a
+ * bounded read loop caps it regardless. Keeping the extra byte is what lets
+ * the size check below fire, since slicing back to the cap left the length
+ * unable to exceed the number it was compared against and an oversized body
+ * arrived as invalid JSON once truncation had broken it. */
+$rawBody = '';
+$input   = @fopen('php://input', 'rb');
+
+if ($input !== false) {
+	while (!feof($input) && strlen($rawBody) <= 16384) {
+		$chunk = fread($input, 8192);
+
+		if ($chunk === false || $chunk === '') {
+			break;
+		}
+
+		$rawBody .= $chunk;
+	}
+
+	fclose($input);
+}
+
+$rawBody = substr($rawBody, 0, 16385);
 
 $result = csp_report_validate_payload(
 	array('CONTENT_TYPE' => $contentType),
@@ -180,21 +200,24 @@ function csp_report_should_log() : bool {
 	$dir = sys_get_temp_dir() . '/cacti_csp';
 
 	if (!is_dir($dir) && !@mkdir($dir, 0700, true) && !is_dir($dir)) {
-		return true;
+		return false;
 	}
 
-	/* Refuse a directory we do not own, or one swapped for a link. Logging
-	   without the cap is the safer failure: reports still reach the operator
-	   and nothing is written through a path someone else controls. */
+	/* Refuse a directory we do not own, or one swapped for a link, and drop the
+	   report rather than logging it uncapped. The two failures are not equal:
+	   logging without a cap lets anyone on the network fill the disk through an
+	   endpoint that needs no credentials, and a local user can arrange this
+	   condition deliberately to remove the cap. Dropping reports loses
+	   telemetry until the directory is repaired, which is the smaller harm. */
 	if (is_link($dir)) {
-		return true;
+		return false;
 	}
 
 	if (function_exists('posix_getuid')) {
 		$owner = @fileowner($dir);
 
 		if ($owner === false || $owner !== posix_getuid()) {
-			return true;
+			return false;
 		}
 	}
 
@@ -206,7 +229,7 @@ function csp_report_should_log() : bool {
 	$fh = @fopen($bucket, 'c+');
 
 	if ($fh === false) {
-		return true;
+		return false;
 	}
 
 	$logged = false;
