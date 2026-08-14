@@ -21,17 +21,26 @@
 
 $base = dirname(__DIR__, 2);
 
+test('the sources under test are readable', function () use ($base) {
+	foreach (array('/lib/api_aggregate.php', '/lib/utility.php', '/lib/html_reports.php') as $rel) {
+		expect(file_get_contents($base . $rel))->toBeString()->not->toBeEmpty();
+	}
+});
+
 test('PHP 8 makes both division and modulo by zero fatal', function () {
 	// the behaviour change these guards exist for
-	expect(fn () => 5 % 0)->toThrow(DivisionByZeroError::class)
-		->and(fn () => 5 / 0)->toThrow(DivisionByZeroError::class);
+	expect(function () { return 5 % 0; })->toThrow(DivisionByZeroError::class)
+		->and(function () { return 5 / 0; })->toThrow(DivisionByZeroError::class);
 });
 
 test('the aggregate colour round robin checks the template has colours', function () use ($base) {
 	$src = file_get_contents($base . '/lib/api_aggregate.php');
 
+	expect($src)->not->toContain("WHERE color_template_id=' . \$_color_templates[\$i] . '")
+		->and($src)->toContain('WHERE color_template_id = ?');
+
 	$guard = strpos($src, 'if ($num_colors > 0) {');
-	$use   = strpos($src, '$_selected_graph_index % $num_colors');
+	$use   = strpos($src, '$offset = $_selected_graph_index % $num_colors;');
 
 	expect($guard)->not->toBeFalse()
 		->and($use)->not->toBeFalse()
