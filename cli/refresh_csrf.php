@@ -24,6 +24,7 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiFilesystem.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
@@ -69,21 +70,25 @@ print 'NOTE: Updating csrf_secret file with new information' . PHP_EOL;
 if (!file_exists(CACTI_CSRF_SECRET)) {
 	print 'WARNING: csrf_secret.php file does not exist!' . PHP_EOL;
 } elseif (!is_writable(CACTI_CSRF_SECRET)) {
-	print 'FATAL: unable to unlink csrf_secret.php!' . PHP_EOL;
+	print 'FATAL: Unable to replace csrf_secret.php!' . PHP_EOL;
 
 	exit(1);
-} else {
-	print 'NOTE: Removing old csrf_secret.php file.' . PHP_EOL;
-	unlink(CACTI_CSRF_SECRET);
 }
 
 $new_secret = csrf_generate_secret();
 
 if (csrf_writable(CACTI_CSRF_SECRET)) {
 	umask(0027);
-	$fh = fopen(CACTI_CSRF_SECRET, 'w');
-	fwrite($fh, '<?php $secret = "' . $new_secret . '";' . PHP_EOL);
-	fclose($fh);
+
+	try {
+		$filesystem = new CactiFilesystem();
+		$filesystem->writeFile(CACTI_CSRF_SECRET, '<?php $secret = "' . $new_secret . '";' . PHP_EOL);
+	} catch (Symfony\Component\Filesystem\Exception\IOExceptionInterface) {
+		print 'FATAL: Unable to write new csrf_secret.php file.' . PHP_EOL;
+
+		exit(1);
+	}
+
 	print 'NOTE: New csrf_secret.php file written.' . PHP_EOL;
 
 	exit(0);

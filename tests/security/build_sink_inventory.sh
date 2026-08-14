@@ -48,5 +48,5 @@ scan "xml_parse" '\b(simplexml_load_file|simplexml_load_string|DOMDocument::load
 # Redirect/header sinks
 scan "header_redirect" '\bheader\s*\(\s*[\"\x27]Location:'
 
-# Filesystem write sinks
-scan "fs_write" '\b(file_put_contents|fopen)\s*\('
+# Filesystem write sinks, including Cacti and Symfony atomic-write abstractions
+scan "fs_write" '(?:\b(?:file_put_contents|fopen)\s*\(|->(?:writeFile|dumpFile)\s*\()'

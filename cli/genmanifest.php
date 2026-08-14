@@ -24,6 +24,7 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiFilesystem.php');
 require_once(CACTI_PATH_LIBRARY . '/xml.php');
 require_once(CACTI_PATH_LIBRARY . '/import.php');
 
@@ -196,7 +197,14 @@ if (cacti_sizeof($directory)) {
 			$package_manifest['manifest'] = $manifest;
 			$package_manifest['keys']     = array_unique($keys);
 
-			file_put_contents("$dir/package.manifest", json_encode($package_manifest, JSON_PRETTY_PRINT));
+			try {
+				$filesystem = new CactiFilesystem();
+				$filesystem->writeFile("$dir/package.manifest", json_encode($package_manifest, JSON_PRETTY_PRINT));
+			} catch (Symfony\Component\Filesystem\Exception\IOExceptionInterface) {
+				print "FATAL: Unable to write $dir/package.manifest" . PHP_EOL;
+
+				continue;
+			}
 
 			print "Manifest package.manifest written to $dir/package.manifest" . PHP_EOL;
 		}
