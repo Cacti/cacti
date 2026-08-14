@@ -45,6 +45,7 @@ beforeEach(function () {
 		output TEXT NOT NULL,
 		PRIMARY KEY (local_data_id, rrd_name, time)
 	)');
+	$conn->exec('CREATE TABLE poller_item (local_data_id INTEGER NOT NULL, poller_id INTEGER NOT NULL)');
 
 	$database_hostname = 'unit_test_host';
 	$database_port     = '0';
@@ -73,7 +74,7 @@ function boost_test_fetch_output(PDO $conn, int $local_data_id, string $rrd_name
 }
 
 test('writes a fresh row when no key collision exists', function () {
-	boost_flush_output_batch(["(1,'ds','2024-01-01 00:00:00','100')"], $this->conn);
+	expect(boost_flush_output_batch(["(1,'ds','2024-01-01 00:00:00','100')"], $this->conn))->toBeTrue();
 
 	$stmt = $this->conn->query('SELECT local_data_id, rrd_name, output FROM poller_output_boost');
 	$row  = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -114,8 +115,44 @@ test('non-colliding rows in the same batch are all written', function () {
 });
 
 test('an empty tuple list is a no-op', function () {
-	boost_flush_output_batch([], $this->conn);
+	expect(boost_flush_output_batch([], $this->conn))->toBeTrue();
 
 	$count = (int) $this->conn->query('SELECT COUNT(*) AS c FROM poller_output_boost')->fetch(PDO::FETCH_ASSOC)['c'];
 	expect($count)->toBe(0);
+});
+
+test('reports a failed database acknowledgement to its caller', function () {
+	$this->conn->exec('DROP TABLE poller_output_boost');
+
+	expect(boost_flush_output_batch(["(1,'ds','2024-01-01 00:00:00','100')"], $this->conn))->toBeFalse();
+});
+
+test('publishes a complete graph cache object without leaving a temporary file', function () {
+	$directory = sys_get_temp_dir() . '/cacti-boost-cache-' . bin2hex(random_bytes(8));
+	mkdir($directory, 0700);
+	$cache_file = $directory . '/cache.png';
+	$output     = str_repeat('png-data', 4096);
+
+	try {
+		expect(boost_atomic_write_cache($cache_file, $output))->toBeTrue();
+		expect(file_get_contents($cache_file))->toBe($output);
+		expect(glob($directory . '/.boost-*'))->toBe([]);
+	} finally {
+		@unlink($cache_file);
+		@rmdir($directory);
+	}
+});
+
+test('validates remote data-source ownership against the destination database', function () {
+	$this->conn->exec('INSERT INTO poller_item (local_data_id, poller_id) VALUES (10, 7), (11, 7), (12, 8)');
+
+	expect(boost_validate_poller_ownership([
+		['local_data_id' => 10],
+		['local_data_id' => 11],
+	], 7, $this->conn))->toBeTrue();
+
+	expect(boost_validate_poller_ownership([
+		['local_data_id' => 10],
+		['local_data_id' => 12],
+	], 7, $this->conn))->toBeFalse();
 });
