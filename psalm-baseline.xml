@@ -5,11 +5,6 @@
       <code><![CDATA['Location: ' . sanitize_uri($_SERVER['REQUEST_URI'])]]></code>
     </TaintedHeader>
   </file>
-  <file src="include/global.php">
-    <TaintedHeader>
-      <code><![CDATA["Content-Security-Policy: default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; $script_src; frame-ancestors 'self' $alternates; worker-src 'self' $alternates;$report_uri"]]></code>
-    </TaintedHeader>
-  </file>
   <file src="include/global_session.php">
     <TaintedHtml>
       <code><![CDATA[gfrv('action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([-a-zA-Z0-9_\s]+)$/']])]]></code>

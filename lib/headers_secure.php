@@ -131,6 +131,44 @@ class CactiSecureHeaders {
 		return '';
 	}
 
+	/**
+	 * Normalize the configured space-delimited CSP host sources. Reject the
+	 * complete value when any token is malformed so an attempted directive or
+	 * header injection cannot leave behind a partially valid, broader policy.
+	 *
+	 * @psalm-taint-escape header
+	 * @psalm-taint-escape html
+	 */
+	public static function normalizeAlternateSources(mixed $value): string {
+		if (!is_string($value) && !is_numeric($value)) {
+			return '';
+		}
+
+		$value = trim((string) $value);
+
+		if ($value === '' || strlen($value) > 2048) {
+			return '';
+		}
+
+		$sources = preg_split('/\s+/', $value, -1, PREG_SPLIT_NO_EMPTY);
+
+		if ($sources === false) {
+			return '';
+		}
+
+		$normalized = [];
+
+		foreach ($sources as $source) {
+			if (!self::isValidAlternateSource($source)) {
+				return '';
+			}
+
+			$normalized[$source] = true;
+		}
+
+		return implode(' ', array_keys($normalized));
+	}
+
 	public static function isNonceMode(): bool {
 		return self::isNonceModeValue(self::getCspMode());
 	}
@@ -199,6 +237,8 @@ class CactiSecureHeaders {
 	 * @param string $alternates sanitized alternate-source token string
 	 */
 	public static function buildScriptSrc(string $mode, string $nonce, string $alternates): string {
+		$alternates = self::normalizeAlternateSources($alternates);
+
 		if ($mode === 'nonce') {
 			if (!self::isValidNonce($nonce)) {
 				throw new \InvalidArgumentException('Invalid CSP nonce.');
@@ -283,6 +323,54 @@ class CactiSecureHeaders {
 	}
 
 	/**
+	 * Accept CSP host-source expressions supported by the alternate-source
+	 * setting: optional HTTP/WebSocket scheme, hostname/IP with optional
+	 * wildcard, optional port, and an optional path without query or fragment.
+	 */
+	private static function isValidAlternateSource(string $source): bool {
+		if ($source === '' || strlen($source) > 255) {
+			return false;
+		}
+
+		$pattern = '~\A(?:(?:https?|wss?)://)?(?<host>\*|\*\.[A-Za-z0-9.-]+|\[[0-9A-Fa-f:.]+\]|[A-Za-z0-9.-]+)(?::(?<port>\*|[0-9]{1,5}))?(?:/[A-Za-z0-9._\~!$&()*+,:=@%/-]*)?\z~Di';
+
+		if (preg_match($pattern, $source, $matches) !== 1) {
+			return false;
+		}
+
+		$host = $matches['host'];
+
+		if ($host !== '*') {
+			if (str_starts_with($host, '[')) {
+				$address = substr($host, 1, -1);
+
+				if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
+					return false;
+				}
+			} else {
+				$hostname = str_starts_with($host, '*.') ? substr($host, 2) : $host;
+
+				if (filter_var($hostname, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)      === false &&
+					filter_var($hostname, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false) {
+					return false;
+				}
+			}
+		}
+
+		$port_value = $matches['port'] ?? '';
+
+		if ($port_value !== '' && $port_value !== '*') {
+			$port = (int) $port_value;
+
+			if ($port < 1 || $port > 65535) {
+				return false;
+			}
+		}
+
+		return preg_match('/%(?![A-Fa-f0-9]{2})/', $source) !== 1;
+	}
+
+	/**
 	 * Resolve the violation report endpoint. Prefers the configured value,
 	 * rejecting anything that could break the header line, and otherwise
 	 * derives the bundled csp_report.php path from the install's URL path.
@@ -301,6 +389,8 @@ class CactiSecureHeaders {
 
 	/**
 	 * Resolve a configured report endpoint against the Cacti URL base.
+	 *
+	 * @psalm-taint-escape header
 	 */
 	public static function resolveReportUri(mixed $configured, string $base): string {
 		if ($configured !== null && $configured !== false && $configured !== '' &&
@@ -308,6 +398,8 @@ class CactiSecureHeaders {
 			return (string) $configured;
 		}
 
-		return $base . '/csp_report.php';
+		$fallback = rtrim($base, '/') . '/csp_report.php';
+
+		return self::isValidReportUri($fallback) ? $fallback : '/csp_report.php';
 	}
 }

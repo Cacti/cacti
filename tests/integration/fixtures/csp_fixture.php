@@ -47,7 +47,7 @@ if (!function_exists('read_config_option')) {
 	}
 }
 
-$alternates = htmlspecialchars((string) read_config_option('content_security_alternate_sources'), ENT_QUOTES);
+$alternates = CactiSecureHeaders::normalizeAlternateSources(read_config_option('content_security_alternate_sources'));
 $script_src = CactiSecureHeaders::scriptSrc($alternates);
 $report_uri = CactiSecureHeaders::getCspMode() === 'nonce-enforce' ?
 	CactiSecureHeaders::reportUriDirective() : '';

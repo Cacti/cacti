@@ -34,6 +34,34 @@ test('stored CSP modes are normalized to supported values', function () {
 	expect(CactiSecureHeaders::normalizeCspMode(false))->toBe('');
 });
 
+test('alternate CSP sources are normalized from supported host expressions', function () {
+	$sources = "  *.cdn.example\thttps://assets.example:8443/static/\n"
+		. 'wss://socket.example [2001:db8::1]:443 *.cdn.example 192.0.2.10:* '
+		. 'https://static.example/assets/app.js';
+
+	expect(CactiSecureHeaders::normalizeAlternateSources($sources))
+		->toBe('*.cdn.example https://assets.example:8443/static/ wss://socket.example [2001:db8::1]:443 192.0.2.10:* https://static.example/assets/app.js');
+});
+
+test('alternate CSP sources fail closed when any token is unsafe', function (string $sources) {
+	expect(CactiSecureHeaders::normalizeAlternateSources($sources))->toBe('');
+})->with([
+	'directive injection' => 'https://cdn.example; script-src *',
+	'header injection'    => "https://cdn.example\r\nX-Test: injected",
+	'quoted source'       => 'https://cdn.example" unsafe.example',
+	'query string'        => 'https://cdn.example/file.js?token=secret',
+	'fragment'            => 'https://cdn.example/file.js#fragment',
+	'invalid percent'     => 'https://cdn.example/%GG',
+	'invalid port'        => 'https://cdn.example:65536',
+	'invalid hostname'    => 'https://not_a_host.example',
+]);
+
+test('script source builders revalidate alternate sources', function () {
+	$src = CactiSecureHeaders::buildScriptSrc('', 'IGNORED', 'https://cdn.example; script-src *');
+
+	expect($src)->toBe("script-src 'self' 'unsafe-inline' ");
+});
+
 test('nonce migration keeps the enforced policy compatible', function () {
 	$src = CactiSecureHeaders::buildEnforcedScriptSrc('nonce', '*.cdn.example');
 
@@ -163,6 +191,8 @@ test('report endpoint resolution accepts safe configuration or uses the bundled 
 	expect(CactiSecureHeaders::resolveReportUri('javascript:alert(1)', '/cacti'))
 		->toBe('/cacti/csp_report.php');
 	expect(CactiSecureHeaders::resolveReportUri(false, ''))
+		->toBe('/csp_report.php');
+	expect(CactiSecureHeaders::resolveReportUri(false, "/cacti\r\nX-Test: injected"))
 		->toBe('/csp_report.php');
 });
 

@@ -631,7 +631,7 @@ if ($config['is_web']) {
 	header('X-Frame-Options: SAMEORIGIN');
 
 	// increased web hardening
-	$alternates = htmle(read_config_option('content_security_alternate_sources'));
+	$alternates = CactiSecureHeaders::normalizeAlternateSources(read_config_option('content_security_alternate_sources'));
 	$script_src = CactiSecureHeaders::scriptSrc($alternates);
 	$report_uri = CactiSecureHeaders::getCspMode() === 'nonce-enforce' ?
 		CactiSecureHeaders::reportUriDirective() : '';

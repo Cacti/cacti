@@ -282,3 +282,18 @@ test('alternate sources appear in frame-ancestors and script-src', function () {
 		_csp_stop_server($server);
 	}
 });
+
+test('unsafe alternate sources cannot inject a CSP directive', function () {
+	$server = _csp_start_server('', 'https://cdn.example; script-src *');
+
+	try {
+		$resp = _csp_fetch($server['port']);
+		$csp  = $resp['headers']['content-security-policy'][0];
+
+		expect($csp)->not->toContain('cdn.example');
+		expect($csp)->not->toContain('; script-src *');
+		expect($csp)->toContain("script-src 'self' 'unsafe-inline'");
+	} finally {
+		_csp_stop_server($server);
+	}
+});
