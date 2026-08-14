@@ -24,6 +24,7 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiFilesystem.php');
 
 // process calling arguments
 $parms = $_SERVER['argv'];
@@ -168,7 +169,10 @@ if ($create) {
 		exit(3);
 	}
 
-	if (file_put_contents($md5_file,$output) === false) {
+	try {
+		$filesystem = new CactiFilesystem();
+		$filesystem->writeFile($md5_file, $output);
+	} catch (Symfony\Component\Filesystem\Exception\IOExceptionInterface) {
 		printf('ERROR: Failed to write to MD5 file \'%s\'' . PHP_EOL, $md5_file);
 		exit(4);
 	}

@@ -24,6 +24,7 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiFilesystem.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
@@ -167,7 +168,15 @@ if ($audit) {
 			$input[$value['hash']] = $value['input_string'];
 		}
 
-		file_put_contents($config['input_whitelist'], json_encode($input));
+		try {
+			$filesystem = new CactiFilesystem();
+			$filesystem->writeFile($config['input_whitelist'], json_encode($input));
+		} catch (Symfony\Component\Filesystem\Exception\IOExceptionInterface) {
+			print 'ERROR: Data Input Whitelist file \'' . $config['input_whitelist'] . '\' could not be updated.' . PHP_EOL;
+
+			exit(1);
+		}
+
 		print 'SUCCESS: Data Input Whitelist file \'' . $config['input_whitelist'] . '\' successfully updated.' . PHP_EOL;
 
 		if (cacti_sizeof($pushes)) {
