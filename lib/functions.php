@@ -2133,8 +2133,9 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 			// average time
 			/* Consistent counters cannot make this zero, but stored data that
 			 * disagrees can, and PHP 8 raises DivisionByZeroError where PHP 7
-			 * only warned and returned INF. That would end the poll for this
-			 * device, so fall back to the current sample instead. */
+			 * only warned and returned an infinity signed by the numerator.
+			 * That would end the poll for this device, so fall back to the
+			 * current sample instead. */
 			$successful_polls = $host['total_polls'] - $host['failed_polls'];
 
 			if ($successful_polls > 0) {
