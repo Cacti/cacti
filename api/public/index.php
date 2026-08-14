@@ -19,11 +19,10 @@ include __DIR__ . '/../../include/global.php';
  * someone follows the composer install in api/README.md on a live host.
  *
  * 404 rather than 403: a refusal that confirms the endpoint exists is a worse
- * answer than one that does not. */
+ * answer than one that does not. No body and no content type either, or the
+ * refusal still says an API is here. */
 if (read_config_option('api_enabled') !== 'on') {
-	header('Content-Type: application/json');
 	http_response_code(404);
-	print json_encode(['error' => 'Not found']);
 
 	exit;
 }

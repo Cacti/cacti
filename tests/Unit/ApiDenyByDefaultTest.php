@@ -42,6 +42,11 @@ test('it refuses unless the setting says otherwise', function () use ($api) {
 	expect($api)->toContain("if (read_config_option('api_enabled') !== 'on') {")
 		->and($api)->toContain('http_response_code(404);');
 
+	/* an empty 404 reads like any other missing path; a JSON error body would
+	   confirm an API is behind it */
+	expect($api)->not->toContain("print json_encode(['error' => 'Not found']);")
+		->and($api)->not->toContain("header('Content-Type: application/json');");
+
 	// the refusal must come before Slim is handed the routes
 	$gate = strpos($api, "read_config_option('api_enabled')");
 	$app  = strpos($api, 'AppFactory::create()');
@@ -57,8 +62,8 @@ test('error details are a development choice, not the default', function () use 
 });
 
 test('the bootstrap include is anchored to the file', function () use ($api) {
-    /* the other two includes beside it already were; this one resolved against
-       the working directory, so it only worked from api/public */
+	/* the other two includes beside it already were; this one resolved against
+	   the working directory, so it only worked from api/public */
 	expect($api)->not->toContain("include  '../../include/global.php';")
 		->and($api)->toContain("include __DIR__ . '/../../include/global.php';");
 });
