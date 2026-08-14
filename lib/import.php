@@ -1514,7 +1514,7 @@ function xml_to_data_template(string $hash, array &$xml_array, array &$hash_cach
 						$save[$field_name] = xml_character_decode($item_array[$field_name]);
 
 						if (!import_validate_data_source_item($field_name, $save[$field_name])) {
-							/* the value is attacker supplied, so it does not get to add lines to the log */
+							// the value is attacker supplied, so it does not get to add lines to the log
 							$logged = substr(clean_up_lines($save[$field_name]), 0, 100);
 
 							cacti_log(sprintf('FATAL: Data Template \'%s\' rejected, the Data Source Item field \'%s\' holds the invalid value \'%s\'',
