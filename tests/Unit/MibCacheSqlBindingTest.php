@@ -21,6 +21,8 @@
  * accepts anything and the next caller would not have known.
  */
 
+require_once dirname(__DIR__, 2) . '/lib/functions.php';
+
 $src = file_get_contents(dirname(__DIR__, 2) . '/lib/mib_cache.php');
 
 test('the source read succeeded', function () use ($src) {
@@ -39,7 +41,6 @@ test('the alias is confined to identifier characters', function () use ($src) {
 });
 
 test('a name carrying the delimiter cannot escape the alias', function () {
-	require_once dirname(__DIR__, 2) . '/lib/functions.php';
 
 	// the shape that used to close the alias and continue the statement
 	expect(sanitize_sql_column("x` UNION SELECT password FROM user_auth -- "))
@@ -55,6 +56,6 @@ test('placeholder count always matches the values bound', function () {
 		$params       = array_merge(array_values($column), ['filter']);
 
 		expect(substr_count($placeholders, '?'))->toBe($n)
-			->and(count($params))->toBe($n + 1);
+			->and(cacti_sizeof($params))->toBe($n + 1);
 	}
 });

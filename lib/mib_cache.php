@@ -256,7 +256,7 @@ class MibCache{
 					/* fetch all values of specific columns given for that MIB table row */
 					$placeholders = implode(',', array_fill(0, cacti_sizeof($column), '?'));
 
-				$entries = db_fetch_assoc_prepared("SELECT name, value
+					$entries = db_fetch_assoc_prepared("SELECT name, value
 						FROM snmpagent_cache
 						WHERE name IN ($placeholders)
 						AND oid LIKE ?
