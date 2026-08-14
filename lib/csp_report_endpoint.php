@@ -138,7 +138,7 @@ if (defined('CACTI_CSP_REPORT_TEST_MODE')) {
 	return;
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
 	http_response_code(405);
 	header('Allow: POST');
 	exit;
@@ -153,10 +153,11 @@ if (isset($_SERVER['CONTENT_TYPE'])) {
 	$contentType = $_SERVER['HTTP_CONTENT_TYPE'];
 }
 
-/* Cap the read at 16 KB; file_get_contents does not honour a length argument
- * for php://input on all SAPIs, so we slice after the fact. */
+/* Read one byte past the cap and keep it. Slicing back to the cap made the
+ * size check below unable to fire, because the length could never exceed what
+ * it was compared against, and an oversized body was reported as invalid JSON
+ * once the truncation broke it. */
 $rawBody = (string) file_get_contents('php://input', false, null, 0, 16385);
-$rawBody = substr($rawBody, 0, 16384);
 
 $result = csp_report_validate_payload(
 	array('CONTENT_TYPE' => $contentType),
@@ -169,29 +170,107 @@ $result = csp_report_validate_payload(
  * cacti_log / error_log unless we drop excess events. We always return the
  * normal HTTP status so probing cannot infer the cap. */
 function csp_report_should_log() : bool {
-	$ip      = isset($_SERVER['REMOTE_ADDR']) ? (string) $_SERVER['REMOTE_ADDR'] : 'unknown';
-	$bucket  = sys_get_temp_dir() . '/cacti_csp_' . hash('sha256', $ip . '|' . gmdate('YmdHi'));
-	$cap     = 30;
+	$cap = 30;
+
+	/* Keep the counters in a directory this process owns rather than beside
+	   everything else in the temp dir. The old path was sys_get_temp_dir()
+	   plus a hash of the address and minute, which any local user could work
+	   out: pre-creating a victim's file at the cap silenced that address, and
+	   leaving a symlink there gave fopen() somewhere else to write. */
+	$dir = sys_get_temp_dir() . '/cacti_csp';
+
+	if (!is_dir($dir) && !@mkdir($dir, 0700, true) && !is_dir($dir)) {
+		return true;
+	}
+
+	/* Refuse a directory we do not own, or one swapped for a link. Logging
+	   without the cap is the safer failure: reports still reach the operator
+	   and nothing is written through a path someone else controls. */
+	if (is_link($dir)) {
+		return true;
+	}
+
+	if (function_exists('posix_getuid')) {
+		$owner = @fileowner($dir);
+
+		if ($owner === false || $owner !== posix_getuid()) {
+			return true;
+		}
+	}
+
+	csp_report_prune_buckets($dir);
+
+	$ip     = isset($_SERVER['REMOTE_ADDR']) ? (string) $_SERVER['REMOTE_ADDR'] : 'unknown';
+	$bucket = $dir . '/' . hash('sha256', $ip . '|' . gmdate('YmdHi'));
 
 	$fh = @fopen($bucket, 'c+');
+
 	if ($fh === false) {
 		return true;
 	}
 
 	$logged = false;
+
 	if (flock($fh, LOCK_EX)) {
 		$count = (int) fread($fh, 16);
+
 		if ($count < $cap) {
 			rewind($fh);
 			ftruncate($fh, 0);
 			fwrite($fh, (string) ($count + 1));
 			$logged = true;
 		}
+
 		flock($fh, LOCK_UN);
 	}
+
 	fclose($fh);
 
 	return $logged;
+}
+
+/**
+ * Drop counter files from earlier minutes. Nothing removed them before, so a
+ * host taking reports accumulated one file per address per minute until it ran
+ * out of inodes. Pruning here keeps the directory to roughly the number of
+ * addresses reporting right now.
+ */
+function csp_report_prune_buckets($dir) : void {
+	/* One request in twenty does the sweep. Every request paying for it would
+	   cost a directory listing per report for no benefit. */
+	if (function_exists('random_int')) {
+		if (random_int(1, 20) !== 1) {
+			return;
+		}
+	} elseif (mt_rand(1, 20) !== 1) {
+		return;
+	}
+
+	$entries = @scandir($dir);
+
+	if ($entries === false) {
+		return;
+	}
+
+	$cutoff = time() - 120;
+
+	foreach ($entries as $entry) {
+		if ($entry === '.' || $entry === '..') {
+			continue;
+		}
+
+		$path = $dir . '/' . $entry;
+
+		if (!is_file($path) || is_link($path)) {
+			continue;
+		}
+
+		$mtime = @filemtime($path);
+
+		if ($mtime !== false && $mtime < $cutoff) {
+			@unlink($path);
+		}
+	}
 }
 
 if ($result['ok']) {
