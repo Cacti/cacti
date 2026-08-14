@@ -1230,7 +1230,7 @@ function raise_message(mixed $message_id, string $message = '', int $message_lev
  */
 function raise_message_javascript(string $title, string $header, string $message, int $level = MESSAGE_LEVEL_MIXED) : void {
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript'<?php print cacti_csp_nonce_attribute(); ?>>
 	var mixedReasonTitle = DOMPurify.sanitize(<?php print json_encode($title, JSON_THROW_ON_ERROR); ?>);
 	var mixedOnPage      = DOMPurify.sanitize(<?php print json_encode($header, JSON_THROW_ON_ERROR); ?>);
 	var message          = DOMPurify.sanitize(<?php print json_encode($message, JSON_THROW_ON_ERROR); ?>);
@@ -8567,6 +8567,42 @@ function get_theme_paths(string $format, string $path, string|null $theme = null
 }
 
 /**
+ * Returns the request-scoped CSP nonce.
+ *
+ * @return string
+ */
+function cacti_csp_nonce() : string {
+	static $nonce = null;
+
+	if ($nonce !== null) {
+		return $nonce;
+	}
+
+	try {
+		$nonce = base64_encode(random_bytes(16));
+	} catch (Throwable $e) {
+		$nonce = '';
+	}
+
+	return $nonce;
+}
+
+/**
+ * Returns a script nonce html attribute when nonce generation succeeds.
+ *
+ * @return string
+ */
+function cacti_csp_nonce_attribute() : string {
+	$nonce = cacti_csp_nonce();
+
+	if ($nonce === '') {
+		return '';
+	}
+
+	return " nonce='" . htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') . "'";
+}
+
+/**
  * Formatted output of javascript include with MD5 hash for uniqueness
  *
  * @param string      $path  Path to include
@@ -8577,9 +8613,9 @@ function get_theme_paths(string $format, string $path, string|null $theme = null
  * @return string
  */
 function get_md5_include_js(string $path, bool $async = false, string|null $theme = null, string|null $file = null) : string {
-	$format = '<script type=\'text/javascript\' src=\'%s\'%s></script>';
+	$format = '<script type=\'text/javascript\' src=\'%s\'%s%s></script>';
 
-	return get_theme_paths($format, $path, $theme, $file, true, $async ? ' async' : '');
+	return get_theme_paths($format, $path, $theme, $file, true, cacti_csp_nonce_attribute(), $async ? ' async' : '');
 }
 
 /**

@@ -637,9 +637,17 @@ if ($config['is_web']) {
 	} else {
 		$script_policy = '';
 	}
+
+	$nonce_policy = '';
+	$script_nonce = cacti_csp_nonce();
+
+	if ($script_nonce !== '') {
+		$nonce_policy = " 'nonce-$script_nonce'";
+	}
+
 	$alternates = htmle(read_config_option('content_security_alternate_sources'));
 
-	header("Content-Security-Policy: default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; script-src 'self' $script_policy 'unsafe-inline' $alternates; frame-ancestors 'self' $alternates; worker-src 'self' $alternates;");
+	header("Content-Security-Policy: default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; script-src 'self' $script_policy$nonce_policy 'unsafe-inline' $alternates; frame-ancestors 'self' $alternates; worker-src 'self' $alternates;");
 
 	// prevent IE from silently rejects cookies sent from third party sites.
 	header('P3P: CP="CAO PSA OUR"');

@@ -1002,6 +1002,16 @@ function applySkin() {
 
 	setupObjectChange();
 
+	$('.cactiLogo[data-load-url]').off('click keydown').on('click keydown', function (event) {
+		if (event.type == 'keydown' && event.key !== 'Enter' && event.key !== ' ') {
+			return;
+		}
+
+		event.preventDefault();
+		event.stopPropagation();
+		loadUrl({ url: $(this).attr('data-load-url') });
+	});
+
 	$('.helpPage').off('click').on('click', function (event) {
 		event.stopPropagation();
 		getCactiHelp($(this).attr('data-page'));

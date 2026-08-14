@@ -168,7 +168,7 @@ function htmx_script_tag(): string {
 	// __csrf_magic field that csrf-magic validates. Only body-based verbs get
 	// the token: htmx puts GET and DELETE parameters into the URL, which would
 	// leak it (see the function doc).
-	$csrf_wiring = "<script type='text/javascript'>\n"
+	$csrf_wiring = "<script type='text/javascript'" . cacti_csp_nonce_attribute() . ">\n"
 		. "document.addEventListener('htmx:configRequest', function(evt) {\n"
 		. "\tvar verb = String(evt.detail.verb).toLowerCase();\n"
 		. "\tif (typeof csrfMagicToken !== 'undefined' && (verb === 'post' || verb === 'put' || verb === 'patch')) {\n"
@@ -178,6 +178,7 @@ function htmx_script_tag(): string {
 		. "</script>\n";
 
 	$tag = "<script type='text/javascript' src='" . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . "'"
+		. cacti_csp_nonce_attribute()
 		. " integrity='" . HTMX_2_0_6_SRI . "'"
 		. " crossorigin='anonymous'></script>\n";
 

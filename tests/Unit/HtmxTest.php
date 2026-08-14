@@ -157,8 +157,15 @@ test('htmx_script_tag carries src, integrity, and crossorigin when enabled', fun
 
 	expect($tag)->toContain('src=')
 		->and($tag)->toContain('include/js/htmx.js')
+		->and($tag)->toMatch('/<script[^>]*nonce=/')
 		->and($tag)->toMatch('/integrity=.sha384-[A-Za-z0-9+\/=]+./')
 		->and($tag)->toContain("crossorigin='anonymous'");
+});
+
+test('get_md5_include_js adds the request nonce attribute', function () {
+	$tag = get_md5_include_js('include/layout.js');
+
+	expect($tag)->toMatch('/<script[^>]*nonce=\'[A-Za-z0-9+\/=]+\'/');
 });
 
 test('htmx_script_tag integrity matches the sha384 of the vendored file', function () {

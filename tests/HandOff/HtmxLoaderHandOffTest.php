@@ -98,7 +98,18 @@ test('htmx_script_tag renders a script tag when htmx_enabled is on', function ()
 	$tag = htmx_script_tag();
 
 	expect($tag)->toContain('<script')
+		->and($tag)->toMatch('/<script[^>]*nonce=/')
 		->and($tag)->toContain('include/js/htmx.js');
+});
+
+test('console headers avoid inline logo click handlers', function () {
+	$top_header = file_get_contents(CACTI_PATH_BASE . '/include/top_header.php');
+	$general_header = file_get_contents(CACTI_PATH_BASE . '/include/top_general_header.php');
+
+	expect($top_header)->not->toContain('onclick=')
+		->and($general_header)->not->toContain('onclick=')
+		->and($top_header)->toContain('data-load-url=')
+		->and($general_header)->toContain('data-load-url=');
 });
 
 test('htmx_script_tag renders nothing when htmx_enabled is absent', function () {

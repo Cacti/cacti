@@ -54,7 +54,7 @@ if (!$is_request_ajax) { ?>
 		<?php if (isset($user_menu) && is_array($user_menu)) {?>
 		<div style='display:none;' id='navigation' class='cactiConsoleNavigationArea'>
 			<?php draw_menu($user_menu); ?>
-			<div class='cactiLogo' onclick='loadUrl({url:"<?php print CACTI_PATH_URL; ?>about.php"})'></div>
+			<div class='cactiLogo' data-load-url='<?php print CACTI_PATH_URL; ?>about.php' tabindex='0' role='button'></div>
 		</div>
 		<?php } ?>
 		<div id='navigation_right' class='cactiConsoleContentArea'>

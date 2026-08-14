@@ -53,7 +53,7 @@ if (!$is_request_ajax) {?>
 	<div id='cactiContent' class='cactiContent'>
 		<div class='cactiConsoleNavigationArea' style='display:none;' id='navigation'>
 			<?php draw_menu(); ?>
-			<div class='cactiLogo' onclick='loadUrl({url:"<?php print CACTI_PATH_URL; ?>about.php"})'></div>
+			<div class='cactiLogo' data-load-url='<?php print CACTI_PATH_URL; ?>about.php' tabindex='0' role='button'></div>
 		</div>
 		<div id='navigation_right' class='cactiConsoleContentArea'>
 			<main id='main'>
