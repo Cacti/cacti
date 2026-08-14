@@ -28,11 +28,12 @@ test('lib/boost.php declares the shared boost_flush_output_batch helper', functi
 	$src = file_get_contents($root . '/lib/boost.php');
 	expect($src)->not->toBeFalse();
 
-	expect($src)->toContain('function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : void');
+	expect($src)->toContain('function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : bool');
+	expect($src)->toContain('$acknowledged = db_execute($sql_prefix . $out_buffer, true, $conn) !== false;');
 
 	// Standardized on IGNORE; the ON DUPLICATE KEY UPDATE variant this
 	// replaced must not reappear for poller_output_boost.
-	expect($src)->toContain("INSERT IGNORE INTO poller_output_boost");
+	expect($src)->toContain('INSERT IGNORE INTO poller_output_boost');
 	expect($src)->not->toMatch('/INSERT\s+INTO\s+poller_output_boost[^;]*ON\s+DUPLICATE\s+KEY\s+UPDATE/is');
 });
 

@@ -168,7 +168,7 @@ test('drain loop exits only when every child has recorded completion', function 
 
 	// The old loop exited as soon as no child was running. The fix also requires
 	// every launched child to have a completion row before draining.
-	expect($contents)->toContain('boost_completed_children() < $expected_children');
+	expect($contents)->toContain('boost_completed_children($run_id) < $expected_children');
 	expect($contents)->not->toMatch('/while\s*\(\s*\$running\s*=\s*boost_processes_running\(\)\s*\)/');
 });
 
