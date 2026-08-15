@@ -3186,6 +3186,10 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 					AND local_data_id = 0',
 					[$new_dt, $old_rrd['data_source_name']]);
 
+				if (!is_numeric($new_rrd_id)) {
+					continue;
+				}
+
 				foreach ($duped_graph_templates as $new_graph_template_id) {
 					if (!is_numeric($new_graph_template_id)) {
 						continue;
@@ -3195,7 +3199,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 						SET task_item_id = ?
 						WHERE graph_template_id = ?
 						AND task_item_id = ?',
-						[$new_rrd_id, $new_graph_template_id, $old_rrd['id']]);
+						[(int) $new_rrd_id, $new_graph_template_id, $old_rrd['id']]);
 				}
 			}
 		}
