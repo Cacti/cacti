@@ -618,6 +618,24 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 		$fdata = base64_decode($f['data']);
 		$name = $f['name'];
 
+		$normalized_name = str_replace('\\', '/', $name);
+
+		/* A crafted package could write outside base_path via '..' in the file
+		 * name; 'resource/../target.php' still contains 'resource/' and slipped
+		 * past the check below (GHSA-vp35-4h28-r883). Reject traversal, NUL, and
+		 * absolute paths before deriving the destination. */
+		if (strpos($name, chr(0)) !== false || preg_match('#(^|/)\.\.(/|$)#', $normalized_name)) {
+			cacti_log("WARNING: Skipping package file with path traversal attempt: $name", false, 'IMPORT');
+
+			continue;
+		}
+
+		if (preg_match('#^([/\\\\]|[A-Za-z]:)#', $name)) {
+			cacti_log("WARNING: Skipping package file with absolute path: $name", false, 'IMPORT');
+
+			continue;
+		}
+
 		if (strpos($name, 'scripts/') !== false || strpos($name, 'resource/') !== false) {
 			$filename = $config['base_path'] . "/$name";
 
