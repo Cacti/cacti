@@ -33,18 +33,24 @@ $GLOBALS['snmp_coverage_debug']  = [];
 $GLOBALS['snmp_priv_protocols']  = ['AES' => 'AES'];
 $GLOBALS['snmp_auth_protocols']  = ['SHA' => 'SHA'];
 
-function read_config_option(string $name) : mixed {
-	return $GLOBALS['snmp_coverage_config'][$name] ?? '';
+if (!function_exists('read_config_option')) {
+	function read_config_option(string $name) : mixed {
+		return $GLOBALS['snmp_coverage_config'][$name] ?? '';
+	}
 }
 
-function cacti_sizeof(mixed $value) : int {
-	return is_array($value) ? count($value) : 0;
+if (!function_exists('cacti_sizeof')) {
+	function cacti_sizeof(mixed $value) : int {
+		return is_array($value) ? count($value) : 0;
+	}
 }
 
-function cacti_log(string $message, bool $output, string $environ = '', int $level = 0) : bool {
-	$GLOBALS['snmp_coverage_logs'][] = [$message, $output, $environ, $level];
+if (!function_exists('cacti_log')) {
+	function cacti_log(string $message, bool $output, string $environ = '', int $level = 0) : bool {
+		$GLOBALS['snmp_coverage_logs'][] = [$message, $output, $environ, $level];
 
-	return true;
+		return true;
+	}
 }
 
 function cacti_format_ipv6_colon(string $hostname) : string {

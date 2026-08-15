@@ -31,10 +31,12 @@ $GLOBALS['auth_guest_user']     = 0;
  *
  * @return mixed Queued scalar result
  */
-function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
-	$GLOBALS['auth_access_queries'][] = [$sql, $params];
+if (!function_exists('db_fetch_cell_prepared')) {
+	function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
+		$GLOBALS['auth_access_queries'][] = [$sql, $params];
 
-	return array_shift($GLOBALS['auth_access_results']);
+		return array_shift($GLOBALS['auth_access_results']);
+	}
 }
 
 /**

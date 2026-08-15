@@ -46,8 +46,10 @@ $GLOBALS['auth_cache_group_users']   = [];
  *
  * @return array Group membership rows.
  */
-function db_fetch_assoc_prepared(string $sql, array $params = []) : array {
-	return $GLOBALS['auth_cache_group_users'];
+if (!function_exists('db_fetch_assoc_prepared')) {
+	function db_fetch_assoc_prepared(string $sql, array $params = []) : array {
+		return $GLOBALS['auth_cache_group_users'];
+	}
 }
 
 /**
@@ -90,10 +92,12 @@ function cacti_sizeof(mixed $value) : int {
  *
  * @return bool Always true for the unit test.
  */
-function db_execute_prepared(string $sql, array $params = []) : bool {
-	$GLOBALS['auth_cache_queries'][] = [$sql, $params];
+if (!function_exists('db_execute_prepared')) {
+	function db_execute_prepared(string $sql, array $params = []) : bool {
+		$GLOBALS['auth_cache_queries'][] = [$sql, $params];
 
-	return true;
+		return true;
+	}
 }
 
 /**
@@ -103,8 +107,10 @@ function db_execute_prepared(string $sql, array $params = []) : bool {
  *
  * @return void
  */
-function kill_session_var(string $name) : void {
-	$GLOBALS['auth_cache_session_kills'][] = $name;
+if (!function_exists('kill_session_var')) {
+	function kill_session_var(string $name) : void {
+		$GLOBALS['auth_cache_session_kills'][] = $name;
+	}
 }
 
 $source = file_get_contents(dirname(__DIR__, 4) . '/lib/auth.php');
