@@ -139,6 +139,34 @@ test('the script url points at the moved asset', function () use ($root) {
 });
 
 /*
+ * csrf_guard() degrades to a disabled guard when Symfony is absent, which is
+ * intended: an install running before composer populates include/vendor must
+ * not fatal. In a web context that branch is only reachable under the
+ * pre-auth installer, and it leaves the request with no CSRF check at all --
+ * something csrf-magic could not do. Degrading silently is the part that is
+ * not acceptable.
+ */
+test('the fail-open branch is recorded rather than silent', function () use ($root) {
+	$src = file_get_contents($root . '/include/csrf.php');
+
+	$start = strpos($src, 'function csrf_guard(');
+	expect($start)->not->toBeFalse();
+
+	$end  = strpos($src, "\nfunction ", $start + 1);
+	$body = substr($src, $start, ($end === false ? strlen($src) : $end) - $start);
+
+	$disable = strpos($body, 'new CactiCsrfGuard(null, false)');
+	$warn    = strpos($body, 'cacti_log(');
+
+	expect($disable)->not->toBeFalse()
+		->and($warn)->not->toBeFalse()
+		->and($warn)->toBeLessThan($disable);
+
+	// the CLI takes the same branch every run and must not log on every run
+	expect($body)->toContain('if (CACTI_WEB) {');
+});
+
+/*
  * Retiring the fork took include/vendor/csrf/ with it, and that is where
  * path_csrf_secret has always defaulted. The installer used to demand the path
  * be writable: getPermissions() raised a STEP_PERMISSION_CHECK error, and

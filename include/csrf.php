@@ -40,6 +40,15 @@ function csrf_guard() : CactiCsrfGuard {
 	}
 
 	if (!CACTI_WEB || !class_exists('Symfony\Component\Security\Csrf\CsrfTokenManager')) {
+		/* Degrading is intended: an install running before composer has
+		   populated include/vendor must not fatal.  But in a web context that
+		   leaves the pre-auth installer serving requests with no CSRF check at
+		   all, which csrf-magic could not do, so say so rather than fail open
+		   in silence. */
+		if (CACTI_WEB) {
+			cacti_log('WARNING: symfony/security-csrf is missing, so CSRF validation is disabled for this request', false, 'CSRF');
+		}
+
 		$guard = new CactiCsrfGuard(null, false);
 
 		return $guard;
