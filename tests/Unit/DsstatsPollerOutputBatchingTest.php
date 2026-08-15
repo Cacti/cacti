@@ -123,11 +123,16 @@ test('poller output batches reads and keeps metadata and last values per data so
 	$cache_write = $GLOBALS['dsstats_writes'][0];
 	$last_write  = $GLOBALS['dsstats_writes'][1];
 
+	// dsstats_poller_output() renders with date(), so derive the expected
+	// stamps the same way rather than pinning the runner to one timezone.
+	$first  = date('Y-m-d H:i:s', 1000);
+	$second = date('Y-m-d H:i:s', 1002);
+
 	expect($cache_write)
 		->toContain("1, 'g''au'")
-		->toContain("2, 'ctr', '1970-01-01 00:16:40', 2")
-		->toContain("2, 'ctr', '1970-01-01 00:16:42', 2")
-		->toContain("3, 'dctr', '1970-01-01 00:16:40', NULL")
+		->toContain("2, 'ctr', '$first', 2")
+		->toContain("2, 'ctr', '$second', 2")
+		->toContain("3, 'dctr', '$first', NULL")
 		->and($last_write)
 		->toContain("2, 'ctr', 14, 2")
 		->toContain("2, 'ctr', 18, 2")
