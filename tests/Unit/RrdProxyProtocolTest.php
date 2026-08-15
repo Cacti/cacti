@@ -106,6 +106,37 @@ function rrd_proxy_test_read_sequence(Socket $socket) : string|false {
 }
 
 /**
+ * Publish proxy settings to whichever read_config_option() is in effect.
+ *
+ * UnitStubs only declares its stub when lib/functions.php has not been loaded,
+ * and suite-wide file order decides that, so the real database-backed function
+ * is the one in play during a full run. Seed its option cache as well as the
+ * stub array; a cached name is returned without touching the database.
+ *
+ * @param array<string,mixed> $options Proxy settings for this test
+ *
+ * @return void
+ */
+function rrd_proxy_test_set_options(array $options) : void {
+	global $config, $unit_config_options;
+
+	$unit_config_options = $options;
+
+	if (defined('OPTIONS_CLI') && defined('CACTI_WEB')) {
+		$key = CACTI_WEB ? OPTIONS_WEB : OPTIONS_CLI;
+
+		if (CACTI_WEB) {
+			$_SESSION[$key] = array_merge($_SESSION[$key] ?? [], $options);
+		} else {
+			$config[$key] = array_merge(
+				is_array($config[$key] ?? null) ? $config[$key] : [],
+				$options
+			);
+		}
+	}
+}
+
+/**
  * Accept one peer with bounded IO.
  *
  * accept() ignores SO_RCVTIMEO, and an accepted socket does not inherit the
@@ -547,7 +578,7 @@ it('negotiates an encrypted official-protocol connection end to end', function (
 	$server_private = phpseclib3\Crypt\RSA::createKey(2048);
 	$server_public  = $server_private->getPublicKey();
 
-	$unit_config_options = [
+	$proxy_options = [
 		'storage_location'          => 'remote',
 		'rrdp_load_balancing'       => 'off',
 		'rrdp_server'               => $address,
@@ -561,7 +592,9 @@ it('negotiates an encrypted official-protocol connection end to end', function (
 		'path_rrdtool'              => '/usr/bin/rrdtool',
 		'path_rrdtool_default_font' => 'Arial'
 	];
+
 	$config = ['local_storage' => false];
+	rrd_proxy_test_set_options($proxy_options);
 
 	$pid = pcntl_fork();
 
@@ -631,8 +664,6 @@ it('negotiates an encrypted official-protocol connection end to end', function (
 });
 
 it('fails closed when configured proxy endpoints are unavailable', function () {
-	global $unit_config_options;
-
 	$listener = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 	socket_bind($listener, '127.0.0.1', 0);
 	$address = '';
@@ -640,28 +671,26 @@ it('fails closed when configured proxy endpoints are unavailable', function () {
 	socket_getsockname($listener, $address, $port);
 	socket_close($listener);
 
-	$unit_config_options = [
+	rrd_proxy_test_set_options([
 		'rrdp_load_balancing' => 'off',
 		'rrdp_server'         => $address,
 		'rrdp_port'           => $port
-	];
+	]);
 
 	expect(__rrd_proxy_init('TEST'))->toBeFalse();
 
-	$unit_config_options = [
+	rrd_proxy_test_set_options([
 		'rrdp_load_balancing' => 'on',
 		'rrdp_server'         => $address,
 		'rrdp_port'           => $port,
 		'rrdp_server_backup'  => $address,
 		'rrdp_port_backup'    => $port
-	];
+	]);
 
 	expect(__rrd_proxy_init('TEST'))->toBeFalse();
 });
 
 it('fails closed on absent invalid and mismatched proxy keys', function () {
-	global $unit_config_options;
-
 	if (!function_exists('pcntl_fork')) {
 		$this->markTestSkipped('pcntl is required for the proxy key exchange test');
 	}
@@ -672,8 +701,6 @@ it('fails closed on absent invalid and mismatched proxy keys', function () {
 	$server_public  = $server_private->getPublicKey();
 
 	$run_exchange = function (?string $reply, string $fingerprint) use ($client_private, $client_public) : mixed {
-		global $unit_config_options;
-
 		$listener = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 		socket_bind($listener, '127.0.0.1', 0);
 		socket_listen($listener, 1);
@@ -681,7 +708,7 @@ it('fails closed on absent invalid and mismatched proxy keys', function () {
 		$port    = 0;
 		socket_getsockname($listener, $address, $port);
 
-		$unit_config_options = [
+		rrd_proxy_test_set_options([
 			'rrdp_load_balancing'       => 'off',
 			'rrdp_server'               => $address,
 			'rrdp_port'                 => $port,
@@ -692,7 +719,7 @@ it('fails closed on absent invalid and mismatched proxy keys', function () {
 			'rsa_public_key'            => (string) $client_public,
 			'rsa_private_key'           => (string) $client_private,
 			'path_rrdtool_default_font' => ''
-		];
+		]);
 
 		$pid = pcntl_fork();
 
