@@ -36,6 +36,30 @@ test('stdin commands convert shell quoted arguments without losing apostrophes',
 	expect($prepared)->toBe('info "/tmp/device\'s metrics.rrd"');
 });
 
+test('RRDtool control codes survive the conversion to a quoted token', function () {
+	// Cacti escapes ':' in legend text because ':' separates RRDtool fields.
+	// Escaping the backslash too left the legend ending in a dangling control
+	// code and RRDtool refused every graph that carried one.
+	$legend = '  IO Wait\\:';
+
+	expect(rrdtool_prepare_stdin_command('graph - COMMENT:' . escapeshellarg($legend)))
+		->toBe('graph - COMMENT:"  IO Wait\\:"')
+		->and(rrdtool_prepare_stdin_command('graph - COMMENT:' . escapeshellarg('Average\\: %8.2lf\\n')))
+		->toBe('graph - COMMENT:"Average\\: %8.2lf\\n"');
+});
+
+test('a quoted token still escapes an embedded double quote', function () {
+	expect(rrdtool_prepare_stdin_command('graph - COMMENT:' . escapeshellarg('say "hi"')))
+		->toBe('graph - COMMENT:"say \\"hi\\""');
+});
+
+test('values with no unambiguous quoted form are refused', function () {
+	// Neither can be expressed inside a quoted RRDtool token: the trailing
+	// backslash would escape the closing delimiter.
+	expect(rrdtool_prepare_stdin_command('graph - COMMENT:' . escapeshellarg('ends with\\')))->toBeFalse()
+		->and(rrdtool_prepare_stdin_command('graph - COMMENT:' . escapeshellarg('path\\"x')))->toBeFalse();
+});
+
 test('array commands leave the operation unquoted and quote only arguments', function () {
 	expect(rrdtool_build_command(['info', "/tmp/device's metrics.rrd"]))
 		->toBe("info '/tmp/device'\\''s metrics.rrd'")

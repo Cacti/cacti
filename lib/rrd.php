@@ -681,7 +681,19 @@ function rrdtool_prepare_stdin_command(string $command_line) : string|false {
 			return false;
 		}
 
-		$prepared .= '"' . addcslashes($value, '\\"') . '"';
+		/**
+		 * RRDtool control codes such as \: and \n must reach the graph parser
+		 * verbatim. Escaping the backslash leaves a legend like "IO Wait\:"
+		 * ending in a dangling control code, which RRDtool refuses, so only the
+		 * delimiter is escaped here. A value ending in a backslash, or holding
+		 * one immediately before a double quote, has no unambiguous form inside
+		 * a quoted token and is rejected instead.
+		 */
+		if (str_ends_with($value, '\\') || str_contains($value, '\\"')) {
+			return false;
+		}
+
+		$prepared .= '"' . str_replace('"', '\\"', $value) . '"';
 	}
 
 	return $prepared;
