@@ -70,6 +70,19 @@ function csrf_guard() : CactiCsrfGuard {
 	   pre-upgrade token on any site that ever rotated its secret. */
 	$secret = (defined('CACTI_CSRF_SECRET') && CACTI_CSRF_SECRET != '' && is_readable(CACTI_CSRF_SECRET) ? (string) file_get_contents(CACTI_CSRF_SECRET) : '');
 
+	/* csrf-magic's own csrf_get_secret() tried $path_csrf_secret and then
+	   fell back to its own directory regardless of that setting.  A site
+	   that pointed $path_csrf_secret elsewhere but never actually created
+	   the file there still had a working secret at the old default, so
+	   check it too before giving up on the grace window. */
+	if ($secret === '') {
+		$fallback = CACTI_PATH_INCLUDE . '/vendor/csrf/csrf-secret.php';
+
+		if (is_readable($fallback)) {
+			$secret = (string) file_get_contents($fallback);
+		}
+	}
+
 	$guard = new CactiCsrfGuard($manager, true, $secret, 7200);
 	$guard->setScriptUrl(CACTI_PATH_URL . 'include/js/csrf.js');
 
