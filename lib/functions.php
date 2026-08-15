@@ -8120,6 +8120,13 @@ function debounce_run_notification($id, $frequency = 7200) {
 	$last = read_config_option($key);
 	$now  = time();
 
+	/* the stored value is written as a timestamp, but a setting that holds
+	   anything else makes the subtraction below a TypeError on PHP 8 where it
+	   was once a warning. develop already tests this with is_numeric(). */
+	if (!is_numeric($last)) {
+		$last = 0;
+	}
+
 	if (empty($last) || $now - $last > $frequency) {
 		set_config_option($key, $now);
 		return true;
