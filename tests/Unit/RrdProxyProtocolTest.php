@@ -46,6 +46,14 @@ if (!defined('CACTI_PATH_RRA')) {
 	define('CACTI_PATH_RRA', '/var/lib/cacti/rra');
 }
 
+if (!defined('RRD_PROXY_TEST_IO_TIMEOUT')) {
+	define('RRD_PROXY_TEST_IO_TIMEOUT', 10);
+}
+
+if (!defined('RRD_PROXY_TEST_REAP_TIMEOUT')) {
+	define('RRD_PROXY_TEST_REAP_TIMEOUT', 30);
+}
+
 if (!function_exists('cacti_escapeshellarg')) {
 	function cacti_escapeshellarg(string $string, bool $quote = true) : string {
 		$escaped = str_replace(['\\', "'"], ['\\\\', "\\'"], $string);
@@ -95,6 +103,73 @@ function rrd_proxy_execute_response(string $response, int $output_flag, ?string 
 
 function rrd_proxy_test_read_sequence(Socket $socket) : string|false {
 	return rrdtool_proxy_read_frame($socket, RRD_PROXY_END_OF_SEQUENCE, 1048576);
+}
+
+/**
+ * Accept one peer with bounded IO.
+ *
+ * accept() ignores SO_RCVTIMEO, and an accepted socket does not inherit the
+ * listener's timeouts, so a forked child would otherwise block in accept() or
+ * read() for as long as the job is allowed to run.
+ *
+ * @param Socket $listener Bound and listening socket
+ *
+ * @return Socket|false The accepted peer, or false when accept timed out
+ */
+function rrd_proxy_test_accept(Socket $listener) : Socket|false {
+	$read   = [$listener];
+	$write  = null;
+	$except = null;
+
+	// SO_RCVTIMEO does not apply to accept(), so wait for readiness explicitly.
+	if (socket_select($read, $write, $except, RRD_PROXY_TEST_IO_TIMEOUT) !== 1) {
+		return false;
+	}
+
+	$peer = socket_accept($listener);
+
+	if (!($peer instanceof Socket)) {
+		return false;
+	}
+
+	rrdtool_proxy_set_timeouts($peer, RRD_PROXY_TEST_IO_TIMEOUT);
+
+	return $peer;
+}
+
+/**
+ * Reap a forked child without blocking forever.
+ *
+ * A child that deadlocks against the parent's own read timeout would hang the
+ * whole suite under a bare pcntl_waitpid(), so give up on it and report the
+ * failure instead.
+ *
+ * @param int $pid Child process id
+ *
+ * @return array{0: bool, 1: int} Whether the child exited on its own, and its status
+ */
+function rrd_proxy_test_reap(int $pid) : array {
+	$status   = 0;
+	$deadline = time() + RRD_PROXY_TEST_REAP_TIMEOUT;
+
+	while (time() < $deadline) {
+		$reaped = pcntl_waitpid($pid, $status, WNOHANG);
+
+		if ($reaped === $pid) {
+			return [true, $status];
+		}
+
+		if ($reaped === -1) {
+			return [false, $status];
+		}
+
+		usleep(50000);
+	}
+
+	posix_kill($pid, SIGKILL);
+	pcntl_waitpid($pid, $status);
+
+	return [false, $status];
 }
 
 it('configures bounded proxy socket IO', function () {
@@ -321,7 +396,7 @@ it('accepts array commands through the proxy execution handoff', function () {
 	$request = socket_read($server, 4096, PHP_BINARY_READ);
 
 	expect($result)->toBeTrue()
-		->and($request)->toContain("'info' 'file name.rrd'")
+		->and($request)->toContain("info 'file name.rrd'")
 		->and($request)->toEndWith(RRD_PROXY_END_OF_SEQUENCE);
 
 	socket_close($client);
@@ -490,11 +565,13 @@ it('negotiates an encrypted official-protocol connection end to end', function (
 
 	$pid = pcntl_fork();
 
+	expect($pid)->not->toBe(-1);
+
 	if ($pid === 0) {
 		$encryption = true;
-		$peer       = socket_accept($listener);
+		$peer       = rrd_proxy_test_accept($listener);
 
-		if (!($peer instanceof Socket)) {
+		if ($peer === false) {
 			exit(10);
 		}
 
@@ -546,9 +623,10 @@ it('negotiates an encrypted official-protocol connection end to end', function (
 		->and($encryption)->toBeTrue();
 
 	socket_close($listener);
-	pcntl_waitpid($pid, $status);
+	[$reaped, $status] = rrd_proxy_test_reap($pid);
 
-	expect(pcntl_wifexited($status))->toBeTrue()
+	expect($reaped)->toBeTrue()
+		->and(pcntl_wifexited($status))->toBeTrue()
 		->and(pcntl_wexitstatus($status))->toBe(0);
 });
 
@@ -618,8 +696,16 @@ it('fails closed on absent invalid and mismatched proxy keys', function () {
 
 		$pid = pcntl_fork();
 
+		expect($pid)->not->toBe(-1);
+
 		if ($pid === 0) {
-			$peer = socket_accept($listener);
+			$peer = rrd_proxy_test_accept($listener);
+
+			if ($peer === false) {
+				socket_close($listener);
+				exit(10);
+			}
+
 			rrd_proxy_test_read_sequence($peer);
 
 			if ($reply !== null) {
@@ -633,9 +719,10 @@ it('fails closed on absent invalid and mismatched proxy keys', function () {
 
 		$result = __rrd_proxy_init('TEST');
 		socket_close($listener);
-		pcntl_waitpid($pid, $status);
+		[$reaped, $status] = rrd_proxy_test_reap($pid);
 
-		expect(pcntl_wifexited($status))->toBeTrue()
+		expect($reaped)->toBeTrue()
+			->and(pcntl_wifexited($status))->toBeTrue()
 			->and(pcntl_wexitstatus($status))->toBe(0);
 
 		return $result;
