@@ -31,7 +31,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install semgrep
-        run: pipx install semgrep==1.90.0
+        run: |
+          pipx install semgrep==1.90.0
+          # semgrep 1.90.0 reaches pkg_resources through opentelemetry-instrumentation.
+          # The runner's Python no longer ships setuptools, so the import fails at startup.
+          pipx inject semgrep setuptools
 
       - name: Self-test the rules (blocking)
         run: semgrep --test tests/security/semgrep/
