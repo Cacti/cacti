@@ -34,7 +34,7 @@ cmd_exec	./lib/functions.php:7262				exec('id -nu', $o, $r);
 cmd_exec	./lib/functions.php:7272				exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
 cmd_exec	./lib/functions.php:7564	 * shell_exec() callers that already assemble the command string.
 cmd_exec	./lib/functions.php:7604		$process = proc_open($argv, $descriptors, $pipes);
-cmd_exec	./lib/functions.php:7676	 * shell_exec() and expect a string return value.
+cmd_exec	./lib/functions.php:7682	 * shell_exec() and expect a string return value.
 cmd_exec	./lib/installer.php:3393				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3425						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3481						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
@@ -79,17 +79,17 @@ cmd_exec	./lib/snmp.php:409			exec($command, $snmp_value);
 cmd_exec	./lib/snmpagent.php:659		/* add pollers of a distributed system (future) */
 cmd_exec	./lib/spikekill.php:446			shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' > ' . cacti_escapeshellarg($xmlfile));
 cmd_exec	./lib/spikekill.php:772			$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
-cmd_exec	./lib/utility.php:1708						$nproc = system('nproc');
-cmd_exec	./lib/utility.php:1826			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
-cmd_exec	./lib/utility.php:1827			exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
-cmd_exec	./lib/utility.php:1828			exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
-cmd_exec	./lib/utility.php:1829			exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
-cmd_exec	./lib/utility.php:1830			exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
-cmd_exec	./lib/utility.php:1831			exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
-cmd_exec	./lib/utility.php:1863				exec('/usr/bin/free', $output, $exit_code);
-cmd_exec	./lib/utility.php:1914		$json     = shell_exec($php . ' -q ' . $php_file);
-cmd_exec	./lib/utility.php:1982		$json     = shell_exec($php . ' -q ' . $php_file);
-cmd_exec	./lib/utility.php:2114		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:1711						$nproc = system('nproc');
+cmd_exec	./lib/utility.php:1829			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
+cmd_exec	./lib/utility.php:1830			exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
+cmd_exec	./lib/utility.php:1831			exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
+cmd_exec	./lib/utility.php:1832			exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
+cmd_exec	./lib/utility.php:1833			exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
+cmd_exec	./lib/utility.php:1834			exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
+cmd_exec	./lib/utility.php:1866				exec('/usr/bin/free', $output, $exit_code);
+cmd_exec	./lib/utility.php:1917		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:1985		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:2117		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./poller_spikekill.php:247				$response = exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./remote_agent.php:499								$cactiphp = proc_open($php_bin . ' -q ' . $srv_path . ' realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 cmd_exec	./script_server.php:185					exec("TASKLIST /FO LIST /FI \"PID eq $parent_pid\"", $out);
@@ -339,9 +339,9 @@ dynamic_include	./install/upgrades/1_2_20.php:28		include_once($config['base_pat
 dynamic_include	./lib/aggregate.php:583		include_once($config['base_path'] . '/lib/cdef.php');
 dynamic_include	./lib/aggregate.php:638		include_once($config['base_path'] . '/lib/cdef.php');
 dynamic_include	./lib/aggregate.php:825		include_once($config['base_path'] . '/lib/api_graph.php');
-dynamic_include	./lib/api_aggregate.php:1677		include($config['include_path'] . '/global_arrays.php');
+dynamic_include	./lib/api_aggregate.php:1689		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/api_aggregate.php:203		include_once($config['base_path'] . '/lib/api_aggregate.php');
-dynamic_include	./lib/api_aggregate.php:671		include_once($config['base_path'] . '/lib/api_aggregate.php');
+dynamic_include	./lib/api_aggregate.php:683		include_once($config['base_path'] . '/lib/api_aggregate.php');
 dynamic_include	./lib/api_automation.php:2384		include_once($config['base_path'] . '/lib/template.php');
 dynamic_include	./lib/api_automation.php:2385		include_once($config['base_path'] . '/lib/api_automation_tools.php');
 dynamic_include	./lib/api_automation.php:2386		include_once($config['base_path'] . '/lib/utility.php');
@@ -385,7 +385,7 @@ dynamic_include	./lib/html_tree.php:829		include($config['include_path'] . '/glo
 dynamic_include	./lib/html_tree.php:830		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/html_tree.php:831		include_once($config['library_path'] . '/html_utility.php');
 dynamic_include	./lib/html_tree.php:93		include_once($config['library_path'] . '/data_query.php');
-dynamic_include	./lib/import.php:2000		include_once($config['library_path'] . '/vdef.php');
+dynamic_include	./lib/import.php:2018		include_once($config['library_path'] . '/vdef.php');
 dynamic_include	./lib/import.php:29		include_once($config['library_path'] . '/xml.php');
 dynamic_include	./lib/installer.php:3534					include_once($upgrade_file);
 dynamic_include	./lib/mib_cache.php:57			include_once($config['include_path'] . '/vendor/phpsnmp/mib_parser.php');
