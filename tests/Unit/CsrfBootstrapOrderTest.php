@@ -31,3 +31,20 @@ test('the composer autoloader is required before include/csrf.php', function () 
 	expect($csrf)->not->toBeFalse();
 	expect($autoload)->toBeLessThan($csrf);
 });
+
+/*
+ * csrf-magic validated the request from the bottom of its own file, so merely
+ * including it protected every POST. Nothing does that implicitly now: if this
+ * call goes missing, every page still renders and every form still carries a
+ * token, but no submission is ever checked.
+ */
+test('include/global.php invokes the guard after loading it', function () use ($root) {
+	$src = file_get_contents($root . '/include/global.php');
+
+	$include = strpos($src, "require_once(CACTI_PATH_INCLUDE . '/csrf.php');");
+	$startup = strpos($src, 'csrf_startup();');
+
+	expect($startup)->not->toBeFalse()
+		->and($include)->not->toBeFalse()
+		->and($include)->toBeLessThan($startup);
+});

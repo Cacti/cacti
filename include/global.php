@@ -740,6 +740,10 @@ if (is_file($vendor_autoload)) {
 
 require_once(CACTI_PATH_INCLUDE . '/csrf.php');
 
+// csrf-magic ran this from the bottom of its own file, so including the
+// library was what protected the request.  The guard is invoked explicitly.
+csrf_startup();
+
 if ($config['is_web']) {
 	// raise a message and perform a page refresh if we've changed modes
 	if ($config['poller_id'] > 1) {
