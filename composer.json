@@ -61,6 +61,9 @@
         "symfony/http-foundation": "^7.4",
         "symfony/mailer": "^7.4",
         "symfony/notifier": "^7.4",
+        "symfony/password-hasher": "^7.4",
+        "symfony/security-core": "^7.4",
+        "symfony/security-csrf": "^7.4",
         "symfony/validator": "^7.4"
     },
     "require-dev": {
