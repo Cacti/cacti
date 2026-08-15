@@ -17,13 +17,14 @@ a patch via pull request.
 ## Requirements
 
 The following versions of PHP are supported.
+Support for older PHP versions is available in version 4.2 (and older) of this library.
 
-* PHP 7.3
-* PHP 7.4
 * PHP 8.0
 * PHP 8.1
 * PHP 8.2
 * PHP 8.3
+* PHP 8.4
+* PHP 8.5
 
 This package uses [OpenID Connect][openid-connect] to authenticate users with
 Google accounts.
