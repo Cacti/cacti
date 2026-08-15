@@ -79,9 +79,9 @@ function array_rekey(array $rows, string $key, string $value_key) : array {
  * @return int Number of group members.
  */
 if (!function_exists('cacti_sizeof')) {
-function cacti_sizeof(mixed $value) : int {
-	return is_countable($value) ? count($value) : 0;
-}
+	function cacti_sizeof(mixed $value) : int {
+		return is_countable($value) ? count($value) : 0;
+	}
 }
 
 /**
