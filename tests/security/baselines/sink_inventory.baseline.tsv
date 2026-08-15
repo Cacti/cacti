@@ -33,7 +33,7 @@ cmd_exec	./lib/functions.php:7262				exec('id -nu', $o, $r);
 cmd_exec	./lib/functions.php:7272				exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
 cmd_exec	./lib/functions.php:7564	 * shell_exec() callers that already assemble the command string.
 cmd_exec	./lib/functions.php:7604		$process = proc_open($argv, $descriptors, $pipes);
-cmd_exec	./lib/functions.php:7676	 * shell_exec() and expect a string return value.
+cmd_exec	./lib/functions.php:7682	 * shell_exec() and expect a string return value.
 cmd_exec	./lib/installer.php:3393				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3425						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3481						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
@@ -383,7 +383,7 @@ dynamic_include	./lib/html_tree.php:829		include($config['include_path'] . '/glo
 dynamic_include	./lib/html_tree.php:830		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/html_tree.php:831		include_once($config['library_path'] . '/html_utility.php');
 dynamic_include	./lib/html_tree.php:93		include_once($config['library_path'] . '/data_query.php');
-dynamic_include	./lib/import.php:2000		include_once($config['library_path'] . '/vdef.php');
+dynamic_include	./lib/import.php:2018		include_once($config['library_path'] . '/vdef.php');
 dynamic_include	./lib/import.php:29		include_once($config['library_path'] . '/xml.php');
 dynamic_include	./lib/installer.php:3534					include_once($upgrade_file);
 dynamic_include	./lib/mib_cache.php:57			include_once($config['include_path'] . '/vendor/phpsnmp/mib_parser.php');
@@ -570,7 +570,7 @@ fs_write	./lib/functions.php:7165		if (($f = @fopen($path, 'w'))) {
 fs_write	./lib/functions.php:719					file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
 fs_write	./lib/functions.php:7239				file_put_contents($tmp_file, 'cacti');
 fs_write	./lib/import.php:425		$f   = fopen($filename, 'r');
-fs_write	./lib/import.php:606							$file = fopen($filename, 'wb');
+fs_write	./lib/import.php:624							$file = fopen($filename, 'wb');
 fs_write	./lib/installer.php:2956				$file = fopen($cacheFile, "r");
 fs_write	./lib/poller.php:1416									if (file_put_contents($tmpfile, $contents) !== false) {
 fs_write	./lib/poller.php:1423												file_put_contents($mypath, $contents);
