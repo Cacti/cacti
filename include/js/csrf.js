@@ -16,6 +16,7 @@
  +-------------------------------------------------------------------------+
  | Derived from csrf-magic by Edward Z. Yang, BSD licensed.  Maintained  |
  | by the Cacti Group since 2020; upstream has been inactive since 2016.   |
+ | See include/js/csrf.js.LICENSE for the original BSD terms.              |
  +-------------------------------------------------------------------------+
 */
 
