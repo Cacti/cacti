@@ -10,8 +10,8 @@
     </source>
     <testsuites>
         <testsuite name="Database audit coverage">
-            <file>tests/Unit/AuditDatabaseMissingTableTest.php</file>
-            <file>tests/Unit/InstallerSchemaValidationTest.php</file>
+            <file>tests/Unit/Database/AuditDatabaseMissingTableTest.php</file>
+            <file>tests/Unit/Installer/InstallerSchemaValidationTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
