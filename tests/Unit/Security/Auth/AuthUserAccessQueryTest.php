@@ -44,8 +44,10 @@ function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
  *
  * @return int Guest account identifier
  */
+if (!function_exists('read_config_option')) {
 function read_config_option(string $name) : int {
 	return $GLOBALS['auth_guest_user'];
+}
 }
 
 $source = file_get_contents(dirname(__DIR__, 4) . '/lib/auth.php');
