@@ -184,10 +184,11 @@ if (POLLER_ID == 1 || read_config_option('storage_location')) { // @phpstan-igno
 $oarray = ['type' => $gtype, 'local_graph_id' => grv('local_graph_id'), 'rra_id' => $rra_id];
 
 if ($output !== false && $output != '') {
-	$decoded = json_decode($output, true);
+	$decoded = remote_graph_json_envelope($output);
 
-	if (is_array($decoded) && isset($decoded['image'])) {
-		$oarray = array_merge($oarray, $decoded);
+	if (is_array($decoded)) {
+		unset($decoded['type'], $decoded['local_graph_id'], $decoded['rra_id']);
+		$oarray = array_merge($decoded, $oarray);
 		// No further parsing needed if it was already JSON
 	} elseif (str_contains($output, 'image = ')) {
 		// Find the beginning of the image definition row

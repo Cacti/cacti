@@ -1,6 +1,16 @@
 OAuth 2.0 Google Provider Changelog
 
 
+## 5.0.0 - 2026-03-23
+
+### Fixed
+
+- Ensure compatibility with `oauth2-client` version 3 by @garak
+
+### Removed
+
+- Remove PHP 7 support by @garak
+
 ## 4.2.0 - 2026-03-09
 
 ### Added
