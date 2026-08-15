@@ -41,20 +41,36 @@ final class CactiCsrfGuard {
 	 */
 	public const INTENTION_GLOBAL = 'cacti';
 
+	/**
+	 * csrf-magic's default hash.  It never set csrf_conf('hash'), so every
+	 * token Cacti ever issued used sha1.
+	 */
+	private const LEGACY_HASH = 'sha1';
+
 	private ?CsrfTokenManagerInterface $manager;
 
 	private bool $enabled;
 
+	private string $legacySecret;
+
+	private int $legacyExpiry;
+
 	/**
-	 * @param CsrfTokenManagerInterface|null $manager Null when Symfony is not
-	 *   available, which happens during a fresh install before composer has
-	 *   populated include/vendor.
-	 * @param bool $enabled False on the CLI, where there is no session and no
-	 *   request to protect.
+	 * @param CsrfTokenManagerInterface|null $manager      Null when Symfony is not
+	 *                                                     available, which happens during a fresh install before composer has
+	 *                                                     populated include/vendor.
+	 * @param bool                           $enabled      False on the CLI, where there is no session
+	 *                                                     and no request to protect.
+	 * @param string                         $legacySecret The csrf-magic secret, used only to accept
+	 *                                                     tokens minted before the upgrade.  Empty disables the fallback.
+	 * @param int                            $legacyExpiry Seconds a legacy token stays acceptable,
+	 *                                                     matching csrf-magic's configured expiry.
 	 */
-	public function __construct(?CsrfTokenManagerInterface $manager = null, bool $enabled = true) {
-		$this->manager = $manager;
-		$this->enabled = $enabled && $manager !== null;
+	public function __construct(?CsrfTokenManagerInterface $manager = null, bool $enabled = true, string $legacySecret = '', int $legacyExpiry = 7200) {
+		$this->manager      = $manager;
+		$this->enabled      = $enabled && $manager !== null;
+		$this->legacySecret = $legacySecret;
+		$this->legacyExpiry = $legacyExpiry;
 	}
 
 	/**
@@ -91,6 +107,52 @@ final class CactiCsrfGuard {
 			return false;
 		}
 
-		return $this->manager->isTokenValid(new CsrfToken(self::INTENTION_GLOBAL, $value));
+		if ($this->manager->isTokenValid(new CsrfToken(self::INTENTION_GLOBAL, $value))) {
+			return true;
+		}
+
+		return $this->validateLegacyHmac($value);
+	}
+
+	/**
+	 * Accept a csrf-magic token minted before the upgrade.
+	 *
+	 * Only the 'sid:' form is honoured.  Cacti configured csrf-magic in session
+	 * mode, so its cookie, key, user and ip branches were unreachable and are
+	 * not ported.  The token carries its own issue time, so this path expires
+	 * on its own arithmetic and needs no configuration flag.
+	 *
+	 * Remove this method, and the secret plumbing behind it, once the upgrade
+	 * window has passed.  See phase 2 of the design document.
+	 *
+	 * @param string $value The submitted token.
+	 *
+	 * @return bool True when the token is a live pre-upgrade token.
+	 */
+	private function validateLegacyHmac(string $value) : bool {
+		if ($this->legacySecret === '' || strpos($value, 'sid:') !== 0) {
+			return false;
+		}
+
+		$body = substr($value, 4);
+
+		if (strpos($body, ',') === false) {
+			return false;
+		}
+
+		[$hash, $time] = explode(',', $body, 2);
+
+		if (!ctype_digit($time)) {
+			return false;
+		}
+
+		if (time() >= (int) $time + $this->legacyExpiry) {
+			return false;
+		}
+
+		$inner    = hash_hmac(self::LEGACY_HASH, $time . ':' . session_id(), $this->legacySecret);
+		$expected = hash_hmac(self::LEGACY_HASH, $inner, $this->legacySecret);
+
+		return hash_equals($expected, $hash);
 	}
 }
