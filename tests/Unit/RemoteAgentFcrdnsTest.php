@@ -74,3 +74,22 @@ test('fcrdns rejects an attacker spoofing a known poller address via forwarded h
 	// so a request whose real source differs cannot pass confirmation.
 	expect(remote_agent_fcrdns_confirmed('203.0.113.7', $poller_forward_records))->toBeFalse();
 });
+
+test('effective-user delegation accepts only the exact enabled user', function () {
+	$lookup = static fn (int $id) : array => ['id' => $id, 'enabled' => 'on'];
+
+	expect(remote_agent_validate_effective_user(7, $lookup))->toBe(7)
+		->and(remote_agent_validate_effective_user('7', $lookup))->toBe(7);
+});
+
+test('effective-user delegation rejects malformed missing and disabled users', function (mixed $value, callable $lookup) {
+	expect(remote_agent_validate_effective_user($value, $lookup))->toBeFalse();
+})->with([
+	'zero'          => [0, static fn (int $_id) : array => ['id' => 0, 'enabled' => 'on']],
+	'negative'      => [-1, static fn (int $_id) : array => ['id' => -1, 'enabled' => 'on']],
+	'signed string' => ['+7', static fn (int $_id) : array => ['id' => 7, 'enabled' => 'on']],
+	'non-numeric'   => ['admin', static fn (int $_id) : array => ['id' => 1, 'enabled' => 'on']],
+	'wrong row'     => [7, static fn (int $_id) : array => ['id' => 8, 'enabled' => 'on']],
+	'disabled'      => [7, static fn (int $_id) : array => ['id' => 7, 'enabled' => 'off']],
+	'missing'       => [7, static fn (int $_id) : bool => false]
+]);

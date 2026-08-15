@@ -34,6 +34,8 @@ use Symfony\Component\Mime\Exception\RfcComplianceException;
 use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Component\Mime\Part\File;
 
+require_once __DIR__ . '/remote_agent_transport.php';
+
 /**
  * Takes a string of text, truncates it to $max_length and appends
  * three periods onto the end
@@ -2394,7 +2396,7 @@ function prepare_validate_result(string &$result) : mixed {
 
 			$space_cnt = substr_count(trim($result), ' ');
 
-			dsv_log('prepare_validate_result', "data has $space_cnt spaces and $delim_cnt fields which is " . (($space_cnt + 1 == $delim_cnt) ? '' : 'NOT') . ' okay', POLLER_VERBOSITY_MEDIUM);
+			dsv_log('prepare_validate_result', "data has $space_cnt spaces and $delim_cnt fields which is " . (($space_cnt + 1 == $delim_cnt) ? '' : 'NOT ') . 'okay', POLLER_VERBOSITY_MEDIUM);
 
 			return ($space_cnt + 1 == $delim_cnt);
 		}
@@ -7338,21 +7340,51 @@ function is_device_debug_enabled(int $host_id) : bool {
  *
  * @return mixed The response from the remote data collector, or false on failure.
  *
- * @throws ErrorException If an error occurs during the file_get_contents call.
+ * @throws Throwable If an error occurs during the Remote Agent request.
  */
 function call_remote_data_collector(int $poller_id, string $url, string $logtype = 'WEBUI') : mixed {
+	if (!str_starts_with($url, '/') || strpbrk($url, "\0\r\n") !== false) {
+		cacti_log('ERROR: Rejected an invalid Remote Data Collector request path.', false, 'SECURITY');
+
+		return false;
+	}
+
 	$hostname = db_fetch_cell_prepared('SELECT hostname
 		FROM poller
 		WHERE id = ?',
 		[$poller_id]);
+	$hostname = is_string($hostname) ? trim($hostname) : '';
 
-	$port = read_config_option('remote_agent_port');
+	if ($hostname === '') {
+		cacti_log(sprintf('ERROR: PollerID:%d has no Remote Data Collector hostname.', $poller_id), false, $logtype);
 
-	if ($port != '') {
-		$port = ':' . $port;
+		return false;
 	}
 
-	if (!is_ipaddress($hostname)) {
+	$port_setting = trim((string) read_config_option('remote_agent_port'));
+	$port         = '';
+
+	if ($port_setting !== '') {
+		$validated_port = filter_var($port_setting, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 65535]]);
+
+		if ($validated_port === false) {
+			cacti_log('ERROR: Remote Agent TCP port is invalid.', false, 'SECURITY');
+
+			return false;
+		}
+
+		$port = ':' . $validated_port;
+	}
+
+	$normalized_host = trim($hostname, '[]');
+
+	if (!is_ipaddress($normalized_host)) {
+		if (filter_var($normalized_host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false) {
+			cacti_log(sprintf('ERROR: PollerID:%d has an invalid Remote Data Collector hostname.', $poller_id), false, 'SECURITY');
+
+			return false;
+		}
+
 		$ipaddress = gethostbyname($hostname);
 
 		if (!is_ipaddress($ipaddress)) {
@@ -7366,7 +7398,15 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 		}
 	}
 
-	$fgc_contextoption = get_default_contextoption();
+	$ca_file = trim((string) read_config_option('remote_agent_ca_file'));
+
+	if (get_url_type() === 'https' && $ca_file !== '' && (!is_file($ca_file) || !is_readable($ca_file))) {
+		cacti_log('ERROR: Remote Agent CA file is configured but is not a readable file.', false, 'SECURITY');
+
+		return false;
+	}
+
+	$fgc_contextoption = get_default_contextoption(false, $normalized_host);
 	$fgc_context       = stream_context_create($fgc_contextoption);
 
 	$output = [];
@@ -7381,8 +7421,31 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 	$ra_start = microtime(true);
 
 	try {
-		$output = file_get_contents(get_url_type() . '://' . $hostname . $port . $url, false, $fgc_context);
-	} catch (ErrorException $e) {
+		$url_host = filter_var($normalized_host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? '[' . $normalized_host . ']' : $normalized_host;
+		$output   = file_get_contents(
+			get_url_type() . '://' . $url_host . $port . $url,
+			false,
+			$fgc_context,
+			0,
+			REMOTE_AGENT_MAX_RESPONSE_BYTES + 1
+		);
+
+		if (version_compare(PHP_VERSION, '8.4.0', '>=')) {
+			if (function_exists('http_get_last_response_headers')) {
+				$http_response_header = http_get_last_response_headers();
+			} else {
+				$http_response_header = [];
+			}
+		}
+
+		$status = remote_agent_http_status($http_response_header);
+
+		if (!is_string($output) || strlen($output) > REMOTE_AGENT_MAX_RESPONSE_BYTES || $status === null || $status < 200 || $status >= 300) {
+			cacti_log(sprintf('WARNING: Remote Data Collector %d returned an invalid, oversized, or non-success response.', $poller_id), false, $logtype);
+
+			return false;
+		}
+	} catch (Throwable $e) {
 		$ra_end = microtime(true);
 
 		if (debounce_run_notification('poller_connect_down:' . $poller_id)) {
@@ -7402,9 +7465,9 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
  * get_url_type - Determines if remote communications are over
  * http or https for remote services.
  *
- * @return mixed http or https
+ * @return string http or https
  */
-function get_url_type() {
+function get_url_type() : string {
 	if (read_config_option('force_https') == 'on') {
 		return 'https';
 	} else {
@@ -7418,13 +7481,12 @@ function get_url_type() {
  * to fulfill system setup related requirements like the usage of Web Single Login
  * cookies for example.
  *
- * @param mixed $timeout A numeric timeout value, or null if not set
+ * @param mixed  $timeout   A numeric timeout value, or null if not set
+ * @param string $peer_name Expected TLS certificate hostname
  *
  * @return array An array to a context
  */
-function get_default_contextoption(mixed $timeout = false) : array {
-	$fgc_contextoption = [];
-
+function get_default_contextoption(mixed $timeout = false, string $peer_name = '') : array {
 	if ($timeout === false) {
 		$timeout = read_config_option('remote_agent_timeout');
 	}
@@ -7433,29 +7495,14 @@ function get_default_contextoption(mixed $timeout = false) : array {
 		$timeout = 5;
 	}
 
-	$protocol = get_url_type();
-
-	if (in_array($protocol, ['ssl', 'https', 'ftps'], true)) {
-		$fgc_contextoption = [
-			'ssl' => [
-				'verify_peer'       => false,
-				'verify_peer_name'  => false,
-				'allow_self_signed' => true,
-			]
-		];
-	}
-
-	if ($protocol == 'https') {
-		$fgc_contextoption['https'] = [
-			'timeout'       => $timeout,
-			'ignore_errors' => true
-		];
-	} elseif ($protocol == 'http') {
-		$fgc_contextoption['http'] = [
-			'timeout'       => $timeout,
-			'ignore_errors' => true
-		];
-	}
+	$protocol          = get_url_type();
+	$fgc_contextoption = remote_agent_context_options(
+		$protocol,
+		(int) $timeout,
+		read_config_option('remote_agent_verify_tls') !== 'off',
+		trim((string) read_config_option('remote_agent_ca_file')),
+		$peer_name
+	);
 
 	$fgc_contextoption = api_plugin_hook_function('fgc_contextoption', $fgc_contextoption);
 
