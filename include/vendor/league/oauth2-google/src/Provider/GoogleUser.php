@@ -17,7 +17,7 @@ class GoogleUser implements ResourceOwnerInterface
         $this->response = $response;
     }
 
-    public function getId()
+    public function getId(): mixed
     {
         return $this->response['sub'];
     }
