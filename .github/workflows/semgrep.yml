@@ -31,7 +31,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install semgrep
-        run: pipx install semgrep==1.90.0
+        run: pipx install semgrep==1.173.0
 
       - name: Self-test the rules (blocking)
         run: semgrep --test tests/security/semgrep/
