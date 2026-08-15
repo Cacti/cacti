@@ -51,7 +51,7 @@ jobs:
 
       - name: Run Pest unit tests
         working-directory: tests
-        run: ./vendor/bin/pest Unit/HeadersSecureTest.php Unit/CspReportEndpointTest.php
+        run: ./vendor/bin/pest Unit/Security/Csp/HeadersSecureTest.php Unit/Security/Csp/CspReportEndpointTest.php
 
   integration:
     name: Integration tests (php -S harness)

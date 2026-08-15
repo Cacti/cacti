@@ -344,6 +344,7 @@ function api_get_graphs_from_datasource($local_data_id) {
 
 function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title, $map_to_data_query = true) {
 	global $struct_graph, $struct_graph_item;
+	$transaction_started = false;
 
 	if (!empty($_local_graph_id)) {
 		$graph_local = db_fetch_row_prepared('SELECT *
@@ -372,7 +373,19 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 		$save['snmp_query_id']     = $graph_local['snmp_query_id'];
 		$save['snmp_index']        = $graph_local['snmp_index'];
 
+		$transaction_started = db_begin_transaction();
+
+		if (!$transaction_started) {
+			return false;
+		}
+
 		$local_graph_id = sql_save($save, 'graph_local');
+
+		if (!$local_graph_id) {
+			db_rollback_transaction();
+
+			return false;
+		}
 
 		$graph_template_graph['title'] = str_replace('<graph_title>', $graph_template_graph['title'], $graph_title);
 	} elseif (!empty($_graph_template_id)) {
@@ -402,13 +415,51 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 			WHERE graph_template_id = ?',
 			array($_graph_template_id));
 
+		if (cacti_sizeof($graph_template_inputs)) {
+			foreach ($graph_template_inputs as $graph_template_input) {
+				if (!graph_template_input_column_is_allowed($graph_template_input['column_name'])) {
+					cacti_log('ERROR: Graph template duplication refused an invalid Graph Item Input field', false, 'SECURITY');
+
+					return false;
+				}
+			}
+		}
+
+		$invalid_input_definitions = db_fetch_cell_prepared('SELECT COUNT(*)
+			FROM graph_template_input_defs AS gtid
+			INNER JOIN graph_template_input AS gti
+			ON gti.id = gtid.graph_template_input_id
+			LEFT JOIN graph_templates_item AS item
+			ON item.id = gtid.graph_template_item_id
+			WHERE gti.graph_template_id = ?
+			AND (item.id IS NULL OR item.graph_template_id <> gti.graph_template_id OR item.local_graph_id <> 0)',
+			array($_graph_template_id));
+
+		if ($invalid_input_definitions > 0) {
+			cacti_log('ERROR: Graph template duplication refused invalid input ownership', false, 'SECURITY');
+
+			return false;
+		}
+
 		/* create new entry: graph_templates */
+		$transaction_started = db_begin_transaction();
+
+		if (!$transaction_started) {
+			return false;
+		}
+
 		$save['id']       = 0;
 		$save['hash']     = get_hash_graph_template(0);
 		$save['name']     = str_replace('<template_title>', $graph_template['name'], $graph_title);
 		$save['multiple'] = $graph_template['multiple'];
 
 		$graph_template_id = sql_save($save, 'graph_templates');
+
+		if (!$graph_template_id) {
+			db_rollback_transaction();
+
+			return false;
+		}
 	}
 
 	unset($save);
@@ -428,6 +479,12 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 
 	$graph_templates_graph_id = sql_save($save, 'graph_templates_graph');
 
+	if (!$graph_templates_graph_id) {
+		db_rollback_transaction();
+
+		return false;
+	}
+
 	/* create new entry(s): graph_templates_item */
 	if (cacti_sizeof($graph_template_items)) {
 		foreach ($graph_template_items as $graph_template_item) {
@@ -445,6 +502,12 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 			}
 
 			$graph_item_mappings[$graph_template_item['id']] = sql_save($save, 'graph_templates_item');
+
+			if (!$graph_item_mappings[$graph_template_item['id']]) {
+				db_rollback_transaction();
+
+				return false;
+			}
 		}
 	}
 
@@ -463,6 +526,12 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 
 				$graph_template_input_id   = sql_save($save, 'graph_template_input');
 
+				if (!$graph_template_input_id) {
+					db_rollback_transaction();
+
+					return false;
+				}
+
 				$graph_template_input_defs = db_fetch_assoc_prepared('SELECT *
 					FROM graph_template_input_defs
 					WHERE graph_template_input_id = ?',
@@ -471,14 +540,18 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 				/* create new entry(s): graph_template_input_defs (graph template only) */
 				if (cacti_sizeof($graph_template_input_defs)) {
 					foreach ($graph_template_input_defs as $graph_template_input_def) {
-						db_execute_prepared('INSERT INTO graph_template_input_defs
+						if (!isset($graph_item_mappings[$graph_template_input_def['graph_template_item_id']]) || !db_execute_prepared('INSERT INTO graph_template_input_defs
 							(graph_template_input_id, graph_template_item_id)
 							VALUES (?, ?)',
 							array(
 								$graph_template_input_id,
 								$graph_item_mappings[$graph_template_input_def['graph_template_item_id']]
 							)
-						);
+						)) {
+							db_rollback_transaction();
+
+							return false;
+						}
 					}
 				}
 			}
@@ -590,10 +663,16 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 	set_config_option('time_last_change_graph', time());
 
 	if ($_local_graph_id > 0) {
+		db_commit_transaction();
 		return $local_graph_id;
 	} elseif ($_graph_template_id > 0) {
+		db_commit_transaction();
 		return $graph_template_id;
 	} else {
+		if ($transaction_started) {
+			db_rollback_transaction();
+		}
+
 		return false;
 	}
 }
@@ -657,4 +736,3 @@ function api_graph_change_device($local_graph_id, $host_id) {
 
 	return false;
 }
-

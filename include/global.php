@@ -276,6 +276,7 @@ if (isset($i18n_text_log)) {
 /* include base modules */
 include_once($config['library_path'] . '/database.php');
 include_once($config['library_path'] . '/functions.php');
+include_once($config['library_path'] . '/graph_template_input.php');
 include_once($config['library_path'] . '/headers_secure.php');
 include_once($config['include_path'] . '/global_constants.php');
 include_once($config['library_path'] . '/html.php');

@@ -190,6 +190,10 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 					if (xml_detect_ignorable_hash_cache($dep_hash_cache[$type][$i]['hash'], $hash_array)) {
 						$repair++;
 					}
+				} elseif ($type == 'graph_template' && !graph_template_input_xml_preflight($hash_array)) {
+					cacti_log('ERROR: Graph template import refused invalid input relationships before the write pass', false, 'SECURITY');
+
+					return false;
 				}
 			}
 		}
@@ -228,9 +232,29 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 				}
 
 				switch($type) {
-				case 'graph_template':
-					$hash_cache += xml_to_graph_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $dep_hash_cache[$type][$i]['version'], $remove_orphans);
-					break;
+					case 'graph_template':
+						$transaction_started = $preview_only ? false : db_begin_transaction();
+
+						if (!$preview_only && !$transaction_started) {
+							return false;
+						}
+
+						$cache_add = xml_to_graph_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $dep_hash_cache[$type][$i]['version'], $remove_orphans);
+
+						if ($cache_add === false) {
+							if ($transaction_started) {
+								db_rollback_transaction();
+							}
+
+							return false;
+						}
+
+						if ($transaction_started) {
+							db_commit_transaction();
+						}
+
+						$hash_cache += $cache_add;
+						break;
 				case 'data_template':
 					$hash_cache += xml_to_data_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
 					$repair++;
@@ -412,6 +436,23 @@ function import_package_get_details($xmlfile) {
 	return $return;
 }
 
+/* import_validate_signature - Report, as a strict boolean, whether a Package is
+ * signed by a key Cacti trusts. The verdict is the return value itself, so a
+ * caller can not treat a populated result as a pass (GHSA-274c-97hj-pv2v). A
+ * Package that carries no key names no signer, so there is nothing to trust. */
+function import_validate_signature($xmlfile) : bool {
+	// Read the raw package details rather than the get-public-key helper: that
+	// helper substitutes Cacti's official key when <publickey> is absent, which
+	// would let a Package that names no signer validate as trusted.
+	$data = import_package_get_details($xmlfile);
+
+	if (!is_array($data) || !isset($data['public_key']) || trim((string) $data['public_key']) === '') {
+		return false;
+	}
+
+	return is_cacti_public_key(trim((string) $data['public_key']));
+}
+
 function import_read_package_data($xmlfile, &$public_key) {
 	$public_key = import_package_get_public_key($xmlfile);
 
@@ -549,6 +590,12 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 		ini_set('memory_limit', '-1');
 	}
 
+	if (!import_validate_signature($xmlfile)) {
+		cacti_log('FATAL: Package signature validation failed for ' . $xmlfile, true, 'IMPORT', POLLER_VERBOSITY_LOW);
+
+		return false;
+	}
+
 	$data = import_read_package_data($xmlfile, $public_key);
 
 	if (!$data) {
@@ -594,6 +641,24 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 	foreach ($data['files']['file'] as $f) {
 		$fdata = base64_decode($f['data']);
 		$name = $f['name'];
+
+		$normalized_name = str_replace('\\', '/', $name);
+
+		/* A crafted package could write outside base_path via '..' in the file
+		 * name; 'resource/../target.php' still contains 'resource/' and slipped
+		 * past the check below (GHSA-vp35-4h28-r883). Reject traversal, NUL, and
+		 * absolute paths before deriving the destination. */
+		if (strpos($name, chr(0)) !== false || preg_match('#(^|/)\.\.(/|$)#', $normalized_name)) {
+			cacti_log("WARNING: Skipping package file with path traversal attempt: $name", false, 'IMPORT');
+
+			continue;
+		}
+
+		if (preg_match('#^([/\\\\]|[A-Za-z]:)#', $name)) {
+			cacti_log("WARNING: Skipping package file with absolute path: $name", false, 'IMPORT');
+
+			continue;
+		}
 
 		if (strpos($name, 'scripts/') !== false || strpos($name, 'resource/') !== false) {
 			$filename = $config['base_path'] . "/$name";
@@ -690,6 +755,53 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 	/* track changes */
 	$status = 0;
+
+	/* Validate every dynamic graph-item field before the import writes any
+	 * template records. Import is a separate producer from the web form and must
+	 * enforce the same invariant at the data handoff boundary. */
+	$available_graph_item_hashes = array();
+
+	if (isset($xml_array['items']) && is_array($xml_array['items'])) {
+		foreach (array_keys($xml_array['items']) as $item_hash) {
+			$parsed_item_hash = parse_xml_hash($item_hash);
+
+			if ($parsed_item_hash === false) {
+				cacti_log('ERROR: Graph template import refused an invalid Graph Item hash', false, 'SECURITY');
+
+				return false;
+			}
+
+			$available_graph_item_hashes[$parsed_item_hash['hash']] = true;
+		}
+	}
+
+	if (isset($xml_array['inputs']) && !is_array($xml_array['inputs'])) {
+		return false;
+	}
+
+	if (isset($xml_array['inputs']) && is_array($xml_array['inputs'])) {
+		foreach ($xml_array['inputs'] as $item_array) {
+			$column_name = is_array($item_array) && isset($item_array['column_name'])
+				? xml_character_decode($item_array['column_name'])
+				: null;
+
+			if (!graph_template_input_column_is_allowed($column_name) || !isset($item_array['items']) || !is_string($item_array['items'])) {
+				cacti_log('ERROR: Graph template import refused an invalid Graph Item Input field', false, 'SECURITY');
+
+				return false;
+			}
+
+			foreach (array_filter(explode('|', $item_array['items']), 'strlen') as $item_hash) {
+				$parsed_item_hash = parse_xml_hash($item_hash);
+
+				if ($parsed_item_hash === false || !isset($available_graph_item_hashes[$parsed_item_hash['hash']])) {
+					cacti_log('ERROR: Graph template import refused an unresolved Graph Item Input relationship', false, 'SECURITY');
+
+					return false;
+				}
+			}
+		}
+	}
 
 	/* import into: graph_templates */
 	$_graph_template_id = db_fetch_cell_prepared('SELECT id
