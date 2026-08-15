@@ -1,0 +1,63 @@
+#!/usr/bin/env php
+<?php declare(strict_types=1);
+
+use NunoMaduro\Collision\Provider;
+use Pest\Actions\ValidatesEnvironment;
+use Pest\Support\Container;
+use Pest\TestSuite;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
+
+(static function () {
+    // Used when Pest is required using composer.
+    $vendorPath = dirname(__DIR__, 4) . '/vendor/autoload.php';
+
+    // Used when Pest maintainers are running Pest tests.
+    $localPath = dirname(__DIR__) . '/vendor/autoload.php';
+
+    if (file_exists($vendorPath)) {
+        include_once $vendorPath;
+        $autoloadPath = $vendorPath;
+    } else {
+        include_once $localPath;
+        $autoloadPath = $localPath;
+    }
+
+    (new Provider())->register();
+
+    // Get $rootPath based on $autoloadPath
+    $rootPath = dirname($autoloadPath, 2);
+    $argv = new ArgvInput();
+
+    $testSuite = TestSuite::getInstance($rootPath, $argv->getParameterOption('--test-directory', 'tests'));
+
+    $isDecorated = $argv->getParameterOption('--colors', 'always') !== 'never';
+    $output = new ConsoleOutput(ConsoleOutput::VERBOSITY_NORMAL, $isDecorated);
+
+    $container = Container::getInstance();
+    $container->add(TestSuite::class, $testSuite);
+    $container->add(OutputInterface::class, $output);
+
+    ValidatesEnvironment::in($testSuite);
+
+    $args = $_SERVER['argv'];
+
+    // Let's remove any arguments that PHPUnit does not understand
+    if ($argv->hasParameterOption('--test-directory')) {
+        foreach ($args as $key => $value) {
+            if (strpos($value, '--test-directory') !== false) {
+                unset($args[$key]);
+            }
+        }
+    }
+
+    if (($runInParallel = $argv->hasParameterOption(['--parallel', '-p'])) && !class_exists(\Pest\Parallel\Command::class)) {
+        $output->writeln("Parallel support requires the Pest Parallel plugin. Run <fg=yellow;options=bold>`composer require --dev pestphp/pest-plugin-parallel`</> first.");
+        exit(Command::FAILURE);
+    }
+
+    $command = $runInParallel ? \Pest\Parallel\Command::class : \Pest\Console\Command::class;
+    exit($container->get($command)->run($args));
+})();

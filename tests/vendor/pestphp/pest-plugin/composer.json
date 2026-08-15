@@ -1,0 +1,61 @@
+{
+    "name": "pestphp/pest-plugin",
+    "description": "The Pest plugin manager",
+    "keywords": [
+        "php",
+        "framework",
+        "pest",
+        "unit",
+        "test",
+        "testing",
+        "plugin",
+        "manager"
+    ],
+    "license": "MIT",
+    "type": "composer-plugin",
+    "require": {
+        "php": "^7.3 || ^8.0",
+        "composer-plugin-api": "^1.1.0 || ^2.0.0"
+    },
+    "conflict": {
+        "pestphp/pest": "<1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pest\\Plugin\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "composer/composer": "^2.4.2",
+        "pestphp/pest-dev-tools": "^1.0.0",
+        "pestphp/pest": "^1.22.1"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        },
+        "class": "Pest\\Plugin\\Manager"
+    },
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist"
+    },
+    "scripts": {
+        "lint": "php-cs-fixer fix -v",
+        "test:lint": "php-cs-fixer fix -v --dry-run",
+        "test:types": "phpstan analyse --ansi",
+        "test:unit": "pest --colors=always",
+        "test": [
+            "@test:lint",
+            "@test:types",
+            "@test:unit"
+        ]
+    }
+}
