@@ -3843,37 +3843,34 @@ function local_auth_login_process(string $username) : array {
 		$user = secpass_login_process($username);
 
 		/**
-		 * If the password needs to be rehashed for security purposes,
-		 * do that now.
+		 * secpass_login_process() returns a partial row on success and [] on any
+		 * failure. Only when it succeeded do we load the full row the caller needs
+		 * and rehash the stored password if the algorithm has moved on. The old
+		 * code re-verified the password here independently: it ran bcrypt a second
+		 * time on every login, and for a correct password on a locked/disabled
+		 * account it repopulated $user even though the primary check had rejected
+		 * the login.
 		 */
-		$stored_pass = db_fetch_cell_prepared('SELECT password
-			FROM user_auth
-			WHERE username = ?
-			AND realm = 0',
-			[$username]);
+		if (cacti_sizeof($user)) {
+			$stored_pass = $user['password'] ?? '';
 
-		if ($stored_pass != '') {
-			$password = gnrv('login_password');
+			$user = db_fetch_row_prepared('SELECT *
+				FROM user_auth
+				WHERE username = ?
+				AND realm = 0',
+				[$username]);
 
-			$valid = compat_password_verify($password, $stored_pass);
+			if ($stored_pass != '' && compat_password_needs_rehash($stored_pass, PASSWORD_DEFAULT)) {
+				$password  = gnrv('login_password');
+				$rehashed  = compat_password_hash($password, PASSWORD_DEFAULT);
 
-			cacti_log("DEBUG: User '" . $username . "' password for rehash is " . ($valid ? '' : 'in') . 'valid', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+				db_check_password_length();
 
-			if ($valid) {
-				$user = db_fetch_row_prepared('SELECT *
-					FROM user_auth
+				db_execute_prepared('UPDATE user_auth
+					SET password = ?
 					WHERE username = ?
 					AND realm = 0',
-					[$username]);
-
-				if (compat_password_needs_rehash($stored_pass, PASSWORD_DEFAULT)) {
-					$password = compat_password_hash($password, PASSWORD_DEFAULT);
-					db_check_password_length();
-					db_execute_prepared('UPDATE user_auth
-						SET password = ?
-						WHERE username = ?',
-						[$password, $username]);
-				}
+					[$rehashed, $username]);
 			}
 		}
 	}
