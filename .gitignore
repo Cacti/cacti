@@ -110,6 +110,8 @@ notepad.md
 # Ignore vendor folders
 include/vendor/*
 vendor/*
+tests/vendor/
+tests/composer.lock
 .worktrees/
 tests/e2e/test-results/
 

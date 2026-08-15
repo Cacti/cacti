@@ -8,7 +8,7 @@
 /*
  * Integration coverage for automation_get_next_host() (lib/api_automation.php).
  *
- * tests/Unit/AutomationNextHostTest.php checks four hand-picked offsets
+ * tests/Unit/Core/Automation/AutomationNextHostTest.php checks four hand-picked offsets
  * (single-octet, two-octet-boundary, full-/8, and a final-octet overflow).
  * The real caller, automation_primeIPAddressTable(), does not call this
  * function with a handful of offsets: it walks a `while ($count <
