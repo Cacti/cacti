@@ -10,8 +10,8 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
-        '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
+        '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
@@ -21,13 +21,15 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         '35a6ad97d21e794e7e22a17d806652e4' => __DIR__ . '/..' . '/nunomaduro/termwind/src/Functions.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'a1cfe24d14977df6878b9bf804af2d1c' => __DIR__ . '/..' . '/nunomaduro/collision/src/Adapters/Phpunit/Autoload.php',
+        'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
+        'deecf9d6b2672fb73429f9b28fdee35f' => __DIR__ . '/..' . '/symfony/polyfill-deepclone/bootstrap.php',
         'aadac1114cab8dc19489a7f6dc24c003' => __DIR__ . '/..' . '/pestphp/pest-plugin-arch/src/Autoload.php',
+        '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         'f83ed111c2f97a0449abf067f157f418' => __DIR__ . '/..' . '/pestphp/pest/src/Functions.php',
         '7d2876738dc0328edeb8a103c76cd8e7' => __DIR__ . '/..' . '/pestphp/pest/src/Pest.php',
         '9b38cf48e83f5d8f60375221cd213eee' => __DIR__ . '/..' . '/phpstan/phpstan/bootstrap.php',
         '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
-        '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
         '9d2b9fc6db0f153a0a149fefb182415e' => __DIR__ . '/..' . '/symfony/polyfill-php84/bootstrap.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         '38143a9afc50997d55e4815db8489d1c' => __DIR__ . '/..' . '/rector/rector/bootstrap.php',
@@ -56,17 +58,23 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Intl\\Normalizer\\' => 33,
+            'Symfony\\Polyfill\\Intl\\Idn\\' => 26,
             'Symfony\\Polyfill\\Intl\\Grapheme\\' => 31,
+            'Symfony\\Polyfill\\DeepClone\\' => 27,
             'Symfony\\Polyfill\\Ctype\\' => 23,
+            'Symfony\\Contracts\\Translation\\' => 30,
             'Symfony\\Contracts\\Service\\' => 26,
             'Symfony\\Contracts\\EventDispatcher\\' => 34,
             'Symfony\\Contracts\\Cache\\' => 24,
             'Symfony\\Component\\Yaml\\' => 23,
             'Symfony\\Component\\VarExporter\\' => 30,
+            'Symfony\\Component\\Validator\\' => 28,
             'Symfony\\Component\\String\\' => 25,
             'Symfony\\Component\\Stopwatch\\' => 28,
             'Symfony\\Component\\Process\\' => 26,
             'Symfony\\Component\\OptionsResolver\\' => 34,
+            'Symfony\\Component\\Mime\\' => 23,
+            'Symfony\\Component\\Mailer\\' => 25,
             'Symfony\\Component\\HttpFoundation\\' => 33,
             'Symfony\\Component\\Finder\\' => 25,
             'Symfony\\Component\\Filesystem\\' => 29,
@@ -106,7 +114,6 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
             'ParaTest\\' => 9,
             'PHPUnit\\Architecture\\' => 21,
             'PHPStan\\PhpDocParser\\' => 21,
-            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'O' =>
         array (
@@ -150,10 +157,12 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         array (
             'Evenement\\' => 10,
             'Ergebnis\\AgentDetector\\' => 23,
+            'Egulias\\EmailValidator\\' => 23,
         ),
         'D' =>
         array (
             'Doctrine\\Deprecations\\' => 22,
+            'Doctrine\\Common\\Lexer\\' => 22,
             'DeepCopy\\' => 9,
         ),
         'C' =>
@@ -212,13 +221,25 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer',
         ),
+        'Symfony\\Polyfill\\Intl\\Idn\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-intl-idn',
+        ),
         'Symfony\\Polyfill\\Intl\\Grapheme\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme',
         ),
+        'Symfony\\Polyfill\\DeepClone\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-deepclone',
+        ),
         'Symfony\\Polyfill\\Ctype\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
+        'Symfony\\Contracts\\Translation\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/symfony/translation-contracts',
         ),
         'Symfony\\Contracts\\Service\\' =>
         array (
@@ -240,6 +261,10 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         array (
             0 => __DIR__ . '/..' . '/symfony/var-exporter',
         ),
+        'Symfony\\Component\\Validator\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/symfony/validator',
+        ),
         'Symfony\\Component\\String\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/string',
@@ -255,6 +280,14 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         'Symfony\\Component\\OptionsResolver\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/options-resolver',
+        ),
+        'Symfony\\Component\\Mime\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/symfony/mime',
+        ),
+        'Symfony\\Component\\Mailer\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/symfony/mailer',
         ),
         'Symfony\\Component\\HttpFoundation\\' =>
         array (
@@ -319,7 +352,7 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         ),
         'Psr\\Log\\' =>
         array (
-            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+            0 => __DIR__ . '/..' . '/psr/log/src',
         ),
         'Psr\\Http\\Server\\' =>
         array (
@@ -391,10 +424,6 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         array (
             0 => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src',
         ),
-        'PHPMailer\\PHPMailer\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
-        ),
         'Overtrue\\PHPLint\\' =>
         array (
             0 => __DIR__ . '/..' . '/overtrue/phplint/src',
@@ -460,9 +489,17 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         array (
             0 => __DIR__ . '/..' . '/ergebnis/agent-detector/src',
         ),
+        'Egulias\\EmailValidator\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/egulias/email-validator/src',
+        ),
         'Doctrine\\Deprecations\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/deprecations/src',
+        ),
+        'Doctrine\\Common\\Lexer\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/lexer/src',
         ),
         'DeepCopy\\' =>
         array (
@@ -499,6 +536,8 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         'DateMalformedStringException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateMalformedStringException.php',
         'DateObjectError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateObjectError.php',
         'DateRangeError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateRangeError.php',
+        'DeepClone\\ClassNotFoundException' => __DIR__ . '/..' . '/symfony/polyfill-deepclone/Resources/stubs/ClassNotFoundException.php',
+        'DeepClone\\NotInstantiableException' => __DIR__ . '/..' . '/symfony/polyfill-deepclone/Resources/stubs/NotInstantiableException.php',
         'Deprecated' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/Deprecated.php',
         'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
         'Override' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/Override.php',
