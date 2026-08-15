@@ -34,8 +34,9 @@ jobs:
         run: |
           pipx install semgrep==1.90.0
           # semgrep 1.90.0 reaches pkg_resources through opentelemetry-instrumentation.
-          # The runner's Python no longer ships setuptools, so the import fails at startup.
-          pipx inject semgrep setuptools
+          # setuptools 81 dropped pkg_resources, and the runner ships a newer one, so the
+          # venv needs an older setuptools forced over it.
+          pipx inject semgrep 'setuptools<81' --force
 
       - name: Self-test the rules (blocking)
         run: semgrep --test tests/security/semgrep/
