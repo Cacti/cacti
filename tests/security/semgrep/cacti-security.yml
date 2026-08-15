@@ -38,8 +38,17 @@ rules:
       - pattern: db_qstr(...)
       - pattern: db_qstr_rlike(...)
       - pattern: sanitize_sql_column(...)
-      - pattern: gfrv(...)
-      - pattern: get_filter_request_var(...)
+      # gfrv()/get_filter_request_var() are only SQL-safe here when they enforce numeric types
+      - pattern: gfrv($NAME)
+      - pattern: gfrv($NAME, FILTER_VALIDATE_INT, ...)
+      - pattern: gfrv($NAME, FILTER_VALIDATE_FLOAT, ...)
+      - pattern: gfrv($NAME, FILTER_VALIDATE_IS_NUMERIC_LIST, ...)
+      - pattern: gfrv($NAME, FILTER_VALIDATE_IS_NUMERIC_ARRAY, ...)
+      - pattern: get_filter_request_var($NAME)
+      - pattern: get_filter_request_var($NAME, FILTER_VALIDATE_INT, ...)
+      - pattern: get_filter_request_var($NAME, FILTER_VALIDATE_FLOAT, ...)
+      - pattern: get_filter_request_var($NAME, FILTER_VALIDATE_IS_NUMERIC_LIST, ...)
+      - pattern: get_filter_request_var($NAME, FILTER_VALIDATE_IS_NUMERIC_ARRAY, ...)
       - pattern: intval(...)
       - pattern: (int) $X
       - pattern: (float) $X
