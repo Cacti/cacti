@@ -67,6 +67,25 @@ test('the JS globals and script tag are injected into head', function () {
 	expect($out)->toContain('CsrfMagic.end();');
 });
 
+/*
+ * The JS globals sit inside a <script> string literal, a context
+ * htmlspecialchars() does not protect.  json_encode() is what makes the
+ * token correct by construction there.  token() re-mints a new random
+ * encoding on every call (BREACH mitigation), so the embedded value is
+ * pulled back out of the rendered output rather than compared against a
+ * second, necessarily different call to token().
+ */
+test('the JS globals are valid JavaScript string literals carrying the right values', function () {
+	$guard = csrf_test_rewrite_guard();
+	$out   = $guard->rewriteBuffer('<html><head></head><body></body></html>');
+
+	preg_match('#var csrfMagicToken = "([^"]+)";#', $out, $matches);
+
+	expect($matches)->toHaveCount(2);
+	expect($guard->validate($matches[1]))->toBeTrue();
+	expect($out)->toContain('var csrfMagicName = "__csrf_magic";');
+});
+
 test('a non-HTML buffer is returned untouched', function () {
 	$guard  = csrf_test_rewrite_guard();
 	$buffer = '{"error":"csrf_timeout"}';

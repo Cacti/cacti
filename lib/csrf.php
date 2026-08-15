@@ -173,9 +173,10 @@ final class CactiCsrfGuard {
 			return $buffer;
 		}
 
-		$token = htmlspecialchars($this->token(), ENT_QUOTES, 'UTF-8');
-		$name  = self::INPUT_NAME;
-		$input = "<input type='hidden' name='$name' value=\"$token\" />";
+		$rawToken = $this->token();
+		$token    = htmlspecialchars($rawToken, ENT_QUOTES, 'UTF-8');
+		$name     = self::INPUT_NAME;
+		$input    = "<input type='hidden' name='$name' value=\"$token\" />";
 
 		$buffer = preg_replace('#(<form[^>]*method\s*=\s*["\']post["\'][^>]*>)#i', '$1' . $input, $buffer);
 
@@ -186,9 +187,20 @@ final class CactiCsrfGuard {
 		$attr = ($this->nonce !== '' ? ' nonce="' . htmlspecialchars($this->nonce, ENT_QUOTES, 'UTF-8') . '"' : '');
 		$url  = htmlspecialchars($this->scriptUrl, ENT_QUOTES, 'UTF-8');
 
+		/*
+		 * The hidden field above is an HTML attribute, so htmlspecialchars() is
+		 * correct there.  These two values land inside a <script> string
+		 * literal instead, a different context that HTML-entity escaping does
+		 * not protect; json_encode() with the HEX_* flags is what makes the
+		 * token correct by construction rather than safe only because
+		 * Symfony's generator happens not to emit quotes today.
+		 */
+		$jsToken = json_encode($rawToken, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+		$jsName  = json_encode($name, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+
 		$head = '<script type="text/javascript"' . $attr . '>' .
-			'var csrfMagicToken = "' . $token . '";' .
-			'var csrfMagicName = "' . $name . '";</script>' .
+			'var csrfMagicToken = ' . $jsToken . ';' .
+			'var csrfMagicName = ' . $jsName . ';</script>' .
 			'<script src="' . $url . '" type="text/javascript"' . $attr . '></script></head>';
 
 		$buffer = str_ireplace('</head>', $head, $buffer);
