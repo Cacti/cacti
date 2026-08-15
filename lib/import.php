@@ -412,6 +412,23 @@ function import_package_get_details($xmlfile) {
 	return $return;
 }
 
+/* import_validate_signature - Report, as a strict boolean, whether a Package is
+ * signed by a key Cacti trusts. The verdict is the return value itself, so a
+ * caller can not treat a populated result as a pass (GHSA-274c-97hj-pv2v). A
+ * Package that carries no key names no signer, so there is nothing to trust. */
+function import_validate_signature($xmlfile) : bool {
+	// Read the raw package details rather than the get-public-key helper: that
+	// helper substitutes Cacti's official key when <publickey> is absent, which
+	// would let a Package that names no signer validate as trusted.
+	$data = import_package_get_details($xmlfile);
+
+	if (!is_array($data) || !isset($data['public_key']) || trim((string) $data['public_key']) === '') {
+		return false;
+	}
+
+	return is_cacti_public_key(trim((string) $data['public_key']));
+}
+
 function import_read_package_data($xmlfile, &$public_key) {
 	$public_key = import_package_get_public_key($xmlfile);
 
@@ -547,6 +564,12 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 	if ($limitex) {
 		ini_set('max_execution_time', '50');
 		ini_set('memory_limit', '-1');
+	}
+
+	if (!import_validate_signature($xmlfile)) {
+		cacti_log('FATAL: Package signature validation failed for ' . $xmlfile, true, 'IMPORT', POLLER_VERBOSITY_LOW);
+
+		return false;
 	}
 
 	$data = import_read_package_data($xmlfile, $public_key);
