@@ -323,6 +323,10 @@ jobs:
     - name: Run Cacti poller
       run: |
         sudo php ${{ github.workspace }}/poller.php --poller=1 --force --debug
+        # This poller runs as root and creates the RRD files, but cactid.service
+        # polls as the web user, so hand the files over or every later update
+        # fails with EPERM.
+        sudo chown -R www-data:www-data ${{ github.workspace }}/rra
         if ! $(grep -q "SYSTEM STATS" ${{ github.workspace }}/log/cacti.log); then exit 1; fi
 
     - name: Check All Pages Using Recursive wget
