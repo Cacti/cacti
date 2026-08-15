@@ -74,7 +74,7 @@ function cacti_snmp_session(string $hostname, mixed $community, mixed $version, 
 	$timeout_us = (int) ($timeout_ms * 1000);
 
 	try {
-		$session = new SNMP($version, $hostname . ':' . $port, ($version == 3 ? $auth_user : $community), $timeout_us, $retries);
+		$session = new SNMP($version, $hostname . ':' . (is_numeric($port) ? (int) $port : 161), ($version == 3 ? $auth_user : $community), $timeout_us, $retries);
 	} catch (Throwable $e) {
 		return false;
 	}
@@ -1161,9 +1161,14 @@ function cacti_snmp_options_sanitize(mixed $version, mixed $community, mixed &$p
 		}
 	}
 
-	// determine default port
-	if (empty($port)) {
+	// determine default port, and force it to an integer. Every net-snmp exec
+	// path interpolates $port raw into the command line (hostname:port); an int
+	// can never carry shell metacharacters, so this holds even if a caller ever
+	// passes a request-derived port rather than the mediumint column value.
+	if (empty($port) || !is_numeric($port)) {
 		$port = 161;
+	} else {
+		$port = (int) $port;
 	}
 
 	// do not attempt to poll invalid combinations
