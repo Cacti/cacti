@@ -168,7 +168,7 @@ fs_write	./install/functions.php:1584			file_put_contents(CACTI_PATH_LOG . '/' .
 fs_write	./install/functions.php:1585			file_put_contents(CACTI_PATH_LOG . '/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
 fs_write	./install/functions.php:275				$fh = fopen($file, 'w');
 fs_write	./install/functions.php:803			file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
-fs_write	./lib/api_device.php:2682							file_put_contents($new_xmlfile, $data);
+fs_write	./lib/api_device.php:2892							if (file_put_contents($new_xmlfile, $data) === false) {
 fs_write	./lib/boost.php:611								if ($fileptr = fopen($cache_file, 'rb')) {
 fs_write	./lib/boost.php:761							if ($fileptr = fopen($cache_file, 'w')) {
 fs_write	./lib/clog_webapi.php:182					$log_fh = fopen($logfile, 'w');

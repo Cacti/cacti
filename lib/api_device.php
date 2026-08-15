@@ -54,24 +54,10 @@ function api_device_remove(int $device_id) : void {
 	 */
 	object_cache_get_totals('device_delete', $device_id);
 
-	if ($poller_id == 1) {
-		db_execute_prepared('DELETE FROM host WHERE id = ?', [$device_id]);
-	} else {
-		db_execute_prepared('UPDATE host SET deleted = "on" WHERE id = ?', [$device_id]);
-	}
+	if (!db_begin_transaction()) {
+		raise_message('device_remove_failed_' . $device_id, __('Unable to remove Device %s because a database transaction could not be started.', $device_id), MESSAGE_LEVEL_ERROR);
 
-	db_execute_prepared('DELETE FROM host_graph       WHERE host_id = ?', [$device_id]);
-	db_execute_prepared('DELETE FROM host_snmp_query  WHERE host_id = ?', [$device_id]);
-	db_execute_prepared('DELETE FROM host_snmp_cache  WHERE host_id = ?', [$device_id]);
-	db_execute_prepared('DELETE FROM host_value_cache WHERE host_id = ?', [$device_id]);
-	poller_item_delete_for_host($device_id);
-	db_execute_prepared('DELETE FROM poller_reindex   WHERE host_id = ?', [$device_id]);
-	db_execute_prepared('DELETE FROM graph_tree_items WHERE host_id = ?', [$device_id]);
-	db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', [$device_id]);
-	db_execute_prepared('DELETE FROM poller_command   WHERE command LIKE ?', [$device_id . ':%']);
-
-	if ($poller_id > 1) {
-		api_device_purge_from_remote($device_id, $poller_id);
+		return;
 	}
 
 	$graphs = array_rekey(
@@ -83,7 +69,64 @@ function api_device_remove(int $device_id) : void {
 	);
 
 	if (cacti_sizeof($graphs)) {
+		$graph_ids = $graphs;
 		api_delete_graphs($graphs, 2);
+
+		$remaining_graphs = db_fetch_cell('SELECT COUNT(*)
+			FROM graph_local
+			WHERE ' . db_in_clause('id', $graph_ids));
+
+		if ($remaining_graphs === false || $remaining_graphs > 0) {
+			db_rollback_transaction();
+			raise_message('device_graph_remove_failed_' . $device_id, __('Unable to remove Device %s because Graph cleanup did not complete.', $device_id), MESSAGE_LEVEL_ERROR);
+
+			return;
+		}
+	}
+
+	$cleanup_queries = [
+		['DELETE FROM host_graph       WHERE host_id = ?', [$device_id]],
+		['DELETE FROM host_snmp_query  WHERE host_id = ?', [$device_id]],
+		['DELETE FROM host_snmp_cache  WHERE host_id = ?', [$device_id]],
+		['DELETE FROM host_value_cache WHERE host_id = ?', [$device_id]],
+		['DELETE FROM poller_item      WHERE host_id = ?', [$device_id]],
+		['DELETE FROM poller_reindex   WHERE host_id = ?', [$device_id]],
+		['DELETE FROM graph_tree_items WHERE host_id = ?', [$device_id]],
+		['DELETE FROM reports_items    WHERE host_id = ?', [$device_id]],
+		['DELETE FROM poller_command   WHERE command LIKE ?', [$device_id . ':%']]
+	];
+
+	foreach ($cleanup_queries as [$sql, $params]) {
+		if (db_execute_prepared($sql, $params) === false) {
+			db_rollback_transaction();
+			raise_message('device_remove_failed_' . $device_id, __('Unable to remove Device %s because dependent database cleanup failed.', $device_id), MESSAGE_LEVEL_ERROR);
+
+			return;
+		}
+	}
+
+	if ($poller_id == 1) {
+		$removed = db_execute_prepared('DELETE FROM host WHERE id = ?', [$device_id]);
+	} else {
+		$removed = db_execute_prepared('UPDATE host SET deleted = "on" WHERE id = ?', [$device_id]);
+	}
+
+	if ($removed === false) {
+		db_rollback_transaction();
+		raise_message('device_remove_failed_' . $device_id, __('Unable to remove Device %s because its primary database record could not be updated.', $device_id), MESSAGE_LEVEL_ERROR);
+
+		return;
+	}
+
+	if (!db_commit_transaction()) {
+		db_rollback_transaction();
+		raise_message('device_remove_failed_' . $device_id, __('Unable to remove Device %s because its database transaction could not be committed.', $device_id), MESSAGE_LEVEL_ERROR);
+
+		return;
+	}
+
+	if ($poller_id > 1) {
+		api_device_purge_from_remote($device_id, $poller_id);
 	}
 
 	api_device_cache_crc_update($poller_id);
@@ -223,34 +266,94 @@ function api_device_remove_multi(array $device_ids, int $delete_type = 2) : void
 			'id', 'id'
 		);
 
-		// poller commands go one at a time due to trashy logic
-		foreach ($device_ids as $device_id) {
-			db_execute_prepared('DELETE FROM poller_command WHERE command LIKE ?', [$device_id . ':%']);
-		}
-
-		poller_item_delete_for_host($int_device_ids);
-		db_execute('DELETE FROM poller_reindex WHERE ' . db_in_clause('host_id', $int_device_ids));
-
 		$poller_ids = get_remote_poller_ids_from_devices($devices_to_delete);
 
-		// handle removal or mark for removal as required
-		db_execute('DELETE FROM host WHERE ' . db_in_clause('id', $int_device_ids) . ' AND poller_id = 1');
-		db_execute("UPDATE host SET deleted = 'on' WHERE " . db_in_clause('id', $int_device_ids) . ' AND poller_id != 1');
+		if (!db_begin_transaction()) {
+			raise_message('device_remove_multi_failed', __('Unable to remove the selected Devices because a database transaction could not be started.'), MESSAGE_LEVEL_ERROR);
 
-		db_execute('DELETE FROM host_graph       WHERE ' . db_in_clause('host_id', $int_device_ids));
-		db_execute('DELETE FROM host_snmp_query  WHERE ' . db_in_clause('host_id', $int_device_ids));
-		db_execute('DELETE FROM host_snmp_cache  WHERE ' . db_in_clause('host_id', $int_device_ids));
-		db_execute('DELETE FROM host_value_cache WHERE ' . db_in_clause('host_id', $int_device_ids));
-		db_execute('DELETE FROM graph_tree_items WHERE ' . db_in_clause('host_id', $int_device_ids));
-		db_execute('DELETE FROM reports_items    WHERE ' . db_in_clause('host_id', $int_device_ids));
+			return;
+		}
 
 		if ($delete_type == 2) {
+			$graph_ids = $graphs;
 			api_delete_graphs($graphs, $delete_type, false);
-		} else {
+
+			if (cacti_sizeof($graph_ids)) {
+				$remaining_graphs = db_fetch_cell('SELECT COUNT(*)
+					FROM graph_local
+					WHERE ' . db_in_clause('id', $graph_ids));
+
+				if ($remaining_graphs === false || $remaining_graphs > 0) {
+					db_rollback_transaction();
+					raise_message('device_remove_multi_graph_failed', __('Unable to remove the selected Devices because Graph cleanup did not complete.'), MESSAGE_LEVEL_ERROR);
+
+					return;
+				}
+			}
+		}
+
+		// poller commands go one at a time due to trashy logic
+		foreach ($device_ids as $device_id) {
+			if (db_execute_prepared('DELETE FROM poller_command WHERE command LIKE ?', [$device_id . ':%']) === false) {
+				db_rollback_transaction();
+				raise_message('device_remove_multi_failed', __('Unable to remove the selected Devices because dependent database cleanup failed.'), MESSAGE_LEVEL_ERROR);
+
+				return;
+			}
+		}
+
+		if (db_execute('DELETE FROM poller_item WHERE ' . db_in_clause('host_id', $int_device_ids)) === false ||
+			db_execute('DELETE FROM poller_reindex WHERE ' . db_in_clause('host_id', $int_device_ids)) === false) {
+			db_rollback_transaction();
+			raise_message('device_remove_multi_failed', __('Unable to remove the selected Devices because poller cleanup failed.'), MESSAGE_LEVEL_ERROR);
+
+			return;
+		}
+
+		$cleanup_queries = [
+			'DELETE FROM host_graph       WHERE ' . db_in_clause('host_id', $int_device_ids),
+			'DELETE FROM host_snmp_query  WHERE ' . db_in_clause('host_id', $int_device_ids),
+			'DELETE FROM host_snmp_cache  WHERE ' . db_in_clause('host_id', $int_device_ids),
+			'DELETE FROM host_value_cache WHERE ' . db_in_clause('host_id', $int_device_ids),
+			'DELETE FROM graph_tree_items WHERE ' . db_in_clause('host_id', $int_device_ids),
+			'DELETE FROM reports_items    WHERE ' . db_in_clause('host_id', $int_device_ids)
+		];
+
+		foreach ($cleanup_queries as $sql) {
+			if (db_execute($sql) === false) {
+				db_rollback_transaction();
+				raise_message('device_remove_multi_failed', __('Unable to remove the selected Devices because dependent database cleanup failed.'), MESSAGE_LEVEL_ERROR);
+
+				return;
+			}
+		}
+
+		if ($delete_type != 2) {
 			api_data_source_disable_multi($data_sources);
 
-			db_execute('UPDATE graph_local SET host_id = 0 WHERE ' . db_in_clause('host_id', $int_device_ids));
-			db_execute('UPDATE data_local  SET host_id = 0 WHERE ' . db_in_clause('host_id', $int_device_ids));
+			if (db_execute('UPDATE graph_local SET host_id = 0 WHERE ' . db_in_clause('host_id', $int_device_ids)) === false ||
+				db_execute('UPDATE data_local  SET host_id = 0 WHERE ' . db_in_clause('host_id', $int_device_ids))    === false) {
+				db_rollback_transaction();
+				raise_message('device_remove_multi_detach_failed', __('Unable to remove the selected Devices because Graph or Data Source detachment failed.'), MESSAGE_LEVEL_ERROR);
+
+				return;
+			}
+		}
+
+		// Remove the primary records only after dependent cleanup succeeds.
+		if (db_execute('DELETE FROM host WHERE ' . db_in_clause('id', $int_device_ids) . ' AND poller_id = 1')             === false ||
+			db_execute("UPDATE host SET deleted = 'on' WHERE " . db_in_clause('id', $int_device_ids) . ' AND poller_id != 1') === false) {
+			db_rollback_transaction();
+			raise_message('device_remove_multi_failed', __('Unable to update the primary records for the selected Devices.'), MESSAGE_LEVEL_ERROR);
+
+			return;
+		}
+
+		if (!db_commit_transaction()) {
+			db_rollback_transaction();
+			raise_message('device_remove_multi_failed', __('Unable to remove the selected Devices because the database transaction could not be committed.'), MESSAGE_LEVEL_ERROR);
+
+			return;
 		}
 
 		if (cacti_sizeof($poller_ids)) {
@@ -1002,9 +1105,9 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 	if ($save['snmp_version'] == 3) {
 		$save['snmp_username']        = form_input_validate($snmp_username, 'snmp_username', '', true, 3);
 		$save['snmp_password']        = form_input_validate($snmp_password, 'snmp_password', '', true, 3);
-		$save['snmp_auth_protocol']   = form_input_validate($snmp_auth_protocol, 'snmp_auth_protocol', "^\[None\]|MD5|SHA|SHA224|SHA256|SHA392|SHA512$", true, 3);
+		$save['snmp_auth_protocol']   = form_input_validate($snmp_auth_protocol, 'snmp_auth_protocol', "^(\[None\]|MD5|SHA|SHA224|SHA256|SHA384|SHA512)$", true, 3);
 		$save['snmp_priv_passphrase'] = form_input_validate($snmp_priv_passphrase, 'snmp_priv_passphrase', '', true, 3);
-		$save['snmp_priv_protocol']   = form_input_validate($snmp_priv_protocol, 'snmp_priv_protocol', "^\[None\]|DES|AES|AES128|AES192|AES192C|AES256|AES256C$", true, 3);
+		$save['snmp_priv_protocol']   = form_input_validate($snmp_priv_protocol, 'snmp_priv_protocol', "^(\[None\]|DES|AES|AES128|AES192|AES192C|AES256|AES256C)$", true, 3);
 		$save['snmp_context']         = form_input_validate($snmp_context, 'snmp_context', '', true, 3);
 		$save['snmp_engine_id']       = form_input_validate($snmp_engine_id, 'snmp_engine_id', '', true, 3);
 
@@ -1498,12 +1601,24 @@ function api_device_template_sync_template(int $device_template, array|string $d
 		$status_where = ' AND status IN(3,2)';
 	}
 
-	if (is_array($device_ids)) {
-		$device_ids = implode(',', $device_ids);
+	$device_ids_supplied = $device_ids !== '' && $device_ids !== [];
+
+	if (!is_array($device_ids)) {
+		$device_ids = preg_split('/,/', $device_ids, -1, PREG_SPLIT_NO_EMPTY);
 	}
 
-	if ($device_ids != '') {
-		$status_where .= ' AND host.id IN(' . $device_ids . ')';
+	$requested_device_count = cacti_sizeof($device_ids);
+	$device_ids             = array_values(array_filter($device_ids, static function (mixed $id) : bool {
+		return ctype_digit((string) $id) && (int) $id > 0;
+	}));
+
+	if ($device_ids_supplied && cacti_sizeof($device_ids) != $requested_device_count) {
+		return;
+	}
+
+	if (cacti_sizeof($device_ids)) {
+		$device_ids   = array_map('intval', $device_ids);
+		$status_where .= ' AND ' . db_in_clause('host.id', $device_ids);
 	}
 
 	$devices = array_rekey(
@@ -1564,7 +1679,8 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 		$results = call_remote_data_collector($host['poller_id'], $url);
 
 		if ($results != '') {
-			print $results;
+			$results = (string) preg_replace('/<br\s*\/?\s*>/i', PHP_EOL, $results);
+			print nl2br(htmle(strip_tags($results)));
 		} else {
 			print __('ERROR: Failed to connect to remote collector.');
 		}
@@ -1596,7 +1712,7 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 				print "<span class='hostDown'>" . __('Session') . ' ' . __('SNMP error');
 
 				if ($snmp_error != '') {
-					print " - $snmp_error";
+					print ' - ' . htmle($snmp_error);
 				} else {
 					print ' - ' . __('No session');
 				}
@@ -1608,7 +1724,7 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 					print "<span class='hostDown'>" . __('System') . ' ' . __('SNMP error');
 
 					if ($snmp_error != '') {
-						print " - $snmp_error";
+						print ' - ' . htmle($snmp_error);
 					}
 					print '</span>';
 				} else {
@@ -1633,7 +1749,7 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 						print "<span class='hostDown'>" . __('Host') . ' ' . __('SNMP error');
 
 						if ($snmp_error != '') {
-							print " - $snmp_error";
+							print ' - ' . htmle($snmp_error);
 						}
 					} else {
 						$snmp_uptime = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
@@ -1648,18 +1764,18 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 						$snmp_location   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
 						$snmp_contact    = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0');
 
-						print '<b>' . __('System:') . '</b> ' . html_split_string($snmp_system, 150) . '<br>';
+						print '<b>' . __('System:') . '</b> ' . html_split_string(htmle($snmp_system), 150) . '<br>';
 						$snmp_uptime_ticks = intval($snmp_uptime);
 						$days              = intval($snmp_uptime_ticks / (60 * 60 * 24 * 100));
 						$remainder         = $snmp_uptime_ticks % (60 * 60 * 24 * 100);
 						$hours             = intval($remainder / (60 * 60 * 100));
 						$remainder %= 60 * 60 * 100;
 						$minutes           = intval($remainder / (60 * 100));
-						print '<b>' . __('Uptime:') . "</b> $snmp_uptime";
+						print '<b>' . __('Uptime:') . '</b> ' . htmle($snmp_uptime);
 						print '&nbsp;(' . $days . __('days') . ', ' . $hours . __('hours') . ', ' . $minutes . __('minutes') . ')<br>';
-						print '<b>' . __('Hostname:') . "</b> $snmp_hostname<br>";
-						print '<b>' . __('Location:') . "</b> $snmp_location<br>";
-						print '<b>' . __('Contact:') . "</b> $snmp_contact<br>";
+						print '<b>' . __('Hostname:') . '</b> ' . htmle($snmp_hostname) . '<br>';
+						print '<b>' . __('Location:') . '</b> ' . htmle($snmp_location) . '<br>';
+						print '<b>' . __('Contact:') . '</b> ' . htmle($snmp_contact) . '<br>';
 					}
 				}
 
@@ -1690,7 +1806,7 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 		}
 
 		print __('Ping Results') . "<br>\n";
-		print "<span class='" . $class . "'>" . $ping->ping_response . "</span>\n";
+		print "<span class='" . $class . "'>" . htmle($ping->ping_response) . "</span>\n";
 	}
 
 	if ($anym == false && $host['disabled'] != 'on') {
@@ -1971,7 +2087,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 	}
 
 	$graph_templates = array_merge(array_keys($objects['graph_templates']), array_keys($objects['data_query_graph_templates']));
-	$data_templates  = array_merge(array_keys($objects['data_templates']), array_keys($objects['data_query_data_templates']));
+	$data_templates  = array_keys($objects['data_templates']);
 	$data_queries    = array_keys($objects['data_queries']);
 
 	if ($include_gt != '' && $include_gt != 'all') {
@@ -2008,6 +2124,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 	}
 
 	$clone_dq_proceed = false;
+	$dqc              = [];
 
 	if ($clone_dq != '' && $clone_dq != 'all') {
 		$clone_dq_proceed = true;
@@ -2015,7 +2132,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		$dqc = explode(',', $clone_dq);
 
 		foreach ($dqc as $dq) {
-			if (!is_numeric($dq) && $dq > 0) {
+			if (!is_numeric($dq) || $dq <= 0) {
 				$errors++;
 				$return['errors'][] = sprintf('FATAL: Data Query to be cloned %s is not numeric', $dq);
 			} elseif (array_search($dq, $data_queries, true) === false) {
@@ -2031,7 +2148,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		$dti = explode(',', $include_dt);
 
 		foreach ($dti as $dt) {
-			if (!is_numeric($dt) && $dt > 0) {
+			if (!is_numeric($dt) || $dt <= 0) {
 				$errors++;
 				$return['errors'][] = sprintf('FATAL: Data Template to be cloned %s is not numeric', $dt);
 			} elseif (array_search($dt, $data_templates, true) === false) {
@@ -2042,6 +2159,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 	}
 
 	$clone_dt_proceed = false;
+	$dtc              = [];
 
 	if ($clone_dt != '' && $clone_dt != 'all') {
 		$clone_dt_proceed = true;
@@ -2049,7 +2167,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		$dtc = explode(',', $clone_dt);
 
 		foreach ($dtc as $dt) {
-			if (!is_numeric($dt) && $dt > 0) {
+			if (!is_numeric($dt) || $dt <= 0) {
 				$errors++;
 				$return['errors'][] = sprintf('FATAL: Data Template to be cloned %s is not numeric', $dt);
 			} elseif (array_search($dt, $data_templates, true) === false) {
@@ -2064,27 +2182,26 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 	// now check for name collision xml files and scripts
 	if ($clone_xml) {
 		if ($clone_dq_proceed) {
-			foreach ($objects['data_queries'] as $id => $data_query) {
-				if (!is_numeric($id) && $id <= 0) {
+			if ($clone_dq == 'all') {
+				$clone_data_queries = $objects['data_queries'];
+			} else {
+				$clone_data_queries = array_intersect_key($objects['data_queries'], array_flip($dqc));
+			}
+
+			foreach ($clone_data_queries as $id => $data_query) {
+				if (!is_numeric($id) || $id <= 0) {
 					$errors++;
 					$return['errors'][] = sprintf('FATAL: Data Query to be cloned %s is not numeric', $id);
 				} elseif ($data_query['xml_path'] != '') {
-					$xml_clone  = str_replace('.xml', '', $data_query['xml_path']);
-					$xml_clone .= $suffix . '.xml';
-					$name     = $data_query['name'];
-					$xml_base = trim(str_replace(CACTI_PATH_BASE, '', $xml_clone), '/');
+					$xml_path = $data_query['xml_path'];
+					$xml_base = trim(str_replace(CACTI_PATH_BASE, '', $xml_path), '/');
 
-					if (file_exists($xml_clone)) {
-						if (!is_writable(dirname($xml_clone))) {
-							$errors++;
-							$return['errors'][] = sprintf('FATAL: Data Query XML Base path \'%s\' for Data Query \'%s\' already exists, and the directory is not writable!', $xml_base, $name);
-						} else {
-							$warnings++;
-							$return['warnings'][] = sprintf('WARNING: Data Query XML Base path \'%s\' for \'%s\' already exists.', $xml_base, $name);
-						}
-					} else {
+					if (!is_file($xml_path) || !is_readable($xml_path)) {
 						$errors++;
-						$return['errors'][] = sprintf('FATAL: Data Query XML Base path \'%s\' for \'%s\' not found!', $xml_base, $name);
+						$return['errors'][] = sprintf('FATAL: Data Query XML Base path \'%s\' for \'%s\' is not readable!', $xml_base, $data_query['name']);
+					} elseif (!is_writable(dirname($xml_path))) {
+						$errors++;
+						$return['errors'][] = sprintf('FATAL: Data Query XML Base directory for \'%s\' is not writable!', $data_query['name']);
 					}
 				}
 			}
@@ -2093,56 +2210,52 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 
 	if ($clone_script) {
 		if ($clone_dq_proceed) {
-			foreach ($objects['data_queries'] as $id => $data_query) {
-				if (!is_numeric($id) && $id <= 0) {
+			if ($clone_dq == 'all') {
+				$clone_data_queries = $objects['data_queries'];
+			} else {
+				$clone_data_queries = array_intersect_key($objects['data_queries'], array_flip($dqc));
+			}
+
+			foreach ($clone_data_queries as $id => $data_query) {
+				if (!is_numeric($id) || $id <= 0) {
 					$errors++;
 					$return['errors'][] = sprintf('FATAL: Data Query to be cloned %s is not numeric', $id);
 				} elseif (isset($data_query['script_path']) && $data_query['script_path'] != '') {
-					$parts = explode('.', $data_query['script_path']);
-					$name  = $data_query['name'];
+					$script_path = $data_query['script_path'];
+					$script_base = trim(str_replace(CACTI_PATH_BASE, '', $script_path), '/');
 
-					$xml_script = $parts[0] . $suffix . (isset($parts[1]) ? '.' . $parts[1] : '');
-					$xml_base   = trim(str_replace(CACTI_PATH_BASE, '', $xml_script), '/');
-
-					if (file_exists($xml_script)) {
-						if (!is_writable(dirname($xml_script))) {
-							$errors++;
-							$return['errors'][] = sprintf('FATAL: Data Query Script Base path \'%s\' for \'%s\' already exists and the directory is not writable!', $xml_base, $name);
-						} else {
-							$warnings++;
-							$return['warnings'][] = sprintf('WARNING: Data Query Script Base path \'%s\' for \'%s\' already exists.', $xml_base, $name);
-						}
-					} else {
+					if (!is_file($script_path) || !is_readable($script_path)) {
 						$errors++;
-						$return['errors'][] = sprintf('FATAL: Data Query Script Base path \'%s\' for \'%s\' not found!', $xml_base, $name);
+						$return['errors'][] = sprintf('FATAL: Data Query Script Base path \'%s\' for \'%s\' is not readable!', $script_base, $data_query['name']);
+					} elseif (!is_writable(dirname($script_path))) {
+						$errors++;
+						$return['errors'][] = sprintf('FATAL: Data Query Script Base directory for \'%s\' is not writable!', $data_query['name']);
 					}
 				}
 			}
 		}
 
 		if ($clone_dt_proceed) {
-			foreach ($objects['data_templates'] as $id => $data_template) {
-				if (!is_numeric($id) && $id <= 0) {
+			if ($clone_dt == 'all') {
+				$clone_data_templates = $objects['data_templates'];
+			} else {
+				$clone_data_templates = array_intersect_key($objects['data_templates'], array_flip($dtc));
+			}
+
+			foreach ($clone_data_templates as $id => $data_template) {
+				if (!is_numeric($id) || $id <= 0) {
 					$errors++;
 					$return['errors'][] = sprintf('FATAL: Data Template to be cloned %s is not numeric', $id);
 				} elseif (isset($data_template['script_path'])) {
-					$parts = explode('.', $data_template['script_path']);
-					$name  = $data_template['name'];
-
-					$script_path = $parts[0] . $suffix . (isset($parts[1]) ? '.' . $parts[1] : '');
+					$script_path = $data_template['script_path'];
 					$script_base = trim(str_replace(CACTI_PATH_BASE, '', $script_path), '/');
 
-					if (file_exists($script_path)) {
-						if (!is_writable($script_path)) {
-							$errors++;
-							$return['errors'][] = sprintf('FATAL: Data Template Script Base path \'%s\' for \'%s\' already exists and the directory is not writable!', $script_base, $name);
-						} else {
-							$warnings++;
-							$return['warnings'][] = sprintf('WARNING: Data Template Script Base path \'%s\' for \'%s\' already exists.', $script_base, $name);
-						}
-					} else {
+					if (!is_file($script_path) || !is_readable($script_path)) {
 						$errors++;
-						$return['errors'][] = sprintf('FATAL: Data Template Script Base path \'%s\' for \'%s\' not found!', $script_base, $name);
+						$return['errors'][] = sprintf('FATAL: Data Template Script Base path \'%s\' for \'%s\' is not readable!', $script_base, $data_template['name']);
+					} elseif (!is_writable(dirname($script_path))) {
+						$errors++;
+						$return['errors'][] = sprintf('FATAL: Data Template Script Base directory for \'%s\' is not writable!', $data_template['name']);
 					}
 				}
 			}
@@ -2263,10 +2376,8 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 	}
 
 	if ($clone_dt_proceed) {
-		print 'Clone DT is "' . $clone_dt . '"' . PHP_EOL;
-
 		if ($clone_dt == 'all') {
-			$dts = array_keys($objects['data_queries']);
+			$dts = array_keys($objects['data_templates']);
 		} else {
 			$dts = explode(',', $clone_dt);
 		}
@@ -2286,9 +2397,9 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 					$return['warnings'][] = sprintf('WARNING: Data Template \'%s\' already exists.', $name . $suffix);
 				}
 
-				$name = db_fetch_assoc_prepared('SELECT name
-					FROM data_input
-					WHERE hash = ?',
+				$name = db_fetch_cell_prepared('SELECT name
+				FROM data_input
+				WHERE hash = ?',
 					[$dihash]);
 
 				$exists = db_fetch_cell_prepared('SELECT id
@@ -2475,12 +2586,12 @@ function api_clone_device_template_get_objects(int $device_template_id) : array 
 function api_clone_device_template(int $template_id, string $template_name, string $include_gt, string $clone_gt,
 	string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string $suffix, bool $clone_xml, bool $clone_script, bool $cli = false) : int|bool {
 	// The list of duplicated Data Templates.  Dont do it more than once
-	$duped_graph_templates[]    = [];
-	$duped_data_templates[]     = [];
-	$duped_data_input_methods[] = [];
-	$duped_xmlfiles[]           = [];
-	$duped_scripts[]            = [];
-	$duped_data_query_graphs[]  = [];
+	$duped_graph_templates    = [];
+	$duped_data_templates     = [];
+	$duped_data_input_methods = [];
+	$duped_xmlfiles           = [];
+	$duped_scripts            = [];
+	$duped_data_query_graphs  = [];
 
 	$start = microtime(true);
 
@@ -2488,6 +2599,12 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 		FROM host_template
 		WHERE id = ?',
 		[$template_id]);
+
+	if (!cacti_sizeof($device_template)) {
+		api_clone_message(sprintf('ERROR: Device Template %s does not exist.', $template_id), true);
+
+		return false;
+	}
 
 	api_clone_message(sprintf('NOTE: Beginning Cloning Device Template %s.', $device_template['name']));
 
@@ -2501,14 +2618,18 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 
 	$new_name = api_clone_get_unique_name($new_name, 'host_template', 'name');
 
+	if ($new_name === false) {
+		api_clone_message('ERROR: Unable to allocate a unique Device Template name.', true);
+
+		return false;
+	}
+
 	api_clone_message(sprintf('NOTE: Cloning Device Template \'%s\'to \'%s\'', $device_template['name'], $new_name), true);
 
 	$save         = $device_template;
 	$save['id']   = 0;
 	$save['name'] = $new_name;
 	$save['hash'] = $device_template_hash;
-
-	$new_template = sql_save($save, 'host_template');
 
 	/**
 	 * This process follows the following algorithm
@@ -2552,9 +2673,72 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 	// get the list of exist Data Template Objects
 	$objects = api_clone_device_template_get_objects($template_id);
 
+	$selection_ids = static function (string $selection, array $available) : array|false {
+		if ($selection == 'all') {
+			return array_map('intval', array_keys($available));
+		}
+
+		if ($selection == '') {
+			return [];
+		}
+
+		$ids = explode(',', $selection);
+
+		foreach ($ids as $id) {
+			if (!ctype_digit($id) || (int) $id <= 0 || !array_key_exists((int) $id, $available)) {
+				return false;
+			}
+		}
+
+		return array_values(array_unique(array_map('intval', $ids)));
+	};
+
+	$included_graph_templates = $selection_ids($include_gt, $objects['graph_templates']);
+	$cloned_graph_templates   = $selection_ids($clone_gt, $objects['graph_templates']);
+	$included_data_queries    = $selection_ids($include_dq, $objects['data_queries']);
+	$cloned_data_queries      = $selection_ids($clone_dq, $objects['data_queries']);
+	$included_data_templates  = $selection_ids($include_dt, $objects['data_templates']);
+	$cloned_data_templates    = $selection_ids($clone_dt, $objects['data_templates']);
+
+	if ($included_graph_templates === false || $cloned_graph_templates === false ||
+		$included_data_queries       === false || $cloned_data_queries === false ||
+		$included_data_templates     === false || $cloned_data_templates === false) {
+		api_clone_message('ERROR: One or more clone selections contain an invalid object ID.', true);
+
+		return false;
+	}
+
+	$selected_graph_templates = array_unique(array_merge(
+		$included_graph_templates,
+		$cloned_graph_templates
+	));
+	$selected_data_templates = array_unique(array_merge(
+		$included_data_templates,
+		$cloned_data_templates
+	));
+
+	foreach ($objects['data_templates'] as $data_template_id => $data_template) {
+		$graph_template_ids = array_map('intval', array_keys($data_template['graph_template_ids']));
+
+		if (array_intersect($selected_graph_templates, $graph_template_ids) &&
+			!in_array((int) $data_template_id, $selected_data_templates, true)) {
+			api_clone_message(sprintf('ERROR: Data Template \'%s\' is required by a selected Graph Template but was not included or cloned.', $data_template['name']), true);
+
+			return false;
+		}
+	}
+
+	$new_template = sql_save($save, 'host_template');
+
+	if (!$new_template) {
+		api_clone_message('ERROR: Unable to create the Device Template clone.', true);
+
+		return false;
+	}
+
 	// include graph templates
 	if ($include_gt != '' && $include_gt != 'all') {
-		$sql_where = 'AND graph_template_id IN (' . $include_gt . ')';
+		$sql_where = 'AND ' . db_in_clause('graph_template_id', $included_graph_templates);
 	} elseif ($clone_gt == 'all') {
 		$sql_where = 'AND 1 = 0';
 	} else {
@@ -2582,7 +2766,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 
 	// include data queries
 	if ($include_dq != '' && $include_dq != 'all') {
-		$sql_where = 'AND snmp_query_id IN (' . $include_dq . ')';
+		$sql_where = 'AND ' . db_in_clause('snmp_query_id', $included_data_queries);
 	} elseif ($clone_dq == 'all') {
 		$sql_where = 'AND 1 = 0';
 	} else {
@@ -2619,13 +2803,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 	if ($clone_dq != '') {
 		api_clone_message('NOTE: Starting Data Query Clone Process');
 
-		if ($clone_dq == 'all') {
-			$ids = array_keys($objects['data_queries']);
-		} else {
-			$ids = explode(',', $clone_dq);
-		}
-
-		foreach ($ids as $id) {
+		foreach ($cloned_data_queries as $id) {
 			$old_name    = $objects['data_queries'][$id]['name'];
 			$new_name    = api_clone_get_unique_name($old_name, 'snmp_query', 'name');
 			$new_dq      = data_query_duplicate($id, $new_name);
@@ -2643,12 +2821,25 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 				$old_xmlfile = $objects['data_queries'][$id]['xml_path'];
 				$old_xmlbase = str_replace(CACTI_PATH_BASE, '', $old_xmlfile);
 				$new_xmlfile = api_clone_get_unique_filename($old_xmlfile);
+
+				if ($new_xmlfile === false) {
+					api_clone_message(sprintf('ERROR: Unable to allocate a unique XML filename for \'%s\'.', $old_xmlbase), true);
+
+					return false;
+				}
+
 				$new_xmlbase = str_replace(CACTI_PATH_BASE, '', $new_xmlfile);
 
 				if (!isset($duped_xmlfiles[$old_xmlfile])) {
 					api_clone_message(sprintf('NOTE: Copying XML Base \'%s\' to \'%s\'', $old_xmlbase, $new_xmlbase));
 
 					$new_xml = copy($old_xmlfile, $new_xmlfile);
+
+					if (!$new_xml) {
+						api_clone_message(sprintf('ERROR: Unable to copy XML Base \'%s\' to \'%s\'.', $old_xmlbase, $new_xmlbase), true);
+
+						return false;
+					}
 
 					$duped_xmlfiles[$old_xmlfile] = $new_xmlfile;
 
@@ -2657,29 +2848,50 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 							$old_scriptfile = $objects['data_queries'][$id]['script_path'];
 							$old_scriptbase = str_replace(CACTI_PATH_BASE, '', $old_scriptfile);
 							$new_scriptfile = api_clone_get_unique_filename($old_scriptfile);
-							$new_scriptbase = str_replace(CACTI_PATH_BASE, '', $new_scriptfile);
 
-							if ($new_xmlfile !== false) {
+							if ($new_scriptfile !== false) {
+								$new_scriptbase = str_replace(CACTI_PATH_BASE, '', $new_scriptfile);
+
 								if (!isset($duped_scripts[$old_scriptfile])) {
 									api_clone_message(sprintf('NOTE: Copying Script Base \'%s\' to \'%s\'', $old_scriptbase, $new_scriptbase));
 
-									$new_script     = copy($old_scriptfile, $new_scriptfile);
+									$new_script = copy($old_scriptfile, $new_scriptfile);
+
+									if ($new_script) {
+										$duped_scripts[$old_scriptfile] = $new_scriptfile;
+									} else {
+										api_clone_message(sprintf('ERROR: Unable to copy Script Base \'%s\' to \'%s\'.', $old_scriptbase, $new_scriptbase), true);
+
+										return false;
+									}
 								} else {
 									// skipping as we've already cloned
 									$new_script     = true;
 									$new_scriptfile = $duped_scripts[$old_scriptfile];
 								}
+							} else {
+								api_clone_message(sprintf('ERROR: Unable to allocate a unique script filename for \'%s\'.', $old_scriptbase), true);
+
+								return false;
 							}
 						}
 					}
 
 					// update the XML with new values
-					if ($new_script && isset($old_scriptfile) && isset($new_scriptfile)) {
+					if ($new_script) {
 						api_clone_message(sprintf('NOTE: Updating \'%s\' with new values', $new_xmlfile));
 
 						$data = file_get_contents($new_xmlfile);
+
+						if ($data === false) {
+							return false;
+						}
+
 						$data = str_replace($old_scriptfile, $new_scriptfile, $data);
-						file_put_contents($new_xmlfile, $data);
+
+						if (file_put_contents($new_xmlfile, $data) === false) {
+							return false;
+						}
 					}
 				} else {
 					// skipping as we've already cloned
@@ -2853,13 +3065,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 	if ($clone_gt != '') {
 		api_clone_message('NOTE: Cloning Non Data Query Graph Templates');
 
-		if ($clone_gt == 'all') {
-			$ids = array_keys($objects['graph_templates']);
-		} else {
-			$ids = explode(',', $clone_gt);
-		}
-
-		foreach ($ids as $id) {
+		foreach ($cloned_graph_templates as $id) {
 			$old_name = $objects['graph_templates'][$id]['name'];
 			$new_name = api_clone_get_unique_name($old_name, 'graph_templates', 'name');
 
@@ -2881,59 +3087,121 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 		}
 	}
 
-	if (1 == 1) {
-		return $new_template;
-	} else {
-		// FIXME : Unused Code after exit
-		if ($clone_dt != '') {
-			api_clone_message('NOTE: Cloning Non Data Query Draph Templates');
+	if ($clone_dt != '') {
+		api_clone_message('NOTE: Cloning Non Data Query Data Templates');
 
-			if ($clone_dt == 'all') {
-				$ids = array_keys($objects['data_templates']);
-			} else {
-				$ids = explode(',', $clone_dt);
+		foreach ($cloned_data_templates as $id) {
+			$id       = (int) $id;
+			$old_name = $objects['data_templates'][$id]['name'];
+			$new_name = api_clone_get_unique_name($old_name, 'data_template', 'name');
+
+			if ($new_name === false) {
+				return false;
 			}
 
-			foreach ($ids as $id) {
-				$graph_templates = $objects['data_templates'][$id]['graph_templates'];
+			api_clone_message(sprintf('NOTE: Cloning Data Template \'%s\' to \'%s\'', $old_name, $new_name), true);
 
-				$old_name = $objects['data_templates'][$id]['name'];
-				$new_name = api_clone_get_unique_name($old_name, 'data_template', 'name');
+			$new_dt = api_data_source_duplicate(0, $id, $new_name);
 
-				if (!isset($duped_data_templates[$id])) {
-					api_clone_message(sprintf('NOTE: Cloning Data Template \'%s\' to \'%s\'', $old_name, $new_name), true);
+			if (!$new_dt) {
+				return false;
+			}
 
-					$new_dt = api_data_source_duplicate(0, $id, $new_name);
+			$duped_data_templates[$id] = $new_dt;
 
-					if (isset($objects['data_templates'][$id]['script_path'])) {
-						$old_scriptfile = $objects['data_queries'][$id]['script_path'];
-						$new_scriptfile = api_clone_get_unique_filename($old_scriptfile);
+			if ($clone_script && isset($objects['data_templates'][$id]['script_path'])) {
+				$old_data_input_id = (int) $objects['data_templates'][$id]['data_input_id'];
 
-						if (!isset($duped_scripts[$old_scriptfile])) {
-							api_clone_message(sprintf('NOTE: Cloning Data Input Script \'%s\' to \'%s\'', $old_scriptfile, $new_scriptfile), true);
+				if (!isset($duped_data_input_methods[$old_data_input_id])) {
+					$old_scriptfile = $objects['data_templates'][$id]['script_path'];
+					$new_scriptfile = api_clone_get_unique_filename($old_scriptfile);
 
-							$new_script = copy($old_scriptfile, $new_scriptfile);
-						} else {
-							// skipping as we've already cloned
-							$new_script = $duped_scripts[$old_scriptfile];
-						}
-
-						// TO-DO Data Input Duplication
-						//					db_execute('UPDATE data_input SET input_string=REPLACE(input_string, ?, ?)
-						//						WHERE data_input_id = ?',
-						//						array($old_scriptfile, $new_scriptfile, $new_di_id));
+					if ($new_scriptfile === false || !copy($old_scriptfile, $new_scriptfile)) {
+						return false;
 					}
 
-					$duped_data_templates[$id] = $new_dt;
-				} else {
-					// skipping as we've already cloned
-					$new_dt = $duped_data_templates[$id];
+					$old_input_name = db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', [$old_data_input_id]);
+					$new_input_name = api_clone_get_unique_name($old_input_name, 'data_input', 'name');
+
+					if ($new_input_name === false) {
+						return false;
+					}
+
+					$new_data_input_id = api_data_input_duplicate($old_data_input_id, $new_input_name);
+
+					if (!$new_data_input_id) {
+						return false;
+					}
+
+					db_execute_prepared('UPDATE data_input
+						SET input_string = REPLACE(input_string, ?, ?)
+						WHERE id = ?',
+						[$old_scriptfile, $new_scriptfile, $new_data_input_id]);
+
+					$duped_data_input_methods[$old_data_input_id] = $new_data_input_id;
+					$duped_scripts[$old_scriptfile]               = $new_scriptfile;
+				}
+
+				$new_data_input_id = $duped_data_input_methods[$old_data_input_id];
+				$new_dtd_id        = db_fetch_cell_prepared('SELECT id
+					FROM data_template_data
+					WHERE data_template_id = ?
+					AND local_data_id = 0',
+					[$new_dt]);
+
+				db_execute_prepared('UPDATE data_template_data
+					SET data_input_id = ?
+					WHERE id = ?',
+					[$new_data_input_id, $new_dtd_id]);
+
+				$input_fields = db_fetch_assoc_prepared('SELECT old_field.id AS old_id, new_field.id AS new_id
+					FROM data_input_fields AS old_field
+					INNER JOIN data_input_fields AS new_field
+					ON new_field.data_name = old_field.data_name
+					AND new_field.input_output = old_field.input_output
+					WHERE old_field.data_input_id = ?
+					AND new_field.data_input_id = ?',
+					[$old_data_input_id, $new_data_input_id]);
+
+				foreach ($input_fields as $input_field) {
+					db_execute_prepared('UPDATE data_input_data
+						SET data_input_field_id = ?
+						WHERE data_template_data_id = ?
+						AND data_input_field_id = ?',
+						[$input_field['new_id'], $new_dtd_id, $input_field['old_id']]);
+				}
+			}
+
+			$old_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name
+				FROM data_template_rrd
+				WHERE data_template_id = ?
+				AND local_data_id = 0',
+				[$id]);
+
+			foreach ($old_rrds as $old_rrd) {
+				$new_rrd_id = db_fetch_cell_prepared('SELECT id
+					FROM data_template_rrd
+					WHERE data_template_id = ?
+					AND data_source_name = ?
+					AND local_data_id = 0',
+					[$new_dt, $old_rrd['data_source_name']]);
+
+				foreach ($duped_graph_templates as $new_graph_template_id) {
+					if (!is_numeric($new_graph_template_id)) {
+						continue;
+					}
+
+					db_execute_prepared('UPDATE graph_templates_item
+						SET task_item_id = ?
+						WHERE graph_template_id = ?
+						AND task_item_id = ?',
+						[$new_rrd_id, $new_graph_template_id, $old_rrd['id']]);
 				}
 			}
 		}
-
-		return $new_template;
 	}
+
+	return $new_template;
 }
 
 /**
@@ -2945,13 +3213,29 @@ function api_clone_device_template(int $template_id, string $template_name, stri
  * @return void
  */
 function api_device_template_download(string $type, array $ids) : void {
+	if (!in_array($type, ['templates', 'archives'], true)) {
+		raise_message('invalid_device_download_type', __('Invalid Device Template download type.'), MESSAGE_LEVEL_ERROR);
+
+		return;
+	}
+
+	$ids = array_values(array_unique(array_filter($ids, static function (mixed $id) : bool {
+		return ctype_digit((string) $id) && (int) $id > 0;
+	})));
+
+	if (!cacti_sizeof($ids)) {
+		raise_message('invalid_device_download_ids', __('No valid Device Templates were selected for download.'), MESSAGE_LEVEL_ERROR);
+
+		return;
+	}
+
 	$name = 'unknown';
 
 	if (cacti_sizeof($ids) == 1) {
 		if ($type == 'templates') {
-			$name = clean_up_name(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', $ids));
+			$name = clean_up_name((string) db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', $ids));
 		} else {
-			$name = clean_up_name(db_fetch_cell_prepared('SELECT name FROM host_template_archive WHERE id = ?', $ids));
+			$name = clean_up_name((string) db_fetch_cell_prepared('SELECT name FROM host_template_archive WHERE id = ?', $ids));
 		}
 
 		$filename = 'device_package_' . cacti_strtolower($name) . '_download.tar';
@@ -2959,52 +3243,81 @@ function api_device_template_download(string $type, array $ids) : void {
 		$filename = 'device_package_multiple_download.tar';
 	}
 
-	// $directory = sys_get_temp_dir() . '/ht_download_' . rand() . '/';
-	// mkdir($directory, 0755);
+	$temp_directory = sys_get_temp_dir() . '/cacti-device-download-' . bin2hex(random_bytes(16));
 
-	$tmpfile = sys_get_temp_dir() . '/' . $filename;
+	if (!mkdir($temp_directory, 0700)) {
+		raise_message('device_download_temp_failed', __('Unable to create a temporary Device Template download directory.'), MESSAGE_LEVEL_ERROR);
 
-	$archive = new PharData($tmpfile);
-
-	foreach ($ids as $id) {
-		$name = 'unknown';
-
-		if ($type == 'archives') {
-			$data = db_fetch_row_prepared('SELECT * FROM host_template_archive WHERE id = ?', [$id]);
-
-			if (cacti_sizeof($data)) {
-				$name = 'device_template_' . clean_up_name($data['name']) . '.tgz';
-			}
-
-			$contents = base64_decode($data['archive'], true);
-
-			$archive->addFromString('./' . $name, $contents);
-		} else {
-			$data = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', [$id]);
-
-			if (cacti_sizeof($data)) {
-				$name = 'device_template_' . clean_up_name($data['name']) . '.tgz';
-			}
-
-			$contents = api_device_template_archive_for_export($id);
-
-			$archive->addFromString('./' . $name, $contents);
-		}
+		return;
 	}
 
-	$archive->compress(Phar::GZ);
+	$tmpfile     = $temp_directory . '/download.tar';
+	$gzip_file   = $tmpfile . '.gz';
+	$files_added = 0;
 
-	$otmpfile  = $tmpfile;
-	$tmpfile .= '.gz';
-	$filename .= '.gz';
+	try {
+		$archive = new PharData($tmpfile);
 
-	header('Content-type: application/gzip');
-	header('Content-Disposition: attachment; filename=' . $filename);
+		foreach ($ids as $id) {
+			$data = [];
 
-	print file_get_contents($tmpfile);
+			if ($type == 'archives') {
+				$data = db_fetch_row_prepared('SELECT * FROM host_template_archive WHERE id = ?', [$id]);
 
-	unlink($otmpfile);
-	unlink($tmpfile);
+				if (!cacti_sizeof($data)) {
+					continue;
+				}
+
+				$contents = base64_decode($data['archive'], true);
+			} else {
+				$data = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', [$id]);
+
+				if (!cacti_sizeof($data)) {
+					continue;
+				}
+
+				$contents = api_device_template_archive_for_export((int) $id);
+			}
+
+			if (!is_string($contents)) {
+				continue;
+			}
+
+			$entry_name = 'device_template_' . clean_up_name($data['name']) . '_' . (int) $id . '.tgz';
+			$archive->addFromString($entry_name, $contents);
+			$files_added++;
+		}
+
+		if (!$files_added) {
+			raise_message('device_download_empty', __('None of the selected Device Templates could be exported.'), MESSAGE_LEVEL_ERROR);
+
+			return;
+		}
+
+		$archive->compress(Phar::GZ);
+		$download = file_get_contents($gzip_file);
+
+		if ($download === false) {
+			raise_message('device_download_read_failed', __('The Device Template archive could not be read after it was created.'), MESSAGE_LEVEL_ERROR);
+
+			return;
+		}
+
+		header('Content-type: application/gzip');
+		header('Content-Disposition: attachment; filename=' . $filename . '.gz');
+
+		print $download;
+	} finally {
+		if (file_exists($tmpfile)) {
+			unlink($tmpfile);
+		}
+
+		if (file_exists($gzip_file)) {
+			unlink($gzip_file);
+		}
+
+		rmdir($temp_directory);
+	}
 }
 
 /**
