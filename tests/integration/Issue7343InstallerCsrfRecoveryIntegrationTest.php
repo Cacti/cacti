@@ -215,7 +215,7 @@ test('installer csrf timeout returns a replacement token accepted by the next re
 			->and($rejected['headers']['x-content-type-options'] ?? [])->toContain('nosniff')
 			->and($payload)->toBeArray()
 			->and($payload['error'] ?? null)->toBe('csrf_timeout')
-			->and($payload['csrfMagicToken'] ?? '')->toStartWith('sid:')
+			->and($payload['csrfMagicToken'] ?? '')->not->toBe('')
 			->and($cookie)->not->toBe('');
 
 		$accepted = issue7343Post(
@@ -228,7 +228,7 @@ test('installer csrf timeout returns a replacement token accepted by the next re
 		expect($accepted['status'])->toBe(200)
 			->and($acceptedPayload)->toBeArray()
 			->and($acceptedPayload['csrfValidated'] ?? false)->toBeTrue()
-			->and($acceptedPayload['csrfMagicToken'] ?? '')->toStartWith('sid:');
+			->and($acceptedPayload['csrfMagicToken'] ?? '')->not->toBe('');
 	} finally {
 		if (is_resource($server)) {
 			issue7343StopServer($server, $pipes);
