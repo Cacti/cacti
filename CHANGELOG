@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.x
 -security: Harden advisory command execution and database DDL sink validation
+-security: Restrict graph input fields across the template, graph and import handoffs
 -security: Treat a non-boolean signature result as a failure in import_package
 -issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata

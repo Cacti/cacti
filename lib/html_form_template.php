@@ -156,14 +156,14 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 
 	if (cacti_sizeof($input_item_list)) {
 		foreach ($input_item_list as $item) {
-			if (!db_column_exists('graph_templates_item', $item['column_name'])) {
+			if (!graph_template_input_column_is_allowed($item['column_name'])) {
 				raise_message_javascript(
-					__('Attempted SQL Injection'),
-					__('There was a SQL Injection attempted on the page'),
-					__('A client attempted to create a SQL Injection into Cacti likely from an external host with the address %s', get_client_addr())
+					__('Invalid Graph Template Input'),
+					__('The graph template cannot be rendered'),
+					__('A Graph Item Input contains an invalid Field Type.')
 				);
 
-				cacti_log(sprintf('ERROR: A client attempted to create a SQL Injection into Cacti likely from an external host with the address %s', get_client_addr()), false, 'SECURITY');
+				cacti_log('ERROR: Graph rendering refused an invalid graph input field', false, 'SECURITY');
 
 				exit;
 			}
@@ -656,4 +656,3 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 		form_text_box($field_name, $current_value, '', '');
 	}
 }
-
