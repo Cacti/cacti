@@ -85,6 +85,7 @@ Cacti CHANGELOG
 -issue#7536: Consolidate the four hand-written poller_output_boost inserts into one shared helper
 -issue#7535: Consolidate the poller_item delete call sites behind poller_item_delete_for_data_source() and poller_item_delete_for_host()
 -issue#7576: Stop passing an unset path_php_binary into string parameters
+-issue#7684: Scope the local-login password rehash to realm 0 and only rehash after a successful login
 -issue#7693: Validate host_id before it reaches the graph template query
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
