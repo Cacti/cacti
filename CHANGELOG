@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#7553: Drop down menus do not update page content after upgrading to 1.2.31
 -issue#7666: cacti_exec() returned the wrong exit code and warned about a missing exit_code key
 -issue#7699: Guard three divisors that PHP 8 makes fatal
+-issue#7702: CSP report endpoint size limit never triggers and rate-limit buckets accumulate
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
