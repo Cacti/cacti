@@ -1,0 +1,129 @@
+# Cacti-aware Semgrep rules.
+#
+# Off-the-shelf PHP rules do not know Cacti's own primitives, so they miss the
+# request-variable -> SQL / shell / RRDtool flows that have produced real CVEs
+# and flag htmle()-escaped output as false positives. These rules model:
+#   sources     - grv(), gnrv(), get_nfilter_request_var()   (raw request input)
+#   sanitizers  - db_qstr[_rlike](), sanitize_sql_column(), (int) cast,
+#                 gfrv()/get_filter_request_var(), cacti_escapeshellarg(),
+#                 html_escape()/htmle()
+#   sinks       - non-prepared db_fetch_*/db_execute, the get_allowed_* WHERE
+#                 builders, shell_exec/exec/popen/proc_open/rrdtool_execute,
+#                 and print/echo (output).
+#
+# Run:   semgrep --config tests/security/semgrep/cacti-security.yml .
+# Test:  semgrep --test    tests/security/semgrep/
+
+rules:
+  - id: cacti-request-var-in-sql
+    mode: taint
+    languages: [php]
+    severity: ERROR
+    message: >
+      A raw request variable flows into a SQL string without parameterization
+      or identifier confinement. Use a *_prepared() helper with bound '?'
+      parameters, db_qstr()/db_qstr_rlike() for values, or
+      sanitize_sql_column() for identifiers. Ref: GHSA-4899 (host_id),
+      GHSA-wfcf (group).
+    metadata:
+      cwe: "CWE-89: Improper Neutralization of Special Elements used in an SQL Command"
+      category: security
+      confidence: MEDIUM
+    pattern-sources:
+      - pattern-either:
+          - pattern: grv(...)
+          - pattern: gnrv(...)
+          - pattern: get_nfilter_request_var(...)
+    pattern-sanitizers:
+      - pattern: db_qstr(...)
+      - pattern: db_qstr_rlike(...)
+      - pattern: sanitize_sql_column(...)
+      - pattern: gfrv(...)
+      - pattern: get_filter_request_var(...)
+      - pattern: intval(...)
+      - pattern: (int) $X
+      - pattern: (float) $X
+    pattern-sinks:
+      - patterns:
+          - pattern-either:
+              - pattern: db_fetch_cell($SQL, ...)
+              - pattern: db_fetch_assoc($SQL, ...)
+              - pattern: db_fetch_row($SQL, ...)
+              - pattern: db_fetch_cell($SQL)
+              - pattern: db_fetch_assoc($SQL)
+              - pattern: db_fetch_row($SQL)
+              - pattern: db_execute($SQL)
+              - pattern: db_execute($SQL, ...)
+              - pattern: get_allowed_graphs($SQL, ...)
+              - pattern: get_allowed_graph_templates($SQL, ...)
+              - pattern: get_allowed_graph_templates_normalized($SQL, ...)
+              - pattern: get_allowed_devices($SQL, ...)
+              - pattern: get_allowed_trees($SQL, ...)
+          # the *_prepared variants bind values and are safe
+          - pattern-not: db_fetch_cell_prepared(...)
+          - pattern-not: db_fetch_assoc_prepared(...)
+          - pattern-not: db_fetch_row_prepared(...)
+          - pattern-not: db_execute_prepared(...)
+
+  - id: cacti-request-var-in-shell-or-rrdtool
+    mode: taint
+    languages: [php]
+    severity: ERROR
+    message: >
+      A raw request or stored value reaches a shell / RRDtool command without
+      cacti_escapeshellarg(). RRDtool batch mode also treats a newline as a
+      command separator, so strip CR/LF too. Ref: GHSA-hcj6 / CVE-2026-39949.
+    metadata:
+      cwe: "CWE-78: Improper Neutralization of Special Elements used in an OS Command"
+      category: security
+      confidence: MEDIUM
+    pattern-sources:
+      - pattern-either:
+          - pattern: grv(...)
+          - pattern: gnrv(...)
+          - pattern: get_nfilter_request_var(...)
+    pattern-sanitizers:
+      - pattern: cacti_escapeshellarg(...)
+      - pattern: cacti_escapeshellcmd(...)
+      - pattern: escapeshellarg(...)
+      - pattern: intval(...)
+      - pattern: (int) $X
+    pattern-sinks:
+      - pattern-either:
+          - pattern: shell_exec($CMD)
+          - pattern: exec($CMD, ...)
+          - pattern: exec($CMD)
+          - pattern: popen($CMD, ...)
+          - pattern: proc_open($CMD, ...)
+          - pattern: system($CMD, ...)
+          - pattern: passthru($CMD, ...)
+          - pattern: rrdtool_execute($CMD, ...)
+
+  - id: cacti-request-var-echoed-unescaped
+    mode: taint
+    languages: [php]
+    severity: WARNING
+    message: >
+      A raw request variable is written to the response without html_escape()
+      /htmle(). In an HTML or a single-quoted JS-string context this is XSS.
+      Ref: GHSA-c3wx (device location value attribute).
+    metadata:
+      cwe: "CWE-79: Improper Neutralization of Input During Web Page Generation"
+      category: security
+      confidence: LOW
+    pattern-sources:
+      - pattern-either:
+          - pattern: grv(...)
+          - pattern: gnrv(...)
+          - pattern: get_nfilter_request_var(...)
+    pattern-sanitizers:
+      - pattern: html_escape(...)
+      - pattern: htmle(...)
+      - pattern: htmlspecialchars(...)
+      - pattern: json_encode(...)
+      - pattern: intval(...)
+      - pattern: (int) $X
+    pattern-sinks:
+      - pattern-either:
+          - pattern: print $X;
+          - pattern: echo $X;
