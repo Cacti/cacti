@@ -48,3 +48,30 @@ test('include/global.php invokes the guard after loading it', function () use ($
 		->and($include)->not->toBeFalse()
 		->and($include)->toBeLessThan($startup);
 });
+
+/*
+ * include/session.php registers session_write_close() as a shutdown
+ * function, and shutdown functions run before output buffers flush. A token
+ * minted lazily from inside the ob_start() callback would therefore write
+ * $_SESSION after the session already closed on any request where that
+ * callback runs the first mint of the request. Exercising this end to end
+ * would require a real shutdown-function pass, which Pest cannot simulate
+ * mid-test, so this asserts the fix at the source level: csrf_startup()
+ * must call token() before it registers the output handler.
+ */
+test('csrf_startup mints a token before registering the output handler', function () use ($root) {
+	$src = file_get_contents($root . '/include/csrf.php');
+
+	$start = strpos($src, 'function csrf_startup(');
+	expect($start)->not->toBeFalse();
+
+	$end  = strpos($src, "\nfunction ", $start + 1);
+	$body = substr($src, $start, ($end === false ? strlen($src) : $end) - $start);
+
+	$token   = strpos($body, '$guard->token();');
+	$obStart = strpos($body, 'ob_start(');
+
+	expect($token)->not->toBeFalse()
+		->and($obStart)->not->toBeFalse()
+		->and($token)->toBeLessThan($obStart);
+});

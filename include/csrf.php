@@ -89,6 +89,15 @@ function csrf_startup() : void {
 		return;
 	}
 
+	/* include/session.php registers session_write_close() as a shutdown
+	   function, and shutdown functions run before output buffers flush.  If
+	   the token were minted lazily from inside the output buffer callback
+	   below, the first mint on a POST that reaches csrf_check() via the
+	   legacy fallback would write $_SESSION after the session already
+	   closed, and the token rendered into the page would never validate.
+	   Mint it now, while the session is still open. */
+	$guard->token();
+
 	ob_start(function ($buffer) use ($guard) {
 		return $guard->rewriteBuffer($buffer);
 	});
