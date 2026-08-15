@@ -27,7 +27,23 @@ use Symfony\Component\Security\Csrf\TokenStorage\NativeSessionTokenStorage;
 
 const CSRF_TEST_SECRET = 'a-known-test-secret';
 
+/**
+ * Ensure a session exists before a test reads session_id().
+ *
+ * A legacy token binds to the session id, and NativeSessionTokenStorage only
+ * starts a session lazily on first access.  Without this the id a test forges
+ * against is empty while the id validate() later sees is real, so this file
+ * passed only when some earlier file in the run had already started one.
+ */
+function csrf_test_start_session() : void {
+	if (session_status() !== PHP_SESSION_ACTIVE) {
+		session_start();
+	}
+}
+
 function csrf_test_legacy_guard() : CactiCsrfGuard {
+	csrf_test_start_session();
+
 	$_SESSION = [];
 
 	$storage = new NativeSessionTokenStorage();
@@ -81,6 +97,8 @@ test('values with no colon never reach the legacy path', function () {
 });
 
 test('legacy validation is off when no secret is configured', function () {
+	csrf_test_start_session();
+
 	$_SESSION = [];
 
 	$storage = new NativeSessionTokenStorage();
@@ -90,4 +108,67 @@ test('legacy validation is off when no secret is configured', function () {
 	$token = csrf_test_forge_legacy(session_id(), time(), CSRF_TEST_SECRET);
 
 	expect($guard->validate($token))->toBeFalse();
+});
+
+/*
+ * cli/refresh_csrf.php does not write a bare digest.  It writes PHP source:
+ *
+ *     fwrite($fh, '<?php $secret = "' . $new_secret . '";' . PHP_EOL);
+ *
+ * csrf-magic keyed its HMAC on the raw bytes of that file, PHP tags and
+ * trailing newline included.  Any site that followed Cacti's own rotation
+ * advice has a secret in this shape, so a reader that normalises whitespace
+ * derives a different key and rejects every pre-upgrade token it was added to
+ * accept -- silently, because a rejected token is indistinguishable from an
+ * expired one.
+ */
+
+/**
+ * Write a secret file the way cli/refresh_csrf.php writes it.
+ *
+ * @param string $digest The hex digest to embed.
+ *
+ * @return string Path to the temporary file, which the caller must unlink.
+ */
+function csrf_test_write_rotated_secret(string $digest) : string {
+	$file = tempnam(sys_get_temp_dir(), 'cacti-csrf-secret-');
+
+	file_put_contents($file, '<?php $secret = "' . $digest . '";' . PHP_EOL);
+
+	return $file;
+}
+
+test('a secret rotated by refresh_csrf.php still validates a pre-upgrade token', function () {
+	$file = csrf_test_write_rotated_secret(str_repeat('ab', 20));
+
+	try {
+		$raw = (string) file_get_contents($file);
+
+		expect($raw)->toEndWith(PHP_EOL)
+			->and($raw)->not->toBe(trim($raw));
+
+		csrf_test_start_session();
+
+		$_SESSION = [];
+
+		$manager = new CsrfTokenManager(new UriSafeTokenGenerator(), new NativeSessionTokenStorage());
+		$token   = csrf_test_forge_legacy(session_id(), time(), $raw);
+
+		$guard = new CactiCsrfGuard($manager, true, $raw, 7200);
+		expect($guard->validate($token))->toBeTrue();
+
+		// the same file read through trim() is a different key
+		$trimmed = new CactiCsrfGuard($manager, true, trim($raw), 7200);
+		expect($trimmed->validate($token))->toBeFalse();
+	} finally {
+		unlink($file);
+	}
+});
+
+test('neither secret reader normalises the bytes it reads', function () {
+	$src = file_get_contents(dirname(__DIR__, 2) . '/include/csrf.php');
+
+	expect($src)->toContain('file_get_contents(CACTI_CSRF_SECRET)')
+		->and($src)->toContain('(string) @file_get_contents($file)')
+		->and($src)->not->toContain('trim(');
 });

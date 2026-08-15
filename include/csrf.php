@@ -51,10 +51,15 @@ function csrf_guard() : CactiCsrfGuard {
 		$storage
 	);
 
-	// Read-only on purpose.  csrf_get_secret() mints and persists a secret when
-	// none exists, and the grace window must not create the very file phase 2
-	// deletes.  A missing secret simply disables the legacy fallback.
-	$secret = (defined('CACTI_CSRF_SECRET') && CACTI_CSRF_SECRET != '' && is_readable(CACTI_CSRF_SECRET) ? trim((string) file_get_contents(CACTI_CSRF_SECRET)) : '');
+	/* Read-only on purpose.  csrf_get_secret() mints and persists a secret when
+	   none exists, and the grace window must not create the very file phase 2
+	   deletes.  A missing secret simply disables the legacy fallback.
+
+	   Do not trim.  csrf-magic keyed its HMAC on the raw bytes of this file,
+	   and cli/refresh_csrf.php writes PHP source with a trailing newline, so
+	   stripping whitespace yields a different key and silently rejects every
+	   pre-upgrade token on any site that ever rotated its secret. */
+	$secret = (defined('CACTI_CSRF_SECRET') && CACTI_CSRF_SECRET != '' && is_readable(CACTI_CSRF_SECRET) ? (string) file_get_contents(CACTI_CSRF_SECRET) : '');
 
 	$guard = new CactiCsrfGuard($manager, true, $secret, 7200);
 	$guard->setScriptUrl(CACTI_PATH_URL . 'include/js/csrf.js');
@@ -184,7 +189,8 @@ function csrf_get_secret() : string {
 	$file = (defined('CACTI_CSRF_SECRET') ? CACTI_CSRF_SECRET : '');
 
 	if ($file != '' && file_exists($file)) {
-		$secret = trim((string) @file_get_contents($file));
+		// the raw bytes are the key; see the note in csrf_guard()
+		$secret = (string) @file_get_contents($file);
 
 		if ($secret !== '') {
 			return $secret;
