@@ -42,6 +42,12 @@ final class CactiCsrfGuard {
 	public const INTENTION_GLOBAL = 'cacti';
 
 	/**
+	 * The POST field name.  Third-party plugins read and write this name, so
+	 * it is a compatibility contract and must not change.
+	 */
+	public const INPUT_NAME = '__csrf_magic';
+
+	/**
 	 * csrf-magic's default hash.  It never set csrf_conf('hash'), so every
 	 * token Cacti ever issued used sha1.
 	 */
@@ -54,6 +60,12 @@ final class CactiCsrfGuard {
 	private string $legacySecret;
 
 	private int $legacyExpiry;
+
+	private string $scriptUrl = '';
+
+	private string $nonce = '';
+
+	private bool $isHtml = false;
 
 	/**
 	 * @param CsrfTokenManagerInterface|null $manager      Null when Symfony is not
@@ -112,6 +124,85 @@ final class CactiCsrfGuard {
 		}
 
 		return $this->validateLegacyHmac($value);
+	}
+
+	/**
+	 * @param string $url URL of the XHR-patching script to inject.
+	 */
+	public function setScriptUrl(string $url) : void {
+		$this->scriptUrl = $url;
+	}
+
+	/**
+	 * Supply a CSP nonce for the scripts this class injects.
+	 *
+	 * develop currently sends 'unsafe-inline', so this is unused today.  1.2.x
+	 * has already moved to nonce-based CSP; when develop follows, the injected
+	 * scripts would silently stop running and take every AJAX call with them.
+	 *
+	 * @param string $nonce The per-request nonce, or an empty string for none.
+	 */
+	public function setNonce(string $nonce) : void {
+		$this->nonce = $nonce;
+	}
+
+	/**
+	 * Inject the CSRF token into POST forms and the XHR shim into the page.
+	 *
+	 * The form pattern is carried over from csrf-magic unchanged.  It is
+	 * deliberately not widened: every POST is validated, decorated or not, so
+	 * a form this pattern misses already fails visibly rather than silently.
+	 *
+	 * The handler may be called repeatedly for a chunked response, so the
+	 * "have we seen <html yet" decision is remembered on the instance.
+	 *
+	 * @param string $buffer One chunk of output.
+	 *
+	 * @return string The chunk, rewritten when it is HTML.
+	 */
+	public function rewriteBuffer(string $buffer) : string {
+		if (!$this->enabled) {
+			return $buffer;
+		}
+
+		if (!$this->isHtml) {
+			$this->isHtml = (stripos($buffer, '<html') !== false);
+		}
+
+		if (!$this->isHtml) {
+			return $buffer;
+		}
+
+		$token = htmlspecialchars($this->token(), ENT_QUOTES, 'UTF-8');
+		$name  = self::INPUT_NAME;
+		$input = "<input type='hidden' name='$name' value=\"$token\" />";
+
+		$buffer = preg_replace('#(<form[^>]*method\s*=\s*["\']post["\'][^>]*>)#i', '$1' . $input, $buffer);
+
+		if ($this->scriptUrl === '') {
+			return $buffer;
+		}
+
+		$attr = ($this->nonce !== '' ? ' nonce="' . htmlspecialchars($this->nonce, ENT_QUOTES, 'UTF-8') . '"' : '');
+		$url  = htmlspecialchars($this->scriptUrl, ENT_QUOTES, 'UTF-8');
+
+		$head = '<script type="text/javascript"' . $attr . '>' .
+			'var csrfMagicToken = "' . $token . '";' .
+			'var csrfMagicName = "' . $name . '";</script>' .
+			'<script src="' . $url . '" type="text/javascript"' . $attr . '></script></head>';
+
+		$buffer = str_ireplace('</head>', $head, $buffer);
+
+		$end   = '<script type="text/javascript"' . $attr . '>CsrfMagic.end();</script>';
+		$count = 0;
+
+		$buffer = str_ireplace('</body>', $end . '</body>', $buffer, $count);
+
+		if (!$count) {
+			$buffer .= $end;
+		}
+
+		return $buffer;
 	}
 
 	/**
