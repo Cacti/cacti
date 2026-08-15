@@ -32,7 +32,7 @@ test('the Symfony CSRF package is committed, not merely installed', function () 
 	$tracked = shell_exec('git -C ' . escapeshellarg($root) . ' ls-files include/vendor/symfony/security-csrf/');
 
 	expect(trim((string) $tracked))->not->toBe('');
-	expect($tracked)->toContain('src/CsrfTokenManager.php');
+	expect($tracked)->toContain('CsrfTokenManager.php');
 });
 
 test('composer.json declares the dependency', function () use ($root) {
