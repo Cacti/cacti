@@ -137,3 +137,43 @@ test('the script url points at the moved asset', function () use ($root) {
 	expect($src)->toContain('include/js/csrf.js');
 	expect($src)->not->toContain('include/vendor/csrf/csrf-magic.js');
 });
+
+/*
+ * Retiring the fork took include/vendor/csrf/ with it, and that is where
+ * path_csrf_secret has always defaulted. The installer used to demand the path
+ * be writable: getPermissions() raised a STEP_PERMISSION_CHECK error, and
+ * setStep() clamps the current step down to the first errored step, so a fresh
+ * install could not advance past a directory the user has no way to create.
+ *
+ * The default is deliberately left pointing at the old location. Upgrades read
+ * it for the grace window, and moving it would strand every existing install.
+ */
+test('the installer does not gate on the retired secret path', function () use ($root) {
+	$installer = file_get_contents($root . '/lib/installer.php');
+
+	expect($installer)->not->toContain("\$install_paths['csrf']")
+		->and($installer)->not->toContain("if (\$name == 'csrf')");
+});
+
+test('the installer skips the secret when its directory is absent', function () use ($root) {
+	$installer = file_get_contents($root . '/lib/installer.php');
+
+	$start = strpos($installer, 'private function setCSRFSecret(');
+	expect($start)->not->toBeFalse();
+
+	$end  = strpos($installer, "\n\t/**", $start + 1);
+	$body = substr($installer, $start, ($end === false ? strlen($installer) : $end) - $start);
+
+	$guard  = strpos($body, 'is_dir(dirname(CACTI_CSRF_SECRET))');
+	$create = strpos($body, 'install_create_csrf_secret(');
+
+	expect($guard)->not->toBeFalse()
+		->and($create)->not->toBeFalse()
+		->and($guard)->toBeLessThan($create);
+});
+
+test('the default secret path is unchanged so upgrades still find it', function () use ($root) {
+	$global = file_get_contents($root . '/include/global.php');
+
+	expect($global)->toContain("CACTI_PATH_INCLUDE . '/vendor/csrf/csrf-secret.php'");
+});
