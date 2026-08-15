@@ -30,3 +30,13 @@ updates:
       composer-api: {patterns: ["*"]}
     labels: [dependencies, composer]
     commit-message: {prefix: deps, include: scope}
+  - package-ecosystem: composer
+    directory: /
+    target-branch: 1.2.x
+    schedule: {interval: weekly, day: monday}
+    open-pull-requests-limit: 5
+    cooldown: {default-days: 7}
+    groups:
+      composer-1-2-x: {patterns: ["*"]}
+    labels: [dependencies, composer]
+    commit-message: {prefix: deps, include: scope}
