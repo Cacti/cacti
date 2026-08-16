@@ -132,10 +132,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
-      - name: Setup PHP 8.4 with Xdebug
+      - name: Setup PHP 8.1 with Xdebug
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
         with:
-          php-version: '8.4'
+          php-version: '8.1'
           coverage: xdebug
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
           ini-values: post_max_size=256M, max_execution_time=60
@@ -143,13 +143,17 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
 
-      - name: Cache Composer packages
+      - name: Locate Composer cache
+        id: composer-cache
+        run: echo "directory=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer downloads
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
-          path: include/vendor
-          key: ${{ runner.os }}-php-coverage-${{ hashFiles('**/composer.lock') }}
+          path: ${{ steps.composer-cache.outputs.directory }}
+          key: ${{ runner.os }}-composer-locked-coverage-php-8.1-${{ hashFiles('composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-php-coverage-
+            ${{ runner.os }}-composer-locked-coverage-php-8.1-
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction

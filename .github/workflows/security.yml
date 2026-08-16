@@ -73,7 +73,7 @@ jobs:
           coverage: none
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+        run: composer install --no-dev --prefer-dist --no-progress --no-interaction
 
       - name: Download and verify pinned Psalm phar
         run: |

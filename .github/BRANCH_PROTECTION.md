@@ -41,10 +41,14 @@ failing CI. Add a **Require status checks to pass** rule with
 **Require branches to be up to date before merging** enabled, listing the
 current checks:
 
-- `PHP 8.1 Test on ubuntu-latest`
-- `PHP 8.2 Test on ubuntu-latest`
-- `PHP 8.3 Test on ubuntu-latest`
-- `PHP 8.4 Test on ubuntu-latest`
+- `PHP 8.1 locked integration`
+- `PHP 8.1 locked runtime`
+- `PHP 8.2 locked runtime`
+- `PHP 8.3 locked runtime`
+- `PHP 8.4 locked runtime`
+- `PHP 8.2 native dependencies`
+- `PHP 8.3 native dependencies`
+- `PHP 8.4 native dependencies`
 - `pest coverage gate`
 - `Analyze (javascript-typescript)`
 - `Analyze (python)`

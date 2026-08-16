@@ -123,19 +123,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Install Composer
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y composer
+      - name: Setup PHP 8.1
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: composer:v2
 
       - name: Run Composer audit
         run: |
           set -euo pipefail
-          # Cacti ships composer.json but no composer.lock; write a fresh lock
-          # from composer.json without downloading packages so audit has a
-          # lockfile to inspect. --lock requires an existing lock and exits 3.
-          composer update --no-install --no-interaction
           # composer audit exits non-zero when it finds advisories. Capture that
           # exit code without tripping set -e so the JSON is always written, then
           # report the advisory count as a warning and exit 0. Advisories stay

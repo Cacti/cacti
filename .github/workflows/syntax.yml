@@ -51,17 +51,97 @@ jobs:
 #    - name: Run codespell
 #      run: codespell --config .codespell.cfg
 
-  check:
-    runs-on: ${{ matrix.os }}
-#    runs-on: self-hosted
-#    container: 
-#      ${{ matrix.os }}
+  runtime-compatibility:
+    name: PHP ${{ matrix.php }} locked runtime
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
         php: ['8.1', '8.2', '8.3', '8.4']
-        experimental: [false]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+    - name: Setup PHP ${{ matrix.php }}
+      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+        coverage: none
+        tools: composer:v2
+
+    - name: Locate Composer cache
+      id: composer-cache
+      run: echo "directory=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+    - name: Cache Composer downloads
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+      with:
+        path: ${{ steps.composer-cache.outputs.directory }}
+        key: ${{ runner.os }}-composer-locked-runtime-php-${{ matrix.php }}-${{ hashFiles('composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-locked-runtime-php-${{ matrix.php }}-
+
+    - name: Install locked runtime dependencies
+      run: composer install --no-dev --prefer-dist --no-progress --no-interaction
+
+    - name: Verify actual platform requirements
+      run: composer check-platform-reqs --no-dev
+
+    - name: Smoke-test the production autoloader
+      run: php -r "require 'include/vendor/autoload.php';"
+
+  native-dependencies:
+    name: PHP ${{ matrix.php }} native dependencies
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.2', '8.3', '8.4']
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+    - name: Setup PHP ${{ matrix.php }}
+      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+        coverage: none
+        tools: composer:v2
+
+    - name: Locate Composer cache
+      id: composer-cache
+      run: echo "directory=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+    - name: Cache Composer downloads
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+      with:
+        path: ${{ steps.composer-cache.outputs.directory }}
+        key: ${{ runner.os }}-composer-native-php-${{ matrix.php }}-${{ hashFiles('composer.json') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-native-php-${{ matrix.php }}-
+
+    - name: Create native compatibility definition
+      run: |
+        cp composer.json composer.compat.json
+        COMPOSER=composer.compat.json composer config platform.php "${{ matrix.php }}"
+
+    - name: Resolve native dependencies
+      env:
+        COMPOSER: composer.compat.json
+      run: composer update --prefer-dist --no-progress --no-interaction
+
+    - name: Run unit tests
+      run: include/vendor/bin/pest --display-warnings --testsuite=Unit
+
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     services:
       mysql:
@@ -76,17 +156,17 @@ jobs:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
-    name: PHP ${{ matrix.php }} Test on ${{ matrix.os }}
+    name: PHP 8.1 locked integration
     steps:
     - name: Checkout
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 0
 
-    - name: Install PHP ${{ matrix.php }}
+    - name: Install PHP 8.1
       uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
       with:
-        php-version: ${{ matrix.php }}
+        php-version: '8.1'
         extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring #optional
         ini-values: "post_max_size=256M, max_execution_time=60, date.timezone=America/New_York" #optional
 
@@ -97,19 +177,25 @@ jobs:
       run: sudo fc-cache
 
     - name: Validate composer.json and composer.lock
-      run: sudo composer validate --strict
+      run: composer validate --strict
 
-    - name: Cache Composer packages
+    - name: Locate Composer cache
       id: composer-cache
+      run: echo "directory=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+    - name: Cache Composer downloads
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
       with:
-        path: include/vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        path: ${{ steps.composer-cache.outputs.directory }}
+        key: ${{ runner.os }}-composer-locked-quality-php-8.1-${{ hashFiles('composer.lock') }}
         restore-keys: |
-          ${{ runner.os }}-php-
+          ${{ runner.os }}-composer-locked-quality-php-8.1-
 
     - name: Install dependencies
-      run: sudo composer install 
+      run: composer install --prefer-dist --no-progress --no-interaction
+
+    - name: Verify actual platform requirements
+      run: composer check-platform-reqs
 
     - name: Run Linter on base code
       run: composer run-script lint
@@ -235,7 +321,6 @@ jobs:
         MYSQL_AUTH_USR: "--defaults-file=~/.my.cnf"
       run: |
         echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\nmax_allowed_packet = 500000000\n" >> ~/.my.cnf
-        cat ~/.my.cnf
         mysql $MYSQL_AUTH_USR -e "CREATE DATABASE IF NOT EXISTS cacti;"
         mysql $MYSQL_AUTH_USR -e "CREATE USER 'cactiuser'@'localhost' IDENTIFIED BY 'cactiuser';"
         mysql $MYSQL_AUTH_USR -e "GRANT ALL PRIVILEGES ON cacti.* TO 'cactiuser'@'localhost';"

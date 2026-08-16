@@ -25,14 +25,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
-      - name: Setup PHP 8.4
+      - name: Setup PHP 8.1
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
         with:
-          php-version: '8.4'
+          php-version: '8.1'
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Validate composer files
         run: composer validate --strict
