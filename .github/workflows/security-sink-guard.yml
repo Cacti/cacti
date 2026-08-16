@@ -25,15 +25,13 @@ concurrency:
 jobs:
   sink-inventory-guard:
     name: sink and architectural hotspot guard
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Install ripgrep
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ripgrep
+        with:
+          persist-credentials: false
 
       - name: Verify tracked sink baseline
         run: tests/security/verify_sink_inventory.sh

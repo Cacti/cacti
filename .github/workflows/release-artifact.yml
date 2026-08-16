@@ -1,0 +1,104 @@
+name: Release artifact provenance
+
+on:
+  push:
+    tags:
+      - 'release/**'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version label for a manually built snapshot.
+        required: true
+        default: snapshot
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-artifact-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build and attest release artifact
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+
+    steps:
+      - name: Checkout immutable release source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP 8.1 release toolchain
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.1'
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          coverage: none
+          dependency-mode: locked-release
+
+      - name: Build deterministic production tree
+        env:
+          REQUESTED_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF" == refs/tags/release/* ]]; then
+            version="${GITHUB_REF#refs/tags/release/}"
+          else
+            version="$REQUESTED_VERSION"
+          fi
+          safe_version="${version//[^A-Za-z0-9._-]/-}"
+          test -n "$safe_version"
+
+          release_root="$PWD/.release-stage"
+          package_dir="$release_root/cacti-$safe_version"
+          mkdir -p "$package_dir" dist
+          git archive HEAD | tar -x -C "$package_dir"
+
+          composer --working-dir="$package_dir" install \
+            --no-dev --optimize-autoloader \
+            --prefer-dist --no-progress --no-interaction
+          composer --working-dir="$package_dir" check-platform-reqs --no-dev
+
+          source_epoch="$(git show -s --format=%ct HEAD)"
+          artifact="dist/cacti-$safe_version.tar.gz"
+          tar --sort=name \
+            --mtime="@$source_epoch" \
+            --owner=0 --group=0 --numeric-owner \
+            -cf - \
+            -C "$release_root" "cacti-$safe_version" \
+            | gzip -n > "$artifact"
+          sha256sum "$artifact" > "$artifact.sha256"
+          echo "artifact=$artifact" >> "$GITHUB_ENV"
+          echo "package_source=/src/.release-stage/cacti-$safe_version" >> "$GITHUB_ENV"
+
+      - name: Generate CycloneDX SBOM
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            --volume "${PWD}:/src" \
+            --workdir /src \
+            anchore/syft@sha256:678bfa565b60f747aac0f8e964fe5588a24445b8d0a480e91f6efd70020dfbb0 \
+            "dir:${package_source}" \
+            --output "cyclonedx-json=${artifact}.cdx.json"
+
+      - name: Upload release bundle
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: cacti-release-${{ github.run_id }}
+          path: |
+            ${{ env.artifact }}
+            ${{ env.artifact }}.sha256
+            ${{ env.artifact }}.cdx.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Attest release provenance
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: ${{ env.artifact }}

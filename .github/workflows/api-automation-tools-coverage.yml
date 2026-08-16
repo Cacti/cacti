@@ -5,6 +5,7 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/api-automation-tools-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
       - 'composer.json'
       - 'composer.lock'
       - 'lib/api_automation_tools.php'
@@ -16,6 +17,7 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/api-automation-tools-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
       - 'composer.json'
       - 'composer.lock'
       - 'lib/api_automation_tools.php'
@@ -38,33 +40,23 @@ env:
 jobs:
   coverage:
     name: API automation tools 100% coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
 
-      - name: Setup PHP 8.1 with Xdebug
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+      - name: Setup locked PHP 8.1 dependencies
+        uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.1'
           coverage: xdebug
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
-
-      - name: Locate Composer cache
-        id: composer-cache
-        run: echo "directory=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Composer downloads
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-        with:
-          path: ${{ steps.composer-cache.outputs.directory }}
-          key: ${{ runner.os }}-composer-locked-api-coverage-php-8.1-${{ hashFiles('composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-locked-api-coverage-php-8.1-
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+          dependency-mode: locked-api-coverage
+          install-args: --prefer-dist --no-progress --no-interaction
 
       - name: Enforce line coverage
         env:

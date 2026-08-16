@@ -41,17 +41,17 @@ failing CI. Add a **Require status checks to pass** rule with
 **Require branches to be up to date before merging** enabled, listing the
 current checks:
 
-- `PHP 8.1 locked integration`
-- `PHP 8.1 locked runtime`
-- `PHP 8.2 locked runtime`
-- `PHP 8.3 locked runtime`
-- `PHP 8.4 locked runtime`
-- `PHP 8.2 native dependencies`
-- `PHP 8.3 native dependencies`
-- `PHP 8.4 native dependencies`
+- `CI / required`
+- `cacti taint rules`
+- `Semgrep taint`
+- `Dependency review`
 - `pest coverage gate`
-- `Analyze (javascript-typescript)`
-- `Analyze (python)`
+
+`CI / required` is the stable aggregate for the PHP 8.1 locked integration,
+locked runtime matrix, native dependency matrix, and CHANGELOG validation. This
+keeps branch protection stable when implementation job names or matrix entries
+change. Every required workflow must also listen for `merge_group` before the
+repository enables merge queues.
 
 Confirm the exact context names against a recent run before saving; a misspelled
 context is treated as never-run and blocks merges until that exact context is
@@ -75,6 +75,13 @@ and CI changes to `@Cacti/cacti-developers` and `@Cacti/cacti-security`. Enablin
 **Require review from Code Owners** on the ruleset makes that routing a merge
 requirement. Each referenced team must have write access for GitHub to accept it
 as an owner.
+
+### 5. Require immutable action references
+
+Enable **Require actions to be pinned to a full-length commit SHA** under the
+repository Actions policy. The checked-in workflow-policy job enforces the same
+rule in review, along with fixed runner images, job timeouts, digest-pinned
+service containers, and non-persistent checkout credentials for read-only jobs.
 
 ## Not changed
 

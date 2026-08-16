@@ -35,6 +35,7 @@ on:
       - 'tests/e2e/package.json'
       - 'tests/e2e/package-lock.json'
       - '.github/workflows/htmx-filters.yml'
+      - '.github/actions/setup-php-composer/**'
   pull_request:
     branches: [develop]
     paths:
@@ -56,6 +57,7 @@ on:
       - 'tests/e2e/package.json'
       - 'tests/e2e/package-lock.json'
       - '.github/workflows/htmx-filters.yml'
+      - '.github/actions/setup-php-composer/**'
 
 permissions:
   contents: read
@@ -67,7 +69,8 @@ concurrency:
 jobs:
   unit:
     name: Pest unit (PHP ${{ matrix.php }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -75,36 +78,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
 
-      - name: Setup PHP ${{ matrix.php }}
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+      - name: Setup locked PHP dependencies
+        uses: ./.github/actions/setup-php-composer
         with:
           php-version: ${{ matrix.php }}
           extensions: intl, gd, ldap, gmp, xml, mbstring, pdo_mysql, curl, json
-          tools: composer:v2
           coverage: none
-
-      - name: Locate Composer cache
-        id: composer-cache
-        run: echo "directory=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Composer downloads
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
-        with:
-          path: ${{ steps.composer-cache.outputs.directory }}
-          key: ${{ runner.os }}-composer-locked-htmx-unit-php-${{ matrix.php }}-${{ hashFiles('composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-locked-htmx-unit-php-${{ matrix.php }}-
-
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+          dependency-mode: locked-htmx-unit
+          install-args: --no-interaction --no-progress --prefer-dist
 
       - name: Run Pest unit suite
         run: include/vendor/bin/pest --testsuite=Unit --filter=HtmxTest
 
   integration:
     name: Pest integration (PHP ${{ matrix.php }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -112,29 +104,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
 
-      - name: Setup PHP ${{ matrix.php }}
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+      - name: Setup locked PHP dependencies
+        uses: ./.github/actions/setup-php-composer
         with:
           php-version: ${{ matrix.php }}
           extensions: intl, gd, ldap, gmp, xml, mbstring, pdo_mysql, curl, json
-          tools: composer:v2
           coverage: none
-
-      - name: Locate Composer cache
-        id: composer-cache
-        run: echo "directory=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Composer downloads
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
-        with:
-          path: ${{ steps.composer-cache.outputs.directory }}
-          key: ${{ runner.os }}-composer-locked-htmx-integration-php-${{ matrix.php }}-${{ hashFiles('composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-locked-htmx-integration-php-${{ matrix.php }}-
-
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+          dependency-mode: locked-htmx-integration
+          install-args: --no-interaction --no-progress --prefer-dist
 
       # Named file rather than --testsuite=Integration --filter: PHPUnit loads
       # every file in a testsuite before --filter applies, and
@@ -145,21 +125,28 @@ jobs:
 
   e2e:
     name: Playwright e2e
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: '20'
+          cache: npm
+          cache-dependency-path: tests/e2e/package-lock.json
 
       - name: Build and start the Cacti stack
         working-directory: tests/e2e
         run: |
+          set -euo pipefail
           docker compose up -d --build
-          for i in $(seq 1 60); do
+          for attempt in $(seq 1 60); do
+            echo "Cacti readiness probe ${attempt}/60"
             if curl -fsS http://127.0.0.1:8080/ >/dev/null 2>&1; then
               echo "cacti is reachable"
               exit 0
@@ -173,14 +160,15 @@ jobs:
       - name: Install Playwright
         working-directory: tests/e2e
         run: |
+          set -euo pipefail
           npm ci
-          npx playwright install --with-deps chromium
+          npx --no-install playwright install --with-deps chromium
 
       - name: Run Playwright specs
         working-directory: tests/e2e
         env:
           CACTI_BASE_URL: http://127.0.0.1:8080
-        run: npx playwright test tests/htmx-loader.spec.ts tests/login-smoke.spec.ts
+        run: npx --no-install playwright test tests/htmx-loader.spec.ts tests/login-smoke.spec.ts
 
       - name: Upload Playwright report
         if: always()

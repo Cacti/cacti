@@ -23,9 +23,10 @@ name: Cacti Commit Audit
 
 on:
   push:
-    branches: [ develop ]
+    branches: [develop, '1.2.x']
   pull_request:
-    branches: [ develop ]
+    branches: [develop, '1.2.x']
+  merge_group:
 
 permissions:
   contents: read
@@ -63,29 +64,17 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        persist-credentials: false
 
-    - name: Setup PHP ${{ matrix.php }}
-      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+    - name: Setup locked PHP dependencies
+      uses: ./.github/actions/setup-php-composer
       with:
         php-version: ${{ matrix.php }}
         extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
         coverage: none
-        tools: composer:v2
-
-    - name: Locate Composer cache
-      id: composer-cache
-      run: echo "directory=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-    - name: Cache Composer downloads
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-      with:
-        path: ${{ steps.composer-cache.outputs.directory }}
-        key: ${{ runner.os }}-composer-locked-runtime-php-${{ matrix.php }}-${{ hashFiles('composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-locked-runtime-php-${{ matrix.php }}-
-
-    - name: Install locked runtime dependencies
-      run: composer install --no-dev --prefer-dist --no-progress --no-interaction
+        dependency-mode: locked-runtime
+        install-args: --no-dev --prefer-dist --no-progress --no-interaction
 
     - name: Verify actual platform requirements
       run: composer check-platform-reqs --no-dev
@@ -105,29 +94,21 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        persist-credentials: false
 
-    - name: Setup PHP ${{ matrix.php }}
-      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+    - name: Setup native PHP dependencies
+      uses: ./.github/actions/setup-php-composer
       with:
         php-version: ${{ matrix.php }}
         extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
         coverage: none
-        tools: composer:v2
-
-    - name: Locate Composer cache
-      id: composer-cache
-      run: echo "directory=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-    - name: Cache Composer downloads
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-      with:
-        path: ${{ steps.composer-cache.outputs.directory }}
-        key: ${{ runner.os }}-composer-native-php-${{ matrix.php }}-${{ hashFiles('composer.json') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-native-php-${{ matrix.php }}-
+        dependency-mode: native
+        cache-dependency-path: composer.json
 
     - name: Create native compatibility definition
       run: |
+        set -euo pipefail
         cp composer.json composer.compat.json
         COMPOSER=composer.compat.json composer config platform.php "${{ matrix.php }}"
 
@@ -140,12 +121,12 @@ jobs:
       run: include/vendor/bin/pest --display-warnings --testsuite=Unit
 
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
 
     services:
       mysql:
-        image: mariadb:10.6
+        image: mariadb:10.6@sha256:2fdc84794931c0abde9ba6a8c9cb5a4635a02d851a103f0301a8b606dfc5cd98
         env:
           MYSQL_DATABASE: cacti
           MYSQL_HOST: 127.0.0.1
@@ -162,13 +143,17 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 0
+        persist-credentials: false
 
-    - name: Install PHP 8.1
-      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+    - name: Setup locked PHP 8.1 dependencies
+      uses: ./.github/actions/setup-php-composer
       with:
         php-version: '8.1'
-        extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring #optional
-        ini-values: "post_max_size=256M, max_execution_time=60, date.timezone=America/New_York" #optional
+        extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+        ini-values: post_max_size=256M, max_execution_time=60, date.timezone=America/New_York
+        coverage: none
+        dependency-mode: locked-quality
+        install-args: --prefer-dist --no-progress --no-interaction
 
     - name: Check PHP version
       run: php -v
@@ -178,21 +163,6 @@ jobs:
 
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
-
-    - name: Locate Composer cache
-      id: composer-cache
-      run: echo "directory=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-    - name: Cache Composer downloads
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-      with:
-        path: ${{ steps.composer-cache.outputs.directory }}
-        key: ${{ runner.os }}-composer-locked-quality-php-8.1-${{ hashFiles('composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-locked-quality-php-8.1-
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-interaction
 
     - name: Verify actual platform requirements
       run: composer check-platform-reqs
@@ -218,67 +188,74 @@ jobs:
       run: composer run-script test
       working-directory: .
 
-    - name: Install github if not already installed
-      run: sudo apt-get -y install git
-
     - name: Checkout Thold Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@62795acaa4a02f89824de75c7025459a9cabaa45 # v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        owner: 'Cacti'
-        repository: 'plugin_thold'
+        repository: Cacti/plugin_thold
+        ref: 34c4a69b752b8eb0d73e90f1cd1c2a9b317a9d1b
+        path: plugins/thold
+        persist-credentials: false
 
     - name: Checkout Monitor Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@62795acaa4a02f89824de75c7025459a9cabaa45 # v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        owner: 'Cacti'
-        repository: 'plugin_monitor'
+        repository: Cacti/plugin_monitor
+        ref: 11c7b6c6422d7ffaba9c2dcac25b729d9cb6ff12
+        path: plugins/monitor
+        persist-credentials: false
 
     - name: Checkout MacTrack Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@62795acaa4a02f89824de75c7025459a9cabaa45 # v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        owner: 'Cacti'
-        repository: 'plugin_mactrack'
+        repository: Cacti/plugin_mactrack
+        ref: 408adb447cbb7b4ef4360bade646b8d926f7b293
+        path: plugins/mactrack
+        persist-credentials: false
 
     - name: Checkout Intropage Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@62795acaa4a02f89824de75c7025459a9cabaa45 # v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        owner: 'Cacti'
-        repository: 'plugin_intropage'
+        repository: Cacti/plugin_intropage
+        ref: f3a00ff7fb4a7f0c26b8910cd32c5c98e45da1e9
+        path: plugins/intropage
+        persist-credentials: false
 
     - name: Checkout FlowView Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@62795acaa4a02f89824de75c7025459a9cabaa45 # v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        owner: 'Cacti'
-        repository: 'plugin_flowview'
+        repository: Cacti/plugin_flowview
+        ref: ee37c8938c99bc49f6a2933f373865c65f51fba0
+        path: plugins/flowview
+        persist-credentials: false
 
     - name: Checkout Audit Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@62795acaa4a02f89824de75c7025459a9cabaa45 # v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        owner: 'Cacti'
-        repository: 'plugin_audit'
+        repository: Cacti/plugin_audit
+        ref: 1d7be4f422a3831dcaa150747ad7314168b60605
+        path: plugins/audit
+        persist-credentials: false
 
     - name: Checkout Syslog Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@62795acaa4a02f89824de75c7025459a9cabaa45 # v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        owner: 'Cacti'
-        repository: 'plugin_syslog'
+        repository: Cacti/plugin_syslog
+        ref: 82df21ba2acf38ec4052aa862d2b53c67287f311
+        path: plugins/syslog
+        persist-credentials: false
 
-    - name: Move Plugins to Plugin Directory
+    - name: Enable Syslog batch installation
       run: |
-        mv plugin_thold ${{ github.workspace }}/plugins/thold
-        mv plugin_monitor ${{ github.workspace }}/plugins/monitor
-        mv plugin_mactrack ${{ github.workspace }}/plugins/mactrack
-        mv plugin_audit ${{ github.workspace }}/plugins/audit
-        mv plugin_flowview ${{ github.workspace }}/plugins/flowview
-        mv plugin_intropage ${{ github.workspace }}/plugins/intropage
-        mv plugin_syslog ${{ github.workspace }}/plugins/syslog
+        set -euo pipefail
         # With syslog we have to enable batch installs using the lines below
         cd ${{ github.workspace }}/plugins/syslog
         cp -p config.php.dist config.php
+        # shellcheck disable=SC2016
         sed -i 's/\/\/\$syslog_install_options/\$syslog_install_options/g' config.php
 
     - name: Move plugin config files
       run: |
+        set -euo pipefail
         cp -p ${{ github.workspace }}/plugins/flowview/config.php.dist ${{ github.workspace }}/plugins/flowview/config.php
         cp -p ${{ github.workspace }}/plugins/syslog/config.php.dist ${{ github.workspace }}/plugins/syslog/config.php
         sed -i 's/\/\/\$/\$/g' ${{ github.workspace }}/plugins/syslog/config.php
@@ -291,11 +268,13 @@ jobs:
 
     - name: Start SNMPD Agent and Test Agent
       run: |
+        set -euo pipefail
         sudo systemctl start snmpd
         sudo snmpwalk -c public -v2c -On localhost .1.3.6.1.2.1.1
 
     - name: Link Web Root and Grant the Web Group Access
       run: |
+        set -euo pipefail
         sudo ln -s /home/runner/work/cacti/cacti /var/www/html
         sudo chgrp -R www-data "${{ github.workspace }}"
         sudo find "${{ github.workspace }}" -type d -exec chmod g+rwx {} +
@@ -308,6 +287,7 @@ jobs:
       
     - name: Configure Apache Site
       run: |
+        set -euo pipefail
         cp ${{ github.workspace }}/tests/tools/cacti.conf /tmp/cacti.conf
         sed -i "s#GITHUB_WORKSPACE#${{ github.workspace }}#g" /tmp/cacti.conf
         sudo cp /tmp/cacti.conf /etc/apache2/sites-available/000-default.conf
@@ -316,27 +296,36 @@ jobs:
       run: sudo systemctl restart apache2
       
     - name: Create and Initialize Database
-      env:
-        MYSQL_AUTH_USR: "--defaults-file=~/.my.cnf"
       run: |
-        echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\nmax_allowed_packet = 500000000\n" >> ~/.my.cnf
-        mysql $MYSQL_AUTH_USR -e "CREATE DATABASE IF NOT EXISTS cacti;"
-        mysql $MYSQL_AUTH_USR -e "CREATE USER 'cactiuser'@'localhost' IDENTIFIED BY 'cactiuser';"
-        mysql $MYSQL_AUTH_USR -e "GRANT ALL PRIVILEGES ON cacti.* TO 'cactiuser'@'localhost';"
-        mysql $MYSQL_AUTH_USR -e "FLUSH PRIVILEGES;"
-        mysql $MYSQL_AUTH_USR -e "SET GLOBAL max_allowed_packet=500000000;"
-        mysql $MYSQL_AUTH_USR cacti < ${{ github.workspace }}/cacti.sql
-        mysql $MYSQL_AUTH_USR -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
+        set -euo pipefail
+        mysql_config="$RUNNER_TEMP/mysql-client.cnf"
+        install -m 0600 /dev/null "$mysql_config"
+        printf '%s\n' \
+          '[client]' \
+          'user = root' \
+          'password = cactiroot' \
+          'host = 127.0.0.1' \
+          'max_allowed_packet = 500000000' > "$mysql_config"
+        mysql_args=(--defaults-extra-file="$mysql_config")
+        mysql "${mysql_args[@]}" -e "CREATE DATABASE IF NOT EXISTS cacti;"
+        mysql "${mysql_args[@]}" -e "CREATE USER 'cactiuser'@'localhost' IDENTIFIED BY 'cactiuser';"
+        mysql "${mysql_args[@]}" -e "GRANT ALL PRIVILEGES ON cacti.* TO 'cactiuser'@'localhost';"
+        mysql "${mysql_args[@]}" -e "FLUSH PRIVILEGES;"
+        mysql "${mysql_args[@]}" -e "SET GLOBAL max_allowed_packet=500000000;"
+        mysql "${mysql_args[@]}" cacti < "${{ github.workspace }}/cacti.sql"
+        mysql "${mysql_args[@]}" -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
 
     - name: Prime Cacti config.php File
       run: |
-        sudo cp -p ${{ github.workspace }}/include/config.php.dist ${{ github.workspace }}/include/config.php
-        sudo sed -i "s/localhost/127.0.0.1/g" ${{ github.workspace }}/include/config.php
-        sudo chmod 777 ${{ github.workspace }}/include/config.php
-        cat ${{ github.workspace}}/include/config.php
+        set -euo pipefail
+        sudo install -o runner -g www-data -m 0660 \
+          ${{ github.workspace }}/include/config.php.dist \
+          ${{ github.workspace }}/include/config.php
+        sed -i "s/localhost/127.0.0.1/g" ${{ github.workspace }}/include/config.php
 
     - name: Setup Cacti Daemon
       run: |
+        set -euo pipefail
         sudo cp ${{ github.workspace }}/tests/tools/cactid.service /etc/systemd/system/cactid.service
         sudo sed -i 's/apache/www-data/g' /etc/systemd/system/cactid.service
         sudo systemctl enable cactid
@@ -349,83 +338,96 @@ jobs:
         fi
 
     - name: Check install code for validity
-      run: |
-        cd ${{ github.workspace }}
-        sudo php -q tests/tools/check_install_code.php
+      run: php -q tests/tools/check_install_code.php
 
     - name: Check All Resource XML File Syntax
-      run: |
-        cd ${{ github.workspace }}
-        sudo php tests/tools/check_xml_syntax.php
+      run: php tests/tools/check_xml_syntax.php
 
     - name: Check Poller Script Syntax after Package Import
-      run: 
-        if $(find ${{ github.workspace }}/scripts -name '*.php' -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"); then exit 1; fi
+      run: find scripts -name '*.php' -print0 | xargs -0 -n1 php -l
 
     - name: Check that all CLI scripts have a valid --version flag
-      run: |
-        cd ${{ github.workspace }}
-        sudo bash tests/tools/check_cli_version.sh
+      run: bash tests/tools/check_cli_version.sh
 
     - name: Install Cacti through the CLI
-      run: |
-        cd ${{ github.workspace }}
-        sudo php cli/install_cacti.php --accept-eula --install --force
+      run: php cli/install_cacti.php --accept-eula --install --force
 
     - name: Install Cacti Packages through CLI
-      run: |
-        cd ${{ github.workspace }}
-        sudo tests/tools/install_packages.sh
+      run: tests/tools/install_packages.sh
 
     - name: Check All Resource XML File Syntax Post Package Install
-      run: |
-        cd ${{ github.workspace }}
-        sudo php tests/tools/check_xml_syntax.php
+      run: php tests/tools/check_xml_syntax.php
     
     - name: Check all perl scripts for syntax errors
-      run: |
-        cd ${{ github.workspace }}
-        if $(find scripts -name '*.pl' -exec perl -c {} 2>&1 \; | grep -iv "syntax OK"); then exit 1; fi
+      run: find scripts -name '*.pl' -print0 | xargs -0 -n1 perl -c
 
     - name: Audit the Installation Schema
-      run: |
-        cd ${{ github.workspace }}
-        sudo php cli/audit_database.php --report
+      run: php cli/audit_database.php --report
 
     - name: Install and Enable Plugins
-      run: |
-        cd ${{ github.workspace }}
-        sudo php cli/plugin_manage.php --plugin=thold --plugin=intropage --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
+      run: php cli/plugin_manage.php --plugin=thold --plugin=intropage --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
 
     - name: Add Device for Moc Test, Check CLI scripts for Errors
       run: |
-        cd ${{ github.workspace }}
-        sudo php cli/add_device.php --description=test_device --ip=127.0.0.1 --template=25
-        sudo php cli/rebuild_poller_cache.php --debug
-        sudo php cli/poller_reindex_hosts.php --id=all --debug
+        set -euo pipefail
+        php cli/add_device.php --description=test_device --ip=127.0.0.1 --template=25
+        php cli/rebuild_poller_cache.php --debug
+        php cli/poller_reindex_hosts.php --id=all --debug
 
     - name: Run Cacti poller
       run: |
-        sudo php ${{ github.workspace }}/poller.php --poller=1 --force --debug
-        if ! $(grep -q "SYSTEM STATS" ${{ github.workspace }}/log/cacti.log); then exit 1; fi
+        set -euo pipefail
+        php poller.php --poller=1 --force --debug
+        grep -q "SYSTEM STATS" log/cacti.log
 
     - name: Check All Pages Using Recursive wget
       run: |
-        cd ${{ github.workspace }}
-        echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\n" > ${{ github.workspace }}/.my.cnf
-        sudo tests/tools/check_all_pages.sh -vmstat 10 -ps 10
+        set -euo pipefail
+        install -m 0600 /dev/null .my.cnf
+        printf '%s\n' \
+          '[client]' \
+          'user = root' \
+          'password = cactiroot' \
+          'host = 127.0.0.1' > .my.cnf
+        tests/tools/check_all_pages.sh -vmstat 10 -ps 10
 
-    - name: View Contents of Logs
-      run: sudo cat ${{ github.workspace }}/log/cacti.log
+    - name: View Cacti log on failure
+      if: failure()
+      run: cat ${{ github.workspace }}/log/cacti.log
 
   changelog:
     name: CHANGELOG format
     runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Validate CHANGELOG ordering and entry format
         run: python3 .github/scripts/check-changelog.py
+
+  required:
+    name: CI / required
+    if: always()
+    needs: [runtime-compatibility, native-dependencies, check, changelog]
+    runs-on: ubuntu-slim
+    timeout-minutes: 5
+    steps:
+      - name: Verify required jobs
+        env:
+          RUNTIME_RESULT: ${{ needs.runtime-compatibility.result }}
+          NATIVE_RESULT: ${{ needs.native-dependencies.result }}
+          INTEGRATION_RESULT: ${{ needs.check.result }}
+          CHANGELOG_RESULT: ${{ needs.changelog.result }}
+        run: |
+          set -euo pipefail
+          for result in \
+            "$RUNTIME_RESULT" \
+            "$NATIVE_RESULT" \
+            "$INTEGRATION_RESULT" \
+            "$CHANGELOG_RESULT"; do
+            test "$result" = success
+          done

@@ -9,13 +9,13 @@ on:
     branches: [develop]
   pull_request:
     branches: [develop]
+  merge_group:
   workflow_dispatch:
   schedule:
     - cron: '0 5 * * 1'
 
 permissions:
   contents: read
-  security-events: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -29,12 +29,14 @@ jobs:
   trufflehog:
     name: TruffleHog secret scan
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: TruffleHog scan
         uses: trufflesecurity/trufflehog@6f3c981e7b77f235fd2702dd74af25fc4b72bf11 # v3.96.0
@@ -44,20 +46,27 @@ jobs:
   semgrep:
     name: Semgrep security scan
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      security-events: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Install Semgrep
-        run: |
-          set -euo pipefail
-          python3 -m pip install --disable-pip-version-check semgrep==1.114.0
+        with:
+          persist-credentials: false
 
       - name: Run Semgrep
         run: |
           set -euo pipefail
-          semgrep scan --config p/ci --sarif --output semgrep.sarif . || true
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            --env HOME=/tmp \
+            --volume "${PWD}:/src" \
+            --workdir /src \
+            semgrep/semgrep@sha256:e04d2cb132288d90035db8791d64f610cb255b21e727b94db046243b30c01ae9 \
+            semgrep scan --config p/ci --sarif --output semgrep.sarif . || true
 
       - name: Upload Semgrep SARIF
         # Fork PRs get a read-only GITHUB_TOKEN without security-events: write, so
@@ -80,6 +89,7 @@ jobs:
   scorecard:
     name: OpenSSF Scorecard
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -87,20 +97,18 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install Scorecard CLI
-        run: |
-          set -euo pipefail
-          # Use the runner's preinstalled Go; the apt golang-go package is too
-          # old to build scorecard and disables toolchain auto-download.
-          GOBIN="${HOME}/.local/bin" go install github.com/ossf/scorecard/v5@v5.5.0
-          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
-
       - name: Run Scorecard
         env:
           GITHUB_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          scorecard --repo="github.com/${{ github.repository }}" --format json --show-details > scorecard.json
+          docker run --rm \
+            --env GITHUB_AUTH_TOKEN \
+            --volume "${PWD}:/src" \
+            --workdir /src \
+            ghcr.io/ossf/scorecard@sha256:3f24714e9366917adb7a05635382c97dfecb14b21eaef3dfa2ea48c8e23e0795 \
+            --repo="github.com/${{ github.repository }}" \
+            --format json --show-details > scorecard.json
 
       - name: Upload Scorecard artifact
         if: always()
@@ -113,6 +121,7 @@ jobs:
   composer-audit:
     name: Composer dependency audit
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     # Advisories are reported as non-blocking: a newly published upstream CVE
     # must not red every open PR. The audit still runs and writes
     # composer-audit.json (uploaded below), and any advisory is surfaced as a
@@ -122,13 +131,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Setup PHP 8.1
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.1'
           coverage: none
-          tools: composer:v2
+          dependency-mode: audit
 
       - name: Run Composer audit
         run: |
@@ -155,10 +166,13 @@ jobs:
   workflow-policy:
     name: Workflow policy checks
     runs-on: ubuntu-24.04
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Install policy checker dependencies
         run: |
@@ -168,8 +182,23 @@ jobs:
       - name: Enforce workflow policy
         run: |
           set -euo pipefail
-          python3 .github/scripts/check-workflow-policy.py \
-            --workflows \
-            .github/workflows/security-posture.yml \
-            .github/workflows/perf-regression.yml \
-            .github/workflows/security-review.yml
+          python3 .github/scripts/check-workflow-policy.py
+
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Block newly introduced vulnerable runtime dependencies
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high
+          fail-on-scopes: runtime
