@@ -354,13 +354,13 @@ jobs:
       run: find scripts -name '*.php' -print0 | xargs -0 -n1 php -l
 
     - name: Check that all CLI scripts have a valid --version flag
-      run: bash tests/tools/check_cli_version.sh
+      run: sudo -u www-data -- bash tests/tools/check_cli_version.sh
 
     - name: Install Cacti through the CLI
-      run: php cli/install_cacti.php --accept-eula --install --force
+      run: sudo -u www-data -- php cli/install_cacti.php --accept-eula --install --force
 
     - name: Install Cacti Packages through CLI
-      run: tests/tools/install_packages.sh
+      run: sudo -u www-data -- bash tests/tools/install_packages.sh
 
     - name: Check All Resource XML File Syntax Post Package Install
       run: php tests/tools/check_xml_syntax.php
@@ -369,22 +369,22 @@ jobs:
       run: find scripts -name '*.pl' -print0 | xargs -0 -n1 perl -c
 
     - name: Audit the Installation Schema
-      run: php cli/audit_database.php --report
+      run: sudo -u www-data -- php cli/audit_database.php --report
 
     - name: Install and Enable Plugins
-      run: php cli/plugin_manage.php --plugin=thold --plugin=intropage --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
+      run: sudo -u www-data -- php cli/plugin_manage.php --plugin=thold --plugin=intropage --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
 
     - name: Add Device for Moc Test, Check CLI scripts for Errors
       run: |
         set -euo pipefail
-        php cli/add_device.php --description=test_device --ip=127.0.0.1 --template=25
-        php cli/rebuild_poller_cache.php --debug
-        php cli/poller_reindex_hosts.php --id=all --debug
+        sudo -u www-data -- php cli/add_device.php --description=test_device --ip=127.0.0.1 --template=25
+        sudo -u www-data -- php cli/rebuild_poller_cache.php --debug
+        sudo -u www-data -- php cli/poller_reindex_hosts.php --id=all --debug
 
     - name: Run Cacti poller
       run: |
         set -euo pipefail
-        php poller.php --poller=1 --force --debug
+        sudo -u www-data -- php poller.php --poller=1 --force --debug
         grep -q "SYSTEM STATS" log/cacti.log
 
     - name: Check All Pages Using Recursive wget
