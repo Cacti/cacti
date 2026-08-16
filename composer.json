@@ -46,7 +46,7 @@
         "ext-xml": "*",
         "ezyang/htmlpurifier": "^4.19",
         "paragonie/constant_time_encoding": "^3.1",
-        "paragonie/random_compat": "*",
+        "paragonie/random_compat": "^9.99",
         "phpseclib/phpseclib": "^3.0"
     },
     "require-dev": {
@@ -66,6 +66,10 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "config": {
+        "platform": {
+            "php": "8.0.0"
+        },
+        "platform-check": true,
         "sort-packages": true,
         "vendor-dir": "./include/vendor"
     }
