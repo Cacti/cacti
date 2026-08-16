@@ -401,6 +401,7 @@ jobs:
     - name: View Cacti log on failure
       if: failure()
       run: |
+        set -euo pipefail
         log_file=${{ github.workspace }}/log/cacti.log
         if [[ -f "$log_file" ]]; then
           cat "$log_file"
