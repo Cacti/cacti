@@ -396,7 +396,7 @@ jobs:
           'user = root' \
           'password = cactiroot' \
           'host = 127.0.0.1' > .my.cnf
-        tests/tools/check_all_pages.sh -vmstat 10 -ps 10
+        sudo tests/tools/check_all_pages.sh -vmstat 10 -ps 10
 
     - name: View Cacti log on failure
       if: failure()
