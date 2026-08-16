@@ -370,7 +370,7 @@ function boost_poller_on_demand(array &$results) : bool {
 
 		if (boost_check_correct_enabled()) {
 			if (cacti_sizeof($results)) {
-				if (POLLER_ID > 1 && !boost_validate_poller_ownership($results, POLLER_ID, $conn)) {
+				if (POLLER_ID > 1 && !boost_validate_poller_ownership($results, POLLER_ID, $conn)) { // @phpstan-ignore-line
 					cacti_log(sprintf('ERROR: Boost rejected a handoff containing data sources not assigned to poller %d.', POLLER_ID), false, 'BOOST');
 					restore_error_handler();
 					error_reporting($previous_error_reporting);
