@@ -86,6 +86,7 @@ Cacti CHANGELOG
 -issue#7535: Consolidate the poller_item delete call sites behind poller_item_delete_for_data_source() and poller_item_delete_for_host()
 -issue#7576: Stop passing an unset path_php_binary into string parameters
 -issue#7682: Revoke the remember-me token and terminate other sessions on logout
+-issue#7683: Harden login brute-force defenses with an atomic lockout counter and constant-time unknown-user handling
 -issue#7684: Scope the local-login password rehash to realm 0 and only rehash after a successful login
 -issue#7688: Force the SNMP port to an integer before it reaches the net-snmp command line
 -feature#412: Import Export for Graph and Tree rules
