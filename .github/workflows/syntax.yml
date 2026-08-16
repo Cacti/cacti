@@ -330,10 +330,17 @@ jobs:
         sudo sed -i 's/apache/www-data/g' /etc/systemd/system/cactid.service
         sudo systemctl enable cactid
         sudo systemctl start cactid
-        sudo systemctl status cactid
+        for _ in {1..15}; do
+          if systemctl is-active --quiet cactid; then
+            break
+          fi
+          sleep 1
+        done
+
         if ! systemctl is-active --quiet cactid; then
-          journalctl -xeu cactid.service
-          echo "Cacti daemon failed to start"
+          sudo systemctl status --no-pager cactid || true
+          sudo journalctl --no-pager -xeu cactid.service || true
+          echo "Cacti daemon failed to become active"
           exit 1
         fi
 
@@ -393,7 +400,13 @@ jobs:
 
     - name: View Cacti log on failure
       if: failure()
-      run: cat ${{ github.workspace }}/log/cacti.log
+      run: |
+        log_file=${{ github.workspace }}/log/cacti.log
+        if [[ -f "$log_file" ]]; then
+          cat "$log_file"
+        else
+          echo "Cacti log was not created"
+        fi
 
   changelog:
     name: CHANGELOG format
