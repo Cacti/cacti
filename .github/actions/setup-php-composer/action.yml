@@ -1,0 +1,57 @@
+name: Setup PHP and Composer
+description: Install a pinned PHP/Composer toolchain and restore the Composer download cache.
+
+inputs:
+  php-version:
+    description: PHP version understood by shivammathur/setup-php.
+    required: true
+  coverage:
+    description: Coverage driver to enable.
+    default: none
+  extensions:
+    description: Comma-separated PHP extensions to enable.
+    default: ''
+  dependency-mode:
+    description: Stable cache namespace for the dependency contract.
+    default: locked
+  cache-dependency-path:
+    description: File whose content invalidates the Composer download cache.
+    default: composer.lock
+  install-args:
+    description: Arguments passed to composer install; leave empty to skip installation.
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Setup PHP ${{ inputs.php-version }}
+      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+      with:
+        php-version: ${{ inputs.php-version }}
+        coverage: ${{ inputs.coverage }}
+        extensions: ${{ inputs.extensions }}
+        tools: composer:2.10.2
+
+    - name: Resolve Composer cache directory
+      id: composer-cache
+      shell: bash
+      run: echo "directory=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+    - name: Restore Composer download cache
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.0.0
+      with:
+        path: ${{ steps.composer-cache.outputs.directory }}
+        key: ${{ runner.os }}-composer-${{ inputs.dependency-mode }}-php-${{ inputs.php-version }}-${{ hashFiles(inputs.cache-dependency-path) }}
+        restore-keys: |
+          ${{ runner.os }}-composer-${{ inputs.dependency-mode }}-php-${{ inputs.php-version }}-
+
+    - name: Install Composer dependencies
+      if: inputs.install-args != ''
+      shell: bash
+      env:
+        COMPOSER_INSTALL_ARGS: ${{ inputs.install-args }}
+      run: |
+        set -euo pipefail
+        # The arguments are repository-controlled action inputs, not user input.
+        # shellcheck disable=SC2086
+        composer install ${COMPOSER_INSTALL_ARGS}
