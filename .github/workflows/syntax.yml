@@ -294,13 +294,12 @@ jobs:
         sudo systemctl start snmpd
         sudo snmpwalk -c public -v2c -On localhost .1.3.6.1.2.1.1
 
-    - name: Link Web Root, Fix Permissions, and Disable Apparmor
+    - name: Link Web Root and Grant the Web Group Access
       run: |
         sudo ln -s /home/runner/work/cacti/cacti /var/www/html
-        sudo find /home/runner/work/cacti -type d -exec chmod 777 {} \;
-        sudo find /home/runner/work/cacti -type f -exec chmod 777 {} \;
-        sudo systemctl stop apparmor
-        sudo systemctl disable apparmor
+        sudo chgrp -R www-data "${{ github.workspace }}"
+        sudo find "${{ github.workspace }}" -type d -exec chmod g+rwx {} +
+        sudo find "${{ github.workspace }}" -type f -exec chmod g+rw {} +
         sudo chmod o+x /home
         sudo chmod o+x /home/runner
         sudo chmod o+x /home/runner/work
