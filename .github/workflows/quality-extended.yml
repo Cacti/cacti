@@ -5,6 +5,7 @@ on:
     branches: [develop]
   pull_request:
     branches: [develop]
+  merge_group:
   workflow_dispatch:
 
 permissions:
@@ -92,11 +93,14 @@ jobs:
 
   sql-interpolation-ratchet:
     name: sql interpolation ratchet
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
 
       - name: Setup PHP 8.4
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
@@ -109,11 +113,14 @@ jobs:
 
   validator-constraint-ratchet:
     name: validator constraint ratchet
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
 
       - name: Setup PHP 8.4
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
@@ -126,33 +133,27 @@ jobs:
 
   unit-coverage:
     name: pest coverage gate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-
-      - name: Setup PHP 8.4 with Xdebug
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
         with:
-          php-version: '8.4'
+          persist-credentials: false
+
+      - name: Setup locked PHP 8.1 dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.1'
           coverage: xdebug
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
           ini-values: post_max_size=256M, max_execution_time=60
+          dependency-mode: locked-coverage
+          install-args: --prefer-dist --no-progress --no-interaction
 
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
-
-      - name: Cache Composer packages
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-        with:
-          path: include/vendor
-          key: ${{ runner.os }}-php-coverage-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-coverage-
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
 
       # Re-enabled: disabled since #6874 (2026-03) pending cleanup of pre-existing
       # issues. Verified the Unit+integration suite passes clean against current
@@ -167,6 +168,7 @@ jobs:
       - name: Enforce minimum statement coverage
         run: |
           set -euo pipefail
+          # shellcheck disable=SC2016
           php -r '
           $min = (float) getenv("COVERAGE_MIN_STATEMENT_PCT");
           if (!file_exists("coverage.xml")) {

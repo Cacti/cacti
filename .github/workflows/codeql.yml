@@ -7,10 +7,11 @@ on:
       - "**/*.php"
       - "**/*.md"
   pull_request:
-    branches: [main, master, develop, regression-audit]
+    branches: [main, master, develop, '1.2.x', regression-audit]
     paths-ignore:
       - "**/*.php"
       - "**/*.md"
+  merge_group:
   schedule:
     - cron: "30 1 * * 1"
   workflow_dispatch:
@@ -22,7 +23,7 @@ concurrency:
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
       actions: read
@@ -35,6 +36,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        with:
+          persist-credentials: false
       - name: Initialize CodeQL
         uses: github/codeql-action/init@5595ccaf912efad79be6eef63a5619ff05969be3 # v3
         with:
