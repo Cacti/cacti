@@ -205,3 +205,93 @@ test('the default secret path is unchanged so upgrades still find it', function 
 
 	expect($global)->toContain("CACTI_PATH_INCLUDE . '/vendor/csrf/csrf-secret.php'");
 });
+
+/*
+ * csrf_check()'s $fatal contract: true for a non-POST request, the
+ * validation result for a POST when $fatal is false, and a failed POST
+ * routed to csrf_error_callback() (which exits) when $fatal is true. The
+ * audit plugin calls `!csrf_check(false)` as an admin guard; a void return
+ * makes `!null` always true, which denies every request regardless of the
+ * token. See tests/fixtures/CsrfCheckContractProbe.php.
+ *
+ * The default-fatal failure path exits, so it cannot run inside the Pest
+ * process without killing the test run. Each mode runs the probe in its own
+ * PHP subprocess instead, which is the only way to see exit() actually fire
+ * rather than inferring it from source text.
+ */
+
+/**
+ * Run tests/fixtures/CsrfCheckContractProbe.php in a fresh PHP process.
+ *
+ * @param string $mode One of the probe's argv[1] modes.
+ *
+ * @return array{exitCode: int, stderr: string} The process exit code and
+ *                                              everything it wrote to stderr.
+ */
+function csrf_facade_run_contract_probe(string $mode) : array {
+	$root = dirname(__DIR__, 2);
+
+	$descriptors = [
+		0 => ['pipe', 'r'],
+		1 => ['pipe', 'w'],
+		2 => ['pipe', 'w'],
+	];
+
+	$process = proc_open(
+		[PHP_BINARY, $root . '/tests/fixtures/CsrfCheckContractProbe.php', $mode],
+		$descriptors,
+		$pipes,
+		$root
+	);
+
+	if (!is_resource($process)) {
+		throw new RuntimeException('Unable to start the CSRF contract probe');
+	}
+
+	fclose($pipes[0]);
+
+	$stdout = stream_get_contents($pipes[1]);
+	$stderr = stream_get_contents($pipes[2]);
+
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+
+	$exitCode = proc_close($process);
+
+	return ['exitCode' => $exitCode, 'stdout' => $stdout, 'stderr' => $stderr];
+}
+
+test('csrf_check() returns true on a non-POST request', function () {
+	$result = csrf_facade_run_contract_probe('get');
+
+	expect($result['exitCode'])->toBe(0)
+		->and($result['stderr'])->toContain('before')
+		->toContain('result:true')
+		->toContain('after');
+});
+
+test('csrf_check(false) returns false on a bad POST token without exiting', function () {
+	$result = csrf_facade_run_contract_probe('nonfatal-fail');
+
+	expect($result['exitCode'])->toBe(0)
+		->and($result['stderr'])->toContain('before')
+		->toContain('result:false')
+		->toContain('after');
+});
+
+/*
+ * "after" and "result:" only print once csrf_check() returns control to the
+ * probe. On the default-fatal path a failed check must never return, so
+ * their absence is the assertion; seeing either would mean the fix
+ * regressed to returning instead of exiting. exitCode 0 (not 255, and not a
+ * signal) confirms the process ended via exit() and not a PHP fatal error.
+ */
+test('csrf_check() with the default $fatal still exits on a failed POST', function () {
+	$result = csrf_facade_run_contract_probe('fatal-fail');
+
+	expect($result['exitCode'])->toBe(0)
+		->and($result['stderr'])->toContain('before')
+		->not->toContain('after')
+		->not->toContain('result:')
+		->not->toContain('Fatal error');
+});

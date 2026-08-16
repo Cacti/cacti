@@ -129,22 +129,37 @@ function csrf_get_tokens() : string {
 }
 
 /**
- * Validate a POST request, invoking the failure callback when it fails.
+ * Validate a POST request.
  *
- * @param bool $fatal Retained for compatibility with csrf-magic's signature.
+ * csrf-magic returned a bool, and plugins such as the bundled audit plugin
+ * branch on it directly (`!csrf_check(false)`).  A void return silently
+ * breaks that caller: `!null` is always true, so the check would appear to
+ * fail on every request.  $fatal has the same meaning it always did: true
+ * routes a failed check to csrf_error_callback(), which exits; false hands
+ * the result back to the caller instead.
+ *
+ * @param bool $fatal Exit via csrf_error_callback() on failure when true;
+ *                    otherwise return false and let the caller decide.
+ *
+ * @return bool True for a non-POST request or a validated POST; false for a
+ *              POST that failed validation and $fatal is false.
  */
-function csrf_check(bool $fatal = true) : void {
+function csrf_check(bool $fatal = true) : bool {
 	if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-		return;
+		return true;
 	}
 
 	$submitted = (isset($_POST[CactiCsrfGuard::INPUT_NAME]) ? (string) $_POST[CactiCsrfGuard::INPUT_NAME] : '');
 
 	if (csrf_guard()->validate($submitted)) {
-		return;
+		return true;
 	}
 
-	csrf_error_callback();
+	if ($fatal) {
+		csrf_error_callback();
+	}
+
+	return false;
 }
 
 /**
