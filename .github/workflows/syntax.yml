@@ -321,7 +321,7 @@ jobs:
         sudo install -o runner -g www-data -m 0660 \
           ${{ github.workspace }}/include/config.php.dist \
           ${{ github.workspace }}/include/config.php
-        sed -i "s/localhost/127.0.0.1/g" ${{ github.workspace }}/include/config.php
+        sudo sed -i "s/localhost/127.0.0.1/g" ${{ github.workspace }}/include/config.php
 
     - name: Setup Cacti Daemon
       run: |
