@@ -1011,6 +1011,9 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 		}
 	}
 
+	/* nothing to flush means nothing failed; the reads below run either way */
+	$updates_ok = true;
+
 	if (cacti_sizeof($results)) {
 		// batch-prefetch the RRD field-name metadata the loop below needs on
 		// every local_data_id boundary, rather than re-querying it per
@@ -1048,7 +1051,6 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 		$rrd_path           = '';
 		$nt_rrd_field_names = [];
 		$tv_tmpl            = [];
-		$updates_ok         = true;
 
 		boost_timer('results_cycle', BOOST_TIMER_START);
 
