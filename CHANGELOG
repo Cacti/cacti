@@ -22,6 +22,7 @@ Cacti CHANGELOG
 -issue#7699: Guard three divisors that PHP 8 makes fatal
 -issue#7702: CSP report endpoint size limit never triggers and rate-limit buckets accumulate
 -issue#7708: Bind the MIB column names in MibCache::select()
+-issue#7727: Log entry for Data Source validation has a double space
 -issue#7728: Fail closed during Boost handoff and preserve the direct-RRD fallback
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
