@@ -2121,8 +2121,19 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 			}
 
 			// average time
-			$host['avg_time'] = (($host['total_polls'] - 1 - $host['failed_polls'])
-				* $host['avg_time'] + $ping_time) / ($host['total_polls'] - $host['failed_polls']);
+			/* Consistent counters cannot make this zero, but stored data that
+			 * disagrees can, and PHP 8 raises DivisionByZeroError where PHP 7
+			 * only warned and returned an infinity signed by the numerator.
+			 * That would end the poll for this device, so fall back to the
+			 * current sample instead. */
+			$successful_polls = $host['total_polls'] - $host['failed_polls'];
+
+			if ($successful_polls > 0) {
+				$host['avg_time'] = (($successful_polls - 1)
+					* $host['avg_time'] + $ping_time) / $successful_polls;
+			} else {
+				$host['avg_time'] = $ping_time;
+			}
 		}
 
 		// the host was down, now it's recovering
@@ -6549,6 +6560,15 @@ function get_dns_from_ip(string $ip, string $dns, int $timeout = 1000) : string 
 	// send our request (and store request size so we can cheat later)
 	$requestsize = @fwrite($handle, $data);
 
+	/* The size is used as the offset the reply is parsed from. A failed write
+	 * returns false, which reads as offset zero and would parse the response
+	 * from the wrong place rather than report that nothing was sent. */
+	if ($requestsize === false) {
+		@fclose($handle);
+
+		return $ip;
+	}
+
 	// get the response
 	$response = @fread($handle, 1000);
 
@@ -7400,6 +7420,18 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 		}
 	}
 
+	$target_ip = is_ipaddress($normalized_host) ? $normalized_host : $ipaddress;
+
+	/* Refuse loopback and link-local targets - 169.254.169.254 is the cloud
+	 * metadata endpoint - and other reserved ranges. RFC1918 private ranges are
+	 * still allowed because distributed Data Collectors legitimately run on
+	 * internal LANs. This closes SSRF to services on the Cacti host or network. */
+	if ($target_ip === '' || filter_var($target_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) === false) {
+		cacti_log(sprintf('SECURITY: Refusing Remote Data Collector fetch for PollerID:%d to disallowed address %s.', $poller_id, $target_ip), false, 'SECURITY');
+
+		return false;
+	}
+
 	$ca_file = trim((string) read_config_option('remote_agent_ca_file'));
 
 	if (get_url_type() === 'https' && $ca_file !== '' && (!is_file($ca_file) || !is_readable($ca_file))) {
@@ -7408,8 +7440,21 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 		return false;
 	}
 
+	/* Pin the outbound request to the IP we just validated. Leaving the hostname
+	 * in the URL would let the OS resolve it a second time when the socket opens,
+	 * so DNS rebinding could swap in a loopback/reserved address after the guard
+	 * above. Connect to $target_ip and carry the hostname in the Host header and
+	 * TLS peer_name so vhost routing and certificate checks still see the name. */
 	$fgc_contextoption = get_default_contextoption(false, $normalized_host);
-	$fgc_context       = stream_context_create($fgc_contextoption);
+
+	$host_header = (filter_var($normalized_host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? '[' . $normalized_host . ']' : $normalized_host) . $port;
+
+	if (isset($fgc_contextoption['http']['header'])) {
+		$fgc_contextoption['http']['header'] .= 'Host: ' . $host_header . "\r\n";
+	}
+
+	$fgc_context  = stream_context_create($fgc_contextoption);
+	$connect_host = filter_var($target_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? '[' . $target_ip . ']' : $target_ip;
 
 	$output = [];
 
@@ -7423,9 +7468,8 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 	$ra_start = microtime(true);
 
 	try {
-		$url_host = filter_var($normalized_host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? '[' . $normalized_host . ']' : $normalized_host;
-		$output   = file_get_contents(
-			get_url_type() . '://' . $url_host . $port . $url,
+		$output = file_get_contents(
+			get_url_type() . '://' . $connect_host . $port . $url,
 			false,
 			$fgc_context,
 			0,
