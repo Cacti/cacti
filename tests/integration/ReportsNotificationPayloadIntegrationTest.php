@@ -14,7 +14,7 @@
 
 /*
  * Integration coverage for reports_log_and_notify() (lib/reports.php).
- * tests/Unit/ReportsNotificationPayloadGuardTest.php only checks that the
+ * tests/Unit/Security/InputValidation/ReportsNotificationPayloadGuardTest.php only checks that the
  * is_array() guards appear before the foreach/switch in the source; it never
  * calls the function. This test drives the real function end to end -
  * decoding a stored reports_queued.notification payload, validating it, and

@@ -24,7 +24,7 @@ if (!function_exists('gnrv')) {
 }
 
 /*
- * #7338: tests/Unit/AggregateFormFieldNamesTest.php only regex-matches
+ * #7338: tests/Unit/Ui/Aggregate/AggregateFormFieldNamesTest.php only regex-matches
  * aggregate_graphs.php's source text; it never runs api_aggregate_convert_template()
  * and so never exercises the actual regression: "without a valid template the
  * saves below would write null template fields" -- i.e. before the fix, a
