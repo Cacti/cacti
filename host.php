@@ -1350,20 +1350,24 @@ function device_javascript(bool $hasHost = true) : void {
 				});
 
 				$('[id^="remove"]').click(function(data) {
-					strURL = 'host.php?action=query_remove&id=' + $(this).attr('data-id') + '&host_id=' + $('#id').val();
-					loadUrl({
-						url: strURL,
-						scroll: true,
-						nostate: true
+					postUrl({
+						url: 'host.php?action=query_remove',
+						scroll: true
+					}, {
+						id: $(this).attr('data-id'),
+						host_id: $('#id').val(),
+						__csrf_magic: csrfMagicToken
 					});
 				});
 
 				$('[id^="gtremove"]').click(function(data) {
-					strURL = 'host.php?action=gt_remove&id=' + $(this).attr('data-id') + '&host_id=' + $('#id').val();
-					loadUrl({
-						url: strURL,
-						scroll: true,
-						nostate: true
+					postUrl({
+						url: 'host.php?action=gt_remove',
+						scroll: true
+					}, {
+						id: $(this).attr('data-id'),
+						host_id: $('#id').val(),
+						__csrf_magic: csrfMagicToken
 					});
 				});
 

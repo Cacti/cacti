@@ -5413,9 +5413,11 @@ function cacti_escapeshellcmd(string $string) : string {
  * @return string The escaped [quoted|unquoted] string
  */
 function cacti_escapeshellarg(string $string, bool $quote = true) : string {
-	if ($string == '') {
-		return $string;
-	}
+	/* An empty argument used to return early, unquoted, which removed it from
+	 * the command line rather than passing it as empty: 'spine -C ' . '' became
+	 * "spine -C --poller 1" and -C consumed the next option. The early return
+	 * dates from a warning about escaping null (issue#1560), which the string
+	 * type hint now prevents, so the normal path handles the empty case. */
 
 	// remove any carriage returns or line feeds from the argument
 	$string = str_replace(["\n", "\r"], ['', ''], $string);
