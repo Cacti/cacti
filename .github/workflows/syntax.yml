@@ -40,10 +40,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Install Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v7
       with:
         node-version: '22'
 
@@ -56,7 +56,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-22.04]
-        php: ${{ fromJSON((github.base_ref == '1.2.x' || github.ref_name == '1.2.x') && '["8.2", "8.3", "8.4"]' || '["8.2", "8.3", "8.4"]') }}
+        # 8.1 is deliberately absent: the daemon cannot reach the database on
+        # that job because libapache2-mod-php below is unversioned and pulls
+        # the distribution's own 8.1 on jammy, which shadows the interpreter
+        # setup-php prepared and does not carry its mysql module. Adding the
+        # version the docs ask contributors to write for needs that resolved
+        # first, which is its own change rather than a rider on this one.
+        php: ['8.2', '8.3', '8.4']
         experimental: [false]
         
     services:
@@ -75,7 +81,7 @@ jobs:
     name: PHP ${{ matrix.php }} Test on ${{ matrix.os }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Install PHP ${{ matrix.php }}
       uses: shivammathur/setup-php@v2
@@ -88,43 +94,43 @@ jobs:
       run: php -v
       
     - name: Checkout Thold Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      uses: GuillaumeFalourd/clone-github-repo-action@v3
       with:
         owner: 'Cacti'
         repository: 'plugin_thold'
 
     - name: Checkout Monitor Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      uses: GuillaumeFalourd/clone-github-repo-action@v3
       with:
         owner: 'Cacti'
         repository: 'plugin_monitor'
 
     - name: Checkout MacTrack Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      uses: GuillaumeFalourd/clone-github-repo-action@v3
       with:
         owner: 'Cacti'
         repository: 'plugin_mactrack'
 
     - name: Checkout Intropage Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      uses: GuillaumeFalourd/clone-github-repo-action@v3
       with:
         owner: 'Cacti'
         repository: 'plugin_intropage'
 
     - name: Checkout FlowView Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      uses: GuillaumeFalourd/clone-github-repo-action@v3
       with:
         owner: 'Cacti'
         repository: 'plugin_flowview'
 
     - name: Checkout Audit Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      uses: GuillaumeFalourd/clone-github-repo-action@v3
       with:
         owner: 'Cacti'
         repository: 'plugin_audit'
 
     - name: Checkout Syslog Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      uses: GuillaumeFalourd/clone-github-repo-action@v3
       with:
         owner: 'Cacti'
         repository: 'plugin_syslog'
@@ -154,7 +160,15 @@ jobs:
 
     - name: Add ondrej PHP PPA and apt-get update
       run: |
-        sudo add-apt-repository -y ppa:ondrej/php
+        # The runner image and setup-php may already have this PPA configured
+        # with a keyring. Adding it again supplies no Signed-By value, and apt
+        # refuses the conflicting pair rather than merging them, which fails
+        # the whole job before any Cacti code runs.
+        if grep -Rqs 'ondrej/php' /etc/apt/sources.list /etc/apt/sources.list.d/; then
+          echo 'ondrej/php already configured, skipping add-apt-repository'
+        else
+          sudo add-apt-repository -y ppa:ondrej/php
+        fi
         sudo apt-get -y update
 
     - name: Install Apache and Tools
@@ -215,9 +229,22 @@ jobs:
         sudo cp ${{ github.workspace }}/tests/tools/cactid.service /etc/systemd/system/cactid.service
         sudo systemctl enable cactid
         sudo systemctl start cactid
-        sudo systemctl status cactid
+        # status exits 3 while the unit sits in auto-restart, and this step runs
+        # under bash -e, so it aborted before the deliberate check below could
+        # report anything. Keep it for the log and let that check decide.
+        sudo systemctl status cactid || true
+        # The service restarts on a timer, so allow it a moment to settle
+        # rather than reading the one instant between runs.
+        for attempt in 1 2 3 4 5 6 7 8 9 10; do
+          if systemctl is-active --quiet cactid; then
+            break
+          fi
+          sleep 2
+        done
         if ! systemctl is-active --quiet cactid; then
           echo "Cacti daemon failed to start"
+          sudo systemctl status cactid || true
+          sudo journalctl -u cactid --no-pager -n 50 || true
           exit 1
         fi
 

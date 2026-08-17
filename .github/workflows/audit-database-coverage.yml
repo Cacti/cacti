@@ -12,8 +12,8 @@ on:
       - 'lib/audit.php'
       - 'lib/installer.php'
       - 'phpunit-audit.xml'
-      - 'tests/Unit/AuditDatabaseMissingTableTest.php'
-      - 'tests/Unit/InstallerSchemaValidationTest.php'
+      - 'tests/Unit/Database/AuditDatabaseMissingTableTest.php'
+      - 'tests/Unit/Installer/InstallerSchemaValidationTest.php'
   pull_request:
     branches: [1.2.x]
     paths:
@@ -25,8 +25,8 @@ on:
       - 'lib/audit.php'
       - 'lib/installer.php'
       - 'phpunit-audit.xml'
-      - 'tests/Unit/AuditDatabaseMissingTableTest.php'
-      - 'tests/Unit/InstallerSchemaValidationTest.php'
+      - 'tests/Unit/Database/AuditDatabaseMissingTableTest.php'
+      - 'tests/Unit/Installer/InstallerSchemaValidationTest.php'
   workflow_dispatch:
 
 permissions:
@@ -43,7 +43,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up PHP
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
