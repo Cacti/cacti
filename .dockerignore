@@ -3,8 +3,6 @@
 *.md
 !README.md
 LICENSE
-.phpstan*
-.php-cs-fixer.php
 .pre-commit-config.yaml
 .env
 .env.local

@@ -5,11 +5,6 @@
       <code><![CDATA['Location: ' . sanitize_uri($_SERVER['REQUEST_URI'])]]></code>
     </TaintedHeader>
   </file>
-  <file src="include/global.php">
-    <TaintedHeader>
-      <code><![CDATA["Content-Security-Policy: default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; script-src 'self' $script_policy 'unsafe-inline' $alternates; frame-ancestors 'self' $alternates; worker-src 'self' $alternates;"]]></code>
-    </TaintedHeader>
-  </file>
   <file src="include/global_session.php">
     <TaintedHtml>
       <code><![CDATA[gfrv('action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([-a-zA-Z0-9_\s]+)$/']])]]></code>
@@ -25,11 +20,6 @@
     <TaintedHtml>
       <code><![CDATA[$data]]></code>
     </TaintedHtml>
-  </file>
-  <file src="lib/auth.php">
-    <TaintedHeader>
-      <code><![CDATA['Location: ' . $referer]]></code>
-    </TaintedHeader>
   </file>
   <file src="lib/functions.php">
     <TaintedHtml>

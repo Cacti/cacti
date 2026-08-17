@@ -1611,6 +1611,17 @@ function api_plugin_archive_restore(string $plugin, string $id, string $type = '
 				if (strlen($output)) {
 					$rfile = ltrim($basefile, '/');
 
+					/**
+					 * Archive entry names are attacker controlled once the
+					 * repository URL is.  An entry that climbs out of the
+					 * plugin directory is skipped rather than written.
+					 */
+					if (validate_relative_path_within($rfile, $restore_path) === false) {
+						cacti_log(sprintf('WARNING: Plugin \'%s\' archive entry \'%s\' escapes the plugin directory and was skipped.', $plugin, $basefile), false, 'PLUGIN');
+
+						continue;
+					}
+
 					if (basename($rfile) != $rfile) {
 						if (!is_dir(dirname($rfile)) && !mkdir(dirname($rfile), 0755, true)) {
 							if ($type == 'archive') {
@@ -1987,7 +1998,7 @@ function plugin_fetch_latest_plugins() : mixed {
 
 	$start = microtime(true);
 
-	$repo = trim(read_config_option('github_repository'), "/\n\r ");
+	$repo = plugin_validate_repository_url(read_config_option('github_repository'));
 	$user = trim(read_config_option('github_user'));
 
 	if ($repo == '' || $user == '') {
@@ -2433,4 +2444,45 @@ function plugin_make_github_request(string $url, string $type = 'json') : mixed 
 	}
 
 	return false;
+}
+
+/**
+ * plugin_validate_repository_url - constrains the plugin repository API base
+ *
+ * The repository URL drives every plugin fetch, so an arbitrary value lets an
+ * administrator point plugin distribution at attacker controlled infrastructure.
+ *
+ * @param mixed $url The configured repository URL
+ *
+ * @return string The trimmed URL, or an empty string when unusable
+ */
+function plugin_validate_repository_url(mixed $url) : string {
+	$url = trim((string) $url, "/\n\r ");
+
+	if ($url === '') {
+		return '';
+	}
+
+	$parts = parse_url($url);
+
+	if ($parts === false || !isset($parts['scheme']) || !isset($parts['host'])) {
+		return '';
+	}
+
+	if (!in_array(strtolower($parts['scheme']), ['http', 'https'], true)) {
+		return '';
+	}
+
+	/**
+	 * The value is concatenated with a path, so a query string or fragment
+	 * would produce a malformed request. Userinfo is not meaningful for an
+	 * API base and would leak credentials into the log.
+	 */
+	foreach (['user', 'pass', 'query', 'fragment'] as $part) {
+		if (isset($parts[$part])) {
+			return '';
+		}
+	}
+
+	return $url;
 }

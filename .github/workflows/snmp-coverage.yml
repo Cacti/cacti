@@ -5,6 +5,7 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/snmp-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
       - 'composer.json'
       - 'composer.lock'
       - 'lib/snmp.php'
@@ -17,6 +18,7 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/snmp-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
       - 'composer.json'
       - 'composer.lock'
       - 'lib/snmp.php'
@@ -40,30 +42,23 @@ env:
 jobs:
   coverage:
     name: lib/snmp.php 100% coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-
-      - name: Setup PHP 8.4 with Xdebug
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
         with:
-          php-version: '8.4'
+          persist-credentials: false
+
+      - name: Setup locked PHP 8.1 dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.1'
           coverage: xdebug
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring, snmp
-
-      - name: Cache Composer packages
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-        with:
-          path: include/vendor
-          key: ${{ runner.os }}-php-snmp-coverage-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-snmp-coverage-
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
-
+          dependency-mode: locked-snmp-coverage
+          install-args: --prefer-dist --no-progress --no-interaction
 
       - name: Start fixture
         run: |
