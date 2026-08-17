@@ -33,6 +33,31 @@ if (read_config_option('storage_location')) {
 }
 
 /**
+ * Strip control characters from a fully assembled rrdtool command line.
+ *
+ * The persistent rrdtool process reads one command per line over a pipe, so a
+ * CR or LF embedded in any field value (data_source_path, DS min/max, a title,
+ * a substituted host value, ...) splits the line into a second, attacker chosen
+ * rrdtool command. RRDtool command lines are single line; the line terminator
+ * is added at the write site, not here, so removing every C0 control and DEL
+ * from the assembled command is safe and defeats pipe/newline injection
+ * regardless of which field carried the payload. Applied after all title and
+ * placeholder substitution so a later substitution cannot reintroduce a break.
+ *
+ * @param string $command_line The assembled rrdtool command line.
+ *
+ * @return string The command line with C0 controls and DEL removed.
+ */
+function rrd_strip_control_chars(string $command_line): string {
+	$clean = preg_replace('/[\x00-\x1f\x7f]/', '', $command_line);
+
+	/* preg_replace() returns null on a PCRE failure. Fall back to removing the
+	 * characters that actually enable pipe injection so a regex engine problem
+	 * never leaves CR/LF/NUL in the command line. */
+	return $clean ?? str_replace(["\r", "\n", "\0"], '', $command_line);
+}
+
+/**
  * set the language environment variable for rrdtool functions
  *
  * @param mixed $lang The desired language to set
@@ -356,6 +381,12 @@ function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $out
 	 */
 	$command_line = str_replace("\\\n", ' ', $command_line);
 
+	/* Defense in depth: after all placeholder and title substitution, strip any
+	 * control characters from the assembled command before it is written to the
+	 * rrdtool pipe or executed. A CR/LF in a field value would otherwise inject
+	 * an independent rrdtool command over the line based pipe protocol. */
+	$command_line = rrd_strip_control_chars($command_line);
+
 	// output information to the log file if appropriate
 	cacti_log('CACTI2RRD: ' . read_config_option('path_rrdtool') . " $command_line", $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
 
@@ -612,6 +643,11 @@ function __rrd_proxy_execute(string $command_line, bool $log_to_stdout, int $out
 	 * in there (text format)
 	 */
 	$command_line = str_replace([CACTI_PATH_RRA, "\\\n"], ['.', ' '], $command_line);
+
+	/* Strip control characters before the command is sent to the rrdtool proxy,
+	 * so a CR/LF in a field value cannot inject a second command at the proxy
+	 * pipe. Mirrors the guard in __rrd_execute() for the local path. */
+	$command_line = rrd_strip_control_chars($command_line);
 
 	// output information to the log file if appropriate
 	cacti_log('CACTI2RRDP: ' . read_config_option('path_rrdtool') . " $command_line", $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);

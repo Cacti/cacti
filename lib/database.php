@@ -2416,6 +2416,23 @@ function db_qstr(mixed $s, mixed $db_conn = false) : string {
 }
 
 /**
+ * db_like_escape - escape the LIKE wildcard characters in a value so it matches
+ *   literally instead of as a pattern.
+ *
+ *   Pass the result to a bound parameter (LIKE ?), not db_qstr(): the backslash
+ *   escapes are meant for MySQL's LIKE, which reads '\%' / '\_' as the literal
+ *   characters. db_qstr() would double-escape the backslashes. Wrap with the
+ *   surrounding '%' wildcards after escaping, e.g. '%' . db_like_escape($v) . '%'.
+ *
+ * @param mixed $value The value to neutralise for a LIKE clause
+ *
+ * @return string The value with '\', '%' and '_' escaped for LIKE
+ */
+function db_like_escape(mixed $value) : string {
+	return str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], (string) $value);
+}
+
+/**
  * db_strip_control_chars - Strip control characters from SQL command
  *
  * @param string $sql The SQL command to loose it's control chars
