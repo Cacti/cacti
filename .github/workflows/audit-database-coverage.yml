@@ -1,0 +1,68 @@
+name: Database audit coverage
+
+on:
+  push:
+    branches: [1.2.x]
+    paths:
+      - '.github/workflows/audit-database-coverage.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'cli/audit_database.php'
+      - 'cli/install_cacti.php'
+      - 'lib/audit.php'
+      - 'lib/installer.php'
+      - 'phpunit-audit.xml'
+      - 'tests/Unit/Database/AuditDatabaseMissingTableTest.php'
+      - 'tests/Unit/Installer/InstallerSchemaValidationTest.php'
+  pull_request:
+    branches: [1.2.x]
+    paths:
+      - '.github/workflows/audit-database-coverage.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'cli/audit_database.php'
+      - 'cli/install_cacti.php'
+      - 'lib/audit.php'
+      - 'lib/installer.php'
+      - 'phpunit-audit.xml'
+      - 'tests/Unit/Database/AuditDatabaseMissingTableTest.php'
+      - 'tests/Unit/Installer/InstallerSchemaValidationTest.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: audit-database-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage:
+    name: lib/audit.php 100% coverage
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.2'
+          coverage: xdebug
+
+      - name: Install Pest
+        run: |
+          composer global config allow-plugins.pestphp/pest-plugin true
+          composer global require pestphp/pest:^3 --no-interaction --no-progress
+          echo "$(composer global config bin-dir --absolute)" >> "$GITHUB_PATH"
+
+      - name: Enforce line coverage
+        env:
+          XDEBUG_MODE: coverage
+        run: |
+          pest --colors=never \
+            --configuration=phpunit-audit.xml \
+            --coverage \
+            --coverage-text \
+            --min=100

@@ -45,7 +45,7 @@ if ($cacti_base === false) {
 
 define('CACTI_PATH_BASE', $cacti_base);
 
-if (!function_exists('read_config_option')) {
+if (!function_exists(__NAMESPACE__ . '\\read_config_option') && !function_exists('\\read_config_option')) {
 	function read_config_option(string $name, bool $force = false): mixed {
 		if ($name === 'htmx_enabled') {
 			return getenv('FIXTURE_HTMX_ENABLED') !== false
