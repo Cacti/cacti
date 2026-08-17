@@ -15,7 +15,7 @@
 // Proves the IN-clause placeholder rewrite used to parameterise purge_old_graphs()
 // targets the same rows as the previous implode(',', $ids) form.
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
+require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
 
 // The exact placeholder builder used at the call sites.
 $in_placeholders = static fn (array $ids): string => trim(str_repeat('?, ', cacti_sizeof($ids)), ', ');

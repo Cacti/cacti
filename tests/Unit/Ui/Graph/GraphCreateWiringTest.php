@@ -12,8 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
+require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
+require_once dirname(__DIR__, 3) . '/Helpers/FakeMySQLPDO.php';
 require_once dirname(__DIR__, 4) . '/include/vendor/autoload.php';
 require_once dirname(__DIR__, 4) . '/lib/database.php';
 

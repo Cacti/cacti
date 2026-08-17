@@ -23,10 +23,10 @@ $GLOBALS['snmp_coverage_config'] = [
 	'snmp_retries'                 => 0,
 	'max_get_size'                 => 0,
 	'snmp_timeout'                 => 0,
-	'path_snmpget'                 => dirname(__DIR__) . '/fixtures/snmp_command_probe.php',
-	'path_snmpgetnext'             => dirname(__DIR__) . '/fixtures/snmp_command_probe.php',
-	'path_snmpwalk'                => dirname(__DIR__) . '/fixtures/snmp_command_probe.php',
-	'path_snmpbulkwalk'            => dirname(__DIR__) . '/fixtures/snmp_command_probe.php'
+	'path_snmpget'                 => dirname(__DIR__, 3) . '/fixtures/snmp_command_probe.php',
+	'path_snmpgetnext'             => dirname(__DIR__, 3) . '/fixtures/snmp_command_probe.php',
+	'path_snmpwalk'                => dirname(__DIR__, 3) . '/fixtures/snmp_command_probe.php',
+	'path_snmpbulkwalk'            => dirname(__DIR__, 3) . '/fixtures/snmp_command_probe.php'
 ];
 $GLOBALS['snmp_coverage_logs']   = [];
 $GLOBALS['snmp_coverage_debug']  = [];
@@ -174,7 +174,7 @@ beforeEach(function () : void {
 	$GLOBALS['snmp_coverage_logs']                                   = [];
 	$GLOBALS['snmp_coverage_debug']                                  = [];
 	$GLOBALS['snmp_coverage_config']['oid_increasing_check_disable'] = 'off';
-	$GLOBALS['snmp_coverage_config']['path_snmpbulkwalk']            = dirname(__DIR__) . '/fixtures/snmp_command_probe.php';
+	$GLOBALS['snmp_coverage_config']['path_snmpbulkwalk']            = dirname(__DIR__, 3) . '/fixtures/snmp_command_probe.php';
 	$GLOBALS['snmp_coverage_reject_ip']                              = false;
 	unset($_SESSION);
 	putenv('CACTI_SNMP_PROBE_MODE=get');
@@ -392,7 +392,7 @@ test('native and binary walks cover parsing, filtering, and diagnostics', functi
 	cacti_snmp_walk($host, 'public', $oid, 1, port: $port, timeout_ms: 500, retries: 1);
 	array_pop($GLOBALS['banned_snmp_strings']);
 
-	$GLOBALS['snmp_coverage_config']['path_snmpbulkwalk']            = dirname(__DIR__) . '/fixtures/snmp_command_probe.php';
+	$GLOBALS['snmp_coverage_config']['path_snmpbulkwalk']            = dirname(__DIR__, 3) . '/fixtures/snmp_command_probe.php';
 	$GLOBALS['snmp_coverage_config']['oid_increasing_check_disable'] = 'on';
 	putenv('CACTI_SNMP_PROBE_MODE=walk');
 	$_SESSION = [];

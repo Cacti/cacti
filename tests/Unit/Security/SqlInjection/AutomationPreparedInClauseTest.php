@@ -26,7 +26,7 @@ if (!function_exists(__NAMESPACE__ . '\\cacti_sizeof') && !function_exists('\\ca
 }
 
 require_once dirname(__DIR__, 4) . '/lib/api_automation_tools.php';
-require_once dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
+require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
 
 test('ID list normalization is strict and fail closed', function () : void {
 	expect(cacti_sizeof(new ArrayObject([1])))->toBe(0)
@@ -45,7 +45,7 @@ test('ID list normalization is strict and fail closed', function () : void {
 });
 
 test('all three host-template filters bind dynamic IN clause values', function () : void {
-	$verdict = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/automation_prepared_in_clause_probe.php');
+	$verdict = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/automation_prepared_in_clause_probe.php');
 	$queries = $verdict['queries'];
 
 	expect($queries)->toHaveCount(3)
@@ -58,7 +58,7 @@ test('all three host-template filters bind dynamic IN clause values', function (
 });
 
 test('invalid ID lists never reach the database', function () : void {
-	$verdict = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/automation_prepared_in_clause_probe.php');
+	$verdict = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/automation_prepared_in_clause_probe.php');
 
 	expect($verdict['invalid_results'])->toBe([false, false, false])
 		->and($verdict['invalid_query_count'])->toBe(0);

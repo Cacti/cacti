@@ -12,7 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
+require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
 require_once dirname(__DIR__, 4) . '/include/vendor/autoload.php';
 // database.php must load before html.php so db_in_clause/db_qstr are the real
 // implementations and html.php's dq_ branch resolves against them.

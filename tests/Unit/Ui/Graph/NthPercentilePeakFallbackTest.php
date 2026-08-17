@@ -26,7 +26,7 @@
  * is exercised without RRDtool or a database.
  */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
+require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
 
 if (!function_exists('nth_percentile_stats_stub')) {
 	function nth_percentile_stats_stub() : string {

@@ -28,7 +28,7 @@
  * issues fewer SQL statements when batched this way.
  */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php'; // provides the global cacti_sizeof() the extracted block falls back to
+require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php'; // provides the global cacti_sizeof() the extracted block falls back to
 
 $source = file_get_contents(dirname(__DIR__, 4) . '/lib/data_query.php');
 
