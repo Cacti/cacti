@@ -29,15 +29,25 @@ require_once dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
  * owns.
  */
 
+function i18n_fallback_verdict() : array {
+	static $verdict;
+
+	if ($verdict === null) {
+		$verdict = cacti_test_isolated_probe(__DIR__ . '/fixtures/i18n_fallback_probe.php', ['0']);
+	}
+
+	return $verdict;
+}
+
 test('the translation API survives the disabled-i18n fallback', function () {
-	$verdict = cacti_test_isolated_probe(__DIR__ . '/fixtures/i18n_fallback_probe.php', ['0']);
+	$verdict = i18n_fallback_verdict();
 
 	expect($verdict['translate_exists'])->toBeTrue();
 	expect($verdict['translated'])->toBe('Version 1.3.0');
 });
 
 test('the unconditionally declared translation helpers are unaffected', function () {
-	$verdict = cacti_test_isolated_probe(__DIR__ . '/fixtures/i18n_fallback_probe.php', ['0']);
+	$verdict = i18n_fallback_verdict();
 
 	// These are plain top level declarations, so PHP hoists them and the early
 	// return never hid them. Asserted so a future move of __() that also moves
