@@ -4683,7 +4683,7 @@ function auth_display_custom_error_message(string $message) : void {
 	print '<div class="ui-state-error ui-corner-all" style="width:50%;margin-left:auto;margin-right:auto;margin-top:200px;padding:20px"><p>' . $message . '</p><p>' . $custom_message . '</p></div>';
 
 	if ($auth_method != AUTH_METHOD_BASIC) {
-		print '<div class="ui-corner-all" style="width:50%;margin:auto;padding:20px"><a href="index.php">' . __('Login Again') . '</a></div><script type="text/javascript">$(function() { $("a").button(); });</script>';
+		print '<div class="ui-corner-all" style="width:50%;margin:auto;padding:20px"><a href="index.php">' . __('Login Again') . '</a></div><script type="text/javascript" ' . CactiSecureHeaders::getNonceAttribute() . '>$(function() { $("a").button(); });</script>';
 	}
 
 	print '</center></body></html>';

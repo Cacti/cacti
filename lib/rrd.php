@@ -22,12 +22,39 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once(__DIR__ . '/rrd_graph_item.php');
+
 define('RRD_NL', " \\\n");
 define('MAX_FETCH_CACHE_SIZE', 5);
 
 if (read_config_option('storage_location')) {
 	global $encryption;
 	$encryption = true;
+}
+
+/**
+ * Strip control characters from a fully assembled rrdtool command line.
+ *
+ * The persistent rrdtool process reads one command per line over a pipe, so a
+ * CR or LF embedded in any field value (data_source_path, DS min/max, a title,
+ * a substituted host value, ...) splits the line into a second, attacker chosen
+ * rrdtool command. RRDtool command lines are single line; the line terminator
+ * is added at the write site, not here, so removing every C0 control and DEL
+ * from the assembled command is safe and defeats pipe/newline injection
+ * regardless of which field carried the payload. Applied after all title and
+ * placeholder substitution so a later substitution cannot reintroduce a break.
+ *
+ * @param string $command_line The assembled rrdtool command line.
+ *
+ * @return string The command line with C0 controls and DEL removed.
+ */
+function rrd_strip_control_chars(string $command_line): string {
+	$clean = preg_replace('/[\x00-\x1f\x7f]/', '', $command_line);
+
+	/* preg_replace() returns null on a PCRE failure. Fall back to removing the
+	 * characters that actually enable pipe injection so a regex engine problem
+	 * never leaves CR/LF/NUL in the command line. */
+	return $clean ?? str_replace(["\r", "\n", "\0"], '', $command_line);
 }
 
 /**
@@ -354,6 +381,12 @@ function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $out
 	 */
 	$command_line = str_replace("\\\n", ' ', $command_line);
 
+	/* Defense in depth: after all placeholder and title substitution, strip any
+	 * control characters from the assembled command before it is written to the
+	 * rrdtool pipe or executed. A CR/LF in a field value would otherwise inject
+	 * an independent rrdtool command over the line based pipe protocol. */
+	$command_line = rrd_strip_control_chars($command_line);
+
 	// output information to the log file if appropriate
 	cacti_log('CACTI2RRD: ' . read_config_option('path_rrdtool') . " $command_line", $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
 
@@ -610,6 +643,11 @@ function __rrd_proxy_execute(string $command_line, bool $log_to_stdout, int $out
 	 * in there (text format)
 	 */
 	$command_line = str_replace([CACTI_PATH_RRA, "\\\n"], ['.', ' '], $command_line);
+
+	/* Strip control characters before the command is sent to the rrdtool proxy,
+	 * so a CR/LF in a field value cannot inject a second command at the proxy
+	 * pipe. Mirrors the guard in __rrd_execute() for the local path. */
+	$command_line = rrd_strip_control_chars($command_line);
 
 	// output information to the log file if appropriate
 	cacti_log('CACTI2RRDP: ' . read_config_option('path_rrdtool') . " $command_line", $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
@@ -2505,7 +2543,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 
 			if (!empty($graph_item['hex'])) {
 				$graph_item_color_code = '#' . $graph_item['hex'];
-				$graph_item_color_code .= $graph_item['alpha'];
+				$graph_item_color_code .= rrd_graph_item_alpha($graph_item['alpha']);
 			}
 
 			$rrdversion = get_rrdtool_version();
@@ -2513,7 +2551,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 			if (cacti_version_compare($rrdversion, '1.8', '>=')) {
 				if (!empty($graph_item['hex2']) && ($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_AREA || $graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_STACK)) {
 					$graph_item_color_code2 = '#' . $graph_item['hex2'];
-					$graph_item_color_code2 .= $graph_item['alpha2'];
+					$graph_item_color_code2 .= rrd_graph_item_alpha($graph_item['alpha2']);
 				} else {
 					$graph_item_color_code2 = '';
 				}
@@ -2530,12 +2568,16 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_LINESTACK ||
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_HRULE ||
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_VRULE) {
-				if (!empty($graph_item['dashes'])) {
-					$dash .= ':dashes=' . $graph_item['dashes'];
+				$dashes = rrd_graph_item_number_list($graph_item['dashes']);
+
+				if ($dashes !== '') {
+					$dash .= ':dashes=' . $dashes;
 				}
 
-				if (!empty($graph_item['dash_offset'])) {
-					$dash .= ':dash-offset=' . $graph_item['dash_offset'];
+				$dash_offset = strip_alpha($graph_item['dash_offset']);
+
+				if (!empty($dash_offset)) {
+					$dash .= ':dash-offset=' . $dash_offset;
 				}
 			}
 
@@ -2572,8 +2614,10 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 						break;
 					case GRAPH_ITEM_TYPE_TEXTALIGN:
 						if (!isset($graph_data_array['graph_nolegend'])) {
-							if (!empty($graph_item['textalign'])) {
-								$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $graph_item['textalign'];
+							$textalign = rrd_graph_item_textalign($graph_item['textalign']);
+
+							if ($textalign !== '') {
+								$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $textalign;
 							}
 						}
 
@@ -2652,18 +2696,27 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 						if (read_config_option('enable_rrdtool_gradient_support') == 'on') {
 							// End color is a 40% (0.4) darkened (negative number) version of the original color
 							$end_color        = colourBrightness('#' . $graph_item['hex'], -0.4);
-							$txt_graph_items .= gradient($data_source_name, $graph_item_color_code, $end_color . $graph_item['alpha'], cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]), 20, false, $graph_item['alpha']);
+							$item_alpha       = rrd_graph_item_alpha($graph_item['alpha']);
+							$txt_graph_items .= gradient($data_source_name, $graph_item_color_code, $end_color . $item_alpha, cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]), 20, false, $item_alpha);
 						} else {
 							$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . $graph_item_color_code2 . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]);
 
 							if ($graph_item_color_code2 != '') {
-								$txt_graph_items .= ':gradheight=' . $graph_item['gradheight'];
+								$gradheight = strip_alpha($graph_item['gradheight']);
+
+								if ($gradheight !== false) {
+									$txt_graph_items .= ':gradheight=' . $gradheight;
+								}
 							}
 						}
 
 						if ($graph_item['shift'] == CHECKED && abs($graph_item['value']) > 0) {
 							// create a SHIFT statement
-							$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
+							$shift_value = strip_alpha($graph_item['value']);
+
+							if ($shift_value !== false) {
+								$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $shift_value;
+							}
 						}
 
 						$text_format                        = trim(preg_replace('/[^a-z0-9 _()]/i', '', $text_format));
@@ -2686,11 +2739,19 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 						$txt_graph_items .= 'AREA:' . $data_source_name . $graph_item_color_code . $graph_item_color_code2 . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ':STACK';
 
 						if ($graph_item_color_code2 != '') {
-							$txt_graph_items .= ':gradheight=' . $graph_item['gradheight'];
+							$gradheight = strip_alpha($graph_item['gradheight']);
+
+							if ($gradheight !== false) {
+								$txt_graph_items .= ':gradheight=' . $gradheight;
+							}
 						}
 
 						if ($graph_item['shift'] == CHECKED && $graph_item['value'] > 0) {      // create a SHIFT statement
-							$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
+							$shift_value = strip_alpha($graph_item['value']);
+
+							if ($shift_value !== false) {
+								$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $shift_value;
+							}
 						}
 
 						$text_format                        = trim(preg_replace('/[^a-z0-9 _()]/i', '', $text_format));
@@ -2715,7 +2776,11 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . $dash;
 
 						if ($graph_item['shift'] == CHECKED && $graph_item['value'] > 0) {      // create a SHIFT statement
-							$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
+							$shift_value = strip_alpha($graph_item['value']);
+
+							if ($shift_value !== false) {
+								$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $shift_value;
+							}
 						}
 
 						$text_format                        = trim(preg_replace('/[^a-z0-9 _()]/i', '', $text_format));
@@ -2735,10 +2800,15 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 							$text_format = '';
 						}
 
-						$txt_graph_items .= 'LINE' . $graph_item['line_width'] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ':STACK' . $dash;
+						$line_width       = strip_alpha($graph_item['line_width']);
+						$txt_graph_items .= 'LINE' . ($line_width === false ? '1' : $line_width) . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ':STACK' . $dash;
 
 						if ($graph_item['shift'] == CHECKED && $graph_item['value'] > 0) {      // create a SHIFT statement
-							$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
+							$shift_value = strip_alpha($graph_item['value']);
+
+							if ($shift_value !== false) {
+								$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $shift_value;
+							}
 						}
 
 						$text_format                        = trim(preg_replace('/[^a-z0-9 _()]/i', '', $text_format));
@@ -2746,8 +2816,9 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 
 						break;
 					case GRAPH_ITEM_TYPE_TIC:
-						$_fraction = (empty($graph_item['graph_type_id']) ? '' : (':' . $graph_item['value']));
-						$_legend   = ':' . cacti_escapeshellarg(rrdtool_escape_string(htmle($graph_variables['text_format'][$graph_item_id])) . $hardreturn[$graph_item_id]);
+						$tick_fraction = strip_alpha($graph_item['value']);
+						$_fraction     = (empty($graph_item['graph_type_id']) || $tick_fraction === false ? '' : (':' . $tick_fraction));
+						$_legend       = ':' . cacti_escapeshellarg(rrdtool_escape_string(htmle($graph_variables['text_format'][$graph_item_id])) . $hardreturn[$graph_item_id]);
 						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . $_fraction . $_legend;
 
 						break;

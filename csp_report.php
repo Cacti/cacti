@@ -22,38 +22,4 @@
  +-------------------------------------------------------------------------+
 */
 
-global $config, $menu, $is_request_ajax;
-
-$page_title          = api_plugin_hook_function('page_title', draw_navigation_text('title'));
-$using_guest_account = false;
-
-if (!$is_request_ajax) {?>
-<!DOCTYPE html>
-<html lang='<?php print CACTI_LOCALE; ?>'>
-<head>
-	<?php html_common_header($page_title); ?>
-</head>
-<body>
-	<a class='skip-link' href='#main' style='display:none'>Skip to main</a>
-	<div id='cactiPageHead' class='cactiPageHead' role='banner'>
-		<div id='tabs'><?php html_show_tabs_left(); ?></div>
-		<div class='cactiGraphHeaderBackground' style='display:none'><div id='gtabs'><?php html_graph_tabs_right(); ?></div></div>
-		<div class='cactiConsolePageHeadBackdrop'></div>
-	</div>
-	<div id='breadCrumbBar' class='breadCrumbBar'>
-		<div id='navBar' class='navBar'><?php print draw_navigation_text(); ?></div>
-		<div class='scrollBar'></div>
-		<div class='infoBar'><?php draw_login_status($using_guest_account); ?></div>
-	</div>
-	<div class='cactiShadow'></div>
-<?php } else {?>
-	<div id='navBar' class='navBar'><?php print draw_navigation_text(); ?></div>
-	<title><?php print $page_title; ?></title>
-<?php } ?>
-	<div id='cactiContent' class='cactiContent'>
-		<div class='cactiConsoleNavigationArea' style='display:none;' id='navigation'>
-			<?php draw_menu(); ?>
-			<a class='cactiLogo' href='<?php print CACTI_PATH_URL; ?>about.php' aria-label='<?php print __esc('About Cacti'); ?>'></a>
-		</div>
-		<div id='navigation_right' class='cactiConsoleContentArea'>
-			<main id='main'>
+require_once(__DIR__ . '/lib/csp_report_endpoint.php');

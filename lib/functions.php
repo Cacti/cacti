@@ -65,24 +65,14 @@ function title_trim(string $text, int $max_length) : string {
  * @return string the filtered string
  */
 function filter_value(mixed $value, string $filter, string $href = '', string $title = '') : string {
-	static $charset;
-
 	if ($value == '') {
 		return '';
 	}
 
-	if ($charset == '') {
-		$charset = ini_get('default_charset');
-	}
-
-	if ($charset == '') {
-		$charset = 'UTF-8';
-	}
-
-	$value =  htmle($value);
-
-	// Grave Accent character can lead to xss
-	$value = str_replace('`', '&#96;', $value);
+	/* html_escape() resolves the charset and replaces the grave accent itself,
+	 * so the copies that stood here were dead: the charset was never passed on
+	 * and no accent survives the escape for a second pass to find. */
+	$value = htmle($value);
 
 	if ($filter != '') {
 		$value = preg_replace('#(' . preg_quote($filter) . ')#i', "<span class='filteredValue'>\\1</span>", $value) ?? $value;
@@ -1230,7 +1220,7 @@ function raise_message(mixed $message_id, string $message = '', int $message_lev
  */
 function raise_message_javascript(string $title, string $header, string $message, int $level = MESSAGE_LEVEL_MIXED) : void {
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute(); ?>>
 	var mixedReasonTitle = DOMPurify.sanitize(<?php print json_encode($title, JSON_THROW_ON_ERROR); ?>);
 	var mixedOnPage      = DOMPurify.sanitize(<?php print json_encode($header, JSON_THROW_ON_ERROR); ?>);
 	var message          = DOMPurify.sanitize(<?php print json_encode($message, JSON_THROW_ON_ERROR); ?>);
@@ -3239,7 +3229,7 @@ function stri_replace(string $find, string $replace, string $string) : string {
  */
 function clean_up_lines(mixed $string) : mixed {
 	if ($string !== null && is_string($string)) {
-		$string = preg_replace('/\s*[\r\n]+\s*/',' ', $string);
+		$string = preg_replace('/\s*[\r\n]+\s*/', ' ', $string) ?? $string;
 	}
 
 	return $string;
@@ -5243,7 +5233,7 @@ function sanitize_uri(string $uri) : string {
 	 * browser as "//evil.com". Drop those leading bytes ourselves before the
 	 * slash-collapse check, then collapse any leading slash/backslash run to a
 	 * single '/' so the URI stays a local path. */
-	$trimmed = preg_replace('/^[\x00-\x20]+/', '', $uri);
+	$trimmed = preg_replace('/^[\x00-\x20]+/', '', $uri) ?? $uri;
 
 	if (preg_match('/^[\/\\\\]{2,}/', $trimmed)) {
 		$uri = '/' . ltrim($trimmed, '/\\');
@@ -5252,8 +5242,12 @@ function sanitize_uri(string $uri) : string {
 	}
 
 	if (str_contains($uri, 'graph_view.php')) {
-		if (!strpos($uri, 'action=')) {
-			$uri = $uri . (strpos($uri, '?') ? '&' : '?') . 'action=' . gnrv('action');
+		/* Both tests were written against strpos(), which returns 0 for a match
+		 * at the start of the string. A URI beginning 'action=' therefore read
+		 * as having none and picked up a second one, and a URI beginning '?'
+		 * was given another '?' instead of an '&'. */
+		if (!str_contains($uri, 'action=')) {
+			$uri = $uri . (str_contains($uri, '?') ? '&' : '?') . 'action=' . gnrv('action');
 		}
 	}
 
@@ -5359,7 +5353,7 @@ function sanitize_unserialize_selected_items(mixed $items) : mixed {
 }
 
 /**
- * verifies all selected graphs only contain numeric and string values
+ * verifies all selected graphs only contain numeric values
  *
  * @param mixed $items An array of serialized items from a post
  *
@@ -5377,6 +5371,14 @@ function sanitize_unserialize_selected_graphs(mixed $items) : array|false {
 
 			if (is_array($items)) {
 				$return_items = $items;
+
+				foreach ($items as $item) {
+					if (!is_numeric($item)) {
+						$return_items = false;
+
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -8621,7 +8623,7 @@ function get_theme_paths(string $format, string $path, string|null $theme = null
  * @return string
  */
 function get_md5_include_js(string $path, bool $async = false, string|null $theme = null, string|null $file = null) : string {
-	$format = '<script type=\'text/javascript\' src=\'%s\'%s></script>';
+	$format = '<script type=\'text/javascript\' src=\'%s\'%s ' . CactiSecureHeaders::getNonceAttribute() . '></script>';
 
 	return get_theme_paths($format, $path, $theme, $file, true, $async ? ' async' : '');
 }
@@ -10174,4 +10176,130 @@ if (!function_exists('stats_standard_deviation')) {
 
 		return sqrt($carry / $total_items);
 	}
+}
+
+/**
+ * cacti_normalize_windows_path - folds a Windows path into a comparable form
+ *
+ * @param mixed $path The path to normalize
+ *
+ * @return string The lower cased, forward slashed path
+ */
+function cacti_normalize_windows_path(mixed $path) : string {
+	$lower = strtolower((string) $path);
+
+	/**
+	 * Long-path prefixes.  Strip \\?\UNC\ first so the remaining \\ is
+	 * preserved for UNC share comparison; then strip bare \\?\ which only
+	 * wraps drive-letter paths for filesystem APIs.
+	 */
+	if (strpos($lower, '\\\\?\\unc\\') === 0) {
+		$lower = '\\\\' . substr($lower, 8);
+	} elseif (strpos($lower, '\\\\?\\') === 0) {
+		$lower = substr($lower, 4);
+	}
+
+	$lower = str_replace('\\', '/', $lower);
+
+	// drop trailing slashes except for a lone '/', the drive-root case
+	if (strlen($lower) > 1) {
+		$lower = rtrim($lower, '/');
+	}
+
+	return $lower;
+}
+
+/**
+ * cacti_path_is_within - checks that a resolved path sits under a base directory
+ *
+ * @param string    $candidate The path to test
+ * @param string    $base      The directory it must stay within
+ * @param bool|null $windows   Force Windows comparison rules, null to detect
+ *
+ * @return bool True when the candidate resolves inside the base
+ */
+function cacti_path_is_within(string $candidate, string $base, ?bool $windows = null) : bool {
+	$resolved = realpath($candidate);
+
+	if ($resolved === false) {
+		return false;
+	}
+
+	$base_resolved = realpath($base);
+
+	if ($base_resolved === false) {
+		return false;
+	}
+
+	if ($windows ?? (DIRECTORY_SEPARATOR === '\\')) {
+		$resolved      = cacti_normalize_windows_path($resolved);
+		$base_resolved = cacti_normalize_windows_path($base_resolved);
+	}
+
+	return strpos($resolved, $base_resolved . '/') === 0 || $resolved === $base_resolved;
+}
+
+/**
+ * validate_relative_path_within - validates an untrusted relative path
+ *
+ * Rejects absolute paths, drive letters, empty or dot segments, and symlinked
+ * segments under the base, then confirms the result resolves inside the base.
+ *
+ * @param mixed  $path     The untrusted relative path
+ * @param string $base_dir The base directory the path must stay within
+ *
+ * @return mixed The validated absolute path, or false when invalid
+ */
+function validate_relative_path_within(mixed $path, string $base_dir) : mixed {
+	if (!is_string($path) || $path === '' || strpos($path, "\0") !== false) {
+		return false;
+	}
+
+	$normalized = str_replace('\\', '/', $path);
+
+	if ($normalized === '' || $normalized[0] === '/' || preg_match('/^[a-zA-Z]:\//', $normalized)) {
+		return false;
+	}
+
+	$parts = [];
+
+	foreach (explode('/', $normalized) as $part) {
+		if ($part === '' || $part === '.' || $part === '..') {
+			return false;
+		}
+
+		$parts[] = $part;
+	}
+
+	$base_real = realpath($base_dir);
+
+	if ($base_real === false) {
+		return false;
+	}
+
+	$candidate = $base_real . '/' . implode('/', $parts);
+
+	// block symlink pivots under writable base paths
+	$walk = $base_real;
+
+	foreach ($parts as $part) {
+		$walk .= '/' . $part;
+
+		if (file_exists($walk) && is_link($walk)) {
+			return false;
+		}
+	}
+
+	/**
+	 * An entry that does not exist yet is judged by its parent directory.
+	 * cacti_path_is_within() already fails closed when realpath() cannot
+	 * resolve either side, so both cases share one check.
+	 */
+	$anchor = file_exists($candidate) ? $candidate : dirname($candidate);
+
+	if (!cacti_path_is_within($anchor, $base_real)) {
+		return false;
+	}
+
+	return $candidate;
 }
