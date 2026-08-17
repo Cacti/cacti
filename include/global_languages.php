@@ -743,22 +743,21 @@ function __uf(string|null $text) : string {
  *
  * @return string - Returns the translated and formatted string, or false if no arguments are provided.
  */
-if (!function_exists(__NAMESPACE__ . '\\__') && !function_exists('\\__')) {
-	function __() : string {
-		global $i18n;
+function __() : string {
+	global $i18n;
 
-		$args = func_get_args();
-		$num  = func_num_args();
+	$args = func_get_args();
+	$num  = func_num_args();
 
-		// this should not happen
-		if ($num < 1) {
-			return '';
-		}
+	// this should not happen
+	if ($num < 1) {
+		return '';
+	}
 
-		if ($num == 1) {
-			return __gettext($args[0]);
-			// convert pure text strings by using a different textdomain
-		}
+	if ($num == 1) {
+		return __gettext($args[0]);
+		// convert pure text strings by using a different textdomain
+	}
 
 	/* only the last argument is allowed to initiate
 	   the use of a different textdomain */
@@ -803,12 +802,11 @@ if (!function_exists(__NAMESPACE__ . '\\__') && !function_exists('\\__')) {
 
 	$valid_regexp = '/(' . implode(')|(', $valid_args) . ')/';
 
-		if (preg_match($valid_regexp, $args[0])) {
-			// process return string against input arguments
-			return __uf(call_user_func_array('sprintf', $args));
-		} else {
-			return $args[0];
-		}
+	if (preg_match($valid_regexp, $args[0])) {
+		// process return string against input arguments
+		return __uf(call_user_func_array('sprintf', $args));
+	} else {
+		return $args[0];
 	}
 }
 
