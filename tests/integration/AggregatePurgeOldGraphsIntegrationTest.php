@@ -39,7 +39,7 @@ if (!function_exists('array_rekey')) {
 }
 
 /*
- * #7261: tests/Unit/InClausePlaceholderTest.php proves the placeholder-count
+ * #7261: tests/Unit/Security/SqlInjection/InClausePlaceholderTest.php proves the placeholder-count
  * arithmetic (str_repeat('?, ', N) + array_values()) is internally consistent,
  * but it never runs a prepared statement -- it can't catch a bug where the
  * placeholder count is right yet the bound values are wrong (e.g. reusing the
@@ -49,7 +49,7 @@ if (!function_exists('array_rekey')) {
  * purge_old_graphs() in aggregate_graphs.php is a page-script function (the
  * file has top-level auth/session bootstrap so it can't be require()'d), so
  * this test extracts its source with the same eval-based technique used by
- * tests/Unit/Issue7380GraphCreateWiringTest.php and runs the *actual*
+ * tests/Unit/Ui/Graph/GraphCreateWiringTest.php and runs the *actual*
  * production function -- parameterised IN clauses, prepared statements and
  * all -- against a real (sqlite-backed) database, across five joined tables.
  */
@@ -60,7 +60,7 @@ if (preg_match('/^function purge_old_graphs\(\) : void \{.*?^\}/sm', $src, $m) !
 // nosemgrep: eval-use -- test-only: defines a renamed copy of the function whose
 // source was just regex-extracted from this repo's own aggregate_graphs.php
 // (not external/user input), matching the existing eval-based test technique
-// in tests/Unit/Issue7380GraphCreateWiringTest.php.
+// in tests/Unit/Ui/Graph/GraphCreateWiringTest.php.
 eval(preg_replace('/^function purge_old_graphs\(\)/m', 'function issue7261_purge_old_graphs()', $m[0]));
 
 function issue7261_wire_default_connection(PDO $conn): void {

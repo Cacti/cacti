@@ -10,8 +10,8 @@ on:
       - 'composer.lock'
       - 'lib/snmp.php'
       - 'phpunit-snmp.xml'
-      - 'tests/Unit/SnmpCoverageTest.php'
-      - 'tests/Unit/SnmpSessionErrorLoggingTest.php'
+      - 'tests/Unit/DataCollection/Snmp/SnmpCoverageTest.php'
+      - 'tests/Unit/DataCollection/Snmp/SnmpSessionErrorLoggingTest.php'
       - 'tests/fixtures/snmp-coverage/**'
       - 'tests/fixtures/snmp_command_probe.php'
   pull_request:
@@ -23,8 +23,8 @@ on:
       - 'composer.lock'
       - 'lib/snmp.php'
       - 'phpunit-snmp.xml'
-      - 'tests/Unit/SnmpCoverageTest.php'
-      - 'tests/Unit/SnmpSessionErrorLoggingTest.php'
+      - 'tests/Unit/DataCollection/Snmp/SnmpCoverageTest.php'
+      - 'tests/Unit/DataCollection/Snmp/SnmpSessionErrorLoggingTest.php'
       - 'tests/fixtures/snmp-coverage/**'
       - 'tests/fixtures/snmp_command_probe.php'
   workflow_dispatch:
