@@ -21,6 +21,14 @@
 // - read_config_option (lib/functions.php line 685)
 // - read_user_setting (lib/functions.php line 340)
 // - cacti_count (lib/functions.php line 9135)
+// - raise_message (lib/functions.php line 1129)
+// - clean_up_lines (lib/functions.php line 3234)
+// - cacti_debug_backtrace (lib/functions.php line 6687)
+// - get_debug_prefix (lib/functions.php line 8898)
+// 
+// NOTE: The POLLER_ID constant is NOT stubbed here because it is defined
+// unconditionally by global.php at line 161-165, and defining it here would
+// cause a redeclaration warning when global.php loads.
 
 // Only define stubs for translation functions (not in lib/functions.php)
 if (!function_exists(__NAMESPACE__ . '\\__') && !function_exists('\\__')) {
@@ -48,34 +56,10 @@ if (!function_exists('srv')) {
 	}
 }
 
-if (!function_exists('clean_up_lines')) {
-	// Production version strips comments; the unit form only trims whitespace.
-	function clean_up_lines($s) {
-		return trim((string)$s);
-	}
-}
-
-if (!function_exists('raise_message')) {
-	function raise_message($message_id, $message = '', $message_level = 0, $message_title = null) {
-		return true;
-	}
-}
-
-if (!function_exists('cacti_debug_backtrace')) {
-	function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limit = 0, $skip = 0) {
-		return '';
-	}
-}
-
-if (!function_exists('get_debug_prefix')) {
-	function get_debug_prefix() {
-		return '';
-	}
-}
-
 // Constants required by lib/database.php logging paths and message helpers.
+// These must be defined before lib/database.php loads, but after POLLER_ID
+// (which is defined unconditionally by global.php and doesn't need stubbing).
 if (!defined('POLLER_VERBOSITY_DEBUG'))  { define('POLLER_VERBOSITY_DEBUG', 5); }
 if (!defined('POLLER_VERBOSITY_DEVDBG')) { define('POLLER_VERBOSITY_DEVDBG', 6); }
 if (!defined('MESSAGE_LEVEL_NONE'))      { define('MESSAGE_LEVEL_NONE', 0); }
 if (!defined('MESSAGE_LEVEL_ERROR'))     { define('MESSAGE_LEVEL_ERROR', 3); }
-if (!defined('POLLER_ID'))               { define('POLLER_ID', 1); }
