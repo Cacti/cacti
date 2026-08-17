@@ -921,34 +921,34 @@ function update_show_current() : void {
 		switch(grv('state')) {
 			case 8:
 				$sql_where = 'WHERE (
-					pi.description LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR
-					pi.author LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR
-					pa.plugin LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR
-					pa.webpage LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR
-					pa.description LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR
-					pa.author LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR
-					pi.plugin LIKE ' . db_qstr('%' . grv('filter') . '%') .
+					pi.description LIKE ' . '?' . ' OR
+					pi.author LIKE ' . '?' . ' OR
+					pa.plugin LIKE ' . '?' . ' OR
+					pa.webpage LIKE ' . '?' . ' OR
+					pa.description LIKE ' . '?' . ' OR
+					pa.author LIKE ' . '?' . ' OR
+					pi.plugin LIKE ' . '?' .
 				')';
 
 				break;
 			case 6:
 				$sql_where = 'WHERE (
-					pi.description LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR
-					pi.author LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR
-					pa.plugin LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR
-					pa.webpage LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR
-					pa.description LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR
-					pa.author LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR
-					pi.plugin LIKE ' . db_qstr('%' . grv('filter') . '%') .
+					pi.description LIKE ' . '?' . ' OR
+					pi.author LIKE ' . '?' . ' OR
+					pa.plugin LIKE ' . '?' . ' OR
+					pa.webpage LIKE ' . '?' . ' OR
+					pa.description LIKE ' . '?' . ' OR
+					pa.author LIKE ' . '?' . ' OR
+					pi.plugin LIKE ' . '?' .
 				')';
 
 				break;
 			default:
 				$sql_where = 'WHERE (
-					pi.description LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR
-					pi.author LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR
-					pi.webpage LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR
-					pi.plugin LIKE ' . db_qstr('%' . grv('filter') . '%') .
+					pi.description LIKE ' . '?' . ' OR
+					pi.author LIKE ' . '?' . ' OR
+					pi.webpage LIKE ' . '?' . ' OR
+					pi.plugin LIKE ' . '?' .
 				')';
 		}
 	}
@@ -1003,27 +1003,32 @@ function update_show_current() : void {
 		$rows = grv('rows');
 	}
 
+	/* The filter LIKE clauses above are now bound placeholders. Each '?' in
+	 * $sql_where is the same filter value, LIKE-escaped so % and _ match
+	 * literally instead of as wildcards (GHSA-jjfq-mj5r-2r95). */
+	$where_params = array_fill(0, substr_count($sql_where, '?'), '%' . db_like_escape(grv('filter')) . '%');
+
 	switch(grv('state')) {
 		case 8:
-			$total_rows = db_fetch_cell("SELECT COUNT(*)
+			$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
 				FROM plugin_archive AS pa
 				LEFT JOIN $table AS pi
 				ON pa.plugin = pi.plugin
-				$sql_where");
+				$sql_where", $where_params);
 
 			break;
 		case 6:
-			$total_rows = db_fetch_cell("SELECT COUNT(*)
+			$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
 				FROM plugin_available AS pa
 				LEFT JOIN $table AS pi
 				ON pa.plugin = pi.plugin
-				$sql_where");
+				$sql_where", $where_params);
 
 			break;
 		default:
-			$total_rows = db_fetch_cell("SELECT COUNT(*)
+			$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
 				FROM $table AS pi
-				$sql_where");
+				$sql_where", $where_params);
 
 			break;
 	}
@@ -1095,7 +1100,7 @@ function update_show_current() : void {
 			break;
 	}
 
-	$plugins = db_fetch_assoc($sql);
+	$plugins = db_fetch_assoc_prepared($sql, $where_params);
 
 	$nav = html_nav_bar('plugins.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8, __('Plugins'), 'page', 'main');
 
