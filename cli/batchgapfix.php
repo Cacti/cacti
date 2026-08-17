@@ -230,14 +230,12 @@ if ($child == 0) {
 			printf('NOTE: Found %s running processes found.' . PHP_EOL, cacti_sizeof($running));
 
 			foreach ($running as $r) {
-				$running = posix_kill($r['pid'], 0);
-
-				if (posix_get_last_error() == 1) {
+				if (cacti_process_still_running((int) $r['pid'])) {
 					printf('NOTE: Process with PID: %s being killed.' . PHP_EOL, $r['pid']);
 
-					posix_kill($r['pid'], SIGTERM);
+					posix_kill((int) $r['pid'], SIGTERM);
 				} else {
-					printf('NOTE: Process with PID: %s, not found likely crashed.' . PHP_EOL, $r['pid']);
+					printf('NOTE: Process with PID: %s is no longer the registered process.' . PHP_EOL, $r['pid']);
 				}
 			}
 
