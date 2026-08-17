@@ -88,18 +88,20 @@ test('the unquoted form keeps the escaping that only works inside quotes', funct
 	expect(cacti_escapeshellarg("it's", false))->toBe("it'\\''s");
 });
 
-test('an empty argument is returned unquoted, so concatenation drops it', function () {
-	/* Characterisation of the early return. escapeshellarg('') would give "''",
-	   which holds an empty positional argument open; this returns '', so a
-	   caller building "cmd " . cacti_escapeshellarg($v) . " next" silently
-	   shifts everything after it when $v is empty. The guard predates the
-	   string type hint, where it stopped a warning about escaping null
-	   (issue#1560). Changing it would move several hundred command lines at
-	   once, so it is pinned here rather than altered. */
-	expect(cacti_escapeshellarg(''))->toBe('')
-		->and(cacti_escapeshellarg('', false))->toBe('');
+test('an empty argument stays on the command line as an empty argument', function () {
+	/* It used to return early and unquoted, which deleted the argument instead
+	   of passing it empty. A separated flag then consumed whatever followed:
+	   'spine -C ' . '' . ' --poller 1' left -C reading --poller as its value. */
+	expect(cacti_escapeshellarg(''))->toBe("''");
 
-	expect('cmd ' . cacti_escapeshellarg('') . ' next')->toBe('cmd  next');
+	expect('spine -C ' . cacti_escapeshellarg('') . ' --poller 1')
+		->toBe("spine -C '' --poller 1");
+});
+
+test('the unquoted form of an empty argument is still empty', function () {
+	/* The caller asked for the quotes off and supplies its own, so there is
+	   nothing left to return here. */
+	expect(cacti_escapeshellarg('', false))->toBe('');
 });
 
 test('escapeshellcmd defers to the platform helper and passes an empty string through', function () {
