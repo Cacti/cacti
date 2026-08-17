@@ -26,38 +26,71 @@ on:
     - cron: '0 6 * * *'
   workflow_dispatch:
 
-# This workflow is meant to live on develop and push straight back to it.
-# The checkout ref below is pinned to develop for that reason; if it's ever
-# backported to 1.2.x, change the ref (and the push target) to match.
+# This workflow is meant to live on develop. Protected branches do not permit
+# bot bypasses, so updates are proposed through a dedicated reviewable PR.
 permissions:
   contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-contributors
+  cancel-in-progress: false
+
+env:
+  UPDATE_BRANCH: ci/update-contributors
 
 jobs:
   refresh:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: develop
           fetch-depth: 0
+          # Required only for pushing the dedicated automation branch below.
+          persist-credentials: true
 
       - name: Refresh contributors
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 .github/scripts/update-contributors.py
 
-      - name: Commit and push
+      - name: Commit and push update branch
+        id: update
         run: |
           set -euo pipefail
 
           if git diff --quiet -- .all-contributorsrc README.md; then
             echo "no changes to commit"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$UPDATE_BRANCH"
           git add .all-contributorsrc README.md
           git commit -s -m "chore(contributors): update contributor list"
-          git push origin HEAD:develop
+          git push --force origin "HEAD:refs/heads/${UPDATE_BRANCH}"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Open or update contributors pull request
+        if: steps.update.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          existing="$(gh pr list --head "$UPDATE_BRANCH" --base develop --state open --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            gh pr edit "$existing" \
+              --title "chore(contributors): update contributor list" \
+              --body "Automated contributor metadata refresh."
+          else
+            gh pr create \
+              --base develop \
+              --head "$UPDATE_BRANCH" \
+              --title "chore(contributors): update contributor list" \
+              --body "Automated contributor metadata refresh."
+          fi

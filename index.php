@@ -39,16 +39,20 @@ function render_external_links(string $style = 'FRONT') : void {
 		foreach ($consoles as $page) {
 			if (is_realm_allowed($page['id'] + 10000)) {
 				if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', $page['contentfile'])) {
-					print '<iframe class="content" src="' . $page['contentfile'] . '" frameborder="0"></iframe>';
+					print '<iframe class="content" src="' . html_escape($page['contentfile']) . '" frameborder="0"></iframe>';
 				} else {
 					print '<div id="content">';
 
-					$file = CACTI_PATH_INCLUDE . '/content/' . $page['contentfile'];
+					// Confine the include to include/content, the same way link.php
+					// does. contentfile comes from the external_links table; without
+					// this a '../' value would include an arbitrary local file.
+					$basepath = realpath(CACTI_PATH_INCLUDE . '/content');
+					$file     = ($basepath !== false) ? realpath($basepath . '/' . $page['contentfile']) : false;
 
-					if (file_exists($file)) {
+					if ($file !== false && is_file($file) && str_starts_with($file, $basepath . DIRECTORY_SEPARATOR)) {
 						require_once($file);
 					} else {
-						print '<h1>The file \'' . $page['contentfile'] . '\' does not exist!!</h1>';
+						print '<h1>The file \'' . html_escape($page['contentfile']) . '\' does not exist!!</h1>';
 					}
 
 					print '</div>';

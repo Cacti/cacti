@@ -121,7 +121,7 @@ if ($graphs) {
 }
 
 ?>
-<script type='text/javascript'>
+<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute(); ?>>
 	var cactiVersion='<?php print $config['cacti_version']; ?>';
 	var cactiServerOS='<?php print CACTI_SERVER_OS; ?>';
 	var cactiAction='<?php print gfrv('action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([-a-zA-Z0-9_\s]+)$/']]); ?>';
