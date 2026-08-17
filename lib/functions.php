@@ -1128,6 +1128,7 @@ function get_message_max_type(mixed $output_messages = null) : int {
  *
  * @return bool
  */
+if (!function_exists('raise_message')) {
 function raise_message(mixed $message_id, string $message = '', int $message_level = MESSAGE_LEVEL_NONE, mixed $message_title = null) : bool {
 	global $messages, $no_http_headers;
 
@@ -1205,6 +1206,7 @@ function raise_message(mixed $message_id, string $message = '', int $message_lev
 	}
 
 	return true;
+}
 }
 
 /**
@@ -3233,12 +3235,14 @@ function stri_replace(string $find, string $replace, string $string) : string {
  *
  * @return mixed The modified string
  */
+if (!function_exists('clean_up_lines')) {
 function clean_up_lines(mixed $string) : mixed {
 	if ($string !== null && is_string($string)) {
 		$string = preg_replace('/\s*[\r\n]+\s*/', ' ', $string) ?? $string;
 	}
 
 	return $string;
+}
 }
 
 /**
@@ -6686,6 +6690,7 @@ function clog_authorized() : bool {
 	}
 }
 
+if (!function_exists('cacti_debug_backtrace')) {
 function cacti_debug_backtrace(string $entry = '', bool $html = false, bool $record = true, int $limit = 0, int $skip = 0) : mixed {
 	$skip  = $skip >= 0 ? $skip : 1;
 	$limit = $limit > 0 ? ($limit + $skip) : 0;
@@ -8891,17 +8896,20 @@ function get_running_user() : string {
 
 	return (empty($tmp_user) ? 'apache' : $tmp_user);
 }
+}
 
 /**
  * Returns a string for debugging purposes
  *
  * @return string
  */
+if (!function_exists('get_debug_prefix')) {
 function get_debug_prefix() : string {
 	$dateTime = new DateTime('NOW');
 	$dateTime = $dateTime->format('Y-m-d H:i:s.u');
 
 	return sprintf('<[ %s | %7d ]> -- ', $dateTime, getmypid());
+}
 }
 
 /**
