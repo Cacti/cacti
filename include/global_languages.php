@@ -51,7 +51,7 @@ $lang2locale = get_list_of_locales();
  *
  * @return string Returns the translated and formatted string, or an empty string when no arguments are provided.
  */
-if (!function_exists(__NAMESPACE__ . '\\__') && !function_exists('\\__')) {
+if (!function_exists('__')) {
 	function __() : string {
 		global $i18n;
 
@@ -820,7 +820,6 @@ function __n(string|null $singular, string|null $plural, int $number, string $do
 function __uf(string|null $text) : string {
 	return str_replace('%%', '%', $text ?? '');
 }
-
 
 /**
  * Translates and pluralizes a string based on the given context and number.

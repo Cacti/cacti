@@ -49,7 +49,7 @@ test('the unconditionally declared translation helpers are unaffected', function
 test('__() is declared before the fallback can return', function () {
 	$src = file_get_contents(dirname(__DIR__, 2) . '/include/global_languages.php');
 
-	$declared = strpos($src, "if (!function_exists(__NAMESPACE__ . '\\\\__')");
+	$declared = strpos($src, "if (!function_exists('__'))");
 	$fallback = strpos($src, 'load_fallback_procedure();');
 
 	expect($declared)->not->toBeFalse();
