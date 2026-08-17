@@ -12,7 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
 
 // build_where_from_array is defined in lib/functions.php
 // We'll test it here by mock or by inclusion if dependencies allow.

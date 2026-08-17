@@ -48,7 +48,7 @@ function get_client_addr() : string|false {
  *
  * @return bool Always true for the unit test.
  */
-if (!function_exists('cacti_log')) {
+if (!function_exists(__NAMESPACE__ . '\\cacti_log') && !function_exists('\\cacti_log')) {
 	function cacti_log(string $message, bool $output, string $environ) : bool {
 		$GLOBALS['validation_security_logs'][] = [$message, $output, $environ];
 

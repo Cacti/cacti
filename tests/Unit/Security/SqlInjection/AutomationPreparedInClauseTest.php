@@ -12,7 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
-if (!function_exists('cacti_sizeof')) {
+if (!function_exists(__NAMESPACE__ . '\\cacti_sizeof') && !function_exists('\\cacti_sizeof')) {
 	/**
 	 * Returns the size of an array test value.
 	 *

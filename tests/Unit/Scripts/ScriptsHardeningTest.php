@@ -21,7 +21,7 @@
 
 $called_by_script_server = true;
 
-require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 2) . '/Helpers/CactiStubs.php';
 require_once dirname(__DIR__, 3) . '/include/global.php';
 
 // ss_mikrotik_health: column allow-list

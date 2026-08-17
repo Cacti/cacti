@@ -33,7 +33,7 @@
  * changes, these helpers must be updated to match.
  */
 
-require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
 require_once dirname(__DIR__, 4) . '/include/global.php';
 
 /**

@@ -46,7 +46,7 @@ $GLOBALS['auth_cache_group_users']   = [];
  *
  * @return array Group membership rows.
  */
-if (!function_exists('db_fetch_assoc_prepared')) {
+if (!function_exists(__NAMESPACE__ . '\\db_fetch_assoc_prepared') && !function_exists('\\db_fetch_assoc_prepared')) {
 	function db_fetch_assoc_prepared(string $sql, array $params = []) : array {
 		return $GLOBALS['auth_cache_group_users'];
 	}
@@ -78,7 +78,7 @@ function array_rekey(array $rows, string $key, string $value_key) : array {
  *
  * @return int Number of group members.
  */
-if (!function_exists('cacti_sizeof')) {
+if (!function_exists(__NAMESPACE__ . '\\cacti_sizeof') && !function_exists('\\cacti_sizeof')) {
 	function cacti_sizeof(mixed $value) : int {
 		return is_countable($value) ? count($value) : 0;
 	}
@@ -92,7 +92,7 @@ if (!function_exists('cacti_sizeof')) {
  *
  * @return bool Always true for the unit test.
  */
-if (!function_exists('db_execute_prepared')) {
+if (!function_exists(__NAMESPACE__ . '\\db_execute_prepared') && !function_exists('\\db_execute_prepared')) {
 	function db_execute_prepared(string $sql, array $params = []) : bool {
 		$GLOBALS['auth_cache_queries'][] = [$sql, $params];
 
@@ -107,7 +107,7 @@ if (!function_exists('db_execute_prepared')) {
  *
  * @return void
  */
-if (!function_exists('kill_session_var')) {
+if (!function_exists(__NAMESPACE__ . '\\kill_session_var') && !function_exists('\\kill_session_var')) {
 	function kill_session_var(string $name) : void {
 		$GLOBALS['auth_cache_session_kills'][] = $name;
 	}

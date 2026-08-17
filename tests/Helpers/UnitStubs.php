@@ -12,25 +12,25 @@
  +-------------------------------------------------------------------------+
 */
 
-if (!function_exists('cacti_sizeof')) {
+if (!function_exists(__NAMESPACE__ . '\\cacti_sizeof') && !function_exists('\\cacti_sizeof')) {
 	function cacti_sizeof($array) {
 		return ($array === false || !is_array($array)) ? 0 : sizeof($array);
 	}
 }
 
-if (!function_exists('cacti_log')) {
+if (!function_exists(__NAMESPACE__ . '\\cacti_log') && !function_exists('\\cacti_log')) {
 	function cacti_log($message, $print = false, $tag = 'GENERAL', $level = 1) {
 		// Silently ignore
 	}
 }
 
-if (!function_exists('__')) {
+if (!function_exists(__NAMESPACE__ . '\\__') && !function_exists('\\__')) {
 	function __($text, ...$args) {
 		return vsprintf($text, $args);
 	}
 }
 
-if (!function_exists('__esc')) {
+if (!function_exists(__NAMESPACE__ . '\\__esc') && !function_exists('\\__esc')) {
 	function __esc($text, ...$args) {
 		return vsprintf($text, $args);
 	}
@@ -54,7 +54,7 @@ if (!function_exists('cacti_strtolower')) {
 	}
 }
 
-if (!function_exists('read_config_option')) {
+if (!function_exists(__NAMESPACE__ . '\\read_config_option') && !function_exists('\\read_config_option')) {
 	function read_config_option($name) {
 		return false;
 	}

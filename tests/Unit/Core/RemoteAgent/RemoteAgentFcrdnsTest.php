@@ -14,7 +14,7 @@
 
 $root = dirname(__DIR__, 4);
 
-if (!function_exists('read_config_option')) {
+if (!function_exists(__NAMESPACE__ . '\\read_config_option') && !function_exists('\\read_config_option')) {
 	function read_config_option($name) {
 		return '';
 	}

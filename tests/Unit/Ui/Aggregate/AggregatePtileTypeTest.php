@@ -29,7 +29,7 @@
  *   3. HRULE item pparts[3] replacement (aggregate_graphs_insert_graph_items)
  */
 
-require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
 require_once dirname(__DIR__, 4) . '/include/global.php';
 
 /**

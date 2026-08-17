@@ -12,7 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
 
 /*
  * dsstats_rrdtool_init() and rrdcheck_rrdtool_init() return [false, false] when

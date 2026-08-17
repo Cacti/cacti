@@ -12,7 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
 require_once dirname(__DIR__, 4) . '/lib/functions.php';
 
 // Negative numbers are data, not formulas, and must not gain a leading quote.

@@ -94,7 +94,7 @@ class FakeSnmpSession {
  *
  * @return bool Always true for the unit test.
  */
-if (!function_exists('cacti_log')) {
+if (!function_exists(__NAMESPACE__ . '\\cacti_log') && !function_exists('\\cacti_log')) {
 	function cacti_log(string $message, bool $output, string $environ, int $level) : bool {
 		$GLOBALS['snmp_session_error_logs'][] = [$message, $output, $environ, $level];
 

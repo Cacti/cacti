@@ -14,13 +14,13 @@
 
 $root = dirname(__DIR__, 4);
 
-if (!function_exists('read_config_option')) {
+if (!function_exists(__NAMESPACE__ . '\\read_config_option') && !function_exists('\\read_config_option')) {
 	function read_config_option($name) {
 		return '';
 	}
 }
 
-if (!function_exists('cacti_sizeof')) {
+if (!function_exists(__NAMESPACE__ . '\\cacti_sizeof') && !function_exists('\\cacti_sizeof')) {
 	function cacti_sizeof($array) {
 		return is_array($array) || $array instanceof Countable ? count($array) : 0;
 	}

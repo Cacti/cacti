@@ -31,13 +31,13 @@
 require_once dirname(__DIR__, 4) . '/include/global_constants.php';
 require_once dirname(__DIR__, 4) . '/lib/ping.php';
 
-if (!function_exists('__')) {
+if (!function_exists(__NAMESPACE__ . '\\__') && !function_exists('\\__')) {
 	function __($text, ...$args) {
 		return $args === [] ? $text : vsprintf($text, $args);
 	}
 }
 
-if (!function_exists('cacti_log')) {
+if (!function_exists(__NAMESPACE__ . '\\cacti_log') && !function_exists('\\cacti_log')) {
 	function cacti_log($message, $print = false, $tag = 'GENERAL', $level = 1) {
 	}
 }

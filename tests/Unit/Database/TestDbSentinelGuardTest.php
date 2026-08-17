@@ -19,7 +19,7 @@
  * it must not swap to config.php.dist nor skip schema validation.
  */
 
-require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 2) . '/Helpers/CactiStubs.php';
 require_once dirname(__DIR__, 3) . '/include/global.php';
 
 // Pure replica of cacti_is_test_bootstrap() so the false branches can be

@@ -19,7 +19,7 @@ declare(strict_types=1);
  * @group regression
  */
 
-require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
 
 /**
  * Simulate the MULTI-output field value coercion logic from

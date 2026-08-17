@@ -31,7 +31,7 @@ $GLOBALS['auth_guest_user']     = 0;
  *
  * @return mixed Queued scalar result
  */
-if (!function_exists('db_fetch_cell_prepared')) {
+if (!function_exists(__NAMESPACE__ . '\\db_fetch_cell_prepared') && !function_exists('\\db_fetch_cell_prepared')) {
 	function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
 		$GLOBALS['auth_access_queries'][] = [$sql, $params];
 
@@ -46,7 +46,7 @@ if (!function_exists('db_fetch_cell_prepared')) {
  *
  * @return int Guest account identifier
  */
-if (!function_exists('read_config_option')) {
+if (!function_exists(__NAMESPACE__ . '\\read_config_option') && !function_exists('\\read_config_option')) {
 	function read_config_option(string $name) : int {
 		return $GLOBALS['auth_guest_user'];
 	}

@@ -24,10 +24,10 @@ $GLOBALS['shellless_process_logs']        = [];
  *
  * @return void
  */
-if (!function_exists('cacti_log')) {
-function cacti_log(string $message, bool $output, string $environ) : void {
-	$GLOBALS['shellless_process_logs'][] = [$message, $output, $environ];
-}
+if (!function_exists(__NAMESPACE__ . '\\cacti_log') && !function_exists('\\cacti_log')) {
+	function cacti_log(string $message, bool $output, string $environ) : void {
+		$GLOBALS['shellless_process_logs'][] = [$message, $output, $environ];
+	}
 }
 
 /**

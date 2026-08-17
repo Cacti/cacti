@@ -29,7 +29,7 @@
  * multi-process race needs the integration suite.
  */
 
-if (!function_exists('cacti_sizeof')) {
+if (!function_exists(__NAMESPACE__ . '\\cacti_sizeof') && !function_exists('\\cacti_sizeof')) {
 	function cacti_sizeof(mixed $array) : int {
 		return is_array($array) ? count($array) : 0;
 	}
