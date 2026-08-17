@@ -49,7 +49,7 @@ $lang2locale = get_list_of_locales();
  * This function uses gettext for translation and sprintf for formatting.
  * It supports different text domains and various formatting options.
  *
- * @return string - Returns the translated and formatted string, or false if no arguments are provided.
+ * @return string Returns the translated and formatted string, or an empty string when no arguments are provided.
  */
 if (!function_exists(__NAMESPACE__ . '\\__') && !function_exists('\\__')) {
 	function __() : string {
@@ -68,48 +68,48 @@ if (!function_exists(__NAMESPACE__ . '\\__') && !function_exists('\\__')) {
 			// convert pure text strings by using a different textdomain
 		}
 
-	/* only the last argument is allowed to initiate
-	   the use of a different textdomain */
+		/* only the last argument is allowed to initiate
+		   the use of a different textdomain */
 
-	// get gettext string
-	if (isset($i18n[(string) $args[$num - 1]]) && $args[$num - 1] != 'cacti') {
-		$args[0] = __gettext($args[0], $args[$num - 1]);
-	} else {
-		$args[0] = __gettext($args[0]);
-	}
+		// get gettext string
+		if (isset($i18n[(string) $args[$num - 1]]) && $args[$num - 1] != 'cacti') {
+			$args[0] = __gettext($args[0], $args[$num - 1]);
+		} else {
+			$args[0] = __gettext($args[0]);
+		}
 
-	$regex_num = '%([-]{0,1}[0-9]+([.][0-9]+){0,1}){0,1}';
-	$regex_str = '%([-]{0,1}[0-9]+){0,1}';
+		$regex_num = '%([-]{0,1}[0-9]+([.][0-9]+){0,1}){0,1}';
+		$regex_str = '%([-]{0,1}[0-9]+){0,1}';
 
-	$array_str = [
-		'b', // Binary
-		'o', // Integer as Octal
-		's', // String
-		'u', // Integer as Unsigned Decimal
-		'x', // Integer as hex (lowercase)
-		'X', // Integer as hex (uppercase)
-	];
+		$array_str = [
+			'b', // Binary
+			'o', // Integer as Octal
+			's', // String
+			'u', // Integer as Unsigned Decimal
+			'x', // Integer as hex (lowercase)
+			'X', // Integer as hex (uppercase)
+		];
 
-	$array_num = [
-		'd', // Decimal
-		'e', // Scientific notation (lowercase)
-		'E', // Scientific notation (uppercase)
-		'f', // Floating point (locale aware)
-		'F', // Floating point (non-locale aware)
-		'g', // General format (uses E and f styling if precision involved)
-		'G', // General format (docs say same as g but uses E and f, yet it already does???)
-		'h', // General format (like g but uses F)
-		'H', // General format (like g but uses E and F)
-	];
+		$array_num = [
+			'd', // Decimal
+			'e', // Scientific notation (lowercase)
+			'E', // Scientific notation (uppercase)
+			'f', // Floating point (locale aware)
+			'F', // Floating point (non-locale aware)
+			'g', // General format (uses E and f styling if precision involved)
+			'G', // General format (docs say same as g but uses E and f, yet it already does???)
+			'h', // General format (like g but uses F)
+			'H', // General format (like g but uses E and F)
+		];
 
-	$valid_args = [
-		'%%', // Escaped percentage (literal)
-		'%c', // Single Character
-		$regex_num . '[' . implode('', $array_num) . ']',
-		$regex_str . '[' . implode('', $array_str) . ']',
-	];
+		$valid_args = [
+			'%%', // Escaped percentage (literal)
+			'%c', // Single Character
+			$regex_num . '[' . implode('', $array_num) . ']',
+			$regex_str . '[' . implode('', $array_str) . ']',
+		];
 
-	$valid_regexp = '/(' . implode(')|(', $valid_args) . ')/';
+		$valid_regexp = '/(' . implode(')|(', $valid_args) . ')/';
 
 		if (preg_match($valid_regexp, $args[0])) {
 			// process return string against input arguments

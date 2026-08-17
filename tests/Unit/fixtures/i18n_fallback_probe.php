@@ -32,6 +32,7 @@ define('CACTI_LANGUAGE_HANDLER_DEFAULT', 0);
 define('SESS_USER_LANGUAGE', 'sess_user_language');
 
 $i18n_support = $argv[1] ?? '0';
+$GLOBALS['i18n_support'] = $i18n_support;
 
 $config = ['base_path' => $root, 'include_path' => $root . '/include'];
 
