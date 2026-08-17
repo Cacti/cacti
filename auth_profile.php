@@ -159,6 +159,15 @@ function api_auth_logout_everywhere() : void {
 			WHERE user_id = ?',
 			[$user]
 		);
+
+		// Revoking the remember-me tokens is not enough: a database session on
+		// another device stays authenticated until it expires. Terminate the
+		// user's other sessions too, keeping the current one so the action does
+		// not log the caller out mid-request.
+		db_execute_prepared('DELETE FROM sessions
+			WHERE user_id = ?
+			AND id != ?',
+			[$user, session_id()]);
 	}
 }
 
