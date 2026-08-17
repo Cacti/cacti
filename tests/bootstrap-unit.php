@@ -26,8 +26,14 @@ $_ENV['CACTI_TEST_BOOTSTRAP'] = '1';
 // Load Composer autoloader
 require_once __DIR__ . '/../include/vendor/autoload.php';
 
+// Load test stubs BEFORE global.php so stub functions like __() are available
+// for use by include/global.php and lib/functions.php
+require_once __DIR__ . '/Helpers/CactiStubs.php';
+require_once __DIR__ . '/Helpers/UnitStubs.php';
+
 // Load global configuration and settings
 // This includes database defaults and test-mode gating via CACTI_TEST_BOOTSTRAP
+// Now that stubs are loaded, global.php functions that depend on __() will work
 require_once __DIR__ . '/../include/global.php';
 
 // Load core library functions early so test stubs can detect
