@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install ripgrep
         run: sudo apt-get install -y ripgrep
@@ -50,7 +50,7 @@ jobs:
     if: github.event_name != 'workflow_dispatch'
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Run advisory Docker probe
         env:
@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -89,7 +89,7 @@ jobs:
           tests/security/verify_private_advisory_matrix.sh "security/proof-run/${GITHUB_RUN_ID}/private_advisory_proof_matrix.tsv"
 
       - name: Upload proof artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: private-advisory-proof-${{ github.run_id }}
           path: security/proof-run/${{ github.run_id }}

@@ -2,6 +2,8 @@ Cacti CHANGELOG
 
 1.2.x
 -security: Harden advisory command execution and database DDL sink validation
+-security: Restrict graph input fields across the template, graph and import handoffs
+-security: Treat a non-boolean signature result as a failure in import_package
 -issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
 -issue#6684: Prevent VDEF-backed aggregate graph items from being emitted as XPORT data sources
@@ -16,6 +18,10 @@ Cacti CHANGELOG
 -issue#7493: SNMP walk for output_format fields used max OIDs instead of the device bulk walk size
 -issue#7552: HTMLPurifier definition cache written inside the read-only library tree
 -issue#7553: Drop down menus do not update page content after upgrading to 1.2.31
+-issue#7666: cacti_exec() returned the wrong exit code and warned about a missing exit_code key
+-issue#7699: Guard three divisors that PHP 8 makes fatal
+-issue#7702: CSP report endpoint size limit never triggers and rate-limit buckets accumulate
+-issue#7708: Bind the MIB column names in MibCache::select()
 -issue#7727: Log entry for Data Source validation has a double space
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees

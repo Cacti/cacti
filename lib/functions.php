@@ -2002,7 +2002,7 @@ function prepare_validate_result(&$result) {
 
 			$space_cnt = substr_count(trim($result), ' ');
 
-			dsv_log('prepare_validate_result', "data has $space_cnt spaces and $delim_cnt fields which is " . (($space_cnt + 1 == $delim_cnt) ? '' : 'NOT') . ' okay', POLLER_VERBOSITY_MEDIUM);
+			dsv_log('prepare_validate_result', "data has $space_cnt spaces and $delim_cnt fields; this is " . (($space_cnt + 1 == $delim_cnt) ? '' : 'NOT ') . 'okay', POLLER_VERBOSITY_MEDIUM);
 
 			return ($space_cnt+1 == $delim_cnt);
 		}
@@ -7630,9 +7630,13 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		$stdout .= stream_get_contents($pipes[1]);
 		$stderr .= stream_get_contents($pipes[2]);
 
-		if (!$status['running']) {
-			$exit = $status['exit_code'];
-
+		/* proc_get_status() returns false on a dead handle. Its exit_code is
+		 * unreliable here: reading the pipes to EOF above can reap the child, so
+		 * a later status read reports exit_code -1 (or a missing key, which was
+		 * the source of the "Undefined array key exit_code" warnings). Stop
+		 * looping once the process is gone and take the real code from
+		 * proc_close() below. */
+		if (!is_array($status) || empty($status['running'])) {
 			break;
 		}
 
@@ -7644,7 +7648,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 
 	$status = proc_get_status($process);
 
-	if ($status['running']) {
+	if (is_array($status) && !empty($status['running'])) {
 		if (isset($status['pid']) && function_exists('posix_kill')) {
 			posix_kill($status['pid'], 9);
 		}
@@ -7657,7 +7661,9 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		return 1;
 	}
 
-	proc_close($process);
+	/* proc_close() reaps the child and returns its real exit status, which stays
+	 * correct even when proc_get_status() already lost it to the pipe reads. */
+	$exit = proc_close($process);
 
 	if (!empty($stderr)) {
 		cacti_log('WARNING: cacti_exec() stderr: ' . trim($stderr), false, 'SYSTEM');
@@ -8113,6 +8119,13 @@ function debounce_run_notification($id, $frequency = 7200) {
 	/* debounce admin emails */
 	$last = read_config_option($key);
 	$now  = time();
+
+	/* the stored value is written as a timestamp, but a setting that holds
+	   anything else makes the subtraction below a TypeError on PHP 8 where it
+	   was once a warning. develop already tests this with is_numeric(). */
+	if (!is_numeric($last)) {
+		$last = 0;
+	}
 
 	if (empty($last) || $now - $last > $frequency) {
 		set_config_option($key, $now);

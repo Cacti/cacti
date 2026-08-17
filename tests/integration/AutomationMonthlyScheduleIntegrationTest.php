@@ -9,7 +9,7 @@
  * Integration coverage for calculateNextStart() / calculateNextStartForYear()
  * (lib/api_automation.php).
  *
- * tests/Unit/AutomationMonthlyScheduleTest.php checks the fix's source
+ * tests/Unit/Core/Automation/AutomationMonthlyScheduleTest.php checks the fix's source
  * fragments and re-implements the year-rollover scan in a local mirror
  * function, because it assumed the real function "cannot be included ...
  * without the full Cacti bootstrap". That is not the case: neither function

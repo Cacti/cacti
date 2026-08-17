@@ -1688,7 +1688,10 @@ function utilities_get_mysql_recommendations() {
 
 				$remainingMem = ($totalMem * 0.8) - $totalMemorySans;
 
-				$recommendation = $remainingMem / $maxConnections;
+				/* max_connections is read from the server, and a user without
+				   rights to the global variable gets nothing back. Dividing by
+				   that is fatal on PHP 8 rather than the warning it once was. */
+				$recommendation = $maxConnections > 0 ? $remainingMem / $maxConnections : 0;
 
 				$compare = '<=';
 				$passed = ($variables[$name] >= ($recommendation/1024/1024)) && $recommendation > 0;

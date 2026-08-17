@@ -12,8 +12,16 @@ if [ ! -f "$BASELINE" ]; then
 	exit 1
 fi
 
-tr -d '\r' < "$BASELINE" | LC_ALL=C sort -u > "$TMP_BASELINE"
-"${ROOT_DIR}/tests/security/build_sink_inventory.sh" | tr -d '\r' | LC_ALL=C sort -u > "$TMP_CUR"
+# Compare on the line-agnostic signature (type + file + code): strip the
+# trailing :LINE from field 2 (location) so pure line-number drift from an
+# unrelated edit no longer trips the gate and no longer forces every PR that
+# shifts a file to regenerate the baseline. Matches the develop gate.
+strip_line_numbers() {
+	awk 'BEGIN{FS="\t";OFS="\t"} {sub(/:[0-9]+$/,"",$2); print}'
+}
+
+tr -d '\r' < "$BASELINE" | strip_line_numbers | LC_ALL=C sort -u > "$TMP_BASELINE"
+"${ROOT_DIR}/tests/security/build_sink_inventory.sh" | tr -d '\r' | strip_line_numbers | LC_ALL=C sort -u > "$TMP_CUR"
 
 if diff -u "$TMP_BASELINE" "$TMP_CUR" > /tmp/sink_inventory.diff; then
 	echo "OK: sink inventory matches baseline"

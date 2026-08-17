@@ -8,6 +8,29 @@ if (!(PHP_VERSION_ID >= 80000)) {
     $issues[] = 'Your Composer dependencies require a PHP version ">= 8.0.0". You are running ' . PHP_VERSION . '.';
 }
 
+$missingExtensions = array();
+extension_loaded('dom') || $missingExtensions[] = 'dom';
+extension_loaded('gd') || $missingExtensions[] = 'gd';
+extension_loaded('gmp') || $missingExtensions[] = 'gmp';
+extension_loaded('intl') || $missingExtensions[] = 'intl';
+extension_loaded('json') || $missingExtensions[] = 'json';
+extension_loaded('ldap') || $missingExtensions[] = 'ldap';
+extension_loaded('mbstring') || $missingExtensions[] = 'mbstring';
+extension_loaded('mysqlnd') || $missingExtensions[] = 'mysqlnd';
+extension_loaded('openssl') || $missingExtensions[] = 'openssl';
+PHP_SAPI !== 'cli' || extension_loaded('pcntl') || $missingExtensions[] = 'pcntl';
+extension_loaded('pdo') || $missingExtensions[] = 'pdo';
+extension_loaded('pdo_mysql') || $missingExtensions[] = 'pdo_mysql';
+extension_loaded('phar') || $missingExtensions[] = 'phar';
+extension_loaded('posix') || $missingExtensions[] = 'posix';
+extension_loaded('sockets') || $missingExtensions[] = 'sockets';
+extension_loaded('sqlite3') || $missingExtensions[] = 'sqlite3';
+extension_loaded('xml') || $missingExtensions[] = 'xml';
+
+if ($missingExtensions) {
+    $issues[] = 'Your Composer dependencies require the following PHP extensions to be installed: ' . implode(', ', $missingExtensions) . '.';
+}
+
 if ($issues) {
     if (!headers_sent()) {
         header('HTTP/1.1 500 Internal Server Error');
@@ -19,8 +42,7 @@ if ($issues) {
             echo 'Composer detected issues in your platform:' . PHP_EOL.PHP_EOL . str_replace('You are running '.PHP_VERSION.'.', '', implode(PHP_EOL, $issues)) . PHP_EOL.PHP_EOL;
         }
     }
-    trigger_error(
-        'Composer detected issues in your platform: ' . implode(' ', $issues),
-        E_USER_ERROR
+    throw new \RuntimeException(
+        'Composer detected issues in your platform: ' . implode(' ', $issues)
     );
 }
