@@ -61,6 +61,7 @@ Cacti CHANGELOG
 -issue#7343: Install wizard silently fails to advance after CSRF token expires
 -issue#7380: Batch graph-create task_item_id wiring to reduce template graph creation queries
 -issue#7424: Correct SNMP disk counter wrap delta calculations
+-issue#7425: Guard process registration and cleanup against PID reuse
 -issue#7426: Stop tracking the generated CSRF secret so each install creates its own
 -issue#7427: Update device status by host id instead of non-unique hostname
 -issue#7429: Prevent monthly automation schedules from resetting next_start to 1970
@@ -85,10 +86,18 @@ Cacti CHANGELOG
 -issue#7536: Consolidate the four hand-written poller_output_boost inserts into one shared helper
 -issue#7535: Consolidate the poller_item delete call sites behind poller_item_delete_for_data_source() and poller_item_delete_for_host()
 -issue#7576: Stop passing an unset path_php_binary into string parameters
+-issue#7674: Enforce tree access when creating, deleting and renaming tree nodes
+-issue#7682: Revoke the remember-me token and terminate other sessions on logout
+-issue#7683: Harden login brute-force defenses with an atomic lockout counter and constant-time unknown-user handling
 -issue#7684: Scope the local-login password rehash to realm 0 and only rehash after a successful login
+-issue#7685: Validate the post-login referer redirect to close an open-redirect gap
+-issue#7686: Confine index.php external-link content includes to include/content and escape the filename
 -issue#7688: Force the SNMP port to an integer before it reaches the net-snmp command line
--feature#7372: Add installer domain foundation types and lifecycle tests
--feature#7372: Add installer domain foundation types and lifecycle tests
+-issue#7696: Repair the string sanitisers in lib/functions.php
+-issue#7697: Guard two divisions PHP 8 made fatal
+-issue#7693: Validate host_id before it reaches the graph template query
+-issue#7719: Spike Kill text output applied the large value scientific notation format to the column left of the value it belonged to, starting with Variance
+-issue#7732: Bind device IDs and escape graph and device HTML sinks
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
@@ -240,7 +249,6 @@ Cacti CHANGELOG
 -feature#6495: Add bulk change data source profile functionality with automatic RRD rebuild
 -feature#6539: Allow Standard Cacti Log Files to be Rotated on Demand from the Cacti UI
 -feature#7324: Harden Basic Authentication by allowing for the specification of trusted proxies
--feature#7372: Add installer domain foundation types and lifecycle tests
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.14.1
 -feature: Upgrade jQueryUI to version 1.14.1
@@ -259,6 +267,7 @@ Cacti CHANGELOG
 -feature: Extract remote agent reverse DNS forward-confirmation into the remote_agent_fcrdns_confirmed() helper
 -feature#7190: Replace PHPMailer with Symfony Mailer for native mail, sendmail, and SMTP (including OAuth2)
 -feature#7370: Allow plugins to register process tables for the technical support view
+-feature#7372: Add installer domain foundation types and lifecycle tests
 
 1.2.x
 -issue#7212: Address a few small memory leaks in realtime graphing
