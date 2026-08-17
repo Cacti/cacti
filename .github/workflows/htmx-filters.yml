@@ -91,7 +91,7 @@ jobs:
           install-args: --no-interaction --no-progress --prefer-dist
 
       - name: Run Pest unit suite
-        run: include/vendor/bin/pest --testsuite=Unit --filter=HtmxTest
+        run: composer test -- --testsuite=Unit --filter=HtmxTest
 
   integration:
     name: Pest integration (PHP ${{ matrix.php }})
@@ -121,7 +121,7 @@ jobs:
       # AuthSystemRegressionIntegrationTest.php declares db_* stubs that fatal
       # against the real lib/database.php the sibling DB tests require.
       - name: Run Pest integration suite
-        run: include/vendor/bin/pest tests/integration/HtmxLoaderTest.php
+        run: composer test -- tests/integration/HtmxLoaderTest.php
 
   e2e:
     name: Playwright e2e

@@ -38,36 +38,30 @@ env:
 jobs:
   coverage:
     name: RRD graph item 100% coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
 
-      - name: Setup PHP 8.4 with Xdebug
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+      - name: Setup locked PHP dependencies
+        uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.4'
           coverage: xdebug
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
-
-      - name: Cache Composer packages
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-        with:
-          path: include/vendor
-          key: ${{ runner.os }}-php-rrd-graph-item-coverage-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-rrd-graph-item-coverage-
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+          dependency-mode: locked-rrd-graph-item-coverage
+          install-args: --prefer-dist --no-progress --no-interaction
 
       - name: Enforce line coverage
         env:
           XDEBUG_MODE: coverage
         run: |
           set -euo pipefail
-          include/vendor/bin/pest \
+          composer test -- \
             --configuration=phpunit-rrd-graph-item.xml \
             --coverage \
             --coverage-text \
