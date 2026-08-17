@@ -10,7 +10,7 @@
     </source>
     <testsuites>
         <testsuite name="SNMP coverage">
-            <file>tests/Unit/SnmpCoverageTest.php</file>
+            <file>tests/Unit/DataCollection/Snmp/SnmpCoverageTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

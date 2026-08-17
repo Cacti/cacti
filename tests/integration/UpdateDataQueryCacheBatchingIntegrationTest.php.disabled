@@ -15,7 +15,7 @@
  * the real function (not a spy) against a real (sqlite-backed) connection
  * and counts actual SQL statements via lib/database.php's
  * $database_total_queries counter -- the same mechanism
- * tests/Unit/DbColumnTypeCacheTest.php-style tests rely on implicitly
+ * tests/Unit/Database/DbColumnTypeCacheTest.php-style tests rely on implicitly
  * through db_execute_prepared() -- proving the O(n) -> O(1) round-trip
  * reduction the issue describes, not just asserting it algebraically.
  *
