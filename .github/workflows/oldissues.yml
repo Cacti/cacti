@@ -31,7 +31,8 @@ permissions:
 
 jobs:
   stale:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
+    timeout-minutes: 10
     steps:
     - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93
       with:
@@ -58,7 +59,8 @@ jobs:
           activity occurs. Thank you for your contributions.
 
   lock:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
+    timeout-minutes: 10
 
     steps:
     - uses: dessant/lock-threads@89ae32b08ed1a541efecbab17912962a5e38981c # v6.0.2

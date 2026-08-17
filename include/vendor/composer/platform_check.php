@@ -4,8 +4,31 @@
 
 $issues = array();
 
-if (!(PHP_VERSION_ID >= 80200)) {
-    $issues[] = 'Your Composer dependencies require a PHP version ">= 8.2.0". You are running ' . PHP_VERSION . '.';
+if (!(PHP_VERSION_ID >= 80100)) {
+    $issues[] = 'Your Composer dependencies require a PHP version ">= 8.1.0". You are running ' . PHP_VERSION . '.';
+}
+
+$missingExtensions = array();
+extension_loaded('dom') || $missingExtensions[] = 'dom';
+extension_loaded('gd') || $missingExtensions[] = 'gd';
+extension_loaded('gmp') || $missingExtensions[] = 'gmp';
+extension_loaded('iconv') || $missingExtensions[] = 'iconv';
+extension_loaded('intl') || $missingExtensions[] = 'intl';
+extension_loaded('json') || $missingExtensions[] = 'json';
+extension_loaded('ldap') || $missingExtensions[] = 'ldap';
+extension_loaded('mysqlnd') || $missingExtensions[] = 'mysqlnd';
+extension_loaded('openssl') || $missingExtensions[] = 'openssl';
+PHP_SAPI !== 'cli' || extension_loaded('pcntl') || $missingExtensions[] = 'pcntl';
+extension_loaded('pdo') || $missingExtensions[] = 'pdo';
+extension_loaded('pdo_mysql') || $missingExtensions[] = 'pdo_mysql';
+extension_loaded('phar') || $missingExtensions[] = 'phar';
+extension_loaded('posix') || $missingExtensions[] = 'posix';
+extension_loaded('sockets') || $missingExtensions[] = 'sockets';
+extension_loaded('sqlite3') || $missingExtensions[] = 'sqlite3';
+extension_loaded('xml') || $missingExtensions[] = 'xml';
+
+if ($missingExtensions) {
+    $issues[] = 'Your Composer dependencies require the following PHP extensions to be installed: ' . implode(', ', $missingExtensions) . '.';
 }
 
 if ($issues) {
