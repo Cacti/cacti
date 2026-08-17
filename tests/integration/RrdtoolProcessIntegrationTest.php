@@ -12,8 +12,6 @@ declare(strict_types = 1);
  +-------------------------------------------------------------------------+
  */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
-
 if (!defined('CACTI_LOCALE')) {
 	define('CACTI_LOCALE', 'en-US');
 }
@@ -69,9 +67,9 @@ test('local RRDtool process acknowledges create update and fetch commands', func
 		$this->markTestSkipped('Set RRDTOOL_TEST_BINARY to an executable RRDtool binary.');
 	}
 
-	global $unit_config_options;
-	$unit_config_options['path_rrdtool']              = $binary;
-	$unit_config_options['path_rrdtool_default_font'] = false;
+	global $config;
+	$config[OPTIONS_CLI]['path_rrdtool']              = $binary;
+	$config[OPTIONS_CLI]['path_rrdtool_default_font'] = false;
 
 	$directory = integration_rrdtool_directory();
 	$rrd       = $directory . "/device's metrics.rrd";
@@ -147,10 +145,10 @@ test('local RRDtool process fails closed on errors and command framing character
 		$this->markTestSkipped('Set RRDTOOL_TEST_BINARY to an executable RRDtool binary.');
 	}
 
-	global $unit_config_options;
-	$unit_config_options['path_rrdtool']              = $binary;
-	$unit_config_options['path_rrdtool_default_font'] = false;
-	$process                                          = __rrd_init();
+	global $config;
+	$config[OPTIONS_CLI]['path_rrdtool']              = $binary;
+	$config[OPTIONS_CLI]['path_rrdtool_default_font'] = false;
+	$process                                           = __rrd_init();
 
 	try {
 		$error = __rrd_execute('not-a-real-command', false, RRDTOOL_OUTPUT_STDOUT, $process, 'TEST');

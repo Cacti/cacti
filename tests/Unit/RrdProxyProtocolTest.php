@@ -12,8 +12,6 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
-
 if (!defined('POLLER_VERBOSITY_LOW')) {
 	define('POLLER_VERBOSITY_LOW', 2);
 }
@@ -54,30 +52,29 @@ if (!defined('RRD_PROXY_TEST_REAP_TIMEOUT')) {
 	define('RRD_PROXY_TEST_REAP_TIMEOUT', 30);
 }
 
-if (!function_exists('cacti_escapeshellarg')) {
-	function cacti_escapeshellarg(string $string, bool $quote = true) : string {
-		$escaped = str_replace(['\\', "'"], ['\\\\', "\\'"], $string);
-
-		return $quote ? "'$escaped'" : $escaped;
-	}
-}
-
 require_once dirname(__DIR__, 2) . '/lib/rrd.php';
 
 beforeEach(function () {
-	global $config, $encryption, $unit_config_options;
+	global $config, $encryption;
 
-	$config              = [];
-	$encryption          = false;
-	$unit_config_options = [];
+	$this->rrdConfigOptions = $config[OPTIONS_CLI] ?? [];
+	$this->rrdLocalStorage  = $config['local_storage'] ?? null;
+	$config[OPTIONS_CLI]    = [];
+	$encryption             = false;
 });
 
 afterEach(function () {
-	global $config, $encryption, $unit_config_options;
+	global $config, $encryption;
 
-	$config              = [];
-	$encryption          = false;
-	$unit_config_options = [];
+	$config[OPTIONS_CLI] = $this->rrdConfigOptions;
+
+	if ($this->rrdLocalStorage === null) {
+		unset($config['local_storage']);
+	} else {
+		$config['local_storage'] = $this->rrdLocalStorage;
+	}
+
+	$encryption = false;
 });
 
 function rrd_proxy_socket_pair() : array {
@@ -106,34 +103,18 @@ function rrd_proxy_test_read_sequence(Socket $socket) : string|false {
 }
 
 /**
- * Publish proxy settings to whichever read_config_option() is in effect.
- *
- * UnitStubs only declares its stub when lib/functions.php has not been loaded,
- * and suite-wide file order decides that, so the real database-backed function
- * is the one in play during a full run. Seed its option cache as well as the
- * stub array; a cached name is returned without touching the database.
+ * Publish proxy settings through Cacti's CLI option cache. This is the same
+ * configuration path read_config_option() uses under the canonical test
+ * bootstrap, so the test exercises production configuration behavior.
  *
  * @param array<string,mixed> $options Proxy settings for this test
  *
  * @return void
  */
 function rrd_proxy_test_set_options(array $options) : void {
-	global $config, $unit_config_options;
+	global $config;
 
-	$unit_config_options = $options;
-
-	if (defined('OPTIONS_CLI') && defined('CACTI_WEB')) {
-		$key = CACTI_WEB ? OPTIONS_WEB : OPTIONS_CLI;
-
-		if (CACTI_WEB) {
-			$_SESSION[$key] = array_merge($_SESSION[$key] ?? [], $options);
-		} else {
-			$config[$key] = array_merge(
-				is_array($config[$key] ?? null) ? $config[$key] : [],
-				$options
-			);
-		}
-	}
+	$config[OPTIONS_CLI] = array_merge($config[OPTIONS_CLI] ?? [], $options);
 }
 
 /**
@@ -560,7 +541,7 @@ it('compresses large proxy commands before handoff', function () {
 });
 
 it('negotiates an encrypted official-protocol connection end to end', function () {
-	global $config, $encryption, $unit_config_options;
+	global $config, $encryption;
 
 	if (!function_exists('pcntl_fork')) {
 		$this->markTestSkipped('pcntl is required for the proxy handshake test');
@@ -593,7 +574,7 @@ it('negotiates an encrypted official-protocol connection end to end', function (
 		'path_rrdtool_default_font' => 'Arial'
 	];
 
-	$config = ['local_storage' => false];
+	$config['local_storage'] = false;
 	rrd_proxy_test_set_options($proxy_options);
 
 	$pid = pcntl_fork();
