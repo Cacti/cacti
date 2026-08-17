@@ -86,6 +86,7 @@ Cacti CHANGELOG
 -issue#7536: Consolidate the four hand-written poller_output_boost inserts into one shared helper
 -issue#7535: Consolidate the poller_item delete call sites behind poller_item_delete_for_data_source() and poller_item_delete_for_host()
 -issue#7576: Stop passing an unset path_php_binary into string parameters
+-issue#7673: Require a POST and a CSRF token for the delete actions that were reachable over GET
 -issue#7674: Enforce tree access when creating, deleting and renaming tree nodes
 -issue#7682: Revoke the remember-me token and terminate other sessions on logout
 -issue#7683: Harden login brute-force defenses with an atomic lockout counter and constant-time unknown-user handling
@@ -93,6 +94,8 @@ Cacti CHANGELOG
 -issue#7685: Validate the post-login referer redirect to close an open-redirect gap
 -issue#7686: Confine index.php external-link content includes to include/content and escape the filename
 -issue#7688: Force the SNMP port to an integer before it reaches the net-snmp command line
+-issue#7694: Cover the shell escaping helpers and their call sites
+-issue#7695: Keep an empty argument on the command line
 -issue#7696: Repair the string sanitisers in lib/functions.php
 -issue#7697: Guard two divisions PHP 8 made fatal
 -issue#7693: Validate host_id before it reaches the graph template query
