@@ -18,15 +18,10 @@
  * database dependencies.
  */
 
-// Set test mode flags before any includes
-define('PHP_TESTING', true);
-putenv('CACTI_TEST_BOOTSTRAP=1');
-$_ENV['CACTI_TEST_BOOTSTRAP'] = '1';
-
-// Load Composer autoloader
+// Load Composer autoloader first
 require_once __DIR__ . '/../include/vendor/autoload.php';
 
-// Load CactiStubs first to set test environment variables
+// Load CactiStubs first - it defines PHP_TESTING and CACTI_TEST_BOOTSTRAP
 require_once __DIR__ . '/Helpers/CactiStubs.php';
 
 // Load test stubs to provide basic functions needed by global.php
