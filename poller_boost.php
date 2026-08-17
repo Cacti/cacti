@@ -669,8 +669,9 @@ function boost_output_rrd_data($child) {
 
 	if (!cacti_sizeof($arch_tables)) {
 		cacti_log('ERROR: Failed to retrieve archive table name', true, 'BOOST');
+		rrd_close($rrdtool_pipe);
 
-		return 0;
+		return -1;
 	}
 
 	$total_rows = 0;
@@ -685,7 +686,9 @@ function boost_output_rrd_data($child) {
 	}
 
 	if ($total_rows == 0) {
-		return 0;
+		rrd_close($rrdtool_pipe);
+
+		return -1;
 	}
 
 	boost_debug("Processes:$child, TotalRows:$total_rows");
