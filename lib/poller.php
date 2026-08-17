@@ -2667,7 +2667,7 @@ function is_process_running(string $tasktype, string $taskname, int $taskid = 0)
 		} else {
 			return 99;
 		}
-	} elseif ($r['pid'] > 0 && posix_kill($r['pid'], 0)) {
+	} elseif (cacti_process_still_running((int) $r['pid'])) {
 		// Process Running and fine
 		return true;
 	} else {
@@ -2676,6 +2676,99 @@ function is_process_running(string $tasktype, string $taskname, int $taskid = 0)
 
 		return 97;
 	}
+}
+
+/**
+ * Determines whether a registered pid is still alive and, where observable,
+ * has the same command identity as the current CLI process.
+ *
+ * A bare posix_kill($pid, 0) only proves that some process owns the pid. Once a
+ * registered process dies without unregistering, the system is free to recycle
+ * its pid for an unrelated program, and trusting the bare pid then either
+ * blocks a legitimate task from starting or sends SIGTERM to a stranger. On
+ * Linux the executable behind /proc gives an identity check the processes
+ * table cannot (it records no start time), falling back to the command name
+ * where that link cannot be read. Where /proc is unavailable, or where the
+ * caller is not itself a CLI process, the bare existence test stands, which is
+ * the behaviour this replaces.
+ *
+ * @param int $pid The pid recorded in the processes table.
+ *
+ * @return bool True when the pid is running and cannot be shown to belong to a
+ *              different program.
+ */
+function cacti_process_still_running(int $pid) : bool {
+	if (!cacti_process_pid_exists($pid)) {
+		return false;
+	}
+
+	/* Only compare identities between processes of the same kind. The registry
+	   holds CLI tasks; when the web UI asks about one, our own comm is php-fpm
+	   or httpd and would never match, so the check would call a live task dead
+	   and let a second copy start. Under any other SAPI, fall back. */
+	if (PHP_SAPI !== 'cli') {
+		return true;
+	}
+
+	/* Compare the executable each process was started from, not its command
+	   name. Children are spawned from path_php_binary, so a /usr/bin/php8.1
+	   child and a parent started as plain php report php8.1 against php for the
+	   same interpreter; comparing names there calls a live task dead and lets a
+	   second copy start. The exe link resolves both spellings to one path. */
+	$self_exe  = '/proc/' . getmypid() . '/exe';
+	$other_exe = '/proc/' . $pid . '/exe';
+
+	if (is_link($self_exe) && is_link($other_exe)) {
+		$mine   = readlink($self_exe);
+		$theirs = readlink($other_exe);
+
+		if ($mine !== false && $theirs !== false) {
+			return $mine === $theirs;
+		}
+	}
+
+	/* The exe link is only readable for our own processes, so fall back to the
+	   command name where it is not. */
+	$self  = '/proc/' . getmypid() . '/comm';
+	$other = '/proc/' . $pid . '/comm';
+
+	if (is_readable($self) && is_readable($other)) {
+		$mine   = file_get_contents($self);
+		$theirs = file_get_contents($other);
+
+		if ($mine !== false && $theirs !== false) {
+			return trim($mine) === trim($theirs);
+		}
+	}
+
+	/* Re-test rather than trusting the check above, which the reads have had
+	   time to make stale. */
+	return cacti_process_pid_exists($pid);
+}
+
+/**
+ * Tests whether a pid exists without treating a permissions failure as exit.
+ *
+ * POSIX kill(2) reports EPERM when the process exists but the caller cannot
+ * signal it. PHP exposes errno through posix_get_last_error(), while the
+ * numeric EPERM constant is supplied by ext-sockets rather than ext-posix.
+ *
+ * @param int $pid The pid to check.
+ *
+ * @return bool True when the process exists or signalling it is forbidden.
+ */
+function cacti_process_pid_exists(int $pid) : bool {
+	if ($pid <= 0 || !function_exists('posix_kill')) {
+		return false;
+	}
+
+	if (posix_kill($pid, 0)) {
+		return true;
+	}
+
+	$eperm = defined('SOCKET_EPERM') ? SOCKET_EPERM : 1;
+
+	return function_exists('posix_get_last_error') && posix_get_last_error() === $eperm;
 }
 
 /**
@@ -2712,9 +2805,11 @@ function register_process_start(string $tasktype, string $taskname, int $taskid 
 		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
 	} elseif ($r['timeout_exceeded']) {
 		if ($r['pid'] > 0) {
-			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceeded'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
+			if (cacti_process_still_running((int) $r['pid'])) {
+				cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceeded'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
 
-			posix_kill($r['pid'], SIGTERM);
+				posix_kill($r['pid'], SIGTERM);
+			}
 
 			unregister_process($tasktype, $taskname, $taskid);
 			register_process($tasktype, $taskname, $taskid, $pid, $timeout);
@@ -2724,7 +2819,7 @@ function register_process_start(string $tasktype, string $taskname, int $taskid 
 
 			return false;
 		}
-	} elseif ($r['pid'] > 0 && posix_kill($r['pid'], 0)) {
+	} elseif (cacti_process_still_running((int) $r['pid'])) {
 		cacti_log(sprintf('NOTE: Failed registering process.  Old process still running and has not timed out! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 
 		return false;
@@ -2859,12 +2954,12 @@ function timeout_kill_registered_processes(string $tasktype = '', string $taskna
 
 	$processes = db_fetch_assoc_prepared("SELECT *
 		FROM processes
-		WHERE UNIX_TIMESTAMP() > FROM_UNIXTIME(started) + timeout
+		WHERE UNIX_TIMESTAMP() > UNIX_TIMESTAMP(started) + timeout
 		$sql_where", $params);
 
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $r) {
-			if ($r['pid'] > 0 && posix_kill($r['pid'], 0)) {
+			if (cacti_process_still_running((int) $r['pid'])) {
 				cacti_log(sprintf('ERROR: Process killed due to timeout! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
 				posix_kill($r['pid'], SIGTERM);
 			} else {
