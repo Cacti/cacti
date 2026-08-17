@@ -2131,8 +2131,19 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 			}
 
 			// average time
-			$host['avg_time'] = (($host['total_polls'] - 1 - $host['failed_polls'])
-				* $host['avg_time'] + $ping_time) / ($host['total_polls'] - $host['failed_polls']);
+			/* Consistent counters cannot make this zero, but stored data that
+			 * disagrees can, and PHP 8 raises DivisionByZeroError where PHP 7
+			 * only warned and returned an infinity signed by the numerator.
+			 * That would end the poll for this device, so fall back to the
+			 * current sample instead. */
+			$successful_polls = $host['total_polls'] - $host['failed_polls'];
+
+			if ($successful_polls > 0) {
+				$host['avg_time'] = (($successful_polls - 1)
+					* $host['avg_time'] + $ping_time) / $successful_polls;
+			} else {
+				$host['avg_time'] = $ping_time;
+			}
 		}
 
 		// the host was down, now it's recovering
@@ -6546,6 +6557,15 @@ function get_dns_from_ip(string $ip, string $dns, int $timeout = 1000) : string 
 
 	// send our request (and store request size so we can cheat later)
 	$requestsize = @fwrite($handle, $data);
+
+	/* The size is used as the offset the reply is parsed from. A failed write
+	 * returns false, which reads as offset zero and would parse the response
+	 * from the wrong place rather than report that nothing was sent. */
+	if ($requestsize === false) {
+		@fclose($handle);
+
+		return $ip;
+	}
 
 	// get the response
 	$response = @fread($handle, 1000);
