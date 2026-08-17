@@ -13,7 +13,13 @@ import yaml
 PINNED_REF_RE = re.compile(r"^[0-9a-f]{40}$")
 CURL_PIPE_RE = re.compile(r"curl\b[^\n|]*\|\s*(?:sudo\s+)?(?:/(?:usr/)?bin/)?(?:sh|bash)\b")
 STRICT_LINE = "set -euo pipefail"
-DEFAULT_GLOB = ".github/workflows/*"
+DEFAULT_WORKFLOW_GLOB = ".github/workflows/*"
+DEFAULT_ACTION_GLOB = ".github/actions/**/action.y*ml"
+ALLOWED_RUNNERS = {"ubuntu-24.04", "ubuntu-slim"}
+CHECKOUT_WRITE_WORKFLOWS = {
+    ".github/workflows/security-baseline-refresh.yml",
+    ".github/workflows/update-contributors.yml",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -64,6 +70,15 @@ def check_run(path: str, step_name: str, run_value: str, violations: list[str]) 
         violations.append(f"{path}:{step_name}: curl|sh is disallowed")
 
 
+def check_container_image(path: str, location: str, image: object, violations: list[str]) -> None:
+    if not isinstance(image, str):
+        return
+    if "@sha256:" not in image:
+        violations.append(
+            f"{path}:{location}: container image must be pinned by digest: {image}"
+        )
+
+
 def resolve_workflow_files(root: Path, explicit_paths: list[str]) -> list[Path]:
     if explicit_paths:
         files: list[Path] = []
@@ -74,8 +89,12 @@ def resolve_workflow_files(root: Path, explicit_paths: list[str]) -> list[Path]:
                 raise SystemExit(1)
             files.append(path)
         return sorted(files)
+    candidates = [
+        *root.glob(DEFAULT_WORKFLOW_GLOB),
+        *root.glob(DEFAULT_ACTION_GLOB),
+    ]
     return sorted(
-        path for path in root.glob(DEFAULT_GLOB) if path.suffix in (".yml", ".yaml")
+        path for path in candidates if path.suffix in (".yml", ".yaml")
     )
 
 
@@ -97,6 +116,21 @@ def main() -> int:
             violations.append(f"{rel}: failed to parse YAML: {exc}")
             continue
 
+        if rel.startswith(".github/actions/"):
+            runs = doc.get("runs", {}) if isinstance(doc, dict) else {}
+            action_steps = runs.get("steps", []) if isinstance(runs, dict) else []
+            for idx, step in enumerate(action_steps, start=1):
+                if not isinstance(step, dict):
+                    continue
+                step_name = str(step.get("name", f"action.step{idx}"))
+                uses_value = step.get("uses")
+                if isinstance(uses_value, str):
+                    check_uses(rel, step_name, uses_value.strip(), violations)
+                run_value = step.get("run")
+                if isinstance(run_value, str):
+                    check_run(rel, step_name, run_value, violations)
+            continue
+
         jobs = doc.get("jobs", {}) if isinstance(doc, dict) else {}
         if not isinstance(jobs, dict):
             continue
@@ -104,6 +138,36 @@ def main() -> int:
         for job_name, job in jobs.items():
             if not isinstance(job, dict):
                 continue
+
+            if "uses" not in job:
+                runner = job.get("runs-on")
+                if runner not in ALLOWED_RUNNERS:
+                    violations.append(
+                        f"{rel}:{job_name}: runs-on must use a fixed approved image: {runner}"
+                    )
+                if "timeout-minutes" not in job:
+                    violations.append(
+                        f"{rel}:{job_name}: job must define timeout-minutes"
+                    )
+
+            container = job.get("container")
+            if isinstance(container, str):
+                check_container_image(rel, f"{job_name}.container", container, violations)
+            elif isinstance(container, dict):
+                check_container_image(
+                    rel, f"{job_name}.container", container.get("image"), violations
+                )
+
+            services = job.get("services")
+            if isinstance(services, dict):
+                for service_name, service in services.items():
+                    if isinstance(service, dict):
+                        check_container_image(
+                            rel,
+                            f"{job_name}.services.{service_name}",
+                            service.get("image"),
+                            violations,
+                        )
 
             # Reusable-workflow calls live at the job level (jobs.<id>.uses) and
             # must be pinned just like step actions.
@@ -119,6 +183,20 @@ def main() -> int:
                 uses_value = step.get("uses")
                 if isinstance(uses_value, str):
                     check_uses(rel, step_name, uses_value.strip(), violations)
+                    if (
+                        uses_value.startswith("actions/checkout@")
+                        and rel not in CHECKOUT_WRITE_WORKFLOWS
+                    ):
+                        checkout_with = step.get("with")
+                        persisted = (
+                            checkout_with.get("persist-credentials")
+                            if isinstance(checkout_with, dict)
+                            else None
+                        )
+                        if persisted is not False:
+                            violations.append(
+                                f"{rel}:{step_name}: read-only checkout must set persist-credentials: false"
+                            )
 
                 run_value = step.get("run")
                 if isinstance(run_value, str):
