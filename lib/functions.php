@@ -337,6 +337,7 @@ function read_default_user_setting(string $config_name) : string {
  *
  * @return mixed The current value of the user setting
  */
+if (!function_exists('read_user_setting')) {
 function read_user_setting(string $config_name, mixed $default = false, bool $force = false, mixed $user = 0) : mixed {
 	global $config;
 
@@ -383,6 +384,7 @@ function read_user_setting(string $config_name, mixed $default = false, bool $fo
 	}
 
 	return $user_config_array[$config_name];
+}
 }
 
 /**
