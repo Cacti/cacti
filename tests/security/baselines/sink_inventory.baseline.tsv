@@ -4,7 +4,7 @@ cmd_exec	./cli/audit_database.php:1028				$db_shell = shell_exec('which mysql');
 cmd_exec	./cli/audit_database.php:1058				exec($cmd, $output, $error);
 cmd_exec	./cli/audit_database.php:168		exec('php ' . CACTI_PATH_CLI . '/upgrade_database.php --debug', $output, $return_var);
 cmd_exec	./cli/audit_database.php:259								exec('php ' . CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old, $output, $return_var);
-cmd_exec	./cli/batchgapfix.php:431			exec($command, $output, $return_var);
+cmd_exec	./cli/batchgapfix.php:429			exec($command, $output, $return_var);
 cmd_exec	./cli/float_rrdfiles.php:352				$response = exec($command, $output, $return);
 cmd_exec	./cli/float_rrdfiles.php:464					$response = exec($command, $output, $return);
 cmd_exec	./cli/push_out_hosts.php:50		passthru($php_binary . ' ' . CACTI_PATH_CLI . '/rebuild_poller_cache.php ' . $parameters);
@@ -122,7 +122,7 @@ deserialize	./lib/reports.php:49		$items = unserialize($unstripped, ['allowed_cl
 dynamic_include	./cli/audit_database.php:232							require_once($plugin . '/setup.php');
 dynamic_include	./cli/audit_database.php:235								require_once($plugin . '/includes/database.php');
 dynamic_include	./cli/upgrade_database.php:152			include($upgrade_file);
-dynamic_include	./include/global.php:719		require_once($vendor_autoload);
+dynamic_include	./include/global.php:715		require_once($vendor_autoload);
 dynamic_include	./include/global_languages.php:178				require_once($providerFull);
 dynamic_include	./index.php:49							require_once($file);
 dynamic_include	./lib/installer.php:4110					include_once($upgrade_file);
@@ -168,10 +168,11 @@ fs_write	./install/functions.php:1584			file_put_contents(CACTI_PATH_LOG . '/' .
 fs_write	./install/functions.php:1585			file_put_contents(CACTI_PATH_LOG . '/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
 fs_write	./install/functions.php:275				$fh = fopen($file, 'w');
 fs_write	./install/functions.php:803			file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
-fs_write	./lib/api_device.php:2682							file_put_contents($new_xmlfile, $data);
+fs_write	./lib/api_device.php:2892							if (file_put_contents($new_xmlfile, $data) === false) {
 fs_write	./lib/boost.php:611								if ($fileptr = fopen($cache_file, 'rb')) {
 fs_write	./lib/boost.php:761							if ($fileptr = fopen($cache_file, 'w')) {
 fs_write	./lib/clog_webapi.php:182					$log_fh = fopen($logfile, 'w');
+fs_write	./lib/csp_report_endpoint.php:166	$inputStream = fopen('php://input', 'rb');
 fs_write	./lib/database.php:241					file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
 fs_write	./lib/database.php:2538		file_put_contents(sys_get_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
 fs_write	./lib/database.php:79					file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
@@ -469,7 +470,7 @@ header_redirect	./include/fa/svgs/index.php:25	header('Location:../index.php');
 header_redirect	./include/fa/svgs/regular/index.php:25	header('Location:../index.php');
 header_redirect	./include/fa/svgs/solid/index.php:25	header('Location:../index.php');
 header_redirect	./include/fa/webfonts/index.php:25	header('Location:../index.php');
-header_redirect	./include/global.php:583				header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+header_redirect	./include/global.php:584				header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 header_redirect	./include/index.php:25	header('Location:../index.php');
 header_redirect	./include/js/LC_MESSAGES/index.php:25	header('Location:../index.php');
 header_redirect	./include/js/index.php:25	header('Location:../index.php');
@@ -507,14 +508,14 @@ header_redirect	./include/themes/sunrise/index.php:25	header('Location:../index.
 header_redirect	./include/vendor/index.php:25	header("Location:../index.php");
 header_redirect	./include/views/index.php:36			header('Location:../index.php');
 header_redirect	./install/upgrades/index.php:25	header('Location:../../index.php');
-header_redirect	./lib/auth.php:4295				header('Location: auth_changepassword.php');
-header_redirect	./lib/auth.php:4752					header('Location: ' . $referer);
-header_redirect	./lib/auth.php:4756					header('Location: graph_view.php');
-header_redirect	./lib/auth.php:4760					header('Location: index.php');
-header_redirect	./lib/auth.php:4766					header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
-header_redirect	./lib/auth.php:4768					header('Location: ' . CACTI_PATH_URL . 'index.php' . ($newtheme ? '?newtheme=1' : ''));
-header_redirect	./lib/auth.php:4773				header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
-header_redirect	./lib/auth.php:4964			header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
+header_redirect	./lib/auth.php:4292				header('Location: auth_changepassword.php');
+header_redirect	./lib/auth.php:4749					header('Location: ' . $referer);
+header_redirect	./lib/auth.php:4753					header('Location: graph_view.php');
+header_redirect	./lib/auth.php:4757					header('Location: index.php');
+header_redirect	./lib/auth.php:4763					header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
+header_redirect	./lib/auth.php:4765					header('Location: ' . CACTI_PATH_URL . 'index.php' . ($newtheme ? '?newtheme=1' : ''));
+header_redirect	./lib/auth.php:4770				header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
+header_redirect	./lib/auth.php:4961			header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
 header_redirect	./lib/clog_webapi.php:124			header('Location: ' . get_current_page());
 header_redirect	./lib/clog_webapi.php:244				header('Location: clog.php?filename=' . basename($logfile));
 header_redirect	./lib/html_form.php:1550				header('Location: ' . $page);

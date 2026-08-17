@@ -93,3 +93,18 @@
 - **Formatting**: Enforce tabs for indentation (no spaces for indentation).
 - **Legacy**: Avoid `preg_*` if simple string functions work. Use `preg_*` over `ereg_*`.
 - Avoid drive-by rewrites: no repo-wide formatting, no unrelated cleanup, and preserve existing file conventions (keep the GPL header blocks).
+
+## Unit test organization (Pest)
+- Unit tests live in `tests/Unit/` and use [Pest](https://pestphp.com/) (`test()` / `it()` functions, not PHPUnit classes). The Pest bootstrap is `tests/Pest.php`; a lightweight source-scan bootstrap is `tests/bootstrap-unit.php`.
+- Tests are organized into category subfolders by domain. New tests **must** follow this structure — do not add flat files to `tests/Unit/` root:
+  - `Security/` — security-related tests, subfoldered by vulnerability class (`SqlInjection/`, `Xss/`, `Shell/`, `Auth/`, `Csrf/`, `Csp/`, `Redirect/`, `PathTraversal/`, `Ssrf/`, `Crypto/`, `InputValidation/`, `Session/`, `Ldap/`, `Type/`, `ShellInjection/`, `Misc/`).
+  - `DataCollection/` — poller/SNMP/cmd/data-query tests (`Poller/`, `Snmp/`, `Cmd/`, `DataQuery/`, `DataInput/`).
+  - `Ui/` — front-end/graph rendering tests (`Aggregate/`, `Graph/`, `Html/`, `Theme/`, `Colour/`, `Tree/`, `Spikekill/`, `Utility/`).
+  - `Core/` — core library tests, with subfolders for distinct subsystems (`Rrd/`, `RemoteAgent/`, `Automation/`, `Cli/`, `Mailer/`, `Boost/`, `Availability_Tests/`).
+  - `Database/`, `Installer/`, `Scripts/`, `Plugin/` — domain-specific folders at the top level.
+- When adding a new test, place it in the matching category folder. If a new domain is needed, create a folder for it rather than leaving the file flat in `tests/Unit/`.
+- **File naming:** do not encode GitHub issue or GHSA numbers in filenames. Name the file after the behavior it tests (e.g. `PercentileContractTest.php`, not `Issue7070PercentileContractTest.php`). The GHSA/issue ID belongs in the test's `test('...')` description string or a file-level docblock, not the filename.
+- **`__DIR__` path depth:** tests read source files via `file_get_contents(__DIR__ . '/../../../...')` or `dirname(__DIR__, N)`. The depth must match the folder's nesting level:
+  - `tests/Unit/<Category>/` → 3 levels (`'/../../../'` or `dirname(__DIR__, 3)`)
+  - `tests/Unit/<Category>/<Subcategory>/` → 4 levels (`'/../../../../'` or `dirname(__DIR__, 4)`)
+  - After moving a test between folders, always update the `__DIR__` relative paths to match the new depth.

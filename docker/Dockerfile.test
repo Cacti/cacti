@@ -1,0 +1,27 @@
+FROM cacti-web
+
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends git unzip \
+	&& pecl install xdebug \
+	&& docker-php-ext-enable xdebug \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/*
+
+WORKDIR /work
+
+COPY . ./
+
+RUN composer install --prefer-dist --no-progress --no-interaction \
+	&& mkdir -p cache log rra \
+	&& touch log/cacti.log \
+	&& chmod -R a+rwX cache log rra \
+	&& cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
+	&& git init \
+	&& git add --force . \
+	&& chown -R www-data:www-data /work
+
+USER www-data
+
+ENTRYPOINT ["php"]

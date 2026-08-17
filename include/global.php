@@ -287,6 +287,7 @@ if (isset($i18n_text_log)) {
 require_once(CACTI_PATH_LIBRARY . '/database.php');
 require_once(CACTI_PATH_LIBRARY . '/functions.php');
 require_once(CACTI_PATH_LIBRARY . '/renderer.php');
+require_once(CACTI_PATH_LIBRARY . '/headers_secure.php');
 require_once(CACTI_PATH_INCLUDE . '/global_constants.php');
 
 define('CACTI_VERSION', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_SHORT));
@@ -630,24 +631,19 @@ if ($config['is_web']) {
 	header('X-Frame-Options: SAMEORIGIN');
 
 	// increased web hardening
-	$script_policy = read_config_option('content_security_policy_script');
+	$alternates = CactiSecureHeaders::normalizeAlternateSources(read_config_option('content_security_alternate_sources'));
+	$script_src = CactiSecureHeaders::scriptSrc($alternates);
+	$report_uri = CactiSecureHeaders::getCspMode() === 'nonce-enforce' ?
+		CactiSecureHeaders::reportUriDirective() : '';
 
-	if ($script_policy == 'unsafe-eval') {
-		$script_policy = "'$script_policy'";
-	} else {
-		$script_policy = '';
+	header("Content-Security-Policy: default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; $script_src; frame-ancestors 'self' $alternates; worker-src 'self' $alternates;$report_uri");
+
+	$report_script_src = CactiSecureHeaders::reportOnlyScriptSrc($alternates);
+
+	if ($report_script_src !== '') {
+		$report_uri = CactiSecureHeaders::reportUriDirective();
+		header("Content-Security-Policy-Report-Only: default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; $report_script_src; frame-ancestors 'self' $alternates; worker-src 'self' $alternates;$report_uri");
 	}
-
-	$nonce_policy = '';
-	$script_nonce = cacti_csp_nonce();
-
-	if ($script_nonce !== '') {
-		$nonce_policy = " 'nonce-$script_nonce'";
-	}
-
-	$alternates = htmle(read_config_option('content_security_alternate_sources'));
-
-	header("Content-Security-Policy: default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; script-src 'self' $script_policy$nonce_policy 'unsafe-inline' $alternates; frame-ancestors 'self' $alternates; worker-src 'self' $alternates;");
 
 	// prevent IE from silently rejects cookies sent from third party sites.
 	header('P3P: CP="CAO PSA OUR"');

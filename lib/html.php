@@ -335,7 +335,7 @@ function html_graph_area(array &$graph_array, string $no_graphs_message = '', st
 	}
 
 	?>
-	<script type='text/javascript'<?php print cacti_csp_nonce_attribute(); ?>>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute(); ?>>
 	if ($('#predefined_timespan').val() == 0) {
 		refreshMSeconds = 999999;
 	} else {
@@ -419,7 +419,7 @@ function html_graph_thumbnail_area(array &$graph_array, string $no_graphs_messag
 	}
 
 	?>
-	<script type='text/javascript'<?php print cacti_csp_nonce_attribute(); ?>>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute(); ?>>
 	if ($('#predefined_timespan').val() == 0) {
 		refreshMSeconds = 999999;
 	} else {
@@ -663,7 +663,7 @@ function html_nav_bar(string $base_url, int $max_pages, int $current_page, int $
 			}
 
 			$url  = $base_url . $page_var;
-			$nav .= "<script type='text/javascript'" . cacti_csp_nonce_attribute() . ">
+			$nav .= "<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">
 			function goto$page_var(pageNo) {
 				if (typeof url_graph === 'function') {
 					var url_add=url_graph('')
@@ -2043,7 +2043,7 @@ function draw_actions_dropdown(array $actions_array, int $delete_action = 1) : v
 		</div>
 	</div>
 	<input type='hidden' id='action' name='action' value='actions' form='<?php print $form_id; ?>'/>
-	<script type='text/javascript'<?php print cacti_csp_nonce_attribute(); ?>>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute(); ?>>
 
 	function setDisabled() {
 		$('tr[id^="line"]').addClass('selectable').prop('disabled', false).removeClass('disabled_row').unbind('click').prop('disabled', false);
@@ -3033,7 +3033,7 @@ function html_spikekill_menu(int $local_graph_id) : void {
 
 function html_spikekill_js() : void {
 	?>
-	<script type='text/javascript'<?php print cacti_csp_nonce_attribute(); ?>>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute(); ?>>
 	var spikeKillOpen = false;
 
 	$(function() {
@@ -3201,21 +3201,8 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 
 	print "<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5' name='viewport'>" . PHP_EOL;
 
-	$script_policy = read_config_option('content_security_policy_script');
-
-	if ($script_policy == 'unsafe-eval') {
-		$script_policy = "'$script_policy'";
-	} else {
-		$script_policy = '';
-	}
-
-	$nonce_policy = '';
-	$script_nonce = cacti_csp_nonce();
-
-	if ($script_nonce !== '') {
-		$nonce_policy = " 'nonce-$script_nonce'";
-	}
 	$alternates = htmle(read_config_option('content_security_alternate_sources'));
+	$script_src = CactiSecureHeaders::scriptSrc($alternates);
 
 	?>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
@@ -3223,13 +3210,13 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 	<meta name='description' content='Monitoringauth tool of the Internet'>
 	<meta name='mobile-web-app-capable' content='yes'>
 	<meta name="theme-color" content="#161616"/>
-	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' https://api.qrserver.com <?php print $alternates; ?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates; ?>; script-src 'self' <?php print htmle($script_policy); ?><?php print htmle($nonce_policy); ?> 'unsafe-inline' <?php print $alternates; ?>; worker-src 'self' <?php print $alternates; ?>;">
+	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' https://api.qrserver.com <?php print $alternates; ?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates; ?>; <?php print $script_src; ?>; worker-src 'self' <?php print $alternates; ?>;">
 
 
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<link rel='manifest' href='/manifest.json'>
-	<script type='text/javascript'<?php print cacti_csp_nonce_attribute(); ?>>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute(); ?>>
 		var urlPath='<?php print CACTI_PATH_URL; ?>';
 		var aboutCacti = '<?php print __esc('About Cacti'); ?>';
 		var cactiCharts = '<?php print __esc('Charts'); ?>';

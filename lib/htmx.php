@@ -20,7 +20,9 @@
  +-------------------------------------------------------------------------+
  | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
-*/
+ */
+
+require_once __DIR__ . '/headers_secure.php';
 
 /**
  * Returns true when htmx support is enabled for this install. Reads the
@@ -155,8 +157,9 @@ function htmx_script_tag(): string {
 	// CACTI_PATH_URL is defined by include/global_path.php during a normal
 	// bootstrap. Fall back to '/' when the constant is absent (lightweight
 	// fixtures that load lib/htmx.php without the full path bootstrap).
-	$base = defined('CACTI_PATH_URL') ? CACTI_PATH_URL : '/';
-	$url  = $base . 'include/js/htmx.js?' . $md5;
+	$base       = defined('CACTI_PATH_URL') ? CACTI_PATH_URL : '/';
+	$url        = $base . 'include/js/htmx.js?' . $md5;
+	$nonce_attr = CactiSecureHeaders::getNonceAttribute();
 
 	$config_meta = "<meta name='htmx-config' content='"
 		. htmlspecialchars('{"allowEval":false,"allowScriptTags":false}', ENT_QUOTES, 'UTF-8')
@@ -168,7 +171,7 @@ function htmx_script_tag(): string {
 	// __csrf_magic field that csrf-magic validates. Only body-based verbs get
 	// the token: htmx puts GET and DELETE parameters into the URL, which would
 	// leak it (see the function doc).
-	$csrf_wiring = "<script type='text/javascript'" . cacti_csp_nonce_attribute() . ">\n"
+	$csrf_wiring = "<script type='text/javascript' $nonce_attr>\n"
 		. "document.addEventListener('htmx:configRequest', function(evt) {\n"
 		. "\tvar verb = String(evt.detail.verb).toLowerCase();\n"
 		. "\tif (typeof csrfMagicToken !== 'undefined' && (verb === 'post' || verb === 'put' || verb === 'patch')) {\n"
@@ -177,8 +180,7 @@ function htmx_script_tag(): string {
 		. "});\n"
 		. "</script>\n";
 
-	$tag = "<script type='text/javascript' src='" . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . "'"
-		. cacti_csp_nonce_attribute()
+	$tag = "<script type='text/javascript' $nonce_attr src='" . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . "'"
 		. " integrity='" . HTMX_2_0_6_SRI . "'"
 		. " crossorigin='anonymous'></script>\n";
 
