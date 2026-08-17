@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -issue#7493: SNMP walk for output_format fields used max OIDs instead of the device bulk walk size
 -issue#7552: HTMLPurifier definition cache written inside the read-only library tree
 -issue#7553: Drop down menus do not update page content after upgrading to 1.2.31
+-issue#7727: Log entry for Data Source validation has a double space
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
