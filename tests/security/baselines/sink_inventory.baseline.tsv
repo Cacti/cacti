@@ -4,7 +4,7 @@ cmd_exec	./cli/audit_database.php:1028				$db_shell = shell_exec('which mysql');
 cmd_exec	./cli/audit_database.php:1058				exec($cmd, $output, $error);
 cmd_exec	./cli/audit_database.php:168		exec('php ' . CACTI_PATH_CLI . '/upgrade_database.php --debug', $output, $return_var);
 cmd_exec	./cli/audit_database.php:259								exec('php ' . CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old, $output, $return_var);
-cmd_exec	./cli/batchgapfix.php:431			exec($command, $output, $return_var);
+cmd_exec	./cli/batchgapfix.php:429			exec($command, $output, $return_var);
 cmd_exec	./cli/float_rrdfiles.php:352				$response = exec($command, $output, $return);
 cmd_exec	./cli/float_rrdfiles.php:464					$response = exec($command, $output, $return);
 cmd_exec	./cli/push_out_hosts.php:50		passthru($php_binary . ' ' . CACTI_PATH_CLI . '/rebuild_poller_cache.php ' . $parameters);
