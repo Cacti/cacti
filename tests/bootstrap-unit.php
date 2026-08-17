@@ -31,10 +31,13 @@ require_once __DIR__ . '/Helpers/CactiStubs.php';
 // without redeclaration errors.
 require_once __DIR__ . '/Helpers/UnitStubs.php';
 
-// Load global configuration and settings (uses __() from stubs above)
+// Load global configuration and settings
+// This includes:
+// - include/global_path.php - path constants
+// - include/global_constants.php - version and logging constants
+// - lib/database.php - database functions
+// - lib/functions.php - core library functions (called by format_cacti_version on lines 293-294)
+// - lib/renderer.php - rendering functions
+// - Various other configuration includes
+// Uses __() from stubs above, and defines format_cacti_version via lib/functions.php
 require_once __DIR__ . '/../include/global.php';
-
-// Load core library functions
-// Since UnitStubs no longer defines cacti_strtolower, read_user_setting, etc.,
-// lib/functions.php can define them without conflicts.
-require_once __DIR__ . '/../lib/functions.php';
