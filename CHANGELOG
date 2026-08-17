@@ -90,6 +90,7 @@ Cacti CHANGELOG
 -issue#7684: Scope the local-login password rehash to realm 0 and only rehash after a successful login
 -issue#7685: Validate the post-login referer redirect to close an open-redirect gap
 -issue#7688: Force the SNMP port to an integer before it reaches the net-snmp command line
+-issue#7732: Bind device IDs and escape graph and device HTML sinks
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
