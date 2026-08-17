@@ -31,7 +31,7 @@
  * before trusting the drain loop's running-count poll.
  */
 
-require_once __DIR__ . '/../Helpers/UnitStubs.php';
+require_once __DIR__ . '/../../../Helpers/UnitStubs.php';
 require_once __DIR__ . '/../../../../lib/dsstats.php';
 require_once __DIR__ . '/../../../../lib/rrdcheck.php';
 
