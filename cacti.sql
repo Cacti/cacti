@@ -2259,8 +2259,11 @@ CREATE TABLE `poller_output_boost_local_data_ids` (
 
 CREATE TABLE `poller_output_boost_processes` (
   `sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
+  `run_id` char(32) NOT NULL default '',
+  `child_id` int(10) unsigned NOT NULL default '0',
   `status` varchar(255) default NULL,
-  PRIMARY KEY (`sock_int_value`)
+  PRIMARY KEY (`sock_int_value`),
+  UNIQUE KEY `run_child` (`run_id`,`child_id`)
 ) ENGINE=MEMORY;
 
 --

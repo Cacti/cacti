@@ -80,16 +80,29 @@ function debug($string) {
 	}
 }
 
+function recovery_delete_acknowledged_rows($rows, $conn) {
+	foreach (array_chunk($rows, 500) as $chunk) {
+		$clauses = array();
+		$params  = array();
+
+		foreach ($chunk as $row) {
+			$clauses[] = '(local_data_id = ? AND rrd_name = ? AND time = ?)';
+			$params[]  = (int) $row['local_data_id'];
+			$params[]  = $row['rrd_name'];
+			$params[]  = $row['time'];
+		}
+
+		if (db_execute_prepared('DELETE FROM poller_output_boost WHERE ' . implode(' OR ', $clauses), $params, true, $conn) === false) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 global $local_db_cnn_id, $remote_db_cnn_id;
 
 $recovery_pid = db_fetch_cell("SELECT value FROM settings WHERE name='recovery_pid'", '', true, $local_db_cnn_id);
-$packet_data  = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'max_allowed_packet'", true, $remote_db_cnn_id);
-
-if (isset($packet_data['Value'])) {
-	$max_allowed_packet = $packet_data['Value'];
-} else {
-	$max_allowed_packet = 1E6;
-}
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -160,6 +173,7 @@ $sleep_time   = 1;
 
 /* global counter variables */
 $records_inserted = 0;
+$transfer_failed  = false;
 
 debug('About to start recovery processing');
 
@@ -217,64 +231,54 @@ if ($run) {
 				FROM poller_output_boost
 				WHERE time <= ?
 				ORDER BY time ASC, local_data_id ASC',
-				array($max_time));
+				array($max_time), true, $local_db_cnn_id);
 
 			if (cacti_sizeof($rows)) {
-				$packet_size = 0;
-				$sql_array   = array();
+				if (!boost_validate_poller_ownership($rows, $poller_id, $remote_db_cnn_id)) {
+					cacti_log('RECOVERY ERROR: Retaining local rows because their data-source ownership could not be verified.', false, 'POLLER');
+					$transfer_failed = true;
+					break;
+				}
+
+				$sql_array = array();
 
 				foreach($rows as $r) {
-					$sql = '(' . $r['local_data_id'] . ',' . db_qstr($r['rrd_name']) . ',' . db_qstr($r['time']) . ',' . db_qstr($r['output']) . ')';
-					$sql_size = strlen($sql);
-
-					/* if adding a new row would exceed max_allowed_packet, send the current frame to the main poller and start a new frame */
-					if (($packet_size + $sql_size) >= $max_allowed_packet) {
-						$record_count = cacti_sizeof($sql_array);
-
-						cacti_log('RECOVERY: Writing ' . $record_count . ' records (' . $packet_size . ' bytes) to main (partial).', false, 'POLLER');
-
-						db_execute('INSERT IGNORE INTO poller_output_boost
-							(local_data_id, rrd_name, time, output)
-							VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
-
-						$records_inserted += $record_count;
-						$sql_array = array();
-						$packet_size = 0;
-					}
-
-					$sql_array[] = $sql;
-					$packet_size += $sql_size;
+					$sql_array[] = '(' . (int) $r['local_data_id'] . ',' .
+						db_qstr($r['rrd_name'], $remote_db_cnn_id) . ',' .
+						db_qstr($r['time'], $remote_db_cnn_id) . ',' .
+						db_qstr($r['output'], $remote_db_cnn_id) . ')';
 				}
 
-				/* if there is data in the last frame, send it to main poller as well and finalize */
-				if ($packet_size > 0) {
-					$record_count = cacti_sizeof($sql_array);
+				$record_count = cacti_sizeof($sql_array);
+				cacti_log('RECOVERY: Writing ' . $record_count . ' records to main.', false, 'POLLER');
 
-					cacti_log('RECOVERY: Writing ' . $record_count . ' records (' . $packet_size . ' bytes) to main (last slice).', false, 'POLLER');
-
-					db_execute("INSERT IGNORE INTO poller_output_boost
-						(local_data_id, rrd_name, time, output)
-						VALUES " . implode(',', $sql_array), true, $remote_db_cnn_id);
-
-					$records_inserted += $record_count;
+				if (!boost_flush_output_batch($sql_array, $remote_db_cnn_id)) {
+					cacti_log('RECOVERY ERROR: Main collector did not acknowledge the Boost batch; retaining local rows.', false, 'POLLER');
+					$transfer_failed = true;
+					break;
 				}
 
-				/* remove the recovery records */
-				if (is_object($local_db_cnn_id)) {
-					db_execute_prepared('DELETE FROM poller_output_boost
-						WHERE time <= ?',
-						array($max_time), true, $local_db_cnn_id);
+				if (!recovery_delete_acknowledged_rows($rows, $local_db_cnn_id)) {
+					cacti_log('RECOVERY ERROR: Unable to remove acknowledged local Boost rows; they will be retried idempotently.', false, 'POLLER');
+					$transfer_failed = true;
+					break;
 				}
+
+				$records_inserted += $record_count;
 			}
 
 			sleep($sleep_time);
 		}
 	}
 
-	/* let the console know you are in online mode */
-	db_execute_prepared('UPDATE poller
-		SET status="2"
-		WHERE id= ?', array($poller_id), false, $remote_db_cnn_id);
+	db_execute("DELETE FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
+
+	if (!$transfer_failed) {
+		/* let the console know you are in online mode */
+		db_execute_prepared('UPDATE poller
+			SET status="2"
+			WHERE id= ?', array($poller_id), false, $remote_db_cnn_id);
+	}
 } else {
 	debug('Recovery process still running, exiting');
 	cacti_log('RECOVERY: Recovery process still running for Poller ' . $poller_id . '.  PID is ' . $recovery_pid, false, 'POLLER');
@@ -285,4 +289,4 @@ $end = microtime(true);
 
 cacti_log('RECOVERY STATS: Time:' . round($end - $start, 2) . ' Records:' . $records_inserted, false, 'SYSTEM');
 
-exit(0);
+exit($transfer_failed ? 1 : 0);
