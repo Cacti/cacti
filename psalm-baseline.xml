@@ -26,11 +26,6 @@
       <code><![CDATA[$data]]></code>
     </TaintedHtml>
   </file>
-  <file src="lib/auth.php">
-    <TaintedHeader>
-      <code><![CDATA['Location: ' . $referer]]></code>
-    </TaintedHeader>
-  </file>
   <file src="lib/functions.php">
     <TaintedHtml>
       <code><![CDATA[$omessage]]></code>

@@ -23,7 +23,8 @@ concurrency:
 jobs:
   security-review:
     name: security review
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     permissions:
       contents: read
       pull-requests: write
@@ -40,6 +41,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Fetch base branch
         if: env.HAS_KEY == 'true'
@@ -104,21 +106,25 @@ jobs:
           run_grep "SQL sinks (db_query / db_execute / db_fetch_*)" \
             'db_(query|execute|fetch_assoc|fetch_row|fetch_cell)\s*\('
 
+          # shellcheck disable=SC2016
           run_grep "String concatenation into SQL keywords" \
             '"(SELECT|INSERT|UPDATE|DELETE|WHERE|FROM|ORDER BY|LIMIT).*\.\s*\$'
 
+          # shellcheck disable=SC2016
           run_grep "Direct superglobal access (\$_GET / \$_POST / \$_REQUEST)" \
             '\$_(GET|POST|REQUEST|COOKIE|FILES)\s*\['
 
           run_grep "get_nfilter_request_var (unfiltered taint)" \
             'get_nfilter_request_var\s*\('
 
+          # shellcheck disable=SC2016
           run_grep "echo / print with apparent variable output" \
             '(echo|print)\s+\$'
 
           run_grep "Command execution sinks" \
             '\b(exec|system|shell_exec|passthru|proc_open|popen)\s*\('
 
+          # shellcheck disable=SC2016
           run_grep "Dynamic include / require" \
             '\b(include|require)(_once)?\s+\$'
 
@@ -128,6 +134,7 @@ jobs:
           run_grep "Archive extraction" \
             '\b(extractTo|ZipArchive|PharData)\b'
 
+          # shellcheck disable=SC2016
           run_grep "Missing realpath / basename on user paths" \
             '(include|require|fopen|file_get_contents)\s*\(\s*\$(?!real_path|resolved)'
 
@@ -155,10 +162,12 @@ jobs:
 
           for f in "${hotspots[@]}"; do
             if [[ -f "$f" ]]; then
-              printf '=== %s ===\n' "$f" >> "$out"
-              # First 120 lines is enough to see includes, auth guards, input handling
-              head -n 120 "$f" >> "$out"
-              printf '\n' >> "$out"
+              {
+                printf '=== %s ===\n' "$f"
+                # First 120 lines is enough to see includes, auth guards, input handling
+                head -n 120 "$f"
+                printf '\n'
+              } >> "$out"
             fi
           done
 
