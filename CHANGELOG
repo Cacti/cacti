@@ -93,6 +93,8 @@ Cacti CHANGELOG
 -issue#7685: Validate the post-login referer redirect to close an open-redirect gap
 -issue#7686: Confine index.php external-link content includes to include/content and escape the filename
 -issue#7688: Force the SNMP port to an integer before it reaches the net-snmp command line
+-issue#7694: Cover the shell escaping helpers and their call sites
+-issue#7695: Keep an empty argument on the command line
 -issue#7696: Repair the string sanitisers in lib/functions.php
 -issue#7697: Guard two divisions PHP 8 made fatal
 -issue#7693: Validate host_id before it reaches the graph template query
