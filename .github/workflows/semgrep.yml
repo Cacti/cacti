@@ -7,9 +7,10 @@ name: Semgrep (Cacti taint rules)
 
 on:
   push:
-    branches: [develop]
+    branches: [develop, '1.2.x']
   pull_request:
-    branches: [develop]
+    branches: [develop, '1.2.x']
+  merge_group:
   workflow_dispatch:
 
 permissions:
@@ -22,24 +23,39 @@ concurrency:
 jobs:
   semgrep:
     name: cacti taint rules
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     permissions:
       contents: read
       security-events: write
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Install semgrep
-        run: pipx install semgrep==1.90.0
+        with:
+          persist-credentials: false
 
       - name: Self-test the rules (blocking)
-        run: semgrep --test tests/security/semgrep/
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            --env HOME=/tmp \
+            --volume "${PWD}:/src" \
+            --workdir /src \
+            semgrep/semgrep@sha256:e04d2cb132288d90035db8791d64f610cb255b21e727b94db046243b30c01ae9 \
+            semgrep --test tests/security/semgrep/
 
       - name: Advisory scan (non-blocking)
         continue-on-error: true
         run: |
-          semgrep scan \
+          set -euo pipefail
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            --env HOME=/tmp \
+            --volume "${PWD}:/src" \
+            --workdir /src \
+            semgrep/semgrep@sha256:e04d2cb132288d90035db8791d64f610cb255b21e727b94db046243b30c01ae9 \
+            semgrep scan \
             --config tests/security/semgrep/cacti-security.yml \
             --exclude 'include/vendor' --exclude 'tests' --exclude 'plugins' \
             --exclude '*.min.js' \
