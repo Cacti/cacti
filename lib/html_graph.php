@@ -42,6 +42,42 @@ function initialize_realtime_step_and_window() : void {
 }
 
 /**
+ * Validates the number of graph columns accepted by the graph views.
+ *
+ * @param mixed $value The requested column count.
+ *
+ * @return int|false The validated count, or false when it is unsupported.
+ */
+function html_graph_validate_columns(mixed $value) : int|false {
+	$value = filter_var($value, FILTER_VALIDATE_INT);
+
+	if ($value === false || $value < 1 || $value > 6) {
+		return false;
+	}
+
+	return $value;
+}
+
+/**
+ * Validates a graph page size against the configured selector values.
+ *
+ * @param mixed $value The requested page size.
+ *
+ * @return int|false The validated page size, or false when it is unsupported.
+ */
+function html_graph_validate_page_size(mixed $value) : int|false {
+	global $item_rows;
+
+	$value = filter_var($value, FILTER_VALIDATE_INT);
+
+	if ($value === false || !array_key_exists($value, $item_rows)) {
+		return false;
+	}
+
+	return $value;
+}
+
+/**
  * Sets the default graph action based on user settings and permissions.
  *
  * This function checks if a request variable 'action' is set. If not, it sets up a default action
@@ -101,9 +137,23 @@ function set_default_graph_action() : void {
 			if ($good_mode == '') {
 				raise_message('no_mode', __('Your User account does not have access to any Graph data'), MESSAGE_LEVEL_ERROR);
 			}
-		} elseif (in_array($_SESSION['sess_graph_view_action'], array_keys($modes), true)) {
-			if (is_view_allowed('show_' . $_SESSION['sess_graph_view_action'])) {
-				srv('action', $_SESSION['sess_graph_view_action']);
+		} elseif (in_array($_SESSION['sess_graph_view_action'], array_keys($modes), true) &&
+			is_view_allowed('show_' . $_SESSION['sess_graph_view_action'])) {
+			srv('action', $_SESSION['sess_graph_view_action']);
+		} else {
+			unset($_SESSION['sess_graph_view_action']);
+
+			foreach ($modes as $fallback_action => $info) {
+				if (is_view_allowed($info['permission'])) {
+					srv('action', $fallback_action);
+					$_SESSION['sess_graph_view_action'] = $fallback_action;
+
+					break;
+				}
+			}
+
+			if (!isset($_SESSION['sess_graph_view_action'])) {
+				raise_message('no_mode', __('Your User account does not have access to any Graph data'), MESSAGE_LEVEL_ERROR);
 			}
 		}
 	} elseif (in_array($action, ['get_node', 'tree_content'], true)) {
@@ -201,6 +251,11 @@ function create_graphs_preview_filter(string $session_var) : array {
 		'5' => __('%d Columns', 5),
 		'6' => __('%d Columns', 6)
 	];
+	$column_setting = html_graph_validate_columns(read_user_setting('num_columns', '2'));
+
+	if ($column_setting === false) {
+		$column_setting = 2;
+	}
 
 	$metrics_array = html_graph_order_filter_array();
 
@@ -266,24 +321,26 @@ function create_graphs_preview_filter(string $session_var) : array {
 					'value'          => gnrv('graph_template_id')
 				],
 			],
-			[
-				'graphs' => [
-					'method'        => 'drop_array',
-					'friendly_name' => __('Graphs'),
-					'filter'        => FILTER_VALIDATE_INT,
-					'default'       => '-1',
-					'pageset'       => true,
-					'array'         => $item_rows,
-					'value'         => ''
-				],
-				'columns' => [
-					'method'        => 'drop_array',
-					'friendly_name' => __('Columns'),
-					'filter'        => FILTER_VALIDATE_INT,
-					'default'       => read_user_setting('num_columns', '2'),
-					'pageset'       => true,
-					'array'         => $columns,
-					'value'         => read_user_setting('num_columns', '2')
+				[
+					'graphs' => [
+						'method'          => 'drop_array',
+						'friendly_name'   => __('Graphs'),
+						'filter'          => FILTER_CALLBACK,
+						'filter_options'  => ['options' => 'html_graph_validate_page_size'],
+						'default'         => '-1',
+						'pageset'         => true,
+						'array'           => $item_rows,
+						'value'           => ''
+					],
+					'columns' => [
+						'method'          => 'drop_array',
+						'friendly_name'   => __('Columns'),
+						'filter'          => FILTER_CALLBACK,
+						'filter_options'  => ['options' => 'html_graph_validate_columns'],
+						'default'         => $column_setting,
+						'pageset'         => true,
+						'array'           => $columns,
+						'value'           => $column_setting
 				],
 				'thumbnails' => [
 					'method'         => 'filter_checkbox',
@@ -405,7 +462,7 @@ function inject_realtime_form() : string {
 				<select name='graph_start' id='graph_start' onChange='realtimeGrapher()' data-defaultLabel='" . __('Window') . "'>";
 
 	foreach ($realtime_window as $interval => $text) {
-		$content .= sprintf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? 'selected="selected"' : '', $text);
+		$content .= sprintf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? ' selected="selected"' : '', $text);
 	}
 
 	$content .= "</select>
@@ -426,7 +483,7 @@ function inject_realtime_form() : string {
 				<span id='countdown'></span>
 			</div>
 			<div class='filterColumn'>
-				<input id='future' type='hidden' value='" . read_config_option('allow_graph_dates_in_future') . "'></input>
+				<input id='future' type='hidden' value='" . read_config_option('allow_graph_dates_in_future') . "'>
 			</div>
 		</div>
 	</div>";
@@ -542,31 +599,23 @@ function html_graph_preview_filter(string $page, string $action, string $devices
  */
 function html_graph_new_graphs(string $page, int $host_id, int $host_template_id, array $selected_graphs_array) : void {
 	$snmp_query_id     = 0;
-	$num_output_fields = [];
-	$output_started    = false;
+	$output_sections   = [];
 
 	foreach ($selected_graphs_array as $form_type => $form_array) {
 		foreach ($form_array as $form_id1 => $form_array2) {
 			ob_start();
 
-			$count = html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $form_type, $form_id1, $form_array2);
+			$count  = html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $form_type, $form_id1, $form_array2);
+			$output = (string) ob_get_clean();
 
 			if (array_sum($count)) {
-				if (!$output_started) {
-					$output_started = true;
-
-					top_header();
-				}
-
-				ob_end_flush();
-			} else {
-				ob_end_clean();
+				$output_sections[] = $output;
 			}
 		}
 	}
 
 	// no fields were actually drawn on the form; just save without prompting the user
-	if (!$output_started) {
+	if (!cacti_sizeof($output_sections)) {
 		/* since the user didn't actually click "Create" to POST the data; we have to
 		pretend like they did here */
 		srv('save_component_new_graphs', '1');
@@ -578,6 +627,10 @@ function html_graph_new_graphs(string $page, int $host_id, int $host_template_id
 
 		exit;
 	}
+
+	top_header();
+	form_start('graphs_new.php', 'new_graphs');
+	print implode('', $output_sections);
 
 	form_hidden_box('host_template_id', $host_template_id, '0');
 	form_hidden_box('host_id', $host_id, '0');
@@ -613,11 +666,6 @@ function html_graph_custom_data(int $host_id, int $host_template_id, int $snmp_q
 	// ====================================================
 
 	$num_output_fields = [];
-	$display           = false;
-	$graph_template_id = 0;
-	$header            = '';
-	$snmp_query        = 0;
-	$num_graphs        = 0;
 
 	if ($form_type == 'cg') {
 		$graph_template_id   = intval($form_id1);
@@ -626,14 +674,21 @@ function html_graph_custom_data(int $host_id, int $host_template_id, int $snmp_q
 			WHERE id = ?',
 			[$graph_template_id]);
 
-		if (graph_template_has_override($graph_template_id)) {
-			$display = true;
-			$header  = __('Create Graph from %s', htmle($graph_template_name));
+		if (!graph_template_has_override($graph_template_id)) {
+			return [];
 		}
-	} elseif ($form_type == 'sg') {
+
+		return html_graph_custom_data_template(
+			$graph_template_id,
+			$snmp_query_id,
+			0,
+			__('Create Graph from %s', htmle($graph_template_name))
+		);
+	}
+
+	if ($form_type == 'sg') {
 		foreach ($form_array2 as $form_id2 => $form_array3) {
 			// ================= input validation =================
-			input_validate_input_number($snmp_query_id, 'snmp_query_id');
 			input_validate_input_number($form_id2, 'form_id2');
 			// ====================================================
 
@@ -641,33 +696,60 @@ function html_graph_custom_data(int $host_id, int $host_template_id, int $snmp_q
 			$snmp_query_graph_id = $form_id2;
 			$num_graphs          = cacti_sizeof($form_array3);
 
-			$snmp_query = db_fetch_cell_prepared('SELECT name
-				FROM snmp_query
-				WHERE id = ?',
-				[$snmp_query_id]);
+			$query_graph = db_fetch_row_prepared('SELECT sq.name, sqg.graph_template_id
+				FROM snmp_query AS sq
+				INNER JOIN snmp_query_graph AS sqg
+				ON sqg.snmp_query_id = sq.id
+				WHERE sq.id = ?
+				AND sqg.id = ?',
+				[$snmp_query_id, $snmp_query_graph_id]);
 
-			$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
-				FROM snmp_query_graph
-				WHERE id = ?',
-				[$snmp_query_graph_id]);
-		}
+			if (!cacti_sizeof($query_graph)) {
+				raise_message(
+					'invalid_snmp_query_graph_' . $snmp_query_graph_id,
+					__('The selected Data Query Graph does not belong to the selected Data Query.'),
+					MESSAGE_LEVEL_ERROR
+				);
 
-		if (graph_template_has_override($graph_template_id)) {
-			$display = true;
+				continue;
+			}
+
+			$graph_template_id = (int) $query_graph['graph_template_id'];
+
+			if (!graph_template_has_override($graph_template_id)) {
+				continue;
+			}
 
 			if ($num_graphs > 1) {
-				$header = __('Create %s Graphs from %s', $num_graphs, htmle($snmp_query));
+				$header = __('Create %s Graphs from %s', $num_graphs, htmle($query_graph['name']));
 			} else {
-				$header = __('Create Graph from %s', htmle($snmp_query));
+				$header = __('Create Graph from %s', htmle($query_graph['name']));
 			}
+
+			$num_output_fields = array_merge(
+				$num_output_fields,
+				html_graph_custom_data_template($graph_template_id, (int) $snmp_query_id, (int) $snmp_query_graph_id, $header)
+			);
 		}
 	}
 
-	if ($display) {
-		form_start('graphs_new.php', 'new_graphs');
+	return $num_output_fields;
+}
 
-		html_start_box($header, '100%', false, 3, 'center', '');
-	}
+/**
+ * Draws override fields for one graph template.
+ *
+ * @param int    $graph_template_id   The graph template being rendered.
+ * @param int    $snmp_query_id       The associated SNMP query, or zero.
+ * @param int    $snmp_query_graph_id The associated SNMP query graph, or zero.
+ * @param string $header              The form section heading.
+ *
+ * @return array The number of fields emitted by each field renderer.
+ */
+function html_graph_custom_data_template(int $graph_template_id, int $snmp_query_id, int $snmp_query_graph_id, string $header) : array {
+	$num_output_fields = [];
+
+	html_start_box($header, '100%', false, 3, 'center', '');
 
 	// ================= input validation =================
 	input_validate_input_number($graph_template_id, 'graph_template_id');
@@ -697,14 +779,14 @@ function html_graph_custom_data(int $host_id, int $host_template_id, int $snmp_q
 		AND gtg.local_graph_id = 0',
 		[$graph_template_id]);
 
-	array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . '_' . $graph_template_id . '_|field|', __('Graph [Template: %s]', htmle($graph_template['graph_template_name'])), true, false, ($snmp_query_graph_id ?? 0)));
+	array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . '_' . $graph_template_id . '_|field|', __('Graph [Template: %s]', htmle($graph_template['graph_template_name'])), true, false, $snmp_query_graph_id));
 
 	array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, 'gi_' . $snmp_query_id . '_' . $graph_template_id . '_|id|_|field|', __('Graph Items [Template: %s]', htmle($graph_template['graph_template_name'])), true));
 
 	// DRAW: Data Sources
 	if (cacti_sizeof($data_templates)) {
 		foreach ($data_templates as $data_template) {
-			array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template['data_template_id'], 0, $data_template, 'd_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|field|', __('Data Source [Template: %s]', htmle($data_template['data_template_name'])), true, false, ($snmp_query_graph_id ?? 0)));
+			array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template['data_template_id'], 0, $data_template, 'd_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|field|', __('Data Source [Template: %s]', htmle($data_template['data_template_name'])), true, false, $snmp_query_graph_id));
 
 			$data_template_items = db_fetch_assoc_prepared('SELECT
 				data_template_rrd.*
@@ -713,24 +795,22 @@ function html_graph_custom_data(int $host_id, int $host_template_id, int $snmp_q
 				AND local_data_id = 0',
 				[$data_template['data_template_id']]);
 
-			array_push($num_output_fields, draw_nontemplated_fields_data_source_item($data_template['data_template_id'], $data_template_items, 'di_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|id|_|field|', '', true, false, false, ($snmp_query_graph_id ?? 0)));
+			array_push($num_output_fields, draw_nontemplated_fields_data_source_item($data_template['data_template_id'], $data_template_items, 'di_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|id|_|field|', '', true, false, false, $snmp_query_graph_id));
 			array_push($num_output_fields, draw_nontemplated_fields_custom_data($data_template['id'], 'c_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|id|', __('Custom Data [Template: %s]', htmle($data_template['data_template_name'])), true, false, $snmp_query_id));
 		}
 	}
 
-	if ($display) {
-		html_end_box(false);
-	}
+	html_end_box(false);
 
 	return $num_output_fields;
 }
 
 function html_save_graph_settings() : void {
 	if (is_view_allowed('graph_settings')) {
-		gfrv('columns');
+		gfrv('columns', FILTER_CALLBACK, ['options' => 'html_graph_validate_columns']);
 		gfrv('predefined_timespan');
 		gfrv('predefined_timeshift');
-		gfrv('graphs');
+		gfrv('graphs', FILTER_CALLBACK, ['options' => 'html_graph_validate_page_size']);
 		gfrv('thumbnails', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^(true|false)$/']]);
 		gfrv('business_hours', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^(true|false)$/']]);
 
@@ -895,6 +975,12 @@ function html_graph_preview_view() : void {
 		$graph_rows = read_user_setting('preview_graphs_per_page', read_config_option('preview_graphs_per_page') ?? 20);
 	} else {
 		$graph_rows = grv('graphs');
+	}
+
+	$graph_rows = html_graph_validate_page_size($graph_rows);
+
+	if ($graph_rows === false || $graph_rows == -1) {
+		$graph_rows = 20;
 	}
 
 	$sql_limit = ($graph_rows * (grv('page') - 1)) . ',' . $graph_rows;
@@ -1068,13 +1154,14 @@ function create_listview_filter(string $session_var) : array {
 					'value'          => gnrv('graph_template_id')
 				],
 				'graphs' => [
-					'method'        => 'drop_array',
-					'friendly_name' => __('Graphs'),
-					'filter'        => FILTER_VALIDATE_INT,
-					'default'       => '-1',
-					'pageset'       => true,
-					'array'         => $item_rows,
-					'value'         => ''
+					'method'         => 'drop_array',
+					'friendly_name'  => __('Graphs'),
+					'filter'         => FILTER_CALLBACK,
+					'filter_options' => ['options' => 'html_graph_validate_page_size'],
+					'default'        => '-1',
+					'pageset'        => true,
+					'array'          => $item_rows,
+					'value'          => ''
 				],
 				'graph_list' => [
 					'method'         => 'validate',
@@ -1174,6 +1261,12 @@ function html_graph_list_view() : void {
 		$graph_rows = read_config_option('num_rows_table');
 	} else {
 		$graph_rows = grv('graphs');
+	}
+
+	$graph_rows = html_graph_validate_page_size($graph_rows);
+
+	if ($graph_rows === false || $graph_rows == -1) {
+		$graph_rows = 20;
 	}
 
 	// check to see if site_id and location are mismatched
@@ -1818,8 +1911,8 @@ function html_graph_single_view() : void {
 			}
 
 			print '</div><div>' . htmle($rra['name']) . '</div>';
-			print "<div><input type='hidden' id='thumbnails' value='" . htmle(grv('thumbnails')) . "'></input></div>";
-			print "<div><input type='hidden' id='business_hours' value='" . htmle(grv('business_hours')) . "'></input></div>";
+			print "<div><input type='hidden' id='thumbnails' value='" . htmle(grv('thumbnails')) . "'></div>";
+			print "<div><input type='hidden' id='business_hours' value='" . htmle(grv('business_hours')) . "'></div>";
 			print '</div>';
 
 			$i++;
@@ -2139,8 +2232,8 @@ function html_graph_zoom() : void {
 			<input type='hidden' id='date2' value=''>
 			<input type='hidden' id='graph_start' value='<?php print $graph_start; ?>'>
 			<input type='hidden' id='graph_end' value='<?php print $graph_end; ?>'>
-			<input type='hidden' id='thumbnails' value='<?php print htmlerv('thumbnails'); ?>'></input>
-			<input type='hidden' id='business_hours' value='<?php print htmlerv('business_hours'); ?>'></input>
+			<input type='hidden' id='thumbnails' value='<?php print htmlerv('thumbnails'); ?>'>
+			<input type='hidden' id='business_hours' value='<?php print htmlerv('business_hours'); ?>'>
 		</div>
 	</div>
 	<?php
@@ -2337,7 +2430,7 @@ function html_graph_properties() : void {
 		$graph_data_array['graph_end'] = grv('graph_end');
 	}
 
-	$graph_data_array['output_flag']  = RRDTOOL_OUTPUT_STDERR;
+	$graph_data_array['output_flag']  = RRDTOOL_OUTPUT_RETURN_STDERR;
 	$graph_data_array['print_source'] = 1;
 	?>
 	<br>
@@ -2354,11 +2447,11 @@ function html_graph_properties() : void {
 				<span class='cactiTableTitleRow'><?php print __('RRDtool Says:'); ?></span>
 				<span class='left'>
 					<?php
-		if (POLLER_ID == 1) {
-			print @rrdtool_function_graph(grv('local_graph_id'), grv('rra_id'), $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID]);
-		} else {
-			print __esc('Not Checked');
-		}
+			if (POLLER_ID == 1) {
+				print htmle((string) @rrdtool_function_graph(grv('local_graph_id'), grv('rra_id'), $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID]));
+			} else {
+				print __esc('Not Checked');
+			}
 	?>
 				</span>
 			</div>
