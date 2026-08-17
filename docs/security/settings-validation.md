@@ -119,7 +119,7 @@ For each setting you want to constrain:
 2. Translate that rule to a constraint object. `drop_array` becomes
    `Assert\Choice` over the array keys. `max_length` becomes `Assert\Length`.
    Numeric textboxes typically need `Assert\Regex` plus `Assert\Range`.
-3. Add a unit test in `tests/Unit/CactiSettingsTest.php` that exercises the
+3. Add a unit test in `tests/Unit/Security/InputValidation/CactiSettingsTest.php` that exercises the
    new constraint with a synthetic definition (do not depend on
    `include/global_settings.php` from the test).
 4. Run `composer test` and confirm the new case passes.
