@@ -108,7 +108,6 @@ notepad.md
 # Ignore vendor folders
 include/vendor/**
 vendor/**
-tests/vendor/**
 
 # Docker local config
 .env

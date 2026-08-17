@@ -43,7 +43,7 @@ if (!file_exists(dirname(__DIR__, 2) . '/lib/CactiCommand.php')) {
 
 const CLI_HANDOFF_REPO_ROOT = __DIR__ . '/../..';
 
-require_once dirname(__DIR__, 1) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
 require_once dirname(__DIR__, 2) . '/lib/CactiCommand.php';
 require_once dirname(__DIR__, 2) . '/lib/CmdRealtimeCommand.php';
 require_once dirname(__DIR__, 2) . '/lib/SpliceRrdCommand.php';

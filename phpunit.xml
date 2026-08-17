@@ -1,4 +1,4 @@
-<phpunit bootstrap="tests/bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+<phpunit bootstrap="include/vendor/autoload.php" beStrictAboutOutputDuringTests="false">
     <php>
         <ini name="error_reporting" value="-1"/>
         <env name="CACTI_TEST_BOOTSTRAP" value="1"/>
@@ -7,7 +7,7 @@
         <testsuite name="Unit">
             <directory>./tests/Unit</directory>
             <!-- Defines dedicated SNMP stubs and must only run via phpunit-snmp.xml. -->
-            <exclude>./tests/Unit/DataCollection/Snmp/SnmpCoverageTest.php</exclude>
+            <exclude>./tests/Unit/SnmpCoverageTest.php</exclude>
         </testsuite>
         <testsuite name="Integration">
             <directory>./tests/integration</directory>

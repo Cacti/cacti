@@ -35,7 +35,7 @@ if (!file_exists(dirname(__DIR__, 2) . '/lib/CactiProcess.php')) {
 	return;
 }
 
-require_once dirname(__DIR__, 1) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
 require_once dirname(__DIR__, 2) . '/lib/CactiProcess.php';
 
 test('argv array reaches child as literal args without shell expansion', function () {
