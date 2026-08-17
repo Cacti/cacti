@@ -20,13 +20,16 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Run PHP checks in Rocky Linux 9
         run: |
+          set -euo pipefail
           docker run --rm \
             --volume "$GITHUB_WORKSPACE:/workspace:ro" \
             --workdir /workspace \
-            rockylinux:9 \
+            rockylinux@sha256:d7be1c094cc5845ee815d4632fe377514ee6ebcf8efaed6892889657e5ddaaa6 \
             bash -euo pipefail -c '
               dnf -y install php-cli php-common php-curl php-gd php-intl php-mbstring php-mysqlnd php-xml php-zip
               php --version

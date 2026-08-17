@@ -31,6 +31,7 @@ jobs:
   php-cli-benchmark:
     name: PHP CLI CPU/RSS benchmark
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     # Benchmarks execute baseline-defined shell commands. On pull_request the
     # trusted baseline is sourced from the base branch, but until it first lands
     # there the job falls back to the PR's copy. Skip fork PRs so an untrusted
@@ -43,6 +44,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0 # Needed to reach origin/develop
+          persist-credentials: false
 
       - name: Install benchmark dependencies
         run: |
