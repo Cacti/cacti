@@ -30,6 +30,11 @@
 // __esc() is defined in include/global_languages.php, so we don't stub it
 if (!function_exists(__NAMESPACE__ . '\\__') && !function_exists('\\__')) {
 	function __($text, ...$args) {
+		// If no args, return the text as-is (no formatting needed)
+		if (empty($args)) {
+			return $text;
+		}
+		// If args provided, use vsprintf for formatting
 		return vsprintf($text, $args);
 	}
 }
