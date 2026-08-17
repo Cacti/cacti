@@ -11,7 +11,7 @@
     <testsuites>
         <testsuite name="API automation tools coverage">
             <file>tests/Coverage/ApiAutomationToolsCoverageTest.php</file>
-            <file>tests/Unit/AutomationPreparedInClauseTest.php</file>
+            <file>tests/Unit/Security/SqlInjection/AutomationPreparedInClauseTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
