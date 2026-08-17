@@ -1427,6 +1427,11 @@ function dsstats_get_subtype(string $type) : string {
 function dsstats_kill_running_processes() : void {
 	global $type;
 
+	// This function has always used unregister_process() from poller.php. Load
+	// that dependency explicitly so the newer identity check is available too,
+	// regardless of which entry point loaded dsstats.php.
+	require_once CACTI_PATH_LIBRARY . '/poller.php';
+
 	if ($type == 'bmaster') {
 		$processes = db_fetch_assoc_prepared('SELECT *
 			FROM processes
@@ -1445,8 +1450,10 @@ function dsstats_kill_running_processes() : void {
 
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {
-			cacti_log(sprintf('WARNING: Killing DSStats %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'BOOST');
-			posix_kill($p['pid'], SIGTERM);
+			if (cacti_process_still_running((int) $p['pid'])) {
+				cacti_log(sprintf('WARNING: Killing DSStats %s PID %d due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'BOOST');
+				posix_kill($p['pid'], SIGTERM);
+			}
 
 			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
 		}
