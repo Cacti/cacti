@@ -87,6 +87,7 @@ Cacti CHANGELOG
 -issue#7535: Consolidate the poller_item delete call sites behind poller_item_delete_for_data_source() and poller_item_delete_for_host()
 -issue#7576: Stop passing an unset path_php_binary into string parameters
 -issue#7674: Enforce tree access when creating, deleting and renaming tree nodes
+-issue#7682: Revoke the remember-me token and terminate other sessions on logout
 -issue#7683: Harden login brute-force defenses with an atomic lockout counter and constant-time unknown-user handling
 -issue#7684: Scope the local-login password rehash to realm 0 and only rehash after a successful login
 -issue#7685: Validate the post-login referer redirect to close an open-redirect gap

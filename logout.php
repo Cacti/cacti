@@ -41,6 +41,12 @@ set_default_action();
 
 api_plugin_hook('logout_pre_session_destroy');
 
+// Revoke the server-side remember-me token first: cacti_cookie_logout() unsets
+// $_COOKIE['cacti_remembers'], and clear_auth_cookie() reads that cookie to find
+// the row to delete. Running it afterwards (or only in the default branch below)
+// left the user_auth_cache token valid after every logout.
+clear_auth_cookie();
+
 // Clear session
 cacti_cookie_logout();
 cacti_session_destroy();
@@ -71,8 +77,6 @@ if (grv('action') == 'timeout' || grv('action') == 'disabled' || grv('action') =
 	print '<div>' . __('Please close your browser or %sLogin Again%s', '[<a href="index.php">', '</a>]') . '</div>';
 	html_auth_footer($hook, __('Cookies have been cleared'), '');
 } else {
-	// Default action
-	clear_auth_cookie();
-
+	// Default action (the remember-me token was already revoked above)
 	header('Location: index.php');
 }
