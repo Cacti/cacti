@@ -1251,7 +1251,7 @@ function tree_edit(bool $partial = false) : void {
 				}
 			})
 			.on('delete_node.jstree', function (e, data) {
-				$.get('?action=delete_node', { 'id' : data.node.id, 'tree_id' : $('#id').val() })
+				$.post('?action=delete_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), '__csrf_magic' : csrfMagicToken })
 					.always(function() {
 						var st = data.instance.get_state();
 						data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
