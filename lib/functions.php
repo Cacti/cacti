@@ -10177,3 +10177,129 @@ if (!function_exists('stats_standard_deviation')) {
 		return sqrt($carry / $total_items);
 	}
 }
+
+/**
+ * cacti_normalize_windows_path - folds a Windows path into a comparable form
+ *
+ * @param mixed $path The path to normalize
+ *
+ * @return string The lower cased, forward slashed path
+ */
+function cacti_normalize_windows_path(mixed $path) : string {
+	$lower = strtolower((string) $path);
+
+	/**
+	 * Long-path prefixes.  Strip \\?\UNC\ first so the remaining \\ is
+	 * preserved for UNC share comparison; then strip bare \\?\ which only
+	 * wraps drive-letter paths for filesystem APIs.
+	 */
+	if (strpos($lower, '\\\\?\\unc\\') === 0) {
+		$lower = '\\\\' . substr($lower, 8);
+	} elseif (strpos($lower, '\\\\?\\') === 0) {
+		$lower = substr($lower, 4);
+	}
+
+	$lower = str_replace('\\', '/', $lower);
+
+	// drop trailing slashes except for a lone '/', the drive-root case
+	if (strlen($lower) > 1) {
+		$lower = rtrim($lower, '/');
+	}
+
+	return $lower;
+}
+
+/**
+ * cacti_path_is_within - checks that a resolved path sits under a base directory
+ *
+ * @param string    $candidate The path to test
+ * @param string    $base      The directory it must stay within
+ * @param bool|null $windows   Force Windows comparison rules, null to detect
+ *
+ * @return bool True when the candidate resolves inside the base
+ */
+function cacti_path_is_within(string $candidate, string $base, ?bool $windows = null) : bool {
+	$resolved = realpath($candidate);
+
+	if ($resolved === false) {
+		return false;
+	}
+
+	$base_resolved = realpath($base);
+
+	if ($base_resolved === false) {
+		return false;
+	}
+
+	if ($windows ?? (DIRECTORY_SEPARATOR === '\\')) {
+		$resolved      = cacti_normalize_windows_path($resolved);
+		$base_resolved = cacti_normalize_windows_path($base_resolved);
+	}
+
+	return strpos($resolved, $base_resolved . '/') === 0 || $resolved === $base_resolved;
+}
+
+/**
+ * validate_relative_path_within - validates an untrusted relative path
+ *
+ * Rejects absolute paths, drive letters, empty or dot segments, and symlinked
+ * segments under the base, then confirms the result resolves inside the base.
+ *
+ * @param mixed  $path     The untrusted relative path
+ * @param string $base_dir The base directory the path must stay within
+ *
+ * @return mixed The validated absolute path, or false when invalid
+ */
+function validate_relative_path_within(mixed $path, string $base_dir) : mixed {
+	if (!is_string($path) || $path === '' || strpos($path, "\0") !== false) {
+		return false;
+	}
+
+	$normalized = str_replace('\\', '/', $path);
+
+	if ($normalized === '' || $normalized[0] === '/' || preg_match('/^[a-zA-Z]:\//', $normalized)) {
+		return false;
+	}
+
+	$parts = [];
+
+	foreach (explode('/', $normalized) as $part) {
+		if ($part === '' || $part === '.' || $part === '..') {
+			return false;
+		}
+
+		$parts[] = $part;
+	}
+
+	$base_real = realpath($base_dir);
+
+	if ($base_real === false) {
+		return false;
+	}
+
+	$candidate = $base_real . '/' . implode('/', $parts);
+
+	// block symlink pivots under writable base paths
+	$walk = $base_real;
+
+	foreach ($parts as $part) {
+		$walk .= '/' . $part;
+
+		if (file_exists($walk) && is_link($walk)) {
+			return false;
+		}
+	}
+
+	/**
+	 * An entry that does not exist yet is judged by its parent directory.
+	 * cacti_path_is_within() already fails closed when realpath() cannot
+	 * resolve either side, so both cases share one check.
+	 */
+	$anchor = file_exists($candidate) ? $candidate : dirname($candidate);
+
+	if (!cacti_path_is_within($anchor, $base_real)) {
+		return false;
+	}
+
+	return $candidate;
+}
