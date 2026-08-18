@@ -1,1 +1,0 @@
-{"nodes": [{"id": "tests_e2e_docker_docker_compose", "label": "PR #7054 docker-compose (master + remote poller + MariaDB)", "file_type": "document", "source_file": "tests/e2e/docker/docker-compose.yml", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}
