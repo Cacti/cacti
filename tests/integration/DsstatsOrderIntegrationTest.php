@@ -14,7 +14,7 @@
 
 /*
  * Integration coverage for the get_allowed_graphs() dsstats ORDER BY path
- * (lib/auth.php). tests/Unit/Security/SqlInjection/DsstatsOrderStringTest.php already covers
+ * (lib/auth.php). tests/Unit/DsstatsOrderStringTest.php already covers
  * get_dsstats_order_string() in isolation; this test drives it together
  * with the other real functions get_allowed_graphs() calls on the same
  * code path (dsstats_get_best_partition() from lib/dsstats.php and
