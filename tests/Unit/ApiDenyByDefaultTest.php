@@ -21,14 +21,14 @@
  * host. The scaffold now refuses unless it is deliberately switched on.
  */
 
-$api = file_get_contents(dirname(__DIR__, 2) . '/api/public/index.php');
+$api = file_get_contents(CACTI_PATH_BASE . '/api/public/index.php');
 
 test('the entry point reads', function () use ($api) {
 	expect($api)->toBeString()->not->toBeEmpty();
 });
 
 test('no route consults a realm, a session or a token', function () use ($api) {
-	$db = file_get_contents(dirname(__DIR__, 2) . '/api/include/db_functions.php');
+	$db = file_get_contents(CACTI_PATH_BASE . '/api/include/db_functions.php');
 
 	/* If this ever stops being true the gate below can be reconsidered; while it
 	   holds, serving without the gate means serving to anyone. */
@@ -65,7 +65,7 @@ test('the bootstrap include is anchored to the file', function () use ($api) {
 	/* the other two includes beside it already were; this one resolved against
 	   the working directory, so it only worked from api/public */
 	expect($api)->not->toContain("include  '../../include/global.php';")
-		->and($api)->toContain("include __DIR__ . '/../../include/global.php';");
+		->and($api)->toContain("include CACTI_PATH_INCLUDE . '/global.php';");
 });
 
 test('the gate behaves as written for every setting value', function () {
