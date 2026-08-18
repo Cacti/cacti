@@ -41,13 +41,12 @@
  * reported by PHPStan all contain the post-fix shape.
  */
 
-$repoRoot = __DIR__ . '/../..';
 $sources  = [
-	'aggregate_graphs.php' => file_get_contents("$repoRoot/aggregate_graphs.php"),
-	'color_templates.php'  => file_get_contents("$repoRoot/color_templates.php"),
-	'graph_templates.php'  => file_get_contents("$repoRoot/graph_templates.php"),
-	'graphs.php'           => file_get_contents("$repoRoot/graphs.php"),
-	'lib/html.php'         => file_get_contents("$repoRoot/lib/html.php"),
+	'aggregate_graphs.php' => file_get_contents(CACTI_PATH_BASE . '/aggregate_graphs.php'),
+	'color_templates.php'  => file_get_contents(CACTI_PATH_BASE . '/color_templates.php'),
+	'graph_templates.php'  => file_get_contents(CACTI_PATH_BASE . '/graph_templates.php'),
+	'graphs.php'           => file_get_contents(CACTI_PATH_BASE . '/graphs.php'),
+	'lib/html.php'         => file_get_contents(CACTI_PATH_LIBRARY . '/html.php'),
 ];
 
 // --- Defect class A: undefined *_template_item_id in empty() ------------

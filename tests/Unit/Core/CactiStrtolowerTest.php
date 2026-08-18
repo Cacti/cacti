@@ -12,7 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once __DIR__ . '/../../../lib/functions.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
 
 // cacti_strtolower tests
 

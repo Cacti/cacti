@@ -18,9 +18,9 @@ if (!file_exists(__DIR__ . '/../../lib/CactiMime.php')) {
 	return;
 }
 
-require_once __DIR__ . '/../../include/vendor/autoload.php';
-require_once __DIR__ . '/../../lib/CactiMime.php';
-require_once __DIR__ . '/../Unit/fixtures/mime/build_fixtures.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_LIBRARY . '/CactiMime.php';
+require_once CACTI_PATH_TESTS . '/Unit/fixtures/mime/build_fixtures.php';
 
 // Stub cacti_log so the libmagic-missing branch in CactiMime can run
 // without pulling in lib/functions.php and its database dependencies.

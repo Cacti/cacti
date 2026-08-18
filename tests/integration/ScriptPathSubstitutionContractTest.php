@@ -16,7 +16,7 @@
 $root = dirname(__DIR__, 2);
 
 test('both script path builders warn before stripping unresolved tokens', function () use ($root) {
-	$src = file_get_contents($root . '/lib/functions.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/functions.php');
 	expect($src)->not->toBeFalse('Failed to read lib/functions.php');
 
 	foreach (['get_full_test_script_path', 'get_full_script_path'] as $fn) {
@@ -37,7 +37,7 @@ test('both script path builders warn before stripping unresolved tokens', functi
 });
 
 test('warning fires only when tokens remain', function () use ($root) {
-	$src = file_get_contents($root . '/lib/functions.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/functions.php');
 	expect($src)->not->toBeFalse('Failed to read lib/functions.php');
 
 	// tolerant of formatting: any preg_match_all() on the token pattern against $full_path

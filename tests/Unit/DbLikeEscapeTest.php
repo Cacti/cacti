@@ -19,8 +19,8 @@
  * these tests pin the escaping the helper produces.
  */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 2) . '/lib/database.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
 
 test('escapes percent, underscore and backslash for LIKE', function () {
 	expect(db_like_escape('100%'))->toBe('100\\%');
@@ -51,7 +51,7 @@ test('returns a string for non-string input', function () {
 });
 
 test('poller_automation binds the PTR hostname with db_like_escape', function () {
-	$src = file_get_contents(dirname(__DIR__, 2) . '/poller_automation.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/poller_automation.php');
 
 	// the reverse-DNS hostname must reach LIKE via a bound parameter, not concat
 	expect($src)->toContain('hostname = ? OR hostname LIKE ?');

@@ -12,10 +12,10 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 4) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 4) . '/lib/database.php';
-require_once dirname(__DIR__, 4) . '/lib/poller.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
+require_once CACTI_PATH_LIBRARY . '/poller.php';
 
 // poller_item_delete_for_data_source() / poller_item_delete_for_host() are the
 // single chokepoint every "DELETE FROM poller_item" call site now goes

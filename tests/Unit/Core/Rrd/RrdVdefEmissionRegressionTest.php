@@ -25,7 +25,7 @@ declare(strict_types = 1);
  */
 
 function rrd_source(): string {
-	$src = file_get_contents(__DIR__ . '/../../../../lib/rrd.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 	expect($src)->not->toBeFalse('Failed to read lib/rrd.php');
 
 	return $src;

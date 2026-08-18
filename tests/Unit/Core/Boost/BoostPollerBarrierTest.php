@@ -35,7 +35,7 @@ if (!function_exists(__NAMESPACE__ . '\\cacti_sizeof') && !function_exists('\\ca
 	}
 }
 
-require_once __DIR__ . '/../../../../lib/boost.php';
+require_once CACTI_PATH_LIBRARY . '/boost.php';
 
 $boostPollerPath = __DIR__ . '/../../../../poller_boost.php';
 $boostLibPath    = __DIR__ . '/../../../../lib/boost.php';
@@ -118,7 +118,7 @@ test('boost_all_children_registered holds until every launched child is accounte
 });
 
 test('archive-table fallback no longer relies on the lagging SHOW TABLES probe', function () use ($boostLibPath) {
-	$contents = file_get_contents($boostLibPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 
 	$func_pos  = strpos($contents, 'function boost_get_arch_table_names');
 	$func_end  = strpos($contents, "\nfunction ", $func_pos + 1);
@@ -134,7 +134,7 @@ test('archive-table fallback no longer relies on the lagging SHOW TABLES probe',
 });
 
 test('boost_archive_table_readable probes data, not metadata, and rejects bad names', function () use ($boostLibPath) {
-	$contents = file_get_contents($boostLibPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 
 	$func_pos  = strpos($contents, 'function boost_archive_table_readable');
 	$func_end  = strpos($contents, "\nfunction ", $func_pos + 1);
@@ -150,7 +150,7 @@ test('boost_archive_table_readable probes data, not metadata, and rejects bad na
 });
 
 test('parent waits for all launched children before draining', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// boost_launch_children() returns the launched count and the barrier waits on
 	// boost_all_children_registered() rather than releasing on the first signup.
@@ -164,7 +164,7 @@ test('parent waits for all launched children before draining', function () use (
 });
 
 test('drain loop exits only when every child has recorded completion', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// The old loop exited as soon as no child was running. The fix also requires
 	// every launched child to have a completion row before draining.
@@ -173,7 +173,7 @@ test('drain loop exits only when every child has recorded completion', function 
 });
 
 test('end-of-run cleanup drops only this run\'s archive tables', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// The unconditional DROP over every poller_output_boost_arch_% table could
 	// destroy a newer rotation or an older crashed run still holding rows. The
@@ -188,7 +188,7 @@ test('end-of-run cleanup drops only this run\'s archive tables', function () use
 });
 
 test('both boost_parallel call sites use the shared clamp helper', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// boost_prepare_process_table() and boost_launch_children() must agree on the
 	// process count so the parent spawns exactly what it later waits for.
@@ -199,7 +199,7 @@ test('both boost_parallel call sites use the shared clamp helper', function () u
 });
 
 test('boost_launch_children uses the shared log-path safety helper', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	expect($contents)->toContain('boost_log_path_is_safe($boost_log)');
 });

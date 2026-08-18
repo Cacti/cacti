@@ -12,10 +12,10 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 2) . '/Helpers/FakeMySQLPDO.php';
-require_once dirname(__DIR__, 3) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 3) . '/lib/database.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/FakeMySQLPDO.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
 
 /*
  * #7379: db_get_table_column_types() memoizes its SHOW COLUMNS lookup so that
@@ -71,7 +71,7 @@ it('keys the cache per connection', function () {
 });
 
 test('every column-mutating DDL helper clears the cache', function () {
-	$src = file_get_contents(dirname(__DIR__, 3) . '/lib/database.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/database.php');
 
 	foreach (['db_add_column', 'db_change_column', 'db_remove_column'] as $fn) {
 		if (!preg_match('/^function ' . $fn . '\(.*?^\}/sm', $src, $m)) {

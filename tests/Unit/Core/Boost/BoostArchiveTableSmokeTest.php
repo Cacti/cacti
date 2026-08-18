@@ -28,7 +28,7 @@ $boostPollerPath = __DIR__ . '/../../../../poller_boost.php';
 $boostLibPath    = __DIR__ . '/../../../../lib/boost.php';
 
 test('poller_boost.php passes PHP syntax check', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 	expect($contents)->not->toBeFalse("Cannot read $boostPollerPath");
 
 	try {
@@ -40,7 +40,7 @@ test('poller_boost.php passes PHP syntax check', function () use ($boostPollerPa
 });
 
 test('lib/boost.php passes PHP syntax check', function () use ($boostLibPath) {
-	$contents = file_get_contents($boostLibPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 	expect($contents)->not->toBeFalse("Cannot read $boostLibPath");
 
 	try {
@@ -92,7 +92,7 @@ test('child validation regex rejects injection attempts', function () {
 });
 
 test('poller_boost.php passes --archive-table to exec_background via $child_args', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// The case label handles the incoming argument on the child side.
 	expect($contents)->toContain("case '--archive-table':");
@@ -104,7 +104,7 @@ test('poller_boost.php passes --archive-table to exec_background via $child_args
 });
 
 test('poller_boost.php child arg block handles --archive-table', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// Both the case label and the assignment must be present.
 	expect($contents)->toContain("case '--archive-table':");
@@ -112,7 +112,7 @@ test('poller_boost.php child arg block handles --archive-table', function () use
 });
 
 test('boost_launch_children has $archive_table in its global declaration', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	$start = strpos($contents, 'function boost_launch_children()');
 	expect($start)->not->toBeFalse('boost_launch_children function not found');

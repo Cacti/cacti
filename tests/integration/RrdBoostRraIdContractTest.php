@@ -17,7 +17,7 @@
 $root = dirname(__DIR__, 2);
 
 test('boost_graph_set_file still declares a nullable int for rra_id', function () use ($root) {
-	$src = file_get_contents($root . '/lib/boost.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 	expect($src)->not->toBeFalse('Failed to read lib/boost.php');
 
 	// Accept either spelling of the nullable int so an int|null <-> ?int refactor
@@ -28,7 +28,7 @@ test('boost_graph_set_file still declares a nullable int for rra_id', function (
 });
 
 test('reports.php still passes a non-int rra_id into rrdtool_function_graph', function () use ($root) {
-	$src = file_get_contents($root . '/lib/reports.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/reports.php');
 	expect($src)->not->toBeFalse('Failed to read lib/reports.php');
 
 	$count = preg_match_all("/rrdtool_function_graph\(\\\$local_graph_id,\s*''/", $src);
@@ -37,7 +37,7 @@ test('reports.php still passes a non-int rra_id into rrdtool_function_graph', fu
 });
 
 test('rrd.php validation guards every boost consumer of rra_id', function () use ($root) {
-	$src = file_get_contents($root . '/lib/rrd.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 	expect($src)->not->toBeFalse('Failed to read lib/rrd.php');
 
 	$fnPos = strpos($src, 'function rrdtool_function_graph(');

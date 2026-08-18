@@ -23,7 +23,7 @@
  */
 
 test('path_composer setting exists with binary filepath validation', function () {
-	$src = file_get_contents(__DIR__ . '/../../../include/global_settings.php');
+	$src = file_get_contents(CACTI_PATH_INCLUDE . '/global_settings.php');
 	expect($src)->not->toBeFalse('Failed to read include/global_settings.php');
 
 	$pos = strpos($src, "'path_composer'");
@@ -38,7 +38,7 @@ test('path_composer setting exists with binary filepath validation', function ()
 });
 
 test('installer seeds path_composer as optional', function () {
-	$src = file_get_contents(__DIR__ . '/../../../install/functions.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/install/functions.php');
 	expect($src)->not->toBeFalse('Failed to read install/functions.php');
 
 	expect(strpos($src, "install_tool_path('composer'"))->not->toBeFalse('install_file_paths must seed path_composer')

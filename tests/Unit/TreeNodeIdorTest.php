@@ -20,7 +20,7 @@
  * bailing out before any write when the caller may not touch the tree.
  */
 
-$src = file_get_contents(dirname(__DIR__, 2) . '/lib/api_tree.php');
+$src = file_get_contents(CACTI_PATH_LIBRARY . '/api_tree.php');
 expect($src)->toBeString();
 
 function _tree_fn_body(string $src, string $fn) : string {

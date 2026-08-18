@@ -51,19 +51,19 @@ test('non-numeric id collapses to zero', function () {
 // --- source guard: the real call site keeps the integer coercion ---
 
 test('lib/html_reports.php defines reports_redirect_url', function () use ($reportsPath) {
-	$contents = file_get_contents($reportsPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/html_reports.php');
 
 	expect($contents)->toContain('function reports_redirect_url(');
 });
 
 test('reports_redirect_url casts the id to int', function () use ($reportsPath) {
-	$contents = file_get_contents($reportsPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/html_reports.php');
 
 	expect($contents)->toMatch('/\\$base\\s*\\.\\s*\'\\?action=edit&id=\'\\s*\\.\\s*\\(int\\)\\s*\\$id/');
 });
 
 test('the save redirect routes through reports_redirect_url', function () use ($reportsPath) {
-	$contents = file_get_contents($reportsPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/html_reports.php');
 
 	expect($contents)->toContain('reports_redirect_url(get_reports_page(),');
 });

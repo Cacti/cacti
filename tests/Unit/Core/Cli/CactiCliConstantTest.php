@@ -13,17 +13,17 @@
 */
 
 test('global.php defines CACTI_CLI constant', function () {
-	$source = file_get_contents(__DIR__ . '/../../../../include/global.php');
+	$source = file_get_contents(CACTI_PATH_INCLUDE . '/global.php');
 	expect($source)->toContain("define('CACTI_CLI'");
 });
 
 test('global.php defines CACTI_WEB constant', function () {
-	$source = file_get_contents(__DIR__ . '/../../../../include/global.php');
+	$source = file_get_contents(CACTI_PATH_INCLUDE . '/global.php');
 	expect($source)->toContain("define('CACTI_WEB'");
 });
 
 test('session.php uses CACTI_CLI not php_sapi_name', function () {
-	$source = file_get_contents(__DIR__ . '/../../../../include/session.php');
+	$source = file_get_contents(CACTI_PATH_INCLUDE . '/session.php');
 	expect($source)->toBeString()
 		->not->toContain("php_sapi_name() == 'cli'")
 		->not->toContain("php_sapi_name() === 'cli'");

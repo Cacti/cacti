@@ -26,7 +26,7 @@
  * process has already loaded lib/database.php.
  */
 
-$source = file_get_contents(dirname(__DIR__, 4) . '/lib/utility.php');
+$source = file_get_contents(CACTI_PATH_LIBRARY . '/utility.php');
 
 preg_match('/if \(\$poller_id === null\) \{.*?\n\t\}\n/s', $source, $block);
 
@@ -99,10 +99,10 @@ test('a poller_id of 0 on the array is honored rather than triggering the fallba
 test('lib/utility.php threads poller_id through to update_poller_cache() at every loop call site named in #7527', function () {
 	$root = dirname(__DIR__, 4);
 
-	$utility = file_get_contents($root . '/lib/utility.php');
+	$utility = file_get_contents(CACTI_PATH_LIBRARY . '/utility.php');
 	expect($utility)->toContain('update_poller_cache($data, false, $poller_id)') // update_poller_cache_from_query()
 		->and($utility)->toContain("\$data['poller_id'] = \$host['poller_id'];"); // push_out_host()
 
-	$apiDevice = file_get_contents($root . '/lib/api_device.php');
+	$apiDevice = file_get_contents(CACTI_PATH_LIBRARY . '/api_device.php');
 	expect($apiDevice)->toContain("update_poller_cache(\$data_source['id'], false, \$poller_id)");
 });

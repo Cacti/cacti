@@ -27,7 +27,7 @@ $htmlGraphPath = __DIR__ . '/../../../../lib/html_graph.php';
 $dataDebugPath = __DIR__ . '/../../../../data_debug.php';
 
 test('auth_profile encodes tab for JavaScript and redirect URL', function () use ($authProfilePath) {
-	$contents = file_get_contents($authProfilePath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/auth_profile.php');
 
 	expect($contents)->toContain("json_encode((string) grv('tab'))");
 	expect($contents)->toContain("gfrv('tab', FILTER_VALIDATE_REGEXP");
@@ -35,7 +35,7 @@ test('auth_profile encodes tab for JavaScript and redirect URL', function () use
 });
 
 test('plugins page normalizes state and encodes sort column in JavaScript', function () use ($pluginsPath) {
-	$contents = file_get_contents($pluginsPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/plugins.php');
 
 	expect($contents)->toContain("json_encode((string) grv('sort_column'))");
 	expect($contents)->toContain("var tableState = <?php print (int) grv('state'); ?>;");
@@ -43,7 +43,7 @@ test('plugins page normalizes state and encodes sort column in JavaScript', func
 });
 
 test('graph list view uses JSON and sanitized CSV for graph list', function () use ($htmlGraphPath) {
-	$contents = file_get_contents($htmlGraphPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/html_graph.php');
 
 	expect($contents)->toContain('$graph_list_js  = []');
 	expect($contents)->toContain('ctype_digit($item)');
@@ -53,7 +53,7 @@ test('graph list view uses JSON and sanitized CSV for graph list', function () u
 });
 
 test('graph pages encode JS-bound PHP strings safely', function () use ($htmlGraphPath) {
-	$contents = file_get_contents($htmlGraphPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/html_graph.php');
 
 	expect($contents)->toContain('var pageAction      = <?php print json_encode($action); ?>');
 	expect($contents)->toContain('var graphPage       = <?php print json_encode($page); ?>');
@@ -61,20 +61,20 @@ test('graph pages encode JS-bound PHP strings safely', function () use ($htmlGra
 });
 
 test('data debug escapes tooltip title values before rendering', function () use ($dataDebugPath) {
-	$contents = file_get_contents($dataDebugPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/data_debug.php');
 
 	expect($contents)->toContain('$value_title = htmle((string) $value);');
 });
 
 test('auth reset password encodes return location in onclick handlers', function () use ($authResetpasswordPath) {
-	$contents = file_get_contents($authResetpasswordPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/auth_resetpassword.php');
 
 	expect($contents)->toContain("document.location=<?php print json_encode((string) \$return); ?>");
 	expect($contents)->not->toContain("document.location=\"<?php print \$return; ?>\"");
 });
 
 test('auth change password encodes return location in onclick handler', function () use ($authChangepasswordPath) {
-	$contents = file_get_contents($authChangepasswordPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/auth_changepassword.php');
 
 	expect($contents)->toContain("document.location=<?php print json_encode((string) \$return); ?>");
 	expect($contents)->not->toContain("onClick='document.location=\\\"\$return\\\"'");

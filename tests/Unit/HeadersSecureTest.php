@@ -14,7 +14,7 @@
  * directly without a config or request context.
  */
 
-require_once dirname(__DIR__, 2) . '/lib/headers_secure.php';
+require_once CACTI_PATH_LIBRARY . '/headers_secure.php';
 
 // --- default (HTMX) mode: byte-identical to prior releases ---
 
@@ -147,7 +147,7 @@ test('nonce is base64url with no padding and stable within a request', function 
 });
 
 test('nonce generation has no predictable fallback', function () {
-	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/headers_secure.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/headers_secure.php');
 
 	expect($source)->not->toBeFalse()
 		->and($source)->not->toContain('uniqid(')
@@ -213,8 +213,6 @@ test('runtime policy wrappers use compatible defaults without configuration', fu
 });
 
 test('shared script emitters attach the request nonce', function () {
-	$root = dirname(__DIR__, 2);
-
 	foreach ([
 		'include/auth.php',
 		'include/global_session.php',
@@ -222,7 +220,7 @@ test('shared script emitters attach the request nonce', function () {
 		'lib/functions.php',
 		'lib/htmx.php',
 	] as $file) {
-		$source = file_get_contents($root . '/' . $file);
+		$source = file_get_contents(CACTI_PATH_BASE . '/' . $file);
 
 		expect($source)->not->toBeFalse();
 		expect($source)->toContain('CactiSecureHeaders::getNonceAttribute()');
@@ -230,10 +228,8 @@ test('shared script emitters attach the request nonce', function () {
 });
 
 test('shared navigation logos use links instead of inline event handlers', function () {
-	$root = dirname(__DIR__, 2);
-
 	foreach (['include/top_header.php', 'include/top_general_header.php'] as $file) {
-		$source = file_get_contents($root . '/' . $file);
+		$source = file_get_contents(CACTI_PATH_BASE . '/' . $file);
 
 		expect($source)->not->toBeFalse();
 		expect($source)->toContain("class='cactiLogo' href='");

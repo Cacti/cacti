@@ -31,11 +31,11 @@
  * with the grants in it, runs exactly as shipped.
  */
 
-require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 2) . '/include/global_constants.php';
-require_once dirname(__DIR__, 2) . '/lib/database.php';
-require_once dirname(__DIR__, 2) . '/lib/functions.php';
-require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_INCLUDE . '/global_constants.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
+require_once CACTI_PATH_TESTS . '/Helpers/FakeMySQLPDO.php';
 
 foreach (['CACTI_WEB' => false, 'POLLER_ID' => 1, 'CACTI_PATH_LOG' => sys_get_temp_dir()] as $name => $value) {
 	if (!defined($name)) {
@@ -43,7 +43,7 @@ foreach (['CACTI_WEB' => false, 'POLLER_ID' => 1, 'CACTI_PATH_LOG' => sys_get_te
 	}
 }
 
-require_once dirname(__DIR__, 2) . '/lib/plugins.php';
+require_once CACTI_PATH_LIBRARY . '/plugins.php';
 
 /**
  * A FakeMySQLPDO that re-expresses the two multi-table deletes. The rewrite is
@@ -241,7 +241,7 @@ test('running the cleanup twice changes nothing the second time', function () {
  * that actually ships, so the rewrite above cannot hide a change to them.
  */
 test('the shipped statements are MySQL multi-table deletes guarding internal', function () {
-	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/plugins.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/plugins.php');
 
 	$start = strpos($source, 'function plugin_clean_old_plugin_info(');
 	expect($start)->not->toBeFalse();
@@ -256,7 +256,7 @@ test('the shipped statements are MySQL multi-table deletes guarding internal', f
 });
 
 test('the plugin management page runs the cleanup', function () {
-	$source = file_get_contents(dirname(__DIR__, 2) . '/plugins.php');
+	$source = file_get_contents(CACTI_PATH_BASE . '/plugins.php');
 
 	$start = strpos($source, 'function update_show_current(');
 	expect($start)->not->toBeFalse();

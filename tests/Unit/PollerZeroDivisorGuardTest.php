@@ -22,7 +22,7 @@
  * from, and a failed write reads as offset zero.
  */
 
-$src = file_get_contents(dirname(__DIR__, 2) . '/lib/functions.php');
+$src = file_get_contents(CACTI_PATH_LIBRARY . '/functions.php');
 
 test('PHP 8 makes a zero divisor fatal rather than infinite', function () {
 	/* the reason the guard is needed at all, rather than the warning and INF

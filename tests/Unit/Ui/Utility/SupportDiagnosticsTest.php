@@ -22,14 +22,14 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 4) . '/include/global.php';
-require_once dirname(__DIR__, 4) . '/lib/utility.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
+require_once CACTI_PATH_LIBRARY . '/utility.php';
 
 // support.php returns early under the test-bootstrap gate, so only its function
 // declarations load here. That skips the auth + dispatch path a unit test cannot
 // satisfy while leaving the diagnostics helpers callable.
-require_once dirname(__DIR__, 4) . '/support.php';
+require_once CACTI_PATH_BASE . '/support.php';
 
 test('show_tech_environment renders the environment sections without a database', function () {
 	global $config;
@@ -93,7 +93,7 @@ test('show_tech_environment flags a directory that is not writable', function ()
  */
 function support_diag_build_report(array $vars): string {
 	$path = dirname(__DIR__, 4) . '/support.php';
-	$src  = file_get_contents($path);
+	$src  = file_get_contents(CACTI_PATH_BASE . '/support.php');
 
 	if ($src === false) {
 		throw new RuntimeException("support_diag_build_report(): unable to read $path");

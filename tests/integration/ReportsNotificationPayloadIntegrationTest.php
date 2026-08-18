@@ -25,7 +25,7 @@
  * or fatal instead of logging and moving on to sql_save().
  */
 
-require_once dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
+require_once CACTI_PATH_TESTS . '/Helpers/IsolatedProbe.php';
 
 $probe = __DIR__ . '/fixtures/reports_notification_payload_probe.php';
 

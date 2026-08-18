@@ -35,7 +35,7 @@
  * updated to match.
  */
 
-require_once __DIR__ . '/../../../../include/global_constants.php';
+require_once CACTI_PATH_INCLUDE . '/global_constants.php';
 
 /**
  * Mirrors the CDEF emission logic in rrd.php.

@@ -29,11 +29,11 @@
  * Linux as well as where /proc is absent.
  */
 
-require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 2) . '/include/global_constants.php';
-require_once dirname(__DIR__, 2) . '/lib/database.php';
-require_once dirname(__DIR__, 2) . '/lib/functions.php';
-require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_INCLUDE . '/global_constants.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
+require_once CACTI_PATH_TESTS . '/Helpers/FakeMySQLPDO.php';
 
 /* include/global.php resolves these from config and the settings table, which
    would need a live install; the registry only logs through them. */
@@ -47,7 +47,7 @@ foreach ([
 	}
 }
 
-require_once dirname(__DIR__, 2) . '/lib/poller.php';
+require_once CACTI_PATH_LIBRARY . '/poller.php';
 
 /**
  * A FakeMySQLPDO that also understands the two MySQL constructs the registry
@@ -369,7 +369,7 @@ test('is_process_running reports a live registration running and reaps a dead on
  * pid guard above it unreachable.
  */
 test('the sweep compares started as an epoch, not as a date', function () {
-	$poller = file_get_contents(dirname(__DIR__, 2) . '/lib/poller.php');
+	$poller = file_get_contents(CACTI_PATH_LIBRARY . '/poller.php');
 
 	expect($poller)->toContain('UNIX_TIMESTAMP() > UNIX_TIMESTAMP(started) + timeout')
 		->and($poller)->not->toContain('FROM_UNIXTIME(started)');

@@ -12,12 +12,12 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 4) . '/include/vendor/autoload.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
 // database.php must load before html.php so db_in_clause/db_qstr are the real
 // implementations and html.php's dq_ branch resolves against them.
-require_once dirname(__DIR__, 4) . '/lib/database.php';
-require_once dirname(__DIR__, 4) . '/lib/html.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
+require_once CACTI_PATH_LIBRARY . '/html.php';
 
 it('parses a numeric cg_ id without coercion', function () {
 	expect(html_transform_graph_template_ids('cg_5'))->toBe('5');

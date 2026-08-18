@@ -35,7 +35,11 @@ if (!defined('VALIDATOR_AUDIT_LIB_ONLY')) {
 	chdir(__DIR__ . '/../../');
 }
 
-const BASELINE = 'tests/tools/validator_constraint_baseline.json';
+if (!defined('CACTI_PATH_BASE')) {
+	require_once __DIR__ . '/../../include/global_path.php';
+}
+
+const VALIDATOR_CONSTRAINT_BASELINE = 'tests/tools/validator_constraint_baseline.json';
 
 const NO_VALIDATION_COMMENT = '/no-validation\s*:/i';
 
@@ -429,7 +433,7 @@ $files   = validator_list_php_files();
 $results = [];  // path => array of sites
 
 foreach ($files as $path) {
-	$src = file_get_contents($path);
+	$src = file_get_contents(CACTI_PATH_BASE . '/' . $path);
 
 	if ($src === false) {
 		continue;
@@ -494,18 +498,18 @@ if ($mode === '--write-baseline') {
 			$baseline[$path] = $e;
 		}
 	}
-	file_put_contents(BASELINE, json_encode($baseline, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL);
-	printf("Wrote %s: %d files, %d undocumented-empty-validation site(s).\n", BASELINE, count($baseline), array_sum($baseline));
+	file_put_contents(VALIDATOR_CONSTRAINT_BASELINE, json_encode($baseline, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL);
+	printf("Wrote %s: %d files, %d undocumented-empty-validation site(s).\n", VALIDATOR_CONSTRAINT_BASELINE, count($baseline), array_sum($baseline));
 	exit(0);
 }
 
 if ($mode === '--check') {
-	if (!file_exists(BASELINE)) {
-		fwrite(STDERR, 'Baseline missing: ' . BASELINE . " (run --write-baseline).\n");
+	if (!file_exists(VALIDATOR_CONSTRAINT_BASELINE)) {
+		fwrite(STDERR, 'Baseline missing: ' . VALIDATOR_CONSTRAINT_BASELINE . " (run --write-baseline).\n");
 		exit(2);
 	}
 
-	$baseline = json_decode(file_get_contents(BASELINE), true);
+	$baseline = json_decode(file_get_contents(VALIDATOR_CONSTRAINT_BASELINE), true);
 
 	if (!is_array($baseline)) {
 		fwrite(STDERR, "Baseline is not valid JSON.\n");

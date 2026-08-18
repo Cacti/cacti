@@ -37,7 +37,7 @@
  * @return string The body, up to the next top-level function.
  */
 function php_binary_body(string $file, string $function) : string {
-	$source = file_get_contents(dirname(__DIR__, 3) . '/' . $file);
+	$source = file_get_contents(CACTI_PATH_BASE . '/' . $file);
 
 	expect($source)->not->toBeFalse("$file must be readable");
 
@@ -51,7 +51,7 @@ function php_binary_body(string $file, string $function) : string {
 }
 
 test('the six affected binary path settings default to an empty string rather than null', function () {
-	$settings = file_get_contents(dirname(__DIR__, 3) . '/include/global_settings.php');
+	$settings = file_get_contents(CACTI_PATH_INCLUDE . '/global_settings.php');
 	expect($settings)->not->toBeFalse('include/global_settings.php must be readable');
 
 	foreach (['path_php_binary', 'path_rrdtool', 'path_spine', 'path_snmpget', 'path_snmpgetnext', 'path_snmpwalk'] as $setting) {
@@ -119,7 +119,7 @@ test('no shipped file escapes the binary path without casting it first', functio
 			continue;
 		}
 
-		$source = file_get_contents($root . '/' . $file);
+		$source = file_get_contents(CACTI_PATH_BASE . '/' . $file);
 
 		if ($source !== false && preg_match(
 			'/cacti_escapeshellcmd\s*\(\s*(?!\(\s*string\s*\)\s*)read_config_option\s*\(\s*[\'\"]path_php_binary[\'\"](?:\s*,[^)]*)?\)/',

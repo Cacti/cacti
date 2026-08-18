@@ -43,7 +43,7 @@ if ($cacti_base === false) {
 	exit(1);
 }
 
-define('CACTI_PATH_BASE', $cacti_base);
+require_once $cacti_base . '/include/global_path.php';
 
 if (!function_exists(__NAMESPACE__ . '\\read_config_option') && !function_exists('\\read_config_option')) {
 	function read_config_option(string $name, bool $force = false): mixed {
@@ -57,7 +57,7 @@ if (!function_exists(__NAMESPACE__ . '\\read_config_option') && !function_exists
 	}
 }
 
-require_once CACTI_PATH_BASE . '/lib/htmx.php';
+require_once CACTI_PATH_LIBRARY . '/htmx.php';
 
 header('Content-Type: text/html; charset=UTF-8');
 

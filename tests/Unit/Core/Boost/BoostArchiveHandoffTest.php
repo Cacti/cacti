@@ -63,7 +63,7 @@ if (!function_exists('boost_handoff_extract_function')) {
 }
 
 test('archive-table cleanup forwards still-open-round rows before deleting', function () use ($boostLibPath) {
-	$contents  = file_get_contents($boostLibPath);
+	$contents  = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 	$func_body = boost_handoff_extract_function($contents, 'function boost_process_poller_output(');
 
 	expect($func_body)->not->toBe('');
@@ -85,7 +85,7 @@ test('archive-table cleanup forwards still-open-round rows before deleting', fun
 });
 
 test('archive-table delete removes the whole local_data_id slice once forwarding has run, not just the closed rounds', function () use ($boostLibPath) {
-	$contents  = file_get_contents($boostLibPath);
+	$contents  = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 	$func_body = boost_handoff_extract_function($contents, 'function boost_process_poller_output(');
 
 	$insert_pos = strpos($func_body, 'INSERT IGNORE INTO poller_output_boost');
@@ -108,7 +108,7 @@ test('archive-table delete removes the whole local_data_id slice once forwarding
 });
 
 test('the archive-side temp-table seed that forwarded rows must not collide with has no time filter', function () use ($boostLibPath) {
-	$contents  = file_get_contents($boostLibPath);
+	$contents  = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 	$func_body = boost_handoff_extract_function($contents, 'function boost_process_poller_output(');
 
 	// This is the query the delete-scope test above is protecting against:
@@ -125,7 +125,7 @@ test('the archive-side temp-table seed that forwarded rows must not collide with
 });
 
 test('duplicate-record guard reassigns $last_item after processing each row', function () use ($boostLibPath) {
-	$contents  = file_get_contents($boostLibPath);
+	$contents  = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 	$func_body = boost_handoff_extract_function($contents, 'function boost_process_poller_output(');
 
 	$guard_pos = strpos($func_body, "if (\$last_item['timestamp'] == \$item['timestamp']");
@@ -145,7 +145,7 @@ test('duplicate-record guard reassigns $last_item after processing each row', fu
 });
 
 test('$last_item sentinel starts at values no real row can match', function () use ($boostLibPath) {
-	$contents  = file_get_contents($boostLibPath);
+	$contents  = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 	$func_body = boost_handoff_extract_function($contents, 'function boost_process_poller_output(');
 
 	expect($func_body)->toContain("'local_data_id' => -1");

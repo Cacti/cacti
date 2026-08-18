@@ -31,7 +31,7 @@
  * used in Issue7070PercentileContractTest.php.
  */
 
-$source = file_get_contents(__DIR__ . '/../../../../lib/spikekill.php');
+$source = file_get_contents(CACTI_PATH_LIBRARY . '/spikekill.php');
 
 preg_match(
 	'/\(\$ds\[\'stddev\'\]\s*!=\s*\'N\/A\'\s*\?\s*round\(\$ds\[\'stddev\'\]\s*\*\*\s*2,\s*2\)\s*:\s*\'N\/A\'\)/',

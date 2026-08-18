@@ -15,7 +15,7 @@
 // Proves the IN-clause placeholder rewrite used to parameterise purge_old_graphs()
 // targets the same rows as the previous implode(',', $ids) form.
 
-require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
 
 // The exact placeholder builder used at the call sites.
 $in_placeholders = static fn (array $ids): string => trim(str_repeat('?, ', cacti_sizeof($ids)), ', ');
@@ -55,7 +55,7 @@ test('array_values drops the associative keys PDO would misbind', function () {
 // Text search filter must not go through gfrv() (FILTER_VALIDATE_INT default).
 // Sort URLs with an active non-numeric filter would die_html_input_error().
 test('aggregate graph list sort URL keeps text filter via grv not gfrv', function () {
-	$src = file_get_contents(dirname(__DIR__, 4) . '/aggregate_graphs.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/aggregate_graphs.php');
 	expect($src)->not->toBeFalse('Failed to read aggregate_graphs.php');
 
 	// Whitespace-tolerant so reformatting the call site doesn't break the test;

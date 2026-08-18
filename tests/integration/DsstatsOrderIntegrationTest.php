@@ -27,9 +27,9 @@
  * which this test suite does not provision.
  */
 
-require_once dirname(__DIR__, 2) . '/lib/database.php';
-require_once dirname(__DIR__, 2) . '/lib/dsstats.php';
-require_once dirname(__DIR__, 2) . '/lib/html_utility.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
+require_once CACTI_PATH_LIBRARY . '/dsstats.php';
+require_once CACTI_PATH_LIBRARY . '/html_utility.php';
 
 /*
  * Rebuilds the $sql_order_join / $sql_order fragment exactly as
@@ -114,7 +114,7 @@ test('a quote-breakout data_source combined with a statement-terminator measure 
 });
 
 test('lib/auth.php builds the dsstats ORDER BY via get_dsstats_order_string(), not raw concatenation', function () {
-	$contents = file_get_contents(dirname(__DIR__, 2) . '/lib/auth.php');
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/auth.php');
 
 	expect($contents)->toContain('get_dsstats_order_string($sql_order)')
 		->and($contents)->not->toContain("'ORDER BY rs.' . \$sql_order['measure']");

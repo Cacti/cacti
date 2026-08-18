@@ -104,7 +104,7 @@ function walk_size_split(string $list) : array {
  * @return string[] One entry per declared parameter, in order.
  */
 function walk_size_snmp_parameters() : array {
-	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/snmp.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/snmp.php');
 	expect($source)->not->toBeFalse('lib/snmp.php must be readable');
 
 	$declaration = strpos($source, 'function cacti_snmp_walk(');
@@ -125,7 +125,7 @@ function walk_size_snmp_parameters() : array {
  * @return string[] One entry per argument, in order.
  */
 function walk_size_walk_arguments() : array {
-	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/data_query.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/data_query.php');
 	expect($source)->not->toBeFalse('lib/data_query.php must be readable');
 
 	$host = strpos($source, 'function query_snmp_host(');
@@ -173,7 +173,7 @@ test('the output_format walk passes the normalized walk size in the bulk walk si
 });
 
 test('the walk size is normalized before the output_format walk reads it', function () {
-	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/data_query.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/data_query.php');
 
 	$host  = strpos($source, 'function query_snmp_host(');
 	$after = strpos($source, "\nfunction ", $host + 1);
@@ -189,7 +189,7 @@ test('the walk size is normalized before the output_format walk reads it', funct
 });
 
 test('max_oids is still passed to the session calls that take it', function () {
-	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/data_query.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/data_query.php');
 
 	// the fix must not have swapped every max_oids in the file
 	expect(substr_count($source, "\$host['max_oids']"))->toBeGreaterThan(0);

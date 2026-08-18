@@ -113,7 +113,7 @@ if (!function_exists(__NAMESPACE__ . '\\kill_session_var') && !function_exists('
 	}
 }
 
-$source = file_get_contents(dirname(__DIR__, 4) . '/lib/auth.php');
+$source = file_get_contents(CACTI_PATH_LIBRARY . '/auth.php');
 
 if ($source === false) {
 	throw new \RuntimeException('Unable to read lib/auth.php for the permission invalidation test.');

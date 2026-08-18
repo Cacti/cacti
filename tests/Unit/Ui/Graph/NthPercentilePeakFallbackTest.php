@@ -26,7 +26,7 @@
  * is exercised without RRDtool or a database.
  */
 
-require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
 
 if (!function_exists('nth_percentile_stats_stub')) {
 	function nth_percentile_stats_stub() : string {
@@ -35,7 +35,7 @@ if (!function_exists('nth_percentile_stats_stub')) {
 }
 
 if (!function_exists('nth_percentile_under_test')) {
-	$src = file_get_contents(__DIR__ . '/../../../../lib/graph_variables.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/graph_variables.php');
 
 	$start = strpos($src, 'function nth_percentile(');
 	$end   = strpos($src, "\n}", $start);

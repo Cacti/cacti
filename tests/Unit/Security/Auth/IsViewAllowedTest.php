@@ -12,8 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once __DIR__ . '/../../../../lib/functions.php';
-require_once __DIR__ . '/../../../../lib/auth.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
+require_once CACTI_PATH_LIBRARY . '/auth.php';
 
 /*
  * Tests for the $allowed_views whitelist in is_view_allowed().

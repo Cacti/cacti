@@ -12,15 +12,13 @@
  +-------------------------------------------------------------------------+
 */
 
-$root = dirname(__DIR__, 4);
-
 if (!function_exists(__NAMESPACE__ . '\\read_config_option') && !function_exists('\\read_config_option')) {
 	function read_config_option($name) {
 		return '';
 	}
 }
 
-require_once $root . '/lib/auth.php';
+require_once CACTI_PATH_LIBRARY . '/auth.php';
 
 /* remote_agent_fcrdns_confirmed is the pure forward-confirmation decision
  * extracted from remote_client_authorized(). A PTR that does not forward-confirm

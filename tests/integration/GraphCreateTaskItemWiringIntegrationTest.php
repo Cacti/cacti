@@ -12,10 +12,10 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
-require_once dirname(__DIR__, 2) . '/lib/database.php';
-require_once dirname(__DIR__, 2) . '/lib/template.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/FakeMySQLPDO.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
+require_once CACTI_PATH_LIBRARY . '/template.php';
 
 /*
  * #7380: tests/Unit/Ui/Graph/GraphCreateWiringTest.php proves equivalence between

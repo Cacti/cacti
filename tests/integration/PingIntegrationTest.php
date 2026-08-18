@@ -11,8 +11,8 @@ if (!file_exists(dirname(__DIR__, 2) . '/lib/CactiProcess.php')) {
 	return;
 }
 
-require_once dirname(__DIR__, 2) . '/lib/ping.php';
-require_once dirname(__DIR__, 2) . '/lib/functions.php';
+require_once CACTI_PATH_LIBRARY . '/ping.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
 
 test('Net_Ping::ping_icmp handles fping-style output through CactiProcess', function () {
 	// Mock a Net_Ping object

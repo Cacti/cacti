@@ -21,7 +21,7 @@
  * producer (query_snmp_host walk) and consumer (oid_index_parse_regexp).
  */
 
-if (strpos((string) @file_get_contents(dirname(__DIR__, 2) . '/lib/data_query.php'),
+if (strpos((string) @file_get_contents(CACTI_PATH_LIBRARY . '/data_query.php'),
 	'oid_index_should_strip_trailing_zero_padding') === false) {
 	test('OID strip hand-off: feature not present on this branch', function () {})
 		->skip('oid_index_should_strip_trailing_zero_padding absent — feature PR #7032 not merged into develop yet');
@@ -29,8 +29,8 @@ if (strpos((string) @file_get_contents(dirname(__DIR__, 2) . '/lib/data_query.ph
 }
 
 beforeAll(function () {
-	require_once dirname(__DIR__, 2) . '/lib/functions.php';
-	require_once dirname(__DIR__, 2) . '/lib/data_query.php';
+	require_once CACTI_PATH_LIBRARY . '/functions.php';
+	require_once CACTI_PATH_LIBRARY . '/data_query.php';
 });
 
 describe('OID strip hand-off pipeline', function () {

@@ -22,10 +22,10 @@ function hardeningFunctionSource(string $source, string $function, string $nextF
 	return substr($source, $start, $end - $start);
 }
 
-$htmlGraphSource = file_get_contents(dirname(__DIR__, 2) . '/lib/html_graph.php');
-$apiDeviceSource = file_get_contents(dirname(__DIR__, 2) . '/lib/api_device.php');
+$htmlGraphSource = file_get_contents(CACTI_PATH_LIBRARY . '/html_graph.php');
+$apiDeviceSource = file_get_contents(CACTI_PATH_LIBRARY . '/api_device.php');
 
-require_once dirname(__DIR__, 2) . '/lib/html_graph.php';
+require_once CACTI_PATH_LIBRARY . '/html_graph.php';
 
 expect($htmlGraphSource)->not->toBeFalse();
 expect($apiDeviceSource)->not->toBeFalse();

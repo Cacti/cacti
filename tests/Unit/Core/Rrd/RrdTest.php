@@ -12,8 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 4) . '/lib/rrd.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_LIBRARY . '/rrd.php';
 
 it('escapes rrdtool strings correctly', function () {
 	expect(rrdtool_escape_string('Normal String'))->toBe('Normal String');

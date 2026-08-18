@@ -31,7 +31,7 @@ function normalize_rra_id(mixed $rra_id): ?int {
 }
 
 test('rrdtool_function_graph validates rra_id before the first boost call', function () {
-	$src = file_get_contents(__DIR__ . '/../../../../lib/rrd.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 	expect($src)->not->toBeFalse('Failed to read lib/rrd.php');
 
 	$fnPos = strpos($src, 'function rrdtool_function_graph(');

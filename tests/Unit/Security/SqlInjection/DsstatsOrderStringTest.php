@@ -24,7 +24,7 @@
  * guest account is enabled and dsstats_enable is 'on'.
  */
 
-require_once dirname(__DIR__, 4) . '/lib/html_utility.php';
+require_once CACTI_PATH_LIBRARY . '/html_utility.php';
 
 test('valid measure and order pass through unchanged', function () {
 	expect(get_dsstats_order_string(['measure' => 'p95n', 'order' => 'desc']))

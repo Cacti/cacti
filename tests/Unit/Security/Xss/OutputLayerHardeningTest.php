@@ -12,7 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
 
 // Mock html_auth_footer logic for testing escaping
 function test_html_auth_footer_logic(string $error) : string {

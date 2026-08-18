@@ -21,7 +21,7 @@
  * and the comparison quirk that made the guard useless.
  */
 
-$src = file_get_contents(dirname(__DIR__, 2) . '/lib/html_graph.php');
+$src = file_get_contents(CACTI_PATH_LIBRARY . '/html_graph.php');
 
 expect($src)->not->toBeFalse();
 

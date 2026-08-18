@@ -13,7 +13,7 @@
  */
 
 $getReportsNotificationSource = static function () : string {
-	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/reports.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/reports.php');
 
 	expect($source)->not->toBeFalse('Failed to read lib/reports.php');
 

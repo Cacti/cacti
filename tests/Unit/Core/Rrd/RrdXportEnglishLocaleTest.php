@@ -22,7 +22,7 @@ declare(strict_types = 1);
  */
 
 test('xport is forced to the English locale alongside fetch and info', function () {
-	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/rrd.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	expect($source)->toContain(
 		"if (str_starts_with(\$command_line, 'fetch') || str_starts_with(\$command_line, 'info') || str_starts_with(\$command_line, 'xport')) {"

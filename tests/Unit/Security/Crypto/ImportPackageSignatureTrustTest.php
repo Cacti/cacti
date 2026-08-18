@@ -34,11 +34,11 @@
  * why the shipped Device Packages are exercised here too.
  */
 
-require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 3) . '/Helpers/FakeMySQLPDO.php';
-require_once dirname(__DIR__, 4) . '/include/global.php';
-require_once dirname(__DIR__, 4) . '/lib/import.php';
-require_once dirname(__DIR__, 4) . '/lib/xml.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/FakeMySQLPDO.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
+require_once CACTI_PATH_LIBRARY . '/import.php';
+require_once CACTI_PATH_LIBRARY . '/xml.php';
 
 /*
  * Build a Package the way lib/package.php does, but signed with a throwaway
@@ -94,7 +94,7 @@ function selfSignedPackage(string &$public_key, bool $names_key = true): string 
 }
 
 function importSourceFile(string $name): string {
-	$src = file_get_contents(dirname(__DIR__, 4) . "/$name");
+	$src = file_get_contents(CACTI_PATH_BASE . '/' . $name);
 	expect($src)->not->toBeFalse("Failed to read $name");
 
 	return $src;

@@ -12,8 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 4) . '/lib/functions.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
 
 // Negative numbers are data, not formulas, and must not gain a leading quote.
 

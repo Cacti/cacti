@@ -102,7 +102,7 @@ if (!function_exists(__NAMESPACE__ . '\\cacti_log') && !function_exists('\\cacti
 	}
 }
 
-$source = file_get_contents(dirname(__DIR__, 4) . '/lib/snmp.php');
+$source = file_get_contents(CACTI_PATH_LIBRARY . '/snmp.php');
 preg_match('/function cacti_snmp_log_session_error\(.*?^}\R/ms', $source, $matches);
 eval('namespace SnmpSessionErrorLoggingTest;' . $matches[0]);
 preg_match('/function cacti_snmp_session_call\(.*?^}\R/ms', $source, $matches);

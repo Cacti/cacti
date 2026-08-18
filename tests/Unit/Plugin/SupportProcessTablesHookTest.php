@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 3) . '/include/global.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
 
 /*
  * support_process_tables() (support.php, #7353) publishes the built-in process
@@ -43,7 +43,7 @@ function process_tables_define_probe(): void {
 		return;
 	}
 
-	$src = file_get_contents(dirname(__DIR__, 3) . '/support.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/support.php');
 
 	if (preg_match('/function\s+support_process_tables\s*\(\s*\)\s*:\s*array\s*\{.*?^\}/sm', $src, $m) !== 1) {
 		throw new RuntimeException('could not locate support_process_tables() in support.php');
@@ -140,7 +140,7 @@ test('the process query is skipped when no tables are available', function () {
 	// A regression guard: when every process table is absent the UNION source is
 	// empty, and show_cacti_processes() must render an empty result instead of a
 	// broken "FROM ()" query.
-	$src = file_get_contents(dirname(__DIR__, 3) . '/support.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/support.php');
 
 	expect($src)->toContain("if (\$sql_inner == '') {")
 		->and($src)->toContain('$processes  = [];');

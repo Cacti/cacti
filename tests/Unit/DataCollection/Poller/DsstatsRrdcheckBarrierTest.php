@@ -31,9 +31,9 @@
  * before trusting the drain loop's running-count poll.
  */
 
-require_once __DIR__ . '/../Helpers/UnitStubs.php';
-require_once __DIR__ . '/../../../../lib/dsstats.php';
-require_once __DIR__ . '/../../../../lib/rrdcheck.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_LIBRARY . '/dsstats.php';
+require_once CACTI_PATH_LIBRARY . '/rrdcheck.php';
 
 $dsstatsLibPath  = __DIR__ . '/../../../../lib/dsstats.php';
 $rrdcheckLibPath = __DIR__ . '/../../../../lib/rrdcheck.php';
@@ -61,7 +61,7 @@ if (!function_exists('boost_handoff_extract_function')) {
 // ---------------------------------------------------------------------
 
 test('dsstats_launch_children returns the launched child count', function () use ($dsstatsLibPath) {
-	$contents  = file_get_contents($dsstatsLibPath);
+	$contents  = file_get_contents(CACTI_PATH_LIBRARY . '/dsstats.php');
 	$func_body = boost_handoff_extract_function($contents, 'function dsstats_launch_children(string $type) : int');
 
 	expect($func_body)->not->toBe('');
@@ -69,7 +69,7 @@ test('dsstats_launch_children returns the launched child count', function () use
 });
 
 test('rrdcheck_launch_children returns the launched child count', function () use ($rrdcheckLibPath) {
-	$contents  = file_get_contents($rrdcheckLibPath);
+	$contents  = file_get_contents(CACTI_PATH_LIBRARY . '/rrdcheck.php');
 	$func_body = boost_handoff_extract_function($contents, 'function rrdcheck_launch_children(string $type) : int');
 
 	expect($func_body)->not->toBe('');
@@ -77,7 +77,7 @@ test('rrdcheck_launch_children returns the launched child count', function () us
 });
 
 test('dsstats_boost_bottom waits on the barrier helper, not a bare running-count poll', function () use ($dsstatsLibPath) {
-	$contents  = file_get_contents($dsstatsLibPath);
+	$contents  = file_get_contents(CACTI_PATH_LIBRARY . '/dsstats.php');
 	$func_body = boost_handoff_extract_function($contents, 'function dsstats_boost_bottom()');
 
 	expect($func_body)->toContain('$expected_children = dsstats_launch_children(\'bmaster\');');
@@ -86,7 +86,7 @@ test('dsstats_boost_bottom waits on the barrier helper, not a bare running-count
 });
 
 test('rrdcheck_boost_bottom waits on the barrier helper, not a bare running-count poll', function () use ($rrdcheckLibPath) {
-	$contents  = file_get_contents($rrdcheckLibPath);
+	$contents  = file_get_contents(CACTI_PATH_LIBRARY . '/rrdcheck.php');
 	$func_body = boost_handoff_extract_function($contents, 'function rrdcheck_boost_bottom()');
 
 	expect($func_body)->toContain('$expected_children = rrdcheck_launch_children(\'bmaster\');');
@@ -95,7 +95,7 @@ test('rrdcheck_boost_bottom waits on the barrier helper, not a bare running-coun
 });
 
 test('dsstats_wait_for_children implements a startup barrier before the drain loop', function () use ($dsstatsLibPath) {
-	$contents  = file_get_contents($dsstatsLibPath);
+	$contents  = file_get_contents(CACTI_PATH_LIBRARY . '/dsstats.php');
 	$func_body = boost_handoff_extract_function($contents, 'function dsstats_wait_for_children(string $type, int $expected_children) : void');
 
 	expect($func_body)->not->toBe('');
@@ -111,7 +111,7 @@ test('dsstats_wait_for_children implements a startup barrier before the drain lo
 });
 
 test('rrdcheck_wait_for_children implements a startup barrier before the drain loop', function () use ($rrdcheckLibPath) {
-	$contents  = file_get_contents($rrdcheckLibPath);
+	$contents  = file_get_contents(CACTI_PATH_LIBRARY . '/rrdcheck.php');
 	$func_body = boost_handoff_extract_function($contents, 'function rrdcheck_wait_for_children(string $type, int $expected_children) : void');
 
 	expect($func_body)->not->toBe('');
@@ -145,7 +145,7 @@ if (!function_exists('boost_handoff_connect_processes_table')) {
 beforeEach(function () {
 	global $database_sessions, $database_hostname, $database_port, $database_default;
 
-	require_once __DIR__ . '/../../../../lib/database.php';
+	require_once CACTI_PATH_LIBRARY . '/database.php';
 
 	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
 

@@ -28,7 +28,7 @@
 $boostPollerPath = __DIR__ . '/../../../../poller_boost.php';
 
 test('archive-table drop is gated on shard completeness, not the status sum', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	$rrd_updates_pos = strpos($contents, "SELECT SUM(status) FROM poller_output_boost_processes");
 	expect($rrd_updates_pos)->not->toBeFalse();
@@ -50,7 +50,7 @@ test('archive-table drop is gated on shard completeness, not the status sum', fu
 });
 
 test('partial-completion path logs a warning instead of silently keeping the tables', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	$drop_pos = strpos($contents, 'DROP TABLE IF EXISTS `$table`');
 	expect($drop_pos)->not->toBeFalse();
@@ -63,7 +63,7 @@ test('partial-completion path logs a warning instead of silently keeping the tab
 });
 
 test('boost_completed_children and expected_children are still computed the same way the drain loop uses', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// The drain loop's own completeness check must still be present and
 	// unchanged; the drop-gate fix reuses these exact symbols rather than

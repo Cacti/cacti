@@ -31,11 +31,11 @@
  * not depend on the day the suite runs.
  */
 
-require_once dirname(__DIR__, 3) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 3) . '/include/global_constants.php';
-require_once dirname(__DIR__, 3) . '/lib/database.php';
-require_once dirname(__DIR__, 3) . '/lib/functions.php';
-require_once dirname(__DIR__, 3) . '/lib/api_scheduler.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_INCLUDE . '/global_constants.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
+require_once CACTI_PATH_LIBRARY . '/api_scheduler.php';
 
 if (!defined('CACTI_WEB')) {
 	define('CACTI_WEB', false);

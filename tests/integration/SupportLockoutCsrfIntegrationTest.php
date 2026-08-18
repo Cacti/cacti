@@ -17,8 +17,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 1) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 2) . '/include/global.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
 
 /*
  * support_lockout() (support.php, #7352) reads and writes cacti_lockout_status
@@ -53,7 +53,7 @@ function lockout_csrf_integration_define(): void {
 		return;
 	}
 
-	$src = file_get_contents(dirname(__DIR__, 2) . '/support.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/support.php');
 
 	if (preg_match('/function support_lockout\(\) : void \{.*?^\}/sm', $src, $m) !== 1) {
 		test('support lockout csrf integration: feature not present on this branch', function () {})

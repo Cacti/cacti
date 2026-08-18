@@ -41,7 +41,11 @@ function cacti_sizeof(mixed $value) : int {
 	return is_array($value) ? count($value) : 0;
 }
 
-require_once dirname(__DIR__, 2) . '/lib/api_automation_tools.php';
+if (!defined('CACTI_PATH_LIBRARY')) {
+	require_once dirname(__DIR__, 2) . '/include/global_path.php';
+}
+
+require_once CACTI_PATH_LIBRARY . '/api_automation_tools.php';
 
 getHostsByDescription([1, '2']);
 getHosts(3);

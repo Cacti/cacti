@@ -21,7 +21,7 @@
  * Issue7070PercentileContractTest.php.
  */
 
-$cmdPhpSource = file_get_contents(dirname(__DIR__, 4) . '/cmd.php');
+$cmdPhpSource = file_get_contents(CACTI_PATH_BASE . '/cmd.php');
 
 preg_match('/^if \(\$allhost\) \{.*?^\}\n/ms', $cmdPhpSource, $allhostBlock);
 

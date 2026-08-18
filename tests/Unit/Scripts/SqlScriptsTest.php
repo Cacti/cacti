@@ -28,50 +28,50 @@ $ssSqlPhpPath = __DIR__ . '/../../../scripts/ss_sql.php';
 // --- scripts/sql.php: no backtick operators remain ---
 
 test('sql.php contains no backtick operators', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/sql.php');
 
 	expect($contents)->not->toMatch('/`[^`]*mysqladmin[^`]*`/');
 });
 
 test('sql.php uses shell_exec for command execution', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/sql.php');
 
 	expect($contents)->toContain('shell_exec(');
 });
 
 test('sql.php escapes database_hostname with cacti_escapeshellarg', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/sql.php');
 
 	expect($contents)->toContain('cacti_escapeshellarg($database_hostname)');
 });
 
 test('sql.php escapes database_username with cacti_escapeshellarg', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/sql.php');
 
 	expect($contents)->toContain('cacti_escapeshellarg($database_username)');
 });
 
 test('sql.php escapes database_password with cacti_escapeshellarg', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/sql.php');
 
 	expect($contents)->toContain('cacti_escapeshellarg($database_password)');
 });
 
 test('sql.php uses no bare escapeshellarg calls', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/sql.php');
 
 	// Negative lookbehind: match escapeshellarg( NOT preceded by cacti_
 	expect(preg_match('/(?<!cacti_)escapeshellarg\(/', $contents))->toBe(0);
 });
 
 test('sql.php handles null return from shell_exec', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/sql.php');
 
 	expect($contents)->toContain("?? ''");
 });
 
 test('sql.php returns U on empty/null shell_exec output', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/sql.php');
 
 	/* Cacti data source scripts must return 'U' on error, never empty string. */
 	expect($contents)->toContain(": 'U'");
@@ -80,50 +80,50 @@ test('sql.php returns U on empty/null shell_exec output', function () use ($sqlP
 // --- scripts/ss_sql.php: no backtick operators remain ---
 
 test('ss_sql.php contains no backtick operators', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_sql.php');
 
 	expect($contents)->not->toMatch('/`[^`]*mysqladmin[^`]*`/');
 });
 
 test('ss_sql.php uses shell_exec for command execution', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_sql.php');
 
 	expect($contents)->toContain('shell_exec(');
 });
 
 test('ss_sql.php escapes database_hostname with cacti_escapeshellarg', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_sql.php');
 
 	expect($contents)->toContain('cacti_escapeshellarg($database_hostname)');
 });
 
 test('ss_sql.php escapes database_username with cacti_escapeshellarg', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_sql.php');
 
 	expect($contents)->toContain('cacti_escapeshellarg($database_username)');
 });
 
 test('ss_sql.php escapes database_password with cacti_escapeshellarg', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_sql.php');
 
 	expect($contents)->toContain('cacti_escapeshellarg($database_password)');
 });
 
 test('ss_sql.php uses no bare escapeshellarg calls', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_sql.php');
 
 	// Negative lookbehind: match escapeshellarg( NOT preceded by cacti_
 	expect(preg_match('/(?<!cacti_)escapeshellarg\(/', $contents))->toBe(0);
 });
 
 test('ss_sql.php handles null return from shell_exec', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_sql.php');
 
 	expect($contents)->toContain("?? ''");
 });
 
 test('ss_sql.php returns U on empty/null shell_exec output', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_sql.php');
 
 	/* Cacti data source scripts must return 'U' on error, never empty string. */
 	expect($contents)->toContain(": 'U'");
@@ -160,13 +160,13 @@ test('ss_sql() returns U when shell_exec produces no output', function () use ($
 // --- no raw variable interpolation in shell commands ---
 
 test('sql.php does not interpolate variables directly in shell strings', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/sql.php');
 
 	expect($contents)->not->toMatch('/`[^`]*\$database_/');
 });
 
 test('ss_sql.php does not interpolate variables directly in shell strings', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_sql.php');
 
 	expect($contents)->not->toMatch('/`[^`]*\$database_/');
 });

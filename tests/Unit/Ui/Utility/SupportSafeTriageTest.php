@@ -22,14 +22,14 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 4) . '/include/global.php';
-require_once dirname(__DIR__, 4) . '/lib/utility.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
+require_once CACTI_PATH_LIBRARY . '/utility.php';
 
 // support.php returns early under the test-bootstrap gate, so only its function
 // declarations load here. That skips the auth + dispatch path a unit test cannot
 // satisfy while leaving the triage helpers callable.
-require_once dirname(__DIR__, 4) . '/support.php';
+require_once CACTI_PATH_BASE . '/support.php';
 
 beforeEach(function () {
 	global $_CACTI_REQUEST;
@@ -107,6 +107,7 @@ function safe_triage_seed_summary(): void {
 	$config[OPTIONS_CLI]['rsa_fingerprint'] = 'abcdef0123456789feedface';
 	$config[OPTIONS_CLI]['poller_interval'] = '60';
 	$config[OPTIONS_CLI]['stats_poller']    = '';
+	$config[OPTIONS_CLI]['path_rrdtool']    = '/cacti-tests/missing-rrdtool';
 }
 
 function safe_triage_uname_cell(string $html): string {
@@ -195,7 +196,7 @@ test('show_tech_summary escapes the PHP uname value when not redacting', functio
 });
 
 test('support.php escapes every php_uname() value it prints', function () {
-	$src = file_get_contents(dirname(__DIR__, 4) . '/support.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/support.php');
 
 	// The redact toggle only decides whether the value is masked first; both
 	// branches still have to reach html_escape(). A host whose uname carries no

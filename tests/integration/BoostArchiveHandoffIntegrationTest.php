@@ -32,8 +32,8 @@
  * fail) if unreachable.
  */
 
-require_once __DIR__ . '/../Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 2) . '/lib/database.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
 
 $boostLibPath = dirname(__DIR__, 2) . '/lib/boost.php';
 
@@ -120,7 +120,7 @@ test('a row from a still-open poll round survives the archive cleanup by moving 
 		return;
 	}
 
-	$contents = file_get_contents($boostLibPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 
 	$insert_sql = str_replace('$table', 'poller_output_boost_arch_handoff_test',
 		boost_handoff_extract_sql($contents, "INSERT IGNORE INTO poller_output_boost\n\t\t\t\tSELECT *", 'AND time >= FROM_UNIXTIME(?)'));
@@ -174,7 +174,7 @@ test('closed-round rows are removed from the archive table and not duplicated in
 		return;
 	}
 
-	$contents = file_get_contents($boostLibPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 
 	$insert_sql = str_replace('$table', 'poller_output_boost_arch_handoff_test',
 		boost_handoff_extract_sql($contents, "INSERT IGNORE INTO poller_output_boost\n\t\t\t\tSELECT *", 'AND time >= FROM_UNIXTIME(?)'));
@@ -210,7 +210,7 @@ test('a forwarded row left in the archive table would collide with itself on the
 	// forwarded to the live table but hypothetically left behind in the
 	// archive table, to prove such a leftover would break the next run's
 	// own merge query with a primary-key collision.
-	$contents = file_get_contents($boostLibPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 
 	// Two `INSERT INTO `{$temp_table}`` statements exist in this function:
 	// the first seeds from the archive table (no time filter, no IGNORE),
@@ -262,7 +262,7 @@ test('forwarding a row already present in the live table does not raise a PK col
 		return;
 	}
 
-	$contents = file_get_contents($boostLibPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 
 	$insert_sql = str_replace('$table', 'poller_output_boost_arch_handoff_test',
 		boost_handoff_extract_sql($contents, "INSERT IGNORE INTO poller_output_boost\n\t\t\t\tSELECT *", 'AND time >= FROM_UNIXTIME(?)'));

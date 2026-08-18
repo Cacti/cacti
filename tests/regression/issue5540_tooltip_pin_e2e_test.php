@@ -7,7 +7,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$layout = file_get_contents(__DIR__ . '/../../include/layout.js');
+$layout = file_get_contents(CACTI_PATH_INCLUDE . '/layout.js');
 
 if ($layout === false) {
 	fwrite(STDERR, "unable to read include/layout.js\n");

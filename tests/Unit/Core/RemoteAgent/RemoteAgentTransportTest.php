@@ -12,7 +12,7 @@ declare(strict_types = 1);
  +-------------------------------------------------------------------------+
  */
 
-require_once dirname(__DIR__, 4) . '/lib/remote_agent_transport.php';
+require_once CACTI_PATH_LIBRARY . '/remote_agent_transport.php';
 
 test('remote-agent HTTP status parser returns the final valid status', function () {
 	expect(remote_agent_http_status([
@@ -56,7 +56,7 @@ test('HTTP remote-agent context applies timeout without TLS options', function (
 });
 
 test('remote collector handoff enforces path status and response-size contracts', function () {
-	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/functions.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/functions.php');
 
 	expect($source)->toContain('strpbrk($url, "\\0\\r\\n")')
 		->and($source)->toContain('REMOTE_AGENT_MAX_RESPONSE_BYTES + 1')
@@ -90,7 +90,7 @@ test('remote graph JSON rejects malformed missing and unsupported images', funct
 ]);
 
 test('remote graph endpoints preserve local request identity over remote metadata', function () {
-	$source = file_get_contents(dirname(__DIR__, 4) . '/graph_json.php');
+	$source = file_get_contents(CACTI_PATH_BASE . '/graph_json.php');
 
 	expect($source)->toContain("unset(\$decoded['type'], \$decoded['local_graph_id'], \$decoded['rra_id'])")
 		->and($source)->toContain('array_merge($decoded, $oarray)');

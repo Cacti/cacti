@@ -23,9 +23,9 @@
  * the three call sites that have to use it.
  */
 
-$authSource      = file_get_contents(dirname(__DIR__, 4) . '/lib/auth.php');
-$includeSource   = file_get_contents(dirname(__DIR__, 4) . '/include/auth.php');
-$loginSource     = file_get_contents(dirname(__DIR__, 4) . '/auth_login.php');
+$authSource      = file_get_contents(CACTI_PATH_LIBRARY . '/auth.php');
+$includeSource   = file_get_contents(CACTI_PATH_INCLUDE . '/auth.php');
+$loginSource     = file_get_contents(CACTI_PATH_BASE . '/auth_login.php');
 
 // --- the helper ---
 

@@ -21,11 +21,11 @@
  * against its own server.
  */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
-require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 2) . '/lib/database.php';
-require_once dirname(__DIR__, 2) . '/lib/boost.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/FakeMySQLPDO.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
+require_once CACTI_PATH_LIBRARY . '/boost.php';
 
 /**
  * Counts the max_allowed_packet lookups this connection is asked for, so

@@ -16,7 +16,7 @@
 $root = dirname(__DIR__, 2);
 
 test('every percentile division applies the exponent scale', function () use ($root) {
-	$src = file_get_contents($root . '/lib/graph_variables.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/graph_variables.php');
 	expect($src)->not->toBeFalse('Failed to read lib/graph_variables.php');
 
 	$scaled = preg_match_all('/\$nth\s*\/=\s*\$base\s*\*\*\s*\(\$power\s*\*\s*\$exp_scale\)/', $src);
@@ -27,14 +27,14 @@ test('every percentile division applies the exponent scale', function () use ($r
 });
 
 test('the bandwidth summation division applies the exponent scale', function () use ($root) {
-	$src = file_get_contents($root . '/lib/graph_variables.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/graph_variables.php');
 
 	$pattern = '/\$summation\s*\/=\s*\$base\s*\*\*\s*\(\$regexp_match_array\[1\]\s*\*\s*\$exp_scale\)/';
 	expect(preg_match($pattern, $src))->toBe(1, 'summation must use the scale');
 });
 
 test('both base selection blocks define the exponent scale', function () use ($root) {
-	$src = file_get_contents($root . '/lib/graph_variables.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/graph_variables.php');
 
 	$count = preg_match_all('/\$exp_scale\s*=\s*10\s*\/\s*3;/', $src);
 	expect($count)->toBe(2, 'both base-1024 branches must set the scale')

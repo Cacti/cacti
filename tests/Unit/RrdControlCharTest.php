@@ -19,8 +19,8 @@
  * command; these cases mirror the reported pipe/newline injection vectors.
  */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 2) . '/lib/rrd.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_LIBRARY . '/rrd.php';
 
 test('CRLF in a data source path cannot inject a second rrdtool command', function () {
 	// data_source_path carrying a CRLF + a second command over the pipe
@@ -63,7 +63,7 @@ test('always returns a string, even on empty and multibyte input', function () {
 });
 
 test('both the local and proxy execute paths sanitize the command line', function () {
-	$src = file_get_contents(dirname(__DIR__, 2) . '/lib/rrd.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	// __rrd_execute() (local pipe/shell) and __rrd_proxy_execute() (rrdp proxy)
 	// must both pass the assembled command through the stripper before it is sent.

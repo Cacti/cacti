@@ -41,3 +41,7 @@ require_once __DIR__ . '/Helpers/UnitStubs.php';
 // - Various other configuration includes
 // Uses __() from stubs above, and defines format_cacti_version via lib/functions.php
 require_once __DIR__ . '/../include/global.php';
+
+if (!defined('CACTI_PATH_TESTS')) {
+	define('CACTI_PATH_TESTS', CACTI_PATH_BASE . '/tests');
+}

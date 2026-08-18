@@ -27,9 +27,9 @@
  * invoking the tool, which is not the account that wrote the path.
  */
 
-$batchgapfixSource     = file_get_contents(dirname(__DIR__, 4) . '/cli/batchgapfix.php');
-$floatRrdfilesSource   = file_get_contents(dirname(__DIR__, 4) . '/cli/float_rrdfiles.php');
-$updateHeartbeatSource = file_get_contents(dirname(__DIR__, 4) . '/cli/update_heartbeat.php');
+$batchgapfixSource     = file_get_contents(CACTI_PATH_BASE . '/cli/batchgapfix.php');
+$floatRrdfilesSource   = file_get_contents(CACTI_PATH_BASE . '/cli/float_rrdfiles.php');
+$updateHeartbeatSource = file_get_contents(CACTI_PATH_BASE . '/cli/update_heartbeat.php');
 
 // --- batchgapfix ---
 

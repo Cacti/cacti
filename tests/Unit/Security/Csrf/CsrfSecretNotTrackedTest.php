@@ -68,7 +68,7 @@ test('no file under the csrf vendor directory holds a bare secret', function () 
 	expect($tracked['output'])->not->toBe('');
 
 	foreach (explode("\n", $tracked['output']) as $file) {
-		$contents = file_get_contents(dirname(__DIR__, 4) . '/' . $file);
+		$contents = file_get_contents(CACTI_PATH_BASE . '/' . $file);
 		expect($contents)->not->toBeFalse("$file must be readable");
 
 		// the secret is written as a bare 40 character hex digest, no php tags
@@ -77,7 +77,7 @@ test('no file under the csrf vendor directory holds a bare secret', function () 
 });
 
 test('the secret path is still ignored so it cannot be committed again', function () {
-	$gitignore = file_get_contents(dirname(__DIR__, 4) . '/.gitignore');
+	$gitignore = file_get_contents(CACTI_PATH_BASE . '/.gitignore');
 	expect($gitignore)->not->toBeFalse('.gitignore must be readable');
 
 	expect($gitignore)->toContain('include/vendor/csrf/csrf-secret.php');
@@ -89,7 +89,7 @@ test('the secret path is still ignored so it cannot be committed again', functio
  * assuming it.
  */
 test('csrf-magic still generates and stores a secret when none exists', function () {
-	$source = file_get_contents(dirname(__DIR__, 4) . '/include/vendor/csrf/csrf-magic.php');
+	$source = file_get_contents(CACTI_PATH_INCLUDE . '/vendor/csrf/csrf-magic.php');
 	expect($source)->not->toBeFalse('csrf-magic.php must be readable');
 
 	$start = strpos($source, 'function csrf_get_secret(');

@@ -12,10 +12,10 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 3) . '/Helpers/FakeMySQLPDO.php';
-require_once dirname(__DIR__, 4) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 4) . '/lib/database.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/FakeMySQLPDO.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
 
 /*
  * #7380: the "connect the dots" step of create_complete_graph_from_template()
@@ -29,7 +29,7 @@ require_once dirname(__DIR__, 4) . '/lib/database.php';
  * issue7380_connect) so the test exercises the production source unmodified.
  */
 
-$src = file_get_contents(dirname(__DIR__, 4) . '/lib/template.php');
+$src = file_get_contents(CACTI_PATH_LIBRARY . '/template.php');
 if (preg_match('/^function graph_template_connect_task_items\([^)]*\).*?^\}/sm', $src, $m) !== 1) {
 	throw new RuntimeException('could not locate graph_template_connect_task_items() in lib/template.php');
 }

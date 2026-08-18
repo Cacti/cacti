@@ -59,7 +59,11 @@ $GLOBALS['reports_probe_report']       = [
 	'requested_id' => 1,
 ];
 
-require_once dirname(__DIR__, 3) . '/lib/reports.php';
+if (!defined('CACTI_PATH_LIBRARY')) {
+	require_once dirname(__DIR__, 3) . '/include/global_path.php';
+}
+
+require_once CACTI_PATH_LIBRARY . '/reports.php';
 
 $raw_data  = [];
 $oput_raw  = '<html></html>';

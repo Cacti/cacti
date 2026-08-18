@@ -17,7 +17,7 @@
  * allowed.
  */
 
-$src = file_get_contents(dirname(__DIR__, 2) . '/lib/functions.php');
+$src = file_get_contents(CACTI_PATH_LIBRARY . '/functions.php');
 
 function _crdc_body(string $src): string {
 	$start = strpos($src, 'function call_remote_data_collector(');

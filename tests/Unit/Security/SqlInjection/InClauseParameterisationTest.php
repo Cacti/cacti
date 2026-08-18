@@ -30,9 +30,9 @@
  *      the file source rather than executed.
  */
 
-require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 4) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 4) . '/lib/database.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
 
 $libDir = dirname(__DIR__, 4) . '/lib';
 
@@ -71,7 +71,7 @@ test('array_to_sql_or yields an empty string for an empty list', function () {
 // =====================================================================
 
 test('api_data_source.php routes id lists through array_to_sql_or', function () use ($libDir) {
-	$src = file_get_contents($libDir . '/api_data_source.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/api_data_source.php');
 
 	expect($src)->toContain('array_to_sql_or($ids_to_delete, ');
 	expect($src)->toContain('array_to_sql_or($dtd_ids_to_delete, ');
@@ -79,7 +79,7 @@ test('api_data_source.php routes id lists through array_to_sql_or', function () 
 });
 
 test('api_data_source.php drops the raw imploded IN() interpolation', function () use ($libDir) {
-	$src = file_get_contents($libDir . '/api_data_source.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/api_data_source.php');
 
 	expect($src)->not->toContain("IN (' . \$ids_to_delete . ')");
 	expect($src)->not->toContain("IN(' . \$ids_to_delete . ')");
@@ -89,7 +89,7 @@ test('api_data_source.php drops the raw imploded IN() interpolation', function (
 });
 
 test('api_data_source.php purge action binds the method as a placeholder', function () use ($libDir) {
-	$src = file_get_contents($libDir . '/api_data_source.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/api_data_source.php');
 
 	// The REPLACE(...) action value moved from inline concat to a bound ?.
 	expect($src)->toContain("REPLACE(data_source_path, '<path_rra>/', ''), ?");
@@ -101,7 +101,7 @@ test('api_data_source.php purge action binds the method as a placeholder', funct
 // =====================================================================
 
 test('api_device.php routes device id lists through db_in_clause', function () use ($libDir) {
-	$src = file_get_contents($libDir . '/api_device.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/api_device.php');
 
 	expect($src)->toContain("db_in_clause('host_id', \$int_device_ids)");
 	expect($src)->toContain("db_in_clause('id', \$int_device_ids)");
@@ -109,7 +109,7 @@ test('api_device.php routes device id lists through db_in_clause', function () u
 });
 
 test('api_device.php drops the raw imploded/interpolated device IN() clauses', function () use ($libDir) {
-	$src = file_get_contents($libDir . '/api_device.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/api_device.php');
 
 	expect($src)->not->toContain("implode(',', array_keys(\$objects['data_queries']))");
 	expect($src)->not->toContain('IN ($devices_to_delete)');
@@ -122,13 +122,13 @@ test('api_device.php drops the raw imploded/interpolated device IN() clauses', f
 // =====================================================================
 
 test('utility.php routes object id lists through array_to_sql_or', function () use ($libDir) {
-	$src = file_get_contents($libDir . '/utility.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/utility.php');
 
 	expect($src)->toContain('array_to_sql_or($object_ids, ');
 });
 
 test('utility.php drops the raw imploded object_ids IN() interpolation', function () use ($libDir) {
-	$src = file_get_contents($libDir . '/utility.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/utility.php');
 
 	expect($src)->not->toContain("implode(', ', \$object_ids)");
 });

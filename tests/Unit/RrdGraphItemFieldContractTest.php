@@ -39,21 +39,21 @@ declare(strict_types = 1);
 $rrdPath = dirname(__DIR__, 2) . '/lib/rrd.php';
 
 test('dashes reaches the command line only through the list validator', function () use ($rrdPath) {
-	$source = file_get_contents($rrdPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	expect($source)->not->toMatch("/':dashes=' \. \\\$graph_item\['dashes'\]/");
 	expect($source)->toMatch('/rrd_graph_item_number_list\(\$graph_item\[.dashes.\]\)/');
 });
 
 test('textalign reaches the command line only through the keyword validator', function () use ($rrdPath) {
-	$source = file_get_contents($rrdPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	expect($source)->not->toMatch("/':' \. \\\$graph_item\['textalign'\]/");
 	expect($source)->toMatch('/rrd_graph_item_textalign\(\$graph_item\[.textalign.\]\)/');
 });
 
 test('alpha reaches the colour code only through the hex validator', function () use ($rrdPath) {
-	$source = file_get_contents($rrdPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	expect($source)->not->toMatch("/\.= \\\$graph_item\['alpha2?'\]/");
 	expect($source)->toMatch('/rrd_graph_item_alpha\(\$graph_item\[.alpha.\]\)/');
@@ -61,21 +61,21 @@ test('alpha reaches the colour code only through the hex validator', function ()
 });
 
 test('no SHIFT statement is built from a raw graph item value', function () use ($rrdPath) {
-	$source = file_get_contents($rrdPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	expect($source)->not->toMatch("/'SHIFT:' \. \\\$data_source_name \. ':' \. \\\$graph_item\['value'\]/");
 	expect(substr_count($source, '$shift_value = strip_alpha($graph_item[\'value\'])'))->toBe(4);
 });
 
 test('the TICK fraction is numeric before it is appended', function () use ($rrdPath) {
-	$source = file_get_contents($rrdPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	expect($source)->not->toMatch("/\(':' \. \\\$graph_item\['value'\]\)\)/");
 	expect($source)->toMatch('/\$tick_fraction = strip_alpha\(\$graph_item\[.value.\]\)/');
 });
 
 test('gradheight and line_width are coerced before they are appended', function () use ($rrdPath) {
-	$source = file_get_contents($rrdPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	expect($source)->not->toMatch("/':gradheight=' \. \\\$graph_item\['gradheight'\]/");
 	expect($source)->not->toMatch("/'LINE' \. \\\$graph_item\['line_width'\]/");
@@ -86,6 +86,6 @@ test('the validators live in a module the coverage gate can reach', function () 
 	$module = dirname(__DIR__, 2) . '/lib/rrd_graph_item.php';
 
 	expect(file_exists($module))->toBeTrue();
-	expect(file_get_contents(dirname(__DIR__, 2) . '/lib/rrd.php'))
+	expect(file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php'))
 		->toMatch("/require_once\(__DIR__ \. '\/rrd_graph_item\.php'\)/");
 });

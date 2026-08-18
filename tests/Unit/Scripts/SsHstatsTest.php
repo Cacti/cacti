@@ -37,7 +37,7 @@
 // Declared as global to ensure proper scope when loaded by PHPUnit
 global $called_by_script_server;
 $called_by_script_server = true;
-require_once __DIR__ . '/../../../scripts/ss_hstats.php';
+require_once CACTI_PATH_BASE . '/scripts/ss_hstats.php';
 
 // Test stat-to-column mapping function directly (verifies switch logic)
 test('polling_time maps to polling_time column', function () {

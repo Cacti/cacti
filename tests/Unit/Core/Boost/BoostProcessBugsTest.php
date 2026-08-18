@@ -32,7 +32,7 @@
 $boostPollerPath = __DIR__ . '/../../../../poller_boost.php';
 
 test('sig_handler releases lock before exit, not after', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// The lock release block must appear before the exit; statement inside
 	// the SIGTERM/SIGINT case.  We look for RELEASE_LOCK appearing before exit;
@@ -51,7 +51,7 @@ test('sig_handler releases lock before exit, not after', function () use ($boost
 });
 
 test('sig_handler has no unreachable lock-release code after closing brace of switch', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// The old pattern was: switch(...) { ... exit; ... } \n\n if (cacti_version_compare...RELEASE_LOCK
 	// After the fix the release block must not appear outside/after the switch.
@@ -61,7 +61,7 @@ test('sig_handler has no unreachable lock-release code after closing brace of sw
 });
 
 test('loop exit condition uses SELECT COUNT(*) not SELECT *', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// Must not contain SELECT * FROM poller_output_boost_local_data_ids
 	expect($contents)->not->toContain('SELECT *
@@ -73,7 +73,7 @@ test('loop exit condition uses SELECT COUNT(*) not SELECT *', function () use ($
 });
 
 test('seconds_offset fallback multiplies minutes by 60', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// The old bug: $seconds_offset = 120; (bare, treating minutes as seconds)
 	// Must not appear as an isolated assignment
@@ -84,7 +84,7 @@ test('seconds_offset fallback multiplies minutes by 60', function () use ($boost
 });
 
 test('sig_handler parent-process path uses RELEASE_ALL_LOCKS via db_execute_prepared', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	$sigterm_pos = strpos($contents, 'case SIGTERM:');
 	expect($sigterm_pos)->not->toBeFalse();
@@ -104,7 +104,7 @@ test('sig_handler parent-process path uses RELEASE_ALL_LOCKS via db_execute_prep
 });
 
 test('sig_handler skips lock release when current_lock is false', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	$sigterm_pos = strpos($contents, 'case SIGTERM:');
 	expect($sigterm_pos)->not->toBeFalse();
@@ -121,7 +121,7 @@ test('sig_handler skips lock release when current_lock is false', function () us
 });
 
 test('seconds_offset normal path multiplies read interval by 60', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// When boost_rrd_update_interval is already configured the assignment must
 	// multiply the stored minutes value by 60 to produce seconds, not assign a
@@ -134,7 +134,7 @@ test('seconds_offset normal path multiplies read interval by 60', function () us
 $boostLibPath = __DIR__ . '/../../../../lib/boost.php';
 
 test('boost_launch_children passes --archive-table to child processes', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// Children need the archive table name so boost_get_arch_table_names has
 	// a concrete fallback when SHOW TABLES returns nothing (e.g. replication lag).
@@ -145,7 +145,7 @@ test('boost_launch_children passes --archive-table to child processes', function
 });
 
 test('boost_launch_children declares $archive_table as global', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// The global declaration inside boost_launch_children must include $archive_table
 	// so the parent-set value is visible when building the child command line.
@@ -158,7 +158,7 @@ test('boost_launch_children declares $archive_table as global', function () use 
 });
 
 test('--archive-table argument is validated with regex before assignment', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// The parsed value must be checked against the expected table name pattern
 	// before being assigned to $archive_table to prevent argument injection.
@@ -167,7 +167,7 @@ test('--archive-table argument is validated with regex before assignment', funct
 });
 
 test('boost_get_arch_table_names does not filter by TABLE_ROWS in information_schema fallback', function () use ($boostLibPath) {
-	$contents = file_get_contents($boostLibPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 
 	// InnoDB TABLE_ROWS in information_schema is an estimate; it can be zero
 	// immediately after RENAME TABLE even for non-empty tables. Filtering on
@@ -181,7 +181,7 @@ test('boost_get_arch_table_names does not filter by TABLE_ROWS in information_sc
 });
 
 test('sig_handler gates boost_poller_status update on parent process only', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	$sigterm_pos = strpos($contents, 'case SIGTERM:');
 	expect($sigterm_pos)->not->toBeFalse();
@@ -196,7 +196,7 @@ test('sig_handler gates boost_poller_status update on parent process only', func
 });
 
 test('boost_prepare_process_table guards against misconfigured parallel count', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	$func_pos = strpos($contents, 'function boost_prepare_process_table()');
 	expect($func_pos)->not->toBeFalse();
@@ -211,7 +211,7 @@ test('boost_prepare_process_table guards against misconfigured parallel count', 
 });
 
 test('boost_output_rrd_data returns 0 not false when no rows are assigned', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	$func_pos = strpos($contents, 'function boost_output_rrd_data(');
 	expect($func_pos)->not->toBeFalse();
@@ -230,7 +230,7 @@ test('boost_output_rrd_data returns 0 not false when no rows are assigned', func
 });
 
 test('boost_output_rrd_data guards against zero max_per_select', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	$func_pos = strpos($contents, 'function boost_output_rrd_data(');
 	expect($func_pos)->not->toBeFalse();
@@ -244,7 +244,7 @@ test('boost_output_rrd_data guards against zero max_per_select', function () use
 });
 
 test('boost_process_local_data_ids guards against zero records per select', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	$func_pos = strpos($contents, 'function boost_process_local_data_ids(');
 	expect($func_pos)->not->toBeFalse();
@@ -260,7 +260,7 @@ test('boost_process_local_data_ids guards against zero records per select', func
 });
 
 test('parent waits for all children to register before entering monitoring loop', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// exec_background() is non-blocking; the barrier must wait for every launched
 	// child, not just the first. Releasing on the first registration lets a fast
@@ -279,7 +279,7 @@ test('parent waits for all children to register before entering monitoring loop'
 });
 
 test('boost_process_poller_output does not shadow archive_table with static', function () use ($boostLibPath) {
-	$contents = file_get_contents($boostLibPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 
 	$func_pos = strpos($contents, 'function boost_process_poller_output(');
 	expect($func_pos)->not->toBeFalse();
@@ -299,7 +299,7 @@ test('boost_process_poller_output does not shadow archive_table with static', fu
 });
 
 test('non-templated data source query joins graph_templates_item before filtering on gti', function () use ($boostLibPath) {
-	$contents = file_get_contents($boostLibPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 
 	// The broken queries referenced gti.task_item_id without a FROM/JOIN clause,
 	// causing MySQL "Unknown column 'gti.task_item_id'" for every non-templated DS.
@@ -316,7 +316,7 @@ test('non-templated data source query joins graph_templates_item before filterin
 });
 
 test('boost_process_local_data_ids non-templated reset_template branch joins gti', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	$func_pos = strpos($contents, 'function boost_process_local_data_ids(');
 	expect($func_pos)->not->toBeFalse();
@@ -339,7 +339,7 @@ test('boost_process_local_data_ids non-templated reset_template branch joins gti
 });
 
 test('poller_prefetch_rrd_field_names joins graph_templates_item for the unused-names lookup', function () {
-	$contents = file_get_contents(__DIR__ . '/../../../../lib/poller.php');
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/poller.php');
 
 	$func_pos = strpos($contents, 'function poller_prefetch_rrd_field_names(');
 	expect($func_pos)->not->toBeFalse();
@@ -360,7 +360,7 @@ test('poller_prefetch_rrd_field_names joins graph_templates_item for the unused-
 });
 
 test('boost_output_rrd_data returns 0 not false when arch tables are not found', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	$func_pos = strpos($contents, 'function boost_output_rrd_data(');
 	expect($func_pos)->not->toBeFalse();
@@ -379,7 +379,7 @@ test('boost_output_rrd_data returns 0 not false when arch tables are not found',
 });
 
 test('boost_poller_status is set to complete when $continue is false', function () use ($boostPollerPath) {
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	// When boost_prepare_process_table() returns false it already set
 	// boost_poller_status to 'running'. Without an explicit reset in the else
@@ -396,7 +396,7 @@ test('boost_poller_status is set to complete when $continue is false', function 
 });
 
 test('boost_get_total_rows uses information_schema SUM(TABLE_ROWS) for O(1) row estimation', function () use ($boostLibPath) {
-	$contents = file_get_contents($boostLibPath);
+	$contents = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
 
 	$func_pos = strpos($contents, 'function boost_get_total_rows()');
 	expect($func_pos)->not->toBeFalse();

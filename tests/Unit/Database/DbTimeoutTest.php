@@ -12,9 +12,9 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 3) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 3) . '/lib/database.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
 
 test('MariaDB wraps with SET STATEMENT for an integer timeout', function () {
 	expect(db_sql_apply_timeout('SELECT 1', 5, 'MariaDB', '10.6.12'))

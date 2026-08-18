@@ -19,9 +19,9 @@
  * that opened with either token was treated as though it lacked it.
  */
 
-require_once dirname(__DIR__, 2) . '/lib/functions.php';
-require_once dirname(__DIR__, 2) . '/lib/html_utility.php';
-require_once dirname(__DIR__, 2) . '/lib/html.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
+require_once CACTI_PATH_LIBRARY . '/html_utility.php';
+require_once CACTI_PATH_LIBRARY . '/html.php';
 
 beforeEach(function () : void {
 	global $_CACTI_REQUEST;

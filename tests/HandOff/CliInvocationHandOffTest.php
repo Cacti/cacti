@@ -43,10 +43,10 @@ if (!file_exists(dirname(__DIR__, 2) . '/lib/CactiCommand.php')) {
 
 const CLI_HANDOFF_REPO_ROOT = __DIR__ . '/../..';
 
-require_once dirname(__DIR__, 1) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 2) . '/lib/CactiCommand.php';
-require_once dirname(__DIR__, 2) . '/lib/CmdRealtimeCommand.php';
-require_once dirname(__DIR__, 2) . '/lib/SpliceRrdCommand.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_LIBRARY . '/CactiCommand.php';
+require_once CACTI_PATH_LIBRARY . '/CmdRealtimeCommand.php';
+require_once CACTI_PATH_LIBRARY . '/SpliceRrdCommand.php';
 
 /**
  * Spawn a fresh PHP process for `php <script> <args...>`, returning stdout,

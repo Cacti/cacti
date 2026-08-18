@@ -25,8 +25,8 @@ if (!function_exists(__NAMESPACE__ . '\\cacti_sizeof') && !function_exists('\\ca
 	}
 }
 
-require_once dirname(__DIR__, 4) . '/lib/api_automation_tools.php';
-require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
+require_once CACTI_PATH_LIBRARY . '/api_automation_tools.php';
+require_once CACTI_PATH_TESTS . '/Helpers/IsolatedProbe.php';
 
 test('ID list normalization is strict and fail closed', function () : void {
 	expect(cacti_sizeof(new ArrayObject([1])))->toBe(0)

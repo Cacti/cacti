@@ -17,8 +17,8 @@
 // The per-item type/id guard the bulk-action loop applies before dispatch is
 // reproduced here as a pure predicate matching reports_form_actions().
 
-require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 4) . '/lib/reports.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_LIBRARY . '/reports.php';
 
 /**
  * Mirror of the bulk-action loop guard in reports_form_actions(): an item is

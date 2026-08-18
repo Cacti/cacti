@@ -31,7 +31,7 @@ if (!defined('CACTI_ESCAPE_CHARACTER')) {
 	define('CACTI_ESCAPE_CHARACTER', '"');
 }
 
-require_once dirname(__DIR__, 2) . '/lib/functions.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
 
 beforeEach(function () : void {
 	if (CACTI_SERVER_OS !== 'unix') {
@@ -149,7 +149,7 @@ test('no command construction bypasses the cacti helpers', function () {
 			continue;
 		}
 
-		$source = file_get_contents($path);
+		$source = file_get_contents(CACTI_PATH_BASE . '/' . substr($path, strlen(CACTI_PATH_BASE) + 1));
 
 		if ($source === false) {
 			continue;

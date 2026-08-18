@@ -19,14 +19,14 @@
  */
 
 test('include/global.php uses require_once for all core library includes', function () {
-	$source = file_get_contents(__DIR__ . '/../../../include/global.php');
+	$source = file_get_contents(CACTI_PATH_INCLUDE . '/global.php');
 
 	expect($source)->not->toContain('include_once(');
 	expect($source)->toContain("require_once(CACTI_PATH_LIBRARY . '/database.php')");
 });
 
 test('lib/plugins.php uses require_once for plugin setup.php in install path', function () {
-	$source = file_get_contents(__DIR__ . '/../../../lib/plugins.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/plugins.php');
 
 	/* The install path now has an explicit file_exists guard followed by
 	 * require_once — verify no bare include_once remains for setup.php. */
@@ -35,7 +35,7 @@ test('lib/plugins.php uses require_once for plugin setup.php in install path', f
 });
 
 test('lib/plugins.php install path hard-fails with sanitized log when setup.php missing', function () {
-	$source = file_get_contents(__DIR__ . '/../../../lib/plugins.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/plugins.php');
 
 	/* Verify the file_exists guard exists before require_once in the install path. */
 	expect($source)->toContain("file_exists(CACTI_PATH_PLUGINS . \"/\$plugin/setup.php\")");
@@ -49,7 +49,7 @@ test('lib/plugins.php install path hard-fails with sanitized log when setup.php 
 });
 
 test('lib/plugins.php uninstall and check_config silently skip missing setup.php (by design)', function () {
-	$source = file_get_contents(__DIR__ . '/../../../lib/plugins.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/plugins.php');
 
 	/* Install hard-fails (file_exists guard + exit) while uninstall/check_config
 	 * use a silent-skip pattern (require_once only inside if (file_exists(...))).
@@ -59,14 +59,14 @@ test('lib/plugins.php uninstall and check_config silently skip missing setup.php
 });
 
 test('cli/audit_database.php uses require_once inside file_exists guard', function () {
-	$source = file_get_contents(__DIR__ . '/../../../cli/audit_database.php');
+	$source = file_get_contents(CACTI_PATH_BASE . '/cli/audit_database.php');
 
 	expect($source)->not->toContain('include_once(');
 	expect($source)->toContain("require_once(\$plugin . '/setup.php')");
 });
 
 test('cli/audit_database.php inner includes/database.php load is guarded by file_exists', function () {
-	$source = file_get_contents(__DIR__ . '/../../../cli/audit_database.php');
+	$source = file_get_contents(CACTI_PATH_BASE . '/cli/audit_database.php');
 
 	/* Confirm includes/database.php is loaded with require_once and only when present. */
 	expect($source)->toContain("require_once(\$plugin . '/includes/database.php')");

@@ -12,8 +12,6 @@
  +-------------------------------------------------------------------------+
 */
 
-$root = dirname(__DIR__, 4);
-
 if (!function_exists(__NAMESPACE__ . '\\read_config_option') && !function_exists('\\read_config_option')) {
 	function read_config_option($name) {
 		return '';
@@ -26,7 +24,7 @@ if (!function_exists(__NAMESPACE__ . '\\cacti_sizeof') && !function_exists('\\ca
 	}
 }
 
-require_once $root . '/lib/auth.php';
+require_once CACTI_PATH_LIBRARY . '/auth.php';
 
 /* is_trusted_proxy() and the forwarded-header gate in get_basic_auth_username()
  * ensure client-supplied HTTP_ identity headers are only honored when the request

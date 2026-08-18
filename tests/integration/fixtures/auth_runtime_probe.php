@@ -24,7 +24,9 @@
 
 $root = dirname(__DIR__, 3);
 
+define('CACTI_PATH_BASE', $root);
 define('CACTI_PATH_INCLUDE', $root . '/include');
+define('CACTI_PATH_LIBRARY', $root . '/lib');
 
 function cacti_sizeof($array) {
 	return ($array === false || !is_array($array)) ? 0 : sizeof($array);
@@ -85,7 +87,7 @@ function get_guest_account() {
 	return (int) read_config_option('guest_user');
 }
 
-require_once $root . '/lib/auth.php';
+require_once CACTI_PATH_LIBRARY . '/auth.php';
 
 switch ($argv[1] ?? '') {
 	case 'cookie-authorization':

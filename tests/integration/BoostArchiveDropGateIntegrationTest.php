@@ -34,8 +34,8 @@
  * unreachable.
  */
 
-require_once __DIR__ . '/../Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 2) . '/lib/database.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
 
 beforeEach(function () {
 	global $database_sessions, $database_hostname, $database_port, $database_default;

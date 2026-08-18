@@ -17,7 +17,7 @@ if (!defined('VALIDATOR_AUDIT_LIB_ONLY')) {
 	define('VALIDATOR_AUDIT_LIB_ONLY', true);
 }
 
-require_once __DIR__ . '/../tools/validator_constraint_audit.php';
+require_once CACTI_PATH_TESTS . '/tools/validator_constraint_audit.php';
 
 function validator_scan(string $php): array {
 	return validator_scan_source("<?php\n" . $php);

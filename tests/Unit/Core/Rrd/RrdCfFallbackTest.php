@@ -18,7 +18,7 @@ declare(strict_types=1);
  * @group regression
  */
 
-require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
 
 /**
  * Simulate the CF fallback selection logic (FIXED version).
@@ -197,7 +197,7 @@ describe('CF fallback mutation killers', function () {
 
 describe('Source verification: CF overwrite removed', function () {
 	test('no unconditional cf_reference overwrite after fallback chain', function () {
-		$c = file_get_contents(__DIR__ . '/../../../../lib/rrd.php');
+		$c = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 		$p = strpos($c, 'first we need to check if there is a DEF');
 		$s = substr($c, $p, 1000);
 

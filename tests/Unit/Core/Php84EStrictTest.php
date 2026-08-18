@@ -19,31 +19,31 @@
 $basePath = dirname(__DIR__, 3);
 
 test('include/global_arrays.php names no E_STRICT constant', function () use ($basePath) {
-	expect(file_get_contents($basePath . '/include/global_arrays.php'))->not->toContain('E_STRICT');
+	expect(file_get_contents(CACTI_PATH_INCLUDE . '/global_arrays.php'))->not->toContain('E_STRICT');
 });
 
 test('lib/functions.php names no E_STRICT constant', function () use ($basePath) {
-	expect(file_get_contents($basePath . '/lib/functions.php'))->not->toContain('E_STRICT');
+	expect(file_get_contents(CACTI_PATH_LIBRARY . '/functions.php'))->not->toContain('E_STRICT');
 });
 
 test('lib/aggregate.php names no E_STRICT constant', function () use ($basePath) {
-	expect(file_get_contents($basePath . '/lib/aggregate.php'))->not->toContain('E_STRICT');
+	expect(file_get_contents(CACTI_PATH_LIBRARY . '/aggregate.php'))->not->toContain('E_STRICT');
 });
 
 test('lib/rrdcheck.php names no E_STRICT constant', function () use ($basePath) {
-	expect(file_get_contents($basePath . '/lib/rrdcheck.php'))->not->toContain('E_STRICT');
+	expect(file_get_contents(CACTI_PATH_LIBRARY . '/rrdcheck.php'))->not->toContain('E_STRICT');
 });
 
 test('lib/boost.php names no E_STRICT constant', function () use ($basePath) {
-	expect(file_get_contents($basePath . '/lib/boost.php'))->not->toContain('E_STRICT');
+	expect(file_get_contents(CACTI_PATH_LIBRARY . '/boost.php'))->not->toContain('E_STRICT');
 });
 
 test('lib/dsstats.php names no E_STRICT constant', function () use ($basePath) {
-	expect(file_get_contents($basePath . '/lib/dsstats.php'))->not->toContain('E_STRICT');
+	expect(file_get_contents(CACTI_PATH_LIBRARY . '/dsstats.php'))->not->toContain('E_STRICT');
 });
 
 test('lib/dsdebug.php names no E_STRICT constant', function () use ($basePath) {
-	expect(file_get_contents($basePath . '/lib/dsdebug.php'))->not->toContain('E_STRICT');
+	expect(file_get_contents(CACTI_PATH_LIBRARY . '/dsdebug.php'))->not->toContain('E_STRICT');
 });
 
 test('userland cannot raise E_STRICT, so the removed key is unreachable', function () {
@@ -68,7 +68,7 @@ test('the error maps name their levels directly instead of patching them in', fu
 		->and(constant('E_DEPRECATED'))->toBe(8192);
 
 	foreach ($files as $file) {
-		$source = file_get_contents($basePath . '/' . $file);
+		$source = file_get_contents(CACTI_PATH_BASE . '/' . $file);
 
 		expect($source)->not->toContain('$errortype[E_RECOVERABLE_ERROR]')
 			->and($source)->not->toContain('$errortype[E_DEPRECATED]');
@@ -76,5 +76,5 @@ test('the error maps name their levels directly instead of patching them in', fu
 });
 
 test('aggregate no longer polyfills a constant that always exists', function () use ($basePath) {
-	expect(file_get_contents($basePath . '/lib/aggregate.php'))->not->toContain("define('E_RECOVERABLE_ERROR'");
+	expect(file_get_contents(CACTI_PATH_LIBRARY . '/aggregate.php'))->not->toContain("define('E_RECOVERABLE_ERROR'");
 });

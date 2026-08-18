@@ -28,8 +28,8 @@
  * check, using the command name under /proc where that exists.
  */
 
-require_once dirname(__DIR__, 2) . '/include/global_constants.php';
-require_once dirname(__DIR__, 2) . '/lib/poller.php';
+require_once CACTI_PATH_INCLUDE . '/global_constants.php';
+require_once CACTI_PATH_LIBRARY . '/poller.php';
 
 /**
  * Starts a process running a different program and returns its pid.
@@ -151,9 +151,9 @@ test('without /proc the check falls back to plain existence', function () {
 });
 
 test('every registry kill site checks the pid before signalling it', function () {
-	$poller      = file_get_contents(dirname(__DIR__, 2) . '/lib/poller.php');
-	$dsstats     = file_get_contents(dirname(__DIR__, 2) . '/lib/dsstats.php');
-	$batchgapfix = file_get_contents(dirname(__DIR__, 2) . '/cli/batchgapfix.php');
+	$poller      = file_get_contents(CACTI_PATH_LIBRARY . '/poller.php');
+	$dsstats     = file_get_contents(CACTI_PATH_LIBRARY . '/dsstats.php');
+	$batchgapfix = file_get_contents(CACTI_PATH_BASE . '/cli/batchgapfix.php');
 
 	expect($poller)->not->toBeFalse('lib/poller.php must be readable')
 		->and($dsstats)->not->toBeFalse('lib/dsstats.php must be readable')
@@ -173,7 +173,7 @@ test('every registry kill site checks the pid before signalling it', function ()
  * report a running poller dead and let a second copy start.
  */
 test('the identity check is limited to CLI callers', function () {
-	$body = file_get_contents(dirname(__DIR__, 2) . '/lib/poller.php');
+	$body = file_get_contents(CACTI_PATH_LIBRARY . '/poller.php');
 
 	$start = strpos($body, 'function cacti_process_still_running(');
 	expect($start)->not->toBeFalse();

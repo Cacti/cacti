@@ -15,8 +15,8 @@
  +-------------------------------------------------------------------------+
  */
 
-require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 4) . '/include/global.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
 
 test('current rrdtool releases retain their own capability level', function () {
 	$supported = [
@@ -42,15 +42,15 @@ test('future and unsupported releases map safely', function () {
 
 test('the configured capability list includes current rrdtool releases', function () {
 	$rrdtool_versions = [];
-	require dirname(__DIR__, 4) . '/include/global_arrays.php';
+	require CACTI_PATH_INCLUDE . '/global_arrays.php';
 
 	expect($rrdtool_versions['1.10.0'])->toBe('RRDtool 1.10+')
 		->and($rrdtool_versions['1.11.0'])->toBe('RRDtool 1.11+');
 });
 
 test('typed callers retain the configured capability when detection fails', function () {
-	$installer = file_get_contents(dirname(__DIR__, 4) . '/lib/installer.php');
-	$boost     = file_get_contents(dirname(__DIR__, 4) . '/poller_boost.php');
+	$installer = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
+	$boost     = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 	expect($installer)->not->toBeFalse()
 		->and($installer)->toContain('if ($detected_version === false)')

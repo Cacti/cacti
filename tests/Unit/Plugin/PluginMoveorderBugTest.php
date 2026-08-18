@@ -40,7 +40,7 @@ $pluginsPath    = __DIR__ . '/../../../plugins.php';
 // ---------------------------------------------------------------------------
 
 test('api_plugin_moveup has !empty($prior_id) guard around the three-step swap', function () use ($libPluginsPath) {
-	$source = file_get_contents($libPluginsPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/plugins.php');
 
 	$fn_pos    = strpos($source, 'function api_plugin_moveup(');
 	$guard_pos = strpos($source, 'if (!empty($prior_id))', $fn_pos);
@@ -50,7 +50,7 @@ test('api_plugin_moveup has !empty($prior_id) guard around the three-step swap',
 });
 
 test('api_plugin_moveup swap executes only after the prior_id guard, not before', function () use ($libPluginsPath) {
-	$source = file_get_contents($libPluginsPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/plugins.php');
 
 	$fn_pos    = strpos($source, 'function api_plugin_moveup(');
 	$guard_pos = strpos($source, 'if (!empty($prior_id))', $fn_pos);
@@ -63,7 +63,7 @@ test('api_plugin_moveup swap executes only after the prior_id guard, not before'
 });
 
 test('api_plugin_moveup temp_id computation is inside the prior_id guard', function () use ($libPluginsPath) {
-	$source = file_get_contents($libPluginsPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/plugins.php');
 
 	$fn_pos      = strpos($source, 'function api_plugin_moveup(');
 	$guard_pos   = strpos($source, 'if (!empty($prior_id))', $fn_pos);
@@ -76,7 +76,7 @@ test('api_plugin_moveup temp_id computation is inside the prior_id guard', funct
 });
 
 test('api_plugin_moveup does not assign $prior_id to any id column before the empty guard', function () use ($libPluginsPath) {
-	$source = file_get_contents($libPluginsPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/plugins.php');
 
 	$fn_pos    = strpos($source, 'function api_plugin_moveup(');
 	$guard_pos = strpos($source, 'if (!empty($prior_id))', $fn_pos);
@@ -93,7 +93,7 @@ test('api_plugin_moveup does not assign $prior_id to any id column before the em
 // ---------------------------------------------------------------------------
 
 test('api_plugin_movedown has outer !empty($id) guard', function () use ($libPluginsPath) {
-	$source = file_get_contents($libPluginsPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/plugins.php');
 
 	$fn_pos   = strpos($source, 'function api_plugin_movedown(');
 	$id_guard = strpos($source, 'if (!empty($id))', $fn_pos);
@@ -103,7 +103,7 @@ test('api_plugin_movedown has outer !empty($id) guard', function () use ($libPlu
 });
 
 test('api_plugin_movedown has !empty($next_id) guard around the three-step swap', function () use ($libPluginsPath) {
-	$source = file_get_contents($libPluginsPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/plugins.php');
 
 	$fn_pos    = strpos($source, 'function api_plugin_movedown(');
 	$guard_pos = strpos($source, 'if (!empty($next_id))', $fn_pos);
@@ -113,7 +113,7 @@ test('api_plugin_movedown has !empty($next_id) guard around the three-step swap'
 });
 
 test('api_plugin_movedown swap executes only after the next_id guard, not before', function () use ($libPluginsPath) {
-	$source = file_get_contents($libPluginsPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/plugins.php');
 
 	$fn_pos    = strpos($source, 'function api_plugin_movedown(');
 	$guard_pos = strpos($source, 'if (!empty($next_id))', $fn_pos);
@@ -125,7 +125,7 @@ test('api_plugin_movedown swap executes only after the next_id guard, not before
 });
 
 test('api_plugin_movedown does not assign $next_id to any id column before the empty guard', function () use ($libPluginsPath) {
-	$source = file_get_contents($libPluginsPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/plugins.php');
 
 	$fn_pos    = strpos($source, 'function api_plugin_movedown(');
 	$guard_pos = strpos($source, 'if (!empty($next_id))', $fn_pos);
@@ -139,7 +139,7 @@ test('api_plugin_movedown does not assign $next_id to any id column before the e
 // ---------------------------------------------------------------------------
 
 test('plugins_load_temp_table saves @@SESSION.sql_mode before adding NO_AUTO_VALUE_ON_ZERO', function () use ($pluginsPath) {
-	$source = file_get_contents($pluginsPath);
+	$source = file_get_contents(CACTI_PATH_BASE . '/plugins.php');
 
 	$fn_pos   = strpos($source, 'function plugins_load_temp_table()');
 	$save_pos = strpos($source, '$orig_sql_mode = db_fetch_cell(\'SELECT @@SESSION.sql_mode\')', $fn_pos);
@@ -156,7 +156,7 @@ test('plugins_load_temp_table saves @@SESSION.sql_mode before adding NO_AUTO_VAL
 });
 
 test('plugins_load_temp_table inserts into temp table while NO_AUTO_VALUE_ON_ZERO is active', function () use ($pluginsPath) {
-	$source = file_get_contents($pluginsPath);
+	$source = file_get_contents(CACTI_PATH_BASE . '/plugins.php');
 
 	$fn_pos      = strpos($source, 'function plugins_load_temp_table()');
 	$nav_pos     = strpos($source, 'NO_AUTO_VALUE_ON_ZERO', $fn_pos);
@@ -169,7 +169,7 @@ test('plugins_load_temp_table inserts into temp table while NO_AUTO_VALUE_ON_ZER
 });
 
 test('plugins_load_temp_table restores original sql_mode after the bulk INSERT', function () use ($pluginsPath) {
-	$source = file_get_contents($pluginsPath);
+	$source = file_get_contents(CACTI_PATH_BASE . '/plugins.php');
 
 	$fn_pos       = strpos($source, 'function plugins_load_temp_table()');
 	$insert_pos   = strpos($source, 'INSERT INTO $table SELECT * FROM plugin_config', $fn_pos);
@@ -182,7 +182,7 @@ test('plugins_load_temp_table restores original sql_mode after the bulk INSERT',
 });
 
 test('plugins_load_temp_table restore uses db_execute_prepared with $orig_sql_mode', function () use ($pluginsPath) {
-	$source = file_get_contents($pluginsPath);
+	$source = file_get_contents(CACTI_PATH_BASE . '/plugins.php');
 
 	$fn_pos = strpos($source, 'function plugins_load_temp_table()');
 

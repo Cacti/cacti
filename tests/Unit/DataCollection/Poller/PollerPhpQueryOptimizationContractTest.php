@@ -20,7 +20,7 @@
  * equivalent, sargable `rrd_next_step <= $poller_interval`.
  */
 
-$source = file_get_contents(dirname(__DIR__, 4) . '/poller.php');
+$source = file_get_contents(CACTI_PATH_BASE . '/poller.php');
 
 test('the total_snmp_ports scan only runs on the central poller', function () use ($source) {
 	$pos = strpos($source, "COUNT(DISTINCT snmp_port)");

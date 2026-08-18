@@ -1,8 +1,8 @@
 <?php
 
-require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 4) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 4) . '/lib/CactiOAuth.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_LIBRARY . '/CactiOAuth.php';
 
 use League\OAuth2\Client\Provider\Google;
 
@@ -100,8 +100,8 @@ it('returns empty defaults for an empty provider name', function () {
 });
 
 it('runtime OAuth entrypoints load the flat CactiOAuth helper before use', function () {
-    $oauth2 = file_get_contents(dirname(__DIR__, 4) . '/oauth2.php');
-    $functions = file_get_contents(dirname(__DIR__, 4) . '/lib/functions.php');
+    $oauth2 = file_get_contents(CACTI_PATH_BASE . '/oauth2.php');
+    $functions = file_get_contents(CACTI_PATH_LIBRARY . '/functions.php');
 
     expect($oauth2)->toContain("require_once(CACTI_PATH_LIBRARY . '/CactiOAuth.php')")
         ->and($oauth2)->toContain('CactiOAuth::getProvider')

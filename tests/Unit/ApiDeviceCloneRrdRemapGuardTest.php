@@ -12,9 +12,9 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 2) . '/lib/database.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
 
 // api_clone_device_template() remaps each cloned Data Template's RRD items
 // onto the cloned Graph Template's task_item_id. If the cloned Data Template
@@ -27,7 +27,7 @@ require_once dirname(__DIR__, 2) . '/lib/database.php';
 // evals it unmodified, the same technique Issue7380GraphCreateWiringTest.php
 // uses for graph_template_connect_task_items().
 
-$src = file_get_contents(dirname(__DIR__, 2) . '/lib/api_device.php');
+$src = file_get_contents(CACTI_PATH_LIBRARY . '/api_device.php');
 
 $anchor = 'foreach ($old_rrds as $old_rrd) {';
 $start  = strpos($src, $anchor);

@@ -16,7 +16,7 @@
 $root = dirname(__DIR__, 2);
 
 test('setPaths probes composer only when a path is present', function () use ($root) {
-	$src = file_get_contents($root . '/lib/installer.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
 	expect($src)->not->toBeFalse('Failed to read lib/installer.php');
 
 	$fnPos = strpos($src, 'private function setPaths(');
@@ -34,7 +34,7 @@ test('setPaths probes composer only when a path is present', function () use ($r
 });
 
 test('composer probe follows the php_binary validation pattern', function () use ($root) {
-	$src = file_get_contents($root . '/lib/installer.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
 	expect($src)->not->toBeFalse('Failed to read lib/installer.php');
 
 	$phpPos      = strpos($src, "\$name == 'path_php_binary'");
@@ -46,8 +46,8 @@ test('composer probe follows the php_binary validation pattern', function () use
 });
 
 test('global settings and installer seeding agree on the setting name', function () use ($root) {
-	$settings = file_get_contents($root . '/include/global_settings.php');
-	$install  = file_get_contents($root . '/install/functions.php');
+	$settings = file_get_contents(CACTI_PATH_INCLUDE . '/global_settings.php');
+	$install  = file_get_contents(CACTI_PATH_BASE . '/install/functions.php');
 
 	expect(strpos($settings, "'path_composer'"))->not->toBeFalse('setting must exist in global_settings')
 		->and(strpos($install, "install_tool_path('composer'"))->not->toBeFalse('installer must seed the same setting');

@@ -20,7 +20,7 @@
  * hand-picked test happens not to hit - would surface here.
  */
 
-require_once dirname(__DIR__, 2) . '/lib/api_automation.php';
+require_once CACTI_PATH_LIBRARY . '/api_automation.php';
 
 function assert_valid_quad($ip, $context) {
 	$octets = explode('.', $ip);

@@ -30,7 +30,7 @@
  * drop a check and regress authorisation for every action table that
  * starts using the helper. */
 
-$source = file_get_contents(__DIR__ . '/../../../../lib/cacti_dispatch.php');
+$source = file_get_contents(CACTI_PATH_LIBRARY . '/cacti_dispatch.php');
 
 /* file_get_contents() returns false when the file is missing or
  * unreadable; coerce to an empty string here so each test can rely on

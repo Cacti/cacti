@@ -21,11 +21,11 @@
 
 $called_by_script_server = true;
 
-require_once dirname(__DIR__, 2) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 3) . '/include/global.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
 
 // ss_mikrotik_health: column allow-list
-require_once __DIR__ . '/../../../scripts/ss_mikrotik_health.php';
+require_once CACTI_PATH_BASE . '/scripts/ss_mikrotik_health.php';
 
 test('ss_mikrotik_health rejects invalid column', function () {
 	expect(ss_mikrotik_health(0, '1; DROP TABLE hosts; --'))->toBe('U');
@@ -48,7 +48,7 @@ test('ss_mikrotik_health accepts valid column temperature', function () {
 });
 
 // ss_hstats: column mapping via ss_hstats_map_stat_to_column
-require_once __DIR__ . '/../../../scripts/ss_hstats.php';
+require_once CACTI_PATH_BASE . '/scripts/ss_hstats.php';
 
 test('ss_hstats rejects invalid stat with host_id 0', function () {
 	expect(ss_hstats(0, 'invalid_stat'))->toBe('U');
@@ -60,31 +60,31 @@ test('ss_hstats returns U for valid stat with host_id 0', function () {
 
 // Verify snmp_retries is referenced (not ping_retries)
 test('aruba scripts use snmp_retries not ping_retries', function () {
-	$file = file_get_contents(__DIR__ . '/../../../scripts/ss_aruba_instant_ap.php');
+	$file = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_aruba_instant_ap.php');
 	expect($file)->toContain('snmp_retries');
 	expect($file)->not->toContain('ping_retries');
 });
 
 test('fortigate scripts use snmp_retries not ping_retries', function () {
-	$file = file_get_contents(__DIR__ . '/../../../scripts/ss_fortigate_ips.php');
+	$file = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_fortigate_ips.php');
 	expect($file)->toContain('snmp_retries');
 	expect($file)->not->toContain('ping_retries');
 });
 
 test('nimble scripts use snmp_retries not ping_retries', function () {
-	$file = file_get_contents(__DIR__ . '/../../../scripts/ss_nimble_alletra_total.php');
+	$file = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_nimble_alletra_total.php');
 	expect($file)->toContain('snmp_retries');
 	expect($file)->not->toContain('ping_retries');
 });
 
 test('disk io scripts use snmp_retries not ping_retries', function () {
-	$file = file_get_contents(__DIR__ . '/../../../scripts/ss_net_snmp_disk_io.php');
+	$file = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_net_snmp_disk_io.php');
 	expect($file)->toContain('snmp_retries');
 	expect($file)->not->toContain('ping_retries');
 });
 
 test('lmsensors script uses snmp_retries not ping_retries', function () {
-	$file = file_get_contents(__DIR__ . '/../../../scripts/ss_netsnmp_lmsensors.php');
+	$file = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_netsnmp_lmsensors.php');
 	expect($file)->toContain('snmp_retries');
 	expect($file)->not->toContain('ping_retries');
 });

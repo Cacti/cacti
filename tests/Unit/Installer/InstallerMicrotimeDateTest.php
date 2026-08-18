@@ -12,9 +12,9 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 3) . '/include/global.php';
-require_once dirname(__DIR__, 3) . '/lib/installer.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
+require_once CACTI_PATH_LIBRARY . '/installer.php';
 
 test('a microtime value without a fractional part is not parseable as U.u', function () {
 	/*
@@ -81,7 +81,7 @@ test('a float landing on a whole second stringifies without a fraction', functio
 
 test('no installer code path formats a raw U.u parse result', function () {
 	// Every caller must route through the guard, or the fatal comes back.
-	$installer = file_get_contents(dirname(__DIR__, 3) . '/lib/installer.php');
+	$installer = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
 
 	expect(substr_count($installer, "DateTime::createFromFormat('U.u'"))->toBe(1)
 		->and($installer)->toContain('Installer::dateFromMicrotime(');

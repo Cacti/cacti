@@ -28,7 +28,7 @@
 $root = dirname(__DIR__, 4);
 
 test('cacti.sql declares poller_output_boost_local_data_ids with USING BTREE on both indexes', function () use ($root) {
-	$sql = file_get_contents($root . '/cacti.sql');
+	$sql = file_get_contents(CACTI_PATH_BASE . '/cacti.sql');
 	expect($sql)->not->toBeFalse();
 
 	$pos = strpos($sql, 'CREATE TABLE `poller_output_boost_local_data_ids`');
@@ -42,7 +42,7 @@ test('cacti.sql declares poller_output_boost_local_data_ids with USING BTREE on 
 });
 
 test('poller_boost.php runtime fallback CREATE TABLE matches the corrected cacti.sql schema', function () use ($root) {
-	$src = file_get_contents($root . '/poller_boost.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 	expect($src)->not->toBeFalse();
 
 	$pos = strpos($src, 'CREATE TABLE IF NOT EXISTS poller_output_boost_local_data_ids');
@@ -61,7 +61,7 @@ test('poller_boost.php runtime fallback CREATE TABLE matches the corrected cacti
 });
 
 test('install/upgrades/1_3_0.php rebuilds both indexes as BTREE for existing installs', function () use ($root) {
-	$src = file_get_contents($root . '/install/upgrades/1_3_0.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/install/upgrades/1_3_0.php');
 	expect($src)->not->toBeFalse();
 
 	$pos = strpos($src, "if (db_table_exists('poller_output_boost_local_data_ids'))");

@@ -65,7 +65,11 @@ function raise_ajax_permission_denied() {
 	$GLOBALS['cdho_ajax_denied'] = true;
 }
 
-require_once dirname(__DIR__, 3) . '/lib/cacti_dispatch.php';
+if (!defined('CACTI_PATH_LIBRARY')) {
+	require_once dirname(__DIR__, 3) . '/include/global_path.php';
+}
+
+require_once CACTI_PATH_LIBRARY . '/cacti_dispatch.php';
 
 $scenario = json_decode($argv[1] ?? '', true);
 

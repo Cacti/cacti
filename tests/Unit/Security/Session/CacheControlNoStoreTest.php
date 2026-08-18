@@ -25,7 +25,7 @@
  * static content but landed on the path every page takes.
  */
 
-$globalSource = file_get_contents(dirname(__DIR__, 4) . '/include/global.php');
+$globalSource = file_get_contents(CACTI_PATH_INCLUDE . '/global.php');
 
 test('the page headers keep no-store', function () use ($globalSource) {
 	expect($globalSource)->toContain("header('Cache-Control: no-store, no-cache, must-revalidate');");

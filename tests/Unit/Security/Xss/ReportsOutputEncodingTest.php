@@ -23,14 +23,14 @@ $reportsPath = dirname(__DIR__, 4) . '/lib/reports.php';
 $packagePath = dirname(__DIR__, 4) . '/package.php';
 
 test('the data query name is escaped in both report rendering branches', function () use ($reportsPath) {
-	$source = file_get_contents($reportsPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/reports.php');
 
 	expect($source)->not->toMatch("/' ' \. \\\$data_query\['name'\]/");
 	expect(substr_count($source, "htmle(\$data_query['name'])"))->toBe(2);
 });
 
 test('every tree title component is escaped as it is built', function () use ($reportsPath) {
-	$source = file_get_contents($reportsPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/reports.php');
 
 	foreach (['tree_name', 'leaf_name', 'host_name', 'graph_name'] as $part) {
 		expect($source)->not->toMatch('/\$title_delimiter \. " \$' . $part . '"/');
@@ -39,14 +39,14 @@ test('every tree title component is escaped as it is built', function () use ($r
 });
 
 test('the package export form escapes the object name', function () use ($packagePath) {
-	$source = file_get_contents($packagePath);
+	$source = file_get_contents(CACTI_PATH_BASE . '/package.php');
 
 	expect($source)->not->toMatch("/value='<\?php print \\\$detail\['name'\]; \?>'/");
 	expect($source)->toContain("print htmle(\$detail['name'])");
 });
 
 test('the escaping helper neutralises both quote styles and script tags', function () {
-	require_once dirname(__DIR__, 4) . '/lib/html.php';
+	require_once CACTI_PATH_LIBRARY . '/html.php';
 
 	$payload = '\'"><script>alert(1)</script>';
 	$escaped = htmle($payload);

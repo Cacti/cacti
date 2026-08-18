@@ -20,8 +20,8 @@
  * validate_redirect_url() before the header() call.
  */
 
-$authSrc = file_get_contents(dirname(__DIR__, 2) . '/lib/auth.php');
-$htmlSrc = file_get_contents(dirname(__DIR__, 2) . '/lib/html_utility.php');
+$authSrc = file_get_contents(CACTI_PATH_LIBRARY . '/auth.php');
+$htmlSrc = file_get_contents(CACTI_PATH_LIBRARY . '/html_utility.php');
 
 test('the referer redirect is validated before it is emitted', function () use ($authSrc) {
 	$start = strpos($authSrc, 'function auth_login_redirect(');

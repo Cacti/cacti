@@ -74,7 +74,7 @@ test('reset link is rejected for a non-local realm account', function () {
 });
 
 test('the consumption query in source does not gate on password_change', function () use ($root) {
-	$reset   = file_get_contents($root . '/auth_resetpassword.php');
+	$reset   = file_get_contents(CACTI_PATH_BASE . '/auth_resetpassword.php');
 	$consume = substr($reset, strpos($reset, "case 'resetpassword'"));
 	$consume = substr($consume, 0, strpos($consume, '// Get passwords entered for change'));
 

@@ -62,7 +62,7 @@ test('the old 10.24 divisor error is gone', function () {
 });
 
 test('no 10.24 divisor remains in graph_variables.php', function () {
-	$src = file_get_contents(__DIR__ . '/../../../../lib/graph_variables.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/graph_variables.php');
 	expect($src)->not->toBeFalse('Failed to read lib/graph_variables.php');
 
 	expect(preg_match('/=\s*10\.24\s*;/', $src))->toBe(0, 'the 10.24 approximation must be gone from code');

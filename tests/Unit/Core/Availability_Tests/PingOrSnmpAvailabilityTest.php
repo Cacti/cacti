@@ -28,8 +28,8 @@
  * so a subclass replaces them with recorded answers and the real ping() runs.
  */
 
-require_once dirname(__DIR__, 4) . '/include/global_constants.php';
-require_once dirname(__DIR__, 4) . '/lib/ping.php';
+require_once CACTI_PATH_INCLUDE . '/global_constants.php';
+require_once CACTI_PATH_LIBRARY . '/ping.php';
 
 if (!function_exists(__NAMESPACE__ . '\\__') && !function_exists('\\__')) {
 	function __($text, ...$args) {

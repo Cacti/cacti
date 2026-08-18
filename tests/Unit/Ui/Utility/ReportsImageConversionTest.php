@@ -16,17 +16,15 @@
  +-------------------------------------------------------------------------+
 */
 
-$basePath = dirname(__DIR__, 4);
-
-beforeEach(function () use ($basePath) {
+beforeEach(function () {
 	$config = [
-		'base_path'         => $basePath,
+		'base_path'         => CACTI_PATH_BASE,
 		'cacti_server_os'   => str_starts_with(PHP_OS, 'WIN') ? 'win32' : 'unix',
 	];
 	$GLOBALS['config'] = $config;
-	require_once $basePath . '/include/global_path.php';
-	require_once $basePath . '/lib/functions.php';
-	require_once $basePath . '/lib/reports.php';
+	require_once CACTI_PATH_INCLUDE . '/global_path.php';
+	require_once CACTI_PATH_LIBRARY . '/functions.php';
+	require_once CACTI_PATH_LIBRARY . '/reports.php';
 });
 
 // Create minimal 1x1 PNG using GD

@@ -50,7 +50,7 @@ test('json output is well-formed and totals every category', function () {
 
 test('committed baseline matches the current tree', function () {
 	$root = dirname(__DIR__, 2);
-	$baseline = json_decode(file_get_contents($root . '/tests/tools/sql_interpolation_baseline.json'), true);
+	$baseline = json_decode(file_get_contents(CACTI_PATH_TESTS . '/tools/sql_interpolation_baseline.json'), true);
 	expect($baseline)->toBeArray();
 
 	$data = json_decode(audit_run('--json')['out'], true);
@@ -72,7 +72,7 @@ test('committed baseline matches the current tree', function () {
 
 test('every baseline path still exists', function () {
 	$root = dirname(__DIR__, 2);
-	$baseline = json_decode(file_get_contents($root . '/tests/tools/sql_interpolation_baseline.json'), true);
+	$baseline = json_decode(file_get_contents(CACTI_PATH_TESTS . '/tools/sql_interpolation_baseline.json'), true);
 
 	foreach (array_keys($baseline) as $path) {
 		expect(file_exists($root . '/' . $path))->toBeTrue("missing baseline path: $path");

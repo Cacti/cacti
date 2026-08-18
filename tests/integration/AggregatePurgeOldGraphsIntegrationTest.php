@@ -12,9 +12,9 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
-require_once dirname(__DIR__, 2) . '/lib/database.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/FakeMySQLPDO.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
 
 if (!function_exists('array_rekey')) {
 	function array_rekey(mixed $array, string $key, mixed $key_value) : array {
@@ -53,7 +53,7 @@ if (!function_exists('array_rekey')) {
  * production function -- parameterised IN clauses, prepared statements and
  * all -- against a real (sqlite-backed) database, across five joined tables.
  */
-$src = file_get_contents(dirname(__DIR__, 2) . '/aggregate_graphs.php');
+$src = file_get_contents(CACTI_PATH_BASE . '/aggregate_graphs.php');
 if (preg_match('/^function purge_old_graphs\(\) : void \{.*?^\}/sm', $src, $m) !== 1) {
 	throw new RuntimeException('could not locate purge_old_graphs() in aggregate_graphs.php');
 }

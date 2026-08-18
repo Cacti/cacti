@@ -7,8 +7,8 @@
  +-------------------------------------------------------------------------+
 */
 
-$graphVariables = file_get_contents(__DIR__ . '/../../../../lib/graph_variables.php');
-$graphXport     = file_get_contents(__DIR__ . '/../../../../graph_xport.php');
+$graphVariables = file_get_contents(CACTI_PATH_LIBRARY . '/graph_variables.php');
+$graphXport     = file_get_contents(CACTI_PATH_BASE . '/graph_xport.php');
 
 test('percentile index is based on observed samples', function () use ($graphVariables) {
 	preg_match('/^function cacti_percentile_index\([^)]*\).*?\{.*?^\}/sm', $graphVariables, $matches);

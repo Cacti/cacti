@@ -12,8 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 4) . '/include/global.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
 
 beforeEach(function () {
 	unset(
@@ -47,7 +47,7 @@ test('returns false when no server variables are set', function () {
 test('returns first valid IP from X-Forwarded-For when proxy_headers enabled', function () {
 	global $config, $allowed_proxy_headers;
 
-	require __DIR__ . '/../../../../include/global_arrays.php';
+	require CACTI_PATH_INCLUDE . '/global_arrays.php';
 
 	$config['proxy_headers'] = true;
 
@@ -60,7 +60,7 @@ test('returns first valid IP from X-Forwarded-For when proxy_headers enabled', f
 test('skips invalid IPs in forwarded header', function () {
 	global $config, $allowed_proxy_headers;
 
-	require __DIR__ . '/../../../../include/global_arrays.php';
+	require CACTI_PATH_INCLUDE . '/global_arrays.php';
 
 	$config['proxy_headers'] = true;
 
@@ -73,7 +73,7 @@ test('skips invalid IPs in forwarded header', function () {
 test('falls back to REMOTE_ADDR when forwarded header has only invalid IPs', function () {
 	global $config, $allowed_proxy_headers;
 
-	require __DIR__ . '/../../../../include/global_arrays.php';
+	require CACTI_PATH_INCLUDE . '/global_arrays.php';
 
 	$config['proxy_headers'] = true;
 

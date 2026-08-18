@@ -34,7 +34,7 @@ if (!file_exists(__DIR__ . '/../../lib/cacti_dispatch.php')) {
 	return;
 }
 
-require_once dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
+require_once CACTI_PATH_TESTS . '/Helpers/IsolatedProbe.php';
 
 function cdho_dispatch(array $scenario): array {
 	return cacti_test_isolated_probe(

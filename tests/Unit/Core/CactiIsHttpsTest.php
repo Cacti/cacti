@@ -30,7 +30,7 @@
  * graph_xport.php.  All callers now use this single helper.
  */
 
-require_once __DIR__ . '/../../../lib/functions.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
 
 test('returns true when HTTPS is "on"', function () {
 	$_SERVER['HTTPS'] = 'on';

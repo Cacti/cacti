@@ -25,7 +25,7 @@
  */
 
 function getPackageFindPathsSource(): string {
-	$src = file_get_contents(__DIR__ . '/../../../../lib/package.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/package.php');
 	expect($src)->not->toBeFalse('Failed to read lib/package.php');
 	$start = strpos($src, 'function find_paths(');
 	expect($start)->not->toBeFalse('find_paths() must exist in lib/package.php');

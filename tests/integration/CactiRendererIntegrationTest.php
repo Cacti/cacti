@@ -17,7 +17,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/lib/renderer.php';
+require_once CACTI_PATH_LIBRARY . '/renderer.php';
 
 if (!defined('CACTI_PATH_INCLUDE')) {
 	define('CACTI_PATH_INCLUDE', dirname(__DIR__, 2) . '/include');

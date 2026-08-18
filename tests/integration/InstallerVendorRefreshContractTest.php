@@ -16,7 +16,7 @@
 $root = dirname(__DIR__, 2);
 
 test('install flow calls the vendor refresh before database conversion', function () use ($root) {
-	$src = file_get_contents($root . '/lib/installer.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
 	expect($src)->not->toBeFalse('Failed to read lib/installer.php');
 
 	$installPos = strpos($src, 'private function install() : void');
@@ -31,7 +31,7 @@ test('install flow calls the vendor refresh before database conversion', functio
 });
 
 test('vendor refresh bails out without a configured composer binary', function () use ($root) {
-	$src = file_get_contents($root . '/lib/installer.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
 
 	$fnPos = strpos($src, 'private function refreshVendorDependencies()');
 	expect($fnPos)->not->toBeFalse('refreshVendorDependencies must exist');
@@ -47,7 +47,7 @@ test('vendor refresh bails out without a configured composer binary', function (
 });
 
 test('global bootstrap permits the installer to repair a missing vendor tree', function () use ($root) {
-	$src = file_get_contents($root . '/include/global.php');
+	$src = file_get_contents(CACTI_PATH_INCLUDE . '/global.php');
 
 	expect($src)->not->toBeFalse()
 		->and(strpos($src, "!defined('IN_CACTI_INSTALL')"))->not->toBeFalse()
@@ -55,7 +55,7 @@ test('global bootstrap permits the installer to repair a missing vendor tree', f
 });
 
 test('refresh gating requires pure installs', function () use ($root) {
-	$src = file_get_contents($root . '/lib/installer.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
 
 	$pattern = '/Package operations: \(\\\\d\+\) installs\?, \(\\\\d\+\) updates\?, \(\\\\d\+\) removals\?/';
 	expect(preg_match($pattern, $src))->toBe(1,

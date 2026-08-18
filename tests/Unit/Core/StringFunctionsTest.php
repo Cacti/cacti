@@ -12,8 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 3) . '/include/global.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
 
 // =====================================================================
 // title_trim tests

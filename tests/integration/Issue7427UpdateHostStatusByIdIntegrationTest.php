@@ -29,12 +29,12 @@
  * re-typed copy of it, and the sibling row is read back to prove it survived.
  */
 
-require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
-require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 2) . '/include/global_constants.php';
-require_once dirname(__DIR__, 2) . '/lib/database.php';
-require_once dirname(__DIR__, 2) . '/lib/ping.php';
-require_once dirname(__DIR__, 2) . '/lib/functions.php';
+require_once CACTI_PATH_TESTS . '/Helpers/FakeMySQLPDO.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_INCLUDE . '/global_constants.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
+require_once CACTI_PATH_LIBRARY . '/ping.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
 
 /* include/global.php decides these from the SAPI and the settings table, and
    pulling it in would need a live Cacti install. CLI is what the poller runs

@@ -29,7 +29,11 @@ if (!defined('SQL_AUDIT_LIB_ONLY')) {
 	chdir(__DIR__ . '/../../');
 }
 
-const BASELINE = 'tests/tools/sql_interpolation_baseline.json';
+if (!defined('CACTI_PATH_BASE')) {
+	require_once __DIR__ . '/../../include/global_path.php';
+}
+
+const SQL_INTERPOLATION_BASELINE = 'tests/tools/sql_interpolation_baseline.json';
 
 $db_functions = [
 	'db_execute', 'db_execute_prepared',
@@ -339,7 +343,7 @@ $files   = list_php_files();
 $results = [];  // path => array of sites
 
 foreach ($files as $path) {
-	$src = file_get_contents($path);
+	$src = file_get_contents(CACTI_PATH_BASE . '/' . $path);
 
 	if ($src === false) {
 		continue;
@@ -401,18 +405,18 @@ if ($mode === '--write-baseline') {
 			$baseline[$path] = $v;
 		}
 	}
-	file_put_contents(BASELINE, json_encode($baseline, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL);
-	printf("Wrote %s: %d files, %d value-interpolation sites.\n", BASELINE, count($baseline), array_sum($baseline));
+	file_put_contents(SQL_INTERPOLATION_BASELINE, json_encode($baseline, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL);
+	printf("Wrote %s: %d files, %d value-interpolation sites.\n", SQL_INTERPOLATION_BASELINE, count($baseline), array_sum($baseline));
 	exit(0);
 }
 
 if ($mode === '--check') {
-	if (!file_exists(BASELINE)) {
-		fwrite(STDERR, "Baseline missing: " . BASELINE . " (run --write-baseline).\n");
+	if (!file_exists(SQL_INTERPOLATION_BASELINE)) {
+		fwrite(STDERR, "Baseline missing: " . SQL_INTERPOLATION_BASELINE . " (run --write-baseline).\n");
 		exit(2);
 	}
 
-	$baseline = json_decode(file_get_contents(BASELINE), true);
+	$baseline = json_decode(file_get_contents(SQL_INTERPOLATION_BASELINE), true);
 	if (!is_array($baseline)) {
 		fwrite(STDERR, "Baseline is not valid JSON.\n");
 		exit(2);

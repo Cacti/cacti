@@ -28,7 +28,7 @@
  * MySQL returns a number from UNIX_TIMESTAMP(), so the translation now casts.
  */
 
-require_once dirname(__DIR__, 2) . '/Helpers/FakeMySQLPDO.php';
+require_once CACTI_PATH_TESTS . '/Helpers/FakeMySQLPDO.php';
 
 /**
  * Seeds one row whose timestamp is a known distance in the past.

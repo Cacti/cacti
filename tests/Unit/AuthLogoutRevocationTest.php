@@ -20,8 +20,8 @@
  * and logout_everywhere only cleared remember-me tokens.
  */
 
-$logoutSrc  = file_get_contents(dirname(__DIR__, 2) . '/logout.php');
-$profileSrc = file_get_contents(dirname(__DIR__, 2) . '/auth_profile.php');
+$logoutSrc  = file_get_contents(CACTI_PATH_BASE . '/logout.php');
+$profileSrc = file_get_contents(CACTI_PATH_BASE . '/auth_profile.php');
 
 test('logout revokes the remember-me token before the cookie is unset', function () use ($logoutSrc) {
 	$clear  = strpos($logoutSrc, 'clear_auth_cookie();');

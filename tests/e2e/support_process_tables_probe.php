@@ -27,7 +27,7 @@
 
 chdir(dirname(__DIR__, 2));
 
-require_once __DIR__ . '/../../include/global.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
 
 function process_tables_probe_fail(string $message): void {
 	fwrite(STDERR, "FAIL: $message\n");
@@ -37,7 +37,7 @@ function process_tables_probe_fail(string $message): void {
 // support.php runs an authenticated dispatch on include, so extract the function
 // and evaluate it here. It still calls the real plugin hook and db_table_exists()
 // against the container database. eval() runs only Cacti's own extracted source.
-$src = file_get_contents(dirname(__DIR__, 2) . '/support.php');
+$src = file_get_contents(CACTI_PATH_BASE . '/support.php');
 $matched = preg_match('/function\s+support_process_tables\s*\(\s*\)\s*:\s*array\s*\{.*?^\}/sm', $src, $m);
 
 if ($matched !== 1) {

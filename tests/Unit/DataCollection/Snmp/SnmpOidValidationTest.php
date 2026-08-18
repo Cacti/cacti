@@ -20,7 +20,7 @@ declare(strict_types=1);
  * @group regression
  */
 
-require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
 
 if (!function_exists('cacti_snmp_validate_oid')) {
 	function cacti_snmp_validate_oid(string $oid): bool {

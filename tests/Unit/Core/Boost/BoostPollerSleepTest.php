@@ -26,7 +26,7 @@ $boostPollerPath = __DIR__ . '/../../../../poller_boost.php';
 
 test('poller_boost.php has no unconditional sleep before boost_launch_children', function () use ($boostPollerPath) {
 	expect(file_exists($boostPollerPath))->toBeTrue("poller_boost.php not found at {$boostPollerPath}");
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 	expect($contents)->not->toBeFalse("file_get_contents failed for {$boostPollerPath}");
 
 	// The removed block combined the "Allow mysql to flush" comment with sleep(7).
@@ -37,7 +37,7 @@ test('poller_boost.php has no unconditional sleep before boost_launch_children',
 
 test('poller_boost.php still calls boost_launch_children', function () use ($boostPollerPath) {
 	expect(file_exists($boostPollerPath))->toBeTrue("poller_boost.php not found at {$boostPollerPath}");
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 	expect($contents)->not->toBeFalse("file_get_contents failed for {$boostPollerPath}");
 
 	// Confirm the removal did not accidentally delete the launch call itself.
@@ -46,7 +46,7 @@ test('poller_boost.php still calls boost_launch_children', function () use ($boo
 
 test('boost_launch_children call is guarded by $continue', function () use ($boostPollerPath) {
 	expect(file_exists($boostPollerPath))->toBeTrue("poller_boost.php not found at {$boostPollerPath}");
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 	expect($contents)->not->toBeFalse("file_get_contents failed for {$boostPollerPath}");
 
 	// The launch call must remain inside an if ($continue) block so that
@@ -56,7 +56,7 @@ test('boost_launch_children call is guarded by $continue', function () use ($boo
 
 test('no sleep or usleep call immediately precedes boost_launch_children', function () use ($boostPollerPath) {
 	expect(file_exists($boostPollerPath))->toBeTrue("poller_boost.php not found at {$boostPollerPath}");
-	$contents = file_get_contents($boostPollerPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 	expect($contents)->not->toBeFalse("file_get_contents failed for {$boostPollerPath}");
 
 	// Walk every line that calls boost_launch_children() and assert the

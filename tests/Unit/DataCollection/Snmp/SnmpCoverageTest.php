@@ -13,8 +13,15 @@
 */
 
 define('CACTI_PHP_SNMP', true);
-define('CACTI_PATH_INCLUDE', dirname(__DIR__, 4) . '/include');
-define('CACTI_SERVER_OS', 'unix');
+
+if (!defined('CACTI_PATH_INCLUDE')) {
+	define('CACTI_PATH_INCLUDE', dirname(__DIR__, 4) . '/include');
+}
+
+if (!defined('CACTI_SERVER_OS')) {
+	define('CACTI_SERVER_OS', 'unix');
+}
+
 define('SNMP_POLLER', 'SNMP');
 define('POLLER_VERBOSITY_HIGH', 4);
 
@@ -119,7 +126,7 @@ function cacti_strtolower(string $value) : string {
 	return strtolower($value);
 }
 
-require_once dirname(__DIR__, 4) . '/lib/snmp.php';
+require_once CACTI_PATH_LIBRARY . '/snmp.php';
 
 final class CoverageSnmpSession {
 	public array $info              = ['timeout' => 1500, 'hostname' => 'coverage-host'];

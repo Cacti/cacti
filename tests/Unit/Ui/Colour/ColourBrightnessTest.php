@@ -7,7 +7,7 @@
  * and RGB lower-bounds clamping.
  */
 
-require_once dirname(__DIR__, 4) . '/lib/rrd.php';
+require_once CACTI_PATH_LIBRARY . '/rrd.php';
 
 test('colourBrightness returns valid hex for positive decimal percent', function () {
 	$result = colourBrightness('808080', 0.5);

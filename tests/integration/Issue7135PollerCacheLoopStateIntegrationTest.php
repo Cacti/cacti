@@ -31,16 +31,16 @@
  * deliberately has no oid, and reads back the poller items it produced.
  */
 
-require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 2) . '/include/global_constants.php';
-require_once dirname(__DIR__, 2) . '/lib/database.php';
-require_once dirname(__DIR__, 2) . '/lib/functions.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_INCLUDE . '/global_constants.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
 
 /* After lib/functions.php, so its guarded definitions stay no-ops; it is here
    for __()/__esc(), which the data query loader calls and functions.php does
    not define. */
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/FakeMySQLPDO.php';
 
 /* include/global.php resolves these from config and the settings table, which
    would need a live install. update_poller_cache() only uses them to build the
@@ -60,10 +60,10 @@ foreach ([
 	}
 }
 
-require_once dirname(__DIR__, 2) . '/lib/utility.php';
+require_once CACTI_PATH_LIBRARY . '/utility.php';
 
 // the script query path expands |host_*| tokens, which fires a plugin hook
-require_once dirname(__DIR__, 2) . '/lib/plugins.php';
+require_once CACTI_PATH_LIBRARY . '/plugins.php';
 
 /**
  * sqlite reports rowCount() as 0 for SELECT, and db_fetch_row_return() guards
@@ -280,7 +280,7 @@ test('the counting statement preserves fetch and fetchColumn after execute', fun
 });
 
 test('test_data_source resets output-specific state on every iteration', function () {
-	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/functions.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/functions.php');
 	expect($source)->not->toBeFalse('lib/functions.php must be readable');
 
 	$start = strpos($source, 'function test_data_source(');

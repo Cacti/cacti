@@ -54,8 +54,8 @@
  * t_value, value) and both call sites already match.
  */
 
-$templateSource      = file_get_contents(__DIR__ . '/../../../lib/template.php');
-$apiDataSourceSource = file_get_contents(__DIR__ . '/../../../lib/api_data_source.php');
+$templateSource      = file_get_contents(CACTI_PATH_LIBRARY . '/template.php');
+$apiDataSourceSource = file_get_contents(CACTI_PATH_LIBRARY . '/api_data_source.php');
 
 /**
  * Extract the body of one PHP function definition out of a source blob.

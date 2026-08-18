@@ -13,7 +13,7 @@
 */
 
 test('global session handles a missing request URI consistently', function () {
-	$source = file_get_contents(dirname(__DIR__, 4) . '/include/global_session.php');
+	$source = file_get_contents(CACTI_PATH_INCLUDE . '/global_session.php');
 
 	expect($source)->not->toBeFalse()
 		->and($source)->toContain("\$request_uri = \$_SERVER['REQUEST_URI'] ?? '';")

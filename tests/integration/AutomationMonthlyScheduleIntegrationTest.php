@@ -28,7 +28,7 @@
  * instead of ever collapsing to false/1970.
  */
 
-require_once dirname(__DIR__, 2) . '/lib/api_automation.php';
+require_once CACTI_PATH_LIBRARY . '/api_automation.php';
 
 if (!isset($GLOBALS['config'])) {
 	/* automation_debug() prints to stdout when $config['is_web'] is falsy;

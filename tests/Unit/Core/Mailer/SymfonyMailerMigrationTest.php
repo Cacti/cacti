@@ -6,8 +6,8 @@
 */
 
 test('mailer implementation uses Symfony Mailer instead of PHPMailer', function () {
-	$functions = file_get_contents(__DIR__ . '/../../../../lib/functions.php');
-	$composer  = file_get_contents(__DIR__ . '/../../../../composer.json');
+	$functions = file_get_contents(CACTI_PATH_LIBRARY . '/functions.php');
+	$composer  = file_get_contents(CACTI_PATH_BASE . '/composer.json');
 
 	expect($composer)->toContain('"symfony/mailer"')
 		->not->toContain('"phpmailer/phpmailer"');

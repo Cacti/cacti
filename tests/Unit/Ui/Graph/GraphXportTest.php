@@ -12,9 +12,9 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 4) . '/include/global.php';
-require_once dirname(__DIR__, 4) . '/lib/xml.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
+require_once CACTI_PATH_LIBRARY . '/xml.php';
 
 // --- rrdxport2array: valid xport XML produces correct structure ---
 

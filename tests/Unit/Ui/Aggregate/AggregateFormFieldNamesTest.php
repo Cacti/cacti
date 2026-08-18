@@ -28,7 +28,7 @@
  */
 
 function getAggregateGraphsSource() : string {
-	$src = file_get_contents(dirname(__DIR__, 4) . '/aggregate_graphs.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/aggregate_graphs.php');
 	expect($src)->not->toBeFalse('Failed to read aggregate_graphs.php');
 
 	return $src;

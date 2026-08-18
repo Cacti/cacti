@@ -30,7 +30,7 @@ foreach (['RRD_ALIGN_LEFT' => 'left', 'RRD_ALIGN_RIGHT' => 'right',
 	}
 }
 
-require_once dirname(__DIR__, 2) . '/lib/rrd_graph_item.php';
+require_once CACTI_PATH_LIBRARY . '/rrd_graph_item.php';
 
 test('alpha accepts a hex pair', function () : void {
 	expect(rrd_graph_item_alpha('FF'))->toBe('FF');

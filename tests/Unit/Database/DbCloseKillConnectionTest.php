@@ -20,16 +20,14 @@
  * the corrected function name and must not contain the typo'd one.
  */
 
-$repoRoot = __DIR__ . '/../..';
-
-test('db_close() issues the corrected KILL CONNECTION statement', function () use ($repoRoot) {
-	$src = file_get_contents("$repoRoot/lib/database.php");
+test('db_close() issues the corrected KILL CONNECTION statement', function () {
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/database.php');
 
 	expect($src)->toContain("db_execute('KILL CONNECTION CONNECTION_ID()', false, \$db_conn)");
 });
 
-test('db_close() no longer contains the CONNECTIION_ID typo', function () use ($repoRoot) {
-	$src = file_get_contents("$repoRoot/lib/database.php");
+test('db_close() no longer contains the CONNECTIION_ID typo', function () {
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/database.php');
 
 	expect($src)->not->toContain('CONNECTIION_ID');
 });

@@ -28,7 +28,7 @@
 
 chdir(dirname(__DIR__, 2));
 
-require_once __DIR__ . '/../../include/global.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
 require_once CACTI_PATH_LIBRARY . '/functions.php';
 
 function support_diag_probe_assert(bool $condition, string $message): void {
@@ -56,7 +56,7 @@ function support_diag_probe_report(): string {
 	$redact          = true;
 
 	$path = dirname(__DIR__, 2) . '/support.php';
-	$src  = file_get_contents($path);
+	$src  = file_get_contents(CACTI_PATH_BASE . '/support.php');
 
 	support_diag_probe_assert($src !== false, "unable to read $path");
 

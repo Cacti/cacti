@@ -24,7 +24,7 @@ $authPath = __DIR__ . '/../../../../auth_resetpassword.php';
 // --- auth_resetpassword.php: hash escaped in output ---
 
 test('auth_resetpassword.php escapes hash with htmlerv', function () use ($authPath) {
-	$contents = file_get_contents($authPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/auth_resetpassword.php');
 
 	expect($contents)->toContain("htmlerv('hash')");
 });

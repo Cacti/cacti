@@ -31,7 +31,7 @@
 // --- source helper ---
 
 function getRrdGraphFunctionSource(): string {
-	$rrdPhp = file_get_contents(__DIR__ . '/../../../../lib/rrd.php');
+	$rrdPhp = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 	expect($rrdPhp)->not->toBeFalse('Failed to read lib/rrd.php');
 
 	$start = strpos($rrdPhp, 'function rrdtool_function_graph(');

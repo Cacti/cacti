@@ -41,7 +41,7 @@ $globalSettings = __DIR__ . '/../../../../include/global_settings.php';
 // ---------------------------------------------------------------------------
 
 test('poller_spikekill.php REPLACE INTO settings statement is syntactically complete', function () use ($pollerPath) {
-	$src = file_get_contents($pollerPath);
+	$src = file_get_contents(CACTI_PATH_BASE . '/poller_spikekill.php');
 
 	// Every occurrence of the lastrun REPLACE must close its VALUES list.
 	// The buggy form was: VALUES ("spikekill_lastrun", ?' with no closing paren.
@@ -54,7 +54,7 @@ test('poller_spikekill.php REPLACE INTO settings statement is syntactically comp
 // ---------------------------------------------------------------------------
 
 test('poller_spikekill.php escapes the RRD file path with cacti_escapeshellarg', function () use ($pollerPath) {
-	$src = file_get_contents($pollerPath);
+	$src = file_get_contents(CACTI_PATH_BASE . '/poller_spikekill.php');
 
 	// The path must be wrapped — bare concatenation is the bug.
 	expect($src)->not->toMatch('/[\'"]--rrdfile=[\'"] \. \$f[^)]/');
@@ -62,7 +62,7 @@ test('poller_spikekill.php escapes the RRD file path with cacti_escapeshellarg',
 });
 
 test('poller_spikekill.php --rrdfile argument uses cacti_escapeshellarg not raw concat', function () use ($pollerPath) {
-	$src = file_get_contents($pollerPath);
+	$src = file_get_contents(CACTI_PATH_BASE . '/poller_spikekill.php');
 
 	// Ensure the full safe pattern is present.
 	expect($src)->toContain("' --rrdfile=' . cacti_escapeshellarg(\$f)");
@@ -73,7 +73,7 @@ test('poller_spikekill.php --rrdfile argument uses cacti_escapeshellarg not raw 
 // ---------------------------------------------------------------------------
 
 test('lib/spikekill.php numspike validation has no double-negation', function () use ($spikeLib) {
-	$src = file_get_contents($spikeLib);
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/spikekill.php');
 
 	// The buggy pattern: !$this->numspike != ''
 	// The boolean cast of !$x compared to a string is meaningless.
@@ -82,7 +82,7 @@ test('lib/spikekill.php numspike validation has no double-negation', function ()
 });
 
 test('lib/spikekill.php numspike validation uses simple not-empty check', function () use ($spikeLib) {
-	$src = file_get_contents($spikeLib);
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/spikekill.php');
 
 	// Confirm the correct form exists — numspike is checked directly.
 	expect($src)->toContain("\$this->numspike != ''");
@@ -93,7 +93,7 @@ test('lib/spikekill.php numspike validation uses simple not-empty check', functi
 // ---------------------------------------------------------------------------
 
 test('lib/spikekill.php validates time range only when both ends are non-empty', function () use ($spikeLib) {
-	$src = file_get_contents($spikeLib);
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/spikekill.php');
 
 	// The buggy form validated the range inside if (empty($this->out_start))
 	// — i.e., when no range was set, which is always a no-op.
@@ -109,7 +109,7 @@ test('lib/spikekill.php validates time range only when both ends are non-empty',
 // ---------------------------------------------------------------------------
 
 test('lib/spikekill.php backup cleanup checks $bakfile not $xmlfile for .bak deletion', function () use ($spikeLib) {
-	$src = file_get_contents($spikeLib);
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/spikekill.php');
 
 	// The fixed form: each variable guards its own deletion.
 	// Verify both exist and that $xmlfile does not guard $bakfile.
@@ -126,7 +126,7 @@ test('lib/spikekill.php backup cleanup checks $bakfile not $xmlfile for .bak del
 // ---------------------------------------------------------------------------
 
 test('global_settings.php spikekill_method default matches the only dropdown option', function () use ($globalSettings) {
-	$src = file_get_contents($globalSettings);
+	$src = file_get_contents(CACTI_PATH_INCLUDE . '/global_settings.php');
 
 	// Extract the spikekill_method block.
 	preg_match("/'spikekill_method'\s*=>\s*\[(.*?)\],\s*'spikekill_/s", $src, $m);
@@ -140,7 +140,7 @@ test('global_settings.php spikekill_method default matches the only dropdown opt
 });
 
 test('global_settings.php spikekill_method dropdown contains Standard Deviation as option 1', function () use ($globalSettings) {
-	$src = file_get_contents($globalSettings);
+	$src = file_get_contents(CACTI_PATH_INCLUDE . '/global_settings.php');
 
 	preg_match("/'spikekill_method'\s*=>\s*\[(.*?)\],\s*'spikekill_/s", $src, $m);
 	$block = $m[1] ?? '';

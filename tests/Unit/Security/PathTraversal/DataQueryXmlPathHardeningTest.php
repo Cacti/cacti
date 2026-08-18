@@ -30,7 +30,7 @@
 // Source-scan suite (secondary lint — does NOT substitute for runtime tests)
 // ---------------------------------------------------------------------------
 
-$src = file_get_contents(__DIR__ . '/../../../../lib/data_query.php');
+$src = file_get_contents(CACTI_PATH_LIBRARY . '/data_query.php');
 
 test('get_data_query_array checks file existence before calling realpath', function () use ($src) {
 	expect($src)->toContain('file_exists($xml_file_path)');

@@ -22,7 +22,7 @@
  */
 
 test('global.php guards the autoload require with instructions', function () {
-	$src = file_get_contents(__DIR__ . '/../../../include/global.php');
+	$src = file_get_contents(CACTI_PATH_INCLUDE . '/global.php');
 	expect($src)->not->toBeFalse('Failed to read include/global.php');
 
 	// The path is now computed once into $vendor_autoload and reused by both

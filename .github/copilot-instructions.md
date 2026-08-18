@@ -67,6 +67,7 @@
 
 ## Workflows you’ll actually use
 - Install deps: `composer install` (CI validates via `.github/workflows/syntax.yml`).
+- Composer uses `"vendor-dir": "./include/vendor"`; run Pest with `include/vendor/bin/pest` or `composer test`, not `vendor/bin/pest`.
 - Install/upgrade DB: `php -q cli/install_cacti.php --accept-eula --install --force` and `php -q cli/upgrade_database.php --forcever=$(cat include/cacti_version)`.
 - Run poller: `php poller.php --poller=1 --force --debug` (daemon debug: `./cactid.php --foreground --debug`).
 - Repo checks: `composer lint`, `composer phpstan`, `composer phpcsfixer` (dry-run).
@@ -104,7 +105,5 @@
   - `Database/`, `Installer/`, `Scripts/`, `Plugin/` — domain-specific folders at the top level.
 - When adding a new test, place it in the matching category folder. If a new domain is needed, create a folder for it rather than leaving the file flat in `tests/Unit/`.
 - **File naming:** do not encode GitHub issue or GHSA numbers in filenames. Name the file after the behavior it tests (e.g. `PercentileContractTest.php`, not `Issue7070PercentileContractTest.php`). The GHSA/issue ID belongs in the test's `test('...')` description string or a file-level docblock, not the filename.
-- **`__DIR__` path depth:** tests read source files via `file_get_contents(__DIR__ . '/../../../...')` or `dirname(__DIR__, N)`. The depth must match the folder's nesting level:
-  - `tests/Unit/<Category>/` → 3 levels (`'/../../../'` or `dirname(__DIR__, 3)`)
-  - `tests/Unit/<Category>/<Subcategory>/` → 4 levels (`'/../../../../'` or `dirname(__DIR__, 4)`)
-  - After moving a test between folders, always update the `__DIR__` relative paths to match the new depth.
+- **Source file reads:** when tests use `file_get_contents()` to inspect Cacti source files, use predefined path constants instead of `__DIR__`, `dirname(__DIR__, N)`, `$root`, `$repoRoot`, or similar path variables. Use `CACTI_PATH_LIBRARY . '/file.php'` for `lib/`, `CACTI_PATH_INCLUDE . '/file.php'` for `include/`, and `CACTI_PATH_BASE . '/remaining/path.php'` for root-level or other repository paths.
+- **Use of include/require functions:** in all test files, the use of include(), include_once(), require(), require_once() must include one of the following predefined constants CACTI_PATH_BASE, CACTI_PATH_INCLUDE, CACTI_PATH_LIBRARY, or CACTI_PATH_TESTS to define the root of every path.  The use of dirname() and __DIR__ functions and constants is forbidden.

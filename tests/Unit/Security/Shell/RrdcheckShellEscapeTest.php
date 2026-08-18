@@ -27,11 +27,11 @@
  * argument at a time.
  */
 
-require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 4) . '/include/global.php';
-require_once dirname(__DIR__, 4) . '/lib/rrdcheck.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
+require_once CACTI_PATH_LIBRARY . '/rrdcheck.php';
 
-$rrdcheckSource = file_get_contents(__DIR__ . '/../../../../lib/rrdcheck.php');
+$rrdcheckSource = file_get_contents(CACTI_PATH_LIBRARY . '/rrdcheck.php');
 
 // --- proxy calls quote the RRDfile path ---
 

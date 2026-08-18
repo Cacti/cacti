@@ -12,7 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 4) . '/lib/CactiSettings.php';
+require_once CACTI_PATH_LIBRARY . '/CactiSettings.php';
 
 use Symfony\Component\Validator\Constraints as Assert;
 

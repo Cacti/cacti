@@ -22,7 +22,7 @@
  */
 
 function getDatabaseSource(): string {
-	$src = file_get_contents(__DIR__ . '/../../../lib/database.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/database.php');
 	expect($src)->not->toBeFalse('Failed to read lib/database.php');
 	return $src;
 }

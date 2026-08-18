@@ -13,7 +13,7 @@
 $root = dirname(__DIR__, 3);
 
 test('installer preserves failed state and initializes the configured csrf secret', function () use ($root) {
-	$installer = file_get_contents($root . '/lib/installer.php');
+	$installer = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
 
 	expect($installer)->toContain("if (CACTI_CSRF_SECRET != '')")
 		->and($installer)->toContain('catch (Throwable $e)')
@@ -22,7 +22,7 @@ test('installer preserves failed state and initializes the configured csrf secre
 });
 
 test('installer isolates admin email changes and fails on package import errors', function () use ($root) {
-	$installer = file_get_contents($root . '/lib/installer.php');
+	$installer = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
 
 	expect($installer)->toContain("db_execute_prepared('UPDATE user_auth")
 		->and($installer)->toContain("WHERE username = \\'admin\\'")

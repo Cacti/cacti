@@ -55,7 +55,7 @@ function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
 	return array_shift($GLOBALS['automation_cell_results']);
 }
 
-require_once dirname(__DIR__, 2) . '/lib/api_automation_tools.php';
+require_once CACTI_PATH_LIBRARY . '/api_automation_tools.php';
 
 beforeEach(function () : void {
 	$GLOBALS['automation_assoc_results'] = [];

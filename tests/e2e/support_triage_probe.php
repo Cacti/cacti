@@ -30,7 +30,7 @@
 
 chdir(dirname(__DIR__, 2));
 
-require_once __DIR__ . '/../../include/global.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
 
 $base = rtrim(getenv('BASE_URL') ?: 'http://localhost/cacti', '/');
 $user = getenv('CACTI_USER') ?: 'admin';

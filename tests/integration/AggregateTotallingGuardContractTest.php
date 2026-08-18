@@ -18,7 +18,7 @@
 $root = dirname(__DIR__, 2);
 
 test('rrd.php keeps the empty cdef guard that makes full totalling safe', function () use ($root) {
-	$src = file_get_contents($root . '/lib/rrd.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 	expect($src)->not->toBeFalse('Failed to read lib/rrd.php');
 
 	$pattern = '/if\s*\(\s*\$cdef_string\s*===\s*\'\'\s*\)\s*\{[^}]*continue;/s';
@@ -27,7 +27,7 @@ test('rrd.php keeps the empty cdef guard that makes full totalling safe', functi
 });
 
 test('totalling replaces CURRENT_DATA_SOURCE for both total types', function () use ($root) {
-	$src = file_get_contents($root . '/lib/aggregate.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/aggregate.php');
 	expect($src)->not->toBeFalse('Failed to read lib/aggregate.php');
 
 	foreach (['SIMILAR_DATA_SOURCES_NODUPS', 'ALL_DATA_SOURCES_NODUPS'] as $replacement) {
@@ -38,7 +38,7 @@ test('totalling replaces CURRENT_DATA_SOURCE for both total types', function () 
 });
 
 test('totalling query and cdef update operate on the same item set', function () use ($root) {
-	$src = file_get_contents($root . '/lib/aggregate.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/aggregate.php');
 	expect($src)->not->toBeFalse('Failed to read lib/aggregate.php');
 
 	$fnPos = strpos($src, 'function aggregate_cdef_totalling(');

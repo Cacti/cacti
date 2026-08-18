@@ -25,13 +25,13 @@ $helpPath = __DIR__ . '/../../../../help.php';
 // --- help.php: path traversal and SSL verification ---
 
 test('help.php uses basename for page parameter', function () use ($helpPath) {
-	$contents = file_get_contents($helpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/help.php');
 
 	expect($contents)->toContain('basename(');
 });
 
 test('help.php enables SSL peer verification', function () use ($helpPath) {
-	$contents = file_get_contents($helpPath);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/help.php');
 
 	expect($contents)->toContain("'verify_peer'       => true");
 	expect($contents)->toContain("'verify_peer_name'  => true");

@@ -18,7 +18,7 @@
 */
 
 test('the CSP header allows configured alternate frame ancestors', function () {
-	$source = file_get_contents(dirname(__DIR__, 4) . '/include/global.php');
+	$source = file_get_contents(CACTI_PATH_INCLUDE . '/global.php');
 
 	expect($source)->not->toBeFalse()
 		->and($source)->toContain("frame-ancestors 'self' \$alternates;")

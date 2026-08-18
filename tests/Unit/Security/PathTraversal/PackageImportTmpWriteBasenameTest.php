@@ -23,7 +23,7 @@
  */
 
 function getPackageImportSource(): string {
-	$src = file_get_contents(__DIR__ . '/../../../../package_import.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/package_import.php');
 	expect($src)->not->toBeFalse('Failed to read package_import.php');
 
 	return $src;

@@ -12,9 +12,9 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/Helpers/CactiStubs.php';
-require_once __DIR__ . '/../../../include/global.php';
-require_once __DIR__ . '/../../../lib/functions.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
 
 // --- get_current_script_name ---
 

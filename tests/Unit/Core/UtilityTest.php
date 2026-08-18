@@ -12,7 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
 
 it('cacti_sizeof handles various inputs', function () {
 	expect(cacti_sizeof([1, 2, 3]))->toBe(3);

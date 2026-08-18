@@ -12,10 +12,10 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 2) . '/Helpers/FakeMySQLPDO.php';
-require_once dirname(__DIR__, 3) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 3) . '/lib/database.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/FakeMySQLPDO.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
 
 // FakeMySQLPDO rewrites SHOW TABLES / SHOW COLUMNS and
 // INSERT ... ON DUPLICATE KEY UPDATE into the sqlite_master /

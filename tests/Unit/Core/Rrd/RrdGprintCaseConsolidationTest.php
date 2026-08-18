@@ -28,7 +28,7 @@
  */
 
 // Load Cacti constants for GRAPH_ITEM_TYPE_* definitions
-require_once __DIR__ . '/../../../../include/global_constants.php';
+require_once CACTI_PATH_INCLUDE . '/global_constants.php';
 
 // Mock the graph item behavior that the switch statement processes
 function mockGraphItem(int $graphType, int $consolidationFunctionId): array

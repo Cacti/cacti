@@ -20,7 +20,7 @@
  * correct password on a locked account.
  */
 
-$authSrc = file_get_contents(dirname(__DIR__, 2) . '/lib/auth.php');
+$authSrc = file_get_contents(CACTI_PATH_LIBRARY . '/auth.php');
 
 function _local_login_body(string $src): string {
 	$start = strpos($src, 'function local_auth_login_process(');

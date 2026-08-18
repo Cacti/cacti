@@ -14,7 +14,7 @@
  * now a bound parameter, LIKE-escaped via db_like_escape().
  */
 
-$src = file_get_contents(dirname(__DIR__, 2) . '/plugins.php');
+$src = file_get_contents(CACTI_PATH_BASE . '/plugins.php');
 
 test('the filter no longer reaches LIKE through db_qstr', function () use ($src) {
 	expect($src)->not->toContain("db_qstr('%' . grv('filter') . '%')");

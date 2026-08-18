@@ -29,7 +29,7 @@
  * against a real connection and proves the sibling row survives.
  */
 
-$source = file_get_contents(__DIR__ . '/../../../lib/functions.php');
+$source = file_get_contents(CACTI_PATH_LIBRARY . '/functions.php');
 
 $statement = static function () use ($source) : string {
 	$pos = strpos($source, "db_execute_prepared('UPDATE host SET");

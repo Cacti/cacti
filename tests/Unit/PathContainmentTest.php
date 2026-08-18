@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/lib/functions.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
 
 beforeEach(function () : void {
 	$this->base = sys_get_temp_dir() . '/cacti_containment_' . bin2hex(random_bytes(6));

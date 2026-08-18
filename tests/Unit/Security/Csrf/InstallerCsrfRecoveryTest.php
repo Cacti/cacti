@@ -15,7 +15,7 @@
 $root = dirname(__DIR__, 4);
 
 test('installer csrf failures return a scoped json recovery response', function () use ($root) {
-	$csrf = file_get_contents($root . '/include/csrf.php');
+	$csrf = file_get_contents(CACTI_PATH_INCLUDE . '/csrf.php');
 
 	$jsonBranch = strpos($csrf, "defined('IN_CACTI_INSTALL')");
 	$redirect   = strpos($csrf, "raise_message('csrf_timeout')");
@@ -37,7 +37,7 @@ test('installer csrf failures return a scoped json recovery response', function 
 });
 
 test('successful installer json responses roll the csrf token forward', function () use ($root) {
-	$stepJson = file_get_contents($root . '/install/step_json.php');
+	$stepJson = file_get_contents(CACTI_PATH_BASE . '/install/step_json.php');
 
 	expect($stepJson)->toContain("\$response['csrfMagicToken'] = csrf_get_tokens();")
 		->and($stepJson)->toContain("header('Cache-Control: no-store')")
@@ -47,7 +47,7 @@ test('successful installer json responses roll the csrf token forward', function
 });
 
 test('installer retries csrf timeouts once for every json action', function () use ($root) {
-	$javascript = file_get_contents($root . '/install/install.js');
+	$javascript = file_get_contents(CACTI_PATH_BASE . '/install/install.js');
 
 	expect($javascript)->toContain('function refreshCsrfMagicToken(data)')
 		->and($javascript)->toContain("data.responseJSON.error == 'csrf_timeout'")
@@ -60,8 +60,8 @@ test('installer retries csrf timeouts once for every json action', function () u
 });
 
 test('installer bootstrap establishes json ajax scope before csrf validation', function () use ($root) {
-	$stepJson = file_get_contents($root . '/install/step_json.php');
-	$global   = file_get_contents($root . '/include/global.php');
+	$stepJson = file_get_contents(CACTI_PATH_BASE . '/install/step_json.php');
+	$global   = file_get_contents(CACTI_PATH_INCLUDE . '/global.php');
 
 	$installMode = strpos($stepJson, "define('IN_CACTI_INSTALL', 1)");
 	$jsonMode    = strpos($stepJson, '$auth_json = true;');

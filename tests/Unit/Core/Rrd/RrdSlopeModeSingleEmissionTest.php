@@ -23,7 +23,7 @@ declare(strict_types = 1);
 
 test('lib/rrd.php emits --slope-mode from exactly one site', function () {
 	$path   = dirname(__DIR__, 4) . '/lib/rrd.php';
-	$source = file_get_contents($path);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	if ($source === false) {
 		$this->fail("Unable to read $path");

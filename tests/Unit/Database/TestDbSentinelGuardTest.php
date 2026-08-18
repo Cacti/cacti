@@ -19,8 +19,8 @@
  * it must not swap to config.php.dist nor skip schema validation.
  */
 
-require_once dirname(__DIR__, 2) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 3) . '/include/global.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
 
 // Pure replica of cacti_is_test_bootstrap() so the false branches can be
 // exercised without mutating the process-global PHP_TESTING constant.
@@ -72,7 +72,7 @@ test('sentinel throws on any method call so it cannot pass as a real handle', fu
 });
 
 test('global.php always assigns cacti_db_version with a safe default', function () {
-	$src = file_get_contents(dirname(__DIR__, 3) . '/include/global.php');
+	$src = file_get_contents(CACTI_PATH_INCLUDE . '/global.php');
 
 	// Bug 4: the key must be seeded so isset()/comparison logic never raises
 	// an Undefined array key warning when the local DB handle is the sentinel
@@ -89,14 +89,14 @@ test('global.php always assigns cacti_db_version with a safe default', function 
 // shipped files, independent of the runtime path the test itself takes.
 
 test('global.php gates config.php.dist swap on the combined predicate', function () {
-	$src = file_get_contents(dirname(__DIR__, 3) . '/include/global.php');
+	$src = file_get_contents(CACTI_PATH_INCLUDE . '/global.php');
 
 	// The config.php.dist include must be gated by the helper, not PHP_TESTING alone.
 	expect($src)->toContain('if (cacti_is_test_bootstrap() && file_exists(__DIR__ . \'/config.php.dist\'))');
 });
 
 test('global.php reads CACTI_TEST_BOOTSTRAP with local_only=true', function () {
-	$src = file_get_contents(dirname(__DIR__, 3) . '/include/global.php');
+	$src = file_get_contents(CACTI_PATH_INCLUDE . '/global.php');
 
 	expect($src)->toContain("getenv('CACTI_TEST_BOOTSTRAP', true)");
 	// No call site may read the env var without the local_only flag.
@@ -104,7 +104,7 @@ test('global.php reads CACTI_TEST_BOOTSTRAP with local_only=true', function () {
 });
 
 test('database.php gates schema validation on the combined predicate with local_only', function () {
-	$src = file_get_contents(dirname(__DIR__, 3) . '/lib/database.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/database.php');
 
 	expect($src)->toContain("getenv('CACTI_TEST_BOOTSTRAP', true)");
 	expect($src)->not->toContain("if (!defined('PHP_TESTING')) {\n\t\t\t\t$table_exists");

@@ -11,7 +11,7 @@ if (!file_exists(dirname(__DIR__, 2) . '/lib/CactiProcess.php')) {
     return;
 }
 
-require_once __DIR__ . '/../../lib/CactiProcess.php';
+require_once CACTI_PATH_LIBRARY . '/CactiProcess.php';
 
 test('Integration: CactiProcess::run executes echo successfully', function () {
     $process = \Cacti\Process\CactiProcess::run(['echo', '-n', 'cacti-ok']);

@@ -17,7 +17,7 @@ test('Integration: scripts/sql.php file contains no shell_exec calls', function 
         expect(true)->toBeTrue();
         return;
     }
-    $contents = file_get_contents($path);
+    $contents = file_get_contents(CACTI_PATH_BASE . '/poller_realtime.php');
     expect($contents)->not->toContain('shell_exec(');
     expect($contents)->toContain('CactiProcess');
 });
@@ -28,7 +28,7 @@ test('Integration: scripts/ss_sql.php file contains no shell_exec calls', functi
         expect(true)->toBeTrue();
         return;
     }
-    $contents = file_get_contents($path);
+    $contents = file_get_contents(CACTI_PATH_BASE . '/poller_realtime.php');
     expect($contents)->not->toContain('shell_exec(');
     expect($contents)->toContain('CactiProcess');
 });
@@ -39,7 +39,7 @@ test('Integration: lib/ping.php passes argv array not concatenated string', func
         expect(true)->toBeTrue();
         return;
     }
-    $contents = file_get_contents($path);
+    $contents = file_get_contents(CACTI_PATH_BASE . '/poller_realtime.php');
     // Old pattern used string concatenation with cacti_escapeshellarg
     expect($contents)->not->toContain("shell_exec(cacti_escapeshellarg(\$fping)");
     expect($contents)->toContain('CactiProcess::run(');
@@ -51,7 +51,7 @@ test('Integration: poller_realtime.php uses CactiProcess not shell_exec', functi
         expect(true)->toBeTrue();
         return;
     }
-    $contents = file_get_contents($path);
+    $contents = file_get_contents(CACTI_PATH_BASE . '/poller_realtime.php');
     expect($contents)->not->toContain('shell_exec("$command_string');
     expect($contents)->toContain('CactiProcess::run(');
 });

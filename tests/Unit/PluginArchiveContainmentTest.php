@@ -23,7 +23,7 @@ declare(strict_types = 1);
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/lib/plugins.php';
+require_once CACTI_PATH_LIBRARY . '/plugins.php';
 
 /**
  * Regression test for GHSA-pjmv-fxjm-29cx.
@@ -40,14 +40,14 @@ require_once dirname(__DIR__, 2) . '/lib/plugins.php';
 $pluginsPath = dirname(__DIR__, 2) . '/lib/plugins.php';
 
 test('the repository URL is validated before it builds a request', function () use ($pluginsPath) {
-	$source = file_get_contents($pluginsPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/plugins.php');
 
 	expect($source)->not->toMatch("/\\\$repo = trim\(read_config_option\('github_repository'\)/");
 	expect($source)->toMatch("/\\\$repo = plugin_validate_repository_url\(read_config_option\('github_repository'\)\)/");
 });
 
 test('archive entries are contained before they are written', function () use ($pluginsPath) {
-	$source = file_get_contents($pluginsPath);
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/plugins.php');
 
 	expect($source)->toMatch('/validate_relative_path_within\(\$rfile, \$restore_path\) === false/');
 
@@ -58,7 +58,7 @@ test('archive entries are contained before they are written', function () use ($
 });
 
 test('the containment helpers live in lib/functions.php', function () {
-	expect(file_get_contents(dirname(__DIR__, 2) . '/lib/functions.php'))
+	expect(file_get_contents(CACTI_PATH_LIBRARY . '/functions.php'))
 		->toContain('function validate_relative_path_within')
 		->toContain('function cacti_path_is_within');
 });

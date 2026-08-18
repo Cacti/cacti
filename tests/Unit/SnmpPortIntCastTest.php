@@ -19,7 +19,7 @@
  * verbatim. Force it to an integer so it can never carry shell metacharacters.
  */
 
-$src = file_get_contents(dirname(__DIR__, 2) . '/lib/snmp.php');
+$src = file_get_contents(CACTI_PATH_LIBRARY . '/snmp.php');
 
 test('cacti_snmp_options_sanitize forces the port to an integer', function () use ($src) {
 	$start = strpos($src, 'function cacti_snmp_options_sanitize(');

@@ -30,12 +30,12 @@
  * second table.
  */
 
-require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
-require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 2) . '/include/global_constants.php';
-require_once dirname(__DIR__, 2) . '/lib/database.php';
-require_once dirname(__DIR__, 2) . '/lib/functions.php';
-require_once dirname(__DIR__, 2) . '/lib/api_scheduler.php';
+require_once CACTI_PATH_TESTS . '/Helpers/FakeMySQLPDO.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_INCLUDE . '/global_constants.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
+require_once CACTI_PATH_LIBRARY . '/api_scheduler.php';
 
 if (!defined('CACTI_WEB')) {
 	define('CACTI_WEB', false);

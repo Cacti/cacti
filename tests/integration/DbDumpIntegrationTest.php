@@ -23,8 +23,8 @@ if (!file_exists(dirname(__DIR__, 2) . '/lib/CactiProcess.php')) {
 	return;
 }
 
-require_once dirname(__DIR__, 2) . '/lib/database.php';
-require_once dirname(__DIR__, 2) . '/lib/functions.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
+require_once CACTI_PATH_LIBRARY . '/functions.php';
 
 test('db_dump_data executes and handles output file via Symfony Process', function () {
 	// We need some Cacti globals to avoid fatal errors in db_dump_data

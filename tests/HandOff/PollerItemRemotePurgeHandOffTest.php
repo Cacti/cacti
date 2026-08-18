@@ -68,9 +68,9 @@
  *     -p 33071:3306 mariadb:11
  */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 2) . '/lib/database.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
 
 // push_out_host() (exercised via api_data_source_change_host()) needs
 // CACTI_PATH_LIBRARY to include_once() a sibling lib/ file. This file never
@@ -121,7 +121,7 @@ if (!defined('MESSAGE_LEVEL_WARN')) {
 	define('MESSAGE_LEVEL_WARN', 2);
 }
 
-require_once dirname(__DIR__, 2) . '/lib/poller.php';
+require_once CACTI_PATH_LIBRARY . '/poller.php';
 
 // api_data_source_change_host()/data_source_to_data_template() call these;
 // neither touches poller_item or anything this test asserts on, so they are
@@ -165,9 +165,9 @@ if (!function_exists('array_rekey')) {
 	}
 }
 
-require_once dirname(__DIR__, 2) . '/lib/api_data_source.php';
-require_once dirname(__DIR__, 2) . '/lib/data_query.php';
-require_once dirname(__DIR__, 2) . '/lib/template.php';
+require_once CACTI_PATH_LIBRARY . '/api_data_source.php';
+require_once CACTI_PATH_LIBRARY . '/data_query.php';
+require_once CACTI_PATH_LIBRARY . '/template.php';
 
 const HANDOFF_OLD_POLLER_ID = 7;
 const HANDOFF_NEW_POLLER_ID = 1; // central; keeps the (unrelated, already-correct) "push to new" side inert

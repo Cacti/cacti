@@ -36,9 +36,9 @@ if (!file_exists(dirname(__DIR__, 2) . '/lib/htmx.php')) {
 	return;
 }
 
-require_once dirname(__DIR__, 1) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 2) . '/include/global.php';
-require_once dirname(__DIR__, 2) . '/lib/htmx.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
+require_once CACTI_PATH_LIBRARY . '/htmx.php';
 
 beforeEach(function () {
 	global $config;
@@ -135,7 +135,7 @@ test('include/global.php requires lib/htmx.php before any caller can invoke htmx
 	 * section that runs page code". We assert by reading global.php directly
 	 * rather than by exercising the full bootstrap.
 	 */
-	$global = file_get_contents(CACTI_PATH_BASE . '/include/global.php');
+	$global = file_get_contents(CACTI_PATH_INCLUDE . '/global.php');
 
 	expect($global)->toContain("require_once(CACTI_PATH_LIBRARY . '/html.php');")
 		->and($global)->toContain("require_once(CACTI_PATH_LIBRARY . '/htmx.php');");

@@ -20,7 +20,7 @@
  * escapes the contentfile in the iframe src and the error message.
  */
 
-$src = file_get_contents(dirname(__DIR__, 2) . '/index.php');
+$src = file_get_contents(CACTI_PATH_BASE . '/index.php');
 
 function _render_links_body(string $src): string {
 	expect($src)->not->toBeEmpty();

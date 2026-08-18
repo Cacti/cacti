@@ -7,8 +7,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 4) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 4) . '/lib/CactiMailerTransport.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_LIBRARY . '/CactiMailerTransport.php';
 
 use Symfony\Component\Mailer\Exception\TransportException;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -154,7 +154,7 @@ test('catching the address exception converts a malformed recipient into a non-e
 // =====================================================================
 
 test('mailer helpers map secure modes without the opportunistic STARTTLS downgrade', function () {
-	$src = file_get_contents(dirname(__DIR__, 4) . '/lib/functions.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/functions.php');
 
 	// The fix removes the inline `($secure == 'tls') ? null` mapping that made
 	// STARTTLS opportunistic at every transport construction site.
@@ -208,7 +208,7 @@ test('non-graph attachment disposition honours inline vs attachment flags', func
 });
 
 test('mailer fails closed when attachment path is unreadable', function () {
-	$src = file_get_contents(dirname(__DIR__, 4) . '/lib/functions.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/functions.php');
 	expect($src)->toContain('is_readable($attachment[\'attachment\'])')
 		->toContain("Error attaching file:");
 });

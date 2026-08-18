@@ -12,7 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
+require_once CACTI_PATH_TESTS . '/Helpers/IsolatedProbe.php';
 
 /**
  * Spawns a fresh PHP process to run tests/Helpers/AuthCookieProbe.php
@@ -35,7 +35,7 @@ require_once dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
  */
 function runAuthCookieProbe(array $scenario) : array {
 	$php  = PHP_BINARY;
-	$path = dirname(__DIR__) . '/Helpers/AuthCookieProbe.php';
+	$path = CACTI_PATH_TESTS . '/Helpers/AuthCookieProbe.php';
 
 	$descriptors = [
 		0 => ['pipe', 'r'],
@@ -75,12 +75,12 @@ function runAuthCookieProbe(array $scenario) : array {
 test('auth subsystem regression coverage spans cookie login, 2fa, reset tokens, basic auth, and profile mutations', function () {
 	$root  = dirname(__DIR__, 2);
 	$files = [
-		'include/auth.php'        => file_get_contents($root . '/include/auth.php'),
-		'auth_2fa.php'            => file_get_contents($root . '/auth_2fa.php'),
-		'auth_resetpassword.php'  => file_get_contents($root . '/auth_resetpassword.php'),
-		'auth_profile.php'        => file_get_contents($root . '/auth_profile.php'),
-		'lib/auth.php'            => file_get_contents($root . '/lib/auth.php'),
-		'lib/functions.php'       => file_get_contents($root . '/lib/functions.php'),
+		'include/auth.php'        => file_get_contents(CACTI_PATH_INCLUDE . '/auth.php'),
+		'auth_2fa.php'            => file_get_contents(CACTI_PATH_BASE . '/auth_2fa.php'),
+		'auth_resetpassword.php'  => file_get_contents(CACTI_PATH_BASE . '/auth_resetpassword.php'),
+		'auth_profile.php'        => file_get_contents(CACTI_PATH_BASE . '/auth_profile.php'),
+		'lib/auth.php'            => file_get_contents(CACTI_PATH_LIBRARY . '/auth.php'),
+		'lib/functions.php'       => file_get_contents(CACTI_PATH_LIBRARY . '/functions.php'),
 	];
 
 	foreach ($files as $path => $contents) {

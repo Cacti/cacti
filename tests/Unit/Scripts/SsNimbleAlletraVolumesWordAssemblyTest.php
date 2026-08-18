@@ -28,7 +28,7 @@
  * expression rather than a re-typed copy of it.
  */
 
-$source = file_get_contents(__DIR__ . '/../../../scripts/ss_nimble_alletra_volumes.php');
+$source = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_nimble_alletra_volumes.php');
 
 preg_match('/\$long = isset\(\$high\[\$key\]\)[^;]*;/', $source, $matches);
 

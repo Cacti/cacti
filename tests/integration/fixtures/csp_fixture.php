@@ -20,7 +20,7 @@
  * failure points at the header helper, not the Cacti bootstrap.
  */
 
-require_once __DIR__ . '/../../../lib/headers_secure.php';
+require_once CACTI_PATH_LIBRARY . '/headers_secure.php';
 
 if (!defined('CACTI_CSP_NONCE_ENFORCE')) {
 	define('CACTI_CSP_NONCE_ENFORCE', getenv('CSP_TEST_ENFORCE') === '1');

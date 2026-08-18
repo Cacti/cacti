@@ -25,7 +25,7 @@
 // --- source-scan helpers ---
 
 function getImportPackageSource(): string {
-	$src = file_get_contents(__DIR__ . '/../../../../lib/import.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/import.php');
 	expect($src)->not->toBeFalse('Failed to read lib/import.php');
 	return $src;
 }

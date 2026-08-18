@@ -26,11 +26,11 @@
  * text looks right.
  */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
-require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/FakeMySQLPDO.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
 
-$source = file_get_contents(dirname(__DIR__, 2) . '/poller_boost.php');
+$source = file_get_contents(CACTI_PATH_BASE . '/poller_boost.php');
 
 $func_pos = strpos($source, 'function boost_archive_select_sql(');
 $func_end = strpos($source, "\nfunction ", $func_pos + 1);

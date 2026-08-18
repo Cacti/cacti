@@ -16,8 +16,8 @@
  * the source-level guards below.
  */
 
-$templateSource      = file_get_contents(__DIR__ . '/../../lib/template.php');
-$apiDataSourceSource = file_get_contents(__DIR__ . '/../../lib/api_data_source.php');
+$templateSource      = file_get_contents(CACTI_PATH_LIBRARY . '/template.php');
+$apiDataSourceSource = file_get_contents(CACTI_PATH_LIBRARY . '/api_data_source.php');
 
 if (!function_exists('_mut_extract_function')) {
 	function _mut_extract_function(string $source, string $name): string {

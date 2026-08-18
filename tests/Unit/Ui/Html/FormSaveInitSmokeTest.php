@@ -13,7 +13,6 @@
  * none of the pre-fix shapes survive. Runs without Cacti's bootstrap.
  */
 
-$repoRoot = __DIR__ . '/../..';
 $touched  = [
 	'aggregate_graphs.php',
 	'color_templates.php',
@@ -22,22 +21,22 @@ $touched  = [
 	'lib/html.php',
 ];
 
-test('every touched file is readable and non-empty', function () use ($repoRoot, $touched) {
+test('every touched file is readable and non-empty', function () use ($touched) {
 	foreach ($touched as $rel) {
-		$path = "$repoRoot/$rel";
+		$path = CACTI_PATH_BASE . '/' . $rel;
 		expect(file_exists($path))->toBeTrue("$rel must exist");
 		expect(filesize($path))->toBeGreaterThanOrEqual(1);
 	}
 });
 
-test('every touched file passes a syntactic shebang/PHP-tag check', function () use ($repoRoot, $touched) {
+test('every touched file passes a syntactic shebang/PHP-tag check', function () use ($touched) {
 	foreach ($touched as $rel) {
-		$head = file_get_contents("$repoRoot/$rel", false, null, 0, 16);
+		$head = file_get_contents(CACTI_PATH_BASE . '/' . $rel, false, null, 0, 16);
 		expect($head)->toContain('<?php');
 	}
 });
 
-test('the four form_save inits are present and precede their null-guarded consumers', function () use ($repoRoot) {
+test('the four form_save inits are present and precede their null-guarded consumers', function () {
 	/* PR #7317/#7348 replaced the empty()-based fallback with a null
 	 * sentinel: init to null right before the items foreach, then check
 	 * `=== null` in the error-redirect URL. empty() would have mistreated
@@ -50,7 +49,7 @@ test('the four form_save inits are present and precede their null-guarded consum
 	];
 
 	foreach ($cases as $rel => [$init, $consumer]) {
-		$src        = file_get_contents("$repoRoot/$rel");
+		$src        = file_get_contents(CACTI_PATH_BASE . '/' . $rel);
 		$initPos    = strpos($src, $init);
 		$consumePos = strpos($src, $consumer);
 		expect($initPos)->not->toBeFalse("$rel must contain init: $init");
@@ -59,8 +58,8 @@ test('the four form_save inits are present and precede their null-guarded consum
 	}
 });
 
-test('lib/html.php right-tab block dropped the redundant isset guard', function () use ($repoRoot) {
-	$src   = file_get_contents("$repoRoot/lib/html.php");
+test('lib/html.php right-tab block dropped the redundant isset guard', function () {
+	$src   = file_get_contents(CACTI_PATH_LIBRARY . '/html.php');
 	$start = strpos($src, 'foreach ($tabs_right as $tab)');
 	$slice = substr($src, $start, 4000);
 	expect($slice)->not->toBe('');

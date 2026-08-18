@@ -9,7 +9,7 @@ declare(strict_types = 1);
  */
 
 test('RRD updates do not query metadata that is never consumed', function () {
-	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/rrd.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	expect($source)->not->toBeFalse();
 

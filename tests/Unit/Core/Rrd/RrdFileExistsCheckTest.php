@@ -36,7 +36,7 @@
 // --- source scanning helper ---
 
 function getRrdFileExistsBlock(): string {
-	$rrdPhp = file_get_contents(__DIR__ . '/../../../../lib/rrd.php');
+	$rrdPhp = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 	expect($rrdPhp)->not->toBeFalse('Failed to read lib/rrd.php');
 
 	/* extract the rrdtool_function_graph function body */

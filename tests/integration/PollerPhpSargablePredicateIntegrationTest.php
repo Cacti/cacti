@@ -17,8 +17,8 @@
  * expressions are algebraically equal on paper.
  */
 
-require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/FakeMySQLPDO.php';
 
 function poller_php_seed_rrd_next_step_rows(FakeMySQLPDO $conn, array $values) : void {
 	$conn->exec('CREATE TABLE poller_item (local_data_id INTEGER PRIMARY KEY, rrd_next_step INTEGER)');

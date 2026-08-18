@@ -42,8 +42,16 @@ ini_set('display_errors', 'stderr');
 
 $root = dirname(__DIR__, 2);
 
+if (!defined('CACTI_PATH_BASE')) {
+	define('CACTI_PATH_BASE', $root);
+}
+
 if (!defined('CACTI_PATH_INCLUDE')) {
 	define('CACTI_PATH_INCLUDE', $root . '/include');
+}
+
+if (!defined('CACTI_PATH_LIBRARY')) {
+	define('CACTI_PATH_LIBRARY', $root . '/lib');
 }
 
 function cacti_sizeof($array) {
@@ -111,7 +119,7 @@ function get_guest_account() {
 	return (int) read_config_option('guest_user');
 }
 
-require_once $root . '/lib/auth.php';
+require_once CACTI_PATH_LIBRARY . '/auth.php';
 
 $scenario = json_decode(stream_get_contents(STDIN), true);
 

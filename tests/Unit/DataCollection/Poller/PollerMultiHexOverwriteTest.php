@@ -19,7 +19,7 @@ declare(strict_types=1);
  * @group regression
  */
 
-require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
 
 /**
  * Simulate the MULTI-output field value coercion logic from
@@ -173,7 +173,7 @@ describe('Mutation killers for #6879 fix', function () {
 
 describe('Source verification: overwrite line removed', function () {
 	test('no unconditional matches[1] overwrite after coercion block', function () {
-		$c = file_get_contents(__DIR__ . '/../../../../lib/poller.php');
+		$c = file_get_contents(CACTI_PATH_LIBRARY . '/poller.php');
 
 		// Find the first multi-DS coercion block (with data template)
 		$pos = strpos($c, "if (is_numeric(\$matches[1]) || (\$matches[1] == 'U'))");

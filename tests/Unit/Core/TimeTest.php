@@ -14,9 +14,9 @@
 
 // UnitStubs MUST be loaded before lib/time.php so srv() and other helpers are
 // resolvable when shift_time() is exercised.
-require_once dirname(__DIR__, 3) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 3) . '/include/global_constants.php';
-require_once dirname(__DIR__, 3) . '/lib/time.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global_constants.php';
+require_once CACTI_PATH_LIBRARY . '/time.php';
 
 it('calculates the last hour correctly', function () {
 	$now = strtotime('2023-01-01 12:00:00');

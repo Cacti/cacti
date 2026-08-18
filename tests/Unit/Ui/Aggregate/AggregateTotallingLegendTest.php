@@ -24,7 +24,7 @@
 
 function getAggregateTotallingSource(): string {
 	$path = __DIR__ . '/../../../../lib/aggregate.php';
-	$src  = file_get_contents($path);
+	$src  = file_get_contents(CACTI_PATH_LIBRARY . '/aggregate.php');
 	expect($src)->not->toBeFalse('Failed to read lib/aggregate.php');
 
 	return $src;

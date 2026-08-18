@@ -24,7 +24,7 @@
  */
 
 function getPluginsSource(): string {
-	$src = file_get_contents(__DIR__ . '/../../../../lib/plugins.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/plugins.php');
 	expect($src)->not->toBeFalse('Failed to read lib/plugins.php');
 
 	return $src;

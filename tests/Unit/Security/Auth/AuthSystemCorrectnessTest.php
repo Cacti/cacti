@@ -15,8 +15,8 @@
 $root = dirname(__DIR__, 4);
 
 test('remember-me restored sessions still require 2fa when enabled', function () use ($root) {
-	$auth     = file_get_contents($root . '/include/auth.php');
-	$auth_lib = file_get_contents($root . '/lib/auth.php');
+	$auth     = file_get_contents(CACTI_PATH_INCLUDE . '/auth.php');
+	$auth_lib = file_get_contents(CACTI_PATH_LIBRARY . '/auth.php');
 
 	expect($auth)->toContain('if (empty($_SESSION[SESS_USER_2FA]) && db_column_exists(\'user_auth\', \'tfa_enabled\'))')
 		->and($auth)->not->toContain('if (!$cookie_user && empty($_SESSION[SESS_USER_2FA])')
@@ -27,7 +27,7 @@ test('remember-me restored sessions still require 2fa when enabled', function ()
 });
 
 test('2fa lifetime uses configured token lifetime in minutes', function () use ($root) {
-	$tfa = file_get_contents($root . '/auth_2fa.php');
+	$tfa = file_get_contents(CACTI_PATH_BASE . '/auth_2fa.php');
 
 	expect($tfa)->toContain("read_config_option('secpass_2fatime')")
 		->and($tfa)->toContain('$tfaTime = time() - ($tfaMins * 60);')
@@ -37,7 +37,7 @@ test('2fa lifetime uses configured token lifetime in minutes', function () use (
 });
 
 test('password reset token validation rejects expired and invalid hashes before use', function () use ($root) {
-	$reset = file_get_contents($root . '/auth_resetpassword.php');
+	$reset = file_get_contents(CACTI_PATH_BASE . '/auth_resetpassword.php');
 
 	expect($reset)->toContain('AND expiry > NOW()')
 		->and($reset)->toContain('$action       = \'formidentity\';' . "\n\n\t\t\tbreak;")
@@ -46,7 +46,7 @@ test('password reset token validation rejects expired and invalid hashes before 
 });
 
 test('reset-link consumption does not gate the account lookup on password_change', function () use ($root) {
-	$reset = file_get_contents($root . '/auth_resetpassword.php');
+	$reset = file_get_contents(CACTI_PATH_BASE . '/auth_resetpassword.php');
 
 	// admin-issued links (user_admin.php) target accounts without password_change set;
 	// the consumption query must accept any account that legitimately received a link.
@@ -59,7 +59,7 @@ test('reset-link consumption does not gate the account lookup on password_change
 });
 
 test('logout clears the remember-me and otp cookies by their actual names', function () use ($root) {
-	$functions = file_get_contents($root . '/lib/functions.php');
+	$functions = file_get_contents(CACTI_PATH_LIBRARY . '/functions.php');
 
 	expect($functions)->toContain("'cacti_remembers'")
 		->and($functions)->toContain("(string) session_name() . '_otp'")
@@ -67,7 +67,7 @@ test('logout clears the remember-me and otp cookies by their actual names', func
 });
 
 test('basic auth shortcut checks disabled accounts and effective access before creating a session', function () use ($root) {
-	$auth = file_get_contents($root . '/include/auth.php');
+	$auth = file_get_contents(CACTI_PATH_INCLUDE . '/auth.php');
 
 	expect($auth)->toContain("if (\$current_user['enabled'] != 'on')")
 		->and($auth)->toContain('if (!auth_user_has_access($current_user))')
@@ -76,8 +76,8 @@ test('basic auth shortcut checks disabled accounts and effective access before c
 });
 
 test('2fa profile mutations require post requests and csrf-bearing ajax calls', function () use ($root) {
-	$profile = file_get_contents($root . '/auth_profile.php');
-	$auth    = file_get_contents($root . '/lib/auth.php');
+	$profile = file_get_contents(CACTI_PATH_BASE . '/auth_profile.php');
+	$auth    = file_get_contents(CACTI_PATH_LIBRARY . '/auth.php');
 
 	expect($profile)->toContain('function auth_profile_require_post()')
 		->and($profile)->toContain('REQUEST_METHOD')
@@ -91,7 +91,7 @@ test('2fa profile mutations require post requests and csrf-bearing ajax calls', 
 });
 
 test('remote agent authorization fails closed on fcrdns mismatch', function () use ($root) {
-	$remote_agent = file_get_contents($root . '/remote_agent.php');
+	$remote_agent = file_get_contents(CACTI_PATH_BASE . '/remote_agent.php');
 
 	// a PTR that exists but does not forward-confirm must still reject after the
 	// inline loop was extracted into remote_agent_fcrdns_confirmed().
@@ -102,7 +102,7 @@ test('remote agent authorization fails closed on fcrdns mismatch', function () u
 });
 
 test('basic authentication only trusts a forwarded user header behind a configured trusted-proxy check', function () use ($root) {
-	$auth = file_get_contents($root . '/lib/auth.php');
+	$auth = file_get_contents(CACTI_PATH_LIBRARY . '/auth.php');
 
 	// HTTP_X_FORWARDED_USER is client-supplied and must never be honored on its
 	// own; it's only read when $trusted is true, and $trusted comes from

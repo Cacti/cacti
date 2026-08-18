@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 4) . '/include/global.php';
+require_once CACTI_PATH_TESTS . '/Helpers/CactiStubs.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
 
 /*
  * support_lockout() (support.php, #7352) cannot be called directly: it ends in
@@ -43,7 +43,7 @@ function lockout_csrf_define_probe(): void {
 		return;
 	}
 
-	$src = file_get_contents(dirname(__DIR__, 4) . '/support.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/support.php');
 
 	if (preg_match('/function support_lockout\(\) : void \{.*?^\}/sm', $src, $m) !== 1) {
 		throw new RuntimeException('could not locate support_lockout() in support.php');
@@ -144,7 +144,7 @@ test('a matching expected state locks Cacti', function () {
 });
 
 test('the process-list page offset is clamped against negative LIMIT offsets', function () {
-	$src = file_get_contents(dirname(__DIR__, 4) . '/support.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/support.php');
 
 	// Both process tables must clamp the page number to at least 1 so a page=0
 	// or negative page cannot produce a negative SQL LIMIT offset. Matched with

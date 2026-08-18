@@ -19,7 +19,7 @@
 
 chdir(dirname(__DIR__, 2));
 
-require_once __DIR__ . '/../../include/global.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
 require_once CACTI_PATH_LIBRARY . '/functions.php';
 require_once CACTI_PATH_LIBRARY . '/rrd.php';
 
@@ -31,27 +31,25 @@ function graph_probe_assert(bool $condition, string $message): void {
 }
 
 function graph_probe_file_contains(string $file, string $needle): bool {
-	$contents = file_get_contents($file);
+	$contents = file_get_contents(CACTI_PATH_BASE . '/' . $file);
 
 	return $contents !== false && strpos($contents, $needle) !== false;
 }
 
-$root = dirname(__DIR__, 2);
-
 graph_probe_assert(
-	graph_probe_file_contains($root . '/graph_image.php', '&effective_user='),
+	graph_probe_file_contains('graph_image.php', '&effective_user='),
 	'remote graph image requests must forward the effective user'
 );
 
 graph_probe_assert(
-	graph_probe_file_contains($root . '/graph_image.php', 'rawurlencode((string) $variable)') &&
-	graph_probe_file_contains($root . '/graph_image.php', 'rawurlencode((string) $value)'),
+	graph_probe_file_contains('graph_image.php', 'rawurlencode((string) $variable)') &&
+	graph_probe_file_contains('graph_image.php', 'rawurlencode((string) $value)'),
 	'remote graph image request parameters must be URL encoded'
 );
 
 graph_probe_assert(
-	graph_probe_file_contains($root . '/graph_image.php', '$image_begin_pos !== false') &&
-	graph_probe_file_contains($root . '/graph_image.php', '$image_data_pos !== false'),
+	graph_probe_file_contains('graph_image.php', '$image_begin_pos !== false') &&
+	graph_probe_file_contains('graph_image.php', '$image_data_pos !== false'),
 	'remote graph image responses must reject output without an image marker'
 );
 

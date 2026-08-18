@@ -22,7 +22,7 @@
 $root = dirname(__DIR__, 2);
 
 test('the server rejects these delete actions on GET without a token', function () use ($root) {
-	$src = file_get_contents($root . '/include/global.php');
+	$src = file_get_contents(CACTI_PATH_INCLUDE . '/global.php');
 
 	// the GET-method block now covers the delete actions
 	expect($src)->toContain("\$bad_actions = ['save', 'update_data', 'changepassword', 'delete_node', 'gt_remove', 'query_remove', 'remove', 'change_leaf']");
@@ -31,14 +31,14 @@ test('the server rejects these delete actions on GET without a token', function 
 });
 
 test('tree.php deletes a node via a token POST, not GET', function () use ($root) {
-	$src = file_get_contents($root . '/tree.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/tree.php');
 
 	expect($src)->toContain("\$.post('?action=delete_node', { 'id' : data.node.id, 'tree_id' : \$('#id').val(), '__csrf_magic' : csrfMagicToken })");
 	expect($src)->not->toContain("\$.get('?action=delete_node'");
 });
 
 test('host.php removes graph templates and data queries via a token POST', function () use ($root) {
-	$src = file_get_contents($root . '/host.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/host.php');
 
 	// gt_remove and query_remove no longer build a GET url through loadUrl
 	expect($src)->not->toContain("'host.php?action=gt_remove&id='");
@@ -56,7 +56,7 @@ test('the automation actions guarded here are not linked by GET anywhere', funct
 	$linked = [];
 
 	foreach (glob($root . '/*.php') as $page) {
-		$src = file_get_contents($page);
+		$src = file_get_contents(CACTI_PATH_BASE . '/' . basename($page));
 
 		foreach (["action=remove'", 'action=remove"', 'action=remove&', 'action=change_leaf'] as $needle) {
 			if (str_contains($src, $needle)) {

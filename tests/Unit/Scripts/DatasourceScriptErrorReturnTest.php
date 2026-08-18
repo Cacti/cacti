@@ -21,13 +21,13 @@
  */
 
 test('ss_webseer.php does not initialise $value to 0', function () {
-	$src = file_get_contents(__DIR__ . '/../../../scripts/ss_webseer.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_webseer.php');
 	expect($src)->not->toContain("\$value = '0'")
 		->and($src)->toContain("\$value = 'U'");
 });
 
 test('ss_webseer.php returns U not 0 on empty/missing value', function () {
-	$src = file_get_contents(__DIR__ . '/../../../scripts/ss_webseer.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_webseer.php');
 	expect($src)->not->toContain("? '0' : \$value")
 		->and($src)->toContain("? 'U' : \$value")
 		// empty('0') === true in PHP; guard must use strict string comparison
@@ -36,29 +36,29 @@ test('ss_webseer.php returns U not 0 on empty/missing value', function () {
 });
 
 test('ss_webseer.php does not return false on fallthrough', function () {
-	$src = file_get_contents(__DIR__ . '/../../../scripts/ss_webseer.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_webseer.php');
 	expect($src)->not->toContain('return false');
 });
 
 test('ss_gexport.php does not initialise $value to 0', function () {
-	$src = file_get_contents(__DIR__ . '/../../../scripts/ss_gexport.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_gexport.php');
 	expect($src)->not->toContain("\$value = '0'")
 		->and($src)->toContain("\$value = 'U'");
 });
 
 test('ss_gexport.php returns U not 0 on empty value', function () {
-	$src = file_get_contents(__DIR__ . '/../../../scripts/ss_gexport.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_gexport.php');
 	expect($src)->not->toContain("? '0' : \$value")
 		->and($src)->toContain("? 'U' : \$value");
 });
 
 test('ss_gexport.php does not return null on fallthrough', function () {
-	$src = file_get_contents(__DIR__ . '/../../../scripts/ss_gexport.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_gexport.php');
 	expect($src)->not->toContain('return null');
 });
 
 test('query_host_cpu.php prints U when get index is absent', function () {
-	$src = file_get_contents(__DIR__ . '/../../../scripts/query_host_cpu.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/scripts/query_host_cpu.php');
 	// The get handler must have an else branch that prints 'U'; a comment
 	// containing the literal would satisfy toContain but not the structural check.
 	expect($src)->toContain("print 'U'")
@@ -67,13 +67,13 @@ test('query_host_cpu.php prints U when get index is absent', function () {
 });
 
 test('ss_webseer.php guard covers false and null from db_fetch_cell_prepared', function () {
-	$src = file_get_contents(__DIR__ . '/../../../scripts/ss_webseer.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_webseer.php');
 	expect($src)->toContain('$value === false')
 		->and($src)->toContain('$value === null');
 });
 
 test('ss_gexport.php guard covers false and null from db_fetch_cell_prepared', function () {
-	$src = file_get_contents(__DIR__ . '/../../../scripts/ss_gexport.php');
+	$src = file_get_contents(CACTI_PATH_BASE . '/scripts/ss_gexport.php');
 	expect($src)->toContain('$value === false')
 		->and($src)->toContain('$value === null');
 });

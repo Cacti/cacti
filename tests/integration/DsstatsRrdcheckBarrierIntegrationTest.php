@@ -31,10 +31,10 @@
  * not fail) if it is unavailable.
  */
 
-require_once __DIR__ . '/../Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 2) . '/lib/database.php';
-require_once dirname(__DIR__, 2) . '/lib/dsstats.php';
-require_once dirname(__DIR__, 2) . '/lib/rrdcheck.php';
+require_once CACTI_PATH_TESTS . '/Helpers/UnitStubs.php';
+require_once CACTI_PATH_LIBRARY . '/database.php';
+require_once CACTI_PATH_LIBRARY . '/dsstats.php';
+require_once CACTI_PATH_LIBRARY . '/rrdcheck.php';
 
 if (!function_exists('barrier_handoff_connect_default_session')) {
 	function barrier_handoff_connect_default_session(PDO $pdo) : void {

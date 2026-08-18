@@ -21,21 +21,19 @@
  * entirely.
  */
 
-$reportsPath = dirname(__DIR__, 4) . '/lib/reports.php';
-
-beforeEach(function () use ($reportsPath) {
-	require_once $reportsPath;
+beforeEach(function () {
+	require_once CACTI_PATH_LIBRARY . '/reports.php';
 });
 
-test('reports.php decodes PNG data in memory via imagecreatefromstring', function () use ($reportsPath) {
-	$src = file_get_contents($reportsPath);
+test('reports.php decodes PNG data in memory via imagecreatefromstring', function () {
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/reports.php');
 	expect($src)->not->toBeFalse('lib/reports.php must be readable');
 
 	expect($src)->toContain('imagecreatefromstring($png_data)');
 });
 
-test('png2jpeg no longer writes a predictable temp file', function () use ($reportsPath) {
-	$src = file_get_contents($reportsPath);
+test('png2jpeg no longer writes a predictable temp file', function () {
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/reports.php');
 	expect($src)->not->toBeFalse('lib/reports.php must be readable');
 
 	expect($src)->not->toContain("'/tmp/' . time() . '.png'")
@@ -43,8 +41,8 @@ test('png2jpeg no longer writes a predictable temp file', function () use ($repo
 		->and($src)->not->toContain('imagecreatefrompng($fn)');
 });
 
-test('reports.php contains no fopen or predictable-path file writes', function () use ($reportsPath) {
-	$src = file_get_contents($reportsPath);
+test('reports.php contains no fopen or predictable-path file writes', function () {
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/reports.php');
 	expect($src)->not->toBeFalse('lib/reports.php must be readable');
 
 	foreach (['png2jpeg', 'png2gif'] as $function) {

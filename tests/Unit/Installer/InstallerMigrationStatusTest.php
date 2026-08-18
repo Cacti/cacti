@@ -20,7 +20,7 @@
 $root = dirname(__DIR__, 3);
 
 test('the 1.3.0 upgrade records every database mutation', function () use ($root) {
-	$source = file_get_contents($root . '/install/upgrades/1_3_0.php');
+	$source = file_get_contents(CACTI_PATH_BASE . '/install/upgrades/1_3_0.php');
 
 	expect($source)->not->toBeFalse();
 	expect($source)->toContain('db_install_execute(');
@@ -36,7 +36,7 @@ test('the 1.3.0 upgrade records every database mutation', function () use ($root
 });
 
 test('the plugin timestamp migration handles null values with SQL null semantics', function () use ($root) {
-	$source = file_get_contents($root . '/install/upgrades/1_3_0.php');
+	$source = file_get_contents(CACTI_PATH_BASE . '/install/upgrades/1_3_0.php');
 
 	expect($source)->not->toBeFalse();
 	expect($source)->toContain('last_updated IS NULL');
@@ -44,7 +44,7 @@ test('the plugin timestamp migration handles null values with SQL null semantics
 });
 
 test('table definition synchronization records its status', function () use ($root) {
-	$source = file_get_contents($root . '/install/functions.php');
+	$source = file_get_contents(CACTI_PATH_BASE . '/install/functions.php');
 
 	expect($source)->not->toBeFalse();
 
