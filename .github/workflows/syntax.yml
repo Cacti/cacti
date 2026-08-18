@@ -164,6 +164,11 @@ jobs:
         else
           sudo timeout --signal=TERM 60s add-apt-repository -y --no-update ppa:ondrej/php
         fi
+        for source in /etc/apt/apt-mirrors.txt /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources; do
+          if [ -f "$source" ]; then
+            sudo sed -i 's#http://azure.archive.ubuntu.com/ubuntu#https://archive.ubuntu.com/ubuntu#g' "$source"
+          fi
+        done
         for attempt in 1 2 3; do
           if sudo timeout --signal=TERM 300s apt-get -y \
             -o Acquire::Retries=3 \
