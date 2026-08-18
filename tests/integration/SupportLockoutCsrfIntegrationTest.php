@@ -17,7 +17,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 1) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
 require_once dirname(__DIR__, 2) . '/include/global.php';
 
 /*
@@ -26,7 +26,7 @@ require_once dirname(__DIR__, 2) . '/include/global.php';
  * database, not the PHP_TESTING sentinel. Neither existing test exercises that
  * persistence:
  *
- *   - tests/Unit/Security/Csrf/SupportLockoutCsrfTest.php says so directly: "the stored
+ *   - tests/Unit/SupportLockoutCsrfTest.php says so directly: "the stored
  *     lockout state ... under the test bootstrap ... returns the empty
  *     default, so the 'currently locked' path (unlock) cannot be reached
  *     here and is left to the Docker end-to-end test."
@@ -41,7 +41,7 @@ require_once dirname(__DIR__, 2) . '/include/global.php';
  * the HTTP/session/CSRF layer e2e exercises separately, and restores the
  * setting afterward so a developer's local database is left clean.
  *
- * Extraction mirrors tests/Unit/Security/Csrf/SupportLockoutCsrfTest.php exactly (same
+ * Extraction mirrors tests/Unit/SupportLockoutCsrfTest.php exactly (same
  * source, same header()/cacti_log()/exit rewrites): support.php on this
  * branch has no test-bootstrap early return, so it cannot be required
  * directly. eval() runs only Cacti's own source pulled from support.php in

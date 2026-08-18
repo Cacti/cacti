@@ -18,7 +18,7 @@ require_once dirname(__DIR__, 2) . '/lib/database.php';
 require_once dirname(__DIR__, 2) . '/lib/template.php';
 
 /*
- * #7380: tests/Unit/Ui/Graph/GraphCreateWiringTest.php proves equivalence between
+ * #7380: tests/Unit/Issue7380GraphCreateWiringTest.php proves equivalence between
  * the old per-item loop and the new bulk pre-fetch by eval'ing an extracted copy
  * of graph_template_connect_task_items() with a small, key-unique fixture. That
  * leaves two things unverified:
