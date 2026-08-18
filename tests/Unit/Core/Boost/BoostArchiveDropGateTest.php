@@ -25,7 +25,7 @@
  * child; the fix wires that same completeness check into the drop decision.
  */
 
-$boostPollerPath = __DIR__ . '/../../../../poller_boost.php';
+$boostPollerPath = CACTI_PATH_BASE . '/poller_boost.php';
 
 test('archive-table drop is gated on shard completeness, not the status sum', function () use ($boostPollerPath) {
 	$contents = file_get_contents($boostPollerPath);
