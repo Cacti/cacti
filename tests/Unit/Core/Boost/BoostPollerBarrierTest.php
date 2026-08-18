@@ -35,10 +35,10 @@ if (!function_exists(__NAMESPACE__ . '\\cacti_sizeof') && !function_exists('\\ca
 	}
 }
 
-require_once __DIR__ . '/../../../../lib/boost.php';
+require_once CACTI_PATH_LIBRARY . '/boost.php';
 
-$boostPollerPath = __DIR__ . '/../../../../poller_boost.php';
-$boostLibPath    = __DIR__ . '/../../../../lib/boost.php';
+$boostPollerPath = CACTI_PATH_BASE . '/poller_boost.php';
+$boostLibPath    = CACTI_PATH_LIBRARY . '/boost.php';
 
 test('boost_clamp_parallel maps misconfigured values to a single child', function () {
 	expect(boost_clamp_parallel(''))->toBe(1);
