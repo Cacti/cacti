@@ -10,7 +10,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$source = file_get_contents(dirname(__DIR__, 2) . '/lib/installer.php');
+$source = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
 
 if ($source === false) {
 	throw new RuntimeException('Unable to read lib/installer.php for SQL batching tests.');

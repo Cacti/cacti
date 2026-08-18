@@ -9,9 +9,9 @@
  */
 
 require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 2) . '/include/global.php';
-require_once dirname(__DIR__, 2) . '/install/functions.php';
-require_once dirname(__DIR__, 2) . '/lib/installer.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
+require_once CACTI_PATH_BASE . '/install/functions.php';
+require_once CACTI_PATH_LIBRARY . '/installer.php';
 
 test('remote database version results expose success rather than the failure flag', function () {
 	$compatible = install_remote_database_version_result('1.3.0', '1.3.0');
@@ -27,7 +27,7 @@ test('remote database version results expose success rather than the failure fla
 });
 
 test('template selection reads and writes the same installer setting namespace', function () {
-	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/installer.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
 
 	expect($source)->not->toBeFalse()
 		->and($source)->toContain('$this->setTemplates($this->getTemplates());')
@@ -48,7 +48,7 @@ test('package imports fail when their result or any file handoff is incomplete',
 });
 
 test('installer completion is guarded by schema and version postconditions', function () {
-	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/installer.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
 
 	expect($source)->not->toBeFalse()
 		->and(substr_count($source, '$this->validateRequiredSchema()'))->toBe(2)
@@ -58,7 +58,7 @@ test('installer completion is guarded by schema and version postconditions', fun
 });
 
 test('installer completion validates schema and version with one query each', function () {
-	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/installer.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
 
 	expect($source)->not->toBeFalse();
 
@@ -80,7 +80,7 @@ test('installer completion validates schema and version with one query each', fu
 });
 
 test('table conversion loads schema metadata once instead of once per table', function () {
-	$source = file_get_contents(dirname(__DIR__, 2) . '/install/functions.php');
+	$source = file_get_contents(CACTI_PATH_BASE . '/install/functions.php');
 
 	expect($source)->not->toBeFalse();
 
@@ -99,12 +99,12 @@ test('table conversion loads schema metadata once instead of once per table', fu
 });
 
 test('installer command-line adapters propagate failures and release locks', function () {
-	$cli        = file_get_contents(dirname(__DIR__, 2) . '/cli/install_cacti.php');
-	$background = file_get_contents(dirname(__DIR__, 2) . '/install/background.php');
-	$conversion = file_get_contents(dirname(__DIR__, 2) . '/cli/convert_tables.php');
-	$installer  = file_get_contents(dirname(__DIR__, 2) . '/lib/installer.php');
-	$import     = file_get_contents(dirname(__DIR__, 2) . '/lib/import.php');
-	$utility    = file_get_contents(dirname(__DIR__, 2) . '/lib/utility.php');
+	$cli        = file_get_contents(CACTI_PATH_BASE . '/cli/install_cacti.php');
+	$background = file_get_contents(CACTI_PATH_BASE . '/install/background.php');
+	$conversion = file_get_contents(CACTI_PATH_BASE . '/cli/convert_tables.php');
+	$installer  = file_get_contents(CACTI_PATH_LIBRARY . '/installer.php');
+	$import     = file_get_contents(CACTI_PATH_LIBRARY . '/import.php');
+	$utility    = file_get_contents(CACTI_PATH_LIBRARY . '/utility.php');
 
 	expect($cli)->toContain('exit($exitCode);')
 		->and($cli)->toContain('if (!isset($options[$key])) {')

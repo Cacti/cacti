@@ -28,7 +28,7 @@ function db_execute_prepared(string $sql, array $params = []) : bool {
 	return true;
 }
 
-$source = file_get_contents(dirname(__DIR__, 2) . '/install/functions.php');
+$source = file_get_contents(CACTI_PATH_BASE . '/install/functions.php');
 
 if ($source === false) {
 	throw new \RuntimeException('Unable to read install/functions.php for color import tests.');
@@ -38,7 +38,7 @@ if (preg_match('/function import_colors\(.*?^}\R/ms', $source, $matches) !== 1) 
 	throw new \RuntimeException('Unable to extract import_colors() for color import tests.');
 }
 
-$colors   = dirname(__DIR__, 2) . '/install/colors.csv';
+$colors   = CACTI_PATH_BASE . '/install/colors.csv';
 $function = str_replace("__DIR__ . '/colors.csv'", var_export($colors, true), $matches[0]);
 $function = str_replace('function import_colors(', 'function import_colors_under_test(', $function);
 eval('namespace InstallerColorImportBatchTest;' . $function);

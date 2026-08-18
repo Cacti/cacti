@@ -24,7 +24,7 @@ function db_execute_prepared(string $sql, array $params = []) : bool {
 	return true;
 }
 
-$source = file_get_contents(dirname(__DIR__, 2) . '/install/functions.php');
+$source = file_get_contents(CACTI_PATH_BASE . '/install/functions.php');
 
 if ($source === false) {
 	throw new \RuntimeException('Unable to read install/functions.php for default-setting tests.');
