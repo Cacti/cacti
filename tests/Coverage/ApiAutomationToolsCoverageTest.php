@@ -24,6 +24,10 @@ if (!defined('TREE_ITEM_TYPE_HOST')) {
 	define('TREE_ITEM_TYPE_HOST', 3);
 }
 
+if (!defined('CACTI_PATH_LIBRARY')) {
+	define('CACTI_PATH_LIBRARY', dirname(__DIR__, 2) . '/lib');
+}
+
 $GLOBALS['automation_assoc_results'] = [];
 $GLOBALS['automation_cell_results']  = [];
 $GLOBALS['automation_queries']       = [];
