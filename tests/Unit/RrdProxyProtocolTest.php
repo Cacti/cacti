@@ -52,7 +52,7 @@ if (!defined('RRD_PROXY_TEST_REAP_TIMEOUT')) {
 	define('RRD_PROXY_TEST_REAP_TIMEOUT', 30);
 }
 
-require_once dirname(__DIR__, 2) . '/lib/rrd.php';
+require_once CACTI_PATH_LIBRARY . '/rrd.php';
 
 beforeEach(function () {
 	global $config, $encryption;

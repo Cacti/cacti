@@ -20,7 +20,7 @@ declare(strict_types = 1);
  * @group regression
  */
 
-$rrdPath = dirname(__DIR__, 4) . '/lib/rrd.php';
+$rrdPath = CACTI_PATH_LIBRARY . '/rrd.php';
 
 test('escape_command is gone from lib/rrd.php', function () use ($rrdPath) {
 	$source = file_get_contents($rrdPath);
@@ -32,7 +32,7 @@ test('escape_command is gone from lib/rrd.php', function () use ($rrdPath) {
 test('escape_command is not redefined elsewhere under lib', function () {
 	$found = [];
 
-	foreach (glob(dirname(__DIR__, 4) . '/lib/*.php') as $file) {
+	foreach (glob(CACTI_PATH_LIBRARY . '/*.php') as $file) {
 		if (preg_match('/function\s+escape_command\s*\(/', file_get_contents($file))) {
 			$found[] = basename($file);
 		}

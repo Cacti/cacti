@@ -28,7 +28,7 @@ if (!function_exists('cacti_escapeshellarg')) {
 	}
 }
 
-require_once dirname(__DIR__, 2) . '/lib/rrd.php';
+require_once CACTI_PATH_LIBRARY . '/rrd.php';
 
 /**
  * Execute RRDtool without a command shell.

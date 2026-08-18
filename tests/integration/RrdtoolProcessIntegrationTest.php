@@ -42,7 +42,7 @@ if (!function_exists('cacti_session_close')) {
 	}
 }
 
-require_once dirname(__DIR__, 2) . '/lib/rrd.php';
+require_once CACTI_PATH_LIBRARY . '/rrd.php';
 
 function integration_rrdtool_binary() : string {
 	$binary = getenv('RRDTOOL_TEST_BINARY');

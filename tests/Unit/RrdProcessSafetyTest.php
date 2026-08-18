@@ -27,7 +27,7 @@ foreach ([
 	}
 }
 
-require_once dirname(__DIR__, 2) . '/lib/rrd.php';
+require_once CACTI_PATH_LIBRARY . '/rrd.php';
 
 test('stdin commands convert shell quoted arguments without losing apostrophes', function () {
 	$path     = "/tmp/device's metrics.rrd";

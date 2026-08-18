@@ -93,7 +93,7 @@ function restore_error_handler() : bool {
 	return true;
 }
 
-$source = file_get_contents(dirname(__DIR__, 2) . '/lib/dsstats.php');
+$source = file_get_contents(CACTI_PATH_LIBRARY . '/dsstats.php');
 
 if ($source === false) {
 	throw new \RuntimeException('Unable to read lib/dsstats.php for the poller-output batching test.');

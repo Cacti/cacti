@@ -24,10 +24,10 @@
  * a new unsafe interpolation in those files fails before reaching a shell.
  */
 
-$rrdSource       = file_get_contents(dirname(__DIR__, 2) . '/lib/rrd.php');
-$boostSource     = file_get_contents(dirname(__DIR__, 2) . '/lib/boost.php');
-$dsstatsSource   = file_get_contents(dirname(__DIR__, 2) . '/lib/dsstats.php');
-$functionsSource = file_get_contents(dirname(__DIR__, 2) . '/lib/functions.php');
+$rrdSource       = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
+$boostSource     = file_get_contents(CACTI_PATH_LIBRARY . '/boost.php');
+$dsstatsSource   = file_get_contents(CACTI_PATH_LIBRARY . '/dsstats.php');
+$functionsSource = file_get_contents(CACTI_PATH_LIBRARY . '/functions.php');
 
 foreach ([
 	'lib/rrd.php'       => $rrdSource,

@@ -10,7 +10,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$source = file_get_contents(dirname(__DIR__, 2) . '/lib/rrd.php');
+$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 
 if ($source === false) {
 	throw new RuntimeException('Unable to read lib/rrd.php for graph query efficiency tests.');

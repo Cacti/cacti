@@ -28,7 +28,7 @@ if (!function_exists('cacti_escapeshellarg')) {
 	}
 }
 
-require_once dirname(__DIR__, 2) . '/lib/rrd.php';
+require_once CACTI_PATH_LIBRARY . '/rrd.php';
 
 function rrd_mutation_test_directory() : string {
 	$directory = sys_get_temp_dir() . '/cacti-rrd-mutation-' . bin2hex(random_bytes(6));

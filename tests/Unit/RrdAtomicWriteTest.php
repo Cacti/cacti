@@ -14,7 +14,7 @@ declare(strict_types = 1);
  */
 
 require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 2) . '/lib/rrd.php';
+require_once CACTI_PATH_LIBRARY . '/rrd.php';
 
 function rrd_atomic_test_directory(string $suffix) : string {
 	$directory = sys_get_temp_dir() . '/cacti-rrd-atomic-' . $suffix . '-' . bin2hex(random_bytes(5));
@@ -73,7 +73,7 @@ test('atomic graph writes reject missing roots and missing parents', function ()
 });
 
 test('RRDtool output filenames are escaped at command construction', function () {
-	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/rrd.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	expect($source)->toContain("cacti_escapeshellarg((string) \$graph_data_array['export_filename'])")
 		->and($source)->toContain("cacti_escapeshellarg((string) \$graph_data_array['output_filename'])");

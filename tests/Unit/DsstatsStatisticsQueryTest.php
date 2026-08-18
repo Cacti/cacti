@@ -21,7 +21,7 @@ function db_fetch_row_prepared(string $sql, array $params = []) : array {
 	return $GLOBALS['dsstats_statistics_row'];
 }
 
-$source = file_get_contents(dirname(__DIR__, 2) . '/lib/dsstats.php');
+$source = file_get_contents(CACTI_PATH_LIBRARY . '/dsstats.php');
 
 if ($source === false) {
 	throw new \RuntimeException('Unable to read lib/dsstats.php for statistics query tests.');

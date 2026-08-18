@@ -14,7 +14,7 @@ declare(strict_types = 1);
  */
 
 require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
-require_once dirname(__DIR__, 2) . '/lib/rrd.php';
+require_once CACTI_PATH_LIBRARY . '/rrd.php';
 
 test('graph text removes credential variables before substitution', function () {
 	$received = null;
@@ -58,7 +58,7 @@ test('every credential placeholder is removed case insensitively', function (str
 ]);
 
 test('graph options resolve values before their argument escaping', function () {
-	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/rrd.php');
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
 	$start  = strpos($source, 'function rrd_function_process_graph_options(');
 	$end    = strpos($source, 'function rrdtool_resolve_graph_text(', $start);
 	$body   = substr($source, $start, $end - $start);
