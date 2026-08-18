@@ -18,6 +18,10 @@ if (!defined('CACTI_PATH_INCLUDE')) {
 	define('CACTI_PATH_INCLUDE', dirname(__DIR__, 4) . '/include');
 }
 
+if (!defined('CACTI_PATH_LIBRARY')) {
+	define('CACTI_PATH_LIBRARY', dirname(__DIR__, 4) . '/lib');
+}
+
 if (!defined('CACTI_SERVER_OS')) {
 	define('CACTI_SERVER_OS', 'unix');
 }
