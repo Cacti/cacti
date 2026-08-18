@@ -9,7 +9,7 @@
 
 use Symfony\Component\Mime\MimeTypesInterface;
 
-require_once __DIR__ . '/../../lib/CactiMime.php';
+require_once CACTI_PATH_LIBRARY . '/CactiMime.php';
 
 final class CactiMimeFake implements MimeTypesInterface {
 	public function __construct(private ?string $detected, private bool $supported = true) {
@@ -112,7 +112,7 @@ test('production detection rejects script bytes renamed as a package', function 
 });
 
 test('the upload is validated before its bytes enter the session', function () {
-	$source   = file_get_contents(__DIR__ . '/../../package_import.php');
+	$source   = file_get_contents(CACTI_PATH_BASE . '/package_import.php');
 	$validate = strpos($source, 'CactiMime::validate($xmlfile');
 	$retain   = strpos($source, "\$_SESSION['sess_import_package'] = file_get_contents(\$xmlfile)");
 
