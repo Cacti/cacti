@@ -72,7 +72,7 @@ test('no file under the csrf vendor directory holds a bare secret', function () 
 });
 
 test('the secret path is still ignored so it cannot be committed again', function () {
-	$gitignore = file_get_contents(dirname(__DIR__, 4) . '/.gitignore');
+	$gitignore = file_get_contents(CACTI_PATH_BASE . '/.gitignore');
 	expect($gitignore)->not->toBeFalse('.gitignore must be readable');
 
 	expect($gitignore)->toContain('include/vendor/csrf/csrf-secret.php');
@@ -85,7 +85,7 @@ test('the secret path is still ignored so it cannot be committed again', functio
  * include/csrf.php when csrf-magic was retired; the assertions are unchanged.
  */
 test('the secret is still generated and stored when none exists', function () {
-	$source = file_get_contents(dirname(__DIR__, 4) . '/include/csrf.php');
+	$source = file_get_contents(CACTI_PATH_INCLUDE . '/csrf.php');
 	expect($source)->not->toBeFalse('include/csrf.php must be readable');
 
 	$start = strpos($source, 'function csrf_get_secret(');

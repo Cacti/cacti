@@ -12,7 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/lib/csrf.php';
+require_once CACTI_PATH_LIBRARY . '/csrf.php';
 
 use Symfony\Component\Security\Csrf\CsrfTokenManager;
 use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
@@ -166,7 +166,7 @@ test('a secret rotated by refresh_csrf.php still validates a pre-upgrade token',
 });
 
 test('neither secret reader normalises the bytes it reads', function () {
-	$src = file_get_contents(dirname(__DIR__, 2) . '/include/csrf.php');
+	$src = file_get_contents(CACTI_PATH_INCLUDE . '/csrf.php');
 
 	expect($src)->toContain('file_get_contents(CACTI_CSRF_SECRET)')
 		->and($src)->toContain('(string) @file_get_contents($file)')
