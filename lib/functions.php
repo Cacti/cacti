@@ -338,53 +338,53 @@ function read_default_user_setting(string $config_name) : string {
  * @return mixed The current value of the user setting
  */
 if (!function_exists('read_user_setting')) {
-function read_user_setting(string $config_name, mixed $default = false, bool $force = false, mixed $user = 0) : mixed {
-	global $config;
+	function read_user_setting(string $config_name, mixed $default = false, bool $force = false, mixed $user = 0) : mixed {
+		global $config;
 
-	// users must have cacti user auth turned on to use this, or the guest account must be active
-	if ($user == 0 && isset($_SESSION[SESS_USER_ID])) {
-		$effective_uid = $_SESSION[SESS_USER_ID];
-	} else {
-		$effective_uid = $user;
-	}
-
-	if (!$force) {
-		if (isset($_SESSION[OPTIONS_USER])) {
-			$user_config_array = $_SESSION[OPTIONS_USER];
-		}
-	}
-
-	// We use isset instead of array_key_exists so that
-	// if we never had a value, we can see if we got on
-	// but once we know we have one, assume we always
-	// will
-	if (!isset($user_config_array[$config_name])) {
-		$db_setting = false;
-
-		if (db_table_exists('settings_user')) {
-			$db_setting = db_fetch_row_prepared('SELECT value
-				FROM settings_user
-				WHERE name = ?
-				AND user_id = ?',
-				[$config_name, $effective_uid]);
-		}
-
-		if (cacti_sizeof($db_setting)) {
-			$user_config_array[$config_name] = $db_setting['value'];
-		} elseif ($default !== false) {
-			$user_config_array[$config_name] = $default;
+		// users must have cacti user auth turned on to use this, or the guest account must be active
+		if ($user == 0 && isset($_SESSION[SESS_USER_ID])) {
+			$effective_uid = $_SESSION[SESS_USER_ID];
 		} else {
-			$user_config_array[$config_name] = read_default_user_setting($config_name);
+			$effective_uid = $user;
 		}
 
-		$set_var = CACTI_WEB ? '_SESSION' : 'config';
-		$set_key = CACTI_WEB ? OPTIONS_USER : 'config_user_options_array';
+		if (!$force) {
+			if (isset($_SESSION[OPTIONS_USER])) {
+				$user_config_array = $_SESSION[OPTIONS_USER];
+			}
+		}
 
-		${$set_var}[$set_key] = $user_config_array;
+		// We use isset instead of array_key_exists so that
+		// if we never had a value, we can see if we got on
+		// but once we know we have one, assume we always
+		// will
+		if (!isset($user_config_array[$config_name])) {
+			$db_setting = false;
+
+			if (db_table_exists('settings_user')) {
+				$db_setting = db_fetch_row_prepared('SELECT value
+					FROM settings_user
+					WHERE name = ?
+					AND user_id = ?',
+					[$config_name, $effective_uid]);
+			}
+
+			if (cacti_sizeof($db_setting)) {
+				$user_config_array[$config_name] = $db_setting['value'];
+			} elseif ($default !== false) {
+				$user_config_array[$config_name] = $default;
+			} else {
+				$user_config_array[$config_name] = read_default_user_setting($config_name);
+			}
+
+			$set_var = CACTI_WEB ? '_SESSION' : 'config';
+			$set_key = CACTI_WEB ? OPTIONS_USER : 'config_user_options_array';
+
+			${$set_var}[$set_key] = $user_config_array;
+		}
+
+		return $user_config_array[$config_name];
 	}
-
-	return $user_config_array[$config_name];
-}
 }
 
 /**
@@ -1129,84 +1129,84 @@ function get_message_max_type(mixed $output_messages = null) : int {
  * @return bool
  */
 if (!function_exists('raise_message')) {
-function raise_message(mixed $message_id, string $message = '', int $message_level = MESSAGE_LEVEL_NONE, mixed $message_title = null) : bool {
-	global $messages, $no_http_headers;
+	function raise_message(mixed $message_id, string $message = '', int $message_level = MESSAGE_LEVEL_NONE, mixed $message_title = null) : bool {
+		global $messages, $no_http_headers;
 
-	// This function should always exist, if not its an invalid install
-	if (function_exists('session_status')) {
-		$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
-	} else {
-		return false;
-	}
-
-	if (empty($message)) {
-		if (is_array($messages) && array_key_exists($message_id, $messages)) {
-			$predefined = $messages[$message_id];
-
-			if (isset($predefined['message'])) {
-				$message = $predefined['message'];
-			} else {
-				$message = $predefined;
-			}
-
-			if ($message_level == MESSAGE_LEVEL_NONE) {
-				$message_level = get_message_level($predefined);
-			}
-
-			$message_title = get_message_title($predefined);
+		// This function should always exist, if not its an invalid install
+		if (function_exists('session_status')) {
+			$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
 		} else {
-			if (isset($_SESSION[$message_id])) {
-				/*
-				 * A message was set at the session level
-				 * but rather than just assume it's an error
-				 * lets see if it is
-				 */
-				$message_level = MESSAGE_LEVEL_ERROR;
-				$sessMessage   = $_SESSION[$message_id];
+			return false;
+		}
 
-				// Is the message an array ?
-				if (is_array($sessMessage)) {
-					// Do we have the message element to set the text ?
-					if (!empty($sessMessage['message'])) {
-						$message = $sessMessage['message'];
-					}
+		if (empty($message)) {
+			if (is_array($messages) && array_key_exists($message_id, $messages)) {
+				$predefined = $messages[$message_id];
 
-					// Do we have the level element to set the level ?
-					if (!empty($sessMessage['level'])) {
-						$message_level = $sessMessage['level'];
-					}
+				if (isset($predefined['message'])) {
+					$message = $predefined['message'];
 				} else {
-					$message = $sessMessage;
+					$message = $predefined;
+				}
+
+				if ($message_level == MESSAGE_LEVEL_NONE) {
+					$message_level = get_message_level($predefined);
+				}
+
+				$message_title = get_message_title($predefined);
+			} else {
+				if (isset($_SESSION[$message_id])) {
+					/*
+					 * A message was set at the session level
+					 * but rather than just assume it's an error
+					 * lets see if it is
+					 */
+					$message_level = MESSAGE_LEVEL_ERROR;
+					$sessMessage   = $_SESSION[$message_id];
+
+					// Is the message an array ?
+					if (is_array($sessMessage)) {
+						// Do we have the message element to set the text ?
+						if (!empty($sessMessage['message'])) {
+							$message = $sessMessage['message'];
+						}
+
+						// Do we have the level element to set the level ?
+						if (!empty($sessMessage['level'])) {
+							$message_level = $sessMessage['level'];
+						}
+					} else {
+						$message = $sessMessage;
+					}
+				}
+
+				// The message is still empty?
+				if (empty($message)) {
+					$message       = __('Message Not Found.');
+					$message_level = MESSAGE_LEVEL_ERROR;
 				}
 			}
-
-			// The message is still empty?
-			if (empty($message)) {
-				$message       = __('Message Not Found.');
-				$message_level = MESSAGE_LEVEL_ERROR;
-			}
 		}
+
+		if ($need_session) {
+			cacti_session_start();
+		}
+
+		if (!isset($_SESSION[SESS_MESSAGES])) {
+			$_SESSION[SESS_MESSAGES] = [];
+		}
+
+		$final_message = ['message' => $message, 'level' => $message_level, 'title' => $message_title];
+
+		$final_message['title']               = get_message_title($final_message);
+		$_SESSION[SESS_MESSAGES][$message_id] = $final_message;
+
+		if ($need_session) {
+			cacti_session_close();
+		}
+
+		return true;
 	}
-
-	if ($need_session) {
-		cacti_session_start();
-	}
-
-	if (!isset($_SESSION[SESS_MESSAGES])) {
-		$_SESSION[SESS_MESSAGES] = [];
-	}
-
-	$final_message = ['message' => $message, 'level' => $message_level, 'title' => $message_title];
-
-	$final_message['title']               = get_message_title($final_message);
-	$_SESSION[SESS_MESSAGES][$message_id] = $final_message;
-
-	if ($need_session) {
-		cacti_session_close();
-	}
-
-	return true;
-}
 }
 
 /**
@@ -3236,13 +3236,13 @@ function stri_replace(string $find, string $replace, string $string) : string {
  * @return mixed The modified string
  */
 if (!function_exists('clean_up_lines')) {
-function clean_up_lines(mixed $string) : mixed {
-	if ($string !== null && is_string($string)) {
-		$string = preg_replace('/\s*[\r\n]+\s*/', ' ', $string) ?? $string;
-	}
+	function clean_up_lines(mixed $string) : mixed {
+		if ($string !== null && is_string($string)) {
+			$string = preg_replace('/\s*[\r\n]+\s*/', ' ', $string) ?? $string;
+		}
 
-	return $string;
-}
+		return $string;
+	}
 }
 
 /**
@@ -6693,58 +6693,59 @@ function clog_authorized() : bool {
 }
 
 if (!function_exists('cacti_debug_backtrace')) {
-function cacti_debug_backtrace(string $entry = '', bool $html = false, bool $record = true, int $limit = 0, int $skip = 0) : mixed {
-	$skip  = $skip >= 0 ? $skip : 1;
-	$limit = $limit > 0 ? ($limit + $skip) : 0;
+	function cacti_debug_backtrace(string $entry = '', bool $html = false, bool $record = true, int $limit = 0, int $skip = 0) : mixed {
+		$skip  = $skip >= 0 ? $skip : 1;
+		$limit = $limit > 0 ? ($limit + $skip) : 0;
 
-	$callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
+		$callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
 
-	while ($skip > 0) {
-		array_shift($callers);
-		$skip--;
-	}
+		while ($skip > 0) {
+			array_shift($callers);
+			$skip--;
+		}
 
-	$s = '';
+		$s = '';
 
-	foreach ($callers as $c) {
-		if (isset($c['line'])) {
-			$line = '[' . $c['line'] . ']';
+		foreach ($callers as $c) {
+			if (isset($c['line'])) {
+				$line = '[' . $c['line'] . ']';
+			} else {
+				$line = '';
+			}
+
+			if (isset($c['file'])) {
+				$file = str_replace(CACTI_PATH_BASE, '', $c['file']) . $line;
+			} else {
+				$file = $line;
+			}
+
+			$func = $c['function'] . '()';
+
+			if (isset($c['class'])) {
+				$func = $c['class'] . ($c['type'] ?? '') . $func;
+			}
+
+			$s = ($file != '' ? $file . ':' : '') . "$func" . (empty($s) ? '' : ', ') . $s;
+		}
+
+		if (!empty($s)) {
+			$s = ' (' . $s . ')';
+		}
+
+		if ($record) {
+			if ($html && CACTI_WEB) {
+				print "<table style='width:100%;text-align:center;'><tr><td>$s</td></tr></table>\n";
+			}
+
+			cacti_log(trim("$entry Backtrace: " . clean_up_lines($s)), false, '');
+
+			return true;
 		} else {
-			$line = '';
-		}
-
-		if (isset($c['file'])) {
-			$file = str_replace(CACTI_PATH_BASE, '', $c['file']) . $line;
-		} else {
-			$file = $line;
-		}
-
-		$func = $c['function'] . '()';
-
-		if (isset($c['class'])) {
-			$func = $c['class'] . ($c['type'] ?? '') . $func;
-		}
-
-		$s = ($file != '' ? $file . ':' : '') . "$func" . (empty($s) ? '' : ', ') . $s;
-	}
-
-	if (!empty($s)) {
-		$s = ' (' . $s . ')';
-	}
-
-	if ($record) {
-		if ($html && CACTI_WEB) {
-			print "<table style='width:100%;text-align:center;'><tr><td>$s</td></tr></table>\n";
-		}
-
-		cacti_log(trim("$entry Backtrace: " . clean_up_lines($s)), false, '');
-
-		return true;
-	} else {
-		if (!empty($entry)) {
-			return trim("$entry Backtrace: " . clean_up_lines($s));
-		} else {
-			return trim(clean_up_lines($s));
+			if (!empty($entry)) {
+				return trim("$entry Backtrace: " . clean_up_lines($s));
+			} else {
+				return trim(clean_up_lines($s));
+			}
 		}
 	}
 }
@@ -8898,7 +8899,6 @@ function get_running_user() : string {
 
 	return (empty($tmp_user) ? 'apache' : $tmp_user);
 }
-}
 
 /**
  * Returns a string for debugging purposes
@@ -8906,12 +8906,12 @@ function get_running_user() : string {
  * @return string
  */
 if (!function_exists('get_debug_prefix')) {
-function get_debug_prefix() : string {
-	$dateTime = new DateTime('NOW');
-	$dateTime = $dateTime->format('Y-m-d H:i:s.u');
+	function get_debug_prefix() : string {
+		$dateTime = new DateTime('NOW');
+		$dateTime = $dateTime->format('Y-m-d H:i:s.u');
 
-	return sprintf('<[ %s | %7d ]> -- ', $dateTime, getmypid());
-}
+		return sprintf('<[ %s | %7d ]> -- ', $dateTime, getmypid());
+	}
 }
 
 /**
