@@ -55,6 +55,7 @@ function proc_open($command, array $descriptors, &$pipes, ?string $cwd = null, ?
 }
 
 $source = file_get_contents(CACTI_PATH_LIBRARY . '/poller.php');
+
 preg_match('/function exec_background_process\(.*?^}\R/ms', $source, $matches);
 eval('namespace ShelllessBackgroundProcessTest;' . $matches[0]);
 preg_match('/function poller_enable_child_reaping\(.*?^}\R/ms', $source, $matches);
