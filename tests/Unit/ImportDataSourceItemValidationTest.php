@@ -28,7 +28,7 @@
  */
 
 if (!defined('POLLER_VERBOSITY_LOW')) {
-	require_once dirname(__DIR__, 2) . '/include/global_constants.php';
+	require_once CACTI_PATH_INCLUDE . '/global_constants.php';
 }
 
 if (!defined('CACTI_VERSION')) {
@@ -83,7 +83,7 @@ if (!function_exists('db_fetch_row_prepared')) {
 	}
 }
 
-require_once dirname(__DIR__, 2) . '/lib/import.php';
+require_once CACTI_PATH_LIBRARY . '/import.php';
 
 /* Pull every data_source_name, rrd_minimum and rrd_maximum out of the packages
    Cacti ships, so the rules are measured against real template content. */
@@ -96,7 +96,7 @@ function shipped_data_source_item_values() : array {
 
 	$values = ['data_source_name' => [], 'rrd_minimum' => [], 'rrd_maximum' => []];
 
-	foreach (glob(dirname(__DIR__, 2) . '/install/templates/*.xml.gz') as $package) {
+	foreach (glob(CACTI_PATH_BASE . '/install/templates/*.xml.gz') as $package) {
 		$blob = file_get_contents($package);
 
 		if ($blob === false) {
@@ -193,7 +193,7 @@ test('a trailing newline does not slip past the anchors', function () {
 });
 
 test('the data template import calls the validator before it saves', function () {
-	$src = file_get_contents(dirname(__DIR__, 2) . '/lib/import.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/import.php');
 
 	$decode = strpos($src, '$save[$field_name] = xml_character_decode($item_array[$field_name]);');
 	$guard  = strpos($src, 'if (!import_validate_data_source_item($field_name, $save[$field_name])) {');
@@ -207,7 +207,7 @@ test('the data template import calls the validator before it saves', function ()
 });
 
 test('a rejected data template aborts the import instead of adding false to the hash cache', function () {
-	$src = file_get_contents(dirname(__DIR__, 2) . '/lib/import.php');
+	$src = file_get_contents(CACTI_PATH_LIBRARY . '/import.php');
 
 	expect($src)->toContain('$cache_add = xml_to_data_template(');
 	expect($src)->not->toContain('$hash_cache += xml_to_data_template(');
@@ -262,7 +262,7 @@ function import_item(array $overrides) : array {
 }
 
 test('the driven field list still matches global_form.php', function () {
-	$form = file_get_contents(dirname(__DIR__, 2) . '/include/global_form.php');
+	$form = file_get_contents(CACTI_PATH_INCLUDE . '/global_form.php');
 	$item = substr($form, strpos($form, '$struct_data_source_item = ['));
 	$item = substr($item, 0, strpos($item, "\n];"));
 
