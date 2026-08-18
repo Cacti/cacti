@@ -12,7 +12,7 @@
  */
 
 function boostSource(string $path): string {
-	return file_get_contents(dirname(__DIR__, 2) . '/' . $path);
+	return file_get_contents(CACTI_PATH_BASE . '/' . $path);
 }
 
 test('Boost hand-off batches expose database acknowledgement', function () {

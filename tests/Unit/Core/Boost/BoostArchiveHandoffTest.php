@@ -42,7 +42,7 @@
  *    now updated at the end of each processed iteration.
  */
 
-$boostLibPath = __DIR__ . '/../../../../lib/boost.php';
+$boostLibPath = CACTI_PATH_LIBRARY . '/boost.php';
 
 if (!function_exists('boost_handoff_extract_function')) {
 	function boost_handoff_extract_function(string $contents, string $signature) : string {
