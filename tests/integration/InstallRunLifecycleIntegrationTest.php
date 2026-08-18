@@ -29,7 +29,7 @@ use Cacti\Domain\Installation\InvalidInstallRunTransition;
 
 // Exercise the production wiring file the installer loads, not a hand-picked
 // require list, so a broken require chain surfaces here.
-require_once dirname(__DIR__, 2) . '/include/domain.php';
+require_once CACTI_PATH_INCLUDE . '/domain.php';
 
 it('drives a full install run lifecycle through the domain bootstrap', function () {
 	$run = new InstallRun(new InstallRunId('bootstrap-run'));

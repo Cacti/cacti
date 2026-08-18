@@ -24,7 +24,7 @@
 
 use Cacti\Domain\Installation\InstallRunId;
 
-require_once dirname(__DIR__, 4) . '/include/domain.php';
+require_once CACTI_PATH_INCLUDE . '/domain.php';
 
 it('keeps a non-empty identifier verbatim', function () {
 	$id = new InstallRunId('run-123');

@@ -27,7 +27,7 @@ use Cacti\Domain\Installation\InstallRunId;
 use Cacti\Domain\Installation\InstallRunState;
 use Cacti\Domain\Installation\InvalidInstallRunTransition;
 
-require_once dirname(__DIR__, 4) . '/include/domain.php';
+require_once CACTI_PATH_INCLUDE . '/domain.php';
 
 it('starts a new run in the ready state', function () {
 	$run = new InstallRun(new InstallRunId('run-123'));
