@@ -20,38 +20,38 @@
  * binary, and cacti_escapeshellarg for the script path.
  */
 
-$graphRealtimePath = __DIR__ . '/../../../../graph_realtime.php';
+$graphRealtimePath = CACTI_BASE_PATH = 'graph_realtime.php';
 
 // --- graph_realtime.php: shell escaping for poller invocation ---
 
 test('graph_realtime.php uses cacti_escapeshellcmd for PHP binary', function () use ($graphRealtimePath) {
-	$contents = file_get_contents(CACTI_PATH_BASE . '/graph_realtime.php');
+	$contents = file_get_contents($graphRealtimePath);
 
 	expect($contents)->toContain("cacti_escapeshellcmd((string) read_config_option('path_php_binary')");
 });
 
 test('graph_realtime.php uses cacti_escapeshellarg for poller_realtime script path', function () use ($graphRealtimePath) {
-	$contents = file_get_contents(CACTI_PATH_BASE . '/graph_realtime.php');
+	$contents = file_get_contents($graphRealtimePath);
 
 	expect($contents)->toContain('cacti_escapeshellarg(CACTI_PATH_BASE');
 	expect($contents)->toContain('poller_realtime.php');
 });
 
 test('graph_realtime.php casts local_graph_id to int before shell_exec', function () use ($graphRealtimePath) {
-	$contents = file_get_contents(CACTI_PATH_BASE . '/graph_realtime.php');
+	$contents = file_get_contents($graphRealtimePath);
 
 	expect($contents)->toMatch('/\(int\)\s+gfrv\s*\(\s*[\'"]local_graph_id[\'"]\s*\)/');
 });
 
 test('graph_realtime.php quotes the realtime poller token', function () use ($graphRealtimePath) {
-	$contents = file_get_contents(CACTI_PATH_BASE . '/graph_realtime.php');
+	$contents = file_get_contents($graphRealtimePath);
 
 	expect($contents)->toContain('cacti_escapeshellarg($poller_id)');
 	expect($contents)->toContain("hash('sha256', session_id())");
 });
 
 test('graph_realtime.php does not pass raw grv local_graph_id to sprintf for shell', function () use ($graphRealtimePath) {
-	$contents = file_get_contents(CACTI_PATH_BASE . '/graph_realtime.php');
+	$contents = file_get_contents($graphRealtimePath);
 
 	expect($contents)->not->toMatch('/sprintf\s*\([^)]*grv\s*\(\s*[\'"]local_graph_id[\'"]\s*\)/');
 });
