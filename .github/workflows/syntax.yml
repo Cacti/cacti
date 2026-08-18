@@ -56,13 +56,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-22.04]
-        # 8.1 is deliberately absent: the daemon cannot reach the database on
-        # that job because libapache2-mod-php below is unversioned and pulls
-        # the distribution's own 8.1 on jammy, which shadows the interpreter
-        # setup-php prepared and does not carry its mysql module. Adding the
-        # version the docs ask contributors to write for needs that resolved
-        # first, which is its own change rather than a rider on this one.
-        php: ['8.2', '8.3', '8.4']
+        php: ['8.1', '8.2', '8.3', '8.4']
         experimental: [false]
         
     services:
@@ -176,7 +170,8 @@ jobs:
         sudo apt-get install \
         -o Acquire::http::Timeout="10" \
         -o Acquire::https::Timeout="10" \
-        -o Acquire::Retries="30" apache2 snmp snmpd rrdtool libapache2-mod-php
+        -o Acquire::Retries="30" apache2 snmp snmpd rrdtool \
+          libapache2-mod-php${{ matrix.php }} php${{ matrix.php }}-mysql
 
     - name: Start SNMPD Agent and Test Agent
       run: |
