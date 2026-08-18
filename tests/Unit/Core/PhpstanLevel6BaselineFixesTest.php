@@ -41,7 +41,7 @@
  * reported by PHPStan all contain the post-fix shape.
  */
 
-$repoRoot = __DIR__ . '/../..';
+$repoRoot = CACTI_PATH_BASE;
 $sources  = [
 	'aggregate_graphs.php' => file_get_contents("$repoRoot/aggregate_graphs.php"),
 	'color_templates.php'  => file_get_contents("$repoRoot/color_templates.php"),

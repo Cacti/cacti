@@ -13,7 +13,7 @@
 */
 
 require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 4) . '/include/global.php';
+require_once CACTI_PATH_INCLUDE . '/global.php';
 
 // =====================================================================
 // html_escape tests
@@ -149,7 +149,7 @@ test('cacti_redirect is used for constructed local page redirects', function () 
 	];
 
 	foreach ($legacyHeaders as $page => $patterns) {
-		$source = file_get_contents(__DIR__ . '/../../' . $page);
+		$source = file_get_contents(CACTI_PATH_BASE . '/' . $page);
 		expect($source)->not->toBeFalse("$page must be readable")
 			->and($source)->toContain('cacti_redirect(');
 
