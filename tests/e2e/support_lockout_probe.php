@@ -30,6 +30,10 @@
 
 chdir(dirname(__DIR__, 2));
 
+if (!defined('CACTI_PATH_INCLUDE')) {
+	define('CACTI_PATH_INCLUDE', dirname(__DIR__) . '/include');
+}
+
 require_once CACTI_PATH_INCLUDE . '/global.php';
 
 $base = rtrim(getenv('BASE_URL') ?: 'http://localhost/cacti', '/');

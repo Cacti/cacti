@@ -28,6 +28,14 @@
 
 chdir(dirname(__DIR__, 2));
 
+if (!defined('CACTI_PATH_INCLUDE')) {
+	define('CACTI_PATH_INCLUDE', dirname(__DIR__) . '/include');
+}
+
+if (!defined('CACTI_PATH_LIBRARY')) {
+	define('CACTI_PATH_LIBRARY', dirname(__DIR__) . '/lib');
+}
+
 require_once CACTI_PATH_INCLUDE . '/global.php';
 require_once CACTI_PATH_LIBRARY . '/functions.php';
 
