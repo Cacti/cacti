@@ -20,10 +20,10 @@
  * or extra log lines.
  */
 
-$authSrc  = file_get_contents(dirname(__DIR__, 2) . '/lib/auth.php');
-$loginSrc = file_get_contents(dirname(__DIR__, 2) . '/auth_login.php');
-$twofaSrc = file_get_contents(dirname(__DIR__, 2) . '/auth_2fa.php');
-$filter   = file_get_contents(dirname(__DIR__, 2) . '/misc/fail2ban/cacti.conf');
+$authSrc  = file_get_contents(CACTI_PATH_LIBRARY . '/auth.php');
+$loginSrc = file_get_contents(CACTI_PATH_BASE . '/auth_login.php');
+$twofaSrc = file_get_contents(CACTI_PATH_BASE . '/auth_2fa.php');
+$filter   = file_get_contents(CACTI_PATH_BASE . '/misc/fail2ban/cacti.conf');
 
 // The fail2ban <HOST> token, expanded to a PCRE that matches an IPv4/IPv6 address.
 function _f2b_regex(string $filter): string {
