@@ -20,6 +20,10 @@
  * failure points at the header helper, not the Cacti bootstrap.
  */
 
+if (!defined('CACTI_PATH_LIBRARY')) {
+	define('CACTI_PATH_LIBRARY', dirname(__DIR__, 4) . '/lib');
+}
+
 require_once CACTI_PATH_LIBRARY . '/headers_secure.php';
 
 if (!defined('CACTI_CSP_NONCE_ENFORCE')) {
