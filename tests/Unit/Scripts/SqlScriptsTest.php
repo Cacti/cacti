@@ -146,7 +146,7 @@ test('ss_sql() returns U when shell_exec produces no output', function () use ($
 	 * function definition is loaded, not the top-level print statement. */
 	$called_by_script_server = true;
 	if (!function_exists('ss_sql')) {
-		require $ssSqlPhpPath;
+		require CACTI_PATH_BASE . '/scripts/ss_sql.php';
 	}
 
 	/* mysqladmin will fail (bad credentials / no server), shell_exec returns
