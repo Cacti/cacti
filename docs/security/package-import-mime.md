@@ -2,7 +2,7 @@
 
 Local package uploads are inspected from the server-controlled temporary file
 before their bytes enter the session. Cacti uses Symfony Mime to ask `fileinfo`
-for a content-derived type and accepts only the XML and gzip aliases used by
+for a content-derived type and accepts only the ZIP, XML, and gzip aliases used by
 supported packages. Browser-provided filenames and `$_FILES['type']` do not
 participate in the decision.
 

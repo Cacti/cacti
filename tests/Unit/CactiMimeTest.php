@@ -75,8 +75,9 @@ test('unsupported and inconclusive detectors fail closed', function (?string $mi
 	'inconclusive'  => [null, true],
 ]);
 
-test('the package allowlist contains the supported XML and gzip aliases only', function () {
+test('the package allowlist contains the supported package formats only', function () {
 	expect(CactiMime::packageImportMimes())->toBe([
+		'application/zip',
 		'application/gzip',
 		'application/x-gzip',
 		'application/xml',

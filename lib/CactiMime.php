@@ -43,12 +43,19 @@ final class CactiMime {
 	/** @return string[] */
 	public static function packageImportMimes() : array {
 		return [
+			'application/zip',
 			'application/gzip',
 			'application/x-gzip',
 			'application/xml',
 			'application/x-xml',
 			'text/xml',
 		];
+	}
+
+	public static function detect(string $path) : string {
+		self::$detector ??= new CactiMimeDetector(MimeTypes::getDefault());
+
+		return self::$detector->detect($path) ?? 'application/octet-stream';
 	}
 
 	/** @param string[] $allowedMimes */
@@ -59,8 +66,6 @@ final class CactiMime {
 			return false;
 		}
 
-		self::$detector ??= new CactiMimeDetector(MimeTypes::getDefault());
-
-		return self::$detector->validate($path, $allowedMimes);
+		return in_array(self::detect($path), $allowedMimes, true);
 	}
 }
