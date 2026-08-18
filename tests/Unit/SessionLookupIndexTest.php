@@ -18,9 +18,9 @@ final class SessionLookupIndexTest extends TestCase {
 	private string $audit;
 
 	protected function setUp(): void {
-		$schema  = file_get_contents(__DIR__ . '/../../cacti.sql');
-		$upgrade = file_get_contents(__DIR__ . '/../../install/upgrades/1_3_0.php');
-		$audit   = file_get_contents(__DIR__ . '/../../docs/audit_schema.sql');
+		$schema  = file_get_contents(CACTI_PATH_BASE . '/cacti.sql');
+		$upgrade = file_get_contents(CACTI_PATH_BASE . '/install/upgrades/1_3_0.php');
+		$audit   = file_get_contents(CACTI_PATH_BASE . '/docs/audit_schema.sql');
 
 		$this->assertIsString($schema, 'Unable to read cacti.sql');
 		$this->assertIsString($upgrade, 'Unable to read the 1.3.0 upgrade');
