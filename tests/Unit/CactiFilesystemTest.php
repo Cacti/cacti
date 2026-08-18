@@ -12,8 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 2) . '/lib/CactiFilesystem.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_LIBRARY . '/CactiFilesystem.php';
 
 test('CactiFilesystem wraps Symfony filesystem operations', function () {
 	$filesystem = new CactiFilesystem();

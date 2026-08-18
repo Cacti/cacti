@@ -12,8 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-require_once dirname(__DIR__, 2) . '/lib/CactiFilesystem.php';
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_LIBRARY . '/CactiFilesystem.php';
 
 it('drives the static filesystem API against a real temp tree', function () {
 	$dir     = sys_get_temp_dir() . '/cacti-fs-int-' . bin2hex(random_bytes(4));
