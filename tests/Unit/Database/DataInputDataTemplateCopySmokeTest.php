@@ -14,7 +14,7 @@
  * bootstrap.
  */
 
-$repoRoot = __DIR__ . '/../..';
+$repoRoot = dirname(__DIR__, 3);
 
 test('lib/template.php parses and contains change_data_template()', function () use ($repoRoot) {
 	expect(file_exists("$repoRoot/lib/template.php"))->toBeTrue();
