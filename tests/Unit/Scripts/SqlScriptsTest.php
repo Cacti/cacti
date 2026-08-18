@@ -22,9 +22,6 @@
  *    escapeshellarg() bypasses any future Cacti-level escaping hooks).
  */
 
-$sqlPhpPath   = __DIR__ . '/../../../scripts/sql.php';
-$ssSqlPhpPath = __DIR__ . '/../../../scripts/ss_sql.php';
-
 // --- scripts/sql.php: no backtick operators remain ---
 
 test('sql.php contains no backtick operators', function () use ($sqlPhpPath) {

@@ -16,7 +16,6 @@
  * mutations are all source-level.
  */
 
-$repoRoot = __DIR__ . '/../..';
 $sources  = [
 	'aggregate_graphs.php' => file_get_contents(CACTI_PATH_BASE . '/aggregate_graphs.php'),
 	'color_templates.php'  => file_get_contents(CACTI_PATH_BASE . '/color_templates.php'),
