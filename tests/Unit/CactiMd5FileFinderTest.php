@@ -15,7 +15,7 @@
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
-require_once(__DIR__ . '/../../lib/CactiMd5FileFinder.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiMd5FileFinder.php');
 
 beforeEach(function () {
 	$this->filesystem = new Filesystem();
