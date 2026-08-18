@@ -20,10 +20,10 @@ declare(strict_types = 1);
  * @group regression
  */
 
-$rrdPath = dirname(__DIR__, 4) . '/lib/rrd.php';
+$rrdPath = CACTI_PATH_LIBRARY . '/rrd.php';
 
 test('escape_command is gone from lib/rrd.php', function () use ($rrdPath) {
-	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
+	$source = file_get_contents($rrdPath);
 
 	expect($source)->not->toMatch('/function\s+escape_command\s*\(/');
 	expect($source)->not->toMatch('/(?<![\w\$])escape_command\s*\(/');
@@ -42,20 +42,20 @@ test('escape_command is not redefined elsewhere under lib', function () {
 });
 
 test('__rrd_execute escapes array arguments one at a time', function () use ($rrdPath) {
-	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
+	$source = file_get_contents($rrdPath);
 
 	expect($source)->toContain("\$command_line = implode(' ', array_map('cacti_escapeshellarg', \$command_line));");
 });
 
 test('the shell_exec command line is assembled without a whole-command escape', function () use ($rrdPath) {
-	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
+	$source = file_get_contents($rrdPath);
 
 	expect($source)->toContain("\$full_commandline = read_config_option('path_rrdtool') . \$debug . ' ' . \$command_line;");
 	expect($source)->toContain('$output = shell_exec($full_commandline);');
 });
 
 test('the pipe writers pass the command line through untouched', function () use ($rrdPath) {
-	$source = file_get_contents(CACTI_PATH_LIBRARY . '/rrd.php');
+	$source = file_get_contents($rrdPath);
 
 	expect($source)->toContain('fwrite($pipes[0], $command_line . "\r\nquit\r\n");');
 	expect($source)->toContain('if (fwrite($rrdtool_pipe, " $command_line\r\n") === false) {');

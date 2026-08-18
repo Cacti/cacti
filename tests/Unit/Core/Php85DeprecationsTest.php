@@ -18,6 +18,8 @@
 
 // --- Static analysis: no deprecated calls in changed files ---
 
+$basePath = CACTI_PATH_BASE;
+
 test('cli/add_site.php contains no curl_close calls', function () use ($basePath) {
 	$contents = file_get_contents(CACTI_PATH_BASE . '/cli/add_site.php');
 
