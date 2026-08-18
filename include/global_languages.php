@@ -34,6 +34,92 @@ global $path2calendar, $path2timepicker, $path2colorpicker, $path2ms, $path2msfi
 // get a list of locale settings
 $lang2locale = get_list_of_locales();
 
+/*
+ * Declared before the fallback below returns.
+ *
+ * PHP hoists a top level function declaration, but not one inside a
+ * conditional, so this guarded declaration is only made when execution
+ * reaches it. Leaving it further down the file meant the disabled-i18n
+ * path returned first and left __() undefined for the rest of the request.
+ */
+
+/**
+ * Translates and formats a string based on the provided arguments.
+ *
+ * This function uses gettext for translation and sprintf for formatting.
+ * It supports different text domains and various formatting options.
+ *
+ * @return string Returns the translated and formatted string, or an empty string when no arguments are provided.
+ */
+if (!function_exists('__')) {
+	function __() : string {
+		global $i18n;
+
+		$args = func_get_args();
+		$num  = func_num_args();
+
+		// this should not happen
+		if ($num < 1) {
+			return '';
+		}
+
+		if ($num == 1) {
+			return __gettext($args[0]);
+			// convert pure text strings by using a different textdomain
+		}
+
+		/* only the last argument is allowed to initiate
+		   the use of a different textdomain */
+
+		// get gettext string
+		if (isset($i18n[(string) $args[$num - 1]]) && $args[$num - 1] != 'cacti') {
+			$args[0] = __gettext($args[0], $args[$num - 1]);
+		} else {
+			$args[0] = __gettext($args[0]);
+		}
+
+		$regex_num = '%([-]{0,1}[0-9]+([.][0-9]+){0,1}){0,1}';
+		$regex_str = '%([-]{0,1}[0-9]+){0,1}';
+
+		$array_str = [
+			'b', // Binary
+			'o', // Integer as Octal
+			's', // String
+			'u', // Integer as Unsigned Decimal
+			'x', // Integer as hex (lowercase)
+			'X', // Integer as hex (uppercase)
+		];
+
+		$array_num = [
+			'd', // Decimal
+			'e', // Scientific notation (lowercase)
+			'E', // Scientific notation (uppercase)
+			'f', // Floating point (locale aware)
+			'F', // Floating point (non-locale aware)
+			'g', // General format (uses E and f styling if precision involved)
+			'G', // General format (docs say same as g but uses E and f, yet it already does???)
+			'h', // General format (like g but uses F)
+			'H', // General format (like g but uses E and F)
+		];
+
+		$valid_args = [
+			'%%', // Escaped percentage (literal)
+			'%c', // Single Character
+			$regex_num . '[' . implode('', $array_num) . ']',
+			$regex_str . '[' . implode('', $array_str) . ']',
+		];
+
+		$valid_regexp = '/(' . implode(')|(', $valid_args) . ')/';
+
+		if (preg_match($valid_regexp, $args[0])) {
+			// process return string against input arguments
+			return __uf(call_user_func_array('sprintf', $args));
+		} else {
+			return $args[0];
+		}
+	}
+}
+
 // use a fallback if i18n is disabled (default)
 if (!read_config_option('i18n_language_support') && read_config_option('i18n_language_support') != '') {
 	i18n_debug('load_fallback_procedure(1)');
