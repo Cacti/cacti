@@ -37,17 +37,18 @@ set_default_action();
 $username = auth_get_username(); // Get the username from either basic auth or the login form
 
 // initialize some variables
-$user          = [];                             // An array that will include all user details
-$user_enabled  = true;                                // A variable to let plugins know that the user is enabled
-$guest_user    = false;                               // Indicates the Guest account is being used
-$realm         = 0;                                   // The compensated realm used for template and user validation
-$frv_realm     = gnrv('realm', 0); // The dropdown value for realm
-$auth_method   = read_config_option('auth_method');   // The authentication method for Cacti
-$error         = false;                               // Global variable, will be true if any errors occur
-$error_msg     = '';                                  // The errors message in case there was a login error
+$user                     = [];                             // An array that will include all user details
+$user_enabled             = true;                                // A variable to let plugins know that the user is enabled
+$guest_user               = false;                               // Indicates the Guest account is being used
+$realm                    = 0;                                   // The compensated realm used for template and user validation
+$frv_realm                = gnrv('realm', 0); // The dropdown value for realm
+$auth_method              = read_config_option('auth_method');   // The authentication method for Cacti
+$error                    = false;                               // Global variable, will be true if any errors occur
+$error_msg                = '';                                  // The errors message in case there was a login error
+$password_reset_available = false;                    // Render the trusted reset action separately from error text
 
 // global variables for exception handling
-global $error, $error_msg;
+global $error, $error_msg, $password_reset_available;
 
 if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 	if ($auth_method > AUTH_METHOD_BASIC && $frv_realm <= 1) {
@@ -415,4 +416,4 @@ html_auth_footer('login', $error_message, "
 
 		});
 	</script>
-");
+", $password_reset_available);

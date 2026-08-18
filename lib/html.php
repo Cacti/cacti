@@ -3570,13 +3570,14 @@ function html_auth_header(string $section, string $browser_title, string $legend
  * including any error messages, version information, and additional HTML content.
  * It also triggers a plugin hook and includes the global session file.
  *
- * @param string $section The section identifier used for the plugin hook.
- * @param string $error   Optional. The error message to display. Default is an empty string.
- * @param string $html    Optional. Additional HTML content to include. Default is an empty string.
+ * @param string $section                  The section identifier used for the plugin hook.
+ * @param string $error                    Optional. The error message to display. Default is an empty string.
+ * @param string $html                     Optional. Additional HTML content to include. Default is an empty string.
+ * @param bool   $password_reset_available Whether to render the trusted local password-reset action.
  *
  * @return void
  */
-function html_auth_footer(string $section, string $error = '', string $html = '') : void {
+function html_auth_footer(string $section, string $error = '', string $html = '', bool $password_reset_available = false) : void {
 	?>
 					</table>
 				</div>
@@ -3584,7 +3585,13 @@ function html_auth_footer(string $section, string $error = '', string $html = ''
 			</form>
 			<hr />
 			<div class='cactiAuthErrors'>
-				<?php print htmle($error); ?>
+				<?php
+				print htmle($error);
+
+	if ($password_reset_available) {
+		print ' <a href="auth_resetpassword.php">' . __esc('Reset password') . '</a>';
+	}
+	?>
 			</div>
 			<div class='versionInfo'>
 				<?php print __('Version %s | %s', CACTI_VERSION_BRIEF, COPYRIGHT_YEARS_SHORT); ?>

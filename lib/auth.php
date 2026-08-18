@@ -4200,7 +4200,7 @@ function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0
  * @return array The user data if login is successful, otherwise an empty array.
  */
 function secpass_login_process(string $username) : array {
-	global $error, $error_msg;
+	global $error, $error_msg, $password_reset_available;
 
 	$password = gnrv('login_password');
 
@@ -4261,8 +4261,9 @@ function secpass_login_process(string $username) : array {
 			auth_process_lockout($username, 0);
 
 			if (!$error) {
-				$error     = true;
-				$error_msg = __('Access Denied! Login Failed.') . ' <a href="auth_resetpassword.php">' . __('Reset password') . '</a>';
+				$error                    = true;
+				$error_msg                = __('Access Denied! Login Failed.');
+				$password_reset_available = true;
 
 				cacti_log(sprintf('LOGIN FAILED: Local Login Failed for user %s from IP Address %s', $username, get_client_addr()), false, 'AUTH');
 			}
