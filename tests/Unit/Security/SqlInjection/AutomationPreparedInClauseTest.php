@@ -25,6 +25,14 @@ if (!function_exists(__NAMESPACE__ . '\\cacti_sizeof') && !function_exists('\\ca
 	}
 }
 
+if (!defined('CACTI_PATH_LIBRARY')) {
+	define('CACTI_PATH_LIBRARY', dirname(__DIR__, 4) . '/lib');
+}
+
+if (!defined('CACTI_PATH_TESTS')) {
+	define('CACTI_PATH_TESTS', dirname(__DIR__, 4) . '/tests');
+}
+
 require_once CACTI_PATH_LIBRARY . '/api_automation_tools.php';
 require_once CACTI_PATH_TESTS . '/Helpers/IsolatedProbe.php';
 
