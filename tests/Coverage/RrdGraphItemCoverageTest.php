@@ -23,11 +23,19 @@
 */
 
 // Mirror include/global_constants.php so the module can be loaded on its own.
-foreach (['RRD_ALIGN_LEFT' => 'left', 'RRD_ALIGN_RIGHT' => 'right',
-	'RRD_ALIGN_JUSTIFIED'     => 'justified', 'RRD_ALIGN_CENTER' => 'center'] as $name => $value) {
+foreach ([
+	'RRD_ALIGN_LEFT'      => 'left',
+	'RRD_ALIGN_RIGHT'     => 'right',
+	'RRD_ALIGN_JUSTIFIED' => 'justified',
+	'RRD_ALIGN_CENTER'    => 'center'] as $name => $value) {
+
 	if (!defined($name)) {
 		define($name, $value);
 	}
+}
+
+if (!defined('CACTI_PATH_LIBRARY')) {
+	define('CACTI_PATH_LIBRARY', dirname(__DIR__, 2) . '/lib');
 }
 
 require_once CACTI_PATH_LIBRARY . '/rrd_graph_item.php';
