@@ -49,8 +49,15 @@ jobs:
       - name: Install benchmark dependencies
         run: |
           set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y php-cli php-xml hyperfine time python3
+          sudo timeout --signal=TERM 300s apt-get -y \
+            -o Acquire::Retries=3 \
+            -o Acquire::http::Timeout=30 \
+            -o Acquire::https::Timeout=30 update
+          sudo timeout --signal=TERM 300s apt-get -y \
+            -o Acquire::Retries=3 \
+            -o Acquire::http::Timeout=30 \
+            -o Acquire::https::Timeout=30 \
+            install php-cli php-xml hyperfine time python3
 
       - name: Prepare trusted benchmark configuration
         run: |
