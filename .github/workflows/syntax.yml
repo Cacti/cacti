@@ -52,6 +52,7 @@ jobs:
 
   check:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
     strategy:
       fail-fast: false
       matrix:
@@ -163,7 +164,21 @@ jobs:
         else
           sudo add-apt-repository -y ppa:ondrej/php
         fi
-        sudo apt-get -y update
+        for attempt in 1 2 3; do
+          if sudo timeout --signal=TERM 300s apt-get -y \
+            -o Acquire::Retries=3 \
+            -o Acquire::http::Timeout=30 \
+            -o Acquire::https::Timeout=30 update; then
+            break
+          fi
+
+          if [ "$attempt" -eq 3 ]; then
+            echo 'apt-get update failed after three bounded attempts' >&2
+            exit 1
+          fi
+
+          sleep $((attempt * 10))
+        done
 
     - name: Install Apache and Tools
       run: |
