@@ -6737,7 +6737,6 @@ function cacti_debug_backtrace(string $entry = '', bool $html = false, bool $rec
 		}
 	}
 }
-
 /**
  * calculate_percentiles - Given and array of numbers, calculate the Nth percentile,
  * optionally, return an array of numbers containing elements required for
@@ -8887,7 +8886,6 @@ function get_running_user() : string {
 
 	return (empty($tmp_user) ? 'apache' : $tmp_user);
 }
-
 /**
  * Returns a string for debugging purposes
  *

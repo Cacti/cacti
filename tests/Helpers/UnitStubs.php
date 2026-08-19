@@ -12,94 +12,18 @@
  +-------------------------------------------------------------------------+
 */
 
-if (!function_exists('cacti_sizeof')) {
-	function cacti_sizeof($array) {
-		return ($array === false || !is_array($array)) ? 0 : sizeof($array);
-	}
-}
+// NOTE: The following functions are NOT stubbed here because they are defined
+// elsewhere in the codebase. By NOT stubbing them, we avoid function redeclaration errors.
+// - cacti_sizeof, cacti_log, cacti_strtolower, read_config_option, read_user_setting,
+//   cacti_count, raise_message, clean_up_lines, cacti_debug_backtrace, get_debug_prefix
+//   (all defined in lib/functions.php)
+// - set_request_var, srv (lib/html_utility.php)
+// - __esc (include/global_languages.php line 595)
+//
+// NOTE: The following constants are NOT stubbed here because they are defined
+// in include/global_constants.php and include/global.php:
+// - POLLER_VERBOSITY_DEBUG, POLLER_VERBOSITY_DEVDBG, MESSAGE_LEVEL_NONE, MESSAGE_LEVEL_ERROR
+// - POLLER_ID
 
-if (!function_exists('cacti_log')) {
-	function cacti_log($message, $print = false, $tag = 'GENERAL', $level = 1) {
-		// Silently ignore
-	}
-}
-
-if (!function_exists('__')) {
-	function __($text, ...$args) {
-		return vsprintf($text, $args);
-	}
-}
-
-if (!function_exists('__esc')) {
-	function __esc($text, ...$args) {
-		return vsprintf($text, $args);
-	}
-}
-
-if (!function_exists('set_request_var')) {
-	function set_request_var($name, $val) {
-		$_REQUEST[$name] = $val;
-	}
-}
-
-if (!function_exists('srv')) {
-	function srv($name, $val) {
-		$_REQUEST[$name] = $val;
-	}
-}
-
-if (!function_exists('cacti_strtolower')) {
-	function cacti_strtolower($string) {
-		return mb_strtolower($string);
-	}
-}
-
-if (!function_exists('read_config_option')) {
-	function read_config_option($name) {
-		return false;
-	}
-}
-
-if (!function_exists('read_user_setting')) {
-	function read_user_setting($name) {
-		return '08:00';
-	}
-}
-
-if (!function_exists('cacti_count')) {
-	function cacti_count($array) {
-		return ($array === false || !is_array($array)) ? 0 : count($array);
-	}
-}
-
-if (!function_exists('clean_up_lines')) {
-	// Production version strips comments; the unit form only trims whitespace.
-	function clean_up_lines($s) {
-		return trim((string)$s);
-	}
-}
-
-if (!function_exists('raise_message')) {
-	function raise_message($message_id, $message = '', $message_level = 0, $message_title = null) {
-		return true;
-	}
-}
-
-if (!function_exists('cacti_debug_backtrace')) {
-	function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limit = 0, $skip = 0) {
-		return '';
-	}
-}
-
-if (!function_exists('get_debug_prefix')) {
-	function get_debug_prefix() {
-		return '';
-	}
-}
-
-// Constants required by lib/database.php logging paths and message helpers.
-if (!defined('POLLER_VERBOSITY_DEBUG'))  { define('POLLER_VERBOSITY_DEBUG', 5); }
-if (!defined('POLLER_VERBOSITY_DEVDBG')) { define('POLLER_VERBOSITY_DEVDBG', 6); }
-if (!defined('MESSAGE_LEVEL_NONE'))      { define('MESSAGE_LEVEL_NONE', 0); }
-if (!defined('MESSAGE_LEVEL_ERROR'))     { define('MESSAGE_LEVEL_ERROR', 3); }
-if (!defined('POLLER_ID'))               { define('POLLER_ID', 1); }
+// Runtime functions come from Cacti itself. Per-test doubles belong in the
+// test file's namespace so the unit bootstrap never replaces production APIs.
