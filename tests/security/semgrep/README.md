@@ -36,13 +36,15 @@ Two steps:
    runs the rules against the annotated fixtures and fails if a rule stops
    matching what it should (or starts matching what it should not). This keeps
    the rules honest without depending on a whole-tree scan.
-2. **Advisory scan (non-blocking)** — a full scan whose findings are uploaded
-   to the GitHub code-scanning tab. It does not fail the build: `grv()` returns
-   the *validated* value when the page registered a filter, which Semgrep
-   cannot see, so a whole-tree run includes known-safe sites, and taint
-   analysis over Cacti's large files is not perfectly deterministic run to run.
-   A baseline pass/fail gate on that is flaky by nature, so findings are
-   surfaced for review rather than gated.
+2. **Advisory changed-file scan (non-blocking)** — compares the checked-out
+   commit with the pull request base, the previous pushed commit, or the merge
+   group's base, then scans only changed PHP files outside `include/vendor`,
+   `plugins`, and `tests`. It does not fail the build: `grv()` returns the
+   *validated* value when the page registered a filter, which Semgrep cannot
+   see, so a whole-tree result includes known-safe sites, and taint analysis
+   over Cacti's large files is not perfectly deterministic run to run.
+   File-scoped results keep that historical noise out of unrelated pull
+   requests while still surfacing request-to-sink flows in changed code.
 
 A finding is a prompt to confirm, not proof of a bug: check whether the source
 is actually unvalidated on that path, then fix (bind the value, cast, or
