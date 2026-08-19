@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="tests/Installer/bootstrap.php" colors="true">
+    <testsuites>
+        <testsuite name="Installer bounded context">
+            <directory>tests/Installer</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

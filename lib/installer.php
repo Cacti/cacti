@@ -23,6 +23,7 @@
 */
 
 include_once(__DIR__ . '/../lib/poller.php');
+require_once(__DIR__ . '/Installer/bootstrap.php');
 
 class Installer implements JsonSerializable {
 	const EXIT_DB_EMPTY = 1;
@@ -1695,7 +1696,7 @@ class Installer implements JsonSerializable {
 	 * @return void
 	 */
 	private function setMode(int $param_mode = 0) : void {
-		if (intval($param_mode) > Installer::MODE_NONE && intval($param_mode) <= Installer::MODE_DOWNGRADE) {
+		if (\Cacti\Installer\Domain\InstallationMode::tryFromLegacy($param_mode) !== null) {
 			log_install_high('mode', 'setMode(' . $param_mode . ')');
 			set_install_config_option('install_mode', $param_mode);
 			$this->mode = $param_mode;
@@ -4125,6 +4126,21 @@ class Installer implements JsonSerializable {
 				$installer = new Installer();
 			}
 			$installer->setDefaults();
+			$legacyMode = intval($installer->getMode());
+			if (\Cacti\Installer\Domain\InstallationMode::tryFromLegacy($legacyMode) !== null) {
+				$domainInstallation = (new \Cacti\Installer\Application\LegacyInstallationFactory())->create(
+					'legacy-' . (string) $backgroundTime,
+					$legacyMode,
+					true
+				);
+				$domainInstallation->confirm();
+				log_install_debug('domain', 'Execution plan: ' . implode(', ', array_map(
+					static function (\Cacti\Installer\Domain\InstallTask $task) {
+						return $task->value;
+					},
+					$domainInstallation->plan()->tasks()
+				)));
+			}
 			$installer->install();
 		} catch (Exception $e) {
 			log_install_always('', __('Exception occurred during installation: #%s - %s', $e->getCode(), $e->getMessage()));

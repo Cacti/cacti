@@ -1,0 +1,11 @@
+includes:
+    - include/vendor/phpstan/phpstan-strict-rules/rules.neon
+
+parameters:
+    level: 8
+    paths:
+        - lib/Installer
+        - tests/Installer
+    bootstrapFiles:
+        - tests/Installer/bootstrap.php
+    tmpDir: .phpstan/installer
