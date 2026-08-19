@@ -9,7 +9,9 @@
 
 namespace ShelllessBackgroundProcessTest;
 
-define('CACTI_SERVER_OS', 'unix');
+if (!defined('CACTI_SERVER_OS')) {
+	define('CACTI_SERVER_OS', 'unix');
+}
 
 $GLOBALS['shellless_force_proc_failure']  = false;
 $GLOBALS['shellless_process_calls']       = [];
