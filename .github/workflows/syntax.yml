@@ -379,6 +379,7 @@ jobs:
 
     - name: Verify Installer Postconditions
       run: |
+        set -euo pipefail
         cd ${{ github.workspace }}
         expected_tables=$(grep -c '^CREATE TABLE' cacti.sql)
         actual_tables=$(mysql cacti --batch --skip-column-names -e "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()")
