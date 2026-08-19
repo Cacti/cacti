@@ -337,54 +337,52 @@ function read_default_user_setting(string $config_name) : string {
  *
  * @return mixed The current value of the user setting
  */
-if (!function_exists('read_user_setting')) {
-	function read_user_setting(string $config_name, mixed $default = false, bool $force = false, mixed $user = 0) : mixed {
-		global $config;
+function read_user_setting(string $config_name, mixed $default = false, bool $force = false, mixed $user = 0) : mixed {
+	global $config;
 
-		// users must have cacti user auth turned on to use this, or the guest account must be active
-		if ($user == 0 && isset($_SESSION[SESS_USER_ID])) {
-			$effective_uid = $_SESSION[SESS_USER_ID];
-		} else {
-			$effective_uid = $user;
-		}
-
-		if (!$force) {
-			if (isset($_SESSION[OPTIONS_USER])) {
-				$user_config_array = $_SESSION[OPTIONS_USER];
-			}
-		}
-
-		// We use isset instead of array_key_exists so that
-		// if we never had a value, we can see if we got on
-		// but once we know we have one, assume we always
-		// will
-		if (!isset($user_config_array[$config_name])) {
-			$db_setting = false;
-
-			if (db_table_exists('settings_user')) {
-				$db_setting = db_fetch_row_prepared('SELECT value
-					FROM settings_user
-					WHERE name = ?
-					AND user_id = ?',
-					[$config_name, $effective_uid]);
-			}
-
-			if (cacti_sizeof($db_setting)) {
-				$user_config_array[$config_name] = $db_setting['value'];
-			} elseif ($default !== false) {
-				$user_config_array[$config_name] = $default;
-			} else {
-				$user_config_array[$config_name] = read_default_user_setting($config_name);
-			}
-
-			$set_var = CACTI_WEB ? '_SESSION' : 'config';
-			$set_key = CACTI_WEB ? OPTIONS_USER : 'config_user_options_array';
-
-			${$set_var}[$set_key] = $user_config_array;
-		}
-
-		return $user_config_array[$config_name];
+	// users must have cacti user auth turned on to use this, or the guest account must be active
+	if ($user == 0 && isset($_SESSION[SESS_USER_ID])) {
+		$effective_uid = $_SESSION[SESS_USER_ID];
+	} else {
+		$effective_uid = $user;
 	}
+
+	if (!$force) {
+		if (isset($_SESSION[OPTIONS_USER])) {
+			$user_config_array = $_SESSION[OPTIONS_USER];
+		}
+	}
+
+	// We use isset instead of array_key_exists so that
+	// if we never had a value, we can see if we got on
+	// but once we know we have one, assume we always
+	// will
+	if (!isset($user_config_array[$config_name])) {
+		$db_setting = false;
+
+		if (db_table_exists('settings_user')) {
+			$db_setting = db_fetch_row_prepared('SELECT value
+				FROM settings_user
+				WHERE name = ?
+				AND user_id = ?',
+				[$config_name, $effective_uid]);
+		}
+
+		if (cacti_sizeof($db_setting)) {
+			$user_config_array[$config_name] = $db_setting['value'];
+		} elseif ($default !== false) {
+			$user_config_array[$config_name] = $default;
+		} else {
+			$user_config_array[$config_name] = read_default_user_setting($config_name);
+		}
+
+		$set_var = CACTI_WEB ? '_SESSION' : 'config';
+		$set_key = CACTI_WEB ? OPTIONS_USER : 'config_user_options_array';
+
+		${$set_var}[$set_key] = $user_config_array;
+	}
+
+	return $user_config_array[$config_name];
 }
 
 /**
@@ -683,70 +681,68 @@ function cache_common_config_settings() : array {
  *
  * @return mixed The current value of the configuration option
  */
-if (!function_exists('read_config_option')) {
-	function read_config_option(string $config_name, bool $force = false) : mixed {
-		global $config, $database_hostname, $database_default, $database_port, $database_sessions;
+function read_config_option(string $config_name, bool $force = false) : mixed {
+	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
 
-		$loaded = false;
+	$loaded = false;
 
-		$set_var = CACTI_WEB ? '_SESSION' : 'config';
-		$set_key = CACTI_WEB ? OPTIONS_WEB : OPTIONS_CLI;
+	$set_var = CACTI_WEB ? '_SESSION' : 'config';
+	$set_key = CACTI_WEB ? OPTIONS_WEB : OPTIONS_CLI;
 
-		// Store whatever value we have in the array
-		if (!isset(${$set_var}[$set_key]) || !is_array(${$set_var}[$set_key])) {
-			${$set_var}[$set_key] = [];
-		}
+	// Store whatever value we have in the array
+	if (!isset(${$set_var}[$set_key]) || !is_array(${$set_var}[$set_key])) {
+		${$set_var}[$set_key] = [];
+	}
 
-		$loaded = isset(${$set_var}[$set_key][$config_name]);
+	$loaded = isset(${$set_var}[$set_key][$config_name]);
+
+	if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
+		file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
+	}
+
+	// Do we have a value already stored in the array, or
+	// do we want to make sure we have the latest value
+	// from the database?
+	if (!$loaded || $force) {
+		// We need to check against the DB, but lets assume default value
+		// unless we can actually read the DB
+		$value = read_default_config_option($config_name);
 
 		if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
-			file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
-		}
+			file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
+				" $config_name: " .
+				' dh: ' . isset($database_hostname) .
+				' dp: ' . isset($database_port) .
+				' dd: ' . isset($database_default) .
+				' ds: ' . isset($database_sessions["$database_hostname:$database_port:$database_default"]) .
+				"\n", FILE_APPEND);
 
-		// Do we have a value already stored in the array, or
-		// do we want to make sure we have the latest value
-		// from the database?
-		if (!$loaded || $force) {
-			// We need to check against the DB, but lets assume default value
-			// unless we can actually read the DB
-			$value = read_default_config_option($config_name);
-
-			if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
+			if (isset($database_hostname) && isset($database_port) && isset($database_default)) {
 				file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
-					" $config_name: " .
-					' dh: ' . isset($database_hostname) .
-					' dp: ' . isset($database_port) .
-					' dd: ' . isset($database_default) .
-					' ds: ' . isset($database_sessions["$database_hostname:$database_port:$database_default"]) .
-					"\n", FILE_APPEND);
-
-				if (isset($database_hostname) && isset($database_port) && isset($database_default)) {
-					file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
-						" $config_name: [$database_hostname:$database_port:$database_default]\n", FILE_APPEND);
-				}
+					" $config_name: [$database_hostname:$database_port:$database_default]\n", FILE_APPEND);
 			}
-
-			// Are the database variables set, and do we have a connection??
-			// If we don't, we'll only use the default value without storing
-			// so that we can read the database version later.
-			if (isset($database_hostname) && isset($database_port) && isset($database_default) &&
-				isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
-				// Get the database setting
-				$db_result = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', [$config_name], false);
-
-				if (cacti_sizeof($db_result)) {
-					$value = $db_result['value'];
-				}
-			}
-
-			// Store whatever value we have in the array
-			${$set_var}[$set_key][$config_name] = $value;
 		}
 
-		$value = ${$set_var}[$set_key][$config_name];
+		// Are the database variables set, and do we have a connection??
+		// If we don't, we'll only use the default value without storing
+		// so that we can read the database version later.
+		if (isset($database_hostname) && isset($database_port) && isset($database_default) &&
+			isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			// Get the database setting
+			$db_result = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', [$config_name], false);
 
-		return $value;
+			if (cacti_sizeof($db_result)) {
+				$value = $db_result['value'];
+			}
+		}
+
+		// Store whatever value we have in the array
+		${$set_var}[$set_key][$config_name] = $value;
 	}
+
+	$value = ${$set_var}[$set_key][$config_name];
+
+	return $value;
 }
 
 /**
@@ -1128,85 +1124,83 @@ function get_message_max_type(mixed $output_messages = null) : int {
  *
  * @return bool
  */
-if (!function_exists('raise_message')) {
-	function raise_message(mixed $message_id, string $message = '', int $message_level = MESSAGE_LEVEL_NONE, mixed $message_title = null) : bool {
-		global $messages, $no_http_headers;
+function raise_message(mixed $message_id, string $message = '', int $message_level = MESSAGE_LEVEL_NONE, mixed $message_title = null) : bool {
+	global $messages, $no_http_headers;
 
-		// This function should always exist, if not its an invalid install
-		if (function_exists('session_status')) {
-			$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
-		} else {
-			return false;
-		}
+	// This function should always exist, if not its an invalid install
+	if (function_exists('session_status')) {
+		$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
+	} else {
+		return false;
+	}
 
-		if (empty($message)) {
-			if (is_array($messages) && array_key_exists($message_id, $messages)) {
-				$predefined = $messages[$message_id];
+	if (empty($message)) {
+		if (is_array($messages) && array_key_exists($message_id, $messages)) {
+			$predefined = $messages[$message_id];
 
-				if (isset($predefined['message'])) {
-					$message = $predefined['message'];
-				} else {
-					$message = $predefined;
-				}
-
-				if ($message_level == MESSAGE_LEVEL_NONE) {
-					$message_level = get_message_level($predefined);
-				}
-
-				$message_title = get_message_title($predefined);
+			if (isset($predefined['message'])) {
+				$message = $predefined['message'];
 			} else {
-				if (isset($_SESSION[$message_id])) {
-					/*
-					 * A message was set at the session level
-					 * but rather than just assume it's an error
-					 * lets see if it is
-					 */
-					$message_level = MESSAGE_LEVEL_ERROR;
-					$sessMessage   = $_SESSION[$message_id];
+				$message = $predefined;
+			}
 
-					// Is the message an array ?
-					if (is_array($sessMessage)) {
-						// Do we have the message element to set the text ?
-						if (!empty($sessMessage['message'])) {
-							$message = $sessMessage['message'];
-						}
+			if ($message_level == MESSAGE_LEVEL_NONE) {
+				$message_level = get_message_level($predefined);
+			}
 
-						// Do we have the level element to set the level ?
-						if (!empty($sessMessage['level'])) {
-							$message_level = $sessMessage['level'];
-						}
-					} else {
-						$message = $sessMessage;
+			$message_title = get_message_title($predefined);
+		} else {
+			if (isset($_SESSION[$message_id])) {
+				/*
+				 * A message was set at the session level
+				 * but rather than just assume it's an error
+				 * lets see if it is
+				 */
+				$message_level = MESSAGE_LEVEL_ERROR;
+				$sessMessage   = $_SESSION[$message_id];
+
+				// Is the message an array ?
+				if (is_array($sessMessage)) {
+					// Do we have the message element to set the text ?
+					if (!empty($sessMessage['message'])) {
+						$message = $sessMessage['message'];
 					}
-				}
 
-				// The message is still empty?
-				if (empty($message)) {
-					$message       = __('Message Not Found.');
-					$message_level = MESSAGE_LEVEL_ERROR;
+					// Do we have the level element to set the level ?
+					if (!empty($sessMessage['level'])) {
+						$message_level = $sessMessage['level'];
+					}
+				} else {
+					$message = $sessMessage;
 				}
 			}
+
+			// The message is still empty?
+			if (empty($message)) {
+				$message       = __('Message Not Found.');
+				$message_level = MESSAGE_LEVEL_ERROR;
+			}
 		}
-
-		if ($need_session) {
-			cacti_session_start();
-		}
-
-		if (!isset($_SESSION[SESS_MESSAGES])) {
-			$_SESSION[SESS_MESSAGES] = [];
-		}
-
-		$final_message = ['message' => $message, 'level' => $message_level, 'title' => $message_title];
-
-		$final_message['title']               = get_message_title($final_message);
-		$_SESSION[SESS_MESSAGES][$message_id] = $final_message;
-
-		if ($need_session) {
-			cacti_session_close();
-		}
-
-		return true;
 	}
+
+	if ($need_session) {
+		cacti_session_start();
+	}
+
+	if (!isset($_SESSION[SESS_MESSAGES])) {
+		$_SESSION[SESS_MESSAGES] = [];
+	}
+
+	$final_message = ['message' => $message, 'level' => $message_level, 'title' => $message_title];
+
+	$final_message['title']               = get_message_title($final_message);
+	$_SESSION[SESS_MESSAGES][$message_id] = $final_message;
+
+	if ($need_session) {
+		cacti_session_close();
+	}
+
+	return true;
 }
 
 /**
@@ -1504,210 +1498,208 @@ function get_selective_log_level() : mixed {
  *
  * @return bool
  */
-if (!function_exists('cacti_log')) {
-	function cacti_log(mixed $string, bool $output = false, string $environ = 'CMDPHP', mixed $level = '') : bool {
-		global $database_log;
+function cacti_log(mixed $string, bool $output = false, string $environ = 'CMDPHP', mixed $level = '') : bool {
+	global $database_log;
 
-		static $start = null;
-		static $depth = null;
+	static $start = null;
+	static $depth = null;
 
-		if ($start == null) {
-			$start = microtime(true);
-		}
+	if ($start == null) {
+		$start = microtime(true);
+	}
 
-		if ($depth == null) {
-			$depth = 1;
-		} else {
-			$depth++;
-		}
+	if ($depth == null) {
+		$depth = 1;
+	} else {
+		$depth++;
+	}
 
-		if ($depth > 1) {
-			print 'Recursion Loop detected.  Check Database' . PHP_EOL;
-			print 'Message: ' . trim($string) . PHP_EOL;
-			exit;
-		}
+	if ($depth > 1) {
+		print 'Recursion Loop detected.  Check Database' . PHP_EOL;
+		print 'Message: ' . trim($string) . PHP_EOL;
+		exit;
+	}
 
-		if (!isset($database_log)) {
-			$database_log = false;
-		}
-
-		if (is_array($string)) {
-			$string = json_encode($string);
-		} elseif ($string == '' || trim($string) == '') {
-			return false;
-		}
-
-		$last_log     = $database_log;
+	if (!isset($database_log)) {
 		$database_log = false;
-		$force_level  = get_selective_log_level();
-		$oprefix      = '';
-		$omessage     = '';
+	}
 
-		if (defined('POLLER_LOG_LEVEL') && POLLER_LOG_LEVEL != -1) { // @phpstan-ignore-line
-			$level = POLLER_LOG_LEVEL;
-		}
+	if (is_array($string)) {
+		$string = json_encode($string);
+	} elseif ($string == '' || trim($string) == '') {
+		return false;
+	}
 
-		// only log if the specific level is reached, developer debug is special low + specific devdbg calls
-		if ($force_level == -1) {
-			if ($level != '') {
-				$logVerbosity = read_config_option('log_verbosity');
+	$last_log     = $database_log;
+	$database_log = false;
+	$force_level  = get_selective_log_level();
+	$oprefix      = '';
+	$omessage     = '';
 
-				if ($logVerbosity == POLLER_VERBOSITY_DEVDBG) {
-					if ($level != POLLER_VERBOSITY_DEVDBG) {
-						if ($level > POLLER_VERBOSITY_LOW) {
-							$database_log = $last_log;
+	if (defined('POLLER_LOG_LEVEL') && POLLER_LOG_LEVEL != -1) { // @phpstan-ignore-line
+		$level = POLLER_LOG_LEVEL;
+	}
 
-							$depth--;
+	// only log if the specific level is reached, developer debug is special low + specific devdbg calls
+	if ($force_level == -1) {
+		if ($level != '') {
+			$logVerbosity = read_config_option('log_verbosity');
 
-							return true;
-						}
+			if ($logVerbosity == POLLER_VERBOSITY_DEVDBG) {
+				if ($level != POLLER_VERBOSITY_DEVDBG) {
+					if ($level > POLLER_VERBOSITY_LOW) {
+						$database_log = $last_log;
+
+						$depth--;
+
+						return true;
 					}
-				} elseif ($level > $logVerbosity) {
-					$database_log = $last_log;
-
-					$depth--;
-
-					return true;
 				}
+			} elseif ($level > $logVerbosity) {
+				$database_log = $last_log;
+
+				$depth--;
+
+				return true;
 			}
 		}
+	}
 
-		cacti_system_zone_set();
+	cacti_system_zone_set();
 
-		// fill in the current date for printing in the log
-		if (defined('CACTI_DATE_TIME_FORMAT')) {
-			$date = date(CACTI_DATE_TIME_FORMAT);
-		} else {
-			$date = date('Y-m-d H:i:s');
-		}
+	// fill in the current date for printing in the log
+	if (defined('CACTI_DATE_TIME_FORMAT')) {
+		$date = date(CACTI_DATE_TIME_FORMAT);
+	} else {
+		$date = date('Y-m-d H:i:s');
+	}
 
-		cacti_browser_zone_set();
+	cacti_browser_zone_set();
 
-		// determine how to log data
-		$logdestination = read_config_option('log_destination');
-		$logfile        = cacti_log_file();
+	// determine how to log data
+	$logdestination = read_config_option('log_destination');
+	$logfile        = cacti_log_file();
 
-		// format the message
-		if ($environ == 'POLLER') {
-			$prefix = "$date - " . ($environ != '' ? "$environ: " : '') . 'Poller[' . POLLER_ID . '] PID[' . getmypid() . '] ';
-
-			if ($output) {
-				$oprefix = sprintf('Total[%3.4f] ', microtime(true) - $start);
-			}
-		} else {
-			$prefix  = "$date - " . ($environ != '' ? $environ . ' ' : '');
-
-			if ($output) {
-				$oprefix = $prefix;
-			}
-		}
-
-		// Log to Logfile
-		$message = clean_up_lines($string) . PHP_EOL;
+	// format the message
+	if ($environ == 'POLLER') {
+		$prefix = "$date - " . ($environ != '' ? "$environ: " : '') . 'Poller[' . POLLER_ID . '] PID[' . getmypid() . '] ';
 
 		if ($output) {
-			$omessage = $oprefix . $message;
+			$oprefix = sprintf('Total[%3.4f] ', microtime(true) - $start);
 		}
+	} else {
+		$prefix  = "$date - " . ($environ != '' ? $environ . ' ' : '');
 
-		if (($logdestination == 1 || $logdestination == 2) && read_config_option('log_verbosity') != POLLER_VERBOSITY_NONE) {
-			// print the data to the log (append)
-			$fp = @fopen($logfile, 'a');
-
-			if ($fp) {
-				$message = $prefix . $message;
-				@fwrite($fp, $message);
-				fclose($fp);
-			}
+		if ($output) {
+			$oprefix = $prefix;
 		}
-
-		// Log to Syslog/Eventlog
-		// Syslog is currently Unstable in Win32
-		if ($logdestination == 2 || $logdestination == 3) {
-			$log_type = '';
-
-			if (str_contains($string, 'ERROR:')) {
-				$log_type = 'err';
-			} elseif (str_contains($string, 'WARNING:')) {
-				$log_type = 'warn';
-			} elseif (str_contains($string, 'STATS:')) {
-				$log_type = 'stat';
-			} elseif (str_contains($string, 'NOTICE:')) {
-				$log_type = 'note';
-			}
-
-			if ($log_type != '') {
-				if (CACTI_SERVER_OS == 'win32') {
-					openlog('Cacti', LOG_NDELAY | LOG_PID, LOG_USER);
-				} else {
-					openlog('Cacti', LOG_NDELAY | LOG_PID, LOG_SYSLOG);
-				}
-
-				if ($log_type == 'err' && read_config_option('log_perror')) {
-					syslog(LOG_CRIT, ($environ != '' ? $environ . ': ' : '') . $string);
-				} elseif ($log_type == 'warn' && read_config_option('log_pwarn')) {
-					syslog(LOG_WARNING, ($environ != '' ? $environ . ': ' : '') . $string);
-				} elseif (($log_type == 'stat' || $log_type == 'note') && read_config_option('log_pstats')) {
-					syslog(LOG_INFO, ($environ != '' ? $environ . ': ' : '') . $string);
-				}
-
-				closelog();
-			}
-		}
-
-		// print output to standard out if required
-		if ($output == true && isset($_SERVER['argv'][0])) {
-			print $omessage;
-		}
-
-		$database_log = $last_log;
-
-		$proceed = false;
-
-		if ($proceed) {
-			$limit = $skip = 0;
-
-			$callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
-
-			while ($skip > 0) {
-				array_shift($callers);
-				$skip--;
-			}
-
-			$s = '';
-
-			foreach ($callers as $c) {
-				if (isset($c['line'])) {
-					$line = '[' . $c['line'] . ']';
-				} else {
-					$line = '';
-				}
-
-				if (isset($c['file'])) {
-					$file = str_replace(CACTI_PATH_BASE, '', $c['file']) . $line;
-				} else {
-					$file = $line;
-				}
-
-				$func = $c['function'] . '()';
-
-				if (isset($c['class'])) {
-					$func = $c['class'] . ($c['type'] ?? '') . $func;
-				}
-
-				$s = ($file != '' ? $file . ':' : '') . "$func" . (empty($s) ? '' : ', ') . $s;
-			}
-
-			if (!empty($s)) {
-				$s = ' (' . $s . ')';
-			}
-
-			error_log($message . '-----------------' . $s);
-		}
-
-		$depth--;
-
-		return true;
 	}
+
+	// Log to Logfile
+	$message = clean_up_lines($string) . PHP_EOL;
+
+	if ($output) {
+		$omessage = $oprefix . $message;
+	}
+
+	if (($logdestination == 1 || $logdestination == 2) && read_config_option('log_verbosity') != POLLER_VERBOSITY_NONE) {
+		// print the data to the log (append)
+		$fp = @fopen($logfile, 'a');
+
+		if ($fp) {
+			$message = $prefix . $message;
+			@fwrite($fp, $message);
+			fclose($fp);
+		}
+	}
+
+	// Log to Syslog/Eventlog
+	// Syslog is currently Unstable in Win32
+	if ($logdestination == 2 || $logdestination == 3) {
+		$log_type = '';
+
+		if (str_contains($string, 'ERROR:')) {
+			$log_type = 'err';
+		} elseif (str_contains($string, 'WARNING:')) {
+			$log_type = 'warn';
+		} elseif (str_contains($string, 'STATS:')) {
+			$log_type = 'stat';
+		} elseif (str_contains($string, 'NOTICE:')) {
+			$log_type = 'note';
+		}
+
+		if ($log_type != '') {
+			if (CACTI_SERVER_OS == 'win32') {
+				openlog('Cacti', LOG_NDELAY | LOG_PID, LOG_USER);
+			} else {
+				openlog('Cacti', LOG_NDELAY | LOG_PID, LOG_SYSLOG);
+			}
+
+			if ($log_type == 'err' && read_config_option('log_perror')) {
+				syslog(LOG_CRIT, ($environ != '' ? $environ . ': ' : '') . $string);
+			} elseif ($log_type == 'warn' && read_config_option('log_pwarn')) {
+				syslog(LOG_WARNING, ($environ != '' ? $environ . ': ' : '') . $string);
+			} elseif (($log_type == 'stat' || $log_type == 'note') && read_config_option('log_pstats')) {
+				syslog(LOG_INFO, ($environ != '' ? $environ . ': ' : '') . $string);
+			}
+
+			closelog();
+		}
+	}
+
+	// print output to standard out if required
+	if ($output == true && isset($_SERVER['argv'][0])) {
+		print $omessage;
+	}
+
+	$database_log = $last_log;
+
+	$proceed = false;
+
+	if ($proceed) {
+		$limit = $skip = 0;
+
+		$callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
+
+		while ($skip > 0) {
+			array_shift($callers);
+			$skip--;
+		}
+
+		$s = '';
+
+		foreach ($callers as $c) {
+			if (isset($c['line'])) {
+				$line = '[' . $c['line'] . ']';
+			} else {
+				$line = '';
+			}
+
+			if (isset($c['file'])) {
+				$file = str_replace(CACTI_PATH_BASE, '', $c['file']) . $line;
+			} else {
+				$file = $line;
+			}
+
+			$func = $c['function'] . '()';
+
+			if (isset($c['class'])) {
+				$func = $c['class'] . ($c['type'] ?? '') . $func;
+			}
+
+			$s = ($file != '' ? $file . ':' : '') . "$func" . (empty($s) ? '' : ', ') . $s;
+		}
+
+		if (!empty($s)) {
+			$s = ' (' . $s . ')';
+		}
+
+		error_log($message . '-----------------' . $s);
+	}
+
+	$depth--;
+
+	return true;
 }
 
 /**
@@ -3235,14 +3227,12 @@ function stri_replace(string $find, string $replace, string $string) : string {
  *
  * @return mixed The modified string
  */
-if (!function_exists('clean_up_lines')) {
-	function clean_up_lines(mixed $string) : mixed {
-		if ($string !== null && is_string($string)) {
-			$string = preg_replace('/\s*[\r\n]+\s*/', ' ', $string) ?? $string;
-		}
-
-		return $string;
+function clean_up_lines(mixed $string) : mixed {
+	if ($string !== null && is_string($string)) {
+		$string = preg_replace('/\s*[\r\n]+\s*/', ' ', $string) ?? $string;
 	}
+
+	return $string;
 }
 
 /**
@@ -6692,64 +6682,61 @@ function clog_authorized() : bool {
 	}
 }
 
-if (!function_exists('cacti_debug_backtrace')) {
-	function cacti_debug_backtrace(string $entry = '', bool $html = false, bool $record = true, int $limit = 0, int $skip = 0) : mixed {
-		$skip  = $skip >= 0 ? $skip : 1;
-		$limit = $limit > 0 ? ($limit + $skip) : 0;
+function cacti_debug_backtrace(string $entry = '', bool $html = false, bool $record = true, int $limit = 0, int $skip = 0) : mixed {
+	$skip  = $skip >= 0 ? $skip : 1;
+	$limit = $limit > 0 ? ($limit + $skip) : 0;
 
-		$callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
+	$callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
 
-		while ($skip > 0) {
-			array_shift($callers);
-			$skip--;
-		}
+	while ($skip > 0) {
+		array_shift($callers);
+		$skip--;
+	}
 
-		$s = '';
+	$s = '';
 
-		foreach ($callers as $c) {
-			if (isset($c['line'])) {
-				$line = '[' . $c['line'] . ']';
-			} else {
-				$line = '';
-			}
-
-			if (isset($c['file'])) {
-				$file = str_replace(CACTI_PATH_BASE, '', $c['file']) . $line;
-			} else {
-				$file = $line;
-			}
-
-			$func = $c['function'] . '()';
-
-			if (isset($c['class'])) {
-				$func = $c['class'] . ($c['type'] ?? '') . $func;
-			}
-
-			$s = ($file != '' ? $file . ':' : '') . "$func" . (empty($s) ? '' : ', ') . $s;
-		}
-
-		if (!empty($s)) {
-			$s = ' (' . $s . ')';
-		}
-
-		if ($record) {
-			if ($html && CACTI_WEB) {
-				print "<table style='width:100%;text-align:center;'><tr><td>$s</td></tr></table>\n";
-			}
-
-			cacti_log(trim("$entry Backtrace: " . clean_up_lines($s)), false, '');
-
-			return true;
+	foreach ($callers as $c) {
+		if (isset($c['line'])) {
+			$line = '[' . $c['line'] . ']';
 		} else {
-			if (!empty($entry)) {
-				return trim("$entry Backtrace: " . clean_up_lines($s));
-			} else {
-				return trim(clean_up_lines($s));
-			}
+			$line = '';
+		}
+
+		if (isset($c['file'])) {
+			$file = str_replace(CACTI_PATH_BASE, '', $c['file']) . $line;
+		} else {
+			$file = $line;
+		}
+
+		$func = $c['function'] . '()';
+
+		if (isset($c['class'])) {
+			$func = $c['class'] . ($c['type'] ?? '') . $func;
+		}
+
+		$s = ($file != '' ? $file . ':' : '') . "$func" . (empty($s) ? '' : ', ') . $s;
+	}
+
+	if (!empty($s)) {
+		$s = ' (' . $s . ')';
+	}
+
+	if ($record) {
+		if ($html && CACTI_WEB) {
+			print "<table style='width:100%;text-align:center;'><tr><td>$s</td></tr></table>\n";
+		}
+
+		cacti_log(trim("$entry Backtrace: " . clean_up_lines($s)), false, '');
+
+		return true;
+	} else {
+		if (!empty($entry)) {
+			return trim("$entry Backtrace: " . clean_up_lines($s));
+		} else {
+			return trim(clean_up_lines($s));
 		}
 	}
 }
-
 /**
  * calculate_percentiles - Given and array of numbers, calculate the Nth percentile,
  * optionally, return an array of numbers containing elements required for
@@ -8899,19 +8886,16 @@ function get_running_user() : string {
 
 	return (empty($tmp_user) ? 'apache' : $tmp_user);
 }
-
 /**
  * Returns a string for debugging purposes
  *
  * @return string
  */
-if (!function_exists('get_debug_prefix')) {
-	function get_debug_prefix() : string {
-		$dateTime = new DateTime('NOW');
-		$dateTime = $dateTime->format('Y-m-d H:i:s.u');
+function get_debug_prefix() : string {
+	$dateTime = new DateTime('NOW');
+	$dateTime = $dateTime->format('Y-m-d H:i:s.u');
 
-		return sprintf('<[ %s | %7d ]> -- ', $dateTime, getmypid());
-	}
+	return sprintf('<[ %s | %7d ]> -- ', $dateTime, getmypid());
 }
 
 /**
@@ -9137,16 +9121,12 @@ function cacti_ptoa(string $title, string $addr) : void {
 	}
 }
 
-if (!function_exists('cacti_sizeof')) {
-	function cacti_sizeof(mixed $array) : int {
-		return ($array === false || !is_array($array)) ? 0 : count($array);
-	}
+function cacti_sizeof(mixed $array) : int {
+	return ($array === false || !is_array($array)) ? 0 : count($array);
 }
 
-if (!function_exists('cacti_count')) {
-	function cacti_count(mixed $array) : int {
-		return ($array === false || !is_array($array)) ? 0 : count($array);
-	}
+function cacti_count(mixed $array) : int {
+	return ($array === false || !is_array($array)) ? 0 : count($array);
 }
 
 /**
