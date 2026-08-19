@@ -1,0 +1,38 @@
+services:
+  app:
+    build:
+      context: ../../..
+      dockerfile: docker/Dockerfile
+      args:
+        PHP_VERSION: '8.1'
+    volumes:
+      - ../../..:/var/www/html/cacti
+      - ./config.php:/var/www/html/cacti/include/config.php:ro
+      - ./plugin:/var/www/html/cacti/plugins/queue_e2e:ro
+      - queue_cache:/var/www/html/cacti/cache
+      - queue_logs:/var/www/html/cacti/log
+      - queue_rra:/var/www/html/cacti/rra
+    depends_on:
+      db:
+        condition: service_healthy
+    entrypoint: ["tail", "-f", "/dev/null"]
+
+  db:
+    build:
+      context: ../../..
+      dockerfile: docker/Database.Dockerfile
+      args:
+        DATABASE_IMAGE: mysql:8.4
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: cacti_queue_e2e
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  queue_cache:
+  queue_logs:
+  queue_rra:

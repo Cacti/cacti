@@ -27,6 +27,7 @@ require(__DIR__ . '/include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 require_once(CACTI_PATH_LIBRARY . '/api_device.php');
 require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/api_queue.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
@@ -112,6 +113,8 @@ if (POLLER_ID == 1) {
 
 	authcache_purge();
 
+	queue_messages_purge();
+
 	secpass_check_expired();
 
 	reindex_devices();
@@ -185,6 +188,18 @@ function purge_host_value_cache() : void {
 		db_execute('DELETE FROM host_value_cache
 			WHERE time_to_live > 0
 			AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_updated) > time_to_live');
+	}
+}
+
+function queue_messages_purge() : void {
+	try {
+		$purged = api_queue_purge_all();
+
+		if ($purged['completed'] > 0 || $purged['dead'] > 0) {
+			cacti_log(sprintf('QUEUE MAINT STATS: Completed:%d Dead:%d', $purged['completed'], $purged['dead']), false, 'SYSTEM');
+		}
+	} catch (Throwable $e) {
+		cacti_log('QUEUE MAINT ERROR: ' . clean_up_lines($e->getMessage()), false, 'SYSTEM');
 	}
 }
 
