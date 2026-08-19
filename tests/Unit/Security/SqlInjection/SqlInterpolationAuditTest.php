@@ -17,7 +17,7 @@ if (!defined('SQL_AUDIT_LIB_ONLY')) {
 	define('SQL_AUDIT_LIB_ONLY', true);
 }
 
-require_once __DIR__ . '/../tools/sql_interpolation_audit.php';
+require_once dirname(__DIR__, 3) . '/tools/sql_interpolation_audit.php';
 
 function audit_db_functions(): array {
 	return array(
