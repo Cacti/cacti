@@ -14,12 +14,14 @@ Unit tests live under `tests/Unit/` in a category subfolder. Do not add a flat
 file to `tests/Unit/` root.
 
 - `Security/` — subfoldered by vulnerability class (`SqlInjection/`, `Xss/`,
-  `Shell/`, `Auth/`, `Csrf/`, `Csp/`, `Redirect/`, `PathTraversal/`, `Ssrf/`,
-  `Crypto/`, `InputValidation/`, `Session/`, `Ldap/`, `Type/`, `Misc/`)
+  `Shell/`, `ShellInjection/`, `Auth/`, `Csrf/`, `Csp/`, `Redirect/`,
+  `PathTraversal/`, `Ssrf/`, `Crypto/`, `InputValidation/`, `Session/`, `Ldap/`,
+  `Type/`, `Misc/`)
 - `DataCollection/` — `Poller/`, `Snmp/`, `Cmd/`, `DataQuery/`, `DataInput/`
 - `Ui/` — `Aggregate/`, `Graph/`, `Html/`, `Theme/`, `Colour/`, `Tree/`,
   `Spikekill/`, `Utility/`
-- `Core/` — `Rrd/`, `RemoteAgent/`, `Automation/`, `Cli/`, `Mailer/`, `Boost/`
+- `Core/` — `Rrd/`, `RemoteAgent/`, `Automation/`, `Cli/`, `Mailer/`, `Boost/`,
+  `Availability_Tests/`
 - `Database/`, `Installer/`, `Scripts/`, `Plugin/` at the top level
 
 If a new domain is needed, create a folder for it. Name the file after the
@@ -54,8 +56,9 @@ collecting, so the first definition wins and later ones are skipped. Behaviour
 then depends on load order, and moving a file changes results. `processIsolation`
 does not help: it isolates execution, not collection.
 
-Configure a stub instead of redefining it. `plugin_thold`'s
-`tests/Helpers/CactiStubs.php` is the working example.
+Configure a stub instead of redefining it. See
+[`tests/Helpers/CactiStubs.php`](tests/Helpers/CactiStubs.php) for the
+repository's working example.
 
 ## Running tests
 
@@ -65,5 +68,5 @@ Pest, through Cacti's own toolchain:
 composer test -- --testsuite=Unit
 ```
 
-Match the PHP version the branch targets (`.mise.toml`, or the CI matrix) rather
-than whatever is on `PATH`. Report which version produced a result.
+Match the PHP version declared by `composer.json` and the CI matrix rather than
+whatever is on `PATH`. Report which version produced a result.
