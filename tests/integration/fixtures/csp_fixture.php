@@ -21,7 +21,7 @@
  */
 
 if (!defined('CACTI_PATH_LIBRARY')) {
-	define('CACTI_PATH_LIBRARY', dirname(__DIR__, 4) . '/lib');
+	define('CACTI_PATH_LIBRARY', dirname(__DIR__, 3) . '/lib');
 }
 
 require_once CACTI_PATH_LIBRARY . '/headers_secure.php';

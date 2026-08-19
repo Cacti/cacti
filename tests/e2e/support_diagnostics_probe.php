@@ -28,15 +28,7 @@
 
 chdir(dirname(__DIR__, 2));
 
-if (!defined('CACTI_PATH_INCLUDE')) {
-	define('CACTI_PATH_INCLUDE', dirname(__DIR__) . '/include');
-}
-
-if (!defined('CACTI_PATH_LIBRARY')) {
-	define('CACTI_PATH_LIBRARY', dirname(__DIR__) . '/lib');
-}
-
-require_once CACTI_PATH_INCLUDE . '/global.php';
+require_once dirname(__DIR__, 2) . '/include/global.php';
 require_once CACTI_PATH_LIBRARY . '/functions.php';
 
 function support_diag_probe_assert(bool $condition, string $message): void {
