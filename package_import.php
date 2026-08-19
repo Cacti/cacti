@@ -23,6 +23,7 @@
 */
 
 require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiMime.php');
 require_once(CACTI_PATH_LIBRARY . '/import.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
@@ -489,6 +490,17 @@ function form_save() : void {
 			($_FILES['import_file']['tmp_name'] != '')) {
 			// file upload
 			$xmlfile = $_FILES['import_file']['tmp_name'];
+
+			if (!CactiMime::validate($xmlfile, CactiMime::packageImportMimes())) {
+				raise_message(
+					'package_mime_rejected',
+					__('The package was rejected because its detected content type is not supported.'),
+					MESSAGE_LEVEL_ERROR
+				);
+				header('Location: package_import.php');
+
+				exit;
+			}
 
 			$_SESSION['sess_import_package'] = file_get_contents($xmlfile);
 		} elseif (isset($_SESSION['sess_import_package'])) {

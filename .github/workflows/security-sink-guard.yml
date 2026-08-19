@@ -36,8 +36,15 @@ jobs:
       - name: Install ripgrep
         run: |
           set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ripgrep
+          sudo timeout --signal=TERM 300s apt-get -y \
+            -o Acquire::Retries=3 \
+            -o Acquire::http::Timeout=30 \
+            -o Acquire::https::Timeout=30 update
+          sudo timeout --signal=TERM 300s apt-get -y \
+            -o Acquire::Retries=3 \
+            -o Acquire::http::Timeout=30 \
+            -o Acquire::https::Timeout=30 \
+            install --no-install-recommends ripgrep
 
       - name: Verify tracked sink baseline
         run: tests/security/verify_sink_inventory.sh

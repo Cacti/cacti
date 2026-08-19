@@ -43,7 +43,14 @@ jobs:
       - name: Install dependencies
         run: |
           set -euo pipefail
-          sudo apt-get update -qq && sudo apt-get install -y gettext
+          sudo timeout --signal=TERM 300s apt-get -qq -y \
+            -o Acquire::Retries=3 \
+            -o Acquire::http::Timeout=30 \
+            -o Acquire::https::Timeout=30 update
+          sudo timeout --signal=TERM 300s apt-get -y \
+            -o Acquire::Retries=3 \
+            -o Acquire::http::Timeout=30 \
+            -o Acquire::https::Timeout=30 install gettext
           python3 -m pip install msgcheck==4.2.0 polib==1.2.0
 
       - name: Identify changed .po files
