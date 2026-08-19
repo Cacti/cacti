@@ -15,6 +15,7 @@
 if (!file_exists(__DIR__ . '/../../lib/CactiMime.php')) {
 	test('CactiMime hand-off: feature not present on this branch', function () {})
 		->skip('lib/CactiMime.php absent — feature PR #7074 not merged into develop yet');
+
 	return;
 }
 
@@ -42,8 +43,8 @@ if (!function_exists('cacti_log')) {
  *   - The allowlist returned by packageImportMimes() drives the caller's
  *     accept/reject branch (the same branch that issues raise_message +
  *     header('Location: ...') in package_import.php form_save()).
- *   - When libmagic is absent, validate(strict=true) returns false and
- *     that boolean propagates to the caller's reject path.
+ *   - When libmagic is absent, validate() returns false and that boolean
+ *     propagates to the caller's reject path.
  */
 
 beforeAll(function () {
@@ -148,23 +149,23 @@ test('allowlist drives the caller reject branch for a PHP payload renamed .zip',
 	unlink($tmp_name);
 });
 
-test('libmagic absence drives validate(strict=true) to false at the caller boundary', function () {
-	// CactiMimeTest already verifies the strict-mode boolean inside the
+test('libmagic absence drives validate() to false at the caller boundary', function () {
+	// CactiMimeTest already verifies the fail-closed boolean inside the
 	// class via a subprocess. This hand-off variant asserts the same
 	// boolean reaches the caller's reject branch -- the one that emits
-	// the "import_mime_unavailable" raise_message and redirects the user.
+	// the "package_mime_unavailable" raise_message and redirects the user.
 	$fx         = cacti_mime_build_fixtures();
-	$scriptPath = tempnam(sys_get_temp_dir(), 'cacti-mime-handoff-strict-');
+	$scriptPath = tempnam(sys_get_temp_dir(), 'cacti-mime-handoff-unavailable-');
 	$libPath    = realpath(__DIR__ . '/../../lib/CactiMime.php');
 
 	// The subprocess models the caller's boundary explicitly: it
 	// invokes validate() and prints the exact branch token the caller
-	// would take (ACCEPT or REJECT). When finfo is disabled, strict
-	// mode must yield REJECT.
+	// would take (ACCEPT or REJECT). When finfo is disabled it must
+	// yield REJECT.
 	$script  = "<?php\n";
 	$script .= 'require_once ' . var_export($libPath, true) . ";\n";
 	$script .= "if (!function_exists('cacti_log')) { function cacti_log(\$s,\$o=false,\$e='CMDPHP',\$l=''){ return true; } }\n";
-	$script .= '$ok = CactiMime::validate($argv[1], CactiMime::packageImportMimes(), true);' . "\n";
+	$script .= '$ok = CactiMime::validate($argv[1], CactiMime::packageImportMimes());' . "\n";
 	$script .= 'echo $ok ? "ACCEPT" : "REJECT";' . "\n";
 
 	file_put_contents($scriptPath, $script);

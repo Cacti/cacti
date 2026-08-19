@@ -492,11 +492,19 @@ function form_save() : void {
 			$xmlfile = $_FILES['import_file']['tmp_name'];
 
 			if (!CactiMime::validate($xmlfile, CactiMime::packageImportMimes())) {
-				raise_message(
-					'package_mime_rejected',
-					__('The package was rejected because its detected content type is not supported.'),
-					MESSAGE_LEVEL_ERROR
-				);
+				if (CactiMime::detectionAvailable()) {
+					raise_message(
+						'package_mime_rejected',
+						__('The package was rejected because its detected content type is not supported.'),
+						MESSAGE_LEVEL_ERROR
+					);
+				} else {
+					raise_message(
+						'package_mime_unavailable',
+						__('The package was rejected because content type detection is unavailable. Install the PHP fileinfo extension and retry the import.'),
+						MESSAGE_LEVEL_ERROR
+					);
+				}
 				header('Location: package_import.php');
 
 				exit;

@@ -120,3 +120,15 @@ test('the upload is validated before its bytes enter the session', function () {
 		->and($retain)->not->toBeFalse()
 		->and($validate)->toBeLessThan($retain);
 });
+
+test('an unusable detector and a rejected type produce different operator messages', function () {
+	$source = file_get_contents(CACTI_PATH_BASE . '/package_import.php');
+
+	expect($source)->toContain('package_mime_rejected')
+		->and($source)->toContain('package_mime_unavailable')
+		->and($source)->toContain('CactiMime::detectionAvailable()');
+});
+
+test('detectionAvailable reports the fileinfo extension', function () {
+	expect(CactiMime::detectionAvailable())->toBe(function_exists('finfo_open'));
+});
