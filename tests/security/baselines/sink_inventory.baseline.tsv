@@ -566,6 +566,7 @@ header_redirect	./package_import.php:243			header('Location: package_import.php?
 header_redirect	./package_import.php:394					header('Location: package_import.php');
 header_redirect	./package_import.php:401			header('Location: package_import.php');
 header_redirect	./package_import.php:501				header('Location: package_import.php');
+header_redirect	./package_import.php:500					header('Location: package_import.php');
 header_redirect	./package_import.php:611				header('Location: package_import.php?package_location=0');
 header_redirect	./package_import.php:942						header('Location: package_import.php');
 header_redirect	./package_keys.php:102			header('Location: package_keys.php?header=false');
