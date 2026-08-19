@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: '8.1'
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, mbstring
           coverage: none
       - uses: actions/cache@v4
@@ -31,12 +31,19 @@ jobs:
           restore-keys: composer-${{ runner.os }}-
       - name: Install locked dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
-      - name: Validate the dependency contract
-        run: composer validate --strict
-      - name: Check production platform requirements
-        run: composer check-platform-reqs --no-dev
+      - name: Validate the Composer developer platform
+        run: |
+          composer composer:validate
+          composer security:audit
+          composer platform:check
       - name: Lint tracked PHP files
-        run: git ls-files -z -- '*.php' | xargs -0 -n1 -P2 php -l
+        shell: bash
+        run: |
+          failed=0
+          while IFS= read -r -d '' file; do
+            php -l "$file" || failed=1
+          done < <(git ls-files -z -- '*.php' ':(exclude)include/vendor/**')
+          exit "$failed"
       - name: Run project lint and static analysis
         run: |
           composer lint

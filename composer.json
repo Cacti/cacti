@@ -67,9 +67,13 @@
         "pestphp/pest": "^2",
         "pestphp/pest-plugin-drift": "^2.0",
         "phpstan/phpstan": "^2.1.21",
+        "phpstan/phpstan-strict-rules": "^2.0",
         "rector/rector": "^2.1.2"
     },
     "scripts": {
+        "composer:validate": "composer validate --strict",
+        "security:audit": "composer audit --locked",
+        "platform:check": "composer check-platform-reqs --no-dev",
         "lint": "phplint --no-cache --exclude=include/vendor --exclude=plugins ",
         "phpstan": "phpstan analyse --level 6 ",
         "php-cs-fixer": "php-cs-fixer fix --allow-unsupported-php-version=yes --dry-run --diff --config=./.php-cs-fixer.php ",
@@ -77,6 +81,11 @@
         "php-cs-fixit": "php-cs-fixer fix ",
         "install-hooks": "bash -c 'install -m 755 tests/tools/pre-commit \"$(git rev-parse --git-path hooks/pre-commit)\"'",
         "test": "include/vendor/bin/pest --display-warnings"
+    },
+    "scripts-descriptions": {
+        "composer:validate": "Validate Composer metadata and the lock file",
+        "security:audit": "Audit locked dependencies for known vulnerabilities",
+        "platform:check": "Verify production platform requirements"
     },
     "authors": [
         {
@@ -93,10 +102,18 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "config": {
+        "optimize-autoloader": true,
+        "preferred-install": {
+            "*": "dist"
+        },
         "sort-packages": true,
         "vendor-dir": "./include/vendor",
-        "audit": {
-            "block-insecure": false
+        "policy": {
+            "advisories": {
+                "ignore-id": {
+                    "GHSA-vvj3-c3rp-c85p": "Pest 2.36.0 is the last PHP 8.1-compatible release and conflicts with PHPUnit >10.5.36; Cacti does not execute untrusted PHPT fixtures. Remove this exception when the PHP baseline and Pest are upgraded."
+                }
+            }
         },
         "allow-plugins": {
             "pestphp/pest-plugin": true

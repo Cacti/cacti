@@ -37,7 +37,7 @@ jobs:
           --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -pcactiroot"
           --health-interval=10s --health-timeout=5s --health-retries=12
     env:
-      PHP_VERSION: ${{ inputs['php-version'] || '8.4' }}
+      PHP_VERSION: ${{ inputs['php-version'] || '8.1' }}
       MYSQL_HOST: 127.0.0.1
       MYSQL_DATABASE: cacti
     steps:
