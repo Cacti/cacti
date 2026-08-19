@@ -2802,6 +2802,35 @@ CREATE TABLE `reports_queued` (
 ) ENGINE=InnoDB COMMENT='Holds Scheduled Reports';
 
 --
+-- Table structure for table `queue_messages`
+--
+
+CREATE TABLE `queue_messages` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `message_id` char(36) NOT NULL,
+  `queue_name` varchar(64) NOT NULL,
+  `topic` varchar(128) NOT NULL,
+  `payload` longblob NOT NULL,
+  `metadata` blob NOT NULL,
+  `status` varchar(16) NOT NULL default 'pending',
+  `priority` tinyint(3) unsigned NOT NULL default 50,
+  `available_at` timestamp NOT NULL default current_timestamp(),
+  `reserved_until` timestamp NULL default NULL,
+  `reservation_token` char(48) default NULL,
+  `attempts` smallint(5) unsigned NOT NULL default 0,
+  `max_attempts` smallint(5) unsigned NOT NULL default 5,
+  `last_error` text,
+  `created_at` timestamp NOT NULL default current_timestamp(),
+  `completed_at` timestamp NULL default NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `message_id` (`message_id`),
+  KEY `queue_ready` (`queue_name`,`status`,`priority`,`available_at`,`id`),
+  KEY `queue_terminal` (`queue_name`,`status`,`completed_at`),
+  KEY `status_completed` (`status`,`completed_at`),
+  KEY `reservation_token` (`reservation_token`)
+) ENGINE=InnoDB COMMENT='Cacti asynchronous queue messages';
+
+--
 -- Table structure for table `settings`
 --
 
