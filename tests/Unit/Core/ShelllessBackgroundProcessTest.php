@@ -9,7 +9,9 @@
 
 namespace ShelllessBackgroundProcessTest;
 
-define('CACTI_SERVER_OS', 'unix');
+if (!defined('CACTI_SERVER_OS')) {
+	define('CACTI_SERVER_OS', 'unix');
+}
 
 $GLOBALS['shellless_force_proc_failure']  = false;
 $GLOBALS['shellless_process_calls']       = [];
@@ -24,10 +26,8 @@ $GLOBALS['shellless_process_logs']        = [];
  *
  * @return void
  */
-if (!function_exists(__NAMESPACE__ . '\\cacti_log') && !function_exists('\\cacti_log')) {
-	function cacti_log(string $message, bool $output, string $environ) : void {
-		$GLOBALS['shellless_process_logs'][] = [$message, $output, $environ];
-	}
+function cacti_log(string $message, bool $output, string $environ) : void {
+	$GLOBALS['shellless_process_logs'][] = [$message, $output, $environ];
 }
 
 /**
