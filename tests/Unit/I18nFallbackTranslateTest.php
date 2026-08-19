@@ -16,9 +16,8 @@ require_once dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
 
 /*
  * include/global_languages.php returns early to a fallback locale when
- * i18n_language_support is off. __() is declared inside a function_exists()
- * guard, and PHP does not hoist a conditional declaration, so that return used
- * to leave __() undefined for the rest of the request.
+ * i18n_language_support is off. __() used to be conditionally declared after
+ * that return, which left it undefined for the rest of the request.
  *
  * include/global.php defines CACTI_VERSION_BRIEF through get_cacti_version_text()
  * immediately after loading this file, so the first thing to touch the missing
@@ -59,7 +58,7 @@ test('the unconditionally declared translation helpers are unaffected', function
 test('__() is declared before the fallback can return', function () {
 	$src = file_get_contents(dirname(__DIR__, 2) . '/include/global_languages.php');
 
-	$declared = strpos($src, "if (!function_exists('__'))");
+	$declared = strpos($src, 'function __() : string');
 	$fallback = strpos($src, 'load_fallback_procedure();');
 
 	expect($declared)->not->toBeFalse();
