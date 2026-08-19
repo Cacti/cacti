@@ -13,7 +13,7 @@
  * none of the pre-fix shapes survive. Runs without Cacti's bootstrap.
  */
 
-$repoRoot = __DIR__ . '/../..';
+$repoRoot = dirname(__DIR__, 4);
 $touched  = [
 	'aggregate_graphs.php',
 	'color_templates.php',
