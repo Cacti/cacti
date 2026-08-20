@@ -27,9 +27,11 @@ test('Recovery deletes only the exact rows acknowledged by the main collector', 
 	$recovery = boostSource('poller_recovery.php');
 
 	expect($recovery)->toContain('function recovery_delete_acknowledged_rows(array $rows, mixed $conn) : bool');
+	expect($recovery)->toContain('function recovery_transfer_rows(array $rows, mixed $remote_conn, mixed $local_conn) : int|false');
 	expect($recovery)->toContain('(local_data_id = ? AND rrd_name = ? AND time = ?)');
-	expect($recovery)->toContain('if (!boost_flush_output_batch($sql_array, $remote_db_cnn_id))');
-	expect($recovery)->toContain('if (!recovery_delete_acknowledged_rows($rows, $local_db_cnn_id))');
+	expect($recovery)->toContain('if (!boost_flush_output_batch($sql_array, $remote_conn))');
+	expect($recovery)->toContain('array_slice($rows, $offset, $transfer_chunk_size)');
+	expect($recovery)->toContain('recovery_transfer_rows($chunk, $remote_db_cnn_id, $local_db_cnn_id)');
 	expect($recovery)->not->toContain('DELETE FROM poller_output_boost WHERE time <=');
 });
 
@@ -40,6 +42,8 @@ test('Scheduled Boost retains shard ownership after an RRD update failure', func
 	expect($poller)->toContain('if ($updates_ok && $results !== false)');
 	expect($poller)->toContain('return $updates_ok && $results !== false ? cacti_sizeof($results) : -1;');
 	expect($poller)->toContain('if ($pass_rows < 0)');
+	expect($poller)->toContain('if ($total_rows == 0) {');
+	expect($poller)->toContain('return 0;');
 	expect(boostSource('lib/boost.php'))->toContain("return is_string(\$result) && \$result !== '' ? \$result : 'ERROR: RRDtool did not acknowledge the update';");
 });
 
@@ -53,6 +57,14 @@ test('Boost child completion and archive deletion are scoped to a parent run', f
 	expect($poller)->toContain('function boost_failed_children(string $run_id) : int');
 	expect($poller)->toContain('if ($rrd_updates > 0 && $failed_children === 0)');
 	expect($schema)->toContain('UNIQUE KEY `run_child` (`run_id`,`child_id`)');
+	expect($schema)->toContain('`child_id` int(10) unsigned NOT NULL default 0');
+});
+
+test('direct Boost redirection does not stage the same rows twice', function () {
+	$boost = boostSource('lib/boost.php');
+
+	expect($boost)->toContain("if (read_config_option('boost_redirect') == 'on')")
+		->and($boost)->toContain('cmd.php already staged these rows');
 });
 
 test('Remote hand-offs validate poller ownership before staging', function () {
@@ -78,7 +90,7 @@ test('Remote tuples are quoted by their destination connection', function () {
 
 	expect($cmd)->toContain("db_qstr(\$item['rrd_name'], \$poller_db_cnn_id)");
 	expect($cmd)->toContain('db_qstr($output, $poller_db_cnn_id)');
-	expect($recovery)->toContain("db_qstr(\$r['rrd_name'], \$remote_db_cnn_id)");
+	expect($recovery)->toContain("db_qstr(\$row['rrd_name'], \$remote_conn)");
 });
 
 test('Graph cache names are opaque and writes are atomically published', function () {

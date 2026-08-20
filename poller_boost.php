@@ -794,6 +794,8 @@ function boost_output_rrd_data(int $child) : mixed {
 	}
 
 	if ($total_rows == 0) {
+		rrd_close($rrdtool_pipe);
+
 		return 0;
 	}
 

@@ -369,6 +369,14 @@ function boost_poller_on_demand(array &$results) : bool {
 		set_error_handler('boost_error_handler');
 
 		if (boost_check_correct_enabled()) {
+			// cmd.php already staged these rows when direct redirection is active.
+			if (read_config_option('boost_redirect') == 'on') {
+				restore_error_handler();
+				error_reporting($previous_error_reporting);
+
+				return false;
+			}
+
 			if (cacti_sizeof($results)) {
 				if (POLLER_ID > 1 && !boost_validate_poller_ownership($results, POLLER_ID, $conn)) { // @phpstan-ignore-line
 					cacti_log(sprintf('ERROR: Boost rejected a handoff containing data sources not assigned to poller %d.', POLLER_ID), false, 'BOOST');
