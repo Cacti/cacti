@@ -61,7 +61,7 @@ jobs:
           esac
 
           if [[ -z "$base_sha" || "$base_sha" =~ ^0+$ ]]; then
-            base_sha="$(git rev-parse HEAD^)"
+            base_sha="$(git rev-parse --verify HEAD^ 2>/dev/null || git rev-parse --verify HEAD)"
           fi
 
           git cat-file -e "${base_sha}^{commit}"

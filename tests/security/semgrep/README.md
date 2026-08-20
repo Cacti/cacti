@@ -38,13 +38,15 @@ Two steps:
    the rules honest without depending on a whole-tree scan.
 2. **Advisory changed-file scan (non-blocking)** — compares the checked-out
    commit with the pull request base, the previous pushed commit, or the merge
-   group's base, then scans only changed PHP files outside `include/vendor`,
-   `plugins`, and `tests`. It does not fail the build: `grv()` returns the
-   *validated* value when the page registered a filter, which Semgrep cannot
-   see, so a whole-tree result includes known-safe sites, and taint analysis
-   over Cacti's large files is not perfectly deterministic run to run.
-   File-scoped results keep that historical noise out of unrelated pull
-   requests while still surfacing request-to-sink flows in changed code.
+   group's base. Manual runs use the previous commit when one exists; on a
+   parentless commit they use the current commit and therefore have no changed
+   PHP files. The scan includes only changed PHP files outside
+   `include/vendor`, `plugins`, and `tests`. It does not fail the build: `grv()`
+   returns the *validated* value when the page registered a filter, which
+   Semgrep cannot see, so a whole-tree result includes known-safe sites, and
+   taint analysis over Cacti's large files is not perfectly deterministic run
+   to run. File-scoped results keep that historical noise out of unrelated
+   pull requests while still surfacing request-to-sink flows in changed code.
 
 A finding is a prompt to confirm, not proof of a bug: check whether the source
 is actually unvalidated on that path, then fix (bind the value, cast, or
