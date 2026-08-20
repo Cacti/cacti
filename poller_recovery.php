@@ -101,6 +101,39 @@ function recovery_delete_acknowledged_rows(array $rows, mixed $conn) : bool {
 	return true;
 }
 
+/**
+ * Transfer and acknowledge one bounded recovery chunk.
+ *
+ * @return int|false Number of transferred rows, or false on any failure.
+ */
+function recovery_transfer_rows(array $rows, mixed $remote_conn, mixed $local_conn) : int|false {
+	$sql_array = [];
+
+	foreach ($rows as $row) {
+		$sql_array[] = '(' . (int) $row['local_data_id'] . ',' .
+			db_qstr($row['rrd_name'], $remote_conn) . ',' .
+			db_qstr($row['time'], $remote_conn) . ',' .
+			db_qstr($row['output'], $remote_conn) . ')';
+	}
+
+	$record_count = cacti_sizeof($sql_array);
+	cacti_log('RECOVERY: Writing ' . $record_count . ' records to main.', false, 'POLLER');
+
+	if (!boost_flush_output_batch($sql_array, $remote_conn)) {
+		cacti_log('RECOVERY ERROR: Main collector did not acknowledge the Boost batch; retaining local rows.', false, 'POLLER');
+
+		return false;
+	}
+
+	if (!recovery_delete_acknowledged_rows($rows, $local_conn)) {
+		cacti_log('RECOVERY ERROR: Unable to remove acknowledged local Boost rows; they will be retried idempotently.', false, 'POLLER');
+
+		return false;
+	}
+
+	return $record_count;
+}
+
 global $local_db_cnn_id, $remote_db_cnn_id;
 
 $recovery_pid = db_fetch_cell("SELECT value FROM settings WHERE name='recovery_pid'", '', true, $local_db_cnn_id);
@@ -177,8 +210,9 @@ if (function_exists('pcntl_signal')) {
 $start = microtime(true);
 
 // configuration variables
-$record_limit = 150000;
-$sleep_time   = 1;
+$record_limit        = 150000;
+$transfer_chunk_size = 1000;
+$sleep_time          = 1;
 
 // global counter variables
 $records_inserted = 0;
@@ -251,33 +285,20 @@ if ($run) {
 					break;
 				}
 
-				$sql_array = [];
+				$row_count = cacti_sizeof($rows);
 
-				foreach ($rows as $r) {
-					$sql_array[] = '(' . (int) $r['local_data_id'] . ',' .
-						db_qstr($r['rrd_name'], $remote_db_cnn_id) . ',' .
-						db_qstr($r['time'], $remote_db_cnn_id) . ',' .
-						db_qstr($r['output'], $remote_db_cnn_id) . ')';
+				for ($offset = 0; $offset < $row_count; $offset += $transfer_chunk_size) {
+					$chunk        = array_slice($rows, $offset, $transfer_chunk_size);
+					$record_count = recovery_transfer_rows($chunk, $remote_db_cnn_id, $local_db_cnn_id);
+
+					if ($record_count === false) {
+						$transfer_failed = true;
+
+						break 2;
+					}
+
+					$records_inserted += $record_count;
 				}
-
-				$record_count = cacti_sizeof($sql_array);
-				cacti_log('RECOVERY: Writing ' . $record_count . ' records to main.', false, 'POLLER');
-
-				if (!boost_flush_output_batch($sql_array, $remote_db_cnn_id)) {
-					cacti_log('RECOVERY ERROR: Main collector did not acknowledge the Boost batch; retaining local rows.', false, 'POLLER');
-					$transfer_failed = true;
-
-					break;
-				}
-
-				if (!recovery_delete_acknowledged_rows($rows, $local_db_cnn_id)) {
-					cacti_log('RECOVERY ERROR: Unable to remove acknowledged local Boost rows; they will be retried idempotently.', false, 'POLLER');
-					$transfer_failed = true;
-
-					break;
-				}
-
-				$records_inserted += $record_count;
 			}
 
 			sleep($sleep_time);
