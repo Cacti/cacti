@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once __DIR__ . '/CactiProcessLock.php';
+
 /**
  * exec_poll - executes a command and returns its output
  *
@@ -2772,6 +2774,36 @@ function cacti_process_pid_exists(int $pid) : bool {
 }
 
 /**
+ * Creates a database-backed mutex for one logical process-registry entry.
+ *
+ * @param string $tasktype The task type.
+ * @param string $taskname The task name.
+ * @param int    $taskid   The task id.
+ *
+ * @return CactiProcessLock|false The lock, or false when it cannot be created.
+ */
+function cacti_process_registry_lock(string $tasktype, string $taskname, int $taskid) : CactiProcessLock|false {
+	global $database_default, $database_hostname, $database_port, $database_sessions;
+
+	$key        = "$database_hostname:$database_port:$database_default";
+	$connection = $database_sessions[$key] ?? null;
+
+	if (!$connection instanceof PDO) {
+		cacti_log(sprintf('ERROR: Process registry lock has no database connection! (%s, %s, %s)', $tasktype, $taskname, $taskid), false, 'POLLER');
+
+		return false;
+	}
+
+	try {
+		return CactiProcessLock::fromPdo($connection, $tasktype, $taskname, $taskid);
+	} catch (Throwable $e) {
+		cacti_log(sprintf('ERROR: Unable to create process registry lock! (%s, %s, %s): %s', $tasktype, $taskname, $taskid, $e->getMessage()), false, 'POLLER');
+
+		return false;
+	}
+}
+
+/**
  * register_process_start - public function to register a process
  * in Cacti's process table
  *
@@ -2784,11 +2816,51 @@ function cacti_process_pid_exists(int $pid) : bool {
  *              another version is running and has not ended.
  */
 function register_process_start(string $tasktype, string $taskname, int $taskid = 0, int $timeout = 300) : bool {
-	$pid = getmypid();
-
 	if (!db_table_exists('processes')) {
 		return true;
 	}
+
+	$lock = cacti_process_registry_lock($tasktype, $taskname, $taskid);
+
+	if ($lock === false) {
+		return false;
+	}
+
+	try {
+		if (!$lock->acquire()) {
+			cacti_log(sprintf('NOTE: Process registry is being updated by another process! (%s, %s, %s)', $tasktype, $taskname, $taskid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+
+			return false;
+		}
+	} catch (Throwable $e) {
+		cacti_log(sprintf('ERROR: Unable to acquire process registry lock! (%s, %s, %s): %s', $tasktype, $taskname, $taskid, $e->getMessage()), false, 'POLLER');
+
+		return false;
+	}
+
+	try {
+		return register_process_start_locked($tasktype, $taskname, $taskid, $timeout);
+	} finally {
+		try {
+			$lock->release();
+		} catch (Throwable $e) {
+			cacti_log(sprintf('WARNING: Unable to release process registry lock! (%s, %s, %s): %s', $tasktype, $taskname, $taskid, $e->getMessage()), false, 'POLLER');
+		}
+	}
+}
+
+/**
+ * Performs registration while register_process_start() owns the task mutex.
+ *
+ * @param string $tasktype Mandatory task type.
+ * @param string $taskname Mandatory task name.
+ * @param int    $taskid   Optional task id.
+ * @param int    $timeout  Optional timeout.
+ *
+ * @return bool True when this process may start.
+ */
+function register_process_start_locked(string $tasktype, string $taskname, int $taskid, int $timeout) : bool {
+	$pid = getmypid();
 
 	$r = db_fetch_row_prepared('SELECT *,
 		IF(UNIX_TIMESTAMP(started) + timeout < UNIX_TIMESTAMP(), UNIX_TIMESTAMP(started), 0) AS timeout_exceeded,
