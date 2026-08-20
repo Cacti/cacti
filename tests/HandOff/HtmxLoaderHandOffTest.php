@@ -45,6 +45,7 @@ beforeEach(function () {
 
 	unset(
 		$config[OPTIONS_CLI]['htmx_enabled'],
+		$config[OPTIONS_CLI]['content_security_policy_script'],
 		$_SERVER['HTTP_HX_REQUEST']
 	);
 });
@@ -53,6 +54,7 @@ test('htmx_script_tag prefixes the src with CACTI_PATH_URL', function () {
 	global $config;
 
 	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
+	$config[OPTIONS_CLI]['content_security_policy_script'] = 'nonce';
 
 	$tag = htmx_script_tag();
 	$md5 = md5_file(CACTI_PATH_BASE . '/include/js/htmx.js');
