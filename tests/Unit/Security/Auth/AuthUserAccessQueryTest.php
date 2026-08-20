@@ -31,12 +31,10 @@ $GLOBALS['auth_guest_user']     = 0;
  *
  * @return mixed Queued scalar result
  */
-if (!function_exists(__NAMESPACE__ . '\\db_fetch_cell_prepared') && !function_exists('\\db_fetch_cell_prepared')) {
-	function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
-		$GLOBALS['auth_access_queries'][] = [$sql, $params];
+function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
+	$GLOBALS['auth_access_queries'][] = [$sql, $params];
 
-		return array_shift($GLOBALS['auth_access_results']);
-	}
+	return array_shift($GLOBALS['auth_access_results']);
 }
 
 /**
@@ -46,10 +44,8 @@ if (!function_exists(__NAMESPACE__ . '\\db_fetch_cell_prepared') && !function_ex
  *
  * @return int Guest account identifier
  */
-if (!function_exists(__NAMESPACE__ . '\\read_config_option') && !function_exists('\\read_config_option')) {
-	function read_config_option(string $name) : int {
-		return $GLOBALS['auth_guest_user'];
-	}
+function read_config_option(string $name) : int {
+	return $GLOBALS['auth_guest_user'];
 }
 
 $source = file_get_contents(dirname(__DIR__, 4) . '/lib/auth.php');
