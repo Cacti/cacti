@@ -3585,13 +3585,10 @@ function html_auth_footer(string $section, string $error = '', string $html = ''
 			</form>
 			<hr />
 			<div class='cactiAuthErrors'>
-				<?php
-				print htmle($error);
-
-	if ($password_reset_available) {
-		print ' <a href="auth_resetpassword.php">' . __esc('Reset password') . '</a>';
-	}
-	?>
+				<?php print htmle($error); ?>
+				<?php if ($password_reset_available) { ?>
+					<a href="auth_resetpassword.php"><?php print __esc('Reset password'); ?></a>
+				<?php } ?>
 			</div>
 			<div class='versionInfo'>
 				<?php print __('Version %s | %s', CACTI_VERSION_BRIEF, COPYRIGHT_YEARS_SHORT); ?>

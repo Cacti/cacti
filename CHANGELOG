@@ -1,7 +1,6 @@
 Cacti CHANGELOG
 
 1.3.0-dev
--issue#7660: Render the password-reset action without treating login errors as trusted HTML
 -issue#7723: Validate package upload content type before retaining it in the session
 -issue#2205: Allow admins to disable RRDtool watermark
 -issue#3066: Enable the secure flag on cookies when HTTPS is enabled.
@@ -104,6 +103,7 @@ Cacti CHANGELOG
 -issue#7719: Spike Kill text output applied the large value scientific notation format to the column left of the value it belonged to, starting with Variance
 -issue#7732: Bind device IDs and escape graph and device HTML sinks
 -issue#7751: Declare the translation helper before the disabled-i18n fallback returns
+-issue#7660: Render the password-reset action without treating login errors as trusted HTML
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
