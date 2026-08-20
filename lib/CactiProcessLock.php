@@ -33,15 +33,20 @@ final class CactiProcessLock {
 	public const TTL   = 30;
 
 	private LockInterface $lock;
+	private ?PDO $connection;
 
-	public function __construct(LockFactory $factory, string $tasktype, string $taskname, int $taskid) {
-		$this->lock = $factory->createLock(self::key($tasktype, $taskname, $taskid), self::TTL);
+	public function __construct(LockFactory $factory, string $tasktype, string $taskname, int $taskid, ?PDO $connection = null) {
+		$this->lock       = $factory->createLock(self::key($tasktype, $taskname, $taskid), self::TTL);
+		$this->connection = $connection;
 	}
 
 	public static function fromPdo(PDO $connection, string $tasktype, string $taskname, int $taskid) : self {
-		$store = new PdoStore($connection, ['db_table' => self::TABLE], 0.01, self::TTL);
+		$store = self::withExceptionMode(
+			$connection,
+			static fn () : PdoStore => new PdoStore($connection, ['db_table' => self::TABLE], 0.01, self::TTL)
+		);
 
-		return new self(new LockFactory($store), $tasktype, $taskname, $taskid);
+		return new self(new LockFactory($store), $tasktype, $taskname, $taskid, $connection);
 	}
 
 	public static function key(string $tasktype, string $taskname, int $taskid) : string {
@@ -49,10 +54,36 @@ final class CactiProcessLock {
 	}
 
 	public function acquire() : bool {
-		return $this->lock->acquire();
+		return $this->runWithRequiredMode(fn () : bool => $this->lock->acquire());
 	}
 
 	public function release() : void {
-		$this->lock->release();
+		$this->runWithRequiredMode(function () : void {
+			$this->lock->release();
+		});
+	}
+
+	private function runWithRequiredMode(callable $operation) : mixed {
+		if ($this->connection === null) {
+			return $operation();
+		}
+
+		return self::withExceptionMode($this->connection, $operation);
+	}
+
+	private static function withExceptionMode(PDO $connection, callable $operation) : mixed {
+		$original = $connection->getAttribute(PDO::ATTR_ERRMODE);
+
+		if ($original !== PDO::ERRMODE_EXCEPTION) {
+			$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		}
+
+		try {
+			return $operation();
+		} finally {
+			if ($original !== PDO::ERRMODE_EXCEPTION) {
+				$connection->setAttribute(PDO::ATTR_ERRMODE, $original);
+			}
+		}
 	}
 }

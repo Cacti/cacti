@@ -311,12 +311,21 @@ test('registry locking fails closed without a usable database connection', funct
 	expect(cacti_process_registry_lock('poller', 'child', 1))->toBeFalse();
 });
 
-test('registry locking fails closed when the database mode is incompatible', function () {
+test('registry locking temporarily enables the required database mode', function () {
 	$conn = registry_seed();
 	$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 	registry_wire($conn);
 
-	expect(cacti_process_registry_lock('poller', 'child', 1))->toBeFalse();
+	$lock = cacti_process_registry_lock('poller', 'child', 1);
+
+	expect($lock)->toBeInstanceOf(CactiProcessLock::class)
+		->and($conn->getAttribute(PDO::ATTR_ERRMODE))->toBe(PDO::ERRMODE_SILENT)
+		->and($lock->acquire())->toBeTrue()
+		->and($conn->getAttribute(PDO::ATTR_ERRMODE))->toBe(PDO::ERRMODE_SILENT);
+
+	$lock->release();
+
+	expect($conn->getAttribute(PDO::ATTR_ERRMODE))->toBe(PDO::ERRMODE_SILENT);
 });
 
 test('a registration whose pid has died no longer blocks a new start', function () {

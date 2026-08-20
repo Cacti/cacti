@@ -49,18 +49,23 @@ test('only one owner can hold a task lock at a time', function () {
 
 test('pdo locks use the declared schema and release ownership', function () {
 	$connection = new PDO('sqlite::memory:');
-	$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
 	$first  = CactiProcessLock::fromPdo($connection, 'reports', 'master', 0);
 	$second = CactiProcessLock::fromPdo($connection, 'reports', 'master', 0);
 
-	expect($first->acquire())->toBeTrue()
+	expect($connection->getAttribute(PDO::ATTR_ERRMODE))->toBe(PDO::ERRMODE_SILENT)
+		->and($first->acquire())->toBeTrue()
+		->and($connection->getAttribute(PDO::ATTR_ERRMODE))->toBe(PDO::ERRMODE_SILENT)
 		->and($connection->query("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'process_locks'")->fetchColumn())->toBe(CactiProcessLock::TABLE)
 		->and($second->acquire())->toBeFalse();
 
 	$first->release();
 
-	expect($second->acquire())->toBeTrue();
+	expect($connection->getAttribute(PDO::ATTR_ERRMODE))->toBe(PDO::ERRMODE_SILENT)
+		->and($second->acquire())->toBeTrue();
 
 	$second->release();
+
+	expect($connection->getAttribute(PDO::ATTR_ERRMODE))->toBe(PDO::ERRMODE_SILENT);
 });
