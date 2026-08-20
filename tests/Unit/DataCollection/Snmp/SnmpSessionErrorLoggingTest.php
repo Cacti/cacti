@@ -94,12 +94,10 @@ class FakeSnmpSession {
  *
  * @return bool Always true for the unit test.
  */
-if (!function_exists(__NAMESPACE__ . '\\cacti_log') && !function_exists('\\cacti_log')) {
-	function cacti_log(string $message, bool $output, string $environ, int $level) : bool {
-		$GLOBALS['snmp_session_error_logs'][] = [$message, $output, $environ, $level];
+function cacti_log(string $message, bool $output, string $environ, int $level) : bool {
+	$GLOBALS['snmp_session_error_logs'][] = [$message, $output, $environ, $level];
 
-		return true;
-	}
+	return true;
 }
 
 $source = file_get_contents(dirname(__DIR__, 4) . '/lib/snmp.php');
