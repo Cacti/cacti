@@ -23,11 +23,11 @@
  +-------------------------------------------------------------------------+
 */
 
+use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
+
 require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/CactiFilesystem.php');
 require_once(CACTI_PATH_LIBRARY . '/CactiMd5FileFinder.php');
-
-use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
 // process calling arguments
 $parms = $_SERVER['argv'];
