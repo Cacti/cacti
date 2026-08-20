@@ -20,7 +20,7 @@
  * the corrected function name and must not contain the typo'd one.
  */
 
-$repoRoot = __DIR__ . '/../..';
+$repoRoot = dirname(__DIR__, 3);
 
 test('db_close() issues the corrected KILL CONNECTION statement', function () use ($repoRoot) {
 	$src = file_get_contents("$repoRoot/lib/database.php");
