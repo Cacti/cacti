@@ -27,6 +27,15 @@ use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
 require_once dirname(__DIR__, 3) . '/lib/api_notification.php';
 
+test('the notification API gates local classes behind Symfony dependencies', function () {
+	$source = file_get_contents(CACTI_PATH_LIBRARY . '/api_notification.php');
+
+	expect($source)->toContain('if (api_notification_dependencies_available()) {')
+		->and(strpos($source, 'if (api_notification_dependencies_available()) {'))
+		->toBeLessThan(strpos($source, "require_once __DIR__ . '/CactiNotification.php';"))
+		->and($source)->toContain('api_notification_assert_dependencies();');
+});
+
 final class RecordingNotifier implements NotifierInterface {
 	public ?Notification $notification = null;
 

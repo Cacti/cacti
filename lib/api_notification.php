@@ -20,11 +20,30 @@
 use Symfony\Component\Notifier\Channel\ChannelInterface;
 use Symfony\Component\Notifier\Notifier;
 use Symfony\Component\Notifier\NotifierInterface;
+use Symfony\Component\Notifier\Notification\Notification;
+use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-require_once __DIR__ . '/CactiNotification.php';
-require_once __DIR__ . '/CactiRecipient.php';
-require_once __DIR__ . '/CactiEmailChannel.php';
+function api_notification_dependencies_available() : bool {
+	return interface_exists(ChannelInterface::class)
+		&& class_exists(Notifier::class)
+		&& interface_exists(NotifierInterface::class)
+		&& class_exists(Notification::class)
+		&& interface_exists(EmailRecipientInterface::class)
+		&& interface_exists(RecipientInterface::class);
+}
+
+if (api_notification_dependencies_available()) {
+	require_once __DIR__ . '/CactiNotification.php';
+	require_once __DIR__ . '/CactiRecipient.php';
+	require_once __DIR__ . '/CactiEmailChannel.php';
+}
+
+function api_notification_assert_dependencies() : void {
+	if (!api_notification_dependencies_available()) {
+		throw new RuntimeException('Symfony Notifier dependencies are unavailable. Run Composer install to restore the vendor tree.');
+	}
+}
 
 /**
  * Returns Cacti's notification channels, extended by installed plugins.
@@ -35,6 +54,8 @@ require_once __DIR__ . '/CactiEmailChannel.php';
  * @return array<string, ChannelInterface>
  */
 function api_notification_channels() : array {
+	api_notification_assert_dependencies();
+
 	$channels = ['email' => new CactiEmailChannel()];
 
 	if (function_exists('api_plugin_hook_function')) {
@@ -48,6 +69,8 @@ function api_notification_channels() : array {
  * @return array<string, ChannelInterface>
  */
 function api_notification_validate_channels(mixed $channels) : array {
+	api_notification_assert_dependencies();
+
 	if (!is_array($channels)) {
 		throw new InvalidArgumentException('The notification_channels hook must return an array.');
 	}
@@ -67,6 +90,8 @@ function api_notification_validate_channels(mixed $channels) : array {
  * @return list<RecipientInterface>
  */
 function api_notification_recipients(array|string|RecipientInterface $recipients) : array {
+	api_notification_assert_dependencies();
+
 	if ($recipients instanceof RecipientInterface) {
 		return [$recipients];
 	}
@@ -106,6 +131,8 @@ function api_notification_recipients(array|string|RecipientInterface $recipients
 function api_notification_send(string $subject, string $content, array|string|RecipientInterface $recipients,
 	array $channels = ['email'], array $options = [], ?NotifierInterface $notifier = null) : bool {
 	try {
+		api_notification_assert_dependencies();
+
 		$normalized = api_notification_recipients($recipients);
 
 		if ($normalized === []) {
