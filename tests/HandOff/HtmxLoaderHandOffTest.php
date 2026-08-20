@@ -103,13 +103,15 @@ test('htmx_script_tag renders a script tag when htmx_enabled is on', function ()
 });
 
 test('console headers avoid inline logo click handlers', function () {
-	$top_header = file_get_contents(CACTI_PATH_BASE . '/include/top_header.php');
+	$top_header     = file_get_contents(CACTI_PATH_BASE . '/include/top_header.php');
 	$general_header = file_get_contents(CACTI_PATH_BASE . '/include/top_general_header.php');
 
 	expect($top_header)->not->toContain('onclick=')
 		->and($general_header)->not->toContain('onclick=')
 		->and($top_header)->toContain('data-load-url=')
-		->and($general_header)->toContain('data-load-url=');
+		->and($general_header)->toContain('data-load-url=')
+		->and($top_header)->toContain("href='<?php print CACTI_PATH_URL; ?>about.php'")
+		->and($general_header)->toContain("href='<?php print CACTI_PATH_URL; ?>about.php'");
 });
 
 test('htmx_script_tag renders nothing when htmx_enabled is absent', function () {

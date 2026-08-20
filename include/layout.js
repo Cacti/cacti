@@ -1009,7 +1009,7 @@ function applySkin() {
 
 		event.preventDefault();
 		event.stopPropagation();
-		loadUrl({ url: $(this).attr('data-load-url') });
+		loadUrl({ url: $(this).attr('data-load-url') || $(this).attr('href') });
 	});
 
 	$('.helpPage').off('click').on('click', function (event) {

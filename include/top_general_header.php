@@ -54,7 +54,7 @@ if (!$is_request_ajax) { ?>
 		<?php if (isset($user_menu) && is_array($user_menu)) {?>
 		<div style='display:none;' id='navigation' class='cactiConsoleNavigationArea'>
 			<?php draw_menu($user_menu); ?>
-			<a class='cactiLogo' href='<?php print CACTI_PATH_URL; ?>about.php' aria-label='<?php print __esc('About Cacti'); ?>'></a>
+			<a class='cactiLogo' href='<?php print CACTI_PATH_URL; ?>about.php' data-load-url='<?php print CACTI_PATH_URL; ?>about.php' aria-label='<?php print __esc('About Cacti'); ?>'></a>
 		</div>
 		<?php } ?>
 		<div id='navigation_right' class='cactiConsoleContentArea'>
