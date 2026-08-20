@@ -501,7 +501,7 @@ function form_save() : void {
 				} else {
 					raise_message(
 						'package_mime_unavailable',
-						__('The package was rejected because content type detection is unavailable. Install the PHP fileinfo extension and retry the import.'),
+						__('The package was rejected because content type detection is unavailable. Install or enable the PHP fileinfo extension and retry the import.'),
 						MESSAGE_LEVEL_ERROR
 					);
 				}

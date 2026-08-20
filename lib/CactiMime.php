@@ -66,7 +66,7 @@ final class CactiMime {
 	/** @param string[] $allowedMimes */
 	public static function validate(string $path, array $allowedMimes) : bool {
 		if (!self::detectionAvailable()) {
-			cacti_log('Package upload MIME validation is unavailable because the PHP fileinfo extension is not loaded.', false, 'SECURITY');
+			cacti_log('Package upload MIME validation is unavailable because the PHP fileinfo extension is missing or disabled.', false, 'SECURITY');
 
 			return false;
 		}
