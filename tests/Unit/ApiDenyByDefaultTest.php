@@ -63,9 +63,11 @@ test('error details are a development choice, not the default', function () use 
 
 test('the bootstrap include is anchored to the file', function () use ($api) {
 	/* the other two includes beside it already were; this one resolved against
-	   the working directory, so it only worked from api/public */
+	   the working directory, so it only worked from api/public.  It anchors on
+	   __DIR__ like its neighbours: CACTI_PATH_INCLUDE is defined by global.php
+	   itself, so it does not exist yet at the point of this include. */
 	expect($api)->not->toContain("include  '../../include/global.php';")
-		->and($api)->toContain("include CACTI_PATH_INCLUDE . '/global.php';");
+		->and($api)->toContain("include __DIR__ . '/../../include/global.php';");
 });
 
 test('the gate behaves as written for every setting value', function () {
