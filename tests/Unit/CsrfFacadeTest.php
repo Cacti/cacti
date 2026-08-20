@@ -44,7 +44,7 @@ test('the installer error branch is preserved verbatim', function () use ($root)
 
 	expect($src)->toContain('csrf_timeout');
 	expect($src)->toContain('IN_CACTI_INSTALL');
-	expect($src)->toContain('session_regenerate_id');
+	expect($src)->toContain('session_regenerate_id(true)');
 });
 
 /**
@@ -139,31 +139,45 @@ test('the script url points at the moved asset', function () use ($root) {
 });
 
 /*
- * csrf_guard() degrades to a disabled guard when Symfony is absent, which is
- * intended: an install running before composer populates include/vendor must
- * not fatal. In a web context that branch is only reachable under the
- * pre-auth installer, and it leaves the request with no CSRF check at all --
- * something csrf-magic could not do. Degrading silently is the part that is
- * not acceptable.
+ * Only an explicit installer request may degrade while Composer is still
+ * populating include/vendor. A deployed web request that cannot autoload the
+ * Symfony manager must stop before it serves a request without CSRF checks.
  */
-test('the fail-open branch is recorded rather than silent', function () use ($root) {
-	$src = file_get_contents($root . '/include/csrf.php');
+test('a deployed web request fails closed when Symfony CSRF is unavailable', function () {
+	$result = csrf_facade_run_php_fixture('CsrfGuardAvailabilityProbe.php', 'deployed');
 
-	$start = strpos($src, 'function csrf_guard(');
-	expect($start)->not->toBeFalse();
+	expect($result['exitCode'])->toBe(1)
+		->and($result['stdout'])->toContain('FATAL: CSRF protection is unavailable')
+		->and($result['stderr'])->toContain('log:FATAL: CSRF protection is unavailable')
+		->toContain('status:500')
+		->not->toContain('enabled:');
+});
 
-	$end  = strpos($src, "\nfunction ", $start + 1);
-	$body = substr($src, $start, ($end === false ? strlen($src) : $end) - $start);
+test('the installer may temporarily disable the guard before Composer is available', function () {
+	$result = csrf_facade_run_php_fixture('CsrfGuardAvailabilityProbe.php', 'installer');
 
-	$disable = strpos($body, 'new CactiCsrfGuard(null, false)');
-	$warn    = strpos($body, 'cacti_log(');
+	expect($result['exitCode'])->toBe(0)
+		->and($result['stdout'])->toBe('')
+		->and($result['stderr'])->toContain('during installation')
+		->toContain('enabled:false');
+});
 
-	expect($disable)->not->toBeFalse()
-		->and($warn)->not->toBeFalse()
-		->and($warn)->toBeLessThan($disable);
+test('the installer creates the legacy secret without world-readable permissions', function () {
+	$result = csrf_facade_run_php_fixture('InstallerCsrfSecretPermissionsProbe.php');
 
-	// the CLI takes the same branch every run and must not log on every run
-	expect($body)->toContain('if (CACTI_WEB) {');
+	expect($result['exitCode'])->toBe(0)
+		->and($result['stderr'])->toContain('created:true')
+		->toContain('mode:640');
+});
+
+test('a legacy secret directory resolves to csrf-secret.php', function () {
+	$result = csrf_facade_run_php_fixture('CsrfSecretDirectoryProbe.php');
+
+	expect($result['exitCode'])->toBe(0)
+		->and($result['stderr'])->toContain('path:')
+		->toContain('/csrf-secret.php')
+		->toContain('reader:true')
+		->toContain('legacy:true');
 });
 
 /*
@@ -192,7 +206,7 @@ test('the installer skips the secret when its directory is absent', function () 
 	$end  = strpos($installer, "\n\t/**", $start + 1);
 	$body = substr($installer, $start, ($end === false ? strlen($installer) : $end) - $start);
 
-	$guard  = strpos($body, 'is_dir(dirname(CACTI_CSRF_SECRET))');
+	$guard  = strpos($body, 'is_dir(dirname($file))');
 	$create = strpos($body, 'install_create_csrf_secret(');
 
 	expect($guard)->not->toBeFalse()
@@ -229,6 +243,18 @@ test('the default secret path is unchanged so upgrades still find it', function 
  *                                              everything it wrote to stderr.
  */
 function csrf_facade_run_contract_probe(string $mode) : array {
+	return csrf_facade_run_php_fixture('CsrfCheckContractProbe.php', $mode);
+}
+
+/**
+ * Run a tests/fixtures PHP probe in a fresh process.
+ *
+ * @param string $fixture Fixture filename.
+ * @param string $mode    Optional argv[1] mode.
+ *
+ * @return array{exitCode: int, stdout: string, stderr: string}
+ */
+function csrf_facade_run_php_fixture(string $fixture, string $mode = '') : array {
 	$root = dirname(__DIR__, 2);
 
 	$descriptors = [
@@ -238,14 +264,14 @@ function csrf_facade_run_contract_probe(string $mode) : array {
 	];
 
 	$process = proc_open(
-		[PHP_BINARY, $root . '/tests/fixtures/CsrfCheckContractProbe.php', $mode],
+		[PHP_BINARY, $root . '/tests/fixtures/' . $fixture, $mode],
 		$descriptors,
 		$pipes,
 		$root
 	);
 
 	if (!is_resource($process)) {
-		throw new RuntimeException('Unable to start the CSRF contract probe');
+		throw new RuntimeException('Unable to start the CSRF fixture ' . $fixture);
 	}
 
 	fclose($pipes[0]);

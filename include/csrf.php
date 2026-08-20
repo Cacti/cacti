@@ -27,8 +27,9 @@ require_once(CACTI_PATH_LIBRARY . '/csrf.php');
 /**
  * The process-wide CSRF guard.
  *
- * Built on first use so the CLI, and an install running before composer has
- * populated include/vendor, never touch Symfony at all.
+ * Built on first use so the CLI never touches Symfony.  An explicit installer
+ * request may also run without it while Composer populates include/vendor;
+ * every other web request fails closed if the dependency cannot be loaded.
  *
  * @return CactiCsrfGuard The shared guard instance.
  */
@@ -39,15 +40,28 @@ function csrf_guard() : CactiCsrfGuard {
 		return $guard;
 	}
 
-	if (!CACTI_WEB || !class_exists('Symfony\Component\Security\Csrf\CsrfTokenManager')) {
-		/* Degrading is intended: an install running before composer has
-		   populated include/vendor must not fatal.  But in a web context that
-		   leaves the pre-auth installer serving requests with no CSRF check at
-		   all, which csrf-magic could not do, so say so rather than fail open
-		   in silence. */
-		if (CACTI_WEB) {
-			cacti_log('WARNING: symfony/security-csrf is missing, so CSRF validation is disabled for this request', false, 'CSRF');
+	if (!CACTI_WEB) {
+		$guard = new CactiCsrfGuard(null, false);
+
+		return $guard;
+	}
+
+	if (!class_exists('Symfony\Component\Security\Csrf\CsrfTokenManager')) {
+		/* The installer is the only web context allowed to run before Composer
+		   has populated include/vendor.  A normal request reaching this branch
+		   has a missing, corrupt, or partially synchronized dependency tree and
+		   must not continue without CSRF validation. */
+		if (!defined('IN_CACTI_INSTALL')) {
+			$message = 'FATAL: CSRF protection is unavailable because symfony/security-csrf could not be loaded. Restore Cacti Composer dependencies and reload this page.';
+
+			cacti_log($message, false, 'CSRF');
+			http_response_code(500);
+			print $message;
+
+			exit(1);
 		}
+
+		cacti_log('WARNING: symfony/security-csrf is not yet available during installation, so CSRF validation is disabled for this request', false, 'CSRF');
 
 		$guard = new CactiCsrfGuard(null, false);
 
@@ -68,7 +82,8 @@ function csrf_guard() : CactiCsrfGuard {
 	   and cli/refresh_csrf.php writes PHP source with a trailing newline, so
 	   stripping whitespace yields a different key and silently rejects every
 	   pre-upgrade token on any site that ever rotated its secret. */
-	$secret = (defined('CACTI_CSRF_SECRET') && CACTI_CSRF_SECRET != '' && is_readable(CACTI_CSRF_SECRET) ? (string) file_get_contents(CACTI_CSRF_SECRET) : '');
+	$secret_file = csrf_secret_file_path(defined('CACTI_CSRF_SECRET') ? CACTI_CSRF_SECRET : '');
+	$secret      = ($secret_file != '' && is_readable($secret_file) ? (string) file_get_contents($secret_file) : '');
 
 	/* csrf-magic's own csrf_get_secret() tried $path_csrf_secret and then
 	   fell back to its own directory regardless of that setting.  A site
@@ -149,7 +164,8 @@ function csrf_check(bool $fatal = true) : bool {
 		return true;
 	}
 
-	$submitted = (isset($_POST[CactiCsrfGuard::INPUT_NAME]) ? (string) $_POST[CactiCsrfGuard::INPUT_NAME] : '');
+	$submitted = filter_input(INPUT_POST, CactiCsrfGuard::INPUT_NAME, FILTER_UNSAFE_RAW);
+	$submitted = (is_string($submitted) ? $submitted : '');
 
 	if (csrf_guard()->validate($submitted)) {
 		return true;
@@ -217,6 +233,25 @@ function csrf_deprecated(string $function) : void {
 }
 
 /**
+ * Resolve the legacy secret configuration to a file.
+ *
+ * Older installer code accepted a directory and appended csrf-secret.php,
+ * even though config.php.dist documents a full file path.  Preserve that
+ * behavior during the legacy-token grace window.
+ *
+ * @param string $path A configured file or directory path.
+ *
+ * @return string The resolved secret file path.
+ */
+function csrf_secret_file_path(string $path) : string {
+	if ($path !== '' && is_dir($path)) {
+		return rtrim($path, '/\\') . '/csrf-secret.php';
+	}
+
+	return $path;
+}
+
+/**
  * Read the csrf-magic secret, or mint and persist one if none exists.
  *
  * Retained because install/functions.php writes this value during a fresh
@@ -232,7 +267,7 @@ function csrf_get_secret() : string {
 		return $secret;
 	}
 
-	$file = (defined('CACTI_CSRF_SECRET') ? CACTI_CSRF_SECRET : '');
+	$file = csrf_secret_file_path(defined('CACTI_CSRF_SECRET') ? CACTI_CSRF_SECRET : '');
 
 	if ($file != '' && file_exists($file)) {
 		// the raw bytes are the key; see the note in csrf_guard()
@@ -331,8 +366,8 @@ function csrf_log(string $function, string $message) : void {
  * token instead, which install.js retries against once.  See issue #7343.
  */
 function csrf_error_callback() : void {
-	// Resolve session fixation for PHP 5.4
-	session_regenerate_id();
+	// Invalidate the failed session id instead of leaving it usable until GC.
+	session_regenerate_id(true);
 
 	if (defined('IN_CACTI_INSTALL') &&
 		isset($GLOBALS['auth_json']) &&

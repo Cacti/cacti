@@ -175,7 +175,8 @@ test('a secret rotated by refresh_csrf.php still validates a pre-upgrade token',
 test('neither secret reader normalises the bytes it reads', function () {
 	$src = file_get_contents(CACTI_PATH_INCLUDE . '/csrf.php');
 
-	expect($src)->toContain('file_get_contents(CACTI_CSRF_SECRET)')
+	expect($src)->toContain('file_get_contents($secret_file)')
 		->and($src)->toContain('(string) @file_get_contents($file)')
-		->and($src)->not->toContain('trim(');
+		->and($src)->not->toContain('trim((string) file_get_contents($secret_file))')
+		->and($src)->not->toContain('trim((string) @file_get_contents($file))');
 });
