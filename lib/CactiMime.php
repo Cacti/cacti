@@ -58,10 +58,15 @@ final class CactiMime {
 		return self::$detector->detect($path) ?? 'application/octet-stream';
 	}
 
+	/** Callers use this to tell a rejected type apart from an unusable detector. */
+	public static function detectionAvailable() : bool {
+		return function_exists('finfo_open');
+	}
+
 	/** @param string[] $allowedMimes */
 	public static function validate(string $path, array $allowedMimes) : bool {
-		if (!function_exists('finfo_open')) {
-			cacti_log('Package upload MIME validation is unavailable because the PHP fileinfo extension is not loaded.', false, 'SECURITY');
+		if (!self::detectionAvailable()) {
+			cacti_log('Package upload MIME validation is unavailable because the PHP fileinfo extension is missing or disabled.', false, 'SECURITY');
 
 			return false;
 		}

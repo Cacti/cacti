@@ -1,7 +1,6 @@
 Cacti CHANGELOG
 
 1.3.0-dev
--issue#7723: Validate package upload content type before retaining it in the session
 -issue#2205: Allow admins to disable RRDtool watermark
 -issue#3066: Enable the secure flag on cookies when HTTPS is enabled.
 -issue#3074: ss_net_snmp_disk_bytes.php and ss_net_snmp_disk_io.php do now report mmcblk data.
@@ -101,6 +100,7 @@ Cacti CHANGELOG
 -issue#7697: Guard two divisions PHP 8 made fatal
 -issue#7693: Validate host_id before it reaches the graph template query
 -issue#7719: Spike Kill text output applied the large value scientific notation format to the column left of the value it belonged to, starting with Variance
+-issue#7723: Validate package upload content type before retaining it in the session
 -issue#7732: Bind device IDs and escape graph and device HTML sinks
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
