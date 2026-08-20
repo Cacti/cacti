@@ -47,11 +47,21 @@ final class CactiEmailChannel implements ChannelInterface {
 			throw new LogicException('The Cacti email channel uses the transport selected in Cacti settings.');
 		}
 
-		$options = $notification instanceof CactiNotification ? $notification->getOptions('email') : [];
-		$name    = $recipient instanceof CactiRecipient ? $recipient->getName() : '';
-		$to      = [['email' => $recipient->getEmail(), 'name' => $name]];
-		$html    = (bool) ($options['html'] ?? false);
-		$text    = (string) ($options['text'] ?? ($html ? '' : $notification->getContent()));
+		$options     = $notification instanceof CactiNotification ? $notification->getOptions('email') : [];
+		$name        = $recipient instanceof CactiRecipient ? $recipient->getName() : '';
+		$to          = [['email' => $recipient->getEmail(), 'name' => $name]];
+		$html        = (bool) ($options['html'] ?? false);
+		$text        = (string) ($options['text'] ?? ($html ? '' : $notification->getContent()));
+		$attachments = $options['attachments'] ?? [];
+		$headers     = $options['headers'] ?? [];
+
+		if (!is_array($attachments)) {
+			throw new LogicException('The Cacti email attachments option must be an array.');
+		}
+
+		if (!is_array($headers)) {
+			throw new LogicException('The Cacti email headers option must be an array.');
+		}
 
 		$error = ($this->mailer)(
 			$options['from'] ?? '',
@@ -62,8 +72,8 @@ final class CactiEmailChannel implements ChannelInterface {
 			$notification->getSubject(),
 			$notification->getContent(),
 			$text,
-			$options['attachments'] ?? [],
-			$options['headers'] ?? [],
+			$attachments,
+			$headers,
 			$html,
 			(bool) ($options['expand_ids'] ?? false)
 		);

@@ -53,6 +53,18 @@ test('Cacti notifications retain content and channel options', function () {
 		->and($notification->getOptions('missing'))->toBe([]);
 });
 
+test('Cacti notifications cannot be mutated after construction', function () {
+	$notification = new CactiNotification('Original', 'Body', ['email'], [
+		'importance' => Notification::IMPORTANCE_URGENT,
+	]);
+
+	expect($notification->getImportance())->toBe(Notification::IMPORTANCE_URGENT)
+		->and(fn () => $notification->subject('Changed'))->toThrow(\LogicException::class, 'immutable')
+		->and(fn () => $notification->content('Changed'))->toThrow(\LogicException::class, 'immutable')
+		->and(fn () => $notification->importance(Notification::IMPORTANCE_LOW))->toThrow(\LogicException::class, 'immutable')
+		->and(fn () => $notification->channels(['chat']))->toThrow(\LogicException::class, 'immutable');
+});
+
 test('Cacti recipients retain their display name', function () {
 	$recipient = new CactiRecipient('ops@example.com', '+15551234567', 'Operations');
 
@@ -130,6 +142,23 @@ test('the email channel rejects unsupported recipients and transport overrides',
 		->toThrow(LogicException::class, 'needs an email recipient')
 		->and(fn () => $channel->notify($notification, new Recipient('ops@example.com'), 'backup'))
 		->toThrow(LogicException::class, 'transport selected in Cacti settings');
+});
+
+test('the email channel rejects malformed mailer collection options', function () {
+	$channel   = new CactiEmailChannel(fn () : string => '');
+	$recipient = new Recipient('ops@example.com');
+
+	$badAttachments = new CactiNotification('Alert', 'Body', ['email'], [
+		'email' => ['attachments' => 'report.txt'],
+	]);
+	$badHeaders = new CactiNotification('Alert', 'Body', ['email'], [
+		'email' => ['headers' => 'X-Cacti: yes'],
+	]);
+
+	expect(fn () => $channel->notify($badAttachments, $recipient))
+		->toThrow(LogicException::class, 'attachments option must be an array')
+		->and(fn () => $channel->notify($badHeaders, $recipient))
+		->toThrow(LogicException::class, 'headers option must be an array');
 });
 
 test('the email channel surfaces sanitized mailer failures', function () {

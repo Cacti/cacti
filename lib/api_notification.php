@@ -114,10 +114,6 @@ function api_notification_send(string $subject, string $content, array|string|Re
 
 		$notification = new CactiNotification($subject, $content, $channels, $options);
 
-		if (isset($options['importance'])) {
-			$notification->importance((string) $options['importance']);
-		}
-
 		$notifier ??= new Notifier(api_notification_channels());
 		$notifier->send($notification, ...$normalized);
 
