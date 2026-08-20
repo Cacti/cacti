@@ -116,6 +116,24 @@ test('no nonce attribute appears when none is set', function () {
 	expect($out)->not->toContain('nonce=');
 });
 
+test('a guard without a script URL only decorates POST forms', function () {
+	$_SESSION = [];
+
+	$manager = new CsrfTokenManager(new UriSafeTokenGenerator(), new NativeSessionTokenStorage());
+	$guard   = new CactiCsrfGuard($manager, true);
+	$out     = $guard->rewriteBuffer("<html><head></head><body><form method='post'></form></body></html>");
+
+	expect($out)->toContain("name='__csrf_magic'")
+		->and($out)->not->toContain('CsrfMagic.end()');
+});
+
+test('the end hook is appended when an HTML chunk has no closing body', function () {
+	$guard = csrf_test_rewrite_guard();
+	$out   = $guard->rewriteBuffer('<html><head></head><main>content</main>');
+
+	expect($out)->toEndWith('<script type="text/javascript">CsrfMagic.end();</script>');
+});
+
 test('a disabled guard does not rewrite', function () {
 	$guard  = new CactiCsrfGuard(null, false);
 	$buffer = "<html><head></head><body><form method='post'></form></body></html>";

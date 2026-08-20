@@ -96,6 +96,13 @@ test('values with no colon never reach the legacy path', function () {
 	expect($guard->validate(''))->toBeFalse();
 });
 
+test('malformed legacy token bodies are rejected', function () {
+	$guard = csrf_test_legacy_guard();
+
+	expect($guard->validate('sid:missing-comma'))->toBeFalse()
+		->and($guard->validate('sid:hash,not-a-timestamp'))->toBeFalse();
+});
+
 test('legacy validation is off when no secret is configured', function () {
 	csrf_test_start_session();
 
