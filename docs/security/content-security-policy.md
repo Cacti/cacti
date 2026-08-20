@@ -15,7 +15,7 @@ This document defines the CSP nonce contract for Cacti core, themes, and plugins
 Plugins and themes that emit script tags must do one of the following:
 
 - Prefer Cacti helper emitters such as `get_md5_include_js()` for external scripts.
-- If emitting script tags directly, append `cacti_csp_nonce_attribute()` to each parser-inserted `<script>` tag.
+- If emitting script tags directly, append `CactiSecureHeaders::getNonceAttribute()` to each parser-inserted `<script>` tag.
 
 Inline event handler attributes (for example `onclick=`, `onchange=`, `onsubmit=`) should be replaced with registered or delegated JavaScript event listeners.
 

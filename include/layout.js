@@ -1003,8 +1003,14 @@ function applySkin() {
 	setupObjectChange();
 
 	$('.cactiLogo[data-load-url]').off('click keydown').on('click keydown', function (event) {
-		if (event.type == 'keydown' && event.key !== 'Enter' && event.key !== ' ') {
-			return;
+		if (event.type == 'click') {
+			if (!shouldCaptureClick(event)) {
+				return;
+			}
+		} else if (event.type == 'keydown') {
+			if (event.keyCode != $.ui.keyCode.ENTER && event.keyCode != $.ui.keyCode.SPACE) {
+				return;
+			}
 		}
 
 		event.preventDefault();
