@@ -269,7 +269,7 @@ Cacti CHANGELOG
 -feature: Harden authentication system correctness including 2FA logic, password reset token security, and basic auth status checks
 -feature: Extract remote agent reverse DNS forward-confirmation into the remote_agent_fcrdns_confirmed() helper
 -feature#7190: Replace PHPMailer with Symfony Mailer for native mail, sendmail, and SMTP (including OAuth2)
--feature#7368: Add dependency-injected Clock and Form wrappers
+-feature#7368: Add a Cacti-native form API and migrate the Site editor
 -feature#7370: Allow plugins to register process tables for the technical support view
 
 1.2.x

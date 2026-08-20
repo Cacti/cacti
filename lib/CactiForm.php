@@ -7,69 +7,119 @@
  | modify it under the terms of the GNU General Public License             |
  | as published by the Free Software Foundation; either version 2          |
  | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
-*/
-
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\Forms;
+ */
 
 /**
- * Small standalone Symfony Form entry point for Cacti pilots.
+ * Immutable entry point for Cacti edit forms.
  *
- * Symfony's docs recommend using a FormFactoryInterface; in a full Symfony
- * app that comes from the service container. Cacti does not have that
- * container, so this wrapper gives us one DI-friendly place to construct and
- * inject a form factory without spreading Forms::createFormFactory() calls.
+ * The field schema intentionally remains compatible with draw_edit_form().
+ * Core and plugins get a Cacti-owned contract while existing forms can
+ * migrate incrementally without changing markup or theme integration.
  */
-class CactiForm {
-	private const DEFAULT_FORM_TYPE = FormType::class;
+final class CactiForm {
+	/** @var array<string, mixed> */
+	private array $config = [];
 
-	private static ?self $instance = null;
+	/** @var array<string, array<string, mixed>> */
+	private array $fields;
 
-	private readonly FormFactoryInterface $factory;
+	private Closure $renderer;
+	private Closure $hydrator;
 
-	public function __construct(?FormFactoryInterface $factory = null) {
-		$this->factory = $factory ?? Forms::createFormFactory();
-	}
+	/**
+	 * @param array<string, array<string, mixed>> $fields
+	 */
+	public function __construct(array $fields, ?callable $renderer = null, ?callable $hydrator = null) {
+		$this->fields = self::validateFields($fields);
 
-	public static function factory(): FormFactoryInterface {
-		return self::instance()->formFactory();
-	}
+		$this->renderer = Closure::fromCallable($renderer ?? static function (array $definition) : void {
+			draw_edit_form($definition);
+		});
 
-	public static function createBuilder(string $type = self::DEFAULT_FORM_TYPE, mixed $data = null, array $options = []): FormBuilderInterface {
-		return self::instance()->builder($type, $data, $options);
-	}
-
-	public static function createNamedBuilder(string $name, string $type = self::DEFAULT_FORM_TYPE, mixed $data = null, array $options = []): FormBuilderInterface {
-		return self::instance()->namedBuilder($name, $type, $data, $options);
-	}
-
-	private static function instance(): self {
-		return self::$instance ??= new self();
+		$this->hydrator = Closure::fromCallable($hydrator ?? static function (array $fields, array $values) : array {
+			return inject_form_variables($fields, $values);
+		});
 	}
 
 	/**
-	 * Overrides the factory backing the static facade (factory/createBuilder/
-	 * createNamedBuilder) so legacy call sites can be tested against a
-	 * DI-provided factory. Pass null to drop back to a fresh default factory.
+	 * @param array<string, mixed> $values
 	 */
-	public static function setDefault(?FormFactoryInterface $factory): void {
-		self::$instance = $factory !== null ? new self($factory) : null;
+	public function withValues(array $values) : self {
+		$form         = clone $this;
+		$form->fields = self::validateFields(($this->hydrator)($this->fields, $values));
+
+		return $form;
 	}
 
-	public function formFactory(): FormFactoryInterface {
-		return $this->factory;
+	public function withoutFormTag() : self {
+		return $this->withConfig('no_form_tag', true);
 	}
 
-	public function builder(string $type = self::DEFAULT_FORM_TYPE, mixed $data = null, array $options = []): FormBuilderInterface {
-		return $this->factory->createBuilder($type, $data, $options);
+	public function postTo(string $action) : self {
+		if ($action === '') {
+			throw new InvalidArgumentException('A form action cannot be empty.');
+		}
+
+		return $this->withConfig('post_to', $action);
 	}
 
-	public function namedBuilder(string $name, string $type = self::DEFAULT_FORM_TYPE, mixed $data = null, array $options = []): FormBuilderInterface {
-		return $this->factory->createNamedBuilder($name, $type, $data, $options);
+	public function named(string $name) : self {
+		if ($name === '') {
+			throw new InvalidArgumentException('A form name cannot be empty.');
+		}
+
+		return $this->withConfig('form_name', $name);
+	}
+
+	public function multipart() : self {
+		return $this->withConfig('enctype', 'multipart/form-data');
+	}
+
+	/**
+	 * @return array{config: array<string, mixed>, fields: array<string, array<string, mixed>>}
+	 */
+	public function definition() : array {
+		return [
+			'config' => $this->config,
+			'fields' => $this->fields,
+		];
+	}
+
+	public function render() : void {
+		($this->renderer)($this->definition());
+	}
+
+	private function withConfig(string $name, mixed $value) : self {
+		$form                = clone $this;
+		$form->config[$name] = $value;
+
+		return $form;
+	}
+
+	/**
+	 * @param array<mixed> $fields
+	 *
+	 * @return array<string, array<string, mixed>>
+	 */
+	private static function validateFields(array $fields) : array {
+		foreach ($fields as $name => $field) {
+			if (!is_string($name) || $name === '') {
+				throw new InvalidArgumentException('Cacti form fields must have non-empty string names.');
+			}
+
+			if (!is_array($field) || !isset($field['method']) || !is_string($field['method']) || $field['method'] === '') {
+				throw new InvalidArgumentException(sprintf("Cacti form field '%s' must define a method.", $name));
+			}
+		}
+
+		return $fields;
 	}
 }

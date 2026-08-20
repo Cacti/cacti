@@ -7,43 +7,81 @@
  | modify it under the terms of the GNU General Public License             |
  | as published by the Free Software Foundation; either version 2          |
  | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
-*/
+ */
 
-require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
 require_once CACTI_PATH_LIBRARY . '/CactiForm.php';
 
-test('CactiForm creates injectable Symfony form builders', function () {
-	$form = CactiForm::createNamedBuilder('settings')
-		->add('name', Symfony\Component\Form\Extension\Core\Type\TextType::class)
-		->getForm();
+function cacti_form_test_fields() : array {
+	return [
+		'name' => [
+			'method'        => 'textbox',
+			'friendly_name' => 'Name',
+			'value'         => '|arg1:name|',
+		],
+	];
+}
 
-	expect($form->getName())->toBe('settings');
-	expect((new CactiForm())->formFactory())->toBeInstanceOf(Symfony\Component\Form\FormFactoryInterface::class);
+test('CactiForm builds the legacy renderer contract immutably', function () {
+	$form = (new CactiForm(cacti_form_test_fields()))
+		->withoutFormTag()
+		->postTo('sites.php')
+		->named('site')
+		->multipart();
+
+	expect($form->definition())->toBe([
+		'config' => [
+			'no_form_tag' => true,
+			'post_to'     => 'sites.php',
+			'form_name'   => 'site',
+			'enctype'     => 'multipart/form-data',
+		],
+		'fields' => cacti_form_test_fields(),
+	]);
 });
 
-test('CactiForm retains an injected form factory', function () {
-	$injected = Symfony\Component\Form\Forms::createFormFactory();
+test('CactiForm hydrates values through an injected Cacti adapter', function () {
+	$hydrator = function (array $fields, array $values) : array {
+		$fields['name']['value'] = $values['name'];
 
-	expect((new CactiForm($injected))->formFactory())->toBe($injected);
+		return $fields;
+	};
+
+	$original = new CactiForm(cacti_form_test_fields(), hydrator: $hydrator);
+	$hydrated = $original->withValues(['name' => 'Datacenter']);
+
+	expect($original->definition()['fields']['name']['value'])->toBe('|arg1:name|')
+		->and($hydrated->definition()['fields']['name']['value'])->toBe('Datacenter');
 });
 
-test('CactiForm exposes the shared factory statically', function () {
-	expect(CactiForm::factory())->toBeInstanceOf(Symfony\Component\Form\FormFactoryInterface::class);
+test('CactiForm delegates rendering through its Cacti contract', function () {
+	$rendered = null;
+	$form     = new CactiForm(cacti_form_test_fields(), function (array $definition) use (&$rendered) : void {
+		$rendered = $definition;
+	});
+
+	$form->withoutFormTag()->render();
+
+	expect($rendered)->toBe([
+		'config' => ['no_form_tag' => true],
+		'fields' => cacti_form_test_fields(),
+	]);
 });
 
-test('CactiForm creates an unnamed builder from the default form type', function () {
-	$builder = CactiForm::createBuilder();
-
-	expect($builder)->toBeInstanceOf(Symfony\Component\Form\FormBuilderInterface::class);
-});
-
-test('CactiForm instance builder honours an injected factory', function () {
-	$injected = Symfony\Component\Form\Forms::createFormFactory();
-	$form     = new CactiForm($injected);
-
-	expect($form->builder())->toBeInstanceOf(Symfony\Component\Form\FormBuilderInterface::class)
-		->and($form->namedBuilder('inner'))->toBeInstanceOf(Symfony\Component\Form\FormBuilderInterface::class);
+test('CactiForm rejects malformed definitions and empty identifiers', function () {
+	expect(fn () => new CactiForm(['name' => []]))
+		->toThrow(InvalidArgumentException::class, "field 'name' must define a method")
+		->and(fn () => new CactiForm([0 => ['method' => 'textbox']]))
+		->toThrow(InvalidArgumentException::class, 'non-empty string names')
+		->and(fn () => (new CactiForm(cacti_form_test_fields()))->postTo(''))
+		->toThrow(InvalidArgumentException::class, 'action cannot be empty')
+		->and(fn () => (new CactiForm(cacti_form_test_fields()))->named(''))
+		->toThrow(InvalidArgumentException::class, 'name cannot be empty');
 });
