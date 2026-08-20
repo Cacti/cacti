@@ -1,0 +1,66 @@
+name: MD5 Finder Coverage
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/md5-finder-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'lib/CactiMd5FileFinder.php'
+      - 'phpunit-md5-finder-coverage.xml'
+      - 'tests/Unit/CactiMd5FileFinderTest.php'
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/md5-finder-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'lib/CactiMd5FileFinder.php'
+      - 'phpunit-md5-finder-coverage.xml'
+      - 'tests/Unit/CactiMd5FileFinderTest.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: md5-finder-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMPOSER_ALLOW_SUPERUSER: 1
+
+jobs:
+  coverage:
+    name: MD5 finder 100% coverage
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Setup locked PHP 8.1 dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.1'
+          coverage: xdebug
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          dependency-mode: locked-md5-finder-coverage
+          install-args: --prefer-dist --no-progress --no-interaction
+
+      - name: Enforce line coverage
+        env:
+          XDEBUG_MODE: coverage
+        run: |
+          set -euo pipefail
+          include/vendor/bin/pest \
+            --configuration=phpunit-md5-finder-coverage.xml \
+            --coverage \
+            --coverage-text \
+            --min=100

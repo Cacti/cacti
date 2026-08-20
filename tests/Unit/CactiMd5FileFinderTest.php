@@ -127,7 +127,14 @@ test('findHashes rejects an unreadable root directory', function () {
 test('findHashes rejects an ignore pattern that is not a valid regex', function () {
 	$finder = new CactiMd5FileFinder();
 
-	/* an unchecked preg_match() would return false here and ignore every file */
+	// an unchecked preg_match() would return false here and ignore every file
 	expect(fn () => $finder->findHashes($this->directory, '/unterminated'))
 		->toThrow(InvalidArgumentException::class);
+});
+
+test('the manifest comparator treats identical paths as equal', function () {
+	$comparator = new ReflectionMethod(CactiMd5FileFinder::class, 'compareManifestPaths');
+	$comparator->setAccessible(true);
+
+	expect($comparator->invoke(null, 'nested/file.php', 'nested/file.php'))->toBe(0);
 });

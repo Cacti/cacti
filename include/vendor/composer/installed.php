@@ -361,6 +361,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'symfony/finder' => array(
+            'pretty_version' => 'v6.4.42',
+            'version' => '6.4.42.0',
+            'reference' => '0b73dac42493acbadbba644207a715b254e9b029',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/finder',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'symfony/http-foundation' => array(
             'pretty_version' => 'v6.4.43',
             'version' => '6.4.43.0',
