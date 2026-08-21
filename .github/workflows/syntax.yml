@@ -162,8 +162,16 @@ jobs:
         if grep -Rqs 'ondrej/php' /etc/apt/sources.list /etc/apt/sources.list.d/; then
           echo 'ondrej/php already configured, skipping add-apt-repository'
         else
-          sudo add-apt-repository -y ppa:ondrej/php
+          if ! sudo timeout --signal=TERM 60s add-apt-repository -y --no-update ppa:ondrej/php; then
+            echo 'add-apt-repository failed or timed out after 60 seconds' >&2
+            exit 1
+          fi
         fi
+        for source in /etc/apt/apt-mirrors.txt /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources; do
+          if [ -f "$source" ]; then
+            sudo sed -E -i 's#https?://azure.archive.ubuntu.com/ubuntu#https://archive.ubuntu.com/ubuntu#g' "$source"
+          fi
+        done
         for attempt in 1 2 3; do
           if sudo timeout --signal=TERM 300s apt-get -y \
             -o Acquire::Retries=3 \
