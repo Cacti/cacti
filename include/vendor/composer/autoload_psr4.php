@@ -17,6 +17,7 @@ return array(
     'Symfony\\Contracts\\Service\\' => array($vendorDir . '/symfony/service-contracts'),
     'Symfony\\Contracts\\EventDispatcher\\' => array($vendorDir . '/symfony/event-dispatcher-contracts'),
     'Symfony\\Component\\Validator\\' => array($vendorDir . '/symfony/validator'),
+    'Symfony\\Component\\Notifier\\' => array($vendorDir . '/symfony/notifier'),
     'Symfony\\Component\\Mime\\' => array($vendorDir . '/symfony/mime'),
     'Symfony\\Component\\Mailer\\' => array($vendorDir . '/symfony/mailer'),
     'Symfony\\Component\\HttpFoundation\\' => array($vendorDir . '/symfony/http-foundation'),

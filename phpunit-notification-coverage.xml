@@ -1,0 +1,19 @@
+<phpunit bootstrap="tests/bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <env name="CACTI_TEST_BOOTSTRAP" value="1"/>
+    </php>
+    <source>
+        <include>
+            <file>lib/CactiEmailChannel.php</file>
+            <file>lib/CactiNotification.php</file>
+            <file>lib/CactiRecipient.php</file>
+            <file>lib/api_notification.php</file>
+        </include>
+    </source>
+    <testsuites>
+        <testsuite name="Notification API coverage">
+            <file>tests/Unit/Core/CactiNotificationApiTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>
