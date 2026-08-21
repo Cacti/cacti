@@ -6,13 +6,36 @@ use Slim\Routing\RouteCollectorProxy;
 
 include __DIR__ . '/../include/db_functions.php';
 include __DIR__ . '/../include/arrays.php';
-include  '../../include/global.php';
+include __DIR__ . '/../../include/global.php';
+
+/* Nothing below authenticates or authorises anything: no route consults a
+ * realm, a session or a token, so every endpoint answers whoever reaches it.
+ * ADR 0001 describes what this needs and is not built yet. Until it is, refuse
+ * to serve unless an operator has deliberately turned the scaffold on.
+ *
+ * The only thing standing in front of these routes today is that api/vendor is
+ * not shipped, so Slim is missing and the entry point fatals. That is an
+ * accident of packaging rather than a control, and it disappears the moment
+ * someone follows the composer install in api/README.md on a live host.
+ *
+ * 404 rather than 403: a refusal that confirms the endpoint exists is a worse
+ * answer than one that does not. No body and no content type either, or the
+ * refusal still says an API is here. */
+if (read_config_option('api_enabled') !== 'on') {
+	http_response_code(404);
+
+	exit;
+}
 
 $client_ip = get_client_addr();
 
 $app = AppFactory::create();
 
-$app->addErrorMiddleware(true, true, true);
+/* displayErrorDetails puts stack traces, file paths and database errors on the
+ * wire. That is a development convenience, so make it one. */
+$api_developer_mode = (read_config_option('api_developer_mode') === 'on');
+
+$app->addErrorMiddleware($api_developer_mode, true, true);
 
 $app->get('/', function (Request $request, Response $response) {
 	$response->getBody()->write('Welcome to the Cacti API!');
