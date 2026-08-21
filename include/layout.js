@@ -3484,7 +3484,7 @@ function applyGraphFilter() {
 	statePushed = false;
 
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction +
-		'&rfilter=' + base64_encode($('#rfilter').val()) +
+		'&rfilter=' + encodeURIComponent(base64_encode($('#rfilter').val())) +
 		(typeof $('#host_id').val() != 'undefined' ? '&host_id=' + $('#host_id').val():'') +
 		'&columns=' + $('#columns').val() +
 		'&graphs='  + $('#graphs').val() +
@@ -3567,7 +3567,7 @@ function handlePopState() {
 function applyGraphTimespan() {
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
-		($('#rfilter').length ? '&rfilter=' + base64_encode($('#rfilter').val()):'') +
+		($('#rfilter').length ? '&rfilter=' + encodeURIComponent(base64_encode($('#rfilter').val())):'') +
 		'&predefined_timeshift='+$('#predefined_timeshift').val());
 
 	closeDateFilters();
