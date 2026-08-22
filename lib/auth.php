@@ -282,12 +282,10 @@ function get_basic_auth_username() {
 		$username = str_replace("\\", "\\\\", $_SERVER['REMOTE_USER']);
 	} elseif (isset($_SERVER['REDIRECT_REMOTE_USER'])) {
 		$username = str_replace("\\", "\\\\", $_SERVER['REDIRECT_REMOTE_USER']);
-	} elseif (isset($_SERVER['HTTP_PHP_AUTH_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['HTTP_PHP_AUTH_USER']);
-	} elseif (isset($_SERVER['HTTP_REMOTE_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['HTTP_REMOTE_USER']);
-	} elseif (isset($_SERVER['HTTP_REDIRECT_REMOTE_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['HTTP_REDIRECT_REMOTE_USER']);
+	/* The HTTP_-prefixed variants are populated from client request headers
+	 * (Remote-User:, PHP-Auth-User:, Redirect-Remote-User:) and are forgeable.
+	 * Trust only the server-set PHP_AUTH_USER / REMOTE_USER / REDIRECT_REMOTE_USER
+	 * that the web server provides after enforcing Basic Auth. GHSA-qrm4-7q3w-qc3v */
 	} else {
 		$username = false;
 	}
