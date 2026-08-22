@@ -5671,8 +5671,15 @@ function admin_email(string $subject, string $message) : bool {
 						$to = $admin_details['email_address'];
 					}
 
-					// If we get any message back then we have failed
-					$result = empty(send_mail($to, $from, $subject, $fin_message, html: true, expandIds: true));
+					require_once(CACTI_PATH_LIBRARY . '/api_notification.php');
+
+					$result = api_notification_send($subject, $fin_message, $to, options: [
+						'email' => [
+							'from'       => $from,
+							'html'       => true,
+							'expand_ids' => true,
+						],
+					]);
 				}
 			}
 		}

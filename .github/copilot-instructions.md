@@ -108,7 +108,13 @@
   - `Database/`, `Installer/`, `Scripts/`, `Plugin/` — domain-specific folders at the top level.
 - When adding a new test, place it in the matching category folder. If a new domain is needed, create a folder for it rather than leaving the file flat in `tests/Unit/`.
 - **File naming:** do not encode GitHub issue or GHSA numbers in filenames. Name the file after the behavior it tests (e.g. `PercentileContractTest.php`, not `Issue7070PercentileContractTest.php`). The GHSA/issue ID belongs in the test's `test('...')` description string or a file-level docblock, not the filename.
-- **`__DIR__` path depth:** tests read source files via `file_get_contents(__DIR__ . '/../../../...')` or `dirname(__DIR__, N)`. The depth must match the folder's nesting level:
-  - `tests/Unit/<Category>/` → 3 levels (`'/../../../'` or `dirname(__DIR__, 3)`)
-  - `tests/Unit/<Category>/<Subcategory>/` → 4 levels (`'/../../../../'` or `dirname(__DIR__, 4)`)
-  - After moving a test between folders, always update the `__DIR__` relative paths to match the new depth.
+- **`__DIR__` path depth:** the depth depends on both the folder's nesting level and on what the path points at. Paths that reach the repository root need one more level than paths that stop at `tests/`, so a single file often needs two different depths.
+
+  | test file location | to reach repo root (`lib/`, `include/`) | to reach `tests/` (`Helpers/`, `fixtures/`, `tools/`) |
+  | --- | --- | --- |
+  | `tests/Unit/` | `dirname(__DIR__, 2)` | `dirname(__DIR__)` |
+  | `tests/Unit/<Category>/` | `dirname(__DIR__, 3)` | `dirname(__DIR__, 2)` |
+  | `tests/Unit/<Category>/<Subcategory>/` | `dirname(__DIR__, 4)` | `dirname(__DIR__, 3)` |
+
+  - After moving a test between folders, update every path in it, and check each one individually. Setting them all to the repo-root depth silently breaks the `tests/`-internal ones. A `require` that resolves to a missing file is fatal during bootstrap and stops the whole suite rather than failing one test.
+  - Verify a move by running the suite, not by reading the diff.
