@@ -30,9 +30,7 @@ $once       = false;
 $sleep      = 2;
 $time_limit = 0;
 $lease      = api_queue_lease_seconds();
-$stop       = false;
 $failed     = false;
-$failures   = 0;
 
 $parameters = $_SERVER['argv'];
 array_shift($parameters);
@@ -90,6 +88,9 @@ try {
 	api_queue_validate_name($queue, 'queue');
 	api_queue_set_lease_seconds($lease);
 	$transport = api_queue_transport($queue);
+	$events    = new Symfony\Component\EventDispatcher\EventDispatcher();
+	$receiver  = new CactiQueueReceiver($queue, $transport);
+	$worker    = new Symfony\Component\Messenger\Worker([$queue => $receiver], api_queue_worker_bus(), $events);
 } catch (Throwable $e) {
 	print 'ERROR: ' . clean_up_lines($e->getMessage()) . PHP_EOL;
 
@@ -98,69 +99,41 @@ try {
 
 if (function_exists('pcntl_async_signals') && function_exists('pcntl_signal')) {
 	pcntl_async_signals(true);
-	pcntl_signal(SIGTERM, static function () use (&$stop) : void {
-		$stop = true;
+	pcntl_signal(SIGTERM, static function () use ($worker) : void {
+		$worker->stop();
 	});
-	pcntl_signal(SIGINT, static function () use (&$stop) : void {
-		$stop = true;
+	pcntl_signal(SIGINT, static function () use ($worker) : void {
+		$worker->stop();
 	});
 }
 
-$started = time();
-
-do {
-	$received = false;
-
-	try {
-		foreach ($transport->get() as $envelope) {
-			$received = true;
-			$failures = 0;
-
-			try {
-				api_queue_dispatch($envelope);
-			} catch (Throwable $e) {
-				try {
-					$transport->reject($envelope, $e->getMessage());
-				} catch (CactiQueueStaleReceiptException $reject_error) {
-					queue_worker_log("Queue receipt expired before rejection: {$reject_error->getMessage()}");
-				} catch (Throwable $reject_error) {
-					queue_worker_log("Queue rejection failed: {$reject_error->getMessage()}");
-					$stop   = true;
-					$failed = true;
-				}
-
-				queue_worker_log("Queue '{$envelope->queue()}' topic '{$envelope->topic()}' failed: {$e->getMessage()}");
-
-				continue;
-			}
-
-			try {
-				$transport->ack($envelope);
-			} catch (CactiQueueStaleReceiptException $e) {
-				queue_worker_log("Queue receipt expired before acknowledgement: {$e->getMessage()}");
-			} catch (Throwable $e) {
-				queue_worker_log("Queue acknowledgement failed; its lease will expire for visible redelivery: {$e->getMessage()}");
-			}
-		}
-	} catch (Throwable $e) {
-		queue_worker_log('Queue receive failed: ' . $e->getMessage());
-
-		if ($e instanceof CactiQueueMessageException) {
-			$failures = 0;
-		} else {
-			$failures++;
-
-			if ($once || $failures >= 5) {
-				$stop   = true;
-				$failed = true;
-			}
-		}
+$events->addListener(Symfony\Component\Messenger\Event\WorkerMessageFailedEvent::class,
+	static function (Symfony\Component\Messenger\Event\WorkerMessageFailedEvent $event) use (&$failed) : void {
+		$failed = true;
+		$event->addStamps(new CactiQueueFailureStamp($event->getThrowable()->getMessage()));
+		queue_worker_log('Queue message failed: ' . $event->getThrowable()->getMessage());
 	}
+);
 
-	if (!$once && !$received && !$stop && ($time_limit === 0 || time() - $started < $time_limit)) {
-		sleep($sleep);
+if ($once) {
+	$events->addListener(Symfony\Component\Messenger\Event\WorkerRunningEvent::class,
+		static function (Symfony\Component\Messenger\Event\WorkerRunningEvent $event) : void {
+			$event->getWorker()->stop();
+		}
+	);
+}
+
+try {
+	$options = ['sleep' => $sleep * 1000000];
+
+	if ($time_limit > 0) {
+		$options['time_limit'] = $time_limit;
 	}
-} while (!$once && !$stop && ($time_limit === 0 || time() - $started < $time_limit));
+	$worker->run($options);
+} catch (Throwable $e) {
+	queue_worker_log('Queue worker failed: ' . $e->getMessage());
+	$failed = true;
+}
 
 exit($failed ? 1 : 0);
 

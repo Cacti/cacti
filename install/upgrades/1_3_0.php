@@ -611,6 +611,7 @@ function upgrade_to_1_3_0() : void {
 	$data['columns'][]  = ['name' => 'message_id', 'type' => 'char(36)', 'NULL' => false];
 	$data['columns'][]  = ['name' => 'queue_name', 'type' => 'varchar(64)', 'NULL' => false];
 	$data['columns'][]  = ['name' => 'topic', 'type' => 'varchar(128)', 'NULL' => false];
+	$data['columns'][]  = ['name' => 'message_type', 'type' => 'varchar(191)', 'NULL' => false];
 	$data['columns'][]  = ['name' => 'payload', 'type' => 'longblob', 'NULL' => false];
 	$data['columns'][]  = ['name' => 'metadata', 'type' => 'blob', 'NULL' => false];
 	$data['columns'][]  = ['name' => 'status', 'type' => 'varchar(16)', 'NULL' => false, 'default' => 'pending'];

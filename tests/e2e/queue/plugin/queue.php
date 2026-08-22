@@ -13,12 +13,13 @@
 */
 
 function queue_e2e_handlers(array $handlers) : array {
-	$handlers['queue-e2e.record'] = static function (CactiQueueEnvelope $message) : void {
+	$handlers['queue-e2e.record'] = static function (CactiQueueMessage $message) : void {
 		api_queue_renew($message, 60);
-		$stored = db_execute_prepared('INSERT INTO queue_e2e_results
+		$envelope = $GLOBALS['cacti_queue_active_envelopes'][spl_object_id($message)];
+		$stored   = db_execute_prepared('INSERT INTO queue_e2e_results
 			(message_id, payload, handled_at)
 			VALUES (?, ?, NOW())',
-			[$message->messageId(), api_queue_json_encode($message->payload())]);
+			[api_queue_message_id_from_envelope($envelope), api_queue_json_encode($message->payload())]);
 
 		if (!$stored) {
 			throw new RuntimeException('Unable to store the queue E2E result.');

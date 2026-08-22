@@ -90,17 +90,13 @@ try {
 	api_queue_validate_name($queue, 'queue');
 	$transport = api_queue_transport($queue);
 
-	if ($action === 'health') {
-		print api_queue_json_encode($transport->health()) . PHP_EOL;
-
-		exit(0);
-	}
-
 	if (!$transport instanceof CactiQueueAdminTransportInterface) {
 		throw new RuntimeException("Queue '$queue' uses a transport without Cacti queue administration support.");
 	}
 
-	if ($action === 'dead') {
+	if ($action === 'health') {
+		print api_queue_json_encode($transport->health()) . PHP_EOL;
+	} elseif ($action === 'dead') {
 		print api_queue_json_encode($transport->dead($limit)) . PHP_EOL;
 	} elseif ($action === 'requeue') {
 		$transport->requeue($message);

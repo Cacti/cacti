@@ -2810,6 +2810,7 @@ CREATE TABLE `queue_messages` (
   `message_id` char(36) NOT NULL,
   `queue_name` varchar(64) NOT NULL,
   `topic` varchar(128) NOT NULL,
+  `message_type` varchar(191) NOT NULL,
   `payload` longblob NOT NULL,
   `metadata` blob NOT NULL,
   `status` varchar(16) NOT NULL default 'pending',

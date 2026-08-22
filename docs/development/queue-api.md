@@ -1,8 +1,8 @@
 # Queue API
 
-Cacti's queue API provides a transport-neutral contract for durable asynchronous work. The built-in database transport works without another service; plugins can provide RabbitMQ, Apache Kafka, Redis Streams, Amazon SQS, or another broker without changing producers and handlers.
+Cacti's queue API is a small Cacti-facing wrapper around Symfony Messenger. The built-in database transport works without another service; plugins can provide RabbitMQ, Apache Kafka, Redis Streams, Amazon SQS, or another broker without changing producers and handlers.
 
-The API requires PHP 8.1. Its transport lifecycle deliberately mirrors Symfony Messenger's `send`, `get`, `ack`, and `reject` model. A provider plugin may therefore adapt a Symfony Messenger transport, while Cacti core avoids imposing Messenger and its dependency tree on installations that use only the database transport.
+The API requires PHP 8.1. Provider plugins use Symfony Messenger's standard `TransportInterface`; Cacti supplies routing, safe serialization, handler registration, database defaults, and worker lifecycle management.
 
 ## Publishing and handling messages
 
@@ -19,7 +19,7 @@ api_queue_publish('reports.generate', ['report_id' => 42], [
 
 api_queue_register_handler(
 	'reports.generate',
-	static function (CactiQueueEnvelope $message) : void {
+	static function (CactiQueueMessage $message) : void {
 		generate_report((int) $message->payload()['report_id']);
 	}
 );
@@ -34,7 +34,7 @@ php cli/queue_worker.php --queue=reports
 php cli/queue_worker.php --queue=reports --once
 ```
 
-Without `--once` or a positive `--time-limit`, the worker runs until it receives SIGTERM or SIGINT. Run it under the operating system's service manager and restart it on failure. Transient transport errors use the configured sleep interval and terminate the worker only after five consecutive failures.
+Without `--once` or a positive `--time-limit`, the worker runs until it receives SIGTERM or SIGINT. Run it under the operating system's service manager and restart it on failure. The worker is Symfony Messenger's `Worker`, with Cacti logging, signal handling, and database visibility leases around it.
 
 The repository includes `service/cacti-queue@.service` as a hardened systemd template. Adjust the literal PHP and Cacti paths for the installation, add a packaging-specific `User` and `Group` override, then enable one instance per queue (for example, `cacti-queue@reports.service`).
 
@@ -53,12 +53,12 @@ php cli/queue_admin.php --queue=reports --purge
 
 ## Provider plugins
 
-A plugin registers a named factory through the `queue_transports` hook. The resulting object must implement `CactiQueueTransportInterface`, including `touch()` for renewing a broker visibility timeout or database lease.
+A plugin registers a named factory through the `queue_transports` hook. The resulting object must implement Symfony Messenger's `TransportInterface`. Configure the provider with `CactiQueueSerializer` or an equivalently strict JSON serializer; do not enable native PHP object serialization for broker data.
 
 ```php
 function rabbitmq_queue_transports(array $transports) : array {
-	$transports['rabbitmq'] = static function (string $queue) : CactiQueueTransportInterface {
-		return new RabbitMqQueueTransport($queue);
+	$transports['rabbitmq'] = static function (string $queue) : Symfony\Component\Messenger\Transport\TransportInterface {
+		return create_rabbitmq_transport($queue, new CactiQueueSerializer());
 	};
 
 	return $transports;
@@ -89,11 +89,11 @@ Handlers may also be contributed through the `queue_handlers` hook by returning 
 
 Routes may also be set at runtime with `api_queue_route()`. If no route is configured, Cacti uses the built-in `database` transport.
 
-Transport implementations should preserve the message ID and metadata, provide durable publication, make acknowledgement explicit, and reclaim deliveries whose lease or broker visibility timeout expires. `health()` should return non-sensitive operational data suitable for diagnostics.
+One installation may route different queues to different providers at the same time. Transport implementations should provide durable publication, make acknowledgement explicit, and reclaim deliveries whose lease or broker visibility timeout expires. Providers may additionally implement `CactiQueueAdminTransportInterface` to expose non-sensitive health and dead-letter operations through `queue_admin.php`.
 
 ## Verification
 
-The PHP 8.1 CI job runs the queue unit and MySQL 8.4 integration suites with Xdebug, publishes Clover and text reports, and enforces at least 60% line coverage for `lib/api_queue.php`.
+The PHP 8.1 CI job runs the queue unit and MySQL 8.4 integration suites with Xdebug, publishes Clover and text reports, and enforces 100% line coverage for `lib/api_queue.php`.
 
 Run the full producer-to-worker path in disposable PHP 8.1 and MySQL 8.4 containers with:
 
