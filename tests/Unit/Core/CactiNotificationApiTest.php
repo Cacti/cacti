@@ -71,6 +71,9 @@ test('Cacti notifications cannot be mutated after construction', function () {
 		->and(fn () => $notification->subject('Changed'))->toThrow(\LogicException::class, 'immutable')
 		->and(fn () => $notification->content('Changed'))->toThrow(\LogicException::class, 'immutable')
 		->and(fn () => $notification->importance(Notification::IMPORTANCE_LOW))->toThrow(\LogicException::class, 'immutable')
+		->and(fn () => $notification->importanceFromLogLevelName('error'))->toThrow(\LogicException::class, 'immutable')
+		->and(fn () => $notification->emoji('warning'))->toThrow(\LogicException::class, 'immutable')
+		->and(fn () => $notification->exception(new RuntimeException('failure')))->toThrow(\LogicException::class, 'immutable')
 		->and(fn () => $notification->channels(['chat']))->toThrow(\LogicException::class, 'immutable');
 });
 

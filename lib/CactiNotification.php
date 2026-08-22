@@ -25,7 +25,6 @@ use Symfony\Component\Notifier\Notification\Notification;
 final class CactiNotification extends Notification {
 	/** @var array<string, mixed> */
 	private array $options;
-	private bool $sealed = false;
 
 	/**
 	 * @param list<string>         $channels
@@ -41,52 +40,37 @@ final class CactiNotification extends Notification {
 		}
 
 		$this->options = $options;
-		$this->sealed  = true;
 	}
 
 	public function subject(string $subject) : static {
-		$this->assertMutable();
-
-		return parent::subject($subject);
+		$this->immutable();
 	}
 
 	public function content(string $content) : static {
-		$this->assertMutable();
-
-		return parent::content($content);
+		$this->immutable();
 	}
 
 	public function importance(string $importance) : static {
-		$this->assertMutable();
-
-		return parent::importance($importance);
+		$this->immutable();
 	}
 
 	public function importanceFromLogLevelName(string $level) : static {
-		$this->assertMutable();
-
-		return parent::importanceFromLogLevelName($level);
+		$this->immutable();
 	}
 
 	public function emoji(string $emoji) : static {
-		$this->assertMutable();
-
-		return parent::emoji($emoji);
+		$this->immutable();
 	}
 
 	public function exception(Throwable $exception) : static {
-		$this->assertMutable();
-
-		return parent::exception($exception);
+		$this->immutable();
 	}
 
 	/**
 	 * @param list<string> $channels
 	 */
 	public function channels(array $channels) : static {
-		$this->assertMutable();
-
-		return parent::channels($channels);
+		$this->immutable();
 	}
 
 	/**
@@ -98,9 +82,7 @@ final class CactiNotification extends Notification {
 		return is_array($options) ? $options : [];
 	}
 
-	private function assertMutable() : void {
-		if ($this->sealed) {
-			throw new LogicException('Cacti notifications are immutable after construction.');
-		}
+	private function immutable() : never {
+		throw new LogicException('Cacti notifications are immutable after construction.');
 	}
 }
