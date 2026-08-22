@@ -31,7 +31,12 @@ if (read_config_option('storage_location')) {
 }
 
 function escape_command($command) {
-	return $command;		# we escape every single argument now, no need for 'special' escaping
+	// The rrdtool remote protocol (rrdtool -) is newline-delimited. RRD_NL
+	// line-continuations are already collapsed to spaces before this point, so
+	// any CR/LF remaining here comes from interpolated data (e.g. an
+	// SNMP-substituted value) and would inject a second rrdtool command. Strip
+	// them. GHSA-hcj6-pmvx-fwgr / GHSA-967c-6qj7-q7rh.
+	return str_replace(array("\r", "\n"), ' ', (string) $command);
 	#return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
 	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
 }
