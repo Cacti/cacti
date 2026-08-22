@@ -635,7 +635,7 @@ function upgrade_to_1_3_0() : void {
 	$data['collate']    = 'utf8mb4_unicode_ci';
 	$data['comment']    = 'Cacti asynchronous queue messages';
 	$data['row_format'] = 'Dynamic';
-	db_update_table('queue_messages', $data);
+	db_install_update_table('queue_messages', $data);
 
 	$data               = [];
 	$data['columns'][]  = ['name' => 'host_id', 'unsigned' => true, 'type' => 'mediumint(8)', 'NULL' => false, 'default' => '0'];

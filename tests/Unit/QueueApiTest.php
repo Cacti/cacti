@@ -70,6 +70,12 @@ final class InvalidCactiQueueHandlerTarget {
 
 beforeEach(function () {
 	queue_api_test_reset_runtime();
+	$GLOBALS['cacti_queue_config_reader'] = static fn (string $name) : string => (string) ($GLOBALS['cacti_queue_test_settings'][$name] ?? '');
+	$GLOBALS['cacti_queue_hook_provider'] = static function (string $hook, mixed $value) : mixed {
+		$callback = $GLOBALS['cacti_queue_test_hooks'][$hook] ?? null;
+
+		return is_callable($callback) ? $callback($value) : $value;
+	};
 	$this->transport = new CactiTestQueueTransport();
 	api_queue_register_transport('test', fn (string $queue) => $this->transport);
 	api_queue_route('reports', 'test');
@@ -342,6 +348,13 @@ it('uses configured routes, defaults, leases, and retention limits', function ()
 	expect(api_queue_transport_name('other'))->toBe('database');
 });
 
+it('falls back to the Cacti configuration and plugin hook APIs', function () {
+	unset($GLOBALS['cacti_queue_config_reader'], $GLOBALS['cacti_queue_hook_provider']);
+
+	expect(api_queue_config_option('queue_missing_setting'))->toBeString()
+		->and(api_queue_apply_hook('queue_missing_hook', ['unchanged' => true]))->toBe(['unchanged' => true]);
+});
+
 it('clamps the database visibility lease to safe limits', function () {
 	expect(api_queue_lease_seconds())->toBe(3600);
 
@@ -380,6 +393,8 @@ function queue_api_test_reset_runtime() : void {
 		$GLOBALS['cacti_queue_active_envelopes'],
 		$GLOBALS['cacti_queue_test_settings'],
 		$GLOBALS['cacti_queue_test_hooks'],
+		$GLOBALS['cacti_queue_config_reader'],
+		$GLOBALS['cacti_queue_hook_provider'],
 		$GLOBALS['cacti_queue_handlers'],
 		$GLOBALS['cacti_queue_lease_seconds']
 	);
