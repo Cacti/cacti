@@ -128,6 +128,64 @@ test('the email channel delegates all Cacti mail options', function () {
 		]);
 });
 
+test('the api advertises multiple recipient support', function () {
+	expect(function_exists('api_notification_email_supports_multiple_to'))->toBeTrue()
+		->and(api_notification_email_supports_multiple_to())->toBeTrue();
+});
+
+test('the email channel folds additional to addresses into one message', function () {
+	$args    = [];
+	$channel = new CactiEmailChannel(function (...$received) use (&$args) : string {
+		$args = $received;
+
+		return '';
+	});
+	$notification = new CactiNotification('Alert', 'Down', ['email'], [
+		'email' => ['to' => 'second@example.com,Third <third@example.com>'],
+	]);
+
+	$channel->notify($notification, new CactiRecipient('first@example.com', '', 'First'));
+
+	expect($args[1])->toBe([
+		['email' => 'first@example.com',  'name' => 'First'],
+		['email' => 'second@example.com', 'name' => ''],
+		['email' => 'third@example.com',  'name' => 'Third'],
+	]);
+});
+
+test('the email channel does not repeat the primary recipient', function () {
+	$args    = [];
+	$channel = new CactiEmailChannel(function (...$received) use (&$args) : string {
+		$args = $received;
+
+		return '';
+	});
+	$notification = new CactiNotification('Alert', 'Down', ['email'], [
+		'email' => ['to' => 'OPS@example.com,other@example.com'],
+	]);
+
+	$channel->notify($notification, new CactiRecipient('ops@example.com', '', 'Operations'));
+
+	expect($args[1])->toBe([
+		['email' => 'ops@example.com',   'name' => 'Operations'],
+		['email' => 'other@example.com', 'name' => ''],
+	]);
+});
+
+test('the email channel keeps a single recipient when no to option is given', function () {
+	$args    = [];
+	$channel = new CactiEmailChannel(function (...$received) use (&$args) : string {
+		$args = $received;
+
+		return '';
+	});
+	$notification = new CactiNotification('Alert', 'Down', ['email'], []);
+
+	$channel->notify($notification, new CactiRecipient('ops@example.com', '', 'Operations'));
+
+	expect($args[1])->toBe([['email' => 'ops@example.com', 'name' => 'Operations']]);
+});
+
 test('the email channel supplies safe defaults for standard notifications', function () {
 	$args    = [];
 	$channel = new CactiEmailChannel(function (...$received) use (&$args) : string {

@@ -49,7 +49,7 @@ final class CactiEmailChannel implements ChannelInterface {
 
 		$options     = $notification instanceof CactiNotification ? $notification->getOptions('email') : [];
 		$name        = $recipient instanceof CactiRecipient ? $recipient->getName() : '';
-		$to          = [['email' => $recipient->getEmail(), 'name' => $name]];
+		$to          = $this->recipients($recipient, $name, $options['to'] ?? null);
 		$html        = (bool) ($options['html'] ?? false);
 		$text        = (string) ($options['text'] ?? ($html ? '' : $notification->getContent()));
 		$attachments = $options['attachments'] ?? [];
@@ -81,6 +81,43 @@ final class CactiEmailChannel implements ChannelInterface {
 		if ($error !== '') {
 			throw new RuntimeException(trim(strip_tags((string) $error)));
 		}
+	}
+
+	/**
+	 * Build the To list for a single message.
+	 *
+	 * Symfony calls notify() once per recipient, so a caller that needs one
+	 * message addressed to several people cannot express that through
+	 * recipients alone.  The 'to' option carries the additional addresses and
+	 * they are folded into the same mailer() call.
+	 *
+	 * @param array<string, string>|string|null $additional
+	 *
+	 * @return list<array{email: string, name: string}>
+	 */
+	private function recipients(EmailRecipientInterface $recipient, string $name, array|string|null $additional) : array {
+		$primary = trim($recipient->getEmail());
+		$to      = [['email' => $primary, 'name' => $name]];
+
+		if ($additional === null || $additional === '' || $additional === []) {
+			return $to;
+		}
+
+		$seen = [mb_strtolower($primary) => true];
+
+		foreach (parse_email_details($additional) as $extra) {
+			$address = trim((string) ($extra['email'] ?? ''));
+			$key     = mb_strtolower($address);
+
+			if ($address === '' || isset($seen[$key])) {
+				continue;
+			}
+
+			$seen[$key] = true;
+			$to[]       = ['email' => $address, 'name' => trim((string) ($extra['name'] ?? ''))];
+		}
+
+		return $to;
 	}
 
 	public function supports(Notification $notification, RecipientInterface $recipient) : bool {

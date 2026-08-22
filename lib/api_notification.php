@@ -33,6 +33,21 @@ function api_notification_dependencies_available() : bool {
 		&& interface_exists(RecipientInterface::class);
 }
 
+/**
+ * Whether the built-in email channel can address several recipients in one
+ * message through the 'to' option.
+ *
+ * Callers migrating off mailer() need to know this before joining addresses,
+ * because a core without the option silently delivers to the first recipient
+ * only.  Probe with function_exists() so plugins stay compatible with cores
+ * that predate it.
+ *
+ * @return bool
+ */
+function api_notification_email_supports_multiple_to() : bool {
+	return true;
+}
+
 if (api_notification_dependencies_available()) {
 	require_once __DIR__ . '/CactiNotification.php';
 	require_once __DIR__ . '/CactiRecipient.php';
