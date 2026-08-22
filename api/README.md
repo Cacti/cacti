@@ -8,6 +8,27 @@ The API exposes endpoints to retrieve information about hosts, host templates, p
 
 **This API is not production ready.**
 
+It refuses to answer unless it is deliberately switched on, because no route in
+it authenticates or authorises anything. Every endpoint would answer whoever
+reached the URL. To run it for development, enable it in the database:
+
+```sql
+REPLACE INTO settings (name, value) VALUES ('api_enabled', 'on');
+```
+
+Error details are withheld on the same basis, since they carry stack traces and
+file paths. To see them while developing:
+
+```sql
+REPLACE INTO settings (name, value) VALUES ('api_developer_mode', 'on');
+```
+
+Neither setting appears in the web interface on purpose. Adding a toggle that
+exposes host inventory without a password would be worse than leaving the
+switch where an operator has to mean it. See ADR 0001 for the authentication
+this is waiting on.
+
+
 To run the API for development:
 
 ```bash
