@@ -792,10 +792,16 @@ function rrdcheck_poller_bottom() : void {
 		$command_string = read_config_option('path_php_binary');
 
 		if (read_config_option('path_rrdcheck_log') != '') {
+			// This log path reaches the shell through exec_background()'s args,
+			// which are unescaped, so quote it. No settings form exposes this
+			// value today; this is defense in depth and a forward-port of the
+			// release/1.2.31 fix (issue#7473).
+			$safe_log = cacti_escapeshellarg(read_config_option('path_rrdcheck_log'));
+
 			if (CACTI_SERVER_OS == 'unix') {
-				$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_rrdcheck.php >> ' . read_config_option('path_rrdcheck_log') . ' 2>&1';
+				$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_rrdcheck.php >> ' . $safe_log . ' 2>&1';
 			} else {
-				$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_rrdcheck.php >> ' . read_config_option('path_rrdcheck_log');
+				$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_rrdcheck.php >> ' . $safe_log;
 			}
 		} else {
 			$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_rrdcheck.php';
