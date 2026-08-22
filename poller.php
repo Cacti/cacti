@@ -736,7 +736,10 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 
 		if (read_config_option('path_stderrlog') != '' && CACTI_SERVER_OS != 'win32') {
-			$extra_parms = '>> ' . read_config_option('path_stderrlog') . ' 2>&1';
+			// exec_background() passes redirect args to the shell unescaped, so
+			// this admin-set path must be quoted (issue#7466, forward-port of
+			// the release/1.2.31 fix).
+			$extra_parms = '>> ' . cacti_escapeshellarg(read_config_option('path_stderrlog')) . ' 2>&1';
 		} else {
 			$extra_parms = '';
 		}
