@@ -1141,6 +1141,10 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
  * @return string The formatted target string
  */
 function snmp_format_target($hostname, $port) {
+	/* a hostname/IP never legitimately contains cmd.exe metacharacters; strip
+	 * them so a crafted device address cannot chain commands on Windows. */
+	$hostname = str_replace(array('"', '&', '|', '^', '<', '>', '(', ')'), '', $hostname);
+
 	if (strpos($hostname, ':') !== false) {
 		/* IPv6: force udp6: transport and bracket-encapsulate */
 		$clean = str_replace(array('[', ']'), '', $hostname);
@@ -1159,9 +1163,11 @@ function snmp_escape_string($string) {
 	}
 
 	if ($config['cacti_server_os'] == 'win32') {
-		/* SECURITY: Always wrap the string in quotes on Windows,
-		 * preventing command chaining via &, |, or ^ operators. */
-		$string = str_replace(SNMP_ESCAPE_CHARACTER, "\\" . SNMP_ESCAPE_CHARACTER, $string);
+		/* cmd.exe tokenizes & | ^ < > ( ) and toggles quoting on every " it sees,
+		 * reading \" as a literal backslash plus a quote, so wrapping in quotes
+		 * cannot neutralize them. SNMP community and v3 credential values never
+		 * legitimately contain these, so strip them before quoting. */
+		$string = str_replace(array('"', '&', '|', '^', '<', '>', '(', ')'), '', $string);
 
 		return SNMP_ESCAPE_CHARACTER . $string . SNMP_ESCAPE_CHARACTER;
 	}
