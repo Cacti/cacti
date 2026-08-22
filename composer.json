@@ -56,12 +56,15 @@
         "slim/slim": "^4.14",
         "stevenmaguire/oauth2-keycloak": "^6.1.0",
         "stevenmaguire/oauth2-microsoft": "^2.2",
+        "symfony/event-dispatcher": "^7.4",
         "symfony/filesystem": "^7.4",
         "symfony/finder": "^6.4 || ^7.4",
         "symfony/http-foundation": "^7.4",
         "symfony/lock": "^7.4",
         "symfony/mailer": "^7.4",
+        "symfony/messenger": "^7.4",
         "symfony/notifier": "^7.4",
+        "symfony/uid": "^7.4",
         "symfony/validator": "^7.4"
     },
     "require-dev": {

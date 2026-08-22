@@ -17,4 +17,4 @@ $message = api_queue_publish('queue-e2e.record', ['value' => $value], [
 	'max_attempts' => 3,
 ]);
 
-print $message->messageId() . PHP_EOL;
+print api_queue_message_id_from_envelope($message) . PHP_EOL;
