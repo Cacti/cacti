@@ -489,14 +489,11 @@ function api_queue_register_handler(string $topic_or_class, callable $handler) :
 }
 
 function api_queue_handlers() : array {
-	$handlers = $GLOBALS['cacti_queue_handlers'] ?? [];
+	$handlers        = $GLOBALS['cacti_queue_handlers'] ?? [];
+	$plugin_handlers = api_queue_apply_hook('queue_handlers', $handlers);
 
-	if (function_exists('api_plugin_hook_function')) {
-		$plugin_handlers = api_plugin_hook_function('queue_handlers', $handlers);
-
-		if (is_array($plugin_handlers)) {
-			$handlers = $plugin_handlers;
-		}
+	if (is_array($plugin_handlers)) {
+		$handlers = $plugin_handlers;
 	}
 
 	return $handlers;
@@ -523,12 +520,10 @@ function api_queue_transport(string $queue) : TransportInterface {
 	$factories = $GLOBALS['cacti_queue_transport_factories'] ?? [];
 	$factories['database'] ??= static fn (string $name) : TransportInterface => new CactiDatabaseQueueTransport($name, api_queue_lease_seconds());
 
-	if (function_exists('api_plugin_hook_function')) {
-		$plugin_factories = api_plugin_hook_function('queue_transports', $factories);
+	$plugin_factories = api_queue_apply_hook('queue_transports', $factories);
 
-		if (is_array($plugin_factories)) {
-			$factories = $plugin_factories;
-		}
+	if (is_array($plugin_factories)) {
+		$factories = $plugin_factories;
 	}
 	$name = api_queue_transport_name($queue);
 
@@ -591,7 +586,7 @@ function api_queue_lease_seconds() : int {
 		return (int) $GLOBALS['cacti_queue_lease_seconds'];
 	}
 
-	if (function_exists('read_config_option') && ($value = (int) read_config_option('queue_lease_seconds')) > 0) {
+	if (($value = (int) api_queue_config_option('queue_lease_seconds')) > 0) {
 		return min(86400, max(30, $value));
 	}
 
@@ -604,7 +599,7 @@ function api_queue_dead_retention_days() : int {
 	return api_queue_retention_days('queue_dead_retention_days', 90);
 }
 function api_queue_retention_days(string $setting, int $default) : int {
-	if (function_exists('read_config_option') && ($value = (int) read_config_option($setting)) > 0) {
+	if (($value = (int) api_queue_config_option($setting)) > 0) {
 		return min(3650, $value);
 	}
 
@@ -636,10 +631,8 @@ function api_queue_purge_status(string $status, int $days) : int {
 function api_queue_transport_name(string $queue) : string {
 	$routes = [];
 
-	if (function_exists('read_config_option')) {
-		$value  = json_decode((string) read_config_option('queue_transport_routes'), true);
-		$routes = is_array($value) ? $value : [];
-	}
+	$value   = json_decode(api_queue_config_option('queue_transport_routes'), true);
+	$routes  = is_array($value) ? $value : [];
 	$runtime = $GLOBALS['cacti_queue_transport_routes'] ?? [];
 
 	if (is_array($runtime)) {
@@ -655,16 +648,14 @@ function api_queue_transport_name(string $queue) : string {
 		}
 	}
 
-	if (function_exists('read_config_option')) {
-		$default = read_config_option('queue_default_transport');
+	$default = api_queue_config_option('queue_default_transport');
 
-		if (is_string($default) && $default !== '') {
-			try {
-				api_queue_validate_name($default, 'transport');
+	if ($default !== '') {
+		try {
+			api_queue_validate_name($default, 'transport');
 
-				return $default;
-			} catch (InvalidArgumentException $e) {
-			}
+			return $default;
+		} catch (InvalidArgumentException $e) {
 		}
 	}
 
@@ -675,6 +666,24 @@ function api_queue_topic_queue(string $topic) : string {
 	$pos = strpos($topic, '.');
 
 	return $pos === false ? $topic : substr($topic, 0, $pos);
+}
+function api_queue_config_option(string $name) : string {
+	$reader = $GLOBALS['cacti_queue_config_reader'] ?? null;
+
+	if (is_callable($reader)) {
+		return (string) $reader($name);
+	}
+
+	return function_exists('read_config_option') ? (string) read_config_option($name) : '';
+}
+function api_queue_apply_hook(string $hook, mixed $value) : mixed {
+	$provider = $GLOBALS['cacti_queue_hook_provider'] ?? null;
+
+	if (is_callable($provider)) {
+		return $provider($hook, $value);
+	}
+
+	return function_exists('api_plugin_hook_function') ? api_plugin_hook_function($hook, $value) : $value;
 }
 function api_queue_validate_name(string $name, string $kind) : void {
 	$maximum = $kind === 'topic' ? 128 : 64;
