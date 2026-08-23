@@ -23,13 +23,11 @@ scan() {
 	local pattern="$2"
 	rg -n --pcre2 --no-config --no-ignore --no-ignore-vcs --no-ignore-parent "$pattern" "${EXCLUDE[@]}" --glob '*.php' . 2>/dev/null | grep -v '\/plugins\/' | while IFS= read -r line; do
 		file="${line%%:*}"
-		rest="${line#*:}"
-		lineno="${rest%%:*}"
 		case "$file" in
 			./*) ;;
 			*) file="./$file" ;;
 		esac
-		loc="${file}:${lineno}"
+		loc="${file}"
 		match="${line#*:*:}"
 		printf '%s\t%s\t%s\n' "$category" "$loc" "$match"
 	done || true
