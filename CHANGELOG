@@ -148,6 +148,7 @@ Cacti CHANGELOG
 -issue#7732: Bind device IDs and escape graph and device HTML sinks
 -issue#7715: Refuse to serve the REST scaffold unless it is explicitly enabled
 -issue#7751: Declare the translation helper before the disabled-i18n fallback returns
+-issue#7473: Escape path_rrdcheck_log before it reaches the rrdcheck poller shell redirect
 -issue#7469: Escape path_php_binary before it reaches shell_exec in test_data_source
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
