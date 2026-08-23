@@ -1,6 +1,24 @@
 Cacti CHANGELOG
 
 1.2.x
+-issue: Url encode the base64 regex filter before it reaches the query string (PR #7777)
+-issue: Make 1.2 dependency builds reproducible (PR #7747)
+-issue: Propagate background installation failures (PR #7630)
+-issue: Reject incomplete selection payloads (PR #7628)
+-issue: Fail closed on incomplete installer schemas (PR #7625)
+-issue: Restore select-all controls on 1.2.x (PR #7624)
+-issue: Log the reason a session read failed (PR #7606)
+-issue: Emit structured security events for validation failures (PR #7604)
+-issue: Launch cactid without a shell (PR #7602)
+-issue: Expire persistent auth tokens when permissions change (PR #7600)
+-issue: Bind host template ID filters as prepared parameters (PR #7598)
+-issue: Guard request URI reads on 1.2.x (PR #7593)
+-issue: Honor alternate frame ancestors (PR #7591)
+-issue: Remove inert Automatically Trust Signer control from package import (PR #7430)
+-issue: Correct octet carry in automation_get_next_host for wide ranges (PR #7410)
+-issue: Commit transaction check uses the passed connection (PR #7409)
+-issue: Memoize db_get_table_column_types to cut redundant SHOW COLUMNS (1.2.x backport) (PR #7382)
+-issue#7245: Raise execution time limit for bulk graph creation (PR #7378)
 -issue#7711: Install the matrix PHP MySQL driver in the 1.2.x integration workflow
 -security: Harden advisory command execution and database DDL sink validation
 -security: Restrict graph input fields across the template, graph and import handoffs
