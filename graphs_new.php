@@ -148,7 +148,9 @@ function form_save() : void {
 		// save the json_encoded form data in case of an error
 		$form_data['header'] = false;
 
-		$_SESSION['sess_graphs_new_form'] = json_encode($form_data);
+		// every $_POST key lands in $form_data and it is replayed into an
+		// inline <script> on the error path, so encode for that context
+		$_SESSION['sess_graphs_new_form'] = cacti_js_encode($form_data);
 		$_SESSION['sess_grn_returnto']    = 'graphs_new.php';
 
 		if (!isrv('host_id')) {
