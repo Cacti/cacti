@@ -28,13 +28,16 @@ require_once dirname(__DIR__, 4) . '/include/global.php';
 $source = file_get_contents(__DIR__ . '/../../../../lib/functions.php');
 
 test('the script-server branch escapes path_php_binary', function () use ($source) {
-	expect($source)->toContain("\$php   = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));")
-		->and($source)->not->toContain("\$php   = read_config_option('path_php_binary');");
+	// Match the call rather than the exact source line. The cast is optional
+	// here because PhpBinaryPathNullCoercionTest owns whether it is present;
+	// asserting it in both places made the two tests contradict each other.
+	expect($source)->toMatch('/\$php\s*=\s*cacti_escapeshellcmd\(\s*(?:\(string\)\s*)?read_config_option\(\s*\'path_php_binary\'\s*\)\s*\)\s*;/')
+		->and($source)->not->toMatch('/\$php\s*=\s*read_config_option\(\s*\'path_php_binary\'\s*\)\s*;/');
 });
 
 test('the query-script-server branch escapes path_php_binary', function () use ($source) {
-	expect($source)->toContain("\$script_path = cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q '")
-		->and($source)->not->toContain("\$script_path = read_config_option('path_php_binary') . ' -q '");
+	expect($source)->toMatch('/\$script_path\s*=\s*cacti_escapeshellcmd\(\s*(?:\(string\)\s*)?read_config_option\(\s*\'path_php_binary\'\s*\)\s*\)\s*\.\s*\' -q \'/')
+		->and($source)->not->toMatch('/\$script_path\s*=\s*read_config_option\(\s*\'path_php_binary\'\s*\)\s*\.\s*\' -q \'/');
 });
 
 test('escaping neutralizes a shell metacharacter in path_php_binary', function () {
