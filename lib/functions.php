@@ -2647,7 +2647,10 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 				$output = shell_exec($script_path);
 			} else {
 				// Script server is a bit more complicated
-				$php   = read_config_option('path_php_binary');
+				// path_php_binary is admin-set and reaches shell_exec() below; escape
+				// it so a shell metacharacter cannot inject a command (issue#7469,
+				// forward-port of the release/1.2.31 fix).
+				$php   = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 				$parts = explode(' ', $script_path);
 
 				dsv_log('parts', $parts);
@@ -2939,7 +2942,7 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 								$prepend = $script_queries['arg_prepend'];
 							}
 
-							$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
+							$script_path = cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
 						} else {
 							$action      = POLLER_ACTION_SCRIPT;
 							$script_path = get_script_query_path(trim(($script_queries['arg_prepend'] ?? '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
