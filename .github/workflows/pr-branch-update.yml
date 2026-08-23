@@ -55,17 +55,30 @@ jobs:
           failed=0
 
           for number in $(echo "$pr_numbers" | jq -r '.[]'); do
-            status=$(gh pr view "$number" --json mergeStateStatus --jq '.mergeStateStatus')
+            # mergeStateStatus reports CLEAN for branches the compare API still
+            # counts as behind, so ask compare directly.
+            refs=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${number}" \
+              --jq '[.base.ref, .head.label] | @tsv')
+            base_ref=$(printf '%s' "$refs" | cut -f1)
+            head_ref=$(printf '%s' "$refs" | cut -f2)
 
-            if [ "$status" != "BEHIND" ]; then
-              echo "skip #$number: mergeStateStatus=$status"
+            behind=$(gh api \
+              "repos/${GITHUB_REPOSITORY}/compare/${base_ref}...${head_ref}" \
+              --jq '.behind_by' 2>/dev/null || echo 0)
+
+            if [ "${behind:-0}" -eq 0 ]; then
+              echo "skip #$number: not behind"
               skipped=$((skipped + 1))
               continue
             fi
 
-            echo "updating #$number (behind base branch)"
+            echo "updating #$number (behind base by $behind)"
+            # Rebase rather than merge. A merge update adds a commit per run, so
+            # each branch accumulates snapshots of old base and re-conflicts on
+            # every shared file it carries.
             if gh api -X PUT \
                 -H "Accept: application/vnd.github+json" \
+                -f update_method=rebase \
                 "repos/${GITHUB_REPOSITORY}/pulls/${number}/update-branch"; then
               updated=$((updated + 1))
             else
