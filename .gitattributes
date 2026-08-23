@@ -1,0 +1,6 @@
+# Every pull request appends to the same two anchors in CHANGELOG: the top of
+# the issue block and the end of the feature block. Concurrent PRs therefore
+# collide there even when they touch nothing else. check-changelog.py enforces
+# entry format and issue/feature grouping rather than numeric order, so keeping
+# both sides is a valid resolution.
+CHANGELOG merge=union
