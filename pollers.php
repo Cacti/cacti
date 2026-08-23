@@ -726,7 +726,7 @@ function poller_edit() : void {
 		if ($poller['id'] > 1) {
 			?>
 			<script type='text/javascript'>
-				pt = <?php print $pt; ?>;
+				pt = <?php print (int) $pt; ?>;
 
 				function showHideRemoteDB() {
 					var hasSSL = $('#dbssl').is(':checked');
@@ -795,7 +795,7 @@ function poller_edit() : void {
 		} else {
 			?>
 			<script type='text/javascript'>
-				pt = <?php print $pt; ?>;
+				pt = <?php print (int) $pt; ?>;
 
 				$(function() {
 					if (pt == 1) {
