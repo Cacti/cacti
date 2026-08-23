@@ -28,12 +28,12 @@ require_once dirname(__DIR__, 4) . '/include/global.php';
 $source = file_get_contents(__DIR__ . '/../../../../lib/functions.php');
 
 test('the script-server branch escapes path_php_binary', function () use ($source) {
-	expect($source)->toContain("\$php   = cacti_escapeshellcmd(read_config_option('path_php_binary'));")
+	expect($source)->toContain("\$php   = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));")
 		->and($source)->not->toContain("\$php   = read_config_option('path_php_binary');");
 });
 
 test('the query-script-server branch escapes path_php_binary', function () use ($source) {
-	expect($source)->toContain("\$script_path = cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q '")
+	expect($source)->toContain("\$script_path = cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q '")
 		->and($source)->not->toContain("\$script_path = read_config_option('path_php_binary') . ' -q '");
 });
 

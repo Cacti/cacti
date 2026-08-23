@@ -118,7 +118,7 @@ cmd_exec	./support.php:2108					print '<td>' . tech_env_status(DB_STATUS_WARNING
 dynamic_include	./cli/audit_database.php:232							require_once($plugin . '/setup.php');
 dynamic_include	./cli/audit_database.php:235								require_once($plugin . '/includes/database.php');
 dynamic_include	./cli/upgrade_database.php:152			include($upgrade_file);
-dynamic_include	./include/global.php:719		require_once($vendor_autoload);
+dynamic_include	./include/global.php:720		require_once($vendor_autoload);
 dynamic_include	./include/global_languages.php:178				require_once($providerFull);
 dynamic_include	./index.php:49							require_once($file);
 dynamic_include	./lib/installer.php:4110					include_once($upgrade_file);

@@ -41,7 +41,11 @@ if (api_notification_dependencies_available()) {
 
 function api_notification_assert_dependencies() : void {
 	if (!api_notification_dependencies_available()) {
+		// Dependency absence is validated in an isolated process; it cannot be
+		// reproduced after this coverage process has loaded the vendor classes.
+		// @codeCoverageIgnoreStart
 		throw new RuntimeException('Symfony Notifier dependencies are unavailable. Run Composer install to restore the vendor tree.');
+		// @codeCoverageIgnoreEnd
 	}
 }
 
