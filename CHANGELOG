@@ -1,6 +1,51 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-issue#7775: Add plugin-extensible notification API
+-issue#7746: Make PHP 8.1 dependency builds reproducible
+-issue#7672: Block loopback/link-local SSRF targets in call_remote_data_collector
+-issue#7670: Escape LIKE wildcards in poller_automation and plugins.php filters
+-issue#7663: Strip control characters from rrdtool command line
+-issue#7662: Stage nonce CSP migration and gated enforcement
+-issue#7657: Escape database sourced names in report and package export output
+-issue#7656: Contain plugin archive writes and validate the repository URL
+-issue#7655: Validate graph item fields before they reach the RRDtool command line
+-issue#7637: Optimize group access authorization queries
+-issue#7636: Recognize RRDtool 1.10 and 1.11
+-issue#7633: Remove dead per-file metadata queries
+-issue#7631: Harden remote graph transport and response validation
+-issue#7629: Track all 1.3.0 migration writes
+-issue#7616: Stop overriding no-store with a one year max-age
+-issue#7614: Repair regressions found in recent develop audit
+-issue#7613: Preserve session errors and enforce 100% coverage
+-issue#7612: Bind template IDs and enforce 100% coverage
+-issue#7609: Escape RRDfile paths passed to the shell
+-issue#7605: Emit structured security events for validation failures
+-issue#7603: Launch cactid without a shell
+-issue#7601: Expire persistent auth tokens when permissions change
+-issue#7597: Honor alternate frame ancestors on develop
+-issue#7594: Default binary paths to empty strings
+-issue#7592: Centralize request URI fallback
+-issue#7589: Batch db_update_table schema alters
+-issue#7548: Tolerate a microtime string with no fractional part
+-issue#7546: Remove dead E_STRICT and always-true constant guards
+-issue#7545: Escape the RRDfile path in RRDtool commands
+-issue#7517: Consolidate htmx loader and renderer abstraction global.php includes
+-issue#7515: Consolidate image conversion and notification payload hardening
+-issue#7513: Scope build context to docker/ so it builds standalone
+-issue#7502: Guard null messages array in raise_message()
+-issue#7438: Validate measure/order before ORDER BY concatenation in get_allowed_graphs()
+-issue#7432: Correct KILL CONNECTION typo in db_close
+-issue#7412: Assemble 64-bit volume value from high and low words
+-issue#7411: Compute variance in CLI stats table
+-issue#7381: Memoize db_get_table_column_types to cut redundant SHOW COLUMNS
+-issue#7363: Normalize trusted-proxy match with inet_pton
+-issue#7350: Repair mikrotik branch, guard task filter, escape table metadata
+-issue#7338: Restore item-override saves and bulk-action input names
+-issue#7337: Map empty value to NULL for nullable numeric columns in sql_save
+-issue#7336: Drop duplicate --slope-mode emission
+-issue#7254: Centralize items filter state
+-issue#7253: Render input attributes safely
 -issue#2205: Allow admins to disable RRDtool watermark
 -issue#3066: Enable the secure flag on cookies when HTTPS is enabled.
 -issue#3074: ss_net_snmp_disk_bytes.php and ss_net_snmp_disk_io.php do now report mmcblk data.
@@ -104,6 +149,7 @@ Cacti CHANGELOG
 -issue#7715: Refuse to serve the REST scaffold unless it is explicitly enabled
 -issue#7751: Declare the translation helper before the disabled-i18n fallback returns
 -issue#7473: Escape path_rrdcheck_log before it reaches the rrdcheck poller shell redirect
+-issue#7469: Escape path_php_binary before it reaches shell_exec in test_data_source
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
@@ -272,6 +318,7 @@ Cacti CHANGELOG
 -feature: Harden authentication system correctness including 2FA logic, password reset token security, and basic auth status checks
 -feature: Extract remote agent reverse DNS forward-confirmation into the remote_agent_fcrdns_confirmed() helper
 -feature#7190: Replace PHPMailer with Symfony Mailer for native mail, sendmail, and SMTP (including OAuth2)
+-feature#7252: Add output-context helpers and a safe local URL builder
 -feature#7370: Allow plugins to register process tables for the technical support view
 
 1.2.x

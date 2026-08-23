@@ -1811,7 +1811,7 @@ function settings_edit(string $header_label) : void {
 	?>
 	<script type='text/javascript'>
 
-	var themeFonts=<?php print read_config_option('font_method'); ?>;
+	var themeFonts=<?php print (int) read_config_option('font_method'); ?>;
 
 	function graphSettings() {
 		var custom_fonts = $('#custom_fonts').is(':checked');
