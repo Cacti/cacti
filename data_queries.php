@@ -976,7 +976,7 @@ function data_query_item_edit() : void {
 
 	?>
 	<script type='text/javascript'>
-	var graph_template_id_prev=<?php print $item; ?>;
+	var graph_template_id_prev=<?php print (int) $item; ?>;
 
 	$('.remover').click(function(event) {
 		event.preventDefault();

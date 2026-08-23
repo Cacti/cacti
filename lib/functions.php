@@ -1295,7 +1295,13 @@ function display_output_messages() : mixed {
 		}
 	}
 
-	return json_encode($final_messages);
+	/**
+	 * Emitted into an inline <script> by global_session.php, and message
+	 * text carries user supplied values such as device descriptions and
+	 * file names, so it needs the script-context encoder rather than a
+	 * plain json_encode().
+	 */
+	return cacti_js_encode($final_messages);
 }
 
 /**
@@ -2647,7 +2653,10 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 				$output = shell_exec($script_path);
 			} else {
 				// Script server is a bit more complicated
-				$php   = read_config_option('path_php_binary');
+				// path_php_binary is admin-set and reaches shell_exec() below; escape
+				// it so a shell metacharacter cannot inject a command (issue#7469,
+				// forward-port of the release/1.2.31 fix).
+				$php   = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 				$parts = explode(' ', $script_path);
 
 				dsv_log('parts', $parts);
@@ -2939,7 +2948,7 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 								$prepend = $script_queries['arg_prepend'];
 							}
 
-							$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
+							$script_path = cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
 						} else {
 							$action      = POLLER_ACTION_SCRIPT;
 							$script_path = get_script_query_path(trim(($script_queries['arg_prepend'] ?? '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
@@ -5094,6 +5103,109 @@ function debug_log_return(string $type) : string {
 	}
 
 	return $log_text;
+}
+
+/**
+ * Encodes a PHP value for direct inclusion in JavaScript.
+ *
+ * @param mixed $value The value to encode
+ *
+ * @return string The JavaScript-safe JSON literal
+ */
+function cacti_js_encode(mixed $value) : string {
+	$encoded = json_encode(
+		$value,
+		JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE
+	);
+
+	if ($encoded === false) {
+		return 'null';
+	}
+
+	// U+2028 and U+2029 are valid JSON but are line terminators in JavaScript;
+	// left literal by JSON_UNESCAPED_UNICODE they break an inline <script> parse.
+	return str_replace(["\u{2028}", "\u{2029}"], ['\\u2028', '\\u2029'], $encoded);
+}
+
+/**
+ * Builds a URL with RFC3986-encoded query parameters.
+ *
+ * @param string $path   The base URL or relative path
+ * @param array  $params Query parameters to append
+ *
+ * @return string The encoded URL
+ */
+function cacti_url(string $path, array $params = []) : string {
+	if (cacti_sizeof($params) == 0) {
+		return $path;
+	}
+
+	$query = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+
+	if ($query == '') {
+		return $path;
+	}
+
+	// the query string must precede any fragment
+	$fragment = '';
+	$hash     = strpos($path, '#');
+
+	if ($hash !== false) {
+		$fragment = substr($path, $hash);
+		$path     = substr($path, 0, $hash);
+	}
+
+	return $path . (str_contains($path, '?') ? '&' : '?') . $query . $fragment;
+}
+
+/**
+ * sanitize_redirect_path - validate a local-redirect destination, failing
+ * closed to index.php so request data cannot create an open redirect or
+ * inject headers.
+ *
+ * Split out of cacti_redirect() so the validation can be unit tested without
+ * triggering that function's exit().
+ *
+ * @param string $path The requested local page or path
+ *
+ * @return string The path itself when safe, otherwise 'index.php'
+ */
+function sanitize_redirect_path(string $path) : string {
+	// Fail closed to index.php when the destination is empty, carries a control
+	// byte anywhere (CR/LF header injection), or resolves to an absolute or
+	// protocol-relative URL in either its raw or percent-decoded form. Checking
+	// the decoded form blocks vectors such as /%2F%2Fevil (-> //evil) and
+	// http%3A%2F%2Fevil (-> http://evil).
+	$candidate = trim($path);
+	$decoded   = rawurldecode($candidate);
+	$control   = '/[\\x00-\\x1f\\x7f]/';
+	$absolute  = '#^(?:[a-z][a-z0-9+.\\-]*:|[\\/\\\\]{2})#i';
+
+	if ($candidate                        === ''
+		|| preg_match($control, $candidate)  === 1
+		|| preg_match($control, $decoded)    === 1
+		|| preg_match($absolute, $candidate) === 1
+		|| preg_match($absolute, $decoded)   === 1) {
+		return 'index.php';
+	}
+
+	return $candidate;
+}
+
+/**
+ * Redirect to a local Cacti page and terminate the request.
+ *
+ * Absolute, protocol-relative, and mixed-slash destinations fail closed to
+ * index.php so request data cannot create an open redirect.
+ *
+ * @param string $path   The local page or path
+ * @param array  $params Query parameters to append
+ *
+ * @return never
+ */
+function cacti_redirect(string $path, array $params = []) : never {
+	header('Location: ' . cacti_url(sanitize_redirect_path($path), $params));
+	exit;
 }
 
 /**
