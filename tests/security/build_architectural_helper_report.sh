@@ -31,14 +31,12 @@ emit_hotspot_matches() {
 
 	rg -n --pcre2 "${RG_COMMON[@]}" "$pattern" "${EXCLUDE[@]}" --glob '*.php' . | while IFS= read -r line; do
 		file="${line%%:*}"
-		rest="${line#*:}"
-		lineno="${rest%%:*}"
 		case "$file" in
 			./*) ;;
 			*) file="./$file" ;;
 		esac
 		match="${line#*:*:}"
-		printf '%s\t%s:%s\t%s\n' "$class" "$file" "$lineno" "$match"
+		printf '%s\t%s\t%s\n' "$class" "$file" "$match"
 	done
 	rg_status="${PIPESTATUS[0]}"
 
