@@ -13,6 +13,35 @@ from pathlib import Path
 RELEASE_HEADING = re.compile(r"^(?:\d+\.\d+\.\d+(?:-[\w.]+)?|\d+\.\d+\.x)$")
 ENTRY = re.compile(r"^-(issue|feature)(?:#\d+)?:\s+\S.*$")
 NUMBERED_ENTRY = re.compile(r"^-(?:issue|feature)#\d+:")
+FRAGMENT = re.compile(r"^(\d+)\.(issue|feature)$")
+
+
+def check_fragments(directory: Path) -> list[str]:
+	"""Validates changelog.d fragments, which replace direct CHANGELOG edits."""
+	errors: list[str] = []
+	if not directory.is_dir():
+		return errors
+
+	for item in sorted(directory.iterdir()):
+		if item.name == "README.md" or item.name.startswith("."):
+			continue
+		if not item.is_file():
+			errors.append(f"{item}: changelog.d holds fragment files only")
+			continue
+		if FRAGMENT.fullmatch(item.name) is None:
+			errors.append(f"{item}: fragment must be named <number>.issue or <number>.feature")
+			continue
+
+		text = item.read_text(encoding="utf-8")
+		body = text.strip()
+		if not body:
+			errors.append(f"{item}: fragment is empty")
+		elif len(body.splitlines()) > 1:
+			errors.append(f"{item}: fragment must be a single line")
+		elif body.startswith("-"):
+			errors.append(f"{item}: fragment holds the description only, without the -issue or -feature prefix")
+
+	return errors
 
 
 def main() -> int:
@@ -34,7 +63,7 @@ def main() -> int:
 			end = index
 			break
 
-	errors: list[str] = []
+	errors: list[str] = check_fragments(Path("changelog.d"))
 	seen_feature = False
 
 	for index in range(start + 1, end):
