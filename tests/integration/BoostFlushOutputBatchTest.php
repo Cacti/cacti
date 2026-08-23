@@ -46,6 +46,7 @@ beforeEach(function () {
 		PRIMARY KEY (local_data_id, rrd_name, time)
 	)');
 	$conn->exec('CREATE TABLE poller_item (local_data_id INTEGER NOT NULL, poller_id INTEGER NOT NULL)');
+	$conn->exec('CREATE TABLE settings (name TEXT PRIMARY KEY, value TEXT)');
 
 	$database_hostname = 'unit_test_host';
 	$database_port     = '0';
