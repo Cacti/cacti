@@ -58,7 +58,7 @@ final class GoogleQrUrl
      *
      * @return string
      */
-    public static function generate(string $accountName, string $secret, string $issuer = null, int $size = 200): string
+    public static function generate(string $accountName, string $secret, ?string $issuer = null, int $size = 200): string
     {
         if ('' === $accountName || false !== strpos($accountName, ':')) {
             throw RuntimeException::InvalidAccountName($accountName);
