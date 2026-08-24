@@ -35,6 +35,7 @@ use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Component\Mime\Part\File;
 
 require_once __DIR__ . '/remote_agent_transport.php';
+require_once __DIR__ . '/client_address.php';
 
 /**
  * Takes a string of text, truncates it to $max_length and appends
@@ -9072,28 +9073,13 @@ function get_client_addr() : string|false {
 		$proxy_headers[] = 'REMOTE_ADDR';
 	}
 
-	$client_addr = false;
-
-	foreach ($proxy_headers as $header) {
-		if (!empty($_SERVER[$header])) {
-			$header_ips = explode(',', $_SERVER[$header]);
-
-			foreach ($header_ips as $header_ip) {
-				if (!empty($header_ip)) {
-					if (!filter_var($header_ip, FILTER_VALIDATE_IP)) {
-						cacti_log('ERROR: Invalid remote client IP Address found in header (' . $header . ').', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
-					} else {
-						$client_addr = $header_ip;
-						cacti_log('DEBUG: Using remote client IP Address found in header (' . $header . '): ' . $client_addr . ' (' . $_SERVER[$header] . ')', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
-
-						break 2;
-					}
-				}
-			}
-		}
-	}
-
-	return $client_addr;
+	/**
+	 * A proxy appends to the forwarded chain, so the leftmost entry is client
+	 * supplied.  Resolution only honours forwarded headers when the immediate
+	 * peer is listed in $trusted_proxies, and then walks the chain from the
+	 * right.  With no trusted proxy configured this yields REMOTE_ADDR.
+	 */
+	return cacti_resolve_client_addr($_SERVER, $config['trusted_proxies'] ?? [], $proxy_headers);
 }
 
 /**

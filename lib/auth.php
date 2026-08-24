@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once(__DIR__ . '/client_address.php');
+
 include(__DIR__ . '/../include/vendor/GoogleAuthenticator/FixedBitNotation.php');
 include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleAuthenticatorInterface.php');
 include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleAuthenticator.php');
@@ -304,10 +306,10 @@ function is_template_account(null|int|string $user_id) : bool {
 /**
  * Whether the current request originates from a reverse proxy that config.php
  * lists in $trusted_proxies. Only such proxies may assert a pre-authenticated
- * user via forwarded HTTP headers. Matching is IP-normalized: when both
- * REMOTE_ADDR and a trusted entry parse as IP addresses, they are compared by
- * packed binary form, so equivalent spellings (for example ::1 and
- * 0:0:0:0:0:0:0:1) match regardless of text representation. A malformed or
+ * user via forwarded HTTP headers. Matching is IP-normalized, so equivalent
+ * spellings (for example ::1 and 0:0:0:0:0:0:0:1) match regardless of text
+ * representation, while an IPv4-mapped entry never silently matches its bare
+ * IPv4 form. CIDR entries such as 10.0.0.0/8 are accepted. A malformed or
  * non-IP entry falls back to exact string equality. An empty or unset list
  * trusts no proxy.
  *
@@ -326,29 +328,7 @@ function is_trusted_proxy() : bool {
 		return false;
 	}
 
-	$remote        = (string) $_SERVER['REMOTE_ADDR'];
-	$remote_packed = @inet_pton($remote);
-
-	foreach ($trusted as $entry) {
-		$entry = (string) $entry;
-
-		/* Compare valid IPs by packed form so alternate spellings of the same
-		 * address match. inet_pton yields 4 bytes for IPv4 and 16 for IPv6, so
-		 * an IPv4-mapped entry never silently matches its bare IPv4 form. */
-		if ($remote_packed !== false) {
-			$entry_packed = @inet_pton($entry);
-
-			if ($entry_packed !== false && hash_equals($entry_packed, $remote_packed)) {
-				return true;
-			}
-		}
-
-		if (hash_equals($entry, $remote)) {
-			return true;
-		}
-	}
-
-	return false;
+	return cacti_trusted_proxy_match((string) $_SERVER['REMOTE_ADDR'], $trusted);
 }
 
 /**

@@ -143,7 +143,7 @@ function remote_client_authorized() : bool {
 
 	// Whitelist check runs before the poller-count guard so single-poller
 	// installs that rely on the whitelist are not incorrectly rejected.
-	if (is_array($remote_agent_whitelist) && in_array($client_addr, $remote_agent_whitelist, true)) {
+	if (is_array($remote_agent_whitelist) && cacti_trusted_proxy_match($client_addr, $remote_agent_whitelist)) {
 		return true;
 	}
 

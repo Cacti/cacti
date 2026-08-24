@@ -1,0 +1,68 @@
+name: Client Address Coverage
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/client-address-coverage.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'lib/client_address.php'
+      - 'lib/functions.php'
+      - 'phpunit-client-address.xml'
+      - 'tests/Coverage/ClientAddressCoverageTest.php'
+      - 'tests/Unit/Security/Misc/GetClientAddrTest.php'
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/client-address-coverage.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'lib/client_address.php'
+      - 'lib/functions.php'
+      - 'phpunit-client-address.xml'
+      - 'tests/Coverage/ClientAddressCoverageTest.php'
+      - 'tests/Unit/Security/Misc/GetClientAddrTest.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: client-address-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMPOSER_ALLOW_SUPERUSER: 1
+
+jobs:
+  coverage:
+    name: Client address 100% coverage
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Set up PHP and Cacti test dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.4'
+          coverage: xdebug
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          dependency-mode: locked-tests
+          install-args: --prefer-dist --no-progress --no-interaction
+
+      - name: Enforce line coverage
+        env:
+          XDEBUG_MODE: coverage
+        run: |
+          set -euo pipefail
+          composer test -- \
+            --configuration=phpunit-client-address.xml \
+            --coverage \
+            --coverage-text \
+            --min=100
