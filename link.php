@@ -23,6 +23,7 @@
 */
 
 require_once('./include/global.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiPath.php');
 
 $page = db_fetch_row_prepared('SELECT
 	id, title, style, contentfile, enabled, refresh
@@ -84,10 +85,10 @@ if (!cacti_sizeof($page)) {
 		} else {
 			print '<div id="content">';
 
-			$basepath = realpath(CACTI_PATH_INCLUDE . '/content');
-			$file     = ($basepath !== false) ? realpath($basepath . '/' . $page['contentfile']) : false;
+			$basepath = CACTI_PATH_INCLUDE . '/content';
+			$file     = CactiPath::resolveWithinBase($basepath, $basepath . '/' . $page['contentfile']);
 
-			if ($file && is_file($file) && str_starts_with($file, $basepath . DIRECTORY_SEPARATOR)) {
+			if ($file !== false && is_file($file)) {
 				require_once($file);
 			} else {
 				print '<h1>The file \'' . htmle($page['contentfile']) . '\' does not exist!!</h1>';

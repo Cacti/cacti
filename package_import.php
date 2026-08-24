@@ -23,6 +23,7 @@
 */
 
 require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiPath.php');
 require_once(CACTI_PATH_LIBRARY . '/import.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
@@ -267,8 +268,8 @@ function form_actions() : void {
 			$id = base64_decode(str_replace('chk_file_', '', $var), true);
 			$id = json_decode($id, true);
 
-			// Get rid of the basename
-			$id['pfile'] = str_replace(CACTI_PATH_BASE . '/', '', $id['pfile']);
+			// Display paths relative to the Cacti root when they are contained.
+			$id['pfile'] = CactiPath::makeRelativeIfWithinBase($id['pfile'], CACTI_PATH_BASE);
 
 			$pkg_file_list .= '<tr>' .
 				'<td style="width:50%">' . htmle($id['package']) . '</td>' .
@@ -732,23 +733,9 @@ function package_diff_file() : void {
 	$package_file     = grv('package_file');
 	$filename         = grv('filename');
 
-	$target = realpath(CACTI_PATH_BASE . '/' . $filename);
-	$base   = realpath(CACTI_PATH_BASE);
+	$target = CactiPath::resolveWithinBase(CACTI_PATH_BASE, CACTI_PATH_BASE . '/' . $filename, true);
 
 	if ($target === false) {
-		// The package may contain files that do not exist locally yet.
-		// Resolve the parent directory instead and re-attach the leaf so
-		// the containment check below still applies.
-		$parent = realpath(dirname(CACTI_PATH_BASE . '/' . $filename));
-		$leaf   = basename($filename);
-
-		if ($parent !== false && $leaf !== '.' && $leaf !== '..') {
-			$target = $parent . DIRECTORY_SEPARATOR . $leaf;
-		}
-	}
-
-	if ($target === false || $base === false ||
-		!str_starts_with($target . DIRECTORY_SEPARATOR, $base . DIRECTORY_SEPARATOR)) {
 		print __('Invalid filename specified.');
 
 		return;
@@ -1161,7 +1148,7 @@ function import_display_package_data(array $templates, array $files, string $pac
 							'&package_location=' . grv('package_location') .
 							'&package_file=' . $file_package_file .
 							'&package_name=' . $file_package_name .
-							'&filename=' . str_replace(CACTI_PATH_BASE . '/', '', $pfile);
+							'&filename=' . CactiPath::makeRelativeIfWithinBase($pfile, CACTI_PATH_BASE);
 
 						$nstatus .= ($nstatus != '' ? ', ' : '') .
 							"<a class='diffme linkEditMain' href='" . htmle($url) . "'>" . __('Differences') . '</a>';
