@@ -73,10 +73,7 @@ cmd_exec	./lib/rrd.php:1043					$fp = popen($rrdtool_cmd, 'r');
 cmd_exec	./lib/rrd.php:360				$process = proc_open(cacti_escapeshellarg(read_config_option('path_rrdtool')) . ' - ' . $debug, $descriptorspec, $pipes);
 cmd_exec	./lib/rrd.php:93		return popen($command, 'w');
 cmd_exec	./lib/rrdcheck.php:798		$process = proc_open($command, $fds, $pipes);
-cmd_exec	./lib/snmp.php:249			exec($command, $snmp_value);
-cmd_exec	./lib/snmp.php:349			exec($command, $snmp_value);
-cmd_exec	./lib/snmp.php:444			exec($command, $snmp_value);
-cmd_exec	./lib/snmpagent.php:659		/* add pollers of a distributed system (future) */
+cmd_exec	./lib/snmpagent.php:675		/* add pollers of a distributed system (future) */
 cmd_exec	./lib/spikekill.php:446			shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' > ' . cacti_escapeshellarg($xmlfile));
 cmd_exec	./lib/spikekill.php:772			$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
 cmd_exec	./lib/utility.php:1711						$nproc = system('nproc');
@@ -388,7 +385,7 @@ dynamic_include	./lib/html_tree.php:93		include_once($config['library_path'] . '
 dynamic_include	./lib/import.php:2112		include_once($config['library_path'] . '/vdef.php');
 dynamic_include	./lib/import.php:29		include_once($config['library_path'] . '/xml.php');
 dynamic_include	./lib/installer.php:3546					include_once($upgrade_file);
-dynamic_include	./lib/mib_cache.php:57			include_once($config['include_path'] . '/vendor/phpsnmp/mib_parser.php');
+dynamic_include	./lib/mib_cache.php:63			include_once($config['include_path'] . '/vendor/phpsnmp/mib_parser.php');
 dynamic_include	./lib/plugins.php:154							include_once($plugin_include);
 dynamic_include	./lib/plugins.php:464		include_once($config['library_path'] . '/database.php');
 dynamic_include	./lib/plugins.php:537		include_once($config['library_path'] . '/database.php');
@@ -431,7 +428,7 @@ dynamic_include	./lib/rrdcheck.php:716			include_once($config['base_path'] . '/l
 dynamic_include	./lib/rrdcheck.php:746			include_once($config['library_path'] . '/poller.php');
 dynamic_include	./lib/snmp.php:49		include_once($config['include_path'] . '/vendor/phpsnmp/extension.php');
 dynamic_include	./lib/snmp.php:51		include_once($config['include_path'] . '/vendor/phpsnmp/classSNMP.php');
-dynamic_include	./lib/snmpagent.php:890				include_once($config['library_path'] . '/poller.php');
+dynamic_include	./lib/snmpagent.php:906				include_once($config['library_path'] . '/poller.php');
 dynamic_include	./lib/template.php:1507		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/timespan_settings.php:32	include_once($config['base_path'] . '/lib/time.php');
 dynamic_include	./lib/utility.php:128		include_once($config['library_path'] . '/api_data_source.php');

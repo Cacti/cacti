@@ -604,17 +604,36 @@ function snmpagent_cache_install() {
 		return false;
 	}
 
-	/* drop everything */
-	snmpagent_cache_uninstall();
+	$transaction_started = db_begin_transaction();
+	if (!$transaction_started) {
+		return false;
+	}
 
-	$mc = new MibCache();
-	$mc->install($config['base_path'] . '/mibs/CACTI-MIB');
-	$mc->install($config['base_path'] . '/mibs/CACTI-SNMPAGENT-MIB');
-	$mc->install($config['base_path'] . '/mibs/CACTI-BOOST-MIB');
-	snmpagent_cache_init();
+	try {
+		/* Rebuild the core cache atomically so a parser or insert failure leaves
+		 * the prior working cache available. */
+		snmpagent_cache_uninstall();
+
+		$mc = new MibCache();
+		if (!$mc->install($config['base_path'] . '/mibs/CACTI-MIB', false, 'optional', false) ||
+			!$mc->install($config['base_path'] . '/mibs/CACTI-SNMPAGENT-MIB', false, 'optional', false) ||
+			!$mc->install($config['base_path'] . '/mibs/CACTI-BOOST-MIB', false, 'optional', false)) {
+			throw new RuntimeException('Unable to rebuild the core SNMP agent MIB cache');
+		}
+
+		snmpagent_cache_init();
+		db_commit_transaction();
+	} catch (Throwable $e) {
+		db_rollback_transaction();
+		cacti_log('ERROR: ' . $e->getMessage(), false, 'SYSTEM');
+
+		return false;
+	}
 
 	/* call install routine of plugins supporting the SNMPAgent */
 	api_plugin_hook('snmpagent_cache_install');
+
+	return true;
 }
 
 function snmpagent_cache_uninstall() {
@@ -628,10 +647,7 @@ function snmpagent_cache_uninstall() {
 	);
 
 	foreach($tables as $table) {
-		$rows = db_fetch_cell("SELECT COUNT(*) FROM $table");
-		if ($rows > 0) {
-			db_execute("TRUNCATE $table");
-		}
+		db_execute("DELETE FROM $table");
 	}
 }
 

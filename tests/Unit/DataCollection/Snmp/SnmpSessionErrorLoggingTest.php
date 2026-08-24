@@ -77,6 +77,14 @@ class FakeSnmpSession {
 		return false;
 	}
 
+	public function unknown() {
+		return 'U';
+	}
+
+	public function walk() {
+		return array();
+	}
+
 	/**
 	 * Emits a transport warning before throwing an operation exception.
 	 *
@@ -155,6 +163,18 @@ test('suppressed operation warnings are captured when native errors are empty', 
 	cacti_snmp_log_session_error($session, array('timeout' => 500, 'hostname' => 'router-3'), '.3', $warning);
 
 	expect($GLOBALS['snmp_session_error_logs'][0][0])->toContain("SNMP Error:'Could not open SNMP session: Invalid address (Permission denied)'");
+});
+
+test('compatibility session failure sentinels are normalized', function () {
+	$session = new FakeSnmpSession(0, '');
+	$warning = '';
+
+	expect(cacti_snmp_session_call($session, 'unknown', array(), $warning))->toBeFalse()
+		->and($warning)->toBe('SNMP request failed');
+
+	$warning = '';
+	expect(cacti_snmp_session_call($session, 'walk', array(), $warning))->toBeFalse()
+		->and($warning)->toBe('SNMP request failed');
 });
 
 test('non-warning errors are delegated to the previous handler', function () {

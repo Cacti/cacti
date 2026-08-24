@@ -27,8 +27,8 @@ test('snmp_format_target forces udp6 for IPv6', function () use ($snmpSource) {
 	expect($body)->toContain("'udp6:[' . \$clean . ']:'");
 });
 
-test('binary SNMP commands use snmp_format_target', function () use ($snmpSource) {
-	$count = substr_count($snmpSource, 'snmp_format_target($hostname, $port)');
+test('binary SNMP commands use a single target argv element', function () use ($snmpSource) {
+	$count = substr_count($snmpSource, 'snmp_format_target_arg($hostname, $port)');
 	expect($count)->toBeGreaterThanOrEqual(5);
 });
 
