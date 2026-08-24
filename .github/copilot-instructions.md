@@ -75,6 +75,12 @@
 - Run poller: `php poller.php --poller=1 --force --debug` (daemon debug: `./cactid.php --foreground --debug`).
 - Repo checks: `composer lint`, `composer phpstan`, `composer phpcsfixer` (dry-run).
 
+## Dependency management: never vendor packages
+- Do not add, copy, or update third-party package source under `include/vendor/` or elsewhere in the repository. Existing vendored dependencies may be removed by an in-scope change, but must not be expanded or refreshed.
+- Add PHP dependencies through Composer: update `composer.json`, update and commit `composer.lock`, and let `composer install` install the locked packages in development, CI, and release builds.
+- Do not commit Composer-installed package trees or hand-edit Composer-generated autoload metadata. Validate dependency changes with `composer validate` and a clean `composer install`.
+- If a third-party asset cannot be managed through Composer, stop and document the concrete packaging requirement before adding files. Do not silently create a vendored exception.
+
 ## Database Optimization (DBA Mode)
 - **Context**: The full schema (DDL/DML) is in `cacti.sql`. Check it for table structures and indexes.
 - **Optimize**: Proactively look for slow query patterns (e.g., missing indexes, non-sargable `WHERE` clauses).
