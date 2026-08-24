@@ -145,6 +145,7 @@ Cacti CHANGELOG
 -issue#7696: Repair the string sanitisers in lib/functions.php
 -issue#7697: Guard two divisions PHP 8 made fatal
 -issue#7693: Validate host_id before it reaches the graph template query
+-issue#7707: Bind the MIB column names in MibCache::select()
 -issue#7719: Spike Kill text output applied the large value scientific notation format to the column left of the value it belonged to, starting with Variance
 -issue#7732: Bind device IDs and escape graph and device HTML sinks
 -issue#7715: Refuse to serve the REST scaffold unless it is explicitly enabled
