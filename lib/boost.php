@@ -1667,6 +1667,12 @@ function boost_rrdtool_function_create(int $local_data_id, bool $show_source, mi
 
 	$data_source_path = get_data_source_path($local_data_id, true);
 
+	if (!rrd_check_path($data_source_path)) {
+		cacti_log("ERROR: Refusing unsafe data source path '$data_source_path' for local_data_id $local_data_id", false, 'BOOST');
+
+		return false;
+	}
+
 	/* ok, if that passes lets check to make sure an rra does not already
 	exist, the last thing we want to do is overwrite data! */
 	if ($show_source != true) {
