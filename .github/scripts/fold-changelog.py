@@ -8,20 +8,20 @@ import re
 import sys
 from pathlib import Path
 
-FRAGMENT = re.compile(r"^(\d+)\.(issue|feature)$")
+FRAGMENT = re.compile(r"^(\d+|GHSA-[0-9A-Za-z-]+)\.(issue|feature|security)$")
 RELEASE_HEADING = re.compile(r"^(?:\d+\.\d+\.\d+(?:-[\w.]+)?|\d+\.\d+\.x)$")
 
 
-def load_fragments(directory: Path) -> list[tuple[int, str, str]]:
+def load_fragments(directory: Path) -> list[tuple[str, str, str]]:
 	"""Returns (number, kind, description) for every well-formed fragment."""
-	entries: list[tuple[int, str, str]] = []
+	entries: list[tuple[str, str, str]] = []
 	for item in sorted(directory.iterdir()):
 		match = FRAGMENT.fullmatch(item.name)
 		if match is None:
 			continue
 		text = item.read_text(encoding="utf-8").strip()
 		if text:
-			entries.append((int(match.group(1)), match.group(2), text))
+			entries.append((match.group(1), match.group(2), text))
 	return entries
 
 
@@ -58,25 +58,40 @@ def main() -> int:
 	lines = path.read_text(encoding="utf-8").splitlines()
 	start, end = section_bounds(lines)
 
-	issues = sorted((n, t) for n, kind, t in fragments if kind == "issue")
-	features = sorted((n, t) for n, kind, t in fragments if kind == "feature")
+	# A release section runs security, then issue, then feature. Security and
+	# issue entries are newest first, so they open their block; features run
+	# oldest first, so they close theirs.
+	order = ("security", "issue", "feature")
+	folded = 0
 
-	# Issues run newest first from the top of the section; features run oldest
-	# first and are appended after the last existing feature.
-	for number, text in issues:
-		lines.insert(start + 1, f"-issue#{number}: {text}")
-		end += 1
+	for rank, kind in enumerate(order):
+		group = sorted(
+			((n, t) for n, k, t in fragments if k == kind),
+			key=lambda item: (0, int(item[0])) if item[0].isdigit() else (1, item[0]),
+		)
+		if not group:
+			continue
 
-	anchor = end
-	for index in range(end - 1, start, -1):
-		if lines[index].startswith("-feature"):
-			anchor = index + 1
-			break
+		if kind == "feature":
+			# close the block: after the last entry of this kind or the one before it
+			prefixes = tuple(f"-{order[r]}" for r in range(rank + 1))
+		else:
+			# open the block: after the last entry of the preceding kinds only
+			prefixes = tuple(f"-{order[r]}" for r in range(rank))
 
-	for offset, (number, text) in enumerate(features):
-		lines.insert(anchor + offset, f"-feature#{number}: {text}")
+		anchor = start + 1
+		if prefixes:
+			for index in range(end - 1, start, -1):
+				if lines[index].startswith(prefixes):
+					anchor = index + 1
+					break
 
-	folded = len(issues) + len(features)
+		for offset, (number, text) in enumerate(group):
+			lines.insert(anchor + offset, f"-{kind}#{number}: {text}")
+
+		end += len(group)
+		folded += len(group)
+
 	if args.check:
 		print(f"{folded} fragment(s) would be folded")
 		return 0
