@@ -20,7 +20,7 @@ declare(strict_types = 1);
  * @group regression
  */
 
-$rrdPath = dirname(__DIR__, 4) . '/lib/rrd.php';
+$rrdPath = CACTI_PATH_LIBRARY . '/rrd.php';
 
 test('escape_command is gone from lib/rrd.php', function () use ($rrdPath) {
 	$source = file_get_contents($rrdPath);
@@ -32,7 +32,7 @@ test('escape_command is gone from lib/rrd.php', function () use ($rrdPath) {
 test('escape_command is not redefined elsewhere under lib', function () {
 	$found = [];
 
-	foreach (glob(dirname(__DIR__, 4) . '/lib/*.php') as $file) {
+	foreach (glob(CACTI_PATH_LIBRARY . '/*.php') as $file) {
 		if (preg_match('/function\s+escape_command\s*\(/', file_get_contents($file))) {
 			$found[] = basename($file);
 		}
@@ -47,11 +47,16 @@ test('__rrd_execute escapes array arguments one at a time', function () use ($rr
 	expect($source)->toContain("\$command_line = implode(' ', array_map('cacti_escapeshellarg', \$command_line));");
 });
 
-test('the shell_exec command line is assembled without a whole-command escape', function () use ($rrdPath) {
+test('the one-shot rrdtool sink runs without a shell', function () use ($rrdPath) {
 	$source = file_get_contents($rrdPath);
 
-	expect($source)->toContain("\$full_commandline = read_config_option('path_rrdtool') . \$debug . ' ' . \$command_line;");
-	expect($source)->toContain('$output = shell_exec($full_commandline);');
+	// The shell path is gone: no shell_exec, no assembled whole-command string.
+	expect($source)->not->toContain('shell_exec(');
+	expect($source)->not->toContain('$full_commandline');
+
+	// rrdtool runs via proc_open() with an argument array (never /bin/sh) and
+	// the command is delivered on stdin, so shell metacharacters are inert.
+	expect($source)->toContain("proc_open([\$rrdtool_path, '-']");
 });
 
 test('the pipe writers pass the command line through untouched', function () use ($rrdPath) {

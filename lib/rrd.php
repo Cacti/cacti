@@ -352,6 +352,101 @@ function rrdtool_execute() : mixed {
 }
 
 /**
+ * Run a single RRDtool command over a pipe without a shell.
+ *
+ * an argument-array proc_open executes rrdtool directly (execvp), never
+ * through /bin/sh, so shell metacharacters in $command_line cannot spawn a
+ * subprocess. The command is delivered on stdin using rrdtool's '-' mode, the
+ * same line protocol the persistent pipe uses. stderr is read on its own
+ * descriptor and appended to the return value only when $want_stderr is set,
+ * which replaces the former ' 2>&1' shell redirect.
+ *
+ * @param string $rrdtool_path Path to the rrdtool executable.
+ * @param string $command_line The assembled RRDtool command; no shell quoting needed.
+ * @param bool   $want_stderr  Fold stderr into the returned output.
+ *
+ * @return string|false Command output, or false if the process could not start.
+ */
+function rrd_execute_pipe(string $rrdtool_path, string $command_line, bool $want_stderr): string|false {
+	$command_line = rrd_strip_control_chars($command_line);
+
+	$descriptorspec = [
+		0 => ['pipe', 'r'],
+		1 => ['pipe', 'w'],
+		2 => ['pipe', 'w'],
+	];
+
+	// Suppression is intentional: a missing/invalid rrdtool path makes proc_open
+	// warn, but the false return is handled here and logged by the caller.
+	$process = @proc_open([$rrdtool_path, '-'], $descriptorspec, $pipes);
+
+	if (!is_resource($process)) {
+		return false;
+	}
+
+	fwrite($pipes[0], $command_line . "\r\nquit\r\n");
+	fclose($pipes[0]);
+
+	/* Drain stdout and stderr concurrently. Reading one to EOF before the other
+	 * can deadlock: rrdtool may block writing a full stderr buffer while the
+	 * parent waits on stdout (or vice versa). */
+	stream_set_blocking($pipes[1], false);
+	stream_set_blocking($pipes[2], false);
+
+	$stdout = '';
+	$stderr = '';
+	$open   = [1 => $pipes[1], 2 => $pipes[2]];
+
+	while (!empty($open)) {
+		$read   = array_values($open);
+		$write  = [];
+		$except = [];
+
+		if (@stream_select($read, $write, $except, null) === false) {
+			break;
+		}
+
+		foreach ($read as $stream) {
+			$chunk = fread($stream, 8192);
+
+			if ($chunk !== false && $chunk !== '') {
+				if ($stream === $pipes[1]) {
+					$stdout .= $chunk;
+				} else {
+					$stderr .= $chunk;
+				}
+			}
+
+			if (feof($stream)) {
+				$key = ($stream === $pipes[1]) ? 1 : 2;
+				fclose($stream);
+				unset($open[$key]);
+			}
+		}
+	}
+
+	foreach ($open as $stream) {
+		fclose($stream);
+	}
+
+	$exit_code = proc_close($process);
+
+	/* On PHP versions before 8.3, opening the process with an array command
+	 * defers a missing or non-executable binary to the child, which exits
+	 * 126/127 with no output instead of failing up front. Treat those codes as
+	 * a failure to run rrdtool so the result is false on every supported PHP. */
+	if ($exit_code === 126 || $exit_code === 127) {
+		return false;
+	}
+
+	if ($want_stderr && is_string($stderr) && $stderr !== '') {
+		$stdout .= $stderr;
+	}
+
+	return $stdout;
+}
+
+/**
  * Execute an RRDtool command and return the output.
  *
  * @param string|array $command_line  The RRDtool command to execute.  An array is quoted here,
@@ -390,12 +485,12 @@ function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $out
 	// output information to the log file if appropriate
 	cacti_log('CACTI2RRD: ' . read_config_option('path_rrdtool') . " $command_line", $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
 
-	// if we want to see the error output from rrdtool; make sure to specify this
-	$debug = '';
+	// fold rrdtool's stderr into the returned output only when the caller asked for it
+	$want_stderr = false;
 
 	if (CACTI_SERVER_OS != 'win32') {
 		if (($output_flag == RRDTOOL_OUTPUT_STDERR || $output_flag == RRDTOOL_OUTPUT_RETURN_STDERR) && !is_resource($rrdtool_pipe)) {
-			$debug .= ' 2>&1';
+			$want_stderr = true;
 		}
 	}
 
@@ -419,61 +514,22 @@ function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $out
 		cacti_session_close();
 
 		if (is_file(read_config_option('path_rrdtool')) && is_executable(read_config_option('path_rrdtool'))) {
-			$descriptorspec = [
-				0 => ['pipe', 'r'],
-				1 => ['pipe', 'w']
-			];
-
 			if (CACTI_WEB) {
 				cacti_time_zone_set();
 			}
 
 			$attempts = 0;
 
-			$full_commandline = read_config_option('path_rrdtool') . $debug . ' ' . $command_line;
-
 			while ($attempts < 5) {
-				if (0 == 1) { // @phpstan-ignore-line
-					/**
-					 * For debugging issue associated with RRDtool, for now I'm commenting out this line
-					 * There are issues processing graphv output with the --add-jsontime option when
-					 * rrdtool is launched in the background.
-					 *
-					 * The reason for this difference is still to be determined.
-					 *
-					 * cacti_log($command_line);
-					 */
-					$process = proc_open(read_config_option('path_rrdtool') . ' - ' . $debug, $descriptorspec, $pipes);
+				/* Execute without a shell. rrd_execute_pipe() runs rrdtool via
+				 * an argument-array proc_open and feeds the command on
+				 * stdin, so shell metacharacters in the command are inert. */
+				$output = rrd_execute_pipe(read_config_option('path_rrdtool'), $command_line, $want_stderr);
 
-					if (!is_resource($process)) {
-						$attempts++;
+				if ($output === false) {
+					$attempts++;
 
-						unset($process);
-					} else {
-						fwrite($pipes[0], $command_line . "\r\nquit\r\n");
-						fclose($pipes[0]);
-						$fp = $pipes[1];
-					}
-
-					if (!isset($fp)) {
-						rrdtool_reset_language();
-
-						return 'Error';
-					}
-
-					// get the output regardless of the output type
-					$output = '';
-
-					while (!feof($fp)) {
-						$output .= fgets($fp, 10000);
-					}
-
-					if (isset($process)) {
-						fclose($fp);
-						proc_close($process);
-					}
-				} else {
-					$output = shell_exec($full_commandline);
+					continue;
 				}
 
 				if ($output_flag == RRDTOOL_OUTPUT_STDOUT || $output_flag == RRDTOOL_OUTPUT_GRAPH_DATA) {

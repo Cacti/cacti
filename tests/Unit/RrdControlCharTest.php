@@ -42,6 +42,7 @@ test('newline in a DS field cannot split the shell command line', function () {
 
 test('all C0 controls and DEL are removed, printable bytes kept', function () {
 	$controls = '';
+
 	for ($i = 0; $i <= 0x1f; $i++) {
 		$controls .= chr($i);
 	}
@@ -51,7 +52,7 @@ test('all C0 controls and DEL are removed, printable bytes kept', function () {
 	// NUL specifically
 	expect(rrd_strip_control_chars("path\x00.rrd"))->toBe('path.rrd');
 	// legitimate command text is untouched
-	$cmd = "graph - --imgformat=PNG DEF:a=/rra/x.rrd:ds:AVERAGE LINE1:a#00FF00:\"Traffic\"";
+	$cmd = 'graph - --imgformat=PNG DEF:a=/rra/x.rrd:ds:AVERAGE LINE1:a#00FF00:"Traffic"';
 	expect(rrd_strip_control_chars($cmd))->toBe($cmd);
 });
 
@@ -62,10 +63,10 @@ test('always returns a string, even on empty and multibyte input', function () {
 	expect(rrd_strip_control_chars("t\xC3\xA9st\ndata"))->toBe("t\xC3\xA9stdata");
 });
 
-test('both the local and proxy execute paths sanitize the command line', function () {
+test('the local, proxy, and pipe primitives sanitize the command line', function () {
 	$src = file_get_contents(dirname(__DIR__, 2) . '/lib/rrd.php');
 
-	// __rrd_execute() (local pipe/shell) and __rrd_proxy_execute() (rrdp proxy)
-	// must both pass the assembled command through the stripper before it is sent.
-	expect(substr_count($src, '$command_line = rrd_strip_control_chars($command_line);'))->toBeGreaterThanOrEqual(2);
+	// The high-level local/proxy paths and the low-level pipe primitive must all
+	// strip controls before a line is sent to an RRDtool protocol endpoint.
+	expect(substr_count($src, '$command_line = rrd_strip_control_chars($command_line);'))->toBeGreaterThanOrEqual(3);
 });

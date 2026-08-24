@@ -74,9 +74,8 @@ cmd_exec	./lib/poller.php:56	 * @param array  $pipes               The array of 
 cmd_exec	./lib/poller.php:57	 * @param mixed  $proc_fd             The file descriptor returned from proc_open()
 cmd_exec	./lib/poller.php:89					$fp = popen($command, 'r');
 cmd_exec	./lib/poller.php:91					$fp = popen($command, 'rb');
-cmd_exec	./lib/rrd.php:1076					$fp = popen($rrd_cmd, 'r');
-cmd_exec	./lib/rrd.php:413						$process = proc_open(read_config_option('path_rrdtool') . ' - ' . $debug, $descriptorspec, $pipes);
-cmd_exec	./lib/rrd.php:443						$output = shell_exec($full_commandline);
+cmd_exec	./lib/rrd.php:1130					$fp = popen($rrd_cmd, 'r');
+cmd_exec	./lib/rrd.php:352		$process = @proc_open([$rrdtool_path, '-'], $descriptorspec, $pipes);
 cmd_exec	./lib/rrd.php:91		$process = popen($command, 'w');
 cmd_exec	./lib/rrdcheck.php:837		$process = proc_open($command, $fds, $pipes);
 cmd_exec	./lib/snmp.php:203			exec($command, $snmp_value, $return_var);
@@ -129,8 +128,8 @@ dynamic_include	./lib/installer.php:4110					include_once($upgrade_file);
 dynamic_include	./lib/plugins.php:96						include_once($full_path);
 dynamic_include	./lib/plugins.php:981			require_once($setup_file);
 dynamic_include	./lib/renderer.php:138				include $__cacti_template_file;
-dynamic_include	./lib/rrd.php:3021			include($rrdtheme);
-dynamic_include	./lib/rrd.php:4573			include($themefile);
+dynamic_include	./lib/rrd.php:3075			include($rrdtheme);
+dynamic_include	./lib/rrd.php:4627			include($themefile);
 dynamic_include	./link.php:91					require_once($file);
 dynamic_include	./plugins.php:1832				require_once($setup_file);
 dynamic_include	./reports.php:35		require_once($reportit_api);
@@ -197,7 +196,7 @@ fs_write	./lib/plugins.php:2378				$fh = fopen($file, 'w');
 fs_write	./lib/poller.php:1443									if (file_put_contents($tmpfile, $contents) !== false) {
 fs_write	./lib/poller.php:1450												file_put_contents($mypath, $contents);
 fs_write	./lib/poller.php:1479								file_put_contents($mypath, $contents);
-fs_write	./lib/rrd.php:2883					if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
+fs_write	./lib/rrd.php:2937					if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
 fs_write	./lib/spikekill.php:806			return file_put_contents($xmlfile, $output);
 fs_write	./package_import.php:226							file_put_contents($xmlfile, $data);
 fs_write	./package_import.php:497				file_put_contents($xmlfile, $_SESSION['sess_import_package']);
