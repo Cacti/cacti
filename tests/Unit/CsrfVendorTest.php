@@ -14,9 +14,10 @@
 
 /*
  * The Symfony CSRF component backs CactiCsrfGuard. include/vendor is
- * gitignored and force-committed, so a package can exist on a developer's
- * disk while being absent from a release tarball. These assertions read the
- * git index, not the filesystem, because only the index reflects what ships.
+ * gitignored and resolved by Composer: a source checkout runs composer
+ * install, and the release build installs from the lock. Committing the tree
+ * would put a second, drifting copy of the component in the repository, so
+ * the index is asserted to stay clear of it.
  */
 
 $root = dirname(__DIR__, 2);
@@ -28,11 +29,10 @@ test('the Symfony CSRF classes are autoloadable', function () {
 	expect(class_exists(Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator::class))->toBeTrue();
 });
 
-test('the Symfony CSRF package is committed, not merely installed', function () use ($root) {
+test('the Symfony CSRF package is resolved by Composer, not committed', function () use ($root) {
 	$tracked = shell_exec('git -C ' . escapeshellarg($root) . ' ls-files include/vendor/symfony/security-csrf/');
 
-	expect(trim((string) $tracked))->not->toBe('');
-	expect($tracked)->toContain('CsrfTokenManager.php');
+	expect(trim((string) $tracked))->toBe('');
 });
 
 test('composer.json declares the dependency', function () use ($root) {
