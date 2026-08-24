@@ -78,7 +78,7 @@ foreach ($parameters as $parameter) {
 		case '--version':
 		case '-V':
 		case '-v':
-			display_version();
+			queue_admin_display_version();
 
 			exit(0);
 		case '--help':
@@ -121,5 +121,14 @@ function queue_admin_error(string $message) : never {
 }
 
 function queue_admin_help() : void {
-	print 'usage: queue_admin.php [--queue=name] [--health|--dead|--requeue=uuid|--purge] [--limit=50]' . PHP_EOL;
+	queue_admin_display_version();
+
+	print PHP_EOL;
+	print 'usage: queue_admin.php [--queue=name] [--health|--dead|--requeue=uuid|--purge] [--limit=50]' . PHP_EOL . PHP_EOL;
+	print 'Checks queue health and administers dead or completed messages.' . PHP_EOL;
+}
+
+function queue_admin_display_version() : void {
+	$version = get_cacti_cli_version();
+	print "Cacti Queue Administrator, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
