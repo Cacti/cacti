@@ -70,11 +70,14 @@ if (!isrv('code')) { // If we don't have an authorization code then get one
 	// Check given state against previously stored one to mitigate CSRF attack
 }
 
-if (isempty_request_var('state') || (isset($_SESSION['oauth2state']) && (grv('state') !== $_SESSION['oauth2state']))) {
+if (isempty_request_var('state') || empty($_SESSION['oauth2state']) ||
+	!hash_equals((string) $_SESSION['oauth2state'], (string) grv('state'))) {
 	unset($_SESSION['oauth2state']);
 
 	exit('Invalid state');
 } else { // Try to get an access token (using the authorization code grant)
+	unset($_SESSION['oauth2state']);
+
 	$token = $provider->getAccessToken(
 		'authorization_code',
 		[
