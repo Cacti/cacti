@@ -407,7 +407,7 @@ function automation_get_matching_graphs_sql(array $rule, int $rule_type) : array
 	} elseif (grv('host_id') == '0') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . ' gl.host_id = 0';
 	} elseif (!ierv('host_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . ' gl.host_id = ' . grv('host_id');
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . ' gl.host_id = ' . (int) grv('host_id');
 	}
 
 	if (grv('template_id') == '-1') {
@@ -415,7 +415,7 @@ function automation_get_matching_graphs_sql(array $rule, int $rule_type) : array
 	} elseif (grv('template_id') == '0') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . ' gtg.graph_template_id = 0';
 	} elseif (!ierv('template_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . ' gtg.graph_template_id = ' . grv('template_id');
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . ' gtg.graph_template_id = ' . (int) grv('template_id');
 	}
 
 	// get the WHERE clause for matching graphs
@@ -1806,8 +1806,38 @@ function build_graph_object_sql_having(array $rule, string $filter) : string {
 			$i = 0;
 
 			foreach ($field_names as $column) {
-				$sql_having .= ($i == 0 ? '' : ' OR ') . '`' . implode('`.`', explode('.', $column['field_name'])) . '`' . ' LIKE ' . db_qstr('%' . $filter . '%');
+				/* The name becomes an identifier in the generated SQL, and it
+				 * arrives from snmp_query_field, which a data query XML import
+				 * populates. A backtick in it would close the quoting the
+				 * backticks below are providing, so confine each part to the
+				 * characters an identifier may hold and drop the field when
+				 * nothing usable survives. */
+				$parts = [];
+
+				foreach (explode('.', $column['field_name']) as $part) {
+					$clean = sanitize_sql_column($part, '');
+
+					if ($clean === '') {
+						$parts = [];
+
+						break;
+					}
+
+					$parts[] = $clean;
+				}
+
+				if (!cacti_sizeof($parts)) {
+					continue;
+				}
+
+				$sql_having .= ($i == 0 ? '' : ' OR ') . '`' . implode('`.`', $parts) . '`' . ' LIKE ' . db_qstr('%' . $filter . '%');
 				$i++;
+			}
+
+			/* Every field being dropped would otherwise remove a requested filter
+			 * or leave invalid SQL. Keep the clause valid and fail closed. */
+			if ($i == 0) {
+				return ' HAVING (1 = 0)';
 			}
 
 			$sql_having .= ')';
@@ -1950,7 +1980,39 @@ function build_rule_item_filter(array $automation_rule_items, string $prefix = '
 
 			// field name
 			if ($automation_rule_item['field'] != '') {
-				$sql_filter .= ' ' . $prefix . '`' . implode('`.`', explode('.', $automation_rule_item['field'])) . '`';
+				/* 1.2.x confines this name with sanitize_sql_column() and that
+				 * call was lost here. The field is stored with the rule item
+				 * and becomes an identifier below, so a backtick in it would
+				 * close the quoting rather than be quoted by it.
+				 *
+				 * Confine each dot separated part rather than the whole name:
+				 * the helper permits '.', so 'a.' survives it intact and then
+				 * splits into 'a' and an empty segment, which renders as an
+				 * empty backticked identifier. A part left with nothing usable
+				 * drops the whole item instead. */
+				$field_parts = [];
+
+				foreach (explode('.', $automation_rule_item['field']) as $field_part) {
+					$clean_part = sanitize_sql_column($field_part, '');
+
+					if ($clean_part === '') {
+						$field_parts = [];
+
+						break;
+					}
+
+					$field_parts[] = $clean_part;
+				}
+
+				if (!cacti_sizeof($field_parts)) {
+					// The operation token may already be present; complete it with a
+					// predicate that fails closed instead of leaving invalid SQL.
+					$sql_filter .= ' 1 = 0';
+
+					continue;
+				}
+
+				$sql_filter .= ' ' . $prefix . '`' . implode('`.`', $field_parts) . '`';
 				$sql_filter .= ' ' . $automation_op_array['op'][$automation_rule_item['operator']] . ' ';
 
 				if ($automation_op_array['binary'][$automation_rule_item['operator']]) {
