@@ -381,10 +381,12 @@ jobs:
       run: |
         set -euo pipefail
         cd ${{ github.workspace }}
+        mysql_config="$RUNNER_TEMP/mysql-client.cnf"
+        mysql_args=(--defaults-extra-file="$mysql_config")
         expected_tables=$(grep -c '^CREATE TABLE' cacti.sql)
-        actual_tables=$(mysql cacti --batch --skip-column-names -e "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()")
-        installed_version=$(mysql cacti --batch --skip-column-names -e "SELECT cacti FROM version")
-        host_templates=$(mysql cacti --batch --skip-column-names -e "SELECT COUNT(*) FROM host_template")
+        actual_tables=$(mysql "${mysql_args[@]}" cacti --batch --skip-column-names -e "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()")
+        installed_version=$(mysql "${mysql_args[@]}" cacti --batch --skip-column-names -e "SELECT cacti FROM version")
+        host_templates=$(mysql "${mysql_args[@]}" cacti --batch --skip-column-names -e "SELECT COUNT(*) FROM host_template")
         test "$actual_tables" -eq "$expected_tables"
         test "$installed_version" != "new_install"
         test "$host_templates" -gt 0
