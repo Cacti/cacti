@@ -70,7 +70,7 @@ function install_create_csrf_secret($file) {
 		if (is_resource_writable($file)) {
 			// Write the file
 			$fh = fopen($file, 'w');
-			fwrite($fh, csrf_get_secret());
+			fwrite($fh, cacti_csrf_secret_file_contents());
 			fclose($fh);
 
 			return true;

@@ -78,11 +78,11 @@ if (!file_exists($path_csrf_secret)) {
 	unlink($path_csrf_secret);
 }
 
-$new_secret = csrf_generate_secret();
+$new_secret = cacti_csrf_secret_file_contents();
 if (csrf_writable($path_csrf_secret)) {
 	umask(0027);
 	$fh = fopen($path_csrf_secret, 'w');
-	fwrite($fh, '<?php $secret = "' . $new_secret . '";' . PHP_EOL);
+	fwrite($fh, $new_secret);
 	fclose($fh);
 	print "NOTE: New csrf_secret.php file written." . PHP_EOL;
 	exit(0);
@@ -106,4 +106,3 @@ function display_help () {
 	print "this key should happen periodically during non-production hours as it can" . PHP_EOL;
 	print "impact the user experience." . PHP_EOL . PHP_EOL;
 }
-

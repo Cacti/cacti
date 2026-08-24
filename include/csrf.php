@@ -24,11 +24,82 @@
 
 require_once($config['include_path'] .'/vendor/csrf/csrf-conf.php');
 
+function cacti_csrf_generate_secret($length = 32) {
+	if (!is_int($length) || $length < 32) {
+		$length = 32;
+	}
+
+	return bin2hex(random_bytes($length));
+}
+
+function cacti_csrf_secret_file_contents() {
+	return '<?php' . PHP_EOL .
+		'/* Cacti CSRF secret: ' . cacti_csrf_generate_secret() . ' */' . PHP_EOL;
+}
+
+function cacti_csrf_read_or_create_secret($paths) {
+	foreach ($paths as $path) {
+		if (is_file($path)) {
+			$secret = @file_get_contents($path);
+			if (is_string($secret) && $secret !== '') {
+				return $secret;
+			}
+		}
+	}
+
+	foreach ($paths as $path) {
+		$old_umask = umask(0027);
+		$handle = @fopen($path, 'x');
+		umask($old_umask);
+
+		if ($handle !== false) {
+			$secret = cacti_csrf_secret_file_contents();
+			$written = fwrite($handle, $secret);
+			fclose($handle);
+
+			if ($written === strlen($secret)) {
+				return $secret;
+			}
+
+			@unlink($path);
+		} elseif (is_file($path)) {
+			/* Another request may have won the exclusive-create race. */
+			$secret = @file_get_contents($path);
+			if (is_string($secret) && $secret !== '') {
+				return $secret;
+			}
+		}
+	}
+
+	/* Read-only web roots can still retain a strong per-session secret. */
+	csrf_start();
+	if (session_id()) {
+		if (empty($_SESSION['cacti_csrf_secret'])) {
+			$_SESSION['cacti_csrf_secret'] = cacti_csrf_generate_secret();
+		}
+
+		return $_SESSION['cacti_csrf_secret'];
+	}
+
+	return '';
+}
+
 /* cross site request forgery library */
 function csrf_startup() {
 	global $config;
 
 	if ($config['is_web']) {
+		$secret_paths = array();
+		if (!empty($config['path_csrf_secret'])) {
+			$secret_paths[] = $config['path_csrf_secret'];
+		}
+		$secret_paths[] = __DIR__ . '/vendor/csrf/csrf-secret.php';
+
+		$secret = cacti_csrf_read_or_create_secret(array_unique($secret_paths));
+		if ($secret !== '') {
+			csrf_conf('secret', $secret);
+		}
+
 		/* If you need to debug CSRF, uncomment the following line */
 		//csrf_conf('log_file', dirname(read_config_option('path_cactilog')) . '/csrf.log');
 		if (!empty($config['path_csrf_secret'])) {
