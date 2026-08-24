@@ -67,10 +67,12 @@ process_request_vars();
 
 switch(get_request_var('action')) {
 	case 'purge':
+		csrf_require_post();
 		purge_discovery_results();
 
 		break;
 	case 'actions':
+		csrf_require_post();
 		form_actions();
 
 		break;
@@ -605,7 +607,11 @@ function draw_filter() {
 			});
 
 			$('#purge').on('click', function() {
-				loadPageNoHeader('automation_devices.php?header=false&action=purge&network_id='+$('#network').val());
+				loadPageUsingPost('automation_devices.php', {
+					header: false,
+					action: 'purge',
+					network_id: $('#network').val()
+				}, 'main');
 			});
 
 			$('#export').on('click', function() {
@@ -699,4 +705,3 @@ function export_data($item) {
 		return cacti_csv_safe($item);
 	}
 }
-

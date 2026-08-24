@@ -33,7 +33,13 @@ function csrf_ob_handler($buffer, $flags) {
 		$name = $GLOBALS['csrf']['input-name'];
 		$endslash = $GLOBALS['csrf']['xhtml'] ? ' /' : '';
 		$input = "<input type='hidden' name='$name' value=\"$tokens\"$endslash>";
-		$buffer = preg_replace('#(<form[^>]*method\s*=\s*["\']post["\'][^>]*>)#i', '$1' . $input, $buffer);
+		$buffer = preg_replace_callback(
+			'#(<form[^>]*method\s*=\s*["\']post["\'][^>]*>)#i',
+			function($matches) use ($input) {
+				return csrf_form_action_is_local($matches[1]) ? $matches[1] . $input : $matches[1];
+			},
+			$buffer
+		);
 
 		if ($GLOBALS['csrf']['frame-breaker']) {
 			$buffer = str_ireplace('</head>', '<script type="text/javascript" ' . CactiSecureHeaders::getNonceAttribute() . '>if (top != self) {top.location.href = self.location.href;}</script></head>', $buffer);
@@ -60,9 +66,31 @@ function csrf_ob_handler($buffer, $flags) {
 		}
 	}
 
-	csrf_log(__FUNCTION__, 'returns: ' . var_export($buffer, true));
+	csrf_log(__FUNCTION__, 'processed response bytes=' . strlen($buffer));
 
 	return $buffer;
+}
+
+/**
+ * Return false for forms which could hand the CSRF token to another origin.
+ * Absolute same-origin forms are left to the browser-side rewriter so this
+ * server-side decision never depends on an attacker-controlled Host header.
+ */
+function csrf_form_action_is_local($form_tag) {
+	if (!preg_match('#\saction\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s>]+))#i', $form_tag, $matches)) {
+		return true;
+	}
+
+	$action = isset($matches[1]) && $matches[1] !== '' ? $matches[1] :
+		(isset($matches[2]) && $matches[2] !== '' ? $matches[2] : (isset($matches[3]) ? $matches[3] : ''));
+	$action = trim(html_entity_decode($action, ENT_QUOTES, 'UTF-8'));
+	if ($action === '') {
+		return true;
+	}
+
+	return strpos($action, '\\') === false &&
+		!preg_match('/[\x00-\x20\x7f]/', $action) &&
+		!preg_match('#^(?:[a-z][a-z0-9+.-]*:|//)#i', $action);
 }
 
 /**
@@ -91,7 +119,7 @@ function csrf_check($fatal = true) {
 				$tokens = implode(';', $tokens);
 			}
 
-			csrf_log(__FUNCTION__, "check_tokens($name, $tokens) returned $result");
+			csrf_log(__FUNCTION__, 'token validation returned ' . ($result ? 'true' : 'false'));
 		}
 
 		if ($fatal && !$result) {
@@ -125,11 +153,16 @@ function csrf_get_tokens() {
 	$secret = csrf_get_secret();
 	$token  = '';
 	$ip     = '';
+	if ($secret === '') {
+		csrf_log(__FUNCTION__, 'refused to issue a token without a secret');
+
+		return 'invalid';
+	}
 
 	if (!$has_cookies && $secret) {
 		$ip = csrf_get_client_addr();
 		if (!empty($ip)) {
-			$ip = ';ip:' . csrf_hash($_SERVER['REMOTE_ADDR']);
+			$ip = ';ip:' . csrf_hash($ip);
 		}
 	}
 
@@ -160,7 +193,7 @@ function csrf_get_tokens() {
 		$token = 'invalid';
 	}
 
-	csrf_log(__FUNCTION__, 'returns: ' . var_export($token, true));
+	csrf_log(__FUNCTION__, 'issued token type: ' . strtok($token, ':'));
 
 	return $token;
 }
@@ -170,8 +203,6 @@ function csrf_flattenpost($data) {
 	foreach($data as $n => $v) {
 		$ret = array_merge($ret, csrf_flattenpost2(1, $n, $v));
 	}
-
-	csrf_log(__FUNCTION__, 'returns: ' . var_export($ret, true));
 
 	return $ret;
 }
@@ -187,16 +218,10 @@ function csrf_flattenpost2($level, $key, $data) {
 		}
 	}
 
-	csrf_log(__FUNCTION__, 'returns: ' . var_export($ret, true));
-
 	return $ret;
 }
 
-/**
- * @param $tokens is safe for HTML consumption
- */
 function csrf_callback($tokens) {
-	// (yes, $tokens is safe to echo without escaping)
 	$data = '';
 	foreach (csrf_flattenpost($_POST) as $key => $value) {
 		if ($key != $GLOBALS['csrf']['input-name']) {
@@ -216,7 +241,6 @@ function csrf_callback($tokens) {
 
 		</p>
 		<form method='post' action=''>$data<input type='submit' value='Try again' /></form>
-		<p>Debug: $tokens</p></body></html>
 	</body>
 </html>";
 }
@@ -230,8 +254,18 @@ function csrf_check_tokens($tokens) {
 		$tokens = explode(';', $tokens);
 	}
 
+	if (!is_array($tokens) || count($tokens) > 8) {
+		csrf_log(__FUNCTION__, 'rejected malformed token collection');
+
+		return false;
+	}
+
 	$valid_token = false;
 	foreach ($tokens as $token) {
+		if (!is_string($token) || strlen($token) > 256) {
+			continue;
+		}
+
 		if (csrf_check_token($token)) {
 			$valid_token = true;
 			break;
@@ -252,13 +286,19 @@ function csrf_check_token($token) {
 		list($type, $value) = explode(':', $token, 2);
 
 		if (strpos($value, ',') !== false) {
-			list($x, $time) = explode(',', $token, 2);
+			list($hash, $time) = explode(',', $value, 2);
+			if (!ctype_digit($time)) {
+				return false;
+			}
+
+			$time = (int) $time;
+			$value = $hash . ',' . $time;
 
 			$check_token = true;
 			if ($GLOBALS['csrf']['expires']) {
 				$expiry_time = time();
 				$expiry_csrf = $time + $GLOBALS['csrf']['expires'];
-				$check_token = ($expiry_time < $expiry_csrf);
+				$check_token = ($time <= $expiry_time + 300 && $expiry_time < $expiry_csrf);
 
 				csrf_log(__FUNCTION__, "expiry $check_token = $expiry_time < $expiry_csrf");
 			}
@@ -343,66 +383,96 @@ function csrf_start() {
  * Retrieves the secret, and generates one if necessary.
  */
 function csrf_get_secret() {
-	$secret = '';
-	$files  = array();
-	if ($GLOBALS['csrf']['secret']) {
-		$secret = $GLOBALS['csrf']['secret'];
+	$secret = isset($GLOBALS['csrf']['secret']) ? $GLOBALS['csrf']['secret'] : '';
+
+	if (!is_string($secret) || strlen($secret) < 32 || strlen($secret) > 4096) {
+		csrf_log(__FUNCTION__, 'CSRF secret is unavailable or invalid');
+
+		return '';
 	}
 
-	if (empty($secret)) {
-		if (isset($GLOBALS['csrf']['path_secret'])) {
-			$files[] = $GLOBALS['csrf']['path_secret'];
-		}
-		$files[] = __DIR__ . '/csrf-secret.php';
-	}
-
-	foreach ($files as $file) {
-		$dir = dirname($file);
-		if (file_exists($file)) {
-			$secret = @file_get_contents($file);
-			if (!empty($secret)) {
-				break;
-			}
-		}
-	}
-
-	if (empty($secret)) {
-		$new_secret = csrf_generate_secret();
-		foreach ($files as $file) {
-			if (csrf_writable($file)) {
-				$old_umask = umask(0027);
-				$fh = fopen($file, 'w');
-				fwrite($fh, $new_secret);
-				fclose($fh);
-				umask($old_umask);
-				$secret = $new_secret;
-				break;
-			}
-		}
-	}
-
-	$GLOBALS['csrf']['secret'] = $secret;
-
-	csrf_log(__FUNCTION__, 'returns: ' . var_export($secret, true));
+	csrf_log(__FUNCTION__, 'CSRF secret is available');
 
 	return $secret;
 }
 
 /**
- * Generates a random string as the hash of time, microtime, and mt_rand.
+ * Generates a cryptographically secure random secret.
  */
 function csrf_generate_secret($len = 32) {
-	$r = '';
-	for ($i = 0; $i < $len; $i++) {
-		$r .= chr(mt_rand(0, 255));
+	if (!is_int($len) || $len < 16) {
+		throw new InvalidArgumentException('CSRF secrets require at least 16 random bytes');
 	}
-	$r .= time() . microtime();
 
-	$secret = csrf_internal_hash('',$r);
+	return bin2hex(random_bytes($len));
+}
 
-	csrf_log(__FUNCTION__, 'returns: ' . var_export($secret, true));
+/**
+ * Atomically write a secret from an installer or administrative CLI process.
+ * Runtime web requests must never call this function.
+ */
+function csrf_write_secret_atomic($path, $secret) {
+	if (!is_string($path) || $path === '' || !is_string($secret) || strlen($secret) < 32 || strlen($secret) > 4096) {
+		return false;
+	}
 
-	return $secret;
+	$directory = realpath(dirname($path));
+	if ($directory === false || !is_writable($directory)) {
+		return false;
+	}
+	$existing_file = is_file($path);
+	$metadata_path = $existing_file ? $path : $directory;
+	$preserve_owner = $existing_file || (function_exists('posix_geteuid') && posix_geteuid() === 0);
+	$owner = $preserve_owner ? @fileowner($metadata_path) : false;
+	$group = @filegroup($metadata_path);
+
+	$temporary = $directory . DIRECTORY_SEPARATOR . '.' . basename($path) . '.' . bin2hex(random_bytes(8)) . '.tmp';
+	$handle = @fopen($temporary, 'x');
+	if ($handle === false) {
+		return false;
+	}
+	$metadata_set = true;
+	$current_owner = @fileowner($temporary);
+	$current_group = @filegroup($temporary);
+	if ($owner !== false && $current_owner !== false && $owner !== $current_owner) {
+		$metadata_set = function_exists('chown') && @chown($temporary, $owner);
+	}
+	if ($metadata_set && $group !== false && $current_group !== false && $group !== $current_group) {
+		$metadata_set = function_exists('chgrp') && @chgrp($temporary, $group);
+	}
+	$metadata_set = $metadata_set && @chmod($temporary, 0640);
+	if (!$metadata_set) {
+		fclose($handle);
+		@unlink($temporary);
+
+		return false;
+	}
+
+	$written = false;
+	try {
+		$payload = $secret . PHP_EOL;
+		$offset = 0;
+		while ($offset < strlen($payload)) {
+			$bytes = fwrite($handle, substr($payload, $offset));
+			if ($bytes === false || $bytes === 0) {
+				break;
+			}
+
+			$offset += $bytes;
+		}
+
+		$written = $offset === strlen($payload) && fflush($handle);
+	} finally {
+		fclose($handle);
+	}
+
+	if (!$written || !@rename($temporary, $path)) {
+		@unlink($temporary);
+
+		return false;
+	}
+
+	return true;
 }
 
 function csrf_internal_hash($secret, $value) {
@@ -431,47 +501,18 @@ function csrf_hash($value, $time = null) {
 	$secret = csrf_get_secret();
 	$result = csrf_internal_hash($secret, csrf_internal_hash($secret, $time . ':' . $value)) . ',' . $time;
 
-	csrf_log(__FUNCTION__, 'returns: ' . var_export($result, true));
-
 	return $result;
 }
 
 function csrf_get_client_addr() {
-	$http_addr_headers = array(
-		'X-Forwarded-For',
-		'X-Client-IP',
-		'X-Real-IP',
-		'X-ProxyUser-Ip',
-		'CF-Connecting-IP',
-		'True-Client-IP',
-		'HTTP_X_FORWARDED',
-		'HTTP_X_FORWARDED_FOR',
-		'HTTP_X_CLUSTER_CLIENT_IP',
-		'HTTP_FORWARDED_FOR',
-		'HTTP_FORWARDED',
-		'HTTP_CLIENT_IP',
-		'REMOTE_ADDR',
-	);
-
-	$client_addr = false;
-	foreach ($http_addr_headers as $header) {
-		if (!empty($_SERVER[$header])) {
-			$header_ips = explode(',', $_SERVER[$header]);
-			foreach ($header_ips as $header_ip) {
-				if (!empty($header_ip)) {
-					if (!filter_var($header_ip, FILTER_VALIDATE_IP)) {
-						csrf_log(__FUNCTION__, 'ERROR: Invalid remote client IP Address found in header (' . $header . ').');
-					} else {
-						$client_addr = $header_ip;
-						csrf_log(__FUNCTION__, 'DEBUG: Using remote client IP Address found in header (' . $header . '): ' . $client_addr . ' (' . $_SERVER[$header] . ')');
-						break;
-					}
-				}
-			}
-		}
+	if (function_exists('get_client_addr')) {
+		return get_client_addr();
 	}
 
-	csrf_log(__FUNCTION__, 'returns: ' . var_export($client_addr, true));
+	$client_addr = isset($_SERVER['REMOTE_ADDR']) ? trim($_SERVER['REMOTE_ADDR']) : '';
+	if (!filter_var($client_addr, FILTER_VALIDATE_IP)) {
+		return false;
+	}
 
 	return $client_addr;
 }
@@ -529,7 +570,8 @@ function csrf_caller() {
 
 	if (empty($caller)) {
 		if (!empty($_SERVER['REQUEST_URI'])) {
-			$caller = $_SERVER['REQUEST_URI'];
+			$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+			$caller = is_string($path) ? $path : '';
 		} else {
 			$caller = $_SERVER['SCRIPT_NAME'];
 		}
@@ -593,12 +635,13 @@ if (function_exists($csrf_startup_func)) {
 	call_user_func($csrf_startup_func);
 }
 
-if (!empty($_POST)) {
-	csrf_log('<post>', var_export($_POST, true));
-}
-
-if (!empty($_GET)) {
-	csrf_log('<get>', var_export($_GET, true));
+if (!empty($_POST) || !empty($_GET)) {
+	csrf_log(
+		'<request>',
+		'method=' . (isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'unknown') .
+		'; post_fields=' . count($_POST) .
+		'; get_fields=' . count($_GET)
+	);
 }
 
 if (!$GLOBALS['csrf']['disable']) {

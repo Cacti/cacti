@@ -39,6 +39,7 @@ if (read_config_option('rrdcheck_enable') != 'on') {
 
 switch(get_request_var('action')) {
 	case 'purge':
+		csrf_require_post();
 		rrdcheck_purge();
 	default:
 		rrdcheck_display_problems();
@@ -295,7 +296,7 @@ function filter() {
 
 				$('#purge').on('click', function() {
 					strURL = 'rrdcheck.php?action=purge&header=false';
-					loadPageNoHeader(strURL);
+					loadPageUsingPostUrl(strURL, 'main');
 				});
 			});
 			</script>
@@ -303,4 +304,3 @@ function filter() {
 	</tr>
 	<?php
 }
-

@@ -71,6 +71,11 @@ $GLOBALS['csrf']['allow-ip'] = true;
 $GLOBALS['csrf']['cookie'] = '__csrf_cookie';
 
 /**
+ * Scope the fallback cookie to the application path.
+ */
+$GLOBALS['csrf']['url_path'] = '/';
+
+/**
  * If this information is available, set this to a unique identifier (it
  * can be an integer or a unique username) for the current "user" of this
  * application. The token will then be globally valid for all of that user's
