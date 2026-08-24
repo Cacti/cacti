@@ -97,7 +97,6 @@ function __rrd_proxy_init($logopt = 'WEBLOG') {
 	global $encryption;
 	$terminator = "_EOT_\r\n";
 	$encryption = true;
-	$rsa = new \phpseclib\phpseclib\phpseclib\Crypt\RSA();
 
 	$rrdp_socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 	if ($rrdp_socket === false) {
@@ -153,11 +152,21 @@ function __rrd_proxy_init($logopt = 'WEBLOG') {
 		}
 	}
 
-	$rsa->loadKey($rrdp_public_key);
-	$fingerprint = $rsa->getPublicKeyFingerprint();
+	try {
+		$rsa = \phpseclib3\Crypt\PublicKeyLoader::loadPublicKey($rrdp_public_key);
+		$fingerprint = $rsa->getFingerprint();
+	} catch (Throwable $e) {
+		cacti_log('CACTI2RRDP ERROR: Invalid RSA public key returned by proxy.', false, $logopt, POLLER_VERBOSITY_LOW);
+		@socket_shutdown($rrdp_socket, 2);
+		@socket_close($rrdp_socket);
+
+		return false;
+	}
 
 	if ($rrdp_fingerprint != $fingerprint) {
 		cacti_log('CACTI2RRDP ERROR: Mismatch RSA Fingerprint.', false, $logopt, POLLER_VERBOSITY_LOW);
+		@socket_shutdown($rrdp_socket, 2);
+		@socket_close($rrdp_socket);
 		return false;
 	} else {
 		$rrdproxy = array($rrdp_socket, $rrdp_public_key);
@@ -193,7 +202,10 @@ function __rrd_proxy_close($rrdp) {
 	/* close the rrdtool proxy server connection */
 	$terminator = "_EOT_\r\n";
 	if ($rrdp) {
-		socket_write($rrdp[0], encrypt('quit', $rrdp[1]) . $terminator);
+		$packet = encrypt('quit', $rrdp[1]);
+		if ($packet !== false) {
+			socket_write($rrdp[0], $packet . $terminator);
+		}
 		@socket_shutdown($rrdp[0], 2);
 		@socket_close($rrdp[0]);
 		return;
@@ -204,17 +216,26 @@ function encrypt($output, $rsa_key) {
 	global $encryption;
 
 	if ($encryption) {
-		$rsa = new \phpseclib\phpseclib\phpseclib\Crypt\RSA();
-		$aes = new \phpseclib\phpseclib\phpseclib\Crypt\Rijndael();
-		$aes_key = \phpseclib\phpseclib\phpseclib\Crypt\Random::string(192);
+		try {
+			/* Preserve the RRDproxy protocol's phpseclib 2 OAEP/SHA-1 wire
+			 * format while using the maintained Composer dependency. */
+			$rsa = \phpseclib3\Crypt\PublicKeyLoader::loadPublicKey($rsa_key)
+				->withPadding(\phpseclib3\Crypt\RSA::ENCRYPTION_OAEP)
+				->withHash('sha1')
+				->withMGFHash('sha1');
+			$aes = new \phpseclib3\Crypt\Rijndael('cbc');
+			$aes_key = random_bytes(32);
 
-		$aes->setKey($aes_key);
-		$ciphertext = base64_encode($aes->encrypt($output));
-		$rsa->loadKey($rsa_key);
-		$aes_key = base64_encode($rsa->encrypt($aes_key));
-		$aes_key_length = str_pad(dechex(strlen($aes_key)),3,'0',STR_PAD_LEFT);
+			$aes->setKey($aes_key);
+			$aes->setIV(str_repeat("\0", 16));
+			$ciphertext = base64_encode($aes->encrypt($output));
+			$encrypted_key = base64_encode($rsa->encrypt($aes_key));
+			$aes_key_length = str_pad(dechex(strlen($encrypted_key)), 3, '0', STR_PAD_LEFT);
 
-		return $aes_key_length . $aes_key . $ciphertext;
+			return $aes_key_length . $encrypted_key . $ciphertext;
+		} catch (Throwable $e) {
+			return false;
+		}
 	} else {
 		return $output;
 	}
@@ -224,21 +245,41 @@ function decrypt($input) {
 	global $encryption;
 
 	if ($encryption) {
-		$rsa = new \phpseclib\phpseclib\phpseclib\Crypt\RSA();
-		$aes = new \phpseclib\phpseclib\phpseclib\Crypt\Rijndael();
+		if (!is_string($input) || strlen($input) < 4 || !ctype_xdigit(substr($input, 0, 3))) {
+			return false;
+		}
 
-		$rsa_private_key = read_config_option('rsa_private_key');
+		$aes_key_length = hexdec(substr($input, 0, 3));
+		if ($aes_key_length <= 0 || $aes_key_length > strlen($input) - 3) {
+			return false;
+		}
 
-		$aes_key_length = hexdec(substr($input,0,3));
-		$aes_key = base64_decode(substr($input,3,$aes_key_length));
-		$ciphertext = base64_decode(substr($input,3+$aes_key_length));
+		$encrypted_key = base64_decode(substr($input, 3, $aes_key_length), true);
+		$ciphertext = base64_decode(substr($input, 3 + $aes_key_length), true);
+		if ($encrypted_key === false || $ciphertext === false) {
+			return false;
+		}
 
-		$rsa->loadKey( $rsa_private_key );
-		$aes_key = $rsa->decrypt($aes_key);
-		$aes->setKey($aes_key);
-		$plaintext = $aes->decrypt($ciphertext);
+		try {
+			$rsa = \phpseclib3\Crypt\PublicKeyLoader::loadPrivateKey(read_config_option('rsa_private_key'))
+				->withPadding(\phpseclib3\Crypt\RSA::ENCRYPTION_OAEP)
+				->withHash('sha1')
+				->withMGFHash('sha1');
+			$aes_key = $rsa->decrypt($encrypted_key);
+			if (!is_string($aes_key) || strlen($aes_key) < 16) {
+				return false;
+			}
 
-		return $plaintext;
+			$aes = new \phpseclib3\Crypt\Rijndael('cbc');
+			/* phpseclib 2 silently truncated oversized Rijndael keys to 32 bytes.
+			 * Retain compatibility with packets produced by existing proxies. */
+			$aes->setKey(substr($aes_key, 0, 32));
+			$aes->setIV(str_repeat("\0", 16));
+
+			return $aes->decrypt($ciphertext);
+		} catch (Throwable $e) {
+			return false;
+		}
 	} else {
 		return $input;
 	}
@@ -483,7 +524,18 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 	if (strlen($command_line) >= 8192) {
 		$command_line = gzencode($command_line, 1);
 	}
-	socket_write($rrdp_socket, encrypt($command_line, $rrdp_public_key) . $end_of_sequence);
+	$packet = encrypt($command_line, $rrdp_public_key);
+	if ($packet === false) {
+		cacti_log('CACTI2RRDP ERROR: Proxy message encryption failed.', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
+
+		if ($rrdp_auto_close) {
+			__rrd_proxy_close($rrdp);
+		}
+
+		return null;
+	}
+
+	socket_write($rrdp_socket, $packet . $end_of_sequence);
 
 	$input = '';
 	$output = '';
