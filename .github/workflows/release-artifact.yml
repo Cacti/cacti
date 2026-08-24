@@ -77,12 +77,21 @@ jobs:
 
           # Prove that the release obtains managed packages from composer.lock,
           # rather than accidentally relying on their historical tracked trees.
+          # The list comes from the lock so it cannot drift as packages change.
+          php -r '
+            $lock = json_decode(file_get_contents($argv[1] . "/composer.lock"), true, 512, JSON_THROW_ON_ERROR);
+            foreach ($lock["packages"] as $package) {
+                echo $package["name"], "\n";
+            }
+          ' "$package_dir" | while IFS= read -r managed; do
+            case "$managed" in
+              */*) rm -rf "${package_dir:?}/include/vendor/$managed" ;;
+            esac
+          done
+
           rm -rf \
-            "$package_dir/include/vendor/composer" \
-            "$package_dir/include/vendor/ezyang" \
-            "$package_dir/include/vendor/paragonie" \
-            "$package_dir/include/vendor/phpseclib" \
-            "$package_dir/include/vendor/autoload.php"
+            "${package_dir:?}/include/vendor/composer" \
+            "${package_dir:?}/include/vendor/autoload.php"
 
           composer --working-dir="$package_dir" install \
             --no-dev --optimize-autoloader \
@@ -194,3 +203,46 @@ jobs:
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: ${{ env.artifact }}
+
+  publish:
+    name: Attach the artifact to the release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/release/')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+
+    steps:
+      - name: Download the built bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          gh run download "$GITHUB_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name "cacti-release-$GITHUB_RUN_ID" \
+            --dir dist
+
+          # Fail loudly rather than handing gh an unmatched glob.
+          count=$(find dist -type f | wc -l)
+          test "$count" -gt 0
+
+      - name: Attach the bundle to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF#refs/tags/}"
+
+          # The tag can arrive before anyone opens the release. Create it as a
+          # draft so an artifact is never published without a human.
+          if ! gh release view "$tag" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release create "$tag" --repo "$GITHUB_REPOSITORY" --draft --title "$tag" \
+              --notes 'Download the cacti-*.tar.gz asset rather than the generated source archive. Only the asset carries the Composer dependencies.'
+          fi
+
+          find dist -type f -print0 | xargs -0 gh release upload "$tag" --repo "$GITHUB_REPOSITORY" --clobber
+
