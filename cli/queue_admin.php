@@ -75,6 +75,12 @@ foreach ($parameters as $parameter) {
 			$action = 'purge';
 
 			break;
+		case '--version':
+		case '-V':
+		case '-v':
+			display_version();
+
+			exit(0);
 		case '--help':
 		case '-H':
 		case '-h':
