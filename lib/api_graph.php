@@ -410,6 +410,7 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 	$graph_item_mappings   = [];
 	$graph_template_items  = [];
 	$graph_template_graph  = [];
+	$transaction_started   = false;
 
 	if (!empty($_local_graph_id)) {
 		$graph_local = db_fetch_row_prepared('SELECT *
@@ -440,7 +441,19 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 		$save['snmp_query_id']     = $graph_local['snmp_query_id'];
 		$save['snmp_index']        = $graph_local['snmp_index'];
 
+		$transaction_started = db_begin_transaction();
+
+		if (!$transaction_started) {
+			return false;
+		}
+
 		$local_graph_id = sql_save($save, 'graph_local');
+
+		if (!$local_graph_id) {
+			db_rollback_transaction();
+
+			return false;
+		}
 
 		$graph_template_graph['title'] = str_replace('<graph_title>', $graph_template_graph['title'], $graph_title);
 	} elseif (!empty($_graph_template_id)) {
@@ -470,7 +483,37 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 			WHERE graph_template_id = ?',
 			[$_graph_template_id]);
 
+		foreach ($graph_template_inputs as $graph_template_input) {
+			if (!graph_template_input_column_is_allowed($graph_template_input['column_name'])) {
+				cacti_log('ERROR: Graph template duplication refused an invalid Graph Item Input field', false, 'SECURITY');
+
+				return false;
+			}
+		}
+
+		$invalid_input_definitions = db_fetch_cell_prepared('SELECT COUNT(*)
+			FROM graph_template_input_defs AS gtid
+			INNER JOIN graph_template_input AS gti
+			ON gti.id = gtid.graph_template_input_id
+			LEFT JOIN graph_templates_item AS item
+			ON item.id = gtid.graph_template_item_id
+			WHERE gti.graph_template_id = ?
+			AND (item.id IS NULL OR item.graph_template_id <> gti.graph_template_id OR item.local_graph_id <> 0)',
+			[$_graph_template_id]);
+
+		if ($invalid_input_definitions > 0) {
+			cacti_log('ERROR: Graph template duplication refused invalid input ownership', false, 'SECURITY');
+
+			return false;
+		}
+
 		// create new entry: graph_templates
+		$transaction_started = db_begin_transaction();
+
+		if (!$transaction_started) {
+			return false;
+		}
+
 		$save       = [];
 		$save['id'] = 0;
 
@@ -479,13 +522,19 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 		$save['multiple'] = $graph_template['multiple'];
 
 		$graph_template_id = sql_save($save, 'graph_templates');
+
+		if (!$graph_template_id) {
+			db_rollback_transaction();
+
+			return false;
+		}
 	}
 
 	$save       = [];
 	$save['id'] = 0;
 
 	// create new entry: graph_templates_graph
-	$save['local_graph_id']                = ($local_graph_id ?? 0);
+	$save['local_graph_id']                = $local_graph_id;
 	$save['local_graph_template_graph_id'] = ($graph_template_graph['local_graph_template_graph_id'] ?? 0);
 	$save['graph_template_id']             = (!empty($_local_graph_id) ? $graph_template_graph['graph_template_id'] : $graph_template_id);
 	$save['title_cache']                   = $graph_template_graph['title_cache'];
@@ -500,6 +549,12 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 
 	$graph_templates_graph_id = sql_save($save, 'graph_templates_graph');
 
+	if (!$graph_templates_graph_id) {
+		db_rollback_transaction();
+
+		return false;
+	}
+
 	// create new entry(s): graph_templates_item
 	if (cacti_sizeof($graph_template_items)) {
 		foreach ($graph_template_items as $graph_template_item) {
@@ -508,7 +563,7 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 
 			// save a hash only for graph_template copy operations
 			$save['hash']                         = (!empty($_graph_template_id) ? get_hash_graph_template(0, 'graph_template_item') : 0);
-			$save['local_graph_id']               = ($local_graph_id ?? 0);
+			$save['local_graph_id']               = $local_graph_id;
 			$save['graph_template_id']            = (!empty($_local_graph_id) ? $graph_template_item['graph_template_id'] : $graph_template_id);
 			$save['local_graph_template_item_id'] = ($graph_template_item['local_graph_template_item_id'] ?? 0);
 
@@ -517,6 +572,12 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 			}
 
 			$graph_item_mappings[$graph_template_item['id']] = sql_save($save, 'graph_templates_item');
+
+			if (!$graph_item_mappings[$graph_template_item['id']]) {
+				db_rollback_transaction();
+
+				return false;
+			}
 		}
 	}
 
@@ -535,6 +596,12 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 
 				$graph_template_input_id   = sql_save($save, 'graph_template_input');
 
+				if (!$graph_template_input_id) {
+					db_rollback_transaction();
+
+					return false;
+				}
+
 				$graph_template_input_defs = db_fetch_assoc_prepared('SELECT *
 					FROM graph_template_input_defs
 					WHERE graph_template_input_id = ?',
@@ -543,14 +610,18 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 				// create new entry(s): graph_template_input_defs (graph template only)
 				if (cacti_sizeof($graph_template_input_defs)) {
 					foreach ($graph_template_input_defs as $graph_template_input_def) {
-						db_execute_prepared('INSERT INTO graph_template_input_defs
+						if (!isset($graph_item_mappings[$graph_template_input_def['graph_template_item_id']]) || !db_execute_prepared('INSERT INTO graph_template_input_defs
 							(graph_template_input_id, graph_template_item_id)
 							VALUES (?, ?)',
 							[
 								$graph_template_input_id,
 								$graph_item_mappings[$graph_template_input_def['graph_template_item_id']]
 							]
-						);
+						)) {
+							db_rollback_transaction();
+
+							return false;
+						}
 					}
 				}
 			}
@@ -659,12 +730,20 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 	set_config_option('time_last_change_graph', time());
 
 	if ($_local_graph_id > 0) {
+		db_commit_transaction();
+
 		return $local_graph_id;
 	}
 
 	if ($_graph_template_id > 0) {
+		db_commit_transaction();
+
 		return $graph_template_id;
 	} else {
+		if ($transaction_started) {
+			db_rollback_transaction();
+		}
+
 		return false;
 	}
 }

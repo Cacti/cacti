@@ -545,6 +545,23 @@ function push_out_graph_input(int $graph_template_input_id, int $graph_template_
 		FROM graph_template_input
 		WHERE id = ?', [$graph_template_input_id]);
 
+	/* column_name is a schema identifier interpolated straight into the SELECT
+	 * and UPDATE statements below; it cannot be bound as a parameter, so confine
+	 * it to an editable graph-item field. Without this a crafted
+	 * graph_template_input row injects SQL through column_name (CVE-2024-31458). */
+	if (!cacti_sizeof($graph_input)) {
+		return;
+	}
+
+	if (!graph_template_input_column_is_allowed($graph_input['column_name'])) {
+		cacti_log('ERROR: push_out_graph_input() refused an invalid graph input field', false, 'SECURITY');
+
+		return;
+	}
+
+	$column_name        = $graph_input['column_name'];
+	$graph_template_id  = (int) $graph_input['graph_template_id'];
+
 	$graph_input_items = db_fetch_assoc_prepared('SELECT graph_template_item_id
 		FROM graph_template_input_defs
 		WHERE graph_template_input_id = ?', [$graph_template_input_id]);
@@ -567,9 +584,9 @@ function push_out_graph_input(int $graph_template_input_id, int $graph_template_
 	}
 
 	if (cacti_sizeof($session_members) == 0) {
-		$values_to_apply = db_fetch_assoc('SELECT local_graph_id,' . $graph_input['column_name'] . '
+		$values_to_apply = db_fetch_assoc('SELECT local_graph_id,' . $column_name . '
 			FROM graph_templates_item
-			WHERE graph_template_id=' . $graph_input['graph_template_id'] . " $sql_include_items
+			WHERE graph_template_id=' . $graph_template_id . " $sql_include_items
 			AND local_graph_id>0
 			GROUP BY local_graph_id");
 	} else {
@@ -579,21 +596,28 @@ function push_out_graph_input(int $graph_template_input_id, int $graph_template_
 			$new_session_members[] = $item_id;
 		}
 
-		$values_to_apply = db_fetch_assoc('SELECT local_graph_id,' . $graph_input['column_name'] . '
+		$values_to_apply = db_fetch_assoc('SELECT local_graph_id,' . $column_name . '
 			FROM graph_templates_item
-			WHERE graph_template_id=' . $graph_input['graph_template_id'] . '
+			WHERE graph_template_id=' . $graph_template_id . '
 			AND local_graph_id>0
 			AND !(' . array_to_sql_or($new_session_members, 'local_graph_template_item_id') . ") $sql_include_items GROUP BY local_graph_id");
 	}
 
 	if (cacti_sizeof($values_to_apply)) {
 		foreach ($values_to_apply as $value) {
+			if (!graph_template_input_value_is_allowed($column_name, $value[$column_name])) {
+				cacti_log('ERROR: push_out_graph_input() refused an invalid graph input value', false, 'SECURITY');
+
+				continue;
+			}
+
 			// this is just an extra check that i threw in to prevent users' graphs from getting really messed up
-			if (!(($graph_input['column_name'] == 'task_item_id') && (empty($value[$graph_input['column_name']])))) {
-				db_execute('UPDATE graph_templates_item
-					SET ' . $graph_input['column_name'] . '=' . db_qstr($value[$graph_input['column_name']]) . '
-					WHERE local_graph_id=' . $value['local_graph_id'] . "
-					AND local_graph_template_item_id=$graph_template_item_id");
+			if (!(($column_name == 'task_item_id') && (empty($value[$column_name])))) {
+				db_execute_prepared('UPDATE graph_templates_item
+					SET ' . $column_name . ' = ?
+					WHERE local_graph_id = ?
+					AND local_graph_template_item_id = ?',
+					[$value[$column_name], $value['local_graph_id'], $graph_template_item_id]);
 			}
 		}
 	}
