@@ -125,6 +125,10 @@ jobs:
             --name "cacti-release-$GITHUB_RUN_ID" \
             --dir dist
 
+          # Fail loudly rather than handing gh an unmatched glob.
+          count=$(find dist -type f | wc -l)
+          test "$count" -gt 0
+
       - name: Attach the bundle to the release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -139,4 +143,4 @@ jobs:
               --notes 'Download the cacti-*.tar.gz asset rather than the generated source archive. Only the asset carries the Composer dependencies; the source archive needs composer install.'
           fi
 
-          gh release upload "$tag" dist/* --repo "$GITHUB_REPOSITORY" --clobber
+          find dist -type f -print0 | xargs -0 gh release upload "$tag" --repo "$GITHUB_REPOSITORY" --clobber
