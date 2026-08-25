@@ -103,11 +103,11 @@ final class CactiEmailChannel implements ChannelInterface {
 			return $to;
 		}
 
-		$seen = [mb_strtolower($primary) => true];
+		$seen = [$this->addressKey($primary) => true];
 
 		foreach (parse_email_details($additional) as $extra) {
 			$address = trim((string) ($extra['email'] ?? ''));
-			$key     = mb_strtolower($address);
+			$key     = $this->addressKey($address);
 
 			if ($address === '' || isset($seen[$key])) {
 				continue;
@@ -118,6 +118,23 @@ final class CactiEmailChannel implements ChannelInterface {
 		}
 
 		return $to;
+	}
+
+	/**
+	 * Build the key that decides whether two addresses are the same mailbox.
+	 *
+	 * RFC 5321 leaves the local part to the receiving host, so only the domain
+	 * folds to lower case.  NETNIV@cacti.org and netniv@cacti.org may be two
+	 * mailboxes and both have to survive the fold.
+	 */
+	private function addressKey(string $address) : string {
+		$at = strrpos($address, '@');
+
+		if ($at === false) {
+			return $address;
+		}
+
+		return substr($address, 0, $at) . '@' . mb_strtolower(substr($address, $at + 1));
 	}
 
 	public function supports(Notification $notification, RecipientInterface $recipient) : bool {

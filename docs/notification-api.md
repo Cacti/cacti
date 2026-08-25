@@ -66,7 +66,8 @@ api_notification_send(
 ```
 
 Addresses matching the recipient are dropped, so the recipient is never listed
-twice.
+twice. Matching compares the domain without regard to case and the local part
+exactly, because RFC 5321 leaves local part case to the receiving host.
 
 Cores released before this option ignore it and deliver to the recipient only.
 Probe for it before joining addresses:

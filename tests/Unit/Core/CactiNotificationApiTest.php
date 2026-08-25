@@ -161,13 +161,51 @@ test('the email channel does not repeat the primary recipient', function () {
 		return '';
 	});
 	$notification = new CactiNotification('Alert', 'Down', ['email'], [
-		'email' => ['to' => 'OPS@example.com,other@example.com'],
+		'email' => ['to' => 'ops@example.com,other@example.com'],
 	]);
 
-	$channel->notify($notification, new CactiRecipient('ops@example.com', '', 'Operations'));
+	$channel->notify($notification, new CactiRecipient('ops@EXAMPLE.com', '', 'Operations'));
 
 	expect($args[1])->toBe([
-		['email' => 'ops@example.com',   'name' => 'Operations'],
+		['email' => 'ops@EXAMPLE.com',   'name' => 'Operations'],
+		['email' => 'other@example.com', 'name' => ''],
+	]);
+});
+
+test('the email channel keeps addresses that differ only in the local part', function () {
+	$args    = [];
+	$channel = new CactiEmailChannel(function (...$received) use (&$args) : string {
+		$args = $received;
+
+		return '';
+	});
+	$notification = new CactiNotification('Alert', 'Down', ['email'], [
+		'email' => ['to' => 'ops@example.com'],
+	]);
+
+	$channel->notify($notification, new CactiRecipient('OPS@example.com', '', 'Operations'));
+
+	expect($args[1])->toBe([
+		['email' => 'OPS@example.com', 'name' => 'Operations'],
+		['email' => 'ops@example.com', 'name' => ''],
+	]);
+});
+
+test('the email channel deduplicates domainless sendmail addresses', function () {
+	$args    = [];
+	$channel = new CactiEmailChannel(function (...$received) use (&$args) : string {
+		$args = $received;
+
+		return '';
+	});
+	$notification = new CactiNotification('Alert', 'Down', ['email'], [
+		'email' => ['to' => 'root,other@example.com'],
+	]);
+
+	$channel->notify($notification, new CactiRecipient('root', '', 'Operations'));
+
+	expect($args[1])->toBe([
+		['email' => 'root',              'name' => 'Operations'],
 		['email' => 'other@example.com', 'name' => ''],
 	]);
 });
