@@ -2099,10 +2099,9 @@ function user() {
 			'default' => ''
 		),
 		'group' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '-1',
-			'pageset' => true,
-			'options' => array('options' => 'sanitize_search_string')
+			'pageset' => true
 		),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
