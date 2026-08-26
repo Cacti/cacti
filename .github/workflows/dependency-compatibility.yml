@@ -57,6 +57,17 @@ jobs:
       - name: Smoke-test the production autoloader
         run: php -r "require 'include/vendor/autoload.php';"
 
+      - name: Keep extension diagnostics in the Cacti installer
+        run: |
+          set -euo pipefail
+          test "$(composer config platform-check)" = php-only
+          grep -Fq 'PHP_VERSION_ID' include/vendor/composer/platform_check.php
+          if grep -Fq 'extension_loaded(' include/vendor/composer/platform_check.php; then
+            echo 'Composer platform check unexpectedly enforces PHP extensions' >&2
+            exit 1
+          fi
+          php -n -r "require 'include/vendor/autoload.php';"
+
   native-dependencies:
     name: PHP ${{ matrix.php }} native dependencies
     runs-on: ubuntu-24.04
