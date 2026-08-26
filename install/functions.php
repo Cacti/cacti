@@ -66,20 +66,7 @@ function prime_default_settings() {
 }
 
 function install_create_csrf_secret($file) {
-	if (!file_exists($file)) {
-		if (is_resource_writable($file)) {
-			// Write the file
-			$fh = fopen($file, 'w');
-			fwrite($fh, csrf_get_secret());
-			fclose($fh);
-
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	return true;
+	return csrf_write_secret_atomic($file, csrf_generate_secret());
 }
 
 function install_test_local_database_connection() {
