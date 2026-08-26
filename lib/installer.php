@@ -516,16 +516,10 @@ class Installer implements JsonSerializable {
 			'scripts'        => $config['base_path'] . '/scripts',
 		);
 
-		$csrf_path = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
 		if (!empty($config['path_csrf_secret'])) {
-			$csrf_path = $config['path_csrf_secret'];
+			$csrf_path = cacti_csrf_external_secret_path($config['path_csrf_secret']);
+			$install_paths['csrf'] = $csrf_path;
 		}
-
-		if (is_dir($csrf_path)) {
-			$csrf_path = rtrim($csrf_path === null ? '' : $csrf_path, '/') . '/csrf-secret.php';
-		}
-
-		$install_paths['csrf'] = $csrf_path;
 
 		$always_paths = array(
 			'sys_temp'  => sys_get_temp_dir(),
@@ -547,23 +541,15 @@ class Installer implements JsonSerializable {
 				$valid = (is_resource_writable($path . '/'));
 				$permissions[$install_key][$path . '/'] = $valid;
 			} else {
-				$valid = false;
-
-				// Lets see if this is the CSRF secret
 				if ($name == 'csrf') {
-
-					// Does it exist?
-					if (file_exists($path)) {
-
-						// Lets get the contents and make sure we have something at least
-						$csrf_secret = file_get_contents($path);
-						$valid = !empty($csrf_secret);
-					}
-				}
-
-				// If we aren't valid at this point, we aren't CSRF
-				// or the CSRF was empty
-				if (!$valid) {
+					$safe = cacti_csrf_external_path_is_safe($path);
+					$secret = $safe ? cacti_csrf_read_external_secret($path) : '';
+					$valid = $safe && (
+						cacti_csrf_secret_is_valid($secret) ||
+						(is_file($path) && is_writable($path)) ||
+						(!file_exists($path) && is_writable(dirname($path)))
+					);
+				} else {
 					// Lets me sure this path is writable
 					$valid = (is_resource_writable($path));
 				}
@@ -670,29 +656,56 @@ class Installer implements JsonSerializable {
 		return $rrdver;
 	}
 
-	/* setCSRFSecret() - Initializes the csrf secret file for csrf protection */
+	/* setCSRFSecret() - Initializes the installer-owned CSRF secret */
 	private function setCSRFSecret() {
 		global $config;
 
 		$this->setProgress(Installer::PROGRESS_CSRF_BEGIN);
 
+		$legacy_path = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
+		$secret = '';
+
 		if (!empty($config['path_csrf_secret'])) {
-			$path_csrf_secret = $config['path_csrf_secret'];
-			log_install_debug('csrf', 'setCSRFSecret(): secret ' . $path_csrf_secret);
+			$path_csrf_secret = cacti_csrf_external_secret_path($config['path_csrf_secret']);
+			if (!cacti_csrf_external_path_is_safe($path_csrf_secret)) {
+				$this->addError(Installer::STEP_PERMISSION_CHECK, 'CSRF', $path_csrf_secret, __('The external CSRF secret must be outside the Cacti document root'));
+				$this->setProgress(Installer::PROGRESS_CSRF_END);
 
-			$secret = @file_exists($path_csrf_secret) ? file_get_contents($path_csrf_secret) : '';
-			log_install_debug('csrf', 'setCSRFSecret(): secret ' . (empty($secret)?'not ': '') . 'empty');
-
-			if (empty($secret)) {
-				if (is_resource_writable($path_csrf_secret)) {
-					log_install_medium('csrf', 'setCSRFSecret(): Updated CSRF secret - "' . $path_csrf_secret . '"');
-					install_create_csrf_secret($path_csrf_secret);
-				} else {
-					log_install_high('csrf', 'setCSRFSecret(): Unable to create file - "' . $path_csrf_secret . '"');
-				}
-			} else {
-				log_install_debug('csrf', 'setCSRFSecret(): Secret already exists - "' . $path_csrf_secret . '"');
+				return;
 			}
+
+			$secret = cacti_csrf_read_external_secret($path_csrf_secret);
+
+			if (!cacti_csrf_secret_is_valid($secret)) {
+				$secret = csrf_generate_secret();
+				if (!csrf_write_secret_atomic($path_csrf_secret, $secret)) {
+					$this->addError(Installer::STEP_PERMISSION_CHECK, 'CSRF', $path_csrf_secret, __('Unable to create the external CSRF secret'));
+					log_install_high('csrf', 'setCSRFSecret(): Unable to create external secret');
+					$this->setProgress(Installer::PROGRESS_CSRF_END);
+
+					return;
+				}
+			}
+		} else {
+			$secret = read_config_option('csrf_secret', true);
+
+			if (!cacti_csrf_secret_is_valid($secret)) {
+				$secret = csrf_generate_secret();
+			}
+
+			set_config_option('csrf_secret', $secret, true);
+			$stored_secret = read_config_option('csrf_secret', true);
+			if (!is_string($stored_secret) || !hash_equals($secret, $stored_secret)) {
+				$this->addError(Installer::STEP_PERMISSION_CHECK, 'CSRF', 'settings', __('Unable to persist the CSRF secret'));
+				log_install_high('csrf', 'setCSRFSecret(): Unable to verify database secret');
+				$this->setProgress(Installer::PROGRESS_CSRF_END);
+
+				return;
+			}
+		}
+
+		if (file_exists($legacy_path) && is_writable($legacy_path)) {
+			@unlink($legacy_path);
 		}
 
 		$this->setProgress(Installer::PROGRESS_CSRF_END);
@@ -3084,9 +3097,8 @@ class Installer implements JsonSerializable {
 
 		$this->setProgress(Installer::PROGRESS_START);
 
-		$this->setCSRFSecret();
-
 		$this->convertDatabase();
+		$this->setCSRFSecret();
 
 		if ($this->mode == Installer::MODE_POLLER) {
 			$failure = $this->installPoller();

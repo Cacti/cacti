@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.x
 -issue: Keep missing PHP extensions visible to the Cacti installer (PR #7747 follow-up)
+-issue#7801: Harden CSRF secret storage and state-changing browser request handoffs
 -issue: Url encode the base64 regex filter before it reaches the query string (PR #7777)
 -issue: Make 1.2 dependency builds reproducible (PR #7747)
 -issue: Propagate background installation failures (PR #7630)

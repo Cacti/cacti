@@ -33,14 +33,17 @@ set_default_action();
 
 switch (get_request_var('action')) {
 	case 'save':
+		csrf_require_post();
 		form_save();
 
 		break;
 	case 'actions':
+		csrf_require_post();
 		form_actions();
 
 		break;
 	case 'remove':
+		csrf_require_post();
 		color_remove();
 
 		header ('Location: color.php');
@@ -772,4 +775,3 @@ function color_export() {
 		}
 	}
 }
-

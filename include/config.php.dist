@@ -134,9 +134,11 @@ $disable_log_rotation = false;
 //$php_snmp_support = false;
 
 /**
- * Optional parameter to define the path of the csrf_secret.php path.  This
- * variable is for packagers who wish to specify an alternate location of
- * the CRSF secret file.
+ * By default, the installer stores the CSRF secret in the Cacti settings
+ * table. Packagers may instead define an external secret file. The file must
+ * be outside the Cacti document root and its parent directory must already
+ * exist. It must contain between 32 and 4096 bytes. Runtime web requests never
+ * create this file.
  */
 
 //$path_csrf_secret = '/usr/share/cacti/resource/csrf-secret.php';
