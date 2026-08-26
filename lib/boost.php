@@ -1990,12 +1990,17 @@ function boost_poller_bottom() : void {
 		$command_string = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
 
 		if ($boost_debug && $boost_log != '') {
+			// exec_background() passes redirect_args to the shell unescaped, so
+			// the admin-set path must be quoted here or it becomes command
+			// injection (issue#7476, forward-port of the release/1.2.31 fix).
+			$safe_log = cacti_escapeshellarg($boost_log);
+
 			if (CACTI_SERVER_OS == 'unix') {
 				$extra_args    = '-q ' . CACTI_PATH_BASE . '/poller_boost.php --debug';
-				$redirect_args =  '>> ' . $boost_log . ' 2>&1';
+				$redirect_args =  '>> ' . $safe_log . ' 2>&1';
 			} else {
 				$extra_args    = '-q ' . CACTI_PATH_BASE . '/poller_boost.php --debug';
-				$redirect_args = '>> ' . $boost_log;
+				$redirect_args = '>> ' . $safe_log;
 			}
 		} else {
 			$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_boost.php';
