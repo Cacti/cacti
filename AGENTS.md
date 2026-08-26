@@ -70,3 +70,19 @@ composer test -- --testsuite=Unit
 
 Match the PHP version declared by `composer.json` and the CI matrix rather than
 whatever is on `PATH`. Report which version produced a result.
+
+## Never vendor dependencies
+
+Do not add, copy, or update third-party package source under `include/vendor/`
+or elsewhere in the repository. Existing vendored dependencies may be removed
+by an in-scope change, but must not be expanded or refreshed.
+
+Add PHP dependencies through Composer: update `composer.json`, update and commit
+`composer.lock`, and let `composer install` install the locked packages in local
+development, CI, and release builds. Do not commit Composer-installed package
+trees or hand-edit Composer-generated autoload metadata. Validate dependency
+changes with `composer validate` and a clean `composer install`.
+
+If a third-party asset cannot be managed through Composer, stop and document
+the concrete packaging requirement before adding files. Do not silently create
+a vendored exception.
