@@ -1,0 +1,248 @@
+name: Release artifact provenance
+
+on:
+  push:
+    tags:
+      - 'release/**'
+  pull_request:
+    branches: ['1.2.x']
+    paths:
+      - composer.json
+      - composer.lock
+      - '.github/actions/setup-php-composer/**'
+      - '.github/workflows/release-artifact.yml'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version label for a manually built snapshot.
+        required: true
+        default: snapshot
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-artifact-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+env:
+  COMPOSER_ALLOW_SUPERUSER: 1
+
+jobs:
+  build:
+    name: Build and verify self-contained release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+
+    steps:
+      - name: Checkout immutable release source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP 8.0 release toolchain
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.0'
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          coverage: none
+          dependency-mode: 1.2-locked-release
+
+      - name: Build deterministic production tree
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REQUESTED_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$GITHUB_REF" == refs/tags/release/* ]]; then
+            version="${GITHUB_REF#refs/tags/release/}"
+          elif [[ -n "$PR_NUMBER" ]]; then
+            version="pr-$PR_NUMBER"
+          else
+            version="$REQUESTED_VERSION"
+          fi
+
+          safe_version="${version//[^A-Za-z0-9._-]/-}"
+          test -n "$safe_version"
+
+          release_root="$PWD/.release-stage"
+          package_dir="$release_root/cacti-$safe_version"
+          mkdir -p "$package_dir" dist
+          git archive HEAD | tar -x -C "$package_dir"
+
+          # Prove that the release obtains managed packages from composer.lock,
+          # rather than accidentally relying on their historical tracked trees.
+          # The list comes from the lock so it cannot drift as packages change.
+          php -r '
+            $lock = json_decode(file_get_contents($argv[1] . "/composer.lock"), true, 512, JSON_THROW_ON_ERROR);
+            foreach ($lock["packages"] as $package) {
+                echo $package["name"], "\n";
+            }
+          ' "$package_dir" | while IFS= read -r managed; do
+            case "$managed" in
+              */*) rm -rf "${package_dir:?}/include/vendor/$managed" ;;
+            esac
+          done
+
+          rm -rf \
+            "${package_dir:?}/include/vendor/composer" \
+            "${package_dir:?}/include/vendor/autoload.php"
+
+          composer --working-dir="$package_dir" install \
+            --no-dev --optimize-autoloader \
+            --prefer-dist --no-progress --no-interaction
+          composer --working-dir="$package_dir" check-platform-reqs --no-dev
+          composer --working-dir="$package_dir" audit --locked
+
+          PACKAGE_DIR="$package_dir" php <<'PHP'
+          <?php
+          $packageDir = getenv('PACKAGE_DIR');
+          $lock = json_decode(
+              file_get_contents($packageDir . '/composer.lock'),
+              true,
+              512,
+              JSON_THROW_ON_ERROR
+          );
+          $lockedVersion = null;
+
+          foreach ($lock['packages'] as $package) {
+              if ($package['name'] === 'phpseclib/phpseclib') {
+                  $lockedVersion = $package['version'];
+                  break;
+              }
+          }
+
+          if ($lockedVersion === null) {
+              fwrite(STDERR, "phpseclib is missing from composer.lock\n");
+              exit(1);
+          }
+
+          require $packageDir . '/include/vendor/autoload.php';
+
+          if (!\Composer\InstalledVersions::isInstalled('phpseclib/phpseclib')) {
+              fwrite(STDERR, "phpseclib is not installed through Composer\n");
+              exit(1);
+          }
+
+          if (\Composer\InstalledVersions::getPrettyVersion('phpseclib/phpseclib') !== $lockedVersion) {
+              fwrite(STDERR, "phpseclib does not match composer.lock\n");
+              exit(1);
+          }
+
+          if (!class_exists(\phpseclib3\Crypt\RSA::class)) {
+              fwrite(STDERR, "phpseclib is not autoloadable\n");
+              exit(1);
+          }
+          PHP
+
+          source_epoch="$(git show -s --format=%ct HEAD)"
+          artifact="dist/cacti-$safe_version.tar.gz"
+          tar --sort=name \
+            --mtime="@$source_epoch" \
+            --owner=0 --group=0 --numeric-owner \
+            -cf - \
+            -C "$release_root" "cacti-$safe_version" \
+            | gzip -n > "$artifact"
+          sha256sum "$artifact" > "$artifact.sha256"
+
+          {
+            echo "artifact=$artifact"
+            echo "package_name=cacti-$safe_version"
+            echo "package_source=/src/.release-stage/cacti-$safe_version"
+          } >> "$GITHUB_ENV"
+
+      - name: Verify extracted archive without Composer
+        run: |
+          set -euo pipefail
+          mkdir -p .release-smoke
+          tar -xzf "$artifact" -C .release-smoke
+
+          PACKAGE_DIR="$PWD/.release-smoke/$package_name" php <<'PHP'
+          <?php
+          require getenv('PACKAGE_DIR') . '/include/vendor/autoload.php';
+
+          if (!class_exists(phpseclib3\Crypt\RSA::class)) {
+              fwrite(STDERR, "The extracted release cannot autoload phpseclib\n");
+              exit(1);
+          }
+
+          if (!class_exists(HTMLPurifier::class)) {
+              fwrite(STDERR, "The extracted release cannot autoload HTML Purifier\n");
+              exit(1);
+          }
+          PHP
+
+      - name: Generate CycloneDX SBOM
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            --volume "${PWD}:/src" \
+            --workdir /src \
+            anchore/syft@sha256:678bfa565b60f747aac0f8e964fe5588a24445b8d0a480e91f6efd70020dfbb0 \
+            "dir:${package_source}" \
+            --output "cyclonedx-json=${artifact}.cdx.json"
+
+      - name: Upload release bundle
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: cacti-release-${{ github.run_id }}
+          path: |
+            ${{ env.artifact }}
+            ${{ env.artifact }}.sha256
+            ${{ env.artifact }}.cdx.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Attest release provenance
+        if: github.event_name != 'pull_request'
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: ${{ env.artifact }}
+
+  publish:
+    name: Attach the artifact to the release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/release/')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+
+    steps:
+      - name: Download the built bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          gh run download "$GITHUB_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name "cacti-release-$GITHUB_RUN_ID" \
+            --dir dist
+
+          # Fail loudly rather than handing gh an unmatched glob.
+          count=$(find dist -type f | wc -l)
+          test "$count" -gt 0
+
+      - name: Attach the bundle to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF#refs/tags/}"
+
+          # The tag can arrive before anyone opens the release. Create it as a
+          # draft so an artifact is never published without a human.
+          if ! gh release view "$tag" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release create "$tag" --repo "$GITHUB_REPOSITORY" --draft --title "$tag" \
+              --notes 'Download the cacti-*.tar.gz asset rather than the generated source archive. Only the asset carries the Composer dependencies.'
+          fi
+
+          find dist -type f -print0 | xargs -0 gh release upload "$tag" --repo "$GITHUB_REPOSITORY" --clobber
+

@@ -35,31 +35,37 @@ set_default_action();
 
 switch (get_request_var('action')) {
 	case 'save':
+		csrf_require_post();
 		form_save();
 
 		break;
 	case 'ajax_dnd':
+		csrf_require_post();
 		automation_template_dnd();
 
 		break;
 	case 'actions':
+		csrf_require_post();
 		form_actions();
 
 		break;
-    case 'movedown':
-        automation_movedown();
+	case 'movedown':
+		csrf_require_post();
+		automation_movedown();
 
-        header('Location: automation_templates.php?header=false');
+		header('Location: automation_templates.php?header=false');
 		break;
-    case 'moveup':
-        automation_moveup();
+	case 'moveup':
+		csrf_require_post();
+		automation_moveup();
 
-        header('Location: automation_templates.php?header=false');
+		header('Location: automation_templates.php?header=false');
 		break;
-    case 'remove':
-        automation_remove();
+	case 'remove':
+		csrf_require_post();
+		automation_remove();
 
-        header('Location: automation_templates.php?header=false');
+		header('Location: automation_templates.php?header=false');
 		break;
 	case 'edit':
 		top_header();
@@ -525,13 +531,13 @@ function template() {
 			if (read_config_option('drag_and_drop') == '') {
 				$add_text = '';
 				if ($i < $total_items && $total_items > 1) {
-					$add_text .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
+					$add_text .= '<a class="pic fa fa-caret-down moveArrow cactiPostAction" href="' . html_escape('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
 
 				if ($i > 1 && $i <= $total_items) {
-					$add_text .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __esc('Move Up') . '"></a>';
+					$add_text .= '<a class="pic fa fa-caret-up moveArrow cactiPostAction" href="' . html_escape('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __esc('Move Up') . '"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
@@ -574,7 +580,7 @@ function template() {
 
         $('#template_ids').tableDnD({
             onDrop: function(table, row) {
-                loadPageNoHeader('automation_templates.php?action=ajax_dnd&'+$.tableDnD.serialize());
+				loadPageUsingPostUrl('automation_templates.php?action=ajax_dnd&'+$.tableDnD.serialize(), 'main');
             }
         });
 		<?php } ?>
@@ -583,4 +589,3 @@ function template() {
 	</script>
 	<?php
 }
-

@@ -26,8 +26,19 @@ CsrfMagic = function(real) {
 
 CsrfMagic.prototype = {
 
-	open: function(method, url, async, username, password) {
-		if (method == 'POST') this.csrf_isPost = true;
+    open: function(method, url, async, username, password) {
+        var isLocalPost = false;
+        try {
+            isLocalPost = method.toUpperCase() == 'POST' &&
+                new URL(url, window.location.href).origin === window.location.origin;
+        } catch (error) {
+            isLocalPost = false;
+        }
+        if (isLocalPost) {
+			this.csrf_isPost = true;
+		} else {
+			delete this.csrf_isPost;
+		}
 		// deal with Opera bug, thanks jQuery
 		if (username) return this.csrf_open(method, url, async, username, password);
 		else return this.csrf_open(method, url, async);
@@ -39,14 +50,20 @@ CsrfMagic.prototype = {
 
 	send: function(data) {
 		if (!this.csrf_isPost) return this.csrf_send(data);
-		prepend = csrfMagicName + '=' + csrfMagicToken + '&';
+		var prepend = encodeURIComponent(csrfMagicName) + '=' + encodeURIComponent(csrfMagicToken) + '&';
 		delete this.csrf_isPost;
 
-		if (typeof data == 'object') {
+		if (typeof FormData != 'undefined' && data instanceof FormData) {
+			data.set(csrfMagicName, csrfMagicToken);
+			prepend = data;
+		} else if (typeof URLSearchParams != 'undefined' && data instanceof URLSearchParams) {
+			data.set(csrfMagicName, csrfMagicToken);
+			prepend = data;
+        } else if (data !== null && typeof data == 'object') {
 			prepend = data;
 			prepend[csrfMagicName] = csrfMagicToken;
 		} else {
-			prepend = csrfMagicName + '=' + csrfMagicToken;
+			prepend = encodeURIComponent(csrfMagicName) + '=' + encodeURIComponent(csrfMagicToken);
 			if (data) prepend = prepend + '&' + data;
 		}
 		return this.csrf_send(prepend);
@@ -90,11 +107,12 @@ CsrfMagic.prototype._updateProps = function() {
 	}
 }
 CsrfMagic.process = function(base) {
+	var prepend;
 	if (typeof base == 'object') {
 		prepend = base;
 		prepend[csrfMagicName] = csrfMagicToken;
 	} else {
-		var prepend = csrfMagicName + '=' + csrfMagicToken;
+		prepend = csrfMagicName + '=' + csrfMagicToken;
 		if (base) prepend = prepend + '&' + base;
 	}
 	return prepend;
@@ -103,10 +121,15 @@ CsrfMagic.process = function(base) {
 CsrfMagic.end = function() {
 	// This rewrites forms AGAIN, so in case buffering didn't work this
 	// certainly will.
-	forms = document.getElementsByTagName('form');
+	var forms = document.getElementsByTagName('form');
 	for (var i = 0; i < forms.length; i++) {
-		form = forms[i];
+		var form = forms[i];
 		if (form.method.toUpperCase() !== 'POST') continue;
+        try {
+            if (new URL(form.action, window.location.href).origin !== window.location.origin) continue;
+        } catch (error) {
+            continue;
+        }
 		if (form.elements[csrfMagicName]) continue;
 		var input = document.createElement('input');
 		input.setAttribute('name',  csrfMagicName);
@@ -142,7 +165,14 @@ if (window.XMLHttpRequest && window.XMLHttpRequest.prototype && '\v' != 'v') {
 		// to do this the hard way.
 		jQuery.csrf_ajax = jQuery.ajax;
 		jQuery.ajax = function( s ) {
-			if (s.type && s.type.toUpperCase() == 'POST') {
+			var isLocalPost = false;
+			try {
+				isLocalPost = s.type && s.type.toUpperCase() == 'POST' &&
+					new URL(s.url, window.location.href).origin === window.location.origin;
+			} catch (error) {
+				isLocalPost = false;
+			}
+			if (isLocalPost) {
 				s = jQuery.extend(true, s, jQuery.extend(true, {}, jQuery.ajaxSettings, s));
 				if ( s.data && s.processData && typeof s.data != "string" ) {
 					s.data = jQuery.param(s.data);
@@ -169,7 +199,7 @@ if (window.XMLHttpRequest && window.XMLHttpRequest.prototype && '\v' != 'v') {
 		// old YUI API
 		YAHOO.util.Connect.csrf_createXhrObject = YAHOO.util.Connect.createXhrObject;
 		YAHOO.util.Connect.createXhrObject = function (transaction) {
-			obj = YAHOO.util.Connect.csrf_createXhrObject(transaction);
+			var obj = YAHOO.util.Connect.csrf_createXhrObject(transaction);
 			obj.conn = new CsrfMagic(obj.conn);
 			return obj;
 		}
@@ -180,7 +210,7 @@ if (window.XMLHttpRequest && window.XMLHttpRequest.prototype && '\v' != 'v') {
 		// it for comprehensiveness's sake.
 		Ext.lib.Ajax.csrf_createXhrObject = Ext.lib.Ajax.createXhrObject;
 		Ext.lib.Ajax.createXhrObject = function (transaction) {
-			obj = Ext.lib.Ajax.csrf_createXhrObject(transaction);
+			var obj = Ext.lib.Ajax.csrf_createXhrObject(transaction);
 			obj.conn = new CsrfMagic(obj.conn);
 			return obj;
 		}
@@ -193,4 +223,3 @@ if (window.XMLHttpRequest && window.XMLHttpRequest.prototype && '\v' != 'v') {
 		}
 	}
 }
-
