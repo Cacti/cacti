@@ -69,7 +69,7 @@
         "platform": {
             "php": "8.0.0"
         },
-        "platform-check": true,
+        "platform-check": "php-only",
         "sort-packages": true,
         "vendor-dir": "./include/vendor"
     }
