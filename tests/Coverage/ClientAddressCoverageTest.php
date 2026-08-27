@@ -22,12 +22,6 @@
  +-------------------------------------------------------------------------+
 */
 
-if (!function_exists('cacti_sizeof')) {
-	function cacti_sizeof(mixed $value) : int {
-		return is_array($value) ? count($value) : 0;
-	}
-}
-
 require_once CACTI_PATH_LIBRARY . '/client_address.php';
 
 test('trusted match rejects an empty address or an empty list', function () : void {
