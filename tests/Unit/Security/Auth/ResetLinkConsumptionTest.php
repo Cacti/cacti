@@ -83,3 +83,23 @@ test('the consumption query in source does not gate on password_change', functio
 		->and($consume)->toContain('AND enabled = "on"')
 		->and($consume)->not->toContain('AND password_change = "on"');
 });
+
+test('issuing a reset link replaces all outstanding links under a user-row lock', function () use ($root) {
+	$auth = file_get_contents($root . '/lib/auth.php');
+
+	expect($auth)->toContain('function auth_reset_token_replace(')
+		->and($auth)->toContain('FOR UPDATE')
+		->and($auth)->toContain('DELETE FROM user_auth_reset_hashes WHERE user_id = ?');
+});
+
+test('successful reset revalidates the token under lock and revokes sibling credentials', function () use ($root) {
+	$reset = file_get_contents($root . '/auth_resetpassword.php');
+	$body  = substr($reset, strpos($reset, "case 'resetpassword'"));
+
+	expect($body)->toContain('AND hash = ?')
+		->and($body)->toContain('FOR UPDATE')
+		->and($body)->toContain("DELETE FROM user_auth_reset_hashes\n\t\t\t\tWHERE user_id = ?")
+		->and($body)->toContain('DELETE FROM user_auth_cache WHERE user_id = ?')
+		->and($body)->toContain('DELETE FROM sessions WHERE user_id = ?')
+		->and($body)->not->toContain("DELETE FROM user_auth_reset_hashes\n\t\t\t\tWHERE hash = ?");
+});

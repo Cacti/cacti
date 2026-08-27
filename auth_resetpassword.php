@@ -76,23 +76,22 @@ switch ($action) {
 		if (cacti_sizeof($user) && $user['email_address'] != '') {
 			$hash = generate_hash();
 
-			db_execute_prepared('INSERT INTO user_auth_reset_hashes
-				(user_id, hash, expiry)
-				VALUES (?, ?, date_add(now(), interval ? minute))',
-				[$user['id'], $hash, read_config_option('secnotify_resetlink_timeout')]);
+			if (auth_reset_token_replace($user['id'], $hash, (int) read_config_option('secnotify_resetlink_timeout'))) {
+				$replacement = [
+					read_config_option('base_url') . CACTI_PATH_URL,
+					$user['username'],
+					read_config_option('base_url') . CACTI_PATH_URL . 'auth_resetpassword.php?action=formreset&hash=' . $hash
+				];
 
-			$replacement = [
-				read_config_option('base_url') . CACTI_PATH_URL,
-				$user['username'],
-				read_config_option('base_url') . CACTI_PATH_URL . 'auth_resetpassword.php?action=formreset&hash=' . $hash
-			];
+				$search = ['<CACTIURL>', '<USERNAME>', '<PWDRESETLINK>'];
 
-			$search = ['<CACTIURL>', '<USERNAME>', '<PWDRESETLINK>'];
+				$body = str_replace($search, $replacement, read_config_option('secnotify_chpass_message'));
 
-			$body = str_replace($search, $replacement, read_config_option('secnotify_chpass_message'));
-
-			send_mail($user['email_address'], null, read_config_option('secnotify_chpass_subject'), $body, [], [],  true);
-			cacti_log(sprintf('NOTE: Reset password request for user %s from IP %s', $user['username'], get_client_addr()), false, 'SYSTEM');
+				send_mail($user['email_address'], null, read_config_option('secnotify_chpass_subject'), $body, [], [],  true);
+				cacti_log(sprintf('NOTE: Reset password request for user %s from IP %s', $user['username'], get_client_addr()), false, 'SYSTEM');
+			} else {
+				cacti_log(sprintf('ERROR: Unable to replace password reset token for user %s', $user['username']), false, 'AUTH');
+			}
 		} else {
 			cacti_log(sprintf('NOTE: Reset password request for unknown user "%s" from IP %s', db_qstr($identity), get_client_addr()), false, 'SYSTEM');
 		}
@@ -172,13 +171,49 @@ switch ($action) {
 
 		// If password isn't blank, password change is good to go
 		if ($password != '') {
+			db_check_password_length();
+
+			if (!db_begin_transaction()) {
+				$errorMessage = "<span class='badpassword_message'>" . __('Unable to securely consume the password reset link.') . '</span>';
+				$action       = 'formidentity';
+
+				break;
+			}
+
+			$locked_user = db_fetch_cell_prepared('SELECT id
+				FROM user_auth
+				WHERE id = ?
+				AND realm = 0
+				AND enabled = "on"
+				FOR UPDATE',
+				[$user['id']]);
+
+			$locked_token_user = db_fetch_cell_prepared('SELECT user_id
+				FROM user_auth_reset_hashes
+				WHERE user_id = ?
+				AND hash = ?
+				AND expiry > NOW()
+				FOR UPDATE',
+				[$user['id'], $user_hash]);
+
+			if ((int) $locked_user !== (int) $user['id'] ||
+				(int) $locked_token_user !== (int) $user['id']) {
+				db_rollback_transaction();
+				$errorMessage = "<span class='badpassword_message'>" . __('Incorrect resetlink hash') . '</span>';
+				$action       = 'formidentity';
+
+				break;
+			}
+
+			$reset_ok = true;
+
 			if (read_config_option('secpass_expirepass') > 0) {
-				db_execute_prepared("UPDATE user_auth
+				$reset_ok = db_execute_prepared("UPDATE user_auth
 					SET lastchange = ?
 					WHERE id = ?
 					AND realm = 0
 					AND enabled = 'on'",
-					[time(), $user['id']]);
+					[time(), $user['id']]) !== false;
 			}
 
 			$history = intval(read_config_option('secpass_history'));
@@ -201,29 +236,37 @@ switch ($action) {
 				$h[] = $op;
 				$h   = implode('|', $h);
 
-				db_execute_prepared("UPDATE user_auth
+				$reset_ok = $reset_ok && db_execute_prepared("UPDATE user_auth
 					SET password_history = ?
 					WHERE id = ?
 					AND realm = 0
 					AND enabled = 'on'",
-					[$h, $user['id']]);
+					[$h, $user['id']]) !== false;
 			}
 
-			db_execute_prepared('INSERT IGNORE INTO user_log
+			$reset_ok = $reset_ok && db_execute_prepared('INSERT IGNORE INTO user_log
 				(username, result, time, ip)
 				VALUES (?, 3, NOW(), ?)',
-				[$user['username'], get_client_addr()]);
+				[$user['username'], get_client_addr()]) !== false;
 
-			db_check_password_length();
-
-			db_execute_prepared("UPDATE user_auth
+			$reset_ok = $reset_ok && db_execute_prepared("UPDATE user_auth
 				SET must_change_password = '', password = ?
 				WHERE id = ?",
-				[compat_password_hash($password,PASSWORD_DEFAULT), $user['id']]);
+				[compat_password_hash($password, PASSWORD_DEFAULT), $user['id']]) !== false;
 
-			db_execute_prepared('DELETE FROM user_auth_reset_hashes
-				WHERE hash = ?',
-				[$user_hash]);
+			$reset_ok = $reset_ok && db_execute_prepared('DELETE FROM user_auth_reset_hashes
+				WHERE user_id = ?',
+				[$user['id']]) !== false;
+			$reset_ok = $reset_ok && db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', [$user['id']]) !== false;
+			$reset_ok = $reset_ok && db_execute_prepared('DELETE FROM sessions WHERE user_id = ?', [$user['id']]) !== false;
+
+			if (!$reset_ok || !db_commit_transaction()) {
+				db_rollback_transaction();
+				$errorMessage = "<span class='badpassword_message'>" . __('Unable to securely consume the password reset link.') . '</span>';
+				$action       = 'formidentity';
+
+				break;
+			}
 
 			raise_message('password_success');
 

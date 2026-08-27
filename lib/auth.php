@@ -670,6 +670,47 @@ function user_enable(int $user_id) : void {
 }
 
 /**
+ * Replace every outstanding password-reset token for a local user.
+ *
+ * Locking the user row serializes the self-service and administrator issuance
+ * paths, so concurrent requests cannot leave multiple valid reset links.
+ *
+ * @param int    $user_id         The local user receiving the token
+ * @param string $hash            Cryptographically random reset-token hash
+ * @param int    $timeout_minutes Token lifetime in minutes
+ *
+ * @return bool True when the replacement token was committed
+ */
+function auth_reset_token_replace(int $user_id, string $hash, int $timeout_minutes) : bool {
+	if ($user_id <= 0 || $hash === '' || $timeout_minutes <= 0 || !db_begin_transaction()) {
+		return false;
+	}
+
+	$locked_user = db_fetch_cell_prepared('SELECT id
+		FROM user_auth
+		WHERE id = ?
+		AND realm = 0
+		AND enabled = "on"
+		FOR UPDATE',
+		[$user_id]);
+
+	$success = (int) $locked_user === $user_id &&
+		db_execute_prepared('DELETE FROM user_auth_reset_hashes WHERE user_id = ?', [$user_id]) !== false &&
+		db_execute_prepared('INSERT INTO user_auth_reset_hashes
+			(user_id, hash, expiry)
+			VALUES (?, ?, date_add(now(), interval ? minute))',
+			[$user_id, $hash, $timeout_minutes]) !== false;
+
+	if ($success && db_commit_transaction()) {
+		return true;
+	}
+
+	db_rollback_transaction();
+
+	return false;
+}
+
+/**
  * Retrieves the authentication realms based on the configured authentication method.
  *
  * @param bool $login Whether the function is being called during a login process. Default is false.

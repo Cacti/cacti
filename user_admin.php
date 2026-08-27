@@ -584,28 +584,31 @@ function form_save() : void {
 			$user_id = sql_save($save, 'user_auth');
 
 			if ($user_id) {
+				$reset_link_created = false;
+
 				if (($save['id'] == 0 && read_config_option('secnotify_newuser') == 'on') ||
 					($save['id'] > 0 && read_config_option('secnotify_chpass') == 'on')) {
 					$hash = generate_hash();
 
-					$replacement = [
-						read_config_option('base_url') . CACTI_PATH_URL,
-						$save['username'],
-						read_config_option('base_url') . CACTI_PATH_URL . 'auth_resetpassword.php?action=formreset&hash=' . $hash
-					];
+					if (auth_reset_token_replace($user_id, $hash, (int) read_config_option('secnotify_resetlink_timeout'))) {
+						$replacement = [
+							read_config_option('base_url') . CACTI_PATH_URL,
+							$save['username'],
+							read_config_option('base_url') . CACTI_PATH_URL . 'auth_resetpassword.php?action=formreset&hash=' . $hash
+						];
 
-					$search = ['<CACTIURL>', '<USERNAME>', '<PWDRESETLINK>'];
-
-					db_execute_prepared('INSERT INTO user_auth_reset_hashes
-						(user_id, hash, expiry)
-						VALUES (?, ?, date_add(now(), interval ? minute))',
-						[$user_id, $hash, read_config_option('secnotify_resetlink_timeout')]);
+						$search             = ['<CACTIURL>', '<USERNAME>', '<PWDRESETLINK>'];
+						$reset_link_created = true;
+					} else {
+						$search = $replacement = '';
+						raise_message('reset_token_error', __('Unable to securely issue the password reset link.'), MESSAGE_LEVEL_ERROR);
+					}
 				} else {
 					$search = $replacement = '';
 				}
 
 				if ($save['id'] == 0) {
-					if ($save['email_address'] && read_config_option('secnotify_newuser') == 'on') {
+					if ($reset_link_created && $save['email_address'] && read_config_option('secnotify_newuser') == 'on') {
 						$body = str_replace($search, $replacement, read_config_option('secnotify_newuser_message'));
 
 						send_mail($save['email_address'], null, read_config_option('secnotify_newuser_subject'), $body, [], [],  true);
@@ -615,7 +618,7 @@ function form_save() : void {
 				}
 
 				if ($save['id'] > 0) {
-					if ($save['email_address'] && read_config_option('secnotify_chpass') == 'on') {
+					if ($reset_link_created && $save['email_address'] && read_config_option('secnotify_chpass') == 'on') {
 						$body = str_replace($search, $replacement, read_config_option('secnotify_chpass_message'));
 
 						send_mail($save['email_address'], null, read_config_option('secnotify_chpass_subject'), $body, [], [],  true);
