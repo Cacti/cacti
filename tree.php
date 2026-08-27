@@ -84,6 +84,19 @@ if (get_request_var('action') != '') {
 	/* ================= input validation ================= */
 }
 
+/* the node AJAX actions all operate on tree_id; block callers who do not own the
+   tree, covering both the write handlers and the copy_node/get_node read path
+   (admin realm 1 bypasses inside cacti_authorize_resource) */
+$tree_node_actions = array('copy_node', 'create_node', 'delete_node', 'move_node', 'rename_node', 'get_node');
+
+if (in_array(get_nfilter_request_var('action'), $tree_node_actions, true)
+	&& isset_request_var('tree_id')
+	&& !cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('tree_id'), 'graph_tree')) {
+	header('HTTP/1.1 403 Forbidden');
+	print __('You do not have permission to access this tree.');
+	exit;
+}
+
 switch (get_request_var('action')) {
 	case 'save':
 		form_save();
