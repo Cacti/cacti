@@ -2099,10 +2099,9 @@ function user() {
 			'default' => ''
 		),
 		'group' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '-1',
-			'pageset' => true,
-			'options' => array('options' => 'sanitize_search_string')
+			'pageset' => true
 		),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -2274,8 +2273,10 @@ function user() {
 		}
 	}
 
-	if (get_request_var('group') > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ug.group_id = ' . get_request_var('group');
+	$group_id = (int) get_request_var('group');
+
+	if ($group_id > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ug.group_id = ' . $group_id;
 	}
 
 	if (get_request_var('login') > 0) {
