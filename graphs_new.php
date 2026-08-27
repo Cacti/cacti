@@ -764,10 +764,11 @@ function graphs() {
 
 						if (cacti_sizeof($indexes)) {
 							foreach($indexes as $index) {
+								/* snmp_index is stored raw on the script data-query path; quote it */
 								if ($sql_where != '') {
-									$sql_where .= ", '" . $index['snmp_index'] . "'";
+									$sql_where .= ', ' . db_qstr($index['snmp_index']);
 								} else {
-									$sql_where .= " AND snmp_index IN('" . $index['snmp_index'] . "'";
+									$sql_where .= ' AND snmp_index IN(' . db_qstr($index['snmp_index']);
 								}
 							}
 
