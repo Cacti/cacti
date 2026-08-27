@@ -1142,19 +1142,15 @@ function validate_is_regex($regex) {
 
 	restore_error_handler();
 
-	$track_errors = ini_get('track_errors');
-	ini_set('track_errors', 1);
-
-    if (@preg_match("'" . $regex . "'", NULL) !== false) {
-		ini_set('track_errors', $track_errors);
+	if (@preg_match("'" . $regex . "'", '') !== false) {
 		return true;
 	}
 
 	$last_error = error_get_last();
 
-	$php_error = trim(str_replace('preg_match():', '', $last_error['message']));
-
-	ini_set('track_errors', $track_errors);
+	$php_error = isset($last_error['message'])
+		? trim(str_replace('preg_match():', '', $last_error['message']))
+		: __('Invalid regular expression.');
 
 	$errors = array(
 		PREG_INTERNAL_ERROR         => __('There was an internal error!'),
