@@ -13,6 +13,7 @@ $boostSource = file_get_contents(__DIR__ . '/../../../../poller_boost.php');
 $importSource = file_get_contents(__DIR__ . '/../../../../package_import.php');
 $indexSource = file_get_contents(__DIR__ . '/../../../../index.php');
 $ssSource    = file_get_contents(__DIR__ . '/../../../../script_server.php');
+$linkSource  = file_get_contents(__DIR__ . '/../../../../link.php');
 
 // --- cacti_csv_safe ---
 
@@ -70,6 +71,14 @@ test('index.php uses cacti_path_is_within for include path validation', function
 
 test('script_server.php uses cacti_path_is_within for include path validation', function () use ($ssSource) {
 	expect($ssSource)->toContain('cacti_path_is_within(');
+});
+
+// --- link.php uses cacti_path_is_within ---
+
+test('link.php confines local content includes to regular files inside include/content', function () use ($linkSource) {
+	expect($linkSource)->toContain('cacti_path_is_within($file, $basepath)')
+		->and($linkSource)->toContain('is_file($file)')
+		->and($linkSource)->not->toContain('substr($file, 0, strlen($basepath)) == $basepath');
 });
 
 // --- db_replace redaction ---
