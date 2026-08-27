@@ -1285,7 +1285,7 @@ function grow_right_pane_tree(int $tree_id, int $leaf_id, string $host_group_dat
 			WHERE id = ?',
 			[$host_group_data_array[1]]);
 
-		$host_group_data_name = '<i class="bold">' . __('Graph Template:') . '</i> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : htmle($name)) . '-> ' . (empty($host_group_data_array[2]) ? __('Template Based') : get_formatted_data_query_index($leaf['host_id'], intval($host_group_data_array[1]), $host_group_data_array[2]));
+		$host_group_data_name = '<i class="bold">' . __('Graph Template:') . '</i> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : htmle($name)) . '-> ' . (empty($host_group_data_array[2]) ? __('Template Based') : htmle(get_formatted_data_query_index($leaf['host_id'], intval($host_group_data_array[1]), $host_group_data_array[2])));
 		$data_query_id        = intval($host_group_data_array[1]);
 		$data_query_index     = $host_group_data_array[2];
 	}
