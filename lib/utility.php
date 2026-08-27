@@ -229,13 +229,19 @@ function update_poller_cache($data_source, $commit = false) {
 
 			$params = array();
 			if (cacti_sizeof($field) && $field['output_type'] != '') {
-				$output_type_sql = ' AND sqgr.snmp_query_graph_id = ' . $field['output_type'];
+				$output_type_sql = ' AND sqgr.snmp_query_graph_id = ?';
 			} else {
 				$output_type_sql = '';
 			}
 
 			$params[] = $data_input['data_template_id'];
 			$params[] = $data_source['id'];
+
+			/* output_type is stored without validation; bind it rather than
+			   concatenate it into the query (appended last to match the clause order) */
+			if ($output_type_sql != '') {
+				$params[] = $field['output_type'];
+			}
 
 			$outputs = db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . "
 				sqgr.snmp_field_name, dtr.id AS data_template_rrd_id
