@@ -1,0 +1,66 @@
+name: Form Coverage
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/form-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'lib/CactiForm.php'
+      - 'phpunit-form-coverage.xml'
+      - 'sites.php'
+      - 'tests/Unit/CactiFormTest.php'
+      - 'tests/integration/CactiFormIntegrationTest.php'
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/form-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'lib/CactiForm.php'
+      - 'phpunit-form-coverage.xml'
+      - 'sites.php'
+      - 'tests/Unit/CactiFormTest.php'
+      - 'tests/integration/CactiFormIntegrationTest.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: form-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMPOSER_ALLOW_SUPERUSER: 1
+
+jobs:
+  coverage:
+    name: Form API 100% coverage
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Setup locked PHP 8.1 dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.1'
+          coverage: xdebug
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          dependency-mode: locked-form-coverage
+          install-args: --prefer-dist --no-progress --no-interaction
+
+      - name: Enforce line coverage
+        env:
+          XDEBUG_MODE: coverage
+        run: |
+          set -euo pipefail
+          include/vendor/bin/pest \
+            --configuration=phpunit-form-coverage.xml \
+            --coverage \
+            --coverage-text \
+            --min=100

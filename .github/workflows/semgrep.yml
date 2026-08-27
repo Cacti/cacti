@@ -1,9 +1,9 @@
 name: Semgrep (Cacti taint rules)
 
 # Runs the Cacti-aware Semgrep rules (tests/security/semgrep/cacti-security.yml).
-# The rule self-test is a hard gate; the whole-tree scan is advisory and its
+# The rule self-test is a hard gate; the differential scan is advisory and its
 # findings are published to the code-scanning tab rather than failing the build
-# (see tests/security/semgrep/README.md for why it is not a pass/fail baseline).
+# (see tests/security/semgrep/README.md for why it is not a pass/fail gate).
 
 on:
   push:
@@ -32,7 +32,40 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
+
+      - name: Resolve scan baseline
+        id: baseline
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          MERGE_GROUP_BASE_SHA: ${{ github.event.merge_group.base_sha }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BASE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+
+          case "$EVENT_NAME" in
+            pull_request)
+              base_sha="$PR_BASE_SHA"
+              ;;
+            push)
+              base_sha="$PUSH_BASE_SHA"
+              ;;
+            merge_group)
+              base_sha="$MERGE_GROUP_BASE_SHA"
+              ;;
+            *)
+              base_sha=""
+              ;;
+          esac
+
+          if [[ -z "$base_sha" || "$base_sha" =~ ^0+$ ]]; then
+            base_sha="$(git rev-parse --verify HEAD^ 2>/dev/null || git rev-parse --verify HEAD)"
+          fi
+
+          git cat-file -e "${base_sha}^{commit}"
+          echo "sha=$base_sha" >> "$GITHUB_OUTPUT"
 
       - name: Self-test the rules (blocking)
         run: |
@@ -45,26 +78,45 @@ jobs:
             semgrep/semgrep@sha256:e04d2cb132288d90035db8791d64f610cb255b21e727b94db046243b30c01ae9 \
             semgrep --test tests/security/semgrep/
 
-      - name: Advisory scan (non-blocking)
+      - name: Advisory differential scan (non-blocking)
         continue-on-error: true
         run: |
           set -euo pipefail
+
+          targets=()
+
+          while IFS= read -r path; do
+            case "$path" in
+              include/vendor/*|plugins/*|tests/*)
+                ;;
+              *)
+                targets+=("$path")
+                ;;
+            esac
+          done < <(git diff --name-only --diff-filter=ACMR \
+            "${{ steps.baseline.outputs.sha }}" HEAD -- '*.php')
+
+          if (( ${#targets[@]} == 0 )); then
+            empty_target="$(mktemp --suffix=.php "${RUNNER_TEMP}/semgrep-empty.XXXXXX")"
+            targets=("$empty_target")
+          fi
+
           docker run --rm \
             --user "$(id -u):$(id -g)" \
             --env HOME=/tmp \
             --volume "${PWD}:/src" \
+            --volume "${RUNNER_TEMP}:${RUNNER_TEMP}" \
             --workdir /src \
             semgrep/semgrep@sha256:e04d2cb132288d90035db8791d64f610cb255b21e727b94db046243b30c01ae9 \
             semgrep scan \
             --config tests/security/semgrep/cacti-security.yml \
-            --exclude 'include/vendor' --exclude 'tests' --exclude 'plugins' \
             --exclude '*.min.js' \
             --timeout 0 --timeout-threshold 0 --max-target-bytes 0 \
             --metrics off --sarif --output semgrep.sarif \
-            lib/ include/ ./*.php
+            "${targets[@]}"
 
       - name: Upload findings to code scanning
-        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
+        uses: github/codeql-action/upload-sarif@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd # v4.37.7
         if: ${{ always() && hashFiles('semgrep.sarif') != '' }}
         with:
           sarif_file: semgrep.sarif

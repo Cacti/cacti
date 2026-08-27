@@ -1346,6 +1346,63 @@ function htmle(mixed $string) : string {
 }
 
 /**
+ * html_escape_attr - sanitizes a string for display in an HTML attribute
+ *
+ * @param mixed $string String the attribute value to escape
+ *
+ * @return string The escaped attribute value to be returned.
+ */
+function html_escape_attr(mixed $string = '') : string {
+	static $charset;
+
+	if ($string === null || $string === '') {
+		return '';
+	}
+
+	if ($charset == '') {
+		$charset = ini_get('default_charset');
+	}
+
+	if ($charset == '') {
+		$charset = 'UTF-8';
+	}
+
+	// double_encode is enabled here (unlike html_escape) so that an
+	// already-encoded entity in the input cannot survive into an attribute
+	// value and be decoded back into a quote by the HTML parser.
+	$string = htmlspecialchars((string) $string, ENT_QUOTES | ENT_HTML5, $charset, true);
+
+	// Grave accent can lead to xss; htmlspecialchars leaves it untouched, so
+	// replace it after escaping to avoid double-encoding the entity itself.
+	return str_replace('`', '&#96;', $string);
+}
+
+/**
+ * html_escape_url - escapes a URL for display in an HTML attribute. This
+ *   function does not validate or restrict URL schemes; callers accepting
+ *   untrusted navigation targets must validate them separately.
+ *
+ * @param mixed $url URL the attribute value to escape
+ *
+ * @return string The escaped URL value to be returned.
+ */
+function html_escape_url(mixed $url = '') : string {
+	return html_escape_attr($url);
+}
+
+/**
+ * cacti_script_data - renders JSON data for scripts to read from the DOM
+ *
+ * @param string $id   HTML id for the script element
+ * @param mixed  $data Data to encode as a JavaScript-safe JSON literal
+ *
+ * @return string The script tag containing JSON data.
+ */
+function cacti_script_data(string $id, mixed $data) : string {
+	return "<script type='application/json' id='" . html_escape_attr($id) . "'>" . cacti_js_encode($data) . '</script>';
+}
+
+/**
  * html_escape - sanitizes a string for display
  *
  * @param mixed $string String the string to escape
@@ -1397,7 +1454,7 @@ function html_attributes(array $attributes) : string {
 		if ($value === true) {
 			$output .= ' ' . $name;
 		} else {
-			$output .= ' ' . $name . "='" . html_escape($value) . "'";
+			$output .= ' ' . $name . "='" . html_escape_attr($value) . "'";
 		}
 	}
 

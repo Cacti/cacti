@@ -388,6 +388,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'symfony/notifier' => array(
+            'pretty_version' => 'v6.4.34',
+            'version' => '6.4.34.0',
+            'reference' => '16a6179e8e6d6e3c71e592e59cdd649f86f1a6f9',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/notifier',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'symfony/polyfill-ctype' => array(
             'pretty_version' => 'v1.37.0',
             'version' => '1.37.0.0',

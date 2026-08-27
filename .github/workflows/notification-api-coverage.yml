@@ -1,0 +1,72 @@
+name: Notification API Coverage
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/notification-api-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'lib/CactiEmailChannel.php'
+      - 'lib/CactiNotification.php'
+      - 'lib/CactiRecipient.php'
+      - 'lib/api_notification.php'
+      - 'phpunit-notification-coverage.xml'
+      - 'tests/Unit/Core/CactiNotificationApiTest.php'
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/notification-api-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'lib/CactiEmailChannel.php'
+      - 'lib/CactiNotification.php'
+      - 'lib/CactiRecipient.php'
+      - 'lib/api_notification.php'
+      - 'phpunit-notification-coverage.xml'
+      - 'tests/Unit/Core/CactiNotificationApiTest.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: notification-api-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMPOSER_ALLOW_SUPERUSER: 1
+
+jobs:
+  coverage:
+    name: Notification API 100% coverage
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Setup locked PHP 8.1 dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.1'
+          coverage: xdebug
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          dependency-mode: locked-notification-api-coverage
+          install-args: --prefer-dist --no-progress --no-interaction
+
+      - name: Enforce line coverage
+        env:
+          XDEBUG_MODE: coverage
+        run: |
+          set -euo pipefail
+          include/vendor/bin/pest \
+            --configuration=phpunit-notification-coverage.xml \
+            --coverage \
+            --coverage-text \
+            --min=100

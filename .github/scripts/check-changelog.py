@@ -11,8 +11,42 @@ from pathlib import Path
 
 
 RELEASE_HEADING = re.compile(r"^(?:\d+\.\d+\.\d+(?:-[\w.]+)?|\d+\.\d+\.x)$")
-ENTRY = re.compile(r"^-(issue|feature)(?:#\d+)?:\s+\S.*$")
-NUMBERED_ENTRY = re.compile(r"^-(?:issue|feature)#\d+:")
+ENTRY = re.compile(r"^-(issue|feature|security)(?:#[0-9A-Za-z-]+)?:\s+\S.*$")
+RANK_NAMES = {0: "security", 1: "issue", 2: "feature"}
+NUMBERED_ENTRY = re.compile(r"^-(?:issue|feature)#\d+:|^-security#(?:\d+|GHSA-[0-9A-Za-z-]+):")
+FRAGMENT = re.compile(r"^(\d+|GHSA-[0-9A-Za-z-]+)\.(issue|feature|security)$")
+
+
+def check_fragments(directory: Path) -> list[str]:
+	"""Validates changelog.d fragments, which replace direct CHANGELOG edits."""
+	errors: list[str] = []
+	if not directory.is_dir():
+		return errors
+
+	for item in sorted(directory.iterdir()):
+		if item.name == "README.md" or item.name.startswith("."):
+			continue
+		if not item.is_file():
+			errors.append(f"{item}: changelog.d holds fragment files only")
+			continue
+		match = FRAGMENT.fullmatch(item.name)
+		if match is None:
+			errors.append(f"{item}: fragment must be named <number>.issue, <number>.feature, or <number|GHSA-id>.security")
+			continue
+		if match.group(2) != "security" and not match.group(1).isdigit():
+			errors.append(f"{item}: only a security fragment may use a GHSA identifier")
+			continue
+
+		text = item.read_text(encoding="utf-8")
+		body = text.strip()
+		if not body:
+			errors.append(f"{item}: fragment is empty")
+		elif len(body.splitlines()) > 1:
+			errors.append(f"{item}: fragment must be a single line")
+		elif body.startswith("-"):
+			errors.append(f"{item}: fragment holds the description only, without the -issue or -feature prefix")
+
+	return errors
 
 
 def main() -> int:
@@ -34,15 +68,15 @@ def main() -> int:
 			end = index
 			break
 
-	errors: list[str] = []
-	seen_feature = False
+	errors: list[str] = check_fragments(Path("changelog.d"))
+	highest_rank = 0
 
 	for index in range(start + 1, end):
 		line = lines[index].rstrip()
 		number = index + 1
 		if not line:
 			continue
-		if not line.startswith(("-issue", "-feature")):
+		if not line.startswith(("-issue", "-feature", "-security")):
 			if line.startswith("-"):
 				errors.append(f"line {number}: malformed CHANGELOG entry: {line}")
 			continue
@@ -50,11 +84,17 @@ def main() -> int:
 			errors.append(f"line {number}: malformed CHANGELOG entry: {line}")
 			continue
 
-		kind = "feature" if line.startswith("-feature") else "issue"
-		if kind == "feature":
-			seen_feature = True
-		elif seen_feature:
-			errors.append(f"line {number}: issue entry appears after feature entries")
+		if line.startswith("-security"):
+			kind, rank = "security", 0
+		elif line.startswith("-issue"):
+			kind, rank = "issue", 1
+		else:
+			kind, rank = "feature", 2
+
+		if rank < highest_rank:
+			errors.append(f"line {number}: {kind} entry appears after {RANK_NAMES[highest_rank]} entries")
+		else:
+			highest_rank = rank
 
 	if end < len(lines) and lines[end - 1].strip():
 		errors.append(f"line {end + 1}: release headings must be separated by a blank line")

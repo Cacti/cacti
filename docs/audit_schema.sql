@@ -700,7 +700,7 @@ INSERT INTO `table_columns` VALUES ('graph_tree_items',12,'host_regex','varchar(
 INSERT INTO `table_columns` VALUES ('host',1,'id','mediumint(8) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('host',2,'poller_id','int(10) unsigned','NO','MUL','1','');
 INSERT INTO `table_columns` VALUES ('host',3,'site_id','int(10) unsigned','NO','MUL','1','');
-INSERT INTO `table_columns` VALUES ('host',4,'host_template_id','mediumint(8) unsigned','NO','','0','');
+INSERT INTO `table_columns` VALUES ('host',4,'host_template_id','mediumint(8) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('host',5,'description','varchar(150)','NO','','','');
 INSERT INTO `table_columns` VALUES ('host',6,'hostname','varchar(100)','YES','MUL',NULL,'');
 INSERT INTO `table_columns` VALUES ('host',7,'location','varchar(40)','YES','',NULL,'');
@@ -1081,9 +1081,9 @@ INSERT INTO `table_columns` VALUES ('rrdcheck',2,'test_date','timestamp','NO',''
 INSERT INTO `table_columns` VALUES ('rrdcheck',3,'message','varchar(250)','YES','','','');
 INSERT INTO `table_columns` VALUES ('sessions',1,'id','varchar(32)','NO','PRI',NULL,'');
 INSERT INTO `table_columns` VALUES ('sessions',2,'remote_addr','varchar(25)','NO','','','');
-INSERT INTO `table_columns` VALUES ('sessions',3,'access','int(10) unsigned','YES','',NULL,'');
+INSERT INTO `table_columns` VALUES ('sessions',3,'access','int(10) unsigned','YES','MUL',NULL,'');
 INSERT INTO `table_columns` VALUES ('sessions',4,'data','mediumblob','YES','',NULL,'');
-INSERT INTO `table_columns` VALUES ('sessions',5,'user_id','int(10) unsigned','NO','','0','');
+INSERT INTO `table_columns` VALUES ('sessions',5,'user_id','int(10) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('sessions',6,'user_agent','varchar(128)','NO','','','');
 INSERT INTO `table_columns` VALUES ('sessions',7,'start_time','timestamp','NO','','current_timestamp()','');
 INSERT INTO `table_columns` VALUES ('sessions',8,'transactions','int(10) unsigned','NO','','1','');
@@ -1527,6 +1527,7 @@ INSERT INTO `table_indexes` VALUES ('graph_tree_items',1,'site_id',1,'site_id','
 INSERT INTO `table_indexes` VALUES ('host',1,'current_errors',1,'current_errors','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host',1,'disabled',1,'disabled','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host',1,'external_id',1,'external_id','A',1,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host',1,'host_template_id',1,'host_template_id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host',1,'hostname',1,'hostname','A',1,NULL,NULL,'YES','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host',1,'poller_id_disabled',1,'poller_id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host',1,'poller_id_disabled',2,'disabled','A',1,NULL,NULL,'','BTREE','');
@@ -1653,7 +1654,9 @@ INSERT INTO `table_indexes` VALUES ('reports_log',1,'source_id',1,'source_id','A
 INSERT INTO `table_indexes` VALUES ('reports_queued',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('reports_queued',1,'source',1,'source','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('reports_queued',1,'source_id',1,'source_id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('sessions',1,'access',1,'access','A',0,NULL,NULL,'YES','BTREE','');
 INSERT INTO `table_indexes` VALUES ('sessions',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('sessions',1,'user_id',1,'user_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('settings',0,'PRIMARY',1,'name','A',285,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('settings_tree',0,'PRIMARY',1,'user_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('settings_tree',0,'PRIMARY',2,'graph_tree_item_id','A',0,NULL,NULL,'','BTREE','');

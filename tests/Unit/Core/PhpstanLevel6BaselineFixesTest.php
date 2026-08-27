@@ -134,8 +134,11 @@ test('the null-guarded fallback in the error-redirect URL still uses the variabl
 	$expected = [
 		'aggregate_graphs.php' => '($graph_template_item_id === null ? gfrv(\'graph_template_item_id\') : $graph_template_item_id)',
 		'color_templates.php'  => '($color_template_item_id === null ? gnrv(\'color_template_item_id\') : $color_template_item_id)',
-		'graph_templates.php'  => '($graph_template_item_id === null ? gnrv(\'graph_template_item_id\') : $graph_template_item_id)',
-		'graphs.php'           => '($graph_template_item_id === null ? gnrv(\'graph_template_item_id\') : $graph_template_item_id)',
+		'graph_templates.php'  => '$graph_template_item_id === null ? gnrv(\'graph_template_item_id\') : $graph_template_item_id',
+		/* graphs.php passes this through cacti_redirect()'s params array rather
+		 * than concatenating it into a Location string, so the guard is not
+		 * parenthesised there. Pin the guard, not the punctuation. */
+		'graphs.php'           => '$graph_template_item_id === null ? gnrv(\'graph_template_item_id\') : $graph_template_item_id',
 	];
 
 	foreach ($expected as $file => $needle) {

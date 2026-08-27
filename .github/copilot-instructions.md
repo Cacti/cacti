@@ -64,6 +64,10 @@
   - Append new issue entries at the end of the issue block and new feature entries at the end of the feature block.
   - Keep numbered entries in their existing numeric order; every new entry must include an issue or pull-request number (`#1234`).
   - Preserve the existing entry prefixes, release headings, and blank-line spacing.
+- **URLs and redirects**:
+  - Use `cacti_url($path, $params)` for RFC 3986 query-string construction, including URLs with fragments.
+  - Use `cacti_redirect($path, $params)` for local redirects; it rejects absolute and protocol-relative destinations (checking both raw and percent-decoded forms) and terminates the request.
+  - Escape output for HTML attribute contexts with `html_escape_attr()`, not `htmle()`/`html_escape()`; only the attribute helper double-encodes to stop pre-encoded entities from breaking out of the attribute.
 
 ## Workflows you’ll actually use
 - Install deps: `composer install` (CI validates via `.github/workflows/syntax.yml`).
@@ -71,6 +75,12 @@
 - Install/upgrade DB: `php -q cli/install_cacti.php --accept-eula --install --force` and `php -q cli/upgrade_database.php --forcever=$(cat include/cacti_version)`.
 - Run poller: `php poller.php --poller=1 --force --debug` (daemon debug: `./cactid.php --foreground --debug`).
 - Repo checks: `composer lint`, `composer phpstan`, `composer phpcsfixer` (dry-run).
+
+## Dependency management: never vendor packages
+- Do not add, copy, or update third-party package source under `include/vendor/` or elsewhere in the repository. Existing vendored dependencies may be removed by an in-scope change, but must not be expanded or refreshed.
+- Add PHP dependencies through Composer: update `composer.json`, update and commit `composer.lock`, and let `composer install` install the locked packages in development, CI, and release builds.
+- Do not commit Composer-installed package trees or hand-edit Composer-generated autoload metadata. Validate dependency changes with `composer validate` and a clean `composer install`.
+- If a third-party asset cannot be managed through Composer, stop and document the concrete packaging requirement before adding files. Do not silently create a vendored exception.
 
 ## Database Optimization (DBA Mode)
 - **Context**: The full schema (DDL/DML) is in `cacti.sql`. Check it for table structures and indexes.
@@ -105,5 +115,14 @@
   - `Database/`, `Installer/`, `Scripts/`, `Plugin/` — domain-specific folders at the top level.
 - When adding a new test, place it in the matching category folder. If a new domain is needed, create a folder for it rather than leaving the file flat in `tests/Unit/`.
 - **File naming:** do not encode GitHub issue or GHSA numbers in filenames. Name the file after the behavior it tests (e.g. `PercentileContractTest.php`, not `Issue7070PercentileContractTest.php`). The GHSA/issue ID belongs in the test's `test('...')` description string or a file-level docblock, not the filename.
-- **Source file reads:** when tests use `file_get_contents()` to inspect Cacti source files, use predefined path constants instead of `__DIR__`, `dirname(__DIR__, N)`, `$root`, `$repoRoot`, or similar path variables. Use `CACTI_PATH_LIBRARY . '/file.php'` for `lib/`, `CACTI_PATH_INCLUDE . '/file.php'` for `include/`, and `CACTI_PATH_BASE . '/remaining/path.php'` for root-level or other repository paths.
-- **Use of include/require functions:** in all test files, the use of include(), include_once(), require(), require_once() must include one of the following predefined constants CACTI_PATH_BASE, CACTI_PATH_INCLUDE, CACTI_PATH_LIBRARY, or CACTI_PATH_TESTS to define the root of every path.  The use of dirname() and __DIR__ functions and constants is forbidden.
+- **Source file reads:** after the test bootstrap has defined Cacti's path constants, use `CACTI_PATH_LIBRARY`, `CACTI_PATH_INCLUDE`, `CACTI_PATH_BASE`, or `CACTI_PATH_TESTS` instead of recalculating the repository root with `__DIR__`.
+- **Self-bootstrapping fixtures and probes:** before those constants exist, the `__DIR__` depth depends on both the file's nesting level and what the path points at. Paths that reach the repository root need one more level than paths that stop at `tests/`, so a single file can need two different depths.
+
+  | test file location | to reach repo root (`lib/`, `include/`) | to reach `tests/` (`Helpers/`, `fixtures/`, `tools/`) |
+  | --- | --- | --- |
+  | `tests/Unit/` | `dirname(__DIR__, 2)` | `dirname(__DIR__)` |
+  | `tests/Unit/<Category>/` | `dirname(__DIR__, 3)` | `dirname(__DIR__, 2)` |
+  | `tests/Unit/<Category>/<Subcategory>/` | `dirname(__DIR__, 4)` | `dirname(__DIR__, 3)` |
+
+  - After moving a self-bootstrapping file between folders, update every pre-bootstrap path and check each one individually. Setting them all to the repo-root depth silently breaks `tests/`-internal paths. A `require` that resolves to a missing file is fatal during bootstrap and stops the whole suite rather than failing one test.
+  - Verify a move by running the suite, not by reading the diff.

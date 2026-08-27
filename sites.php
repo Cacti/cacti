@@ -23,6 +23,7 @@
 */
 
 require('./include/auth.php');
+require_once CACTI_PATH_LIBRARY . '/CactiForm.php';
 
 $actions = [
 	1 => __('Delete'),
@@ -475,12 +476,10 @@ function site_edit() : void {
 
 	html_start_box($header_label, '100%', true, 3, 'center', '');
 
-	draw_edit_form(
-		[
-			'config' => ['no_form_tag' => true],
-			'fields' => inject_form_variables($fields_site_edit, (isset($site) ? $site : []))
-		]
-	);
+	(new CactiForm($fields_site_edit))
+		->withValues($site ?? [])
+		->withoutFormTag()
+		->render();
 
 	html_end_box(true, true);
 

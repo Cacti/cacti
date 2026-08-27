@@ -87,6 +87,9 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_key('data_input_data', 'INDEX', 'host_id', ['host_id']);
 
 	db_install_add_key('poller_output_boost', 'INDEX', 'time', ['time']);
+	db_install_add_key('host', 'INDEX', 'host_template_id', ['host_template_id']);
+	db_install_add_key('sessions', 'INDEX', 'user_id', ['user_id']);
+	db_install_add_key('sessions', 'INDEX', 'access', ['access']);
 
 	// poller_output_boost_local_data_ids is a MEMORY table; its indexes default
 	// to HASH unless USING BTREE is specified. Range/ORDER BY access against
