@@ -60,6 +60,16 @@ function integration_rrdtool_directory() : string {
 	return $directory;
 }
 
+function integration_fake_rrdtool_binary() : string {
+	return __DIR__ . '/fixtures/fake_rrdtool_argv.sh';
+}
+
+function integration_rrdtool_unlink(string $path) : void {
+	if (is_file($path)) {
+		unlink($path);
+	}
+}
+
 test('local RRDtool process acknowledges create update and fetch commands', function () {
 	$binary = integration_rrdtool_binary();
 
@@ -160,5 +170,69 @@ test('local RRDtool process fails closed on errors and command framing character
 			->and($process->alive)->toBeTrue();
 	} finally {
 		__rrd_close($process);
+	}
+});
+
+test('RRDtool is launched with a fixed argv and never interprets command payloads in a shell', function () {
+	$argvFile  = tempnam(sys_get_temp_dir(), 'cacti-rrd-argv-');
+	$stdinFile = tempnam(sys_get_temp_dir(), 'cacti-rrd-stdin-');
+	$marker    = sys_get_temp_dir() . '/cacti-rrd-shell-marker-' . getmypid();
+
+	expect($argvFile)->toBeString()
+		->and($stdinFile)->toBeString();
+
+	integration_rrdtool_unlink($marker);
+	putenv('FAKE_RRD_ARGV_FILE=' . $argvFile);
+	putenv('FAKE_RRD_STDIN_FILE=' . $stdinFile);
+
+	global $config;
+	$config[OPTIONS_CLI]['path_rrdtool']              = integration_fake_rrdtool_binary();
+	$config[OPTIONS_CLI]['path_rrdtool_default_font'] = false;
+	$process                                           = __rrd_init();
+
+	try {
+		expect(rrdtool_is_process($process))->toBeTrue();
+
+		$payload = "/tmp/value; touch $marker; \$(touch $marker); `touch $marker`";
+		$result  = __rrd_execute(['info', $payload], false, RRDTOOL_OUTPUT_STDOUT, $process, 'TEST');
+		$argv    = array_values(array_filter(explode("\n", (string) file_get_contents($argvFile))));
+		$stdin   = (string) file_get_contents($stdinFile);
+
+		expect($result)->toBe('')
+			->and($argv)->toBe(['-'])
+			->and($stdin)->toContain('info ')
+			->and($stdin)->toContain('touch')
+			->and(file_exists($marker))->toBeFalse();
+	} finally {
+		__rrd_close($process);
+		putenv('FAKE_RRD_ARGV_FILE');
+		putenv('FAKE_RRD_STDIN_FILE');
+		integration_rrdtool_unlink($argvFile);
+		integration_rrdtool_unlink($stdinFile);
+		integration_rrdtool_unlink($marker);
+	}
+});
+
+test('RRDtool stdout and stderr are drained concurrently under pipe pressure', function () {
+	putenv('FAKE_RRD_STDOUT_BYTES=200000');
+	putenv('FAKE_RRD_STDERR_BYTES=200000');
+
+	global $config;
+	$config[OPTIONS_CLI]['path_rrdtool']              = integration_fake_rrdtool_binary();
+	$config[OPTIONS_CLI]['path_rrdtool_default_font'] = false;
+	$process                                           = __rrd_init();
+
+	try {
+		expect(rrdtool_is_process($process))->toBeTrue();
+
+		$result = rrdtool_process_command($process, 'info /tmp/metrics.rrd', 5.0);
+
+		expect($result['success'])->toBeTrue()
+			->and(strlen($result['output']))->toBeGreaterThanOrEqual(200000)
+			->and(strlen($result['error']))->toBeGreaterThanOrEqual(200000);
+	} finally {
+		__rrd_close($process);
+		putenv('FAKE_RRD_STDOUT_BYTES');
+		putenv('FAKE_RRD_STDERR_BYTES');
 	}
 });
