@@ -331,7 +331,7 @@ function form_actions() {
 						WHERE id = ?',
 						array(get_request_var('report_id')));
 
-					raise_message('reports_add_error', __('Unable to add some Devices to Report \'%s\'', $name), MESSAGE_LEVEL_WARN);
+					raise_message('reports_add_error', __esc('Unable to add some Devices to Report \'%s\'', $name), MESSAGE_LEVEL_WARN);
 				}
 			} elseif (get_request_var('drp_action') == '1') { // delete
 				if (!isset_request_var('delete_type')) {
