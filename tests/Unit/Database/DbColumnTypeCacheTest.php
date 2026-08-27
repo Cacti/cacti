@@ -38,7 +38,7 @@ test('db_get_table_column_types memoizes the SHOW COLUMNS lookup', function () u
 
 	expect($body)->not->toBe('');
 	// it still issues the SHOW COLUMNS query when uncached
-	expect($body)->toContain('SHOW COLUMNS FROM $table');
+	expect($body)->toContain('SHOW COLUMNS FROM $table_identifier');
 	// but reads from and writes to the request-scoped cache
 	expect($body)->toContain('global $database_sessions, $database_default, $database_hostname, $database_port, $db_column_type_cache');
 	expect($body)->toContain('if (isset($db_column_type_cache[$key])) {');

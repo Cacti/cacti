@@ -29,6 +29,7 @@ Cacti CHANGELOG
 -issue#7728: Fail closed during Boost handoff and preserve the direct-RRD fallback
 -issue#7801: Harden CSRF secret storage and state-changing browser request handoffs
 -issue: Keep missing PHP extensions visible to the Cacti installer (PR #7747 follow-up)
+-issue: Restore qualified plugin table metadata lookups (plugin_syslog#331)
 -issue: Restore RRDproxy encryption with Composer-managed phpseclib 3
 -issue: Url encode the base64 regex filter before it reaches the query string (PR #7777)
 -issue: Make 1.2 dependency builds reproducible (PR #7747)

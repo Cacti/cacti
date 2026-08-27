@@ -900,6 +900,41 @@ function db_is_safe_identifier($identifier) {
 }
 
 /**
+ * db_format_qualified_identifier - validate and quote a table identifier
+ *
+ * @param  (string) $identifier - A table name, optionally qualified by a database
+ *
+ * @return (string|bool) The safely quoted identifier or false when invalid
+ */
+function db_format_qualified_identifier($identifier) {
+	if (!is_string($identifier)) {
+		return false;
+	}
+
+	$parts = explode('.', $identifier);
+
+	if (count($parts) < 1 || count($parts) > 2) {
+		return false;
+	}
+
+	$quoted_parts = array();
+
+	foreach ($parts as $part) {
+		if (preg_match('/^`([A-Za-z0-9_]+)`$/D', $part, $matches) === 1) {
+			$part = $matches[1];
+		}
+
+		if (!db_is_safe_identifier($part)) {
+			return false;
+		}
+
+		$quoted_parts[] = "`$part`";
+	}
+
+	return implode('.', $quoted_parts);
+}
+
+/**
  * db_is_safe_column_type - validate column type clauses used in DDL
  *
  * @param  (string) $type - Column type clause
@@ -1484,7 +1519,9 @@ function db_get_table_column_types($table, $db_conn = false) {
 		}
 	}
 
-	if (!db_is_safe_identifier($table)) {
+	$table_identifier = db_format_qualified_identifier($table);
+
+	if ($table_identifier === false) {
 		return false;
 	}
 
@@ -1492,13 +1529,13 @@ function db_get_table_column_types($table, $db_conn = false) {
 	 * lookup. sql_save() calls this for every write, and a bulk operation (e.g.
 	 * creating many graphs) otherwise re-queries the same tables hundreds of
 	 * times. The cache is cleared by the DDL helpers whenever a column changes. */
-	$key = spl_object_id($db_conn) . ':' . $table;
+	$key = spl_object_id($db_conn) . ':' . $table_identifier;
 
 	if (isset($db_column_type_cache[$key])) {
 		return $db_column_type_cache[$key];
 	}
 
-	$columns = db_fetch_assoc("SHOW COLUMNS FROM `$table`", false, $db_conn);
+	$columns = db_fetch_assoc("SHOW COLUMNS FROM $table_identifier", false, $db_conn);
 	$cols    = [];
 	if (cacti_sizeof($columns)) {
 		foreach ($columns as $col) {
