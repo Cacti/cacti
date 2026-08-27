@@ -2273,8 +2273,10 @@ function user() {
 		}
 	}
 
-	if (get_request_var('group') > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ug.group_id = ' . get_request_var('group');
+	$group_id = (int) get_request_var('group');
+
+	if ($group_id > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ug.group_id = ' . $group_id;
 	}
 
 	if (get_request_var('login') > 0) {
