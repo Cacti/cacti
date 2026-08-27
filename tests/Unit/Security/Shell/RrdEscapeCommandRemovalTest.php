@@ -41,23 +41,31 @@ test('escape_command is not redefined elsewhere under lib', function () {
 	expect($found)->toBe([]);
 });
 
-test('__rrd_execute escapes array arguments one at a time', function () use ($rrdPath) {
+test('__rrd_execute normalizes array commands into structured commands', function () use ($rrdPath) {
 	$source = file_get_contents($rrdPath);
 
-	expect($source)->toContain("\$command_line = implode(' ', array_map('cacti_escapeshellarg', \$command_line));");
+	expect($source)->toContain('$command_line = \\Cacti\\Rrd\\RrdCommand::fromList($command_line);')
+		->and($source)->toContain("'cacti_escapeshellarg'");
 });
 
-test('the shell_exec command line is assembled without a whole-command escape', function () use ($rrdPath) {
+test('structured commands use a shellless local transport', function () use ($rrdPath) {
 	$source = file_get_contents($rrdPath);
 
-	expect($source)->toContain("\$full_commandline = read_config_option('path_rrdtool') . \$debug . ' ' . \$command_line;");
-	expect($source)->toContain('$output = shell_exec($full_commandline);');
+	expect($source)->toContain('$structured_command = $command_line instanceof \\Cacti\\Rrd\\RrdCommand')
+		->and($source)->toContain('new \\Cacti\\Rrd\\LocalRrdTransport(')
+		->and($source)->toContain('))->execute($structured_command);');
 });
 
-test('the pipe writers pass the command line through untouched', function () use ($rrdPath) {
+test('legacy string commands retain their compatibility execution path', function () use ($rrdPath) {
 	$source = file_get_contents($rrdPath);
 
-	expect($source)->toContain('fwrite($pipes[0], $command_line . "\r\nquit\r\n");');
+	expect($source)->toContain("\$full_commandline = read_config_option('path_rrdtool') . \$debug . ' ' . \$command_line;")
+		->and($source)->toContain('$output = shell_exec($full_commandline);');
+});
+
+test('the persistent pipe writer passes the command line through untouched', function () use ($rrdPath) {
+	$source = file_get_contents($rrdPath);
+
 	expect($source)->toContain('if (fwrite($rrdtool_pipe, " $command_line\r\n") === false) {');
 });
 

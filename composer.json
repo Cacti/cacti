@@ -60,6 +60,7 @@
         "symfony/http-foundation": "^7.4",
         "symfony/mailer": "^7.4",
         "symfony/notifier": "^7.4",
+        "symfony/process": "^7.4",
         "symfony/validator": "^7.4"
     },
     "require-dev": {
@@ -74,6 +75,7 @@
     "scripts": {
         "lint": "phplint --no-cache --exclude=include/vendor --exclude=plugins ",
         "phpstan": "phpstan analyse --level 6 ",
+        "phpstan-rrd": "phpstan analyse --level 8 lib/rrd.php lib/Rrd ",
         "php-cs-fixer": "php-cs-fixer fix --allow-unsupported-php-version=yes --dry-run --diff --config=./.php-cs-fixer.php ",
         "phpcsfixer": "@php-cs-fixer",
         "hardening-patterns": "php tests/tools/check_hardening_patterns.php",
