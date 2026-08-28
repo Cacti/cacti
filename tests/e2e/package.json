@@ -10,6 +10,6 @@
         "install-browsers": "playwright install --with-deps chromium"
     },
     "devDependencies": {
-        "@playwright/test": "1.49.0"
+        "@playwright/test": "1.62.1"
     }
 }
