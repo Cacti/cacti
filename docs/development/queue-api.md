@@ -75,6 +75,7 @@ api_plugin_register_hook(
 A RabbitMQ or SQS adapter maps one Cacti queue to a broker queue. A Kafka adapter normally maps the Cacti queue to a Kafka topic and uses the message topic as a header; its `ack` operation commits the consumer offset. Broker-specific connection, serialization, and redelivery details remain inside the adapter.
 
 Handlers may also be contributed through the `queue_handlers` hook by returning the topic-to-callable map with plugin handlers added.
+When both a topic handler and a message-class handler are registered for the same message, the more specific topic handler takes precedence and only that handler runs.
 
 ## Routing
 

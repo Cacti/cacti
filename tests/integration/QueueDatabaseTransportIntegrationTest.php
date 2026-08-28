@@ -234,12 +234,12 @@ it('fails closed when claiming or releasing a lease is refused', function () {
 	expect(fn () => $transport->get())->toThrow(RuntimeException::class, 'release expired');
 });
 
-it('returns safe empty diagnostics when queue reads fail', function () {
+it('fails closed when queue diagnostics cannot be read', function () {
 	$transport = new CactiDatabaseQueueTransport('reports');
 	$this->db->exec('DROP TABLE queue_messages');
 
-	expect($transport->health())->toBe(['queue' => 'reports', 'transport' => 'database', 'counts' => []])
-		->and($transport->dead())->toBe([])
+	expect(fn () => $transport->health())->toThrow(RuntimeException::class, 'Unable to read queue health')
+		->and(fn () => $transport->dead())->toThrow(RuntimeException::class, 'Unable to read dead-letter queue messages')
 		->and(api_queue_purge_all())->toBe(['completed' => 0, 'dead' => 0])
 		->and(fn () => api_queue_purge_status('completed', 7))->toThrow(RuntimeException::class, 'Unable to purge');
 });
