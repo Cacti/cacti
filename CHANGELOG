@@ -57,6 +57,7 @@ Cacti CHANGELOG
 -issue#7254: Centralize items filter state
 -issue#7253: Render input attributes safely
 -feature: Add a pluggable queue API with database, RabbitMQ/AMQP, Redis Streams, SQS, and Kafka transports
+-feature#7790: Add a pluggable queue API with a database transport and provider hooks
 -issue#7131: Fix data_input_data column-expansion bugs in change_data_template and api_data_source_duplicate
 -issue#7137: Fix eleven PHPStan Level 6 errors in form_save error-redirect URLs and lib/html.php right-tab block
 -issue#6762: Harden lib/ping.php: apply cacti_escapeshellarg() to hostname in native ping and fping shell commands

@@ -202,6 +202,24 @@ it('registers handlers by message class and clears active handler state', functi
 		->and($GLOBALS['cacti_queue_active_envelopes'] ?? [])->not->toHaveKey(spl_object_id($message));
 });
 
+it('prefers a topic handler over a class handler', function () {
+	$handled = [];
+	api_queue_register_handler(CactiQueueMessage::class, function () use (&$handled) : void {
+		$handled[] = 'class';
+	});
+	api_queue_register_handler('reports.generate', function () use (&$handled) : void {
+		$handled[] = 'topic';
+	});
+	$envelope = new Symfony\Component\Messenger\Envelope(
+		new CactiQueueMessage('reports.generate', []),
+		[new CactiQueueStamp('reports')]
+	);
+
+	api_queue_dispatch($envelope);
+
+	expect($handled)->toBe(['topic']);
+});
+
 it('rejects handler classes that are not queue messages', function () {
 	api_queue_register_handler(InvalidCactiQueueHandlerTarget::class, static fn () => null);
 })->throws(InvalidArgumentException::class, 'Handler must target');

@@ -64,7 +64,7 @@ foreach ($parameters as $parameter) {
 			break;
 		case '--requeue':
 			if (!api_queue_is_message_id($value)) {
-				queue_admin_error('--requeue requires a canonical UUID version 4.');
+				queue_admin_error('--requeue requires a canonical lowercase UUID.');
 			}
 
 			$action  = 'requeue';

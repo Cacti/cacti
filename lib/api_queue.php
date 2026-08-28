@@ -310,7 +310,11 @@ final class CactiDatabaseQueueTransport implements TransportInterface, CactiQueu
 		$rows   = db_fetch_assoc_prepared('SELECT status, COUNT(*) AS messages FROM queue_messages WHERE queue_name = ? GROUP BY status', [$this->queue]);
 		$health = ['queue' => $this->queue, 'transport' => 'database', 'counts' => []];
 
-		foreach (is_array($rows) ? $rows : [] as $row) {
+		if (!is_array($rows)) {
+			throw new RuntimeException('Unable to read queue health.');
+		}
+
+		foreach ($rows as $row) {
 			$health['counts'][$row['status']] = (int) $row['messages'];
 		}
 
@@ -321,7 +325,11 @@ final class CactiDatabaseQueueTransport implements TransportInterface, CactiQueu
 		$maximum = min(500, max(1, $limit));
 		$rows    = db_fetch_assoc_prepared('SELECT message_id, topic, message_type, attempts, max_attempts, last_error, created_at, completed_at FROM queue_messages WHERE queue_name = ? AND status = ? ORDER BY completed_at DESC, id DESC LIMIT ' . $maximum, [$this->queue, 'dead']);
 
-		return is_array($rows) ? array_slice($rows, 0, $maximum) : [];
+		if (!is_array($rows)) {
+			throw new RuntimeException('Unable to read dead-letter queue messages.');
+		}
+
+		return array_slice($rows, 0, $maximum);
 	}
 
 	public function requeue(string $message_id) : void {
@@ -421,27 +429,27 @@ final class CactiQueueReceiver implements ReceiverInterface {
 final class CactiQueueHandlersLocator implements HandlersLocatorInterface {
 	public function getHandlers(Envelope $envelope) : iterable {
 		$message  = $envelope->getMessage();
-		$keys     = [$message::class, $message instanceof CactiQueueMessageInterface ? $message->queueTopic() : ''];
 		$handlers = api_queue_handlers();
+		$handler  = $message instanceof CactiQueueMessageInterface ? ($handlers[$message->queueTopic()] ?? null) : null;
 
-		foreach ($keys as $key) {
-			$handler = $handlers[$key] ?? null;
-
-			if (!is_callable($handler)) {
-				continue;
-			}
-
-			yield new HandlerDescriptor(static function (object $handled_message) use ($handler, $envelope) : mixed {
-				$id                                           = spl_object_id($handled_message);
-				$GLOBALS['cacti_queue_active_envelopes'][$id] = $envelope;
-
-				try {
-					return $handler($handled_message);
-				} finally {
-					unset($GLOBALS['cacti_queue_active_envelopes'][$id]);
-				}
-			});
+		if (!is_callable($handler)) {
+			$handler = $handlers[$message::class] ?? null;
 		}
+
+		if (!is_callable($handler)) {
+			return;
+		}
+
+		yield new HandlerDescriptor(static function (object $handled_message) use ($handler, $envelope) : mixed {
+			$id                                           = spl_object_id($handled_message);
+			$GLOBALS['cacti_queue_active_envelopes'][$id] = $envelope;
+
+			try {
+				return $handler($handled_message);
+			} finally {
+				unset($GLOBALS['cacti_queue_active_envelopes'][$id]);
+			}
+		});
 	}
 }
 
