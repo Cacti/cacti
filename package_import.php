@@ -372,10 +372,12 @@ function package_get_details() {
 			$data = get_repo_file($package_location, $filename, false);
 
 			if ($data !== false) {
-				$tmp_dir = sys_get_temp_dir() . '/package' . $_SESSION['sess_user_id'];
+				/* use an unpredictable, private per-run directory so a local
+				   co-tenant cannot pre-plant a symlink at a guessable path */
+				$tmp_dir = sys_get_temp_dir() . '/cacti_pkg_' . $_SESSION['sess_user_id'] . '_' . bin2hex(random_bytes(8));
 
 				if (!is_dir($tmp_dir)) {
-					mkdir($tmp_dir);
+					mkdir($tmp_dir, 0700);
 				}
 
 				$xmlfile = $tmp_dir . '/' . $filename;

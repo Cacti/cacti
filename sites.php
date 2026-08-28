@@ -577,7 +577,7 @@ function sites() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
+		$sql_where = 'WHERE name LIKE ' . db_qstr('%' . str_replace(array('\\', '%', '_'), array('\\\\', '\\%', '\\_'), get_request_var('filter')) . '%');
 	} else {
 		$sql_where = '';
 	}
