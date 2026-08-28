@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -security: Harden advisory command execution and database DDL sink validation
 -security: Restrict graph input fields across the template, graph and import handoffs
 -security: Treat a non-boolean signature result as a failure in import_package
+-issue#7819: Remove obsolete pre-PHP 8 compatibility branches
 -issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
 -issue#6684: Prevent VDEF-backed aggregate graph items from being emitted as XPORT data sources

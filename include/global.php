@@ -476,25 +476,6 @@ if ($config['is_web']) {
 
 	cacti_session_start();
 
-	/* we never run with magic quotes on */
-	if (version_compare(PHP_VERSION, '5.4', '<=')) {
-		if (get_magic_quotes_gpc()) {
-			$process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
-			foreach ($process as $key => $val) {
-				foreach ($val as $k => $v) {
-					unset($process[$key][$k]);
-					if (is_array($v)) {
-						$process[$key][stripslashes($k)] = $v;
-						$process[] = &$process[$key][stripslashes($k)];
-					} else {
-						$process[$key][stripslashes($k)] = stripslashes($v);
-					}
-				}
-			}
-			unset($process);
-		}
-	}
-
 	/* make sure to start only Cacti session at a time */
 	if (!isset($_SESSION['cacti_cwd'])) {
 		$_SESSION['cacti_cwd'] = $config['base_path'];
@@ -508,31 +489,6 @@ if ($config['is_web']) {
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		$_SERVER['HTTP_REFERER'] = sanitize_uri($_SERVER['HTTP_REFERER']);
 	}
-}
-
-/* emulate 'register_globals' = 'off' if turned on */
-if ((bool)ini_get('register_globals')) {
-	$not_unset = array('_GET', '_POST', '_COOKIE', '_SERVER', '_SESSION', '_ENV', '_FILES', 'database_type', 'database_default', 'database_hostname', 'database_username', 'database_password', 'config', 'colors');
-
-	/* Not only will array_merge give a warning if a parameter is not an array, it will
-	* actually fail. So we check if HTTP_SESSION_VARS has been initialised. */
-	if (!isset($_SESSION)) {
-		$_SESSION = array();
-	}
-
-	/* Merge all into one extremely huge array; unset this later */
-	$input = array_merge($_GET, $_POST, $_COOKIE, $_SERVER, $_SESSION, $_ENV, $_FILES);
-
-	unset($input['input']);
-	unset($input['not_unset']);
-
-	foreach ($input as $var => $val) {
-		if (!in_array($var, $not_unset)) {
-			unset($$var);
-		}
-	}
-
-	unset($input);
 }
 
 define('CACTI_DATE_TIME_FORMAT', date_time_format());
