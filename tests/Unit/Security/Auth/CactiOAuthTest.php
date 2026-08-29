@@ -108,3 +108,11 @@ it('runtime OAuth entrypoints load the flat CactiOAuth helper before use', funct
         ->and($functions)->toContain("require_once(CACTI_PATH_LIBRARY . '/CactiOAuth.php')")
         ->and($functions)->toContain('CactiOAuth::getProvider');
 });
+
+it('OAuth callbacks fail closed when the session state is absent or mismatched', function () {
+    $oauth2 = file_get_contents(dirname(__DIR__, 4) . '/oauth2.php');
+
+    expect($oauth2)->toContain("empty(\$_SESSION['oauth2state'])")
+        ->and($oauth2)->toContain('hash_equals((string) $_SESSION[\'oauth2state\'], (string) grv(\'state\'))')
+        ->and($oauth2)->toContain("unset(\$_SESSION['oauth2state']);");
+});
