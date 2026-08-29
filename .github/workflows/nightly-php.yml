@@ -27,10 +27,10 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup PHP 8.1
+      - name: Setup PHP 8.2
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.1'
+          php-version: '8.2'
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
           dependency-mode: nightly-audit
 
