@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -security: Treat a non-boolean signature result as a failure in import_package
 -issue#7809: Undefined array key "source" warning reindexing SNMP data queries with output-only fields
 -issue#7819: Remove obsolete pre-PHP 8 compatibility branches
+-issue#7617: Allow the graph tree sidebar to shrink with collapsed content
 -issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
 -issue#6684: Prevent VDEF-backed aggregate graph items from being emitted as XPORT data sources
