@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security: Build forced-HTTPS redirects from the server-configured name
 -security: Replace sibling password-reset links and revoke authentication state after reset
 -issue#7775: Add plugin-extensible notification API
 -issue#7746: Make PHP 8.1 dependency builds reproducible

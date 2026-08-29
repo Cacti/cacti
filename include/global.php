@@ -580,8 +580,19 @@ db_cacti_initialized($config['is_web']);
 
 if ($config['is_web']) {
 	if (read_config_option('force_https') == 'on') {
-		if (!cacti_is_https() && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
-			header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+		if (!cacti_is_https()) {
+			$location = cacti_build_https_redirect_url(
+				$_SERVER['SERVER_NAME'] ?? '',
+				$_SERVER['REQUEST_URI'] ?? '',
+				CACTI_PATH_URL
+			);
+
+			if ($location === '') {
+				http_response_code(400);
+				exit;
+			}
+
+			header('Location: ' . $location);
 
 			exit;
 		}
