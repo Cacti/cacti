@@ -4509,7 +4509,7 @@ function draw_navigation_text(string $type = 'url') : string {
 		}
 	} elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
 		$externalLinks = db_fetch_row_prepared('SELECT title, style FROM external_links WHERE id = ?', [$matches[1]]);
-		$title         = is_array($externalLinks) ? $externalLinks['title'] : '';
+		$title         = is_array($externalLinks) ? htmle($externalLinks['title']) : '';
 		$style         = is_array($externalLinks) ? $externalLinks['style'] : '';
 
 		if ($style == 'CONSOLE') {
@@ -4518,9 +4518,9 @@ function draw_navigation_text(string $type = 'url') : string {
 					<a id='nav_0' href='" . CACTI_PATH_URL . "index.php'>" . __('Console') . '</a>' .
 				'</li>';
 
-			$current_nav .= "<li><a id='nav_1' href='#'>" . __('Link %s', htmle($title)) . '</a></li>';
+			$current_nav .= "<li><a id='nav_1' href='#'>" . __('Link %s', $title) . '</a></li>';
 		} else {
-			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0'>" . htmle($title) . '</a></li>';
+			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0'>" . $title . '</a></li>';
 		}
 
 		$tree_title = '';
