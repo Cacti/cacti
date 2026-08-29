@@ -441,6 +441,41 @@ function cacti_get_snmpv3_auth(mixed $auth_proto, mixed $auth_user, mixed $auth_
 }
 
 /**
+ * cacti_snmp_session_from_host - build an SNMP session from a device row.
+ *
+ * cacti_snmp_session() takes fifteen positional arguments. Callers across the
+ * poller, data queries, and automation each spelled out the same mapping from
+ * a $host row, which is where SNMPv3 credential handling drifted between them.
+ * This assembles the arguments once. Missing keys fall back to the same
+ * defaults cacti_snmp_session() already applies, so a partial row behaves as
+ * the explicit-argument calls did.
+ *
+ * @param array $host           A device row with the snmp_* and ping_retries columns.
+ * @param mixed $bulk_walk_size Optional bulk walk size override.
+ *
+ * @return mixed The SNMP session object, or false on failure.
+ */
+function cacti_snmp_session_from_host(array $host, mixed $bulk_walk_size = 10) : mixed {
+	return cacti_snmp_session(
+		$host['hostname'] ?? '',
+		$host['snmp_community'] ?? '',
+		$host['snmp_version'] ?? '',
+		$host['snmp_username'] ?? '',
+		$host['snmp_password'] ?? '',
+		$host['snmp_auth_protocol'] ?? '',
+		$host['snmp_priv_passphrase'] ?? '',
+		$host['snmp_priv_protocol'] ?? '',
+		$host['snmp_context'] ?? '',
+		$host['snmp_engine_id'] ?? '',
+		$host['snmp_port'] ?? 161,
+		$host['snmp_timeout'] ?? 500,
+		$host['ping_retries'] ?? 0,
+		$host['max_oids'] ?? 10,
+		$bulk_walk_size
+	);
+}
+
+/**
  * Calls a native SNMP session method and captures its suppressed warning.
  *
  * Some PHP SNMP failures emit their only useful diagnostic as a warning while

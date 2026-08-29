@@ -1,7 +1,9 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security: Build forced-HTTPS redirects from the server-configured name
 -security: Replace sibling password-reset links and revoke authentication state after reset
+-issue: Fail closed when OAuth callback state is absent or mismatched
 -issue#7775: Add plugin-extensible notification API
 -issue#7746: Make PHP 8.1 dependency builds reproducible
 -issue#7672: Block loopback/link-local SSRF targets in call_remote_data_collector
@@ -145,6 +147,7 @@ Cacti CHANGELOG
 -issue#7696: Repair the string sanitisers in lib/functions.php
 -issue#7697: Guard two divisions PHP 8 made fatal
 -issue#7693: Validate host_id before it reaches the graph template query
+-issue#7707: Bind the MIB column names in MibCache::select()
 -issue#7719: Spike Kill text output applied the large value scientific notation format to the column left of the value it belonged to, starting with Variance
 -issue#7732: Bind device IDs and escape graph and device HTML sinks
 -issue#7715: Refuse to serve the REST scaffold unless it is explicitly enabled
@@ -153,6 +156,7 @@ Cacti CHANGELOG
 -issue#7473: Escape path_rrdcheck_log before it reaches the rrdcheck poller shell redirect
 -issue#7469: Escape path_php_binary before it reaches shell_exec in test_data_source
 -issue#7466: Escape path_stderrlog before it reaches the poller stderr shell redirect
+-feature#7835: Add cacti_snmp_session_from_host() to build SNMP sessions from a device row
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors

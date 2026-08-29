@@ -1079,11 +1079,7 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 		query_debug_timer_offset('data_query', __('Auto Bulk Walk Size Selected.'));
 
 		foreach ($walk_sizes as $size) {
-			$session = cacti_snmp_session($host['hostname'], $host['snmp_community'],
-				$host['snmp_version'], $host['snmp_username'], $host['snmp_password'],
-				$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
-				$host['snmp_context'], $host['snmp_engine_id'],  $host['snmp_port'],
-				$host['snmp_timeout'], $host['ping_retries'], $host['max_oids'], $size);
+			$session = cacti_snmp_session_from_host($host, $size);
 
 			if ($session === false) {
 				debug_log_insert('data_query', __esc('Failed to load SNMP session.'));
@@ -1125,11 +1121,7 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 
 		query_debug_timer_offset('data_query', __esc('Bulk Walk Size is fixed at %d.', $walk_size));
 
-		$session = cacti_snmp_session($host['hostname'], $host['snmp_community'],
-			$host['snmp_version'], $host['snmp_username'], $host['snmp_password'],
-			$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
-			$host['snmp_context'], $host['snmp_engine_id'],  $host['snmp_port'],
-			$host['snmp_timeout'], $host['ping_retries'], $host['max_oids'], $walk_size);
+		$session = cacti_snmp_session_from_host($host, $walk_size);
 
 		if ($session === false) {
 			debug_log_insert('data_query', __esc('Failed to load SNMP session.'));

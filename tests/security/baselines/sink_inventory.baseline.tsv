@@ -457,7 +457,7 @@ header_redirect	./include/fa/svgs/index.php	header('Location:../index.php');
 header_redirect	./include/fa/svgs/regular/index.php	header('Location:../index.php');
 header_redirect	./include/fa/svgs/solid/index.php	header('Location:../index.php');
 header_redirect	./include/fa/webfonts/index.php	header('Location:../index.php');
-header_redirect	./include/global.php				header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+header_redirect	./include/global.php				header('Location: ' . $location);
 header_redirect	./include/index.php	header('Location:../index.php');
 header_redirect	./include/js/LC_MESSAGES/index.php	header('Location:../index.php');
 header_redirect	./include/js/index.php	header('Location:../index.php');
