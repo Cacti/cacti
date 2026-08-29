@@ -270,13 +270,18 @@ class MibCache {
 					$filter = $oid_entry . '.%.' . $this->active_table_entry;
 
 					// fetch all values of specific columns given for that MIB table row
+					/* The names are bound rather than pasted between quotes. The
+					   caller passes them, and a quote in one used to close the
+					   string and leave the rest as SQL. */
+					$placeholders = implode(',', array_fill(0, cacti_sizeof($column), '?'));
+
 					$entries = db_fetch_assoc_prepared("SELECT name, value
 						FROM snmpagent_cache
-						WHERE name IN ('" . implode("','", $column) . "')
+						WHERE name IN ($placeholders)
 						AND oid LIKE ?
 						GROUP BY name
 						ORDER BY oid",
-						[$filter]);
+						array_merge(array_values($column), [$filter]));
 
 					if ($entries && cacti_sizeof($entries) > 0) {
 						foreach ($entries as $entry) {
@@ -323,21 +328,35 @@ class MibCache {
 				// fetch only the values of one single column
 				$filter = $oid_entry . '.%.%';
 
-				return db_fetch_assoc_prepared("SELECT value AS '" . $column . "'
+				/* The alias is an identifier and cannot be bound, so confine it
+				   to the characters one may hold. It was pasted between quotes
+				   before, where a quote in the name ended the alias. */
+				/* The helper's default is 'id', which would quietly rename the
+				   returned key to a real column name when the input strips to
+				   nothing. Ask for an empty default and refuse instead. */
+				$alias = sanitize_sql_column($column, '');
+
+				if ($alias === '') {
+					return [];
+				}
+
+				return db_fetch_assoc_prepared('SELECT value AS `' . $alias . '`
 					FROM snmpagent_cache
 					WHERE name = ?
 					AND oid LIKE ?
-					ORDER BY oid",
+					ORDER BY oid',
 					[$column, $filter]);
 			} elseif (is_array($column) && cacti_sizeof($column) > 0) {
 				// fetch values of specific columns given
 				$filter = $oid_entry . '.%.%';
 
+				$placeholders = implode(',', array_fill(0, cacti_sizeof($column), '?'));
+
 				$entries = db_fetch_assoc_prepared("SELECT name, value
 					FROM snmpagent_cache
-					WHERE name IN ('" . implode("','", $column) . "')
+					WHERE name IN ($placeholders)
 					AND oid LIKE ?
-					ORDER BY oid", [$filter]);
+					ORDER BY oid", array_merge(array_values($column), [$filter]));
 
 				if (cacti_sizeof($entries)) {
 					$num_objects        = cacti_sizeof($column);
