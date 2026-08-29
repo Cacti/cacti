@@ -169,6 +169,7 @@ Cacti CHANGELOG
 -issue#7720: Data Source item fields imported from a Template XML are not held to the data_sources.php field rules
 -issue#7355: Add a vendor-neutral ENTITY-SENSOR-MIB script data query for physical sensors
 -issue#7355: Add a JUNIPER-MIB jnxOperatingTable script data query for RE and FPC health
+-issue#7355: Add an F5-BIGIP-SYSTEM-MIB script data query for per-CPU utilization
 -feature#7835: Add cacti_snmp_session_from_host() to build SNMP sessions from a device row
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
