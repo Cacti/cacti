@@ -1578,8 +1578,8 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 	$ref_host = parse_url($url, PHP_URL_HOST);
 	$srv_host = null;
 
-	if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '') {
-		$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
+	if (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] != '') {
+		$srv_host = preg_replace('/:\d+$/', '', $_SERVER['SERVER_NAME']);
 	}
 
 	if ($ref_host === null || ($srv_host !== null && $ref_host === $srv_host)) {
@@ -1592,6 +1592,34 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 	} else {
 		return $default;
 	}
+}
+
+/**
+ * Builds a forced-HTTPS redirect using a server-configured host name.
+ *
+ * @param string $server_name  The web server's configured name.
+ * @param string $request_uri  The requested local path and query string.
+ * @param string $default_path A local fallback when the request URI is invalid.
+ *
+ * @psalm-taint-escape header
+ *
+ * @return string A safe absolute HTTPS URL, or an empty string for an invalid host.
+ */
+function cacti_build_https_redirect_url(string $server_name, string $request_uri, string $default_path = '/') : string {
+	$server_name = trim($server_name);
+	$host        = trim($server_name, '[]');
+
+	if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
+		$host = '[' . $host . ']';
+	} elseif (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false &&
+		filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)  === false) {
+		return '';
+	}
+
+	$path = validate_redirect_url($request_uri, $default_path);
+	$path = '/' . ltrim($path, '/');
+
+	return 'https://' . $host . $path;
 }
 
 /**
