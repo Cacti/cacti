@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="tests/bootstrap-unit.php" colors="false" beStrictAboutOutputDuringTests="false">
+	<testsuites>
+		<testsuite name="F5Cpu">
+			<file>tests/Unit/DataCollection/Scripts/F5CpuTest.php</file>
+		</testsuite>
+	</testsuites>
+	<source>
+		<include>
+			<file>scripts/ss_f5_cpu.php</file>
+		</include>
+	</source>
+</phpunit>
