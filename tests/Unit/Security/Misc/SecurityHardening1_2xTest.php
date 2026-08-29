@@ -39,17 +39,15 @@ test('sanitize_uri does not call urldecode', function () use ($functionsSource) 
 	expect($body)->not->toContain('urldecode(');
 });
 
-// M-3/M-4: validate_redirect_url prefers SERVER_NAME over HTTP_HOST
+// M-3/M-4: validate_redirect_url does not trust HTTP_HOST
 
-test('validate_redirect_url prefers SERVER_NAME over HTTP_HOST', function () use ($htmlUtilitySource) {
+test('validate_redirect_url does not trust HTTP_HOST', function () use ($htmlUtilitySource) {
 	$start = strpos($htmlUtilitySource, 'function validate_redirect_url(');
 	expect($start)->not->toBeFalse();
 
 	$body = substr($htmlUtilitySource, $start, 3000);
-	// SERVER_NAME check must appear before HTTP_HOST fallback
-	$posServerName = strpos($body, "SERVER_NAME");
-	$posHttpHost   = strpos($body, "HTTP_HOST");
-	expect($posServerName)->toBeLessThan($posHttpHost);
+	expect($body)->toContain('SERVER_NAME');
+	expect($body)->not->toContain('HTTP_HOST');
 });
 
 test('validate_redirect_url rejects protocol-relative URLs after sanitize_uri', function () use ($htmlUtilitySource) {
