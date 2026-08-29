@@ -834,7 +834,7 @@ header_redirect	./include/fa/svgs/brands/index.php:25	header("Location:../index.
 header_redirect	./include/fa/svgs/regular/index.php:25	header("Location:../index.php");
 header_redirect	./include/fa/svgs/solid/index.php:25	header("Location:../index.php");
 header_redirect	./include/fa/webfonts/index.php:25	header("Location:../index.php");
-header_redirect	./include/global.php:423				header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+header_redirect	./include/global.php:434				header('Location: ' . $location);
 header_redirect	./include/index.php:25	header("Location:../index.php");
 header_redirect	./include/js/LC_MESSAGES/index.php:25	header("Location:../index.php");
 header_redirect	./include/js/index.php:25	header("Location:../index.php");

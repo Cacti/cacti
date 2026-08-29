@@ -49,7 +49,7 @@ hotspots() {
 	done
 
 	# Host header trust boundaries.
-	rg -n --pcre2 "${RG_COMMON[@]}" '\$_SERVER\s*\[\s*["'"'"']HTTP_HOST["'"'"']\s*\]' "${EXCLUDE[@]}" --glob '*.php' . | while IFS= read -r line; do
+	(rg -n --pcre2 "${RG_COMMON[@]}" '\$_SERVER\s*\[\s*["'"'"']HTTP_HOST["'"'"']\s*\]' "${EXCLUDE[@]}" --glob '*.php' . || true) | while IFS= read -r line; do
 		file="${line%%:*}"
 		rest="${line#*:}"
 		lineno="${rest%%:*}"
