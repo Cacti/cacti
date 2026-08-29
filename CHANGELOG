@@ -180,6 +180,7 @@ Cacti CHANGELOG
 -feature#7835: Add cacti_snmp_session_from_host() to build SNMP sessions from a device row
 -issue#XXXX: Replace the unmaintained csrf-magic library with symfony/security-csrf
 -issue#7744: Replace the unmaintained csrf-magic library with symfony/security-csrf
+-feature#7835: Add cacti_snmp_session_from_host() to build SNMP sessions from a device row
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
