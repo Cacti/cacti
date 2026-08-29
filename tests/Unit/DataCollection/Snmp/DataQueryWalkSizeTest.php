@@ -191,6 +191,11 @@ test('the walk size is normalized before the output_format walk reads it', funct
 test('max_oids is still passed to the session calls that take it', function () {
 	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/data_query.php');
 
-	// the fix must not have swapped every max_oids in the file
-	expect(substr_count($source, "\$host['max_oids']"))->toBeGreaterThan(0);
+	// the #7493 fix must not have swapped every max_oids for the walk size.
+	// max_oids reaches the session either directly or through
+	// cacti_snmp_session_from_host(), which forwards $host['max_oids'].
+	$direct  = substr_count($source, "\$host['max_oids']");
+	$wrapped = substr_count($source, 'cacti_snmp_session_from_host(');
+
+	expect($direct + $wrapped)->toBeGreaterThan(0);
 });
