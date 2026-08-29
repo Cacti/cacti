@@ -327,6 +327,17 @@ test('native sessions cover versions and security levels without network I/O', f
 		->and(cacti_snmp_session('127.0.0.1', '', '3', 'user', 'secretpass', 'SHA', 'privatepass', 'AES'))->toBeObject()
 		->and(cacti_snmp_session('127.0.0.1', '', '3', 'user', 'secretpass', 'INVALID', '', '[None]'))->toBeFalse()
 		->and(cacti_snmp_session('127.0.0.1', 'public', 'invalid'))->toBeFalse();
+
+	// cacti_snmp_session_from_host maps a device row onto the arguments above (#7835).
+	expect(cacti_snmp_session_from_host(array(
+		'hostname' => '127.0.0.1', 'snmp_community' => 'public', 'snmp_version' => '2',
+	)))->toBeObject()
+		->and(cacti_snmp_session_from_host(array(
+			'hostname' => '127.0.0.1', 'snmp_version' => '3', 'snmp_username' => 'user',
+			'snmp_password' => 'secretpass', 'snmp_auth_protocol' => 'SHA',
+			'snmp_priv_passphrase' => 'privatepass', 'snmp_priv_protocol' => 'AES',
+		)))->toBeObject()
+		->and(cacti_snmp_session_from_host(array('hostname' => '127.0.0.1', 'snmp_community' => 'public', 'snmp_version' => 'invalid')))->toBeFalse();
 });
 
 test('native and binary get operations cover success and failure results', function () : void {
