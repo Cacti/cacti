@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="tests/bootstrap-unit.php" colors="false" beStrictAboutOutputDuringTests="false">
+	<testsuites>
+		<testsuite name="JuniperOperating">
+			<file>tests/Unit/DataCollection/Scripts/JuniperOperatingTest.php</file>
+		</testsuite>
+	</testsuites>
+	<source>
+		<include>
+			<file>scripts/ss_juniper_operating.php</file>
+		</include>
+	</source>
+</phpunit>
