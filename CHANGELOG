@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -security: Cast graph and device ids to int in get_allowed_* permission filters
 -security: Honour a trusted forwarded proto when setting the Secure session cookie
 -security: Confine automation sorting and pagination before SQL and HTML rendering
+-security: Substitute query data before escaping graph titles and axis labels
 -security: Build forced-HTTPS redirects from the server-configured name
 -security: Replace sibling password-reset links and revoke authentication state after reset
 -issue: Fail closed when OAuth callback state is absent or mismatched

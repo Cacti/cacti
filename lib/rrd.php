@@ -2103,7 +2103,7 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 		switch($key) {
 			case 'title_cache':
 				if (!empty($value)) {
-					$graph_opts .= '--title=' . cacti_escapeshellarg(htmle($value)) . RRD_NL;
+					$graph_opts .= '--title=' . cacti_escapeshellarg(rrd_substitute_host_query_data(htmle($value), $graph, [])) . RRD_NL;
 				}
 
 				break;
@@ -2157,7 +2157,7 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 				break;
 			case 'vertical_label':
 				if (!empty($value)) {
-					$graph_opts .= '--vertical-label=' . cacti_escapeshellarg(htmle($value)) . RRD_NL;
+					$graph_opts .= '--vertical-label=' . cacti_escapeshellarg(rrd_substitute_host_query_data(htmle($value), $graph, [])) . RRD_NL;
 				}
 
 				break;
@@ -2175,7 +2175,7 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 				break;
 			case 'right_axis_label':
 				if (!empty($value)) {
-					$graph_opts .= '--right-axis-label ' . cacti_escapeshellarg($value) . RRD_NL;
+					$graph_opts .= '--right-axis-label ' . cacti_escapeshellarg(rrd_substitute_host_query_data($value, $graph, [])) . RRD_NL;
 				}
 
 				break;
@@ -2265,6 +2265,10 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 
 	// process theme and font styling options
 	$graph_opts .= rrdtool_function_theme_font_options($graph_data_array);
+
+	/* NOTE: title, vertical-label and right-axis-label perform |query_*|
+	 * substitution before cacti_escapeshellarg above, so a device-supplied
+	 * value cannot break out of the quoted RRDtool argument. */
 
 	$watermark = str_replace("'", '"', read_config_option('graph_watermark'));
 
