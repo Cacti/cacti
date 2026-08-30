@@ -130,6 +130,9 @@ rules:
       - pattern: htmle(...)
       - pattern: htmlspecialchars(...)
       - pattern: json_encode(...)
+      # filter_value() escapes values, link targets, and titles before adding
+      # optional highlighting markup.
+      - pattern: filter_value(...)
       - pattern: intval(...)
       - pattern: (int) $X
     pattern-sinks:

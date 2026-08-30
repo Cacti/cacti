@@ -179,16 +179,17 @@ function display_matching_hosts(array $rule, int $rule_type, string $url) : void
 	);
 
 	$total_rows     = cacti_sizeof(db_fetch_assoc($details['rows_query'], false));
-	$sort_column    = api_automation_column_exists(grv('sort_column'), ['host', 'graph_local', 'sites', 'graph_templates', 'graph_templates_graph', 'host_template']) ? grv('sort_column') : 'description';
-	$sort_direction = in_array(strtoupper((string) grv('sort_direction')), ['ASC', 'DESC'], true) ? strtoupper((string) grv('sort_direction')) : 'ASC';
+	$sort_column    = sanitize_sql_column((string) grv('sort_column'), '');
+	$sort_column    = api_automation_column_exists($sort_column, ['host', 'graph_local', 'sites', 'graph_templates', 'graph_templates_graph', 'host_template']) ? $sort_column : 'description';
+	$sort_direction = strtoupper((string) grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
 	$sortby         = str_ends_with($sort_column, 'hostname') ? 'INET_ATON(' . $sort_column . ')' : $sort_column;
 	$sql_query      = $details['rows_query'] .
 		' ORDER BY ' . $sortby . ' ' . $sort_direction .
-		' LIMIT ' . ($details['rows'] * (grv('page') - 1)) . ',' . $details['rows'];
+		' LIMIT ' . ($details['rows'] * (gfrv('page') - 1)) . ',' . $details['rows'];
 
 	$hosts = db_fetch_assoc($sql_query, false);
 
-	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, grv('page'), $details['rows'], $total_rows, 7, __('Devices'), 'page', 'main');
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, gfrv('page'), $details['rows'], $total_rows, 7, __('Devices'), 'page', 'main');
 
 	print $nav;
 
@@ -235,7 +236,7 @@ function display_matching_hosts(array $rule, int $rule_type, string $url) : void
 		],
 	];
 
-	html_header_sort($display_text, grv('sort_column'), grv('sort_direction'), 1, $url . '?action=edit&id=' . grv('id') . '&page=' . grv('page'));
+	html_header_sort($display_text, grv('sort_column'), grv('sort_direction'), 1, $url . '?action=edit&id=' . grv('id') . '&page=' . gfrv('page'));
 
 	if (cacti_sizeof($hosts)) {
 		foreach ($hosts as $host) {
@@ -274,10 +275,10 @@ function display_matching_hosts(array $rule, int $rule_type, string $url) : void
  */
 function automation_get_matching_device_sql(array &$rule, int $rule_type) : array {
 	// if the number of rows is -1, set it to the default
-	if (grv('rows') == -1) {
+	if (gfrv('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = grv('rows');
+		$rows = gfrv('rows');
 	}
 
 	// form the 'where' clause for our main sql query
@@ -299,7 +300,7 @@ function automation_get_matching_device_sql(array &$rule, int $rule_type) : arra
 		$host_where_disabled = "(IFNULL(TRIM(h.disabled),'') == 'on')";
 	}
 
-	$host_where_status = grv('status');
+	$host_where_status = gfrv('status');
 
 	if ($host_where_status == '-1') {
 		// Show all items
@@ -383,10 +384,10 @@ function automation_get_matching_device_sql(array &$rule, int $rule_type) : arra
  */
 function automation_get_matching_graphs_sql(array $rule, int $rule_type) : array {
 	// if the number of rows is -1, set it to the default
-	if (grv('rows') == -1) {
+	if (gfrv('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = grv('rows');
+		$rows = gfrv('rows');
 	}
 
 	// form the 'where' clause for our main sql query
@@ -452,8 +453,9 @@ function automation_get_matching_graphs_sql(array $rule, int $rule_type) : array
 		$sdisabled = "'' AS site_disabled,";
 	}
 
-	$sort_column    = api_automation_column_exists(grv('sort_column'), ['host', 'graph_local', 'sites', 'graph_templates', 'graph_templates_graph', 'host_template']) ? grv('sort_column') : 'title_cache';
-	$sort_direction = in_array(strtoupper((string) grv('sort_direction')), ['ASC', 'DESC'], true) ? strtoupper((string) grv('sort_direction')) : 'ASC';
+	$sort_column    = sanitize_sql_column((string) grv('sort_column'), '');
+	$sort_column    = api_automation_column_exists($sort_column, ['host', 'graph_local', 'sites', 'graph_templates', 'graph_templates_graph', 'host_template']) ? $sort_column : 'title_cache';
+	$sort_direction = strtoupper((string) grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
 
 	$rows_query = "SELECT h.id AS host_id, h.hostname, h.description,
 		h.disabled AS disabled, $sdisabled
@@ -474,7 +476,7 @@ function automation_get_matching_graphs_sql(array $rule, int $rule_type) : array
 		ON h.host_template_id = ht.id
 		$sql_where
 		ORDER BY " . $sort_column . ' ' . $sort_direction . '
-		LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
+		LIMIT ' . ($rows * (gfrv('page') - 1)) . ',' . $rows;
 
 	return [
 		'rows_query' => $rows_query,
@@ -647,7 +649,7 @@ function display_matching_graphs(array $rule, int $rule_type, string $url) : voi
 		$graph_list = [];
 	}
 
-	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 9, __('Graphs'), 'page', 'main');
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, gfrv('page'), $rows, $total_rows, 9, __('Graphs'), 'page', 'main');
 
 	print $nav;
 
@@ -692,7 +694,7 @@ function display_matching_graphs(array $rule, int $rule_type, string $url) : voi
 		],
 	];
 
-	html_header_sort($display_text, grv('sort_column'), grv('sort_direction'), 1, $url . '?action=edit&id=' . grv('id') . '&page=' . grv('page'));
+	html_header_sort($display_text, grv('sort_column'), grv('sort_direction'), 1, $url . '?action=edit&id=' . grv('id') . '&page=' . gfrv('page'));
 
 	if (cacti_sizeof($graph_list)) {
 		foreach ($graph_list as $graph) {
@@ -776,10 +778,10 @@ function automation_get_new_graphs_sql(array $rule) : mixed {
 	}
 
 	// if the number of rows is -1, set it to the default
-	if (grv('rows') == -1) {
+	if (gfrv('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = grv('rows');
+		$rows = gfrv('rows');
 	}
 
 	$rule_items     = [];
@@ -893,7 +895,7 @@ function automation_get_new_graphs_sql(array $rule) : mixed {
 			$rows_query    = "SELECT * \nFROM (\n" . trim($sql_query) . "\n) AS `a` " . ($sql_filter != '' ? "\nWHERE (\n" . trim($sql_filter) . "\n)" : '') . $sql_having;
 
 			// construct the indexes query
-			$indexes_query = $rows_query . "\nLIMIT " . ($rows * (grv('page') - 1)) . ',' . $rows;
+			$indexes_query = $rows_query . "\nLIMIT " . ($rows * (gfrv('page') - 1)) . ',' . $rows;
 		} else {
 			$rows_query    = '';
 			$indexes_query = '';
@@ -934,7 +936,7 @@ function display_new_graphs(array $rule, string $url) : void {
 	if (isset($details['rows_query']) && $details['rows_query'] != '') {
 		$total_rows = cacti_sizeof(db_fetch_assoc($details['rows_query'], false));
 
-		if ($total_rows < (grv('rows') * (grv('page') - 1)) + 1) {
+		if ($total_rows < (gfrv('rows') * (gfrv('page') - 1)) + 1) {
 			srv('page', '1');
 		}
 
@@ -944,7 +946,7 @@ function display_new_graphs(array $rule, string $url) : void {
 		$rows = $details['rows'];
 		$name = $details['name'];
 
-		$nav = html_nav_bar('automation_graph_rules.php?action=edit&id=' . $rule['id'], MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 30, __('Matching Indexes'), 'page', 'main');
+		$nav = html_nav_bar('automation_graph_rules.php?action=edit&id=' . $rule['id'], MAX_DISPLAY_PAGES, gfrv('page'), $rows, $total_rows, 30, __('Matching Indexes'), 'page', 'main');
 
 		print $nav;
 
@@ -1093,10 +1095,10 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
 
 	draw_tree_items_filter(true, $url);
 
-	if (grv('rows') == -1) {
+	if (gfrv('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = grv('rows');
+		$rows = gfrv('rows');
 	}
 
 	form_hidden_box('page', '1', '');
@@ -1160,7 +1162,7 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
 		$host_where_disabled = "(IFNULL(TRIM(h.disabled),'') = 'on')";
 	}
 
-	$host_where_status = grv('status');
+	$host_where_status = gfrv('status');
 
 	if ($host_where_status == '-1') {
 		// Show all items
@@ -1210,19 +1212,20 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
 
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-	$sort_column    = api_automation_column_exists(grv('sort_column'), ['host', 'graph_local', 'sites', 'graph_templates', 'graph_templates_graph', 'host_template']) ? grv('sort_column') : 'description';
-	$sort_direction = in_array(strtoupper((string) grv('sort_direction')), ['ASC', 'DESC'], true) ? strtoupper((string) grv('sort_direction')) : 'ASC';
+	$sort_column    = sanitize_sql_column((string) grv('sort_column'), '');
+	$sort_column    = api_automation_column_exists($sort_column, ['host', 'graph_local', 'sites', 'graph_templates', 'graph_templates_graph', 'host_template']) ? $sort_column : 'description';
+	$sort_direction = strtoupper((string) grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
 	$sortby         = str_ends_with($sort_column, 'hostname') ? 'INET_ATON(' . $sort_column . ')' : $sort_column;
 
 	$sql_query = "$rows_query ORDER BY $sortby " .
 		$sort_direction . ' LIMIT ' .
-		($rows * (grv('page') - 1)) . ',' . $rows;
+		($rows * (gfrv('page') - 1)) . ',' . $rows;
 
 	$templates = db_fetch_assoc($sql_query, false);
 
 	cacti_log($function . ' templates sql: ' . str_replace("\n",' ', $sql_query), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
 
-	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8, __('Devices'), 'page', 'main');
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, gfrv('page'), $rows, $total_rows, 8, __('Devices'), 'page', 'main');
 
 	print $nav;
 
