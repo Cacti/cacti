@@ -54,3 +54,6 @@ print "<option value='" . html_escape(gnrv('location')) . "'>";
 
 // ok: cacti-request-var-echoed-unescaped
 print '<div>' . htmle(grv('name')) . '</div>';
+
+// ok: cacti-request-var-echoed-unescaped
+print '<td>' . filter_value(grv('name'), grv('filter')) . '</td>';
