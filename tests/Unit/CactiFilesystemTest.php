@@ -1,0 +1,149 @@
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+*/
+
+require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
+require_once CACTI_PATH_LIBRARY . '/CactiFilesystem.php';
+
+test('CactiFilesystem wraps Symfony filesystem operations', function () {
+	$filesystem = new CactiFilesystem();
+	$dir        = sys_get_temp_dir() . '/cacti-filesystem-' . bin2hex(random_bytes(4));
+	$file       = CactiFilesystem::join($dir, 'nested', 'settings.txt');
+	$copy       = CactiFilesystem::join($dir, 'nested', 'settings.copy');
+
+	try {
+		$filesystem->ensureDirectory(dirname($file));
+		$filesystem->writeFile($file, 'alpha');
+		$filesystem->appendFile($file, "\nbeta");
+		$filesystem->copyFile($file, $copy);
+
+		expect($filesystem->has([$file, $copy]))->toBeTrue();
+		expect($filesystem->read($file))->toBe("alpha\nbeta");
+		expect(CactiFilesystem::canonicalize(CactiFilesystem::join($dir, 'nested', '..', 'nested', 'settings.txt')))->toBe($file);
+	} finally {
+		$filesystem->delete($dir);
+	}
+});
+
+test('CactiFilesystem read throws when the file is missing', function () {
+	$filesystem = new CactiFilesystem();
+	$missing    = sys_get_temp_dir() . '/cacti-filesystem-missing-' . bin2hex(random_bytes(4));
+
+	expect(fn () => $filesystem->read($missing))
+		->toThrow(RuntimeException::class);
+});
+
+test('CactiFilesystem read rejects a path containing a null byte', function () {
+	$filesystem = new CactiFilesystem();
+
+	expect(fn () => $filesystem->read("/tmp/foo\0bar"))
+		->toThrow(RuntimeException::class, 'null byte');
+});
+
+test('CactiFilesystem rejects a null byte in has, ensureDirectory and delete', function () {
+	$filesystem = new CactiFilesystem();
+	$tainted    = "/tmp/foo\0bar";
+
+	expect(fn () => $filesystem->has($tainted))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->has([$tainted]))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->ensureDirectory($tainted))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->ensureDirectory([$tainted]))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->delete($tainted))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->delete([$tainted]))->toThrow(RuntimeException::class, 'null byte');
+});
+
+test('CactiFilesystem rejects null bytes across write, copy, move and temporary paths', function () {
+	$filesystem = new CactiFilesystem();
+	$clean      = sys_get_temp_dir() . '/clean';
+	$tainted    = "/tmp/foo\0bar";
+
+	expect(fn () => $filesystem->writeFile($tainted, 'data'))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->appendFile($tainted, 'data'))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->copyFile($tainted, $clean))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->copyFile($clean, $tainted))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->move($tainted, $clean))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->move($clean, $tainted))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->temporaryName($tainted, 'tmp'))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->temporaryName($clean, "tmp\0"))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->temporaryName($clean, 'tmp', ".tmp\0"))->toThrow(RuntimeException::class, 'null byte')
+		->and(fn () => $filesystem->isAbsolute($tainted))->toThrow(RuntimeException::class, 'null byte');
+});
+
+test('CactiFilesystem accepts an injected Symfony filesystem', function () {
+	$injected   = new Symfony\Component\Filesystem\Filesystem();
+	$filesystem = new CactiFilesystem($injected);
+	$dir        = sys_get_temp_dir() . '/cacti-fs-inject-' . bin2hex(random_bytes(4));
+
+	try {
+		$filesystem->ensureDirectory($dir);
+
+		expect($filesystem->has($dir))->toBeTrue();
+	} finally {
+		$filesystem->delete($dir);
+	}
+});
+
+test('CactiFilesystem instance moves, renames and reports absolute paths', function () {
+	$filesystem = new CactiFilesystem();
+	$dir        = sys_get_temp_dir() . '/cacti-fs-move-' . bin2hex(random_bytes(4));
+	$origin     = CactiFilesystem::join($dir, 'origin.txt');
+	$target     = CactiFilesystem::join($dir, 'target.txt');
+
+	try {
+		$filesystem->ensureDirectory($dir);
+		$filesystem->writeFile($origin, 'payload');
+		$filesystem->move($origin, $target);
+
+		expect($filesystem->has($origin))->toBeFalse()
+			->and($filesystem->read($target))->toBe('payload');
+
+		$temp = $filesystem->temporaryName($dir, 'tmp');
+		expect($filesystem->has($temp))->toBeTrue();
+
+		expect($filesystem->isAbsolute($target))->toBeTrue()
+			->and($filesystem->isAbsolute('relative/path'))->toBeFalse();
+	} finally {
+		$filesystem->delete($dir);
+	}
+});
+
+test('CactiFilesystem static facade renames, creates temp files with a suffix, and reports absolute paths', function () {
+	$dir    = sys_get_temp_dir() . '/cacti-fs-static-' . bin2hex(random_bytes(4));
+	$origin = CactiFilesystem::join($dir, 'origin.txt');
+	$target = CactiFilesystem::join($dir, 'target.txt');
+
+	try {
+		CactiFilesystem::mkdir($dir);
+		CactiFilesystem::dumpFile($origin, 'payload');
+		CactiFilesystem::rename($origin, $target);
+
+		expect(CactiFilesystem::exists($origin))->toBeFalse()
+			->and(CactiFilesystem::exists($target))->toBeTrue();
+
+		// The suffix must land at the end of the generated filename: this is
+		// the Symfony Filesystem::tempnam() argument position, not a file mode.
+		$temp = CactiFilesystem::tempnam($dir, 'tmp', '.suffix');
+		expect(CactiFilesystem::exists($temp))->toBeTrue()
+			->and($temp)->toEndWith('.suffix');
+
+		expect(CactiFilesystem::isAbsolutePath($target))->toBeTrue()
+			->and(CactiFilesystem::isAbsolutePath('relative/path'))->toBeFalse();
+	} finally {
+		CactiFilesystem::remove($dir);
+	}
+});
+
+test('CactiFilesystem is a readonly value wrapper', function () {
+	$property = (new ReflectionClass(CactiFilesystem::class))->getProperty('filesystem');
+	expect($property->isReadOnly())->toBeTrue();
+});
