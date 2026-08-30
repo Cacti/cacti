@@ -3442,9 +3442,10 @@ function get_graph_title(int $local_graph_id) : string {
  * @return int The guest account if greater than 0
  */
 function get_guest_account() : int {
-	$user = db_fetch_cell_prepared('SELECT id
+	$user = db_fetch_cell_prepared("SELECT id
 		FROM user_auth
-		WHERE username = ? OR id = ?',
+		WHERE (username = ? OR id = ?)
+		AND enabled = 'on'",
 		[read_config_option('guest_user'), read_config_option('guest_user')]);
 
 	if (empty($user)) {
@@ -9091,11 +9092,24 @@ function get_client_addr() : string|false {
  * @return bool True when the connection is HTTPS, false otherwise.
  */
 function cacti_is_https() : bool {
-	if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === '' || $_SERVER['HTTPS'] === '0') {
-		return false;
+	global $config;
+
+	if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== '' && $_SERVER['HTTPS'] !== '0' && strtolower($_SERVER['HTTPS']) !== 'off') {
+		return true;
 	}
 
-	return strtolower($_SERVER['HTTPS']) !== 'off';
+	// Honour a forwarded proto only when we are configured to trust proxy
+	// headers, so a client cannot force the Secure flag on a plaintext request.
+	if (!empty($config['proxy_headers'])) {
+		$fwd_proto = isset($_SERVER['HTTP_X_FORWARDED_PROTO']) ? strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) : '';
+		$fwd_ssl   = isset($_SERVER['HTTP_X_FORWARDED_SSL']) ? strtolower($_SERVER['HTTP_X_FORWARDED_SSL']) : '';
+
+		if ($fwd_proto === 'https' || $fwd_ssl === 'on') {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 /**
