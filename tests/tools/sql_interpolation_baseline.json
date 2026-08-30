@@ -44,7 +44,7 @@
     "lib/plugins.php": 1,
     "lib/poller.php": 14,
     "lib/rrdcheck.php": 1,
-    "lib/template.php": 6,
+    "lib/template.php": 5,
     "lib/variables.php": 1,
     "managers.php": 6,
     "plugins.php": 2,

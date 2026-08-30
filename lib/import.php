@@ -189,6 +189,10 @@ function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id
 					if (xml_detect_ignorable_hash_cache($dep_hash_cache[$type][$i]['hash'], $hash_array)) {
 						$repair++;
 					}
+				} elseif ($type == 'graph_template' && !graph_template_input_xml_preflight($hash_array)) {
+					cacti_log('ERROR: Graph template import refused invalid input relationships before the write pass', false, 'SECURITY');
+
+					return false;
 				}
 			}
 		}
@@ -229,7 +233,27 @@ function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id
 
 				switch($type) {
 					case 'graph_template':
-						$hash_cache += xml_to_graph_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $dep_hash_cache[$type][$i]['version'], $remove_orphans);
+						$transaction_started = $preview_only ? false : db_begin_transaction();
+
+						if (!$preview_only && !$transaction_started) {
+							return false;
+						}
+
+						$cache_add = xml_to_graph_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $dep_hash_cache[$type][$i]['version'], $remove_orphans);
+
+						if ($cache_add === false) {
+							if ($transaction_started) {
+								db_rollback_transaction();
+							}
+
+							return false;
+						}
+
+						if ($transaction_started) {
+							db_commit_transaction();
+						}
+
+						$hash_cache += $cache_add;
 
 						break;
 					case 'data_template':
@@ -900,6 +924,53 @@ function xml_to_graph_template(string $hash, array &$xml_array, array &$hash_cac
 
 	// track changes
 	$status = 0;
+
+	/* Validate every dynamic graph-item field before the import writes any
+	 * template records. Import is a separate producer from the web form and must
+	 * enforce the same invariant at the data handoff boundary. */
+	$available_graph_item_hashes = [];
+
+	if (isset($xml_array['items']) && is_array($xml_array['items'])) {
+		foreach (array_keys($xml_array['items']) as $item_hash) {
+			$parsed_item_hash = parse_xml_hash($item_hash);
+
+			if ($parsed_item_hash === false) {
+				cacti_log('ERROR: Graph template import refused an invalid Graph Item hash', false, 'SECURITY');
+
+				return false;
+			}
+
+			$available_graph_item_hashes[$parsed_item_hash['hash']] = true;
+		}
+	}
+
+	if (isset($xml_array['inputs']) && !is_array($xml_array['inputs'])) {
+		return false;
+	}
+
+	if (isset($xml_array['inputs'])) {
+		foreach ($xml_array['inputs'] as $item_array) {
+			$column_name = is_array($item_array) && isset($item_array['column_name'])
+				? xml_character_decode($item_array['column_name'])
+				: null;
+
+			if (!graph_template_input_column_is_allowed($column_name) || !isset($item_array['items']) || !is_string($item_array['items'])) {
+				cacti_log('ERROR: Graph template import refused an invalid Graph Item Input field', false, 'SECURITY');
+
+				return false;
+			}
+
+			foreach (array_filter(explode('|', $item_array['items']), static fn (string $item_hash) : bool => $item_hash !== '') as $item_hash) {
+				$parsed_item_hash = parse_xml_hash($item_hash);
+
+				if ($parsed_item_hash === false || !isset($available_graph_item_hashes[$parsed_item_hash['hash']])) {
+					cacti_log('ERROR: Graph template import refused an unresolved Graph Item Input relationship', false, 'SECURITY');
+
+					return false;
+				}
+			}
+		}
+	}
 
 	// import into: graph_templates
 	$_graph_template_id = db_fetch_cell_prepared('SELECT id
