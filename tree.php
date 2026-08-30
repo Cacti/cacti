@@ -316,6 +316,10 @@ function get_host_sort_type() {
 						WHERE id = ?',
 						array($branch));
 
+					if ($sort_type === false) {
+						return;
+					}
+
 					if ($sort_type == HOST_GROUPING_GRAPH_TEMPLATE) {
 						print 'hsgt';
 					} else {
@@ -384,6 +388,11 @@ function get_branch_sort_type() {
 					FROM graph_tree_items
 					WHERE id = ?',
 					array($branch));
+
+				if ($sort_type === false) {
+					print '';
+					break;
+				}
 
 				switch($sort_type) {
 				case TREE_ORDERING_INHERIT:
@@ -697,7 +706,7 @@ function form_actions() {
 
 	form_start('tree.php');
 
-	html_start_box($tree_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($tree_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($tree_array) && cacti_sizeof($tree_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { // delete

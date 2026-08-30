@@ -389,6 +389,31 @@ function form_save() {
 
 			if (cacti_sizeof($input_list)) {
 				foreach ($input_list as $input) {
+					$input_var = $input['column_name'] . '_' . $input['id'];
+
+					if (!graph_template_input_column_is_allowed($input['column_name']) ||
+						(isset_request_var($input_var) && !graph_template_input_value_is_allowed($input['column_name'], get_nfilter_request_var($input_var)))) {
+						cacti_log('ERROR: Graph save refused an invalid graph input field', false, 'SECURITY');
+						raise_message('graph_input_invalid', __('A Graph Item Input contains an invalid field or value.'), MESSAGE_LEVEL_ERROR);
+
+						$input_list = array();
+
+						break;
+					}
+				}
+
+				$transaction_started = cacti_sizeof($input_list) ? db_begin_transaction() : false;
+				$mutation_failed     = cacti_sizeof($input_list) && !$transaction_started;
+
+				if ($mutation_failed) {
+					raise_message('graph_input_update_failed', __('Graph Item Input changes could not be saved.'), MESSAGE_LEVEL_ERROR);
+				}
+
+				foreach ($input_list as $input) {
+					if ($mutation_failed) {
+						break;
+					}
+
 					/* we need to find out which graph items will be affected by saving this particular item */
 					$item_list = db_fetch_assoc_prepared('SELECT gti.id
 						FROM graph_template_input_defs AS gtid
@@ -405,12 +430,35 @@ function form_save() {
 							 this is because the db and form are out of sync here, but it is ok to just skip over saving
 							 the inputs in this case. */
 							if (isset_request_var($input['column_name'] . '_' . $input['id'])) {
-								db_execute_prepared('UPDATE graph_templates_item
+								$input_value = get_nfilter_request_var($input['column_name'] . '_' . $input['id']);
+
+								if (!graph_template_input_value_is_allowed($input['column_name'], $input_value)) {
+									cacti_log('ERROR: Graph save refused an invalid graph input value', false, 'SECURITY');
+									raise_message('column_value_invalid', __('A Graph Item Input contains an invalid value.'), MESSAGE_LEVEL_ERROR);
+									$mutation_failed = true;
+
+									break 2;
+								}
+
+								if (!db_execute_prepared('UPDATE graph_templates_item
 									SET ' . $input['column_name'] . ' = ?
 									WHERE id = ?',
-									array(get_nfilter_request_var($input['column_name'] . '_' . $input['id']), $item['id']));
+									array($input_value, $item['id']))) {
+									$mutation_failed = true;
+
+									break 2;
+								}
 							}
 						}
+					}
+				}
+
+				if ($transaction_started) {
+					if ($mutation_failed) {
+						db_rollback_transaction();
+						raise_message('graph_input_update_failed', __('Graph Item Input changes could not be saved.'), MESSAGE_LEVEL_ERROR);
+					} else {
+						db_commit_transaction();
 					}
 				}
 			}
@@ -589,15 +637,24 @@ function form_actions() {
 					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_GRAPH, get_nfilter_request_var('tree_item_id'), '', $selected_items[$i], 0, 0, 0, 0, false);
 				}
 			} elseif (get_request_var('drp_action') == '5') { // change host
-				get_filter_request_var('host_id');
-				$failures = false;
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
-					if (!api_graph_change_device($selected_items[$i], get_request_var('host_id'))) {
-						$failures = true;
-					}
+				$failures = 0;
+				$success  = 0;
+				$host_id  = get_filter_request_var('host_id');
 
-					if ($failures) {
-						raise_message(33);
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
+					$local_graph_id = $selected_items[$i];
+
+					$title = db_fetch_cell_prepared('SELECT title_cache
+						FROM graph_templates_graph
+						WHERE local_graph_id = ?',
+						array($local_graph_id));
+
+					if (api_graph_change_device($local_graph_id, $host_id)) {
+						raise_message('moved_' . $local_graph_id, __('Graph %s Moved to new Device', $title), MESSAGE_LEVEL_INFO);
+						$success++;
+					} else {
+						raise_message('notmoved_' . $local_graph_id, __('Graph %s not Moved.  Device missing Data Query', $title), MESSAGE_LEVEL_WARN);
+						$failures++;
 					}
 				}
 			} elseif (get_request_var('drp_action') == '6') { // reapply suggested naming
@@ -826,7 +883,7 @@ function form_actions() {
 
 	form_start('graphs.php');
 
-	html_start_box($graph_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($graph_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($graph_array) && cacti_sizeof($graph_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
@@ -1007,8 +1064,8 @@ function form_actions() {
 				print '<tr>';
 				print "<td class='textArea'>
 					<p>" . __('Click \'Continue\' to create an Aggregate Graph from the selected Graph(s).'). "</p>
-					<div class='itemlist'><ul>" . get_nfilter_request_var('graph_list') . '</ul></div>
-				</td></tr>';
+					<div class='itemlist'><ul>$graph_list</ul></div>
+				</td></tr>";
 
 				/* list affected data sources */
 				print '<tr>';
@@ -1290,7 +1347,7 @@ function form_actions() {
 				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Return') . "'>";
 			}
 		} else {
-			$save['drp_action'] = get_nfilter_request_var('drp_action');
+			$save['drp_action'] = get_request_var('drp_action');
 			$save['graph_list'] = $graph_list;
 			$save['graph_array'] = (isset($graph_array) ? $graph_array : array());
 
@@ -1308,7 +1365,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>";
@@ -1684,8 +1741,8 @@ function graph_edit() {
 				<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
 				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);?></pre>
 				<span class='textInfo'><?php print __('RRDtool Says:');?></span><br>
-				<pre><?php print ($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']):__esc('Not Checked'));?></pre>
 				<?php unset($graph_data_array['print_source']);?>
+				<pre><?php print ($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']):__esc('Not Checked'));?></pre>
 			</div>
 		<?php
 		}

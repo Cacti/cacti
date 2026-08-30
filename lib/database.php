@@ -274,12 +274,29 @@ function db_check_reconnect($db_conn = false, $log = true) {
 			}
 		}
 	} else {
-		if (!isset($database_ssl))      $database_ssl      = false;
-		if (!isset($database_ssl_key))  $database_ssl_key  = '';
-		if (!isset($database_ssl_cert)) $database_ssl_cert = '';
-		if (!isset($database_ssl_ca))   $database_ssl_ca   = '';
-		if (!isset($database_retries))  $database_retries  = 2;
-		if (!isset($database_port))     $database_port     = 3306;
+		if (!isset($database_ssl)) {
+			$database_ssl      = false;
+		}
+
+		if (!isset($database_ssl_key)) {
+			$database_ssl_key  = '';
+		}
+
+		if (!isset($database_ssl_cert)) {
+			$database_ssl_cert = '';
+		}
+
+		if (!isset($database_ssl_ca)) {
+			$database_ssl_ca   = '';
+		}
+
+		if (!isset($database_retries)) {
+			$database_retries  = 2;
+		}
+
+		if (!isset($database_port)) {
+			$database_port     = 3306;
+		}
 	}
 
 	if ($db_conn !== false) {
@@ -471,7 +488,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 			if (isset($database_details[$hash])) {
 				$det = $database_details[$hash];
 
-				error_log(sprintf("NOTE: Execute Using %s:%s/%s.", $det['database_hostname'], $det['database_port'], $det['database_default']));
+				error_log(sprintf('NOTE: Execute Using %s:%s/%s.', $det['database_hostname'], $det['database_port'], $det['database_default']));
 			} else {
 				error_log("WARNING: Execute Using Object ID: $id.");
 			}
@@ -573,7 +590,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 					$errors++;
 					if ($errors > 30) {
 						cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . clean_up_lines($sql) . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-						$database_last_error = "Too many Lock/Deadlock errors occurred!";
+						$database_last_error = 'Too many Lock/Deadlock errors occurred!';
 					} else {
 						usleep(200000);
 
@@ -693,7 +710,13 @@ function db_fetch_cell_return($query, $col_name = '') {
 	$r = $query->fetchAll(PDO::FETCH_BOTH);
 	if (isset($r[0]) && is_array($r[0])) {
 		if ($col_name != '') {
-			return $r[0][$col_name];
+			if (array_key_exists($col_name, $r[0])) {
+				return $r[0][$col_name];
+			}
+
+			cacti_log('WARNING: Requested column not found in SQL result: "' . $col_name . '"', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+
+			return false;
 		} else {
 			return reset($r[0]);
 		}
@@ -866,6 +889,253 @@ function db_affected_rows($db_conn = false) {
 }
 
 /**
+ * db_is_safe_identifier - validate table and column names used in DDL
+ *
+ * @param  (string) $identifier - Identifier to validate
+ *
+ * @return (bool) True when safe for backtick-quoted DDL
+ */
+function db_is_safe_identifier($identifier) {
+	return is_string($identifier) && preg_match('/^[A-Za-z0-9_]+$/', $identifier) === 1;
+}
+
+/**
+ * db_format_qualified_identifier - validate and quote a table identifier
+ *
+ * @param  (string) $identifier - A table name, optionally qualified by a database
+ *
+ * @return (string|bool) The safely quoted identifier or false when invalid
+ */
+function db_format_qualified_identifier($identifier) {
+	if (!is_string($identifier)) {
+		return false;
+	}
+
+	$parts = explode('.', $identifier);
+
+	if (count($parts) < 1 || count($parts) > 2) {
+		return false;
+	}
+
+	$quoted_parts = array();
+
+	foreach ($parts as $part) {
+		if (preg_match('/^`([A-Za-z0-9_]+)`$/D', $part, $matches) === 1) {
+			$part = $matches[1];
+		}
+
+		if (!db_is_safe_identifier($part)) {
+			return false;
+		}
+
+		$quoted_parts[] = "`$part`";
+	}
+
+	return implode('.', $quoted_parts);
+}
+
+/**
+ * db_is_safe_column_type - validate column type clauses used in DDL
+ *
+ * @param  (string) $type - Column type clause
+ *
+ * @return (bool) True when the type clause contains no unsafe SQL separators
+ */
+function db_is_safe_column_type($type) {
+	if (!is_string($type) || cacti_has_control_chars($type)) {
+		return false;
+	}
+
+	$type = trim($type);
+
+	if ($type === '' || preg_match('/[`;"#]|--|\/\*/', $type)) {
+		return false;
+	}
+
+	if (preg_match('/^([A-Za-z]+)\s*(?:\((.*)\))?\s*((?:\s+(?:unsigned|signed|zerofill|binary))*)$/i', $type, $matches) !== 1) {
+		return false;
+	}
+
+	if (!isset($matches[2]) || $matches[2] === '') {
+		return true;
+	}
+
+	$base_type = strtolower($matches[1]);
+	$params    = $matches[2];
+
+	if (preg_match('/^\s*[0-9]+\s*(?:,\s*[0-9]+\s*)?$/', $params) === 1) {
+		return true;
+	}
+
+	if ($base_type === 'enum' || $base_type === 'set') {
+		return preg_match("/^\\s*'([^'\\\\]|\\\\.|'')*'(\\s*,\\s*'([^'\\\\]|\\\\.|'')*')*\\s*$/", $params) === 1;
+	}
+
+	return false;
+}
+
+/**
+ * db_is_safe_table_option - validate storage engine, charset, collation, and row format tokens
+ *
+ * @param  (string) $option - Table option token
+ *
+ * @return (bool) True when safe for DDL option clauses
+ */
+function db_is_safe_table_option($option) {
+	return is_string($option) && preg_match('/^[A-Za-z0-9_]+$/', $option) === 1;
+}
+
+/**
+ * db_is_safe_index_column - validate index column names with optional prefix lengths
+ *
+ * @param  (string) $column - Index column definition
+ *
+ * @return (bool) True when safe for index DDL
+ */
+function db_is_safe_index_column($column) {
+	return is_string($column) && preg_match('/^`?[A-Za-z0-9_]+`?(?:\([0-9]+\))?$/', trim($column)) === 1;
+}
+
+/**
+ * db_is_safe_column_definition - validate a db_add_column column definition
+ *
+ * @param  (array) $column - Column definition
+ *
+ * @return (bool) True when safe to compose into an ALTER TABLE statement
+ */
+function db_is_safe_column_definition($column) {
+	if (!isset($column['name']) || !db_is_safe_identifier($column['name'])) {
+		return false;
+	}
+
+	if (!isset($column['type']) || !db_is_safe_column_type($column['type'])) {
+		return false;
+	}
+
+	if (isset($column['after']) && !db_is_safe_identifier($column['after'])) {
+		return false;
+	}
+
+	if (isset($column['on_update']) && strtoupper($column['on_update']) !== 'CURRENT_TIMESTAMP') {
+		return false;
+	}
+
+	foreach (['default', 'comment'] as $field) {
+		if (isset($column[$field]) && cacti_has_control_chars($column[$field])) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/**
+ * db_build_column_definition_sql - build a validated column definition fragment
+ *
+ * @param  (array)         $column        - Column definition
+ * @param  (bool|resource) $db_conn       - The connection to use or false to use the default
+ * @param  (bool)          $include_after - Include the AFTER clause when present
+ *
+ * @return (string|bool) SQL fragment on success, false when validation fails
+ */
+function db_build_column_definition_sql($column, $db_conn = false, $include_after = true) {
+	if (!db_is_safe_column_definition($column)) {
+		return false;
+	}
+
+	$sql = '`' . $column['name'] . '`';
+
+	if (isset($column['type'])) {
+		$sql .= ' ' . $column['type'];
+	}
+
+	if (isset($column['unsigned'])) {
+		$sql .= ' unsigned';
+	}
+
+	if (isset($column['NULL']) && $column['NULL'] === false) {
+		$sql .= ' NOT NULL';
+	}
+
+	if (isset($column['NULL']) && $column['NULL'] === true && !isset($column['default'])) {
+		$sql .= ' default NULL';
+	}
+
+	if (isset($column['default'])) {
+		if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+			$sql .= ' default CURRENT_TIMESTAMP';
+		} else {
+			$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : db_qstr($column['default'], $db_conn));
+		}
+	}
+
+	if (isset($column['on_update'])) {
+		$sql .= ' ON UPDATE ' . $column['on_update'];
+	}
+
+	if (isset($column['auto_increment'])) {
+		$sql .= ' auto_increment';
+	}
+
+	if (isset($column['comment'])) {
+		$sql .= ' COMMENT ' . db_qstr($column['comment'], $db_conn);
+	}
+
+	if ($include_after && isset($column['after'])) {
+		$sql .= ' AFTER `' . $column['after'] . '`';
+	}
+
+	return $sql;
+}
+
+/**
+ * db_is_safe_table_definition - validate table creation/update arrays
+ *
+ * @param  (array) $data - Table definition
+ *
+ * @return (bool) True when safe to compose into CREATE/ALTER TABLE statements
+ */
+function db_is_safe_table_definition($data) {
+	if (!is_array($data) || !isset($data['columns']) || !is_array($data['columns']) || !isset($data['type']) || !db_is_safe_table_option($data['type'])) {
+		return false;
+	}
+
+	foreach (['charset', 'collate', 'row_format'] as $option) {
+		if (isset($data[$option]) && !db_is_safe_table_option($data[$option])) {
+			return false;
+		}
+	}
+
+	if (isset($data['comment']) && cacti_has_control_chars($data['comment'])) {
+		return false;
+	}
+
+	foreach ($data['columns'] as $column) {
+		if (!db_is_safe_column_definition($column)) {
+			return false;
+		}
+	}
+
+	if (isset($data['primary'])) {
+		if (db_format_index_create($data['primary']) === false) {
+			return false;
+		}
+	}
+
+	foreach (['keys', 'unique_keys'] as $key_type) {
+		if (isset($data[$key_type]) && cacti_sizeof($data[$key_type])) {
+			foreach ($data[$key_type] as $key) {
+				if (!isset($key['name']) || !db_is_safe_identifier($key['name']) || !isset($key['columns']) || db_format_index_create($key['columns']) === false) {
+					return false;
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
+/**
  * db_add_column - add a column to table
  *
  * @param  (string)        The name of the table
@@ -888,6 +1158,10 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 		}
 	}
 
+	if (!db_is_safe_identifier($table) || !db_is_safe_column_definition($column)) {
+		return false;
+	}
+
 	$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
 	if ($result === false) {
 		return false;
@@ -898,49 +1172,20 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 		$columns[] = $arr['Field'];
 	}
 
-	if (isset($column['name']) && !in_array($column['name'], $columns)) {
-		$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
-		if (isset($column['type'])) {
-			$sql .= ' ' . $column['type'];
+	if (isset($column['name']) && !in_array($column['name'], $columns, true)) {
+		$definition = db_build_column_definition_sql($column, $db_conn);
+
+		if ($definition === false) {
+			return false;
 		}
 
-		if (isset($column['unsigned'])) {
-			$sql .= ' unsigned';
-		}
+		$sql = 'ALTER TABLE `' . $table . '` ADD ' . $definition;
 
-		if (isset($column['NULL']) && $column['NULL'] === false) {
-			$sql .= ' NOT NULL';
-		}
+		$result = db_execute($sql, $log, $db_conn);
 
-		if (isset($column['NULL']) && $column['NULL'] === true && !isset($column['default'])) {
-			$sql .= ' default NULL';
-		}
+		db_column_type_cache_reset();
 
-		if (isset($column['default'])) {
-			if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
-				$sql .= ' default CURRENT_TIMESTAMP';
-			} else {
-				$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-			}
-		}
-
-		if (isset($column['on_update'])) {
-			$sql .= ' ON UPDATE ' . $column['on_update'];
-		}
-
-		if (isset($column['auto_increment'])) {
-			$sql .= ' auto_increment';
-		}
-
-		if (isset($column['comment'])) {
-			$sql .= " COMMENT '" . $column['comment'] . "'";
-		}
-
-		if (isset($column['after'])) {
-			$sql .= ' AFTER ' . $column['after'];
-		}
-
-		return db_execute($sql, $log, $db_conn);
+		return $result;
 	}
 
 	return true;
@@ -968,15 +1213,24 @@ function db_remove_column($table, $column, $log = true, $db_conn = false) {
 		}
 	}
 
-	$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
-	$columns = array();
-	foreach($result as $arr) {
+	if (!db_is_safe_identifier($table) || !db_is_safe_identifier($column)) {
+		return false;
+	}
+
+	$result  = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
+	$columns = [];
+
+	foreach ($result as $arr) {
 		$columns[] = $arr['Field'];
 	}
 
 	if (isset($column) && in_array($column, $columns)) {
 		$sql = 'ALTER TABLE `' . $table . '` DROP `' . $column . '`';
-		return db_execute($sql, $log, $db_conn);
+		$result = db_execute($sql, $log, $db_conn);
+
+		db_column_type_cache_reset();
+
+		return $result;
 	}
 
 	return true;
@@ -999,11 +1253,26 @@ function db_add_index($table, $type, $key, $columns, $log = true, $db_conn = fal
 		$columns = array($columns);
 	}
 
-	$sql = 'ALTER TABLE `' . $table . '` ADD ' . $type . ' `' . $key . '`(`' . implode('`,`', $columns) . '`)';
+	if (!db_is_safe_identifier($table) || !db_is_safe_identifier($key) || !preg_match('/^(UNIQUE |FULLTEXT |SPATIAL )?(INDEX|KEY)$/i', $type)) {
+		return false;
+	}
+
+	foreach ($columns as $column) {
+		if (!db_is_safe_index_column($column)) {
+			return false;
+		}
+	}
+
+	$columns = db_format_index_create($columns);
+
+	if ($columns === false) {
+		return false;
+	}
+
+	$sql = 'ALTER TABLE `' . $table . '` ADD ' . $type . ' `' . $key . '`(' . $columns . ')';
 
 	if (db_index_exists($table, $key, false, $db_conn)) {
-		$type = str_ireplace('UNIQUE ', '', $type);
-		if (!db_execute("ALTER TABLE $table DROP $type $key", $log, $db_conn)) {
+		if (!db_execute("ALTER TABLE `$table` DROP INDEX `$key`", $log, $db_conn)) {
 			return false;
 		}
 	}
@@ -1024,6 +1293,10 @@ function db_add_index($table, $type, $key, $columns, $log = true, $db_conn = fal
 function db_index_exists($table, $index, $log = true, $db_conn = false) {
 	global $database_log, $config;
 
+	if (!db_is_safe_identifier($table) || !db_is_safe_identifier($index)) {
+		return false;
+	}
+
 	if (!isset($database_log)) {
 		$database_log = false;
 	}
@@ -1032,7 +1305,7 @@ function db_index_exists($table, $index, $log = true, $db_conn = false) {
 	$database_log = false;
 
 	$_data = db_fetch_assoc("SHOW KEYS FROM `$table`", $log, $db_conn);
-	$_keys = array_rekey($_data, "Key_name", "Key_name");
+	$_keys = array_rekey($_data, 'Key_name', 'Key_name');
 
 	$database_log = $_log;
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -1058,6 +1331,10 @@ function db_index_exists($table, $index, $log = true, $db_conn = false) {
 function db_index_matches($table, $index, $columns, $log = true, $db_conn = false) {
 	global $database_log, $config;
 
+	if (!db_is_safe_identifier($table) || !db_is_safe_identifier($index)) {
+		return false;
+	}
+
 	if (!isset($database_log)) {
 		$database_log = false;
 	}
@@ -1066,7 +1343,13 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 		$columns = array($columns);
 	}
 
-	$_log  = $database_log;
+	foreach ($columns as $column) {
+		if (!db_is_safe_identifier($column)) {
+			return false;
+		}
+	}
+
+	$_log         = $database_log;
 	$database_log = false;
 
 	$_data = db_fetch_assoc("SHOW KEYS FROM `$table`", $log, $db_conn);
@@ -1101,7 +1384,7 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 		db_echo_sql('db_index_matches(\'' . $table . '\', \'' . $index .'\'): '
 			. $status . "\n ::: "
 			. clean_up_lines(var_export($columns, true))
-			. " ::: "
+			. ' ::: '
 			. clean_up_lines(var_export($_cols, true)));
 	}
 
@@ -1195,7 +1478,11 @@ function db_cacti_initialized($is_web = true) {
  * @return (bool) The output of the sql query as a single variable
  */
 function db_column_exists($table, $column, $log = true, $db_conn = false) {
-	static $results = array();
+	static $results = [];
+
+	if (!db_is_safe_identifier($table) || !db_is_safe_identifier($column)) {
+		return false;
+	}
 
 	if ($db_conn === false) {
 		$index = '-1';
@@ -1221,7 +1508,7 @@ function db_column_exists($table, $column, $log = true, $db_conn = false) {
  * @return (array) An array of column types indexed by the column names
  */
 function db_get_table_column_types($table, $db_conn = false) {
-	global $database_sessions, $database_default, $database_hostname, $database_port;
+	global $database_sessions, $database_default, $database_hostname, $database_port, $db_column_type_cache;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
@@ -1232,15 +1519,39 @@ function db_get_table_column_types($table, $db_conn = false) {
 		}
 	}
 
-	$columns = db_fetch_assoc("SHOW COLUMNS FROM $table", false, $db_conn);
-	$cols    = array();
+	$table_identifier = db_format_qualified_identifier($table);
+
+	if ($table_identifier === false) {
+		return false;
+	}
+
+	/* column metadata is invariant within a request, so memoize the SHOW COLUMNS
+	 * lookup. sql_save() calls this for every write, and a bulk operation (e.g.
+	 * creating many graphs) otherwise re-queries the same tables hundreds of
+	 * times. The cache is cleared by the DDL helpers whenever a column changes. */
+	$key = spl_object_id($db_conn) . ':' . $table_identifier;
+
+	if (isset($db_column_type_cache[$key])) {
+		return $db_column_type_cache[$key];
+	}
+
+	$columns = db_fetch_assoc("SHOW COLUMNS FROM $table_identifier", false, $db_conn);
+	$cols    = [];
 	if (cacti_sizeof($columns)) {
-		foreach($columns as $col) {
-			$cols[$col['Field']] = array('type' => $col['Type'], 'null' => $col['Null'], 'default' => $col['Default'], 'extra' => $col['Extra']);;
+		foreach ($columns as $col) {
+			$cols[$col['Field']] = ['type' => $col['Type'], 'null' => $col['Null'], 'default' => $col['Default'], 'extra' => $col['Extra']];
 		}
+
+		$db_column_type_cache[$key] = $cols;
 	}
 
 	return $cols;
+}
+
+function db_column_type_cache_reset() {
+	global $db_column_type_cache;
+
+	$db_column_type_cache = array();
 }
 
 /**
@@ -1269,46 +1580,73 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 		}
 	}
 
-	if (!db_table_exists($table, $log, $db_conn)) {
-		return db_table_create($table, $data, $log, $db_conn);
+	if (!db_is_safe_identifier($table)) {
+		return false;
 	}
 
-	if (isset($data['charset'])) {
-		$charset = ' DEFAULT CHARSET = ' . $data['charset'];
-		db_execute("ALTER TABLE `$table` " . $charset, $log, $db_conn);
+	// Validate engine/charset/collate/row_format tokens before string concatenation.
+	// Full column arrays are not always present on partial updates, so use option checks
+	// rather than db_is_safe_table_definition() here.
+	if (isset($data['type']) && !db_is_safe_table_option($data['type'])) {
+		return false;
 	}
 
-	if (isset($data['collate'])) {
-		$charset = ' COLLATE = ' . $data['collate'];
-		db_execute("ALTER TABLE `$table` " . $charset, $log, $db_conn);
-	}
-
-	$info = db_fetch_row("SELECT ENGINE, TABLE_COMMENT
-		FROM information_schema.TABLES
-		WHERE TABLE_SCHEMA = SCHEMA()
-		AND TABLE_NAME = '$table'", $log, $db_conn);
-
-	if (isset($info['ENGINE']) && isset($data['type']) && strtolower($info['ENGINE']) != strtolower($data['type'])) {
-		if (!db_execute("ALTER TABLE `$table` ENGINE = " . $data['type'], $log, $db_conn)) {
+	foreach (['charset', 'collate', 'row_format'] as $option) {
+		if (isset($data[$option]) && !db_is_safe_table_option($data[$option])) {
 			return false;
 		}
 	}
 
+	if (isset($data['comment']) && cacti_has_control_chars($data['comment'])) {
+		return false;
+	}
+
+	if (!db_table_exists($table, $log, $db_conn)) {
+		return db_table_create($table, $data, $log, $db_conn);
+	}
+
+	$alter_clauses   = [];
+	$columns_changed = false;
+
+	if (isset($data['charset']) || isset($data['collate'])) {
+		$table_encoding = isset($data['charset']) ? 'DEFAULT CHARSET = ' . $data['charset'] : '';
+
+		if (isset($data['collate'])) {
+			$table_encoding .= ($table_encoding !== '' ? ' ' : '') . 'COLLATE = ' . $data['collate'];
+		}
+
+		$alter_clauses[] = $table_encoding;
+	}
+
+	$info = db_fetch_row('SELECT ENGINE, TABLE_COMMENT
+		FROM information_schema.TABLES
+		WHERE TABLE_SCHEMA = SCHEMA()
+		AND TABLE_NAME = ' . db_qstr($table, $db_conn), $log, $db_conn);
+
+	if (isset($info['ENGINE']) && isset($data['type']) && strtolower($info['ENGINE']) != strtolower($data['type'])) {
+		$alter_clauses[] = 'ENGINE = ' . $data['type'];
+	}
+
 	if (isset($data['row_format']) && strtolower(db_get_global_variable('innodb_file_format', $db_conn)) == 'barracuda') {
-		db_execute("ALTER TABLE `$table` ROW_FORMAT = " . $data['row_format'], $log, $db_conn);
+		$alter_clauses[] = 'ROW_FORMAT = ' . $data['row_format'];
 	}
 
 	$allcolumns = array();
 	foreach ($data['columns'] as $column) {
 		$allcolumns[] = $column['name'];
 		if (!db_column_exists($table, $column['name'], $log, $db_conn)) {
-			if (!db_add_column($table, $column, $log, $db_conn)) {
+			$definition = db_build_column_definition_sql($column, $db_conn);
+
+			if ($definition === false) {
 				return false;
 			}
+
+			$alter_clauses[] = 'ADD ' . $definition;
+			$columns_changed = true;
 		} else {
 			// Check that column is correct and fix it
 			// FIXME: Need to still check default value
-			$arr = db_fetch_row("SHOW columns FROM `$table` LIKE '" . $column['name'] . "'", $log, $db_conn);
+			$arr = db_fetch_row('SHOW columns FROM `' . $table . '` LIKE ' . db_qstr($column['name'], $db_conn), $log, $db_conn);
 
 			if (strpos(strtolower($arr['Type']), ' unsigned') !== false) {
 				$arr['Type'] = str_ireplace(' unsigned', '', $arr['Type']);
@@ -1318,47 +1656,15 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 			if ($column['type'] != $arr['Type'] || (isset($column['NULL']) && ($column['NULL'] ? 'YES' : 'NO') != $arr['Null'])
 				|| (((!isset($column['unsigned']) || !$column['unsigned']) && isset($arr['unsigned']))
 					|| (isset($column['unsigned']) && $column['unsigned'] && !isset($arr['unsigned'])))
-			    || (isset($column['auto_increment']) && ($column['auto_increment'] ? 'auto_increment' : '') != $arr['Extra'])) {
-				$sql = 'ALTER TABLE `' . $table . '` CHANGE `' . $column['name'] . '` `' . $column['name'] . '`';
-				if (isset($column['type'])) {
-					$sql .= ' ' . $column['type'];
-				}
+				|| (isset($column['auto_increment']) && ($column['auto_increment'] ? 'auto_increment' : '') != $arr['Extra'])) {
+				$definition = db_build_column_definition_sql($column, $db_conn, false);
 
-				if (isset($column['unsigned'])) {
-					$sql .= ' unsigned';
-				}
-
-				if (isset($column['NULL']) && $column['NULL'] == false) {
-					$sql .= ' NOT NULL';
-				}
-
-				if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default'])) {
-					$sql .= ' default NULL';
-				}
-
-				if (isset($column['default'])) {
-					if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
-						$sql .= ' default CURRENT_TIMESTAMP';
-					} else {
-						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-					}
-				}
-
-				if (isset($column['on_update'])) {
-					$sql .= ' ON UPDATE ' . $column['on_update'];
-				}
-
-				if (isset($column['auto_increment'])) {
-					$sql .= ' auto_increment';
-				}
-
-				if (isset($column['comment'])) {
-					$sql .= " COMMENT '" . $column['comment'] . "'";
-				}
-
-				if (!db_execute($sql, $log, $db_conn)) {
+				if ($definition === false) {
 					return false;
 				}
+
+				$alter_clauses[] = 'CHANGE `' . $column['name'] . '` ' . $definition;
+				$columns_changed = true;
 			}
 		}
 	}
@@ -1367,17 +1673,18 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 		$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
 		foreach($result as $arr) {
 			if (!in_array($arr['Field'], $allcolumns)) {
-				if (!db_remove_column($table, $arr['Field'], $log, $db_conn)) {
+				if (!db_is_safe_identifier($arr['Field'])) {
 					return false;
 				}
+
+				$alter_clauses[] = 'DROP COLUMN `' . $arr['Field'] . '`';
+				$columns_changed = true;
 			}
 		}
 	}
 
 	if (isset($info['TABLE_COMMENT']) && isset($data['comment']) && str_replace("'", '', $info['TABLE_COMMENT']) != str_replace("'", '', $data['comment'])) {
-		if (!db_execute("ALTER TABLE `$table` COMMENT '" . str_replace("'", '', $data['comment']) . "'", $log, $db_conn)) {
-			return false;
-		}
+		$alter_clauses[] = 'COMMENT = ' . db_qstr(str_replace("'", '', $data['comment']), $db_conn);
 	}
 
 	// Correct any indexes
@@ -1397,19 +1704,25 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 					$add = array_diff($k['columns'], $index);
 					$del = array_diff($index, $k['columns']);
 					if (!empty($add) || !empty($del)) {
-						if (!db_execute("ALTER TABLE `$table` DROP INDEX `$n`", $log, $db_conn) ||
-						    !db_execute("ALTER TABLE `$table` ADD INDEX `$n` (" . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
+						$columns = db_format_index_create($k['columns']);
+
+						if (!db_is_safe_identifier($n) || !db_is_safe_identifier($k['name']) || $columns === false) {
 							return false;
 						}
+
+						$alter_clauses[] = "DROP INDEX `$n`";
+						$alter_clauses[] = 'ADD INDEX `' . $k['name'] . '` (' . $columns . ')';
 					}
 					break;
 				}
 			}
 
 			if ($removeindex) {
-				if (!db_execute("ALTER TABLE `$table` DROP INDEX `$n`", $log, $db_conn)) {
+				if (!db_is_safe_identifier($n)) {
 					return false;
 				}
+
+				$alter_clauses[] = "DROP INDEX `$n`";
 			}
 		}
 	}
@@ -1418,9 +1731,13 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 	if (isset($data['keys'])) {
 		foreach ($data['keys'] as $k) {
 			if (!isset($allindexes[$k['name']])) {
-				if (!db_execute("ALTER TABLE `$table` ADD INDEX `" . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
+				$columns = db_format_index_create($k['columns']);
+
+				if (!db_is_safe_identifier($k['name']) || $columns === false) {
 					return false;
 				}
+
+				$alter_clauses[] = 'ADD INDEX `' . $k['name'] . '` (' . $columns . ')';
 			}
 		}
 	}
@@ -1429,28 +1746,42 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 
 	// Check Primary Key
 	if (!isset($data['primary']) && isset($allindexes['PRIMARY'])) {
-		if (!db_execute("ALTER TABLE `$table` DROP PRIMARY KEY", $log, $db_conn)) {
-			return false;
-		}
+		$alter_clauses[] = 'DROP PRIMARY KEY';
 		unset($allindexes['PRIMARY']);
 	}
 
 	if (isset($data['primary'])) {
 		if (!isset($allindexes['PRIMARY'])) {
 			// No current primary key, so add it
-			if (!db_execute("ALTER TABLE `$table` ADD PRIMARY KEY(" . db_format_index_create($data['primary']) . ')', $log, $db_conn)) {
+			$primary = db_format_index_create($data['primary']);
+
+			if ($primary === false) {
 				return false;
 			}
+
+			$alter_clauses[] = 'ADD PRIMARY KEY (' . $primary . ')';
 		} else {
 			$add = array_diff($data['primary'], $allindexes['PRIMARY']);
 			$del = array_diff($allindexes['PRIMARY'], $data['primary']);
 			if (!empty($add) || !empty($del)) {
-				if (!db_execute("ALTER TABLE `$table` DROP PRIMARY KEY", $log, $db_conn) ||
-				    !db_execute("ALTER TABLE `$table` ADD PRIMARY KEY(" . db_format_index_create($data['primary']) . ')', $log, $db_conn)) {
+				$primary = db_format_index_create($data['primary']);
+
+				if ($primary === false) {
 					return false;
 				}
+
+				$alter_clauses[] = 'DROP PRIMARY KEY';
+				$alter_clauses[] = 'ADD PRIMARY KEY (' . $primary . ')';
 			}
 		}
+	}
+
+	if (cacti_sizeof($alter_clauses) && !db_execute("ALTER TABLE `$table` " . implode(', ', $alter_clauses), $log, $db_conn)) {
+		return false;
+	}
+
+	if ($columns_changed) {
+		db_column_type_cache_reset();
 	}
 
 	return true;
@@ -1470,18 +1801,60 @@ function db_format_index_create($indexes) {
 		$outindex = '';
 		foreach($indexes as $index) {
 			$index = trim($index);
+
+			if (!db_is_safe_index_column($index)) {
+				return false;
+			}
+
 			if (substr($index, -1) == ')') {
-				$outindex .= ($outindex != '' ? ',':'') . $index;
+				$index_name = substr($index, 0, strpos($index, '('));
+				$index_len  = substr($index, strpos($index, '('));
+				$outindex .= ($outindex != '' ? ',' : '') . '`' . trim($index_name, ' `') . '`' . $index_len;
 			} else {
-				$outindex .= ($outindex != '' ? ',':'') . '`' . $index . '`';
+				$outindex .= ($outindex != '' ? ',' : '') . '`' . trim($index, ' `') . '`';
 			}
 		}
 
 		return $outindex;
 	} else {
 		$indexes = trim($indexes);
+
+		// several plugins (thold, mactrack) pass a compound key as a single
+		// string in the form 'col1`,`col2`,`col3' instead of an array; split
+		// on the backtick-quoted comma and validate each column individually
+		$parts = preg_split('/`\s*,\s*`/', $indexes);
+
+		if (cacti_sizeof($parts) > 1) {
+			$outindex = '';
+
+			foreach ($parts as $part) {
+				$part = trim($part, " \t\n\r\0\x0B`");
+
+				if (!db_is_safe_index_column($part)) {
+					return false;
+				}
+
+				if (substr($part, -1) == ')') {
+					$part_name = substr($part, 0, strpos($part, '('));
+					$part_len  = substr($part, strpos($part, '('));
+					$outindex .= ($outindex != '' ? ',' : '') . '`' . trim($part_name, ' `') . '`' . $part_len;
+				} else {
+					$outindex .= ($outindex != '' ? ',' : '') . '`' . $part . '`';
+				}
+			}
+
+			return $outindex;
+		}
+
+		if (!db_is_safe_index_column($indexes)) {
+			return false;
+		}
+
 		if (substr($indexes, -1) == ')') {
-			return $indexes;
+			$index_name = substr($indexes, 0, strpos($indexes, '('));
+			$index_len  = substr($indexes, strpos($indexes, '('));
+
+			return '`' . trim($index_name, ' `') . '`' . $index_len;
 		} else {
 			return '`' . trim($indexes, ' `') . '`';
 		}
@@ -1510,6 +1883,14 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 		}
 	}
 
+	if (!db_is_safe_identifier($table)) {
+		return false;
+	}
+
+	if (!db_is_safe_table_definition($data)) {
+		return false;
+	}
+
 	if (!db_table_exists($table, $log, $db_conn)) {
 		$c = 0;
 		$sql = 'CREATE TABLE `' . $table . "` (\n";
@@ -1519,71 +1900,59 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 					$sql .= ",\n";
 				}
 
-				$sql .= '`' . $column['name'] . '`';
+				$definition = db_build_column_definition_sql($column, $db_conn, false);
 
-				if (isset($column['type'])) {
-					$sql .= ' ' . $column['type'];
+				if ($definition === false) {
+					return false;
 				}
 
-				if (isset($column['unsigned'])) {
-					$sql .= ' unsigned';
-				}
-
-				if (isset($column['NULL']) && $column['NULL'] == false) {
-					$sql .= ' NOT NULL';
-				}
-
-				if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default'])) {
-					$sql .= ' default NULL';
-				}
-
-				if (isset($column['default'])) {
-					if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
-						$sql .= ' default CURRENT_TIMESTAMP';
-					} else {
-						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-					}
-				}
-
-				if (isset($column['on_update'])) {
-					$sql .= ' ON UPDATE ' . $column['on_update'];
-				}
-
-				if (isset($column['comment'])) {
-					$sql .= " COMMENT '" . $column['comment'] . "'";
-				}
-
-				if (isset($column['auto_increment'])) {
-					$sql .= ' auto_increment';
-				}
-
+				$sql .= $definition;
 				$c++;
 			}
 		}
 
 		if (isset($data['primary'])) {
-			if (is_array($data['primary'])) {
-				$sql .= ",\n PRIMARY KEY (`" . implode('`,`'. $data['primary']) . '`)';
-			} else {
-				$sql .= ",\n PRIMARY KEY (`" . $data['primary'] . '`)';
+			$primary = db_format_index_create($data['primary']);
+
+			if ($primary === false) {
+				return false;
 			}
+
+			$sql .= ",\n PRIMARY KEY (" . $primary . ')';
 		}
 
 		if (isset($data['keys']) && cacti_sizeof($data['keys'])) {
 			foreach ($data['keys'] as $key) {
 				if (isset($key['name'])) {
-					if (is_array($key['columns'])) {
-						$sql .= ",\n KEY `" . $key['name'] . '` (`' . implode('`,`', $key['columns']) . '`)';
-					} else {
-						$sql .= ",\n KEY `" . $key['name'] . '` (`' . $key['columns'] . '`)';
+					$columns = db_format_index_create($key['columns']);
+
+					if ($columns === false) {
+						return false;
 					}
+
+					$sql .= ",\n KEY `" . $key['name'] . '` (' . $columns . ')';
 				}
 			}
 		}
+
+		if (isset($data['unique_keys']) && cacti_sizeof($data['unique_keys'])) {
+			foreach ($data['unique_keys'] as $key) {
+				if (isset($key['name'])) {
+					$columns = db_format_index_create($key['columns']);
+
+					if ($columns === false) {
+						return false;
+					}
+
+					$sql .= ",\n UNIQUE KEY `" . $key['name'] . '` (' . $columns . ')';
+				}
+			}
+		}
+
 		$sql .= ') ENGINE = ' . $data['type'];
 
 		if (isset($data['comment'])) {
-			$sql .= " COMMENT = '" . $data['comment'] . "'";
+			$sql .= ' COMMENT = ' . db_qstr($data['comment'], $db_conn);
 		}
 
 		if (isset($data['row_format']) && strtolower(db_get_global_variable('innodb_file_format', $db_conn)) == 'barracuda') {
@@ -1592,11 +1961,11 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 
 		if (db_execute($sql, $log, $db_conn)) {
 			if (isset($data['charset'])) {
-				db_execute("ALTER TABLE `$table` CHARSET = " . $data['charset']);
+				db_execute("ALTER TABLE `$table` CHARSET = " . $data['charset'], $log, $db_conn);
 			}
 
 			if (isset($data['collate'])) {
-				db_execute("ALTER TABLE `$table` COLLATE = " . $data['collate']);
+				db_execute("ALTER TABLE `$table` COLLATE = " . $data['collate'], $log, $db_conn);
 			}
 
 			return true;
@@ -1604,6 +1973,8 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 			return false;
 		}
 	}
+
+	return true;
 }
 
 /**
@@ -1704,7 +2075,7 @@ function db_commit_transaction($db_conn = false) {
 		}
 	}
 
-	if (db_fetch_cell('SELECT @@in_transaction') > 0) {
+	if (db_fetch_cell('SELECT @@in_transaction', '', true, $db_conn) > 0) {
 		return $db_conn->commit();
 	}
 }
@@ -1848,7 +2219,9 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 		$sql2  .= $v;
 		$first  = false;
 
-		if (in_array($k, $keyCols)) continue; // skip UPDATE if is key
+		if (in_array($k, $keyCols, true)) {
+			continue;
+		} // skip UPDATE if is key
 
 		if (!$first3) {
 			$sql3 .= ', ';
@@ -2345,4 +2718,3 @@ function cacti_fetch_by_id($table, $id, $columns = '*', $id_column = 'id', $db_c
 
 	return $row;
 }
-

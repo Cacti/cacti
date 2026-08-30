@@ -516,7 +516,7 @@ function reports_form_actions() {
 
 	form_start(get_reports_page(), 'report');
 
-	html_start_box($reports_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($reports_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (!isset($reports_array)) {
 		raise_message(40);
@@ -1516,7 +1516,16 @@ function reports_edit() {
 		$report['mailtime'] = date('Y-m-d H:i', strtotime(date('Y-m-d H:i:00', $report['mailtime'])));
 		$header_label = __('[edit: %s]', $report['name']);
 	} else {
-		$report['mailtime'] = date('Y-m-d H:i', strtotime(date('Y-m-d H:i:00', floor(time() / read_config_option('poller_interval')) * read_config_option('poller_interval'))));
+		/* an unset poller_interval reads back empty, and rounding the current
+		   time to it divides by that. PHP 8 makes it fatal, so fall back to the
+		   default interval the setting itself declares. */
+		$interval = (int) read_config_option('poller_interval');
+
+		if ($interval < 1) {
+			$interval = 300;
+		}
+
+		$report['mailtime'] = date('Y-m-d H:i', strtotime(date('Y-m-d H:i:00', floor(time() / $interval) * $interval)));
 		$header_label = __('[new]');
 	}
 
@@ -1957,6 +1966,20 @@ function reports() {
 
 	$total_rows = get_total_row_data($_SESSION['sess_user_id'], "SELECT COUNT(reports.id) FROM reports $sql_join $sql_where", $params);
 
+	$sort_columns = array(
+		'name'            => 'reports.name',
+		'full_name'       => 'user_auth.full_name',
+		'cint'            => 'cint',
+		'lastsent'        => 'reports.lastsent',
+		'mailtime'        => 'reports.mailtime',
+		'from_name'       => 'reports.from_name',
+		'attachment_type' => 'reports.attachment_type',
+		'enabled'         => 'reports.enabled'
+	);
+
+	$sort_column = cacti_validate_sort_column(get_request_var('sort_column'), array_keys($sort_columns), 'name');
+	$sortby      = $sort_columns[$sort_column];
+
 	$reports_list = db_fetch_assoc_prepared("SELECT
 		user_auth.full_name, user_auth.username,
 		reports.*,
@@ -1964,8 +1987,9 @@ function reports() {
 		FROM reports
 		$sql_join
 		$sql_where
-		" . get_order_string() . "
-		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows, $params);
+		ORDER BY $sortby " .
+		(strtoupper(get_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
+		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows, $params);
 
 	form_start(get_reports_page(), 'chk');
 

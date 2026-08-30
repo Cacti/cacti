@@ -192,7 +192,7 @@ function host_reindex() {
 	$start = microtime(true);
 
 	$host_id = get_filter_request_var('host_id');
-	shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/cli/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
+	shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/cli/poller_reindex_hosts.php') . ' --qid=all --id=' . cacti_escapeshellarg((string) $host_id));
 
 	$end = microtime(true);
 
@@ -392,7 +392,7 @@ function form_actions() {
 
 	form_start('host.php');
 
-	html_start_box($device_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($device_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($host_array) && cacti_sizeof($host_array)) {
 		if (get_request_var('drp_action') == '2') { // Enable Devices

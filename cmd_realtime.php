@@ -172,6 +172,12 @@ if (cacti_sizeof($idbyhost)) {
 
 			if (cacti_sizeof($poller_items)) {
 				foreach($poller_items as $item) {
+					/* Reset between iterations: a poller_item action that
+					 * is not handled by the switch below must not inherit
+					 * the previous iteration's $output and write it into
+					 * poller_output_realtime under the wrong local_data_id. */
+					unset($output);
+
 					switch ($item['action']) {
 					case POLLER_ACTION_SNMP: /* snmp */
 						if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {

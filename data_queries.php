@@ -37,48 +37,58 @@ set_default_action();
 
 switch (get_request_var('action')) {
 	case 'save':
+		csrf_require_post();
 		form_save();
 
 		break;
 	case 'actions':
+		csrf_require_post();
 		form_actions();
 
 		break;
 	case 'item_moveup_dssv':
+		csrf_require_post();
 		data_query_item_moveup_dssv();
 
 		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_movedown_dssv':
+		csrf_require_post();
 		data_query_item_movedown_dssv();
 
 		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_remove_dssv':
+		csrf_require_post();
 		data_query_item_remove_dssv();
 
 		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_moveup_gsv':
+		csrf_require_post();
 		data_query_item_moveup_gsv();
 
 		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_movedown_gsv':
+		csrf_require_post();
 		data_query_item_movedown_gsv();
 
 		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_remove_gsv':
+		csrf_require_post();
 		data_query_item_remove_gsv();
 
 		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
-    case 'item_remove_confirm':
-        data_query_item_remove_confirm();
+	case 'item_remove_confirm':
+		csrf_require_post();
+		data_query_item_remove_confirm();
 
-        break;
+		break;
 	case 'item_remove':
+		csrf_require_post();
 		data_query_item_remove();
 
 		header('Location: data_queries.php?header=false&action=edit&id=' . get_filter_request_var('snmp_query_id'));
@@ -91,6 +101,7 @@ switch (get_request_var('action')) {
 		bottom_footer();
 		break;
 	case 'remove':
+		csrf_require_post();
 		data_query_remove();
 
 		header ('Location: data_queries.php');
@@ -398,7 +409,7 @@ function form_actions() {
 
 	form_start('data_queries.php');
 
-	html_start_box($dq_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($dq_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($dq_array) && cacti_sizeof($dq_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
@@ -983,8 +994,9 @@ function data_query_item_edit() {
 
 	$('.remover').on('click', function(event) {
 		event.preventDefault();
-		href=$(this).attr('href');
-		$.get(href)
+		var href = $(this).attr('href');
+		var request = cactiPreparePostRequestFromUrl(href);
+		$.post(request.url, request.data)
 			.done(function(data) {
 				$('form[action="data_queries.php"]').off();
 				$('#main').html(data);
@@ -1487,4 +1499,3 @@ function data_query() {
 
 	form_end();
 }
-

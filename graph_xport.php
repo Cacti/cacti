@@ -116,6 +116,22 @@ if (isset_request_var('format') && get_nfilter_request_var('format') == 'table')
 }
 
 if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
+	/* Percentile summaries use the observed finite samples. Expose the expected
+	 * row count so sparse periods are visible instead of being mistaken for zero. */
+	$xport_array['meta']['expected_rows'] = 0;
+	$xport_array['meta']['missing_rows']  = 0;
+
+	if ($xport_array['meta']['step'] > 0) {
+		$effective_end = $xport_array['meta']['end'];
+
+		if ($effective_end == $xport_array['meta']['start'] && $xport_array['meta']['rows'] > 0) {
+			$effective_end = $xport_array['meta']['start'] + $xport_array['meta']['step'] * ($xport_array['meta']['rows'] - 1);
+		}
+
+		$xport_array['meta']['expected_rows'] = (int) floor(($effective_end - $xport_array['meta']['start']) / $xport_array['meta']['step']) + 1;
+		$xport_array['meta']['missing_rows']  = max(0, $xport_array['meta']['expected_rows'] - $xport_array['meta']['rows']);
+	}
+
 	if (!$html) {
 		$output  = '"' . __('Title') . '","'          . $xport_array['meta']['title_cache']    . '"' . "\n";
 		$output .= '"' . __('Vertical Label') . '","' . $xport_array['meta']['vertical_label'] . '"' . "\n";
@@ -124,6 +140,8 @@ if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
 		$output .= '"' . __('End Date') . '","'       . date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step']*($xport_array['meta']['rows']-1) : $xport_array['meta']['end']) . '"' . "\n";
 		$output .= '"' . __('Step') . '","'           . $xport_array['meta']['step']                       . '"' . "\n";
 		$output .= '"' . __('Total Rows') . '","'     . $xport_array['meta']['rows']                       . '"' . "\n";
+		$output .= '"' . __('Expected Rows') . '","'  . $xport_array['meta']['expected_rows']              . '"' . "\n";
+		$output .= '"' . __('Missing Rows') . '","'   . $xport_array['meta']['missing_rows']               . '"' . "\n";
 		$output .= '"' . __('Graph ID') . '","'       . $xport_array['meta']['local_graph_id']             . '"' . "\n";
 		$output .= '"' . __('Host ID') . '","'        . $xport_array['meta']['host_id']                    . '"' . "\n";
 
@@ -186,6 +204,16 @@ if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
 		print "<tr class='odd'>
 			<td class='left'>" . __('Total Rows') . "</td>
 			<td class='right'>" . $xport_array['meta']['rows'] . "</td>
+		</tr>\n";
+
+		print "<tr class='even'>
+			<td class='left'>" . __('Expected Rows') . "</td>
+			<td class='right'>" . $xport_array['meta']['expected_rows'] . "</td>
+		</tr>\n";
+
+		print "<tr class='odd'>
+			<td class='left'>" . __('Missing Rows') . "</td>
+			<td class='right'>" . $xport_array['meta']['missing_rows'] . "</td>
 		</tr>\n";
 
 		print "<tr class='even'>

@@ -551,9 +551,15 @@ function create_site_branch($leaf) {
 	// suppress total rows collection
 	$total_rows = -1;
 
-	$graph_templates = get_allowed_graph_templates('h.site_id=' . $leaf['site_id'], 'name', '', $total_rows);
+	$tree_expansion = read_user_setting('tree_site_includes_templates', read_config_option('tree_site_includes_templates')) == 'on' ? true : false;
 
-	if (cacti_sizeof($graph_templates)) {
+	if ($tree_expansion) {
+		$graph_templates = get_allowed_graph_templates('h.site_id=' . $leaf['site_id'], 'name', '', $total_rows);
+	} else {
+		$graph_templates = [];
+	}
+
+	if (cacti_sizeof($graph_templates) && $tree_expansion) {
 		$dhtml_tree[] = "\t\t\t\t\t\t<ul>\n";
 		$dhtml_tree[] = "\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-site-' . $leaf['site_id'] . '-gts' . "' data-jstree='{ \"type\" : \"graph_templates\" }'><a href='" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=' . $leaf['site_id'] . '&gti=-1&host_id=-1&host_template_id=-1&hgd=') . "'>" . __('Graph Templates') . "</a>\n";
 		$dhtml_tree[] = "\t\t\t\t\t\t\t<ul>\n";
@@ -935,7 +941,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			WHERE id = ?',
 			array($host_group_data_array[1]));
 
-		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : html_escape($name)) . '-> ' . (empty($host_group_data_array[2]) ? __('Template Based') : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
+		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : html_escape($name)) . '-> ' . (empty($host_group_data_array[2]) ? __('Template Based') : html_escape(get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2])));
 		$data_query_id    = $host_group_data_array[1];
 		$data_query_index = $host_group_data_array[2];
 	}

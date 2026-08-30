@@ -1,0 +1,121 @@
+name: Composer dependency compatibility
+
+on:
+  push:
+    branches: ['1.2.x']
+    paths:
+      - composer.json
+      - composer.lock
+      - '.github/actions/setup-php-composer/**'
+      - '.github/workflows/dependency-compatibility.yml'
+  pull_request:
+    branches: ['1.2.x']
+    paths:
+      - composer.json
+      - composer.lock
+      - '.github/actions/setup-php-composer/**'
+      - '.github/workflows/dependency-compatibility.yml'
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: composer-compatibility-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMPOSER_ALLOW_SUPERUSER: 1
+
+jobs:
+  locked-runtime:
+    name: PHP ${{ matrix.php }} locked runtime
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.0', '8.1', '8.2', '8.3', '8.4']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup locked runtime dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          dependency-mode: 1.2-locked-runtime
+          install-args: --no-dev --prefer-dist --no-progress --no-interaction
+
+      - name: Verify actual platform requirements
+        run: composer check-platform-reqs --no-dev
+
+      - name: Smoke-test the production autoloader
+        run: php -r "require 'include/vendor/autoload.php';"
+
+      - name: Keep extension diagnostics in the Cacti installer
+        run: |
+          set -euo pipefail
+          test "$(composer config platform-check)" = php-only
+          grep -Fq 'PHP_VERSION_ID' include/vendor/composer/platform_check.php
+          if grep -Fq 'extension_loaded(' include/vendor/composer/platform_check.php; then
+            echo 'Composer platform check unexpectedly enforces PHP extensions' >&2
+            exit 1
+          fi
+          php -n -r "require 'include/vendor/autoload.php';"
+
+  native-dependencies:
+    name: PHP ${{ matrix.php }} native dependencies
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2', '8.3', '8.4']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup native dependency resolver
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          dependency-mode: 1.2-native
+          cache-dependency-path: composer.json
+
+      - name: Create native compatibility definition
+        run: |
+          set -euo pipefail
+          cp composer.json composer.compat.json
+          COMPOSER=composer.compat.json composer config platform.php "${{ matrix.php }}"
+
+      - name: Resolve native dependencies
+        env:
+          COMPOSER: composer.compat.json
+        run: composer update --no-dev --prefer-dist --no-progress --no-interaction
+
+      - name: Smoke-test the native production autoloader
+        run: php -r "require 'include/vendor/autoload.php';"
+
+  required:
+    name: CI 1.2 / required
+    if: always()
+    needs: [locked-runtime, native-dependencies]
+    runs-on: ubuntu-slim
+    timeout-minutes: 5
+    steps:
+      - name: Verify dependency jobs
+        env:
+          LOCKED_RESULT: ${{ needs.locked-runtime.result }}
+          NATIVE_RESULT: ${{ needs.native-dependencies.result }}
+        run: |
+          set -euo pipefail
+          test "$LOCKED_RESULT" = success
+          test "$NATIVE_RESULT" = success

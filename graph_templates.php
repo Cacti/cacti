@@ -362,7 +362,7 @@ function form_actions() {
 
 	form_start('graph_templates.php');
 
-	html_start_box($graph_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($graph_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($graph_array) && cacti_sizeof($graph_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
@@ -512,7 +512,7 @@ function item() {
 				<a class='linkEditMain' href='<?php print html_escape('graph_templates_inputs.php?action=input_edit&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id'));?>'><?php print html_escape($item['name']);?></a>
 			</td>
 			<td class='right'>
-				<a class='deleteMarker fa fa-times' title='<?php print __esc('Delete');?>' href='<?php print html_escape('graph_templates_inputs.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id') . '&nostate=true');?>'></a>
+				<a class='deleteMarker fa fa-times' title='<?php print __esc('Delete');?>' href='#' data-id='<?php print (int) $item['id'];?>'></a>
 			</td>
 		</tr>
 		<?php
@@ -524,9 +524,16 @@ function item() {
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
-		$('.deleteMarker, .moveArrow').on('click', function(event) {
+		$('.deleteMarker').on('click', function(event) {
 			event.preventDefault();
-			loadPageNoHeader($(this).attr('href'));
+
+			loadPageUsingPost('graph_templates_inputs.php', {
+				action: 'input_remove',
+				id: $(this).data('id'),
+				graph_template_id: <?php print (int) get_request_var('id');?>,
+				header: false,
+				__csrf_magic: csrfMagicToken
+			});
 		});
 	});
 	</script>
@@ -923,4 +930,3 @@ function template() {
 
 	form_end();
 }
-

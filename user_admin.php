@@ -90,6 +90,8 @@ function update_policies() {
 		}
 	}
 
+	reset_user_perms(get_filter_request_var('id'));
+
 	header('Location: user_admin.php?action=user_edit&header=false&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_filter_request_var('id'));
 	exit;
 }
@@ -120,6 +122,8 @@ function form_actions() {
 			}
 		}
 
+		reset_user_perms(get_nfilter_request_var('id'));
+
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('associate_graph')) {
@@ -143,6 +147,8 @@ function form_actions() {
 				}
 			}
 		}
+
+		reset_user_perms(get_nfilter_request_var('id'));
 
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
 		exit;
@@ -168,6 +174,8 @@ function form_actions() {
 			}
 		}
 
+		reset_user_perms(get_nfilter_request_var('id'));
+
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permste&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('associate_groups')) {
@@ -190,6 +198,8 @@ function form_actions() {
 				}
 			}
 		}
+
+		reset_user_perms(get_nfilter_request_var('id'));
 
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsgr&id=' . get_nfilter_request_var('id'));
 		exit;
@@ -214,6 +224,8 @@ function form_actions() {
 				}
 			}
 		}
+
+		reset_user_perms(get_nfilter_request_var('id'));
 
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permstr&id=' . get_nfilter_request_var('id'));
 		exit;
@@ -329,7 +341,7 @@ function form_actions() {
 
 	form_start('user_admin.php');
 
-	html_start_box($user_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($user_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($user_array) && cacti_sizeof($user_array)) {
 		if ((get_nfilter_request_var('drp_action') == '1') && (cacti_sizeof($user_array))) { // delete
@@ -509,6 +521,8 @@ function form_save() {
 		}
 
 		if ($add_button_clicked == true) {
+			reset_user_perms(get_nfilter_request_var('id'));
+
 			header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_nfilter_request_var('id'));
 			exit;
 		}
@@ -666,6 +680,8 @@ function form_save() {
 				get_nfilter_request_var('id')
 			)
 		);
+
+		reset_user_perms(get_nfilter_request_var('id'));
 	} else {
 		api_plugin_hook('user_admin_user_save');
 
@@ -707,6 +723,8 @@ function perm_remove() {
 			AND item_id = ?',
 			array(get_request_var('user_id'), get_request_var('id')));
 	}
+
+	reset_user_perms(get_request_var('user_id'));
 
 	header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_request_var('user_id'));
 }
@@ -1665,7 +1683,7 @@ function user_realms_edit($header_label) {
 			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->')+2:0);
 
 			print '<div class="flexChild">';
-			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0), $r['display'], true);
+			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0), $name, true);
 			print '</div>';
 		}
 
@@ -2081,10 +2099,9 @@ function user() {
 			'default' => ''
 		),
 		'group' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '-1',
-			'pageset' => true,
-			'options' => array('options' => 'sanitize_search_string')
+			'pageset' => true
 		),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -2099,6 +2116,12 @@ function user() {
 	);
 
 	validate_store_request_vars($filters, 'sess_usera');
+
+	/* constrain sort_column to the displayed columns so it cannot pivot ORDER BY
+	   onto sensitive user_auth columns such as password or tfa_secret */
+	set_request_var('sort_column', cacti_validate_sort_column(get_request_var('sort_column'),
+		array('username', 'id', 'full_name', 'enabled', 'realm', 'policy_graphs', 'policy_hosts', 'policy_graph_templates', 'dtime'),
+		'username'));
 	/* ================= input validation ================= */
 
 	?>
@@ -2256,8 +2279,10 @@ function user() {
 		}
 	}
 
-	if (get_request_var('group') > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ug.group_id = ' . get_request_var('group');
+	$group_id = (int) get_request_var('group');
+
+	if ($group_id > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ug.group_id = ' . $group_id;
 	}
 
 	if (get_request_var('login') > 0) {
@@ -3175,4 +3200,3 @@ function member_filter($header_label) {
 
 	html_end_box();
 }
-

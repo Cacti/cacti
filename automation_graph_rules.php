@@ -37,24 +37,29 @@ set_default_action();
 
 switch (get_request_var('action')) {
 	case 'save':
+		csrf_require_post();
 		save();
 
 		break;
 	case 'actions':
+		csrf_require_post();
 		automation_graph_rules_form_actions();
 
 		break;
 	case 'item_movedown':
+		csrf_require_post();
 		automation_graph_rules_item_movedown();
 
 		header('Location: automation_graph_rules.php?action=edit&id=' . get_filter_request_var('id'));
 		break;
 	case 'item_moveup':
+		csrf_require_post();
 		automation_graph_rules_item_moveup();
 
 		header('Location: automation_graph_rules.php?action=edit&id=' . get_filter_request_var('id'));
 		break;
 	case 'item_remove':
+		csrf_require_post();
 		automation_graph_rules_item_remove();
 
 		header('Location: automation_graph_rules.php?action=edit&id=' . get_filter_request_var('id'));
@@ -65,11 +70,20 @@ switch (get_request_var('action')) {
 		bottom_footer();
 		break;
 	case 'qedit':
+		csrf_require_post();
 		automation_change_query_type();
 
-		header('Location: automation_graph_rules.php?header=false&action=edit&name=' . get_request_var('name') . '&id=' . get_filter_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		$query = http_build_query(array(
+			'header'        => 'false',
+			'action'        => 'edit',
+			'name'          => get_request_var('name'),
+			'id'            => get_filter_request_var('id'),
+			'snmp_query_id' => get_filter_request_var('snmp_query_id'),
+		), '', '&', PHP_QUERY_RFC3986);
+		header('Location: automation_graph_rules.php?' . $query);
 		break;
 	case 'remove':
+		csrf_require_post();
 		automation_graph_rules_remove();
 
 		header ('Location: automation_graph_rules.php');
@@ -294,7 +308,7 @@ function automation_graph_rules_form_actions() {
 
 	form_start('automation_graph_rules.php', 'automation_graph_rules');
 
-	html_start_box($automation_graph_rules_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($automation_graph_rules_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DELETE) { /* delete */
 		print "<tr>
@@ -701,21 +715,23 @@ function automation_graph_rules_edit() {
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applySNMPQueryIdChange() {
-		strURL  = 'automation_graph_rules.php?action=qedit';
-		strURL += '&id=' + $('#id').val();
-		strURL += '&name=' + $('#name').val();
-		strURL += '&snmp_query_id=' + $('#snmp_query_id').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadPageUsingPost('automation_graph_rules.php', {
+			action: 'qedit',
+			id: $('#id').val(),
+			name: $('#name').val(),
+			snmp_query_id: $('#snmp_query_id').val(),
+			header: false
+		}, 'main');
 	}
 
 	function applySNMPQueryTypeChange() {
-		strURL  = 'automation_graph_rules.php?action=qedit'
-		strURL += '&id=' + $('#id').val();
-		strURL += '&name=' + $('#name').val();
-		strURL += '&graph_type_id=' + $('#graph_type_id').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadPageUsingPost('automation_graph_rules.php', {
+			action: 'qedit',
+			id: $('#id').val(),
+			name: $('#name').val(),
+			graph_type_id: $('#graph_type_id').val(),
+			header: false
+		}, 'main');
 	}
 	</script>
 	<?php
@@ -980,4 +996,3 @@ function automation_graph_rules() {
 
 	form_end();
 }
-

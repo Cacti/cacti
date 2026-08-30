@@ -439,13 +439,13 @@ function api_plugin_status_run($hook, $required_capabilities, $plugin_capabiliti
 
 		switch($capability) {
 			case 'offline_view': // if the plugin has mgmt, it's assumed to have view
-				if (strpos($plugin_capabilities, "offline_mgmt:1") !== false) {
+				if (strpos($plugin_capabilities, 'offline_mgmt:1') !== false) {
 					return true;
 				}
 
 				break;
 			case 'online_view': // if the plugin has mgmt, it's assumed to have view
-				if (strpos($plugin_capabilities, "offline_mgmt:1") !== false) {
+				if (strpos($plugin_capabilities, 'offline_mgmt:1') !== false) {
 					return true;
 				}
 
@@ -463,106 +463,26 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 
 	include_once($config['library_path'] . '/database.php');
 
-	$result = db_fetch_assoc('SHOW TABLES');
-	$tables = array();
-	foreach($result as $index => $arr) {
-		foreach ($arr as $t) {
-			$tables[] = $t;
-		}
+	if (!db_is_safe_identifier($table)) {
+		return;
 	}
 
-	if (!in_array($table, $tables)) {
-		$c = 0;
-		$sql = 'CREATE TABLE `' . $table . "` (\n";
-		foreach ($data['columns'] as $column) {
-			if (isset($column['name'])) {
-				if ($c > 0) {
-					$sql .= ",\n";
-				}
-
-				$sql .= '`' . $column['name'] . '`';
-
-				if (isset($column['type'])) {
-					$sql .= ' ' . $column['type'];
-				}
-
-				if (isset($column['unsigned'])) {
-					$sql .= ' unsigned';
-				}
-
-				if (isset($column['NULL']) && $column['NULL'] == false) {
-					$sql .= ' NOT NULL';
-				}
-
-				if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default'])) {
-					$sql .= ' default NULL';
-				}
-
-				if (isset($column['default'])) {
-					if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
-						$sql .= ' default CURRENT_TIMESTAMP';
-					} else {
-						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-					}
-				}
-
-				if (isset($column['auto_increment'])) {
-					$sql .= ' auto_increment';
-				}
-
-				$c++;
-			}
-		}
-
-		if (isset($data['primary'])) {
-			$sql .= ",\n PRIMARY KEY (`" . $data['primary'] . '`)';
-		}
-
-		if (isset($data['keys']) && cacti_sizeof($data['keys'])) {
-			foreach ($data['keys'] as $key) {
-				if (isset($key['name'])) {
-					$sql .= ",\n INDEX `" . $key['name'] . '` (' . db_format_index_create($key['columns']) . ')';
-				}
-			}
-		}
-
-		if (isset($data['unique_keys'])) {
-			foreach ($data['unique_keys'] as $key) {
-				if (isset($key['name'])) {
-					$sql .= ",\n UNIQUE INDEX `" . $key['name'] . '` (' . db_format_index_create($key['columns']) . ')';
-				}
-			}
-		}
-
-		$sql .= ') ENGINE = ' . $data['type'];
-
-		if (isset($data['charset'])) {
-			$sql .= ' DEFAULT CHARSET = ' . $data['charset'];
-		}
-
-		if (isset($data['row_format']) && strtolower(db_get_global_variable('innodb_file_format')) == 'barracuda') {
-			$sql .= ' ROW_FORMAT = ' . $data['row_format'];
-		}
-
-		if (isset($data['comment'])) {
-			$sql .= " COMMENT = '" . $data['comment'] . "'";
-		}
-
-		if (db_execute($sql)) {
+	if (!db_table_exists($table, false)) {
+		if (db_table_create($table, $data)) {
 			db_execute_prepared("REPLACE INTO plugin_db_changes
 				(plugin, `table`, `column`, `method`)
 				VALUES (?, ?, '', 'create')",
-				array($plugin, $table));
-
-			if (isset($data['collate'])) {
-				db_execute("ALTER TABLE `$table` COLLATE = " . $data['collate']);
-			}
+				[$plugin, $table]);
 		}
 	}
 }
 
 function api_plugin_drop_table($table) {
-	db_execute("DROP TABLE IF EXISTS $table");
+	if (!db_is_safe_identifier($table)) {
+		return;
+	}
+
+	db_execute("DROP TABLE IF EXISTS `$table`");
 
 	api_plugin_drop_remote_table($table);
 }
@@ -576,8 +496,10 @@ function api_plugin_db_changes_remove($plugin) {
 
 	if (cacti_count($tables)) {
 		foreach ($tables as $table) {
-			db_execute('DROP TABLE IF EXISTS `' . $table['table'] . '`;');
-			api_plugin_drop_remote_table($table['table']);
+			if (db_is_safe_identifier($table['table'])) {
+				db_execute('DROP TABLE IF EXISTS `' . $table['table'] . '`;');
+				api_plugin_drop_remote_table($table['table']);
+			}
 		}
 
 		db_execute_prepared("DELETE FROM plugin_db_changes
@@ -594,7 +516,9 @@ function api_plugin_db_changes_remove($plugin) {
 
 	if (cacti_count($columns)) {
 		foreach ($columns as $column) {
-			db_execute('ALTER TABLE `' . $column['table'] . '` DROP `' . $column['column'] . '`');
+			if (db_is_safe_identifier($column['table']) && db_is_safe_identifier($column['column'])) {
+				db_execute('ALTER TABLE `' . $column['table'] . '` DROP `' . $column['column'] . '`');
+			}
 		}
 
 		db_execute_prepared("DELETE FROM plugin_db_changes
@@ -612,55 +536,22 @@ function api_plugin_db_add_column($plugin, $table, $column) {
 
 	include_once($config['library_path'] . '/database.php');
 
-	$result = db_fetch_assoc('SHOW COLUMNS FROM `' . $table . '`');
-	$columns = array();
-	foreach($result as $index => $arr) {
-		foreach ($arr as $t) {
-			$columns[] = $t;
-		}
+	if (!db_is_safe_identifier($table) || !db_is_safe_column_definition($column)) {
+		return;
 	}
 
-	if (isset($column['name']) && !in_array($column['name'], $columns)) {
-		$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
+	$result  = db_fetch_assoc('SHOW COLUMNS FROM `' . $table . '`');
+	$columns = [];
 
-		if (isset($column['type'])) {
-			$sql .= ' ' . $column['type'];
-		}
+	foreach ($result as $index => $arr) {
+		$columns[] = $arr['Field'];
+	}
 
-		if (isset($column['unsigned'])) {
-			$sql .= ' unsigned';
-		}
-
-		if (isset($column['NULL']) && $column['NULL'] == false) {
-			$sql .= ' NOT NULL';
-		}
-
-		if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default'])) {
-			$sql .= ' default NULL';
-		}
-
-		if (isset($column['default'])) {
-			if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
-				$sql .= ' default CURRENT_TIMESTAMP';
-			} else {
-				$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-			}
-		}
-
-		if (isset($column['auto_increment'])) {
-			$sql .= ' auto_increment';
-		}
-
-		if (isset($column['after'])) {
-			$sql .= ' AFTER ' . $column['after'];
-		}
-
-		if (db_execute($sql)) {
-			db_execute_prepared("INSERT INTO plugin_db_changes
-				(plugin, `table`, `column`, `method`)
-				VALUES (?, ?, ?, 'addcolumn')",
-				array($plugin, $table, $column['name']));
-		}
+	if (isset($column['name']) && !in_array($column['name'], $columns, true) && db_add_column($table, $column)) {
+		db_execute_prepared("INSERT INTO plugin_db_changes
+			(plugin, `table`, `column`, `method`)
+			VALUES (?, ?, ?, 'addcolumn')",
+			[$plugin, $table, $column['name']]);
 	}
 }
 
@@ -883,7 +774,7 @@ function api_plugin_enable($plugin) {
 }
 
 function api_plugin_is_enabled($plugin) {
-	static $pstatus = array();;
+	static $pstatus = [];
 
 	if (isset($pstatus[$plugin])) {
 		return $pstatus[$plugin];
@@ -919,8 +810,6 @@ function api_plugin_disable($plugin) {
 function api_plugin_replicate_config() {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/poller.php');
-
 	$gone_time = read_config_option('poller_interval') * 2;
 
 	$pollers = array_rekey(
@@ -947,6 +836,10 @@ function api_plugin_drop_remote_table($table) {
 
 	include_once($config['base_path'] . '/lib/poller.php');
 
+	if (!db_is_safe_identifier($table)) {
+		return;
+	}
+
 	$gone_time = read_config_option('poller_interval') * 2;
 
 	$pollers = array_rekey(
@@ -964,7 +857,7 @@ function api_plugin_drop_remote_table($table) {
 			$rcnn_id = poller_connect_to_remote($poller_id);
 
 			if ($rcnn_id !== false) {
-				db_execute("DROP TABLE IF EXISTS $table", false, $rcnn_id);
+				db_execute("DROP TABLE IF EXISTS `$table`", false, $rcnn_id);
 			}
 		}
 	}
@@ -987,32 +880,42 @@ function api_plugin_moveup($plugin) {
 		WHERE directory = ?',
 		array($plugin));
 
-	if (!empty($id)) {
-		$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config')+1;
-
+	if ($id !== false) {
 		$prior_id = db_fetch_cell_prepared('SELECT MAX(id)
 			FROM plugin_config
 			WHERE id < ?',
 			array($id));
 
-		/* update the above plugin to the prior temp id */
-		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($temp_id, $prior_id));
-		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($prior_id, $id));
-		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
+		/* MAX() on an empty set returns NULL; without a guard, the UPDATE
+		 * below would set id = NULL on the current plugin, which non-strict
+		 * MariaDB/MySQL silently stores as 0, corrupting the primary key. */
+		if ($prior_id !== null) {
+			$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config') + 1;
+
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($temp_id, $prior_id));
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($prior_id, $id));
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
+		}
 	}
 
 	api_plugin_replicate_config();
 }
 
 function api_plugin_movedown($plugin) {
-	$id      = db_fetch_cell_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin));
-	$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config')+1;
-	$next_id = db_fetch_cell_prepared('SELECT MIN(id) FROM plugin_config WHERE id > ?', array($id));
+	$id = db_fetch_cell_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin));
 
-	/* update the above plugin to the prior temp id */
-	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($temp_id, $next_id));
-	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($next_id, $id));
-	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
+	if ($id !== false) {
+		$next_id = db_fetch_cell_prepared('SELECT MIN(id) FROM plugin_config WHERE id > ?', array($id));
+
+		/* MIN() on an empty set returns NULL; same NULL->0 corruption risk as moveup. */
+		if ($next_id !== null) {
+			$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config') + 1;
+
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($temp_id, $next_id));
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($next_id, $id));
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
+		}
+	}
 
 	api_plugin_replicate_config();
 }
@@ -1062,12 +965,12 @@ function api_plugin_register_hook($plugin, $hook, $function, $file, $enable = fa
 			}
 		}
 
-		db_execute_prepared("UPDATE plugin_hooks
+		db_execute_prepared('UPDATE plugin_hooks
 			SET `function` = ?, `status` = ?,
 			`file` = ?
 			WHERE `name` = ?
-			AND `hook` = ?",
-			array($function, $status, $file, $plugin, $hook));
+			AND `hook` = ?',
+			[$function, $status, $file, $plugin, $hook]);
 	}
 
 	api_plugin_replicate_config();
@@ -1103,10 +1006,10 @@ function api_plugin_disable_hooks($plugin) {
 }
 
 function api_plugin_disable_hooks_all($plugin) {
-	db_execute_prepared("UPDATE plugin_hooks
+	db_execute_prepared('UPDATE plugin_hooks
 		SET status = 0
-		WHERE name = ?",
-		array($plugin));
+		WHERE name = ?',
+		[$plugin]);
 
 	api_plugin_replicate_config();
 }
@@ -1360,6 +1263,43 @@ function plugin_load_info_defaults($file, $info, $defaults = array()) {
 	}
 
 	return $result;
+}
+
+function plugin_clean_old_plugin_info() {
+	db_execute_prepared('DELETE ph
+		FROM plugin_hooks AS ph
+		LEFT JOIN plugin_config AS pc
+		ON ph.name = pc.directory
+		WHERE pc.directory IS NULL
+		AND ph.name != ?',
+		array('internal'));
+
+	db_execute_prepared('DELETE pd
+		FROM plugin_db_changes AS pd
+		LEFT JOIN plugin_config AS pc
+		ON pd.plugin = pc.directory
+		WHERE pc.directory IS NULL
+		AND pd.plugin != ?',
+		array('internal'));
+
+	$realms = db_fetch_assoc_prepared('SELECT pr.id
+		FROM plugin_realms AS pr
+		LEFT JOIN plugin_config AS pc
+		ON pr.plugin = pc.directory
+		WHERE pc.directory IS NULL
+		AND pr.plugin != ?',
+		array('internal'));
+
+	if (cacti_sizeof($realms)) {
+		foreach($realms as $r) {
+			$id = $r['id'] + 100;
+
+			db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($id));
+			db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', array($id));
+
+			db_execute_prepared('DELETE FROM plugin_realms WHERE id = ?', array($r['id']));
+		}
+	}
 }
 
 function plugin_load_info_file($file) {

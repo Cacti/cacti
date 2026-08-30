@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install ripgrep
         run: sudo apt-get install -y ripgrep
@@ -44,13 +44,26 @@ jobs:
       - name: Verify no new architectural hotspots
         run: tests/security/verify_architectural_hotspots.sh
 
+  advisory-docker-probe:
+    name: private advisory Docker probe
+    runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_dispatch'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Run advisory Docker probe
+        env:
+          CACTI_E2E_TEST_GLOB: tests/05-private-advisory-hardening.sh
+        run: tests/e2e/docker/run.sh
+
   advisory-proof-matrix:
     name: private advisory proof matrix
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -76,7 +89,7 @@ jobs:
           tests/security/verify_private_advisory_matrix.sh "security/proof-run/${GITHUB_RUN_ID}/private_advisory_proof_matrix.tsv"
 
       - name: Upload proof artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: private-advisory-proof-${{ github.run_id }}
           path: security/proof-run/${{ github.run_id }}

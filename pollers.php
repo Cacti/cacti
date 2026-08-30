@@ -354,12 +354,7 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 
 		$ip_addresses[$hostname] = $hostname;
 	} elseif (strpos($hostname, '.') !== false) {
-		$addresses = @dns_get_record($hostname);
-		$ip        = @gethostbyname($hostname);
-
-		if ($ip != $hostname) {
-			$ip_addresses[$ip] = $ip;
-		}
+		$addresses = @dns_get_record($hostname, DNS_A | DNS_AAAA | DNS_CNAME);
 
 		$ip_hostnames[$hostname] = $hostname;
 
@@ -379,12 +374,11 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 			}
 		}
 	} else {
-		$ip_hostname[$hostname] = $hostname;
-
-		$address = @gethostbyname($hostname);
-
-		if ($address != $hostname) {
-			$ip_addresses[$address] = $address;
+		$ip_hostnames[$hostname] = $hostname;
+		foreach (@dns_get_record($hostname, DNS_A | DNS_AAAA) ?: array() as $address) {
+			if (isset($address['ip'])) {
+				$ip_addresses[$address['ip']] = $address['ip'];
+			}
 		}
 	}
 
@@ -550,7 +544,7 @@ function form_actions() {
 
 	form_start('pollers.php');
 
-	html_start_box($poller_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($poller_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($poller_array) && cacti_sizeof($poller_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { // delete
@@ -1150,4 +1144,3 @@ function pollers() {
 
 	form_end();
 }
-

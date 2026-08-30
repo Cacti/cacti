@@ -135,15 +135,13 @@ function form_save() {
 			exit;
 		}
 
-		if (isset_request_var('trust_signer') && get_request_var('trust_signer') == 'on') {
-			import_validate_public_key($xmlfile, true);
-		} elseif (!package_validate_signature($xmlfile)) {
+		if (!package_validate_signature($xmlfile)) {
 			if ($session_tmpfile) {
 				@unlink($xmlfile);
 			}
 
-			raise_message('verify_warning', __('You have not Trusted this Package Author.  If you wish to import, check the Automatically Trust Author checkbox'), MESSAGE_LEVEL_ERROR);
-			header('Location: package_import?package_location=0');
+			raise_message('verify_warning', __('The package signature could not be verified against a trusted author.'), MESSAGE_LEVEL_ERROR);
+			header('Location: package_import.php?package_location=0');
 			exit;
 		}
 
@@ -374,10 +372,12 @@ function package_get_details() {
 			$data = get_repo_file($package_location, $filename, false);
 
 			if ($data !== false) {
-				$tmp_dir = sys_get_temp_dir() . '/package' . $_SESSION['sess_user_id'];
+				/* use an unpredictable, private per-run directory so a local
+				   co-tenant cannot pre-plant a symlink at a guessable path */
+				$tmp_dir = sys_get_temp_dir() . '/cacti_pkg_' . $_SESSION['sess_user_id'] . '_' . bin2hex(random_bytes(8));
 
 				if (!is_dir($tmp_dir)) {
-					mkdir($tmp_dir);
+					mkdir($tmp_dir, 0700);
 				}
 
 				$xmlfile = $tmp_dir . '/' . $filename;
@@ -581,8 +581,8 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 					);
 
 					form_alternate_row('line_' . $id);
-					form_selectable_cell($file_package_name, $id);
-					form_selectable_cell($pfile, $id);
+					form_selectable_ecell($file_package_name, $id);
+					form_selectable_ecell($pfile, $id);
 
 					$status  = explode(',', $status);
 					$nstatus = '';
@@ -673,8 +673,8 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 
 			form_alternate_row('line_import_' . $detail['status'] . '_' . $id);
 
-			form_selectable_cell($detail['type_name'], $id);
-			form_selectable_cell($detail['name'], $id);
+			form_selectable_ecell($detail['type_name'], $id);
+			form_selectable_ecell($detail['name'], $id);
 			form_selectable_cell($status, $id);
 
 			if (isset($detail['vals'])) {
@@ -697,11 +697,13 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 				}
 
 				if (cacti_sizeof($diff_array)) {
+					// $diff_array entries are pre-escaped at source in lib/import.php via html_escape();
+					// do NOT wrap with array_map('html_escape') here — that would double-encode color spans.
 					$diff_details .= __('Differences') . '<br>' . implode('<br>', $diff_array);
 				}
 
 				if (cacti_sizeof($orphan_array)) {
-					$diff_details .= ($diff_details != '' ? '<br>':'') . __('Orphans') . '<br>' . implode('<br>', $orphan_array);
+					$diff_details .= ($diff_details != '' ? '<br>':'') . __('Orphans') . '<br>' . implode('<br>', array_map('html_escape', $orphan_array));
 				}
 
 				form_selectable_cell($diff_details, $id, '', 'white-space:pre-wrap');
@@ -785,11 +787,6 @@ function validate_request_vars() {
 			'options' => array('options' => array('regexp' => '(on|true|false)')),
 			'default' => 'on'
 		),
-		'trust_signer' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
-			'options' => array('options' => array('regexp' => '(on|true|false)')),
-			'default' => 'on'
-		),
 		'data_source_profile' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => $default_profile
@@ -835,12 +832,6 @@ function get_import_form($default_profile) {
 		$remove_orphans = '';
 	}
 
-	if (isset_request_var('trust_signer') && get_nfilter_request_var('trust_signer') == 'on') {
-		$trust_signer = 'on';
-	} else {
-		$trust_signer = '';
-	}
-
 	if (isset_request_var('image_format')) {
 		$image_format = get_filter_request_var('image_format');
 	} else {
@@ -865,13 +856,6 @@ function get_import_form($default_profile) {
 			'description' => __('The *.xml.gz file located on your Local machine to Upload and Import.'),
 			'accept' => '.xml.gz',
 			'method' => 'file'
-		),
-		'trust_signer' => array(
-			'friendly_name' => __('Automatically Trust Signer'),
-			'method' => 'hidden',
-			'description' => __('If checked, Cacti will automatically Trust the Signer for this and any future Packages by that author.'),
-			'value' => 'on',
-			'default' => ''
 		),
 	);
 
@@ -1012,10 +996,6 @@ function package_import() {
 
 			if ($('#replace_svalues').is(':checked')) {
 				formExtra += '&replace_svalues=on';
-			}
-
-			if ($('#trust_signer').is(':checked')) {
-				formExtra += '&trust_signer=on';
 			}
 
 			Pace.start();

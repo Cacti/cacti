@@ -52,18 +52,16 @@ html_start_box(__('About Cacti'), '100%', '', '3', 'center', '');
 			<li>Mark Brugnoli-Vinten <i>(netniV)</i></li>
 			<li>Jimmy Conner <i>(cigamit)</i></li>
 			<li>Petr Macek <i>(xmacan)</i></li>
+			<li>Sean Mancini <i>(bmfmancini)</i></li>
 			<li>Andreas Braun <i>(browniebraun)</i></li>
-			<li>Thomas Urban <i>(phalek)</i></li>
-			<li>Jing Chen <i>(ddb4github)</i></li>
+			<li>Thomas Vincent <i>(somethingwithproof)</i></li>
 		</ul>
 		</div>
 		<div class='flexChild' style='min-width:300px;'>
 		<p><strong><?php print __('Honorable Mentions'); ?></strong></p>
 		<p style='min-height:45px'><?php print __('Contributors to Documentation, QA, Packaging, the Forums and our YouTube page.'); ?></strong></p>
 		<ul type='disc'>
-			<li>Sean Mancini <i>(bmfmancini)</i></li>
-			<li>J.P. Pasnak, CD <i>(Linegod)</i></strong></li>
-			<li>Chris Bell (Windows) <i>(BSOD2600)</i></li>
+			<li>Thomas Urban <i>(phalek)</i></li>
 			<li>Paul Gevers (Debian) <i>(paulgevers)</i></strong></li>
 			<li>Morten Stevens (Fedora) <i>(mortenstevens)</i></strong></li>
 		</ul>
@@ -75,7 +73,10 @@ html_start_box(__('About Cacti'), '100%', '', '3', 'center', '');
 			<li>Ian Berry <i>(raX)</i></li>
 			<li>Reinhard Scheck <i>(gandalf)</i></li>
 			<li>Tony Roman <i>(rony)</i></strong></li>
+			<li>Chris Bell (Windows) <i>(BSOD2600)</i></li>
 			<li>Andy Blyler <i>(ablyler)</i></strong></li>
+			<li>Jing Chen <i>(ddb4github)</i></li>
+			<li>J.P. Pasnak, CD <i>(Linegod)</i> - Till we meet again!</strong></li>
 		</ul>
 		</div>
 		</div>

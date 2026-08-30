@@ -262,9 +262,22 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	$rows_query = $sql_query . $sql_where . $sql_filter;
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-	$sql_query = $rows_query . ' ' . get_order_string() .
+	$sort_columns = array(
+		'description'        => 'h.description',
+		'hostname'           => 'INET_ATON(h.hostname)',
+		'status'             => 'h.status',
+		'host_template_name' => 'ht.name',
+		'id'                 => 'h.id',
+	);
+
+	$sort_column = cacti_validate_sort_column(get_request_var('sort_column'), array_keys($sort_columns), 'description');
+	$sortby      = $sort_columns[$sort_column];
+	$sort_dir    = strtoupper(get_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
+
+	$sql_query = $rows_query .
+		' ORDER BY ' . $sortby . ' ' . $sort_dir .
 		' LIMIT ' . ($rows*(get_request_var('paged')-1)) . ',' . $rows;
-  
+
 	$hosts = db_fetch_assoc($sql_query, false);
 
 	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('paged'), $rows, $total_rows, 7, __('Devices'), 'paged', 'main');
@@ -1205,7 +1218,18 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-	$sql_query = "$rows_query " . get_order_string() . ' LIMIT ' .
+	$sort_columns = array(
+		'description'        => 'h.description',
+		'hostname'           => 'INET_ATON(h.hostname)',
+		'status'             => 'h.status',
+		'host_template_name' => 'ht.name'
+	);
+
+	$sort_column = cacti_validate_sort_column(get_request_var('sort_column'), array_keys($sort_columns), 'description');
+	$sortby      = $sort_columns[$sort_column];
+
+	$sql_query = "$rows_query ORDER BY $sortby " .
+		(strtoupper(get_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') . ' LIMIT ' .
 		($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$templates = db_fetch_assoc($sql_query, false);
@@ -1329,20 +1353,20 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '<td class="right nowrap">';
 
 			if ($i != cacti_sizeof($items)-1) {
-				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-down moveArrow cactiPostAction" href="' . html_escape($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-up moveArrow cactiPostAction" href="' . html_escape($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 			$form_data .= '</td>';
 
 			$form_data .= '<td style="width:1%;">
-				<a class="pid deleteMarker fa fa-times" href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
+				<a class="pid deleteMarker fa fa-times cactiPostAction" href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
 			</tr>';
 
 			print $form_data;
@@ -1391,20 +1415,20 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '<td class="right nowrap">';
 
 			if ($i != cacti_sizeof($items)-1) {
-				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-down moveArrow cactiPostAction" href="' . html_escape($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-up moveArrow cactiPostAction" href="' . html_escape($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 			$form_data .= '</td>';
 
 			$form_data .= '<td class="right nowrap">
-				<a class="pic deleteMarker fa fa-times" href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
+				<a class="pic deleteMarker fa fa-times cactiPostAction" href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
 			</tr>';
 
 			print $form_data;
@@ -1459,20 +1483,20 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 
 			$form_data .= '<td class="right">';
 			if ($i != cacti_sizeof($items)-1) {
-				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-down moveArrow cactiPostAction" href="' . html_escape($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-up moveArrow cactiPostAction" href="' . html_escape($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 			$form_data .= '</td>';
 
 			$form_data .= '<td class="nowrap" style="width:1%;">
-				<a class="pic deleteMarker fa fa-times" href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
+				<a class="pic deleteMarker fa fa-times cactiPostAction" href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
 			</tr>';
 
 			print $form_data;
@@ -2740,7 +2764,7 @@ function create_all_header_nodes($item_id, $rule) {
 				LEFT JOIN host_template AS ht
 				ON h.host_template_id=ht.id ';
 
-			$sql_where = 'WHERE h.id='. $item_id . ' AND h.deleted = "" ';
+			$sql_where = 'WHERE h.id=? AND h.deleted = "" ';
 		} elseif ($rule['leaf_type'] == TREE_ITEM_TYPE_GRAPH) {
 			/* graphs require a different set of tables to be joined */
 			$sql_tables = 'FROM host AS h
@@ -2753,7 +2777,7 @@ function create_all_header_nodes($item_id, $rule) {
 				LEFT JOIN graph_templates_graph AS gtg
 				ON gl.id=gtg.local_graph_id ';
 
-			$sql_where = 'WHERE gl.id=' . $item_id . ' AND h.deleted = "" ';
+			$sql_where = 'WHERE gl.id=? AND h.deleted = "" ';
 		}
 
 		/* get the WHERE clause for matching hosts */
@@ -3359,11 +3383,14 @@ function automation_get_next_host($start, $total, $count, $range) {
 
 		for ($x = 0; $x < 4; $x++) {
 			$ip[$x] += intval($count/$y);
-			$count -= ((intval($count/$y))*256);
+			$count -= (intval($count/$y) * $y);
 			$y = $y / 256;
-			if ($ip[$x] == 256 && $x > 0) {
-				$ip[$x] = 0;
-				$ip[$x-1] += 1;
+		}
+
+		for ($x = 3; $x > 0; $x--) {
+			if ($ip[$x] >= 256) {
+				$ip[$x-1] += intval($ip[$x] / 256);
+				$ip[$x]    = $ip[$x] % 256;
 			}
 		}
 
@@ -3742,7 +3769,14 @@ function api_automation_is_time_to_start($network_id) {
 		break;
 	case '4':
 	case '5':
-		$next = calculateNextStart($net, $now);
+		$next = calculateNextStart($net);
+
+		/* No schedulable date was found (e.g. an incomplete schedule). Leave
+		   next_start untouched instead of writing a 1970 timestamp, which the
+		   run check below would then treat as due every poller cycle. */
+		if (empty($next)) {
+			return false;
+		}
 
 		db_execute_prepared('UPDATE automation_networks
 			SET next_start = ?
@@ -3766,8 +3800,22 @@ function api_automation_is_time_to_start($network_id) {
 }
 
 function calculateNextStart($net) {
-	$now    = time();
-	$dates  = array();
+	$now = time();
+
+	/* Evaluate this year first; when every selected date has already passed,
+	   roll over to the next year so a valid monthly schedule never resolves to
+	   false (which the caller would otherwise store as a 1970 next_start). */
+	$next = calculateNextStartForYear($net, (int) date('Y', $now), $now);
+
+	if ($next === false) {
+		$next = calculateNextStartForYear($net, (int) date('Y', $now) + 1, $now);
+	}
+
+	return $next;
+}
+
+function calculateNextStartForYear($net, $year, $now) {
+	$dates = array();
 
 	switch($net['sched_type']) {
 	case '4':
@@ -3816,9 +3864,9 @@ function calculateNextStart($net) {
 				}
 
 				if ($day == '32') {
-					$dates[] = strtotime('last day of ' . $smonth);;
+					$dates[] = strtotime("last day of $smonth $year");
 				} else {
-					$dates[] = strtotime("$smonth $day");
+					$dates[] = strtotime("$smonth $day $year");
 				}
 			}
 		}
@@ -3828,8 +3876,6 @@ function calculateNextStart($net) {
 		$months = explode(',', $net['month']);
 		$weeks  = explode(',', $net['monthly_week']);
 		$days   = explode(',', $net['monthly_day']);
-		$now    = time();
-		$dates  = array();
 
 		foreach($months as $month) {
 			foreach($weeks as $week) {
@@ -3884,7 +3930,7 @@ function calculateNextStart($net) {
 						$sweek = 'third';
 						break;
 					case '4':
-						$sweek = 'forth';
+						$sweek = 'fourth';
 						break;
 					case '32':
 						$sweek = 'last';
@@ -3915,7 +3961,7 @@ function calculateNextStart($net) {
 						break;
 					}
 
-					$dates[] = strtotime("$sweek $sday of $smonth", strtotime($net['start_at']));
+					$dates[] = strtotime("$sweek $sday of $smonth $year");
 				}
 			}
 		}
@@ -3928,6 +3974,10 @@ function calculateNextStart($net) {
 	$newdates = array();
 
 	foreach($dates as $date) {
+		if ($date === false) {
+			continue;
+		}
+
 		$ndate = date('Y-m-d', $date) . ' ' . date('H:i:s', strtotime($net['start_at']));
 		$ntime = strtotime($ndate);
 

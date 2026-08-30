@@ -35,6 +35,8 @@ include_once('./lib/poller.php');
 include_once('./lib/template.php');
 include_once('./lib/utility.php');
 
+ini_set('max_execution_time', '0');
+
 /* set default action */
 set_default_action();
 switch (get_request_var('action')) {
@@ -989,7 +991,7 @@ function graphs() {
 			$('tr.notemplate').tooltip();
 
 			$('.dqselect').on('change', function() {
-				var prefix = $(this).data('prefix');
+				var prefix = $(this).data('prefix').split(',')[0];
 				dqUpdateDeps(prefix);
 			});
 		</script>";

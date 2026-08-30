@@ -67,10 +67,12 @@ process_request_vars();
 
 switch(get_request_var('action')) {
 	case 'purge':
+		csrf_require_post();
 		purge_discovery_results();
 
 		break;
 	case 'actions':
+		csrf_require_post();
 		form_actions();
 
 		break;
@@ -166,7 +168,7 @@ function form_actions() {
 
 	form_start('automation_devices.php', 'chk');
 
-	html_start_box($device_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($device_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	$available_host_templates = db_fetch_assoc_prepared('SELECT id, name FROM host_template ORDER BY name');
 
@@ -241,7 +243,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($device_array) ? serialize($device_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>";
@@ -605,7 +607,11 @@ function draw_filter() {
 			});
 
 			$('#purge').on('click', function() {
-				loadPageNoHeader('automation_devices.php?header=false&action=purge&network_id='+$('#network').val());
+				loadPageUsingPost('automation_devices.php', {
+					header: false,
+					action: 'purge',
+					network_id: $('#network').val()
+				}, 'main');
 			});
 
 			$('#export').on('click', function() {
@@ -699,4 +705,3 @@ function export_data($item) {
 		return cacti_csv_safe($item);
 	}
 }
-

@@ -60,36 +60,36 @@ if (cacti_sizeof($parms)) {
 }
 
 /* issue warnings and start message if applicable */
-print "NOTE: Updating csrf_secret file with new information" . PHP_EOL;
+print "NOTE: Updating the Cacti CSRF secret" . PHP_EOL;
 
-if (isset($config['path_csrf_secret'])) {
-	$path_csrf_secret = $config['path_csrf_secret'];
+if (!empty($config['path_csrf_secret'])) {
+	$path_csrf_secret = cacti_csrf_external_secret_path($config['path_csrf_secret']);
+	if (!cacti_csrf_external_path_is_safe($path_csrf_secret)) {
+		print "FATAL: The configured CSRF secret must be outside the Cacti document root." . PHP_EOL;
+		exit(1);
+	}
+
+	if (!csrf_write_secret_atomic($path_csrf_secret, csrf_generate_secret())) {
+		print "FATAL: Unable to atomically write the configured external CSRF secret." . PHP_EOL;
+		exit(1);
+	}
 } else {
-	$path_csrf_secret = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
+	$new_secret = csrf_generate_secret();
+	set_config_option('csrf_secret', $new_secret, true);
+	$stored_secret = read_config_option('csrf_secret', true);
+	if (!is_string($stored_secret) || !hash_equals($new_secret, $stored_secret)) {
+		print "FATAL: Unable to verify the updated CSRF secret in the database." . PHP_EOL;
+		exit(1);
+	}
 }
 
-if (!file_exists($path_csrf_secret)) {
-	print "WARNING: csrf_secret.php file does not exist!" . PHP_EOL;
-} elseif (!is_writable($path_csrf_secret)) {
-	print "FATAL: unable to unlink csrf_secret.php!" . PHP_EOL;
-	exit(1);
-} else {
-	print "NOTE: Removing old csrf_secret.php file." . PHP_EOL;
-	unlink($path_csrf_secret);
+$legacy_path = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
+if (file_exists($legacy_path) && is_writable($legacy_path)) {
+	@unlink($legacy_path);
 }
 
-$new_secret = csrf_generate_secret();
-if (csrf_writable($path_csrf_secret)) {
-	umask(0027);
-	$fh = fopen($path_csrf_secret, 'w');
-	fwrite($fh, '<?php $secret = "' . $new_secret . '";' . PHP_EOL);
-	fclose($fh);
-	print "NOTE: New csrf_secret.php file written." . PHP_EOL;
-	exit(0);
-} else {
-	print "FATAL: Unable to write new csrf_secret.php file." . PHP_EOL;
-	exit(1);
-}
+print "NOTE: New CSRF secret installed." . PHP_EOL;
+exit(0);
 
 /*  display_version - displays version information */
 function display_version() {
@@ -106,4 +106,3 @@ function display_help () {
 	print "this key should happen periodically during non-production hours as it can" . PHP_EOL;
 	print "impact the user experience." . PHP_EOL . PHP_EOL;
 }
-

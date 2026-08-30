@@ -156,7 +156,7 @@ function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
  */
 function month_shift($shift_size) {
 	# is monthly shifting required?
-	return ( strpos(strtolower($shift_size), 'month') > 0);
+	return ( strpos(strtolower($shift_size), 'month') !== false);
 }
 
 /* check_month_boundaries 	- check given boundaries for begin/end of month matching

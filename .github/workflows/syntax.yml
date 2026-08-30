@@ -35,13 +35,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  javascript-contracts:
+    name: JavaScript contracts
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+
+    - name: Install Node.js
+      uses: actions/setup-node@v7
+      with:
+        node-version: '22'
+
+    - name: Test JavaScript contracts
+      run: node --test tests/js/*.test.js
+
   check:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        php: ${{ fromJSON((github.base_ref == '1.2.x' || github.ref_name == '1.2.x') && '["7.4"]' || '["8.1","8.2","8.3","8.4"]') }}
+        os: [ubuntu-22.04]
+        php: ['8.1', '8.2', '8.3', '8.4']
         experimental: [false]
         
     services:
@@ -60,7 +76,7 @@ jobs:
     name: PHP ${{ matrix.php }} Test on ${{ matrix.os }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Install PHP ${{ matrix.php }}
       uses: shivammathur/setup-php@v2
@@ -73,43 +89,43 @@ jobs:
       run: php -v
       
     - name: Checkout Thold Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      uses: GuillaumeFalourd/clone-github-repo-action@v3
       with:
         owner: 'Cacti'
         repository: 'plugin_thold'
 
     - name: Checkout Monitor Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      uses: GuillaumeFalourd/clone-github-repo-action@v3
       with:
         owner: 'Cacti'
         repository: 'plugin_monitor'
 
     - name: Checkout MacTrack Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      uses: GuillaumeFalourd/clone-github-repo-action@v3
       with:
         owner: 'Cacti'
         repository: 'plugin_mactrack'
 
     - name: Checkout Intropage Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      uses: GuillaumeFalourd/clone-github-repo-action@v3
       with:
         owner: 'Cacti'
         repository: 'plugin_intropage'
 
     - name: Checkout FlowView Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      uses: GuillaumeFalourd/clone-github-repo-action@v3
       with:
         owner: 'Cacti'
         repository: 'plugin_flowview'
 
     - name: Checkout Audit Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      uses: GuillaumeFalourd/clone-github-repo-action@v3
       with:
         owner: 'Cacti'
         repository: 'plugin_audit'
 
     - name: Checkout Syslog Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      uses: GuillaumeFalourd/clone-github-repo-action@v3
       with:
         owner: 'Cacti'
         repository: 'plugin_syslog'
@@ -137,11 +153,48 @@ jobs:
     - name: Check PHP syntax
       run: if find ${{ github.workspace }} -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
 
-    - name: Run and apt-get update
-      run: true
+    - name: Add ondrej PHP PPA and apt-get update
+      run: |
+        # The runner image and setup-php may already have this PPA configured
+        # with a keyring. Adding it again supplies no Signed-By value, and apt
+        # refuses the conflicting pair rather than merging them, which fails
+        # the whole job before any Cacti code runs.
+        if grep -Rqs 'ondrej/php' /etc/apt/sources.list /etc/apt/sources.list.d/; then
+          echo 'ondrej/php already configured, skipping add-apt-repository'
+        else
+          if ! sudo timeout --signal=TERM 60s add-apt-repository -y --no-update ppa:ondrej/php; then
+            echo 'add-apt-repository failed or timed out after 60 seconds' >&2
+            exit 1
+          fi
+        fi
+        for source in /etc/apt/apt-mirrors.txt /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources; do
+          if [ -f "$source" ]; then
+            sudo sed -E -i 's#https?://azure.archive.ubuntu.com/ubuntu#https://archive.ubuntu.com/ubuntu#g' "$source"
+          fi
+        done
+        for attempt in 1 2 3; do
+          if sudo timeout --signal=TERM 300s apt-get -y \
+            -o Acquire::Retries=3 \
+            -o Acquire::http::Timeout=30 \
+            -o Acquire::https::Timeout=30 update; then
+            break
+          fi
+
+          if [ "$attempt" -eq 3 ]; then
+            echo 'apt-get update failed after three bounded attempts' >&2
+            exit 1
+          fi
+
+          sleep $((attempt * 10))
+        done
 
     - name: Install Apache and Tools
-      run: sudo apt-get install -o Acquire::Retries=5 apache2 snmp snmpd rrdtool libapache2-mod-php${{ matrix.php }}
+      run: |
+        sudo apt-get install \
+        -o Acquire::http::Timeout="10" \
+        -o Acquire::https::Timeout="10" \
+        -o Acquire::Retries="30" apache2 snmp snmpd rrdtool \
+          libapache2-mod-php${{ matrix.php }} php${{ matrix.php }}-mysql
 
     - name: Start SNMPD Agent and Test Agent
       run: |
@@ -194,9 +247,22 @@ jobs:
         sudo cp ${{ github.workspace }}/tests/tools/cactid.service /etc/systemd/system/cactid.service
         sudo systemctl enable cactid
         sudo systemctl start cactid
-        sudo systemctl status cactid
+        # status exits 3 while the unit sits in auto-restart, and this step runs
+        # under bash -e, so it aborted before the deliberate check below could
+        # report anything. Keep it for the log and let that check decide.
+        sudo systemctl status cactid || true
+        # The service restarts on a timer, so allow it a moment to settle
+        # rather than reading the one instant between runs.
+        for attempt in 1 2 3 4 5 6 7 8 9 10; do
+          if systemctl is-active --quiet cactid; then
+            break
+          fi
+          sleep 2
+        done
         if ! systemctl is-active --quiet cactid; then
           echo "Cacti daemon failed to start"
+          sudo systemctl status cactid || true
+          sudo journalctl -u cactid --no-pager -n 50 || true
           exit 1
         fi
 
@@ -230,7 +296,7 @@ jobs:
     - name: Add Device for Moc Test, Check CLI scripts for Errors
       run: |
         cd ${{ github.workspace }}
-        template=$(php -q cli/add_device.php --list-host-templates | grep "Net-SNMP Device" | awk '{print $1}')
+        template=$(sudo php -q cli/add_device.php --list-host-templates | grep "Net-SNMP Device" | awk '{print $1}')
         sudo php cli/add_device.php --description=test_device --ip=127.0.0.1 --template=$template
         sudo php cli/rebuild_poller_cache.php --debug
         sudo php cli/poller_reindex_hosts.php --id=all --debug

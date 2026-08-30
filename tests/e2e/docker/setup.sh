@@ -35,6 +35,13 @@ echo "[setup] importing baseline cacti.sql"
 echo "[setup] running cli/install_cacti.php"
 "${DC[@]}" exec -T cacti-master php /var/www/html/cli/install_cacti.php --accept-eula --install --mode=1
 
+# The installer runs through docker exec as root and can create log/cacti.log
+# as root-owned. Apache runs as www-data, so reset runtime-writable paths
+# before curl-based tests request index.php.
+echo "[setup] fixing runtime path ownership"
+"${DC[@]}" exec -T cacti-master sh -c 'mkdir -p /var/www/html/log /var/www/html/rra && touch /var/www/html/log/cacti.log && chown -R www-data:www-data /var/www/html/log /var/www/html/rra /var/cacti-state'
+"${DC[@]}" exec -T cacti-poller sh -c 'mkdir -p /var/www/html/log /var/www/html/rra && touch /var/www/html/log/cacti.log && chown -R www-data:www-data /var/www/html/log /var/www/html/rra /var/cacti-state'
+
 # Confirm the installer populated the version row; abort early if it did not.
 # Cacti tracks the installed db version in a dedicated `version` table (see
 # include/global.php: SELECT cacti FROM version LIMIT 1), not in the settings

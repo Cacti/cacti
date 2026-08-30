@@ -396,10 +396,10 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 
 			if ($set_spike_kill && !substr_count($output, ':')) {
 				// insert a U in place of the actual value if the snmp agent restarts
-				$output_array[] = sprintf('(%d, %s, CURRENT_TIMESTAMP(), "U")', $item['local_data_id'], db_qstr($item['rrd_name']));
+				$output_array[] = sprintf('(%d, %s, CURRENT_TIMESTAMP(), "U")', $item['local_data_id'], db_qstr($item['rrd_name'], $poller_db_cnn_id));
 			} else {
 				// otherwise, just insert the value received from the poller
-				$output_array[] = sprintf('(%d, %s, CURRENT_TIMESTAMP(), %s)', $item['local_data_id'], db_qstr($item['rrd_name']), db_qstr($output));
+				$output_array[] = sprintf('(%d, %s, CURRENT_TIMESTAMP(), %s)', $item['local_data_id'], db_qstr($item['rrd_name'], $poller_db_cnn_id), db_qstr($output, $poller_db_cnn_id));
 			}
 
 			if ($output_count > 2000) {
@@ -729,6 +729,8 @@ function collect_device_data(&$item, &$error_ds) {
 					if (read_config_option('spine_log_level') == 2) {
 						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SCRIPT: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER');
 					}
+
+					$output = 'U';
 				}
 			}
 
@@ -753,6 +755,8 @@ function collect_device_data(&$item, &$error_ds) {
 					if (read_config_option('spine_log_level') == 2) {
 						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SERVER: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER');
 					}
+
+					$output = 'U';
 				}
 			}
 
@@ -815,6 +819,13 @@ function ping_and_reindex_check(&$item, $mibs) {
 
 			foreach ($reindex as $index_item) {
 				$assert_fail = false;
+				/* Reset between iterations: a reindex action that
+				 * is not handled by the switch below (the default
+				 * branch only logs) must not inherit the previous
+				 * iteration's $output and feed the wrong value into
+				 * the assert comparison further down. The empty-string
+				 * sentinel keeps trim($output) safe under PHP 8. */
+				$output = '';
 
 				switch ($index_item['action']) {
 					case POLLER_ACTION_SNMP:

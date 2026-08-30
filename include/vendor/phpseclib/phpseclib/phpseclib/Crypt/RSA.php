@@ -340,14 +340,14 @@ abstract class RSA extends AsymmetricKey
             $e = new BigInteger(self::$defaultExponent);
         }
 
-        $n = clone self::$one;
-        $exponents = $coefficients = $primes = [];
-        $lcm = [
-            'top' => clone self::$one,
-            'bottom' => false
-        ];
-
         do {
+            $n = clone self::$one;
+            $exponents = $coefficients = $primes = [];
+            $lcm = [
+                'top' => clone self::$one,
+                'bottom' => false
+            ];
+
             for ($i = 1; $i <= $num_primes; $i++) {
                 if ($i != $num_primes) {
                     $primes[$i] = BigInteger::randomPrime($regSize);
@@ -974,7 +974,51 @@ abstract class RSA extends AsymmetricKey
                         break;
                     case $this->getSaltLength() !== $this->hLen:
                         $error = 'Engine OpenSSL is forced but can\'t be used because the salt length doesn\'t match the hash length';
+                        break;
+                    case 'openssl_sign' && $this->getLength() < 8 * (2 * $this->getSaltLength() + 2):
+                        $error = 'Engine OpenSSL is forced but can\'t be used for PSS signing because the key is too small for OpenSSL to use the configured salt length';
+                        break;
+                    case 'openssl_sign' && OPENSSL_VERSION_NUMBER < 0x30100000:
+                        $error = 'Engine OpenSSL is forced but can\'t be used for PSS signing because OpenSSL < 3.1.0 defaults to the maximum salt length instead of the hash length';
+                        break;
                 }
+            }
+            /*
+            https://datatracker.ietf.org/doc/html/rfc4055#page-6 says the following:
+
+               There are two possible encodings for the AlgorithmIdentifier
+               parameters field associated with these object identifiers.  The two
+               alternatives arise from the loss of the OPTIONAL associated with the
+               algorithm identifier parameters when the 1988 syntax for
+               AlgorithmIdentifier was translated into the 1997 syntax.  Later the
+               OPTIONAL was recovered via a defect report, but by then many people
+               thought that algorithm parameters were mandatory.  Because of this
+               history some implementations encode parameters as a NULL element
+               while others omit them entirely.  The correct encoding is to omit the
+               parameters field; however, when RSASSA-PSS and RSAES-OAEP were
+               defined, it was done using the NULL parameters rather than absent
+               parameters.
+
+               All implementations MUST accept both NULL and absent parameters as
+               legal and equivalent encodings.
+
+            OpenSSL does NOT accept both - it REQUIRES NULL be present. phpseclib, however,
+            DOES accept both. at first, it didn't. at first, not knowing why some small number
+            of PKCS1 signatures omitted NULL, i added the SIGNATURE_RELAXED_PKCS1 mode on
+            2015-08-26. https://phpseclib.com/docs/rsa#rsasignature_relaxed_pkcs1 talks more
+            about that mode. later, on 2021-04-05, there was CVE-2021-30130. consequently,
+            the SIGNATURE_PKCS1 mode was updated to accept either NULL or non-NULL.
+
+            because phpseclib accepts PKCS1 signatures that OpenSSL doesn't, OpenSSL isn't
+            used for PKCS1. if the OpenSSL extension is installed then it'll be used to perform
+            unpadded RSA (ie. modular exponentiation), however, the actual PKCS1 construction
+            takes place in PHP code vs OpenSSL.
+
+            see https://security.stackexchange.com/questions/110330/encoding-of-optional-null-in-der
+            for an additional reference
+            */
+            if ($this->$paddingType === self::SIGNATURE_PKCS1 && $func === 'openssl_verify') {
+                $error = 'Engine OpenSSL is forced but can\'t be used with PKCS1 signature verification because OpenSSL requires NULL be present whereas phpseclib doesn\'t';
             }
             if ($this->$paddingType === self::ENCRYPTION_OAEP) {
                 switch (true) {
@@ -1037,7 +1081,9 @@ abstract class RSA extends AsymmetricKey
                 }
             } else {
                 if ($this->encryptionPadding !== self::ENCRYPTION_OAEP || PHP_VERSION_ID >= 80500) {
-                    $key = $this->toString('PKCS8');
+                    $key = $this instanceof PrivateKey ?
+                        $this->withPassword()->toString('PKCS8') :
+                        $this->toString('PKCS8');
                     if ($func === 'openssl_private_decrypt' && strpos($key, 'PUBLIC') !== false) {
                         if ($this->encryptionPadding === self::ENCRYPTION_OAEP) {
                             if (self::$forcedEngine === 'OpenSSL') {
@@ -1047,13 +1093,51 @@ abstract class RSA extends AsymmetricKey
                         }
                         $func = 'openssl_public_decrypt';
                     }
+                    if ($this->encryptionPadding === self::ENCRYPTION_PKCS1 && OPENSSL_VERSION_NUMBER >= 0x30200000) {
+                        // quoting https://docs.openssl.org/3.4/man3/RSA_public_encrypt/#return-values :
+                        //
+                        // "Since version 3.2.0, the default provider in OpenSSL does not return an error when padding checks fail.
+                        //  Instead it generates a random message"
+                        //
+                        // the idea is that even a perfect implementation of PKCS1 padding can be used to conduct a Bleichenbacher
+                        // padding oracle attack.
+                        //
+                        // so like if $rsa->decrypt() doesn't throw an exception it's liable to run additional code that'll take
+                        // longer to run than it'd take if an exception would be thrown and in theory, with PKCS1, in particular,
+                        // you can use that fact to guess at successive bits of the private key until you've figured it out. it's
+                        // why you should use OAEP padding vs PKCS1 padding BUT if you need PKCS1 padding for interoperability then
+                        // you're stuck with it.
+                        //
+                        // with the OpenSSL 3.2.0+ behavior they're making it harder to do the attack by making it harder to use PKCS1
+                        // in the real world. this isn't a design philosophy i agree with. like phpseclib lets you DES encryption. you
+                        // shouldn't use DES encryption but if you need to you need to and phpseclib isn't here to judge. that's a big
+                        // difference between phpseclib and stuff like libsodium.
+                        if (self::$forcedEngine === 'OpenSSL') {
+                            throw new BadConfigurationException('Engine OpenSSL is forced but cannot be used to decrypt PKCS1 encrypted strings with OpenSSL 3.2.0+');
+                        }
+                        return null;
+                    }
                     $hash = $this->hash->getHash();
                     $output = '';
                     switch ($this->encryptionPadding) {
                         case self::ENCRYPTION_NONE:
                         case self::ENCRYPTION_PKCS1:
                             $padding = $this->encryptionPadding === self::ENCRYPTION_NONE ? OPENSSL_NO_PADDING : OPENSSL_PKCS1_PADDING;
-                            $result = $func($message, $output, $key, $padding);
+                            // on github actions, php 7.0 and 7.1 on windows emit the following warning:
+                            // openssl_private_decrypt(): key parameter is not a valid private key
+                            set_error_handler(function ($errno, $errstr) {
+                                throw new BadConfigurationException("Engine OpenSSL is forced but got error: $errstr");
+                            });
+                            try {
+                                $result = $func($message, $output, $key, $padding);
+                            } catch (BadConfigurationException $e) {
+                                if (self::$forcedEngine === 'OpenSSL') {
+                                    throw $e;
+                                }
+                                $result = false;
+                            } finally {
+                                restore_error_handler();
+                            }
                             break;
                         //case self::ENCRYPTION_OAEP:
                         default:

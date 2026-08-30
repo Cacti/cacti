@@ -198,7 +198,7 @@ case 'save':
 		get_filter_request_var('predefined_timespan');
 		get_filter_request_var('predefined_timeshift');
 		get_filter_request_var('graphs');
-		get_filter_request_var('thumbnails', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '(true|false)')));
+		get_filter_request_var('thumbnails', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '^(true|false)$')));
 
 		if (isset_request_var('predefined_timespan')) {
 			set_graph_config_option('default_timespan', get_request_var('predefined_timespan'));
@@ -340,7 +340,7 @@ case 'tree_content':
 	$(function() {
 		/* these are all global variables */
 		refreshIsLogout = false;
-		refreshPage     = '<?php print str_replace('tree_content', 'tree', sanitize_uri($_SERVER['REQUEST_URI']));?>';
+		refreshPage     = <?php print json_encode(str_replace('tree_content', 'tree', validate_redirect_url($_SERVER['REQUEST_URI'] ?? '')), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);?>;
 		refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
 		pageAction      = 'tree';
 		navHeight       = $('.cactiTreeNavigationArea').height();

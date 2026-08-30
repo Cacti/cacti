@@ -254,6 +254,14 @@ function is_template_account($user_id) {
  * @return (string) the new username, or false if one was not passed
  */
 function get_basic_auth_username() {
+	/* Only trust Remote-User / PHP_AUTH_USER headers when Basic Auth is the
+	 * configured auth method (auth_method == 2).  Accepting these headers
+	 * unconditionally allows any proxy or client to spoof arbitrary usernames.
+	 * GHSA-9ffc-rr2g-c8hh */
+	if (read_config_option('auth_method') != 2) {
+		return false;
+	}
+
 	if (isset($_SERVER['PHP_AUTH_USER'])) {
 		$username = str_replace("\\", "\\\\", $_SERVER['PHP_AUTH_USER']);
 	} elseif (isset($_SERVER['REMOTE_USER'])) {
@@ -362,12 +370,22 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		}
 	} else {
 		/* new user */
+		try {
+			$random_password = bin2hex(random_bytes(16));
+		} catch (Exception $e) {
+			cacti_log('FATAL: CSPRNG failed. Cannot generate secure placeholder password for user copy.', false, 'AUTH');
+
+			return false;
+		}
+
 		$user_auth['id']            = 0;
 		$user_auth['username']      = $new_user;
 		$user_auth['enabled']       = 'on';
-		$user_auth['password']      = mt_rand(100000, 10000000);
+		$user_auth['password']      = compat_password_hash($random_password, PASSWORD_DEFAULT);
 		$user_auth['email_address'] = '';
  		$user_auth['realm']         = $new_realm;
+
+		$user_auth['must_change_password'] = 'on';
 	}
 
 	/* Update data_override fields */
@@ -3855,7 +3873,8 @@ function domains_login_process($username) {
 
 	$user = array();
 
-	if ($realm > 3 && $password != '') {
+	// realm >= 3: domain realms start at 3; > 3 allowed realm=3 to skip LDAP bind (GHSA-3jj2-v5ch-wmq5)
+	if ($realm >= 3 && $password != '') {
 		/* get user DN */
 		$ldap_dn_search_response = domains_ldap_search_dn($username, $realm);
 		if ($ldap_dn_search_response['error_num'] == '0') {
@@ -3968,7 +3987,10 @@ function domains_login_process($username) {
 
 				cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
 
-				if ($ldap_auth_response['error_text'] == 1) {
+				/* error_text is a string; the correct field for the numeric
+				 * bind-failure code is error_num (mirrors the check in
+				 * ldap_login_process at line ~3818).  GHSA-2px8-gvmq-85f3 */
+				if ($ldap_auth_response['error_num'] == 1) {
 					auth_process_lockout($username, $realm);
 				}
 			}
@@ -4253,7 +4275,7 @@ function secpass_login_process($username) {
 
 			if (!$error) {
 				$error     = true;
-				$error_msg = __('Access Denied! Login failed.');
+				$error_msg = __('Access Denied!  Login Failed.');
 			}
 
 			return array();
@@ -4399,12 +4421,12 @@ function rsa_check_keypair() {
 }
 
 /**
- * reset_group_perms - sets a flag for all users of a group logged in that their perms
- *   need to be reloaded from the database
+ * Expires persistent authentication tokens and reloads permissions for users
+ * who are members of the changed group.
  *
- * @param  (int) $group_id - the id of the group to check
+ * @param int $group_id ID of the group whose user permissions changed.
  *
- * @return (void)
+ * @return void
  */
 function reset_group_perms($group_id) {
 	$users = array_rekey(db_fetch_assoc_prepared('SELECT user_id
@@ -4413,21 +4435,30 @@ function reset_group_perms($group_id) {
 		array($group_id)), 'user_id', 'user_id');
 
 	if (cacti_sizeof($users)) {
-		db_execute('UPDATE user_auth
+		$user_ids     = array_values($users);
+		$placeholders = implode(',', array_fill(0, cacti_sizeof($user_ids), '?'));
+
+		db_execute_prepared("DELETE FROM user_auth_cache
+			WHERE user_id IN ($placeholders)",
+			$user_ids);
+
+		db_execute_prepared("UPDATE user_auth
 			SET reset_perms=FLOOR(RAND() * 4294967295) + 1
-			WHERE id IN (' . implode(',', $users) . ')');
+			WHERE id IN ($placeholders)",
+			$user_ids);
 	}
 }
 
 /**
- * reset_user_perms - sets a flag for all users logged in as this user that their perms
- *   need to be reloaded from the database
+ * Expires persistent authentication tokens and reloads permissions for a user.
  *
- * @param  (int) $user_id - the id of the current user
+ * @param int $user_id ID of the user whose permissions changed.
  *
- * @return (void)
+ * @return void
  */
 function reset_user_perms($user_id) {
+	db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', array($user_id));
+
 	db_execute_prepared('UPDATE user_auth
 		SET reset_perms=FLOOR(RAND() * 4294967295) + 1
 		WHERE id = ?',

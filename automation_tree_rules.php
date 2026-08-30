@@ -37,29 +37,35 @@ set_default_action();
 
 switch (get_request_var('action')) {
 	case 'save':
+		csrf_require_post();
 		automation_tree_rules_form_save();
 
 		break;
 	case 'actions':
+		csrf_require_post();
 		automation_tree_rules_form_actions();
 
 		break;
 	case 'change_leaf':
+		csrf_require_post();
 		automation_tree_rules_change_leaf();
 
 		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_request_var('id'));
 		break;
 	case 'item_movedown':
+		csrf_require_post();
 		automation_tree_rules_item_movedown();
 
 		header('Location: automation_tree_rules.php?action=edit&id=' . get_request_var('id'));
 		break;
 	case 'item_moveup':
+		csrf_require_post();
 		automation_tree_rules_item_moveup();
 
 		header('Location: automation_tree_rules.php?action=edit&id=' . get_request_var('id'));
 		break;
 	case 'item_remove':
+		csrf_require_post();
 		automation_tree_rules_item_remove();
 
 		header('Location: automation_tree_rules.php?action=edit&id=' . get_request_var('id'));
@@ -70,6 +76,7 @@ switch (get_request_var('action')) {
 		bottom_footer();
 		break;
 	case 'remove':
+		csrf_require_post();
 		automation_tree_rules_remove();
 
 		header ('Location: automation_tree_rules.php');
@@ -277,7 +284,7 @@ function automation_tree_rules_form_actions() {
 
 	form_start('automation_tree_rules.php', 'automation_tree_rules_action');
 
-	html_start_box($automation_tree_rules_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($automation_tree_rules_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DELETE) { /* DELETE */
 		print "<tr>
@@ -689,15 +696,28 @@ function automation_tree_rules_edit() {
 			action = 'edit';
 		}
 
-		strURL  = 'automation_tree_rules.php?header=false&action=' + action;
-		strURL += '&id=' + $('#id').val();
-		strURL += '&name=' + $('#name').val();
-		strURL += '&tree_id=' + $('#tree_id').val();
-		strURL += '&tree_item_id=' + $('#tree_item_id').val();
-		strURL += '&leaf_type=' + $('#leaf_type').val();
-		strURL += '&enabled=' + $('#enabled').val();
+		if (action == 'change_leaf') {
+			loadPageUsingPost('automation_tree_rules.php', {
+				header: false,
+				action: action,
+				id: $('#id').val(),
+				name: $('#name').val(),
+				tree_id: $('#tree_id').val(),
+				tree_item_id: $('#tree_item_id').val(),
+				leaf_type: $('#leaf_type').val(),
+				enabled: $('#enabled').val()
+			}, 'main');
+		} else {
+			strURL  = 'automation_tree_rules.php?header=false&action=' + action;
+			strURL += '&id=' + $('#id').val();
+			strURL += '&name=' + $('#name').val();
+			strURL += '&tree_id=' + $('#tree_id').val();
+			strURL += '&tree_item_id=' + $('#tree_item_id').val();
+			strURL += '&leaf_type=' + $('#leaf_type').val();
+			strURL += '&enabled=' + $('#enabled').val();
 
-		loadPageNoHeader(strURL,undefined,force);
+			loadPageNoHeader(strURL,undefined,force);
+		}
 	}
 
 	function applyItemTypeChange() {

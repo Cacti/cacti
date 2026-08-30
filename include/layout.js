@@ -776,6 +776,12 @@ function handleTableNav() {
 		var url = $(this).data('url');
 		cactiReturnTo(url);
 	});
+
+	$('.cactiPostAction').on('click', function(event) {
+		event.preventDefault();
+		var url = $(this).data('url') || $(this).attr('href');
+		submitPageUsingPost(url);
+	});
 }
 
 /** applySkin - This function re-asserts all javascript behavior to a page
@@ -1615,8 +1621,9 @@ function resizeTreePanel() {
 		$('#jstree').height(jsTreeHeight + 30);
 		$('.cactiTreeNavigationArea').height(treeAreaHeight+searchHeight);
 
-		var visWidth = Math.max.apply(Math, $('#jstree').children(':visible').map(function() {
-			return $(this).width();
+		var treeLeft = $('#jstree').offset().left;
+		var visWidth = Math.max.apply(Math, $('#jstree').find('.jstree-anchor:visible').map(function() {
+			return this.getBoundingClientRect().right - treeLeft;
 		}).get());
 
 		if (visWidth < 0) {
@@ -1636,18 +1643,18 @@ function resizeTreePanel() {
 			$('.cactiGraphContentArea').css('margin-left', visWidth+5);
 			$('.cactiTreeNavigationArea').css('overflow-x', 'auto');
 		} else {
-			$('.cactiTreeNavigationArea').css('width', navWidth);
-			$('.cactiGraphContentArea').css('margin-left', navWidth+5);
+			$('.cactiTreeNavigationArea').css('width', visWidth);
+			$('.cactiGraphContentArea').css('margin-left', visWidth+5);
 			$('.cactiTreeNavigationArea').css('overflow-x', '');
 		}
 	}
 
 	var navWidth = $('#navigation').width();
-	if (navWidth > 220) {
-		$('#searcher').css('width', navWidth-70);
-	} else {
-		$('#searcher').css('width', 150);
-	}
+	$('#searcher').css('width', getTreeSearchWidth(navWidth));
+}
+
+function getTreeSearchWidth(navWidth) {
+	return Math.max(navWidth-70, 40);
 }
 
 function countHiddenCols(object) {
@@ -2228,8 +2235,63 @@ function loadTopTab(href, id, force) {
 	}
 }
 
+function cactiPreparePostRequest(href, postData) {
+	var target = new URL(href, window.location.href);
+	if (target.origin !== window.location.origin) {
+		throw new Error('Refusing to send a CSRF token to a different origin');
+	}
+
+	if (typeof postData === 'string') {
+		postData = postData.replace(/(^|&)__csrf_magic=[^&]*/g, '').replace(/^&|&$/g, '');
+		postData = '__csrf_magic=' + encodeURIComponent(csrfMagicToken) + (postData === '' ? '' : '&' + postData);
+	} else {
+		postData = $.extend({__csrf_magic: csrfMagicToken}, postData || {});
+		postData.__csrf_magic = csrfMagicToken;
+	}
+
+	return {
+		url: target.pathname + target.search,
+		data: postData
+	};
+}
+
+function cactiPreparePostRequestFromUrl(href) {
+	var target = new URL(href, window.location.href);
+	if (target.origin !== window.location.origin) {
+		throw new Error('Refusing to send a CSRF token to a different origin');
+	}
+
+	var fields = [];
+	target.searchParams.forEach(function(value, name) {
+		if (name !== '__csrf_magic') {
+			fields.push({name: name, value: value});
+		}
+	});
+
+	return cactiPreparePostRequest(target.pathname, $.param(fields));
+}
+
+function submitPageUsingPost(href) {
+	var request = cactiPreparePostRequestFromUrl(href);
+	var form = $('<form>', {method: 'post', action: request.url});
+	new URLSearchParams(request.data).forEach(function(value, name) {
+		form.append($('<input>', {type: 'hidden', name: name, value: value}));
+	});
+
+	form.appendTo(document.body);
+	form[0].submit();
+}
+
+function loadPageUsingPostUrl(href, returnLocation) {
+	var request = cactiPreparePostRequestFromUrl(href);
+
+	return loadPageUsingPost(request.url, request.data, returnLocation);
+}
+
 function loadPageUsingPost(href, postData, returnLocation) {
-	$.post(href, postData, function(data) {
+	var request = cactiPreparePostRequest(href, postData);
+
+	$.post(request.url, request.data, function(data) {
 		if (returnLocation !== undefined) {
 			$('#'+returnLocation).empty().html(data);
 		} else {
@@ -2604,6 +2666,12 @@ function ajaxAnchors() {
 		var href = $(this).attr('href');
 
 		if (href == '#') {
+			return false;
+		}
+
+		if ($(this).hasClass('cactiPostAction')) {
+			submitPageUsingPost(href);
+
 			return false;
 		}
 
@@ -3234,11 +3302,7 @@ function keepWindowSize() {
 			}
 
 			var navWidth = $('#navigation').width();
-			if (navWidth > 220) {
-				$('#searcher').css('width', navWidth-70);
-			} else {
-				$('#searcher').css('width', 150);
-			}
+			$('#searcher').css('width', getTreeSearchWidth(navWidth));
 
 			responsiveResizeGraphs();
 
@@ -3484,7 +3548,7 @@ function applyGraphFilter() {
 	statePushed = false;
 
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction +
-		'&rfilter=' + base64_encode($('#rfilter').val()) +
+		'&rfilter=' + encodeURIComponent(base64_encode($('#rfilter').val())) +
 		(typeof $('#host_id').val() != 'undefined' ? '&host_id=' + $('#host_id').val():'') +
 		'&columns=' + $('#columns').val() +
 		'&graphs='  + $('#graphs').val() +
@@ -3567,7 +3631,7 @@ function handlePopState() {
 function applyGraphTimespan() {
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
-		($('#rfilter').length ? '&rfilter=' + base64_encode($('#rfilter').val()):'') +
+		($('#rfilter').length ? '&rfilter=' + encodeURIComponent(base64_encode($('#rfilter').val())):'') +
 		'&predefined_timeshift='+$('#predefined_timeshift').val());
 
 	closeDateFilters();
@@ -4808,4 +4872,3 @@ function checkSNMPPassphraseConfirm(type) {
 		}
 	}
 }
-

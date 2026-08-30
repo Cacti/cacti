@@ -48,7 +48,7 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 	$total_time     = 0;
 	$failed_results = 0;
 
-	$ping->host['hostname'] = gethostbyname($hostname);
+	$ping->host['hostname'] = $hostname;
 	$ping->retries          = 1;
 	$ping->port             = $port;
 
@@ -140,4 +140,3 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 		return sprintf('min:%0.4f avg:%0.4f max:%0.4f dev:%0.4f loss:%0.4f', $min, $avg, $max, $dev, $loss);
 	}
 }
-

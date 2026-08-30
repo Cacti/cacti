@@ -158,17 +158,129 @@ function exec_background($filename, $args = '', $redirect_args = '') {
 				pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args . ' ' . $redirect_args, 'r'));
 			}
 		} elseif ($redirect_args == '') {
-			exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
+			$safe_filename = cacti_escapeshellarg($filename);
+			exec($safe_filename . ' ' . $args . ' > /dev/null 2>&1 &');
 		} else {
-			exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
+			$safe_filename = cacti_escapeshellarg($filename);
+			exec($safe_filename . ' ' . $args . ' ' . $redirect_args . ' &');
 		}
 	} elseif (file_exists_2gb($filename)) {
 		if ($redirect_args == '') {
-			exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
+			$safe_filename = cacti_escapeshellarg($filename);
+			exec($safe_filename . ' ' . $args . ' > /dev/null 2>&1 &');
 		} else {
-			exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
+			$safe_filename = cacti_escapeshellarg($filename);
+			exec($safe_filename . ' ' . $args . ' ' . $redirect_args . ' &');
 		}
 	}
+}
+
+/**
+ * Starts a background process without invoking an operating-system shell.
+ *
+ * @param string $filename Absolute path to an executable file.
+ * @param array  $args     Individual command arguments passed directly to the executable.
+ *
+ * @return bool True when the child process was started, otherwise false.
+ */
+function exec_background_process($filename, $args = array()) {
+	global $config;
+	static $processes = array();
+
+	foreach ($processes as $index => $background_process) {
+		$status = @proc_get_status($background_process);
+
+		if (!is_array($status) || empty($status['running'])) {
+			@proc_close($background_process);
+			unset($processes[$index]);
+		}
+	}
+
+	$filename = realpath($filename);
+
+	if ($filename === false || !is_file($filename) || !is_executable($filename)) {
+		cacti_log('WARNING: Refusing to start an invalid background executable', false, 'POLLER');
+
+		return false;
+	}
+
+	$null_device = $config['cacti_server_os'] == 'win32' ? 'NUL' : '/dev/null';
+	$descriptors = array(
+		0 => array('file', $null_device, 'r'),
+		1 => array('file', $null_device, 'a'),
+		2 => array('file', $null_device, 'a')
+	);
+	$command = array_merge(array($filename), array_map('strval', $args));
+	$process = @proc_open($command, $descriptors, $pipes, null, null, array('bypass_shell' => true));
+
+	if (!is_resource($process)) {
+		cacti_log('WARNING: Unable to start a background process', false, 'POLLER');
+
+		return false;
+	}
+
+	$processes[] = $process;
+
+	return true;
+}
+
+/**
+ * Configures a long-running Unix parent to let the kernel reap child exits.
+ *
+ * @param string|null   $server_os     Server operating system, or null to use the Cacti runtime value.
+ * @param callable|null $signal_handler Optional signal handler used by tests.
+ *
+ * @return bool True when automatic child reaping was enabled, otherwise false.
+ */
+function poller_enable_child_reaping($server_os = null, $signal_handler = null) {
+	global $config;
+
+	if ($server_os === null) {
+		$server_os = $config['cacti_server_os'];
+	}
+
+	if ($server_os == 'win32' || !defined('SIGCHLD') || !defined('SIG_IGN')) {
+		return false;
+	}
+
+	if ($signal_handler === null) {
+		if (!function_exists('pcntl_signal')) {
+			return false;
+		}
+
+		$signal_handler = 'pcntl_signal';
+	}
+
+	return (bool) call_user_func($signal_handler, SIGCHLD, SIG_IGN);
+}
+
+/**
+ * Selects the configured PHP executable or the currently running PHP binary.
+ *
+ * @param string $configured_binary Configured PHP executable path.
+ *
+ * @return string PHP executable path.
+ */
+function poller_php_binary($configured_binary) {
+	return empty($configured_binary) ? PHP_BINARY : $configured_binary;
+}
+
+/**
+ * Builds the discrete arguments used to start the main poller from cactid.
+ *
+ * @param string $base_path Cacti installation path.
+ * @param bool   $debug     Whether debug output is enabled.
+ *
+ * @return array Poller command arguments.
+ */
+function poller_cactid_arguments($base_path, $debug) {
+	$args = array('-q', $base_path . '/poller.php', '--force');
+
+	if ($debug) {
+		$args[] = '--debug';
+	}
+
+	return $args;
 }
 
 /**
@@ -359,12 +471,12 @@ function update_reindex_cache($host_id, $data_query_id) {
 
 				if ($session !== false) {
 					if ($oid_uptime == '.1.3.6.1.2.1.1.3.0') {
-						$checks = array(
+						$checks = [
 							'.1.3.6.1.6.3.10.2.1.3.0',
 							'.1.3.6.1.2.1.1.3.0'
-						);
+						];
 
-						foreach($checks as $oid_uptime) {
+						foreach ($checks as $oid_uptime) {
 							$assert_value = cacti_snmp_session_get($session, $oid_uptime);
 
 							if (is_numeric($assert_value)) {
@@ -413,31 +525,34 @@ function update_reindex_cache($host_id, $data_query_id) {
 			 */
 			switch ($data_query_type) {
 				case DATA_INPUT_TYPE_SNMP_QUERY:
-					if (isset($data_query_xml['oid_num_indexes'])) { /* we have a specific OID for counting indexes */
-						$recache_stack[] = "($host_id, $data_query_id," .  POLLER_ACTION_SNMP . ", '=', " . db_qstr($assert_value) . ", " . db_qstr($data_query_xml['oid_num_indexes']) . ", 1)";
-					} else { /* count all indexes found */
-						$recache_stack[] = "($host_id, $data_query_id, " .  POLLER_ACTION_SNMP_COUNT . ", '=', " . db_qstr($assert_value) . ", " . db_qstr($data_query_xml['oid_index']) . ", 1)";
+					if (isset($data_query_xml['oid_num_indexes'])) { // we have a specific OID for counting indexes
+						$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SNMP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr($data_query_xml['oid_num_indexes']) . ', 1)';
+					} else { // count all indexes found
+						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SNMP_COUNT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr($data_query_xml['oid_index']) . ', 1)';
 					}
+
 					break;
 				case DATA_INPUT_TYPE_SCRIPT_QUERY:
-					if (isset($data_query_xml['arg_num_indexes'])) { /* we have a specific request for counting indexes */
-						/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
-						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT . ", '=', " . db_qstr($assert_value) . ", " . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_num_indexes'], $data_query_xml['script_path'], $host_id)) . ", 1)";
-					} else { /* count all indexes found */
-						/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
-						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_COUNT . ", '=', " . db_qstr($assert_value) . ", " . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_index'], $data_query_xml['script_path'], $host_id)) . ", 1)";
+					if (isset($data_query_xml['arg_num_indexes'])) { // we have a specific request for counting indexes
+						// escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string?
+						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ' : '') . $data_query_xml['arg_num_indexes'], $data_query_xml['script_path'], $host_id)) . ', 1)';
+					} else { // count all indexes found
+						// escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string?
+						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_COUNT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ' : '') . $data_query_xml['arg_index'], $data_query_xml['script_path'], $host_id)) . ', 1)';
 					}
+
 					break;
 				case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
-					if (isset($data_query_xml['arg_num_indexes'])) { /* we have a specific request for counting indexes */
-						/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
-						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP . ", '=', " . db_qstr($assert_value) . ", " . db_qstr(get_script_query_path($data_query_xml['script_function'] . ' ' . (isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_num_indexes'], $data_query_xml['script_path'], $host_id)) . ", 1)";
-					} else { /* count all indexes found */
-						# TODO: push the correct assert value
-						/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
-						#$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', " . db_qstr($assert_value) . ", " . db_qstr(get_script_query_path($data_query_xml['script_function'] . ' ' . (isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_index'], $data_query_xml['script_path'], $host_id)) . ", 1)";
-						# omit the assert value until we are able to run an 'index' command through script server
+					if (isset($data_query_xml['arg_num_indexes'])) { // we have a specific request for counting indexes
+						// escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string?
+						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path($data_query_xml['script_function'] . ' ' . (isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ' : '') . $data_query_xml['arg_num_indexes'], $data_query_xml['script_path'], $host_id)) . ', 1)';
+					} else { // count all indexes found
+						// TODO: push the correct assert value
+						// escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string?
+						// $recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', " . db_qstr($assert_value) . ", " . db_qstr(get_script_query_path($data_query_xml['script_function'] . ' ' . (isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_index'], $data_query_xml['script_path'], $host_id)) . ", 1)";
+						// omit the assert value until we are able to run an 'index' command through script server
 					}
+
 					break;
 			}
 
@@ -455,9 +570,9 @@ function update_reindex_cache($host_id, $data_query_id) {
 					$assert_value = $index['field_value'];
 
 					if ($data_query_type == DATA_INPUT_TYPE_SNMP_QUERY) {
-						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SNMP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(($data_query_xml['fields'][$data_query['sort_field']]['source'] == 'index') ? $data_query_xml['oid_index'] . '.' . $index['snmp_index']:$data_query_xml['fields'][$data_query['sort_field']]['oid'] . '.' . $index['snmp_index']) . ", 1)";
+						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SNMP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(($data_query_xml['fields'][$data_query['sort_field']]['source'] == 'index') ? $data_query_xml['oid_index'] . '.' . $index['snmp_index'] : $data_query_xml['fields'][$data_query['sort_field']]['oid'] . '.' . $index['snmp_index']) . ', 1)';
 					} elseif ($data_query_type == DATA_INPUT_TYPE_SCRIPT_QUERY) {
-						$recache_stack[] = '(' . $host_id . ', ' . $data_query_id . ', ' . POLLER_ACTION_SCRIPT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_get'] . ' ' . $data_query_xml['fields'][$data_query['sort_field']]['query_name'] . ' "' . $index['snmp_index'] . '"', $data_query_xml['script_path'], $host_id)) . ", 1)";
+						$recache_stack[] = '(' . $host_id . ', ' . $data_query_id . ', ' . POLLER_ACTION_SCRIPT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ' : '') . $data_query_xml['arg_get'] . ' ' . $data_query_xml['fields'][$data_query['sort_field']]['query_name'] . ' "' . $index['snmp_index'] . '"', $data_query_xml['script_path'], $host_id)) . ', 1)';
 					}
 				}
 			}
@@ -885,7 +1000,9 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 function update_resource_cache($poller_id = 1) {
 	global $config, $remote_db_cnn_id;
 
-	if ($config['cacti_server_os'] == 'win32') return;
+	if ($config['cacti_server_os'] == 'win32') {
+		return;
+	}
 
 	if ($poller_id == 1) {
 		$conn = false;
@@ -940,7 +1057,7 @@ function update_resource_cache($poller_id = 1) {
 					cache_in_path($path['path'], $type, $path['recursive']);
 				}
 			} else {
-				cacti_log("ERROR: Unable to read the " . $type . " path '" . $path['path'] . "'", false, 'REPLICATE');
+				cacti_log('ERROR: Unable to read the ' . $type . " path '" . $path['path'] . "'", false, 'REPLICATE');
 			}
 		}
 
@@ -1041,7 +1158,7 @@ function update_resource_cache($poller_id = 1) {
 			if (is_writable($path['path'])) {
 				resource_cache_out($type, $path);
 			} else {
-				cacti_log("FATAL: Unable to write to the " . $type . " path '" . $path['path'] . "'", false, 'REPLICATE');
+				cacti_log('FATAL: Unable to write to the ' . $type . " path '" . $path['path'] . "'", false, 'REPLICATE');
 			}
 		}
 	}
@@ -1273,9 +1390,9 @@ function resource_cache_out($type, $path) {
 						// If for some reason, the attributes are empty, assume 0644
 						$attributes = empty($e['attributes']) ? 33188 : $e['attributes'];
 
-						$extension = substr(strrchr($e['path'], "."), 1);
-						$exit = -1;
-						$contents = base64_decode(db_fetch_cell_prepared('SELECT contents
+						$extension = substr(strrchr($e['path'], '.'), 1);
+						$exit      = -1;
+						$contents  = base64_decode(db_fetch_cell_prepared('SELECT contents
 							FROM poller_resource_cache
 							WHERE id = ?',
 							array($e['id']), '', true, $remote_db_cnn_id));
@@ -2369,6 +2486,45 @@ function get_remote_poller_ids_from_devices(&$devices) {
 }
 
 /**
+ * cacti_process_still_running - determine whether a registered pid is still
+ *   alive and still belongs to the process that registered it.
+ *
+ *   A bare posix_kill($pid, 0) only proves that *some* process owns the pid.
+ *   After a registered process dies without unregistering, the OS can recycle
+ *   its pid for an unrelated program; trusting the bare pid then blocks a
+ *   legitimate task from starting or sends SIGTERM to the wrong process.  On
+ *   Linux we compare /proc/<pid>/comm against our own command name as a
+ *   no-schema identity check (the processes table stores no start-time).  When
+ *   /proc is unavailable (non-Linux or restricted) we fall back to the bare
+ *   existence test, preserving prior behaviour.
+ *
+ * @param  (int)  $pid - the pid recorded in the processes table
+ *
+ * @return (bool) true if the pid is running and cannot be shown to be a reused
+ *                pid belonging to a different program
+ */
+function cacti_process_still_running($pid) {
+	$pid = intval($pid);
+
+	if ($pid <= 0 || !function_exists('posix_kill') || !posix_kill($pid, 0)) {
+		return false;
+	}
+
+	$self  = @file_get_contents('/proc/' . getmypid() . '/comm');
+	$other = @file_get_contents('/proc/' . $pid . '/comm');
+
+	if ($self !== false && $other !== false) {
+		return trim($self) === trim($other);
+	}
+
+	/* /proc is unavailable (non-Linux or restricted): fall back to the bare
+	 * existence test, but re-check it here rather than trusting the result
+	 * from the top of the function, which can now be stale if the pid exited
+	 * in the window between that check and these file reads. */
+	return posix_kill($pid, 0);
+}
+
+/**
  * register_process_start - public function to register a process
  *   in Cacti's process table
  *
@@ -2397,25 +2553,36 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		AND taskid = ?',
 		array($tasktype, $taskname, $taskid));
 
-	if (!cacti_sizeof($r)) {
-		cacti_log(sprintf('NOTE: Registering process! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+		if (!cacti_sizeof($r)) {
+			cacti_log(sprintf('NOTE: Registering process! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 
-		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
-	} elseif ($r['timeout_exceeded']) {
-		if ($r['pid'] > 0) {
-			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceeded'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
-
-			posix_kill($r['pid'], SIGTERM);
-
-			unregister_process($tasktype, $taskname, $taskid);
 			register_process($tasktype, $taskname, $taskid, $pid, $timeout);
+		} elseif ($r['timeout_exceeded']) {
+			$timeout_pid = (int) $r['pid'];
+
+			if (is_system_pid($timeout_pid)) {
+				// mirror timeout_kill_registered_processes(): never signal a reserved
+				// system PID from the registry, but still clear and re-register
+				cacti_log(sprintf('WARNING: Refusing to kill registered process with a reserved system PID! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $r['pid']), false, 'POLLER');
+
+				unregister_process($tasktype, $taskname, $taskid);
+				register_process($tasktype, $taskname, $taskid, $pid, $timeout);
+			} elseif ($timeout_pid > 0) {
+				if (cacti_process_still_running($timeout_pid)) {
+					cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceeded'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
+
+					posix_kill($timeout_pid, SIGTERM);
+				}
+
+				unregister_process($tasktype, $taskname, $taskid);
+				register_process($tasktype, $taskname, $taskid, $pid, $timeout);
 		} else {
 			// Should never be reached
 			cacti_log(sprintf('ERROR: Failed registering process.  Invalid pid found.  Unable to kill! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $r['pid']), false, 'POLLER');
 
 			return false;
 		}
-	} elseif ($r['pid'] > 0 && posix_kill($r['pid'], 0)) {
+	} elseif (cacti_process_still_running($r['pid'])) {
 		cacti_log(sprintf('NOTE: Failed registering process.  Old process still running and has not timed out! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 
 		return false;
@@ -2504,6 +2671,19 @@ function heartbeat_process($tasktype, $taskname, $taskid = 0) {
 }
 
 /**
+ * is_system_pid - test whether a PID falls in the reserved low range that Cacti
+ *   must never signal. init (1), systemd, and kernel threads live here, so a
+ *   tampered or reused pid column could otherwise take down a host service.
+ *
+ * @param  (int) $pid  - The process id to test
+ *
+ * @return (bool) true when the PID is a low/system PID that must be skipped
+ */
+function is_system_pid($pid) {
+	return (int) $pid <= 100;
+}
+
+/**
  * timeout_kill_registered_processes - allow a Cacti plugin or scheduled task to
  *   be bulk cleaned.
  *
@@ -2532,26 +2712,30 @@ function timeout_kill_registered_processes($tasktype = '', $taskname = '', $task
 		$params[] = $taskname;
 	}
 
-	if ($taskid != '') {
+	if ($taskid != 0) {
 		$sql_where .= ' AND taskid = ?';
 		$params[] = $taskid;
 	}
 
-	if ($pid != '') {
+	if ($pid != -1) {
 		$sql_where .= ' AND pid = ?';
 		$params[] = $pid;
 	}
 
 	$processes = db_fetch_assoc_prepared("SELECT *
 		FROM processes
-		WHERE UNIX_TIMESTAMP() > FROM_UNIXTIME(started) + timeout
+		WHERE UNIX_TIMESTAMP() > UNIX_TIMESTAMP(started) + timeout
 		$sql_where", $params);
 
 	if (cacti_sizeof($processes)) {
 		foreach($processes as $r) {
-			if ($r['pid'] > 0 && posix_kill($r['pid'], 0)) {
+			$pid = (int) $r['pid'];
+
+			if (is_system_pid($pid)) {
+				cacti_log(sprintf('WARNING: Refusing to kill registered process with a reserved system PID! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
+			} elseif (cacti_process_still_running($pid)) {
 				cacti_log(sprintf('ERROR: Process killed due to timeout! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
-				posix_kill($r['pid'], SIGTERM);
+				posix_kill($pid, SIGTERM);
 			} else {
 				cacti_log(sprintf('ERROR: Detected process that is gone and did not unregister first! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
 			}
@@ -2560,4 +2744,3 @@ function timeout_kill_registered_processes($tasktype = '', $taskname = '', $task
 		}
 	}
 }
-

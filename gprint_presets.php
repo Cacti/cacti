@@ -139,7 +139,7 @@ function form_actions() {
 
 	form_start('gprint_presets.php');
 
-	html_start_box($gprint_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($gprint_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($gprint_array) && cacti_sizeof($gprint_array)) {
 		if (get_request_var('drp_action') == '1') { /* delete */
@@ -162,7 +162,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($gprint_array) ? serialize($gprint_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>\n";

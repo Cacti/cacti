@@ -153,6 +153,7 @@ function setRealtimeWindowSize() {
 
 function countRealtimeGraphs() {
 	var graphs = 0;
+	var key;
 
 	for (key in realtimeArray) {
 		if (realtimeArray[key] == true) {
@@ -165,6 +166,7 @@ function countRealtimeGraphs() {
 
 function stopRealtime() {
 	var graph;
+	var key;
 
 	for (key in realtimeArray) {
 		var graph_id = key;
@@ -272,9 +274,15 @@ function realtimeGrapher() {
 
 					$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'&graph_nolegend=false')+'&graph_end=0&graph_start=-'+(parseInt(graph_start) > 0 ? graph_start:'60')+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count+'&size='+size)
 						.done(function(data) {
-							var results = $.parseJSON(data);
+							var results;
 
-							if (realtimeArray[results.local_graph_id] == true) {
+							try {
+								results = $.parseJSON(data);
+							} catch (e) {
+								results = null;
+							}
+
+							if (results != null && realtimeArray[results.local_graph_id] == true) {
 								var image_format = (results.image_format == 'svg+xml') ? 'svg+xml' : 'png';
 								$('#graph_'+results.local_graph_id).attr('src', 'data:image/'+image_format+';base64,'+results.data).change();
 
@@ -288,11 +296,12 @@ function realtimeGrapher() {
 							destroy(data);
 							destroy(results);
 							destroy(position);
-
-							graphsRendered++;
 						})
 						.fail(function(data) {
 							getPresentHTTPError(data);
+						})
+						.always(function() {
+							graphsRendered++;
 						});
 				});
 			}
@@ -318,6 +327,10 @@ function realtimeGrapher() {
 }
 
 function destroy(obj) {
+	if (obj == null) {
+		return;
+	}
+
 	for (var prop in obj){
 		var property = obj[prop];
 

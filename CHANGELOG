@@ -1,42 +1,95 @@
 Cacti CHANGELOG
 
-1.2.31
+1.2.x
+-security: Build forced-HTTPS redirects from the server-configured name
+-security: Constrain external-link includes to regular files inside the configured content directory
+-security: Harden advisory command execution and database DDL sink validation
+-security: Restrict graph input fields across the template, graph and import handoffs
+-security: Treat a non-boolean signature result as a failure in import_package
+-issue#7809: Undefined array key "source" warning reindexing SNMP data queries with output-only fields
+-issue#7819: Remove obsolete pre-PHP 8 compatibility branches
+-issue#7617: Allow the graph tree sidebar to shrink with collapsed content
+-issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
+-issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
+-issue#6684: Prevent VDEF-backed aggregate graph items from being emitted as XPORT data sources
+-issue#7212: Address a few small memory leaks in realtime graphing
+-issue#7216: Aggregate totalling legend printed untotalled single data source values
+-issue#7245: Raise execution time limit for bulk graph creation (PR #7378)
+-issue#7359: Undefined variables detected with legacy plugins
+-issue#7424: Correct SNMP disk counter wrap delta calculations
+-issue#7425: Guard process registration and cleanup against PID reuse
+-issue#7426: Stop tracking the generated CSRF secret so each install creates its own
+-issue#7427: Update device status by host id instead of non-unique hostname
+-issue#7429: Prevent monthly automation schedules from resetting next_start to 1970
+-issue#7493: SNMP walk for output_format fields used max OIDs instead of the device bulk walk size
+-issue#7552: HTMLPurifier definition cache written inside the read-only library tree
+-issue#7553: Drop down menus do not update page content after upgrading to 1.2.31
+-issue#7666: cacti_exec() returned the wrong exit code and warned about a missing exit_code key
+-issue#7699: Guard three divisors that PHP 8 makes fatal
+-issue#7702: CSP report endpoint size limit never triggers and rate-limit buckets accumulate
+-issue#7708: Bind the MIB column names in MibCache::select()
+-issue#7711: Install the matrix PHP MySQL driver in the 1.2.x integration workflow
+-issue#7727: Log entry for Data Source validation has a double space
+-issue#7728: Fail closed during Boost handoff and preserve the direct-RRD fallback
+-issue#7801: Harden CSRF secret storage and state-changing browser request handoffs
+-issue: Keep missing PHP extensions visible to the Cacti installer (PR #7747 follow-up)
+-issue: Restore qualified plugin table metadata lookups (plugin_syslog#331)
+-issue: Restore RRDproxy encryption with Composer-managed phpseclib 3
+-issue: Url encode the base64 regex filter before it reaches the query string (PR #7777)
+-issue: Make 1.2 dependency builds reproducible (PR #7747)
+-issue: Propagate background installation failures (PR #7630)
+-issue: Reject incomplete selection payloads (PR #7628)
+-issue: Fail closed on incomplete installer schemas (PR #7625)
+-issue: Restore select-all controls on 1.2.x (PR #7624)
+-issue: Log the reason a session read failed (PR #7606)
+-issue: Emit structured security events for validation failures (PR #7604)
+-issue: Launch cactid without a shell (PR #7602)
+-issue: Expire persistent auth tokens when permissions change (PR #7600)
+-issue: Bind host template ID filters as prepared parameters (PR #7598)
+-issue: Guard request URI reads on 1.2.x (PR #7593)
+-issue: Honor alternate frame ancestors (PR #7591)
+-issue: Remove inert Automatically Trust Signer control from package import (PR #7430)
+-issue: Correct octet carry in automation_get_next_host for wide ranges (PR #7410)
+-issue: Commit transaction check uses the passed connection (PR #7409)
+-issue: Memoize db_get_table_column_types to cut redundant SHOW COLUMNS (1.2.x backport) (PR #7382)
+-feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
+-feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
+-feature#7388: Allow admin to pass CSV file to change device script for bulk changes
 
--security#GHSA-6RVG-2VM8-5WRF: CVE-2026-22802 Authentication Bypass leads to information disclosure
--security#GHSA-9wvp-cfx6-hj7p: CVE-2026-24482 1st argument to preg_replace is not sanitized and given from user_inputs
--security#GHSA-j3p9-q28q-8j33: CVE-2026-24483 Unsafe serialization usage in the maint plugin on user supplied POST data
+1.2.31
 -security#GHSA-23g4-vf2j-94w4: CVE-2026-39894 RRDtool metric shift via LC_NUMERIC locale comma decimal formatting
--security#GHSA-wpjq-m269-mghj: CVE-2026-39895 Second-order RCE via unescaped log path in exec_background shell redirection
--security#GHSA-hr82-h9vr-587w: CVE-2026-39896 TOCTOU race in auth_process_lockout allows brute-force lockout bypass
+-security#GHSA-273r-qr93-wgcp: CVE-2026-40082 Session Fixation via missing session_regenerate_id() after login
+-security#GHSA-274c-97hj-pv2v: CVE-2026-40941 Package Import Signature Validation Bypass allows self-signed packages
 -security#GHSA-2j98-xfjq-gw39: CVE-2026-39897 Reflected XSS in html_auth_footer error message output
--security#GHSA-fwh3-8c8r-378r: CVE-2026-39898 Reflected XSS via rfilter parameter in aggregate_graphs.php input value
--security#GHSA-pr9x-34w8-4mf7: CVE-2026-39899 Path traversal via filename parameter in package_import.php
 -security#GHSA-34rf-frc3-v48r: CVE-2026-39900 Reflected XSS via tab parameter in auth_profile.php JavaScript context
--security#GHSA-w47c-53f9-w47g: CVE-2026-39947 RRDtool IPC pipe poisoning via is_numeric newline bypass in rrdtool_function_update
--security#GHSA-9jqv-4cpm-vm2c: CVE-2026-39948 SQL Injection via rfilter parameter in RLIKE clauses
--security#GHSA-xq98-376r-hv9j: CVE-2026-40079 Command Injection via escape_command() no-op in RRDtool execution
+-security#GHSA-37jj-rx8x-4wf2: CVE-2026-46531 SQL Injection in automation_tree_rules.php
+-security#GHSA-3vj5-jqr9-q8hg: CVE-2026-44481 Pre-auth Open Redirect via link.php Referer header
+-security#GHSA-6233-v5hc-6gvf: CVE-2026-39952 Stored XSS in Report Tree expansion titles
 -security#GHSA-69gg-mjfm-jjpc: CVE-2026-39893 Pre-authentication SQL injection via rfilter RLIKE clause in graph_view.php
+-security#GHSA-6RVG-2vm8-5wrf: CVE-2026-22802 Authentication Bypass leads to information disclosure
+-security#GHSA-6gr7-53g8-vchq: CVE-2026-40080 Open Redirect via HTTP_REFERER substring check in auth_login_redirect
+-security#GHSA-84q3-92xc-c3pf: CVE-2026-40078 Backend ORDER BY SQL Injection
+-security#GHSA-8522-5p3m-754c: CVE-2026-39949 Authenticated Remote Code Execution via Host Variable Injection
+-security#GHSA-8p2f-6jvx-j75j: CVE-2026-40081 Reports IDOR allows any authenticated user to modify other users' reports (CWE-639)
+-security#GHSA-9jqv-4cpm-vm2c: CVE-2026-39948 SQL Injection via rfilter parameter in RLIKE clauses
 -security#GHSA-c4qp-j9r9-fq24: CVE-2026-39902 Authenticated RCE on Data Input
+-security#GHSA-fwh3-8c8r-378r: CVE-2026-39898 Reflected XSS via rfilter parameter in aggregate_graphs.php input value
+-security#GHSA-g37j-39f4-6r4j: CVE-2026-41884 Arbitrary File Read via Reports format_file path traversal
+-security#GHSA-gp82-qhrg-crv7: CVE-2026-39955 Pre-Authentication SQL Injection via unanchored FILTER_VALIDATE_REGEXP in graph_view.php
+-security#GHSA-hr82-h9vr-587w: CVE-2026-39896 TOCTOU race in auth_process_lockout allows brute-force lockout bypass
+-security#GHSA-j696-m433-87qq: CVE-2026-39950 Arbitrary PHP file write via Plugin Archive extraction leading to RCE
+-security#GHSA-j9jv-6xjq-9hhj: CVE-2026-40083 SQL Injection in managers.php via uncast array values in IN clauses
+-security#GHSA-m7v2-f3xw-3qh7: User Enumeration via Error Messages
+-security#GHSA-mjvw-mhj5-9jcj: CVE-2026-40084 Arbitrary File Read via path traversal in Report format_file parameter
+-security#GHSA-pf37-v86f-5xwp: CVE-2026-39951 Stored SQL Injection via graph_name_regexp in Reports feature
+-security#GHSA-pr9x-34w8-4mf7: CVE-2026-39899 Path traversal via filename parameter in package_import.php
 -security#GHSA-rm7p-qcqm-x5m6: CVE-2026-39938 Unauthenticated LFI via graph_theme and rrdtool IPC serialization hardening
 -security#GHSA-vp35-4h28-r883: CVE-2026-39939 Path traversal in Package Import file write allows arbitrary file creation in webroot
--security#GHSA-8522-5p3m-754c: CVE-2026-39949 Authenticated Remote Code Execution via Host Variable Injection
--security#GHSA-j696-m433-87qq: CVE-2026-39950 Arbitrary PHP file write via Plugin Archive extraction leading to RCE
--security#GHSA-pf37-v86f-5xwp: CVE-2026-39951 Stored SQL Injection via graph_name_regexp in Reports feature
--security#GHSA-6233-v5hc-6gvf: CVE-2026-39952 Stored XSS in Report Tree expansion titles
--security#GHSA-xrh3-6pfg-ff35: CVE-2026-39953 Unauthenticated Stored SQL Injection via graph_name_regexp in reports.php
--security#GHSA-gp82-qhrg-crv7: CVE-2026-39955 Pre-Authentication SQL Injection via unanchored FILTER_VALIDATE_REGEXP in graph_view.php
--security#GHSA-84q3-92xc-c3pf: CVE-2026-40078 Backend ORDER BY SQL Injection
--security#GHSA-6gr7-53g8-vchq: CVE-2026-40080 Open Redirect via HTTP_REFERER substring check in auth_login_redirect
--security#GHSA-8p2f-6jvx-j75j: CVE-2026-40081 Reports IDOR allows any authenticated user to modify other users' reports (CWE-639)
--security#GHSA-273r-qr93-wgcp: CVE-2026-40082 Session Fixation via missing session_regenerate_id() after login
--security#GHSA-j9jv-6xjq-9hhj: CVE-2026-40083 SQL Injection in managers.php via uncast array values in IN clauses
--security#GHSA-mjvw-mhj5-9jcj: CVE-2026-40084 Arbitrary File Read via path traversal in Report format_file parameter
--security#GHSA-274c-97hj-pv2v: CVE-2026-40941 Package Import Signature Validation Bypass allows self-signed packages
--security#GHSA-g37j-39f4-6r4j: CVE-2026-41884 Arbitrary File Read via Reports format_file path traversal
--security#GHSA-3vj5-jqr9-q8hg: CVE-2026-XXXXX Pre-auth Open Redirect via link.php Referer header
--security: CVE-2026-1513 billboard.js before 3.18.0 Improper Input Sanitization Allows Remote JavaScript Execution
+-security#GHSA-w47c-53f9-w47g: CVE-2026-39947 RRDtool IPC pipe poisoning via is_numeric newline bypass in rrdtool_function_update
+-security#GHSA-wpjq-m269-mghj: CVE-2026-39895 Second-order RCE via unescaped log path in exec_background shell redirection
+-security#GHSA-xq98-376r-hv9j: CVE-2026-40079 Command Injection via escape_command() no-op in RRDtool execution
 -security: CVE-2026-40194, CVE-2026-32935 in phpseclib - This is breaking change for RRDProxy
--security: CVE-2026-XXXXX - SQL Injection in automation_tree_rules.php
+-security: CVE-2026-1513 billboard.js before 3.18.0 Improper Input Sanitization Allows Remote JavaScript Execution
 -issue#6168: When purging RRD files, paths are not correctly handled
 -issue#6202: When using automation, devices may not be added as expected
 -issue#6204: Attempting to match a field in automation may cause unexpected errors
@@ -79,13 +132,20 @@ Cacti CHANGELOG
 -issue#6600: When replicating plugins, unexpected errors may appear due to missing tables
 -issue#6605: Prevent Row Data Loss When Rebuilding RRD Files
 -issue#6606: When using SpikeKill, actions would not always lead to expected results
--issue#6706: Fix false device down status in GUI for device that use empty SNMP OID System
+-issue#6706: Some hosts may show as down incorrectly by xmacan
+-issue#6945: Improve PHP 8.5 support
+-issue#7070: Align percentile rank with observed samples and expose missing export rows
+-issue#7121: When using data input methods, unexpected log entries may appear
+-issue#7133: When attempting to push out items, offline data sources can have unexpected results
+-issue#7135: Fix issue with locally scoped OID/Script path not being correctly cleared
+-issue#7199: CSV Color Import fails
+-issue#7202: Removed plugins may leave orphan entries in plugin tables
 -feature#6523: When disabling users, ensure that their authentication cookies and sessions cleared
 -feature#6524: When changing your password, log off from all sessions
 -feature#6534: Improve Cacti Session ID security
 -feature#6607: Implement session security on Password change
--feature#6681: Add Dell iDrac template
--feature: Update DOMPurify to 3.3.0
+-feature#6681: Add Dell iDRAC template by xmacan
+-feature: Update DOMPurify to 3.4.7
 -feature: Update PHPMailer to 6.10 to support SMTPUTF8
 -feature: Update phpseclib for the Service Check plugin
 -feature: Update jstree to 3.3.17 for CSP Level 3 compliance

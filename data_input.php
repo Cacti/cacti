@@ -53,6 +53,7 @@ switch (get_request_var('action')) {
 		field_remove();
 
 		header('Location: data_input.php?header=false&action=edit&id=' . get_filter_request_var('data_input_id'));
+
 		break;
 	case 'field_edit':
 		top_header();
@@ -60,20 +61,42 @@ switch (get_request_var('action')) {
 		field_edit();
 
 		bottom_footer();
+
 		break;
+	case 'whitelist_update':
+		/* csrf-magic only validates the token on POST. A GET to this
+		 * action would bypass the token check and let a CSRF gadget
+		 * trigger the shell_exec below. The UI uses loadPageUsingPost
+		 * so a POST is the only legitimate caller. */
+		if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+			cacti_log('WARNING: Rejected non-POST request to data_input.php?action=whitelist_update', false, 'AUTH');
+
+			header('Location: data_input.php?header=false&action=edit&id=' . get_filter_request_var('id'));
+			exit;
+		}
+
+		$id = get_filter_request_var('id');
+
+		$php        = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+		$script     = cacti_escapeshellarg($config['base_path'] . '/cli/input_whitelist.php');
+		$id_arg     = cacti_escapeshellarg('--id=' . $id);
+
+		$output = shell_exec($php . ' -q ' . $script . ' --update --push ' . $id_arg);
+
+		raise_message('whitelist_updated', html_escape($output), MESSAGE_LEVEL_INFO);
+
+		/* fall through */
 	case 'edit':
 		top_header();
-
 		data_edit();
-
 		bottom_footer();
+
 		break;
 	default:
 		top_header();
-
 		data();
-
 		bottom_footer();
+
 		break;
 }
 
@@ -81,7 +104,7 @@ switch (get_request_var('action')) {
  * form_save - Saves the data input method
  */
 function form_save() {
-	global $registered_cacti_names;
+	global $config, $registered_cacti_names;
 
 	if (isset_request_var('save_component_data_input')) {
 		/* ================= input validation ================= */
@@ -100,6 +123,12 @@ function form_save() {
 				raise_message('validation_error', __('Input string contains dangerous shell characters'), MESSAGE_LEVEL_ERROR);
 				header('Location: data_input.php?action=edit&id=' . (empty($save['id']) ? '' : $save['id']));
 				exit;
+			}
+
+			$input_string = db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', [$save['id']]);
+
+			if ($save['id'] > 0 && $input_string != $save['input_string'] && isset($config['input_whitelist'])) {
+				raise_message('whitelist_change', __('Input Whitelisting is in effect.  Changes in this Data Input Method require rerunning of the Input Whitelist CLI script (cli/input_whitelist.php) using both the --audit and --update options before Data Source will be queried again.'), MESSAGE_LEVEL_WARN);
 			}
 		}
 
@@ -144,6 +173,11 @@ function form_save() {
 		$save['type_code']     = form_input_validate((isset_request_var('type_code') ? get_nfilter_request_var('type_code') : ''), 'type_code', '', true, 3);
 		$save['regexp_match']  = form_input_validate((isset_request_var('regexp_match') ? get_nfilter_request_var('regexp_match') : ''), 'regexp_match', '', true, 3);
 		$save['allow_nulls']   = form_input_validate((isset_request_var('allow_nulls') ? get_nfilter_request_var('allow_nulls') : ''), 'allow_nulls', '', true, 3);
+
+		if (!is_error_message() && $save['input_output'] == 'in' && $save['type_code'] == '' && defined('VALID_HOST_FIELDS') && preg_match('/^(?:' . VALID_HOST_FIELDS . ')$/i', $save['data_name']) === 1) {
+			$_SESSION[SESS_ERROR_FIELDS]['type_code'] = 'type_code';
+			raise_message('validation_error', __esc('Input field <%s> requires Special Type Code "%s".', $save['data_name'], $save['data_name']), MESSAGE_LEVEL_ERROR);
+		}
 
 		if (!is_error_message()) {
 			$data_input_field_id = sql_save($save, 'data_input_fields');
@@ -244,7 +278,7 @@ function form_actions() {
 
 	form_start('data_input.php');
 
-	html_start_box($di_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(escape_page_action($di_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($di_array) && cacti_sizeof($di_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
@@ -510,6 +544,8 @@ function data_edit() {
 		$header_label = __('Data Input Method [new]');
 	}
 
+	$whitelist_issues = false;
+
 	if (!isset($config['input_whitelist'])) {
 		unset($fields_data_input_edit['whitelist_verification']);
 	}
@@ -541,8 +577,16 @@ function data_edit() {
 				$fields_data_input_edit['whitelist_verification']['value'] = __('White List Verification Succeeded.');
 			} elseif ($aud == false) {
 				$fields_data_input_edit['whitelist_verification']['value'] = __('White List Verification Failed.  Run CLI script input_whitelist.php to correct.');
+
+				if (is_writable(dirname($config['input_whitelist'])) && (!file_exists($config['input_whitelist']) || is_writable($config['input_whitelist']))) {
+					$whitelist_issues = true;
+				}
 			} elseif ($aud == '-1') {
 				$fields_data_input_edit['whitelist_verification']['value'] = __('Input String does not exist in White List.  Run CLI script input_whitelist.php to correct.');
+
+				if (is_writable(dirname($config['input_whitelist'])) && (!file_exists($config['input_whitelist']) || is_writable($config['input_whitelist']))) {
+					$whitelist_issues = true;
+				}
 			}
 		}
 	}
@@ -676,6 +720,8 @@ function data_edit() {
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
+		var whiteList=<?php print $whitelist_issues ? 'true':'false';?>;
+
 		$('.cdialog').remove();
 		$('#main').append("<div id='cdialog' class='cdialog'></div>");
 
@@ -701,6 +747,21 @@ function data_edit() {
 					getPresentHTTPError(data);
 				});
 		}).css('cursor', 'pointer');
+
+		if (whiteList) {
+			$('input[name="action"]').after('<input id="updateme" class="ui-button ui-corner-all ui-widget" type="button" value="<?php print __('Update Whitelist');?>" role="button" data-id="<?php print get_filter_request_var('id');?>">');
+
+			$('#updateme').on('click', function() {
+				var data = {
+					action: 'whitelist_update',
+					header: false,
+					id: $(this).data('id'),
+					__csrf_magic: csrfMagicToken
+				}
+
+				loadPageUsingPost('data_input.php', data);
+			});
+		}
 	});
 
 	</script>
@@ -906,13 +967,14 @@ function data() {
 			} else {
 				$disabled = false;
 			}
+
 			form_alternate_row('line' . $data_input['id'], true, $disabled);
 			form_selectable_cell(filter_value($data_input['name'], get_request_var('filter'), 'data_input.php?action=edit&id=' . $data_input['id']), $data_input['id']);
 			form_selectable_cell($data_input['id'], $data_input['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $data_input['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($data_input['data_sources'], '-1'), $data_input['id'],'', 'right');
 			form_selectable_cell(number_format_i18n($data_input['templates'], '-1'), $data_input['id'],'', 'right');
-			form_selectable_cell($input_types[$data_input['type_id']], $data_input['id'], '', 'right');
+			form_selectable_cell($input_types[$data_input['type_id']] ?? __('Unknown'), $data_input['id'], '', 'right');
 			form_checkbox_cell($data_input['name'], $data_input['id'], $disabled);
 			form_end_row();
 		}
@@ -931,4 +993,3 @@ function data() {
 
 	form_end();
 }
-

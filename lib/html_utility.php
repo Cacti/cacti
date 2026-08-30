@@ -1070,12 +1070,9 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 
 	$srv_host = null;
 
-	/* Prefer SERVER_NAME (set by server config) over HTTP_HOST (client-supplied)
-	   to prevent open redirect via Host header spoofing */
+	/* Use the server-configured name rather than the client-supplied Host header. */
 	if (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] != '') {
 		$srv_host = preg_replace('/:\d+$/', '', $_SERVER['SERVER_NAME']);
-	} elseif (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '') {
-		$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
 	}
 
 	if ($ref_host !== null) {
@@ -1112,6 +1109,34 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 }
 
 /**
+ * Builds a forced-HTTPS redirect using a server-configured host name.
+ *
+ * @param string $server_name  The web server's configured name.
+ * @param string $request_uri  The requested local path and query string.
+ * @param string $default_path A local fallback when the request URI is invalid.
+ *
+ * @psalm-taint-escape header
+ *
+ * @return string A safe absolute HTTPS URL, or an empty string for an invalid host.
+ */
+function cacti_build_https_redirect_url(string $server_name, string $request_uri, string $default_path = '/') : string {
+	$server_name = trim($server_name);
+	$host         = trim($server_name, '[]');
+
+	if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
+		$host = '[' . $host . ']';
+	} elseif (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false &&
+		filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)  === false) {
+		return '';
+	}
+
+	$path = validate_redirect_url($request_uri, $default_path);
+	$path = '/' . ltrim($path, '/');
+
+	return 'https://' . $host . $path;
+}
+
+/**
  * Validates if the given string is a valid regular expression.
  *
  * This function checks if the provided regular expression is valid and safe to use.
@@ -1142,19 +1167,15 @@ function validate_is_regex($regex) {
 
 	restore_error_handler();
 
-	$track_errors = ini_get('track_errors');
-	ini_set('track_errors', 1);
-
-    if (@preg_match("'" . $regex . "'", NULL) !== false) {
-		ini_set('track_errors', $track_errors);
+	if (@preg_match("'" . $regex . "'", '') !== false) {
 		return true;
 	}
 
 	$last_error = error_get_last();
 
-	$php_error = trim(str_replace('preg_match():', '', $last_error['message']));
-
-	ini_set('track_errors', $track_errors);
+	$php_error = isset($last_error['message'])
+		? trim(str_replace('preg_match():', '', $last_error['message']))
+		: __('Invalid regular expression.');
 
 	$errors = array(
 		PREG_INTERNAL_ERROR         => __('There was an internal error!'),

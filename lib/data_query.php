@@ -609,6 +609,16 @@ function get_data_query_array($snmp_query_id) {
 		$replace       = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
 		$xml_file_path = str_replace($search, $replace, $xml_file_path);
 
+		/* Reject paths that resolve outside the Cacti resource tree.
+		 * xml_path may be absolute after <path_cacti> substitution above,
+		 * so we validate against the actual filesystem location rather than
+		 * just the token value. */
+		$allowed_base = $config['base_path'] . '/resource';
+		if (!cacti_path_is_within($xml_file_path, $allowed_base)) {
+			cacti_log("SECURITY: xml_path '$xml_file_path' for snmp_query id $snmp_query_id resolves outside '$allowed_base' -- access denied.", false, 'SYSTEM');
+			return array();
+		}
+
 		if (!file_exists($xml_file_path)) {
 			query_debug_timer_offset('data_query', __esc('Could not find data query XML file at \'%s\'', $xml_file_path));
 			return array();
@@ -997,7 +1007,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	rewrite_snmp_enum_value(null);
 
 	foreach ($snmp_queries['fields'] as $field_name => $field_array) {
-		if ($field_array['source'] != 'index' && ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') && $field_array['method'] != 'get' &&
+		if (($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') && $field_array['source'] != 'index' && $field_array['method'] != 'get' &&
 			(isset($field_array['rewrite_index']) || isset($field_array['oid_suffix']))) {
 			$field_array['method'] = 'get';
 			debug_log_insert('data_query', __esc('Fixing wrong \'method\' field for \'%s\' since \'rewrite_index\' or \'oid_suffix\' is defined',$field_name));
@@ -1233,7 +1243,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				$data = cacti_snmp_walk($host['hostname'], $host['snmp_community'], $field_array['oid'], $host['snmp_version'],
 					$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'],
 					$host['snmp_priv_passphrase'], $host['snmp_priv_protocol'], $host['snmp_context'],
-					$host['snmp_port'], $host['snmp_timeout'], $host['ping_retries'], $host['max_oids'], 'SNMP',
+					$host['snmp_port'], $host['snmp_timeout'], $host['ping_retries'], $walk_size, 'SNMP',
 					$host['snmp_engine_id'], $value_output_format);
 
 				$snmp_data = array();
