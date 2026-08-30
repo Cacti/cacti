@@ -51,7 +51,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install --yes apache2 snmp rrdtool
+          sudo apt-get install --yes apache2 fping snmp rrdtool
       - name: Install Cacti plugins used by integration tests
         run: |
           declare -A plugin_refs=(
