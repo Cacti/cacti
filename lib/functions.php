@@ -5589,9 +5589,16 @@ function cacti_escapeshellarg(string $string, bool $quote = true) : string {
  *
  * @return string The escaped value.
  */
-function cacti_escapeshellarg_cmd(string $string, bool $quote = true) : string {
+function cacti_escapeshellarg_cmd(string $string, bool $quote = true, bool $strip_env = false) : string {
 	if (CACTI_SERVER_OS == 'win32') {
 		$string = str_replace(['"', '&', '|', '^', '<', '>', '(', ')'], '', $string);
+
+		/* cmd.exe expands %VAR% even inside quotes. Only values that never
+		 * legitimately contain a percent (a hostname or IP) may strip it; SNMP
+		 * community and credential values can contain %, so callers opt in. */
+		if ($strip_env) {
+			$string = str_replace('%', '', $string);
+		}
 	}
 
 	return cacti_escapeshellarg($string, $quote);

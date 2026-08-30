@@ -172,7 +172,7 @@ class Net_Ping {
 					}
 				}
 
-				$result = shell_exec(cacti_escapeshellarg($fping) . ' -q -t ' . $this->timeout . ' -c 1 -r ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname']) . ' 2>&1');
+				$result = shell_exec(cacti_escapeshellarg($fping) . ' -q -t ' . $this->timeout . ' -c 1 -r ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true) . ' 2>&1');
 			} else {
 				$using_fping = false;
 
@@ -183,25 +183,25 @@ class Net_Ping {
 				 * DNS resolution check above.
 				 */
 				if (substr_count(cacti_strtolower(PHP_OS), 'sun')) {
-					$result = shell_exec('ping ' . cacti_escapeshellarg_cmd($this->host['hostname']));
+					$result = shell_exec('ping ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
 				} elseif (substr_count(cacti_strtolower(PHP_OS), 'hpux')) {
-					$result = shell_exec('ping -m ' . ceil($this->timeout / 1000) . ' -n ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname']));
+					$result = shell_exec('ping -m ' . ceil($this->timeout / 1000) . ' -n ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
 				} elseif (substr_count(cacti_strtolower(PHP_OS), 'mac')) {
-					$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname']));
+					$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
 				} elseif (substr_count(cacti_strtolower(PHP_OS), 'freebsd')) {
 					if (filter_var($host_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-						$result = shell_exec('ping6 -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname']));
+						$result = shell_exec('ping6 -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
 					} else {
-						$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname']));
+						$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
 					}
 				} elseif (substr_count(cacti_strtolower(PHP_OS), 'darwin')) {
-					$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname']));
+					$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
 				} elseif (substr_count(cacti_strtolower(PHP_OS), 'bsd')) {
-					$result = shell_exec('ping -w ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname']));
+					$result = shell_exec('ping -w ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
 				} elseif (substr_count(cacti_strtolower(PHP_OS), 'aix')) {
-					$result = shell_exec('ping -i ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname']));
+					$result = shell_exec('ping -i ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
 				} elseif (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-					$result = shell_exec('chcp 437 && ping -w ' . $this->timeout . ' -n ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname']));
+					$result = shell_exec('chcp 437 && ping -w ' . $this->timeout . ' -n ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
 				} else {
 					/**
 					 * Please know, that when running SELinux, httpd will throw
@@ -210,9 +210,9 @@ class Net_Ping {
 					 * $result will be empty, then.
 					 */
 					if (filter_var($host_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-						$result = shell_exec('ping -6 -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg_cmd($this->host['hostname']));
+						$result = shell_exec('ping -6 -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
 					} else {
-						$result = shell_exec('ping -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg_cmd($this->host['hostname']) . ' 2>&1');
+						$result = shell_exec('ping -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true) . ' 2>&1');
 					}
 				}
 			}

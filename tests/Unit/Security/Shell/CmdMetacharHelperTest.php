@@ -49,7 +49,7 @@ test('snmp_escape_string strips cmd.exe operators on win32', function () use ($s
 });
 
 test('the snmp binary hostname uses the cmd helper', function () use ($snmp) {
-	expect($snmp)->toContain('cacti_escapeshellarg_cmd($hostname)');
+	expect($snmp)->toContain('cacti_escapeshellarg_cmd($hostname, true, true)');
 });
 
 test('get_script_query_path strips device values on win32', function () use ($dataquery) {
@@ -60,6 +60,25 @@ test('get_script_query_path strips device values on win32', function () use ($da
 });
 
 test('ping hostname and snmp trap args use the cmd helper', function () use ($ping, $snmpagent) {
-	expect($ping)->toContain("cacti_escapeshellarg_cmd(\$this->host['hostname'])");
+	expect($ping)->toContain('cacti_escapeshellarg_cmd($this->host[' . "'hostname'" . '], true, true)');
 	expect($snmpagent)->toContain('cacti_escapeshellarg_cmd($arg)');
+});
+
+test('the strip_env flag removes %VAR% for hostname-class values only', function () {
+	// default: percent is preserved (credentials may contain it)
+	expect(cacti_escapeshellarg_cmd('p%ss'))->toBe(cacti_escapeshellarg('p%ss'));
+	// opt-in: a hostname never contains a percent, so it is stripped on win32.
+	// on unix (test default) the flag is a no-op, so assert the source wiring.
+	$src   = file_get_contents(dirname(__DIR__, 4) . '/lib/functions.php');
+	$start = strpos($src, 'function cacti_escapeshellarg_cmd(');
+	$body  = substr($src, $start, 700);
+	expect($body)->toContain('$strip_env');
+	expect($body)->toContain("str_replace('%', ''");
+});
+
+test('the hostname sinks opt into the percent strip', function () {
+	$snmp = file_get_contents(dirname(__DIR__, 4) . '/lib/snmp.php');
+	$ping = file_get_contents(dirname(__DIR__, 4) . '/lib/ping.php');
+	expect($snmp)->toContain('cacti_escapeshellarg_cmd($hostname, true, true)');
+	expect($ping)->toContain('cacti_escapeshellarg_cmd($this->host[' . "'hostname'" . '], true, true)');
 });
