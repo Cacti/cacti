@@ -226,9 +226,16 @@ $proxy_headers = null;
  * honor the forwarded identity header. Requests from any other
  * address have their forwarded identity headers ignored.
  *
+ * This list also governs the client address reported by
+ * get_client_addr(). A proxy appends to headers such as
+ * X-Forwarded-For, so the leftmost entry is whatever the client
+ * chose to send. Cacti walks the chain from the right, discarding
+ * hops that are themselves trusted, and reports the first address
+ * a trusted hop actually observed.
+ *
  * Empty (the default) means no proxy is trusted, so all forwarded
- * identity headers are ignored. Only entries that exactly match
- * REMOTE_ADDR are trusted.
+ * headers are ignored and REMOTE_ADDR is used. Entries may be a
+ * plain address or a CIDR range such as '10.0.0.0/8'.
  */
 $trusted_proxies = [];
 
