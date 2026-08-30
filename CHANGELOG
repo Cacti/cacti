@@ -1,7 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
--security: Substitute query data before escaping graph titles and axis labels
+-security: Reject Windows-special log filename forms in the clog purge validation
 -security: Build forced-HTTPS redirects from the server-configured name
 -security: Constrain external-link includes to regular files inside the configured content directory
 -security: Harden advisory command execution and database DDL sink validation
