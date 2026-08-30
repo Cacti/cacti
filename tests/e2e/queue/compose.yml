@@ -1,8 +1,8 @@
 services:
   app:
     build:
-      context: ../../../docker
-      dockerfile: Dockerfile
+      context: ../../..
+      dockerfile: docker/Dockerfile
       args:
         PHP_VERSION: '8.1'
     volumes:
