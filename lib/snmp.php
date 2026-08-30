@@ -227,7 +227,7 @@ function cacti_snmp_get(string $hostname, mixed $community, string $oid, mixed $
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
-			' ' . cacti_escapeshellarg($hostname) . ':' . $port .
+			' ' . cacti_escapeshellarg_cmd($hostname) . ':' . $port .
 			' ' . cacti_escapeshellarg($oid);
 
 		if (isset($_SESSION)) {
@@ -315,7 +315,7 @@ function cacti_snmp_get_raw(string $hostname, mixed $community, string $oid, mix
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
-			' ' . cacti_escapeshellarg($hostname) . ':' . $port .
+			' ' . cacti_escapeshellarg_cmd($hostname) . ':' . $port .
 			' ' . cacti_escapeshellarg($oid);
 
 		if (isset($_SESSION)) {
@@ -399,7 +399,7 @@ function cacti_snmp_getnext(string $hostname, mixed $community, mixed $oid, mixe
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
-			' ' . cacti_escapeshellarg($hostname) . ':' . $port .
+			' ' . cacti_escapeshellarg_cmd($hostname) . ':' . $port .
 			' ' . cacti_escapeshellarg($oid);
 
 		if (isset($_SESSION)) {
@@ -877,7 +877,7 @@ function cacti_snmp_walk(string $hostname, mixed $community, string $oid, mixed 
 				' -r ' . $retries .
 				' -Cr' . $bulk_walk_size .
 				' ' . $oidCheck . ' ' .
-				cacti_escapeshellarg($hostname) . ':' . $port . ' ' .
+				cacti_escapeshellarg_cmd($hostname) . ':' . $port . ' ' .
 				cacti_escapeshellarg($oid);
 
 			if (isset($_SESSION)) {
@@ -892,7 +892,7 @@ function cacti_snmp_walk(string $hostname, mixed $community, string $oid, mixed 
 				' -t ' . $timeout_s .
 				' -r ' . $retries .
 				' ' . $oidCheck . ' ' .
-				' ' . cacti_escapeshellarg($hostname) . ':' . $port .
+				' ' . cacti_escapeshellarg_cmd($hostname) . ':' . $port .
 				' ' . cacti_escapeshellarg($oid);
 
 			if (isset($_SESSION)) {
@@ -1160,6 +1160,11 @@ function snmp_escape_string(string $string, string $server_os = CACTI_SERVER_OS)
 	}
 
 	if ($server_os == 'win32') {
+		/* GHSA-rjvj-r52f-8v5q: cmd.exe ignores the \" escape and toggles
+		 * quoting on every ", so wrapping cannot neutralize & | ^ < > ( ).
+		 * SNMP values never legitimately contain these, so strip them. */
+		$string = str_replace(['"', '&', '|', '^', '<', '>', '(', ')'], '', $string);
+
 		if (substr_count($string, SNMP_ESCAPE_CHARACTER)) {
 			$string = str_replace(SNMP_ESCAPE_CHARACTER, '\\' . SNMP_ESCAPE_CHARACTER, $string);
 

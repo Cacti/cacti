@@ -2800,7 +2800,16 @@ function get_script_query_path(string $args, string $script_path, int $host_id) 
 		$extra_arguments = '';
 
 		foreach ($parts as $index => $part) {
-			$extra_arguments .= ($index > 0 ? ' ' : '') . cacti_escapeshellarg(substitute_host_data($part, '|', '|', $host_id));
+			$part = substitute_host_data($part, '|', '|', $host_id);
+
+			/* GHSA-rjvj-r52f-8v5q: a rogue device's SNMP index or system field
+			 * reaches here; on Windows cmd.exe would interpret & | ^ < > ( ) it
+			 * carries, so strip them before quoting. */
+			if (CACTI_SERVER_OS == 'win32') {
+				$part = str_replace(['"', '&', '|', '^', '<', '>', '(', ')'], '', $part);
+			}
+
+			$extra_arguments .= ($index > 0 ? ' ' : '') . cacti_escapeshellarg($part);
 		}
 	} else {
 		$extra_arguments = '';

@@ -995,7 +995,7 @@ function snmpagent_notification(string $notification, string $mib, array $varbin
 				// directly so empty positions survive as quoted '' rather than being
 				// swallowed when exec_background joins the arguments with spaces.
 				$escaped_args = implode(' ', array_map(static function ($arg) {
-					return $arg === '' ? "''" : cacti_escapeshellarg($arg);
+					return $arg === '' ? "''" : cacti_escapeshellarg_cmd($arg);
 				}, $args));
 
 				exec_background(cacti_escapeshellcmd($path_snmptrap), $escaped_args);

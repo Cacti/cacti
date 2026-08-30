@@ -3022,11 +3022,11 @@ function get_full_test_script_path(int $data_template_id, int $host_id) : mixed 
 	if (cacti_sizeof($data) && is_array($host)) {
 		foreach ($data as $item) {
 			if (isset($host[$item['data_name']])) {
-				$value = cacti_escapeshellarg($host[$item['data_name']]);
+				$value = cacti_escapeshellarg_cmd($host[$item['data_name']]);
 			} elseif ($item['data_name'] == 'host_id' || $item['data_name'] == 'hostid') {
 				$value = cacti_escapeshellarg($host['id']);
 			} else {
-				$value = cacti_escapeshellarg((string) $item['value']);
+				$value = cacti_escapeshellarg_cmd((string) $item['value']);
 			}
 
 			$full_path = str_replace('<' . $item['data_name'] . '>', $value, $full_path);
@@ -3089,7 +3089,7 @@ function get_full_script_path(int $local_data_id) : mixed {
 
 	if (cacti_sizeof($data)) {
 		foreach ($data as $item) {
-			$value = cacti_escapeshellarg($item['value']);
+			$value = cacti_escapeshellarg_cmd($item['value']);
 
 			if ($value == '') {
 				$value = "''";
@@ -5572,6 +5572,29 @@ function cacti_escapeshellarg(string $string, bool $quote = true) : string {
 			return $string;
 		}
 	}
+}
+
+/**
+ * cacti_escapeshellarg_cmd - escape an argument that will reach cmd.exe on Windows.
+ *
+ * On Windows, exec()/shell_exec()/popen() route through cmd.exe, which ignores
+ * the \" escape and toggles quote-state on every ", so cacti_escapeshellarg()
+ * alone cannot stop the operators & | ^ < > ( ). Device- and request-supplied
+ * values that reach a Windows shell never legitimately contain these, so strip
+ * them before quoting. On Unix this is exactly cacti_escapeshellarg().
+ * GHSA-rjvj-r52f-8v5q.
+ *
+ * @param string $string The value to place in a Windows command line.
+ * @param bool   $quote  Whether to wrap the result in quotes.
+ *
+ * @return string The escaped value.
+ */
+function cacti_escapeshellarg_cmd(string $string, bool $quote = true) : string {
+	if (CACTI_SERVER_OS == 'win32') {
+		$string = str_replace(['"', '&', '|', '^', '<', '>', '(', ')'], '', $string);
+	}
+
+	return cacti_escapeshellarg($string, $quote);
 }
 
 /**
