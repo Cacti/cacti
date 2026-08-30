@@ -5,7 +5,6 @@ on:
     branches: [develop]
     paths: &queue-paths
       - '.github/workflows/queue-api-coverage.yml'
-      - '.github/actions/setup-php-composer/**'
       - 'composer.json'
       - 'composer.lock'
       - 'cacti.sql'
@@ -58,14 +57,16 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup locked PHP 8.1 dependencies
-        uses: ./.github/actions/setup-php-composer
+      - name: Setup PHP 8.1
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
         with:
           php-version: '8.1'
           coverage: xdebug
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
-          dependency-mode: locked-queue-api-coverage
-          install-args: --prefer-dist --no-progress --no-interaction
+          tools: composer:v2
+
+      - name: Install locked dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Enforce line coverage
         env:
