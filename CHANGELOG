@@ -1,6 +1,9 @@
 Cacti CHANGELOG
 
 1.2.x
+-security: Revoke anonymous access when the guest account is disabled
+-security: Cast graph and device ids to int in get_allowed_* permission filters
+-security: Set the Secure session cookie behind a trusted TLS-terminating proxy
 -security: Substitute query data before escaping graph titles and axis labels
 -security: Build forced-HTTPS redirects from the server-configured name
 -security: Constrain external-link includes to regular files inside the configured content directory

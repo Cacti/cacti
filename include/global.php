@@ -462,7 +462,21 @@ if ($config['is_web']) {
 		$options['cookie_samesite'] = 'Strict';
 	}
 
-	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+	/* Direct TLS, or TLS terminated at a proxy we are configured to trust
+	 * ($config['proxy_headers']). Only honour a forwarded-proto header when
+	 * proxy trust is enabled, so a client cannot force the Secure flag. */
+	$https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off');
+
+	if (!$https && !empty($config['proxy_headers'])) {
+		$fwd_proto = isset($_SERVER['HTTP_X_FORWARDED_PROTO']) ? strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) : '';
+		$fwd_ssl   = isset($_SERVER['HTTP_X_FORWARDED_SSL'])   ? strtolower($_SERVER['HTTP_X_FORWARDED_SSL'])   : '';
+
+		if ($fwd_proto == 'https' || $fwd_ssl == 'on') {
+			$https = true;
+		}
+	}
+
+	if ($https) {
 		ini_set('session.cookie_secure', true);
 		$options['cookie_secure'] = true;
 	}
