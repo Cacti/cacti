@@ -1,6 +1,8 @@
 Cacti CHANGELOG
 
 1.2.x
+-security: Escape path_dsstats_log before logging
+-security: Escape aggregate graph local_graph_id before SQL use
 -security: Substitute query data before escaping graph titles and axis labels
 -security: Build forced-HTTPS redirects from the server-configured name
 -security: Constrain external-link includes to regular files inside the configured content directory
