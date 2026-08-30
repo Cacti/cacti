@@ -1143,7 +1143,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 function snmp_format_target($hostname, $port) {
 	/* a hostname/IP never legitimately contains cmd.exe metacharacters; strip
 	 * them so a crafted device address cannot chain commands on Windows. */
-	$hostname = str_replace(array('"', '&', '|', '^', '<', '>', '(', ')'), '', $hostname);
+	$hostname = str_replace(array('"', '&', '|', '^', '<', '>', '(', ')', '%'), '', $hostname);
 
 	if (strpos($hostname, ':') !== false) {
 		/* IPv6: force udp6: transport and bracket-encapsulate */

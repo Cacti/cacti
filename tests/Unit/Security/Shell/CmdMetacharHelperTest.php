@@ -40,7 +40,7 @@ test('on unix the helper is exactly cacti_escapeshellarg', function () {
 });
 
 test('the windows ping hostname goes through the cmd helper', function () use ($ping) {
-	expect($ping)->toContain("cacti_escapeshellarg_cmd(\$this->host['hostname'])");
+	expect($ping)->toContain('cacti_escapeshellarg_cmd($this->host[' . "'hostname'" . '], true, true)');
 });
 
 test('data-input argument builders use the cmd helper', function () use ($functions) {
@@ -54,4 +54,22 @@ test('the snmp trap notification arguments use the cmd helper', function () use 
 	$start = strpos($snmpagent, "\$args = ' -v 1 -c '");
 	$block = substr($snmpagent, $start, 1400);
 	expect($block)->not->toContain('cacti_escapeshellarg($notification_manager');
+});
+
+test('the strip_env flag removes %VAR% for hostname-class values only', function () {
+	// default: percent preserved (community/credentials may contain it)
+	expect(cacti_escapeshellarg_cmd('p%ss'))->toBe(cacti_escapeshellarg('p%ss'));
+	$src   = file_get_contents(dirname(__DIR__, 4) . '/lib/functions.php');
+	$start = strpos($src, 'function cacti_escapeshellarg_cmd(');
+	$body  = substr($src, $start, 700);
+	expect($body)->toContain('$strip_env');
+	expect($body)->toContain("str_replace('%', ''");
+});
+
+test('the snmp hostname strip and the ping hostname opt into the percent strip', function () {
+	$snmp = file_get_contents(dirname(__DIR__, 4) . '/lib/snmp.php');
+	$ping = file_get_contents(dirname(__DIR__, 4) . '/lib/ping.php');
+	// snmp hostname inline strip now includes %
+	expect($snmp)->toContain("'(', ')', '%'), ''");
+	expect($ping)->toContain('cacti_escapeshellarg_cmd($this->host[' . "'hostname'" . '], true, true)');
 });
