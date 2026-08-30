@@ -1,6 +1,10 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security: Escape path_dsstats_log before it reaches the dsstats poller shell redirect
+-security: Revoke anonymous access when the guest account is disabled
+-security: Cast graph and device ids to int in get_allowed_* permission filters
+-security: Honour a trusted forwarded proto when setting the Secure session cookie
 -security: Build forced-HTTPS redirects from the server-configured name
 -security: Replace sibling password-reset links and revoke authentication state after reset
 -issue: Fail closed when OAuth callback state is absent or mismatched

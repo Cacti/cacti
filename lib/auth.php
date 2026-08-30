@@ -1745,7 +1745,7 @@ function get_allowed_aggregate_graphs(string $sql_where = '', string $sql_order 
 	}
 
 	if ($graph_id > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . " gl.id = $graph_id";
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . ' gl.id = ' . (int) $graph_id;
 	}
 
 	if (read_user_setting('hide_disabled', false, false, $user_id) == 'on') {
@@ -2913,7 +2913,7 @@ function get_allowed_devices(string $sql_where = '', string $sql_order = 'descri
 	}
 
 	if ($device_id > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " h.id = $device_id";
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' h.id = ' . (int) $device_id;
 	}
 
 	$graph_auth_method = read_config_option('graph_auth_method');
