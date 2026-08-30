@@ -2377,7 +2377,19 @@ function get_script_query_path($args, $script_path, $host_id) {
 
 		$extra_arguments = '';
 		foreach ($parts as $index => $part) {
-			$extra_arguments .= ($index > 0 ? ' ':'') . cacti_escapeshellarg(substitute_host_data($part, '|', '|', $host_id));
+			$part = substitute_host_data($part, '|', '|', $host_id);
+
+			/* GHSA-rjvj-r52f-8v5q: on Windows the data-query script runs through
+			 * cmd.exe, which ignores the \" escape and toggles quoting on every
+			 * ", so cacti_escapeshellarg cannot neutralize & | ^ < > ( ). A rogue
+			 * monitored device can supply an SNMP index or system field (sysName
+			 * etc.) that lands here; those values never legitimately contain
+			 * cmd.exe metacharacters, so strip them before quoting. */
+			if ($config['cacti_server_os'] == 'win32') {
+				$part = str_replace(array('"', '&', '|', '^', '<', '>', '(', ')'), '', $part);
+			}
+
+			$extra_arguments .= ($index > 0 ? ' ':'') . cacti_escapeshellarg($part);
 		}
 	} else {
 		$extra_arguments = '';
