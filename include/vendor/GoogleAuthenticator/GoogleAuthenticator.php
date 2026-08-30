@@ -48,7 +48,7 @@ final class GoogleAuthenticator implements GoogleAuthenticatorInterface
      * @param int                     $secretLength
      * @param \DateTimeInterface|null $now
      */
-    public function __construct(int $passCodeLength = 6, int $secretLength = 10, \DateTimeInterface $now = null)
+    public function __construct(int $passCodeLength = 6, int $secretLength = 10, ?\DateTimeInterface $now = null)
     {
         $this->passCodeLength = $passCodeLength;
         $this->secretLength = $secretLength;

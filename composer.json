@@ -66,8 +66,8 @@
         "composer/xdebug-handler": "^3.0",
         "friendsofphp/php-cs-fixer": "^3.86",
         "overtrue/phplint": "^9.6",
-        "pestphp/pest": "^2",
-        "pestphp/pest-plugin-drift": "^2.0",
+        "pestphp/pest": "^2 || ^3",
+        "pestphp/pest-plugin-drift": "^2.0 || ^3.0",
         "phpstan/phpstan": "2.2.8",
         "rector/rector": "^2.1.2"
     },

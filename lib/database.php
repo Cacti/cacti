@@ -73,7 +73,11 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 			$device = '127.0.0.1';
 		}
 
-		if (!defined('PDO::MYSQL_ATTR_FOUND_ROWS')) {
+		/* PHP 8.4 moved the driver constants onto Pdo\Mysql and 8.5 deprecates the
+		 * PDO:: spellings, so resolve whichever one this runtime owns. */
+		$found_rows_const = PHP_VERSION_ID >= 80400 ? 'Pdo\Mysql::ATTR_FOUND_ROWS' : 'PDO::MYSQL_ATTR_FOUND_ROWS';
+
+		if (!defined($found_rows_const)) {
 			if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
 				$prefix = get_debug_prefix();
 				file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
@@ -88,7 +92,7 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 			$flags[PDO::ATTR_PERSISTENT] = true;
 		}
 
-		$flags[PDO::MYSQL_ATTR_FOUND_ROWS] = true;
+		$flags[constant($found_rows_const)] = true;
 
 		if ($db_ssl) {
 			if ($db_ssl_ca != '') {
