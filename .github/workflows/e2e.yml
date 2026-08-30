@@ -69,7 +69,7 @@ jobs:
             git -C "plugins/${plugin}" checkout --detach FETCH_HEAD
           done
           cp -p plugins/syslog/config.php.dist plugins/syslog/config.php
-          sed -i "s|//\\$syslog_install_options|\\$syslog_install_options|" plugins/syslog/config.php
+          sed -i "s|//\$syslog_install_options|\$syslog_install_options|" plugins/syslog/config.php
       - name: Configure Apache and Cacti
         run: |
           sudo a2enmod proxy_fcgi setenvif actions alias
