@@ -2107,7 +2107,7 @@ function db_commit_transaction(mixed $db_conn = false) : bool {
 		}
 	}
 
-	if (db_fetch_cell('SELECT @@in_transaction') > 0) {
+	if (db_fetch_cell('SELECT @@in_transaction', '', true, $db_conn) > 0) {
 		return $db_conn->commit();
 	} else {
 		return false;
@@ -2269,7 +2269,8 @@ function _db_replace(mixed $db_conn, string $table, array $fieldArray, mixed $ke
 			$sql .= ', ';
 			$sql2 .= ', ';
 		}
-		$sql .= "`$k`";
+		$ek = '`' . str_replace('`', '``', $k) . '`';
+		$sql .= $ek;
 		$sql2 .= $v;
 		$first  = false;
 
@@ -2281,7 +2282,7 @@ function _db_replace(mixed $db_conn, string $table, array $fieldArray, mixed $ke
 			$sql3 .= ', ';
 		}
 
-		$sql3 .= "`$k`=VALUES(`$k`)";
+		$sql3 .= $ek . '=VALUES(' . $ek . ')';
 
 		$first3 = false;
 	}
