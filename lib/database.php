@@ -283,7 +283,7 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
  *
  * @return bool The database true is the database is connected else false
  */
-function db_check_reconnect(mixed $db_conn = false, bool $log = true) : bool {
+function db_check_reconnect(mixed &$db_conn = false, bool $log = true) : bool {
 	global $database_details;
 	global $database_hostname;
 	global $database_username;
@@ -388,6 +388,13 @@ function db_check_reconnect(mixed $db_conn = false, bool $log = true) : bool {
 		);
 
 		if ($cnn_id !== false) {
+			// Propagate the fresh handle back so a caller that passed its own
+			// connection (e.g. the db_execute_prepared retry) does not keep
+			// using the one we just closed.
+			if ($db_conn !== false) {
+				$db_conn = $cnn_id;
+			}
+
 			return true;
 		} else {
 			return false;
