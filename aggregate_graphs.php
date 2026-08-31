@@ -534,7 +534,7 @@ function form_actions() {
 	print "	<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='local_graph_id' value='" . (isset_request_var('local_graph_id') ? html_escape(get_nfilter_request_var('local_graph_id')):0) . "'>
+			<input type='hidden' name='local_graph_id' value='" . (isset_request_var('local_graph_id') ? get_filter_request_var('local_graph_id') : 0) . "'>
 			<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . html_escape(get_request_var('drp_action')) . "'>
 			$save_html
