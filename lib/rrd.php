@@ -2459,7 +2459,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 		$graph_opts = rrd_function_process_graph_options($graph_start, $graph_end, $graph, $graph_data_array);
 	} else {
 		// basic export options
-		$graph_opts = '--start=' . $graph_start . RRD_NL . '--end=' . $graph_end . RRD_NL . '--maxrows=10000' . RRD_NL;
+		$graph_opts = '--start=' . $graph_start . RRD_NL . '--end=' . $graph_end . RRD_NL . '--maxrows=' . max(10000, intval(($graph_end - $graph_start) / 60) + 10) . RRD_NL;
 	}
 
 	// +++++++++++++++++++++++ LEGEND: MAGIC +++++++++++++++++++++++
