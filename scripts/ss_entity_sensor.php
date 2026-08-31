@@ -32,7 +32,7 @@ if (!isset($called_by_script_server)) {
 } else {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
-// @codeCoverageIgnoreEnd
+/** @codeCoverageIgnoreEnd */
 
 /**
  * Base OIDs for the vendor-neutral ENTITY-SENSOR / ENTITY MIB collector.
