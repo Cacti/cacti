@@ -1343,12 +1343,103 @@ function rrdtool_function_interface_speed(array $data_local) : string {
 	return $speed_cache[$cache_key];
 }
 
+/**
+ * Reject an RRD file path that shows directory traversal or a NUL byte, and
+ * confine it to the RRA directory when that base can be resolved.
+ *
+ * data_source_path is stored in the database and flows into every rrdtool
+ * create/fetch/update/graph command. A '..' segment or a NUL byte would let a
+ * crafted path escape the RRA directory. The traversal/NUL check is
+ * unconditional so a legitimate path is never refused. Containment under the
+ * RRA base is enforced only when both the base and the target (or its parent
+ * directory, for a not-yet-created file) resolve with realpath(); remote
+ * storage, where the path is proxy relative, leaves them unresolved and is not
+ * second-guessed.
+ *
+ * @param string      $path     The candidate RRD file path.
+ * @param string|null $rra_base RRA base directory; defaults to CACTI_PATH_RRA.
+ *
+ * @return bool True when the path is safe to use.
+ */
+function rrd_check_path(string $path, ?string $rra_base = null) : bool {
+	if ($path === '' || strpos($path, "\0") !== false) {
+		return false;
+	}
+
+	// '..' between path boundaries (or at either edge) denotes traversal.
+	if (preg_match('/(^|[\/\\\\:])\.\.([\/\\\\:]|$)/', $path)) {
+		return false;
+	}
+
+	if ($rra_base === null) {
+		$rra_base = defined('CACTI_PATH_RRA') ? (string) CACTI_PATH_RRA : '';
+	}
+
+	// When the RRA base cannot be resolved (e.g. remote/proxy storage), the
+	// syntactic traversal/NUL checks above are all that apply.
+	$base = ($rra_base !== '') ? realpath($rra_base) : false;
+
+	if ($base === false) {
+		return true;
+	}
+
+	/* Resolve the target as strictly as the filesystem allows: realpath() when
+	 * the file exists (also collapses symlinks), else realpath() of the nearest
+	 * existing ancestor with the not-yet-created tail appended. A path whose
+	 * whole tail is missing cannot be resolved that way, so fall back to a
+	 * lexical absolute form. A relative path we cannot resolve is refused
+	 * rather than waved through, which was the hole that let a target with a
+	 * non-existent parent skip confinement (the create flow mkdir()s parents). */
+	$real = realpath($path);
+
+	if ($real === false) {
+		$dir  = $path;
+		$tail = '';
+
+		while (true) {
+			$parent = dirname($dir);
+			$tail   = ($tail === '') ? basename($dir) : basename($dir) . DIRECTORY_SEPARATOR . $tail;
+
+			$resolved = realpath($parent);
+
+			if ($resolved !== false) {
+				$real = $resolved . DIRECTORY_SEPARATOR . $tail;
+
+				break;
+			}
+
+			if ($parent === $dir) {
+				// reached the root without an existing ancestor
+				$real = (strpos($path, DIRECTORY_SEPARATOR) === 0) ? $path : false;
+
+				break;
+			}
+
+			$dir = $parent;
+		}
+	}
+
+	if ($real === false) {
+		return false;
+	}
+
+	$base = rtrim($base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
+	return strncmp($real . DIRECTORY_SEPARATOR, $base, strlen($base)) === 0;
+}
+
 function rrdtool_function_create(int $local_data_id, bool $show_source, mixed $rrdtool_pipe = null) : mixed {
 	global $data_source_types, $consolidation_functions, $encryption;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
 
 	$data_source_path = get_data_source_path($local_data_id, true);
+
+	if (!rrd_check_path($data_source_path)) {
+		cacti_log("ERROR: Refusing unsafe data source path '$data_source_path' for local_data_id $local_data_id", false, 'RRDTOOL');
+
+		return false;
+	}
 
 	/**
 	 * ok, if that passes lets check to make sure an rra does not already
