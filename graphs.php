@@ -3207,7 +3207,7 @@ function create_graphs_filter(string $session_var) : array {
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Template'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '(cg_[0-9]|dq_[0-9]|[\-0-9])']],
+					'filter_options' => ['options' => ['regexp' => '/^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)$/']],
 					'default'        => '-1',
 					'pageset'        => true,
 					'array'          => $normalized_templates,
