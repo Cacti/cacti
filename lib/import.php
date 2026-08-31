@@ -257,7 +257,13 @@ function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id
 
 						break;
 					case 'data_template':
-						$hash_cache += xml_to_data_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
+						$cache_add = xml_to_data_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
+
+						if ($cache_add === false) {
+							return false;
+						}
+
+						$hash_cache += $cache_add;
 						$repair++;
 
 						break;
@@ -1344,9 +1350,32 @@ function xml_to_graph_template(string $hash, array &$xml_array, array &$hash_cac
 	return $hash_cache;
 }
 
+/**
+ * import_validate_data_source_item - applies the data_sources.php field rules to a
+ * Data Source item coming from a Template XML.  The import path never passes through
+ * those forms, and data_source_name, rrd_minimum and rrd_maximum all end up in an
+ * RRDtool command line, so they have to be checked here instead.
+ *
+ * @param string $field_name The $struct_data_source_item field being imported
+ * @param string $value      The decoded value from the Template XML
+ *
+ * @return bool True when the value is acceptable for the field
+ */
+function import_validate_data_source_item(string $field_name, string $value) : bool {
+	switch ($field_name) {
+		case 'data_source_name':
+			return preg_match('/^[a-zA-Z0-9_-]{1,19}\z/', $value) == 1;
+		case 'rrd_minimum':
+		case 'rrd_maximum':
+			return preg_match('/^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?|U|\|query_ifSpeed\||\|query_ifHighSpeed\|)\z/', $value) == 1;
+	}
+
+	return true;
+}
+
 function xml_to_data_template(string $hash, array &$xml_array, array &$hash_cache, bool $import_as_new, int $profile_id) : mixed {
 	global $struct_data_source, $struct_data_source_item, $import_template_id, $preview_only;
-	global $ignorable_hashes, $import_debug_info, $legacy_template;
+	global $ignorable_hashes, $import_debug_info, $legacy_template, $import_messages;
 
 	// track changes
 	$status = 0;
@@ -1498,6 +1527,18 @@ function xml_to_data_template(string $hash, array &$xml_array, array &$hash_cach
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache, 'data_template_rrd');
 					} else {
 						$save[$field_name] = xml_character_decode($item_array[$field_name]);
+
+						if (!import_validate_data_source_item($field_name, $save[$field_name])) {
+							// the value is attacker supplied, so it does not get to add lines to the log
+							$logged = substr(clean_up_lines($save[$field_name]), 0, 100);
+
+							cacti_log(sprintf('FATAL: Data Template \'%s\' rejected, the Data Source Item field \'%s\' holds the invalid value \'%s\'',
+								$xml_array['name'], $field_name, $logged), false, 'IMPORT', POLLER_VERBOSITY_LOW);
+
+							$import_messages[] = 45;
+
+							return false;
+						}
 					}
 				}
 			}

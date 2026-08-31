@@ -166,6 +166,7 @@ Cacti CHANGELOG
 -issue#7469: Escape path_php_binary before it reaches shell_exec in test_data_source
 -issue#7466: Escape path_stderrlog before it reaches the poller stderr shell redirect
 -issue#7658: Resolve client addresses only through explicitly trusted proxies
+-issue#7720: Data Source item fields imported from a Template XML are not held to the data_sources.php field rules
 -feature#7835: Add cacti_snmp_session_from_host() to build SNMP sessions from a device row
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
