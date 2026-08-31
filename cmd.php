@@ -722,22 +722,41 @@ function update_system_mibs(int $host_id) : void {
 		$uptimeAltFound = false;
 		$uptime         = false;
 
+		$uptimeAlt = false;
+		$uptimeSys = false;
+
 		if ($session !== false) {
 			foreach ($system_mibs as $name => $oid) {
 				$value = cacti_snmp_session_get($session, $oid);
 
-				if ($name == 'snmp_sysUpTimeInstanceAlt' && $value > 0) {
-					$uptime         = $value * 100;
-					$uptimeAltFound = true;
-				} elseif ($name == 'snmp_sysUpTimeInstance' && !$uptimeAltFound) {
-					$uptime = $value;
-				} elseif ($name != 'snmp_sysUpTimeInstanceAlt' && !empty($value)) {
+				if ($name == 'snmp_sysUpTimeInstanceAlt') {
+					if ($value > 0) {
+						$uptimeAlt = $value * 100;
+					}
+				} elseif ($name == 'snmp_sysUpTimeInstance') {
+					if ($value !== false && $value !== '') {
+						$uptimeSys = $value;
+					}
+				} elseif (!empty($value)) {
 					db_execute_prepared("UPDATE host SET $name = ?
 						WHERE deleted = ''
 						AND id = ?",
 						[$value, $host_id]
 					);
 				}
+			}
+
+			/**
+			 * snmpEngineTime tracks the SNMP engine, which can restart
+			 * independently of the system (for example OpenBSD snmpd). Prefer
+			 * it only when it is at least the system uptime: that still lets it
+			 * cover the 32-bit sysUpTime wrap, but stops an engine restart from
+			 * looking like a reboot and forcing a perpetual reindex.
+			 */
+			if ($uptimeAlt !== false && ($uptimeSys === false || $uptimeAlt >= $uptimeSys)) {
+				$uptime = $uptimeAlt;
+			} elseif ($uptimeSys !== false) {
+				$uptime = $uptimeSys;
 			}
 
 			if ($uptime !== false) {
