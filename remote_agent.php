@@ -185,14 +185,17 @@ function remote_client_authorized() : bool {
 		}
 	}
 
+	// A direct client-IP match against a poller's configured address is
+	// authoritative even when no hostname-based pollers exist, so check it
+	// before the empty-hostname guard.
+	if ($direct_match) {
+		return true;
+	}
+
 	if (!cacti_sizeof($allowed_hostnames)) {
 		cacti_log("Unauthorized remote agent access attempt from $client_addr", false, 'SECURITY');
 
 		return false;
-	}
-
-	if ($direct_match) {
-		return true;
 	}
 
 	foreach ($poller_hostnames as $poller_host) {
