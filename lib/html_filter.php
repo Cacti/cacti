@@ -124,7 +124,8 @@ class CactiTableFilter {
 					'filter' => [
 						'method'         => 'textbox',
 						'friendly_name'  => __('Search'),
-						'filter'         => FILTER_DEFAULT,
+						'filter'         => FILTER_CALLBACK,
+						'options'        => ['options' => 'sanitize_search_string'],
 						'placeholder'    => __('Enter a search term'),
 						'size'           => '30',
 						'default'        => '',
