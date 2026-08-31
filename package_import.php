@@ -262,7 +262,7 @@ function package_file_get_contents($filename) {
 
 		$data = import_read_package_data($xmlfile, $binary_signature);
 
-		if (isset($data['publickey'])) {
+		if (isset($data['publickey']) && package_public_key_is_trusted(base64_decode($data['publickey']))) {
 			$public_key = base64_decode($data['publickey']);
 		} else {
 			$public_key = get_public_key();
@@ -408,6 +408,28 @@ function package_get_details() {
 	}
 }
 
+function package_public_key_is_trusted($public_key) {
+	if ($public_key == '') {
+		return false;
+	}
+
+	if ($public_key == get_public_key()) {
+		return true;
+	}
+
+	$trusted = db_fetch_assoc('SELECT public_key FROM package_public_keys');
+
+	if (cacti_sizeof($trusted)) {
+		foreach ($trusted as $t) {
+			if ($t['public_key'] == $public_key) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 function import_validate_public_key($xmlfile, $accept = false) {
 	$public_key = get_public_key();
 
@@ -454,7 +476,10 @@ function import_validate_public_key($xmlfile, $accept = false) {
 				$package_publickey = base64_decode($xml['publickey']);
 			}
 
-			if ($package_publickey != '') {
+			// Only trust the key the package ships if the operator has
+			// already trusted it; otherwise verify against the Cacti key, which
+			// a self-signed package cannot forge.
+			if ($package_publickey != '' && package_public_key_is_trusted($package_publickey)) {
 				return $package_publickey;
 			} else {
 				return get_public_key();
