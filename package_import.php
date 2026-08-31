@@ -276,10 +276,12 @@ function package_file_get_contents($filename) {
 
 				$fdata = base64_decode($file['data']);
 
-				if (strlen($public_key) < 200) {
-					$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
-				} else {
-					$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
+				// Prefer SHA-256, but fall back to SHA-1 so packages signed before the
+				// SHA-256 transition still verify against a trusted public key.
+				$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
+
+				if ($ok != 1) {
+					$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
 				}
 
 				if ($ok != 1) {
