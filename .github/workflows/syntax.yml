@@ -377,6 +377,20 @@ jobs:
     - name: Install Cacti through the CLI
       run: sudo -u www-data -- php cli/install_cacti.php --accept-eula --install --force
 
+    - name: Verify Installer Postconditions
+      run: |
+        set -euo pipefail
+        cd ${{ github.workspace }}
+        mysql_config="$RUNNER_TEMP/mysql-client.cnf"
+        mysql_args=(--defaults-extra-file="$mysql_config")
+        expected_tables=$(grep -c '^CREATE TABLE' cacti.sql)
+        actual_tables=$(mysql "${mysql_args[@]}" cacti --batch --skip-column-names -e "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()")
+        installed_version=$(mysql "${mysql_args[@]}" cacti --batch --skip-column-names -e "SELECT cacti FROM version")
+        host_templates=$(mysql "${mysql_args[@]}" cacti --batch --skip-column-names -e "SELECT COUNT(*) FROM host_template")
+        test "$actual_tables" -eq "$expected_tables"
+        test "$installed_version" != "new_install"
+        test "$host_templates" -gt 0
+
     - name: Install Cacti Packages through CLI
       run: sudo -u www-data -- bash tests/tools/install_packages.sh
 

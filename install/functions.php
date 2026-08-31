@@ -229,39 +229,37 @@ function prime_default_settings() : void {
 	global $settings;
 
 	if (is_array($settings) && !isset($_SESSION['settings_primed'])) {
+		$defaults = [];
+
 		foreach ($settings as $tab_array) {
 			if (cacti_sizeof($tab_array)) {
 				foreach ($tab_array as $setting => $attributes) {
 					if (isset($attributes['default'])) {
-						$current = db_fetch_cell_prepared('SELECT value
-							FROM settings
-							WHERE name = ?',
-							[$setting]);
-
-						if ($current == '' || $current == null) {
-							db_execute_prepared('INSERT IGNORE INTO settings
-								(name, value) VALUES (?, ?)',
-								[$setting, $attributes['default']]);
-						}
+						$defaults[$setting] = $attributes['default'];
 					} elseif (isset($attributes['items'])) {
 						foreach ($attributes['items'] as $isetting => $iattributes) {
 							if (isset($iattributes['default'])) {
-								$current = db_fetch_cell_prepared('SELECT value
-									FROM settings
-									WHERE name = ?',
-									[$isetting]);
-
-								if ($current == '' || $current == null) {
-									db_execute_prepared('INSERT IGNORE INTO settings
-										(name, value)
-										VALUES (?, ?)',
-										[$isetting, $iattributes['default']]);
-								}
+								$defaults[$isetting] = $iattributes['default'];
 							}
 						}
 					}
 				}
 			}
+		}
+
+		foreach (array_chunk($defaults, 250, true) as $chunk) {
+			$placeholders = [];
+			$params       = [];
+
+			foreach ($chunk as $name => $value) {
+				$placeholders[] = '(?, ?)';
+				$params[]       = $name;
+				$params[]       = $value;
+			}
+
+			db_execute_prepared('INSERT IGNORE INTO settings
+				(name, value) VALUES ' . implode(', ', $placeholders),
+				$params);
 		}
 	}
 
@@ -434,7 +432,7 @@ function install_test_local_database_connection() : string|false {
 	}
 }
 
-function install_test_remote_database_connection() : string|false {
+function install_test_remote_database_connection() : string {
 	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default,
 	$rdatabase_type, $rdatabase_port, $rdatabase_retries, $rdatabase_ssl, $rdatabase_ssl_key,
 	$rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert;
@@ -481,23 +479,38 @@ function install_test_remote_database_connection() : string|false {
 
 	if (is_object($connection)) {
 		$version = db_fetch_cell('SELECT cacti FROM version', '', true, $connection);
-
-		if (cacti_version_compare($version, CACTI_VERSION, '<')) {
-			$failed  = true;
-			$message = __('Test Failed! Remote version newer than Primary.  Main Primary at %s and Remote at %s.', $version, CACTI_VERSION);
-		} else {
-			$failed  = false;
-			$message = __('Check ran successfully.');
-		}
+		$result  = install_remote_database_version_result((string) $version, CACTI_VERSION);
 
 		db_close($connection);
 
-		return json_encode(['status' => $failed, 'message' => $message]);
+		return json_encode($result, JSON_THROW_ON_ERROR);
 	} else {
 		$message = __('Unable to connect to the main Cacti server.');
 
-		return json_encode(['status' => 'false', 'message' => $message]);
+		return json_encode([
+			'status'  => 'false',
+			'message' => $message,
+		], JSON_THROW_ON_ERROR);
 	}
+}
+
+/**
+ * Compare the primary database version with the remote poller's code version.
+ *
+ * @return array{status: string, message: string}
+ */
+function install_remote_database_version_result(string $primaryVersion, string $remoteVersion) : array {
+	if (cacti_version_compare($primaryVersion, $remoteVersion, '<')) {
+		return [
+			'status'  => 'false',
+			'message' => __('Test Failed! Remote version newer than Primary.  Main Primary at %s and Remote at %s.', $primaryVersion, $remoteVersion),
+		];
+	}
+
+	return [
+		'status'  => 'true',
+		'message' => __('Check ran successfully.'),
+	];
 }
 
 function install_test_temporary_table() : bool {
@@ -989,7 +1002,7 @@ function install_setup_get_templates() : array {
 	return $info;
 }
 
-function install_setup_get_tables() : mixed {
+function install_setup_get_tables() : array|false {
 	// ensure all tables are utf8 enabled
 	$db_tables = get_cacti_base_tables();
 
@@ -997,10 +1010,18 @@ function install_setup_get_tables() : mixed {
 		return false;
 	}
 
+	$table_statuses = array_rekey(db_fetch_assoc('SELECT TABLE_NAME AS Name,
+		ENGINE AS Engine,
+		TABLE_ROWS AS `Rows`,
+		TABLE_COLLATION AS Collation,
+		ROW_FORMAT AS Row_format
+		FROM information_schema.TABLES
+		WHERE TABLE_SCHEMA = DATABASE()'), 'Name', ['Engine', 'Rows', 'Collation', 'Row_format']);
+
 	$t = [];
 
 	foreach ($db_tables as $table) {
-		$table_status = db_fetch_row("SHOW TABLE STATUS LIKE '$table'");
+		$table_status = $table_statuses[$table] ?? false;
 
 		$collation  = '';
 		$engine     = '';
@@ -1025,12 +1046,12 @@ function install_setup_get_tables() : mixed {
 			}
 		}
 
-		if ($table_status === false || $collation != '' || $engine != '' || $row_format != '') {
+		if (!is_array($table_status) || $collation != '' || $engine != '' || $row_format != '') {
 			$t[$table]['Name']       = $table;
-			$t[$table]['Collation']  = is_array($table_status) ? $table_status['Collation'] : '';
-			$t[$table]['Engine']     = is_array($table_status) ? $table_status['Engine'] : '';
+			$t[$table]['Collation']  = is_array($table_status) ? ($table_status['Collation'] ?? '') : '';
+			$t[$table]['Engine']     = is_array($table_status) ? ($table_status['Engine'] ?? '') : '';
 			$t[$table]['Rows']       = $rows;
-			$t[$table]['Row_format'] = is_array($table_status) ? $table_status['Row_format'] : '';
+			$t[$table]['Row_format'] = is_array($table_status) ? ($table_status['Row_format'] ?? '') : '';
 		}
 	}
 
@@ -1418,6 +1439,8 @@ function import_colors() : bool {
 
 	$contents = file(__DIR__ . '/colors.csv');
 
+	$colors = [];
+
 	if (is_array($contents) && cacti_count($contents)) {
 		foreach ($contents as $line) {
 			$line = trim($line);
@@ -1432,22 +1455,32 @@ function import_colors() : bool {
 				continue;
 			}
 
-			$natural = $parts[0];
-			$hex     = $parts[1];
-			$name    = $parts[2];
+			$hex  = $parts[1];
+			$name = $parts[2];
 
 			if (!preg_match('/^[0-9a-fA-F]{6}$/', $hex)) {
 				continue;
 			}
 
-			$id = db_fetch_cell_prepared('SELECT hex FROM colors WHERE hex = ?', [$hex]);
-
-			if (!empty($id)) {
-				db_execute_prepared('UPDATE colors SET name = ?, read_only = ? WHERE hex = ?', [$name, 'on', $hex]);
-			} else {
-				db_execute_prepared('INSERT IGNORE INTO colors (name, hex, read_only) VALUES (?, ?, ?)', [$name, $hex, 'on']);
-			}
+			$colors[$hex] = $name;
 		}
+	}
+
+	foreach (array_chunk($colors, 250, true) as $chunk) {
+		$placeholders = [];
+		$params       = [];
+
+		foreach ($chunk as $hex => $name) {
+			$placeholders[] = '(?, ?, ?)';
+			$params[]       = $name;
+			$params[]       = $hex;
+			$params[]       = 'on';
+		}
+
+		db_execute_prepared('INSERT INTO colors (name, hex, read_only) VALUES ' .
+			implode(', ', $placeholders) . '
+			ON DUPLICATE KEY UPDATE name = VALUES(name), read_only = VALUES(read_only)',
+			$params);
 	}
 
 	return true;

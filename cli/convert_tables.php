@@ -31,18 +31,19 @@ array_shift($parms);
 
 global $debug, $database_default;
 
-$innodb      = false;
-$utf8        = false;
-$latin       = false;
-$debug       = false;
-$size        = 1000000;
-$force       = false;
-$rebuild     = false;
-$dynamic     = false;
-$table_name  = '';
-$skip_tables = [];
-$installer   = false;
-$local       = false;
+$innodb            = false;
+$utf8              = false;
+$latin             = false;
+$debug             = false;
+$size              = 1000000;
+$force             = false;
+$rebuild           = false;
+$dynamic           = false;
+$table_name        = '';
+$skip_tables       = [];
+$installer         = false;
+$local             = false;
+$conversion_failed = false;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
@@ -138,7 +139,7 @@ if (cacti_sizeof($skip_tables) && $table_name != '') {
 	print_or_log($installer,  'ERROR: You can not specify a single table and skip tables at the same time.' . PHP_EOL . PHP_EOL);
 	display_help();
 
-	exit;
+	exit(1);
 }
 
 if (!($innodb || $utf8 || $latin)) {
@@ -166,7 +167,7 @@ if (cacti_sizeof($skip_tables)) {
 			print_or_log($installer,  "ERROR: Skip Table $table does not Exist.  Can not continue." . PHP_EOL . PHP_EOL);
 			display_help();
 
-			exit;
+			exit(1);
 		}
 	}
 }
@@ -187,7 +188,7 @@ if ($innodb) {
 			if (cacti_strtolower($engine['Engine']) == 'innodb' && cacti_strtolower($engine['Support']) == 'off') {
 				print_or_log($installer,  'InnoDB Engine is not enabled' . PHP_EOL);
 
-				exit;
+				exit(1);
 			}
 		}
 	}
@@ -214,6 +215,13 @@ if (cacti_sizeof($tables)) {
 			WHERE TABLE_NAME = ?
 			AND TABLE_SCHEMA = ?',
 			[$table, $database_default]);
+
+		if (!is_array($table_data) || $table_data === []) {
+			$conversion_failed = true;
+			record_log($installer, "FATAL: Table '$table' does not exist in database '$database_default'");
+
+			continue;
+		}
 
 		$canConvert = $rebuild;
 		$canInnoDB  = false;
@@ -266,6 +274,7 @@ if (cacti_sizeof($tables)) {
 				$status = db_execute("ALTER TABLE `$table`" . ($dynamic ? ' ROW_FORMAT=Dynamic, ' : '') . $sql);
 
 				if ($status === false) {
+					$conversion_failed = true;
 					print_or_log($installer,  ' Failed' . PHP_EOL);
 
 					record_log($installer, "FATAL: Conversion of Table '$table' Failed.  Command: 'ALTER TABLE `$table` $sql'");
@@ -280,6 +289,8 @@ if (cacti_sizeof($tables)) {
 		}
 	}
 }
+
+exit($conversion_failed ? 1 : 0);
 
 function print_or_log(bool $installer, string $text) : void {
 	if ($installer) {

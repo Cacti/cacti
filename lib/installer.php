@@ -424,6 +424,7 @@ class Installer implements JsonSerializable {
 		$this->modules     = $this->getModules();
 
 		$this->setDefaultTemplate($this->getDefaultTemplate());
+		$this->setTemplates($this->getTemplates());
 		$this->setProfile($this->getProfile());
 		$this->setAutomationMode($this->getAutomationMode());
 		$this->setAutomationOverride($this->getAutomationOverride());
@@ -1350,14 +1351,11 @@ class Installer implements JsonSerializable {
 		}
 
 		$sysDescrMatch = CACTI_SERVER_OS == 'win32' ? 'Windows' : 'Linux';
+		$template_ids  = $this->getDefaultAutomationTemplateIds();
 
 		foreach ($this->defaultAutomation as $item) {
 			if ($item['sysDescrMatch'] == $sysDescrMatch || !empty($default_template)) {
-				$host_template_id = db_fetch_cell_prepared('SELECT id
-					FROM host_template
-					WHERE hash = ?',
-					[$item['hash']]
-				);
+				$host_template_id = $template_ids[$item['hash']] ?? 0;
 
 				if (!empty($host_template_id)) {
 					if ($host_template_id != $default_template) {
@@ -1385,11 +1383,10 @@ class Installer implements JsonSerializable {
 		$default_template = null;
 
 		if (!empty($param_default_template)) {
+			$template_ids = $this->getDefaultAutomationTemplateIds();
+
 			foreach ($this->defaultAutomation as $item) {
-				$id = db_fetch_cell_prepared('SELECT id
-					FROM host_template
-					WHERE hash = ?',
-					[$item['hash']]);
+				$id = $template_ids[$item['hash']] ?? 0;
 
 				if ($id == $param_default_template) {
 					$default_template = $param_default_template;
@@ -1414,20 +1411,40 @@ class Installer implements JsonSerializable {
 	}
 
 	/**
+	 * Resolve the installer automation template hashes in one query.
+	 *
+	 * This intentionally does not cache results because package import can add
+	 * host templates between installer phases.
+	 *
+	 * @return array<string, int> Host template IDs keyed by template hash.
+	 */
+	private function getDefaultAutomationTemplateIds() : array {
+		$hashes = array_values(array_unique(array_column($this->defaultAutomation, 'hash')));
+
+		if (!cacti_sizeof($hashes)) {
+			return [];
+		}
+
+		$placeholders = implode(', ', array_fill(0, cacti_sizeof($hashes), '?'));
+		$templates    = db_fetch_assoc_prepared("SELECT id, hash
+			FROM host_template
+			WHERE hash IN ($placeholders)",
+			$hashes);
+
+		return array_map('intval', array_rekey($templates, 'hash', 'id'));
+	}
+
+	/**
 	 * getTemplates() - returns a list of expected templates and whether
 	 * they have been selected for installation.
 	 *
-	 * @return mixed
+	 * @return array<string, bool>
 	 */
-	private function getTemplates() : mixed { // @phpstan-ignore-line
+	private function getTemplates() : array { // @phpstan-ignore-line
 		$known_templates = install_setup_get_templates();
 
-		if ($known_templates === false) {
-			return false;
-		}
-
 		$db_templates = array_rekey(
-			db_fetch_assoc('SELECT name, value FROM settings WHERE name LIKE \'install_template_%\''),
+			db_fetch_assoc('SELECT name, value FROM settings WHERE name LIKE \'install_tp_%\''),
 			'name',
 			'value'
 		);
@@ -1441,7 +1458,7 @@ class Installer implements JsonSerializable {
 		foreach ($known_templates as $known) {
 			$filename    = $known['filename'];
 			$key_base    = str_replace('.', '_', $filename);
-			$key_install = 'install_template_' . $key_base;
+			$key_install = 'install_tp_' . $key_base;
 			$key_check   = 'chk_template_' . $key_base;
 
 			log_install_high('templates', 'getTemplates(): Checking template ' . $known['name'] . ' using base: ' . $key_base);
@@ -1472,6 +1489,49 @@ class Installer implements JsonSerializable {
 	}
 
 	/**
+	 * Confirm that a browser submitted the complete server-rendered selection.
+	 *
+	 * Web selection forms submit both checked and unchecked rows. Requiring an
+	 * exact key set prevents a missing selector, stale page, or truncated request
+	 * from being interpreted as an intentional request to clear every selection.
+	 * CLI callers remain sparse by design and are validated by the individual
+	 * template/table allowlists.
+	 *
+	 * @param array<string, mixed> $submitted
+	 * @param array<int, string>   $expected
+	 */
+	private static function isCompleteSelectionPayload(array $submitted, array $expected) : bool {
+		unset($submitted['all']);
+
+		$submittedKeys = array_keys($submitted);
+		sort($submittedKeys);
+		sort($expected);
+
+		if ($submittedKeys !== $expected) {
+			return false;
+		}
+
+		foreach ($submitted as $value) {
+			if (!in_array($value, [true, false, 'true', 'false', 'on', '', 1, 0, '1', '0'], true)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Determines whether the web installer renders a conversion checkbox for a table.
+	 *
+	 * @param array<string, mixed> $table The table metadata
+	 *
+	 * @return bool Whether the table can be selected in the web installer
+	 */
+	private static function isTableSelectable(array $table) : bool {
+		return isset($table['Rows']) && is_numeric($table['Rows']) && (int) $table['Rows'] < 1000000;
+	}
+
+	/**
 	 * setTemplates() - sets a list of templates that should be installed
 	 * during the installServer() phase.
 	 *
@@ -1482,9 +1542,31 @@ class Installer implements JsonSerializable {
 	 * passed that is not expected
 	 */
 	private function setTemplates(array $param_templates = []) : void {
-		db_execute("DELETE FROM settings WHERE name LIKE 'install_tp_%'");
-
 		$known_templates = install_setup_get_templates();
+		$expected_keys   = [];
+
+		if (!is_array($known_templates)) {
+			$this->addError(Installer::STEP_TEMPLATE_INSTALL, 'Templates', 'SelectionPayload', __('Unable to load the available templates'));
+
+			return;
+		}
+
+		foreach ($known_templates as $known) {
+			$expected_keys[] = 'chk_template_' . str_replace('.', '_', $known['filename']);
+		}
+
+		if ($this->runtime === 'Web' && !self::isCompleteSelectionPayload($param_templates, $expected_keys)) {
+			$this->addError(
+				Installer::STEP_TEMPLATE_INSTALL,
+				'Templates',
+				'SelectionPayload',
+				__('The template selection was incomplete. Reload this installer step and select the templates again.')
+			);
+
+			return;
+		}
+
+		db_execute("DELETE FROM settings WHERE name LIKE 'install_tp_%'");
 
 		log_install_medium('templates', 'setTemplates(): Updating templates');
 		log_install_debug('templates', 'setTemplates(): Parameter data:' . clean_up_lines(var_export($param_templates, true)));
@@ -1524,7 +1606,7 @@ class Installer implements JsonSerializable {
 				$this->setTrueFalse($enabled, $set, $key, false);
 				$use   = ($set) || ($param_all);
 				$value = ($use) ? $template['filename'] : '';
-				log_install_high('templates', "setTemplates(): Use: $use, Set: $set, All: $param_all, key: install_template_$key = " . $value);
+				log_install_high('templates', "setTemplates(): Use: $use, Set: $set, All: $param_all, key: install_tp_$key = " . $value);
 
 				// Don't default install templates if upgrade
 				if ($this->getMode() == Installer::MODE_DOWNGRADE) {
@@ -1606,9 +1688,33 @@ class Installer implements JsonSerializable {
 	 * @return void
 	 */
 	private function setTables(array $param_tables = []) : void {
-		db_execute('DELETE FROM settings WHERE name like \'install_table_%\'');
+		$known_tables  = install_setup_get_tables();
+		$expected_keys = [];
 
-		$known_tables = install_setup_get_tables();
+		if (!is_array($known_tables)) {
+			$this->addError(Installer::STEP_CHECK_TABLES, 'Tables', 'SelectionPayload', __('Unable to load the tables requiring conversion'));
+
+			return;
+		}
+
+		foreach ($known_tables as $known) {
+			if (self::isTableSelectable($known)) {
+				$expected_keys[] = 'chk_table_' . $known['Name'];
+			}
+		}
+
+		if ($this->runtime === 'Web' && !self::isCompleteSelectionPayload($param_tables, $expected_keys)) {
+			$this->addError(
+				Installer::STEP_CHECK_TABLES,
+				'Tables',
+				'SelectionPayload',
+				__('The table selection was incomplete. Reload this installer step and select the tables again.')
+			);
+
+			return;
+		}
+
+		db_execute('DELETE FROM settings WHERE name like \'install_table_%\'');
 
 		log_install_medium('tables', 'setTables(): Updating Tables');
 		log_install_debug('tables', 'setTables(): Parameter data:' . clean_up_lines(var_export($param_tables, true)));
@@ -1819,7 +1925,7 @@ class Installer implements JsonSerializable {
 		return (cacti_version_compare($this->old_cacti_version, CACTI_VERSION, '='));
 	}
 
-	public function shouldExitWithReason() : mixed {
+	public function shouldExitWithReason() : int|false {
 		if ($this->isDatabaseEmpty()) {
 			return Installer::EXIT_DB_EMPTY;
 		}
@@ -3065,7 +3171,7 @@ class Installer implements JsonSerializable {
 				html_header_checkbox([__('Name'), __('Collation'), __('Row Format'), __('Engine'), __('Rows')]);
 
 				foreach ($tables as $id => $p) {
-					$enabled = ($p['Rows'] < 1000000 ? true : false);
+					$enabled = self::isTableSelectable($p);
 
 					$style = ($enabled ? '' : 'text-decoration: line-through;');
 
@@ -3406,13 +3512,13 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated.  You may now start using the software.', CACTI_VERSION_FULL));
 
 			db_execute('DELETE FROM settings WHERE name LIKE "install_%"');
+
+			// Remove integrated plugin references only after a successful install.
+			api_plugin_uninstall_integrated();
 		} elseif ($this->stepCurrent == Installer::STEP_ERROR) {
 			$output = Installer::sectionTitleError();
 			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated with errors', CACTI_VERSION_BRIEF_FULL));
 		}
-
-		// Remove integrated plugin references
-		api_plugin_uninstall_integrated();
 
 		$output .= Installer::sectionSubTitleEnd();
 
@@ -3496,7 +3602,7 @@ class Installer implements JsonSerializable {
 
 							$output .= '<tr class=\'cactiInstallSqlRow\'>';
 							$output .= '<td class=\'cactiInstallSqlIcon ' . $cssClass . '\' width=\'50\'><i class=\'' . $dbIcon . '\'></i></td>';
-							$output .= '<td class=\'cactiInstallSqlLeft\'>' . $sql_temp . '</td>';
+							$output .= '<td class=\'cactiInstallSqlLeft\'>' . html_escape($sql_temp) . '</td>';
 							$output .= '<td class=\'cactiInstallSqlRight ' . $cssClass . '\'>' . $dbStatus . '</td>';
 							$output .= '</tr>';
 
@@ -3526,6 +3632,10 @@ class Installer implements JsonSerializable {
 		$this->buttonNext->Enabled     = true;
 
 		$this->stepData = ['Sections' => $sections];
+
+		if ($this->stepCurrent == Installer::STEP_COMPLETE && is_string($cacheFile) && is_file($cacheFile)) {
+			unlink($cacheFile);
+		}
 
 		if ($this->stepCurrent == Installer::STEP_ERROR) {
 			$this->buttonPrevious->Text    = __('Get Help');
@@ -3625,7 +3735,7 @@ class Installer implements JsonSerializable {
 	}
 
 	private function install() : void {
-		$failure = '';
+		$failure = $this->mode == Installer::MODE_UPGRADE ? '' : $this->validateRequiredSchema();
 
 		switch ($this->mode) {
 			case Installer::MODE_UPGRADE:
@@ -3646,45 +3756,58 @@ class Installer implements JsonSerializable {
 
 		$this->setProgress(Installer::PROGRESS_START);
 
-		$this->setCSRFSecret();
+		if ($failure === '') {
+			$this->setCSRFSecret();
 
-		$this->refreshVendorDependencies();
+			$this->refreshVendorDependencies();
 
-		$this->convertDatabase();
+			$failure = $this->convertDatabase();
 
-		if ($this->mode == Installer::MODE_POLLER) {
-			$failure = $this->installPoller();
-		} else {
-			if ($this->mode == Installer::MODE_INSTALL) {
-				$failure = $this->installTemplate();
+			if ($failure === '') {
+				if ($this->mode == Installer::MODE_POLLER) {
+					$failure = $this->installPoller();
+				} else {
+					if ($this->mode == Installer::MODE_INSTALL) {
+						$failure = $this->installTemplate();
 
-				if (empty($failure)) {
-					$failure = $this->installServer();
-				}
-			} elseif ($this->mode == Installer::MODE_UPGRADE) {
-				$failure = $this->upgradeDatabase();
+						if ($failure === '') {
+							$failure = $this->installServer();
+						}
+					} elseif ($this->mode == Installer::MODE_UPGRADE) {
+						$failure = $this->upgradeDatabase();
 
-				if (empty($failure)) {
-					$failure = $this->installTemplate();
+						if ($failure === '') {
+							$failure = $this->installTemplate();
+						}
+					}
+					Installer::disableInvalidPlugins();
 				}
 			}
-			Installer::disableInvalidPlugins();
 		}
 
-		$this->setDefaultTemplate();
+		if ($failure === '') {
+			$this->setDefaultTemplate();
+			$failure = $this->validateRequiredSchema();
+		}
 
 		log_install_always('', __('Finished %s Process for v%s', $which, CACTI_VERSION));
 
 		set_install_config_option('install_error', $failure);
 
-		if (empty($failure)) {
+		if ($failure === '') {
 			// No failures so lets update the version
 			$this->setProgress(Installer::PROGRESS_VERSION_BEGIN);
-			db_execute('TRUNCATE TABLE version');
-			db_execute('INSERT INTO version (cacti) VALUES (\'' . CACTI_VERSION . '\');');
-			set_install_config_option('install_version', CACTI_VERSION);
-			$this->setProgress(Installer::PROGRESS_VERSION_END);
 
+			if (!$this->writeInstalledVersion()) {
+				$failure = __('Unable to persist and verify the installed Cacti version');
+				set_install_config_option('install_error', $failure);
+			} else {
+				set_install_config_option('install_version', CACTI_VERSION);
+				$this->setProgress(Installer::PROGRESS_VERSION_END);
+			}
+		}
+
+		if ($failure === '') {
 			// Sync the remote data collectors
 			if ($this->mode != Installer::MODE_POLLER) {
 				$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_START);
@@ -3700,6 +3823,52 @@ class Installer implements JsonSerializable {
 			$this->setProgress(Installer::PROGRESS_COMPLETE);
 			$this->setStep(Installer::STEP_ERROR);
 		}
+	}
+
+	/**
+	 * Verify that every table declared by cacti.sql exists in the active schema.
+	 *
+	 * @return string An empty string on success, otherwise a user-facing error.
+	 */
+	private function validateRequiredSchema() : string {
+		$requiredTables = get_cacti_base_tables();
+		$tableRows      = db_fetch_assoc('SELECT TABLE_NAME
+			FROM information_schema.TABLES
+			WHERE TABLE_SCHEMA = DATABASE()');
+		$actualTables   = array_column($tableRows, 'TABLE_NAME');
+		$missingTables  = array_values(array_diff($requiredTables, $actualTables));
+
+		if ($missingTables === []) {
+			return '';
+		}
+
+		$failure = __('The Cacti database schema is incomplete. Missing required tables: %s', implode(', ', $missingTables));
+		log_install_always('', $failure);
+		$this->addError(Installer::STEP_ERROR, 'Schema', 'RequiredTables', $failure);
+
+		return $failure;
+	}
+
+	/**
+	 * Persist the final version as one row and verify the database handoff.
+	 */
+	private function writeInstalledVersion() : bool {
+		if (!db_execute('START TRANSACTION')) {
+			return false;
+		}
+
+		if (!db_execute('DELETE FROM version') ||
+			!db_execute_prepared('INSERT INTO version (cacti) VALUES (?)', [CACTI_VERSION]) ||
+			!db_execute('COMMIT')
+		) {
+			db_execute('ROLLBACK');
+
+			return false;
+		}
+
+		$version = db_fetch_row('SELECT COUNT(*) AS row_count, MAX(cacti) AS cacti FROM version');
+
+		return $version['cacti'] === CACTI_VERSION && (int) $version['row_count'] === 1;
 	}
 
 	private function installTemplate() : string {
@@ -3727,16 +3896,15 @@ class Installer implements JsonSerializable {
 				if (!empty($package)) {
 					set_install_config_option('install_updated', microtime(true));
 
-					$info   = import_package_get_details($path . $package);
 					$result = import_package($path . $package, $this->profile, false, false, false, false, true, [], []);
 
-					if ($result !== false) {
+					if ($this->packageImportSucceeded($result)) {
 						log_install_always('', __('Import of Package #%s \'%s\' under Profile \'%s\' succeeded', $i, $package, $this->profile));
 						$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN + $i);
 					}
 				}
 
-				if ($result === false) {
+				if (!$this->packageImportSucceeded($result)) {
 					log_install_always('', __('Import of Package #%s \'%s\' under Profile \'%s\' failed', $i, $package, $this->profile));
 					$this->addError(Installer::STEP_ERROR, 'Package:' . $package, 'FAIL: XML version code error');
 					$failure = __('One or more template packages failed to import');
@@ -3745,24 +3913,30 @@ class Installer implements JsonSerializable {
 
 			// Repair automation rules if broken
 			repair_automation();
+			$template_ids = $this->getDefaultAutomationTemplateIds();
+			$mapped_ids   = [];
+
+			if (cacti_sizeof($template_ids)) {
+				$host_template_ids = array_values($template_ids);
+				$placeholders      = implode(', ', array_fill(0, cacti_sizeof($host_template_ids), '?'));
+				$mapped_ids        = array_rekey(
+					db_fetch_assoc_prepared("SELECT host_template
+						FROM automation_templates
+						WHERE host_template IN ($placeholders)",
+						$host_template_ids
+					),
+					'host_template',
+					'host_template'
+				);
+			}
 
 			foreach ($this->defaultAutomation as $item) {
-				$host_template_id = db_fetch_cell_prepared('SELECT id
-					FROM host_template
-					WHERE hash = ?',
-					[$item['hash']]
-				);
+				$host_template_id = $template_ids[$item['hash']] ?? 0;
 
 				if (!empty($host_template_id)) {
 					log_install_always('', __('Mapping Automation Template for Device Template \'%s\'', $item['name']));
 
-					$exists = db_fetch_cell_prepared('SELECT host_template
-						FROM automation_templates
-						WHERE host_template = ?',
-						[$host_template_id]
-					);
-
-					if (empty($exists)) {
+					if (!isset($mapped_ids[$host_template_id])) {
 						db_execute_prepared('INSERT INTO automation_templates
 							(host_template, availability_method, sysDescr, sysName, sysOid, sequence)
 							VALUES (?, ?, ?, ?, ?, ?)',
@@ -3781,6 +3955,23 @@ class Installer implements JsonSerializable {
 		$this->setProgress(Installer::PROGRESS_TEMPLATES_END);
 
 		return $failure;
+	}
+
+	/**
+	 * Validate both the XML import and every package file handoff.
+	 */
+	private function packageImportSucceeded(mixed $result) : bool {
+		if (!is_array($result) || !array_key_exists(1, $result) || !is_array($result[1])) {
+			return false;
+		}
+
+		foreach ($result[1] as $status) {
+			if ($status !== __('written')) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private function installPoller() : string {
@@ -3814,33 +4005,36 @@ class Installer implements JsonSerializable {
 
 		log_install_high('automation', "Profile ID: $profile_id (" . $this->profile . ') returned ' . clean_up_lines(var_export($profile, true)));
 
-		if ($profile['id'] == $this->profile) {
+		if (!is_array($profile) || !isset($profile['id'], $profile['name'], $profile['step'], $profile['heartbeat'])) {
+			return __('Failed to find selected profile (%s)', $profile_id);
+		}
+
+		if ((int) $profile['id'] == $profile_id) {
 			log_install_always('automation', __('Setting default data source profile to %s (%s)', $profile['name'], $profile['id']));
 			$this->setProgress(Installer::PROGRESS_PROFILE_DEFAULT);
 
-			db_execute('UPDATE data_source_profiles
-				SET `default` = ""');
-
-			db_execute_prepared('UPDATE data_source_profiles
+			$profileUpdated = db_execute('UPDATE data_source_profiles
+				SET `default` = ""') &&
+				db_execute_prepared('UPDATE data_source_profiles
 				SET `default` = \'on\'
 				WHERE `id` = ?',
-				[$profile['id']]
-			);
-
-			db_execute_prepared('UPDATE data_template_data
+					[$profile['id']]
+				) &&
+				db_execute_prepared('UPDATE data_template_data
 				SET rrd_step = ?, data_source_profile_id = ?',
-				[$profile['step'], $profile['id']]
-			);
-
-			db_execute_prepared('UPDATE data_template_rrd
+					[$profile['step'], $profile['id']]
+				) &&
+				db_execute_prepared('UPDATE data_template_rrd
 				SET rrd_heartbeat = ?',
-				[$profile['heartbeat']]
-			);
+					[$profile['heartbeat']]
+				);
+
+			if (!$profileUpdated) {
+				return __('Unable to apply the selected data source profile');
+			}
 
 			$this->setProgress(Installer::PROGRESS_PROFILE_POLLER);
 			set_install_config_option('poller_interval', $profile['step']);
-		} else {
-			log_install_always('', __('Failed to find selected profile (%s), no changes were made', $profile_id));
 		}
 
 		$this->setProgress(Installer::PROGRESS_PROFILE_END);
@@ -3938,31 +4132,26 @@ class Installer implements JsonSerializable {
 			$this->setProgress(Installer::PROGRESS_DEVICE_TEMPLATE);
 			log_install_always('', __('Device Template for First Cacti Device is %s', $host_template_id));
 
-			$command = cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
-				cacti_escapeshellarg(CACTI_PATH_CLI . '/add_device.php') .
-				' --description=' . cacti_escapeshellarg($description) .
-				' --ip=' . cacti_escapeshellarg($ip) .
-				' --template=' . $host_template_id .
-				' --notes=' . cacti_escapeshellarg('Initial Cacti Device') .
-				' --poller=1 --site=0 --avail=' . cacti_escapeshellarg($avail) .
-				' --version=' . $version .
-				' --community=' . cacti_escapeshellarg($community);
+			$result = $this->runCliCommand(CACTI_PATH_CLI . '/add_device.php', [
+				'--description=' . $description,
+				'--ip=' . $ip,
+				'--template=' . $host_template_id,
+				'--notes=Initial Cacti Device',
+				'--poller=1',
+				'--site=0',
+				'--avail=' . $avail,
+				'--version=' . $version,
+				'--community=' . $community,
+			]);
 
-			log_install_always('', __('The Add Default Device Command is: \'%s\'', $command));
-
-			$return = 0;
-			$output = [];
-
-			$last_line = exec($command, $output, $return);
-
-			if ($return != 0) {
+			if ($result['exitCode'] != 0) {
 				log_install_always('', __('WARNING: Default Device Failed to be Added error to follow.'));
 			} else {
 				log_install_always('', __('Default Device Added to Cacti.'));
 			}
 
-			if (cacti_sizeof($output)) {
-				foreach ($output as $l) {
+			if ($result['output'] !== []) {
+				foreach ($result['output'] as $l) {
 					log_install_always('', __('Output: %s.', $l));
 				}
 			}
@@ -3973,6 +4162,10 @@ class Installer implements JsonSerializable {
 				LIMIT 1',
 				[$host_template_id]
 			);
+
+			if ($result['exitCode'] != 0 && empty($host_id)) {
+				return __('The default device could not be created');
+			}
 
 			if (!empty($host_id)) {
 				$this->setProgress(Installer::PROGRESS_DEVICE_GRAPH);
@@ -3992,12 +4185,16 @@ class Installer implements JsonSerializable {
 
 					$this->setProgress(Installer::PROGRESS_DEVICE_TREE);
 					log_install_always('', __('Adding Device to Default Tree'));
-					shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
-						cacti_escapeshellarg(CACTI_PATH_CLI . '/add_tree.php') .
-						' --type=node' .
-						' --node-type=host' .
-						' --tree-id=1' .
-						' --host-id=' . $host_id);
+					$treeResult = $this->runCliCommand(CACTI_PATH_CLI . '/add_tree.php', [
+						'--type=node',
+						'--node-type=host',
+						'--tree-id=1',
+						'--host-id=' . $host_id,
+					]);
+
+					if ($treeResult['exitCode'] != 0) {
+						log_install_always('', __('WARNING: The default device could not be added to the default tree.'));
+					}
 				} else {
 					log_install_always('', __('No templated graphs for Default Device were found'));
 				}
@@ -4036,47 +4233,115 @@ class Installer implements JsonSerializable {
 		return '';
 	}
 
-	private function convertDatabase() : void {
-		$tables = db_fetch_assoc("SELECT value FROM settings WHERE name like 'install_table_%'");
+	/**
+	 * Run a Cacti CLI script without invoking a command shell.
+	 *
+	 * @param array<int, string> $arguments
+	 *
+	 * @return array{exitCode: int, output: array<int, string>}
+	 */
+	private function runCliCommand(string $script, array $arguments = [], ?string $phpBinary = null) : array {
+		$phpBinary ??= (string) read_config_option('path_php_binary');
+
+		if ($phpBinary === '' || !is_file($phpBinary) || !is_executable($phpBinary) || !is_file($script)) {
+			return ['exitCode' => 127, 'output' => [__('Unable to execute the configured PHP binary or CLI script')]];
+		}
+
+		$command   = [$phpBinary, '-q', $script, ...$arguments];
+		$pipes     = [];
+		$errorFile = tmpfile();
+
+		if ($errorFile === false) {
+			return ['exitCode' => 127, 'output' => [__('Unable to create a temporary file for CLI errors')]];
+		}
+
+		$process = proc_open(
+			$command,
+			[
+				1 => ['pipe', 'w'],
+				2 => $errorFile,
+			],
+			$pipes,
+			null,
+			null,
+			['bypass_shell' => true]
+		);
+
+		if (!is_resource($process)) {
+			fclose($errorFile);
+
+			return ['exitCode' => 127, 'output' => [__('Unable to start the Cacti CLI process')]];
+		}
+
+		$output = stream_get_contents($pipes[1]);
+		fclose($pipes[1]);
+		$exitCode = proc_close($process);
+		rewind($errorFile);
+		$errors = stream_get_contents($errorFile);
+		fclose($errorFile);
+		$combinedOutput = ($output === false ? '' : $output) . ($errors === false ? '' : $errors);
+		$lines          = preg_split('/\R/', trim($combinedOutput));
+
+		return [
+			'exitCode' => $exitCode,
+			'output'   => is_array($lines) ? array_values(array_filter($lines, static fn (string $line) : bool => $line !== '')) : [],
+		];
+	}
+
+	private function convertDatabase() : string {
+		$tables   = db_fetch_assoc("SELECT name, value FROM settings WHERE name like 'install_table_%'");
+		$failures = [];
 
 		if (cacti_sizeof($tables)) {
 			log_install_always('', __('Found %s tables to convert', cacti_sizeof($tables)));
 			$this->setProgress(Installer::PROGRESS_TABLES_BEGIN);
 			$i = 0;
 
-			foreach ($tables as $key => $table) {
+			foreach ($tables as $table) {
 				$i++;
 				$name = $table['value'];
 
 				if (!empty($name)) {
 					log_install_always('', __('Converting Table #%s \'%s\'', $i, $name), true);
-					$results = shell_exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
-						cacti_escapeshellarg(CACTI_PATH_CLI . '/convert_tables.php') .
-						' --table=' . cacti_escapeshellarg($name) .
-						' --utf8 --innodb --dynamic');
+					$result = $this->runCliCommand(CACTI_PATH_CLI . '/convert_tables.php', [
+						'--table=' . $name,
+						'--utf8',
+						'--innodb',
+						'--dynamic',
+					]);
+					$results = implode(PHP_EOL, $result['output']);
 
 					set_install_config_option('install_updated', microtime(true));
 					log_install_debug('convert', sprintf('Convert table #%s \'%s\' results: %s', $i, $name, $results), true);
 
-					if ((stripos($results, 'Converting table') !== false && stripos($results, 'Successful') !== false) ||
-						stripos($results, 'Skipped table') !== false
-					) {
-						set_install_config_option($key, '');
+					if ($result['exitCode'] === 0) {
+						set_install_config_option($table['name'], '');
+					} else {
+						$failures[] = $name;
+						log_install_always('', __('Conversion failed for table \'%s\' with exit code %s', $name, $result['exitCode']));
 					}
 				}
 			}
 		} else {
-			log_install_always('', __('No tables where found or selected for conversion'));
+			log_install_always('', __('No tables were found or selected for conversion'));
 		}
+
+		return $failures === []
+			? ''
+			: __('One or more database tables failed conversion: %s', implode(', ', $failures));
 	}
 
-	private function upgradeDatabase() : mixed {
+	private function upgradeDatabase() : string {
 		global $cacti_version_codes, $cacti_upgrade_version, $database_statuses, $database_upgrade_status;
 
 		$failure = DB_STATUS_SKIPPED;
 
 		$cachePrev = read_config_option('install_cache_db', true);
 		$cacheFile = tempnam(sys_get_temp_dir(), 'cdu');
+
+		if ($cacheFile === false) {
+			return __('Unable to create the database-upgrade status file');
+		}
 
 		log_install_always('', __('Switched from %s to %s', $cachePrev, $cacheFile));
 		set_install_config_option('install_cache_db', $cacheFile);
@@ -4119,12 +4384,18 @@ class Installer implements JsonSerializable {
 				}
 
 				// Only update database version if database successfully upgraded
-				if ($ver_status != DB_STATUS_ERROR) {
+				if ($ver_status == DB_STATUS_SUCCESS || $ver_status == DB_STATUS_SKIPPED) {
 					if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
-						db_execute("UPDATE version SET cacti = '" . $cacti_upgrade_version . "'");
-						$orig_cacti_version = $cacti_upgrade_version;
+						if (!db_execute_prepared('UPDATE version SET cacti = ?', [$cacti_upgrade_version])) {
+							$ver_status = DB_STATUS_ERROR;
+						} else {
+							$orig_cacti_version = $cacti_upgrade_version;
+						}
 					}
-					$prev_cacti_version = $cacti_upgrade_version;
+
+					if ($ver_status != DB_STATUS_ERROR) {
+						$prev_cacti_version = $cacti_upgrade_version;
+					}
 				}
 			}
 
@@ -4139,15 +4410,17 @@ class Installer implements JsonSerializable {
 
 		set_install_config_option('install_cache_result', $failure);
 
-		if ($failure == DB_STATUS_ERROR) {
-			return 'WARNING: One or more upgrades failed to install correctly';
+		if ($failure <= DB_STATUS_WARNING) {
+			return __('One or more database upgrades failed or completed with warnings; the database version was not advanced');
 		}
 
-		if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<=')) {
-			db_execute("UPDATE version SET cacti = '" . CACTI_VERSION_FULL . "'");
+		if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<=') &&
+			!db_execute_prepared('UPDATE version SET cacti = ?', [CACTI_VERSION_FULL])
+		) {
+			return __('Unable to persist the upgraded database version');
 		}
 
-		return false;
+		return '';
 	}
 
 	private function checkDatabaseUpgrade(string $cacti_upgrade_version) : int {
@@ -4278,7 +4551,7 @@ class Installer implements JsonSerializable {
 		$output_log = '';
 
 		foreach ($logcontents as $logline) {
-			$output_log = $logline . '<br/>' . $output_log;
+			$output_log = html_escape($logline) . '<br/>' . $output_log;
 		}
 
 		if (empty($output_log)) {
@@ -4340,8 +4613,20 @@ class Installer implements JsonSerializable {
 
 	private static function fullSyncDataCollectorLog(array $poller_ids, string $format) : void {
 		if (cacti_sizeof($poller_ids) > 0) {
+			$unique_ids   = array_values(array_unique($poller_ids, SORT_REGULAR));
+			$placeholders = implode(', ', array_fill(0, cacti_sizeof($unique_ids), '?'));
+			$pollers      = array_rekey(
+				db_fetch_assoc_prepared("SELECT id, name
+					FROM poller
+					WHERE id IN ($placeholders)",
+					$unique_ids
+				),
+				'id',
+				'name'
+			);
+
 			foreach ($poller_ids as $id) {
-				$poller = db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', [$id]);
+				$poller = $pollers[$id] ?? false;
 
 				log_install_always('sync', __($format, $poller, $id));
 			}

@@ -1,0 +1,112 @@
+name: Installer coverage
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/installer-coverage.yml'
+      - 'cacti.sql'
+      - 'cli/convert_tables.php'
+      - 'cli/install_cacti.php'
+      - 'docker/**'
+      - 'install/**'
+      - 'lib/import.php'
+      - 'lib/installer.php'
+      - 'lib/utility.php'
+      - 'phpunit-installer.xml'
+      - 'tests/Unit/Installer/**'
+      - 'tests/Unit/Installer*.php'
+      - 'tests/Unit/Security/Csrf/InstallerCsrfRecoveryTest.php'
+      - 'tests/e2e/installer_resilience_docker.sh'
+      - 'tests/fixtures/InstallerCliProbe.php'
+      - 'tests/integration/Installer*.php'
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/installer-coverage.yml'
+      - 'cacti.sql'
+      - 'cli/convert_tables.php'
+      - 'cli/install_cacti.php'
+      - 'docker/**'
+      - 'install/**'
+      - 'lib/import.php'
+      - 'lib/installer.php'
+      - 'lib/utility.php'
+      - 'phpunit-installer.xml'
+      - 'tests/Unit/Installer/**'
+      - 'tests/Unit/Installer*.php'
+      - 'tests/Unit/Security/Csrf/InstallerCsrfRecoveryTest.php'
+      - 'tests/e2e/installer_resilience_docker.sh'
+      - 'tests/fixtures/InstallerCliProbe.php'
+      - 'tests/integration/Installer*.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: installer-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit:
+    name: installer unit and contract tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up PHP and Cacti test dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.2'
+          coverage: xdebug
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          dependency-mode: locked-tests
+          install-args: --prefer-dist --no-progress --no-interaction
+
+      - name: Run installer unit tests
+        env:
+          XDEBUG_MODE: coverage
+        run: |
+          set -euo pipefail
+          composer test -- --colors=never \
+            --configuration=phpunit-installer.xml \
+            --testsuite='Installer Unit' \
+            --coverage \
+            --coverage-clover installer-unit-coverage.xml
+
+      - name: Run installer integration contracts
+        run: |
+          set -euo pipefail
+          composer test -- --colors=never \
+            --configuration=phpunit-installer.xml \
+            --testsuite='Installer Integration'
+
+      - name: Upload unit coverage
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: installer-unit-coverage
+          path: installer-unit-coverage.xml
+          if-no-files-found: error
+
+  docker-integration:
+    name: installer Docker integration matrix
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Run fresh, upgrade, CLI, and background scenarios
+        run: tests/e2e/installer_resilience_docker.sh
