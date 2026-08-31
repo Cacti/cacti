@@ -879,6 +879,8 @@ function is_valid_theme(mixed &$theme, int $set_user = 0) : bool {
 		$theme = read_config_option('selected_theme', true);
 
 		if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css')) {
+			$valid = true;
+
 			if ($user_table && $set_user && isset($_SESSION[SESS_USER_ID])) {
 				db_execute_prepared('UPDATE settings_user
 					SET value = ?
