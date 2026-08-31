@@ -339,6 +339,7 @@ Cacti CHANGELOG
 -feature#7370: Allow plugins to register process tables for the technical support view
 -feature#7372: Add installer domain foundation types and lifecycle tests
 -feature#7634: Add indexes for host-template and session lookup queries
+-feature#7681: Add fail2ban support with a stable authentication-failure log line and a bundled filter
 
 1.2.x
 -issue#7212: Address a few small memory leaks in realtime graphing

@@ -271,7 +271,13 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 			[$username, !empty($id) ? $id : 0, get_client_addr()]
 		);
 
-		cacti_log('LOGIN FAILED: ' . $realm_name . " Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.", false, 'AUTH');
+		cacti_log('LOGIN FAILED: ' . $realm_name . " login failed for user '" . $username . "' from IP address '" . get_client_addr() . "'.", false, 'AUTH');
+
+		// Single machine-parseable failure line for fail2ban. This is the universal
+		// choke point for a failed login across every realm, so it fires exactly once
+		// per attempt (auth_process_lockout() deliberately does not emit its own).
+		// $frv_realm is the dropdown value the $realm_name switch above keys on.
+		auth_log_failure($username, auth_realm_token((int) $frv_realm), !empty($id) ? 'bad_password' : 'no_such_user');
 	}
 }
 

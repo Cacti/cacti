@@ -116,6 +116,10 @@ if (gnrv('action') == 'login_2fa') {
 		// BAD token
 		cacti_log("DEBUG: User '" . $user['username'] . "' failed to verify 2fa token", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
+		// Structured failure line for fail2ban, at normal verbosity (the human line
+		// above is DEBUG-only). A failed second factor is a brute-force signal too.
+		auth_log_failure($user['username'], auth_realm_token((int) ($user['realm'] ?? 0)), '2fa');
+
 		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, user_id, result, ip, time)
 			VALUES (?, 0, 3, ?, NOW())',
