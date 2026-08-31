@@ -656,7 +656,7 @@ function package_file_get_contents(string $package_location, string $package_fil
 				$fdata = base64_decode($file['data'], true);
 
 				// provide two checks against the public key
-				$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
+				$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
 
 				if ($ok != 1) {
 					$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
@@ -704,7 +704,7 @@ function package_file_get_contents(string $package_location, string $package_fil
 					$fdata = base64_decode($file['data'], true);
 
 					// provide two checks against the public key
-					$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
+					$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
 
 					if ($ok != 1) {
 						$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
