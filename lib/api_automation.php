@@ -1309,6 +1309,13 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
  * @return bool   Returns true if the column exists in any of the tables, false otherwise.
  */
 function api_automation_column_exists(string $column, array $tables) : bool {
+	// SELECT aliases that are valid in ORDER BY but are not real columns.
+	static $aliases = ['site_name', 'host_template_name'];
+
+	if (in_array($column, $aliases, true)) {
+		return true;
+	}
+
 	$column = str_replace(['h.', 'ht.', 'gt.', 'gl.', 'gtg.'], ['', '', '', '', ''], $column);
 
 	if (cacti_sizeof($tables)) {
