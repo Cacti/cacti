@@ -475,7 +475,7 @@ function get_discovery_results(int &$total_rows = 0, int $rows = 0, bool $export
 
 	if ($os != '-1' && in_array($os, $os_arr, true)) {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'os = ?';
-		$sql_params[] = $network;
+		$sql_params[] = $os;
 	}
 
 	if ($filter != '') {
