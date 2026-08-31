@@ -74,10 +74,7 @@ cmd_exec	./lib/poller.php		$process = proc_open('exec ' . $cmd_full, $descriptor
 cmd_exec	./lib/poller.php	 *                                    of the proc_open() and proc_close() functions (php 4.3+)
 cmd_exec	./lib/poller.php	 * @param array  $pipes               The array of r/w pipes returned from proc_open()
 cmd_exec	./lib/poller.php	 * @param mixed  $proc_fd             The file descriptor returned from proc_open()
-cmd_exec	./lib/rrd.php						$output = shell_exec($full_commandline);
-cmd_exec	./lib/rrd.php						$process = proc_open(read_config_option('path_rrdtool') . ' - ' . $debug, $descriptorspec, $pipes);
-cmd_exec	./lib/rrd.php					$fp = popen($rrd_cmd, 'r');
-cmd_exec	./lib/rrd.php		$process = popen($command, 'w');
+cmd_exec	./lib/rrd.php			$process = proc_open([$path, '-'], $descriptors, $pipes, null, null, ['bypass_shell' => true]);
 cmd_exec	./lib/rrdcheck.php		$process = proc_open($command, $fds, $pipes);
 cmd_exec	./lib/snmp.php			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmp.php			exec($command, $snmp_value, $return_var);
@@ -199,7 +196,7 @@ fs_write	./lib/plugins.php				file_put_contents($tmpfile, $file_data);
 fs_write	./lib/poller.php												file_put_contents($mypath, $contents);
 fs_write	./lib/poller.php									if (file_put_contents($tmpfile, $contents) !== false) {
 fs_write	./lib/poller.php								file_put_contents($mypath, $contents);
-fs_write	./lib/rrd.php					if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
+fs_write	./lib/rrd.php			$written = file_put_contents($temporary, $contents, LOCK_EX);
 fs_write	./lib/spikekill.php			return file_put_contents($xmlfile, $output);
 fs_write	./package_import.php							file_put_contents($xmlfile, $data);
 fs_write	./package_import.php						file_put_contents($xmlfile, $data);

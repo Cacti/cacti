@@ -155,8 +155,30 @@ test('no command construction bypasses the cacti helpers', function () {
 			continue;
 		}
 
-		if (preg_match('/(?<![\w_])escapeshell(arg|cmd)\s*\(/', $source)) {
+		/* Scan tokens rather than raw text.  A regex over the source also matches
+		   the helper names where they appear in prose, and lib/rrd.php documents
+		   its escaping behaviour in a comment. */
+		$tokens = token_get_all($source);
+
+		foreach ($tokens as $index => $token) {
+			if (!is_array($token) || $token[0] !== T_STRING) {
+				continue;
+			}
+
+			if (!in_array(strtolower($token[1]), ['escapeshellarg', 'escapeshellcmd'], true)) {
+				continue;
+			}
+
+			/* A method or property of the same name is not the global call. */
+			$previous = $tokens[$index - 1] ?? null;
+
+			if (is_array($previous) && in_array($previous[0], [T_OBJECT_OPERATOR, T_DOUBLE_COLON, T_FUNCTION], true)) {
+				continue;
+			}
+
 			$offenders[] = substr($path, strlen($root) + 1);
+
+			break;
 		}
 	}
 

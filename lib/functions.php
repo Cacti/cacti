@@ -3685,7 +3685,7 @@ function get_rrd_cfs(int $local_data_id) : array {
 	$rrdfile = get_data_source_path($local_data_id, true);
 
 	if (rrdtool_file_exists($rrdfile)) {
-		$output = rrdtool_execute("info $rrdfile", false, RRDTOOL_OUTPUT_STDOUT);
+		$output = rrdtool_execute('info ' . cacti_escapeshellarg($rrdfile), false, RRDTOOL_OUTPUT_STDOUT);
 	} else {
 		$output = '';
 	}
