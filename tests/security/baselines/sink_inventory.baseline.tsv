@@ -501,7 +501,7 @@ header_redirect	./lib/auth.php					header('Location: graph_view.php');
 header_redirect	./lib/auth.php					header('Location: index.php');
 header_redirect	./lib/auth.php				header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
 header_redirect	./lib/auth.php				header('Location: auth_changepassword.php');
-header_redirect	./lib/auth.php			header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
+header_redirect	./lib/auth.php			header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url($_SERVER['HTTP_REFERER'] ?? 'index.php')));
 header_redirect	./lib/clog_webapi.php				header('Location: clog.php?filename=' . basename($logfile));
 header_redirect	./lib/clog_webapi.php			header('Location: ' . get_current_page());
 header_redirect	./lib/functions.php		header('Location: ' . cacti_url(sanitize_redirect_path($path), $params));
