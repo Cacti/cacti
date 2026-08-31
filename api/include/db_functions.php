@@ -79,6 +79,16 @@ function get_hosts(array $params = []) : mixed {
 		$values[]     = '%' . $params['snmp_location'] . '%';
 	}
 
+	if (isset($params['hostname']) && $params['hostname'] !== '') {
+		$conditions[] = 'hostname LIKE ?';
+		$values[]     = '%' . $params['hostname'] . '%';
+	}
+
+	if (isset($params['description']) && $params['description'] !== '') {
+		$conditions[] = 'description LIKE ?';
+		$values[]     = '%' . $params['description'] . '%';
+	}
+
 	// Apply WHERE clause if needed
 	if (!empty($conditions)) {
 		$sql .= ' WHERE ' . implode(' AND ', $conditions);
