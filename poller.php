@@ -549,8 +549,9 @@ while ($poller_runs_completed < $poller_runs) {
 		admin_email(__('Cacti System Warning'), __('WARNING: There are %d processes detected as overrunning a polling cycle for poller id %d, please investigate.', $running_processes, $poller_id));
 	}
 
-	db_execute_prepared('DELETE FROM poller_time
-		WHERE poller_id = ?',
+	db_execute_prepared("DELETE FROM poller_time
+		WHERE poller_id = ?
+		AND end_time != '0000-00-00 00:00:00'",
 		array($poller_id), true, $poller_db_cnn_id);
 
 	/**
