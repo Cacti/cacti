@@ -7768,13 +7768,12 @@ function cacti_session_start($regenerate = false) {
 function cacti_session_regenerate() {
 	if (session_status() === PHP_SESSION_ACTIVE) {
 		$session_data = $_SESSION;
-	} else {
-		$session_data = array();
+		session_regenerate_id(true);
+
+		return $session_data;
 	}
 
-	session_regenerate_id(true);
-
-	return $session_data;
+	return array();
 }
 
 /**
