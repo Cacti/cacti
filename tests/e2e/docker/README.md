@@ -43,6 +43,7 @@ By default the master Cacti UI binds to `127.0.0.1:8088`. To use a different por
 | `03-session-persistence.sh` | After login via the same CSRF + index.php curl flow as test 01, `/index.php`, `/host.php`, `/data_sources.php`, `/graphs.php`, `/user_admin.php` all return < 400 and the admin layout marker is present. No Playwright dependency. | `cacti_auth_transition()` bouncing the user via `session_regenerate_id(true)` plus aggressive remember-me cookie rotation. |
 | `04-realm-enforcement.sh` | (a) `grep -RnE 'function (cacti_realm_check\|realm_allowed\|dispatch_realm\|check_user_realm)\b'` matches nothing in `lib/` or `include/`. (b) The seeded `lowpriv` user is denied on `/user_admin.php`, `/settings.php`, `/host.php`. | A parallel realm-check helper being reintroduced (the earlier `lib/cacti_dispatch.php`) or admin pages skipping `is_realm_allowed()`. |
 | `06-csrf-secret-lifecycle.sh` | The installer stores a random secret in `settings`, creates no secret below the web root, and the login form receives a derived token. | Secret lifecycle or installer-to-browser handoff regressions. |
+| `07-session-cookie-failure.sh` | A login POST whose configured session-cookie domain is rejected returns an actionable 403 and log entry. | A missing session cookie being hidden by the CSRF redirect loop. |
 
 ## Debugging a failure
 
