@@ -1137,6 +1137,65 @@ function cacti_build_https_redirect_url(string $server_name, string $request_uri
 }
 
 /**
+ * Checks whether a configured cookie domain can domain-match a host.
+ *
+ * A leading dot on the cookie domain is ignored by modern clients. Host names
+ * are compared case-insensitively, while IP addresses must match exactly.
+ *
+ * @param string $cookie_domain The configured Domain attribute.
+ * @param string $host          The web server's configured host name.
+ *
+ * @return bool True when a browser can accept the Domain attribute for the host.
+ */
+function cacti_cookie_domain_matches_host(string $cookie_domain, string $host) : bool {
+	if (preg_match('/[\x00-\x20\x7f]/', $cookie_domain) || preg_match('/[\x00-\x20\x7f]/', $host)) {
+		return false;
+	}
+
+	$cookie_domain = strtolower(trim($cookie_domain));
+	$host          = strtolower(trim($host));
+
+	if ($cookie_domain === '' || $host === '' || substr($cookie_domain, -1) === '.') {
+		return false;
+	}
+
+	$cookie_domain = ltrim($cookie_domain, '.');
+	$host          = rtrim($host, '.');
+
+	if (filter_var($cookie_domain, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false ||
+		filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
+		return false;
+	}
+
+	$domain_is_ip = filter_var($cookie_domain, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
+	$host_is_ip   = filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
+
+	if ($domain_is_ip || $host_is_ip) {
+		return $domain_is_ip && $host_is_ip && $cookie_domain === $host;
+	}
+
+	if (filter_var($cookie_domain, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false ||
+		filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false) {
+		return false;
+	}
+
+	if ($host === $cookie_domain) {
+		return true;
+	}
+
+	/* A single-label domain that is not the host itself is a public suffix as
+	 * far as the browser is concerned, so it would be discarded. 'localhost'
+	 * still works because it matches the host exactly above. This does not
+	 * catch multi-label suffixes such as co.uk, which would need the public
+	 * suffix list. */
+	if (strpos($cookie_domain, '.') === false) {
+		return false;
+	}
+
+	return substr($host, -(strlen($cookie_domain) + 1)) === '.' . $cookie_domain;
+}
+
+/**
  * Validates if the given string is a valid regular expression.
  *
  * This function checks if the provided regular expression is valid and safe to use.

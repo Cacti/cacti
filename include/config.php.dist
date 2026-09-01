@@ -79,7 +79,9 @@ $url_path = '/cacti/';
 $cacti_session_name = 'Cacti';
 
 /**
- * Default Cookie domain - The cookie domain to be used for Cacti
+ * Optional cookie domain. This must match the browser-visible host or one of
+ * its parent domains. Leave it unset for a host-only cookie. Use $url_path and
+ * $cacti_session_name, not the cookie domain, to isolate Cacti installations.
  */
 
 //$cacti_cookie_domain = 'cacti.net';

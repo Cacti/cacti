@@ -442,6 +442,7 @@ if ($config['is_web']) {
 	/* add additional cookie directives */
 	ini_set('session.cookie_httponly', true);
 	ini_set('session.cookie_path', $config['url_path']);
+	ini_set('session.cookie_domain', '');
 	ini_set('session.use_strict_mode', true);
 	ini_set('session.use_only_cookies', true);
 
@@ -452,8 +453,14 @@ if ($config['is_web']) {
 	);
 
 	if (isset($cacti_cookie_domain) && $cacti_cookie_domain != '') {
-		ini_set('session.cookie_domain', $cacti_cookie_domain);
-		$options['cookie_domain'] = $cacti_cookie_domain;
+		$server_name = $_SERVER['SERVER_NAME'] ?? '';
+
+		if (cacti_cookie_domain_matches_host($cacti_cookie_domain, $server_name)) {
+			ini_set('session.cookie_domain', $cacti_cookie_domain);
+			$options['cookie_domain'] = $cacti_cookie_domain;
+		} elseif (!isset($_COOKIE[$cacti_session_name])) {
+			cacti_log('WARNING: Ignoring configured session cookie domain ' . cacti_log_safe_value($cacti_cookie_domain) . ' because it does not match the configured server name; using a host-only cookie.', false, 'AUTH');
+		}
 	}
 
 	// SameSite php7.3+ behavior
