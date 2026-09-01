@@ -1671,7 +1671,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		$graph_opts =
 			'--start=' . cacti_escapeshellarg($graph_start) . RRD_NL .
 			'--end=' . cacti_escapeshellarg($graph_end) . RRD_NL .
-			'--maxrows=10000' . RRD_NL;
+			'--maxrows=' . max(10000, intval(($graph_end - $graph_start) / 60) + 10) . RRD_NL;
 	}
 
 	/* +++++++++++++++++++++++ LEGEND: MAGIC +++++++++++++++++++++++ */
