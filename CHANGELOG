@@ -160,7 +160,7 @@ Cacti CHANGELOG
 -issue#7715: Refuse to serve the REST scaffold unless it is explicitly enabled
 -issue#7701: Confine names used as SQL identifiers in automation
 -issue#7665: Confine local RRD paths while preserving remote RRDProxy storage
--issue#7700: Guard two divisors that PHP 8 makes fatal
+-issue: Repair confirmed poller, database, automation, export, filtering, theme, and arithmetic defects
 -issue#7751: Declare the translation helper before the disabled-i18n fallback returns
 -issue#7476: Escape path_boost_log before it reaches the Boost debug shell redirect
 -issue#7473: Escape path_rrdcheck_log before it reaches the rrdcheck poller shell redirect
