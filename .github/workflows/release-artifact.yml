@@ -34,6 +34,12 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Setup Node.js release toolchain
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4.4.0
+        with:
+          node-version: '22'
+          cache: npm
+
       - name: Setup PHP 8.2 release toolchain
         uses: ./.github/actions/setup-php-composer
         with:
@@ -59,6 +65,9 @@ jobs:
           package_dir="$release_root/cacti-$safe_version"
           mkdir -p "$package_dir" dist
           git archive HEAD | tar -x -C "$package_dir"
+
+          npm --prefix "$package_dir" ci
+          rm -rf "$package_dir/node_modules"
 
           composer --working-dir="$package_dir" install \
             --no-dev --optimize-autoloader \
