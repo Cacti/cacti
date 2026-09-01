@@ -1485,7 +1485,7 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 	}
 
 	if ($graph_id > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . " gl.id = $graph_id";
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . " gl.id = " . (int) $graph_id;
 	}
 
 	if (read_user_setting('hide_disabled', false, false, $user_id) == 'on') {
@@ -1587,7 +1587,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 	}
 
 	if ($graph_id > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . " gl.id = $graph_id";
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . " gl.id = " . (int) $graph_id;
 	}
 
 	if (read_user_setting('hide_disabled', false, false, $user_id) == 'on') {
@@ -2811,7 +2811,7 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 	}
 
 	if ($device_id > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " h.id = $device_id";
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " h.id = " . (int) $device_id;
 	}
 
 	$graph_auth_method = read_config_option('graph_auth_method');

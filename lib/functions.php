@@ -3040,9 +3040,10 @@ function get_graph_title($local_graph_id) {
  * @return (int) the guest account if greater than 0
  */
 function get_guest_account() {
-	$user = db_fetch_cell_prepared('SELECT id
+	$user = db_fetch_cell_prepared("SELECT id
 		FROM user_auth
-		WHERE username = ? OR id = ?',
+		WHERE (username = ? OR id = ?)
+		AND enabled = 'on'",
 		array(read_config_option('guest_user'), read_config_option('guest_user')));
 
 	if (empty($user)) {

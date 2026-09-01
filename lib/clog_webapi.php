@@ -72,6 +72,14 @@ function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = fal
 	$file     = basename($file);
 	$logbase  = basename($logfile);
 
+	/* SECURITY: reject Windows-special filename forms so a name that the OS
+	 * resolves back to the active log (trailing dot/space, or an alternate
+	 * data stream / drive colon) cannot slip past the active-log guard in
+	 * clog_purge_logfile(). Legitimate rotated logs are name.<digit>. */
+	if (strpos($file, ':') !== false || preg_match('/[\. ]$/', $file)) {
+		return false;
+	}
+
 	$filepath = '';
 	$filename = '';
 	$filefull = '';
