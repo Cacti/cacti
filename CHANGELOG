@@ -1,7 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
--issue#7902: Add the Symfony Console entry point and PHP 8.3 runtime floor
+-issue#7902: Add a unified CLI entry point, PHP 8.3 floor, and normalized path containment
 -security: Escape path_dsstats_log before it reaches the dsstats poller shell redirect
 -security: Revoke anonymous access when the guest account is disabled
 -security: Cast graph and device ids to int in get_allowed_* permission filters

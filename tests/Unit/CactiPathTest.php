@@ -12,9 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
+use Cacti\Filesystem\CactiPath;
 use Symfony\Component\Filesystem\Filesystem;
-
-require_once(CACTI_PATH_LIBRARY . '/CactiPath.php');
 
 beforeEach(function () {
 	$this->filesystem = new Filesystem();
@@ -85,4 +84,13 @@ test('resolveWithinBase refuses a null byte instead of raising a ValueError', fu
 	expect(CactiPath::resolveWithinBase($this->base, $this->base . "/file.php\0.txt"))->toBeFalse();
 	expect(CactiPath::resolveWithinBase($this->base . "\0", $this->base . '/nested/file.php'))->toBeFalse();
 	expect(CactiPath::resolveWithinBase($this->base, $this->base . "/missing\0", true))->toBeFalse();
+});
+
+test('web entry points use the autoloaded path boundary', function () {
+	foreach (['link.php', 'package_import.php'] as $entryPoint) {
+		$source = file_get_contents(dirname(__DIR__, 2) . '/' . $entryPoint);
+
+		expect($source)->toContain('use Cacti\\Filesystem\\CactiPath;')
+			->not->toContain("require_once(CACTI_PATH_LIBRARY . '/CactiPath.php')");
+	}
 });

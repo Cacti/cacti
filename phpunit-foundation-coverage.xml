@@ -5,11 +5,13 @@
     </php>
     <source>
         <include>
-            <file>lib/CactiPath.php</file>
+            <directory suffix=".php">lib/Console</directory>
+            <file>lib/Filesystem/CactiPath.php</file>
         </include>
     </source>
     <testsuites>
-        <testsuite name="Path coverage">
+        <testsuite name="CLI and path coverage">
+            <file>tests/Unit/Core/Cli/CactiApplicationTest.php</file>
             <file>tests/Unit/CactiPathTest.php</file>
         </testsuite>
     </testsuites>

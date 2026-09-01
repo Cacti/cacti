@@ -22,8 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
+use Cacti\Filesystem\CactiPath;
+
 require_once('./include/global.php');
-require_once(CACTI_PATH_LIBRARY . '/CactiPath.php');
 
 $page = db_fetch_row_prepared('SELECT
 	id, title, style, contentfile, enabled, refresh

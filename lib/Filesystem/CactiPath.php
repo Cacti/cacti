@@ -12,6 +12,10 @@
  +-------------------------------------------------------------------------+
 */
 
+declare(strict_types = 1);
+
+namespace Cacti\Filesystem;
+
 use Symfony\Component\Filesystem\Path;
 
 final class CactiPath {

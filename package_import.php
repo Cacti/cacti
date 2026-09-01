@@ -22,8 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
+use Cacti\Filesystem\CactiPath;
+
 require('./include/auth.php');
-require_once(CACTI_PATH_LIBRARY . '/CactiPath.php');
 require_once(CACTI_PATH_LIBRARY . '/import.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');

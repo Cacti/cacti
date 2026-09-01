@@ -1,25 +1,37 @@
-name: Path Coverage
+name: CLI and Path Coverage
 
 on:
   push:
     branches: [develop]
     paths:
-      - '.github/workflows/path-coverage.yml'
+      - '.github/workflows/foundation-coverage.yml'
       - '.github/actions/setup-php-composer/**'
       - 'composer.json'
       - 'composer.lock'
-      - 'lib/CactiPath.php'
-      - 'phpunit-path-coverage.xml'
+      - 'bin/cacti'
+      - 'lib/Console/**'
+      - 'lib/Filesystem/CactiPath.php'
+      - 'link.php'
+      - 'package_import.php'
+      - 'phpunit-foundation-coverage.xml'
+      - 'tests/fixtures/Console/**'
+      - 'tests/Unit/Core/Cli/CactiApplicationTest.php'
       - 'tests/Unit/CactiPathTest.php'
   pull_request:
     branches: [develop]
     paths:
-      - '.github/workflows/path-coverage.yml'
+      - '.github/workflows/foundation-coverage.yml'
       - '.github/actions/setup-php-composer/**'
       - 'composer.json'
       - 'composer.lock'
-      - 'lib/CactiPath.php'
-      - 'phpunit-path-coverage.xml'
+      - 'bin/cacti'
+      - 'lib/Console/**'
+      - 'lib/Filesystem/CactiPath.php'
+      - 'link.php'
+      - 'package_import.php'
+      - 'phpunit-foundation-coverage.xml'
+      - 'tests/fixtures/Console/**'
+      - 'tests/Unit/Core/Cli/CactiApplicationTest.php'
       - 'tests/Unit/CactiPathTest.php'
   workflow_dispatch:
 
@@ -27,7 +39,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: path-coverage-${{ github.event.pull_request.number || github.ref }}
+  group: foundation-coverage-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 env:
@@ -35,7 +47,7 @@ env:
 
 jobs:
   coverage:
-    name: Path 100% coverage
+    name: CLI and path 100% coverage
     runs-on: ubuntu-24.04
     timeout-minutes: 20
 
@@ -45,13 +57,13 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup locked PHP 8.2 dependencies
+      - name: Setup locked PHP 8.3 dependencies
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           coverage: xdebug
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
-          dependency-mode: locked-path-coverage
+          dependency-mode: locked-foundation-coverage
           install-args: --prefer-dist --no-progress --no-interaction
 
       - name: Enforce line coverage
@@ -59,8 +71,4 @@ jobs:
           XDEBUG_MODE: coverage
         run: |
           set -euo pipefail
-          include/vendor/bin/pest \
-            --configuration=phpunit-path-coverage.xml \
-            --coverage \
-            --coverage-text \
-            --min=100
+          composer test:foundation-coverage

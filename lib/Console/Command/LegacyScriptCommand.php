@@ -39,6 +39,7 @@ final class LegacyScriptCommand extends Command {
 		$this->ignoreValidationErrors();
 	}
 
+	#[\Override]
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		if (!$input instanceof RawArgvInput) {
 			throw new \LogicException('Legacy commands require RawArgvInput.');

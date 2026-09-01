@@ -83,6 +83,7 @@
         "hardening-patterns": "php tests/tools/check_hardening_patterns.php",
         "vendor-policy": "php tests/tools/check_vendor_policy.php",
         "php-cs-fixit": "php-cs-fixer fix ",
+        "test:foundation-coverage": "@php include/vendor/bin/pest --configuration=phpunit-foundation-coverage.xml --coverage --coverage-text --min=100",
         "install-hooks": "bash -c 'install -m 755 tests/tools/pre-commit \"$(git rev-parse --git-path hooks/pre-commit)\"'",
         "test": "include/vendor/bin/pest --display-warnings",
         "sink-guard": "bash tests/security/verify_sink_inventory.sh",
@@ -118,7 +119,8 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "Cacti\\Console\\": "lib/Console/"
+            "Cacti\\Console\\": "lib/Console/",
+            "Cacti\\Filesystem\\": "lib/Filesystem/"
         }
     },
     "config": {
