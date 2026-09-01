@@ -9,20 +9,21 @@
 
 /*
  * Regression: |query_*|/|host_*| tokens in a graph title, vertical-label or
- * right-axis-label are replaced with device-supplied SNMP values. The
- * substitution must run INSIDE cacti_escapeshellarg so a device value that
- * contains a quote cannot break out of the RRDtool argument; the post-escape
+ * right-axis-label are replaced with device-supplied SNMP values. The value is
+ * resolved (credential-stripped and substituted) by rrdtool_resolve_graph_text()
+ * before it reaches cacti_escapeshellarg, so a device value that contains a quote
+ * is escaped and cannot break out of the RRDtool argument; the post-escape
  * whole-command pass that previously injected into the quoted args must be gone.
  */
 
 $rrd = file_get_contents(dirname(__DIR__, 4) . '/lib/rrd.php');
 
-test('title substitution happens inside cacti_escapeshellarg', function () use ($rrd) {
-	expect($rrd)->toContain('cacti_escapeshellarg(rrd_substitute_host_query_data(htmle($value), $graph, []))');
+test('the resolved title value is escaped', function () use ($rrd) {
+	expect($rrd)->toContain('cacti_escapeshellarg(htmle($value))');
 });
 
-test('right-axis-label substitution happens inside cacti_escapeshellarg', function () use ($rrd) {
-	expect($rrd)->toContain("--right-axis-label ' . cacti_escapeshellarg(rrd_substitute_host_query_data(\$value, \$graph, []))");
+test('the resolved right-axis-label value is escaped', function () use ($rrd) {
+	expect($rrd)->toContain("--right-axis-label ' . cacti_escapeshellarg(\$value)");
 });
 
 test('the post-escape whole-command substitution is removed', function () use ($rrd) {
