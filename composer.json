@@ -51,7 +51,7 @@
         "lipis/flag-icons": "^7.5.0",
         "mikepultz/netdns2": "^2.0",
         "php-mqtt/client": "^2.2",
-        "phpseclib/phpseclib": "^3.0",
+        "phpseclib/phpseclib": "^4.0",
         "psr/log": "^3.0",
         "slim/slim": "^4.14",
         "stevenmaguire/oauth2-keycloak": "^6.1.0",
@@ -69,7 +69,7 @@
         "overtrue/phplint": "^9.6",
         "pestphp/pest": "^2 || ^3",
         "pestphp/pest-plugin-drift": "^2.0 || ^3.0",
-        "phpstan/phpstan": "2.2.8",
+        "phpstan/phpstan": "2.2.9",
         "rector/rector": "^2.1.2"
     },
     "scripts": {
