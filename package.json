@@ -1,0 +1,23 @@
+{
+  "name": "cacti-frontend-assets",
+  "version": "0.0.0",
+  "description": "Build tooling for Cacti's front-end JavaScript libraries. Sources the vendored copies under include/js/ from npm so Dependabot can track them.",
+  "private": true,
+  "license": "GPL-2.0-or-later",
+  "scripts": {
+    "build:js": "node build/sync-js.mjs",
+    "postinstall": "patch-package && node build/sync-js.mjs"
+  },
+  "dependencies": {
+    "billboard.js": "3.18.0",
+    "jquery": "3.7.1",
+    "jquery-ui": "1.14.2",
+    "jquery-validation": "1.21.0",
+    "jstree": "3.3.17",
+    "pace-js": "1.2.4",
+    "tablesorter": "2.31.3"
+  },
+  "devDependencies": {
+    "patch-package": "8.0.0"
+  }
+}
