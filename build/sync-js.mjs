@@ -3,9 +3,10 @@
 // to the pinned versions in package.json. pace-js carries a one-line local fix
 // applied via patch-package (patches/pace-js+1.2.4.patch) before this runs.
 import { copyFileSync, mkdirSync } from 'node:fs';
-import { dirname } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
-const map = {
+export const assetMap = Object.freeze({
 	'node_modules/jquery/dist/jquery.js':                             'include/js/jquery.js',
 	'node_modules/jquery-ui/dist/jquery-ui.js':                       'include/js/jquery-ui.js',
 	'node_modules/jstree/dist/jstree.js':                             'include/js/jstree.js',
@@ -18,10 +19,19 @@ const map = {
 	'node_modules/jquery-validation/dist/jquery.validate.min.js':     'include/js/jquery.validate/jquery.validate.min.js',
 	'node_modules/jquery-validation/dist/additional-methods.js':      'include/js/jquery.validate/additional-methods.js',
 	'node_modules/jquery-validation/dist/additional-methods.min.js':  'include/js/jquery.validate/additional-methods.min.js',
-};
+});
 
-for (const [src, dest] of Object.entries(map)) {
-	mkdirSync(dirname(dest), { recursive: true });
-	copyFileSync(src, dest);
-	console.log(`synced ${dest}`);
+export function syncAssets(root = process.cwd(), log = console.log) {
+	for (const [src, dest] of Object.entries(assetMap)) {
+		const source = resolve(root, src);
+		const destination = resolve(root, dest);
+
+		mkdirSync(dirname(destination), { recursive: true });
+		copyFileSync(source, destination);
+		log(`synced ${dest}`);
+	}
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+	syncAssets();
 }

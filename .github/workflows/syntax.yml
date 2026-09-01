@@ -54,8 +54,11 @@ jobs:
       with:
         node-version: '22'
 
-    - name: Test JavaScript contracts
-      run: node --test tests/js/*.test.js
+    - name: Install managed JavaScript and test contracts
+      run: |
+        npm ci
+        npm test
+        npm run test:coverage
 
 #  spelling:
 #    name: Spell Check
