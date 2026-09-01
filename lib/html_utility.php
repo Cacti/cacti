@@ -1179,8 +1179,20 @@ function cacti_cookie_domain_matches_host(string $cookie_domain, string $host) :
 		return false;
 	}
 
-	return $host === $cookie_domain ||
-		substr($host, -(strlen($cookie_domain) + 1)) === '.' . $cookie_domain;
+	if ($host === $cookie_domain) {
+		return true;
+	}
+
+	/* A single-label domain that is not the host itself is a public suffix as
+	 * far as the browser is concerned, so it would be discarded. 'localhost'
+	 * still works because it matches the host exactly above. This does not
+	 * catch multi-label suffixes such as co.uk, which would need the public
+	 * suffix list. */
+	if (strpos($cookie_domain, '.') === false) {
+		return false;
+	}
+
+	return substr($host, -(strlen($cookie_domain) + 1)) === '.' . $cookie_domain;
 }
 
 /**

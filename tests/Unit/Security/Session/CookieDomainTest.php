@@ -27,6 +27,15 @@ test('cookie domains reject mismatched or malformed hosts', function () {
 		->and(cacti_cookie_domain_matches_host('2001:db8::1', '2001:db8::1'))->toBeFalse();
 });
 
+test('a single label domain is only accepted as the host itself', function () {
+	/* Domain=localhost on host localhost is stored by the browser, while
+	 * Domain=com on host foo.com is discarded as a public suffix. Both were
+	 * confirmed against a real client before this rule was written. */
+	expect(cacti_cookie_domain_matches_host('localhost', 'localhost'))->toBeTrue()
+		->and(cacti_cookie_domain_matches_host('com', 'foo.com'))->toBeFalse()
+		->and(cacti_cookie_domain_matches_host('example', 'host.example'))->toBeFalse();
+});
+
 test('invalid configured domains use host-only session cookies', function () {
 	$global = file_get_contents(dirname(__DIR__, 4) . '/include/global.php');
 
