@@ -688,7 +688,7 @@ class cactiButton extends cactiNavigation {
 
         // re-initialize resizable if box just became visible
         const $box = this._getBox(helper);
-        if ($box.hasClass('visible') && $box.attr('data-style') === 'overlay' && $.isFunction($.fn.resizable)) {
+        if ($box.hasClass('visible') && $box.attr('data-style') === 'overlay' && typeof $.fn.resizable === 'function') {
             $box.resizable({ handles: 'e' });
         }
     }
@@ -1229,7 +1229,7 @@ class cactiBox extends cactiNavigation {
 
     searchToHighlight(data) {
         // critical check: ensure external library mark.js is loaded
-        if (!$.isFunction($.fn.markRegExp)) {
+        if (!typeof $.fn.markRegExp === 'function') {
             console.error("NavigationBox Error: 'mark.js' is not loaded! The search function requires this library.");
             return;
         }
