@@ -434,5 +434,9 @@ test('native and binary walks cover parsing, filtering, and diagnostics', functi
 		->and($no_credentials)->toBe([])
 		->and($invalid)->toBe([])
 		->and(implode(' ', array_column($GLOBALS['snmp_coverage_logs'], 0)))->toContain('exploit attempted')
-		->toContain('Timeout');
+		// A failed walk is now reported by its exit code. The previous wording
+		// came from matching 'Timeout' against the walk output, which only ever
+		// matched device data.
+		->toContain('Exit Code')
+		->toContain('Missing credentials');
 });
