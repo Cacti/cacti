@@ -95,3 +95,35 @@ test('getQueryString reads a named parameter from the query string', () => {
 	assert.equal(getQueryString('q'), 'a b'); // + decodes to space
 	assert.equal(getQueryString('missing'), null);
 });
+
+test('base64_encode round-trips UTF-8 text through btoa', () => {
+	const base64_encode = load('base64_encode', { btoa, unescape, encodeURIComponent });
+
+	assert.equal(base64_encode('Cacti'), 'Q2FjdGk=');
+	assert.equal(base64_encode(''), '');
+	// multi-byte characters survive the encodeURIComponent/unescape dance
+	assert.equal(base64_encode('café'), Buffer.from('café', 'utf8').toString('base64'));
+});
+
+test('countHiddenCols counts the header cells hidden with display:none', () => {
+	function jqueryFor(displays) {
+		const cells = displays.map((display) => ({ display }));
+
+		return function $(arg) {
+			if (arg && typeof arg.display === 'string') {
+				return { css: (prop) => (prop === 'display' ? arg.display : undefined) };
+			}
+
+			return {
+				find: () => ({
+					each: (callback) => cells.forEach((cell) => callback.call(cell)),
+				}),
+			};
+		};
+	}
+
+	const countHiddenCols = load('countHiddenCols', { $: jqueryFor(['none', 'table-cell', 'none', 'block']) });
+
+	assert.equal(countHiddenCols('#atable'), 2);
+	assert.equal(load('countHiddenCols', { $: jqueryFor([]) })('#empty'), 0);
+});
