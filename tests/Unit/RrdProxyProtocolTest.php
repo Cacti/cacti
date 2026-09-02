@@ -12,6 +12,9 @@
  +-------------------------------------------------------------------------+
 */
 
+use phpseclib4\Crypt\Rijndael;
+use phpseclib4\Crypt\RSA;
+
 if (!defined('POLLER_VERBOSITY_LOW')) {
 	define('POLLER_VERBOSITY_LOW', 2);
 }
@@ -376,7 +379,7 @@ it('rejects a structurally valid encrypted packet when the private key is invali
 it('round trips encrypted packets using the official proxy cipher contract', function () {
 	global $encryption;
 
-	$private_key = phpseclib3\Crypt\RSA::createKey(2048);
+	$private_key = RSA::createKey(2048);
 	$public_key  = $private_key->getPublicKey();
 	$encryption  = true;
 	$packet      = encrypt('encrypted payload', (string) $public_key);
@@ -385,10 +388,10 @@ it('round trips encrypted packets using the official proxy cipher contract', fun
 });
 
 it('accepts legacy oversized Rijndael keys by applying the phpseclib 2 truncation contract', function () {
-	$private_key = phpseclib3\Crypt\RSA::createKey(4096);
+	$private_key = RSA::createKey(4096);
 	$public_key  = $private_key->getPublicKey();
-	$legacy_key  = phpseclib3\Crypt\Random::string(192);
-	$aes         = new phpseclib3\Crypt\Rijndael('cbc');
+	$legacy_key  = random_bytes(192);
+	$aes         = new Rijndael('cbc');
 	$aes->setKey(substr($legacy_key, 0, 32));
 	$aes->setIV(str_repeat("\0", 16));
 
@@ -554,9 +557,9 @@ it('negotiates an encrypted official-protocol connection end to end', function (
 	$port    = 0;
 	socket_getsockname($listener, $address, $port);
 
-	$client_private = phpseclib3\Crypt\RSA::createKey(2048);
+	$client_private = RSA::createKey(2048);
 	$client_public  = $client_private->getPublicKey();
-	$server_private = phpseclib3\Crypt\RSA::createKey(2048);
+	$server_private = RSA::createKey(2048);
 	$server_public  = $server_private->getPublicKey();
 
 	$proxy_options = [
@@ -676,9 +679,9 @@ it('fails closed on absent invalid and mismatched proxy keys', function () {
 		$this->markTestSkipped('pcntl is required for the proxy key exchange test');
 	}
 
-	$client_private = phpseclib3\Crypt\RSA::createKey(2048);
+	$client_private = RSA::createKey(2048);
 	$client_public  = $client_private->getPublicKey();
-	$server_private = phpseclib3\Crypt\RSA::createKey(2048);
+	$server_private = RSA::createKey(2048);
 	$server_public  = $server_private->getPublicKey();
 
 	$run_exchange = function (?string $reply, string $fingerprint) use ($client_private, $client_public) : mixed {
