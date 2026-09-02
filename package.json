@@ -20,6 +20,6 @@
     "tablesorter": "2.31.3"
   },
   "devDependencies": {
-    "patch-package": "8.0.0"
+    "patch-package": "8.0.1"
   }
 }
