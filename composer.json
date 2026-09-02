@@ -51,7 +51,7 @@
         "lipis/flag-icons": "^7.5.0",
         "mikepultz/netdns2": "^2.0",
         "php-mqtt/client": "^2.2",
-        "phpseclib/phpseclib": "^4.0",
+        "phpseclib/phpseclib": "^3.0",
         "psr/log": "^3.0",
         "slim/slim": "^4.14",
         "stevenmaguire/oauth2-keycloak": "^6.1.0",
