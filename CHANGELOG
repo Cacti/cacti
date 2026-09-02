@@ -9,7 +9,6 @@ Cacti CHANGELOG
 -security: Build forced-HTTPS redirects from the server-configured name
 -security: Replace sibling password-reset links and revoke authentication state after reset
 -issue: Fail closed when OAuth callback state is absent or mismatched
--feature#7884: Build release artifacts from managed dependencies, including phpseclib 4, and a reduced runtime tree
 -issue#7775: Add plugin-extensible notification API
 -issue#7746: Make PHP 8.1 dependency builds reproducible
 -issue#7672: Block loopback/link-local SSRF targets in call_remote_data_collector
@@ -173,6 +172,7 @@ Cacti CHANGELOG
 -issue#7355: Add a JUNIPER-MIB jnxOperatingTable script data query for RE and FPC health
 -issue#7355: Add an F5-BIGIP-SYSTEM-MIB script data query for per-CPU utilization
 -feature#7884: Manage front-end JavaScript libraries with npm and Dependabot
+-feature#7884: Build release artifacts from managed dependencies, including DOMPurify 3.4.14 and phpseclib 4, and a reduced runtime tree
 -feature#7835: Add cacti_snmp_session_from_host() to build SNMP sessions from a device row
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
