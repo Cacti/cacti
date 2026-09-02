@@ -2389,24 +2389,6 @@ parameters:
 			path: include/themes/midwinter/update_hash.php
 
 		-
-			message: '#^Variable \$argc might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: install/cli_check.php
-
-		-
-			message: '#^Variable \$argv might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: install/cli_check.php
-
-		-
-			message: '#^Variable \$argv might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: install/cli_test.php
-
-		-
 			message: '#^Parameter \#2 \$subject of function preg_match expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
