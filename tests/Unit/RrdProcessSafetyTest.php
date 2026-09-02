@@ -165,3 +165,47 @@ test('process handle and complete write helpers reject invalid streams', functio
 		->and($result['success'])->toBeFalse()
 		->and($result['error'])->toContain('unavailable');
 });
+
+test('a died process is relaunched so the rest of the run still writes', function () {
+	$binary = trim((string) shell_exec('command -v rrdtool'));
+
+	if ($binary === '') {
+		test()->markTestSkipped('rrdtool is not installed');
+	}
+
+	set_config_option('path_rrdtool', $binary);
+
+	$process = __rrd_init(false);
+
+	expect(rrdtool_is_process($process))->toBeTrue();
+
+	// Kill it the way a crash would, then confirm a command still succeeds.
+	proc_terminate($process->process);
+	$process->alive = false;
+
+	$result = rrdtool_process_command($process, 'pwd');
+
+	expect($process->alive)->toBeTrue()
+		->and($process->restarts)->toBe(1)
+		->and($result['success'])->toBeTrue();
+
+	rrd_close($process);
+});
+
+test('process relaunches are bounded so a persistently failing binary cannot spin', function () {
+	$process = (object) [
+		'process'        => null,
+		'stdin'          => null,
+		'stdout'         => null,
+		'stderr'         => null,
+		'alive'          => false,
+		'restarts'       => RRDTOOL_MAX_RESTARTS,
+		'output_to_term' => false
+	];
+
+	expect(rrdtool_process_restart($process))->toBeFalse();
+});
+
+test('a handle that is not an RRDtool process is never relaunched', function () {
+	expect(rrdtool_process_restart((object) ['alive' => false]))->toBeFalse();
+});

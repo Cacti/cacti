@@ -37,6 +37,9 @@ define('RRD_PROXY_MAX_RESPONSE_SIZE', 67108864);
 define('RRDTOOL_MAX_COMMAND_BYTES', 16 * 1024 * 1024);
 define('RRDTOOL_MAX_RESPONSE_BYTES', 128 * 1024 * 1024);
 
+// Bound on in-run RRDtool process relaunches after a crash.
+define('RRDTOOL_MAX_RESTARTS', 5);
+
 if (read_config_option('storage_location')) {
 	global $encryption;
 	$encryption = true;
@@ -158,6 +161,7 @@ function __rrd_init(bool $output_to_term = true, mixed $lang = false) : mixed {
 		'stdout'         => $pipes[1],
 		'stderr'         => $pipes[2],
 		'alive'          => true,
+		'restarts'       => 0,
 		'output_to_term' => $output_to_term
 	];
 }
@@ -879,10 +883,73 @@ function rrdtool_command_language(string $command_line) : string|false {
  *
  * @return array{success: bool, output: string, error: string}
  */
+/**
+ * Relaunch a died RRDtool process in place.
+ *
+ * The poller opens one process per run and reuses it for every update, so a
+ * process that dies partway through would otherwise take the rest of the run
+ * with it. The replacement is written back into the same object so every holder
+ * of the handle recovers.
+ *
+ * @param object $process RRDtool process handle to revive
+ *
+ * @return bool Whether a working process is available afterwards
+ */
+function rrdtool_process_restart(object $process) : bool {
+	if (!rrdtool_is_process($process)) {
+		return false;
+	}
+
+	$attempts = isset($process->restarts) ? (int) $process->restarts : 0;
+
+	if ($attempts >= RRDTOOL_MAX_RESTARTS) {
+		return false;
+	}
+
+	foreach (['stdin', 'stdout', 'stderr'] as $pipe) {
+		if (isset($process->$pipe) && is_resource($process->$pipe)) {
+			fclose($process->$pipe);
+		}
+	}
+
+	if (isset($process->process) && is_resource($process->process)) {
+		proc_close($process->process);
+	}
+
+	$replacement = __rrd_init((bool) ($process->output_to_term ?? false));
+
+	if (!rrdtool_is_process($replacement)) {
+		$process->alive = false;
+
+		return false;
+	}
+
+	$process->process  = $replacement->process;
+	$process->stdin    = $replacement->stdin;
+	$process->stdout   = $replacement->stdout;
+	$process->stderr   = $replacement->stderr;
+	$process->alive    = true;
+	$process->restarts = $attempts + 1;
+
+	cacti_log(sprintf('WARNING: Detected RRDtool Crash, restarted the process (attempt %d of %d).', $attempts + 1, RRDTOOL_MAX_RESTARTS), false, 'RRDTOOL');
+
+	if (function_exists('debounce_run_notification')) {
+		debounce_run_notification('rrdtool_command_crash');
+	}
+
+	return true;
+}
+
 function rrdtool_process_command(object $process, string $command_line, float $timeout = 60.0) : array {
 	$result = ['success' => false, 'output' => '', 'error' => 'RRDtool process is unavailable.'];
 
-	if (!rrdtool_is_process($process) || !$process->alive) {
+	if (!rrdtool_is_process($process)) {
+		return $result;
+	}
+
+	// A died process used to be reopened and the command retried; without that
+	// every remaining update in the run fails.
+	if (!$process->alive && !rrdtool_process_restart($process)) {
 		return $result;
 	}
 
