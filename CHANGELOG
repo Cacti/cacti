@@ -8,7 +8,6 @@ Cacti CHANGELOG
 -security: Confine automation sorting and pagination before SQL and HTML rendering
 -security: Build forced-HTTPS redirects from the server-configured name
 -security: Replace sibling password-reset links and revoke authentication state after reset
--issue#7908: Add unit tests for layout.js and realtime.js helper functions
 -issue: Fail closed when OAuth callback state is absent or mismatched
 -issue#7775: Add plugin-extensible notification API
 -issue#7746: Make PHP 8.1 dependency builds reproducible
