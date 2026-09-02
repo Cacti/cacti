@@ -383,7 +383,11 @@ function boost_poller_on_demand(array &$results) : bool {
 					restore_error_handler();
 					error_reporting($previous_error_reporting);
 
-					return false;
+					// The caller has already removed these rows from poller_output, so
+					// returning false here would drop the cycle entirely. Report that
+					// boost did not consume the data and let the poller write it to RRD
+					// directly, matching the database failure path below.
+					return true;
 				}
 
 				$value_tuples = [];
@@ -2090,6 +2094,17 @@ function boost_rrdtool_function_update(int $local_data_id, string $rrd_path, str
 		}
 
 		if ($result === false || preg_match('/(?:^|\b)(?:ERROR|Error)(?::|\b)/', trim((string) $result))) {
+			// A timestamp at or behind the last update means the sample is already
+			// in the RRD, which is what a retried shard looks like. Reporting that
+			// as a failure would retain the shard and reprocess it forever, so the
+			// same rows would fail again on every pass and boost would never drain.
+			// rrdtool 1.5 and later avoid this with --skip-past-updates; older
+			// releases raise it, and a retry after a partial pass raises it on any
+			// version.
+			if (is_string($result) && preg_match('/illegal attempt to update using time|minimum one second step/i', $result)) {
+				return 'OK';
+			}
+
 			return is_string($result) && $result !== '' ? $result : 'ERROR: RRDtool did not acknowledge the update';
 		}
 

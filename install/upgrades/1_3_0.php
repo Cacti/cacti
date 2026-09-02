@@ -98,8 +98,8 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_key('sessions', 'INDEX', 'user_id', ['user_id']);
 	db_install_add_key('sessions', 'INDEX', 'access', ['access']);
 	db_install_execute('TRUNCATE TABLE poller_output_boost_processes');
-	db_install_add_column('poller_output_boost_processes', ['name' => 'run_id', 'type' => 'char(32)', 'null' => false, 'default' => '', 'after' => 'sock_int_value']);
-	db_install_add_column('poller_output_boost_processes', ['name' => 'child_id', 'type' => 'int(10)', 'unsigned' => true, 'null' => false, 'default' => '0', 'after' => 'run_id']);
+	db_install_add_column('poller_output_boost_processes', ['name' => 'run_id', 'type' => 'char(32)', 'NULL' => false, 'default' => '', 'after' => 'sock_int_value']);
+	db_install_add_column('poller_output_boost_processes', ['name' => 'child_id', 'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'run_id']);
 	db_install_add_key('poller_output_boost_processes', 'UNIQUE', 'run_child', ['run_id', 'child_id']);
 
 	// poller_output_boost_local_data_ids is a MEMORY table; its indexes default
