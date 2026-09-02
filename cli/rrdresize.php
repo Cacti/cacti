@@ -124,7 +124,7 @@ if (sizeof($parms)) {
 			case '-V':
 				display_version();
 
-				exit(1);
+				exit(0);
 			case '-h':
 			case '-H':
 			case '--help':
