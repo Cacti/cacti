@@ -31,7 +31,7 @@ test('database recovery and identifier handling retain the corrected connection'
 
 	expect($source)->toContain('function db_check_reconnect(mixed &$db_conn = false')
 		->and($source)->toContain('$db_conn = $cnn_id;')
-		->and($source)->toContain("db_fetch_cell('SELECT @@in_transaction', '', true, \$db_conn)")
+		->and($source)->toContain('if (!$db_conn->inTransaction())')
 		->and($source)->toContain("str_replace('`', '``', \$k)")
 		->and($source)->toContain("VALUES(' . \$ek . ')'");
 });
