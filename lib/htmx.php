@@ -98,7 +98,7 @@ function htmx_version(): string {
  * On an htmx upgrade, replace the vendored file and recompute this value:
  *   php -r 'echo "sha384-".base64_encode(hash_file("sha384","include/js/htmx.js",true));'
  */
-const HTMX_2_0_6_SRI = 'sha384-ksKjJrwjL5VxqAkAZAVOPXvMkwAykMaNYegdixAESVr+KqLkKE8XBDoZuwyWVUDv';
+const HTMX_2_0_10_SRI = 'sha384-Q+Dky3iHVJOr6wUjQ4ulh6uQ76an/t+ak1+PjMVaxRjbZamFLAG+u9InkfjbsEQf';
 
 /**
  * Returns a <script> tag that loads the vendored htmx.js with an SRI
@@ -110,7 +110,7 @@ const HTMX_2_0_6_SRI = 'sha384-ksKjJrwjL5VxqAkAZAVOPXvMkwAykMaNYegdixAESVr+KqLkK
  * navigation and AJAX submission model. Pages that want htmx behaviour opt in
  * per-element with explicit hx-* attributes.
  *
- * The integrity attribute uses the HTMX_2_0_6_SRI constant pinned to the
+ * The integrity attribute uses the HTMX_2_0_10_SRI constant pinned to the
  * vendored build (see that constant for why the hash is not recomputed here).
  *
  * The src is root-absolute (prefixed with CACTI_PATH_URL) so the asset
@@ -181,7 +181,7 @@ function htmx_script_tag(): string {
 		. "</script>\n";
 
 	$tag = "<script type='text/javascript' $nonce_attr src='" . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . "'"
-		. " integrity='" . HTMX_2_0_6_SRI . "'"
+		. " integrity='" . HTMX_2_0_10_SRI . "'"
 		. " crossorigin='anonymous'></script>\n";
 
 	// Both wiring pieces precede the script element (see the function doc):
