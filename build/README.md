@@ -16,7 +16,7 @@ npm run build:js   # or run the sync explicitly
 ## What is managed here
 
 All third-party JavaScript libraries are npm-sourced (generated, git-ignored):
-jquery, jquery-ui, jstree, billboard.js, pace-js, the tablesorter files
+jquery, jquery-ui, jstree, billboard.js, dompurify, pace-js, the tablesorter files
 (core, widgets, pager) and the jquery-validation files.
 
 `pace-js` carries a one-line local fix (a stray regex alternation removed) applied

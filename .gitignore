@@ -151,3 +151,4 @@ verify_task*.php
 /include/js/pace.js
 /include/js/jquery.tablesorter.widgets.js
 /include/js/jquery.tablesorter.pager.js
+/include/js/purify.js
