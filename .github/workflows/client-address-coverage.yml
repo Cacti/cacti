@@ -4,6 +4,7 @@ on:
   push:
     branches: [develop]
     paths:
+      - '.github/workflows/script-coverage.yml'
       - '.github/workflows/client-address-coverage.yml'
       - 'composer.json'
       - 'composer.lock'
@@ -15,6 +16,7 @@ on:
   pull_request:
     branches: [develop]
     paths:
+      - '.github/workflows/script-coverage.yml'
       - '.github/workflows/client-address-coverage.yml'
       - 'composer.json'
       - 'composer.lock'

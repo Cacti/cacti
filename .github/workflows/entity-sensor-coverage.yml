@@ -4,6 +4,7 @@ on:
   push:
     branches: [develop]
     paths:
+      - '.github/workflows/script-coverage.yml'
       - '.github/workflows/entity-sensor-coverage.yml'
       - '.github/actions/setup-php-composer/**'
       - 'composer.json'
@@ -14,6 +15,7 @@ on:
   pull_request:
     branches: [develop]
     paths:
+      - '.github/workflows/script-coverage.yml'
       - '.github/workflows/entity-sensor-coverage.yml'
       - '.github/actions/setup-php-composer/**'
       - 'composer.json'

@@ -5,6 +5,7 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/api-automation-tools-coverage.yml'
+      - '.github/workflows/script-coverage.yml'
       - '.github/actions/setup-php-composer/**'
       - 'composer.json'
       - 'composer.lock'
@@ -17,6 +18,7 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/api-automation-tools-coverage.yml'
+      - '.github/workflows/script-coverage.yml'
       - '.github/actions/setup-php-composer/**'
       - 'composer.json'
       - 'composer.lock'
