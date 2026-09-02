@@ -283,7 +283,7 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
  *
  * @return bool The database true is the database is connected else false
  */
-function db_check_reconnect(mixed $db_conn = false, bool $log = true) : bool {
+function db_check_reconnect(mixed &$db_conn = false, bool $log = true) : bool {
 	global $database_details;
 	global $database_hostname;
 	global $database_username;
@@ -388,6 +388,13 @@ function db_check_reconnect(mixed $db_conn = false, bool $log = true) : bool {
 		);
 
 		if ($cnn_id !== false) {
+			// Propagate the fresh handle back so a caller that passed its own
+			// connection (e.g. the db_execute_prepared retry) does not keep
+			// using the one we just closed.
+			if ($db_conn !== false) {
+				$db_conn = $cnn_id;
+			}
+
 			return true;
 		} else {
 			return false;
@@ -2107,7 +2114,7 @@ function db_commit_transaction(mixed $db_conn = false) : bool {
 		}
 	}
 
-	if (db_fetch_cell('SELECT @@in_transaction') > 0) {
+	if (db_fetch_cell('SELECT @@in_transaction', '', true, $db_conn) > 0) {
 		return $db_conn->commit();
 	} else {
 		return false;
@@ -2269,7 +2276,8 @@ function _db_replace(mixed $db_conn, string $table, array $fieldArray, mixed $ke
 			$sql .= ', ';
 			$sql2 .= ', ';
 		}
-		$sql .= "`$k`";
+		$ek = '`' . str_replace('`', '``', $k) . '`';
+		$sql .= $ek;
 		$sql2 .= $v;
 		$first  = false;
 
@@ -2281,7 +2289,7 @@ function _db_replace(mixed $db_conn, string $table, array $fieldArray, mixed $ke
 			$sql3 .= ', ';
 		}
 
-		$sql3 .= "`$k`=VALUES(`$k`)";
+		$sql3 .= $ek . '=VALUES(' . $ek . ')';
 
 		$first3 = false;
 	}

@@ -609,8 +609,9 @@ while ($poller_runs_completed < $poller_runs) {
 		admin_email(__('Cacti System Warning'), __('WARNING: There are %d processes detected as overrunning a polling cycle for Poller[%d], please investigate.', $running_processes, $poller_id));
 	}
 
-	db_execute_prepared('DELETE FROM poller_time
-		WHERE poller_id = ?',
+	db_execute_prepared("DELETE FROM poller_time
+		WHERE poller_id = ?
+		AND end_time != '0000-00-00 00:00:00'",
 		[$poller_id], true, $poller_db_cnn_id);
 
 	/**
@@ -678,7 +679,13 @@ while ($poller_runs_completed < $poller_runs) {
 		db_execute('CREATE TABLE IF NOT EXISTS po LIKE poller_output');
 		db_execute('RENAME TABLE poller_output TO poold, po TO poller_output');
 		db_execute('DROP TABLE IF EXISTS poold');
-		db_execute('ALTER TABLE poller_output ENGINE=MEMORY');
+
+		// The swapped-in copy inherits the engine, so only convert when it is
+		// not already MEMORY. This drops a metadata-locking ALTER from every
+		// poll cycle in the steady state.
+		if (db_fetch_cell("SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'poller_output'") != 'MEMORY') {
+			db_execute('ALTER TABLE poller_output ENGINE=MEMORY');
+		}
 
 		// catch the unlikely event that the poller_output_boost is missing
 		if (!db_table_exists('poller_output_boost')) {

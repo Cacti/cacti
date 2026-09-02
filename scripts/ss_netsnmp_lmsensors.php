@@ -207,6 +207,16 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 
 			return 'U';
 		} else {
+			// Apply the same scaling as the query path so a get returns the
+			// sensor value rather than the raw milli-unit counter.
+			if ($sensor_type == 'voltage' && $snmp_test > 2147483647) {
+				$snmp_test = $snmp_test - 4294967294;
+			}
+
+			if ($sensor_type == 'voltage' || $sensor_type == 'temperature') {
+				$snmp_test = $snmp_test / 1000;
+			}
+
 			return $snmp_test;
 		}
 	} else {

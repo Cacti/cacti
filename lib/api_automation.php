@@ -1309,6 +1309,13 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
  * @return bool   Returns true if the column exists in any of the tables, false otherwise.
  */
 function api_automation_column_exists(string $column, array $tables) : bool {
+	// SELECT aliases that are valid in ORDER BY but are not real columns.
+	static $aliases = ['site_name', 'host_template_name'];
+
+	if (in_array($column, $aliases, true)) {
+		return true;
+	}
+
 	$column = str_replace(['h.', 'ht.', 'gt.', 'gl.', 'gtg.'], ['', '', '', '', ''], $column);
 
 	if (cacti_sizeof($tables)) {
@@ -4065,22 +4072,16 @@ function automation_get_next_host(string $start, int $total, int $count, string 
 		// 10.1.*.1
 		return $matches[1] . ++$count . $matches[2];
 	} else {
-		// other cases
-		$ip = explode('.', $start);
-		$y  = 16777216;
+		// Offset from the start address. Walking the octets by hand
+		// mishandled the carry for ranges wider than a /16 and emitted
+		// out-of-range octets; convert through the 32-bit integer instead.
+		$base = ip2long($start);
 
-		for ($x = 0; $x < 4; $x++) {
-			$ip[$x] += intval($count / $y);
-			$count -= ((intval($count / $y)) * 256);
-			$y /= 256;
-
-			if ($ip[$x] == 256 && $x > 0) {
-				$ip[$x] = 0;
-				$ip[$x - 1] += 1;
-			}
+		if ($base === false) {
+			return false;
 		}
 
-		return implode('.', $ip);
+		return long2ip($base + $count);
 	}
 }
 

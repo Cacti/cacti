@@ -2583,7 +2583,7 @@ function html_make_device_where() : string {
 	}
 
 	if (isrv('host_template_id') && gfrv('host_template_id') > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . 'h.location = ' . grv('host_template_id');
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . 'h.host_template_id = ' . grv('host_template_id');
 	}
 
 	if (isrv('external_id') && gnrv('external_id') != '-1') {
