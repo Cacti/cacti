@@ -422,11 +422,16 @@ test('native and binary walks cover parsing, filtering, and diagnostics', functi
 	$GLOBALS['snmp_coverage_config']['oid_increasing_check_disable'] = 'off';
 	$without_oid_check                                               = cacti_snmp_walk($host, 'public', $oid, 3, 'user', '', '[None]', '', '[None]', port: $port);
 
+	// An auth protocol outside $snmp_auth_protocols makes cacti_get_snmpv3_auth()
+	// return '', which used to build a credential-less snmpwalk -v 3.
+	$no_credentials = cacti_snmp_walk($host, 'public', $oid, 3, 'user', 'secret', 'BOGUS', '', '[None]', port: $port);
+
 	expect($bulk[0]['value'])->toContain('coverage agent')
 		->and($regular[0]['value'])->toContain('coverage agent')
 		->and($timeout)->toBe([])
 		->and($too_big)->toBe([])
 		->and($without_oid_check)->not->toBe([])
+		->and($no_credentials)->toBe([])
 		->and($invalid)->toBe([])
 		->and(implode(' ', array_column($GLOBALS['snmp_coverage_logs'], 0)))->toContain('exploit attempted')
 		->toContain('Timeout');

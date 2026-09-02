@@ -75,6 +75,7 @@ cmd_exec	./lib/poller.php	 * @param array  $pipes               The array of r/w
 cmd_exec	./lib/poller.php	 * @param mixed  $proc_fd             The file descriptor returned from proc_open()
 cmd_exec	./lib/rrd.php			$process = proc_open([$path, '-'], $descriptors, $pipes, null, null, ['bypass_shell' => true]);
 cmd_exec	./lib/rrdcheck.php		$process = proc_open($command, $fds, $pipes);
+cmd_exec	./lib/snmp.php			// exec() does not capture, so the walk output can never contain either.
 cmd_exec	./lib/snmp.php			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmp.php			exec($command, $snmp_value, $return_var);
 cmd_exec	./lib/snmp.php			exec($command, $snmp_value, $return_var);
