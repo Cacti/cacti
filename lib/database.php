@@ -2075,9 +2075,15 @@ function db_commit_transaction($db_conn = false) {
 		}
 	}
 
-	if (db_fetch_cell('SELECT @@in_transaction', '', true, $db_conn) > 0) {
-		return $db_conn->commit();
+	/* @@in_transaction is a MariaDB variable. On MySQL the query raises
+	 * "Unknown system variable 'in_transaction'", the comparison is false, and
+	 * the transaction was left open without ever being committed. PDO tracks
+	 * this itself and answers the same question on both engines. */
+	if (!$db_conn->inTransaction()) {
+		return false;
 	}
+
+	return $db_conn->commit();
 }
 
 /**
