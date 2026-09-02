@@ -16,8 +16,9 @@ test('upgrade column definitions spell the NULL key in upper case', function () 
 	expect($upgrades)->not->toBeEmpty();
 
 	foreach ($upgrades as $upgrade) {
-		expect(file_get_contents($upgrade))
-			->not->toContain("'null' =>", "lowercase 'null' key in " . basename($upgrade));
+		// toContain() takes needles, not a message.
+		expect(str_contains(file_get_contents($upgrade), "'null' =>"))
+			->toBeFalse();
 	}
 });
 
