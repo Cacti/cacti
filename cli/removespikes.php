@@ -219,7 +219,7 @@ $result = $spiker->remove_spikes();
 if (!$result) {
 	print "ERROR: Remove Spikes experienced errors\n";
 	print $spiker->get_errors();
-	exit(-1);
+	exit(1);
 } else {
 	print $spiker->get_output();
 	exit(0);
