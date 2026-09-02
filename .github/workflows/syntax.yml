@@ -119,6 +119,15 @@ jobs:
       with:
         persist-credentials: false
 
+    - name: Setup Node
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+      with:
+        node-version: '22'
+        cache: npm
+
+    - name: Build managed JavaScript
+      run: npm ci
+
     - name: Setup native PHP dependencies
       uses: ./.github/actions/setup-php-composer
       with:
@@ -166,6 +175,15 @@ jobs:
       with:
         fetch-depth: 0
         persist-credentials: false
+
+    - name: Setup Node
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+      with:
+        node-version: '22'
+        cache: npm
+
+    - name: Build managed JavaScript
+      run: npm ci
 
     - name: Setup locked PHP 8.2 dependencies
       uses: ./.github/actions/setup-php-composer
