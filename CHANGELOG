@@ -171,6 +171,8 @@ Cacti CHANGELOG
 -issue#7355: Add a vendor-neutral ENTITY-SENSOR-MIB script data query for physical sensors
 -issue#7355: Add a JUNIPER-MIB jnxOperatingTable script data query for RE and FPC health
 -issue#7355: Add an F5-BIGIP-SYSTEM-MIB script data query for per-CPU utilization
+-feature#7884: Manage front-end JavaScript libraries with npm and Dependabot
+-feature#7884: Build release artifacts from managed dependencies, including DOMPurify 3.4.14 and phpseclib 4, and a reduced runtime tree
 -feature#7835: Add cacti_snmp_session_from_host() to build SNMP sessions from a device row
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php

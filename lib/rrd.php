@@ -24,6 +24,9 @@
 
 require_once(__DIR__ . '/rrd_graph_item.php');
 
+use phpseclib4\Crypt\Rijndael;
+use phpseclib4\Crypt\RSA;
+
 define('RRD_NL', " \\\n");
 define('MAX_FETCH_CACHE_SIZE', 5);
 define('RRD_PROXY_END_OF_PACKET', "_EOP_\r\n");
@@ -508,7 +511,7 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 	$rrdp_public_key = trim($rrdp_public_key);
 
 	try {
-		$public = phpseclib3\Crypt\RSA::loadPublicKey($rrdp_public_key);
+		$public = RSA::loadPublicKey($rrdp_public_key);
 	} catch (Throwable $e) {
 		cacti_log('CACTI2RRDP ERROR: Public RSA Key Exchange returned an invalid key.', false, $logopt, POLLER_VERBOSITY_LOW);
 		@socket_close($rrdp_socket);
@@ -716,10 +719,10 @@ function encrypt(string $output, string $rsa_key) : string {
 	global $encryption;
 
 	if ($encryption) {
-		/** @var \phpseclib3\Crypt\RSA\PublicKey $public loadPublicKey() returns the RSA public key implementation, which exposes encrypt() */
-		$public  = phpseclib3\Crypt\RSA::loadPublicKey($rsa_key);
-		$aes     = new \phpseclib3\Crypt\Rijndael('cbc');
-		$aes_key = phpseclib3\Crypt\Random::string(32);
+		/** @var \phpseclib4\Crypt\RSA\PublicKey $public loadPublicKey() returns the RSA public key implementation, which exposes encrypt() */
+		$public  = RSA::loadPublicKey($rsa_key);
+		$aes     = new Rijndael('cbc');
+		$aes_key = random_bytes(32);
 
 		$aes->setKey($aes_key);
 		$aes->setIV(str_repeat("\0", 16));
@@ -760,9 +763,9 @@ function rrdtool_proxy_decrypt(string $input, string $rsa_private_key) : string|
 	}
 
 	try {
-		/** @var \phpseclib3\Crypt\RSA\PrivateKey $private loadPrivateKey() returns the RSA private key implementation, which exposes decrypt() */
-		$private = phpseclib3\Crypt\RSA::loadPrivateKey($rsa_private_key);
-		$aes     = new \phpseclib3\Crypt\Rijndael('cbc');
+		/** @var \phpseclib4\Crypt\RSA\PrivateKey $private loadPrivateKey() returns the RSA private key implementation, which exposes decrypt() */
+		$private = RSA::loadPrivateKey($rsa_private_key);
+		$aes     = new Rijndael('cbc');
 		$aes_key = $private->decrypt($aes_key);
 
 		if (!is_string($aes_key) || $aes_key === '') {

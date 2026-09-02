@@ -30,7 +30,7 @@ include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleAuthenticator.ph
 include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleQrUrl.php');
 include(__DIR__ . '/../include/vendor/GoogleAuthenticator/RuntimeException.php');
 
-use phpseclib3\Crypt\RSA;
+use phpseclib4\Crypt\RSA;
 
 /**
  * Clears a users security token

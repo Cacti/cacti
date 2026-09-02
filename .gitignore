@@ -135,3 +135,26 @@ verify_task*.php
 # Local autopilot/session data
 /.omc/
 /docs/superpowers/
+
+# Front-end JavaScript libraries built from package.json via `npm run build:js`.
+# Do not edit these directly; change the pinned version in package.json and rebuild.
+/node_modules/
+/include/js/jquery.js
+/include/js/jstree.js
+/include/js/billboard.js
+/include/js/jquery.tablesorter.js
+/include/js/jquery.validate/jquery.validate.js
+/include/js/jquery.validate/jquery.validate.min.js
+/include/js/jquery.validate/additional-methods.js
+/include/js/jquery.validate/additional-methods.min.js
+/include/js/jquery-ui.js
+/include/js/pace.js
+/include/js/jquery.tablesorter.widgets.js
+/include/js/jquery.tablesorter.pager.js
+/include/js/purify.js
+/include/js/purify.js.map
+/include/js/htmx.js
+/include/js/d3.js
+/include/js/big.js
+/include/js/lzjs.js
+/include/js/screenfull.js
