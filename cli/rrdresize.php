@@ -124,7 +124,7 @@ if (sizeof($parms)) {
 			case '-V':
 				display_version();
 
-				exit(0);
+				exit(1);
 			case '-h':
 			case '-H':
 			case '--help':
@@ -185,7 +185,7 @@ if (!$data_template_id) {
 if (!$backup_folder) {
 	print 'ERROR: You must define a backup folder!' . PHP_EOL;
 
-	exit(0);
+	exit(1);
 } else {
 	$tmp_xml_file = $tmp_backup_folder . 'tmp_rrdresize.xml';
 	$tmp_rrd_file = $tmp_backup_folder . 'tmp_rrdfile.rrd';
@@ -240,7 +240,7 @@ if ($scanned_directory['folders']) {
 	if (!mkdir($tmp_backup_folder)) {
 		print 'ERROR: Unable to create a backup folder!' . PHP_EOL;
 
-		exit(0);
+		exit(1);
 	}
 
 	// create log file
