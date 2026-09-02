@@ -157,6 +157,21 @@ if (cacti_sizeof($parms)) {
 	exit(1);
 }
 
+/** Quote a value for a MySQL option file.
+ *
+ * The option file format is not byte transparent: an unquoted '#' starts a
+ * comment, a backslash escapes, trailing whitespace is stripped, and a newline
+ * would inject a further option. Values therefore have to be double quoted with
+ * the backslash and quote characters escaped.
+ *
+ * @param string $value Raw value.
+ *
+ * @return string Quoted value safe to write into the file.
+ */
+function audit_database_option_quote($value) {
+	return '"' . addcslashes((string) $value, '\\"') . '"';
+}
+
 /**
  * audit_database_defaults_file - writes the database credentials to a private
  * file for --defaults-file.
@@ -172,21 +187,6 @@ if (cacti_sizeof($parms)) {
  *
  * @return string|false The path to the file, or false when it cannot be created.
  */
-/** Quote a value for a MySQL option file.
- *
- * The option file format is not byte transparent: an unquoted '#' starts a
- * comment, a backslash escapes, trailing whitespace is stripped, and a newline
- * would inject a further option. Values therefore have to be double quoted with
- * the backslash and quote characters escaped.
- *
- * @param string $value Raw value.
- *
- * @return string Quoted value safe to write into the file.
- */
-function audit_database_option_quote($value) {
-	return '"' . addcslashes((string) $value, "\\\"") . '"';
-}
-
 function audit_database_defaults_file($username, $password, $hostname, $port) {
 	$path = tempnam(sys_get_temp_dir(), 'cacti_audit_');
 
@@ -203,7 +203,7 @@ function audit_database_defaults_file($username, $password, $hostname, $port) {
 
 	// A newline cannot be represented in the option file format; refuse rather
 	// than silently authenticate with a mangled credential.
-	foreach (array($username, $password, $hostname) as $value) {
+	foreach ([$username, $password, $hostname] as $value) {
 		if (strpbrk((string) $value, "\r\n") !== false) {
 			unlink($path);
 
