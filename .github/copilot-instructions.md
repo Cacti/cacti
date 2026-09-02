@@ -74,6 +74,13 @@
 - Install/upgrade DB: `php -q cli/install_cacti.php --accept-eula --install --force` and `php -q cli/upgrade_database.php --forcever=$(cat include/cacti_version)`.
 - Run poller: `php poller.php --poller=1 --force --debug` (daemon debug: `./cactid.php --foreground --debug`).
 - Repo checks: `composer lint`, `composer phpstan`, `composer phpcsfixer` (dry-run).
+- Refresh security baselines when the sink or hotspot guard reports drift:
+  `tests/security/build_sink_inventory.sh | tr -d '\r' | LC_ALL=C sort > tests/security/baselines/sink_inventory.baseline.tsv`
+  and the matching `build_architectural_helper_report.sh --hotspots` for
+  `architectural_hotspots.baseline.tsv`. Use the command the verifier prints
+  rather than editing the file. The verifiers strip `:LINE` before comparing, so
+  most of the resulting diff is renumbering they ignore; say in the pull request
+  how many entries are substantive.
 
 ## Dependency management: never vendor packages
 - Do not add, copy, or update third-party package source under `include/vendor/` or elsewhere in the repository. Existing vendored dependencies may be removed by an in-scope change, but must not be expanded or refreshed.
