@@ -73,9 +73,9 @@ function __esc(string $message, mixed ...$args) : string {
 	return $args === [] ? $message : vsprintf($message, $args);
 }
 
-function exec_into_array(string $command) : array {
+function exec_into_array(string $command, int &$return_code = 0) : array {
 	$output = [];
-	exec($command, $output);
+	exec($command, $output, $return_code);
 
 	return $output;
 }
@@ -422,12 +422,21 @@ test('native and binary walks cover parsing, filtering, and diagnostics', functi
 	$GLOBALS['snmp_coverage_config']['oid_increasing_check_disable'] = 'off';
 	$without_oid_check                                               = cacti_snmp_walk($host, 'public', $oid, 3, 'user', '', '[None]', '', '[None]', port: $port);
 
+	// An auth protocol outside $snmp_auth_protocols makes cacti_get_snmpv3_auth()
+	// return '', which used to build a credential-less snmpwalk -v 3.
+	$no_credentials = cacti_snmp_walk($host, 'public', $oid, 3, 'user', 'secret', 'BOGUS', '', '[None]', port: $port);
+
 	expect($bulk[0]['value'])->toContain('coverage agent')
 		->and($regular[0]['value'])->toContain('coverage agent')
 		->and($timeout)->toBe([])
 		->and($too_big)->toBe([])
 		->and($without_oid_check)->not->toBe([])
+		->and($no_credentials)->toBe([])
 		->and($invalid)->toBe([])
 		->and(implode(' ', array_column($GLOBALS['snmp_coverage_logs'], 0)))->toContain('exploit attempted')
-		->toContain('Timeout');
+		// A failed walk is now reported by its exit code. The previous wording
+		// came from matching 'Timeout' against the walk output, which only ever
+		// matched device data.
+		->toContain('Exit Code')
+		->toContain('Missing credentials');
 });
