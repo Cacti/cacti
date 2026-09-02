@@ -22,7 +22,7 @@
 
 SCRIPTPATH="$( cd "$(dirname "$0")" || exit ; pwd -P )"
 cd "${SCRIPTPATH}/../../" || exit
-FILES1=$(find cli -name \*.php | grep -v "index.php" | sort)
+FILES1=$(find cli -type f -name \*.php ! -path 'cli/lib/*' | grep -v "index.php" | sort)
 FILES2=$(find . -maxdepth 1 -name 'poller*.php' | grep -E -v "(index.php|pollers.php)" | sort)
 FILES3="cactid.php cmd.php"
 # shellcheck disable=SC2009 # pgrep lacks awk/user-filtering in one step; ps pipeline required

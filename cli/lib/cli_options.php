@@ -29,12 +29,13 @@
  * --help from the same declaration so the two cannot drift, and prints
  * --version. The option contract is unchanged: options are --name or
  * --name=value, -v and -V print the version, -h and -H print the help.
+ * @param mixed $title
  */
 
 /**
  * cacti_cli_version - prints the standard version banner.
  *
- * @param  string $title The utility name, for example 'Add Device Utility'.
+ * @param string $title The utility name, for example 'Add Device Utility'.
  *
  * @return void
  */
@@ -46,14 +47,14 @@ function cacti_cli_version($title) {
  * cacti_cli_help - prints the version banner, the usage lines, and the
  * options rendered from the same declaration the parser uses.
  *
- * @param  string $title   The utility name.
- * @param  array  $usage   Usage lines, printed one per line, without a trailing newline.
- * @param  array  $options The option declaration, see cacti_cli_parse().
- * @param  array  $extra   Optional lines printed after the options.
+ * @param string $title   The utility name.
+ * @param array  $usage   Usage lines, printed one per line, without a trailing newline.
+ * @param array  $options The option declaration, see cacti_cli_parse().
+ * @param array  $extra   Optional lines printed after the options.
  *
  * @return void
  */
-function cacti_cli_help($title, $usage, $options, $extra = array()) {
+function cacti_cli_help($title, $usage, $options, $extra = []) {
 	cacti_cli_version($title);
 
 	print PHP_EOL;
@@ -62,8 +63,8 @@ function cacti_cli_help($title, $usage, $options, $extra = array()) {
 		print $line . PHP_EOL;
 	}
 
-	$required = array();
-	$optional = array();
+	$required = [];
+	$optional = [];
 
 	foreach ($options as $name => $option) {
 		if (isset($option['help'])) {
@@ -103,8 +104,8 @@ function cacti_cli_help($title, $usage, $options, $extra = array()) {
 /**
  * cacti_cli_help_options - prints one aligned line per option.
  *
- * @param  array $options The options to print.
- * @param  int   $width   The column width taken from the longest option name.
+ * @param array $options The options to print.
+ * @param int   $width   The column width taken from the longest option name.
  *
  * @return void
  */
@@ -134,17 +135,17 @@ function cacti_cli_help_options($options, $width) {
  * --help, -h and -H print the help and exit 0. --version, -v and -V print
  * the version and exit 0, matching what the scripts did individually.
  *
- * @param  array  $argv    The raw argument vector, including the script name.
- * @param  array  $options The option declaration.
- * @param  string $title   The utility name, for --version and --help.
- * @param  array  $usage   Usage lines for --help.
- * @param  array  $extra   Optional trailing help lines.
+ * @param array  $argv    The raw argument vector, including the script name.
+ * @param array  $options The option declaration.
+ * @param string $title   The utility name, for --version and --help.
+ * @param array  $usage   Usage lines for --help.
+ * @param array  $extra   Optional trailing help lines.
  *
  * @return array The parsed values, keyed by option name.
  */
-function cacti_cli_parse($argv, $options, $title, $usage, $extra = array()) {
+function cacti_cli_parse($argv, $options, $title, $usage, $extra = []) {
 	$parms  = $argv;
-	$values = array();
+	$values = [];
 
 	array_shift($parms);
 
@@ -160,7 +161,7 @@ function cacti_cli_parse($argv, $options, $title, $usage, $extra = array()) {
 
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=') !== false) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
