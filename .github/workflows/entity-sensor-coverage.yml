@@ -1,0 +1,66 @@
+name: Entity Sensor Coverage
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/entity-sensor-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'scripts/ss_entity_sensor.php'
+      - 'phpunit-entity-sensor.xml'
+      - 'tests/Unit/DataCollection/Scripts/EntitySensorTest.php'
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/entity-sensor-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'scripts/ss_entity_sensor.php'
+      - 'phpunit-entity-sensor.xml'
+      - 'tests/Unit/DataCollection/Scripts/EntitySensorTest.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: entity-sensor-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMPOSER_ALLOW_SUPERUSER: 1
+
+jobs:
+  coverage:
+    name: scripts/ss_entity_sensor.php 100% coverage
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Setup locked PHP 8.2 dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.2'
+          coverage: xdebug
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring, snmp
+          dependency-mode: locked
+          install-args: --prefer-dist --no-progress --no-interaction
+
+      - name: Enforce line coverage
+        env:
+          XDEBUG_MODE: coverage
+        run: |
+          set -euo pipefail
+          include/vendor/bin/pest --colors=never \
+            --configuration=phpunit-entity-sensor.xml \
+            --coverage \
+            --coverage-text \
+            --min=100

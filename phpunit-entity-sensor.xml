@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="tests/bootstrap-unit.php" colors="false" beStrictAboutOutputDuringTests="false">
+	<testsuites>
+		<testsuite name="EntitySensor">
+			<file>tests/Unit/DataCollection/Scripts/EntitySensorTest.php</file>
+		</testsuite>
+	</testsuites>
+	<source>
+		<include>
+			<file>scripts/ss_entity_sensor.php</file>
+		</include>
+	</source>
+</phpunit>
