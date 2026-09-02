@@ -1,0 +1,70 @@
+name: Script Coverage
+
+# Reusable body for the per-script coverage workflows. Each caller supplies the
+# PHPUnit configuration and the job name; everything else was identical across
+# them and is kept here so it can only drift in one place.
+
+on:
+  workflow_call:
+    inputs:
+      job-name:
+        description: Name shown for the job, usually the script and its target.
+        required: true
+        type: string
+      phpunit-config:
+        description: PHPUnit configuration file for this script.
+        required: true
+        type: string
+      php-version:
+        description: PHP version to run the suite against.
+        required: false
+        type: string
+        default: '8.2'
+      extensions:
+        description: PHP extensions the suite needs.
+        required: false
+        type: string
+        default: 'intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring'
+      min-coverage:
+        description: Minimum line coverage percentage.
+        required: false
+        type: number
+        default: 100
+
+permissions:
+  contents: read
+
+env:
+  COMPOSER_ALLOW_SUPERUSER: 1
+
+jobs:
+  coverage:
+    name: ${{ inputs.job-name }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Setup locked PHP ${{ inputs.php-version }} dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: ${{ inputs.php-version }}
+          coverage: xdebug
+          extensions: ${{ inputs.extensions }}
+          dependency-mode: locked
+          install-args: --prefer-dist --no-progress --no-interaction
+
+      - name: Enforce line coverage
+        env:
+          XDEBUG_MODE: coverage
+        run: |
+          set -euo pipefail
+          include/vendor/bin/pest --colors=never \
+            --configuration=${{ inputs.phpunit-config }} \
+            --coverage \
+            --coverage-text \
+            --min=${{ inputs.min-coverage }}
