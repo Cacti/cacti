@@ -165,10 +165,10 @@ if (cacti_sizeof($parms)) {
  * an argument is readable from the process list by every local user for the
  * lifetime of the command.
  *
- * @param  string $username The database user.
- * @param  string $password The database password.
- * @param  string $hostname The database host.
- * @param  string $port     The database port.
+ * @param string $username The database user.
+ * @param string $password The database password.
+ * @param string $hostname The database host.
+ * @param string $port     The database port.
  *
  * @return string|false The path to the file, or false when it cannot be created.
  */
@@ -179,7 +179,7 @@ function audit_database_defaults_file($username, $password, $hostname, $port) {
 		return false;
 	}
 
-	/* narrow the permissions before the secret is written */
+	// narrow the permissions before the secret is written
 	if (!chmod($path, 0600)) {
 		unlink($path);
 
@@ -203,7 +203,6 @@ function audit_database_defaults_file($username, $password, $hostname, $port) {
 
 	return $path;
 }
-
 
 function upgrade_database() : void {
 	$start = microtime(true);

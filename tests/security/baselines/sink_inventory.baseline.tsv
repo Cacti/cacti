@@ -137,8 +137,9 @@ dynamic_include	./scripts/ss_netsnmp_lmsensors.php		include($config['base_path']
 dynamic_include	./snmpagent_persist.php				require($path_mibcache);
 fs_write	./cactid.php		$STDERR = fopen('/dev/null', 'wb');
 fs_write	./cactid.php		$STDERR = fopen('null', 'wb');
+fs_write	./cli/audit_database.php		if (file_put_contents($path, $contents) === false) {
 fs_write	./cli/clone_device_template.php			$fin = fopen('php://stdin', 'r');
-fs_write	./cli/float_rrdfiles.php					$lf = fopen('/tmp/clearer.log', 'a');
+fs_write	./cli/float_rrdfiles.php					$lf = fopen(sys_get_temp_dir() . '/cacti_float_rrdfiles.log', 'a');
 fs_write	./cli/float_rrdfiles.php				$fp = fopen($tmp_file, 'w');
 fs_write	./cli/genkey.php				if (file_put_contents("$keypair_path/package.key", $privKey)) {
 fs_write	./cli/genkey.php			if (file_put_contents("$keypair_path/package.pub", $pubKey)) {
