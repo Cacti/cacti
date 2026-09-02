@@ -153,3 +153,8 @@ verify_task*.php
 /include/js/jquery.tablesorter.pager.js
 /include/js/purify.js
 /include/js/purify.js.map
+/include/js/htmx.js
+/include/js/d3.js
+/include/js/big.js
+/include/js/lzjs.js
+/include/js/screenfull.js

@@ -8,6 +8,11 @@ import { pathToFileURL } from 'node:url';
 
 export const assetMap = Object.freeze({
 	'node_modules/jquery/dist/jquery.js':                             'include/js/jquery.js',
+	'node_modules/htmx.org/dist/htmx.js':                            'include/js/htmx.js',
+	'node_modules/d3/dist/d3.js':                                    'include/js/d3.js',
+	'node_modules/big.js/big.js':                                    'include/js/big.js',
+	'node_modules/lzjs/lzjs.js':                                     'include/js/lzjs.js',
+	'node_modules/screenfull/dist/screenfull.js':                    'include/js/screenfull.js',
 	'node_modules/dompurify/dist/purify.js':                          'include/js/purify.js',
 	'node_modules/dompurify/dist/purify.js.map':                      'include/js/purify.js.map',
 	'node_modules/jquery-ui/dist/jquery-ui.js':                       'include/js/jquery-ui.js',
