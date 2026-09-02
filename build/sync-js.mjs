@@ -9,6 +9,7 @@ import { pathToFileURL } from 'node:url';
 export const assetMap = Object.freeze({
 	'node_modules/jquery/dist/jquery.js':                             'include/js/jquery.js',
 	'node_modules/dompurify/dist/purify.js':                          'include/js/purify.js',
+	'node_modules/dompurify/dist/purify.js.map':                      'include/js/purify.js.map',
 	'node_modules/jquery-ui/dist/jquery-ui.js':                       'include/js/jquery-ui.js',
 	'node_modules/jstree/dist/jstree.js':                             'include/js/jstree.js',
 	'node_modules/billboard.js/dist/billboard.js':                    'include/js/billboard.js',

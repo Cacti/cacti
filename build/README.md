@@ -15,9 +15,9 @@ npm run build:js   # or run the sync explicitly
 
 ## What is managed here
 
-All third-party JavaScript libraries are npm-sourced (generated, git-ignored):
-jquery, jquery-ui, jstree, billboard.js, dompurify, pace-js, the tablesorter files
-(core, widgets, pager) and the jquery-validation files.
+The managed third-party JavaScript libraries are npm-sourced (generated,
+git-ignored): jquery, jquery-ui, jstree, billboard.js, DOMPurify, pace-js, the
+tablesorter files (core, widgets, pager) and the jquery-validation files.
 
 `pace-js` carries a one-line local fix (a stray regex alternation removed) applied
 through `patch-package` from `patches/pace-js+1.2.4.patch`. The fix should also be

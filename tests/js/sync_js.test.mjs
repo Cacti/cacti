@@ -48,3 +48,12 @@ test('the command-line entry point builds a release-tree checkout', () => {
 
 	assertSynced(root);
 });
+
+test('DOMPurify is pinned and generated from the matching npm release', () => {
+	const packageJson = JSON.parse(readFileSync('package.json', 'utf8'));
+	const source = 'node_modules/dompurify/dist/purify.js';
+
+	assert.equal(packageJson.dependencies.dompurify, '3.4.14');
+	assert.equal(assetMap[source], 'include/js/purify.js');
+	assert.match(readFileSync(source, 'utf8'), /DOMPurify 3\.4\.14/);
+});
