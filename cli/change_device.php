@@ -282,6 +282,7 @@ foreach ($parms as $parameter) {
 				exit(1);
 			}
 
+			break;
 		case '--version':
 		case '-V':
 		case '-v':
