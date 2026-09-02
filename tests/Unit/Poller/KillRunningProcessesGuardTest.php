@@ -33,10 +33,10 @@ test('every kill_running_processes signals only a process confirmed still runnin
 		while (($at = strpos($source, "posix_kill(\$p['pid'], SIGTERM)", $offset)) !== false) {
 			$preceding = substr($source, max(0, $at - 400), min(400, $at));
 
-			expect($preceding)->toContain(
-				'cacti_process_still_running',
-				'unguarded posix_kill in ' . $file
-			);
+			// toContain() takes needles, not a message, so assert plainly and
+			// name the file through the surrounding loop instead.
+			expect(str_contains($preceding, 'cacti_process_still_running'))
+				->toBeTrue();
 
 			$offset = $at + 1;
 		}
