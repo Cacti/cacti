@@ -30,12 +30,12 @@ function upgrade_to_1_3_0() : void {
 		PRIMARY KEY (key_id)
 	) ENGINE=InnoDB COMMENT='Serializes Cacti Process Registry Mutations'");
 
-	db_install_change_column('version', ['name' => 'cacti', 'type' => 'char(30)', 'null' => false, 'default' => '']);
+	db_install_change_column('version', ['name' => 'cacti', 'type' => 'char(30)', 'NULL' => false, 'default' => '']);
 
-	db_install_add_column('user_auth', ['name' => 'tfa_enabled', 'type' => 'char(3)', 'null' => false, 'default' => '']);
-	db_install_add_column('user_auth', ['name' => 'tfa_secret', 'type' => 'char(50)', 'null' => false, 'default' => '']);
+	db_install_add_column('user_auth', ['name' => 'tfa_enabled', 'type' => 'char(3)', 'NULL' => false, 'default' => '']);
+	db_install_add_column('user_auth', ['name' => 'tfa_secret', 'type' => 'char(50)', 'NULL' => false, 'default' => '']);
 
-	db_install_add_column('poller', ['name' => 'log_level', 'type' => 'int', 'null' => false, 'default' => '-1', 'after' => 'status']);
+	db_install_add_column('poller', ['name' => 'log_level', 'type' => 'int', 'NULL' => false, 'default' => '-1', 'after' => 'status']);
 	db_install_add_column('poller', ['name' => 'dbsslkey', 'type' => 'varchar(255)', 'after' => 'dbssl']);
 	db_install_add_column('poller', ['name' => 'dbsslcert', 'type' => 'varchar(255)', 'after' => 'dbsslkey']);
 	db_install_add_column('poller', ['name' => 'dbsslca', 'type' => 'varchar(255)', 'after' => 'dbsslcert']);
@@ -60,10 +60,10 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_column('graph_templates_item', ['name' => 'alpha2', 'type' => 'char(2)', 'default' => 'FF', 'after' => 'color2_id']);
 	db_install_add_column('graph_templates_item', ['name' => 'gradheight', 'type' => 'tinyint(4)', 'default' => '50', 'after' => 'alpha2']);
 
-	db_install_add_column('sites', ['name' => 'disabled', 'type' => 'char(2)', 'null' => false, 'default' => '', 'after' => 'name']);
-	db_install_add_column('sites', ['name' => 'region', 'type' => 'varchar(30)', 'null' => false, 'default' => '', 'after' => 'country']);
+	db_install_add_column('sites', ['name' => 'disabled', 'type' => 'char(2)', 'NULL' => false, 'default' => '', 'after' => 'name']);
+	db_install_add_column('sites', ['name' => 'region', 'type' => 'varchar(30)', 'NULL' => false, 'default' => '', 'after' => 'country']);
 
-	db_install_add_column('user_domains_ldap', ['name' => 'tls_certificate', 'type' => 'tinyint(3)', 'unsigned' => true, 'null' => false, 'default' => '3']);
+	db_install_add_column('user_domains_ldap', ['name' => 'tls_certificate', 'type' => 'tinyint(3)', 'unsigned' => true, 'NULL' => false, 'default' => '3']);
 
 	db_install_add_column('graph_templates_graph', ['name' => 't_left_axis_format', 'type' => 'char(2)',  'default' => '', 'after' => 'right_axis_formatter']);
 	db_install_add_column('graph_templates_graph', ['name' => 'left_axis_format', 'type' => 'mediumint(8)', 'NULL' => true, 'after' => 't_left_axis_format']);
@@ -85,9 +85,9 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_column('data_input_data', ['name' => 'local_data_id', 'type' => 'int', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'data_template_id']);
 	db_install_add_column('data_input_data', ['name' => 'host_id', 'type' => 'int', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'local_data_id']);
 
-	db_install_add_column('graph_templates', ['name' => 'last_updated', 'type' => 'timestamp', 'null' => false, 'default' => 'CURRENT_TIMESTAMP']);
-	db_install_add_column('data_template', ['name' => 'last_updated', 'type' => 'timestamp', 'null' => false, 'default' => 'CURRENT_TIMESTAMP']);
-	db_install_add_column('snmp_query', ['name' => 'last_updated', 'type' => 'timestamp', 'null' => false, 'default' => 'CURRENT_TIMESTAMP']);
+	db_install_add_column('graph_templates', ['name' => 'last_updated', 'type' => 'timestamp', 'NULL' => false, 'default' => 'CURRENT_TIMESTAMP']);
+	db_install_add_column('data_template', ['name' => 'last_updated', 'type' => 'timestamp', 'NULL' => false, 'default' => 'CURRENT_TIMESTAMP']);
+	db_install_add_column('snmp_query', ['name' => 'last_updated', 'type' => 'timestamp', 'NULL' => false, 'default' => 'CURRENT_TIMESTAMP']);
 
 	db_install_add_key('data_input_data', 'INDEX', 'data_template_id', ['data_template_id']);
 	db_install_add_key('data_input_data', 'INDEX', 'local_data_id', ['local_data_id']);
@@ -137,8 +137,8 @@ function upgrade_to_1_3_0() : void {
 		}
 	}
 
-	db_install_add_column('host_snmp_query', ['name' => 'reindex_last_runtime', 'type' => 'timestamp', 'null' => false, 'default' => 'CURRENT_TIMESTAMP']);
-	db_install_add_column('host_snmp_query', ['name' => 'reindex_last_duration', 'type' => 'double', 'unsigned' => true, 'null' => false, 'default' => '0']);
+	db_install_add_column('host_snmp_query', ['name' => 'reindex_last_runtime', 'type' => 'timestamp', 'NULL' => false, 'default' => 'CURRENT_TIMESTAMP']);
+	db_install_add_column('host_snmp_query', ['name' => 'reindex_last_duration', 'type' => 'double', 'unsigned' => true, 'NULL' => false, 'default' => '0']);
 
 	db_install_execute('UPDATE data_input_data AS did
 		INNER JOIN data_template_data AS dtd
@@ -203,7 +203,7 @@ function upgrade_to_1_3_0() : void {
 	db_install_update_table('plugin_archive', $data);
 
 	// Not sure why we were adding this...
-	// db_install_add_column('user_domains', array('name' => 'tls_verify', 'type' => 'int', 'null' => false, 'default' => '0'));
+	// db_install_add_column('user_domains', array('name' => 'tls_verify', 'type' => 'int', 'NULL' => false, 'default' => '0'));
 
 	db_install_execute('UPDATE host AS h
 		LEFT JOIN sites AS s
