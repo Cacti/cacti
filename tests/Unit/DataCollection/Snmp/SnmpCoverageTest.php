@@ -73,9 +73,9 @@ function __esc(string $message, mixed ...$args) : string {
 	return $args === [] ? $message : vsprintf($message, $args);
 }
 
-function exec_into_array(string $command) : array {
+function exec_into_array(string $command, int &$return_code = 0) : array {
 	$output = [];
-	exec($command, $output);
+	exec($command, $output, $return_code);
 
 	return $output;
 }
