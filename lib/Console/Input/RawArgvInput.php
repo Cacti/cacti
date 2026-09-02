@@ -38,7 +38,7 @@ final class RawArgvInput extends ArgvInput {
 	public function argumentsAfterCommand(array $names): array {
 		foreach ($this->rawTokens as $offset => $token) {
 			if (in_array($token, $names, true)) {
-				return array_values(array_slice($this->rawTokens, $offset + 1));
+				return array_slice($this->rawTokens, $offset + 1);
 			}
 		}
 
