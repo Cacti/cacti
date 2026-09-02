@@ -441,7 +441,42 @@ jobs:
         sudo -u www-data -- php poller.php --poller=1 --force --debug
         grep -q "SYSTEM STATS" log/cacti.log
 
+    # The recursive crawl walks the whole authenticated UI one request at a
+    # time and is the single most expensive step in CI. Nothing it exercises can
+    # change unless server-rendered code, assets or the schema changed, so skip
+    # it when a pull request touches only tests, workflows or documentation.
+    - name: Decide whether the page crawl can affect this change
+      id: crawl_scope
+      run: |
+        set -euo pipefail
+
+        if [[ "${{ github.event_name }}" != 'pull_request' ]]; then
+          echo 'required=true' >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        base='${{ github.event.pull_request.base.sha }}'
+
+        # Fail open: if the diff cannot be read, run the crawl.
+        if ! changed=$(git diff --name-only "$base" HEAD 2>/dev/null); then
+          echo 'required=true' >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        if [[ -z "$changed" ]]; then
+          echo 'required=true' >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        if printf '%s\n' "$changed" | grep -qvE '^(tests/|\.github/|docs/|locales/|CHANGELOG|changelog\.d/|.*\.md$)'; then
+          echo 'required=true' >> "$GITHUB_OUTPUT"
+        else
+          echo 'required=false' >> "$GITHUB_OUTPUT"
+          echo "Only tests, workflows or documentation changed; skipping the page crawl."
+        fi
+
     - name: Check All Pages Using Recursive wget
+      if: steps.crawl_scope.outputs.required == 'true'
       run: |
         set -euo pipefail
         install -m 0600 /dev/null .my.cnf
