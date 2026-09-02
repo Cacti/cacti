@@ -138,6 +138,54 @@ if (cacti_sizeof($parms)) {
 	exit(1);
 }
 
+
+/**
+ * audit_database_defaults_file - writes the database credentials to a private
+ * file for --defaults-extra-file.
+ *
+ * The password is deliberately kept off the command line. Anything passed as
+ * an argument is readable from the process list by every local user for the
+ * lifetime of the command.
+ *
+ * @param  string $username The database user.
+ * @param  string $password The database password.
+ * @param  string $hostname The database host.
+ * @param  string $port     The database port.
+ *
+ * @return string|false The path to the file, or false when it cannot be created.
+ */
+function audit_database_defaults_file($username, $password, $hostname, $port) {
+	$path = tempnam(sys_get_temp_dir(), 'cacti_audit_');
+
+	if ($path === false) {
+		return false;
+	}
+
+	/* narrow the permissions before the secret is written */
+	if (!chmod($path, 0600)) {
+		unlink($path);
+
+		return false;
+	}
+
+	$contents  = '[client]' . PHP_EOL;
+	$contents .= 'user=' . $username . PHP_EOL;
+	$contents .= 'password=' . $password . PHP_EOL;
+	$contents .= 'host=' . $hostname . PHP_EOL;
+
+	if ($hostname != 'localhost') {
+		$contents .= 'port=' . $port . PHP_EOL;
+	}
+
+	if (file_put_contents($path, $contents) === false) {
+		unlink($path);
+
+		return false;
+	}
+
+	return $path;
+}
+
 function upgrade_database() {
 	global $config;
 
@@ -1043,13 +1091,22 @@ function create_tables($load = true) {
 		}
 
 		if (file_exists($config['base_path'] . '/docs/audit_schema.sql')) {
+			/* the credentials go in a private defaults file rather than on the
+			 * command line, where any local user could read them out of the
+			 * process list for as long as the import runs */
+			$defaults_file = audit_database_defaults_file($database_username, $database_password, $database_hostname, $database_port);
+
+			if ($defaults_file === false) {
+				print 'FATAL: Unable to create a private credentials file' . PHP_EOL;
+				exit(1);
+			}
+
 			exec($db_shell .
-				' -u' . cacti_escapeshellarg($database_username) .
-				' -p' . cacti_escapeshellarg($database_password) .
-				' -h' . cacti_escapeshellarg($database_hostname) .
-				' -P' . cacti_escapeshellarg($database_port) .
-				' ' . $database_default .
-				' < ' . $config['base_path'] . '/docs/audit_schema.sql', $output, $error);
+				' --defaults-extra-file=' . cacti_escapeshellarg($defaults_file) .
+				' ' . cacti_escapeshellarg($database_default) .
+				' < ' . cacti_escapeshellarg($config['base_path'] . '/docs/audit_schema.sql'), $output, $error);
+
+			unlink($defaults_file);
 
 			if ($error == 0) {
 				print ($altersopt ? '-- ' : '') . 'SUCCESS: Loaded the Audit Schema' . PHP_EOL;

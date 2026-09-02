@@ -342,7 +342,7 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 			$fp = fopen($tmp_file, 'w');
 
 			if ($seebug) {
-				$lf = fopen('/tmp/clearer.log', 'a');
+				$lf = fopen(sys_get_temp_dir() . '/cacti_float_rrdfiles.log', 'a');
 			}
 
 			if (is_resource($fp)) {
