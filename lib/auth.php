@@ -5049,7 +5049,7 @@ function check_reset_no_authentication(int $auth_method) : bool {
 
 		$_SESSION[SESS_USER_ID]         = $admin_id;
 		$_SESSION[SESS_CHANGE_PASSWORD] = true;
-		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
+		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url($_SERVER['HTTP_REFERER'] ?? 'index.php')));
 
 		exit;
 	}

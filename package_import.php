@@ -492,7 +492,7 @@ function form_save() : void {
 
 			$_SESSION['sess_import_package'] = file_get_contents($xmlfile);
 		} elseif (isset($_SESSION['sess_import_package'])) {
-			$xmlfile = sys_get_temp_dir() . '/package_import_' . rand();
+			$xmlfile = tempnam(sys_get_temp_dir(), 'package_import_');
 
 			file_put_contents($xmlfile, $_SESSION['sess_import_package']);
 
@@ -637,7 +637,7 @@ function package_file_get_contents(string $package_location, string $package_fil
 			}
 		}
 	} elseif (isset($_SESSION['sess_import_package'])) {
-		$xmlfile = sys_get_temp_dir() . '/package_import_' . rand();
+		$xmlfile = tempnam(sys_get_temp_dir(), 'package_import_');
 
 		$binary_signature = '';
 
@@ -846,7 +846,7 @@ function package_verify_key() : void {
 			}
 		}
 	} elseif (isset($_SESSION['sess_import_package'])) {
-		$xmlfile = sys_get_temp_dir() . '/package_import_' . rand();
+		$xmlfile = tempnam(sys_get_temp_dir(), 'package_import_');
 
 		file_put_contents($xmlfile, $_SESSION['sess_import_package']);
 
@@ -946,7 +946,7 @@ function package_accept_key() : void {
 			}
 		}
 	} elseif (isset($_SESSION['sess_import_package'])) {
-		$xmlfile = sys_get_temp_dir() . '/package_import_' . rand();
+		$xmlfile = tempnam(sys_get_temp_dir(), 'package_import_');
 
 		file_put_contents($xmlfile, $_SESSION['sess_import_package']);
 
