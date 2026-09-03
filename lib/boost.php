@@ -898,7 +898,7 @@ function boost_graph_set_file(string|null &$output, int $local_graph_id, int|nul
 
 				if (is_writable($cache_directory)) {
 					// if the cache file was created in a prior step, save it
-					if (strlen($output) > 10) {
+					if (is_string($output) && strlen($output) > 10) {
 						if (boost_atomic_write_cache($cache_file, $output)) {
 							// count the number of images that had to be cached
 							$mc->object('boostStatsTotalsImagesCacheWrites')->count();
