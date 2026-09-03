@@ -44,7 +44,16 @@ test('Scheduled Boost retains shard ownership after an RRD update failure', func
 	expect($poller)->toContain('if ($pass_rows < 0)');
 	expect($poller)->toContain('if ($total_rows == 0) {');
 	expect($poller)->toContain('return 0;');
+	expect($poller)->not->toContain('elseif ($rrd_updates == -1)');
 	expect(boostSource('lib/boost.php'))->toContain("return is_string(\$result) && \$result !== '' ? \$result : 'ERROR: RRDtool did not acknowledge the update';");
+});
+
+test('Boost completion-table upgrades recover when the legacy table is missing', function () {
+	$upgrade = boostSource('install/upgrades/1_3_0.php');
+
+	expect($upgrade)->toContain("if (!db_table_exists('poller_output_boost_processes'))")
+		->and($upgrade)->toContain('CREATE TABLE `poller_output_boost_processes`')
+		->and($upgrade)->toContain('UNIQUE KEY `run_child` (`run_id`, `child_id`)');
 });
 
 test('Boost child completion and archive deletion are scoped to a parent run', function () {

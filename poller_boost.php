@@ -292,9 +292,6 @@ if ($child == false) {
 			} elseif ($rrd_updates > 0) {
 				boost_log_statistics($rrd_updates);
 				$next_run_time = $current_time + $seconds_offset;
-			} elseif ($rrd_updates == -1) {
-				boost_log_statistics(0);
-				$next_run_time = $current_time + $seconds_offset;
 			} else { // rollback last run time
 				set_config_option('boost_last_run_time', $last_run_time);
 			}

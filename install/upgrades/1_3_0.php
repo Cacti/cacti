@@ -97,10 +97,22 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_key('host', 'INDEX', 'host_template_id', ['host_template_id']);
 	db_install_add_key('sessions', 'INDEX', 'user_id', ['user_id']);
 	db_install_add_key('sessions', 'INDEX', 'access', ['access']);
-	db_install_execute('TRUNCATE TABLE poller_output_boost_processes');
-	db_install_add_column('poller_output_boost_processes', ['name' => 'run_id', 'type' => 'char(32)', 'NULL' => false, 'default' => '', 'after' => 'sock_int_value']);
-	db_install_add_column('poller_output_boost_processes', ['name' => 'child_id', 'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'run_id']);
-	db_install_add_key('poller_output_boost_processes', 'UNIQUE', 'run_child', ['run_id', 'child_id']);
+
+	if (!db_table_exists('poller_output_boost_processes')) {
+		db_install_execute('CREATE TABLE `poller_output_boost_processes` (
+			`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
+			`run_id` char(32) NOT NULL default \'\',
+			`child_id` int(10) unsigned NOT NULL default 0,
+			`status` varchar(255) default NULL,
+			PRIMARY KEY (`sock_int_value`),
+			UNIQUE KEY `run_child` (`run_id`, `child_id`)
+		) ENGINE=MEMORY');
+	} else {
+		db_install_execute('TRUNCATE TABLE poller_output_boost_processes');
+		db_install_add_column('poller_output_boost_processes', ['name' => 'run_id', 'type' => 'char(32)', 'NULL' => false, 'default' => '', 'after' => 'sock_int_value']);
+		db_install_add_column('poller_output_boost_processes', ['name' => 'child_id', 'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'run_id']);
+		db_install_add_key('poller_output_boost_processes', 'UNIQUE', 'run_child', ['run_id', 'child_id']);
+	}
 
 	// poller_output_boost_local_data_ids is a MEMORY table; its indexes default
 	// to HASH unless USING BTREE is specified. Range/ORDER BY access against
