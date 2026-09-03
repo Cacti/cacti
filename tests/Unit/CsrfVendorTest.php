@@ -30,9 +30,23 @@ test('the Symfony CSRF classes are autoloadable', function () {
 });
 
 test('the Symfony CSRF package is resolved by Composer, not committed', function () use ($root) {
-	$tracked = shell_exec('git -C ' . escapeshellarg($root) . ' ls-files include/vendor/symfony/security-csrf/');
+	if (!function_exists('exec') || str_contains((string) ini_get('disable_functions'), 'exec')) {
+		test()->markTestSkipped('exec is disabled, so Composer package tracking cannot be inspected');
+	}
 
-	expect(trim((string) $tracked))->toBe('');
+	if (!file_exists($root . '/.git')) {
+		test()->markTestSkipped('not a git checkout, so Composer package tracking cannot be inspected');
+	}
+
+	$tracked = [];
+	$status  = 0;
+	exec('git -C ' . escapeshellarg($root) . ' ls-files include/vendor/symfony/security-csrf/', $tracked, $status);
+
+	if ($status !== 0) {
+		test()->markTestSkipped('git could not inspect Composer package tracking');
+	}
+
+	expect($tracked)->toBe([]);
 });
 
 test('composer.json declares the dependency', function () use ($root) {

@@ -12,11 +12,11 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once CACTI_PATH_LIBRARY . '/csrf.php';
-
 use Symfony\Component\Security\Csrf\CsrfTokenManager;
 use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 use Symfony\Component\Security\Csrf\TokenStorage\NativeSessionTokenStorage;
+
+require_once CACTI_PATH_LIBRARY . '/csrf.php';
 
 /*
  * Build a guard over a real Symfony manager backed by the process $_SESSION.
