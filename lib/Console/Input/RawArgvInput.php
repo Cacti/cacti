@@ -36,6 +36,13 @@ final class RawArgvInput extends ArgvInput {
 	 * @return list<string>
 	 */
 	public function argumentsAfterCommand(array $names): array {
+		/* Symfony resolves abbreviated command names, so the typed token is
+		 * often neither the registered name nor an alias. Without the token it
+		 * actually consumed, an abbreviation matches nothing and the legacy
+		 * script is spawned with an empty argv, silently taking its
+		 * no-argument path. */
+		$names[] = $this->getFirstArgument();
+
 		foreach ($this->rawTokens as $offset => $token) {
 			if (in_array($token, $names, true)) {
 				return array_slice($this->rawTokens, $offset + 1);

@@ -96,6 +96,23 @@ it('routes child stderr separately for console outputs and accepts aliases', fun
 		->and($errorOutput->fetch())->toBe('probe-error');
 });
 
+it('forwards arguments when the command name is abbreviated', function (): void {
+	$root        = dirname(__DIR__, 3) . '/fixtures/Console';
+	$application = new Application('test');
+	$application->setAutoExit(false);
+	$application->setCatchExceptions(false);
+	$application->add(new LegacyScriptCommand('probe:run', 'probe', $root));
+	$output = new BufferedOutput();
+
+	$status = $application->run(
+		new RawArgvInput(['bin/cacti', 'pro:r', '--arbitrary=value', 'plain']),
+		$output
+	);
+
+	expect($status)->toBe(23)
+		->and($output->fetch())->toBe('["--arbitrary=value","plain"]probe-error');
+});
+
 it('rejects parsed inputs that cannot preserve the raw argument vector', function (): void {
 	$command = new LegacyScriptCommand('probe:run', 'probe', dirname(__DIR__, 3) . '/fixtures/Console');
 
