@@ -2854,8 +2854,8 @@ function register_process_start(string $tasktype, string $taskname, int $taskid 
  *
  * @param string $tasktype Mandatory task type.
  * @param string $taskname Mandatory task name.
- * @param int    $taskid   Optional task id.
- * @param int    $timeout  Optional timeout.
+ * @param int    $taskid   Task id supplied by register_process_start().
+ * @param int    $timeout  Timeout supplied by register_process_start().
  *
  * @return bool True when this process may start.
  */
