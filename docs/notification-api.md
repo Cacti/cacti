@@ -49,8 +49,35 @@ api_notification_send(
 );
 ```
 
-Supported email options are `from`, `cc`, `bcc`, `reply_to`, `html`, `text`,
-`attachments`, `headers`, and `expand_ids`.
+Supported email options are `from`, `to`, `cc`, `bcc`, `reply_to`, `html`,
+`text`, `attachments`, `headers`, and `expand_ids`.
+
+Symfony calls a channel once per recipient, so passing several recipients
+sends several messages. When one message has to reach several people, pass one
+recipient and put the rest in the `to` option:
+
+```php
+api_notification_send(
+	'Devices rebooted',
+	$body,
+	'first@example.com',
+	options: ['email' => ['to' => 'second@example.com,third@example.com']]
+);
+```
+
+Addresses matching the recipient are dropped, so the recipient is never listed
+twice. Matching compares the domain without regard to case and the local part
+exactly, because RFC 5321 leaves local part case to the receiving host.
+
+Cores released before this option ignore it and deliver to the recipient only.
+Probe for it before joining addresses:
+
+```php
+if (function_exists('api_notification_email_supports_multiple_to')
+	&& api_notification_email_supports_multiple_to()) {
+	// safe to pass the 'to' option
+}
+```
 
 ## Add a plugin channel
 
