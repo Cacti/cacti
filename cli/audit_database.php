@@ -157,6 +157,78 @@ if (cacti_sizeof($parms)) {
 	exit(1);
 }
 
+/** Quote a value for a MySQL option file.
+ *
+ * The option file format is not byte transparent: an unquoted '#' starts a
+ * comment, a backslash escapes, trailing whitespace is stripped, and a newline
+ * would inject a further option. Values therefore have to be double quoted with
+ * the backslash and quote characters escaped.
+ *
+ * @param string $value Raw value.
+ *
+ * @return string Quoted value safe to write into the file.
+ */
+function audit_database_option_quote($value) {
+	return '"' . addcslashes((string) $value, '\\"') . '"';
+}
+
+/**
+ * audit_database_defaults_file - writes the database credentials to a private
+ * file for --defaults-file.
+ *
+ * The password is deliberately kept off the command line. Anything passed as
+ * an argument is readable from the process list by every local user for the
+ * lifetime of the command.
+ *
+ * @param string $username The database user.
+ * @param string $password The database password.
+ * @param string $hostname The database host.
+ * @param string $port     The database port.
+ *
+ * @return string|false The path to the file, or false when it cannot be created.
+ */
+function audit_database_defaults_file($username, $password, $hostname, $port) {
+	$path = tempnam(sys_get_temp_dir(), 'cacti_audit_');
+
+	if ($path === false) {
+		return false;
+	}
+
+	// narrow the permissions before the secret is written
+	if (!chmod($path, 0600)) {
+		unlink($path);
+
+		return false;
+	}
+
+	// A newline cannot be represented in the option file format; refuse rather
+	// than silently authenticate with a mangled credential.
+	foreach ([$username, $password, $hostname] as $value) {
+		if (strpbrk((string) $value, "\r\n") !== false) {
+			unlink($path);
+
+			return false;
+		}
+	}
+
+	$contents  = '[client]' . PHP_EOL;
+	$contents .= 'user=' . audit_database_option_quote($username) . PHP_EOL;
+	$contents .= 'password=' . audit_database_option_quote($password) . PHP_EOL;
+	$contents .= 'host=' . audit_database_option_quote($hostname) . PHP_EOL;
+
+	if ($hostname != 'localhost') {
+		$contents .= 'port=' . intval($port) . PHP_EOL;
+	}
+
+	if (file_put_contents($path, $contents) === false) {
+		unlink($path);
+
+		return false;
+	}
+
+	return $path;
+}
+
 function upgrade_database() : void {
 	$start = microtime(true);
 
@@ -1025,7 +1097,9 @@ function create_tables(bool $load = true) : void {
 		} elseif (file_exists('/usr/local/bin/mysql')) {
 			$db_shell = '/usr/local/bin/mysql';
 		} else {
-			$db_shell = shell_exec('which mysql');
+			// which appends a newline, which would split the command in two and
+			// strand the credential argument on the second line.
+			$db_shell = trim((string) shell_exec('which mysql'));
 
 			if ($db_shell == '') {
 				print 'FATAL: mysql or mariadb command not found!' . PHP_EOL;
@@ -1046,16 +1120,23 @@ function create_tables(bool $load = true) : void {
 		$error  = 0;
 
 		if (file_exists(CACTI_PATH_DOCS . '/audit_schema.sql')) {
-			$password = ' --password=' . cacti_escapeshellarg($database_password);
+			/* the credentials go in a private defaults file rather than on the
+			 * command line, where any local user could read them out of the
+			 * process list for as long as the import runs */
+			$defaults_file = audit_database_defaults_file($database_username, $database_password, $database_hostname, $database_port);
 
-			$cmd = $db_shell . ' --user=' . cacti_escapeshellarg($database_username) .
-				$password .
-				' --host=' . cacti_escapeshellarg($database_hostname) .
-				$port .
+			if ($defaults_file === false) {
+				print 'FATAL: Unable to create a private credentials file' . PHP_EOL;
+				exit(1);
+			}
+
+			$cmd = $db_shell . ' --defaults-file=' . cacti_escapeshellarg($defaults_file) .
 				' ' . cacti_escapeshellarg($database_default) .
 				' < ' . CACTI_PATH_DOCS . '/audit_schema.sql';
 
 			exec($cmd, $output, $error);
+
+			unlink($defaults_file);
 
 			if ($debug) {
 				print 'Called: ' . $cmd . PHP_EOL;
