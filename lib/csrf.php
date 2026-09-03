@@ -102,7 +102,7 @@ final class CactiCsrfGuard {
 	 * @return string The token, or an empty string when the guard is disabled.
 	 */
 	public function token() : string {
-		if (!$this->enabled) {
+		if (!$this->enabled || $this->manager === null) {
 			return '';
 		}
 
@@ -115,7 +115,7 @@ final class CactiCsrfGuard {
 	 * @return bool True only when the token is valid for this session.
 	 */
 	public function validate(string $value) : bool {
-		if (!$this->enabled || $value === '') {
+		if (!$this->enabled || $this->manager === null || $value === '') {
 			return false;
 		}
 
@@ -178,7 +178,7 @@ final class CactiCsrfGuard {
 		$name     = self::INPUT_NAME;
 		$input    = "<input type='hidden' name='$name' value=\"$token\" />";
 
-		$buffer = preg_replace('#(<form[^>]*method\s*=\s*["\']post["\'][^>]*>)#i', '$1' . $input, $buffer);
+		$buffer = preg_replace('#(<form[^>]*method\s*=\s*["\']post["\'][^>]*>)#i', '$1' . $input, $buffer) ?? $buffer;
 
 		if ($this->scriptUrl === '') {
 			return $buffer;
