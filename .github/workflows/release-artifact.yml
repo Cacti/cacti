@@ -47,7 +47,7 @@ jobs:
       - name: Setup PHP 8.0 release toolchain
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.0'
+          php-version: '8.1'
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
           coverage: none
           dependency-mode: 1.2-locked-release
