@@ -182,6 +182,65 @@ it('does not swallow legacy output when -q is passed through', function (): void
 		->and($output->fetch())->toBe('["-q","plain"]probe-error');
 });
 
+it('streams large legacy output without retaining it in the parent', function (): void {
+	$root        = dirname(__DIR__, 3) . '/fixtures/Console';
+	$application = new Application('test');
+	$application->setAutoExit(false);
+	$application->setCatchExceptions(false);
+	$application->add(new LegacyScriptCommand('bulk:run', 'bulk', $root));
+	$output = new BufferedOutput();
+
+	$status = $application->run(new RawArgvInput(['bin/cacti', 'bulk:run', '20000']), $output);
+
+	// 20000 lines is past the 1MB php://temp threshold Process spools at.
+	expect($status)->toBe(0)
+		->and(strlen($output->fetch()))->toBe(20000 * 100);
+});
+
+it('reports a killed legacy script as the shell does', function (): void {
+	$root   = dirname(__DIR__, 3) . '/fixtures/Console';
+	$runner = dirname(__DIR__, 3) . '/fixtures/Console/kill_runner.php';
+
+	$descriptor = [1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
+	$process    = proc_open([PHP_BINARY, $runner, $root], $descriptor, $pipes);
+
+	expect($process)->toBeResource();
+
+	$stdout = stream_get_contents($pipes[1]);
+	$stderr = stream_get_contents($pipes[2]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+	proc_close($process);
+
+	// 128 + SIGKILL, the status a shell reports for the same death.
+	expect(trim($stdout))->toBe('137')
+		->and($stderr)->not->toContain('ProcessSignaledException');
+});
+
+it('runs the legacy script in the directory the caller was in', function (): void {
+	$root      = dirname(__DIR__, 3) . '/fixtures/Console';
+	$original  = getcwd();
+	$elsewhere = sys_get_temp_dir();
+
+	try {
+		chdir($elsewhere);
+
+		$application = new Application('test');
+		$application->setAutoExit(false);
+		$application->setCatchExceptions(false);
+		$application->add(new LegacyScriptCommand('pwd:run', 'pwd', $root));
+		$output = new BufferedOutput();
+
+		$application->run(new RawArgvInput(['bin/cacti', 'pwd:run']), $output);
+
+		// A relative path argument has to mean what it would have meant to
+		// `php cli/<script>.php` from the same shell.
+		expect(realpath(trim($output->fetch())))->toBe(realpath($elsewhere));
+	} finally {
+		chdir((string) $original);
+	}
+});
+
 it('rejects parsed inputs that cannot preserve the raw argument vector', function (): void {
 	$command = new LegacyScriptCommand('probe:run', 'probe', dirname(__DIR__, 3) . '/fixtures/Console');
 

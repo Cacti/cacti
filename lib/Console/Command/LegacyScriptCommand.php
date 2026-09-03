@@ -21,6 +21,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Exception\ProcessSignaledException;
 use Symfony\Component\Process\Process;
 
 final class LegacyScriptCommand extends Command {
@@ -48,18 +49,80 @@ final class LegacyScriptCommand extends Command {
 		$arguments = $input->argumentsAfterCommand(array_values(array_merge([$this->getName()], $this->getAliases())));
 		$process   = new Process(
 			array_merge([PHP_BINARY, $this->root . '/cli/' . $this->script . '.php'], $arguments),
-			$this->root,
+			/* Inherit the caller's directory. The script path is absolute, and the
+			 * legacy scripts resolve relative path arguments against the cwd with
+			 * no normalization, so anchoring here would send
+			 * 'rrd:splice --finrrd=out.rrd' into the web-served root instead of the
+			 * directory the operator ran it from. */
+			null,
 			null,
 			STDIN,
 			null
 		);
 		$process->setTimeout(null);
 
-		return $process->run(function (string $type, string $buffer) use ($output): void {
-			$target = $type === Process::ERR && $output instanceof ConsoleOutputInterface
-				? $output->getErrorOutput()
-				: $output;
-			$target->write($buffer, false, OutputInterface::OUTPUT_RAW);
-		});
+		$this->forwardSignals($process);
+
+		try {
+			/* Several scripts under cli/ prompt with fgets(STDIN). Behind a pipe
+			 * the prompt sits in a buffer while the child blocks on the read, so
+			 * hand the terminal over whenever there is one. */
+			if ($this->canUseTty()) {
+				$process->setTty(true);
+
+				return $process->run();
+			}
+
+			/* Process::buildCallback() appends every byte to a php://temp stream
+			 * as well as calling this callback, and nothing ever reads it back.
+			 * With no timeout, a long poller run spooled its whole output to disk
+			 * for no reader. */
+			$process->disableOutput();
+
+			return $process->run(function (string $type, string $buffer) use ($output): void {
+				$target = $type === Process::ERR && $output instanceof ConsoleOutputInterface
+					? $output->getErrorOutput()
+					: $output;
+				$target->write($buffer, false, OutputInterface::OUTPUT_RAW);
+			});
+		} catch (ProcessSignaledException $exception) {
+			/* A child the kernel killed has no exit code of its own, and Process
+			 * throws rather than returning one. Report it the way a shell does so
+			 * cron and systemd see 137 or 143, not a rendered stack trace. */
+			return 128 + $exception->getSignal();
+		}
+	}
+
+	/**
+	 * Whether this invocation owns a terminal it can hand to the child.
+	 */
+	private function canUseTty(): bool {
+		return defined('STDIN')
+			&& defined('STDOUT')
+			&& Process::isTtySupported()
+			&& stream_isatty(STDIN)
+			&& stream_isatty(STDOUT);
+	}
+
+	/**
+	 * Pass a termination signal on to the child.
+	 *
+	 * Without this a SIGTERM to bin/cacti leaves the legacy script running,
+	 * possibly mid-write to the database, with nothing left to reap it.
+	 */
+	private function forwardSignals(Process $process): void {
+		if (!function_exists('pcntl_async_signals') || !function_exists('pcntl_signal')) {
+			return;
+		}
+
+		pcntl_async_signals(true);
+
+		foreach ([SIGTERM, SIGINT, SIGHUP] as $signal) {
+			pcntl_signal($signal, static function (int $received) use ($process): void {
+				if ($process->isRunning()) {
+					$process->signal($received);
+				}
+			});
+		}
 	}
 }
