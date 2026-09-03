@@ -169,7 +169,7 @@ fs_write	./lib/CactiFilesystem.php			$this->filesystem->dumpFile($filename, $con
 fs_write	./lib/CactiFilesystem.php			self::default()->writeFile($filename, $content);
 fs_write	./lib/api_device.php							if (file_put_contents($new_xmlfile, $data) === false) {
 fs_write	./lib/boost.php								if ($fileptr = fopen($cache_file, 'rb')) {
-fs_write	./lib/boost.php							if ($fileptr = fopen($cache_file, 'w')) {
+fs_write	./lib/boost.php		$fileptr = fopen($temp_file, 'wb');
 fs_write	./lib/clog_webapi.php					$log_fh = fopen($logfile, 'w');
 fs_write	./lib/csp_report_endpoint.php	$inputStream = fopen('php://input', 'rb');
 fs_write	./lib/database.php					file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
