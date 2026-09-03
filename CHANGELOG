@@ -9,7 +9,6 @@ Cacti CHANGELOG
 -security: Substitute query data before escaping graph titles and axis labels
 -security: Build forced-HTTPS redirects from the server-configured name
 -security: Replace sibling password-reset links and revoke authentication state after reset
--issue#7902: Add a unified CLI entry point, PHP 8.3 floor, and normalized path containment
 -issue: Fail closed when OAuth callback state is absent or mismatched
 -issue#7959: Stop source checkouts from loading a partial Composer dependency tree
 -issue#7775: Add plugin-extensible notification API
@@ -165,7 +164,6 @@ Cacti CHANGELOG
 -issue#7701: Confine names used as SQL identifiers in automation
 -issue#7665: Confine local RRD paths while preserving remote RRDProxy storage
 -issue#7861: Repair confirmed poller, database, automation, export, filtering, theme, and arithmetic defects
--issue#7717: Resolve path containment with Symfony Path
 -issue#7751: Declare the translation helper before the disabled-i18n fallback returns
 -issue#7476: Escape path_boost_log before it reaches the Boost debug shell redirect
 -issue#7782: Allow one notification to address several recipients through the email 'to' option
