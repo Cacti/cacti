@@ -113,6 +113,75 @@ it('forwards arguments when the command name is abbreviated', function (): void 
 		->and($output->fetch())->toBe('["--arbitrary=value","plain"]probe-error');
 });
 
+it('leaves --help, -h, --version and -V to the legacy script', function (string $flag): void {
+	$application = new CactiApplication(dirname(__DIR__, 4));
+	$application->setAutoExit(false);
+	$application->setCatchExceptions(false);
+	$application->add(new LegacyScriptCommand('probe:run', 'probe', dirname(__DIR__, 3) . '/fixtures/Console'));
+	$output = new BufferedOutput();
+
+	$status = $application->run(new RawArgvInput(['bin/cacti', 'probe:run', $flag]), $output);
+
+	expect($status)->toBe(23)
+		->and($output->fetch())->toBe(sprintf('["%s"]probe-error', $flag));
+})->with(['--help', '-h', '--version', '-V']);
+
+it('forwards a flag written before the command name', function (string $flag): void {
+	$application = new CactiApplication(dirname(__DIR__, 4));
+	$application->setAutoExit(false);
+	$application->setCatchExceptions(false);
+	$application->add(new LegacyScriptCommand('probe:run', 'probe', dirname(__DIR__, 3) . '/fixtures/Console'));
+	$output = new BufferedOutput();
+
+	// getFirstArgument() skips leading options, so the command dispatches with
+	// the flag ahead of its name. Slicing only forward handed the script an
+	// empty argv, and a script whose flags are all optional then ran its
+	// default path.
+	$status = $application->run(new RawArgvInput(['bin/cacti', $flag, 'probe:run']), $output);
+
+	expect($status)->toBe(23)
+		->and($output->fetch())->toBe(sprintf('["%s"]probe-error', $flag));
+})->with(['--help', '-h', '--version', '-V']);
+
+it('preserves the order of flags on both sides of the command name', function (): void {
+	$application = new CactiApplication(dirname(__DIR__, 4));
+	$application->setAutoExit(false);
+	$application->setCatchExceptions(false);
+	$application->add(new LegacyScriptCommand('probe:run', 'probe', dirname(__DIR__, 3) . '/fixtures/Console'));
+	$output = new BufferedOutput();
+
+	$status = $application->run(
+		new RawArgvInput(['bin/cacti', '-v', 'probe:run', '--arbitrary=value', 'plain']),
+		$output
+	);
+
+	expect($status)->toBe(23)
+		->and($output->fetch())->toBe('["-v","--arbitrary=value","plain"]probe-error');
+});
+
+it('still answers --version and --help for the application itself', function (): void {
+	$application = new CactiApplication(dirname(__DIR__, 4));
+	$application->setAutoExit(false);
+	$application->setCatchExceptions(false);
+	$output = new BufferedOutput();
+
+	expect($application->run(new RawArgvInput(['bin/cacti', '--version']), $output))->toBe(0)
+		->and($output->fetch())->toStartWith('Cacti');
+});
+
+it('does not swallow legacy output when -q is passed through', function (): void {
+	$application = new CactiApplication(dirname(__DIR__, 4));
+	$application->setAutoExit(false);
+	$application->setCatchExceptions(false);
+	$application->add(new LegacyScriptCommand('probe:run', 'probe', dirname(__DIR__, 3) . '/fixtures/Console'));
+	$output = new BufferedOutput();
+
+	$status = $application->run(new RawArgvInput(['bin/cacti', 'probe:run', '-q', 'plain']), $output);
+
+	expect($status)->toBe(23)
+		->and($output->fetch())->toBe('["-q","plain"]probe-error');
+});
+
 it('rejects parsed inputs that cannot preserve the raw argument vector', function (): void {
 	$command = new LegacyScriptCommand('probe:run', 'probe', dirname(__DIR__, 3) . '/fixtures/Console');
 

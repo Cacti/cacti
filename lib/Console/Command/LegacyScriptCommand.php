@@ -45,7 +45,7 @@ final class LegacyScriptCommand extends Command {
 			throw new \LogicException('Legacy commands require RawArgvInput.');
 		}
 
-		$arguments = $input->argumentsAfterCommand(array_merge([$this->getName()], $this->getAliases()));
+		$arguments = $input->argumentsAfterCommand(array_values(array_merge([$this->getName()], $this->getAliases())));
 		$process   = new Process(
 			array_merge([PHP_BINARY, $this->root . '/cli/' . $this->script . '.php'], $arguments),
 			$this->root,

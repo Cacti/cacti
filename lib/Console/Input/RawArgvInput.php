@@ -45,7 +45,14 @@ final class RawArgvInput extends ArgvInput {
 
 		foreach ($this->rawTokens as $offset => $token) {
 			if (in_array($token, $names, true)) {
-				return array_slice($this->rawTokens, $offset + 1);
+				/* Drop the command token, keep everything else. getFirstArgument()
+				 * skips leading options, so 'bin/cacti --help poller:rebuild-cache'
+				 * dispatches with the flag ahead of the name; slicing only forward
+				 * handed the script an empty argv and it rebuilt every cache. */
+				return array_merge(
+					array_slice($this->rawTokens, 0, $offset),
+					array_slice($this->rawTokens, $offset + 1)
+				);
 			}
 		}
 
