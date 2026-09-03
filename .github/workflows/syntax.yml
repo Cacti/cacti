@@ -216,6 +216,14 @@ jobs:
       run: composer run-script hardening-patterns -- --base="${{ github.event.pull_request.base.sha }}" --head=HEAD
       working-directory: .
 
+    # Reported, not gated.  The tree and the lock disagree today (see #7940),
+    # so this surfaces the drift on every run without blocking unrelated work.
+    # Flip continue-on-error off once the tree is refreshed.
+    - name: Check include/vendor against composer.lock
+      run: composer run-script vendor-sync
+      working-directory: .
+      continue-on-error: true
+
     - name: Checking coding standards on base code
       run: composer run-script phpcsfixer
       working-directory: .
