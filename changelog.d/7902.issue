@@ -1,1 +1,1 @@
-Add a unified CLI entry point, PHP 8.3 floor, and normalized path containment
+Raise the supported PHP floor to 8.3 and report it consistently
