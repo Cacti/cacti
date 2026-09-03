@@ -3655,6 +3655,12 @@ parameters:
 			path: lib/database.php
 
 		-
+			message: '#^Call to an undefined method object\:\:inTransaction\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: lib/database.php
+
+		-
 			message: '#^Call to an undefined method object\:\:lastInsertId\(\)\.$#'
 			identifier: method.notFound
 			count: 1
