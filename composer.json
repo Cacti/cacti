@@ -80,7 +80,22 @@
         "hardening-patterns": "php tests/tools/check_hardening_patterns.php",
         "php-cs-fixit": "php-cs-fixer fix ",
         "install-hooks": "bash -c 'install -m 755 tests/tools/pre-commit \"$(git rev-parse --git-path hooks/pre-commit)\"'",
-        "test": "include/vendor/bin/pest --display-warnings"
+        "test": "include/vendor/bin/pest --display-warnings",
+        "sink-guard": "bash tests/security/verify_sink_inventory.sh",
+        "hotspot-guard": "bash tests/security/verify_architectural_hotspots.sh",
+        "changelog": "python3 .github/scripts/check-changelog.py",
+        "test-js": "node --test tests/js/*.test.js",
+        "check": [
+            "@lint",
+            "@phpstan",
+            "@php-cs-fixer",
+            "@hardening-patterns",
+            "@changelog",
+            "@sink-guard",
+            "@hotspot-guard",
+            "@test",
+            "@test-js"
+        ]
     },
     "authors": [
         {
