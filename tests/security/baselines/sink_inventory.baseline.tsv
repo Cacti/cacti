@@ -1,7 +1,7 @@
 category	location	match
 cmd_exec	./cactid.php		exec('pgrep -a php | grep cactid.php', $output);
 cmd_exec	./cli/audit_database.php								exec('php ' . CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old, $output, $return_var);
-cmd_exec	./cli/audit_database.php				$db_shell = shell_exec('which mysql');
+cmd_exec	./cli/audit_database.php				$db_shell = trim((string) shell_exec('which mysql'));
 cmd_exec	./cli/audit_database.php				exec($cmd, $output, $error);
 cmd_exec	./cli/audit_database.php		exec('php ' . CACTI_PATH_CLI . '/upgrade_database.php --debug', $output, $return_var);
 cmd_exec	./cli/batchgapfix.php			exec($command, $output, $return_var);
@@ -137,8 +137,9 @@ dynamic_include	./scripts/ss_netsnmp_lmsensors.php		include($config['base_path']
 dynamic_include	./snmpagent_persist.php				require($path_mibcache);
 fs_write	./cactid.php		$STDERR = fopen('/dev/null', 'wb');
 fs_write	./cactid.php		$STDERR = fopen('null', 'wb');
+fs_write	./cli/audit_database.php		if (file_put_contents($path, $contents) === false) {
 fs_write	./cli/clone_device_template.php			$fin = fopen('php://stdin', 'r');
-fs_write	./cli/float_rrdfiles.php					$lf = fopen('/tmp/clearer.log', 'a');
+fs_write	./cli/float_rrdfiles.php					$lf = fopen(sys_get_temp_dir() . '/cacti_float_rrdfiles.log', 'a');
 fs_write	./cli/float_rrdfiles.php				$fp = fopen($tmp_file, 'w');
 fs_write	./cli/genkey.php				if (file_put_contents("$keypair_path/package.key", $privKey)) {
 fs_write	./cli/genkey.php			if (file_put_contents("$keypair_path/package.pub", $pubKey)) {
@@ -501,7 +502,7 @@ header_redirect	./lib/auth.php					header('Location: graph_view.php');
 header_redirect	./lib/auth.php					header('Location: index.php');
 header_redirect	./lib/auth.php				header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
 header_redirect	./lib/auth.php				header('Location: auth_changepassword.php');
-header_redirect	./lib/auth.php			header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
+header_redirect	./lib/auth.php			header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url($_SERVER['HTTP_REFERER'] ?? 'index.php')));
 header_redirect	./lib/clog_webapi.php				header('Location: clog.php?filename=' . basename($logfile));
 header_redirect	./lib/clog_webapi.php			header('Location: ' . get_current_page());
 header_redirect	./lib/functions.php		header('Location: ' . cacti_url(sanitize_redirect_path($path), $params));

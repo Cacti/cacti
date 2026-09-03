@@ -309,7 +309,7 @@ function get_package_contents(string $export_type, int $export_item_id, bool $in
 		$output .= '<div class="formHeader"><div class="formHeaderText">' . __('Graph Templates') . '</div></div>';
 
 		foreach ($graph_templates as $t) {
-			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . $t['name'] . '</div></div>';
+			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . htmle($t['name']) . '</div></div>';
 		}
 
 		$output .= '</div>';
@@ -320,7 +320,7 @@ function get_package_contents(string $export_type, int $export_item_id, bool $in
 		$output .= '<div class="formHeader"><div class="formHeaderText">' . __('Data Queries') . '</div></div>';
 
 		foreach ($queries as $q) {
-			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . $q['name'] . '</div></div>';
+			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . htmle($q['name']) . '</div></div>';
 		}
 
 		$output .= '</div>';
@@ -331,7 +331,7 @@ function get_package_contents(string $export_type, int $export_item_id, bool $in
 		$output .= '<div class="formHeader"><div class="formHeaderText">' . __('Data Query Graph Templates') . '</div></div>';
 
 		foreach ($graph_templates as $t) {
-			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . $t['name'] . '</div></div>';
+			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . htmle($t['name']) . '</div></div>';
 		}
 
 		$output .= '</div>';

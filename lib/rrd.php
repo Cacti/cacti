@@ -2266,6 +2266,10 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 	// process theme and font styling options
 	$graph_opts .= rrdtool_function_theme_font_options($graph_data_array);
 
+	/* NOTE: title, vertical-label and right-axis-label perform |query_*|
+	 * substitution before cacti_escapeshellarg above, so a device-supplied
+	 * value cannot break out of the quoted RRDtool argument. */
+
 	$watermark = str_replace("'", '"', read_config_option('graph_watermark'));
 
 	if ($watermark != '') {

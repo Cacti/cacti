@@ -86,3 +86,39 @@ changes with `composer validate` and a clean `composer install`.
 If a third-party asset cannot be managed through Composer, stop and document
 the concrete packaging requirement before adding files. Do not silently create
 a vendored exception.
+
+## Confirm the defect before writing the fix
+
+A finding from a review, a scan or another agent is a claim about a branch, not
+a fact about this one. `develop` and `1.2.x` diverge, and a defect reported
+against one is often already fixed on the other, sometimes by a pull request
+that has since merged.
+
+Before writing a fix, check that the target still exists where you intend to
+land it:
+
+    git show upstream/develop:path/to/file.php | rg 'the pattern'
+    git log -S 'the pattern' --oneline upstream/develop | head
+
+Then choose the branch deliberately, and say in the pull request which branches
+the defect affects. Porting a fix to a branch that never had the bug adds review
+work and risk for no benefit.
+
+## A pull request with no checks has not been verified
+
+Branches pushed from a fork hold their workflow runs in `action_required` until
+someone approves them. Until that happens the pull request reports **no checks
+at all**, which is easy to read as passing in both the merge box and
+`gh pr checks`. Nothing has run.
+
+    # runs waiting for approval
+    gh run list --repo Cacti/cacti --limit 200 --json conclusion \
+      --jq '[.[]|select(.conclusion=="action_required")]|length'
+
+    # a pull request with zero checks is unverified, not green
+    gh pr checks <pr> --repo Cacti/cacti | wc -l
+
+`gh run list` pages by recency, so one sweep can miss older branches; re-check
+with `--branch <name>`. Report a pull request as green only once its checks
+exist and have completed.
+
