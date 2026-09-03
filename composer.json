@@ -69,12 +69,12 @@
         "overtrue/phplint": "^9.6",
         "pestphp/pest": "^2 || ^3",
         "pestphp/pest-plugin-drift": "^2.0 || ^3.0",
-        "phpstan/phpstan": "2.2.9",
+        "phpstan/phpstan": "^2.2.12",
         "rector/rector": "^2.1.2"
     },
     "scripts": {
         "lint": "phplint --no-cache --exclude=include/vendor --exclude=plugins ",
-        "phpstan": "phpstan analyse --level 6 ",
+        "phpstan": "phpstan analyse ",
         "php-cs-fixer": "php-cs-fixer fix --allow-unsupported-php-version=yes --dry-run --diff --config=./.php-cs-fixer.php ",
         "phpcsfixer": "@php-cs-fixer",
         "hardening-patterns": "php tests/tools/check_hardening_patterns.php",
