@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+use Symfony\Component\Filesystem\Path;
+
 function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id,
 	bool $remove_orphans = false, bool $replace_svalues = false, array $import_hashes = []) : mixed {
 	global $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only;
@@ -467,6 +469,37 @@ function import_validate_signature(string $xmlfile) : bool {
 	));
 
 	return in_array($public_key, $keys, true);
+}
+
+/**
+ * import_diff_target_allowed - Report whether a resolved path may be rendered
+ * as a Package diff.
+ *
+ * import_package() writes only under scripts/ and resource/ and ignores every
+ * other entry, so a diff outside that pair previews an import that can never
+ * happen while reaching files such as log/cacti.log, which carries SNMP
+ * communities and the arguments handed to data input scripts.
+ *
+ * An allowlist rather than a list of refusals: the signature on the diff path
+ * proves provenance and not trust, because a Package carries the key it is
+ * checked against, so anything reachable here is reachable by anyone who can
+ * import. Path:: rather than string comparison, since realpath() yields
+ * backslashes on win32 while a missing leaf arrives already canonicalized.
+ *
+ * @param string $target An already resolved absolute path
+ *
+ * @return bool True when the path may be rendered
+ */
+function import_diff_target_allowed(string $target) : bool {
+	foreach (['scripts', 'resource'] as $directory) {
+		$base = realpath(CACTI_PATH_BASE . '/' . $directory);
+
+		if ($base !== false && Path::isBasePath($base, $target)) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 function import_get_package_info(string $xmlfile) : mixed {

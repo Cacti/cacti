@@ -267,7 +267,15 @@ function form_actions() : void {
 	foreach ($_POST as $var => $val) {
 		if (str_contains($var, 'chk_file_')) {
 			$id = base64_decode(str_replace('chk_file_', '', $var), true);
-			$id = json_decode($id, true);
+			$id = json_decode((string) $id, true);
+
+			/* The key name is attacker supplied, so the decode can yield anything.
+			 * makeRelativeIfWithinBase() takes a string, and null is not coercible
+			 * to one, so an unchecked value turns a bad request into a 500. */
+			if (!is_array($id) || !isset($id['pfile'], $id['package'])
+				|| !is_string($id['pfile']) || !is_string($id['package'])) {
+				continue;
+			}
 
 			// Display paths relative to the Cacti root when they are contained.
 			$id['pfile'] = CactiPath::makeRelativeIfWithinBase($id['pfile'], CACTI_PATH_BASE);
@@ -284,7 +292,11 @@ function form_actions() : void {
 
 		if (str_contains($var, 'chk_import_')) {
 			$id = base64_decode(str_replace('chk_import_', '', $var), true);
-			$id = json_decode($id, true);
+			$id = json_decode((string) $id, true);
+
+			if (!is_array($id) || !isset($id['package']) || !is_string($id['package'])) {
+				continue;
+			}
 
 			$packages = explode('<br>', $id['package']);
 			$package  = '';
@@ -734,9 +746,22 @@ function package_diff_file() : void {
 	$package_file     = grv('package_file');
 	$filename         = grv('filename');
 
+	/* Read the Package side first, so a filename it does not carry never
+	 * reaches the local filesystem. This is ordering, not a control: the
+	 * signature here is checked against a key the Package itself supplies, so
+	 * anyone able to import can sign their own. import_diff_target_allowed()
+	 * below is the control, and it allows only what an import can write. */
+	$newfile = package_file_get_contents($package_location, $package_file, $filename);
+
+	if ($newfile === false) {
+		print __('Invalid filename specified.');
+
+		return;
+	}
+
 	$target = CactiPath::resolveWithinBase(CACTI_PATH_BASE, CACTI_PATH_BASE . '/' . $filename, true);
 
-	if ($target === false) {
+	if ($target === false || !import_diff_target_allowed($target)) {
 		print __('Invalid filename specified.');
 
 		return;
@@ -747,12 +772,7 @@ function package_diff_file() : void {
 		'ignoreCase'       => false
 	];
 
-	$newfile = package_file_get_contents($package_location, $package_file, $filename);
-
-	if ($newfile !== false) {
-		$newfile = str_replace("\n\r", "\n", $newfile);
-		$newfile = explode("\n", $newfile);
-	}
+	$newfile = explode("\n", str_replace("\n\r", "\n", $newfile));
 
 	$oldfile = file_get_contents($target);
 

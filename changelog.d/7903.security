@@ -1,0 +1,1 @@
+Restrict the package import diff to the scripts and resource directories an import can write to, so a crafted filename cannot render cacti.log or include/config.php
