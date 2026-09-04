@@ -158,6 +158,29 @@ it('rejects unsafe or malformed serialized messages', function (array $encoded) 
 	'invalid shape' => [['body' => '{}', 'headers' => ['type' => CactiQueueMessage::class]]],
 ])->throws(CactiQueueMessageException::class);
 
+it('rejects malformed broker envelopes without emitting a warning', function () {
+	/* A broker may hand back an envelope missing either key, so decode() must
+	   reach its own exception rather than trip an undefined index first. */
+	$warnings = [];
+
+	set_error_handler(static function (int $severity, string $message) use (&$warnings) : bool {
+		$warnings[] = $message;
+
+		return true;
+	});
+
+	try {
+		expect(fn () => (new CactiQueueSerializer())->decode(['headers' => ['type' => CactiQueueMessage::class]]))
+			->toThrow(CactiQueueMessageException::class, 'is not allowed')
+			->and(fn () => (new CactiQueueSerializer())->decode([]))
+			->toThrow(CactiQueueMessageException::class, 'is not allowed');
+	} finally {
+		restore_error_handler();
+	}
+
+	expect($warnings)->toBe([]);
+});
+
 it('rejects objects without an explicit queue message contract', function () {
 	(new CactiQueueSerializer())->encode(new Symfony\Component\Messenger\Envelope(new stdClass()));
 })->throws(InvalidArgumentException::class, 'CactiQueueMessageInterface');
