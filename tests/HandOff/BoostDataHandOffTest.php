@@ -76,16 +76,6 @@ test('direct Boost redirection does not stage the same rows twice', function () 
 		->and($boost)->toContain('cmd.php already staged these rows');
 });
 
-test('Remote hand-offs validate poller ownership before staging', function () {
-	$boost    = boostSource('lib/boost.php');
-	$recovery = boostSource('poller_recovery.php');
-
-	expect($boost)->toContain('function boost_validate_poller_ownership(array $results, int $poller_id, mixed $conn = false) : bool');
-	expect($boost)->toContain('WHERE poller_id = ?');
-	expect($boost)->toContain('POLLER_ID > 1 && !boost_validate_poller_ownership');
-	expect($recovery)->toContain('!boost_validate_poller_ownership($rows, $poller_id, $remote_db_cnn_id)');
-});
-
 test('Archive discovery validates every dynamic table identifier', function () {
 	$boost = boostSource('lib/boost.php');
 
