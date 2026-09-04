@@ -16,9 +16,10 @@
  * Branch coverage for issue #7027. register_process_start() and
  * timeout_kill_registered_processes() decide whether to signal a pid read from
  * the processes table. is_system_pid() gates the kill so a tampered pid column
- * cannot take down init/systemd. The DB and posix_kill() are the only external
- * boundaries; both are stubbed here so every branch of the guarded code runs
- * without a live database and without signalling this process.
+ * cannot take down init/systemd. The database is stubbed here, but posix_kill()
+ * is not, so every pid these tests hand to the registry has to be one the
+ * kernel will refuse. A pid wider than pid_t is not such a value: posix_kill()
+ * narrows it to -1 and signals every process the test runner owns.
  */
 
 if (!defined('POLLER_VERBOSITY_MEDIUM')) {
@@ -73,9 +74,14 @@ beforeEach(function () {
 	$GLOBALS['__poller_procs']        = array();
 });
 
-// A pid beyond any platform's pid_max, so posix_kill() fails with ESRCH and
-// can never signal a real process (999999 is reachable where pid_max is high).
-const POLLER_DEAD_PID = PHP_INT_MAX;
+// Above every platform's pid_max but still inside pid_t, so posix_kill() fails
+// with ESRCH and can never signal a real process (999999 is reachable where
+// pid_max is high).
+const POLLER_DEAD_PID = 999999999;
+
+// Wider than pid_t. posix_kill() narrows this to -1, which the kernel reads as
+// every process the caller may signal, so the guard has to stop it.
+const POLLER_WIDE_PID = PHP_INT_MAX;
 
 test('register_process_start refuses to kill a reserved system pid on timeout', function () {
 	$GLOBALS['__poller_row'] = array(
@@ -94,7 +100,7 @@ test('register_process_start refuses to kill a reserved system pid on timeout', 
 	expect(count($GLOBALS['__poller_writes']))->toBeGreaterThanOrEqual(2);
 });
 
-test('register_process_start signals a normal timed-out pid', function () {
+test('register_process_start clears a timed-out pid that is already gone', function () {
 	$GLOBALS['__poller_row'] = array(
 		'pid'               => POLLER_DEAD_PID,
 		'timeout_exceeded'  => 1720000000,
@@ -106,7 +112,11 @@ test('register_process_start signals a normal timed-out pid', function () {
 
 	expect($result)->toBeTrue();
 	$joined = implode("\n", $GLOBALS['__poller_log']);
-	expect($joined)->toContain('being killed due to timeout');
+	// An ordinary pid, so the guard must not claim it, and it is not running,
+	// so nothing may be signalled. The row is still cleared and re-registered.
+	expect($joined)->not->toContain('reserved system PID');
+	expect($joined)->not->toContain('being killed due to timeout');
+	expect(count($GLOBALS['__poller_writes']))->toBeGreaterThanOrEqual(2);
 });
 
 test('register_process_start treats a zero pid as a reserved system pid', function () {
@@ -146,4 +156,44 @@ test('timeout_kill_registered_processes reports a stale gone pid', function () {
 
 	$joined = implode("\n", $GLOBALS['__poller_log']);
 	expect($joined)->toContain('did not unregister first');
+});
+
+test('is_system_pid refuses a pid wider than pid_t', function () {
+	expect(is_system_pid(POLLER_WIDE_PID))->toBeTrue();
+	// The bound is pid_t, not an arbitrary ceiling on large pids.
+	expect(is_system_pid(2147483647))->toBeFalse();
+	expect(is_system_pid(POLLER_DEAD_PID))->toBeFalse();
+});
+
+test('cacti_process_still_running refuses a pid wider than pid_t', function () {
+	// Without the bound this probes posix_kill(-1, 0), which succeeds and
+	// reports a dead registry row as live.
+	expect(cacti_process_still_running(POLLER_WIDE_PID))->toBeFalse();
+});
+
+test('register_process_start refuses to signal a pid wider than pid_t', function () {
+	$GLOBALS['__poller_row'] = array(
+		'pid'               => POLLER_WIDE_PID,
+		'timeout_exceeded'  => 1720000000,
+		'timeout'           => 300,
+		'current_timestamp' => 1720000600,
+	);
+
+	$result = register_process_start('poller', 'test', 0, 300);
+
+	expect($result)->toBeTrue();
+	$joined = implode("\n", $GLOBALS['__poller_log']);
+	expect($joined)->toContain('reserved system PID');
+	expect($joined)->not->toContain('being killed due to timeout');
+});
+
+test('timeout_kill_registered_processes refuses a pid wider than pid_t', function () {
+	$GLOBALS['__poller_procs'] = array(
+		array('pid' => POLLER_WIDE_PID, 'tasktype' => 'poller', 'taskname' => 'test', 'taskid' => 0),
+	);
+
+	timeout_kill_registered_processes();
+
+	$joined = implode("\n", $GLOBALS['__poller_log']);
+	expect($joined)->toContain('reserved system PID');
 });

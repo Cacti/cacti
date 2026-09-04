@@ -2506,7 +2506,7 @@ function get_remote_poller_ids_from_devices(&$devices) {
 function cacti_process_still_running($pid) {
 	$pid = intval($pid);
 
-	if ($pid <= 0 || !function_exists('posix_kill') || !posix_kill($pid, 0)) {
+	if ($pid <= 0 || $pid > 2147483647 || !function_exists('posix_kill') || !posix_kill($pid, 0)) {
 		return false;
 	}
 
@@ -2675,12 +2675,22 @@ function heartbeat_process($tasktype, $taskname, $taskid = 0) {
  *   must never signal. init (1), systemd, and kernel threads live here, so a
  *   tampered or reused pid column could otherwise take down a host service.
  *
+ *   A pid wider than pid_t is refused for the same reason. posix_kill() narrows
+ *   its argument to a 32 bit pid_t, so PHP_INT_MAX reaches the kernel as -1,
+ *   which signals every process the poller is permitted to signal.
+ *
  * @param  (int) $pid  - The process id to test
  *
- * @return (bool) true when the PID is a low/system PID that must be skipped
+ * @return (bool) true when the PID must be skipped
  */
 function is_system_pid($pid) {
-	return (int) $pid <= 100;
+	$pid = (int) $pid;
+
+	if ($pid > 2147483647) {
+		return true;
+	}
+
+	return $pid <= 100;
 }
 
 /**
