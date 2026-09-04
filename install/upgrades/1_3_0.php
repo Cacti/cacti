@@ -98,21 +98,7 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_key('sessions', 'INDEX', 'user_id', ['user_id']);
 	db_install_add_key('sessions', 'INDEX', 'access', ['access']);
 
-	if (!db_table_exists('poller_output_boost_processes')) {
-		db_install_execute('CREATE TABLE `poller_output_boost_processes` (
-			`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
-			`run_id` char(32) NOT NULL default \'\',
-			`child_id` int(10) unsigned NOT NULL default 0,
-			`status` varchar(255) default NULL,
-			PRIMARY KEY (`sock_int_value`),
-			UNIQUE KEY `run_child` (`run_id`, `child_id`)
-		) ENGINE=MEMORY');
-	} else {
-		db_install_execute('TRUNCATE TABLE poller_output_boost_processes');
-		db_install_add_column('poller_output_boost_processes', ['name' => 'run_id', 'type' => 'char(32)', 'NULL' => false, 'default' => '', 'after' => 'sock_int_value']);
-		db_install_add_column('poller_output_boost_processes', ['name' => 'child_id', 'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'run_id']);
-		db_install_add_key('poller_output_boost_processes', 'UNIQUE', 'run_child', ['run_id', 'child_id']);
-	}
+	upgrade_boost_process_table();
 
 	// poller_output_boost_local_data_ids is a MEMORY table; its indexes default
 	// to HASH unless USING BTREE is specified. Range/ORDER BY access against
@@ -683,6 +669,40 @@ function upgrade_to_1_3_0() : void {
 	if (!db_column_exists('user_domains_ldap', 'bind_timeout')) {
 		db_install_execute('ALTER TABLE  user_domains_ldap ADD COLUMN bind_timeout INT unsigned NOT NULL default 2 AFTER network_timeout');
 	}
+}
+
+/**
+ * Bring poller_output_boost_processes up to the 1.3.0 layout.
+ *
+ * Nothing stops cron from starting poller_boost.php while the installer runs,
+ * so boost can be mid-run here.  Emptying the table would discard the
+ * completion rows the parent counts to decide whether every child finished,
+ * leaving it to drain early, warn about a crashed child and hold the run's
+ * archive tables.  Only the rows written before run_id existed have to go:
+ * the two ALTERs default all of them to ('', 0), which the new UNIQUE key
+ * cannot accept.  A child of an in-flight run records a 32 character run_id
+ * and keeps its row.
+ */
+function upgrade_boost_process_table() : void {
+	if (!db_table_exists('poller_output_boost_processes')) {
+		db_install_execute('CREATE TABLE `poller_output_boost_processes` (
+			`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
+			`run_id` char(32) NOT NULL default \'\',
+			`child_id` int(10) unsigned NOT NULL default 0,
+			`status` varchar(255) default NULL,
+			PRIMARY KEY (`sock_int_value`),
+			UNIQUE KEY `run_child` (`run_id`, `child_id`)
+		) ENGINE=MEMORY');
+
+		return;
+	}
+
+	db_install_add_column('poller_output_boost_processes', ['name' => 'run_id', 'type' => 'char(32)', 'NULL' => false, 'default' => '', 'after' => 'sock_int_value']);
+	db_install_add_column('poller_output_boost_processes', ['name' => 'child_id', 'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'run_id']);
+
+	db_install_execute('DELETE FROM poller_output_boost_processes WHERE run_id = ?', ['']);
+
+	db_install_add_key('poller_output_boost_processes', 'UNIQUE', 'run_child', ['run_id', 'child_id']);
 }
 
 function upgrade_reports() : void {
