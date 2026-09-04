@@ -278,13 +278,6 @@ if ($run) {
 				[$max_time], true, $local_db_cnn_id);
 
 			if (cacti_sizeof($rows)) {
-				if (!boost_validate_poller_ownership($rows, $poller_id, $remote_db_cnn_id)) {
-					cacti_log(sprintf('RECOVERY ERROR: Retaining local rows because their data-source ownership could not be verified for poller %d.', $poller_id), false, 'POLLER');
-					$transfer_failed = true;
-
-					break;
-				}
-
 				$row_count = cacti_sizeof($rows);
 
 				for ($offset = 0; $offset < $row_count; $offset += $transfer_chunk_size) {
