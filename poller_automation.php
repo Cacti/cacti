@@ -88,7 +88,7 @@ function sig_handler($signo) : void {
 
 				if (cacti_sizeof($pids)) {
 					foreach ($pids as $pid) {
-						posix_kill($pid, SIGTERM);
+						cacti_process_kill((int) $pid, SIGTERM, 'AUTOM8');
 					}
 				}
 
@@ -109,7 +109,7 @@ function sig_handler($signo) : void {
 
 				if (cacti_sizeof($pids)) {
 					foreach ($pids as $pid) {
-						posix_kill($pid, SIGTERM);
+						cacti_process_kill((int) $pid, SIGTERM, 'AUTOM8');
 					}
 				}
 
@@ -366,7 +366,13 @@ if ($master === false && $thread == 0) {
 			[$network_id]);
 
 		if ($command == 'cancel') {
+			/* Terminating ourselves, so exit rather than depend on the signal
+			   arriving: the sibling cancel path below already does, and without
+			   it a refused or lost signal leaves this while (true) re-querying
+			   for ever and the cancelled discovery never stops. */
 			killProcess(getmypid());
+
+			exit(0);
 		}
 
 		$running = db_fetch_cell_prepared('SELECT count(*)
@@ -982,11 +988,11 @@ function display_help() : void {
 }
 
 function isProcessRunning(int $pid) : bool {
-	return posix_kill($pid, 0);
+	return cacti_process_pid_exists($pid);
 }
 
 function killProcess(int $pid) : bool {
-	return posix_kill($pid, SIGTERM);
+	return cacti_process_kill((int) $pid, SIGTERM, 'AUTOM8');
 }
 
 function removeMyProcess(int $pid, int $network_id) : void {

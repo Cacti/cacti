@@ -170,7 +170,18 @@ $records_inserted = 0;
 debug('About to start recovery processing');
 
 if (!empty($recovery_pid)) {
-	$pid = posix_kill($recovery_pid, 0);
+	/* A stored pid wider than pid_t narrows to -1 inside posix_kill(), which
+	   reads as "someone is running" and leaves the stale row in place forever;
+	   on PHP 8.5 the same value throws instead. Either way recovery never runs
+	   again.
+
+	   This branch reads false as "stale, clear the row and run", so it needs a
+	   probe where a pid we cannot signal counts as stale. That is the prior
+	   posix_kill($pid, 0) semantics, kept, with the bound added.
+	   cacti_process_pid_exists() reports EPERM as present by contract and
+	   cacti_process_still_running() inherits that wherever /proc cannot
+	   answer, so neither of those fits here. */
+	$pid = cacti_process_signalable((int) $recovery_pid);
 
 	if ($pid === false) {
 		// we found a stale PID, so we delete it from the table

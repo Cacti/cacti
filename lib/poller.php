@@ -2743,6 +2743,84 @@ function cacti_process_still_running(int $pid) : bool {
 }
 
 /**
+ * Whether this process could deliver a signal to $pid.
+ *
+ * Two things separate this from cacti_process_still_running(). It reads EPERM as
+ * stale rather than live, because a pid this process cannot signal has been
+ * recycled by somebody else and the row naming it is dead. And it skips the
+ * /proc identity check, because its caller reads false as "stale, clear the row
+ * and run"; an identity check that answered no for a live process would clear a
+ * row out from under a running collector and let a second one start.
+ *
+ * Bounded first, so a value pid_t cannot hold never reaches the kernel as -1.
+ *
+ * @param int $pid The pid recorded in a table.
+ *
+ * @return bool True when a signal from this process would reach that pid.
+ */
+function cacti_process_signalable(int $pid) : bool {
+	if ($pid <= 1 || $pid > 2147483647 || !function_exists('posix_kill')) {
+		return false;
+	}
+
+	return posix_kill($pid, 0);
+}
+
+/**
+ * Sends a signal to a pid that was read from a process table.
+ *
+ * A stored pid can hold a value the kernel will not read as the caller means
+ * it. processes.pid is int(10) unsigned, so a corrupted row can carry
+ * 4294967295, and posix_kill() narrows that to a 32 bit pid_t of -1, which
+ * kill(2) reads as every process the caller is permitted to signal. From PHP
+ * 8.5 the same value raises a ValueError and ends the collector. Refusing it
+ * ahead of the call covers both, and logs the row so an operator can find it.
+ *
+ * init is refused as well, since a recycled or tampered row naming pid 1 would
+ * otherwise reach the host's own service manager. The floor stops there.
+ * Taking in the rest of the low range would exclude Cacti's own children
+ * inside a pid namespace, where they hold single and double digit pids, and
+ * every caller below unregisters the row whether or not the signal lands.
+ * Refusing there would leave a live collector with no registry row and a
+ * second one free to start against the same RRDs.
+ *
+ * This bounds the pid only. It deliberately does not test liveness, so the
+ * call sites keep the semantics they had; those that want an identity check
+ * still call cacti_process_still_running() first. A caller that owns the
+ * process it is signalling, a child it started itself for instance, already
+ * knows the pid is real and does not need this.
+ *
+ * @param int    $pid     The pid recorded in a process table.
+ * @param int    $signal  The signal to send.
+ * @param string $environ The log environment to record a refusal under.
+ *
+ * @return bool True when the signal was sent.
+ */
+function cacti_process_kill(int $pid, int $signal = SIGTERM, string $environ = 'POLLER') : bool {
+	/* Split, because the two refusals are refused for different reasons and an
+	   operator reading the log should be told which. A non-positive pid is not
+	   out of pid_t range at all: kill(2) reads 0 as this process group and -1
+	   as every process the caller may signal. */
+	if ($pid <= 1) {
+		cacti_log(sprintf('WARNING: Refusing to signal PID %s from a process table, which does not name a process a Cacti task can own!', $pid), false, $environ);
+
+		return false;
+	}
+
+	if ($pid > 2147483647) {
+		cacti_log(sprintf('WARNING: Refusing to signal PID %s from a process table, which is wider than pid_t and would reach the kernel as -1!', $pid), false, $environ);
+
+		return false;
+	}
+
+	if (!function_exists('posix_kill')) {
+		return false;
+	}
+
+	return posix_kill($pid, $signal);
+}
+
+/**
  * Tests whether a pid exists without treating a permissions failure as exit.
  *
  * POSIX kill(2) reports EPERM when the process exists but the caller cannot
@@ -2882,7 +2960,7 @@ function register_process_start_locked(string $tasktype, string $taskname, int $
 			if (cacti_process_still_running((int) $r['pid'])) {
 				cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceeded'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
 
-				posix_kill($r['pid'], SIGTERM);
+				cacti_process_kill((int) $r['pid'], SIGTERM);
 			}
 
 			unregister_process($tasktype, $taskname, $taskid);
@@ -3035,7 +3113,7 @@ function timeout_kill_registered_processes(string $tasktype = '', string $taskna
 		foreach ($processes as $r) {
 			if (cacti_process_still_running((int) $r['pid'])) {
 				cacti_log(sprintf('ERROR: Process killed due to timeout! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
-				posix_kill($r['pid'], SIGTERM);
+				cacti_process_kill((int) $r['pid'], SIGTERM);
 			} else {
 				cacti_log(sprintf('ERROR: Detected process that is gone and did not unregister first! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
 			}

@@ -1,1 +1,1 @@
-Refuse a registry pid wider than pid_t before probing it with a signal
+Refuse to signal a process table PID that names no process a task can own, or that pid_t cannot hold
