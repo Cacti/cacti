@@ -762,7 +762,16 @@ class Ldap {
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
 		$this->username = str_replace(['&', '|', '(', ')', '*', '>', '<', '!', '='], '', $this->username);
 		$this->password = html_entity_decode($this->password, $this->GetMask(), 'UTF-8');
-		$this->dn       = str_replace('<username>', $this->username, $this->dn);
+
+		/**
+		 * The blocklist above only strips search filter metacharacters. A DN has a
+		 * separate grammar (RFC 4514) in which the comma, backslash, plus, quote,
+		 * semicolon, hash and surrounding whitespace all survive it, so an
+		 * unescaped username can graft extra RDNs onto the configured template.
+		 * Escape at the point of use and leave $this->username as typed, because
+		 * the group comparison below and the log lines still want the raw value.
+		 */
+		$this->dn       = str_replace('<username>', ldap_escape($this->username, '', LDAP_ESCAPE_DN), $this->dn);
 
 		if ($this->password == '') {
 			return LdapError::GetErrorDetails(LdapError::EmptyPassword);
@@ -791,7 +800,9 @@ class Ldap {
 					 * And the patch against latest PHP release:
 					 * http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/databases/php-ldap/files/ldap-ctrl-exop.patch
 					 */
-					$true_dn_result = ldap_search($ldap_conn, $this->search_base, '(|(uid=' . $this->dn . ')(cn=' . $this->dn . ')(userPrincipalName=' . $this->dn . '))', ['dn']);
+					// the DN carries the username, so it is a filter assertion value here
+					$filter_dn      = ldap_escape($this->dn, '', LDAP_ESCAPE_FILTER);
+					$true_dn_result = ldap_search($ldap_conn, $this->search_base, '(|(uid=' . $filter_dn . ')(cn=' . $filter_dn . ')(userPrincipalName=' . $filter_dn . '))', ['dn']);
 					$first_entry    = ldap_first_entry($ldap_conn, $true_dn_result);
 
 					// we will test in two ways
@@ -897,7 +908,7 @@ class Ldap {
 		// Decode username, and remove bad characters
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
 		$this->username = str_replace(['&', '|', '(', ')', '*', '>', '<', '!', '='], '', $this->username);
-		$this->dn       = str_replace('<username>', $this->username, $this->dn);
+		$this->dn       = str_replace('<username>', ldap_escape($this->username, '', LDAP_ESCAPE_DN), $this->dn);
 
 		if ($this->mode == 0) {
 			// Just bind mode, make dn and return
@@ -924,7 +935,7 @@ class Ldap {
 			$this->specific_password = '';
 		}
 
-		$this->search_filter = str_replace('<username>', $this->username, $this->search_filter);
+		$this->search_filter = str_replace('<username>', ldap_escape($this->username, '', LDAP_ESCAPE_FILTER), $this->search_filter);
 
 		// Fix encoding on ldap specific search DN and password
 		$this->specific_password = html_entity_decode($this->specific_password, $this->GetMask(), 'UTF-8');
@@ -1017,7 +1028,7 @@ class Ldap {
 		// Decode username, and remove bad characters
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
 		$this->username = str_replace(['&', '|', '(', ')', '*', '>', '<', '!', '='], '', $this->username);
-		$this->dn       = str_replace('<username>', $this->username, $this->dn);
+		$this->dn       = str_replace('<username>', ldap_escape($this->username, '', LDAP_ESCAPE_DN), $this->dn);
 
 		if ($this->mode == 0) {
 			// Just bind mode, make dn and return
@@ -1041,7 +1052,7 @@ class Ldap {
 			$this->specific_password = '';
 		}
 
-		$this->search_filter = str_replace('<username>', $this->username, $this->search_filter);
+		$this->search_filter = str_replace('<username>', ldap_escape($this->username, '', LDAP_ESCAPE_FILTER), $this->search_filter);
 
 		// Fix encoding on ldap specific search DN and password
 		$this->specific_password = html_entity_decode($this->specific_password, $this->GetMask(), 'UTF-8');

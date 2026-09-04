@@ -3961,7 +3961,7 @@ function local_auth_login_process(string $username) : array {
 function domains_login_process(string $username) : array {
 	global $realm, $error, $error_msg;
 
-	$realm    = gnrv('realm');
+	$realm    = (int) gnrv('realm');
 	$password = gnrv('login_password');
 
 	if ($username == '') {
@@ -3969,6 +3969,21 @@ function domains_login_process(string $username) : array {
 		$error_msg = __('Access Denied!  Login Failed.');
 
 		cacti_log('LOGIN FAILED: Empty Domains Username provided, from IP address' . get_client_addr(), false, 'AUTH');
+
+		return [];
+	}
+
+	/**
+	 * get_auth_realms() builds the realm dropdown, so a realm it does not list was
+	 * never on offer and must not reach the branches below. The check runs before
+	 * the lockout bookkeeping so a forged realm cannot scatter an account's failure
+	 * counters across realms that do not exist.
+	 */
+	if (!array_key_exists($realm, get_auth_realms(true))) {
+		$error     = true;
+		$error_msg = __('Access Denied!  Login Failed.');
+
+		cacti_log(sprintf("LOGIN FAILED: Unknown Login Realm '%s' provided for user '%s' from IP address %s", $realm, $username, get_client_addr()), false, 'AUTH');
 
 		return [];
 	}
@@ -4109,6 +4124,17 @@ function domains_login_process(string $username) : array {
 		cacti_log(sprintf("LOGIN FAILED: LDAP No password provided for user '%s' from IP address %s", $username, get_client_addr()), false, 'AUTH');
 
 		auth_process_lockout($username, $realm);
+	} else {
+		/**
+		 * Realms at or below 3 are the local and legacy realms, so there is no
+		 * user_domains row to bind against. Without this arm the call returned an
+		 * empty user with $error still false, which auth_login.php treats as an
+		 * authenticated user with no account yet and provisions from the template.
+		 */
+		$error     = true;
+		$error_msg = __('Access Denied!  Login Failed.');
+
+		cacti_log(sprintf("LOGIN FAILED: Login Realm '%s' is not an LDAP domain for user '%s' from IP address %s", $realm, $username, get_client_addr()), false, 'AUTH');
 	}
 
 	return is_array($user) ? $user : [];
