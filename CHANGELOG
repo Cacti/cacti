@@ -1,7 +1,9 @@
 Cacti CHANGELOG
 
 1.2.x
--issue: Refuse registry PIDs wider than pid_t before signalling them
+-issue: Refuse to signal a process table PID that pid_t cannot hold
+-issue: Stop treating every PID in a container as a reserved system PID
+-issue: Repair batchgapfix --force, which aborted on PHP 8 and killed nothing
 -issue: Commit transactions on MySQL as well as MariaDB
 -security: Update bundled DOMPurify to 3.4.14
 -security: Revoke anonymous access when the guest account is disabled

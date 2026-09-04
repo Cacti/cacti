@@ -103,7 +103,23 @@ test('falls back to the bare existence check when /proc is unavailable', functio
 test('register_process_start() and timeout_kill_registered_processes() route through the guard, not a bare posix_kill(pid, 0)', function () {
 	$src = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
 
-	expect(substr_count($src, 'cacti_process_still_running($r[\'pid\'])'))->toBe(3);
+	/* Three liveness decisions live in these two functions: the timed-out pid
+	   and the not-yet-timed-out row in register_process_start(), and the row in
+	   timeout_kill_registered_processes(). They name the argument $timeout_pid,
+	   $r['pid'] and $pid, so counting one spelling only ever found one of the
+	   three. Assert the guarded call is present in each function instead. */
+	foreach (array('register_process_start', 'timeout_kill_registered_processes') as $function) {
+		$start = strpos($src, 'function ' . $function . '(');
+
+		expect($start)->not->toBeFalse();
+		expect(substr($src, $start, 2600))->toContain('cacti_process_still_running(');
+	}
+
+	/* Subtract the declaration, which the raw count includes, so this asserts
+	   the three call sites it names rather than two of them plus the function. */
+	$calls = substr_count($src, 'cacti_process_still_running($') - substr_count($src, 'function cacti_process_still_running($');
+
+	expect($calls)->toBeGreaterThanOrEqual(3);
 	expect($src)->not->toContain('$r[\'pid\'] > 0 && posix_kill($r[\'pid\'], 0)');
 });
 

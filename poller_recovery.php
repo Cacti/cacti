@@ -178,7 +178,12 @@ $transfer_failed  = false;
 debug('About to start recovery processing');
 
 if (!empty($recovery_pid)) {
-	$pid = posix_kill($recovery_pid, 0);
+	/* This branch reads false as "stale, clear the row and run", so it needs a
+	   probe where a pid we cannot signal counts as stale. That is the prior
+	   posix_kill($pid, 0) semantics, kept, with the pid_t bound added: a value
+	   the column can hold but pid_t cannot would otherwise narrow to -1, read
+	   as live, and retire recovery for good. */
+	$pid = cacti_process_signalable($recovery_pid);
 	if ($pid === false) {
 		/* we found a stale PID, so we delete it from the table */
 		db_execute("DELETE FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);

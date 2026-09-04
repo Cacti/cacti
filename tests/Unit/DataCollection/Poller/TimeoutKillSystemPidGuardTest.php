@@ -24,11 +24,33 @@
 
 require_once __DIR__ . '/../../../../lib/poller.php';
 
-test('is_system_pid rejects init and the reserved low range', function () {
+test('is_system_pid rejects init and anything that cannot name a process', function () {
 	expect(is_system_pid(1))->toBeTrue();
 	expect(is_system_pid(0))->toBeTrue();
 	expect(is_system_pid(-1))->toBeTrue();
-	expect(is_system_pid(100))->toBeTrue();
+});
+
+test('is_system_pid never claims the running process itself', function () {
+	/* A fresh pid namespace numbers from 1, so inside a container this very
+	   process can hold a pid in the reserved range. The flat floor refused it
+	   outright, while both callers cleared the registry row regardless of
+	   whether they signalled, leaving a live collector with no row. Identity
+	   settles it: we are trivially the same program as ourselves. */
+	expect(is_system_pid(getmypid()))->toBeFalse();
+});
+
+test('the reserved range defers to identity rather than refusing outright', function () {
+	$src   = file_get_contents(__DIR__ . '/../../../../lib/poller.php');
+	$start = strpos($src, 'function is_system_pid(');
+
+	expect($start)->not->toBeFalse();
+
+	$body = substr($src, $start, strpos($src, "\n}\n", $start) - $start);
+
+	/* Where /proc cannot answer, which is every platform without procfs, the
+	   refusal must still stand. */
+	expect($body)->toContain('cacti_process_identity_matches($pid)')
+		->and($body)->toContain('$pid > 100');
 });
 
 test('is_system_pid allows a normal registered pid', function () {
@@ -51,8 +73,9 @@ test('timeout_kill_registered_processes gates posix_kill behind is_system_pid', 
 	$body = substr($source, $start, 2200);
 
 	// The SIGTERM kill must sit on the elseif branch, reachable only after the
-	// is_system_pid() check has excluded the reserved range.
+	// is_system_pid() check has excluded the reserved range, and it goes out
+	// through the shared guard rather than a bare posix_kill().
 	expect(strpos($body, 'if (is_system_pid($pid))'))->not->toBeFalse();
-	expect(preg_match('/}\s*elseif\s*\(\s*posix_kill\s*\(\s*\$pid\s*,\s*0\s*\)\s*\)\s*{/', $body))->toBe(1);
-	expect(strpos($body, 'posix_kill($pid, SIGTERM)'))->not->toBeFalse();
+	expect(preg_match('/}\s*elseif\s*\(\s*cacti_process_still_running\s*\(\s*\$pid\s*\)\s*\)\s*{/', $body))->toBe(1);
+	expect(strpos($body, 'cacti_process_kill($pid, SIGTERM)'))->not->toBeFalse();
 });
