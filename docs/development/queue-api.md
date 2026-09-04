@@ -2,7 +2,7 @@
 
 Cacti's queue API is a small Cacti-facing wrapper around Symfony Messenger. The built-in database transport works without another service; plugins can provide RabbitMQ, Apache Kafka, Redis Streams, Amazon SQS, or another broker without changing producers and handlers.
 
-The API requires PHP 8.1. Provider plugins use Symfony Messenger's standard `TransportInterface`; Cacti supplies routing, safe serialization, handler registration, database defaults, and worker lifecycle management.
+The API requires PHP 8.2. Provider plugins use Symfony Messenger's standard `TransportInterface`; Cacti supplies routing, safe serialization, handler registration, database defaults, and worker lifecycle management.
 
 ## Publishing and handling messages
 
@@ -94,9 +94,9 @@ One installation may route different queues to different providers at the same t
 
 ## Verification
 
-The PHP 8.1 CI job runs the queue unit and MySQL 8.4 integration suites with Xdebug, publishes Clover and text reports, and enforces 100% line coverage for `lib/api_queue.php`.
+The PHP 8.2 CI job runs the queue unit and MySQL 8.4 integration suites with Xdebug, publishes Clover and text reports, and enforces 100% line coverage for `lib/api_queue.php`.
 
-Run the full producer-to-worker path in disposable PHP 8.1 and MySQL 8.4 containers with:
+Run the full producer-to-worker path in disposable PHP 8.2 and MySQL 8.4 containers with:
 
 ```console
 tests/e2e/queue/run.sh
