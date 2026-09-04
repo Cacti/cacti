@@ -79,7 +79,7 @@ cd cacti
 
 Dependency management:
 
-- For a source checkout on both `1.2.x` and `develop`, install dependencies with Composer.
+- For a source checkout on both `1.2.x` and `develop`, install dependencies with Composer before serving Cacti. Composer-managed packages under `include/vendor` are generated and intentionally not committed; the remaining legacy libraries in that directory are not Composer-managed and remain in the repository.
 - On `develop`, `composer install` uses the committed lock file resolved against Cacti's PHP 8.1 floor.
 - Use `composer update` only in an intentional dependency-update change, and commit the resulting `composer.lock` update.
 - Release packages must build `include/vendor` from the lock with `composer install --no-dev` and verify the real build host with `composer check-platform-reqs --no-dev`.
