@@ -153,7 +153,7 @@ interface CactiQueueAdminTransportInterface {
 final class CactiQueueSerializer implements SerializerInterface {
 	public function decode(array $encodedEnvelope) : Envelope {
 		$type = $encodedEnvelope['headers']['type'] ?? null;
-		$body = $encodedEnvelope['body'];
+		$body = array_key_exists('body', $encodedEnvelope) ? $encodedEnvelope['body'] : null;
 
 		if (!is_string($type) || !is_string($body) || !class_exists($type) || !is_subclass_of($type, CactiQueueMessageInterface::class)) {
 			throw new CactiQueueMessageException('Stored queue message type is not allowed.');
