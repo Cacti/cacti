@@ -45,7 +45,6 @@ beforeEach(function () {
 		output TEXT NOT NULL,
 		PRIMARY KEY (local_data_id, rrd_name, time)
 	)');
-	$conn->exec('CREATE TABLE poller_item (local_data_id INTEGER NOT NULL, poller_id INTEGER NOT NULL)');
 	$conn->exec('CREATE TABLE settings (name TEXT PRIMARY KEY, value TEXT)');
 
 	$database_hostname = 'unit_test_host';
@@ -142,18 +141,4 @@ test('publishes a complete graph cache object without leaving a temporary file',
 		@unlink($cache_file);
 		@rmdir($directory);
 	}
-});
-
-test('validates remote data-source ownership against the destination database', function () {
-	$this->conn->exec('INSERT INTO poller_item (local_data_id, poller_id) VALUES (10, 7), (11, 7), (12, 8)');
-
-	expect(boost_validate_poller_ownership([
-		['local_data_id' => 10],
-		['local_data_id' => 11],
-	], 7, $this->conn))->toBeTrue();
-
-	expect(boost_validate_poller_ownership([
-		['local_data_id' => 10],
-		['local_data_id' => 12],
-	], 7, $this->conn))->toBeFalse();
 });

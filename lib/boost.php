@@ -289,44 +289,6 @@ function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : bo
 	return $success;
 }
 
-/** Confirm that every handed-off data source belongs to the claiming poller. */
-function boost_validate_poller_ownership(array $results, int $poller_id, mixed $conn = false) : bool {
-	$result_ids = array_map(
-		static fn (array $result): int => (int) ($result['local_data_id'] ?? 0),
-		$results
-	);
-	$local_data_ids = array_values(array_unique(array_filter(
-		$result_ids,
-		static fn (int $local_data_id): bool => $local_data_id > 0
-	)));
-
-	if (!cacti_sizeof($local_data_ids) || in_array(0, $result_ids, true)) {
-		return false;
-	}
-
-	$assigned_ids = [];
-
-	foreach (array_chunk($local_data_ids, 1000) as $chunk) {
-		$placeholders = implode(',', array_fill(0, cacti_sizeof($chunk), '?'));
-		$params       = array_merge([$poller_id], $chunk);
-		$assigned     = db_fetch_assoc_prepared("SELECT DISTINCT local_data_id
-			FROM poller_item
-			WHERE poller_id = ?
-			AND local_data_id IN ($placeholders)", $params, true, $conn);
-
-		if ($assigned === false) {
-			return false;
-		}
-
-		$assigned_ids = array_merge($assigned_ids, array_map('intval', array_column($assigned, 'local_data_id')));
-	}
-
-	sort($assigned_ids);
-	sort($local_data_ids);
-
-	return $assigned_ids === $local_data_ids;
-}
-
 /**
  * Handles the on-demand poller boost functionality for Cacti.
  *
@@ -378,18 +340,6 @@ function boost_poller_on_demand(array &$results) : bool {
 			}
 
 			if (cacti_sizeof($results)) {
-				if (POLLER_ID > 1 && !boost_validate_poller_ownership($results, POLLER_ID, $conn)) { // @phpstan-ignore-line
-					cacti_log(sprintf('ERROR: Boost rejected a handoff containing data sources not assigned to poller %d.', POLLER_ID), false, 'BOOST');
-					restore_error_handler();
-					error_reporting($previous_error_reporting);
-
-					// The caller has already removed these rows from poller_output, so
-					// returning false here would drop the cycle entirely. Report that
-					// boost did not consume the data and let the poller write it to RRD
-					// directly, matching the database failure path below.
-					return true;
-				}
-
 				$value_tuples = [];
 
 				foreach ($results as $result) {
