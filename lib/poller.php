@@ -2749,12 +2749,20 @@ function cacti_process_still_running(int $pid) : bool {
  * signal it. PHP exposes errno through posix_get_last_error(), while the
  * numeric EPERM constant is supplied by ext-sockets rather than ext-posix.
  *
+ * A pid wider than pid_t is refused before it reaches posix_kill(). Through PHP
+ * 8.4 that call narrows its argument to a 32 bit pid_t, so a processes.pid of
+ * 4294967295, the maximum its int(10) unsigned column holds, arrives as -1 and
+ * kill(2) reads it as every process the caller may signal; a caller that asks
+ * here first then reads a dead registry row as live and SIGTERMs it. From PHP
+ * 8.5 the same value raises a ValueError, which ends the poller instead. Sites
+ * that signal a stored pid without asking are unaffected by this bound.
+ *
  * @param int $pid The pid to check.
  *
  * @return bool True when the process exists or signalling it is forbidden.
  */
 function cacti_process_pid_exists(int $pid) : bool {
-	if ($pid <= 0 || !function_exists('posix_kill')) {
+	if ($pid <= 0 || $pid > 2147483647 || !function_exists('posix_kill')) {
 		return false;
 	}
 
