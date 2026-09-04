@@ -216,6 +216,10 @@ jobs:
       run: composer run-script hardening-patterns -- --base="${{ github.event.pull_request.base.sha }}" --head=HEAD
       working-directory: .
 
+    - name: Reject committed Composer dependencies
+      run: composer run-script vendor-policy
+      working-directory: .
+
     - name: Checking coding standards on base code
       run: composer run-script phpcsfixer
       working-directory: .
