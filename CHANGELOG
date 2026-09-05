@@ -1,7 +1,6 @@
 Cacti CHANGELOG
 
 1.3.0-dev
--issue#7506: Close open select menus when their scroll container moves
 -security: Escape path_dsstats_log before it reaches the dsstats poller shell redirect
 -security: Revoke anonymous access when the guest account is disabled
 -security: Cast graph and device ids to int in get_allowed_* permission filters
@@ -44,6 +43,7 @@ Cacti CHANGELOG
 -issue#7517: Consolidate htmx loader and renderer abstraction global.php includes
 -issue#7515: Consolidate image conversion and notification payload hardening
 -issue#7513: Scope build context to docker/ so it builds standalone
+-issue#7506: Close open select menus when their scroll container moves
 -issue#7502: Guard null messages array in raise_message()
 -issue#7438: Validate measure/order before ORDER BY concatenation in get_allowed_graphs()
 -issue#7432: Correct KILL CONNECTION typo in db_close
