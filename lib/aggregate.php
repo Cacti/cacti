@@ -641,6 +641,29 @@ function aggregate_cdef_for_totalling($cdefs, $cdef_id) {
 	return $cdefs[$cdef_id]['cdef_text'];
 }
 
+/* Validate every target before aggregate_cdef_totalling() performs any writes. */
+function aggregate_prepare_cdef_totalling($graph_template_items, $cdefs) {
+	$items = array();
+
+	foreach ($graph_template_items as $graph_template_item) {
+		$cdef_id   = (int) $graph_template_item['cdef_id'];
+		$cdef_text = aggregate_cdef_for_totalling($cdefs, $cdef_id);
+
+		if ($cdef_text === null) {
+			return array('items' => array(), 'invalid_cdef_id' => $cdef_id);
+		}
+
+		$items[] = array(
+			'graph_item' => $graph_template_item,
+			'cdef_id'    => $cdef_id,
+			'cdef_name'  => $cdefs[$cdef_id]['name'],
+			'cdef_text'  => $cdef_text,
+		);
+	}
+
+	return array('items' => $items, 'invalid_cdef_id' => null);
+}
+
 function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total_type) {
 	global $config;
 
@@ -685,22 +708,24 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 	);
 
 	/* new CDEF(s) are required! */
-	$num_items = cacti_sizeof($graph_template_items);
+	$prepared = aggregate_prepare_cdef_totalling($graph_template_items, $cdefs);
+
+	if ($prepared['invalid_cdef_id'] !== null) {
+		cacti_log(__FUNCTION__ . ' aborted before updates due to invalid or empty CDEF id ' . $prepared['invalid_cdef_id'], true, 'AGGREGATE');
+
+		return;
+	}
+
+	$totalling_items = $prepared['items'];
+	$num_items       = cacti_sizeof($totalling_items);
 	if ($num_items > 0) {
 		$i = 0;
-		foreach ($graph_template_items as $graph_template_item) {
+		foreach ($totalling_items as $totalling_item) {
 			# current cdef
-			$cdef_id   = $graph_template_item['cdef_id'];
-
-			$cdef_text = aggregate_cdef_for_totalling($cdefs, $cdef_id);
-
-			if ($cdef_text === null) {
-				cacti_log(__FUNCTION__ . ' cannot total invalid or empty CDEF id ' . $cdef_id, true, 'AGGREGATE');
-
-				continue;
-			}
-
-			$cdef_name = $cdefs[$cdef_id]['name'];
+			$graph_template_item = $totalling_item['graph_item'];
+			$cdef_id            = $totalling_item['cdef_id'];
+			$cdef_name          = $totalling_item['cdef_name'];
+			$cdef_text          = $totalling_item['cdef_text'];
 
 			cacti_log(__FUNCTION__ . ' cdef id: ' . $cdef_id . ' name: ' . $cdef_name . ' value: ' . $cdef_text, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
