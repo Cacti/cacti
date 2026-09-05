@@ -31,6 +31,8 @@ test('float rrdfiles uses a private temporary file and reachable cleanup', funct
 	expect($floatRrdfilesSource)->toContain("tempnam(\$tmp_dir, 'cacti_float_')")
 		->and($floatRrdfilesSource)->not->toContain("\$tmp_dir . '/' . \$local_data_id . '.xml'")
 		->and(substr_count($floatRrdfilesSource, 'unlink($tmp_file);'))->toBeGreaterThanOrEqual(3)
+		->and($floatRrdfilesSource)->toContain('$lf = false;')
+		->and($floatRrdfilesSource)->toContain('$seebug = is_resource($lf);')
 		->and($floatRrdfilesSource)->not->toContain("cacti_float_rrdfiles.log");
 });
 

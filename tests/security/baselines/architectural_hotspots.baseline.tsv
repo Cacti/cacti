@@ -1,6 +1,6 @@
 class	location	match
 cmd_exec	./cactid.php:102		exec('pgrep -a php | grep cactid.php', $output);
-cmd_exec	./cli/audit_database.php:1122					$db_shell = trim((string) shell_exec('which mysql'));
+cmd_exec	./cli/audit_database.php:1122				$db_shell = trim((string) shell_exec('which mysql'));
 cmd_exec	./cli/audit_database.php:1141				exec(cacti_escapeshellarg($db_shell) .
 cmd_exec	./cli/audit_database.php:232		exec(cacti_escapeshellarg($php_binary) . ' ' .
 cmd_exec	./cli/audit_database.php:325								exec(cacti_escapeshellarg($php_binary) . ' ' .
