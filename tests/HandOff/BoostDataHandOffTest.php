@@ -48,6 +48,7 @@ test('Recovery status SQL remains valid when ANSI_QUOTES is enabled', function (
 	expect($recovery)->toContain('SET status=2')
 		->and($recovery)->toContain('SET status = 5')
 		->and($recovery)->toContain("VALUES (\\'recovery_pid\\', ?)")
+		->and($recovery)->not->toContain("if (!\$transfer_failed) {\n\t\t// let the console know you are in online mode")
 		->and($recovery)->not->toMatch('/(?:status\s*=|VALUES\s*\()\s*"/');
 });
 

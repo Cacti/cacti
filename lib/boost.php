@@ -1130,12 +1130,14 @@ function boost_get_arch_table_names(mixed $latest_table = '') : mixed {
 
 	if (cacti_sizeof($tableData)) {
 		foreach ($tableData as $table) {
-			$table = array_values($table);
+			$table      = array_values($table);
+			$table_name = (string) $table[0];
 
-			if (boost_is_valid_archive_table($table[0])) {
-				$tableNames[$table[0]] = $table[0];
+			if (boost_is_valid_archive_table($table_name)) {
+				$tableNames[$table_name] = $table_name;
 			} else {
-				cacti_log('WARNING: Boost ignored an unexpected archive-like table name.', false, 'BOOST');
+				$display_name = preg_replace('/[^\x20-\x7e]/', '?', $table_name) ?? '<invalid>';
+				cacti_log('WARNING: Boost ignored an unexpected archive-like table name: ' . $display_name, false, 'BOOST');
 			}
 		}
 	}

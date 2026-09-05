@@ -131,6 +131,7 @@ test('archive-table fallback no longer relies on the lagging SHOW TABLES probe',
 	// The fallback must validate the name and confirm it with a data-plane read.
 	expect($func_body)->toContain('boost_is_valid_archive_table($latest_table)');
 	expect($func_body)->toContain('boost_archive_table_readable($latest_table)');
+	expect($func_body)->toContain("Boost ignored an unexpected archive-like table name: ' . \$display_name");
 });
 
 test('boost_archive_table_readable probes data, not metadata, and rejects bad names', function () use ($boostLibPath) {
