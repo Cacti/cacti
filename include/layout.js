@@ -807,9 +807,11 @@ function setupSelectmenuScrollClose() {
  *  that can't be set using a live attribute 'on()' */
 function applySkin() {
 	// Support callback nonces
-	$.ajaxSetup({
-		nonce: cactiNonce
-	});
+	if (typeof cactiNonce !== 'undefined') {
+		$.ajaxSetup({
+			nonce: cactiNonce
+		});
+	}
 
 	pageName = basename($(location).attr('pathname'));
 
