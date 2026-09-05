@@ -41,7 +41,27 @@ test('cacti_exec returns the real process exit code', function () {
 	expect(cacti_exec(PHP_BINARY, array('-r', 'exit(1);'), $out))->toBe(1);
 	expect(cacti_exec(PHP_BINARY, array('-r', 'exit(3);'), $out))->toBe(3);
 	expect(cacti_exec(PHP_BINARY, array('-r', 'exit(42);'), $out))->toBe(42);
+	expect(cacti_exec(PHP_BINARY, array('-r', 'exit(127);'), $out))->toBe(127);
 	expect(cacti_exec(PHP_BINARY, array('-r', 'exit(255);'), $out))->toBe(255);
+});
+
+test('open_basedir does not reject an executable outside the allowed filesystem paths', function () {
+	$script = 'require ' . var_export(dirname(__DIR__, 2) . '/include/global_constants.php', true) . ';'
+		. 'require ' . var_export(dirname(__DIR__, 2) . '/lib/functions.php', true) . ';'
+		. 'ini_set("open_basedir", sys_get_temp_dir());'
+		. '$output = array(); echo cacti_exec(' . var_export(PHP_BINARY, true) . ', array("-r", "exit(23);"), $output);';
+	$proc = proc_open(array(PHP_BINARY, '-r', $script), array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+
+	expect(is_resource($proc))->toBeTrue();
+
+	$stdout = stream_get_contents($pipes[1]);
+	$stderr = stream_get_contents($pipes[2]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+	$exit = proc_close($proc);
+
+	expect($exit)->toBe(0, $stderr)
+		->and($stdout)->toBe('23');
 });
 
 test('a non-zero exit still returns the exit code and captures output', function () {
@@ -90,10 +110,10 @@ test('cacti_exec rejects an empty, whitespace, or dash-led binary with 255', fun
 	expect(_exec_quietly(fn () => cacti_exec('--version', array(), $out)))->toBe(255);
 });
 
-test('a non-existent binary returns 255 and does not crash', function () {
+test('a non-existent binary returns the operating system exec failure code', function () {
 	$out = array();
 
-	expect(_exec_quietly(fn () => cacti_exec('/nonexistent/path/to/binary', array(), $out)))->toBe(255);
+	expect(_exec_quietly(fn () => cacti_exec('/nonexistent/path/to/binary', array(), $out)))->toBe(127);
 });
 
 test('cacti_exec raises no exit_code warning while reading status', function () {
