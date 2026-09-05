@@ -242,12 +242,12 @@ if ($run) {
 
 	db_execute_prepared('REPLACE INTO settings
 		(name, value)
-		VALUES ("recovery_pid", ?)',
+		VALUES (\'recovery_pid\', ?)',
 		[$my_pid], true, $local_db_cnn_id);
 
 	// let the console know you are in recovery mode
 	db_execute_prepared('UPDATE poller
-		SET status = "5"
+		SET status = 5
 		WHERE id = ?',
 		[$poller_id], true, $remote_db_cnn_id);
 
