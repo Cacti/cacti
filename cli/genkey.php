@@ -231,13 +231,13 @@ if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . 
 		if ($privKey === false) {
 			print "FATAL: Unable to open your private key $privkey" . PHP_EOL;
 
-			exit(0);
+			exit(1);
 		}
 
 		if ($pubKey === false) {
 			print "FATAL: Unable to open your public key $pubkey" . PHP_EOL;
 
-			exit(0);
+			exit(1);
 		}
 	} else {
 		print 'NOTE: Generating custom public/private key pair.' . PHP_EOL;

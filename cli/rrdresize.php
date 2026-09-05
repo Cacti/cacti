@@ -36,7 +36,7 @@ require_once('./include/cli_check.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	$data_template_id     = false;
 	$displayDataTemplates = false;
 	$debug_mode           = false;
@@ -164,7 +164,7 @@ if ($displayDataTemplates) {
 
 	print 'Known Data Templates: (id, name)' . PHP_EOL;
 
-	if (sizeof($data_templates)) {
+	if (cacti_sizeof($data_templates)) {
 		foreach ($data_templates as $data_template) {
 			print $data_template['id'] . "\t" . $data_template['name'] . PHP_EOL;
 		}
@@ -185,7 +185,7 @@ if (!$data_template_id) {
 if (!$backup_folder) {
 	print 'ERROR: You must define a backup folder!' . PHP_EOL;
 
-	exit(0);
+	exit(1);
 } else {
 	$tmp_xml_file = $tmp_backup_folder . 'tmp_rrdresize.xml';
 	$tmp_rrd_file = $tmp_backup_folder . 'tmp_rrdfile.rrd';
@@ -240,7 +240,7 @@ if ($scanned_directory['folders']) {
 	if (!mkdir($tmp_backup_folder)) {
 		print 'ERROR: Unable to create a backup folder!' . PHP_EOL;
 
-		exit(0);
+		exit(1);
 	}
 
 	// create log file
@@ -261,7 +261,7 @@ if ($scanned_directory['folders']) {
 
 	$dt_hosts = [];
 
-	if (sizeof($db_hosts) > 0) {
+	if (cacti_sizeof($db_hosts) > 0) {
 		foreach ($db_hosts as $key => $value) {
 			$dt_hosts[] = $value['host_id'];
 		}
@@ -280,7 +280,7 @@ if ($scanned_directory['folders']) {
 
 	$dt_data_sources = [];
 
-	if (sizeof($db_data_sources) > 0) {
+	if (cacti_sizeof($db_data_sources) > 0) {
 		foreach ($db_data_sources as $key => $value) {
 			$dt_data_sources[] = $value['local_data_id'];
 		}
@@ -361,7 +361,7 @@ if ($scanned_directory['folders']) {
 						[$local_data['data_template_id']]
 					);
 
-					$data_template_ds_counter    = sizeof($data_template_ds);
+					$data_template_ds_counter    = cacti_sizeof($data_template_ds);
 					$data_template_data_settings = db_fetch_assoc_prepared('SELECT *
 						FROM data_template_data_rra
 						LEFT JOIN rra

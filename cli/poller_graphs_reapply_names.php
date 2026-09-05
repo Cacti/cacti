@@ -52,6 +52,7 @@ if (cacti_sizeof($parms)) {
 
 		switch ($arg) {
 			case '-id':
+			case '--id':
 			case '--host-id':
 				$host_id = $value;
 
