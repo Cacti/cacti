@@ -101,13 +101,13 @@ if (cacti_sizeof($parms)) {
 				if (!file_exists($oldrrd)) {
 					print 'FATAL: File \'' . $oldrrd . '\' does not exist.' . PHP_EOL;
 
-					exit(-9);
+					exit(1);
 				}
 
 				if (!is_resource_writable($oldrrd)) {
 					print 'FATAL: File \'' . $oldrrd . '\' is not writable by this account.' . PHP_EOL;
 
-					exit(-8);
+					exit(1);
 				}
 
 				break;
@@ -117,13 +117,13 @@ if (cacti_sizeof($parms)) {
 				if (!file_exists($newrrd)) {
 					print 'FATAL: File \'' . $newrrd . '\' does not exist.' . PHP_EOL;
 
-					exit(-9);
+					exit(1);
 				}
 
 				if (!is_resource_writable($newrrd)) {
 					print 'FATAL: File \'' . $newrrd . '\' is not writable by this account.' . PHP_EOL;
 
-					exit(-8);
+					exit(1);
 				}
 
 				break;
@@ -133,7 +133,7 @@ if (cacti_sizeof($parms)) {
 				if (!is_resource_writable(dirname($finrrd) . '/') || (file_exists($finrrd) && !is_resource_writable($finrrd))) {
 					print 'FATAL: File \'' . $finrrd . '\' is not writable by this account.' . PHP_EOL;
 
-					exit(-8);
+					exit(1);
 				}
 
 				break;
@@ -178,7 +178,7 @@ if (cacti_sizeof($parms)) {
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 
-				exit(-3);
+				exit(1);
 		}
 	}
 }
@@ -188,14 +188,14 @@ if ($oldrrd == '') {
 	print 'FATAL: You must specify a old RRDfile!' . PHP_EOL . PHP_EOL;
 	display_help();
 
-	exit(-2);
+	exit(1);
 }
 
 if ($newrrd == '') {
 	print 'FATAL: You must specify a New RRDfile!' . PHP_EOL . PHP_EOL;
 	display_help();
 
-	exit(-2);
+	exit(1);
 }
 
 if ($overwrite && $finrrd == '') {
@@ -206,7 +206,7 @@ if ($finrrd == '') {
 	print 'FATAL: You must specify a New RRDfile or use the overwrite option!' . PHP_EOL . PHP_EOL;
 	display_help();
 
-	exit(-2);
+	exit(1);
 }
 
 debug('Entering Mainline');
@@ -240,7 +240,7 @@ if (strlen($response)) {
 	$response_array = explode(' ', $response);
 	print 'NOTE: Using ' . $response_array[0] . ' Version ' . $response_array[1] . PHP_EOL;
 } else {
-	print 'FATAL: RRDTool not found in configuration or path.' . PHP_EOL . 'Please insure RRDTool can be found using one of these methods!' . PHP_EOL;
+	print 'FATAL: RRDTool not found in configuration or path.' . PHP_EOL . 'Please ensure RRDTool can be found using one of these methods!' . PHP_EOL;
 
 	exit(1);
 }
@@ -280,7 +280,7 @@ if (file_exists($oldxmlfile)) {
 } else {
 	print 'FATAL: RRDtool Command Failed on \'' . $oldrrd . '\'.  Please insure your RRDtool install is valid!' . PHP_EOL;
 
-	exit(-12);
+	exit(1);
 }
 
 if (file_exists($newxmlfile)) {
@@ -291,7 +291,7 @@ if (file_exists($newxmlfile)) {
 } else {
 	print 'FATAL: RRDtool Command Failed on \'' . $newrrd . '\'.  Please insure your RRDtool install is valid!' . PHP_EOL;
 
-	exit(-12);
+	exit(1);
 }
 
 print 'NOTE: RRDfile will be written to \'' . $finrrd . '\'' . PHP_EOL;

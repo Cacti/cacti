@@ -30,6 +30,7 @@ require_once($config['base_path'] . '/lib/api_graph.php');
 require_once($config['base_path'] . '/lib/data_query.php');
 require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/utility.php');
+require_once(__DIR__ . '/../lib/maintenance_cli.php');
 
 ini_set('max_execution_time', '0');
 ini_set('memory_limit', '-1');
@@ -66,7 +67,6 @@ if (cacti_sizeof($parms)) {
 
 	$longopts = array(
 		'host-id::',
-		'graph-type::',
 		'graph-template-id::',
 		'host-template-id::',
 		'graph-regex::',
@@ -82,8 +82,20 @@ if (cacti_sizeof($parms)) {
 		'version',
 		'help'
 	);
+	/* getopt() silently discards unknown options. Validate the raw tokens
+	 * first so a typo cannot be ignored by this destructive command. */
+	foreach($parms as $parameter) {
+		if (cacti_remove_graphs_parameter_is_valid($parameter, $shortopts, $longopts)) {
+			continue;
+		}
+
+		print "ERROR: Invalid Argument: ($parameter)" . PHP_EOL . PHP_EOL;
+		display_help();
+		exit(1);
+	}
 
 	$options = getopt($shortopts, $longopts);
+	$quietMode = cacti_remove_graphs_quiet_enabled($options);
 
 	foreach($options as $arg => $value) {
 		switch($arg) {
@@ -95,8 +107,10 @@ if (cacti_sizeof($parms)) {
 			$regex = $value;
 
 			foreach($value as $item) {
-				if (!validate_is_regex($item)) {
-					print "ERROR: Regex specified '$item', is not a valid Regex!" . PHP_EOL;
+				$error = cacti_remove_graphs_regex_error($item);
+
+				if ($error !== false) {
+					print "ERROR: Regex specified '$item' is not valid: $error" . PHP_EOL;
 					exit(1);
 				}
 			}
@@ -129,6 +143,8 @@ if (cacti_sizeof($parms)) {
 		case 'preserve':
 			$preserve = true;
 
+			break;
+		case 'quiet':
 			break;
 		case 'all':
 			$all = true;
@@ -344,4 +360,3 @@ function display_help() {
 	print "    --list-graph-templates [--host-template-id=ID]" . PHP_EOL;
 	print "    --list-host-templates" . PHP_EOL . PHP_EOL;
 }
-
