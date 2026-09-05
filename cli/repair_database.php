@@ -467,27 +467,35 @@ function detailed_checks() : void {
 	printf('NOTE: Searching for graph items that reference missing CDEFs.' . PHP_EOL);
 
 	$cdef_references = [
-		'graph_templates_item'           => false,
-		'aggregate_graph_templates_item' => true,
-		'aggregate_graphs_graph_item'    => true,
+		[
+			'rows' => db_fetch_cell('SELECT COUNT(*) FROM graph_templates_item AS source LEFT JOIN cdef ON source.cdef_id = cdef.id WHERE source.cdef_id > 0 AND cdef.id IS NULL'),
+			'fix'  => static function (): void {
+				db_execute('UPDATE graph_templates_item SET cdef_id = 0 WHERE cdef_id > 0 AND cdef_id NOT IN (SELECT id FROM cdef)');
+			},
+		],
+		[
+			'rows' => db_fetch_cell('SELECT COUNT(*) FROM aggregate_graph_templates_item AS source LEFT JOIN cdef ON source.cdef_id = cdef.id WHERE source.cdef_id > 0 AND cdef.id IS NULL'),
+			'fix'  => static function (): void {
+				db_execute("UPDATE aggregate_graph_templates_item SET cdef_id = 0, t_cdef_id = '' WHERE cdef_id > 0 AND cdef_id NOT IN (SELECT id FROM cdef)");
+			},
+		],
+		[
+			'rows' => db_fetch_cell('SELECT COUNT(*) FROM aggregate_graphs_graph_item AS source LEFT JOIN cdef ON source.cdef_id = cdef.id WHERE source.cdef_id > 0 AND cdef.id IS NULL'),
+			'fix'  => static function (): void {
+				db_execute("UPDATE aggregate_graphs_graph_item SET cdef_id = 0, t_cdef_id = '' WHERE cdef_id > 0 AND cdef_id NOT IN (SELECT id FROM cdef)");
+			},
+		],
 	];
 	$invalid_references = 0;
 	$fixed_references   = 0;
 
-	foreach ($cdef_references as $table => $has_template_flag) {
-		$rows = db_fetch_cell("SELECT COUNT(*)
-			FROM $table AS source
-			LEFT JOIN cdef ON source.cdef_id = cdef.id
-			WHERE source.cdef_id > 0
-			AND cdef.id IS NULL");
+	foreach ($cdef_references as $queries) {
+		$rows = $queries['rows'];
 
 		$invalid_references += (int) $rows;
 
 		if ($force && $rows > 0) {
-			$set = $has_template_flag ? "cdef_id = 0, t_cdef_id = ''" : 'cdef_id = 0';
-			db_execute("UPDATE $table SET $set
-				WHERE cdef_id > 0
-				AND cdef_id NOT IN (SELECT id FROM cdef)");
+			$queries['fix']();
 			$fixed_references += db_affected_rows();
 		}
 	}
