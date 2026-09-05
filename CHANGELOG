@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -issue#7212: Address a few small memory leaks in realtime graphing
 -issue#7216: Aggregate totalling legend printed untotalled single data source values
 -issue#7245: Raise execution time limit for bulk graph creation (PR #7378)
+-issue#7342: Reject wall-clock snmpEngineTime values when selecting device uptime
 -issue#7359: Undefined variables detected with legacy plugins
 -issue#7424: Correct SNMP disk counter wrap delta calculations
 -issue#7425: Guard process registration and cleanup against PID reuse
