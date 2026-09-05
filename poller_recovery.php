@@ -271,10 +271,11 @@ if ($run) {
 		} else {
 			cacti_log('RECOVERY: Fetching records till time: ' . $max_time . ' from poller DB', false, 'POLLER');
 
-			$rows = db_fetch_assoc_prepared('SELECT *
+			$rows = db_fetch_assoc_prepared(sprintf('SELECT *
 				FROM poller_output_boost
 				WHERE time <= ?
-				ORDER BY time ASC, local_data_id ASC',
+				ORDER BY time ASC, local_data_id ASC
+				LIMIT %d', (int) $record_limit),
 				[$max_time], true, $local_db_cnn_id);
 
 			if (cacti_sizeof($rows)) {
