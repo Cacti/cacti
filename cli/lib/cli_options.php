@@ -198,7 +198,18 @@ function cacti_cli_parse($argv, $options, $title, $usage, $extra = []) {
 	}
 
 	foreach ($options as $name => $option) {
-		if (isset($option['required']) && $option['required'] && $values[$name] === '') {
+		if (!isset($option['required']) || !$option['required']) {
+			continue;
+		}
+
+		// an absent value option is still '', an absent flag is still false
+		if (isset($option['value']) && $option['value'] != '') {
+			$missing = $values[$name] === '';
+		} else {
+			$missing = $values[$name] === false;
+		}
+
+		if ($missing) {
 			print __('ERROR: Missing Required Argument: (--%s)', $name) . PHP_EOL . PHP_EOL;
 
 			cacti_cli_help($title, $usage, $options, $extra);
