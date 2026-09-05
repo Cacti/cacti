@@ -27,7 +27,7 @@
  * Git-following 1.2.x installs can already be stamped 1.2.32 without
  * ever running an upgrade file that adds those columns.
  */
-function boost_ensure_process_table() {
+function boost_ensure_process_table($repair_key = false) {
 	if (!db_table_exists('poller_output_boost_processes')) {
 		if (db_execute("CREATE TABLE `poller_output_boost_processes` (
 			`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
@@ -47,7 +47,7 @@ function boost_ensure_process_table() {
 
 	$needs_run_id   = !db_column_exists('poller_output_boost_processes', 'run_id');
 	$needs_child_id = !db_column_exists('poller_output_boost_processes', 'child_id');
-	$needs_key      = !db_index_exists('poller_output_boost_processes', 'run_child');
+	$needs_key      = $repair_key && !db_index_exists('poller_output_boost_processes', 'run_child');
 
 	if (!$needs_run_id && !$needs_child_id && !$needs_key) {
 		return true;
