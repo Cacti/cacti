@@ -2486,27 +2486,53 @@ function get_remote_poller_ids_from_devices(&$devices) {
 }
 
 /**
- * cacti_process_still_running - determine whether a registered pid is still
- *   alive and still belongs to the process that registered it.
+ * cacti_process_pid_is_valid - validate a database value before narrowing it
+ *   to the signed pid_t range used by posix_kill().
  *
- *   A bare posix_kill($pid, 0) only proves that *some* process owns the pid.
- *   After a registered process dies without unregistering, the OS can recycle
- *   its pid for an unrelated program; trusting the bare pid then blocks a
- *   legitimate task from starting or sends SIGTERM to the wrong process.  On
- *   Linux we compare /proc/<pid>/comm against our own command name as a
- *   no-schema identity check (the processes table stores no start-time).  When
- *   /proc is unavailable (non-Linux or restricted) we fall back to the bare
- *   existence test, preserving prior behaviour.
+ * @param  (mixed) $pid - the process table value
  *
- * @param  (int)  $pid - the pid recorded in the processes table
+ * @return (bool) true only for a signalable numeric process id
+ */
+function cacti_process_pid_is_valid($pid) {
+	$value = (string) $pid;
+
+	if (!preg_match('/\A[0-9]+\z/', $value)) {
+		return false;
+	}
+
+	$value = ltrim($value, '0');
+	$value = $value === '' ? '0' : $value;
+	$max   = '2147483647';
+
+	if (strlen($value) > strlen($max) || (strlen($value) == strlen($max) && strcmp($value, $max) > 0)) {
+		return false;
+	}
+
+	/* PID 0 addresses the caller's process group and PID 1 is init. Neither may
+	 * be taken from a database row and passed to a native signal function. */
+	return (int) $value > 1;
+}
+
+/**
+ * cacti_process_still_running - determine whether a registered pid is alive
+ *   and has the same process name as the caller.
  *
- * @return (bool) true if the pid is running and cannot be shown to be a reused
- *                pid belonging to a different program
+ *   The comm comparison is a best-effort guard against accidental pid reuse,
+ *   not an anti-impersonation boundary. When procfs is unavailable or
+ *   restricted, preserve the historical bare liveness behavior.
+ *
+ * @param  (int) $pid - the pid recorded in the processes table
+ *
+ * @return (bool) true if the pid is live and cannot be shown to be unrelated
  */
 function cacti_process_still_running($pid) {
+	if (!cacti_process_pid_is_valid($pid)) {
+		return false;
+	}
+
 	$pid = intval($pid);
 
-	if ($pid <= 0 || $pid > 2147483647 || !function_exists('posix_kill') || !posix_kill($pid, 0)) {
+	if (!function_exists('posix_kill') || !posix_kill($pid, 0)) {
 		return false;
 	}
 
@@ -2558,7 +2584,7 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 
 			register_process($tasktype, $taskname, $taskid, $pid, $timeout);
 		} elseif ($r['timeout_exceeded']) {
-			$timeout_pid = (int) $r['pid'];
+			$timeout_pid = $r['pid'];
 
 			if (is_system_pid($timeout_pid)) {
 				// mirror timeout_kill_registered_processes(): never signal a reserved
@@ -2673,27 +2699,19 @@ function heartbeat_process($tasktype, $taskname, $taskid = 0) {
 /**
  * cacti_process_identity_matches - whether $pid runs the same program we do
  *
- *   A positive answer only, and only from /proc/<pid>/exe. That link resolves
- *   both spellings of the same interpreter, so a child spawned from
- *   path_php_binary matches a parent started as plain php, and it is readable
- *   only for a process we could already signal, which is what makes a match
- *   mean anything.
+ *   Low-numbered process ids are valid in a container. A positive answer uses
+ *   the kernel-resolved executable only, so a controller can recognize a
+ *   different Cacti PHP script running under the same interpreter.
  *
- *   /proc/<pid>/comm is deliberately not consulted. It is world readable, but
- *   the target sets it itself through prctl(PR_SET_NAME), so a process that
- *   wanted to be mistaken for ours only has to say so. The caller below is
- *   guarding against a tampered pid column, which is the same adversary.
- *
- *   Where the link cannot be read the answer is no, not unknown. Callers treat
- *   that as "refuse", which is the safe direction.
+ *   Where the executable link cannot be read, the answer is no. The low-pid
+ *   caller treats that as "reserved", which is the safe direction.
  *
  * @param  (int) $pid  - The process id to compare against this one
  *
- * @return (bool) true only when the two are positively the same program
+ * @return (bool) true only when the two use the same resolved executable
  */
 function cacti_process_identity_matches($pid) {
 	$pid = (int) $pid;
-
 	$self_exe  = '/proc/' . getmypid() . '/exe';
 	$other_exe = '/proc/' . $pid . '/exe';
 
@@ -2701,9 +2719,6 @@ function cacti_process_identity_matches($pid) {
 		return false;
 	}
 
-	/* readlink() needs PTRACE_MODE_READ and fails with EACCES for a foreign
-	   process, which CactiErrorHandler would otherwise turn into a log entry
-	   and a backtrace on every guarded row. */
 	$mine   = @readlink($self_exe);
 	$theirs = @readlink($other_exe);
 
@@ -2731,11 +2746,11 @@ function cacti_process_identity_matches($pid) {
  * @return (bool) true when a signal from this process would reach that pid
  */
 function cacti_process_signalable($pid) {
-	$pid = (int) $pid;
-
-	if ($pid <= 1 || $pid > 2147483647 || !function_exists('posix_kill')) {
+	if (!cacti_process_pid_is_valid($pid) || !function_exists('posix_kill')) {
 		return false;
 	}
+
+	$pid = (int) $pid;
 
 	return posix_kill($pid, 0);
 }
@@ -2757,10 +2772,10 @@ function cacti_process_signalable($pid) {
  * collector with no registry row and a second one free to start on the same
  * RRDs.
  *
- * This bounds the pid only. It deliberately does not test liveness, so the
- * call sites keep the semantics they had. A caller that owns the process it
- * is signalling, a child it started itself for instance, already knows the pid
- * is real and does not need this.
+ * The wrapper deliberately does not inspect /proc ownership. Spine is commonly
+ * setuid, so its executable link may be unreadable even though it is the task
+ * registered in the row. Callers unregister the row after attempting the
+ * signal; rejecting that live process would let a duplicate collector start.
  *
  * @param  (int) $pid     - The pid read from a process table
  * @param  (int) $signal  - The signal to send
@@ -2769,22 +2784,8 @@ function cacti_process_signalable($pid) {
  * @return (bool) true when the signal was sent
  */
 function cacti_process_kill($pid, $signal = SIGTERM, $environ = 'POLLER') {
-	$pid = (int) $pid;
-
-	/* Bound only. The identity band in is_system_pid() belongs to the process
-	   registry, which holds PHP CLI tasks, and must not reach here: poller_time
-	   holds spine collectors, whose /proc/<pid>/exe is not this interpreter, and
-	   sig_handler() truncates that table whether or not the signal landed. An
-	   identity refusal there would strand a live collector with no row, which is
-	   the failure this whole change exists to remove. */
-	if ($pid <= 1) {
+	if (!cacti_process_pid_is_valid($pid)) {
 		cacti_log(sprintf('WARNING: Refusing to signal PID %s from a process table, which does not name a process a Cacti task can own!', $pid), false, $environ);
-
-		return false;
-	}
-
-	if ($pid > 2147483647) {
-		cacti_log(sprintf('WARNING: Refusing to signal PID %s from a process table, which is wider than pid_t and would reach the kernel as -1!', $pid), false, $environ);
 
 		return false;
 	}
@@ -2792,6 +2793,8 @@ function cacti_process_kill($pid, $signal = SIGTERM, $environ = 'POLLER') {
 	if (!function_exists('posix_kill')) {
 		return false;
 	}
+
+	$pid = (int) $pid;
 
 	return posix_kill($pid, $signal);
 }
@@ -2811,7 +2814,7 @@ function cacti_process_kill($pid, $signal = SIGTERM, $environ = 'POLLER') {
  *   is not ours, which covers the kernel threads the wider floor was reaching
  *   for.
  *
- *   A pid wider than pid_t is refused for a different reason. posix_kill()
+ *   A pid wider than the platform process-id type is refused for a different reason. posix_kill()
  *   narrows its argument to a 32 bit pid_t, so 4294967295, the largest value
  *   the pid column holds, reaches the kernel as -1, which signals every
  *   process the poller is permitted to signal.
@@ -2821,11 +2824,11 @@ function cacti_process_kill($pid, $signal = SIGTERM, $environ = 'POLLER') {
  * @return (bool) true when the PID must be skipped
  */
 function is_system_pid($pid) {
-	$pid = (int) $pid;
-
-	if ($pid > 2147483647 || $pid <= 1) {
+	if (!cacti_process_pid_is_valid($pid)) {
 		return true;
 	}
+
+	$pid = (int) $pid;
 
 	if ($pid > 100) {
 		return false;
@@ -2885,7 +2888,7 @@ function timeout_kill_registered_processes($tasktype = '', $taskname = '', $task
 
 	if (cacti_sizeof($processes)) {
 		foreach($processes as $r) {
-			$pid = (int) $r['pid'];
+			$pid = $r['pid'];
 
 			if (is_system_pid($pid)) {
 				cacti_log(sprintf('WARNING: Refusing to kill registered process with a reserved system PID! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');

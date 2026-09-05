@@ -43,8 +43,8 @@ beforeEach(function () {
 /**
  * Every file that reads a pid out of a process table and signals it.
  *
- * @return array<string, string> Path relative to the repository root, mapped
- *                               to the call the guard replaced.
+ * @return array<int, string> Repository-relative paths containing guarded
+ *                            process-table kill sites.
  */
 function process_kill_guard_sites() {
 	return array(
@@ -107,7 +107,7 @@ test('a pid that cannot name a process is refused and recorded', function () {
 	expect(implode("\n", $GLOBALS['__poller_log']))->toContain('Refusing to signal PID');
 });
 
-test('the guard bounds the pid itself and leaves identity to the registry', function () {
+test('the guard bounds the pid before calling the native signal function', function () {
 	/* A floor at the reserved low range would also exclude Cacti's own
 	   children inside a pid namespace, where they hold single and double digit
 	   pids, and every caller unregisters the row whether or not the signal
@@ -124,13 +124,9 @@ test('the guard bounds the pid itself and leaves identity to the registry', func
 	   into the next declaration and match text this function does not carry. */
 	$body = substr($src, $start, strpos($src, "\n}\n", $start) - $start);
 
-	/* The identity band belongs to the registry, not here: poller_time holds
-	   spine collectors whose exe is not this interpreter, and sig_handler()
-	   truncates that table whether or not the signal landed. */
-	expect($body)->toContain('$pid <= 1')
-		->and($body)->toContain('$pid > 2147483647')
-		->and($body)->not->toContain('if (is_system_pid(')
-		->and($body)->toContain("function_exists('posix_kill')");
+	expect($body)->toContain('cacti_process_pid_is_valid($pid)')
+		->and($body)->toContain("function_exists('posix_kill')")
+		->and($body)->not->toContain('/proc/');
 
 	/* The predicate it delegates to must keep refusing init and anything wider
 	   than pid_t, and must not grow the old floor back. */
@@ -140,8 +136,7 @@ test('the guard bounds the pid itself and leaves identity to the registry', func
 
 	$predicate = substr($src, $start, strpos($src, "\n}\n", $start) - $start);
 
-	expect($predicate)->toContain('$pid <= 1')
-		->and($predicate)->toContain('2147483647')
+	expect($predicate)->toContain('cacti_process_pid_is_valid($pid)')
 		->and($predicate)->not->toContain('<= 100');
 });
 
@@ -159,9 +154,37 @@ test('a pid wider than pid_t is refused', function () {
 	expect(implode("\n", $GLOBALS['__poller_log']))->toContain('Refusing to signal PID');
 });
 
+test('every platform keeps the signed pid_t ceiling', function () {
+	expect(cacti_process_pid_is_valid('2147483647'))->toBeTrue()
+		->and(cacti_process_pid_is_valid('2147483648'))->toBeFalse()
+		->and(cacti_process_pid_is_valid('4294967295'))->toBeFalse();
+});
+
+test('pid validation accepts zero padding and rejects non-integer forms', function () {
+	expect(cacti_process_pid_is_valid('0000000001'))->toBeFalse()
+		->and(cacti_process_pid_is_valid('01'))->toBeFalse()
+		->and(cacti_process_pid_is_valid('007'))->toBeTrue()
+		->and(cacti_process_pid_is_valid(' 7'))->toBeFalse()
+		->and(cacti_process_pid_is_valid('7.0'))->toBeFalse()
+		->and(cacti_process_pid_is_valid("123\n"))->toBeFalse()
+		->and(cacti_process_pid_is_valid("999999999\n"))->toBeFalse();
+});
+
+test('pid validation handles native scalar inputs', function () {
+	expect(cacti_process_pid_is_valid(5))->toBeTrue()
+		->and(cacti_process_pid_is_valid(0))->toBeFalse()
+		->and(cacti_process_pid_is_valid(1))->toBeFalse()
+		->and(cacti_process_pid_is_valid(-1))->toBeFalse()
+		->and(cacti_process_pid_is_valid(null))->toBeFalse()
+		->and(cacti_process_pid_is_valid(false))->toBeFalse()
+		->and(cacti_process_pid_is_valid(7.0))->toBeTrue()
+		->and(cacti_process_pid_is_valid(7.5))->toBeFalse();
+});
+
 test('an ordinary pid is still signalled', function () {
 	$pipes  = array();
-	$handle = proc_open(array(PHP_BINARY, '-r', 'sleep(30);'), array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+	$script = dirname(__DIR__, 4) . '/tests/fixtures/process_sleep.php';
+	$handle = proc_open(array(PHP_BINARY, $script), array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
 
 	/* proc_open() returns false when process creation is disabled, and
 	   proc_get_status(false) then fails somewhere less obvious than here. */

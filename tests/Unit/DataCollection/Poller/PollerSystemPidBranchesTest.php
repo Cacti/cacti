@@ -79,9 +79,9 @@ beforeEach(function () {
 // pid_max is high).
 const POLLER_DEAD_PID = 999999999;
 
-// Wider than pid_t. posix_kill() narrows this to -1, which the kernel reads as
-// every process the caller may signal, so the guard has to stop it.
-const POLLER_WIDE_PID = PHP_INT_MAX;
+// Wider than signed pid_t on both 32-bit and 64-bit PHP. Keep it as a string
+// so a 32-bit runtime does not narrow it before the guard sees it.
+const POLLER_WIDE_PID = '4294967295';
 
 test('register_process_start refuses to kill a reserved system pid on timeout', function () {
 	$GLOBALS['__poller_row'] = array(
@@ -123,7 +123,7 @@ test('register_process_start treats a zero pid as a reserved system pid', functi
 	// is_system_pid(0) is true, so a zero pid takes the guarded branch rather
 	// than reaching posix_kill().
 	$GLOBALS['__poller_row'] = array(
-		'pid'               => 0,
+		'pid'               => '0',
 		'timeout_exceeded'  => 1720000000,
 		'timeout'           => 300,
 		'current_timestamp' => 1720000600,
@@ -138,7 +138,7 @@ test('register_process_start treats a zero pid as a reserved system pid', functi
 
 test('timeout_kill_registered_processes skips a reserved system pid', function () {
 	$GLOBALS['__poller_procs'] = array(
-		array('pid' => 1, 'tasktype' => 'poller', 'taskname' => 'test', 'taskid' => 0),
+		array('pid' => '1', 'tasktype' => 'poller', 'taskname' => 'test', 'taskid' => 0),
 	);
 
 	timeout_kill_registered_processes();

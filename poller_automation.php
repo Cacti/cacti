@@ -900,7 +900,7 @@ function display_help () {
 }
 
 function isProcessRunning($pid) {
-    return cacti_process_still_running((int) $pid);
+    return cacti_process_still_running($pid);
 }
 
 function killProcess($pid) {

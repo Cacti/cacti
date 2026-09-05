@@ -15,8 +15,8 @@
  * bare check couldn't tell the difference: it would refuse to start a
  * legitimate new task, or SIGTERM a process that never had anything to do
  * with Cacti. The fix adds cacti_process_still_running(), which layers a
- * /proc/<pid>/comm identity check on Linux, and routes all three call
- * sites through it instead of the bare posix_kill($pid, 0).
+ * procfs command-name check on Linux, and routes all three call sites
+ * through it instead of the bare posix_kill($pid, 0).
  */
 
 require_once dirname(__DIR__, 4) . '/lib/poller.php';
@@ -59,7 +59,11 @@ test('returns true for the currently running process (self)', function () use ($
 	expect($stillRunning(getmypid()))->toBeTrue();
 });
 
-test('tracks a real child process through its start/exit lifecycle', function () use ($stillRunning) {
+test('rejects an unrelated child process through its start and exit lifecycle', function () use ($stillRunning) {
+	if (!is_dir('/proc/' . getmypid())) {
+		test()->markTestSkipped('command identity is available only on procfs platforms');
+	}
+
 	$descriptors = array(1 => array('pipe', 'w'), 2 => array('pipe', 'w'));
 	$proc        = proc_open('sleep 5', $descriptors, $pipes);
 
@@ -68,7 +72,7 @@ test('tracks a real child process through its start/exit lifecycle', function ()
 	$status = proc_get_status($proc);
 	$pid    = $status['pid'];
 
-	expect($stillRunning($pid))->toBeTrue();
+	expect($stillRunning($pid))->toBeFalse();
 
 	posix_kill($pid, SIGKILL);
 
@@ -90,7 +94,7 @@ test('tracks a real child process through its start/exit lifecycle', function ()
 
 test('falls back to the bare existence check when /proc is unavailable', function () use ($stillRunning) {
 	if (is_dir('/proc')) {
-		test()->markTestSkipped('This host has /proc; the Linux comm-comparison path is exercised instead.');
+		test()->markTestSkipped('This host has /proc; the Linux command-name comparison path is exercised instead.');
 	}
 
 	// On non-Linux hosts (e.g. macOS/BSD) file_get_contents() on
@@ -121,6 +125,8 @@ test('register_process_start() and timeout_kill_registered_processes() route thr
 
 	expect($calls)->toBeGreaterThanOrEqual(3);
 	expect($src)->not->toContain('$r[\'pid\'] > 0 && posix_kill($r[\'pid\'], 0)');
+	expect($src)->not->toContain("\$timeout_pid = (int) \$r['pid']")
+		->and($src)->not->toContain("\$pid = (int) \$r['pid']");
 });
 
 test('dsstats_kill_running_processes() guards its SIGTERM with the same check', function () {
