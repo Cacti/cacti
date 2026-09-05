@@ -217,6 +217,13 @@ if ($child == false) {
 		// Check if processes are running and kill them
 		boost_kill_running_processes();
 
+		if (!boost_ensure_process_table(true)) {
+			cacti_log('ERROR: Boost process table is not ready.', true, 'BOOST');
+			unregister_process('boost', 'master', POLLER_ID, getmypid());
+
+			exit(1);
+		}
+
 		// Truncate the rrd_update_counter table
 		db_execute('TRUNCATE TABLE poller_output_boost_processes');
 
@@ -361,6 +368,12 @@ if ($child == false) {
 } else {
 	if (!preg_match('/^[a-f0-9]{32}$/D', $run_id)) {
 		cacti_log('ERROR: Boost child refused to run without a valid parent run identifier.', true, 'BOOST');
+
+		exit(1);
+	}
+
+	if (!boost_ensure_process_table(true)) {
+		cacti_log('ERROR: Boost child process table is not ready.', true, 'BOOST');
 
 		exit(1);
 	}

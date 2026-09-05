@@ -37,6 +37,7 @@ if (!defined('IN_CACTI_INSTALL')) {
 
 require_once __DIR__ . '/../Helpers/UnitStubs.php';
 require_once dirname(__DIR__, 2) . '/lib/database.php';
+require_once dirname(__DIR__, 2) . '/lib/boost.php';
 require_once dirname(__DIR__, 2) . '/install/functions.php';
 require_once dirname(__DIR__, 2) . '/install/upgrades/1_3_0.php';
 
@@ -226,4 +227,26 @@ test('the run_child index rejects duplicate completion reports for one child', f
 
 	expect($duplicate)->toBeFalse()
 		->and((int) $this->pdo->query('SELECT COUNT(*) FROM poller_output_boost_processes')->fetchColumn())->toBe(1);
+});
+
+test('runtime repair makes a legacy process table safe before a child records completion', function () {
+	if (!isset($this->pdo) || !$this->pdo instanceof PDO) {
+		return;
+	}
+
+	$this->pdo->exec('CREATE TABLE poller_output_boost_processes (
+		sock_int_value bigint(20) unsigned NOT NULL auto_increment,
+		status varchar(255) default NULL,
+		PRIMARY KEY (sock_int_value)) ENGINE=MEMORY');
+	$this->pdo->exec("INSERT INTO poller_output_boost_processes (status) VALUES ('legacy')");
+
+	expect(boost_ensure_process_table(true))->toBeTrue()
+		->and(boostProcessIndexColumns($this->pdo))->toBe(['run_id:0', 'child_id:0'])
+		->and((int) $this->pdo->query('SELECT COUNT(*) FROM poller_output_boost_processes')->fetchColumn())->toBe(0);
+
+	$insert = $this->pdo->prepare('INSERT INTO poller_output_boost_processes
+		(run_id, child_id, status) VALUES (?, ?, ?)
+		ON DUPLICATE KEY UPDATE status = VALUES(status)');
+
+	expect($insert->execute(['3f2a91c4d80b47e6a15c9f0e7b32d5a8', 1, '10']))->toBeTrue();
 });
