@@ -9,9 +9,11 @@
             <!-- Defines dedicated SNMP stubs and must only run via phpunit-snmp.xml. -->
             <exclude>./tests/Unit/DataCollection/Snmp/SnmpCoverageTest.php</exclude>
         </testsuite>
-        <testsuite name="Integration">
-            <directory>./tests/integration</directory>
-        </testsuite>
+		<testsuite name="Integration">
+			<directory>./tests/integration</directory>
+			<!-- Uses dedicated CDEF database fixtures and runs via phpunit-cdef-integration.xml. -->
+			<exclude>./tests/integration/CdefDatabaseIntegrationTest.php</exclude>
+		</testsuite>
         <testsuite name="HandOff">
             <directory>./tests/HandOff</directory>
         </testsuite>
