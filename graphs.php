@@ -1544,6 +1544,15 @@ function form_actions() : void {
 					$ag_data['order_type']            = $template_data['order_type'];
 				}
 
+				$original_local_graph_id = $local_graph_id;
+
+				if (!db_begin_transaction()) {
+					raise_message('aggregate_transaction_failed', __('Unable to start the aggregate graph update.'), MESSAGE_LEVEL_ERROR);
+					header('Location: aggregate_graphs.php');
+
+					exit;
+				}
+
 				// create graph in cacti tables
 				$local_graph_id = aggregate_graph_save(
 					$local_graph_id,
@@ -1638,7 +1647,22 @@ function form_actions() : void {
 				}
 
 				// create actual graph items
-				aggregate_create_update($local_graph_id, $member_graphs, $attribs);
+				if (!aggregate_create_update($local_graph_id, $member_graphs, $attribs, false)) {
+					db_rollback_transaction();
+					$local_graph_id = $original_local_graph_id;
+					header('Location: aggregate_graphs.php');
+
+					exit;
+				}
+
+				if (!db_commit_transaction()) {
+					db_rollback_transaction();
+					$local_graph_id = $original_local_graph_id;
+					raise_message('aggregate_commit_failed', __('Unable to commit the aggregate graph update.'), MESSAGE_LEVEL_ERROR);
+					header('Location: aggregate_graphs.php');
+
+					exit;
+				}
 
 				header("Location: aggregate_graphs.php?action=edit&tab=details&id=$local_graph_id");
 

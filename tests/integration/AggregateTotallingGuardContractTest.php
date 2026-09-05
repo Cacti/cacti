@@ -65,9 +65,28 @@ test('aggregate caller rolls back and surfaces CDEF totalling failures', functio
 	$fnEnd = strpos($src, "\nfunction ", $fnPos + 1);
 	$body  = substr($src, $fnPos, ($fnEnd === false ? strlen($src) : $fnEnd) - $fnPos);
 
-	expect($body)->toContain("db_execute('START TRANSACTION')")
+	expect($body)->toContain('db_begin_transaction()')
 		->and($body)->toContain('if (!aggregate_cdef_totalling(')
-		->and($body)->toContain("db_execute('ROLLBACK')")
+		->and($body)->toContain('db_rollback_transaction()')
 		->and($body)->toContain("raise_message('aggregate_invalid_cdef'")
-		->and($body)->toContain("db_execute('COMMIT')");
+		->and($body)->toContain('db_commit_transaction()');
+});
+
+test('aggregate callers preserve existing rows and honor update failures', function () use ($root) {
+	$api    = file_get_contents($root . '/lib/api_aggregate.php');
+	$graphs = file_get_contents($root . '/graphs.php');
+
+	expect($api)->not->toBeFalse()
+		->and($graphs)->not->toBeFalse();
+
+	$pushStart = strpos($api, 'function push_out_aggregates(');
+	$pushEnd   = strpos($api, "\nfunction ", $pushStart + 1);
+	$pushBody  = substr($api, $pushStart, $pushEnd - $pushStart);
+
+	expect($pushBody)->not->toContain('DELETE FROM graph_templates_item')
+		->and($pushBody)->toContain('if (!aggregate_create_update(')
+		->and($pushBody)->toContain('return false;')
+		->and($graphs)->toContain('if (!aggregate_create_update($local_graph_id, $member_graphs, $attribs, false))')
+		->and($graphs)->toContain('db_rollback_transaction()')
+		->and($graphs)->toContain('db_commit_transaction()');
 });
