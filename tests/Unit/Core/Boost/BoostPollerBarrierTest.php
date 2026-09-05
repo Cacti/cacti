@@ -23,22 +23,16 @@
  *    sources of truth and the allow-list accepts Windows paths.
  *
  * The pure helpers (clamp, name validation, log-path safety, barrier predicate)
- * are exercised behaviourally. lib/boost.php is function definitions only, so it
- * is safe to require once cacti_sizeof() is stubbed. The wiring in poller_boost.php
- * and the concurrency race itself are asserted by reading the source; the full
- * multi-process race needs the integration suite.
+ * are exercised behaviourally. The unit bootstrap provides core helpers before
+ * lib/boost.php is loaded. The wiring in poller_boost.php and the concurrency
+ * race itself are asserted by reading the source; the full multi-process race
+ * needs the integration suite.
  */
 
-if (!function_exists(__NAMESPACE__ . '\\cacti_sizeof') && !function_exists('\\cacti_sizeof')) {
-	function cacti_sizeof(mixed $array) : int {
-		return is_array($array) ? count($array) : 0;
-	}
-}
+require_once CACTI_PATH_LIBRARY . '/boost.php';
 
-require_once __DIR__ . '/../../../../lib/boost.php';
-
-$boostPollerPath = __DIR__ . '/../../../../poller_boost.php';
-$boostLibPath    = __DIR__ . '/../../../../lib/boost.php';
+$boostPollerPath = CACTI_PATH_BASE . '/poller_boost.php';
+$boostLibPath    = CACTI_PATH_LIBRARY . '/boost.php';
 
 test('boost_clamp_parallel maps misconfigured values to a single child', function () {
 	expect(boost_clamp_parallel(''))->toBe(1);
@@ -131,6 +125,7 @@ test('archive-table fallback no longer relies on the lagging SHOW TABLES probe',
 	// The fallback must validate the name and confirm it with a data-plane read.
 	expect($func_body)->toContain('boost_is_valid_archive_table($latest_table)');
 	expect($func_body)->toContain('boost_archive_table_readable($latest_table)');
+	expect($func_body)->toContain("Boost ignored an unexpected archive-like table name: ' . \$display_name");
 });
 
 test('boost_archive_table_readable probes data, not metadata, and rejects bad names', function () use ($boostLibPath) {
@@ -168,7 +163,7 @@ test('drain loop exits only when every child has recorded completion', function 
 
 	// The old loop exited as soon as no child was running. The fix also requires
 	// every launched child to have a completion row before draining.
-	expect($contents)->toContain('boost_completed_children() < $expected_children');
+	expect($contents)->toContain('boost_completed_children($run_id) < $expected_children');
 	expect($contents)->not->toMatch('/while\s*\(\s*\$running\s*=\s*boost_processes_running\(\)\s*\)/');
 });
 
@@ -202,4 +197,27 @@ test('boost_launch_children uses the shared log-path safety helper', function ()
 	$contents = file_get_contents($boostPollerPath);
 
 	expect($contents)->toContain('boost_log_path_is_safe($boost_log)');
+});
+
+test('parent and child repair the completion schema before using it', function () use ($boostPollerPath) {
+	$contents = file_get_contents($boostPollerPath);
+
+	$master_repair = strpos($contents, 'boost_ensure_process_table(true)');
+	$truncate      = strpos($contents, "db_execute('TRUNCATE TABLE poller_output_boost_processes')");
+	$child_start   = strpos($contents, "cacti_log('INFO: Boost register child process '");
+	$child_repair  = strpos($contents, 'boost_ensure_process_table(true)', $master_repair + 1);
+	$child_insert  = strpos($contents, "db_execute_prepared('INSERT INTO poller_output_boost_processes", $child_start);
+
+	expect($master_repair)->not->toBeFalse()
+		->and($truncate)->not->toBeFalse()
+		->and($master_repair)->toBeLessThan($truncate)
+		->and($child_repair)->not->toBeFalse()
+		->and($child_insert)->not->toBeFalse()
+		->and($child_repair)->toBeLessThan($child_insert);
+});
+
+test('uses the unit bootstrap cacti_sizeof implementation', function () {
+	$contents = file_get_contents(__FILE__);
+
+	expect($contents)->not->toContain('function cacti_' . 'sizeof(');
 });
