@@ -111,6 +111,25 @@ test('malformed remember-me cookies fail closed without warnings or database mut
 		->and($results[4]['cookie_calls'])->toBeEmpty();
 });
 
+test('absent remember-me cookies are no-ops for check and clear', function () {
+	$results = runAuthCookieProbe([
+		'config' => ['auth_cache_enabled' => 'on', 'guest_user' => 0],
+		'calls'  => [
+			['type' => 'check_auth_cookie'],
+			['type' => 'clear_auth_cookie'],
+		],
+	]);
+
+	expect($results[0]['return'])->toBeFalse()
+		->and($results[0]['warnings'])->toBeEmpty()
+		->and($results[0]['executed'])->toBeEmpty()
+		->and($results[0]['cookie_calls'])->toBeEmpty()
+		->and($results[1]['return'])->toBeNull()
+		->and($results[1]['warnings'])->toBeEmpty()
+		->and($results[1]['executed'])->toBeEmpty()
+		->and($results[1]['cookie_calls'])->toBeEmpty();
+});
+
 test('legacy remember-me identity that no longer exists fails closed', function () {
 	$results = runAuthCookieProbe([
 		'config' => ['auth_cache_enabled' => 'on', 'guest_user' => 0],
@@ -142,7 +161,8 @@ test('remember-me cookie clear and set lifecycle covers legacy identities and to
 		->and($results[1]['cookie_calls'])->toBe([['logout']])
 		->and($results[1]['executed'][0]['params'])->toBe([43, hash('sha512', 'legacy-token', false)])
 		->and($results[2]['executed'])->toBeEmpty()
-		->and($results[2]['warnings'])->toBeEmpty();
+		->and($results[2]['warnings'])->toBeEmpty()
+		->and($results[2]['cookie_calls'])->toBe([['logout']]);
 
 	$insert  = $results[3]['executed'][0];
 	$setCall = $results[3]['cookie_calls'][0];

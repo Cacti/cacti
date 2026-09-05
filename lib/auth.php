@@ -33,6 +33,8 @@ function clear_auth_cookie() {
 	global $config;
 
 	if (isset($_COOKIE['cacti_remembers']) && is_string($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
+		cacti_cookie_session_logout();
+
 		$parts = explode(',', $_COOKIE['cacti_remembers']);
 
 		if (cacti_sizeof($parts) == 2) {
@@ -67,8 +69,6 @@ function clear_auth_cookie() {
 
 		if ($user_id > 0) {
 			$secret = hash('sha512', $token, false);
-
-			cacti_cookie_session_logout();
 
 			db_execute_prepared('DELETE FROM user_auth_cache
 				WHERE user_id = ?
