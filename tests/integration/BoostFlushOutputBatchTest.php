@@ -142,3 +142,22 @@ test('publishes a multi-chunk graph cache object without leaving a temporary fil
 		@rmdir($directory);
 	}
 });
+
+test('the Windows cache replacement fallback replaces an existing object', function () {
+	$directory  = sys_get_temp_dir() . '/cacti-boost-cache-' . bin2hex(random_bytes(8));
+	$cache_file = $directory . '/cache.png';
+	$temp_file  = $directory . '/.boost-replacement';
+	mkdir($directory, 0700);
+	file_put_contents($cache_file, 'old');
+	file_put_contents($temp_file, 'new');
+
+	try {
+		expect(boost_replace_cache_file_on_windows($temp_file, $cache_file))->toBeTrue();
+		expect(file_get_contents($cache_file))->toBe('new');
+		expect(file_exists($temp_file))->toBeFalse();
+	} finally {
+		@unlink($temp_file);
+		@unlink($cache_file);
+		@rmdir($directory);
+	}
+});

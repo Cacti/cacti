@@ -535,6 +535,11 @@ function boost_graph_cache_filename(string $cache_directory, int $local_graph_id
 	return rtrim($cache_directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . hash_hmac('sha256', $cache_key, $secret) . '.png';
 }
 
+/** Replace an existing cache object after Windows rejects rename-over-existing. */
+function boost_replace_cache_file_on_windows(string $temp_file, string $cache_file) : bool {
+	return is_file($cache_file) && @unlink($cache_file) && @rename($temp_file, $cache_file);
+}
+
 /** Write a complete cache object and publish it with a same-directory rename. */
 function boost_atomic_write_cache(string $cache_file, string $output) : bool {
 	$temp_file = tempnam(dirname($cache_file), '.boost-');
@@ -579,7 +584,13 @@ function boost_atomic_write_cache(string $cache_file, string $output) : bool {
 	fclose($fileptr);
 	chmod($temp_file, 0640);
 
-	if (!$flushed || !rename($temp_file, $cache_file)) {
+	$published = $flushed && @rename($temp_file, $cache_file);
+
+	if (!$published && $flushed && PHP_OS_FAMILY === 'Windows') {
+		$published = boost_replace_cache_file_on_windows($temp_file, $cache_file);
+	}
+
+	if (!$published) {
 		@unlink($temp_file);
 
 		return false;

@@ -12,7 +12,13 @@
  */
 
 function boostSource(string $path): string {
-	return file_get_contents(CACTI_PATH_BASE . '/' . $path);
+	$source = file_get_contents(CACTI_PATH_BASE . '/' . $path);
+
+	if ($source === false) {
+		throw new RuntimeException("Unable to read Boost source file: $path");
+	}
+
+	return $source;
 }
 
 test('Boost hand-off batches expose database acknowledgement', function () {
@@ -97,7 +103,8 @@ test('Graph cache names are opaque and writes are atomically published', functio
 
 	expect($boost)->toContain("hash_hmac('sha256', \$cache_key, \$secret) . '.png'");
 	expect($boost)->toContain("tempnam(dirname(\$cache_file), '.boost-')");
-	expect($boost)->toContain('if (!$flushed || !rename($temp_file, $cache_file))');
+	expect($boost)->toContain("PHP_OS_FAMILY === 'Windows'");
+	expect($boost)->toContain('boost_replace_cache_file_on_windows($temp_file, $cache_file)');
 	expect($boost)->toContain('if (is_string($output) && strlen($output) > 10)');
 	expect($boost)->toContain('chmod($temp_file, 0640)');
 	expect($boost)->not->toContain("get_selected_theme() . '_lgi_'");
