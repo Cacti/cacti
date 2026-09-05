@@ -19,7 +19,7 @@
  * assert against, so the source order is the assertion.
  */
 
-$root = dirname(__DIR__, 2);
+$root = dirname(__DIR__, 4);
 
 test('the composer autoloader is required before include/csrf.php', function () use ($root) {
 	$src = file_get_contents($root . '/include/global.php');

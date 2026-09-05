@@ -11,14 +11,7 @@ on:
       - 'include/csrf.php'
       - 'lib/csrf.php'
       - 'phpunit-csrf-coverage.xml'
-      - 'tests/Unit/CactiCsrfGuardLegacyTest.php'
-      - 'tests/Unit/CactiCsrfGuardTest.php'
-      - 'tests/Unit/CactiCsrfRewriteTest.php'
-      - 'tests/Unit/CsrfBootstrapOrderTest.php'
-      - 'tests/Unit/CsrfFacadeTest.php'
-      - 'tests/Unit/CsrfScriptAssetTest.php'
-      - 'tests/Unit/CsrfVendorTest.php'
-      - 'tests/Unit/Security/Csrf/CsrfSecretNotTrackedTest.php'
+      - 'tests/Unit/Security/Csrf/**'
   pull_request:
     branches: [develop]
     paths:
@@ -29,14 +22,7 @@ on:
       - 'include/csrf.php'
       - 'lib/csrf.php'
       - 'phpunit-csrf-coverage.xml'
-      - 'tests/Unit/CactiCsrfGuardLegacyTest.php'
-      - 'tests/Unit/CactiCsrfGuardTest.php'
-      - 'tests/Unit/CactiCsrfRewriteTest.php'
-      - 'tests/Unit/CsrfBootstrapOrderTest.php'
-      - 'tests/Unit/CsrfFacadeTest.php'
-      - 'tests/Unit/CsrfScriptAssetTest.php'
-      - 'tests/Unit/CsrfVendorTest.php'
-      - 'tests/Unit/Security/Csrf/CsrfSecretNotTrackedTest.php'
+      - 'tests/Unit/Security/Csrf/**'
   workflow_dispatch:
 
 permissions:

@@ -18,7 +18,7 @@
  * keep resolving and keep delegating to the guard until phase 2 retires them.
  */
 
-$root = dirname(__DIR__, 2);
+$root = dirname(__DIR__, 4);
 
 test('the vendored csrf-magic fork is gone', function () use ($root) {
 	expect(is_dir($root . '/include/vendor/csrf'))->toBeFalse();
@@ -255,7 +255,7 @@ function csrf_facade_run_contract_probe(string $mode) : array {
  * @return array{exitCode: int, stdout: string, stderr: string}
  */
 function csrf_facade_run_php_fixture(string $fixture, string $mode = '') : array {
-	$root = dirname(__DIR__, 2);
+	$root = dirname(__DIR__, 4);
 
 	$descriptors = [
 		0 => ['pipe', 'r'],

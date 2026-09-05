@@ -20,7 +20,7 @@
  * the index is asserted to stay clear of it.
  */
 
-$root = dirname(__DIR__, 2);
+$root = dirname(__DIR__, 4);
 
 test('the Symfony CSRF classes are autoloadable', function () {
 	expect(class_exists(Symfony\Component\Security\Csrf\CsrfTokenManager::class))->toBeTrue();

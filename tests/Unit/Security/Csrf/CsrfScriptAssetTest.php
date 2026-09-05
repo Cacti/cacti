@@ -18,7 +18,7 @@
  * where composer manages the contents.
  */
 
-$root = dirname(__DIR__, 2);
+$root = dirname(__DIR__, 4);
 
 test('the CSRF script ships from include/js', function () use ($root) {
 	expect(is_file($root . '/include/js/csrf.js'))->toBeTrue();

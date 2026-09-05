@@ -10,13 +10,13 @@
     </source>
     <testsuites>
         <testsuite name="CSRF coverage">
-            <file>tests/Unit/CactiCsrfGuardLegacyTest.php</file>
-            <file>tests/Unit/CactiCsrfGuardTest.php</file>
-            <file>tests/Unit/CactiCsrfRewriteTest.php</file>
-            <file>tests/Unit/CsrfBootstrapOrderTest.php</file>
-            <file>tests/Unit/CsrfFacadeTest.php</file>
-            <file>tests/Unit/CsrfScriptAssetTest.php</file>
-            <file>tests/Unit/CsrfVendorTest.php</file>
+            <file>tests/Unit/Security/Csrf/CactiCsrfGuardLegacyTest.php</file>
+            <file>tests/Unit/Security/Csrf/CactiCsrfGuardTest.php</file>
+            <file>tests/Unit/Security/Csrf/CactiCsrfRewriteTest.php</file>
+            <file>tests/Unit/Security/Csrf/CsrfBootstrapOrderTest.php</file>
+            <file>tests/Unit/Security/Csrf/CsrfFacadeTest.php</file>
+            <file>tests/Unit/Security/Csrf/CsrfScriptAssetTest.php</file>
+            <file>tests/Unit/Security/Csrf/CsrfVendorTest.php</file>
             <file>tests/Unit/Security/Csrf/CsrfSecretNotTrackedTest.php</file>
         </testsuite>
     </testsuites>
