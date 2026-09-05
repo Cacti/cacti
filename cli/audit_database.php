@@ -154,8 +154,25 @@ if (cacti_sizeof($parms)) {
  *
  * @return string|false The path to the file, or false when it cannot be created.
  */
+function audit_database_option_value($value) {
+	$value = (string) $value;
+
+	if (strpos($value, "\0") !== false) {
+		return false;
+	}
+
+	return '"' . strtr($value, array(
+		'\\' => '\\\\',
+		'"'  => '\\"',
+		"\n" => '\\n',
+		"\r" => '\\r',
+		"\t" => '\\t'
+	)) . '"';
+}
+
 function audit_database_defaults_file($username, $password, $hostname, $port) {
 	$path = tempnam(sys_get_temp_dir(), 'cacti_audit_');
+	$include_port = $hostname != 'localhost';
 
 	if ($path === false) {
 		return false;
@@ -168,12 +185,23 @@ function audit_database_defaults_file($username, $password, $hostname, $port) {
 		return false;
 	}
 
+	$username = audit_database_option_value($username);
+	$password = audit_database_option_value($password);
+	$hostname = audit_database_option_value($hostname);
+	$port     = audit_database_option_value($port);
+
+	if ($username === false || $password === false || $hostname === false || $port === false) {
+		unlink($path);
+
+		return false;
+	}
+
 	$contents  = '[client]' . PHP_EOL;
 	$contents .= 'user=' . $username . PHP_EOL;
 	$contents .= 'password=' . $password . PHP_EOL;
 	$contents .= 'host=' . $hostname . PHP_EOL;
 
-	if ($hostname != 'localhost') {
+	if ($include_port) {
 		$contents .= 'port=' . $port . PHP_EOL;
 	}
 
@@ -189,14 +217,21 @@ function audit_database_defaults_file($username, $password, $hostname, $port) {
 function upgrade_database() {
 	global $config;
 
-	$start = microtime(true);
+	$php_binary = read_config_option('path_php_binary');
+	$start      = microtime(true);
+
+	if ($php_binary == '') {
+		$php_binary = PHP_BINARY;
+	}
 
 	cacti_log('NOTE: Upgrading Cacti, this will take a few minutes.', true, 'UPGRADE');
 
 	$return_var = 0;
 	$output     = array();
 
-	exec('php ' . $config['base_path'] . '/cli/upgrade_database.php --debug', $output, $return_var);
+	exec(cacti_escapeshellarg($php_binary) . ' ' .
+		cacti_escapeshellarg($config['base_path'] . '/cli/upgrade_database.php') .
+		' --debug', $output, $return_var);
 
 	$end = microtime(true);
 
@@ -287,7 +322,9 @@ function upgrade_database() {
 							$return_var = 0;
 							$output     = array();
 
-							exec('php ' . $config['base_path'] . '/plugins/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old, $output, $return_var);
+							exec(cacti_escapeshellarg($php_binary) . ' ' .
+								cacti_escapeshellarg($plugin . '/database_upgrade.php') .
+								' --type=large --force-ver=' . cacti_escapeshellarg($old), $output, $return_var);
 
 							if ($return_var == 0) {
 								print implode(PHP_EOL, $output) . PHP_EOL;
@@ -1082,7 +1119,7 @@ function create_tables($load = true) {
 		} elseif (file_exists('/usr/local/bin/mysql')) {
 			$db_shell = '/usr/local/bin/mysql';
 		} else {
-			$db_shell = shell_exec('which mysql');
+			$db_shell = trim((string) shell_exec('which mysql'));
 
 			if ($db_shell == '') {
 				print 'FATAL: mysql or mariadb command not found' . PHP_EOL;
@@ -1101,7 +1138,7 @@ function create_tables($load = true) {
 				exit(1);
 			}
 
-			exec($db_shell .
+			exec(cacti_escapeshellarg($db_shell) .
 				' --defaults-extra-file=' . cacti_escapeshellarg($defaults_file) .
 				' ' . cacti_escapeshellarg($database_default) .
 				' < ' . cacti_escapeshellarg($config['base_path'] . '/docs/audit_schema.sql'), $output, $error);
