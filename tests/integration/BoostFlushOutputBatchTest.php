@@ -252,3 +252,19 @@ test('the Windows replacement helper fails closed when no destination exists', f
 		@rmdir($directory);
 	}
 });
+
+test('the Windows replacement helper preserves the existing object when publication fails', function () {
+	$directory  = sys_get_temp_dir() . '/cacti-boost-cache-' . bin2hex(random_bytes(8));
+	$cache_file = $directory . '/cache.png';
+	$temp_file  = $directory . '/missing-replacement';
+	mkdir($directory, 0700);
+	file_put_contents($cache_file, 'old');
+
+	try {
+		expect(boost_replace_cache_file_on_windows($temp_file, $cache_file))->toBeFalse();
+		expect(file_get_contents($cache_file))->toBe('old');
+	} finally {
+		@unlink($cache_file);
+		@rmdir($directory);
+	}
+});

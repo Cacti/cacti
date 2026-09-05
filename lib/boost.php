@@ -540,7 +540,28 @@ function boost_graph_cache_filename(string $cache_directory, int $local_graph_id
 
 /** Replace an existing cache object after Windows rejects rename-over-existing. */
 function boost_replace_cache_file_on_windows(string $temp_file, string $cache_file) : bool {
-	return is_file($cache_file) && @unlink($cache_file) && @rename($temp_file, $cache_file);
+	if (!is_file($temp_file) || !is_file($cache_file)) {
+		return false;
+	}
+
+	$backup_file = tempnam(dirname($cache_file), '.boost-old-');
+
+	if ($backup_file === false || !@unlink($backup_file) || !@rename($cache_file, $backup_file)) {
+		return false;
+	}
+
+	if (@rename($temp_file, $cache_file)) {
+		@unlink($backup_file);
+
+		return true;
+	}
+
+	// Keep the previously published object when the replacement cannot be
+	// installed. If the rename remains blocked, retain the backup as the
+	// recoverable copy rather than deleting it.
+	@rename($backup_file, $cache_file);
+
+	return false;
 }
 
 /** Write a complete cache object and publish it with a same-directory rename. */
