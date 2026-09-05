@@ -194,6 +194,11 @@ final class CactiDatabaseQueueTransport implements TransportInterface, CactiQueu
 
 	public function send(Envelope $envelope) : Envelope {
 		$stamp = api_queue_stamp($envelope);
+		$message = $envelope->getMessage();
+
+		if (!$message instanceof CactiQueueMessageInterface) {
+			throw new InvalidArgumentException('Queued messages must implement CactiQueueMessageInterface.');
+		}
 
 		if ($stamp->queue() !== $this->queue) {
 			throw new InvalidArgumentException("Message for queue '{$stamp->queue()}' cannot be sent through '{$this->queue}'.");
@@ -207,14 +212,13 @@ final class CactiDatabaseQueueTransport implements TransportInterface, CactiQueu
 		}
 
 		$message_id = api_queue_message_id();
-		$message    = $envelope->getMessage();
 		$delay      = $envelope->last(DelayStamp::class);
 		$delay      = $delay instanceof DelayStamp ? (int) ceil($delay->getDelay() / 1000) : 0;
 		$metadata   = ['schema' => 'cacti.queue.v2', 'created_at' => gmdate('c'), 'correlation_id' => $stamp->correlationId()];
 		$stored     = db_execute_prepared('INSERT INTO queue_messages
 			(message_id, queue_name, topic, message_type, payload, metadata, status, priority, available_at, attempts, max_attempts, created_at)
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?, DATE_ADD(NOW(), INTERVAL ? SECOND), 0, ?, NOW())', [
-			$message_id, $this->queue, $message->queueTopic(), (string) $encoded['headers']['type'], $body,
+			$message_id, $this->queue, $message->queueTopic(), $message::class, $body,
 			api_queue_json_encode($metadata), 'pending', $stamp->priority(), min(31536000, max(0, $delay)), $stamp->maxAttempts(),
 		]);
 
