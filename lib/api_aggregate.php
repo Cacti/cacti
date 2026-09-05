@@ -1116,9 +1116,9 @@ function push_out_aggregates(int $aggregate_template_id, int $local_graph_id = 0
  * @param array $member_graphs  An array of member graphs to include in the aggregate.
  * @param array $attribs        An array of attributes for the aggregate graph.
  *
- * @return void
+ * @return bool True when the aggregate update was committed.
  */
-function aggregate_create_update(int &$local_graph_id, array $member_graphs, array $attribs) : void {
+function aggregate_create_update(int &$local_graph_id, array $member_graphs, array $attribs) : bool {
 	cacti_log(__FUNCTION__ . ' called. Graph id: ' . $local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	// suppress warnings
@@ -1126,6 +1126,14 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 
 	// install own error handler
 	set_error_handler('aggregate_error_handler');
+	$original_local_graph_id = $local_graph_id;
+
+	if (!db_execute('START TRANSACTION')) {
+		raise_message('aggregate_transaction_failed', __('Unable to start the aggregate graph update.'), MESSAGE_LEVEL_ERROR);
+		restore_error_handler();
+
+		return false;
+	}
 
 	if (cacti_sizeof($member_graphs)) {
 		$graph_title          = ($attribs['graph_title'] ?? '');
@@ -1329,10 +1337,17 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 
 				// now pay attention to CDEFs
 				// next_item_sequence still points to the first totalling graph item
-				aggregate_cdef_totalling(
+				if (!aggregate_cdef_totalling(
 					$local_graph_id,
 					$next_item_sequence,
-					$_total_type);
+					$_total_type)) {
+					db_execute('ROLLBACK');
+					$local_graph_id = $original_local_graph_id;
+					raise_message('aggregate_invalid_cdef', __('Unable to create aggregate totals because a referenced CDEF is invalid or empty.'), MESSAGE_LEVEL_ERROR);
+					restore_error_handler();
+
+					return false;
+				}
 		}
 
 		/* post processing for pure LINEx graphs
@@ -1365,8 +1380,19 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 		}
 	}
 
+	if (!db_execute('COMMIT')) {
+		db_execute('ROLLBACK');
+		$local_graph_id = $original_local_graph_id;
+		raise_message('aggregate_commit_failed', __('Unable to commit the aggregate graph update.'), MESSAGE_LEVEL_ERROR);
+		restore_error_handler();
+
+		return false;
+	}
+
 	// restore original error handler
 	restore_error_handler();
+
+	return true;
 }
 
 /**

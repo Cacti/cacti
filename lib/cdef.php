@@ -48,12 +48,6 @@ function get_cdef_item_name(int $cdef_item_id) : ?string {
 	switch ($cdef_item['type']) {
 		case '1':
 			if (!isset($cdef_functions[$current_cdef_value])) {
-				if ((int) $current_cdef_value === 59) {
-					cacti_log(sprintf('WARNING: CDEF item %d uses ROUND, which the configured RRDtool version does not advertise.', $cdef_item_id), false, 'CDEF');
-
-					return 'ROUND';
-				}
-
 				cacti_log(sprintf('ERROR: CDEF item %d references an unknown function.', $cdef_item_id), false, 'CDEF');
 
 				return null;
@@ -145,12 +139,25 @@ function get_cdef_recursive(int $cdef_id, array &$visited, int &$expansion, arra
 	$visited[$cdef_id] = true;
 	$cdef_items        = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', [$cdef_id]);
 
+	if ($cdef_items === false) {
+		unset($visited[$cdef_id]);
+		cacti_log(sprintf('ERROR: Unable to load CDEF %d.', $cdef_id), false, 'CDEF');
+
+		return null;
+	}
+
 	if (cacti_sizeof($cdef_items) === 0) {
-		$cdef_exists = db_fetch_cell_prepared('SELECT id FROM cdef WHERE id = ?', [$cdef_id]);
+		$cdef_exists = db_fetch_assoc_prepared('SELECT id FROM cdef WHERE id = ?', [$cdef_id]);
 
 		unset($visited[$cdef_id]);
 
-		if ($cdef_exists === false || $cdef_exists === null || $cdef_exists === '') {
+		if ($cdef_exists === false) {
+			cacti_log(sprintf('ERROR: Unable to verify CDEF %d.', $cdef_id), false, 'CDEF');
+
+			return null;
+		}
+
+		if (cacti_sizeof($cdef_exists) === 0) {
 			cacti_log(sprintf('ERROR: CDEF %d does not exist.', $cdef_id), false, 'CDEF');
 
 			return null;
@@ -215,14 +222,45 @@ function get_cdef_recursive(int $cdef_id, array &$visited, int &$expansion, arra
 
 	$resolved = implode(',', $parts);
 
-	if ($cache_bytes + strlen($resolved) > 8388608) {
-		cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver cache budget.', $cdef_id), false, 'CDEF');
-
-		return null;
+	if ($cache_bytes + strlen($resolved) <= 8388608) {
+		$cache_bytes    += strlen($resolved);
+		$cache[$cdef_id] = $resolved;
 	}
 
-	$cache_bytes    += strlen($resolved);
-	$cache[$cdef_id] = $resolved;
+	return $resolved;
+}
 
-	return $cache[$cdef_id];
+/**
+ * Determines whether deleting a CDEF would leave a live reference behind.
+ *
+ * References owned by another CDEF in the same delete request are ignored.
+ * Database errors fail closed so an uncertain dependency cannot be deleted.
+ *
+ * @param int        $cdef_id      CDEF being considered for deletion.
+ * @param array<int> $deleting_ids All CDEF IDs in the delete request.
+ */
+function cdef_is_in_use(int $cdef_id, array $deleting_ids = []) : bool {
+	foreach (['graph_templates_item', 'aggregate_graph_templates_item', 'aggregate_graphs_graph_item'] as $table) {
+		$references = db_fetch_assoc_prepared("SELECT cdef_id FROM $table WHERE cdef_id = ? LIMIT 1", [$cdef_id]);
+
+		if ($references === false || cacti_sizeof($references) > 0) {
+			return true;
+		}
+	}
+
+	$parents = db_fetch_assoc_prepared('SELECT DISTINCT cdef_id FROM cdef_items WHERE type = 5 AND value = ?', [$cdef_id]);
+
+	if ($parents === false) {
+		return true;
+	}
+
+	$deleting = array_fill_keys(array_map('intval', $deleting_ids), true);
+
+	foreach ($parents as $parent) {
+		if (!isset($deleting[(int) $parent['cdef_id']])) {
+			return true;
+		}
+	}
+
+	return false;
 }

@@ -734,15 +734,6 @@ function aggregate_cdef_make0() : int {
 }
 
 /**
- * aggregate_cdef_totalling			- create a totalling CDEF, if need be
- *
- * @param int $_new_graph_id        - id of new graph
- * @param int $_graph_item_sequence - current graph item sequence
- * @param int $_total_type          - what type of totalling is required?
- *
- * @return void
- */
-/**
  * Check whether an aggregate item has a usable CDEF expression.
  *
  * @param array<int,array{id:mixed,name:mixed,cdef_text:?string}> $cdefs
@@ -788,7 +779,16 @@ function aggregate_prepare_cdef_totalling(array $graph_template_items, array $cd
 	return ['items' => $items, 'invalid_cdef_id' => null];
 }
 
-function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence, int $_total_type) : void {
+/**
+ * Creates and applies aggregate totalling CDEFs.
+ *
+ * @param int $_new_graph_id        ID of the new graph.
+ * @param int $_graph_item_sequence First graph item sequence to total.
+ * @param int $_total_type          Type of totalling required.
+ *
+ * @return bool True when every totalling CDEF was applied.
+ */
+function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence, int $_total_type) : bool {
 	include_once(CACTI_PATH_LIBRARY . '/cdef.php');
 
 	cacti_log(__FUNCTION__ . ' called. Working on Graph: ' . $_new_graph_id . ' sequence: ' . $_graph_item_sequence . ' totalling: ' . $_total_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -807,12 +807,24 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 			ORDER BY sequence',
 			[$_new_graph_id, $_graph_item_sequence]);
 
+		if ($graph_template_items === false) {
+			cacti_log(__FUNCTION__ . ' could not load graph items.', true, 'AGGREGATE');
+
+			return false;
+		}
+
 		cacti_log(__FUNCTION__ . " totalling query: graph=$_new_graph_id seq=$_graph_item_sequence", true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 	}
 
 	// now get the list of cdefs
 	$_cdefs = db_fetch_assoc_prepared('SELECT id, name FROM cdef ORDER BY id', []);
 	$cdefs  = [];
+
+	if ($_cdefs === false) {
+		cacti_log(__FUNCTION__ . ' could not load CDEFs.', true, 'AGGREGATE');
+
+		return false;
+	}
 
 	// build cdefs array to allow for indexing on cdef_id
 	foreach ($_cdefs as $_cdef) {
@@ -835,9 +847,9 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 	$prepared = aggregate_prepare_cdef_totalling($graph_template_items, $cdefs);
 
 	if ($prepared['invalid_cdef_id'] !== null) {
-		cacti_log(__FUNCTION__ . ' aborted before updates due to invalid or empty CDEF id ' . $prepared['invalid_cdef_id'], true, 'AGGREGATE');
+		cacti_log(__FUNCTION__ . ' could not apply totals due to invalid or empty CDEF id ' . $prepared['invalid_cdef_id'], true, 'AGGREGATE');
 
-		return;
+		return false;
 	}
 
 	$totalling_items = $prepared['items'];
@@ -940,6 +952,8 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 			cacti_log(__FUNCTION__ . ' updated new cdef id: ' . $new_cdef_id . ' for item: ' . $graph_template_item['id'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 		}
 	}
+
+	return true;
 }
 
 /** auto_hr			- set a new hr when items are skipped
