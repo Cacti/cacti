@@ -7621,12 +7621,9 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		$stdout .= stream_get_contents($pipes[1]);
 		$stderr .= stream_get_contents($pipes[2]);
 
-		/* proc_get_status() returns false on a dead handle. Its exit_code is
-		 * unreliable here: reading the pipes to EOF above can reap the child, so
-		 * a later status read reports exit_code -1 (or a missing key, which was
-		 * the source of the "Undefined array key exit_code" warnings). Stop
-		 * looping once the process is gone and take the real code from
-		 * proc_close() below. */
+		/* proc_get_status() returns false on a dead handle. Preserve a valid
+		 * exitcode while it is observable because a later status read or
+		 * proc_close() can return -1 after the child has already been reaped. */
 		if (!is_array($status) || empty($status['running'])) {
 			if (is_array($status) && isset($status['exitcode']) && $status['exitcode'] >= 0) {
 				$exit = (int) $status['exitcode'];
