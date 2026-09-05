@@ -24,11 +24,21 @@ test('recursive installer cleanup removes symlinks without traversing their targ
 	mkdir($external, 0700);
 	file_put_contents($root . '/target/keep.txt', 'internal');
 	file_put_contents($external . '/keep.txt', 'external');
-	symlink($root . '/target', $root . '/internal-link');
-	symlink($external, $root . '/external-link');
+	if (!@symlink($root . '/target', $root . '/internal-link') || !@symlink($external, $root . '/external-link')) {
+		@unlink($root . '/internal-link');
+		@unlink($root . '/external-link');
+		@unlink($root . '/target/keep.txt');
+		@rmdir($root . '/target');
+		@rmdir($root);
+		@unlink($external . '/keep.txt');
+		@rmdir($external);
+
+		$this->markTestSkipped('Symlink creation is not permitted in this environment.');
+	}
 
 	try {
-		install_rmdir_recursive($root . '/internal-link', true);
+		/* GLOB_MARK supplies this trailing slash for directory symlinks. */
+		install_rmdir_recursive($root . '/internal-link/', true);
 		install_rmdir_recursive($root . '/external-link', true);
 
 		expect(file_exists($root . '/internal-link'))->toBeFalse()

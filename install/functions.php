@@ -350,10 +350,15 @@ function install_rmdir_recursive(string $directory, bool $del_parent = false) : 
 		$directory = CACTI_PATH_BASE . '/' . $directory;
 	}
 
+	/* glob(..., GLOB_MARK) appends a directory separator to directory links.
+	 * is_link() does not reliably recognize that spelling, so inspect the
+	 * unmarked path before any directory or realpath operation can follow it. */
+	$link_path = rtrim($directory, '/\\');
+
 	// Never traverse a symbolic link.  Cleanup should remove the link itself,
 	// not files in the directory to which it happens to point.
-	if (is_link($directory)) {
-		install_unlink($directory);
+	if ($link_path !== '' && is_link($link_path)) {
+		install_unlink($link_path);
 
 		return;
 	}
