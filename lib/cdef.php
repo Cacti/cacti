@@ -30,15 +30,37 @@ function get_cdef_item_name($cdef_item_id) 	{
 
 	$cdef_item = db_fetch_row_prepared('SELECT type, value FROM cdef_items WHERE id = ?', array($cdef_item_id));
 
-	if (cacti_sizeof($cdef_item) == 0) {
+	if (!is_array($cdef_item) || !array_key_exists('type', $cdef_item) || !array_key_exists('value', $cdef_item)) {
+		if (function_exists('cacti_log')) {
+			cacti_log(sprintf('ERROR: CDEF item %d is missing or corrupt.', $cdef_item_id), false, 'CDEF');
+		}
+
 		return null;
 	}
 
 	$current_cdef_value = $cdef_item['value'];
 
 	switch ($cdef_item['type']) {
-		case '1': return isset($cdef_functions[$current_cdef_value]) ? $cdef_functions[$current_cdef_value] : null; break;
-		case '2': return isset($cdef_operators[$current_cdef_value]) ? $cdef_operators[$current_cdef_value] : null; break;
+		case '1':
+			if (!isset($cdef_functions[$current_cdef_value])) {
+				if (function_exists('cacti_log')) {
+					cacti_log(sprintf('ERROR: CDEF item %d references an unknown function.', $cdef_item_id), false, 'CDEF');
+				}
+
+				return null;
+			}
+
+			return $cdef_functions[$current_cdef_value];
+		case '2':
+			if (!isset($cdef_operators[$current_cdef_value])) {
+				if (function_exists('cacti_log')) {
+					cacti_log(sprintf('ERROR: CDEF item %d references an unknown operator.', $cdef_item_id), false, 'CDEF');
+				}
+
+				return null;
+			}
+
+			return $cdef_operators[$current_cdef_value];
 		case '4': return $current_cdef_value; break;
 		case '5': return db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array($current_cdef_value)); break;
 		case '6': return $current_cdef_value; break;

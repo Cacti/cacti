@@ -16,6 +16,7 @@ beforeEach(function () : void {
 	$GLOBALS['cdef_test_lists']   = [];
 	$GLOBALS['cdef_test_names']   = [];
 	$GLOBALS['cdef_test_queries'] = [];
+	$GLOBALS['cdef_test_logs']    = [];
 	$GLOBALS['cdef_functions']    = [7 => 'Maximum'];
 	$GLOBALS['cdef_operators']    = [3 => '*'];
 });
@@ -30,6 +31,7 @@ test('CDEF item names cover every supported item type and the unknown fallback',
 		6 => ['type' => '99', 'value' => 'ignored'],
 		7 => ['type' => '1', 'value' => 999],
 		8 => ['type' => '2', 'value' => 999],
+		9 => ['type' => '1'],
 	];
 	$GLOBALS['cdef_test_names'][42] = 'Nested CDEF';
 
@@ -41,7 +43,14 @@ test('CDEF item names cover every supported item type and the unknown fallback',
 		->and(get_cdef_item_name(6))->toBeNull()
 		->and(get_cdef_item_name(7))->toBeNull()
 		->and(get_cdef_item_name(8))->toBeNull()
+		->and(get_cdef_item_name(9))->toBeNull()
 		->and(get_cdef_item_name(999))->toBeNull();
+
+	expect($GLOBALS['cdef_test_logs'])->toHaveCount(4)
+		->and($GLOBALS['cdef_test_logs'][0][0])->toContain('unknown function')
+		->and($GLOBALS['cdef_test_logs'][1][0])->toContain('unknown operator')
+		->and($GLOBALS['cdef_test_logs'][2][0])->toContain('missing or corrupt')
+		->and($GLOBALS['cdef_test_logs'][3][0])->toContain('missing or corrupt');
 
 	expect($GLOBALS['cdef_test_queries'][0][1])->toBe([1])
 		->and($GLOBALS['cdef_test_queries'][4][1])->toBe([42]);
