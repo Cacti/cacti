@@ -17,8 +17,16 @@ $root = dirname(__DIR__, 2);
 
 test('cacti_exec preserves an observed exit code and falls back to proc_close', function () use ($root) {
 	$src = file_get_contents($root . '/lib/functions.php');
+	if ($src === false) {
+		throw new RuntimeException('Unable to read lib/functions.php for the cacti_exec contract test.');
+	}
+
 	$loopStart = strpos($src, 'while ($remaining > 0)');
 	$loopEnd   = strpos($src, 'fclose($pipes[1]);', $loopStart);
+	if ($loopStart === false || $loopEnd === false) {
+		throw new RuntimeException('Unable to locate the cacti_exec process loop markers.');
+	}
+
 	$loopBody  = substr($src, $loopStart, $loopEnd - $loopStart);
 
 	expect($loopBody)->toContain("isset(\$status['exitcode']) && \$status['exitcode'] >= 0")
