@@ -77,7 +77,7 @@ jobs:
           XDEBUG_MODE: coverage
         run: |
           set -euo pipefail
-          vendor/bin/pest \
+          php -d xdebug.mode=coverage vendor/bin/pest \
             --configuration=../phpunit-cdef.xml \
             Coverage/CdefCoverageTest.php \
             --coverage \
