@@ -114,6 +114,21 @@ test('non-colliding rows in the same batch are all written', function () {
 	expect(boost_test_fetch_output($this->conn, 2, 'ds2', '2024-01-01 00:00:00'))->toBe('20');
 });
 
+test('splits a batch before the database packet limit without losing rows', function () {
+	$large_output = str_repeat('x', 600000);
+
+	expect(boost_flush_output_batch([
+		"(11,'large_1','2024-01-01 00:00:00','{$large_output}')",
+		"(12,'large_2','2024-01-01 00:00:00','{$large_output}')",
+	], $this->conn))->toBeTrue();
+
+	$count = (int) $this->conn->query('SELECT COUNT(*) FROM poller_output_boost')->fetchColumn();
+
+	expect($count)->toBe(2)
+		->and(strlen(boost_test_fetch_output($this->conn, 11, 'large_1', '2024-01-01 00:00:00')))->toBe(600000)
+		->and(strlen(boost_test_fetch_output($this->conn, 12, 'large_2', '2024-01-01 00:00:00')))->toBe(600000);
+});
+
 test('an empty tuple list is a no-op', function () {
 	expect(boost_flush_output_batch([], $this->conn))->toBeTrue();
 
@@ -158,6 +173,69 @@ test('the Windows cache replacement fallback replaces an existing object', funct
 	} finally {
 		@unlink($temp_file);
 		@unlink($cache_file);
+		@rmdir($directory);
+	}
+});
+
+test('atomic cache publication replaces an existing object on the native platform', function () {
+	$directory  = sys_get_temp_dir() . '/cacti-boost-cache-' . bin2hex(random_bytes(8));
+	$cache_file = $directory . '/cache.png';
+	mkdir($directory, 0700);
+	file_put_contents($cache_file, 'old');
+
+	try {
+		expect(boost_atomic_write_cache($cache_file, 'new'))->toBeTrue();
+		expect(file_get_contents($cache_file))->toBe('new');
+		expect(glob($directory . '/.boost-*'))->toBe([]);
+	} finally {
+		@unlink($cache_file);
+		@rmdir($directory);
+	}
+});
+
+test('atomic cache publication supports an empty object', function () {
+	$directory  = sys_get_temp_dir() . '/cacti-boost-cache-' . bin2hex(random_bytes(8));
+	$cache_file = $directory . '/cache.png';
+	mkdir($directory, 0700);
+
+	try {
+		expect(boost_atomic_write_cache($cache_file, ''))->toBeTrue();
+		expect(file_get_contents($cache_file))->toBe('');
+	} finally {
+		@unlink($cache_file);
+		@rmdir($directory);
+	}
+});
+
+test('a failed cache publication removes its temporary object', function () {
+	$directory  = sys_get_temp_dir() . '/cacti-boost-cache-' . bin2hex(random_bytes(8));
+	$cache_file = $directory . '/occupied';
+	mkdir($directory, 0700);
+	mkdir($cache_file, 0700);
+
+	try {
+		expect(boost_atomic_write_cache($cache_file, 'new'))->toBeFalse();
+		expect(is_dir($cache_file))->toBeTrue();
+		expect(glob($directory . '/.boost-*'))->toBe([]);
+	} finally {
+		@rmdir($cache_file);
+		@rmdir($directory);
+	}
+});
+
+test('the Windows replacement helper fails closed when no destination exists', function () {
+	$directory  = sys_get_temp_dir() . '/cacti-boost-cache-' . bin2hex(random_bytes(8));
+	$cache_file = $directory . '/missing.png';
+	$temp_file  = $directory . '/.boost-replacement';
+	mkdir($directory, 0700);
+	file_put_contents($temp_file, 'new');
+
+	try {
+		expect(boost_replace_cache_file_on_windows($temp_file, $cache_file))->toBeFalse();
+		expect(file_get_contents($temp_file))->toBe('new');
+		expect(file_exists($cache_file))->toBeFalse();
+	} finally {
+		@unlink($temp_file);
 		@rmdir($directory);
 	}
 });
