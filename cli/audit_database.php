@@ -1119,7 +1119,7 @@ function create_tables($load = true) {
 		} elseif (file_exists('/usr/local/bin/mysql')) {
 			$db_shell = '/usr/local/bin/mysql';
 		} else {
-				$db_shell = trim((string) shell_exec('which mysql'));
+			$db_shell = trim((string) shell_exec('which mysql'));
 
 			if ($db_shell == '') {
 				print 'FATAL: mysql or mariadb command not found' . PHP_EOL;
