@@ -276,6 +276,58 @@ test('a registration held by a live process of ours still blocks a new start', f
 	expect(register_process_start('poller', 'child', 1, 300))->toBeFalse();
 });
 
+test('a registry mutation lock prevents a concurrent registration', function () {
+	$conn = registry_seed();
+	registry_wire($conn);
+
+	$held = CactiProcessLock::fromPdo($conn, 'poller', 'child', 1);
+
+	expect($held->acquire())->toBeTrue()
+		->and(register_process_start('poller', 'child', 1, 300))->toBeFalse()
+		->and($conn->query('SELECT COUNT(*) AS c FROM processes')->fetch(PDO::FETCH_ASSOC)['c'])->toBe(0);
+
+	$held->release();
+});
+
+test('registration releases its mutation lock after updating the registry', function () {
+	$conn = registry_seed();
+	registry_wire($conn);
+
+	expect(register_process_start('poller', 'child', 1, 300))->toBeTrue();
+
+	$next = CactiProcessLock::fromPdo($conn, 'poller', 'child', 1);
+
+	expect($next->acquire())->toBeTrue();
+
+	$next->release();
+});
+
+test('registry locking fails closed without a usable database connection', function () {
+	$GLOBALS['database_hostname'] = 'missing';
+	$GLOBALS['database_port']     = 0;
+	$GLOBALS['database_default']  = 'missing';
+	$GLOBALS['database_sessions'] = [];
+
+	expect(cacti_process_registry_lock('poller', 'child', 1))->toBeFalse();
+});
+
+test('registry locking temporarily enables the required database mode', function () {
+	$conn = registry_seed();
+	$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
+	registry_wire($conn);
+
+	$lock = cacti_process_registry_lock('poller', 'child', 1);
+
+	expect($lock)->toBeInstanceOf(CactiProcessLock::class)
+		->and($conn->getAttribute(PDO::ATTR_ERRMODE))->toBe(PDO::ERRMODE_SILENT)
+		->and($lock->acquire())->toBeTrue()
+		->and($conn->getAttribute(PDO::ATTR_ERRMODE))->toBe(PDO::ERRMODE_SILENT);
+
+	$lock->release();
+
+	expect($conn->getAttribute(PDO::ATTR_ERRMODE))->toBe(PDO::ERRMODE_SILENT);
+});
+
 test('a registration whose pid has died no longer blocks a new start', function () {
 	$conn = registry_seed();
 	registry_wire($conn);

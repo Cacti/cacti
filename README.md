@@ -417,6 +417,7 @@ Thanks go to these wonderful people ([emoji key](https://allcontributors.org/doc
       <tr>
         <td align="center" valign="top" width="14.28%"><a href="https://github.com/Mojo-OG"><img src="https://avatars.githubusercontent.com/u/57604549?v=4" width="100px;" alt="Mojo-OG"/><br /><sub><b>Mojo-OG</b></sub></a><br /><span title="Code">💻</span></td>
         <td align="center" valign="top" width="14.28%"><a href="https://github.com/abdulm5"><img src="https://avatars.githubusercontent.com/u/154353563?v=4" width="100px;" alt="abdulm5"/><br /><sub><b>abdulm5</b></sub></a><br /><span title="Code">💻</span></td>
+        <td align="center" valign="top" width="14.28%"><a href="https://github.com/darkdi"><img src="https://avatars.githubusercontent.com/u/45711841?v=4" width="100px;" alt="darkdi"/><br /><sub><b>darkdi</b></sub></a><br /><span title="Code">💻</span></td>
       </tr>
   </tbody>
 </table>
