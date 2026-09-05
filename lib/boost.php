@@ -49,9 +49,7 @@ function boost_ensure_process_table() {
 		return;
 	}
 
-	if ($needs_run_id || $needs_child_id) {
-		db_execute('TRUNCATE TABLE poller_output_boost_processes');
-	}
+	db_execute('TRUNCATE TABLE poller_output_boost_processes');
 
 	if ($needs_run_id) {
 		db_execute("ALTER TABLE poller_output_boost_processes ADD `run_id` char(32) NOT NULL default '' AFTER `sock_int_value`");
