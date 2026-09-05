@@ -345,9 +345,11 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 			}
 
 			$fp = fopen($tmp_file, 'w');
+			$lf = false;
 
 			if ($seebug) {
-				$lf = fopen('php://stderr', 'w');
+				$lf     = @fopen('php://stderr', 'w');
+				$seebug = is_resource($lf);
 			}
 
 			if (is_resource($fp)) {

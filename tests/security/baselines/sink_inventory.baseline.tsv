@@ -1,6 +1,6 @@
 category	location	match
 cmd_exec	./cactid.php:102		exec('pgrep -a php | grep cactid.php', $output);
-cmd_exec	./cli/audit_database.php:1122					$db_shell = trim((string) shell_exec('which mysql'));
+cmd_exec	./cli/audit_database.php:1122				$db_shell = trim((string) shell_exec('which mysql'));
 cmd_exec	./cli/audit_database.php:1141				exec(cacti_escapeshellarg($db_shell) .
 cmd_exec	./cli/audit_database.php:232		exec(cacti_escapeshellarg($php_binary) . ' ' .
 cmd_exec	./cli/audit_database.php:325								exec(cacti_escapeshellarg($php_binary) . ' ' .
@@ -535,8 +535,8 @@ fs_write	./cactid.php:110		$STDERR = fopen('null', 'wb');
 fs_write	./cactid.php:99		$STDERR = fopen('/dev/null', 'wb');
 fs_write	./cli/audit_database.php:180		if (file_put_contents($path, $contents) === false) {
 fs_write	./cli/change_device.php:987		$fh = fopen($file, 'r');
-fs_write	./cli/float_rrdfiles.php:342				$fp = fopen($tmp_file, 'w');
-fs_write	./cli/float_rrdfiles.php:350					$lf = fopen('php://stderr', 'w');
+fs_write	./cli/float_rrdfiles.php:347				$fp = fopen($tmp_file, 'w');
+fs_write	./cli/float_rrdfiles.php:351					$lf     = @fopen('php://stderr', 'w');
 fs_write	./cli/import_package.php:159				$fp   = fopen($filename, 'r');
 fs_write	./cli/import_template.php:121				$fp = fopen($filename,'r');
 fs_write	./cli/input_whitelist.php:188			file_put_contents($config['input_whitelist'], json_encode($input));
