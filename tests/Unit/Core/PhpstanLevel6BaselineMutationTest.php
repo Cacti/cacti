@@ -51,6 +51,9 @@ test('lib/html.php right-tab block keeps the != \'\' image guard (Mutation Prote
 	 * producing a broken-image badge in the UI. */
 	$src          = $sources['lib/html.php'];
 	$foreachStart = strpos($src, 'foreach ($tabs_right as $tab)');
+
+	expect($foreachStart)->not->toBeFalse();
+
 	$slice        = substr($src, $foreachStart, 4000);
 	expect(substr_count($slice, "\$tab['image'] != ''"))->toBeGreaterThanOrEqual(3);
 });
@@ -61,6 +64,9 @@ test('lib/html.php right-tab block does not reintroduce isset($tab[image]) (Muta
 	 * silently reintroduce dead code and the Level 6 error. */
 	$src          = $sources['lib/html.php'];
 	$foreachStart = strpos($src, 'foreach ($tabs_right as $tab)');
+
+	expect($foreachStart)->not->toBeFalse();
+
 	$slice        = substr($src, $foreachStart, 4000);
 	expect(strpos($slice, "isset(\$tab['image'])"))->toBeFalse();
 });
