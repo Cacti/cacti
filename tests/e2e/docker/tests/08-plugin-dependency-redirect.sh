@@ -27,7 +27,12 @@ cleanup() {
 trap cleanup EXIT
 
 "${DC[@]}" exec -T cacti-master mkdir -p "/var/www/html/plugins/$FIXTURE"
-docker cp "../../fixtures/plugins/$FIXTURE/." "cacti-e2e-master:/var/www/html/plugins/$FIXTURE"
+MASTER_CONTAINER=$("${DC[@]}" ps -q cacti-master)
+if [ -z "$MASTER_CONTAINER" ]; then
+	echo 'FAIL: cacti-master container is not running' >&2
+	exit 1
+fi
+docker cp "../../fixtures/plugins/$FIXTURE/." "$MASTER_CONTAINER:/var/www/html/plugins/$FIXTURE"
 "${DC[@]}" exec -T cacti-master chown -R www-data:www-data "/var/www/html/plugins/$FIXTURE"
 "${DC[@]}" exec -T cacti-master rm -f "$COOKIE_JAR"
 
