@@ -85,4 +85,7 @@ test('server rendering applies the shared 50 percent default', () => {
 	assert.doesNotMatch(endpoint, /read_user_setting\('realtime_size', 100\)/);
 	assert.match(endpoint, /if \(\$size < 100\)/);
 	assert.match(endpoint, /foreach \(\$realtime_sizes as \$key => \$value\)/);
+	assert.equal((endpoint.match(/array_key_exists\(\$size, \$realtime_sizes\)/g) || []).length, 2);
+	assert.equal((endpoint.match(/set_request_var\('size', \$size\)/g) || []).length, 2);
+	assert.equal((endpoint.match(/\$_SESSION\['sess_realtime_size'\] = \$size/g) || []).length, 2);
 });

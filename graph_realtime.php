@@ -123,14 +123,14 @@ case 'countdown':
 		$graph_data_array['graph_nolegend'] = 'true';
 	}
 
-	if (isset_request_var('size') && get_request_var('size') > 0) {
-		$_SESSION['sess_realtime_size'] = get_request_var('size');
-		$size = get_request_var('size');
-	} elseif (isset($_SESSION['sess_realtime_size']) && $_SESSION['sess_realtime_size'] != '') {
-		$size = $_SESSION['sess_realtime_size'];
-	} else {
+	$size = (int)get_request_var('size');
+
+	if (!array_key_exists($size, $realtime_sizes)) {
 		$size = $realtime_default_size;
 	}
+
+	set_request_var('size', $size);
+	$_SESSION['sess_realtime_size'] = $size;
 
 	if (isset_request_var('local_graph_id')) {
 		$graph_data = db_fetch_row_prepared('SELECT width, height
@@ -309,6 +309,15 @@ default:
 	load_current_session_value('graph_start',    'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
 	load_current_session_value('size',           'sess_realtime_size',        read_user_setting('realtime_size', $realtime_default_size));
 	load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    read_user_setting('realtime_nolegend', 'false'));
+
+	$size = (int)get_request_var('size');
+
+	if (!array_key_exists($size, $realtime_sizes)) {
+		$size = $realtime_default_size;
+	}
+
+	set_request_var('size', $size);
+	$_SESSION['sess_realtime_size'] = $size;
 
 	break;
 }
