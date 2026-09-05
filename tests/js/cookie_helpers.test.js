@@ -72,3 +72,19 @@ test('theme cookie uses the configured path lifetime and transport security', ()
 	assert.equal(calls[0][2].secure, true);
 	assert.equal(context.getCookieValue('CactiColorMode'), 'dark');
 });
+
+test('browser helper cookies omit Secure on plain HTTP', () => {
+	const writes = [];
+	const document = {};
+	Object.defineProperty(document, 'cookie', { set: (value) => writes.push(value) });
+	const zoneContext = { Date, document, urlPath: '/cacti/', window: { location: { protocol: 'http:' } } };
+	const setZoneInfo = vm.runInNewContext(`${extractFunction(layoutSource, 'setZoneInfo')}\nsetZoneInfo;`, zoneContext);
+	setZoneInfo();
+	for (const cookie of writes) assert.doesNotMatch(cookie, /; Secure;/);
+
+	const calls = [];
+	const jquery = { cookie: (...args) => { calls.push(args); } };
+	const themeContext = { $: jquery, urlPath: '/cacti/', window: { location: { protocol: 'http:' } } };
+	vm.runInNewContext(`${extractFunction(themeSource, 'setCookieValue')}\nsetCookieValue('CactiColorMode', 'light');`, themeContext);
+	assert.equal(calls[0][2].secure, false);
+});

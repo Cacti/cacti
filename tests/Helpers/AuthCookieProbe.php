@@ -60,6 +60,8 @@ $GLOBALS['auth_integration_usernames']    = [];
 $GLOBALS['auth_integration_cache']        = [];
 $GLOBALS['auth_integration_executed']     = [];
 $GLOBALS['auth_integration_cookie_calls'] = [];
+$GLOBALS['auth_integration_locked_users'] = [];
+$GLOBALS['auth_integration_table_exists'] = true;
 
 function read_config_option($name) {
 	return $GLOBALS['auth_integration_config'][$name] ?? '';
@@ -68,7 +70,7 @@ function read_config_option($name) {
 function db_fetch_cell_prepared($sql, $params = []) {
 	if (strpos($sql, 'FROM user_auth_cache') !== false) {
 		foreach (($GLOBALS['auth_integration_cache'] ?? []) as $row) {
-			if ($row['user_id'] == $params[0] && $row['token'] == $params[1]) {
+			if ($row['user_id'] == $params[0] && $row['token'] == $params[1] && $row['hostname'] === $params[2]) {
 				return $row['user_id'];
 			}
 		}
@@ -82,6 +84,10 @@ function db_fetch_cell_prepared($sql, $params = []) {
 }
 
 function db_fetch_row_prepared($sql, $params = []) {
+	if (strpos($sql, "AND locked = 'on'") !== false) {
+		return $GLOBALS['auth_integration_locked_users'][$params[0]] ?? [];
+	}
+
 	return $GLOBALS['auth_integration_users'][$params[0]] ?? [];
 }
 
@@ -95,7 +101,7 @@ function db_execute_prepared($sql, $params = []) {
 }
 
 function db_table_exists($table) {
-	return $table == 'user_auth_cache';
+	return $table == 'user_auth_cache' && $GLOBALS['auth_integration_table_exists'];
 }
 
 function get_guest_account() {
@@ -130,6 +136,8 @@ $GLOBALS['auth_integration_config']       = $scenario['config'] ?? [];
 $GLOBALS['auth_integration_users']        = $scenario['users'] ?? [];
 $GLOBALS['auth_integration_usernames']    = $scenario['usernames'] ?? [];
 $GLOBALS['auth_integration_cache']        = $scenario['cache'] ?? [];
+$GLOBALS['auth_integration_locked_users'] = $scenario['locked_users'] ?? [];
+$GLOBALS['auth_integration_table_exists'] = $scenario['table_exists'] ?? true;
 
 $results = [];
 

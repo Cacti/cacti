@@ -32,7 +32,7 @@ use phpseclib3\Crypt\RSA;
 function clear_auth_cookie() {
 	global $config;
 
-	if (isset($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
+	if (isset($_COOKIE['cacti_remembers']) && is_string($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
 		$parts = explode(',', $_COOKIE['cacti_remembers']);
 
 		if (cacti_sizeof($parts) == 2) {
@@ -118,6 +118,7 @@ function set_auth_cookie($user) {
  */
 function check_auth_cookie() {
 	if (isset($_COOKIE['cacti_remembers']) &&
+		is_string($_COOKIE['cacti_remembers']) &&
 		read_config_option('auth_cache_enabled') == 'on' &&
 		db_table_exists('user_auth_cache')) {
 
