@@ -105,8 +105,7 @@ test('a non-existent binary matches this PHP builds spawn behavior', function ()
 		stream_get_contents($pipes[2]);
 		fclose($pipes[1]);
 		fclose($pipes[2]);
-		proc_close($proc);
-		$expected = 127;
+		$expected = proc_close($proc);
 	} else {
 		$expected = 255;
 	}
