@@ -47,15 +47,18 @@ final class LegacyScriptCommand extends Command {
 		$this->tty_probe = $tty_probe === null
 			? static fn (): bool => defined('STDIN') && defined('STDOUT') && Process::isTtySupported() && stream_isatty(STDIN) && stream_isatty(STDOUT)
 			: \Closure::fromCallable($tty_probe);
-		$this->signal_registrar = match (true) {
-			$signal_registrar === false                                               => null,
-			$signal_registrar !== null                                                => \Closure::fromCallable($signal_registrar),
-			function_exists('pcntl_async_signals') && function_exists('pcntl_signal') => static function (int $signal, callable $handler): void {
+		$signals_available = function_exists('pcntl_async_signals') && function_exists('pcntl_signal');
+
+		if ($signal_registrar === false || ($signal_registrar === null && !$signals_available)) {
+			$this->signal_registrar = null;
+		} elseif ($signal_registrar !== null) {
+			$this->signal_registrar = \Closure::fromCallable($signal_registrar);
+		} else {
+			$this->signal_registrar = static function (int $signal, callable $handler): void {
 				pcntl_async_signals(true);
 				pcntl_signal($signal, $handler);
-			},
-			default => null,
-		};
+			};
+		}
 		$this->setAliases([$script]);
 		$this->setDescription(sprintf('Runs the legacy cli/%s.php command.', $script));
 		$this->setHelp(sprintf(
