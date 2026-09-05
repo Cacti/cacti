@@ -19,6 +19,7 @@
 
 require_once dirname(__DIR__) . '/Helpers/FakeMySQLPDO.php';
 require_once dirname(__DIR__, 2) . '/lib/cdef.php';
+require_once dirname(__DIR__, 2) . '/lib/aggregate.php';
 
 function cdef_integration_seed() : FakeMySQLPDO {
 	$conn = new FakeMySQLPDO();
@@ -35,6 +36,9 @@ function cdef_integration_seed() : FakeMySQLPDO {
 		type TEXT NOT NULL,
 		value TEXT NOT NULL
 	)');
+	$conn->exec('CREATE TABLE graph_templates_item (id INTEGER PRIMARY KEY, local_graph_id INTEGER, sequence INTEGER, cdef_id INTEGER)');
+	$conn->exec('CREATE TABLE aggregate_graph_templates_item (aggregate_template_id INTEGER, graph_templates_item_id INTEGER, cdef_id INTEGER)');
+	$conn->exec('CREATE TABLE aggregate_graphs_graph_item (aggregate_graph_id INTEGER, graph_templates_item_id INTEGER, cdef_id INTEGER)');
 	$conn->exec("INSERT INTO cdef (id, name) VALUES (1, 'Base Definition'), (2, 'Nested Definition'), (5, 'Empty Definition')");
 	$conn->exec("INSERT INTO cdef_items (id, cdef_id, sequence, type, value) VALUES
 		(1, 1, 3, '2', '3'),
@@ -78,6 +82,9 @@ function cdef_integration_seed_mysql(PDO $conn) : void {
 		type VARCHAR(8) NOT NULL,
 		value VARCHAR(150) NOT NULL
 	)');
+	$conn->exec('CREATE TEMPORARY TABLE graph_templates_item (id INTEGER PRIMARY KEY, local_graph_id INTEGER, sequence INTEGER, cdef_id INTEGER)');
+	$conn->exec('CREATE TEMPORARY TABLE aggregate_graph_templates_item (aggregate_template_id INTEGER, graph_templates_item_id INTEGER, cdef_id INTEGER)');
+	$conn->exec('CREATE TEMPORARY TABLE aggregate_graphs_graph_item (aggregate_graph_id INTEGER, graph_templates_item_id INTEGER, cdef_id INTEGER)');
 	$conn->exec("INSERT INTO cdef (id, name) VALUES (1, 'Base Definition'), (2, 'Nested Definition')");
 	$conn->exec("INSERT INTO cdef_items (id, cdef_id, sequence, type, value) VALUES
 		(1, 1, 3, '2', '3'),
@@ -130,6 +137,20 @@ test('stored CDEFs preserve sequence and recursively expand nested definitions',
 		->and(get_cdef(11))->toBeNull()
 		->and(get_cdef(4))->toBe('CURRENT_DATA_SOURCE,8,*,CURRENT_DATA_SOURCE,8,*')
 		->and(get_cdef(999))->toBeNull();
+});
+
+test('CDEF dependencies block deletion and aggregate totalling reports invalid definitions', function () : void {
+	$this->cdef_conn->exec('INSERT INTO graph_templates_item (id, local_graph_id, sequence, cdef_id) VALUES (1, 42, 1, 1), (2, 42, 2, 5)');
+
+	expect(cdef_is_in_use(1, [1]))->toBeTrue()
+		->and(cdef_is_in_use(2, [2]))->toBeFalse()
+		->and(aggregate_cdef_totalling(42, 2, 0))->toBeFalse();
+
+	$this->cdef_conn->exec('DELETE FROM graph_templates_item WHERE id = 1');
+	$this->cdef_conn->exec("INSERT INTO cdef_items (id, cdef_id, sequence, type, value) VALUES (20, 2, 3, '5', '1')");
+
+	expect(cdef_is_in_use(1, [1]))->toBeTrue()
+		->and(cdef_is_in_use(1, [1, 2, 4]))->toBeFalse();
 });
 
 test('CDEF resolution executes against MariaDB with production table shapes', function () : void {
