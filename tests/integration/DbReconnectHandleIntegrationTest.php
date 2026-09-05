@@ -46,6 +46,17 @@ beforeEach(function () {
 	$old_connection = new \stdClass();
 
 	$GLOBALS['config']                             = array('base_path' => '/nonexistent-cacti-test');
+	$GLOBALS['database_hostname']                  = 'database';
+	$GLOBALS['database_username']                  = 'cacti';
+	$GLOBALS['database_password']                  = 'secret';
+	$GLOBALS['database_default']                   = 'cacti';
+	$GLOBALS['database_type']                      = 'mysql';
+	$GLOBALS['database_port']                      = 3306;
+	$GLOBALS['database_retries']                   = 2;
+	$GLOBALS['database_ssl']                       = false;
+	$GLOBALS['database_ssl_key']                   = '';
+	$GLOBALS['database_ssl_cert']                  = '';
+	$GLOBALS['database_ssl_ca']                    = '';
 	$GLOBALS['db_reconnect_connection_is_healthy'] = false;
 	$GLOBALS['db_reconnect_old']                   = $old_connection;
 	$GLOBALS['db_reconnect_replacement']           = new \stdClass();
