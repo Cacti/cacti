@@ -1,0 +1,85 @@
+name: CSV Window Coverage
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/csv-window-coverage.yml'
+      - 'lib/rrd.php'
+      - 'lib/graph_variables.php'
+      - 'graph_xport.php'
+      - 'tests/Unit/RrdFetchWindowTest.php'
+      - 'tests/Unit/BandwidthEffectiveStepTest.php'
+      - 'tests/Unit/CsvWindowResolutionContractTest.php'
+      - 'tests/Unit/PercentileResolutionBehaviorTest.php'
+      - 'tests/Unit/Ui/Graph/PercentileContractTest.php'
+      - 'tests/integration/RrdtoolProcessIntegrationTest.php'
+      - 'tests/integration/GraphVariablesDivisorContractTest.php'
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/csv-window-coverage.yml'
+      - 'lib/rrd.php'
+      - 'lib/graph_variables.php'
+      - 'graph_xport.php'
+      - 'tests/Unit/RrdFetchWindowTest.php'
+      - 'tests/Unit/BandwidthEffectiveStepTest.php'
+      - 'tests/Unit/CsvWindowResolutionContractTest.php'
+      - 'tests/Unit/PercentileResolutionBehaviorTest.php'
+      - 'tests/Unit/Ui/Graph/PercentileContractTest.php'
+      - 'tests/integration/RrdtoolProcessIntegrationTest.php'
+      - 'tests/integration/GraphVariablesDivisorContractTest.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: csv-window-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: PHP ${{ matrix.php }} unit and RRDtool integration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.2', '8.3', '8.4']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP and Composer
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: xdebug
+          install-args: '--no-interaction --prefer-dist'
+
+      - name: Install RRDtool
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends rrdtool
+
+      - name: Run CSV window tests
+        env:
+          RRDTOOL_TEST_BINARY: /usr/bin/rrdtool
+        run: |
+          include/vendor/bin/pest \
+            tests/Unit/RrdFetchWindowTest.php \
+            tests/Unit/BandwidthEffectiveStepTest.php \
+            tests/Unit/CsvWindowResolutionContractTest.php \
+            tests/Unit/PercentileResolutionBehaviorTest.php \
+            tests/Unit/Ui/Graph/PercentileContractTest.php \
+            tests/Unit/RrdResolutionStepQueryTest.php \
+            tests/integration/RrdtoolProcessIntegrationTest.php \
+            tests/integration/GraphVariablesDivisorContractTest.php \
+            --coverage \
+            --coverage-text
