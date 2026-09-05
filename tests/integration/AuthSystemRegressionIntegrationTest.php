@@ -93,15 +93,22 @@ test('malformed remember-me cookies fail closed without warnings or database mut
 			['type' => 'check_auth_cookie', 'cookie' => ''],
 			['type' => 'check_auth_cookie', 'cookie' => '42'],
 			['type' => 'check_auth_cookie', 'cookie' => '42,-1,valid-token,extra'],
+			['type' => 'check_auth_cookie', 'cookie' => ['42', '-1', 'valid-token']],
+			['type' => 'clear_auth_cookie', 'cookie' => ['42', 'valid-token']],
 		],
 	]);
 
-	foreach ($results as $result) {
+	foreach (array_slice($results, 0, 4) as $result) {
 		expect($result['return'])->toBeFalse()
 			->and($result['warnings'])->toBeEmpty()
 			->and($result['executed'])->toBeEmpty()
 			->and($result['cookie_calls'])->toBeEmpty();
 	}
+
+	expect($results[4]['return'])->toBeNull()
+		->and($results[4]['warnings'])->toBeEmpty()
+		->and($results[4]['executed'])->toBeEmpty()
+		->and($results[4]['cookie_calls'])->toBeEmpty();
 });
 
 test('legacy remember-me identity that no longer exists fails closed', function () {
@@ -169,6 +176,7 @@ test('valid remember-me cookie rotates the token and records the login', functio
 		'cache' => [[
 			'user_id' => 42,
 			'token'   => hash('sha512', 'valid-token', false),
+			'hostname' => '192.0.2.10',
 		]],
 		'calls' => [['type' => 'check_auth_cookie', 'cookie' => '42,-1,valid-token']],
 	]);
@@ -183,4 +191,57 @@ test('valid remember-me cookie rotates the token and records the login', functio
 		->and($result['executed'][0]['sql'])->toContain('INSERT IGNORE INTO user_log')
 		->and($result['executed'][1]['sql'])->toContain('DELETE FROM user_auth_cache')
 		->and($result['executed'][2]['sql'])->toContain('INSERT INTO user_auth_cache');
+});
+
+test('remember-me authorization rejects token host guest lockout and disabled-cache failures', function () {
+	$user = [
+		'id' => 42, 'username' => 'allowed', 'realm' => 0, 'enabled' => 'on', 'locked' => '',
+		'show_tree' => 'on', 'show_list' => '', 'show_preview' => '',
+	];
+
+	$base = [
+		'config' => ['auth_cache_enabled' => 'on', 'guest_user' => 0, 'secpass_lockfailed' => 0],
+		'users'  => [42 => $user],
+		'cache'  => [[
+			'user_id' => 42,
+			'token' => hash('sha512', 'valid-token', false),
+			'hostname' => '192.0.2.10',
+		]],
+	];
+
+	$wrongToken = runAuthCookieProbe($base + [
+		'calls' => [['type' => 'check_auth_cookie', 'cookie' => '42,-1,wrong-token']],
+	]);
+	$wrongHost = runAuthCookieProbe(array_replace($base, [
+		'cache' => [[
+			'user_id' => 42,
+			'token' => hash('sha512', 'valid-token', false),
+			'hostname' => '198.51.100.20',
+		]],
+		'calls' => [['type' => 'check_auth_cookie', 'cookie' => '42,-1,valid-token']],
+	]));
+	$guest = runAuthCookieProbe(array_replace($base, [
+		'config' => ['auth_cache_enabled' => 'on', 'guest_user' => 42, 'secpass_lockfailed' => 0],
+		'calls' => [['type' => 'check_auth_cookie', 'cookie' => '42,-1,valid-token']],
+	]));
+	$locked = runAuthCookieProbe(array_replace($base, [
+		'config' => ['auth_cache_enabled' => 'on', 'guest_user' => 0, 'secpass_lockfailed' => 3],
+		'locked_users' => ['allowed' => array_replace($user, ['locked' => 'on'])],
+		'calls' => [['type' => 'check_auth_cookie', 'cookie' => '42,-1,valid-token']],
+	]));
+	$disabled = runAuthCookieProbe([
+		'config' => ['auth_cache_enabled' => 'off'],
+		'calls' => [['type' => 'check_auth_cookie', 'cookie' => '42,-1,valid-token']],
+	]);
+	$missingTable = runAuthCookieProbe([
+		'config' => ['auth_cache_enabled' => 'on'],
+		'table_exists' => false,
+		'calls' => [['type' => 'check_auth_cookie', 'cookie' => '42,-1,valid-token']],
+	]);
+
+	foreach ([$wrongToken, $wrongHost, $guest, $locked, $disabled, $missingTable] as $results) {
+		expect($results[0]['return'])->toBeFalse()
+			->and($results[0]['executed'])->toBeEmpty()
+			->and($results[0]['cookie_calls'])->toBeEmpty();
+	}
 });
