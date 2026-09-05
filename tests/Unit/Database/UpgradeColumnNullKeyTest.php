@@ -13,6 +13,8 @@
 test('upgrade column definitions spell the NULL key in upper case', function () {
 	$upgrades = glob(dirname(__DIR__, 3) . '/install/upgrades/*.php');
 
+	expect($upgrades)->not->toBeFalse();
+	$upgrades = is_array($upgrades) ? $upgrades : [];
 	expect($upgrades)->not->toBeEmpty();
 
 	foreach ($upgrades as $upgrade) {
