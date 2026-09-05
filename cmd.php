@@ -917,6 +917,10 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 								$engine_time   = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
 								$system_uptime = cacti_snmp_session_get($session, $index_item['arg1']);
 								$output        = cacti_snmp_select_uptime($system_uptime, $engine_time);
+
+								if ($output === false) {
+									$output = 'U';
+								}
 							} else {
 								$output = cacti_snmp_session_get($session, $index_item['arg1']);
 							}

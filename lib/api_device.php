@@ -1753,6 +1753,8 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 						if ($snmp_error != '') {
 							print ' - ' . htmle($snmp_error);
 						}
+
+						print '</span>';
 					} else {
 						$snmp_hostname   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
 						$snmp_location   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
