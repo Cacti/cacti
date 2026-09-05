@@ -303,7 +303,7 @@ if ($run) {
 	if (!$transfer_failed) {
 		// let the console know you are in online mode
 		db_execute_prepared('UPDATE poller
-			SET status="2"
+			SET status=2
 			WHERE id= ?', [$poller_id], false, $remote_db_cnn_id);
 	}
 } else {
