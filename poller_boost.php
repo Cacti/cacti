@@ -219,7 +219,7 @@ if ($child == false) {
 
 		if (!boost_ensure_process_table(true)) {
 			cacti_log('ERROR: Boost process table is not ready.', true, 'BOOST');
-			unregister_process('boost', 'master', POLLER_ID, getmypid());
+			unregister_process('boost', 'master', POLLER_ID, (int) getmypid());
 
 			exit(1);
 		}
