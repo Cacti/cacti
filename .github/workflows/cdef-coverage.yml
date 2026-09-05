@@ -10,6 +10,8 @@ on:
       - 'cdef.php'
       - 'lib/cdef.php'
       - 'phpunit-cdef.xml'
+      - 'phpunit-cdef-integration.xml'
+      - 'phpunit.xml'
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
@@ -23,6 +25,8 @@ on:
       - 'cdef.php'
       - 'lib/cdef.php'
       - 'phpunit-cdef.xml'
+      - 'phpunit-cdef-integration.xml'
+      - 'phpunit.xml'
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
@@ -104,4 +108,4 @@ jobs:
           CACTI_TEST_DB_NAME: cacti_test
           CACTI_TEST_DB_USER: cacti
           CACTI_TEST_DB_PASS: cacti
-        run: include/vendor/bin/pest tests/integration/CdefDatabaseIntegrationTest.php
+        run: include/vendor/bin/pest --configuration=phpunit-cdef-integration.xml
