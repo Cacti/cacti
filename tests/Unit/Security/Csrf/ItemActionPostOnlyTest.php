@@ -126,12 +126,13 @@ test('no page still links a state changing action by GET', function () {
 
 		if (preg_match_all('/<a\b[^>]*?' . guarded_action_pattern() . '[^>]*>/', $flat, $matches)) {
 			foreach ($matches[0] as $anchor) {
+				$has_crawlable_action = preg_match('/href=["\'][^"\']*' . guarded_action_pattern() . '/i', $anchor) === 1;
 				$uses_global_handler = strpos($anchor, 'cactiPostAction') !== false;
 				$uses_page_handler   = strpos($anchor, 'remover') !== false
 					&& strpos($src, "$('.remover').on('click'") !== false
 					&& strpos($src, 'cactiPreparePostRequestFromUrl') !== false;
 
-				if (!$uses_global_handler && !$uses_page_handler) {
+				if ($has_crawlable_action || (!$uses_global_handler && !$uses_page_handler)) {
 					$unconverted[] = $file;
                     break;
                 }
