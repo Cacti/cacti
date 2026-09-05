@@ -2312,17 +2312,29 @@ function rrdtool_resolve_graph_text(string $value, array $graph, array $graph_it
 }
 
 /**
- * Store a resolved CDEF without allowing a resolver failure into graph-text substitution.
+ * Return the established graph failure response for an invalid CDEF.
  *
- * @param string|null $cdef Resolver result
+ * @param array         $graph_data_array Graph output options
+ * @param int           $cdef_id          Invalid CDEF identifier
+ * @param int           $graph_id         Graph identifier
+ * @param callable|null $error_image      Test seam for the image renderer
  *
- * @return array{cdef_cache:string,cdef_invalid:bool}
+ * @return string|false
  */
-function rrdtool_normalize_graph_item_cdef(?string $cdef) : array {
-	return [
-		'cdef_cache'   => $cdef ?? '',
-		'cdef_invalid' => $cdef === null,
-	];
+function rrdtool_invalid_cdef_response(array $graph_data_array, int $cdef_id, int $graph_id, ?callable $error_image = null) : string|false {
+	$message = __('ERROR: Invalid CDEF %d for graph %d.', $cdef_id, $graph_id);
+
+	if (isset($graph_data_array['export_csv'])) {
+		return false;
+	}
+
+	if (isset($graph_data_array['get_error']) || isset($graph_data_array['print_source'])) {
+		return $message;
+	}
+
+	$error_image ??= 'rrdtool_create_error_image';
+
+	return $error_image($message);
 }
 
 function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph_data_array,
@@ -2703,17 +2715,16 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 			}
 
 			// cache cdef value here to support data query variables in the cdef string
-			$cdef       = empty($graph_item['cdef_id']) ? '' : get_cdef($graph_item['cdef_id']);
-			$cdef_state = rrdtool_normalize_graph_item_cdef($cdef);
+			$cdef = empty($graph_item['cdef_id']) ? '' : get_cdef($graph_item['cdef_id']);
 
-			$graph_item['cdef_cache']      = $cdef_state['cdef_cache'];
-			$graph_items[$j]['cdef_cache'] = $cdef_state['cdef_cache'];
+			if ($cdef === null) {
+				cacti_log('ERROR: Invalid CDEF ' . $graph_item['cdef_id'] . ' for graph ' . $local_graph_id . '; graph rendering aborted.', true, 'RRD');
 
-			if ($cdef_state['cdef_invalid']) {
-				$graph_item['cdef_invalid']      = true;
-				$graph_items[$j]['cdef_invalid'] = true;
-				cacti_log('ERROR: Invalid CDEF ' . $graph_item['cdef_id'] . ' for graph ' . $local_graph_id . '; skipping graph item.', true, 'RRD');
+				return rrdtool_invalid_cdef_response($graph_data_array, (int) $graph_item['cdef_id'], $local_graph_id);
 			}
+
+			$graph_item['cdef_cache']      = $cdef;
+			$graph_items[$j]['cdef_cache'] = $cdef;
 
 			// cache vdef value here
 			if (empty($graph_item['vdef_id'])) {
@@ -2815,10 +2826,6 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 		 * syntax is required
 		 */
 		foreach ($graph_items as $graph_item) {
-			if (!empty($graph_item['cdef_invalid'])) {
-				continue;
-			}
-
 			// note the current item_id for easy access
 			$graph_item_id = $graph_item['graph_templates_item_id'];
 
@@ -2857,10 +2864,6 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 
 	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $graph_item) {
-			if (!empty($graph_item['cdef_invalid'])) {
-				continue;
-			}
-
 			// Restore the $cf_reference from the first pass of the graph items
 			$graph_cf  = $graph_item['cf_reference'];
 			$cf_ds_key = "{$graph_item['data_template_rrd_id']}:{$graph_cf}";
