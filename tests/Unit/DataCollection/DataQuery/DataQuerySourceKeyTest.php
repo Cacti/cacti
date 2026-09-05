@@ -11,7 +11,7 @@
  * Regression test for #7809.
  *
  * query_snmp_host() iterates every data query field, including output-only
- * fields that carry no 'source' key. The pre-processing guard read
+ * fields that carry no 'source' key. Before the fix, the pre-processing guard read
  * $field_array['source'] as its left-most term, so PHP raised
  * "Undefined array key source" for every output field before the direction
  * test could short-circuit. Testing the direction first reads 'source' only
