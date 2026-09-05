@@ -729,12 +729,20 @@ require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/snmpagent.php');
 require_once(CACTI_PATH_LIBRARY . '/aggregate.php');
 require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
-require_once(CACTI_PATH_INCLUDE . '/csrf.php');
 require_once(CACTI_PATH_INCLUDE . '/domain.php');
 
+// The CSRF guard resolves Symfony classes as include/csrf.php is evaluated,
+// so the autoloader has to be registered first.  During a fresh install the
+// vendor directory may not exist yet; CactiCsrfGuard degrades in that case.
 if (is_file($vendor_autoload)) {
 	require_once($vendor_autoload);
 }
+
+require_once(CACTI_PATH_INCLUDE . '/csrf.php');
+
+// csrf-magic ran this from the bottom of its own file, so including the
+// library was what protected the request.  The guard is invoked explicitly.
+csrf_startup();
 
 if ($config['is_web']) {
 	// raise a message and perform a page refresh if we've changed modes
