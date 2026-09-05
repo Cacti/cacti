@@ -1489,13 +1489,13 @@ function format_plugin_row(array $plugin, bool $last_plugin, bool $include_order
 		$row .= "<td class='nowrap right'>";
 
 		if (!$first_plugin) {
-			$row .= "<a class='pic ti ti-caret-up-filled moveArrow cactiPostAction' href='" . htmle(CACTI_PATH_URL . 'plugins.php?action=moveup&plugin=' . $plugin['plugin']) . "' title='" . __esc('Order Before Previous Plugin') . "'></a>";
+			$row .= "<a class='pic ti ti-caret-up-filled moveArrow cactiPostAction' href='#' data-url='" . htmle(CACTI_PATH_URL . 'plugins.php?action=moveup&plugin=' . $plugin['plugin']) . "' title='" . __esc('Order Before Previous Plugin') . "'></a>";
 		} else {
 			$row .= '<span class="moveArrowNone"></span>';
 		}
 
 		if ($last_plugin === false) {
-			$row .= "<a class='pic ti ti-caret-down-filled moveArrow cactiPostAction' href='" . htmle(CACTI_PATH_URL . 'plugins.php?action=movedown&plugin=' . $plugin['plugin']) . "' title='" . __esc('Order After Next Plugin') . "'></a>";
+			$row .= "<a class='pic ti ti-caret-down-filled moveArrow cactiPostAction' href='#' data-url='" . htmle(CACTI_PATH_URL . 'plugins.php?action=movedown&plugin=' . $plugin['plugin']) . "' title='" . __esc('Order After Next Plugin') . "'></a>";
 		} else {
 			$row .= '<span class="moveArrowNone"></span>';
 		}

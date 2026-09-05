@@ -802,12 +802,12 @@ function data_query_item_edit() : void {
 				</td>
 				<td class='center'>
 					<?php if ($show_down) {?>
-					<a class='remover ti ti-caret-down-filled moveArrow' title='<?php print __('Move Down'); ?>' href='<?php print htmle('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&field_name=' . $suggested_value['field_name']); ?>'></a>
+					<a class='remover ti ti-caret-down-filled moveArrow' title='<?php print __('Move Down'); ?>' href='#' data-url='<?php print htmle('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&field_name=' . $suggested_value['field_name']); ?>'></a>
 					<?php } else {?>
 					<span class='moveArrowNone'></span>
 					<?php } ?>
 					<?php if ($show_up) {?>
-					<a class='remover ti ti-caret-up-filled moveArrow' title='<?php print __('Move Up'); ?>' href='<?php print htmle('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&field_name=' . $suggested_value['field_name']); ?>'></a>
+					<a class='remover ti ti-caret-up-filled moveArrow' title='<?php print __('Move Up'); ?>' href='#' data-url='<?php print htmle('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&field_name=' . $suggested_value['field_name']); ?>'></a>
 					<?php } else {?>
 					<span class='moveArrowNone'></span>
 					<?php } ?>
@@ -816,7 +816,7 @@ function data_query_item_edit() : void {
 					<?php print htmle($suggested_value['text']); ?>
 				</td>
 				<td class='right'>
-					<a class='remover deleteMarker ti ti-x' title='<?php print htmle(__('Delete')); ?>' href='<?php print htmle('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id')); ?>'></a>
+					<a class='remover deleteMarker ti ti-x' title='<?php print htmle(__('Delete')); ?>' href='#' data-url='<?php print htmle('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id')); ?>'></a>
 				</td>
 				<?php
 
@@ -910,12 +910,12 @@ function data_query_item_edit() : void {
 						</td>
 						<td class='center'>
 							<?php if ($show_down) {?>
-							<a class='remover ti ti-caret-down-filled moveArrow' title='<?php print __('Move Down'); ?>' href='<?php print htmle('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']); ?>'></a>
+							<a class='remover ti ti-caret-down-filled moveArrow' title='<?php print __('Move Down'); ?>' href='#' data-url='<?php print htmle('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']); ?>'></a>
 							<?php } else {?>
 							<span class='moveArrowNone'></span>
 							<?php } ?>
 							<?php if ($show_up) {?>
-							<a class='remover ti ti-caret-up-filled moveArrow' title='<?php print __('Move Up'); ?>' href='<?php print htmle('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']); ?>'></a>
+							<a class='remover ti ti-caret-up-filled moveArrow' title='<?php print __('Move Up'); ?>' href='#' data-url='<?php print htmle('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']); ?>'></a>
 							<?php } else {?>
 							<span class='moveArrowNone'></span>
 							<?php } ?>
@@ -924,7 +924,7 @@ function data_query_item_edit() : void {
 							<?php print htmle($suggested_value['text']); ?>
 						</td>
 						<td class='right'>
-							<a class='remover deleteMarker ti ti-x' title='<?php print __('Delete'); ?>' href='<?php print htmle('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&data_template_id=' . $data_template['id']); ?>'></a>
+							<a class='remover deleteMarker ti ti-x' title='<?php print __('Delete'); ?>' href='#' data-url='<?php print htmle('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&data_template_id=' . $data_template['id']); ?>'></a>
 						</td>
 						<?php
 
@@ -980,7 +980,7 @@ function data_query_item_edit() : void {
 
 	$('.remover').click(function(event) {
 		event.preventDefault();
-		href=$(this).attr('href');
+		href=$(this).data('url') || $(this).attr('href');
 		$.get(href)
 			.done(function(data) {
 				$('form[action="data_queries.php"]').unbind();

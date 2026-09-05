@@ -1266,7 +1266,7 @@ function ds_edit() : void {
 				print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>";
 
 				foreach ($template_data_rrds as $template_data_rrd) {
-					print "<li class='subTab'><a " . (($template_data_rrd['id'] == grv('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . htmle('data_sources.php?action=ds_edit&id=' . grv('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmle($template_data_rrd['data_source_name']) . '</a>' . ($use_data_template == false ? " <a class='pic deleteMarker ti ti-x cactiPostAction' href='" . htmle('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . grv('id')) . "' title='" . __esc('Delete') . "'></a>" : '') . '</li>';
+					print "<li class='subTab'><a " . (($template_data_rrd['id'] == grv('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . htmle('data_sources.php?action=ds_edit&id=' . grv('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmle($template_data_rrd['data_source_name']) . '</a>' . ($use_data_template == false ? " <a class='pic deleteMarker ti ti-x cactiPostAction' href='#' data-url='" . htmle('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . grv('id')) . "' title='" . __esc('Delete') . "'></a>" : '') . '</li>';
 
 					$i++;
 				}
@@ -1284,7 +1284,7 @@ function ds_edit() : void {
 				" . __esc('Data Source Item %s', $header_label) . "
 			</div>
 			<div class='tableSubHeaderColumn right'>
-				" . ((!ierv('id') && (empty($data_template['id']))) ? "<a class='linkOverDark cactiPostAction' href='" . htmle('data_sources.php?action=rrd_add&id=' . grv('id')) . "'>" . __('New') . '</a>&nbsp;' : '') . '
+				" . ((!ierv('id') && (empty($data_template['id']))) ? "<a class='linkOverDark cactiPostAction' href='#' data-url='" . htmle('data_sources.php?action=rrd_add&id=' . grv('id')) . "'>" . __('New') . '</a>&nbsp;' : '') . '
 			</div>
 		</div>';
 
