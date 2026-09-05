@@ -27,7 +27,13 @@ function upgrade_to_1_2_32() {
 	 * 1.2.31 had already shipped. Installs sitting on 1.2.31 never re-run that
 	 * file. db_install_add_column() is a no-op when the column exists, so
 	 * 1.2.30 -> 1.2.32 is safe. */
-	if (db_table_exists('poller_output_boost_processes')) {
+	if (!db_table_exists('poller_output_boost_processes')) {
+		db_install_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost_processes` (
+			`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
+			`status` varchar(255) default NULL,
+			PRIMARY KEY (`sock_int_value`))
+			ENGINE=MEMORY");
+	} else {
 		db_install_execute('TRUNCATE TABLE poller_output_boost_processes');
 	}
 
