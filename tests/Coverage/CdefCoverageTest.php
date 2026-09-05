@@ -239,7 +239,7 @@ test('CDEF deletion dependency checks cover graph, aggregate, nested, and databa
 	expect(cdef_is_in_use(10, [10]))->toBeTrue();
 });
 
-test('empty nested definitions do not introduce empty separators', function () : void {
+test('empty nested definitions and stored items fail closed', function () : void {
 	$GLOBALS['cdef_test_items'] = [
 		10 => ['type' => '4', 'value' => 'CURRENT_DATA_SOURCE'],
 		11 => ['type' => '6', 'value' => '8'],
@@ -255,8 +255,8 @@ test('empty nested definitions do not introduce empty separators', function () :
 		24 => [['id' => 10, 'type' => '4', 'value' => 'CURRENT_DATA_SOURCE'], ['id' => 30, 'type' => '6', 'value' => ''], ['id' => 31, 'type' => '4', 'value' => ''], ['id' => 11, 'type' => '6', 'value' => '8']],
 	];
 
-	expect(get_cdef(21))->toBe('CURRENT_DATA_SOURCE')
-		->and(get_cdef(22))->toBe('CURRENT_DATA_SOURCE,8')
-		->and(get_cdef(23))->toBe('CURRENT_DATA_SOURCE')
-		->and(get_cdef(24))->toBe('CURRENT_DATA_SOURCE,8');
+	expect(get_cdef(21))->toBeNull()
+		->and(get_cdef(22))->toBeNull()
+		->and(get_cdef(23))->toBeNull()
+		->and(get_cdef(24))->toBeNull();
 });

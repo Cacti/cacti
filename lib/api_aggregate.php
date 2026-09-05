@@ -870,6 +870,7 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
  * push_out_aggregates				- update all aggregates based upon the template
  * @param int aggregate_template_id	- the aggregate template id
  * @param int local_graph_id		- the specific aggregate graph to update
+ * @return bool true when every selected aggregate was updated
  *  */
 function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 	$attribs                    = array();
@@ -1057,22 +1058,19 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 				WHERE ag.local_graph_id = ?',
 				array($ag));
 
-			/* remove all old graph items first */
-			if ($ag > 0) {
-				db_execute_prepared('DELETE FROM graph_templates_item
-					WHERE local_graph_id = ?',
-					array($ag));
-			}
-
 			if (cacti_sizeof($graphs)) {
 				foreach($graphs as $mg) {
 					$member_graphs[] = $mg['local_graph_id'];
 				}
 
-				aggregate_create_update($ag, $member_graphs, $attribs);
+				if (!aggregate_create_update($ag, $member_graphs, $attribs)) {
+					return false;
+				}
 			}
 		}
 	}
+
+	return true;
 }
 
 /**
@@ -1081,7 +1079,7 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
  * @param array $member_graphs - the graphs that will be included in this aggregate
  * @return array $attribs      - the attributes for this new graph
  *  */
-function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
+function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs, $manage_transaction = true) {
 	global $config;
 	cacti_log(__FUNCTION__ . ' called. Graph id: ' . $local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
@@ -1092,7 +1090,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 	set_error_handler('aggregate_error_handler');
 	$original_local_graph_id = $local_graph_id;
 
-	if (!db_execute('START TRANSACTION')) {
+	if ($manage_transaction && !db_begin_transaction()) {
 		raise_message('aggregate_transaction_failed', __('Unable to start the aggregate graph update.'), MESSAGE_LEVEL_ERROR);
 		restore_error_handler();
 
@@ -1299,8 +1297,10 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 					$local_graph_id,
 					$next_item_sequence,
 					$_total_type)) {
-					db_execute('ROLLBACK');
-					$local_graph_id = $original_local_graph_id;
+					if ($manage_transaction) {
+						db_rollback_transaction();
+						$local_graph_id = $original_local_graph_id;
+					}
 					raise_message('aggregate_invalid_cdef', __('Unable to create aggregate totals because a referenced CDEF is invalid or empty.'), MESSAGE_LEVEL_ERROR);
 					restore_error_handler();
 
@@ -1338,8 +1338,8 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 		}
 	}
 
-	if (!db_execute('COMMIT')) {
-		db_execute('ROLLBACK');
+	if ($manage_transaction && !db_commit_transaction()) {
+		db_rollback_transaction();
 		$local_graph_id = $original_local_graph_id;
 		raise_message('aggregate_commit_failed', __('Unable to commit the aggregate graph update.'), MESSAGE_LEVEL_ERROR);
 		restore_error_handler();

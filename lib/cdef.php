@@ -157,18 +157,23 @@ function get_cdef_recursive($cdef_id, &$visited, &$expansion, &$cache, &$cache_b
 				return null;
 			}
 
-			if ($nested !== '') {
-				$length += strlen($nested) + (empty($parts) ? 0 : 1);
+			if ($nested === '') {
+				cacti_log(sprintf('ERROR: CDEF %d references an empty definition.', $cdef_id), false, 'CDEF');
+				unset($visited[$cdef_id]);
 
-				if ($length > 1048576) {
-					cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver output budget.', $cdef_id), false, 'CDEF');
-					unset($visited[$cdef_id]);
-
-					return null;
-				}
-
-				$parts[] = $nested;
+				return null;
 			}
+
+			$length += strlen($nested) + (empty($parts) ? 0 : 1);
+
+			if ($length > 1048576) {
+				cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver output budget.', $cdef_id), false, 'CDEF');
+				unset($visited[$cdef_id]);
+
+				return null;
+			}
+
+			$parts[] = $nested;
 		} else {
 			$item_name = get_cdef_item_name($cdef_item['id']);
 
@@ -178,18 +183,23 @@ function get_cdef_recursive($cdef_id, &$visited, &$expansion, &$cache, &$cache_b
 				return null;
 			}
 
-			if ($item_name !== '') {
-				$length += strlen($item_name) + (empty($parts) ? 0 : 1);
+			if ($item_name === '') {
+				cacti_log(sprintf('ERROR: CDEF %d contains an empty item.', $cdef_id), false, 'CDEF');
+				unset($visited[$cdef_id]);
 
-				if ($length > 1048576) {
-					cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver output budget.', $cdef_id), false, 'CDEF');
-					unset($visited[$cdef_id]);
-
-					return null;
-				}
-
-				$parts[] = $item_name;
+				return null;
 			}
+
+			$length += strlen($item_name) + (empty($parts) ? 0 : 1);
+
+			if ($length > 1048576) {
+				cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver output budget.', $cdef_id), false, 'CDEF');
+				unset($visited[$cdef_id]);
+
+				return null;
+			}
+
+			$parts[] = $item_name;
 		}
 	}
 
