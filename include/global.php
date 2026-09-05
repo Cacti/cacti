@@ -808,8 +808,15 @@ if ($config['is_web']) {
 
 		foreach ($bad_actions as $bad) {
 			if ($action == $bad && !isset($_POST['__csrf_magic'])) {
-				cacti_log(sprintf('WARNING: Attempt to use GET method for POST operations in page %s from IP %s', $filename, get_client_addr()), false, 'WEBUI');
+				// Preserve the legacy warning for form actions. Item-action links
+				// can also come from plugins outside this repository; crawlers may
+				// discover those URLs, but they must still fail closed.
+				if (in_array($bad, ['save', 'update_data', 'changepassword'], true)) {
+					cacti_log(sprintf('WARNING: Attempt to use GET method for POST operations in page %s from IP %s', $filename, get_client_addr()), false, 'WEBUI');
+				}
 
+				header('Allow: POST');
+				http_response_code(405);
 				exit;
 			}
 		}
