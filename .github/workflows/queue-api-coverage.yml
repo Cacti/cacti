@@ -13,7 +13,7 @@ on:
       - 'install/upgrades/1_3_0.php'
       - 'lib/api_queue.php'
       - 'phpunit.queue.xml'
-      - 'tests/Unit/QueueApiTest.php'
+      - 'tests/Unit/Core/Queue/QueueApiTest.php'
       - 'tests/integration/QueueDatabaseTransportIntegrationTest.php'
       - 'tests/e2e/queue/**'
   pull_request:

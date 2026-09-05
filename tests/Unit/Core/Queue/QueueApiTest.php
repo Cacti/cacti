@@ -12,7 +12,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/lib/api_queue.php';
+require_once dirname(__DIR__, 4) . '/lib/api_queue.php';
 
 if (!function_exists('read_config_option')) {
 	function read_config_option(string $name) : string {
@@ -409,7 +409,7 @@ it('clamps the database visibility lease to safe limits', function () {
 });
 
 it('does not embed executable command dispatch in the queue API', function () {
-	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/api_queue.php');
+	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/api_queue.php');
 
 	expect($source)->not->toContain('run_command')
 		->and($source)->not->toContain('eval(')
@@ -417,7 +417,7 @@ it('does not embed executable command dispatch in the queue API', function () {
 });
 
 it('guards queue command entry points against web execution', function () {
-	$root = dirname(__DIR__, 2);
+	$root = dirname(__DIR__, 4);
 
 	foreach (['queue_worker.php', 'queue_admin.php'] as $script) {
 		$source = file_get_contents("$root/cli/$script");
