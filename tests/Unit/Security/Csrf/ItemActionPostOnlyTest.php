@@ -13,10 +13,9 @@
 */
 
 /*
- * item_remove, item_moveup and item_movedown change state and were reachable by
- * GET, so a cross origin <img> or link could delete or reorder a template item
- * using only the victim's session. Under AUTH_METHOD_BASIC the browser re-sends
- * credentials on that request, so no session cookie is needed at all.
+ * Item, tree, RRA, and ordering actions change state and were reachable by GET,
+ * so a cross-origin request could delete or reorder objects using the victim's
+ * authentication state.
  *
  * The guard and the links have to move together: adding the actions to
  * $bad_actions while a page still links them by GET breaks the delete it is
@@ -24,11 +23,6 @@
  * neither half can land alone.
  */
 
-/**
- * Every repository file that names one of the three actions.
- *
- * @return array<int, string> Repository-relative paths.
- */
 /**
  * Every GET reachable action whose handler mutates state. Read-only actions are
  * deliberately absent: item_edit, readme, changelog, latest, avail and the
@@ -130,10 +124,15 @@ test('no page still links a state changing action by GET', function () {
            before pairing an href with the class that posts it. */
         $flat = preg_replace('/\s+/', ' ', $src);
 
-        if (preg_match_all('/<a\b[^>]*?' . guarded_action_pattern() . '[^>]*>/', $flat, $matches)) {
-            foreach ($matches[0] as $anchor) {
-                if (strpos($anchor, 'cactiPostAction') === false) {
-                    $unconverted[] = $file;
+		if (preg_match_all('/<a\b[^>]*?' . guarded_action_pattern() . '[^>]*>/', $flat, $matches)) {
+			foreach ($matches[0] as $anchor) {
+				$uses_global_handler = strpos($anchor, 'cactiPostAction') !== false;
+				$uses_page_handler   = strpos($anchor, 'remover') !== false
+					&& strpos($src, "$('.remover').on('click'") !== false
+					&& strpos($src, 'cactiPreparePostRequestFromUrl') !== false;
+
+				if (!$uses_global_handler && !$uses_page_handler) {
+					$unconverted[] = $file;
                     break;
                 }
             }

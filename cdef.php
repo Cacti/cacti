@@ -621,7 +621,7 @@ function cdef_edit() {
 							}
 						}
 						?>
-						<a id='<?php print $cdef['id'] . '_' . $cdef_item['id'];?>' class='delete deleteMarker fa fa-times cactiPostAction' title='<?php print __esc('Delete');?>' href='#'></a>
+						<a id='<?php print $cdef['id'] . '_' . $cdef_item['id'];?>' class='delete deleteMarker fa fa-times' title='<?php print __esc('Delete');?>' href='#'></a>
 					</td>
 				</tr>
 				<?php
@@ -920,4 +920,3 @@ function cdef() {
 
 	form_end();
 }
-
