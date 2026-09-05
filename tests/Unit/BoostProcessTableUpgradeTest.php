@@ -36,3 +36,14 @@ test('1.2.32 is in the installer version chain', function () use ($root) {
 
 	expect($src)->toContain("'1.2.32'");
 });
+
+test('Boost recovers the process-table columns without waiting for an upgrade stamp', function () use ($root) {
+	$boost  = file_get_contents($root . '/lib/boost.php');
+	$poller = file_get_contents($root . '/poller.php');
+	$child  = file_get_contents($root . '/poller_boost.php');
+
+	expect($boost)->toContain('function boost_ensure_process_table()')
+		->and($boost)->toContain("db_column_exists('poller_output_boost_processes', 'run_id')")
+		->and($poller)->toContain('boost_ensure_process_table()')
+		->and($child)->toContain('boost_ensure_process_table()');
+});

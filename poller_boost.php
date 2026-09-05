@@ -185,6 +185,8 @@ if ($child == false) {
 		/* Check if processes are running and kill them */
 		boost_kill_running_processes();
 
+		boost_ensure_process_table();
+
 		/* Truncate the rrd_update_counter table */
 		db_execute('TRUNCATE TABLE poller_output_boost_processes');
 
