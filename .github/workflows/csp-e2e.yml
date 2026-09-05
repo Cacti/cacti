@@ -21,6 +21,7 @@ on:
       - csp_report.php
       - tests/integration/**
       - tests/e2e/**
+      - tests/phpunit-csp.xml
       - .github/workflows/csp-e2e.yml
 
 permissions:
@@ -73,7 +74,7 @@ jobs:
 
       - name: Run Pest integration tests
         working-directory: tests
-        run: ./vendor/bin/pest integration/ContentSecurityPolicyTest.php
+        run: ./vendor/bin/pest --configuration phpunit-csp.xml
 
   e2e:
     name: Playwright E2E (docker-compose + Playwright)
