@@ -7606,7 +7606,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 	$stdout    = '';
 	$stderr    = '';
 	$remaining = (int) $timeout * 1000000;
-	$exit      = null;
+	$exit      = false;
 
 	while ($remaining > 0) {
 		$start  = microtime(true);
@@ -7621,14 +7621,13 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		$stdout .= stream_get_contents($pipes[1]);
 		$stderr .= stream_get_contents($pipes[2]);
 
-		/* proc_get_status() returns false on a dead handle. Preserve a valid
-		 * exitcode while it is observable because a later status read or
-		 * proc_close() can return -1 after the child has already been reaped. */
+		/* proc_get_status() returns false on a dead handle. Its exit_code is
+		 * unreliable here: reading the pipes to EOF above can reap the child, so
+		 * a later status read reports exit_code -1 (or a missing key, which was
+		 * the source of the "Undefined array key exit_code" warnings). Stop
+		 * looping once the process is gone and take the real code from
+		 * proc_close() below. */
 		if (!is_array($status) || empty($status['running'])) {
-			if (is_array($status) && isset($status['exitcode']) && $status['exitcode'] >= 0) {
-				$exit = (int) $status['exitcode'];
-			}
-
 			break;
 		}
 
@@ -7653,15 +7652,9 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		return 1;
 	}
 
-	if ($exit === null && is_array($status) && isset($status['exitcode']) && $status['exitcode'] >= 0) {
-		$exit = (int) $status['exitcode'];
-	}
-
-	$close_exit = proc_close($process);
-
-	if ($exit === null) {
-		$exit = $close_exit;
-	}
+	/* proc_close() reaps the child and returns its real exit status, which stays
+	 * correct even when proc_get_status() already lost it to the pipe reads. */
+	$exit = proc_close($process);
 
 	if (!empty($stderr)) {
 		cacti_log('WARNING: cacti_exec() stderr: ' . trim($stderr), false, 'SYSTEM');
