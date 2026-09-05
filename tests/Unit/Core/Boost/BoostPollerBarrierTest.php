@@ -23,17 +23,11 @@
  *    sources of truth and the allow-list accepts Windows paths.
  *
  * The pure helpers (clamp, name validation, log-path safety, barrier predicate)
- * are exercised behaviourally. lib/boost.php is function definitions only, so it
- * is safe to require once cacti_sizeof() is stubbed. The wiring in poller_boost.php
- * and the concurrency race itself are asserted by reading the source; the full
- * multi-process race needs the integration suite.
+ * are exercised behaviourally. The unit bootstrap provides core helpers before
+ * lib/boost.php is loaded. The wiring in poller_boost.php and the concurrency
+ * race itself are asserted by reading the source; the full multi-process race
+ * needs the integration suite.
  */
-
-if (!function_exists(__NAMESPACE__ . '\\cacti_sizeof') && !function_exists('\\cacti_sizeof')) {
-	function cacti_sizeof(mixed $array) : int {
-		return is_array($array) ? count($array) : 0;
-	}
-}
 
 require_once CACTI_PATH_LIBRARY . '/boost.php';
 
@@ -220,4 +214,10 @@ test('parent and child repair the completion schema before using it', function (
 		->and($child_repair)->not->toBeFalse()
 		->and($child_insert)->not->toBeFalse()
 		->and($child_repair)->toBeLessThan($child_insert);
+});
+
+test('uses the unit bootstrap cacti_sizeof implementation', function () {
+	$contents = file_get_contents(__FILE__);
+
+	expect($contents)->not->toContain('function cacti_' . 'sizeof(');
 });
