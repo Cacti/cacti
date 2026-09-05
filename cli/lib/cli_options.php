@@ -74,13 +74,15 @@ function cacti_cli_help($title, $usage, $options, $extra = []) {
 		}
 	}
 
-	/* the width is computed from the longest name so the columns line up
-	 * whatever the script declares */
+	/* the width comes from the rendered flags, placeholder included, so the
+	 * columns line up whatever the script declares */
 	$width = 0;
 
-	foreach (array_merge(array_keys($required), array_keys($optional)) as $name) {
-		if (strlen($name) > $width) {
-			$width = strlen($name);
+	foreach (array_merge($required, $optional) as $name => $option) {
+		$length = strlen(cacti_cli_help_flag($name, $option));
+
+		if ($length > $width) {
+			$width = $length;
 		}
 	}
 
@@ -100,22 +102,34 @@ function cacti_cli_help($title, $usage, $options, $extra = []) {
 }
 
 /**
+ * cacti_cli_help_flag - renders the flag as the help prints it.
+ *
+ * @param string $name   The option name.
+ * @param array  $option The option declaration.
+ *
+ * @return string The flag, with the value placeholder when the option takes one.
+ */
+function cacti_cli_help_flag($name, $option) {
+	$flag = '--' . $name;
+
+	if (isset($option['value']) && $option['value'] != '') {
+		$flag .= '=' . $option['value'];
+	}
+
+	return $flag;
+}
+
+/**
  * cacti_cli_help_options - prints one aligned line per option.
  *
  * @param array $options The options to print.
- * @param int   $width   The column width taken from the longest option name.
+ * @param int   $width   The column width taken from the longest rendered flag.
  *
  * @return void
  */
 function cacti_cli_help_options($options, $width) {
 	foreach ($options as $name => $option) {
-		$flag = '--' . $name;
-
-		if (isset($option['value']) && $option['value'] != '') {
-			$flag .= '=' . $option['value'];
-		}
-
-		print '    ' . str_pad($flag, $width + 10) . $option['help'] . PHP_EOL;
+		print '    ' . str_pad(cacti_cli_help_flag($name, $option), $width + 10) . $option['help'] . PHP_EOL;
 	}
 }
 
