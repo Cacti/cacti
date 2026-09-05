@@ -36,13 +36,18 @@ function get_cdef_item_name(int $cdef_item_id) : string {
 	global $cdef_functions, $cdef_operators;
 
 	$cdef_item          = db_fetch_row_prepared('SELECT type, value FROM cdef_items WHERE id = ?', [$cdef_item_id]);
+
+	if (cacti_sizeof($cdef_item) === 0) {
+		return '';
+	}
+
 	$current_cdef_value = $cdef_item['value'];
 
 	switch ($cdef_item['type']) {
 		case '1':
-			return (string) $cdef_functions[$current_cdef_value];
+			return (string) ($cdef_functions[$current_cdef_value] ?? '');
 		case '2':
-			return (string) $cdef_operators[$current_cdef_value];
+			return (string) ($cdef_operators[$current_cdef_value] ?? '');
 		case '4':
 			return (string) $current_cdef_value;
 		case '5':
@@ -65,6 +70,25 @@ function get_cdef_item_name(int $cdef_item_id) : string {
  * @return string The constructed CDEF string.
  */
 function get_cdef(int $cdef_id) : string {
+	$visited = [];
+
+	return get_cdef_recursive($cdef_id, $visited) ?? '';
+}
+
+/**
+ * Resolves nested CDEFs while rejecting cycles and unreasonable depth.
+ *
+ * @param int             $cdef_id The ID of the CDEF to retrieve.
+ * @param array<int,true> $visited IDs active in the current recursion path.
+ *
+ * @return string|null The CDEF string, or null when recursion is unsafe.
+ */
+function get_cdef_recursive(int $cdef_id, array &$visited) : ?string {
+	if (isset($visited[$cdef_id]) || count($visited) >= 64) {
+		return null;
+	}
+
+	$visited[$cdef_id] = true;
 	$cdef_items = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', [$cdef_id]);
 
 	$i           = 0;
@@ -78,13 +102,23 @@ function get_cdef(int $cdef_id) : string {
 
 			if ($cdef_item['type'] == 5) {
 				$current_cdef_id = $cdef_item['value'];
-				$cdef_string .= get_cdef($current_cdef_id);
+				$nested          = get_cdef_recursive((int) $current_cdef_id, $visited);
+
+				if ($nested === null) {
+					unset($visited[$cdef_id]);
+
+					return null;
+				}
+
+				$cdef_string .= $nested;
 			} else {
 				$cdef_string .= get_cdef_item_name($cdef_item['id']);
 			}
 			$i++;
 		}
 	}
+
+	unset($visited[$cdef_id]);
 
 	return $cdef_string;
 }

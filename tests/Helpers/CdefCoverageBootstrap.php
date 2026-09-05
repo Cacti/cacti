@@ -6,6 +6,12 @@
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
  | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
  | Cacti: The Complete RRDTool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
@@ -20,20 +26,20 @@ $GLOBALS['cdef_test_queries'] = [];
 $GLOBALS['cdef_functions']    = [];
 $GLOBALS['cdef_operators']    = [];
 
-function db_fetch_row_prepared(string $sql, array $params = []) : array|false {
-	$GLOBALS['cdef_test_queries'][] = [$sql, $params];
+function db_fetch_row_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, float $timeout = 0) : bool|array {
+	$GLOBALS['cdef_test_queries'][] = [$sql, $params, $log, $db_conn, $timeout];
 
 	return $GLOBALS['cdef_test_items'][(int) ($params[0] ?? 0)] ?? false;
 }
 
-function db_fetch_assoc_prepared(string $sql, array $params = []) : array|false {
-	$GLOBALS['cdef_test_queries'][] = [$sql, $params];
+function db_fetch_assoc_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, float $timeout = 0) : mixed {
+	$GLOBALS['cdef_test_queries'][] = [$sql, $params, $log, $db_conn, $timeout];
 
 	return $GLOBALS['cdef_test_lists'][(int) ($params[0] ?? 0)] ?? [];
 }
 
-function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
-	$GLOBALS['cdef_test_queries'][] = [$sql, $params];
+function db_fetch_cell_prepared(string $sql, array $params = [], string $col_name = '', bool $log = true, mixed $db_conn = false, float $timeout = 0) : mixed {
+	$GLOBALS['cdef_test_queries'][] = [$sql, $params, $col_name, $log, $db_conn, $timeout];
 
 	return $GLOBALS['cdef_test_names'][(int) ($params[0] ?? 0)] ?? false;
 }
