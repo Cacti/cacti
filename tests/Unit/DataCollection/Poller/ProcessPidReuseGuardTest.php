@@ -15,7 +15,7 @@
  * bare check couldn't tell the difference: it would refuse to start a
  * legitimate new task, or SIGTERM a process that never had anything to do
  * with Cacti. The fix adds cacti_process_still_running(), which layers a
- * /proc/<pid>/comm identity check on Linux, and routes all three call
+ * normalized /proc/<pid>/cmdline identity check on Linux, and routes all three call
  * sites through it instead of the bare posix_kill($pid, 0).
  */
 
@@ -53,13 +53,17 @@ test('returns false for a pid that is not running', function () use ($stillRunni
 });
 
 test('returns true for the currently running process (self)', function () use ($stillRunning) {
-	// Comparing /proc/self/comm to /proc/<pid>/comm (or falling back to
+	// Comparing /proc/self/cmdline to /proc/<pid>/cmdline (or falling back to
 	// the bare existence check when /proc is unavailable) must agree
 	// that our own pid is both alive and not a reused identity.
 	expect($stillRunning(getmypid()))->toBeTrue();
 });
 
-test('tracks a real child process through its start/exit lifecycle', function () use ($stillRunning) {
+test('rejects an unrelated child process through its start and exit lifecycle', function () use ($stillRunning) {
+	if (!is_dir('/proc/' . getmypid())) {
+		test()->markTestSkipped('command identity is available only on procfs platforms');
+	}
+
 	$descriptors = array(1 => array('pipe', 'w'), 2 => array('pipe', 'w'));
 	$proc        = proc_open('sleep 5', $descriptors, $pipes);
 
@@ -68,7 +72,7 @@ test('tracks a real child process through its start/exit lifecycle', function ()
 	$status = proc_get_status($proc);
 	$pid    = $status['pid'];
 
-	expect($stillRunning($pid))->toBeTrue();
+	expect($stillRunning($pid))->toBeFalse();
 
 	posix_kill($pid, SIGKILL);
 
@@ -90,11 +94,11 @@ test('tracks a real child process through its start/exit lifecycle', function ()
 
 test('falls back to the bare existence check when /proc is unavailable', function () use ($stillRunning) {
 	if (is_dir('/proc')) {
-		test()->markTestSkipped('This host has /proc; the Linux comm-comparison path is exercised instead.');
+		test()->markTestSkipped('This host has /proc; the Linux command-line comparison path is exercised instead.');
 	}
 
 	// On non-Linux hosts (e.g. macOS/BSD) file_get_contents() on
-	// /proc/<pid>/comm always fails, so the function must fall back to
+	// /proc/<pid>/cmdline always fails, so the function must fall back to
 	// treating a live pid as "still running" rather than defaulting to
 	// false and starving legitimate registrations.
 	expect($stillRunning(getmypid()))->toBeTrue();
@@ -103,7 +107,23 @@ test('falls back to the bare existence check when /proc is unavailable', functio
 test('register_process_start() and timeout_kill_registered_processes() route through the guard, not a bare posix_kill(pid, 0)', function () {
 	$src = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
 
-	expect(substr_count($src, 'cacti_process_still_running($r[\'pid\'])'))->toBe(3);
+	/* Three liveness decisions live in these two functions: the timed-out pid
+	   and the not-yet-timed-out row in register_process_start(), and the row in
+	   timeout_kill_registered_processes(). They name the argument $timeout_pid,
+	   $r['pid'] and $pid, so counting one spelling only ever found one of the
+	   three. Assert the guarded call is present in each function instead. */
+	foreach (array('register_process_start', 'timeout_kill_registered_processes') as $function) {
+		$start = strpos($src, 'function ' . $function . '(');
+
+		expect($start)->not->toBeFalse();
+		expect(substr($src, $start, 2600))->toContain('cacti_process_still_running(');
+	}
+
+	/* Subtract the declaration, which the raw count includes, so this asserts
+	   the three call sites it names rather than two of them plus the function. */
+	$calls = substr_count($src, 'cacti_process_still_running($') - substr_count($src, 'function cacti_process_still_running($');
+
+	expect($calls)->toBeGreaterThanOrEqual(3);
 	expect($src)->not->toContain('$r[\'pid\'] > 0 && posix_kill($r[\'pid\'], 0)');
 });
 
