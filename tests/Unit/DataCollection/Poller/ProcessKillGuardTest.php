@@ -107,7 +107,7 @@ test('a pid that cannot name a process is refused and recorded', function () {
 	expect(implode("\n", $GLOBALS['__poller_log']))->toContain('Refusing to signal PID');
 });
 
-test('the guard bounds the pid itself and leaves identity to the registry', function () {
+test('the guard bounds the pid and verifies Cacti ownership', function () {
 	/* A floor at the reserved low range would also exclude Cacti's own
 	   children inside a pid namespace, where they hold single and double digit
 	   pids, and every caller unregisters the row whether or not the signal
@@ -124,12 +124,8 @@ test('the guard bounds the pid itself and leaves identity to the registry', func
 	   into the next declaration and match text this function does not carry. */
 	$body = substr($src, $start, strpos($src, "\n}\n", $start) - $start);
 
-	/* The identity band belongs to the registry, not here: poller_time holds
-	   spine collectors whose exe is not this interpreter, and sig_handler()
-	   truncates that table whether or not the signal landed. */
-	expect($body)->toContain('$pid <= 1')
-		->and($body)->toContain('$pid > 2147483647')
-		->and($body)->not->toContain('if (is_system_pid(')
+	expect($body)->toContain('cacti_process_pid_is_valid($pid)')
+		->and($body)->toContain('cacti_process_is_owned($pid)')
 		->and($body)->toContain("function_exists('posix_kill')");
 
 	/* The predicate it delegates to must keep refusing init and anything wider
@@ -140,8 +136,7 @@ test('the guard bounds the pid itself and leaves identity to the registry', func
 
 	$predicate = substr($src, $start, strpos($src, "\n}\n", $start) - $start);
 
-	expect($predicate)->toContain('$pid <= 1')
-		->and($predicate)->toContain('2147483647')
+	expect($predicate)->toContain('cacti_process_pid_is_valid($pid)')
 		->and($predicate)->not->toContain('<= 100');
 });
 
@@ -159,9 +154,26 @@ test('a pid wider than pid_t is refused', function () {
 	expect(implode("\n", $GLOBALS['__poller_log']))->toContain('Refusing to signal PID');
 });
 
+test('Windows accepts its full unsigned process id range', function () {
+	if (PHP_INT_SIZE < 8) {
+		test()->markTestSkipped('a 32 bit build cannot express the Windows process id range');
+	}
+
+	$previous = $GLOBALS['config']['cacti_server_os'] ?? null;
+	$GLOBALS['config']['cacti_server_os'] = 'win32';
+
+	try {
+		expect(cacti_process_pid_is_valid(4294967295))->toBeTrue()
+			->and(cacti_process_pid_is_valid(4294967296))->toBeFalse();
+	} finally {
+		$GLOBALS['config']['cacti_server_os'] = $previous;
+	}
+});
+
 test('an ordinary pid is still signalled', function () {
 	$pipes  = array();
-	$handle = proc_open(array(PHP_BINARY, '-r', 'sleep(30);'), array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+	$script = dirname(__DIR__, 4) . '/tests/fixtures/process_sleep.php';
+	$handle = proc_open(array(PHP_BINARY, $script), array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
 
 	/* proc_open() returns false when process creation is disabled, and
 	   proc_get_status(false) then fails somewhere less obvious than here. */
@@ -191,6 +203,29 @@ test('an ordinary pid is still signalled', function () {
 		->and($status['signaled'])->toBeTrue()
 		->and($status['termsig'])->toBe(SIGTERM);
 
+	proc_close($handle);
+});
+
+test('an unrelated PHP process is not signalled', function () {
+	if (!is_dir('/proc/' . getmypid())) {
+		test()->markTestSkipped('command ownership is available only on procfs platforms');
+	}
+
+	$pipes  = array();
+	$handle = proc_open(array(PHP_BINARY, '-r', 'sleep(30);'), array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+
+	expect($handle)->toBeResource();
+
+	$pid = (int) proc_get_status($handle)['pid'];
+
+	foreach ($pipes as $pipe) {
+		fclose($pipe);
+	}
+
+	expect(cacti_process_kill($pid, SIGTERM))->toBeFalse()
+		->and(implode("\n", $GLOBALS['__poller_log']))->toContain('does not belong to this Cacti installation');
+
+	proc_terminate($handle, SIGTERM);
 	proc_close($handle);
 });
 

@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-security: Verify process ownership before signalling registry PIDs
 -issue: Refuse to signal a process table PID that pid_t cannot hold
 -issue: Stop treating every PID in a container as a reserved system PID
 -issue: Repair batchgapfix --force, which aborted on PHP 8 and killed nothing
