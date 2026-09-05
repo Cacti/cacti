@@ -63,11 +63,12 @@ beforeEach(function () {
 	$database_default  = 'cacti_boost_upgrade_test';
 
 	$database_sessions["$database_hostname:$database_port:$database_default"] = $this->pdo;
+	$this->pdo->exec("SET SESSION sql_mode = CONCAT_WS(',', @@sql_mode, 'ANSI_QUOTES')");
 
 	// db_install_add_cache() stamps install_updated on every statement.
 	$this->pdo->exec('CREATE TABLE IF NOT EXISTS settings (
-		name varchar(50) NOT NULL default "",
-		value varchar(2048) NOT NULL default "",
+		name varchar(50) NOT NULL default \'\',
+		value varchar(2048) NOT NULL default \'\',
 		PRIMARY KEY (name))');
 
 	$this->pdo->exec('DROP TABLE IF EXISTS poller_output_boost_processes');
