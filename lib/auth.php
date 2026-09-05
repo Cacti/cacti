@@ -39,10 +39,12 @@ function clear_auth_cookie() {
 			$user_id  = $parts[0];
 			$realm_id = -1;
 			$token    = $parts[1];
-		} else {
+		} elseif (cacti_sizeof($parts) == 3) {
 			$user_id  = $parts[0];
 			$realm_id = $parts[1];
 			$token    = $parts[2];
+		} else {
+			return;
 		}
 
 		// Legacy support which leaked usernames
@@ -125,10 +127,12 @@ function check_auth_cookie() {
 			$user_id  = $parts[0];
 			$realm_id = -1;
 			$token    = $parts[1];
-		} else {
+		} elseif (cacti_sizeof($parts) == 3) {
 			$user_id  = $parts[0];
 			$realm_id = $parts[1];
 			$token    = $parts[2];
+		} else {
+			return false;
 		}
 
 		// Legacy support which leaked usernames
