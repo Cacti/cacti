@@ -576,7 +576,7 @@ function boost_graph_cache_filename(string $cache_directory, int $local_graph_id
 		if (!is_string($secret) || !preg_match('/^[a-f0-9]{64}$/D', $secret)) {
 			$candidate = bin2hex(random_bytes(32));
 			db_execute_prepared('INSERT IGNORE INTO settings (name, value) VALUES (?, ?)', ['boost_png_cache_secret', $candidate]);
-			$secret = read_config_option('boost_png_cache_secret');
+			$secret = read_config_option('boost_png_cache_secret', true);
 
 			if (!is_string($secret) || !preg_match('/^[a-f0-9]{64}$/D', $secret)) {
 				$secret = $candidate;
