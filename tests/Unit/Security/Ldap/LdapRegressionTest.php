@@ -60,5 +60,8 @@ test('GHSA-pmgm: cacti_ldap_filter escapes each variable with ldap_escape', func
 
 	$body = substr($ldapSource, $start, 600);
 	expect($body)->toContain("ldap_escape((string) \$value, '', LDAP_ESCAPE_FILTER)");
-	expect($body)->toContain("str_replace('<' . \$key . '>', \$escaped, \$result)");
+
+	// How the substitution is performed is asserted behaviourally in
+	// LdapFilterSubstitutionTest, so it is not pinned to an implementation
+	// here as well.
 });
