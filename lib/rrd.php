@@ -2877,6 +2877,13 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 			if ($graph_item['cdef_id'] > 0 && !isset($cdef_cache[$cdef_cache_key])) {
 				/** @var string $cdef_string */
 				$cdef_string  = $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']];
+
+				if ($cdef_string === null) {
+					$local_graph_id = is_array($graph) ? ($graph['local_graph_id'] ?? 0) : 0;
+					cacti_log('ERROR: Invalid CDEF ' . $graph_item['cdef_id'] . ' for graph ' . $local_graph_id . '; skipping graph item.', true, 'RRD');
+
+					continue;
+				}
 				$magic_item   = [];
 				$already_seen = [];
 				$sources_seen = [];
