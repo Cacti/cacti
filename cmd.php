@@ -843,6 +843,10 @@ function ping_and_reindex_check(&$item, $mibs) {
 								}
 							} else {
 								$output = cacti_snmp_session_get($session, $index_item['arg1']);
+
+								if ($output === false) {
+									$output = 'U';
+								}
 							}
 						} else {
 							$output = 'U';
