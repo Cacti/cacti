@@ -1,0 +1,94 @@
+name: Cookie Coverage
+
+on:
+  push:
+    branches: [1.2.x]
+    paths:
+      - '.github/workflows/cookie-coverage.yml'
+      - 'auth_changepassword.php'
+      - 'auth_login.php'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'include/auth.php'
+      - 'include/global.php'
+      - 'include/js/jquery.zoom.js'
+      - 'include/js/js.storage.js'
+      - 'include/layout.js'
+      - 'include/themes/midwinter/main.js'
+      - 'lib/auth.php'
+      - 'lib/functions.php'
+      - 'logout.php'
+      - 'tests/Helpers/AuthCookieProbe.php'
+      - 'tests/integration/AuthSystemRegressionIntegrationTest.php'
+      - 'tests/js/cookie_helpers.test.js'
+      - 'tests/phpunit-cookie.xml'
+  pull_request:
+    branches: [1.2.x]
+    paths:
+      - '.github/workflows/cookie-coverage.yml'
+      - 'auth_changepassword.php'
+      - 'auth_login.php'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'include/auth.php'
+      - 'include/global.php'
+      - 'include/js/jquery.zoom.js'
+      - 'include/js/js.storage.js'
+      - 'include/layout.js'
+      - 'include/themes/midwinter/main.js'
+      - 'lib/auth.php'
+      - 'lib/functions.php'
+      - 'logout.php'
+      - 'tests/Helpers/AuthCookieProbe.php'
+      - 'tests/integration/AuthSystemRegressionIntegrationTest.php'
+      - 'tests/js/cookie_helpers.test.js'
+      - 'tests/phpunit-cookie.xml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cookie-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMPOSER_ALLOW_SUPERUSER: 1
+
+jobs:
+  coverage:
+    name: Cookie behavior matrix
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP 8.1
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.1'
+          coverage: none
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+
+      - name: Setup Node 22
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # 4.4.0
+        with:
+          node-version: '22'
+
+      - name: Install PHP dependencies
+        working-directory: tests
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run PHP cookie matrix
+        working-directory: tests
+        run: >-
+          ./vendor/bin/pest
+          --configuration phpunit-cookie.xml
+          integration/AuthSystemRegressionIntegrationTest.php
+
+      - name: Run browser cookie helpers
+        run: node --test tests/js/cookie_helpers.test.js
