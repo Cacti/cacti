@@ -29,8 +29,8 @@ require_once dirname(__DIR__, 4) . '/lib/poller.php';
 /**
  * Every file that reads a pid out of a process table and signals it.
  *
- * @return array<string, string> Repository-relative path, mapped to the call
- *                               the guard replaced.
+ * @return array<int, string> Repository-relative paths whose signal calls
+ *                            the guard replaced.
  */
 function process_kill_guard_sites() : array {
 	return [
