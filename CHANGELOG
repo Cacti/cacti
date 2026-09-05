@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#7969: Restore excluded integration and mutation regression coverage
 -issue#7969: Align Rocky Linux compatibility checks with the supported PHP runtime
 -issue: Fail closed when OAuth callback state is absent or mismatched
+-issue#7981: Require POST tokens for state-changing item, tree and RRD actions
 -issue#7959: Stop source checkouts from loading a partial Composer dependency tree
 -issue#7775: Add plugin-extensible notification API
 -issue#7746: Make PHP 8.1 dependency builds reproducible
