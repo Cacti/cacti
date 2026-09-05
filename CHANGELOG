@@ -96,6 +96,7 @@ Cacti CHANGELOG
 -issue#6240: Fix sorting exception in rrdtool_function_create function
 -issue#6255: Fix not showing any graphs in the subtree if there are only graphs without devices
 -issue#6258: Rename 'Data' to 'Data/Statistics' per customer request
+-issue#6515: Serialize process registry admission with database-backed Symfony locks
 -issue#6545: Add 30 and 60 second timeout options for Remote Agent and Poller settings
 -issue#6573: Create new device_change_javascript hook for THOLD plugin by xmacan
 -issue#6669: Show on the Technical Support page whether php-snmp is in use or disabled by $php_snmp_support

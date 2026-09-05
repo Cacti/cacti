@@ -2669,6 +2669,17 @@ CREATE TABLE `processes` (
 ) ENGINE=MEMORY COMMENT='Stores Process Status for Cacti Background Processes';
 
 --
+-- Table structure for table `process_locks`
+--
+
+CREATE TABLE `process_locks` (
+  `key_id` varchar(64) NOT NULL,
+  `key_token` varchar(44) NOT NULL,
+  `key_expiration` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`key_id`)
+) ENGINE=InnoDB COMMENT='Serializes Cacti Process Registry Mutations';
+
+--
 -- Table structure for table `reports`
 --
 
