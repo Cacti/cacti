@@ -301,12 +301,11 @@ if ($run) {
 
 	db_execute("DELETE FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
 
-	if (!$transfer_failed) {
-		// let the console know you are in online mode
-		db_execute_prepared('UPDATE poller
-			SET status=2
-			WHERE id= ?', [$poller_id], false, $remote_db_cnn_id);
-	}
+	// Recovery failures are reported by the log and exit status; leaving the
+	// poller in status 5 would incorrectly advertise recovery indefinitely.
+	db_execute_prepared('UPDATE poller
+		SET status=2
+		WHERE id= ?', [$poller_id], false, $remote_db_cnn_id);
 } else {
 	debug('Recovery process still running, exiting');
 	cacti_log('RECOVERY: Recovery process still running for Poller ' . $poller_id . '.  PID is ' . $recovery_pid, false, 'POLLER');
