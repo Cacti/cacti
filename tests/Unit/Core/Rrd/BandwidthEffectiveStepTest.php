@@ -1,4 +1,15 @@
 <?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+*/
+
 
 namespace BandwidthEffectiveStepTest;
 
@@ -12,7 +23,7 @@ function cacti_count($value) {
 	return count($value);
 }
 
-$source = file_get_contents(dirname(__DIR__, 2) . '/lib/graph_variables.php');
+$source = file_get_contents(dirname(__DIR__, 4) . '/lib/graph_variables.php');
 
 if ($source === false || preg_match('/function bandwidth_summation\(.*?^}\R/ms', $source, $matches) !== 1) {
 	throw new \RuntimeException('Unable to extract bandwidth_summation() for tests.');

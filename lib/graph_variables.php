@@ -398,8 +398,7 @@ function is_graphable_item($item) {
      either be absolute (unix timestamp) or relative (to now)
    @arg $graph_end - the end time to use for the data calculation. this value can
      either be absolute (unix timestamp) or relative (to now)
-   @arg $seconds_between_graph_updates - the number of seconds between each update on the graph which
-     varies depending on the RRA in use
+   @arg $resolution - the selected RRA resolution in seconds
    @returns - a string containing the Nth percentile suitable for placing on the graph */
 function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end, $resolution = 0) {
 	global $graph_item_types;

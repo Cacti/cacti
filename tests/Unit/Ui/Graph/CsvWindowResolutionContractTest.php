@@ -1,8 +1,19 @@
 <?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+*/
+
 
 test('graph export and percentile paths share the selected RRA resolution', function () {
-	$rrd       = file_get_contents(dirname(__DIR__, 2) . '/lib/rrd.php');
-	$variables = file_get_contents(dirname(__DIR__, 2) . '/lib/graph_variables.php');
+	$rrd       = file_get_contents(dirname(__DIR__, 4) . '/lib/rrd.php');
+	$variables = file_get_contents(dirname(__DIR__, 4) . '/lib/graph_variables.php');
 
 	expect($rrd)->not->toBeFalse()
 		->and($variables)->not->toBeFalse()
@@ -15,7 +26,7 @@ test('graph export and percentile paths share the selected RRA resolution', func
 });
 
 test('CSV export does not shift the requested start boundary', function () {
-	$rrd = file_get_contents(dirname(__DIR__, 2) . '/lib/rrd.php');
+	$rrd = file_get_contents(dirname(__DIR__, 4) . '/lib/rrd.php');
 
 	expect($rrd)->not->toBeFalse()
 		->and($rrd)->toContain("'--start=' . cacti_escapeshellarg(\$graph_start)")
