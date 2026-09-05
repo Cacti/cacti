@@ -23,11 +23,16 @@
 */
 
 function initialize_realtime_step_and_window() {
+	global $realtime_default_size;
+
 	if (!isset($_SESSION['sess_realtime_dsstep'])) {
 		$_SESSION['sess_realtime_dsstep'] = read_config_option('realtime_interval');
 	}
 	if (!isset($_SESSION['sess_realtime_window'])) {
 		$_SESSION['sess_realtime_window'] = read_config_option('realtime_gwindow');
+	}
+	if (!isset($_SESSION['sess_realtime_size'])) {
+		$_SESSION['sess_realtime_size'] = read_user_setting('realtime_size', $realtime_default_size);
 	}
 }
 
@@ -138,7 +143,7 @@ function html_graph_validate_preview_request_vars() {
 }
 
 function html_graph_preview_filter($page, $action, $devices_where = '', $templates_where = '') {
-	global $graphs_per_page, $realtime_window, $realtime_refresh, $graph_timeshifts, $graph_timespans, $config;
+	global $graphs_per_page, $realtime_window, $realtime_refresh, $realtime_sizes, $graph_timeshifts, $graph_timespans, $config;
 
 	initialize_realtime_step_and_window();
 
@@ -337,6 +342,18 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						</select>
 					</td>
 					<td>
+						<?php print __('Size');?>
+					</td>
+					<td>
+						<select name='size' id='size'>
+							<?php
+							foreach ($realtime_sizes as $size => $text) {
+								printf('<option value="%d"%s>%s</option>', $size, $size == $_SESSION['sess_realtime_size'] ? ' selected="selected"' : '', $text);
+							}
+							?>
+						</select>
+					</td>
+					<td>
 						<input type='button' class='ui-button ui-corner-all ui-widget' id='realtimeoff' value='<?php print __esc('Stop');?>'>
 					</td>
 					<td class='center' colspan='6'>
@@ -425,7 +442,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 				refreshGraphTimespanFilter();
 			});
 
-			$('#graph_start, #ds_step').on('change', function() {
+			$('#graph_start, #ds_step, #size').on('change', function() {
 				realtimeGrapher();
 			});
 
@@ -628,4 +645,3 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 
 	return $num_output_fields;
 }
-

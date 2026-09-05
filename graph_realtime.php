@@ -64,7 +64,7 @@ case 'countdown':
 	case 'init':
 		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_user_setting('realtime_interval', 10));
 		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
-		load_current_session_value('size',           'sess_realtime_size',        read_user_setting('realtime_size', 100));
+		load_current_session_value('size',           'sess_realtime_size',        read_user_setting('realtime_size', $realtime_default_size));
 		load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    read_user_setting('realtime_nolegend', 'false'));
 
 		break;
@@ -75,21 +75,21 @@ case 'countdown':
 	case 'interval':
 		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_user_setting('realtime_interval', 10));
 		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
-		load_current_session_value('size',           'sess_realtime_size',        read_user_setting('realtime_size', 100));
+		load_current_session_value('size',           'sess_realtime_size',        read_user_setting('realtime_size', $realtime_default_size));
 		load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    read_user_setting('realtime_nolegend', 'false'));
 
 		break;
 	case 'countdown':
 		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_user_setting('realtime_interval', 10));
 		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
-		load_current_session_value('size',           'sess_realtime_size',        read_user_setting('realtime_size', 100));
+		load_current_session_value('size',           'sess_realtime_size',        read_user_setting('realtime_size', $realtime_default_size));
 		load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    read_user_setting('realtime_nolegend', 'false'));
 
 		break;
 	default:
 		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_user_setting('realtime_interval', 10));
 		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
-		load_current_session_value('size',           'sess_realtime_size',        read_user_setting('realtime_size', 100));
+		load_current_session_value('size',           'sess_realtime_size',        read_user_setting('realtime_size', $realtime_default_size));
 		load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    read_user_setting('realtime_nolegend', 'false'));
 
 		break;
@@ -129,7 +129,7 @@ case 'countdown':
 	} elseif (isset($_SESSION['sess_realtime_size']) && $_SESSION['sess_realtime_size'] != '') {
 		$size = $_SESSION['sess_realtime_size'];
 	} else {
-		$size = 100;
+		$size = $realtime_default_size;
 	}
 
 	if (isset_request_var('local_graph_id')) {
@@ -144,7 +144,7 @@ case 'countdown':
 		}
 	}
 
-	if (isset_request_var('size') && get_request_var('size') < 100) {
+	if ($size < 100) {
 		$graph_data_array['graph_height'] = $graph_data_array['graph_height'] * $size / 100;
 		$graph_data_array['graph_width']  = $graph_data_array['graph_width']  * $size / 100;
 	}
@@ -285,7 +285,7 @@ case 'countdown':
 		'left'           => get_request_var('left'),
 		'ds_step'        => html_escape(isset($_SESSION['sess_realtime_ds_step']) ? $_SESSION['sess_realtime_ds_step']:$graph_data_array['ds_step']),
 		'graph_start'    => html_escape(isset($_SESSION['sess_realtime_graph_start']) ? $_SESSION['sess_realtime_graph_start']:$graph_data_array['graph_start']),
-		'size'           => html_escape(isset($_SESSION['sess_realtime_size']) ? $_SESSION['sess_realtime_size']:read_user_setting('realtime_size', 100)),
+		'size'           => html_escape(isset($_SESSION['sess_realtime_size']) ? $_SESSION['sess_realtime_size']:read_user_setting('realtime_size', $realtime_default_size)),
 		'thumbnails'     => html_escape(isset($_SESSION['sess_realtime_nolegend']) ? $_SESSION['sess_realtime_nolegend']:'false'),
 		'data'           => (isset($data) ? $data:''),
 		'image_format'   => $graph_data_array['image_format']
@@ -307,7 +307,7 @@ case 'view':
 default:
 	load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_user_setting('realtime_interval', 10));
 	load_current_session_value('graph_start',    'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
-	load_current_session_value('size',           'sess_realtime_size',        read_user_setting('realtime_size', 100));
+	load_current_session_value('size',           'sess_realtime_size',        read_user_setting('realtime_size', $realtime_default_size));
 	load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    read_user_setting('realtime_nolegend', 'false'));
 
 	break;
@@ -365,16 +365,6 @@ if (read_config_option('realtime_enabled') == '') {
 
 $selectedTheme = get_selected_theme();
 
-$sizes = array(
-	'100' => '100%',
-	'90'  => '90%',
-	'80'  => '80%',
-	'70'  => '70%',
-	'60'  => '60%',
-	'50'  => '50%',
-	'40'  => '40%'
-);
-
 ?>
 <html>
 <head>
@@ -408,7 +398,7 @@ $sizes = array(
 				</select>
 				<select id='size' onChange='imageOptionsChanged("interval")'>
 					<?php
-					foreach ($sizes as $key => $value) {
+					foreach ($realtime_sizes as $key => $value) {
 						printf('<option value="%d"%s>%s</option>',
 							$key, $key == get_request_var('size') ? ' selected="selected"' : '', $value
 						);
