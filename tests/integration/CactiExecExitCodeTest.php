@@ -12,8 +12,9 @@
  *
  * Reading the process pipes to EOF can reap the child before proc_get_status()
  * runs, which left exit_code as -1 or a missing key (the "Undefined array key
- * exit_code" warnings seen from poller_realtime.php). The exit code now comes
- * from proc_close(), which stays correct. These tests spawn a real PHP process.
+ * exit_code" warnings seen from poller_realtime.php). The implementation now
+ * preserves a valid observed exitcode and uses proc_close() only as fallback.
+ * These tests spawn a real PHP process.
  */
 
 beforeAll(function () {
@@ -41,6 +42,7 @@ test('cacti_exec returns the real process exit code', function () {
 	expect(cacti_exec(PHP_BINARY, array('-r', 'exit(1);'), $out))->toBe(1);
 	expect(cacti_exec(PHP_BINARY, array('-r', 'exit(3);'), $out))->toBe(3);
 	expect(cacti_exec(PHP_BINARY, array('-r', 'exit(42);'), $out))->toBe(42);
+	expect(cacti_exec(PHP_BINARY, array('-r', 'exit(127);'), $out))->toBe(127);
 	expect(cacti_exec(PHP_BINARY, array('-r', 'exit(255);'), $out))->toBe(255);
 });
 
@@ -90,10 +92,12 @@ test('cacti_exec rejects an empty, whitespace, or dash-led binary with 255', fun
 	expect(_exec_quietly(fn () => cacti_exec('--version', array(), $out)))->toBe(255);
 });
 
-test('a non-existent binary returns 255 and does not crash', function () {
+test('a non-existent binary returns the operating system exec failure code', function () {
 	$out = array();
+	$exit = _exec_quietly(fn () => cacti_exec('/nonexistent/path/to/binary', array(), $out));
 
-	expect(_exec_quietly(fn () => cacti_exec('/nonexistent/path/to/binary', array(), $out)))->toBe(255);
+	// PHP may report exec failure through a child (127) or fail proc_open (255).
+	expect(in_array($exit, array(127, 255), true))->toBeTrue();
 });
 
 test('cacti_exec raises no exit_code warning while reading status', function () {
