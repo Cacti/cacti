@@ -91,40 +91,33 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup PHP 8.1 with Xdebug
+
+      - name: Setup PHP 8.2 with Xdebug
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
-          php-version: '8.1'
+          php-version: '8.2'
           coverage: xdebug
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
 
-      - name: Cache Composer packages
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-        with:
-          path: tests/vendor
-          key: ${{ runner.os }}-php-cdef-coverage-${{ hashFiles('tests/composer.lock') }}
-
-      - name: Install dependencies
-        run: composer install --working-dir=tests --prefer-dist --no-progress --no-interaction
-
-      - name: Validate locked test dependencies
-        run: composer validate --working-dir=tests --strict
+      - name: Install Pest 3
+        run: |
+          composer global config allow-plugins.pestphp/pest-plugin true
+          composer global require pestphp/pest:^3 --no-interaction --no-progress
+          composer global config bin-dir --absolute >> "$GITHUB_PATH"
 
       - name: Enforce line coverage
-        working-directory: tests
         env:
           XDEBUG_MODE: coverage
         run: |
           set -euo pipefail
-          php -d xdebug.mode=coverage vendor/bin/pest \
-            --configuration=../phpunit-cdef.xml \
-            Coverage/CdefCoverageTest.php \
+          pest --colors=never \
+            --configuration=phpunit-cdef.xml \
+            tests/Coverage/CdefCoverageTest.php \
             --coverage \
             --coverage-text \
             --min=100
 
       - name: Run MariaDB integration coverage
-        working-directory: tests
         env:
           CACTI_CDEF_REAL_DB: '1'
           CACTI_TEST_DB_HOST: 127.0.0.1
@@ -132,4 +125,4 @@ jobs:
           CACTI_TEST_DB_NAME: cacti_test
           CACTI_TEST_DB_USER: cacti
           CACTI_TEST_DB_PASS: cacti
-        run: vendor/bin/pest --configuration=../phpunit-cdef-integration.xml
+        run: pest --colors=never --configuration=phpunit-cdef-integration.xml
