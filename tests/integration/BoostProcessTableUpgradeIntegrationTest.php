@@ -28,6 +28,13 @@
  * for the same env vars.  Skips (does not fail) if unreachable.
  */
 
+// Production upgrade entry points define this before loading upgrade files.
+// It also makes schema probes bypass their runtime cache while this test
+// deliberately drops and recreates the same table between cases.
+if (!defined('IN_CACTI_INSTALL')) {
+	define('IN_CACTI_INSTALL', 1);
+}
+
 require_once __DIR__ . '/../Helpers/UnitStubs.php';
 require_once dirname(__DIR__, 2) . '/lib/database.php';
 require_once dirname(__DIR__, 2) . '/install/functions.php';
@@ -38,7 +45,7 @@ beforeEach(function () {
 
 	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
 
-	$dsn  = getenv('CACTI_TEST_MYSQL_DSN')  ?: 'mysql:host=127.0.0.1;port=33061;dbname=cacti_test';
+	$dsn  = getenv('CACTI_TEST_MYSQL_DSN') ?: 'mysql:host=127.0.0.1;port=33061;dbname=cacti_test';
 	$user = getenv('CACTI_TEST_MYSQL_USER') ?: 'root';
 	$pass = getenv('CACTI_TEST_MYSQL_PASS') ?: 'root';
 
@@ -160,4 +167,62 @@ test('an in-flight run keeps its completion rows while the legacy rows are dropp
 	$completed->execute([$run_id]);
 
 	expect((int) $completed->fetchColumn())->toBe(0);
+});
+
+test('a missing process table is recreated with the complete current schema', function () {
+	if (!isset($this->pdo) || !$this->pdo instanceof PDO) {
+		return;
+	}
+
+	upgrade_boost_process_table();
+
+	$columns = $this->pdo->query('SHOW COLUMNS FROM poller_output_boost_processes')->fetchAll(PDO::FETCH_COLUMN);
+	$engine  = $this->pdo->query("SELECT ENGINE FROM information_schema.TABLES
+		WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'poller_output_boost_processes'")->fetchColumn();
+
+	expect($columns)->toBe(['sock_int_value', 'run_id', 'child_id', 'status'])
+		->and(boostProcessIndexColumns($this->pdo))->toBe(['run_id:0', 'child_id:0'])
+		->and($engine)->toBe('MEMORY');
+});
+
+test('an already upgraded process table and its completion row are unchanged', function () {
+	if (!isset($this->pdo) || !$this->pdo instanceof PDO) {
+		return;
+	}
+
+	$this->pdo->exec("CREATE TABLE poller_output_boost_processes (
+		sock_int_value bigint(20) unsigned NOT NULL auto_increment,
+		run_id char(32) NOT NULL default '',
+		child_id int(10) unsigned NOT NULL default 0,
+		status varchar(255) default NULL,
+		PRIMARY KEY (sock_int_value),
+		UNIQUE KEY run_child (run_id, child_id)) ENGINE=MEMORY");
+	$this->pdo->exec("INSERT INTO poller_output_boost_processes (run_id, child_id, status)
+		VALUES ('3f2a91c4d80b47e6a15c9f0e7b32d5a8', 4, '123')");
+
+	upgrade_boost_process_table();
+
+	$row = $this->pdo->query('SELECT run_id, child_id, status FROM poller_output_boost_processes')->fetch(PDO::FETCH_ASSOC);
+
+	expect($row)->toBe([
+		'run_id'   => '3f2a91c4d80b47e6a15c9f0e7b32d5a8',
+		'child_id' => 4,
+		'status'   => '123',
+	]);
+});
+
+test('the run_child index rejects duplicate completion reports for one child', function () {
+	if (!isset($this->pdo) || !$this->pdo instanceof PDO) {
+		return;
+	}
+
+	upgrade_boost_process_table();
+
+	$insert = $this->pdo->prepare('INSERT INTO poller_output_boost_processes (run_id, child_id, status) VALUES (?, ?, ?)');
+	expect($insert->execute(['3f2a91c4d80b47e6a15c9f0e7b32d5a8', 1, '10']))->toBeTrue();
+
+	$duplicate = $insert->execute(['3f2a91c4d80b47e6a15c9f0e7b32d5a8', 1, '20']);
+
+	expect($duplicate)->toBeFalse()
+		->and((int) $this->pdo->query('SELECT COUNT(*) FROM poller_output_boost_processes')->fetchColumn())->toBe(1);
 });
