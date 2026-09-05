@@ -3222,7 +3222,7 @@ function generate_data_source_path($local_data_id) {
  *  @return - the best cf to use
  */
 function generate_graph_best_cf($local_data_id, $requested_cf, $ds_step = 60) {
-	static $best_cf;
+	static $best_cf = 1;
 
 	if ($local_data_id > 0) {
 		$avail_cf_functions = get_rrd_cfs($local_data_id);
