@@ -1229,7 +1229,7 @@ class cactiBox extends cactiNavigation {
 
     searchToHighlight(data) {
         // critical check: ensure external library mark.js is loaded
-        if (!typeof $.fn.markRegExp === 'function') {
+        if (typeof $.fn.markRegExp !== 'function') {
             console.error("NavigationBox Error: 'mark.js' is not loaded! The search function requires this library.");
             return;
         }
