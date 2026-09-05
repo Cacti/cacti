@@ -607,6 +607,37 @@ function upgrade_to_1_3_0() : void {
 	db_install_update_table('reports_queued', $data);
 
 	$data               = [];
+	$data['columns'][]  = ['name' => 'id', 'unsigned' => true, 'type' => 'bigint(20)', 'NULL' => false, 'auto_increment' => true];
+	$data['columns'][]  = ['name' => 'message_id', 'type' => 'char(36)', 'NULL' => false];
+	$data['columns'][]  = ['name' => 'queue_name', 'type' => 'varchar(64)', 'NULL' => false];
+	$data['columns'][]  = ['name' => 'topic', 'type' => 'varchar(128)', 'NULL' => false];
+	$data['columns'][]  = ['name' => 'message_type', 'type' => 'varchar(191)', 'NULL' => false];
+	$data['columns'][]  = ['name' => 'payload', 'type' => 'longblob', 'NULL' => false];
+	$data['columns'][]  = ['name' => 'metadata', 'type' => 'blob', 'NULL' => false];
+	$data['columns'][]  = ['name' => 'status', 'type' => 'varchar(16)', 'NULL' => false, 'default' => 'pending'];
+	$data['columns'][]  = ['name' => 'priority', 'unsigned' => true, 'type' => 'tinyint(3)', 'NULL' => false, 'default' => '50'];
+	$data['columns'][]  = ['name' => 'available_at', 'type' => 'timestamp', 'NULL' => false, 'default' => 'CURRENT_TIMESTAMP'];
+	$data['columns'][]  = ['name' => 'reserved_until', 'type' => 'timestamp', 'NULL' => true];
+	$data['columns'][]  = ['name' => 'reservation_token', 'type' => 'char(48)', 'NULL' => true];
+	$data['columns'][]  = ['name' => 'attempts', 'unsigned' => true, 'type' => 'smallint(5)', 'NULL' => false, 'default' => '0'];
+	$data['columns'][]  = ['name' => 'max_attempts', 'unsigned' => true, 'type' => 'smallint(5)', 'NULL' => false, 'default' => '5'];
+	$data['columns'][]  = ['name' => 'last_error', 'type' => 'text', 'NULL' => true];
+	$data['columns'][]  = ['name' => 'created_at', 'type' => 'timestamp', 'NULL' => false, 'default' => 'CURRENT_TIMESTAMP'];
+	$data['columns'][]  = ['name' => 'completed_at', 'type' => 'timestamp', 'NULL' => true];
+	$data['primary']    = 'id';
+	$data['keys'][]     = ['name' => 'message_id', 'columns' => ['message_id'], 'unique' => true];
+	$data['keys'][]     = ['name' => 'queue_ready', 'columns' => ['queue_name', 'status', 'priority', 'available_at', 'id']];
+	$data['keys'][]     = ['name' => 'queue_terminal', 'columns' => ['queue_name', 'status', 'completed_at']];
+	$data['keys'][]     = ['name' => 'status_completed', 'columns' => ['status', 'completed_at']];
+	$data['keys'][]     = ['name' => 'reservation_token', 'columns' => ['reservation_token']];
+	$data['type']       = 'InnoDB';
+	$data['charset']    = 'utf8mb4';
+	$data['collate']    = 'utf8mb4_unicode_ci';
+	$data['comment']    = 'Cacti asynchronous queue messages';
+	$data['row_format'] = 'Dynamic';
+	db_install_update_table('queue_messages', $data);
+
+	$data               = [];
 	$data['columns'][]  = ['name' => 'host_id', 'unsigned' => true, 'type' => 'mediumint(8)', 'NULL' => false, 'default' => '0'];
 	$data['columns'][]  = ['name' => 'poller_id', 'unsigned' => true, 'type' => 'int(10)', 'NULL' => false, 'default' => '1'];
 	$data['columns'][]  = ['name' => 'errors', 'unsigned' => true, 'type' => 'mediumint(8)', 'NULL' => false, 'default' => '0'];
