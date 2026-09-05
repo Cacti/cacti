@@ -45,11 +45,17 @@ test('Automation Network picker receives the current server offset', () => {
 });
 
 test('Now uses UTC server wall time in a browser two hours east', () => {
-	assert.equal(process.env.TZ, 'Europe/Amsterdam');
-	assert.deepEqual(
-		timepickerNow('2026-07-23T12:00:00Z', 0),
-		{ hour: 12, minute: 0 }
-	);
+	const originalTimezone = process.env.TZ;
+
+	try {
+		process.env.TZ = 'Europe/Amsterdam';
+		assert.deepEqual(
+			timepickerNow('2026-07-23T12:00:00Z', 0),
+			{ hour: 12, minute: 0 }
+		);
+	} finally {
+		process.env.TZ = originalTimezone;
+	}
 });
 
 test('Now supports server timezones with half-hour offsets', () => {
