@@ -24,6 +24,56 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessSignaledException;
+
+final class CactiControllableLegacyProcess extends Process {
+	public bool $tty_enabled         = false;
+	public bool $output_disabled     = false;
+	public bool $running             = false;
+	public int|null $received_signal = null;
+
+	public function __construct(private readonly int $result = 0, private readonly int|null $term_signal = null) {
+		parent::__construct(['true']);
+	}
+
+	public function setTimeout(float|null $timeout): static {
+		return $this;
+	}
+
+	public function setTty(bool $tty): static {
+		$this->tty_enabled = $tty;
+
+		return $this;
+	}
+
+	public function disableOutput(): static {
+		$this->output_disabled = true;
+
+		return $this;
+	}
+
+	public function run(callable|null $callback = null, array $env = []): int {
+		if ($this->term_signal !== null) {
+			throw new ProcessSignaledException($this);
+		}
+
+		return $this->result;
+	}
+
+	public function getTermSignal(): int {
+		return $this->term_signal ?? 0;
+	}
+
+	public function isRunning(): bool {
+		return $this->running;
+	}
+
+	public function signal(int $signal): static {
+		$this->received_signal = $signal;
+
+		return $this;
+	}
+}
 
 it('registers every executable legacy CLI script exactly once', function (): void {
 	$root    = dirname(__DIR__, 4);
@@ -60,6 +110,73 @@ it('reports an unknown version when the version file is unavailable', function (
 	$application = new CactiApplication('/path/that/does/not/exist');
 
 	expect($application->getVersion())->toBe('unknown');
+});
+
+it('leaves unknown commands to Symfony after legacy lookup fails', function (): void {
+	$application = new CactiApplication(dirname(__DIR__, 4));
+	$application->setAutoExit(false);
+	$application->setCatchExceptions(false);
+
+	expect(fn (): int => $application->run(new RawArgvInput(['bin/cacti', 'not:a:command']), new BufferedOutput()))
+		->toThrow(Symfony\Component\Console\Exception\CommandNotFoundException::class);
+});
+
+it('hands a terminal directly to a legacy process', function (): void {
+	$process = new CactiControllableLegacyProcess(17);
+	$command = new LegacyScriptCommand(
+		'probe:run',
+		'probe',
+		dirname(__DIR__, 3) . '/fixtures/Console',
+		static fn (array $command): Process => $process,
+		static fn (): bool => true,
+		false
+	);
+
+	expect($command->run(new RawArgvInput(['bin/cacti', 'probe:run']), new BufferedOutput()))->toBe(17)
+		->and($process->tty_enabled)->toBeTrue()
+		->and($process->output_disabled)->toBeFalse();
+});
+
+it('maps a signaled legacy process to the shell exit status', function (): void {
+	$process = new CactiControllableLegacyProcess(term_signal: SIGKILL);
+	$command = new LegacyScriptCommand(
+		'probe:run',
+		'probe',
+		dirname(__DIR__, 3) . '/fixtures/Console',
+		static fn (array $command): Process => $process,
+		static fn (): bool => false,
+		false
+	);
+
+	expect($command->run(new RawArgvInput(['bin/cacti', 'probe:run']), new BufferedOutput()))->toBe(128 + SIGKILL);
+});
+
+it('relays registered termination signals only while the child is running', function (): void {
+	$process  = new CactiControllableLegacyProcess();
+	$handlers = [];
+	$command  = new LegacyScriptCommand(
+		'probe:run',
+		'probe',
+		dirname(__DIR__, 3) . '/fixtures/Console',
+		static fn (array $command): Process => $process,
+		static fn (): bool => false,
+		static function (int $signal, callable $handler) use (&$handlers): void {
+			$handlers[$signal] = $handler;
+		}
+	);
+
+	$command->run(new RawArgvInput(['bin/cacti', 'probe:run']), new BufferedOutput());
+	$process->running = true;
+	$handlers[SIGTERM](SIGTERM);
+
+	expect($process->received_signal)->toBe(SIGTERM)
+		->and($handlers)->toHaveKeys([SIGTERM, SIGINT, SIGHUP]);
+
+	$process->running         = false;
+	$process->received_signal = null;
+	$handlers[SIGINT](SIGINT);
+
+	expect($process->received_signal)->toBeNull();
 });
 
 it('forwards raw legacy arguments and preserves the exit status', function (): void {

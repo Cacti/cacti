@@ -25,12 +25,37 @@ use Symfony\Component\Process\Exception\ProcessSignaledException;
 use Symfony\Component\Process\Process;
 
 final class LegacyScriptCommand extends Command {
+	/** @var \Closure(array<int, string>): Process */
+	private readonly \Closure $process_factory;
+	/** @var \Closure(): bool */
+	private readonly \Closure $tty_probe;
+	/** @var (\Closure(int, callable): void)|null */
+	private readonly ?\Closure $signal_registrar;
+
 	public function __construct(
 		string $name,
 		private readonly string $script,
 		private readonly string $root,
+		?callable $process_factory = null,
+		?callable $tty_probe = null,
+		callable|false|null $signal_registrar = null,
 	) {
 		parent::__construct($name);
+		$this->process_factory = $process_factory === null
+			? static fn (array $command): Process => new Process($command, null, null, STDIN, null)
+			: \Closure::fromCallable($process_factory);
+		$this->tty_probe = $tty_probe === null
+			? static fn (): bool => defined('STDIN') && defined('STDOUT') && Process::isTtySupported() && stream_isatty(STDIN) && stream_isatty(STDOUT)
+			: \Closure::fromCallable($tty_probe);
+		$this->signal_registrar = match (true) {
+			$signal_registrar === false                                               => null,
+			$signal_registrar !== null                                                => \Closure::fromCallable($signal_registrar),
+			function_exists('pcntl_async_signals') && function_exists('pcntl_signal') => static function (int $signal, callable $handler): void {
+				pcntl_async_signals(true);
+				pcntl_signal($signal, $handler);
+			},
+			default => null,
+		};
 		$this->setAliases([$script]);
 		$this->setDescription(sprintf('Runs the legacy cli/%s.php command.', $script));
 		$this->setHelp(sprintf(
@@ -47,17 +72,12 @@ final class LegacyScriptCommand extends Command {
 		}
 
 		$arguments = $input->argumentsAfterCommand(array_values(array_merge([$this->getName()], $this->getAliases())));
-		$process   = new Process(
-			array_merge([PHP_BINARY, $this->root . '/cli/' . $this->script . '.php'], $arguments),
-			/* Inherit the caller's directory. The script path is absolute, and the
-			 * legacy scripts resolve relative path arguments against the cwd with
-			 * no normalization, so anchoring here would send
-			 * 'rrd:splice --finrrd=out.rrd' into the web-served root instead of the
-			 * directory the operator ran it from. */
-			null,
-			null,
-			STDIN,
-			null
+		/* Inherit the caller's directory. The script path is absolute, and the
+		 * legacy scripts resolve relative path arguments against the cwd with no
+		 * normalization. Anchoring here would send a relative output into the
+		 * web-served root instead of the directory the operator ran it from. */
+		$process = ($this->process_factory)(
+			array_merge([PHP_BINARY, $this->root . '/cli/' . $this->script . '.php'], $arguments)
 		);
 		$process->setTimeout(null);
 
@@ -97,11 +117,7 @@ final class LegacyScriptCommand extends Command {
 	 * Whether this invocation owns a terminal it can hand to the child.
 	 */
 	private function canUseTty(): bool {
-		return defined('STDIN')
-			&& defined('STDOUT')
-			&& Process::isTtySupported()
-			&& stream_isatty(STDIN)
-			&& stream_isatty(STDOUT);
+		return ($this->tty_probe)();
 	}
 
 	/**
@@ -111,14 +127,12 @@ final class LegacyScriptCommand extends Command {
 	 * possibly mid-write to the database, with nothing left to reap it.
 	 */
 	private function forwardSignals(Process $process): void {
-		if (!function_exists('pcntl_async_signals') || !function_exists('pcntl_signal')) {
+		if ($this->signal_registrar === null) {
 			return;
 		}
 
-		pcntl_async_signals(true);
-
 		foreach ([SIGTERM, SIGINT, SIGHUP] as $signal) {
-			pcntl_signal($signal, static function (int $received) use ($process): void {
+			($this->signal_registrar)($signal, static function (int $received) use ($process): void {
 				if ($process->isRunning()) {
 					$process->signal($received);
 				}

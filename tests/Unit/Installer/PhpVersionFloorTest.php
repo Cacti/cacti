@@ -61,7 +61,14 @@ it('generates a platform check matching the declared floor', function (): void {
 	expect(preg_match('/PHP_VERSION_ID\s*>=\s*(\d+)/', $check, $m))->toBe(1);
 
 	[$major, $minor] = array_map('intval', explode('.', $short));
-	expect((int) $m[1])->toBe($major * 10000 + $minor * 100);
+	$declaredFloor   = $major * 10000 + $minor * 100;
+	$generatedFloor  = (int) $m[1];
+
+	// A native install may select packages with a higher floor when it runs on
+	// a newer PHP release. The generated check must never weaken the project's
+	// declared floor, and it must remain executable on the runtime that created it.
+	expect($generatedFloor)->toBeGreaterThanOrEqual($declaredFloor)
+		->and($generatedFloor)->toBeLessThanOrEqual(PHP_VERSION_ID);
 });
 
 require_once dirname(__DIR__, 2) . '/Helpers/IsolatedProbe.php';
