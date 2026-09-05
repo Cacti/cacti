@@ -10,8 +10,10 @@ on:
       - 'cdef.php'
       - 'lib/cdef.php'
       - 'phpunit-cdef.xml'
+      - 'phpunit-cdef-contract.xml'
+      - 'tests/composer.json'
       - 'tests/Coverage/CdefCoverageTest.php'
-      - 'tests/integration/CdefDatabaseIntegrationTest.php'
+      - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/Unit/Ui/Cdef/CdefControllerContractTest.php'
   pull_request:
     branches: [1.2.x]
@@ -22,8 +24,10 @@ on:
       - 'cdef.php'
       - 'lib/cdef.php'
       - 'phpunit-cdef.xml'
+      - 'phpunit-cdef-contract.xml'
+      - 'tests/composer.json'
       - 'tests/Coverage/CdefCoverageTest.php'
-      - 'tests/integration/CdefDatabaseIntegrationTest.php'
+      - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/Unit/Ui/Cdef/CdefControllerContractTest.php'
   workflow_dispatch:
 
@@ -43,22 +47,6 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
 
-    services:
-      mariadb:
-        image: mariadb@sha256:611a2fcc5fa7c6ceb8644c6f74b25ede004ff6c3a6b38c8f8c23d3bbf6c26430 # 11.4
-        env:
-          MARIADB_ROOT_PASSWORD: root
-          MARIADB_DATABASE: cacti_test
-          MARIADB_USER: cacti
-          MARIADB_PASSWORD: cacti
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="healthcheck.sh --connect --innodb_initialized"
-          --health-interval=5s
-          --health-timeout=5s
-          --health-retries=20
-
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -75,31 +63,27 @@ jobs:
       - name: Cache Composer packages
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
-          path: include/vendor
-          key: ${{ runner.os }}-php-cdef-coverage-${{ hashFiles('**/composer.lock') }}
+          path: tests/vendor
+          key: ${{ runner.os }}-php-cdef-coverage-${{ hashFiles('tests/composer.json') }}
           restore-keys: |
             ${{ runner.os }}-php-cdef-coverage-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+        run: composer install --working-dir=tests --prefer-dist --no-progress --no-interaction
 
       - name: Enforce line coverage
+        working-directory: tests
         env:
           XDEBUG_MODE: coverage
         run: |
           set -euo pipefail
-          include/vendor/bin/pest \
-            --configuration=phpunit-cdef.xml \
+          vendor/bin/pest \
+            --configuration=../phpunit-cdef.xml \
+            Coverage/CdefCoverageTest.php \
             --coverage \
             --coverage-text \
             --min=100
 
-      - name: Run MariaDB integration coverage
-        env:
-          CACTI_CDEF_REAL_DB: '1'
-          CACTI_TEST_DB_HOST: 127.0.0.1
-          CACTI_TEST_DB_PORT: '3306'
-          CACTI_TEST_DB_NAME: cacti_test
-          CACTI_TEST_DB_USER: cacti
-          CACTI_TEST_DB_PASS: cacti
-        run: include/vendor/bin/pest tests/integration/CdefDatabaseIntegrationTest.php
+      - name: Run controller contract tests
+        working-directory: tests
+        run: vendor/bin/pest --configuration=../phpunit-cdef-contract.xml

@@ -11,10 +11,23 @@
  +-------------------------------------------------------------------------+
 */
 
-$cdef_controller_source = file_get_contents(dirname(__DIR__, 4) . '/cdef.php');
+function cdef_test_controller_source() : string {
+	static $source;
 
-test('CDEF controller exposes every action handler', function () use ($cdef_controller_source) : void {
-	$functions = [
+	if (!isset($source)) {
+		$source = file_get_contents(dirname(__DIR__, 4) . '/cdef.php');
+
+		if ($source === false) {
+			throw new RuntimeException('Unable to read cdef.php for controller contract tests.');
+		}
+	}
+
+	return $source;
+}
+
+test('CDEF controller exposes every action handler', function () : void {
+	$cdef_controller_source = cdef_test_controller_source();
+	$functions              = [
 		'draw_cdef_preview', 'form_save', 'duplicate_cdef', 'form_actions',
 		'cdef_item_remove_confirm', 'item_movedown', 'item_moveup',
 		'cdef_item_remove', 'item_edit', 'cdef_item_dnd', 'cdef_edit', 'cdef',
@@ -28,7 +41,9 @@ test('CDEF controller exposes every action handler', function () use ($cdef_cont
 	expect($matches[1])->toBe($functions);
 });
 
-test('CDEF dispatcher covers save edit reorder remove duplicate and list actions', function () use ($cdef_controller_source) : void {
+test('CDEF dispatcher covers save edit reorder remove duplicate and list actions', function () : void {
+	$cdef_controller_source = cdef_test_controller_source();
+
 	foreach (['save', 'item_remove_confirm', 'item_remove', 'item_movedown', 'item_moveup', 'edit', 'item_edit', 'ajax_dnd', 'actions'] as $action) {
 		expect($cdef_controller_source)->toContain("case '$action':");
 	}
@@ -36,17 +51,20 @@ test('CDEF dispatcher covers save edit reorder remove duplicate and list actions
 	expect($cdef_controller_source)->toMatch('/default:\s+top_header\(\);\s+cdef\(\);\s+bottom_footer\(\);/');
 });
 
-test('CDEF mutations validate identifiers and use bound database operations', function () use ($cdef_controller_source) : void {
+test('CDEF mutations validate identifiers and use bound database operations', function () : void {
+	$cdef_controller_source = cdef_test_controller_source();
+
 	expect($cdef_controller_source)->toContain("get_filter_request_var('cdef_id');")
 		->toContain("get_filter_request_var('id');")
 		->toContain('input_validate_input_number($cdef_id);')
 		->toContain("db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', array(\$_cdef_id))")
 		->toContain("db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE cdef_id = ?', array(\$_cdef_id))")
-		->toContain("DELETE FROM cdef_items\n\t\tWHERE cdef_id = ?\n\t\tAND id = ?")
-		->toContain("UPDATE cdef_items\n\t\t\t\t\tSET sequence = ?\n\t\t\t\t\tWHERE id = ?");
+		->toMatch('/DELETE FROM cdef_items\s+WHERE cdef_id = \?\s+AND id = \?/')
+		->toMatch('/UPDATE cdef_items\s+SET sequence = \?\s+WHERE id = \?/');
 });
 
-test('CDEF save duplicate and delete flows maintain definitions and their items', function () use ($cdef_controller_source) : void {
+test('CDEF save duplicate and delete flows maintain definitions and their items', function () : void {
+	$cdef_controller_source = cdef_test_controller_source();
 	expect($cdef_controller_source)->toContain("sql_save(\$save, 'cdef')")
 		->toContain("sql_save(\$save, 'cdef_items')")
 		->toContain("get_hash_cdef(0, 'cdef_item')")
@@ -56,7 +74,8 @@ test('CDEF save duplicate and delete flows maintain definitions and their items'
 		->toContain("duplicate_cdef(\$selected_items[\$i], get_nfilter_request_var('title_format'))");
 });
 
-test('CDEF edit and list views bind filters pagination and drag ordering', function () use ($cdef_controller_source) : void {
+test('CDEF edit and list views bind filters pagination and drag ordering', function () : void {
+	$cdef_controller_source = cdef_test_controller_source();
 	expect($cdef_controller_source)->toContain('ORDER BY sequence')
 		->toContain('tableDnD({')
 		->toContain('cdef_item_dnd()')
