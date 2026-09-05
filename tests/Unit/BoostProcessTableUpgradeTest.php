@@ -44,6 +44,8 @@ test('Boost recovers the process-table columns without waiting for an upgrade st
 
 	expect($boost)->toContain('function boost_ensure_process_table()')
 		->and($boost)->toContain("db_column_exists('poller_output_boost_processes', 'run_id')")
+		->and($boost)->toContain("db_column_exists('poller_output_boost_processes', 'child_id')")
+		->and($boost)->toContain("db_index_exists('poller_output_boost_processes', 'run_child')")
 		->and($poller)->toContain('boost_ensure_process_table()')
 		->and($child)->toContain('boost_ensure_process_table()');
 });

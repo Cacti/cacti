@@ -3242,7 +3242,7 @@ function generate_graph_best_cf($local_data_id, $requested_cf, $ds_step = 60) {
 			}
 		}
 	} else {
-		$best_cf = '1';
+		$best_cf = 1;
 	}
 
 	/* if you can not figure it out return average */
