@@ -13,12 +13,15 @@
 */
 
 $root = dirname(__DIR__, 4);
-$config = array(
-	'php_snmp_support' => false,
-	'include_path'     => $root . '/include'
-);
 
-require_once $root . '/lib/snmp.php';
+(function () use ($root) {
+	$config = array(
+		'php_snmp_support' => false,
+		'include_path'     => $root . '/include'
+	);
+
+	require_once $root . '/lib/snmp.php';
+})();
 
 test('issue 7342 rejects an snmpEngineTime value that is the Unix clock', function () {
 	$now = 1784363931;
