@@ -15,8 +15,6 @@ if (PHP_SAPI !== 'cli') {
 	exit;
 }
 
-require_once dirname(__DIR__) . '/vendor/autoload.php';
-
 $GLOBALS['cdef_test_items']          = [];
 $GLOBALS['cdef_test_lists']          = [];
 $GLOBALS['cdef_test_names']          = [];
