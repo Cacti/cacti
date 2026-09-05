@@ -791,6 +791,10 @@ function setupSelectmenuScrollClose() {
 		.add(window)
 		.off('scroll.cactiSelectmenu')
 		.on('scroll.cactiSelectmenu', function() {
+			if (!$('.ui-selectmenu-open').length) {
+				return;
+			}
+
 			$('select').each(function() {
 				if ($(this).selectmenu('instance') !== undefined) {
 					$(this).selectmenu('close');

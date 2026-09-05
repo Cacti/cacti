@@ -51,6 +51,8 @@ test('scroll handlers close initialized select menus without duplicate bindings'
 	const windowObject = {};
 	const selects = [{ initialized: true, closes: 0 }, { initialized: false, closes: 0 }];
 	let boundEvent;
+	let menuOpen = true;
+	let selectScans = 0;
 	let scrollHandler;
 	let selectedContainers;
 
@@ -79,9 +81,15 @@ test('scroll handlers close initialized select menus without duplicate bindings'
 		}
 
 		if (selector === 'select') {
+			selectScans++;
+
 			return {
 				each: (callback) => selects.forEach(select => callback.call(select))
 			};
+		}
+
+		if (selector === '.ui-selectmenu-open') {
+			return { length: menuOpen ? 1 : 0 };
 		}
 
 		return {
@@ -109,6 +117,11 @@ test('scroll handlers close initialized select menus without duplicate bindings'
 	scrollHandler();
 	assert.equal(selects[0].closes, 1);
 	assert.equal(selects[1].closes, 0);
+	assert.equal(selectScans, 1);
+
+	menuOpen = false;
+	scrollHandler();
+	assert.equal(selectScans, 1);
 });
 
 test('applySkin binds scroll handling after theme widgets initialize', () => {
