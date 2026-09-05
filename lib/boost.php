@@ -596,7 +596,7 @@ function boost_graph_cache_filename(string $cache_directory, int $local_graph_id
 		'nolegend'       => isset($graph_data_array['graph_nolegend']),
 	]);
 
-	return rtrim($cache_directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . hash_hmac('sha256', $cache_key, $secret) . '.png';
+	return rtrim($cache_directory, '/\\') . DIRECTORY_SEPARATOR . hash_hmac('sha256', $cache_key, $secret) . '.png';
 }
 
 /** Replace an existing cache object after Windows rejects rename-over-existing. */

@@ -11,15 +11,31 @@
  +-------------------------------------------------------------------------+
  */
 
-function boostSource(string $path): string {
-	$source = file_get_contents(CACTI_PATH_BASE . '/' . $path);
+if (!function_exists('boostSource')) {
+	function boostSource(string $path): string {
+		$source = file_get_contents(CACTI_PATH_BASE . '/' . $path);
 
-	if ($source === false) {
-		throw new RuntimeException("Unable to read Boost source file: $path");
+		if ($source === false) {
+			throw new RuntimeException("Unable to read Boost source file: $path");
+		}
+
+		return $source;
 	}
-
-	return $source;
 }
+
+test('Boost cache paths normalize either trailing separator style', function () {
+	$boost = boostSource('lib/boost.php');
+
+	expect($boost)->toContain("rtrim(\$cache_directory, '/\\\\')");
+});
+
+test('Boost hand-off helper tolerates repeated test-file loading', function () {
+	$source      = file_get_contents(__FILE__);
+	$declaration = strpos($source, 'function ' . 'boostSource');
+
+	expect($declaration)->not->toBeFalse();
+	expect(substr($source, max(0, $declaration - 80), 80))->toContain("if (!function_exists('boostSource')) {");
+});
 
 test('Boost hand-off batches expose database acknowledgement', function () {
 	$boost = boostSource('lib/boost.php');
