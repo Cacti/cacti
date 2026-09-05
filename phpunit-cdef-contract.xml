@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="tests/bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+	<php>
+		<ini name="error_reporting" value="-1"/>
+	</php>
+	<testsuites>
+		<testsuite name="CDEF controller contracts">
+			<file>tests/Unit/Ui/Cdef/CdefControllerContractTest.php</file>
+		</testsuite>
+	</testsuites>
+</phpunit>
