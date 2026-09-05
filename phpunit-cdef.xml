@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="tests/Helpers/CdefCoverageBootstrap.php" beStrictAboutOutputDuringTests="false">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
+	bootstrap="tests/Helpers/CdefCoverageBootstrap.php"
+	beStrictAboutOutputDuringTests="false"
+	cacheDirectory=".phpunit.cache">
 	<php>
 		<ini name="error_reporting" value="-1"/>
 		<env name="CACTI_TEST_BOOTSTRAP" value="1"/>
 	</php>
-	<coverage>
+	<source>
 		<include>
 			<file>lib/cdef.php</file>
 		</include>
-	</coverage>
+	</source>
 	<testsuites>
 		<testsuite name="CDEF coverage">
 			<file>tests/Coverage/CdefCoverageTest.php</file>
