@@ -243,7 +243,6 @@ function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : bo
 	$overhead   = strlen($sql_prefix) + 1;
 	$out_buffer = '';
 	$out_length = 0;
-	$success    = true;
 	$rows       = 0;
 
 	foreach ($value_tuples as $tuple) {
@@ -257,8 +256,10 @@ function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : bo
 			}
 
 			if (!$acknowledged) {
-				$success = false;
-			} elseif (db_affected_rows($conn) < $rows) {
+				return false;
+			}
+
+			if (db_affected_rows($conn) < $rows) {
 				cacti_log('WARNING: Boost staging ignored one or more duplicate sample keys.', false, 'BOOST');
 			}
 
@@ -280,13 +281,15 @@ function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : bo
 		}
 
 		if (!$acknowledged) {
-			$success = false;
-		} elseif (db_affected_rows($conn) < $rows) {
+			return false;
+		}
+
+		if (db_affected_rows($conn) < $rows) {
 			cacti_log('WARNING: Boost staging ignored one or more duplicate sample keys.', false, 'BOOST');
 		}
 	}
 
-	return $success;
+	return true;
 }
 
 /**

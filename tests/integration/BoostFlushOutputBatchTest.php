@@ -31,12 +31,24 @@ require_once CACTI_PATH_INCLUDE . '/vendor/autoload.php';
 require_once CACTI_PATH_LIBRARY . '/database.php';
 require_once CACTI_PATH_LIBRARY . '/boost.php';
 
+class BoostBatchPDO extends FakeMySQLPDO {
+	public int $insert_attempts = 0;
+
+	public function prepare(string $query, array $options = []): PDOStatement|false {
+		if (stripos(ltrim($query), 'INSERT IGNORE INTO poller_output_boost') === 0) {
+			$this->insert_attempts++;
+		}
+
+		return parent::prepare($query, $options);
+	}
+}
+
 beforeEach(function () {
 	global $database_sessions, $database_hostname, $database_port, $database_default;
 
 	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
 
-	$conn = new FakeMySQLPDO();
+	$conn = new BoostBatchPDO();
 
 	$conn->exec('CREATE TABLE poller_output_boost (
 		local_data_id INTEGER NOT NULL,
@@ -115,7 +127,7 @@ test('non-colliding rows in the same batch are all written', function () {
 });
 
 test('splits a batch before the database packet limit without losing rows', function () {
-	$large_output = str_repeat('x', 600000);
+	$large_output = str_repeat('x', 2200000);
 
 	expect(boost_flush_output_batch([
 		"(11,'large_1','2024-01-01 00:00:00','{$large_output}')",
@@ -125,8 +137,9 @@ test('splits a batch before the database packet limit without losing rows', func
 	$count = (int) $this->conn->query('SELECT COUNT(*) FROM poller_output_boost')->fetchColumn();
 
 	expect($count)->toBe(2)
-		->and(strlen(boost_test_fetch_output($this->conn, 11, 'large_1', '2024-01-01 00:00:00')))->toBe(600000)
-		->and(strlen(boost_test_fetch_output($this->conn, 12, 'large_2', '2024-01-01 00:00:00')))->toBe(600000);
+		->and($this->conn->insert_attempts)->toBe(2)
+		->and(strlen(boost_test_fetch_output($this->conn, 11, 'large_1', '2024-01-01 00:00:00')))->toBe(2200000)
+		->and(strlen(boost_test_fetch_output($this->conn, 12, 'large_2', '2024-01-01 00:00:00')))->toBe(2200000);
 });
 
 test('an empty tuple list is a no-op', function () {
