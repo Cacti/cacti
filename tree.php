@@ -2326,7 +2326,7 @@ function tree() {
 					$sequence .= '<span class="moveArrowNone"></span>';
 					$sequence .= '<span class="moveArrowNone"></span>';
 				} elseif ($i == 1) {
-					$sequence .= '<a class="pic fa fa-caret-down moveArrow cactiPostAction" href="' . htmlspecialchars('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __esc('Move Down') . '"></a>';
+					$sequence .= '<a class="pic fa fa-caret-down moveArrow cactiPostAction" href="' . html_escape('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __esc('Move Down') . '"></a>';
 					$sequence .= '<span class="moveArrowNone"></span>';
 				} elseif ($i == cacti_sizeof($trees)) {
 					$sequence .= '<span class="moveArrowNone"></span>';
@@ -2390,4 +2390,3 @@ function tree() {
 		<?php
 	}
 }
-

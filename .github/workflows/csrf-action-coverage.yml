@@ -7,7 +7,8 @@ on:
       - '.github/workflows/csrf-action-coverage.yml'
       - 'include/global.php'
       - 'include/layout.js'
-      - '**.php'
+      - '**/*.php'
+      - 'tests/phpunit-csrf.xml'
       - 'tests/Unit/Security/Csrf/ItemActionPostOnlyTest.php'
       - 'tests/js/csrf_post_actions.test.js'
   pull_request:
@@ -16,7 +17,8 @@ on:
       - '.github/workflows/csrf-action-coverage.yml'
       - 'include/global.php'
       - 'include/layout.js'
-      - '**.php'
+      - '**/*.php'
+      - 'tests/phpunit-csrf.xml'
       - 'tests/Unit/Security/Csrf/ItemActionPostOnlyTest.php'
       - 'tests/js/csrf_post_actions.test.js'
   workflow_dispatch:
@@ -57,7 +59,7 @@ jobs:
 
       - name: Verify guarded actions and links
         working-directory: tests
-        run: vendor/bin/pest Unit/Security/Csrf/ItemActionPostOnlyTest.php
+        run: vendor/bin/pest --configuration=phpunit-csrf.xml
 
       - name: Verify browser POST construction
         run: node --test tests/js/csrf_post_actions.test.js
