@@ -11,10 +11,13 @@ on:
       - 'lib/cdef.php'
       - 'phpunit-cdef.xml'
       - 'phpunit-cdef-contract.xml'
+      - 'phpunit-cdef-integration.xml'
       - 'tests/composer.json'
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
+      - 'tests/Helpers/CdefDatabaseProbe.php'
       - 'tests/Unit/Ui/Cdef/CdefControllerContractTest.php'
+      - 'tests/integration/CdefDatabaseIntegrationTest.php'
   pull_request:
     branches: [1.2.x]
     paths:
@@ -25,10 +28,13 @@ on:
       - 'lib/cdef.php'
       - 'phpunit-cdef.xml'
       - 'phpunit-cdef-contract.xml'
+      - 'phpunit-cdef-integration.xml'
       - 'tests/composer.json'
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
+      - 'tests/Helpers/CdefDatabaseProbe.php'
       - 'tests/Unit/Ui/Cdef/CdefControllerContractTest.php'
+      - 'tests/integration/CdefDatabaseIntegrationTest.php'
   workflow_dispatch:
 
 permissions:
@@ -46,6 +52,22 @@ jobs:
     name: lib/cdef.php 100% coverage
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+
+    services:
+      mariadb:
+        image: mariadb@sha256:611a2fcc5fa7c6ceb8644c6f74b25ede004ff6c3a6b38c8f8c23d3bbf6c26430 # 11.4
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: cacti_test
+          MARIADB_USER: cacti
+          MARIADB_PASSWORD: cacti
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
 
     steps:
       - name: Checkout
@@ -87,3 +109,14 @@ jobs:
       - name: Run controller contract tests
         working-directory: tests
         run: vendor/bin/pest --configuration=../phpunit-cdef-contract.xml
+
+      - name: Run MariaDB integration coverage
+        working-directory: tests
+        env:
+          CACTI_CDEF_REAL_DB: '1'
+          CACTI_TEST_DB_HOST: 127.0.0.1
+          CACTI_TEST_DB_PORT: '3306'
+          CACTI_TEST_DB_NAME: cacti_test
+          CACTI_TEST_DB_USER: cacti
+          CACTI_TEST_DB_PASS: cacti
+        run: vendor/bin/pest --configuration=../phpunit-cdef-integration.xml

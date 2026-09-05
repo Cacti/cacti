@@ -20,20 +20,20 @@ $GLOBALS['cdef_test_queries'] = [];
 $GLOBALS['cdef_functions']    = [];
 $GLOBALS['cdef_operators']    = [];
 
-function db_fetch_row_prepared(string $sql, array $params = []) : array|false {
-	$GLOBALS['cdef_test_queries'][] = [$sql, $params];
+function db_fetch_row_prepared($sql, $params = array(), $log = true, $db_conn = false) {
+	$GLOBALS['cdef_test_queries'][] = array($sql, $params, $log, $db_conn);
 
 	return $GLOBALS['cdef_test_items'][(int) ($params[0] ?? 0)] ?? false;
 }
 
-function db_fetch_assoc_prepared(string $sql, array $params = []) : array|false {
-	$GLOBALS['cdef_test_queries'][] = [$sql, $params];
+function db_fetch_assoc_prepared($sql, $params = array(), $log = true, $db_conn = false) {
+	$GLOBALS['cdef_test_queries'][] = array($sql, $params, $log, $db_conn);
 
 	return $GLOBALS['cdef_test_lists'][(int) ($params[0] ?? 0)] ?? [];
 }
 
-function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
-	$GLOBALS['cdef_test_queries'][] = [$sql, $params];
+function db_fetch_cell_prepared($sql, $params = array(), $col_name = '', $log = true, $db_conn = false) {
+	$GLOBALS['cdef_test_queries'][] = array($sql, $params, $col_name, $log, $db_conn);
 
 	return $GLOBALS['cdef_test_names'][(int) ($params[0] ?? 0)] ?? false;
 }
