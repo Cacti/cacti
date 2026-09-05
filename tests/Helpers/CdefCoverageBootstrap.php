@@ -11,6 +11,10 @@
  +-------------------------------------------------------------------------+
 */
 
+if (PHP_SAPI !== 'cli') {
+	exit;
+}
+
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $GLOBALS['cdef_test_items']   = [];
@@ -43,8 +47,10 @@ function cacti_sizeof(mixed $value) : int {
 	return is_array($value) ? count($value) : 0;
 }
 
-function cacti_log($message, $output = false, $environ = 'SYSTEM') {
-	$GLOBALS['cdef_test_logs'][] = array($message, $output, $environ);
+function cacti_log($message, $output = false, $environ = 'CMDPHP', $level = '') {
+	$GLOBALS['cdef_test_logs'][] = array($message, $output, $environ, $level);
+
+	return true;
 }
 
 require_once dirname(__DIR__, 2) . '/lib/cdef.php';

@@ -14,11 +14,23 @@
 
 /* Isolated MariaDB fixture for CdefDatabaseIntegrationTest.php. */
 
-$host = getenv('CACTI_TEST_DB_HOST') ?: '127.0.0.1';
-$port = getenv('CACTI_TEST_DB_PORT') ?: '3306';
-$name = getenv('CACTI_TEST_DB_NAME') ?: 'cacti_test';
-$user = getenv('CACTI_TEST_DB_USER') ?: 'cacti';
-$pass = getenv('CACTI_TEST_DB_PASS') ?: 'cacti';
+if (PHP_SAPI !== 'cli') {
+	http_response_code(404);
+	exit;
+}
+
+$host = getenv('CACTI_TEST_DB_HOST');
+$port = getenv('CACTI_TEST_DB_PORT');
+$name = getenv('CACTI_TEST_DB_NAME');
+$user = getenv('CACTI_TEST_DB_USER');
+$pass = getenv('CACTI_TEST_DB_PASS');
+
+if ($host === false || $host === '' || $port === false || $port === '' || $name === false || $name === '' || $user === false || $user === '') {
+	fwrite(STDERR, 'CdefDatabaseProbe: CACTI_TEST_DB_HOST, PORT, NAME, and USER are required.');
+	exit(2);
+}
+
+$pass = $pass === false ? '' : $pass;
 
 $GLOBALS['cdef_probe_connection'] = new PDO("mysql:host=$host;port=$port;dbname=$name;charset=utf8mb4", $user, $pass, array(
 	PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -48,13 +60,19 @@ function cacti_sizeof($value) {
 	return is_array($value) ? count($value) : 0;
 }
 
+function cacti_log($message, $output = false, $environ = 'CMDPHP', $level = '') {
+	return true;
+}
+
 $conn = $GLOBALS['cdef_probe_connection'];
 $conn->exec('CREATE TEMPORARY TABLE cdef (id INTEGER PRIMARY KEY, name VARCHAR(255) NOT NULL)');
 $conn->exec('CREATE TEMPORARY TABLE cdef_items (id INTEGER PRIMARY KEY, cdef_id INTEGER NOT NULL, sequence INTEGER NOT NULL, type VARCHAR(8) NOT NULL, value VARCHAR(150) NOT NULL)');
 $conn->exec("INSERT INTO cdef (id, name) VALUES (1, 'Base Definition'), (2, 'Nested Definition')");
 $conn->exec("INSERT INTO cdef_items (id, cdef_id, sequence, type, value) VALUES
 	(1, 1, 3, '2', '3'), (2, 1, 1, '4', 'CURRENT_DATA_SOURCE'), (3, 1, 2, '6', '8'),
-	(4, 2, 1, '5', '1'), (5, 2, 2, '6', '2'), (6, 6, 1, '5', '6')");
+	(4, 2, 1, '5', '1'), (5, 2, 2, '6', '2'), (6, 6, 1, '5', '6'),
+	(7, 7, 1, '1', '999'), (8, 8, 1, '5', '1'), (9, 8, 2, '5', '1'),
+	(10, 10, 1, '5', '999')");
 
 $GLOBALS['cdef_functions'] = array(7 => 'Maximum');
 $GLOBALS['cdef_operators'] = array(3 => '*');
@@ -67,4 +85,7 @@ print json_encode(array(
 	'nested'  => get_cdef(2),
 	'missing' => get_cdef_item_name(999),
 	'cycle'   => get_cdef(6),
+	'invalid' => get_cdef(7),
+	'diamond' => get_cdef(8),
+	'missing_definition' => get_cdef_item_name(10),
 ), JSON_THROW_ON_ERROR);

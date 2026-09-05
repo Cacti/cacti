@@ -4,11 +4,11 @@
 		<ini name="error_reporting" value="-1"/>
 		<env name="CACTI_TEST_BOOTSTRAP" value="1"/>
 	</php>
-	<source>
+	<coverage>
 		<include>
 			<file>lib/cdef.php</file>
 		</include>
-	</source>
+	</coverage>
 	<testsuites>
 		<testsuite name="CDEF coverage">
 			<file>tests/Coverage/CdefCoverageTest.php</file>
