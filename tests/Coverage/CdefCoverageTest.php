@@ -11,37 +11,6 @@
  +-------------------------------------------------------------------------+
 */
 
-$GLOBALS['cdef_test_items']   = [];
-$GLOBALS['cdef_test_lists']   = [];
-$GLOBALS['cdef_test_names']   = [];
-$GLOBALS['cdef_test_queries'] = [];
-$GLOBALS['cdef_functions']    = [];
-$GLOBALS['cdef_operators']    = [];
-
-function db_fetch_row_prepared(string $sql, array $params = []) : array|false {
-	$GLOBALS['cdef_test_queries'][] = [$sql, $params];
-
-	return $GLOBALS['cdef_test_items'][(int) ($params[0] ?? 0)] ?? false;
-}
-
-function db_fetch_assoc_prepared(string $sql, array $params = []) : array|false {
-	$GLOBALS['cdef_test_queries'][] = [$sql, $params];
-
-	return $GLOBALS['cdef_test_lists'][(int) ($params[0] ?? 0)] ?? [];
-}
-
-function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
-	$GLOBALS['cdef_test_queries'][] = [$sql, $params];
-
-	return $GLOBALS['cdef_test_names'][(int) ($params[0] ?? 0)] ?? false;
-}
-
-function cacti_sizeof(mixed $value) : int {
-	return is_array($value) ? count($value) : 0;
-}
-
-require_once dirname(__DIR__, 2) . '/lib/cdef.php';
-
 beforeEach(function () : void {
 	$GLOBALS['cdef_test_items']   = [];
 	$GLOBALS['cdef_test_lists']   = [];
