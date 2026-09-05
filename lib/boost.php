@@ -29,14 +29,14 @@
  */
 function boost_ensure_process_table($repair_key = false) {
 	if (!db_table_exists('poller_output_boost_processes')) {
-		if (db_execute("CREATE TABLE `poller_output_boost_processes` (
+		if (db_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost_processes` (
 			`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
 			`run_id` char(32) NOT NULL default '',
 			`child_id` int(10) unsigned NOT NULL default '0',
 			`status` varchar(255) default NULL,
 			PRIMARY KEY (`sock_int_value`),
 			UNIQUE KEY `run_child` (`run_id`, `child_id`))
-			ENGINE=MEMORY") === false) {
+			ENGINE=MEMORY") === false && !db_table_exists('poller_output_boost_processes')) {
 			cacti_log('ERROR: Unable to create poller_output_boost_processes', true, 'BOOST');
 
 			return false;
@@ -54,7 +54,8 @@ function boost_ensure_process_table($repair_key = false) {
 	}
 
 	if ($needs_run_id) {
-		if (db_execute("ALTER TABLE poller_output_boost_processes ADD `run_id` char(32) NOT NULL default '' AFTER `sock_int_value`") === false) {
+		if (db_execute("ALTER TABLE poller_output_boost_processes ADD `run_id` char(32) NOT NULL default '' AFTER `sock_int_value`") === false &&
+			!db_column_exists('poller_output_boost_processes', 'run_id')) {
 			cacti_log('ERROR: Unable to add run_id to poller_output_boost_processes', true, 'BOOST');
 
 			return false;
@@ -62,7 +63,8 @@ function boost_ensure_process_table($repair_key = false) {
 	}
 
 	if ($needs_child_id) {
-		if (db_execute("ALTER TABLE poller_output_boost_processes ADD `child_id` int(10) unsigned NOT NULL default '0' AFTER `run_id`") === false) {
+		if (db_execute("ALTER TABLE poller_output_boost_processes ADD `child_id` int(10) unsigned NOT NULL default '0' AFTER `run_id`") === false &&
+			!db_column_exists('poller_output_boost_processes', 'child_id')) {
 			cacti_log('ERROR: Unable to add child_id to poller_output_boost_processes', true, 'BOOST');
 
 			return false;
@@ -76,7 +78,8 @@ function boost_ensure_process_table($repair_key = false) {
 			return false;
 		}
 
-		if (db_execute('ALTER TABLE poller_output_boost_processes ADD UNIQUE KEY `run_child` (`run_id`, `child_id`)') === false) {
+		if (db_execute('ALTER TABLE poller_output_boost_processes ADD UNIQUE KEY `run_child` (`run_id`, `child_id`)') === false &&
+			!db_index_exists('poller_output_boost_processes', 'run_child')) {
 			cacti_log('ERROR: Unable to add run_child key to poller_output_boost_processes', true, 'BOOST');
 
 			return false;
