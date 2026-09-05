@@ -222,8 +222,23 @@ function form_actions() : void {
 
 		if ($selected_items != false) {
 			if (gnrv('drp_action') == '1') { // delete
-				db_execute('DELETE FROM cdef WHERE ' . array_to_sql_or($selected_items, 'id'));
-				db_execute('DELETE FROM cdef_items WHERE ' . array_to_sql_or($selected_items, 'cdef_id'));
+				$selected_items = array_map('intval', $selected_items);
+				$in_use         = false;
+
+				foreach ($selected_items as $cdef_id) {
+					if (cdef_is_in_use($cdef_id, $selected_items)) {
+						$in_use = true;
+
+						break;
+					}
+				}
+
+				if ($in_use) {
+					raise_message('cdef_in_use', __('One or more CDEFs are in use and cannot be deleted.'), MESSAGE_LEVEL_ERROR);
+				} else {
+					db_execute('DELETE FROM cdef WHERE ' . array_to_sql_or($selected_items, 'id'));
+					db_execute('DELETE FROM cdef_items WHERE ' . array_to_sql_or($selected_items, 'cdef_id'));
+				}
 			} elseif (gnrv('drp_action') == '2') { // duplicate
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					duplicate_cdef($selected_items[$i], gnrv('title_format'));
