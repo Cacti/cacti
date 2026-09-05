@@ -26,6 +26,38 @@
  * boost_array_orderby - performs a multicolumn sort of an
  *   array
  */
+/**
+ * Ensure poller_output_boost_processes has the run_id/child_id shape.
+ * Git-following 1.2.x installs can already be stamped 1.2.32 without
+ * ever running an upgrade file that adds those columns.
+ */
+function boost_ensure_process_table() {
+	if (!db_table_exists('poller_output_boost_processes')) {
+		db_execute('CREATE TABLE `poller_output_boost_processes` (
+			`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
+			`run_id` char(32) NOT NULL default "",
+			`child_id` int(10) unsigned NOT NULL default "0",
+			`status` varchar(255) default NULL,
+			PRIMARY KEY (`sock_int_value`),
+			UNIQUE KEY `run_child` (`run_id`, `child_id`))
+			ENGINE=MEMORY');
+
+		return;
+	}
+
+	if (db_column_exists('poller_output_boost_processes', 'run_id')) {
+		return;
+	}
+
+	db_execute('TRUNCATE TABLE poller_output_boost_processes');
+	db_execute('ALTER TABLE poller_output_boost_processes ADD `run_id` char(32) NOT NULL default "" AFTER `sock_int_value`');
+	db_execute('ALTER TABLE poller_output_boost_processes ADD `child_id` int(10) unsigned NOT NULL default "0" AFTER `run_id`');
+
+	if (!db_index_exists('poller_output_boost_processes', 'run_child')) {
+		db_execute('ALTER TABLE poller_output_boost_processes ADD UNIQUE KEY `run_child` (`run_id`, `child_id`)');
+	}
+}
+
 function boost_array_orderby() {
 	$args = func_get_args();
 	$data = array_shift($args);
