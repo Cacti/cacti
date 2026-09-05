@@ -17,6 +17,7 @@ $GLOBALS['cdef_test_items']   = [];
 $GLOBALS['cdef_test_lists']   = [];
 $GLOBALS['cdef_test_names']   = [];
 $GLOBALS['cdef_test_queries'] = [];
+$GLOBALS['cdef_test_logs']    = [];
 $GLOBALS['cdef_functions']    = [];
 $GLOBALS['cdef_operators']    = [];
 
@@ -40,6 +41,10 @@ function db_fetch_cell_prepared($sql, $params = array(), $col_name = '', $log = 
 
 function cacti_sizeof(mixed $value) : int {
 	return is_array($value) ? count($value) : 0;
+}
+
+function cacti_log($message, $output = false, $environ = 'SYSTEM') {
+	$GLOBALS['cdef_test_logs'][] = array($message, $output, $environ);
 }
 
 require_once dirname(__DIR__, 2) . '/lib/cdef.php';
