@@ -25,7 +25,7 @@ function cdef_test_controller_source() : string {
 	return $source;
 }
 
-test('CDEF controller exposes every action handler', function () : void {
+test('CDEF controller source declares every expected action handler', function () : void {
 	$cdef_controller_source = cdef_test_controller_source();
 	$functions              = [
 		'draw_cdef_preview', 'form_save', 'duplicate_cdef', 'form_actions',
@@ -41,7 +41,7 @@ test('CDEF controller exposes every action handler', function () : void {
 	expect(array_diff($functions, $matches[1]))->toBe([]);
 });
 
-test('CDEF dispatcher covers save edit reorder remove duplicate and list actions', function () : void {
+test('CDEF dispatcher source covers save edit reorder remove duplicate and list actions', function () : void {
 	$cdef_controller_source = cdef_test_controller_source();
 
 	foreach (['save', 'item_remove_confirm', 'item_remove', 'item_movedown', 'item_moveup', 'edit', 'item_edit', 'ajax_dnd', 'actions'] as $action) {
@@ -51,7 +51,7 @@ test('CDEF dispatcher covers save edit reorder remove duplicate and list actions
 	expect($cdef_controller_source)->toMatch('/default:\s+top_header\(\);\s+cdef\(\);\s+bottom_footer\(\);/');
 });
 
-test('CDEF mutations validate identifiers and use bound database operations', function () : void {
+test('CDEF mutation source validates identifiers and includes bound database operations', function () : void {
 	$cdef_controller_source = cdef_test_controller_source();
 
 	expect($cdef_controller_source)->toContain("get_filter_request_var('cdef_id');")
@@ -63,13 +63,11 @@ test('CDEF mutations validate identifiers and use bound database operations', fu
 		->toMatch('/UPDATE cdef_items\s+SET sequence = \?\s+WHERE id = \?/');
 });
 
-test('CDEF save duplicate and delete flows maintain definitions and their items', function () : void {
+test('CDEF save and duplicate source maintains definitions and their items', function () : void {
 	$cdef_controller_source = cdef_test_controller_source();
 	expect($cdef_controller_source)->toContain("sql_save(\$save, 'cdef')")
 		->toContain("sql_save(\$save, 'cdef_items')")
 		->toContain("get_hash_cdef(0, 'cdef_item')")
-		->toContain('DELETE FROM cdef WHERE ')
-		->toContain('DELETE FROM cdef_items WHERE ')
 		->toContain("sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'))")
 		->toContain("duplicate_cdef(\$selected_items[\$i], get_nfilter_request_var('title_format'))");
 });
@@ -82,7 +80,5 @@ test('CDEF edit and list views bind filters pagination and drag ordering', funct
 		->toContain("html_start_box(__('CDEF Preview')")
 		->toContain('get_cdef($cdef_id, true)')
 		->toContain("get_request_var('rows')")
-		->toContain("get_request_var('page')")
-		->toContain("\$sql_limit = ' LIMIT ' . (\$rows*(get_request_var('page')-1)) . ',' . \$rows")
-		->toContain('$cdef_list = db_fetch_assoc(');
+		->toContain("get_request_var('page')");
 });

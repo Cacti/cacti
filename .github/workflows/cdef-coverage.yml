@@ -13,6 +13,8 @@ on:
       - 'phpunit-cdef-contract.xml'
       - 'phpunit-cdef-integration.xml'
       - 'tests/composer.json'
+      - 'tests/composer.lock'
+      - 'tests/.htaccess'
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/Helpers/CdefDatabaseProbe.php'
@@ -30,6 +32,8 @@ on:
       - 'phpunit-cdef-contract.xml'
       - 'phpunit-cdef-integration.xml'
       - 'tests/composer.json'
+      - 'tests/composer.lock'
+      - 'tests/.htaccess'
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/Helpers/CdefDatabaseProbe.php'
@@ -86,12 +90,13 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: tests/vendor
-          key: ${{ runner.os }}-php-cdef-coverage-${{ hashFiles('tests/composer.json') }}
-          restore-keys: |
-            ${{ runner.os }}-php-cdef-coverage-
+          key: ${{ runner.os }}-php-cdef-coverage-${{ hashFiles('tests/composer.lock') }}
 
       - name: Install dependencies
         run: composer install --working-dir=tests --prefer-dist --no-progress --no-interaction
+
+      - name: Validate locked test dependencies
+        run: composer validate --working-dir=tests --strict
 
       - name: Enforce line coverage
         working-directory: tests

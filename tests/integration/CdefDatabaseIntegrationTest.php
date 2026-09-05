@@ -34,10 +34,13 @@ test('CDEF resolution executes against MariaDB with production table shapes', fu
 	$results = json_decode($stdout, true, 512, JSON_THROW_ON_ERROR);
 
 	expect($results)->toBe([
-		'item'    => 'Base Definition',
-		'base'    => 'CURRENT_DATA_SOURCE,8,*',
-		'nested'  => 'CURRENT_DATA_SOURCE,8,*,2',
-		'missing' => null,
-		'cycle'   => '',
+		'item'               => 'Base Definition',
+		'base'               => 'CURRENT_DATA_SOURCE,8,*',
+		'nested'             => 'CURRENT_DATA_SOURCE,8,*,2',
+		'missing'            => null,
+		'cycle'              => '',
+		'invalid'            => '',
+		'diamond'            => 'CURRENT_DATA_SOURCE,8,*,CURRENT_DATA_SOURCE,8,*',
+		'missing_definition' => null,
 	]);
 });
