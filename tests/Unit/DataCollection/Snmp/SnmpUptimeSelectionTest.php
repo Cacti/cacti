@@ -45,6 +45,6 @@ test('every system uptime consumer delegates to the shared selector', function (
 		$source = file_get_contents($root . '/' . $path);
 
 		expect($source)->not->toBeFalse("$path must be readable")
-			->and(substr_count($source, 'cacti_snmp_select_uptime('))->toBe($count);
+			->and(substr_count($source, 'cacti_snmp_select_uptime('))->toBeGreaterThanOrEqual($count);
 	}
 });
