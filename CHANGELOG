@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -security: Replace sibling password-reset links and revoke authentication state after reset
 -issue: Fail closed when OAuth callback state is absent or mismatched
 -issue#7959: Stop source checkouts from loading a partial Composer dependency tree
+-issue#7809: Avoid reading a missing source key on output-only data query fields
 -issue#7775: Add plugin-extensible notification API
 -issue#7746: Make PHP 8.1 dependency builds reproducible
 -issue#7672: Block loopback/link-local SSRF targets in call_remote_data_collector
