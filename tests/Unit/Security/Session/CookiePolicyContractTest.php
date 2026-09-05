@@ -11,21 +11,42 @@
  +-------------------------------------------------------------------------+
 */
 
-$cookie_root    = dirname(__DIR__, 4);
-$cookie_sources = [
-	'functions' => file_get_contents($cookie_root . '/lib/functions.php'),
-	'auth'      => file_get_contents($cookie_root . '/lib/auth.php'),
-	'global'    => file_get_contents($cookie_root . '/include/global.php'),
-	'tfa'       => file_get_contents($cookie_root . '/auth_2fa.php'),
-	'logout'    => file_get_contents($cookie_root . '/logout.php'),
-	'login'     => file_get_contents($cookie_root . '/auth_login.php'),
-	'change'    => file_get_contents($cookie_root . '/auth_changepassword.php'),
-	'include'   => file_get_contents($cookie_root . '/include/auth.php'),
-	'zoom'      => file_get_contents($cookie_root . '/include/js/jquery.zoom.js'),
-	'storage'   => file_get_contents($cookie_root . '/include/js/js.storage.js'),
-];
+function cacti_test_cookie_sources() : array {
+	static $sources;
 
-test('server cookie writers enforce path domain secure httponly and SameSite policy', function () use ($cookie_sources) : void {
+	if (!isset($sources)) {
+		$root  = dirname(__DIR__, 4);
+		$files = [
+			'functions' => 'lib/functions.php',
+			'auth'      => 'lib/auth.php',
+			'global'    => 'include/global.php',
+			'tfa'       => 'auth_2fa.php',
+			'logout'    => 'logout.php',
+			'login'     => 'auth_login.php',
+			'change'    => 'auth_changepassword.php',
+			'include'   => 'include/auth.php',
+			'zoom'      => 'include/js/jquery.zoom.js',
+			'storage'   => 'include/js/js.storage.js',
+		];
+		$sources = [];
+
+		foreach ($files as $name => $file) {
+			$source = file_get_contents($root . '/' . $file);
+
+			if ($source === false) {
+				throw new RuntimeException("Unable to read $file for cookie policy tests.");
+			}
+
+			$sources[$name] = $source;
+		}
+	}
+
+	return $sources;
+}
+
+test('server cookie writers enforce path domain secure httponly and SameSite policy', function () : void {
+	$cookie_sources = cacti_test_cookie_sources();
+
 	foreach (['cacti_cookie_set', 'cacti_cookie_logout', 'cacti_cookie_session_set', 'cacti_cookie_session_logout'] as $function) {
 		$start = strpos($cookie_sources['functions'], "function $function(");
 		expect($start)->not->toBeFalse("$function must exist");
@@ -40,7 +61,8 @@ test('server cookie writers enforce path domain secure httponly and SameSite pol
 	}
 });
 
-test('session bootstrap enables strict secure cookie settings', function () use ($cookie_sources) : void {
+test('session bootstrap enables strict secure cookie settings', function () : void {
+	$cookie_sources = cacti_test_cookie_sources();
 	expect($cookie_sources['global'])->toContain("ini_set('session.cookie_httponly', true)")
 		->toContain("ini_set('session.cookie_path', CACTI_PATH_URL)")
 		->toContain("ini_set('session.use_strict_mode', true)")
@@ -49,10 +71,11 @@ test('session bootstrap enables strict secure cookie settings', function () use 
 		->toContain("ini_set('session.cookie_secure', true)");
 });
 
-test('remember-me parsing accepts exactly legacy or current field counts', function () use ($cookie_sources) : void {
-	$start = strpos($cookie_sources['auth'], 'function check_auth_cookie()');
-	$end   = strpos($cookie_sources['auth'], '/**', $start + 10);
-	$body  = substr($cookie_sources['auth'], $start, $end - $start);
+test('remember-me parsing accepts exactly legacy or current field counts', function () : void {
+	$cookie_sources = cacti_test_cookie_sources();
+	$start          = strpos($cookie_sources['auth'], 'function check_auth_cookie()');
+	$end            = strpos($cookie_sources['auth'], '/**', $start + 10);
+	$body           = substr($cookie_sources['auth'], $start, $end - $start);
 
 	expect($body)->toContain('cacti_sizeof($parts) == 2')
 		->toContain('cacti_sizeof($parts) == 3')
@@ -62,25 +85,28 @@ test('remember-me parsing accepts exactly legacy or current field counts', funct
 		->toContain('set_auth_cookie($user_info)');
 });
 
-test('2FA cookie binds user time user-agent and secret and has bounded parsing', function () use ($cookie_sources) : void {
+test('2FA cookie binds user time user-agent and secret and has bounded parsing', function () : void {
+	$cookie_sources = cacti_test_cookie_sources();
 	expect($cookie_sources['tfa'])->toContain("explode(':', \$_COOKIE[session_name() . '_otp'], 2)")
 		->toContain('cacti_count($tfaCookie) == 2')
 		->toContain("hash_hmac('sha1', \$user['username'] . ':' . \$tfaMins . ':' . \$tfaCookieTime . ':' . \$_SERVER['HTTP_USER_AGENT'], \$user['tfa_secret'])")
 		->toContain("cacti_cookie_set(session_name() . '_otp', \$cookie, time() + (\$cookie_lifetime))");
 });
 
-test('logout revokes the server token before clearing browser cookies', function () use ($cookie_sources) : void {
-	$revoke = strpos($cookie_sources['logout'], 'clear_auth_cookie();');
-	$clear  = strpos($cookie_sources['logout'], 'cacti_cookie_logout();');
+test('logout revokes the server token before clearing browser cookies', function () : void {
+	$cookie_sources = cacti_test_cookie_sources();
+	$revoke         = strpos($cookie_sources['logout'], 'clear_auth_cookie();');
+	$clear          = strpos($cookie_sources['logout'], 'cacti_cookie_logout();');
 
 	expect($revoke)->not->toBeFalse()
 		->and($clear)->not->toBeFalse()
 		->and($revoke)->toBeLessThan($clear);
 });
 
-test('login restore and password-change flows invoke the cookie lifecycle at safe boundaries', function () use ($cookie_sources) : void {
-	$set        = strpos($cookie_sources['login'], 'set_auth_cookie($user);');
-	$transition = strpos($cookie_sources['login'], "cacti_auth_transition((int) \$user['id'], 'login')");
+test('login restore and password-change flows invoke the cookie lifecycle at safe boundaries', function () : void {
+	$cookie_sources = cacti_test_cookie_sources();
+	$set            = strpos($cookie_sources['login'], 'set_auth_cookie($user);');
+	$transition     = strpos($cookie_sources['login'], "cacti_auth_transition((int) \$user['id'], 'login')");
 
 	expect($set)->not->toBeFalse()
 		->and($transition)->not->toBeFalse()
@@ -91,7 +117,8 @@ test('login restore and password-change flows invoke the cookie lifecycle at saf
 		->toContain('clear_auth_cookie();');
 });
 
-test('zoom cookie fallback uses isolated storage prefixes and persists every custom setting mutation', function () use ($cookie_sources) : void {
+test('zoom cookie fallback uses isolated storage prefixes and persists every custom setting mutation', function () : void {
+	$cookie_sources = cacti_test_cookie_sources();
 	expect($cookie_sources['zoom'])->toContain("cookieName\t\t\t: 'cacti_zoom'")
 		->toContain('storage.isSet(zoom.options.cookieName)')
 		->toContain('zoom.custom = deserialize(storage.get(zoom.options.cookieName))')
