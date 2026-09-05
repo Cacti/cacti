@@ -1710,6 +1710,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	if (cacti_sizeof($graph_items)) {
 		/* we need to add a new column 'cf_reference', so unless PHP 5 is used, this foreach syntax is required */
 		foreach ($graph_items as $key => $graph_item) {
+			$dtr_id = $graph_item['data_template_rrd_id'] ?? '';
+
 			/* mimic the old behavior: LINE[123], AREA and STACK items use the CF specified in the graph item */
 			switch ($graph_item['graph_type_id']) {
 				case GRAPH_ITEM_TYPE_LINE1:
@@ -1724,7 +1726,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					/* remember the last CF for this data source for use with GPRINT
 					 * if e.g. an AREA/AVERAGE and a LINE/MAX is used
 					 * we will have AVERAGE first and then MAX, depending on GPRINT sequence */
-					$last_graph_cf[$graph_item['data_source_name']][$graph_item['local_data_template_rrd_id']] = $graph_cf;
+					$last_graph_cf[$graph_item['data_source_name'] ?? ''][$graph_item['local_data_template_rrd_id'] ?? ''] = $graph_cf;
 
 					/* remember this for second foreach loop */
 					$graph_items[$key]['cf_reference'] = $graph_cf;
@@ -1737,8 +1739,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					 * see 'man rrdgraph_data' for the correct VDEF based notation
 					 * so our task now is to 'guess' the very graph_item, this GPRINT is related to
 					 * and to use that graph_item's CF */
-					if (isset($last_graph_cf[$graph_item['data_source_name']][$graph_item['local_data_template_rrd_id']])) {
-						$graph_cf = $last_graph_cf[$graph_item['data_source_name']][$graph_item['local_data_template_rrd_id']];
+					if (isset($last_graph_cf[$graph_item['data_source_name'] ?? ''][$graph_item['local_data_template_rrd_id'] ?? ''])) {
+						$graph_cf = $last_graph_cf[$graph_item['data_source_name'] ?? ''][$graph_item['local_data_template_rrd_id'] ?? ''];
 						/* remember this for second foreach loop */
 						$graph_items[$key]['cf_reference'] = $graph_cf;
 					} else {
@@ -1778,7 +1780,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					break;
 			}
 
-			if (!empty($graph_item['local_data_id']) && !isset($cf_ds_cache[$graph_item['data_template_rrd_id']][$graph_cf])) {
+			if (!empty($graph_item['local_data_id']) && !isset($cf_ds_cache[$dtr_id][$graph_cf])) {
 				/* use a user-specified ds path if one is entered */
 				if (isset($graph_data_array['export_realtime'])) {
 					if (!isset($_SESSION['sess_realtime_hash'])) {
@@ -1818,7 +1820,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					the same way, except a 'cdef' is put on the beginning of the hash */
 					$graph_defs .= 'DEF:' . generate_graph_def_name(strval($i)) . '=' . cacti_escapeshellarg($data_source_path) . ':' . cacti_escapeshellarg($graph_item['data_source_name'], true) . ':' . $consolidation_functions[$graph_cf] . RRD_NL;
 
-					$cf_ds_cache[$graph_item['data_template_rrd_id']][$graph_cf] = "$i";
+					$cf_ds_cache[$dtr_id][$graph_cf] = "$i";
 
 					$i++;
 				}
@@ -1971,6 +1973,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $graph_item) {
+			$dtr_id = $graph_item['data_template_rrd_id'] ?? '';
+
 			// ToDO: The code blcok appears to not be required as at the end of the block
 			// we simply discard the $cf_id for the computed 'cf_reference' that was
 			// computed previously.
@@ -1991,18 +1995,18 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 			/* first we need to check if there is a DEF for the current data source/cf combination. if so,
 			we will use that */
-			if (isset($cf_ds_cache[$graph_item['data_template_rrd_id']][$graph_cf])) {
+			if (isset($cf_ds_cache[$dtr_id][$graph_cf])) {
 				$cf_id = $graph_item['consolidation_function_id'];
 			} else {
 				/* if there is not a DEF defined for the current data source/cf combination, then we will have to
 				improvise. choose the first available cf in the following order: AVERAGE, MAX, MIN, LAST */
-				if (isset($cf_ds_cache[$graph_item['data_template_rrd_id']][1])) {
+				if (isset($cf_ds_cache[$dtr_id][1])) {
 					$cf_id = 1; // CF: AVERAGE
-				} elseif (isset($cf_ds_cache[$graph_item['data_template_rrd_id']][3])) {
+				} elseif (isset($cf_ds_cache[$dtr_id][3])) {
 					$cf_id = 3; // CF: MAX
-				} elseif (isset($cf_ds_cache[$graph_item['data_template_rrd_id']][2])) {
+				} elseif (isset($cf_ds_cache[$dtr_id][2])) {
 					$cf_id = 2; // CF: MIN
-				} elseif (isset($cf_ds_cache[$graph_item['data_template_rrd_id']][4])) {
+				} elseif (isset($cf_ds_cache[$dtr_id][4])) {
 					$cf_id = 4; // CF: LAST
 				} else {
 					$cf_id = 1; // CF: AVERAGE
@@ -2010,7 +2014,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 
 			/* Compensate for RRDfiles that are missing CF's required for the Graph Template */
-			$cf_id = $graph_item['cf_reference'];
+			$cf_id = $graph_item['cf_reference'] ?? 1;
 
 			/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF START +++++++++++++++++++++++ */
 
@@ -2018,7 +2022,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			data source of global cdef, but is unique when those two variables combine. */
 			$cdef_graph_defs = '';
 
-			if ((!empty($graph_item['cdef_id'])) && (!isset($cdef_cache[$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id]))) {
+			if ((!empty($graph_item['cdef_id'])) && (!isset($cdef_cache[$graph_item['cdef_id']][$dtr_id][$cf_id]))) {
 				$cdef_string 	= $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']];
 				$magic_item 	= array();
 				$already_seen	= array();
@@ -2176,7 +2180,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$cdef_string = str_replace('CURRENT_DATA_SOURCE_PI', read_config_option('poller_interval'), $cdef_string);
 				}
 
-				$cdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval((isset($cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id]) ? $cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id] : '0'))), $cdef_string);
+				$cdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval((isset($cf_ds_cache[$dtr_id][$cf_id]) ? $cf_ds_cache[$dtr_id][$cf_id] : '0'))), $cdef_string);
 
 				/* allow automatic rate calculations on raw gauge data */
 				if (isset($graph_item['local_data_id'])) {
@@ -2276,7 +2280,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$cdef_graph_defs .= " \\\n";
 
 				/* the CDEF cache is so we do not create duplicate CDEF's on a graph */
-				$cdef_cache[$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id] = $i;
+				$cdef_cache[$graph_item['cdef_id']][$dtr_id][$cf_id] = $i;
 			}
 
 			/* add the cdef string to the end of the def string */
@@ -2289,15 +2293,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			/* make vdef string here, copied from cdef stuff */
 			$vdef_graph_defs = '';
 
-			if ((!empty($graph_item['vdef_id'])) && (!isset($vdef_cache[$graph_item['vdef_id']][$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id]))) {
+			if ((!empty($graph_item['vdef_id'])) && (!isset($vdef_cache[$graph_item['vdef_id']][$graph_item['cdef_id']][$dtr_id][$cf_id]))) {
 				$vdef_string = $graph_variables['vdef_cache'][$graph_item['graph_templates_item_id']];
 				/* do we refer to a CDEF within this VDEF? */
 				if ($graph_item['cdef_id'] != '0') {
 					/* 'calculated' VDEF: use (cached) CDEF as base, only way to get calculations into VDEFs */
-					$vdef_string = 'cdef' . str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval(isset($cdef_cache[$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id]) ? $cdef_cache[$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id] : '0')), $vdef_string);
+					$vdef_string = 'cdef' . str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval(isset($cdef_cache[$graph_item['cdef_id']][$dtr_id][$cf_id]) ? $cdef_cache[$graph_item['cdef_id']][$dtr_id][$cf_id] : '0')), $vdef_string);
 				} else {
 					/* 'pure' VDEF: use DEF as base */
-					$vdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval(isset($cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id]) ? $cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id] : '0')), $vdef_string);
+					$vdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval(isset($cf_ds_cache[$dtr_id][$cf_id]) ? $cf_ds_cache[$dtr_id][$cf_id] : '0')), $vdef_string);
 				}
 
 				# TODO: It would be possible to refer to a CDEF, but that's all. So ALL_DATA_SOURCES_NODUPS and stuff can't be used directly!
@@ -2314,7 +2318,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				/* the VDEF cache is so we do not create duplicate VDEFs on a graph,
 				* but take info account, that same VDEF may use different CDEFs
 				* so index over VDEF_ID, CDEF_ID per DATA_TEMPLATE_RRD_ID, lvm */
-				$vdef_cache[$graph_item['vdef_id']][$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id] = $i;
+				$vdef_cache[$graph_item['vdef_id']][$graph_item['cdef_id']][$dtr_id][$cf_id] = $i;
 			}
 
 			/* add the cdef string to the end of the def string */
@@ -2332,13 +2336,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			/* IF this graph item has a data source... get a DEF name for it, or the cdef if that applies
 			to this graph item */
 			if ($graph_item['cdef_id'] == '0') {
-				if (isset($cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id])) {
-					$data_source_name = generate_graph_def_name(strval($cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id]));
+				if (isset($cf_ds_cache[$dtr_id][$cf_id])) {
+					$data_source_name = generate_graph_def_name(strval($cf_ds_cache[$dtr_id][$cf_id]));
 				} else {
 					$data_source_name = '';
 				}
 			} else {
-				$data_source_name = 'cdef' . generate_graph_def_name(strval($cdef_cache[$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id]));
+				$data_source_name = 'cdef' . generate_graph_def_name(strval($cdef_cache[$graph_item['cdef_id']][$dtr_id][$cf_id]));
 			}
 
 			/* IF this graph item has a data source... get a DEF name for it, or the vdef if that applies
@@ -2346,7 +2350,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			if ($graph_item['vdef_id'] == '0') {
 				/* do not overwrite $data_source_name that stems from cdef above */
 			} else {
-				$data_source_name = 'vdef' . generate_graph_def_name(strval($vdef_cache[$graph_item['vdef_id']][$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id]));
+				$data_source_name = 'vdef' . generate_graph_def_name(strval($vdef_cache[$graph_item['vdef_id']][$graph_item['cdef_id']][$dtr_id][$cf_id]));
 			}
 
 			/* to make things easier... if there is no text format set; set blank text */
