@@ -50,6 +50,17 @@ $error_msg     = '';                                  // The errors message in c
 /* global variables for exception handling */
 global $error, $error_msg;
 
+/* The IP fallback can validate a login CSRF token when a clean browser rejects
+ * a mis-scoped session cookie. Stop before authenticating so that successful
+ * credentials do not redirect back to a fresh unauthenticated session. */
+if ($auth_method != 2 && get_nfilter_request_var('action') == 'login') {
+	$session_name = session_name();
+
+	if ($session_name !== '' && !isset($_COOKIE[$session_name])) {
+		cacti_session_cookie_failure(!empty($_COOKIE));
+	}
+}
+
 if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 	if ($auth_method > 2 && $frv_realm <= 1) {
 		// User picked 'local' from dropdown;
