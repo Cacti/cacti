@@ -49,8 +49,10 @@ function cacti_sizeof(mixed $value) : int {
 	return is_array($value) ? count($value) : 0;
 }
 
-function cacti_log(string $message, bool $output = false, string $environ = 'SYSTEM') : void {
-	$GLOBALS['cdef_test_logs'][] = [$message, $output, $environ];
+function cacti_log(mixed $message, bool $output = false, string $environ = 'CMDPHP', mixed $level = '') : bool {
+	$GLOBALS['cdef_test_logs'][] = [$message, $output, $environ, $level];
+
+	return true;
 }
 
 require_once dirname(__DIR__, 2) . '/lib/cdef.php';
