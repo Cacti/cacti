@@ -7,6 +7,7 @@ on:
       - '.github/workflows/csv-window-coverage.yml'
       - 'lib/rrd.php'
       - 'lib/graph_variables.php'
+      - 'phpunit-csv.xml'
       - 'tests/Unit/RrdFetchWindowTest.php'
       - 'tests/Unit/BandwidthEffectiveStepTest.php'
       - 'tests/Unit/CsvWindowResolutionContractTest.php'
@@ -20,6 +21,7 @@ on:
       - '.github/workflows/csv-window-coverage.yml'
       - 'lib/rrd.php'
       - 'lib/graph_variables.php'
+      - 'phpunit-csv.xml'
       - 'tests/Unit/RrdFetchWindowTest.php'
       - 'tests/Unit/BandwidthEffectiveStepTest.php'
       - 'tests/Unit/CsvWindowResolutionContractTest.php'
@@ -82,8 +84,10 @@ jobs:
         run: |
           set -euo pipefail
           pest_runner=vendor/bin/pest
+          pest_config=../phpunit.xml
           if [ "${{ matrix.php }}" = '8.4' ]; then
             pest_runner=pest
+            pest_config=../phpunit-csv.xml
           fi
           for test_file in \
             Unit/RrdFetchWindowTest.php \
@@ -91,5 +95,5 @@ jobs:
             Unit/CsvWindowResolutionContractTest.php \
             Unit/PercentileResolutionBehaviorTest.php \
             integration/CsvWindowRrdIntegrationTest.php; do
-            "${pest_runner}" --configuration=../phpunit.xml "${test_file}"
+            "${pest_runner}" --configuration="${pest_config}" "${test_file}"
           done
