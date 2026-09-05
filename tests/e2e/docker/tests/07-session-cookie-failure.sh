@@ -14,10 +14,7 @@ DC=(docker compose -f docker-compose.yml)
 sleep 3
 "${DC[@]}" exec -T cacti-master rm -f /tmp/c07.jar /tmp/c07_form /tmp/c07_headers /tmp/c07_response
 
-# An unrelated host-only cookie suppresses csrf-magic's IP fallback, matching
-# a normal browser which already has timezone or preference cookies.
 "${DC[@]}" exec -T cacti-master curl -sS \
-	-b 'probe=1' \
 	-c /tmp/c07.jar \
 	-o /tmp/c07_form \
 	http://127.0.0.1/index.php
@@ -34,8 +31,7 @@ if [ -z "$CSRF" ]; then
 	exit 1
 fi
 
-STATUS=$("${DC[@]}" exec -T cacti-master curl -sS \
-	-b 'probe=1' \
+	STATUS=$("${DC[@]}" exec -T cacti-master curl -sS \
 	-b /tmp/c07.jar \
 	-c /tmp/c07.jar \
 	-D /tmp/c07_headers \
