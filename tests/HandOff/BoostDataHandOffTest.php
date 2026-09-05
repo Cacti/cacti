@@ -38,6 +38,7 @@ test('Recovery deletes only the exact rows acknowledged by the main collector', 
 	expect($recovery)->toContain('if (!boost_flush_output_batch($sql_array, $remote_conn))');
 	expect($recovery)->toContain('array_slice($rows, $offset, $transfer_chunk_size)');
 	expect($recovery)->toContain('recovery_transfer_rows($chunk, $remote_db_cnn_id, $local_db_cnn_id)');
+	expect($recovery)->toContain("ORDER BY time ASC, local_data_id ASC\n\t\t\t\tLIMIT %d', (int) \$record_limit)");
 	expect($recovery)->not->toContain('DELETE FROM poller_output_boost WHERE time <=');
 });
 
