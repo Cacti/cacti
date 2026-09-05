@@ -63,6 +63,12 @@ jobs:
       - name: Install test dependencies
         run: composer install --working-dir=tests --no-interaction --prefer-dist
 
+      - name: Install PHP 8.4-compatible Pest runner
+        if: matrix.php == '8.4'
+        run: |
+          composer global require pestphp/pest:^3 --no-interaction --prefer-dist
+          composer global config bin-dir --absolute >> "$GITHUB_PATH"
+
       - name: Install RRDtool
         run: |
           set -euo pipefail
@@ -75,11 +81,15 @@ jobs:
           RRDTOOL_TEST_BINARY: /usr/bin/rrdtool
         run: |
           set -euo pipefail
+          pest_runner=vendor/bin/pest
+          if [ "${{ matrix.php }}" = '8.4' ]; then
+            pest_runner=pest
+          fi
           for test_file in \
             Unit/RrdFetchWindowTest.php \
             Unit/BandwidthEffectiveStepTest.php \
             Unit/CsvWindowResolutionContractTest.php \
             Unit/PercentileResolutionBehaviorTest.php \
             integration/CsvWindowRrdIntegrationTest.php; do
-            vendor/bin/pest --configuration=../phpunit.xml "${test_file}"
+            "${pest_runner}" --configuration=../phpunit.xml "${test_file}"
           done
