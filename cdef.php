@@ -242,8 +242,9 @@ function form_actions() {
 				if ($in_use) {
 					raise_message('cdef_in_use', __('One or more CDEFs are in use and cannot be deleted.'), MESSAGE_LEVEL_ERROR);
 				} else {
-					db_execute('DELETE FROM cdef WHERE ' . array_to_sql_or($selected_items, 'id'));
-					db_execute('DELETE FROM cdef_items WHERE ' . array_to_sql_or($selected_items, 'cdef_id'));
+					$placeholders = implode(', ', array_fill(0, cacti_count($selected_items), '?'));
+					db_execute_prepared('DELETE FROM cdef WHERE id IN (' . $placeholders . ')', $selected_items);
+					db_execute_prepared('DELETE FROM cdef_items WHERE cdef_id IN (' . $placeholders . ')', $selected_items);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
@@ -350,7 +351,7 @@ function cdef_item_remove_confirm() {
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following CDEF Item.');?></p>
 			<p><?php print __esc('CDEF Name: %s', $cdef['name']);?><br>
-			<em><?php $cdef_item_type = $cdef_item['type']; print $cdef_item_types[$cdef_item_type];?></em>: <strong><?php print html_escape(get_cdef_item_name($cdef_item['id']) ?? __('Invalid'));?></strong></p>
+				<em><?php $cdef_item_type = $cdef_item['type']; print html_escape($cdef_item_types[$cdef_item_type] ?? __('Unknown'));?></em>: <strong><?php print html_escape(get_cdef_item_name($cdef_item['id']) ?? __('Invalid'));?></strong></p>
 		</td>
 	</tr>
 	<tr>
