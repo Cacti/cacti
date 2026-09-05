@@ -25,11 +25,14 @@ Cacti CHANGELOG
 -issue#7216: Aggregate totalling legend printed untotalled single data source values
 -issue#7245: Raise execution time limit for bulk graph creation (PR #7378)
 -issue#7359: Undefined variables detected with legacy plugins
+-issue#7403: Scale lm-sensors get values consistently with query values
 -issue#7424: Correct SNMP disk counter wrap delta calculations
 -issue#7425: Guard process registration and cleanup against PID reuse
 -issue#7426: Stop tracking the generated CSRF secret so each install creates its own
 -issue#7427: Update device status by host id instead of non-unique hostname
 -issue#7429: Prevent monthly automation schedules from resetting next_start to 1970
+-issue#7456: Bind the selected operating system in automation discovery filters
+-issue#7490: Require complete graph template filter matches
 -issue#7493: SNMP walk for output_format fields used max OIDs instead of the device bulk walk size
 -issue#7552: HTMLPurifier definition cache written inside the read-only library tree
 -issue#7553: Drop down menus do not update page content after upgrading to 1.2.31
