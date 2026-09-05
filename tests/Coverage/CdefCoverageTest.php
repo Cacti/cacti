@@ -39,6 +39,7 @@ test('CDEF item names cover every supported item type and the unknown fallback',
 		8  => ['type' => '2', 'value' => 999],
 		9  => ['type' => '1'],
 		10 => ['type' => '5', 'value' => 999],
+		11 => ['type' => '1', 'value' => 59],
 	];
 	$GLOBALS['cdef_test_names'][42] = 'Nested CDEF';
 
@@ -52,6 +53,7 @@ test('CDEF item names cover every supported item type and the unknown fallback',
 		->and(get_cdef_item_name(8))->toBeNull()
 		->and(get_cdef_item_name(9))->toBeNull()
 		->and(get_cdef_item_name(10))->toBeNull()
+		->and(get_cdef_item_name(11))->toBe('ROUND')
 		->and(get_cdef_item_name(999))->toBeNull();
 
 	$messages = implode("\n", array_column($GLOBALS['cdef_test_logs'], 0));

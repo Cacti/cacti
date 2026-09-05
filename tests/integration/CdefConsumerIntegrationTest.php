@@ -13,20 +13,14 @@
 require_once dirname(__DIR__, 2) . '/lib/rrd.php';
 require_once dirname(__DIR__, 2) . '/lib/aggregate.php';
 
-test('graph CDEF caching keeps resolver failures out of text substitution', function () : void {
-	$state = rrdtool_normalize_graph_item_cdef(null);
+test('invalid graph CDEFs use visible output-specific failure responses', function () : void {
+	$image = fn (string $message) => 'IMAGE:' . $message;
 
-	expect($state['cdef_invalid'])->toBeTrue()
-		->and($state['cdef_cache'])->toBe('')
-		->and(rrdtool_resolve_graph_text($state['cdef_cache'], [], [], fn (string $value) => $value))->toBe('');
+	expect(rrdtool_invalid_cdef_response(['export_csv' => true], 7, 42, $image))->toBeFalse()
+		->and(rrdtool_invalid_cdef_response(['get_error' => true], 7, 42, $image))->toBe('ERROR: Invalid CDEF 7 for graph 42.')
+		->and(rrdtool_invalid_cdef_response(['print_source' => true], 7, 42, $image))->toBe('ERROR: Invalid CDEF 7 for graph 42.')
+		->and(rrdtool_invalid_cdef_response([], 7, 42, $image))->toBe('IMAGE:ERROR: Invalid CDEF 7 for graph 42.');
 });
-
-test('graph CDEF caching preserves valid empty and non-empty definitions', function (?string $cdef) : void {
-	$state = rrdtool_normalize_graph_item_cdef($cdef);
-
-	expect($state['cdef_invalid'])->toBeFalse()
-		->and($state['cdef_cache'])->toBe($cdef);
-})->with(['empty definition' => '', 'resolved definition' => 'CURRENT_DATA_SOURCE,8,*']);
 
 test('aggregate totalling rejects absent invalid and empty definitions', function () : void {
 	$cdefs = [
@@ -39,4 +33,14 @@ test('aggregate totalling rejects absent invalid and empty definitions', functio
 		->and(aggregate_cdef_for_totalling($cdefs, 1))->toBeNull()
 		->and(aggregate_cdef_for_totalling($cdefs, 2))->toBeNull()
 		->and(aggregate_cdef_for_totalling($cdefs, 3))->toBe('CURRENT_DATA_SOURCE,8,*');
+
+	$items = [
+		['id' => 10, 'cdef_id' => 3],
+		['id' => 11, 'cdef_id' => 1],
+	];
+
+	expect(aggregate_prepare_cdef_totalling($items, $cdefs))->toBe([
+		'items'           => [],
+		'invalid_cdef_id' => 1,
+	]);
 });
