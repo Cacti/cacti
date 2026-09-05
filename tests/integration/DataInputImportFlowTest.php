@@ -30,6 +30,12 @@ $importSource    = file_get_contents(__DIR__ . '/../../lib/import.php');
 $dataInputSource = file_get_contents(__DIR__ . '/../../data_input.php');
 $functionsSource = file_get_contents(__DIR__ . '/../../lib/functions.php');
 
+if (!function_exists('read_config_option')) {
+	function read_config_option($name) {
+		return '';
+	}
+}
+
 test('lib/import.php still calls cacti_input_string_is_safe before sql_save', function () use ($importSource) {
 	/* Per the test SecurityScriptServerDataInputTest, the import path
 	 * MUST keep calling the validator. PR #7122's alternative removed the

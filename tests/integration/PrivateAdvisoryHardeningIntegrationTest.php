@@ -17,7 +17,8 @@
 
 define('CACTI_CLI_ONLY', true);
 define('IN_PLUGIN_INSTALL', true);
-chdir('/var/www/html');
+$root = dirname(__DIR__, 2);
+chdir($root);
 
 require_once 'include/global.php';
 require_once 'lib/database.php';
