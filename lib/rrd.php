@@ -1051,6 +1051,94 @@ function rrdtool_function_tune($rrd_tune_array) {
 	}
 }
 
+/* Convert RRDtool fetch output into Cacti's timestamp-indexed representation.
+ * RRDtool emits one bucket after the requested end; keep consumers on (start, end].
+ */
+function rrdtool_parse_fetch_output($output, $normalized_end_time, $show_unknown = false) {
+	$fetch_array        = array();
+	$lines              = explode("\n", $output);
+	$first              = true;
+	$previous_timestamp = null;
+	$last_timestamp     = null;
+	$effective_step     = 0;
+
+	foreach ($lines as $line) {
+		$line = trim($line);
+
+		if ($first) {
+			if ($line == '') {
+				continue;
+			}
+
+			$names = preg_split('/\s+/', $line);
+
+			if ($names === false) {
+				return array();
+			}
+
+			$fetch_array['data_source_names'] = $names;
+			$first = false;
+
+			continue;
+		}
+
+		if ($line == '' || strpos($line, ':') === false) {
+			continue;
+		}
+
+		list($raw_timestamp, $raw_data) = explode(':', $line, 2);
+
+		if (!is_numeric(trim($raw_timestamp))) {
+			continue;
+		}
+
+		$timestamp = (int) trim($raw_timestamp);
+
+		if ($timestamp > $normalized_end_time) {
+			continue;
+		}
+
+		if ($previous_timestamp !== null) {
+			$observed_step = $timestamp - $previous_timestamp;
+
+			if ($observed_step > 0 && ($effective_step == 0 || $observed_step < $effective_step)) {
+				$effective_step = $observed_step;
+			}
+		}
+
+		$previous_timestamp = $timestamp;
+		$last_timestamp     = $timestamp;
+		$data               = preg_split('/\s+/', trim($raw_data));
+
+		if ($data === false) {
+			continue;
+		}
+
+		if (!isset($fetch_array['timestamp']['start_time'])) {
+			$fetch_array['timestamp']['start_time'] = $timestamp;
+		}
+
+		foreach ($data as $index => $number) {
+			if (strtolower($number) == 'nan' || strtolower($number) == '-nan') {
+				if ($show_unknown) {
+					$fetch_array['values'][$index][$timestamp] = 'U';
+				}
+			} elseif (is_numeric($number)) {
+				$fetch_array['values'][$index][$timestamp] = $number;
+			} elseif ($show_unknown) {
+				$fetch_array['values'][$index][$timestamp] = 'U';
+			}
+		}
+	}
+
+	if ($last_timestamp !== null) {
+		$fetch_array['timestamp']['end_time'] = $last_timestamp;
+		$fetch_array['timestamp']['step']     = $effective_step;
+	}
+
+	return $fetch_array;
+}
+
 /* rrdtool_function_fetch - given a data source, return all of its data in an array
    @arg $local_data_id - the data source to fetch data for
    @arg $start_time - the start time to use for the data calculation. this value can
@@ -1106,66 +1194,30 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 		return [];
 	}
 
+	$normalized_start_time = $start_time < 0 ? $time + $start_time : $start_time;
+	$normalized_end_time   = $end_time < 0 ? $time + $end_time : $end_time;
+
 	// Find the correct resolution
 	if ($resolution == 0) {
-		$resolution = rrdtool_function_get_resstep($local_data_id, $start_time, $end_time, 'res');
+		$resolution = rrdtool_function_get_resstep($local_data_id, $normalized_start_time, $normalized_end_time, 'res');
 	}
 
 	/* update the rrdfile if performing a fetch */
 	boost_fetch_cache_check($local_data_id, $rrdtool_pipe);
 
 	/* build and run the rrdtool fetch command with all of our data */
-	$cmd_line = "fetch $data_source_path $cf -s $start_time -e $end_time";
+	$cmd_line = "fetch $data_source_path $cf -s $normalized_start_time -e $normalized_end_time";
 	if ($resolution > 0) {
 		$cmd_line .= " -r $resolution";
 	}
 
 	$output = rrdtool_execute($cmd_line, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe);
-	$output = explode("\n", $output);
 
-	$first  = true;
-	$count  = 0;
-
-	if (cacti_sizeof($output)) {
-		$timestamp = 0;
-
-		foreach($output as $line) {
-			$line      = trim($line);
-			$max_array = array();
-
-			if ($first) {
-				/* get the data source names */
-				$fetch_array['data_source_names'] = preg_split('/\s+/', $line);
-				$first = false;
-			} elseif ($line != '') {
-				/* process the data sources into an array */
-				$parts     = explode(':', $line);
-				$timestamp = $parts[0];
-				$data      = explode(' ', trim($parts[1]));
-
-				if (!isset($fetch_array['timestamp']['start_time'])) {
-					$fetch_array['timestamp']['start_time'] = $timestamp;
-				}
-
-				/* process out bad data */
-				foreach($data as $index => $number) {
-					if (strtolower($number) == 'nan' || strtolower($number) == '-nan') {
-						if ($show_unknown) {
-							$fetch_array['values'][$index][$timestamp] = 'U';
-						}
-					} elseif (is_numeric($number)) {
-						$fetch_array['values'][$index][$timestamp] = $number;
-					} elseif ($show_unknown) {
-						$fetch_array['values'][$index][$timestamp] = 'U';
-					}
-				}
-			}
-		}
-
-		$fetch_array['timestamp']['end_time'] = $timestamp;
+	if (!is_string($output)) {
+		return $fetch_array;
 	}
 
-	return $fetch_array;
+	return rrdtool_parse_fetch_output($output, $normalized_end_time, $show_unknown);
 }
 
 function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &$graph_data_array) {
@@ -1594,7 +1646,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 
 	if (!isset($graph_data_array['export_realtime']) && isset($rra['steps'])) {
-		$rra_seconds = ($ds_step * $rra['steps']);
+		$rra_seconds = max(1, (int) $ds_step * (int) $rra['steps']);
 	} else {
 		$rra_seconds = 5;
 	}
@@ -1668,10 +1720,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		$graph_opts = rrd_function_process_graph_options($graph_start, $graph_end, $graph, $graph_data_array);
 	} else {
 		/* basic export options */
+		$export_step = max(1, $rra_seconds);
+		$export_rows = (int) ceil(abs($graph_end - $graph_start) / $export_step) + 10;
 		$graph_opts =
 			'--start=' . cacti_escapeshellarg($graph_start) . RRD_NL .
 			'--end=' . cacti_escapeshellarg($graph_end) . RRD_NL .
-			'--maxrows=' . max(10000, intval(($graph_end - $graph_start) / 60) + 10) . RRD_NL;
+			'--maxrows=' . max(10000, $export_rows) . RRD_NL;
 	}
 
 	/* +++++++++++++++++++++++ LEGEND: MAGIC +++++++++++++++++++++++ */
@@ -1816,7 +1870,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					to a function that matches the digits with letters. rrdtool likes letters instead
 					of numbers in DEF names; especially with CDEFs. CDEFs are created
 					the same way, except a 'cdef' is put on the beginning of the hash */
-					$graph_defs .= 'DEF:' . generate_graph_def_name(strval($i)) . '=' . cacti_escapeshellarg($data_source_path) . ':' . cacti_escapeshellarg($graph_item['data_source_name'], true) . ':' . $consolidation_functions[$graph_cf] . RRD_NL;
+					$graph_defs .= 'DEF:' . generate_graph_def_name(strval($i)) . '=' . cacti_escapeshellarg($data_source_path) . ':' . cacti_escapeshellarg($graph_item['data_source_name'], true) . ':' . $consolidation_functions[$graph_cf] . ':step=' . max(1, $rra_seconds) . RRD_NL;
 
 					$cf_ds_cache[$graph_item['data_template_rrd_id']][$graph_cf] = "$i";
 
@@ -1883,7 +1937,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if (preg_match_all('/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_sum_peak|aggregate_current|aggregate_current_peak|aggregate_peak|aggregate):(\d)?\|/', $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 					foreach ($matches as $match) {
 						$search[]  = $match[0];
-						$value     = variable_nth_percentile($match, $graph, $graph_item, $graph_items, $graph_start, $graph_end);
+						$value     = variable_nth_percentile($match, $graph, $graph_item, $graph_items, $graph_start, $graph_end, $rra_seconds);
 						$replace[] = $value;
 
 						if ($field_name == 'value') {
