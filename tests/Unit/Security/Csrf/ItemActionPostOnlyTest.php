@@ -156,7 +156,8 @@ test('the cactiPostAction handler posts the token and refuses another origin', f
        selector names. */
     expect($js)->toContain(".cactiPostAction')")
         ->and($js)->toContain('submitPageUsingPost')
-        ->and($js)->toContain('cactiPreparePostRequestFromUrl');
+        ->and($js)->toContain('cactiPreparePostRequestFromUrl')
+		->and($js)->toContain('event.stopImmediatePropagation()');
 
     $start = strpos($js, 'function cactiPreparePostRequest(');
 
