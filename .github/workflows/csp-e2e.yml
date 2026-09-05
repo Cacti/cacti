@@ -78,20 +78,11 @@ jobs:
 
       - name: Run complete isolated integration suite
         working-directory: tests
-        run: |
-          set -euo pipefail
-          for test_file in integration/*Test.php; do
-            case "$test_file" in
-              integration/HardeningImportKeyStrengthIntegrationTest.php|integration/HardeningPingXssIntegrationTest.php|integration/PrivateAdvisoryHardeningIntegrationTest.php)
-                continue
-                ;;
-            esac
-            ./vendor/bin/pest --configuration phpunit-cookie.xml "$test_file"
-          done
+        run: ./vendor/bin/pest --configuration phpunit-cookie.xml integration/
 
       - name: Run standalone import key integration proof
         working-directory: tests
-        run: php integration/HardeningImportKeyStrengthIntegrationTest.php
+        run: php integration/HardeningImportKeyStrengthProbe.php
 
   e2e:
     name: Playwright E2E (docker-compose + Playwright)
@@ -168,8 +159,8 @@ jobs:
       - name: Run container-backed security integration proofs
         working-directory: tests/e2e
         run: |
-          docker compose exec -T php php /var/www/html/cacti/tests/integration/HardeningPingXssIntegrationTest.php
-          docker compose exec -T php php /var/www/html/cacti/tests/integration/PrivateAdvisoryHardeningIntegrationTest.php
+          docker compose exec -T php php /var/www/html/cacti/tests/integration/HardeningPingXssProbe.php
+          docker compose exec -T php php /var/www/html/cacti/tests/integration/PrivateAdvisoryHardeningProbe.php
 
       - name: Run Playwright suite (plugin CSP -- thold + monitor)
         working-directory: tests/e2e

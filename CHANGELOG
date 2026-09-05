@@ -16,7 +16,6 @@ Cacti CHANGELOG
 -security: Harden advisory command execution and database DDL sink validation
 -security: Restrict graph input fields across the template, graph and import handoffs
 -security: Treat a non-boolean signature result as a failure in import_package
--issue#7986: Preserve child exit codes observed by cacti_exec
 -issue#7809: Undefined array key "source" warning reindexing SNMP data queries with output-only fields
 -issue#7819: Remove obsolete pre-PHP 8 compatibility branches
 -issue#7617: Allow the graph tree sidebar to shrink with collapsed content
@@ -64,6 +63,8 @@ Cacti CHANGELOG
 -issue: Commit transaction check uses the passed connection (PR #7409)
 -issue: Memoize db_get_table_column_types to cut redundant SHOW COLUMNS (1.2.x backport) (PR #7382)
 -issue#7829: Report a missing session cookie instead of redirecting into a login loop
+-issue#7975: Harden malformed remember-me cookies and protocol-aware UI cookie flags
+-issue#7986: Preserve child exit codes observed by cacti_exec
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
