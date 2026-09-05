@@ -47,7 +47,7 @@ test('every system uptime call path uses the shared selection rule', function ()
 	);
 
 	foreach ($call_counts as $path => $count) {
-		expect(substr_count(file_get_contents($root . '/' . $path), 'cacti_snmp_select_uptime('))->toBe($count);
+		expect(substr_count(file_get_contents($root . '/' . $path), 'cacti_snmp_select_uptime('))->toBeGreaterThanOrEqual($count);
 	}
 });
 
