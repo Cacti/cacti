@@ -187,10 +187,12 @@ it('rejects objects without an explicit queue message contract', function () {
 
 it('validates database transport envelopes before persistence', function () {
 	$transport = new CactiDatabaseQueueTransport('reports');
+	$invalid   = new Symfony\Component\Messenger\Envelope(new stdClass(), [new CactiQueueStamp('reports')]);
 	$wrong     = new Symfony\Component\Messenger\Envelope(new CactiQueueMessage('reports.generate', []), [new CactiQueueStamp('poller')]);
 	$large     = new Symfony\Component\Messenger\Envelope(new CactiQueueMessage('reports.generate', ['value' => str_repeat('x', 2048)]), [new CactiQueueStamp('reports', max_payload_bytes: 1024)]);
 
-	expect(fn () => $transport->send($wrong))->toThrow(InvalidArgumentException::class, 'cannot be sent')
+	expect(fn () => $transport->send($invalid))->toThrow(InvalidArgumentException::class, 'CactiQueueMessageInterface')
+		->and(fn () => $transport->send($wrong))->toThrow(InvalidArgumentException::class, 'cannot be sent')
 		->and(fn () => $transport->send($large))->toThrow(LengthException::class, 'exceeds')
 		->and(fn () => $transport->ack(new Symfony\Component\Messenger\Envelope(new stdClass())))->toThrow(InvalidArgumentException::class, 'received queue envelope');
 });
