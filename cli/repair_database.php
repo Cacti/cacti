@@ -421,6 +421,39 @@ function detailed_checks() {
 		printf('NOTE: Found 0 invalid Cacti CDEFs.' . PHP_EOL);
 	}
 
+	printf('NOTE: Searching for graph items that reference missing CDEFs.' . PHP_EOL);
+
+	$cdef_references = [
+		'graph_templates_item'           => false,
+		'aggregate_graph_templates_item' => true,
+		'aggregate_graphs_graph_item'    => true,
+	];
+	$invalid_references = 0;
+	$fixed_references   = 0;
+
+	foreach ($cdef_references as $table => $has_template_flag) {
+		$rows = db_fetch_cell("SELECT COUNT(*)
+			FROM $table AS source
+			LEFT JOIN cdef ON source.cdef_id = cdef.id
+			WHERE source.cdef_id > 0
+			AND cdef.id IS NULL");
+
+		$invalid_references += (int) $rows;
+
+		if ($force && $rows > 0) {
+			$set = $has_template_flag ? "cdef_id = 0, t_cdef_id = ''" : 'cdef_id = 0';
+			db_execute("UPDATE $table SET $set
+				WHERE cdef_id > 0
+				AND cdef_id NOT IN (SELECT id FROM cdef)");
+			$fixed_references += db_affected_rows();
+		}
+	}
+
+	$total_errors  += $invalid_references;
+	$total_repairs += $fixed_references;
+
+	printf('NOTE: Found ' . ($force ? 'and repaired ' : '') . "$fixed_references of $invalid_references graph item references to missing CDEFs." . PHP_EOL);
+
 	printf('NOTE: Searching for invalid Cacti Data Inputs.' . PHP_EOL);
 
 	/* remove invalid Data Templates from the Database, validated */

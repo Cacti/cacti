@@ -29,15 +29,49 @@ function get_cdef_item_name($cdef_item_id) 	{
 	global $cdef_functions, $cdef_operators;
 
 	$cdef_item = db_fetch_row_prepared('SELECT type, value FROM cdef_items WHERE id = ?', array($cdef_item_id));
+
+	if (!is_array($cdef_item) || !array_key_exists('type', $cdef_item) || !array_key_exists('value', $cdef_item)) {
+		cacti_log(sprintf('ERROR: CDEF item %d is missing or corrupt.', $cdef_item_id), false, 'CDEF');
+
+		return null;
+	}
+
 	$current_cdef_value = $cdef_item['value'];
 
 	switch ($cdef_item['type']) {
-		case '1': return $cdef_functions[$current_cdef_value]; break;
-		case '2': return $cdef_operators[$current_cdef_value]; break;
+		case '1':
+			if (!isset($cdef_functions[$current_cdef_value])) {
+				cacti_log(sprintf('ERROR: CDEF item %d references an unknown function.', $cdef_item_id), false, 'CDEF');
+
+				return null;
+			}
+
+			return $cdef_functions[$current_cdef_value];
+		case '2':
+			if (!isset($cdef_operators[$current_cdef_value])) {
+				cacti_log(sprintf('ERROR: CDEF item %d references an unknown operator.', $cdef_item_id), false, 'CDEF');
+
+				return null;
+			}
+
+			return $cdef_operators[$current_cdef_value];
 		case '4': return $current_cdef_value; break;
-		case '5': return db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array($current_cdef_value)); break;
+		case '5':
+			$cdef_name = db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array($current_cdef_value));
+
+			if ($cdef_name === false || $cdef_name === null || $cdef_name === '') {
+				cacti_log(sprintf('ERROR: CDEF item %d references a missing definition.', $cdef_item_id), false, 'CDEF');
+
+				return null;
+			}
+
+			return $cdef_name;
 		case '6': return $current_cdef_value; break;
 	}
+
+	cacti_log(sprintf('ERROR: CDEF item %d has an unknown type.', $cdef_item_id), false, 'CDEF');
+
+	return null;
 }
 
 /* get_cdef - resolves an entire CDEF into its text-based representation for use in the RRDtool 'graph'
@@ -45,24 +79,173 @@ function get_cdef_item_name($cdef_item_id) 	{
    @arg $cdef_id - the id of the cdef to resolve
    @returns - a text-based representation of the cdef */
 function get_cdef($cdef_id) {
-	$cdef_items = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array($cdef_id));
+	$visited   = array();
+	$expansion = 0;
+	$cache     = array();
+	$cache_bytes = 0;
 
-	$i = 0; $cdef_string = '';
-
-	if (cacti_sizeof($cdef_items) > 0) {
-		foreach ($cdef_items as $cdef_item) {
-			if ($i > 0) {
-				$cdef_string .= ',';
-			}
-			if ($cdef_item['type'] == 5) {
-				$current_cdef_id = $cdef_item['value'];
-				$cdef_string .= get_cdef($current_cdef_id);
-			} else {
-				$cdef_string .= get_cdef_item_name($cdef_item['id']);
-			}
-			$i++;
-		}
-	}
-	return $cdef_string;
+	return get_cdef_recursive($cdef_id, $visited, $expansion, $cache, $cache_bytes);
 }
 
+/* get_cdef_recursive - resolves nested CDEFs while rejecting cycles and excessive depth */
+function get_cdef_recursive($cdef_id, &$visited, &$expansion, &$cache, &$cache_bytes) {
+	if (isset($visited[$cdef_id])) {
+		cacti_log(sprintf('ERROR: CDEF %d contains a recursive cycle.', $cdef_id), false, 'CDEF');
+
+		return null;
+	}
+
+	if (array_key_exists($cdef_id, $cache)) {
+		return $cache[$cdef_id];
+	}
+
+	if (cacti_sizeof($visited) >= 64) {
+		cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver nesting depth.', $cdef_id), false, 'CDEF');
+
+		return null;
+	}
+
+	if (++$expansion > 4096) {
+		cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver expansion budget.', $cdef_id), false, 'CDEF');
+
+		return null;
+	}
+
+	$visited[$cdef_id] = true;
+	$cdef_items        = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array($cdef_id));
+
+	if ($cdef_items === false) {
+		unset($visited[$cdef_id]);
+		cacti_log(sprintf('ERROR: Unable to load CDEF %d.', $cdef_id), false, 'CDEF');
+
+		return null;
+	}
+
+	if (cacti_sizeof($cdef_items) == 0) {
+		$cdef_exists = db_fetch_assoc_prepared('SELECT id FROM cdef WHERE id = ?', array($cdef_id));
+
+		unset($visited[$cdef_id]);
+
+		if ($cdef_exists === false) {
+			cacti_log(sprintf('ERROR: Unable to verify CDEF %d.', $cdef_id), false, 'CDEF');
+
+			return null;
+		}
+
+		if (cacti_sizeof($cdef_exists) === 0) {
+			cacti_log(sprintf('ERROR: CDEF %d does not exist.', $cdef_id), false, 'CDEF');
+
+			return null;
+		}
+
+		$cache[$cdef_id] = '';
+
+		return $cache[$cdef_id];
+	}
+
+	$parts  = array();
+	$length = 0;
+
+	foreach ($cdef_items as $cdef_item) {
+		if ($cdef_item['type'] == 5) {
+			$current_cdef_id = $cdef_item['value'];
+			$nested          = get_cdef_recursive($current_cdef_id, $visited, $expansion, $cache, $cache_bytes);
+
+			if ($nested === null) {
+				unset($visited[$cdef_id]);
+
+				return null;
+			}
+
+			if ($nested === '') {
+				cacti_log(sprintf('ERROR: CDEF %d references an empty definition.', $cdef_id), false, 'CDEF');
+				unset($visited[$cdef_id]);
+
+				return null;
+			}
+
+			$length += strlen($nested) + (empty($parts) ? 0 : 1);
+
+			if ($length > 1048576) {
+				cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver output budget.', $cdef_id), false, 'CDEF');
+				unset($visited[$cdef_id]);
+
+				return null;
+			}
+
+			$parts[] = $nested;
+		} else {
+			$item_name = get_cdef_item_name($cdef_item['id']);
+
+			if ($item_name === null || $item_name === false) {
+				unset($visited[$cdef_id]);
+
+				return null;
+			}
+
+			if ($item_name === '') {
+				cacti_log(sprintf('ERROR: CDEF %d contains an empty item.', $cdef_id), false, 'CDEF');
+				unset($visited[$cdef_id]);
+
+				return null;
+			}
+
+			$length += strlen($item_name) + (empty($parts) ? 0 : 1);
+
+			if ($length > 1048576) {
+				cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver output budget.', $cdef_id), false, 'CDEF');
+				unset($visited[$cdef_id]);
+
+				return null;
+			}
+
+			$parts[] = $item_name;
+		}
+	}
+
+	unset($visited[$cdef_id]);
+
+	$resolved = implode(',', $parts);
+
+	if ($cache_bytes + strlen($resolved) <= 8388608) {
+		$cache_bytes    += strlen($resolved);
+		$cache[$cdef_id] = $resolved;
+	}
+
+	return $resolved;
+}
+
+/**
+ * Determines whether deleting a CDEF would leave a live reference behind.
+ *
+ * References owned by another CDEF in the same delete request are ignored.
+ * Database errors fail closed so an uncertain dependency cannot be deleted.
+ *
+ * @param int        $cdef_id      CDEF being considered for deletion.
+ * @param array<int> $deleting_ids All CDEF IDs in the delete request.
+ */
+function cdef_is_in_use($cdef_id, $deleting_ids = array()) {
+	foreach (array('graph_templates_item', 'aggregate_graph_templates_item', 'aggregate_graphs_graph_item') as $table) {
+		$references = db_fetch_assoc_prepared("SELECT cdef_id FROM $table WHERE cdef_id = ? LIMIT 1", array($cdef_id));
+
+		if ($references === false || cacti_sizeof($references) > 0) {
+			return true;
+		}
+	}
+
+	$parents = db_fetch_assoc_prepared('SELECT DISTINCT cdef_id FROM cdef_items WHERE type = 5 AND value = ?', array($cdef_id));
+
+	if ($parents === false) {
+		return true;
+	}
+
+	$deleting = array_fill_keys(array_map('intval', $deleting_ids), true);
+
+	foreach ($parents as $parent) {
+		if (!isset($deleting[(int) $parent['cdef_id']])) {
+			return true;
+		}
+	}
+
+	return false;
+}
