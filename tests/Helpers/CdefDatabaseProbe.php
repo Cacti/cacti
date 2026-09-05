@@ -67,6 +67,9 @@ function cacti_log($message, $output = false, $environ = 'CMDPHP', $level = '') 
 $conn = $GLOBALS['cdef_probe_connection'];
 $conn->exec('CREATE TEMPORARY TABLE cdef (id INTEGER PRIMARY KEY, name VARCHAR(255) NOT NULL)');
 $conn->exec('CREATE TEMPORARY TABLE cdef_items (id INTEGER PRIMARY KEY, cdef_id INTEGER NOT NULL, sequence INTEGER NOT NULL, type VARCHAR(8) NOT NULL, value VARCHAR(150) NOT NULL)');
+$conn->exec('CREATE TEMPORARY TABLE graph_templates_item (id INTEGER PRIMARY KEY, cdef_id INTEGER NOT NULL)');
+$conn->exec('CREATE TEMPORARY TABLE aggregate_graph_templates_item (id INTEGER PRIMARY KEY, cdef_id INTEGER NOT NULL)');
+$conn->exec('CREATE TEMPORARY TABLE aggregate_graphs_graph_item (id INTEGER PRIMARY KEY, cdef_id INTEGER NOT NULL)');
 $conn->exec("INSERT INTO cdef (id, name) VALUES (1, 'Base Definition'), (2, 'Nested Definition'), (5, 'Empty Definition')");
 $conn->exec("INSERT INTO cdef_items (id, cdef_id, sequence, type, value) VALUES
 	(1, 1, 3, '2', '3'), (2, 1, 1, '4', 'CURRENT_DATA_SOURCE'), (3, 1, 2, '6', '8'),
@@ -89,4 +92,6 @@ print json_encode(array(
 	'invalid' => get_cdef(7),
 	'diamond' => get_cdef(8),
 	'missing_definition' => get_cdef_item_name(10),
+	'in_use'             => cdef_is_in_use(1, array(1)),
+	'deleting_group'     => cdef_is_in_use(1, array(1, 2, 8)),
 ), JSON_THROW_ON_ERROR);

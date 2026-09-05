@@ -9,6 +9,7 @@ on:
       - 'composer.lock'
       - 'cdef.php'
       - 'lib/aggregate.php'
+      - 'lib/api_aggregate.php'
       - 'lib/cdef.php'
       - 'lib/rrd.php'
       - 'phpunit-cdef.xml'
@@ -21,6 +22,7 @@ on:
       - 'tests/Helpers/CdefDatabaseProbe.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
       - 'tests/integration/CdefConsumerIntegrationTest.php'
+      - 'tests/integration/AggregateTotallingGuardContractTest.php'
   pull_request:
     branches: [1.2.x]
     paths:
@@ -29,6 +31,7 @@ on:
       - 'composer.lock'
       - 'cdef.php'
       - 'lib/aggregate.php'
+      - 'lib/api_aggregate.php'
       - 'lib/cdef.php'
       - 'lib/rrd.php'
       - 'phpunit-cdef.xml'
@@ -41,6 +44,7 @@ on:
       - 'tests/Helpers/CdefDatabaseProbe.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
       - 'tests/integration/CdefConsumerIntegrationTest.php'
+      - 'tests/integration/AggregateTotallingGuardContractTest.php'
   workflow_dispatch:
 
 permissions:
