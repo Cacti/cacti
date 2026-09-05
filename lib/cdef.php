@@ -41,6 +41,12 @@ function get_cdef_item_name($cdef_item_id) 	{
 	switch ($cdef_item['type']) {
 		case '1':
 			if (!isset($cdef_functions[$current_cdef_value])) {
+				if ((int) $current_cdef_value === 59) {
+					cacti_log(sprintf('WARNING: CDEF item %d uses ROUND, which the configured RRDtool version does not advertise.', $cdef_item_id), false, 'CDEF');
+
+					return 'ROUND';
+				}
+
 				cacti_log(sprintf('ERROR: CDEF item %d references an unknown function.', $cdef_item_id), false, 'CDEF');
 
 				return null;
