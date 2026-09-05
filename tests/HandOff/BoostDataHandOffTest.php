@@ -45,7 +45,9 @@ test('Recovery status SQL remains valid when ANSI_QUOTES is enabled', function (
 	$recovery = boostSource('poller_recovery.php');
 
 	expect($recovery)->toContain('SET status=2')
-		->and($recovery)->not->toContain('SET status="2"');
+		->and($recovery)->toContain('SET status = 5')
+		->and($recovery)->toContain("VALUES (\\'recovery_pid\\', ?)")
+		->and($recovery)->not->toMatch('/(?:status\s*=|VALUES\s*\()\s*"/');
 });
 
 test('Scheduled Boost retains shard ownership after an RRD update failure', function () {
@@ -102,6 +104,8 @@ test('Remote tuples are quoted by their destination connection', function () {
 
 	expect($cmd)->toContain("db_qstr(\$item['rrd_name'], \$poller_db_cnn_id)");
 	expect($cmd)->toContain('db_qstr($output, $poller_db_cnn_id)');
+	expect($cmd)->toContain("db_qstr('U', \$poller_db_cnn_id)");
+	expect($cmd)->toContain("IFNULL(s.disabled, \\'\\') != \\'on\\'");
 	expect($recovery)->toContain("db_qstr(\$row['rrd_name'], \$remote_conn)");
 });
 
