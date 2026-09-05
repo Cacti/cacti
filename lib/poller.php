@@ -450,24 +450,9 @@ function update_reindex_cache(int $host_id, int $data_query_id) : void {
 
 					if ($session !== false) {
 						if ($oid_uptime == '.1.3.6.1.2.1.1.3.0') {
-							$checks = [
-								'.1.3.6.1.6.3.10.2.1.3.0',
-								'.1.3.6.1.2.1.1.3.0'
-							];
-
-							foreach ($checks as $oid_uptime) {
-								$assert_value = cacti_snmp_session_get($session, $oid_uptime);
-
-								if (is_numeric($assert_value)) {
-									if ($oid_uptime == '.1.3.6.1.6.3.10.2.1.3.0') {
-										$assert_value *= 100;
-									}
-
-									break;
-								}
-							}
-
-							$oid_uptime = '.1.3.6.1.2.1.1.3.0';
+							$engine_time   = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
+							$system_uptime = cacti_snmp_session_get($session, $oid_uptime);
+							$assert_value  = cacti_snmp_select_uptime($system_uptime, $engine_time);
 						} else {
 							$assert_value = cacti_snmp_session_get($session, $oid_uptime);
 						}

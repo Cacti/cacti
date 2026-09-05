@@ -1743,22 +1743,17 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 					}
 
 					// Some devices (Dell iDRAC, Fortigate, etc.) may have an empty system value. This causes a false down status
-					$snmp_uptime = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
+					$snmp_engine_time = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
 
-					if ($snmp_system == '' && empty($snmp_uptime)) {
+					if ($snmp_system == '' && empty($snmp_engine_time)) {
 						print "<span class='hostDown'>" . __('Host') . ' ' . __('SNMP error');
 
 						if ($snmp_error != '') {
 							print ' - ' . htmle($snmp_error);
 						}
 					} else {
-						$snmp_uptime = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
-
-						if (!empty($snmp_uptime) && is_numeric($snmp_uptime)) {
-							$snmp_uptime *= 100;
-						} else {
-							$snmp_uptime = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
-						}
+						$snmp_system_uptime = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
+						$snmp_uptime        = (string) cacti_snmp_select_uptime($snmp_system_uptime, $snmp_engine_time);
 
 						$snmp_hostname   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
 						$snmp_location   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');

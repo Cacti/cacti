@@ -51,6 +51,7 @@ Cacti CHANGELOG
 -issue#7381: Memoize db_get_table_column_types to cut redundant SHOW COLUMNS
 -issue#7363: Normalize trusted-proxy match with inet_pton
 -issue#7350: Repair mikrotik branch, guard task filter, escape table metadata
+-issue#7342: Reject wall-clock snmpEngineTime values when selecting device uptime
 -issue#7338: Restore item-override saves and bulk-action input names
 -issue#7337: Map empty value to NULL for nullable numeric columns in sql_save
 -issue#7336: Drop duplicate --slope-mode emission
