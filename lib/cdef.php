@@ -94,24 +94,26 @@ function get_cdef_item_name(int $cdef_item_id) : ?string {
  * @return string|null The constructed CDEF string, or null on invalid data.
  */
 function get_cdef(int $cdef_id) : ?string {
-	$visited   = [];
-	$expansion = 0;
-	$cache     = [];
+	$visited     = [];
+	$expansion   = 0;
+	$cache       = [];
+	$cache_bytes = 0;
 
-	return get_cdef_recursive($cdef_id, $visited, $expansion, $cache);
+	return get_cdef_recursive($cdef_id, $visited, $expansion, $cache, $cache_bytes);
 }
 
 /**
  * Resolves nested CDEFs while rejecting cycles and unreasonable depth.
  *
- * @param int               $cdef_id   The ID of the CDEF to retrieve.
- * @param array<int,true>   $visited   IDs active in the current recursion path.
- * @param int               $expansion Number of definitions expanded by this call.
- * @param array<int,string> $cache     Successfully resolved definitions.
+ * @param int               $cdef_id     The ID of the CDEF to retrieve.
+ * @param array<int,true>   $visited     IDs active in the current recursion path.
+ * @param int               $expansion   Number of definitions expanded by this call.
+ * @param array<int,string> $cache       Successfully resolved definitions.
+ * @param int               $cache_bytes Total bytes retained by the resolver cache.
  *
  * @return string|null The CDEF string, or null when recursion is unsafe.
  */
-function get_cdef_recursive(int $cdef_id, array &$visited, int &$expansion, array &$cache) : ?string {
+function get_cdef_recursive(int $cdef_id, array &$visited, int &$expansion, array &$cache, int &$cache_bytes) : ?string {
 	if (isset($visited[$cdef_id])) {
 		cacti_log(sprintf('ERROR: CDEF %d contains a recursive cycle.', $cdef_id), false, 'CDEF');
 
@@ -159,7 +161,7 @@ function get_cdef_recursive(int $cdef_id, array &$visited, int &$expansion, arra
 	foreach ($cdef_items as $cdef_item) {
 		if ($cdef_item['type'] == 5) {
 			$current_cdef_id = $cdef_item['value'];
-			$nested          = get_cdef_recursive((int) $current_cdef_id, $visited, $expansion, $cache);
+			$nested          = get_cdef_recursive((int) $current_cdef_id, $visited, $expansion, $cache, $cache_bytes);
 
 			if ($nested === null) {
 				unset($visited[$cdef_id]);
@@ -205,7 +207,16 @@ function get_cdef_recursive(int $cdef_id, array &$visited, int &$expansion, arra
 
 	unset($visited[$cdef_id]);
 
-	$cache[$cdef_id] = implode(',', $parts);
+	$resolved = implode(',', $parts);
+
+	if ($cache_bytes + strlen($resolved) > 8388608) {
+		cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver cache budget.', $cdef_id), false, 'CDEF');
+
+		return null;
+	}
+
+	$cache_bytes    += strlen($resolved);
+	$cache[$cdef_id] = $resolved;
 
 	return $cache[$cdef_id];
 }

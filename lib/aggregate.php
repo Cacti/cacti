@@ -742,6 +742,22 @@ function aggregate_cdef_make0() : int {
  *
  * @return void
  */
+/**
+ * Check whether an aggregate item has a usable CDEF expression.
+ *
+ * @param array<int,array{id:mixed,name:mixed,cdef_text:?string}> $cdefs
+ * @param int                                                     $cdef_id
+ *
+ * @return string|null A usable expression, or null when totalling must skip the item
+ */
+function aggregate_cdef_for_totalling(array $cdefs, int $cdef_id) : ?string {
+	if (!isset($cdefs[$cdef_id]) || $cdefs[$cdef_id]['cdef_text'] === null || $cdefs[$cdef_id]['cdef_text'] === '') {
+		return null;
+	}
+
+	return $cdefs[$cdef_id]['cdef_text'];
+}
+
 function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence, int $_total_type) : void {
 	include_once(CACTI_PATH_LIBRARY . '/cdef.php');
 
@@ -795,14 +811,15 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 			// current cdef
 			$cdef_id   = $graph_template_item['cdef_id'];
 
-			if (!isset($cdefs[$cdef_id]) || $cdefs[$cdef_id]['cdef_text'] === null || $cdefs[$cdef_id]['cdef_text'] === '') {
+			$cdef_text = aggregate_cdef_for_totalling($cdefs, (int) $cdef_id);
+
+			if ($cdef_text === null) {
 				cacti_log(__FUNCTION__ . ' cannot total invalid or empty CDEF id ' . $cdef_id, true, 'AGGREGATE');
 
 				continue;
 			}
 
 			$cdef_name = $cdefs[$cdef_id]['name'];
-			$cdef_text = $cdefs[$cdef_id]['cdef_text'];
 
 			cacti_log(__FUNCTION__ . ' cdef id: ' . $cdef_id . ' name: ' . $cdef_name . ' value: ' . $cdef_text, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
