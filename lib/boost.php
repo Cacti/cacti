@@ -606,7 +606,7 @@ function boost_atomic_write_cache(string $cache_file, string $output) : bool {
 
 	$flushed = fflush($fileptr);
 	fclose($fileptr);
-	chmod($temp_file, 0640);
+	chmod($temp_file, 0644);
 
 	$published = $flushed && @rename($temp_file, $cache_file);
 

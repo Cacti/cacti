@@ -164,6 +164,7 @@ test('publishes a multi-chunk graph cache object without leaving a temporary fil
 	try {
 		expect(boost_atomic_write_cache($cache_file, $output))->toBeTrue();
 		expect(file_get_contents($cache_file))->toBe($output);
+		expect(fileperms($cache_file) & 0777)->toBe(0644);
 		expect(glob($directory . '/.boost-*'))->toBe([]);
 	} finally {
 		@unlink($cache_file);
