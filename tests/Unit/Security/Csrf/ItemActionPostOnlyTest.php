@@ -13,10 +13,9 @@
 */
 
 /*
- * item_remove, item_moveup and item_movedown change state and were reachable by
- * GET, so a cross origin <img> or link could delete or reorder a template item
- * using only the victim's session. Under AUTH_METHOD_BASIC the browser re-sends
- * credentials on that request, so no session cookie is needed at all.
+ * Item, tree, RRA, and ordering actions change state and were reachable by GET,
+ * so a cross-origin request could delete or reorder objects using the victim's
+ * authentication state.
  *
  * The guard and the links have to move together: adding the actions to
  * $bad_actions while a page still links them by GET breaks the delete it is
@@ -25,11 +24,6 @@
  */
 
 /**
- * Every repository file that names one of the three actions.
- *
- * @return array<int, string> Repository-relative paths.
- */
-/**
  * Every GET reachable action whose handler mutates state. Read-only actions are
  * deliberately absent: item_edit, readme, changelog, latest, avail and the
  * *_confirm dialogs render a page and change nothing.
@@ -37,16 +31,16 @@
  * @return array<int, string> Action names.
  */
 function guarded_actions() {
-    return array(
-        'item_remove', 'item_moveup', 'item_movedown',
-        'item_remove_gsv', 'item_remove_dssv',
-        'item_moveup_gsv', 'item_moveup_dssv',
-        'item_movedown_gsv', 'item_movedown_dssv',
-        'delete_node', 'gt_remove', 'query_remove', 'remove', 'change_leaf',
-        'moveup', 'movedown',
-        'tree_up', 'tree_down', 'move_page_up', 'move_page_down',
-        'rrd_add', 'rrd_remove',
-    );
+	return [
+		'item_remove', 'item_moveup', 'item_movedown',
+		'item_remove_gsv', 'item_remove_dssv',
+		'item_moveup_gsv', 'item_moveup_dssv',
+		'item_movedown_gsv', 'item_movedown_dssv',
+		'delete_node', 'gt_remove', 'query_remove', 'remove', 'change_leaf',
+		'moveup', 'movedown',
+		'tree_up', 'tree_down', 'move_page_up', 'move_page_down',
+		'rrd_add', 'rrd_remove',
+	];
 }
 
 /**
@@ -56,113 +50,119 @@ function guarded_actions() {
  * @return string A regex alternation.
  */
 function guarded_action_pattern() {
-    $actions = guarded_actions();
+	$actions = guarded_actions();
 
-    usort($actions, function ($a, $b) {
-        return strlen($b) - strlen($a);
-    });
+	usort($actions, function ($a, $b) {
+		return strlen($b) - strlen($a);
+	});
 
-    return 'action=(?:' . implode('|', array_map('preg_quote', $actions)) . ')(?![a-z_])';
+	return 'action=(?:' . implode('|', array_map('preg_quote', $actions)) . ')(?![a-z_])';
 }
 
 function item_action_files() {
-    $root  = dirname(__DIR__, 4);
-    $found = array();
+	$root  = dirname(__DIR__, 4);
+	$found = [];
 
-    $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS));
+	$it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS));
 
-    foreach ($it as $file) {
-        $path = $file->getPathname();
+	foreach ($it as $file) {
+		$path = $file->getPathname();
 
-        if (substr($path, -4) !== '.php') {
-            continue;
-        }
+		if (substr($path, -4) !== '.php') {
+			continue;
+		}
 
-        if (strpos($path, '/include/vendor/') !== false || strpos($path, '/tests/') !== false) {
-            continue;
-        }
+		if (strpos($path, '/include/vendor/') !== false || strpos($path, '/tests/') !== false) {
+			continue;
+		}
 
-        $src = file_get_contents($path);
+		$src = file_get_contents($path);
 
-        if ($src !== false && preg_match('/' . guarded_action_pattern() . '/', $src)) {
-            $found[] = substr($path, strlen($root) + 1);
-        }
-    }
+		if ($src !== false && preg_match('/' . guarded_action_pattern() . '/', $src)) {
+			$found[] = substr($path, strlen($root) + 1);
+		}
+	}
 
-    sort($found);
+	sort($found);
 
-    return $found;
+	return $found;
 }
 
 test('every state changing action is refused without a POST token', function () {
-    $src = file_get_contents(dirname(__DIR__, 4) . '/include/global.php');
+	$src = file_get_contents(dirname(__DIR__, 4) . '/include/global.php');
 
-    expect($src)->not->toBeFalse();
+	expect($src)->not->toBeFalse();
 
-    preg_match('/\$bad_actions\s*=\s*(?:array\(|\[)(.*?)(?:\);|\];)/s', $src, $matches);
+	preg_match('/\$bad_actions\s*=\s*(?:array\(|\[)(.*?)(?:\);|\];)/s', $src, $matches);
 
-    expect($matches)->toHaveKey(1);
+	expect($matches)->toHaveKey(1);
 
-    $list = $matches[1];
+	$list = $matches[1];
 
-    $missing = array();
+	$missing = [];
 
-    foreach (guarded_actions() as $action) {
-        if (strpos($list, "'" . $action . "'") === false) {
-            $missing[] = $action;
-        }
-    }
+	foreach (guarded_actions() as $action) {
+		if (strpos($list, "'" . $action . "'") === false) {
+			$missing[] = $action;
+		}
+	}
 
-    expect($missing)->toBe(array());
+	expect($missing)->toBe([]);
 });
 
 test('no page still links a state changing action by GET', function () {
-    $files = item_action_files();
+	$files = item_action_files();
 
-    expect($files)->not->toBe(array());
+	expect($files)->not->toBe([]);
 
-    $unconverted = array();
+	$unconverted = [];
 
-    foreach ($files as $file) {
-        $src = file_get_contents(dirname(__DIR__, 4) . '/' . $file);
+	foreach ($files as $file) {
+		$src = file_get_contents(dirname(__DIR__, 4) . '/' . $file);
 
-        /* Anchors are emitted across two lines in places, so collapse the file
-           before pairing an href with the class that posts it. */
-        $flat = preg_replace('/\s+/', ' ', $src);
+		/* Anchors are emitted across two lines in places, so collapse the file
+		   before pairing an href with the class that posts it. */
+		$flat = preg_replace('/\s+/', ' ', $src);
 
-        if (preg_match_all('/<a\b[^>]*?' . guarded_action_pattern() . '[^>]*>/', $flat, $matches)) {
-            foreach ($matches[0] as $anchor) {
-                if (strpos($anchor, 'cactiPostAction') === false) {
-                    $unconverted[] = $file;
-                    break;
-                }
-            }
-        }
-    }
+		if (preg_match_all('/<a\b[^>]*?' . guarded_action_pattern() . '[^>]*>/', $flat, $matches)) {
+			foreach ($matches[0] as $anchor) {
+				$uses_global_handler = strpos($anchor, 'cactiPostAction') !== false;
+				$uses_page_handler   = strpos($anchor, 'remover') !== false
+					&& strpos($src, "$('.remover').on('click'") !== false
+					&& strpos($src, 'cactiPreparePostRequestFromUrl') !== false;
 
-    expect($unconverted)->toBe(array());
+				if (!$uses_global_handler && !$uses_page_handler) {
+					$unconverted[] = $file;
+
+					break;
+				}
+			}
+		}
+	}
+
+	expect($unconverted)->toBe([]);
 });
 
 test('the cactiPostAction handler posts the token and refuses another origin', function () {
-    $js = file_get_contents(dirname(__DIR__, 4) . '/include/layout.js');
+	$js = file_get_contents(dirname(__DIR__, 4) . '/include/layout.js');
 
-    expect($js)->not->toBeFalse();
+	expect($js)->not->toBeFalse();
 
-    /* The class has to be bound on its own, not only through the ajaxAnchors
-       selector, because several tagged anchors carry none of the classes that
-       selector names. */
+	/* The class has to be bound on its own, not only through the ajaxAnchors
+	   selector, because several tagged anchors carry none of the classes that
+	   selector names. */
 	expect($js)->toContain("a.cactiPostAction')")
 		->and($js)->toContain(".not('.cactiPostAction').off('click')")
 		->and($js)->toContain('submitPageUsingPost')
-        ->and($js)->toContain('cactiPreparePostRequestFromUrl');
+		->and($js)->toContain('cactiPreparePostRequestFromUrl');
 
-    $start = strpos($js, 'function cactiPreparePostRequest(');
+	$start = strpos($js, 'function cactiPreparePostRequest(');
 
-    expect($start)->not->toBeFalse();
+	expect($start)->not->toBeFalse();
 
-    $body = substr($js, $start, 600);
+	$body = substr($js, $start, 600);
 
-    expect($body)->toContain('csrfMagicToken')
-        ->and($body)->toContain('__csrf_magic')
-        ->and($body)->toContain('Refusing to send a CSRF token to a different origin');
+	expect($body)->toContain('csrfMagicToken')
+		->and($body)->toContain('__csrf_magic')
+		->and($body)->toContain('Refusing to send a CSRF token to a different origin');
 });
