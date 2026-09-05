@@ -31,6 +31,10 @@ test('Boost cache paths normalize either trailing separator style', function () 
 
 test('Boost hand-off helper tolerates repeated test-file loading', function () {
 	$source      = file_get_contents(__FILE__);
+
+	expect($source)->not->toBeFalse();
+	$source = (string) $source;
+
 	$declaration = strpos($source, 'function ' . 'boostSource');
 
 	expect($declaration)->not->toBeFalse();

@@ -146,6 +146,8 @@ test('boost_archive_table_readable probes data, not metadata, and rejects bad na
 
 test('parent waits for all launched children before draining', function () use ($boostPollerPath) {
 	$contents = file_get_contents($boostPollerPath);
+	expect($contents)->not->toBeFalse();
+	$contents = (string) $contents;
 
 	// boost_launch_children() returns the launched count and the barrier waits on
 	// boost_all_children_registered() rather than releasing on the first signup.
@@ -160,6 +162,8 @@ test('parent waits for all launched children before draining', function () use (
 
 test('drain loop exits only when every child has recorded completion', function () use ($boostPollerPath) {
 	$contents = file_get_contents($boostPollerPath);
+	expect($contents)->not->toBeFalse();
+	$contents = (string) $contents;
 
 	// The old loop exited as soon as no child was running. The fix also requires
 	// every launched child to have a completion row before draining.
