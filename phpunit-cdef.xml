@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="include/vendor/autoload.php" beStrictAboutOutputDuringTests="false">
+<phpunit bootstrap="tests/Helpers/CdefCoverageBootstrap.php" beStrictAboutOutputDuringTests="false">
 	<php>
 		<ini name="error_reporting" value="-1"/>
 		<env name="CACTI_TEST_BOOTSTRAP" value="1"/>
