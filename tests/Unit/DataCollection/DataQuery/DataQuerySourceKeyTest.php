@@ -52,20 +52,24 @@ test('#7809: an output-only field does not read a missing source key', function 
 
 	$warned = false;
 	set_error_handler(function ($errno, $errstr) use (&$warned) {
-		if (stripos($errstr, 'source') !== false) {
+		if ($errno === E_WARNING && stripos($errstr, 'source') !== false) {
 			$warned = true;
+
+			return true;
 		}
 
-		return true;
-	});
+		return false;
+	}, E_WARNING);
 
-	$hit =
-		($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') &&
-		$field_array['source'] != 'index' &&
-		$field_array['method'] != 'get' &&
-		(isset($field_array['rewrite_index']) || isset($field_array['oid_suffix']));
-
-	restore_error_handler();
+	try {
+		$hit =
+			($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') &&
+			$field_array['source'] != 'index' &&
+			$field_array['method'] != 'get' &&
+			(isset($field_array['rewrite_index']) || isset($field_array['oid_suffix']));
+	} finally {
+		restore_error_handler();
+	}
 
 	expect($warned)->toBeFalse('output-only field must not trigger an undefined source-key warning');
 	expect($hit)->toBeFalse('output-only field must not enter the input method-fix branch');
