@@ -1463,6 +1463,14 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	return $graph_opts;
 }
 
+/* Normalize a nullable resolver result before graph text substitution. */
+function rrdtool_normalize_graph_item_cdef($cdef) {
+	return array(
+		'cdef_cache'   => $cdef === null ? '' : $cdef,
+		'cdef_invalid' => $cdef === null,
+	);
+}
+
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = false, &$xport_meta = array(), $user = 0) {
 	global $config, $consolidation_functions, $graph_item_types, $encryption;
 
@@ -1825,14 +1833,16 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 
 			/* cache cdef value here to support data query variables in the cdef string */
-			if (empty($graph_item['cdef_id'])) {
-				$graph_item['cdef_cache'] = '';
-				$graph_items[$j]['cdef_cache'] = '';
-			} else {
-				$cdef = get_cdef($graph_item['cdef_id']);
+			$cdef       = empty($graph_item['cdef_id']) ? '' : get_cdef($graph_item['cdef_id']);
+			$cdef_state = rrdtool_normalize_graph_item_cdef($cdef);
 
-				$graph_item['cdef_cache'] = $cdef;
-				$graph_items[$j]['cdef_cache'] = $cdef;
+			$graph_item['cdef_cache']      = $cdef_state['cdef_cache'];
+			$graph_items[$j]['cdef_cache'] = $cdef_state['cdef_cache'];
+
+			if ($cdef_state['cdef_invalid']) {
+				$graph_item['cdef_invalid']      = true;
+				$graph_items[$j]['cdef_invalid'] = true;
+				cacti_log('ERROR: Invalid CDEF ' . $graph_item['cdef_id'] . ' for graph ' . $local_graph_id . '; skipping graph item.', true, 'RRD');
 			}
 
 			/* cache vdef value here */
@@ -1935,6 +1945,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		 * syntax is required
 		 */
 		foreach ($graph_items as $key => $graph_item) {
+			if (!empty($graph_item['cdef_invalid'])) {
+				continue;
+			}
+
 			/* note the current item_id for easy access */
 			$graph_item_id = $graph_item['graph_templates_item_id'];
 
@@ -1971,6 +1985,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $graph_item) {
+			if (!empty($graph_item['cdef_invalid'])) {
+				continue;
+			}
+
 			// ToDO: The code blcok appears to not be required as at the end of the block
 			// we simply discard the $cf_id for the computed 'cf_reference' that was
 			// computed previously.

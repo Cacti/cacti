@@ -8,9 +8,10 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'cdef.php'
+      - 'lib/aggregate.php'
       - 'lib/cdef.php'
+      - 'lib/rrd.php'
       - 'phpunit-cdef.xml'
-      - 'phpunit-cdef-contract.xml'
       - 'phpunit-cdef-integration.xml'
       - 'tests/composer.json'
       - 'tests/composer.lock'
@@ -18,8 +19,8 @@ on:
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/Helpers/CdefDatabaseProbe.php'
-      - 'tests/Unit/Ui/Cdef/CdefControllerContractTest.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
+      - 'tests/integration/CdefConsumerIntegrationTest.php'
   pull_request:
     branches: [1.2.x]
     paths:
@@ -27,9 +28,10 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'cdef.php'
+      - 'lib/aggregate.php'
       - 'lib/cdef.php'
+      - 'lib/rrd.php'
       - 'phpunit-cdef.xml'
-      - 'phpunit-cdef-contract.xml'
       - 'phpunit-cdef-integration.xml'
       - 'tests/composer.json'
       - 'tests/composer.lock'
@@ -37,8 +39,8 @@ on:
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/Helpers/CdefDatabaseProbe.php'
-      - 'tests/Unit/Ui/Cdef/CdefControllerContractTest.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
+      - 'tests/integration/CdefConsumerIntegrationTest.php'
   workflow_dispatch:
 
 permissions:
@@ -110,10 +112,6 @@ jobs:
             --coverage \
             --coverage-text \
             --min=100
-
-      - name: Run controller contract tests
-        working-directory: tests
-        run: vendor/bin/pest --configuration=../phpunit-cdef-contract.xml
 
       - name: Run MariaDB integration coverage
         working-directory: tests

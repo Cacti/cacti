@@ -79,19 +79,24 @@ function get_cdef_item_name($cdef_item_id) 	{
    @arg $cdef_id - the id of the cdef to resolve
    @returns - a text-based representation of the cdef */
 function get_cdef($cdef_id) {
-	$visited = array();
+	$visited   = array();
 	$expansion = 0;
-	$result    = get_cdef_recursive($cdef_id, $visited, $expansion);
+	$cache     = array();
+	$cache_bytes = 0;
 
-	return $result === null ? '' : $result;
+	return get_cdef_recursive($cdef_id, $visited, $expansion, $cache, $cache_bytes);
 }
 
 /* get_cdef_recursive - resolves nested CDEFs while rejecting cycles and excessive depth */
-function get_cdef_recursive($cdef_id, &$visited, &$expansion) {
+function get_cdef_recursive($cdef_id, &$visited, &$expansion, &$cache, &$cache_bytes) {
 	if (isset($visited[$cdef_id])) {
 		cacti_log(sprintf('ERROR: CDEF %d contains a recursive cycle.', $cdef_id), false, 'CDEF');
 
 		return null;
+	}
+
+	if (array_key_exists($cdef_id, $cache)) {
+		return $cache[$cdef_id];
 	}
 
 	if (cacti_sizeof($visited) >= 64) {
@@ -100,51 +105,93 @@ function get_cdef_recursive($cdef_id, &$visited, &$expansion) {
 		return null;
 	}
 
-	$expansion++;
-
-	if ($expansion > 4096) {
+	if (++$expansion > 4096) {
 		cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver expansion budget.', $cdef_id), false, 'CDEF');
 
 		return null;
 	}
 
 	$visited[$cdef_id] = true;
-	$cdef_items = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array($cdef_id));
+	$cdef_items        = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array($cdef_id));
 
-	$i = 0; $cdef_string = '';
+	if (cacti_sizeof($cdef_items) == 0) {
+		$cdef_exists = db_fetch_cell_prepared('SELECT id FROM cdef WHERE id = ?', array($cdef_id));
 
-	if (cacti_sizeof($cdef_items) > 0) {
-		foreach ($cdef_items as $cdef_item) {
-			if ($i > 0) {
-				$cdef_string .= ',';
+		unset($visited[$cdef_id]);
+
+		if ($cdef_exists === false || $cdef_exists === null || $cdef_exists === '') {
+			cacti_log(sprintf('ERROR: CDEF %d does not exist.', $cdef_id), false, 'CDEF');
+
+			return null;
+		}
+
+		$cache[$cdef_id] = '';
+
+		return $cache[$cdef_id];
+	}
+
+	$parts  = array();
+	$length = 0;
+
+	foreach ($cdef_items as $cdef_item) {
+		if ($cdef_item['type'] == 5) {
+			$current_cdef_id = $cdef_item['value'];
+			$nested          = get_cdef_recursive($current_cdef_id, $visited, $expansion, $cache, $cache_bytes);
+
+			if ($nested === null) {
+				unset($visited[$cdef_id]);
+
+				return null;
 			}
-			if ($cdef_item['type'] == 5) {
-				$current_cdef_id = $cdef_item['value'];
-				$nested          = get_cdef_recursive($current_cdef_id, $visited, $expansion);
 
-				if ($nested === null) {
+			if ($nested !== '') {
+				$length += strlen($nested) + (empty($parts) ? 0 : 1);
+
+				if ($length > 1048576) {
+					cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver output budget.', $cdef_id), false, 'CDEF');
 					unset($visited[$cdef_id]);
 
 					return null;
 				}
 
-				$cdef_string .= $nested;
-			} else {
-				$item_name = get_cdef_item_name($cdef_item['id']);
+				$parts[] = $nested;
+			}
+		} else {
+			$item_name = get_cdef_item_name($cdef_item['id']);
 
-				if ($item_name === null || $item_name === false) {
+			if ($item_name === null || $item_name === false) {
+				unset($visited[$cdef_id]);
+
+				return null;
+			}
+
+			if ($item_name !== '') {
+				$length += strlen($item_name) + (empty($parts) ? 0 : 1);
+
+				if ($length > 1048576) {
+					cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver output budget.', $cdef_id), false, 'CDEF');
 					unset($visited[$cdef_id]);
 
 					return null;
 				}
 
-				$cdef_string .= $item_name;
+				$parts[] = $item_name;
 			}
-			$i++;
 		}
 	}
 
 	unset($visited[$cdef_id]);
 
-	return $cdef_string;
+	$resolved = implode(',', $parts);
+
+	if ($cache_bytes + strlen($resolved) > 8388608) {
+		cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver cache budget.', $cdef_id), false, 'CDEF');
+
+		return null;
+	}
+
+	$cache_bytes    += strlen($resolved);
+	$cache[$cdef_id] = $resolved;
+
+	return $cache[$cdef_id];
 }

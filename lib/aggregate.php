@@ -632,6 +632,15 @@ function aggregate_cdef_make0() {
  * @param int $_graph_item_sequence	- current graph item sequence
  * @param int $_total_type			- what type of totalling is required?
  */
+/* Return a usable aggregate CDEF expression, or null when the item must be skipped. */
+function aggregate_cdef_for_totalling($cdefs, $cdef_id) {
+	if (!isset($cdefs[$cdef_id]) || $cdefs[$cdef_id]['cdef_text'] === null || $cdefs[$cdef_id]['cdef_text'] === '') {
+		return null;
+	}
+
+	return $cdefs[$cdef_id]['cdef_text'];
+}
+
 function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total_type) {
 	global $config;
 
@@ -660,16 +669,20 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 
 	# build cdefs array to allow for indexing on cdef_id
 	foreach ($_cdefs as $_cdef) {
-		$cdefs[$_cdef['id']]['id'] = $_cdef['id'];
-		$cdefs[$_cdef['id']]['name'] = $_cdef['name'];
-		$cdefs[$_cdef['id']]['cdef_text'] = get_cdef($_cdef['id']);
+		$cdefs[$_cdef['id']] = array(
+			'id'        => $_cdef['id'],
+			'name'      => $_cdef['name'],
+			'cdef_text' => get_cdef($_cdef['id']),
+		);
 	}
 
 	# add pseudo CDEF for CURRENT_DATA_SOURCE, in case CDEF=NONE
 	# we then may apply the standard CDEF procedure to create a new CDEF
-	$cdefs[0]['id']        = 0;
-	$cdefs[0]['name']      = 'Items';
-	$cdefs[0]['cdef_text'] = 'CURRENT_DATA_SOURCE';
+	$cdefs[0] = array(
+		'id'        => 0,
+		'name'      => 'Items',
+		'cdef_text' => 'CURRENT_DATA_SOURCE',
+	);
 
 	/* new CDEF(s) are required! */
 	$num_items = cacti_sizeof($graph_template_items);
@@ -678,8 +691,16 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 		foreach ($graph_template_items as $graph_template_item) {
 			# current cdef
 			$cdef_id   = $graph_template_item['cdef_id'];
+
+			$cdef_text = aggregate_cdef_for_totalling($cdefs, $cdef_id);
+
+			if ($cdef_text === null) {
+				cacti_log(__FUNCTION__ . ' cannot total invalid or empty CDEF id ' . $cdef_id, true, 'AGGREGATE');
+
+				continue;
+			}
+
 			$cdef_name = $cdefs[$cdef_id]['name'];
-			$cdef_text = $cdefs[$cdef_id]['cdef_text'];
 
 			cacti_log(__FUNCTION__ . ' cdef id: ' . $cdef_id . ' name: ' . $cdef_name . ' value: ' . $cdef_text, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -699,7 +720,7 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 			foreach ($cdefs as $cdef) {
 				cacti_log(__FUNCTION__ . ' verify matching cdef: ' . $cdef['id'] . ' on: ' . $cdef['cdef_text'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
-				if ($cdef['cdef_text'] == $new_cdef_text) {
+				if ($cdef['cdef_text'] === $new_cdef_text) {
 					$new_cdef_id = $cdef['id'];
 					cacti_log(__FUNCTION__ . ' matching cdef: ' . $new_cdef_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 					# leave on first match
