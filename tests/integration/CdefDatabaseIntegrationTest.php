@@ -24,6 +24,10 @@ function cdef_integration_seed() : FakeMySQLPDO {
 	$conn = new FakeMySQLPDO();
 
 	$conn->exec('CREATE TABLE cdef (id INTEGER PRIMARY KEY, name TEXT NOT NULL)');
+	$conn->exec('CREATE TABLE settings (name TEXT PRIMARY KEY, value TEXT)');
+	$conn->exec('CREATE TABLE version (cacti TEXT)');
+	$conn->exec("INSERT INTO settings (name, value) VALUES ('log_destination', '0'), ('selective_debug', ''), ('selective_plugin_debug', '')");
+	$conn->exec("INSERT INTO version (cacti) VALUES ('1.3.0')");
 	$conn->exec('CREATE TABLE cdef_items (
 		id INTEGER PRIMARY KEY,
 		cdef_id INTEGER NOT NULL,
@@ -45,7 +49,9 @@ function cdef_integration_seed() : FakeMySQLPDO {
 		(10, 10, 1, '5', '9'),
 		(11, 11, 1, '5', '999'),
 		(12, 3, 3, '1', '999'),
-		(13, 3, 4, '2', '999')");
+		(13, 3, 4, '2', '999'),
+		(14, 4, 1, '5', '1'),
+		(15, 4, 2, '5', '1')");
 
 	return $conn;
 }
@@ -63,6 +69,8 @@ function cdef_integration_seed_mysql(PDO $conn) : void {
 	$conn->exec('DROP TEMPORARY TABLE IF EXISTS cdef_items');
 	$conn->exec('DROP TEMPORARY TABLE IF EXISTS cdef');
 	$conn->exec('CREATE TEMPORARY TABLE cdef (id INTEGER PRIMARY KEY, name VARCHAR(255) NOT NULL)');
+	$conn->exec('CREATE TEMPORARY TABLE settings (name VARCHAR(255) PRIMARY KEY, value TEXT)');
+	$conn->exec("INSERT INTO settings (name, value) VALUES ('log_destination', '0'), ('selective_debug', ''), ('selective_plugin_debug', '')");
 	$conn->exec('CREATE TEMPORARY TABLE cdef_items (
 		id INTEGER PRIMARY KEY,
 		cdef_id INTEGER NOT NULL,
@@ -76,7 +84,8 @@ function cdef_integration_seed_mysql(PDO $conn) : void {
 		(2, 1, 1, '4', 'CURRENT_DATA_SOURCE'),
 		(3, 1, 2, '6', '8'),
 		(4, 2, 1, '5', '1'),
-		(5, 2, 2, '6', '2')");
+		(5, 2, 2, '6', '2'),
+		(6, 6, 1, '5', '6')");
 }
 
 beforeEach(function () : void {
@@ -108,7 +117,8 @@ test('stored CDEF item types resolve through production database helpers', funct
 		->and(get_cdef_item_name(7))->toBe('')
 		->and(get_cdef_item_name(12))->toBe('')
 		->and(get_cdef_item_name(13))->toBe('')
-		->and(get_cdef_item_name(999))->toBe('');
+		->and(get_cdef_item_name(999))->toBe('')
+		->and(get_cdef(3))->toBe('');
 });
 
 test('stored CDEFs preserve sequence and recursively expand nested definitions', function () : void {
@@ -117,12 +127,13 @@ test('stored CDEFs preserve sequence and recursively expand nested definitions',
 		->and(get_cdef(8))->toBe('')
 		->and(get_cdef(9))->toBe('')
 		->and(get_cdef(11))->toBe('')
+		->and(get_cdef(4))->toBe('CURRENT_DATA_SOURCE,8,*,CURRENT_DATA_SOURCE,8,*')
 		->and(get_cdef(999))->toBe('');
 });
 
 test('CDEF resolution executes against MariaDB with production table shapes', function () : void {
 	if (getenv('CACTI_CDEF_REAL_DB') !== '1') {
-		test()->markTestSkipped('set CACTI_CDEF_REAL_DB=1 with CACTI_TEST_DB_* to run the MariaDB proof');
+		$this->markTestSkipped('set CACTI_CDEF_REAL_DB=1 with CACTI_TEST_DB_* to run the MariaDB proof');
 	}
 
 	$host = getenv('CACTI_TEST_DB_HOST') ?: '127.0.0.1';
@@ -140,5 +151,6 @@ test('CDEF resolution executes against MariaDB with production table shapes', fu
 
 	expect(get_cdef_item_name(4))->toBe('Base Definition')
 		->and(get_cdef(1))->toBe('CURRENT_DATA_SOURCE,8,*')
-		->and(get_cdef(2))->toBe('CURRENT_DATA_SOURCE,8,*,2');
+		->and(get_cdef(2))->toBe('CURRENT_DATA_SOURCE,8,*,2')
+		->and(get_cdef(6))->toBe('');
 });
