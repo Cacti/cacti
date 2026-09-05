@@ -469,7 +469,7 @@ function update_reindex_cache(int $host_id, int $data_query_id) : void {
 						$session->close();
 					}
 
-					$recache_stack[] = "('$host_id', '$data_query_id'," . POLLER_ACTION_SNMP . ", '<', '$assert_value', '$oid_uptime', 1)";
+					$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SNMP . ", '<', " . db_qstr($assert_value) . ', ' . db_qstr($oid_uptime) . ', 1)';
 				}
 
 				break;
