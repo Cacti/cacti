@@ -24,6 +24,12 @@
 
 require_once __DIR__ . '/../../../../lib/ldap.php';
 
+beforeEach(function () {
+	if (!function_exists('ldap_escape') || !defined('LDAP_ESCAPE_FILTER')) {
+		$this->markTestSkipped('The LDAP extension is not available.');
+	}
+});
+
 test('a plain value is substituted unchanged', function () {
 	expect(cacti_ldap_filter('(uid=<user>)', array('user' => 'alice')))->toBe('(uid=alice)');
 });
