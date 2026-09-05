@@ -1,0 +1,8 @@
+[info]
+name = dependency_fixture
+version = 1.0
+longname = Dependency Redirect Fixture
+author = The Cacti Group
+homepage = https://www.cacti.net
+compat = 1.2.0
+requires = missing_fixture_dependency:1.0
