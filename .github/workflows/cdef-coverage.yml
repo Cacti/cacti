@@ -8,6 +8,8 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'cdef.php'
+      - 'graphs.php'
+      - 'cli/repair_database.php'
       - 'lib/aggregate.php'
       - 'lib/api_aggregate.php'
       - 'lib/cdef.php'
@@ -19,6 +21,7 @@ on:
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
       - 'tests/integration/CdefConsumerIntegrationTest.php'
+      - 'tests/integration/CdefRepairContractTest.php'
       - 'tests/integration/AggregateTotallingGuardContractTest.php'
   pull_request:
     branches: [develop]
@@ -27,6 +30,8 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'cdef.php'
+      - 'graphs.php'
+      - 'cli/repair_database.php'
       - 'lib/aggregate.php'
       - 'lib/api_aggregate.php'
       - 'lib/cdef.php'
@@ -38,6 +43,7 @@ on:
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
       - 'tests/integration/CdefConsumerIntegrationTest.php'
+      - 'tests/integration/CdefRepairContractTest.php'
       - 'tests/integration/AggregateTotallingGuardContractTest.php'
   workflow_dispatch:
 

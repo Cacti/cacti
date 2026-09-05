@@ -8,6 +8,7 @@
 		<testsuite name="CDEF database integration">
 			<file>tests/integration/CdefDatabaseIntegrationTest.php</file>
 			<file>tests/integration/CdefConsumerIntegrationTest.php</file>
+			<file>tests/integration/CdefRepairContractTest.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>
