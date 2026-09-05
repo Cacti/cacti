@@ -16,8 +16,12 @@ test('upgrade column definitions spell the NULL key in upper case', function () 
 	expect($upgrades)->not->toBeEmpty();
 
 	foreach ($upgrades as $upgrade) {
+		$contents = file_get_contents($upgrade);
+
+		expect($contents)->not->toBeFalse();
+
 		// toContain() takes needles, not a message.
-		expect(str_contains(file_get_contents($upgrade), "'null' =>"))
+		expect(str_contains($contents, "'null' =>"))
 			->toBeFalse();
 	}
 });
@@ -25,5 +29,6 @@ test('upgrade column definitions spell the NULL key in upper case', function () 
 test('the column builder still reads the upper case key', function () {
 	$database = file_get_contents(dirname(__DIR__, 3) . '/lib/database.php');
 
-	expect($database)->toContain("\$column['NULL']");
+	expect($database)->not->toBeFalse()
+		->and($database)->toContain("\$column['NULL']");
 });

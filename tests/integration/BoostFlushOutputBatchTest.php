@@ -127,11 +127,11 @@ test('reports a failed database acknowledgement to its caller', function () {
 	expect(boost_flush_output_batch(["(1,'ds','2024-01-01 00:00:00','100')"], $this->conn))->toBeFalse();
 });
 
-test('publishes a complete graph cache object without leaving a temporary file', function () {
+test('publishes a multi-chunk graph cache object without leaving a temporary file', function () {
 	$directory = sys_get_temp_dir() . '/cacti-boost-cache-' . bin2hex(random_bytes(8));
 	mkdir($directory, 0700);
 	$cache_file = $directory . '/cache.png';
-	$output     = str_repeat('png-data', 4096);
+	$output     = str_repeat('png-data', 393217);
 
 	try {
 		expect(boost_atomic_write_cache($cache_file, $output))->toBeTrue();

@@ -551,20 +551,28 @@ function boost_atomic_write_cache(string $cache_file, string $output) : bool {
 		return false;
 	}
 
-	$length  = strlen($output);
-	$written = 0;
+	$length     = strlen($output);
+	$written    = 0;
+	$chunk_size = 1024 * 1024;
 
 	while ($written < $length) {
-		$result = fwrite($fileptr, substr($output, $written));
+		$chunk         = substr($output, $written, $chunk_size);
+		$chunk_length  = strlen($chunk);
+		$chunk_written = 0;
 
-		if ($result === false || $result === 0) {
-			fclose($fileptr);
-			@unlink($temp_file);
+		while ($chunk_written < $chunk_length) {
+			$result = fwrite($fileptr, substr($chunk, $chunk_written));
 
-			return false;
+			if ($result === false || $result === 0) {
+				fclose($fileptr);
+				@unlink($temp_file);
+
+				return false;
+			}
+
+			$chunk_written += $result;
+			$written       += $result;
 		}
-
-		$written += $result;
 	}
 
 	$flushed = fflush($fileptr);
