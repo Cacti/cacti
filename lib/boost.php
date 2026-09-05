@@ -22,6 +22,67 @@
  +-------------------------------------------------------------------------+
 */
 
+/** Ensure Boost children can record one completion row per run and shard. */
+function boost_ensure_process_table(bool $repair_key = false) : bool {
+	if (!db_table_exists('poller_output_boost_processes')) {
+		$created = db_execute("CREATE TABLE `poller_output_boost_processes` (
+			`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
+			`run_id` char(32) NOT NULL default '',
+			`child_id` int(10) unsigned NOT NULL default 0,
+			`status` varchar(255) default NULL,
+			PRIMARY KEY (`sock_int_value`),
+			UNIQUE KEY `run_child` (`run_id`, `child_id`)
+		) ENGINE=MEMORY");
+
+		if ($created === false && !db_table_exists('poller_output_boost_processes')) {
+			cacti_log('ERROR: Unable to create poller_output_boost_processes', true, 'BOOST');
+
+			return false;
+		}
+	}
+
+	if (!db_column_exists('poller_output_boost_processes', 'run_id')) {
+		$added = db_execute("ALTER TABLE poller_output_boost_processes
+			ADD `run_id` char(32) NOT NULL default '' AFTER `sock_int_value`");
+
+		if ($added === false && !db_column_exists('poller_output_boost_processes', 'run_id')) {
+			cacti_log('ERROR: Unable to add run_id to poller_output_boost_processes', true, 'BOOST');
+
+			return false;
+		}
+	}
+
+	if (!db_column_exists('poller_output_boost_processes', 'child_id')) {
+		$added = db_execute('ALTER TABLE poller_output_boost_processes
+			ADD `child_id` int(10) unsigned NOT NULL default 0 AFTER `run_id`');
+
+		if ($added === false && !db_column_exists('poller_output_boost_processes', 'child_id')) {
+			cacti_log('ERROR: Unable to add child_id to poller_output_boost_processes', true, 'BOOST');
+
+			return false;
+		}
+	}
+
+	if ($repair_key && !db_index_exists('poller_output_boost_processes', 'run_child')) {
+		if (db_execute_prepared('DELETE FROM poller_output_boost_processes WHERE run_id = ?', ['']) === false) {
+			cacti_log('ERROR: Unable to remove legacy Boost completion rows', true, 'BOOST');
+
+			return false;
+		}
+
+		$added = db_execute('ALTER TABLE poller_output_boost_processes
+			ADD UNIQUE KEY `run_child` (`run_id`, `child_id`)');
+
+		if ($added === false && !db_index_exists('poller_output_boost_processes', 'run_child')) {
+			cacti_log('ERROR: Unable to add run_child key to poller_output_boost_processes', true, 'BOOST');
+
+			return false;
+		}
+	}
+
+	return true;
+}
+
 /**
  * Sorts a multi-dimensional array by one or more fields.
  *
@@ -606,11 +667,16 @@ function boost_atomic_write_cache(string $cache_file, string $output) : bool {
 
 	$flushed = fflush($fileptr);
 	fclose($fileptr);
-	chmod($temp_file, 0644);
 
-	$published = $flushed && @rename($temp_file, $cache_file);
+	if (!$flushed || !chmod($temp_file, 0644)) {
+		@unlink($temp_file);
 
-	if (!$published && $flushed && PHP_OS_FAMILY === 'Windows') {
+		return false;
+	}
+
+	$published = @rename($temp_file, $cache_file);
+
+	if (!$published && PHP_OS_FAMILY === 'Windows') {
 		$published = boost_replace_cache_file_on_windows($temp_file, $cache_file);
 	}
 
