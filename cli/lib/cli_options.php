@@ -75,13 +75,15 @@ function cacti_cli_help($title, $usage, $options, $extra = array()) {
 		}
 	}
 
-	/* the width is computed from the longest name so the columns line up
+	/* the width is computed from the longest rendered flag so the columns line up
 	 * whatever the script declares */
 	$width = 0;
 
-	foreach (array_merge(array_keys($required), array_keys($optional)) as $name) {
-		if (strlen($name) > $width) {
-			$width = strlen($name);
+	foreach (array_merge($required, $optional) as $name => $option) {
+		$flag = cacti_cli_option_flag($name, $option);
+
+		if (strlen($flag) > $width) {
+			$width = strlen($flag);
 		}
 	}
 
@@ -104,20 +106,50 @@ function cacti_cli_help($title, $usage, $options, $extra = array()) {
  * cacti_cli_help_options - prints one aligned line per option.
  *
  * @param  array $options The options to print.
- * @param  int   $width   The column width taken from the longest option name.
+ * @param  int   $width   The column width taken from the longest rendered flag.
  *
  * @return void
  */
 function cacti_cli_help_options($options, $width) {
 	foreach ($options as $name => $option) {
-		$flag = '--' . $name;
+		$flag = cacti_cli_option_flag($name, $option);
 
-		if (isset($option['value']) && $option['value'] != '') {
-			$flag .= '=' . $option['value'];
-		}
-
-		print '    ' . str_pad($flag, $width + 10) . $option['help'] . PHP_EOL;
+		print '    ' . str_pad($flag, $width + 4) . $option['help'] . PHP_EOL;
 	}
+}
+
+/**
+ * cacti_cli_option_flag - renders the flag shown in help output.
+ *
+ * @param  string $name   The option name.
+ * @param  array  $option The option declaration.
+ *
+ * @return string The rendered flag.
+ */
+function cacti_cli_option_flag($name, $option) {
+	$flag = '--' . $name;
+
+	if (isset($option['value']) && $option['value'] != '') {
+		$flag .= '=' . $option['value'];
+	}
+
+	return $flag;
+}
+
+/**
+ * cacti_cli_option_missing - checks the absent value for an option's type.
+ *
+ * @param  array $option The option declaration.
+ * @param  mixed $value  The parsed option value.
+ *
+ * @return bool Whether the required option is missing.
+ */
+function cacti_cli_option_missing($option, $value) {
+	if (isset($option['value']) && $option['value'] != '') {
+		return $value === '';
+	}
+
+	return $value === false;
 }
 
 /**
@@ -199,7 +231,7 @@ function cacti_cli_parse($argv, $options, $title, $usage, $extra = array()) {
 	}
 
 	foreach ($options as $name => $option) {
-		if (isset($option['required']) && $option['required'] && $values[$name] === '') {
+		if (isset($option['required']) && $option['required'] && cacti_cli_option_missing($option, $values[$name])) {
 			print __('ERROR: Missing Required Argument: (--%s)', $name) . PHP_EOL . PHP_EOL;
 
 			cacti_cli_help($title, $usage, $options, $extra);
