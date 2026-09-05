@@ -79,6 +79,7 @@ test('missing receivers produce an actionable notice', function () {
 	expect($result)->toBeFalse()
 		->and($GLOBALS['snmpagent_notification_logs'])->toHaveCount(1)
 		->and($GLOBALS['snmpagent_notification_logs'][0][0])->toStartWith('NOTICE:')
+		->and($GLOBALS['snmpagent_notification_logs'][0][0])->toContain('No enabled SNMP notification receivers')
 		->and($GLOBALS['snmpagent_notification_logs'][0][0])->toContain('Console > Utilities > SNMP Agent Utilities > SNMP Notification Receivers')
 		->and($GLOBALS['snmpagent_notification_logs'][0][0])->toContain('ignore this notice when SNMP traps are intentionally disabled')
 		->and($GLOBALS['snmpagent_notification_logs'][0][2])->toBe('SNMPAGENT')
