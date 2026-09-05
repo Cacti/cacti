@@ -28,6 +28,8 @@ test('CDEF item names cover every supported item type and the unknown fallback',
 		4 => ['type' => '5', 'value' => 42],
 		5 => ['type' => '6', 'value' => '8'],
 		6 => ['type' => '99', 'value' => 'ignored'],
+		7 => ['type' => '1', 'value' => 999],
+		8 => ['type' => '2', 'value' => 999],
 	];
 	$GLOBALS['cdef_test_names'][42] = 'Nested CDEF';
 
@@ -36,7 +38,10 @@ test('CDEF item names cover every supported item type and the unknown fallback',
 		->and(get_cdef_item_name(3))->toBe('CURRENT_DATA_SOURCE')
 		->and(get_cdef_item_name(4))->toBe('Nested CDEF')
 		->and(get_cdef_item_name(5))->toBe('8')
-		->and(get_cdef_item_name(6))->toBeNull();
+		->and(get_cdef_item_name(6))->toBeNull()
+		->and(get_cdef_item_name(7))->toBeNull()
+		->and(get_cdef_item_name(8))->toBeNull()
+		->and(get_cdef_item_name(999))->toBeNull();
 
 	expect($GLOBALS['cdef_test_queries'][0][1])->toBe([1])
 		->and($GLOBALS['cdef_test_queries'][4][1])->toBe([42]);
@@ -60,11 +65,27 @@ test('CDEF resolution handles empty, ordered, and recursively nested definitions
 			['id' => 0, 'type' => '5', 'value' => '2'],
 			['id' => 20, 'type' => '6', 'value' => '2'],
 		],
+		4 => [['id' => 0, 'type' => '5', 'value' => '999']],
+		5 => [['id' => 0, 'type' => '5', 'value' => '5']],
+		6 => [['id' => 0, 'type' => '5', 'value' => '7']],
+		7 => [['id' => 0, 'type' => '5', 'value' => '6']],
 	];
 
 	expect(get_cdef(1))->toBe('')
 		->and(get_cdef(2))->toBe('CURRENT_DATA_SOURCE,8,*')
-		->and(get_cdef(3))->toBe('CURRENT_DATA_SOURCE,8,*,2');
+		->and(get_cdef(3))->toBe('CURRENT_DATA_SOURCE,8,*,2')
+		->and(get_cdef(4))->toBe('')
+		->and(get_cdef(5))->toBe('')
+		->and(get_cdef(6))->toBe('');
 
-	expect($GLOBALS['cdef_test_queries'][0][1])->toBe([1]);
+	expect($GLOBALS['cdef_test_queries'][0][1])->toBe([1])
+		->and($GLOBALS['cdef_test_queries'][0][0])->toContain('ORDER BY sequence');
+});
+
+test('CDEF resolution rejects nesting deeper than the safety limit', function () : void {
+	for ($id = 1; $id <= 65; $id++) {
+		$GLOBALS['cdef_test_lists'][$id] = [['id' => 0, 'type' => '5', 'value' => $id + 1]];
+	}
+
+	expect(get_cdef(1))->toBe('');
 });
