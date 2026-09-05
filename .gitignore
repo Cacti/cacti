@@ -111,6 +111,7 @@ notepad.md
 include/vendor/*
 vendor/*
 tests/vendor/
+tests/composer.lock
 .worktrees/
 tests/e2e/test-results/
 

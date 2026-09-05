@@ -105,6 +105,9 @@ jobs:
           composer global require pestphp/pest:^3 --no-interaction --no-progress
           composer global config bin-dir --absolute >> "$GITHUB_PATH"
 
+      - name: Install 1.2 integration test dependencies
+        run: composer install --working-dir=tests --no-interaction --no-progress --prefer-dist
+
       - name: Enforce line coverage
         env:
           XDEBUG_MODE: coverage
@@ -118,6 +121,7 @@ jobs:
             --min=100
 
       - name: Run MariaDB integration coverage
+        working-directory: tests
         env:
           CACTI_CDEF_REAL_DB: '1'
           CACTI_TEST_DB_HOST: 127.0.0.1
@@ -125,4 +129,4 @@ jobs:
           CACTI_TEST_DB_NAME: cacti_test
           CACTI_TEST_DB_USER: cacti
           CACTI_TEST_DB_PASS: cacti
-        run: pest --colors=never --configuration=phpunit-cdef-integration.xml
+        run: vendor/bin/pest --colors=never --configuration=../phpunit-cdef-integration.xml
