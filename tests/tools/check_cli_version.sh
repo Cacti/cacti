@@ -22,7 +22,7 @@
 
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 cd $SCRIPTPATH/../../
-FILES1=`find cli -name \*.php | grep -v "index.php" | sort`
+FILES1=`find cli -type f -name \*.php | grep -v "index.php" | sort`
 FILES2=`ls -1 poller*.php | egrep -v "(index.php|pollers.php)" | sort`
 FILES3="cactid.php cmd.php"
 

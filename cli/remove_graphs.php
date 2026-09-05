@@ -166,6 +166,10 @@ if (cacti_sizeof($parms)) {
 			exit(0);
 		default:
 			print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
+
+			display_help();
+
+			exit(1);
 		}
 	}
 } else {

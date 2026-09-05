@@ -242,7 +242,7 @@ if (strlen($response)) {
 } else {
 	print 'FATAL: RRDTool not found in configuration or path.' . PHP_EOL . 'Please insure RRDTool can be found using one of these methods!' . PHP_EOL;
 
-	exit(-1);
+	exit(1);
 }
 
 /* The dump files and the backups were previously named from the RRD basename
@@ -254,7 +254,7 @@ $tempdir = tempnam(sys_get_temp_dir(), 'cacti_splice_');
 
 if ($tempdir === false || !unlink($tempdir) || !mkdir($tempdir, 0700)) {
 	print 'FATAL: Unable to create a private working directory' . PHP_EOL;
-	exit(-1);
+	exit(1);
 }
 
 $oldxmlfile = $tempdir . '/' . str_replace('.rrd', '', basename($oldrrd)) . '.dump';
