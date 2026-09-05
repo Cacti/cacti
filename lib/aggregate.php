@@ -681,7 +681,13 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 			WHERE local_graph_id = ?
 			AND sequence >= ?
 			ORDER BY sequence',
-			[$_new_graph_id, $_graph_item_sequence]);
+			array($_new_graph_id, $_graph_item_sequence));
+
+		if ($graph_template_items === false) {
+			cacti_log(__FUNCTION__ . ' could not load graph items.', true, 'AGGREGATE');
+
+			return false;
+		}
 
 		cacti_log(__FUNCTION__ . " totalling query: graph=$_new_graph_id seq=$_graph_item_sequence", true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 	}
@@ -689,6 +695,12 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 	# now get the list of cdefs
 	$_cdefs = db_fetch_assoc('SELECT id, name FROM cdef ORDER BY id');
 	$cdefs  = array();
+
+	if ($_cdefs === false) {
+		cacti_log(__FUNCTION__ . ' could not load CDEFs.', true, 'AGGREGATE');
+
+		return false;
+	}
 
 	# build cdefs array to allow for indexing on cdef_id
 	foreach ($_cdefs as $_cdef) {
@@ -711,9 +723,9 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 	$prepared = aggregate_prepare_cdef_totalling($graph_template_items, $cdefs);
 
 	if ($prepared['invalid_cdef_id'] !== null) {
-		cacti_log(__FUNCTION__ . ' aborted before updates due to invalid or empty CDEF id ' . $prepared['invalid_cdef_id'], true, 'AGGREGATE');
+		cacti_log(__FUNCTION__ . ' could not apply totals due to invalid or empty CDEF id ' . $prepared['invalid_cdef_id'], true, 'AGGREGATE');
 
-		return;
+		return false;
 	}
 
 	$totalling_items = $prepared['items'];
@@ -807,6 +819,8 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 			cacti_log(__FUNCTION__ . ' updated new cdef id: ' . $new_cdef_id . ' for item: ' . $graph_template_item['id'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 		}
 	}
+
+	return true;
 }
 
 /** auto_hr			- set a new hr when items are skipped

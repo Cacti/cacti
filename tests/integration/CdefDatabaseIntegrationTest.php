@@ -43,5 +43,7 @@ test('CDEF resolution executes against MariaDB with production table shapes', fu
 		'invalid'            => null,
 		'diamond'            => 'CURRENT_DATA_SOURCE,8,*,CURRENT_DATA_SOURCE,8,*',
 		'missing_definition' => null,
+		'in_use'             => true,
+		'deleting_group'     => false,
 	]);
 });

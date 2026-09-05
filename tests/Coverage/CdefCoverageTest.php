@@ -12,13 +12,15 @@
 */
 
 beforeEach(function () : void {
-	$GLOBALS['cdef_test_items']   = [];
-	$GLOBALS['cdef_test_lists']   = [];
-	$GLOBALS['cdef_test_names']   = [];
-	$GLOBALS['cdef_test_queries'] = [];
-	$GLOBALS['cdef_test_logs']    = [];
-	$GLOBALS['cdef_functions']    = [7 => 'Maximum'];
-	$GLOBALS['cdef_operators']    = [3 => '*'];
+	$GLOBALS['cdef_test_items']          = [];
+	$GLOBALS['cdef_test_lists']          = [];
+	$GLOBALS['cdef_test_names']          = [];
+	$GLOBALS['cdef_test_queries']        = [];
+	$GLOBALS['cdef_test_logs']           = [];
+	$GLOBALS['cdef_test_assoc_callback'] = null;
+	$GLOBALS['cdef_test_cell_callback']  = null;
+	$GLOBALS['cdef_functions']           = [7 => 'Maximum'];
+	$GLOBALS['cdef_operators']           = [3 => '*'];
 });
 
 test('CDEF item names cover every supported item type and the unknown fallback', function () : void {
@@ -47,7 +49,7 @@ test('CDEF item names cover every supported item type and the unknown fallback',
 		->and(get_cdef_item_name(8))->toBeNull()
 		->and(get_cdef_item_name(9))->toBeNull()
 		->and(get_cdef_item_name(10))->toBeNull()
-		->and(get_cdef_item_name(11))->toBe('ROUND')
+		->and(get_cdef_item_name(11))->toBeNull()
 		->and(get_cdef_item_name(999))->toBeNull();
 
 	$messages = implode("\n", array_column($GLOBALS['cdef_test_logs'], 0));
@@ -168,7 +170,7 @@ test('CDEF resolution bounds a single stored item value', function () : void {
 		->and($GLOBALS['cdef_test_logs'][0][0])->toContain('output budget');
 });
 
-test('CDEF resolution bounds cumulative cache memory', function () : void {
+test('CDEF resolution stops caching without rejecting a valid deep expression', function () : void {
 	$GLOBALS['cdef_test_items'][50] = ['type' => '6', 'value' => str_repeat('x', 200000)];
 
 	for ($id = 5000; $id < 5063; $id++) {
@@ -177,8 +179,64 @@ test('CDEF resolution bounds cumulative cache memory', function () : void {
 
 	$GLOBALS['cdef_test_lists'][5063] = [['id' => 50, 'type' => '6', 'value' => str_repeat('x', 200000)]];
 
-	expect(get_cdef(5000))->toBeNull()
-		->and($GLOBALS['cdef_test_logs'][0][0])->toContain('cache budget');
+	expect(get_cdef(5000))->toBe(str_repeat('x', 200000))
+		->and(implode("\n", array_column($GLOBALS['cdef_test_logs'], 0)))->not->toContain('cache budget');
+});
+
+test('CDEF resolution distinguishes query errors from missing and empty definitions', function () : void {
+	$GLOBALS['cdef_test_names'][3]       = 3;
+	$GLOBALS['cdef_test_assoc_callback'] = static function (string $sql, array $params) : mixed {
+		if (str_contains($sql, 'FROM cdef_items') && (int) $params[0] === 1) {
+			return false;
+		}
+
+		if (str_contains($sql, 'FROM cdef WHERE id') && (int) $params[0] === 2) {
+			return false;
+		}
+
+		return null;
+	};
+
+	expect(get_cdef(1))->toBeNull()
+		->and(get_cdef(2))->toBeNull()
+		->and(get_cdef(3))->toBe('')
+		->and(get_cdef(4))->toBeNull();
+
+	$messages = implode("\n", array_column($GLOBALS['cdef_test_logs'], 0));
+	expect($messages)->toContain('Unable to load CDEF 1')
+		->and($messages)->toContain('Unable to verify CDEF 2')
+		->and($messages)->toContain('CDEF 4 does not exist');
+});
+
+test('CDEF deletion dependency checks cover graph, aggregate, nested, and database failures', function () : void {
+	$counts                              = [];
+	$GLOBALS['cdef_test_assoc_callback'] = static function (string $sql, array $params) use (&$counts) : mixed {
+		foreach ($counts as $table => $value) {
+			if (str_contains($sql, "FROM $table")) {
+				return $value === false ? false : ($value > 0 ? [['cdef_id' => $params[0]]] : []);
+			}
+		}
+
+		return str_contains($sql, 'SELECT DISTINCT cdef_id') ? [] : null;
+	};
+
+	expect(cdef_is_in_use(10, [10]))->toBeFalse();
+
+	foreach (['graph_templates_item', 'aggregate_graph_templates_item', 'aggregate_graphs_graph_item'] as $table) {
+		$counts = [$table => 1];
+		expect(cdef_is_in_use(10, [10]))->toBeTrue();
+	}
+
+	$counts = ['graph_templates_item' => false];
+	expect(cdef_is_in_use(10, [10]))->toBeTrue();
+
+	$counts                              = [];
+	$GLOBALS['cdef_test_assoc_callback'] = static fn (string $sql, array $params) : mixed => str_contains($sql, 'SELECT DISTINCT cdef_id') ? [['cdef_id' => 20]] : null;
+	expect(cdef_is_in_use(10, [10]))->toBeTrue()
+		->and(cdef_is_in_use(10, [10, 20]))->toBeFalse();
+
+	$GLOBALS['cdef_test_assoc_callback'] = static fn (string $sql, array $params) : mixed => str_contains($sql, 'SELECT DISTINCT cdef_id') ? false : null;
+	expect(cdef_is_in_use(10, [10]))->toBeTrue();
 });
 
 test('empty nested definitions do not introduce empty separators', function () : void {
