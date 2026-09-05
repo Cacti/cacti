@@ -13,13 +13,22 @@
  * The resulting ReferenceError aborts the rest of applySkin().
  */
 
-$root = dirname(__DIR__, 2);
+$root = dirname(__DIR__, 4);
 
 test('applySkin does not read cactiNonce unless it is defined', function () use ($root) {
 	$src = file_get_contents($root . '/include/layout.js');
-	$fn  = strstr($src, 'function applySkin()');
-	$fn  = substr($fn, 0, strpos($fn, "\nfunction ", 1));
 
+	expect($src)->toBeString()->not->toBeEmpty();
+
+	$fn = strstr($src, 'function applySkin()');
+
+	expect($fn)->toBeString();
+
+	$end = strpos($fn, "\nfunction ", 1);
+
+	expect($end)->not->toBeFalse();
+
+	$fn    = substr($fn, 0, $end);
 	$guard = strpos($fn, "typeof cactiNonce !== 'undefined'");
 	$use   = strpos($fn, 'nonce: cactiNonce');
 

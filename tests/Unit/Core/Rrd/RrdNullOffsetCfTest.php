@@ -14,14 +14,13 @@
  * names and rrd ids into those arrays.
  */
 
-$root = dirname(__DIR__, 2);
+$root = dirname(__DIR__, 4);
 
 test('generate_graph_best_cf initializes the static CF before first use', function () use ($root) {
 	$src = file_get_contents($root . '/lib/functions.php');
 
 	expect($src)->toContain('static $best_cf = 1;')
-		->and($src)->toContain('if ($local_data_id <= 0) {')
-		->and($src)->toContain("\t\treturn 1;")
+		->and($src)->toMatch('/if \(\$local_data_id <= 0\) \{\s+return 1;/')
 		->and($src)->not->toMatch('/static \$best_cf;\s*$/m');
 });
 

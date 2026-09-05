@@ -15,7 +15,7 @@
  * version after the database version. 1.2.32 is already in that map.
  */
 
-$root = dirname(__DIR__, 2);
+$root = dirname(__DIR__, 4);
 
 test('the 1.2.32 upgrade file exists so already-upgraded 1.2.31 installs receive the Boost process columns', function () use ($root) {
 	expect(file_exists($root . '/install/upgrades/1_2_32.php'))->toBeTrue();
