@@ -15,10 +15,6 @@
 declare(strict_types = 1);
 
 $root = dirname(__DIR__, 4);
-$config = [
-	'php_snmp_support' => false,
-	'include_path'     => $root . '/include',
-];
 
 require_once $root . '/lib/snmp.php';
 
