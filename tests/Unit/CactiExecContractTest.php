@@ -8,17 +8,21 @@
 */
 
 /*
- * Source-level regression guards for the cacti_exec() exit-status fix. The exit
- * code must come from proc_close() (reliable after the pipe reads reap the
- * child), and proc_get_status() results must be treated as possibly non-array.
+ * Source-level regression guards for the cacti_exec() exit-status fix. A valid
+ * exit code observed when the child stops must survive later status reads, with
+ * proc_close() retained as the fallback when no usable status was observed.
  */
 
 $root = dirname(__DIR__, 2);
 
-test('cacti_exec takes the exit code from proc_close', function () use ($root) {
+test('cacti_exec preserves an observed exit code and falls back to proc_close', function () use ($root) {
 	$src = file_get_contents($root . '/lib/functions.php');
 
-	expect($src)->toContain('$exit = proc_close($process);');
+	expect($src)->toContain("isset(\$status['exitcode']) && \$status['exitcode'] >= 0")
+		->and($src)->toContain("\$exit = (int) \$status['exitcode'];")
+		->and($src)->toContain('$close_exit = proc_close($process);')
+		->and($src)->toContain('if ($exit === null) {')
+		->and($src)->toContain('$exit = $close_exit;');
 	// the old, unreliable read must be gone
 	expect($src)->not->toContain("\$exit = \$status['exit_code'];");
 });

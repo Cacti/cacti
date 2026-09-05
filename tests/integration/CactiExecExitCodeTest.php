@@ -92,12 +92,36 @@ test('cacti_exec rejects an empty, whitespace, or dash-led binary with 255', fun
 	expect(_exec_quietly(fn () => cacti_exec('--version', array(), $out)))->toBe(255);
 });
 
-test('a non-existent binary returns the operating system exec failure code', function () {
+test('a non-existent binary preserves the platform-specific spawn contract', function () {
 	$out = array();
 	$exit = _exec_quietly(fn () => cacti_exec('/nonexistent/path/to/binary', array(), $out));
 
-	// PHP may report exec failure through a child (127) or fail proc_open (255).
-	expect(in_array($exit, array(127, 255), true))->toBeTrue();
+	if (PHP_OS_FAMILY === 'Linux') {
+		// Linux starts a child which reports the exec(2) failure as 127.
+		expect($exit)->toBe(127);
+	} elseif (PHP_OS_FAMILY === 'Darwin') {
+		// macOS reports the argv-array spawn failure directly from proc_open().
+		expect($exit)->toBe(255);
+	} else {
+		$this->markTestSkipped('missing-binary exit behavior is pinned on Linux and macOS');
+	}
+});
+
+test('timeout zero fails closed without entering the process wait loop', function () {
+	$out = array();
+
+	expect(_exec_quietly(fn () => cacti_exec(PHP_BINARY, array('-r', 'usleep(200000);'), $out, 0)))->toBe(1);
+});
+
+test('a signal-terminated child does not fabricate a successful exit code', function () {
+	if (!function_exists('posix_kill')) {
+		$this->markTestSkipped('posix extension is required for the signal termination proof');
+	}
+
+	$out  = array();
+	$exit = cacti_exec(PHP_BINARY, array('-r', 'posix_kill(getmypid(), 9);'), $out);
+
+	expect($exit)->not->toBe(0);
 });
 
 test('cacti_exec raises no exit_code warning while reading status', function () {
