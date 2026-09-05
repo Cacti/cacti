@@ -17,9 +17,13 @@ $root = dirname(__DIR__, 2);
 
 test('cacti_exec preserves an observed exit code and falls back to proc_close', function () use ($root) {
 	$src = file_get_contents($root . '/lib/functions.php');
+	$loopStart = strpos($src, 'while ($remaining > 0)');
+	$loopEnd   = strpos($src, 'fclose($pipes[1]);', $loopStart);
+	$loopBody  = substr($src, $loopStart, $loopEnd - $loopStart);
 
-	expect($src)->toContain("isset(\$status['exitcode']) && \$status['exitcode'] >= 0")
-		->and($src)->toContain("\$exit = (int) \$status['exitcode'];")
+	expect($loopBody)->toContain("isset(\$status['exitcode']) && \$status['exitcode'] >= 0")
+		->and($loopBody)->toContain("\$exit = (int) \$status['exitcode'];")
+		->and($src)->toContain("isset(\$status['exitcode']) && \$status['exitcode'] >= 0")
 		->and($src)->toContain('$close_exit = proc_close($process);')
 		->and($src)->toContain('if ($exit === null) {')
 		->and($src)->toContain('$exit = $close_exit;');
