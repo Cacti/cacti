@@ -67,7 +67,8 @@ test('CDEF resolution handles empty, ordered, and recursively nested definitions
 		20 => ['type' => '6', 'value' => '2'],
 		7  => ['type' => '1', 'value' => 999],
 	];
-	$GLOBALS['cdef_test_lists'] = [
+	$GLOBALS['cdef_test_names'][1] = 1;
+	$GLOBALS['cdef_test_lists']    = [
 		1 => [],
 		2 => [
 			['id' => 10, 'type' => '4', 'value' => 'CURRENT_DATA_SOURCE'],
@@ -92,10 +93,10 @@ test('CDEF resolution handles empty, ordered, and recursively nested definitions
 	expect(get_cdef(1))->toBe('')
 		->and(get_cdef(2))->toBe('CURRENT_DATA_SOURCE,8,*')
 		->and(get_cdef(3))->toBe('CURRENT_DATA_SOURCE,8,*,2')
-		->and(get_cdef(4))->toBe('')
-		->and(get_cdef(5))->toBe('')
-		->and(get_cdef(6))->toBe('')
-		->and(get_cdef(8))->toBe('')
+		->and(get_cdef(4))->toBeNull()
+		->and(get_cdef(5))->toBeNull()
+		->and(get_cdef(6))->toBeNull()
+		->and(get_cdef(8))->toBeNull()
 		->and(get_cdef(9))->toBe('CURRENT_DATA_SOURCE,8,*,CURRENT_DATA_SOURCE,8,*');
 
 	expect($GLOBALS['cdef_test_queries'][0][1])->toBe([1])
@@ -111,7 +112,7 @@ test('CDEF resolution rejects nesting deeper than the safety limit', function ()
 		$GLOBALS['cdef_test_lists'][$id] = [['id' => 0, 'type' => '5', 'value' => $id + 1]];
 	}
 
-	expect(get_cdef(1))->toBe('')
+	expect(get_cdef(1))->toBeNull()
 		->and($GLOBALS['cdef_test_logs'][0][0])->toContain('nesting depth');
 });
 
@@ -127,19 +128,75 @@ test('CDEF resolution accepts the maximum safe nesting depth', function () : voi
 	expect(get_cdef(1000))->toBe('CURRENT_DATA_SOURCE');
 });
 
-test('CDEF resolution rejects an excessive total expansion count', function () : void {
+test('CDEF resolution rejects an excessive expanded output size', function () : void {
 	$GLOBALS['cdef_test_items'][10] = ['type' => '4', 'value' => 'CURRENT_DATA_SOURCE'];
 
-	for ($id = 100; $id < 113; $id++) {
+	for ($id = 100; $id < 117; $id++) {
 		$GLOBALS['cdef_test_lists'][$id] = [
 			['id' => 0, 'type' => '5', 'value' => $id + 1],
 			['id' => 0, 'type' => '5', 'value' => $id + 1],
 		];
 	}
 
-	$GLOBALS['cdef_test_lists'][113] = [['id' => 10, 'type' => '4', 'value' => 'CURRENT_DATA_SOURCE']];
+	$GLOBALS['cdef_test_lists'][117] = [['id' => 10, 'type' => '4', 'value' => 'CURRENT_DATA_SOURCE']];
 
-	expect(get_cdef(100))->toBe('')
+	expect(get_cdef(100))->toBeNull()
 		->and($GLOBALS['cdef_test_logs'])->not->toBeEmpty()
-		->and($GLOBALS['cdef_test_logs'][count($GLOBALS['cdef_test_logs']) - 1][0])->toContain('expansion budget');
+		->and($GLOBALS['cdef_test_logs'][count($GLOBALS['cdef_test_logs']) - 1][0])->toContain('output budget');
+});
+
+test('CDEF resolution rejects too many unique definitions', function () : void {
+	$GLOBALS['cdef_test_items'][10]   = ['type' => '4', 'value' => 'CURRENT_DATA_SOURCE'];
+	$GLOBALS['cdef_test_lists'][2000] = [];
+
+	for ($id = 3000; $id < 7097; $id++) {
+		$GLOBALS['cdef_test_lists'][2000][] = ['id' => 0, 'type' => '5', 'value' => $id];
+		$GLOBALS['cdef_test_lists'][$id]    = [['id' => 10, 'type' => '4', 'value' => 'CURRENT_DATA_SOURCE']];
+	}
+
+	expect(get_cdef(2000))->toBeNull()
+		->and($GLOBALS['cdef_test_logs'][0][0])->toContain('expansion budget');
+});
+
+test('CDEF resolution bounds a single stored item value', function () : void {
+	$GLOBALS['cdef_test_items'][40] = ['type' => '6', 'value' => str_repeat('x', 1048577)];
+	$GLOBALS['cdef_test_lists'][40] = [['id' => 40, 'type' => '6', 'value' => str_repeat('x', 1048577)]];
+
+	expect(get_cdef(40))->toBeNull()
+		->and($GLOBALS['cdef_test_logs'][0][0])->toContain('output budget');
+});
+
+test('CDEF resolution bounds cumulative cache memory', function () : void {
+	$GLOBALS['cdef_test_items'][50] = ['type' => '6', 'value' => str_repeat('x', 200000)];
+
+	for ($id = 5000; $id < 5063; $id++) {
+		$GLOBALS['cdef_test_lists'][$id] = [['id' => 0, 'type' => '5', 'value' => $id + 1]];
+	}
+
+	$GLOBALS['cdef_test_lists'][5063] = [['id' => 50, 'type' => '6', 'value' => str_repeat('x', 200000)]];
+
+	expect(get_cdef(5000))->toBeNull()
+		->and($GLOBALS['cdef_test_logs'][0][0])->toContain('cache budget');
+});
+
+test('empty nested definitions do not introduce empty separators', function () : void {
+	$GLOBALS['cdef_test_items'] = [
+		10 => ['type' => '4', 'value' => 'CURRENT_DATA_SOURCE'],
+		11 => ['type' => '6', 'value' => '8'],
+		30 => ['type' => '6', 'value' => ''],
+		31 => ['type' => '4', 'value' => ''],
+	];
+	$GLOBALS['cdef_test_names'][20] = 20;
+	$GLOBALS['cdef_test_lists']     = [
+		20 => [],
+		21 => [['id' => 0, 'type' => '5', 'value' => '20'], ['id' => 10, 'type' => '4', 'value' => 'CURRENT_DATA_SOURCE']],
+		22 => [['id' => 10, 'type' => '4', 'value' => 'CURRENT_DATA_SOURCE'], ['id' => 0, 'type' => '5', 'value' => '20'], ['id' => 11, 'type' => '6', 'value' => '8']],
+		23 => [['id' => 10, 'type' => '4', 'value' => 'CURRENT_DATA_SOURCE'], ['id' => 0, 'type' => '5', 'value' => '20']],
+		24 => [['id' => 10, 'type' => '4', 'value' => 'CURRENT_DATA_SOURCE'], ['id' => 30, 'type' => '6', 'value' => ''], ['id' => 31, 'type' => '4', 'value' => ''], ['id' => 11, 'type' => '6', 'value' => '8']],
+	];
+
+	expect(get_cdef(21))->toBe('CURRENT_DATA_SOURCE')
+		->and(get_cdef(22))->toBe('CURRENT_DATA_SOURCE,8')
+		->and(get_cdef(23))->toBe('CURRENT_DATA_SOURCE')
+		->and(get_cdef(24))->toBe('CURRENT_DATA_SOURCE,8');
 });

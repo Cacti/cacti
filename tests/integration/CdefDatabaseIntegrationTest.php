@@ -37,9 +37,10 @@ test('CDEF resolution executes against MariaDB with production table shapes', fu
 		'item'               => 'Base Definition',
 		'base'               => 'CURRENT_DATA_SOURCE,8,*',
 		'nested'             => 'CURRENT_DATA_SOURCE,8,*,2',
+		'empty'              => '',
 		'missing'            => null,
-		'cycle'              => '',
-		'invalid'            => '',
+		'cycle'              => null,
+		'invalid'            => null,
 		'diamond'            => 'CURRENT_DATA_SOURCE,8,*,CURRENT_DATA_SOURCE,8,*',
 		'missing_definition' => null,
 	]);
