@@ -728,13 +728,9 @@ function update_system_mibs(int $host_id) : void {
 				$value = cacti_snmp_session_get($session, $oid);
 
 				if ($name == 'snmp_sysUpTimeInstanceAlt') {
-					if ($value > 0) {
-						$engine_time = $value;
-					}
+					$engine_time = $value;
 				} elseif ($name == 'snmp_sysUpTimeInstance') {
-					if ($value !== false && $value !== '') {
-						$system_uptime = $value;
-					}
+					$system_uptime = $value;
 				} elseif (!empty($value)) {
 					db_execute_prepared("UPDATE host SET $name = ?
 						WHERE deleted = ''

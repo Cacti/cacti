@@ -92,6 +92,7 @@ test('device supplied ping and SNMP values are escaped at HTML sinks', function 
 	}
 
 	expect($apiDeviceSource)->toContain('htmle($ping->ping_response)');
+	expect($apiDeviceSource)->toContain("\$snmp_uptime = 'U';");
 	expect($apiDeviceSource)->not->toContain('print $results;');
 });
 
