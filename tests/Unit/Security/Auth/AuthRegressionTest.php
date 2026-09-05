@@ -15,7 +15,7 @@
  * so the advisory it guards against remains traceable.
  */
 
-$authSource = file_get_contents(__DIR__ . '/../../../../../lib/auth.php');
+$authSource = file_get_contents(__DIR__ . '/../../../../lib/auth.php');
 
 // GHSA-4494: remember-me cookie auth must honor the account lockout check.
 test('GHSA-4494: check_auth_cookie runs lockout check before returning', function () use ($authSource) {
