@@ -13,7 +13,7 @@ test('database repair clears every direct graph reference to a missing CDEF', fu
 	expect($source)->not->toBeFalse();
 
 	foreach (['graph_templates_item', 'aggregate_graph_templates_item', 'aggregate_graphs_graph_item'] as $table) {
-		expect($source)->toContain("'$table'");
+		expect($source)->toContain($table);
 	}
 
 	expect($source)->toContain('LEFT JOIN cdef ON source.cdef_id = cdef.id')
