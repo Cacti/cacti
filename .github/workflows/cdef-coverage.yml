@@ -17,6 +17,7 @@ on:
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
+      - 'tests/integration/CdefConsumerIntegrationTest.php'
   pull_request:
     branches: [develop]
     paths:
@@ -33,6 +34,7 @@ on:
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
+      - 'tests/integration/CdefConsumerIntegrationTest.php'
   workflow_dispatch:
 
 permissions:
