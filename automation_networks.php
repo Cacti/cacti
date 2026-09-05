@@ -850,6 +850,7 @@ function network_edit() {
 			stepMinute: 5,
 			timeFormat: 'HH:mm',
 			dateFormat: 'yy-mm-dd',
+			timezone: <?php print intval(date('Z') / 60); ?>,
 			minDateTime: new Date(<?php print date("Y") . ', ' . (date("m")-1) . ', ' . date("d, H") . ', ' . date('i', ceil(time()/300)*300) . ', 0, 0';?>)
 		});
 
@@ -1282,4 +1283,3 @@ function networks_filter() {
 	</tr>
 	<?php
 }
-
