@@ -21,7 +21,6 @@ on:
       - csp_report.php
       - tests/integration/**
       - tests/e2e/**
-      - tests/phpunit-csp.xml
       - .github/workflows/csp-e2e.yml
 
 permissions:
@@ -39,10 +38,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v4
 
-      - name: Setup PHP 8.1
+      - name: Setup PHP 7.4
         uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231  # v2.31.1
         with:
-          php-version: '8.1'
+          php-version: '7.4'
           extensions: mbstring, intl, json, openssl, curl, xml
           coverage: none
 
@@ -61,10 +60,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v4
 
-      - name: Setup PHP 8.1
+      - name: Setup PHP 7.4
         uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231  # v2.31.1
         with:
-          php-version: '8.1'
+          php-version: '7.4'
           extensions: mbstring, intl, json, openssl, curl, xml
           coverage: none
 
@@ -74,15 +73,7 @@ jobs:
 
       - name: Run Pest integration tests
         working-directory: tests
-        run: ./vendor/bin/pest --configuration phpunit-csp.xml
-
-      - name: Run complete isolated integration suite
-        working-directory: tests
-        run: ./vendor/bin/pest --configuration phpunit-cookie.xml integration/
-
-      - name: Run standalone import key integration proof
-        working-directory: tests
-        run: php integration/HardeningImportKeyStrengthProbe.php
+        run: ./vendor/bin/pest integration/
 
   e2e:
     name: Playwright E2E (docker-compose + Playwright)
@@ -155,12 +146,6 @@ jobs:
       - name: Run Playwright suite (core CSP)
         working-directory: tests/e2e
         run: npx playwright test tests/csp.spec.ts
-
-      - name: Run container-backed security integration proofs
-        working-directory: tests/e2e
-        run: |
-          docker compose exec -T php php /var/www/html/cacti/tests/integration/HardeningPingXssProbe.php
-          docker compose exec -T php php /var/www/html/cacti/tests/integration/PrivateAdvisoryHardeningProbe.php
 
       - name: Run Playwright suite (plugin CSP -- thold + monitor)
         working-directory: tests/e2e

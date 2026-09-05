@@ -22,10 +22,7 @@ require_once dirname(__DIR__, 2) . '/lib/functions.php';
 
 test('db_dump_data executes and handles output file via Symfony Process', function () {
 	// We need some Cacti globals to avoid fatal errors in db_dump_data
-	global $config, $database_default, $database_username, $database_password;
-	$config['cacti_server_os'] = 'unix';
-	$config['is_web']          = false;
-	$config['base_path']       = dirname(__DIR__, 2);
+	global $database_default, $database_username, $database_password;
 	$database_default = 'cacti';
 	$database_username = 'cactiuser';
 	$database_password = 'cactipassword';

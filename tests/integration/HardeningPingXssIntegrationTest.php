@@ -16,8 +16,7 @@
 */
 
 define('CACTI_CLI_ONLY', true);
-$root = dirname(__DIR__, 2);
-chdir($root);
+chdir('/var/www/html/cacti');
 require_once 'include/global.php';
 require_once 'lib/ping.php';
 
