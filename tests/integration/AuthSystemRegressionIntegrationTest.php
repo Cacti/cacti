@@ -22,11 +22,11 @@
  * which the combined Unit+Integration pest run can no longer guarantee.
  *
  * $scenario shape:
- *   config, users, cache: seed the probe's fixtures.
- *   calls: list of either
- *     {type: 'check_auth_cookie', cookie?: string, realms?: int}
+ *   config, users, usernames, cache, locked_users and table_exists seed fixtures.
+ *   calls: check_auth_cookie/clear_auth_cookie entries with an optional cookie,
+ *     or set_auth_cookie entries with a user row.
  *
- * @return array<int, array{return: mixed, executed: array<int, array{sql: string, params: array}>}>
+ * @return array<int, array{return: mixed, executed: array<int, array{sql: string, params: array}>, cookie_calls: array, events: array, warnings: array}>
  */
 function runAuthCookieProbe(array $scenario) : array {
 	$php  = PHP_BINARY;
@@ -159,6 +159,8 @@ test('remember-me cookie clear and set lifecycle covers legacy identities and to
 
 	expect($results[0]['cookie_calls'])->toBe([['logout']])
 		->and($results[0]['executed'][0]['params'])->toBe(['42', hash('sha512', 'old-token', false)])
+		->and($results[0]['events'][0][0])->toBe('database')
+		->and($results[0]['events'][1])->toBe(['cookie', 'logout'])
 		->and($results[1]['cookie_calls'])->toBe([['logout']])
 		->and($results[1]['executed'][0]['params'])->toBe([43, hash('sha512', 'legacy-token', false)])
 		->and($results[2]['executed'])->toBeEmpty()
@@ -179,6 +181,24 @@ test('remember-me cookie clear and set lifecycle covers legacy identities and to
 		->and($setCall[2])->toBe(2)
 		->and($setCall[3])->toMatch('/^[a-f0-9]{64}$/D')
 		->and($insert['params'][2])->toBe(hash('sha512', $setCall[3], false));
+});
+
+test('persistent credentials follow the safe login and logout ordering', function () {
+	$authLogin = file_get_contents(dirname(__DIR__, 2) . '/auth_login.php');
+	$logout    = file_get_contents(dirname(__DIR__, 2) . '/logout.php');
+
+	$transition = strpos($authLogin, "cacti_auth_transition((int)\$user['id'], 'login')");
+	$mint       = strpos($authLogin, 'set_auth_cookie($user);');
+	$revoke     = strpos($logout, 'clear_auth_cookie();');
+	$session    = strpos($logout, 'cacti_cookie_logout();');
+
+	expect($transition)->not->toBeFalse()
+		->and($mint)->not->toBeFalse()
+		->and($mint)->toBeGreaterThan($transition)
+		->and($revoke)->not->toBeFalse()
+		->and($session)->not->toBeFalse()
+		->and($revoke)->toBeLessThan($session)
+		->and(substr_count($logout, 'clear_auth_cookie();'))->toBe(1);
 });
 
 test('valid remember-me cookie rotates the token and records the login', function () {

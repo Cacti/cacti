@@ -33,9 +33,9 @@ function clear_auth_cookie() {
 	global $config;
 
 	if (isset($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
-		cacti_cookie_session_logout();
-
 		if (!is_string($_COOKIE['cacti_remembers'])) {
+			cacti_cookie_session_logout();
+
 			return;
 		}
 
@@ -50,6 +50,8 @@ function clear_auth_cookie() {
 			$realm_id = $parts[1];
 			$token    = $parts[2];
 		} else {
+			cacti_cookie_session_logout();
+
 			return;
 		}
 
@@ -79,6 +81,9 @@ function clear_auth_cookie() {
 				AND token = ?',
 				array($user_id, $secret));
 		}
+
+		/* Revoke the server-side credential before clearing browser state. */
+		cacti_cookie_session_logout();
 	}
 }
 

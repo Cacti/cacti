@@ -199,13 +199,6 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 			}
 		}
 
-		/* remember me support.  Not for guest of basic auth */
-		if ($auth_method != 2 && $user['id'] !== get_guest_account()) {
-			if (!$error && isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
-				set_auth_cookie($user);
-			}
-		}
-
 			if (!$error) {
 				/* avoid session fixation */
 				cacti_session_start(true);
@@ -229,6 +222,13 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 
 					header('Location: auth_login.php');
 					exit;
+				}
+
+				/* Mint a persistent credential only after the login transition succeeds. */
+				if ($auth_method != 2 && $user['id'] !== get_guest_account()
+					&& isset_request_var('remember_me')
+					&& read_config_option('auth_cache_enabled') == 'on') {
+					set_auth_cookie($user);
 				}
 
 				/* handle 'force change password' */
