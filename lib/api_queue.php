@@ -193,7 +193,7 @@ final class CactiDatabaseQueueTransport implements TransportInterface, CactiQueu
 	}
 
 	public function send(Envelope $envelope) : Envelope {
-		$stamp = api_queue_stamp($envelope);
+		$stamp   = api_queue_stamp($envelope);
 		$message = $envelope->getMessage();
 
 		if (!$message instanceof CactiQueueMessageInterface) {
