@@ -219,11 +219,6 @@ function form_save() : void {
 		gfrv('sequence');
 		// ====================================================
 
-		/* sql_save() inside the items foreach below assigns this; if the
-		 * loop never enters the !is_error_message() branch we still need a
-		 * defined value for the error-redirect URL fallback. */
-		$color_template_item_id = 0;
-
 		$items[0] = [];
 		$sequence = gnrv('sequence');
 

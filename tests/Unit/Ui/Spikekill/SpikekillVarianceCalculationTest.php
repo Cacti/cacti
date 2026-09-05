@@ -31,6 +31,8 @@
  * used in Issue7070PercentileContractTest.php.
  */
 
+require_once __DIR__ . '/../../../../lib/spikekill.php';
+
 $source = file_get_contents(__DIR__ . '/../../../../lib/spikekill.php');
 
 preg_match(
@@ -63,4 +65,44 @@ test('variance is stddev squared, not stddev XOR 2', function () use ($variance_
 
 test('variance is N/A when stddev is N/A, without throwing', function () use ($variance_of) {
 	expect($variance_of('N/A'))->toBe('N/A');
+});
+
+test('outputStatistics renders variance in its own aligned column', function () {
+	$spikekill = (new ReflectionClass(spikekill::class))->newInstanceWithoutConstructor();
+	$set       = static function (string $property, mixed $value) use ($spikekill): void {
+		$reflection = new ReflectionProperty(spikekill::class, $property);
+		$reflection->setValue($spikekill, $value);
+	};
+
+	$set('html', false);
+	$set('rra_pdp', [1]);
+	$set('ds_name', ['traffic_in']);
+	$set('rra_cf', ['AVERAGE']);
+
+	$statistics = [[[
+		'totalsamples'    => 10,
+		'numsamples'      => 9,
+		'average'         => 5,
+		'stddev'          => 3,
+		'max_value'       => 12,
+		'min_value'       => 1,
+		'max_cutoff'      => 8,
+		'min_cutoff'      => 2,
+		'stddev_killed'   => 1,
+		'outwind_samples' => 4,
+		'outwind_killed'  => 2,
+	]]];
+	$method = new ReflectionMethod(spikekill::class, 'outputStatistics');
+	$method->invoke($spikekill, $statistics);
+
+	$lines = array_values(array_filter(explode("\n", $spikekill->get_output()), static fn (string $line): bool => trim($line) !== ''));
+
+	expect($lines)->toHaveCount(3)
+		->and(preg_split('/\s+/', trim($lines[0])))->toBe([
+			'Size', 'DS', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev', 'Variance',
+			'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'WindSamples', 'WindKilled',
+		])
+		->and(preg_split('/\s+/', trim($lines[2])))->toBe([
+			'0', 'secs', 'traffic_in', 'AVERAGE', '10', '9', '5', '3', '9', '12', '1', '8', '2', '1', '4', '2',
+		]);
 });
