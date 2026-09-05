@@ -108,7 +108,7 @@ test('malformed remember-me cookies fail closed without warnings or database mut
 	expect($results[4]['return'])->toBeNull()
 		->and($results[4]['warnings'])->toBeEmpty()
 		->and($results[4]['executed'])->toBeEmpty()
-		->and($results[4]['cookie_calls'])->toBeEmpty();
+		->and($results[4]['cookie_calls'])->toBe([['logout']]);
 });
 
 test('absent remember-me cookies are no-ops for check and clear', function () {
@@ -152,6 +152,7 @@ test('remember-me cookie clear and set lifecycle covers legacy identities and to
 			['type' => 'clear_auth_cookie', 'cookie' => '42,old-token'],
 			['type' => 'clear_auth_cookie', 'cookie' => 'legacy-user,7,legacy-token'],
 			['type' => 'clear_auth_cookie', 'cookie' => 'broken'],
+			['type' => 'clear_auth_cookie', 'cookie' => 'legacy,user,7,legacy-token'],
 			['type' => 'set_auth_cookie', 'user' => ['id' => 44, 'realm' => 2]],
 		],
 	]);
@@ -162,10 +163,13 @@ test('remember-me cookie clear and set lifecycle covers legacy identities and to
 		->and($results[1]['executed'][0]['params'])->toBe([43, hash('sha512', 'legacy-token', false)])
 		->and($results[2]['executed'])->toBeEmpty()
 		->and($results[2]['warnings'])->toBeEmpty()
-		->and($results[2]['cookie_calls'])->toBe([['logout']]);
+		->and($results[2]['cookie_calls'])->toBe([['logout']])
+		->and($results[3]['executed'])->toBeEmpty()
+		->and($results[3]['warnings'])->toBeEmpty()
+		->and($results[3]['cookie_calls'])->toBe([['logout']]);
 
-	$insert  = $results[3]['executed'][0];
-	$setCall = $results[3]['cookie_calls'][0];
+	$insert  = $results[4]['executed'][0];
+	$setCall = $results[4]['cookie_calls'][0];
 
 	expect($insert['sql'])->toContain('INSERT INTO user_auth_cache')
 		->and($insert['params'][0])->toBe(44)
