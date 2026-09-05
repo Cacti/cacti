@@ -1,0 +1,168 @@
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+*/
+
+/*
+ * item_remove, item_moveup and item_movedown change state and were reachable by
+ * GET, so a cross origin <img> or link could delete or reorder a template item
+ * using only the victim's session. Under AUTH_METHOD_BASIC the browser re-sends
+ * credentials on that request, so no session cookie is needed at all.
+ *
+ * The guard and the links have to move together: adding the actions to
+ * $bad_actions while a page still links them by GET breaks the delete it is
+ * meant to protect. These two assertions fail in opposite directions, so
+ * neither half can land alone.
+ */
+
+/**
+ * Every repository file that names one of the three actions.
+ *
+ * @return array<int, string> Repository-relative paths.
+ */
+/**
+ * Every GET reachable action whose handler mutates state. Read-only actions are
+ * deliberately absent: item_edit, readme, changelog, latest, avail and the
+ * *_confirm dialogs render a page and change nothing.
+ *
+ * @return array<int, string> Action names.
+ */
+function guarded_actions() {
+    return array(
+        'item_remove', 'item_moveup', 'item_movedown',
+        'item_remove_gsv', 'item_remove_dssv',
+        'item_moveup_gsv', 'item_moveup_dssv',
+        'item_movedown_gsv', 'item_movedown_dssv',
+        'delete_node', 'gt_remove', 'query_remove', 'remove', 'change_leaf',
+        'moveup', 'movedown',
+        'tree_up', 'tree_down', 'move_page_up', 'move_page_down',
+        'rrd_add', 'rrd_remove',
+    );
+}
+
+/**
+ * A pattern matching any guarded action, longest name first so that
+ * item_remove_gsv is not matched as item_remove.
+ *
+ * @return string A regex alternation.
+ */
+function guarded_action_pattern() {
+    $actions = guarded_actions();
+
+    usort($actions, function ($a, $b) {
+        return strlen($b) - strlen($a);
+    });
+
+    return 'action=(?:' . implode('|', array_map('preg_quote', $actions)) . ')(?![a-z_])';
+}
+
+function item_action_files() {
+    $root  = dirname(__DIR__, 4);
+    $found = array();
+
+    $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS));
+
+    foreach ($it as $file) {
+        $path = $file->getPathname();
+
+        if (substr($path, -4) !== '.php') {
+            continue;
+        }
+
+        if (strpos($path, '/include/vendor/') !== false || strpos($path, '/tests/') !== false) {
+            continue;
+        }
+
+        $src = file_get_contents($path);
+
+        if ($src !== false && preg_match('/' . guarded_action_pattern() . '/', $src)) {
+            $found[] = substr($path, strlen($root) + 1);
+        }
+    }
+
+    sort($found);
+
+    return $found;
+}
+
+test('every state changing action is refused without a POST token', function () {
+    $src = file_get_contents(dirname(__DIR__, 4) . '/include/global.php');
+
+    expect($src)->not->toBeFalse();
+
+    preg_match('/\$bad_actions\s*=\s*(?:array\(|\[)(.*?)(?:\);|\];)/s', $src, $matches);
+
+    expect($matches)->toHaveKey(1);
+
+    $list = $matches[1];
+
+    $missing = array();
+
+    foreach (guarded_actions() as $action) {
+        if (strpos($list, "'" . $action . "'") === false) {
+            $missing[] = $action;
+        }
+    }
+
+    expect($missing)->toBe(array());
+});
+
+test('no page still links a state changing action by GET', function () {
+    $files = item_action_files();
+
+    expect($files)->not->toBe(array());
+
+    $unconverted = array();
+
+    foreach ($files as $file) {
+        $src = file_get_contents(dirname(__DIR__, 4) . '/' . $file);
+
+        /* Anchors are emitted across two lines in places, so collapse the file
+           before pairing an href with the class that posts it. */
+        $flat = preg_replace('/\s+/', ' ', $src);
+
+        if (preg_match_all('/<a\b[^>]*?' . guarded_action_pattern() . '[^>]*>/', $flat, $matches)) {
+            foreach ($matches[0] as $anchor) {
+                if (strpos($anchor, 'cactiPostAction') === false) {
+                    $unconverted[] = $file;
+                    break;
+                }
+            }
+        }
+    }
+
+    expect($unconverted)->toBe(array());
+});
+
+test('the cactiPostAction handler posts the token and refuses another origin', function () {
+    $js = file_get_contents(dirname(__DIR__, 4) . '/include/layout.js');
+
+    expect($js)->not->toBeFalse();
+
+    /* The class has to be bound on its own, not only through the ajaxAnchors
+       selector, because several tagged anchors carry none of the classes that
+       selector names. */
+	expect($js)->toContain("a.cactiPostAction')")
+		->and($js)->toContain(".not('.cactiPostAction').off('click')")
+		->and($js)->toContain('submitPageUsingPost')
+        ->and($js)->toContain('cactiPreparePostRequestFromUrl');
+
+    $start = strpos($js, 'function cactiPreparePostRequest(');
+
+    expect($start)->not->toBeFalse();
+
+    $body = substr($js, $start, 600);
+
+    expect($body)->toContain('csrfMagicToken')
+        ->and($body)->toContain('__csrf_magic')
+        ->and($body)->toContain('Refusing to send a CSRF token to a different origin');
+});
