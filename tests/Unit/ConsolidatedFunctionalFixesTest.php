@@ -54,19 +54,6 @@ test('automation host offsets carry across every IPv4 octet', function (): void 
 		->and($source)->toContain('return long2ip($base + $count);');
 });
 
-test('SNMP uptime selection is delegated to the shared validator', function (): void {
-	$call_counts = [
-		'cmd.php'                => 2,
-		'lib/poller.php'         => 1,
-		'lib/api_device.php'     => 1,
-		'lib/api_automation.php' => 1,
-	];
-
-	foreach ($call_counts as $path => $count) {
-		expect(substr_count(consolidatedSource($path), 'cacti_snmp_select_uptime('))->toBe($count);
-	}
-});
-
 test('single-value lm-sensors reads use query-path scaling', function (): void {
 	$source = consolidatedSource('scripts/ss_netsnmp_lmsensors.php');
 

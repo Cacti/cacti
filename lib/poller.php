@@ -443,7 +443,7 @@ function update_reindex_cache(int $host_id, int $data_query_id) : void {
 						$oid_uptime = '.1.3.6.1.2.1.1.3.0';
 					}
 
-					$assert_value = 'U';
+					$assert_value = '';
 					$session      = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
 						$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
 						$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
@@ -456,13 +456,13 @@ function update_reindex_cache(int $host_id, int $data_query_id) : void {
 							$assert_value  = cacti_snmp_select_uptime($system_uptime, $engine_time);
 
 							if ($assert_value === false) {
-								$assert_value = 'U';
+								$assert_value = '';
 							}
 						} else {
 							$assert_value = cacti_snmp_session_get($session, $oid_uptime);
 
 							if ($assert_value === false) {
-								$assert_value = 'U';
+								$assert_value = '';
 							}
 						}
 

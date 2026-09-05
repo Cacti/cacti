@@ -923,6 +923,10 @@ function ping_and_reindex_check(array &$item, bool $mibs, int $script_timeout) :
 								}
 							} else {
 								$output = cacti_snmp_session_get($session, $index_item['arg1']);
+
+								if ($output === false) {
+									$output = 'U';
+								}
 							}
 						} else {
 							$output = 'U';
