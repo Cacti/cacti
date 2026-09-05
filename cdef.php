@@ -102,7 +102,7 @@ function draw_cdef_preview(int $cdef_id) : void {
 	?>
 	<tr class='even'>
 		<td style='padding:4px'>
-			<pre>cdef=<?php print htmle(get_cdef($cdef_id)); ?></pre>
+			<pre>cdef=<?php print htmle(get_cdef($cdef_id) ?? __('Invalid CDEF')); ?></pre>
 		</td>
 	</tr>
 	<?php
@@ -310,7 +310,7 @@ function cdef_item_remove_confirm() : void {
 			<p><?php print __('Click \'Continue\' to delete the following CDEF Item.'); ?></p>
 			<p><?php print __esc('CDEF Name: %s', $cdef['name']); ?><br>
 			<em><?php $cdef_item_type = $cdef_item['type'];
-	print $cdef_item_types[$cdef_item_type]; ?></em>: <strong><?php print htmle(get_cdef_item_name($cdef_item['id'])); ?></strong></p>
+	print $cdef_item_types[$cdef_item_type]; ?></em>: <strong><?php print htmle(get_cdef_item_name($cdef_item['id']) ?? __('Invalid')); ?></strong></p>
 		</td>
 	</tr>
 	<tr>
@@ -603,7 +603,7 @@ function cdef_edit() : void {
 
 				form_selectable_cell(filter_value(__('Item # %d', $i), '', 'cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']), $cdef_item['id']);
 
-				$item_value = '<em>' . $cdef_item_types[$cdef_item['type']] . '</em>' . htmle(get_cdef_item_name($cdef_item['id']));
+				$item_value = '<em>' . $cdef_item_types[$cdef_item['type']] . '</em>' . htmle(get_cdef_item_name($cdef_item['id']) ?? __('Invalid'));
 
 				form_selectable_cell($item_value, $cdef_item['id']);
 

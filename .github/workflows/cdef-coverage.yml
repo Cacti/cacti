@@ -8,14 +8,15 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'cdef.php'
+      - 'lib/aggregate.php'
       - 'lib/cdef.php'
+      - 'lib/rrd.php'
       - 'phpunit-cdef.xml'
       - 'phpunit-cdef-integration.xml'
       - 'phpunit.xml'
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
-      - 'tests/Unit/Ui/Cdef/CdefControllerContractTest.php'
   pull_request:
     branches: [develop]
     paths:
@@ -23,14 +24,15 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'cdef.php'
+      - 'lib/aggregate.php'
       - 'lib/cdef.php'
+      - 'lib/rrd.php'
       - 'phpunit-cdef.xml'
       - 'phpunit-cdef-integration.xml'
       - 'phpunit.xml'
       - 'tests/Coverage/CdefCoverageTest.php'
       - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
-      - 'tests/Unit/Ui/Cdef/CdefControllerContractTest.php'
   workflow_dispatch:
 
 permissions:
