@@ -74,7 +74,17 @@ test('session bootstrap enables strict secure cookie settings', function () : vo
 test('remember-me parsing accepts exactly legacy or current field counts', function () : void {
 	$cookie_sources = cacti_test_cookie_sources();
 	$start          = strpos($cookie_sources['auth'], 'function check_auth_cookie()');
+
+	if ($start === false) {
+		throw new RuntimeException('check_auth_cookie() must exist');
+	}
+
 	$end            = strpos($cookie_sources['auth'], '/**', $start + 10);
+
+	if ($end === false) {
+		throw new RuntimeException('check_auth_cookie() must have a following docblock boundary');
+	}
+
 	$body           = substr($cookie_sources['auth'], $start, $end - $start);
 
 	expect($body)->toContain('cacti_sizeof($parts) == 2')
