@@ -22,14 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
-/**
- * Shared option handling for the scripts under cli/.
+/* Shared option handling for the scripts under cli/.
  *
  * Each script declares its options once and this file parses them, renders
  * --help from the same declaration so the two cannot drift, and prints
  * --version. The option contract is unchanged: options are --name or
  * --name=value, -v and -V print the version, -h and -H print the help.
- * @param mixed $title
  */
 
 /**
