@@ -35,7 +35,7 @@ function cdef_integration_seed() : FakeMySQLPDO {
 		type TEXT NOT NULL,
 		value TEXT NOT NULL
 	)');
-	$conn->exec("INSERT INTO cdef (id, name) VALUES (1, 'Base Definition'), (2, 'Nested Definition')");
+	$conn->exec("INSERT INTO cdef (id, name) VALUES (1, 'Base Definition'), (2, 'Nested Definition'), (5, 'Empty Definition')");
 	$conn->exec("INSERT INTO cdef_items (id, cdef_id, sequence, type, value) VALUES
 		(1, 1, 3, '2', '3'),
 		(2, 1, 1, '4', 'CURRENT_DATA_SOURCE'),
@@ -114,21 +114,22 @@ test('stored CDEF item types resolve through production database helpers', funct
 		->and(get_cdef_item_name(4))->toBe('Base Definition')
 		->and(get_cdef_item_name(5))->toBe('2')
 		->and(get_cdef_item_name(6))->toBe('Maximum')
-		->and(get_cdef_item_name(7))->toBe('')
-		->and(get_cdef_item_name(12))->toBe('')
-		->and(get_cdef_item_name(13))->toBe('')
-		->and(get_cdef_item_name(999))->toBe('')
-		->and(get_cdef(3))->toBe('');
+		->and(get_cdef_item_name(7))->toBeNull()
+		->and(get_cdef_item_name(12))->toBeNull()
+		->and(get_cdef_item_name(13))->toBeNull()
+		->and(get_cdef_item_name(999))->toBeNull()
+		->and(get_cdef(3))->toBeNull();
 });
 
 test('stored CDEFs preserve sequence and recursively expand nested definitions', function () : void {
 	expect(get_cdef(1))->toBe('CURRENT_DATA_SOURCE,8,*')
 		->and(get_cdef(2))->toBe('CURRENT_DATA_SOURCE,8,*,2')
-		->and(get_cdef(8))->toBe('')
-		->and(get_cdef(9))->toBe('')
-		->and(get_cdef(11))->toBe('')
+		->and(get_cdef(5))->toBe('')
+		->and(get_cdef(8))->toBeNull()
+		->and(get_cdef(9))->toBeNull()
+		->and(get_cdef(11))->toBeNull()
 		->and(get_cdef(4))->toBe('CURRENT_DATA_SOURCE,8,*,CURRENT_DATA_SOURCE,8,*')
-		->and(get_cdef(999))->toBe('');
+		->and(get_cdef(999))->toBeNull();
 });
 
 test('CDEF resolution executes against MariaDB with production table shapes', function () : void {
@@ -152,5 +153,5 @@ test('CDEF resolution executes against MariaDB with production table shapes', fu
 	expect(get_cdef_item_name(4))->toBe('Base Definition')
 		->and(get_cdef(1))->toBe('CURRENT_DATA_SOURCE,8,*')
 		->and(get_cdef(2))->toBe('CURRENT_DATA_SOURCE,8,*,2')
-		->and(get_cdef(6))->toBe('');
+		->and(get_cdef(6))->toBeNull();
 });

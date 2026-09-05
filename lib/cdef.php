@@ -30,9 +30,9 @@
  *
  * @param int $cdef_item_id The ID of the CDEF item.
  *
- * @return string The name or value of the CDEF item.
+ * @return string|null The name/value, or null when the stored item is invalid.
  */
-function get_cdef_item_name(int $cdef_item_id) : string {
+function get_cdef_item_name(int $cdef_item_id) : ?string {
 	global $cdef_functions, $cdef_operators;
 
 	$cdef_item          = db_fetch_row_prepared('SELECT type, value FROM cdef_items WHERE id = ?', [$cdef_item_id]);
@@ -40,7 +40,7 @@ function get_cdef_item_name(int $cdef_item_id) : string {
 	if (!is_array($cdef_item) || !array_key_exists('type', $cdef_item) || !array_key_exists('value', $cdef_item)) {
 		cacti_log(sprintf('ERROR: CDEF item %d is missing or corrupt.', $cdef_item_id), false, 'CDEF');
 
-		return '';
+		return null;
 	}
 
 	$current_cdef_value = $cdef_item['value'];
@@ -50,7 +50,7 @@ function get_cdef_item_name(int $cdef_item_id) : string {
 			if (!isset($cdef_functions[$current_cdef_value])) {
 				cacti_log(sprintf('ERROR: CDEF item %d references an unknown function.', $cdef_item_id), false, 'CDEF');
 
-				return '';
+				return null;
 			}
 
 			return (string) $cdef_functions[$current_cdef_value];
@@ -58,7 +58,7 @@ function get_cdef_item_name(int $cdef_item_id) : string {
 			if (!isset($cdef_operators[$current_cdef_value])) {
 				cacti_log(sprintf('ERROR: CDEF item %d references an unknown operator.', $cdef_item_id), false, 'CDEF');
 
-				return '';
+				return null;
 			}
 
 			return (string) $cdef_operators[$current_cdef_value];
@@ -70,7 +70,7 @@ function get_cdef_item_name(int $cdef_item_id) : string {
 			if ($cdef_name === false || $cdef_name === null || $cdef_name === '') {
 				cacti_log(sprintf('ERROR: CDEF item %d references a missing definition.', $cdef_item_id), false, 'CDEF');
 
-				return '';
+				return null;
 			}
 
 			return (string) $cdef_name;
@@ -80,7 +80,7 @@ function get_cdef_item_name(int $cdef_item_id) : string {
 
 	cacti_log(sprintf('ERROR: CDEF item %d has an unknown type.', $cdef_item_id), false, 'CDEF');
 
-	return '';
+	return null;
 }
 /**
  * Resolves an entire CDEF into its text-based representation for use in the RRDtool 'graph'
@@ -91,29 +91,35 @@ function get_cdef_item_name(int $cdef_item_id) : string {
  *
  * @param int $cdef_id The ID of the CDEF to retrieve.
  *
- * @return string The constructed CDEF string.
+ * @return string|null The constructed CDEF string, or null on invalid data.
  */
-function get_cdef(int $cdef_id) : string {
+function get_cdef(int $cdef_id) : ?string {
 	$visited   = [];
 	$expansion = 0;
+	$cache     = [];
 
-	return get_cdef_recursive($cdef_id, $visited, $expansion) ?? '';
+	return get_cdef_recursive($cdef_id, $visited, $expansion, $cache);
 }
 
 /**
  * Resolves nested CDEFs while rejecting cycles and unreasonable depth.
  *
- * @param int             $cdef_id   The ID of the CDEF to retrieve.
- * @param array<int,true> $visited   IDs active in the current recursion path.
- * @param int             $expansion Number of definitions expanded by this call.
+ * @param int               $cdef_id   The ID of the CDEF to retrieve.
+ * @param array<int,true>   $visited   IDs active in the current recursion path.
+ * @param int               $expansion Number of definitions expanded by this call.
+ * @param array<int,string> $cache     Successfully resolved definitions.
  *
  * @return string|null The CDEF string, or null when recursion is unsafe.
  */
-function get_cdef_recursive(int $cdef_id, array &$visited, int &$expansion) : ?string {
+function get_cdef_recursive(int $cdef_id, array &$visited, int &$expansion, array &$cache) : ?string {
 	if (isset($visited[$cdef_id])) {
 		cacti_log(sprintf('ERROR: CDEF %d contains a recursive cycle.', $cdef_id), false, 'CDEF');
 
 		return null;
+	}
+
+	if (array_key_exists($cdef_id, $cache)) {
+		return $cache[$cdef_id];
 	}
 
 	if (count($visited) >= 64) {
@@ -131,42 +137,75 @@ function get_cdef_recursive(int $cdef_id, array &$visited, int &$expansion) : ?s
 	$visited[$cdef_id] = true;
 	$cdef_items        = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', [$cdef_id]);
 
-	$i           = 0;
-	$cdef_string = '';
+	if (cacti_sizeof($cdef_items) === 0) {
+		$cdef_exists = db_fetch_cell_prepared('SELECT id FROM cdef WHERE id = ?', [$cdef_id]);
 
-	if (cacti_sizeof($cdef_items) > 0) {
-		foreach ($cdef_items as $cdef_item) {
-			if ($i > 0) {
-				$cdef_string .= ',';
+		unset($visited[$cdef_id]);
+
+		if ($cdef_exists === false || $cdef_exists === null || $cdef_exists === '') {
+			cacti_log(sprintf('ERROR: CDEF %d does not exist.', $cdef_id), false, 'CDEF');
+
+			return null;
+		}
+
+		$cache[$cdef_id] = '';
+
+		return $cache[$cdef_id];
+	}
+
+	$parts  = [];
+	$length = 0;
+
+	foreach ($cdef_items as $cdef_item) {
+		if ($cdef_item['type'] == 5) {
+			$current_cdef_id = $cdef_item['value'];
+			$nested          = get_cdef_recursive((int) $current_cdef_id, $visited, $expansion, $cache);
+
+			if ($nested === null) {
+				unset($visited[$cdef_id]);
+
+				return null;
 			}
 
-			if ($cdef_item['type'] == 5) {
-				$current_cdef_id = $cdef_item['value'];
-				$nested          = get_cdef_recursive((int) $current_cdef_id, $visited, $expansion);
+			if ($nested !== '') {
+				$length += strlen($nested) + ($parts === [] ? 0 : 1);
 
-				if ($nested === null) {
+				if ($length > 1048576) {
+					cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver output budget.', $cdef_id), false, 'CDEF');
 					unset($visited[$cdef_id]);
 
 					return null;
 				}
 
-				$cdef_string .= $nested;
-			} else {
-				$item_name = get_cdef_item_name($cdef_item['id']);
+				$parts[] = $nested;
+			}
+		} else {
+			$item_name = get_cdef_item_name($cdef_item['id']);
 
-				if ($item_name === '') {
+			if ($item_name === null) {
+				unset($visited[$cdef_id]);
+
+				return null;
+			}
+
+			if ($item_name !== '') {
+				$length += strlen($item_name) + ($parts === [] ? 0 : 1);
+
+				if ($length > 1048576) {
+					cacti_log(sprintf('ERROR: CDEF %d exceeds the resolver output budget.', $cdef_id), false, 'CDEF');
 					unset($visited[$cdef_id]);
 
 					return null;
 				}
 
-				$cdef_string .= $item_name;
+				$parts[] = $item_name;
 			}
-			$i++;
 		}
 	}
 
 	unset($visited[$cdef_id]);
 
-	return $cdef_string;
+	$cache[$cdef_id] = implode(',', $parts);
+
+	return $cache[$cdef_id];
 }
