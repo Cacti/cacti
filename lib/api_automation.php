@@ -1518,20 +1518,20 @@ function display_graph_rule_items(string $title, array &$rule, int $rule_type, s
 			$form_data = '';
 
 			if ($i != cacti_sizeof($items) - 1) {
-				$form_data .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . htmle($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
+				$form_data .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="' . htmle($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . htmle($module . '?action=item_moveup&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
+				$form_data .= '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="' . htmle($module . '?action=item_moveup&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			form_selectable_cell($form_data, $i, '32px', 'right nowrap');
 
-			$form_data = '<a class="pic deleteMarker ti ti-x"
+			$form_data = '<a class="pic deleteMarker ti ti-x cactiPostAction"
 				href="' . htmle($module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a>';
 
 			form_selectable_cell($form_data, $i, '16px', 'right nowrap');

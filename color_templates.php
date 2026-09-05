@@ -156,13 +156,13 @@ function draw_color_template_items_list(array $item_list, string $filename, stri
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items) {
-						print '<a class="pic ti ti-caret-down-filled moveArrow" href="' . htmle('color_templates.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Down') . '"></a>';
+						print '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="' . htmle('color_templates.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						print '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						print '<a class="pic ti ti-caret-up-filled moveArrow" href="' . htmle('color_templates.php?action=item_moveup&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						print '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="' . htmle('color_templates.php?action=item_moveup&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						print '<span class="moveArrowNone"></span>';
 					}

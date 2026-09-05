@@ -2592,6 +2592,56 @@ function loadPageNoHeader(href, scroll, force) {
 	});
 }
 
+function cactiPreparePostRequest(href, postData) {
+	var target = new URL(href, window.location.href);
+
+	if (target.origin !== window.location.origin) {
+		throw new Error('Refusing to send a CSRF token to a different origin');
+	}
+
+	if (typeof postData === 'string') {
+		postData = postData.replace(/(^|&)__csrf_magic=[^&]*/g, '').replace(/^&|&$/g, '');
+		postData = '__csrf_magic=' + encodeURIComponent(csrfMagicToken) + (postData === '' ? '' : '&' + postData);
+	} else {
+		postData = $.extend({__csrf_magic: csrfMagicToken}, postData || {});
+		postData.__csrf_magic = csrfMagicToken;
+	}
+
+	return {
+		url: target.pathname + target.search,
+		data: postData
+	};
+}
+
+function cactiPreparePostRequestFromUrl(href) {
+	var target = new URL(href, window.location.href);
+
+	if (target.origin !== window.location.origin) {
+		throw new Error('Refusing to send a CSRF token to a different origin');
+	}
+
+	var fields = [];
+	target.searchParams.forEach(function (value, name) {
+		if (name !== '__csrf_magic') {
+			fields.push({name: name, value: value});
+		}
+	});
+
+	return cactiPreparePostRequest(target.pathname, $.param(fields));
+}
+
+function submitPageUsingPost(href) {
+	var request = cactiPreparePostRequestFromUrl(href);
+	var form    = $('<form>', {method: 'post', action: request.url});
+
+	new URLSearchParams(request.data).forEach(function (value, name) {
+		form.append($('<input>', {type: 'hidden', name: name, value: value}));
+	});
+
+	form.appendTo(document.body);
+	form[0].submit();
+}
+
 function loadPage(href, force) {
 	var stack = ''; //getStackTrace(); // new Error().stack;
 	console.error("Function loadPage is now deprecated, use loadUrl instead\n" + stack);
@@ -2986,7 +3036,24 @@ function getPresentHTTPErrorOrRedirect(data, url) {
 function ajaxAnchors() {
 	var page = basename(location.pathname);
 
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [href^="mailto"], [target="_blank"]').off('click').on('click', function (event) {
+	$('a.cactiPostAction').off('click.cactiPostAction').on('click.cactiPostAction', function (event) {
+		if (!shouldCaptureClick(event)) {
+			return;
+		}
+
+		event.preventDefault();
+		event.stopImmediatePropagation();
+
+		var href = $(this).attr('href');
+
+		if (href != null && href != '#') {
+			submitPageUsingPost(href);
+		}
+
+		return false;
+	});
+
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [href^="mailto"], [target="_blank"]').not('.cactiPostAction').off('click').on('click', function (event) {
 		if (!shouldCaptureClick(event)) {
 			return;
 		}
