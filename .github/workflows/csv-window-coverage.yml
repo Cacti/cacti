@@ -8,10 +8,10 @@ on:
       - 'lib/rrd.php'
       - 'lib/graph_variables.php'
       - 'phpunit-csv.xml'
-      - 'tests/Unit/RrdFetchWindowTest.php'
-      - 'tests/Unit/BandwidthEffectiveStepTest.php'
-      - 'tests/Unit/CsvWindowResolutionContractTest.php'
-      - 'tests/Unit/PercentileResolutionBehaviorTest.php'
+      - 'tests/Unit/Core/Rrd/RrdFetchWindowTest.php'
+      - 'tests/Unit/Core/Rrd/BandwidthEffectiveStepTest.php'
+      - 'tests/Unit/Ui/Graph/CsvWindowResolutionContractTest.php'
+      - 'tests/Unit/Ui/Graph/PercentileResolutionBehaviorTest.php'
       - 'tests/integration/CsvWindowRrdIntegrationTest.php'
       - 'tests/composer.json'
       - 'tests/composer.lock'
@@ -22,10 +22,10 @@ on:
       - 'lib/rrd.php'
       - 'lib/graph_variables.php'
       - 'phpunit-csv.xml'
-      - 'tests/Unit/RrdFetchWindowTest.php'
-      - 'tests/Unit/BandwidthEffectiveStepTest.php'
-      - 'tests/Unit/CsvWindowResolutionContractTest.php'
-      - 'tests/Unit/PercentileResolutionBehaviorTest.php'
+      - 'tests/Unit/Core/Rrd/RrdFetchWindowTest.php'
+      - 'tests/Unit/Core/Rrd/BandwidthEffectiveStepTest.php'
+      - 'tests/Unit/Ui/Graph/CsvWindowResolutionContractTest.php'
+      - 'tests/Unit/Ui/Graph/PercentileResolutionBehaviorTest.php'
       - 'tests/integration/CsvWindowRrdIntegrationTest.php'
       - 'tests/composer.json'
       - 'tests/composer.lock'
@@ -84,16 +84,14 @@ jobs:
         run: |
           set -euo pipefail
           pest_runner=vendor/bin/pest
-          pest_config=../phpunit.xml
           if [ "${{ matrix.php }}" = '8.4' ]; then
             pest_runner=pest
-            pest_config=../phpunit-csv.xml
           fi
           for test_file in \
-            Unit/RrdFetchWindowTest.php \
-            Unit/BandwidthEffectiveStepTest.php \
-            Unit/CsvWindowResolutionContractTest.php \
-            Unit/PercentileResolutionBehaviorTest.php \
+            Unit/Core/Rrd/RrdFetchWindowTest.php \
+            Unit/Core/Rrd/BandwidthEffectiveStepTest.php \
+            Unit/Ui/Graph/CsvWindowResolutionContractTest.php \
+            Unit/Ui/Graph/PercentileResolutionBehaviorTest.php \
             integration/CsvWindowRrdIntegrationTest.php; do
-            "${pest_runner}" --configuration="${pest_config}" "${test_file}"
+            "${pest_runner}" --configuration=../phpunit-csv.xml "${test_file}"
           done
