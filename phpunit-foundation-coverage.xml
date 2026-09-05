@@ -1,0 +1,18 @@
+<phpunit bootstrap="tests/bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <env name="CACTI_TEST_BOOTSTRAP" value="1"/>
+    </php>
+    <source>
+        <include>
+            <directory suffix=".php">lib/Console</directory>
+            <file>lib/Filesystem/CactiPath.php</file>
+        </include>
+    </source>
+    <testsuites>
+        <testsuite name="CLI and path coverage">
+            <file>tests/Unit/Core/Cli/CactiApplicationTest.php</file>
+            <file>tests/Unit/Security/PathTraversal/CactiPathTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>

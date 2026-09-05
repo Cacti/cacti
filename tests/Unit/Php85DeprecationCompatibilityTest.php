@@ -17,7 +17,7 @@ declare(strict_types = 1);
  * committed tree for anyone running the sources directly.
  */
 
-test('composer retains PHP 8.1 test support while allowing modern Pest releases', function () {
+test('composer retains PHP 8.3 test support while allowing modern Pest releases', function () {
 	$composer = json_decode(
 		file_get_contents(CACTI_PATH_BASE . '/composer.json'),
 		true,

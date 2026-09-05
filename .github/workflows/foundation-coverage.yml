@@ -1,33 +1,45 @@
-name: Process Lock Coverage
+name: CLI and Path Coverage
 
 on:
   push:
     branches: [develop]
     paths:
-      - '.github/workflows/process-lock-coverage.yml'
+      - '.github/workflows/foundation-coverage.yml'
       - '.github/actions/setup-php-composer/**'
       - 'composer.json'
       - 'composer.lock'
-      - 'lib/CactiProcessLock.php'
-      - 'phpunit-process-lock.xml'
-      - 'tests/Unit/Core/CactiProcessLockTest.php'
+      - 'bin/cacti'
+      - 'lib/Console/**'
+      - 'lib/Filesystem/CactiPath.php'
+      - 'link.php'
+      - 'package_import.php'
+      - 'phpunit-foundation-coverage.xml'
+      - 'tests/fixtures/Console/**'
+      - 'tests/Unit/Core/Cli/CactiApplicationTest.php'
+      - 'tests/Unit/Security/PathTraversal/CactiPathTest.php'
   pull_request:
     branches: [develop]
     paths:
-      - '.github/workflows/process-lock-coverage.yml'
+      - '.github/workflows/foundation-coverage.yml'
       - '.github/actions/setup-php-composer/**'
       - 'composer.json'
       - 'composer.lock'
-      - 'lib/CactiProcessLock.php'
-      - 'phpunit-process-lock.xml'
-      - 'tests/Unit/Core/CactiProcessLockTest.php'
+      - 'bin/cacti'
+      - 'lib/Console/**'
+      - 'lib/Filesystem/CactiPath.php'
+      - 'link.php'
+      - 'package_import.php'
+      - 'phpunit-foundation-coverage.xml'
+      - 'tests/fixtures/Console/**'
+      - 'tests/Unit/Core/Cli/CactiApplicationTest.php'
+      - 'tests/Unit/Security/PathTraversal/CactiPathTest.php'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: process-lock-coverage-${{ github.event.pull_request.number || github.ref }}
+  group: foundation-coverage-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 env:
@@ -35,7 +47,7 @@ env:
 
 jobs:
   coverage:
-    name: Process lock 100% coverage
+    name: CLI and path 100% coverage
     runs-on: ubuntu-24.04
     timeout-minutes: 20
 
@@ -51,7 +63,7 @@ jobs:
           php-version: '8.3'
           coverage: xdebug
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
-          dependency-mode: locked-process-lock-coverage
+          dependency-mode: locked-foundation-coverage
           install-args: --prefer-dist --no-progress --no-interaction
 
       - name: Enforce line coverage
@@ -59,8 +71,4 @@ jobs:
           XDEBUG_MODE: coverage
         run: |
           set -euo pipefail
-          include/vendor/bin/pest \
-            --configuration=phpunit-process-lock.xml \
-            --coverage \
-            --coverage-text \
-            --min=100
+          composer test:foundation-coverage

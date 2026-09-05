@@ -40,10 +40,10 @@ jobs:
           node-version: '22'
           cache: npm
 
-      - name: Setup PHP 8.2 release toolchain
+      - name: Setup PHP 8.3 release toolchain
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
           coverage: none
           dependency-mode: locked-release

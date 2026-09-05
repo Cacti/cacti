@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+use Cacti\Filesystem\CactiPath;
+
 require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/import.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
@@ -265,10 +267,18 @@ function form_actions() : void {
 	foreach ($_POST as $var => $val) {
 		if (str_contains($var, 'chk_file_')) {
 			$id = base64_decode(str_replace('chk_file_', '', $var), true);
-			$id = json_decode($id, true);
+			$id = json_decode((string) $id, true);
 
-			// Get rid of the basename
-			$id['pfile'] = str_replace(CACTI_PATH_BASE . '/', '', $id['pfile']);
+			/* The key name is attacker supplied, so the decode can yield anything.
+			 * makeRelativeIfWithinBase() takes a string, and null is not coercible
+			 * to one, so an unchecked value turns a bad request into a 500. */
+			if (!is_array($id) || !isset($id['pfile'], $id['package'])
+				|| !is_string($id['pfile']) || !is_string($id['package'])) {
+				continue;
+			}
+
+			// Display paths relative to the Cacti root when they are contained.
+			$id['pfile'] = CactiPath::makeRelativeIfWithinBase($id['pfile'], CACTI_PATH_BASE);
 
 			$pkg_file_list .= '<tr>' .
 				'<td style="width:50%">' . htmle($id['package']) . '</td>' .
@@ -282,7 +292,11 @@ function form_actions() : void {
 
 		if (str_contains($var, 'chk_import_')) {
 			$id = base64_decode(str_replace('chk_import_', '', $var), true);
-			$id = json_decode($id, true);
+			$id = json_decode((string) $id, true);
+
+			if (!is_array($id) || !isset($id['package']) || !is_string($id['package'])) {
+				continue;
+			}
 
 			$packages = explode('<br>', $id['package']);
 			$package  = '';
@@ -732,23 +746,22 @@ function package_diff_file() : void {
 	$package_file     = grv('package_file');
 	$filename         = grv('filename');
 
-	$target = realpath(CACTI_PATH_BASE . '/' . $filename);
-	$base   = realpath(CACTI_PATH_BASE);
+	/* Read the Package side first, so a filename it does not carry never
+	 * reaches the local filesystem. This is ordering, not a control: the
+	 * signature here is checked against a key the Package itself supplies, so
+	 * anyone able to import can sign their own. import_diff_target_allowed()
+	 * below is the control, and it allows only what an import can write. */
+	$newfile = package_file_get_contents($package_location, $package_file, $filename);
 
-	if ($target === false) {
-		// The package may contain files that do not exist locally yet.
-		// Resolve the parent directory instead and re-attach the leaf so
-		// the containment check below still applies.
-		$parent = realpath(dirname(CACTI_PATH_BASE . '/' . $filename));
-		$leaf   = basename($filename);
+	if ($newfile === false) {
+		print __('Invalid filename specified.');
 
-		if ($parent !== false && $leaf !== '.' && $leaf !== '..') {
-			$target = $parent . DIRECTORY_SEPARATOR . $leaf;
-		}
+		return;
 	}
 
-	if ($target === false || $base === false ||
-		!str_starts_with($target . DIRECTORY_SEPARATOR, $base . DIRECTORY_SEPARATOR)) {
+	$target = CactiPath::resolveWithinBase(CACTI_PATH_BASE, CACTI_PATH_BASE . '/' . $filename, true);
+
+	if ($target === false || !import_diff_target_allowed($target)) {
 		print __('Invalid filename specified.');
 
 		return;
@@ -759,12 +772,7 @@ function package_diff_file() : void {
 		'ignoreCase'       => false
 	];
 
-	$newfile = package_file_get_contents($package_location, $package_file, $filename);
-
-	if ($newfile !== false) {
-		$newfile = str_replace("\n\r", "\n", $newfile);
-		$newfile = explode("\n", $newfile);
-	}
+	$newfile = explode("\n", str_replace("\n\r", "\n", $newfile));
 
 	$oldfile = file_get_contents($target);
 
@@ -1161,7 +1169,7 @@ function import_display_package_data(array $templates, array $files, string $pac
 							'&package_location=' . grv('package_location') .
 							'&package_file=' . $file_package_file .
 							'&package_name=' . $file_package_name .
-							'&filename=' . str_replace(CACTI_PATH_BASE . '/', '', $pfile);
+							'&filename=' . CactiPath::makeRelativeIfWithinBase($pfile, CACTI_PATH_BASE);
 
 						$nstatus .= ($nstatus != '' ? ', ' : '') .
 							"<a class='diffme linkEditMain' href='" . htmle($url) . "'>" . __('Differences') . '</a>';

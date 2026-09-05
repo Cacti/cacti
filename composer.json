@@ -26,7 +26,7 @@
     "type": "composer-plugin",
     "license": "GPL-2.0-only",
     "require": {
-        "php": "^8.2",
+        "php": ">=8.3",
         "ext-PDO": "*",
         "ext-Phar": "*",
         "ext-dom": "*",
@@ -56,12 +56,14 @@
         "slim/slim": "^4.14",
         "stevenmaguire/oauth2-keycloak": "^6.1.0",
         "stevenmaguire/oauth2-microsoft": "^2.2",
+        "symfony/console": "^7.4",
         "symfony/filesystem": "^7.4",
         "symfony/finder": "^6.4 || ^7.4",
         "symfony/http-foundation": "^7.4",
         "symfony/lock": "^7.4",
         "symfony/mailer": "^7.4",
         "symfony/notifier": "^7.4",
+        "symfony/process": "^7.4",
         "symfony/validator": "^7.4"
     },
     "require-dev": {
@@ -81,6 +83,7 @@
         "hardening-patterns": "php tests/tools/check_hardening_patterns.php",
         "vendor-policy": "php tests/tools/check_vendor_policy.php",
         "php-cs-fixit": "php-cs-fixer fix ",
+        "test:foundation-coverage": "@php include/vendor/bin/pest --configuration=phpunit-foundation-coverage.xml --coverage --coverage-text --min=100",
         "install-hooks": "bash -c 'install -m 755 tests/tools/pre-commit \"$(git rev-parse --git-path hooks/pre-commit)\"'",
         "test": "include/vendor/bin/pest --display-warnings",
         "sink-guard": "bash tests/security/verify_sink_inventory.sh",
@@ -114,11 +117,17 @@
     ],
     "minimum-stability": "stable",
     "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Cacti\\Console\\": "lib/Console/",
+            "Cacti\\Filesystem\\": "lib/Filesystem/"
+        }
+    },
     "config": {
         "sort-packages": true,
         "vendor-dir": "./include/vendor",
         "platform": {
-            "php": "8.2.0"
+            "php": "8.3.0"
         },
         "platform-check": true,
         "audit": {
