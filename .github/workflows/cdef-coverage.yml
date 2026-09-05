@@ -11,6 +11,7 @@ on:
       - 'lib/cdef.php'
       - 'phpunit-cdef.xml'
       - 'tests/Coverage/CdefCoverageTest.php'
+      - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
       - 'tests/Unit/Ui/Cdef/CdefControllerContractTest.php'
   pull_request:
@@ -23,6 +24,7 @@ on:
       - 'lib/cdef.php'
       - 'phpunit-cdef.xml'
       - 'tests/Coverage/CdefCoverageTest.php'
+      - 'tests/Helpers/CdefCoverageBootstrap.php'
       - 'tests/integration/CdefDatabaseIntegrationTest.php'
       - 'tests/Unit/Ui/Cdef/CdefControllerContractTest.php'
   workflow_dispatch:
