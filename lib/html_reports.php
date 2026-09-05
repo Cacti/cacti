@@ -1801,14 +1801,14 @@ function display_reports_items($report_id) {
 			$form_data .= '<td>' . $size . '</td>';
 
 			if ($i == 1) {
-				$form_data .= '<td class="right nowrap"><a class="pic remover fa fa-caret-down moveArrow cactiPostAction" style="padding:3px" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span style="padding:5ps" class="moveArrowNone"></span>';
+				$form_data .= '<td class="right nowrap"><a class="pic remover fa fa-caret-down moveArrow cactiPostAction" style="padding:3px" title="' . __esc('Move Down') . '" href="#" data-url="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span style="padding:5ps" class="moveArrowNone"></span>';
 			} elseif ($i > 1 && $i < cacti_sizeof($items)) {
-				$form_data .= '<td class="right nowrap"><a class="pic remover fa fa-caret-down moveArrow cactiPostAction" style="padding:3px" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover fa fa-caret-up moveArrow cactiPostAction" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
+				$form_data .= '<td class="right nowrap"><a class="pic remover fa fa-caret-down moveArrow cactiPostAction" style="padding:3px" title="' . __esc('Move Down') . '" href="#" data-url="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover fa fa-caret-up moveArrow cactiPostAction" style="padding:3px" title="' . __esc('Move Up') . '" href="#" data-url="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
 			} else {
-				$form_data .= '<td class="right nowrap"><span style="padding:3px" class="moveArrowNone"></span>' . '<a class="remover fa fa-caret-up moveArrow cactiPostAction" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
+				$form_data .= '<td class="right nowrap"><span style="padding:3px" class="moveArrowNone"></span>' . '<a class="remover fa fa-caret-up moveArrow cactiPostAction" style="padding:3px" title="' . __esc('Move Up') . '" href="#" data-url="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
 			}
 
-			$form_data .= '<a class="pic deleteMarker fa fa-times cactiPostAction" style="padding:3px" href="' . html_escape(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
+			$form_data .= '<a class="pic deleteMarker fa fa-times cactiPostAction" style="padding:3px" href="#" data-url="' . html_escape(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
 
 			print $form_data;
 

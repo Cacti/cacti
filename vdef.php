@@ -633,13 +633,13 @@ function vdef_edit() {
 					<?php
 					if (read_config_option('drag_and_drop') == '') {
 						if ($i < $total_items && $total_items > 1) {
-							echo '<a class="pic fa fa-caret-down moveArrow cactiPostAction" href="' . html_escape('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
+							echo '<a class="pic fa fa-caret-down moveArrow cactiPostAction" href="#" data-url="' . html_escape('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
 						} else {
 							echo '<span class="moveArrowNone"></span>';
 						}
 
 						if ($i > 1 && $i <= $total_items) {
-							echo '<a class="pic fa fa-caret-up moveArrow cactiPostAction" href="' . html_escape('vdef.php?action=item_moveup&id=' . $vdef_item['id'] .	'&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
+							echo '<a class="pic fa fa-caret-up moveArrow cactiPostAction" href="#" data-url="' . html_escape('vdef.php?action=item_moveup&id=' . $vdef_item['id'] .	'&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
 						} else {
 							echo '<span class="moveArrowNone"></span>';
 						}

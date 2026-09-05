@@ -2691,7 +2691,7 @@ function ajaxAnchors() {
 		}
 
 		if ($(this).hasClass('cactiPostAction')) {
-			submitPageUsingPost(href);
+			submitPageUsingPost($(this).data('url') || href);
 
 			return false;
 		}
