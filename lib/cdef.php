@@ -37,7 +37,11 @@ function get_cdef_item_name(int $cdef_item_id) : string {
 
 	$cdef_item          = db_fetch_row_prepared('SELECT type, value FROM cdef_items WHERE id = ?', [$cdef_item_id]);
 
-	if (cacti_sizeof($cdef_item) === 0) {
+	if (!is_array($cdef_item) || !array_key_exists('type', $cdef_item) || !array_key_exists('value', $cdef_item)) {
+		if (function_exists('cacti_log')) {
+			cacti_log(sprintf('ERROR: CDEF item %d is missing or corrupt.', $cdef_item_id), false, 'CDEF');
+		}
+
 		return '';
 	}
 
@@ -45,9 +49,25 @@ function get_cdef_item_name(int $cdef_item_id) : string {
 
 	switch ($cdef_item['type']) {
 		case '1':
-			return (string) ($cdef_functions[$current_cdef_value] ?? '');
+			if (!isset($cdef_functions[$current_cdef_value])) {
+				if (function_exists('cacti_log')) {
+					cacti_log(sprintf('ERROR: CDEF item %d references an unknown function.', $cdef_item_id), false, 'CDEF');
+				}
+
+				return '';
+			}
+
+			return (string) $cdef_functions[$current_cdef_value];
 		case '2':
-			return (string) ($cdef_operators[$current_cdef_value] ?? '');
+			if (!isset($cdef_operators[$current_cdef_value])) {
+				if (function_exists('cacti_log')) {
+					cacti_log(sprintf('ERROR: CDEF item %d references an unknown operator.', $cdef_item_id), false, 'CDEF');
+				}
+
+				return '';
+			}
+
+			return (string) $cdef_operators[$current_cdef_value];
 		case '4':
 			return (string) $current_cdef_value;
 		case '5':
@@ -89,7 +109,7 @@ function get_cdef_recursive(int $cdef_id, array &$visited) : ?string {
 	}
 
 	$visited[$cdef_id] = true;
-	$cdef_items = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', [$cdef_id]);
+	$cdef_items        = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', [$cdef_id]);
 
 	$i           = 0;
 	$cdef_string = '';
