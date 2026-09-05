@@ -8,16 +8,7 @@
 require_once dirname(__DIR__, 2) . '/lib/ping.php';
 require_once dirname(__DIR__, 2) . '/lib/functions.php';
 
-if (!function_exists('__')) {
-	function __($text, ...$args) {
-		return vsprintf($text, $args);
-	}
-}
-
 test('Net_Ping::ping_icmp handles fping-style output through CactiProcess', function () {
-	global $config;
-	$config = ['cacti_server_os' => 'unix', 'is_web' => false];
-
 	// Mock a Net_Ping object
 	$ping = new Net_Ping();
 	$ping->host = ['hostname' => '127.0.0.1'];

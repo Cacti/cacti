@@ -63,25 +63,18 @@ beforeEach(function () {
 });
 
 test('timeout_kill_registered_processes delivers SIGTERM to a live child', function () {
-	$sockets = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
-	expect($sockets)->not->toBeFalse();
-
 	$pid = pcntl_fork();
 	expect($pid)->not->toBe(-1);
 
 	if ($pid === 0) {
-		fclose($sockets[0]);
-		fwrite($sockets[1], 'ready');
-		fclose($sockets[1]);
 		// Child: block until the parent signals us. Short enough that a kill
 		// regression fails fast instead of stalling the suite for 30s.
 		sleep(5);
 		exit(0);
 	}
 
-	fclose($sockets[1]);
-	expect(fread($sockets[0], 5))->toBe('ready');
-	fclose($sockets[0]);
+	// Give the child a moment to enter its sleep before we signal it.
+	usleep(200000);
 
 	$GLOBALS['__poller_procs'] = array(
 		array('pid' => $pid, 'tasktype' => 'poller', 'taskname' => 'integration', 'taskid' => 0),

@@ -30,12 +30,6 @@ $importSource    = file_get_contents(__DIR__ . '/../../lib/import.php');
 $dataInputSource = file_get_contents(__DIR__ . '/../../data_input.php');
 $functionsSource = file_get_contents(__DIR__ . '/../../lib/functions.php');
 
-if (!function_exists('_data_input_test_read_config_option')) {
-	function _data_input_test_read_config_option($name) {
-		return '';
-	}
-}
-
 test('lib/import.php still calls cacti_input_string_is_safe before sql_save', function () use ($importSource) {
 	/* Per the test SecurityScriptServerDataInputTest, the import path
 	 * MUST keep calling the validator. PR #7122's alternative removed the
@@ -75,7 +69,6 @@ test('shared validator accepts the issue #7121 ss_grid_preason template', functi
 		'function _integration_is_safe(',
 		$m[0]
 	);
-	$src = str_replace('read_config_option(', '_data_input_test_read_config_option(', $src);
 	if (!function_exists('_integration_is_safe')) {
 		eval($src); // nosemgrep: php.lang.security.eval-use.eval-use
 	}
@@ -101,7 +94,6 @@ test('shared validator placeholder grammar matches generate_data_input_field_seq
 		'function _grammar_is_safe(',
 		$m[0]
 	);
-	$src = str_replace('read_config_option(', '_data_input_test_read_config_option(', $src);
 	if (!function_exists('_grammar_is_safe')) {
 		eval($src); // nosemgrep: php.lang.security.eval-use.eval-use
 	}
