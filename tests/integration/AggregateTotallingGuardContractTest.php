@@ -54,3 +54,20 @@ test('totalling query and cdef update operate on the same item set', function ()
 	expect(preg_match($pattern, $body))->toBe(1,
 		'cdef update must remain prepared and keyed by item id');
 });
+
+test('aggregate caller rolls back and surfaces CDEF totalling failures', function () use ($root) {
+	$src = file_get_contents($root . '/lib/api_aggregate.php');
+	expect($src)->not->toBeFalse('Failed to read lib/api_aggregate.php');
+
+	$fnPos = strpos($src, 'function aggregate_create_update(');
+	expect($fnPos)->not->toBeFalse('aggregate_create_update must exist');
+
+	$fnEnd = strpos($src, "\nfunction ", $fnPos + 1);
+	$body  = substr($src, $fnPos, ($fnEnd === false ? strlen($src) : $fnEnd) - $fnPos);
+
+	expect($body)->toContain("db_execute('START TRANSACTION')")
+		->and($body)->toContain('if (!aggregate_cdef_totalling(')
+		->and($body)->toContain("db_execute('ROLLBACK')")
+		->and($body)->toContain("raise_message('aggregate_invalid_cdef'")
+		->and($body)->toContain("db_execute('COMMIT')");
+});
