@@ -32,6 +32,7 @@ if [ -z "$CSRF" ]; then
 fi
 
 	STATUS=$("${DC[@]}" exec -T cacti-master curl -sS \
+	-b 'probe=1' \
 	-b /tmp/c07.jar \
 	-c /tmp/c07.jar \
 	-D /tmp/c07_headers \
