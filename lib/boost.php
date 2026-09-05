@@ -34,7 +34,7 @@ function boost_ensure_process_table(bool $repair_key = false) : bool {
 			UNIQUE KEY `run_child` (`run_id`, `child_id`)
 		) ENGINE=MEMORY");
 
-		if ($created === false && !db_table_exists('poller_output_boost_processes')) {
+		if ($created === false) {
 			cacti_log('ERROR: Unable to create poller_output_boost_processes', true, 'BOOST');
 
 			return false;
@@ -45,7 +45,7 @@ function boost_ensure_process_table(bool $repair_key = false) : bool {
 		$added = db_execute("ALTER TABLE poller_output_boost_processes
 			ADD `run_id` char(32) NOT NULL default '' AFTER `sock_int_value`");
 
-		if ($added === false && !db_column_exists('poller_output_boost_processes', 'run_id')) {
+		if ($added === false) {
 			cacti_log('ERROR: Unable to add run_id to poller_output_boost_processes', true, 'BOOST');
 
 			return false;
@@ -56,7 +56,7 @@ function boost_ensure_process_table(bool $repair_key = false) : bool {
 		$added = db_execute('ALTER TABLE poller_output_boost_processes
 			ADD `child_id` int(10) unsigned NOT NULL default 0 AFTER `run_id`');
 
-		if ($added === false && !db_column_exists('poller_output_boost_processes', 'child_id')) {
+		if ($added === false) {
 			cacti_log('ERROR: Unable to add child_id to poller_output_boost_processes', true, 'BOOST');
 
 			return false;
@@ -73,7 +73,7 @@ function boost_ensure_process_table(bool $repair_key = false) : bool {
 		$added = db_execute('ALTER TABLE poller_output_boost_processes
 			ADD UNIQUE KEY `run_child` (`run_id`, `child_id`)');
 
-		if ($added === false && !db_index_exists('poller_output_boost_processes', 'run_child')) {
+		if ($added === false) {
 			cacti_log('ERROR: Unable to add run_child key to poller_output_boost_processes', true, 'BOOST');
 
 			return false;
