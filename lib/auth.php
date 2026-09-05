@@ -116,10 +116,12 @@ function check_auth_cookie() : int|false {
 			$user_id  = $parts[0];
 			$realm_id = -1;
 			$token    = $parts[1];
-		} else {
+		} elseif (cacti_sizeof($parts) == 3) {
 			$user_id  = $parts[0];
 			$realm_id = $parts[1];
 			$token    = $parts[2];
+		} else {
+			return false;
 		}
 
 		if (!is_numeric($user_id)) {
