@@ -734,15 +734,61 @@ function aggregate_cdef_make0() : int {
 }
 
 /**
- * aggregate_cdef_totalling			- create a totalling CDEF, if need be
+ * Check whether an aggregate item has a usable CDEF expression.
  *
- * @param int $_new_graph_id        - id of new graph
- * @param int $_graph_item_sequence - current graph item sequence
- * @param int $_total_type          - what type of totalling is required?
+ * @param array<int,array{id:mixed,name:mixed,cdef_text:?string}> $cdefs
+ * @param int                                                     $cdef_id
  *
- * @return void
+ * @return string|null A usable expression, or null when totalling must skip the item
  */
-function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence, int $_total_type) : void {
+function aggregate_cdef_for_totalling(array $cdefs, int $cdef_id) : ?string {
+	if (!isset($cdefs[$cdef_id]) || $cdefs[$cdef_id]['cdef_text'] === null || $cdefs[$cdef_id]['cdef_text'] === '') {
+		return null;
+	}
+
+	return $cdefs[$cdef_id]['cdef_text'];
+}
+
+/**
+ * Validate every target before aggregate_cdef_totalling() performs any writes.
+ *
+ * @param array<int,array<string,mixed>>                          $graph_template_items
+ * @param array<int,array{id:mixed,name:mixed,cdef_text:?string}> $cdefs
+ *
+ * @return array{items:array<int,array{graph_item:array<string,mixed>,cdef_id:int,cdef_name:mixed,cdef_text:string}>,invalid_cdef_id:?int}
+ */
+function aggregate_prepare_cdef_totalling(array $graph_template_items, array $cdefs) : array {
+	$items = [];
+
+	foreach ($graph_template_items as $graph_template_item) {
+		$cdef_id   = (int) $graph_template_item['cdef_id'];
+		$cdef_text = aggregate_cdef_for_totalling($cdefs, $cdef_id);
+
+		if ($cdef_text === null) {
+			return ['items' => [], 'invalid_cdef_id' => $cdef_id];
+		}
+
+		$items[] = [
+			'graph_item' => $graph_template_item,
+			'cdef_id'    => $cdef_id,
+			'cdef_name'  => $cdefs[$cdef_id]['name'],
+			'cdef_text'  => $cdef_text,
+		];
+	}
+
+	return ['items' => $items, 'invalid_cdef_id' => null];
+}
+
+/**
+ * Creates and applies aggregate totalling CDEFs.
+ *
+ * @param int $_new_graph_id        ID of the new graph.
+ * @param int $_graph_item_sequence First graph item sequence to total.
+ * @param int $_total_type          Type of totalling required.
+ *
+ * @return bool True when every totalling CDEF was applied.
+ */
+function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence, int $_total_type) : bool {
 	include_once(CACTI_PATH_LIBRARY . '/cdef.php');
 
 	cacti_log(__FUNCTION__ . ' called. Working on Graph: ' . $_new_graph_id . ' sequence: ' . $_graph_item_sequence . ' totalling: ' . $_total_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -761,6 +807,12 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 			ORDER BY sequence',
 			[$_new_graph_id, $_graph_item_sequence]);
 
+		if ($graph_template_items === false) {
+			cacti_log(__FUNCTION__ . ' could not load graph items.', true, 'AGGREGATE');
+
+			return false;
+		}
+
 		cacti_log(__FUNCTION__ . " totalling query: graph=$_new_graph_id seq=$_graph_item_sequence", true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 	}
 
@@ -768,30 +820,50 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 	$_cdefs = db_fetch_assoc_prepared('SELECT id, name FROM cdef ORDER BY id', []);
 	$cdefs  = [];
 
+	if ($_cdefs === false) {
+		cacti_log(__FUNCTION__ . ' could not load CDEFs.', true, 'AGGREGATE');
+
+		return false;
+	}
+
 	// build cdefs array to allow for indexing on cdef_id
 	foreach ($_cdefs as $_cdef) {
-		$cdefs[$_cdef['id']]['id']        = $_cdef['id'];
-		$cdefs[$_cdef['id']]['name']      = $_cdef['name'];
-		$cdefs[$_cdef['id']]['cdef_text'] = get_cdef($_cdef['id']);
+		$cdefs[$_cdef['id']] = [
+			'id'        => $_cdef['id'],
+			'name'      => $_cdef['name'],
+			'cdef_text' => get_cdef($_cdef['id']),
+		];
 	}
 
 	// add pseudo CDEF for CURRENT_DATA_SOURCE, in case CDEF=NONE
 	// we then may apply the standard CDEF procedure to create a new CDEF
-	$cdefs[0]['id']        = 0;
-	$cdefs[0]['name']      = 'Items';
-	$cdefs[0]['cdef_text'] = 'CURRENT_DATA_SOURCE';
+	$cdefs[0] = [
+		'id'        => 0,
+		'name'      => 'Items',
+		'cdef_text' => 'CURRENT_DATA_SOURCE',
+	];
 
 	// new CDEF(s) are required!
-	$num_items = cacti_sizeof($graph_template_items);
+	$prepared = aggregate_prepare_cdef_totalling($graph_template_items, $cdefs);
+
+	if ($prepared['invalid_cdef_id'] !== null) {
+		cacti_log(__FUNCTION__ . ' could not apply totals due to invalid or empty CDEF id ' . $prepared['invalid_cdef_id'], true, 'AGGREGATE');
+
+		return false;
+	}
+
+	$totalling_items = $prepared['items'];
+	$num_items       = cacti_sizeof($totalling_items);
 
 	if ($num_items > 0) {
 		$i = 0;
 
-		foreach ($graph_template_items as $graph_template_item) {
+		foreach ($totalling_items as $totalling_item) {
 			// current cdef
-			$cdef_id   = $graph_template_item['cdef_id'];
-			$cdef_name = $cdefs[$cdef_id]['name'];
-			$cdef_text = $cdefs[$cdef_id]['cdef_text'];
+			$graph_template_item = $totalling_item['graph_item'];
+			$cdef_id             = $totalling_item['cdef_id'];
+			$cdef_name           = $totalling_item['cdef_name'];
+			$cdef_text           = $totalling_item['cdef_text'];
 
 			cacti_log(__FUNCTION__ . ' cdef id: ' . $cdef_id . ' name: ' . $cdef_name . ' value: ' . $cdef_text, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -815,7 +887,7 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 			foreach ($cdefs as $cdef) {
 				cacti_log(__FUNCTION__ . ' verify matching cdef: ' . $cdef['id'] . ' on: ' . $cdef['cdef_text'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
-				if ($cdef['cdef_text'] == $new_cdef_text) {
+				if ($cdef['cdef_text'] === $new_cdef_text) {
 					$new_cdef_id = $cdef['id'];
 					cacti_log(__FUNCTION__ . ' matching cdef: ' . $new_cdef_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -880,6 +952,8 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 			cacti_log(__FUNCTION__ . ' updated new cdef id: ' . $new_cdef_id . ' for item: ' . $graph_template_item['id'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 		}
 	}
+
+	return true;
 }
 
 /** auto_hr			- set a new hr when items are skipped
