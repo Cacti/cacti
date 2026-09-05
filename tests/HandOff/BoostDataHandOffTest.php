@@ -41,6 +41,13 @@ test('Recovery deletes only the exact rows acknowledged by the main collector', 
 	expect($recovery)->not->toContain('DELETE FROM poller_output_boost WHERE time <=');
 });
 
+test('Recovery status SQL remains valid when ANSI_QUOTES is enabled', function () {
+	$recovery = boostSource('poller_recovery.php');
+
+	expect($recovery)->toContain('SET status=2')
+		->and($recovery)->not->toContain('SET status="2"');
+});
+
 test('Scheduled Boost retains shard ownership after an RRD update failure', function () {
 	$poller = boostSource('poller_boost.php');
 
