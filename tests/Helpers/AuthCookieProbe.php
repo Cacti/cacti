@@ -66,7 +66,7 @@ function read_config_option($name) {
 }
 
 function db_fetch_cell_prepared($sql, $params = []) {
-	if (str_contains($sql, 'FROM user_auth_cache')) {
+	if (strpos($sql, 'FROM user_auth_cache') !== false) {
 		foreach (($GLOBALS['auth_integration_cache'] ?? []) as $row) {
 			if ($row['user_id'] == $params[0] && $row['token'] == $params[1]) {
 				return $row['user_id'];
@@ -74,7 +74,7 @@ function db_fetch_cell_prepared($sql, $params = []) {
 		}
 	}
 
-	if (str_contains($sql, 'FROM user_auth') && str_contains($sql, 'WHERE username')) {
+	if (strpos($sql, 'FROM user_auth') !== false && strpos($sql, 'WHERE username') !== false) {
 		return $GLOBALS['auth_integration_usernames'][$params[0]] ?? 0;
 	}
 
