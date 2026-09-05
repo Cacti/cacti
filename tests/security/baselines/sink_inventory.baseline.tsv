@@ -1,8 +1,9 @@
 category	location	match
 cmd_exec	./cactid.php:102		exec('pgrep -a php | grep cactid.php', $output);
-cmd_exec	./cli/audit_database.php:1085				$db_shell = shell_exec('which mysql');
-cmd_exec	./cli/audit_database.php:1104				exec($db_shell .
-cmd_exec	./cli/audit_database.php:199		exec('php ' . $config['base_path'] . '/cli/upgrade_database.php --debug', $output, $return_var);
+cmd_exec	./cli/audit_database.php:1122					$db_shell = trim((string) shell_exec('which mysql'));
+cmd_exec	./cli/audit_database.php:1141				exec(cacti_escapeshellarg($db_shell) .
+cmd_exec	./cli/audit_database.php:232		exec(cacti_escapeshellarg($php_binary) . ' ' .
+cmd_exec	./cli/audit_database.php:325								exec(cacti_escapeshellarg($php_binary) . ' ' .
 cmd_exec	./cli/batchgapfix.php:388			exec($command, $output, $return_var);
 cmd_exec	./cli/float_rrdfiles.php:335				$response = exec($command, $output, $return);
 cmd_exec	./cli/float_rrdfiles.php:443					$response = exec($command, $output, $return);
@@ -535,7 +536,7 @@ fs_write	./cactid.php:99		$STDERR = fopen('/dev/null', 'wb');
 fs_write	./cli/audit_database.php:180		if (file_put_contents($path, $contents) === false) {
 fs_write	./cli/change_device.php:987		$fh = fopen($file, 'r');
 fs_write	./cli/float_rrdfiles.php:342				$fp = fopen($tmp_file, 'w');
-fs_write	./cli/float_rrdfiles.php:345					$lf = fopen(sys_get_temp_dir() . '/cacti_float_rrdfiles.log', 'a');
+fs_write	./cli/float_rrdfiles.php:350					$lf = fopen('php://stderr', 'w');
 fs_write	./cli/import_package.php:159				$fp   = fopen($filename, 'r');
 fs_write	./cli/import_template.php:121				$fp = fopen($filename,'r');
 fs_write	./cli/input_whitelist.php:188			file_put_contents($config['input_whitelist'], json_encode($input));

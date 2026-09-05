@@ -58,7 +58,7 @@ $method     = 'fill';
 $avgnan     = 'last';
 $start_time = false;
 $end_time   = false;
-$php_bin    = read_config_option('path_php_binary');
+$php_bin    = (string) read_config_option('path_php_binary');
 
 /* install signal handlers for UNIX types only */
 if (function_exists('pcntl_signal')) {
@@ -286,20 +286,28 @@ if ($child == 0) {
 
 	// Fork Child Binaries
 	for($i = 1; $i <= $threads; $i++) {
-		$command = sprintf("%s/cli/batchgapfix.php --start='%s' --end='%s' --method=%s --avgnan=%s --child=%s" . ($force ? ' --force':'') . ($debug ? ' --debug':''),
-			$config['base_path'],
-			$start_date,
-			$end_date,
-			$method,
-			$avgnan,
-			$i
+		$args = array(
+			$config['base_path'] . '/cli/batchgapfix.php',
+			'--start=' . $start_date,
+			'--end=' . $end_date,
+			'--method=' . $method,
+			'--avgnan=' . $avgnan,
+			'--child=' . $i
 		);
+
+		if ($force) {
+			$args[] = '--force';
+		}
+
+		if ($debug) {
+			$args[] = '--debug';
+		}
 
 		$now = date('H:i:s');
 
-		printf("NOTE: %s, Exec in Background: %s %s" . PHP_EOL, $now, $php_bin, $command);
+		printf("NOTE: %s, Exec in Background: %s %s" . PHP_EOL, $now, $php_bin, implode(' ', $args));
 
-		exec_background($php_bin, $command);
+		exec_background($php_bin, $args);
 	}
 
 	$start = microtime(true);
@@ -367,14 +375,14 @@ if ($child == 0) {
 		$return_var = 0;
 
 		// Format the command
-		$command = sprintf("%s -q %s/cli/removespikes.php --rrdfile='%s' --outlier-start='%s' --outlier-end='%s' --method=%s --avgnan=%s",
-			$php_bin,
-			$config['base_path'],
-			$rrdfile['data_source_path'],
-			$start_date,
-			$end_date,
-			$method,
-			$avgnan
+		$command = sprintf('%s -q %s --rrdfile=%s --outlier-start=%s --outlier-end=%s --method=%s --avgnan=%s',
+			cacti_escapeshellarg($php_bin),
+			cacti_escapeshellarg($config['base_path'] . '/cli/removespikes.php'),
+			cacti_escapeshellarg($rrdfile['data_source_path']),
+			cacti_escapeshellarg($start_date),
+			cacti_escapeshellarg($end_date),
+			cacti_escapeshellarg($method),
+			cacti_escapeshellarg($avgnan)
 		);
 
 		db_execute_prepared('UPDATE graph_local_spikekill
@@ -467,4 +475,3 @@ function display_help() {
 	print '   --force                         - Kill the current running batch gap fill and start over.' . PHP_EOL;
 	print '   --debug                         - Higher tracing level for select utilities.' . PHP_EOL . PHP_EOL;
 }
-
