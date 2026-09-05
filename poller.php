@@ -1024,17 +1024,7 @@ function poller_table_maintenance() {
 		db_execute('ALTER TABLE poller_output_boost ENGINE=InnoDB');
 	}
 
-	// catch the unlikely event that the poller_output_boost_processes is missing
-	if (!db_table_exists('poller_output_boost_processes')) {
-		db_execute('CREATE TABLE  `poller_output_boost_processes` (
-			`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
-			`run_id` char(32) NOT NULL default "",
-			`child_id` int(10) unsigned NOT NULL default "0",
-			`status` varchar(255) default NULL,
-			PRIMARY KEY (`sock_int_value`),
-			UNIQUE KEY `run_child` (`run_id`, `child_id`))
-			ENGINE=MEMORY');
-	}
+	boost_ensure_process_table();
 
 	// catch the unlikely event that the poller_output_realtime is missing
 	if (!db_table_exists('poller_output_realtime')) {
