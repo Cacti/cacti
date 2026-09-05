@@ -54,5 +54,7 @@ test('device display reuses the uptime reads and shows an unknown placeholder', 
 	$body   = substr($source, $start, strpos($source, 'function api_duplicate_device_template', $start) - $start);
 
 	expect(substr_count($body, '.1.3.6.1.6.3.10.2.1.3.0'))->toBe(1)
-		->and($body)->toContain("\$snmp_uptime = 'U';");
+		->and($body)->toContain('if ($snmp_uptime === false)')
+		->and($body)->toContain('"</strong> $snmp_uptime<br>"')
+		->and($body)->toContain("print '</span>';");
 });

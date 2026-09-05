@@ -464,7 +464,8 @@ function update_reindex_cache($host_id, $data_query_id) {
 					$oid_uptime = '.1.3.6.1.2.1.1.3.0';
 				}
 
-				$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
+				$assert_value = 'U';
+				$session      = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
 					$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
 					$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
 					$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
@@ -474,12 +475,20 @@ function update_reindex_cache($host_id, $data_query_id) {
 						$engine_time   = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
 						$system_uptime = cacti_snmp_session_get($session, $oid_uptime);
 						$assert_value  = cacti_snmp_select_uptime($system_uptime, $engine_time);
+
+						if ($assert_value === false) {
+							$assert_value = 'U';
+						}
 					} else {
 						$assert_value = cacti_snmp_session_get($session, $oid_uptime);
-					}
-				}
 
-				$session->close();
+						if ($assert_value === false) {
+							$assert_value = 'U';
+						}
+					}
+
+					$session->close();
+				}
 
 				$recache_stack[] = "('$host_id', '$data_query_id'," .  POLLER_ACTION_SNMP . ", '<', '$assert_value', '$oid_uptime', 1)";
 			}

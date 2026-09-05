@@ -1581,7 +1581,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 						if ($snmp_error != '') {
 							print " - $snmp_error";
 						}
-						'</span>';
+						print '</span>';
 					} else {
 						$snmp_hostname   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
 						$snmp_location   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
