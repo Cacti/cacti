@@ -72,6 +72,7 @@ jobs:
         env:
           RRDTOOL_TEST_BINARY: /usr/bin/rrdtool
         run: |
+          set -euo pipefail
           include/vendor/bin/pest \
             tests/Unit/RrdFetchWindowTest.php \
             tests/Unit/BandwidthEffectiveStepTest.php \
