@@ -184,3 +184,107 @@ test('remember-me cookie authorization verifies token before deleting cache rows
 		->and($results[1]['executed'][0]['sql'])->toContain('DELETE FROM user_auth_cache')
 		->and($results[1]['executed'][0]['params'])->toBe([42]);
 });
+
+test('malformed remember-me cookies fail closed without warnings or database mutations', function () {
+	$results = runAuthCookieProbe([
+		'config' => [
+			'auth_cache_enabled' => 'on',
+			'guest_user'         => 0,
+		],
+		'realms' => 1,
+		'users'  => [
+			42 => [
+				'id'           => 42,
+				'username'     => 'valid-user',
+				'realm'        => 0,
+				'enabled'      => 'on',
+				'show_tree'    => 'on',
+				'show_list'    => '',
+				'show_preview' => '',
+			],
+		],
+		'cache' => [[
+			'user_id' => 42,
+			'token'   => hash('sha512', 'valid-token', false),
+		]],
+		'calls' => [
+			['type' => 'check_auth_cookie', 'cookie' => ''],
+			['type' => 'check_auth_cookie', 'cookie' => '42'],
+			['type' => 'check_auth_cookie', 'cookie' => '42,-1,valid-token,extra'],
+		],
+	]);
+
+	foreach ($results as $result) {
+		expect($result['return'])->toBeFalse()
+			->and($result['warnings'])->toBeEmpty()
+			->and($result['executed'])->toBeEmpty()
+			->and($result['cookie_calls'])->toBeEmpty();
+	}
+});
+
+test('remember-me cookie clear and set lifecycle covers legacy identities and token hashing', function () {
+	$results = runAuthCookieProbe([
+		'config'    => ['auth_cache_enabled' => 'on', 'guest_user' => 0],
+		'usernames' => ['legacy-user' => 43],
+		'calls'     => [
+			['type' => 'clear_auth_cookie', 'cookie' => '42,old-token'],
+			['type' => 'clear_auth_cookie', 'cookie' => 'legacy-user,7,legacy-token'],
+			['type' => 'clear_auth_cookie', 'cookie' => 'broken'],
+			['type' => 'set_auth_cookie', 'user' => ['id' => 44, 'realm' => 2]],
+		],
+	]);
+
+	expect($results[0]['cookie_calls'])->toBe([['logout']])
+		->and($results[0]['executed'][0]['params'])->toBe(['42', hash('sha512', 'old-token', false)])
+		->and($results[1]['cookie_calls'])->toBe([['logout']])
+		->and($results[1]['executed'][0]['params'])->toBe([43, hash('sha512', 'legacy-token', false)])
+		->and($results[2]['executed'])->toBeEmpty()
+		->and($results[2]['warnings'])->toBeEmpty();
+
+	$replace = $results[3]['executed'][0];
+	$setCall = $results[3]['cookie_calls'][0];
+
+	expect($replace['sql'])->toContain('REPLACE INTO user_auth_cache')
+		->and($replace['params'][0])->toBe(44)
+		->and($replace['params'][1])->toBe('192.0.2.10')
+		->and($setCall[0])->toBe('set')
+		->and($setCall[1])->toBe(44)
+		->and($setCall[2])->toBe(2)
+		->and($setCall[3])->toMatch('/^[a-f0-9]{64}$/D')
+		->and($replace['params'][2])->toBe(hash('sha512', $setCall[3], false));
+});
+
+test('valid remember-me cookie rotates the token and records the login', function () {
+	$results = runAuthCookieProbe([
+		'config' => ['auth_cache_enabled' => 'on', 'guest_user' => 0],
+		'realms' => 1,
+		'users'  => [
+			42 => [
+				'id'           => 42,
+				'username'     => 'allowed',
+				'realm'        => 0,
+				'enabled'      => 'on',
+				'locked'       => '',
+				'show_tree'    => 'on',
+				'show_list'    => '',
+				'show_preview' => '',
+			],
+		],
+		'cache' => [[
+			'user_id' => 42,
+			'token'   => hash('sha512', 'valid-token', false),
+		]],
+		'calls' => [['type' => 'check_auth_cookie', 'cookie' => '42,-1,valid-token']],
+	]);
+
+	$result = $results[0];
+
+	expect($result['return'])->toBe(42)
+		->and($result['warnings'])->toBeEmpty()
+		->and($result['cookie_calls'][0])->toBe(['logout'])
+		->and($result['cookie_calls'][1][0])->toBe('set')
+		->and($result['executed'])->toHaveCount(3)
+		->and($result['executed'][0]['sql'])->toContain('DELETE FROM user_auth_cache')
+		->and($result['executed'][1]['sql'])->toContain('REPLACE INTO user_auth_cache')
+		->and($result['executed'][2]['sql'])->toContain('INSERT IGNORE INTO user_log');
+});
