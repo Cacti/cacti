@@ -73,7 +73,7 @@ jobs:
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
 
       - name: Cache Composer packages
-        uses: actions/cache@55cc8345863c7c66a329aec7e433d2d1c52a9d # v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: include/vendor
           key: ${{ runner.os }}-php-cdef-coverage-${{ hashFiles('**/composer.lock') }}
