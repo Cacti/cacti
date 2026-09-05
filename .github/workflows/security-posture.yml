@@ -134,10 +134,10 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup PHP 8.2
+      - name: Setup PHP 8.3
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           coverage: none
           dependency-mode: audit
 
