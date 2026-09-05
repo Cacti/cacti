@@ -70,14 +70,16 @@ test('empty stdout yields an empty output array, not a one-element array', funct
 	expect($out)->toBe(array());
 });
 
-test('large stdout is captured without truncation or deadlock', function () {
+test('large stdout and stderr are drained without truncation or losing the exit code', function () {
 	$out = array();
-	// 5000 lines forces the child to keep writing while the parent drains.
-	$rc = cacti_exec(PHP_BINARY, array('-r', 'for ($i = 0; $i < 5000; $i++) echo "line$i\n";'), $out);
+	// Both streams exceed typical pipe capacity and must be drained concurrently.
+	$rc = _exec_quietly(function () use (&$out) {
+		return cacti_exec(PHP_BINARY, array('-r', 'for ($i = 0; $i < 20000; $i++) { echo "line$i\n"; fwrite(STDERR, "warning$i\n"); } exit(23);'), $out);
+	});
 
-	expect($rc)->toBe(0);
-	expect(count($out))->toBe(5000);
-	expect($out[4999])->toBe('line4999');
+	expect($rc)->toBe(23);
+	expect(count($out))->toBe(20000);
+	expect($out[19999])->toBe('line19999');
 });
 
 test('cacti_exec rejects an empty, whitespace, or dash-led binary with 255', function () {
@@ -92,19 +94,24 @@ test('cacti_exec rejects an empty, whitespace, or dash-led binary with 255', fun
 	expect(_exec_quietly(fn () => cacti_exec('--version', array(), $out)))->toBe(255);
 });
 
-test('a non-existent binary preserves the platform-specific spawn contract', function () {
+test('a non-existent binary matches this PHP builds spawn behavior', function () {
 	$out = array();
-	$exit = _exec_quietly(fn () => cacti_exec('/nonexistent/path/to/binary', array(), $out));
+	$path = '/nonexistent/path/to/binary';
+	$proc = @proc_open(array($path), array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
 
-	if (PHP_OS_FAMILY === 'Linux') {
-		// Linux starts a child which reports the exec(2) failure as 127.
-		expect($exit)->toBe(127);
-	} elseif (PHP_OS_FAMILY === 'Darwin') {
-		// macOS reports the argv-array spawn failure directly from proc_open().
-		expect($exit)->toBe(255);
+	if (is_resource($proc)) {
+		fclose($pipes[0]);
+		stream_get_contents($pipes[1]);
+		stream_get_contents($pipes[2]);
+		fclose($pipes[1]);
+		fclose($pipes[2]);
+		$expected = proc_close($proc);
 	} else {
-		$this->markTestSkipped('missing-binary exit behavior is pinned on Linux and macOS');
+		$expected = 255;
 	}
+
+	$exit = _exec_quietly(fn () => cacti_exec($path, array(), $out));
+	expect($exit)->toBe($expected);
 });
 
 test('timeout zero fails closed without entering the process wait loop', function () {
