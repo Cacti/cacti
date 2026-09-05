@@ -194,7 +194,15 @@ function cacti_cli_parse($argv, $options, $title, $usage, $extra = []) {
 				exit(0);
 		}
 
-		$name = ltrim($arg, '-');
+		if (!str_starts_with($arg, '--') || str_starts_with($arg, '---')) {
+			print __('ERROR: Invalid Argument: (%s)', $arg) . PHP_EOL . PHP_EOL;
+
+			cacti_cli_help($title, $usage, $options, $extra);
+
+			exit(1);
+		}
+
+		$name = substr($arg, 2);
 
 		if (!isset($options[$name])) {
 			print __('ERROR: Invalid Argument: (%s)', $arg) . PHP_EOL . PHP_EOL;
