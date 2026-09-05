@@ -37,11 +37,11 @@ test('CDEF dispatcher covers save edit reorder remove duplicate and list actions
 });
 
 test('CDEF mutations validate identifiers and use bound database operations', function () use ($cdef_controller_source) : void {
-	expect($cdef_controller_source)->toContain("gfrv('cdef_id');")
-		->toContain("gfrv('id');")
-		->toContain("input_validate_input_number(\$cdef_id, 'cdef_id');")
-		->toContain("db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', [\$_cdef_id])")
-		->toContain("db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE cdef_id = ?', [\$_cdef_id])")
+	expect($cdef_controller_source)->toContain("get_filter_request_var('cdef_id');")
+		->toContain("get_filter_request_var('id');")
+		->toContain('input_validate_input_number($cdef_id);')
+		->toContain("db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', array(\$_cdef_id))")
+		->toContain("db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE cdef_id = ?', array(\$_cdef_id))")
 		->toContain("DELETE FROM cdef_items\n\t\tWHERE cdef_id = ?\n\t\tAND id = ?")
 		->toContain("UPDATE cdef_items\n\t\t\t\t\tSET sequence = ?\n\t\t\t\t\tWHERE id = ?");
 });
@@ -52,8 +52,8 @@ test('CDEF save duplicate and delete flows maintain definitions and their items'
 		->toContain("get_hash_cdef(0, 'cdef_item')")
 		->toContain('DELETE FROM cdef WHERE ')
 		->toContain('DELETE FROM cdef_items WHERE ')
-		->toContain("sanitize_unserialize_selected_items(gnrv('selected_items'))")
-		->toContain("duplicate_cdef(\$selected_items[\$i], gnrv('title_format'))");
+		->toContain("sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'))")
+		->toContain("duplicate_cdef(\$selected_items[\$i], get_nfilter_request_var('title_format'))");
 });
 
 test('CDEF edit and list views bind filters pagination and drag ordering', function () use ($cdef_controller_source) : void {
@@ -61,9 +61,9 @@ test('CDEF edit and list views bind filters pagination and drag ordering', funct
 		->toContain('tableDnD({')
 		->toContain('cdef_item_dnd()')
 		->toContain("html_start_box(__('CDEF Preview')")
-		->toContain('get_cdef($cdef_id)')
-		->toContain("grv('rows')")
-		->toContain("grv('page')")
-		->toContain("\$sql_limit = ' LIMIT ' . (\$rows * (grv('page') - 1)) . ',' . \$rows")
+		->toContain('get_cdef($cdef_id, true)')
+		->toContain("get_request_var('rows')")
+		->toContain("get_request_var('page')")
+		->toContain("\$sql_limit = ' LIMIT ' . (\$rows*(get_request_var('page')-1)) . ',' . \$rows")
 		->toContain('$cdef_list = db_fetch_assoc(');
 });

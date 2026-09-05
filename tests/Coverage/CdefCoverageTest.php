@@ -67,7 +67,7 @@ test('CDEF item names cover every supported item type and the unknown fallback',
 		->and(get_cdef_item_name(3))->toBe('CURRENT_DATA_SOURCE')
 		->and(get_cdef_item_name(4))->toBe('Nested CDEF')
 		->and(get_cdef_item_name(5))->toBe('8')
-		->and(get_cdef_item_name(6))->toBe('');
+		->and(get_cdef_item_name(6))->toBeNull();
 
 	expect($GLOBALS['cdef_test_queries'][0][1])->toBe([1])
 		->and($GLOBALS['cdef_test_queries'][4][1])->toBe([42]);

@@ -93,7 +93,7 @@ test('stored CDEF item types resolve through production database helpers', funct
 		->and(get_cdef_item_name(4))->toBe('Base Definition')
 		->and(get_cdef_item_name(5))->toBe('2')
 		->and(get_cdef_item_name(6))->toBe('Maximum')
-		->and(get_cdef_item_name(7))->toBe('');
+		->and(get_cdef_item_name(7))->toBeNull();
 });
 
 test('stored CDEFs preserve sequence and recursively expand nested definitions', function () : void {
