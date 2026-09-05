@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#7810: Stop using null as a graph CF cache offset on PHP 8.5
 -issue#7819: Remove obsolete pre-PHP 8 compatibility branches
 -issue#7868: Apply Boost process-table columns on the 1.2.32 upgrade path
+-issue#7954: Guard applySkin when cactiNonce is not defined
 -issue#7617: Allow the graph tree sidebar to shrink with collapsed content
 -issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
