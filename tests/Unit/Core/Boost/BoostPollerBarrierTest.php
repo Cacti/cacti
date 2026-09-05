@@ -203,3 +203,20 @@ test('boost_launch_children uses the shared log-path safety helper', function ()
 
 	expect($contents)->toContain('boost_log_path_is_safe($boost_log)');
 });
+
+test('parent and child repair the completion schema before using it', function () use ($boostPollerPath) {
+	$contents = file_get_contents($boostPollerPath);
+
+	$master_repair = strpos($contents, 'boost_ensure_process_table(true)');
+	$truncate      = strpos($contents, "db_execute('TRUNCATE TABLE poller_output_boost_processes')");
+	$child_start   = strpos($contents, "cacti_log('INFO: Boost register child process '");
+	$child_repair  = strpos($contents, 'boost_ensure_process_table(true)', $master_repair + 1);
+	$child_insert  = strpos($contents, "db_execute_prepared('INSERT INTO poller_output_boost_processes", $child_start);
+
+	expect($master_repair)->not->toBeFalse()
+		->and($truncate)->not->toBeFalse()
+		->and($master_repair)->toBeLessThan($truncate)
+		->and($child_repair)->not->toBeFalse()
+		->and($child_insert)->not->toBeFalse()
+		->and($child_repair)->toBeLessThan($child_insert);
+});

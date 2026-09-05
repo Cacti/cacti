@@ -117,7 +117,7 @@ test('Graph cache names are opaque and writes are atomically published', functio
 	expect($boost)->toContain("PHP_OS_FAMILY === 'Windows'");
 	expect($boost)->toContain('boost_replace_cache_file_on_windows($temp_file, $cache_file)');
 	expect($boost)->toContain('if (is_string($output) && strlen($output) > 10)');
-	expect($boost)->toContain('chmod($temp_file, 0644)');
+	expect($boost)->toContain('if (!$flushed || !chmod($temp_file, 0644))');
 	expect($boost)->not->toContain("get_selected_theme() . '_lgi_'");
 });
 
