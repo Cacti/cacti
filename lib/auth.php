@@ -39,20 +39,26 @@ use phpseclib4\Crypt\RSA;
  */
 function clear_auth_cookie() : void {
 	if (isset($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
+		if (!is_string($_COOKIE['cacti_remembers'])) {
+			cacti_cookie_session_logout();
+
+			return;
+		}
+
 		$parts = explode(',', $_COOKIE['cacti_remembers']);
 
 		if (cacti_sizeof($parts) == 2) {
 			$user_id  = $parts[0];
 			$realm_id = -1;
 			$token    = $parts[1];
-		} else {
-			if (cacti_sizeof($parts) != 3) {
-				return;
-			}
-
+		} elseif (cacti_sizeof($parts) == 3) {
 			$user_id  = $parts[0];
 			$realm_id = $parts[1];
 			$token    = $parts[2];
+		} else {
+			cacti_cookie_session_logout();
+
+			return;
 		}
 
 		// Legacy support which leaked usernames
@@ -66,13 +72,14 @@ function clear_auth_cookie() : void {
 		if ($user_id > 0) {
 			$secret = hash('sha512', $token, false);
 
-			cacti_cookie_session_logout();
-
 			db_execute_prepared('DELETE FROM user_auth_cache
 				WHERE user_id = ?
 				AND token = ?',
 				[$user_id, $secret]);
 		}
+
+		// Revoke the server-side credential before clearing browser state.
+		cacti_cookie_session_logout();
 	}
 }
 
@@ -110,6 +117,10 @@ function check_auth_cookie() : int|false {
 	if (isset($_COOKIE['cacti_remembers']) &&
 		read_config_option('auth_cache_enabled') == 'on' &&
 		db_table_exists('user_auth_cache')) {
+		if (!is_string($_COOKIE['cacti_remembers'])) {
+			return false;
+		}
+
 		$parts = explode(',', $_COOKIE['cacti_remembers']);
 
 		if (cacti_sizeof($parts) == 2) {

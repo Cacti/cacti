@@ -25,13 +25,14 @@ require_once dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
  * which the combined Unit+Integration pest run can no longer guarantee.
  *
  * $scenario shape:
- *   config, group_realms, groups, users, cache: seed the probe's fixtures.
+ *   config, group_realms, groups, users, usernames and cache seed fixtures.
  *   realms: default realm count for every call; a call may override it.
  *   calls: list of either
  *     {type: 'auth_cookie_user_currently_allowed', user: array, realms?: int}
- *     {type: 'check_auth_cookie', cookie?: string, realms?: int}
+ *     {type: 'check_auth_cookie'|'clear_auth_cookie', cookie?: mixed, realms?: int}
+ *     {type: 'set_auth_cookie', user: array}
  *
- * @return array<int, array{return: mixed, executed: array<int, array{sql: string, params: array}>}>
+ * @return array<int, array{return: mixed, executed: array<int, array{sql: string, params: array}>, cookie_calls: array, events: array, warnings: array}>
  */
 function runAuthCookieProbe(array $scenario) : array {
 	$php  = PHP_BINARY;
@@ -211,15 +212,22 @@ test('malformed remember-me cookies fail closed without warnings or database mut
 			['type' => 'check_auth_cookie', 'cookie' => ''],
 			['type' => 'check_auth_cookie', 'cookie' => '42'],
 			['type' => 'check_auth_cookie', 'cookie' => '42,-1,valid-token,extra'],
+			['type' => 'check_auth_cookie', 'cookie' => ['42', '-1', 'valid-token']],
+			['type' => 'clear_auth_cookie', 'cookie' => ['42', 'valid-token']],
 		],
 	]);
 
-	foreach ($results as $result) {
+	foreach (array_slice($results, 0, 4) as $result) {
 		expect($result['return'])->toBeFalse()
 			->and($result['warnings'])->toBeEmpty()
 			->and($result['executed'])->toBeEmpty()
 			->and($result['cookie_calls'])->toBeEmpty();
 	}
+
+	expect($results[4]['return'])->toBeNull()
+		->and($results[4]['warnings'])->toBeEmpty()
+		->and($results[4]['executed'])->toBeEmpty()
+		->and($results[4]['cookie_calls'])->toBe([['logout']]);
 });
 
 test('remember-me cookie clear and set lifecycle covers legacy identities and token hashing', function () {
@@ -236,10 +244,13 @@ test('remember-me cookie clear and set lifecycle covers legacy identities and to
 
 	expect($results[0]['cookie_calls'])->toBe([['logout']])
 		->and($results[0]['executed'][0]['params'])->toBe(['42', hash('sha512', 'old-token', false)])
+		->and($results[0]['events'][0][0])->toBe('database')
+		->and($results[0]['events'][1])->toBe(['cookie', 'logout'])
 		->and($results[1]['cookie_calls'])->toBe([['logout']])
 		->and($results[1]['executed'][0]['params'])->toBe([43, hash('sha512', 'legacy-token', false)])
 		->and($results[2]['executed'])->toBeEmpty()
-		->and($results[2]['warnings'])->toBeEmpty();
+		->and($results[2]['warnings'])->toBeEmpty()
+		->and($results[2]['cookie_calls'])->toBe([['logout']]);
 
 	$replace = $results[3]['executed'][0];
 	$setCall = $results[3]['cookie_calls'][0];

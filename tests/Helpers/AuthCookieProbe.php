@@ -63,6 +63,7 @@ $GLOBALS['auth_integration_usernames']    = [];
 $GLOBALS['auth_integration_cache']        = [];
 $GLOBALS['auth_integration_executed']     = [];
 $GLOBALS['auth_integration_cookie_calls'] = [];
+$GLOBALS['auth_integration_events']       = [];
 
 function read_config_option($name) {
 	return $GLOBALS['auth_integration_config'][$name] ?? '';
@@ -105,6 +106,7 @@ function db_execute_prepared($sql, $params = []) {
 		'sql'    => $sql,
 		'params' => $params,
 	];
+	$GLOBALS['auth_integration_events'][] = ['database', $sql];
 
 	return true;
 }
@@ -127,6 +129,7 @@ function cacti_cookie_session_set($user, $realm, $secret) {
 
 function cacti_cookie_session_logout() {
 	$GLOBALS['auth_integration_cookie_calls'][] = ['logout'];
+	$GLOBALS['auth_integration_events'][]       = ['cookie', 'logout'];
 }
 
 function cacti_log(...$args) {
@@ -154,6 +157,7 @@ foreach ($scenario['calls'] as $call) {
 	$GLOBALS['auth_integration_realms']       = $call['realms'] ?? $scenario['realms'] ?? 0;
 	$GLOBALS['auth_integration_executed']     = [];
 	$GLOBALS['auth_integration_cookie_calls'] = [];
+	$GLOBALS['auth_integration_events']       = [];
 	$warnings                                 = [];
 
 	set_error_handler(function (int $severity, string $message) use (&$warnings) : bool {
@@ -194,6 +198,7 @@ foreach ($scenario['calls'] as $call) {
 		'return'       => $return,
 		'executed'     => $GLOBALS['auth_integration_executed'],
 		'cookie_calls' => $GLOBALS['auth_integration_cookie_calls'],
+		'events'       => $GLOBALS['auth_integration_events'],
 		'warnings'     => $warnings,
 	];
 }
