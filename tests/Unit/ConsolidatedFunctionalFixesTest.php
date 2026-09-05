@@ -54,14 +54,10 @@ test('automation host offsets carry across every IPv4 octet', function (): void 
 		->and($source)->toContain('return long2ip($base + $count);');
 });
 
-test('SNMP engine uptime is used only when it covers system uptime', function (): void {
+test('SNMP uptime selection is delegated to the shared validator', function (): void {
 	$source = consolidatedSource('cmd.php');
-	$select = static fn (int|false $engine, int|false $system): int|false => $engine !== false && ($system === false || $engine >= $system) ? $engine : $system;
 
-	expect($select(100, 500))->toBe(500)
-		->and($select(600, 500))->toBe(600)
-		->and($select(600, false))->toBe(600)
-		->and($source)->toContain('$uptimeAlt >= $uptimeSys');
+	expect($source)->toContain('cacti_snmp_select_uptime($system_uptime, $engine_time)');
 });
 
 test('single-value lm-sensors reads use query-path scaling', function (): void {
