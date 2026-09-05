@@ -244,7 +244,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
  *
  * @return bool        The database true is the database is connected else false
  */
-function db_check_reconnect($db_conn = false, $log = true) {
+function db_check_reconnect(&$db_conn = false, $log = true) {
 	global $config, $database_details;
 
 	if (file_exists($config['base_path'] . '/include/config.php')) {
@@ -328,6 +328,11 @@ function db_check_reconnect($db_conn = false, $log = true) {
 		);
 
 		if ($cnn_id !== false) {
+			/* Pass the replacement connection back to callers using a local handle */
+			if ($db_conn !== false) {
+				$db_conn = $cnn_id;
+			}
+
 			return true;
 		} else {
 			return false;
