@@ -86,12 +86,12 @@ test('resolveWithinBase refuses a null byte instead of raising a ValueError', fu
 	expect(CactiPath::resolveWithinBase($this->base, $this->base . "/missing\0", true))->toBeFalse();
 });
 
-require_once dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
+require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
 
 test('the shipped autoloader resolves the classes the entry points import', function () {
 	// A grep for the use statement passes whether or not the class can load,
 	// which is how committed maps missing every Cacti prefix reached review.
-	$verdict = cacti_test_isolated_probe(dirname(__DIR__) . '/fixtures/autoload_probe.php');
+	$verdict = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/autoload_probe.php');
 
 	if (!$verdict['installed']) {
 		test()->markTestSkipped('include/vendor has not been installed');

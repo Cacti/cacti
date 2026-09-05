@@ -16,7 +16,7 @@ on:
       - 'phpunit-foundation-coverage.xml'
       - 'tests/fixtures/Console/**'
       - 'tests/Unit/Core/Cli/CactiApplicationTest.php'
-      - 'tests/Unit/CactiPathTest.php'
+      - 'tests/Unit/Security/PathTraversal/CactiPathTest.php'
   pull_request:
     branches: [develop]
     paths:
@@ -32,7 +32,7 @@ on:
       - 'phpunit-foundation-coverage.xml'
       - 'tests/fixtures/Console/**'
       - 'tests/Unit/Core/Cli/CactiApplicationTest.php'
-      - 'tests/Unit/CactiPathTest.php'
+      - 'tests/Unit/Security/PathTraversal/CactiPathTest.php'
   workflow_dispatch:
 
 permissions:

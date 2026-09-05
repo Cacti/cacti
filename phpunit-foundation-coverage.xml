@@ -12,7 +12,7 @@
     <testsuites>
         <testsuite name="CLI and path coverage">
             <file>tests/Unit/Core/Cli/CactiApplicationTest.php</file>
-            <file>tests/Unit/CactiPathTest.php</file>
+            <file>tests/Unit/Security/PathTraversal/CactiPathTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
