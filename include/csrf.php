@@ -175,28 +175,34 @@ function cacti_csrf_external_path_is_safe($path) {
 	return true;
 }
 
-function csrf_error_callback() {
+function cacti_session_cookie_failure($write_log = true) {
 	global $config;
 
+	if ($write_log) {
+		cacti_log('ERROR: Browser did not return the Cacti session cookie; verify url_path and cacti_cookie_domain.', false, 'AUTH');
+		csrf_log(__FUNCTION__, 'Session cookie missing; refusing to redirect into a login loop');
+	}
+
+	while (ob_get_level()) {
+		ob_end_clean();
+	}
+
+	http_response_code(403);
+	header('Content-Type: text/plain; charset=UTF-8');
+	print __('The browser did not return the Cacti session cookie. Ensure cookies are enabled and verify the configured URL path and cookie domain.') . PHP_EOL;
+	print __('Return to Cacti: %s', $config['url_path'] . 'index.php') . PHP_EOL;
+	exit;
+}
+
+function csrf_error_callback() {
 	$session_name = session_name();
 
-	// Only treat this as a misconfigured cookie domain when the client returned
-	// cookies but not ours. A request carrying no cookies at all is an unattended
-	// scanner rather than a browser in a login loop, and logging those would let
-	// anonymous traffic write to cacti.log unthrottled.
-	if ($session_name !== '' && !empty($_COOKIE) && !isset($_COOKIE[$session_name])) {
-		cacti_log('ERROR: Browser did not return the Cacti session cookie during CSRF validation; verify url_path and cacti_cookie_domain.', false, 'AUTH');
-		csrf_log(__FUNCTION__, 'Session cookie missing; refusing to redirect into a login loop');
-
-		while (ob_get_level()) {
-			ob_end_clean();
-		}
-
-		http_response_code(403);
-		header('Content-Type: text/plain; charset=UTF-8');
-		print __('The browser did not return the Cacti session cookie. Ensure cookies are enabled and verify the configured URL path and cookie domain.') . PHP_EOL;
-		print __('Return to Cacti: %s', $config['url_path'] . 'index.php') . PHP_EOL;
-		exit;
+	// A clean browser may return no cookies when it rejects a mis-scoped session
+	// cookie. Refuse the redirect loop in that case as well, but only write the
+	// diagnostic log when the client returned some other cookie so anonymous
+	// cookie-less requests cannot amplify cacti.log.
+	if ($session_name !== '' && !isset($_COOKIE[$session_name])) {
+		cacti_session_cookie_failure(!empty($_COOKIE));
 	}
 
 	// Resolve session fixation for PHP 5.4
