@@ -172,6 +172,19 @@ test('CDEF resolution bounds a single stored item value', function () : void {
 		->and($GLOBALS['cdef_test_logs'][0][0])->toContain('output budget');
 });
 
+test('CDEF resolution bounds cumulative cache memory', function () : void {
+	$GLOBALS['cdef_test_items'][50] = ['type' => '6', 'value' => str_repeat('x', 200000)];
+
+	for ($id = 5000; $id < 5063; $id++) {
+		$GLOBALS['cdef_test_lists'][$id] = [['id' => 0, 'type' => '5', 'value' => $id + 1]];
+	}
+
+	$GLOBALS['cdef_test_lists'][5063] = [['id' => 50, 'type' => '6', 'value' => str_repeat('x', 200000)]];
+
+	expect(get_cdef(5000))->toBeNull()
+		->and($GLOBALS['cdef_test_logs'][0][0])->toContain('cache budget');
+});
+
 test('empty nested definitions do not introduce empty separators', function () : void {
 	$GLOBALS['cdef_test_items'] = [
 		10 => ['type' => '4', 'value' => 'CURRENT_DATA_SOURCE'],
