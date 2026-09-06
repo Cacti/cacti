@@ -140,7 +140,7 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	print "\nusage: poller_graphs_reapply_names.php --host-id|--id|-id=[id|all][N1,N2,...] [--filter=[string] [--debug]\n\n";
+	print "\nusage: poller_graphs_reapply_names.php --host-id=<id|all|N1,N2,...> [--filter=<string>] [--debug]\n\n";
 	print "A utility to reapply Cacti Graph naming rules to existing Graphs in bulk.\n\n";
 	print "Required:\n";
 	print "    --host-id=id|all|N1,N2,... - The device id, 'all' or a comma delimited list of ids\n";
