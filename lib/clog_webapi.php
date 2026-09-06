@@ -327,7 +327,7 @@ function clog_view_logfile() {
 
 		/* respect the exclusion filter */
 		if ($exclude_regex != '' && !$clogAdmin) {
-			if (validate_is_regex($exclude_regex)) {
+			if (validate_is_regex($exclude_regex) === true) {
 				if (preg_match($exclude_regex, $new_item)) {
 					continue;
 				}
