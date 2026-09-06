@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.x
 -issue#7506: Close open select menus when their scroll container moves
+-issue#7812: Clarify that missing SNMP notification receivers need no action when traps are disabled
 -issue: Commit transactions on MySQL as well as MariaDB
 -security: Update bundled DOMPurify to 3.4.14
 -security: Revoke anonymous access when the guest account is disabled
