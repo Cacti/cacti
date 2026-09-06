@@ -619,7 +619,7 @@ function cdef_edit() {
 						<a class='linkEditMain' href='<?php print html_escape('cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><?php print __('Item #%d', $i);?></a>
 					</td>
 					<td>
-						<em><?php $cdef_item_type = $cdef_item['type']; print $cdef_item_types[$cdef_item_type];?></em>: <?php print html_escape(get_cdef_item_name($cdef_item['id']) ?? __('Invalid'));?>
+						<em><?php $cdef_item_type = $cdef_item['type']; print html_escape($cdef_item_types[$cdef_item_type] ?? __('Unknown'));?></em>: <?php print html_escape(get_cdef_item_name($cdef_item['id']) ?? __('Invalid'));?>
 					</td>
 					<td class='right'>
 						<?php
