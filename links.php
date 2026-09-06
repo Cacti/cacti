@@ -349,7 +349,7 @@ function pages() : void {
 
 			if (grv('sort_column') == 'sortorder') {
 				if ($i != 0) {
-					$sort = '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . htmle('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
+					$sort = '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				} else {
 					$sort = '<span class="moveArrowNone"></span>';
 				}
@@ -357,7 +357,7 @@ function pages() : void {
 				if ($i == cacti_sizeof($pages) - 1) {
 					$sort .= '<span class="moveArrowNone"></span>';
 				} else {
-					$sort .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . htmle('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
+					$sort .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				}
 
 				form_selectable_cell($sort, $page['id'], '', 'center');

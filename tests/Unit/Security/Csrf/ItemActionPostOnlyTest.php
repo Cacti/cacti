@@ -185,3 +185,29 @@ test('state action URLs use attribute-safe escaping and the page handler posts',
 		->and($data_queries)->toContain('cactiPreparePostRequestFromUrl(href)')
 		->and($data_queries)->toContain('$.post(request.url, request.data)');
 });
+
+test('every guarded data URL uses attribute-safe URL escaping', function () {
+	$unsafe = [];
+
+	foreach (item_action_files() as $file) {
+		$lines = file(dirname(__DIR__, 4) . '/' . $file);
+
+		foreach ($lines as $line_number => $line) {
+			$attribute_start = strpos($line, 'data-url=');
+
+			if ($attribute_start === false || !preg_match('/' . guarded_action_pattern() . '/', $line)) {
+				continue;
+			}
+
+			$attribute = substr($line, $attribute_start);
+
+			if (strpos($attribute, 'html_escape_url(') === false
+				|| strpos($attribute, 'htmle(') !== false
+				|| strpos($attribute, 'htmlspecialchars(') !== false) {
+				$unsafe[] = $file . ':' . ($line_number + 1);
+			}
+		}
+	}
+
+	expect($unsafe)->toBe([]);
+});

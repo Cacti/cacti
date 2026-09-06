@@ -611,13 +611,13 @@ function cdef_edit() : void {
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items) {
-						$actions .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . htmle('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
+						$actions .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$actions .= '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						$actions .= '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . htmle('cdef.php?action=item_moveup&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						$actions .= '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('cdef.php?action=item_moveup&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$actions .= '<span class="moveArrowNone"></span>';
 					}
