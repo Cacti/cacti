@@ -1,0 +1,18 @@
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+*/
+
+test('rrdresize reports a missing required data template as failure', function () : void {
+	$source = file_get_contents(dirname(__DIR__, 4) . '/cli/rrdresize.php');
+	$start  = strpos($source, 'if (!$data_template_id)');
+	$body   = substr($source, $start, 220);
+
+	expect($start)->not->toBeFalse()
+		->and($body)->toContain('exit(1);')
+		->and($body)->not->toContain('exit(0);');
+});

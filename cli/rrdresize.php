@@ -179,7 +179,7 @@ if ($displayDataTemplates) {
 if (!$data_template_id) {
 	print 'ERROR: You must supply a valid data template id to run this script!' . PHP_EOL;
 
-	exit(0);
+	exit(1);
 }
 
 if (!$backup_folder) {
