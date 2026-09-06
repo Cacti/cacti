@@ -50,6 +50,9 @@ class FakeMySQLPDO extends PDO {
 	private function translate(string $sql): string {
 		$trim = ltrim($sql);
 
+		// SQL_NO_CACHE is a MySQL SELECT modifier with no SQLite equivalent.
+		$trim = preg_replace('/^SELECT\s+SQL_NO_CACHE\s+/i', 'SELECT ', $trim);
+
 		// SHOW TABLES LIKE '...'
 		if (preg_match('/^SHOW\s+TABLES\s+LIKE\s+(.+)$/is', $trim, $m)) {
 			return "SELECT name FROM sqlite_master WHERE type='table' AND name LIKE " . trim($m[1], '; ');

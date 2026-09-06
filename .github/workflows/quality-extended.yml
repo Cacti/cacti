@@ -17,12 +17,10 @@ concurrency:
 
 env:
   COMPOSER_ALLOW_SUPERUSER: 1
-  # 10.0 was an unverified placeholder from #6874 (coverage.xml was never actually
-  # produced back then, see the two bugs fixed alongside this comment). Measured
-  # statement coverage on develop today is ~1.73% (788/45456 via tests/Unit +
-  # tests/integration). Set below that measured baseline so the gate catches
-  # regressions without failing on day one; raise as real coverage grows.
-  COVERAGE_MIN_STATEMENT_PCT: '1.5'
+  # Calibrated from the uploaded develop artifact at 8.89% (4256/47850 via
+  # tests/Unit + tests/integration). Keep a small cross-runtime margin while
+  # making the ratchet representative of the coverage the suite actually has.
+  COVERAGE_MIN_STATEMENT_PCT: '8.8'
 
 jobs:
 #  actionlint:

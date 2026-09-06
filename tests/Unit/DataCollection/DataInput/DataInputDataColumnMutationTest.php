@@ -16,12 +16,13 @@
  * the source-level guards below.
  */
 
-$templateSource      = file_get_contents(__DIR__ . '/../../lib/template.php');
-$apiDataSourceSource = file_get_contents(__DIR__ . '/../../lib/api_data_source.php');
+$templateSource      = file_get_contents(dirname(__DIR__, 4) . '/lib/template.php');
+$apiDataSourceSource = file_get_contents(dirname(__DIR__, 4) . '/lib/api_data_source.php');
 
 if (!function_exists('_mut_extract_function')) {
 	function _mut_extract_function(string $source, string $name): string {
 		$pattern = '/^function\s+' . preg_quote($name, '/') . '\b[^{]*\{.*?^\}/sm';
+
 		return preg_match($pattern, $source, $m) ? $m[0] : '';
 	}
 }
@@ -30,13 +31,13 @@ test('change_data_template REPLACE keeps seven placeholders (Mutation Protection
 	/* If a mutation narrows the placeholder list back to four `?`, the
 	 * seven-element bind array no longer matches and db_execute_prepared()
 	 * silently fails on every template-to-child copy. */
-	$body = _mut_extract_function($templateSource, 'change_data_template');
+	$body  = _mut_extract_function($templateSource, 'change_data_template');
 	$slice = substr($body, strpos($body, 'REPLACE INTO data_input_data'), 800);
 	expect(substr_count($slice, '?'))->toBe(7);
 });
 
 test('api_data_source_duplicate INSERT keeps seven placeholders (Mutation Protection)', function () use ($apiDataSourceSource) {
-	$body = _mut_extract_function($apiDataSourceSource, 'api_data_source_duplicate');
+	$body  = _mut_extract_function($apiDataSourceSource, 'api_data_source_duplicate');
 	$slice = substr($body, strpos($body, 'INSERT IGNORE INTO data_input_data'), 800);
 	expect(substr_count($slice, '?'))->toBe(7);
 });
@@ -46,7 +47,7 @@ test('change_data_template binds function-scope identity, not parent template ro
 	 * data source's identity tuple. If a mutation reverts the bind list
 	 * to the parent's `$item['local_data_id']` / `$item['host_id']`
 	 * (always 0 for templates), the child rows go out orphaned again. */
-	$body = _mut_extract_function($templateSource, 'change_data_template');
+	$body  = _mut_extract_function($templateSource, 'change_data_template');
 	$slice = substr($body, strpos($body, 'REPLACE INTO data_input_data'), 800);
 
 	expect($slice)->toContain('$data_template_id,');
@@ -75,7 +76,7 @@ test('api_data_source_duplicate stamps the duplicated identity, not the source (
 	 * local_data_id = 0. The fix branches on $_local_data_id and uses
 	 * $bound_data_template_id / $bound_local_data_id / $bound_host_id
 	 * for the bind list. */
-	$body = _mut_extract_function($apiDataSourceSource, 'api_data_source_duplicate');
+	$body  = _mut_extract_function($apiDataSourceSource, 'api_data_source_duplicate');
 	$slice = substr($body, strpos($body, 'INSERT IGNORE INTO data_input_data'), 1500);
 
 	expect($slice)->toContain('$bound_data_template_id');
@@ -95,7 +96,7 @@ test('api_data_source_duplicate template-dup branch zeroes local_data_id and hos
 	 * `$bound_local_data_id = 0; $bound_host_id = 0;` assignments in
 	 * the template-dup branch, child rows go out tagged with whatever
 	 * the source happened to carry. */
-	$body = _mut_extract_function($apiDataSourceSource, 'api_data_source_duplicate');
+	$body  = _mut_extract_function($apiDataSourceSource, 'api_data_source_duplicate');
 	$slice = substr($body, strpos($body, 'INSERT IGNORE INTO data_input_data') - 1500, 1500);
 
 	expect($slice)->toContain('$bound_local_data_id    = 0;');

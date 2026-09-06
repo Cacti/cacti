@@ -15,7 +15,6 @@ on:
       - 'lib/utility.php'
       - 'phpunit-installer.xml'
       - 'tests/Unit/Installer/**'
-      - 'tests/Unit/Installer*.php'
       - 'tests/Unit/Security/Csrf/InstallerCsrfRecoveryTest.php'
       - 'tests/e2e/installer_resilience_docker.sh'
       - 'tests/fixtures/InstallerCliProbe.php'
@@ -34,7 +33,6 @@ on:
       - 'lib/utility.php'
       - 'phpunit-installer.xml'
       - 'tests/Unit/Installer/**'
-      - 'tests/Unit/Installer*.php'
       - 'tests/Unit/Security/Csrf/InstallerCsrfRecoveryTest.php'
       - 'tests/e2e/installer_resilience_docker.sh'
       - 'tests/fixtures/InstallerCliProbe.php'
@@ -78,15 +76,21 @@ jobs:
           composer test -- --colors=never \
             --configuration=phpunit-installer.xml \
             --testsuite='Installer Unit' \
+            --fail-on-empty-test-suite \
+            --fail-on-warning \
             --coverage \
-            --coverage-clover installer-unit-coverage.xml
+            --coverage-text \
+            --coverage-clover installer-unit-coverage.xml \
+            --min=2
 
       - name: Run installer integration contracts
         run: |
           set -euo pipefail
           composer test -- --colors=never \
             --configuration=phpunit-installer.xml \
-            --testsuite='Installer Integration'
+            --testsuite='Installer Integration' \
+            --fail-on-empty-test-suite \
+            --fail-on-warning
 
       - name: Upload unit coverage
         if: always()
