@@ -2716,6 +2716,10 @@ function heartbeat_process($tasktype, $taskname, $taskid = 0) {
  * @return (bool|null) true for the same command, false for a positive
  *                     mismatch, or null when procfs cannot establish identity
  */
+function cacti_process_executable_is_php_interpreter($path) {
+	return preg_match('/^php(?:(?:-fpm|-cgi|dbg)?[0-9.]*)$/i', basename($path)) === 1;
+}
+
 function cacti_process_identity_matches($pid) {
 	$pid           = (int) $pid;
 
@@ -2769,7 +2773,7 @@ function cacti_process_identity_matches($pid) {
 
 	/* If argv is unavailable, matching PHP interpreters do not establish that
 	 * the registered process runs the same Cacti script. */
-	return preg_match('/^php(?:-fpm)?(?:[0-9.]*)?$/i', basename($mine)) ? null : true;
+	return cacti_process_executable_is_php_interpreter($mine) ? null : true;
 }
 
 /**

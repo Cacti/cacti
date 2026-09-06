@@ -113,6 +113,15 @@ test('the liveness guard falls back when procfs identity is unreadable', functio
 		->and($body)->toContain('return posix_kill($pid, 0);');
 });
 
+test('all common PHP executables require script identity', function () {
+	foreach (array('php', 'php8.3', 'php-fpm', 'php-fpm8.3', 'php-cgi', 'php-cgi8.3', 'phpdbg', 'phpdbg8.3') as $binary) {
+		expect(cacti_process_executable_is_php_interpreter('/usr/bin/' . $binary))->toBeTrue();
+	}
+
+	expect(cacti_process_executable_is_php_interpreter('/usr/bin/phpunit'))->toBeFalse()
+		->and(cacti_process_executable_is_php_interpreter('/usr/bin/python'))->toBeFalse();
+});
+
 test('register_process_start() and timeout_kill_registered_processes() route through the guard, not a bare posix_kill(pid, 0)', function () {
 	$src = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
 
