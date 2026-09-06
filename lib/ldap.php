@@ -1007,13 +1007,15 @@ class Ldap {
  * @return string The assembled, injection-safe LDAP filter
  */
 function cacti_ldap_filter($template, $vars) {
-	$result = $template;
+	$map = array();
 
 	foreach ($vars as $key => $value) {
-		$escaped = ldap_escape((string) $value, '', LDAP_ESCAPE_FILTER);
-		$result  = str_replace('<' . $key . '>', $escaped, $result);
+		$map['<' . $key . '>'] = ldap_escape((string) $value, '', LDAP_ESCAPE_FILTER);
 	}
 
-	return $result;
+	/* One pass. LDAP_ESCAPE_FILTER leaves '<' and '>' alone, so substituting in a
+	 * loop would let the text inserted for one key be rescanned as another key's
+	 * placeholder. */
+	return strtr($template, $map);
 }
 
