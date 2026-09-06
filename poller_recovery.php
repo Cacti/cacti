@@ -78,16 +78,65 @@ function debug(string $string) : void {
 	}
 }
 
+/**
+ * Delete only rows which were acknowledged by the main collector.
+ */
+function recovery_delete_acknowledged_rows(array $rows, mixed $conn) : bool {
+	foreach (array_chunk($rows, 500) as $chunk) {
+		$clauses = [];
+		$params  = [];
+
+		foreach ($chunk as $row) {
+			$clauses[] = '(local_data_id = ? AND rrd_name = ? AND time = ?)';
+			$params[]  = (int) $row['local_data_id'];
+			$params[]  = $row['rrd_name'];
+			$params[]  = $row['time'];
+		}
+
+		if (db_execute_prepared('DELETE FROM poller_output_boost WHERE ' . implode(' OR ', $clauses), $params, true, $conn) === false) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Transfer and acknowledge one bounded recovery chunk.
+ *
+ * @return int|false Number of transferred rows, or false on any failure.
+ */
+function recovery_transfer_rows(array $rows, mixed $remote_conn, mixed $local_conn) : int|false {
+	$sql_array = [];
+
+	foreach ($rows as $row) {
+		$sql_array[] = '(' . (int) $row['local_data_id'] . ',' .
+			db_qstr($row['rrd_name'], $remote_conn) . ',' .
+			db_qstr($row['time'], $remote_conn) . ',' .
+			db_qstr($row['output'], $remote_conn) . ')';
+	}
+
+	$record_count = cacti_sizeof($sql_array);
+	cacti_log('RECOVERY: Writing ' . $record_count . ' records to main.', false, 'POLLER');
+
+	if (!boost_flush_output_batch($sql_array, $remote_conn)) {
+		cacti_log('RECOVERY ERROR: Main collector did not acknowledge the Boost batch; retaining local rows.', false, 'POLLER');
+
+		return false;
+	}
+
+	if (!recovery_delete_acknowledged_rows($rows, $local_conn)) {
+		cacti_log('RECOVERY ERROR: Unable to remove acknowledged local Boost rows; they will be retried idempotently.', false, 'POLLER');
+
+		return false;
+	}
+
+	return $record_count;
+}
+
 global $local_db_cnn_id, $remote_db_cnn_id;
 
 $recovery_pid = db_fetch_cell("SELECT value FROM settings WHERE name='recovery_pid'", '', true, $local_db_cnn_id);
-$packet_data  = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'max_allowed_packet'", true, $remote_db_cnn_id);
-
-if (isset($packet_data['Value'])) {
-	$max_allowed_packet = $packet_data['Value'];
-} else {
-	$max_allowed_packet = 1E6;
-}
 
 // process calling arguments
 $parms = $_SERVER['argv'];
@@ -161,11 +210,13 @@ if (function_exists('pcntl_signal')) {
 $start = microtime(true);
 
 // configuration variables
-$record_limit = 150000;
-$sleep_time   = 1;
+$record_limit        = 150000;
+$transfer_chunk_size = 1000;
+$sleep_time          = 1;
 
 // global counter variables
 $records_inserted = 0;
+$transfer_failed  = false;
 
 debug('About to start recovery processing');
 
@@ -191,12 +242,12 @@ if ($run) {
 
 	db_execute_prepared('REPLACE INTO settings
 		(name, value)
-		VALUES ("recovery_pid", ?)',
+		VALUES (\'recovery_pid\', ?)',
 		[$my_pid], true, $local_db_cnn_id);
 
 	// let the console know you are in recovery mode
 	db_execute_prepared('UPDATE poller
-		SET status = "5"
+		SET status = 5
 		WHERE id = ?',
 		[$poller_id], true, $remote_db_cnn_id);
 
@@ -220,57 +271,27 @@ if ($run) {
 		} else {
 			cacti_log('RECOVERY: Fetching records till time: ' . $max_time . ' from poller DB', false, 'POLLER');
 
-			$rows = db_fetch_assoc_prepared('SELECT *
+			$rows = db_fetch_assoc_prepared(sprintf('SELECT *
 				FROM poller_output_boost
 				WHERE time <= ?
-				ORDER BY time ASC, local_data_id ASC',
-				[$max_time]);
+				ORDER BY time ASC, local_data_id ASC
+				LIMIT %d', (int) $record_limit),
+				[$max_time], true, $local_db_cnn_id);
 
 			if (cacti_sizeof($rows)) {
-				$packet_size = 0;
-				$sql_array   = [];
+				$row_count = cacti_sizeof($rows);
 
-				foreach ($rows as $r) {
-					$sql      = '(' . $r['local_data_id'] . ',' . db_qstr($r['rrd_name']) . ',' . db_qstr($r['time']) . ',' . db_qstr($r['output']) . ')';
-					$sql_size = strlen($sql);
+				for ($offset = 0; $offset < $row_count; $offset += $transfer_chunk_size) {
+					$chunk        = array_slice($rows, $offset, $transfer_chunk_size);
+					$record_count = recovery_transfer_rows($chunk, $remote_db_cnn_id, $local_db_cnn_id);
 
-					// if adding a new row would exceed max_allowed_packet, send the current frame to the main poller and start a new frame
-					if (($packet_size + $sql_size) >= $max_allowed_packet) {
-						$record_count = cacti_sizeof($sql_array);
+					if ($record_count === false) {
+						$transfer_failed = true;
 
-						cacti_log('RECOVERY: Writing ' . $record_count . ' records (' . $packet_size . ' bytes) to main (partial).', false, 'POLLER');
-
-						db_execute('INSERT IGNORE INTO poller_output_boost
-							(local_data_id, rrd_name, time, output)
-							VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
-
-						$records_inserted += $record_count;
-						$sql_array   = [];
-						$packet_size = 0;
+						break 2;
 					}
 
-					$sql_array[] = $sql;
-					$packet_size += $sql_size;
-				}
-
-				// if there is data in the last frame, send it to main poller as well and finalize
-				if ($packet_size > 0) {
-					$record_count = cacti_sizeof($sql_array);
-
-					cacti_log('RECOVERY: Writing ' . $record_count . ' records (' . $packet_size . ' bytes) to main (last slice).', false, 'POLLER');
-
-					db_execute('INSERT IGNORE INTO poller_output_boost
-						(local_data_id, rrd_name, time, output)
-						VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
-
 					$records_inserted += $record_count;
-				}
-
-				// remove the recovery records
-				if (is_object($local_db_cnn_id)) {
-					db_execute_prepared('DELETE FROM poller_output_boost
-						WHERE time <= ?',
-						[$max_time], true, $local_db_cnn_id);
 				}
 			}
 
@@ -278,9 +299,12 @@ if ($run) {
 		}
 	}
 
-	// let the console know you are in online mode
+	db_execute("DELETE FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
+
+	// Recovery failures are reported by the log and exit status; leaving the
+	// poller in status 5 would incorrectly advertise recovery indefinitely.
 	db_execute_prepared('UPDATE poller
-		SET status="2"
+		SET status=2
 		WHERE id= ?', [$poller_id], false, $remote_db_cnn_id);
 } else {
 	debug('Recovery process still running, exiting');
@@ -293,4 +317,4 @@ $end = microtime(true);
 
 cacti_log('RECOVERY STATS: Time:' . round($end - $start, 2) . ' Records:' . $records_inserted, false, 'SYSTEM');
 
-exit(0);
+exit($transfer_failed ? 1 : 0);
