@@ -100,7 +100,7 @@ function draw_cdef_preview($cdef_id) {
 	?>
 	<tr class='even'>
 		<td style='padding:4px'>
-			<pre>cdef=<?php print html_escape(get_cdef($cdef_id, true));?></pre>
+			<pre>cdef=<?php print html_escape(get_cdef($cdef_id) ?? __('Invalid CDEF'));?></pre>
 		</td>
 	</tr>
 	<?php
@@ -228,8 +228,24 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-				db_execute('DELETE FROM cdef WHERE ' . array_to_sql_or($selected_items, 'id'));
-				db_execute('DELETE FROM cdef_items WHERE ' . array_to_sql_or($selected_items, 'cdef_id'));
+				$selected_items = array_map('intval', $selected_items);
+				$in_use         = false;
+
+				foreach ($selected_items as $cdef_id) {
+					if (cdef_is_in_use($cdef_id, $selected_items)) {
+						$in_use = true;
+
+						break;
+					}
+				}
+
+				if ($in_use) {
+					raise_message('cdef_in_use', __('One or more CDEFs are in use and cannot be deleted.'), MESSAGE_LEVEL_ERROR);
+				} else {
+					$placeholders = implode(', ', array_fill(0, cacti_count($selected_items), '?'));
+					db_execute_prepared('DELETE FROM cdef WHERE id IN (' . $placeholders . ')', $selected_items);
+					db_execute_prepared('DELETE FROM cdef_items WHERE cdef_id IN (' . $placeholders . ')', $selected_items);
+				}
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					duplicate_cdef($selected_items[$i], get_nfilter_request_var('title_format'));
@@ -335,7 +351,7 @@ function cdef_item_remove_confirm() {
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following CDEF Item.');?></p>
 			<p><?php print __esc('CDEF Name: %s', $cdef['name']);?><br>
-			<em><?php $cdef_item_type = $cdef_item['type']; print $cdef_item_types[$cdef_item_type];?></em>: <strong><?php print html_escape(get_cdef_item_name($cdef_item['id']));?></strong></p>
+				<em><?php $cdef_item_type = $cdef_item['type']; print html_escape($cdef_item_types[$cdef_item_type] ?? __('Unknown'));?></em>: <strong><?php print html_escape(get_cdef_item_name($cdef_item['id']) ?? __('Invalid'));?></strong></p>
 		</td>
 	</tr>
 	<tr>
@@ -603,7 +619,7 @@ function cdef_edit() {
 						<a class='linkEditMain' href='<?php print html_escape('cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><?php print __('Item #%d', $i);?></a>
 					</td>
 					<td>
-						<em><?php $cdef_item_type = $cdef_item['type']; print $cdef_item_types[$cdef_item_type];?></em>: <?php print html_escape(get_cdef_item_name($cdef_item['id']));?>
+						<em><?php $cdef_item_type = $cdef_item['type']; print html_escape($cdef_item_types[$cdef_item_type] ?? __('Unknown'));?></em>: <?php print html_escape(get_cdef_item_name($cdef_item['id']) ?? __('Invalid'));?>
 					</td>
 					<td class='right'>
 						<?php
@@ -920,4 +936,3 @@ function cdef() {
 
 	form_end();
 }
-
