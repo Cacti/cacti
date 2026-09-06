@@ -2623,7 +2623,7 @@ function cactiPreparePostRequest(href, postData) {
 	}
 
 	if (typeof postData === 'string') {
-		postData = postData.replace(/(^|&)__csrf_magic=[^&]*/g, '').replace(/^&|&$/g, '');
+		postData = postData.replace(/(^|&)__csrf_magic=[^&]*/g, '').replace(/&{2,}/g, '&').replace(/^&|&$/g, '');
 		postData = '__csrf_magic=' + encodeURIComponent(csrfMagicToken) + (postData === '' ? '' : '&' + postData);
 	} else {
 		postData = $.extend({__csrf_magic: csrfMagicToken}, postData || {});

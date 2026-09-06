@@ -58,11 +58,13 @@ test('state-changing URL fields move into a same-origin POST body with the trust
 });
 
 test('an explicit POST body cannot override the trusted token', () => {
-	const request = context.cactiPreparePostRequest('/cacti/tree.php', 'action=tree_up&id=9&__csrf_magic=attacker');
+	const request = context.cactiPreparePostRequest('/cacti/tree.php', 'action=tree_up&__csrf_magic=attacker&id=9');
 	const fields = new URLSearchParams(request.data);
 
 	assert.equal(fields.get('__csrf_magic'), 'trusted-token');
 	assert.equal(fields.get('action'), 'tree_up');
+	assert.equal(fields.get('id'), '9');
+	assert.doesNotMatch(request.data, /&&/);
 });
 
 test('cross-origin targets are rejected before a token is exposed', () => {
