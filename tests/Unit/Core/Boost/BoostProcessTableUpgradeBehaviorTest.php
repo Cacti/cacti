@@ -17,6 +17,7 @@ function boost12TestReset(array $overrides = array()) {
 		'key'      => true,
 		'rows'     => 3,
 		'fail_on'  => '',
+		'appear_on_failure' => '',
 		'sql'      => array(),
 		'logs'     => array(),
 	), $overrides);
@@ -39,6 +40,16 @@ function boost12TestExecute($sql) {
 	$state['sql'][] = $sql;
 
 	if ($state['fail_on'] !== '' && strpos($sql, $state['fail_on']) !== false) {
+		if ($state['appear_on_failure'] === 'table') {
+			$state['table'] = true;
+		} elseif ($state['appear_on_failure'] === 'run_id') {
+			$state['run_id'] = true;
+		} elseif ($state['appear_on_failure'] === 'child_id') {
+			$state['child_id'] = true;
+		} elseif ($state['appear_on_failure'] === 'key') {
+			$state['key'] = true;
+		}
+
 		return false;
 	}
 
@@ -158,4 +169,61 @@ test('runtime recovery fails closed and logs the first schema error', function (
 		->and($GLOBALS['boost12_test_state']['key'])->toBeFalse()
 		->and($GLOBALS['boost12_test_state']['logs'])->toHaveCount(1)
 		->and($GLOBALS['boost12_test_state']['logs'][0][0])->toContain('Unable to add child_id');
+});
+
+test('runtime recovery accepts a concurrent table creator after create reports failure', function () {
+	boost12TestReset(array(
+		'table'             => false,
+		'run_id'            => false,
+		'child_id'          => false,
+		'key'               => false,
+		'fail_on'           => 'CREATE TABLE',
+		'appear_on_failure' => 'table',
+	));
+
+	expect(boost12TestEnsureProcessTable(true))->toBeTrue()
+		->and($GLOBALS['boost12_test_state']['logs'])->toBe(array());
+});
+
+test('runtime recovery accepts a concurrent run_id column repair', function () {
+	boost12TestReset(array(
+		'run_id'            => false,
+		'fail_on'           => 'ADD `run_id`',
+		'appear_on_failure' => 'run_id',
+	));
+
+	expect(boost12TestEnsureProcessTable())->toBeTrue()
+		->and($GLOBALS['boost12_test_state']['logs'])->toBe(array());
+});
+
+test('runtime recovery accepts a concurrent child_id column repair', function () {
+	boost12TestReset(array(
+		'child_id'          => false,
+		'fail_on'           => 'ADD `child_id`',
+		'appear_on_failure' => 'child_id',
+	));
+
+	expect(boost12TestEnsureProcessTable())->toBeTrue()
+		->and($GLOBALS['boost12_test_state']['logs'])->toBe(array());
+});
+
+test('runtime recovery accepts a concurrent unique-key repair', function () {
+	boost12TestReset(array(
+		'key'               => false,
+		'fail_on'           => 'ADD UNIQUE KEY',
+		'appear_on_failure' => 'key',
+	));
+
+	expect(boost12TestEnsureProcessTable(true))->toBeTrue()
+		->and($GLOBALS['boost12_test_state']['rows'])->toBe(0)
+		->and($GLOBALS['boost12_test_state']['logs'])->toBe(array());
+});
+
+test('runtime recovery fails closed when process-row truncation fails', function () {
+	boost12TestReset(array('key' => false, 'fail_on' => 'TRUNCATE TABLE'));
+
+	expect(boost12TestEnsureProcessTable(true))->toBeFalse()
+		->and($GLOBALS['boost12_test_state']['key'])->toBeFalse()
+		->and($GLOBALS['boost12_test_state']['logs'])->toHaveCount(1)
+		->and($GLOBALS['boost12_test_state']['logs'][0][0])->toContain('Unable to truncate');
 });
