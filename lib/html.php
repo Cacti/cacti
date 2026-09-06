@@ -162,13 +162,21 @@ function html_start_box(string $title, string $width, bool $div, int $cell_paddi
 							$href = '#';
 						}
 
+						if (isset($icon['data_url'])) {
+							$href      = '#';
+							$data_url  = " data-url='" . html_escape_url($icon['data_url']) . "'";
+							$classo .= ' linkOverDark cactiPostAction';
+						} else {
+							$data_url = '';
+						}
+
 						if (isset($icon['title'])) {
 							$title = $icon['title'];
 						} else {
 							$title = $add_label;
 						}
 
-						print "<span class='cactiFilterAdd' title='$title'><a" . (isset($icon['id']) ? " id='" . $icon['id'] . "'" : '') . " class='$classo' href='$href'><i class='$classi'></i></a></span>";
+						print "<span class='cactiFilterAdd' title='$title'><a" . (isset($icon['id']) ? " id='" . $icon['id'] . "'" : '') . " class='" . trim($classo) . "' href='$href'$data_url><i class='$classi'></i></a></span>";
 					}
 				}
 			} else {
@@ -1797,18 +1805,18 @@ function draw_graph_items_list(array $item_list, string $filename, string $url_d
 				print "<td class='right nowrap'>";
 
 				if ($i != cacti_sizeof($item_list) - 1) {
-					print "<span><a class='moveArrow ti ti-caret-down-filled' title='" . __esc('Move Down') . "' href='" . htmle("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
+					print "<span><a class='moveArrow ti ti-caret-down-filled cactiPostAction' title='" . __esc('Move Down') . "' href='#' data-url='" . html_escape_url("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					print "<span class='moveArrowNone'></span>";
 				}
 
 				if ($i > 0) {
-					print "<span><a class='moveArrow ti ti-caret-up-filled' title='" . __esc('Move Up') . "' href='" . htmle("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a></span>";
+					print "<span><a class='moveArrow ti ti-caret-up-filled cactiPostAction' title='" . __esc('Move Up') . "' href='#' data-url='" . html_escape_url("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					print "<span class='moveArrowNone'></span>";
 				}
 
-				print "<a class='deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" . htmle("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
+				print "<a class='deleteMarker ti ti-x cactiPostAction' title='" . __esc('Delete') . "' href='#' data-url='" . html_escape_url("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
 
 				print '</td>';
 			}

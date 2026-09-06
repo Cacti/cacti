@@ -1,0 +1,62 @@
+name: CSRF Action Coverage
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/csrf-action-coverage.yml'
+      - 'include/global.php'
+      - 'include/layout.js'
+      - '**/*.php'
+      - 'tests/Unit/Security/Csrf/ItemActionPostOnlyTest.php'
+      - 'tests/js/csrf_post_actions.test.js'
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/csrf-action-coverage.yml'
+      - 'include/global.php'
+      - 'include/layout.js'
+      - '**/*.php'
+      - 'tests/Unit/Security/Csrf/ItemActionPostOnlyTest.php'
+      - 'tests/js/csrf_post_actions.test.js'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: csrf-action-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  csrf-actions:
+    name: POST guard and browser submission
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.4'
+          coverage: none
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+
+      - name: Setup Node 22
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # 4.4.0
+        with:
+          node-version: '22'
+
+      - name: Install PHP dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Verify guarded actions and links
+        run: include/vendor/bin/pest tests/Unit/Security/Csrf/ItemActionPostOnlyTest.php
+
+      - name: Verify browser POST construction
+        run: node --test tests/js/csrf_post_actions.test.js

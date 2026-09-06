@@ -1189,13 +1189,13 @@ function template_edit() : void {
 
 				if (!$dnd) {
 					if ($i != cacti_sizeof($graph_rules) - 1) {
-						$action .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . htmle('automation_templates.php?action=item_movedown&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Down') . '"></a>';
+						$action .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('automation_templates.php?action=item_movedown&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 
 					if ($i > 0) {
-						$action .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . htmle('automation_templates.php?action=item_moveup&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Up') . '"></a>';
+						$action .= '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('automation_templates.php?action=item_moveup&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
@@ -1300,13 +1300,13 @@ function template_edit() : void {
 
 				if (!$dnd) {
 					if ($i != cacti_sizeof($tree_rules) - 1) {
-						$action .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . htmle('automation_templates.php?action=item_movedown&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Down') . '"></a>';
+						$action .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('automation_templates.php?action=item_movedown&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 
 					if ($i > 0) {
-						$action .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . htmle('automation_templates.php?action=item_moveup&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Up') . '"></a>';
+						$action .= '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('automation_templates.php?action=item_moveup&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
@@ -1664,13 +1664,13 @@ function template() : void {
 				$add_text = '';
 
 				if ($i < $total_items && $total_items > 1) {
-					$add_text .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . htmle('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
+					$add_text .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
 
 				if ($i > 1 && $i <= $total_items) {
-					$add_text .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . htmle('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __esc('Move Up') . '"></a>';
+					$add_text .= '<a class="pic ti ti-caret-up-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __esc('Move Up') . '"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}

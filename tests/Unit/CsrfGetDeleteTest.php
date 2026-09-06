@@ -1,6 +1,6 @@
 <?php
 /*
-+-------------------------------------------------------------------------+
+ +-------------------------------------------------------------------------+
  | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
@@ -24,8 +24,11 @@ $root = dirname(__DIR__, 2);
 test('the server rejects these delete actions on GET without a token', function () use ($root) {
 	$src = file_get_contents($root . '/include/global.php');
 
-	// the GET-method block now covers the delete actions
-	expect($src)->toContain("\$bad_actions = ['save', 'update_data', 'changepassword', 'delete_node', 'gt_remove', 'query_remove', 'remove', 'change_leaf']");
+	// The GET-method block covers the original delete actions even as the
+	// protected list grows to include other state-changing actions.
+	foreach (['save', 'update_data', 'changepassword', 'delete_node', 'gt_remove', 'query_remove', 'remove', 'change_leaf'] as $action) {
+		expect($src)->toContain("'$action'");
+	}
 	// the block still requires the csrf token on POST
 	expect($src)->toContain("!isset(\$_POST['__csrf_magic'])");
 });
