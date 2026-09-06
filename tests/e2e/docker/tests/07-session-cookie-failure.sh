@@ -12,12 +12,9 @@ DC=(docker compose -f docker-compose.yml)
 	'printf '\''%s\n'\'' "\$cacti_cookie_domain = '\''example.com'\'';" >> /var/www/html/include/config.php'
 # php.ini-production caches file timestamps for two seconds.
 sleep 3
-"${DC[@]}" exec -T cacti-master rm -f /tmp/c07.jar /tmp/c07_form /tmp/c07_headers /tmp/c07_response
+"${DC[@]}" exec -T cacti-master rm -f /tmp/c07.jar /tmp/c07_form /tmp/c07_headers /tmp/c07_response /tmp/c07_logged_response
 
-# An unrelated host-only cookie suppresses csrf-magic's IP fallback, matching
-# a normal browser which already has timezone or preference cookies.
 "${DC[@]}" exec -T cacti-master curl -sS \
-	-b 'probe=1' \
 	-c /tmp/c07.jar \
 	-o /tmp/c07_form \
 	http://127.0.0.1/index.php
@@ -34,8 +31,11 @@ if [ -z "$CSRF" ]; then
 	exit 1
 fi
 
+LOG_MESSAGE='Browser did not return the Cacti session cookie during CSRF validation'
+LOG_COUNT_BEFORE=$("${DC[@]}" exec -T cacti-master sh -c \
+	"grep -cF '$LOG_MESSAGE' /var/www/html/log/cacti.log || true")
+
 STATUS=$("${DC[@]}" exec -T cacti-master curl -sS \
-	-b 'probe=1' \
 	-b /tmp/c07.jar \
 	-c /tmp/c07.jar \
 	-D /tmp/c07_headers \
@@ -60,11 +60,36 @@ if ! "${DC[@]}" exec -T cacti-master grep -q \
 	exit 1
 fi
 
-if ! "${DC[@]}" exec -T cacti-master grep -q \
-	'Browser did not return the Cacti session cookie during CSRF validation' \
-	/var/www/html/log/cacti.log; then
-	echo 'FAIL: missing session cookie was not logged' >&2
+LOG_COUNT_AFTER_CLEAN=$("${DC[@]}" exec -T cacti-master sh -c \
+	"grep -cF '$LOG_MESSAGE' /var/www/html/log/cacti.log || true")
+if [ "$LOG_COUNT_AFTER_CLEAN" != "$LOG_COUNT_BEFORE" ]; then
+	echo 'FAIL: a cookie-less login attempt amplified the diagnostic log' >&2
 	exit 1
 fi
 
-echo 'PASS: rejected session cookie returns an actionable 403 without redirecting'
+LOGGED_STATUS=$("${DC[@]}" exec -T cacti-master curl -sS \
+	-b 'probe=1' \
+	-b /tmp/c07.jar \
+	-c /tmp/c07.jar \
+	-o /tmp/c07_logged_response \
+	-w '%{http_code}' \
+	--data-urlencode 'action=login' \
+	--data-urlencode 'login_username=admin' \
+	--data-urlencode 'login_password=cacti-e2e-admin' \
+	--data-urlencode "__csrf_magic=$CSRF" \
+	--data-urlencode 'realm=local' \
+	http://127.0.0.1/index.php)
+
+if [ "$LOGGED_STATUS" != '403' ]; then
+	echo "FAIL: other-cookie request returned HTTP $LOGGED_STATUS instead of 403" >&2
+	exit 1
+fi
+
+LOG_COUNT_AFTER_COOKIE=$("${DC[@]}" exec -T cacti-master sh -c \
+	"grep -cF '$LOG_MESSAGE' /var/www/html/log/cacti.log || true")
+if [ "$LOG_COUNT_AFTER_COOKIE" -le "$LOG_COUNT_AFTER_CLEAN" ]; then
+	echo 'FAIL: missing session cookie was not logged when another cookie was present' >&2
+	exit 1
+fi
+
+echo 'PASS: rejected session cookie returns an actionable 403 with bounded logging'

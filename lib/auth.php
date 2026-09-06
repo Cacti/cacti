@@ -33,16 +33,26 @@ function clear_auth_cookie() {
 	global $config;
 
 	if (isset($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
+		if (!is_string($_COOKIE['cacti_remembers'])) {
+			cacti_cookie_session_logout();
+
+			return;
+		}
+
 		$parts = explode(',', $_COOKIE['cacti_remembers']);
 
 		if (cacti_sizeof($parts) == 2) {
 			$user_id  = $parts[0];
 			$realm_id = -1;
 			$token    = $parts[1];
-		} else {
+		} elseif (cacti_sizeof($parts) == 3) {
 			$user_id  = $parts[0];
 			$realm_id = $parts[1];
 			$token    = $parts[2];
+		} else {
+			cacti_cookie_session_logout();
+
+			return;
 		}
 
 		// Legacy support which leaked usernames
@@ -66,13 +76,14 @@ function clear_auth_cookie() {
 		if ($user_id > 0) {
 			$secret = hash('sha512', $token, false);
 
-			cacti_cookie_session_logout();
-
 			db_execute_prepared('DELETE FROM user_auth_cache
 				WHERE user_id = ?
 				AND token = ?',
 				array($user_id, $secret));
 		}
+
+		/* Revoke the server-side credential before clearing browser state. */
+		cacti_cookie_session_logout();
 	}
 }
 
@@ -116,6 +127,7 @@ function set_auth_cookie($user) {
  */
 function check_auth_cookie() {
 	if (isset($_COOKIE['cacti_remembers']) &&
+		is_string($_COOKIE['cacti_remembers']) &&
 		read_config_option('auth_cache_enabled') == 'on' &&
 		db_table_exists('user_auth_cache')) {
 
@@ -125,10 +137,12 @@ function check_auth_cookie() {
 			$user_id  = $parts[0];
 			$realm_id = -1;
 			$token    = $parts[1];
-		} else {
+		} elseif (cacti_sizeof($parts) == 3) {
 			$user_id  = $parts[0];
 			$realm_id = $parts[1];
 			$token    = $parts[2];
+		} else {
+			return false;
 		}
 
 		// Legacy support which leaked usernames
