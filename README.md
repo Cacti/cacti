@@ -47,7 +47,7 @@ Minimum supported dependencies by branch:
 |---|---|---|
 | MariaDB | 5.6+ | 10.2.x+ |
 | MySQL | 5.6+ | 8.0+ |
-| PHP | 8.1+ | 8.1+ |
+| PHP | 8.1+ | 8.3+ |
 | RRDtool | 1.4+ | 1.8+ |
 | Net-SNMP | 5.5+ | 5.8+ |
 
@@ -80,7 +80,7 @@ cd cacti
 Dependency management:
 
 - For a source checkout on both `1.2.x` and `develop`, install dependencies with Composer before serving Cacti. Composer-managed packages under `include/vendor` are generated and intentionally not committed; the remaining legacy libraries in that directory are not Composer-managed and remain in the repository.
-- On `develop`, `composer install` uses the committed lock file resolved against Cacti's PHP 8.1 floor.
+- On `develop`, `composer install` uses the committed lock file resolved against Cacti's PHP 8.3 floor.
 - Use `composer update` only in an intentional dependency-update change, and commit the resulting `composer.lock` update.
 - Release packages must build `include/vendor` from the lock with `composer install --no-dev` and verify the real build host with `composer check-platform-reqs --no-dev`.
 - Tags under `release/*` build a deterministic archive, SHA-256 checksum, CycloneDX SBOM, and GitHub provenance attestation through the release-artifact workflow.

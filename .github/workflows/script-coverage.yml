@@ -19,7 +19,7 @@ on:
         description: PHP version to run the suite against.
         required: false
         type: string
-        default: '8.2'
+        default: '8.3'
       extensions:
         description: PHP extensions the suite needs.
         required: false

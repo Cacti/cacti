@@ -75,7 +75,7 @@ function html_start_box(string $title, string $width, bool $div, int $cell_paddi
 	if (!is_cacti_release() && $title != '' && $beta_count == 0) {
 		$title .= ' [ ' . CACTI_VERSION_BRIEF_FULL . ' ]';
 
-		$beta_count++;
+		$beta_count = 1;
 	}
 
 	if (POLLER_ID > 1 && $title != '' && $mode_count == 0) { // @phpstan-ignore-line
@@ -91,7 +91,7 @@ function html_start_box(string $title, string $width, bool $div, int $cell_paddi
 
 		$title .= ' ]';
 
-		$mode_count++;
+		$mode_count = 1;
 	}
 
 	$table_prefix = basename(get_current_page(), '.php');
@@ -131,7 +131,7 @@ function html_start_box(string $title, string $width, bool $div, int $cell_paddi
 
 		if ($help_file !== false && $help_count == 0 && is_realm_allowed(28)) {
 			print "<span class='cactiHelp' title='" . __esc('Get Page Help') . "'><a class='linkOverDark helpPage' data-page='" . htmle(basename($help_file)) . "' href='#'><i class='ti ti-help actionHelp'></i></a></span>";
-			$help_count++;
+			$help_count = 1;
 		}
 
 		if ($showcols) {
