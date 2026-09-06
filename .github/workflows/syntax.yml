@@ -35,6 +35,44 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  boost-mariadb:
+    name: Boost MariaDB contracts
+    runs-on: ubuntu-22.04
+    services:
+      mysql:
+        image: mariadb:10.6
+        env:
+          MYSQL_DATABASE: cacti_boost_contract
+          MYSQL_USER: cactiuser
+          MYSQL_PASSWORD: cactiuser
+          MYSQL_ROOT_PASSWORD: cactiroot
+        ports:
+        - 3306:3306
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=5s --health-timeout=5s --health-retries=10
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+
+    - name: Install PHP 8.1
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: pdo_mysql
+        coverage: none
+
+    - name: Install test dependencies
+      working-directory: tests
+      run: composer install --no-interaction --no-progress --prefer-dist
+
+    - name: Run Boost MariaDB contracts
+      working-directory: tests
+      env:
+        BOOST_DB_HOST: 127.0.0.1
+        BOOST_DB_NAME: cacti_boost_contract
+        BOOST_DB_USER: cactiuser
+        BOOST_DB_PASSWORD: cactiuser
+      run: php vendor/bin/pest --configuration=phpunit-boost-mariadb.xml --colors=never
+
   boost-contracts:
     name: Boost contracts
     runs-on: ubuntu-22.04
