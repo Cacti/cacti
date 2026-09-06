@@ -14,7 +14,7 @@ namespace BandwidthEffectiveStepTest;
 
 $GLOBALS['bandwidth_fetch_result'] = [];
 
-function rrdtool_function_fetch() : array {
+function rrdtool_function_fetch(...$arguments) : array {
 	return $GLOBALS['bandwidth_fetch_result'];
 }
 
