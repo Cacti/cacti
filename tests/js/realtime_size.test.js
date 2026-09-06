@@ -84,6 +84,16 @@ test('the tree size control falls back to the persisted user preference', () => 
 	assert.match(source, /\$size == \$selected_size/);
 });
 
+test('session and tree sizes are clamped to the shared allowlist', () => {
+	const graph = fs.readFileSync(path.join(root, 'lib', 'html_graph.php'), 'utf8');
+	const tree = fs.readFileSync(path.join(root, 'lib', 'html_tree.php'), 'utf8');
+
+	assert.match(graph, /array_key_exists\(\$realtime_size, \$realtime_sizes\)/);
+	assert.match(graph, /\$realtime_size = \$realtime_default_size/);
+	assert.match(tree, /array_key_exists\(\$selected_size, \$realtime_sizes\)/);
+	assert.match(tree, /\$selected_size = \$realtime_default_size/);
+});
+
 test('server rendering applies the shared 50 percent default', () => {
 	const arrays = fs.readFileSync(path.join(root, 'include/global_arrays.php'), 'utf8');
 	const endpoint = fs.readFileSync(path.join(root, 'graph_realtime.php'), 'utf8');

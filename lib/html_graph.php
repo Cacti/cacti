@@ -23,7 +23,7 @@
 */
 
 function initialize_realtime_step_and_window() {
-	global $realtime_default_size;
+	global $realtime_default_size, $realtime_sizes;
 
 	if (!isset($_SESSION['sess_realtime_dsstep'])) {
 		$_SESSION['sess_realtime_dsstep'] = read_config_option('realtime_interval');
@@ -31,9 +31,15 @@ function initialize_realtime_step_and_window() {
 	if (!isset($_SESSION['sess_realtime_window'])) {
 		$_SESSION['sess_realtime_window'] = read_config_option('realtime_gwindow');
 	}
-	if (!isset($_SESSION['sess_realtime_size'])) {
-		$_SESSION['sess_realtime_size'] = read_user_setting('realtime_size', $realtime_default_size);
+	$realtime_size = isset($_SESSION['sess_realtime_size'])
+		? $_SESSION['sess_realtime_size']
+		: read_user_setting('realtime_size', $realtime_default_size);
+
+	if (!array_key_exists($realtime_size, $realtime_sizes)) {
+		$realtime_size = $realtime_default_size;
 	}
+
+	$_SESSION['sess_realtime_size'] = $realtime_size;
 }
 
 function set_default_graph_action() {
