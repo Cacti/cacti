@@ -22,3 +22,11 @@ test('database repair clears every direct graph reference to a missing CDEF', fu
 		->and($source)->toContain('Found $invalid_references graph item references')
 		->and($source)->toContain('Found and repaired $fixed_references of $invalid_references');
 });
+
+test('aggregate push failures are handled at every call site', function () use ($root) {
+	foreach (['aggregate_graphs.php', 'aggregate_templates.php', 'color_templates.php', 'lib/aggregate.php'] as $file) {
+		$source = file_get_contents($root . '/' . $file);
+
+		expect($source)->not->toMatch('/^\s*push_out_aggregates\(/m');
+	}
+});

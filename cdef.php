@@ -222,7 +222,7 @@ function form_actions() : void {
 
 		if ($selected_items != false) {
 			if (gnrv('drp_action') == '1') { // delete
-				$selected_items = array_map('intval', $selected_items);
+				$selected_items = array_values(array_map('intval', $selected_items));
 				$in_use         = false;
 
 				foreach ($selected_items as $cdef_id) {

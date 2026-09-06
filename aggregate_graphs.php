@@ -280,12 +280,16 @@ function form_save() : void {
 				}
 
 				if ($save_me || $items_changed) {
-					push_out_aggregates(0, $local_graph_id);
+					if (!push_out_aggregates(0, $local_graph_id)) {
+						raise_message(2);
+					}
 				}
 			}
 		}
 
-		raise_message(1);
+		if (!is_error_message()) {
+			raise_message(1);
+		}
 
 		header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 	} elseif (isrv('save_component_item')) {
@@ -448,9 +452,13 @@ function form_save_aggregate() : mixed {
 
 		// update existing graphs with the changes to this item
 		if ($save_to == 'aggregate_graphs_graph_item') {
-			push_out_aggregates(0, gfrv('local_graph_id'));
+			if (!push_out_aggregates(0, gfrv('local_graph_id'))) {
+				raise_message(2);
+			}
 		} elseif ($save_to == 'aggregate_graph_templates_item') {
-			push_out_aggregates(gfrv('aggregate_template_id'));
+			if (!push_out_aggregates(gfrv('aggregate_template_id'))) {
+				raise_message(2);
+			}
 		}
 	}
 
