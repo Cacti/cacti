@@ -61,10 +61,12 @@ jobs:
       - name: Enforce line coverage
         env:
           XDEBUG_MODE: coverage
+          PHPUNIT_CONFIG: ${{ inputs.phpunit-config }}
+          MIN_COVERAGE: ${{ inputs.min-coverage }}
         run: |
           set -euo pipefail
           include/vendor/bin/pest --colors=never \
-            --configuration=${{ inputs.phpunit-config }} \
+            --configuration="$PHPUNIT_CONFIG" \
             --coverage \
             --coverage-text \
-            --min=${{ inputs.min-coverage }}
+            --min="$MIN_COVERAGE"

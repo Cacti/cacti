@@ -1194,9 +1194,9 @@ function graph_edit() : bool {
 				<td id='rrdtoolinfo' class='left' style='padding-left:15px;max-width:900px;overflow:scroll'>
 					<div style='overflow:auto;'>
 						<span class='textInfo'><?php print __('RRDtool Command:'); ?></span><br>
-						<?php print @rrdtool_function_graph(grv('id'), 1, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]); ?>
+						<pre class='monoSpace tableRow left'><?php print htmle(@rrdtool_function_graph(grv('id'), 1, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID])); ?></pre>
 						<span class='textInfo'><?php print __('RRDtool Says:'); ?></span><br><?php unset($graph_data_array['print_source']); ?>
-						<pre class='monoSpace tableRow left'><?php print(POLLER_ID == 1 ? @rrdtool_function_graph(grv('id'), 1, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]) : __esc('Not Checked')); ?></pre>
+						<pre class='monoSpace tableRow left'><?php print(POLLER_ID == 1 ? htmle(@rrdtool_function_graph(grv('id'), 1, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID])) : __esc('Not Checked')); ?></pre>
 					</div>
 					<script type='text/javascript'>
 						$(function() {
@@ -1425,8 +1425,8 @@ function graph_edit() : bool {
 		print "<div id='classic'>";
 
 		?>
-		<input type='hidden' id='graph_template_graph_id' name='graph_template_graph_id' value='<?php print(cacti_sizeof($graphs) ? $graphs['id'] : '0'); ?>'>
-		<input type='hidden' id='local_graph_template_graph_id' name='local_graph_template_graph_id' value='<?php print(cacti_sizeof($graphs) ? $graphs['local_graph_template_graph_id'] : '0'); ?>'>
+		<input type='hidden' id='graph_template_graph_id' name='graph_template_graph_id' value='<?php print(cacti_sizeof($graphs) ? (int) $graphs['id'] : 0); ?>'>
+		<input type='hidden' id='local_graph_template_graph_id' name='local_graph_template_graph_id' value='<?php print(cacti_sizeof($graphs) ? (int) $graphs['local_graph_template_graph_id'] : 0); ?>'>
 		<?php
 
 		if (empty($graphs['graph_template_id'])) {
@@ -1657,7 +1657,7 @@ function aggregate_items() : void {
 
 	?>
 	<script type='text/javascript'>
-		var totalItems = <?php print $total_items; ?>;
+		var totalItems = <?php print (int) $total_items; ?>;
 
 		$(function() {
 			if (totalItems == 0) {
@@ -1727,7 +1727,7 @@ function aggregate_items() : void {
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	$nav = html_nav_bar('aggregate_graphs.php?action=edit&tab=items&id=' . gfrv('id'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
+	$nav = html_nav_bar('aggregate_graphs.php?action=edit&tab=items&id=' . gfrv('id'), MAX_DISPLAY_PAGES, (int) grv('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
 
 	print $nav;
 
@@ -2061,7 +2061,7 @@ function aggregate_graph() : void {
 		]
 	];
 
-	$nav = html_nav_bar('aggregate_graphs.php', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Aggregate Graphs'), 'page', 'main');
+	$nav = html_nav_bar('aggregate_graphs.php', MAX_DISPLAY_PAGES, (int) grv('page'), $rows, $total_rows, 5, __('Aggregate Graphs'), 'page', 'main');
 
 	form_start('aggregate_graphs.php', 'chk');
 
