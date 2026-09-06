@@ -3059,7 +3059,7 @@ function getPresentHTTPErrorOrRedirect(data, url) {
 function ajaxAnchors() {
 	var page = basename(location.pathname);
 
-	$('a.cactiPostAction').off('click.cactiPostAction').on('click.cactiPostAction', function (event) {
+	$(document).off('click.cactiPostAction', 'a.cactiPostAction').on('click.cactiPostAction', 'a.cactiPostAction', function (event) {
 		if (!shouldCaptureClick(event)) {
 			return;
 		}
