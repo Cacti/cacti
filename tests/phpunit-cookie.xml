@@ -5,7 +5,7 @@
          colors="true">
     <testsuites>
         <testsuite name="Cookie coverage">
-			<file>integration/AuthSystemRegressionIntegrationTest.php</file>
+            <file>integration/AuthSystemRegressionIntegrationTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
