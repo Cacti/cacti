@@ -41,7 +41,7 @@ if ($source === false || preg_match('/function variable_nth_percentile\(.*?^}\R/
 	throw new \RuntimeException('Unable to extract variable_nth_percentile() for tests.');
 }
 
-eval('namespace PercentileResolutionBehaviorTest;' . $matches[0]);
+eval('namespace PercentileResolutionBehaviorTest;' . $matches[0]); // nosemgrep: php.lang.security.eval-use.eval-use
 
 beforeEach(function () {
 	$GLOBALS['percentile_fetch_requests'] = array();

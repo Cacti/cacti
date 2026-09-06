@@ -29,7 +29,7 @@ if ($source === false || preg_match('/function bandwidth_summation\(.*?^}\R/ms',
 	throw new \RuntimeException('Unable to extract bandwidth_summation() for tests.');
 }
 
-eval('namespace BandwidthEffectiveStepTest;' . $matches[0]);
+eval('namespace BandwidthEffectiveStepTest;' . $matches[0]); // nosemgrep: php.lang.security.eval-use.eval-use
 
 test('bandwidth uses the observed step and falls back when it cannot be inferred', function () {
 	$GLOBALS['bandwidth_fetch_result'] = array(

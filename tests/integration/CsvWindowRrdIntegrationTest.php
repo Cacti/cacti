@@ -34,7 +34,7 @@ if ($source === false || preg_match('/function rrdtool_parse_fetch_output\(.*?^}
 	throw new \RuntimeException('Unable to extract rrdtool_parse_fetch_output() for integration tests.');
 }
 
-eval('namespace CsvWindowRrdIntegrationTest;' . $matches[0]);
+eval('namespace CsvWindowRrdIntegrationTest;' . $matches[0]); // nosemgrep: php.lang.security.eval-use.eval-use
 
 test('real RRDtool output is trimmed to the requested CSV window', function () {
 	$binary = getenv('RRDTOOL_TEST_BINARY');

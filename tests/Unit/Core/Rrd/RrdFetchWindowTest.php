@@ -19,7 +19,7 @@ if ($source === false || preg_match('/function rrdtool_parse_fetch_output\(.*?^}
 	throw new \RuntimeException('Unable to extract rrdtool_parse_fetch_output() for tests.');
 }
 
-eval('namespace RrdFetchWindowTest;' . $matches[0]);
+eval('namespace RrdFetchWindowTest;' . $matches[0]); // nosemgrep: php.lang.security.eval-use.eval-use
 
 test('fetch output is bounded by the requested end and reports its observed step', function () {
 	$output = " traffic_in traffic_out\n" .
