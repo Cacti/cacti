@@ -33,7 +33,7 @@ require_once __DIR__ . '/../../../../lib/poller.php';
 function process_kill_guard_refusal($pid) {
 	$library = dirname(__DIR__, 4) . '/lib/poller.php';
 	$code    = '$log = array();'
-		. 'function cacti_log($message) { global $log; $log[] = $message; }'
+		. 'function cacti_log($message, $output = false, $environ = "CMDPHP", $level = 0) { global $log; $log[] = $message; }'
 		. 'require ' . var_export($library, true) . ';'
 		. '$result = cacti_process_kill(' . var_export($pid, true) . ', SIGTERM);'
 		. 'echo json_encode(array("result" => $result, "log" => $log));';
