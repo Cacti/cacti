@@ -1,0 +1,78 @@
+name: CLI Coverage
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - '.github/workflows/cli-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'bin/cacti'
+      - 'bin/.htaccess'
+      - 'include/cli_check.php'
+      - 'include/cli_only.php'
+      - 'lib/Console/**'
+      - 'phpunit-cli-coverage.xml'
+      - 'tests/fixtures/Console/**'
+      - 'tests/.htaccess'
+      - 'tests/index.php'
+      - 'tests/Unit/Core/Cli/CactiApplicationTest.php'
+      - 'tests/Unit/Core/Cli/CactiEntrypointSecurityTest.php'
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/cli-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'bin/cacti'
+      - 'bin/.htaccess'
+      - 'include/cli_check.php'
+      - 'include/cli_only.php'
+      - 'lib/Console/**'
+      - 'phpunit-cli-coverage.xml'
+      - 'tests/fixtures/Console/**'
+      - 'tests/.htaccess'
+      - 'tests/index.php'
+      - 'tests/Unit/Core/Cli/CactiApplicationTest.php'
+      - 'tests/Unit/Core/Cli/CactiEntrypointSecurityTest.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cli-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMPOSER_ALLOW_SUPERUSER: 1
+
+jobs:
+  coverage:
+    name: CLI 100% coverage
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Setup locked PHP dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.2'
+          coverage: xdebug
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          dependency-mode: locked-cli-coverage
+          install-args: --prefer-dist --no-progress --no-interaction
+
+      - name: Enforce line coverage
+        env:
+          XDEBUG_MODE: coverage
+        run: |
+          set -euo pipefail
+          composer test:cli-coverage
