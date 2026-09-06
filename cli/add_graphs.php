@@ -97,7 +97,7 @@ if (cacti_sizeof($parms)) {
 		'snmp-query-type-id::',
 		'snmp-field::',
 		'snmp-value::',
-		'snmp-value-regex::',
+		'snmp-value-regex:',
 		'reindex-method::',
 
 		'list-hosts',
@@ -166,6 +166,11 @@ if (cacti_sizeof($parms)) {
 			}
 
 			foreach($value as $item) {
+				if ($item === false || $item === '') {
+					print "ERROR: --snmp-value-regex requires a non-empty value.\n";
+					exit(1);
+				}
+
 				$validation = validate_is_rlike_regex($item);
 
 				if ($validation !== true) {

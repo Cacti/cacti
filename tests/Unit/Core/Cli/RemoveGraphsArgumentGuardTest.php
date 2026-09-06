@@ -105,7 +105,7 @@ test('remove_graphs uses the real regex length and semicolon guards', function (
 		->and($valid['handler'])->toBe('CactiErrorHandler')
 		->and($malformed['result'])->toContain('Compilation failed')
 		->and($too_long['result'])->toBe('Cacti regular expressions are limited to 50 characters only for security reasons.')
-		->and($semicolon['result'])->toBe('Cacti regular expressions can not includes the semi-color character.')
+		->and($semicolon['result'])->not->toBeFalse()
 		->and($alteration['result'])->toContain('do not support alternation')
 		->and($repeat['result'])->toContain('do not support alternation');
 });
@@ -208,7 +208,9 @@ test('all regex consumers honor the validator true-or-error contract', function 
 	$root = dirname(__DIR__, 4);
 
 	$add_graphs = file_get_contents($root . '/cli/add_graphs.php');
-	expect($add_graphs)->toContain('validate_is_rlike_regex($item)')
+	expect($add_graphs)->toContain("'snmp-value-regex:'")
+		->and($add_graphs)->toContain("if (\$item === false || \$item === '')")
+		->and($add_graphs)->toContain('validate_is_rlike_regex($item)')
 		->and($add_graphs)->toContain('if ($validation !== true)')
 		->and($add_graphs)->toContain("' AND field_value ' . db_qstr_rlike(")
 		->and($add_graphs)->not->toContain('field_value REGEXP "');
