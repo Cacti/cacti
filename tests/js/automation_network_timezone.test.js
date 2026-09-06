@@ -37,10 +37,12 @@ function timepickerNow(epoch, serverOffsetMinutes) {
 	};
 }
 
-test('Automation Network picker receives the current server offset', () => {
+test('Automation Network Now action receives the current server offset', () => {
 	const picker = source.match(/\$\('#start_at'\)\.datetimepicker\(\{[\s\S]*?\}\);/);
 
 	assert.notEqual(picker, null, 'start_at datetimepicker configuration must exist');
+	assert.match(picker[0], /add-on uses this offset only to translate its Now action/);
+	assert.match(picker[0], /submitted and stored as a server wall-time string/);
 	assert.match(picker[0], /timezone:\s*<\?php print intval\(date\('Z'\) \/ 60\); \?>,/);
 });
 
