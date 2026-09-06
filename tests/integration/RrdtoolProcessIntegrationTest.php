@@ -78,8 +78,8 @@ test('local RRDtool process acknowledges create update and fetch commands', func
 	}
 
 	global $config;
-	$config[OPTIONS_CLI]['path_rrdtool']              = $binary;
-	$config[OPTIONS_CLI]['path_rrdtool_default_font'] = false;
+	$config[OPTIONS_CLI]['path_rrdtool']               = $binary;
+	$config[OPTIONS_CLI]['path_rrdtool_default_font']  = false;
 
 	$directory = integration_rrdtool_directory();
 	$rrd       = $directory . "/device's metrics.rrd";
@@ -148,6 +148,81 @@ test('local RRDtool process acknowledges create update and fetch commands', func
 	}
 });
 
+test('Cacti fetch excludes the RRDtool bucket after the requested CSV window', function () {
+	$binary = integration_rrdtool_binary();
+
+	if ($binary === '' || !is_executable($binary)) {
+		$this->markTestSkipped('Set RRDTOOL_TEST_BINARY to an executable RRDtool binary.');
+	}
+
+	global $config;
+	$had_local_storage = array_key_exists('local_storage', $config);
+	$local_storage     = $config['local_storage'] ?? null;
+	$had_rrdtool_path  = isset($config[OPTIONS_CLI]) && array_key_exists('path_rrdtool', $config[OPTIONS_CLI]);
+	$rrdtool_path      = $config[OPTIONS_CLI]['path_rrdtool'] ?? null;
+	$had_default_font  = isset($config[OPTIONS_CLI]) && array_key_exists('path_rrdtool_default_font', $config[OPTIONS_CLI]);
+	$default_font      = $config[OPTIONS_CLI]['path_rrdtool_default_font'] ?? null;
+
+	$config[OPTIONS_CLI]['path_rrdtool']              = $binary;
+	$config[OPTIONS_CLI]['path_rrdtool_default_font'] = false;
+	$config['local_storage']                          = true;
+	$directory                           = integration_rrdtool_directory();
+	$rrd                                 = $directory . '/csv-window.rrd';
+	$start                               = 1700000100;
+	$end                                 = $start + 900;
+
+	try {
+		$create = __rrd_execute(
+			'create ' . escapeshellarg($rrd) . ' --start ' . ($start - 300) .
+			' --step 300 DS:value:GAUGE:600:0:U RRA:AVERAGE:0.5:1:20',
+			false,
+			RRDTOOL_OUTPUT_STDOUT
+		);
+		$update = __rrd_execute(
+			'update ' . escapeshellarg($rrd) . ' ' .
+			$start . ':1 ' . ($start + 300) . ':2 ' . ($start + 600) . ':3 ' .
+			' ' . $end . ':4 ' . ($end + 300) . ':5',
+			false,
+			RRDTOOL_OUTPUT_BOOLEAN
+		);
+		$fetch = rrdtool_function_fetch(0, $start, $end, 300, true, $rrd);
+		$xport = __rrd_execute(
+			'xport --start ' . $start . ' --end ' . $end . ' --maxrows 10000 ' .
+			'DEF:value=' . escapeshellarg($rrd) . ':value:AVERAGE:step=300 XPORT:value',
+			false,
+			RRDTOOL_OUTPUT_STDOUT
+		);
+
+		expect($create)->toBe('')
+			->and($update)->toBeTrue()
+			->and($fetch['timestamp']['end_time'])->toBeLessThanOrEqual($end)
+			->and($fetch['timestamp']['step'])->toBe(300)
+			->and(array_keys($fetch['values'][0]))->not->toContain($end + 300)
+			->and($xport)->toBeString()->toContain('<step>300</step>');
+	} finally {
+		integration_rrdtool_unlink($rrd);
+		rmdir($directory);
+
+		if ($had_local_storage) {
+			$config['local_storage'] = $local_storage;
+		} else {
+			unset($config['local_storage']);
+		}
+
+		if ($had_rrdtool_path) {
+			$config[OPTIONS_CLI]['path_rrdtool'] = $rrdtool_path;
+		} else {
+			unset($config[OPTIONS_CLI]['path_rrdtool']);
+		}
+
+		if ($had_default_font) {
+			$config[OPTIONS_CLI]['path_rrdtool_default_font'] = $default_font;
+		} else {
+			unset($config[OPTIONS_CLI]['path_rrdtool_default_font']);
+		}
+	}
+});
+
 test('local RRDtool process fails closed on errors and command framing characters', function () {
 	$binary = integration_rrdtool_binary();
 
@@ -156,8 +231,8 @@ test('local RRDtool process fails closed on errors and command framing character
 	}
 
 	global $config;
-	$config[OPTIONS_CLI]['path_rrdtool']              = $binary;
-	$config[OPTIONS_CLI]['path_rrdtool_default_font'] = false;
+	$config[OPTIONS_CLI]['path_rrdtool']               = $binary;
+	$config[OPTIONS_CLI]['path_rrdtool_default_font']  = false;
 	$process                                           = __rrd_init();
 
 	try {
@@ -186,8 +261,8 @@ test('RRDtool is launched with a fixed argv and never interprets command payload
 	putenv('FAKE_RRD_STDIN_FILE=' . $stdinFile);
 
 	global $config;
-	$config[OPTIONS_CLI]['path_rrdtool']              = integration_fake_rrdtool_binary();
-	$config[OPTIONS_CLI]['path_rrdtool_default_font'] = false;
+	$config[OPTIONS_CLI]['path_rrdtool']               = integration_fake_rrdtool_binary();
+	$config[OPTIONS_CLI]['path_rrdtool_default_font']  = false;
 	$process                                           = __rrd_init();
 
 	try {
@@ -218,8 +293,8 @@ test('RRDtool stdout and stderr are drained concurrently under pipe pressure', f
 	putenv('FAKE_RRD_STDERR_BYTES=200000');
 
 	global $config;
-	$config[OPTIONS_CLI]['path_rrdtool']              = integration_fake_rrdtool_binary();
-	$config[OPTIONS_CLI]['path_rrdtool_default_font'] = false;
+	$config[OPTIONS_CLI]['path_rrdtool']               = integration_fake_rrdtool_binary();
+	$config[OPTIONS_CLI]['path_rrdtool_default_font']  = false;
 	$process                                           = __rrd_init();
 
 	try {
