@@ -31,6 +31,10 @@ $g = db_fetch_assoc('SELECT * FROM host WHERE id = ' . gfrv('id'));
 // ok: cacti-request-var-in-sql
 $g2 = db_fetch_assoc('SELECT * FROM host WHERE ' . array_to_sql_or(gnrv('ids'), 'id'));
 
+$unsafe_column = gnrv('column');
+// ruleid: cacti-request-var-in-sql
+$g3 = db_fetch_assoc('SELECT * FROM host WHERE ' . array_to_sql_or([1], $unsafe_column));
+
 // ---- cacti-request-var-in-shell-or-rrdtool ----
 
 // ruleid: cacti-request-var-in-shell-or-rrdtool

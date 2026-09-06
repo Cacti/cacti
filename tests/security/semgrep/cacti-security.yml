@@ -38,8 +38,13 @@ rules:
       - pattern: db_qstr(...)
       - pattern: db_qstr_rlike(...)
       - pattern: sanitize_sql_column(...)
-      # array_to_sql_or() quotes each value with db_qstr().
-      - pattern: array_to_sql_or(...)
+      # array_to_sql_or() quotes each value with db_qstr(), but does not
+      # sanitize its column argument. Only a literal identifier is safe.
+      - patterns:
+          - pattern: array_to_sql_or($VALUES, $COLUMN)
+          - metavariable-regex:
+              metavariable: $COLUMN
+              regex: ^['"][A-Za-z0-9_.]+['"]$
       # gfrv()/get_filter_request_var() are only SQL-safe here when they enforce numeric types
       - pattern: gfrv($NAME)
       - pattern: gfrv($NAME, FILTER_VALIDATE_INT, ...)
