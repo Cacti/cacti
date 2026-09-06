@@ -26,3 +26,13 @@ test('child completion identity is run scoped in new and upgraded installs', fun
 	expect($schema)->toContain('UNIQUE KEY `run_child` (`run_id`,`child_id`)')
 		->and($upgrade)->toContain("db_install_add_key('poller_output_boost_processes', 'UNIQUE', 'run_child', array('run_id', 'child_id'))");
 });
+
+test('Boost distribution ownership and acknowledged cursors are run scoped', function () use ($root) {
+	$schema = file_get_contents($root . '/cacti.sql');
+
+	expect($schema)->toContain('`run_id` char(32) NOT NULL DEFAULT \'\'')
+		->and($schema)->toContain('`cursor_time` timestamp NULL DEFAULT NULL')
+		->and($schema)->toContain('`cursor_rrd_name` varchar(19) NOT NULL DEFAULT \'\'')
+		->and($schema)->toContain('PRIMARY KEY (`run_id`,`local_data_id`)')
+		->and($schema)->toContain('KEY `process_handler` (`run_id`,`process_handler`)');
+});

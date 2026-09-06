@@ -138,16 +138,101 @@ test('table rotation and shard preparation fail closed on database errors', func
 
 	expect($body)->toContain('failed to create its interim output table')
 		->and($body)->toContain('failed to rotate its output table')
-		->and($body)->toContain('failed to reset its process-distribution table')
+		->and($body)->toContain('failed to create its process-distribution table')
 		->and($body)->toContain('failed to stage archive data-source identifiers')
 		->and($body)->toContain('failed to assign data sources to a child process');
+});
+
+test('scheduled Boost pages are hard bounded and advance run-scoped primary-key cursors', function () use ($root) {
+	$source = file_get_contents($root . '/poller_boost.php');
+	$body   = boostLifecycleFunctionBody($source, 'function boost_process_local_data_ids(');
+
+	expect($body)->toContain('LIMIT \' . ($max_rows + 1)')
+		->and($body)->toContain('boost_limit_complete_timestamp_page($results, $max_rows)')
+		->and($body)->toContain('SET cursor_time = ?, cursor_rrd_name = ?')
+		->and($body)->toContain('WHERE run_id = ?')
+		->and($body)->not->toContain('WHERE local_data_id <= ?');
+});
+
+test('on-demand Boost defers oversized result sets without deleting them', function () use ($root) {
+	$source = file_get_contents($root . '/lib/boost.php');
+	$body   = boostLifecycleFunctionBody($source, 'function boost_process_poller_output(');
+
+	expect($body)->toContain('LIMIT \' . ($max_rows + 1)')
+		->and($body)->toContain('if (cacti_sizeof($results) > $max_rows)')
+		->and($body)->toContain('rows were retained for scheduled processing')
+		->and(strpos($body, 'return -1;'))->toBeLessThan(strpos($body, 'DELETE FROM poller_output_boost'));
+});
+
+test('scheduled and on-demand parsers share cached data-source metadata', function () use ($root) {
+	$boost  = file_get_contents($root . '/lib/boost.php');
+	$poller = file_get_contents($root . '/poller_boost.php');
+	$body   = boostLifecycleFunctionBody($boost, 'function boost_process_poller_output(');
+
+	expect($boost)->toContain('function boost_get_unused_data_source_names(')
+		->and($boost)->toContain('function boost_get_input_field_names(')
+		->and($body)->toContain('boost_get_unused_data_source_names($local_data_id)')
+		->and($body)->toContain('boost_get_input_field_names($item[\'local_data_id\'], true)')
+		->and($poller)->toContain('boost_get_unused_data_source_names($item[\'local_data_id\'])')
+		->and($poller)->toContain('boost_get_input_field_names($item[\'local_data_id\'], true)');
+});
+
+test('Boost takeover must confirm process death before shared table preparation', function () use ($root) {
+	$source = file_get_contents($root . '/poller_boost.php');
+	$body   = boostLifecycleFunctionBody($source, 'function boost_kill_running_processes(');
+
+	expect($source)->toContain('if (!boost_kill_running_processes())')
+		->and($body)->toContain('cacti_process_still_running')
+		->and($body)->toContain('microtime(true) + max(1, (int) $wait_seconds)')
+		->and($body)->toContain('did not terminate before the takeover deadline')
+		->and($body)->toContain('return false;');
+});
+
+test('legacy RRD locks stop at the configured Boost runtime deadline', function () use ($root) {
+	$source = file_get_contents($root . '/poller_boost.php');
+	$body   = boostLifecycleFunctionBody($source, 'function boost_process_local_data_ids(');
+
+	expect($body)->toContain('microtime(true) + max(1, min(30, (int) $max_run_duration))')
+		->and($body)->toContain('microtime(true) >= $lock_deadline')
+		->and($body)->toContain('timed out acquiring the RRD lock')
+		->and($body)->toContain('return -1;');
+});
+
+test('Boost runtime status uses a numeric start timestamp with legacy fallback', function () use ($root) {
+	$source = file_get_contents($root . '/poller_boost.php');
+	$body   = boostLifecycleFunctionBody($source, 'function boost_prepare_process_table(');
+
+	expect($body)->toContain("read_config_option('boost_poller_started')")
+		->and($body)->toContain("set_config_option('boost_poller_started', \$start_time)")
+		->and($body)->toContain('if (!$previous_start_time && substr_count($boost_poller_status, \'running\'))');
+});
+
+test('only the Boost master mutates global lifecycle status from a signal', function () use ($root) {
+	$source = file_get_contents($root . '/poller_boost.php');
+	$body   = boostLifecycleFunctionBody($source, 'function sig_handler(');
+	$child  = strpos($body, 'if ($child)');
+	$status = strpos($body, "set_config_option('boost_poller_status'");
+	$master = strpos($body, '} else {', $child);
+
+	expect($child)->not->toBeFalse()
+		->and($master)->not->toBeFalse()
+		->and($status)->toBeGreaterThan($master);
 });
 
 test('legacy RRDtool locking acquires each data-source lock only once', function () use ($root) {
 	$source = file_get_contents($root . '/poller_boost.php');
 	$body   = boostLifecycleFunctionBody($source, 'function boost_process_local_data_ids(');
 
-	expect(substr_count($body, "SELECT GET_LOCK('boost.single_ds."))->toBe(1);
+	$flush   = strpos($body, '$flush_ok   = boost_process_output');
+	$release = strpos($body, 'SELECT RELEASE_LOCK', $flush);
+	$acquire = strpos($body, 'SELECT GET_LOCK', $release);
+
+	expect(substr_count($body, "SELECT GET_LOCK('boost.single_ds."))->toBe(1)
+		->and($flush)->not->toBeFalse()
+		->and($release)->toBeGreaterThan($flush)
+		->and($acquire)->toBeGreaterThan($release)
+		->and($body)->toContain("SELECT RELEASE_LOCK('boost.single_ds.\$current_lock')")
+		->and($body)->toContain('if (!$flush_ok)');
 });
 
 test('malformed child statistics are ignored instead of iterated', function () use ($root) {
@@ -164,7 +249,8 @@ test('preparation and completion-record failures are externally visible', functi
 	expect($source)->toContain("set_config_option('boost_poller_status', 'failed - end time:'")
 		->and($source)->toContain('Boost preparation failed; no child processes were launched.')
 		->and($source)->toContain('Boost child could not record its completion status.')
-		->and($source)->toContain('exit($completion_recorded === false ? 1 : 0)');
+		->and($source)->toContain('exit($completion_recorded === false || $rrd_updates < 0 ? 1 : 0)')
+		->and($source)->toContain('exit($exit_code)');
 });
 
 test('child identifiers are positive integers before reaching SQL and process state', function () use ($root) {
