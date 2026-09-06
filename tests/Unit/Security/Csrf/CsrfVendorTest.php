@@ -30,7 +30,9 @@ test('the Symfony CSRF classes are autoloadable', function () {
 });
 
 test('the Symfony CSRF package is resolved by Composer, not committed', function () use ($root) {
-	if (!function_exists('exec') || str_contains((string) ini_get('disable_functions'), 'exec')) {
+	$disabled_functions = array_filter(array_map('trim', explode(',', (string) ini_get('disable_functions'))));
+
+	if (!function_exists('exec') || in_array('exec', $disabled_functions, true)) {
 		test()->markTestSkipped('exec is disabled, so Composer package tracking cannot be inspected');
 	}
 
