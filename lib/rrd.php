@@ -1847,7 +1847,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$cdef = empty($graph_item['cdef_id']) ? '' : get_cdef($graph_item['cdef_id']);
 
 			if ($cdef === null) {
-				cacti_log('ERROR: Invalid CDEF ' . $graph_item['cdef_id'] . ' for graph ' . $local_graph_id . '; graph rendering aborted.', true, 'RRD');
+						cacti_log('ERROR: Invalid CDEF ' . $graph_item['cdef_id'] . ' for graph ' . $local_graph_id . '; graph rendering aborted.', false, 'RRD');
 
 				return rrdtool_invalid_cdef_response($graph_data_array, (int) $graph_item['cdef_id'], (int) $local_graph_id);
 			}
