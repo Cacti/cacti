@@ -4,7 +4,11 @@ Cacti CHANGELOG
 -issue#7385: Keep Automation Network schedule times in the server timezone
 -issue#7506: Close open select menus when their scroll container moves
 -issue#7967: Fail CSP Pest jobs when no tests execute
+-issue#7027: Refuse to signal a process table PID that pid_t cannot hold
+-issue#7957: Stop treating every PID in a container as a reserved system PID
+-issue#7958: Repair batchgapfix --force, which aborted on PHP 8 and killed nothing
 -issue: Commit transactions on MySQL as well as MariaDB
+-security#7027: Detect reused process IDs before treating registry tasks as live
 -security: Update bundled DOMPurify to 3.4.14
 -security: Revoke anonymous access when the guest account is disabled
 -security: Cast graph and device ids to int in get_allowed_* permission filters

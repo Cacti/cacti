@@ -14,9 +14,9 @@
 
 /*
  * Guard for issue #7027: timeout_kill_registered_processes() signalled any pid
- * from the processes table. A tampered pid column could then take down init,
- * systemd, or a kernel thread. is_system_pid() rejects the reserved low range
- * so those pids are logged and skipped instead of killed.
+ * from the processes table. A tampered pid column could then target init or a
+ * value that narrows to a process group. is_system_pid() rejects those values
+ * and callers retire a refused stale row without sending a signal.
  *
  * lib/poller.php only defines functions at file scope, so it is safe to load
  * here; require_once dedupes by path across the suite.
@@ -24,11 +24,16 @@
 
 require_once __DIR__ . '/../../../../lib/poller.php';
 
-test('is_system_pid rejects init and the reserved low range', function () {
+test('is_system_pid rejects init and anything that cannot name a process', function () {
 	expect(is_system_pid(1))->toBeTrue();
 	expect(is_system_pid(0))->toBeTrue();
 	expect(is_system_pid(-1))->toBeTrue();
-	expect(is_system_pid(100))->toBeTrue();
+});
+
+test('ordinary low pids remain valid inside pid namespaces', function () {
+	foreach (array(2, 7, 42, 100) as $pid) {
+		expect(is_system_pid($pid))->toBeFalse((string) $pid);
+	}
 });
 
 test('is_system_pid allows a normal registered pid', function () {
@@ -51,8 +56,9 @@ test('timeout_kill_registered_processes gates posix_kill behind is_system_pid', 
 	$body = substr($source, $start, 2200);
 
 	// The SIGTERM kill must sit on the elseif branch, reachable only after the
-	// is_system_pid() check has excluded the reserved range.
+	// is_system_pid() check has excluded the reserved range, and it goes out
+	// through the shared guard rather than a bare posix_kill().
 	expect(strpos($body, 'if (is_system_pid($pid))'))->not->toBeFalse();
-	expect(preg_match('/}\s*elseif\s*\(\s*posix_kill\s*\(\s*\$pid\s*,\s*0\s*\)\s*\)\s*{/', $body))->toBe(1);
-	expect(strpos($body, 'posix_kill($pid, SIGTERM)'))->not->toBeFalse();
+	expect(preg_match('/}\s*elseif\s*\(\s*cacti_process_still_running\s*\(\s*\$pid\s*\)\s*\)\s*{/', $body))->toBe(1);
+	expect(strpos($body, 'cacti_process_kill($pid, SIGTERM)'))->not->toBeFalse();
 });
