@@ -63,8 +63,19 @@ test('Now uses UTC server wall time in a browser two hours east', () => {
 });
 
 test('Now supports server timezones with half-hour offsets', () => {
-	assert.deepEqual(
-		timepickerNow('2026-07-23T12:00:00Z', 330),
-		{ hour: 17, minute: 30 }
-	);
+	const originalTimezone = process.env.TZ;
+
+	try {
+		process.env.TZ = 'UTC';
+		assert.deepEqual(
+			timepickerNow('2026-07-23T12:00:00Z', 330),
+			{ hour: 17, minute: 30 }
+		);
+	} finally {
+		if (originalTimezone === undefined) {
+			delete process.env.TZ;
+		} else {
+			process.env.TZ = originalTimezone;
+		}
+	}
 });
