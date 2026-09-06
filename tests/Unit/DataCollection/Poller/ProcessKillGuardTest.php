@@ -127,7 +127,9 @@ test('a pid wider than pid_t is refused', function () {
 });
 
 test('the process id ceiling follows the platform signal adapter', function () {
-	expect(cacti_process_pid_max())->toBe(PHP_OS_FAMILY === 'Windows' ? 4294967295 : 2147483647);
+	$expected = PHP_OS_FAMILY === 'Windows' && PHP_INT_SIZE >= 8 ? 4294967295 : 2147483647;
+
+	expect(cacti_process_pid_max())->toBe($expected);
 });
 
 test('a pid inside pid_t that does not exist is left to the kernel', function () {
@@ -163,9 +165,12 @@ test('an ordinary pid is still signalled', function () {
 		$status = proc_get_status($handle);
 	}
 
-	expect($status['running'])->toBeFalse()
-		->and($status['signaled'])->toBeTrue()
-		->and($status['termsig'])->toBe(SIGTERM);
+	expect($status['running'])->toBeFalse();
+
+	if (PHP_OS_FAMILY !== 'Windows') {
+		expect($status['signaled'])->toBeTrue()
+			->and($status['termsig'])->toBe(SIGTERM);
+	}
 
 	proc_close($handle);
 });

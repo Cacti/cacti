@@ -2743,6 +2743,16 @@ function cacti_process_still_running(int $pid) : bool {
 }
 
 /**
+ * Returns the largest process id accepted by the platform signal adapter.
+ *
+ * Windows process IDs are unsigned 32-bit values and Cacti's posix_kill()
+ * compatibility shim does not narrow them through the POSIX pid_t type.
+ */
+function cacti_process_pid_max() : int {
+	return PHP_OS_FAMILY === 'Windows' && PHP_INT_SIZE >= 8 ? 4294967295 : 2147483647;
+}
+
+/**
  * Whether this process could deliver a signal to $pid.
  *
  * Two things separate this from cacti_process_still_running(). It reads EPERM as
@@ -2758,16 +2768,6 @@ function cacti_process_still_running(int $pid) : bool {
  *
  * @return bool True when a signal from this process would reach that pid.
  */
-/**
- * Returns the largest process id accepted by the platform signal adapter.
- *
- * Windows process IDs are unsigned 32-bit values and Cacti's posix_kill()
- * compatibility shim does not narrow them through the POSIX pid_t type.
- */
-function cacti_process_pid_max() : int {
-	return PHP_OS_FAMILY === 'Windows' ? 4294967295 : 2147483647;
-}
-
 function cacti_process_signalable(int $pid) : bool {
 	if ($pid <= 1 || $pid > cacti_process_pid_max() || !function_exists('posix_kill')) {
 		return false;
