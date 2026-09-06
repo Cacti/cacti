@@ -21,6 +21,13 @@ if ($source === false || preg_match('/function rrdtool_parse_fetch_output\(.*?^}
 
 eval('namespace RrdFetchWindowTest;' . $matches[0]); // nosemgrep: php.lang.security.eval-use.eval-use
 
+test('fetch quotes an RRD path before passing it to the command parser', function () use ($source) {
+	preg_match('/function rrdtool_function_fetch\(.*?^}\R/ms', $source, $matches);
+
+	expect($matches)->toHaveKey(0)
+		->and($matches[0])->toContain("cacti_escapeshellarg(\$data_source_path)");
+});
+
 test('fetch output is bounded by the requested end and reports its observed step', function () {
 	$output = " traffic_in traffic_out\n" .
 		"1700000400: 1.0 2.0\n" .
