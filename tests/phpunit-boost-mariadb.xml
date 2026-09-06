@@ -4,11 +4,8 @@
 		bootstrap="vendor/autoload.php"
 		colors="true">
 	<testsuites>
-		<testsuite name="Boost">
-			<directory suffix="Test.php">./Unit/Core/Boost</directory>
-			<file>./HandOff/BoostDataHandOffTest.php</file>
-			<file>./Unit/Core/Rrd/RrdNullOffsetCfTest.php</file>
-			<file>./Unit/Ui/Html/CactiNonceApplySkinTest.php</file>
+		<testsuite name="Boost MariaDB">
+			<file>./integration/BoostProcessTableMariaDbTest.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>
