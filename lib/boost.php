@@ -503,6 +503,8 @@ function boost_atomic_write_cache($cache_file, $output) {
 	$temp_file = tempnam(dirname($cache_file), '.boost-');
 
 	if ($temp_file === false) {
+		cacti_log('ERROR: Boost could not create a temporary graph cache file.', false, 'BOOST');
+
 		return false;
 	}
 
@@ -510,6 +512,7 @@ function boost_atomic_write_cache($cache_file, $output) {
 
 	if ($fileptr === false) {
 		@unlink($temp_file);
+		cacti_log('ERROR: Boost could not open its temporary graph cache file.', false, 'BOOST');
 
 		return false;
 	}
@@ -529,6 +532,7 @@ function boost_atomic_write_cache($cache_file, $output) {
 			if ($result === false || $result === 0) {
 				fclose($fileptr);
 				@unlink($temp_file);
+				cacti_log('ERROR: Boost could not finish writing its graph cache file.', false, 'BOOST');
 
 				return false;
 			}
@@ -540,10 +544,16 @@ function boost_atomic_write_cache($cache_file, $output) {
 
 	$flushed = fflush($fileptr);
 	fclose($fileptr);
-	if (!$flushed || !chmod($temp_file, 0640)) {
+	if (!$flushed) {
 		@unlink($temp_file);
+		cacti_log('ERROR: Boost could not flush its graph cache file.', false, 'BOOST');
 
 		return false;
+	}
+
+	if (!chmod($temp_file, 0640)) {
+		/* tempnam() creates a stricter 0600 file, so publication remains safe. */
+		cacti_log('WARNING: Boost could not set shared graph cache permissions; publishing with the existing stricter mode.', false, 'BOOST');
 	}
 
 	$published = @rename($temp_file, $cache_file);
@@ -554,6 +564,7 @@ function boost_atomic_write_cache($cache_file, $output) {
 
 	if (!$published) {
 		@unlink($temp_file);
+		cacti_log('ERROR: Boost could not publish its graph cache file.', false, 'BOOST');
 
 		return false;
 	}

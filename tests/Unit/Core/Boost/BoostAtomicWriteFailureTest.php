@@ -17,8 +17,10 @@ function boostAtomicFailureReset(array $overrides = array()) {
 	$GLOBALS['boost_atomic_failure_state'] = array_merge(array(
 		'flush'   => true,
 		'chmod'   => true,
+		'rename'  => true,
 		'unlinks' => array(),
 		'renames' => array(),
+		'logs'    => array(),
 	), $overrides);
 }
 
@@ -49,13 +51,17 @@ function boostAtomicFailureChmod($path, $mode) {
 function boostAtomicFailureRename($source, $destination) {
 	$GLOBALS['boost_atomic_failure_state']['renames'][] = array($source, $destination);
 
-	return true;
+	return $GLOBALS['boost_atomic_failure_state']['rename'];
 }
 
 function boostAtomicFailureUnlink($path) {
 	$GLOBALS['boost_atomic_failure_state']['unlinks'][] = $path;
 
 	return true;
+}
+
+function boostAtomicFailureLog($message, $output = false, $facility = '') {
+	$GLOBALS['boost_atomic_failure_state']['logs'][] = array($message, $facility);
 }
 
 function boostAtomicFailureLoad($root) {
@@ -81,6 +87,7 @@ function boostAtomicFailureLoad($root) {
 		'chmod',
 		'rename',
 		'unlink',
+		'cacti_log',
 	), array(
 		'boostAtomicFailureWrite',
 		'boostAtomicFailureTempnam',
@@ -91,6 +98,7 @@ function boostAtomicFailureLoad($root) {
 		'boostAtomicFailureChmod',
 		'boostAtomicFailureRename',
 		'boostAtomicFailureUnlink',
+		'boostAtomicFailureLog',
 	), $function);
 
 	eval($function);
@@ -106,13 +114,23 @@ test('a cache flush failure removes the temporary file without publishing it', f
 
 	expect(boostAtomicFailureWrite('/cache/final.png', 'payload'))->toBeFalse()
 		->and($GLOBALS['boost_atomic_failure_state']['unlinks'])->toBe(array('/cache/.boost-test'))
-		->and($GLOBALS['boost_atomic_failure_state']['renames'])->toBe(array());
+		->and($GLOBALS['boost_atomic_failure_state']['renames'])->toBe(array())
+		->and($GLOBALS['boost_atomic_failure_state']['logs'][0][0])->toContain('could not flush');
 });
 
-test('a cache permission failure removes the temporary file without publishing it', function () {
+test('a cache permission failure logs a warning and publishes the stricter temporary mode', function () {
 	boostAtomicFailureReset(array('chmod' => false));
+
+	expect(boostAtomicFailureWrite('/cache/final.png', 'payload'))->toBeTrue()
+		->and($GLOBALS['boost_atomic_failure_state']['unlinks'])->toBe(array())
+		->and($GLOBALS['boost_atomic_failure_state']['renames'])->toBe(array(array('/cache/.boost-test', '/cache/final.png')))
+		->and($GLOBALS['boost_atomic_failure_state']['logs'][0][0])->toContain('existing stricter mode');
+});
+
+test('a cache publication failure removes the temporary file and logs the error', function () {
+	boostAtomicFailureReset(array('rename' => false));
 
 	expect(boostAtomicFailureWrite('/cache/final.png', 'payload'))->toBeFalse()
 		->and($GLOBALS['boost_atomic_failure_state']['unlinks'])->toBe(array('/cache/.boost-test'))
-		->and($GLOBALS['boost_atomic_failure_state']['renames'])->toBe(array());
+		->and($GLOBALS['boost_atomic_failure_state']['logs'][0][0])->toContain('could not publish');
 });
