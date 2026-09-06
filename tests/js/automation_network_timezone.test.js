@@ -54,7 +54,11 @@ test('Now uses UTC server wall time in a browser two hours east', () => {
 			{ hour: 12, minute: 0 }
 		);
 	} finally {
-		process.env.TZ = originalTimezone;
+		if (originalTimezone === undefined) {
+			delete process.env.TZ;
+		} else {
+			process.env.TZ = originalTimezone;
+		}
 	}
 });
 
