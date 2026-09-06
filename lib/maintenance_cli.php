@@ -21,6 +21,16 @@
  +-------------------------------------------------------------------------+
  */
 
+/**
+ * Validate one raw remove_graphs.php option before getopt() can discard it.
+ *
+ * @param string $parameter The raw command-line argument.
+ * @param string $shortopts The getopt() short-option declaration.
+ * @param array  $longopts  The getopt() long-option declarations.
+ *
+ * @return bool True only when the argument matches a declared option and its
+ *              required value shape.
+ */
 function cacti_remove_graphs_parameter_is_valid($parameter, $shortopts, $longopts) {
 	if (strpos($parameter, '-') === 0 && strpos($parameter, '--') !== 0) {
 		$letters = substr($parameter, 1);
@@ -51,17 +61,45 @@ function cacti_remove_graphs_parameter_is_valid($parameter, $shortopts, $longopt
 	return ($valid_longopts[$name] && $has_value) || (!$valid_longopts[$name] && !$has_equals);
 }
 
+/**
+ * Return the validation error for a remove_graphs.php regular expression.
+ *
+ * @param string        $regex     The expression supplied by the operator.
+ * @param callable|null $validator Optional validator used by unit tests.
+ *
+ * @return string|false False when valid, otherwise a printable error message.
+ */
 function cacti_remove_graphs_regex_error($regex, $validator = null) {
 	$validator  = $validator ?: 'validate_is_regex';
 	$validation = $validator($regex);
 
-	return $validation === true ? false : $validation;
+	if ($validation === true) {
+		return false;
+	}
+
+	return is_string($validation) && $validation !== '' ? $validation : 'Invalid regular expression.';
 }
 
+/**
+ * Determine whether getopt() observed the remove_graphs.php quiet flag.
+ *
+ * @param array $options Parsed getopt() options.
+ *
+ * @return bool True when the quiet option key is present.
+ */
 function cacti_remove_graphs_quiet_enabled($options) {
 	return array_key_exists('quiet', $options);
 }
 
+/**
+ * Build the prepared host/filter predicate for graph-name reapplication.
+ *
+ * @param string $host_id A single id, comma-delimited ids, zero, or "all".
+ * @param string $filter  Optional graph name/title filter.
+ *
+ * @return array|false A SQL fragment and parameter list, or false for an
+ *                     invalid or missing host selector.
+ */
 function cacti_reapply_names_where($host_id, $filter) {
 	$host_id = trim($host_id);
 	$params = array();

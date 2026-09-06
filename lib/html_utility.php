@@ -1194,7 +1194,7 @@ function validate_is_regex($regex) {
 	if (empty($error)) {
 		return $php_error;
 	} else {
-		return $errors[$error];
+		return $errors[$error] ?? $php_error;
 	}
 }
 

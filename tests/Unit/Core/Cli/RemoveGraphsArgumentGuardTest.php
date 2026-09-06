@@ -46,7 +46,7 @@ test('remove_graphs accepts only declared options with the right value shape', f
 		expect(cacti_remove_graphs_parameter_is_valid($parameter, $shortopts, $longopts))->toBeTrue($parameter);
 	}
 
-	foreach (array('--graph-typo=5', '--graph-type=weekly', '--all=1', '--host-id', '--host-id=', '--graph-regex', '--', '-', '-x', '-Xv', 'graph') as $parameter) {
+	foreach (array('--graph-typo=5', '--graph-type=weekly', '--all=1', '--host-id', '--host-id=', '--graph-regex', '--', '-', '-x', '-Xv', '-Hfoo', 'graph') as $parameter) {
 		expect(cacti_remove_graphs_parameter_is_valid($parameter, $shortopts, $longopts))->toBeFalse($parameter);
 	}
 });
@@ -64,6 +64,14 @@ test('remove_graphs treats validator error strings as regex failures', function 
 	expect(cacti_remove_graphs_regex_error('edge.*', $validator))->toBeFalse()
 		->and(cacti_remove_graphs_regex_error(str_repeat('a', 51), $validator))->toBe('invalid regex')
 		->and(cacti_remove_graphs_regex_error('edge;.*', $validator))->toBe('invalid regex');
+});
+
+test('remove_graphs fails closed when its regex validator breaks contract', function () {
+	$validator = static function () {
+		return false;
+	};
+
+	expect(cacti_remove_graphs_regex_error('edge.*', $validator))->toBe('Invalid regular expression.');
 });
 
 test('remove_graphs quiet mode follows the parsed option key', function () {
@@ -120,4 +128,22 @@ test('normalized maintenance failures use the portable non-zero exit', function 
 
 		expect($source)->not->toMatch('/exit\(-[0-9]+\)/');
 	}
+});
+
+test('remove_graphs wires strict validation before getopt', function () {
+	$source = file_get_contents(__DIR__ . '/../../../../cli/remove_graphs.php');
+
+	expect($source)->not->toBeFalse()
+		->and($source)->toContain('cacti_remove_graphs_parameter_is_valid($parameter, $shortopts, $longopts)')
+		->and($source)->toContain('ERROR: Invalid Argument:')
+		->and($source)->not->toContain("'graph-type::'");
+});
+
+test('graph-name reapply wires invalid selectors to distinct failures', function () {
+	$source = file_get_contents(__DIR__ . '/../../../../cli/poller_graphs_reapply_names.php');
+
+	expect($source)->not->toBeFalse()
+		->and($source)->toContain('cacti_reapply_names_where($host_id, $filter)')
+		->and($source)->toContain('You must specify either a host_id')
+		->and($source)->toContain("Invalid host id '");
 });
