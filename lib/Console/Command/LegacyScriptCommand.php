@@ -22,6 +22,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessSignaledException;
+use Symfony\Component\Process\Exception\LogicException as ProcessLogicException;
 use Symfony\Component\Process\Process;
 
 final class LegacyScriptCommand extends Command {
@@ -45,7 +46,7 @@ final class LegacyScriptCommand extends Command {
 			? static fn (array $command): Process => new Process($command, null, null, STDIN, null)
 			: \Closure::fromCallable($process_factory);
 		$this->tty_probe = $tty_probe === null
-			? static fn (): bool => defined('STDIN') && defined('STDOUT') && Process::isTtySupported() && stream_isatty(STDIN) && stream_isatty(STDOUT)
+			? static fn (): bool => defined('STDIN') && defined('STDOUT') && defined('STDERR') && Process::isTtySupported() && stream_isatty(STDIN) && stream_isatty(STDOUT) && stream_isatty(STDERR)
 			: \Closure::fromCallable($tty_probe);
 		$signals_available = function_exists('pcntl_async_signals') && function_exists('pcntl_signal');
 
@@ -136,8 +137,11 @@ final class LegacyScriptCommand extends Command {
 
 		foreach ([SIGTERM, SIGINT, SIGHUP] as $signal) {
 			($this->signal_registrar)($signal, static function (int $received) use ($process): void {
-				if ($process->isRunning()) {
+				try {
 					$process->signal($received);
+				} catch (ProcessLogicException) {
+					/* The child can exit between signal delivery and Process::signal().
+					 * Its real exit status remains authoritative in that race. */
 				}
 			});
 		}

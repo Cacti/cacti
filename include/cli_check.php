@@ -31,10 +31,11 @@
  *
  * Any source wishing to check whether the system is in
  * CLI or WEB mode should use the CACTI_WEB and
- * CACTI_CLI constants
-define('CACTI_CLI_ONLY', true);
+ * CACTI_CLI constants.
+ */
+require_once(__DIR__ . '/cli_only.php');
 
-/* We are not talking to the browser */
+// We are not talking to the browser
 $no_http_headers = true;
 
 // Make sure CLI's are have minimum settings

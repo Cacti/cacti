@@ -9,10 +9,16 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'bin/cacti'
+      - 'bin/.htaccess'
+      - 'include/cli_check.php'
+      - 'include/cli_only.php'
       - 'lib/Console/**'
       - 'phpunit-cli-coverage.xml'
       - 'tests/fixtures/Console/**'
+      - 'tests/.htaccess'
+      - 'tests/index.php'
       - 'tests/Unit/Core/Cli/CactiApplicationTest.php'
+      - 'tests/Unit/Core/Cli/CactiEntrypointSecurityTest.php'
   pull_request:
     branches: [develop]
     paths:
@@ -21,10 +27,16 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'bin/cacti'
+      - 'bin/.htaccess'
+      - 'include/cli_check.php'
+      - 'include/cli_only.php'
       - 'lib/Console/**'
       - 'phpunit-cli-coverage.xml'
       - 'tests/fixtures/Console/**'
+      - 'tests/.htaccess'
+      - 'tests/index.php'
       - 'tests/Unit/Core/Cli/CactiApplicationTest.php'
+      - 'tests/Unit/Core/Cli/CactiEntrypointSecurityTest.php'
   workflow_dispatch:
 
 permissions:
@@ -52,7 +64,7 @@ jobs:
       - name: Setup locked PHP dependencies
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.3'
+          php-version: '8.2'
           coverage: xdebug
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
           dependency-mode: locked-cli-coverage

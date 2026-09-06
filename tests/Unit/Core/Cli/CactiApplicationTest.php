@@ -24,6 +24,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\LogicException as ProcessLogicException;
 use Symfony\Component\Process\Exception\ProcessSignaledException;
 
 final class CactiControllableLegacyProcess extends Process {
@@ -69,6 +70,9 @@ final class CactiControllableLegacyProcess extends Process {
 	}
 
 	public function signal(int $signal): static {
+		if (!$this->running) {
+			throw new ProcessLogicException('Cannot send signal on a non running process.');
+		}
 		$this->received_signal = $signal;
 
 		return $this;
@@ -77,17 +81,18 @@ final class CactiControllableLegacyProcess extends Process {
 
 it('registers every executable legacy CLI script exactly once', function (): void {
 	$root    = dirname(__DIR__, 4);
+	$non_commands = ['cacti', 'index'];
 	$scripts = array_map(
 		static fn (string $path): string => basename($path, '.php'),
 		glob($root . '/cli/*.php') ?: []
 	);
-	$scripts = array_values(array_diff($scripts, ['index']));
-	sort($scripts);
 
 	$mapped = array_keys(LegacyCommandMap::commands());
-	sort($mapped);
+	$missing = array_values(array_diff($mapped, $scripts));
+	$unexpected = array_values(array_diff($scripts, $mapped, $non_commands));
 
-	expect($mapped)->toBe($scripts)
+	expect($missing)->toBe([], 'Every mapped command must name an existing cli/*.php script.')
+		->and($unexpected)->toBe([], 'Classify new non-command files in $non_commands, or add commands to LegacyCommandMap.')
 		->and(array_unique(array_values(LegacyCommandMap::commands())))
 		->toHaveCount(count($mapped));
 });
@@ -177,6 +182,25 @@ it('relays registered termination signals only while the child is running', func
 	$handlers[SIGINT](SIGINT);
 
 	expect($process->received_signal)->toBeNull();
+});
+
+it('preserves the child status when a signal arrives before process startup', function (): void {
+	$process = new CactiControllableLegacyProcess(17);
+	$command = new LegacyScriptCommand(
+		'probe:run',
+		'probe',
+		dirname(__DIR__, 3) . '/fixtures/Console',
+		static fn (array $command): Process => $process,
+		static fn (): bool => false,
+		static function (int $signal, callable $handler): void {
+			if ($signal === SIGTERM) {
+				$handler($signal);
+			}
+		}
+	);
+
+	expect($command->run(new RawArgvInput(['bin/cacti', 'probe:run']), new BufferedOutput()))->toBe(17)
+		->and($process->received_signal)->toBeNull();
 });
 
 it('forwards raw legacy arguments and preserves the exit status', function (): void {
@@ -369,10 +393,11 @@ it('rejects parsed inputs that cannot preserve the raw argument vector', functio
 		->toThrow(LogicException::class, 'Legacy commands require RawArgvInput.');
 });
 
-it('returns no forwarded arguments when no command token is present', function (): void {
+it('fails closed when no command token is present', function (): void {
 	$input = new RawArgvInput(['bin/cacti', '--version']);
 
-	expect($input->argumentsAfterCommand(['probe:run', 'probe']))->toBe([]);
+	expect(fn (): array => $input->argumentsAfterCommand(['probe:run', 'probe']))
+		->toThrow(LogicException::class, 'resolved command token is missing');
 });
 
 it('uses the server argument vector when one is not supplied', function (): void {
@@ -403,7 +428,9 @@ it('runs the installed CLI entry point without application bootstrap', function 
 it('fails clearly when the CLI entry point has no installed dependencies', function (): void {
 	$fixture = sys_get_temp_dir() . '/cacti-cli-no-deps-' . bin2hex(random_bytes(8));
 	mkdir($fixture . '/bin', 0777, true);
+	mkdir($fixture . '/include', 0777, true);
 	copy(dirname(__DIR__, 4) . '/bin/cacti', $fixture . '/bin/cacti');
+	copy(dirname(__DIR__, 4) . '/include/cli_only.php', $fixture . '/include/cli_only.php');
 	$process = new Process([PHP_BINARY, $fixture . '/bin/cacti']);
 
 	expect($process->run())->toBe(1)

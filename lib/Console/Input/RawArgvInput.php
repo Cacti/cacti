@@ -56,6 +56,6 @@ final class RawArgvInput extends ArgvInput {
 			}
 		}
 
-		return [];
+		throw new \LogicException('The resolved command token is missing from the raw argument vector.');
 	}
 }

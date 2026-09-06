@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -13,24 +12,16 @@
  +-------------------------------------------------------------------------+
 */
 
-declare(strict_types = 1);
-
-use Cacti\Console\CactiApplication;
-use Cacti\Console\Input\RawArgvInput;
-
-$root     = dirname(__DIR__);
-$autoload = $root . '/include/vendor/autoload.php';
-
-require_once $root . '/include/cli_only.php';
-
-if (!is_file($autoload)) {
-	fwrite(STDERR, "Cacti dependencies are not installed. Run composer install.\n");
+/* Keep this guard independent of global.php so lightweight launchers can
+ * reject web requests without opening the database merely to show --help or
+ * --version. Full legacy scripts continue through cli_check.php afterwards. */
+if (PHP_SAPI !== 'cli') {
+	http_response_code(403);
+	print 'FATAL: This file can only be called from the command line.' . PHP_EOL;
 
 	exit(1);
 }
 
-require $autoload;
-
-$application = new CactiApplication($root);
-
-exit($application->run(new RawArgvInput()));
+if (!defined('CACTI_CLI_ONLY')) {
+	define('CACTI_CLI_ONLY', true);
+}

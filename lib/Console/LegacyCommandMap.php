@@ -18,7 +18,7 @@ namespace Cacti\Console;
 
 final class LegacyCommandMap {
 	/** @var array<string, string> Legacy script basename to command name. */
-	private const array COMMANDS = [
+	private const COMMANDS = [
 		'add_data_query'                    => 'data-query:add',
 		'add_datasource'                    => 'data-source:add',
 		'add_device'                        => 'device:add',

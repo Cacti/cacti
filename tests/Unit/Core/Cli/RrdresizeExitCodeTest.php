@@ -16,9 +16,14 @@ test('rrdresize reports a missing required data template as failure', function (
 	}
 
 	$start  = strpos($source, 'if (!$data_template_id)');
-	$body   = substr($source, $start, 220);
+	expect($start)->not->toBeFalse();
 
-	expect($start)->not->toBeFalse()
-		->and($body)->toContain('exit(1);')
-		->and($body)->not->toContain('exit(0);');
+	if ($start === false) {
+		return;
+	}
+
+	$body = substr($source, $start, 220);
+
+	expect($body)->toContain('exit(1);')
+		->not->toContain('exit(0);');
 });
