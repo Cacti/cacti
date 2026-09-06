@@ -14,6 +14,7 @@ on:
       - 'tests/Unit/Core/Rrd/PercentileResolutionBehaviorTest.php'
       - 'tests/Unit/ConsolidatedFunctionalFixesTest.php'
       - 'tests/Unit/Ui/Graph/PercentileContractTest.php'
+      - 'tests/Unit/RrdResolutionStepQueryTest.php'
       - 'tests/integration/RrdtoolProcessIntegrationTest.php'
       - 'tests/integration/GraphVariablesDivisorContractTest.php'
   pull_request:
@@ -29,6 +30,7 @@ on:
       - 'tests/Unit/Core/Rrd/PercentileResolutionBehaviorTest.php'
       - 'tests/Unit/ConsolidatedFunctionalFixesTest.php'
       - 'tests/Unit/Ui/Graph/PercentileContractTest.php'
+      - 'tests/Unit/RrdResolutionStepQueryTest.php'
       - 'tests/integration/RrdtoolProcessIntegrationTest.php'
       - 'tests/integration/GraphVariablesDivisorContractTest.php'
   workflow_dispatch:
