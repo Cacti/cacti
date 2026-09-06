@@ -1720,8 +1720,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		$graph_opts = rrd_function_process_graph_options($graph_start, $graph_end, $graph, $graph_data_array);
 	} else {
 		/* basic export options */
-		$export_step = max(1, $rra_seconds);
-		$export_rows = (int) ceil(abs($graph_end - $graph_start) / $export_step) + 10;
+		$export_now   = time();
+		$export_start = $graph_start < 0 ? $export_now + $graph_start : $graph_start;
+		$export_end   = $graph_end < 0 ? $export_now + $graph_end : $graph_end;
+		$export_step  = max(1, $rra_seconds);
+		$export_rows  = (int) ceil(abs($export_end - $export_start) / $export_step) + 10;
 		$graph_opts =
 			'--start=' . cacti_escapeshellarg($graph_start) . RRD_NL .
 			'--end=' . cacti_escapeshellarg($graph_end) . RRD_NL .
