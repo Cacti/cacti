@@ -7,9 +7,11 @@
  +-------------------------------------------------------------------------+
 */
 
-$boostSource = file_get_contents(__DIR__ . '/../../../../lib/boost.php');
+$boostPath   = __DIR__ . '/../../../../lib/boost.php';
+$boostSource = file_get_contents($boostPath);
 
 expect($boostSource)->not->toBeFalse();
+require_once $boostPath;
 
 test('boost_graph_set_file delegates cache publication to the atomic writer', function () use ($boostSource) {
 	$start = strpos($boostSource, 'function boost_graph_set_file(');
@@ -50,12 +52,7 @@ test('RRD update boundaries reject unsafe paths templates and values', function 
 		->and($body)->toContain('cacti_has_control_chars($rrd_update_values)');
 });
 
-test('on-demand processing validates its identifier before building temporary table names', function () use ($boostSource) {
-	$start = strpos($boostSource, 'function boost_process_poller_output(');
-	expect($start)->not->toBeFalse();
-
-	$body = substr($boostSource, $start, 1000);
-
-	expect($body)->toContain('$local_data_id = (int) $local_data_id;')
-		->and($body)->toContain('if ($local_data_id <= 0)');
+test('on-demand processing rejects a non-positive identifier before querying', function () {
+	expect(boost_process_poller_output(0))->toBe(-1)
+		->and(boost_process_poller_output('-4'))->toBe(-1);
 });

@@ -277,14 +277,14 @@ if ($child == false) {
 				dsstats_boost_bottom();
 				rrdcheck_boost_bottom();
 
-					api_plugin_hook('boost_poller_bottom');
-				}
-			} else {
-				$rrd_updates = 0;
-				set_config_option('boost_poller_status', 'failed - end time:' . date('Y-m-d H:i:s'));
-				set_config_option('boost_last_run_time', $last_run_time);
-				cacti_log('ERROR: Boost preparation failed; no child processes were launched.', true, 'BOOST');
+				api_plugin_hook('boost_poller_bottom');
 			}
+		} else {
+			$rrd_updates = 0;
+			set_config_option('boost_poller_status', 'failed - end time:' . date('Y-m-d H:i:s'));
+			set_config_option('boost_last_run_time', $last_run_time);
+			cacti_log('ERROR: Boost preparation failed; no child processes were launched.', true, 'BOOST');
+		}
 
 		cacti_log('INFO: Boost unregistering master process', true, 'BOOST');
 

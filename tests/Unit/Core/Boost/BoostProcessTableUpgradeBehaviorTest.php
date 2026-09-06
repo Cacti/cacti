@@ -18,16 +18,38 @@ function boost12TestReset(array $overrides = array()) {
 		'rows'     => 3,
 		'fail_on'  => '',
 		'appear_on_failure' => '',
+		'table_cache'       => null,
+		'column_cache'      => array(),
 		'sql'      => array(),
 		'logs'     => array(),
 	), $overrides);
 }
 
 function boost12TestTableExists($table) {
-	return $GLOBALS['boost12_test_state']['table'];
+	$state =& $GLOBALS['boost12_test_state'];
+
+	if ($state['table_cache'] === null) {
+		$state['table_cache'] = $state['table'];
+	}
+
+	return $state['table_cache'];
 }
 
 function boost12TestColumnExists($table, $column) {
+	$state =& $GLOBALS['boost12_test_state'];
+
+	if (!array_key_exists($column, $state['column_cache'])) {
+		$state['column_cache'][$column] = $state[$column];
+	}
+
+	return $state['column_cache'][$column];
+}
+
+function boost12TestTableExistsUncached() {
+	return $GLOBALS['boost12_test_state']['table'];
+}
+
+function boost12TestColumnExistsUncached($column) {
 	return $GLOBALS['boost12_test_state'][$column];
 }
 
@@ -105,6 +127,8 @@ function boost12LoadEnsureFunction($root) {
 	$function = substr($source, $start, $end - $start);
 	$function = str_replace(array(
 		'boost_ensure_process_table',
+		'boost_process_table_exists_uncached',
+		'boost_process_column_exists_uncached',
 		'db_table_exists',
 		'db_column_exists',
 		'db_index_exists',
@@ -112,6 +136,8 @@ function boost12LoadEnsureFunction($root) {
 		'cacti_log',
 	), array(
 		'boost12TestEnsureProcessTable',
+		'boost12TestTableExistsUncached',
+		'boost12TestColumnExistsUncached',
 		'boost12TestTableExists',
 		'boost12TestColumnExists',
 		'boost12TestIndexExists',

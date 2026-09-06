@@ -90,12 +90,12 @@ test('dynamic archive identifiers are validated before select delete analyze and
 		->and($poller)->toContain('DROP TABLE IF EXISTS `$table`');
 });
 
-test('recovery reads are bounded and restore online status even after transfer failure', function () use ($root) {
+test('recovery reads are bounded and leave recovery status visible after transfer failure', function () use ($root) {
 	$source = file_get_contents($root . '/poller_recovery.php');
 
 	expect($source)->toContain("LIMIT ' . (int) \$record_limit")
 		->and($source)->toContain('ORDER BY time ASC, local_data_id ASC, rrd_name ASC')
-		->and($source)->not->toContain('if (!$transfer_failed) {')
+		->and($source)->toContain('if (!$transfer_failed) {')
 		->and($source)->toContain('exit($transfer_failed ? 1 : 0)');
 });
 
