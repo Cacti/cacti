@@ -41,7 +41,10 @@ test('Automation Network Now action receives the current server offset', () => {
 	const picker = source.match(/\$\('#start_at'\)\.datetimepicker\(\{[\s\S]*?\}\);/);
 
 	assert.notEqual(picker, null, 'start_at datetimepicker configuration must exist');
-	assert.match(picker[0], /timezone:\s*<\?php print intval\(date\('Z'\) \/ 60\); \?>,/);
+	assert.match(
+		picker[0],
+		/timezone\s*:\s*<\?php\s+print\s+intval\s*\(\s*date\s*\(\s*'Z'\s*\)\s*\/\s*60\s*\)\s*;\s*\?>\s*,/
+	);
 });
 
 test('Now uses UTC server wall time in a browser two hours east', () => {
