@@ -23,14 +23,6 @@
 
 require_once __DIR__ . '/../../../../lib/maintenance_cli.php';
 
-if (!function_exists('__')) {
-	function __($text) {
-		return $text;
-	}
-}
-
-require_once __DIR__ . '/../../../../lib/html_utility.php';
-
 $longopts = array(
 	'host-id::',
 	'graph-template-id::',
@@ -65,9 +57,13 @@ test('remove_graphs short option validation follows its declaration', function (
 });
 
 test('remove_graphs treats validator error strings as regex failures', function () {
-	expect(cacti_remove_graphs_regex_error('edge.*'))->toBeFalse()
-		->and(cacti_remove_graphs_regex_error(str_repeat('a', 51)))->not->toBeFalse()
-		->and(cacti_remove_graphs_regex_error('edge;.*'))->not->toBeFalse();
+	$validator = static function ($regex) {
+		return $regex === 'edge.*' ? true : 'invalid regex';
+	};
+
+	expect(cacti_remove_graphs_regex_error('edge.*', $validator))->toBeFalse()
+		->and(cacti_remove_graphs_regex_error(str_repeat('a', 51), $validator))->toBe('invalid regex')
+		->and(cacti_remove_graphs_regex_error('edge;.*', $validator))->toBe('invalid regex');
 });
 
 test('remove_graphs quiet mode follows the parsed option key', function () {

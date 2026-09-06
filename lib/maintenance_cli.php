@@ -51,8 +51,9 @@ function cacti_remove_graphs_parameter_is_valid($parameter, $shortopts, $longopt
 	return ($valid_longopts[$name] && $has_value) || (!$valid_longopts[$name] && !$has_equals);
 }
 
-function cacti_remove_graphs_regex_error($regex) {
-	$validation = validate_is_regex($regex);
+function cacti_remove_graphs_regex_error($regex, $validator = null) {
+	$validator  = $validator ?: 'validate_is_regex';
+	$validation = $validator($regex);
 
 	return $validation === true ? false : $validation;
 }
