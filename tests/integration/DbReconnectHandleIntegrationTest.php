@@ -40,12 +40,12 @@ if (preg_match('/function db_check_reconnect\(.*?^}\R/ms', $source, $matches) !=
 	throw new \RuntimeException('Unable to extract db_check_reconnect() for the reconnect integration test.');
 }
 
-eval('namespace DbReconnectHandleIntegrationTest;' . $matches[0]);
+eval('namespace DbReconnectHandleIntegrationTest;' . $matches[0]); // nosemgrep: php.lang.security.eval-use.eval-use
 
 beforeEach(function () {
 	$old_connection = new \stdClass();
 
-	$GLOBALS['config']                             = array('base_path' => '/nonexistent-cacti-test');
+	$GLOBALS['config']['base_path']                = '/nonexistent-cacti-test';
 	$GLOBALS['database_hostname']                  = 'database';
 	$GLOBALS['database_username']                  = 'cacti';
 	$GLOBALS['database_password']                  = 'secret';
