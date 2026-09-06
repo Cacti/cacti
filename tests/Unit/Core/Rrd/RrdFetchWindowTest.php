@@ -52,12 +52,12 @@ test('fetch output handles unknown, malformed, sparse, and empty rows safely', f
 		->and($empty)->toBe([]);
 });
 
-test('a single in-window row has an unknown observed step', function () {
+test('a single in-window row derives its observed step from the excluded trailing row', function () {
 	$fetch = rrdtool_parse_fetch_output("value\n1700000400: 1\n1700000700: 2\n", 1700000400);
 
 	expect($fetch['timestamp'])->toBe([
 		'start_time' => 1700000400,
 		'end_time'   => 1700000400,
-		'step'       => 0,
+		'step'       => 300,
 	]);
 });

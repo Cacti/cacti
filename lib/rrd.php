@@ -1882,16 +1882,16 @@ function rrdtool_parse_fetch_output(string $output, int $normalized_end_time, bo
 
 		$timestamp = (int) trim($raw_timestamp);
 
-		if ($timestamp > $normalized_end_time) {
-			continue;
-		}
-
 		if ($previous_timestamp !== null) {
 			$observed_step = $timestamp - $previous_timestamp;
 
 			if ($observed_step > 0 && ($effective_step == 0 || $observed_step < $effective_step)) {
 				$effective_step = $observed_step;
 			}
+		}
+
+		if ($timestamp > $normalized_end_time) {
+			continue;
 		}
 
 		$previous_timestamp = $timestamp;
