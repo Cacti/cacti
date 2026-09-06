@@ -107,6 +107,17 @@ test('a pid that cannot name a process is refused and recorded', function () {
 	expect(implode("\n", $GLOBALS['__poller_log']))->toContain('Refusing to signal PID');
 });
 
+test('control characters in a refused pid cannot inject log lines', function () {
+	$GLOBALS['__poller_log'] = [];
+
+	expect(cacti_process_kill("12\nforged", SIGTERM))->toBeFalse();
+
+	$log = implode("\n", $GLOBALS['__poller_log']);
+
+	expect($log)->toContain('PID 12?forged')
+		->and(substr_count($log, "\n"))->toBe(0);
+});
+
 test('the guard bounds the pid before calling the native signal function', function () {
 	/* A floor at the reserved low range would also exclude Cacti's own
 	   children inside a pid namespace, where they hold single and double digit

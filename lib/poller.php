@@ -2521,7 +2521,8 @@ function cacti_process_pid_is_valid($pid) {
  *   share one interpreter. Executable identity is used only for non-PHP
  *   programs when cmdline is unavailable. This is a best-effort PID-reuse
  *   guard, not an anti-impersonation boundary. Without procfs, preserve the
- *   historical bare liveness behavior.
+ *   historical bare liveness behavior. The same fallback applies when procfs
+ *   exists but its identity files are hidden from this process.
  *
  * @param  (int) $pid - the pid recorded in the processes table
  *
@@ -2539,10 +2540,14 @@ function cacti_process_still_running($pid) {
 	}
 
 	if (is_dir('/proc/' . getmypid()) && is_dir('/proc/' . $pid)) {
-		return cacti_process_identity_matches($pid);
+		$identity_matches = cacti_process_identity_matches($pid);
+
+		if ($identity_matches !== null) {
+			return $identity_matches;
+		}
 	}
 
-	/* /proc is unavailable (non-Linux or restricted): fall back to the bare
+	/* /proc is unavailable or identity is unreadable: fall back to the bare
 	 * existence test, but re-check it here rather than trusting the result
 	 * from the top of the function, which can now be stale if the pid exited
 	 * in the window between that check and these file reads. */
@@ -2702,12 +2707,14 @@ function heartbeat_process($tasktype, $taskname, $taskid = 0) {
  *   the kernel-resolved executable only, so a controller can recognize a
  *   different Cacti PHP script running under the same interpreter.
  *
- *   Where the executable link cannot be read, the answer is no. The low-pid
- *   caller treats that as "reserved", which is the safe direction.
+ *   An unreadable identity is reported separately from a positive mismatch.
+ *   Liveness callers may then preserve the process row, while the low-pid
+ *   safety check still treats an unknown identity as reserved.
  *
  * @param  (int) $pid  - The process id to compare against this one
  *
- * @return (bool) true only when procfs identifies the same command
+ * @return (bool|null) true for the same command, false for a positive
+ *                     mismatch, or null when procfs cannot establish identity
  */
 function cacti_process_identity_matches($pid) {
 	$pid           = (int) $pid;
@@ -2746,14 +2753,14 @@ function cacti_process_identity_matches($pid) {
 	$other_exe = '/proc/' . $pid . '/exe';
 
 	if (!is_link($self_exe) || !is_link($other_exe)) {
-		return false;
+		return null;
 	}
 
 	$mine   = @readlink($self_exe);
 	$theirs = @readlink($other_exe);
 
 	if ($mine === false || $theirs === false) {
-		return false;
+		return null;
 	}
 
 	if ($mine !== $theirs) {
@@ -2762,7 +2769,7 @@ function cacti_process_identity_matches($pid) {
 
 	/* If argv is unavailable, matching PHP interpreters do not establish that
 	 * the registered process runs the same Cacti script. */
-	return !preg_match('/^php(?:-fpm)?(?:[0-9.]*)?$/i', basename($mine));
+	return preg_match('/^php(?:-fpm)?(?:[0-9.]*)?$/i', basename($mine)) ? null : true;
 }
 
 /**
@@ -2821,7 +2828,8 @@ function cacti_process_signalable($pid) {
  */
 function cacti_process_kill($pid, $signal = SIGTERM, $environ = 'POLLER') {
 	if (!cacti_process_pid_is_valid($pid) || is_system_pid($pid)) {
-		cacti_log(sprintf('WARNING: Refusing to signal PID %s from a process table, which does not name a process a Cacti task can own!', $pid), false, $environ);
+		$logged_pid = preg_replace('/[\x00-\x1f\x7f]/', '?', (string) $pid);
+		cacti_log(sprintf('WARNING: Refusing to signal PID %s from a process table, which does not name a process a Cacti task can own!', $logged_pid), false, $environ);
 
 		return false;
 	}
@@ -2875,7 +2883,7 @@ function is_system_pid($pid) {
 	   pid namespace. Allow it only when /proc positively identifies the pid as
 	   the same program as this process. Where /proc cannot answer, which is
 	   every platform without procfs, the old refusal stands. */
-	return !cacti_process_identity_matches($pid);
+	return cacti_process_identity_matches($pid) !== true;
 }
 
 /**

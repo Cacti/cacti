@@ -104,6 +104,15 @@ test('falls back to the bare existence check when /proc is unavailable', functio
 	expect($stillRunning(getmypid()))->toBeTrue();
 });
 
+test('the liveness guard falls back when procfs identity is unreadable', function () {
+	$src = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
+	$start = strpos($src, 'function cacti_process_still_running(');
+	$body = substr($src, $start, strpos($src, "\n}\n", $start) - $start);
+
+	expect($body)->toContain('$identity_matches !== null')
+		->and($body)->toContain('return posix_kill($pid, 0);');
+});
+
 test('register_process_start() and timeout_kill_registered_processes() route through the guard, not a bare posix_kill(pid, 0)', function () {
 	$src = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
 
