@@ -81,7 +81,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.2', '8.3', '8.4', '8.5']
+        php: ['8.3', '8.4', '8.5']
 
     steps:
     - name: Checkout
@@ -111,7 +111,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.2', '8.3', '8.4', '8.5']
+        php: ['8.3', '8.4', '8.5']
 
     steps:
     - name: Checkout
@@ -168,7 +168,7 @@ jobs:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
-    name: PHP 8.2 locked integration
+    name: PHP 8.3 locked integration
     steps:
     - name: Checkout
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -185,10 +185,10 @@ jobs:
     - name: Build managed JavaScript
       run: npm ci
 
-    - name: Setup locked PHP 8.2 dependencies
+    - name: Setup locked PHP 8.3 dependencies
       uses: ./.github/actions/setup-php-composer
       with:
-        php-version: '8.2'
+        php-version: '8.3'
         extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
         ini-values: post_max_size=256M, max_execution_time=60, date.timezone=America/New_York
         coverage: none
