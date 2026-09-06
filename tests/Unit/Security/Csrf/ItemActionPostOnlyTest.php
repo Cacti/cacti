@@ -170,3 +170,16 @@ test('the cactiPostAction handler posts the token and refuses another origin', f
 		->and($body)->toContain('__csrf_magic')
 		->and($body)->toContain('Refusing to send a CSRF token to a different origin');
 });
+
+test('state action URLs use attribute-safe escaping and the page handler posts', function () {
+	$data_queries = file_get_contents(dirname(__DIR__, 4) . '/data_queries.php');
+	$html         = file_get_contents(dirname(__DIR__, 4) . '/lib/html.php');
+
+	expect($data_queries)->not->toBeFalse()
+		->and($html)->not->toBeFalse()
+		->and(substr_count($data_queries, "data-url='<?php print html_escape_url("))->toBeGreaterThanOrEqual(6)
+		->and(substr_count($html, "data-url='\" . html_escape_url("))->toBeGreaterThanOrEqual(3)
+		->and($data_queries)->toContain("$('.remover').on('click'")
+		->and($data_queries)->toContain('cactiPreparePostRequestFromUrl(href)')
+		->and($data_queries)->toContain('$.post(request.url, request.data)');
+});
