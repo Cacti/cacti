@@ -189,6 +189,16 @@ function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request =
 
 			return 'U';
 		} else {
+			# Apply the same scaling as the query path so get requests return the
+			# sensor value rather than the raw milli-unit counter.
+			if (($sensor_type == 'voltage') && ($snmp_test > 2147483647)) {
+				$snmp_test = ($snmp_test - 4294967296);
+			}
+
+			if (($sensor_type == 'voltage') || ($sensor_type == 'temperature')) {
+				$snmp_test = ($snmp_test / 1000);
+			}
+
 			return $snmp_test;
 		}
 	} else {
@@ -318,7 +328,7 @@ function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request =
 						# negative voltage readings must be converted to negative numbers
 						#
 						if (($sensor_type == 'voltage') && ($scratch > 2147483647)) {
-							$scratch = ($scratch - 4294967294);
+							$scratch = ($scratch - 4294967296);
 						}
 
 						#
@@ -382,4 +392,3 @@ function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request =
 		}
 	}
 }
-

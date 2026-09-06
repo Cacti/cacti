@@ -433,7 +433,7 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 
 	if ($os != '-1' && in_array($os, $os_arr)) {
 		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . 'os = ?';
-		$sql_param[] = $os;
+		$sql_params[] = $os;
 	}
 
 	if ($filter != '') {
