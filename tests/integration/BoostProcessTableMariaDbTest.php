@@ -169,3 +169,19 @@ test('uncached recheck accepts a concurrent column repair after cached absence',
 		->and(boostMariaDbIndexExists('poller_output_boost_processes', 'run_child'))->toBeTrue()
 		->and($GLOBALS['boost_mariadb_logs'])->toBe(array());
 });
+
+test('runtime repair clears duplicate legacy rows before adding the run-child key', function () {
+	$GLOBALS['boost_mariadb_pdo']->exec('CREATE TABLE poller_output_boost_processes (
+		sock_int_value bigint unsigned NOT NULL AUTO_INCREMENT,
+		run_id char(32) NOT NULL DEFAULT \'\',
+		child_id int unsigned NOT NULL DEFAULT 0,
+		status varchar(255) DEFAULT NULL,
+		PRIMARY KEY (sock_int_value)) ENGINE=MEMORY');
+	$GLOBALS['boost_mariadb_pdo']->exec("INSERT INTO poller_output_boost_processes
+		(run_id, child_id, status) VALUES ('', 0, '1'), ('', 0, '2')");
+
+	expect(boostMariaDbEnsureProcessTable(true))->toBeTrue()
+		->and(boostMariaDbIndexExists('poller_output_boost_processes', 'run_child'))->toBeTrue()
+		->and((int) boostMariaDbFetchCellPrepared('SELECT COUNT(*) FROM poller_output_boost_processes'))->toBe(0)
+		->and($GLOBALS['boost_mariadb_logs'])->toBe(array());
+});

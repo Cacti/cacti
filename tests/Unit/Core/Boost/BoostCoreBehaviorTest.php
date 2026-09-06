@@ -114,6 +114,12 @@ test('Windows cache replacement preserves the new payload and removes its backup
 	}
 });
 
+test('Windows cache replacement rejects a missing source or destination', function () {
+	$missing = sys_get_temp_dir() . '/cacti-boost-missing-' . bin2hex(random_bytes(8));
+
+	expect(boost_replace_cache_file_on_windows($missing . '-source', $missing . '-destination'))->toBeFalse();
+});
+
 test('Boost timer records complete cycles and ignores an unmatched end', function () {
 	if (!defined('BOOST_TIMER_START')) {
 		define('BOOST_TIMER_START', 0);

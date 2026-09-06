@@ -87,7 +87,7 @@ function loadApplySkin(nonce) {
 		'setupPageTimeout', 'setupSpecialKeys', 'setupCollapsible', 'ajaxAnchors',
 		'applySelectorVisibilityAndActions', 'handleTableNav', 'makeFiltersResponsive',
 		'setupResponsiveMenuAndTabs', 'setupButtonStyle', 'keepWindowSize',
-		'displayMessages', 'renderLanguages',
+		'displayMessages', 'renderLanguages', 'setupSelectmenuScrollClose',
 	]) {
 		context[name] = () => calls.push(name);
 	}
