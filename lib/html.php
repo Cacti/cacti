@@ -165,7 +165,7 @@ function html_start_box(string $title, string $width, bool $div, int $cell_paddi
 						if (isset($icon['data_url'])) {
 							$href      = '#';
 							$data_url  = " data-url='" . html_escape_url($icon['data_url']) . "'";
-							$classo   .= ' linkOverDark cactiPostAction';
+							$classo .= ' linkOverDark cactiPostAction';
 						} else {
 							$data_url = '';
 						}
