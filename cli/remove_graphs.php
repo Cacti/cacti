@@ -30,7 +30,7 @@ require_once($config['base_path'] . '/lib/api_graph.php');
 require_once($config['base_path'] . '/lib/data_query.php');
 require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/utility.php');
-require_once($config['base_path'] . '/lib/maintenance_cli.php');
+require_once(__DIR__ . '/../lib/maintenance_cli.php');
 
 ini_set('max_execution_time', '0');
 ini_set('memory_limit', '-1');
