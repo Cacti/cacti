@@ -1825,6 +1825,10 @@ function display_tooltip(string $text) : string {
  * @return string The HTML for the pagination control.
  */
 function get_page_list(int $current_page, int $pages_per_screen, int $rows_per_page, int $total_rows, string $url, string $page_var = 'page', string $return_to = '') : string {
+	if (!preg_match('/^[A-Za-z_$][A-Za-z0-9_$]*$/', $page_var)) {
+		$page_var = 'page';
+	}
+
 	// By current design, $pages_per_screen means number of page no in mid of nav bar
 	// when $total_pages is larger than $pages_per_screen + 2(first and last)
 	// So actual $pages_per_screen should be $pages_per_screen+2
@@ -1913,7 +1917,8 @@ function get_page_list(int $current_page, int $pages_per_screen, int $rows_per_p
 		$return_to = 'main';
 	}
 
-	$url .= $page_var;
+	$url_json       = cacti_js_encode($url . $page_var);
+	$return_to_json = cacti_js_encode($return_to);
 	$url_page_select .= "<script type='text/javascript'>
 	function goto$page_var(pageNo) {
 		if (typeof url_graph === 'function') {
@@ -1922,11 +1927,11 @@ function get_page_list(int $current_page, int $pages_per_screen, int $rows_per_p
 			var url_add='';
 		};
 
-		strURL = '$url='+pageNo+url_add;
+		strURL = $url_json + '=' + pageNo + url_add;
 
 		loadUrl({
 			url: strURL,
-			elementId: '$return_to',
+			elementId: $return_to_json,
 		});
 	}</script>";
 

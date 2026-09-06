@@ -604,9 +604,15 @@ function graph_drilldown_icons(int $local_graph_id, string $type = 'graph_button
  */
 function html_nav_bar(string $base_url, int $max_pages, int $current_page, int $rows_per_page, int $total_rows,
 	int $colspan = 30, string $object = '', string $page_var = 'page', string $return_to = '', bool $page_count = true) : string {
+	if (!preg_match('/^[A-Za-z_$][A-Za-z0-9_$]*$/', $page_var)) {
+		$page_var = 'page';
+	}
+
 	if ($object == '') {
 		$object = __('Rows');
 	}
+
+	$object = htmle($object);
 
 	if ($total_rows >= $rows_per_page && $page_count) {
 		if (substr_count($base_url, '?') == 0) {
@@ -662,7 +668,8 @@ function html_nav_bar(string $base_url, int $max_pages, int $current_page, int $
 				$return_to = 'main';
 			}
 
-			$url  = $base_url . $page_var;
+			$url            = cacti_js_encode($base_url . $page_var);
+			$return_to_json = cacti_js_encode($return_to);
 			$nav .= "<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">
 			function goto$page_var(pageNo) {
 				if (typeof url_graph === 'function') {
@@ -671,11 +678,11 @@ function html_nav_bar(string $base_url, int $max_pages, int $current_page, int $
 					var url_add='';
 				};
 
-				strURL = '$url='+pageNo+url_add;
+				strURL = $url + '=' + pageNo + url_add;
 
 				loadUrl({
 					url: strURL,
-					elementId: '$return_to',
+					elementId: $return_to_json,
 				});
 			}</script>";
 		}
