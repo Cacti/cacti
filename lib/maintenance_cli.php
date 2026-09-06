@@ -69,7 +69,7 @@ function cacti_remove_graphs_parameter_is_valid($parameter, $shortopts, $longopt
  * @return string|false False when valid, otherwise a printable error message.
  */
 function cacti_remove_graphs_regex_error($regex) {
-	$validation = validate_is_regex($regex);
+	$validation = validate_is_rlike_regex($regex);
 
 	if ($validation === true) {
 		return false;

@@ -55,7 +55,7 @@ function remove_graphs_regex_result($regex, $broken_contract = false) {
 	$translation = 'function __($message) { return $message; }'
 		. 'function CactiErrorHandler() { return true; }';
 	$validator   = $broken_contract
-		? 'function validate_is_regex($regex) { return false; }'
+		? 'function validate_is_rlike_regex($regex) { return false; }'
 		: 'require ' . var_export($root . '/lib/html_utility.php', true) . ';';
 	$code        = $translation . $validator
 		. 'require ' . var_export($root . '/lib/maintenance_cli.php', true) . ';'
@@ -98,12 +98,16 @@ test('remove_graphs uses the real regex length and semicolon guards', function (
 	$malformed = remove_graphs_regex_result('(');
 	$too_long  = remove_graphs_regex_result(str_repeat('a', 51));
 	$semicolon = remove_graphs_regex_result('edge;.*');
+	$alteration = remove_graphs_regex_result('eth0|eth1');
+	$repeat     = remove_graphs_regex_result('^Gi[0-9]{1,2}$');
 
 	expect($valid['result'])->toBeFalse()
 		->and($valid['handler'])->toBe('CactiErrorHandler')
 		->and($malformed['result'])->toContain('Compilation failed')
 		->and($too_long['result'])->toBe('Cacti regular expressions are limited to 50 characters only for security reasons.')
-		->and($semicolon['result'])->toBe('Cacti regular expressions can not includes the semi-color character.');
+		->and($semicolon['result'])->toBe('Cacti regular expressions can not includes the semi-color character.')
+		->and($alteration['result'])->toContain('do not support alternation')
+		->and($repeat['result'])->toContain('do not support alternation');
 });
 
 test('remove_graphs fails closed when its regex validator breaks contract', function () {
@@ -164,6 +168,7 @@ test('reapply names rejects malformed values that compare loosely to zero', func
 	}
 
 	expect(cacti_reapply_names_where('0', ''))->toBe(array(' AND graph_local.host_id=?', array(0)));
+	expect(cacti_reapply_names_where('all', ''))->toBe(array('', array()));
 });
 
 test('normalized maintenance failures use the portable non-zero exit', function () {
@@ -187,11 +192,24 @@ test('remove_graphs wires strict validation before getopt', function () {
 		->and($source)->toContain('displayGraphTemplates($graphTemplates, $quietMode)');
 });
 
+test('every declared remove_graphs option has a switch branch', function () use ($shortopts, $longopts) {
+	$source = file_get_contents(dirname(__DIR__, 4) . '/cli/remove_graphs.php');
+
+	foreach ($longopts as $option) {
+		expect($source)->toContain("case '" . rtrim($option, ':') . "':");
+	}
+
+	foreach (str_split(str_replace(':', '', $shortopts)) as $option) {
+		expect($source)->toContain("case '$option':");
+	}
+});
+
 test('all regex consumers honor the validator true-or-error contract', function () {
 	$root = dirname(__DIR__, 4);
 
 	$add_graphs = file_get_contents($root . '/cli/add_graphs.php');
-	expect($add_graphs)->toContain('if ($validation !== true)')
+	expect($add_graphs)->toContain('validate_is_rlike_regex($item)')
+		->and($add_graphs)->toContain('if ($validation !== true)')
 		->and($add_graphs)->toContain("' AND field_value ' . db_qstr_rlike(")
 		->and($add_graphs)->not->toContain('field_value REGEXP "');
 

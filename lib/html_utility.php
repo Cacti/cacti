@@ -1202,6 +1202,27 @@ function validate_is_regex($regex) {
 	}
 }
 
+/**
+ * Validate a regular expression for use with db_qstr_rlike().
+ *
+ * @param string $regex The regular expression to validate.
+ *
+ * @return bool|string True when safe, otherwise a printable error message.
+ */
+function validate_is_rlike_regex($regex) {
+	$validation = validate_is_regex($regex);
+
+	if ($validation !== true) {
+		return $validation;
+	}
+
+	if (strpbrk($regex, '|{}') !== false) {
+		return __('Cacti RLIKE filters do not support alternation or bounded-repeat characters.');
+	}
+
+	return true;
+}
+
 /* load_current_session_value - finds the correct value of a variable that is being
      cached as a session variable on an HTML form
    @arg $request_var_name - the array index name for the request variable

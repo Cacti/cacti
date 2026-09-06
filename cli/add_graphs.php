@@ -166,7 +166,7 @@ if (cacti_sizeof($parms)) {
 			}
 
 			foreach($value as $item) {
-				$validation = validate_is_regex($item);
+				$validation = validate_is_rlike_regex($item);
 
 				if ($validation !== true) {
 					print "ERROR: Regex specified '$item' is not valid: $validation\n";
