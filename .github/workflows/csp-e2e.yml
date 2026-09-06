@@ -38,10 +38,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v4
 
-      - name: Setup PHP 7.4
+      - name: Setup PHP 8.1
         uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231  # v2.31.1
         with:
-          php-version: '7.4'
+          php-version: '8.1'
           extensions: mbstring, intl, json, openssl, curl, xml
           coverage: none
 
@@ -51,7 +51,14 @@ jobs:
 
       - name: Run Pest unit tests
         working-directory: tests
-        run: ./vendor/bin/pest Unit/Security/Csp/HeadersSecureTest.php Unit/Security/Csp/CspReportEndpointTest.php
+        run: |
+          ./vendor/bin/pest \
+            --bootstrap=./bootstrap-unit.php \
+            --log-junit="$RUNNER_TEMP/csp-unit.xml" \
+            Unit/Security/Csp/
+          # PHP variables must not expand in the shell.
+          # shellcheck disable=SC2016
+          php -r '$xml = is_file($argv[1]) ? @simplexml_load_file($argv[1]) : false; $tests = $xml === false ? false : $xml->xpath("//testcase"); if (!is_array($tests) || count($tests) < 1) { fwrite(STDERR, "Missing, invalid, or empty CSP unit test report\n"); exit(1); }' "$RUNNER_TEMP/csp-unit.xml"
 
   integration:
     name: Integration tests (php -S harness)
@@ -60,10 +67,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v4
 
-      - name: Setup PHP 7.4
+      - name: Setup PHP 8.1
         uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231  # v2.31.1
         with:
-          php-version: '7.4'
+          php-version: '8.1'
           extensions: mbstring, intl, json, openssl, curl, xml
           coverage: none
 
@@ -73,7 +80,14 @@ jobs:
 
       - name: Run Pest integration tests
         working-directory: tests
-        run: ./vendor/bin/pest integration/
+        run: |
+          ./vendor/bin/pest \
+            --bootstrap=./bootstrap-unit.php \
+            --log-junit="$RUNNER_TEMP/csp-integration.xml" \
+            integration/ContentSecurityPolicyTest.php
+          # PHP variables must not expand in the shell.
+          # shellcheck disable=SC2016
+          php -r '$xml = is_file($argv[1]) ? @simplexml_load_file($argv[1]) : false; $tests = $xml === false ? false : $xml->xpath("//testcase"); if (!is_array($tests) || count($tests) < 1) { fwrite(STDERR, "Missing, invalid, or empty CSP integration test report\n"); exit(1); }' "$RUNNER_TEMP/csp-integration.xml"
 
   e2e:
     name: Playwright E2E (docker-compose + Playwright)
