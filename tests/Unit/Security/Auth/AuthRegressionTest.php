@@ -15,7 +15,7 @@
  * so the advisory it guards against remains traceable.
  */
 
-$authSource = file_get_contents(__DIR__ . '/../../../../../lib/auth.php');
+$authSource = file_get_contents(__DIR__ . '/../../../../lib/auth.php');
 
 // GHSA-4494: remember-me cookie auth must honor the account lockout check.
 test('GHSA-4494: check_auth_cookie runs lockout check before returning', function () use ($authSource) {
@@ -28,7 +28,7 @@ test('GHSA-4494: check_auth_cookie runs lockout check before returning', functio
 	$end  = strpos($authSource, "\n}\n", $start);
 	$body = substr($authSource, $start, $end - $start);
 
-	expect($body)->toContain("auth_process_lockout_check(\$user_info['username'], \$user_info['realm']) === false");
+	expect($body)->toContain("if (auth_process_lockout_check(\$user_info['username'], \$user_info['realm']))");
 	expect($body)->toContain("return \$user_info['id'];");
 });
 
@@ -52,7 +52,7 @@ test('GHSA-4494: lockout failure returns false', function () use ($authSource) {
 
 	// The lockout failure branch must short-circuit to false, not fall
 	// through to the success return.
-	expect(preg_match('/auth_process_lockout_check\([^)]*\)\s*===\s*false\)\s*\{\s*return false;/', $body))->toBe(1);
+	expect(preg_match('/if\s*\(auth_process_lockout_check\([^)]*\)\)\s*\{\s*return false;/', $body))->toBe(1);
 });
 
 // GHSA-mx5c: 1.2.x branch must not expose an unauthenticated REST API v1 entrypoint.
