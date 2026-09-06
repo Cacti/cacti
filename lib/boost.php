@@ -27,6 +27,25 @@
  * Git-following 1.2.x installs can already be stamped 1.2.32 without
  * ever running an upgrade file that adds those columns.
  */
+function boost_process_table_exists_uncached() {
+	return (bool) db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM information_schema.TABLES
+		WHERE TABLE_SCHEMA = SCHEMA()
+		AND TABLE_NAME = ?', array('poller_output_boost_processes'));
+}
+
+function boost_process_column_exists_uncached($column) {
+	if (!in_array($column, array('run_id', 'child_id'), true)) {
+		return false;
+	}
+
+	return (bool) db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM information_schema.COLUMNS
+		WHERE TABLE_SCHEMA = SCHEMA()
+		AND TABLE_NAME = ?
+		AND COLUMN_NAME = ?', array('poller_output_boost_processes', $column));
+}
+
 function boost_ensure_process_table($repair_key = false) {
 	if (!db_table_exists('poller_output_boost_processes')) {
 		if (db_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost_processes` (
@@ -36,7 +55,7 @@ function boost_ensure_process_table($repair_key = false) {
 			`status` varchar(255) default NULL,
 			PRIMARY KEY (`sock_int_value`),
 			UNIQUE KEY `run_child` (`run_id`, `child_id`))
-			ENGINE=MEMORY") === false && !db_table_exists('poller_output_boost_processes')) {
+			ENGINE=MEMORY") === false && !boost_process_table_exists_uncached()) {
 			cacti_log('ERROR: Unable to create poller_output_boost_processes', true, 'BOOST');
 
 			return false;
@@ -55,7 +74,7 @@ function boost_ensure_process_table($repair_key = false) {
 
 	if ($needs_run_id) {
 		if (db_execute("ALTER TABLE poller_output_boost_processes ADD `run_id` char(32) NOT NULL default '' AFTER `sock_int_value`") === false &&
-			!db_column_exists('poller_output_boost_processes', 'run_id')) {
+			!boost_process_column_exists_uncached('run_id')) {
 			cacti_log('ERROR: Unable to add run_id to poller_output_boost_processes', true, 'BOOST');
 
 			return false;
@@ -64,7 +83,7 @@ function boost_ensure_process_table($repair_key = false) {
 
 	if ($needs_child_id) {
 		if (db_execute("ALTER TABLE poller_output_boost_processes ADD `child_id` int(10) unsigned NOT NULL default '0' AFTER `run_id`") === false &&
-			!db_column_exists('poller_output_boost_processes', 'child_id')) {
+			!boost_process_column_exists_uncached('child_id')) {
 			cacti_log('ERROR: Unable to add child_id to poller_output_boost_processes', true, 'BOOST');
 
 			return false;
@@ -521,7 +540,7 @@ function boost_atomic_write_cache($cache_file, $output) {
 
 	$flushed = fflush($fileptr);
 	fclose($fileptr);
-	if (!$flushed || !chmod($temp_file, 0644)) {
+	if (!$flushed || !chmod($temp_file, 0640)) {
 		@unlink($temp_file);
 
 		return false;
