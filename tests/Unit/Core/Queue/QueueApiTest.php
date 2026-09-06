@@ -14,20 +14,6 @@
 
 require_once dirname(__DIR__, 4) . '/lib/api_queue.php';
 
-if (!function_exists('read_config_option')) {
-	function read_config_option(string $name) : string {
-		return (string) ($GLOBALS['cacti_queue_test_settings'][$name] ?? '');
-	}
-}
-
-if (!function_exists('api_plugin_hook_function')) {
-	function api_plugin_hook_function(string $hook, mixed $value) : mixed {
-		$callback = $GLOBALS['cacti_queue_test_hooks'][$hook] ?? null;
-
-		return is_callable($callback) ? $callback($value) : $value;
-	}
-}
-
 class CactiTestQueueTransport implements Symfony\Component\Messenger\Transport\TransportInterface {
 	/** @var Symfony\Component\Messenger\Envelope[] */
 	public array $sent         = [];
