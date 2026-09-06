@@ -22,57 +22,49 @@
  * narrows it to -1 and signals every process the test runner owns.
  */
 
-if (!defined('POLLER_VERBOSITY_MEDIUM')) {
-	define('POLLER_VERBOSITY_MEDIUM', 2);
-}
-
-if (!function_exists('cacti_sizeof')) {
-	function cacti_sizeof($a) {
-		return is_array($a) ? count($a) : 0;
-	}
-}
-
-if (!function_exists('cacti_log')) {
-	function cacti_log($message, $stdout = false, $environ = 'CMDPHP', $level = 0) {
-		$GLOBALS['__poller_log'][] = $message;
-		return true;
-	}
-}
-
-if (!function_exists('db_table_exists')) {
-	function db_table_exists($table, $log = true, $force = false) {
-		return $GLOBALS['__poller_table_exists'] ?? true;
-	}
-}
-
-if (!function_exists('db_execute_prepared')) {
-	function db_execute_prepared($sql, $params = array(), $log = true) {
-		$GLOBALS['__poller_writes'][] = array($sql, $params);
-		return true;
-	}
-}
-
-if (!function_exists('db_fetch_row_prepared')) {
-	function db_fetch_row_prepared($sql, $params = array(), $log = true) {
-		return $GLOBALS['__poller_row'] ?? array();
-	}
-}
-
-if (!function_exists('db_fetch_assoc_prepared')) {
-	function db_fetch_assoc_prepared($sql, $params = array(), $log = true) {
-		return $GLOBALS['__poller_procs'] ?? array();
-	}
-}
-
 require_once __DIR__ . '/../../../../lib/poller.php';
 
-beforeEach(function () {
-	$GLOBALS['__poller_log']          = array();
-	$GLOBALS['__poller_writes']       = array();
-	$GLOBALS['__poller_table_exists'] = true;
-	$GLOBALS['__poller_row']          = array();
-	$GLOBALS['__poller_procs']        = array();
-});
+/**
+ * Exercise database-backed branches in an isolated PHP process. Keeping the
+ * doubles there prevents them from shadowing real Cacti functions when Pest
+ * collects the complete unit suite in one process.
+ *
+ * @param array  $row    Row returned to register_process_start().
+ * @param array  $procs  Rows returned to timeout_kill_registered_processes().
+ * @param string $action Function branch to invoke.
+ *
+ * @return array{result: mixed, log: array<int, string>, writes: array}
+ */
+function poller_pid_branch_scenario($row, $procs, $action) {
+	$library = dirname(__DIR__, 4) . '/lib/poller.php';
+	$invoke  = $action === 'register'
+		? '$result = register_process_start("poller", "test", 0, 300);'
+		: '$result = timeout_kill_registered_processes();';
+	$code    = 'define("POLLER_VERBOSITY_MEDIUM", 2);'
+		. '$row = ' . var_export($row, true) . '; $procs = ' . var_export($procs, true) . '; $log = array(); $writes = array();'
+		. 'function cacti_sizeof($value) { return is_array($value) ? count($value) : 0; }'
+		. 'function cacti_log($message) { global $log; $log[] = $message; return true; }'
+		. 'function db_table_exists($table) { return true; }'
+		. 'function db_execute_prepared($sql, $params = array()) { global $writes; $writes[] = array($sql, $params); return true; }'
+		. 'function db_fetch_row_prepared($sql, $params = array()) { global $row; return $row; }'
+		. 'function db_fetch_assoc_prepared($sql, $params = array()) { global $procs; return $procs; }'
+		. 'require ' . var_export($library, true) . ';' . $invoke
+		. 'echo json_encode(array("result" => $result, "log" => $log, "writes" => $writes));';
+	$pipes   = array();
+	$process = proc_open(array(PHP_BINARY, '-r', $code), array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+
+	expect($process)->not->toBeFalse();
+
+	$output = stream_get_contents($pipes[1]);
+	$error  = stream_get_contents($pipes[2]);
+
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+
+	expect(proc_close($process))->toBe(0, $error);
+
+	return json_decode($output, true);
+}
 
 // Above every platform's pid_max but still inside pid_t, so posix_kill() fails
 // with ESRCH and can never signal a real process (999999 is reachable where
@@ -84,77 +76,78 @@ const POLLER_DEAD_PID = 999999999;
 const POLLER_WIDE_PID = '4294967295';
 
 test('register_process_start refuses to kill a reserved system pid on timeout', function () {
-	$GLOBALS['__poller_row'] = array(
+	$row = array(
 		'pid'               => 1,
 		'timeout_exceeded'  => 1720000000,
 		'timeout'           => 300,
 		'current_timestamp' => 1720000600,
 	);
 
-	$result = register_process_start('poller', 'test', 0, 300);
+	$out = poller_pid_branch_scenario($row, array(), 'register');
 
-	expect($result)->toBeTrue();
-	$joined = implode("\n", $GLOBALS['__poller_log']);
+	expect($out['result'])->toBeTrue();
+	$joined = implode("\n", $out['log']);
 	expect($joined)->toContain('reserved system PID');
-	// Must have re-registered (unregister + register both write).
-	expect(count($GLOBALS['__poller_writes']))->toBeGreaterThanOrEqual(2);
+	expect(count($out['writes']))->toBeGreaterThanOrEqual(2);
 });
 
 test('register_process_start clears a timed-out pid that is already gone', function () {
-	$GLOBALS['__poller_row'] = array(
+	$row = array(
 		'pid'               => POLLER_DEAD_PID,
 		'timeout_exceeded'  => 1720000000,
 		'timeout'           => 300,
 		'current_timestamp' => 1720000600,
 	);
 
-	$result = register_process_start('poller', 'test', 0, 300);
+	$out = poller_pid_branch_scenario($row, array(), 'register');
 
-	expect($result)->toBeTrue();
-	$joined = implode("\n", $GLOBALS['__poller_log']);
+	expect($out['result'])->toBeTrue();
+	$joined = implode("\n", $out['log']);
 	// An ordinary pid, so the guard must not claim it, and it is not running,
 	// so nothing may be signalled. The row is still cleared and re-registered.
 	expect($joined)->not->toContain('reserved system PID');
 	expect($joined)->not->toContain('being killed due to timeout');
-	expect(count($GLOBALS['__poller_writes']))->toBeGreaterThanOrEqual(2);
+	expect(count($out['writes']))->toBeGreaterThanOrEqual(2);
 });
 
-test('register_process_start treats a zero pid as a reserved system pid', function () {
+test('register_process_start clears a pid value that cannot name a process', function () {
 	// is_system_pid(0) is true, so a zero pid takes the guarded branch rather
 	// than reaching posix_kill().
-	$GLOBALS['__poller_row'] = array(
+	$row = array(
 		'pid'               => '0',
 		'timeout_exceeded'  => 1720000000,
 		'timeout'           => 300,
 		'current_timestamp' => 1720000600,
 	);
 
-	$result = register_process_start('poller', 'test', 0, 300);
+	$out = poller_pid_branch_scenario($row, array(), 'register');
 
-	expect($result)->toBeTrue();
-	$joined = implode("\n", $GLOBALS['__poller_log']);
+	expect($out['result'])->toBeTrue();
+	$joined = implode("\n", $out['log']);
 	expect($joined)->toContain('reserved system PID');
+	expect(count($out['writes']))->toBeGreaterThanOrEqual(2);
 });
 
 test('timeout_kill_registered_processes skips a reserved system pid', function () {
-	$GLOBALS['__poller_procs'] = array(
+	$procs = array(
 		array('pid' => '1', 'tasktype' => 'poller', 'taskname' => 'test', 'taskid' => 0),
 	);
 
-	timeout_kill_registered_processes();
+	$out = poller_pid_branch_scenario(array(), $procs, 'timeout');
 
-	$joined = implode("\n", $GLOBALS['__poller_log']);
+	$joined = implode("\n", $out['log']);
 	expect($joined)->toContain('reserved system PID');
+	expect(count($out['writes']))->toBe(1);
 });
 
 test('timeout_kill_registered_processes reports a stale gone pid', function () {
-	$GLOBALS['__poller_procs'] = array(
+	$procs = array(
 		array('pid' => POLLER_DEAD_PID, 'tasktype' => 'poller', 'taskname' => 'test', 'taskid' => 0),
 	);
 
-	timeout_kill_registered_processes();
+	$out = poller_pid_branch_scenario(array(), $procs, 'timeout');
 
-	$joined = implode("\n", $GLOBALS['__poller_log']);
+	$joined = implode("\n", $out['log']);
 	expect($joined)->toContain('did not unregister first');
 });
 
@@ -172,28 +165,29 @@ test('cacti_process_still_running refuses a pid wider than pid_t', function () {
 });
 
 test('register_process_start refuses to signal a pid wider than pid_t', function () {
-	$GLOBALS['__poller_row'] = array(
+	$row = array(
 		'pid'               => POLLER_WIDE_PID,
 		'timeout_exceeded'  => 1720000000,
 		'timeout'           => 300,
 		'current_timestamp' => 1720000600,
 	);
 
-	$result = register_process_start('poller', 'test', 0, 300);
+	$out = poller_pid_branch_scenario($row, array(), 'register');
 
-	expect($result)->toBeTrue();
-	$joined = implode("\n", $GLOBALS['__poller_log']);
+	expect($out['result'])->toBeTrue();
+	$joined = implode("\n", $out['log']);
 	expect($joined)->toContain('reserved system PID');
 	expect($joined)->not->toContain('being killed due to timeout');
+	expect(count($out['writes']))->toBeGreaterThanOrEqual(2);
 });
 
 test('timeout_kill_registered_processes refuses a pid wider than pid_t', function () {
-	$GLOBALS['__poller_procs'] = array(
+	$procs = array(
 		array('pid' => POLLER_WIDE_PID, 'tasktype' => 'poller', 'taskname' => 'test', 'taskid' => 0),
 	);
 
-	timeout_kill_registered_processes();
+	$out = poller_pid_branch_scenario(array(), $procs, 'timeout');
 
-	$joined = implode("\n", $GLOBALS['__poller_log']);
+	$joined = implode("\n", $out['log']);
 	expect($joined)->toContain('reserved system PID');
 });

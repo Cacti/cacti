@@ -64,7 +64,7 @@ function sig_handler($signo) {
 			if (cacti_sizeof($running_processes)) {
 				foreach($running_processes as $process) {
 					if (function_exists('posix_kill')) {
-						$logged_pid = preg_replace('/[\x00-\x1f\x7f]/', '?', (string) $process['pid']);
+						$logged_pid = cacti_process_pid_for_log($process['pid']);
 						cacti_log("WARNING: Termination poller process with pid '$logged_pid'", true, 'POLLER', POLLER_VERBOSITY_LOW);
 						cacti_process_kill($process['pid'], SIGTERM, 'POLLER');
 					}

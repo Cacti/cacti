@@ -332,16 +332,6 @@ if (!$master && $thread == 0) {
 			AND task="tmaster"',
 			array($network_id));
 
-		if ($command == 'cancel') {
-			/* Terminating ourselves, so exit rather than depend on the signal
-			   arriving: the sibling cancel path below already does, and without
-			   it a refused or lost signal leaves this while (true) re-querying
-			   for ever and the cancelled discovery never stops. */
-			killProcess(getmypid());
-
-			exit(0);
-		}
-
 		$running = db_fetch_cell_prepared('SELECT count(*)
 			FROM automation_processes
 			WHERE network_id = ?

@@ -59,7 +59,7 @@ test('returns true for the currently running process (self)', function () use ($
 	expect($stillRunning(getmypid()))->toBeTrue();
 });
 
-test('rejects an unrelated child process through its start and exit lifecycle', function () use ($stillRunning) {
+test('rejects a recycled pid running a readable native command', function () use ($stillRunning) {
 	if (!is_dir('/proc/' . getmypid())) {
 		test()->markTestSkipped('command identity is available only on procfs platforms');
 	}
@@ -72,7 +72,8 @@ test('rejects an unrelated child process through its start and exit lifecycle', 
 	$status = proc_get_status($proc);
 	$pid    = $status['pid'];
 
-	expect($stillRunning($pid))->toBeFalse();
+	expect(cacti_process_identity_matches($pid))->toBeFalse()
+		->and($stillRunning($pid))->toBeFalse();
 
 	posix_kill($pid, SIGKILL);
 
@@ -126,7 +127,9 @@ test('register_process_start() and timeout_kill_registered_processes() route thr
 	$src = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
 
 	expect($src)->toContain("'/cmdline'")
-		->and($src)->toContain('hash_equals($mine_script, $theirs_script)');
+		->and($src)->toContain('hash_equals($mine_script, $theirs_script)')
+		->and($src)->toContain('($mine_script === false) !== ($theirs_script === false)')
+		->and($src)->toContain('cacti_process_executable_is_php_interpreter($hidden_exe)');
 
 	/* Three liveness decisions live in these two functions: the timed-out pid
 	   and the not-yet-timed-out row in register_process_start(), and the row in

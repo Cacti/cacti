@@ -964,9 +964,11 @@ function rrdcheck_kill_running_processes() {
 		foreach($processes as $p) {
 			cacti_log(sprintf('WARNING: Killing rrdcheck %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'BOOST');
 
-			cacti_process_kill($p['pid'], SIGTERM, 'BOOST');
+			$signal_sent = cacti_process_kill($p['pid'], SIGTERM, 'BOOST');
 
-			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
+			if (cacti_process_can_unregister($p['pid'], $signal_sent)) {
+				unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
+			}
 		}
 	}
 }

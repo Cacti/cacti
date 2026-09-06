@@ -20,25 +20,38 @@
  * posix_kill() would narrow to -1, meaning every process the caller owns.
  */
 
-if (!function_exists('cacti_log')) {
-	function cacti_log($message, $stdout = false, $environ = 'CMDPHP', $level = 0) {
-		$GLOBALS['__poller_log'][] = $message;
-
-		return true;
-	}
-}
-
-if (!function_exists('cacti_sizeof')) {
-	function cacti_sizeof($a) {
-		return is_array($a) ? count($a) : 0;
-	}
-}
-
 require_once __DIR__ . '/../../../../lib/poller.php';
 
-beforeEach(function () {
-	$GLOBALS['__poller_log'] = array();
-});
+/**
+ * Run a refusal path in a separate PHP process so its cacti_log() test double
+ * cannot shadow the production function while Pest collects the unit suite.
+ *
+ * @param mixed $pid PID value passed to cacti_process_kill().
+ *
+ * @return array{result: bool, log: array<int, string>}
+ */
+function process_kill_guard_refusal($pid) {
+	$library = dirname(__DIR__, 4) . '/lib/poller.php';
+	$code    = '$log = array();'
+		. 'function cacti_log($message) { global $log; $log[] = $message; }'
+		. 'require ' . var_export($library, true) . ';'
+		. '$result = cacti_process_kill(' . var_export($pid, true) . ', SIGTERM);'
+		. 'echo json_encode(array("result" => $result, "log" => $log));';
+	$pipes   = array();
+	$process = proc_open(array(PHP_BINARY, '-r', $code), array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+
+	expect($process)->not->toBeFalse();
+
+	$output = stream_get_contents($pipes[1]);
+	$error  = stream_get_contents($pipes[2]);
+
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+
+	expect(proc_close($process))->toBe(0, $error);
+
+	return json_decode($output, true);
+}
 
 /**
  * Every file that reads a pid out of a process table and signals it.
@@ -75,7 +88,7 @@ function process_kill_guard_code($src) {
 
 	foreach (token_get_all($src) as $token) {
 		if (is_array($token)) {
-			if (in_array($token[0], array(T_COMMENT, T_DOC_COMMENT, T_CONSTANT_ENCAPSED_STRING), true)) {
+			if (in_array($token[0], array(T_COMMENT, T_DOC_COMMENT, T_CONSTANT_ENCAPSED_STRING, T_ENCAPSED_AND_WHITESPACE), true)) {
 				continue;
 			}
 
@@ -101,38 +114,33 @@ function process_kill_guard_signals_directly($src) {
 }
 
 test('a pid that cannot name a process is refused and recorded', function () {
-	expect(cacti_process_kill(0, SIGTERM))->toBeFalse()
-		->and(cacti_process_kill(-1, SIGTERM))->toBeFalse();
+	$zero     = process_kill_guard_refusal(0);
+	$negative = process_kill_guard_refusal(-1);
 
-	expect(implode("\n", $GLOBALS['__poller_log']))->toContain('Refusing to signal PID');
+	expect($zero['result'])->toBeFalse()
+		->and($negative['result'])->toBeFalse()
+		->and(implode("\n", array_merge($zero['log'], $negative['log'])))->toContain('Refusing to signal PID');
 });
 
 test('control characters in a refused pid cannot inject log lines', function () {
-	$GLOBALS['__poller_log'] = [];
+	$result = process_kill_guard_refusal("12\nforged");
+	$log    = implode("\n", $result['log']);
 
-	expect(cacti_process_kill("12\nforged", SIGTERM))->toBeFalse();
-
-	$log = implode("\n", $GLOBALS['__poller_log']);
-
-	expect($log)->toContain('PID 12?forged')
+	expect($result['result'])->toBeFalse()
+		->and($log)->toContain('PID 12?forged')
 		->and(substr_count($log, "\n"))->toBe(0);
 });
 
 test('the master poller sanitizes a stored pid before its status log', function () {
 	$src = file_get_contents(dirname(__DIR__, 4) . '/poller.php');
 
-	expect($src)->toContain("preg_replace('/[\\x00-\\x1f\\x7f]/', '?', (string) \$process['pid'])")
+	expect($src)->toContain("cacti_process_pid_for_log(\$process['pid'])")
 		->and($src)->toContain("process with pid '\$logged_pid'");
 });
 
 test('the guard bounds the pid before calling the native signal function', function () {
-	/* A floor at the reserved low range would also exclude Cacti's own
-	   children inside a pid namespace, where they hold single and double digit
-	   pids, and every caller unregisters the row whether or not the signal
-	   lands. Refusing there would strand a live collector with no registry row
-	   and let a second one start against the same RRDs. Asserting on the
-	   source keeps that decision from being quietly reversed; the behaviour
-	   itself cannot be tested without signalling a real low pid. */
+	/* Validate before the native call so malformed, reserved, and out-of-range
+	   values never reach the platform signal adapter. */
 	$src   = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
 	$start = strpos($src, 'function cacti_process_kill(');
 
@@ -145,10 +153,11 @@ test('the guard bounds the pid before calling the native signal function', funct
 	expect($body)->toContain('cacti_process_pid_is_valid($pid)')
 		->and($body)->toContain('is_system_pid($pid)')
 		->and($body)->toContain("function_exists('posix_kill')")
-		->and($body)->not->toContain('/proc/');
+		->and($body)->not->toContain('/proc/')
+		->and($body)->not->toContain('$pid <= 100');
 
 	/* The predicate it delegates to must keep refusing init and anything wider
-	   than pid_t, and must not grow the old floor back. */
+	   than pid_t without rejecting container-safe low process IDs. */
 	$start = strpos($src, 'function is_system_pid(');
 
 	expect($start)->not->toBeFalse();
@@ -156,7 +165,8 @@ test('the guard bounds the pid before calling the native signal function', funct
 	$predicate = substr($src, $start, strpos($src, "\n}\n", $start) - $start);
 
 	expect($predicate)->toContain('cacti_process_pid_is_valid($pid)')
-		->and($predicate)->not->toContain('<= 100');
+		->and($predicate)->toContain('return $pid === 1;')
+		->and($predicate)->not->toContain('getmypid()');
 });
 
 test('a pid wider than pid_t is refused', function () {
@@ -167,10 +177,12 @@ test('a pid wider than pid_t is refused', function () {
 	/* posix_kill() narrows its argument to a 32 bit pid_t, so 4294967295, the
 	   largest value an int(10) unsigned pid column holds, would arrive as -1
 	   and signal every process the caller owns. */
-	expect(cacti_process_kill(4294967295, SIGTERM))->toBeFalse()
-		->and(cacti_process_kill(PHP_INT_MAX, SIGTERM))->toBeFalse();
+	$wide = process_kill_guard_refusal(4294967295);
+	$max  = process_kill_guard_refusal(PHP_INT_MAX);
 
-	expect(implode("\n", $GLOBALS['__poller_log']))->toContain('Refusing to signal PID');
+	expect($wide['result'])->toBeFalse()
+		->and($max['result'])->toBeFalse()
+		->and(implode("\n", array_merge($wide['log'], $max['log'])))->toContain('Refusing to signal PID');
 });
 
 test('pid validation uses the platform signal adapter ceiling', function () {
@@ -192,8 +204,8 @@ test('the unsigned Windows ceiling is only used by 64-bit PHP', function () {
 });
 
 test('pid validation accepts zero padding and rejects non-integer forms', function () {
-	expect(cacti_process_pid_is_valid('0000000001'))->toBeFalse()
-		->and(cacti_process_pid_is_valid('01'))->toBeFalse()
+	expect(cacti_process_pid_is_valid('0000000001'))->toBeTrue()
+		->and(cacti_process_pid_is_valid('01'))->toBeTrue()
 		->and(cacti_process_pid_is_valid('007'))->toBeTrue()
 		->and(cacti_process_pid_is_valid(' 7'))->toBeFalse()
 		->and(cacti_process_pid_is_valid('7.0'))->toBeFalse()
@@ -204,12 +216,22 @@ test('pid validation accepts zero padding and rejects non-integer forms', functi
 test('pid validation handles native scalar inputs', function () {
 	expect(cacti_process_pid_is_valid(5))->toBeTrue()
 		->and(cacti_process_pid_is_valid(0))->toBeFalse()
-		->and(cacti_process_pid_is_valid(1))->toBeFalse()
+		->and(cacti_process_pid_is_valid(1))->toBeTrue()
 		->and(cacti_process_pid_is_valid(-1))->toBeFalse()
 		->and(cacti_process_pid_is_valid(null))->toBeFalse()
 		->and(cacti_process_pid_is_valid(false))->toBeFalse()
 		->and(cacti_process_pid_is_valid(7.0))->toBeTrue()
-		->and(cacti_process_pid_is_valid(7.5))->toBeFalse();
+		->and(cacti_process_pid_is_valid(7.5))->toBeFalse()
+		->and(cacti_process_pid_is_valid(array(7)))->toBeFalse()
+		->and(cacti_process_pid_is_valid(new stdClass()))->toBeFalse();
+});
+
+test('untrusted pids are safe to include in one log line', function () {
+	expect(cacti_process_pid_for_log("12\nforged"))->toBe('12?forged')
+		->and(cacti_process_pid_for_log(array(7)))->toBe('array')
+		->and(cacti_process_pid_for_log(new stdClass()))->toBe('object')
+		->and(cacti_process_pid_for_log(false))->toBe('false')
+		->and(cacti_process_pid_for_log(null))->toBe('null');
 });
 
 test('an ordinary pid is still signalled', function () {
@@ -227,8 +249,7 @@ test('an ordinary pid is still signalled', function () {
 		fclose($pipe);
 	}
 
-	expect(cacti_process_kill($pid, SIGTERM))->toBeTrue()
-		->and($GLOBALS['__poller_log'])->toBe(array());
+	expect(cacti_process_kill($pid, SIGTERM))->toBeTrue();
 
 	/* Wait on the child's own status rather than probing the pid. Until the
 	   parent reaps it the pid still exists as a zombie, so posix_kill($pid, 0)
@@ -251,8 +272,7 @@ test('an ordinary pid is still signalled', function () {
 test('a pid that does not exist reports the kernel refusal, not a guard refusal', function () {
 	// 999999999 is above every platform's pid_max but inside pid_t, so it must
 	// reach posix_kill() and come back ESRCH rather than be refused here.
-	expect(cacti_process_kill(999999999, SIGTERM))->toBeFalse()
-		->and($GLOBALS['__poller_log'])->toBe(array());
+	expect(cacti_process_kill(999999999, SIGTERM))->toBeFalse();
 });
 
 test('every process table kill site routes through the guard', function () {
@@ -275,6 +295,34 @@ test('every process table kill site routes through the guard', function () {
 
 	expect($missing)->toBe(array())
 		->and($unguarded)->toBe(array());
+});
+
+test('cleanup sites preserve a row when the signal guard refuses a live pid', function () {
+	expect(cacti_process_can_unregister(getmypid(), false))->toBeFalse()
+		->and(cacti_process_can_unregister(999999999, false))->toBeTrue()
+		->and(cacti_process_can_unregister(getmypid(), true))->toBeTrue();
+
+	$sites = array(
+		'cli/batchgapfix.php',
+		'cli/float_rrdfiles.php',
+		'cli/rebuild_poller_cache.php',
+		'lib/dsstats.php',
+		'lib/rrdcheck.php',
+		'poller_boost.php',
+		'poller_commands.php',
+	);
+
+	foreach ($sites as $file) {
+		$src = file_get_contents(dirname(__DIR__, 4) . '/' . $file);
+
+		expect($src)->not->toBeFalse($file . ' must be readable')
+			->and($src)->toContain('cacti_process_can_unregister(');
+	}
+
+	$poller = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
+
+	expect($poller)->toContain('function cacti_process_can_unregister(')
+		->and($poller)->toContain('unregister_process($tasktype, $taskname, $taskid)');
 });
 
 /**
@@ -327,11 +375,12 @@ test('the scan catches every shape of raw signal and ignores prose', function ()
 	/* Without this the ratchet's own coverage is unverified. The scalar form is
 	   the one half these files use, and it is the shape an argument-matching
 	   regex missed. */
-	$guarded = <<<'GUARDED'
+$guarded = <<<'GUARDED'
 <?php
 /* posix_kill($pid, 0) is what this replaced. */
 cacti_process_kill($p['pid'], SIGTERM, 'BOOST');
 $note = 'posix_kill(';
+$interpolated = "posix_kill($pid, 0)";
 GUARDED;
 
 	expect(process_kill_guard_signals_directly($guarded))->toBeFalse();
@@ -349,27 +398,48 @@ GUARDED;
 	}
 });
 
-test('a pid that exists but cannot be signalled counts as stale, not live', function () {
+test('batchgapfix sanitizes stored pids before terminal output', function () {
+	$src = file_get_contents(dirname(__DIR__, 4) . '/cli/batchgapfix.php');
+
+	expect($src)->not->toBeFalse()
+		->and($src)->toContain("cacti_process_pid_for_log(\$r['pid'])")
+		->and($src)->toContain('PHP_EOL, $logged_pid)');
+});
+
+test('automation cancel reaches full network cleanup before exit', function () {
+	$src    = file_get_contents(dirname(__DIR__, 4) . '/poller_automation.php');
+	$cancel = strpos($src, "|| \$command == 'cancel'");
+
+	expect($src)->not->toBeFalse()
+		->and($cancel)->not->toBeFalse()
+		->and(substr($src, 0, $cancel))->not->toContain("if (\$command == 'cancel')")
+		->and(substr($src, $cancel))->toContain('DELETE FROM automation_ips')
+		->and(substr($src, $cancel))->toContain('clearAllTasks($network_id)')
+		->and(substr($src, $cancel))->toContain('reportNetworkStatus($network_id, $preexisting_devices)');
+});
+
+test('a pid that exists but cannot be signalled remains live', function () {
 	$eperm = defined('SOCKET_EPERM') ? SOCKET_EPERM : 1;
 
 	if (posix_kill(1, 0) || posix_get_last_error() !== $eperm) {
 		test()->markTestSkipped('pid 1 does not produce EPERM for this user');
 	}
 
-	/* poller_recovery asks "is the row still mine", where a pid it cannot
-	   signal has been recycled by someone else and the row is stale. Reading
-	   EPERM as live would leave settings.recovery_pid in place and retire
-	   recovery for good. */
-	expect(cacti_process_signalable(1))->toBeFalse();
+	/* EPERM proves the process exists. Treating it as stale would clear the
+	   ownership row and permit a duplicate process to start. */
+	expect(cacti_process_signalable(1))->toBeTrue();
+	expect(cacti_process_signalable(1, false))->toBeFalse();
 
 	$src = file_get_contents(dirname(__DIR__, 4) . '/poller_recovery.php');
 
 	expect($src)->not->toBeFalse()
-		->and(process_kill_guard_code($src))->toContain('cacti_process_signalable(');
+		->and(preg_match('/cacti_process_signalable\s*\(\s*\$recovery_pid\s*,\s*false\s*\)/', process_kill_guard_code($src)))->toBe(1)
+		->and($src)->toContain('Another recovery process is still running')
+		->and($src)->toContain('cacti_process_pid_for_log($recovery_pid)');
 });
 
 test('cacti_process_kill refuses init behaviourally, not just in source', function () {
 	// Signal 0 delivers nothing, so this asserts the refusal without touching init.
-	expect(cacti_process_kill(1, 0))->toBeFalse()
+	expect(process_kill_guard_refusal(1)['result'])->toBeFalse()
 		->and(cacti_process_signalable(getmypid()))->toBeTrue();
 });

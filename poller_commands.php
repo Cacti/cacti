@@ -408,9 +408,11 @@ function commands_kill_running_processes() {
     if (cacti_sizeof($processes)) {
         foreach($processes as $p) {
             cacti_log(sprintf('WARNING: Killing Commands %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'CLEANUP');
-            cacti_process_kill($p['pid'], SIGTERM, 'CLEANUP');
+            $signal_sent = cacti_process_kill($p['pid'], SIGTERM, 'CLEANUP');
 
-            unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
+            if (cacti_process_can_unregister($p['pid'], $signal_sent)) {
+                unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
+            }
         }
     }
 }
@@ -442,4 +444,3 @@ function display_help () {
 	print '  --threads=N - Override the System Processes setting and use N processes' . PHP_EOL;
 	print '  --debug     - Display verbose output during execution' . PHP_EOL . PHP_EOL;
 }
-

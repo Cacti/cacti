@@ -14,9 +14,9 @@
 
 /*
  * Guard for issue #7027: timeout_kill_registered_processes() signalled any pid
- * from the processes table. A tampered pid column could then take down init,
- * systemd, or a kernel thread. is_system_pid() rejects the reserved low range
- * so those pids are logged and skipped instead of killed.
+ * from the processes table. A tampered pid column could then target init or a
+ * value that narrows to a process group. is_system_pid() rejects those values
+ * and callers preserve a refused process row.
  *
  * lib/poller.php only defines functions at file scope, so it is safe to load
  * here; require_once dedupes by path across the suite.
@@ -30,27 +30,10 @@ test('is_system_pid rejects init and anything that cannot name a process', funct
 	expect(is_system_pid(-1))->toBeTrue();
 });
 
-test('is_system_pid never claims the running process itself', function () {
-	/* A fresh pid namespace numbers from 1, so inside a container this very
-	   process can hold a pid in the reserved range. The flat floor refused it
-	   outright, while both callers cleared the registry row regardless of
-	   whether they signalled, leaving a live collector with no row. Identity
-	   settles it: we are trivially the same program as ourselves. */
-	expect(is_system_pid(getmypid()))->toBeFalse();
-});
-
-test('the reserved range defers to identity rather than refusing outright', function () {
-	$src   = file_get_contents(__DIR__ . '/../../../../lib/poller.php');
-	$start = strpos($src, 'function is_system_pid(');
-
-	expect($start)->not->toBeFalse();
-
-	$body = substr($src, $start, strpos($src, "\n}\n", $start) - $start);
-
-	/* Where /proc cannot answer, which is every platform without procfs, the
-	   refusal must still stand. */
-	expect($body)->toContain('cacti_process_identity_matches($pid)')
-		->and($body)->toContain('$pid > 100');
+test('ordinary low pids remain valid inside pid namespaces', function () {
+	foreach (array(2, 7, 42, 100) as $pid) {
+		expect(is_system_pid($pid))->toBeFalse((string) $pid);
+	}
 });
 
 test('is_system_pid allows a normal registered pid', function () {

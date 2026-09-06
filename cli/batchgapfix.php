@@ -201,16 +201,21 @@ if ($child == 0) {
 			printf("NOTE: Found %s running processes." . PHP_EOL, cacti_sizeof($running));
 
 			foreach($running as $r) {
-				if (cacti_process_still_running($r['pid'])) {
-					printf("NOTE: Process with PID: %s being killed." . PHP_EOL, $r['pid']);
+				$logged_pid = cacti_process_pid_for_log($r['pid']);
+				$signal_sent = false;
 
-					cacti_process_kill($r['pid'], SIGTERM, 'POLLER');
+				if (cacti_process_still_running($r['pid'])) {
+					printf("NOTE: Process with PID: %s being killed." . PHP_EOL, $logged_pid);
+
+					$signal_sent = cacti_process_kill($r['pid'], SIGTERM, 'POLLER');
 				} else {
-					printf("NOTE: Process with PID: %s is no longer running or does not match the registered command." . PHP_EOL, $r['pid']);
+					printf("NOTE: Process with PID: %s is no longer running or does not match the registered command." . PHP_EOL, $logged_pid);
+				}
+
+				if (cacti_process_can_unregister($r['pid'], $signal_sent)) {
+					unregister_process($r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']);
 				}
 			}
-
-			db_execute('DELETE FROM processes WHERE tasktype = \'batchgapfix\'');
 		} else {
 			printf("NOTE: No running processes found." . PHP_EOL);
 		}
