@@ -2711,13 +2711,35 @@ function heartbeat_process($tasktype, $taskname, $taskid = 0) {
  */
 function cacti_process_identity_matches($pid) {
 	$pid           = (int) $pid;
+
+	if ($pid === getmypid()) {
+		return true;
+	}
+
 	$self_cmdline  = @file_get_contents('/proc/' . getmypid() . '/cmdline');
 	$other_cmdline = @file_get_contents('/proc/' . $pid . '/cmdline');
 
 	/* PHP's executable path alone cannot distinguish two unrelated scripts.
-	 * Compare the complete NUL-delimited argv while procfs can provide it. */
+	 * Compare script paths while ignoring flags that legitimately differ
+	 * between master and worker instances of the same Cacti command. */
 	if ($self_cmdline !== false && $self_cmdline !== '' && $other_cmdline !== false && $other_cmdline !== '') {
-		return hash_equals($self_cmdline, $other_cmdline);
+		$script = static function ($cmdline) {
+			foreach (explode("\0", $cmdline) as $argument) {
+				if (preg_match('/\.php\z/i', $argument)) {
+					$resolved = realpath($argument);
+
+					return $resolved !== false ? $resolved : $argument;
+				}
+			}
+
+			return false;
+		};
+		$mine_script   = $script($self_cmdline);
+		$theirs_script = $script($other_cmdline);
+
+		if ($mine_script !== false || $theirs_script !== false) {
+			return $mine_script !== false && $theirs_script !== false && hash_equals($mine_script, $theirs_script);
+		}
 	}
 
 	$self_exe  = '/proc/' . getmypid() . '/exe';

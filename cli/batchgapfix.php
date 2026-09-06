@@ -206,7 +206,7 @@ if ($child == 0) {
 
 					cacti_process_kill($r['pid'], SIGTERM, 'POLLER');
 				} else {
-					printf("NOTE: Process with PID: %s is no longer signalable." . PHP_EOL, $r['pid']);
+					printf("NOTE: Process with PID: %s is no longer running or does not match the registered command." . PHP_EOL, $r['pid']);
 				}
 			}
 
@@ -466,4 +466,3 @@ function display_help() {
 	print '   --force                         - Kill the current running batch gap fill and start over.' . PHP_EOL;
 	print '   --debug                         - Higher tracing level for select utilities.' . PHP_EOL . PHP_EOL;
 }
-

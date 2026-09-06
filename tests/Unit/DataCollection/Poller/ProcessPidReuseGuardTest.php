@@ -108,7 +108,7 @@ test('register_process_start() and timeout_kill_registered_processes() route thr
 	$src = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
 
 	expect($src)->toContain("'/cmdline'")
-		->and($src)->toContain('hash_equals($self_cmdline, $other_cmdline)');
+		->and($src)->toContain('hash_equals($mine_script, $theirs_script)');
 
 	/* Three liveness decisions live in these two functions: the timed-out pid
 	   and the not-yet-timed-out row in register_process_start(), and the row in
