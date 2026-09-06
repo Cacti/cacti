@@ -140,6 +140,30 @@ test('timeout_kill_registered_processes skips a reserved system pid', function (
 	expect(count($out['writes']))->toBe(1);
 });
 
+test('stored pid control characters cannot inject timeout log lines', function () {
+	$malformed = "1\nforged";
+	$row = array(
+		'pid'               => $malformed,
+		'timeout_exceeded'  => 1720000000,
+		'timeout'           => 300,
+		'current_timestamp' => 1720000600,
+	);
+	$procs = array(
+		array('pid' => $malformed, 'tasktype' => 'poller', 'taskname' => 'test', 'taskid' => 0),
+	);
+
+	foreach (array(
+		poller_pid_branch_scenario($row, array(), 'register'),
+		poller_pid_branch_scenario(array(), $procs, 'timeout'),
+	) as $out) {
+		expect(implode('', $out['log']))->toContain('1?forged');
+
+		foreach ($out['log'] as $message) {
+			expect($message)->not->toContain("\n");
+		}
+	}
+});
+
 test('timeout_kill_registered_processes reports a stale gone pid', function () {
 	$procs = array(
 		array('pid' => POLLER_DEAD_PID, 'tasktype' => 'poller', 'taskname' => 'test', 'taskid' => 0),

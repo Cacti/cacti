@@ -16,7 +16,7 @@
  * Guard for issue #7027: timeout_kill_registered_processes() signalled any pid
  * from the processes table. A tampered pid column could then target init or a
  * value that narrows to a process group. is_system_pid() rejects those values
- * and callers preserve a refused process row.
+ * and callers retire a refused stale row without sending a signal.
  *
  * lib/poller.php only defines functions at file scope, so it is safe to load
  * here; require_once dedupes by path across the suite.
