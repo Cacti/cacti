@@ -144,6 +144,24 @@ test('a missing interval consistently defaults to two hours', function () {
 		->and($GLOBALS['boost_schedule_test_state']['writes'])->toContain(array('boost_next_run_time', 207200));
 });
 
+test('a non-numeric interval consistently defaults to two hours', function () {
+	boostScheduleTestReset(array(
+		'config' => array(
+			'boost_rrd_update_enable'        => 'on',
+			'boost_rrd_update_system_enable' => 'on',
+			'boost_rrd_update_interval'      => 'invalid',
+			'boost_rrd_update_max_records'   => 1000,
+		),
+		'rows'    => 0,
+		'pollers' => 1,
+		'writes'  => array(),
+	));
+
+	expect(boostScheduleTestTimeToRun(false, 200000, 0, 0))->toBeFalse()
+		->and($GLOBALS['boost_schedule_test_state']['writes'])->toContain(array('boost_rrd_update_interval', 120))
+		->and($GLOBALS['boost_schedule_test_state']['writes'])->toContain(array('boost_next_run_time', 207200));
+});
+
 test('disabled Boost stays idle with an empty queue and disables its system flag', function () {
 	boostScheduleTestReset(array(
 		'config' => array(
