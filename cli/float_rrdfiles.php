@@ -315,7 +315,11 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 	static $tmp_dir     = false;
 
 	if ($rrdtool_bin === false) {
-		$rrdtool_bin = read_config_option('path_rrdtool');
+		$rrdtool_bin = (string) read_config_option('path_rrdtool');
+
+		if ($rrdtool_bin === '') {
+			$rrdtool_bin = 'rrdtool';
+		}
 	}
 
 	if ($tmp_dir === false) {
@@ -323,11 +327,9 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 	}
 
 	$delta_time = $end_time - $start_time;
-	$tmp_file   = $tmp_dir . '/' . $local_data_id . '.xml';
-
 	$return     = 0;
 	$output     = array();
-	$command    = "$rrdtool_bin dump $rrd_path";
+	$command    = cacti_escapeshellarg($rrdtool_bin) . ' dump ' . cacti_escapeshellarg($rrd_path);
 	$db_prefix  = '                       ';
 
 	if (file_exists($rrd_path)) {
@@ -339,10 +341,19 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 				return false;
 			}
 
+			$tmp_file = tempnam($tmp_dir, 'cacti_float_');
+
+			if ($tmp_file === false) {
+				cacti_log('WARNING: Unable to create a private temporary RRD XML file', false, 'RFLOAT');
+				return false;
+			}
+
 			$fp = fopen($tmp_file, 'w');
+			$lf = false;
 
 			if ($seebug) {
-				$lf = fopen(sys_get_temp_dir() . '/cacti_float_rrdfiles.log', 'a');
+				$lf     = @fopen('php://stderr', 'w');
+				$seebug = is_resource($lf);
 			}
 
 			if (is_resource($fp)) {
@@ -438,24 +449,32 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 				/* restore the file */
 				$return  = 0;
 				$output  = array();
-				$command = "$rrdtool_bin restore -f $tmp_file $rrd_path";
+				$command = cacti_escapeshellarg($rrdtool_bin) . ' restore -f ' . cacti_escapeshellarg($tmp_file) . ' ' . cacti_escapeshellarg($rrd_path);
 
 				$response = exec($command, $output, $return);
 
 				if ($return == 0) {
 					cacti_log(sprintf('NOTE: Range floated for RRDfile %s', $rrd_path), false, 'RFLOAT');
+					unlink($tmp_file);
+
+					if ($seebug && is_resource($lf)) {
+						fclose($lf);
+					}
+
 					return true;
 				} else {
 					cacti_log(sprintf('WARNING: Range float FAILED for RRDfile %s.  Message is %s', $rrd_path, $response), false, 'RFLOAT');
-					return false;
-				}
-
-				if (!$seebug) {
 					unlink($tmp_file);
-					fclose($lf);
+
+					if ($seebug && is_resource($lf)) {
+						fclose($lf);
+					}
+
+					return false;
 				}
 			} else {
 				cacti_log(sprintf('WARNING: Unable to open file %s for writing', $tmp_file), false, 'RFLOAT');
+				unlink($tmp_file);
 				return false;
 			}
 		} else {
@@ -601,13 +620,33 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 function float_launch_child($thread_id, $step, $start_time, $end_time) {
 	global $config, $seebug;
 
-	$php_binary = read_config_option('path_php_binary');
+	$php_binary = (string) read_config_option('path_php_binary');
+
+	if ($php_binary === '') {
+		$php_binary = PHP_BINARY;
+	}
+
+	$args       = array(
+		$config['base_path'] . '/cli/float_rrdfiles.php',
+		'--type=child',
+		'--child=' . $thread_id,
+		'--start=' . $start_time,
+		'--end=' . $end_time
+	);
+
+	if ($step !== false) {
+		$args[] = '--step=' . $step;
+	}
+
+	if ($seebug) {
+		$args[] = '--debug';
+	}
 
 	float_debug(sprintf('Launching Float Data Process Number %s for Type %s', $thread_id, 'child'));
 
 	cacti_log(sprintf('NOTE: Launching Float Data Number %s for Type %s', $thread_id, 'child'), false, 'RFLOAT', POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, $config['base_path'] . "/cli/float_rrdfiles.php --type=child --child=$thread_id --start=$start_time --end=$end_time" . ($step !== false ? ' --step=' . $step:'') . ($seebug ? ' --debug':''));
+	exec_background($php_binary, $args);
 }
 
 /**
