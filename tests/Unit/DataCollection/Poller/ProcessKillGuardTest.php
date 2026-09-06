@@ -178,6 +178,12 @@ test('pid validation uses the platform signal adapter ceiling', function () {
 	}
 });
 
+test('the unsigned Windows ceiling is only used by 64-bit PHP', function () {
+	$src = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
+
+	expect($src)->toContain("PHP_OS_FAMILY === 'Windows' && PHP_INT_SIZE >= 8");
+});
+
 test('pid validation accepts zero padding and rejects non-integer forms', function () {
 	expect(cacti_process_pid_is_valid('0000000001'))->toBeFalse()
 		->and(cacti_process_pid_is_valid('01'))->toBeFalse()

@@ -2502,7 +2502,7 @@ function cacti_process_pid_is_valid($pid) {
 
 	$value = ltrim($value, '0');
 	$value = $value === '' ? '0' : $value;
-	$max   = PHP_OS_FAMILY === 'Windows' ? '4294967295' : '2147483647';
+	$max   = PHP_OS_FAMILY === 'Windows' && PHP_INT_SIZE >= 8 ? '4294967295' : '2147483647';
 
 	if (strlen($value) > strlen($max) || (strlen($value) == strlen($max) && strcmp($value, $max) > 0)) {
 		return false;
