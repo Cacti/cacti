@@ -179,7 +179,7 @@ function cacti_session_cookie_failure($write_log = true) {
 	global $config;
 
 	if ($write_log) {
-		cacti_log('ERROR: Browser did not return the Cacti session cookie; verify url_path and cacti_cookie_domain.', false, 'AUTH');
+		cacti_log('ERROR: Browser did not return the Cacti session cookie during CSRF validation; verify url_path and cacti_cookie_domain.', false, 'AUTH');
 		csrf_log(__FUNCTION__, 'Session cookie missing; refusing to redirect into a login loop');
 	}
 
