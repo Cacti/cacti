@@ -118,6 +118,13 @@ test('control characters in a refused pid cannot inject log lines', function () 
 		->and(substr_count($log, "\n"))->toBe(0);
 });
 
+test('the master poller sanitizes a stored pid before its status log', function () {
+	$src = file_get_contents(dirname(__DIR__, 4) . '/poller.php');
+
+	expect($src)->toContain("preg_replace('/[\\x00-\\x1f\\x7f]/', '?', (string) \$process['pid'])")
+		->and($src)->toContain("process with pid '\$logged_pid'");
+});
+
 test('the guard bounds the pid before calling the native signal function', function () {
 	/* A floor at the reserved low range would also exclude Cacti's own
 	   children inside a pid namespace, where they hold single and double digit
