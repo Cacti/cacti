@@ -18,8 +18,8 @@
 */
 
 /*
- * include/vendor/csrf/csrf-secret.php holds the secret every CSRF token is
- * derived from. csrf_get_secret() only generates one when the file is missing
+ * include/vendor/csrf/csrf-secret.php holds the legacy secret pre-upgrade CSRF
+ * tokens are derived from. csrf_get_secret() only generates one when it is missing
  * or empty, so a secret committed to the repository is never replaced: every
  * install built from that tree shares it, and anyone who reads the repository
  * can mint tokens for all of them.
@@ -65,32 +65,28 @@ test('the csrf secret is not tracked in the repository', function () {
 test('no file under the csrf vendor directory holds a bare secret', function () {
 	$tracked = csrf_secret_git('ls-files include/vendor/csrf/');
 
-	expect($tracked['output'])->not->toBe('');
-
-	foreach (explode("\n", $tracked['output']) as $file) {
-		$contents = file_get_contents(dirname(__DIR__, 4) . '/' . $file);
-		expect($contents)->not->toBeFalse("$file must be readable");
-
-		// the secret is written as a bare 40 character hex digest, no php tags
-		expect(trim($contents))->not->toMatch('/^[0-9a-f]{40}$/');
-	}
+	/* The vendored csrf-magic fork was removed, so nothing under this path is
+	   tracked any more.  That is a stronger guarantee than scanning what is
+	   there, and it also stops the directory returning with a secret in it. */
+	expect($tracked['output'])->toBe('');
 });
 
 test('the secret path is still ignored so it cannot be committed again', function () {
-	$gitignore = file_get_contents(dirname(__DIR__, 4) . '/.gitignore');
+	$gitignore = file_get_contents(CACTI_PATH_BASE . '/.gitignore');
 	expect($gitignore)->not->toBeFalse('.gitignore must be readable');
 
 	expect($gitignore)->toContain('include/vendor/csrf/csrf-secret.php');
 });
 
 /**
- * Removing the file is only safe because csrf-magic.php writes a fresh secret
- * the first time it finds none, so this pins the generation path rather than
- * assuming it.
+ * Removing the file is only safe because csrf_get_secret() writes a fresh
+ * secret the first time it finds none, so this pins the generation path rather
+ * than assuming it.  The function moved from the vendored fork into
+ * include/csrf.php when csrf-magic was retired; the assertions are unchanged.
  */
-test('csrf-magic still generates and stores a secret when none exists', function () {
-	$source = file_get_contents(dirname(__DIR__, 4) . '/include/vendor/csrf/csrf-magic.php');
-	expect($source)->not->toBeFalse('csrf-magic.php must be readable');
+test('the secret is still generated and stored when none exists', function () {
+	$source = file_get_contents(CACTI_PATH_INCLUDE . '/csrf.php');
+	expect($source)->not->toBeFalse('include/csrf.php must be readable');
 
 	$start = strpos($source, 'function csrf_get_secret(');
 	expect($start)->not->toBeFalse();

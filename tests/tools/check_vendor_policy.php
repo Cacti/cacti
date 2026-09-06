@@ -25,7 +25,6 @@ function cacti_vendor_policy_legacy_paths() : array {
 	return [
 		'include/vendor/GoogleAuthenticator/',
 		'include/vendor/composer/index.php',
-		'include/vendor/csrf/',
 		'include/vendor/index.php',
 		'include/vendor/parsedown/',
 		'include/vendor/phpdiff/',

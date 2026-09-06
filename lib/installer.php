@@ -599,13 +599,12 @@ class Installer implements JsonSerializable {
 			'spikekill' => CACTI_PATH_CACHE . '/spikekill'
 		];
 
-		$csrf_path = CACTI_CSRF_SECRET;
-
-		if (is_dir($csrf_path)) {
-			$csrf_path = rtrim($csrf_path ?? '', '/') . '/csrf-secret.php';
-		}
-
-		$install_paths['csrf'] = $csrf_path;
+		/* The csrf secret is deliberately absent from $install_paths.  It only
+		   feeds the legacy token fallback for sites upgrading from csrf-magic,
+		   which a new install has no use for, and its historical default lives
+		   under a directory that no longer ships.  Demanding it here failed the
+		   permission step, and setStep() clamps to the first errored step, so a
+		   fresh install could never advance past a path the user cannot create. */
 
 		$install_key = 'always';
 
@@ -619,24 +618,7 @@ class Installer implements JsonSerializable {
 
 				$permissions[$install_key][$path . '/'] = $valid;
 			} else {
-				$valid = false;
-
-				// Lets see if this is the CSRF secret
-				if ($name == 'csrf') {
-					// Does it exist?
-					if (file_exists($path)) {
-						// Lets get the contents and make sure we have something at least
-						$csrf_secret = file_get_contents($path);
-						$valid       = !empty($csrf_secret);
-					}
-				}
-
-				// If we aren't valid at this point, we aren't CSRF
-				// or the CSRF was empty
-				if (!$valid) {
-					// Lets me sure this path is writable
-					$valid = (is_resource_writable($path));
-				}
+				$valid = (is_resource_writable($path));
 
 				$permissions[$install_key][$path] = $valid;
 			}
@@ -793,20 +775,28 @@ class Installer implements JsonSerializable {
 		$this->setProgress(Installer::PROGRESS_CSRF_BEGIN);
 
 		if (CACTI_CSRF_SECRET != '') {
-			log_install_debug('csrf', 'setCSRFSecret(): secret ' . CACTI_CSRF_SECRET);
+			$file = csrf_secret_file_path(CACTI_CSRF_SECRET);
 
-			$secret = @file_exists(CACTI_CSRF_SECRET) ? file_get_contents(CACTI_CSRF_SECRET) : '';
+			log_install_debug('csrf', 'setCSRFSecret(): secret ' . $file);
+
+			$secret = @file_exists($file) ? file_get_contents($file) : '';
 			log_install_debug('csrf', 'setCSRFSecret(): secret ' . (empty($secret) ? 'not ' : '') . 'empty');
 
 			if (empty($secret)) {
-				if (is_resource_writable(CACTI_CSRF_SECRET)) {
-					log_install_medium('csrf', 'setCSRFSecret(): Updated CSRF secret - "' . CACTI_CSRF_SECRET . '"');
-					install_create_csrf_secret(CACTI_CSRF_SECRET);
+				if (!is_dir(dirname($file))) {
+					/* The historical default sits under the retired csrf-magic
+					   directory, so on a new install there is nowhere to write.
+					   Nothing needs one either: the secret exists only to verify
+					   tokens minted before the upgrade. */
+					log_install_debug('csrf', 'setCSRFSecret(): No directory for "' . $file . '", skipping');
+				} elseif (is_resource_writable($file)) {
+					log_install_medium('csrf', 'setCSRFSecret(): Updated CSRF secret - "' . $file . '"');
+					install_create_csrf_secret($file);
 				} else {
-					log_install_high('csrf', 'setCSRFSecret(): Unable to create file - "' . CACTI_CSRF_SECRET . '"');
+					log_install_high('csrf', 'setCSRFSecret(): Unable to create file - "' . $file . '"');
 				}
 			} else {
-				log_install_debug('csrf', 'setCSRFSecret(): Secret already exists - "' . CACTI_CSRF_SECRET . '"');
+				log_install_debug('csrf', 'setCSRFSecret(): Secret already exists - "' . $file . '"');
 			}
 		}
 

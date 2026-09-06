@@ -24,7 +24,6 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once(CACTI_PATH_LIBRARY . '/CactiFilesystem.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
@@ -64,39 +63,17 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-// issue warnings and start message if applicable
-print 'NOTE: Updating csrf_secret file with new information' . PHP_EOL;
+// CSRF tokens are session-bound random values now, not HMACs over this
+// file, so rotating it no longer invalidates anything outstanding.  Kept
+// only so scripts and cron entries that still invoke it do not break; it
+// will be removed in a future release once the pre-upgrade grace window
+// (see CactiCsrfGuard::validateLegacyHmac()) is retired.
+print 'NOTE: CSRF tokens are now session-bound and are not derived from a shared secret,' . PHP_EOL;
+print '      so rotating the secret no longer invalidates anything.' . PHP_EOL;
+print '      This file is retained only to validate tokens issued before the upgrade' . PHP_EOL;
+print '      and will be removed in a future release.' . PHP_EOL;
 
-if (!file_exists(CACTI_CSRF_SECRET)) {
-	print 'WARNING: csrf_secret.php file does not exist!' . PHP_EOL;
-} elseif (!is_writable(CACTI_CSRF_SECRET)) {
-	print 'FATAL: Unable to replace csrf_secret.php!' . PHP_EOL;
-
-	exit(1);
-}
-
-$new_secret = csrf_generate_secret();
-
-if (csrf_writable(CACTI_CSRF_SECRET)) {
-	umask(0027);
-
-	try {
-		$filesystem = new CactiFilesystem();
-		$filesystem->writeFile(CACTI_CSRF_SECRET, '<?php $secret = "' . $new_secret . '";' . PHP_EOL);
-	} catch (Symfony\Component\Filesystem\Exception\IOExceptionInterface) {
-		print 'FATAL: Unable to write new csrf_secret.php file.' . PHP_EOL;
-
-		exit(1);
-	}
-
-	print 'NOTE: New csrf_secret.php file written.' . PHP_EOL;
-
-	exit(0);
-} else {
-	print 'FATAL: Unable to write new csrf_secret.php file.' . PHP_EOL;
-
-	exit(1);
-}
+exit(0);
 
 /**
  * display_version - displays version information
@@ -117,7 +94,7 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: refresh_csrf.php' . PHP_EOL . PHP_EOL;
-	print 'A utility to update the csrf_secret() key on a the Cacti system.  Updating' . PHP_EOL;
-	print 'this key should happen periodically during non-production hours as it can' . PHP_EOL;
-	print 'impact the user experience.' . PHP_EOL . PHP_EOL;
+	print 'Deprecated.  CSRF tokens are session-bound and are not derived from a' . PHP_EOL;
+	print 'shared secret, so this utility no longer rotates anything.  Retained' . PHP_EOL;
+	print 'only to avoid breaking scripts that still invoke it.' . PHP_EOL . PHP_EOL;
 }
