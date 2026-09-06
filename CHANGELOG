@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security: Reject SHA-1 signatures across every package import path
 -security: Escape path_dsstats_log before it reaches the dsstats poller shell redirect
 -security: Revoke anonymous access when the guest account is disabled
 -security: Cast graph and device ids to int in get_allowed_* permission filters
@@ -9,6 +10,8 @@ Cacti CHANGELOG
 -security: Substitute query data before escaping graph titles and axis labels
 -security: Build forced-HTTPS redirects from the server-configured name
 -security: Replace sibling password-reset links and revoke authentication state after reset
+-issue#7969: Restore excluded integration and mutation regression coverage
+-issue#7969: Align Rocky Linux compatibility checks with the supported PHP runtime
 -issue: Fail closed when OAuth callback state is absent or mismatched
 -issue#7959: Stop source checkouts from loading a partial Composer dependency tree
 -issue#7775: Add plugin-extensible notification API

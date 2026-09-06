@@ -6,7 +6,7 @@
 */
 
 /*
- * Integration coverage for issue #7531 (update_data_query_cache() commits
+ * Runtime integration coverage for issue #7531 (update_data_query_cache() commits
  * poller-cache writes per-row instead of batching).
  *
  * poller_update_poller_cache_from_buffer() is the function whose call count

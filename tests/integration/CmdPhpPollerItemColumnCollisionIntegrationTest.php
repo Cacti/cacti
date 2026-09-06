@@ -6,7 +6,7 @@
 */
 
 /*
- * Integration coverage for issue #7522 (cmd.php's poller_item/host join
+ * Runtime integration coverage for issue #7522 (cmd.php's poller_item/host join
  * silently defeats poller_item's SNMP-credential caching) and #7528
  * (the redundant script-server-call COUNT(*) query).
  *
@@ -73,7 +73,7 @@ if (!function_exists('cmd_php_query_branch_2')) {
 function cmd_php_seed_schema() : PDO {
 	$conn = new FakeMySQLPDO();
 
-	$conn->exec("CREATE TABLE poller_item (
+	$conn->exec('CREATE TABLE poller_item (
 		local_data_id INTEGER, poller_id INTEGER, host_id INTEGER, action INTEGER,
 		present INTEGER, hostname TEXT, snmp_community TEXT, snmp_version INTEGER,
 		snmp_username TEXT, snmp_password TEXT, snmp_auth_protocol TEXT,
@@ -81,7 +81,7 @@ function cmd_php_seed_schema() : PDO {
 		snmp_engine_id TEXT, snmp_port INTEGER, snmp_timeout INTEGER, snmp_retries INTEGER,
 		rrd_name TEXT, rrd_path TEXT, rrd_num INTEGER, rrd_step INTEGER, rrd_next_step INTEGER,
 		arg1 TEXT, arg2 TEXT, arg3 TEXT
-	)");
+	)');
 
 	$conn->exec('CREATE TABLE host (id INTEGER, hostname TEXT, snmp_community TEXT, snmp_version INTEGER, disabled TEXT, site_id INTEGER)');
 	$conn->exec('CREATE TABLE sites (id INTEGER, disabled TEXT)');
@@ -92,9 +92,9 @@ function cmd_php_seed_schema() : PDO {
 		(local_data_id, poller_id, host_id, action, present, hostname, snmp_community, snmp_version, rrd_name, rrd_step, rrd_next_step)
 		VALUES (1, 1, 10, 0, 1, 'cached-host', 'CACHED_COMMUNITY', 2, 'ds1', 300, 0)");
 
-	$conn->exec("INSERT INTO poller_item
+	$conn->exec('INSERT INTO poller_item
 		(local_data_id, poller_id, host_id, action, present, hostname, snmp_community, snmp_version, rrd_name, rrd_step, rrd_next_step)
-		VALUES (2, 1, 10, " . POLLER_ACTION_SCRIPT_PHP . ", 1, 'cached-host', 'CACHED_COMMUNITY', 2, 'ds2', 300, 0)");
+		VALUES (2, 1, 10, ' . POLLER_ACTION_SCRIPT_PHP . ", 1, 'cached-host', 'CACHED_COMMUNITY', 2, 'ds2', 300, 0)");
 
 	$conn->exec("INSERT INTO host (id, hostname, snmp_community, snmp_version, disabled, site_id)
 		VALUES (10, 'live-host', 'LIVE_COMMUNITY', 3, '', NULL)");
