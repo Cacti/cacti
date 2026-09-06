@@ -1195,7 +1195,7 @@ function validate_is_regex($regex) {
 		set_error_handler('CactiErrorHandler');
 	}
 
-	if (empty($error)) {
+	if (empty($error) || ($error === PREG_INTERNAL_ERROR && $php_error !== '')) {
 		return $php_error;
 	} else {
 		return $errors[$error] ?? $php_error;

@@ -95,11 +95,13 @@ test('remove_graphs short option validation follows its declaration', function (
 
 test('remove_graphs uses the real regex length and semicolon guards', function () {
 	$valid     = remove_graphs_regex_result('edge.*');
+	$malformed = remove_graphs_regex_result('(');
 	$too_long  = remove_graphs_regex_result(str_repeat('a', 51));
 	$semicolon = remove_graphs_regex_result('edge;.*');
 
 	expect($valid['result'])->toBeFalse()
 		->and($valid['handler'])->toBe('CactiErrorHandler')
+		->and($malformed['result'])->toContain('Compilation failed')
 		->and($too_long['result'])->toBe('Cacti regular expressions are limited to 50 characters only for security reasons.')
 		->and($semicolon['result'])->toBe('Cacti regular expressions can not includes the semi-color character.');
 });
@@ -183,6 +185,29 @@ test('remove_graphs wires strict validation before getopt', function () {
 	expect($source)->toContain('displayHosts($hosts, $quietMode)')
 		->and($source)->toContain('displayHostTemplates($hostTemplates, $quietMode)')
 		->and($source)->toContain('displayGraphTemplates($graphTemplates, $quietMode)');
+});
+
+test('all regex consumers honor the validator true-or-error contract', function () {
+	$root = dirname(__DIR__, 4);
+
+	$add_graphs = file_get_contents($root . '/cli/add_graphs.php');
+	expect($add_graphs)->toContain('if ($validation !== true)')
+		->and($add_graphs)->toContain("' AND field_value ' . db_qstr_rlike(")
+		->and($add_graphs)->not->toContain('field_value REGEXP "');
+
+	foreach (array(
+		'cli/apply_automation_rules.php',
+		'aggregate_graphs.php',
+		'lib/functions.php',
+		'lib/clog_webapi.php',
+	) as $file) {
+		$source = file_get_contents($root . '/' . $file);
+		$lines  = preg_grep('/validate_is_regex\s*\(/', explode("\n", $source));
+
+		foreach ($lines as $line) {
+			expect($line)->toContain('=== true');
+		}
+	}
 });
 
 test('graph-name reapply wires invalid selectors to distinct failures', function () {
