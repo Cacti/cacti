@@ -24,7 +24,9 @@ test('database sourced RRD paths are escaped before shell execution', function (
 
 test('CLI subprocesses pass background arguments as arrays', function () use ($batchgapfixSource, $floatRrdfilesSource) {
 	expect($batchgapfixSource)->toContain('exec_background($php_bin, $args)')
-		->and($floatRrdfilesSource)->toContain('exec_background($php_binary, $args)');
+		->and($floatRrdfilesSource)->toContain('exec_background($php_binary, $args)')
+		->and($batchgapfixSource)->toContain('$php_bin = PHP_BINARY;')
+		->and($floatRrdfilesSource)->toContain('$php_binary = PHP_BINARY;');
 });
 
 test('float rrdfiles uses a private temporary file and reachable cleanup', function () use ($floatRrdfilesSource) {
@@ -33,6 +35,7 @@ test('float rrdfiles uses a private temporary file and reachable cleanup', funct
 		->and(substr_count($floatRrdfilesSource, 'unlink($tmp_file);'))->toBeGreaterThanOrEqual(3)
 		->and($floatRrdfilesSource)->toContain('$lf = false;')
 		->and($floatRrdfilesSource)->toContain('$seebug = is_resource($lf);')
+		->and($floatRrdfilesSource)->toContain("\$rrdtool_bin = 'rrdtool';")
 		->and($floatRrdfilesSource)->not->toContain("cacti_float_rrdfiles.log");
 });
 
@@ -40,6 +43,8 @@ test('mysql option file values are quoted and escaped', function () use ($auditD
 	preg_match('/function audit_database_option_value\(.*?^}\R/ms', $auditDatabaseSource, $matches);
 
 	expect($matches)->toHaveKey(0);
+	expect($auditDatabaseSource)->toContain('audit_database_option_value - quote and escape a MySQL option-file value')
+		->and($auditDatabaseSource)->toContain('audit_database_defaults_file - writes the database credentials');
 
 	eval($matches[0]); // nosemgrep: php.lang.security.eval-use.eval-use
 

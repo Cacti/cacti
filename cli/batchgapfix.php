@@ -60,6 +60,10 @@ $start_time = false;
 $end_time   = false;
 $php_bin    = (string) read_config_option('path_php_binary');
 
+if ($php_bin === '') {
+	$php_bin = PHP_BINARY;
+}
+
 /* install signal handlers for UNIX types only */
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
