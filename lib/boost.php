@@ -172,7 +172,7 @@ function boost_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 		}
 
 		/* create an error string for the log */
-		$err = "ERRNO:'"  . $errno   . "' TYPE:'"    . $errortype[$errno] .
+		$err = "ERRNO:'"  . $errno   . "' TYPE:'"    . ($errortype[$errno] ?? 'Unknown Error') .
 			"' MESSAGE:'" . $errmsg  . "' IN FILE:'" . $filename .
 			"' LINE NO:'" . $linenum . "'";
 
@@ -224,7 +224,6 @@ function boost_flush_output_batch($value_tuples, $conn = false) {
 	$overhead   = strlen($sql_prefix) + 1;
 	$out_buffer = '';
 	$out_length = 0;
-	$success    = true;
 	$rows       = 0;
 
 	foreach ($value_tuples as $tuple) {
@@ -238,7 +237,7 @@ function boost_flush_output_batch($value_tuples, $conn = false) {
 			}
 
 			if (!$acknowledged) {
-				$success = false;
+				return false;
 			} elseif (db_affected_rows($conn) < $rows) {
 				cacti_log('WARNING: Boost staging ignored one or more duplicate sample keys.', false, 'BOOST');
 			}
@@ -261,13 +260,13 @@ function boost_flush_output_batch($value_tuples, $conn = false) {
 		}
 
 		if (!$acknowledged) {
-			$success = false;
+			return false;
 		} elseif (db_affected_rows($conn) < $rows) {
 			cacti_log('WARNING: Boost staging ignored one or more duplicate sample keys.', false, 'BOOST');
 		}
 	}
 
-	return $success;
+	return true;
 }
 
 function boost_validate_poller_ownership($results, $poller_id, $conn = false) {
@@ -459,7 +458,7 @@ function boost_graph_cache_filename($cache_directory, $local_graph_id, $rra_id, 
 		if (!is_string($secret) || !preg_match('/^[a-f0-9]{64}$/D', $secret)) {
 			$candidate = bin2hex(random_bytes(32));
 			db_execute_prepared('INSERT IGNORE INTO settings (name, value) VALUES (?, ?)', array('boost_png_cache_secret', $candidate));
-			$secret = read_config_option('boost_png_cache_secret');
+			$secret = read_config_option('boost_png_cache_secret', true);
 
 			if (!is_string($secret) || !preg_match('/^[a-f0-9]{64}$/D', $secret)) {
 				$secret = $candidate;
@@ -478,7 +477,7 @@ function boost_graph_cache_filename($cache_directory, $local_graph_id, $rra_id, 
 		'nolegend'       => isset($graph_data_array['graph_nolegend'])
 	));
 
-	return rtrim($cache_directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . hash_hmac('sha256', $cache_key, $secret) . '.png';
+	return rtrim($cache_directory, '/\\') . DIRECTORY_SEPARATOR . hash_hmac('sha256', $cache_key, $secret) . '.png';
 }
 
 function boost_atomic_write_cache($cache_file, $output) {
@@ -496,33 +495,73 @@ function boost_atomic_write_cache($cache_file, $output) {
 		return false;
 	}
 
-	$length  = strlen($output);
-	$written = 0;
+	$length     = strlen($output);
+	$written    = 0;
+	$chunk_size = 1024 * 1024;
 
 	while ($written < $length) {
-		$result = fwrite($fileptr, substr($output, $written));
+		$chunk         = substr($output, $written, $chunk_size);
+		$chunk_length  = strlen($chunk);
+		$chunk_written = 0;
 
-		if ($result === false || $result === 0) {
-			fclose($fileptr);
-			@unlink($temp_file);
+		while ($chunk_written < $chunk_length) {
+			$result = fwrite($fileptr, substr($chunk, $chunk_written));
 
-			return false;
+			if ($result === false || $result === 0) {
+				fclose($fileptr);
+				@unlink($temp_file);
+
+				return false;
+			}
+
+			$chunk_written += $result;
+			$written       += $result;
 		}
-
-		$written += $result;
 	}
 
 	$flushed = fflush($fileptr);
 	fclose($fileptr);
-	chmod($temp_file, 0640);
+	if (!$flushed || !chmod($temp_file, 0644)) {
+		@unlink($temp_file);
 
-	if (!$flushed || !rename($temp_file, $cache_file)) {
+		return false;
+	}
+
+	$published = @rename($temp_file, $cache_file);
+
+	if (!$published && PHP_OS_FAMILY === 'Windows') {
+		$published = boost_replace_cache_file_on_windows($temp_file, $cache_file);
+	}
+
+	if (!$published) {
 		@unlink($temp_file);
 
 		return false;
 	}
 
 	return true;
+}
+
+function boost_replace_cache_file_on_windows($temp_file, $cache_file) {
+	if (!is_file($temp_file) || !is_file($cache_file)) {
+		return false;
+	}
+
+	$backup_file = tempnam(dirname($cache_file), '.boost-old-');
+
+	if ($backup_file === false || !@unlink($backup_file) || !@rename($cache_file, $backup_file)) {
+		return false;
+	}
+
+	if (@rename($temp_file, $cache_file)) {
+		@unlink($backup_file);
+
+		return true;
+	}
+
+	@rename($backup_file, $cache_file);
+
+	return false;
 }
 
 function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$graph_data_array, $return = true) {
@@ -878,6 +917,12 @@ function boost_get_arch_table_names($latest_table = '') {
 function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	global $config, $database_default, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
 
+	$local_data_id = (int) $local_data_id;
+
+	if ($local_data_id <= 0) {
+		return -1;
+	}
+
 	static $archive_table = false;
 	static $warning_issued;
 
@@ -906,7 +951,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	/* avoid getting rows in the middle of poller run */
 	$timestamp = db_fetch_cell('SELECT MIN(UNIX_TIMESTAMP(start_time))
 		FROM poller_time
-		WHERE end_time="0000-00-00"');
+		WHERE end_time=\'0000-00-00\'');
 
 	if (empty($timestamp)) {
 		$timestamp = time() - 10;
@@ -1076,7 +1121,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 					$vals_in_buffer = 0;
 
 					/* check return status for delete operation */
-					if (strpos(trim($return_value), 'OK') === false && $return_value != '') {
+					if (trim((string) $return_value) !== 'OK') {
 						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 						$updates_ok = false;
 					}
@@ -1273,7 +1318,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 			boost_timer('rrdupdate', BOOST_TIMER_END);
 
 			/* check return status for delete operation */
-			if (strpos(trim($return_value), 'OK') === false && $return_value != '') {
+			if (trim((string) $return_value) !== 'OK') {
 				cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 				$updates_ok = false;
 			}
@@ -1740,9 +1785,19 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 		// Check for a Data Source that has been removed
 		if ($ds_exists) {
-			$valid_entry = boost_rrdtool_function_create($local_data_id, false, $rrdtool_pipe);
+			boost_rrdtool_function_create($local_data_id, false, $rrdtool_pipe);
+
+			if (read_config_option('storage_location')) {
+				$valid_entry = rrdtool_execute_path_command('file_exists', $rrd_path, '', true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST');
+			} else {
+				$valid_entry = file_exists($rrd_path);
+			}
 		} else {
 			return 'OK';
+		}
+
+		if (!$valid_entry) {
+			return 'ERROR: Unable to create RRD file';
 		}
 	}
 
