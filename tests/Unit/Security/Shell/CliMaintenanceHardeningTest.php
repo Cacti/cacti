@@ -41,7 +41,7 @@ test('mysql option file values are quoted and escaped', function () use ($auditD
 
 	expect($matches)->toHaveKey(0);
 
-	eval($matches[0]);
+	eval($matches[0]); // nosemgrep: php.lang.security.eval-use.eval-use
 
 	expect(audit_database_option_value('abc#def;ghi'))->toBe('"abc#def;ghi"')
 		->and(audit_database_option_value("line\nnext"))->toBe('"line\\nnext"')
