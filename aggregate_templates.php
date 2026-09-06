@@ -269,6 +269,8 @@ function aggregate_form_save() : void {
 		}
 	}
 
+	// Save helpers mutate the global message registry; PHPStan cannot observe that side effect.
+	/** @phpstan-ignore booleanNot.alwaysTrue */
 	if (!is_error_message()) {
 		raise_message(1);
 	}
