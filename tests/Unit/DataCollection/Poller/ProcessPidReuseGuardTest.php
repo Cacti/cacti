@@ -15,7 +15,7 @@
  * bare check couldn't tell the difference: it would refuse to start a
  * legitimate new task, or SIGTERM a process that never had anything to do
  * with Cacti. The fix adds cacti_process_still_running(), which layers a
- * procfs command-name check on Linux, and routes all three call sites
+ * procfs command-line check on Linux, and routes all three call sites
  * through it instead of the bare posix_kill($pid, 0).
  */
 
@@ -53,7 +53,7 @@ test('returns false for a pid that is not running', function () use ($stillRunni
 });
 
 test('returns true for the currently running process (self)', function () use ($stillRunning) {
-	// Comparing /proc/self/comm to /proc/<pid>/comm (or falling back to
+	// Comparing /proc/self/cmdline to /proc/<pid>/cmdline (or falling back to
 	// the bare existence check when /proc is unavailable) must agree
 	// that our own pid is both alive and not a reused identity.
 	expect($stillRunning(getmypid()))->toBeTrue();
@@ -106,6 +106,9 @@ test('falls back to the bare existence check when /proc is unavailable', functio
 
 test('register_process_start() and timeout_kill_registered_processes() route through the guard, not a bare posix_kill(pid, 0)', function () {
 	$src = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
+
+	expect($src)->toContain("'/cmdline'")
+		->and($src)->toContain('hash_equals($self_cmdline, $other_cmdline)');
 
 	/* Three liveness decisions live in these two functions: the timed-out pid
 	   and the not-yet-timed-out row in register_process_start(), and the row in

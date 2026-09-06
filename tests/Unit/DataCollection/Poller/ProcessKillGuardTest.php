@@ -125,6 +125,7 @@ test('the guard bounds the pid before calling the native signal function', funct
 	$body = substr($src, $start, strpos($src, "\n}\n", $start) - $start);
 
 	expect($body)->toContain('cacti_process_pid_is_valid($pid)')
+		->and($body)->toContain('is_system_pid($pid)')
 		->and($body)->toContain("function_exists('posix_kill')")
 		->and($body)->not->toContain('/proc/');
 
@@ -154,10 +155,16 @@ test('a pid wider than pid_t is refused', function () {
 	expect(implode("\n", $GLOBALS['__poller_log']))->toContain('Refusing to signal PID');
 });
 
-test('every platform keeps the signed pid_t ceiling', function () {
-	expect(cacti_process_pid_is_valid('2147483647'))->toBeTrue()
-		->and(cacti_process_pid_is_valid('2147483648'))->toBeFalse()
-		->and(cacti_process_pid_is_valid('4294967295'))->toBeFalse();
+test('pid validation uses the platform signal adapter ceiling', function () {
+	expect(cacti_process_pid_is_valid('2147483647'))->toBeTrue();
+
+	if (PHP_OS_FAMILY === 'Windows') {
+		expect(cacti_process_pid_is_valid('2147483648'))->toBeTrue()
+			->and(cacti_process_pid_is_valid('4294967295'))->toBeTrue();
+	} else {
+		expect(cacti_process_pid_is_valid('2147483648'))->toBeFalse()
+			->and(cacti_process_pid_is_valid('4294967295'))->toBeFalse();
+	}
 });
 
 test('pid validation accepts zero padding and rejects non-integer forms', function () {

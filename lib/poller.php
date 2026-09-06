@@ -2502,7 +2502,7 @@ function cacti_process_pid_is_valid($pid) {
 
 	$value = ltrim($value, '0');
 	$value = $value === '' ? '0' : $value;
-	$max   = '2147483647';
+	$max   = PHP_OS_FAMILY === 'Windows' ? '4294967295' : '2147483647';
 
 	if (strlen($value) > strlen($max) || (strlen($value) == strlen($max) && strcmp($value, $max) > 0)) {
 		return false;
@@ -2536,11 +2536,8 @@ function cacti_process_still_running($pid) {
 		return false;
 	}
 
-	$self  = @file_get_contents('/proc/' . getmypid() . '/comm');
-	$other = @file_get_contents('/proc/' . $pid . '/comm');
-
-	if ($self !== false && $other !== false) {
-		return trim($self) === trim($other);
+	if (is_dir('/proc/' . getmypid()) && is_dir('/proc/' . $pid)) {
+		return cacti_process_identity_matches($pid);
 	}
 
 	/* /proc is unavailable (non-Linux or restricted): fall back to the bare
@@ -2708,10 +2705,19 @@ function heartbeat_process($tasktype, $taskname, $taskid = 0) {
  *
  * @param  (int) $pid  - The process id to compare against this one
  *
- * @return (bool) true only when the two use the same resolved executable
+ * @return (bool) true only when procfs identifies the same command
  */
 function cacti_process_identity_matches($pid) {
-	$pid = (int) $pid;
+	$pid           = (int) $pid;
+	$self_cmdline  = @file_get_contents('/proc/' . getmypid() . '/cmdline');
+	$other_cmdline = @file_get_contents('/proc/' . $pid . '/cmdline');
+
+	/* PHP's executable path alone cannot distinguish two unrelated scripts.
+	 * Compare the complete NUL-delimited argv while procfs can provide it. */
+	if ($self_cmdline !== false && $self_cmdline !== '' && $other_cmdline !== false && $other_cmdline !== '') {
+		return hash_equals($self_cmdline, $other_cmdline);
+	}
+
 	$self_exe  = '/proc/' . getmypid() . '/exe';
 	$other_exe = '/proc/' . $pid . '/exe';
 
@@ -2726,7 +2732,13 @@ function cacti_process_identity_matches($pid) {
 		return false;
 	}
 
-	return $mine === $theirs;
+	if ($mine !== $theirs) {
+		return false;
+	}
+
+	/* If argv is unavailable, matching PHP interpreters do not establish that
+	 * the registered process runs the same Cacti script. */
+	return !preg_match('/^php(?:-fpm)?(?:[0-9.]*)?$/i', basename($mine));
 }
 
 /**
@@ -2784,7 +2796,7 @@ function cacti_process_signalable($pid) {
  * @return (bool) true when the signal was sent
  */
 function cacti_process_kill($pid, $signal = SIGTERM, $environ = 'POLLER') {
-	if (!cacti_process_pid_is_valid($pid)) {
+	if (!cacti_process_pid_is_valid($pid) || is_system_pid($pid)) {
 		cacti_log(sprintf('WARNING: Refusing to signal PID %s from a process table, which does not name a process a Cacti task can own!', $pid), false, $environ);
 
 		return false;
