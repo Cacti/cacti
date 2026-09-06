@@ -784,6 +784,25 @@ function handleTableNav() {
 	});
 }
 
+/** setupSelectmenuScrollClose - Close open select menus when their scroll
+ *  container moves so the detached menu cannot remain over unrelated fields. */
+function setupSelectmenuScrollClose() {
+	$('.cactiConsoleContentArea, .cactiGraphContentArea, .cactiGraphContentAreaPreview, .cactiTreeNavigationArea')
+		.add(window)
+		.off('scroll.cactiSelectmenu')
+		.on('scroll.cactiSelectmenu', function() {
+			if (!$('.ui-selectmenu-open').length) {
+				return;
+			}
+
+			$('select').each(function() {
+				if ($(this).selectmenu('instance') !== undefined) {
+					$(this).selectmenu('close');
+				}
+			});
+		});
+}
+
 /** applySkin - This function re-asserts all javascript behavior to a page
  *  that can't be set using a live attribute 'on()' */
 function applySkin() {
@@ -845,6 +864,8 @@ function applySkin() {
 	if (typeof themeReady == 'function') {
 		themeReady();
 	}
+
+	setupSelectmenuScrollClose();
 
 	makeFiltersResponsive();
 
