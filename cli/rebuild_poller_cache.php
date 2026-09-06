@@ -449,12 +449,12 @@ function pushout_kill_running_processes() {
 
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {
-			cacti_log(sprintf('WARNING: Killing Cleanup %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'PUSHOUT');
-			$signal_sent = cacti_process_kill($p['pid'], SIGTERM, 'PUSHOUT');
-
-			if (cacti_process_can_unregister($p['pid'], $signal_sent)) {
-				unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
+			if (cacti_process_still_running($p['pid'])) {
+				cacti_log(sprintf('WARNING: Killing Cleanup %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'PUSHOUT');
+				cacti_process_kill($p['pid'], SIGTERM, 'PUSHOUT');
 			}
+
+			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
 		}
 	}
 }

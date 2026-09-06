@@ -76,7 +76,9 @@ function sig_handler($signo) {
 
 				if (cacti_sizeof($pids)) {
 					foreach($pids as $pid) {
-						cacti_process_kill($pid, SIGTERM, 'AUTOM8');
+						if (cacti_process_still_running($pid)) {
+							cacti_process_kill($pid, SIGTERM, 'AUTOM8');
+						}
 					}
 				}
 
@@ -97,7 +99,9 @@ function sig_handler($signo) {
 
 				if (cacti_sizeof($pids)) {
 					foreach($pids as $pid) {
-						cacti_process_kill($pid, SIGTERM, 'AUTOM8');
+						if (cacti_process_still_running($pid)) {
+							cacti_process_kill($pid, SIGTERM, 'AUTOM8');
+						}
 					}
 				}
 
@@ -344,6 +348,24 @@ if (!$master && $thread == 0) {
 		// Are there no more running tasks? Wait up to 15 seconds to
 		// allow processes to start before checking for failures
 		if (($running == 0 && $failcount > 3) || $command == 'cancel') {
+			if ($command == 'cancel') {
+				$pids = array_rekey(db_fetch_assoc_prepared("SELECT pid
+					FROM automation_processes
+					WHERE network_id = ?
+					AND task!='tmaster'",
+					array($network_id)), 'pid', 'pid');
+
+				if (cacti_sizeof($pids)) {
+					foreach($pids as $pid) {
+						if (cacti_process_still_running($pid)) {
+							cacti_process_kill($pid, SIGTERM, 'AUTOM8');
+						}
+					}
+
+					sleep(5);
+				}
+			}
+
 			db_execute_prepared('DELETE FROM automation_ips
 				WHERE network_id = ?',
 				array($network_id));

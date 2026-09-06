@@ -1229,16 +1229,12 @@ function dsstats_kill_running_processes() {
 
 	if (cacti_sizeof($processes)) {
 		foreach($processes as $p) {
-			$signal_sent = false;
-
 			if (cacti_process_still_running($p['pid'])) {
 				cacti_log(sprintf('WARNING: Killing DSStats %s PID %d due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'BOOST');
-				$signal_sent = cacti_process_kill($p['pid'], SIGTERM, 'BOOST');
+				cacti_process_kill($p['pid'], SIGTERM, 'BOOST');
 			}
 
-			if (cacti_process_can_unregister($p['pid'], $signal_sent)) {
-				unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
-			}
+			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
 		}
 	}
 }

@@ -2849,18 +2849,6 @@ function cacti_process_signalable($pid, $permission_denied_is_alive = true) {
 }
 
 /**
- * Determine whether a process row can be retired after a signal attempt.
- *
- * @param  (mixed) $pid         - The process-table PID value
- * @param  (bool)  $signal_sent - Whether cacti_process_kill() succeeded
- *
- * @return (bool) true after a successful signal or when no process exists
- */
-function cacti_process_can_unregister($pid, $signal_sent) {
-	return $signal_sent || !cacti_process_signalable($pid);
-}
-
-/**
  * cacti_process_kill - signal a pid that was read from a process table
  *
  * A stored pid can hold a value the kernel will not read as the caller means

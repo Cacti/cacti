@@ -297,11 +297,7 @@ test('every process table kill site routes through the guard', function () {
 		->and($unguarded)->toBe(array());
 });
 
-test('cleanup sites preserve a row when the signal guard refuses a live pid', function () {
-	expect(cacti_process_can_unregister(getmypid(), false))->toBeFalse()
-		->and(cacti_process_can_unregister(999999999, false))->toBeTrue()
-		->and(cacti_process_can_unregister(getmypid(), true))->toBeTrue();
-
+test('cleanup sites guard signals and still retire timed-out rows', function () {
 	$sites = array(
 		'cli/batchgapfix.php',
 		'cli/float_rrdfiles.php',
@@ -316,12 +312,13 @@ test('cleanup sites preserve a row when the signal guard refuses a live pid', fu
 		$src = file_get_contents(dirname(__DIR__, 4) . '/' . $file);
 
 		expect($src)->not->toBeFalse($file . ' must be readable')
-			->and($src)->toContain('cacti_process_can_unregister(');
+			->and($src)->toContain('cacti_process_still_running(')
+			->and($src)->toContain('unregister_process(');
 	}
 
 	$poller = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
 
-	expect($poller)->toContain('function cacti_process_can_unregister(')
+	expect($poller)->not->toContain('function cacti_process_can_unregister(')
 		->and($poller)->toContain('unregister_process($tasktype, $taskname, $taskid)');
 });
 
@@ -403,7 +400,8 @@ test('batchgapfix sanitizes stored pids before terminal output', function () {
 
 	expect($src)->not->toBeFalse()
 		->and($src)->toContain("cacti_process_pid_for_log(\$r['pid'])")
-		->and($src)->toContain('PHP_EOL, $logged_pid)');
+		->and($src)->toContain('PHP_EOL, $logged_pid)')
+		->and($src)->toContain("db_fetch_assoc_prepared('SELECT *");
 });
 
 test('automation cancel reaches full network cleanup before exit', function () {
@@ -413,6 +411,8 @@ test('automation cancel reaches full network cleanup before exit', function () {
 	expect($src)->not->toBeFalse()
 		->and($cancel)->not->toBeFalse()
 		->and(substr($src, 0, $cancel))->not->toContain("if (\$command == 'cancel')")
+		->and(substr($src, $cancel))->toContain('cacti_process_kill($pid, SIGTERM')
+		->and(strpos($src, 'cacti_process_kill($pid, SIGTERM', $cancel))->toBeLessThan(strpos($src, 'DELETE FROM automation_ips', $cancel))
 		->and(substr($src, $cancel))->toContain('DELETE FROM automation_ips')
 		->and(substr($src, $cancel))->toContain('clearAllTasks($network_id)')
 		->and(substr($src, $cancel))->toContain('reportNetworkStatus($network_id, $preexisting_devices)');

@@ -193,28 +193,24 @@ if ($child == 0) {
 	if ($force) {
 		printf("NOTE: Looking for and killing running processes." . PHP_EOL);
 
-		$running = db_fetch_assoc('SELECT *
+		$running = db_fetch_assoc_prepared('SELECT *
 			FROM processes
-			WHERE tasktype = \'batchgapfix\'');
+			WHERE tasktype = \'batchgapfix\'', array());
 
 		if (cacti_sizeof($running)) {
 			printf("NOTE: Found %s running processes." . PHP_EOL, cacti_sizeof($running));
 
 			foreach($running as $r) {
 				$logged_pid = cacti_process_pid_for_log($r['pid']);
-				$signal_sent = false;
-
 				if (cacti_process_still_running($r['pid'])) {
 					printf("NOTE: Process with PID: %s being killed." . PHP_EOL, $logged_pid);
 
-					$signal_sent = cacti_process_kill($r['pid'], SIGTERM, 'POLLER');
+					cacti_process_kill($r['pid'], SIGTERM, 'POLLER');
 				} else {
 					printf("NOTE: Process with PID: %s is no longer running or does not match the registered command." . PHP_EOL, $logged_pid);
 				}
 
-				if (cacti_process_can_unregister($r['pid'], $signal_sent)) {
-					unregister_process($r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']);
-				}
+				unregister_process($r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']);
 			}
 		} else {
 			printf("NOTE: No running processes found." . PHP_EOL);
