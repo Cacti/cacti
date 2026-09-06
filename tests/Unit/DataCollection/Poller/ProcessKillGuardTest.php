@@ -110,7 +110,7 @@ test('the guard refuses init and carries no wider low pid floor', function () {
 	$body = substr($src, $start, strpos($src, "\n}\n", $start) - $start);
 
 	expect($body)->toContain('$pid <= 1')
-		->and($body)->toContain('$pid > 2147483647')
+		->and($body)->toContain('$pid > cacti_process_pid_max()')
 		->and($body)->not->toContain('<= 100');
 });
 
@@ -124,6 +124,10 @@ test('a pid wider than pid_t is refused', function () {
 	   that ends the poller. Refusing ahead of the call covers both. */
 	expect(cacti_process_kill(4294967295, SIGTERM))->toBeFalse()
 		->and(cacti_process_kill(PHP_INT_MAX, SIGTERM))->toBeFalse();
+});
+
+test('the process id ceiling follows the platform signal adapter', function () {
+	expect(cacti_process_pid_max())->toBe(PHP_OS_FAMILY === 'Windows' ? 4294967295 : 2147483647);
 });
 
 test('a pid inside pid_t that does not exist is left to the kernel', function () {

@@ -2758,8 +2758,18 @@ function cacti_process_still_running(int $pid) : bool {
  *
  * @return bool True when a signal from this process would reach that pid.
  */
+/**
+ * Returns the largest process id accepted by the platform signal adapter.
+ *
+ * Windows process IDs are unsigned 32-bit values and Cacti's posix_kill()
+ * compatibility shim does not narrow them through the POSIX pid_t type.
+ */
+function cacti_process_pid_max() : int {
+	return PHP_OS_FAMILY === 'Windows' ? 4294967295 : 2147483647;
+}
+
 function cacti_process_signalable(int $pid) : bool {
-	if ($pid <= 1 || $pid > 2147483647 || !function_exists('posix_kill')) {
+	if ($pid <= 1 || $pid > cacti_process_pid_max() || !function_exists('posix_kill')) {
 		return false;
 	}
 
@@ -2807,7 +2817,7 @@ function cacti_process_kill(int $pid, int $signal = SIGTERM, string $environ = '
 		return false;
 	}
 
-	if ($pid > 2147483647) {
+	if ($pid > cacti_process_pid_max()) {
 		cacti_log(sprintf('WARNING: Refusing to signal PID %s from a process table, which is wider than pid_t and would reach the kernel as -1!', $pid), false, $environ);
 
 		return false;
@@ -2840,7 +2850,7 @@ function cacti_process_kill(int $pid, int $signal = SIGTERM, string $environ = '
  * @return bool True when the process exists or signalling it is forbidden.
  */
 function cacti_process_pid_exists(int $pid) : bool {
-	if ($pid <= 0 || $pid > 2147483647 || !function_exists('posix_kill')) {
+	if ($pid <= 0 || $pid > cacti_process_pid_max() || !function_exists('posix_kill')) {
 		return false;
 	}
 
