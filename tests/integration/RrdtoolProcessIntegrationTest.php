@@ -160,9 +160,12 @@ test('Cacti fetch excludes the RRDtool bucket after the requested CSV window', f
 	$local_storage     = $config['local_storage'] ?? null;
 	$had_rrdtool_path  = isset($config[OPTIONS_CLI]) && array_key_exists('path_rrdtool', $config[OPTIONS_CLI]);
 	$rrdtool_path      = $config[OPTIONS_CLI]['path_rrdtool'] ?? null;
+	$had_default_font  = isset($config[OPTIONS_CLI]) && array_key_exists('path_rrdtool_default_font', $config[OPTIONS_CLI]);
+	$default_font      = $config[OPTIONS_CLI]['path_rrdtool_default_font'] ?? null;
 
-	$config[OPTIONS_CLI]['path_rrdtool'] = $binary;
-	$config['local_storage']             = true;
+	$config[OPTIONS_CLI]['path_rrdtool']              = $binary;
+	$config[OPTIONS_CLI]['path_rrdtool_default_font'] = false;
+	$config['local_storage']                          = true;
 	$directory                           = integration_rrdtool_directory();
 	$rrd                                 = $directory . '/csv-window.rrd';
 	$start                               = 1700000100;
@@ -210,6 +213,12 @@ test('Cacti fetch excludes the RRDtool bucket after the requested CSV window', f
 			$config[OPTIONS_CLI]['path_rrdtool'] = $rrdtool_path;
 		} else {
 			unset($config[OPTIONS_CLI]['path_rrdtool']);
+		}
+
+		if ($had_default_font) {
+			$config[OPTIONS_CLI]['path_rrdtool_default_font'] = $default_font;
+		} else {
+			unset($config[OPTIONS_CLI]['path_rrdtool_default_font']);
 		}
 	}
 });
