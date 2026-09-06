@@ -39,6 +39,17 @@ test('shared CLI parser accepts declared flags and splits values once', function
 		]);
 });
 
+test('shared CLI parser accepts a value in the following argument', function () {
+	[$status, $output, $error] = run_cli_options_probe(['--name', 'a=b', '--force']);
+
+	expect($status)->toBe(0)
+		->and($error)->toBe('')
+		->and(json_decode($output, true, 512, JSON_THROW_ON_ERROR))->toBe([
+			'name'  => 'a=b',
+			'force' => true,
+		]);
+});
+
 test('shared CLI parser rejects unknown, positional, malformed, and missing arguments', function (array $arguments) {
 	[$status, $output] = run_cli_options_probe($arguments);
 

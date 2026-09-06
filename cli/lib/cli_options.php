@@ -27,7 +27,8 @@
  * Each script declares its options once and this file parses them, renders
  * --help from the same declaration so the two cannot drift, and prints
  * --version. The option contract is unchanged: options are --name or
- * --name=value, -v and -V print the version, -h and -H print the help.
+ * --name=value or --name value, -v and -V print the version, -h and -H
+ * print the help.
  */
 
 /**
@@ -136,7 +137,8 @@ function cacti_cli_help_options($options, $width) {
 /**
  * cacti_cli_parse - parses the command line against a declaration.
  *
- * Options are --name or --name=value. A declaration entry may set:
+ * Options are --name, --name=value, or --name value. Values beginning with a
+ * dash must use the --name=value form. A declaration entry may set:
  *
  *   value    the placeholder shown in help; absent or '' means the option
  *            takes no value and is returned as boolean true
@@ -171,7 +173,9 @@ function cacti_cli_parse($argv, $options, $title, $usage, $extra = []) {
 		}
 	}
 
-	foreach ($parms as $parameter) {
+	for ($index = 0; $index < cacti_sizeof($parms); $index++) {
+		$parameter = $parms[$index];
+
 		if (strpos($parameter, '=') !== false) {
 			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
@@ -213,6 +217,10 @@ function cacti_cli_parse($argv, $options, $title, $usage, $extra = []) {
 		}
 
 		if (isset($options[$name]['value']) && $options[$name]['value'] != '') {
+			if ($value === '' && $parameter === $arg && isset($parms[$index + 1]) && !str_starts_with($parms[$index + 1], '-')) {
+				$value = $parms[++$index];
+			}
+
 			$values[$name] = trim($value);
 		} else {
 			$values[$name] = true;
