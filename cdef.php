@@ -619,7 +619,7 @@ function cdef_edit() : void {
 
 				form_selectable_cell(filter_value(__('Item # %d', $i), '', 'cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']), $cdef_item['id']);
 
-				$item_value = '<em>' . $cdef_item_types[$cdef_item['type']] . '</em>' . htmle(get_cdef_item_name($cdef_item['id']) ?? __('Invalid'));
+				$item_value = '<em>' . htmle($cdef_item_types[$cdef_item['type']] ?? __('Unknown')) . '</em>' . htmle(get_cdef_item_name($cdef_item['id']) ?? __('Invalid'));
 
 				form_selectable_cell($item_value, $cdef_item['id']);
 

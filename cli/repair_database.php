@@ -503,7 +503,11 @@ function detailed_checks() : void {
 	$total_errors  += $invalid_references;
 	$total_repairs += $fixed_references;
 
-	printf('NOTE: Found ' . ($force ? 'and repaired ' : '') . "$fixed_references of $invalid_references graph item references to missing CDEFs." . PHP_EOL);
+	if ($force) {
+		printf("NOTE: Found and repaired $fixed_references of $invalid_references graph item references to missing CDEFs." . PHP_EOL);
+	} else {
+		printf("NOTE: Found $invalid_references graph item references to missing CDEFs." . PHP_EOL);
+	}
 
 	printf('NOTE: Searching for invalid Cacti Data Inputs.' . PHP_EOL);
 
