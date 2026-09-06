@@ -64,14 +64,12 @@ function cacti_remove_graphs_parameter_is_valid($parameter, $shortopts, $longopt
 /**
  * Return the validation error for a remove_graphs.php regular expression.
  *
- * @param string        $regex     The expression supplied by the operator.
- * @param callable|null $validator Optional validator used by unit tests.
+ * @param string $regex The expression supplied by the operator.
  *
  * @return string|false False when valid, otherwise a printable error message.
  */
-function cacti_remove_graphs_regex_error($regex, $validator = null) {
-	$validator  = $validator ?: 'validate_is_regex';
-	$validation = $validator($regex);
+function cacti_remove_graphs_regex_error($regex) {
+	$validation = validate_is_regex($regex);
 
 	if ($validation === true) {
 		return false;
@@ -133,11 +131,7 @@ function cacti_reapply_names_where($host_id, $filter) {
 		return array($where, $params);
 	}
 
-	if ($host_id == '0') {
-		return array($where . ' AND graph_local.host_id=0', $params);
-	}
-
-	if (ctype_digit($host_id) && (int) $host_id > 0) {
+	if (ctype_digit($host_id)) {
 		$where   .= ' AND graph_local.host_id=?';
 		$params[] = (int) $host_id;
 

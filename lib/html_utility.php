@@ -1168,6 +1168,10 @@ function validate_is_regex($regex) {
 	restore_error_handler();
 
 	if (@preg_match("'" . $regex . "'", '') !== false) {
+		if (!defined('IN_CACTI_INSTALL')) {
+			set_error_handler('CactiErrorHandler');
+		}
+
 		return true;
 	}
 

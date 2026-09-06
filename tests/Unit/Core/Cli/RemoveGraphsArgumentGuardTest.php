@@ -41,6 +41,43 @@ $longopts = array(
 );
 $shortopts = 'VvHh';
 
+/**
+ * Exercise regex validation in an isolated process so translation and error
+ * handler doubles cannot shadow Cacti functions during Pest collection.
+ *
+ * @param string $regex           Expression to validate.
+ * @param bool   $broken_contract Replace the validator with a false result.
+ *
+ * @return array{result: string|false, handler: mixed}
+ */
+function remove_graphs_regex_result($regex, $broken_contract = false) {
+	$root        = dirname(__DIR__, 4);
+	$translation = 'function __($message) { return $message; }'
+		. 'function CactiErrorHandler() { return true; }';
+	$validator   = $broken_contract
+		? 'function validate_is_regex($regex) { return false; }'
+		: 'require ' . var_export($root . '/lib/html_utility.php', true) . ';';
+	$code        = $translation . $validator
+		. 'require ' . var_export($root . '/lib/maintenance_cli.php', true) . ';'
+		. '$result = cacti_remove_graphs_regex_error(' . var_export($regex, true) . ');'
+		. '$handler = set_error_handler(function () {});'
+		. 'echo json_encode(array("result" => $result, "handler" => $handler));';
+	$pipes       = array();
+	$process     = proc_open(array(PHP_BINARY, '-r', $code), array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+
+	expect($process)->not->toBeFalse();
+
+	$output = stream_get_contents($pipes[1]);
+	$error  = stream_get_contents($pipes[2]);
+
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+
+	expect(proc_close($process))->toBe(0, $error);
+
+	return json_decode($output, true);
+}
+
 test('remove_graphs accepts only declared options with the right value shape', function () use ($shortopts, $longopts) {
 	foreach (array('--graph-template-id=5', '--host-id=0', '--all', '--force', '--list-hosts', '-V', '-h', '-Vv') as $parameter) {
 		expect(cacti_remove_graphs_parameter_is_valid($parameter, $shortopts, $longopts))->toBeTrue($parameter);
@@ -56,22 +93,19 @@ test('remove_graphs short option validation follows its declaration', function (
 		->and(cacti_remove_graphs_parameter_is_valid('-qX', 'VvHhq', $longopts))->toBeFalse();
 });
 
-test('remove_graphs treats validator error strings as regex failures', function () {
-	$validator = static function ($regex) {
-		return $regex === 'edge.*' ? true : 'invalid regex';
-	};
+test('remove_graphs uses the real regex length and semicolon guards', function () {
+	$valid     = remove_graphs_regex_result('edge.*');
+	$too_long  = remove_graphs_regex_result(str_repeat('a', 51));
+	$semicolon = remove_graphs_regex_result('edge;.*');
 
-	expect(cacti_remove_graphs_regex_error('edge.*', $validator))->toBeFalse()
-		->and(cacti_remove_graphs_regex_error(str_repeat('a', 51), $validator))->toBe('invalid regex')
-		->and(cacti_remove_graphs_regex_error('edge;.*', $validator))->toBe('invalid regex');
+	expect($valid['result'])->toBeFalse()
+		->and($valid['handler'])->toBe('CactiErrorHandler')
+		->and($too_long['result'])->toBe('Cacti regular expressions are limited to 50 characters only for security reasons.')
+		->and($semicolon['result'])->toBe('Cacti regular expressions can not includes the semi-color character.');
 });
 
 test('remove_graphs fails closed when its regex validator breaks contract', function () {
-	$validator = static function () {
-		return false;
-	};
-
-	expect(cacti_remove_graphs_regex_error('edge.*', $validator))->toBe('Invalid regular expression.');
+	expect(remove_graphs_regex_result('edge.*', true)['result'])->toBe('Invalid regular expression.');
 });
 
 test('remove_graphs quiet mode follows the parsed option key', function () {
@@ -83,7 +117,7 @@ test('reapply names builds balanced prepared query fragments', function () {
 	foreach (array(
 		array('all', 'edge', 2),
 		array('1,2,3', '', 3),
-		array('0', 'edge', 2),
+		array('0', 'edge', 3),
 		array('42', 'edge', 3),
 	) as $case) {
 		$where = cacti_reapply_names_where($case[0], $case[1]);
@@ -122,6 +156,14 @@ test('reapply names rejects an invalid member instead of narrowing the host list
 		->and(cacti_reapply_names_where('', ''))->toBeFalse();
 });
 
+test('reapply names rejects malformed values that compare loosely to zero', function () {
+	foreach (array('0e5', '0.0', '-0', '+0', '0.') as $host_id) {
+		expect(cacti_reapply_names_where($host_id, ''))->toBeFalse($host_id);
+	}
+
+	expect(cacti_reapply_names_where('0', ''))->toBe(array(' AND graph_local.host_id=?', array(0)));
+});
+
 test('normalized maintenance failures use the portable non-zero exit', function () {
 	foreach (array('removespikes.php', 'splice_rrd.php') as $script) {
 		$source = file_get_contents(__DIR__ . '/../../../../cli/' . $script);
@@ -137,6 +179,10 @@ test('remove_graphs wires strict validation before getopt', function () {
 		->and($source)->toContain('cacti_remove_graphs_parameter_is_valid($parameter, $shortopts, $longopts)')
 		->and($source)->toContain('ERROR: Invalid Argument:')
 		->and($source)->not->toContain("'graph-type::'");
+
+	expect($source)->toContain('displayHosts($hosts, $quietMode)')
+		->and($source)->toContain('displayHostTemplates($hostTemplates, $quietMode)')
+		->and($source)->toContain('displayGraphTemplates($graphTemplates, $quietMode)');
 });
 
 test('graph-name reapply wires invalid selectors to distinct failures', function () {
