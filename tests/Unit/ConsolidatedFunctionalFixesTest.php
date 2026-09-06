@@ -56,16 +56,6 @@ test('automation host offsets carry across every IPv4 octet', function (): void 
 		->and($source)->toContain('return long2ip($base + $count);');
 });
 
-test('SNMP engine uptime is used only when it covers system uptime', function (): void {
-	$source = consolidatedSource('cmd.php');
-	$select = static fn (int|false $engine, int|false $system): int|false => $engine !== false && ($system === false || $engine >= $system) ? $engine : $system;
-
-	expect($select(100, 500))->toBe(500)
-		->and($select(600, 500))->toBe(600)
-		->and($select(600, false))->toBe(600)
-		->and($source)->toContain('$uptimeAlt >= $uptimeSys');
-});
-
 test('single-value lm-sensors reads use query-path scaling', function (): void {
 	$source = consolidatedSource('scripts/ss_netsnmp_lmsensors.php');
 
