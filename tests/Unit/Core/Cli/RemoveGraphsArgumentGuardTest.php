@@ -24,10 +24,10 @@
 require_once __DIR__ . '/../../../../lib/maintenance_cli.php';
 
 $longopts = array(
-	'host-id::',
-	'graph-template-id::',
-	'host-template-id::',
-	'graph-regex::',
+	'host-id:',
+	'graph-template-id:',
+	'host-template-id:',
+	'graph-regex:',
 	'all',
 	'preserve',
 	'quiet',

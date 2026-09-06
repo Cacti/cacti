@@ -66,10 +66,10 @@ if (cacti_sizeof($parms)) {
 	$shortopts = 'VvHh';
 
 	$longopts = array(
-		'host-id::',
-		'graph-template-id::',
-		'host-template-id::',
-		'graph-regex::',
+		'host-id:',
+		'graph-template-id:',
+		'host-template-id:',
+		'graph-regex:',
 		'all',
 		'preserve',
 		'quiet',
