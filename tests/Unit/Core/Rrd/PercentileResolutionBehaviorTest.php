@@ -12,8 +12,7 @@
 
 namespace PercentileResolutionBehaviorTest;
 
-$GLOBALS['graph_item_types']          = [1 => 'LINE1'];
-$GLOBALS['percentile_fetch_requests'] = [];
+$savedGlobals = [];
 
 function cacti_sizeof(array $value) : int {
 	return count($value);
@@ -44,10 +43,30 @@ if (preg_match('/function variable_nth_percentile\(.*?^}\R/ms', $source, $matche
 	throw new \RuntimeException('Unable to extract variable_nth_percentile() for tests.');
 }
 
-eval('namespace PercentileResolutionBehaviorTest;' . $matches[0]);
+eval('namespace PercentileResolutionBehaviorTest;' . $matches[0]); // nosemgrep: php.lang.security.eval-use.eval-use
 
-beforeEach(function () {
+beforeEach(function () use (&$savedGlobals) {
+	foreach (['graph_item_types', 'percentile_fetch_requests'] as $name) {
+		$savedGlobals[$name] = [
+			'exists' => array_key_exists($name, $GLOBALS),
+			'value'  => $GLOBALS[$name] ?? null,
+		];
+	}
+
+	$GLOBALS['graph_item_types']          = [1 => 'LINE1'];
 	$GLOBALS['percentile_fetch_requests'] = [];
+});
+
+afterEach(function () use (&$savedGlobals) {
+	foreach ($savedGlobals as $name => $saved) {
+		if ($saved['exists']) {
+			$GLOBALS[$name] = $saved['value'];
+		} else {
+			unset($GLOBALS[$name]);
+		}
+	}
+
+	$savedGlobals = [];
 });
 
 test('every percentile mode forwards the graph RRA resolution', function (string $type, bool $peak) {
