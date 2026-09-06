@@ -134,7 +134,11 @@ function api_aggregate_convert_template(array $graphs) : void {
 			$sequence++;
 		}
 
-		push_out_aggregates($aggregate_template_id, $graph);
+		if (!push_out_aggregates($aggregate_template_id, $graph)) {
+			cacti_log('ERROR: Failed to rebuild aggregate graph after template conversion.', false, 'AGGREGATE');
+
+			return;
+		}
 
 		/**
 		 * Save the last time a aggregate was altered/updated
@@ -187,7 +191,11 @@ function api_aggregate_associate(int $local_graph_id, array $graphs) : void {
 			$max_sequence++;
 		}
 
-		push_out_aggregates($aggregate_template, $local_graph_id);
+		if (!push_out_aggregates($aggregate_template, $local_graph_id)) {
+			cacti_log('ERROR: Failed to rebuild aggregate graph after association.', false, 'AGGREGATE');
+
+			return;
+		}
 
 		/**
 		 * Save the last time a aggregate was altered/updated
@@ -230,7 +238,11 @@ function api_aggregate_disassociate(int $local_graph_id, array $graphs) : void {
 				[$aggregate_id, $graph]);
 		}
 
-		push_out_aggregates($aggregate_template, $local_graph_id);
+		if (!push_out_aggregates($aggregate_template, $local_graph_id)) {
+			cacti_log('ERROR: Failed to rebuild aggregate graph after disassociation.', false, 'AGGREGATE');
+
+			return;
+		}
 
 		/**
 		 * Save the last time a aggregate was altered/updated
@@ -322,7 +334,9 @@ function api_aggregate_create(string $aggregate_name, array $graphs, int $agg_te
 			update_graph_title_cache($local_graph_id);
 		}
 
-		push_out_aggregates($agg_template['aggregate_template_id'], $local_graph_id);
+		if (!push_out_aggregates($agg_template['aggregate_template_id'], $local_graph_id)) {
+			cacti_log('ERROR: Failed to rebuild newly created aggregate graph.', false, 'AGGREGATE');
+		}
 	}
 }
 
