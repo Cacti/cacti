@@ -76,6 +76,14 @@ test('both inline views render the shared persisted size control', () => {
 	}
 });
 
+test('the tree size control falls back to the persisted user preference', () => {
+	const source = fs.readFileSync(path.join(root, 'lib', 'html_tree.php'), 'utf8');
+
+	assert.match(source, /isset\(\$_SESSION\['sess_realtime_size'\]\)/);
+	assert.match(source, /read_user_setting\('realtime_size', \$realtime_default_size\)/);
+	assert.match(source, /\$size == \$selected_size/);
+});
+
 test('server rendering applies the shared 50 percent default', () => {
 	const arrays = fs.readFileSync(path.join(root, 'include/global_arrays.php'), 'utf8');
 	const endpoint = fs.readFileSync(path.join(root, 'graph_realtime.php'), 'utf8');

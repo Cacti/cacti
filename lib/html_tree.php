@@ -1178,8 +1178,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<td>
 						<select id='size'>
 							<?php
+							$selected_size = isset($_SESSION['sess_realtime_size'])
+								? $_SESSION['sess_realtime_size']
+								: read_user_setting('realtime_size', $realtime_default_size);
+
 							foreach ($realtime_sizes as $size => $text) {
-								printf('<option value="%d"%s>%s</option>', $size, $size == $_SESSION['sess_realtime_size'] ? ' selected="selected"' : '', $text);
+								printf('<option value="%d"%s>%s</option>', $size, $size == $selected_size ? ' selected="selected"' : '', $text);
 							}
 							?>
 						</select>
