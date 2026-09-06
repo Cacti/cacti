@@ -135,7 +135,9 @@ test('the master poller sanitizes a stored pid before its status log', function 
 	$src = file_get_contents(dirname(__DIR__, 4) . '/poller.php');
 
 	expect($src)->toContain("cacti_process_pid_for_log(\$process['pid'])")
-		->and($src)->toContain("process with pid '\$logged_pid'");
+		->and($src)->toContain("process with pid '\$logged_pid'")
+		->and($src)->toContain("cacti_process_kill(\$process['pid'], SIGTERM")
+		->and($src)->not->toContain("cacti_process_still_running(\$process['pid'])");
 });
 
 test('the guard bounds the pid before calling the native signal function', function () {
