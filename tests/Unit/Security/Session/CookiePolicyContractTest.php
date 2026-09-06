@@ -79,11 +79,13 @@ test('remember-me parsing accepts exactly legacy or current field counts', funct
 		throw new RuntimeException('check_auth_cookie() must exist');
 	}
 
-	$end            = strpos($cookie_sources['auth'], '/**', $start + 10);
+	$matched        = preg_match('/\nfunction\s+[a-zA-Z_][a-zA-Z0-9_]*\s*\(/', $cookie_sources['auth'], $boundary, PREG_OFFSET_CAPTURE, $start + 10);
 
-	if ($end === false) {
-		throw new RuntimeException('check_auth_cookie() must have a following docblock boundary');
+	if ($matched !== 1) {
+		throw new RuntimeException('check_auth_cookie() must have a following function boundary');
 	}
+
+	$end = $boundary[0][1];
 
 	$body           = substr($cookie_sources['auth'], $start, $end - $start);
 
