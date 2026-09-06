@@ -68,7 +68,13 @@ if (cacti_sizeof($parms)) {
 
 		switch ($arg) {
 			case '--child':
-				$child = $value;
+				if (!preg_match('/^[1-9]\d*$/D', $value)) {
+					print "ERROR: Child identifier must be a positive integer.\n\n";
+					display_help();
+					exit(1);
+				}
+
+				$child = (int) $value;
 				break;
 			case '--run-id':
 				if (preg_match('/^[a-f0-9]{32}$/D', $value)) {
@@ -145,7 +151,8 @@ if ($child == false) {
 		$next_run_time = $boost_next_run_time;
 	}
 
-	$seconds_offset = read_config_option('boost_rrd_update_interval') * 60;
+	$interval_minutes = (int) read_config_option('boost_rrd_update_interval');
+	$seconds_offset   = ($interval_minutes > 0 ? $interval_minutes : 120) * 60;
 
 	$run_now = boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_time);
 
@@ -270,9 +277,14 @@ if ($child == false) {
 				dsstats_boost_bottom();
 				rrdcheck_boost_bottom();
 
-				api_plugin_hook('boost_poller_bottom');
+					api_plugin_hook('boost_poller_bottom');
+				}
+			} else {
+				$rrd_updates = 0;
+				set_config_option('boost_poller_status', 'failed - end time:' . date('Y-m-d H:i:s'));
+				set_config_option('boost_last_run_time', $last_run_time);
+				cacti_log('ERROR: Boost preparation failed; no child processes were launched.', true, 'BOOST');
 			}
-		}
 
 		cacti_log('INFO: Boost unregistering master process', true, 'BOOST');
 
@@ -312,16 +324,20 @@ if ($child == false) {
 	/* output all the rrd data to the rrd files */
 	$rrd_updates = boost_output_rrd_data($child);
 
-	db_execute_prepared('INSERT INTO poller_output_boost_processes
+	$completion_recorded = db_execute_prepared('INSERT INTO poller_output_boost_processes
 		(run_id, child_id, status) VALUES (?, ?, ?)
 		ON DUPLICATE KEY UPDATE status = VALUES(status)',
 		array($run_id, $child, $rrd_updates));
+
+	if ($completion_recorded === false) {
+		cacti_log('ERROR: Boost child could not record its completion status.', true, 'BOOST');
+	}
 
 	boost_log_child_statistics($rrd_updates, $child);
 
 	unregister_process('boost', 'child', $child);
 
-	exit(0);
+	exit($completion_recorded === false ? 1 : 0);
 }
 
 function sig_handler($signo) {
@@ -341,25 +357,24 @@ function sig_handler($signo) {
 				unregister_process('boost', 'master', $config['poller_id'], getmypid());
 			}
 
-			exit;
-			break;
+			if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
+				if ($current_lock !== false && $child) {
+					db_execute("SELECT RELEASE_LOCK('boost.single_ds.$current_lock')");
+				} elseif (!$child) {
+					db_execute('SELECT RELEASE_ALL_LOCKS()');
+				}
+			}
+
+			exit(1);
 		default:
 			/* ignore all other signals */
-	}
-
-	if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-		if ($current_lock !== false && $child) {
-			db_execute("SELECT RELEASE_LOCK('boost.single_ds.$current_lock')");
-		} elseif (!$child) {
-			db_execute("SELECT RELEASE_ALL_LOCKS()");
-		}
 	}
 }
 
 function boost_kill_running_processes() {
 	$processes = db_fetch_assoc_prepared('SELECT *
 		FROM processes
-		WHERE tasktype = "boost"
+		WHERE tasktype = \'boost\'
 		AND pid != ?',
 		array(getmypid()));
 
@@ -377,8 +392,8 @@ function boost_kill_running_processes() {
 function boost_processes_running() {
 	$running = db_fetch_cell('SELECT COUNT(*)
 		FROM processes
-		WHERE tasktype = "boost"
-		AND taskname = "child"');
+		WHERE tasktype = \'boost\'
+		AND taskname = \'child\'');
 
 	return $running;
 }
@@ -442,9 +457,22 @@ function boost_prepare_process_table() {
 	$interim_table = 'poller_output_boost_' . $time;
 
 	cacti_log('INFO: Boost rotating poller_output_boost into archive table: ' . $archive_table, true, 'BOOST');
-	db_execute("CREATE TABLE $interim_table LIKE poller_output_boost");
-	db_execute("RENAME TABLE poller_output_boost TO $archive_table, $interim_table TO poller_output_boost");
-	db_execute("ANALYZE TABLE $archive_table");
+	if (db_execute("CREATE TABLE `$interim_table` LIKE poller_output_boost") === false) {
+		cacti_log('ERROR: Boost failed to create its interim output table.', true, 'BOOST');
+
+		return false;
+	}
+
+	if (db_execute("RENAME TABLE poller_output_boost TO `$archive_table`, `$interim_table` TO poller_output_boost") === false) {
+		db_execute("DROP TABLE IF EXISTS `$interim_table`");
+		cacti_log('ERROR: Boost failed to rotate its output table.', true, 'BOOST');
+
+		return false;
+	}
+
+	if (db_execute("ANALYZE TABLE `$archive_table`") === false) {
+		cacti_log('WARNING: Boost could not analyze its archive table; processing will continue.', true, 'BOOST');
+	}
 	cacti_log('INFO: Boost done rotating poller_output_boost', true, 'BOOST');
 
 	$arch_tables = boost_get_arch_table_names($archive_table);
@@ -482,20 +510,32 @@ function boost_prepare_process_table() {
 		cacti_log('INFO: Boost processing a total of ' . $total_rows . ' entries.', true, 'BOOST');
 	}
 
-	db_execute('CREATE TABLE IF NOT EXISTS poller_output_boost_local_data_ids (
-		local_data_id int unsigned default "0",
-		process_handler int unsigned default "0",
+	if (db_execute('CREATE TABLE IF NOT EXISTS poller_output_boost_local_data_ids (
+		local_data_id int unsigned default 0,
+		process_handler int unsigned default 0,
 		PRIMARY KEY (local_data_id),
 		INDEX process_handler(process_handler))
-		ENGINE=InnoDB');
+		ENGINE=InnoDB') === false) {
+		cacti_log('ERROR: Boost failed to create its process-distribution table.', true, 'BOOST');
 
-	db_execute('TRUNCATE poller_output_boost_local_data_ids');
+		return false;
+	}
+
+	if (db_execute('TRUNCATE poller_output_boost_local_data_ids') === false) {
+		cacti_log('ERROR: Boost failed to reset its process-distribution table.', true, 'BOOST');
+
+		return false;
+	}
 
 	foreach($arch_tables as $table) {
-		db_execute("INSERT IGNORE INTO poller_output_boost_local_data_ids
+		if (db_execute("INSERT IGNORE INTO poller_output_boost_local_data_ids
 			(local_data_id)
 			SELECT DISTINCT local_data_id
-			FROM $table");
+			FROM `$table`") === false) {
+			cacti_log('ERROR: Boost failed to stage archive data-source identifiers.', true, 'BOOST');
+
+			return false;
+		}
 	}
 
 	$data_ids = db_fetch_cell("SELECT
@@ -515,11 +555,15 @@ function boost_prepare_process_table() {
 	$count = 1;
 
 	while ($count <= $processes) {
-		db_execute_prepared('UPDATE poller_output_boost_local_data_ids
+		if (db_execute_prepared('UPDATE poller_output_boost_local_data_ids
 			SET process_handler = ?
 			WHERE process_handler = 0
 			LIMIT ' . $data_ids_per_process,
-			array($count));
+			array($count)) === false) {
+			cacti_log('ERROR: Boost failed to assign data sources to a child process.', true, 'BOOST');
+
+			return false;
+		}
 
 		$count++;
 	}
@@ -533,8 +577,8 @@ function boost_prune_memstats() {
 	$processes = read_config_option('boost_parallel');
 
 	db_execute_prepared('DELETE FROM settings
-		WHERE name LIKE "boost_peak_memory%"
-		AND REPLACE(name, "boost_peak_memory_", "") > ?',
+		WHERE name LIKE \'boost_peak_memory%\'
+		AND REPLACE(name, \'boost_peak_memory_\', \'\') > ?',
 		array($processes));
 }
 
@@ -587,11 +631,11 @@ function boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_t
 			set_config_option('boost_rrd_update_system_enable', 'on');
 		}
 
-		$seconds_offset = read_config_option('boost_rrd_update_interval') * 60;
+		$seconds_offset = (int) read_config_option('boost_rrd_update_interval') * 60;
 
 		/* Initialize seconds offset, if not set to 2 hours */
 		if (empty($seconds_offset)) {
-			$seconds_offset = 120;
+			$seconds_offset = 120 * 60;
 			set_config_option('boost_rrd_update_interval', 120);
 		}
 
@@ -631,7 +675,7 @@ function boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_t
 			set_config_option('boost_next_run_time', $next_run_time);
 		}
 	} else {
-		$pollers = db_fetch_cell('SELECT COUNT(*) FROM pollers WHERE disabled = ""');
+		$pollers = db_fetch_cell('SELECT COUNT(*) FROM pollers WHERE disabled = \'\'');
 
 		if ($pollers > 1) {
 			boost_debug('Someone attempted to disable boost through there are multiple Data Collectors Defined!');
@@ -833,7 +877,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 	if (!cacti_sizeof($rrd_field_names)) {
 		$rrd_field_names = array_rekey(
 			db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
-				CONCAT(data_template_id, "_", data_name) AS keyname, data_source_names AS data_source_name
+					CONCAT(data_template_id, \'_\', data_name) AS keyname, data_source_names AS data_source_name
 				FROM poller_data_template_field_mappings'),
 			'keyname', array('data_source_name'));
 	}
@@ -877,7 +921,6 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 		$time           = -1;
 		$buflen         = 0;
 		$outarray       = array();
-		$locked         = false;
 		$last_update    = -1;
 		$reset_template = true;
 
@@ -895,19 +938,6 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 			}
 
 			$item['timestamp'] = trim($item['timestamp']);
-
-			if (!$locked) {
-				/* acquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5 */
-				if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
-					while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds." . $item['local_data_id'] . "', 1)")) {
-						usleep(50000);
-					}
-				}
-
-				$current_lock = $item['local_data_id'];
-
-				$locked = true;
-			}
 
 			/**
 			 * if the local_data_id changes, we need to flush the buffer
@@ -1306,7 +1336,7 @@ function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, 
 	boost_timer('rrdupdate', BOOST_TIMER_END);
 
 	/* check return status for delete operation */
-	if (trim($return_value) != 'OK' && $return_value != '') {
+	if (trim((string) $return_value) !== 'OK') {
 		cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", true, 'BOOST');
 
 		return false;
@@ -1352,11 +1382,17 @@ function boost_log_statistics($rrd_updates) {
 
 	$stats = db_fetch_assoc('SELECT value
 		FROM settings
-		WHERE name LIKE "stats_detail_boost_%"');
+		WHERE name LIKE \'stats_detail_boost_%\'');
 
 	if (cacti_sizeof($stats)) {
 		foreach($stats as $stat) {
-			$stat = json_decode($stat['value']);
+			$stat = json_decode($stat['value'], true);
+
+			if (!is_array($stat)) {
+				cacti_log('WARNING: Ignoring malformed Boost child statistics.', true, 'BOOST');
+
+				continue;
+			}
 
 			foreach($stat as $key => $value) {
 				if (isset($output[$key])) {
@@ -1392,7 +1428,7 @@ function boost_log_statistics($rrd_updates) {
 
 	/* prune old process statistics if the number has changed */
 	$processes = read_config_option('boost_parallel');
-	$stats     = db_fetch_assoc('SELECT * FROM settings WHERE name LIKE "stats_boost_%"');
+	$stats     = db_fetch_assoc('SELECT * FROM settings WHERE name LIKE \'stats_boost_%\'');
 	if (cacti_sizeof($stats)) {
 		foreach($stats as $stat) {
 			$process = str_replace('stats_boost_', '', $stat['name']);
@@ -1403,7 +1439,7 @@ function boost_log_statistics($rrd_updates) {
 	}
 
 	/* prune all detailed stats */
-	db_execute('DELETE FROM settings WHERE name LIKE "stats_detail_boost_%"');
+	db_execute('DELETE FROM settings WHERE name LIKE \'stats_detail_boost_%\'');
 }
 
 function boost_log_child_statistics($rrd_updates, $child) {
