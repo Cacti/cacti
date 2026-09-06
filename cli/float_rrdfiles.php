@@ -316,6 +316,10 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 
 	if ($rrdtool_bin === false) {
 		$rrdtool_bin = (string) read_config_option('path_rrdtool');
+
+		if ($rrdtool_bin === '') {
+			$rrdtool_bin = 'rrdtool';
+		}
 	}
 
 	if ($tmp_dir === false) {
@@ -616,7 +620,12 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 function float_launch_child($thread_id, $step, $start_time, $end_time) {
 	global $config, $seebug;
 
-	$php_binary = read_config_option('path_php_binary');
+	$php_binary = (string) read_config_option('path_php_binary');
+
+	if ($php_binary === '') {
+		$php_binary = PHP_BINARY;
+	}
+
 	$args       = array(
 		$config['base_path'] . '/cli/float_rrdfiles.php',
 		'--type=child',

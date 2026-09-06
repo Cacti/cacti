@@ -140,19 +140,11 @@ if (cacti_sizeof($parms)) {
 
 
 /**
- * audit_database_defaults_file - writes the database credentials to a private
- * file for --defaults-extra-file.
+ * audit_database_option_value - quote and escape a MySQL option-file value
  *
- * The password is deliberately kept off the command line. Anything passed as
- * an argument is readable from the process list by every local user for the
- * lifetime of the command.
+ * @param  mixed $value The value to encode.
  *
- * @param  string $username The database user.
- * @param  string $password The database password.
- * @param  string $hostname The database host.
- * @param  string $port     The database port.
- *
- * @return string|false The path to the file, or false when it cannot be created.
+ * @return string|false The encoded value, or false when it contains a NUL byte.
  */
 function audit_database_option_value($value) {
 	$value = (string) $value;
@@ -170,6 +162,21 @@ function audit_database_option_value($value) {
 	)) . '"';
 }
 
+/**
+ * audit_database_defaults_file - writes the database credentials to a private
+ * file for --defaults-extra-file.
+ *
+ * The password is deliberately kept off the command line. Anything passed as
+ * an argument is readable from the process list by every local user for the
+ * lifetime of the command.
+ *
+ * @param  string $username The database user.
+ * @param  string $password The database password.
+ * @param  string $hostname The database host.
+ * @param  string $port     The database port.
+ *
+ * @return string|false The path to the file, or false when it cannot be created.
+ */
 function audit_database_defaults_file($username, $password, $hostname, $port) {
 	$path = tempnam(sys_get_temp_dir(), 'cacti_audit_');
 	$include_port = $hostname != 'localhost';
