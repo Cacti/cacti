@@ -21,6 +21,8 @@ on:
       - 'tests/Helpers/AuthCookieProbe.php'
       - 'tests/integration/AuthSystemRegressionIntegrationTest.php'
       - 'tests/js/cookie_helpers.test.js'
+      - 'tests/composer.json'
+      - 'tests/composer.lock'
       - 'tests/phpunit-cookie.xml'
   pull_request:
     branches: [1.2.x]
@@ -42,6 +44,8 @@ on:
       - 'tests/Helpers/AuthCookieProbe.php'
       - 'tests/integration/AuthSystemRegressionIntegrationTest.php'
       - 'tests/js/cookie_helpers.test.js'
+      - 'tests/composer.json'
+      - 'tests/composer.lock'
       - 'tests/phpunit-cookie.xml'
   workflow_dispatch:
 
@@ -75,7 +79,7 @@ jobs:
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
 
       - name: Setup Node 22
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # 4.4.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # 7.0.0
         with:
           node-version: '22'
 
