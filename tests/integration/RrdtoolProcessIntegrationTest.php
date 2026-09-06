@@ -156,6 +156,11 @@ test('Cacti fetch excludes the RRDtool bucket after the requested CSV window', f
 	}
 
 	global $config;
+	$had_local_storage = array_key_exists('local_storage', $config);
+	$local_storage     = $config['local_storage'] ?? null;
+	$had_rrdtool_path  = isset($config[OPTIONS_CLI]) && array_key_exists('path_rrdtool', $config[OPTIONS_CLI]);
+	$rrdtool_path      = $config[OPTIONS_CLI]['path_rrdtool'] ?? null;
+
 	$config[OPTIONS_CLI]['path_rrdtool'] = $binary;
 	$config['local_storage']             = true;
 	$directory                           = integration_rrdtool_directory();
@@ -194,6 +199,18 @@ test('Cacti fetch excludes the RRDtool bucket after the requested CSV window', f
 	} finally {
 		integration_rrdtool_unlink($rrd);
 		rmdir($directory);
+
+		if ($had_local_storage) {
+			$config['local_storage'] = $local_storage;
+		} else {
+			unset($config['local_storage']);
+		}
+
+		if ($had_rrdtool_path) {
+			$config[OPTIONS_CLI]['path_rrdtool'] = $rrdtool_path;
+		} else {
+			unset($config[OPTIONS_CLI]['path_rrdtool']);
+		}
 	}
 });
 
