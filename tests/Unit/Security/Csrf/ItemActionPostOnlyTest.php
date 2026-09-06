@@ -108,8 +108,10 @@ test('every state changing action is refused without a POST token', function () 
 	}
 
 	expect($missing)->toBe([]);
-	expect($src)->toContain("header('Allow: POST')")
-		->and($src)->toContain('http_response_code(405)');
+	expect($src)->toContain("(\$_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST'")
+		->and($src)->toContain("header('Allow: POST')")
+		->and($src)->toContain('http_response_code(405)')
+		->and($src)->toContain('http_response_code(403)');
 });
 
 test('no page still links a state changing action by GET', function () {

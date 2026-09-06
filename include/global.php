@@ -807,7 +807,7 @@ if ($config['is_web']) {
 		];
 
 		foreach ($bad_actions as $bad) {
-			if ($action == $bad && !isset($_POST['__csrf_magic'])) {
+			if ($action == $bad && ($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
 				// Preserve the legacy warning for form actions. Item-action links
 				// can also come from plugins outside this repository; crawlers may
 				// discover those URLs, but they must still fail closed.
@@ -817,6 +817,11 @@ if ($config['is_web']) {
 
 				header('Allow: POST');
 				http_response_code(405);
+				exit;
+			}
+
+			if ($action == $bad && !isset($_POST['__csrf_magic'])) {
+				http_response_code(403);
 				exit;
 			}
 		}
