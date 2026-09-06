@@ -296,9 +296,9 @@ function install_unlink(string $file) : void {
 	}
 
 	$real_base = realpath(CACTI_PATH_BASE);
-	$real_file = realpath($full_file);
+	$real_file = is_link($full_file) ? realpath(dirname($full_file)) : realpath($full_file);
 
-	if ($real_base === false || $real_file === false || !str_starts_with($real_file, $real_base . DIRECTORY_SEPARATOR)) {
+	if ($real_base === false || $real_file === false || ($real_file !== $real_base && !str_starts_with($real_file, $real_base . DIRECTORY_SEPARATOR))) {
 		log_install_high('file', "Not Unlinking file: $full_file due to it not being in the Cacti base path.");
 
 		return;
@@ -348,6 +348,19 @@ function install_rmdir(string $directory) : void {
 function install_rmdir_recursive(string $directory, bool $del_parent = false) : void {
 	if (substr($directory, 0, 1) != '/') {
 		$directory = CACTI_PATH_BASE . '/' . $directory;
+	}
+
+	/* glob(..., GLOB_MARK) appends a directory separator to directory links.
+	 * is_link() does not reliably recognize that spelling, so inspect the
+	 * unmarked path before any directory or realpath operation can follow it. */
+	$link_path = rtrim($directory, '/\\');
+
+	// Never traverse a symbolic link.  Cleanup should remove the link itself,
+	// not files in the directory to which it happens to point.
+	if ($link_path !== '' && is_link($link_path)) {
+		install_unlink($link_path);
+
+		return;
 	}
 
 	$real_base = realpath(CACTI_PATH_BASE);
@@ -1449,7 +1462,7 @@ function import_colors() : bool {
 				continue;
 			}
 
-			$parts = str_getcsv($line);
+			$parts = str_getcsv($line, ',', '"', '');
 
 			if (cacti_sizeof($parts) < 3) {
 				continue;
