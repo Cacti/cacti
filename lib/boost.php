@@ -23,6 +23,92 @@
 */
 
 /**
+ * Ensure poller_output_boost_processes has the run_id/child_id shape.
+ * Git-following 1.2.x installs can already be stamped 1.2.32 without
+ * ever running an upgrade file that adds those columns.
+ */
+function boost_process_table_exists_uncached() {
+	return (bool) db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM information_schema.TABLES
+		WHERE TABLE_SCHEMA = SCHEMA()
+		AND TABLE_NAME = ?', array('poller_output_boost_processes'));
+}
+
+function boost_process_column_exists_uncached($column) {
+	if (!in_array($column, array('run_id', 'child_id'), true)) {
+		return false;
+	}
+
+	return (bool) db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM information_schema.COLUMNS
+		WHERE TABLE_SCHEMA = SCHEMA()
+		AND TABLE_NAME = ?
+		AND COLUMN_NAME = ?', array('poller_output_boost_processes', $column));
+}
+
+function boost_ensure_process_table($repair_key = false) {
+	if (!db_table_exists('poller_output_boost_processes')) {
+		if (db_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost_processes` (
+			`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
+			`run_id` char(32) NOT NULL default '',
+			`child_id` int(10) unsigned NOT NULL default '0',
+			`status` varchar(255) default NULL,
+			PRIMARY KEY (`sock_int_value`),
+			UNIQUE KEY `run_child` (`run_id`, `child_id`))
+			ENGINE=MEMORY") === false && !boost_process_table_exists_uncached()) {
+			cacti_log('ERROR: Unable to create poller_output_boost_processes', true, 'BOOST');
+
+			return false;
+		}
+
+		return true;
+	}
+
+	$needs_run_id   = !db_column_exists('poller_output_boost_processes', 'run_id');
+	$needs_child_id = !db_column_exists('poller_output_boost_processes', 'child_id');
+	$needs_key      = $repair_key && !db_index_exists('poller_output_boost_processes', 'run_child');
+
+	if (!$needs_run_id && !$needs_child_id && !$needs_key) {
+		return true;
+	}
+
+	if ($needs_run_id) {
+		if (db_execute("ALTER TABLE poller_output_boost_processes ADD `run_id` char(32) NOT NULL default '' AFTER `sock_int_value`") === false &&
+			!boost_process_column_exists_uncached('run_id')) {
+			cacti_log('ERROR: Unable to add run_id to poller_output_boost_processes', true, 'BOOST');
+
+			return false;
+		}
+	}
+
+	if ($needs_child_id) {
+		if (db_execute("ALTER TABLE poller_output_boost_processes ADD `child_id` int(10) unsigned NOT NULL default '0' AFTER `run_id`") === false &&
+			!boost_process_column_exists_uncached('child_id')) {
+			cacti_log('ERROR: Unable to add child_id to poller_output_boost_processes', true, 'BOOST');
+
+			return false;
+		}
+	}
+
+	if ($needs_key) {
+		if (db_execute('TRUNCATE TABLE poller_output_boost_processes') === false) {
+			cacti_log('ERROR: Unable to truncate poller_output_boost_processes before adding run_child', true, 'BOOST');
+
+			return false;
+		}
+
+		if (db_execute('ALTER TABLE poller_output_boost_processes ADD UNIQUE KEY `run_child` (`run_id`, `child_id`)') === false &&
+			!db_index_exists('poller_output_boost_processes', 'run_child')) {
+			cacti_log('ERROR: Unable to add run_child key to poller_output_boost_processes', true, 'BOOST');
+
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/**
  * boost_array_orderby - performs a multicolumn sort of an
  *   array
  */
@@ -70,12 +156,79 @@ function boost_file_size_display($file_size, $digits = 2) {
 	}
 }
 
-function boost_get_total_rows() {
-	return db_fetch_cell("SELECT SUM(TABLE_ROWS)
+/**
+ * Return a bounded page without splitting the fields belonging to one RRD
+ * timestamp.  The caller must fetch max_rows + 1 ordered rows so this function
+ * can prove whether the final timestamp is complete.
+ *
+ * @return array|false A safe page, or false when one timestamp alone exceeds
+ *                     the configured bound.
+ */
+function boost_limit_complete_timestamp_page($rows, $max_rows) {
+	$max_rows = max(1, (int) $max_rows);
+
+	if (!is_array($rows) || count($rows) <= $max_rows) {
+		return $rows;
+	}
+
+	$overflow = $rows[$max_rows];
+	$rows     = array_slice($rows, 0, $max_rows);
+	$last     = end($rows);
+
+	if ($last['local_data_id'] == $overflow['local_data_id'] && $last['timestamp'] == $overflow['timestamp']) {
+		$split_id   = $last['local_data_id'];
+		$split_time = $last['timestamp'];
+
+		while (count($rows)) {
+			$last = end($rows);
+
+			if ($last['local_data_id'] != $split_id || $last['timestamp'] != $split_time) {
+				break;
+			}
+
+			array_pop($rows);
+		}
+
+		if (!count($rows)) {
+			return false;
+		}
+	}
+
+	return $rows;
+}
+
+function boost_get_total_rows($stop_after = 0) {
+	$tables = db_fetch_assoc("SELECT TABLE_NAME
 		FROM information_schema.tables
 		WHERE table_schema = SCHEMA()
 		AND (table_name LIKE 'poller_output_boost_arch_%'
-		OR table_name LIKE 'poller_output_boost')");
+		OR table_name = 'poller_output_boost')");
+	$rows = 0;
+	$stop_after = max(0, (int) $stop_after);
+
+	if (!is_array($tables)) {
+		return 0;
+	}
+
+	foreach($tables as $table) {
+		$table_name = $table['TABLE_NAME'];
+
+		if ($table_name === 'poller_output_boost' || boost_is_valid_archive_table($table_name)) {
+			if ($stop_after > 0) {
+				$remaining = max(1, $stop_after - $rows + 1);
+				$rows += (int) db_fetch_cell("SELECT COUNT(*)
+					FROM (SELECT 1 FROM `$table_name` LIMIT $remaining) AS boost_rows");
+			} else {
+				$rows += (int) db_fetch_cell("SELECT COUNT(*) FROM `$table_name`");
+			}
+
+			if ($stop_after > 0 && $rows > $stop_after) {
+				break;
+			}
+		}
+	}
+
+	return $rows;
 }
 
 function boost_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
@@ -105,7 +258,7 @@ function boost_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 		}
 
 		/* create an error string for the log */
-		$err = "ERRNO:'"  . $errno   . "' TYPE:'"    . $errortype[$errno] .
+		$err = "ERRNO:'"  . $errno   . "' TYPE:'"    . ($errortype[$errno] ?? 'Unknown Error') .
 			"' MESSAGE:'" . $errmsg  . "' IN FILE:'" . $filename .
 			"' LINE NO:'" . $linenum . "'";
 
@@ -157,7 +310,6 @@ function boost_flush_output_batch($value_tuples, $conn = false) {
 	$overhead   = strlen($sql_prefix) + 1;
 	$out_buffer = '';
 	$out_length = 0;
-	$success    = true;
 	$rows       = 0;
 
 	foreach ($value_tuples as $tuple) {
@@ -171,7 +323,7 @@ function boost_flush_output_batch($value_tuples, $conn = false) {
 			}
 
 			if (!$acknowledged) {
-				$success = false;
+				return false;
 			} elseif (db_affected_rows($conn) < $rows) {
 				cacti_log('WARNING: Boost staging ignored one or more duplicate sample keys.', false, 'BOOST');
 			}
@@ -194,13 +346,13 @@ function boost_flush_output_batch($value_tuples, $conn = false) {
 		}
 
 		if (!$acknowledged) {
-			$success = false;
+			return false;
 		} elseif (db_affected_rows($conn) < $rows) {
 			cacti_log('WARNING: Boost staging ignored one or more duplicate sample keys.', false, 'BOOST');
 		}
 	}
 
-	return $success;
+	return true;
 }
 
 function boost_validate_poller_ownership($results, $poller_id, $conn = false) {
@@ -392,7 +544,7 @@ function boost_graph_cache_filename($cache_directory, $local_graph_id, $rra_id, 
 		if (!is_string($secret) || !preg_match('/^[a-f0-9]{64}$/D', $secret)) {
 			$candidate = bin2hex(random_bytes(32));
 			db_execute_prepared('INSERT IGNORE INTO settings (name, value) VALUES (?, ?)', array('boost_png_cache_secret', $candidate));
-			$secret = read_config_option('boost_png_cache_secret');
+			$secret = read_config_option('boost_png_cache_secret', true);
 
 			if (!is_string($secret) || !preg_match('/^[a-f0-9]{64}$/D', $secret)) {
 				$secret = $candidate;
@@ -411,13 +563,15 @@ function boost_graph_cache_filename($cache_directory, $local_graph_id, $rra_id, 
 		'nolegend'       => isset($graph_data_array['graph_nolegend'])
 	));
 
-	return rtrim($cache_directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . hash_hmac('sha256', $cache_key, $secret) . '.png';
+	return rtrim($cache_directory, '/\\') . DIRECTORY_SEPARATOR . hash_hmac('sha256', $cache_key, $secret) . '.png';
 }
 
 function boost_atomic_write_cache($cache_file, $output) {
 	$temp_file = tempnam(dirname($cache_file), '.boost-');
 
 	if ($temp_file === false) {
+		cacti_log('ERROR: Boost could not create a temporary graph cache file.', false, 'BOOST');
+
 		return false;
 	}
 
@@ -425,37 +579,86 @@ function boost_atomic_write_cache($cache_file, $output) {
 
 	if ($fileptr === false) {
 		@unlink($temp_file);
+		cacti_log('ERROR: Boost could not open its temporary graph cache file.', false, 'BOOST');
 
 		return false;
 	}
 
-	$length  = strlen($output);
-	$written = 0;
+	$length     = strlen($output);
+	$written    = 0;
+	$chunk_size = 1024 * 1024;
 
 	while ($written < $length) {
-		$result = fwrite($fileptr, substr($output, $written));
+		$chunk         = substr($output, $written, $chunk_size);
+		$chunk_length  = strlen($chunk);
+		$chunk_written = 0;
 
-		if ($result === false || $result === 0) {
-			fclose($fileptr);
-			@unlink($temp_file);
+		while ($chunk_written < $chunk_length) {
+			$result = fwrite($fileptr, substr($chunk, $chunk_written));
 
-			return false;
+			if ($result === false || $result === 0) {
+				fclose($fileptr);
+				@unlink($temp_file);
+				cacti_log('ERROR: Boost could not finish writing its graph cache file.', false, 'BOOST');
+
+				return false;
+			}
+
+			$chunk_written += $result;
+			$written       += $result;
 		}
-
-		$written += $result;
 	}
 
 	$flushed = fflush($fileptr);
 	fclose($fileptr);
-	chmod($temp_file, 0640);
-
-	if (!$flushed || !rename($temp_file, $cache_file)) {
+	if (!$flushed) {
 		@unlink($temp_file);
+		cacti_log('ERROR: Boost could not flush its graph cache file.', false, 'BOOST');
+
+		return false;
+	}
+
+	if (!chmod($temp_file, 0640)) {
+		/* tempnam() creates a stricter 0600 file, so publication remains safe. */
+		cacti_log('WARNING: Boost could not set shared graph cache permissions; publishing with the existing stricter mode.', false, 'BOOST');
+	}
+
+	$published = @rename($temp_file, $cache_file);
+
+	if (!$published && PHP_OS_FAMILY === 'Windows') {
+		$published = boost_replace_cache_file_on_windows($temp_file, $cache_file);
+	}
+
+	if (!$published) {
+		@unlink($temp_file);
+		cacti_log('ERROR: Boost could not publish its graph cache file.', false, 'BOOST');
 
 		return false;
 	}
 
 	return true;
+}
+
+function boost_replace_cache_file_on_windows($temp_file, $cache_file) {
+	if (!is_file($temp_file) || !is_file($cache_file)) {
+		return false;
+	}
+
+	$backup_file = tempnam(dirname($cache_file), '.boost-old-');
+
+	if ($backup_file === false || !@unlink($backup_file) || !@rename($cache_file, $backup_file)) {
+		return false;
+	}
+
+	if (@rename($temp_file, $cache_file)) {
+		@unlink($backup_file);
+
+		return true;
+	}
+
+	@rename($backup_file, $cache_file);
+
+	return false;
 }
 
 function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$graph_data_array, $return = true) {
@@ -789,6 +992,64 @@ function boost_get_arch_table_names($latest_table = '') {
 	}
 }
 
+/** Cache metadata reused when a hot data source spans multiple bounded pages. */
+function boost_get_unused_data_source_names($local_data_id) {
+	static $cache = array();
+
+	$local_data_id = (int) $local_data_id;
+
+	if ($local_data_id <= 0) {
+		return array();
+	}
+
+	if (!isset($cache[$local_data_id])) {
+		$cache[$local_data_id] = array_rekey(
+			db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
+				FROM data_template_rrd AS dtr
+				LEFT JOIN graph_templates_item AS gti
+				ON dtr.id = gti.task_item_id
+				WHERE dtr.local_data_id = ?
+				AND gti.task_item_id IS NULL', array($local_data_id)),
+			'data_source_name', 'data_source_name'
+		);
+	}
+
+	return $cache[$local_data_id];
+}
+
+function boost_get_input_field_names($local_data_id, $templated) {
+	static $cache = array();
+
+	$local_data_id = (int) $local_data_id;
+	$key           = $local_data_id . ':' . ($templated ? '1' : '0');
+
+	if ($local_data_id <= 0) {
+		return array();
+	}
+
+	if (!isset($cache[$key])) {
+		if ($templated) {
+			$rows = db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
+				FROM graph_templates_item AS gti
+				INNER JOIN data_template_rrd AS dtr
+				ON gti.task_item_id = dtr.id
+				INNER JOIN data_input_fields AS dif
+				ON dtr.data_input_field_id = dif.id
+				WHERE dtr.local_data_id = ?', array($local_data_id));
+		} else {
+			$rows = db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
+				FROM data_template_rrd AS dtr
+				INNER JOIN data_input_fields AS dif
+				ON dtr.data_input_field_id = dif.id
+				WHERE dtr.local_data_id = ?', array($local_data_id));
+		}
+
+		$cache[$key] = array_rekey($rows, 'data_name', 'data_source_name');
+	}
+
+	return $cache[$key];
+}
+
 /**
  * boost_process_poller_output - grabs data from the 'poller_output' and 'poller_output_boost*'
  *   table and feeds to RRDtool for processing.  This function has been repurposed for a
@@ -811,6 +1072,12 @@ function boost_get_arch_table_names($latest_table = '') {
 function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	global $config, $database_default, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
 
+	$local_data_id = (int) $local_data_id;
+
+	if ($local_data_id <= 0) {
+		return -1;
+	}
+
 	static $archive_table = false;
 	static $warning_issued;
 
@@ -830,7 +1097,11 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	set_error_handler('boost_error_handler');
 
 
-	$data_ids_to_get = read_config_option('boost_rrd_update_max_records_per_select');
+	$max_rows = (int) read_config_option('boost_rrd_update_max_records_per_select');
+
+	if ($max_rows < 1) {
+		$max_rows = 50000;
+	}
 
 	$archive_tables = boost_get_arch_table_names($archive_table);
 
@@ -839,7 +1110,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	/* avoid getting rows in the middle of poller run */
 	$timestamp = db_fetch_cell('SELECT MIN(UNIX_TIMESTAMP(start_time))
 		FROM poller_time
-		WHERE end_time="0000-00-00"');
+		WHERE end_time=\'0000-00-00\'');
 
 	if (empty($timestamp)) {
 		$timestamp = time() - 10;
@@ -879,7 +1150,8 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 			ON po.local_data_id = dl.id
 			WHERE po.local_data_id = ?
 			AND po.time < FROM_UNIXTIME(?)
-			ORDER BY time ASC, rrd_name ASC";
+			ORDER BY time ASC, rrd_name ASC
+			LIMIT " . ($max_rows + 1);
 	} else {
 		$query_string = 'SELECT po.local_data_id, dl.data_template_id,
 			UNIX_TIMESTAMP(po.time) AS timestamp, po.rrd_name, po.output
@@ -888,7 +1160,8 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 			ON po.local_data_id = dl.id
 			WHERE po.local_data_id = ?
 			AND po.time < FROM_UNIXTIME(?)
-			ORDER BY time ASC, rrd_name ASC';
+			ORDER BY time ASC, rrd_name ASC
+			LIMIT ' . ($max_rows + 1);
 	}
 
 	$sql_params[] = $local_data_id;
@@ -902,6 +1175,14 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 	if ($temp_table !== false) {
 		db_execute("DROP TEMPORARY TABLE $temp_table");
+	}
+
+	if (cacti_sizeof($results) > $max_rows) {
+		cacti_log("WARNING: On-demand Boost processing for Local Data ID '$local_data_id' exceeded the $max_rows row request limit; rows were retained for scheduled processing.", false, 'BOOST');
+		restore_error_handler();
+		error_reporting($previous_error_reporting);
+
+		return -1;
 	}
 
 	cacti_log('Local Data ID: ' . $local_data_id . ', Boost Results: ' . $boost_results, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
@@ -961,16 +1242,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 		cacti_log('The RRDpath is ' . $rrd_path, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 		cacti_log('The RRDpath template is ' . $rrd_tmpl, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 
-		$unused_data_source_names = array_rekey(
-			db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-				FROM data_template_rrd AS dtr
-				LEFT JOIN graph_templates_item AS gti
-				ON dtr.id = gti.task_item_id
-				WHERE dtr.local_data_id = ?
-				AND gti.task_item_id IS NULL',
-				array($local_data_id)),
-			'data_source_name', 'data_source_name'
-		);
+		$unused_data_source_names = boost_get_unused_data_source_names($local_data_id);
 
 		boost_timer('results_cycle', BOOST_TIMER_START);
 
@@ -1009,7 +1281,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 					$vals_in_buffer = 0;
 
 					/* check return status for delete operation */
-					if (strpos(trim($return_value), 'OK') === false && $return_value != '') {
+					if (trim((string) $return_value) !== 'OK') {
 						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 						$updates_ok = false;
 					}
@@ -1042,39 +1314,10 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 				if (!$multi_vals_set) {
 					if ($item['data_template_id'] > 0) {
-						$rrd_field_names = array_rekey(
-							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
-								FROM graph_templates_item AS gti
-								INNER JOIN data_template_rrd AS dtr
-								ON gti.task_item_id = dtr.id
-								INNER JOIN data_input_fields AS dif
-								ON dtr.data_input_field_id = dif.id
-								WHERE dtr.local_data_id = ?',
-								array($item['local_data_id'])),
-							'data_name', 'data_source_name'
-						);
-
-						$unused_data_source_names = array_rekey(
-							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-								FROM data_template_rrd AS dtr
-								LEFT JOIN graph_templates_item AS gti
-								ON dtr.id = gti.task_item_id
-								WHERE dtr.local_data_id = ?
-								AND gti.task_item_id IS NULL',
-								array($item['local_data_id'])),
-							'data_source_name', 'data_source_name'
-						);
+						$rrd_field_names          = boost_get_input_field_names($item['local_data_id'], true);
+						$unused_data_source_names = boost_get_unused_data_source_names($item['local_data_id']);
 					} else {
-						$rrd_field_names = array_rekey(
-							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
-								FROM data_template_rrd AS dtr
-								INNER JOIN data_input_fields AS dif
-								ON dtr.data_input_field_id = dif.id
-								WHERE dtr.local_data_id = ?',
-								array($item['local_data_id'])),
-							'data_name', 'data_source_name'
-						);
-
+						$rrd_field_names = boost_get_input_field_names($item['local_data_id'], false);
 						$unused_data_source_names = array();
 					}
 
@@ -1134,39 +1377,10 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 			} else {
 				if (!$multi_vals_set) {
 					if ($item['data_template_id'] > 0) {
-						$rrd_field_names = array_rekey(
-							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
-								FROM graph_templates_item AS gti
-								INNER JOIN data_template_rrd AS dtr
-								ON gti.task_item_id = dtr.id
-								INNER JOIN data_input_fields AS dif
-								ON dtr.data_input_field_id = dif.id
-								WHERE dtr.local_data_id = ?',
-								array($item['local_data_id'])),
-							'data_name', 'data_source_name'
-						);
-
-						$unused_data_source_names = array_rekey(
-							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-								FROM data_template_rrd AS dtr
-								LEFT JOIN graph_templates_item AS gti
-								ON dtr.id = gti.task_item_id
-								WHERE dtr.local_data_id = ?
-								AND gti.task_item_id IS NULL',
-								array($item['local_data_id'])),
-							'data_source_name', 'data_source_name'
-						);
+						$rrd_field_names          = boost_get_input_field_names($item['local_data_id'], true);
+						$unused_data_source_names = boost_get_unused_data_source_names($item['local_data_id']);
 					} else {
-						$rrd_field_names = array_rekey(
-							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
-								FROM data_template_rrd AS dtr
-								INNER JOIN data_input_fields AS dif
-								ON dtr.data_input_field_id = dif.id
-								WHERE dtr.local_data_id = ?',
-								array($item['local_data_id'])),
-							'data_name', 'data_source_name'
-						);
-
+						$rrd_field_names = boost_get_input_field_names($item['local_data_id'], false);
 						$unused_data_source_names = array();
 					}
 
@@ -1175,8 +1389,8 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 				$expected = '';
 
-				if (cacti_sizeof($nt_rrd_field_names)) {
-					foreach($nt_rrd_field_names as $field) {
+				if (cacti_sizeof($rrd_field_names)) {
+					foreach($rrd_field_names as $field) {
 						if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$field])) {
 							continue;
 						}
@@ -1206,7 +1420,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 			boost_timer('rrdupdate', BOOST_TIMER_END);
 
 			/* check return status for delete operation */
-			if (strpos(trim($return_value), 'OK') === false && $return_value != '') {
+			if (trim((string) $return_value) !== 'OK') {
 				cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 				$updates_ok = false;
 			}
@@ -1673,9 +1887,19 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 		// Check for a Data Source that has been removed
 		if ($ds_exists) {
-			$valid_entry = boost_rrdtool_function_create($local_data_id, false, $rrdtool_pipe);
+			boost_rrdtool_function_create($local_data_id, false, $rrdtool_pipe);
+
+			if (read_config_option('storage_location')) {
+				$valid_entry = rrdtool_execute_path_command('file_exists', $rrd_path, '', true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST');
+			} else {
+				$valid_entry = file_exists($rrd_path);
+			}
 		} else {
 			return 'OK';
+		}
+
+		if (!$valid_entry) {
+			return 'ERROR: Unable to create RRD file';
 		}
 	}
 

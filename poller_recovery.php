@@ -198,12 +198,12 @@ if ($run) {
 
 	db_execute_prepared('REPLACE INTO settings
 		(name, value)
-		VALUES ("recovery_pid", ?)',
+		VALUES (\'recovery_pid\', ?)',
 		array($my_pid), true, $local_db_cnn_id);
 
 	/* let the console know you are in recovery mode */
 	db_execute_prepared('UPDATE poller
-		SET status = "5"
+		SET status = 5
 		WHERE id = ?',
 		array($poller_id), true, $remote_db_cnn_id);
 
@@ -230,7 +230,8 @@ if ($run) {
 			$rows = db_fetch_assoc_prepared('SELECT *
 				FROM poller_output_boost
 				WHERE time <= ?
-				ORDER BY time ASC, local_data_id ASC',
+				ORDER BY time ASC, local_data_id ASC, rrd_name ASC
+				LIMIT ' . (int) $record_limit,
 				array($max_time), true, $local_db_cnn_id);
 
 			if (cacti_sizeof($rows)) {
@@ -276,8 +277,8 @@ if ($run) {
 	if (!$transfer_failed) {
 		/* let the console know you are in online mode */
 		db_execute_prepared('UPDATE poller
-			SET status="2"
-			WHERE id= ?', array($poller_id), false, $remote_db_cnn_id);
+			SET status = 2
+			WHERE id = ?', array($poller_id), false, $remote_db_cnn_id);
 	}
 } else {
 	debug('Recovery process still running, exiting');
