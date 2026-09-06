@@ -9,6 +9,12 @@
 
 test('rrdresize reports a missing required data template as failure', function () : void {
 	$source = file_get_contents(dirname(__DIR__, 4) . '/cli/rrdresize.php');
+	expect($source)->not->toBeFalse();
+
+	if ($source === false) {
+		return;
+	}
+
 	$start  = strpos($source, 'if (!$data_template_id)');
 	$body   = substr($source, $start, 220);
 
