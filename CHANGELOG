@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security: Reject SHA-1 signatures across every package import path
 -security: Escape path_dsstats_log before it reaches the dsstats poller shell redirect
 -security: Revoke anonymous access when the guest account is disabled
 -security: Cast graph and device ids to int in get_allowed_* permission filters
@@ -9,6 +10,8 @@ Cacti CHANGELOG
 -security: Substitute query data before escaping graph titles and axis labels
 -security: Build forced-HTTPS redirects from the server-configured name
 -security: Replace sibling password-reset links and revoke authentication state after reset
+-issue#7969: Restore excluded integration and mutation regression coverage
+-issue#7969: Align Rocky Linux compatibility checks with the supported PHP runtime
 -issue: Fail closed when OAuth callback state is absent or mismatched
 -issue#7959: Stop source checkouts from loading a partial Composer dependency tree
 -issue#7775: Add plugin-extensible notification API
@@ -43,6 +46,7 @@ Cacti CHANGELOG
 -issue#7517: Consolidate htmx loader and renderer abstraction global.php includes
 -issue#7515: Consolidate image conversion and notification payload hardening
 -issue#7513: Scope build context to docker/ so it builds standalone
+-issue#7506: Close open select menus when their scroll container moves
 -issue#7502: Guard null messages array in raise_message()
 -issue#7438: Validate measure/order before ORDER BY concatenation in get_allowed_graphs()
 -issue#7432: Correct KILL CONNECTION typo in db_close
@@ -51,6 +55,7 @@ Cacti CHANGELOG
 -issue#7381: Memoize db_get_table_column_types to cut redundant SHOW COLUMNS
 -issue#7363: Normalize trusted-proxy match with inet_pton
 -issue#7350: Repair mikrotik branch, guard task filter, escape table metadata
+-issue#7342: Reject wall-clock snmpEngineTime values when selecting device uptime
 -issue#7338: Restore item-override saves and bulk-action input names
 -issue#7337: Map empty value to NULL for nullable numeric columns in sql_save
 -issue#7336: Drop duplicate --slope-mode emission

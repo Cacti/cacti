@@ -7,11 +7,6 @@
     <testsuites>
         <testsuite name="Installer Unit">
             <directory>tests/Unit/Installer</directory>
-            <file>tests/Unit/InstallerColorImportBatchTest.php</file>
-            <file>tests/Unit/InstallerDefaultSettingsBatchTest.php</file>
-            <file>tests/Unit/InstallerResilienceTest.php</file>
-            <file>tests/Unit/InstallerSelectionPayloadTest.php</file>
-            <file>tests/Unit/InstallerSqlBatchingTest.php</file>
             <file>tests/Unit/Security/Csrf/InstallerCsrfRecoveryTest.php</file>
         </testsuite>
         <testsuite name="Installer Integration">

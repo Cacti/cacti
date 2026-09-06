@@ -45,7 +45,7 @@ require_once dirname(__DIR__, 4) . '/lib/xml.php';
  * key rather than the Cacti key.  Returns the .xml.gz path; $public_key
  * receives the PEM that the Package carries.
  */
-function selfSignedPackage(string &$public_key, bool $names_key = true): string {
+function selfSignedPackage(string &$public_key, bool $names_key = true, int $algorithm = OPENSSL_ALGO_SHA256): string {
 	$key = openssl_pkey_new(['private_key_bits' => 2048, 'private_key_type' => OPENSSL_KEYTYPE_RSA]);
 	openssl_pkey_export($key, $private_key);
 	$public_key = openssl_pkey_get_details($key)['key'];
@@ -68,7 +68,7 @@ function selfSignedPackage(string &$public_key, bool $names_key = true): string 
 	$xml .= "       <file>\n";
 	$xml .= "           <name>scripts/planted.php</name>\n";
 
-	openssl_sign($payload, $file_sig, $private_key, OPENSSL_ALGO_SHA256);
+	openssl_sign($payload, $file_sig, $private_key, $algorithm);
 
 	$xml .= '           <data>' . base64_encode($payload) . "</data>\n";
 	$xml .= '           <filesignature>' . base64_encode($file_sig) . "</filesignature>\n";
@@ -80,7 +80,7 @@ function selfSignedPackage(string &$public_key, bool $names_key = true): string 
 		$xml .= '   <publickey>' . base64_encode($public_key) . "</publickey>\n";
 	}
 
-	openssl_sign($xml . "   <signature></signature>\n</xml>", $base_sig, $private_key, OPENSSL_ALGO_SHA256);
+	openssl_sign($xml . "   <signature></signature>\n</xml>", $base_sig, $private_key, $algorithm);
 
 	$xml .= '   <signature>' . base64_encode($base_sig) . "</signature>\n</xml>";
 
@@ -205,6 +205,38 @@ test('a key in package_public_keys makes the same package importable', function 
 		expect(import_validate_signature($this->package))->toBeTrue();
 		expect(import_read_package_data($this->package, $public_key, false))->toBeArray();
 	} finally {
+		if ($prior === null) {
+			unset($database_sessions[$session]);
+		} else {
+			$database_sessions[$session] = $prior;
+		}
+	}
+});
+
+test('a trusted key cannot make a SHA-1 signed package importable', function () {
+	global $database_sessions, $database_hostname, $database_port, $database_default;
+
+	$publicKey = '';
+	$package   = selfSignedPackage($publicKey, true, OPENSSL_ALGO_SHA1);
+	$session   = "$database_hostname:$database_port:$database_default";
+	$prior     = $database_sessions[$session] ?? null;
+	$conn      = new FakeMySQLPDO();
+
+	$conn->exec('CREATE TABLE package_public_keys (id INTEGER PRIMARY KEY AUTOINCREMENT, public_key TEXT)');
+	$insert = $conn->prepare('INSERT INTO package_public_keys (public_key) VALUES (?)');
+	$insert->execute([$publicKey]);
+	$database_sessions[$session] = $conn;
+
+	try {
+		// Trust identifies an accepted signer; it does not override the
+		// cryptographic SHA-256 verification performed while reading.
+		expect(import_validate_signature($package))->toBeTrue();
+
+		$validatedKey = '';
+		expect(import_read_package_data($package, $validatedKey, false))->toBeFalse();
+	} finally {
+		unlink($package);
+
 		if ($prior === null) {
 			unset($database_sessions[$session]);
 		} else {

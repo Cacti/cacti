@@ -8,7 +8,7 @@
  +-------------------------------------------------------------------------+
  */
 
-require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 2) . '/Helpers/CactiStubs.php';
 require_once CACTI_PATH_INCLUDE . '/global.php';
 require_once CACTI_PATH_BASE . '/install/functions.php';
 require_once CACTI_PATH_LIBRARY . '/installer.php';
@@ -127,7 +127,7 @@ test('installer command-line adapters propagate failures and release locks', fun
 test('installer CLI handoff bypasses the shell and preserves output and status', function () {
 	$installer = (new ReflectionClass(Installer::class))->newInstanceWithoutConstructor();
 	$method    = new ReflectionMethod(Installer::class, 'runCliCommand');
-	$script    = dirname(__DIR__) . '/fixtures/InstallerCliProbe.php';
+	$script    = dirname(__DIR__, 2) . '/fixtures/InstallerCliProbe.php';
 
 	$result = $method->invoke($installer, $script, ['value with spaces', '--exit=7'], PHP_BINARY);
 
