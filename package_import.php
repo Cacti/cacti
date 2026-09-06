@@ -414,7 +414,7 @@ function form_actions() : void {
 		<td class='saveRow'>
 			" . html_hidden_input('action', 'actions') . '
 			' . html_hidden_input('import_state', $import_state) . '
-			' . html_hidden_input('drp_action', gfrv('drp_action')) . "
+			' . html_hidden_input('drp_action', grv('drp_action')) . "
 			$save_html
 		</td>
 	</tr>";

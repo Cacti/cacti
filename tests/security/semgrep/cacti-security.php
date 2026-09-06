@@ -29,7 +29,7 @@ $f = db_fetch_row('SELECT x FROM t WHERE name = ' . db_qstr(gnrv('name')));
 $g = db_fetch_assoc('SELECT * FROM host WHERE id = ' . gfrv('id'));
 
 // ok: cacti-request-var-in-sql
-$g2 = db_fetch_assoc('SELECT * FROM host WHERE ' . array_to_sql_or(gnrv('ids'), 'id'));
+$g2 = db_fetch_assoc('SELECT * FROM host WHERE ' . array_to_sql_or((array) gnrv('ids'), 'id'));
 
 $unsafe_column = gnrv('column');
 // ruleid: cacti-request-var-in-sql
