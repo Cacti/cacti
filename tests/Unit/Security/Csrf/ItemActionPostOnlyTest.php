@@ -212,3 +212,13 @@ test('every guarded data URL uses attribute-safe URL escaping', function () {
 
 	expect($unsafe)->toBe([]);
 });
+
+test('the data template add button submits its guarded action by POST', function () {
+	$data_templates = file_get_contents(dirname(__DIR__, 4) . '/data_templates.php');
+	$html           = file_get_contents(dirname(__DIR__, 4) . '/lib/html.php');
+
+	expect($data_templates)->toContain("'data_url' => 'data_templates.php?action=rrd_add&id='")
+		->and($html)->toContain("isset(\$icon['data_url'])")
+		->and($html)->toContain("html_escape_url(\$icon['data_url'])")
+		->and($html)->toContain("linkOverDark cactiPostAction");
+});

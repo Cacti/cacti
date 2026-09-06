@@ -162,13 +162,21 @@ function html_start_box(string $title, string $width, bool $div, int $cell_paddi
 							$href = '#';
 						}
 
+						if (isset($icon['data_url'])) {
+							$href      = '#';
+							$data_url  = " data-url='" . html_escape_url($icon['data_url']) . "'";
+							$classo   .= ' linkOverDark cactiPostAction';
+						} else {
+							$data_url = '';
+						}
+
 						if (isset($icon['title'])) {
 							$title = $icon['title'];
 						} else {
 							$title = $add_label;
 						}
 
-						print "<span class='cactiFilterAdd' title='$title'><a" . (isset($icon['id']) ? " id='" . $icon['id'] . "'" : '') . " class='$classo' href='$href'><i class='$classi'></i></a></span>";
+						print "<span class='cactiFilterAdd' title='$title'><a" . (isset($icon['id']) ? " id='" . $icon['id'] . "'" : '') . " class='" . trim($classo) . "' href='$href'$data_url><i class='$classi'></i></a></span>";
 					}
 				}
 			} else {

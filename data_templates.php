@@ -828,7 +828,12 @@ function template_edit() : void {
 	}
 
 	if (!$isSNMPGet && !$readOnly) {
-		html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? htmle($template_rrd['data_source_name']) : '')), '100%', true, 3, 'center', (!ierv('id') ? 'data_templates.php?action=rrd_add&id=' . grv('id') : ''), __('New'));
+		$add_button = !ierv('id') ? [[
+			'data_url' => 'data_templates.php?action=rrd_add&id=' . grv('id'),
+			'title'    => __('New')
+		]] : '';
+
+		html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? htmle($template_rrd['data_source_name']) : '')), '100%', true, 3, 'center', $add_button, __('New'));
 	} else {
 		html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? htmle($template_rrd['data_source_name']) : '')), '100%', true, 3, 'center', '', '');
 	}
