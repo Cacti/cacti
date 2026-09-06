@@ -148,7 +148,8 @@ sleep(2);
 while (true) {
 	wait_for_start($frequency);
 
-	db_check_reconnect(false, $logrecon);
+	$reconnect_conn = false;
+	db_check_reconnect($reconnect_conn, $logrecon);
 
 	run_poller();
 
