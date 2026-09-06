@@ -264,10 +264,16 @@ function aggregate_form_save() : void {
 	}
 
 	if ($save_me || $params_changed || $items_changed) {
-		push_out_aggregates($id);
+		if (!push_out_aggregates($id)) {
+			raise_message(2);
+		}
 	}
 
-	raise_message(1);
+	// Save helpers mutate the global message registry; PHPStan cannot observe that side effect.
+	/** @phpstan-ignore booleanNot.alwaysTrue */
+	if (!is_error_message()) {
+		raise_message(1);
+	}
 
 	header('Location: aggregate_templates.php?action=edit&id=' . $id);
 }
