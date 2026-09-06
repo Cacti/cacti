@@ -2515,11 +2515,13 @@ function cacti_process_pid_is_valid($pid) {
 
 /**
  * cacti_process_still_running - determine whether a registered pid is alive
- *   and has the same process name as the caller.
+ *   and has the same command identity as the caller.
  *
- *   The comm comparison is a best-effort guard against accidental pid reuse,
- *   not an anti-impersonation boundary. When procfs is unavailable or
- *   restricted, preserve the historical bare liveness behavior.
+ *   The procfs cmdline comparison distinguishes unrelated PHP scripts that
+ *   share one interpreter. Executable identity is used only for non-PHP
+ *   programs when cmdline is unavailable. This is a best-effort PID-reuse
+ *   guard, not an anti-impersonation boundary. Without procfs, preserve the
+ *   historical bare liveness behavior.
  *
  * @param  (int) $pid - the pid recorded in the processes table
  *
