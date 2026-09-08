@@ -987,7 +987,7 @@ function draw_item_filter(bool $render = false, array $host = []) : void {
 function item_edit() : void {
 	global $struct_graph_item, $graph_item_types, $consolidation_functions;
 
-	$id = (!ierv('id') ? '&id=' . grv('id') : '');
+	$id = (!ierv('id') ? '&id=' . (int) gfrv('id') : '');
 
 	$host = db_fetch_row_prepared('SELECT hostname
 		FROM host
@@ -1256,7 +1256,7 @@ function item_edit() : void {
 
 		function applyFilter() {
 			strURL = 'graphs.php?action=item_edit<?php print $id; ?>' +
-				'&local_graph_id=<?php print grv('local_graph_id'); ?>' +
+				'&local_graph_id=<?php print (int) gfrv('local_graph_id'); ?>' +
 				'&data_template_id=' + $('#data_template_id').val() +
 				'&host_id=' + $('#host_id').val();
 
@@ -2676,7 +2676,7 @@ function graph_edit() : void {
 	<script type='text/javascript'>
 
 	var locked         = <?php print($locked ? 'true' : 'false'); ?>;
-	var imageSource    = '<?php print $graph['src']; ?>';
+	var imageSource    = <?php print json_encode($graph['src'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 	var originalWidth  = null;
 	var originalHeight = null;
 
@@ -2980,7 +2980,7 @@ function graphs() : void {
 
 	$graph_list = db_fetch_assoc_prepared($sql, $merged_params);
 
-	$nav = html_nav_bar('graphs.php', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
+	$nav = html_nav_bar('graphs.php', MAX_DISPLAY_PAGES, (int) grv('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
 
 	form_start('graphs.php', 'chk');
 
