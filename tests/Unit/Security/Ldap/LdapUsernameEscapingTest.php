@@ -80,7 +80,9 @@ test('every username splice in the Ldap class escapes for its own context', func
 		->and(substr_count($src, "str_replace('<username>', ldap_escape(\$this->username, '', LDAP_ESCAPE_FILTER), \$this->search_filter)"))->toBe(2)
 		->and($src)->not->toContain("str_replace('<username>', \$this->username,");
 
-	// the group_member_type 2 lookup uses the built DN as a filter assertion value
-	expect($src)->toContain("\$filter_dn      = ldap_escape(\$this->dn, '', LDAP_ESCAPE_FILTER);")
+	// the group_member_type 2 lookup escapes the username before using it in
+	// uid, cn and userPrincipalName filter assertions
+	expect($src)->toContain("\$filter_user    = ldap_escape(\$this->username, '', LDAP_ESCAPE_FILTER);")
+		->and(substr_count($src, "' . \$filter_user . '"))->toBeGreaterThanOrEqual(3)
 		->and($src)->not->toContain("'(|(uid=' . \$this->dn . ')");
 });
