@@ -1012,13 +1012,12 @@ class Ldap {
  * @return string The assembled, injection-safe LDAP filter
  */
 function cacti_ldap_filter($template, $vars) {
-	$result = $template;
+	$map = array();
 
 	foreach ($vars as $key => $value) {
-		$escaped = ldap_escape((string) $value, '', LDAP_ESCAPE_FILTER);
-		$result  = str_replace('<' . $key . '>', $escaped, $result);
+		$map['<' . $key . '>'] = ldap_escape((string) $value, '', LDAP_ESCAPE_FILTER);
 	}
 
-	return $result;
+	return strtr($template, $map);
 }
 
