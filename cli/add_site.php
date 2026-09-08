@@ -32,7 +32,7 @@ include_once(CACTI_PATH_LIBRARY . '/api_tree.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	// setup defaults
 	$siteName       = '';  					// Site Name
 	$siteAddr1      = '';  					// Site Address 1
@@ -380,7 +380,7 @@ function mapDevices(int $siteId, bool $doMap) : void {
 		}
 	}
 
-	$numMatched = sizeof($matchedDevices);
+	$numMatched = cacti_sizeof($matchedDevices);
 
 	if ($numMatched) {
 		echoQuiet(PHP_EOL);
