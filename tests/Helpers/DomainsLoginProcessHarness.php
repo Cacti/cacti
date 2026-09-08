@@ -34,6 +34,7 @@ function cacti_test_load_cacti_ldap_filter(string $src) : void {
 			$depth--;
 
 			if ($depth === 0) {
+				// nosemgrep: php.lang.security.eval-use.eval-use -- test-only evaluation of a repository-owned function
 				eval(substr($src, $start, $i - $start + 1));
 
 				return;
