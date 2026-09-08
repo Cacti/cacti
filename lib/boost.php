@@ -255,6 +255,264 @@ function boost_check_correct_enabled() : bool {
 }
 
 /**
+ * Read one SQL VALUES token: a quoted string, a bare number, or FUNC().
+ *
+ * @param string $sql    Tuple text
+ * @param int    $offset Byte offset; advanced past the token
+ *
+ * @return string|null The token value, or null when the tuple is malformed
+ */
+function boost_parse_sql_value(string $sql, int &$offset) : ?string {
+	$length = strlen($sql);
+
+	while ($offset < $length && ctype_space($sql[$offset])) {
+		$offset++;
+	}
+
+	if ($offset >= $length) {
+		return null;
+	}
+
+	if ($sql[$offset] === "'") {
+		$offset++;
+		$value = '';
+
+		while ($offset < $length) {
+			$ch = $sql[$offset];
+
+			if ($ch === '\\' && $offset + 1 < $length) {
+				$value .= $sql[$offset + 1];
+				$offset += 2;
+
+				continue;
+			}
+
+			if ($ch === "'") {
+				if ($offset + 1 < $length && $sql[$offset + 1] === "'") {
+					$value .= "'";
+					$offset += 2;
+
+					continue;
+				}
+
+				$offset++;
+
+				return $value;
+			}
+
+			$value .= $ch;
+			$offset++;
+		}
+
+		return null;
+	}
+
+	if (preg_match('/\G[A-Za-z_][A-Za-z0-9_]*\s*\(\s*\)/', $sql, $matches, 0, $offset) === 1) {
+		$offset += strlen($matches[0]);
+
+		return preg_replace('/\s+/', '', $matches[0]) ?? $matches[0];
+	}
+
+	if (preg_match('/\G-?\d+(?:\.\d+)?/', $sql, $matches, 0, $offset) === 1) {
+		$offset += strlen($matches[0]);
+
+		return $matches[0];
+	}
+
+	return null;
+}
+
+/**
+ * Pull local_data_id, rrd_name, and time from a poller_output_boost VALUES tuple.
+ *
+ * @param string $tuple A "(id, 'name', 'time', 'output')" or CURRENT_TIMESTAMP() tuple
+ *
+ * @return array{local_data_id:int, rrd_name:string, time:string}|null
+ */
+function boost_parse_output_tuple(string $tuple) : ?array {
+	$tuple  = trim($tuple);
+	$offset = 0;
+
+	if ($tuple === '' || $tuple[0] !== '(') {
+		return null;
+	}
+
+	$offset = 1;
+	$id     = boost_parse_sql_value($tuple, $offset);
+
+	if ($id === null || !ctype_digit($id)) {
+		return null;
+	}
+
+	while ($offset < strlen($tuple) && ctype_space($tuple[$offset])) {
+		$offset++;
+	}
+
+	if ($offset >= strlen($tuple) || $tuple[$offset] !== ',') {
+		return null;
+	}
+
+	$offset++;
+	$rrd_name = boost_parse_sql_value($tuple, $offset);
+
+	if ($rrd_name === null) {
+		return null;
+	}
+
+	while ($offset < strlen($tuple) && ctype_space($tuple[$offset])) {
+		$offset++;
+	}
+
+	if ($offset >= strlen($tuple) || $tuple[$offset] !== ',') {
+		return null;
+	}
+
+	$offset++;
+	$time = boost_parse_sql_value($tuple, $offset);
+
+	if ($time === null) {
+		return null;
+	}
+
+	return [
+		'local_data_id' => (int) $id,
+		'rrd_name'      => $rrd_name,
+		'time'          => $time
+	];
+}
+
+/**
+ * Clip a diagnostic fragment so one huge rrd_name cannot flood the log.
+ */
+function boost_clip_log_fragment(string $value, int $max = 64) : string {
+	$value = str_replace(["\r", "\n", "\0"], ' ', $value);
+
+	if (strlen($value) <= $max) {
+		return $value;
+	}
+
+	return substr($value, 0, $max - 3) . '...';
+}
+
+/**
+ * Build the BOOST warning for an INSERT IGNORE that dropped rows.
+ *
+ * @param array $tuples    The VALUES tuples from the statement that was ignored in part
+ * @param int   $attempted Rows in that statement
+ * @param int   $inserted  Rows the server reported as written
+ *
+ * @return string Empty when nothing was dropped
+ */
+function boost_describe_ignored_sample_keys(array $tuples, int $attempted, int $inserted) : string {
+	$dropped = $attempted - $inserted;
+
+	if ($dropped < 1) {
+		return '';
+	}
+
+	$by_key = [];
+	$ids    = [];
+
+	foreach ($tuples as $tuple) {
+		$parsed = boost_parse_output_tuple((string) $tuple);
+
+		if ($parsed === null) {
+			continue;
+		}
+
+		$ids[$parsed['local_data_id']] = true;
+		$key = $parsed['local_data_id'] . "\0" . $parsed['rrd_name'] . "\0" . $parsed['time'];
+
+		if (!isset($by_key[$key])) {
+			$parsed['count'] = 0;
+			$by_key[$key]    = $parsed;
+		}
+
+		$by_key[$key]['count']++;
+	}
+
+	$in_batch = 0;
+	$examples = [];
+
+	foreach ($by_key as $row) {
+		if ($row['count'] < 2) {
+			continue;
+		}
+
+		$in_batch += $row['count'] - 1;
+
+		if (cacti_count($examples) < 8) {
+			$examples[] = sprintf(
+				'DS[%d] %s @ %s (x%d)',
+				$row['local_data_id'],
+				boost_clip_log_fragment($row['rrd_name']),
+				boost_clip_log_fragment($row['time']),
+				$row['count']
+			);
+		}
+	}
+
+	if ($in_batch === 0) {
+		foreach ($by_key as $row) {
+			if (cacti_count($examples) >= 8) {
+				break;
+			}
+
+			$examples[] = sprintf(
+				'DS[%d] %s @ %s',
+				$row['local_data_id'],
+				boost_clip_log_fragment($row['rrd_name']),
+				boost_clip_log_fragment($row['time'])
+			);
+		}
+	}
+
+	$id_keys = array_keys($ids);
+	$id_list = implode(',', array_slice($id_keys, 0, 20));
+
+	if (cacti_count($id_keys) > 20) {
+		$id_list .= ',...';
+	}
+
+	$vs_existing = $dropped - $in_batch;
+
+	if ($vs_existing < 0) {
+		$vs_existing = 0;
+	}
+
+	if ($in_batch > 0 && $vs_existing > 0) {
+		$reason = 'duplicate keys inside this INSERT and vs existing poller_output_boost rows';
+	} elseif ($in_batch > 0) {
+		$reason = 'duplicate keys inside this INSERT';
+	} else {
+		$reason = 'keys already in poller_output_boost';
+	}
+
+	$poller = defined('POLLER_ID') ? (int) POLLER_ID : 0;
+
+	return sprintf(
+		'WARNING: Boost staging ignored %d of %d duplicate sample keys (INSERT IGNORE, first write wins, poller=%d, %s). local_data_id=%s%s',
+		$dropped,
+		$attempted,
+		$poller,
+		$reason,
+		$id_list !== '' ? $id_list : 'unknown',
+		$examples !== [] ? '; ' . implode('; ', $examples) : ''
+	);
+}
+
+/**
+ * Log INSERT IGNORE collisions with the keys an operator can grep.
+ */
+function boost_log_ignored_sample_keys(array $tuples, int $attempted, int $inserted) : void {
+	$message = boost_describe_ignored_sample_keys($tuples, $attempted, $inserted);
+
+	if ($message !== '') {
+		cacti_log($message, false, 'BOOST');
+	}
+}
+
+/**
  * boost_flush_output_batch - writes a batch of pre-built poller_output_boost
  * VALUE tuples, chunking on max_allowed_packet so a single INSERT statement
  * never exceeds it. Shared by cmd.php's boost_redirect writes and
@@ -304,6 +562,7 @@ function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : bo
 	$overhead   = strlen($sql_prefix) + 1;
 	$out_buffer = '';
 	$out_length = 0;
+	$chunk      = [];
 	$rows       = 0;
 
 	foreach ($value_tuples as $tuple) {
@@ -320,16 +579,20 @@ function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : bo
 				return false;
 			}
 
-			if (db_affected_rows($conn) < $rows) {
-				cacti_log('WARNING: Boost staging ignored one or more duplicate sample keys.', false, 'BOOST');
+			$inserted = (int) db_affected_rows($conn);
+
+			if ($inserted < $rows) {
+				boost_log_ignored_sample_keys($chunk, $rows, $inserted);
 			}
 
 			$out_buffer = $tuple;
 			$out_length = $tuple_length;
+			$chunk      = [$tuple];
 			$rows       = 1;
 		} else {
 			$out_buffer .= ($out_buffer != '' ? ',' : '') . $tuple;
 			$out_length += $tuple_length + ($out_length > 0 ? 1 : 0);
+			$chunk[] = $tuple;
 			$rows++;
 		}
 	}
@@ -345,8 +608,10 @@ function boost_flush_output_batch(array $value_tuples, mixed $conn = false) : bo
 			return false;
 		}
 
-		if (db_affected_rows($conn) < $rows) {
-			cacti_log('WARNING: Boost staging ignored one or more duplicate sample keys.', false, 'BOOST');
+		$inserted = (int) db_affected_rows($conn);
+
+		if ($inserted < $rows) {
+			boost_log_ignored_sample_keys($chunk, $rows, $inserted);
 		}
 	}
 
@@ -1681,8 +1946,16 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 				break;
 			}
 
-			if (db_affected_rows() < $forward_rows) {
-				cacti_log("WARNING: Boost archive forwarding encountered duplicate sample keys for Local Data ID '$local_data_id'.", false, 'BOOST');
+			$forwarded = (int) db_affected_rows();
+
+			if ($forwarded < $forward_rows) {
+				cacti_log(sprintf(
+					'WARNING: Boost archive forwarding ignored %d of %d duplicate sample keys for Local Data ID %d from %s (already in poller_output_boost, first write wins).',
+					$forward_rows - $forwarded,
+					$forward_rows,
+					$local_data_id,
+					$table
+				), false, 'BOOST');
 			}
 		}
 	}
