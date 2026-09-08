@@ -671,7 +671,7 @@ class Ldap {
 				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorVersion, $ldap_conn, $this->host);
 				Ldap::RecordError($output);
 				ldap_close($ldap_conn);
-		$this->connection = [];
+				$this->connection = [];
 
 				return [
 					'ldap_conn' => $ldap_conn,
@@ -702,7 +702,7 @@ class Ldap {
 					Ldap::RecordError($output);
 
 					ldap_close($ldap_conn);
-		$this->connection = [];
+					$this->connection = [];
 
 					return [
 						'ldap_conn' => $ldap_conn,
@@ -719,7 +719,7 @@ class Ldap {
 					Ldap::RecordError($output);
 
 					ldap_close($ldap_conn);
-		$this->connection = [];
+					$this->connection = [];
 
 					return [
 						'ldap_conn' => $ldap_conn,
@@ -785,7 +785,6 @@ class Ldap {
 
 		if ($this->password == '') {
 			ldap_close($ldap_conn);
-		$this->connection = [];
 			$this->connection = [];
 			$this->RestoreCactiHandler();
 
@@ -829,7 +828,7 @@ class Ldap {
 					$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess, $ldap_conn, $this->host);
 					Ldap::RecordError($output);
 					ldap_close($ldap_conn);
-		$this->connection = [];
+					$this->connection = [];
 					$this->RestoreCactiHandler();
 
 					return $output;
@@ -837,7 +836,7 @@ class Ldap {
 					$output = LdapError::GetErrorDetails(LdapError::SearchFoundNoGroup, $ldap_conn, $this->host);
 					Ldap::RecordError($output);
 					ldap_close($ldap_conn);
-		$this->connection = [];
+					$this->connection = [];
 					$this->RestoreCactiHandler();
 
 					return $output;
