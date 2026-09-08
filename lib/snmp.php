@@ -53,6 +53,41 @@ if ($config['php_snmp_support']) {
 
 use phpsnmp\SNMP;
 
+/**
+ * Select a reliable uptime value from sysUpTime and snmpEngineTime.
+ *
+ * Some agents, notably OpenBSD snmpd, return the current Unix timestamp for
+ * snmpEngineTime. That value is not an uptime and must not replace the real
+ * sysUpTime value. Legitimate engine time remains useful after the 32-bit
+ * TimeTicks value wraps, so retain the existing preference when it is at
+ * least the system uptime and does not resemble wall-clock time.
+ *
+ * @param mixed    $system_uptime sysUpTime in hundredths of a second.
+ * @param mixed    $engine_time   snmpEngineTime in seconds.
+ * @param int|null $now           Current Unix time, injectable for tests.
+ *
+ * @return int|false Selected uptime in hundredths of a second.
+ */
+function cacti_snmp_select_uptime($system_uptime, $engine_time, $now = null) {
+	$system_uptime = is_numeric($system_uptime) && $system_uptime >= 0 ? (int) $system_uptime : false;
+
+	if (!is_numeric($engine_time) || $engine_time <= 0) {
+		return $system_uptime;
+	}
+
+	$engine_time = (int) $engine_time;
+	$now         = $now ?? time();
+	$epoch_range = 5 * 366 * 86400;
+
+	if ($now > $epoch_range && abs($engine_time - $now) <= $epoch_range) {
+		return $system_uptime;
+	}
+
+	$engine_uptime = $engine_time * 100;
+
+	return $system_uptime === false || $engine_uptime >= $system_uptime ? $engine_uptime : $system_uptime;
+}
+
 function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '', $engineid = '',
 	$port = 161, $timeout_ms = 500, $retries = 0, $max_oids = 10, $bulk_walk_size = 10) {

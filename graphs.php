@@ -1954,7 +1954,7 @@ function validate_graph_request_vars() {
 		),
 		'template_id' => array(
 			'filter' => FILTER_VALIDATE_REGEXP,
-			'options' => array('options' => array('regexp' => '(cg_[0-9]|dq_[0-9]|[\-0-9])')),
+			'options' => array('options' => array('regexp' => '/^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)$/')),
 			'pageset' => true,
 			'default' => '-1'
 		),

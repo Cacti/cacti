@@ -1571,37 +1571,37 @@ function api_device_ping_device($device_id, $from_remote = false) {
 					}
 
 					/* Some devices (Dell iDRAC, Fortigate, etc.) may have an empty system value. This causes a false down status */
-					$snmp_uptime = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
+					$snmp_engine_time   = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
+					$snmp_system_uptime = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
+					$snmp_uptime        = cacti_snmp_select_uptime($snmp_system_uptime, $snmp_engine_time);
 
-					if ($snmp_system == '' && empty($snmp_uptime)) {
+					if ($snmp_system == '' && $snmp_uptime === false) {
 
 						print "<span class='hostDown'>" . __('Host') . ' ' .  __('SNMP error');
 						if ($snmp_error != '') {
 							print " - $snmp_error";
 						}
-						'</span>';
+						print '</span>';
 					} else {
-						$snmp_uptime = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
-
-						if (!empty($snmp_uptime) && is_numeric($snmp_uptime)) {
-							$snmp_uptime *= 100;
-						} else {
-							$snmp_uptime = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
-						}
-
 						$snmp_hostname   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
 						$snmp_location   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
 						$snmp_contact    = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0');
 
 						print '<strong>' . __('System:') . '</strong> ' . html_split_string($snmp_system) . '<br>';
-						$snmp_uptime_ticks = intval($snmp_uptime);
-						$days      = intval($snmp_uptime_ticks / (60*60*24*100));
-						$remainder = $snmp_uptime_ticks % (60*60*24*100);
-						$hours     = intval($remainder / (60*60*100));
-						$remainder = $remainder % (60*60*100);
-						$minutes   = intval($remainder / (60*100));
-						print '<strong>' . __('Uptime:') . "</strong> $snmp_uptime";
-						print '&nbsp;(' . $days . __('days') . ', ' . $hours . __('hours') . ', ' . $minutes . __('minutes') . ')<br>';
+
+						if ($snmp_uptime === false) {
+							$snmp_uptime = 'U';
+							print '<strong>' . __('Uptime:') . "</strong> $snmp_uptime<br>";
+						} else {
+							$snmp_uptime_ticks = intval($snmp_uptime);
+							$days      = intval($snmp_uptime_ticks / (60*60*24*100));
+							$remainder = $snmp_uptime_ticks % (60*60*24*100);
+							$hours     = intval($remainder / (60*60*100));
+							$remainder = $remainder % (60*60*100);
+							$minutes   = intval($remainder / (60*100));
+							print '<strong>' . __('Uptime:') . "</strong> $snmp_uptime";
+							print '&nbsp;(' . $days . __('days') . ', ' . $hours . __('hours') . ', ' . $minutes . __('minutes') . ')<br>';
+						}
 						print '<strong>' . __('Hostname:') . "</strong> $snmp_hostname<br>";
 						print '<strong>' . __('Location:') . "</strong> $snmp_location<br>";
 						print '<strong>' . __('Contact:') . "</strong> $snmp_contact<br>";
@@ -2889,4 +2889,3 @@ function api_clone_device_template($template_id, $template_name, $include_gt, $c
 
 	return $new_template;
 }
-
