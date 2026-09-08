@@ -47,7 +47,7 @@ current checks:
 - `Dependency review`
 - `pest coverage gate`
 
-`CI / required` is the stable aggregate for the PHP 8.1 locked integration,
+`CI / required` is the stable aggregate for the PHP 8.3 locked integration,
 locked runtime matrix, native dependency matrix, and CHANGELOG validation. This
 keeps branch protection stable when implementation job names or matrix entries
 change. Every required workflow must also listen for `merge_group` before the

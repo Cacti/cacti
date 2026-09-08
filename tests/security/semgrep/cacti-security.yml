@@ -38,6 +38,13 @@ rules:
       - pattern: db_qstr(...)
       - pattern: db_qstr_rlike(...)
       - pattern: sanitize_sql_column(...)
+      # array_to_sql_or() quotes each value with db_qstr(), but does not
+      # sanitize its column argument. Only a literal identifier is safe.
+      - patterns:
+          - pattern: array_to_sql_or($VALUES, $COLUMN)
+          - metavariable-regex:
+              metavariable: $COLUMN
+              regex: ^['"][A-Za-z0-9_.]+['"]$
       # gfrv()/get_filter_request_var() are only SQL-safe here when they enforce numeric types
       - pattern: gfrv($NAME)
       - pattern: gfrv($NAME, FILTER_VALIDATE_INT, ...)
@@ -133,6 +140,11 @@ rules:
       # filter_value() escapes values, link targets, and titles before adding
       # optional highlighting markup.
       - pattern: filter_value(...)
+      # These helpers return context-escaped markup and have dedicated unit tests.
+      - pattern: html_hidden_input(...)
+      - pattern: html_nav_bar(...)
+      # clean_up_name() confines values to ASCII letters, digits, and underscores.
+      - pattern: clean_up_name(...)
       - pattern: intval(...)
       - pattern: (int) $X
     pattern-sinks:

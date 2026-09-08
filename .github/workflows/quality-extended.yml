@@ -149,10 +149,10 @@ jobs:
       - name: Build managed JavaScript
         run: npm ci
 
-      - name: Setup locked PHP 8.2 dependencies
+      - name: Setup locked PHP 8.3 dependencies
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           coverage: xdebug
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
           ini-values: post_max_size=256M, max_execution_time=60

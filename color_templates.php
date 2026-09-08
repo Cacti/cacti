@@ -495,7 +495,7 @@ function color_item_remove_confirm() : void {
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following Color Template Color.'); ?></p>
 			<p><?php print __('Color Name:'); ?> '<?php print htmle($template['name']); ?>'<br>
-			<?php print __('Color Hex:'); ?><strong><?php print $color_hex; ?></p>
+			<?php print __('Color Hex:'); ?><strong><?php print htmle($color_hex); ?></p>
 		</td>
 	</tr>
 	<tr>
@@ -516,13 +516,13 @@ function color_item_remove_confirm() : void {
 		$('#continue').click(function(data) {
 			var options = {
 				url: 'color_templates.php?action=item_remove',
-				redirect: 'color_templates.php?action=template_edit&color_template_id=<?php print grv('id'); ?>'
+				redirect: 'color_templates.php?action=template_edit&color_template_id=<?php print (int) grv('id'); ?>'
 			}
 
 			var data = {
 				__csrf_magic: csrfMagicToken,
-				color_id: <?php print grv('color_id'); ?>,
-				id: <?php print grv('id'); ?>
+				color_id: <?php print (int) grv('color_id'); ?>,
+				id: <?php print (int) grv('id'); ?>
 			}
 
 			postUrl(options, data);
@@ -806,7 +806,7 @@ function color_template() : void {
 		$sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ((int) $rows * ((int) grv('page') - 1)) . ',' . (int) $rows;
 
 	$template_list = db_fetch_assoc("SELECT *
 		FROM color_templates AS ct
@@ -814,7 +814,7 @@ function color_template() : void {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Color Templates'), 'page', 'main');
+	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, (int) grv('page'), $rows, $total_rows, 5, __('Color Templates'), 'page', 'main');
 
 	form_start('color_templates.php', 'chk');
 
