@@ -577,7 +577,7 @@ class Ldap {
 			}
 
 			$bind_timeout = read_config_option('ldap_bind_timeout');
-			if (defined('LDAP_OPT_TIMELIMIT')) {
+			if (defined('LDAP_OPT_TIMEOUT')) {
 				cacti_log("NOTE: Setting Bind Timeout to $bind_timeout seconds", false, 'AUTH', $this->debug);
 				ldap_set_option($ldap_conn, LDAP_OPT_TIMEOUT, $bind_timeout);
 			}
@@ -651,6 +651,9 @@ class Ldap {
 		$this->dn = str_replace('<username>', $safe_username, $this->dn);
 
 		if ($this->password == '') {
+			ldap_close($ldap_conn);
+			$this->RestoreCactiHandler();
+
 			return LdapError::GetErrorDetails(LdapError::EmptyPassword);
 		}
 
@@ -668,13 +671,7 @@ class Ldap {
 						$ldap_group_response = Ldap::isUserInLDAPGroup($ldap_conn, $this->search_base, $this->group_dn, $this->dn);
 					}
 				} elseif ($this->group_member_type == 2) {
-					/* Do a lookup to find this user's true DN. */
-					/* ldap_exop_whoami is not yet included in PHP. For reference, the
-					 * feature request: http://bugs.php.net/bug.php?id=42060
-					 * And the patch against latest PHP release:
-					 * http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/databases/php-ldap/files/ldap-ctrl-exop.patch
-					*/
-					$filter = cacti_ldap_filter('(|(uid=<dn>)(cn=<dn>)(userPrincipalName=<dn>))', array('dn' => $this->dn));
+					$filter = cacti_ldap_filter('(|(uid=<username>)(cn=<username>)(userPrincipalName=<username>))', array('username' => $this->username));
 					$true_dn_result = ldap_search($ldap_conn, $this->search_base, $filter, array('dn'));
 					$first_entry    = ldap_first_entry($ldap_conn, $true_dn_result);
 
@@ -890,12 +887,18 @@ class Ldap {
 			/* Just bind mode, make dn and return */
 			$output = LdapError::GetErrorDetails(LdapError::Success);
 			$output['dn'] = $this->dn;
+			ldap_close($ldap_conn);
+			$this->RestoreCactiHandler();
+
 			return $output;
 		} elseif ($this->mode == '2') {
 			/* Specific */
 			if (empty($this->specific_dn) || empty($this->specific_password)) {
 				$output = LdapError::GetErrorDetails(LdapError::UndefinedDnOrPassword);
 				$output['dn'] = $this->dn;
+				ldap_close($ldap_conn);
+				$this->RestoreCactiHandler();
+
 				return $output;
 			}
 		} elseif ($this->mode == '1'){
@@ -919,7 +922,7 @@ class Ldap {
 				$ldap_entries =  ldap_get_entries($ldap_conn, $ldap_results);
 
 				/* We find 1 entries */
-				if ($ldap_entries['count'] == 1) {
+				if ($ldap_entries !== false && isset($ldap_entries['count']) && $ldap_entries['count'] == 1) {
 					$output = LdapError::GetErrorDetails(LdapError::Success);
 					// check if we got an full username entry
 					if (array_key_exists($this->cn[0], $ldap_entries[0])) {
@@ -934,8 +937,10 @@ class Ldap {
 					} else {
 						$output['cn'][$this->cn[1]] = '';
 					}
-				} else {
+				} elseif (is_array($ldap_entries) && isset($ldap_entries['count']) && $ldap_entries['count'] > 1) {
 					$output = LdapError::GetErrorDetails(LdapError::SearchFoundMultiUser);
+				} else {
+					$output = LdapError::GetErrorDetails(LdapError::SearchFoundNoUser);
 				}
 			} else {
 				/* no search results, user not found*/
