@@ -604,6 +604,7 @@ header_redirect	./support.php		header('Location: support.php?tab=summary');
 header_redirect	./templates_export.php					header('Location: templates_export.php');
 header_redirect	./templates_import.php				header('Location: templates_import.php');
 header_redirect	./templates_import.php				header('Location: templates_import.php');
+header_redirect	./tests/index.php	header('Location:../index.php');
 header_redirect	./tree.php			header('Location: tree.php');
 header_redirect	./tree.php			header('Location: tree.php');
 header_redirect	./tree.php			header('Location: tree.php');
