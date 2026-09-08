@@ -1585,13 +1585,13 @@ function determine_display_log_entry($message_type, $line, $filter, $matches = t
 	/* match any lines that match the search string */
 	if ($display === true && $filter != '') {
 		if ($matches) {
-			if (validate_is_regex($filter) && preg_match('/' . $filter . '/i', $line)) {
+			if (validate_is_regex($filter) === true && preg_match('/' . $filter . '/i', $line)) {
 				return $line;
 			} elseif (stripos($line, $filter) !== false) {
 				return $line;
 			}
 		} else {
-			if (validate_is_regex($filter)) {
+			if (validate_is_regex($filter) === true) {
 				if (!preg_match('/' . $filter . '/i', $line)) {
 					return $line;
 				}
