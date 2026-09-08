@@ -422,8 +422,11 @@ function commands_kill_running_processes() : void {
 
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {
-			cacti_log(sprintf('WARNING: Killing Commands %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'CLEANUP');
-			posix_kill($p['pid'], SIGTERM);
+			if (cacti_process_still_running((int) $p['pid'])) {
+				cacti_log(sprintf('WARNING: Killing Commands %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'CLEANUP');
+
+				posix_kill($p['pid'], SIGTERM);
+			}
 
 			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
 		}

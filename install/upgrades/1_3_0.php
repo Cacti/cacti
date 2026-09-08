@@ -23,6 +23,13 @@
 */
 
 function upgrade_to_1_3_0() : void {
+	db_install_execute("CREATE TABLE IF NOT EXISTS process_locks (
+		key_id varchar(64) NOT NULL,
+		key_token varchar(44) NOT NULL,
+		key_expiration int(10) unsigned NOT NULL,
+		PRIMARY KEY (key_id)
+	) ENGINE=InnoDB COMMENT='Serializes Cacti Process Registry Mutations'");
+
 	db_install_change_column('version', ['name' => 'cacti', 'type' => 'char(30)', 'null' => false, 'default' => '']);
 
 	db_install_add_column('user_auth', ['name' => 'tfa_enabled', 'type' => 'char(3)', 'null' => false, 'default' => '']);

@@ -4285,17 +4285,12 @@ function automation_valid_snmp_device(array &$device) : bool {
 			}
 
 			// get system uptime
-			$snmp_sysUptime = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
+			$snmp_engine_time   = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
+			$snmp_system_uptime = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
+			$snmp_sysUptime     = cacti_snmp_select_uptime($snmp_system_uptime, $snmp_engine_time);
 
-			if (!empty($snmp_sysUptime)) {
-				$snmp_sysUptime *= 100;
-			} else {
-				$snmp_sysUptime = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
-			}
-
-			if ($snmp_sysUptime != '') {
-				$snmp_sysUptime           = trim(strtr($snmp_sysUptime,'"',' '));
-				$device['snmp_sysUptime'] = $snmp_sysUptime;
+			if ($snmp_sysUptime !== false) {
+				$device['snmp_sysUptime'] = (string) $snmp_sysUptime;
 			}
 
 			$session->close();

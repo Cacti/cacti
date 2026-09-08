@@ -414,7 +414,7 @@ function form_actions() : void {
 		<td class='saveRow'>
 			" . html_hidden_input('action', 'actions') . '
 			' . html_hidden_input('import_state', $import_state) . '
-			' . html_hidden_input('drp_action', gnrv('drp_action')) . "
+			' . html_hidden_input('drp_action', grv('drp_action')) . "
 			$save_html
 		</td>
 	</tr>";
@@ -655,12 +655,7 @@ function package_file_get_contents(string $package_location, string $package_fil
 
 				$fdata = base64_decode($file['data'], true);
 
-				// provide two checks against the public key
 				$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
-
-				if ($ok != 1) {
-					$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
-				}
 
 				if ($ok != 1) {
 					$fdata = false;
@@ -703,12 +698,7 @@ function package_file_get_contents(string $package_location, string $package_fil
 
 					$fdata = base64_decode($file['data'], true);
 
-					// provide two checks against the public key
 					$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
-
-					if ($ok != 1) {
-						$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
-					}
 
 					if ($ok != 1) {
 						$fdata = false;
@@ -779,7 +769,9 @@ function package_diff_file() : void {
 
 			$renderer = new Diff_Renderer_Html_Inline;
 
-			print '<body>' . $diff->render($renderer) . '</body></html>';
+			// Diff_Renderer_Html_Inline::formatLines() HTML-escapes every input
+			// line before adding its own <ins>/<del> markup.
+			print '<body>' . $diff->render($renderer) . '</body></html>'; // nosemgrep: cacti-request-var-echoed-unescaped
 		} else {
 			print 'New file does not exist';
 		}

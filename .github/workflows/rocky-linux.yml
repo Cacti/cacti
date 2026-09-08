@@ -31,7 +31,9 @@ jobs:
             --workdir /workspace \
             rockylinux@sha256:d7be1c094cc5845ee815d4632fe377514ee6ebcf8efaed6892889657e5ddaaa6 \
             bash -euo pipefail -c '
+              dnf -y module enable php:8.2
               dnf -y install php-cli php-common php-curl php-gd php-intl php-mbstring php-mysqlnd php-xml php-zip
               php --version
-              find . -path ./vendor -prune -o -type f -name "*.php" -print0 | xargs -0 -r -n1 php -l
+              php -r '\''exit(version_compare(PHP_VERSION, "8.2.0", ">=") ? 0 : 1);'\''
+              find . \( -path ./vendor -o -path ./include/vendor \) -prune -o -type f -name "*.php" -print0 | xargs -0 -r -n1 php -l
             '

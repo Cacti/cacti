@@ -1,5 +1,7 @@
 .git
 .github
+# check-changelog.py is a composer 'check' step
+!.github/scripts
 *.md
 !README.md
 LICENSE
@@ -9,6 +11,10 @@ LICENSE
 docker-compose.override.yml
 data/
 cache/
+# the tracked redirect guards are part of the sink inventory
+!cache/index.php
+!cache/**/index.php
 log/
+!log/index.php
 rra/*.rrd
 *.log

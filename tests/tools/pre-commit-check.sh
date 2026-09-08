@@ -58,18 +58,7 @@ check_composer_lock() {
 }
 
 check_vendor_dev_deps() {
-    staged_vendor=$(git diff --cached --name-only | grep '^include/vendor/' | head -5)
-
-    if [ -n "$staged_vendor" ]; then
-        echo ""
-        echo "WARNING: Vendor files are staged for commit:"
-        echo "$staged_vendor"
-        echo "  Dev dependencies should not be committed to include/vendor/."
-        echo "  Run: git reset HEAD include/vendor/"
-        echo ""
-
-        exit 1
-    fi
+    php tests/tools/check_vendor_policy.php
 }
 
 check_autoload_freshness() {

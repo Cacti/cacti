@@ -12,19 +12,36 @@
  +-------------------------------------------------------------------------+
 */
 
+use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Process\Exception\ProcessTimedOutException;
+use Symfony\Component\Process\Process;
+
 $orb_available = static function (): bool {
-	// nosemgrep: php.lang.security.exec-use.exec-use - constant command, integration test
-	return trim((string)shell_exec('command -v orb 2>/dev/null')) !== '';
+	return (new ExecutableFinder())->find('orb') !== null;
 };
 
-$has_timeout = static function (): bool {
-	// nosemgrep: php.lang.security.exec-use.exec-use - constant command, integration test
-	return trim((string)shell_exec('command -v timeout 2>/dev/null')) !== '';
+$run_orb = static function (array $arguments): array {
+	$process = new Process(array_merge(['orb'], $arguments));
+	$process->setTimeout(30);
+
+	try {
+		$process->run();
+	} catch (ProcessTimedOutException $e) {
+		return [124, $e->getMessage()];
+	}
+
+	return [$process->getExitCode(), $process->getOutput() . $process->getErrorOutput()];
 };
 
-it('has all required PHP extensions in the Orb machine', function () use ($orb_available, $has_timeout) {
+it('has all required PHP extensions in the Orb machine', function () use ($orb_available, $run_orb) {
 	if (!$orb_available()) {
 		test()->markTestSkipped('orb CLI not available');
+	}
+
+	[$probeStatus] = $run_orb(['true']);
+
+	if ($probeStatus !== 0) {
+		test()->markTestSkipped('orb CLI is installed but no usable machine is available');
 	}
 
 	$required_exts = [
@@ -34,22 +51,25 @@ it('has all required PHP extensions in the Orb machine', function () use ($orb_a
 	];
 
 	foreach ($required_exts as $ext) {
-		// Extension names come from a fixed allowlist; no external input.
-		$cmd = ($has_timeout() ? 'timeout 30 ' : '') . 'orb php -m | grep -i ^' . escapeshellarg($ext) . '$';
-		// nosemgrep: php.lang.security.exec-use.exec-use - allowlisted ext names, integration test
-		$output = shell_exec($cmd);
-		expect(trim((string)$output))->toBeIgnoringCase($ext);
+		[$status, $output] = $run_orb(['php', '-r', "exit(extension_loaded('$ext') ? 0 : 1);"]);
+
+		expect($status)->toBe(0, "Missing required Orb PHP extension: $ext\n$output");
 	}
 });
 
-it('can run a Cacti CLI command in the Orb machine', function () use ($orb_available, $has_timeout) {
+it('can run a Cacti CLI command in the Orb machine', function () use ($orb_available, $run_orb) {
 	if (!$orb_available()) {
 		test()->markTestSkipped('orb CLI not available');
 	}
 
-	$cmd = ($has_timeout() ? 'timeout 30 ' : '') . 'orb php cli/check_cli_version.sh';
-	// nosemgrep: php.lang.security.exec-use.exec-use - constant command, integration test
-	$output = shell_exec($cmd);
-	// Just verify it doesn't crash and returns something sensible
-	expect($output)->toContain('Cacti');
+	[$probeStatus] = $run_orb(['true']);
+
+	if ($probeStatus !== 0) {
+		test()->markTestSkipped('orb CLI is installed but no usable machine is available');
+	}
+
+	[$status, $output] = $run_orb(['php', 'cli/check_cli_version.sh']);
+
+	expect($status)->toBe(0, $output)
+		->and($output)->toContain('Cacti');
 });

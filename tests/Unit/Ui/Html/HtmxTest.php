@@ -26,6 +26,19 @@ require_once dirname(__DIR__, 3) . '/Helpers/CactiStubs.php';
 require_once dirname(__DIR__, 4) . '/include/global.php';
 require_once dirname(__DIR__, 4) . '/lib/htmx.php';
 
+$htmx_test_asset         = CACTI_PATH_BASE . '/include/js/htmx.js';
+$htmx_test_asset_created = !file_exists($htmx_test_asset);
+
+if ($htmx_test_asset_created && file_put_contents($htmx_test_asset, '/* htmx unit-test fixture */') === false) {
+	throw new RuntimeException('Unable to create the HTMX unit-test fixture.');
+}
+
+afterAll(function () use ($htmx_test_asset, $htmx_test_asset_created) {
+	if ($htmx_test_asset_created && file_exists($htmx_test_asset)) {
+		unlink($htmx_test_asset);
+	}
+});
+
 /*
  * read_config_option() is already declared by include/global.php. In CLI mode
  * it reads from $config[OPTIONS_CLI] before touching the database, so seeding
@@ -175,8 +188,12 @@ test('htmx loader and CSRF wiring share the request nonce in migration mode', fu
 	expect(array_unique($matches[1]))->toHaveCount(1);
 });
 
-test('htmx_script_tag integrity matches the sha384 of the vendored file', function () {
+test('htmx_script_tag integrity matches the sha384 of the vendored file', function () use ($htmx_test_asset_created) {
 	global $config;
+
+	if ($htmx_test_asset_created) {
+		$this->markTestSkipped('The release HTMX asset is not present in this source checkout.');
+	}
 
 	$config[OPTIONS_CLI]['htmx_enabled'] = 'on';
 

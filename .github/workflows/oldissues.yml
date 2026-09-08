@@ -42,7 +42,7 @@ jobs:
         days-before-close: 30
         remove-stale-when-updated: true
 
-        exempt-issue-labels: 'pinned, security, enhancement, future release'
+        exempt-issue-labels: 'pinned, security, type:security, enhancement, type:enhancement, future release'
 
         stale-issue-label: 'outdated'
         stale-issue-message: >
@@ -50,7 +50,7 @@ jobs:
           not had recent activity. It will be closed if no further activity
           occurs. Thank you for your contributions.
 
-        exempt-pr-labels: 'pinned, security, enhancement, future release'
+        exempt-pr-labels: 'pinned, security, type:security, enhancement, type:enhancement, future release'
 
         stale-pr-label: 'outdated'
         stale-pr-message: >
@@ -86,5 +86,7 @@ jobs:
         #   has not been any recent activity after it was closed. Please
         #   open a new issue for related bugs.
         pr-lock-reason: ''
-        process-only: ''
+        # Empty means every thread type, including discussions, which the
+        # job has no permission for and which failed the run every night.
+        process-only: 'issues, prs'
         debug-run: true

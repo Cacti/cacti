@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once __DIR__ . '/CactiProcessLock.php';
+
 /**
  * exec_poll - executes a command and returns its output
  *
@@ -441,39 +443,33 @@ function update_reindex_cache(int $host_id, int $data_query_id) : void {
 						$oid_uptime = '.1.3.6.1.2.1.1.3.0';
 					}
 
-					$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
+					$assert_value = '';
+					$session      = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
 						$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
 						$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
 						$host['snmp_timeout'], $host['snmp_retries'], $host['max_oids']);
 
 					if ($session !== false) {
 						if ($oid_uptime == '.1.3.6.1.2.1.1.3.0') {
-							$checks = [
-								'.1.3.6.1.6.3.10.2.1.3.0',
-								'.1.3.6.1.2.1.1.3.0'
-							];
+							$engine_time   = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
+							$system_uptime = cacti_snmp_session_get($session, $oid_uptime);
+							$assert_value  = cacti_snmp_select_uptime($system_uptime, $engine_time);
 
-							foreach ($checks as $oid_uptime) {
-								$assert_value = cacti_snmp_session_get($session, $oid_uptime);
-
-								if (is_numeric($assert_value)) {
-									if ($oid_uptime == '.1.3.6.1.6.3.10.2.1.3.0') {
-										$assert_value *= 100;
-									}
-
-									break;
-								}
+							if ($assert_value === false) {
+								$assert_value = '';
 							}
-
-							$oid_uptime = '.1.3.6.1.2.1.1.3.0';
 						} else {
 							$assert_value = cacti_snmp_session_get($session, $oid_uptime);
+
+							if ($assert_value === false) {
+								$assert_value = '';
+							}
 						}
+
+						$session->close();
 					}
 
-					$session->close();
-
-					$recache_stack[] = "('$host_id', '$data_query_id'," . POLLER_ACTION_SNMP . ", '<', '$assert_value', '$oid_uptime', 1)";
+					$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SNMP . ", '<', " . db_qstr($assert_value) . ', ' . db_qstr($oid_uptime) . ', 1)';
 				}
 
 				break;
@@ -2772,6 +2768,36 @@ function cacti_process_pid_exists(int $pid) : bool {
 }
 
 /**
+ * Creates a database-backed mutex for one logical process-registry entry.
+ *
+ * @param string $tasktype The task type.
+ * @param string $taskname The task name.
+ * @param int    $taskid   The task id.
+ *
+ * @return CactiProcessLock|false The lock, or false when it cannot be created.
+ */
+function cacti_process_registry_lock(string $tasktype, string $taskname, int $taskid) : CactiProcessLock|false {
+	global $database_default, $database_hostname, $database_port, $database_sessions;
+
+	$key        = "$database_hostname:$database_port:$database_default";
+	$connection = $database_sessions[$key] ?? null;
+
+	if (!$connection instanceof PDO) {
+		cacti_log(sprintf('ERROR: Process registry lock has no database connection! (%s, %s, %s)', $tasktype, $taskname, $taskid), false, 'POLLER');
+
+		return false;
+	}
+
+	try {
+		return CactiProcessLock::fromPdo($connection, $tasktype, $taskname, $taskid);
+	} catch (Throwable $e) {
+		cacti_log(sprintf('ERROR: Unable to create process registry lock! (%s, %s, %s): %s', $tasktype, $taskname, $taskid, $e->getMessage()), false, 'POLLER');
+
+		return false;
+	}
+}
+
+/**
  * register_process_start - public function to register a process
  * in Cacti's process table
  *
@@ -2784,11 +2810,51 @@ function cacti_process_pid_exists(int $pid) : bool {
  *              another version is running and has not ended.
  */
 function register_process_start(string $tasktype, string $taskname, int $taskid = 0, int $timeout = 300) : bool {
-	$pid = getmypid();
-
 	if (!db_table_exists('processes')) {
 		return true;
 	}
+
+	$lock = cacti_process_registry_lock($tasktype, $taskname, $taskid);
+
+	if ($lock === false) {
+		return false;
+	}
+
+	try {
+		if (!$lock->acquire()) {
+			cacti_log(sprintf('NOTE: Process registry is being updated by another process! (%s, %s, %s)', $tasktype, $taskname, $taskid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+
+			return false;
+		}
+	} catch (Throwable $e) {
+		cacti_log(sprintf('ERROR: Unable to acquire process registry lock! (%s, %s, %s): %s', $tasktype, $taskname, $taskid, $e->getMessage()), false, 'POLLER');
+
+		return false;
+	}
+
+	try {
+		return register_process_start_locked($tasktype, $taskname, $taskid, $timeout);
+	} finally {
+		try {
+			$lock->release();
+		} catch (Throwable $e) {
+			cacti_log(sprintf('WARNING: Unable to release process registry lock! (%s, %s, %s): %s', $tasktype, $taskname, $taskid, $e->getMessage()), false, 'POLLER');
+		}
+	}
+}
+
+/**
+ * Performs registration while register_process_start() owns the task mutex.
+ *
+ * @param string $tasktype Mandatory task type.
+ * @param string $taskname Mandatory task name.
+ * @param int    $taskid   Task id supplied by register_process_start().
+ * @param int    $timeout  Timeout supplied by register_process_start().
+ *
+ * @return bool True when this process may start.
+ */
+function register_process_start_locked(string $tasktype, string $taskname, int $taskid, int $timeout) : bool {
+	$pid = getmypid();
 
 	$r = db_fetch_row_prepared('SELECT *,
 		IF(UNIX_TIMESTAMP(started) + timeout < UNIX_TIMESTAMP(), UNIX_TIMESTAMP(started), 0) AS timeout_exceeded,
