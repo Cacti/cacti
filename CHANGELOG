@@ -1,6 +1,10 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security: Fail closed on a posted LDAP realm that is not a configured domain
+-security: Keep LDAP directory errors out of the login page
+-security: Demand TLS certificates for new LDAP domains
+-security: Restore the Cacti error handler on LDAP bind-only and empty-password paths
 -security: Escape path_dsstats_log before it reaches the dsstats poller shell redirect
 -security: Revoke anonymous access when the guest account is disabled
 -security: Cast graph and device ids to int in get_allowed_* permission filters

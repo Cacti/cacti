@@ -60,11 +60,25 @@ $login = static function (array $scenario) use ($root, $extract): array {
 <?php
 $scenario = json_decode($argv[1], true);
 
-$GLOBALS['req']        = $scenario['request'];
-$GLOBALS['domains']    = $scenario['domains'];
-$GLOBALS['ldap_ok']    = $scenario['ldap_ok'];
-$GLOBALS['user_row']   = $scenario['user_row'];
-$GLOBALS['ldap_calls'] = 0;
+$GLOBALS['req']            = $scenario['request'];
+$GLOBALS['domains']        = $scenario['domains'];
+$GLOBALS['ldap_ok']        = $scenario['ldap_ok'];
+$GLOBALS['search_ok']      = $scenario['search_ok'];
+$GLOBALS['search_false']   = $scenario['search_false'];
+$GLOBALS['auth_false']     = $scenario['auth_false'];
+$GLOBALS['auth_error_num'] = $scenario['auth_error_num'];
+$GLOBALS['user_row']       = $scenario['user_row'];
+$GLOBALS['after_copy_row'] = $scenario['after_copy_row'];
+$GLOBALS['template_user']  = $scenario['template_user'];
+$GLOBALS['template_row']   = $scenario['template_row'];
+$GLOBALS['cn_full_name']   = $scenario['cn_full_name'];
+$GLOBALS['cn_email']       = $scenario['cn_email'];
+$GLOBALS['cn_response']    = $scenario['cn_response'];
+$GLOBALS['lockout']        = $scenario['lockout'];
+$GLOBALS['copied']         = false;
+$GLOBALS['ldap_calls']     = 0;
+$GLOBALS['lockout_calls']  = 0;
+$GLOBALS['copy_calls']     = 0;
 
 $realm     = 0;
 $error     = false;
@@ -75,7 +89,7 @@ function gnrv($name, $default = '') {
 }
 
 function __(...$args) {
-	return (string) $args[0];
+	return vsprintf((string) $args[0], array_slice($args, 1));
 }
 
 function get_client_addr() {
@@ -104,14 +118,23 @@ function auth_checkclear_lockout($username, $realm) {
 }
 
 function auth_process_lockout_check($username, $realm) {
-	return false;
+	return !empty($GLOBALS['lockout']);
 }
 
 function auth_process_lockout($username, $realm) {
+	$GLOBALS['lockout_calls']++;
 }
 
 function domains_ldap_search_dn($username, $realm) {
 	$GLOBALS['ldap_calls']++;
+
+	if (!empty($GLOBALS['search_false'])) {
+		return false;
+	}
+
+	if (empty($GLOBALS['search_ok'])) {
+		return ['error_num' => '14', 'error_text' => 'Unable to find users DN'];
+	}
 
 	return ['error_num' => '0', 'error_text' => '', 'dn' => 'uid=' . $username . ',dc=example,dc=com'];
 }
@@ -119,27 +142,66 @@ function domains_ldap_search_dn($username, $realm) {
 function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
 	$GLOBALS['ldap_calls']++;
 
-	if ($GLOBALS['ldap_ok']) {
+	if (!empty($GLOBALS['auth_false'])) {
+		return false;
+	}
+
+	if (!empty($GLOBALS['ldap_ok'])) {
 		return ['error_num' => '0', 'error_text' => ''];
 	}
 
-	return ['error_num' => '1', 'error_text' => 'Authentication Failure'];
+	return ['error_num' => $GLOBALS['auth_error_num'], 'error_text' => 'Authentication Failure'];
 }
 
 function domains_ldap_search_cn($username, $cn, $realm) {
-	return ['error_num' => '0', 'cn' => []];
+	return $GLOBALS['cn_response'];
 }
 
 function user_copy(...$args) {
+	$GLOBALS['copy_calls']++;
+	$GLOBALS['copied'] = true;
+
 	return true;
 }
 
 function db_fetch_row_prepared($sql, $params = []) {
-	return strpos($sql, 'WHERE username = ?') !== false ? $GLOBALS['user_row'] : [];
+	if (strpos($sql, 'WHERE username = ?') !== false) {
+		if (!empty($GLOBALS['copied']) && is_array($GLOBALS['after_copy_row'])) {
+			return $GLOBALS['after_copy_row'];
+		}
+
+		return $GLOBALS['user_row'];
+	}
+
+	if (strpos($sql, 'WHERE id = ?') !== false) {
+		return $GLOBALS['template_row'];
+	}
+
+	return [];
 }
 
 function db_fetch_cell_prepared($sql, $params = []) {
-	return strpos($sql, 'domain_name') !== false ? 'ExampleDomain' : 0;
+	if (strpos($sql, 'domain_name') !== false) {
+		return 'ExampleDomain';
+	}
+
+	if (strpos($sql, 'user_id') !== false) {
+		return $GLOBALS['template_user'];
+	}
+
+	if (strpos($sql, 'cn_full_name') !== false) {
+		return $GLOBALS['cn_full_name'];
+	}
+
+	if (strpos($sql, 'cn_email') !== false) {
+		return $GLOBALS['cn_email'];
+	}
+
+	if (strpos($sql, 'username') !== false) {
+		return 'template';
+	}
+
+	return 0;
 }
 
 PHP;
@@ -147,21 +209,34 @@ PHP;
 	$harness .= $body . "\n\n";
 	$harness .= '$user = domains_login_process($scenario[\'username\']);' . "\n";
 	$harness .= 'print json_encode([' . "\n";
-	$harness .= "\t'error'      => \$error,\n";
-	$harness .= "\t'error_msg'  => \$error_msg,\n";
-	$harness .= "\t'user'       => \$user,\n";
-	$harness .= "\t'ldap_calls' => \$GLOBALS['ldap_calls']\n";
+	$harness .= "\t'error'         => \$error,\n";
+	$harness .= "\t'error_msg'     => \$error_msg,\n";
+	$harness .= "\t'user'          => \$user,\n";
+	$harness .= "\t'ldap_calls'    => \$GLOBALS['ldap_calls'],\n";
+	$harness .= "\t'lockout_calls' => \$GLOBALS['lockout_calls'],\n";
+	$harness .= "\t'copy_calls'    => \$GLOBALS['copy_calls']\n";
 	$harness .= ']);' . "\n";
 
 	$file = tempnam(sys_get_temp_dir(), 'cacti_login_');
 	file_put_contents($file, $harness);
 
 	$scenario += [
-		'username' => 'attacker',
-		'request'  => [],
-		'domains'  => [1],
-		'ldap_ok'  => true,
-		'user_row' => []
+		'username'       => 'attacker',
+		'request'        => [],
+		'domains'        => [1],
+		'ldap_ok'        => true,
+		'search_ok'      => true,
+		'search_false'   => false,
+		'auth_false'     => false,
+		'auth_error_num' => 1,
+		'user_row'       => [],
+		'after_copy_row' => ['id' => 9, 'username' => 'attacker', 'realm' => 1001],
+		'template_user'  => 0,
+		'template_row'   => [],
+		'cn_full_name'   => '',
+		'cn_email'       => '',
+		'cn_response'    => ['error_num' => '0'],
+		'lockout'        => false,
 	];
 
 	$output = shell_exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($file) . ' ' . escapeshellarg(json_encode($scenario)) . ' 2>&1');
@@ -235,7 +310,56 @@ test('a valid domain with a bad password still fails with an error', function ()
 	]);
 
 	expect($result['error'])->toBeTrue()
+		->and($result['error_msg'])->toBe('Access Denied!  Login Failed.')
+		->and($result['lockout_calls'])->toBe(1)
 		->and($result['user'])->toBe([]);
+});
+
+test('LDAP success with no account and no domain template is rejected', function () use ($login) {
+	$result = $login([
+		'request'       => ['realm' => '1001', 'login_password' => 'x'],
+		'ldap_ok'       => true,
+		'user_row'      => [],
+		'template_user' => 0,
+	]);
+
+	expect($result['error'])->toBeTrue()
+		->and($result['error_msg'])->toContain('Domain template is not configured')
+		->and($result['copy_calls'])->toBe(0);
+});
+
+test('a search that returns no LDAP row fails closed', function () use ($login) {
+	$result = $login([
+		'request'      => ['realm' => '1001', 'login_password' => 'x'],
+		'search_false' => true,
+	]);
+
+	expect($result['error'])->toBeTrue()
+		->and($result['error_msg'])->toBe('Access Denied!  Login Failed.');
+});
+
+test('LDAP success copies the domain template when the account is new', function () use ($login) {
+	$result = $login([
+		'username'       => 'bob',
+		'request'        => ['realm' => '1001', 'login_password' => 'x'],
+		'user_row'       => [],
+		'template_user'  => 4,
+		'template_row'   => ['id' => 4, 'username' => 'template'],
+		'after_copy_row' => ['id' => 22, 'username' => 'bob', 'realm' => 1001],
+	]);
+
+	expect($result['error'])->toBeFalse()
+		->and($result['copy_calls'])->toBe(1)
+		->and($result['user']['id'])->toBe(22);
+});
+
+test('the local realm with a password is not treated as an LDAP domain', function () use ($login) {
+	$result = $login([
+		'request' => ['realm' => '0', 'login_password' => 'anything'],
+	]);
+
+	expect($result['error'])->toBeTrue()
+		->and($result['ldap_calls'])->toBe(0);
 });
 
 test('an empty password on a valid domain keeps its own error path', function () use ($login) {
