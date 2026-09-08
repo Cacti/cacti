@@ -39,3 +39,12 @@ test('cacti_ldap_filter stringifies non-string values before escaping', function
 
 	expect(cacti_ldap_filter('(uid=<id>)', ['id' => 42]))->toBe('(uid=42)');
 });
+
+test('a value is never rescanned as another placeholder', function () use ($cactiLdapFilterSource) {
+	cacti_test_load_cacti_ldap_filter($cactiLdapFilterSource);
+
+	$filter = cacti_ldap_filter('(&(a=<x>)(b=<y>))', ['x' => '<y>', 'y' => 'secret']);
+
+	expect($filter)->toBe('(&(a=<y>)(b=secret))');
+	expect($filter)->not->toContain('(a=secret)');
+});

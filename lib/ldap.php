@@ -770,7 +770,6 @@ class Ldap {
 
 		// Decode username, and remove bad characters
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-		$this->username = str_replace(['&', '|', '(', ')', '*', '>', '<', '!', '='], '', $this->username);
 		$this->password = html_entity_decode($this->password, $this->GetMask(), 'UTF-8');
 
 		/**
@@ -917,7 +916,6 @@ class Ldap {
 
 		// Decode username, and remove bad characters
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-		$this->username = str_replace(['&', '|', '(', ')', '*', '>', '<', '!', '='], '', $this->username);
 		$this->dn       = str_replace('<username>', ldap_escape($this->username, '', LDAP_ESCAPE_DN), $this->dn);
 
 		if ($this->mode == 0) {
@@ -1038,7 +1036,6 @@ class Ldap {
 
 		// Decode username, and remove bad characters
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-		$this->username = str_replace(['&', '|', '(', ')', '*', '>', '<', '!', '='], '', $this->username);
 		$this->dn       = str_replace('<username>', ldap_escape($this->username, '', LDAP_ESCAPE_DN), $this->dn);
 
 		if ($this->mode == 0) {
@@ -1176,12 +1173,11 @@ class Ldap {
  * @return string The assembled, injection-safe LDAP filter
  */
 function cacti_ldap_filter(string $template, array $vars) : string {
-	$result = $template;
+	$map = [];
 
 	foreach ($vars as $key => $value) {
-		$escaped = ldap_escape((string) $value, '', LDAP_ESCAPE_FILTER);
-		$result  = str_replace('<' . $key . '>', $escaped, $result);
+		$map['<' . $key . '>'] = ldap_escape((string) $value, '', LDAP_ESCAPE_FILTER);
 	}
 
-	return $result;
+	return strtr($template, $map);
 }
