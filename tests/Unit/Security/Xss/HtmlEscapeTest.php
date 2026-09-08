@@ -228,6 +228,28 @@ test('html input helpers preserve zero values', function () {
 		->and(html_text_input('rfilter', '0'))->toContain("value='0'");
 });
 
+test('html navigation encodes script values and confines callback identifiers', function () {
+	$result = html_nav_bar(
+		"graphs.php?filter=';</script><script>alert(1)</script>&",
+		10,
+		2,
+		10,
+		100,
+		5,
+		'<img src=x onerror=alert(1)>',
+		"page');alert(1);//",
+		"main');alert(1);//"
+	);
+	$label_result = html_nav_bar('graphs.php', 10, 1, 10, 5, 5, '<img src=x onerror=alert(1)>');
+
+	expect($result)->toContain('function gotopage(pageNo)')
+		->and($result)->toContain('\\u003C\\/script\\u003E')
+		->and($result)->toContain('\\u0027')
+		->and($label_result)->toContain('&lt;img src=x onerror=alert(1)&gt;')
+		->and($result)->not->toContain('</script><script>alert(1)</script>')
+		->and($result)->not->toContain("elementId: 'main');alert(1);//'");
+});
+
 // =====================================================================
 // html_split_string tests
 // =====================================================================
