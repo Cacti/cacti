@@ -414,7 +414,7 @@ function form_actions() : void {
 		<td class='saveRow'>
 			" . html_hidden_input('action', 'actions') . '
 			' . html_hidden_input('import_state', $import_state) . '
-			' . html_hidden_input('drp_action', gnrv('drp_action')) . "
+			' . html_hidden_input('drp_action', grv('drp_action')) . "
 			$save_html
 		</td>
 	</tr>";
@@ -769,7 +769,9 @@ function package_diff_file() : void {
 
 			$renderer = new Diff_Renderer_Html_Inline;
 
-			print '<body>' . $diff->render($renderer) . '</body></html>';
+			// Diff_Renderer_Html_Inline::formatLines() HTML-escapes every input
+			// line before adding its own <ins>/<del> markup.
+			print '<body>' . $diff->render($renderer) . '</body></html>'; // nosemgrep: cacti-request-var-echoed-unescaped
 		} else {
 			print 'New file does not exist';
 		}

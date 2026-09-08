@@ -11,7 +11,7 @@
 # | http://www.cacti.net/                                                   |
 # +-------------------------------------------------------------------------+
 
-FROM php:8.2-apache
+FROM php:8.3-apache
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -40,7 +40,7 @@ RUN apt-get update \
 		snmp \
 		unzip \
 	&& docker-php-ext-configure gd --with-freetype --with-jpeg \
-	# sqlite3 ships built-in on php:8.2-apache (php -m already lists it) and its
+	# sqlite3 ships built-in on php:8.3-apache (php -m already lists it) and its
 	# ext/sqlite3 only carries config0.m4, not config.m4, so docker-php-ext-install
 	# can't build it standalone; pdo_sqlite stays since libsqlite3-dev backs it.
 	&& docker-php-ext-install -j"$(nproc)" \
