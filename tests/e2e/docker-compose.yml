@@ -14,6 +14,23 @@
 #
 
 services:
+  openldap:
+    image: osixia/openldap:1.5.0
+    command: --copy-service
+    environment:
+      LDAP_ORGANISATION: Cacti E2E
+      LDAP_DOMAIN: example.org
+      LDAP_ADMIN_PASSWORD: adminpassword
+      LDAP_TLS: "false"
+    volumes:
+      - ./ldap/50-e2e.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/50-e2e.ldif:ro
+    healthcheck:
+      test: ["CMD", "ldapsearch", "-x", "-H", "ldap://127.0.0.1:389", "-b", "dc=example,dc=org", "-D", "cn=admin,dc=example,dc=org", "-w", "adminpassword", "-LLL", "cn=ldapuser"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 15s
+
   mariadb:
     image: mariadb:10.11
     environment:
@@ -38,6 +55,8 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
+      openldap:
+        condition: service_healthy
     environment:
       CACTI_DB_HOST: mariadb
       CACTI_DB_NAME: cacti
@@ -45,7 +64,7 @@ services:
       CACTI_DB_PASS: cactiuser
       CACTI_DB_ROOT_PASS: cactiroot
     ports:
-      - "8080:80"
+      - "${HOST_PORT:-8080}:80"
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://127.0.0.1/"]
       interval: 5s
