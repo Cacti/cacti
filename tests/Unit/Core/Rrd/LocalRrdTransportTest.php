@@ -63,7 +63,7 @@ test('rrd updates use the structured command path', function () {
 
 	$function = substr($source, $start, $end - $start);
 
-	expect($function)->toContain("new \\Cacti\\Rrd\\RrdCommand('update', \$arguments)")
+	expect($function)->toContain('new \\Cacti\\Rrd\\DataSource\\UpdateCommandBuilder()')
 		->not->toContain("rrdtool_execute('update '");
 });
 
@@ -77,6 +77,13 @@ test('rrd fetches use the structured command path', function () {
 
 	$function = substr($source, $start, $end - $start);
 
-	expect($function)->toContain("new \\Cacti\\Rrd\\RrdCommand('fetch', \$arguments)")
+	expect($function)->toContain('new \\Cacti\\Rrd\\DataSource\\FetchCommandBuilder()')
 		->not->toContain("\$cmd_line = 'fetch '");
+});
+
+test('local transport wraps process startup errors', function () {
+	$transport = new LocalRrdTransport("rrdtool\n--daemon");
+
+	expect(fn () => $transport->execute(new RrdCommand('info', ['/tmp/test.rrd'])))
+		->toThrow(\Cacti\Rrd\RrdTransportException::class, 'Unable to execute RRDtool');
 });

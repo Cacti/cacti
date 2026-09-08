@@ -65,3 +65,26 @@ test('commands reject operations containing whitespace', function () {
 	expect(fn () => new RrdCommand('fetch another-command'))
 		->toThrow(InvalidArgumentException::class);
 });
+
+test('commands reject an empty operation and a non-list argument array', function () {
+	expect(fn () => new RrdCommand(''))->toThrow(InvalidArgumentException::class)
+		->and(fn () => new RrdCommand('fetch', ['path' => '/tmp/test.rrd']))
+		->toThrow(InvalidArgumentException::class);
+});
+
+test('commands reject invalid binary paths', function (string $binary) {
+	expect(fn () => (new RrdCommand('fetch'))->toArgv($binary))
+		->toThrow(InvalidArgumentException::class);
+})->with(['', "rrdtool\n--daemon", 'two words']);
+
+test('an empty list cannot create a command', function () {
+	expect(fn () => RrdCommand::fromList([]))
+		->toThrow(InvalidArgumentException::class);
+});
+
+test('a command without arguments serializes to its operation', function () {
+	$serializer = new RrdCommandSerializer();
+
+	expect($serializer->forLineProtocol(new RrdCommand('flushcached'), 'escapeshellarg'))
+		->toBe('flushcached');
+});
