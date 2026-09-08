@@ -1737,7 +1737,7 @@ function graph_templates() : void {
 		]
 	];
 
-	$nav = html_nav_bar('graph_templates.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Graph Templates'), 'page', 'main');
+	$nav = html_nav_bar('graph_templates.php?filter=' . rawurlencode(grv('filter')), MAX_DISPLAY_PAGES, (int) grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Graph Templates'), 'page', 'main');
 
 	form_start('graph_templates.php', 'chk');
 
@@ -1902,10 +1902,10 @@ function input_edit() : void {
 
 			print '<td>';
 
-			$name = $start_bold . __esc('Item #%s', $i + 1) . ': ' . $graph_item_types[$item['graph_type_id']] . ' (' . $consolidation_functions[$item['consolidation_function_id']] . ')' . $end_bold;
+			$name = $start_bold . __esc('Item #%s', $i + 1) . ': ' . htmle($graph_item_types[$item['graph_type_id']]) . ' (' . htmle($consolidation_functions[$item['consolidation_function_id']]) . ')' . $end_bold;
 
 			form_checkbox('i_' . $item['graph_templates_item_id'], $old_value, '', '', '', grv('graph_template_id'));
-			print "<label for='i_" . $item['graph_templates_item_id'] . "'>" . $name . '</label>';
+			print "<label for='i_" . (int) $item['graph_templates_item_id'] . "'>" . $name . '</label>';
 
 			print '</td>';
 
