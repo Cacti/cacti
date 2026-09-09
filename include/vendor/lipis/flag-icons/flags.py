@@ -1,5 +1,6 @@
 import os
 import json
+import sys
 
 flags_dir = os.path.join("flags", "1x1")
 
@@ -35,5 +36,5 @@ for code in country_codes:
 
 if all_good:
     print("All flag icons and country.json are in sync.")
-    exit(0)
-exit(1)
+    sys.exit(0)
+sys.exit(1)
