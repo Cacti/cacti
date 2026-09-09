@@ -11,8 +11,8 @@ for (dirpath, dirnames, filenames) in os.walk(flags_dir):
 
 file_codes = [name.replace(".svg", "") for name in files if name.find(".svg") > 0]
 
-country_json = open("country.json")
-flags = json.load(country_json)
+with open("country.json", encoding='utf8') as country_json:
+    flags = json.load(country_json)
 flags.sort(key=lambda x: x["name"])
 country_codes = [flag["code"] for flag in flags]
 
