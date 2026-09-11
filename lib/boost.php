@@ -259,7 +259,7 @@ function boost_poller_on_demand(&$results) {
 		/* install the boost error handler */
 		set_error_handler('boost_error_handler');
 
-		if (boost_check_correct_enabled()) {
+		if (boost_check_correct_enabled() && read_config_option('boost_redirect') == '') {
 			if (cacti_sizeof($results)) {
 				if ($config['poller_id'] > 1 && !boost_validate_poller_ownership($results, $config['poller_id'], $conn)) {
 					cacti_log('ERROR: Boost rejected a handoff containing data sources not assigned to this poller.', false, 'BOOST');
