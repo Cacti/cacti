@@ -3222,25 +3222,27 @@ function generate_data_source_path($local_data_id) {
  *  @return - the best cf to use
  */
 function generate_graph_best_cf($local_data_id, $requested_cf, $ds_step = 60) {
-	static $best_cf;
+	static $best_cf = 1;
 
-	if ($local_data_id > 0) {
-		$avail_cf_functions = get_rrd_cfs($local_data_id);
+	if ($local_data_id <= 0) {
+		return 1;
+	}
 
-		if (cacti_sizeof($avail_cf_functions)) {
-			/* workaround until we have RRA presets in 0.8.8 */
-			/* check through the cf's and get the best */
-			/* if none was found, take the first */
-			$best_cf = reset($avail_cf_functions);
+	$avail_cf_functions = get_rrd_cfs($local_data_id);
 
-			foreach($avail_cf_functions as $cf) {
-				if ($cf == $requested_cf) {
-					$best_cf = $requested_cf;
-				}
+	if (cacti_sizeof($avail_cf_functions)) {
+		/* workaround until we have RRA presets in 0.8.8 */
+		/* check through the cf's and get the best */
+		/* if none was found, take the first */
+		$best_cf = reset($avail_cf_functions);
+
+		foreach($avail_cf_functions as $cf) {
+			if ($cf == $requested_cf) {
+				$best_cf = $requested_cf;
 			}
-		} else {
-			$best_cf = '1';
 		}
+	} else {
+		$best_cf = 1;
 	}
 
 	/* if you can not figure it out return average */
@@ -7606,7 +7608,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 	$stdout    = '';
 	$stderr    = '';
 	$remaining = (int) $timeout * 1000000;
-	$exit      = false;
+	$exit      = null;
 
 	while ($remaining > 0) {
 		$start  = microtime(true);
@@ -7621,13 +7623,14 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		$stdout .= stream_get_contents($pipes[1]);
 		$stderr .= stream_get_contents($pipes[2]);
 
-		/* proc_get_status() returns false on a dead handle. Its exit_code is
-		 * unreliable here: reading the pipes to EOF above can reap the child, so
-		 * a later status read reports exit_code -1 (or a missing key, which was
-		 * the source of the "Undefined array key exit_code" warnings). Stop
-		 * looping once the process is gone and take the real code from
-		 * proc_close() below. */
+		/* proc_get_status() returns false on a dead handle. Preserve a valid
+		 * exitcode while it is observable because a later status read or
+		 * proc_close() can return -1 after the child has already been reaped. */
 		if (!is_array($status) || empty($status['running'])) {
+			if (is_array($status) && isset($status['exitcode']) && $status['exitcode'] >= 0) {
+				$exit = (int) $status['exitcode'];
+			}
+
 			break;
 		}
 
@@ -7652,9 +7655,15 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		return 1;
 	}
 
-	/* proc_close() reaps the child and returns its real exit status, which stays
-	 * correct even when proc_get_status() already lost it to the pipe reads. */
-	$exit = proc_close($process);
+	if ($exit === null && is_array($status) && isset($status['exitcode']) && $status['exitcode'] >= 0) {
+		$exit = (int) $status['exitcode'];
+	}
+
+	$close_exit = proc_close($process);
+
+	if ($exit === null) {
+		$exit = $close_exit;
+	}
 
 	if (!empty($stderr)) {
 		cacti_log('WARNING: cacti_exec() stderr: ' . trim($stderr), false, 'SYSTEM');
