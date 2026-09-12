@@ -3853,7 +3853,7 @@ function ldap_login_process($username) {
 function domains_login_process($username) {
 	global $realm, $error, $error_msg;
 
-	$realm    = (int) get_nfilter_request_var('realm');
+	$realm    = get_filter_request_var('realm');
 	$password = get_nfilter_request_var('login_password');
 
 	if ($username == '') {
