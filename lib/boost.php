@@ -411,7 +411,7 @@ function boost_poller_on_demand(&$results) {
 		/* install the boost error handler */
 		set_error_handler('boost_error_handler');
 
-		if (boost_check_correct_enabled()) {
+		if (boost_check_correct_enabled() && read_config_option('boost_redirect') == '') {
 			if (cacti_sizeof($results)) {
 				if ($config['poller_id'] > 1 && !boost_validate_poller_ownership($results, $config['poller_id'], $conn)) {
 					cacti_log('ERROR: Boost rejected a handoff containing data sources not assigned to this poller.', false, 'BOOST');
@@ -425,15 +425,19 @@ function boost_poller_on_demand(&$results) {
 
 				$value_tuples = array();
 
-				foreach ($results as $result) {
-					$value_tuples[] = '(' .
-						(int) $result['local_data_id'] . ',' .
-						db_qstr($result['rrd_name'], $conn) . ',' .
-						db_qstr($result['time'], $conn) . ',' .
-						db_qstr($result['output'], $conn) . ')';
-				}
+				if (read_config_option('boost_redirect') == '') {
+					foreach ($results as $result) {
+						$value_tuples[] = '(' .
+							(int) $result['local_data_id'] . ',' .
+							db_qstr($result['rrd_name'], $conn) . ',' .
+							db_qstr($result['time'], $conn) . ',' .
+							db_qstr($result['output'], $conn) . ')';
+					}
 
-				$return_value = !boost_flush_output_batch($value_tuples, $conn);
+					$return_value = !boost_flush_output_batch($value_tuples, $conn);
+				} else {
+					$return_value = false;
+				}
 			} else {
 				$return_value = false;
 			}

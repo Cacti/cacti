@@ -193,25 +193,25 @@ if ($child == 0) {
 	if ($force) {
 		printf("NOTE: Looking for and killing running processes." . PHP_EOL);
 
-		$running = db_fetch_assoc('SELECT *
+		$running = db_fetch_assoc_prepared('SELECT *
 			FROM processes
-			WHERE tasktype = "batchgapfix"');
+			WHERE tasktype = \'batchgapfix\'', array());
 
 		if (cacti_sizeof($running)) {
-			printf("NOTE: Found %s running processes found." . PHP_EOL);
+			printf("NOTE: Found %s running processes." . PHP_EOL, cacti_sizeof($running));
 
 			foreach($running as $r) {
-				$running = posix_kill($r['pid'], 0);
-				if (posix_get_last_error() == 1) {
-					printf("NOTE: Process with PID: %s being killed." . PHP_EOL, $r['pid']);
+				$logged_pid = cacti_process_pid_for_log($r['pid']);
+				if (cacti_process_still_running($r['pid'])) {
+					printf("NOTE: Process with PID: %s being killed." . PHP_EOL, $logged_pid);
 
-					posix_kill($r['pid'], SIGTERM);
+					cacti_process_kill($r['pid'], SIGTERM, 'POLLER');
 				} else {
-					printf("NOTE: Process with PID: %s, not found likely crashed." . PHP_EOL, $r['pid']);
+					printf("NOTE: Process with PID: %s is no longer running or does not match the registered command." . PHP_EOL, $logged_pid);
 				}
-			}
 
-			db_execute('DELETE FROM processes WHERE tasktype = "batchgapfix"');
+				unregister_process($r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']);
+			}
 		} else {
 			printf("NOTE: No running processes found." . PHP_EOL);
 		}
@@ -467,4 +467,3 @@ function display_help() {
 	print '   --force                         - Kill the current running batch gap fill and start over.' . PHP_EOL;
 	print '   --debug                         - Higher tracing level for select utilities.' . PHP_EOL . PHP_EOL;
 }
-
