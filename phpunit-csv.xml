@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit beStrictAboutOutputDuringTests="false">
+	<testsuites>
+		<testsuite name="CSV window coverage">
+			<directory>tests/Unit</directory>
+			<file>tests/integration/CsvWindowRrdIntegrationTest.php</file>
+		</testsuite>
+	</testsuites>
+</phpunit>
