@@ -239,12 +239,13 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
  * db_check_reconnect - Check the database connection.  If the connection is gone
  *  attempt to reconnect, otherwise return the connection
  *
- * @param bool|object  The connection to check
- * @param bool         Whether or not to log the connection check
+ * @param bool|object &$db_conn The connection to check. Replaced with the new
+ *                              connection after a successful reconnect.
+ * @param bool         $log     Whether or not to log the connection check
  *
- * @return bool        The database true is the database is connected else false
+ * @return bool True when the database is connected, otherwise false
  */
-function db_check_reconnect($db_conn = false, $log = true) {
+function db_check_reconnect(&$db_conn = false, $log = true) {
 	global $config, $database_details;
 
 	if (file_exists($config['base_path'] . '/include/config.php')) {
@@ -328,6 +329,11 @@ function db_check_reconnect($db_conn = false, $log = true) {
 		);
 
 		if ($cnn_id !== false) {
+			/* Pass the replacement connection back to callers using a local handle */
+			if ($db_conn !== false) {
+				$db_conn = $cnn_id;
+			}
+
 			return true;
 		} else {
 			return false;
