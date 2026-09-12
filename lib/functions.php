@@ -3222,25 +3222,27 @@ function generate_data_source_path($local_data_id) {
  *  @return - the best cf to use
  */
 function generate_graph_best_cf($local_data_id, $requested_cf, $ds_step = 60) {
-	static $best_cf;
+	static $best_cf = 1;
 
-	if ($local_data_id > 0) {
-		$avail_cf_functions = get_rrd_cfs($local_data_id);
+	if ($local_data_id <= 0) {
+		return 1;
+	}
 
-		if (cacti_sizeof($avail_cf_functions)) {
-			/* workaround until we have RRA presets in 0.8.8 */
-			/* check through the cf's and get the best */
-			/* if none was found, take the first */
-			$best_cf = reset($avail_cf_functions);
+	$avail_cf_functions = get_rrd_cfs($local_data_id);
 
-			foreach($avail_cf_functions as $cf) {
-				if ($cf == $requested_cf) {
-					$best_cf = $requested_cf;
-				}
+	if (cacti_sizeof($avail_cf_functions)) {
+		/* workaround until we have RRA presets in 0.8.8 */
+		/* check through the cf's and get the best */
+		/* if none was found, take the first */
+		$best_cf = reset($avail_cf_functions);
+
+		foreach($avail_cf_functions as $cf) {
+			if ($cf == $requested_cf) {
+				$best_cf = $requested_cf;
 			}
-		} else {
-			$best_cf = '1';
 		}
+	} else {
+		$best_cf = 1;
 	}
 
 	/* if you can not figure it out return average */
