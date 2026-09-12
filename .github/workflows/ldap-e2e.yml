@@ -1,0 +1,47 @@
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# +-------------------------------------------------------------------------+
+
+name: LDAP login e2e
+
+on:
+  pull_request:
+    paths:
+      - 'lib/ldap.php'
+      - 'lib/auth.php'
+      - 'auth_login.php'
+      - 'user_domains.php'
+      - 'tests/e2e/docker/**'
+      - '.github/workflows/ldap-e2e.yml'
+  push:
+    branches: [1.2.x]
+    paths:
+      - 'lib/ldap.php'
+      - 'lib/auth.php'
+      - 'auth_login.php'
+      - 'user_domains.php'
+      - 'tests/e2e/docker/**'
+      - '.github/workflows/ldap-e2e.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ldap-e2e-1.2-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ldap-login:
+    name: OpenLDAP domain login
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Run LDAP login e2e
+        env:
+          CACTI_E2E_TEST_GLOB: tests/08-ldap-login.sh
+        run: tests/e2e/docker/run.sh

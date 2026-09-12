@@ -2,6 +2,26 @@
 # All services share an internal network; only cacti-master is published to the host.
 
 services:
+  openldap:
+    image: osixia/openldap:1.5.0
+    container_name: cacti-e2e-openldap
+    command: --copy-service
+    environment:
+      LDAP_ORGANISATION: Cacti E2E
+      LDAP_DOMAIN: example.org
+      LDAP_ADMIN_PASSWORD: adminpassword
+      LDAP_TLS: "false"
+    volumes:
+      - ./ldap/50-e2e.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/50-e2e.ldif:ro
+    healthcheck:
+      test: ["CMD", "ldapsearch", "-x", "-H", "ldap://127.0.0.1:389", "-b", "dc=example,dc=org", "-D", "cn=admin,dc=example,dc=org", "-w", "adminpassword", "-LLL", "cn=ldapuser"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 15s
+    networks:
+      - cacti-e2e
+
   cacti-db:
     image: mariadb:10.11
     container_name: cacti-e2e-db
@@ -38,6 +58,8 @@ services:
       REMOTE_POLLER_HOST: cacti-poller
     depends_on:
       cacti-db:
+        condition: service_healthy
+      openldap:
         condition: service_healthy
     volumes:
       # The harness directory is .dockerignore'd from the COPY layer to keep
