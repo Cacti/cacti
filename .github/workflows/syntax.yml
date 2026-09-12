@@ -64,6 +64,10 @@ jobs:
       working-directory: tests
       run: composer install --no-interaction --no-progress --prefer-dist
 
+    - name: Allow pest-plugin composer plugin
+      working-directory: tests
+      run: composer config allow-plugins.pestphp/pest-plugin true
+
     - name: Run Boost MariaDB contracts
       working-directory: tests
       env:
@@ -89,6 +93,10 @@ jobs:
     - name: Install test dependencies
       working-directory: tests
       run: composer install --no-interaction --no-progress --prefer-dist
+
+    - name: Allow pest-plugin composer plugin
+      working-directory: tests
+      run: composer config allow-plugins.pestphp/pest-plugin true
 
     - name: Run Boost contracts
       working-directory: tests
