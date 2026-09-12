@@ -97,7 +97,7 @@ if (cacti_sizeof($parms)) {
 		'snmp-query-type-id::',
 		'snmp-field::',
 		'snmp-value::',
-		'snmp-value-regex::',
+		'snmp-value-regex:',
 		'reindex-method::',
 
 		'list-hosts',
@@ -166,8 +166,15 @@ if (cacti_sizeof($parms)) {
 			}
 
 			foreach($value as $item) {
-				if (!validate_is_regex($item)) {
-					print "ERROR: Regex specified '$item', is not a valid Regex!\n";
+				if ($item === false || $item === '') {
+					print "ERROR: --snmp-value-regex requires a non-empty value.\n";
+					exit(1);
+				}
+
+				$validation = validate_is_rlike_regex($item);
+
+				if ($validation !== true) {
+					print "ERROR: Regex specified '$item' is not valid: $validation\n";
 					exit(1);
 				}
 			}
@@ -643,7 +650,7 @@ if (cacti_sizeof($parms)) {
 				if (isset($dsGraph['snmpValue'][$index_snmp_filter])) {
 					$req .= ' AND field_value = ' . db_qstr($dsGraph['snmpValue'][$index_snmp_filter]). ')';
 				} elseif (isset($dsGraph['snmpValueRegex'][$index_snmp_filter])) {
-					$req .= ' AND field_value REGEXP "' . addslashes($dsGraph['snmpValueRegex'][$index_snmp_filter]) . '")';
+					$req .= ' AND field_value ' . db_qstr_rlike($dsGraph['snmpValueRegex'][$index_snmp_filter]) . ')';
 				}
 
 				$index_snmp_filter++;
