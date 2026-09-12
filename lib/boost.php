@@ -421,6 +421,7 @@ function boost_describe_ignored_sample_keys(array $tuples, int $attempted, int $
 		}
 
 		$ids[$parsed['local_data_id']] = true;
+
 		$key = $parsed['local_data_id'] . "\0" . $parsed['rrd_name'] . "\0" . $parsed['time'];
 
 		if (!isset($by_key[$key])) {
