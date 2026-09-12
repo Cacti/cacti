@@ -3961,7 +3961,7 @@ function local_auth_login_process(string $username) : array {
 function domains_login_process(string $username) : array {
 	global $realm, $error, $error_msg;
 
-	$realm    = (int) gnrv('realm');
+	$realm    = gfrv('realm');
 	$password = gnrv('login_password');
 
 	if ($username == '') {
