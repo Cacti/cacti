@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#7328: Align graph, CSV export, percentile, and summation sample windows
 -issue#7385: Keep Automation Network schedule times in the server timezone
 -issue#7506: Close open select menus when their scroll container moves
+-issue#7812: Clarify that missing SNMP notification receivers need no action when traps are disabled
 -issue#7967: Fail CSP Pest jobs when no tests execute
 -issue#7027: Refuse to signal a process table PID that pid_t cannot hold
 -issue#7957: Stop treating every PID in a container as a reserved system PID
