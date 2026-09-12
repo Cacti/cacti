@@ -2247,10 +2247,13 @@ CREATE TABLE `poller_output_boost` (
 --
 
 CREATE TABLE `poller_output_boost_local_data_ids` (
+	`run_id` char(32) NOT NULL DEFAULT '',
   `local_data_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `process_handler` int(10) unsigned DEFAULT 0,
-  PRIMARY KEY (`local_data_id`),
-  KEY `process_handler` (`process_handler`)
+	`process_handler` int(10) unsigned NOT NULL DEFAULT 0,
+	`cursor_time` timestamp NULL DEFAULT NULL,
+	`cursor_rrd_name` varchar(19) NOT NULL DEFAULT '',
+	PRIMARY KEY (`run_id`,`local_data_id`),
+	KEY `process_handler` (`run_id`,`process_handler`)
 ) ENGINE=MEMORY;
 
 --

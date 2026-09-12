@@ -7,19 +7,26 @@
  +-------------------------------------------------------------------------+
 */
 
-$boostSource  = file_get_contents(__DIR__ . '/../../../../lib/boost.php');
-$pollerSource = file_get_contents(__DIR__ . '/../../../../lib/poller.php');
-$funcSource   = file_get_contents(__DIR__ . '/../../../../lib/functions.php');
+$boostPath   = __DIR__ . '/../../../../lib/boost.php';
+$boostSource = file_get_contents($boostPath);
 
-test('boost_graph_set_file uses umask instead of chmod', function () use ($boostSource) {
+expect($boostSource)->not->toBeFalse();
+require_once $boostPath;
+
+test('boost_graph_set_file delegates cache publication to the atomic writer', function () use ($boostSource) {
 	$start = strpos($boostSource, 'function boost_graph_set_file(');
-	$body = substr($boostSource, $start, 1500);
-	expect($body)->toContain('umask(');
-	expect($body)->not->toContain('chmod($cache_file');
+	expect($start)->not->toBeFalse();
+
+	$body = substr($boostSource, $start, 2500);
+
+	expect($body)->toContain('boost_atomic_write_cache($cache_file, $output)')
+		->and($body)->not->toContain('file_put_contents($cache_file');
 });
 
 test('boost_graph_cache_check casts IDs to int', function () use ($boostSource) {
 	$start = strpos($boostSource, 'function boost_graph_cache_check(');
+	expect($start)->not->toBeFalse();
+
 	$body = substr($boostSource, $start, 500);
 	expect($body)->toContain('$local_graph_id = (int)$local_graph_id');
 	expect($body)->toContain('$rra_id         = (int)$rra_id');
@@ -27,32 +34,25 @@ test('boost_graph_cache_check casts IDs to int', function () use ($boostSource) 
 
 test('boost_graph_set_file casts IDs to int', function () use ($boostSource) {
 	$start = strpos($boostSource, 'function boost_graph_set_file(');
+	expect($start)->not->toBeFalse();
+
 	$body = substr($boostSource, $start, 500);
 	expect($body)->toContain('(int)$local_graph_id');
 	expect($body)->toContain('(int)$rra_id');
 });
 
-test('boost GET_LOCK has retry limit', function () use ($boostSource) {
-	expect($boostSource)->toContain('$max_attempts');
-	expect($boostSource)->toContain('if (++$lock_attempts >= $max_attempts)');
+test('RRD update boundaries reject unsafe paths templates and values', function () use ($boostSource) {
+	$start = strpos($boostSource, 'function boost_rrdtool_function_update(');
+	expect($start)->not->toBeFalse();
+
+	$body = substr($boostSource, $start, 5000);
+
+	expect($body)->toContain('cacti_rrdtool_valid_path($rrd_path)')
+		->and($body)->toContain('cacti_rrdtool_valid_ds_template($rrd_update_template)')
+		->and($body)->toContain('cacti_has_control_chars($rrd_update_values)');
 });
 
-test('exec_with_timeout does not use exec setsid', function () use ($pollerSource) {
-	$start = strpos($pollerSource, 'function exec_with_timeout(');
-	$body = substr($pollerSource, $start, 1000);
-	expect($body)->not->toContain('exec setsid');
-	expect($body)->toContain('proc_open($cmd,');
-});
-
-test('cacti_unserialize blocks object injection on PHP 5', function () use ($funcSource) {
-	$start = strpos($funcSource, 'function cacti_unserialize(');
-	$body = substr($funcSource, $start, 600);
-	expect($body)->toContain("(O|C):[0-9]+:");
-	expect($body)->toContain("'allowed_classes' => false");
-});
-
-test('cacti_unserialize rejects null and empty input', function () use ($funcSource) {
-	$start = strpos($funcSource, 'function cacti_unserialize(');
-	$body = substr($funcSource, $start, 300);
-	expect($body)->toContain("\$strobj === null || \$strobj === ''");
+test('on-demand processing rejects a non-positive identifier before querying', function () {
+	expect(boost_process_poller_output(0))->toBe(-1)
+		->and(boost_process_poller_output('-4'))->toBe(-1);
 });

@@ -2,10 +2,17 @@ Cacti CHANGELOG
 
 1.2.x
 -issue#7029: Propagate replacement database handles to reconnecting callers
+-issue#7344: Share and preserve realtime graph sizing in Inline and New Window modes
+-issue#7328: Align graph, CSV export, percentile, and summation sample windows
 -issue#7385: Keep Automation Network schedule times in the server timezone
 -issue#7506: Close open select menus when their scroll container moves
 -issue#7967: Fail CSP Pest jobs when no tests execute
+-issue#7027: Refuse to signal a process table PID that pid_t cannot hold
+-issue#7957: Stop treating every PID in a container as a reserved system PID
+-issue#7958: Repair batchgapfix --force, which aborted on PHP 8 and killed nothing
 -issue: Commit transactions on MySQL as well as MariaDB
+-security: Harden CLI shell arguments, database credentials, and temporary RRD files
+-security#7027: Detect reused process IDs before treating registry tasks as live
 -security: Update bundled DOMPurify to 3.4.14
 -security: Revoke anonymous access when the guest account is disabled
 -security: Cast graph and device ids to int in get_allowed_* permission filters
@@ -19,8 +26,12 @@ Cacti CHANGELOG
 -security: Harden advisory command execution and database DDL sink validation
 -security: Restrict graph input fields across the template, graph and import handoffs
 -security: Treat a non-boolean signature result as a failure in import_package
+-issue#7961: Preserve the full Plugin Management layout after dependency errors
 -issue#7809: Undefined array key "source" warning reindexing SNMP data queries with output-only fields
+-issue#7810: Stop using null as a graph CF cache offset on PHP 8.5
 -issue#7819: Remove obsolete pre-PHP 8 compatibility branches
+-issue#7868: Apply Boost process-table columns on the 1.2.32 upgrade path
+-issue#7954: Guard applySkin when cactiNonce is not defined
 -issue#7617: Allow the graph tree sidebar to shrink with collapsed content
 -issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
@@ -70,6 +81,10 @@ Cacti CHANGELOG
 -issue: Commit transaction check uses the passed connection (PR #7409)
 -issue: Memoize db_get_table_column_types to cut redundant SHOW COLUMNS (1.2.x backport) (PR #7382)
 -issue#7829: Report a missing session cookie instead of redirecting into a login loop
+-issue#7986: Preserve child exit codes observed by cacti_exec
+-issue#7907: Correct maintenance CLI validation, help text and error exit statuses
+-issue#7907: Remove the unused remove_graphs --graph-type option
+-issue#7907: Reject CLI RLIKE patterns whose metacharacters would be stripped
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
