@@ -8,6 +8,20 @@ cd "$(dirname "$0")/.."
 
 DC=(docker compose -f docker-compose.yml)
 
+cleanup() {
+	"${DC[@]}" exec -T cacti-master cp \
+		/tmp/c07-config.php /var/www/html/include/config.php >/dev/null 2>&1 || true
+	"${DC[@]}" exec -T cacti-master rm -f \
+		/tmp/c07-config.php /tmp/c07.jar /tmp/c07_form \
+		/tmp/c07_headers /tmp/c07_response >/dev/null 2>&1 || true
+	# php.ini-production caches file timestamps for two seconds.
+	sleep 3
+}
+
+"${DC[@]}" exec -T cacti-master cp \
+	/var/www/html/include/config.php /tmp/c07-config.php
+trap cleanup EXIT
+
 "${DC[@]}" exec -T cacti-master sh -c \
 	'printf '\''%s\n'\'' "\$cacti_cookie_domain = '\''example.com'\'';" >> /var/www/html/include/config.php'
 # php.ini-production caches file timestamps for two seconds.
