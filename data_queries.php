@@ -817,12 +817,12 @@ function data_query_item_edit() {
 				</td>
 				<td class='center'>
 					<?php if ($show_down) {?>
-					<a class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down');?>' href='<?php print html_escape('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']);?>'></a>
+					<a class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down');?>' href='#' data-url='<?php print html_escape('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']);?>'></a>
 					<?php } else {?>
 					<span class='moveArrowNone'></span>
 					<?php } ?>
 					<?php if ($show_up) {?>
-					<a class='remover fa fa-caret-up moveArrow' title='<?php print __('Move Up');?>' href='<?php print html_escape('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']);?>'></a>
+					<a class='remover fa fa-caret-up moveArrow' title='<?php print __('Move Up');?>' href='#' data-url='<?php print html_escape('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']);?>'></a>
 					<?php } else {?>
 					<span class='moveArrowNone'></span>
 					<?php } ?>
@@ -831,7 +831,7 @@ function data_query_item_edit() {
 					<?php print html_escape($suggested_value['text']);?>
 				</td>
 				<td class='right'>
-					<a class='remover deleteMarker fa fa-times' title='<?php print html_escape(__('Delete'));?>' href='<?php print html_escape('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id'));?>'></a>
+					<a class='remover deleteMarker fa fa-times' title='<?php print html_escape(__('Delete'));?>' href='#' data-url='<?php print html_escape('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id'));?>'></a>
 				</td>
 				<?php
 
@@ -924,12 +924,12 @@ function data_query_item_edit() {
 						</td>
 						<td class='center'>
 							<?php if ($show_down) {?>
-							<a class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down');?>' href='<?php print html_escape('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id='. $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'></a>
+							<a class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down');?>' href='#' data-url='<?php print html_escape('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id='. $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'></a>
 							<?php } else {?>
 							<span class='moveArrowNone'></span>
 							<?php } ?>
 							<?php if ($show_up) {?>
-							<a class='remover fa fa-caret-up moveArrow' title='<?php print __('Move Up');?>' href='<?php print html_escape('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'></a>
+							<a class='remover fa fa-caret-up moveArrow' title='<?php print __('Move Up');?>' href='#' data-url='<?php print html_escape('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'></a>
 							<?php } else {?>
 							<span class='moveArrowNone'></span>
 							<?php } ?>
@@ -938,7 +938,7 @@ function data_query_item_edit() {
 							<?php print html_escape($suggested_value['text']);?>
 						</td>
 						<td class='right'>
-							<a class='remover deleteMarker fa fa-times' title='<?php print __('Delete');?>' href='<?php print html_escape('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id']);?>'></a>
+							<a class='remover deleteMarker fa fa-times' title='<?php print __('Delete');?>' href='#' data-url='<?php print html_escape('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id']);?>'></a>
 						</td>
 						<?php
 
@@ -994,7 +994,7 @@ function data_query_item_edit() {
 
 	$('.remover').on('click', function(event) {
 		event.preventDefault();
-		var href = $(this).attr('href');
+		var href = $(this).data('url') || $(this).attr('href');
 		var request = cactiPreparePostRequestFromUrl(href);
 		$.post(request.url, request.data)
 			.done(function(data) {

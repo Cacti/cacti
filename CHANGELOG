@@ -1,17 +1,23 @@
 Cacti CHANGELOG
 
 1.2.x
+-issue#7029: Propagate replacement database handles to reconnecting callers
 -issue#7344: Share and preserve realtime graph sizing in Inline and New Window modes
 -issue#7328: Align graph, CSV export, percentile, and summation sample windows
 -issue#7385: Keep Automation Network schedule times in the server timezone
 -issue#7506: Close open select menus when their scroll container moves
 -issue#7812: Clarify that missing SNMP notification receivers need no action when traps are disabled
 -issue#7967: Fail CSP Pest jobs when no tests execute
+-issue#7981: Require a POST token for actions that reorder or delete items, trees and link pages
 -issue#7027: Refuse to signal a process table PID that pid_t cannot hold
 -issue#7957: Stop treating every PID in a container as a reserved system PID
 -issue#7958: Repair batchgapfix --force, which aborted on PHP 8 and killed nothing
 -issue: Commit transactions on MySQL as well as MariaDB
 -security: Reject clean-client login requests when the session cookie was not accepted
+-security: Fail closed on a posted LDAP realm that is not a configured domain
+-security: Keep LDAP directory errors out of the login page
+-security: Demand TLS certificates for new LDAP installs
+-security: Restore the Cacti error handler on LDAP bind-only and empty-password paths
 -security: Harden CLI shell arguments, database credentials, and temporary RRD files
 -security#7027: Detect reused process IDs before treating registry tasks as live
 -security: Update bundled DOMPurify to 3.4.14
