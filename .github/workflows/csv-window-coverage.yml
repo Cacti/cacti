@@ -1,0 +1,98 @@
+name: CSV Window Coverage
+
+on:
+  push:
+    branches: [1.2.x]
+    paths:
+      - '.github/workflows/csv-window-coverage.yml'
+      - 'lib/rrd.php'
+      - 'lib/graph_variables.php'
+      - 'phpunit-csv.xml'
+      - 'tests/Unit/Core/Rrd/RrdFetchWindowTest.php'
+      - 'tests/Unit/Core/Rrd/BandwidthEffectiveStepTest.php'
+      - 'tests/Unit/Ui/Graph/CsvWindowResolutionContractTest.php'
+      - 'tests/Unit/Ui/Graph/PercentileResolutionBehaviorTest.php'
+      - 'tests/integration/CsvWindowRrdIntegrationTest.php'
+      - 'tests/composer.json'
+      - 'tests/composer.lock'
+  pull_request:
+    branches: [1.2.x]
+    paths:
+      - '.github/workflows/csv-window-coverage.yml'
+      - 'lib/rrd.php'
+      - 'lib/graph_variables.php'
+      - 'phpunit-csv.xml'
+      - 'tests/Unit/Core/Rrd/RrdFetchWindowTest.php'
+      - 'tests/Unit/Core/Rrd/BandwidthEffectiveStepTest.php'
+      - 'tests/Unit/Ui/Graph/CsvWindowResolutionContractTest.php'
+      - 'tests/Unit/Ui/Graph/PercentileResolutionBehaviorTest.php'
+      - 'tests/integration/CsvWindowRrdIntegrationTest.php'
+      - 'tests/composer.json'
+      - 'tests/composer.lock'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: csv-window-1-2-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: PHP ${{ matrix.php }} unit and RRDtool integration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2', '8.3', '8.4']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: xdebug
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+
+      - name: Install test dependencies
+        run: composer install --working-dir=tests --no-interaction --prefer-dist
+
+      - name: Install PHP 8.4-compatible Pest runner
+        if: matrix.php == '8.4'
+        run: |
+          composer global config allow-plugins.pestphp/pest-plugin true
+          composer global require pestphp/pest:^3 --no-interaction --prefer-dist
+          composer global config bin-dir --absolute >> "$GITHUB_PATH"
+
+      - name: Install RRDtool
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends rrdtool
+
+      - name: Run CSV window tests
+        working-directory: tests
+        env:
+          RRDTOOL_TEST_BINARY: /usr/bin/rrdtool
+        run: |
+          set -euo pipefail
+          pest_runner=vendor/bin/pest
+          if [ "${{ matrix.php }}" = '8.4' ]; then
+            pest_runner=pest
+          fi
+          for test_file in \
+            Unit/Core/Rrd/RrdFetchWindowTest.php \
+            Unit/Core/Rrd/BandwidthEffectiveStepTest.php \
+            Unit/Ui/Graph/CsvWindowResolutionContractTest.php \
+            Unit/Ui/Graph/PercentileResolutionBehaviorTest.php \
+            integration/CsvWindowRrdIntegrationTest.php; do
+            "${pest_runner}" --configuration=../phpunit-csv.xml "${test_file}"
+          done

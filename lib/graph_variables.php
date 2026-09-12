@@ -346,12 +346,11 @@ function cacti_stats_calc($array, $ptile = 95) {
    @returns - (array) an array containing each data source item, and its sum */
 function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps, $ds_steps) {
 	$fetch_array = @rrdtool_function_fetch($local_data_id, $start_time, $end_time, $rra_steps * $ds_steps);
+	$return_array = array();
 
 	if (!isset($fetch_array['data_source_names']) || cacti_count($fetch_array['data_source_names']) == 0) {
-		return;
+		return $return_array;
 	}
-
-	$return_array = array();
 
 	/* loop through each regexp determined above (or each data source) */
 	for ($i=0; $i<cacti_count($fetch_array['data_source_names']); $i++) {
@@ -359,7 +358,9 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
 			$sum = array_sum($fetch_array['values'][$i]);
 
 			if (cacti_count($fetch_array['values'][$i]) > 0) {
-				$sum = ($sum * $ds_steps * $rra_steps);
+				$requested_step = $ds_steps * $rra_steps;
+				$effective_step = isset($fetch_array['timestamp']['step']) ? $fetch_array['timestamp']['step'] : 0;
+				$sum *= $effective_step > 0 ? $effective_step : $requested_step;
 			} else {
 				$sum = 0;
 			}
@@ -397,10 +398,9 @@ function is_graphable_item($item) {
      either be absolute (unix timestamp) or relative (to now)
    @arg $graph_end - the end time to use for the data calculation. this value can
      either be absolute (unix timestamp) or relative (to now)
-   @arg $seconds_between_graph_updates - the number of seconds between each update on the graph which
-     varies depending on the RRA in use
+   @arg $resolution - the selected RRA resolution in seconds
    @returns - a string containing the Nth percentile suitable for placing on the graph */
-function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end) {
+function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end, $resolution = 0) {
 	global $graph_item_types;
 
 	$nth_cache = array();
@@ -462,33 +462,33 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 			case 'current':
 				// Query data for the individual case
 				$local_data_array = array_intersect_key($local_data_array, array_flip(array($graph_item['local_data_id'])));
-				$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
+				$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution);
 
 				break;
 			case 'max':
 				// Query data for the individual case
 				$local_data_array = array_intersect_key($local_data_array, array_flip(array($graph_item['local_data_id'])));
-				$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
+				$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution, true);
 
 				break;
 			case 'total':
 			case 'all_max_current':
 				if (cacti_sizeof($local_data_array)) {
-					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
+					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution);
 				}
 
 				break;
 			case 'total_peak':
 			case 'all_max_peak':
 				if (cacti_sizeof($local_data_array)) {
-					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
+					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution, true);
 				}
 
 				break;
 			case 'aggregate':
 			case 'aggregate_sum':
 				if (cacti_sizeof($local_data_array)) {
-					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
+					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution);
 				}
 
 				break;
@@ -496,7 +496,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 			case 'aggregate_max':
 			case 'aggregate_sum_peak':
 				if (cacti_sizeof($local_data_array)) {
-					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
+					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution, true);
 				}
 
 				break;
@@ -517,11 +517,11 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 
 					if ($type == 'aggregate_current') {
 						if (cacti_sizeof($local_data_array)) {
-							$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
+							$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution);
 						}
 					} else {
 						if (cacti_sizeof($local_data_array)) {
-							$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
+							$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution, true);
 						}
 					}
 				}
@@ -725,4 +725,3 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 		return sprintf('%10s', number_format_i18n($summation, $round_to));
 	}
 }
-
