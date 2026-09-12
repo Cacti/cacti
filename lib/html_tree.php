@@ -1173,6 +1173,25 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</select>
 					</td>
 					<td>
+						<?php print __('Size');?>
+					</td>
+					<td>
+						<select id='size'>
+							<?php
+							$selected_size = isset($_SESSION['sess_realtime_size'])
+								? $_SESSION['sess_realtime_size']
+								: read_user_setting('realtime_size', $realtime_default_size);
+							if (!array_key_exists($selected_size, $realtime_sizes)) {
+								$selected_size = $realtime_default_size;
+							}
+
+							foreach ($realtime_sizes as $size => $text) {
+								printf('<option value="%d"%s>%s</option>', $size, $size == $selected_size ? ' selected="selected"' : '', $text);
+							}
+							?>
+						</select>
+					</td>
+					<td>
 						<input type='button' class='ui-button ui-corner-all ui-widget' id='realtimeoff' value='<?php print __esc('Stop');?>'>
 					</td>
 					<td class='center' colspan='6'>
@@ -1260,7 +1279,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			applyGraphFilter();
 		});
 
-		$('#graph_start, #ds_step').on('change', function() {
+		$('#graph_start, #ds_step, #size').on('change', function() {
 			realtimeGrapher();
 		});
 
