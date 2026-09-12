@@ -1647,6 +1647,17 @@ $realtime_refresh = array(
 	120 => __('%d Minutes', 2)
 );
 
+$realtime_default_size = 50;
+$realtime_sizes = array(
+	100 => '100%',
+	90  => '90%',
+	80  => '80%',
+	70  => '70%',
+	60  => '60%',
+	50  => '50%',
+	40  => '40%'
+);
+
 $attachment_sizes = array(
 	1048576   => __('1 Megabyte'),
 	2097152   => __('%d Megabytes', 2),
