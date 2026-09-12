@@ -273,15 +273,19 @@ function boost_poller_on_demand(&$results) {
 
 				$value_tuples = array();
 
-				foreach ($results as $result) {
-					$value_tuples[] = '(' .
-						(int) $result['local_data_id'] . ',' .
-						db_qstr($result['rrd_name'], $conn) . ',' .
-						db_qstr($result['time'], $conn) . ',' .
-						db_qstr($result['output'], $conn) . ')';
-				}
+				if (read_config_option('boost_redirect') == '') {
+					foreach ($results as $result) {
+						$value_tuples[] = '(' .
+							(int) $result['local_data_id'] . ',' .
+							db_qstr($result['rrd_name'], $conn) . ',' .
+							db_qstr($result['time'], $conn) . ',' .
+							db_qstr($result['output'], $conn) . ')';
+					}
 
-				$return_value = !boost_flush_output_batch($value_tuples, $conn);
+					$return_value = !boost_flush_output_batch($value_tuples, $conn);
+				} else {
+					$return_value = false;
+				}
 			} else {
 				$return_value = false;
 			}
