@@ -23,6 +23,12 @@
 */
 
 require_once(__DIR__ . '/rrd_graph_item.php');
+require_once(__DIR__ . '/Rrd/RrdCommand.php');
+require_once(__DIR__ . '/Rrd/RrdCommandSerializer.php');
+require_once(__DIR__ . '/Rrd/DataSource/FetchCommandBuilder.php');
+require_once(__DIR__ . '/Rrd/DataSource/TuneCommandBuilder.php');
+require_once(__DIR__ . '/Rrd/DataSource/UpdateCommandBuilder.php');
+require_once(__DIR__ . '/Rrd/Graph/GraphOptions.php');
 
 use phpseclib4\Crypt\Rijndael;
 use phpseclib4\Crypt\RSA;
@@ -848,20 +854,22 @@ function rrdtool_command_log_context(string $command_line) : string {
  *
  * @return string|false A command suitable for stdin conversion, or false
  */
-function rrdtool_build_command(array $command) : string|false {
-	$operation = array_shift($command);
+function rrdtool_build_command(array|\Cacti\Rrd\RrdCommand $command) : string|false {
+	try {
+		if (is_array($command)) {
+			foreach ($command as $token) {
+				if (!is_string($token)) {
+					return false;
+				}
+			}
 
-	if (!is_string($operation) || $operation === '') {
+			$command = \Cacti\Rrd\RrdCommand::fromList($command);
+		}
+
+		return (new \Cacti\Rrd\RrdCommandSerializer())->forLineProtocol($command, 'cacti_escapeshellarg');
+	} catch (InvalidArgumentException) {
 		return false;
 	}
-
-	foreach ($command as $argument) {
-		if (!is_string($argument)) {
-			return false;
-		}
-	}
-
-	return $operation . ($command === [] ? '' : ' ' . implode(' ', array_map('cacti_escapeshellarg', $command)));
 }
 
 /**
@@ -1106,19 +1114,18 @@ function rrdtool_format_result(array $result, int $output_flag) : mixed {
 /**
  * Execute an RRDtool command and return the output.
  *
- * @param string|array $command_line  The RRDtool command to execute.  An array is quoted here,
- *                                    one element per argument.  A caller passing a string quotes
- *                                    each variable argument with cacti_escapeshellarg() as it
- *                                    builds the line; the assembled line is never quoted
- * @param bool         $log_to_stdout Whether to echo output to stdout
- * @param int          $output_flag   Output format constant (RRDTOOL_OUTPUT_*)
- * @param mixed        $rrdtool_pipe  An open RRDtool pipe resource, or null
- * @param string       $logopt        Logging context identifier
+ * @param string|array|\Cacti\Rrd\RrdCommand $command_line  The RRDtool command to execute. Arrays
+ *                                                          and command objects keep arguments
+ *                                                          isolated until line-protocol serialization
+ * @param bool                               $log_to_stdout Whether to echo output to stdout
+ * @param int                                $output_flag   Output format constant (RRDTOOL_OUTPUT_*)
+ * @param mixed                              $rrdtool_pipe  An open RRDtool pipe resource, or null
+ * @param string                             $logopt        Logging context identifier
  *
  * @return mixed The command output in the requested format
  */
-function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $output_flag = RRDTOOL_OUTPUT_STDOUT, mixed $rrdtool_pipe = null, string $logopt = 'WEBLOG') : mixed {
-	if (is_array($command_line)) {
+function __rrd_execute(string|array|\Cacti\Rrd\RrdCommand $command_line, bool $log_to_stdout, int $output_flag = RRDTOOL_OUTPUT_STDOUT, mixed $rrdtool_pipe = null, string $logopt = 'WEBLOG') : mixed {
+	if (is_array($command_line) || $command_line instanceof \Cacti\Rrd\RrdCommand) {
 		$command_line = rrdtool_build_command($command_line);
 
 		if ($command_line === false) {
@@ -1210,16 +1217,16 @@ function rrdtool_trim_output(string &$output) : void {
 /**
  * Execute an RRDtool command through the remote proxy.
  *
- * @param string|array $command_line  RRDtool command string, or one string argument per array element
- * @param bool         $log_to_stdout Whether to echo log output
- * @param int          $output_flag   Requested RRDTOOL_OUTPUT_* result mode
- * @param mixed        $rrdp          Existing proxy connection tuple, or an empty value
- * @param string       $logopt        Logging context identifier
+ * @param string|array|\Cacti\Rrd\RrdCommand $command_line  RRDtool command string, argument list, or command object
+ * @param bool                               $log_to_stdout Whether to echo log output
+ * @param int                                $output_flag   Requested RRDTOOL_OUTPUT_* result mode
+ * @param mixed                              $rrdp          Existing proxy connection tuple, or an empty value
+ * @param string                             $logopt        Logging context identifier
  *
  * @return mixed Output in the requested mode, or false when transport/protocol validation fails
  */
-function __rrd_proxy_execute(string|array $command_line, bool $log_to_stdout, int $output_flag = RRDTOOL_OUTPUT_STDOUT, mixed $rrdp = '', string $logopt = 'WEBLOG') : mixed {
-	if (is_array($command_line)) {
+function __rrd_proxy_execute(string|array|\Cacti\Rrd\RrdCommand $command_line, bool $log_to_stdout, int $output_flag = RRDTOOL_OUTPUT_STDOUT, mixed $rrdp = '', string $logopt = 'WEBLOG') : mixed {
+	if (is_array($command_line) || $command_line instanceof \Cacti\Rrd\RrdCommand) {
 		$command_line = rrdtool_build_command($command_line);
 
 		if ($command_line === false) {
@@ -1761,13 +1768,14 @@ function rrdtool_function_update(array $update_cache_array, mixed $rrdtool_pipe 
 					$rrd_update_values .= $value;
 				}
 
-				if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
-					$update_options = '--skip-past-updates';
-				} else {
-					$update_options = '';
-				}
+				$command = (new \Cacti\Rrd\DataSource\UpdateCommandBuilder())->build(
+					$rrd_path,
+					$rrd_update_template,
+					$rrd_update_values,
+					cacti_version_compare(get_rrdtool_version(), '1.5', '>=')
+				);
 
-				$update_result = rrdtool_execute('update ' . cacti_escapeshellarg($rrd_path) . " $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+				$update_result = rrdtool_execute($command, true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 
 				if ($update_result !== false) {
 					$rrds_processed++;
@@ -1790,32 +1798,34 @@ function rrdtool_function_tune(array $rrd_tune_array) : void {
 	$data_source_type = $data_source_types[$rrd_tune_array['data-source-type']];
 	$data_source_path = get_data_source_path($rrd_tune_array['data_source_id'], true);
 
-	$rrd_tune = '';
+	$options = [];
 
 	if ($rrd_tune_array['heartbeat'] != '') {
-		$rrd_tune .= ' --heartbeat ' . cacti_escapeshellarg($data_source_name . ':' . $rrd_tune_array['heartbeat']);
+		$options['--heartbeat'] = $data_source_name . ':' . $rrd_tune_array['heartbeat'];
 	}
 
 	if ($rrd_tune_array['minimum'] != '') {
-		$rrd_tune .= ' --minimum ' . cacti_escapeshellarg($data_source_name . ':' . $rrd_tune_array['minimum']);
+		$options['--minimum'] = $data_source_name . ':' . $rrd_tune_array['minimum'];
 	}
 
 	if ($rrd_tune_array['maximum'] != '') {
-		$rrd_tune .= ' --maximum ' . cacti_escapeshellarg($data_source_name . ':' . $rrd_tune_array['maximum']);
+		$options['--maximum'] = $data_source_name . ':' . $rrd_tune_array['maximum'];
 	}
 
 	if ($rrd_tune_array['data-source-type'] != '') {
-		$rrd_tune .= ' --data-source-type ' . cacti_escapeshellarg($data_source_name . ':' . $data_source_type);
+		$options['--data-source-type'] = $data_source_name . ':' . $data_source_type;
 	}
 
 	if ($rrd_tune_array['data-source-rename'] != '') {
-		$rrd_tune .= ' --data-source-rename ' . cacti_escapeshellarg($data_source_name . ':' . $rrd_tune_array['data-source-rename']);
+		$options['--data-source-rename'] = $data_source_name . ':' . $rrd_tune_array['data-source-rename'];
 	}
 
-	if ($rrd_tune != '') {
+	$command = (new \Cacti\Rrd\DataSource\TuneCommandBuilder())->build($data_source_path, $options);
+
+	if ($command !== null) {
 		if (file_exists($data_source_path) == true) {
 			$result = rrdtool_execute(
-				'tune ' . cacti_escapeshellarg($data_source_path) . $rrd_tune,
+				$command,
 				false,
 				RRDTOOL_OUTPUT_BOOLEAN,
 				null,
@@ -1890,19 +1900,15 @@ function rrdtool_function_fetch(int $local_data_id, int $start_time, int $end_ti
 	// update the rrdfile if performing a fetch
 	boost_fetch_cache_check($local_data_id, $rrdtool_pipe);
 
-	// rrdtool consolidation function is a fixed keyword set; never pass it through unchecked
-	if (!in_array($cf, ['AVERAGE', 'MIN', 'MAX', 'LAST'], true)) {
-		$cf = 'AVERAGE';
-	}
+	$command = (new \Cacti\Rrd\DataSource\FetchCommandBuilder())->build(
+		$data_source_path,
+		$cf,
+		$start_time,
+		$end_time,
+		$resolution
+	);
 
-	// build and run the rrdtool fetch command with all of our data
-	$cmd_line = 'fetch ' . cacti_escapeshellarg($data_source_path) . " $cf -s $start_time -e $end_time";
-
-	if ($resolution > 0) {
-		$cmd_line .= " -r $resolution";
-	}
-
-	$output = rrdtool_execute($cmd_line, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe);
+	$output = rrdtool_execute($command, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe);
 
 	if (!is_string($output)) {
 		return $fetch_array;
@@ -2321,6 +2327,14 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 	include_once(CACTI_PATH_LIBRARY . '/boost.php');
 	include_once(CACTI_PATH_LIBRARY . '/xml.php');
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
+
+	try {
+		$graph_data_array = \Cacti\Rrd\Graph\GraphOptions::resolve($graph_data_array);
+	} catch (Symfony\Component\OptionsResolver\Exception\InvalidOptionsException $exception) {
+		cacti_log('ERROR: Invalid RRDtool graph options: ' . $exception->getMessage(), false, 'RRDTOOL');
+
+		return 'ERROR: Invalid graph options';
+	}
 
 	/* prevent command injection
 	 * This function prepares an rrdtool graph statement to be executed by the web server.
