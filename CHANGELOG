@@ -79,6 +79,7 @@ Cacti CHANGELOG
 -issue: Commit transaction check uses the passed connection (PR #7409)
 -issue: Memoize db_get_table_column_types to cut redundant SHOW COLUMNS (1.2.x backport) (PR #7382)
 -issue#7829: Report a missing session cookie instead of redirecting into a login loop
+-issue#7986: Preserve child exit codes observed by cacti_exec
 -issue#7907: Correct maintenance CLI validation, help text and error exit statuses
 -issue#7907: Remove the unused remove_graphs --graph-type option
 -issue#7907: Reject CLI RLIKE patterns whose metacharacters would be stripped
