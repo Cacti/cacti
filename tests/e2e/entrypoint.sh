@@ -72,6 +72,19 @@ if ! mysql -h "$DB_HOST" -u"$DB_USER" -p"$DB_PASS" --skip-ssl "$DB_NAME" \
 		"REPLACE INTO settings (name, value) VALUES ('htmx_enabled', 'on')"
 fi
 
+# Domain auth against the sibling OpenLDAP service. Re-applied on every
+# start so a leftover settings row cannot leave the stack on local-only auth.
+ldap_hash="$(php -r 'echo password_hash("unused-local-hash", PASSWORD_DEFAULT);')"
+printf '%s\n' \
+	"REPLACE INTO settings (name, value) VALUES ('auth_method', '4');" \
+	"REPLACE INTO settings (name, value) VALUES ('guest_user', '0');" \
+	"REPLACE INTO settings (name, value) VALUES ('user_template', '1');" \
+	"INSERT INTO user_domains (domain_id, domain_name, type, enabled, debug, defdomain, user_id) VALUES (1, 'E2E LDAP', 1, 'on', '', 1, 0) ON DUPLICATE KEY UPDATE domain_name=VALUES(domain_name), enabled='on', defdomain=1, user_id=0;" \
+	"INSERT INTO user_domains_ldap (domain_id, server, port, port_ssl, proto_version, network_timeout, bind_timeout, encryption, tls_certificate, referrals, mode, dn, group_require, group_dn, group_attrib, group_member_type, search_base, search_filter, specific_dn, specific_password, cn_full_name, cn_email) VALUES (1, 'openldap', 389, 636, 3, 2, 2, 0, 2, 0, 0, 'cn=<username>,ou=users,dc=example,dc=org', '', '', '', 0, 'ou=users,dc=example,dc=org', '(cn=<username>)', '', '', '', '') ON DUPLICATE KEY UPDATE server=VALUES(server), port=VALUES(port), dn=VALUES(dn), mode=0, encryption=0;" \
+	"INSERT INTO user_auth (id, username, password, realm, full_name, enabled) VALUES (1001, 'ldapuser', '${ldap_hash}', 1001, 'LDAP E2E User', 'on') ON DUPLICATE KEY UPDATE password=VALUES(password), realm=1001, enabled='on';" \
+	"INSERT INTO user_auth_realm (user_id, realm_id) SELECT 1001, realm_id FROM user_auth_realm WHERE user_id=1 ON DUPLICATE KEY UPDATE user_id=VALUES(user_id);" \
+	| mysql -h "$DB_HOST" -u"$DB_USER" -p"$DB_PASS" --skip-ssl "$DB_NAME"
+
 # Cacti writes to log/, rra/, resource/, cache/. The image build drops log/
 # and cache/ via .dockerignore, so recreate any missing directory before the
 # chown. global.php aborts with a FATAL when log/cacti.log is not writable,

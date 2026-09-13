@@ -233,7 +233,7 @@ if ($child == 0) {
 				if (cacti_process_still_running((int) $r['pid'])) {
 					printf('NOTE: Process with PID: %s being killed.' . PHP_EOL, $r['pid']);
 
-					posix_kill((int) $r['pid'], SIGTERM);
+					cacti_process_kill((int) $r['pid'], SIGTERM, 'SYSTEM');
 				} else {
 					printf('NOTE: Process with PID: %s is no longer the registered process.' . PHP_EOL, $r['pid']);
 				}

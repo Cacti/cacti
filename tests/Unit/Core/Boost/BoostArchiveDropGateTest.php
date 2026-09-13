@@ -25,12 +25,12 @@
  * child; the fix wires that same completeness check into the drop decision.
  */
 
-$boostPollerPath = __DIR__ . '/../../../../poller_boost.php';
+$boostPollerPath = CACTI_PATH_BASE . '/poller_boost.php';
 
 test('archive-table drop is gated on shard completeness, not the status sum', function () use ($boostPollerPath) {
 	$contents = file_get_contents($boostPollerPath);
 
-	$rrd_updates_pos = strpos($contents, "SELECT SUM(status) FROM poller_output_boost_processes");
+	$rrd_updates_pos = strpos($contents, 'COALESCE(SUM(CAST(status AS SIGNED)), 0)');
 	expect($rrd_updates_pos)->not->toBeFalse();
 
 	$drop_pos = strpos($contents, 'DROP TABLE IF EXISTS `$table`', $rrd_updates_pos);
@@ -40,12 +40,13 @@ test('archive-table drop is gated on shard completeness, not the status sum', fu
 
 	// The completeness check must appear between the SUM() read and the
 	// actual DROP, gating it.
-	expect($segment)->toContain('boost_completed_children() >= $expected_children');
+	expect($segment)->toContain('boost_completed_children($run_id) >= $expected_children');
+	expect($segment)->toContain('$failed_children === 0');
 
 	// A bare "if ($rrd_updates > 0) { ... DROP ... }" with nothing else
 	// between them is exactly the bug: the drop must not be reachable
 	// without the completeness check in between.
-	$gate_pos = strpos($segment, 'boost_completed_children() >= $expected_children');
+	$gate_pos = strpos($segment, 'boost_completed_children($run_id) >= $expected_children');
 	expect($gate_pos)->toBeGreaterThan(0);
 });
 
@@ -68,6 +69,6 @@ test('boost_completed_children and expected_children are still computed the same
 	// The drain loop's own completeness check must still be present and
 	// unchanged; the drop-gate fix reuses these exact symbols rather than
 	// inventing a parallel accounting mechanism that could drift from it.
-	expect($contents)->toContain('boost_completed_children() < $expected_children');
+	expect($contents)->toContain('boost_completed_children($run_id) < $expected_children');
 	expect(substr_count($contents, '$expected_children'))->toBeGreaterThanOrEqual(4);
 });

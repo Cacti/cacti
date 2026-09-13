@@ -427,7 +427,7 @@ function pushout_kill_running_processes() : void {
 			if (cacti_process_still_running((int) $p['pid'])) {
 				cacti_log(sprintf('WARNING: Killing Cleanup %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'PUSHOUT');
 
-				posix_kill($p['pid'], SIGTERM);
+				cacti_process_kill((int) $p['pid'], SIGTERM, 'PUSHOUT');
 			}
 
 			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);

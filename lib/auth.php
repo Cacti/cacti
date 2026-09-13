@@ -3974,7 +3974,7 @@ function local_auth_login_process(string $username) : array {
 function domains_login_process(string $username) : array {
 	global $realm, $error, $error_msg;
 
-	$realm    = gnrv('realm');
+	$realm    = gfrv('realm');
 	$password = gnrv('login_password');
 
 	if ($username == '') {
@@ -3982,6 +3982,21 @@ function domains_login_process(string $username) : array {
 		$error_msg = __('Access Denied!  Login Failed.');
 
 		cacti_log('LOGIN FAILED: Empty Domains Username provided, from IP address' . get_client_addr(), false, 'AUTH');
+
+		return [];
+	}
+
+	/**
+	 * get_auth_realms() builds the realm dropdown, so a realm it does not list was
+	 * never on offer and must not reach the branches below. The check runs before
+	 * the lockout bookkeeping so a forged realm cannot scatter an account's failure
+	 * counters across realms that do not exist.
+	 */
+	if (!array_key_exists($realm, get_auth_realms(true))) {
+		$error     = true;
+		$error_msg = __('Access Denied!  Login Failed.');
+
+		cacti_log(sprintf("LOGIN FAILED: Unknown Login Realm '%s' provided for user '%s' from IP address %s", $realm, $username, get_client_addr()), false, 'AUTH');
 
 		return [];
 	}
@@ -3995,25 +4010,24 @@ function domains_login_process(string $username) : array {
 	$user    = [];
 	$ldap_dn = '';
 
-	if ($realm > 3 && $password != '') {
+	if ($realm >= 1000 && $password != '') {
 		// get user DN
 		$ldap_dn_search_response = domains_ldap_search_dn($username, $realm);
 
-		if ($ldap_dn_search_response['error_num'] == '0') {
+		if (is_array($ldap_dn_search_response) && $ldap_dn_search_response['error_num'] == '0') {
 			$ldap_dn = $ldap_dn_search_response['dn'];
 		} else {
-			// error searching
 			$error     = true;
-			$error_msg = __('LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
+			$error_msg = __('Access Denied!  Login Failed.');
 
-			cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_dn_search_response['error_text'] . '. From IP address ' . get_client_addr(), false, 'AUTH');
+			cacti_log('LOGIN FAILED: LDAP Error: ' . (is_array($ldap_dn_search_response) ? $ldap_dn_search_response['error_text'] : 'No LDAP configuration for realm') . '. From IP address ' . get_client_addr(), false, 'AUTH');
 		}
 
 		if (!$error) {
 			// auth user with LDAP
 			$ldap_auth_response = domains_ldap_auth($username, $password, $ldap_dn, $realm);
 
-			if ($ldap_auth_response['error_num'] == '0') {
+			if (is_array($ldap_auth_response) && $ldap_auth_response['error_num'] == '0') {
 				// User ok
 				$domain_name = db_fetch_cell_prepared('SELECT domain_name
 					FROM user_domains
@@ -4081,7 +4095,7 @@ function domains_login_process(string $username) : array {
 
 								user_copy($user_template['username'], $username, 0, $realm, false, $data_override);
 							} else {
-								cacti_log('LOGIN: fields not found ' . $ldap_cn_search_response[0] . 'code: ' . $ldap_cn_search_response['error_num'], false, 'AUTH');
+								cacti_log('LOGIN: fields not found code: ' . (is_array($ldap_cn_search_response) ? $ldap_cn_search_response['error_num'] : ''), false, 'AUTH');
 								user_copy($user_template['username'], $username, 0, $realm);
 							}
 						} else {
@@ -4102,14 +4116,20 @@ function domains_login_process(string $username) : array {
 						cacti_log("LOGIN FAILED: Template user id '" . $template_user . "' does not exist.", false, 'AUTH');
 					}
 				}
+
+				if (!$error && !cacti_sizeof($user)) {
+					$error     = true;
+					$error_msg = __('Access Denied!  Domain template is not configured.  Please contact your Administrator.');
+
+					cacti_log("LOGIN FAILED: LDAP user '" . $username . "' authenticated but the domain has no template and no existing account.", false, 'AUTH');
+				}
 			} else {
-				// error
 				$error     = true;
-				$error_msg = __('Access Denied!  LDAP Error: %s', $ldap_auth_response['error_text']);
+				$error_msg = __('Access Denied!  Login Failed.');
 
-				cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_auth_response['error_text'] . ', from IP address ' . get_client_addr(), false, 'AUTH');
+				cacti_log('LOGIN FAILED: LDAP Error: ' . (is_array($ldap_auth_response) ? $ldap_auth_response['error_text'] : 'No LDAP configuration for realm') . ', from IP address ' . get_client_addr(), false, 'AUTH');
 
-				if ($ldap_auth_response['error_text'] == 1) {
+				if (is_array($ldap_auth_response) && $ldap_auth_response['error_num'] == 1) {
 					auth_process_lockout($username, $realm);
 				}
 			}
@@ -4122,6 +4142,17 @@ function domains_login_process(string $username) : array {
 		cacti_log(sprintf("LOGIN FAILED: LDAP No password provided for user '%s' from IP address %s", $username, get_client_addr()), false, 'AUTH');
 
 		auth_process_lockout($username, $realm);
+	} else {
+		/**
+		 * Realms at or below 3 are the local and legacy realms, so there is no
+		 * user_domains row to bind against. Without this arm the call returned an
+		 * empty user with $error still false, which auth_login.php treats as an
+		 * authenticated user with no account yet and provisions from the template.
+		 */
+		$error     = true;
+		$error_msg = __('Access Denied!  Login Failed.');
+
+		cacti_log(sprintf("LOGIN FAILED: Login Realm '%s' is not an LDAP domain for user '%s' from IP address %s", $realm, $username, get_client_addr()), false, 'AUTH');
 	}
 
 	return is_array($user) ? $user : [];
@@ -4140,6 +4171,10 @@ function domains_login_process(string $username) : array {
 function domains_ldap_auth(string $username, string $password = '', string $dn = '', int $realm = 0) : mixed {
 	$ldap  = new Ldap($realm - 1000);
 	$debug = $ldap->debug;
+
+	if ($ldap->host === '') {
+		return LdapError::GetErrorDetails(LdapError::ConnectionUnavailable, false, '');
+	}
 
 	cacti_log(sprintf('LDAP: Initiating login for User \'%s\'', $username), false, 'AUTH', $debug);
 
