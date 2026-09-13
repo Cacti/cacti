@@ -11,6 +11,7 @@ fi
 
 EXCLUDE=(
 	--glob '!include/vendor/**'
+	--glob '!vendor/**'
 	--glob '!locales/**'
 	--glob '!tests/**'
 	--glob '!**/*.min.js'

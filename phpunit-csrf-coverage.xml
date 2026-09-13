@@ -1,0 +1,23 @@
+<phpunit bootstrap="tests/bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <env name="CACTI_TEST_BOOTSTRAP" value="1"/>
+    </php>
+	<source>
+		<include>
+			<file>lib/csrf.php</file>
+		</include>
+    </source>
+    <testsuites>
+        <testsuite name="CSRF coverage">
+            <file>tests/Unit/Security/Csrf/CactiCsrfGuardLegacyTest.php</file>
+            <file>tests/Unit/Security/Csrf/CactiCsrfGuardTest.php</file>
+            <file>tests/Unit/Security/Csrf/CactiCsrfRewriteTest.php</file>
+            <file>tests/Unit/Security/Csrf/CsrfBootstrapOrderTest.php</file>
+            <file>tests/Unit/Security/Csrf/CsrfFacadeTest.php</file>
+            <file>tests/Unit/Security/Csrf/CsrfScriptAssetTest.php</file>
+            <file>tests/Unit/Security/Csrf/CsrfVendorTest.php</file>
+            <file>tests/Unit/Security/Csrf/CsrfSecretNotTrackedTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>
