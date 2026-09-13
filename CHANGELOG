@@ -10,6 +10,10 @@ Cacti CHANGELOG
 -security: Substitute query data before escaping graph titles and axis labels
 -security: Build forced-HTTPS redirects from the server-configured name
 -security: Replace sibling password-reset links and revoke authentication state after reset
+-security: Fail closed on a posted LDAP realm that is not a configured domain
+-security: Keep LDAP directory errors out of the login page
+-security: Demand TLS certificates for new LDAP domains
+-security: Restore the Cacti error handler on LDAP bind-only and empty-password paths
 -issue#7969: Restore excluded integration and mutation regression coverage
 -issue#7969: Align Rocky Linux compatibility checks with the supported PHP runtime
 -issue: Fail closed when OAuth callback state is absent or mismatched
@@ -181,6 +185,7 @@ Cacti CHANGELOG
 -issue#7355: Add a JUNIPER-MIB jnxOperatingTable script data query for RE and FPC health
 -issue#7355: Add an F5-BIGIP-SYSTEM-MIB script data query for per-CPU utilization
 -issue#7904: Device changes are silently skipped when --bulk_walk is passed to change_device.php
+-issue#7328: Align graph, CSV export, percentile, and summation sample windows
 -issue#7981: Require POST tokens for state-changing item, tree and RRD actions
 -issue#7809: Avoid reading a missing source key on output-only data query fields
 -feature#7884: Manage front-end JavaScript libraries with npm and Dependabot

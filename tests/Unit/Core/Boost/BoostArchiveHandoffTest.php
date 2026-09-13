@@ -42,7 +42,7 @@
  *    now updated at the end of each processed iteration.
  */
 
-$boostLibPath = __DIR__ . '/../../../../lib/boost.php';
+$boostLibPath = CACTI_PATH_LIBRARY . '/boost.php';
 
 if (!function_exists('boost_handoff_extract_function')) {
 	function boost_handoff_extract_function(string $contents, string $signature) : string {
@@ -79,7 +79,7 @@ test('archive-table cleanup forwards still-open-round rows before deleting', fun
 
 	// The archive DELETE (the second db_execute_prepared after the archive
 	// foreach) must run after the forwarding INSERT.
-	$delete_pos = strpos($func_body, 'DELETE IGNORE', $insert_pos);
+	$delete_pos = strpos($func_body, 'DELETE FROM `$table`', $insert_pos);
 	expect($delete_pos)->not->toBeFalse('archive DELETE is missing');
 	expect($insert_pos)->toBeLessThan($delete_pos);
 });
@@ -89,15 +89,15 @@ test('archive-table delete removes the whole local_data_id slice once forwarding
 	$func_body = boost_handoff_extract_function($contents, 'function boost_process_poller_output(');
 
 	$insert_pos = strpos($func_body, 'INSERT IGNORE INTO poller_output_boost');
-	$delete_pos = strpos($func_body, 'DELETE IGNORE', $insert_pos);
+	$delete_pos = strpos($func_body, 'DELETE FROM `$table`', $insert_pos);
 	expect($delete_pos)->not->toBeFalse();
 
 	$delete_segment = substr($func_body, $delete_pos, 200);
 
 	// A forwarded row must not be left behind in the archive table: the
-	// archive-side temp-table seed a few lines above (INSERT INTO
+	// archive-side temp-table seed a few lines above (INSERT IGNORE INTO
 	// `{$temp_table}` SELECT * FROM `{$table}` WHERE local_data_id = ?) has
-	// no time filter and is not INSERT IGNORE, so a leftover forwarded row
+	// no time filter, so a leftover forwarded row
 	// would collide with its own live-table copy on a later call for the
 	// same local_data_id. The delete must therefore not be narrowed to
 	// "time < FROM_UNIXTIME(?)" -- it must clear everything for this
@@ -115,7 +115,7 @@ test('the archive-side temp-table seed that forwarded rows must not collide with
 	// confirms the hazard this fix accounts for is still actually present
 	// in the source, so the reasoning stays tied to real code rather than a
 	// stale assumption.
-	$seed_pos = strpos($func_body, 'INSERT INTO `{$temp_table}`');
+	$seed_pos = strpos($func_body, 'INSERT IGNORE INTO `{$temp_table}`');
 	expect($seed_pos)->not->toBeFalse();
 
 	$seed_segment = substr($func_body, $seed_pos, 200);
