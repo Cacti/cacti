@@ -28,8 +28,8 @@
  * check, using the command name under /proc where that exists.
  */
 
-require_once dirname(__DIR__, 2) . '/include/global_constants.php';
-require_once dirname(__DIR__, 2) . '/lib/poller.php';
+require_once dirname(__DIR__, 4) . '/include/global_constants.php';
+require_once dirname(__DIR__, 4) . '/lib/poller.php';
 
 /**
  * Starts a process running a different program and returns its pid.
@@ -71,6 +71,32 @@ test('a pid that cannot be valid is never reported running', function () {
 	expect(cacti_process_still_running(0))->toBeFalse()
 		->and(cacti_process_still_running(-1))->toBeFalse()
 		->and(cacti_process_still_running(-99999))->toBeFalse();
+});
+
+test('a pid wider than pid_t is never reported existing or running', function () {
+	if (PHP_INT_SIZE < 8) {
+		test()->markTestSkipped('a 32 bit build cannot express a pid wider than pid_t');
+	}
+
+	/* 4294967295 is the largest value processes.pid can hold. Handing it to an
+	   unguarded posix_kill() is unsafe in two different ways: through PHP 8.4
+	   the argument narrows to a 32 bit pid_t of -1, which kill(2) reads as every
+	   process the caller may signal, and from PHP 8.5 the same call raises a
+	   ValueError that takes the poller down instead. Refusing the value ahead of
+	   the call covers both, so this asserts the refusal rather than whichever
+	   behaviour the running interpreter would have produced. */
+	expect(cacti_process_pid_exists(4294967295))->toBeFalse()
+		->and(cacti_process_still_running(4294967295))->toBeFalse()
+		->and(cacti_process_pid_exists(PHP_INT_MAX))->toBeFalse()
+		->and(cacti_process_still_running(PHP_INT_MAX))->toBeFalse();
+});
+
+test('every value pid_t can hold is still answered by the kernel', function () {
+	/* The bound sits at pid_t and not below it, so the largest pid_t is still
+	   passed to posix_kill() and a pid that does exist is still recognised. */
+	expect(posix_kill(2147483647, 0))->toBeFalse()
+		->and(cacti_process_pid_exists(2147483647))->toBeFalse()
+		->and(cacti_process_pid_exists(getmypid()))->toBeTrue();
 });
 
 test('the running process recognises itself', function () {
@@ -151,9 +177,9 @@ test('without /proc the check falls back to plain existence', function () {
 });
 
 test('every registry kill site checks the pid before signalling it', function () {
-	$poller      = file_get_contents(dirname(__DIR__, 2) . '/lib/poller.php');
-	$dsstats     = file_get_contents(dirname(__DIR__, 2) . '/lib/dsstats.php');
-	$batchgapfix = file_get_contents(dirname(__DIR__, 2) . '/cli/batchgapfix.php');
+	$poller      = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
+	$dsstats     = file_get_contents(dirname(__DIR__, 4) . '/lib/dsstats.php');
+	$batchgapfix = file_get_contents(dirname(__DIR__, 4) . '/cli/batchgapfix.php');
 
 	expect($poller)->not->toBeFalse('lib/poller.php must be readable')
 		->and($dsstats)->not->toBeFalse('lib/dsstats.php must be readable')
@@ -173,7 +199,7 @@ test('every registry kill site checks the pid before signalling it', function ()
  * report a running poller dead and let a second copy start.
  */
 test('the identity check is limited to CLI callers', function () {
-	$body = file_get_contents(dirname(__DIR__, 2) . '/lib/poller.php');
+	$body = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
 
 	$start = strpos($body, 'function cacti_process_still_running(');
 	expect($start)->not->toBeFalse();

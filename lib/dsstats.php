@@ -1470,7 +1470,7 @@ function dsstats_kill_running_processes() : void {
 		foreach ($processes as $p) {
 			if (cacti_process_still_running((int) $p['pid'])) {
 				cacti_log(sprintf('WARNING: Killing DSStats %s PID %d due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'BOOST');
-				posix_kill($p['pid'], SIGTERM);
+				cacti_process_kill((int) $p['pid'], SIGTERM, 'BOOST');
 			}
 
 			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);

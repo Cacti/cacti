@@ -273,7 +273,7 @@ midwinter.navigationBox.tree = {
 
         const $tree = $box.find('.mdw-jstree-wrapper');
 
-        if ($tree.length && $.isFunction($tree.jstree)) {
+        if ($tree.length && typeof $tree.jstree === 'function') {
 
             if (command.includes('Selected')) {
                 const actualCommand = command.startsWith('expand') ? 'open_all' : 'close_all';
