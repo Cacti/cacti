@@ -734,6 +734,7 @@ require_once(CACTI_PATH_INCLUDE . '/domain.php');
 
 if (is_file($vendor_autoload)) {
 	require_once($vendor_autoload);
+	require_once(CACTI_PATH_LIBRARY . '/api_queue.php');
 }
 
 if ($config['is_web']) {

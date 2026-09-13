@@ -1,4 +1,5 @@
-FROM php:8.4-fpm-bookworm
+ARG PHP_VERSION=8.4
+FROM php:${PHP_VERSION}-fpm-bookworm
 
 # rrdtool 1.7.x from Debian meets Cacti's minimum requirement. 1.9+ (source
 # build) enables graph tooltip output via graphv — not worth the image size
