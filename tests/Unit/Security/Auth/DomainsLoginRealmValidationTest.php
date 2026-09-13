@@ -88,6 +88,10 @@ function gnrv($name, $default = '') {
 	return $GLOBALS['req'][$name] ?? $default;
 }
 
+function gfrv($name, $filter = FILTER_VALIDATE_INT, $options = []) {
+	return $GLOBALS['req'][$name] ?? ($options['default'] ?? '');
+}
+
 function __(...$args) {
 	return vsprintf((string) $args[0], array_slice($args, 1));
 }
