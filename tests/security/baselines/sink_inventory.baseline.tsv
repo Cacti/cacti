@@ -406,6 +406,9 @@ header_redirect	./graph_templates.php			header('Location: graph_templates.php?ac
 header_redirect	./graph_templates.php			header('Location: graph_templates.php?action=template_edit&id=' . grv('graph_template_id'));
 header_redirect	./graph_templates.php			header('Location: graph_templates.php?action=template_edit&id=' . grv('graph_template_id'));
 header_redirect	./graph_templates.php			header('Location: graph_templates.php?action=template_edit&id=' . grv('graph_template_id'));
+header_redirect	./graphs.php						header('Location: aggregate_graphs.php');
+header_redirect	./graphs.php						header('Location: aggregate_graphs.php');
+header_redirect	./graphs.php						header('Location: aggregate_graphs.php');
 header_redirect	./graph_templates.php			header('Location: graph_templates.php?action=template_edit&id=' . grv('graph_template_id'));
 header_redirect	./graphs.php					header("Location: aggregate_graphs.php?action=edit&tab=details&id=$local_graph_id");
 header_redirect	./graphs.php				header('Location: graphs.php');
