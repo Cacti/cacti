@@ -10,6 +10,10 @@ Cacti CHANGELOG
 -security: Substitute query data before escaping graph titles and axis labels
 -security: Build forced-HTTPS redirects from the server-configured name
 -security: Replace sibling password-reset links and revoke authentication state after reset
+-security: Fail closed on a posted LDAP realm that is not a configured domain
+-security: Keep LDAP directory errors out of the login page
+-security: Demand TLS certificates for new LDAP domains
+-security: Restore the Cacti error handler on LDAP bind-only and empty-password paths
 -issue#7969: Restore excluded integration and mutation regression coverage
 -issue#7969: Align Rocky Linux compatibility checks with the supported PHP runtime
 -issue: Fail closed when OAuth callback state is absent or mismatched
