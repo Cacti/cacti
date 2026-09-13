@@ -735,7 +735,7 @@ function getDocumentAttribute(name) {
 }
 
 function setCookieValue(name, value) {
-	$.cookie(name, value.toString(), { expires: 365, path: urlPath + ';SameSite=Lax', secure: true });
+	$.cookie(name, value.toString(), { expires: 365, path: urlPath + ';SameSite=Lax', secure: (window.location.protocol === 'https:') });
 }
 
 function getCookieValue(name) {

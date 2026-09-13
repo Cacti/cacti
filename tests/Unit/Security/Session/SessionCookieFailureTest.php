@@ -18,9 +18,18 @@ test('a missing session cookie stops the CSRF redirect loop', function () use ($
 
 	expect($start)->not->toBeFalse()
 		->and($body)->toContain("!isset(\$_COOKIE[\$session_name])")
-		->and($body)->toContain('http_response_code(403);')
-		->and($body)->toContain('Session cookie missing; refusing to redirect into a login loop')
-		->and(strpos($body, 'http_response_code(403);'))->toBeLessThan(strpos($body, "header('Location: '"));
+		->and($body)->not->toContain("!empty(\$_COOKIE) && !isset(\$_COOKIE[\$session_name])")
+		->and($body)->toContain('cacti_session_cookie_failure(!empty($_COOKIE));')
+		->and(strpos($body, 'cacti_session_cookie_failure('))->toBeLessThan(strpos($body, "header('Location: '"));
+});
+
+test('cookie-less clients receive the response without unbounded logging', function () use ($csrfSource) {
+	$loginSource = file_get_contents(dirname(__DIR__, 4) . '/auth_login.php');
+
+	expect($loginSource)->toContain("!isset(\$_COOKIE[\$session_name])")
+		->and($loginSource)->toContain('cacti_session_cookie_failure(!empty($_COOKIE));')
+		->and($csrfSource)->toContain('if ($write_log) {')
+		->and($csrfSource)->toContain('http_response_code(403);');
 });
 
 test('the missing-cookie response gives actionable configuration guidance', function () use ($csrfSource) {

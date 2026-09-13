@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#7957: Stop treating every PID in a container as a reserved system PID
 -issue#7958: Repair batchgapfix --force, which aborted on PHP 8 and killed nothing
 -issue: Commit transactions on MySQL as well as MariaDB
+-security: Reject clean-client login requests when the session cookie was not accepted
 -security: Fail closed on a posted LDAP realm that is not a configured domain
 -security: Keep LDAP directory errors out of the login page
 -security: Demand TLS certificates for new LDAP installs
@@ -87,6 +88,8 @@ Cacti CHANGELOG
 -issue: Commit transaction check uses the passed connection (PR #7409)
 -issue: Memoize db_get_table_column_types to cut redundant SHOW COLUMNS (1.2.x backport) (PR #7382)
 -issue#7829: Report a missing session cookie instead of redirecting into a login loop
+-issue#7975: Harden malformed remember-me cookies and protocol-aware UI cookie flags
+-issue#7978: Revoke remember-me tokens before clearing cookies on every logout path
 -issue#7986: Preserve child exit codes observed by cacti_exec
 -issue#7907: Correct maintenance CLI validation, help text and error exit statuses
 -issue#7907: Remove the unused remove_graphs --graph-type option

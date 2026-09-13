@@ -50,6 +50,17 @@ $error_msg     = '';                                  // The errors message in c
 /* global variables for exception handling */
 global $error, $error_msg;
 
+/* The IP fallback can validate a login CSRF token when a clean browser rejects
+ * a mis-scoped session cookie. Stop before authenticating so that successful
+ * credentials do not redirect back to a fresh unauthenticated session. */
+if ($auth_method != 2 && get_nfilter_request_var('action') == 'login') {
+	$session_name = session_name();
+
+	if ($session_name !== '' && !isset($_COOKIE[$session_name])) {
+		cacti_session_cookie_failure(!empty($_COOKIE));
+	}
+}
+
 if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 	if ($auth_method > 2 && $frv_realm <= 1) {
 		// User picked 'local' from dropdown;
@@ -199,13 +210,6 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 			}
 		}
 
-		/* remember me support.  Not for guest of basic auth */
-		if ($auth_method != 2 && $user['id'] !== get_guest_account()) {
-			if (!$error && isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
-				set_auth_cookie($user);
-			}
-		}
-
 			if (!$error) {
 				/* avoid session fixation */
 				cacti_session_start(true);
@@ -229,6 +233,13 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 
 					header('Location: auth_login.php');
 					exit;
+				}
+
+				/* Mint a persistent credential only after the login transition succeeds. */
+				if ($auth_method != 2 && $user['id'] !== get_guest_account()
+					&& isset_request_var('remember_me')
+					&& read_config_option('auth_cache_enabled') == 'on') {
+					set_auth_cookie($user);
 				}
 
 				/* handle 'force change password' */
