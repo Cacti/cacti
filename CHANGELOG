@@ -185,6 +185,8 @@ Cacti CHANGELOG
 -issue#7355: Add a JUNIPER-MIB jnxOperatingTable script data query for RE and FPC health
 -issue#7355: Add an F5-BIGIP-SYSTEM-MIB script data query for per-CPU utilization
 -issue#7904: Device changes are silently skipped when --bulk_walk is passed to change_device.php
+-issue#7975: Reject malformed remember-me cookies without warnings or mutations
+-issue#7978: Revoke remember-me tokens before clearing browser state
 -issue#7328: Align graph, CSV export, percentile, and summation sample windows
 -issue#7981: Require POST tokens for state-changing item, tree and RRD actions
 -issue#7809: Avoid reading a missing source key on output-only data query fields
