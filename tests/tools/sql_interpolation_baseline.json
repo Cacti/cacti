@@ -50,7 +50,7 @@
     "poller_automation.php": 2,
     "poller_boost.php": 5,
     "poller_dsstats.php": 1,
-    "poller_recovery.php": 4,
+    "poller_recovery.php": 2,
     "poller_spikekill.php": 1,
     "rrdcleaner.php": 3,
     "support.php": 3,
