@@ -954,7 +954,7 @@ function db_is_safe_column_type($type) {
 
 	$type = trim($type);
 
-	if ($type === '' || preg_match('/[`;"#]|--|\/\*/', $type)) {
+	if ($type === '' || preg_match('/[`;#]|--|\/\*/', $type)) {
 		return false;
 	}
 
@@ -974,7 +974,9 @@ function db_is_safe_column_type($type) {
 	}
 
 	if ($base_type === 'enum' || $base_type === 'set') {
-		return preg_match("/^\\s*'([^'\\\\]|\\\\.|'')*'(\\s*,\\s*'([^'\\\\]|\\\\.|'')*')*\\s*$/", $params) === 1;
+		$quoted_value = "(?:'([^'\\\\]|\\\\.|'')*'|\"([^\"\\\\]|\\\\.|\"\")*\")";
+
+		return preg_match('/^\\s*' . $quoted_value . '(?:\\s*,\\s*' . $quoted_value . ')*\\s*$/', $params) === 1;
 	}
 
 	return false;
