@@ -1236,11 +1236,6 @@ function device_javascript() {
 	function hostPageLoad(strURL) {
 		var scrollTop = $(window).scrollTop();
 		loadPageUsingPost(strURL);
-//		$.get(strURL, function(data) {
-//			$('#main').html(data);
-//			applySkin();
-//			$(window).scrollTop(scrollTop);
-//		});
 	}
 
 	$(function() {
