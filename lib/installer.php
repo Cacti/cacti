@@ -2866,7 +2866,7 @@ class Installer implements JsonSerializable {
 		if (!$backgroundNeeded) {
 			log_install_debug('background', PHP_EOL . '----------------' . PHP_EOL . 'Check Expire' . PHP_EOL . '----------------');
 
-			$backgroundDateStarted = DateTime::createFromFormat('U.u', $backgroundTime);
+			$backgroundDateStarted = Installer::dateFromMicrotime($backgroundTime);
 			$backgroundLast = read_config_option('install_updated', true);
 
 			log_install_debug('background', 'backgroundDateStarted = ' . $backgroundDateStarted->format('Y-m-d H:i:s') . PHP_EOL);
@@ -3619,17 +3619,8 @@ class Installer implements JsonSerializable {
 
 		log_install_high('', "beginInstall(): '$backgroundTime' (time) != '$backgroundArg' (arg) && '-b' != '$backgroundArg' (arg)");
 		if ("$backgroundTime" != "$backgroundArg" && "-b" != "$backgroundArg") {
-			$dateTime = DateTime::createFromFormat('U.u', $backgroundTime);
-
-			if ($dateTime === false) {
-				$dateTime = new DateTime();
-			}
-
-			$dateArg = DateTime::createFromFormat('U.u', $backgroundArg);
-
-			if ($dateArg === false) {
-				$dateArg = new DateTime();
-			}
+			$dateTime = Installer::dateFromMicrotime($backgroundTime);
+			$dateArg  = Installer::dateFromMicrotime($backgroundArg);
 
 			$background_error = __('Background was already started at %s, this attempt at %s was skipped',
 				$dateTime->format('Y-m-d H:i:s.u'),
@@ -3663,12 +3654,29 @@ class Installer implements JsonSerializable {
 		$backgroundDone = microtime(true);
 		set_install_config_option('install_complete', $backgroundDone);
 
-		$dateBack = DateTime::createFromFormat('U.u', $backgroundTime);
-		$dateTime = DateTime::createFromFormat('U.u', $backgroundDone);
+		$dateBack = Installer::dateFromMicrotime($backgroundTime);
+		$dateTime = Installer::dateFromMicrotime($backgroundDone);
 
 		log_install_always('', __('Installation was started at %s, completed at %s', (string) $dateBack->format('Y-m-d H:i:s'), (string) $dateTime->format('Y-m-d H:i:s')));
 
 		return $success;
+	}
+
+	/*
+	 * Installer timestamps are stored as (string) microtime(true), which has no
+	 * fractional part whenever the float lands on a whole second, and an install
+	 * carried over from an older release may hold a bare integer.  'U.u' rejects
+	 * both, so fall back to whole seconds rather than let a log message abort the
+	 * install with a format() call on false.
+	 */
+	public static function dateFromMicrotime($value) {
+		$date = DateTime::createFromFormat('U.u', (string) $value);
+
+		if ($date === false && is_numeric($value)) {
+			$date = DateTime::createFromFormat('U', (string) (int) $value);
+		}
+
+		return $date === false ? new DateTime() : $date;
 	}
 
 	public static function getInstallLog() {
