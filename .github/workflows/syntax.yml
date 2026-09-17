@@ -212,47 +212,11 @@ jobs:
     - name: Check PHP syntax
       run: if find ${{ github.workspace }} -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
 
-    - name: Add ondrej PHP PPA and apt-get update
-      run: |
-        # The runner image and setup-php may already have this PPA configured
-        # with a keyring. Adding it again supplies no Signed-By value, and apt
-        # refuses the conflicting pair rather than merging them, which fails
-        # the whole job before any Cacti code runs.
-        if grep -Rqs 'ondrej/php' /etc/apt/sources.list /etc/apt/sources.list.d/; then
-          echo 'ondrej/php already configured, skipping add-apt-repository'
-        else
-          if ! sudo timeout --signal=TERM 60s add-apt-repository -y --no-update ppa:ondrej/php; then
-            echo 'add-apt-repository failed or timed out after 60 seconds' >&2
-            exit 1
-          fi
-        fi
-        for source in /etc/apt/apt-mirrors.txt /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources; do
-          if [ -f "$source" ]; then
-            sudo sed -E -i 's#https?://azure.archive.ubuntu.com/ubuntu#https://archive.ubuntu.com/ubuntu#g' "$source"
-          fi
-        done
-        for attempt in 1 2 3; do
-          if sudo timeout --signal=TERM 300s apt-get -y \
-            -o Acquire::Retries=3 \
-            -o Acquire::http::Timeout=30 \
-            -o Acquire::https::Timeout=30 update; then
-            break
-          fi
-
-          if [ "$attempt" -eq 3 ]; then
-            echo 'apt-get update failed after three bounded attempts' >&2
-            exit 1
-          fi
-
-          sleep $((attempt * 10))
-        done
+    - name: Run apt-get update
+      run: sudo apt-get update
 
     - name: Install Apache and Tools
-      run: |
-        sudo apt-get install \
-        -o Acquire::http::Timeout="10" \
-        -o Acquire::https::Timeout="10" \
-        -o Acquire::Retries="30" snmp snmpd rrdtool 
+      run: sudo apt-get install snmp snmpd rrdtool fping
 
     - name: Start SNMPD Agent and Test Agent
       run: |
@@ -280,6 +244,23 @@ jobs:
 
     - name: Restart Apache2
       run: sudo systemctl restart apache2
+
+    - name: Validate composer files
+      run: |
+        cd ${{ github.workspace }}
+        if [ -f composer.json ]; then
+          composer validate --strict || true
+        fi
+
+    - name: Install Composer Dependencies
+      run: |
+        cd ${{ github.workspace }}
+        if [ -f composer.json ]; then
+          composer config --no-plugins allow-plugins.pestphp/pest-plugin true
+          composer require --dev --no-progress --no-interaction "pestphp/pest: ^3" "pestphp/pest-plugin-drift: ^3.0"
+          rm -f composer.lock
+          composer install --dev --no-progress
+        fi      
       
     - name: Create and Initialize Database
       env:
