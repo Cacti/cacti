@@ -62,9 +62,11 @@
         "symfony/http-foundation": "^7.4",
         "symfony/lock": "^7.4",
         "symfony/mailer": "^7.4",
-        "symfony/notifier": "^7.4",
-        "symfony/process": "^7.4",
-        "symfony/validator": "^7.4"
+		"symfony/messenger": "^7.4",
+		"symfony/notifier": "^7.4",
+		"symfony/uid": "^7.4",
+		"symfony/process": "^7.4",
+		"symfony/validator": "^7.4"
     },
     "require-dev": {
         "composer/xdebug-handler": "^3.0",

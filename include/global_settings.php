@@ -73,6 +73,7 @@ $tabs = [
 	'logging'        => __('Logging'),
 	'snmp'           => __('Device Defaults'),
 	'poller'         => __('Poller'),
+	'queue'          => __('Queue'),
 	'scheduler'      => __('Scheduler'),
 	'data'           => __('Data/Statistics'),
 	'visual'         => __('Visual'),
@@ -1808,6 +1809,81 @@ $settings['poller'] = [
 			'90' => __('%d Percent', '90')
 		],
 	],
+];
+
+$settings['queue'] = [
+	'queue_header' => [
+		'friendly_name' => __('Asynchronous Queue'),
+		'method'        => 'spacer',
+		'collapsible'   => 'true'
+	],
+	'queue_default_transport' => [
+		'friendly_name' => __('Default Queue Transport'),
+		'description'   => __('The registered transport used when a queue has no explicit route.'),
+		'method'        => 'textbox',
+		'default'       => 'database',
+		'max_length'    => '64',
+		'size'          => '30'
+	],
+	'queue_transport_routes' => [
+		'friendly_name' => __('Queue Transport Routes'),
+		'description'   => __('A JSON object mapping queue names to registered transport names.'),
+		'method'        => 'textarea',
+		'default'       => '{}',
+		'textarea_rows' => '5',
+		'textarea_cols' => '60'
+	],
+	'queue_lease_seconds' => [
+		'friendly_name' => __('Queue Visibility Lease'),
+		'description'   => __('The default number of seconds a database message remains reserved.'),
+		'method'        => 'drop_array',
+		'default'       => '3600',
+		'array'         => [
+			30    => __('%d Seconds', 30),
+			60    => __('%d Minute', 1),
+			300   => __('%d Minutes', 5),
+			900   => __('%d Minutes', 15),
+			1800  => __('%d Minutes', 30),
+			3600  => __('%d Hour', 1),
+			7200  => __('%d Hours', 2),
+			21600 => __('%d Hours', 6),
+			43200 => __('%d Hours', 12),
+			86400 => __('%d Day', 1)
+		]
+	],
+	'queue_completed_retention_days' => [
+		'friendly_name' => __('Completed Message Retention'),
+		'description'   => __('The number of days completed database messages are retained.'),
+		'method'        => 'drop_array',
+		'default'       => '7',
+		'array'         => [
+			1   => __('%d Day', 1),
+			7   => __('%d Days', 7),
+			14  => __('%d Days', 14),
+			30  => __('%d Days', 30),
+			60  => __('%d Days', 60),
+			90  => __('%d Days', 90),
+			180 => __('%d Days', 180),
+			365 => __('%d Days', 365)
+		]
+	],
+	'queue_dead_retention_days' => [
+		'friendly_name' => __('Dead Message Retention'),
+		'description'   => __('The number of days dead-letter database messages are retained.'),
+		'method'        => 'drop_array',
+		'default'       => '90',
+		'array'         => [
+			1   => __('%d Day', 1),
+			7   => __('%d Days', 7),
+			14  => __('%d Days', 14),
+			30  => __('%d Days', 30),
+			60  => __('%d Days', 60),
+			90  => __('%d Days', 90),
+			180 => __('%d Days', 180),
+			365 => __('%d Days', 365),
+			730 => __('%d Days', 730)
+		]
+	]
 ];
 
 $settings['scheduler'] = [
