@@ -707,7 +707,7 @@ INSERT INTO `table_columns` VALUES ('poller_command',1,'poller_id','smallint(5) 
 INSERT INTO `table_columns` VALUES ('poller_command',2,'time','timestamp','NO','','0000-00-00 00:00:00','');
 INSERT INTO `table_columns` VALUES ('poller_command',3,'action','tinyint(3) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('poller_command',4,'command','varchar(191)','NO','PRI','','');
-INSERT INTO `table_columns` VALUES ('poller_command',5,'last_updated','timestamp','YES','','current_timestamp()','on update current_timestamp()');
+INSERT INTO `table_columns` VALUES ('poller_command',5,'last_updated','timestamp','NO','','current_timestamp()','on update current_timestamp()');
 INSERT INTO `table_columns` VALUES ('poller_data_template_field_mappings',1,'data_template_id','int(10) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('poller_data_template_field_mappings',2,'data_name','varchar(40)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('poller_data_template_field_mappings',3,'data_source_names','varchar(125)','NO','PRI','','');
@@ -717,7 +717,7 @@ INSERT INTO `table_columns` VALUES ('poller_item',2,'poller_id','int(10) unsigne
 INSERT INTO `table_columns` VALUES ('poller_item',3,'host_id','mediumint(8) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('poller_item',4,'action','tinyint(3) unsigned','NO','MUL','1','');
 INSERT INTO `table_columns` VALUES ('poller_item',5,'present','tinyint(3) unsigned','NO','MUL','1','');
-INSERT INTO `table_columns` VALUES ('poller_item',6,'last_updated','timestamp','YES','','current_timestamp()','on update current_timestamp()');
+INSERT INTO `table_columns` VALUES ('poller_item',6,'last_updated','timestamp','NO','','current_timestamp()','on update current_timestamp()');
 INSERT INTO `table_columns` VALUES ('poller_item',7,'hostname','varchar(100)','NO','','','');
 INSERT INTO `table_columns` VALUES ('poller_item',8,'snmp_community','varchar(100)','NO','','','');
 INSERT INTO `table_columns` VALUES ('poller_item',9,'snmp_version','tinyint(3) unsigned','NO','','0','');
@@ -1296,7 +1296,7 @@ INSERT INTO `table_indexes` VALUES ('poller',1,'disabled',1,'disabled','A',1,NUL
 INSERT INTO `table_indexes` VALUES ('poller',1,'name',1,'name','A',1,NULL,NULL,'YES','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller',0,'PRIMARY',1,'id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_command',1,'poller_id_last_updated',1,'poller_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_command',1,'poller_id_last_updated',2,'last_updated','A',0,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_command',1,'poller_id_last_updated',2,'last_updated','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_command',0,'PRIMARY',1,'poller_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_command',0,'PRIMARY',2,'action','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_command',0,'PRIMARY',3,'command','A',0,NULL,NULL,'','BTREE','');
@@ -1310,7 +1310,7 @@ INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_action',2,'action
 INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_host_id',1,'poller_id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_host_id',2,'host_id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_last_updated',1,'poller_id','A',1,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_last_updated',2,'last_updated','A',1,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_last_updated',2,'last_updated','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_rrd_next_step',1,'poller_id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_rrd_next_step',2,'rrd_next_step','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_item',1,'present',1,'present','A',1,NULL,NULL,'','BTREE','');
@@ -1411,13 +1411,13 @@ INSERT INTO `table_indexes` VALUES ('snmpagent_notifications_log',1,'manager_id_
 INSERT INTO `table_indexes` VALUES ('snmpagent_notifications_log',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_notifications_log',1,'severity',1,'severity','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_notifications_log',1,'time',1,'time','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('table_columns',0,'PRIMARY',1,'table_name','A',1,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('table_columns',0,'PRIMARY',2,'table_sequence','A',3,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('table_columns',0,'PRIMARY',3,'table_field','A',3,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',1,'idx_table_name','A',1,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',2,'idx_key_name','A',1,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',3,'idx_seq_in_index','A',1,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',4,'idx_column_name','A',1,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('table_columns',0,'PRIMARY',1,'table_name','A',3,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('table_columns',0,'PRIMARY',2,'table_sequence','A',81,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('table_columns',0,'PRIMARY',3,'table_field','A',81,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',1,'idx_table_name','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',2,'idx_key_name','A',4,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',3,'idx_seq_in_index','A',4,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',4,'idx_column_name','A',4,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_auth',1,'enabled',1,'enabled','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_auth',0,'PRIMARY',1,'id','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_auth',1,'realm',1,'realm','A',1,NULL,NULL,'','BTREE','');
@@ -1477,4 +1477,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-09-17 19:25:21
+-- Dump completed on 2026-09-17 19:28:45
