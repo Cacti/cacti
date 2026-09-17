@@ -623,7 +623,7 @@ INSERT INTO `table_columns` VALUES ('host',46,'polling_time','double','YES','','
 INSERT INTO `table_columns` VALUES ('host',47,'total_polls','int(10) unsigned','YES','','0','');
 INSERT INTO `table_columns` VALUES ('host',48,'failed_polls','int(10) unsigned','YES','','0','');
 INSERT INTO `table_columns` VALUES ('host',49,'availability','decimal(8,5)','NO','','100.00000','');
-INSERT INTO `table_columns` VALUES ('host',50,'last_updated','timestamp','YES','','current_timestamp()','on update current_timestamp()');
+INSERT INTO `table_columns` VALUES ('host',50,'last_updated','timestamp','NO','','current_timestamp()','on update current_timestamp()');
 INSERT INTO `table_columns` VALUES ('host_graph',1,'host_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('host_graph',2,'graph_template_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('host_snmp_cache',1,'host_id','mediumint(8) unsigned','NO','PRI','0','');
@@ -633,7 +633,7 @@ INSERT INTO `table_columns` VALUES ('host_snmp_cache',4,'field_value','varchar(5
 INSERT INTO `table_columns` VALUES ('host_snmp_cache',5,'snmp_index','varchar(255)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('host_snmp_cache',6,'oid','text','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('host_snmp_cache',7,'present','tinyint(3) unsigned','NO','MUL','1','');
-INSERT INTO `table_columns` VALUES ('host_snmp_cache',8,'last_updated','timestamp','YES','MUL','current_timestamp()','on update current_timestamp()');
+INSERT INTO `table_columns` VALUES ('host_snmp_cache',8,'last_updated','timestamp','NO','MUL','current_timestamp()','on update current_timestamp()');
 INSERT INTO `table_columns` VALUES ('host_snmp_query',1,'host_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('host_snmp_query',2,'snmp_query_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('host_snmp_query',3,'sort_field','varchar(50)','NO','','','');
@@ -705,7 +705,7 @@ INSERT INTO `table_columns` VALUES ('poller_command',1,'poller_id','smallint(5) 
 INSERT INTO `table_columns` VALUES ('poller_command',2,'time','timestamp','NO','','0000-00-00 00:00:00','');
 INSERT INTO `table_columns` VALUES ('poller_command',3,'action','tinyint(3) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('poller_command',4,'command','varchar(191)','NO','PRI','','');
-INSERT INTO `table_columns` VALUES ('poller_command',5,'last_updated','timestamp','YES','','current_timestamp()','on update current_timestamp()');
+INSERT INTO `table_columns` VALUES ('poller_command',5,'last_updated','timestamp','NO','','current_timestamp()','on update current_timestamp()');
 INSERT INTO `table_columns` VALUES ('poller_data_template_field_mappings',1,'data_template_id','int(10) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('poller_data_template_field_mappings',2,'data_name','varchar(40)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('poller_data_template_field_mappings',3,'data_source_names','varchar(125)','NO','PRI','','');
@@ -715,7 +715,7 @@ INSERT INTO `table_columns` VALUES ('poller_item',2,'poller_id','int(10) unsigne
 INSERT INTO `table_columns` VALUES ('poller_item',3,'host_id','mediumint(8) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('poller_item',4,'action','tinyint(3) unsigned','NO','MUL','1','');
 INSERT INTO `table_columns` VALUES ('poller_item',5,'present','tinyint(3) unsigned','NO','MUL','1','');
-INSERT INTO `table_columns` VALUES ('poller_item',6,'last_updated','timestamp','YES','','current_timestamp()','on update current_timestamp()');
+INSERT INTO `table_columns` VALUES ('poller_item',6,'last_updated','timestamp','NO','','current_timestamp()','on update current_timestamp()');
 INSERT INTO `table_columns` VALUES ('poller_item',7,'hostname','varchar(100)','NO','','','');
 INSERT INTO `table_columns` VALUES ('poller_item',8,'snmp_community','varchar(100)','NO','','','');
 INSERT INTO `table_columns` VALUES ('poller_item',9,'snmp_version','tinyint(3) unsigned','NO','','0','');
