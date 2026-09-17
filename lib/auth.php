@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-use phpseclib3\Crypt\RSA;
+use phpseclib4\Crypt\RSA;
 
 /**
  * clear_auth_cookie - clears a users security token
