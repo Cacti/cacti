@@ -630,6 +630,7 @@ FILTERED_LOG="$(grep -v \
   -e "DSDEBUG Bad Data" \
   -e "PUSHOUT Child Started" \
   -e "Creating new partition" \
+  -e "Removing old partition" \
   "$CACTI_LOG")" || true
 
 save_log_files
