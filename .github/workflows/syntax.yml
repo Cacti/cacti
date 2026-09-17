@@ -258,7 +258,7 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: composer install --no-interaction --no-progress --prefer-dist
+      run: sudo composer install --no-interaction --no-progress --prefer-dist
 
     - name: Create and Initialize Database
       env:
