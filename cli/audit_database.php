@@ -865,7 +865,7 @@ function report_audit_results($output = true) {
 		print '---------------------------------------------------------------------------------------------' . PHP_EOL;
 	}
 
-	return $alters;
+	return cacti_sizeof($alters) ? false : true;
 }
 
 function make_column_props(&$dbc) {
