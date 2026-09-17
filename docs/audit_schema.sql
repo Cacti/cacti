@@ -745,10 +745,10 @@ INSERT INTO `table_columns` VALUES ('poller_output_boost',2,'rrd_name','varchar(
 INSERT INTO `table_columns` VALUES ('poller_output_boost',3,'time','timestamp','NO','PRI','0000-00-00 00:00:00','');
 INSERT INTO `table_columns` VALUES ('poller_output_boost',4,'output','varchar(512)','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('poller_output_boost_local_data_ids',1,'run_id','char(32)','NO','PRI','0','');
-INSERT INTO `table_columns` VALUES ('poller_output_boost_local_data_ids',2,'local_data_id','int(10) unsigned','NO','PRI','0','');
+INSERT INTO `table_columns` VALUES ('poller_output_boost_local_data_ids',2,'local_data_id','int(10) unsigned','NO','PRI',NULL,'');
 INSERT INTO `table_columns` VALUES ('poller_output_boost_local_data_ids',3,'process_handler','int(10) unsigned','NO','PRI','0','');
-INSERT INTO `table_columns` VALUES ('poller_output_boost_local_data_ids',4,'cursor_time','timestamp','YES','','0','');
-INSERT INTO `table_columns` VALUES ('poller_output_boost_local_data_ids',4,'cursor_rrd_name','varchar(19)','NO','','0','');
+INSERT INTO `table_columns` VALUES ('poller_output_boost_local_data_ids',4,'cursor_time','timestamp','YES','',NULL,'');
+INSERT INTO `table_columns` VALUES ('poller_output_boost_local_data_ids',5,'cursor_rrd_name','varchar(19)','NO','','0','');
 INSERT INTO `table_columns` VALUES ('poller_output_boost_processes',1,'sock_int_value','bigint(20) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('poller_output_boost_processes',2,'run_id','char(32)','NO','MUL','','');
 INSERT INTO `table_columns` VALUES ('poller_output_boost_processes',3,'child_id','int(10) unsigned','NO','','0','');
@@ -1319,8 +1319,8 @@ INSERT INTO `table_indexes` VALUES ('poller_output_boost',0,'PRIMARY',2,'time','
 INSERT INTO `table_indexes` VALUES ('poller_output_boost',0,'PRIMARY',3,'rrd_name','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output_boost_local_data_ids',0,'PRIMARY',1,'run_id',NULL,NULL,NULL,NULL,'','HASH','');
 INSERT INTO `table_indexes` VALUES ('poller_output_boost_local_data_ids',0,'PRIMARY',2,'local_data_id',NULL,0,NULL,NULL,'','HASH','');
-INSERT INTO `table_indexes` VALUES ('poller_output_boost_local_data_ids',1,'process_handler',1,'run_id',NULL,NULL,NULL,NULL,'YES','HASH','');
-INSERT INTO `table_indexes` VALUES ('poller_output_boost_local_data_ids',1,'process_handler',2,'process_handler',NULL,0,NULL,NULL,'YES','HASH','');
+INSERT INTO `table_indexes` VALUES ('poller_output_boost_local_data_ids',1,'process_handler',1,'run_id',NULL,NULL,NULL,NULL,'','HASH','');
+INSERT INTO `table_indexes` VALUES ('poller_output_boost_local_data_ids',1,'process_handler',2,'process_handler',NULL,0,NULL,NULL,'','HASH','');
 INSERT INTO `table_indexes` VALUES ('poller_output_boost_processes',0,'PRIMARY',1,'sock_int_value',NULL,0,NULL,NULL,'','HASH','');
 INSERT INTO `table_indexes` VALUES ('poller_output_boost_processes',0,'run_child',1,'run_id',NULL,0,NULL,NULL,'','HASH','');
 INSERT INTO `table_indexes` VALUES ('poller_output_boost_processes',0,'run_child',2,'child_id',NULL,0,NULL,NULL,'','HASH','');
