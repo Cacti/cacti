@@ -1,109 +1,92 @@
 <?php
 
 /**
- * Miccrosoft BLOB Formatted RSA Key Handler
+ * Microsoft BLOB Formatted RSA Key Handler
  *
  * More info:
  *
  * https://msdn.microsoft.com/en-us/library/windows/desktop/aa375601(v=vs.85).aspx
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2015 Jim Wigginton
+ * @copyright 2015-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\RSA\Formats\Keys;
+declare(strict_types=1);
 
-use phpseclib3\Common\Functions\Strings;
-use phpseclib3\Exception\UnsupportedFormatException;
-use phpseclib3\Math\BigInteger;
+namespace phpseclib4\Crypt\RSA\Formats\Keys;
+
+use phpseclib4\Common\Functions\Strings;
+use phpseclib4\Exception\{InvalidArgumentException, UnexpectedValueException};
+use phpseclib4\Math\BigInteger;
 
 /**
  * Microsoft BLOB Formatted RSA Key Handler
  *
  * @author  Jim Wigginton <terrafrost@php.net>
+ * @psalm-api
  */
 abstract class MSBLOB
 {
     /**
      * Public/Private Key Pair
-     *
      */
-    const PRIVATEKEYBLOB = 0x7;
+    private const PRIVATEKEYBLOB = 0x7;
     /**
      * Public Key
-     *
      */
-    const PUBLICKEYBLOB = 0x6;
+    private const PUBLICKEYBLOB = 0x6;
     /**
      * Public Key
-     *
      */
-    const PUBLICKEYBLOBEX = 0xA;
+    private const PUBLICKEYBLOBEX = 0xA;
     /**
      * RSA public key exchange algorithm
-     *
      */
-    const CALG_RSA_KEYX = 0x0000A400;
+    private const CALG_RSA_KEYX = 0x0000A400;
     /**
      * RSA public key exchange algorithm
-     *
      */
-    const CALG_RSA_SIGN = 0x00002400;
+    private const CALG_RSA_SIGN = 0x00002400;
     /**
      * Public Key
-     *
      */
-    const RSA1 = 0x31415352;
+    private const RSA1 = 0x31415352;
     /**
      * Private Key
-     *
      */
-    const RSA2 = 0x32415352;
+    private const RSA2 = 0x32415352;
 
     /**
      * Break a public or private key down into its constituent components
      *
-     * @param string $key
-     * @param string $password optional
-     * @return array
+     * @psalm-suppress PossiblyUnusedParam
      */
-    public static function load($key, $password = '')
-    {
-        if (!Strings::is_stringable($key)) {
-            throw new \UnexpectedValueException('Key should be a string - not a ' . gettype($key));
-        }
-
+    public static function load(
+        #[\SensitiveParameter] string $key,
+        #[\SensitiveParameter] ?string $password = null
+    ): array {
         $key = Strings::base64_decode($key);
-
-        if (!is_string($key)) {
-            throw new \UnexpectedValueException('Base64 decoding produced an error');
-        }
         if (strlen($key) < 20) {
-            throw new \UnexpectedValueException('Key appears to be malformed');
+            throw new UnexpectedValueException('Key appears to be malformed');
         }
 
         // PUBLICKEYSTRUC  publickeystruc
         // https://msdn.microsoft.com/en-us/library/windows/desktop/aa387453(v=vs.85).aspx
-        $unpacked = unpack('atype/aversion/vreserved/Valgo', Strings::shift($key, 8));
-        $type = $unpacked['type'];
-        $version = $unpacked['version'];
-        $reserved = $unpacked['reserved'];
-        $algo = $unpacked['algo'];
-        switch (ord($type)) {
-            case self::PUBLICKEYBLOB:
-            case self::PUBLICKEYBLOBEX:
-                $publickey = true;
-                break;
-            case self::PRIVATEKEYBLOB:
-                $publickey = false;
-                break;
-            default:
-                throw new \UnexpectedValueException('Key appears to be malformed');
-        }
+        [
+            'type' => $type,
+            //'version' => $version,
+            //'reserved' => $reserved,
+            'algo' => $algo
+        ] = unpack('atype/aversion/vreserved/Valgo', Strings::shift($key, 8));
+        $publickey = match (ord($type)) {
+            self::PUBLICKEYBLOB, self::PUBLICKEYBLOBEX => true,
+            self::PRIVATEKEYBLOB => false,
+            default => throw new UnexpectedValueException('Key appears to be malformed')
+        };
 
         $components = ['isPublicKey' => $publickey];
 
@@ -113,29 +96,30 @@ abstract class MSBLOB
             case self::CALG_RSA_SIGN:
                 break;
             default:
-                throw new \UnexpectedValueException('Key appears to be malformed');
+                throw new UnexpectedValueException('Key appears to be malformed');
         }
 
         // RSAPUBKEY rsapubkey
         // https://msdn.microsoft.com/en-us/library/windows/desktop/aa387685(v=vs.85).aspx
         // could do V for pubexp but that's unsigned 32-bit whereas some PHP installs only do signed 32-bit
-        $unpacked = unpack('Vmagic/Vbitlen/a4pubexp', Strings::shift($key, 12));
-        $magic = $unpacked['magic'];
-        $bitlen = $unpacked['bitlen'];
-        $pubexp = $unpacked['pubexp'];
+        [
+            'magic' => $magic,
+            'bitlen' => $bitlen,
+            'pubexp' => $pubexp
+        ] = unpack('Vmagic/Vbitlen/a4pubexp', Strings::shift($key, 12));
         switch ($magic) {
             case self::RSA2:
                 $components['isPublicKey'] = false;
-                // fall-through
+                // no break
             case self::RSA1:
                 break;
             default:
-                throw new \UnexpectedValueException('Key appears to be malformed');
+                throw new UnexpectedValueException('Key appears to be malformed');
         }
 
         $baseLength = $bitlen / 16;
         if (strlen($key) != 2 * $baseLength && strlen($key) != 9 * $baseLength) {
-            throw new \UnexpectedValueException('Key appears to be malformed');
+            throw new UnexpectedValueException('Key appears to be malformed');
         }
 
         $components[$components['isPublicKey'] ? 'publicExponent' : 'privateExponent'] = new BigInteger(strrev($pubexp), 256);
@@ -170,23 +154,24 @@ abstract class MSBLOB
     /**
      * Convert a private key to the appropriate format.
      *
-     * @param BigInteger $n
-     * @param BigInteger $e
-     * @param BigInteger $d
-     * @param array $primes
-     * @param array $exponents
-     * @param array $coefficients
-     * @param string $password optional
-     * @return string
+     * @psalm-suppress PossiblyUnusedParam
      */
-    public static function savePrivateKey(BigInteger $n, BigInteger $e, BigInteger $d, array $primes, array $exponents, array $coefficients, $password = '')
-    {
+    public static function savePrivateKey(
+        BigInteger $n,
+        BigInteger $e,
+        #[\SensitiveParameter] BigInteger $d,
+        #[\SensitiveParameter] array $primes,
+        #[\SensitiveParameter] array $exponents,
+        #[\SensitiveParameter] array $coefficients,
+        #[\SensitiveParameter] ?string $password = null,
+        array $options = []
+    ): string {
         if (count($primes) != 2) {
-            throw new \InvalidArgumentException('MSBLOB does not support multi-prime RSA keys');
+            throw new InvalidArgumentException('MSBLOB does not support multi-prime RSA keys');
         }
 
-        if (!empty($password) && is_string($password)) {
-            throw new UnsupportedFormatException('MSBLOB private keys do not support encryption');
+        if (isset($password)) {
+            throw new InvalidArgumentException('MSBLOB private keys do not support encryption');
         }
 
         $n = strrev($n->toBytes());
@@ -207,11 +192,9 @@ abstract class MSBLOB
     /**
      * Convert a public key to the appropriate format
      *
-     * @param BigInteger $n
-     * @param BigInteger $e
-     * @return string
+     * @psalm-suppress PossiblyUnusedParam
      */
-    public static function savePublicKey(BigInteger $n, BigInteger $e)
+    public static function savePublicKey(BigInteger $n, BigInteger $e, array $options = []): string
     {
         $n = strrev($n->toBytes());
         $e = str_pad(strrev($e->toBytes()), 4, "\0");

@@ -20,8 +20,8 @@
         "asn1",
         "asn.1",
         "BigInteger"
-        ],
-    "homepage": "http://phpseclib.sourceforge.net",
+    ],
+    "homepage": "https://phpseclib.com/",
     "license": "MIT",
     "authors": [
         {
@@ -48,20 +48,30 @@
             "name": "Graham Campbell",
             "email": "graham@alt-three.com",
             "role": "Developer"
+        },
+        {
+            "name": "Jack Worman",
+            "email": "jack.worman@gmail.com",
+            "role": "Developer",
+            "homepage": "https://jackworman.com"
         }
     ],
     "require": {
-        "php": ">=5.6.1",
-        "paragonie/constant_time_encoding": "^1|^2|^3",
-        "paragonie/random_compat": "^1.4|^2.0|^9.99.99"
+        "php": ">=8.1",
+        "paragonie/constant_time_encoding": "^2|^3",
+        "symfony/polyfill-php82": "^1.26"
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "ext-xml": "*",
+        "brianium/paratest": "^7.22",
+        "phpunit/phpunit": "^13",
+        "php-parallel-lint/php-parallel-lint": "^1.3",
+        "squizlabs/php_codesniffer": "^3.7",
+        "vimeo/psalm": "*"
     },
     "suggest": {
         "ext-libsodium": "SSH2/SFTP can make use of some algorithms provided by the libsodium-php extension.",
         "ext-openssl": "Install the OpenSSL extension in order to speed up a wide variety of cryptographic operations.",
-        "ext-mcrypt": "Install the Mcrypt extension in order to speed up a few other cryptographic operations.",
         "ext-gmp": "Install the GMP (GNU Multiple Precision) extension in order to speed up arbitrary precision integer arithmetic operations.",
         "ext-dom": "Install the DOM extension to load XML formatted public keys."
     },
@@ -70,15 +80,29 @@
             "phpseclib/bootstrap.php"
         ],
         "psr-4": {
-            "phpseclib3\\": "phpseclib/"
+            "phpseclib4\\": "phpseclib/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "phpseclib3\\Tests\\": "tests/"
+            "phpseclib4\\Tests\\": "tests/"
         }
     },
     "config": {
         "sort-packages": true
+    },
+    "scripts": {
+        "lint": "vendor/bin/parallel-lint --show-deprecated build phpseclib tests",
+        "php_codesniffer": "vendor/bin/phpcs --standard=build/php_codesniffer.xml",
+        "php_codesniffer-fix": "vendor/bin/phpcbf --standard=build/php_codesniffer.xml",
+        "psalm": "vendor/bin/psalm --config=build/psalm.xml --no-cache --long-progress --threads=4",
+        "psalm-set-baseline": "vendor/bin/psalm --config=build/psalm.xml --no-cache --long-progress --set-baseline=psalm_baseline.xml --threads=4",
+        "test": "vendor/bin/paratest --verbose --configuration=tests/phpunit.xml --runner=WrapperRunner",
+        "all-quality-tools": [
+            "@lint",
+            "@phpcs",
+            "@psalm",
+            "@test"
+        ]
     }
 }

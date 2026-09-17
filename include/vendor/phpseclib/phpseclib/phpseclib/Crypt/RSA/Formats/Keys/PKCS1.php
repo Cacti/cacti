@@ -3,7 +3,7 @@
 /**
  * PKCS#1 Formatted RSA Key Handler
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * Used by File/X509.php
  *
@@ -15,18 +15,19 @@
  * Analogous to ssh-keygen's pem format (as specified by -m)
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2015 Jim Wigginton
+ * @copyright 2015-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\RSA\Formats\Keys;
+declare(strict_types=1);
 
-use phpseclib3\Common\Functions\Strings;
-use phpseclib3\Crypt\Common\Formats\Keys\PKCS1 as Progenitor;
-use phpseclib3\File\ASN1;
-use phpseclib3\File\ASN1\Maps;
-use phpseclib3\Math\BigInteger;
+namespace phpseclib4\Crypt\RSA\Formats\Keys;
+
+use phpseclib4\Crypt\Common\Formats\Keys\PKCS1 as Progenitor;
+use phpseclib4\File\ASN1;
+use phpseclib4\File\ASN1\Maps;
+use phpseclib4\Math\BigInteger;
 
 /**
  * PKCS#1 Formatted RSA Key Handler
@@ -37,44 +38,34 @@ abstract class PKCS1 extends Progenitor
 {
     /**
      * Break a public or private key down into its constituent components
-     *
-     * @param string $key
-     * @param string $password optional
-     * @return array
      */
-    public static function load($key, $password = '')
-    {
-        if (!Strings::is_stringable($key)) {
-            throw new \UnexpectedValueException('Key should be a string - not a ' . gettype($key));
-        }
+    public static function load(
+        #[\SensitiveParameter] string $key,
+        #[\SensitiveParameter] ?string $password = null
+    ): array {
+        $components = match (true) {
+            str_contains($key, 'PUBLIC') => ['isPublicKey' => true],
+            str_contains($key, 'PRIVATE') => ['isPrivateKey' => false],
+            default => []
+        };
 
-        if (strpos($key, 'PUBLIC') !== false) {
-            $components = ['isPublicKey' => true];
-        } elseif (strpos($key, 'PRIVATE') !== false) {
-            $components = ['isPublicKey' => false];
-        } else {
-            $components = [];
-        }
-
-        $key = parent::load($key, $password);
+        $key = parent::loadHelper($key, $password);
 
         $decoded = ASN1::decodeBER($key);
-        if (!$decoded) {
-            throw new \RuntimeException('Unable to decode BER');
-        }
 
-        $key = ASN1::asn1map($decoded[0], Maps\RSAPrivateKey::MAP);
+        try {
+            $key = ASN1::map($decoded, Maps\RSAPrivateKey::MAP)->toArray();
+        } catch (\Exception) {
+            $key = null;
+        }
         if (is_array($key)) {
-            if ($key['version'] === false) {
-                throw new \UnexpectedValueException('Version number is not valid');
-            }
             $components += [
                 'modulus' => $key['modulus'],
                 'publicExponent' => $key['publicExponent'],
                 'privateExponent' => $key['privateExponent'],
                 'primes' => [1 => $key['prime1'], $key['prime2']],
                 'exponents' => [1 => $key['exponent1'], $key['exponent2']],
-                'coefficients' => [2 => $key['coefficient']]
+                'coefficients' => [2 => $key['coefficient']],
             ];
             if ($key['version'] == 'multi') {
                 foreach ($key['otherPrimeInfos'] as $primeInfo) {
@@ -89,11 +80,7 @@ abstract class PKCS1 extends Progenitor
             return $components;
         }
 
-        $key = ASN1::asn1map($decoded[0], Maps\RSAPublicKey::MAP);
-
-        if (!is_array($key)) {
-            throw new \RuntimeException('Unable to perform ASN1 mapping');
-        }
+        $key = ASN1::map($decoded, Maps\RSAPublicKey::MAP)->toArray();
 
         if (!isset($components['isPublicKey'])) {
             $components['isPublicKey'] = true;
@@ -118,19 +105,17 @@ abstract class PKCS1 extends Progenitor
 
     /**
      * Convert a private key to the appropriate format.
-     *
-     * @param BigInteger $n
-     * @param BigInteger $e
-     * @param BigInteger $d
-     * @param array $primes
-     * @param array $exponents
-     * @param array $coefficients
-     * @param string $password optional
-     * @param array $options optional
-     * @return string
      */
-    public static function savePrivateKey(BigInteger $n, BigInteger $e, BigInteger $d, array $primes, array $exponents, array $coefficients, $password = '', array $options = [])
-    {
+    public static function savePrivateKey(
+        BigInteger $n,
+        BigInteger $e,
+        #[\SensitiveParameter] BigInteger $d,
+        #[\SensitiveParameter] array $primes,
+        #[\SensitiveParameter] array $exponents,
+        #[\SensitiveParameter] array $coefficients,
+        #[\SensitiveParameter] ?string $password = null,
+        array $options = []
+    ): string {
         $num_primes = count($primes);
         $key = [
             'version' => $num_primes == 2 ? 'two-prime' : 'multi',
@@ -141,13 +126,13 @@ abstract class PKCS1 extends Progenitor
             'prime2' => $primes[2],
             'exponent1' => $exponents[1],
             'exponent2' => $exponents[2],
-            'coefficient' => $coefficients[2]
+            'coefficient' => $coefficients[2],
         ];
         for ($i = 3; $i <= $num_primes; $i++) {
             $key['otherPrimeInfos'][] = [
                 'prime' => $primes[$i],
                 'exponent' => $exponents[$i],
-                'coefficient' => $coefficients[$i]
+                'coefficient' => $coefficients[$i],
             ];
         }
 
@@ -159,15 +144,13 @@ abstract class PKCS1 extends Progenitor
     /**
      * Convert a public key to the appropriate format
      *
-     * @param BigInteger $n
-     * @param BigInteger $e
-     * @return string
+     * @psalm-suppress PossiblyUnusedParam
      */
-    public static function savePublicKey(BigInteger $n, BigInteger $e)
+    public static function savePublicKey(BigInteger $n, BigInteger $e, array $options = []): string
     {
         $key = [
             'modulus' => $n,
-            'publicExponent' => $e
+            'publicExponent' => $e,
         ];
 
         $key = ASN1::encodeDER($key, Maps\RSAPublicKey::MAP);
@@ -176,12 +159,9 @@ abstract class PKCS1 extends Progenitor
     }
 
     /**
-     * Negative numbers make no sense in RSA so convert them to positive
-     *
-     * @param BigInteger $x
-     * @return string
+     * Negative numbers make no sense in RSA so convert them to positiveAdd commentMore actions
      */
-    private static function makePositive(BigInteger $x)
+    private static function makePositive(BigInteger $x): BigInteger
     {
         return $x->isNegative() ?
             new BigInteger($x->toBytes(true), 256) :

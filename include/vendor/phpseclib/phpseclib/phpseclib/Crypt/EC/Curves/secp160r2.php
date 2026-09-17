@@ -3,19 +3,22 @@
 /**
  * secp160r2
  *
- * PHP version 5 and 7
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2017 Jim Wigginton
+ * @copyright 2018-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://pear.php.net/package/Math_BigInteger
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\EC\Curves;
+declare(strict_types=1);
 
-use phpseclib3\Crypt\EC\BaseCurves\Prime;
-use phpseclib3\Math\BigInteger;
+namespace phpseclib4\Crypt\EC\Curves;
 
+use phpseclib4\Crypt\EC\BaseCurves\Prime;
+use phpseclib4\Math\BigInteger;
+
+/** @psalm-api */
 class secp160r2 extends Prime
 {
     public function __construct()

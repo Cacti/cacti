@@ -3,7 +3,7 @@
 /**
  * Pure-PHP implementation of SCP.
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * The API for this library is modeled after the API from PHP's {@link http://php.net/book.ftp FTP extension}.
  *
@@ -24,15 +24,22 @@
  * </code>
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2009 Jim Wigginton
+ * @copyright 2013-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Net;
+namespace phpseclib4\Net;
 
-use phpseclib3\Common\Functions\Strings;
-use phpseclib3\Exception\FileNotFoundException;
+use phpseclib4\Common\Functions\Files;
+use phpseclib4\Exception\{
+    FileSystemException,
+    InvalidArgumentException,
+    InvalidStateException,
+    TimeoutException,
+    UnexpectedSSHMessageException,
+    UnexpectedValueException
+};
 
 /**
  * Pure-PHP implementations of SCP.
@@ -46,27 +53,18 @@ class SCP extends SSH2
      *
      * @see \phpseclib3\Net\SCP::put()
      */
-    const SOURCE_LOCAL_FILE = 1;
+    public const SOURCE_LOCAL_FILE = 1;
     /**
      * Reads data from a string.
      *
      * @see \phpseclib3\Net\SCP::put()
      */
     // this value isn't really used anymore but i'm keeping it reserved for historical reasons
-    const SOURCE_STRING = 2;
+    public const SOURCE_STRING = 2;
     /**
      * SCP.php doesn't support SOURCE_CALLBACK because, with that one, we don't know the size, in advance
      */
     //const SOURCE_CALLBACK = 16;
-
-    /**
-     * Error information
-     *
-     * @see self::getSCPErrors()
-     * @see self::getLastSCPError()
-     * @var array
-     */
-    private $scp_errors = [];
 
     /**
      * Uploads a file to the SCP server.
@@ -82,39 +80,30 @@ class SCP extends SSH2
      * Currently, only binary mode is supported.  As such, if the line endings need to be adjusted, you will need to take
      * care of that, yourself.
      *
-     * @param string $remote_file
-     * @param string $data
-     * @param int $mode
-     * @param callable $callback
-     * @return bool
-     * @access public
+     * @param string|resource $data
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public function put($remote_file, $data, $mode = self::SOURCE_STRING, $callback = null)
-    {
-        if (!($this->bitmap & self::MASK_LOGIN)) {
-            return false;
+    public function put(
+        string $remote_file,
+        #[\SensitiveParameter] mixed $data,
+        int $mode = self::SOURCE_STRING,
+        ?\Closure $callback = null
+    ): void {
+        if (!$this->isAuthenticated()) {
+            throw new InvalidStateException('Unable to upload file. Not connected.');
         }
 
         if (empty($remote_file)) {
-            // remote file cannot be blank
-            return false;
+            throw new InvalidArgumentException('Remote Filename cannot be blank');
         }
 
-        if (!$this->exec('scp -t ' . escapeshellarg($remote_file), false)) { // -t = to
-            return false;
-        }
-
-        $temp = $this->get_channel_packet(self::CHANNEL_EXEC, true);
-        if ($temp !== chr(0)) {
-            $this->close_channel(self::CHANNEL_EXEC, true);
-            return false;
-        }
+        $this->initExec('scp -t ' . escapeshellarg($remote_file)); // -t = to
+        $this->get_scp_response();
 
         $packet_size = $this->packet_size_client_to_server[self::CHANNEL_EXEC] - 4;
 
         $remote_file = basename($remote_file);
 
-        $dataCallback = false;
         switch (true) {
             case is_resource($data):
                 $mode = $mode & ~self::SOURCE_LOCAL_FILE;
@@ -129,12 +118,13 @@ class SCP extends SSH2
                 break;
             case $mode & self::SOURCE_LOCAL_FILE:
                 if (!is_file($data)) {
-                    throw new FileNotFoundException("$data is not a valid file");
+                    throw new FileSystemException("$data is not a valid file");
                 }
-                $fp = @fopen($data, 'rb');
-                if (!$fp) {
+                try {
+                    $fp = Files::open($data, 'rb');
+                } catch (FileSystemException $e) {
                     $this->close_channel(self::CHANNEL_EXEC, true);
-                    return false;
+                    throw $e;
                 }
         }
 
@@ -145,17 +135,11 @@ class SCP extends SSH2
             $size = strlen($data);
         }
 
-        $sent = 0;
         $size = $size < 0 ? ($size & 0x7FFFFFFF) + 0x80000000 : $size;
 
         $temp = 'C0644 ' . $size . ' ' . $remote_file . "\n";
         $this->send_channel_packet(self::CHANNEL_EXEC, $temp);
-
-        $temp = $this->get_channel_packet(self::CHANNEL_EXEC, true);
-        if ($temp !== chr(0)) {
-            $this->close_channel(self::CHANNEL_EXEC, true);
-            return false;
-        }
+        $this->get_scp_response();
 
         $sent = 0;
         while ($sent < $size) {
@@ -163,8 +147,8 @@ class SCP extends SSH2
             $this->send_channel_packet(self::CHANNEL_EXEC, $temp);
             $sent += strlen($temp);
 
-            if (is_callable($callback)) {
-                call_user_func($callback, $sent);
+            if (isset($callback)) {
+                $callback($sent);
             }
         }
         $this->close_channel(self::CHANNEL_EXEC, true);
@@ -172,8 +156,6 @@ class SCP extends SSH2
         if ($mode != self::SOURCE_STRING) {
             fclose($fp);
         }
-
-        return true;
     }
 
     /**
@@ -183,76 +165,59 @@ class SCP extends SSH2
      * the operation was unsuccessful.  If $local_file is defined, returns true or false depending on the success of the
      * operation
      *
-     * @param string $remote_file
-     * @param string $local_file
-     * @return mixed
-     * @access public
+     * @param string|resource|null $local_file
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public function get($remote_file, $local_file = null, $progressCallback = null)
+    public function get(string $remote_file, mixed $local_file = null, ?\Closure $progressCallback = null): ?string
     {
-        if (!($this->bitmap & self::MASK_LOGIN)) {
-            return false;
+        if (!$this->isAuthenticated()) {
+            throw new InvalidStateException('Unable to download file. Not connected.');
         }
 
-        if (!$this->exec('scp -f ' . escapeshellarg($remote_file), false)) { // -f = from
-            return false;
-        }
+        $this->initExec('scp -f ' . escapeshellarg($remote_file)); // -f = from
 
         $this->send_channel_packet(self::CHANNEL_EXEC, chr(0));
-
-        $info = $this->get_channel_packet(self::CHANNEL_EXEC, true);
-        // per https://goteleport.com/blog/scp-familiar-simple-insecure-slow/ non-zero responses mean there are errors
-        if ($info[0] === chr(1) || $info[0] == chr(2)) {
-            $type = $info[0] === chr(1) ? 'warning' : 'error';
-            $this->scp_errors[] = "$type: " . substr($info, 1);
-            $this->close_channel(self::CHANNEL_EXEC, true);
-            return false;
-        }
+        $info = $this->get_scp_response();
 
         $this->send_channel_packet(self::CHANNEL_EXEC, chr(0));
 
         if (!preg_match('#(?<perms>[^ ]+) (?<size>\d+) (?<name>.+)#', rtrim($info), $info)) {
             $this->close_channel(self::CHANNEL_EXEC, true);
-            return false;
+            throw new UnexpectedSSHMessageException('Response did not meet expected format');
         }
 
         $fclose_check = false;
         if (is_resource($local_file)) {
             $fp = $local_file;
-        } elseif (!is_null($local_file)) {
-            $fp = @fopen($local_file, 'wb');
-            if (!$fp) {
+        } elseif (isset($local_file)) {
+            try {
+                $fp = Files::open($local_file, 'wb');
+            } catch (FileSystemException $e) {
                 $this->close_channel(self::CHANNEL_EXEC, true);
-                return false;
+                throw $e;
             }
             $fclose_check = true;
+            $content = null;
         } else {
             $content = '';
         }
 
         $size = 0;
         while (true) {
-            $data = $this->get_channel_packet(self::CHANNEL_EXEC, true);
-            // Terminate the loop in case the server repeatedly sends an empty response
-            if ($data === false) {
-                $this->close_channel(self::CHANNEL_EXEC, true);
-                // no data received from server
-                return false;
-            }
+            $data = $this->get_scp_response(false);
             // SCP usually seems to split stuff out into 16k chunks
             $length = strlen($data);
             $size += $length;
             $end = $size > $info['size'];
             if ($end) {
                 $diff = $size - $info['size'];
-                $offset = $length - $diff;
+                $offset = (int) ($length - $diff);
                 if ($data[$offset] === chr(0)) {
                     $data = substr($data, 0, -$diff);
                 } else {
                     $type = $data[$offset] === chr(1) ? 'warning' : 'error';
-                    $this->scp_errors[] = "$type: " . substr($data, 1);
                     $this->close_channel(self::CHANNEL_EXEC, true);
-                    return false;
+                    throw new FileSystemException("Received a $type from server: " . substr($data, 1));
                 }
             }
 
@@ -262,8 +227,8 @@ class SCP extends SSH2
                 fputs($fp, $data);
             }
 
-            if (is_callable($progressCallback)) {
-                call_user_func($progressCallback, $size);
+            if (isset($progressCallback)) {
+                $progressCallback($size);
             }
 
             if ($end) {
@@ -278,26 +243,23 @@ class SCP extends SSH2
         }
 
         // if $content isn't set that means a file was written to
-        return isset($content) ? $content : true;
+        return $content;
     }
 
-    /**
-     * Returns all errors on the SCP layer
-     *
-     * @return array
-     */
-    public function getSCPErrors()
+    private function get_scp_response(bool $check_for_null = true): string
     {
-        return $this->scp_errors;
-    }
-
-    /**
-     * Returns the last error on the SCP layer
-     *
-     * @return string
-     */
-    public function getLastSCPError()
-    {
-        return count($this->scp_errors) ? $this->scp_errors[count($this->scp_errors) - 1] : '';
+        $response = $this->get_channel_packet(self::CHANNEL_EXEC, true);
+        if (is_bool($response)) {
+            throw $this->is_timeout ?
+                new TimeoutException('SCP get() timed out') :
+                new UnexpectedValueException('Error reading additional SCP data');
+        }
+        // per https://goteleport.com/blog/scp-familiar-simple-insecure-slow/ non-zero responses mean there are errors
+        if ($check_for_null && in_array($response[0], ["\1", "\2"])) {
+            $type = $response[0] === chr(1) ? 'warning' : 'error';
+            $this->close_channel(self::CHANNEL_EXEC, true);
+            throw new FileSystemException("Received a $type from server: " . substr($response, 1));
+        }
+        return $response;
     }
 }

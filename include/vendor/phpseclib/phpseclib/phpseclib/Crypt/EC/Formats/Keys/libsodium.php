@@ -7,24 +7,33 @@
  * https://blog.mozilla.org/warner/2011/11/29/ed25519-keys/ elaborates.
  * libsodium appears to use the same format as SUPERCOP.
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2015 Jim Wigginton
+ * @copyright 2018-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\EC\Formats\Keys;
+declare(strict_types=1);
 
-use phpseclib3\Crypt\EC\Curves\Ed25519;
-use phpseclib3\Exception\UnsupportedFormatException;
-use phpseclib3\Math\BigInteger;
+namespace phpseclib4\Crypt\EC\Formats\Keys;
+
+use phpseclib4\Crypt\EC\Curves\Ed25519;
+use phpseclib4\Exception\{
+    InvalidArgumentException,
+    LengthException,
+    UnexpectedValueException,
+    UnsupportedValueException
+};
+use phpseclib4\Math\BigInteger;
+use phpseclib4\Math\Common\FiniteField\Integer;
 
 /**
  * libsodium Key Handler
  *
  * @author  Jim Wigginton <terrafrost@php.net>
+ * @psalm-api
  */
 abstract class libsodium
 {
@@ -32,19 +41,18 @@ abstract class libsodium
 
     /**
      * Is invisible flag
-     *
      */
-    const IS_INVISIBLE = true;
+    public const IS_INVISIBLE = true;
 
     /**
      * Break a public or private key down into its constituent components
      *
-     * @param string $key
-     * @param string $password optional
-     * @return array
+     * @psalm-suppress PossiblyUnusedParam
      */
-    public static function load($key, $password = '')
-    {
+    public static function load(
+        #[\SensitiveParameter] string $key,
+        #[\SensitiveParameter] ?string $password = null
+    ): array {
         switch (strlen($key)) {
             case 32:
                 $public = $key;
@@ -56,12 +64,12 @@ abstract class libsodium
             case 96:
                 $public = substr($key, -32);
                 if (substr($key, 32, 32) != $public) {
-                    throw new \RuntimeException('Keys with 96 bytes should have the 2nd and 3rd set of 32 bytes match');
+                    throw new UnexpectedValueException('Keys with 96 bytes should have the 2nd and 3rd set of 32 bytes match');
                 }
                 $private = substr($key, 0, 32);
                 break;
             default:
-                throw new \RuntimeException('libsodium keys need to either be 32 bytes long, 64 bytes long or 96 bytes long');
+                throw new UnexpectedValueException('libsodium keys need to either be 32 bytes long, 64 bytes long or 96 bytes long');
         }
 
         $curve = new Ed25519();
@@ -81,11 +89,10 @@ abstract class libsodium
     /**
      * Convert an EC public key to the appropriate format
      *
-     * @param Ed25519 $curve
-     * @param \phpseclib3\Math\Common\FiniteField\Integer[] $publicKey
-     * @return string
+     * @param Integer[] $publicKey
+     * @psalm-suppress PossiblyUnusedParam
      */
-    public static function savePublicKey(Ed25519 $curve, array $publicKey)
+    public static function savePublicKey(Ed25519 $curve, array $publicKey, array $options = []): string
     {
         return $curve->encodePoint($publicKey);
     }
@@ -93,23 +100,25 @@ abstract class libsodium
     /**
      * Convert a private key to the appropriate format.
      *
-     * @param BigInteger $privateKey
-     * @param Ed25519 $curve
-     * @param \phpseclib3\Math\Common\FiniteField\Integer[] $publicKey
-     * @param string $secret optional
-     * @param string $password optional
-     * @return string
+     * @param Integer[] $publicKey
+     * @psalm-suppress PossiblyUnusedParam
      */
-    public static function savePrivateKey(BigInteger $privateKey, Ed25519 $curve, array $publicKey, $secret = null, $password = '')
-    {
+    public static function savePrivateKey(
+        #[\SensitiveParameter] BigInteger $privateKey,
+        Ed25519 $curve,
+        array $publicKey,
+        #[\SensitiveParameter] ?string $secret = null,
+        #[\SensitiveParameter] ?string $password = null,
+        array $options = []
+    ): string {
         if (!isset($secret)) {
-            throw new \RuntimeException('Private Key does not have a secret set');
+            throw new UnsupportedValueException('Private Key does not have a secret set');
         }
         if (strlen($secret) != 32) {
-            throw new \RuntimeException('Private Key secret is not of the correct length');
+            throw new LengthException('Private Key secret is not of the correct length');
         }
-        if (!empty($password) && is_string($password)) {
-            throw new UnsupportedFormatException('libsodium private keys do not support encryption');
+        if (isset($password)) {
+            throw new InvalidArgumentException('libsodium private keys do not support encryption');
         }
         return $secret . $curve->encodePoint($publicKey);
     }
