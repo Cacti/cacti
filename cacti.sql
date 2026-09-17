@@ -1965,7 +1965,7 @@ CREATE TABLE host_snmp_cache (
   snmp_index varchar(255) NOT NULL default '',
   oid TEXT NOT NULL,
   present tinyint(3) unsigned NOT NULL DEFAULT '1',
-  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  last_updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (host_id, snmp_query_id, field_name, snmp_index),
   KEY host_id (host_id, field_name),
   KEY snmp_index (snmp_index),
