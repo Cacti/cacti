@@ -2160,7 +2160,7 @@ CREATE TABLE poller_command (
   time timestamp NOT NULL default '0000-00-00 00:00:00',
   action tinyint(3) unsigned NOT NULL default '0',
   command varchar(191) NOT NULL default '',
-  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  last_updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (poller_id, action, command),
   KEY poller_id_last_updated (poller_id, last_updated)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
@@ -2187,7 +2187,7 @@ CREATE TABLE poller_item (
   `host_id` mediumint(8) unsigned NOT NULL default '0',
   `action` tinyint(3) unsigned NOT NULL default '1',
   `present` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `last_updated` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `hostname` varchar(100) NOT NULL default '',
   `snmp_community` varchar(100) NOT NULL default '',
   `snmp_version` tinyint(3) unsigned NOT NULL default '0',
@@ -2248,7 +2248,7 @@ CREATE TABLE `poller_output_boost` (
 
 CREATE TABLE `poller_output_boost_local_data_ids` (
 	`run_id` char(32) NOT NULL DEFAULT '',
-  `local_data_id` int(10) unsigned NOT NULL DEFAULT 0,
+	`local_data_id` int(10) unsigned NOT NULL DEFAULT 0,
 	`process_handler` int(10) unsigned NOT NULL DEFAULT 0,
 	`cursor_time` timestamp NULL DEFAULT NULL,
 	`cursor_rrd_name` varchar(19) NOT NULL DEFAULT '',
