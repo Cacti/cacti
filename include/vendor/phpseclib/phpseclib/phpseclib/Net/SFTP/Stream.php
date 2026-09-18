@@ -5,19 +5,22 @@
  *
  * Creates an sftp:// protocol handler that can be used with, for example, fopen(), dir(), etc.
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2013 Jim Wigginton
+ * @copyright 2013-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Net\SFTP;
+declare(strict_types=1);
 
-use phpseclib3\Crypt\Common\PrivateKey;
-use phpseclib3\Net\SFTP;
-use phpseclib3\Net\SSH2;
+namespace phpseclib4\Net\SFTP;
+
+use phpseclib4\Crypt\Common\PrivateKey;
+use phpseclib4\Exception\FileSystemException;
+use phpseclib4\Net\{SFTP, SSH2};
+use phpseclib4\Net\SSH2\MessageType as SSH2MessageType;
 
 /**
  * SFTP Stream Wrapper
@@ -30,59 +33,43 @@ class Stream
      * SFTP instances
      *
      * Rather than re-create the connection we re-use instances if possible
-     *
-     * @var array
      */
-    public static $instances;
+    public static array $instances;
 
     /**
      * SFTP instance
-     *
-     * @var object
      */
-    private $sftp;
+    private SFTP $sftp;
 
     /**
      * Path
-     *
-     * @var string
      */
-    private $path;
+    private string $path;
 
     /**
      * Mode
-     *
-     * @var string
      */
-    private $mode;
+    private string $mode;
 
     /**
      * Position
-     *
-     * @var int
      */
-    private $pos;
+    private int $pos;
 
     /**
      * Size
-     *
-     * @var int
      */
-    private $size;
+    private ?int $size;
 
     /**
      * Directory entries
-     *
-     * @var array
      */
-    private $entries;
+    private array $entries;
 
     /**
      * EOF flag
-     *
-     * @var bool
      */
-    private $eof;
+    private bool $eof;
 
     /**
      * Context resource
@@ -98,7 +85,7 @@ class Stream
      *
      * @var callable
      */
-    private $notification;
+    private \Closure|string|array $notification;
 
     /**
      * Registers this class as a URL wrapper.
@@ -106,7 +93,7 @@ class Stream
      * @param string $protocol The wrapper name to be registered.
      * @return bool True on success, false otherwise.
      */
-    public static function register($protocol = 'sftp')
+    public static function register(string $protocol = 'sftp'): bool
     {
         if (in_array($protocol, stream_get_wrappers(), true)) {
             return false;
@@ -117,6 +104,7 @@ class Stream
     /**
      * The Constructor
      *
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function __construct()
     {
@@ -131,16 +119,22 @@ class Stream
      * Extract a path from a URI and actually connect to an SSH server if appropriate
      *
      * If "notification" is set as a context parameter the message code for successful login is
-     * NET_SSH2_MSG_USERAUTH_SUCCESS. For a failed login it's NET_SSH2_MSG_USERAUTH_FAILURE.
-     *
-     * @param string $path
-     * @return string
+     * SSHMsg::USERAUTH_SUCCESS. For a failed login it's SSHMsg::USERAUTH_FAILURE.
      */
-    protected function parse_path($path)
+    protected function parse_path(string $path): ?string
     {
         $orig = $path;
         $url = parse_url($path) + ['port' => 22];
 
+        /**
+         * @var string $scheme
+         * @var string $host
+         * @var int $port
+         * @var string $user
+         * @var string $pass
+         * @var string $query
+         * @var string $fragment
+         */
         $keys = ['scheme', 'host', 'port', 'user', 'pass', 'path', 'query', 'fragment'];
         foreach ($keys as $key) {
             if (isset($url[$key])) {
@@ -155,25 +149,25 @@ class Stream
         }
         if (isset($fragment)) {
             $path .= '#' . $fragment;
-        } elseif ($orig[strlen($orig) - 1] == '#') {
+        } elseif ($orig[-1] == '#') {
             $path .= '#';
         }
 
         if (!isset($host)) {
-            return false;
+            return null;
         }
 
         if (isset($this->context)) {
             $context = stream_context_get_params($this->context);
-            if (isset($context['notification'])) {
+            if (isset($context['notification']) && is_callable($context['notification'])) {
                 $this->notification = $context['notification'];
             }
         }
 
         if (preg_match('/^{[a-z0-9]+}$/i', $host)) {
             $host = SSH2::getConnectionByResourceId($host);
-            if ($host === false) {
-                return false;
+            if ($host === null) {
+                return null;
             }
             $this->sftp = $host;
         } else {
@@ -201,10 +195,10 @@ class Stream
             }
 
             if (!isset($user) || !isset($pass)) {
-                return false;
+                return null;
             }
 
-            // casting $pass to a string is necessary in the event that it's a \phpseclib3\Crypt\RSA object
+            // casting $pass to a string is necessary in the event that it's a \phpseclib4\Crypt\RSA object
             if (isset(self::$instances[$host][$port][$user][(string) $pass])) {
                 $this->sftp = self::$instances[$host][$port][$user][(string) $pass];
             } else {
@@ -223,13 +217,13 @@ class Stream
                     call_user_func($this->notification, STREAM_NOTIFY_CONNECT, STREAM_NOTIFY_SEVERITY_INFO, '', 0, 0, 0);
                     call_user_func($this->notification, STREAM_NOTIFY_AUTH_REQUIRED, STREAM_NOTIFY_SEVERITY_INFO, '', 0, 0, 0);
                     if (!$this->sftp->login($user, $pass)) {
-                        call_user_func($this->notification, STREAM_NOTIFY_AUTH_RESULT, STREAM_NOTIFY_SEVERITY_ERR, 'Login Failure', NET_SSH2_MSG_USERAUTH_FAILURE, 0, 0);
-                        return false;
+                        call_user_func($this->notification, STREAM_NOTIFY_AUTH_RESULT, STREAM_NOTIFY_SEVERITY_ERR, 'Login Failure', SSH2MessageType::USERAUTH_FAILURE, 0, 0);
+                        return null;
                     }
-                    call_user_func($this->notification, STREAM_NOTIFY_AUTH_RESULT, STREAM_NOTIFY_SEVERITY_INFO, 'Login Success', NET_SSH2_MSG_USERAUTH_SUCCESS, 0, 0);
+                    call_user_func($this->notification, STREAM_NOTIFY_AUTH_RESULT, STREAM_NOTIFY_SEVERITY_INFO, 'Login Success', SSH2MessageType::USERAUTH_SUCCESS, 0, 0);
                 } else {
                     if (!$this->sftp->login($user, $pass)) {
-                        return false;
+                        return null;
                     }
                 }
                 self::$instances[$host][$port][$user][(string) $pass] = $this->sftp;
@@ -241,31 +235,36 @@ class Stream
 
     /**
      * Opens file or URL
-     *
-     * @param string $path
-     * @param string $mode
-     * @param int $options
-     * @param string $opened_path
-     * @return bool
      */
-    private function _stream_open($path, $mode, $options, &$opened_path)
+    private function _stream_open(string $path, string $mode): bool
     {
         $path = $this->parse_path($path);
 
-        if ($path === false) {
+        if (!isset($path)) {
             return false;
         }
         $this->path = $path;
 
-        $this->size = $this->sftp->filesize($path);
+        try {
+            $this->size = $this->sftp->filesize($path);
+        } catch (\Exception) {
+            $this->size = null;
+        }
         $this->mode = preg_replace('#[bt]$#', '', $mode);
         $this->eof = false;
 
-        if ($this->size === false) {
+        if (!isset($this->size)) {
             if ($this->mode[0] == 'r') {
                 return false;
             } else {
-                $this->sftp->touch($path);
+                try {
+                    $this->sftp->touch($path);
+                } catch (\Exception $e) {
+                    if (isset($this->notification) && is_callable($this->notification)) {
+                        call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $e->getMessage(), $e->getCode(), 0, 0);
+                    }
+                    return false;
+                }
                 $this->size = 0;
             }
         } else {
@@ -273,7 +272,14 @@ class Stream
                 case 'x':
                     return false;
                 case 'w':
-                    $this->sftp->truncate($path, 0);
+                    try {
+                        $this->sftp->truncate($path, 0);
+                    } catch (\Exception $e) {
+                        if (isset($this->notification) && is_callable($this->notification)) {
+                            call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $e->getMessage(), $e->getCode(), 0, 0);
+                        }
+                        return false;
+                    }
                     $this->size = 0;
             }
         }
@@ -286,10 +292,9 @@ class Stream
     /**
      * Read from stream
      *
-     * @param int $count
-     * @return mixed
+     * @return string|false
      */
-    private function _stream_read($count)
+    private function _stream_read(int $count): string|bool
     {
         switch ($this->mode) {
             case 'w':
@@ -305,20 +310,19 @@ class Stream
         //    return false;
         //}
 
-        $result = $this->sftp->get($this->path, false, $this->pos, $count);
-        if (isset($this->notification) && is_callable($this->notification)) {
-            if ($result === false) {
-                call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $this->sftp->getLastSFTPError(), NET_SFTP_OPEN, 0, 0);
-                return 0;
+        try {
+            $result = $this->sftp->get($this->path, null, $this->pos, $count);
+        } catch (\Exception $e) {
+            if (isset($this->notification) && is_callable($this->notification)) {
+                call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $e->getMessage(), $e->getCode(), 0, 0);
             }
+            return false;
+        }
+        if (isset($this->notification) && is_callable($this->notification)) {
             // seems that PHP calls stream_read in 8k chunks
             call_user_func($this->notification, STREAM_NOTIFY_PROGRESS, STREAM_NOTIFY_SEVERITY_INFO, '', 0, strlen($result), $this->size);
         }
 
-        if (empty($result)) { // ie. false or empty string
-            $this->eof = true;
-            return false;
-        }
         $this->pos += strlen($result);
 
         return $result;
@@ -327,29 +331,28 @@ class Stream
     /**
      * Write to stream
      *
-     * @param string $data
      * @return int|false
      */
-    private function _stream_write($data)
+    private function _stream_write(string $data): int|bool
     {
         switch ($this->mode) {
             case 'r':
                 return false;
         }
 
-        $result = $this->sftp->put($this->path, $data, SFTP::SOURCE_STRING, $this->pos);
-        if (isset($this->notification) && is_callable($this->notification)) {
-            if (!$result) {
-                call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $this->sftp->getLastSFTPError(), NET_SFTP_OPEN, 0, 0);
-                return 0;
+        try {
+            $this->sftp->put($this->path, $data, SFTP::SOURCE_STRING, $this->pos);
+        } catch (\Exception $e) {
+            if (isset($this->notification) && is_callable($this->notification)) {
+                call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $e->getMessage(), $e->getCode(), 0, 0);
             }
+            return false;
+        }
+        if (isset($this->notification) && is_callable($this->notification)) {
             // seems that PHP splits up strings into 8k blocks before calling stream_write
             call_user_func($this->notification, STREAM_NOTIFY_PROGRESS, STREAM_NOTIFY_SEVERITY_INFO, '', 0, strlen($data), strlen($data));
         }
 
-        if ($result === false) {
-            return false;
-        }
         $this->pos += strlen($data);
         if ($this->pos > $this->size) {
             $this->size = $this->pos;
@@ -360,10 +363,8 @@ class Stream
 
     /**
      * Retrieve the current position of a stream
-     *
-     * @return int
      */
-    private function _stream_tell()
+    private function _stream_tell(): int
     {
         return $this->pos;
     }
@@ -377,22 +378,16 @@ class Stream
      * Only fgets / fread, however, results in feof() returning true. do fputs($fp, 'aaa') on a blank file and feof()
      * will return false. do fread($fp, 1) and feof() will then return true. do fseek($fp, 10) on ablank file and feof()
      * will return false. do fread($fp, 1) and feof() will then return true.
-     *
-     * @return bool
      */
-    private function _stream_eof()
+    private function _stream_eof(): bool
     {
         return $this->eof;
     }
 
     /**
      * Seeks to specific location in a stream
-     *
-     * @param int $offset
-     * @param int $whence
-     * @return bool
      */
-    private function _stream_seek($offset, $whence)
+    private function _stream_seek(int $offset, int $whence): bool
     {
         switch ($whence) {
             case SEEK_SET:
@@ -414,57 +409,73 @@ class Stream
 
     /**
      * Change stream options
-     *
-     * @param string $path
-     * @param int $option
-     * @param mixed $var
-     * @return bool
      */
-    private function _stream_metadata($path, $option, $var)
+    private function _stream_metadata(string $path, int $option, int|string|array $var): bool
     {
         $path = $this->parse_path($path);
-        if ($path === false) {
+        if (!isset($path)) {
             return false;
         }
 
-        // stream_metadata was introduced in PHP 5.4.0 but as of 5.4.11 the constants haven't been defined
-        // see http://www.php.net/streamwrapper.stream-metadata and https://bugs.php.net/64246
-        //     and https://github.com/php/php-src/blob/master/main/php_streams.h#L592
-        switch ($option) {
-            case 1: // PHP_STREAM_META_TOUCH
-                $time = isset($var[0]) ? $var[0] : null;
-                $atime = isset($var[1]) ? $var[1] : null;
-                return $this->sftp->touch($path, $time, $atime);
-            case 2: // PHP_STREAM_OWNER_NAME
-            case 3: // PHP_STREAM_GROUP_NAME
-                return false;
-            case 4: // PHP_STREAM_META_OWNER
-                return $this->sftp->chown($path, $var);
-            case 5: // PHP_STREAM_META_GROUP
-                return $this->sftp->chgrp($path, $var);
-            case 6: // PHP_STREAM_META_ACCESS
-                return $this->sftp->chmod($path, $var) !== false;
+        try {
+            switch ($option) {
+                case STREAM_META_TOUCH:
+                    $time = $var[0] ?? null;
+                    $atime = $var[1] ?? null;
+                    $this->sftp->touch($path, $time, $atime);
+                    return true;
+                case STREAM_META_OWNER_NAME:
+                    if ($this->getNegotiatedVersion() >= 4) {
+                        $this->sftp->chown($path, $var);
+                        return true;
+                    }
+                    return false;
+                case STREAM_META_GROUP_NAME:
+                    if ($this->getNegotiatedVersion() >= 4) {
+                        $this->sftp->chgrp($path, $var);
+                        return true;
+                    }
+                    return false;
+                case STREAM_META_OWNER:
+                    if ($this->getNegotiatedVersion() < 4) {
+                        $this->sftp->chown($path, $var);
+                        return true;
+                    }
+                    return false;
+                case STREAM_META_GROUP:
+                    if ($this->getNegotiatedVersion() < 4) {
+                        $this->sftp->chgrp($path, $var);
+                        return true;
+                    }
+                    return false;
+                case STREAM_META_ACCESS:
+                    $this->sftp->chmod($path, $var);
+                    return true;
+                default:
+                    return false;
+            }
+        } catch (\Exception $e) {
+            if (isset($this->notification) && is_callable($this->notification)) {
+                call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $e->getMessage(), $e->getCode(), 0, 0);
+            }
+            return false;
         }
     }
 
     /**
-     * Retrieve the underlaying resource
+     * Retrieve the underlying resource
      *
-     * @param int $cast_as
-     * @return resource
+     * @return resource|false
      */
-    private function _stream_cast($cast_as)
+    private function _stream_cast(int $cast_as)
     {
-        return $this->sftp->fsock;
+        return is_resource($this->sftp->fsock) ? $this->sftp->fsock : false;
     }
 
     /**
      * Advisory file locking
-     *
-     * @param int $operation
-     * @return bool
      */
-    private function _stream_lock($operation)
+    private function _stream_lock(int $operation): bool
     {
         return false;
     }
@@ -473,14 +484,10 @@ class Stream
      * Renames a file or directory
      *
      * Attempts to rename oldname to newname, moving it between directories if necessary.
-     * If newname exists, it will be overwritten.  This is a departure from what \phpseclib3\Net\SFTP
+     * If newname exists, it will be overwritten.  This is a departure from what \phpseclib4\Net\SFTP
      * does.
-     *
-     * @param string $path_from
-     * @param string $path_to
-     * @return bool
      */
-    private function _rename($path_from, $path_to)
+    private function _rename(string $path_from, string $path_to): bool
     {
         $path1 = parse_url($path_from);
         $path2 = parse_url($path_to);
@@ -491,18 +498,31 @@ class Stream
 
         $path_from = $this->parse_path($path_from);
         $path_to = parse_url($path_to);
-        if ($path_from === false) {
+        if (!isset($path_from)) {
             return false;
         }
 
-        $path_to = $path_to['path']; // the $component part of parse_url() was added in PHP 5.1.2
+        $path_to = $path_to['path'];
         // "It is an error if there already exists a file with the name specified by newpath."
         //  -- http://tools.ietf.org/html/draft-ietf-secsh-filexfer-02#section-6.5
-        if (!$this->sftp->rename($path_from, $path_to)) {
-            if ($this->sftp->stat($path_to)) {
-                return $this->sftp->delete($path_to, true) && $this->sftp->rename($path_from, $path_to);
+        try {
+            $this->sftp->rename($path_from, $path_to);
+        } catch (FileSystemException $e) {
+            if (!$this->sftp->file_exists($path_to)) {
+                if (isset($this->notification) && is_callable($this->notification)) {
+                    call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $e->getMessage(), $e->getCode(), 0, 0);
+                }
+                return false;
             }
-            return false;
+            try {
+                $this->sftp->delete($path_to, true);
+                $this->sftp->rename($path_from, $path_to);
+            } catch (FileSystemException $e) {
+                if (isset($this->notification) && is_callable($this->notification)) {
+                    call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $e->getMessage(), $e->getCode(), 0, 0);
+                }
+                return false;
+            }
         }
 
         return true;
@@ -511,11 +531,8 @@ class Stream
     /**
      * Open directory handle
      *
-     * The only $options is "whether or not to enforce safe_mode (0x04)". Since safe mode was deprecated in 5.3 and
-     * removed in 5.4 I'm just going to ignore it.
-     *
-     * Also, nlist() is the best that this function is realistically going to be able to do. When an SFTP client
-     * sends a SSH_FXP_READDIR packet you don't generally get info on just one file but on multiple files. Quoting
+     * nlist() is the best that this function is realistically going to be able to do. When an SFTP client sends
+     * a SSH_FXP_READDIR packet you don't generally get info on just one file but on multiple files. Quoting
      * the SFTP specs:
      *
      *    The SSH_FXP_NAME response has the following format:
@@ -526,26 +543,27 @@ class Stream
      *                string     filename
      *                string     longname
      *                ATTRS      attrs
-     *
-     * @param string $path
-     * @param int $options
-     * @return bool
      */
-    private function _dir_opendir($path, $options)
+    private function _dir_opendir(string $path, int $options): bool
     {
         $path = $this->parse_path($path);
-        if ($path === false) {
+        if (!isset($path)) {
             return false;
         }
         $this->pos = 0;
-        $this->entries = $this->sftp->nlist($path);
-        return $this->entries !== false;
+        try {
+            $this->entries = $this->sftp->nlist($path);
+        } catch (FileSystemException $e) {
+            if (isset($this->notification) && is_callable($this->notification)) {
+                call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $e->getMessage(), $e->getCode(), 0, 0);
+            }
+            return false;
+        }
+        return true;
     }
 
     /**
      * Read entry from directory handle
-     *
-     * @return mixed
      */
     private function _dir_readdir()
     {
@@ -557,10 +575,8 @@ class Stream
 
     /**
      * Rewind directory handle
-     *
-     * @return bool
      */
-    private function _dir_rewinddir()
+    private function _dir_rewinddir(): bool
     {
         $this->pos = 0;
         return true;
@@ -568,10 +584,8 @@ class Stream
 
     /**
      * Close directory handle
-     *
-     * @return bool
      */
-    private function _dir_closedir()
+    private function _dir_closedir(): bool
     {
         return true;
     }
@@ -580,20 +594,23 @@ class Stream
      * Create a directory
      *
      * Only valid $options is STREAM_MKDIR_RECURSIVE
-     *
-     * @param string $path
-     * @param int $mode
-     * @param int $options
-     * @return bool
      */
-    private function _mkdir($path, $mode, $options)
+    private function _mkdir(string $path, int $mode, int $options): bool
     {
         $path = $this->parse_path($path);
-        if ($path === false) {
+        if (!isset($path)) {
             return false;
         }
 
-        return $this->sftp->mkdir($path, $mode, $options & STREAM_MKDIR_RECURSIVE);
+        try {
+            $this->sftp->mkdir($path, $mode, boolval($options & STREAM_MKDIR_RECURSIVE));
+            return true;
+        } catch (FileSystemException $e) {
+            if (isset($this->notification) && is_callable($this->notification)) {
+                call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $e->getMessage(), $e->getCode(), 0, 0);
+            }
+            return false;
+        }
     }
 
     /**
@@ -603,128 +620,128 @@ class Stream
      * <http://php.net/rmdir>  does not have a $recursive parameter as mkdir() does so I don't know how
      * STREAM_MKDIR_RECURSIVE is supposed to be set. Also, when I try it out with rmdir() I get 8 as
      * $options. What does 8 correspond to?
-     *
-     * @param string $path
-     * @param int $options
-     * @return bool
      */
-    private function _rmdir($path, $options)
+    private function _rmdir(string $path, int $options): bool
     {
         $path = $this->parse_path($path);
-        if ($path === false) {
+        if (!isset($path)) {
             return false;
         }
 
-        return $this->sftp->rmdir($path);
+        try {
+            $this->sftp->rmdir($path);
+            return true;
+        } catch (FileSystemException $e) {
+            if (isset($this->notification) && is_callable($this->notification)) {
+                call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $e->getMessage(), $e->getCode(), 0, 0);
+            }
+            return false;
+        }
     }
 
     /**
      * Flushes the output
      *
-     * See <http://php.net/fflush>. Always returns true because \phpseclib3\Net\SFTP doesn't cache stuff before writing
-     *
-     * @return bool
+     * See <http://php.net/fflush>. Always returns true because \phpseclib4\Net\SFTP doesn't cache stuff before writing
      */
-    private function _stream_flush()
+    private function _stream_flush(): bool
     {
         return true;
     }
 
     /**
      * Retrieve information about a file resource
-     *
-     * @return mixed
      */
-    private function _stream_stat()
+    private function _stream_stat(): array|bool
     {
-        $results = $this->sftp->stat($this->path);
-        if ($results === false) {
+        try {
+            return $this->sftp->stat($this->path);
+        } catch (FileSystemException $e) {
+            if (isset($this->notification) && is_callable($this->notification)) {
+                call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $e->getMessage(), $e->getCode(), 0, 0);
+            }
             return false;
         }
-        return $results;
     }
 
     /**
      * Delete a file
-     *
-     * @param string $path
-     * @return bool
      */
-    private function _unlink($path)
+    private function _unlink(string $path): bool
     {
         $path = $this->parse_path($path);
-        if ($path === false) {
+        if (!isset($path)) {
             return false;
         }
 
-        return $this->sftp->delete($path, false);
+        try {
+            $this->sftp->delete($path, false);
+            return true;
+        } catch (FileSystemException $e) {
+            if (isset($this->notification) && is_callable($this->notification)) {
+                call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $e->getMessage(), $e->getCode(), 0, 0);
+            }
+            return false;
+        }
     }
 
     /**
      * Retrieve information about a file
      *
-     * Ignores the STREAM_URL_STAT_QUIET flag because the entirety of \phpseclib3\Net\SFTP\Stream is quiet by default
+     * Ignores the STREAM_URL_STAT_QUIET flag because the entirety of \phpseclib4\Net\SFTP\Stream is quiet by default
      * might be worthwhile to reconstruct bits 12-16 (ie. the file type) if mode doesn't have them but we'll
      * cross that bridge when and if it's reached
-     *
-     * @param string $path
-     * @param int $flags
-     * @return mixed
      */
-    private function _url_stat($path, $flags)
+    private function _url_stat(string $path, int $flags): array|bool
     {
         $path = $this->parse_path($path);
-        if ($path === false) {
+        if (!isset($path)) {
             return false;
         }
 
-        $results = $flags & STREAM_URL_STAT_LINK ? $this->sftp->lstat($path) : $this->sftp->stat($path);
-        if ($results === false) {
+        try {
+            return $flags & STREAM_URL_STAT_LINK ? $this->sftp->lstat($path) : $this->sftp->stat($path);
+        } catch (FileSystemException $e) {
+            if (isset($this->notification) && is_callable($this->notification)) {
+                call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $e->getMessage(), $e->getCode(), 0, 0);
+            }
             return false;
         }
-
-        return $results;
     }
 
     /**
      * Truncate stream
-     *
-     * @param int $new_size
-     * @return bool
      */
-    private function _stream_truncate($new_size)
+    private function _stream_truncate(int $new_size): bool
     {
-        if (!$this->sftp->truncate($this->path, $new_size)) {
+        try {
+            $this->sftp->truncate($this->path, $new_size);
+            $this->eof = false;
+            $this->size = $new_size;
+            return true;
+        } catch (FileSystemException $e) {
+            if (isset($this->notification) && is_callable($this->notification)) {
+                call_user_func($this->notification, STREAM_NOTIFY_FAILURE, STREAM_NOTIFY_SEVERITY_ERR, $e->getMessage(), $e->getCode(), 0, 0);
+            }
             return false;
         }
-
-        $this->eof = false;
-        $this->size = $new_size;
-
-        return true;
     }
 
     /**
      * Change stream options
      *
      * STREAM_OPTION_WRITE_BUFFER isn't supported for the same reason stream_flush isn't.
-     * The other two aren't supported because of limitations in \phpseclib3\Net\SFTP.
-     *
-     * @param int $option
-     * @param int $arg1
-     * @param int $arg2
-     * @return bool
+     * The other two aren't supported because of limitations in \phpseclib4\Net\SFTP.
      */
-    private function _stream_set_option($option, $arg1, $arg2)
+    private function _stream_set_option(int $option, int $arg1, int $arg2): bool
     {
         return false;
     }
 
     /**
-     * Close an resource
-     *
+     * Close a resource
      */
-    private function _stream_close()
+    private function _stream_close(): void
     {
     }
 
@@ -737,12 +754,8 @@ class Stream
      *
      * If NET_SFTP_STREAM_LOGGING is defined all calls will be output on the screen and then (regardless of whether or not
      * NET_SFTP_STREAM_LOGGING is enabled) the parameters will be passed through to the appropriate method.
-     *
-     * @param string $name
-     * @param array $arguments
-     * @return mixed
      */
-    public function __call($name, array $arguments)
+    public function __call(string $name, array $arguments)
     {
         if (defined('NET_SFTP_STREAM_LOGGING')) {
             echo $name . '(';

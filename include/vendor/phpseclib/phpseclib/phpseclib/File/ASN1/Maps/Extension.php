@@ -3,17 +3,19 @@
 /**
  * Extension
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2016 Jim Wigginton
+ * @copyright 2016-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\File\ASN1\Maps;
+declare(strict_types=1);
 
-use phpseclib3\File\ASN1;
+namespace phpseclib4\File\ASN1\Maps;
+
+use phpseclib4\File\ASN1;
 
 /**
  * Extension
@@ -28,16 +30,16 @@ use phpseclib3\File\ASN1;
  */
 abstract class Extension
 {
-    const MAP = [
+    public const MAP = [
         'type' => ASN1::TYPE_SEQUENCE,
         'children' => [
             'extnId' => ['type' => ASN1::TYPE_OBJECT_IDENTIFIER],
             'critical' => [
                 'type' => ASN1::TYPE_BOOLEAN,
                 'optional' => true,
-                'default' => false
+                'default' => false,
             ],
-            'extnValue' => ['type' => ASN1::TYPE_OCTET_STRING]
-        ]
+            'extnValue' => ['type' => ASN1::TYPE_OCTET_STRING],
+        ],
     ];
 }

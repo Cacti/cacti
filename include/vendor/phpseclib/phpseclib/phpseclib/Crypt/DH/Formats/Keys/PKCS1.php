@@ -3,7 +3,7 @@
 /**
  * "PKCS1" Formatted EC Key Handler
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * Processes keys with the following headers:
  *
@@ -14,59 +14,50 @@
  * use it to describe this, too.
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2015 Jim Wigginton
+ * @copyright 2019-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\DH\Formats\Keys;
+declare(strict_types=1);
 
-use phpseclib3\Crypt\Common\Formats\Keys\PKCS1 as Progenitor;
-use phpseclib3\File\ASN1;
-use phpseclib3\File\ASN1\Maps;
-use phpseclib3\Math\BigInteger;
+namespace phpseclib4\Crypt\DH\Formats\Keys;
+
+use phpseclib4\Crypt\Common\Formats\Keys\PKCS1 as Progenitor;
+use phpseclib4\File\ASN1;
+use phpseclib4\File\ASN1\Maps;
+use phpseclib4\Math\BigInteger;
 
 /**
  * "PKCS1" Formatted DH Key Handler
  *
  * @author  Jim Wigginton <terrafrost@php.net>
+ * @psalm-api
  */
 abstract class PKCS1 extends Progenitor
 {
     /**
      * Break a public or private key down into its constituent components
-     *
-     * @param string $key
-     * @param string $password optional
-     * @return array
      */
-    public static function load($key, $password = '')
-    {
-        $key = parent::load($key, $password);
+    public static function load(
+        #[\SensitiveParameter] string $key,
+        #[\SensitiveParameter] ?string $password = null
+    ): array {
+        $key = parent::loadHelper($key, $password);
 
         $decoded = ASN1::decodeBER($key);
-        if (!$decoded) {
-            throw new \RuntimeException('Unable to decode BER');
-        }
 
-        $components = ASN1::asn1map($decoded[0], Maps\DHParameter::MAP);
-        if (!is_array($components)) {
-            throw new \RuntimeException('Unable to perform ASN1 mapping on parameters');
-        }
-
-        return $components;
+        return ASN1::map($decoded, Maps\DHParameter::MAP)->toArray();
     }
 
     /**
      * Convert EC parameters to the appropriate format
-     *
-     * @return string
      */
-    public static function saveParameters(BigInteger $prime, BigInteger $base, array $options = [])
+    public static function saveParameters(BigInteger $prime, BigInteger $base): string
     {
         $params = [
             'prime' => $prime,
-            'base' => $base
+            'base' => $base,
         ];
         $params = ASN1::encodeDER($params, Maps\DHParameter::MAP);
 

@@ -3,17 +3,19 @@
 /**
  * IssuingDistributionPoint
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2016 Jim Wigginton
+ * @copyright 2016-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\File\ASN1\Maps;
+declare(strict_types=1);
 
-use phpseclib3\File\ASN1;
+namespace phpseclib4\File\ASN1\Maps;
+
+use phpseclib4\File\ASN1;
 
 /**
  * IssuingDistributionPoint
@@ -22,47 +24,47 @@ use phpseclib3\File\ASN1;
  */
 abstract class IssuingDistributionPoint
 {
-    const MAP = [
+    public const MAP = [
         'type' => ASN1::TYPE_SEQUENCE,
         'children' => [
             'distributionPoint' => [
                 'constant' => 0,
                 'optional' => true,
-                'explicit' => true
+                'explicit' => true,
             ] + DistributionPointName::MAP,
             'onlyContainsUserCerts' => [
                 'type' => ASN1::TYPE_BOOLEAN,
                 'constant' => 1,
                 'optional' => true,
                 'default' => false,
-                'implicit' => true
+                'implicit' => true,
             ],
             'onlyContainsCACerts' => [
                 'type' => ASN1::TYPE_BOOLEAN,
                 'constant' => 2,
                 'optional' => true,
                 'default' => false,
-                'implicit' => true
+                'implicit' => true,
             ],
             'onlySomeReasons' => [
                 'constant' => 3,
                 'optional' => true,
-                'implicit' => true
+                'implicit' => true,
             ] + ReasonFlags::MAP,
             'indirectCRL' => [
                 'type' => ASN1::TYPE_BOOLEAN,
                 'constant' => 4,
                 'optional' => true,
                 'default' => false,
-                'implicit' => true
+                'implicit' => true,
             ],
             'onlyContainsAttributeCerts' => [
                 'type' => ASN1::TYPE_BOOLEAN,
                 'constant' => 5,
                 'optional' => true,
                 'default' => false,
-                'implicit' => true
-            ]
-        ]
+                'implicit' => true,
+            ],
+        ],
     ];
 }

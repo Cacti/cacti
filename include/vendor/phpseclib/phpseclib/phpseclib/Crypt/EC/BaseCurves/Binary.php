@@ -11,19 +11,21 @@
  * https://en.wikipedia.org/wiki/Jacobian_curve
  * https://en.wikibooks.org/wiki/Cryptography/Prime_Curve/Jacobian_Coordinates
  *
- * PHP version 5 and 7
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2017 Jim Wigginton
+ * @copyright 2018-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://pear.php.net/package/Math_BigInteger
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\EC\BaseCurves;
+declare(strict_types=1);
 
-use phpseclib3\Math\BigInteger;
-use phpseclib3\Math\BinaryField;
-use phpseclib3\Math\BinaryField\Integer as BinaryInteger;
+namespace phpseclib4\Crypt\EC\BaseCurves;
+
+use phpseclib4\Exception\{BadMethodCallException, InvalidStateException, UnsupportedValueException};
+use phpseclib4\Math\BinaryField;
+use phpseclib4\Math\BinaryField\Integer as BinaryInteger;
 
 /**
  * Curves over y^2 + x*y = x^3 + a*x^2 + b
@@ -34,57 +36,42 @@ class Binary extends Base
 {
     /**
      * Binary Field Integer factory
-     *
-     * @var BinaryField
      */
-    protected $factory;
+    protected BinaryField $factory;
 
     /**
      * Cofficient for x^1
-     *
-     * @var object
      */
-    protected $a;
+    protected BinaryInteger $a;
 
     /**
      * Cofficient for x^0
-     *
-     * @var object
      */
-    protected $b;
+    protected BinaryInteger $b;
 
     /**
      * Base Point
      *
-     * @var object
+     * @var BinaryInteger[]
      */
-    protected $p;
+    protected array $p;
 
     /**
      * The number one over the specified finite field
-     *
-     * @var object
      */
-    protected $one;
+    protected BinaryInteger $one;
 
     /**
      * The modulo
      *
-     * @var BigInteger
+     * @var int[]
      */
-    protected $modulo;
-
-    /**
-     * The Order
-     *
-     * @var BigInteger
-     */
-    protected $order;
+    protected array $modulo;
 
     /**
      * Sets the modulo
      */
-    public function setModulo(...$modulo)
+    public function setModulo(int ...$modulo): void
     {
         $this->modulo = $modulo;
         $this->factory = new BinaryField(...$modulo);
@@ -94,14 +81,11 @@ class Binary extends Base
 
     /**
      * Set coefficients a and b
-     *
-     * @param string $a
-     * @param string $b
      */
-    public function setCoefficients($a, $b)
+    public function setCoefficients(string $a, string $b): void
     {
         if (!isset($this->factory)) {
-            throw new \RuntimeException('setModulo needs to be called before this method');
+            throw new InvalidStateException('setModulo needs to be called before this method');
         }
         $this->a = $this->factory->newInteger(pack('H*', $a));
         $this->b = $this->factory->newInteger(pack('H*', $b));
@@ -109,40 +93,31 @@ class Binary extends Base
 
     /**
      * Set x and y coordinates for the base point
-     *
-     * @param string|BinaryInteger $x
-     * @param string|BinaryInteger $y
      */
-    public function setBasePoint($x, $y)
+    public function setBasePoint(string|BinaryInteger $x, string|BinaryInteger $y): void
     {
-        switch (true) {
-            case !is_string($x) && !$x instanceof BinaryInteger:
-                throw new \UnexpectedValueException('Argument 1 passed to Binary::setBasePoint() must be a string or an instance of BinaryField\Integer');
-            case !is_string($y) && !$y instanceof BinaryInteger:
-                throw new \UnexpectedValueException('Argument 2 passed to Binary::setBasePoint() must be a string or an instance of BinaryField\Integer');
-        }
         if (!isset($this->factory)) {
-            throw new \RuntimeException('setModulo needs to be called before this method');
+            throw new InvalidStateException('setModulo needs to be called before this method');
         }
         $this->p = [
             is_string($x) ? $this->factory->newInteger(pack('H*', $x)) : $x,
-            is_string($y) ? $this->factory->newInteger(pack('H*', $y)) : $y
+            is_string($y) ? $this->factory->newInteger(pack('H*', $y)) : $y,
         ];
     }
 
     /**
      * Retrieve the base point as an array
      *
-     * @return array
+     * @return BinaryInteger[]
      */
-    public function getBasePoint()
+    public function getBasePoint(): array
     {
         if (!isset($this->factory)) {
-            throw new \RuntimeException('setModulo needs to be called before this method');
+            throw new InvalidStateException('setModulo needs to be called before this method');
         }
         /*
         if (!isset($this->p)) {
-            throw new \RuntimeException('setBasePoint needs to be called before this method');
+            throw new InvalidStateException('setBasePoint needs to be called before this method');
         }
         */
         return $this->p;
@@ -151,12 +126,13 @@ class Binary extends Base
     /**
      * Adds two points on the curve
      *
-     * @return FiniteField[]
+     * @return BinaryInteger[]
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public function addPoint(array $p, array $q)
+    public function addPoint(array $p, array $q): array
     {
         if (!isset($this->factory)) {
-            throw new \RuntimeException('setModulo needs to be called before this method');
+            throw new InvalidStateException('setModulo needs to be called before this method');
         }
 
         if (!count($p) || !count($q)) {
@@ -170,7 +146,7 @@ class Binary extends Base
         }
 
         if (!isset($p[2]) || !isset($q[2])) {
-            throw new \RuntimeException('Affine coordinates need to be manually converted to "Jacobi" coordinates or vice versa');
+            throw new UnsupportedValueException('Affine coordinates need to be manually converted to "Jacobi" coordinates or vice versa');
         }
 
         if ($p[0]->equals($q[0])) {
@@ -179,8 +155,8 @@ class Binary extends Base
 
         // formulas from http://hyperelliptic.org/EFD/g12o/auto-shortw-jacobian.html
 
-        list($x1, $y1, $z1) = $p;
-        list($x2, $y2, $z2) = $q;
+        [$x1, $y1, $z1] = $p;
+        [$x2, $y2, $z2] = $q;
 
         $o1 = $z1->multiply($z1);
         $b = $x2->multiply($o1);
@@ -224,12 +200,12 @@ class Binary extends Base
     /**
      * Doubles a point on a curve
      *
-     * @return FiniteField[]
+     * @return BinaryInteger[]
      */
-    public function doublePoint(array $p)
+    public function doublePoint(array $p): array
     {
         if (!isset($this->factory)) {
-            throw new \RuntimeException('setModulo needs to be called before this method');
+            throw new InvalidStateException('setModulo needs to be called before this method');
         }
 
         if (!count($p)) {
@@ -237,12 +213,12 @@ class Binary extends Base
         }
 
         if (!isset($p[2])) {
-            throw new \RuntimeException('Affine coordinates need to be manually converted to "Jacobi" coordinates or vice versa');
+            throw new UnsupportedValueException('Affine coordinates need to be manually converted to "Jacobi" coordinates or vice versa');
         }
 
         // formulas from http://hyperelliptic.org/EFD/g12o/auto-shortw-jacobian.html
 
-        list($x1, $y1, $z1) = $p;
+        [$x1, $y1, $z1] = $p;
 
         $a = $x1->multiply($x1);
         $b = $a->multiply($a);
@@ -278,21 +254,22 @@ class Binary extends Base
      *  and can be enabled by defining the preprocessor macro OPENSSL_EC_BIN_PT_COMP at
      *  compile time."
      *
-     * @return array
+     * @psalm-suppress PossiblyUnusedParam
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public function derivePoint($m)
+    public function derivePoint(string $m): array
     {
-        throw new \RuntimeException('Point compression on binary finite field elliptic curves is not supported');
+        throw new BadMethodCallException('Point compression on binary finite field elliptic curves is not supported');
     }
 
     /**
      * Tests whether or not the x / y values satisfy the equation
      *
-     * @return boolean
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public function verifyPoint(array $p)
+    public function verifyPoint(array $p): bool
     {
-        list($x, $y) = $p;
+        [$x, $y] = $p;
         $lhs = $y->multiply($y);
         $lhs = $lhs->add($x->multiply($y));
         $x2 = $x->multiply($x);
@@ -304,30 +281,24 @@ class Binary extends Base
 
     /**
      * Returns the modulo
-     *
-     * @return BigInteger
      */
-    public function getModulo()
+    public function getModulo(): array
     {
         return $this->modulo;
     }
 
     /**
      * Returns the a coefficient
-     *
-     * @return \phpseclib3\Math\PrimeField\Integer
      */
-    public function getA()
+    public function getA(): BinaryInteger
     {
         return $this->a;
     }
 
     /**
      * Returns the a coefficient
-     *
-     * @return \phpseclib3\Math\PrimeField\Integer
      */
-    public function getB()
+    public function getB(): BinaryInteger
     {
         return $this->b;
     }
@@ -339,28 +310,28 @@ class Binary extends Base
      * To convert a Jacobian Coordinate to an Affine Point
      * you do (x / z^2, y / z^3)
      *
-     * @return \phpseclib3\Math\PrimeField\Integer[]
+     * @return BinaryInteger[]
      */
-    public function convertToAffine(array $p)
+    public function convertToAffine(array $p): array
     {
         if (!isset($p[2])) {
             return $p;
         }
-        list($x, $y, $z) = $p;
+        [$x, $y, $z] = $p;
         $z = $this->one->divide($z);
         $z2 = $z->multiply($z);
         return [
             $x->multiply($z2),
-            $y->multiply($z2)->multiply($z)
+            $y->multiply($z2)->multiply($z),
         ];
     }
 
     /**
      * Converts an affine point to a jacobian coordinate
      *
-     * @return \phpseclib3\Math\PrimeField\Integer[]
+     * @return BinaryInteger[]
      */
-    public function convertToInternal(array $p)
+    public function convertToInternal(array $p): array
     {
         if (isset($p[2])) {
             return $p;

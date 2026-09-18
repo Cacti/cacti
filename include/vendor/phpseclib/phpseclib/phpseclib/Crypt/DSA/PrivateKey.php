@@ -4,18 +4,21 @@
  * DSA Private Key
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2015 Jim Wigginton
+ * @copyright 2019-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\DSA;
+declare(strict_types=1);
 
-use phpseclib3\Crypt\Common;
-use phpseclib3\Crypt\DSA;
-use phpseclib3\Crypt\DSA\Formats\Signature\ASN1 as ASN1Signature;
-use phpseclib3\Math\BigInteger;
-use phpseclib3\Exception\BadConfigurationException;
+namespace phpseclib4\Crypt\DSA;
+
+use phpseclib4\Crypt\{Common, DSA};
+use phpseclib4\Crypt\DSA\Formats\Signature\ASN1 as ASN1Signature;
+use phpseclib4\Exception\{BadConfigurationException, UnsupportedValueException};
+use phpseclib4\File\Common\Signable;
+use phpseclib4\File\CSR;
+use phpseclib4\Math\BigInteger;
 
 /**
  * DSA Private Key
@@ -28,10 +31,8 @@ final class PrivateKey extends DSA implements Common\PrivateKey
 
     /**
      * DSA secret exponent x
-     *
-     * @var BigInteger
      */
-    protected $x;
+    protected BigInteger $x;
 
     /**
      * Returns the public key
@@ -52,15 +53,12 @@ final class PrivateKey extends DSA implements Common\PrivateKey
      * without the parameters and the PKCS1 DSA public key format does not include the parameters.
      *
      * @see self::getPrivateKey()
-     * @return mixed
      */
-    public function getPublicKey()
+    public function getPublicKey(): PublicKey
     {
         $type = self::validatePlugin('Keys', 'PKCS8', 'savePublicKey');
 
-        if (!isset($this->y)) {
-            $this->y = $this->g->powMod($this->x, $this->p);
-        }
+        $this->y ??= $this->g->powMod($this->x, $this->p);
 
         $key = $type::savePublicKey($this->p, $this->q, $this->g, $this->y);
 
@@ -73,10 +71,8 @@ final class PrivateKey extends DSA implements Common\PrivateKey
      * Create a signature
      *
      * @see self::verify()
-     * @param string $message
-     * @return mixed
      */
-    public function sign($message)
+    public function sign(string|Signable $source): string|array
     {
         $format = $this->sigFormat;
 
@@ -88,6 +84,17 @@ final class PrivateKey extends DSA implements Common\PrivateKey
             throw new BadConfigurationException('Engine OpenSSL is forced but unsupported for DSA');
         }
 
+        if ($source instanceof Signable) {
+            $public = $this->getPublicKey();
+            if ($source instanceof CSR && !$source->hasPublicKey()) {
+                $source->setPublicKey($public);
+            }
+            $source->identifySignatureAlgorithm($this);
+            $message = $source->getSignableSection();
+        } else {
+            $message = $source;
+        }
+
         if (function_exists('openssl_get_md_methods') && self::$forcedEngine !== 'PHP') {
             if (in_array($this->hash->getHash(), openssl_get_md_methods())) {
                 $signature = '';
@@ -95,12 +102,22 @@ final class PrivateKey extends DSA implements Common\PrivateKey
 
                 if ($result) {
                     if ($this->shortFormat == 'ASN1') {
+                        if ($source instanceof Signable) {
+                            $source->setSignature($signature);
+                        }
                         return $signature;
                     }
 
                     $loaded = ASN1Signature::load($signature);
                     $r = $loaded['r'];
                     $s = $loaded['s'];
+
+                    if ($source instanceof Signable) {
+                        if (is_array($signature)) {
+                            throw new UnsupportedValueException('The Raw signature format cannot be used with Signable objects');
+                        }
+                        $source->setSignature($signature);
+                    }
 
                     return $format::save($r, $s);
                 } elseif (self::$forcedEngine === 'OpenSSL') {
@@ -117,14 +134,14 @@ final class PrivateKey extends DSA implements Common\PrivateKey
         while (true) {
             $k = BigInteger::randomRange(self::$one, $this->q->subtract(self::$one));
             $r = $this->g->powMod($k, $this->p);
-            list(, $r) = $r->divide($this->q);
+            [, $r] = $r->divide($this->q);
             if ($r->equals(self::$zero)) {
                 continue;
             }
             $kinv = $k->modInverse($this->q);
             $temp = $h->add($this->x->multiply($r));
             $temp = $kinv->multiply($temp);
-            list(, $s) = $temp->divide($this->q);
+            [, $s] = $temp->divide($this->q);
             if (!$s->equals(self::$zero)) {
                 break;
             }
@@ -138,32 +155,43 @@ final class PrivateKey extends DSA implements Common\PrivateKey
         $h1 = $this->hash->hash($message);
         $k = $this->computek($h1);
         $r = $this->g->powMod($k, $this->p);
-        list(, $r) = $r->divide($this->q);
+        [, $r] = $r->divide($this->q);
         $kinv = $k->modInverse($this->q);
         $h1 = $this->bits2int($h1);
         $temp = $h1->add($this->x->multiply($r));
         $temp = $kinv->multiply($temp);
-        list(, $s) = $temp->divide($this->q);
+        [, $s] = $temp->divide($this->q);
         */
 
-        return $format::save($r, $s);
+        $signature = $format::save($r, $s);
+        if ($source instanceof Signable) {
+            $source->setSignature($signature);
+        }
+        return $signature;
     }
 
     /**
-     * Returns the private key
-     *
-     * @param string $type
-     * @param array $options optional
-     * @return string
+     * Returns the private key as a string
      */
-    public function toString($type, array $options = [])
+    public function toString(string $type, array $options = []): string
     {
         $type = self::validatePlugin('Keys', $type, 'savePrivateKey');
 
-        if (!isset($this->y)) {
-            $this->y = $this->g->powMod($this->x, $this->p);
-        }
+        $this->y ??= $this->g->powMod($this->x, $this->p);
 
         return $type::savePrivateKey($this->p, $this->q, $this->g, $this->y, $this->x, $this->password, $options);
+    }
+
+    public function toArray(): array
+    {
+        $this->y ??= $this->g->powMod($this->x, $this->p);
+
+        return [
+            'p' => clone $this->p,
+            'q' => clone $this->q,
+            'g' => clone $this->g,
+            'y' => clone $this->y,
+            'x' => clone $this->x,
+        ];
     }
 }

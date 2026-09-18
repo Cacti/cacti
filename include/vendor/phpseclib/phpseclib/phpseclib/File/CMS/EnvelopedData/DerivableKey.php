@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * DerivableKey interface
+ *
+ * @author    Jim Wigginton <terrafrost@php.net>
+ * @copyright 2015-2026 Jim Wigginton
+ * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
+ * @link      https://phpseclib.com/
+ */
+
+declare(strict_types=1);
+
+namespace phpseclib4\File\CMS\EnvelopedData;
+
+/**
+ * DerivableKey interface
+ *
+ * @author  Jim Wigginton <terrafrost@php.net>
+ */
+interface DerivableKey
+{
+    public function decrypt(): string;
+}

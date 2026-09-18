@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * SMIMECapability
+ *
+ * This is an exact copy of AlgorithmIdentifier, however, https://datatracker.ietf.org/doc/html/rfc2985#section-5.6
+ * opts not to use AlgorithmIdentifier as the name so we shant, either
+ *
+ * PHP version 8.1+
+ *
+ * @author    Jim Wigginton <terrafrost@php.net>
+ * @copyright 2016-2026 Jim Wigginton
+ * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
+ * @link      https://phpseclib.com/
+ */
+
+declare(strict_types=1);
+
+namespace phpseclib4\File\ASN1\Maps;
+
+/**
+ * SMIMECapability
+ *
+ * @author  Jim Wigginton <terrafrost@php.net>
+ */
+abstract class SMIMECapability extends AlgorithmIdentifier
+{
+}

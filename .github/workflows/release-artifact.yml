@@ -134,7 +134,7 @@ jobs:
               exit(1);
           }
 
-          if (!class_exists(\phpseclib3\Crypt\RSA::class)) {
+          if (!class_exists(\phpseclib4\Crypt\RSA::class)) {
               fwrite(STDERR, "phpseclib is not autoloadable\n");
               exit(1);
           }
@@ -166,7 +166,7 @@ jobs:
           <?php
           require getenv('PACKAGE_DIR') . '/include/vendor/autoload.php';
 
-          if (!class_exists(phpseclib3\Crypt\RSA::class)) {
+          if (!class_exists(phpseclib4\Crypt\RSA::class)) {
               fwrite(STDERR, "The extracted release cannot autoload phpseclib\n");
               exit(1);
           }

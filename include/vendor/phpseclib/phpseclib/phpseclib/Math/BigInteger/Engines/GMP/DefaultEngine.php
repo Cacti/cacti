@@ -3,34 +3,32 @@
 /**
  * GMP Modular Exponentiation Engine
  *
- * PHP version 5 and 7
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2017 Jim Wigginton
+ * @copyright 2017-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://pear.php.net/package/Math_BigInteger
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Math\BigInteger\Engines\GMP;
+declare(strict_types=1);
 
-use phpseclib3\Math\BigInteger\Engines\GMP;
+namespace phpseclib4\Math\BigInteger\Engines\GMP;
+
+use phpseclib4\Math\BigInteger\Engines\GMP;
 
 /**
  * GMP Modular Exponentiation Engine
  *
  * @author  Jim Wigginton <terrafrost@php.net>
+ * @psalm-api
  */
 abstract class DefaultEngine extends GMP
 {
     /**
      * Performs modular exponentiation.
-     *
-     * @param GMP $x
-     * @param GMP $e
-     * @param GMP $n
-     * @return GMP
      */
-    protected static function powModHelper(GMP $x, GMP $e, GMP $n)
+    protected static function powModHelper(GMP $x, GMP $e, GMP $n): GMP
     {
         $temp = new GMP();
         $temp->value = gmp_powm($x->value, $e->value, $n->value);

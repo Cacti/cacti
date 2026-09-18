@@ -5,21 +5,27 @@
  *
  * See PuTTY's SSHPUBK.C and https://tartarus.org/~simon/putty-snapshots/htmldoc/AppendixC.html
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2016 Jim Wigginton
+ * @copyright 2016-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\Common\Formats\Keys;
+declare(strict_types=1);
 
-use phpseclib3\Common\Functions\Strings;
-use phpseclib3\Crypt\AES;
-use phpseclib3\Crypt\Hash;
-use phpseclib3\Crypt\Random;
-use phpseclib3\Exception\UnsupportedAlgorithmException;
+namespace phpseclib4\Crypt\Common\Formats\Keys;
+
+use phpseclib4\Common\Functions\Strings;
+use phpseclib4\Crypt\{AES, Hash};
+use phpseclib4\Exception\{
+    BadConfigurationException,
+    PasswordNeededException,
+    UnexpectedValueException,
+    UnsupportedAlgorithmException,
+    UnsupportedValueException
+};
 
 /**
  * PuTTY Formatted Key Handler
@@ -29,50 +35,47 @@ use phpseclib3\Exception\UnsupportedAlgorithmException;
 abstract class PuTTY
 {
     /**
-     * Default comment
+     * Public Handler
      *
      * @var string
      */
-    private static $comment = 'phpseclib-generated-key';
+    public const PUBLIC_HANDLER = '';
+
+    protected static array $types = [];
+
+    /**
+     * Default comment
+     */
+    private static string $comment = 'phpseclib-generated-key';
 
     /**
      * Default version
-     *
-     * @var int
      */
-    private static $version = 2;
+    private static int $version = 2;
 
     /**
      * Sets the default comment
-     *
-     * @param string $comment
      */
-    public static function setComment($comment)
+    public static function setComment(string $comment): void
     {
         self::$comment = str_replace(["\r", "\n"], '', $comment);
     }
 
     /**
      * Sets the default version
-     *
-     * @param int $version
      */
-    public static function setVersion($version)
+    public static function setVersion(int $version): void
     {
-        if ($version != 2 && $version != 3) {
-            throw new \RuntimeException('Only supported versions are 2 and 3');
-        }
-        self::$version = $version;
+        self::$version = match ($version) {
+            2, 3 => $version,
+            default => throw new UnsupportedValueException('Only supported versions are 2 and 3')
+        };
     }
 
     /**
      * Generate a symmetric key for PuTTY v2 keys
-     *
-     * @param string $password
-     * @param int $length
-     * @return string
      */
-    private static function generateV2Key($password, $length)
+    private static function generateV2Key(string $password, int $length): string
     {
         $symkey = '';
         $sequence = 0;
@@ -85,30 +88,23 @@ abstract class PuTTY
 
     /**
      * Generate a symmetric key for PuTTY v3 keys
-     *
-     * @param string $password
-     * @param string $flavour
-     * @param int $memory
-     * @param int $passes
-     * @param string $salt
-     * @return array
      */
-    private static function generateV3Key($password, $flavour, $memory, $passes, $salt)
-    {
+    private static function generateV3Key(
+        #[\SensitiveParameter] string $password,
+        string $flavour,
+        int $memory,
+        int $passes,
+        string $salt
+    ): array {
         if (!function_exists('sodium_crypto_pwhash')) {
-            throw new \RuntimeException('sodium_crypto_pwhash needs to exist for Argon2 password hasing');
+            throw new BadConfigurationException('sodium_crypto_pwhash needs to exist for Argon2 password hasing');
         }
 
-        switch ($flavour) {
-            case 'Argon2i':
-                $flavour = SODIUM_CRYPTO_PWHASH_ALG_ARGON2I13;
-                break;
-            case 'Argon2id':
-                $flavour = SODIUM_CRYPTO_PWHASH_ALG_ARGON2ID13;
-                break;
-            default:
-                throw new UnsupportedAlgorithmException('Only Argon2i and Argon2id are supported');
-        }
+        $flavour = match ($flavour) {
+            'Argon2i' => SODIUM_CRYPTO_PWHASH_ALG_ARGON2I13,
+            'Argon2id' => SODIUM_CRYPTO_PWHASH_ALG_ARGON2ID13,
+            default => throw new UnsupportedAlgorithmException('Only Argon2i and Argon2id are supported')
+        };
 
         $length = 80; // keylen + ivlen + mac_keylen
         $temp = sodium_crypto_pwhash($length, $password, $salt, $passes, $memory << 10, $flavour);
@@ -122,41 +118,35 @@ abstract class PuTTY
 
     /**
      * Break a public or private key down into its constituent components
-     *
-     * @param string $key
-     * @param string $password
-     * @return array
      */
-    public static function load($key, $password)
-    {
-        if (!Strings::is_stringable($key)) {
-            throw new \UnexpectedValueException('Key should be a string - not a ' . gettype($key));
-        }
+    public static function load(
+        #[\SensitiveParameter] string $key,
+        #[\SensitiveParameter] ?string $password
+    ): array {
 
-        if (strpos($key, 'BEGIN SSH2 PUBLIC KEY') !== false) {
+        if (str_contains($key, 'BEGIN SSH2 PUBLIC KEY')) {
             $lines = preg_split('#[\r\n]+#', $key);
+            /** @psalm-suppress InvalidArrayOffset */
             switch (true) {
                 case $lines[0] != '---- BEGIN SSH2 PUBLIC KEY ----':
-                    throw new \UnexpectedValueException('Key doesn\'t start with ---- BEGIN SSH2 PUBLIC KEY ----');
+                    throw new UnexpectedValueException('Key doesn\'t start with ---- BEGIN SSH2 PUBLIC KEY ----');
                 case $lines[count($lines) - 1] != '---- END SSH2 PUBLIC KEY ----':
-                    throw new \UnexpectedValueException('Key doesn\'t end with ---- END SSH2 PUBLIC KEY ----');
+                    throw new UnexpectedValueException('Key doesn\'t end with ---- END SSH2 PUBLIC KEY ----');
             }
             $lines = array_splice($lines, 1, -1);
-            $lines = array_map(function ($line) {
-                return rtrim($line, "\r\n");
-            }, $lines);
+            $lines = array_map(fn ($line) => rtrim($line, "\r\n"), $lines);
             $data = $current = '';
             $values = [];
             $in_value = false;
             foreach ($lines as $line) {
                 switch (true) {
                     case preg_match('#^(.*?): (.*)#', $line, $match):
-                        $in_value = $line[strlen($line) - 1] == '\\';
+                        $in_value = $line[-1] == '\\';
                         $current = strtolower($match[1]);
                         $values[$current] = $in_value ? substr($match[2], 0, -1) : $match[2];
                         break;
                     case $in_value:
-                        $in_value = $line[strlen($line) - 1] == '\\';
+                        $in_value = $line[-1] == '\\';
                         $values[$current] .= $in_value ? substr($line, 0, -1) : $line;
                         break;
                     default:
@@ -164,11 +154,7 @@ abstract class PuTTY
                 }
             }
 
-            $components = call_user_func([static::PUBLIC_HANDLER, 'load'], $data);
-            if ($components === false) {
-                throw new \UnexpectedValueException('Unable to decode public key');
-            }
-            $components += $values;
+            $components = ([static::PUBLIC_HANDLER, 'load'])($data) + $values;
             $components['comment'] = str_replace(['\\\\', '\"'], ['\\', '"'], $values['comment']);
 
             return $components;
@@ -178,11 +164,11 @@ abstract class PuTTY
 
         $key = preg_split('#\r\n|\r|\n#', trim($key));
         if (Strings::shift($key[0], strlen('PuTTY-User-Key-File-')) != 'PuTTY-User-Key-File-') {
-            return false;
+            throw new UnexpectedValueException('PuTTY private keys need to begin with "PuTTY-User-Key-File-"');
         }
         $version = (int) Strings::shift($key[0], 3); // should be either "2: " or "3: 0" prior to int casting
         if ($version != 2 && $version != 3) {
-            throw new \RuntimeException('Only v2 and v3 PuTTY private keys are supported');
+            throw new UnsupportedValueException('Only v2 and v3 PuTTY private keys are supported');
         }
         $components['type'] = $type = rtrim($key[0]);
         if (!in_array($type, static::$types)) {
@@ -194,25 +180,26 @@ abstract class PuTTY
         $encryption = trim(preg_replace('#Encryption: (.+)#', '$1', $key[1]));
         $components['comment'] = trim(preg_replace('#Comment: (.+)#', '$1', $key[2]));
 
-        $publicLength = trim(preg_replace('#Public-Lines: (\d+)#', '$1', $key[3]));
+        $publicLength = (int) trim(preg_replace('#Public-Lines: (\d+)#', '$1', $key[3]));
         $public = Strings::base64_decode(implode('', array_map('trim', array_slice($key, 4, $publicLength))));
 
         $source = Strings::packSSH2('ssss', $type, $encryption, $components['comment'], $public);
 
-        $length = unpack('Nlength', Strings::shift($public, 4))['length'];
+        ['length' => $length] = unpack('Nlength', Strings::shift($public, 4));
         $newtype = Strings::shift($public, $length);
         if ($newtype != $type) {
-            throw new \RuntimeException('The binary type does not match the human readable type field');
+            throw new UnexpectedValueException('The binary type does not match the human readable type field');
         }
 
         $components['public'] = $public;
 
-        switch ($version) {
-            case 3:
-                $hashkey = '';
-                break;
-            case 2:
-                $hashkey = 'putty-private-key-file-mac-key';
+        $hashkey = match ($version) {
+            3 => '',
+            2 => 'putty-private-key-file-mac-key'
+        };
+
+        if ($encryption != 'none' && !isset($password)) {
+            throw new PasswordNeededException('Unable to perform decryption without some sort of password');
         }
 
         $offset = $publicLength + 4;
@@ -227,10 +214,15 @@ abstract class PuTTY
                         $parallelism = trim(preg_replace('#Argon2-Parallelism: (\d+)#', '$1', $key[$offset++]));
                         $salt = Strings::hex2bin(trim(preg_replace('#Argon2-Salt: ([0-9a-f]+)#', '$1', $key[$offset++])));
 
-                        $v3key = self::generateV3Key($password, $flavour, $memory, $passes, $salt);
-                        $symkey = $v3key['symkey'];
-                        $symiv = $v3key['symiv'];
-                        $hashkey = $v3key['hashkey'];
+                        if ($parallelism != 1) {
+                            throw new UnsupportedValueException('Argon2 parallelism > 1 is not supported by libsodium');
+                        }
+
+                        [
+                            'symkey' => $symkey,
+                            'symiv' => $symiv,
+                            'hashkey' => $hashkey
+                        ] = self::generateV3Key($password, $flavour, (int) $memory, (int) $passes, $salt);
 
                         break;
                     case 2:
@@ -250,7 +242,7 @@ abstract class PuTTY
                 $hash->setKey(sha1($hashkey, true));
         }
 
-        $privateLength = trim(preg_replace('#Private-Lines: (\d+)#', '$1', $key[$offset++]));
+        $privateLength = (int) trim(preg_replace('#Private-Lines: (\d+)#', '$1', $key[$offset++]));
         $private = Strings::base64_decode(implode('', array_map('trim', array_slice($key, $offset, $privateLength))));
 
         if ($encryption != 'none') {
@@ -266,7 +258,7 @@ abstract class PuTTY
         $hmac = Strings::hex2bin($hmac);
 
         if (!hash_equals($hash->hash($source), $hmac)) {
-            throw new \UnexpectedValueException('MAC validation error');
+            throw new UnexpectedValueException('MAC validation error');
         }
 
         $components['private'] = $private;
@@ -276,19 +268,17 @@ abstract class PuTTY
 
     /**
      * Wrap a private key appropriately
-     *
-     * @param string $public
-     * @param string $private
-     * @param string $type
-     * @param string $password
-     * @param array $options optional
-     * @return string
      */
-    protected static function wrapPrivateKey($public, $private, $type, $password, array $options = [])
-    {
-        $encryption = (!empty($password) || is_string($password)) ? 'aes256-cbc' : 'none';
-        $comment = isset($options['comment']) ? $options['comment'] : self::$comment;
-        $version = isset($options['version']) ? $options['version'] : self::$version;
+    protected static function wrapPrivateKey(
+        string $public,
+        #[\SensitiveParameter] string $private,
+        string $type,
+        #[\SensitiveParameter] ?string $password,
+        array $options = []
+    ): string {
+        $encryption = isset($password) ? 'aes256-cbc' : 'none';
+        $comment = $options['comment'] ?? self::$comment;
+        $version = $options['version'] ?? self::$version;
 
         $key = "PuTTY-User-Key-File-$version: $type\r\n";
         $key .= "Encryption: $encryption\r\n";
@@ -302,7 +292,7 @@ abstract class PuTTY
         $key .= "Public-Lines: " . ((strlen($public) + 63) >> 6) . "\r\n";
         $key .= chunk_split($public, 64);
 
-        if (empty($password) && !is_string($password)) {
+        if (!isset($password)) {
             $source .= Strings::packSSH2('s', $private);
             switch ($version) {
                 case 3:
@@ -314,22 +304,23 @@ abstract class PuTTY
                     $hash->setKey(sha1('putty-private-key-file-mac-key', true));
             }
         } else {
-            $private .= Random::string(16 - (strlen($private) & 15));
+            $private .= random_bytes(16 - (strlen($private) & 15));
             $source .= Strings::packSSH2('s', $private);
             $crypto = new AES('cbc');
 
             switch ($version) {
                 case 3:
-                    $salt = Random::string(16);
+                    $salt = random_bytes(16);
                     $key .= "Key-Derivation: Argon2id\r\n";
                     $key .= "Argon2-Memory: 8192\r\n";
                     $key .= "Argon2-Passes: 13\r\n";
                     $key .= "Argon2-Parallelism: 1\r\n";
                     $key .= "Argon2-Salt: " . Strings::bin2hex($salt) . "\r\n";
-                    $v3key = self::generateV3Key($password, 'Argon2id', 8192, 13, $salt);
-                    $symkey = $v3key['symkey'];
-                    $symiv = $v3key['symiv'];
-                    $hashkey = $v3key['hashkey'];
+                    [
+                        'symkey' => $symkey,
+                        'symiv' => $symiv,
+                        'hashkey' => $hashkey
+                    ] = self::generateV3Key($password, 'Argon2id', 8192, 13, $salt);
 
                     $hash = new Hash('sha256');
                     $hash->setKey($hashkey);
@@ -348,7 +339,6 @@ abstract class PuTTY
             $crypto->setIV($symiv);
             $crypto->disablePadding();
             $private = $crypto->encrypt($private);
-            $mac = $hash->hash($source);
         }
 
         $private = Strings::base64_encode($private);
@@ -363,12 +353,8 @@ abstract class PuTTY
      * Wrap a public key appropriately
      *
      * This is basically the format described in RFC 4716 (https://tools.ietf.org/html/rfc4716)
-     *
-     * @param string $key
-     * @param string $type
-     * @return string
      */
-    protected static function wrapPublicKey($key, $type)
+    protected static function wrapPublicKey(string $key, string $type): string
     {
         $key = pack('Na*a*', strlen($type), $type, $key);
         $key = "---- BEGIN SSH2 PUBLIC KEY ----\r\n" .

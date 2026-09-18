@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Finite Fields Base Class
  *
- * PHP version 5 and 7
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2017 Jim Wigginton
+ * @copyright 2017-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
  */
 
-namespace phpseclib3\Math\Common;
+namespace phpseclib4\Math\Common;
 
 /**
  * Finite Fields

@@ -3,19 +3,21 @@
 /**
  * PHP Montgomery Modular Exponentiation Engine
  *
- * PHP version 5 and 7
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2017 Jim Wigginton
+ * @copyright 2017-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://pear.php.net/package/Math_BigInteger
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Math\BigInteger\Engines\PHP;
+declare(strict_types=1);
 
-use phpseclib3\Math\BigInteger\Engines\Engine;
-use phpseclib3\Math\BigInteger\Engines\PHP;
-use phpseclib3\Math\BigInteger\Engines\PHP\Reductions\PowerOfTwo;
+namespace phpseclib4\Math\BigInteger\Engines\PHP;
+
+use phpseclib4\Exception\InvalidArgumentException;
+use phpseclib4\Math\BigInteger\Engines\{Engine, PHP};
+use phpseclib4\Math\BigInteger\Engines\PHP\Reductions\PowerOfTwo;
 
 /**
  * PHP Montgomery Modular Exponentiation Engine
@@ -26,10 +28,8 @@ abstract class Montgomery extends Base
 {
     /**
      * Test for engine validity
-     *
-     * @return bool
      */
-    public static function isValidEngine()
+    public static function isValidEngine(): bool
     {
         return static::class != __CLASS__;
     }
@@ -37,15 +37,15 @@ abstract class Montgomery extends Base
     /**
      * Performs modular exponentiation.
      *
-     * @template T of Engine
-     * @param Engine $x
-     * @param Engine $e
-     * @param Engine $n
+     * @template T of PHP
      * @param class-string<T> $class
      * @return T
      */
-    protected static function slidingWindow(Engine $x, Engine $e, Engine $n, $class)
+    protected static function slidingWindow(Engine $x, Engine $e, Engine $n, string $class): PHP
     {
+        if (!$x instanceof PHP || !$e instanceof PHP || !$n instanceof PHP) {
+            throw new InvalidArgumentException('Montgomery exponentiation only works with PHP engines');
+        }
         // is the modulo odd?
         if ($n->value[0] & 1) {
             return parent::slidingWindow($x, $e, $n, $class);
@@ -82,7 +82,7 @@ abstract class Montgomery extends Base
         $temp = $temp->multiply($y2);
 
         $result = $result->add($temp);
-        list(, $result) = $result->divide($n);
+        [, $result] = $result->divide($n);
 
         return $result;
     }

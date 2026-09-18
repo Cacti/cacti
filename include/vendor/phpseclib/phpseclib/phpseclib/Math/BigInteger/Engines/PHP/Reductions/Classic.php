@@ -3,40 +3,38 @@
 /**
  * PHP Classic Modular Exponentiation Engine
  *
- * PHP version 5 and 7
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2017 Jim Wigginton
+ * @copyright 2017-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://pear.php.net/package/Math_BigInteger
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Math\BigInteger\Engines\PHP\Reductions;
+declare(strict_types=1);
 
-use phpseclib3\Math\BigInteger\Engines\PHP\Base;
+namespace phpseclib4\Math\BigInteger\Engines\PHP\Reductions;
+
+use phpseclib4\Math\BigInteger\Engines\PHP\Base;
 
 /**
  * PHP Classic Modular Exponentiation Engine
  *
  * @author  Jim Wigginton <terrafrost@php.net>
+ * @psalm-api
  */
 abstract class Classic extends Base
 {
     /**
      * Regular Division
-     *
-     * @param array $x
-     * @param array $n
-     * @param string $class
-     * @return array
      */
-    protected static function reduce(array $x, array $n, $class)
+    protected static function reduce(array $x, array $n, string $class): array
     {
         $lhs = new $class();
         $lhs->value = $x;
         $rhs = new $class();
         $rhs->value = $n;
-        list(, $temp) = $lhs->divide($rhs);
+        [, $temp] = $lhs->divide($rhs);
         return $temp->value;
     }
 }

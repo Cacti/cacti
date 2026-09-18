@@ -3,19 +3,22 @@
 /**
  * secp160k1
  *
- * PHP version 5 and 7
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2017 Jim Wigginton
+ * @copyright 2018-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://pear.php.net/package/Math_BigInteger
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\EC\Curves;
+declare(strict_types=1);
 
-use phpseclib3\Crypt\EC\BaseCurves\KoblitzPrime;
-use phpseclib3\Math\BigInteger;
+namespace phpseclib4\Crypt\EC\Curves;
 
+use phpseclib4\Crypt\EC\BaseCurves\KoblitzPrime;
+use phpseclib4\Math\BigInteger;
+
+/** @psalm-api */
 class secp160k1 extends KoblitzPrime
 {
     public function __construct()
@@ -35,11 +38,11 @@ class secp160k1 extends KoblitzPrime
         $this->basis = [];
         $this->basis[] = [
             'a' => new BigInteger('0096341F1138933BC2F505', -16),
-            'b' => new BigInteger('FF6E9D0418C67BB8D5F562', -16)
+            'b' => new BigInteger('FF6E9D0418C67BB8D5F562', -16),
         ];
         $this->basis[] = [
             'a' => new BigInteger('01BDCB3A09AAAABEAFF4A8', -16),
-            'b' => new BigInteger('04D12329FF0EF498EA67', -16)
+            'b' => new BigInteger('04D12329FF0EF498EA67', -16),
         ];
         $this->beta = $this->factory->newInteger(new BigInteger('645B7345A143464942CC46D7CF4D5D1E1E6CBB68', -16));
     }
