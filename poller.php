@@ -548,18 +548,17 @@ while ($poller_runs_completed < $poller_runs) {
 	if ($running_processes) {
 		cacti_log("WARNING: There are $running_processes processes detected as overrunning a polling cycle, please investigate", true, 'POLLER');
 		admin_email(__('Cacti System Warning'), __('WARNING: There are %d processes detected as overrunning a polling cycle for poller id %d, please investigate.', $running_processes, $poller_id));
-
-		/**
-		 * We have to clear the poller_time due to processes
-		 * that may have segfaulted and never cleared their
-		 * poller time.  Otherwise we will get an endless
-		 * sea of log messages.
-		 */
-		db_execute_prepared("DELETE FROM poller_time
-			WHERE poller_id = ?
-			AND end_time = '0000-00-00 00:00:00'",
-			array($poller_id), true, $poller_db_cnn_id);
 	}
+
+	/**
+	 * We have to clear the poller_time due to processes
+	 * that may have segfaulted and never cleared their
+	 * poller time.  Otherwise we will get an endless
+	 * sea of log messages.
+	 */
+	db_execute_prepared("DELETE FROM poller_time
+		WHERE poller_id = ?",
+		array($poller_id), true, $poller_db_cnn_id);
 
 	/**
 	 * only report issues for the main poller or from bad local
