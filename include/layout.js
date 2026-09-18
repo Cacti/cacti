@@ -3582,7 +3582,7 @@ function cactiReady() {
 				clearTimeout(tapped);
 				tapped = null;
 
-				if (screenfull.enabled) {
+				if (screenfull.isEnabled) {
 					screenfull.request();
 				}
 			}
