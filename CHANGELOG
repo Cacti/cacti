@@ -191,6 +191,8 @@ Cacti CHANGELOG
 -issue#7328: Align graph, CSV export, percentile, and summation sample windows
 -issue#7981: Require POST tokens for state-changing item, tree and RRD actions
 -issue#7809: Avoid reading a missing source key on output-only data query fields
+-issue#7812: Clarify that missing SNMP notification receivers need no action when traps are disabled
+-issue#8040: Regenerate the vendored DOMPurify asset to match the pinned 3.4.15 release and keep node_modules during CI
 -issue#8041: Detect a real TTY instead of a dead github_actions check before calling stty size
 -issue#8043: Regenerate the vendored DOMPurify asset to match the pinned 3.4.15 release and keep node_modules during CI
 -feature#7884: Manage front-end JavaScript libraries with npm and Dependabot
