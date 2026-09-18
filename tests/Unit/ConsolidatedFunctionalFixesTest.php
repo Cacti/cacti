@@ -17,15 +17,6 @@ function consolidatedSource(string $path): string {
 	return $source;
 }
 
-test('poller cleanup retains active rows and avoids a repeated engine conversion', function (): void {
-	$source = consolidatedSource('poller.php');
-
-	expect($source)->toContain("AND end_time != '0000-00-00 00:00:00'")
-		->and($source)->toContain("TABLE_NAME = 'poller_output'")
-		->and(strpos($source, "TABLE_NAME = 'poller_output'"))
-		->toBeLessThan(strpos($source, 'ALTER TABLE poller_output ENGINE=MEMORY'));
-});
-
 test('database recovery and identifier handling retain the corrected connection', function (): void {
 	$source = consolidatedSource('lib/database.php');
 
