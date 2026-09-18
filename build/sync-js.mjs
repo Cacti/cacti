@@ -1,7 +1,8 @@
 // Copies the npm-managed JavaScript libraries into include/js/ so the tree
 // ships with prebuilt assets. Run `npm ci && npm run build:js` after any change
-// to the pinned versions in package.json. pace-js carries a one-line local fix
-// applied via patch-package (patches/pace-js+1.2.4.patch) before this runs.
+// to the pinned versions in package.json. pace-js and tablesorter each carry a
+// local fix applied via patch-package (patches/pace-js+1.2.4.patch,
+// patches/tablesorter+2.32.0.patch) before this runs.
 import { copyFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
