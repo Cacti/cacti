@@ -39,7 +39,12 @@ require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-if (!isrv('action') || gnrv('action') == 'templates' || gnrv('action_type') == 'templates') {
+if (gnrv('action') == 'archives' || gnrv('action_type') == 'archives') {
+	$actions = [
+		1 => __('Delete'),
+		2 => __('Download'),
+	];
+} else {
 	$actions = [
 		1 => __('Delete'),
 		2 => __('Duplicate'),
@@ -52,11 +57,6 @@ if (!isrv('action') || gnrv('action') == 'templates' || gnrv('action_type') == '
 		unset($actions[4]);
 		unset($actions[5]);
 	}
-} elseif (gnrv('action') == 'archives' || gnrv('action_type') == 'archives') {
-	$actions = [
-		1 => __('Delete'),
-		2 => __('Download'),
-	];
 }
 
 // set default action
