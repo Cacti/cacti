@@ -15,7 +15,6 @@ const SNMPAGENT_EVENT_SEVERITY_HIGH     = 3;
 const SNMPAGENT_EVENT_SEVERITY_CRITICAL = 4;
 const POLLER_VERBOSITY_NONE             = 1;
 
-$GLOBALS['config']                      = array();
 $GLOBALS['snmpagent_notification_logs'] = array();
 $GLOBALS['snmpagent_event_severity']    = array(
 	SNMPAGENT_EVENT_SEVERITY_LOW      => 'low',
@@ -59,8 +58,14 @@ if (preg_match('/function snmpagent_notification\(.*?^}\R/ms', $source, $matches
 eval('namespace SnmpAgentNotificationReceiverTest;' . $matches[0]);
 
 beforeEach(function () {
-	$GLOBALS['config']                      = array();
-	$GLOBALS['snmpagent_notification_logs'] = array();
+	$GLOBALS['snmpagent_notification_receiver_test_prior_config'] = $GLOBALS['config'] ?? null;
+	$GLOBALS['config']                                            = array();
+	$GLOBALS['snmpagent_notification_logs']                       = array();
+});
+
+afterEach(function () {
+	$GLOBALS['config'] = $GLOBALS['snmpagent_notification_receiver_test_prior_config'];
+	unset($GLOBALS['snmpagent_notification_receiver_test_prior_config']);
 });
 
 test('missing receivers produce an actionable notice', function () {
@@ -75,7 +80,7 @@ test('missing receivers produce an actionable notice', function () {
 		->and($GLOBALS['snmpagent_notification_logs'])->toHaveCount(1)
 		->and($GLOBALS['snmpagent_notification_logs'][0][0])->toStartWith('NOTICE:')
 		->and($GLOBALS['snmpagent_notification_logs'][0][0])->toContain('No enabled SNMP notification receivers')
-		->and($GLOBALS['snmpagent_notification_logs'][0][0])->toContain('Console > Utilities > SNMP Agent Utilities > SNMP Notification Receivers')
+		->and($GLOBALS['snmpagent_notification_logs'][0][0])->toContain('Console > Utilities > SNMP Managers')
 		->and($GLOBALS['snmpagent_notification_logs'][0][0])->toContain('ignore this notice when SNMP traps are intentionally disabled')
 		->and($GLOBALS['snmpagent_notification_logs'][0][2])->toBe('SNMPAGENT')
 		->and($GLOBALS['snmpagent_notification_logs'][0][3])->toBe(POLLER_VERBOSITY_NONE);
