@@ -610,8 +610,7 @@ while ($poller_runs_completed < $poller_runs) {
 	}
 
 	db_execute_prepared("DELETE FROM poller_time
-		WHERE poller_id = ?
-		AND end_time != '0000-00-00 00:00:00'",
+		WHERE poller_id = ?",
 		[$poller_id], true, $poller_db_cnn_id);
 
 	/**
