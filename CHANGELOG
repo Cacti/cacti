@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#7027: Refuse to signal a process table PID that pid_t cannot hold
 -issue#7957: Stop treating every PID in a container as a reserved system PID
 -issue#7958: Repair batchgapfix --force, which aborted on PHP 8 and killed nothing
+-issue#8042: Detect a real TTY instead of a dead github_actions check before calling stty size
 -issue: Commit transactions on MySQL as well as MariaDB
 -security: Reject clean-client login requests when the session cookie was not accepted
 -security: Fail closed on a posted LDAP realm that is not a configured domain
