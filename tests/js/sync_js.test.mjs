@@ -64,9 +64,9 @@ test('DOMPurify is pinned and generated from the matching npm release', () => {
 	const packageJson = JSON.parse(readFileSync('package.json', 'utf8'));
 	const source = 'node_modules/dompurify/dist/purify.js';
 
-	assert.equal(packageJson.dependencies.dompurify, '3.4.14');
+	assert.equal(packageJson.dependencies.dompurify, '3.4.15');
 	assert.equal(assetMap[source], 'include/js/purify.js');
-	assert.match(readFileSync(source, 'utf8'), /DOMPurify 3\.4\.14/);
+	assert.match(readFileSync(source, 'utf8'), /DOMPurify 3\.4\.15/);
 });
 
 test("screenfull's ESM export is rewritten to a global assignment", () => {
