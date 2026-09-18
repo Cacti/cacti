@@ -20,7 +20,7 @@ test('Composer output is rejected while legacy paths remain allowed', function (
 	$tracked = [
 		'include/vendor/composer/index.php',
 		'include/vendor/composer/installed.json',
-		'include/vendor/csrf/README.md',
+		'include/vendor/parsedown/Parsedown.php',
 	];
 
 	expect(cacti_vendor_policy_unexpected_files($tracked))
