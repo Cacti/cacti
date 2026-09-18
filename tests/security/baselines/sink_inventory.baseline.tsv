@@ -149,7 +149,6 @@ fs_write	./cli/import_template.php				$fp       = fopen($filename,'r');
 fs_write	./cli/input_whitelist.php				$filesystem->writeFile($config['input_whitelist'], json_encode($input));
 fs_write	./cli/md5sum.php			$filesystem->writeFile($md5_file, $output);
 fs_write	./cli/migrate_poller.php		$result = file_put_contents($migration_log_file, date('Y-m-d H:i:s') . " - $message" . PHP_EOL, FILE_APPEND);
-fs_write	./cli/refresh_csrf.php			$filesystem->writeFile(CACTI_CSRF_SECRET, '<?php $secret = "' . $new_secret . '";' . PHP_EOL);
 fs_write	./cli/rrdresize.php					if (!file_put_contents($tmp_xml_file, $rrd_new_header . $rrd_new_body . '</rrd>')) {
 fs_write	./cli/rrdresize.php		$log_handle = fopen($tmp_backup_folder . 'tmp_rrdresize.log', 'w');
 fs_write	./cli/splice_rrd.php				if (($f = @fopen($path, 'a'))) {
@@ -157,11 +156,14 @@ fs_write	./cli/splice_rrd.php			if (($f = @fopen($path, 'w'))) {
 fs_write	./cli/splice_rrd.php		return file_put_contents($xmlfile, $output);
 fs_write	./cli/splice_rrd.php	file_put_contents($newxmlfile, $new_xml);
 fs_write	./host.php		$stdout = fopen('php://output', 'w');
+fs_write	./include/csrf.php			$fh        = fopen($file, 'w');
+fs_write	./include/csrf.php			$fh = @fopen($path, 'a');
+fs_write	./include/csrf.php		$fh = @fopen($path, 'w');
 fs_write	./include/global_languages.php			file_put_contents($config['i18n_log'], $text . $eol, $mode);
 fs_write	./include/global_languages.php			file_put_contents($config['i18n_text_log'], $text . $eol, $mode);
 fs_write	./include/themes/midwinter/update_hash.php			file_put_contents($cssFile, $fileUpdated);
 fs_write	./install/functions.php						$fp = fopen($config_file, 'w');
-fs_write	./install/functions.php				$fh = fopen($file, 'w');
+fs_write	./install/functions.php					$fh = fopen($file, 'w');
 fs_write	./install/functions.php			file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
 fs_write	./install/functions.php			file_put_contents(CACTI_PATH_LOG . '/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
 fs_write	./install/functions.php			file_put_contents(CACTI_PATH_LOG . '/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
