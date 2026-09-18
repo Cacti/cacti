@@ -192,6 +192,7 @@ Cacti CHANGELOG
 -issue#7981: Require POST tokens for state-changing item, tree and RRD actions
 -issue#7809: Avoid reading a missing source key on output-only data query fields
 -issue#8041: Detect a real TTY instead of a dead github_actions check before calling stty size
+-issue#8043: Regenerate the vendored DOMPurify asset to match the pinned 3.4.15 release and keep node_modules during CI
 -feature#7884: Manage front-end JavaScript libraries with npm and Dependabot
 -feature#7884: Build release artifacts from managed dependencies, including DOMPurify 3.4.14 and phpseclib 4, and a reduced runtime tree
 -feature#7835: Add cacti_snmp_session_from_host() to build SNMP sessions from a device row
