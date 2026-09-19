@@ -734,13 +734,16 @@ function sync_color_templates(int $color_template) : void {
 	$found     = false;
 	$templates = 0;
 	$graphs    = 0;
+	$failed    = 0;
 
 	if (cacti_sizeof($aggregate_templates)) {
 		$found     = true;
 		$templates = cacti_sizeof($aggregate_templates);
 
 		foreach ($aggregate_templates as $id) {
-			push_out_aggregates($id);
+			if (!push_out_aggregates($id)) {
+				$failed++;
+			}
 		}
 	}
 
@@ -757,12 +760,16 @@ function sync_color_templates(int $color_template) : void {
 		$found  = true;
 		$graphs = cacti_sizeof($aggregate_graphs);
 
-		foreach ($aggregate_templates as $id) {
-			push_out_aggregates($id['aggregate_template_id'], $id['local_graph_id']);
+		foreach ($aggregate_graphs as $id) {
+			if (!push_out_aggregates($id['aggregate_template_id'], $id['local_graph_id'])) {
+				$failed++;
+			}
 		}
 	}
 
-	if ($found) {
+	if ($failed > 0) {
+		raise_message('color_template_sync', __('Color Template \'%s\' failed to push out %d Aggregate Templates or Graphs', $name, $failed), MESSAGE_LEVEL_ERROR);
+	} elseif ($found) {
 		raise_message('color_template_sync', __('Color Template \'%s\' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
 	} else {
 		raise_message('color_template_sync', __('Color Template \'%s\' had no Aggregate Templates or Graphs using this Color Template.', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
