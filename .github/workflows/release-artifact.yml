@@ -108,17 +108,28 @@ jobs:
               512,
               JSON_THROW_ON_ERROR
           );
-          $lockedVersion = null;
 
-          foreach ($lock['packages'] as $package) {
-              if ($package['name'] === 'phpseclib/phpseclib') {
-                  $lockedVersion = $package['version'];
-                  break;
+          function lockedVersion(array $lock, string $name): ?string {
+              foreach ($lock['packages'] as $package) {
+                  if ($package['name'] === $name) {
+                      return $package['version'];
+                  }
               }
+
+              return null;
           }
+
+          $lockedVersion = lockedVersion($lock, 'phpseclib/phpseclib');
 
           if ($lockedVersion === null) {
               fwrite(STDERR, "phpseclib is missing from composer.lock\n");
+              exit(1);
+          }
+
+          $lockedNetDns2Version = lockedVersion($lock, 'mikepultz/netdns2');
+
+          if ($lockedNetDns2Version === null) {
+              fwrite(STDERR, "mikepultz/netdns2 is missing from composer.lock\n");
               exit(1);
           }
 
@@ -136,6 +147,26 @@ jobs:
 
           if (!class_exists(\phpseclib4\Crypt\RSA::class)) {
               fwrite(STDERR, "phpseclib is not autoloadable\n");
+              exit(1);
+          }
+
+          if (!\Composer\InstalledVersions::isInstalled('mikepultz/netdns2')) {
+              fwrite(STDERR, "mikepultz/netdns2 is not installed through Composer\n");
+              exit(1);
+          }
+
+          if (\Composer\InstalledVersions::getPrettyVersion('mikepultz/netdns2') !== $lockedNetDns2Version) {
+              fwrite(STDERR, "mikepultz/netdns2 does not match composer.lock\n");
+              exit(1);
+          }
+
+          if (!class_exists(Net_DNS2_Resolver::class) || !class_exists(Net_DNS2_Exception::class)) {
+              fwrite(STDERR, "mikepultz/netdns2 is not autoloadable\n");
+              exit(1);
+          }
+
+          if (Net_DNS2::VERSION !== ltrim($lockedNetDns2Version, 'v')) {
+              fwrite(STDERR, "Net_DNS2::VERSION does not match composer.lock\n");
               exit(1);
           }
           PHP
@@ -173,6 +204,16 @@ jobs:
 
           if (!class_exists(HTMLPurifier::class)) {
               fwrite(STDERR, "The extracted release cannot autoload HTML Purifier\n");
+              exit(1);
+          }
+
+          if (!class_exists(Net_DNS2_Resolver::class) || !class_exists(Net_DNS2_Exception::class)) {
+              fwrite(STDERR, "The extracted release cannot autoload Net_DNS2\n");
+              exit(1);
+          }
+
+          if (Net_DNS2::VERSION !== '1.5.5') {
+              fwrite(STDERR, "The extracted release's Net_DNS2 version is " . Net_DNS2::VERSION . ", expected 1.5.5\n");
               exit(1);
           }
           PHP
