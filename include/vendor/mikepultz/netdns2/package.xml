@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.10.14" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+    http://pear.php.net/dtd/tasks-1.0.xsd
+    http://pear.php.net/dtd/package-2.0
+    http://pear.php.net/dtd/package-2.0.xsd">
+ <name>Net_DNS2</name>
+ <channel>pear.php.net</channel>
+ <summary>PHP Resolver library used to communicate with a DNS server.</summary>
+ <description>Provides (roughly) the same functionality as Net_DNS, but using modern PHP objects, exceptions for error handling, better sockets support.
+
+This release is (in most cases) 2x - 10x faster than Net_DNS, as well as includes more RR&apos;s (including DNSSEC RR&apos;s), and improved sockets and streams support.</description>
+ <lead>
+  <name>Mike Pultz</name>
+  <user>mikepultz</user>
+  <email>mike@mikepultz.com</email>
+  <active>yes</active>
+ </lead>
+ <date>2025-05-17</date>
+ <time>16:46:56</time>
+ <version>
+  <release>1.5.5</release>
+  <api>1.5.5</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="https://opensource.org/license/bsd-3-clause/">BSD License</license>
+ <notes>
+- increased minimum PHP requirement to v7.1
+- fixed the PHP 8.4 deprecation notices - #154.
+- fixed the infinite loop issue related to the v1.5.4 changes - #146
+- modified the TCP write process to avoid possible TCP segmentation with the length prefix.
+- added support for microsecond level timeout values by passing a float value to the timeout option instead of a whole integer.
+- updated the PEAR package.php file; the last version was missing some new files.
+ </notes>
+ <contents>
+  <dir baseinstalldir="/" name="/">
+   <file baseinstalldir="/" md5sum="b61ba75ae0d330a3056207947ab593e3" name="Net/DNS2.php" role="php" />
+   <file baseinstalldir="/" md5sum="ce00f9e02970fe5dfa6a293a24aa20cb" name="Net/DNS2/BitMap.php" role="php" />
+   <file baseinstalldir="/" md5sum="f635fe34ca382450debba73cefc62bb5" name="Net/DNS2/Cache.php" role="php" />
+   <file baseinstalldir="/" md5sum="7cc7954cd6c153ad3606431ed2eee628" name="Net/DNS2/Exception.php" role="php" />
+   <file baseinstalldir="/" md5sum="f16a202fc17df9617d1d1fb152982c2b" name="Net/DNS2/Header.php" role="php" />
+   <file baseinstalldir="/" md5sum="ee8cb16f52961bc230b3a3bd7b21da23" name="Net/DNS2/Lookups.php" role="php" />
+   <file baseinstalldir="/" md5sum="e6b76d1ab79e02254ef79184aff07dea" name="Net/DNS2/Names.php" role="php" />
+   <file baseinstalldir="/" md5sum="e7cbacfdea10fd81e464ed01aa8af93f" name="Net/DNS2/Notifier.php" role="php" />
+   <file baseinstalldir="/" md5sum="c17a81904cba6df9351e16ea41ea6054" name="Net/DNS2/Packet.php" role="php" />
+   <file baseinstalldir="/" md5sum="e3d46434da69dc0073d70a84fde8bdde" name="Net/DNS2/PrivateKey.php" role="php" />
+   <file baseinstalldir="/" md5sum="f8478c58349571edf1e8d5708110e179" name="Net/DNS2/Question.php" role="php" />
+   <file baseinstalldir="/" md5sum="2aade1dacee24d2490b020397b55cff0" name="Net/DNS2/Resolver.php" role="php" />
+   <file baseinstalldir="/" md5sum="2009f9f065862fcf5dd135af13c8c4bf" name="Net/DNS2/RR.php" role="php" />
+   <file baseinstalldir="/" md5sum="c772b3bcfaf2a71da02b8ad7517e3ad1" name="Net/DNS2/Socket.php" role="php" />
+   <file baseinstalldir="/" md5sum="74543e2183a907c8fdb727a77ef862fe" name="Net/DNS2/Updater.php" role="php" />
+   <file baseinstalldir="/" md5sum="4a1eb359dabd56f7dd435a657b40d271" name="Net/DNS2/Cache/File.php" role="php" />
+   <file baseinstalldir="/" md5sum="5b158831fcf72aa801f308988ea2815f" name="Net/DNS2/Cache/Shm.php" role="php" />
+   <file baseinstalldir="/" md5sum="65d8427f0db5c87c6e4bb4cd8e556f3e" name="Net/DNS2/Packet/Request.php" role="php" />
+   <file baseinstalldir="/" md5sum="5681148554ab5174940fef48d15414bf" name="Net/DNS2/Packet/Response.php" role="php" />
+   <file baseinstalldir="/" md5sum="49269e3bac6ee18abc3b512120a26540" name="Net/DNS2/RR/A.php" role="php" />
+   <file baseinstalldir="/" md5sum="aa3c1bfb45a4ed889d6507d2b31b8593" name="Net/DNS2/RR/AAAA.php" role="php" />
+   <file baseinstalldir="/" md5sum="3d999b64ba97395990f3b6c2874ef620" name="Net/DNS2/RR/AFSDB.php" role="php" />
+   <file baseinstalldir="/" md5sum="d7592afd62d9cdf29fad9b78ec5fe093" name="Net/DNS2/RR/AMTRELAY.php" role="php" />
+   <file baseinstalldir="/" md5sum="4eaf33515b4303276d467bca4e24f89c" name="Net/DNS2/RR/ANY.php" role="php" />
+   <file baseinstalldir="/" md5sum="40766ba91f57f26366fee4ec57da33eb" name="Net/DNS2/RR/APL.php" role="php" />
+   <file baseinstalldir="/" md5sum="3f4d4bfdfbce921546e35cc2ace0c0ac" name="Net/DNS2/RR/ATMA.php" role="php" />
+   <file baseinstalldir="/" md5sum="b16d7fe6a80eac184b329f5a0cdc4713" name="Net/DNS2/RR/AVC.php" role="php" />
+   <file baseinstalldir="/" md5sum="22c1e7d8ff6f08e3d94d4515aae52888" name="Net/DNS2/RR/CAA.php" role="php" />
+   <file baseinstalldir="/" md5sum="a7c1566d3b6f3ee640bde61ea6a3e150" name="Net/DNS2/RR/CDNSKEY.php" role="php" />
+   <file baseinstalldir="/" md5sum="3ef118f6dbe1ddd0f71cf2c9fb456da9" name="Net/DNS2/RR/CDS.php" role="php" />
+   <file baseinstalldir="/" md5sum="592d148a2ee70e9cd7aebb29532a6dc1" name="Net/DNS2/RR/CERT.php" role="php" />
+   <file baseinstalldir="/" md5sum="1f4e875f71f1fc32cfdbd79209f356f4" name="Net/DNS2/RR/CNAME.php" role="php" />
+   <file baseinstalldir="/" md5sum="97b49c0131fc18d9bf8207054758ac76" name="Net/DNS2/RR/CSYNC.php" role="php" />
+   <file baseinstalldir="/" md5sum="fee5353026cf0af55b51b009d76d5e67" name="Net/DNS2/RR/DHCID.php" role="php" />
+   <file baseinstalldir="/" md5sum="ec74257bac87820aa77d6e7f27a1cec2" name="Net/DNS2/RR/DLV.php" role="php" />
+   <file baseinstalldir="/" md5sum="936e95ec37a9a775ea0692641e5ddc90" name="Net/DNS2/RR/DNAME.php" role="php" />
+   <file baseinstalldir="/" md5sum="d2e17925888cc69d8787134130ed8053" name="Net/DNS2/RR/DNSKEY.php" role="php" />
+   <file baseinstalldir="/" md5sum="b144653c65cfe1463a7b88a2423a050e" name="Net/DNS2/RR/DS.php" role="php" />
+   <file baseinstalldir="/" md5sum="778ef8ef8e57bebe6eaaaa7ace381f33" name="Net/DNS2/RR/EID.php" role="php" />
+   <file baseinstalldir="/" md5sum="7fb0410d3d68f7a978ceee2be1e73ee4" name="Net/DNS2/RR/EUI48.php" role="php" />
+   <file baseinstalldir="/" md5sum="d051439a416d7ee5ac55dda78817a070" name="Net/DNS2/RR/EUI64.php" role="php" />
+   <file baseinstalldir="/" md5sum="01e9f01fccc9d552cfd51690592bb66d" name="Net/DNS2/RR/HINFO.php" role="php" />
+   <file baseinstalldir="/" md5sum="eef4a0f3642706288c74c12bf2198bdf" name="Net/DNS2/RR/HIP.php" role="php" />
+   <file baseinstalldir="/" md5sum="4aa31a2b349862e6e66de6e5a3fe09f9" name="Net/DNS2/RR/IPSECKEY.php" role="php" />
+   <file baseinstalldir="/" md5sum="63c9b6744ea690687a708dc7eb3eec17" name="Net/DNS2/RR/ISDN.php" role="php" />
+   <file baseinstalldir="/" md5sum="2b6ed2ff0fde52cdc88a431bec58104d" name="Net/DNS2/RR/KEY.php" role="php" />
+   <file baseinstalldir="/" md5sum="35f501f0782d3fa9176d15da1527e1a8" name="Net/DNS2/RR/KX.php" role="php" />
+   <file baseinstalldir="/" md5sum="da45fda79826d4175a0f2b02c7bb40bc" name="Net/DNS2/RR/L32.php" role="php" />
+   <file baseinstalldir="/" md5sum="3611fac651fc4bc52c951c9f61ac8c3a" name="Net/DNS2/RR/L64.php" role="php" />
+   <file baseinstalldir="/" md5sum="f9b0f300fc2c43cb8857c404738d0567" name="Net/DNS2/RR/LOC.php" role="php" />
+   <file baseinstalldir="/" md5sum="c32281671d6fa2d956bfa4f1cf05ebf8" name="Net/DNS2/RR/LP.php" role="php" />
+   <file baseinstalldir="/" md5sum="b5f0bacafa02befec4f7189389dff918" name="Net/DNS2/RR/MX.php" role="php" />
+   <file baseinstalldir="/" md5sum="f469405d51c25811e6d2ba5a1afdb0e8" name="Net/DNS2/RR/NAPTR.php" role="php" />
+   <file baseinstalldir="/" md5sum="4c28c455b84147db6f1a46de78841429" name="Net/DNS2/RR/NID.php" role="php" />
+   <file baseinstalldir="/" md5sum="27a6cb081d0d3e6016411653904dd260" name="Net/DNS2/RR/NIMLOC.php" role="php" />
+   <file baseinstalldir="/" md5sum="d76c5df21dcb81b9109f2c4a7b200ff9" name="Net/DNS2/RR/NS.php" role="php" />
+   <file baseinstalldir="/" md5sum="3cf2ce4f193515eb03ece1b8f3884feb" name="Net/DNS2/RR/NSAP.php" role="php" />
+   <file baseinstalldir="/" md5sum="cecb91d02db19a875e7684cbff4acf87" name="Net/DNS2/RR/NSEC.php" role="php" />
+   <file baseinstalldir="/" md5sum="81e177672209c308430e48a45ba6eb73" name="Net/DNS2/RR/NSEC3.php" role="php" />
+   <file baseinstalldir="/" md5sum="69a5dacbbfc52456ef19b156840271f0" name="Net/DNS2/RR/NSEC3PARAM.php" role="php" />
+   <file baseinstalldir="/" md5sum="ab0bd2b517a2a1e595623f68d25970aa" name="Net/DNS2/RR/OPENPGPKEY.php" role="php" />
+   <file baseinstalldir="/" md5sum="d2ae9348b99ec7e2215744bb0c4657bf" name="Net/DNS2/RR/OPT.php" role="php" />
+   <file baseinstalldir="/" md5sum="ab49dbd9c41c7df30dddfc93cb130973" name="Net/DNS2/RR/PTR.php" role="php" />
+   <file baseinstalldir="/" md5sum="b3f187ca793b2da25f895bdf2dab90ef" name="Net/DNS2/RR/PX.php" role="php" />
+   <file baseinstalldir="/" md5sum="22fc47471cb8de0b4a412f3014aeeb40" name="Net/DNS2/RR/RP.php" role="php" />
+   <file baseinstalldir="/" md5sum="1af26362b981500f645f575f12f8b174" name="Net/DNS2/RR/RRSIG.php" role="php" />
+   <file baseinstalldir="/" md5sum="315dbea20fb2a78b9bb3c8cf03b582ef" name="Net/DNS2/RR/RT.php" role="php" />
+   <file baseinstalldir="/" md5sum="39fbf045d1c4ec7d6d3f1a97daea985e" name="Net/DNS2/RR/SIG.php" role="php" />
+   <file baseinstalldir="/" md5sum="a8efd38d743fecbfbb4eee3021f5391d" name="Net/DNS2/RR/SMIMEA.php" role="php" />
+   <file baseinstalldir="/" md5sum="c35ff748bc1e3db49202fac271169f59" name="Net/DNS2/RR/SOA.php" role="php" />
+   <file baseinstalldir="/" md5sum="0af8927cfd8cffc1ab2154b91b37359a" name="Net/DNS2/RR/SPF.php" role="php" />
+   <file baseinstalldir="/" md5sum="2746407a7d6d18572c1f6042af401697" name="Net/DNS2/RR/SRV.php" role="php" />
+   <file baseinstalldir="/" md5sum="2904fa31c4bbb0cd41ccd7aa439f5dee" name="Net/DNS2/RR/SSHFP.php" role="php" />
+   <file baseinstalldir="/" md5sum="b3c2fd46e6492e2dd4953ce8f29bff41" name="Net/DNS2/RR/TA.php" role="php" />
+   <file baseinstalldir="/" md5sum="c376f6cb224e171946f21c43de0932dc" name="Net/DNS2/RR/TALINK.php" role="php" />
+   <file baseinstalldir="/" md5sum="eb76f1c270ae3a51a13e4dd151d1ab5b" name="Net/DNS2/RR/TKEY.php" role="php" />
+   <file baseinstalldir="/" md5sum="95bdaa2ad3cbb37eb2e5451b1f4f4bda" name="Net/DNS2/RR/TLSA.php" role="php" />
+   <file baseinstalldir="/" md5sum="2b599098bcf585ec5afe7a12b9cb5015" name="Net/DNS2/RR/TSIG.php" role="php" />
+   <file baseinstalldir="/" md5sum="07fe19634afb3c82b6f73a354339ecc9" name="Net/DNS2/RR/TXT.php" role="php" />
+   <file baseinstalldir="/" md5sum="2e8a982ec1aa5b6ee2ec9d490b120e35" name="Net/DNS2/RR/TYPE65534.php" role="php" />
+   <file baseinstalldir="/" md5sum="1aa1500cda6504917dd54f3557150e73" name="Net/DNS2/RR/URI.php" role="php" />
+   <file baseinstalldir="/" md5sum="dba04fb789e2eb580d2b63ada13e0139" name="Net/DNS2/RR/WKS.php" role="php" />
+   <file baseinstalldir="/" md5sum="13d69c257d782c25e76e1486eae6ee13" name="Net/DNS2/RR/X25.php" role="php" />
+   <file baseinstalldir="/" md5sum="31ccafdb4518694920c05b2e2087bbd2" name="Net/DNS2/RR/ZONEMD.php" role="php" />
+   <file baseinstalldir="/" md5sum="8478ca6a249a2ba608baffb1144c111a" name="tests/Tests_Net_DNS2_AllTests.php" role="test" />
+   <file baseinstalldir="/" md5sum="b60b97766d5d01f651205c60fae5928b" name="tests/Tests_Net_DNS2_CacheTest.php" role="test" />
+   <file baseinstalldir="/" md5sum="149ac6f774c77c487ca1ad97b3af0260" name="tests/Tests_Net_DNS2_DNSSECTest.php" role="test" />
+   <file baseinstalldir="/" md5sum="b9f84d450009a92deb2b5fd675877f58" name="tests/Tests_Net_DNS2_ParserTest.php" role="test" />
+   <file baseinstalldir="/" md5sum="3895ba0286792857fc41b238dbf1cda1" name="tests/Tests_Net_DNS2_ResolverTest.php" role="test" />
+   <file baseinstalldir="/" md5sum="d8c296d331487d5b8bccfef897cd11d9" name="LICENSE" role="doc" />
+   <file baseinstalldir="/" md5sum="59d4a5ef1882679aaed69b8df768f59f" name="README.md" role="doc" />
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>7.1</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0a12</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <phprelease />
+ <changelog>
+  <release>
+   <version>
+    <release>0.6.0</release>
+    <api>0.6.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2010-09-26</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+Initial Beta release of Net_DNS2
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.0.0</release>
+    <api>1.0.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>beta</api>
+   </stability>
+   <date>2010-10-25</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- finished support for the OPT, APL, and the HIP RR
+- fixed a small bug in the Net_DNS2_RR::fromString method when parsing strings. apparently PHP doesn&apos;t think that 0 is numeric sometimes
+- updated the @since value for all the files; it was set with the incorrect version.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.0.1</release>
+    <api>1.0.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2010-12-02</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- fixed a problem Sockets and Streams class; was using the wrong shift operators when calculating the size
+- added support for the WKS RR
+- fixed some phpcs issues
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.1.0</release>
+    <api>1.1.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2011-04-24</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- added support for signing requests using SIG(0); uses the PHP openssl extension, and only currently supports RSA- DSA support in PHP is limited.
+- moved the signing code for SIG(0) and TSIG to the base class so it can be used for both updates and queries (for AXFR)
+- added a simple local cache feature using shared memory (shmop extension) or using a flat fille. This feature is disabled by default.
+- added support for the ATMA resource record (supported in Windows)
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.1.1</release>
+    <api>1.1.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2011-05-07</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- fixed a bug in the autoload function; if you had another autoload function defined, and tried to load a class with an _ in the name, it would fail.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.1.2</release>
+    <api>1.1.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2011-06-01</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- fixed a bug in the Net_DNS2_Updater class; I wasn&apos;t resetting the internal packet request values, so in some cases making more than one request on the same instance would fail.
+- Fixed a bug in Net_DNS2; I wasn&apos;t handling comments properly when parsing the resolv.conf file.
+- check for duplicate entries when adding/deleting entries in the Updater() class; BIND will throw and error if you try to delete the same RR twice in the same request, not sure if this is expected behaviour
+- modified several RR&apos;s to clean up the trailing period when it&apos;s displayed on hosts.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.1.3</release>
+    <api>1.1.3</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2011-07-01</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- added support for IPv6 DNS servers; from resolv.conf files, and from name server arrays
+- added new IPv4 and IPv6 validation functions, and a IPv6 expand function
+- changed the A, AAAA and IPSECKEY RR&apos;s to use the new validation methods
+- added support for IPv6 PTR records
+- dropped the old IPv4 regex from the lookups class
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.1.4</release>
+    <api>1.1.4</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2011-07-25</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- fixed a math issue with the name compress logic; this would somtimes screw up Updates with multiple RR&apos;s
+- added a new test in the test suite, that validates that the domain name compression and expansion works properly
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.2.0</release>
+    <api>1.2.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2011-12-04</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- added numeric error codes to the Lookups class, and had each method that throws an exception throw a numeric error code along with the message.
+- dropped all references to InvalidArgumentException; we only use the Net_DNS2_Exception from now on.
+- added the CAA, URI, TALINK, CDS and TA resource records. Some of these are experimental, but are pretty straight forward.
+- fixed a bug in formatString(); my version was only putting double quotes around strings that have spaces, but apparently ALL strings should have double quotes around them. This is how BIND does it.
+- re-organized the Net_DNS2_Lookups initialization code; it no longer creates a global object of itself.
+- fixed a bug in the caching code; in some cases it wouldn&apos;t cache the same content more than once.
+- added an option to use JSON to serialize the cache data rather than using the PHP serialize function. JSON is much faster, but loses the class definition, and becomes a stdClass object.
+- fixed a handful of cases where I was using double quotes where a single quote would be fine.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.2.1</release>
+    <api>1.2.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-03-24</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- changed the Net_DNS2_Sockets::_sock property from private to protected; this was causing some problems when the request was failing.
+- PHP doesn&apos;t support unsigned integers, but many of the RR&apos;s return unsigned values (like SOA), so there is the possibility that the value will overrun on 32bit systems, and you&apos;ll end up with a negative value. So a new function was added to convert the negative value, to a string with the correct unsigned value.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.2.2</release>
+    <api>1.2.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-08-13</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- added some trimming of whitespace to Net_DNS2_RR::buildString(); we&apos;d get some Uninitialized string offset errors if there was some blank space at the end.
+- fixed a few cases where Net_DNS2_Lookup where it should Net_DNS2_Lookups
+- added support for a strict query mode, that lets you handle the weird way DNS handles failed lookups + CNAME recors; see RFC 1034 section 3.6.2 for more information.
+- fixed some warning messages that were coming from the cache classes when a json_decode() would fail.
+- fixed a bug in Net_DNS2_Cache_File and Net_DNS2_Cache_Shm; it would try to write the file even if caching was turned off
+- made sure we don&apos;t cache records when we do a zone transfer
+- added some blocking in both the Sockets.php and Streams.php file around the read function
+- I wasn&apos;t handling multi-message zone transfers properly; now we loop through and read all the messages and pack them together as one big result
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.2.3</release>
+    <api>1.2.3</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-08-17</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- added a LICENSE file to satisfy fedora packaging guidelines
+- included the tests folder in the PEAR package
+- updated the tests to not include a specific include_path, and to use the Google public DNS servers for the resolution tests, rather than the /etc/resolv.conf file (which won&apos;t exist on a Windows system)
+- fixed a endless loop bug in the Streams.php file; this was related to the code changes I made + UDP packets
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.2.4</release>
+    <api>1.2.4</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-09-19</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- added the name server that the response came from to the Net_DNS2_Packet_Response object
+- added the socket type (TCP or UDP) that was used for the request.
+- changed the internal socket logic to use a local define for SOCK_STREAM and SOCK_DGRAM rather than the one provied with the sockets library; this isn&apos;t available if you&apos;re not using the library.
+- fixed a bug when an AXFR fails; rather than returning right away, it was waiting until there was a timeout condition. Now it returns right away on failure.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.2.5</release>
+    <api>1.2.5</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-12-30</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- changed the socket_connect() code to start off non-blocking, and call select() after connect() so a timeout on a invalid server works properly
+- added the new TLSA RR - RFC 6698
+- fixed the socket defines again; apparently the values of the SOCK_* are different under solaris
+- changed the Net_DNS2_Updater::update() so you can pass a reference to a variable that will be populated with the response object
+- moved the lines that add the response server/type to after the is_null() check- it should have been there to begin with.
+- fixed a whole bunch of cases where I wasn&apos;t incrementing the offset values properly
+- added support to set the RD (recursion desired) bit when making a request
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.0</release>
+    <api>1.3.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2013-04-07</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- re-worked a lot of the code around OPT RR&apos;s, including adding support for the DO flag
+- added the AD and CD flags to the Net_DNS2_Header class for DNSSEC
+- added a new function to keep track of RR&apos;s that should NOT be cached.
+- added a new flag (dnssec) to request DNSSEC lookups; this adds an OPT RR to the additional section
+- added a new flag (dnssec_payload_size) to adjust the EDNS(0) UDP payload size.
+- added a new flag (dnssec_cd_flag) to set the DNSSEC CD bit to disable signature validation.
+- added a new flag (dnssec_ad_flag) to set the DNSSEC AD bit to request authentic data without needing to set the DO flag.
+- fixed an issue in Net_DNS2_Socket_Sockets; Windows (specifically &lt; 2003) has problems with MSG_WAITALL
+- added a DNSSEC test to the testing suite.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.1</release>
+    <api>1.3.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2013-06-12</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- added the Net_DNS2_Packet_Request and Net_DNS2_Packet_Response objects to the Net_DNS2_Exception object
+- added support in the TSIG class for SHA algorithms (requires the hash extension, which is included in PHP &gt;= 5.1.2), patch provided by Manuel Mausz
+- added support for the NID, L32, L64, and LP DNS RR&apos;s (RFC6742)
+- lots of phpcs cleanup
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.2</release>
+    <api>1.3.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2013-11-30</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- added support for the EUI48 and EUI64 resource records (RFC7043)
+- fixed how we handle the return values from socket select() statements; this wasn&apos;t causing a problem, but it wasn&apos;t quite right
+- added some error messaging when the socket times out
+- before we cache the data, unset the rdata value; this was causing some JSON errors to be generated, and we don&apos;t need the data anyway.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.1</release>
+    <api>1.4.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2015-04-13</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- increased the default DNSSEC payload size value to 4000 bytes per RFC 4035 section 4.1; this is still configurable.
+- fixed a bug where I was still using the DNS_MAX_UDP_SIZE default (512 bytes) for all requests, event DNSSEC, where I should have been using the dnssec_payload_size config value.
+- removed the limitation that PTR records had to look like IP addresses; you can add other things to PTR records, like service discovery objects- RFC 6763.
+- dropped support for using the Sockets library on Windows. There have been too many inconsistencies between versions of Windows; we&apos;ll just default to use the Streams library.
+- fixed the Net_DNS2_RR_PTR class so we can pass ptrdname&apos;s with spaces in them so that we can support DNS-Based Service Discovery (RFC 6763).
+- added support for the CSYNC resource record - see RFC 7477.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.2</release>
+    <api>1.4.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2016-08-22</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- changed the role for the README.md file to doc
+- parse the resolv.conf options line; right now I just support the timeout and rotate options.
+- the options values only work if you set the new option use_resolv_options to true; this is to keep backwards compatibility.
+- added support for RFC 6594; support for SHA-256 and ECDSA in the SSHFP resource record.
+- added the SMIMEA resource record; this just extends the TLSA record.
+- added the AVC resource records; this just extends the TXT record.
+- added error and EDNS0 defines for DNS Cookies (RFC7873)
+- added EDNS0 defines to the lookup class
+- dropped the Net_DNS2_Packet::formatIPv6() function; this was deprecated in v1.1.3
+- re-wrote the Net_DNS2::expandIPv6() function. Based on testing, the new version is about twice as fast.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.3</release>
+    <api>1.4.3</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2017-03-06</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- fixed an issue when looking up . or com., when using the strict_query_mode flag.
+- fixed a bug in the caching logic where I was loading the content more than once per instance, when really I only need to do it once.
+- changed the Net_DNS2::sock array to use the SOCK_DGRAM and SOCK_STREAM defines, rather than the strings &apos;tcp&apos; or &apos;udp&apos;.
+- fixed a bug in the Net_DNS2_Header and Net_DNS2_Question classes, where I was using the wrong bit-shift operators when parsing some of the values. This only became apparent when somebody was trying to use the CAA class (id 257); it was causing this to roll over to the next 8 bit value, and returning 1 (RR A) instead of the CAA class.
+- fixed a bug that occurs when a DNS lookup request times out, and then the same class is reused for a subsequent request. Because I&apos;m caching the sockets, the timed out data could eventually come in, and end up being seen as the result for a subsequent lookup.
+- fixed a couple cases in NSAP.php where I was comparing a string to to an integer.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.4</release>
+    <api>1.4.4</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2018-02-12</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- bugfix when returning an empty bitmap-type in BitMap.php - patch from BugMaster510945.
+- added the BIND 9 private record RR (TYPE65534) - patch from BugMaster510945.
+- added DNSSEC algorithms 13-16 (ECDSAP256SHA256, ECDSAP384SHA384, ED25519, and ED448).
+- added SSHFP algoritm ED25519.
+- modified Net_DNS2::sendPacket() to use current()/next() rather than the deprecated each() (deprecated in 7.2).
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.5.0</release>
+    <api>1.5.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2020-10-08</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- added the AMTRELAY resource record type (RFC 8777).
+- added Net_DNS2_RR::asArray(), which returns the same values as __toString(), but as an array for easier access.
+- added Net_DNS2::closeSockets(), which lets you close all cached network sockets in the resolver object.
+- added Net_DNS2::getSockets(), which returns the local sockets cache array.
+- added date_created and date_last_used to the Net_DNS2_Socket object, to track usage stats on each socket object.
+- added the SHA256, SHA384, and GOST digest defines to Lookups.php.
+- dropped the Net_DNS2_Socket_Sockets, and switch to just using the streams code. There&apos;s no speed difference anymore.
+- fixed a bug in Net_DNS2_Packet::compress() and Net_DNS2_Packet::expand() related to dot literals in compressed names.
+- fixed a display issue in the IPSECKEY RR when displaying hostname / domain names in the gateway field.
+- fixed a couple inconsistencies in the docs.
+- fixed a PHP 7.4 bug in Sockets.php; accessing a null value as an array throws an exception now.
+- fixed Net_DNS2_RR_DS so it will be able to support other digest definitions without any other changes.
+- the Net_DNS2_RR_NIMLOC class was incorrectly named Net_DNS2_RR_NIMLOCK.
+- Net_DNS2_PrivateKey was using the wrong member variable name for the key_format value.
+- changed all references to array() to [].
+- removed all sorts of license noise from the files.
+- updated the test cases to use PHPUnit v9+.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.5.1</release>
+    <api>1.5.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2020-10-11</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- fixed a mistake in the autoload section of the composer.json file.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.5.2</release>
+    <api>1.5.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2020-10-11</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License</license>
+   <notes>
+- fixed a mistake in the autoload section of the composer.json file.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.5.5</release>
+    <api>1.5.5</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2025-05-17</date>
+   <license uri="https://opensource.org/license/bsd-3-clause/">BSD License</license>
+   <notes>
+- increased minimum PHP requirement to v7.1
+- fixed the PHP 8.4 deprecation notices - #154.
+- fixed the infinite loop issue related to the v1.5.4 changes - #146
+- modified the TCP write process to avoid possible TCP segmentation with the length prefix.
+- added support for microsecond level timeout values by passing a float value to the timeout option instead of a whole integer.
+- updated the PEAR package.php file; the last version was missing some new files.
+   </notes>
+  </release>
+ </changelog>
+</package>
