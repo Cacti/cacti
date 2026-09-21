@@ -158,3 +158,4 @@ verify_task*.php
 /include/js/big.js
 /include/js/lzjs.js
 /include/js/screenfull.js
+/include/js/select2.js
