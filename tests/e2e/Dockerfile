@@ -40,7 +40,8 @@ RUN set -eux; \
         net-snmp-dev \
         freetype-dev \
         libjpeg-turbo-dev \
-        oniguruma-dev; \
+        oniguruma-dev \
+        linux-headers; \
     docker-php-ext-configure gd --with-freetype --with-jpeg; \
     docker-php-ext-install -j"$(nproc)" \
         pdo_mysql \
