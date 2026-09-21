@@ -31,7 +31,10 @@ test('the web tree excludes unused vendor development entry points', function ()
 test('required vendor runtime files remain packaged', function () use ($vendorRoot) {
 	$required = array(
 		'phpmailer/src/PHPMailer.php',
-		'jfcherng/php-diff/src/DiffHelper.php',
+		'jfcherng/php-diff/src/Differ.php',
+		'jfcherng/php-diff/src/Factory/RendererFactory.php',
+		'jfcherng/php-diff/src/Renderer/Html/Inline.php',
+		'jfcherng/php-sequence-matcher/src/SequenceMatcher.php',
 		'cldr-to-gettext-plural-rules/src/autoloader.php',
 		'gettext/src/Translator.php',
 		'flag-icons/css/flag-icons.css',
@@ -41,6 +44,17 @@ test('required vendor runtime files remain packaged', function () use ($vendorRo
 	foreach ($required as $path) {
 		expect(is_file($vendorRoot . '/' . $path))->toBeTrue($path . ' must remain available at runtime');
 	}
+});
+
+test('jfcherng/php-diff can actually autoload and render an inline diff', function () {
+	$differ   = new \Jfcherng\Diff\Differ(array('old line'), array('new line'));
+	$renderer = \Jfcherng\Diff\Factory\RendererFactory::make('Inline');
+	$html     = $renderer->render($differ);
+
+	expect($html)->toBeString();
+	expect($html)->toContain('diff-wrapper');
+	expect($html)->toContain('<del>old</del>');
+	expect($html)->toContain('<ins>new</ins>');
 });
 
 test('every flag referenced by the runtime stylesheet remains packaged', function () use ($vendorRoot) {
