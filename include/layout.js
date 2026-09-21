@@ -1012,7 +1012,8 @@ function applySkin() {
 	});
 
 	$('.select2-callback').each(function() {
-		$(this).select2({
+		var callbackUrl = $(this).data('callback');
+		var options = {
 			ajax: {
 				type: 'post',
 				dataType: 'json',
@@ -1020,13 +1021,19 @@ function applySkin() {
 				cache: false,
 				url: function(params) {
 					if (params.term !== undefined && params.term != '') {
-						return $(this).data('callback') + '&search=' + encodeURIComponent(params.term) + '&page=' + (encodeURIComponent(params.page || 1));
+						return callbackUrl + '&search=' + encodeURIComponent(params.term) + '&page=' + (encodeURIComponent(params.page || 1));
 					} else {
-						return $(this).data('callback') + '&page=' + (encodeURIComponent(params.page || 1));
+						return callbackUrl + '&page=' + (encodeURIComponent(params.page || 1));
 					}
 				}
 			}
-		});
+		};
+
+		if ($(this).closest('.ui-dialog').length) {
+			options.dropdownParent = $(this).closest('.ui-dialog');
+		}
+
+		$(this).select2(options);
 	});
 }
 
