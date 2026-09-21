@@ -27,7 +27,6 @@ function cacti_vendor_policy_legacy_paths() : array {
 		'include/vendor/composer/index.php',
 		'include/vendor/index.php',
 		'include/vendor/parsedown/',
-		'include/vendor/phpdiff/',
 		'include/vendor/phpgettext/',
 		'include/vendor/phpsnmp/',
 	];
