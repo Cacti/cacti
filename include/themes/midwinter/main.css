@@ -52,61 +52,66 @@
    Select2 4.x ships no jQuery UI theme, so these overrides reuse this
    theme's own jquery-ui.css/main.css colors (see .ui-widget-content /
    .ui-state-hover / .ui-state-active) to match its look and feel. */
+/* Select2 - adapt to look like a native Cacti/jQuery UI control.
+   Midwinter's look is driven by CSS custom properties (css/pre/colors.css)
+   which flip with the data-theme-color switch, so these overrides reuse
+   those variables instead of fixed colors (see .ui-widget-content /
+   .ui-menu .ui-state-focus, .ui-state-active in jquery-ui.midwinter.css). */
 .select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple {
-	border: 1px solid #aaaaaa;
+	border: 1px solid var(--border-color-superlowlight);
 	border-radius: 4px;
-	background: #ffffff;
-	color: #222222;
+	background: var(--background-content);
+	color: var(--text-color-lighter);
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered,
 .select2-container--default .select2-selection--single .select2-selection__placeholder {
-	color: #222222;
+	color: var(--text-color-lighter);
 }
 
 .select2-container--default.select2-container--focus .select2-selection--single,
 .select2-container--default.select2-container--focus .select2-selection--multiple,
 .select2-container--default.select2-container--open .select2-selection--single,
 .select2-container--default.select2-container--open .select2-selection--multiple {
-	border-color: #999999;
-	background: #dadada;
-	color: #212121;
+	border-color: var(--border-color);
+	background: var(--background-lowlight);
+	color: var(--text-color-lighter);
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow b {
-	border-top-color: #222222;
+	border-top-color: var(--text-color-lighter);
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
-	background: #dadada;
-	border: 1px solid #aaaaaa;
-	color: #212121;
+	background: var(--background-lowlight);
+	border: 1px solid var(--border-color-superlowlight);
+	color: var(--text-color-lighter);
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-	color: #212121;
+	color: var(--text-color-lighter);
 }
 
 .select2-dropdown {
-	border: 1px solid #aaaaaa;
-	background: #ffffff;
-	color: #222222;
+	border: 1px solid var(--border-color-superlowlight);
+	background: var(--background-content);
+	color: var(--text-color-lighter);
 }
 
 .select2-container--default .select2-search--dropdown .select2-search__field,
 .select2-container--default .select2-search--inline .select2-search__field {
-	border: 1px solid #aaaaaa;
-	background: #ffffff;
-	color: #222222;
+	border: 1px solid var(--border-color-superlowlight);
+	background: var(--background-content);
+	color: var(--text-color-lighter);
 }
 
 .select2-container--default .select2-results__option--selected {
-	background: #dadada;
-	color: #212121;
+	background: var(--background-lowlight);
+	color: var(--text-color-lighter);
 }
 
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-	background: #ffffff;
-	color: #212121;
+	background: var(--background-lowlight);
+	color: var(--text-color-lighter);
 }
