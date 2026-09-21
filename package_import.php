@@ -764,8 +764,8 @@ function package_diff_file() : void {
 		$oldfile = explode("\n", $oldfile);
 	}
 
-	if (cacti_sizeof($oldfile)) {
-		if (cacti_sizeof($newfile)) {
+	if (is_array($oldfile) && cacti_sizeof($oldfile)) {
+		if (is_array($newfile) && cacti_sizeof($newfile)) {
 			$differ   = new Differ($oldfile, $newfile, $differOptions);
 			$renderer = RendererFactory::make('Inline');
 
