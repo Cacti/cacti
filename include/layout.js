@@ -1164,7 +1164,7 @@ function applySkin() {
 
 	renderLanguages();
 
-	$('.select2').each(function() {
+	$('select.select2').each(function() {
 		if ($(this).closest('.ui-dialog').length) {
 			var dropdownParent = $(this).closest('.ui-dialog');
 
@@ -1176,7 +1176,7 @@ function applySkin() {
 		}
 	});
 
-	$('.select2-nosearch').each(function() {
+	$('select.select2-nosearch').each(function() {
 		if ($(this).closest('.ui-dialog').length) {
 			var dropdownParent = $(this).closest('.ui-dialog');
 
@@ -1191,7 +1191,7 @@ function applySkin() {
 		}
 	});
 
-	$('.select2-tags').each(function() {
+	$('select.select2-tags').each(function() {
 		if ($(this).closest('.ui-dialog').length) {
 			var dropdownParent = $(this).closest('.ui-dialog');
 
@@ -1206,7 +1206,7 @@ function applySkin() {
 		}
 	});
 
-	$('.select2-multi').each(function() {
+	$('select.select2-multi').each(function() {
 		if ($(this).closest('.ui-dialog').length) {
 			var dropdownParent = $(this).closest('.ui-dialog');
 
@@ -1218,7 +1218,7 @@ function applySkin() {
 		}
 	});
 
-	$('.select2-multi-tags').each(function() {
+	$('select.select2-multi-tags').each(function() {
 		if ($(this).closest('.ui-dialog').length) {
 			var dropdownParent = $(this).closest('.ui-dialog');
 
@@ -1233,9 +1233,10 @@ function applySkin() {
 		}
 	});
 
-	$('.select2-callback').each(function() {
+	$('select.select2-callback').each(function() {
 		var callbackUrl = $(this).data('callback');
 		var options = {
+			dropdownParent: $(this).closest('.ui-dialog').length ? $(this).closest('.ui-dialog') : document.body,
 			ajax: {
 				type: 'post',
 				dataType: 'json',
@@ -1247,13 +1248,16 @@ function applySkin() {
 					} else {
 						return callbackUrl + '&page=' + (encodeURIComponent(params.page || 1));
 					}
+				},
+				processResults: function(data) {
+					return {
+						results: $.map(data, function(item) {
+							return { id: item.id, text: item.label };
+						})
+					};
 				}
 			}
 		};
-
-		if ($(this).closest('.ui-dialog').length) {
-			options.dropdownParent = $(this).closest('.ui-dialog');
-		}
 
 		$(this).select2(options);
 	});
