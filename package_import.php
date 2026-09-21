@@ -28,8 +28,9 @@ include_once('./lib/poller.php');
 include_once('./lib/template.php');
 include_once('./lib/utility.php');
 include_once('./lib/xml.php');
-include_once('./include/vendor/phpdiff/Diff.php');
-include_once('./include/vendor/phpdiff/Renderer/Html/Inline.php');
+
+use Jfcherng\Diff\Differ;
+use Jfcherng\Diff\Factory\RendererFactory;
 
 /* set default action */
 set_default_action();
@@ -307,7 +308,7 @@ function package_diff_file() {
 	$package_file     = get_nfilter_request_var('package_file');
 	$filename         = get_nfilter_request_var('filename');
 
-	$options = array(
+	$differOptions = array(
 		'ignoreWhitespace' => true,
 		'ignoreCase' => false
 	);
@@ -336,11 +337,10 @@ function package_diff_file() {
 
 	if (cacti_sizeof($oldfile)) {
 		if (cacti_sizeof($newfile)) {
-			$diff = new Diff($oldfile, $newfile, $options);
+			$differ   = new Differ($oldfile, $newfile, $differOptions);
+			$renderer = RendererFactory::make('Inline');
 
-			$renderer = new Diff_Renderer_Html_Inline;
-
-			print $diff->render($renderer);
+			print $renderer->render($differ);
 		} else {
 			print "New file does not exist";
 		}

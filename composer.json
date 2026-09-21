@@ -45,6 +45,7 @@
         "ext-sqlite3": "*",
         "ext-xml": "*",
         "ezyang/htmlpurifier": "^4.19",
+        "jfcherng/php-diff": "^6.16",
         "paragonie/constant_time_encoding": "^3.1",
         "paragonie/random_compat": "^9.99",
         "phpseclib/phpseclib": "^4.0"

@@ -13,7 +13,8 @@ test('the web tree excludes unused vendor development entry points', function ()
 	$excluded = array(
 		'phpmailer/get_oauth_token.php',
 		'phpmailer/vendor',
-		'phpdiff/example',
+		'jfcherng/php-diff/example',
+		'jfcherng/php-color-output/demo.php',
 		'cldr-to-gettext-plural-rules/bin',
 		'cldr-to-gettext-plural-rules/tests',
 		'gettext/tests',
@@ -30,7 +31,7 @@ test('the web tree excludes unused vendor development entry points', function ()
 test('required vendor runtime files remain packaged', function () use ($vendorRoot) {
 	$required = array(
 		'phpmailer/src/PHPMailer.php',
-		'phpdiff/Diff.php',
+		'jfcherng/php-diff/src/DiffHelper.php',
 		'cldr-to-gettext-plural-rules/src/autoloader.php',
 		'gettext/src/Translator.php',
 		'flag-icons/css/flag-icons.css',
