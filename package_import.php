@@ -28,8 +28,9 @@ require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/xml.php');
-require_once('./include/vendor/phpdiff/Diff.php');
-require_once('./include/vendor/phpdiff/Renderer/Html/Inline.php');
+
+use Jfcherng\Diff\Differ;
+use Jfcherng\Diff\Factory\RendererFactory;
 
 // set default action
 set_default_action();
@@ -744,7 +745,7 @@ function package_diff_file() : void {
 		return;
 	}
 
-	$options = [
+	$differOptions = [
 		'ignoreWhitespace' => true,
 		'ignoreCase'       => false
 	];
@@ -765,13 +766,12 @@ function package_diff_file() : void {
 
 	if (cacti_sizeof($oldfile)) {
 		if (cacti_sizeof($newfile)) {
-			$diff = new Diff($oldfile, $newfile, $options);
+			$differ   = new Differ($oldfile, $newfile, $differOptions);
+			$renderer = RendererFactory::make('Inline');
 
-			$renderer = new Diff_Renderer_Html_Inline;
-
-			// Diff_Renderer_Html_Inline::formatLines() HTML-escapes every input
-			// line before adding its own <ins>/<del> markup.
-			print '<body>' . $diff->render($renderer) . '</body></html>'; // nosemgrep: cacti-request-var-echoed-unescaped
+			// Jfcherng\Diff\Renderer\Html\AbstractHtml::htmlSafe() HTML-escapes every
+			// input line before adding its own <ins>/<del> markup.
+			print '<body>' . $renderer->render($differ) . '</body></html>'; // nosemgrep: cacti-request-var-echoed-unescaped
 		} else {
 			print 'New file does not exist';
 		}
