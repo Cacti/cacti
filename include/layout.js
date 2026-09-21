@@ -1234,7 +1234,8 @@ function applySkin() {
 	});
 
 	$('.select2-callback').each(function() {
-		$(this).select2({
+		var callbackUrl = $(this).data('callback');
+		var options = {
 			ajax: {
 				type: 'post',
 				dataType: 'json',
@@ -1242,13 +1243,19 @@ function applySkin() {
 				cache: false,
 				url: function(params) {
 					if (params.term !== undefined && params.term != '') {
-						return $(this).data('callback') + '&search=' + encodeURIComponent(params.term) + '&page=' + (encodeURIComponent(params.page || 1));
+						return callbackUrl + '&search=' + encodeURIComponent(params.term) + '&page=' + (encodeURIComponent(params.page || 1));
 					} else {
-						return $(this).data('callback') + '&page=' + (encodeURIComponent(params.page || 1));
+						return callbackUrl + '&page=' + (encodeURIComponent(params.page || 1));
 					}
 				}
 			}
-		});
+		};
+
+		if ($(this).closest('.ui-dialog').length) {
+			options.dropdownParent = $(this).closest('.ui-dialog');
+		}
+
+		$(this).select2(options);
 	});
 }
 
@@ -3844,7 +3851,9 @@ function setSelectMenus() {
 
 	$('select.colordropdown').dropcolor();
 
-	$('select').not('.colordropdown').not('.drop-icon').not('.multi-select').not('.graph-multiselect').not('#user_language').each(function() {
+	$('select').not('.colordropdown').not('.drop-icon').not('.multi-select').not('.graph-multiselect').not('#user_language')
+		.not('.select2').not('.select2-nosearch').not('.select2-tags').not('.select2-multi').not('.select2-multi-tags').not('.select2-callback')
+		.each(function() {
 		if ($(this).prop('multiple') != true) {
 			$(this).each(function() {
 				let id = $(this).attr('id');
