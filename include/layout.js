@@ -1163,6 +1163,95 @@ function applySkin() {
 	sessionNoticesDisplay();
 
 	renderLanguages();
+
+	$('.select2').each(function() {
+		if ($(this).closest('.ui-dialog').length) {
+			var dropdownParent = $(this).closest('.ui-dialog');
+
+			$(this).select2({
+				dropdownParent: dropdownParent
+			});
+		} else {
+			$(this).select2({});
+		}
+	});
+
+	$('.select2-nosearch').each(function() {
+		if ($(this).closest('.ui-dialog').length) {
+			var dropdownParent = $(this).closest('.ui-dialog');
+
+			$(this).select2({
+				minimumResultsForSearch: Infinity,
+				dropdownParent: dropdownParent
+			});
+		} else {
+			$(this).select2({
+				minimumResultsForSearch: Infinity
+			});
+		}
+	});
+
+	$('.select2-tags').each(function() {
+		if ($(this).closest('.ui-dialog').length) {
+			var dropdownParent = $(this).closest('.ui-dialog');
+
+			$(this).select2({
+				tags: true,
+				dropdownParent: dropdownParent
+			});
+		} else {
+			$(this).select2({
+				tags: true
+			});
+		}
+	});
+
+	$('.select2-multi').each(function() {
+		if ($(this).closest('.ui-dialog').length) {
+			var dropdownParent = $(this).closest('.ui-dialog');
+
+			$(this).select2({
+				dropdownParent: dropdownParent
+			});
+		} else {
+			$(this).select2({
+				theme: 'bootstrap'
+			});
+		}
+	});
+
+	$('.select2-multi-tags').each(function() {
+		if ($(this).closest('.ui-dialog').length) {
+			var dropdownParent = $(this).closest('.ui-dialog');
+
+			$(this).select2({
+				tags: true,
+				dropdownParent: dropdownParent
+			});
+		} else {
+			$(this).select2({
+				tags: true
+			});
+		}
+	});
+
+	$('.select2-callback').each(function() {
+		$(this).select2({
+			ajax: {
+				type: 'post',
+				dataType: 'json',
+				delay: 250,
+				cache: false,
+				url: function(params) {
+					if (params.term !== undefined && params.term != '') {
+						return $(this).data('callback') + '&search=' + encodeURIComponent(params.term) + '&page=' + (encodeURIComponent(params.page || 1));
+					} else {
+						return $(this).data('callback') + '&page=' + (encodeURIComponent(params.page || 1));
+					}
+				}
+			}
+		});
+	});
 }
 
 function checkPassword(url) {
