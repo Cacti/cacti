@@ -992,9 +992,7 @@ function applySkin() {
 				dropdownParent: dropdownParent
 			});
 		} else {
-			$(this).select2({
-				theme: 'bootstrap'
-			});
+			$(this).select2({});
 		}
 	});
 
