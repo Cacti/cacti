@@ -1,8 +1,10 @@
-# PHP-FPM image for the Cacti E2E stack. PHP 7.4 matches the 1.2.x branch
-# floor. Vendor tree is already committed under include/vendor, so Composer
-# is intentionally not installed here.
+# PHP-FPM image for the Cacti E2E stack. PHP 8.2 matches composer.json's
+# "php": ">=8.1" floor (the committed include/vendor tree already requires
+# PHP 8 syntax, e.g. jfcherng/php-diff's dependencies). Vendor tree is already
+# committed under include/vendor, so Composer is intentionally not installed
+# here.
 
-FROM php:7.4-fpm-alpine
+FROM php:8.2-fpm-alpine
 
 LABEL org.opencontainers.image.title="cacti-e2e-php" \
       org.opencontainers.image.source="https://github.com/Cacti/cacti" \
