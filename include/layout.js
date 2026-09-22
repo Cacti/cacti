@@ -104,6 +104,11 @@ let select2Setup = {
 	displayDefaultLabel : false,
 }
 
+/* size the open dropdown to fit its options instead of the (possibly narrower) control */
+if (typeof $ !== 'undefined' && $.fn.select2) {
+	$.fn.select2.defaults.set('dropdownAutoWidth', true);
+}
+
 window.paceOptions = {
 	ajax: true,
 	document: true,
@@ -1163,6 +1168,17 @@ function applySkin() {
 	sessionNoticesDisplay();
 
 	renderLanguages();
+
+	/* applySkin() runs more than once per page view (initial load, then again
+	 * after every AJAX load/filter apply); tear down any select2 widget still
+	 * attached before the blocks below re-initialize, instead of relying only
+	 * on the :not(.select2-hidden-accessible) guards to skip them, so a widget
+	 * can never end up duplicated. */
+	$('.select2-hidden-accessible').each(function() {
+		if ($(this).data('select2')) {
+			$(this).select2('destroy');
+		}
+	});
 
 	$('select.select2:not(.select2-hidden-accessible)').each(function() {
 		/* fewer than 10 options is quicker to scan than to search */
@@ -3924,6 +3940,12 @@ function setSelectMenus() {
 		.not('.select2-hidden-accessible')
 		.each(function() {
 		var $this = $(this);
+
+		/* a plugin may have already deliberately widget-ified this element with
+		 * jQuery UI selectmenu itself; don't layer select2 on top of that too */
+		if ($this.selectmenu('instance')) {
+			return;
+		}
 
 		/* fewer than 10 options is quicker to scan than to search */
 		var options = {
