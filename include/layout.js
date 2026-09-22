@@ -1223,13 +1223,6 @@ function applySkin() {
 		var $this    = $(this);
 		var instance = $this.data('select2');
 
-		/* TEMPORARY DIAGNOSTIC - remove once the checkbox lag bug is found */
-		var $clickedOpt = $this.find('option[value="' + event.params.data.id + '"]');
-		console.log('[graphTemplateSentinel] select2:select fired',
-			'clickedId=', event.params.data.id,
-			'clickedOption.selected(DOM prop)=', $clickedOpt.length ? $clickedOpt[0].selected : 'N/A',
-			'valBefore=', $this.val());
-
 		if (!instance) {
 			return;
 		}
@@ -1255,27 +1248,10 @@ function applySkin() {
 		if (instance.results && instance.results.setClasses) {
 			instance.results.setClasses();
 		}
-
-		/* TEMPORARY DIAGNOSTIC - what does the VISIBLE dropdown DOM actually show as checked? */
-		var checkedTexts = [];
-		$('.select2-container--open .select2-results__option[aria-selected="true"]').each(function() {
-			checkedTexts.push($(this).text());
-		});
-		console.log('[graphTemplateSentinel] DOM aria-selected=true rows after select:', checkedTexts);
-
-		/* TEMPORARY DIAGNOSTIC */
-		console.log('[graphTemplateSentinel] select2:select done',
-			'clickedOption.selected(DOM prop)=', $clickedOpt.length ? $clickedOpt[0].selected : 'N/A',
-			'valAfter=', $this.val());
 	}).on('select2:unselect.graphTemplateSentinel', function(event) {
 		var $this      = $(this);
 		var instance   = $this.data('select2');
 		var $allOption = $this.find('option[value="-1"]');
-
-		/* TEMPORARY DIAGNOSTIC */
-		console.log('[graphTemplateSentinel] select2:unselect fired',
-			'unselectedId=', event.params.data.id,
-			'valBefore=', $this.val());
 
 		if (instance && $allOption.length && $this.find('option:selected').length == 0) {
 			instance.trigger('select', { data: { id: '-1', text: $allOption.text(), element: $allOption[0] } });
@@ -1284,16 +1260,6 @@ function applySkin() {
 		if (instance && instance.results && instance.results.setClasses) {
 			instance.results.setClasses();
 		}
-
-		/* TEMPORARY DIAGNOSTIC */
-		var checkedTextsU = [];
-		$('.select2-container--open .select2-results__option[aria-selected="true"]').each(function() {
-			checkedTextsU.push($(this).text());
-		});
-		console.log('[graphTemplateSentinel] DOM aria-selected=true rows after unselect:', checkedTextsU);
-
-		/* TEMPORARY DIAGNOSTIC */
-		console.log('[graphTemplateSentinel] select2:unselect done', 'valAfter=', $this.val());
 	}).on('select2:close.graphTemplateSentinel', function(event) {
 		var currentValue = ($(this).val() || []).join(',');
 
