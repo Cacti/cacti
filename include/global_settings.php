@@ -1299,14 +1299,18 @@ $settings['visual'] = [
 		'default'       => '30',
 		'array'         => $item_rows
 	],
-	'autocomplete_enabled' => [
-		'friendly_name' => __('Autocomplete Enabled'),
-		'description'   => __('In very large systems, select lists can slow the user interface significantly.  If this option is enabled, Cacti will use autocomplete callbacks to populate the select list systematically.  Note: autocomplete is forcibly disabled on the Classic theme.'),
+	'select2_search_rows' => [
+		'friendly_name' => __('Select Search Minimum Rows'),
+		'description'   => __('The minimum number of options a dropdown must have before Cacti shows a search box inside it.  Choose \'Always\' to show the search box regardless of the number of options.'),
 		'method'        => 'drop_array',
-		'default'       => '1',
+		'default'       => '10',
 		'array'         => [
-			1 => __('Yes'),
-			0 => __('No')
+			'0'  => __('Always'),
+			'5'  => '5',
+			'10' => '10',
+			'15' => '15',
+			'20' => '20',
+			'25' => '25'
 		]
 	],
 	'autocomplete_rows' => [

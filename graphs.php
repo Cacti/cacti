@@ -1073,28 +1073,26 @@ function item_edit() : void {
 			$value = '';
 		}
 
-		if (read_config_option('autocomplete_enabled') > 0) {
-			$action = 'ajax_graph_items';
+		$action = 'ajax_graph_items';
 
-			if (grv('host_id') > 0) {
-				$action .= '&host_id=' . gfrv('host_id');
-			}
-
-			if (grv('data_template_id') > 0) {
-				$action .= '&data_template_id=' . gfrv('data_template_id');
-			}
-
-			$struct_graph_item['task_item_id'] = [
-				'method'        => 'drop_callback',
-				'friendly_name' => __('Data Source'),
-				'description'   => __('Choose the Data Source to associate with this Graph Item.'),
-				'sql'           => '',
-				'action'        => $action,
-				'none_value'    => __('None'),
-				'id'            => $task_item_id,
-				'value'         => $value
-			];
+		if (grv('host_id') > 0) {
+			$action .= '&host_id=' . gfrv('host_id');
 		}
+
+		if (grv('data_template_id') > 0) {
+			$action .= '&data_template_id=' . gfrv('data_template_id');
+		}
+
+		$struct_graph_item['task_item_id'] = [
+			'method'        => 'drop_callback',
+			'friendly_name' => __('Data Source'),
+			'description'   => __('Choose the Data Source to associate with this Graph Item.'),
+			'sql'           => '',
+			'action'        => $action,
+			'none_value'    => __('None'),
+			'id'            => $task_item_id,
+			'value'         => $value
+		];
 
 		// modifications to the default graph items array
 		$struct_graph_item['task_item_id']['sql'] = "SELECT
@@ -1124,11 +1122,7 @@ function item_edit() : void {
 	foreach ($struct_graph_item as $field_name => $field_array) {
 		$form_array += [$field_name => $struct_graph_item[$field_name]];
 
-		if (read_config_option('autocomplete_enabled')) {
-			if ($field_name != 'task_item_id') {
-				$form_array[$field_name]['value'] = (isset($template_item[$field_name]) ? $template_item[$field_name] : '');
-			}
-		} else {
+		if ($field_name != 'task_item_id') {
 			$form_array[$field_name]['value'] = (isset($template_item[$field_name]) ? $template_item[$field_name] : '');
 		}
 

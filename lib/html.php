@@ -2789,8 +2789,6 @@ function html_business_hours_filter(string $callBack = 'applyGraphFilter') : str
  * @return void
  */
 function html_host_filter(mixed $host_id = -1, string $call_back = 'applyFilter', string $sql_where = '', bool $noany = false, bool $nonone = false) : void {
-	$theme = get_selected_theme();
-
 	if (!str_contains($call_back, '()')) {
 		$call_back .= '()';
 	}
@@ -2799,51 +2797,27 @@ function html_host_filter(mixed $host_id = -1, string $call_back = 'applyFilter'
 		$host_id = gfrv('host_id');
 	}
 
-	if (!read_config_option('autocomplete_enabled')) {
-		?>
-		<td>
-			<?php print __('Device'); ?>
-		</td>
-		<td>
-			<select id='host_id' name='host_id' onChange='<?php print $call_back; ?>' data-defaultLabel='<?php print __('Device'); ?>'>
-				<?php if (!$noany) {?><option value='-1'<?php if ($host_id == '-1') {?> selected<?php }?>><?php print __('Any'); ?></option><?php }?>
-				<?php if (!$nonone) {?><option value='0'<?php if ($host_id == '0') {?> selected<?php }?>><?php print __('None'); ?></option><?php }?>
-				<?php
-
-				$devices = get_allowed_devices($sql_where);
-
-		if (cacti_sizeof($devices)) {
-			foreach ($devices as $device) {
-				print "<option value='{$device['id']}'" . ($host_id == $device['id'] ? ' selected' : '') . '>' . htmle(strip_domain($device['description'])) . '</option>';
-			}
-		}
-		?>
-			</select>
-		</td>
-		<?php
+	if ($host_id > 0) {
+		$hostname = db_fetch_cell_prepared('SELECT description
+			FROM host
+			WHERE id = ?',
+			[$host_id]);
+	} elseif ($host_id == 0) {
+		$hostname = __('None');
 	} else {
-		if ($host_id > 0) {
-			$hostname = db_fetch_cell_prepared('SELECT description
-				FROM host
-				WHERE id = ?',
-				[$host_id]);
-		} elseif ($host_id == 0) {
-			$hostname = __('None');
-		} else {
-			$hostname = __('Any');
-		}
-
-		?>
-		<td>
-			<?php print __('Device'); ?>
-		</td>
-		<td>
-			<select id='host_id' name='host_id' class='select2-callback' data-action='ajax_hosts' data-variables='site_id' data-callback='<?php print htmle($call_back);?>'>
-				<option value='<?php print htmle($host_id);?>' selected><?php print htmle($hostname);?></option>
-			</select>
-		</td>
-	<?php
+		$hostname = __('Any');
 	}
+
+	?>
+	<td>
+		<?php print __('Device'); ?>
+	</td>
+	<td>
+		<select id='host_id' name='host_id' class='select2-callback' data-action='ajax_hosts' data-variables='site_id' data-callback='<?php print htmle($call_back);?>'>
+			<option value='<?php print htmle($host_id);?>' selected><?php print htmle($hostname);?></option>
+		</select>
+	</td>
+	<?php
 }
 
 /**

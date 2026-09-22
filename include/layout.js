@@ -969,9 +969,8 @@ function applySkin() {
 	/* Replace icons */
 	$('.fa-arrow-down').addClass('fa-chevron-down').removeClass('fa-arrow-down');
 	$('.fa-arrow-up').addClass('fa-chevron-up').removeClass('fa-arrow-up');
-	$('.fa-remove').addClass('fa-trash-o').removeClass('fa-remove');
-
-	if (!theme) {
+	$var options = {
+			minimumResultsForSearch: select2SearchRows
 		theme = 'midwinter';
 
 		// debounce submits
@@ -1012,9 +1011,8 @@ function applySkin() {
 
 	applyTableSizing();
 
-	setupPageTimeout();
-
-	CsrfMagic.end();
+	svar options = {
+			minimumResultsForSearch: select2SearchRows
 
 	setupSpecialKeys();
 
@@ -1032,7 +1030,7 @@ function applySkin() {
 		event.stopPropagation();
 		getCactiHelp($(this).attr('data-page'));
 	});
-
+select2SearchRows
 	if (typeof themeReady == 'function') {
 		themeReady();
 	}
@@ -1151,10 +1149,9 @@ function applySkin() {
 		});
 
 		return dfd;
-	});
-
-	$('#password').delayKeyup(function () {
-		var url = window.location.href.split('?')[0] + '?action=checkpass';
+	}var options = {
+			width: 'auto',
+			minimumResultsForSearch: select2SearchRows
 		checkPassword(url);
 	});
 
