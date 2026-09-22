@@ -996,7 +996,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='graph_template_id' multiple style='opacity:0.1;overflow-y:auto;overflow-x:hide;height:0px;'>
+						<select id='graph_template_id' multiple class='select2-multi-count'
+							data-select-all-text='<?php print html_escape(__('All Graphs & Templates'));?>'
+							data-select-count-text='<?php print html_escape(__('Templates Selected'));?>'
+							data-select-all-value='-1'>
 							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
 							<?php
