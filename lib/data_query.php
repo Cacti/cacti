@@ -2800,6 +2800,11 @@ function get_script_query_path(string $args, string $script_path, int $host_id) 
 		$extra_arguments = '';
 
 		foreach ($parts as $index => $part) {
+			/* only the hostname/IP placeholders are stripped of '%'; SNMP
+			 * community and credential substitutions may legitimately
+			 * contain one, so they keep their value unmodified. */
+			$strip_env = (strpos($part, '|host_hostname|') !== false || strpos($part, '|host_management_ip|') !== false);
+
 			$part = substitute_host_data($part, '|', '|', $host_id);
 
 			/* GHSA-rjvj-r52f-8v5q: a rogue device's SNMP index or system field
@@ -2807,6 +2812,10 @@ function get_script_query_path(string $args, string $script_path, int $host_id) 
 			 * carries, so strip them before quoting. */
 			if (CACTI_SERVER_OS == 'win32') {
 				$part = str_replace(['"', '&', '|', '^', '<', '>', '(', ')'], '', $part);
+
+				if ($strip_env) {
+					$part = str_replace('%', '', $part);
+				}
 			}
 
 			$extra_arguments .= ($index > 0 ? ' ' : '') . cacti_escapeshellarg($part);

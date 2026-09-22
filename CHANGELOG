@@ -12,7 +12,7 @@ Cacti CHANGELOG
 -security: Authorize single-item Report actions (remove/move) against report ownership to close a guest-bind IDOR (GHSA-j5jh-fhwg-r56x)
 -security: Use validate_redirect_url() for the CSRF timeout redirect to close a tab-based open redirect bypass (GHSA-c725-4jm5-9fx5)
 -security: Require Package Management permission to trust new package signers (GHSA-gxgm-8rhv-r7jv)
--security: Harden cmd.exe shell sinks and strip %VAR% from hostnames on win32 (GHSA-rjvj-r52f-8v5q)
+-security: Harden cmd.exe shell sinks and strip %VAR% from hostnames on win32 (GHSA-rjvj-r52f-8v5q) (#8056)
 -security: Reject SHA-1 signatures across every package import path
 -security: Escape path_dsstats_log before it reaches the dsstats poller shell redirect
 -security: Revoke anonymous access when the guest account is disabled

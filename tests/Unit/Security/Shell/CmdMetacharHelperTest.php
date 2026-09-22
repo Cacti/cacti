@@ -82,3 +82,53 @@ test('the hostname sinks opt into the percent strip', function () {
 	expect($snmp)->toContain('cacti_escapeshellarg_cmd($hostname, true, true)');
 	expect($ping)->toContain('cacti_escapeshellarg_cmd($this->host[' . "'hostname'" . '], true, true)');
 });
+
+/*
+ * CACTI_SERVER_OS is a constant, so the win32 branch above can only be
+ * inferred from source text in this process. Run the helper in a fresh
+ * process with CACTI_SERVER_OS actually set to 'win32' so the stripping
+ * really executes instead of being assumed from the assertions above.
+ */
+test('cacti_escapeshellarg_cmd actually strips metachars and percent on win32', function () {
+	$result = cmd_metachar_run_win32_probe();
+
+	expect($result['metachars'])->toBe('"abcdefghi"')
+		->and($result['percent-default'])->toBe('"host%PATH%name"')
+		->and($result['percent-stripped'])->toBe('"hostPATHname"')
+		->and($result['credential-kept'])->toBe('"p%ss"');
+});
+
+/**
+ * Run tests/fixtures/CmdMetacharHelperWin32Probe.php and parse its
+ * "label\tresult" stdout lines.
+ *
+ * @return array<string, string> Result keyed by test case label.
+ */
+function cmd_metachar_run_win32_probe() : array {
+	$root = dirname(__DIR__, 4);
+
+	$process = proc_open(
+		[PHP_BINARY, $root . '/tests/fixtures/CmdMetacharHelperWin32Probe.php'],
+		[1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+		$pipes,
+		$root
+	);
+
+	if (!is_resource($process)) {
+		throw new RuntimeException('Unable to start the win32 metachar probe');
+	}
+
+	$stdout = stream_get_contents($pipes[1]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+	proc_close($process);
+
+	$results = [];
+
+	foreach (explode("\n", trim($stdout)) as $line) {
+		[$label, $value] = explode("\t", $line, 2);
+		$results[$label] = $value;
+	}
+
+	return $results;
+}

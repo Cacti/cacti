@@ -3022,7 +3022,10 @@ function get_full_test_script_path(int $data_template_id, int $host_id) : mixed 
 	if (cacti_sizeof($data) && is_array($host)) {
 		foreach ($data as $item) {
 			if (isset($host[$item['data_name']])) {
-				$value = cacti_escapeshellarg_cmd($host[$item['data_name']]);
+				/* only the hostname column may legitimately need percent
+				 * stripping on Windows; other host columns (e.g. SNMP
+				 * community/credentials) can contain a literal '%'. */
+				$value = cacti_escapeshellarg_cmd($host[$item['data_name']], true, $item['data_name'] === 'hostname');
 			} elseif ($item['data_name'] == 'host_id' || $item['data_name'] == 'hostid') {
 				$value = cacti_escapeshellarg($host['id']);
 			} else {
@@ -3076,7 +3079,7 @@ function get_full_script_path(int $local_data_id) : mixed {
 		return false;
 	}
 
-	$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " dif.data_name, did.value
+	$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " dif.data_name, dif.type_code, did.value
 		FROM data_input_fields AS dif
 		LEFT JOIN data_input_data AS did
 		ON dif.id = did.data_input_field_id
@@ -3089,7 +3092,10 @@ function get_full_script_path(int $local_data_id) : mixed {
 
 	if (cacti_sizeof($data)) {
 		foreach ($data as $item) {
-			$value = cacti_escapeshellarg_cmd($item['value']);
+			/* only hostname-class fields may legitimately need percent
+			 * stripping on Windows; other input fields (e.g. SNMP
+			 * community/credentials) can contain a literal '%'. */
+			$value = cacti_escapeshellarg_cmd($item['value'], true, $item['type_code'] === 'hostname');
 
 			if ($value == '') {
 				$value = "''";
