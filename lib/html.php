@@ -2702,6 +2702,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.filter.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.timepicker.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/select2.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/billboard.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/Diff.css');
@@ -2722,6 +2723,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.multiselect.filter.js');
 	print get_md5_include_js('include/js/jquery.timepicker.js');
 	print get_md5_include_js('include/js/jquery.colorpicker.js', true);
+	print get_md5_include_js('include/js/select2.js');
 	print get_md5_include_js('include/js/jquery.tablesorter.js');
 	print get_md5_include_js('include/js/jquery.tablesorter.widgets.js', true);
 	print get_md5_include_js('include/js/jquery.tablesorter.pager.js', true);

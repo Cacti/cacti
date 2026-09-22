@@ -2446,3 +2446,66 @@ td.center > table {
 .tableRowGraph {
      border: 2px solid rgba(0,0,0,0);
 }
+
+/* Select2 - adapt to look like a native Cacti/jQuery UI control.
+   Select2 4.x ships no jQuery UI theme, so these overrides reuse this
+   theme's own jquery-ui.css/main.css colors (see .ui-widget-content /
+   .ui-state-hover / .ui-state-active) to match its look and feel. */
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+	border: 1px solid #aaaaaa;
+	border-radius: 4px;
+	background: #ffffff;
+	color: #222222;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered,
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+	color: #222222;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--focus .select2-selection--multiple,
+.select2-container--default.select2-container--open .select2-selection--single,
+.select2-container--default.select2-container--open .select2-selection--multiple {
+	border-color: #999999;
+	background: #dadada;
+	color: #212121;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+	border-top-color: #222222;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+	background: #dadada;
+	border: 1px solid #aaaaaa;
+	color: #212121;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+	color: #212121;
+}
+
+.select2-dropdown {
+	border: 1px solid #aaaaaa;
+	background: #ffffff;
+	color: #222222;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field,
+.select2-container--default .select2-search--inline .select2-search__field {
+	border: 1px solid #aaaaaa;
+	background: #ffffff;
+	color: #222222;
+}
+
+.select2-container--default .select2-results__option--selected {
+	background: #dadada;
+	color: #212121;
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+	background: rgba(0,0,0,0.9);
+	color: white;
+}
