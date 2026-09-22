@@ -447,6 +447,16 @@ function escapeString(string) {
 	});
 }
 
+// Reverses escapeString()/html_escape() so a value that was already HTML-escaped
+// server-side isn't escaped a second time by a renderer (e.g. Select2's escapeMarkup)
+// that expects to receive raw text.
+function decodeHtmlEntities(string) {
+	var el = document.createElement('textarea');
+	el.innerHTML = string;
+
+	return el.value;
+}
+
 // Plugin to apply numeric format for tablesorter
 $.tablesorter.addParser({
 	id: 'numberFormat',
@@ -1027,10 +1037,21 @@ function applySkin() {
 						return callbackUrl + '&page=' + (encodeURIComponent(params.page || 1));
 					}
 				},
+				data: function() {
+					// These callback endpoints are regular Cacti actions guarded by the same
+					// CSRF check as any other POST - the nonce configured above is the CSP
+					// nonce, not the CSRF token, so it must be sent separately here.
+					return { __csrf_magic: csrfMagicToken };
+				},
 				processResults: function(data) {
 					return {
 						results: $.map(data, function(item) {
-							return { id: item.id, text: item.label };
+							// item.label is already HTML-escaped server-side (html_escape() in the
+							// callback producers, e.g. lib/auth.php); Select2's default
+							// templateResult/templateSelection escapes 'text' again via escapeMarkup,
+							// so decode it once here first to avoid double-escaping (e.g. '&amp;'
+							// becoming '&amp;amp;').
+							return { id: item.id, text: decodeHtmlEntities(item.label) };
 						})
 					};
 				}
