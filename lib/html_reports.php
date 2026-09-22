@@ -287,7 +287,9 @@ function reports_form_save() : void {
 		$save['enabled']       = (isset($post['enabled']) ? 'on' : '');
 
 		$save['cformat']       = (isset($post['cformat']) ? 'on' : '');
-		$save['format_file']   = $post['format_file'];
+		// format files are flat files under CACTI_PATH_FORMATS; confine the
+		// stored value to a bare filename so it cannot carry a path traversal.
+		$save['format_file']   = basename((string) ($post['format_file'] ?? ''));
 		$save['font_size']     = form_input_validate($post['font_size'], 'font_size', '^[0-9]+$', false, 3);
 		$save['alignment']     = form_input_validate($post['alignment'], 'alignment', '^[0-9]+$', false, 3);
 		$save['graph_linked']  = (isset($post['graph_linked']) ? 'on' : '');
