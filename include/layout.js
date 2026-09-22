@@ -1241,6 +1241,13 @@ function applySkin() {
 				instance.trigger('unselect', { data: { id: '-1', text: $allOption.text(), element: $allOption[0] } });
 			}
 		}
+
+		/* belt-and-suspenders: force the open dropdown's checkboxes to match the
+		 * current selection right now, rather than trusting internal event-ordering
+		 * between the data and results adapters to have already redrawn them */
+		if (instance.results && instance.results.setClasses) {
+			instance.results.setClasses();
+		}
 	}).on('select2:unselect.graphTemplateSentinel', function(event) {
 		var $this      = $(this);
 		var instance   = $this.data('select2');
@@ -1248,6 +1255,10 @@ function applySkin() {
 
 		if (instance && $allOption.length && $this.find('option:selected').length == 0) {
 			instance.trigger('select', { data: { id: '-1', text: $allOption.text(), element: $allOption[0] } });
+		}
+
+		if (instance && instance.results && instance.results.setClasses) {
+			instance.results.setClasses();
 		}
 	}).on('select2:close.graphTemplateSentinel', function(event) {
 		var currentValue = ($(this).val() || []).join(',');
