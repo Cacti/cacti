@@ -2779,6 +2779,7 @@ td.center > table {
 	min-height: 24px;
 	padding-right: 20px;
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 }
 
@@ -2788,6 +2789,7 @@ td.center > table {
 	margin: 0;
 	padding-left: 8px;
 	overflow: hidden;
+	line-height: 24px;
 }
 
 /* select2-multi-count always replaces the rendered area with "N Selected" text;
