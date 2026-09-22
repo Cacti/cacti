@@ -144,22 +144,57 @@ switch (grv('action')) {
 
 		break;
 	case 'copy_node':
+		if (!is_tree_allowed((int) grv('tree_id'))) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+
+			exit;
+		}
+
 		api_tree_copy_node(grv('tree_id'), grv('id'), grv('parent'), grv('position'));
 
 		break;
 	case 'create_node':
+		if (!is_tree_allowed((int) grv('tree_id'))) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+
+			exit;
+		}
+
 		api_tree_create_node(grv('tree_id'), grv('id'), grv('position'), gnrv('text'));
 
 		break;
 	case 'delete_node':
+		if (!is_tree_allowed((int) grv('tree_id'))) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+
+			exit;
+		}
+
 		api_tree_delete_node(grv('tree_id'), grv('id'));
 
 		break;
 	case 'move_node':
+		if (!is_tree_allowed((int) grv('tree_id'))) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+
+			exit;
+		}
+
 		api_tree_move_node(grv('tree_id'), grv('id'), grv('parent'), grv('position'));
 
 		break;
 	case 'rename_node':
+		if (!is_tree_allowed((int) grv('tree_id'))) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+
+			exit;
+		}
+
 		api_tree_rename_node(grv('tree_id'), grv('id'), gnrv('text'));
 
 		break;
