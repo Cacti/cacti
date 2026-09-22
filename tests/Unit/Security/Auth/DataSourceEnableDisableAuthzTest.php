@@ -59,3 +59,26 @@ test('GHSA-2fhv: ds_enable() checks authorization before calling api_data_source
 test('GHSA-2fhv: the bulk disable/enable actions filter each selected id through data_source_authorized()', function () use ($source) {
 	expect(substr_count($source, 'if (data_source_authorized((int) $local_data_id)) {'))->toBeGreaterThanOrEqual(2);
 });
+
+/*
+ * GHSA-fc82-w6xq-4jg7: the bulk "Change Data Source Profile" action
+ * (drp_action == '6') iterated $selected_items and updated
+ * data_template_data/data_template_rrd/poller_item for each local_data_id with
+ * no object-level authorization check -- the same class of defect as
+ * GHSA-2fhv, just a different bulk action in the same file. Guarded with the
+ * same data_source_authorized() helper.
+ */
+test('GHSA-fc82: the bulk change-data-source-profile action skips unauthorized data sources', function () use ($source) {
+	$start = strpos($source, "drp_action') == '6') { // change data source profile");
+	expect($start)->not->toBeFalse();
+
+	$end  = strpos($source, "\n\t\t\t} elseif", $start);
+	$body = substr($source, $start, $end - $start);
+
+	$checkPos  = strpos($body, 'if (!data_source_authorized((int) $local_data_id)) {');
+	$updatePos = strpos($body, "UPDATE data_template_data");
+
+	expect($checkPos)->not->toBeFalse();
+	expect($updatePos)->not->toBeFalse();
+	expect($checkPos)->toBeLessThan($updatePos);
+});

@@ -501,6 +501,10 @@ function form_actions() : void {
 					$remote_conns = [];
 
 					foreach ($selected_items as $local_data_id) {
+						if (!data_source_authorized((int) $local_data_id)) {
+							continue;
+						}
+
 						$data = db_fetch_row_prepared('SELECT dl.host_id, h.poller_id
 							FROM host AS h
 							INNER JOIN data_local AS dl
