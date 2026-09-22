@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security: Harden cmd.exe shell sinks and strip %VAR% from hostnames on win32 (GHSA-rjvj-r52f-8v5q)
 -security: Reject SHA-1 signatures across every package import path
 -security: Escape path_dsstats_log before it reaches the dsstats poller shell redirect
 -security: Revoke anonymous access when the guest account is disabled
