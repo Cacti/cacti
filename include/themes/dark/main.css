@@ -2841,9 +2841,24 @@ circle {
 .select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple {
 	border: 1px solid #555555;
-	border-radius: 4px;
-	background: #000000;
+	border-radius: 6px;
+	background: #222222 url("images/ui-bg_highlight-soft_35_222222_1x100.png") 50% 50% repeat-x;
 	color: #ffffff;
+}
+
+.select2-container {
+	min-width: 160px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered,
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.select2-results__option {
+	white-space: nowrap;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered,
@@ -2876,7 +2891,7 @@ circle {
 
 .select2-dropdown {
 	border: 1px solid #555555;
-	background: #000000;
+	background: #000000 url("images/ui-bg_loop_25_000000_21x21.png") 50% 50% repeat;
 	color: #ffffff;
 }
 
