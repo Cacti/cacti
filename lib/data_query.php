@@ -2377,6 +2377,11 @@ function get_script_query_path($args, $script_path, $host_id) {
 
 		$extra_arguments = '';
 		foreach ($parts as $index => $part) {
+			/* only the hostname/IP placeholders are stripped of '%'; SNMP
+			 * community and credential substitutions may legitimately
+			 * contain one, so they keep their value unmodified. */
+			$strip_env = (strpos($part, '|host_hostname|') !== false || strpos($part, '|host_management_ip|') !== false);
+
 			$part = substitute_host_data($part, '|', '|', $host_id);
 
 			/* GHSA-rjvj-r52f-8v5q: on Windows the data-query script runs through
@@ -2387,6 +2392,10 @@ function get_script_query_path($args, $script_path, $host_id) {
 			 * cmd.exe metacharacters, so strip them before quoting. */
 			if ($config['cacti_server_os'] == 'win32') {
 				$part = str_replace(array('"', '&', '|', '^', '<', '>', '(', ')'), '', $part);
+
+				if ($strip_env) {
+					$part = str_replace('%', '', $part);
+				}
 			}
 
 			$extra_arguments .= ($index > 0 ? ' ':'') . cacti_escapeshellarg($part);

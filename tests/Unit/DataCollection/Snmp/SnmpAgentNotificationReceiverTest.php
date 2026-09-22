@@ -19,6 +19,7 @@ const SNMPAGENT_EVENT_SEVERITY_MEDIUM   = 2;
 const SNMPAGENT_EVENT_SEVERITY_HIGH     = 3;
 const SNMPAGENT_EVENT_SEVERITY_CRITICAL = 4;
 const POLLER_VERBOSITY_NONE             = 1;
+const POLLER_VERBOSITY_MEDIUM           = 5;
 
 $GLOBALS['config']                      = array();
 $GLOBALS['snmpagent_notification_logs'] = array();
@@ -37,8 +38,36 @@ function db_fetch_cell_prepared($sql, $params) {
 	return '.1.3.6.1.4.1.500.1';
 }
 
+$GLOBALS['snmpagent_fetch_calls']   = 0;
+$GLOBALS['snmpagent_managers']      = array();
+$GLOBALS['snmpagent_varbind_defs']  = array();
+$GLOBALS['snmpagent_exec_calls']    = array();
+
 function db_fetch_assoc_prepared($sql, $params) {
-	return array();
+	$GLOBALS['snmpagent_fetch_calls']++;
+
+	/* calls 1 and 3 both fetch notification managers (the function re-fetches
+	 * them, ordered by message type, inside the difference-check block);
+	 * call 2 fetches the registered var binds. */
+	return in_array($GLOBALS['snmpagent_fetch_calls'], array(1, 3), true) ? $GLOBALS['snmpagent_managers'] : $GLOBALS['snmpagent_varbind_defs'];
+}
+
+function cacti_is_sensitive_key($key) {
+	return in_array($key, array('snmp_community', 'snmp_password', 'snmp_priv_passphrase'), true);
+}
+
+function exec_background_process($filename, $args) {
+	$GLOBALS['snmpagent_exec_calls'][] = array($filename, $args);
+
+	return true;
+}
+
+function sql_save($save, $table) {
+	return 1;
+}
+
+function cacti_escapeshellarg_cmd($string, $quote = true, $strip_env = false) {
+	return "'" . $string . "'";
 }
 
 function cacti_sizeof($value) {
@@ -66,6 +95,10 @@ eval('namespace SnmpAgentNotificationReceiverTest;' . $matches[0]);
 beforeEach(function () {
 	$GLOBALS['config']                      = array();
 	$GLOBALS['snmpagent_notification_logs'] = array();
+	$GLOBALS['snmpagent_fetch_calls']       = 0;
+	$GLOBALS['snmpagent_managers']          = array();
+	$GLOBALS['snmpagent_varbind_defs']      = array();
+	$GLOBALS['snmpagent_exec_calls']        = array();
 });
 
 test('missing receivers produce an actionable notice', function () {
@@ -100,4 +133,48 @@ test('high-severity missing receiver notices are not suppressed', function () {
 
 	expect($GLOBALS['snmpagent_notification_logs'])->toHaveCount(2)
 		->and($GLOBALS['config']['snmpagent']['notifications']['ignore']['cactiNotifyDeviceDown'] ?? null)->toBeNull();
+});
+
+/*
+ * GHSA-rjvj-r52f-8v5q follow-up: the trap is now sent through
+ * exec_background_process(), which uses proc_open(..., ['bypass_shell' =>
+ * true]) so every argument reaches snmptrap directly, with no shell (and
+ * therefore no cmd.exe metacharacter or %VAR% expansion, and no credential
+ * leak through a concatenated debug-log string) involved at all.
+ */
+test('a v1 notification is sent through the argv-based background path without leaking the community', function () {
+	$GLOBALS['snmpagent_managers'] = array(
+		array(
+			'id' => 1, 'snmp_version' => 1, 'snmp_community' => 'public%PATH%',
+			'hostname' => 'host1', 'snmp_port' => 162, 'snmp_message_type' => 1
+		)
+	);
+	$GLOBALS['snmpagent_varbind_defs'] = array(
+		array('attribute' => 'trapReason', 'oid' => '.1.3.6.1.4.1.500.2.1', 'type' => 'octect string', 'tcType' => '')
+	);
+
+	$result = snmpagent_notification('cactiNotifyDeviceDown', 'CACTI-MIB', array('trapReason' => 'linkDown'), SNMPAGENT_EVENT_SEVERITY_HIGH);
+
+	expect($result)->not->toBeFalse()
+		->and($GLOBALS['snmpagent_exec_calls'])->toHaveCount(1);
+
+	$call     = $GLOBALS['snmpagent_exec_calls'][0];
+	$filename = $call[0];
+	$args     = $call[1];
+
+	expect($filename)->toBe('/usr/bin/snmptrap')
+		->and($args)->toBeArray()
+		->and($args)->toContain('public%PATH%')
+		->and($args)->toContain('host1:162');
+
+	$noteLine = null;
+	foreach ($GLOBALS['snmpagent_notification_logs'] as $log) {
+		if (str_starts_with($log[0], 'NOTE:')) {
+			$noteLine = $log[0];
+		}
+	}
+
+	expect($noteLine)->not->toBeNull()
+		->and($noteLine)->toContain('[REDACTED]')
+		->not->toContain('public%PATH%');
 });

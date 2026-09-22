@@ -63,19 +63,15 @@ if (!function_exists('snmp_escape_string')) {
 	require_once __DIR__ . '/../../../../lib/snmp.php';
 }
 
-test('snmp_escape_string strips cmd.exe metacharacters on win32', function () {
+test('snmp_escape_string fails closed for cmd.exe metacharacters on win32', function () {
 	global $config;
 	$config['cacti_server_os'] = 'win32';
 
 	$result = snmp_escape_string('public" & calc & "');
 
-	/* metacharacters gone, only the outer quote wrapper remains */
-	expect($result)->toBe('"public  calc  "');
-
-	$interior = substr($result, 1, -1);
-	foreach (array('"', '&', '|', '^', '<', '>', '(', ')') as $meta) {
-		expect(strpos($interior, $meta))->toBeFalse("interior still contains $meta");
-	}
+	/* SNMP community/credential values never legitimately contain shell
+	 * metacharacters, so a value carrying one is rejected outright. */
+	expect($result)->toBe('');
 });
 
 test('snmp_escape_string leaves a normal community intact', function () {

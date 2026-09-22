@@ -214,7 +214,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 			$snmp_value = format_snmp_string($snmp_value, false, $value_output_format);
 		}
 	} else {
-		$snmp_value = '';
+		$snmp_value = array();
 		$hostname = cacti_format_ipv6_colon($hostname);
 
 		/* net snmp want the timeout in seconds */
@@ -302,7 +302,7 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 			$snmp_value = 'U';
 		}
 	} else {
-		$snmp_value = '';
+		$snmp_value = array();
 		$hostname = cacti_format_ipv6_colon($hostname);
 
 		/* net snmp want the timeout in seconds */
@@ -385,7 +385,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 			$snmp_value = format_snmp_string($snmp_value, false, $value_output_format);
 		}
 	} else {
-		$snmp_value = '';
+		$snmp_value = array();
 		$hostname = cacti_format_ipv6_colon($hostname);
 
 		/* net snmp want the timeout in seconds */
@@ -1133,7 +1133,13 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 function snmp_format_target($hostname, $port) {
 	/* a hostname/IP never legitimately contains cmd.exe metacharacters; strip
 	 * them so a crafted device address cannot chain commands on Windows. */
-	$hostname = str_replace(array('"', '&', '|', '^', '<', '>', '(', ')', '%'), '', $hostname);
+	$hostname = str_replace(array('"', '&', '|', '^', '<', '>', '(', ')'), '', $hostname);
+
+	/* '%' is a valid IPv6 zone-id separator (e.g. fe80::1%eth0) on Unix;
+	 * only cmd.exe expands it, so only strip it on win32. */
+	if (CACTI_SERVER_OS == 'win32') {
+		$hostname = str_replace('%', '', $hostname);
+	}
 
 	if (strpos($hostname, ':') !== false) {
 		/* IPv6: force udp6: transport and bracket-encapsulate */
