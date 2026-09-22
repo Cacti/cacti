@@ -952,7 +952,7 @@ function applySkin() {
 
 	renderLanguages();
 
-	$('select.select2').each(function() {
+	$('select.select2:not(.select2-hidden-accessible)').each(function() {
 		/* fewer than 10 options is quicker to scan than to search */
 		var options = {
 			minimumResultsForSearch: $(this).find('option').length < 10 ? Infinity : 0
@@ -965,7 +965,7 @@ function applySkin() {
 		$(this).select2(options);
 	});
 
-	$('select.select2-nosearch').each(function() {
+	$('select.select2-nosearch:not(.select2-hidden-accessible)').each(function() {
 		if ($(this).closest('.ui-dialog').length) {
 			var dropdownParent = $(this).closest('.ui-dialog');
 
@@ -980,7 +980,7 @@ function applySkin() {
 		}
 	});
 
-	$('select.select2-tags').each(function() {
+	$('select.select2-tags:not(.select2-hidden-accessible)').each(function() {
 		if ($(this).closest('.ui-dialog').length) {
 			var dropdownParent = $(this).closest('.ui-dialog');
 
@@ -995,7 +995,7 @@ function applySkin() {
 		}
 	});
 
-	$('select.select2-multi').each(function() {
+	$('select.select2-multi:not(.select2-hidden-accessible)').each(function() {
 		/* fewer than 10 options is quicker to scan than to search */
 		var options = {
 			minimumResultsForSearch: $(this).find('option').length < 10 ? Infinity : 0
@@ -1009,7 +1009,7 @@ function applySkin() {
 	});
 
 	/* multi-select that reports "N selected"/"All selected" instead of one chip per option */
-	$('select.select2-multi-count').each(function() {
+	$('select.select2-multi-count:not(.select2-hidden-accessible)').each(function() {
 		var $select   = $(this);
 		var allText   = $select.data('select-all-text') || 'All Selected';
 		var countText = $select.data('select-count-text') || 'Selected';
@@ -1042,7 +1042,7 @@ function applySkin() {
 		updateSelect2CountLabel();
 	});
 
-	$('select.select2-multi-tags').each(function() {
+	$('select.select2-multi-tags:not(.select2-hidden-accessible)').each(function() {
 		if ($(this).closest('.ui-dialog').length) {
 			var dropdownParent = $(this).closest('.ui-dialog');
 
@@ -1060,7 +1060,7 @@ function applySkin() {
 	/* ajax-backed lookup select: replaces the legacy per-field jQuery UI autocomplete
 	 * widget form_callback() prints inline, for fields opted into it (see
 	 * form_callback()'s $class parameter) */
-	$('select.select2-callback').each(function() {
+	$('select.select2-callback:not(.select2-hidden-accessible)').each(function() {
 		var $select     = $(this);
 		var action      = $select.data('action');
 		var requestVars = $select.data('variables');
@@ -1125,6 +1125,7 @@ function applySkin() {
 	 * <select> not already handled above (or explicitly excluded) becomes a select2 */
 	$('select').not('#user_language').not('#i18n_default_language')
 		.not('.select2').not('.select2-nosearch').not('.select2-tags').not('.select2-multi').not('.select2-multi-tags').not('.select2-multi-count').not('.select2-callback')
+		.not('.select2-hidden-accessible')
 		.each(function() {
 		var $this = $(this);
 
@@ -1143,7 +1144,8 @@ function applySkin() {
 
 	/* graph_template_id's '-1' option means "All Graphs & Templates"; picking it clears
 	 * every other selection and picking anything else clears '-1' */
-	$('#graph_template_id.select2-multi-count').on('select2:select', function(event) {
+	$('#graph_template_id.select2-multi-count').off('select2:select.graphTemplateSentinel select2:unselect.graphTemplateSentinel')
+		.on('select2:select.graphTemplateSentinel', function(event) {
 		var $this = $(this);
 
 		if (event.params.data.id == '-1') {
@@ -1153,7 +1155,7 @@ function applySkin() {
 		}
 
 		$this.trigger('change');
-	}).on('select2:unselect', function(event) {
+	}).on('select2:unselect.graphTemplateSentinel', function(event) {
 		var $this = $(this);
 
 		if ($this.find('option:selected').length == 0) {
