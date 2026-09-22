@@ -3055,8 +3055,17 @@ circle {
 	color: #969BA3;
 }
 
-.select2-container {
-	min-width: 160px;
+/* match jQuery UI's shorter button height */
+.select2-container--default .select2-selection--single {
+	height: 24px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+	line-height: 24px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+	height: 22px;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered,
@@ -3075,8 +3084,7 @@ circle {
 	color: #969BA3;
 }
 
-.select2-container--default.select2-container--focus .select2-selection--single,
-.select2-container--default.select2-container--focus .select2-selection--multiple,
+/* select2 keeps --focus set after the dropdown closes; only --open should get the active look */
 .select2-container--default.select2-container--open .select2-selection--single,
 .select2-container--default.select2-container--open .select2-selection--multiple {
 	border-color: rgba(255,255,255,0.2);
