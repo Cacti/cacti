@@ -678,6 +678,41 @@ function reports_send(int $id) : void {
 }
 
 /**
+ * Determines whether the current session user may modify a report item.
+ *
+ * reports.php sets $guest_account = true, so include/auth.php grants an
+ * implicit guest session (when the Guest User feature is enabled) without
+ * ever evaluating the realm 22 gate that user_auth_realm_filenames declares
+ * for this page. The single-item action handlers below are reachable from
+ * that guest bind, so they must not rely on the page-level realm check and
+ * must independently verify the caller is either a Reports administrator or
+ * the owning user before mutating a reports_items row.
+ *
+ * @param int $item_id The reports_items.id to authorize against.
+ *
+ * @return bool True when the current user may modify the item's report.
+ */
+function reports_item_authorized(int $item_id) : bool {
+	if (empty($_SESSION[SESS_USER_ID])) {
+		return false;
+	}
+
+	if (is_reports_admin()) {
+		return true;
+	}
+
+	$owner_id = db_fetch_cell_prepared('SELECT r.user_id
+		FROM reports_items AS ri
+		INNER JOIN reports AS r
+		ON r.id = ri.report_id
+		WHERE ri.id = ?',
+		[$item_id]
+	);
+
+	return ($owner_id !== false && (int) $owner_id === (int) $_SESSION[SESS_USER_ID]);
+}
+
+/**
  * Moves a report item down in the order.
  *
  * This function validates the input parameters and then calls the move_item_down function
@@ -690,6 +725,12 @@ function reports_item_movedown() : void {
 	gfrv('item_id');
 	gfrv('id');
 	// ====================================================
+
+	if (!reports_item_authorized((int) grv('item_id'))) {
+		raise_message('permission_denied');
+
+		return;
+	}
 
 	move_item_down('reports_items', grv('item_id'), 'report_id=' . grv('id'));
 }
@@ -708,6 +749,12 @@ function reports_item_moveup() : void {
 	gfrv('item_id');
 	gfrv('id');
 	// ====================================================
+	if (!reports_item_authorized((int) grv('item_id'))) {
+		raise_message('permission_denied');
+
+		return;
+	}
+
 	move_item_up('reports_items', grv('item_id'), 'report_id=' . grv('id'));
 }
 
@@ -723,6 +770,12 @@ function reports_item_remove() : void {
 	// ================= input validation =================
 	gfrv('item_id');
 	// ====================================================
+	if (!reports_item_authorized((int) grv('item_id'))) {
+		raise_message('permission_denied');
+
+		return;
+	}
+
 	db_execute_prepared('DELETE FROM reports_items WHERE id = ?', [grv('item_id')]);
 }
 
