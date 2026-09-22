@@ -812,6 +812,7 @@ if ($config['is_web']) {
 			'delete_node', 'gt_remove', 'query_remove', 'remove', 'change_leaf',
 			'moveup', 'movedown', 'tree_up', 'tree_down',
 			'move_page_up', 'move_page_down', 'rrd_add', 'rrd_remove',
+			'accept',
 		];
 
 		foreach ($bad_actions as $bad) {

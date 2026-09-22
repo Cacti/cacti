@@ -895,6 +895,16 @@ function package_verify_key() : void {
 }
 
 function package_accept_key() : void {
+	// Trusting a new signer is a Package Management (realm 29) decision,
+	// distinct from the Import Templates (realm 17) permission that gates
+	// this page as a whole.
+	if (!is_realm_allowed(29)) {
+		raise_message('permission_denied');
+		header('Location: package_import.php');
+
+		exit;
+	}
+
 	$package_location = gfrv('package_location');
 
 	if ($package_location > 0) {
