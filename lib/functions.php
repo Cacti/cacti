@@ -5214,9 +5214,14 @@ function cacti_redirect(string $path, array $params = []) : never {
 
 /**
  * Strips any character that cannot safely appear in a SQL identifier.
- * Allows word characters, dots (table.column), parentheses and INET_ATON-style
- * wrappers already used by the sort helpers.  Use before concatenating a
- * user-supplied sort column into an ORDER BY clause.
+ * Allows word characters and dots (table.column). Parentheses are only
+ * permitted when the entire value is one of the known safe function-call
+ * wrappers (INET_ATON(col), NATURAL_SORT_KEY(col)) around a plain identifier;
+ * any other use of '(' -- including MySQL subquery syntax, which needs only
+ * alphanumerics and parentheses -- is rejected back to the default rather
+ * than passed through, since a bare character-class allowlist alone cannot
+ * distinguish a function wrapper from a subquery.
+ * Use before concatenating a user-supplied sort column into an ORDER BY clause.
  *
  * @param string $column  Raw sort-column value from user input.
  * @param string $default Fallback returned when all characters are stripped (default 'id').
@@ -5226,7 +5231,15 @@ function cacti_redirect(string $path, array $params = []) : never {
 function sanitize_sql_column(string $column, string $default = 'id') : string {
 	$result = preg_replace('/[^a-zA-Z0-9_().]/', '', $column) ?? '';
 
-	return $result !== '' ? $result : $default;
+	if ($result === '') {
+		return $default;
+	}
+
+	if (str_contains($result, '(') && preg_match('/^(?:INET_ATON|NATURAL_SORT_KEY)\([a-zA-Z_][a-zA-Z0-9_.]*\)$/i', $result) !== 1) {
+		return $default;
+	}
+
+	return $result;
 }
 
 /**

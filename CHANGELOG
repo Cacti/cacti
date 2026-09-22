@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security: Reject ORDER BY sort_column subquery payloads that bypassed the GHSA-q9xg-p762-9jm3 fix (GHSA-8j73-cvf6-jrvx)
 -security: Authorize Report save/edit against report ownership to close an authenticated IDOR (GHSA-8f5c-3h59-q7gc)
 -security: Stop building the Realtime RRD create command through a shell and validate DS bounds are numeric before they reach it (GHSA-f88m-q789-g22j)
 -security: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating (GHSA-prxj-84qq-v5jq)
