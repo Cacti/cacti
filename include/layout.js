@@ -1029,25 +1029,26 @@ function applySkin() {
 	 * drop the inline box entirely, so the control stays a fixed height whether open or closed */
 	var multiCountDropdownAdapter, multiCountSelectionAdapter;
 	if ($.fn.select2 && $.fn.select2.amd) {
-		$.fn.select2.amd.require([
-			'select2/utils',
-			'select2/dropdown',
-			'select2/dropdown/search',
-			'select2/dropdown/minimumResultsForSearch',
-			'select2/dropdown/attachBody',
-			'select2/selection/multiple',
-			'select2/selection/eventRelay'
-		], function(Utils, Dropdown, DropdownSearch, MinimumResultsForSearch, AttachBody, MultipleSelection, EventRelay) {
-			multiCountDropdownAdapter = Utils.Decorate(
-				Utils.Decorate(
-					Utils.Decorate(Dropdown, DropdownSearch),
-					MinimumResultsForSearch
-				),
-				AttachBody
-			);
+		/* string-form require() resolves synchronously; the array form defers via
+		 * setTimeout, which would leave these undefined when the init loop below runs */
+		var s2amd            = $.fn.select2.amd;
+		var Utils            = s2amd.require('select2/utils');
+		var Dropdown         = s2amd.require('select2/dropdown');
+		var DropdownSearch   = s2amd.require('select2/dropdown/search');
+		var MinResults       = s2amd.require('select2/dropdown/minimumResultsForSearch');
+		var AttachBody       = s2amd.require('select2/dropdown/attachBody');
+		var MultipleSelection = s2amd.require('select2/selection/multiple');
+		var EventRelay       = s2amd.require('select2/selection/eventRelay');
 
-			multiCountSelectionAdapter = Utils.Decorate(MultipleSelection, EventRelay);
-		});
+		multiCountDropdownAdapter = Utils.Decorate(
+			Utils.Decorate(
+				Utils.Decorate(Dropdown, DropdownSearch),
+				MinResults
+			),
+			AttachBody
+		);
+
+		multiCountSelectionAdapter = Utils.Decorate(MultipleSelection, EventRelay);
 	}
 
 	$('select.select2-multi-count:not(.select2-hidden-accessible)').each(function() {
