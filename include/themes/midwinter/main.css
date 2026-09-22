@@ -158,9 +158,9 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	box-sizing: border-box;
 }
 
-/* keep the first 20 results visible before the list needs to scroll */
+/* keep the first 15 results visible before the list needs to scroll */
 .select2-container--default .select2-results > .select2-results__options {
-	max-height: 480px;
+	max-height: 360px;
 }
 
 /* checkbox-style indicator for select2-multi-count option rows */
