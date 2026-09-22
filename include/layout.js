@@ -1214,27 +1214,50 @@ function applySkin() {
 
 	/* graph_template_id's '-1' option means "All Graphs & Templates"; picking it clears
 	 * every other selection and picking anything else clears '-1' */
-	$('#graph_template_id.select2-multi-count').off('select2:select.graphTemplateSentinel select2:unselect.graphTemplateSentinel select2:close.graphTemplateSentinel')
-		.on('select2:select.graphTemplateSentinel', function(event) {
-		var $this = $(this);
+	var graphTemplateValueAtOpen = null;
 
-		if (event.params.data.id == '-1') {
-			$this.find('option').not('[value="-1"]').prop('selected', false);
-		} else {
-			$this.find('option[value="-1"]').prop('selected', false);
+	$('#graph_template_id.select2-multi-count').off('select2:select.graphTemplateSentinel select2:unselect.graphTemplateSentinel select2:open.graphTemplateSentinel select2:close.graphTemplateSentinel')
+		.on('select2:open.graphTemplateSentinel', function(event) {
+		graphTemplateValueAtOpen = ($(this).val() || []).join(',');
+	}).on('select2:select.graphTemplateSentinel', function(event) {
+		var $this    = $(this);
+		var instance = $this.data('select2');
+
+		if (!instance) {
+			return;
 		}
 
-		$this.trigger('change');
-	}).on('select2:unselect.graphTemplateSentinel', function(event) {
-		var $this = $(this);
+		/* unselect through select2's own event bus (not just the underlying <option>s)
+		 * so the open dropdown's checkboxes redraw along with the selection - a plain
+		 * .prop('selected', ...) + change only updates the "N Selected" summary label */
+		if (event.params.data.id == '-1') {
+			$this.find('option:selected').not('[value="-1"]').each(function() {
+				instance.trigger('unselect', { data: { id: this.value, text: this.text, element: this } });
+			});
+		} else {
+			var $allOption = $this.find('option[value="-1"]:selected');
 
-		if ($this.find('option:selected').length == 0) {
-			$this.find('option[value="-1"]').prop('selected', true);
-			$this.trigger('change');
+			if ($allOption.length) {
+				instance.trigger('unselect', { data: { id: '-1', text: $allOption.text(), element: $allOption[0] } });
+			}
+		}
+	}).on('select2:unselect.graphTemplateSentinel', function(event) {
+		var $this      = $(this);
+		var instance   = $this.data('select2');
+		var $allOption = $this.find('option[value="-1"]');
+
+		if (instance && $allOption.length && $this.find('option:selected').length == 0) {
+			instance.trigger('select', { data: { id: '-1', text: $allOption.text(), element: $allOption[0] } });
 		}
 	}).on('select2:close.graphTemplateSentinel', function(event) {
-		/* defer past select2's own close teardown so the reload isn't torn down with it */
-		setTimeout(applyGraphFilter, 0);
+		var currentValue = ($(this).val() || []).join(',');
+
+		/* only reload if the selection actually changed while open - just opening
+		 * and closing without picking anything shouldn't refresh the page */
+		if (currentValue !== graphTemplateValueAtOpen) {
+			/* defer past select2's own close teardown so the reload isn't torn down with it */
+			setTimeout(applyGraphFilter, 0);
+		}
 	});
 }
 
