@@ -3002,6 +3002,7 @@ td.center > table {
 .select2-container--default .select2-selection--multiple .select2-selection__rendered {
 	display: block;
 	flex: 1;
+	margin: 0;
 	padding-left: 8px;
 	overflow: hidden;
 }
@@ -3021,31 +3022,18 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	white-space: nowrap;
 }
 
-/* take this fully out of flow so it can never stretch or reposition the
-   control it's nested in - it just overlays the same area while open */
+/* once open, let the search box sit on its own row below the current
+   selection instead of overlapping it */
 .select2-container--default .select2-selection--multiple .select2-search--inline {
-	position: absolute;
-	top: 0;
-	left: 8px;
-	right: 20px;
-	height: 100%;
-	margin: 0;
+	display: block;
+	width: 100%;
+	margin: 4px 0 0;
 }
 
 .select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field {
 	width: 100% !important;
-	height: 100% !important;
+	box-sizing: border-box;
 	margin: 0 !important;
-	padding: 0 !important;
-	background: transparent !important;
-	border: none !important;
-	color: inherit;
-}
-
-/* the search field overlays the label; hide the label while open instead of
-   showing both at once */
-.select2-container--default.select2-container--open .select2-selection--multiple .select2-count-label {
-	visibility: hidden;
 }
 
 /* select2 doesn't draw a dropdown arrow for multi-selects by default; add one to match */
