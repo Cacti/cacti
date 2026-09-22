@@ -4020,13 +4020,6 @@ function setSelectMenus() {
 		var $this    = $(this);
 		var instance = $this.data('select2');
 
-		/* TEMPORARY DIAGNOSTIC - remove once the checkbox lag bug is found */
-		var $clickedOpt = $this.find('option[value="' + event.params.data.id + '"]');
-		console.log('[graphTemplateSentinel] select2:select fired',
-			'clickedId=', event.params.data.id,
-			'clickedOption.selected(DOM prop)=', $clickedOpt.length ? $clickedOpt[0].selected : 'N/A',
-			'valBefore=', $this.val());
-
 		if (!instance) {
 			return;
 		}
@@ -4052,20 +4045,10 @@ function setSelectMenus() {
 		if (instance.results && instance.results.setClasses) {
 			instance.results.setClasses();
 		}
-
-		/* TEMPORARY DIAGNOSTIC */
-		console.log('[graphTemplateSentinel] select2:select done',
-			'clickedOption.selected(DOM prop)=', $clickedOpt.length ? $clickedOpt[0].selected : 'N/A',
-			'valAfter=', $this.val());
 	}).on('select2:unselect.graphTemplateSentinel', function(event) {
 		var $this      = $(this);
 		var instance   = $this.data('select2');
 		var $allOption = $this.find('option[value="-1"]');
-
-		/* TEMPORARY DIAGNOSTIC */
-		console.log('[graphTemplateSentinel] select2:unselect fired',
-			'unselectedId=', event.params.data.id,
-			'valBefore=', $this.val());
 
 		if (instance && $allOption.length && $this.find('option:selected').length == 0) {
 			instance.trigger('select', { data: { id: '-1', text: $allOption.text(), element: $allOption[0] } });
@@ -4074,9 +4057,6 @@ function setSelectMenus() {
 		if (instance && instance.results && instance.results.setClasses) {
 			instance.results.setClasses();
 		}
-
-		/* TEMPORARY DIAGNOSTIC */
-		console.log('[graphTemplateSentinel] select2:unselect done', 'valAfter=', $this.val());
 	}).on('select2:close.graphTemplateSentinel', function(event) {
 		var currentValue = ($(this).val() || []).join(',');
 

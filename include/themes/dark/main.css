@@ -3190,7 +3190,10 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	box-sizing: border-box;
 }
 
-.select2-results__option[aria-selected="true"] .select2-checkbox-option::after {
+/* select2 also (re)uses aria-selected for mouse-hover/keyboard highlight
+ * tracking, unrelated to actual selection - key off the --selected class
+ * instead, which setClasses() only ever sets from the real selected data */
+.select2-results__option.select2-results__option--selected .select2-checkbox-option::after {
 	content: '\2713';
 	position: absolute;
 	left: 2px;
