@@ -2838,7 +2838,9 @@ function html_host_filter(mixed $host_id = -1, string $call_back = 'applyFilter'
 			<?php print __('Device'); ?>
 		</td>
 		<td>
-			<?php print "<input id='host_id' name='host_id' type='text' class='drop-callback ui-state-default ui-corner-all' data-action='ajax_hosts' data-callback='$call_back' data-callback-id='host_id' data-value='" . htmle($hostname) . "' value='" . htmle($host_id) . "'>"; ?>
+			<select id='host_id' name='host_id' class='select2-callback' data-action='ajax_hosts' data-variables='site_id' data-callback='<?php print htmle($call_back);?>'>
+				<option value='<?php print htmle($host_id);?>' selected><?php print htmle($hostname);?></option>
+			</select>
 		</td>
 	<?php
 	}
