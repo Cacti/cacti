@@ -22,7 +22,8 @@ $ping      = file_get_contents(dirname(__DIR__, 4) . '/lib/ping.php');
 $snmpagent = file_get_contents(dirname(__DIR__, 4) . '/lib/snmpagent.php');
 
 test('on win32 the helper strips cmd.exe operators before quoting', function () {
-	$GLOBALS['config']['cacti_server_os'] = 'win32';
+	global $config;
+	$config['cacti_server_os'] = 'win32';
 	$out = cacti_escapeshellarg_cmd('eth0" & calc.exe & ');
 	// the outer wrapping quotes are the (safe) escaping; the value between them
 	// must carry no cmd.exe operator that a rogue value tried to inject.
@@ -34,7 +35,8 @@ test('on win32 the helper strips cmd.exe operators before quoting', function () 
 });
 
 test('on unix the helper is exactly cacti_escapeshellarg', function () {
-	$GLOBALS['config']['cacti_server_os'] = 'unix';
+	global $config;
+	$config['cacti_server_os'] = 'unix';
 	$value = "eth0' && id";
 	expect(cacti_escapeshellarg_cmd($value))->toBe(cacti_escapeshellarg($value));
 });
@@ -48,12 +50,15 @@ test('data-input argument builders use the cmd helper', function () use ($functi
 	expect($functions)->toContain("cacti_escapeshellarg_cmd(\$host[\$item['data_name']])");
 });
 
-test('the snmp trap notification arguments use the cmd helper', function () use ($snmpagent) {
-	expect(substr_count($snmpagent, 'cacti_escapeshellarg_cmd('))->toBeGreaterThan(4);
+test('the snmp trap notification is sent via the argv-based background process', function () use ($snmpagent) {
+	// no shell string is built for the notification anymore; snmptrap runs
+	// via proc_open bypass_shell, so no per-argument cmd helper is needed.
+	expect($snmpagent)->toContain("exec_background_process(\$path_snmptrap, \$args);");
 	// no bare escaper left in the trap community/credential args
-	$start = strpos($snmpagent, "\$args = ' -v 1 -c '");
+	$start = strpos($snmpagent, "if (\$notification_manager['snmp_version'] == 1 )");
 	$block = substr($snmpagent, $start, 1400);
 	expect($block)->not->toContain('cacti_escapeshellarg($notification_manager');
+	expect($block)->not->toContain('cacti_escapeshellarg_cmd($notification_manager');
 });
 
 test('the strip_env flag removes %VAR% for hostname-class values only', function () {

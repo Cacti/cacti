@@ -57,7 +57,7 @@ test('GHSA-7vw4: file_exists_2gb body is a single-line delegation', function () 
 // GHSA-c4qp: test-script path expansion must shell-escape data_input values.
 test('GHSA-c4qp: test-script path expansion shell-escapes data_input values', function () use ($functionsSource) {
 	expect($functionsSource)->toContain("function get_full_test_script_path(");
-	expect($functionsSource)->toContain("\$value = cacti_escapeshellarg((string) \$item['value']);");
+	expect($functionsSource)->toContain("\$value = cacti_escapeshellarg_cmd((string) \$item['value']);");
 });
 
 test('GHSA-c4qp: get_full_test_script_path does not wrap raw field values in manual quotes', function () use ($functionsSource) {

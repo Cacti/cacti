@@ -1131,13 +1131,15 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
  * @return string The formatted target string
  */
 function snmp_format_target($hostname, $port) {
+	global $config;
+
 	/* a hostname/IP never legitimately contains cmd.exe metacharacters; strip
 	 * them so a crafted device address cannot chain commands on Windows. */
 	$hostname = str_replace(array('"', '&', '|', '^', '<', '>', '(', ')'), '', $hostname);
 
 	/* '%' is a valid IPv6 zone-id separator (e.g. fe80::1%eth0) on Unix;
 	 * only cmd.exe expands it, so only strip it on win32. */
-	if (CACTI_SERVER_OS == 'win32') {
+	if ($config['cacti_server_os'] == 'win32') {
 		$hostname = str_replace('%', '', $hostname);
 	}
 
