@@ -1058,6 +1058,10 @@ function applySkin() {
 		var allValue  = $select.data('select-all-value');
 
 		var options = {
+			/* without this select2 defaults width to 'resolve', which sizes the control
+			 * (and thus the body-attached dropdown) to the native multi-select's wide
+			 * content box instead of the rendered summary label */
+			width: 'auto',
 			minimumResultsForSearch: select2SearchRows,
 			closeOnSelect: false,
 			/* checkbox-styled option rows, closer to the old jquery-multiselect look;
