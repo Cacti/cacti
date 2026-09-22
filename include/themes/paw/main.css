@@ -2477,10 +2477,31 @@ td.center > table {
 	min-height: 24px;
 	padding-top: 0;
 	padding-bottom: 0;
+	padding-right: 20px;
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__rendered {
 	line-height: 22px;
+}
+
+/* select2 doesn't draw a dropdown arrow for multi-selects by default; add one to match */
+.select2-container--default .select2-selection--multiple::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	right: 8px;
+	margin-top: -2px;
+	border-color: currentColor transparent transparent transparent;
+	border-style: solid;
+	border-width: 5px 4px 0 4px;
+	height: 0;
+	width: 0;
+	pointer-events: none;
+}
+
+.select2-container--default.select2-container--open .select2-selection--multiple::after {
+	border-color: transparent transparent currentColor transparent;
+	border-width: 0 4px 5px 4px;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered,
