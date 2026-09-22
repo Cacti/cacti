@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security: Use validate_redirect_url() for the CSRF timeout redirect to close a tab-based open redirect bypass (GHSA-c725-4jm5-9fx5)
 -security: Require Package Management permission to trust new package signers (GHSA-gxgm-8rhv-r7jv)
 -security: Harden cmd.exe shell sinks and strip %VAR% from hostnames on win32 (GHSA-rjvj-r52f-8v5q)
 -security: Reject SHA-1 signatures across every package import path
