@@ -140,9 +140,8 @@
   `$.fn.select2.amd.require('select2/...')` (synchronous string-form require -
   see the comment at that call site for why array-form must not be used).
 - TheWitness has an upstream pull request open against `select2/select2`
-  proposing this behavior as a first-class option (search here for the PR once
-  filed and fill in the URL below):
-  `<select2/select2 PR URL - TBD, opened by TheWitness>`
+  proposing this behavior as a first-class option:
+  `https://github.com/select2/select2/pull/6462`
 - **Action item for any future Copilot session working in this repo:** when
   starting work here, check whether a select2 release has shipped that
   includes that PR (check `select2/select2` releases/CHANGELOG for a
