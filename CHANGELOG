@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security: Authorize Data Source enable/disable against the owning device before mutating (GHSA-2fhv-c794-v433)
 -security: Confine Reports format_file to a bare filename to close a path traversal/LFI regression (GHSA-5x27-wqpm-m24v)
 -security: Reject ORDER BY sort_column subquery payloads that bypassed the GHSA-q9xg-p762-9jm3 fix (GHSA-8j73-cvf6-jrvx)
 -security: Authorize Report save/edit against report ownership to close an authenticated IDOR (GHSA-8f5c-3h59-q7gc)
