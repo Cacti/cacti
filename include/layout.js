@@ -1243,7 +1243,16 @@ function applySkin() {
 
 		var options = {
 			minimumResultsForSearch: select2SearchRows,
-			closeOnSelect: false
+			closeOnSelect: false,
+			/* checkbox-styled option rows, closer to the old jquery-multiselect look;
+			 * the checked mark itself is drawn from [aria-selected] via CSS */
+			templateResult: function(state) {
+				if (!state.id) {
+					return state.text;
+				}
+
+				return $('<span class="select2-checkbox-option">').text(state.text);
+			}
 		};
 
 		if ($select.closest('.ui-dialog').length) {
