@@ -1300,7 +1300,7 @@ function tree_edit(bool $partial = false) : void {
 				}
 			})
 			.on('create_node.jstree', function (e, data) {
-				$.get('?action=create_node', { 'id' : data.node.parent, 'tree_id' : $('#id').val(), 'position' : data.position, 'text' : data.node.text })
+				$.post('?action=create_node', { 'id' : data.node.parent, 'tree_id' : $('#id').val(), 'position' : data.position, 'text' : data.node.text, '__csrf_magic' : csrfMagicToken })
 					.done(function (d) {
 						data.instance.set_id(data.node, d.id);
 						data.instance.set_text(data.node, d.text);
@@ -1316,7 +1316,7 @@ function tree_edit(bool $partial = false) : void {
 					});
 			})
 			.on('rename_node.jstree', function (e, data) {
-				$.get('?action=rename_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'text' : data.text })
+				$.post('?action=rename_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'text' : data.text, '__csrf_magic' : csrfMagicToken })
 					.done(function (d) {
 						if (d.result == 'false') {
 							data.instance.set_text(data.node, d.text);
@@ -1331,7 +1331,7 @@ function tree_edit(bool $partial = false) : void {
 					});
 			})
 			.on('move_node.jstree', function (e, data) {
-				$.get('?action=move_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
+				$.post('?action=move_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position, '__csrf_magic' : csrfMagicToken })
 					.always(function () {
 						var st = data.instance.get_state();
 						data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
@@ -1348,7 +1348,7 @@ function tree_edit(bool $partial = false) : void {
 					$('#graphs').jstree().deselect_all();
 				}
 
-				$.get('?action=copy_node', { 'id' : data.original.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
+				$.post('?action=copy_node', { 'id' : data.original.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position, '__csrf_magic' : csrfMagicToken })
 					.always(function () {
 						var st = data.instance.get_state();
 						data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });

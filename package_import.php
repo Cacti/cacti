@@ -1846,10 +1846,14 @@ function package_import() : void {
 		});
 
 		if (checks != '' || $('#package_location').val() == 0) {
-			$.getJSON('package_import.php?action=accept'               +
-				'&package_location='    + $('#package_location').val() +
-				'&package_ids='         + checks, function(data) {
-			});
+			/* accept is state-changing (trusts a signer), so it must arrive by
+			 * POST with a CSRF token like the other 'bad_actions' in global.php */
+			$.post('package_import.php?action=accept', {
+				package_location: $('#package_location').val(),
+				package_ids:      checks,
+				__csrf_magic:     csrfMagicToken
+			}, function(data) {
+			}, 'json');
 		}
 	}
 

@@ -353,6 +353,26 @@ function reports_form_save() : void {
 		$save['id']        = gnrv('id');
 		$save['report_id'] = form_input_validate(gnrv('report_id'), 'report_id', '^[0-9]+$', false, 3);
 
+		/* reports.php's guest bind makes this reachable without the page-level
+		 * realm check (see reports_item_authorized()) - independently verify the
+		 * caller owns both the target report and, when editing, the item's
+		 * current report before touching reports_items */
+		$report_owner = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [$save['report_id']]);
+
+		if (!is_reports_admin() && (int) $report_owner !== (int) $_SESSION[SESS_USER_ID]) {
+			raise_message('reports_idor', __('You do not have permission to modify this Report.'), MESSAGE_LEVEL_ERROR);
+			header('Location: ' . get_reports_page());
+
+			exit;
+		}
+
+		if ((int) $save['id'] > 0 && !reports_item_authorized((int) $save['id'])) {
+			raise_message('reports_idor', __('You do not have permission to modify this Report Item.'), MESSAGE_LEVEL_ERROR);
+			header('Location: ' . get_reports_page());
+
+			exit;
+		}
+
 		if (ierv('id')) {
 			$save['sequence'] = db_fetch_cell_prepared('SELECT MAX(sequence)+1
 				FROM reports_items
@@ -697,20 +717,24 @@ function reports_send(int $id) : void {
  * must independently verify the caller is either a Reports administrator or
  * the owning user before mutating a reports_items row.
  *
- * @param int $item_id The reports_items.id to authorize against.
+ * @param int      $item_id   The reports_items.id to authorize against.
+ * @param int|null $report_id When provided, also require that this is the
+ *                             item's actual current report_id - callers that
+ *                             take a separate report/id request parameter
+ *                             (e.g. the move-up/move-down and edit/save
+ *                             handlers) must not let it diverge from the
+ *                             item's real report and be used to scope
+ *                             operations against a report the item isn't
+ *                             even in.
  *
  * @return bool True when the current user may modify the item's report.
  */
-function reports_item_authorized(int $item_id) : bool {
+function reports_item_authorized(int $item_id, ?int $report_id = null) : bool {
 	if (empty($_SESSION[SESS_USER_ID])) {
 		return false;
 	}
 
-	if (is_reports_admin()) {
-		return true;
-	}
-
-	$owner_id = db_fetch_cell_prepared('SELECT r.user_id
+	$item = db_fetch_row_prepared('SELECT ri.report_id, r.user_id
 		FROM reports_items AS ri
 		INNER JOIN reports AS r
 		ON r.id = ri.report_id
@@ -718,7 +742,19 @@ function reports_item_authorized(int $item_id) : bool {
 		[$item_id]
 	);
 
-	return ($owner_id !== false && (int) $owner_id === (int) $_SESSION[SESS_USER_ID]);
+	if (!cacti_sizeof($item)) {
+		return false;
+	}
+
+	if ($report_id !== null && (int) $item['report_id'] !== $report_id) {
+		return false;
+	}
+
+	if (is_reports_admin()) {
+		return true;
+	}
+
+	return ((int) $item['user_id'] === (int) $_SESSION[SESS_USER_ID]);
 }
 
 /**
@@ -735,7 +771,7 @@ function reports_item_movedown() : void {
 	gfrv('id');
 	// ====================================================
 
-	if (!reports_item_authorized((int) grv('item_id'))) {
+	if (!reports_item_authorized((int) grv('item_id'), (int) grv('id'))) {
 		raise_message('permission_denied');
 
 		return;
@@ -759,7 +795,7 @@ function reports_item_moveup() : void {
 	gfrv('id');
 
 	// ====================================================
-	if (!reports_item_authorized((int) grv('item_id'))) {
+	if (!reports_item_authorized((int) grv('item_id'), (int) grv('id'))) {
 		raise_message('permission_denied');
 
 		return;
@@ -1055,11 +1091,27 @@ function reports_item_edit() : void {
 	$report_item['tree_id']           = -1;
 
 	if (isrv('item_id') && gfrv('item_id') > 0) {
+		if (!reports_item_authorized((int) grv('item_id'))) {
+			raise_message('reports_idor', __('You do not have permission to view this Report Item.'), MESSAGE_LEVEL_ERROR);
+			header('Location: ' . get_reports_page());
+
+			exit;
+		}
+
 		$report_item = db_fetch_row_prepared('SELECT *
 			FROM reports_items WHERE id = ?',
 			[grv('item_id')]
 		);
 	} else {
+		$report_owner = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [grv('id')]);
+
+		if (!is_reports_admin() && (int) $report_owner !== (int) $_SESSION[SESS_USER_ID]) {
+			raise_message('reports_idor', __('You do not have permission to view this Report.'), MESSAGE_LEVEL_ERROR);
+			header('Location: ' . get_reports_page());
+
+			exit;
+		}
+
 		$report_item['report_id']      = grv('id');
 		$report_item['local_graph_id'] = 0;
 
