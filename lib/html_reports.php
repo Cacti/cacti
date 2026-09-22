@@ -719,13 +719,13 @@ function reports_send(int $id) : void {
  *
  * @param int      $item_id   The reports_items.id to authorize against.
  * @param int|null $report_id When provided, also require that this is the
- *                             item's actual current report_id - callers that
- *                             take a separate report/id request parameter
- *                             (e.g. the move-up/move-down and edit/save
- *                             handlers) must not let it diverge from the
- *                             item's real report and be used to scope
- *                             operations against a report the item isn't
- *                             even in.
+ *                            item's actual current report_id - callers that
+ *                            take a separate report/id request parameter
+ *                            (e.g. the move-up/move-down and edit/save
+ *                            handlers) must not let it diverge from the
+ *                            item's real report and be used to scope
+ *                            operations against a report the item isn't
+ *                            even in.
  *
  * @return bool True when the current user may modify the item's report.
  */
