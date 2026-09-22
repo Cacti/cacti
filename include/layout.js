@@ -4011,7 +4011,7 @@ function setSelectMenus() {
 	/* graph_template_id's '-1' option means "All Templates"; picking it clears every
 	 * other selection and picking anything else clears '-1', mirroring the old
 	 * jquery.multiselect uncheckAll/click handlers this replaces */
-	$('#graph_template_id.select2-multi-count').off('select2:select.graphTemplateSentinel select2:unselect.graphTemplateSentinel select2:closing.graphTemplateSentinel')
+	$('#graph_template_id.select2-multi-count').off('select2:select.graphTemplateSentinel select2:unselect.graphTemplateSentinel select2:close.graphTemplateSentinel')
 		.on('select2:select.graphTemplateSentinel', function(event) {
 		var $this = $(this);
 
@@ -4029,8 +4029,9 @@ function setSelectMenus() {
 			$this.find('option[value="-1"]').prop('selected', true);
 			$this.trigger('change');
 		}
-	}).on('select2:closing.graphTemplateSentinel', function(event) {
-		applyGraphFilter();
+	}).on('select2:close.graphTemplateSentinel', function(event) {
+		/* defer past select2's own close teardown so the reload isn't torn down with it */
+		setTimeout(applyGraphFilter, 0);
 	});
 
 	var msWidth = 40;
