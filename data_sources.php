@@ -398,7 +398,6 @@ function data_source_authorized(int $local_data_id) : bool {
 	return is_device_allowed((int) $host_id);
 }
 
-
 function form_actions() : void {
 	global $actions;
 

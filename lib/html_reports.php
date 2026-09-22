@@ -757,6 +757,7 @@ function reports_item_moveup() : void {
 	// ================= input validation =================
 	gfrv('item_id');
 	gfrv('id');
+
 	// ====================================================
 	if (!reports_item_authorized((int) grv('item_id'))) {
 		raise_message('permission_denied');
@@ -778,6 +779,7 @@ function reports_item_moveup() : void {
 function reports_item_remove() : void {
 	// ================= input validation =================
 	gfrv('item_id');
+
 	// ====================================================
 	if (!reports_item_authorized((int) grv('item_id'))) {
 		raise_message('permission_denied');
