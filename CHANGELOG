@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security: Authorize Report save/edit against report ownership to close an authenticated IDOR (GHSA-8f5c-3h59-q7gc)
 -security: Stop building the Realtime RRD create command through a shell and validate DS bounds are numeric before they reach it (GHSA-f88m-q789-g22j)
 -security: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating (GHSA-prxj-84qq-v5jq)
 -security: Authorize single-item Report actions (remove/move) against report ownership to close a guest-bind IDOR (GHSA-j5jh-fhwg-r56x)

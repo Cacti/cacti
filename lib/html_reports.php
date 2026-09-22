@@ -272,6 +272,13 @@ function reports_form_save() : void {
 			$save['user_id'] = $_SESSION[SESS_USER_ID];
 		} else {
 			$save['user_id'] = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [$post['id']]);
+
+			if (!is_reports_admin() && (int) $save['user_id'] !== (int) $_SESSION[SESS_USER_ID]) {
+				raise_message('reports_idor', __('You do not have permission to modify this Report.'), MESSAGE_LEVEL_ERROR);
+				header('Location: ' . get_reports_page());
+
+				exit;
+			}
 		}
 
 		$save['id']            = $post['id'];
@@ -1631,6 +1638,13 @@ function reports_edit() : void {
 
 	if (gfrv('id') > 0) {
 		$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', [grv('id')]);
+
+		if (cacti_sizeof($report) && !is_reports_admin() && (int) $report['user_id'] !== (int) $_SESSION[SESS_USER_ID]) {
+			raise_message('reports_idor', __('You do not have permission to view this Report.'), MESSAGE_LEVEL_ERROR);
+			header('Location: ' . get_reports_page());
+
+			exit;
+		}
 	}
 
 	reports_tabs(grv('id'));
