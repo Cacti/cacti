@@ -2599,10 +2599,20 @@ td.center > table {
 	height: 22px;
 }
 
-/* match the multi-select (e.g. Templates) control to the single-select height */
+/* match the multi-select (e.g. Templates) control to the single-select height;
+   flexbox centers content vertically regardless of font metrics */
 .select2-container--default .select2-selection--multiple {
 	min-height: 24px;
 	padding-right: 20px;
+	display: flex;
+	align-items: center;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+	display: block;
+	flex: 1;
+	padding-left: 8px;
+	overflow: hidden;
 }
 
 /* select2-multi-count always replaces the rendered area with "N Selected" text;
@@ -2615,10 +2625,27 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 
 .select2-selection--multiple .select2-count-label {
 	display: block;
-	line-height: 22px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+/* take this fully out of flow so it can never stretch or reposition the
+   control it's nested in - it just overlays the same area while open */
+.select2-container--default .select2-selection--multiple .select2-search--inline {
+	position: absolute;
+	top: 0;
+	left: 8px;
+	right: 20px;
+	height: 100%;
+	margin: 0;
+}
+
+.select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field {
+	width: 100% !important;
+	height: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
 }
 
 /* select2 doesn't draw a dropdown arrow for multi-selects by default; add one to match */
