@@ -131,18 +131,48 @@ switch (get_request_var('action')) {
 		tree_edit(true);
 		break;
 	case 'copy_node':
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('tree_id'), 'graph_tree')) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+			exit;
+		}
+
 		api_tree_copy_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('parent'), get_request_var('position'));
 		break;
 	case 'create_node':
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('tree_id'), 'graph_tree')) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+			exit;
+		}
+
 		api_tree_create_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('position'), get_nfilter_request_var('text'));
 		break;
 	case 'delete_node':
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('tree_id'), 'graph_tree')) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+			exit;
+		}
+
 		api_tree_delete_node(get_request_var('tree_id'), get_request_var('id'));
 		break;
 	case 'move_node':
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('tree_id'), 'graph_tree')) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+			exit;
+		}
+
 		api_tree_move_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('parent'), get_request_var('position'));
 		break;
 	case 'rename_node':
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('tree_id'), 'graph_tree')) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+			exit;
+		}
+
 		api_tree_rename_node(get_request_var('tree_id'), get_request_var('id'), get_nfilter_request_var('text'));
 		break;
 	case 'get_node':

@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-security: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating (GHSA-prxj-84qq-v5jq)
 -security: Escape template name and dependency path in the Template Import preview (GHSA-xvwr-hvpm-67jw)
 -security: Strip cmd.exe metacharacters from SNMP, script query, and data query arguments on win32
 -security: Strip CR/LF from escape_command to stop rrdtool-protocol injection
