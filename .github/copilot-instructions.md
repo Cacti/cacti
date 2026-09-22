@@ -104,6 +104,11 @@
   - **CSRF**: Verify forms/AJAX include `__csrf_magic`.
   - **Command Injection**: Scrutinize `shell_exec`, `exec`, `passthru`. Ensure arguments are escaped (`escapeshellarg`).
   - **Auth**: Verify `include/auth.php` is loaded and permissions are checked (`api_user_realm_auth`).
+- **Security advisories and CVE policy**:
+  - `develop`/`1.3.x` is unreleased. A vulnerability that exists **only** on `develop` does **not** get a CVE requested, since no released version is affected — document that determination in the GHSA description (a dated "Triage Note") instead.
+  - `1.2.x` is the released/LTS branch. If the same vulnerable code is also reachable on `1.2.x` (or was historically, for an unpatched released version), **a CVE is requested**.
+  - Before deciding CVE vs. no-CVE, verify the claim against both branches' actual current source rather than trusting the reporter's stated affected-version range — it can be wrong (e.g. describing a bug already fixed on `1.2.x` that only regressed on `develop`).
+  - If a `develop`-only advisory is later found to also affect a released `1.2.x` version, request a CVE at that point.
 
 ## Clean-as-you-code
 - While implementing a change, do small, behavior-preserving refactors in the *touched area* (dedupe logic, extract helpers, simplify conditions).
