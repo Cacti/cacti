@@ -22,6 +22,7 @@ export const assetMap = Object.freeze({
 	'node_modules/jstree/dist/jstree.js':                             'include/js/jstree.js',
 	'node_modules/billboard.js/dist/billboard.js':                    'include/js/billboard.js',
 	'node_modules/pace-js/pace.js':                                   'include/js/pace.js',
+	'node_modules/select2/dist/js/select2.full.js':                   'include/js/select2.js',
 	'node_modules/tablesorter/dist/js/jquery.tablesorter.js':         'include/js/jquery.tablesorter.js',
 	'node_modules/tablesorter/dist/js/jquery.tablesorter.widgets.js': 'include/js/jquery.tablesorter.widgets.js',
 	'node_modules/tablesorter/dist/js/extras/jquery.tablesorter.pager.min.js': 'include/js/jquery.tablesorter.pager.js',

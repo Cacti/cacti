@@ -16,8 +16,9 @@ npm run build:js   # or run the sync explicitly
 ## What is managed here
 
 The managed third-party JavaScript libraries are npm-sourced (generated,
-git-ignored): jquery, jquery-ui, jstree, billboard.js, DOMPurify, pace-js, the
-tablesorter files (core, widgets, pager) and the jquery-validation files.
+git-ignored): jquery, jquery-ui, jstree, billboard.js, DOMPurify, pace-js,
+select2, the tablesorter files (core, widgets, pager) and the
+jquery-validation files.
 
 `pace-js` carries a one-line local fix (a stray regex alternation removed) applied
 through `patch-package` from `patches/pace-js+1.2.4.patch`. The fix should also be
@@ -25,6 +26,12 @@ sent upstream so the patch can eventually be dropped.
 
 Only Cacti's own themed CSS for jquery-ui and jstree remains committed; those are
 Cacti theme assets, not upstream library files.
+
+`include/themes/<theme>/select2.css` is the unmodified upstream Select2 CSS,
+committed (not npm-synced) per-theme so it loads alongside each theme's other
+vendor CSS files; it should be refreshed by hand whenever the `select2` version
+in `package.json` changes. Cacti's own Select2-to-theme adapter rules live in
+each theme's `main.css` instead.
 
 ## Release and source-tree checkouts
 
