@@ -387,7 +387,10 @@ function draw_edit_control(string $field_name, array &$field_array) : void {
 				(isset($field_array['sql']) ? db_fetch_assoc($field_array['sql']) : $field_array['value']),
 				'id',
 				($field_array['class'] ?? ''),
-				($field_array['on_change'] ?? '')
+				($field_array['on_change'] ?? ''),
+				($field_array['select_all_text'] ?? ''),
+				($field_array['select_count_text'] ?? ''),
+				($field_array['select_all_value'] ?? '')
 			);
 
 			break;
@@ -1051,6 +1054,28 @@ function form_callback(string $form_name, string $classic_sql, string $column_di
 		}
 	}
 
+	/* opt-in via $class: preserves the legacy .drop-callback/makeCallbacks() autocomplete
+	 * widget below for every existing caller (including plugins) that does not explicitly
+	 * request the newer ajax-backed select2-callback rendering. */
+	if (preg_match('/(^|\s)select2-callback(\s|$)/', $class)) {
+		if (empty($previous_id) && $prev_val == '') {
+			$prev_val = $none_entry;
+		}
+
+		print "<select id='" . htmle($form_name) . "' name='" . htmle($form_name) . "' class='" . htmle($class) . "'"
+			. " data-action='" . htmle($action) . "' data-variables='" . htmle($request_vars) . "' data-callback='" . htmle($on_change) . "'>";
+
+		if ($previous_id != '' && $prev_val != '') {
+			print "<option value='" . htmle($previous_id) . "' selected>" . htmle($prev_val) . '</option>';
+		} elseif (!empty($none_entry)) {
+			print "<option value='0' selected>" . htmle($none_entry) . '</option>';
+		}
+
+		print '</select>';
+
+		return;
+	}
+
 	if ($class != '') {
 		$class = " class='$class' ";
 	}
@@ -1242,11 +1267,18 @@ function form_text_area(string $form_name, mixed $prev_val, int $form_rows, int 
  * @param string $column_id     - the name of the key used to reference the keys above
  * @param string $class         - Optional. Additional CSS classes to apply to the select element.
  * @param string $on_change     - Optional. JavaScript code to execute when the selection changes.
+ * @param string $select_all_text   - Optional. For class 'select2-multi-count', the summary text shown
+ *                                    when $select_all_value is selected (or nothing is selected).
+ * @param string $select_count_text - Optional. For class 'select2-multi-count', the suffix appended
+ *                                    after the selected count (e.g. '3 <suffix>').
+ * @param string $select_all_value  - Optional. For class 'select2-multi-count', the option value that
+ *                                    represents "all" and takes priority over showing a count.
  *
  * @return void
  */
 function form_multi_dropdown(string $form_name, array $array_display, mixed $prev_vals,
-	string $column_id, string $class = '', string $on_change = '') : void {
+	string $column_id, string $class = '', string $on_change = '', string $select_all_text = '',
+	string $select_count_text = '', string $select_all_value = '') : void {
 	if (!is_array($prev_vals) && $prev_vals != '') {
 		$values              = explode(',', $prev_vals);
 		$prev_vals           = [];
@@ -1283,7 +1315,21 @@ function form_multi_dropdown(string $form_name, array $array_display, mixed $pre
 		$on_change = " onChange='$on_change' ";
 	}
 
-	print "<select style='height:20px;' size='1' class='$class' id='$form_name' name='$form_name" . "[]' multiple>";
+	$select2Attrs = '';
+
+	if ($select_all_text != '') {
+		$select2Attrs .= " data-select-all-text='" . htmle($select_all_text) . "'";
+	}
+
+	if ($select_count_text != '') {
+		$select2Attrs .= " data-select-count-text='" . htmle($select_count_text) . "'";
+	}
+
+	if ($select_all_value != '') {
+		$select2Attrs .= " data-select-all-value='" . htmle($select_all_value) . "'";
+	}
+
+	print "<select style='height:20px;' size='1' class='$class'$select2Attrs id='$form_name' name='$form_name" . "[]' multiple>";
 
 	foreach (array_keys($array_display) as $id) {
 		print "<option value='" . $id . "'";

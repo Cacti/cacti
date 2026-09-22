@@ -1020,7 +1020,10 @@ function create_tree_filter() : array {
 					'filter_options' => ['options' => ['regexp' => '/^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)(,(cg_[0-9]+|dq_[0-9]+|-?[0-9]+))*$/']],
 					'default'        => '-1',
 					'dynamic'        => false,
-					'class'          => 'graph-multiselect',
+					'class'          => 'select2-multi-count',
+					'select_all_text'   => __('All Graph Templates'),
+					'select_count_text' => __('Templates Selected'),
+					'select_all_value'  => '-1',
 					'pageset'        => true,
 					'array'          => $normalized_templates,
 					'value'          => gnrv('graph_template_id')

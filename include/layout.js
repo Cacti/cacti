@@ -1165,15 +1165,16 @@ function applySkin() {
 	renderLanguages();
 
 	$('select.select2').each(function() {
-		if ($(this).closest('.ui-dialog').length) {
-			var dropdownParent = $(this).closest('.ui-dialog');
+		/* fewer than 10 options is quicker to scan than to search */
+		var options = {
+			minimumResultsForSearch: $(this).find('option').length < 10 ? Infinity : 0
+		};
 
-			$(this).select2({
-				dropdownParent: dropdownParent
-			});
-		} else {
-			$(this).select2({});
+		if ($(this).closest('.ui-dialog').length) {
+			options.dropdownParent = $(this).closest('.ui-dialog');
 		}
+
+		$(this).select2(options);
 	});
 
 	$('select.select2-nosearch').each(function() {
@@ -1207,15 +1208,50 @@ function applySkin() {
 	});
 
 	$('select.select2-multi').each(function() {
-		if ($(this).closest('.ui-dialog').length) {
-			var dropdownParent = $(this).closest('.ui-dialog');
+		/* fewer than 10 options is quicker to scan than to search */
+		var options = {
+			minimumResultsForSearch: $(this).find('option').length < 10 ? Infinity : 0
+		};
 
-			$(this).select2({
-				dropdownParent: dropdownParent
-			});
-		} else {
-			$(this).select2({});
+		if ($(this).closest('.ui-dialog').length) {
+			options.dropdownParent = $(this).closest('.ui-dialog');
 		}
+
+		$(this).select2(options);
+	});
+
+	/* multi-select that reports "N selected"/"All selected" instead of one chip per option */
+	$('select.select2-multi-count').each(function() {
+		var $select      = $(this);
+		var allText      = $select.data('select-all-text') || multiSelectAllText;
+		var countText    = $select.data('select-count-text') || multiSelectCountText;
+		var allValue     = $select.data('select-all-value');
+
+		var options = {
+			minimumResultsForSearch: $select.find('option').length < 10 ? Infinity : 0,
+			closeOnSelect: false
+		};
+
+		if ($select.closest('.ui-dialog').length) {
+			options.dropdownParent = $select.closest('.ui-dialog');
+		}
+
+		$select.select2(options);
+
+		function updateSelect2CountLabel() {
+			var selected  = $select.val() || [];
+			var rendered  = $select.next('.select2-container').find('.select2-selection__rendered');
+
+			if (selected.length == 0 || (allValue !== undefined && $.inArray(String(allValue), selected) > -1)) {
+				rendered.text(allText);
+			} else {
+				rendered.text(selected.length + ' ' + countText);
+			}
+		}
+
+		$select.on('select2:select select2:unselect change', updateSelect2CountLabel);
+
+		updateSelect2CountLabel();
 	});
 
 	$('select.select2-multi-tags').each(function() {
@@ -1233,21 +1269,43 @@ function applySkin() {
 		}
 	});
 
+	/* ajax-backed lookup select: replaces the legacy .drop-callback/makeCallbacks() autocomplete
+	 * widget for filter fields opted into it (see form_callback()'s $class parameter) */
 	$('select.select2-callback').each(function() {
-		var callbackUrl = $(this).data('callback');
+		var $select       = $(this);
+		var action        = $select.data('action');
+		var requestVars   = $select.data('variables');
+		var changeFunc    = $select.data('callback');
+
 		var options = {
-			dropdownParent: $(this).closest('.ui-dialog').length ? $(this).closest('.ui-dialog') : document.body,
+			dropdownParent: $select.closest('.ui-dialog').length ? $select.closest('.ui-dialog') : document.body,
+			minimumInputLength: 0,
 			ajax: {
 				type: 'post',
 				dataType: 'json',
 				delay: 250,
 				cache: false,
 				url: function(params) {
-					if (params.term !== undefined && params.term != '') {
-						return callbackUrl + '&search=' + encodeURIComponent(params.term) + '&page=' + (encodeURIComponent(params.page || 1));
-					} else {
-						return callbackUrl + '&page=' + (encodeURIComponent(params.page || 1));
+					var url = pageName + '?action=' + encodeURIComponent(action);
+
+					if (requestVars) {
+						$.each(requestVars.split(','), function(index, field) {
+							if ($('#' + field).length) {
+								url += '&' + encodeURIComponent(field) + '=' + encodeURIComponent($('#' + field).val());
+							}
+						});
 					}
+
+					if (params.term !== undefined && params.term != '') {
+						url += '&term=' + encodeURIComponent(params.term);
+					}
+
+					return url + '&page=' + encodeURIComponent(params.page || 1);
+				},
+				data: function() {
+					/* these callback actions are regular POST endpoints guarded by the
+					 * same CSRF check as any other form submission */
+					return { __csrf_magic: csrfMagicToken };
 				},
 				processResults: function(data) {
 					return {
@@ -1259,7 +1317,13 @@ function applySkin() {
 			}
 		};
 
-		$(this).select2(options);
+		$select.select2(options);
+
+		if (changeFunc) {
+			$select.on('select2:select', function() {
+				executeFunctionByName(changeFunc.replace('(', '').replace(')', ''), window);
+			});
+		}
 	});
 }
 
@@ -3855,42 +3919,46 @@ function setSelectMenus() {
 
 	$('select.colordropdown').dropcolor();
 
-	$('select').not('.colordropdown').not('.drop-icon').not('.multi-select').not('.graph-multiselect').not('#user_language')
-		.not('.select2').not('.select2-nosearch').not('.select2-tags').not('.select2-multi').not('.select2-multi-tags').not('.select2-callback')
+	$('select').not('.colordropdown').not('.drop-icon').not('.multi-select').not('.graph-multiselect').not('#user_language').not('#i18n_default_language')
+		.not('.select2').not('.select2-nosearch').not('.select2-tags').not('.select2-multi').not('.select2-multi-tags').not('.select2-multi-count').not('.select2-callback')
 		.each(function() {
-		if ($(this).prop('multiple') != true) {
-			$(this).each(function() {
-				let id = $(this).attr('id');
-				let text = 'hello';
+		var $this = $(this);
 
-				$(this).selectmenu({
-					open: function(event, ui) {
-						let instance = $(this).selectmenu('instance');
+		/* fewer than 10 options is quicker to scan than to search */
+		var options = {
+			width: 'auto',
+			minimumResultsForSearch: $this.find('option').length < 10 ? Infinity : 0
+		};
 
-						instance.menuInstance.focus(null, instance._getSelectedItem());
-
-						let search = instance.menuWrap.find('input');
-
-						if (search.length > 0) {
-							search.trigger('focus');
-						}
-					},
-					change: function(event, ui) {
-						$(this).val(ui.item.value).trigger('change');
-					},
-					position: {
-						my: 'left top',
-						at: 'left bottom',
-						collision: 'flip'
-					},
-					width: 'auto'
-				});
-
-				$('#'+id+'-menu').css('max-height', '250px');
-			});
-		} else {
-			$(this).addClass('ui-state-default ui-corner-all');
+		if ($this.closest('.ui-dialog').length) {
+			options.dropdownParent = $this.closest('.ui-dialog');
 		}
+
+		$this.select2(options);
+	});
+
+	/* graph_template_id's '-1' option means "All Templates"; picking it clears every
+	 * other selection and picking anything else clears '-1', mirroring the old
+	 * jquery.multiselect uncheckAll/click handlers this replaces */
+	$('#graph_template_id.select2-multi-count').on('select2:select', function(event) {
+		var $this = $(this);
+
+		if (event.params.data.id == '-1') {
+			$this.find('option').not('[value="-1"]').prop('selected', false);
+		} else {
+			$this.find('option[value="-1"]').prop('selected', false);
+		}
+
+		$this.trigger('change');
+	}).on('select2:unselect', function(event) {
+		var $this = $(this);
+
+		if ($this.find('option:selected').length == 0) {
+			$this.find('option[value="-1"]').prop('selected', true);
+			$this.trigger('change');
+		}
+	}).on('select2:closing', function(event) {
+		applyGraphFilter();
 	});
 
 	var msWidth = 40;
@@ -3905,6 +3973,9 @@ function setSelectMenus() {
 	/* shrink down */
 	msWidth -= 20;
 
+	/* legacy jquery.multiselect widget, preserved for any plugin/theme still emitting its
+	 * own class='graph-multiselect' element; core's own #graph_template_id now uses
+	 * select2-multi-count (see above) and no longer matches this selector */
 	$('#graph_template_id.graph-multiselect').hide().multiselect({
 		menuHeight: $(window).height()*.7,
 		menuWidth: 'auto',
@@ -3975,6 +4046,8 @@ function setupObjectChange() {
 			$('#' + id).button('disable');
 		} else if ($('#' + id).selectmenu('instance')) {
                 $('#' + id).selectmenu('disable');
+		} else if ($('#' + id).hasClass('select2-hidden-accessible')) {
+			$('#' + id).trigger('change.select2');
 		}
 	}
 
@@ -3989,6 +4062,8 @@ function setupObjectChange() {
 			$('#' + id).button('enable');
 		} else if ($('#' + id).selectmenu('instance')) {
 			$('#' + id).selectmenu('enable');
+		} else if ($('#' + id).hasClass('select2-hidden-accessible')) {
+			$('#' + id).trigger('change.select2');
 		}
 	}
 
@@ -5511,6 +5586,8 @@ function setSNMPSecurity() {
 			var selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
 			if (selectmenu) {
 				$('#snmp_security_level').selectmenu('refresh');
+			} else if ($('#snmp_security_level').hasClass('select2-hidden-accessible')) {
+				$('#snmp_security_level').trigger('change.select2');
 			}
 
 			$('#snmp_password').delayKeyup(function () {
@@ -5661,6 +5738,12 @@ function setSNMP() {
 		$('#snmp_security_level').selectmenu('refresh');
 		$('#snmp_auth_protocol').selectmenu('refresh');
 		$('#snmp_priv_protocol').selectmenu('refresh');
+	}
+
+	if ($('#snmp_security_level').hasClass('select2-hidden-accessible')) {
+		$('#snmp_security_level').trigger('change.select2');
+		$('#snmp_auth_protocol').trigger('change.select2');
+		$('#snmp_priv_protocol').trigger('change.select2');
 	}
 }
 
