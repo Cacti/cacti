@@ -2479,10 +2479,19 @@ td.center > table {
 }
 
 /* select2-multi-count always replaces the rendered area with "N Selected" text;
-   the inline search-while-typing box doesn't fit that display and was
-   rendering as a tiny stray box next to it, inflating the control's height too */
-select.select2-multi-count.select2-hidden-accessible + .select2-container .select2-search--inline {
+   only hide the inline search-while-typing box while closed (it doesn't fit
+   that display and was inflating the control's height) - let it reappear once
+   the dropdown opens, since that's the only place multi-selects can search from */
+select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.select2-container--open) .select2-search--inline {
 	display: none;
+}
+
+.select2-selection--multiple .select2-count-label {
+	display: block;
+	line-height: 22px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 /* select2 doesn't draw a dropdown arrow for multi-selects by default; add one to match */

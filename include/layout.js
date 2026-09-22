@@ -1052,12 +1052,17 @@ function applySkin() {
 		function updateSelect2CountLabel() {
 			var selected = $select.val() || [];
 			var rendered = $select.next('.select2-container').find('.select2-selection__rendered');
+			/* own span instead of bare text, so it can be centered independently of
+			 * whatever else (e.g. select2's inline search box) shares this container */
+			var label    = $('<span class="select2-count-label">');
 
 			if (selected.length == 0 || (allValue !== undefined && $.inArray(String(allValue), selected) > -1)) {
-				rendered.text(allText);
+				label.text(allText);
 			} else {
-				rendered.text(selected.length + ' ' + countText);
+				label.text(selected.length + ' ' + countText);
 			}
+
+			rendered.empty().append(label);
 		}
 
 		$select.on('select2:select select2:unselect change', updateSelect2CountLabel);
