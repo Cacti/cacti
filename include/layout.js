@@ -969,9 +969,8 @@ function applySkin() {
 	});
 
 	$('select.select2:not(.select2-hidden-accessible)').each(function() {
-		/* fewer than 10 options is quicker to scan than to search */
 		var options = {
-			minimumResultsForSearch: $(this).find('option').length < 10 ? Infinity : 0
+			minimumResultsForSearch: select2SearchRows
 		};
 
 		if ($(this).closest('.ui-dialog').length) {
@@ -1012,9 +1011,8 @@ function applySkin() {
 	});
 
 	$('select.select2-multi:not(.select2-hidden-accessible)').each(function() {
-		/* fewer than 10 options is quicker to scan than to search */
 		var options = {
-			minimumResultsForSearch: $(this).find('option').length < 10 ? Infinity : 0
+			minimumResultsForSearch: select2SearchRows
 		};
 
 		if ($(this).closest('.ui-dialog').length) {
@@ -1032,7 +1030,7 @@ function applySkin() {
 		var allValue  = $select.data('select-all-value');
 
 		var options = {
-			minimumResultsForSearch: $select.find('option').length < 10 ? Infinity : 0,
+			minimumResultsForSearch: select2SearchRows,
 			closeOnSelect: false
 		};
 
@@ -1151,10 +1149,9 @@ function applySkin() {
 			return;
 		}
 
-		/* fewer than 10 options is quicker to scan than to search */
 		var options = {
 			width: 'auto',
-			minimumResultsForSearch: $this.find('option').length < 10 ? Infinity : 0
+			minimumResultsForSearch: select2SearchRows
 		};
 
 		if ($this.closest('.ui-dialog').length) {

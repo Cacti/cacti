@@ -892,6 +892,20 @@ $settings = array(
 				0 => __('No')
 			)
 		),
+		'select2_search_rows' => array(
+			'friendly_name' => __('Select Search Minimum Rows'),
+			'description' => __('The minimum number of options a dropdown must have before Cacti shows a search box inside it.  Choose \'Always\' to show the search box regardless of the number of options.'),
+			'method' => 'drop_array',
+			'default' => '10',
+			'array' => array(
+				'0'  => __('Always'),
+				'5'  => '5',
+				'10' => '10',
+				'15' => '15',
+				'20' => '20',
+				'25' => '25'
+			)
+		),
 		'autocomplete_rows' => array(
 			'friendly_name' => __('Autocomplete Rows'),
 			'description' => __('The default number of rows to return from an autocomplete based select pattern match.') . ' ' . __('.  This is limited by the php setting \'max_input_vars\', currently:') .  ' ' . ini_get('max_input_vars'),
