@@ -1256,6 +1256,13 @@ function applySkin() {
 			instance.results.setClasses();
 		}
 
+		/* TEMPORARY DIAGNOSTIC - what does the VISIBLE dropdown DOM actually show as checked? */
+		var checkedTexts = [];
+		$('.select2-container--open .select2-results__option[aria-selected="true"]').each(function() {
+			checkedTexts.push($(this).text());
+		});
+		console.log('[graphTemplateSentinel] DOM aria-selected=true rows after select:', checkedTexts);
+
 		/* TEMPORARY DIAGNOSTIC */
 		console.log('[graphTemplateSentinel] select2:select done',
 			'clickedOption.selected(DOM prop)=', $clickedOpt.length ? $clickedOpt[0].selected : 'N/A',
@@ -1277,6 +1284,13 @@ function applySkin() {
 		if (instance && instance.results && instance.results.setClasses) {
 			instance.results.setClasses();
 		}
+
+		/* TEMPORARY DIAGNOSTIC */
+		var checkedTextsU = [];
+		$('.select2-container--open .select2-results__option[aria-selected="true"]').each(function() {
+			checkedTextsU.push($(this).text());
+		});
+		console.log('[graphTemplateSentinel] DOM aria-selected=true rows after unselect:', checkedTextsU);
 
 		/* TEMPORARY DIAGNOSTIC */
 		console.log('[graphTemplateSentinel] select2:unselect done', 'valAfter=', $this.val());
