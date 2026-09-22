@@ -969,8 +969,9 @@ function applySkin() {
 	/* Replace icons */
 	$('.fa-arrow-down').addClass('fa-chevron-down').removeClass('fa-arrow-down');
 	$('.fa-arrow-up').addClass('fa-chevron-up').removeClass('fa-arrow-up');
-	$var options = {
-			minimumResultsForSearch: select2SearchRows
+	$('.fa-remove').addClass('fa-trash-o').removeClass('fa-remove');
+
+	if (!theme) {
 		theme = 'midwinter';
 
 		// debounce submits
@@ -1011,8 +1012,9 @@ function applySkin() {
 
 	applyTableSizing();
 
-	svar options = {
-			minimumResultsForSearch: select2SearchRows
+	setupPageTimeout();
+
+	CsrfMagic.end();
 
 	setupSpecialKeys();
 
@@ -1030,7 +1032,7 @@ function applySkin() {
 		event.stopPropagation();
 		getCactiHelp($(this).attr('data-page'));
 	});
-select2SearchRows
+
 	if (typeof themeReady == 'function') {
 		themeReady();
 	}
@@ -1149,9 +1151,10 @@ select2SearchRows
 		});
 
 		return dfd;
-	}var options = {
-			width: 'auto',
-			minimumResultsForSearch: select2SearchRows
+	});
+
+	$('#password').delayKeyup(function () {
+		var url = window.location.href.split('?')[0] + '?action=checkpass';
 		checkPassword(url);
 	});
 
@@ -1178,9 +1181,8 @@ select2SearchRows
 	});
 
 	$('select.select2:not(.select2-hidden-accessible)').each(function() {
-		/* fewer than 10 options is quicker to scan than to search */
 		var options = {
-			minimumResultsForSearch: $(this).find('option').length < 10 ? Infinity : 0
+			minimumResultsForSearch: select2SearchRows
 		};
 
 		if ($(this).closest('.ui-dialog').length) {
@@ -1221,9 +1223,8 @@ select2SearchRows
 	});
 
 	$('select.select2-multi:not(.select2-hidden-accessible)').each(function() {
-		/* fewer than 10 options is quicker to scan than to search */
 		var options = {
-			minimumResultsForSearch: $(this).find('option').length < 10 ? Infinity : 0
+			minimumResultsForSearch: select2SearchRows
 		};
 
 		if ($(this).closest('.ui-dialog').length) {
@@ -1241,7 +1242,7 @@ select2SearchRows
 		var allValue     = $select.data('select-all-value');
 
 		var options = {
-			minimumResultsForSearch: $select.find('option').length < 10 ? Infinity : 0,
+			minimumResultsForSearch: select2SearchRows,
 			closeOnSelect: false
 		};
 
@@ -3932,7 +3933,7 @@ function setSelectMenus() {
 
 	$('select.colordropdown').dropcolor();
 
-	$('select').not('.colordropdown').not('.drop-icon').not('.multi-select').not('.graph-multiselect').not('#user_language').not('#i18n_default_language')
+	$('select').not('.colordropdown').not('.drop-icon').not('.multiselect').not('#user_language').not('#i18n_default_language')
 		.not('.select2').not('.select2-nosearch').not('.select2-tags').not('.select2-multi').not('.select2-multi-tags').not('.select2-multi-count').not('.select2-callback')
 		.not('.select2-hidden-accessible')
 		.each(function() {
@@ -3944,10 +3945,9 @@ function setSelectMenus() {
 			return;
 		}
 
-		/* fewer than 10 options is quicker to scan than to search */
 		var options = {
 			width: 'auto',
-			minimumResultsForSearch: $this.find('option').length < 10 ? Infinity : 0
+			minimumResultsForSearch: select2SearchRows
 		};
 
 		if ($this.closest('.ui-dialog').length) {
