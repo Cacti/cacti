@@ -72,6 +72,13 @@ Use these notes to navigate and contribute productively to this PHP codebase.
   - Don’t change public function signatures in `lib/api_*.php` or widely used helpers without auditing usages.
   - For dependencies, prefer Composer-managed libs under `include/vendor` and keep versions pinned by `composer.lock`.
 
+## Security advisories and CVE policy
+- `1.2.x` is the released/LTS branch. A security fix landing here means real, released installations are affected, so **a CVE is requested** for any GitHub Security Advisory (GHSA) whose vulnerable code is reachable on `1.2.x` (in addition to `develop`, if also affected there).
+- `develop`/`1.3.x` is unreleased. A vulnerability that exists **only** on `develop` (confirmed absent/already-mitigated on `1.2.x`, e.g. the feature doesn't exist yet, or `1.2.x` already has an equivalent guard) does **not** get a CVE requested, since no released version is affected.
+- Before deciding CVE vs. no-CVE for a given advisory, verify the claim against both branches' actual current source (don't rely solely on the reporter's stated `vulnerable_version_range` — it can be wrong, e.g. describing a bug already fixed on `1.2.x` that only regressed on `develop`).
+- When an advisory turns out to be `develop`-only, record that determination directly in the GHSA description (a dated "Triage Note") rather than requesting a CVE, and note that the policy applies specifically because no released version is affected.
+- If a `develop`-only advisory is later found to also affect a released `1.2.x` version, request a CVE at that point.
+
 ## Useful references
 - Bootstrap/config: `include/global.php`, `include/config.php.dist`.
 - Core libs: `lib/database.php`, `lib/functions.php`, `lib/poller.php`, `lib/template.php`, `lib/plugins.php`.
