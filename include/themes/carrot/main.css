@@ -2648,6 +2648,15 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	height: 100% !important;
 	margin: 0 !important;
 	padding: 0 !important;
+	background: transparent !important;
+	border: none !important;
+	color: inherit;
+}
+
+/* the search field overlays the label; hide the label while open instead of
+   showing both at once */
+.select2-container--default.select2-container--open .select2-selection--multiple .select2-count-label {
+	visibility: hidden;
 }
 
 /* select2 doesn't draw a dropdown arrow for multi-selects by default; add one to match */
