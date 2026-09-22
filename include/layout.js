@@ -1235,6 +1235,33 @@ function applySkin() {
 	});
 
 	/* multi-select that reports "N selected"/"All selected" instead of one chip per option */
+	/* select2 normally puts a multi-select's type-to-filter box inside the control itself,
+	 * which grows its height and shoves the surrounding form down when opened. Build adapters
+	 * that instead search from the floating dropdown panel (how single-selects behave) and
+	 * drop the inline box entirely, so the control stays a fixed height whether open or closed */
+	var multiCountDropdownAdapter, multiCountSelectionAdapter;
+	if ($.fn.select2 && $.fn.select2.amd) {
+		$.fn.select2.amd.require([
+			'select2/utils',
+			'select2/dropdown',
+			'select2/dropdown/search',
+			'select2/dropdown/minimumResultsForSearch',
+			'select2/dropdown/attachBody',
+			'select2/selection/multiple',
+			'select2/selection/eventRelay'
+		], function(Utils, Dropdown, DropdownSearch, MinimumResultsForSearch, AttachBody, MultipleSelection, EventRelay) {
+			multiCountDropdownAdapter = Utils.Decorate(
+				Utils.Decorate(
+					Utils.Decorate(Dropdown, DropdownSearch),
+					MinimumResultsForSearch
+				),
+				AttachBody
+			);
+
+			multiCountSelectionAdapter = Utils.Decorate(MultipleSelection, EventRelay);
+		});
+	}
+
 	$('select.select2-multi-count:not(.select2-hidden-accessible)').each(function() {
 		var $select      = $(this);
 		var allText      = $select.data('select-all-text') || multiSelectAllText;
@@ -1254,6 +1281,11 @@ function applySkin() {
 				return $('<span class="select2-checkbox-option">').text(state.text);
 			}
 		};
+
+		if (multiCountDropdownAdapter && multiCountSelectionAdapter) {
+			options.dropdownAdapter  = multiCountDropdownAdapter;
+			options.selectionAdapter = multiCountSelectionAdapter;
+		}
 
 		if ($select.closest('.ui-dialog').length) {
 			options.dropdownParent = $select.closest('.ui-dialog');
