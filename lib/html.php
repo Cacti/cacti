@@ -2813,8 +2813,8 @@ function html_host_filter(mixed $host_id = -1, string $call_back = 'applyFilter'
 		<?php print __('Device'); ?>
 	</td>
 	<td>
-		<select id='host_id' name='host_id' class='select2-callback' data-action='ajax_hosts' data-variables='site_id' data-callback='<?php print htmle($call_back);?>'>
-			<option value='<?php print htmle($host_id);?>' selected><?php print htmle($hostname);?></option>
+		<select id='host_id' name='host_id' class='select2-callback' data-action='ajax_hosts' data-variables='site_id' data-callback='<?php print htmle($call_back); ?>'>
+			<option value='<?php print htmle($host_id); ?>' selected><?php print htmle($hostname); ?></option>
 		</select>
 	</td>
 	<?php

@@ -1257,22 +1257,22 @@ function form_text_area(string $form_name, mixed $prev_val, int $form_rows, int 
 /**
  * Draws a standard html multiple select dropdown
  *
- * @param string $form_name     - the name of this form element
- * @param array  $array_display - an array containing display values for this dropdown. it must
- *                              be formatted like:
- *                              $array[id] = display;
- * @param mixed  $prev_vals     - an array containing keys that should be marked as selected.
- *                              it must be formatted like:
- *                              $array[0][$column_id] = key
- * @param string $column_id     - the name of the key used to reference the keys above
- * @param string $class         - Optional. Additional CSS classes to apply to the select element.
- * @param string $on_change     - Optional. JavaScript code to execute when the selection changes.
+ * @param string $form_name         - the name of this form element
+ * @param array  $array_display     - an array containing display values for this dropdown. it must
+ *                                  be formatted like:
+ *                                  $array[id] = display;
+ * @param mixed  $prev_vals         - an array containing keys that should be marked as selected.
+ *                                  it must be formatted like:
+ *                                  $array[0][$column_id] = key
+ * @param string $column_id         - the name of the key used to reference the keys above
+ * @param string $class             - Optional. Additional CSS classes to apply to the select element.
+ * @param string $on_change         - Optional. JavaScript code to execute when the selection changes.
  * @param string $select_all_text   - Optional. For class 'select2-multi-count', the summary text shown
- *                                    when $select_all_value is selected (or nothing is selected).
+ *                                  when $select_all_value is selected (or nothing is selected).
  * @param string $select_count_text - Optional. For class 'select2-multi-count', the suffix appended
- *                                    after the selected count (e.g. '3 <suffix>').
+ *                                  after the selected count (e.g. '3 <suffix>').
  * @param string $select_all_value  - Optional. For class 'select2-multi-count', the option value that
- *                                    represents "all" and takes priority over showing a count.
+ *                                  represents "all" and takes priority over showing a count.
  *
  * @return void
  */
