@@ -2849,9 +2849,24 @@ circle {
 .select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple {
 	border: 1px solid #d3d3d3;
-	border-radius: 4px;
+	border-radius: 6px;
 	background: #111111;
 	color: #555555;
+}
+
+.select2-container {
+	min-width: 160px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered,
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.select2-results__option {
+	white-space: nowrap;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered,
