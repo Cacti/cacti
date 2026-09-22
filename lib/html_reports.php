@@ -1326,15 +1326,21 @@ function reports_item_edit() {
 	function resetSelects(data) {
 		if (data.site_id) {
 			$('#site_id').val('-1');
+
 			if ($('#site_id').selectmenu('instance')) {
 				$('#site_id').selectmenu('refresh');
+			} else if ($('#site_id').hasClass('select2-hidden-accessible')) {
+				$('#site_id').trigger('change.select2');
 			}
 		}
 
 		if (data.host_template_id) {
 			$('#host_template_id').val('-1');
+
 			if ($('#host_template_id').selectmenu('instance')) {
 				$('#host_template_id').selectmenu('refresh');
+			} else if ($('#host_template_id').hasClass('select2-hidden-accessible')) {
+				$('#host_template_id').trigger('change.select2');
 			}
 		}
 

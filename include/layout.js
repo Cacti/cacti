@@ -953,15 +953,16 @@ function applySkin() {
 	renderLanguages();
 
 	$('select.select2').each(function() {
-		if ($(this).closest('.ui-dialog').length) {
-			var dropdownParent = $(this).closest('.ui-dialog');
+		/* fewer than 10 options is quicker to scan than to search */
+		var options = {
+			minimumResultsForSearch: $(this).find('option').length < 10 ? Infinity : 0
+		};
 
-			$(this).select2({
-				dropdownParent: dropdownParent
-			});
-		} else {
-			$(this).select2({});
+		if ($(this).closest('.ui-dialog').length) {
+			options.dropdownParent = $(this).closest('.ui-dialog');
 		}
+
+		$(this).select2(options);
 	});
 
 	$('select.select2-nosearch').each(function() {
@@ -995,15 +996,50 @@ function applySkin() {
 	});
 
 	$('select.select2-multi').each(function() {
-		if ($(this).closest('.ui-dialog').length) {
-			var dropdownParent = $(this).closest('.ui-dialog');
+		/* fewer than 10 options is quicker to scan than to search */
+		var options = {
+			minimumResultsForSearch: $(this).find('option').length < 10 ? Infinity : 0
+		};
 
-			$(this).select2({
-				dropdownParent: dropdownParent
-			});
-		} else {
-			$(this).select2({});
+		if ($(this).closest('.ui-dialog').length) {
+			options.dropdownParent = $(this).closest('.ui-dialog');
 		}
+
+		$(this).select2(options);
+	});
+
+	/* multi-select that reports "N selected"/"All selected" instead of one chip per option */
+	$('select.select2-multi-count').each(function() {
+		var $select   = $(this);
+		var allText   = $select.data('select-all-text') || 'All Selected';
+		var countText = $select.data('select-count-text') || 'Selected';
+		var allValue  = $select.data('select-all-value');
+
+		var options = {
+			minimumResultsForSearch: $select.find('option').length < 10 ? Infinity : 0,
+			closeOnSelect: false
+		};
+
+		if ($select.closest('.ui-dialog').length) {
+			options.dropdownParent = $select.closest('.ui-dialog');
+		}
+
+		$select.select2(options);
+
+		function updateSelect2CountLabel() {
+			var selected = $select.val() || [];
+			var rendered = $select.next('.select2-container').find('.select2-selection__rendered');
+
+			if (selected.length == 0 || (allValue !== undefined && $.inArray(String(allValue), selected) > -1)) {
+				rendered.text(allText);
+			} else {
+				rendered.text(selected.length + ' ' + countText);
+			}
+		}
+
+		$select.on('select2:select select2:unselect change', updateSelect2CountLabel);
+
+		updateSelect2CountLabel();
 	});
 
 	$('select.select2-multi-tags').each(function() {
@@ -1021,21 +1057,39 @@ function applySkin() {
 		}
 	});
 
+	/* ajax-backed lookup select: replaces the legacy per-field jQuery UI autocomplete
+	 * widget form_callback() prints inline, for fields opted into it (see
+	 * form_callback()'s $class parameter) */
 	$('select.select2-callback').each(function() {
-		var callbackUrl = $(this).data('callback');
+		var $select     = $(this);
+		var action      = $select.data('action');
+		var requestVars = $select.data('variables');
+		var changeFunc  = $select.data('callback');
+
 		var options = {
-			dropdownParent: $(this).closest('.ui-dialog').length ? $(this).closest('.ui-dialog') : document.body,
+			dropdownParent: $select.closest('.ui-dialog').length ? $select.closest('.ui-dialog') : document.body,
+			minimumInputLength: 0,
 			ajax: {
 				type: 'post',
 				dataType: 'json',
 				delay: 250,
 				cache: false,
 				url: function(params) {
-					if (params.term !== undefined && params.term != '') {
-						return callbackUrl + '&search=' + encodeURIComponent(params.term) + '&page=' + (encodeURIComponent(params.page || 1));
-					} else {
-						return callbackUrl + '&page=' + (encodeURIComponent(params.page || 1));
+					var url = pageName + '?action=' + encodeURIComponent(action);
+
+					if (requestVars) {
+						$.each(requestVars.split(','), function(index, field) {
+							if ($('#' + field).length) {
+								url += '&' + encodeURIComponent(field) + '=' + encodeURIComponent($('#' + field).val());
+							}
+						});
 					}
+
+					if (params.term !== undefined && params.term != '') {
+						url += '&term=' + encodeURIComponent(params.term);
+					}
+
+					return url + '&page=' + encodeURIComponent(params.page || 1);
 				},
 				data: function() {
 					// These callback endpoints are regular Cacti actions guarded by the same
@@ -1058,7 +1112,54 @@ function applySkin() {
 			}
 		};
 
-		$(this).select2(options);
+		$select.select2(options);
+
+		if (changeFunc) {
+			$select.on('select2:select', function() {
+				executeFunctionByName(changeFunc.replace('(', '').replace(')', ''), window);
+			});
+		}
+	});
+
+	/* legacy jQuery UI selectmenu widget catch-all is superseded by select2 below; every plain
+	 * <select> not already handled above (or explicitly excluded) becomes a select2 */
+	$('select').not('#user_language').not('#i18n_default_language')
+		.not('.select2').not('.select2-nosearch').not('.select2-tags').not('.select2-multi').not('.select2-multi-tags').not('.select2-multi-count').not('.select2-callback')
+		.each(function() {
+		var $this = $(this);
+
+		/* fewer than 10 options is quicker to scan than to search */
+		var options = {
+			width: 'auto',
+			minimumResultsForSearch: $this.find('option').length < 10 ? Infinity : 0
+		};
+
+		if ($this.closest('.ui-dialog').length) {
+			options.dropdownParent = $this.closest('.ui-dialog');
+		}
+
+		$this.select2(options);
+	});
+
+	/* graph_template_id's '-1' option means "All Graphs & Templates"; picking it clears
+	 * every other selection and picking anything else clears '-1' */
+	$('#graph_template_id.select2-multi-count').on('select2:select', function(event) {
+		var $this = $(this);
+
+		if (event.params.data.id == '-1') {
+			$this.find('option').not('[value="-1"]').prop('selected', false);
+		} else {
+			$this.find('option[value="-1"]').prop('selected', false);
+		}
+
+		$this.trigger('change');
+	}).on('select2:unselect', function(event) {
+		var $this = $(this);
+
+		if ($this.find('option:selected').length == 0) {
+			$this.find('option[value="-1"]').prop('selected', true);
+			$this.trigger('change');
+		}
 	});
 }
 
@@ -4742,6 +4843,8 @@ function setSNMPSecurity() {
 			var selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
 			if (selectmenu) {
 				$('#snmp_security_level').selectmenu('refresh');
+			} else if ($('#snmp_security_level').hasClass('select2-hidden-accessible')) {
+				$('#snmp_security_level').trigger('change.select2');
 			}
 
 			$('#snmp_password').on('keyup', function() {
@@ -4946,6 +5049,12 @@ function setSNMP() {
 				$('#snmp_security_level').selectmenu('refresh');
 				$('#snmp_auth_protocol').selectmenu('refresh');
 				$('#snmp_priv_protocol').selectmenu('refresh');
+			}
+
+			if ($('#snmp_security_level').hasClass('select2-hidden-accessible')) {
+				$('#snmp_security_level').trigger('change.select2');
+				$('#snmp_auth_protocol').trigger('change.select2');
+				$('#snmp_priv_protocol').trigger('change.select2');
 			}
 
 			break;

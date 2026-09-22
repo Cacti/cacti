@@ -373,7 +373,9 @@ function draw_edit_control($field_name, &$field_array) {
 			((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			((isset($field_array['class'])) ? $field_array['class'] : ''),
-			((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
+			((isset($field_array['on_change'])) ? $field_array['on_change'] : ''),
+			((isset($field_array['friendly_name'])) ? $field_array['friendly_name'] : ''),
+			((isset($field_array['request_vars'])) ? $field_array['request_vars'] : '')
 		);
 
 		break;
@@ -384,7 +386,10 @@ function draw_edit_control($field_name, &$field_array) {
 			(isset($field_array['sql']) ? db_fetch_assoc($field_array['sql']):$field_array['value']),
 			'id',
 			((isset($field_array['class'])) ? $field_array['class'] : ''),
-			((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
+			((isset($field_array['on_change'])) ? $field_array['on_change'] : ''),
+			((isset($field_array['select_all_text'])) ? $field_array['select_all_text'] : ''),
+			((isset($field_array['select_count_text'])) ? $field_array['select_count_text'] : ''),
+			((isset($field_array['select_all_value'])) ? $field_array['select_all_value'] : '')
 		);
 
 		break;
@@ -914,7 +919,7 @@ function form_droplanguage($form_name, $column_display, $column_id, $form_previo
 	print '</select>';
 }
 
-function form_callback($form_name, $classic_sql, $column_display, $column_id, $callback, $previous_id, $previous_value, $none_entry, $default_value, $class = '', $on_change = '') {
+function form_callback($form_name, $classic_sql, $column_display, $column_id, $callback, $previous_id, $previous_value, $none_entry, $default_value, $class = '', $on_change = '', $display_name = '', $request_vars = '') {
 	if ($previous_value == '') {
 		$previous_value = $default_value;
 	}
@@ -924,6 +929,28 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 			$class .= ($class != '' ? ' ':'') . 'txtErrorTextBox';
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
+	}
+
+	/* opt-in via $class: preserves the legacy inline jQuery UI autocomplete widget below
+	 * for every existing caller that does not explicitly request the newer ajax-backed
+	 * select2-callback rendering. */
+	if (preg_match('/(^|\s)select2-callback(\s|$)/', $class)) {
+		if (empty($previous_id) && $previous_value == '') {
+			$previous_value = $none_entry;
+		}
+
+		print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "' class='" . html_escape($class) . "'"
+			. " data-action='" . html_escape($callback) . "' data-variables='" . html_escape($request_vars) . "' data-callback='" . html_escape($on_change) . "'>";
+
+		if ($previous_id != '' && $previous_value != '') {
+			print "<option value='" . html_escape($previous_id) . "' selected>" . html_escape($previous_value) . '</option>';
+		} elseif (!empty($none_entry)) {
+			print "<option value='0' selected>" . html_escape($none_entry) . '</option>';
+		}
+
+		print '</select>';
+
+		return;
 	}
 
 	if ($class != '') {
@@ -1174,7 +1201,8 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
      it must be formatted like:
      $array[0][$column_id] = key
    @arg $column_id - the name of the key used to reference the keys above */
-function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $column_id, $class = '', $on_change = '') {
+function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $column_id, $class = '', $on_change = '',
+	$select_all_text = '', $select_count_text = '', $select_all_value = '') {
 	if (!is_array($sql_previous_values) && $sql_previous_values != '') {
 		$values = explode(',', $sql_previous_values);
 		$sql_previous_values = array();
@@ -1198,16 +1226,28 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 		}
 	}
 
-	$class = 'multiselect';
-	if ($class != '') {
-		$class .= " $class";
-	}
+	/* preserve any caller-supplied class (e.g. select2-multi-count) alongside 'multiselect' */
+	$class = trim('multiselect ' . $class);
 
 	if ($on_change != '') {
 		$_SESSION['form_change_actions'][$form_name] = $on_change;
 	}
 
-	print "<select style='height:20px;' size='1' class='$class' id='$form_name' name='$form_name" . "[]' multiple>";
+	$select2Attrs = '';
+
+	if ($select_all_text != '') {
+		$select2Attrs .= " data-select-all-text='" . html_escape($select_all_text) . "'";
+	}
+
+	if ($select_count_text != '') {
+		$select2Attrs .= " data-select-count-text='" . html_escape($select_count_text) . "'";
+	}
+
+	if ($select_all_value != '') {
+		$select2Attrs .= " data-select-all-value='" . html_escape($select_all_value) . "'";
+	}
+
+	print "<select style='height:20px;' size='1' class='$class'$select2Attrs id='$form_name' name='$form_name" . "[]' multiple>";
 
 	foreach (array_keys($array_display) as $id) {
 		print "<option value='" . $id . "'";
