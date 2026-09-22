@@ -2581,9 +2581,24 @@ td.center > table {
 .select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple {
 	border: 1px solid #aaaaaa;
-	border-radius: 4px;
-	background: #ffffff;
+	border-radius: 6px;
+	background: #e6e6e6 url("images/ui-bg_glass_75_e6e6e6_1x400.png") 50% 50% repeat-x;
 	color: #222222;
+}
+
+.select2-container {
+	min-width: 160px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered,
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.select2-results__option {
+	white-space: nowrap;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered,
