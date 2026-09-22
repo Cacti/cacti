@@ -1137,7 +1137,7 @@ function applySkin() {
 
 	/* legacy jQuery UI selectmenu widget catch-all is superseded by select2 below; every plain
 	 * <select> not already handled above (or explicitly excluded) becomes a select2 */
-	$('select').not('#user_language').not('#i18n_default_language')
+	$('select').not('#user_language').not('#i18n_default_language').not('.multiselect')
 		.not('.select2').not('.select2-nosearch').not('.select2-tags').not('.select2-multi').not('.select2-multi-tags').not('.select2-multi-count').not('.select2-callback')
 		.not('.select2-hidden-accessible')
 		.each(function() {
@@ -1185,9 +1185,9 @@ function applySkin() {
 }
 
 function renderLanguages() {
-	if ($('select#user_language').selectmenu('instance') !== undefined) {
-		$('select#user_language').selectmenu('destroy');
-
+	/* themeReady() no longer widget-ifies every select first, so init this
+	 * directly instead of relying on an existing selectmenu instance to destroy */
+	if ($('select#user_language').languageselect('instance') === undefined) {
 		$('select#user_language').languageselect({
 			width: '220',
 			change: function() {
@@ -1209,9 +1209,7 @@ function renderLanguages() {
 		}).languageselect('menuWidget').addClass('ui-menu-icons customicons');
 	}
 
-	if ($('select#i18n_default_language').selectmenu('instance') !== undefined) {
-		$('select#i18n_default_language').selectmenu('destroy');
-
+	if ($('select#i18n_default_language').languageselect('instance') === undefined) {
 		$('select#i18n_default_language').languageselect({
 			width: '220'
 		}).languageselect('menuWidget').addClass('ui-menu-icons customicons');
