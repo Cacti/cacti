@@ -2867,12 +2867,17 @@ circle {
 	height: 22px;
 }
 
-/* match the multi-select (e.g. Templates) control closer to the single-select height;
-   don't touch padding/line-height here - select2's inline search input sizes itself
-   off this box's natural layout and collapses to near-zero width if we override it */
+/* match the multi-select (e.g. Templates) control to the single-select height */
 .select2-container--default .select2-selection--multiple {
-	min-height: 26px;
+	min-height: 24px;
 	padding-right: 20px;
+}
+
+/* select2-multi-count always replaces the rendered area with "N Selected" text;
+   the inline search-while-typing box doesn't fit that display and was
+   rendering as a tiny stray box next to it, inflating the control's height too */
+select.select2-multi-count.select2-hidden-accessible + .select2-container .select2-search--inline {
+	display: none;
 }
 
 /* select2 doesn't draw a dropdown arrow for multi-selects by default; add one to match */
