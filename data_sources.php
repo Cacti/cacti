@@ -442,11 +442,15 @@ function form_actions() {
 				api_data_source_change_host($selected_items, get_request_var('host_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '6') { // data source enable
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
-					api_data_source_enable($selected_items[$i]);
+					if (data_source_authorized($selected_items[$i])) {
+						api_data_source_enable($selected_items[$i]);
+					}
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '7') { // data source disable
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
-					api_data_source_disable($selected_items[$i]);
+					if (data_source_authorized($selected_items[$i])) {
+						api_data_source_disable($selected_items[$i]);
+					}
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '8') { // reapply suggested data source naming
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
@@ -751,10 +755,36 @@ function ds_rrd_add() {
 	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
 }
 
+/**
+ * Determines whether the current user is authorized to modify the given data source.
+ * Data sources tied to a device (host_id > 0) require the caller to be authorized for
+ * that device; host-independent data sources (host_id = 0) are not device-scoped.
+ *
+ * @param int $local_data_id The data source to check.
+ *
+ * @return bool True if the caller may modify this data source.
+ */
+function data_source_authorized($local_data_id) {
+	$host_id = db_fetch_cell_prepared('SELECT host_id FROM data_local WHERE id = ?', array($local_data_id));
+
+	if (empty($host_id)) {
+		return true;
+	}
+
+	return is_device_allowed($host_id);
+}
+
 function ds_disable() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	/* ==================================================== */
+
+	if (!data_source_authorized(get_request_var('id'))) {
+		raise_message('permission_denied');
+		header('Location: data_sources.php');
+
+		return;
+	}
 
 	api_data_source_disable(get_request_var('id'));
 	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('id'));
@@ -764,6 +794,13 @@ function ds_enable() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	/* ==================================================== */
+
+	if (!data_source_authorized(get_request_var('id'))) {
+		raise_message('permission_denied');
+		header('Location: data_sources.php');
+
+		return;
+	}
 
 	api_data_source_enable(get_request_var('id'));
 	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('id'));

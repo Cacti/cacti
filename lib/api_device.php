@@ -986,9 +986,9 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 	if ($save['snmp_version'] == 3) {
 		$save['snmp_username']        = form_input_validate($snmp_username, 'snmp_username', '', true, 3);
 		$save['snmp_password']        = form_input_validate($snmp_password, 'snmp_password', '', true, 3);
-		$save['snmp_auth_protocol']   = form_input_validate($snmp_auth_protocol, 'snmp_auth_protocol', "^\[None\]|MD5|SHA|SHA224|SHA256|SHA392|SHA512$", true, 3);
+		$save['snmp_auth_protocol']   = form_input_validate($snmp_auth_protocol, 'snmp_auth_protocol', "^(?:\[None\]|MD5|SHA|SHA224|SHA256|SHA384|SHA512)$", true, 3);
 		$save['snmp_priv_passphrase'] = form_input_validate($snmp_priv_passphrase, 'snmp_priv_passphrase', '', true, 3);
-		$save['snmp_priv_protocol']   = form_input_validate($snmp_priv_protocol, 'snmp_priv_protocol', "^\[None\]|DES|AES|AES128|AES192|AES192C|AES256|AES256C$", true, 3);
+		$save['snmp_priv_protocol']   = form_input_validate($snmp_priv_protocol, 'snmp_priv_protocol', "^(?:\[None\]|DES|AES|AES128|AES192|AES192C|AES256|AES256C)$", true, 3);
 		$save['snmp_context']         = form_input_validate($snmp_context, 'snmp_context', '', true, 3);
 		$save['snmp_engine_id']       = form_input_validate($snmp_engine_id, 'snmp_engine_id', '', true, 3);
 

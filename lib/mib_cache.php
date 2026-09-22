@@ -51,14 +51,45 @@ class MibCache{
 		}
 	}
 
-	public function install($path, $replace=false, $mib_name='optional') {
+	public function install($path, $replace=false, $mib_name='optional', $manage_transaction=true) {
 		global $config;
+
+		if (!is_readable($path) || filesize($path) > 16 * 1024 * 1024) {
+			cacti_log('ERROR: Refusing to parse missing, unreadable, or oversized MIB file: ' . basename($path), false, 'SYSTEM');
+
+			return false;
+		}
 
 		include_once($config['include_path'] . '/vendor/phpsnmp/mib_parser.php');
 
-		$mp = new MibParser();
-		$mp->add_mib($path, $mib_name);
-		$mp->generate();
+		$old_memory_limit = ini_get('memory_limit');
+		$old_time_limit   = ini_get('max_execution_time');
+		$old_error_level  = error_reporting();
+
+		set_error_handler(function($severity, $message, $file, $line) {
+			if ($severity == E_USER_ERROR || $severity == E_RECOVERABLE_ERROR) {
+				throw new ErrorException($message, 0, $severity, $file, $line);
+			}
+
+			return false;
+		});
+
+		try {
+			$mp = new MibParser();
+			ini_set('memory_limit', $old_memory_limit == '-1' ? '256M' : $old_memory_limit);
+			set_time_limit(60);
+			$mp->add_mib($path, $mib_name);
+			$mp->generate();
+		} catch (Throwable $e) {
+			cacti_log('ERROR: Unable to parse MIB file ' . basename($path) . ': ' . $e->getMessage(), false, 'SYSTEM');
+
+			return false;
+		} finally {
+			restore_error_handler();
+			error_reporting($old_error_level);
+			ini_set('memory_limit', $old_memory_limit);
+			set_time_limit((int) $old_time_limit);
+		}
 
 		if (isset($mp->mib) && isset($mp->oids) && $mp->mib ) {
 			/* check if this mib has already been installed */
@@ -68,39 +99,74 @@ class MibCache{
 					unset($mp->oids);
 					unset($mp->mib);
 					return false;
-				} else {
-					$this->uninstall();
 				}
 			}
-			db_execute_prepared('INSERT INTO snmpagent_mibs SET `id` = 0, `name` = ?, `file` = ?', array($mp->mib, $path));
 
-			foreach($mp->oids as $object_name => $object_params) {
-				if ($object_params['otype'] != 'TEXTUAL-CONVENTION') {
-					db_execute_prepared('INSERT IGNORE INTO `snmpagent_cache`
-						(`oid`, `name`, `mib`, `type`, `otype`, `kind`, `max-access`, `description`)
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-						array($object_params['oid'], $object_name, $object_params['mib'], $object_params['syntax'],
-							$object_params['otype'], $object_params['kind'], $object_params['max-access'],
-							str_replace("\r\n", '<br>', trim($object_params['description']))));
+			$transaction_started = $manage_transaction ? db_begin_transaction() : false;
+			if ($manage_transaction && !$transaction_started) {
+				return false;
+			}
 
-					if ($object_params['otype'] == 'NOTIFICATION-TYPE') {
-						foreach($object_params['objects'] as $notification_object_index => $notification_object) {
-							db_execute_prepared('INSERT INTO `snmpagent_cache_notifications`
-								(`name`, `mib`, `attribute`, `sequence_id`)
-								VALUES (?, ?, ?, ?)',
-								array($object_name, $object_params['mib'], $notification_object, $notification_object_index));
+			try {
+				if ($existing && $replace) {
+					db_execute_prepared('DELETE FROM snmpagent_cache WHERE `mib` = ?', array($mp->mib));
+					db_execute_prepared('DELETE FROM snmpagent_cache_notifications WHERE `mib` = ?', array($mp->mib));
+					db_execute_prepared('DELETE FROM snmpagent_cache_textual_conventions WHERE `mib` = ?', array($mp->mib));
+					db_execute_prepared('DELETE FROM snmpagent_mibs WHERE `name` = ?', array($mp->mib));
+				}
+
+				if (db_execute_prepared('INSERT INTO snmpagent_mibs SET `id` = 0, `name` = ?, `file` = ?', array($mp->mib, $path)) === false) {
+					throw new RuntimeException('Unable to register MIB');
+				}
+
+				foreach($mp->oids as $object_name => $object_params) {
+					if ($object_params['otype'] != 'TEXTUAL-CONVENTION') {
+						if (db_execute_prepared('INSERT IGNORE INTO `snmpagent_cache`
+							(`oid`, `name`, `mib`, `type`, `otype`, `kind`, `max-access`, `description`)
+							VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+							array($object_params['oid'], $object_name, $object_params['mib'], $object_params['syntax'],
+								$object_params['otype'], $object_params['kind'], $object_params['max-access'],
+								str_replace("\r\n", '<br>', trim($object_params['description'] ?? '')))) === false) {
+							throw new RuntimeException('Unable to cache MIB object');
+						}
+
+						if ($object_params['otype'] == 'NOTIFICATION-TYPE') {
+							foreach(($object_params['objects'] ?? array()) as $notification_object_index => $notification_object) {
+								if (db_execute_prepared('INSERT INTO `snmpagent_cache_notifications`
+									(`name`, `mib`, `attribute`, `sequence_id`)
+									VALUES (?, ?, ?, ?)',
+									array($object_name, $object_params['mib'], $notification_object, $notification_object_index)) === false) {
+									throw new RuntimeException('Unable to cache MIB notification');
+								}
+							}
+						}
+					} else {
+						if (db_execute_prepared('INSERT INTO `snmpagent_cache_textual_conventions`
+							(`name`, `mib`, `type`, `description`)
+							VALUES (?, ?, ?, ?)',
+							array($object_name, $object_params['mib'], $object_params['syntax'], nl2br($object_params['description'] ?? ''))) === false) {
+							throw new RuntimeException('Unable to cache MIB textual convention');
 						}
 					}
-				} else {
-					db_execute_prepared('INSERT INTO `snmpagent_cache_textual_conventions`
-						(`name`, `mib`, `type`, `description`)
-						VALUES (?, ?, ?, ?)',
-						array($object_name, $object_params['mib'], $object_params['syntax'], nl2br($object_params['description'])));
 				}
+
+				if ($transaction_started) {
+					db_commit_transaction();
+				}
+			} catch (Throwable $e) {
+				if ($transaction_started) {
+					db_rollback_transaction();
+				}
+
+				cacti_log('ERROR: Unable to install MIB ' . $mp->mib . ': ' . $e->getMessage(), false, 'SYSTEM');
+
+				return false;
 			}
 
 			unset($mp->oids);
 			unset($mp->mib);
+
+			return true;
 		} else {
 			return false;
 		}
@@ -432,4 +498,3 @@ class MibCache{
 		return ($exists) ? $oid_entry : false;
 	}
 }
-

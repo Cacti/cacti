@@ -1,6 +1,14 @@
 Cacti CHANGELOG
 
 1.2.x
+-security: Authorize Data Source enable/disable against the owning device before mutating (GHSA-2fhv-c794-v433)
+-security: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating (GHSA-prxj-84qq-v5jq)
+-security: Escape template name and dependency path in the Template Import preview (GHSA-xvwr-hvpm-67jw)
+-security: Strip cmd.exe metacharacters from SNMP, script query, and data query arguments on win32
+-security: Strip CR/LF from escape_command to stop rrdtool-protocol injection
+-security: Harden Net-SNMP command execution and SNMP cache processing
+-security: Escape the device Location filter option value to stop stored XSS
+-security: Drop client-forgeable HTTP_PHP_AUTH_USER/HTTP_REMOTE_USER headers from HTTP Basic Auth
 -feature: Update phpseclib to version 4.0.1
 -issue#7029: Propagate replacement database handles to reconnecting callers
 -issue#7344: Share and preserve realtime graph sizing in Inline and New Window modes

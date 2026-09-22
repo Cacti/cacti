@@ -1657,7 +1657,7 @@ function host() {
 
 							if (cacti_sizeof($locations)) {
 								foreach ($locations as $l) {
-									print "<option value='" . $l['location'] . "'"; if (get_request_var('location') == $l['location']) { print ' selected'; } print '>' . html_escape($l['location']) . '</option>';
+									print "<option value='" . html_escape($l['location']) . "'"; if (get_request_var('location') == $l['location']) { print ' selected'; } print '>' . html_escape($l['location']) . '</option>';
 								}
 							}
 							?>

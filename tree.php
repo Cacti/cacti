@@ -114,35 +114,89 @@ switch (get_request_var('action')) {
 		display_graphs();
 		break;
 	case 'tree_up':
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'graph_tree')) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+			exit;
+		}
+
 		tree_up();
 		break;
 	case 'tree_down':
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'graph_tree')) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+			exit;
+		}
+
 		tree_down();
 		break;
 	case 'ajax_dnd':
 		tree_dnd();
 		break;
 	case 'lock':
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'graph_tree')) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+			exit;
+		}
+
 		api_tree_lock(get_request_var('id'), $_SESSION['sess_user_id']);
 		tree_edit(true);
 		break;
 	case 'unlock':
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'graph_tree')) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+			exit;
+		}
+
 		api_tree_unlock(get_request_var('id'), $_SESSION['sess_user_id']);
 		tree_edit(true);
 		break;
 	case 'copy_node':
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('tree_id'), 'graph_tree')) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+			exit;
+		}
+
 		api_tree_copy_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('parent'), get_request_var('position'));
 		break;
 	case 'create_node':
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('tree_id'), 'graph_tree')) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+			exit;
+		}
+
 		api_tree_create_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('position'), get_nfilter_request_var('text'));
 		break;
 	case 'delete_node':
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('tree_id'), 'graph_tree')) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+			exit;
+		}
+
 		api_tree_delete_node(get_request_var('tree_id'), get_request_var('id'));
 		break;
 	case 'move_node':
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('tree_id'), 'graph_tree')) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+			exit;
+		}
+
 		api_tree_move_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('parent'), get_request_var('position'));
 		break;
 	case 'rename_node':
+		if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('tree_id'), 'graph_tree')) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+			exit;
+		}
+
 		api_tree_rename_node(get_request_var('tree_id'), get_request_var('id'), get_nfilter_request_var('text'));
 		break;
 	case 'get_node':
@@ -281,6 +335,12 @@ function tree_dnd() {
 			$id = str_replace('line', '', $id);
 			input_validate_input_number($id);
 
+			if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) $id, 'graph_tree')) {
+				raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+				header('Location: tree.php');
+				exit;
+			}
+
 			db_execute_prepared('UPDATE graph_tree
 				SET sequence = ?
 				WHERE id = ?',
@@ -351,6 +411,17 @@ function set_host_sort_type() {
 				if (isset($parts[0]) && $parts[0] == 'tbranch') {
 					$branch = $parts[1];
 					input_validate_input_number($branch);
+
+					$branch_tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
+						FROM graph_tree_items
+						WHERE id = ?',
+						array($branch));
+
+					if ($branch_tree_id === false || !cacti_authorize_resource($_SESSION['sess_user_id'], (int) $branch_tree_id, 'graph_tree')) {
+						raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+						header('Location: tree.php');
+						exit;
+					}
 
 					if (get_request_var('type') == 'hsgt') {
 						$type = HOST_GROUPING_GRAPH_TEMPLATE;
@@ -441,6 +512,17 @@ function set_branch_sort_type() {
 				if (isset($parts[0]) && $parts[0] == 'tbranch') {
 					$branch = $parts[1];
 					input_validate_input_number($branch);
+
+					$branch_tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
+						FROM graph_tree_items
+						WHERE id = ?',
+						array($branch));
+
+					if ($branch_tree_id === false || !cacti_authorize_resource($_SESSION['sess_user_id'], (int) $branch_tree_id, 'graph_tree')) {
+						raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+						header('Location: tree.php');
+						exit;
+					}
 
 					switch(get_request_var('type')) {
 					case 'inherit':
