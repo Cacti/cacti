@@ -57,6 +57,8 @@ final class LegacyCommandMap {
 		'poller_reindex_hosts'              => 'poller:reindex',
 		'poller_replicate'                  => 'poller:replicate',
 		'push_out_hosts'                    => 'poller:push-hosts',
+		'queue_admin'                       => 'queue:admin',
+		'queue_worker'                      => 'queue:worker',
 		'rebuild_poller_cache'              => 'poller:rebuild-cache',
 		'refresh_csrf'                      => 'security:refresh-csrf',
 		'remove_broken_graphs'              => 'graph:remove-broken',
