@@ -1360,7 +1360,7 @@ function reports_item_edit() : void {
 						$('#branch_id').selectmenu();
 					} else if (select2) {
 						$('#branch_id').select2({
-							minimumResultsForSearch: $('#branch_id').find('option').length < 10 ? Infinity : 0
+							minimumResultsForSearch: select2SearchRows
 						});
 					}
 				});

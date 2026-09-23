@@ -2782,7 +2782,11 @@ function html_business_hours_filter(string $callBack = 'applyGraphFilter') : str
  *
  * @param mixed  $host_id   - The ID of the host to be selected by default. Defaults to '-1'.
  * @param string $call_back - The JavaScript function to call when the selection changes. Defaults to 'applyFilter'.
- * @param string $sql_where - Additional SQL WHERE clause to filter the devices. Defaults to an empty string.
+ * @param string $sql_where - Not applied: the option list is populated via the shared
+ *                            'ajax_hosts' action, which is not safe to pass caller-supplied
+ *                            raw SQL to over the client/server boundary. Callers that need to
+ *                            constrain the device list must add their own SQL-safe filtering
+ *                            (e.g. by request var) inside their page's own 'ajax_hosts' handler.
  * @param bool   $noany     - Whether to exclude the 'Any' option from the dropdown. Defaults to false.
  * @param bool   $nonone    - Whether to exclude the 'None' option from the dropdown. Defaults to false.
  *
@@ -2813,8 +2817,8 @@ function html_host_filter(mixed $host_id = -1, string $call_back = 'applyFilter'
 		<?php print __('Device'); ?>
 	</td>
 	<td>
-		<select id='host_id' name='host_id' class='select2-callback' data-action='ajax_hosts' data-variables='site_id' data-callback='<?php print htmle($call_back); ?>'>
-			<option value='<?php print htmle($host_id); ?>' selected><?php print htmle($hostname); ?></option>
+		<select id='host_id' name='host_id' class='select2-callback' data-action='ajax_hosts' data-variables='site_id' data-noany='<?php print $noany ? '1' : '0'; ?>' data-nonone='<?php print $nonone ? '1' : '0'; ?>' data-callback='<?php print html_escape_attr($call_back); ?>'>
+			<option value='<?php print html_escape_attr($host_id); ?>' selected><?php print htmle($hostname); ?></option>
 		</select>
 	</td>
 	<?php
@@ -3359,8 +3363,8 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 		var allSelectedText = '<?php print __('All Graph Templates'); ?>';
 		var templatesSelected = '<?php print __esc('Templates Selected'); ?>';
 		var notTemplated = '<?php print __esc('Not Templated'); ?>';
-		var multiSelectAllText = <?php print json_encode(__('All Selected')); ?>;
-		var multiSelectCountText = <?php print json_encode(__('Selected')); ?>;
+		var multiSelectAllText = <?php print cacti_js_encode(__('All Selected')); ?>;
+		var multiSelectCountText = <?php print cacti_js_encode(__('Selected')); ?>;
 		var allText = '<?php __esc('All'); ?>';
 		var noneText = '<?php print __esc('None'); ?>';
 		var zoom_i18n_3rd_button = '<?php print __esc('3rd Mouse Button'); ?>';

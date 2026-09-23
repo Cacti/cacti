@@ -3073,7 +3073,7 @@ circle {
 	border: 1px solid #d3d3d3;
 	border-radius: 6px;
 	background: #111111;
-	color: #222222;
+	color: #cccccc;
 }
 
 /* match jQuery UI's shorter button height */
@@ -3209,7 +3209,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 
 .select2-container--default .select2-selection--single .select2-selection__rendered,
 .select2-container--default .select2-selection--single .select2-selection__placeholder {
-	color: #222222;
+	color: #cccccc;
 }
 
 /* select2 keeps --focus set after the dropdown closes; only --open should get the active look */

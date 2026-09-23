@@ -1002,6 +1002,19 @@ function applySkin() {
 		});
 	}
 
+	/* applySkin() runs more than once per page view (initial load, then again
+	 * after every AJAX load/filter apply); tear down any select2 widget still
+	 * attached before setSelectMenus()/the blocks below re-initialize, instead
+	 * of relying only on the :not(.select2-hidden-accessible) guards to skip
+	 * them, so a widget can never end up duplicated. Must run before
+	 * setSelectMenus() so its catch-all init below still re-enhances plain
+	 * <select> elements that this teardown just destroyed. */
+	$('.select2-hidden-accessible').each(function() {
+		if ($(this).data('select2')) {
+			$(this).select2('destroy');
+		}
+	});
+
 	setSelectMenus();
 
 	setGraphTabs();
@@ -1169,17 +1182,6 @@ function applySkin() {
 
 	renderLanguages();
 
-	/* applySkin() runs more than once per page view (initial load, then again
-	 * after every AJAX load/filter apply); tear down any select2 widget still
-	 * attached before the blocks below re-initialize, instead of relying only
-	 * on the :not(.select2-hidden-accessible) guards to skip them, so a widget
-	 * can never end up duplicated. */
-	$('.select2-hidden-accessible').each(function() {
-		if ($(this).data('select2')) {
-			$(this).select2('destroy');
-		}
-	});
-
 	$('select.select2:not(.select2-hidden-accessible)').each(function() {
 		var options = {
 			minimumResultsForSearch: select2SearchRows
@@ -1341,6 +1343,8 @@ function applySkin() {
 		var action        = $select.data('action');
 		var requestVars   = $select.data('variables');
 		var changeFunc    = $select.data('callback');
+		var noAny         = $select.data('noany');
+		var noNone        = $select.data('nonone');
 
 		var options = {
 			dropdownParent: $select.closest('.ui-dialog').length ? $select.closest('.ui-dialog') : document.body,
@@ -1359,6 +1363,14 @@ function applySkin() {
 								url += '&' + encodeURIComponent(field) + '=' + encodeURIComponent($('#' + field).val());
 							}
 						});
+					}
+
+					if (noAny == 1 || noAny === '1') {
+						url += '&noany=1';
+					}
+
+					if (noNone == 1 || noNone === '1') {
+						url += '&nonone=1';
 					}
 
 					if (params.term !== undefined && params.term != '') {
@@ -1385,7 +1397,11 @@ function applySkin() {
 		$select.select2(options);
 
 		if (changeFunc) {
-			$select.on('select2:select', function() {
+			/* namespaced + unbound-before-rebound: applySkin() destroys/recreates this
+			 * select2 widget on every AJAX filter reload, but that destroy doesn't remove
+			 * a plain jQuery listener bound to the underlying <select> itself, so without
+			 * this the handler would accumulate and fire the callback multiple times */
+			$select.off('select2:select.select2Callback').on('select2:select.select2Callback', function() {
 				executeFunctionByName(changeFunc.replace('(', '').replace(')', ''), window);
 			});
 		}
