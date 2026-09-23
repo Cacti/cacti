@@ -895,6 +895,16 @@ function package_verify_key() : void {
 }
 
 function package_accept_key() : void {
+	// Trusting a new signer is a Package Management (realm 29) decision,
+	// distinct from the Import Templates (realm 17) permission that gates
+	// this page as a whole.
+	if (!is_realm_allowed(29)) {
+		raise_message('permission_denied');
+		header('Location: package_import.php');
+
+		exit;
+	}
+
 	$package_location = gfrv('package_location');
 
 	if ($package_location > 0) {
@@ -1836,10 +1846,14 @@ function package_import() : void {
 		});
 
 		if (checks != '' || $('#package_location').val() == 0) {
-			$.getJSON('package_import.php?action=accept'               +
-				'&package_location='    + $('#package_location').val() +
-				'&package_ids='         + checks, function(data) {
-			});
+			/* accept is state-changing (trusts a signer), so it must arrive by
+			 * POST with a CSRF token like the other 'bad_actions' in global.php */
+			$.post('package_import.php?action=accept', {
+				package_location: $('#package_location').val(),
+				package_ids:      checks,
+				__csrf_magic:     csrfMagicToken
+			}, function(data) {
+			}, 'json');
 		}
 	}
 

@@ -84,6 +84,14 @@ if (!function_exists('sanitize_uri')) {
 	}
 }
 
+// lib/html_utility.php is not loaded here; csrf_error_callback()'s redirect
+// branch only needs a default to fall back to, not the real validation.
+if (!function_exists('validate_redirect_url')) {
+	function validate_redirect_url($url = '', $default = 'index.php') {
+		return $default;
+	}
+}
+
 $mode = ($argv[1] ?? '');
 
 $_SERVER['REQUEST_URI'] = '/test';

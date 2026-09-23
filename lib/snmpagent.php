@@ -916,6 +916,10 @@ function snmpagent_notification(string $notification, string $mib, array $varbin
 			$args = [];
 
 			foreach ($notification_managers as $notification_manager) {
+				// the receiver hostname is attacker-controlled device data; strip '%'
+				// here so cmd.exe cannot expand an environment variable from it.
+				$snmp_trap_receiver = (CACTI_SERVER_OS == 'win32' ? str_replace('%', '', $notification_manager['hostname']) : $notification_manager['hostname']) . ':' . $notification_manager['snmp_port'];
+
 				if (!cacti_sizeof($snmp_notification_varbinds)) {
 					foreach ($registered_var_binds as $name => $attributes) {
 						$snmp_notification_varbinds[] = $attributes['oid'];
@@ -929,7 +933,7 @@ function snmpagent_notification(string $notification, string $mib, array $varbin
 					$args = array_merge([
 						'-v', '1',
 						'-c', $notification_manager['snmp_community'],
-						$notification_manager['hostname'] . ':' . $notification_manager['snmp_port'],
+						$snmp_trap_receiver,
 						$enterprise_oid,
 						'', '6', $specific_trap_number, ''
 					], $snmp_notification_varbinds);
@@ -941,7 +945,7 @@ function snmpagent_notification(string $notification, string $mib, array $varbin
 					}
 
 					$args = array_merge($args, [
-						$notification_manager['hostname'] . ':' . $notification_manager['snmp_port'],
+						$snmp_trap_receiver,
 						'', $enterprise_oid
 					], $snmp_notification_varbinds);
 				} elseif ($notification_manager['snmp_version'] == 3) {
@@ -984,7 +988,7 @@ function snmpagent_notification(string $notification, string $mib, array $varbin
 					}
 
 					$args = array_merge($args, [
-						$notification_manager['hostname'] . ':' . $notification_manager['snmp_port'],
+						$snmp_trap_receiver,
 						'', $enterprise_oid
 					], $snmp_notification_varbinds);
 				}
@@ -995,7 +999,7 @@ function snmpagent_notification(string $notification, string $mib, array $varbin
 				// directly so empty positions survive as quoted '' rather than being
 				// swallowed when exec_background joins the arguments with spaces.
 				$escaped_args = implode(' ', array_map(static function ($arg) {
-					return $arg === '' ? "''" : cacti_escapeshellarg($arg);
+					return $arg === '' ? "''" : cacti_escapeshellarg_cmd($arg);
 				}, $args));
 
 				exec_background(cacti_escapeshellcmd($path_snmptrap), $escaped_args);
