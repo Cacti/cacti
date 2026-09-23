@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "74147514b3d9c7e4eac663bf30f287e1",
+    "content-hash": "33e998cd982511b16a0c0af4a47e0f41",
     "packages": [
         {
             "name": "ezyang/htmlpurifier",
@@ -66,6 +66,243 @@
                 "source": "https://github.com/ezyang/htmlpurifier/tree/v4.19.0"
             },
             "time": "2025-10-17T16:34:55+00:00"
+        },
+        {
+            "name": "jfcherng/php-color-output",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jfcherng/php-color-output.git",
+                "reference": "6c7bf16686cc6a291647fcb87491640a2d5edd20"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jfcherng/php-color-output/zipball/6c7bf16686cc6a291647fcb87491640a2d5edd20",
+                "reference": "6c7bf16686cc6a291647fcb87491640a2d5edd20",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.3"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.19",
+                "liip/rmt": "^1.6",
+                "phan/phan": "^2 || ^3 || ^4",
+                "phpunit/phpunit": ">=7 <10",
+                "squizlabs/php_codesniffer": "^3.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jfcherng\\Utility\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jack Cherng",
+                    "email": "jfcherng@gmail.com"
+                }
+            ],
+            "description": "Make your PHP command-line application colorful.",
+            "keywords": [
+                "ansi-colors",
+                "color",
+                "command-line",
+                "str-color"
+            ],
+            "support": {
+                "issues": "https://github.com/jfcherng/php-color-output/issues",
+                "source": "https://github.com/jfcherng/php-color-output/tree/3.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/jfcherng/5usd",
+                    "type": "custom"
+                }
+            ],
+            "time": "2021-05-27T02:45:54+00:00"
+        },
+        {
+            "name": "jfcherng/php-diff",
+            "version": "6.16.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jfcherng/php-diff.git",
+                "reference": "8b49edeba6e367df22977fca0f0324b4a99b78a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jfcherng/php-diff/zipball/8b49edeba6e367df22977fca0f0324b4a99b78a0",
+                "reference": "8b49edeba6e367df22977fca0f0324b4a99b78a0",
+                "shasum": ""
+            },
+            "require": {
+                "jfcherng/php-color-output": "^3",
+                "jfcherng/php-mb-string": "^1.4.6 || ^2",
+                "jfcherng/php-sequence-matcher": "^3.2.10 || ^4",
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.8",
+                "liip/rmt": "^1.6",
+                "phan/phan": "^5",
+                "phpunit/phpunit": "^9",
+                "squizlabs/php_codesniffer": "^3.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jfcherng\\Diff\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Jack Cherng",
+                    "email": "jfcherng@gmail.com"
+                },
+                {
+                    "name": "Chris Boulton",
+                    "email": "chris.boulton@interspire.com"
+                }
+            ],
+            "description": "A comprehensive library for generating differences between two strings in multiple formats (unified, side by side HTML etc).",
+            "keywords": [
+                "diff",
+                "udiff",
+                "unidiff",
+                "unified diff"
+            ],
+            "support": {
+                "issues": "https://github.com/jfcherng/php-diff/issues",
+                "source": "https://github.com/jfcherng/php-diff/tree/6.16.0"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/jfcherng/5usd",
+                    "type": "custom"
+                }
+            ],
+            "time": "2024-03-05T08:44:05+00:00"
+        },
+        {
+            "name": "jfcherng/php-mb-string",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jfcherng/php-mb-string.git",
+                "reference": "8407bfefde47849c9e7c9594e6de2ac85a0f845d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jfcherng/php-mb-string/zipball/8407bfefde47849c9e7c9594e6de2ac85a0f845d",
+                "reference": "8407bfefde47849c9e7c9594e6de2ac85a0f845d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-iconv": "*",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3",
+                "phan/phan": "^5",
+                "phpunit/phpunit": "^9 || ^10"
+            },
+            "suggest": {
+                "ext-iconv": "Either \"ext-iconv\" or \"ext-mbstring\" is requried.",
+                "ext-mbstring": "Either \"ext-iconv\" or \"ext-mbstring\" is requried."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jfcherng\\Utility\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jack Cherng",
+                    "email": "jfcherng@gmail.com"
+                }
+            ],
+            "description": "A high performance multibytes sting implementation for frequently reading/writing operations.",
+            "support": {
+                "issues": "https://github.com/jfcherng/php-mb-string/issues",
+                "source": "https://github.com/jfcherng/php-mb-string/tree/2.0.1"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/jfcherng/5usd",
+                    "type": "custom"
+                }
+            ],
+            "time": "2023-04-17T14:23:16+00:00"
+        },
+        {
+            "name": "jfcherng/php-sequence-matcher",
+            "version": "4.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jfcherng/php-sequence-matcher.git",
+                "reference": "d2038ac29627340a7458609072a8ba355e80ec5b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jfcherng/php-sequence-matcher/zipball/d2038ac29627340a7458609072a8ba355e80ec5b",
+                "reference": "d2038ac29627340a7458609072a8ba355e80ec5b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3",
+                "phan/phan": "^5",
+                "phpunit/phpunit": "^9 || ^10",
+                "squizlabs/php_codesniffer": "^3.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jfcherng\\Diff\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Jack Cherng",
+                    "email": "jfcherng@gmail.com"
+                },
+                {
+                    "name": "Chris Boulton",
+                    "email": "chris.boulton@interspire.com"
+                }
+            ],
+            "description": "A longest sequence matcher. The logic is primarily based on the Python difflib package.",
+            "support": {
+                "issues": "https://github.com/jfcherng/php-sequence-matcher/issues",
+                "source": "https://github.com/jfcherng/php-sequence-matcher/tree/4.0.3"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/jfcherng/5usd",
+                    "type": "custom"
+                }
+            ],
+            "time": "2023-05-21T07:57:08+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -400,6 +637,7 @@
         "ext-dom": "*",
         "ext-gd": "*",
         "ext-gmp": "*",
+        "ext-iconv": "*",
         "ext-intl": "*",
         "ext-json": "*",
         "ext-ldap": "*",

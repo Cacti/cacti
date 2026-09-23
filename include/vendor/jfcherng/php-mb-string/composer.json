@@ -1,0 +1,54 @@
+{
+    "name": "jfcherng/php-mb-string",
+    "description": "A high performance multibytes sting implementation for frequently reading/writing operations.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jack Cherng",
+            "email": "jfcherng@gmail.com"
+        }
+    ],
+    "minimum-stability": "beta",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Jfcherng\\Utility\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jfcherng\\Utility\\Test\\": "tests/"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "8.1.99"
+        },
+        "sort-packages": true
+    },
+    "require": {
+        "php": ">=8.1",
+        "ext-iconv": "*"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3",
+        "phan/phan": "^5",
+        "phpunit/phpunit": "^9 || ^10"
+    },
+    "suggest": {
+        "ext-iconv": "Either \"ext-iconv\" or \"ext-mbstring\" is requried.",
+        "ext-mbstring": "Either \"ext-iconv\" or \"ext-mbstring\" is requried."
+    },
+    "scripts": {
+        "analyze": [
+            "phan --color"
+        ],
+        "fix": [
+            "php-cs-fixer fix --verbose"
+        ],
+        "test": [
+            "phpunit"
+        ]
+    }
+}
