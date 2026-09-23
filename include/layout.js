@@ -1052,10 +1052,12 @@ function applySkin() {
 	}
 
 	$('select.select2-multi-count:not(.select2-hidden-accessible)').each(function() {
-		var $select   = $(this);
-		var allText   = $select.data('select-all-text') || 'All Selected';
-		var countText = $select.data('select-count-text') || 'Selected';
-		var allValue  = $select.data('select-all-value');
+		var $select    = $(this);
+		var allText    = $select.data('select-all-text') || 'All Selected';
+		var countText  = $select.data('select-count-text') || 'Selected';
+		var allValue   = $select.data('select-all-value');
+		var zeroValue  = $select.data('select-zero-value');
+		var zeroText   = $select.data('select-zero-text');
 
 		var options = {
 			/* without this select2 defaults width to 'resolve', which sizes the control
@@ -1095,6 +1097,8 @@ function applySkin() {
 
 			if (selected.length == 0 || (allValue !== undefined && $.inArray(String(allValue), selected) > -1)) {
 				label.text(allText);
+			} else if (zeroValue !== undefined && zeroText !== undefined && selected.length == 1 && selected[0] === String(zeroValue)) {
+				label.text(zeroText);
 			} else {
 				label.text(selected.length + ' ' + countText);
 			}
@@ -1180,7 +1184,11 @@ function applySkin() {
 		$select.select2(options);
 
 		if (changeFunc) {
-			$select.on('select2:select', function() {
+			/* namespaced + unbound-before-rebound: applySkin() destroys/recreates this
+			 * select2 widget on every AJAX filter reload, but that destroy doesn't remove
+			 * a plain jQuery listener bound to the underlying <select> itself, so without
+			 * this the handler would accumulate and fire the callback multiple times */
+			$select.off('select2:select.select2Callback').on('select2:select.select2Callback', function() {
 				executeFunctionByName(changeFunc.replace('(', '').replace(')', ''), window);
 			});
 		}
@@ -1188,7 +1196,7 @@ function applySkin() {
 
 	/* legacy jQuery UI selectmenu widget catch-all is superseded by select2 below; every plain
 	 * <select> not already handled above (or explicitly excluded) becomes a select2 */
-	$('select').not('#user_language').not('#i18n_default_language').not('.multiselect')
+	$('select').not('#user_language').not('#i18n_default_language').not('.multiselect').not('.colordropdown')
 		.not('.select2').not('.select2-nosearch').not('.select2-tags').not('.select2-multi').not('.select2-multi-tags').not('.select2-multi-count').not('.select2-callback')
 		.not('.select2-hidden-accessible')
 		.each(function() {

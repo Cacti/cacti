@@ -255,8 +255,8 @@ function get_site_locations() {
 	}
 
 	if (!cacti_sizeof($return)) {
-		$return[] = array('label' => html_escape($term), 'value' => html_escape($term), 'id' => html_escape($term));
-		$return[] = array('label' => __('None'), 'value' => '', 'id' => __('None'));
+		$return[] = array('label' => html_escape($term), 'value' => $term, 'id' => $term);
+		$return[] = array('label' => __('None'), 'value' => '', 'id' => '');
 	}
 
 	header('Content-Type: application/json');

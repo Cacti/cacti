@@ -1370,7 +1370,10 @@ function ds() {
 			applyFilter()
 		});
 
-		$('#host_id, #site_id, #rows, #status, #profile, #orphans, #template_id').on('change', function() {
+		// host_id already reloads via its own select2-callback data-callback wiring;
+		// select2 also fires a native change event, so including it here would
+		// apply the filter twice per selection
+		$('#site_id, #rows, #status, #profile, #orphans, #template_id').on('change', function() {
 			applyFilter();
 		});
 

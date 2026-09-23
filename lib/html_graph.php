@@ -167,7 +167,9 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<select id='graph_template_id' multiple class='select2-multi-count'
 							data-select-all-text='<?php print html_escape(__('All Graphs & Templates'));?>'
 							data-select-count-text='<?php print html_escape(__('Templates Selected'));?>'
-							data-select-all-value='-1'>
+							data-select-all-value='-1'
+							data-select-zero-value='0'
+							data-select-zero-text='<?php print html_escape(__('Not Templated'));?>'>
 							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
 							<?php

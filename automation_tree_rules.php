@@ -740,7 +740,13 @@ function automation_tree_rules_edit() {
 							var leaf = $('#leaf_type');
 							if (leaf != null) {
 								leaf.val(automationLeafTypeOriginal);
-								leaf.selectmenu("refresh");
+
+								if (leaf.selectmenu('instance') !== undefined) {
+									leaf.selectmenu("refresh");
+								} else if (leaf.hasClass('select2-hidden-accessible')) {
+									leaf.trigger('change.select2');
+								}
+
 								leaf.change();
 							}
 						}
@@ -786,7 +792,12 @@ function automation_tree_rules_edit() {
 			} else if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_GRAPH;?>') {
 				$('#row_host_grouping_type').hide();
 			}
-			$('#leaf_type').selectmenu("refresh");
+
+			if ($('#leaf_type').selectmenu('instance') !== undefined) {
+				$('#leaf_type').selectmenu("refresh");
+			} else if ($('#leaf_type').hasClass('select2-hidden-accessible')) {
+				$('#leaf_type').trigger('change.select2');
+			}
 		}
 	}
 	</script>
