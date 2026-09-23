@@ -103,9 +103,10 @@ jobs:
           # dev-only entry points, so a fresh --no-dev install still contains
           # them - prune to match tests/Unit/Security/VendorRuntimeSurfaceTest.php's
           # "excludes unused vendor development entry points" assertions.
-          rm -rf \
-            "${package_dir:?}/include/vendor/jfcherng/php-diff/example" \
-            "${package_dir:?}/include/vendor/jfcherng/php-color-output/demo.php"
+          # diff-table.css is kept: Jfcherng\Diff\DiffHelper::getStyleSheet() loads it at runtime.
+          find "${package_dir:?}/include/vendor/jfcherng/php-diff/example" -mindepth 1 \
+            -not -name 'diff-table.css' -delete
+          rm -rf "${package_dir:?}/include/vendor/jfcherng/php-color-output/demo.php"
 
           PACKAGE_DIR="$package_dir" php <<'PHP'
           <?php

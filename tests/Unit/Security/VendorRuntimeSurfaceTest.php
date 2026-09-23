@@ -13,7 +13,13 @@ test('the web tree excludes unused vendor development entry points', function ()
 	$excluded = array(
 		'phpmailer/get_oauth_token.php',
 		'phpmailer/vendor',
-		'jfcherng/php-diff/example',
+		'jfcherng/php-diff/example/demo_base.php',
+		'jfcherng/php-diff/example/demo_cli.php',
+		'jfcherng/php-diff/example/demo_web.php',
+		'jfcherng/php-diff/example/diff-table.scss',
+		'jfcherng/php-diff/example/images',
+		'jfcherng/php-diff/example/new_file.txt',
+		'jfcherng/php-diff/example/old_file.txt',
 		'jfcherng/php-color-output/demo.php',
 		'cldr-to-gettext-plural-rules/bin',
 		'cldr-to-gettext-plural-rules/tests',
@@ -32,8 +38,10 @@ test('required vendor runtime files remain packaged', function () use ($vendorRo
 	$required = array(
 		'phpmailer/src/PHPMailer.php',
 		'jfcherng/php-diff/src/Differ.php',
+		'jfcherng/php-diff/src/DiffHelper.php',
 		'jfcherng/php-diff/src/Factory/RendererFactory.php',
 		'jfcherng/php-diff/src/Renderer/Html/Inline.php',
+		'jfcherng/php-diff/example/diff-table.css',
 		'jfcherng/php-sequence-matcher/src/SequenceMatcher.php',
 		'cldr-to-gettext-plural-rules/src/autoloader.php',
 		'gettext/src/Translator.php',
@@ -46,7 +54,9 @@ test('required vendor runtime files remain packaged', function () use ($vendorRo
 	}
 });
 
-test('jfcherng/php-diff can actually autoload and render an inline diff', function () {
+test('jfcherng/php-diff can actually autoload and render an inline diff', function () use ($vendorRoot) {
+	require_once $vendorRoot . '/autoload.php';
+
 	$differ   = new \Jfcherng\Diff\Differ(array('old line'), array('new line'));
 	$renderer = \Jfcherng\Diff\Factory\RendererFactory::make('Inline');
 	$html     = $renderer->render($differ);
