@@ -3,9 +3,9 @@
 /**
  * Pure-PHP implementation of Rijndael.
  *
- * Uses mcrypt, if available/possible, and an internal implementation, otherwise.
+ * Uses OpenSSL, if available/possible, and an internal implementation, otherwise
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * If {@link self::setBlockLength() setBlockLength()} isn't called, it'll be assumed to be 128 bits.  If
  * {@link self::setKeyLength() setKeyLength()} isn't called, it'll be calculated from
@@ -13,8 +13,8 @@
  * 136-bits it'll be null-padded to 192-bits and 192 bits will be the key length until
  * {@link self::setKey() setKey()} is called, again, at which point, it'll be recalculated.
  *
- * Not all Rijndael implementations may support 160-bits or 224-bits as the block length / key length.  mcrypt, for example,
- * does not.  AES, itself, only supports block lengths of 128 and key lengths of 128, 192, and 256.
+ * Not all Rijndael implementations may support 160-bits or 224-bits as the block length / key length. AES, itself, only
+ * supports block lengths of 128 and key lengths of 128, 192, and 256.
  * {@link http://csrc.nist.gov/archive/aes/rijndael/Rijndael-ammended.pdf#page=10 Rijndael-ammended.pdf#page=10} defines the
  * algorithm for block lengths of 192 and 256 but not for block lengths / key lengths of 160 and 224.  Indeed, 160 and 224
  * are first defined as valid key / block lengths in
@@ -30,7 +30,7 @@
  * <?php
  *    include 'vendor/autoload.php';
  *
- *    $rijndael = new \phpseclib3\Crypt\Rijndael('ctr');
+ *    $rijndael = new \phpseclib4\Crypt\Rijndael('ctr');
  *
  *    $rijndael->setKey('abcdefghijklmnop');
  *
@@ -45,19 +45,18 @@
  * </code>
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2008 Jim Wigginton
+ * @copyright 2009-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt;
+declare(strict_types=1);
 
-use phpseclib3\Common\Functions\Strings;
-use phpseclib3\Crypt\Common\BlockCipher;
-use phpseclib3\Exception\BadDecryptionException;
-use phpseclib3\Exception\BadModeException;
-use phpseclib3\Exception\InconsistentSetupException;
-use phpseclib3\Exception\InsufficientSetupException;
+namespace phpseclib4\Crypt;
+
+use phpseclib4\Common\Functions\Strings;
+use phpseclib4\Crypt\Common\BlockCipher;
+use phpseclib4\Exception\{BadDecryptionException, InvalidStateException, LengthException};
 
 /**
  * Pure-PHP implementation of Rijndael.
@@ -67,35 +66,18 @@ use phpseclib3\Exception\InsufficientSetupException;
 class Rijndael extends BlockCipher
 {
     /**
-     * The mcrypt specific name of the cipher
-     *
-     * Mcrypt is useable for 128/192/256-bit $block_size/$key_length. For 160/224 not.
-     * \phpseclib3\Crypt\Rijndael determines automatically whether mcrypt is useable
-     * or not for the current $block_size/$key_length.
-     * In case of, $cipher_name_mcrypt will be set dynamically at run time accordingly.
-     *
-     * @see Common\SymmetricKey::cipher_name_mcrypt
-     * @see Common\SymmetricKey::engine
-     * @see self::isValidEngine()
-     * @var string
-     */
-    protected $cipher_name_mcrypt = 'rijndael-128';
-
-    /**
      * The Key Schedule
      *
      * @see self::setup()
-     * @var array
      */
-    private $w;
+    private array $w;
 
     /**
      * The Inverse Key Schedule
      *
      * @see self::setup()
-     * @var array
      */
-    private $dw;
+    private array $dw;
 
     /**
      * The Block Length divided by 32
@@ -106,9 +88,8 @@ class Rijndael extends BlockCipher
      *    of that, we'll just precompute it once.}
      *
      * @see self::setBlockLength()
-     * @var int
      */
-    private $Nb = 4;
+    private int $Nb = 4;
 
     /**
      * The Key Length (in bytes)
@@ -119,56 +100,33 @@ class Rijndael extends BlockCipher
      *    of that, we'll just precompute it once.}
      *
      * @see self::setKeyLength()
-     * @var int
      */
-    protected $key_length = 16;
+    protected int $key_length = 16;
 
     /**
      * The Key Length divided by 32
      *
      * @see self::setKeyLength()
-     * @var int
      * @internal The max value is 256 / 32 = 8, the min value is 128 / 32 = 4
      */
-    private $Nk = 4;
+    private int $Nk = 4;
 
     /**
      * The Number of Rounds
      *
      * {@internal The max value is 14, the min value is 10.}
-     *
-     * @var int
      */
-    private $Nr;
+    private int $Nr;
 
     /**
      * Shift offsets
-     *
-     * @var array
      */
-    private $c;
+    private array $c;
 
     /**
      * Holds the last used key- and block_size information
-     *
-     * @var array
      */
-    private $kl;
-
-    /**
-     * Default Constructor.
-     *
-     * @param string $mode
-     * @throws \InvalidArgumentException if an invalid / unsupported mode is provided
-     */
-    public function __construct($mode)
-    {
-        parent::__construct($mode);
-
-        if ($this->mode == self::MODE_STREAM) {
-            throw new BadModeException('Block ciphers cannot be ran in stream mode');
-        }
-    }
+    private array $kl;
 
     /**
      * Sets the key length.
@@ -177,19 +135,12 @@ class Rijndael extends BlockCipher
      *
      * Note: phpseclib extends Rijndael (and AES) for using 160- and 224-bit keys but they are officially not defined
      *       and the most (if not all) implementations are not able using 160/224-bit keys but round/pad them up to
-     *       192/256 bits as, for example, mcrypt will do.
+     *       192/256 bits as.
      *
      *       That said, if you want be compatible with other Rijndael and AES implementations,
      *       you should not setKeyLength(160) or setKeyLength(224).
-     *
-     * Additional: In case of 160- and 224-bit keys, phpseclib will/can, for that reason, not use
-     *             the mcrypt php extension, even if available.
-     *             This results then in slower encryption.
-     *
-     * @throws \LengthException if the key length is invalid
-     * @param int $length
      */
-    public function setKeyLength($length)
+    public function setKeyLength(int $length): void
     {
         switch ($length) {
             case 128:
@@ -200,7 +151,7 @@ class Rijndael extends BlockCipher
                 $this->key_length = $length >> 3;
                 break;
             default:
-                throw new \LengthException('Key size of ' . $length . ' bits is not supported by this algorithm. Only keys of sizes 128, 160, 192, 224 or 256 bits are supported');
+                throw new LengthException('Key size of ' . $length . ' bits is not supported by this algorithm. Only keys of sizes 128, 160, 192, 224 or 256 bits are supported');
         }
 
         parent::setKeyLength($length);
@@ -211,11 +162,10 @@ class Rijndael extends BlockCipher
      *
      * Rijndael supports five different key lengths
      *
+     * @throws LengthException if the key length isn't supported
      * @see setKeyLength()
-     * @param string $key
-     * @throws \LengthException if the key length isn't supported
      */
-    public function setKey($key)
+    public function setKey(#[\SensitiveParameter] string $key): void
     {
         switch (strlen($key)) {
             case 16:
@@ -225,7 +175,7 @@ class Rijndael extends BlockCipher
             case 32:
                 break;
             default:
-                throw new \LengthException('Key of size ' . strlen($key) . ' not supported by this algorithm. Only keys of sizes 16, 20, 24, 28 or 32 are supported');
+                throw new LengthException('Key of size ' . strlen($key) . ' not supported by this algorithm. Only keys of sizes 16, 20, 24, 28 or 32 are supported');
         }
 
         parent::setKey($key);
@@ -235,10 +185,8 @@ class Rijndael extends BlockCipher
      * Sets the block length
      *
      * Valid block lengths are 128, 160, 192, 224, and 256.
-     *
-     * @param int $length
      */
-    public function setBlockLength($length)
+    public function setBlockLength(int $length): void
     {
         switch ($length) {
             case 128:
@@ -248,7 +196,7 @@ class Rijndael extends BlockCipher
             case 256:
                 break;
             default:
-                throw new \LengthException('Key size of ' . $length . ' bits is not supported by this algorithm. Only keys of sizes 128, 160, 192, 224 or 256 bits are supported');
+                throw new LengthException('Key size of ' . $length . ' bits is not supported by this algorithm. Only keys of sizes 128, 160, 192, 224 or 256 bits are supported');
         }
 
         $this->Nb = $length >> 5;
@@ -260,13 +208,11 @@ class Rijndael extends BlockCipher
     /**
      * Test for engine validity
      *
-     * This is mainly just a wrapper to set things up for \phpseclib3\Crypt\Common\SymmetricKey::isValidEngine()
+     * This is mainly just a wrapper to set things up for \phpseclib4\Crypt\Common\SymmetricKey::isValidEngine()
      *
-     * @see \phpseclib3\Crypt\Common\SymmetricKey::__construct()
-     * @param int $engine
-     * @return bool
+     * @see \phpseclib4\Crypt\Common\SymmetricKey::__construct()
      */
-    protected function isValidEngineHelper($engine)
+    protected function isValidEngineHelper(int $engine): bool
     {
         switch ($engine) {
             case self::ENGINE_LIBSODIUM:
@@ -276,7 +222,7 @@ class Rijndael extends BlockCipher
                        $this->key_length == 32 &&
                        $this->nonce && strlen($this->nonce) == 12 &&
                        $this->block_size == 16;
-            case self::ENGINE_OPENSSL_GCM:
+            case self::ENGINE_OPENSSL_AEAD:
                 if (!extension_loaded('openssl')) {
                     return false;
                 }
@@ -292,12 +238,6 @@ class Rijndael extends BlockCipher
                 $this->cipher_name_openssl_ecb = 'aes-' . ($this->key_length << 3) . '-ecb';
                 $this->cipher_name_openssl = 'aes-' . ($this->key_length << 3) . '-' . $this->openssl_translate_mode();
                 break;
-            case self::ENGINE_MCRYPT:
-                $this->cipher_name_mcrypt = 'rijndael-' . ($this->block_size << 3);
-                if ($this->key_length % 8) { // is it a 160/224-bit key?
-                    // mcrypt is not usable for them, only for 128/192/256-bit keys
-                    return false;
-                }
         }
 
         return parent::isValidEngineHelper($engine);
@@ -305,11 +245,8 @@ class Rijndael extends BlockCipher
 
     /**
      * Encrypts a block
-     *
-     * @param string $in
-     * @return string
      */
-    protected function encryptBlock($in)
+    protected function encryptBlock(string $in): string
     {
         static $tables;
         if (empty($tables)) {
@@ -394,11 +331,8 @@ class Rijndael extends BlockCipher
 
     /**
      * Decrypts a block
-     *
-     * @param string $in
-     * @return string
      */
-    protected function decryptBlock($in)
+    protected function decryptBlock(string $in): string
     {
         static $invtables;
         if (empty($invtables)) {
@@ -495,7 +429,7 @@ class Rijndael extends BlockCipher
      * @see self::setIV()
      * @see self::disableContinuousBuffer()
      */
-    protected function setup()
+    protected function setup(): void
     {
         if (!$this->changed) {
             return;
@@ -504,16 +438,16 @@ class Rijndael extends BlockCipher
         parent::setup();
 
         if (is_string($this->iv) && strlen($this->iv) != $this->block_size) {
-            throw new InconsistentSetupException('The IV length (' . strlen($this->iv) . ') does not match the block size (' . $this->block_size . ')');
+            throw new LengthException('The IV length (' . strlen($this->iv) . ') does not match the block size (' . $this->block_size . ')');
         }
     }
 
     /**
      * Setup the key (expansion)
      *
-     * @see \phpseclib3\Crypt\Common\SymmetricKey::setupKey()
+     * @see \phpseclib4\Crypt\Common\SymmetricKey::setupKey()
      */
-    protected function setupKey()
+    protected function setupKey(): void
     {
         // Each number in $rcon is equal to the previous number multiplied by two in Rijndael's finite field.
         // See http://en.wikipedia.org/wiki/Finite_field_arithmetic#Multiplicative_inverse
@@ -526,9 +460,9 @@ class Rijndael extends BlockCipher
                 0x6C000000, 0xD8000000, 0xAB000000, 0x4D000000, 0x9A000000,
                 0x2F000000, 0x5E000000, 0xBC000000, 0x63000000, 0xC6000000,
                 0x97000000, 0x35000000, 0x6A000000, 0xD4000000, 0xB3000000,
-                0x7D000000, 0xFA000000, 0xEF000000, 0xC5000000, 0x91000000
+                0x7D000000, 0xFA000000, 0xEF000000, 0xC5000000, 0x91000000,
             ];
-            $rcon = array_map([self::class, 'safe_intval'], $rcon);
+            $rcon = array_map(self::safe_intval(...), $rcon);
         }
 
         if (isset($this->kl['key']) && $this->key === $this->kl['key'] && $this->key_length === $this->kl['key_length'] && $this->block_size === $this->kl['block_size']) {
@@ -545,18 +479,11 @@ class Rijndael extends BlockCipher
         //     "Table 8: Shift offsets in Shiftrow for the alternative block lengths"
         // shift offsets for Nb = 4, 6, 8 are defined in Rijndael-ammended.pdf#page=14,
         //     "Table 2: Shift offsets for different block lengths"
-        switch ($this->Nb) {
-            case 4:
-            case 5:
-            case 6:
-                $this->c = [0, 1, 2, 3];
-                break;
-            case 7:
-                $this->c = [0, 1, 2, 4];
-                break;
-            case 8:
-                $this->c = [0, 1, 3, 4];
-        }
+        $this->c = match ($this->Nb) {
+            4, 5, 6 => [0, 1, 2, 3],
+            7 => [0, 1, 2, 4],
+            8 => [0, 1, 3, 4]
+        };
 
         $w = array_values(unpack('N*words', $this->key));
 
@@ -585,7 +512,7 @@ class Rijndael extends BlockCipher
         //        1. Apply the Key Expansion.
         //        2. Apply InvMixColumn to all Round Keys except the first and the last one."
         // also, see fips-197.pdf#page=27, "5.3.5 Equivalent Inverse Cipher"
-        list($dt0, $dt1, $dt2, $dt3) = $this->getInvTables();
+        [$dt0, $dt1, $dt2, $dt3] = $this->getInvTables();
         $temp = $this->w = $this->dw = [];
         for ($i = $row = $col = 0; $i < $length; $i++, $col++) {
             if ($col == $this->Nb) {
@@ -605,6 +532,7 @@ class Rijndael extends BlockCipher
                     $this->dw[$row] = $temp;
                 }
 
+                /** @psalm-suppress LoopInvalidation */
                 $col = 0;
                 $row++;
             }
@@ -629,15 +557,12 @@ class Rijndael extends BlockCipher
 
     /**
      * Performs S-Box substitutions
-     *
-     * @return array
-     * @param int $word
      */
-    private function subWord($word)
+    private function subWord(int $word): int
     {
         static $sbox;
         if (empty($sbox)) {
-            list(, , , , $sbox) = self::getTables();
+            [, , , , $sbox] = self::getTables();
         }
 
         return  $sbox[$word       & 0x000000FF]        |
@@ -652,16 +577,15 @@ class Rijndael extends BlockCipher
      * @see self::encryptBlock()
      * @see self::setupInlineCrypt()
      * @see self::subWord()
-     * @return array &$tables
      */
-    protected function &getTables()
+    protected function &getTables(): array
     {
         static $tables;
         if (empty($tables)) {
             // according to <http://csrc.nist.gov/archive/aes/rijndael/Rijndael-ammended.pdf#page=19> (section 5.2.1),
             // precomputed tables can be used in the mixColumns phase. in that example, they're assigned t0...t3, so
             // those are the names we'll use.
-            $t3 = array_map([self::class, 'safe_intval'], [
+            $t3 = array_map(self::safe_intval(...), [
                 // with array_map('intval', ...) we ensure we have only int's and not
                 // some slower floats converted by php automatically on high values
                 0x6363A5C6, 0x7C7C84F8, 0x777799EE, 0x7B7B8DF6, 0xF2F20DFF, 0x6B6BBDD6, 0x6F6FB1DE, 0xC5C55491,
@@ -695,7 +619,7 @@ class Rijndael extends BlockCipher
                 0xE1E138D9, 0xF8F813EB, 0x9898B32B, 0x11113322, 0x6969BBD2, 0xD9D970A9, 0x8E8E8907, 0x9494A733,
                 0x9B9BB62D, 0x1E1E223C, 0x87879215, 0xE9E920C9, 0xCECE4987, 0x5555FFAA, 0x28287850, 0xDFDF7AA5,
                 0x8C8C8F03, 0xA1A1F859, 0x89898009, 0x0D0D171A, 0xBFBFDA65, 0xE6E631D7, 0x4242C684, 0x6868B8D0,
-                0x4141C382, 0x9999B029, 0x2D2D775A, 0x0F0F111E, 0xB0B0CB7B, 0x5454FCA8, 0xBBBBD66D, 0x16163A2C
+                0x4141C382, 0x9999B029, 0x2D2D775A, 0x0F0F111E, 0xB0B0CB7B, 0x5454FCA8, 0xBBBBD66D, 0x16163A2C,
             ]);
 
             foreach ($t3 as $t3i) {
@@ -727,8 +651,8 @@ class Rijndael extends BlockCipher
                     0xBA, 0x78, 0x25, 0x2E, 0x1C, 0xA6, 0xB4, 0xC6, 0xE8, 0xDD, 0x74, 0x1F, 0x4B, 0xBD, 0x8B, 0x8A,
                     0x70, 0x3E, 0xB5, 0x66, 0x48, 0x03, 0xF6, 0x0E, 0x61, 0x35, 0x57, 0xB9, 0x86, 0xC1, 0x1D, 0x9E,
                     0xE1, 0xF8, 0x98, 0x11, 0x69, 0xD9, 0x8E, 0x94, 0x9B, 0x1E, 0x87, 0xE9, 0xCE, 0x55, 0x28, 0xDF,
-                    0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16
-                ]
+                    0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16,
+                ],
             ];
         }
         return $tables;
@@ -742,11 +666,11 @@ class Rijndael extends BlockCipher
      * @see self::setupKey()
      * @return array &$tables
      */
-    protected function &getInvTables()
+    protected function &getInvTables(): array
     {
         static $tables;
         if (empty($tables)) {
-            $dt3 = array_map([self::class, 'safe_intval'], [
+            $dt3 = array_map(self::safe_intval(...), [
                 0xF4A75051, 0x4165537E, 0x17A4C31A, 0x275E963A, 0xAB6BCB3B, 0x9D45F11F, 0xFA58ABAC, 0xE303934B,
                 0x30FA5520, 0x766DF6AD, 0xCC769188, 0x024C25F5, 0xE5D7FC4F, 0x2ACBD7C5, 0x35448026, 0x62A38FB5,
                 0xB15A49DE, 0xBA1B6725, 0xEA0E9845, 0xFEC0E15D, 0x2F7502C3, 0x4CF01281, 0x4697A38D, 0xD3F9C66B,
@@ -778,7 +702,7 @@ class Rijndael extends BlockCipher
                 0xD7618C9A, 0xA10C7A37, 0xF8148E59, 0x133C89EB, 0xA927EECE, 0x61C935B7, 0x1CE5EDE1, 0x47B13C7A,
                 0xD2DF599C, 0xF2733F55, 0x14CE7918, 0xC737BF73, 0xF7CDEA53, 0xFDAA5B5F, 0x3D6F14DF, 0x44DB8678,
                 0xAFF381CA, 0x68C43EB9, 0x24342C38, 0xA3405FC2, 0x1DC37216, 0xE2250CBC, 0x3C498B28, 0x0D9541FF,
-                0xA8017139, 0x0CB3DE08, 0xB4E49CD8, 0x56C19064, 0xCB84617B, 0x32B670D5, 0x6C5C7448, 0xB85742D0
+                0xA8017139, 0x0CB3DE08, 0xB4E49CD8, 0x56C19064, 0xCB84617B, 0x32B670D5, 0x6C5C7448, 0xB85742D0,
             ]);
 
             if (PHP_INT_SIZE === 8) {
@@ -818,8 +742,8 @@ class Rijndael extends BlockCipher
                     0x1F, 0xDD, 0xA8, 0x33, 0x88, 0x07, 0xC7, 0x31, 0xB1, 0x12, 0x10, 0x59, 0x27, 0x80, 0xEC, 0x5F,
                     0x60, 0x51, 0x7F, 0xA9, 0x19, 0xB5, 0x4A, 0x0D, 0x2D, 0xE5, 0x7A, 0x9F, 0x93, 0xC9, 0x9C, 0xEF,
                     0xA0, 0xE0, 0x3B, 0x4D, 0xAE, 0x2A, 0xF5, 0xB0, 0xC8, 0xEB, 0xBB, 0x3C, 0x83, 0x53, 0x99, 0x61,
-                    0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D
-                ]
+                    0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D,
+                ],
             ];
         }
         return $tables;
@@ -828,9 +752,10 @@ class Rijndael extends BlockCipher
     /**
      * Setup the performance-optimized function for de/encrypt()
      *
-     * @see \phpseclib3\Crypt\Common\SymmetricKey::setupInlineCrypt()
+     * @see Common\SymmetricKey::setup()
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    protected function setupInlineCrypt()
+    protected function setupInlineCrypt(): void
     {
         $w  = $this->w;
         $dw = $this->dw;
@@ -865,7 +790,7 @@ class Rijndael extends BlockCipher
 
         // Mainrounds: shiftRows + subWord + mixColumns + addRoundKey
         for ($round = 1; $round < $Nr; ++$round) {
-            list($s, $e) = [$e, $s];
+            [$s, $e] = [$e, $s];
             for ($i = 0; $i < $Nb; ++$i) {
                 $encrypt_block .=
                     '$' . $e . $i . ' =
@@ -921,7 +846,7 @@ class Rijndael extends BlockCipher
 
         // Mainrounds: shiftRows + subWord + mixColumns + addRoundKey
         for ($round = 1; $round < $Nr; ++$round) {
-            list($s, $e) = [$e, $s];
+            [$s, $e] = [$e, $s];
             for ($i = 0; $i < $Nb; ++$i) {
                 $decrypt_block .=
                     '$' . $e . $i . ' =
@@ -959,7 +884,7 @@ class Rijndael extends BlockCipher
                'init_encrypt'  => $init_encrypt,
                'init_decrypt'  => $init_decrypt,
                'encrypt_block' => $encrypt_block,
-               'decrypt_block' => $decrypt_block
+               'decrypt_block' => $decrypt_block,
             ]
         );
     }
@@ -969,10 +894,8 @@ class Rijndael extends BlockCipher
      *
      * @see self::decrypt()
      * @see parent::encrypt()
-     * @param string $plaintext
-     * @return string
      */
-    public function encrypt($plaintext)
+    public function encrypt(#[\SensitiveParameter] string $plaintext): string
     {
         $this->setup();
 
@@ -980,7 +903,7 @@ class Rijndael extends BlockCipher
             case self::ENGINE_LIBSODIUM:
                 $this->newtag = sodium_crypto_aead_aes256gcm_encrypt($plaintext, $this->aad, $this->nonce, $this->key);
                 return Strings::shift($this->newtag, strlen($plaintext));
-            case self::ENGINE_OPENSSL_GCM:
+            case self::ENGINE_OPENSSL_AEAD:
                 return openssl_encrypt(
                     $plaintext,
                     'aes-' . $this->getKeyLength() . '-gcm',
@@ -1000,30 +923,28 @@ class Rijndael extends BlockCipher
      *
      * @see self::encrypt()
      * @see parent::decrypt()
-     * @param string $ciphertext
-     * @return string
      */
-    public function decrypt($ciphertext)
+    public function decrypt(string $ciphertext): string
     {
         $this->setup();
 
         switch ($this->engine) {
             case self::ENGINE_LIBSODIUM:
-                if ($this->oldtag === false) {
-                    throw new InsufficientSetupException('Authentication Tag has not been set');
+                if (!isset($this->oldtag)) {
+                    throw new InvalidStateException('Authentication Tag has not been set - call setTag() first');
                 }
                 if (strlen($this->oldtag) != 16) {
                     break;
                 }
                 $plaintext = sodium_crypto_aead_aes256gcm_decrypt($ciphertext . $this->oldtag, $this->aad, $this->nonce, $this->key);
                 if ($plaintext === false) {
-                    $this->oldtag = false;
+                    $this->oldtag = null;
                     throw new BadDecryptionException('Error decrypting ciphertext with libsodium');
                 }
                 return $plaintext;
-            case self::ENGINE_OPENSSL_GCM:
-                if ($this->oldtag === false) {
-                    throw new InsufficientSetupException('Authentication Tag has not been set');
+            case self::ENGINE_OPENSSL_AEAD:
+                if (!isset($this->oldtag)) {
+                    throw new InvalidStateException('Authentication Tag has not been set - call setTag() first');
                 }
                 $plaintext = openssl_decrypt(
                     $ciphertext,
@@ -1035,7 +956,7 @@ class Rijndael extends BlockCipher
                     $this->aad
                 );
                 if ($plaintext === false) {
-                    $this->oldtag = false;
+                    $this->oldtag = null;
                     throw new BadDecryptionException('Error decrypting ciphertext with OpenSSL');
                 }
                 return $plaintext;

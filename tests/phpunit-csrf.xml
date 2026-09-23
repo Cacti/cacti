@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap-unit.php" beStrictAboutOutputDuringTests="false">
+	<testsuites>
+		<testsuite name="CSRF action coverage">
+			<file>Unit/Security/Csrf/ItemActionPostOnlyTest.php</file>
+		</testsuite>
+	</testsuites>
+</phpunit>

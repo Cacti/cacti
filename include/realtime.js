@@ -37,6 +37,12 @@ var prevTotalGraphs = null;
 var url;
 var local_graph_id  = null;
 
+function getRealtimeSize() {
+	var size = $('#size').val();
+
+	return size == null ? null : parseInt(size, 10);
+}
+
 function realtimeDetectBrowser() {
 	if (navigator.userAgent.indexOf('MSIE') >= 0) {
 		var browser = 'IE';
@@ -57,12 +63,12 @@ function imageOptionsChanged(action) {
 	var graph_start    = $('#graph_start').val();
 	var graph_end      = 0;
 	var ds_step        = $('#ds_step').val();
-	var size           = $('#size').val();
+	var size           = getRealtimeSize();
 	var isThumb        = $('#thumbnails').is(':checked');
 	var url            = '';
 
 	if (size == null) {
-		size = 100;
+		size = 50;
 	}
 
 	local_graph_id = $('#local_graph_id').val();
@@ -103,6 +109,8 @@ function imageOptionsChanged(action) {
 					$('#ds_step').val(data.ds_step);
 					if ($('#ds_step').selectmenu('instance') !== undefined) {
 						$('#ds_step').selectmenu('refresh');
+					} else if ($('#ds_step').hasClass('select2-hidden-accessible')) {
+						$('#ds_step').trigger('change.select2');
 					}
 				}
 
@@ -112,6 +120,8 @@ function imageOptionsChanged(action) {
 					$('#graph_start').val(Math.abs(data.graph_start));
 					if ($('#graph_start').selectmenu('instance') !== undefined) {
 						$('#graph_start').selectmenu('refresh');
+					} else if ($('#graph_start').hasClass('select2-hidden-accessible')) {
+						$('#graph_start').trigger('change.select2');
 					}
 				}
 
@@ -119,6 +129,8 @@ function imageOptionsChanged(action) {
 					$('#size').val(data.size);
 					if ($('#size').selectmenu('instance') !== undefined) {
 						$('#size').selectmenu('refresh');
+					} else if ($('#size').hasClass('select2-hidden-accessible')) {
+						$('#size').trigger('change.select2');
 					}
 				}
 
@@ -237,14 +249,11 @@ function realtimeGrapher() {
 	var graph_start = $('#graph_start').val();
 	var graph_end   = 0;
 	var ds_step     = $('#ds_step').val();
-	var size        = $('#size').val();
+	var size        = getRealtimeSize();
+	var sizeOption  = size == null ? '' : '&size='+size;
     var isThumb     = $('#thumbnails').is(':checked');
 	var totalGraphs = countRealtimeGraphs();
 	var key;
-
-	if (size == null) {
-		size = 100;
-	}
 
 	if (graphsRendered == null || graphsRendered >= totalGraphs || prevTotalGraphs != totalGraphs) {
 		//console.log('Rendering: Total Graphs:' + totalGraphs + ', Rendered Graphs:' + graphsRendered);
@@ -272,7 +281,7 @@ function realtimeGrapher() {
 						position = $('body').position();
 					}
 
-					$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'&graph_nolegend=false')+'&graph_end=0&graph_start=-'+(parseInt(graph_start) > 0 ? graph_start:'60')+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count+'&size='+size)
+					$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'&graph_nolegend=false')+'&graph_end=0&graph_start=-'+(parseInt(graph_start) > 0 ? graph_start:'60')+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count+sizeOption)
 						.done(function(data) {
 							var results;
 

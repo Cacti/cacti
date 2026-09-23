@@ -621,6 +621,8 @@ function item_edit() {
 
 		if ($('#cdef_id').selectmenu('instance') !== undefined) {
 			$('#cdef_id').selectmenu('refresh');
+		} else if ($('#cdef_id').hasClass('select2-hidden-accessible')) {
+			$('#cdef_id').trigger('change.select2');
 		}
 	}
 

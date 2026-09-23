@@ -1,0 +1,62 @@
+
+VERSION 1  INIT
+===============
+
+   Version 1.4 - Add MbString::strToChars()
+      28/05/2020 03:25  1.4.2  allow PHP 8
+         7f8bdde chore: update deps
+         738b66b chore: Composer PHP constrain >=7.1.3
+      04/04/2020 01:10  1.4.1  nits
+         c6b73d9 chore: update deps
+         66fc4ef docs: use markdown grammar badges in readme
+         1396862 chore: $ composer fix
+         9a7a15e chore: update deps
+         feffd7b Add PHP 8.0.0-dev benchmark result
+         2108041 Suppress annoying PhanTypePossiblyInvalidDimOffset errors
+         157c102 Remove unused codes
+         42b320a Update deps
+         b19e65f Update .travis.yml to PHP 7.4 stable
+      21/09/2019 10:17  1.4.0  initial release
+         7a81573 Add MbString::strToChars()
+
+   Version 1.3 - Add MbString::toArraySplit()
+      21/09/2019 10:02  1.3.2  Faster MbString::toArray()
+         75785d5 nits
+         4fe3304 Faster MbString::toArray()
+         d68c92d Update deps
+         0191a10 Update readme to use badges from shields.io
+         715f7b1 Revise docs
+         a509909 Output "Nums of Runs" in the benchmark
+      11/07/2019 09:16  1.3.1  nits
+         e5ddaaf Add benchmark results
+         464c021 Remove wrong demo.php
+         649e809 Update deps
+         24c449a Add .gitattributes
+         37957e2 $ composer fix
+         0bd808f Update deps
+         8d873b7 Update .travis.yml for 7.4snapshot
+         492dd4d Add .editorconfig
+         e554752 Update deps
+         64f5b45 nits
+         48d0a13 Use native namespace
+         68e31aa Update deps
+      22/01/2019 13:47  1.3.0  initial release
+         5bcdcc5 Add MbString::toArraySplit()
+         21dff79 year++
+         8865407 Add tests for PHP 7.3
+         6b89bec Update README
+         9f2cef0 Update deps
+
+   Version 1.2 - init
+      04/09/2018 18:58  1.2.4  php-cs-fixer
+         0020f0d php-cs-fixer: enable native_constant_invocation and native_function_invocation
+         f49dd29 Update deps
+         cb21cf1 Rename CHANGELOG.md -> CHANGELOG
+         cf74396 Update deps
+         4bb0848 Update .travis.yml
+      18/07/2018 08:28  1.2.3  Update deps
+         4dc8711 Add composer.lock
+         73a7dd6 Mark ext-iconv as a requirement
+      04/07/2018 15:28  1.2.2  nits
+         8de1ef9 Update .rmt.yml
+      04/07/2018 14:57  1.2.1  initial release

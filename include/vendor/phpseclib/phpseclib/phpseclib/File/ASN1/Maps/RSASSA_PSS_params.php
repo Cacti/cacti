@@ -5,17 +5,19 @@
  *
  * As defined in https://tools.ietf.org/html/rfc4055#section-3.1
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2016 Jim Wigginton
+ * @copyright 2019-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\File\ASN1\Maps;
+declare(strict_types=1);
 
-use phpseclib3\File\ASN1;
+namespace phpseclib4\File\ASN1\Maps;
+
+use phpseclib4\File\ASN1;
 
 /**
  * RSASSA_PSS_params
@@ -24,7 +26,7 @@ use phpseclib3\File\ASN1;
  */
 abstract class RSASSA_PSS_params
 {
-    const MAP = [
+    public const MAP = [
         'type' => ASN1::TYPE_SEQUENCE,
         'children' => [
             'hashAlgorithm' => [
@@ -44,15 +46,15 @@ abstract class RSASSA_PSS_params
                 'constant' => 2,
                 'optional' => true,
                 'explicit' => true,
-                'default' => 20
+                'default' => 20,
             ],
             'trailerField' => [
                 'type' => ASN1::TYPE_INTEGER,
                 'constant' => 3,
                 'optional' => true,
                 'explicit' => true,
-                'default' => 1
-            ]
-        ]
+                'default' => 1,
+            ],
+        ],
     ];
 }

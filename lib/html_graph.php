@@ -23,12 +23,23 @@
 */
 
 function initialize_realtime_step_and_window() {
+	global $realtime_default_size, $realtime_sizes;
+
 	if (!isset($_SESSION['sess_realtime_dsstep'])) {
 		$_SESSION['sess_realtime_dsstep'] = read_config_option('realtime_interval');
 	}
 	if (!isset($_SESSION['sess_realtime_window'])) {
 		$_SESSION['sess_realtime_window'] = read_config_option('realtime_gwindow');
 	}
+	$realtime_size = isset($_SESSION['sess_realtime_size'])
+		? $_SESSION['sess_realtime_size']
+		: read_user_setting('realtime_size', $realtime_default_size);
+
+	if (!array_key_exists($realtime_size, $realtime_sizes)) {
+		$realtime_size = $realtime_default_size;
+	}
+
+	$_SESSION['sess_realtime_size'] = $realtime_size;
 }
 
 function set_default_graph_action() {
@@ -138,7 +149,7 @@ function html_graph_validate_preview_request_vars() {
 }
 
 function html_graph_preview_filter($page, $action, $devices_where = '', $templates_where = '') {
-	global $graphs_per_page, $realtime_window, $realtime_refresh, $graph_timeshifts, $graph_timespans, $config;
+	global $graphs_per_page, $realtime_window, $realtime_refresh, $realtime_sizes, $graph_timeshifts, $graph_timespans, $config;
 
 	initialize_realtime_step_and_window();
 
@@ -153,7 +164,12 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='graph_template_id' multiple style='opacity:0.1;overflow-y:auto;overflow-x:hide;height:0px;'>
+						<select id='graph_template_id' multiple class='select2-multi-count'
+							data-select-all-text='<?php print html_escape(__('All Graphs & Templates'));?>'
+							data-select-count-text='<?php print html_escape(__('Templates Selected'));?>'
+							data-select-all-value='-1'
+							data-select-zero-value='0'
+							data-select-zero-text='<?php print html_escape(__('Not Templated'));?>'>
 							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
 							<?php
@@ -337,6 +353,18 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						</select>
 					</td>
 					<td>
+						<?php print __('Size');?>
+					</td>
+					<td>
+						<select name='size' id='size'>
+							<?php
+							foreach ($realtime_sizes as $size => $text) {
+								printf('<option value="%d"%s>%s</option>', $size, $size == $_SESSION['sess_realtime_size'] ? ' selected="selected"' : '', $text);
+							}
+							?>
+						</select>
+					</td>
+					<td>
 						<input type='button' class='ui-button ui-corner-all ui-widget' id='realtimeoff' value='<?php print __esc('Stop');?>'>
 					</td>
 					<td class='center' colspan='6'>
@@ -425,7 +453,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 				refreshGraphTimespanFilter();
 			});
 
-			$('#graph_start, #ds_step').on('change', function() {
+			$('#graph_start, #ds_step, #size').on('change', function() {
 				realtimeGrapher();
 			});
 
@@ -628,4 +656,3 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 
 	return $num_output_fields;
 }
-

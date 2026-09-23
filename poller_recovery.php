@@ -178,13 +178,20 @@ $transfer_failed  = false;
 debug('About to start recovery processing');
 
 if (!empty($recovery_pid)) {
-	$pid = posix_kill($recovery_pid, 0);
+	/* This branch reads false as "stale, clear the row and run", so it needs a
+	   probe where a pid we cannot signal counts as stale. That is the prior
+	   posix_kill($pid, 0) semantics, kept, with the pid_t bound added: a value
+	   the column can hold but pid_t cannot would otherwise narrow to -1, read
+	   as live, and retire recovery for good. */
+	$pid = cacti_process_signalable($recovery_pid, false);
 	if ($pid === false) {
 		/* we found a stale PID, so we delete it from the table */
-		db_execute("DELETE FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
+		db_execute_prepared("DELETE FROM settings WHERE name='recovery_pid'", array(), true, $local_db_cnn_id);
 
 		$run = true;
 	} else {
+		cacti_log('RECOVERY: Another recovery process is still running (PID=' . cacti_process_pid_for_log($recovery_pid) . ').', false, 'POLLER');
+
 		$run = false;
 	}
 } else {
@@ -198,12 +205,12 @@ if ($run) {
 
 	db_execute_prepared('REPLACE INTO settings
 		(name, value)
-		VALUES ("recovery_pid", ?)',
+		VALUES (\'recovery_pid\', ?)',
 		array($my_pid), true, $local_db_cnn_id);
 
 	/* let the console know you are in recovery mode */
 	db_execute_prepared('UPDATE poller
-		SET status = "5"
+		SET status = 5
 		WHERE id = ?',
 		array($poller_id), true, $remote_db_cnn_id);
 
@@ -221,7 +228,7 @@ if ($run) {
 			) AS rs", '', true, $local_db_cnn_id);
 
 		if (empty($max_time)) {
-			db_execute("DELETE FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
+			db_execute_prepared("DELETE FROM settings WHERE name='recovery_pid'", array(), true, $local_db_cnn_id);
 
 			break;
 		} else {
@@ -230,7 +237,8 @@ if ($run) {
 			$rows = db_fetch_assoc_prepared('SELECT *
 				FROM poller_output_boost
 				WHERE time <= ?
-				ORDER BY time ASC, local_data_id ASC',
+				ORDER BY time ASC, local_data_id ASC, rrd_name ASC
+				LIMIT ' . (int) $record_limit,
 				array($max_time), true, $local_db_cnn_id);
 
 			if (cacti_sizeof($rows)) {
@@ -271,13 +279,13 @@ if ($run) {
 		}
 	}
 
-	db_execute("DELETE FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
+	db_execute_prepared("DELETE FROM settings WHERE name='recovery_pid'", array(), true, $local_db_cnn_id);
 
 	if (!$transfer_failed) {
 		/* let the console know you are in online mode */
 		db_execute_prepared('UPDATE poller
-			SET status="2"
-			WHERE id= ?', array($poller_id), false, $remote_db_cnn_id);
+			SET status = 2
+			WHERE id = ?', array($poller_id), false, $remote_db_cnn_id);
 	}
 } else {
 	debug('Recovery process still running, exiting');

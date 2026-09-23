@@ -1585,13 +1585,13 @@ function determine_display_log_entry($message_type, $line, $filter, $matches = t
 	/* match any lines that match the search string */
 	if ($display === true && $filter != '') {
 		if ($matches) {
-			if (validate_is_regex($filter) && preg_match('/' . $filter . '/i', $line)) {
+			if (validate_is_regex($filter) === true && preg_match('/' . $filter . '/i', $line)) {
 				return $line;
 			} elseif (stripos($line, $filter) !== false) {
 				return $line;
 			}
 		} else {
-			if (validate_is_regex($filter)) {
+			if (validate_is_regex($filter) === true) {
 				if (!preg_match('/' . $filter . '/i', $line)) {
 					return $line;
 				}
@@ -2578,11 +2578,14 @@ function get_full_test_script_path($data_template_id, $host_id) {
 	if (cacti_sizeof($data)) {
 		foreach ($data as $item) {
 			if (isset($host[$item['data_name']])) {
-				$value = cacti_escapeshellarg($host[$item['data_name']]);
+				/* the 'hostname' column is the only host field substituted here
+				 * that is ever embedded in a shell_exec()'d command below; strip
+				 * '%' from it so cmd.exe can't expand a crafted %VAR% hostname. */
+				$value = cacti_escapeshellarg_cmd($host[$item['data_name']], true, $item['data_name'] == 'hostname');
 			} elseif ($item['data_name'] == 'host_id' || $item['data_name'] == 'hostid') {
 				$value = cacti_escapeshellarg($host['id']);
 			} else {
-				$value = cacti_escapeshellarg((string) $item['value']);
+				$value = cacti_escapeshellarg_cmd((string) $item['value']);
 			}
 
 			$full_path = str_replace('<' . $item['data_name'] . '>', $value, $full_path);
@@ -2637,7 +2640,7 @@ function get_full_script_path($local_data_id) {
 
 	if (cacti_sizeof($data)) {
 		foreach ($data as $item) {
-			$value = cacti_escapeshellarg($item['value']);
+			$value = cacti_escapeshellarg_cmd($item['value']);
 
 			if ($value == '') {
 				$value = "''";
@@ -3222,25 +3225,27 @@ function generate_data_source_path($local_data_id) {
  *  @return - the best cf to use
  */
 function generate_graph_best_cf($local_data_id, $requested_cf, $ds_step = 60) {
-	static $best_cf;
+	static $best_cf = 1;
 
-	if ($local_data_id > 0) {
-		$avail_cf_functions = get_rrd_cfs($local_data_id);
+	if ($local_data_id <= 0) {
+		return 1;
+	}
 
-		if (cacti_sizeof($avail_cf_functions)) {
-			/* workaround until we have RRA presets in 0.8.8 */
-			/* check through the cf's and get the best */
-			/* if none was found, take the first */
-			$best_cf = reset($avail_cf_functions);
+	$avail_cf_functions = get_rrd_cfs($local_data_id);
 
-			foreach($avail_cf_functions as $cf) {
-				if ($cf == $requested_cf) {
-					$best_cf = $requested_cf;
-				}
+	if (cacti_sizeof($avail_cf_functions)) {
+		/* workaround until we have RRA presets in 0.8.8 */
+		/* check through the cf's and get the best */
+		/* if none was found, take the first */
+		$best_cf = reset($avail_cf_functions);
+
+		foreach($avail_cf_functions as $cf) {
+			if ($cf == $requested_cf) {
+				$best_cf = $requested_cf;
 			}
-		} else {
-			$best_cf = '1';
 		}
+	} else {
+		$best_cf = 1;
 	}
 
 	/* if you can not figure it out return average */
@@ -4886,6 +4891,37 @@ function cacti_escapeshellarg($string, $quote = true) {
 			return $string;
 		}
 	}
+}
+
+/**
+ * cacti_escapeshellarg_cmd - escape an argument that will reach cmd.exe on Windows.
+ *
+ * On Windows, exec()/shell_exec()/popen() route through cmd.exe, which ignores
+ * the \" escape and toggles quote-state on every ", so cacti_escapeshellarg()
+ * alone cannot stop the command operators & | ^ < > ( ). Device- and
+ * request-supplied values that reach a Windows shell (SNMP fields, hostnames,
+ * data-input values) never legitimately contain these, so strip them before
+ * quoting. On Unix this is exactly cacti_escapeshellarg(). GHSA-rjvj-r52f-8v5q.
+ *
+ * @param  string $string The value to place in a Windows command line.
+ * @param  bool   $quote  Whether to wrap the result in quotes.
+ * @return string The escaped value.
+ */
+function cacti_escapeshellarg_cmd($string, $quote = true, $strip_env = false) {
+	global $config;
+
+	if ($config['cacti_server_os'] == 'win32') {
+		$string = str_replace(array('"', '&', '|', '^', '<', '>', '(', ')'), '', $string);
+
+		/* cmd.exe expands %VAR% even inside quotes. Only values that never
+		 * legitimately contain a percent (a hostname or IP) may strip it; SNMP
+		 * community and credential values can contain %, so callers opt in. */
+		if ($strip_env) {
+			$string = str_replace('%', '', $string);
+		}
+	}
+
+	return cacti_escapeshellarg($string, $quote);
 }
 
 /**
@@ -7606,7 +7642,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 	$stdout    = '';
 	$stderr    = '';
 	$remaining = (int) $timeout * 1000000;
-	$exit      = false;
+	$exit      = null;
 
 	while ($remaining > 0) {
 		$start  = microtime(true);
@@ -7621,13 +7657,14 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		$stdout .= stream_get_contents($pipes[1]);
 		$stderr .= stream_get_contents($pipes[2]);
 
-		/* proc_get_status() returns false on a dead handle. Its exit_code is
-		 * unreliable here: reading the pipes to EOF above can reap the child, so
-		 * a later status read reports exit_code -1 (or a missing key, which was
-		 * the source of the "Undefined array key exit_code" warnings). Stop
-		 * looping once the process is gone and take the real code from
-		 * proc_close() below. */
+		/* proc_get_status() returns false on a dead handle. Preserve a valid
+		 * exitcode while it is observable because a later status read or
+		 * proc_close() can return -1 after the child has already been reaped. */
 		if (!is_array($status) || empty($status['running'])) {
+			if (is_array($status) && isset($status['exitcode']) && $status['exitcode'] >= 0) {
+				$exit = (int) $status['exitcode'];
+			}
+
 			break;
 		}
 
@@ -7652,9 +7689,15 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		return 1;
 	}
 
-	/* proc_close() reaps the child and returns its real exit status, which stays
-	 * correct even when proc_get_status() already lost it to the pipe reads. */
-	$exit = proc_close($process);
+	if ($exit === null && is_array($status) && isset($status['exitcode']) && $status['exitcode'] >= 0) {
+		$exit = (int) $status['exitcode'];
+	}
+
+	$close_exit = proc_close($process);
+
+	if ($exit === null) {
+		$exit = $close_exit;
+	}
 
 	if (!empty($stderr)) {
 		cacti_log('WARNING: cacti_exec() stderr: ' . trim($stderr), false, 'SYSTEM');

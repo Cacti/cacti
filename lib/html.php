@@ -198,76 +198,9 @@ function html_end_box($trailing_br = true, $div = false) {
 	}
 }
 
-/* html_graph_template_multiselect - consistent multiselect javascript library for cacti. */
+/* html_graph_template_multiselect - kept as a no-op for plugin/theme backward compatibility;
+   #graph_template_id is now handled by the select2-multi-count catch-all in layout.js */
 function html_graph_template_multiselect() {
-	?>
-	var msWidth = 200;
-
-	$('#graph_template_id').hide().multiselect({
-		menuHeight: $(window).height()*.7,
-		menuWidth: 'auto',
-		linkInfo: faIcons,
-		buttonWidth: 'auto',
-		noneSelectedText: '<?php print __('All Graphs & Templates');?>',
-		selectedText: function(numChecked, numTotal, checkedItems) {
-			myReturn = numChecked + ' <?php print __('Templates Selected');?>';
-			$.each(checkedItems, function(index, value) {
-				if (value.value == '-1') {
-					myReturn='<?php print __('All Graphs & Templates');?>';
-					return false;
-				} else if (value.value == '0') {
-					myReturn='<?php print __('Not Templated');?>';
-					return false;
-				}
-			});
-			return myReturn;
-		},
-		checkAllText: '<?php print __('All');?>',
-		uncheckAllText: '<?php print __('None');?>',
-		uncheckAll: function() {
-			$(this).multiselect('widget').find(':checkbox:first').each(function() {
-				$(this).prop('checked', true);
-			});
-		},
-		close: function(event, ui) {
-			applyGraphFilter();
-		},
-		open: function(event, ui) {
-			$("input[type='search']:first").focus();
-		},
-		click: function(event, ui) {
-			checked=$(this).multiselect('widget').find('input:checked').length;
-
-			if (ui.value == -1 || ui.value == 0) {
-				if (ui.checked == true) {
-					$('#graph_template_id').multiselect('uncheckAll');
-					if (ui.value == -1) {
-						$(this).multiselect('widget').find(':checkbox:first').prop('checked', true);
-					} else {
-						$(this).multiselect('widget').find(':checkbox[value="0"]').prop('checked', true);
-					}
-				}
-			} else if (checked == 0) {
-				$(this).multiselect('widget').find(':checkbox:first').each(function() {
-					$(this).click();
-				});
-			} else if ($(this).multiselect('widget').find('input:checked:first').val() == '-1') {
-				if (checked > 0) {
-					$(this).multiselect('widget').find(':checkbox:first').each(function() {
-						$(this).click();
-						$(this).prop('disable', true);
-					});
-				}
-			} else {
-				$(this).multiselect('widget').find(':checkbox[value="0"]').prop('checked', false);
-			}
-		}
-	}).multiselectfilter({
-		label: '<?php print __('Search');?>',
-		placeholder: '<?php print __('Enter keyword');?>',
-		width: msWidth
-	});
-	<?php
 }
 
 /* html_graph_area - draws an area the contains full sized graphs
@@ -1399,20 +1332,20 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				$line = '';
 
 				if ($i != cacti_sizeof($item_list)-1) {
-					$line .= "<span><a class='moveArrow fa fa-caret-down' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
+					$line .= "<span><a class='moveArrow fa fa-caret-down cactiPostAction' title='" . __esc('Move Down'). "' href='#' data-url='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					$line .= "<span class='moveArrowNone'></span>";
 				}
 
 				if ($i > 0) {
-					$line .= "<span><a class='moveArrow fa fa-caret-up' title='" . __esc('Move Up') . "' href='" . html_escape("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a></span>";
+					$line .= "<span><a class='moveArrow fa fa-caret-up cactiPostAction' title='" . __esc('Move Up') . "' href='#' data-url='" . html_escape("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					$line .= "<span class='moveArrowNone'></span>";
 				}
 
 				form_selectable_cell($line, $rid, '', 'right nowrap');
 
-				$line = "<a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
+				$line = "<a class='deleteMarker fa fa-times cactiPostAction' title='" . __esc('Delete') . "' href='#' data-url='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
 
 				form_selectable_cell($line, $rid, '1%', 'right');
 			}
@@ -2235,14 +2168,9 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 			<?php print __('Device');?>
 		</td>
 		<td>
-			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-corner-all ui-button ui-widget'>
-				<span id='host_click' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>
-				<span class='ui-select-text'>
-					<input type='text' size='28' id='host' value='<?php print html_escape($hostname);?>'>
-				</span>
-			</span>
-			<input type='hidden' id='host_id' name='host_id' value='<?php print $host_id;?>'>
-			<input type='hidden' id='call_back' value='<?php print $call_back;?>'>
+			<select id='host_id' name='host_id' class='select2-callback' data-action='ajax_hosts' data-variables='site_id' data-callback='<?php print html_escape($call_back);?>'>
+				<option value='<?php print html_escape($host_id);?>' selected><?php print html_escape($hostname);?></option>
+			</select>
 		</td>
 	<?php
 	}
@@ -2702,6 +2630,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.filter.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.timepicker.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/select2.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/billboard.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/Diff.css');
@@ -2722,6 +2651,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.multiselect.filter.js');
 	print get_md5_include_js('include/js/jquery.timepicker.js');
 	print get_md5_include_js('include/js/jquery.colorpicker.js', true);
+	print get_md5_include_js('include/js/select2.js');
 	print get_md5_include_js('include/js/jquery.tablesorter.js');
 	print get_md5_include_js('include/js/jquery.tablesorter.widgets.js', true);
 	print get_md5_include_js('include/js/jquery.tablesorter.pager.js', true);

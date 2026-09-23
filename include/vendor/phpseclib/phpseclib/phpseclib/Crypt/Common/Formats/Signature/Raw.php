@@ -3,19 +3,21 @@
 /**
  * Raw Signature Handler
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * Handles signatures as arrays
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2016 Jim Wigginton
+ * @copyright 2016-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\Common\Formats\Signature;
+declare(strict_types=1);
 
-use phpseclib3\Math\BigInteger;
+namespace phpseclib4\Crypt\Common\Formats\Signature;
+
+use phpseclib4\Math\BigInteger;
 
 /**
  * Raw Signature Handler
@@ -27,33 +29,29 @@ abstract class Raw
     /**
      * Loads a signature
      *
-     * @param array $sig
-     * @return array|bool
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public static function load($sig)
+    public static function load(array $sig): array
     {
         switch (true) {
-            case !is_array($sig):
             case !isset($sig['r']) || !isset($sig['s']):
             case !$sig['r'] instanceof BigInteger:
             case !$sig['s'] instanceof BigInteger:
-                return false;
+                return [];
         }
 
         return [
             'r' => $sig['r'],
-            's' => $sig['s']
+            's' => $sig['s'],
         ];
     }
 
     /**
      * Returns a signature in the appropriate format
      *
-     * @param BigInteger $r
-     * @param BigInteger $s
-     * @return string
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public static function save(BigInteger $r, BigInteger $s)
+    public static function save(BigInteger $r, BigInteger $s): array
     {
         return compact('r', 's');
     }

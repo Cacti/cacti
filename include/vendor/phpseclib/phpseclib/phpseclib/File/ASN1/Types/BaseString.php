@@ -1,0 +1,210 @@
+<?php
+
+/**
+ * ASN.1 Base String
+ *
+ * PHP version 8.1+
+ *
+ * @author    Jim Wigginton <terrafrost@php.net>
+ * @copyright 2025-2026 Jim Wigginton
+ * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
+ * @link      https://phpseclib.com/
+ */
+
+declare(strict_types=1);
+
+namespace phpseclib4\File\ASN1\Types;
+
+use phpseclib4\Exception\{BadMethodCallException, CharacterConversionException};
+
+/**
+ * ASN.1 Base String
+ *
+ * @author  Jim Wigginton <terrafrost@php.net>
+ * @psalm-api
+ */
+abstract class BaseString implements BaseType
+{
+    use Common;
+
+    protected const SIZE = -1;
+
+    public function __construct(public string $value)
+    {
+    }
+
+    public function __toString(): string
+    {
+        return $this->value;
+    }
+
+    /**
+     * String type conversion
+     *
+     * This is a lazy conversion, dealing only with character size.
+     * No real conversion table is used.
+     */
+    private function convert(string $class): self
+    {
+        if (!$this->isConvertable()) {
+            throw new BadMethodCallException('Unable to convert - ' . static::class . ' doesn\'t have a size constant associated with it');
+        }
+        //if (!defined("$class::SIZE")) {
+        //    throw new BadMethodCallException("Unable to convert - $class doesn't have a size constant associated with it");
+        //}
+
+        $insize = static::SIZE;
+        $outsize = $class::SIZE;
+        $in = $this->value;
+
+        // altho in theory the following could save some computational resources
+        // doing so risks making phpseclib 3.0 give different output than phpseclib 4.0
+        // when the underlying string type is malformed.
+        // see, for example, the cert in the testPostalAddress() method. the id-at-organizationName
+        // attribute for the subject DN isn't valid UTF-8 so converting UTF-8 to UTF-8 results in
+        // an error whereas if you just omit the conversion process all together, as the following
+        // code does, then no error is issued
+        //if ($insize == $outsize) {
+        //    return new $class($in);
+        //}
+
+        $inlength = strlen($in);
+        $out = '';
+
+        for ($i = 0; $i < $inlength;) {
+            if ($inlength - $i < $insize) {
+                throw new CharacterConversionException('Malformed string detected: Input string needs at least ' . ($insize - $inlength + $i) . ' more bytes');
+            }
+
+            // Get an input character as a 32-bit value.
+            $c = ord($in[$i++]);
+            switch (true) {
+                case $insize == 4:
+                    $c = ($c << 8) | ord($in[$i++]);
+                    $c = ($c << 8) | ord($in[$i++]);
+                    // no break
+                case $insize == 2:
+                    $c = ($c << 8) | ord($in[$i++]);
+                    // no break
+                case $insize == 1:
+                    break;
+                // only single byte UTF-8 characters have the first bit set to 1
+                case ($c & 0x80) == 0x00:
+                    break;
+                case ($c & 0x40) == 0x00:
+                    // "In a sequence of n octets, n>1, the initial octet has the n higher-order bits set to 1,
+                    //  followed by a bit set to 0."
+                    // -- https://datatracker.ietf.org/doc/html/rfc2279#section-2
+                    throw new CharacterConversionException('Malformed UTF-8 string detected (AND with 0x40 != 0x00)');
+                default:
+                    $bit = 6;
+                    do {
+                        // $bit > 25 is because the most number of non-fixed bits one can have in a UTF-8 character is 31
+                        // and 25 + 6 = 31
+                        // $i >= $inlength is because we don't want to try to extract more characters than are actually in
+                        // the input string
+                        // (ord($in[$i]) & 0xC0) != 0x80 makes sure that the first two bits are 10 (as above)
+                        // RFC2279#section-2 elaborates
+                        if ($bit > 25 || $i >= $inlength || (ord($in[$i]) & 0xC0) != 0x80) {
+                            throw new CharacterConversionException('Malformed UTF-8 string detected');
+                        }
+                        $c = ($c << 6) | (ord($in[$i++]) & 0x3F);
+                        $bit += 5;
+                        $mask = 1 << $bit;
+                    } while ($c & $bit);
+                    $c &= $mask - 1;
+                    break;
+            }
+
+            // Convert and append the character to output string.
+            $v = '';
+            $origC = $c;
+            switch (true) {
+                case $outsize == 4:
+                    $v .= chr($c & 0xFF);
+                    $c >>= 8;
+                    $v .= chr($c & 0xFF);
+                    $c >>= 8;
+                    // no break
+                case $outsize == 2:
+                    $v .= chr($c & 0xFF);
+                    $c >>= 8;
+                    // no break
+                case $outsize == 1:
+                    $v .= chr($c & 0xFF);
+                    $c >>= 8;
+                    if ($c) {
+                        throw new CharacterConversionException('Character requiring ' . floor(log($origC, 2)) . ' bits found but only ' . ($outsize << 3) . ' bits are available per character in new format');
+                    }
+                    break;
+                // 1 << 31 == 0x8000000. we do the former vs the latter because the latter doesn't work well on 32-bit PHP installs
+                case ($c & (1 << 31)) != 0:
+                    throw new CharacterConversionException('Character requiring 32 bits found but only 31 bits are available per character in new format');
+                case $c >= 0x04000000:
+                    $v .= chr(0x80 | ($c & 0x3F));
+                    $c = ($c >> 6) | 0x04000000;
+                    // no break
+                case $c >= 0x00200000:
+                    $v .= chr(0x80 | ($c & 0x3F));
+                    $c = ($c >> 6) | 0x00200000;
+                    // no break
+                case $c >= 0x00010000:
+                    $v .= chr(0x80 | ($c & 0x3F));
+                    $c = ($c >> 6) | 0x00010000;
+                    // no break
+                case $c >= 0x00000800:
+                    $v .= chr(0x80 | ($c & 0x3F));
+                    $c = ($c >> 6) | 0x00000800;
+                    // no break
+                case $c >= 0x00000080:
+                    $v .= chr(0x80 | ($c & 0x3F));
+                    $c = ($c >> 6) | 0x000000C0;
+                    // no break
+                default:
+                    $v .= chr($c);
+            }
+            $out .= strrev($v);
+        }
+        return new $class($out);
+    }
+
+    public function isConvertable(): bool
+    {
+        return defined('static::SIZE');
+    }
+
+    public function toUTF8String(): UTF8String
+    {
+        return $this->convert(UTF8String::class);
+    }
+
+    public function toBMPString(): BMPString
+    {
+        return $this->convert(BMPString::class);
+    }
+
+    public function toUniversalString(): UniversalString
+    {
+        return $this->convert(UniversalString::class);
+    }
+
+    public function toPrintableString(): PrintableString
+    {
+        return $this->convert(PrintableString::class);
+    }
+
+    public function toTeletexString(): TeletexString
+    {
+        return $this->convert(TeletexString::class);
+    }
+
+    public function toIA5String(): IA5String
+    {
+        return $this->convert(IA5String::class);
+    }
+
+    public function toVisibleString(): VisibleString
+    {
+        return $this->convert(VisibleString::class);
+    }
+}

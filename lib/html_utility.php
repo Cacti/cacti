@@ -1168,6 +1168,10 @@ function validate_is_regex($regex) {
 	restore_error_handler();
 
 	if (@preg_match("'" . $regex . "'", '') !== false) {
+		if (!defined('IN_CACTI_INSTALL')) {
+			set_error_handler('CactiErrorHandler');
+		}
+
 		return true;
 	}
 
@@ -1191,11 +1195,32 @@ function validate_is_regex($regex) {
 		set_error_handler('CactiErrorHandler');
 	}
 
-	if (empty($error)) {
+	if (empty($error) || ($error === PREG_INTERNAL_ERROR && $php_error !== '')) {
 		return $php_error;
 	} else {
-		return $errors[$error];
+		return $errors[$error] ?? $php_error;
 	}
+}
+
+/**
+ * Validate a regular expression for use with db_qstr_rlike().
+ *
+ * @param string $regex The regular expression to validate.
+ *
+ * @return bool|string True when safe, otherwise a printable error message.
+ */
+function validate_is_rlike_regex($regex) {
+	$validation = validate_is_regex($regex);
+
+	if ($validation !== true) {
+		return $validation;
+	}
+
+	if (strpbrk($regex, '|{}') !== false) {
+		return __('Cacti RLIKE filters do not support alternation or bounded-repeat characters.');
+	}
+
+	return true;
 }
 
 /* load_current_session_value - finds the correct value of a variable that is being

@@ -1924,7 +1924,7 @@ CREATE TABLE host (
   total_polls int(10) unsigned default '0',
   failed_polls int(10) unsigned default '0',
   availability decimal(8,5) NOT NULL default '100.00000',
-  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  last_updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY poller_id_disabled (poller_id, disabled),
   KEY external_id (external_id),
@@ -1965,7 +1965,7 @@ CREATE TABLE host_snmp_cache (
   snmp_index varchar(255) NOT NULL default '',
   oid TEXT NOT NULL,
   present tinyint(3) unsigned NOT NULL DEFAULT '1',
-  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  last_updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (host_id, snmp_query_id, field_name, snmp_index),
   KEY host_id (host_id, field_name),
   KEY snmp_index (snmp_index),
@@ -2160,7 +2160,7 @@ CREATE TABLE poller_command (
   time timestamp NOT NULL default '0000-00-00 00:00:00',
   action tinyint(3) unsigned NOT NULL default '0',
   command varchar(191) NOT NULL default '',
-  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  last_updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (poller_id, action, command),
   KEY poller_id_last_updated (poller_id, last_updated)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
@@ -2187,7 +2187,7 @@ CREATE TABLE poller_item (
   `host_id` mediumint(8) unsigned NOT NULL default '0',
   `action` tinyint(3) unsigned NOT NULL default '1',
   `present` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `last_updated` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `hostname` varchar(100) NOT NULL default '',
   `snmp_community` varchar(100) NOT NULL default '',
   `snmp_version` tinyint(3) unsigned NOT NULL default '0',
@@ -2247,10 +2247,13 @@ CREATE TABLE `poller_output_boost` (
 --
 
 CREATE TABLE `poller_output_boost_local_data_ids` (
-  `local_data_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `process_handler` int(10) unsigned DEFAULT 0,
-  PRIMARY KEY (`local_data_id`),
-  KEY `process_handler` (`process_handler`)
+	`run_id` char(32) NOT NULL DEFAULT '',
+	`local_data_id` int(10) unsigned NOT NULL DEFAULT 0,
+	`process_handler` int(10) unsigned NOT NULL DEFAULT 0,
+	`cursor_time` timestamp NULL DEFAULT NULL,
+	`cursor_rrd_name` varchar(19) NOT NULL DEFAULT '',
+	PRIMARY KEY (`run_id`,`local_data_id`),
+	KEY `process_handler` (`run_id`,`process_handler`)
 ) ENGINE=MEMORY;
 
 --

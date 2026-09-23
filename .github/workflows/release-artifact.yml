@@ -44,10 +44,10 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup PHP 8.0 release toolchain
+      - name: Setup PHP 8.2 release toolchain
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.1'
+          php-version: '8.2'
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
           coverage: none
           dependency-mode: 1.2-locked-release
@@ -99,6 +99,15 @@ jobs:
           composer --working-dir="$package_dir" check-platform-reqs --no-dev
           composer --working-dir="$package_dir" audit --locked
 
+          # Upstream dist archives for these packages don't export-ignore their
+          # dev-only entry points, so a fresh --no-dev install still contains
+          # them - prune to match tests/Unit/Security/VendorRuntimeSurfaceTest.php's
+          # "excludes unused vendor development entry points" assertions.
+          # diff-table.css is kept: Jfcherng\Diff\DiffHelper::getStyleSheet() loads it at runtime.
+          find "${package_dir:?}/include/vendor/jfcherng/php-diff/example" -mindepth 1 \
+            -not -name 'diff-table.css' -delete
+          rm -rf "${package_dir:?}/include/vendor/jfcherng/php-color-output/demo.php"
+
           PACKAGE_DIR="$package_dir" php <<'PHP'
           <?php
           $packageDir = getenv('PACKAGE_DIR');
@@ -134,7 +143,7 @@ jobs:
               exit(1);
           }
 
-          if (!class_exists(\phpseclib3\Crypt\RSA::class)) {
+          if (!class_exists(\phpseclib4\Crypt\RSA::class)) {
               fwrite(STDERR, "phpseclib is not autoloadable\n");
               exit(1);
           }
@@ -166,7 +175,7 @@ jobs:
           <?php
           require getenv('PACKAGE_DIR') . '/include/vendor/autoload.php';
 
-          if (!class_exists(phpseclib3\Crypt\RSA::class)) {
+          if (!class_exists(phpseclib4\Crypt\RSA::class)) {
               fwrite(STDERR, "The extracted release cannot autoload phpseclib\n");
               exit(1);
           }

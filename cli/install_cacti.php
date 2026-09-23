@@ -203,35 +203,42 @@ $message = '';
 $install_failed = false;
 if ($installer->getStep() == Installer::STEP_INSTALL_CONFIRM && $should_install) {
 	$time = '';
+
 	if ($force_install) {
 		$time = '-b';
 	}
-	log_install_always('cli', 'Starting installation...');
-	$install_failed = !Installer::beginInstall($time, $installer);
-	log_install_always('cli', 'Finished installation...');
-}
 
-$step = $installer->getStep();
-log_install_high('cli','getStep(): ' . $step);
-switch ($installer->getStep()) {
-	case Installer::STEP_INSTALL:
-		log_install_always('cli', 'An Installation was already in progress');
-		break;
-	case Installer::STEP_INSTALL_CONFIRM:
-		log_install_always('cli', 'No errors were detected.  Install not performed as --install not specified');
-		break;
-	case Installer::STEP_ERROR:
-		log_install_always('cli', 'One or more errors occurred during install, please refer to log files');
-		process_install_errors(array('Errors'=>$installer->getErrors()));
-		break;
-	case Installer::STEP_COMPLETE:
-		log_install_always('cli', 'Installation has now completed, you may launch the web console');
-		break;
-	default:
-		log_install_always('cli', 'Unexpected step (' . $installer->getStep() . ')');
-		break;
+	log_install_always('cli', 'Starting installation...');
+
+	$install_failed = !Installer::beginInstall($time, $installer);
+
+	log_install_always('cli', 'Finished installation...');
+} else {
+	$step = $installer->getStep();
+
+	log_install_high('cli','getStep(): ' . $step);
+
+	switch ($installer->getStep()) {
+		case Installer::STEP_INSTALL:
+			log_install_always('cli', 'An Installation was already in progress');
+			break;
+		case Installer::STEP_INSTALL_CONFIRM:
+			log_install_always('cli', 'No errors were detected.  Install not performed as --install not specified');
+			break;
+		case Installer::STEP_ERROR:
+			log_install_always('cli', 'One or more errors occurred during install, please refer to log files');
+			process_install_errors(array('Errors'=>$installer->getErrors()));
+			break;
+		case Installer::STEP_COMPLETE:
+			log_install_always('cli', 'Installation has now completed, you may launch the web console');
+			break;
+		default:
+			log_install_always('cli', 'Unexpected step (' . $installer->getStep() . ')');
+			break;
+	}
+
+	print PHP_EOL;
 }
-print PHP_EOL;
 
 if ($install_failed || $installer->getStep() === Installer::STEP_ERROR) {
 	exit(1);

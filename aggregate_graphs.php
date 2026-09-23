@@ -1118,7 +1118,7 @@ function aggregate_items() {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('rfilter') == '') {
 		$sql_where = '';
-	} elseif (validate_is_regex(get_request_var('rfilter'))) {
+	} elseif (validate_is_regex(get_request_var('rfilter')) === true) {
 		$sql_where = 'WHERE gtg.title_cache ' . db_qstr_rlike(get_request_var('rfilter'));
 	} else {
 		$filters = explode(' ', get_request_var('rfilter'));
@@ -1302,7 +1302,7 @@ function aggregate_items() {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 
-			if (validate_is_regex(get_request_var('rfilter'))) {
+			if (validate_is_regex(get_request_var('rfilter')) === true) {
 				form_selectable_cell(filter_value($graph['title_cache'], get_request_var('rfilter')), $graph['local_graph_id']);
 			} else {
 				form_selectable_ecell(get_request_var('rfilter') != '' ? aggregate_format_text($graph['title_cache'], get_request_var('rfilter')) : $graph['title_cache'], $graph['local_graph_id']);
@@ -1706,4 +1706,3 @@ function purge_old_graphs() {
 			WHERE aggregate_graph_id IN (' . implode(',', $old_agg_ids) . ')');
 	}
 }
-

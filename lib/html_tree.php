@@ -996,7 +996,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='graph_template_id' multiple style='opacity:0.1;overflow-y:auto;overflow-x:hide;height:0px;'>
+						<select id='graph_template_id' multiple class='select2-multi-count'
+							data-select-all-text='<?php print html_escape(__('All Graphs & Templates'));?>'
+							data-select-count-text='<?php print html_escape(__('Templates Selected'));?>'
+							data-select-all-value='-1'
+							data-select-zero-value='0'
+							data-select-zero-text='<?php print html_escape(__('Not Templated'));?>'>
 							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
 							<?php
@@ -1173,6 +1178,25 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</select>
 					</td>
 					<td>
+						<?php print __('Size');?>
+					</td>
+					<td>
+						<select id='size'>
+							<?php
+							$selected_size = isset($_SESSION['sess_realtime_size'])
+								? $_SESSION['sess_realtime_size']
+								: read_user_setting('realtime_size', $realtime_default_size);
+							if (!array_key_exists($selected_size, $realtime_sizes)) {
+								$selected_size = $realtime_default_size;
+							}
+
+							foreach ($realtime_sizes as $size => $text) {
+								printf('<option value="%d"%s>%s</option>', $size, $size == $selected_size ? ' selected="selected"' : '', $text);
+							}
+							?>
+						</select>
+					</td>
+					<td>
 						<input type='button' class='ui-button ui-corner-all ui-widget' id='realtimeoff' value='<?php print __esc('Stop');?>'>
 					</td>
 					<td class='center' colspan='6'>
@@ -1260,7 +1284,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			applyGraphFilter();
 		});
 
-		$('#graph_start, #ds_step').on('change', function() {
+		$('#graph_start, #ds_step, #size').on('change', function() {
 			realtimeGrapher();
 		});
 

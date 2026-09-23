@@ -25,6 +25,7 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 require_once($config['base_path'] . '/lib/api_graph.php');
+require_once(__DIR__ . '/../lib/maintenance_cli.php');
 
 ini_set('max_execution_time', '0');
 
@@ -52,6 +53,7 @@ if (cacti_sizeof($parms)) {
 
 		switch ($arg) {
 			case '-id':
+			case '--id':
 			case '--host-id':
 				$host_id = $value;
 				break;
@@ -86,37 +88,22 @@ if (cacti_sizeof($parms)) {
 }
 
 /* form the 'where' clause for our main sql query */
-if ($filter != '') {
-	$sql_where = "AND (graph_templates_graph.title_cache LIKE '%" . $filter . "%'" .
-		" OR graph_templates.name LIKE '%" . $filter . "%')";
-} else {
-	$sql_where = '';
-}
+$where = cacti_reapply_names_where($host_id, $filter);
 
-if (strtolower($host_id) == 'all') {
-	/* Act on all graphs */
-} elseif (substr_count($host_id, ',')) {
-	$hosts = explode(',', $host_id);
-	$host_str = '';
-
-	foreach($hosts as $host) {
-		if (is_numeric($host) && $host > 0) {
-			$host_str .= ($host_str != '' ? ', ':'') . $host;
-		}
+if ($where === false) {
+	if (trim($host_id) === '') {
+		print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
+	} else {
+		print "ERROR: Invalid host id '$host_id'.\n";
 	}
 
-	$sql_where .= " AND graph_local.host_id IN ($host_str)";
-} elseif ($host_id == '0') {
-	$sql_where .= ' AND graph_local.host_id=0';
-} elseif (!empty($host_id) && $host_id > 0) {
-	$sql_where .= ' AND graph_local.host_id=' . $host_id;
-} else {
-	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
 	display_help();
-	exit;
+	exit(1);
 }
 
-$graph_list = db_fetch_assoc("SELECT
+list($sql_where, $sql_params) = $where;
+
+$graph_list = db_fetch_assoc_prepared("SELECT
 	graph_templates_graph.id,
 	graph_templates_graph.local_graph_id,
 	graph_templates_graph.height,
@@ -127,7 +114,7 @@ $graph_list = db_fetch_assoc("SELECT
 	FROM (graph_local,graph_templates_graph)
 	LEFT JOIN graph_templates ON (graph_local.graph_template_id=graph_templates.id)
 	WHERE graph_local.id=graph_templates_graph.local_graph_id
-	$sql_where");
+	$sql_where", $sql_params);
 
 /* issue warnings and start message if applicable */
 print "WARNING: Do not interrupt this script.  Interrupting during rename can cause issues\n";
@@ -153,10 +140,11 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	print "\nusage: poller_graphs_reapply_names.php --host-id=[id|all][N1,N2,...] [--filter=[string] [--debug]\n\n";
+	print "\nusage: poller_graphs_reapply_names.php --host-id=<id|all|N1,N2,...> [--filter=<string>] [--debug]\n\n";
 	print "A utility to reapply Cacti Graph naming rules to existing Graphs in bulk.\n\n";
 	print "Required:\n";
-	print "    --host-id=id|all|N1,N2,... - The devices id, 'all' or a comma delimited list of id's\n\n";
+	print "    --host-id=id|all|N1,N2,... - The device id, 'all' or a comma delimited list of ids\n";
+	print "    --id and -id                 - Aliases for --host-id\n\n";
 	print "Optional:\n";
 	print "    --filter=string            - A Graph Template name or Graph Title to search for\n";
 	print "    --debug                    - Display verbose output during execution\n\n";

@@ -3,66 +3,56 @@
 /**
  * SSH2 Signature Handler
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * Handles signatures in the format used by SSH2
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2016 Jim Wigginton
+ * @copyright 2016-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\DSA\Formats\Signature;
+declare(strict_types=1);
 
-use phpseclib3\Common\Functions\Strings;
-use phpseclib3\Math\BigInteger;
+namespace phpseclib4\Crypt\DSA\Formats\Signature;
+
+use phpseclib4\Common\Functions\Strings;
+use phpseclib4\Exception\{LengthException, UnexpectedValueException};
+use phpseclib4\Math\BigInteger;
 
 /**
  * SSH2 Signature Handler
  *
  * @author  Jim Wigginton <terrafrost@php.net>
+ * @psalm-api
  */
 abstract class SSH2
 {
     /**
      * Loads a signature
-     *
-     * @param string $sig
-     * @return mixed
      */
-    public static function load($sig)
+    public static function load(string $sig): array
     {
-        if (!is_string($sig)) {
-            return false;
-        }
-
         $result = Strings::unpackSSH2('ss', $sig);
-        if ($result === false) {
-            return false;
-        }
-        list($type, $blob) = $result;
+        [$type, $blob] = $result;
         if ($type != 'ssh-dss' || strlen($blob) != 40) {
-            return false;
+            throw new UnexpectedValueException('Both R and S must be less than or equal to 20 bytes in length');
         }
 
         return [
             'r' => new BigInteger(substr($blob, 0, 20), 256),
-            's' => new BigInteger(substr($blob, 20), 256)
+            's' => new BigInteger(substr($blob, 20), 256),
         ];
     }
 
     /**
      * Returns a signature in the appropriate format
-     *
-     * @param BigInteger $r
-     * @param BigInteger $s
-     * @return string
      */
-    public static function save(BigInteger $r, BigInteger $s)
+    public static function save(BigInteger $r, BigInteger $s): string
     {
         if ($r->getLength() > 160 || $s->getLength() > 160) {
-            return false;
+            throw new LengthException('Both R and S must be less than or equal to 20 bytes in length');
         }
         return Strings::packSSH2(
             'ss',

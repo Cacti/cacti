@@ -93,4 +93,20 @@ LOWPRIV_HASH=$("${DC[@]}" exec -T cacti-master php -r 'echo password_hash("cacti
     DELETE FROM user_auth_perms WHERE user_id=1000;
 "
 
+# Domain auth (auth_method=4) plus one LDAP domain bound to the OpenLDAP
+# service. user_template is left as the admin account so a forged realm that
+# skips the bind would provision a user — the 08-ldap-login test asserts it
+# does not. The LDAP account is pre-created in user_auth with realm 1001.
+echo "[setup] seeding LDAP domain auth"
+LDAP_HASH=$("${DC[@]}" exec -T cacti-master php -r 'echo password_hash("unused-local-hash", PASSWORD_DEFAULT);')
+printf "%s\n" \
+	"INSERT INTO settings (name, value) VALUES ('auth_method', '4') ON DUPLICATE KEY UPDATE value='4';" \
+	"INSERT INTO settings (name, value) VALUES ('guest_user', '0') ON DUPLICATE KEY UPDATE value='0';" \
+	"INSERT INTO settings (name, value) VALUES ('user_template', '1') ON DUPLICATE KEY UPDATE value='1';" \
+	"INSERT INTO user_domains (domain_id, domain_name, type, enabled, defdomain, user_id) VALUES (1, 'E2E LDAP', 1, 'on', 1, 0) ON DUPLICATE KEY UPDATE domain_name=VALUES(domain_name), enabled='on', defdomain=1, user_id=0;" \
+	"INSERT INTO user_domains_ldap (domain_id, server, port, port_ssl, proto_version, encryption, referrals, mode, dn, group_require, group_dn, group_attrib, group_member_type, search_base, search_filter, specific_dn, specific_password, cn_full_name, cn_email) VALUES (1, 'openldap', 389, 636, 3, 0, 0, 0, 'cn=<username>,ou=users,dc=example,dc=org', '', '', '', 0, 'ou=users,dc=example,dc=org', '(cn=<username>)', '', '', '', '') ON DUPLICATE KEY UPDATE server=VALUES(server), port=VALUES(port), dn=VALUES(dn), mode=VALUES(mode), encryption=VALUES(encryption);" \
+	"INSERT INTO user_auth (id, username, password, realm, full_name, must_change_password, password_change, show_tree, show_list, show_preview, graph_settings, login_opts, policy_graphs, policy_trees, policy_hosts, policy_graph_templates, enabled, lastchange, lastlogin, password_history, locked, failed_attempts, lastfail, reset_perms) VALUES (1001, 'ldapuser', '${LDAP_HASH}', 1001, 'LDAP E2E User', '', '', 'on', 'on', 'on', 'on', 1, 2, 2, 2, 2, 'on', -1, -1, '-1', '', 0, 0, 0) ON DUPLICATE KEY UPDATE password=VALUES(password), realm=1001, enabled='on';" \
+	"INSERT INTO user_auth_realm (user_id, realm_id) SELECT 1001, realm_id FROM user_auth_realm WHERE user_id=1 ON DUPLICATE KEY UPDATE user_id=VALUES(user_id);" \
+	| "${DC[@]}" exec -T cacti-db mariadb -ucactiuser -pcactiuser cacti
+
 echo "[setup] complete"

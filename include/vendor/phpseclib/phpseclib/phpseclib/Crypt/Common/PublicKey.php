@@ -4,12 +4,14 @@
  * PublicKey interface
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2009 Jim Wigginton
+ * @copyright 2019-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\Common;
+declare(strict_types=1);
+
+namespace phpseclib4\Crypt\Common;
 
 /**
  * PublicKey interface
@@ -18,8 +20,8 @@ namespace phpseclib3\Crypt\Common;
  */
 interface PublicKey
 {
-    public function verify($message, $signature);
-    //public function encrypt($plaintext);
-    public function toString($type, array $options = []);
-    public function getFingerprint($algorithm);
+    public function verify(string $message, string|array $signature): bool;
+    //public function encrypt(string $plaintext): string;
+    public function toString(string $type, array $options = []): string;
+    public function getFingerprint(string $algorithm): string;
 }

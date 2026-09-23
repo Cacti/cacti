@@ -3,22 +3,26 @@
 /**
  * Curve25519
  *
- * PHP version 5 and 7
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2019 Jim Wigginton
+ * @copyright 2019-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://pear.php.net/package/Math_BigInteger
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\EC\Curves;
+declare(strict_types=1);
 
-use phpseclib3\Crypt\EC\BaseCurves\Montgomery;
-use phpseclib3\Math\BigInteger;
+namespace phpseclib4\Crypt\EC\Curves;
 
+use phpseclib4\Crypt\EC\BaseCurves\Montgomery;
+use phpseclib4\Exception\UnexpectedValueException;
+use phpseclib4\Math\BigInteger;
+
+/** @psalm-api */
 class Curve25519 extends Montgomery
 {
-    const SIZE = 32;
+    public const SIZE = 32;
 
     public function __construct()
     {
@@ -44,10 +48,8 @@ class Curve25519 extends Montgomery
      * Multiply a point on the curve by a scalar
      *
      * Modifies the scalar as described at https://tools.ietf.org/html/rfc7748#page-8
-     *
-     * @return array
      */
-    public function multiplyPoint(array $p, BigInteger $d)
+    public function multiplyPoint(array $p, BigInteger $d): array
     {
         $d = $d->toBytes();
         $d = str_pad($d, 32, "\0", STR_PAD_LEFT);
@@ -65,10 +67,8 @@ class Curve25519 extends Montgomery
 
     /**
      * Creates a random scalar multiplier
-     *
-     * @return BigInteger
      */
-    public function createRandomMultiplier()
+    public function createRandomMultiplier(): BigInteger
     {
         return BigInteger::random(256);
     }
@@ -76,10 +76,10 @@ class Curve25519 extends Montgomery
     /**
      * Performs range check
      */
-    public function rangeCheck(BigInteger $x)
+    public function rangeCheck(BigInteger $x): void
     {
         if ($x->getLength() > 256 || $x->isNegative()) {
-            throw new \RangeException('x must be a positive integer less than 256 bytes in length');
+            throw new UnexpectedValueException('x must be a positive integer less than 256 bytes in length');
         }
     }
 }

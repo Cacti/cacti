@@ -20,10 +20,10 @@ test('ping constructor casts timeout to int', function () use ($pingSource) {
 	expect($pingSource)->toContain('$timeout = (int)$timeout');
 });
 
-test('snmp_escape_string always wraps Windows strings', function () use ($snmpSource) {
-	$start = strpos($snmpSource, 'function snmp_escape_string(');
-	$body = substr($snmpSource, $start, 500);
-	expect($body)->not->toContain('if (substr_count($string, SNMP_ESCAPE_CHARACTER))');
+test('SNMP execution uses argv arrays and redacts credentials from debug logs', function () use ($snmpSource) {
+	expect($snmpSource)->toContain('cacti_exec($binary, $args')
+		->and($snmpSource)->toContain('credentials redacted')
+		->and($snmpSource)->not->toContain("'SNMP Command is: %s'");
 });
 
 test('get_script_query_path uses cacti_escapeshellcmd on script path', function () use ($dqSource) {

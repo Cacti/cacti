@@ -18,18 +18,20 @@
  * If a later version of SEC2 comes out wherein some $a$ values are non-zero we can create a
  * new method for those. eg. KoblitzA1Prime.php or something.
  *
- * PHP version 5 and 7
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2017 Jim Wigginton
+ * @copyright 2018-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://pear.php.net/package/Math_BigInteger
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\EC\BaseCurves;
+declare(strict_types=1);
 
-use phpseclib3\Math\BigInteger;
-use phpseclib3\Math\PrimeField;
+namespace phpseclib4\Crypt\EC\BaseCurves;
+
+use phpseclib4\Math\{BigInteger, PrimeField};
+use phpseclib4\Math\PrimeField\Integer as PrimeInteger;
 
 /**
  * Curves over y^2 = x^3 + b
@@ -43,14 +45,12 @@ class KoblitzPrime extends Prime
      *
      * @var list<array{a: BigInteger, b: BigInteger}>
      */
-    protected $basis;
+    public array $basis;
 
     /**
      * Beta
-     *
-     * @var PrimeField\Integer
      */
-    protected $beta;
+    public PrimeInteger $beta;
 
     // don't overwrite setCoefficients() with one that only accepts one parameter so that
     // one might be able to switch between KoblitzPrime and Prime more easily (for benchmarking
@@ -64,11 +64,11 @@ class KoblitzPrime extends Prime
      * Adapted from:
      * https://github.com/indutny/elliptic/blob/725bd91/lib/elliptic/curve/short.js#L219
      *
-     * @return int[]
+     * @return PrimeInteger[]
      */
-    public function multiplyAddPoints(array $points, array $scalars)
+    public function multiplyAddPoints(array $points, array $scalars): array
     {
-        static $zero, $one, $two;
+        static $one, $two;
         if (!isset($two)) {
             $two = new BigInteger(2);
             $one = new BigInteger(1);
@@ -80,10 +80,9 @@ class KoblitzPrime extends Prime
             $s = $this->three->negate()->squareRoot()->multiply($inv);
             $betas = [
                 $inv->add($s),
-                $inv->subtract($s)
+                $inv->subtract($s),
             ];
             $this->beta = $betas[0]->compare($betas[1]) < 0 ? $betas[0] : $betas[1];
-            //echo strtoupper($this->beta->toHex(true)) . "\n"; exit;
         }
 
         if (!isset($this->basis)) {
@@ -97,21 +96,14 @@ class KoblitzPrime extends Prime
 
             $lambdas = [
                 $inv->add($s),
-                $inv->subtract($s)
+                $inv->subtract($s),
             ];
 
-            $lhs = $this->multiplyPoint($this->p, $lambdas[0])[0];
+            $lhs = $this->multiplyPoint($this->p, $lambdas[0]->toBigInteger())[0];
             $rhs = $this->p[0]->multiply($this->beta);
             $lambda = $lhs->equals($rhs) ? $lambdas[0] : $lambdas[1];
 
             $this->basis = static::extendedGCD($lambda->toBigInteger(), $this->order);
-            ///*
-            foreach ($this->basis as $basis) {
-                echo strtoupper($basis['a']->toHex(true)) . "\n";
-                echo strtoupper($basis['b']->toHex(true)) . "\n\n";
-            }
-            exit;
-            //*/
         }
 
         $npoints = $nscalars = [];
@@ -120,16 +112,16 @@ class KoblitzPrime extends Prime
             $k = $scalars[$i]->toBigInteger();
 
             // begin split
-            list($v1, $v2) = $this->basis;
+            [$v1, $v2] = $this->basis;
 
             $c1 = $v2['b']->multiply($k);
-            list($c1, $r) = $c1->divide($this->order);
+            [$c1, $r] = $c1->divide($this->order);
             if ($this->order->compare($r->multiply($two)) <= 0) {
                 $c1 = $c1->add($one);
             }
 
             $c2 = $v1['b']->negate()->multiply($k);
-            list($c2, $r) = $c2->divide($this->order);
+            [$c2, $r] = $c2->divide($this->order);
             if ($this->order->compare($r->multiply($two)) <= 0) {
                 $c2 = $c2->add($one);
             }
@@ -146,17 +138,15 @@ class KoblitzPrime extends Prime
             $beta = [
                 $p[0]->multiply($this->beta),
                 $p[1],
-                clone $this->one
+                clone $this->one,
             ];
 
             if (isset($p['naf'])) {
-                $beta['naf'] = array_map(function ($p) {
-                    return [
-                        $p[0]->multiply($this->beta),
-                        $p[1],
-                        clone $this->one
-                    ];
-                }, $p['naf']);
+                $beta['naf'] = array_map(fn (array $p): array => [
+                    $p[0]->multiply($this->beta),
+                    $p[1],
+                    clone $this->one
+                ], $p['naf']);
                 $beta['nafwidth'] = $p['nafwidth'];
             }
 
@@ -185,9 +175,9 @@ class KoblitzPrime extends Prime
     /**
      * Returns the numerator and denominator of the slope
      *
-     * @return FiniteField[]
+     * @return PrimeInteger[]
      */
-    protected function doublePointHelper(array $p)
+    protected function doublePointHelper(array $p): array
     {
         $numerator = $this->three->multiply($p[0])->multiply($p[0]);
         $denominator = $this->two->multiply($p[1]);
@@ -199,11 +189,11 @@ class KoblitzPrime extends Prime
      *
      * See http://hyperelliptic.org/EFD/g1p/auto-shortw-jacobian-0.html#doubling-dbl-2009-l
      *
-     * @return FiniteField[]
+     * @return PrimeInteger[]
      */
-    protected function jacobianDoublePoint(array $p)
+    protected function jacobianDoublePoint(array $p): array
     {
-        list($x1, $y1, $z1) = $p;
+        [$x1, $y1, $z1] = $p;
         $a = $x1->multiply($x1);
         $b = $y1->multiply($y1);
         $c = $b->multiply($b);
@@ -224,11 +214,11 @@ class KoblitzPrime extends Prime
      *
      * See http://hyperelliptic.org/EFD/g1p/auto-shortw-jacobian-0.html#doubling-mdbl-2007-bl
      *
-     * @return FiniteField[]
+     * @return PrimeInteger[]
      */
-    protected function jacobianDoublePointMixed(array $p)
+    protected function jacobianDoublePointMixed(array $p): array
     {
-        list($x1, $y1) = $p;
+        [$x1, $y1] = $p;
         $xx = $x1->multiply($x1);
         $yy = $y1->multiply($y1);
         $yyyy = $yy->multiply($yy);
@@ -245,12 +235,10 @@ class KoblitzPrime extends Prime
 
     /**
      * Tests whether or not the x / y values satisfy the equation
-     *
-     * @return boolean
      */
-    public function verifyPoint(array $p)
+    public function verifyPoint(array $p): bool
     {
-        list($x, $y) = $p;
+        [$x, $y] = $p;
         $lhs = $y->multiply($y);
         $temp = $x->multiply($x)->multiply($x);
         $rhs = $temp->add($this->b);
@@ -262,11 +250,12 @@ class KoblitzPrime extends Prime
      * Calculates the parameters needed from the Euclidean algorithm as discussed at
      * http://diamond.boisestate.edu/~liljanab/MATH308/GuideToECC.pdf#page=148
      *
-     * @param BigInteger $u
-     * @param BigInteger $v
-     * @return BigInteger[]
+     * @return list{
+     *     array{a: BigInteger, b: BigInteger},
+     *     array{a: BigInteger, b: BigInteger}
+     * }
      */
-    protected static function extendedGCD(BigInteger $u, BigInteger $v)
+    protected static function extendedGCD(BigInteger $u, BigInteger $v): array
     {
         $one = new BigInteger(1);
         $zero = new BigInteger();
@@ -286,7 +275,7 @@ class KoblitzPrime extends Prime
         $postGreatestIndex = 0;
 
         while (!$v->equals($zero)) {
-            list($q) = $u->divide($v);
+            [$q] = $u->divide($v);
 
             $temp = $u;
             $u = $v;
@@ -329,7 +318,7 @@ class KoblitzPrime extends Prime
 
         return [
             ['a' => $a1, 'b' => $b1],
-            ['a' => $a2, 'b' => $b2]
+            ['a' => $a2, 'b' => $b2],
         ];
     }
 }

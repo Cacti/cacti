@@ -43,7 +43,7 @@ $report  = false;
 $remove  = false;
 $columns = 80;
 
-if (empty($github_actions) && $config['cacti_server_os'] == 'unix') {
+if ($config['cacti_server_os'] == 'unix' && stream_isatty(STDIN)) {
 	$stty = shell_exec('stty size');
 	$sizes = explode(' ', $stty);
 

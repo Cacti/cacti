@@ -3,17 +3,19 @@
 /**
  * RSAPrivateKey
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2016 Jim Wigginton
+ * @copyright 2016-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\File\ASN1\Maps;
+declare(strict_types=1);
 
-use phpseclib3\File\ASN1;
+namespace phpseclib4\File\ASN1\Maps;
+
+use phpseclib4\File\ASN1;
 
 /**
  * RSAPrivateKey
@@ -23,12 +25,12 @@ use phpseclib3\File\ASN1;
 abstract class RSAPrivateKey
 {
     // version must be multi if otherPrimeInfos present
-    const MAP = [
+    public const MAP = [
         'type' => ASN1::TYPE_SEQUENCE,
         'children' => [
             'version' => [
                 'type' => ASN1::TYPE_INTEGER,
-                'mapping' => ['two-prime', 'multi']
+                'mapping' => ['two-prime', 'multi'],
             ],
             'modulus' => ['type' => ASN1::TYPE_INTEGER],         // n
             'publicExponent' => ['type' => ASN1::TYPE_INTEGER],  // e
@@ -38,7 +40,7 @@ abstract class RSAPrivateKey
             'exponent1' => ['type' => ASN1::TYPE_INTEGER],       // d mod (p-1)
             'exponent2' => ['type' => ASN1::TYPE_INTEGER],       // d mod (q-1)
             'coefficient' => ['type' => ASN1::TYPE_INTEGER],     // (inverse of q) mod p
-            'otherPrimeInfos' => OtherPrimeInfos::MAP + ['optional' => true]
-        ]
+            'otherPrimeInfos' => OtherPrimeInfos::MAP + ['optional' => true],
+        ],
     ];
 }

@@ -3,17 +3,25 @@
 /**
  * EncryptedData
  *
- * PHP version 5
+ * This is using the RFC5208 (PKCS#8) definition of EncryptedData:
+ * https://datatracker.ietf.org/doc/html/rfc5208#section-6
+ *
+ * RFC5652 (CMS) has another definition of EncryptedData:
+ * https://datatracker.ietf.org/doc/html/rfc5652#section-8
+ *
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2016 Jim Wigginton
+ * @copyright 2015-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\File\ASN1\Maps;
+declare(strict_types=1);
 
-use phpseclib3\File\ASN1;
+namespace phpseclib4\File\ASN1\Maps;
+
+use phpseclib4\File\ASN1;
 
 /**
  * EncryptedData
@@ -22,5 +30,5 @@ use phpseclib3\File\ASN1;
  */
 abstract class EncryptedData
 {
-    const MAP = ['type' => ASN1::TYPE_OCTET_STRING];
+    public const MAP = ['type' => ASN1::TYPE_OCTET_STRING];
 }

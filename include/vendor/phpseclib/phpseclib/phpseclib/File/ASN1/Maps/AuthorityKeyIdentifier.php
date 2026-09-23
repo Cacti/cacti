@@ -3,17 +3,19 @@
 /**
  * AuthorityKeyIdentifier
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2016 Jim Wigginton
+ * @copyright 2016-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\File\ASN1\Maps;
+declare(strict_types=1);
 
-use phpseclib3\File\ASN1;
+namespace phpseclib4\File\ASN1\Maps;
+
+use phpseclib4\File\ASN1;
 
 /**
  * AuthorityKeyIdentifier
@@ -22,24 +24,24 @@ use phpseclib3\File\ASN1;
  */
 abstract class AuthorityKeyIdentifier
 {
-    const MAP = [
+    public const MAP = [
         'type' => ASN1::TYPE_SEQUENCE,
         'children' => [
             'keyIdentifier' => [
                 'constant' => 0,
                 'optional' => true,
-                'implicit' => true
+                'implicit' => true,
             ] + KeyIdentifier::MAP,
             'authorityCertIssuer' => [
                 'constant' => 1,
                 'optional' => true,
-                'implicit' => true
+                'implicit' => true,
             ] + GeneralNames::MAP,
             'authorityCertSerialNumber' => [
                 'constant' => 2,
                 'optional' => true,
-                'implicit' => true
-            ] + CertificateSerialNumber::MAP
-        ]
+                'implicit' => true,
+            ] + CertificateSerialNumber::MAP,
+        ],
     ];
 }

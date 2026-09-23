@@ -766,10 +766,12 @@
 		*/
 		function setCustomFilterActionActionAndDate() {
 			onChange = $('#predefined_timespan').attr('onchange');
-			if (typeof $('#predefined_timespan').selectmenu() == 'function') {
-				$('#predefined_timespan').val('0').selectmenu('refresh');
-			} else{
-				$('#predefined_timespan').val('0');
+			$('#predefined_timespan').val('0');
+
+			if ($('#predefined_timespan').selectmenu('instance') !== undefined) {
+				$('#predefined_timespan').selectmenu('refresh');
+			} else if ($('#predefined_timespan').hasClass('select2-hidden-accessible')) {
+				$('#predefined_timespan').trigger('change.select2');
 			}
 		}
 
@@ -891,8 +893,11 @@
 				'&date1=' + unixTime2Date(newGraphStartTime) +
 				'&date2=' + unixTime2Date(newGraphEndTime), function() {
 				$('#predefined_timespan').val('0');
-				if (typeof $('#predefined_timespan').selectmenu() === 'object') {
+
+				if ($('#predefined_timespan').selectmenu('instance') !== undefined) {
 					$('#predefined_timespan').selectmenu('refresh');
+				} else if ($('#predefined_timespan').hasClass('select2-hidden-accessible')) {
+					$('#predefined_timespan').trigger('change.select2');
 				}
 			});
 		}

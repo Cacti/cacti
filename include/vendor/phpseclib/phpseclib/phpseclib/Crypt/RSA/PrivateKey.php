@@ -4,22 +4,23 @@
  * RSA Private Key
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2015 Jim Wigginton
+ * @copyright 2019-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\RSA;
+declare(strict_types=1);
 
-use phpseclib3\Crypt\Common;
-use phpseclib3\Crypt\Random;
-use phpseclib3\Crypt\RSA;
-use phpseclib3\Crypt\RSA\Formats\Keys\PSS;
-use phpseclib3\Exception\UnsupportedFormatException;
-use phpseclib3\Math\BigInteger;
+namespace phpseclib4\Crypt\RSA;
+
+use phpseclib4\Crypt\{Common, RSA};
+use phpseclib4\Exception\{BadDecryptionException, KeyConstraintException, LengthException};
+use phpseclib4\File\Common\Signable;
+use phpseclib4\File\CSR;
+use phpseclib4\Math\BigInteger;
 
 /**
- * Raw RSA Key Handler
+ * RSA Private Key
  *
  * @author  Jim Wigginton <terrafrost@php.net>
  */
@@ -30,42 +31,38 @@ final class PrivateKey extends RSA implements Common\PrivateKey
     /**
      * Primes for Chinese Remainder Theorem (ie. p and q)
      *
-     * @var array
+     * @var BigInteger[]
      */
-    protected $primes;
+    protected array $primes;
 
     /**
      * Exponents for Chinese Remainder Theorem (ie. dP and dQ)
      *
-     * @var array
+     * @var BigInteger[]
      */
-    protected $exponents;
+    protected array $exponents;
 
     /**
      * Coefficients for Chinese Remainder Theorem (ie. qInv)
      *
-     * @var array
+     * @var BigInteger[]
      */
-    protected $coefficients;
+    protected array $coefficients;
 
     /**
      * Private Exponent
-     *
-     * @var BigInteger
      */
-    protected $privateExponent;
+    protected BigInteger $privateExponent;
 
     /**
      * RSADP
      *
      * See {@link http://tools.ietf.org/html/rfc3447#section-5.1.2 RFC3447#section-5.1.2}.
-     *
-     * @return bool|BigInteger
      */
-    private function rsadp(BigInteger $c)
+    private function rsadp(BigInteger $c): BigInteger
     {
         if ($c->compare(self::$zero) < 0 || $c->compare($this->modulus) > 0) {
-            throw new \OutOfRangeException('Ciphertext representative out of range');
+            throw new LengthException('Ciphertext representative out of range');
         }
         return $this->exponentiate($c);
     }
@@ -74,24 +71,19 @@ final class PrivateKey extends RSA implements Common\PrivateKey
      * RSASP1
      *
      * See {@link http://tools.ietf.org/html/rfc3447#section-5.2.1 RFC3447#section-5.2.1}.
-     *
-     * @return bool|BigInteger
      */
-    private function rsasp1(BigInteger $m)
+    private function rsasp1(BigInteger $m): BigInteger
     {
         if ($m->compare(self::$zero) < 0 || $m->compare($this->modulus) > 0) {
-            throw new \OutOfRangeException('Signature representative out of range');
+            throw new LengthException('Signature representative out of range');
         }
         return $this->exponentiate($m);
     }
 
     /**
      * Exponentiate
-     *
-     * @param BigInteger $x
-     * @return BigInteger
      */
-    protected function exponentiate(BigInteger $x)
+    protected function exponentiate(BigInteger $x): BigInteger
     {
         switch (true) {
             case empty($this->primes):
@@ -108,11 +100,11 @@ final class PrivateKey extends RSA implements Common\PrivateKey
         if (!static::$enableBlinding) {
             $m_i = [
                 1 => $x->modPow($this->exponents[1], $this->primes[1]),
-                2 => $x->modPow($this->exponents[2], $this->primes[2])
+                2 => $x->modPow($this->exponents[2], $this->primes[2]),
             ];
             $h = $m_i[1]->subtract($m_i[2]);
             $h = $h->multiply($this->coefficients[2]);
-            list(, $h) = $h->divide($this->primes[1]);
+            [, $h] = $h->divide($this->primes[1]);
             $m = $m_i[2]->add($h->multiply($this->primes[2]));
 
             $r = $this->primes[1];
@@ -123,7 +115,7 @@ final class PrivateKey extends RSA implements Common\PrivateKey
 
                 $h = $m_i->subtract($m);
                 $h = $h->multiply($this->coefficients[$i]);
-                list(, $h) = $h->divide($this->primes[$i]);
+                [, $h] = $h->divide($this->primes[$i]);
 
                 $m = $m->add($r->multiply($h));
             }
@@ -139,11 +131,11 @@ final class PrivateKey extends RSA implements Common\PrivateKey
 
             $m_i = [
                 1 => $this->blind($x, $r, 1),
-                2 => $this->blind($x, $r, 2)
+                2 => $this->blind($x, $r, 2),
             ];
             $h = $m_i[1]->subtract($m_i[2]);
             $h = $h->multiply($this->coefficients[2]);
-            list(, $h) = $h->divide($this->primes[1]);
+            [, $h] = $h->divide($this->primes[1]);
             $m = $m_i[2]->add($h->multiply($this->primes[2]));
 
             $r = $this->primes[1];
@@ -154,7 +146,7 @@ final class PrivateKey extends RSA implements Common\PrivateKey
 
                 $h = $m_i->subtract($m);
                 $h = $h->multiply($this->coefficients[$i]);
-                list(, $h) = $h->divide($this->primes[$i]);
+                [, $h] = $h->divide($this->primes[$i]);
 
                 $m = $m->add($r->multiply($h));
             }
@@ -168,20 +160,15 @@ final class PrivateKey extends RSA implements Common\PrivateKey
      *
      * Protects against timing attacks by employing RSA Blinding.
      * Returns $x->modPow($this->exponents[$i], $this->primes[$i])
-     *
-     * @param BigInteger $x
-     * @param BigInteger $r
-     * @param int $i
-     * @return BigInteger
      */
-    private function blind(BigInteger $x, BigInteger $r, $i)
+    private function blind(BigInteger $x, BigInteger $r, int $i): BigInteger
     {
         $x = $x->multiply($r->modPow($this->publicExponent, $this->primes[$i]));
         $x = $x->modPow($this->exponents[$i], $this->primes[$i]);
 
         $r = $r->modInverse($this->primes[$i]);
         $x = $x->multiply($r);
-        list(, $x) = $x->divide($this->primes[$i]);
+        [, $x] = $x->divide($this->primes[$i]);
 
         return $x;
     }
@@ -190,26 +177,21 @@ final class PrivateKey extends RSA implements Common\PrivateKey
      * EMSA-PSS-ENCODE
      *
      * See {@link http://tools.ietf.org/html/rfc3447#section-9.1.1 RFC3447#section-9.1.1}.
-     *
-     * @return string
-     * @param string $m
-     * @throws \RuntimeException on encoding error
-     * @param int $emBits
      */
-    private function emsa_pss_encode($m, $emBits)
+    private function emsa_pss_encode(string $m, int $emBits): string
     {
         // if $m is larger than two million terrabytes and you're using sha1, PKCS#1 suggests a "Label too long" error
         // be output.
 
         $emLen = ($emBits + 1) >> 3; // ie. ceil($emBits / 8)
-        $sLen = $this->sLen !== null ? $this->sLen : $this->hLen;
+        $sLen = $this->sLen ?? $this->hLen;
 
         $mHash = $this->hash->hash($m);
         if ($emLen < $this->hLen + $sLen + 2) {
-            throw new \LengthException('RSA modulus too short');
+            throw new LengthException('RSA modulus too short');
         }
 
-        $salt = Random::string($sLen);
+        $salt = $sLen ? random_bytes($sLen) : '';
         $m2 = "\0\0\0\0\0\0\0\0" . $mHash . $salt;
         $h = $this->hash->hash($m2);
         $ps = str_repeat(chr(0), $emLen - $sLen - $this->hLen - 2);
@@ -226,11 +208,8 @@ final class PrivateKey extends RSA implements Common\PrivateKey
      * RSASSA-PSS-SIGN
      *
      * See {@link http://tools.ietf.org/html/rfc3447#section-8.1.1 RFC3447#section-8.1.1}.
-     *
-     * @param string $m
-     * @return bool|string
      */
-    private function rsassa_pss_sign($m)
+    private function rsassa_pss_sign(string $m): string
     {
         // EMSA-PSS encoding
 
@@ -251,12 +230,8 @@ final class PrivateKey extends RSA implements Common\PrivateKey
      * RSASSA-PKCS1-V1_5-SIGN
      *
      * See {@link http://tools.ietf.org/html/rfc3447#section-8.2.1 RFC3447#section-8.2.1}.
-     *
-     * @param string $m
-     * @throws \LengthException if the RSA modulus is too short
-     * @return bool|string
      */
-    private function rsassa_pkcs1_v1_5_sign($m)
+    private function rsassa_pkcs1_v1_5_sign(string $m): string
     {
         // EMSA-PKCS1-v1_5 encoding
 
@@ -264,8 +239,8 @@ final class PrivateKey extends RSA implements Common\PrivateKey
         // too short" and stop.
         try {
             $em = $this->emsa_pkcs1_v1_5_encode($m, $this->k);
-        } catch (\LengthException $e) {
-            throw new \LengthException('RSA modulus too short');
+        } catch (LengthException $e) {
+            throw new LengthException('RSA modulus too short');
         }
 
         // RSA signature
@@ -283,40 +258,50 @@ final class PrivateKey extends RSA implements Common\PrivateKey
      * Create a signature
      *
      * @see self::verify()
-     * @param string $message
-     * @return string
      */
-    public function sign($message)
+    public function sign(string|Signable $source): string|array
     {
-        $result = $this->handleOpenSSL('openssl_sign', $message);
-        if ($result !== null) {
-            return $result;
+        if ($source instanceof Signable) {
+            $public = $this->getPublicKey();
+            if ($source instanceof CSR && !$source->hasPublicKey()) {
+                $source->setPublicKey($public);
+            }
+            $source->identifySignatureAlgorithm($this);
+            $message = $source->getSignableSection();
+        } else {
+            $message = $source;
         }
 
-        switch ($this->signaturePadding) {
-            case self::SIGNATURE_PKCS1:
-            case self::SIGNATURE_RELAXED_PKCS1:
-                return $this->rsassa_pkcs1_v1_5_sign($message);
-            //case self::SIGNATURE_PSS:
-            default:
-                return $this->rsassa_pss_sign($message);
+        $signature = $this->handleOpenSSL('openssl_sign', $message);
+        if ($signature !== null) {
+            if ($source instanceof Signable) {
+                $source->setSignature($signature);
+            }
+            return $signature;
         }
+
+        $signature = match ($this->signaturePadding) {
+            self::SIGNATURE_PKCS1 => $this->rsassa_pkcs1_v1_5_sign($message),
+            self::SIGNATURE_PSS => $this->rsassa_pss_sign($message)
+        };
+
+        if ($source instanceof Signable) {
+            $source->setSignature($signature);
+        }
+        return $signature;
     }
 
     /**
      * RSAES-PKCS1-V1_5-DECRYPT
      *
      * See {@link http://tools.ietf.org/html/rfc3447#section-7.2.2 RFC3447#section-7.2.2}.
-     *
-     * @param string $c
-     * @return bool|string
      */
-    private function rsaes_pkcs1_v1_5_decrypt($c)
+    private function rsaes_pkcs1_v1_5_decrypt(string $c): string
     {
         // Length checking
 
         if (strlen($c) != $this->k) { // or if k < 11
-            throw new \LengthException('Ciphertext representative too long');
+            throw new KeyConstraintException('Ciphertext representative too long');
         }
 
         // RSA decryption
@@ -327,15 +312,15 @@ final class PrivateKey extends RSA implements Common\PrivateKey
 
         // EME-PKCS1-v1_5 decoding
 
-        if (ord($em[0]) != 0 || ord($em[1]) > 2) {
-            throw new \RuntimeException('Decryption error');
+        if ((ord($em[0]) != 0) | (ord($em[1]) > 2)) {
+            throw new BadDecryptionException('Decryption error');
         }
 
         $ps = substr($em, 2, strpos($em, chr(0), 2) - 2);
         $m = substr($em, strlen($ps) + 3);
 
         if (strlen($ps) < 8) {
-            throw new \RuntimeException('Decryption error');
+            throw new BadDecryptionException('Decryption error');
         }
 
         // Output M
@@ -356,11 +341,8 @@ final class PrivateKey extends RSA implements Common\PrivateKey
      *    be able to obtain useful information about the decryption of the
      *    ciphertext C, leading to a chosen-ciphertext attack such as the one
      *    observed by Manger [36].
-     *
-     * @param string $c
-     * @return bool|string
      */
-    private function rsaes_oaep_decrypt($c)
+    private function rsaes_oaep_decrypt(string $c): string
     {
         // Length checking
 
@@ -368,7 +350,7 @@ final class PrivateKey extends RSA implements Common\PrivateKey
         // be output.
 
         if (strlen($c) != $this->k || $this->k < 2 * $this->hLen + 2) {
-            throw new \LengthException('Ciphertext representative too long');
+            throw new KeyConstraintException('Ciphertext representative too long');
         }
 
         // RSA decryption
@@ -380,7 +362,7 @@ final class PrivateKey extends RSA implements Common\PrivateKey
         // EME-OAEP decoding
 
         $lHash = $this->hash->hash($this->label);
-        $y = ord($em[0]);
+        //$y = ord($em[0]);
         $maskedSeed = substr($em, 1, $this->hLen);
         $maskedDB = substr($em, $this->hLen + 1);
         $seedMask = $this->mgf1($maskedDB, $this->hLen);
@@ -402,7 +384,7 @@ final class PrivateKey extends RSA implements Common\PrivateKey
         // we do | instead of || to avoid https://en.wikipedia.org/wiki/Short-circuit_evaluation
         // to protect against timing attacks
         if (!$hashesMatch | !$patternMatch) {
-            throw new \RuntimeException('Decryption error');
+            throw new BadDecryptionException('Decryption error');
         }
 
         // Output the message M
@@ -414,15 +396,11 @@ final class PrivateKey extends RSA implements Common\PrivateKey
      * Raw Encryption / Decryption
      *
      * Doesn't use padding and is not recommended.
-     *
-     * @param string $m
-     * @return bool|string
-     * @throws \LengthException if strlen($m) > $this->k
      */
-    private function raw_encrypt($m)
+    private function raw_encrypt(string $m): string
     {
         if (strlen($m) > $this->k) {
-            throw new \LengthException('Ciphertext representative too long');
+            throw new KeyConstraintException('Ciphertext representative too long');
         }
 
         $temp = $this->os2ip($m);
@@ -434,37 +412,30 @@ final class PrivateKey extends RSA implements Common\PrivateKey
      * Decryption
      *
      * @see self::encrypt()
-     * @param string $ciphertext
-     * @return bool|string
      */
-    public function decrypt($ciphertext)
+    public function decrypt(string $ciphertext): string
     {
         $result = $this->handleOpenSSL('openssl_private_decrypt', $ciphertext);
         if ($result !== null) {
             return $result;
         }
 
-        switch ($this->encryptionPadding) {
-            case self::ENCRYPTION_NONE:
-                return $this->raw_encrypt($ciphertext);
-            case self::ENCRYPTION_PKCS1:
-                return $this->rsaes_pkcs1_v1_5_decrypt($ciphertext);
-            //case self::ENCRYPTION_OAEP:
-            default:
-                return $this->rsaes_oaep_decrypt($ciphertext);
-        }
+        return match ($this->encryptionPadding) {
+            self::ENCRYPTION_NONE => $this->raw_encrypt($ciphertext),
+            self::ENCRYPTION_PKCS1 => $this->rsaes_pkcs1_v1_5_decrypt($ciphertext),
+            // self::ENCRYPTION_OAEP
+            default => $this->rsaes_oaep_decrypt($ciphertext)
+        };
     }
 
     /**
      * Returns the public key
-     *
-     * @return mixed
      */
-    public function getPublicKey()
+    public function getPublicKey(): PublicKey
     {
         $type = self::validatePlugin('Keys', 'PKCS8', 'savePublicKey');
         if (empty($this->modulus) || empty($this->publicExponent)) {
-            throw new \RuntimeException('Public key components not found');
+            throw new KeyConstraintException('Public key components not found');
         }
 
         $key = $type::savePublicKey($this->modulus, $this->publicExponent);
@@ -474,67 +445,5 @@ final class PrivateKey extends RSA implements Common\PrivateKey
             ->withSaltLength($this->sLen)
             ->withLabel($this->label)
             ->withPadding($this->signaturePadding | $this->encryptionPadding);
-    }
-
-    /**
-     * Returns the private key
-     *
-     * @param string $type
-     * @param array $options optional
-     * @return string
-     */
-    public function toString($type, array $options = [])
-    {
-        $type = self::validatePlugin(
-            'Keys',
-            $type,
-            empty($this->primes) ? 'savePublicKey' : 'savePrivateKey'
-        );
-
-        if ($type == PSS::class) {
-            if ($this->signaturePadding == self::SIGNATURE_PSS) {
-                $options += [
-                    'hash' => $this->hash->getHash(),
-                    'MGFHash' => $this->mgfHash->getHash(),
-                    'saltLength' => $this->getSaltLength()
-                ];
-            } else {
-                throw new UnsupportedFormatException('The PSS format can only be used when the signature method has been explicitly set to PSS');
-            }
-        }
-
-        if (empty($this->primes)) {
-            return $type::savePublicKey($this->modulus, $this->exponent, $options);
-        }
-
-        return $type::savePrivateKey($this->modulus, $this->publicExponent, $this->exponent, $this->primes, $this->exponents, $this->coefficients, $this->password, $options);
-
-        /*
-        $key = $type::savePrivateKey($this->modulus, $this->publicExponent, $this->exponent, $this->primes, $this->exponents, $this->coefficients, $this->password, $options);
-        if ($key !== false || count($this->primes) == 2) {
-            return $key;
-        }
-
-        $nSize = $this->getSize() >> 1;
-
-        $primes = [1 => clone self::$one, clone self::$one];
-        $i = 1;
-        foreach ($this->primes as $prime) {
-            $primes[$i] = $primes[$i]->multiply($prime);
-            if ($primes[$i]->getLength() >= $nSize) {
-                $i++;
-            }
-        }
-
-        $exponents = [];
-        $coefficients = [2 => $primes[2]->modInverse($primes[1])];
-
-        foreach ($primes as $i => $prime) {
-            $temp = $prime->subtract(self::$one);
-            $exponents[$i] = $this->modulus->modInverse($temp);
-        }
-
-        return $type::savePrivateKey($this->modulus, $this->publicExponent, $this->exponent, $primes, $exponents, $coefficients, $this->password, $options);
-        */
     }
 }

@@ -12,8 +12,9 @@
  *
  * Reading the process pipes to EOF can reap the child before proc_get_status()
  * runs, which left exit_code as -1 or a missing key (the "Undefined array key
- * exit_code" warnings seen from poller_realtime.php). The exit code now comes
- * from proc_close(), which stays correct. These tests spawn a real PHP process.
+ * exit_code" warnings seen from poller_realtime.php). The implementation now
+ * preserves a valid observed exitcode and uses proc_close() only as fallback.
+ * These tests spawn a real PHP process.
  */
 
 beforeAll(function () {
@@ -41,6 +42,7 @@ test('cacti_exec returns the real process exit code', function () {
 	expect(cacti_exec(PHP_BINARY, array('-r', 'exit(1);'), $out))->toBe(1);
 	expect(cacti_exec(PHP_BINARY, array('-r', 'exit(3);'), $out))->toBe(3);
 	expect(cacti_exec(PHP_BINARY, array('-r', 'exit(42);'), $out))->toBe(42);
+	expect(cacti_exec(PHP_BINARY, array('-r', 'exit(127);'), $out))->toBe(127);
 	expect(cacti_exec(PHP_BINARY, array('-r', 'exit(255);'), $out))->toBe(255);
 });
 
@@ -68,14 +70,16 @@ test('empty stdout yields an empty output array, not a one-element array', funct
 	expect($out)->toBe(array());
 });
 
-test('large stdout is captured without truncation or deadlock', function () {
+test('large stdout and stderr are drained without truncation or losing the exit code', function () {
 	$out = array();
-	// 5000 lines forces the child to keep writing while the parent drains.
-	$rc = cacti_exec(PHP_BINARY, array('-r', 'for ($i = 0; $i < 5000; $i++) echo "line$i\n";'), $out);
+	// Both streams exceed typical pipe capacity and must be drained concurrently.
+	$rc = _exec_quietly(function () use (&$out) {
+		return cacti_exec(PHP_BINARY, array('-r', 'for ($i = 0; $i < 20000; $i++) { echo "line$i\n"; fwrite(STDERR, "warning$i\n"); } exit(23);'), $out);
+	});
 
-	expect($rc)->toBe(0);
-	expect(count($out))->toBe(5000);
-	expect($out[4999])->toBe('line4999');
+	expect($rc)->toBe(23);
+	expect(count($out))->toBe(20000);
+	expect($out[19999])->toBe('line19999');
 });
 
 test('cacti_exec rejects an empty, whitespace, or dash-led binary with 255', function () {
@@ -90,10 +94,41 @@ test('cacti_exec rejects an empty, whitespace, or dash-led binary with 255', fun
 	expect(_exec_quietly(fn () => cacti_exec('--version', array(), $out)))->toBe(255);
 });
 
-test('a non-existent binary returns 255 and does not crash', function () {
+test('a non-existent binary matches this PHP builds spawn behavior', function () {
+	$out = array();
+	$path = '/nonexistent/path/to/binary';
+	$proc = @proc_open(array($path), array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+
+	if (is_resource($proc)) {
+		fclose($pipes[0]);
+		stream_get_contents($pipes[1]);
+		stream_get_contents($pipes[2]);
+		fclose($pipes[1]);
+		fclose($pipes[2]);
+		$expected = proc_close($proc);
+	} else {
+		$expected = 255;
+	}
+
+	$exit = _exec_quietly(fn () => cacti_exec($path, array(), $out));
+	expect($exit)->toBe($expected);
+});
+
+test('timeout zero fails closed without entering the process wait loop', function () {
 	$out = array();
 
-	expect(_exec_quietly(fn () => cacti_exec('/nonexistent/path/to/binary', array(), $out)))->toBe(255);
+	expect(_exec_quietly(fn () => cacti_exec(PHP_BINARY, array('-r', 'usleep(200000);'), $out, 0)))->toBe(1);
+});
+
+test('a signal-terminated child does not fabricate a successful exit code', function () {
+	if (!function_exists('posix_kill')) {
+		$this->markTestSkipped('posix extension is required for the signal termination proof');
+	}
+
+	$out  = array();
+	$exit = cacti_exec(PHP_BINARY, array('-r', 'posix_kill(getmypid(), 9);'), $out);
+
+	expect($exit)->not->toBe(0);
 });
 
 test('cacti_exec raises no exit_code warning while reading status', function () {

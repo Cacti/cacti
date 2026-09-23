@@ -3,7 +3,7 @@
 /**
  * PKCS#8 Formatted RSA-PSS Key Handler
  *
- * PHP version 5
+ * PHP version 8.1+
  *
  * Used by PHP's openssl_public_encrypt() and openssl's rsautl (when -pubin is set)
  *
@@ -16,23 +16,25 @@
  * Analogous to "openssl genpkey -algorithm rsa-pss".
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2015 Jim Wigginton
+ * @copyright 2019-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\RSA\Formats\Keys;
+declare(strict_types=1);
 
-use phpseclib3\Common\Functions\Strings;
-use phpseclib3\Crypt\Common\Formats\Keys\PKCS8 as Progenitor;
-use phpseclib3\File\ASN1;
-use phpseclib3\File\ASN1\Maps;
-use phpseclib3\Math\BigInteger;
+namespace phpseclib4\Crypt\RSA\Formats\Keys;
+
+use phpseclib4\Crypt\Common\Formats\Keys\PKCS8 as Progenitor;
+use phpseclib4\File\ASN1;
+use phpseclib4\File\ASN1\{Element, Maps};
+use phpseclib4\Math\BigInteger;
 
 /**
  * PKCS#8 Formatted RSA-PSS Key Handler
  *
  * @author  Jim Wigginton <terrafrost@php.net>
+ * @psalm-api
  */
 abstract class PSS extends Progenitor
 {
@@ -41,96 +43,77 @@ abstract class PSS extends Progenitor
      *
      * @var string
      */
-    const OID_NAME = 'id-RSASSA-PSS';
+    public const OID_NAME = 'id-RSASSA-PSS';
 
     /**
      * OID Value
      *
      * @var string
      */
-    const OID_VALUE = '1.2.840.113549.1.1.10';
+    public const OID_VALUE = '1.2.840.113549.1.1.10';
 
     /**
      * OIDs loaded
-     *
-     * @var bool
      */
-    private static $oidsLoaded = false;
-
-    /**
-     * Child OIDs loaded
-     *
-     * @var bool
-     */
-    protected static $childOIDsLoaded = false;
+    private static bool $oidsLoaded = false;
 
     /**
      * Initialize static variables
      */
-    private static function initialize_static_variables()
+    private static function initialize_static_variables(): void
     {
         if (!self::$oidsLoaded) {
-            ASN1::loadOIDs([
-                'md2' => '1.2.840.113549.2.2',
-                'md4' => '1.2.840.113549.2.4',
-                'md5' => '1.2.840.113549.2.5',
-                'id-sha1' => '1.3.14.3.2.26',
-                'id-sha256' => '2.16.840.1.101.3.4.2.1',
-                'id-sha384' => '2.16.840.1.101.3.4.2.2',
-                'id-sha512' => '2.16.840.1.101.3.4.2.3',
-                'id-sha224' => '2.16.840.1.101.3.4.2.4',
-                'id-sha512/224' => '2.16.840.1.101.3.4.2.5',
-                'id-sha512/256' => '2.16.840.1.101.3.4.2.6',
-
-                'id-mgf1' => '1.2.840.113549.1.1.8'
-            ]);
+            ASN1::loadOIDs('Hashes');
             self::$oidsLoaded = true;
         }
     }
 
     /**
      * Break a public or private key down into its constituent components
-     *
-     * @param string $key
-     * @param string $password optional
-     * @return array
      */
-    public static function load($key, $password = '')
-    {
+    public static function load(
+        #[\SensitiveParameter] string $key,
+        #[\SensitiveParameter] ?string $password = null
+    ): array {
         self::initialize_static_variables();
 
-        if (!Strings::is_stringable($key)) {
-            throw new \UnexpectedValueException('Key should be a string - not a ' . gettype($key));
-        }
-
-        $components = ['isPublicKey' => strpos($key, 'PUBLIC') !== false];
+        $components = match (true) {
+            str_contains($key, 'PUBLIC') => ['isPublicKey' => true],
+            str_contains($key, 'PRIVATE') => ['isPublicKey' => false],
+            default => []
+        };
 
         $key = parent::load($key, $password);
 
-        $type = isset($key['privateKey']) ? 'private' : 'public';
+        if (isset($key['privateKey'])) {
+            if (!isset($components['isPublicKey'])) {
+                $components['isPublicKey'] = false;
+            }
+            $type = 'private';
+        } else {
+            if (!isset($components['isPublicKey'])) {
+                $components['isPublicKey'] = true;
+            }
+            $type = 'public';
+        }
 
-        $result = $components + PKCS1::load($key[$type . 'Key']);
+        $result = $components + PKCS1::load((string) $key[$type . 'Key']);
 
         if (isset($key[$type . 'KeyAlgorithm']['parameters'])) {
-            $decoded = ASN1::decodeBER($key[$type . 'KeyAlgorithm']['parameters']);
-            if ($decoded === false) {
-                throw new \UnexpectedValueException('Unable to decode parameters');
-            }
-            $params = ASN1::asn1map($decoded[0], Maps\RSASSA_PSS_params::MAP);
+            $decoded = ASN1::decodeBER((string) $key[$type . 'KeyAlgorithm']['parameters']);
+            $params = ASN1::map($decoded, Maps\RSASSA_PSS_params::MAP);
         } else {
+            /** @var array<string, mixed> $params */
             $params = [];
         }
 
         if (isset($params['maskGenAlgorithm']['parameters'])) {
-            $decoded = ASN1::decodeBER($params['maskGenAlgorithm']['parameters']);
-            if ($decoded === false) {
-                throw new \UnexpectedValueException('Unable to decode parameters');
-            }
-            $params['maskGenAlgorithm']['parameters'] = ASN1::asn1map($decoded[0], Maps\HashAlgorithm::MAP);
+            $decoded = ASN1::decodeBER((string) $params['maskGenAlgorithm']['parameters']);
+            $params['maskGenAlgorithm']['parameters'] = ASN1::map($decoded, Maps\HashAlgorithm::MAP);
         } else {
             $params['maskGenAlgorithm'] = [
                 'algorithm' => 'id-mgf1',
-                'parameters' => ['algorithm' => 'id-sha1']
+                'parameters' => ['algorithm' => 'id-sha1'],
             ];
         }
 
@@ -138,8 +121,8 @@ abstract class PSS extends Progenitor
             $params['hashAlgorithm']['algorithm'] = 'id-sha1';
         }
 
-        $result['hash'] = str_replace('id-', '', $params['hashAlgorithm']['algorithm']);
-        $result['MGFHash'] = str_replace('id-', '', $params['maskGenAlgorithm']['parameters']['algorithm']);
+        $result['hash'] = str_replace('id-', '', (string) $params['hashAlgorithm']['algorithm']);
+        $result['MGFHash'] = str_replace('id-', '', (string) $params['maskGenAlgorithm']['parameters']['algorithm']);
         if (isset($params['saltLength'])) {
             $result['saltLength'] = (int) "$params[saltLength]";
         }
@@ -153,52 +136,51 @@ abstract class PSS extends Progenitor
 
     /**
      * Convert a private key to the appropriate format.
-     *
-     * @param BigInteger $n
-     * @param BigInteger $e
-     * @param BigInteger $d
-     * @param array $primes
-     * @param array $exponents
-     * @param array $coefficients
-     * @param string $password optional
-     * @param array $options optional
-     * @return string
      */
-    public static function savePrivateKey(BigInteger $n, BigInteger $e, BigInteger $d, array $primes, array $exponents, array $coefficients, $password = '', array $options = [])
-    {
+    public static function savePrivateKey(
+        BigInteger $n,
+        BigInteger $e,
+        #[\SensitiveParameter] BigInteger $d,
+        #[\SensitiveParameter] array $primes,
+        #[\SensitiveParameter] array $exponents,
+        #[\SensitiveParameter] array $coefficients,
+        #[\SensitiveParameter] ?string $password = null,
+        array $options = []
+    ): string {
         self::initialize_static_variables();
 
         $key = PKCS1::savePrivateKey($n, $e, $d, $primes, $exponents, $coefficients);
         $key = ASN1::extractBER($key);
         $params = self::savePSSParams($options);
-        return self::wrapPrivateKey($key, [], $params, $password, null, '', $options);
+        return self::wrapPrivateKey(
+            key: $key,
+            params: $params,
+            password: $password,
+            options: $options
+        );
     }
 
     /**
      * Convert a public key to the appropriate format
-     *
-     * @param BigInteger $n
-     * @param BigInteger $e
-     * @param array $options optional
-     * @return string
      */
-    public static function savePublicKey(BigInteger $n, BigInteger $e, array $options = [])
+    public static function savePublicKey(BigInteger $n, BigInteger $e, array $options = []): string
     {
         self::initialize_static_variables();
 
         $key = PKCS1::savePublicKey($n, $e);
         $key = ASN1::extractBER($key);
         $params = self::savePSSParams($options);
-        return self::wrapPublicKey($key, $params);
+        return self::wrapPublicKey(
+            key: $key,
+            params: $params,
+            options: $options
+        );
     }
 
     /**
      * Encodes PSS parameters
-     *
-     * @param array $options
-     * @return string
      */
-    public static function savePSSParams(array $options)
+    public static function savePSSParams(array $options): Element
     {
         /*
          The trailerField field is an integer.  It provides
@@ -216,7 +198,7 @@ abstract class PSS extends Progenitor
          source: https://tools.ietf.org/html/rfc4055#page-9
         */
         $params = [
-            'trailerField' => new BigInteger(1)
+            'trailerField' => new BigInteger(1),
         ];
         if (isset($options['hash'])) {
             $params['hashAlgorithm']['algorithm'] = 'id-' . $options['hash'];
@@ -226,7 +208,7 @@ abstract class PSS extends Progenitor
             $temp = ASN1::encodeDER($temp, Maps\HashAlgorithm::MAP);
             $params['maskGenAlgorithm'] = [
                 'algorithm' => 'id-mgf1',
-                'parameters' => new ASN1\Element($temp)
+                'parameters' => new ASN1\Element($temp),
             ];
         }
         if (isset($options['saltLength'])) {

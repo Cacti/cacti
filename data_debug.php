@@ -1179,7 +1179,10 @@ function data_debug_filter() {
 				applyFilter()
 			});
 
-			$('#rfilter, #status, #rows, #debug, #refresh, #profile, #site_id, #host_id, #template_id').on('change', function() {
+			// host_id already reloads via its own select2-callback data-callback wiring;
+			// select2 also fires a native change event, so including it here would
+			// apply the filter twice per selection
+			$('#rfilter, #status, #rows, #debug, #refresh, #profile, #site_id, #template_id').on('change', function() {
 				applyFilter();
 			});
 

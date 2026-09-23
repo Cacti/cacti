@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/autoload.php" beStrictAboutOutputDuringTests="false">
+	<testsuites>
+		<testsuite name="cacti_exec regression">
+			<file>Unit/CactiExecContractTest.php</file>
+			<file>integration/CactiExecExitCodeTest.php</file>
+		</testsuite>
+	</testsuites>
+</phpunit>

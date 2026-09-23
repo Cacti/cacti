@@ -4,17 +4,18 @@
  * DSA Public Key
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2015 Jim Wigginton
+ * @copyright 2019-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://phpseclib.sourceforge.net
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Crypt\DSA;
+declare(strict_types=1);
 
-use phpseclib3\Crypt\Common;
-use phpseclib3\Crypt\DSA;
-use phpseclib3\Crypt\DSA\Formats\Signature\ASN1 as ASN1Signature;
-use phpseclib3\Exception\BadConfigurationException;
+namespace phpseclib4\Crypt\DSA;
+
+use phpseclib4\Crypt\{Common, DSA};
+use phpseclib4\Crypt\DSA\Formats\Signature\ASN1 as ASN1Signature;
+use phpseclib4\Exception\{BadConfigurationException, UnexpectedValueException};
 
 /**
  * DSA Public Key
@@ -29,11 +30,8 @@ final class PublicKey extends DSA implements Common\PublicKey
      * Verify a signature
      *
      * @see self::verify()
-     * @param string $message
-     * @param string $signature
-     * @return mixed
      */
-    public function verify($message, $signature)
+    public function verify(string $message, string|array $signature): bool
     {
         if (self::$forcedEngine === 'libsodium') {
             throw new BadConfigurationException('Engine libsodium is forced but unsupported for DSA');
@@ -43,14 +41,22 @@ final class PublicKey extends DSA implements Common\PublicKey
             throw new BadConfigurationException('Engine OpenSSL is forced but unsupported for DSA');
         }
 
+        $shortFormat = $this->shortFormat;
         $format = $this->sigFormat;
 
-        $params = $format::load($signature);
-        if ($params === false || count($params) != 2) {
+        if ($shortFormat == 'Raw') {
+            if (is_string($signature)) {
+                throw new UnexpectedValueException('Raw signatures must be arrays');
+            }
+        } elseif (is_array($signature)) {
+            throw new UnexpectedValueException('The only signature format that takes in arrays is the Raw format');
+        }
+
+        try {
+            ['r' => $r, 's' => $s] = $format::load($signature);
+        } catch (\Exception) {
             return false;
         }
-        $r = $params['r'];
-        $s = $params['s'];
 
         if (function_exists('openssl_get_md_methods') && self::$forcedEngine !== 'PHP') {
             if (in_array($this->hash->getHash(), openssl_get_md_methods())) {
@@ -74,27 +80,33 @@ final class PublicKey extends DSA implements Common\PublicKey
         $w = $s->modInverse($this->q);
         $h = $this->hash->hash($message);
         $h = $this->bits2int($h);
-        list(, $u1) = $h->multiply($w)->divide($this->q);
-        list(, $u2) = $r->multiply($w)->divide($this->q);
+        [, $u1] = $h->multiply($w)->divide($this->q);
+        [, $u2] = $r->multiply($w)->divide($this->q);
         $v1 = $this->g->powMod($u1, $this->p);
         $v2 = $this->y->powMod($u2, $this->p);
-        list(, $v) = $v1->multiply($v2)->divide($this->p);
-        list(, $v) = $v->divide($this->q);
+        [, $v] = $v1->multiply($v2)->divide($this->p);
+        [, $v] = $v->divide($this->q);
 
         return $v->equals($r);
     }
 
     /**
      * Returns the public key
-     *
-     * @param string $type
-     * @param array $options optional
-     * @return string
      */
-    public function toString($type, array $options = [])
+    public function toString(string $type, array $options = []): string
     {
         $type = self::validatePlugin('Keys', $type, 'savePublicKey');
 
         return $type::savePublicKey($this->p, $this->q, $this->g, $this->y, $options);
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'p' => clone $this->p,
+            'q' => clone $this->q,
+            'g' => clone $this->g,
+            'y' => clone $this->y,
+        ];
     }
 }

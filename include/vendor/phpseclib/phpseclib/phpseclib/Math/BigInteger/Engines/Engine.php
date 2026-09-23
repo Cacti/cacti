@@ -3,20 +3,20 @@
 /**
  * Base BigInteger Engine
  *
- * PHP version 5 and 7
+ * PHP version 8.1+
  *
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright 2017 Jim Wigginton
+ * @copyright 2017-2026 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link      http://pear.php.net/package/Math_BigInteger
+ * @link      https://phpseclib.com/
  */
 
-namespace phpseclib3\Math\BigInteger\Engines;
+declare(strict_types=1);
 
-use phpseclib3\Common\Functions\Strings;
-use phpseclib3\Crypt\Random;
-use phpseclib3\Exception\BadConfigurationException;
-use phpseclib3\Math\BigInteger;
+namespace phpseclib4\Math\BigInteger\Engines;
+
+use phpseclib4\Common\Functions\Strings;
+use phpseclib4\Exception\{BadConfigurationException, InvalidArgumentException, ResourceLimitException};
 
 /**
  * Base Engine.
@@ -25,7 +25,10 @@ use phpseclib3\Math\BigInteger;
  */
 abstract class Engine implements \JsonSerializable
 {
-    /* final protected */ const PRIMES = [
+    public const ENGINE_DIR = '';
+    public const FAST_BITWISE = false;
+
+    /* final */ protected const PRIMES = [
         3,   5,   7,   11,  13,  17,  19,  23,  29,  31,  37,  41,  43,  47,  53,  59,
         61,  67,  71,  73,  79,  83,  89,  97,  101, 103, 107, 109, 113, 127, 131, 137,
         139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227,
@@ -42,97 +45,79 @@ abstract class Engine implements \JsonSerializable
     /**
      * BigInteger(0)
      *
-     * @var array<class-string<static>, static>
+     * @var array<class-string<static>, ?static>
      */
-    protected static $zero = [];
+    protected static array $zero = [];
 
     /**
      * BigInteger(1)
      *
      * @var array<class-string<static>, static>
      */
-    protected static $one  = [];
+    protected static array $one  = [];
 
     /**
      * BigInteger(2)
      *
      * @var array<class-string<static>, static>
      */
-    protected static $two = [];
+    protected static array $two = [];
 
     /**
      * Modular Exponentiation Engine
      *
      * @var array<class-string<static>, class-string<static>>
      */
-    protected static $modexpEngine;
+    protected static array $modexpEngine;
 
     /**
      * Engine Validity Flag
      *
      * @var array<class-string<static>, bool>
      */
-    protected static $isValidEngine;
-
-    /**
-     * Holds the BigInteger's value
-     *
-     * @var \GMP|string|array|int
-     */
-    protected $value;
+    protected static array $isValidEngine;
 
     /**
      * Holds the BigInteger's sign
-     *
-     * @var bool
      */
-    protected $is_negative;
+    protected bool $is_negative = false;
 
     /**
      * Precision
      *
      * @see static::setPrecision()
-     * @var int
      */
-    protected $precision = -1;
+    protected int $precision = -1;
 
     /**
      * Precision Bitmask
      *
      * @see static::setPrecision()
-     * @var static|false
+     * @var ?static
      */
-    protected $bitmask = false;
-
-    /**
-     * Recurring Modulo Function
-     *
-     * @var callable
-     */
-    protected $reduce;
-
-    /**
-     * Mode independent value used for serialization.
-     *
-     * @see self::__sleep()
-     * @see self::__wakeup()
-     * @var string
-     */
-    protected $hex;
+    protected ?Engine $bitmask = null;
 
     /**
      * Default constructor
      *
-     * @param int|numeric-string $x integer Base-10 number or base-$base number if $base set.
-     * @param int $base
+     * $base is ignored if $x is an int or an instance of \GMP
+     *
+     * @param int|numeric-string|\GMP $x integer Base-10 number or base-$base number if $base set.
      */
-    public function __construct($x = 0, $base = 10)
+    public function __construct(int|string|\GMP $x = '0', int $base = 10)
     {
         if (!array_key_exists(static::class, static::$zero)) {
             static::$zero[static::class] = null; // Placeholder to prevent infinite loop.
             static::$zero[static::class] = new static(0);
             static::$one[static::class] = new static(1);
             static::$two[static::class] = new static(2);
+        }
+
+        if (is_int($x) || $x instanceof \GMP) {
+            $temp = new static("$x");
+            $this->value = $temp->value;
+            $this->is_negative = $temp->is_negative;
+            return;
         }
 
         // '0' counts as empty() but when the base is 256 '0' is equal to ord('0') or 48
@@ -187,7 +172,7 @@ abstract class Engine implements \JsonSerializable
                 // (?<!^)(?:-).*: find any -'s that aren't at the beginning and then any characters that follow that
                 // (?<=^|-)0*: find any 0's that are preceded by the start of the string or by a - (ie. octals)
                 // [^-0-9].*: find any non-numeric characters and then any characters that follow that
-                $this->value = preg_replace('#(?<!^)(?:-).*|(?<=^|-)0*|[^-0-9].*#s', '', $x);
+                $this->value = preg_replace('#(?<!^)-.*|(?<=^|-)0*|[^-0-9].*#s', '', (string) $x);
                 if (!strlen($this->value) || $this->value == '-') {
                     $this->value = '0';
                 }
@@ -218,14 +203,12 @@ abstract class Engine implements \JsonSerializable
      * Sets engine type.
      *
      * Throws an exception if the type is invalid
-     *
-     * @param class-string<Engine> $engine
      */
-    public static function setModExpEngine($engine)
+    public static function setModExpEngine(string $engine): void
     {
-        $fqengine = '\\phpseclib3\\Math\\BigInteger\\Engines\\' . static::ENGINE_DIR . '\\' . $engine;
+        $fqengine = '\\phpseclib4\\Math\\BigInteger\\Engines\\' . static::ENGINE_DIR . '\\' . $engine;
         if (!class_exists($fqengine) || !method_exists($fqengine, 'isValidEngine')) {
-            throw new \InvalidArgumentException("$engine is not a valid engine");
+            throw new BadConfigurationException("$engine is not a valid engine");
         }
         if (!$fqengine::isValidEngine()) {
             throw new BadConfigurationException("$engine is not setup correctly on this system");
@@ -238,9 +221,8 @@ abstract class Engine implements \JsonSerializable
      *
      * Negative numbers are saved as positive numbers, unless $twos_compliment is set to true, at which point, they're
      * saved as two's compliment.
-     * @return string
      */
-    protected function toBytesHelper()
+    protected function toBytesHelper(): string
     {
         $comparison = $this->compare(new static());
         if ($comparison == 0) {
@@ -263,11 +245,8 @@ abstract class Engine implements \JsonSerializable
 
     /**
      * Converts a BigInteger to a hex string (eg. base-16).
-     *
-     * @param bool $twos_compliment
-     * @return string
      */
-    public function toHex($twos_compliment = false)
+    public function toHex(bool $twos_compliment = false): string
     {
         return Strings::bin2hex($this->toBytes($twos_compliment));
     }
@@ -277,11 +256,8 @@ abstract class Engine implements \JsonSerializable
      *
      * Negative numbers are saved as positive numbers, unless $twos_compliment is set to true, at which point, they're
      * saved as two's compliment.
-     *
-     * @param bool $twos_compliment
-     * @return string
      */
-    public function toBits($twos_compliment = false)
+    public function toBits(bool $twos_compliment = false): string
     {
         $hex = $this->toBytes($twos_compliment);
         $bits = Strings::bin2bits($hex);
@@ -301,11 +277,8 @@ abstract class Engine implements \JsonSerializable
      * Say you have (30 mod 17 * x mod 17) mod 17 == 1.  x can be found using modular inverses.
      *
      * {@internal See {@link http://www.cacr.math.uwaterloo.ca/hac/about/chap14.pdf#page=21 HAC 14.64} for more information.}
-     *
-     * @param Engine $n
-     * @return static|false
      */
-    protected function modInverseHelper(Engine $n)
+    protected function modInverseHelper(Engine $n): ?Engine
     {
         // $x mod -$n == $x mod $n.
         $n = $n->abs();
@@ -316,52 +289,15 @@ abstract class Engine implements \JsonSerializable
             return $this->normalize($n->subtract($temp));
         }
 
-        $extended = $this->extendedGCD($n);
-        $gcd = $extended['gcd'];
-        $x = $extended['x'];
+        ['gcd' => $gcd, 'x' => $x] = $this->extendedGCD($n);
 
         if (!$gcd->equals(static::$one[static::class])) {
-            return false;
+            return null;
         }
 
         $x = $x->compare(static::$zero[static::class]) < 0 ? $x->add($n) : $x;
 
         return $this->compare(static::$zero[static::class]) < 0 ? $this->normalize($n->subtract($x)) : $this->normalize($x);
-    }
-
-    /**
-     * Serialize
-     *
-     * Will be called, automatically, when serialize() is called on a BigInteger object.
-     *
-     * @return array
-     */
-    public function __sleep()
-    {
-        $this->hex = $this->toHex(true);
-        $vars = ['hex'];
-        if ($this->precision > 0) {
-            $vars[] = 'precision';
-        }
-        return $vars;
-    }
-
-    /**
-     * Serialize
-     *
-     * Will be called, automatically, when unserialize() is called on a BigInteger object.
-     *
-     * @return void
-     */
-    public function __wakeup()
-    {
-        $temp = new static($this->hex, -16);
-        $this->value = $temp->value;
-        $this->is_negative = $temp->is_negative;
-        if ($this->precision > 0) {
-            // recalculate $this->bitmask
-            $this->setPrecision($this->precision);
-        }
     }
 
     /**
@@ -371,9 +307,8 @@ abstract class Engine implements \JsonSerializable
      * Will be called, automatically, when serialize() is called on a Math_BigInteger object.
      *
      * @see self::__unserialize()
-     * @access public
      */
-    public function __serialize()
+    public function __serialize(): array
     {
         $result = ['hex' => $this->toHex(true)];
         if ($this->precision > 0) {
@@ -389,9 +324,8 @@ abstract class Engine implements \JsonSerializable
      * Will be called, automatically, when unserialize() is called on a Math_BigInteger object.
      *
      * @see self::__serialize()
-     * @access public
      */
-    public function __unserialize(array $data)
+    public function __unserialize(array $data): void
     {
         $temp = new static($data['hex'], -16);
         $this->value = $temp->value;
@@ -409,8 +343,7 @@ abstract class Engine implements \JsonSerializable
      *
      * @return array{hex: string, precision?: int]
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $result = ['hex' => $this->toHex(true)];
         if ($this->precision > 0) {
@@ -421,10 +354,8 @@ abstract class Engine implements \JsonSerializable
 
     /**
      * Converts a BigInteger to a base-10 number.
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->toString();
     }
@@ -433,14 +364,12 @@ abstract class Engine implements \JsonSerializable
      *  __debugInfo() magic method
      *
      * Will be called, automatically, when print_r() or var_dump() are called
-     *
-     * @return array
      */
-    public function __debugInfo()
+    public function __debugInfo(): array
     {
         $result = [
             'value' => '0x' . $this->toHex(true),
-            'engine' => basename(static::class)
+            'engine' => basename(static::class),
         ];
         return $this->precision > 0 ? $result + ['precision' => $this->precision] : $result;
     }
@@ -450,14 +379,12 @@ abstract class Engine implements \JsonSerializable
      *
      * Some bitwise operations give different results depending on the precision being used.  Examples include left
      * shift, not, and rotates.
-     *
-     * @param int $bits
      */
-    public function setPrecision($bits)
+    public function setPrecision(int $bits): void
     {
         if ($bits < 1) {
             $this->precision = -1;
-            $this->bitmask = false;
+            $this->bitmask = null;
 
             return;
         }
@@ -472,31 +399,27 @@ abstract class Engine implements \JsonSerializable
      * Get Precision
      *
      * Returns the precision if it exists, -1 if it doesn't
-     *
-     * @return int
      */
-    public function getPrecision()
+    public function getPrecision(): int
     {
         return $this->precision;
     }
 
     /**
      * Set Bitmask
+     *
      * @return static
-     * @param int $bits
      * @see self::setPrecision()
      */
-    protected static function setBitmask($bits)
+    protected static function setBitmask(int $bits): Engine
     {
         return new static(chr((1 << ($bits & 0x7)) - 1) . str_repeat(chr(0xFF), $bits >> 3), 256);
     }
 
     /**
      * Logical Not
-     *
-     * @return Engine|string
      */
-    public function bitwise_not()
+    public function bitwise_not(): Engine
     {
         // calculuate "not" without regard to $this->precision
         // (will always result in a smaller number.  ie. ~1 isn't 1111 1110 - it's 0)
@@ -533,12 +456,8 @@ abstract class Engine implements \JsonSerializable
      * Logical Left Shift
      *
      * Shifts binary strings $shift bits, essentially multiplying by 2**$shift.
-     *
-     * @param string $x
-     * @param int $shift
-     * @return void
      */
-    protected static function base256_lshift(&$x, $shift)
+    protected static function base256_lshift(string &$x, int $shift): void
     {
         if ($shift == 0) {
             return;
@@ -561,11 +480,8 @@ abstract class Engine implements \JsonSerializable
      * Logical Left Rotate
      *
      * Instead of the top x bits being dropped they're appended to the shifted bit string.
-     *
-     * @param int $shift
-     * @return Engine
      */
-    public function bitwise_leftRotate($shift)
+    public function bitwise_leftRotate(int $shift): Engine
     {
         $bits = $this->toBytes();
 
@@ -605,11 +521,8 @@ abstract class Engine implements \JsonSerializable
      * Logical Right Rotate
      *
      * Instead of the bottom x bits being dropped they're prepended to the shifted bit string.
-     *
-     * @param int $shift
-     * @return Engine
      */
-    public function bitwise_rightRotate($shift)
+    public function bitwise_rightRotate(int $shift): Engine
     {
         return $this->bitwise_leftRotate(-$shift);
     }
@@ -617,10 +530,9 @@ abstract class Engine implements \JsonSerializable
     /**
      * Returns the smallest and largest n-bit number
      *
-     * @param int $bits
      * @return array{min: static, max: static}
      */
-    public static function minMaxBits($bits)
+    public static function minMaxBits(int $bits): array
     {
         $bytes = $bits >> 3;
         $min = str_repeat(chr(0), $bytes);
@@ -634,54 +546,46 @@ abstract class Engine implements \JsonSerializable
         }
         return [
             'min' => new static($min, 256),
-            'max' => new static($max, 256)
+            'max' => new static($max, 256),
         ];
     }
 
     /**
      * Return the size of a BigInteger in bits
-     *
-     * @return int
      */
-    public function getLength()
+    public function getLength(): int
     {
         return strlen($this->toBits());
     }
 
     /**
      * Return the size of a BigInteger in bytes
-     *
-     * @return int
      */
-    public function getLengthInBytes()
+    public function getLengthInBytes(): int
     {
         return (int) ceil($this->getLength() / 8);
     }
 
     /**
      * Performs some pre-processing for powMod
-     *
-     * @param Engine $e
-     * @param Engine $n
-     * @return static|false
      */
-    protected function powModOuter(Engine $e, Engine $n)
+    protected function powModOuter(Engine $e, Engine $n): ?Engine
     {
-        $n = $this->bitmask !== false && $this->bitmask->compare($n) < 0 ? $this->bitmask : $n->abs();
+        $n = isset($this->bitmask) && $this->bitmask->compare($n) < 0 ? $this->bitmask : $n->abs();
 
         if ($e->compare(new static()) < 0) {
             $e = $e->abs();
 
             $temp = $this->modInverse($n);
-            if ($temp === false) {
-                return false;
+            if ($temp === null) {
+                return null;
             }
 
             return $this->normalize($temp->powModInner($e, $n));
         }
 
         if ($this->compare($n) > 0 || $this->isNegative()) {
-            list(, $temp) = $this->divide($n);
+            [, $temp] = $this->divide($n);
             return $temp->powModInner($e, $n);
         }
 
@@ -697,13 +601,10 @@ abstract class Engine implements \JsonSerializable
      * As such, this function has the same preconditions that the reductions being used do.
      *
      * @template T of Engine
-     * @param Engine $x
-     * @param Engine $e
-     * @param Engine $n
      * @param class-string<T> $class
      * @return T
      */
-    protected static function slidingWindow(Engine $x, Engine $e, Engine $n, $class)
+    protected static function slidingWindow(Engine $x, Engine $e, Engine $n, string $class): Engine
     {
         static $window_ranges = [7, 25, 81, 241, 673, 1793]; // from BigInteger.java's oddModPow function
         //static $window_ranges = [0, 7, 36, 140, 450, 1303, 3529]; // from MPM 7.3.1
@@ -761,6 +662,7 @@ abstract class Engine implements \JsonSerializable
         }
 
         $temp = new $class();
+        /** @psalm-suppress UndefinedPropertyAssignment */
         $temp->value = static::reduce($result, $n_value, $class);
 
         return $temp;
@@ -770,15 +672,10 @@ abstract class Engine implements \JsonSerializable
      * Generates a random number of a certain size
      *
      * Bit length is equal to $size
-     *
-     * @param int $size
-     * @return Engine
      */
-    public static function random($size)
+    public static function random(int $size): Engine
     {
-        $minMax = static::minMaxBits($size);
-        $min = $minMax['min'];
-        $max = $minMax['max'];
+        ['min' => $min, 'max' => $max] = static::minMaxBits($size);
         return static::randomRange($min, $max);
     }
 
@@ -786,31 +683,22 @@ abstract class Engine implements \JsonSerializable
      * Generates a random prime number of a certain size
      *
      * Bit length is equal to $size
-     *
-     * @param int $size
-     * @return Engine
      */
-    public static function randomPrime($size)
+    public static function randomPrime(int $size): Engine
     {
-        $minMax = static::minMaxBits($size);
-        $min = $minMax['min'];
-        $max = $minMax['max'];
+        ['min' => $min, 'max' => $max] = static::minMaxBits($size);
         return static::randomRangePrime($min, $max);
     }
 
     /**
      * Performs some pre-processing for randomRangePrime
-     *
-     * @param Engine $min
-     * @param Engine $max
-     * @return static|false
      */
-    protected static function randomRangePrimeOuter(Engine $min, Engine $max)
+    protected static function randomRangePrimeOuter(Engine $min, Engine $max): ?Engine
     {
         $compare = $max->compare($min);
 
         if (!$compare) {
-            return $min->isPrime() ? $min : false;
+            return $min->isPrime() ? $min : null;
         } elseif ($compare < 0) {
             // if $min is bigger then $max, swap $min and $max
             $temp = $max;
@@ -820,7 +708,7 @@ abstract class Engine implements \JsonSerializable
 
         $length = $max->getLength();
         if ($length > 8196) {
-            throw new \RuntimeException("Generation of random prime numbers larger than 8196 has been disabled ($length)");
+            throw new ResourceLimitException("Generation of random prime numbers larger than 8196 has been disabled ($length)");
         }
 
         $x = static::randomRange($min, $max);
@@ -836,12 +724,8 @@ abstract class Engine implements \JsonSerializable
      *
      * BigInteger::randomRange($min, $max)
      * BigInteger::randomRange($max, $min)
-     *
-     * @param Engine $min
-     * @param Engine $max
-     * @return Engine
      */
-    protected static function randomRangeHelper(Engine $min, Engine $max)
+    protected static function randomRangeHelper(Engine $min, Engine $max): Engine
     {
         $compare = $max->compare($min);
 
@@ -878,34 +762,29 @@ abstract class Engine implements \JsonSerializable
             http://crypto.stackexchange.com/questions/5708/creating-a-small-number-from-a-cryptographically-secure-random-string
         */
         $random_max = new static(chr(1) . str_repeat("\0", $size), 256);
-        $random = new static(Random::string($size), 256);
+        $random = new static($size ? random_bytes($size) : '', 256);
 
-        list($max_multiple) = $random_max->divide($max);
+        [$max_multiple] = $random_max->divide($max);
         $max_multiple = $max_multiple->multiply($max);
 
         while ($random->compare($max_multiple) >= 0) {
             $random = $random->subtract($max_multiple);
             $random_max = $random_max->subtract($max_multiple);
             $random = $random->bitwise_leftShift(8);
-            $random = $random->add(new static(Random::string(1), 256));
+            $random = $random->add(new static(random_bytes(1), 256));
             $random_max = $random_max->bitwise_leftShift(8);
-            list($max_multiple) = $random_max->divide($max);
+            [$max_multiple] = $random_max->divide($max);
             $max_multiple = $max_multiple->multiply($max);
         }
-        list(, $random) = $random->divide($max);
+        [, $random] = $random->divide($max);
 
         return $random->add($min);
     }
 
     /**
      * Performs some post-processing for randomRangePrime
-     *
-     * @param Engine $x
-     * @param Engine $min
-     * @param Engine $max
-     * @return static|false
      */
-    protected static function randomRangePrimeInner(Engine $x, Engine $min, Engine $max)
+    protected static function randomRangePrimeInner(Engine $x, Engine $min, Engine $max): ?Engine
     {
         if (!isset(static::$two[static::class])) {
             static::$two[static::class] = new static('2');
@@ -915,7 +794,7 @@ abstract class Engine implements \JsonSerializable
         if ($x->compare($max) > 0) {
             // if $x > $max then $max is even and if $min == $max then no prime number exists between the specified range
             if ($min->equals($max)) {
-                return false;
+                return null;
             }
             $x = clone $min;
             $x->make_odd();
@@ -939,37 +818,33 @@ abstract class Engine implements \JsonSerializable
             }
 
             if ($x->equals($initial_x)) {
-                return false;
+                return null;
             }
         }
     }
 
     /**
      * Sets the $t parameter for primality testing
-     *
-     * @return int
      */
-    protected function setupIsPrime()
+    protected function setupIsPrime(): int
     {
         $length = $this->getLengthInBytes();
 
         // see HAC 4.49 "Note (controlling the error probability)"
-        // @codingStandardsIgnoreStart
-             if ($length >= 163) { $t =  2; } // floor(1300 / 8)
-        else if ($length >= 106) { $t =  3; } // floor( 850 / 8)
-        else if ($length >= 81 ) { $t =  4; } // floor( 650 / 8)
-        else if ($length >= 68 ) { $t =  5; } // floor( 550 / 8)
-        else if ($length >= 56 ) { $t =  6; } // floor( 450 / 8)
-        else if ($length >= 50 ) { $t =  7; } // floor( 400 / 8)
-        else if ($length >= 43 ) { $t =  8; } // floor( 350 / 8)
-        else if ($length >= 37 ) { $t =  9; } // floor( 300 / 8)
-        else if ($length >= 31 ) { $t = 12; } // floor( 250 / 8)
-        else if ($length >= 25 ) { $t = 15; } // floor( 200 / 8)
-        else if ($length >= 18 ) { $t = 18; } // floor( 150 / 8)
-        else                     { $t = 27; }
-        // @codingStandardsIgnoreEnd
-
-        return $t;
+        return match (true) {
+            $length >= 163 =>  2, // floor(1300 / 8)
+            $length >= 106 =>  3, // floor( 850 / 8)
+            $length >= 81  =>  4, // floor( 650 / 8)
+            $length >= 68  =>  5, // floor( 550 / 8)
+            $length >= 56  =>  6, // floor( 450 / 8)
+            $length >= 50  =>  7, // floor( 400 / 8)
+            $length >= 43  =>  8, // floor( 350 / 8)
+            $length >= 37  =>  9, // floor( 300 / 8)
+            $length >= 31  => 12, // floor( 250 / 8)
+            $length >= 25  => 15, // floor( 200 / 8)
+            $length >= 18  => 18, // floor( 150 / 8)
+            default        => 27,
+        };
     }
 
     /**
@@ -977,11 +852,8 @@ abstract class Engine implements \JsonSerializable
      *
      * Uses the {@link http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test Miller-Rabin primality test}.
      * See {@link http://www.cacr.math.uwaterloo.ca/hac/about/chap4.pdf#page=8 HAC 4.24} for more info.
-     *
-     * @param int $t
-     * @return bool
      */
-    protected function testPrimality($t)
+    protected function testPrimality(int $t): bool
     {
         if (!$this->testSmallPrimes()) {
             return false;
@@ -1021,11 +893,8 @@ abstract class Engine implements \JsonSerializable
      * Assuming the $t parameter is not set, this function has an error rate of 2**-80.  The main motivation for the
      * $t parameter is distributability.  BigInteger::randomPrime() can be distributed across multiple pageloads
      * on a website instead of just one.
-     *
-     * @param int|bool $t
-     * @return bool
      */
-    public function isPrime($t = false)
+    public function isPrime(?int $t = null): bool
     {
         // OpenSSL limits RSA keys to 16384 bits. The length of an RSA key is equal to the length of the modulo, which is
         // produced by multiplying the primes p and q by one another. The largest number two 8196 bit primes can produce is
@@ -1033,10 +902,10 @@ abstract class Engine implements \JsonSerializable
         // that it'll generate it also stands to reason that that's the largest you'll be able to test primality on
         $length = $this->getLength();
         if ($length > 8196) {
-            throw new \RuntimeException("Primality testing is not supported for numbers larger than 8196 bits ($length)");
+            throw new ResourceLimitException("Primality testing is not supported for numbers larger than 8196 bits ($length)");
         }
 
-        if (!$t) {
+        if (!isset($t)) {
             $t = $this->setupIsPrime();
         }
         return $this->testPrimality($t);
@@ -1044,11 +913,8 @@ abstract class Engine implements \JsonSerializable
 
     /**
      * Performs a few preliminary checks on root
-     *
-     * @param int $n
-     * @return Engine
      */
-    protected function rootHelper($n)
+    protected function rootHelper(int $n): Engine
     {
         if ($n < 1) {
             return clone static::$zero[static::class];
@@ -1069,11 +935,8 @@ abstract class Engine implements \JsonSerializable
      * Returns the nth root of a positive biginteger, where n defaults to 2
      *
      * {@internal This function is based off of {@link http://mathforum.org/library/drmath/view/52605.html this page} and {@link http://stackoverflow.com/questions/11242920/calculating-nth-root-with-bcmath-in-php this stackoverflow question}.}
-     *
-     * @param int $n
-     * @return Engine
      */
-    protected function rootInner($n)
+    protected function rootInner(int $n): Engine
     {
         $n = new static($n);
 
@@ -1110,7 +973,6 @@ abstract class Engine implements \JsonSerializable
                     $g = $g->subtract($step);
                     break;
                 case 0: // if guess is exactly the num we're done, we return the value
-                    $root = $g;
                     break 2;
             }
         }
@@ -1127,22 +989,16 @@ abstract class Engine implements \JsonSerializable
 
     /**
      * Calculates the nth root of a biginteger.
-     *
-     * @param int $n
-     * @return Engine
      */
-    public function root($n = 2)
+    public function root(int $n = 2): Engine
     {
         return $this->rootHelper($n);
     }
 
     /**
      * Return the minimum BigInteger between an arbitrary number of BigIntegers.
-     *
-     * @param array $nums
-     * @return Engine
      */
-    protected static function minHelper(array $nums)
+    protected static function minHelper(array $nums): Engine
     {
         if (count($nums) == 1) {
             return $nums[0];
@@ -1156,11 +1012,8 @@ abstract class Engine implements \JsonSerializable
 
     /**
      * Return the minimum BigInteger between an arbitrary number of BigIntegers.
-     *
-     * @param array $nums
-     * @return Engine
      */
-    protected static function maxHelper(array $nums)
+    protected static function maxHelper(array $nums): Engine
     {
         if (count($nums) == 1) {
             return $nums[0];
@@ -1177,15 +1030,13 @@ abstract class Engine implements \JsonSerializable
      *
      * Sometimes it may be desirable to do repeated modulos with the same number outside of
      * modular exponentiation
-     *
-     * @return callable
      */
-    public function createRecurringModuloFunction()
+    public function createRecurringModuloFunction(): \Closure
     {
         $class = static::class;
 
         $fqengine = !method_exists(static::$modexpEngine[static::class], 'reduce') ?
-            '\\phpseclib3\\Math\\BigInteger\\Engines\\' . static::ENGINE_DIR . '\\DefaultEngine' :
+            '\\phpseclib4\\Math\\BigInteger\\Engines\\' . static::ENGINE_DIR . '\\DefaultEngine' :
             static::$modexpEngine[static::class];
         if (method_exists($fqengine, 'generateCustomReduction')) {
             $func = $fqengine::generateCustomReduction($this, static::class);
@@ -1195,6 +1046,7 @@ abstract class Engine implements \JsonSerializable
                 return $r;
             };');
         }
+        /** @psalm-suppress UndefinedThisPropertyFetch */
         $n = $this->value;
         return eval('return function(' . static::class . ' $x) use ($n, $fqengine, $class) {
             $r = new $class();
@@ -1206,10 +1058,9 @@ abstract class Engine implements \JsonSerializable
     /**
      * Calculates the greatest common divisor and Bezout's identity.
      *
-     * @param Engine $n
      * @return array{gcd: Engine, x: Engine, y: Engine}
      */
-    protected function extendedGCDHelper(Engine $n)
+    protected function extendedGCDHelper(Engine $n): array
     {
         $u = clone $this;
         $v = clone $n;
@@ -1223,7 +1074,7 @@ abstract class Engine implements \JsonSerializable
         $d = clone $one;
 
         while (!$v->equals($zero)) {
-            list($q) = $u->divide($v);
+            [$q] = $u->divide($v);
 
             $temp = $u;
             $u = $v;
@@ -1241,7 +1092,7 @@ abstract class Engine implements \JsonSerializable
         return [
             'gcd' => $u,
             'x' => $a,
-            'y' => $b
+            'y' => $b,
         ];
     }
 
@@ -1250,13 +1101,12 @@ abstract class Engine implements \JsonSerializable
      *
      * Splits BigInteger's into chunks of $split bits
      *
-     * @param int $split
      * @return Engine[]
      */
-    public function bitwise_split($split)
+    public function bitwise_split(int $split): array
     {
         if ($split < 1) {
-            throw new \RuntimeException('Offset must be greater than 1');
+            throw new InvalidArgumentException('Offset must be greater than 1');
         }
 
         $mask = static::$one[static::class]->bitwise_leftShift($split)->subtract(static::$one[static::class]);
@@ -1274,11 +1124,8 @@ abstract class Engine implements \JsonSerializable
 
     /**
      * Logical And
-     *
-     * @param Engine $x
-     * @return Engine
      */
-    protected function bitwiseAndHelper(Engine $x)
+    protected function bitwiseAndHelper(Engine $x): Engine
     {
         $left = $this->toBytes(true);
         $right = $x->toBytes(true);
@@ -1293,11 +1140,8 @@ abstract class Engine implements \JsonSerializable
 
     /**
      * Logical Or
-     *
-     * @param Engine $x
-     * @return Engine
      */
-    protected function bitwiseOrHelper(Engine $x)
+    protected function bitwiseOrHelper(Engine $x): Engine
     {
         $left = $this->toBytes(true);
         $right = $x->toBytes(true);
@@ -1312,11 +1156,8 @@ abstract class Engine implements \JsonSerializable
 
     /**
      * Logical Exclusive Or
-     *
-     * @param Engine $x
-     * @return Engine
      */
-    protected function bitwiseXorHelper(Engine $x)
+    protected function bitwiseXorHelper(Engine $x): Engine
     {
         $left = $this->toBytes(true);
         $right = $x->toBytes(true);

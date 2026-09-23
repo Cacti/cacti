@@ -74,21 +74,21 @@ switch (get_request_var('action')) {
 
 		item_remove();
 
-		header('Location: graph_templates.php?header=false&action=template_edit&id=' . get_request_var('graph_template_id'));
+		header('Location: graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
 		break;
 	case 'item_movedown':
 		get_filter_request_var('graph_template_id');
 
 		item_movedown();
 
-		header('Location: graph_templates.php?header=false&action=template_edit&id=' . get_request_var('graph_template_id'));
+		header('Location: graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
 		break;
 	case 'item_moveup':
 		get_filter_request_var('graph_template_id');
 
 		item_moveup();
 
-		header('Location: graph_templates.php?header=false&action=template_edit&id=' . get_request_var('graph_template_id'));
+		header('Location: graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
 		break;
 	case 'item_edit':
 		top_header();
@@ -613,6 +613,8 @@ function item_edit() {
 
 				if ($('#task_item_id').selectmenu('instance')) {
 					$('#task_item_id').selectmenu('refresh');
+				} else if ($('#task_item_id').hasClass('select2-hidden-accessible')) {
+					$('#task_item_id').trigger('change.select2');
 				}
 			});
 		});

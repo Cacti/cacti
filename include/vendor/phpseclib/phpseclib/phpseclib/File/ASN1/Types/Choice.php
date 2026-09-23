@@ -1,0 +1,240 @@
+<?php
+
+/**
+ * ASN.1 Choice
+ *
+ * PHP version 8.1+
+ *
+ * @author    Jim Wigginton <terrafrost@php.net>
+ * @copyright 2025-2026 Jim Wigginton
+ * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
+ * @link      https://phpseclib.com/
+ */
+
+declare(strict_types=1);
+
+namespace phpseclib4\File\ASN1\Types;
+
+use phpseclib4\Common\Functions\Strings;
+use phpseclib4\Exception\{
+    BadMethodCallException,
+    InvalidArgumentException,
+    UnexpectedValueException,
+    UnsupportedValueException
+};
+use phpseclib4\File\ASN1\Constructed;
+use phpseclib4\File\{ASN1, X509};
+use phpseclib4\File\CMS\EnvelopedData\KeyAgreeRecipient\EncryptedKey;
+use phpseclib4\File\CMS\EnvelopedData\Recipient;
+use phpseclib4\File\CMS\SignedData\Signer;
+
+/**
+ * ASN.1 Choice
+ *
+ * @author  Jim Wigginton <terrafrost@php.net>
+ * @implements \ArrayAccess<string, mixed>
+ * @implements \Iterator<string, mixed>
+ */
+class Choice implements \ArrayAccess, \Countable, \Iterator, BaseType
+{
+    public array $rules = [];
+    public Choice|Constructed|null $parent = null;
+    public int $depth = 0;
+    public int|string $key;
+    private bool $forcedCache = false;
+    private bool $iteratorStart = true;
+
+    /**
+     * Constructor
+     */
+    public function __construct(public string $index, public mixed $value)
+    {
+    }
+
+    public function __debugInfo(): array
+    {
+        if ($this->value instanceof X509) {
+            $this->value->enableHideFullDecode();
+        }
+        if (isset($this->rules[$this->index]) && ($this->value instanceof Constructed || $this->value instanceof Choice)) {
+            $this->value->rules = $this->rules[$this->index];
+        }
+        return [$this->index => $this->value];
+    }
+
+    public function enableForcedCache(): void
+    {
+        $this->forcedCache = true;
+    }
+
+    public function disableForcedCache(): void
+    {
+        $this->forcedCache = false;
+    }
+
+    public function isCacheForced(): bool
+    {
+        return $this->forcedCache;
+    }
+
+    public function setWrapping(string $wrapping): void
+    {
+        if ($this->value instanceof BaseType) {
+            $this->value->setWrapping($wrapping);
+        }
+    }
+
+    public function setEncoded(string $header, string $encoded): void
+    {
+        if ($this->value instanceof BaseType) {
+            $this->value->setEncoded($header, $encoded);
+        }
+    }
+
+    public function hasTypeID(): bool
+    {
+        return $this->value instanceof BaseType ? $this->value->hasTypeID() : false;
+    }
+
+    public function hasWrapping(): bool
+    {
+        return $this->value instanceof BaseType && $this->value->hasWrapping();
+    }
+
+    public function getEncodedWithWrapping(): string
+    {
+        return $this->value instanceof BaseType ? $this->value->getEncodedWithWrapping() : '';
+    }
+
+    public function hasEncoded(): bool
+    {
+        return $this->value instanceof BaseType && $this->value->hasEncoded();
+    }
+
+    public function getEncoded(): string
+    {
+        return $this->value instanceof BaseType ? $this->value->getEncoded() : '';
+    }
+
+    public function getEncodedLength(): int
+    {
+        if (!$this->value instanceof BaseType) {
+            throw new UnsupportedValueException('Unable to get encoded length of non-Base type');
+        }
+        return $this->value->getEncodedLength();
+    }
+
+    public function offsetExists(mixed $offset): bool
+    {
+        return $offset == $this->index;
+    }
+
+    public function &offsetGet(mixed $offset): mixed
+    {
+        if ($offset != $this->index) {
+            throw new UnexpectedValueException("The requested offset '$offset' was not found - did you mean '{$this->index}'?");
+        }
+        if (($this->value instanceof Constructed || $this->value instanceof Choice) && !$this->value->parent) {
+            $this->value->parent = $this;
+            if (isset($this->rules[$this->index])) {
+                $this->value->rules = $this->rules[$offset];
+            }
+            if (isset($this->value->depth)) {
+                $this->value->depth = $this->depth + 1;
+                if (isset($this->key)) {
+                    $this->value->key = $this->key;
+                }
+            }
+        }
+        return $this->value;
+    }
+
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        if (!Strings::is_stringable($offset)) {
+            throw new BadMethodCallException('Only offsets that can be cast to strings are supported');
+        }
+
+        $this->index = "$offset";
+        $this->value = $value;
+
+        if (ASN1::invalidateCache()) {
+            $this->invalidateCache();
+        }
+    }
+
+    public function offsetUnset(mixed $offset): void
+    {
+        if ($offset == $this->index) {
+            unset($this->index, $this->value);
+        }
+    }
+
+    public function __toString(): string
+    {
+        if (!Strings::is_stringable($this->value)) {
+            $reflect = new \ReflectionClass($this->value);
+            throw new InvalidArgumentException($reflect->getShortName() . ' isn\'t stringable');
+        }
+        return (string) $this->value;
+    }
+
+    public function count(): int
+    {
+        return 1;
+    }
+
+    public function toArray(bool $convertPrimitives = false): array
+    {
+        if ($this->value instanceof Constructed || $this->value instanceof Choice) {
+            if (isset($this->rules[$this->index])) {
+                $this->value->rules = $this->rules[$this->index];
+            }
+            return [$this->index => $this->value->toArray($convertPrimitives)];
+        }
+        if ($this->value instanceof Signer || $this->value instanceof Recipient || $this->value instanceof EncryptedKey) {
+            return [$this->index => $this->value->toArray($convertPrimitives)];
+        }
+        return [$this->index => $convertPrimitives ? ASN1::convertToPrimitive($this->value) : $this->value];
+    }
+
+    public function reconstituteKeyHelper(): ?string
+    {
+        if (!isset($this->key)) {
+            return null;
+        }
+        return !isset($this->parent) || !isset($this->parent->key) ? (string) $this->key : $this->parent->reconstituteKeyHelper() . '/' . $this->key;
+    }
+
+    public function invalidateCache(): void
+    {
+        if ($this->parent) {
+            $this->parent->invalidateCache();
+        }
+    }
+
+    public function rewind(): void
+    {
+        $this->iteratorStart = true;
+    }
+
+    public function current(): mixed
+    {
+        return $this->value;
+    }
+
+    public function key(): mixed
+    {
+        return $this->index;
+    }
+
+    public function next(): void
+    {
+        $this->iteratorStart = false;
+    }
+
+    public function valid(): bool
+    {
+        return $this->iteratorStart;
+    }
+}

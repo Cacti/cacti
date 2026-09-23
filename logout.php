@@ -31,6 +31,9 @@ set_default_action();
 
 api_plugin_hook('logout_pre_session_destroy');
 
+/* Revoke persistent authentication on every logout path, before browser state. */
+clear_auth_cookie();
+
 /* Note: logout is reachable via GET without CSRF token. Impact is limited
  * to forced-logout (annoyance, no privilege escalation). SameSite=Strict
  * on the session cookie prevents cross-site exploitation on modern browsers.
@@ -97,8 +100,5 @@ if (get_request_var('action') == 'timeout' || get_request_var('action') == 'disa
 	</html>";
 } else {
 	/* Default action */
-	clear_auth_cookie();
-
 	header('Location: index.php');
 }
-

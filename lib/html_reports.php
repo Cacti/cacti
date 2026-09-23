@@ -1287,11 +1287,23 @@ function reports_item_edit() {
 		$.getJSON(strURL, function(data) {
 			$.get('?action=ajax_get_branches&tree_id=' + $('#tree_id').val(), function(data) {
 				var selectmenu = $('#branch_id').selectmenu('instance');
+				var select2    = $('#branch_id').hasClass('select2-hidden-accessible');
+
+				/* replaceWith() only swaps the <select> itself; a live Select2 instance's
+				 * sibling .select2-container is left orphaned in the DOM unless torn down
+				 * first, which would leave a duplicate control once re-initialized below */
+				if (select2) {
+					$('#branch_id').select2('destroy');
+				}
 
 				$('#branch_id').replaceWith(data);
 
 				if (selectmenu) {
 					$('#branch_id').selectmenu();
+				} else if (select2) {
+					$('#branch_id').select2({
+						minimumResultsForSearch: select2SearchRows
+					});
 				}
 			});
 		});
@@ -1326,15 +1338,21 @@ function reports_item_edit() {
 	function resetSelects(data) {
 		if (data.site_id) {
 			$('#site_id').val('-1');
+
 			if ($('#site_id').selectmenu('instance')) {
 				$('#site_id').selectmenu('refresh');
+			} else if ($('#site_id').hasClass('select2-hidden-accessible')) {
+				$('#site_id').trigger('change.select2');
 			}
 		}
 
 		if (data.host_template_id) {
 			$('#host_template_id').val('-1');
+
 			if ($('#host_template_id').selectmenu('instance')) {
 				$('#host_template_id').selectmenu('refresh');
+			} else if ($('#host_template_id').hasClass('select2-hidden-accessible')) {
+				$('#host_template_id').trigger('change.select2');
 			}
 		}
 
@@ -1801,14 +1819,14 @@ function display_reports_items($report_id) {
 			$form_data .= '<td>' . $size . '</td>';
 
 			if ($i == 1) {
-				$form_data .= '<td class="right nowrap"><a class="pic remover fa fa-caret-down moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span style="padding:5ps" class="moveArrowNone"></span>';
+				$form_data .= '<td class="right nowrap"><a class="pic remover fa fa-caret-down moveArrow cactiPostAction" style="padding:3px" title="' . __esc('Move Down') . '" href="#" data-url="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span style="padding:5ps" class="moveArrowNone"></span>';
 			} elseif ($i > 1 && $i < cacti_sizeof($items)) {
-				$form_data .= '<td class="right nowrap"><a class="pic remover fa fa-caret-down moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover fa fa-caret-up moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
+				$form_data .= '<td class="right nowrap"><a class="pic remover fa fa-caret-down moveArrow cactiPostAction" style="padding:3px" title="' . __esc('Move Down') . '" href="#" data-url="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover fa fa-caret-up moveArrow cactiPostAction" style="padding:3px" title="' . __esc('Move Up') . '" href="#" data-url="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
 			} else {
-				$form_data .= '<td class="right nowrap"><span style="padding:3px" class="moveArrowNone"></span>' . '<a class="remover fa fa-caret-up moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
+				$form_data .= '<td class="right nowrap"><span style="padding:3px" class="moveArrowNone"></span>' . '<a class="remover fa fa-caret-up moveArrow cactiPostAction" style="padding:3px" title="' . __esc('Move Up') . '" href="#" data-url="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
 			}
 
-			$form_data .= '<a class="pic deleteMarker fa fa-times" style="padding:3px" href="' . html_escape(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
+			$form_data .= '<a class="pic deleteMarker fa fa-times cactiPostAction" style="padding:3px" href="#" data-url="' . html_escape(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
 
 			print $form_data;
 

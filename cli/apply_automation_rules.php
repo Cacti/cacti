@@ -121,7 +121,7 @@ if ($hostname != '') {
 	$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(';
 	$regex = false;
 
-	if (validate_is_regex($hostname)) {
+	if (validate_is_regex($hostname) === true) {
 		$regex = true;
 		$sql_where .= 'h.hostname ' . db_qstr_rlike($hostname);
 	}
@@ -135,7 +135,7 @@ if ($description != '') {
 	$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(';
 	$regex = false;
 
-	if (validate_is_regex($description)) {
+	if (validate_is_regex($description) === true) {
 		$regex = true;
 		$sql_where .= 'h.description ' . db_qstr_rlike($description);
 	}

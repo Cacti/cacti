@@ -182,7 +182,7 @@ class Net_Ping
 			} elseif (substr_count(strtolower(PHP_OS), 'aix')) {
 				$result = shell_exec('ping -i ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
 			} elseif (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-				$result = shell_exec('chcp 437 && ping -w ' . $this->timeout . ' -n ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
+				$result = shell_exec('chcp 437 && ping -w ' . $this->timeout . ' -n ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
 			} else {
 				/* please know, that when running SELinux, httpd will throw
 				 * ping: cap_set_proc: Permission denied

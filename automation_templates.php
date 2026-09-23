@@ -531,13 +531,13 @@ function template() {
 			if (read_config_option('drag_and_drop') == '') {
 				$add_text = '';
 				if ($i < $total_items && $total_items > 1) {
-					$add_text .= '<a class="pic fa fa-caret-down moveArrow cactiPostAction" href="' . html_escape('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
+					$add_text .= '<a class="pic fa fa-caret-down moveArrow cactiPostAction" href="#" data-url="' . html_escape('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
 
 				if ($i > 1 && $i <= $total_items) {
-					$add_text .= '<a class="pic fa fa-caret-up moveArrow cactiPostAction" href="' . html_escape('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __esc('Move Up') . '"></a>';
+					$add_text .= '<a class="pic fa fa-caret-up moveArrow cactiPostAction" href="#" data-url="' . html_escape('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __esc('Move Up') . '"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
