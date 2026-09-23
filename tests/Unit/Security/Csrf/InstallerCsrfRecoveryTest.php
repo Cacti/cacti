@@ -33,7 +33,8 @@ test('installer csrf failures return a scoped json recovery response', function 
 		->and($csrf)->toContain("'csrfMagicToken' => csrf_get_tokens()")
 		->and($csrf)->toContain("header('Cache-Control: no-store')")
 		->and($csrf)->toContain("header('X-Content-Type-Options: nosniff')")
-		->and($csrf)->toContain("header('Location: ' . sanitize_uri(\$_SERVER['REQUEST_URI']))");
+		->and($csrf)->toContain("validate_redirect_url(\$_SERVER['REQUEST_URI'] ?? '', 'index.php')")
+		->and($csrf)->toContain("header('Location: ' . \$redirect_target)");
 });
 
 test('successful installer json responses roll the csrf token forward', function () use ($root) {

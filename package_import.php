@@ -28,8 +28,9 @@ require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/xml.php');
-require_once('./include/vendor/phpdiff/Diff.php');
-require_once('./include/vendor/phpdiff/Renderer/Html/Inline.php');
+
+use Jfcherng\Diff\Differ;
+use Jfcherng\Diff\Factory\RendererFactory;
 
 // set default action
 set_default_action();
@@ -744,7 +745,7 @@ function package_diff_file() : void {
 		return;
 	}
 
-	$options = [
+	$differOptions = [
 		'ignoreWhitespace' => true,
 		'ignoreCase'       => false
 	];
@@ -763,15 +764,14 @@ function package_diff_file() : void {
 		$oldfile = explode("\n", $oldfile);
 	}
 
-	if (cacti_sizeof($oldfile)) {
-		if (cacti_sizeof($newfile)) {
-			$diff = new Diff($oldfile, $newfile, $options);
+	if (is_array($oldfile) && cacti_sizeof($oldfile)) {
+		if (is_array($newfile) && cacti_sizeof($newfile)) {
+			$differ   = new Differ($oldfile, $newfile, $differOptions);
+			$renderer = RendererFactory::make('Inline');
 
-			$renderer = new Diff_Renderer_Html_Inline;
-
-			// Diff_Renderer_Html_Inline::formatLines() HTML-escapes every input
-			// line before adding its own <ins>/<del> markup.
-			print '<body>' . $diff->render($renderer) . '</body></html>'; // nosemgrep: cacti-request-var-echoed-unescaped
+			// Jfcherng\Diff\Renderer\Html\AbstractHtml::htmlSafe() HTML-escapes every
+			// input line before adding its own <ins>/<del> markup.
+			print '<body>' . $renderer->render($differ) . '</body></html>'; // nosemgrep: cacti-request-var-echoed-unescaped
 		} else {
 			print 'New file does not exist';
 		}
@@ -895,6 +895,16 @@ function package_verify_key() : void {
 }
 
 function package_accept_key() : void {
+	// Trusting a new signer is a Package Management (realm 29) decision,
+	// distinct from the Import Templates (realm 17) permission that gates
+	// this page as a whole.
+	if (!is_realm_allowed(29)) {
+		raise_message('permission_denied');
+		header('Location: package_import.php');
+
+		exit;
+	}
+
 	$package_location = gfrv('package_location');
 
 	if ($package_location > 0) {
@@ -1836,10 +1846,14 @@ function package_import() : void {
 		});
 
 		if (checks != '' || $('#package_location').val() == 0) {
-			$.getJSON('package_import.php?action=accept'               +
-				'&package_location='    + $('#package_location').val() +
-				'&package_ids='         + checks, function(data) {
-			});
+			/* accept is state-changing (trusts a signer), so it must arrive by
+			 * POST with a CSRF token like the other 'bad_actions' in global.php */
+			$.post('package_import.php?action=accept', {
+				package_location: $('#package_location').val(),
+				package_ids:      checks,
+				__csrf_magic:     csrfMagicToken
+			}, function(data) {
+			}, 'json');
 		}
 	}
 

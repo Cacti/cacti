@@ -3372,6 +3372,8 @@ function get_host_array() : array {
 /**
  * Returns a list of hosts in a way that can be easily read through
  * a callback, in JSON.  The 'term' request variable will include an optional search term.
+ * The 'noany'/'nonone' request vars, if present, override $include_any/$include_none
+ * respectively (used by html_host_filter()'s ajax-backed select2-callback widget).
  *
  * @param bool   $include_any  Whether to include an "Any" option in the results.
  * @param bool   $include_none Whether to include a "None" option in the results.
@@ -3384,6 +3386,17 @@ function get_allowed_ajax_hosts(bool $include_any = true, bool $include_none = t
 
 	if (!auth_valid_user($user_id)) {
 		return [];
+	}
+
+	// html_host_filter()'s select2-callback widget forwards the caller's $noany/$nonone
+	// choice as request vars, since it's not the same page context that originally
+	// rendered the filter form; only override the defaults when explicitly present.
+	if (isrv('noany')) {
+		$include_any = !gfrv('noany', FILTER_VALIDATE_BOOLEAN);
+	}
+
+	if (isrv('nonone')) {
+		$include_none = !gfrv('nonone', FILTER_VALIDATE_BOOLEAN);
 	}
 
 	$return = [];

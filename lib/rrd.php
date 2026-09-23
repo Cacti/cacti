@@ -1395,9 +1395,9 @@ function rrdtool_function_interface_speed(array $data_local) : string {
 	$ifSpeed     = $speeds['ifSpeed'] ?? false;
 
 	if (!empty($ifHighSpeed)) {
-		$speed = $ifHighSpeed * 1000000;
+		$speed = (int) $ifHighSpeed * 1000000;
 	} elseif (!empty($ifSpeed)) {
-		$speed = $ifSpeed;
+		$speed = (int) $ifSpeed;
 	} else {
 		$speed = intval(read_config_option('default_interface_speed'));
 
@@ -1629,6 +1629,16 @@ function rrdtool_function_create(int $local_data_id, bool $show_source, mixed $r
 			// min==max==0 won't work with rrdtool
 			if ($data_source['rrd_minimum'] == 0 && $data_source['rrd_maximum'] == 0) {
 				$data_source['rrd_maximum'] = 'U';
+			}
+
+			// the bounds are about to be concatenated onto an rrdtool command line, so
+			// never let anything but a number or the literal 'U' reach that sink
+			foreach (['rrd_minimum', 'rrd_maximum'] as $bound) {
+				if ($data_source[$bound] !== 'U' && !is_numeric($data_source[$bound])) {
+					cacti_log("ERROR: Non-numeric $bound '" . $data_source[$bound] . "' for data source '$data_source_name' local_data_id " . $local_data_id, false, 'RRDTOOL');
+
+					$data_source[$bound] = 'U';
+				}
 			}
 
 			$create_ds .= "DS:$data_source_name:" . $data_source_types[$data_source['data_source_type_id']] . ':' . $data_source['rrd_heartbeat'] . ':' . $data_source['rrd_minimum'] . ':' . $data_source['rrd_maximum'] . RRD_NL;

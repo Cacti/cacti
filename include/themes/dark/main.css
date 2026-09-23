@@ -3059,3 +3059,196 @@ circle {
 	color:#9BB7D4 !important;
 }
 
+
+/* Select2 - adapt to look like a native Cacti/jQuery UI control.
+   Select2 4.x ships no jQuery UI theme, so these overrides reuse this
+   theme's own jquery-ui.css/main.css colors (see .ui-widget-content /
+   .ui-state-hover / .ui-state-active) to match its look and feel. */
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+	border: 1px solid #555555;
+	border-radius: 6px;
+	background: #222222 url("images/ui-bg_highlight-soft_35_222222_1x100.png") 50% 50% repeat-x;
+	color: #ffffff;
+}
+
+/* match jQuery UI's shorter button height */
+.select2-container--default .select2-selection--single {
+	height: 24px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+	line-height: 24px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+	height: 22px;
+}
+
+/* match the multi-select (e.g. Templates) control to the single-select height;
+   flexbox centers content vertically regardless of font metrics */
+.select2-container--default .select2-selection--multiple {
+	min-height: 24px;
+	padding: 0 20px 0 0;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+	display: block;
+	flex: 1;
+	margin: 0;
+	padding-left: 8px;
+	overflow: hidden;
+	line-height: 24px;
+}
+
+/* select2-multi-count always replaces the rendered area with "N Selected" text;
+   only hide the inline search-while-typing box while closed (it doesn't fit
+   that display and was inflating the control's height) - let it reappear once
+   the dropdown opens, since that's the only place multi-selects can search from */
+select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.select2-container--open) .select2-search--inline {
+	display: none;
+}
+
+.select2-selection--multiple .select2-count-label {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* once open, let the search box sit on its own row below the current
+   selection instead of overlapping it */
+.select2-container--default .select2-selection--multiple .select2-search--inline {
+	display: block;
+	width: 100%;
+	margin: 4px 0 0;
+}
+
+.select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field {
+	width: 100% !important;
+	box-sizing: border-box;
+	margin: 0 !important;
+}
+
+/* select2 doesn't draw a dropdown arrow for multi-selects by default; add one to match */
+.select2-container--default .select2-selection--multiple::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	right: 8px;
+	margin-top: -2px;
+	border-color: currentColor transparent transparent transparent;
+	border-style: solid;
+	border-width: 5px 4px 0 4px;
+	height: 0;
+	width: 0;
+	pointer-events: none;
+}
+
+.select2-container--default.select2-container--open .select2-selection--multiple::after {
+	border-color: transparent transparent currentColor transparent;
+	border-width: 0 4px 5px 4px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.select2-results__option {
+	white-space: nowrap;
+	min-height: 24px;
+	box-sizing: border-box;
+}
+
+/* keep the first 15 results visible before the list needs to scroll */
+.select2-container--default .select2-results > .select2-results__options {
+	max-height: 360px;
+}
+
+/* checkbox-style indicator for select2-multi-count option rows */
+.select2-results__option .select2-checkbox-option {
+	position: relative;
+	display: block;
+	padding-left: 20px;
+}
+
+.select2-results__option .select2-checkbox-option::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 13px;
+	height: 13px;
+	margin-top: -7px;
+	border: 1px solid currentColor;
+	border-radius: 2px;
+	box-sizing: border-box;
+}
+
+/* select2 also (re)uses aria-selected for mouse-hover/keyboard highlight
+ * tracking, unrelated to actual selection - key off the --selected class
+ * instead, which setClasses() only ever sets from the real selected data */
+.select2-results__option.select2-results__option--selected .select2-checkbox-option::after {
+	content: '\2713';
+	position: absolute;
+	left: 2px;
+	top: 50%;
+	margin-top: -7px;
+	font-size: 11px;
+	line-height: 13px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered,
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+	color: #ffffff;
+}
+
+/* select2 keeps --focus set after the dropdown closes; only --open should get the active look */
+.select2-container--default.select2-container--open .select2-selection--single,
+.select2-container--default.select2-container--open .select2-selection--multiple {
+	border-color: #155413;
+	background: #155413;
+	color: #ffffff;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+	border-top-color: #ffffff;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+	background: #155413;
+	border: 1px solid #555555;
+	color: #ffffff;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+	color: #ffffff;
+}
+
+.select2-dropdown {
+	border: 1px solid #555555;
+	background: #000000 url("images/ui-bg_loop_25_000000_21x21.png") 50% 50% repeat;
+	color: #ffffff;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field,
+.select2-container--default .select2-search--inline .select2-search__field {
+	border: 1px solid #555555;
+	background: #000000;
+	color: #ffffff;
+}
+
+.select2-container--default .select2-results__option--selected {
+	background: #155413;
+	color: #ffffff;
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+	background: #31442b;
+	color: #ffffff;
+}

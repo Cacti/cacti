@@ -248,8 +248,14 @@ function process_poller_output_rt(mixed $rrdtool_pipe, string $poller_id, int $i
 				in there (text format) */
 				$command = str_replace("\\\n", ' ', $command);
 
-				// create the rrdfile
-				shell_exec($command);
+				// create the rrdfile without going through a shell
+				$rrdtool = read_config_option('path_rrdtool') . ' ';
+
+				if (strpos($command, $rrdtool) === 0) {
+					$command = substr($command, strlen($rrdtool));
+				}
+
+				rrdtool_execute($command, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 
 				// change permissions so that the poller can clear
 				@chmod($rt_graph_path, 0644);

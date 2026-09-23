@@ -401,8 +401,16 @@ function csrf_error_callback() : void {
 
 	raise_message('csrf_timeout');
 	ob_end_clean();
-	header('Location: ' . sanitize_uri($_SERVER['REQUEST_URI']));
-	csrf_log(__FUNCTION__, 'Timeout, redirecting to ' . sanitize_uri($_SERVER['REQUEST_URI']));
+	// sanitize_uri()'s guard models the WHATWG C0/leading-slash normalisation
+	// rule but not Chromium's separate stripping of embedded tabs, so a
+	// target like "/%09/evil.example" still reaches the browser as a
+	// same-origin-looking "//evil.example" once Chromium collapses the tab.
+	// validate_redirect_url() resolves the URL with parse_url() and compares
+	// host/port against the server-configured values instead of pattern
+	// matching known-bad prefixes, so it is not bypassable this way.
+	$redirect_target = validate_redirect_url($_SERVER['REQUEST_URI'] ?? '', 'index.php');
+	header('Location: ' . $redirect_target);
+	csrf_log(__FUNCTION__, 'Timeout, redirecting to ' . $redirect_target);
 
 	exit;
 }

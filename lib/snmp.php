@@ -32,28 +32,52 @@
  * TimeTicks value wraps, so retain the existing preference when it is at
  * least the system uptime and does not resemble wall-clock time.
  *
- * @param mixed    $system_uptime sysUpTime in hundredths of a second.
- * @param mixed    $engine_time   snmpEngineTime in seconds.
- * @param int|null $now           Current Unix time, injectable for tests.
+ * @param mixed    $system_uptime      sysUpTime in hundredths of a second.
+ * @param mixed    $engine_time        snmpEngineTime in seconds.
+ * @param int|null $now                Current Unix time, injectable for tests.
+ * @param bool     $prefer_engine_time When true, skip BOTH the wall-clock rejection and
+ *                                     the "prefer whichever is larger" comparison, and
+ *                                     always use engine time once it is numeric and
+ *                                     positive. Spine's own reindex assert re-check
+ *                                     (poller.c) always prefers the engine OID whenever
+ *                                     it is numeric - with no wall-clock awareness and no
+ *                                     magnitude comparison of its own; the recache
+ *                                     baseline stored for spine to compare against must
+ *                                     use the exact same rule, or a device whose engine
+ *                                     time is legitimately smaller than sysUpTime (e.g.
+ *                                     the SNMP agent restarted more recently than the OS),
+ *                                     or an OpenBSD-style agent returning the Unix clock
+ *                                     as engine time, causes a permanent mismatch and an
+ *                                     infinite RECACHE ASSERT loop.
  *
  * @return int|false Selected uptime in hundredths of a second.
  */
-function cacti_snmp_select_uptime(mixed $system_uptime, mixed $engine_time, ?int $now = null) : int|false {
+function cacti_snmp_select_uptime(mixed $system_uptime, mixed $engine_time, ?int $now = null, bool $prefer_engine_time = false) : int|false {
 	$system_uptime = is_numeric($system_uptime) && $system_uptime >= 0 ? (int) $system_uptime : false;
 
 	if (!is_numeric($engine_time) || $engine_time <= 0) {
 		return $system_uptime;
 	}
 
-	$engine_time = (int) $engine_time;
+	$engine_time   = (int) $engine_time;
+	$engine_uptime = $engine_time * 100;
+
+	// spine's own reindex re-check has no wall-clock awareness at all - it
+	// unconditionally prefers any numeric engine time. Paths that must agree
+	// with spine's live comparison value have to replicate that exactly,
+	// including on OpenBSD-style agents that return the Unix clock as engine
+	// time, or the stored baseline and spine's re-check permanently disagree
+	// and the RECACHE ASSERT loop persists for those devices too.
+	if ($prefer_engine_time) {
+		return $engine_uptime;
+	}
+
 	$now         = $now ?? time();
 	$epoch_range = 5 * 366 * 86400;
 
 	if ($now > $epoch_range && abs($engine_time - $now) <= $epoch_range) {
 		return $system_uptime;
 	}
-
-	$engine_uptime = $engine_time * 100;
 
 	return $system_uptime === false || $engine_uptime >= $system_uptime ? $engine_uptime : $system_uptime;
 }
@@ -227,7 +251,7 @@ function cacti_snmp_get(string $hostname, mixed $community, string $oid, mixed $
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
-			' ' . cacti_escapeshellarg($hostname) . ':' . $port .
+			' ' . cacti_escapeshellarg_cmd($hostname, true, true) . ':' . $port .
 			' ' . cacti_escapeshellarg($oid);
 
 		if (isset($_SESSION)) {
@@ -315,7 +339,7 @@ function cacti_snmp_get_raw(string $hostname, mixed $community, string $oid, mix
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
-			' ' . cacti_escapeshellarg($hostname) . ':' . $port .
+			' ' . cacti_escapeshellarg_cmd($hostname, true, true) . ':' . $port .
 			' ' . cacti_escapeshellarg($oid);
 
 		if (isset($_SESSION)) {
@@ -399,7 +423,7 @@ function cacti_snmp_getnext(string $hostname, mixed $community, mixed $oid, mixe
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
-			' ' . cacti_escapeshellarg($hostname) . ':' . $port .
+			' ' . cacti_escapeshellarg_cmd($hostname, true, true) . ':' . $port .
 			' ' . cacti_escapeshellarg($oid);
 
 		if (isset($_SESSION)) {
@@ -877,7 +901,7 @@ function cacti_snmp_walk(string $hostname, mixed $community, string $oid, mixed 
 				' -r ' . $retries .
 				' -Cr' . $bulk_walk_size .
 				' ' . $oidCheck . ' ' .
-				cacti_escapeshellarg($hostname) . ':' . $port . ' ' .
+				cacti_escapeshellarg_cmd($hostname, true, true) . ':' . $port . ' ' .
 				cacti_escapeshellarg($oid);
 
 			if (isset($_SESSION)) {
@@ -892,7 +916,7 @@ function cacti_snmp_walk(string $hostname, mixed $community, string $oid, mixed 
 				' -t ' . $timeout_s .
 				' -r ' . $retries .
 				' ' . $oidCheck . ' ' .
-				' ' . cacti_escapeshellarg($hostname) . ':' . $port .
+				' ' . cacti_escapeshellarg_cmd($hostname, true, true) . ':' . $port .
 				' ' . cacti_escapeshellarg($oid);
 
 			if (isset($_SESSION)) {
@@ -1155,16 +1179,11 @@ function format_snmp_string(string $string, bool $snmp_oid_included, int $value_
  * @return string Escaped command argument.
  */
 function snmp_escape_string(string $string, string $server_os = CACTI_SERVER_OS) : string {
-	if (!defined('SNMP_ESCAPE_CHARACTER')) {
-		define('SNMP_ESCAPE_CHARACTER', '"');
-	}
-
 	if ($server_os == 'win32') {
-		if (substr_count($string, SNMP_ESCAPE_CHARACTER)) {
-			$string = str_replace(SNMP_ESCAPE_CHARACTER, '\\' . SNMP_ESCAPE_CHARACTER, $string);
-
-			return SNMP_ESCAPE_CHARACTER . $string . SNMP_ESCAPE_CHARACTER;
-		}
+		/* GHSA-rjvj-r52f-8v5q: cmd.exe ignores the \" escape and toggles
+		 * quoting on every ", so wrapping cannot neutralize & | ^ < > ( ).
+		 * SNMP values never legitimately contain these, so strip them. */
+		$string = str_replace(['"', '&', '|', '^', '<', '>', '(', ')'], '', $string);
 	}
 
 	return cacti_escapeshellarg($string);

@@ -65,6 +65,18 @@ function cacti_escapeshellarg(string $argument) : string {
 	return escapeshellarg($argument);
 }
 
+function cacti_escapeshellarg_cmd(string $argument, bool $quote = true, bool $strip_env = false) : string {
+	if (CACTI_SERVER_OS == 'win32') {
+		$argument = str_replace(['"', '&', '|', '^', '<', '>', '(', ')'], '', $argument);
+
+		if ($strip_env) {
+			$argument = str_replace('%', '', $argument);
+		}
+	}
+
+	return cacti_escapeshellarg($argument, $quote);
+}
+
 function debug_log_insert(string $category, string $message) : void {
 	$GLOBALS['snmp_coverage_debug'][] = [$category, $message];
 }
@@ -130,6 +142,21 @@ test('uptime selection rejects wall-clock engine times and preserves wrap handli
 		->and(cacti_snmp_select_uptime(4000000, 600, $now))->toBe(4000000)
 		->and(cacti_snmp_select_uptime(false, 600, $now))->toBe(60000)
 		->and(cacti_snmp_select_uptime('U', 'U', $now))->toBeFalse();
+});
+
+test('prefer_engine_time forces the spine-compatible engine-OID preference', function () : void {
+	$now = 1784363931;
+
+	// spine (poller.c) always prefers a numeric engine time over sysUpTime with no
+	// magnitude comparison and no wall-clock awareness of its own; the recache
+	// baseline must use the exact same rule
+	expect(cacti_snmp_select_uptime(999999999, 600, $now, true))->toBe(60000)
+		->and(cacti_snmp_select_uptime(4000000, 600, $now, true))->toBe(60000)
+		->and(cacti_snmp_select_uptime(false, 600, $now, true))->toBe(60000)
+		// spine has no wall-clock rejection either, so an OpenBSD-style engine time
+		// that looks like the Unix clock must still be used here, not rejected
+		->and(cacti_snmp_select_uptime(3015, $now, $now, true))->toBe($now * 100)
+		->and(cacti_snmp_select_uptime('U', 'U', $now, true))->toBeFalse();
 });
 
 final class CoverageSnmpSession {
@@ -296,7 +323,7 @@ test('OID validation, escaping, method selection, options, and v3 auth cover all
 		->and(cacti_snmp_validate_oid('.'))->toBeFalse()
 		->and(cacti_snmp_validate_oid('1.bad'))->toBeFalse()
 		->and(snmp_escape_string('public'))->toBe("'public'")
-		->and(snmp_escape_string('a"b', 'win32'))->toBe('"a\\"b"')
+		->and(snmp_escape_string('a"b', 'win32'))->toBe("'ab'")
 		->and(snmp_escape_string('public', 'win32'))->toBe("'public'")
 		->and(snmp_get_method('get', 1, '', '', SNMP_STRING_OUTPUT_GUESS, false))->toBe(SNMP_METHOD_BINARY)
 		->and(snmp_get_method('get', 1, '', '', SNMP_STRING_OUTPUT_HEX))->toBe(SNMP_METHOD_BINARY)

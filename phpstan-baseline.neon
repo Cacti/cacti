@@ -1519,6 +1519,12 @@ parameters:
 			path: cli/splice_rrd.php
 
 		-
+			message: '#^Function loadTable invoked with 2 parameters, 3 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: cli/splice_rrd.php
+
+		-
 			message: '#^Parameter \#1 \$output of function preProcessXML expects array, list\<string\>\|false given\.$#'
 			identifier: argument.type
 			count: 2
@@ -4267,9 +4273,15 @@ parameters:
 			path: lib/html_reports.php
 
 		-
-			message: '#^Cannot access offset ''user_id'' on array\|bool\.$#'
+			message: '#^Cannot access offset ''report_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
+			path: lib/html_reports.php
+
+		-
+			message: '#^Cannot access offset ''user_id'' on array\|bool\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 3
 			path: lib/html_reports.php
 
 		-
@@ -6950,6 +6962,18 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$command of function shell_exec expects string, array\<string\>\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: poller_realtime.php
+
+		-
+			message: '#^Parameter \#1 \$haystack of function strpos expects string, array\<string\>\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: poller_realtime.php
+
+		-
+			message: '#^Parameter \#1 \$string of function substr expects string, array\<string\>\|string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: poller_realtime.php

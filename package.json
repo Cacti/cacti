@@ -6,7 +6,7 @@
   "license": "GPL-2.0-or-later",
   "scripts": {
     "build:js": "node build/sync-js.mjs",
-    "postinstall": "patch-package && node build/sync-js.mjs",
+    "postinstall": "patch-package && node build/sync-js.mjs && node build/clean-node-modules.mjs",
     "test": "node --test tests/js/*.test.js tests/js/*.test.mjs",
     "test:coverage": "node --test --experimental-test-coverage --test-coverage-lines=100 --test-coverage-branches=100 --test-coverage-functions=100 tests/js/sync_js.test.mjs"
   },
@@ -23,6 +23,7 @@
     "lzjs": "1.3.1",
     "pace-js": "1.2.4",
     "screenfull": "6.0.2",
+    "select2": "4.1.0",
     "tablesorter": "2.32.0"
   },
   "devDependencies": {
