@@ -1,6 +1,18 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security: Grant AllowOverride All in docker/apache.conf so shipped .htaccess denies on log/cache/scripts/cli take effect (GHSA-fxfg-j995-j69j)
+-security: Authorize the bulk Change Data Source Profile action against the owning device (GHSA-fc82-w6xq-4jg7)
+-security: Authorize Data Source enable/disable against the owning device before mutating (GHSA-2fhv-c794-v433)
+-security: Confine Reports format_file to a bare filename to close a path traversal/LFI regression (GHSA-5x27-wqpm-m24v)
+-security: Reject ORDER BY sort_column subquery payloads that bypassed the GHSA-q9xg-p762-9jm3 fix (GHSA-8j73-cvf6-jrvx)
+-security: Authorize Report save/edit against report ownership to close an authenticated IDOR (GHSA-8f5c-3h59-q7gc)
+-security: Stop building the Realtime RRD create command through a shell and validate DS bounds are numeric before they reach it (GHSA-f88m-q789-g22j)
+-security: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating (GHSA-prxj-84qq-v5jq)
+-security: Authorize single-item Report actions (remove/move) against report ownership to close a guest-bind IDOR (GHSA-j5jh-fhwg-r56x)
+-security: Use validate_redirect_url() for the CSRF timeout redirect to close a tab-based open redirect bypass (GHSA-c725-4jm5-9fx5)
+-security: Require Package Management permission to trust new package signers (GHSA-gxgm-8rhv-r7jv)
+-security: Harden cmd.exe shell sinks and strip %VAR% from hostnames on win32 (GHSA-rjvj-r52f-8v5q) (#8056)
 -security: Reject SHA-1 signatures across every package import path
 -security: Escape path_dsstats_log before it reaches the dsstats poller shell redirect
 -security: Revoke anonymous access when the guest account is disabled
@@ -185,11 +197,16 @@ Cacti CHANGELOG
 -issue#7355: Add a JUNIPER-MIB jnxOperatingTable script data query for RE and FPC health
 -issue#7355: Add an F5-BIGIP-SYSTEM-MIB script data query for per-CPU utilization
 -issue#7904: Device changes are silently skipped when --bulk_walk is passed to change_device.php
+-issue#7744: Replace the unmaintained csrf-magic library with symfony/security-csrf
 -issue#7975: Reject malformed remember-me cookies without warnings or mutations
 -issue#7978: Revoke remember-me tokens before clearing browser state
 -issue#7328: Align graph, CSV export, percentile, and summation sample windows
 -issue#7981: Require POST tokens for state-changing item, tree and RRD actions
 -issue#7809: Avoid reading a missing source key on output-only data query fields
+-issue#7812: Clarify that missing SNMP notification receivers need no action when traps are disabled
+-issue#8040: Regenerate the vendored DOMPurify asset to match the pinned 3.4.15 release and keep node_modules during CI
+-issue#8041: Detect a real TTY instead of a dead github_actions check before calling stty size
+-issue#8043: Regenerate the vendored DOMPurify asset to match the pinned 3.4.15 release and keep node_modules during CI
 -feature#7884: Manage front-end JavaScript libraries with npm and Dependabot
 -feature#7884: Build release artifacts from managed dependencies, including DOMPurify 3.4.14 and phpseclib 4, and a reduced runtime tree
 -feature#7835: Add cacti_snmp_session_from_host() to build SNMP sessions from a device row

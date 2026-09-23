@@ -19,7 +19,7 @@ test('installer csrf failures return a scoped json recovery response', function 
 
 	$jsonBranch = strpos($csrf, "defined('IN_CACTI_INSTALL')");
 	$redirect   = strpos($csrf, "raise_message('csrf_timeout')");
-	$regenerate = strpos($csrf, 'session_regenerate_id();');
+	$regenerate = strpos($csrf, 'session_regenerate_id(true);');
 	$freshToken = strpos($csrf, "'csrfMagicToken' => csrf_get_tokens()");
 
 	expect($jsonBranch)->not->toBeFalse()
@@ -28,12 +28,13 @@ test('installer csrf failures return a scoped json recovery response', function 
 		->and($regenerate < $freshToken)->toBeTrue()
 		->and($csrf)->toContain("isset(\$GLOBALS['auth_json'])")
 		->and($csrf)->toContain("!empty(\$GLOBALS['is_request_ajax'])")
-		->and($csrf)->toContain("http_response_code(403)")
+		->and($csrf)->toContain('http_response_code(403)')
 		->and($csrf)->toContain("'error'          => 'csrf_timeout'")
 		->and($csrf)->toContain("'csrfMagicToken' => csrf_get_tokens()")
 		->and($csrf)->toContain("header('Cache-Control: no-store')")
 		->and($csrf)->toContain("header('X-Content-Type-Options: nosniff')")
-		->and($csrf)->toContain("header('Location: ' . sanitize_uri(\$_SERVER['REQUEST_URI']))");
+		->and($csrf)->toContain("validate_redirect_url(\$_SERVER['REQUEST_URI'] ?? '', 'index.php')")
+		->and($csrf)->toContain("header('Location: ' . \$redirect_target)");
 });
 
 test('successful installer json responses roll the csrf token forward', function () use ($root) {

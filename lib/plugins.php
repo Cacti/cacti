@@ -934,7 +934,9 @@ function api_plugin_enable(string $plugin) : void {
 			WHERE directory = ?',
 			[$plugin]);
 
-		cacti_log(sprintf('WARNING: Cacti Plugin %s has been enabled by %s', $plugin, get_username()), false, 'PLUGIN');
+		$username = get_username();
+
+		cacti_log(sprintf('NOTE: Cacti Plugin %s has been enabled by %s', $plugin, $username != '' ? $username : 'cli user'), false, 'PLUGIN');
 	}
 }
 

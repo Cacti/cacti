@@ -65,6 +65,18 @@ function cacti_escapeshellarg(string $argument) : string {
 	return escapeshellarg($argument);
 }
 
+function cacti_escapeshellarg_cmd(string $argument, bool $quote = true, bool $strip_env = false) : string {
+	if (CACTI_SERVER_OS == 'win32') {
+		$argument = str_replace(['"', '&', '|', '^', '<', '>', '(', ')'], '', $argument);
+
+		if ($strip_env) {
+			$argument = str_replace('%', '', $argument);
+		}
+	}
+
+	return cacti_escapeshellarg($argument, $quote);
+}
+
 function debug_log_insert(string $category, string $message) : void {
 	$GLOBALS['snmp_coverage_debug'][] = [$category, $message];
 }
@@ -296,7 +308,7 @@ test('OID validation, escaping, method selection, options, and v3 auth cover all
 		->and(cacti_snmp_validate_oid('.'))->toBeFalse()
 		->and(cacti_snmp_validate_oid('1.bad'))->toBeFalse()
 		->and(snmp_escape_string('public'))->toBe("'public'")
-		->and(snmp_escape_string('a"b', 'win32'))->toBe('"a\\"b"')
+		->and(snmp_escape_string('a"b', 'win32'))->toBe("'ab'")
 		->and(snmp_escape_string('public', 'win32'))->toBe("'public'")
 		->and(snmp_get_method('get', 1, '', '', SNMP_STRING_OUTPUT_GUESS, false))->toBe(SNMP_METHOD_BINARY)
 		->and(snmp_get_method('get', 1, '', '', SNMP_STRING_OUTPUT_HEX))->toBe(SNMP_METHOD_BINARY)

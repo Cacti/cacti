@@ -10,14 +10,14 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 4) . '/include/vendor/phpdiff/Diff.php';
-require_once dirname(__DIR__, 4) . '/include/vendor/phpdiff/Renderer/Html/Inline.php';
+use Jfcherng\Diff\Differ;
+use Jfcherng\Diff\Factory\RendererFactory;
 
 test('package inline diffs escape file content before adding markup', function () {
 	$payload  = "</td></tr></table><script>alert('xss')</script>";
-	$diff     = new Diff(['safe'], [$payload]);
-	$renderer = new Diff_Renderer_Html_Inline();
-	$html     = $diff->render($renderer);
+	$differ   = new Differ(['safe'], [$payload], ['ignoreWhitespace' => true, 'ignoreCase' => false]);
+	$renderer = RendererFactory::make('Inline');
+	$html     = $renderer->render($differ);
 
 	expect($html)->toContain('&lt;script&gt;')
 		->and($html)->toContain('&lt;/script&gt;')
