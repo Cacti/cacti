@@ -104,12 +104,18 @@ fi
 log "marking Cacti version as ${CACTI_VER} (was new_install)"
 
 mysql_cmd() {
+    # Alpine's mariadb-client on the php:8.2-fpm-alpine base (bumped from 7.4
+    # for jfcherng/php-diff's PHP 8 syntax) defaults to requiring TLS, but the
+    # mariadb:10.11 server in this stack has no TLS listener configured at
+    # all - only --skip-ssl lets the client fall back to a plaintext
+    # connection on this private, ephemeral CI-only network.
     mariadb \
         --host="${DB_HOST}" \
         --port="${DB_PORT}" \
         --user="${DB_USER}" \
         --password="${DB_PASS}" \
         --protocol=TCP \
+        --skip-ssl \
         --batch --silent \
         "${DB_NAME}" \
         --execute="$1"
