@@ -1479,6 +1479,8 @@ function tree_edit($partial = false) {
 					$('#element').prop('selectedIndex', 1);
 					if ($('#element').selectmenu('instance')) {
 						$('#element').selectmenu('refresh');
+					} else if ($('#element').hasClass('select2-hidden-accessible')) {
+						$('#element').trigger('change.select2');
 					}
 					selected = $('#element').prop('selectedIndex');
 				}

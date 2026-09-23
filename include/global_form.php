@@ -1205,6 +1205,7 @@ $fields_host_edit = array(
 		'friendly_name' => __('Location'),
 		'description' => __('The physical location of the Device.  This free form text can be a room, rack location, etc.'),
 		'none_value' => __('None'),
+		'class' => 'select2-callback',
 		'sql' => 'SELECT DISTINCT location AS id, location AS name FROM host ORDER BY location',
 		'action' => 'ajax_locations',
 		'id' => '|arg1:location|',

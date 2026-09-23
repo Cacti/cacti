@@ -109,6 +109,8 @@ function imageOptionsChanged(action) {
 					$('#ds_step').val(data.ds_step);
 					if ($('#ds_step').selectmenu('instance') !== undefined) {
 						$('#ds_step').selectmenu('refresh');
+					} else if ($('#ds_step').hasClass('select2-hidden-accessible')) {
+						$('#ds_step').trigger('change.select2');
 					}
 				}
 
@@ -118,6 +120,8 @@ function imageOptionsChanged(action) {
 					$('#graph_start').val(Math.abs(data.graph_start));
 					if ($('#graph_start').selectmenu('instance') !== undefined) {
 						$('#graph_start').selectmenu('refresh');
+					} else if ($('#graph_start').hasClass('select2-hidden-accessible')) {
+						$('#graph_start').trigger('change.select2');
 					}
 				}
 
@@ -125,6 +129,8 @@ function imageOptionsChanged(action) {
 					$('#size').val(data.size);
 					if ($('#size').selectmenu('instance') !== undefined) {
 						$('#size').selectmenu('refresh');
+					} else if ($('#size').hasClass('select2-hidden-accessible')) {
+						$('#size').trigger('change.select2');
 					}
 				}
 

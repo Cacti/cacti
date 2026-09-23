@@ -1999,6 +1999,8 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 
 				if ($('#'+fieldId).selectmenu('instance')) {
 					$('#'+fieldId).selectmenu('disable');
+				} else if ($('#'+fieldId).hasClass('select2-hidden-accessible')) {
+					$('#'+fieldId).trigger('change.select2');
 				}
 			}
 		});
@@ -2013,12 +2015,16 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 
 			if ($('#'+fieldId).selectmenu('instance')) {
 				$('#'+fieldId).selectmenu('enable');
+			} else if ($('#'+fieldId).hasClass('select2-hidden-accessible')) {
+				$('#'+fieldId).trigger('change.select2');
 			}
 		} else {
 			$('#'+fieldId).prop('disabled', true).addClass('ui-state-disabled');
 
 			if ($('#'+fieldId).selectmenu('instance')) {
 				$('#'+fieldId).selectmenu('disable');
+			} else if ($('#'+fieldId).hasClass('select2-hidden-accessible')) {
+				$('#'+fieldId).trigger('change.select2');
 			}
 		}
 	}

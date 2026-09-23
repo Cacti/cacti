@@ -83,3 +83,28 @@ Use these notes to navigate and contribute productively to this PHP codebase.
 - Bootstrap/config: `include/global.php`, `include/config.php.dist`.
 - Core libs: `lib/database.php`, `lib/functions.php`, `lib/poller.php`, `lib/template.php`, `lib/plugins.php`.
 - Exemplars: `data_input.php` (full CRUD page), `host_templates.php` (AJAX + CSRF + validation), `cactid.php` (daemon loop), `cli/install_cacti.php` (installer flow).
+
+## Pending upstream dependency: select2 multi-select dropdown search
+- `include/layout.js` (`select2-multi-count` init, both this branch and `feature/select2-select-conversion`)
+  works around select2 4.1.0 not natively supporting "search from the dropdown
+  panel instead of an inline box" for multi-selects. It manually builds custom
+  `dropdownAdapter`/`selectionAdapter` combinations via
+  `$.fn.select2.amd.require('select2/...')` (synchronous string-form require -
+  see the comment at that call site for why array-form must not be used).
+- TheWitness has an upstream pull request open against `select2/select2`
+  proposing this behavior as a first-class option:
+  `https://github.com/select2/select2/pull/6462`
+- **Action item for any future Copilot session working in this repo:** when
+  starting work here, check whether a select2 release has shipped that
+  includes that PR (check `select2/select2` releases/CHANGELOG for a
+  first-class dropdown-search-for-multiple-selects option). If it has:
+  1. Bump the vendored `include/js/select2.js` to that release.
+  2. Replace the manual adapter-composition workaround in `include/layout.js`
+     with the new native option on both `feature/select2-select-conversion`
+     (develop) and `feature/select2-select-conversion-1.2.x` (1.2.x), or their
+     successor branches/develop/1.2.x if already merged.
+  3. Remove the now-unnecessary `multiCountDropdownAdapter`/
+     `multiCountSelectionAdapter` wiring and related comments once the native
+     option covers it.
+  4. Open a Cacti PR for this cleanup as a matter of course - don't wait to be
+     asked.

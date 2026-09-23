@@ -82,33 +82,11 @@ function themeReady() {
 
 	$('select.colordropdown').dropcolor();
 
-	$('select').not('.colordropdown').each(function() {
-		if ($(this).prop('multiple') != true) {
-			$(this).each(function() {
-				id = $(this).attr('id');
-
-				$(this).selectmenu({
-					open: function(event, ui) {
-						var instance = $(this).selectmenu('instance');
-						instance.menuInstance.focus(null, instance._getSelectedItem());
-					},
-					change: function(event, ui) {
-						$(this).val(ui.item.value).change();
-					},
-					position: {
-						my: "left top",
-						at: "left bottom",
-						collision: "flip"
-					},
-					width: 'auto'
-				});
-
-				$('#'+id+'-menu').css('max-height', '250px');
-			});
-		} else {
-			$(this).addClass('ui-state-default ui-corner-all');
-		}
-	});
+	/* jQuery UI selectmenu is superseded by select2, applied later in applySkin();
+	 * don't double-widgetize every select here, just keep multi-selects' outline */
+	$('select').not('.colordropdown').filter(function() {
+		return $(this).prop('multiple') === true;
+	}).addClass('ui-state-default ui-corner-all');
 
 	$('#drp_action').change(function() {
 		if ($(this).val() != '0') {
@@ -125,7 +103,7 @@ function themeReady() {
 		case '6':
 		case '7':
 		case '8':
-			$('#alpha').selectmenu('enable');
+			$('#alpha').prop('disabled', false);
 		}
 	});
 

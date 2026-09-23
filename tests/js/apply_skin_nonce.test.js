@@ -69,6 +69,10 @@ function loadApplySkin(nonce) {
 	const jquery = () => chain;
 	jquery.ajaxSetup = (options) => ajaxSetups.push(options);
 	jquery.Deferred = () => ({ resolve: () => undefined });
+	// applySkin feature-detects select2's AMD loader via $.fn.select2; real
+	// jQuery always defines $.fn, so mock it too (select2 itself stays unset,
+	// matching a page where the select2 plugin script isn't loaded).
+	jquery.fn = {};
 
 	const context = {
 		$: jquery,

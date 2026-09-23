@@ -198,76 +198,9 @@ function html_end_box($trailing_br = true, $div = false) {
 	}
 }
 
-/* html_graph_template_multiselect - consistent multiselect javascript library for cacti. */
+/* html_graph_template_multiselect - kept as a no-op for plugin/theme backward compatibility;
+   #graph_template_id is now handled by the select2-multi-count catch-all in layout.js */
 function html_graph_template_multiselect() {
-	?>
-	var msWidth = 200;
-
-	$('#graph_template_id').hide().multiselect({
-		menuHeight: $(window).height()*.7,
-		menuWidth: 'auto',
-		linkInfo: faIcons,
-		buttonWidth: 'auto',
-		noneSelectedText: '<?php print __('All Graphs & Templates');?>',
-		selectedText: function(numChecked, numTotal, checkedItems) {
-			myReturn = numChecked + ' <?php print __('Templates Selected');?>';
-			$.each(checkedItems, function(index, value) {
-				if (value.value == '-1') {
-					myReturn='<?php print __('All Graphs & Templates');?>';
-					return false;
-				} else if (value.value == '0') {
-					myReturn='<?php print __('Not Templated');?>';
-					return false;
-				}
-			});
-			return myReturn;
-		},
-		checkAllText: '<?php print __('All');?>',
-		uncheckAllText: '<?php print __('None');?>',
-		uncheckAll: function() {
-			$(this).multiselect('widget').find(':checkbox:first').each(function() {
-				$(this).prop('checked', true);
-			});
-		},
-		close: function(event, ui) {
-			applyGraphFilter();
-		},
-		open: function(event, ui) {
-			$("input[type='search']:first").focus();
-		},
-		click: function(event, ui) {
-			checked=$(this).multiselect('widget').find('input:checked').length;
-
-			if (ui.value == -1 || ui.value == 0) {
-				if (ui.checked == true) {
-					$('#graph_template_id').multiselect('uncheckAll');
-					if (ui.value == -1) {
-						$(this).multiselect('widget').find(':checkbox:first').prop('checked', true);
-					} else {
-						$(this).multiselect('widget').find(':checkbox[value="0"]').prop('checked', true);
-					}
-				}
-			} else if (checked == 0) {
-				$(this).multiselect('widget').find(':checkbox:first').each(function() {
-					$(this).click();
-				});
-			} else if ($(this).multiselect('widget').find('input:checked:first').val() == '-1') {
-				if (checked > 0) {
-					$(this).multiselect('widget').find(':checkbox:first').each(function() {
-						$(this).click();
-						$(this).prop('disable', true);
-					});
-				}
-			} else {
-				$(this).multiselect('widget').find(':checkbox[value="0"]').prop('checked', false);
-			}
-		}
-	}).multiselectfilter({
-		label: '<?php print __('Search');?>',
-		placeholder: '<?php print __('Enter keyword');?>',
-		width: msWidth
-	});
-	<?php
 }
 
 /* html_graph_area - draws an area the contains full sized graphs
@@ -2235,14 +2168,9 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 			<?php print __('Device');?>
 		</td>
 		<td>
-			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-corner-all ui-button ui-widget'>
-				<span id='host_click' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>
-				<span class='ui-select-text'>
-					<input type='text' size='28' id='host' value='<?php print html_escape($hostname);?>'>
-				</span>
-			</span>
-			<input type='hidden' id='host_id' name='host_id' value='<?php print $host_id;?>'>
-			<input type='hidden' id='call_back' value='<?php print $call_back;?>'>
+			<select id='host_id' name='host_id' class='select2-callback' data-action='ajax_hosts' data-variables='site_id' data-callback='<?php print html_escape($call_back);?>'>
+				<option value='<?php print html_escape($host_id);?>' selected><?php print html_escape($hostname);?></option>
+			</select>
 		</td>
 	<?php
 	}

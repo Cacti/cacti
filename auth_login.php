@@ -439,6 +439,8 @@ $selectedTheme = get_selected_theme();
 				$('#realm').val(preferredRealm);
 				if ($('#realm').selectmenu('instance') !== undefined) {
 					$('#realm').selectmenu('refresh');
+				} else if ($('#realm').hasClass('select2-hidden-accessible')) {
+					$('#realm').trigger('change.select2');
 				}
 			}
 		}
