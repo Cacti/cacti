@@ -33,6 +33,21 @@ test('normal engine time still covers a wrapped sysUpTime value', function (): v
 		->and(cacti_snmp_select_uptime('U', 'U', $now))->toBeFalse();
 });
 
+test('prefer_engine_time matches spine\'s own unconditional engine-OID preference', function (): void {
+	$now = 1784363931;
+
+	// spine (poller.c) always prefers a numeric engine time over sysUpTime with no
+	// magnitude comparison of its own; a smaller-but-legitimate engine time (e.g. the
+	// SNMP agent restarted more recently than the OS) must not fall back to sysUpTime
+	// here, or the recache baseline permanently disagrees with spine's live re-check
+	expect(cacti_snmp_select_uptime(999999999, 600, $now, true))->toBe(60000)
+		->and(cacti_snmp_select_uptime(4000000, 600, $now, true))->toBe(60000)
+		->and(cacti_snmp_select_uptime(false, 600, $now, true))->toBe(60000)
+		// the wall-clock rejection still applies regardless of $prefer_engine_time
+		->and(cacti_snmp_select_uptime(3015, $now, $now, true))->toBe(3015)
+		->and(cacti_snmp_select_uptime('U', 'U', $now, true))->toBeFalse();
+});
+
 test('every system uptime consumer delegates to the shared selector', function () use ($root): void {
 	$callCounts = [
 		'cmd.php'                => 2,
@@ -47,4 +62,12 @@ test('every system uptime consumer delegates to the shared selector', function (
 		expect($source)->not->toBeFalse("$path must be readable")
 			->and(substr_count($source, 'cacti_snmp_select_uptime('))->toBeGreaterThanOrEqual($count);
 	}
+});
+
+test('the recache baseline and cmd.php reindex re-check opt into spine-compatible engine preference', function () use ($root): void {
+	$pollerSource = file_get_contents($root . '/lib/poller.php');
+	$cmdSource    = file_get_contents($root . '/cmd.php');
+
+	expect($pollerSource)->toContain('cacti_snmp_select_uptime($system_uptime, $engine_time, null, true)')
+		->and(substr_count($cmdSource, 'cacti_snmp_select_uptime($system_uptime, $engine_time, null, true)'))->toBe(2);
 });

@@ -32,13 +32,24 @@
  * TimeTicks value wraps, so retain the existing preference when it is at
  * least the system uptime and does not resemble wall-clock time.
  *
- * @param mixed    $system_uptime sysUpTime in hundredths of a second.
- * @param mixed    $engine_time   snmpEngineTime in seconds.
- * @param int|null $now           Current Unix time, injectable for tests.
+ * @param mixed    $system_uptime      sysUpTime in hundredths of a second.
+ * @param mixed    $engine_time        snmpEngineTime in seconds.
+ * @param int|null $now                Current Unix time, injectable for tests.
+ * @param bool     $prefer_engine_time When true, skip the "prefer whichever is larger"
+ *                                     comparison and always use engine time once it
+ *                                     passes the numeric/wall-clock checks. Spine's own
+ *                                     reindex assert re-check (poller.c) always prefers
+ *                                     the engine OID whenever it is numeric, with no
+ *                                     magnitude comparison of its own; the recache
+ *                                     baseline stored for spine to compare against must
+ *                                     use the same rule, or a device whose engine time is
+ *                                     legitimately smaller than sysUpTime (e.g. the SNMP
+ *                                     agent restarted more recently than the OS) causes a
+ *                                     permanent mismatch and an infinite RECACHE ASSERT loop.
  *
  * @return int|false Selected uptime in hundredths of a second.
  */
-function cacti_snmp_select_uptime(mixed $system_uptime, mixed $engine_time, ?int $now = null) : int|false {
+function cacti_snmp_select_uptime(mixed $system_uptime, mixed $engine_time, ?int $now = null, bool $prefer_engine_time = false) : int|false {
 	$system_uptime = is_numeric($system_uptime) && $system_uptime >= 0 ? (int) $system_uptime : false;
 
 	if (!is_numeric($engine_time) || $engine_time <= 0) {
@@ -54,6 +65,10 @@ function cacti_snmp_select_uptime(mixed $system_uptime, mixed $engine_time, ?int
 	}
 
 	$engine_uptime = $engine_time * 100;
+
+	if ($prefer_engine_time) {
+		return $engine_uptime;
+	}
 
 	return $system_uptime === false || $engine_uptime >= $system_uptime ? $engine_uptime : $system_uptime;
 }
