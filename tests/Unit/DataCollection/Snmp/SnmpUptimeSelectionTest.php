@@ -33,6 +33,24 @@ test('normal engine time still covers a wrapped sysUpTime value', function (): v
 		->and(cacti_snmp_select_uptime('U', 'U', $now))->toBeFalse();
 });
 
+test('prefer_engine_time matches spine\'s own unconditional engine-OID preference', function (): void {
+	$now = 1784363931;
+
+	// spine (poller.c) always prefers a numeric engine time over sysUpTime with no
+	// magnitude comparison and no wall-clock awareness of its own; a smaller-but-
+	// legitimate engine time (e.g. the SNMP agent restarted more recently than the OS)
+	// must not fall back to sysUpTime here, or the recache baseline permanently
+	// disagrees with spine's live re-check
+	expect(cacti_snmp_select_uptime(999999999, 600, $now, true))->toBe(60000)
+		->and(cacti_snmp_select_uptime(4000000, 600, $now, true))->toBe(60000)
+		->and(cacti_snmp_select_uptime(false, 600, $now, true))->toBe(60000)
+		// spine has no wall-clock rejection either, so an OpenBSD-style engine time
+		// that looks like the Unix clock must still be used here, not rejected -
+		// otherwise this exact class of device keeps the RECACHE ASSERT loop
+		->and(cacti_snmp_select_uptime(3015, $now, $now, true))->toBe($now * 100)
+		->and(cacti_snmp_select_uptime('U', 'U', $now, true))->toBeFalse();
+});
+
 test('every system uptime consumer delegates to the shared selector', function () use ($root): void {
 	$callCounts = [
 		'cmd.php'                => 2,
@@ -47,4 +65,12 @@ test('every system uptime consumer delegates to the shared selector', function (
 		expect($source)->not->toBeFalse("$path must be readable")
 			->and(substr_count($source, 'cacti_snmp_select_uptime('))->toBeGreaterThanOrEqual($count);
 	}
+});
+
+test('the recache baseline and cmd.php reindex re-check opt into spine-compatible engine preference', function () use ($root): void {
+	$pollerSource = file_get_contents($root . '/lib/poller.php');
+	$cmdSource    = file_get_contents($root . '/cmd.php');
+
+	expect($pollerSource)->toContain('cacti_snmp_select_uptime($system_uptime, $engine_time, null, true)')
+		->and(substr_count($cmdSource, 'cacti_snmp_select_uptime($system_uptime, $engine_time, null, true)'))->toBe(2);
 });

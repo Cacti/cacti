@@ -144,6 +144,21 @@ test('uptime selection rejects wall-clock engine times and preserves wrap handli
 		->and(cacti_snmp_select_uptime('U', 'U', $now))->toBeFalse();
 });
 
+test('prefer_engine_time forces the spine-compatible engine-OID preference', function () : void {
+	$now = 1784363931;
+
+	// spine (poller.c) always prefers a numeric engine time over sysUpTime with no
+	// magnitude comparison and no wall-clock awareness of its own; the recache
+	// baseline must use the exact same rule
+	expect(cacti_snmp_select_uptime(999999999, 600, $now, true))->toBe(60000)
+		->and(cacti_snmp_select_uptime(4000000, 600, $now, true))->toBe(60000)
+		->and(cacti_snmp_select_uptime(false, 600, $now, true))->toBe(60000)
+		// spine has no wall-clock rejection either, so an OpenBSD-style engine time
+		// that looks like the Unix clock must still be used here, not rejected
+		->and(cacti_snmp_select_uptime(3015, $now, $now, true))->toBe($now * 100)
+		->and(cacti_snmp_select_uptime('U', 'U', $now, true))->toBeFalse();
+});
+
 final class CoverageSnmpSession {
 	public array $info              = ['timeout' => 1500, 'hostname' => 'coverage-host'];
 	public int $bulk_walk_size      = 5;
