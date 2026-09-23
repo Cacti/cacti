@@ -56,7 +56,7 @@ cmd_exec	./lib/ping.php:205							$result = shell_exec($ping_path . ' -W ' . cei
 cmd_exec	./lib/poller.php:100					$fp = popen($command, 'r');
 cmd_exec	./lib/poller.php:102					$fp = popen($command, 'rb');
 cmd_exec	./lib/poller.php:115				$output = shell_exec($command);
-cmd_exec	./lib/poller.php:1411										$output = system($php_path . ' -l ' . $tmpfile, $exit);
+cmd_exec	./lib/poller.php:1415										$output = system($php_path . ' -l ' . $tmpfile, $exit);
 cmd_exec	./lib/poller.php:156					pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args, 'r'));
 cmd_exec	./lib/poller.php:158					pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args . ' ' . $redirect_args, 'r'));
 cmd_exec	./lib/poller.php:162				exec($safe_filename . ' ' . $args . ' > /dev/null 2>&1 &');
@@ -338,9 +338,9 @@ dynamic_include	./install/upgrades/0_8_6.php:28	include_once($config["base_path"
 dynamic_include	./install/upgrades/0_8_7h.php:28		require_once($config['base_path'] . '/lib/poller.php');
 dynamic_include	./install/upgrades/1_2_20.php:28		include_once($config['base_path'] . '/lib/data_query.php');
 dynamic_include	./lib/aggregate.php:583		include_once($config['base_path'] . '/lib/cdef.php');
-dynamic_include	./lib/aggregate.php:638		include_once($config['base_path'] . '/lib/cdef.php');
-dynamic_include	./lib/aggregate.php:825		include_once($config['base_path'] . '/lib/api_graph.php');
-dynamic_include	./lib/api_aggregate.php:1689		include($config['include_path'] . '/global_arrays.php');
+dynamic_include	./lib/aggregate.php:670		include_once($config['base_path'] . '/lib/cdef.php');
+dynamic_include	./lib/aggregate.php:885		include_once($config['base_path'] . '/lib/api_graph.php');
+dynamic_include	./lib/api_aggregate.php:1714		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/api_aggregate.php:203		include_once($config['base_path'] . '/lib/api_aggregate.php');
 dynamic_include	./lib/api_aggregate.php:683		include_once($config['base_path'] . '/lib/api_aggregate.php');
 dynamic_include	./lib/api_automation.php:2384		include_once($config['base_path'] . '/lib/template.php');
@@ -378,7 +378,7 @@ dynamic_include	./lib/functions.php:5652	    require_once($config['include_path'
 dynamic_include	./lib/functions.php:5653	    require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
 dynamic_include	./lib/functions.php:5654	    require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
 dynamic_include	./lib/graph_variables.php:65		include_once($config['library_path'] . '/rrd.php');
-dynamic_include	./lib/html.php:1268		include($config['include_path'] . '/global_arrays.php');
+dynamic_include	./lib/html.php:1201		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/html_tree.php:479		include_once($config['base_path'] . '/lib/data_query.php');
 dynamic_include	./lib/html_tree.php:829		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/html_tree.php:830		include_once($config['library_path'] . '/data_query.php');
@@ -398,7 +398,7 @@ dynamic_include	./lib/plugins.php:837		include_once($config['base_path'] . '/lib
 dynamic_include	./lib/plugins.php:92							include_once($full_path);
 dynamic_include	./lib/poller.php:425		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/poller.php:426		include_once($config['library_path'] . '/snmp.php');
-dynamic_include	./lib/poller.php:654		include_once($config['library_path'] . '/rrd.php');
+dynamic_include	./lib/poller.php:658		include_once($config['library_path'] . '/rrd.php');
 dynamic_include	./lib/reports.php:1015		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/reports.php:1016		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/reports.php:1017		include_once($config['library_path'] . '/html_tree.php');
@@ -416,15 +416,15 @@ dynamic_include	./lib/reports.php:755		include_once($config['base_path'] . '/lib
 dynamic_include	./lib/rrd.php:1017		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/rrd.php:1179		include_once($config['library_path'] . '/boost.php');
 dynamic_include	./lib/rrd.php:1231		include($config['include_path'] . '/global_arrays.php');
-dynamic_include	./lib/rrd.php:1526		include_once($config['library_path'] . '/cdef.php');
-dynamic_include	./lib/rrd.php:1527		include_once($config['library_path'] . '/vdef.php');
-dynamic_include	./lib/rrd.php:1528		include_once($config['library_path'] . '/graph_variables.php');
-dynamic_include	./lib/rrd.php:1529		include_once($config['library_path'] . '/boost.php');
-dynamic_include	./lib/rrd.php:1530		include_once($config['library_path'] . '/xml.php');
-dynamic_include	./lib/rrd.php:1531		include($config['include_path'] . '/global_arrays.php');
-dynamic_include	./lib/rrd.php:2849			include($rrdtheme);
-dynamic_include	./lib/rrd.php:3519		include_once($config['library_path'] . '/time.php');
-dynamic_include	./lib/rrd.php:4331			include($themefile);
+dynamic_include	./lib/rrd.php:1545		include_once($config['library_path'] . '/cdef.php');
+dynamic_include	./lib/rrd.php:1546		include_once($config['library_path'] . '/vdef.php');
+dynamic_include	./lib/rrd.php:1547		include_once($config['library_path'] . '/graph_variables.php');
+dynamic_include	./lib/rrd.php:1548		include_once($config['library_path'] . '/boost.php');
+dynamic_include	./lib/rrd.php:1549		include_once($config['library_path'] . '/xml.php');
+dynamic_include	./lib/rrd.php:1550		include($config['include_path'] . '/global_arrays.php');
+dynamic_include	./lib/rrd.php:2869			include($rrdtheme);
+dynamic_include	./lib/rrd.php:3539		include_once($config['library_path'] . '/time.php');
+dynamic_include	./lib/rrd.php:4351			include($themefile);
 dynamic_include	./lib/rrd.php:658		include ($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/rrdcheck.php:716			include_once($config['base_path'] . '/lib/rrd.php');
 dynamic_include	./lib/rrdcheck.php:746			include_once($config['library_path'] . '/poller.php');
@@ -544,7 +544,7 @@ fs_write	./cli/splice_rrd.php:327	file_put_contents($newxmlfile, $new_xml);
 fs_write	./cli/splice_rrd.php:47				if (($f = @fopen($path, 'a'))) {
 fs_write	./cli/splice_rrd.php:56			if (($f = @fopen($path, 'w'))) {
 fs_write	./cli/splice_rrd.php:872		return file_put_contents($xmlfile, $output);
-fs_write	./host.php:591		$stdout = fopen('php://output', 'w');
+fs_write	./host.php:594		$stdout = fopen('php://output', 'w');
 fs_write	./include/global_languages.php:956			file_put_contents($config['i18n_log'], $text . $eol, $mode);
 fs_write	./include/global_languages.php:964			file_put_contents($config['i18n_text_log'], $text . $eol, $mode);
 fs_write	./include/themes/midwinter/update_hash.php:61			file_put_contents($cssFile, $fileUpdated);
@@ -574,15 +574,15 @@ fs_write	./lib/functions.php:7266				file_put_contents($tmp_file, 'cacti');
 fs_write	./lib/import.php:466		$f   = fopen($filename, 'r');
 fs_write	./lib/import.php:671							$file = fopen($filename, 'wb');
 fs_write	./lib/installer.php:2969				$file = fopen($cacheFile, "r");
-fs_write	./lib/poller.php:1410									if (file_put_contents($tmpfile, $contents) !== false) {
-fs_write	./lib/poller.php:1417												file_put_contents($mypath, $contents);
-fs_write	./lib/poller.php:1446								file_put_contents($mypath, $contents);
+fs_write	./lib/poller.php:1414									if (file_put_contents($tmpfile, $contents) !== false) {
+fs_write	./lib/poller.php:1421												file_put_contents($mypath, $contents);
+fs_write	./lib/poller.php:1450								file_put_contents($mypath, $contents);
 fs_write	./lib/reports.php:1704			$f = fopen($fn, 'wb');
 fs_write	./lib/reports.php:1745			$f = fopen($fn, 'wb');
-fs_write	./lib/rrd.php:2711					if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
+fs_write	./lib/rrd.php:2731					if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
 fs_write	./lib/spikekill.php:780			return file_put_contents($xmlfile, $output);
 fs_write	./package_import.php:387					file_put_contents($xmlfile, $data);
-fs_write	./package_import.php:96		if (file_put_contents($xmlfile, $_SESSION['sess_import_package']) === false) {
+fs_write	./package_import.php:97		if (file_put_contents($xmlfile, $_SESSION['sess_import_package']) === false) {
 fs_write	./script_server.php:49		define('STDIN', fopen('php://stdin', 'r'));
 fs_write	./script_server.php:50		define('STDOUT', fopen('php://stdout', 'w'));
 fs_write	./scripts/ss_net_snmp_disk_bytes.php:251			file_put_contents("$tmpdir/$tmpfile", $data);
@@ -673,10 +673,10 @@ header_redirect	./cache/spikekill/index.php:25	header("Location:../index.php");
 header_redirect	./cdef.php:141			header('Location: cdef.php?header=false&action=edit&id=' . (empty($cdef_id) ? get_nfilter_request_var('id') : $cdef_id));
 header_redirect	./cdef.php:169				header('Location: cdef.php?header=false&action=item_edit&cdef_id=' . get_nfilter_request_var('cdef_id') . '&id=' . (empty($cdef_item_id) ? get_nfilter_request_var('id') : $cdef_item_id));
 header_redirect	./cdef.php:171				header('Location: cdef.php?header=false&action=edit&id=' . get_nfilter_request_var('cdef_id'));
-header_redirect	./cdef.php:240			header('Location: cdef.php?header=false');
-header_redirect	./cdef.php:291			header('Location: cdef.php?header=false');
+header_redirect	./cdef.php:256			header('Location: cdef.php?header=false');
+header_redirect	./cdef.php:307			header('Location: cdef.php?header=false');
 header_redirect	./cdef.php:52			header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
-header_redirect	./cdef.php:547		header('Location: cdef.php?action=edit&header=false&id=' . get_request_var('id'));
+header_redirect	./cdef.php:563		header('Location: cdef.php?action=edit&header=false&id=' . get_request_var('id'));
 header_redirect	./cdef.php:59			header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 header_redirect	./cdef.php:66			header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 header_redirect	./cli/index.php:25	header("Location:../index.php");
@@ -781,17 +781,20 @@ header_redirect	./graph_templates_items.php:84			header('Location: graph_templat
 header_redirect	./graph_templates_items.php:91			header('Location: graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
 header_redirect	./graph_view.php:187		header('Location: graph_view.php?action=list&header=false');
 header_redirect	./graph_view.php:388				header('Location: permission_denied.php');
-header_redirect	./graphs.php:1360			header('Location: graphs.php?header=false');
-header_redirect	./graphs.php:1535				header('Location: graphs.php');
+header_redirect	./graphs.php:1384			header('Location: graphs.php?header=false');
+header_redirect	./graphs.php:1559				header('Location: graphs.php');
 header_redirect	./graphs.php:267				header('Location: graphs.php?action=graph_edit&header=false&id=' . $local_graph_id);
 header_redirect	./graphs.php:269				header('Location: graphs.php?header=false');
 header_redirect	./graphs.php:469			header('Location: graphs.php?action=graph_edit&header=false&host_id=' . get_nfilter_request_var('host_id') . '&new=1');
 header_redirect	./graphs.php:471			header('Location: graphs.php?action=graph_edit&header=false&id=' . (empty($local_graph_id) ? get_nfilter_request_var('local_graph_id') : $local_graph_id) . (isset_request_var('host_id') ? '&host_id=' . get_nfilter_request_var('host_id') : ''));
 header_redirect	./graphs.php:473			header('Location: graphs.php?action=graph_edit&header=false&id=' . $local_graph_id);
 header_redirect	./graphs.php:475			header('Location: graphs.php?header=false');
-header_redirect	./graphs.php:811					header("Location: aggregate_graphs.php?header=false&action=edit&tab=details&id=$local_graph_id");
-header_redirect	./graphs.php:844				header('Location: graphs.php?header=false&template_id=-1');
-header_redirect	./graphs.php:846				header('Location: graphs.php?header=false');
+header_redirect	./graphs.php:720						header('Location: aggregate_graphs.php');
+header_redirect	./graphs.php:821						header('Location: aggregate_graphs.php');
+header_redirect	./graphs.php:830						header('Location: aggregate_graphs.php');
+header_redirect	./graphs.php:835					header("Location: aggregate_graphs.php?header=false&action=edit&tab=details&id=$local_graph_id");
+header_redirect	./graphs.php:868				header('Location: graphs.php?header=false&template_id=-1');
+header_redirect	./graphs.php:870				header('Location: graphs.php?header=false');
 header_redirect	./graphs_items.php:235				header('Location: graphs.php?header=false&action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? get_nfilter_request_var('graph_template_item_id') : $graph_template_item_id) . '&id=' . get_nfilter_request_var('local_graph_id'));
 header_redirect	./graphs_items.php:238				header('Location: graphs.php?header=false&action=graph_edit&id=' . get_nfilter_request_var('local_graph_id'));
 header_redirect	./graphs_items.php:42			header('Location: graphs.php?header=false&action=graph_edit&id=' . get_request_var('local_graph_id'));
@@ -807,9 +810,9 @@ header_redirect	./host.php:131			header('Location: host.php?header=' . (isset_re
 header_redirect	./host.php:150			header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
 header_redirect	./host.php:157			header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
 header_redirect	./host.php:168			header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
-header_redirect	./host.php:297			header('Location: host.php?header=false&action=edit&id=' . (empty($host_id) ? get_nfilter_request_var('id') : $host_id));
-header_redirect	./host.php:368			header('Location: host.php?header=false');
-header_redirect	./host.php:562			header('Location: host.php?header=false');
+header_redirect	./host.php:300			header('Location: host.php?header=false&action=edit&id=' . (empty($host_id) ? get_nfilter_request_var('id') : $host_id));
+header_redirect	./host.php:371			header('Location: host.php?header=false');
+header_redirect	./host.php:565			header('Location: host.php?header=false');
 header_redirect	./host.php:70			header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
 header_redirect	./host.php:82			header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
 header_redirect	./host.php:90			header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
@@ -876,8 +879,8 @@ header_redirect	./lib/auth.php:5022			header ('Location: ' . $config['url_path']
 header_redirect	./lib/clog_webapi.php:107			header('Location: ' . get_current_page());
 header_redirect	./lib/functions.php:8280		header('Location: ' . $save_url);
 header_redirect	./lib/functions.php:8303		header('Location: ' . $safe_url, true, $status);
-header_redirect	./lib/html_graph.php:521			header('Location: ' . $page . '?host_id=' . $host_id . '&header=false');
-header_redirect	./lib/html_reports.php:1507				header('Location: reports.php');
+header_redirect	./lib/html_graph.php:526			header('Location: ' . $page . '?host_id=' . $host_id . '&header=false');
+header_redirect	./lib/html_reports.php:1525				header('Location: reports.php');
 header_redirect	./lib/html_reports.php:274					header('Location: reports.php');
 header_redirect	./lib/html_reports.php:355			header('Location: ' . get_reports_page() . '?action=edit&header=false&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
 header_redirect	./lib/html_reports.php:407			header('Location: ' . get_reports_page() . '?action=item_edit&id=' . get_nfilter_request_var('report_id') . '&item_id=' . (empty($item_id) ? get_nfilter_request_var('id') : $item_id));
@@ -904,10 +907,10 @@ header_redirect	./managers.php:934		header('Location: managers.php?action=edit&h
 header_redirect	./managers.php:961				header('Location: managers.php');
 header_redirect	./managers.php:995				header('Location: managers.php?action=edit&id=' . get_nfilter_request_var('id') . '&tab=notifications&header=false');
 header_redirect	./mibs/index.php:25	header("Location:../index.php");
-header_redirect	./package_import.php:128					header('Location: package_import.php');
-header_redirect	./package_import.php:134				header('Location: package_import.php');
-header_redirect	./package_import.php:144				header('Location: package_import.php?package_location=0');
-header_redirect	./package_import.php:249				header('Location: package_import.php');
+header_redirect	./package_import.php:129					header('Location: package_import.php');
+header_redirect	./package_import.php:135				header('Location: package_import.php');
+header_redirect	./package_import.php:145				header('Location: package_import.php?package_location=0');
+header_redirect	./package_import.php:250				header('Location: package_import.php');
 header_redirect	./plugins.php:103				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 header_redirect	./plugins.php:114				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 header_redirect	./plugins.php:127				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));

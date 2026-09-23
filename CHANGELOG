@@ -100,6 +100,7 @@ Cacti CHANGELOG
 -issue#7829: Report a missing session cookie instead of redirecting into a login loop
 -issue#7975: Harden malformed remember-me cookies and protocol-aware UI cookie flags
 -issue#7978: Revoke remember-me tokens before clearing cookies on every logout path
+-issue#7979: Fail closed on invalid, cyclic, or oversized CDEF definitions
 -issue#7986: Preserve child exit codes observed by cacti_exec
 -issue#7907: Correct maintenance CLI validation, help text and error exit statuses
 -issue#7907: Remove the unused remove_graphs --graph-type option
