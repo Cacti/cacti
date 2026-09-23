@@ -76,6 +76,12 @@ switch (get_request_var('action')) {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's graphs new functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function save_default_query_option() {
 	$data_query = get_filter_request_var('query');
@@ -86,6 +92,11 @@ function save_default_query_option() {
 	print __('Default Settings Saved') . "\n";
 }
 
+/**
+ * Saves the user filter. Used as part of Cacti's graphs new functionality.
+ *
+ * @return void No value is returned.
+ */
 function save_user_filter() {
 	$rows = get_filter_request_var('rows');
 
@@ -99,6 +110,13 @@ function save_user_filter() {
 	set_user_setting('graph_type', $graph_type);
 }
 
+/**
+ * Handles the store get selected dq index. Used as part of Cacti's graphs new functionality.
+ *
+ * @param int $snmp_query_id The SNMP query ID.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function store_get_selected_dq_index($snmp_query_id) {
 	// Always restore the last used filter, otherwise, use the default
 	if (!is_numeric($snmp_query_id)) {
@@ -116,6 +134,11 @@ function store_get_selected_dq_index($snmp_query_id) {
 	return $selected;
 }
 
+/**
+ * Handles the form save. Used as part of Cacti's graphs new functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_save() {
 	if (isset_request_var('save_component_graph')) {
 		$form_data = array();
@@ -180,6 +203,12 @@ function form_save() {
 /* -------------------
     Data Query Functions
    ------------------- */
+/**
+ * ------------------- Data Query Functions -------------------. Used as part of Cacti's graphs
+ * new functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function host_reload_query() {
 	/* ================= input validation ================= */
@@ -193,6 +222,14 @@ function host_reload_query() {
 /* -------------------
     New Graph Functions
    ------------------- */
+/**
+ * ------------------- New Graph Functions -------------------. Used as part of Cacti's graphs new
+ * functionality.
+ *
+ * @param int $host_id The host ID.
+ *
+ * @return void No value is returned.
+ */
 
 function host_new_graphs_save($host_id) {
 	$selected_graphs_array = cacti_unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
@@ -297,6 +334,12 @@ function host_new_graphs_save($host_id) {
 /* -------------------
     Graph Functions
    ------------------- */
+/**
+ * ------------------- Graph Functions -------------------. Used as part of Cacti's graphs new
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function graphs() {
 	global $config, $item_rows;

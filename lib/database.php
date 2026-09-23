@@ -23,22 +23,22 @@
 */
 
 /**
- * db_connect_real - makes a connection to the database server
+ * Makes a connection to the database server. Used as part of Cacti's lib functionality.
  *
- * @param  (string) The hostname of the database server, 'localhost'
- *                  if the database server is running on this machine
- * @param  (string) The username to connect to the database server as
- * @param  (string) The password to connect to the database server with
- * @param  (string) The name of the database to connect to
- * @param  (string) The type of database server.  Only 'mysql' is currently supported
- * @param  (int)    The port to communicate with MySQL/MariaDB on
- * @param  (int)    The number a time the server should attempt to connect before failing
- * @param  (bool)   A boolean true or false
- * @param  (string) String that points to the client ssl key file
- * @param  (string) String that points to the client ssl cert file
- * @param  (string) String that points to the ssl ca file
+ * @param string $device The hostname of the database server, 'localhost'.
+ * @param string $user The username to connect to the database server as.
+ * @param string $pass The password to connect to the database server with.
+ * @param string $db_name The name of the database to connect to.
+ * @param string $db_type The type of database server. Only 'mysql' is currently supported.
+ * @param int $port The port to communicate with MySQL/MariaDB on.
+ * @param int $retries The number a time the server should attempt to connect before failing.
+ * @param bool $db_ssl A boolean true or false.
+ * @param string $db_ssl_key String that points to the client ssl key file.
+ * @param string $db_ssl_cert String that points to the client ssl cert file.
+ * @param string $db_ssl_ca String that points to the ssl ca file.
+ * @param bool $persist Set to true if you wish to use a persistent connection.
  *
- * @returns (bool|object) connection object on success, false for error
+ * @return bool|object Connection object on success, false for error.
  */
 function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $port = '3306', $retries = 20,
 	$db_ssl = false, $db_ssl_key = '', $db_ssl_cert = '', $db_ssl_ca = '', $persist = false) {
@@ -236,14 +236,13 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 }
 
 /**
- * db_check_reconnect - Check the database connection.  If the connection is gone
- *  attempt to reconnect, otherwise return the connection
+ * Check the database connection. If the connection is gone attempt to reconnect, otherwise return
+ * the connection. Used as part of Cacti's lib functionality.
  *
- * @param bool|object &$db_conn The connection to check. Replaced with the new
- *                              connection after a successful reconnect.
- * @param bool         $log     Whether or not to log the connection check
+ * @param & $db_conn Bool|object &$db_conn The connection to check. Replaced with the new.
+ * @param bool $log Whether or not to log the connection check.
  *
- * @return bool True when the database is connected, otherwise false
+ * @return bool True when the database is connected, otherwise false.
  */
 function db_check_reconnect(&$db_conn = false, $log = true) {
 	global $config, $database_details;
@@ -343,14 +342,26 @@ function db_check_reconnect(&$db_conn = false, $log = true) {
 	}
 }
 
+/**
+ * Handles the DB warning handler. Used as part of Cacti's lib functionality.
+ *
+ * @param int $errno The errno.
+ * @param string $errstr The errstr.
+ * @param string $errfile The errfile.
+ * @param int $errline The errline.
+ * @param array $errcontext The errcontext.
+ *
+ * @return bool|null True on success, false otherwise.
+ */
 function db_warning_handler($errno, $errstr, $errfile, $errline, $errcontext = []) {
 	throw new Exception($errstr, $errno);
 }
 
 /**
- * db_binlog_enabled - Checks to see if binary logging is enabled on the server
+ * Checks to see if binary logging is enabled on the server. Used as part of Cacti's lib
+ * functionality.
  *
- * @return (bool) true if enabled, else false
+ * @return bool True if enabled, else false.
  */
 function db_binlog_enabled() {
 	$enabled = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "log_bin"');
@@ -365,9 +376,9 @@ function db_binlog_enabled() {
 }
 
 /**
- * db_get_active_replicas - Returns the hostnames of all active replicas
+ * Returns the hostnames of all active replicas. Used as part of Cacti's lib functionality.
  *
- * @return (array) The list of active replicas as an array of hostnames
+ * @return array The list of active replicas as an array of hostnames.
  */
 function db_get_active_replicas() {
 	return array_rekey(
@@ -379,11 +390,11 @@ function db_get_active_replicas() {
 }
 
 /**
- * db_close - closes the open connection
+ * Closes the open connection. Used as part of Cacti's lib functionality.
  *
- * @param  (bool|resource) Either the connection to use of false to use the default
+ * @param & $db_conn Either the connection to use of false to use the default.
  *
- * @return (bool) the result of the close command
+ * @return bool The result of the close command.
  */
 function db_close(&$db_conn = false) {
 	global $database_sessions, $error_logged, $database_default, $database_hostname, $database_port, $database_details;
@@ -431,31 +442,31 @@ function db_close(&$db_conn = false) {
 }
 
 /**
- * db_execute - run an sql query and do not return any output
+ * Run an sql query and do not return any output. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The SQL query to execute
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false for the default
+ * @param string $sql The SQL query to execute.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false for the default.
  *
- * @return (bool) '1' for success, false on error
+ * @return bool '1' for success, false on error.
  */
 function db_execute($sql, $log = true, $db_conn = false) {
 	return db_execute_prepared($sql, array(), $log, $db_conn);
 }
 
 /**
- * db_execute_prepared - run an sql query and do not return any output
+ * Run an sql query and do not return any output. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The SQL query to execute
- * @param  (array)         An array of values to be prepared into the SQL
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false for the default
- * @param  (string)        The database action/function to run
- * @param  (bool)          To Be Completed
- * @param  (string)        To Be Completed
- * @param  (array)         To Be Completed
+ * @param string $sql The SQL query to execute.
+ * @param array $params An array of values to be prepared into the SQL.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false for the default.
+ * @param string $execute_name The database action/function to run.
+ * @param bool $default_value To Be Completed.
+ * @param string $return_func To Be Completed.
+ * @param array $return_params To Be Completed.
  *
- * @return (bool) '1' for success, false for failed
+ * @return bool '1' for success, false for failed.
  */
 function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = array()) {
 	global $database_sessions, $error_logged, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log, $affected_rows, $database_details;
@@ -653,15 +664,15 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 
 /**
- * db_fetch_cell - run a 'select' sql query and return the first column of the
- *   first row found
+ * Run a 'select' sql query and return the first column of the first row found. Used as part of
+ * Cacti's lib functionality.
  *
- * @param  (string)        The SQL query to execute
- * @param  (string)        Use this column name instead of the first one
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $sql The SQL query to execute.
+ * @param string $col_name Use this column name instead of the first one.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool)  The output of the sql query as a single variable
+ * @return bool The output of the sql query as a single variable.
  */
 function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) {
 	global $config;
@@ -674,16 +685,16 @@ function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) {
 }
 
 /**
- * db_fetch_cell_prepared - run a 'select' sql query and return the first column of the
- *   first row found
+ * Run a 'select' sql query and return the first column of the first row found. Used as part of
+ * Cacti's lib functionality.
  *
- * @param  (string)        The SQL query to execute
- * @param  (array)         An array of values to be prepared into the SQL
- * @param  (string)        Use this column name instead of the first one
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $sql The SQL query to execute.
+ * @param array $params An array of values to be prepared into the SQL.
+ * @param string $col_name Use this column name instead of the first one.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool) The output of the sql query as a single variable
+ * @return bool The output of the sql query as a single variable.
  */
 function db_fetch_cell_prepared($sql, $params = array(), $col_name = '', $log = true, $db_conn = false) {
 	global $config;
@@ -696,15 +707,13 @@ function db_fetch_cell_prepared($sql, $params = array(), $col_name = '', $log = 
 }
 
 /**
- * db_fetch_cell_return - Function to process and return data from the
- *   db_fetch_cell_prepared function
+ * Function to process and return data from the db_fetch_cell_prepared function. Used as part of
+ * Cacti's lib functionality.
  *
- * @param  (string) The SQL query to run
- * @param  (string) The column to return if the query is more row or associative
- *                  in the case of associated, returns the column from the first
- *                  row.
+ * @param string $query The SQL query to run.
+ * @param string $col_name The column to return if the query is more row or associative.
  *
- * @return (bool|string) The value of the column or false if failed
+ * @return bool|string The value of the column or false if failed.
  */
 function db_fetch_cell_return($query, $col_name = '') {
 	global $config;
@@ -731,13 +740,14 @@ function db_fetch_cell_return($query, $col_name = '') {
 }
 
 /**
- * db_fetch_row - run a 'select' sql query and return the first row found
+ * Run a 'select' sql query and return the first row found. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (string)        The SQL query to execute
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $sql The SQL query to execute.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool|array) The first row of the result or false if failed
+ * @return bool|array The first row of the result or false if failed.
  */
 function db_fetch_row($sql, $log = true, $db_conn = false) {
 	global $config;
@@ -750,14 +760,15 @@ function db_fetch_row($sql, $log = true, $db_conn = false) {
 }
 
 /**
- * db_fetch_row_prepared - run a 'select' sql query and return the first row found
+ * Run a 'select' sql query and return the first row found. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (string)        The SQL query to execute
- * @param  (array)         An array of values to be prepared into the SQL
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $sql The SQL query to execute.
+ * @param array $params An array of values to be prepared into the SQL.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool|array) The first row of the result or false if failed
+ * @return bool|array The first row of the result or false if failed.
  */
 function db_fetch_row_prepared($sql, $params = array(), $log = true, $db_conn = false) {
 	global $config;
@@ -770,12 +781,12 @@ function db_fetch_row_prepared($sql, $params = array(), $log = true, $db_conn = 
 }
 
 /**
- * db_fetch_row_return - Function to execute and process the results for the
- *   db_fetch_row_prepared() function.
+ * Function to execute and process the results for the db_fetch_row_prepared() function. Used as
+ * part of Cacti's lib functionality.
  *
- * @param  (string) The prepared Query
+ * @param string $query The prepared Query.
  *
- * @return (array) The row, or false on failure
+ * @return array The row, or false on failure.
  */
 function db_fetch_row_return($query) {
 	global $config;
@@ -792,13 +803,13 @@ function db_fetch_row_return($query) {
 }
 
 /**
- * db_fetch_assoc - run a 'select' sql query and return all rows found
+ * Run a 'select' sql query and return all rows found. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The SQL query to execute
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $sql The SQL query to execute.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool|array)    The entire result set or false on error
+ * @return bool|array The entire result set or false on error.
  */
 function db_fetch_assoc($sql, $log = true, $db_conn = false) {
 	global $config;
@@ -811,14 +822,14 @@ function db_fetch_assoc($sql, $log = true, $db_conn = false) {
 }
 
 /**
- * db_fetch_assoc_prepared - run a 'select' sql query and return all rows found
+ * Run a 'select' sql query and return all rows found. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The sql query to execute
- * @param  (array)         An array of values to be prepared into the SQL
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $sql The sql query to execute.
+ * @param array $params An array of values to be prepared into the SQL.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool|array)    The entire result or false on error
+ * @return bool|array The entire result or false on error.
  */
 function db_fetch_assoc_prepared($sql, $params = array(), $log = true, $db_conn = false) {
 	global $config;
@@ -831,12 +842,12 @@ function db_fetch_assoc_prepared($sql, $params = array(), $log = true, $db_conn 
 }
 
 /**
- * db_fetch_assoc_return - Function to execute and process the results for the
- *   db_fetch_assoc_prepared() function.
+ * Function to execute and process the results for the db_fetch_assoc_prepared() function. Used as
+ * part of Cacti's lib functionality.
  *
- * @param  (string)     The prepared Query
+ * @param string $query The prepared Query.
  *
- * @return (bool|array) The associated array of data, or false on failure
+ * @return bool|array The associated array of data, or false on failure.
  */
 function db_fetch_assoc_return($query) {
 	global $config;
@@ -850,11 +861,11 @@ function db_fetch_assoc_return($query) {
 }
 
 /**
- * db_fetch_insert_id - get the last insert_id or auto increment
+ * Get the last insert_id or auto increment. Used as part of Cacti's lib functionality.
  *
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool|int)      The id of the last auto increment row or false on error
+ * @return bool|int The id of the last auto increment row or false on error.
  */
 function db_fetch_insert_id($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -872,12 +883,12 @@ function db_fetch_insert_id($db_conn = false) {
 }
 
 /**
- * db_affected_rows - return the number of rows affected by the last transaction
+ * Return the number of rows affected by the last transaction. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool|int)      The number of rows affected by the last transaction,
- *                         or false on error
+ * @return bool|int The number of rows affected by the last transaction, or false on error.
  */
 function db_affected_rows($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port, $affected_rows;
@@ -895,22 +906,22 @@ function db_affected_rows($db_conn = false) {
 }
 
 /**
- * db_is_safe_identifier - validate table and column names used in DDL
+ * Validate table and column names used in DDL.
  *
- * @param  (string) $identifier - Identifier to validate
+ * @param string $identifier Identifier to validate.
  *
- * @return (bool) True when safe for backtick-quoted DDL
+ * @return bool True when safe for backtick-quoted DDL.
  */
 function db_is_safe_identifier($identifier) {
 	return is_string($identifier) && preg_match('/^[A-Za-z0-9_]+$/', $identifier) === 1;
 }
 
 /**
- * db_format_qualified_identifier - validate and quote a table identifier
+ * Validate and quote a table identifier. Used as part of Cacti's lib functionality.
  *
- * @param  (string) $identifier - A table name, optionally qualified by a database
+ * @param string $identifier A table name, optionally qualified by a database.
  *
- * @return (string|bool) The safely quoted identifier or false when invalid
+ * @return string|bool The safely quoted identifier or false when invalid.
  */
 function db_format_qualified_identifier($identifier) {
 	if (!is_string($identifier)) {
@@ -941,11 +952,11 @@ function db_format_qualified_identifier($identifier) {
 }
 
 /**
- * db_is_safe_column_type - validate column type clauses used in DDL
+ * Validate column type clauses used in DDL.
  *
- * @param  (string) $type - Column type clause
+ * @param string $type Column type clause.
  *
- * @return (bool) True when the type clause contains no unsafe SQL separators
+ * @return bool True when the type clause contains no unsafe SQL separators.
  */
 function db_is_safe_column_type($type) {
 	if (!is_string($type) || cacti_has_control_chars($type)) {
@@ -983,33 +994,35 @@ function db_is_safe_column_type($type) {
 }
 
 /**
- * db_is_safe_table_option - validate storage engine, charset, collation, and row format tokens
+ * Validate storage engine, charset, collation, and row format tokens. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (string) $option - Table option token
+ * @param string $option Table option token.
  *
- * @return (bool) True when safe for DDL option clauses
+ * @return bool True when safe for DDL option clauses.
  */
 function db_is_safe_table_option($option) {
 	return is_string($option) && preg_match('/^[A-Za-z0-9_]+$/', $option) === 1;
 }
 
 /**
- * db_is_safe_index_column - validate index column names with optional prefix lengths
+ * Validate index column names with optional prefix lengths. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (string) $column - Index column definition
+ * @param string $column Index column definition.
  *
- * @return (bool) True when safe for index DDL
+ * @return bool True when safe for index DDL.
  */
 function db_is_safe_index_column($column) {
 	return is_string($column) && preg_match('/^`?[A-Za-z0-9_]+`?(?:\([0-9]+\))?$/', trim($column)) === 1;
 }
 
 /**
- * db_is_safe_column_definition - validate a db_add_column column definition
+ * Validate a db_add_column column definition. Used as part of Cacti's lib functionality.
  *
- * @param  (array) $column - Column definition
+ * @param array $column Column definition.
  *
- * @return (bool) True when safe to compose into an ALTER TABLE statement
+ * @return bool True when safe to compose into an ALTER TABLE statement.
  */
 function db_is_safe_column_definition($column) {
 	if (!isset($column['name']) || !db_is_safe_identifier($column['name'])) {
@@ -1038,13 +1051,13 @@ function db_is_safe_column_definition($column) {
 }
 
 /**
- * db_build_column_definition_sql - build a validated column definition fragment
+ * Build a validated column definition fragment. Used as part of Cacti's lib functionality.
  *
- * @param  (array)         $column        - Column definition
- * @param  (bool|resource) $db_conn       - The connection to use or false to use the default
- * @param  (bool)          $include_after - Include the AFTER clause when present
+ * @param array $column Column definition.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
+ * @param bool $include_after Include the AFTER clause when present.
  *
- * @return (string|bool) SQL fragment on success, false when validation fails
+ * @return string|bool SQL fragment on success, false when validation fails.
  */
 function db_build_column_definition_sql($column, $db_conn = false, $include_after = true) {
 	if (!db_is_safe_column_definition($column)) {
@@ -1097,11 +1110,11 @@ function db_build_column_definition_sql($column, $db_conn = false, $include_afte
 }
 
 /**
- * db_is_safe_table_definition - validate table creation/update arrays
+ * Validate table creation/update arrays. Used as part of Cacti's lib functionality.
  *
- * @param  (array) $data - Table definition
+ * @param array $data Table definition.
  *
- * @return (bool) True when safe to compose into CREATE/ALTER TABLE statements
+ * @return bool True when safe to compose into CREATE/ALTER TABLE statements.
  */
 function db_is_safe_table_definition($data) {
 	if (!is_array($data) || !isset($data['columns']) || !is_array($data['columns']) || !isset($data['type']) || !db_is_safe_table_option($data['type'])) {
@@ -1144,15 +1157,14 @@ function db_is_safe_table_definition($data) {
 }
 
 /**
- * db_add_column - add a column to table
+ * Add a column to table. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The name of the table
- * @param  (string)        Array of column data ex: array('name' => 'test' .
- *                         rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $table The name of the table.
+ * @param string $column Array of column data ex: array('name' => 'test' .
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool) '1' for success, false for error
+ * @return bool '1' for success, false for error.
  */
 function db_add_column($table, $column, $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -1200,14 +1212,14 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 }
 
 /**
- * db_remove_column - remove a column to table
+ * Remove a column to table. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The name of the table
- * @param  (string)        The name of the column
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $table The name of the table.
+ * @param string $column The name of the column.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool) '1' for success, false for error
+ * @return bool '1' for success, false for error.
  */
 function db_remove_column($table, $column, $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -1245,16 +1257,16 @@ function db_remove_column($table, $column, $log = true, $db_conn = false) {
 }
 
 /**
- * db_add_index - adds a new index to a table
+ * Adds a new index to a table. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The name of the table
- * @param  (string)        The type of the index
- * @param  (string)        The name of the index
- * @param  (array)         An array that defines the columns to include in the index
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $table The name of the table.
+ * @param string $type The type of the index.
+ * @param string $key The name of the index.
+ * @param array $columns An array that defines the columns to include in the index.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool)   The result of the operation true or false
+ * @return bool The result of the operation true or false.
  */
 function db_add_index($table, $type, $key, $columns, $log = true, $db_conn = false) {
 	if (!is_array($columns)) {
@@ -1289,14 +1301,14 @@ function db_add_index($table, $type, $key, $columns, $log = true, $db_conn = fal
 }
 
 /**
- * db_index_exists - checks whether an index exists
+ * Checks whether an index exists. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The name of the table
- * @param  (string)        The name of the index
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $table The name of the table.
+ * @param string $index The name of the index.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool) The output of the sql query as a single variable
+ * @return bool The output of the sql query as a single variable.
  */
 function db_index_exists($table, $index, $log = true, $db_conn = false) {
 	global $database_log, $config;
@@ -1326,15 +1338,15 @@ function db_index_exists($table, $index, $log = true, $db_conn = false) {
 }
 
 /**
- * db_index_exists - checks whether an index exists
+ * Checks whether an index exists. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The name of the table
- * @param  (string)        The name of the index
- * @param  (array)         The columns of the index that should match
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $table The name of the table.
+ * @param string $index The name of the index.
+ * @param array $columns The columns of the index that should match.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool) the output of the sql query as a single variable
+ * @return bool The output of the sql query as a single variable.
  */
 function db_index_matches($table, $index, $columns, $log = true, $db_conn = false) {
 	global $database_log, $config;
@@ -1400,13 +1412,13 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 }
 
 /**
- * db_table_exists - checks whether a table exists
+ * Checks whether a table exists. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The name of the table
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $table The name of the table.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool) The output of the sql query as a single variable
+ * @return bool The output of the sql query as a single variable.
  */
 function db_table_exists($table, $log = true, $db_conn = false) {
 	static $results;
@@ -1436,11 +1448,12 @@ function db_table_exists($table, $log = true, $db_conn = false) {
 }
 
 /**
- * db_cacti_initialized - checks whether cacti has been initialized properly and if not exits with a message
+ * Checks whether cacti has been initialized properly and if not exits with a message. Used as
+ * part of Cacti's lib functionality.
  *
- * @param  (bool) Is the session a web session.
+ * @param bool $is_web Is the session a web session.
  *
- * @return (bool) true if the database is initialized else false
+ * @return bool True if the database is initialized else false.
  */
 function db_cacti_initialized($is_web = true) {
 	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $config;
@@ -1476,14 +1489,14 @@ function db_cacti_initialized($is_web = true) {
 }
 
 /**
- * db_column_exists - checks whether a column exists
+ * Checks whether a column exists. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The name of the table
- * @param  (string)        The name of the column
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $table The name of the table.
+ * @param string $column The name of the column.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool) The output of the sql query as a single variable
+ * @return bool The output of the sql query as a single variable.
  */
 function db_column_exists($table, $column, $log = true, $db_conn = false) {
 	static $results = [];
@@ -1508,12 +1521,12 @@ function db_column_exists($table, $column, $log = true, $db_conn = false) {
 }
 
 /**
- * db_get_table_column_types - returns all the types for each column of a table
+ * Returns all the types for each column of a table. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The name of the table
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $table The name of the table.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (array) An array of column types indexed by the column names
+ * @return array An array of column types indexed by the column names.
  */
 function db_get_table_column_types($table, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port, $db_column_type_cache;
@@ -1556,6 +1569,13 @@ function db_get_table_column_types($table, $db_conn = false) {
 	return $cols;
 }
 
+/**
+ * Clear the memoized column-type cache Called by the DDL helpers when a table's columns change so
+ * that a later sql_save() in the same request sees the new schema. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function db_column_type_cache_reset() {
 	global $db_column_type_cache;
 
@@ -1563,18 +1583,18 @@ function db_column_type_cache_reset() {
 }
 
 /**
- * db_update_table - a function that will update the table structure based upon
- *   a Cacti specific array specification constructed by the sqltable_to_php.php
- *   script.  That script will construct an array from the table definition.
- *   The script is very handy for both Cacti table construction and for plugins.
+ * A function that will update the table structure based upon a Cacti specific array specification
+ * constructed by the sqltable_to_php.php script. That script will construct an array from the
+ * table definition. The script is very handy for both Cacti table construction and for plugins.
+ * Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The name of the table
- * @param  (array)         Table definition as a Cacti specific array
- * @param  (bool)          Remove any existing columns that are not in the specification
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $table The name of the table.
+ * @param array $data Table definition as a Cacti specific array.
+ * @param bool $removecolumns Remove any existing columns that are not in the specification.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (array) An array of column types indexed by the column names
+ * @return array An array of column types indexed by the column names.
  */
 function db_update_table($table, $data, $removecolumns = false, $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -1796,13 +1816,12 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 }
 
 /**
- * db_format_index_create - Converts and array of indexes to a string
- *   that is compatible with the cacti database table creation array.
+ * Converts and array of indexes to a string that is compatible with the cacti database table
+ * creation array. Used as part of Cacti's lib functionality.
  *
- * @param  (array) An array of indexes to process
+ * @param array $indexes An array of indexes to process.
  *
- * @return (string) A list of preprocessed indexes into a form
- *                  compatible with the array definition
+ * @return string A list of preprocessed indexes into a form compatible with the array definition.
  */
 function db_format_index_create($indexes) {
 	if (is_array($indexes)) {
@@ -1870,14 +1889,14 @@ function db_format_index_create($indexes) {
 }
 
 /**
- * db_table_create - checks whether a table exists
+ * Checks whether a table exists. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The name of the table
- * @param  (array)         The table creation array as defined by sqltable_to_php.php script
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $table The name of the table.
+ * @param array $data The table creation array as defined by sqltable_to_php.php script.
+ * @param bool $log Whether to log error messages, defaults to true.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool) The output of the sql query as a single variable
+ * @return bool The output of the sql query as a single variable.
  */
 function db_table_create($table, $data, $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -1986,12 +2005,12 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 }
 
 /**
- * db_get_global_variable - get the value of a global variable
+ * Get the value of a global variable. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The GLOBAL variable to obtain
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $variable The GLOBAL variable to obtain.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @returns - (string) the value of the variable if found
+ * @return mixed (string) the value of the variable if found.
  */
 function db_get_global_variable($variable, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -2015,12 +2034,12 @@ function db_get_global_variable($variable, $db_conn = false) {
 }
 
 /**
- * db_get_session_variable - get the value of a session variable
+ * Get the value of a session variable. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The variable to obtain
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param string $variable The variable to obtain.
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (string) The value of the variable if found
+ * @return string The value of the variable if found.
  */
 function db_get_session_variable($variable, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -2044,11 +2063,11 @@ function db_get_session_variable($variable, $db_conn = false) {
 }
 
 /**
- * db_begin_transaction - start a transaction
+ * Start a transaction. Used as part of Cacti's lib functionality.
  *
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool) If the begin transaction was successful
+ * @return bool If the begin transaction was successful.
  */
 function db_begin_transaction($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -2065,11 +2084,12 @@ function db_begin_transaction($db_conn = false) {
 	return $db_conn->beginTransaction();
 }
 
-/** db_commit_transaction - commit a transaction
+/**
+ * Commit a transaction. Used as part of Cacti's lib functionality.
  *
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool) If the commit transaction was successful
+ * @return bool If the commit transaction was successful.
  */
 function db_commit_transaction($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -2095,11 +2115,11 @@ function db_commit_transaction($db_conn = false) {
 }
 
 /**
- * db_rollback_transaction - rollback a transaction
+ * Rollback a transaction. Used as part of Cacti's lib functionality.
  *
- * @param  (bool|resource) The connection to use or false to use the default
+ * @param bool|resource $db_conn The connection to use or false to use the default.
  *
- * @return (bool) if the rollback transaction was successful
+ * @return bool If the rollback transaction was successful.
  */
 function db_rollback_transaction($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -2117,16 +2137,14 @@ function db_rollback_transaction($db_conn = false) {
 }
 
 /**
- * array_to_sql_or - loops through a single dimensional array and converts each
- *   item to a string that can be used in the OR portion of an sql query in the
- *   following form:
+ * Loops through a single dimensional array and converts each item to a string that can be used in
+ * the OR portion of an sql query in the following form: column=item1 OR column=item2 OR
+ * column=item2 ...
  *
- *   column=item1 OR column=item2 OR column=item2 ...
+ * @param array $array The array to convert.
+ * @param string $sql_column The column to set each item in the array equal to.
  *
- * @param  (array)  The array to convert
- * @param  (string) The column to set each item in the array equal to
- *
- * @return (string) A string that can be placed in a SQL OR statement
+ * @return string A string that can be placed in a SQL OR statement.
  */
 function array_to_sql_or($array, $sql_column) {
 	/* if the last item is null; pop it off */
@@ -2142,14 +2160,14 @@ function array_to_sql_or($array, $sql_column) {
 }
 
 /**
- * db_replace - replaces the data contained in a particular row
+ * Replaces the data contained in a particular row. Used as part of Cacti's lib functionality.
  *
- * @param $table_name - the name of the table to make the replacement in
- * @param $array_items - an array containing each column -> value mapping in the row
- * @param $keyCols - a string or array of primary keys
- * @param $autoQuote - whether to use intelligent quoting or not
+ * @param string $table_name The name of the table to make the replacement in.
+ * @param array $array_items An array containing each column -> value mapping in the row.
+ * @param string $keyCols A string or array of primary keys.
+ * @param mixed $db_conn Db connection object of false.
  *
- * @return - the auto increment id column (if applicable)
+ * @return int The auto increment id column (if applicable).
  */
 function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -2189,16 +2207,27 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
  * @return (bool|int) Either the insert id of the replace of false on error
  */
 /**
- * Sanitize a column name for safe SQL interpolation.
- * Strips backticks and any character that is not alphanumeric or underscore.
+ * Sanitize a column name for safe SQL interpolation. Strips backticks and any character that is
+ * not alphanumeric or underscore. Used as part of Cacti's lib functionality.
  *
- * @param string $col  Raw column name
- * @return string      Safe column name
+ * @param string $col Raw column name.
+ *
+ * @return string Safe column name.
  */
 function cacti_safe_column_name($col) {
 	return preg_replace('/[^a-zA-Z0-9_]/', '', $col);
 }
 
+/**
+ * Internal function used as a part of the db_replace public function.
+ *
+ * @param mixed $db_conn The database connection to use.
+ * @param string $table The table name to use.
+ * @param array $fieldArray An array of field values.
+ * @param mixed $keyCols A string of a key column or an array of key columns.
+ *
+ * @return mixed Either the insert id of the replace of false on error.
+ */
 function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -2258,13 +2287,15 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 }
 
 /**
- * sql_save - saves data to an sql table
+ * Saves data to an sql table. Used as part of Cacti's lib functionality.
  *
- * @param  (array)        An array containing each column -> value mapping in the row
- * @param  (string)       The name of the table to make the replacement in
- * @param  (string|array) The primary key(s) for the table
+ * @param array $array_items An array containing each column -> value mapping in the row.
+ * @param string $table_name The name of the table to make the replacement in.
+ * @param string|array $key_cols The primary key(s) for the table.
+ * @param bool $autoinc Use autoinc if available.
+ * @param mixed $db_conn Database connection to use.
  *
- * @return (bool|int)     The auto increment id column (if applicable)
+ * @return bool|int The auto increment id column (if applicable).
  */
 function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port, $database_last_error;
@@ -2342,13 +2373,13 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 }
 
 /**
- * db_qstr - Quote a string using the PDO function and also enclose
- *   the remainder of the string in single quotes.
+ * Quote a string using the PDO function and also enclose the remainder of the string in single
+ * quotes. Used as part of Cacti's lib functionality.
  *
- * @param  (string)        The SQL to be escaped
- * @param  (bool|resource) The database connection or false if to use the default
+ * @param string $s The SQL to be escaped.
+ * @param bool|resource $db_conn The database connection or false if to use the default.
  *
- * @return (string) The escaped SQL string
+ * @return string The escaped SQL string.
  */
 function db_qstr($s, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -2374,17 +2405,15 @@ function db_qstr($s, $db_conn = false) {
 }
 
 /**
- * db_qstr_rlike - Safely quote a value for use in a RLIKE/REGEXP clause.
+ * Safely quote a value for use in a RLIKE/REGEXP clause. Caps the length and strips alternation
+ * and bounded-repeat metacharacters to limit catastrophic backtracking on attacker-supplied
+ * filter input. Normal regex features (anchors, character classes, simple quantifiers) remain
+ * available. Used as part of Cacti's lib functionality.
  *
- * Caps the length and strips alternation and bounded-repeat metacharacters
- * to limit catastrophic backtracking on attacker-supplied filter input.
- * Normal regex features (anchors, character classes, simple quantifiers)
- * remain available.
+ * @param string $s The regex pattern value to quote.
+ * @param mixed $db_conn An optional database connection object.
  *
- * @param string $s       The regex pattern value to quote
- * @param mixed  $db_conn An optional database connection object
- *
- * @return string The safe 'RLIKE <quoted>' SQL fragment
+ * @return string The safe 'RLIKE <quoted>' SQL fragment.
  */
 function db_qstr_rlike($s, $db_conn = false) {
 	$s = (string) $s;
@@ -2399,23 +2428,23 @@ function db_qstr_rlike($s, $db_conn = false) {
 }
 
 /**
- * db_strip_control_chars - Strip control characters from SQL command
+ * Strip control characters from SQL command. Used as part of Cacti's lib functionality.
  *
- * @param  (string) The SQL command to loose it's control chars
+ * @param string $sql The SQL command to loose it's control chars.
  *
- * @return (string) The SQL command
+ * @return string The SQL command.
  */
 function db_strip_control_chars($sql) {
 	return trim(clean_up_lines($sql), ';');
 }
 
 /**
- * db_get_column_attributes - Get the attributes for a column or columns
+ * Get the attributes for a column or columns. Used as part of Cacti's lib functionality.
  *
- * @param  (string) The name of the table
- * @param  (string) A comma separated list of columns
+ * @param string $table The name of the table.
+ * @param string $columns A comma separated list of columns.
  *
- * @return (array|bool) An array of column attributes on success or false if failed
+ * @return array|bool An array of column attributes on success or false if failed.
  */
 function db_get_column_attributes($table, $columns) {
 	if (empty($columns) || empty($table)) {
@@ -2446,12 +2475,12 @@ function db_get_column_attributes($table, $columns) {
 }
 
 /**
- * db_get_columns_length - Get the length of a array of columns in a table
+ * Get the length of a array of columns in a table. Used as part of Cacti's lib functionality.
  *
- * @param  (string) The name of the table
- * @param  (array)  An array of column names
+ * @param string $table The name of the table.
+ * @param array $columns An array of column names.
  *
- * @return (array|bool) An array of column lengths on success or false if failed
+ * @return array|bool An array of column lengths on success or false if failed.
  */
 function db_get_columns_length($table, $columns) {
 	$column_data = db_get_column_attributes($table, $columns);
@@ -2464,12 +2493,12 @@ function db_get_columns_length($table, $columns) {
 }
 
 /**
- * db_get_column_length - Get the length of a column in a table
+ * Get the length of a column in a table. Used as part of Cacti's lib functionality.
  *
- * @param  (string) The name of the table
- * @param  (string) The name of the table column
+ * @param string $table The name of the table.
+ * @param string $column The name of the table column.
  *
- * @return (int|bool) The length on success or false if failed
+ * @return int|bool The length on success or false if failed.
  */
 function db_get_column_length($table, $column) {
 	$column_data = db_get_columns_length($table, $column);
@@ -2482,10 +2511,10 @@ function db_get_column_length($table, $column) {
 }
 
 /**
- * db_check_password_length - Get the length of the password column in the
- *   user_auth table and adjust if the password length to 80 chars
+ * Get the length of the password column in the user_auth table and adjust if the password length
+ * to 80 chars. Used as part of Cacti's lib functionality.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function db_check_password_length() {
 	$len = db_get_column_length('user_auth', 'password');
@@ -2504,12 +2533,12 @@ function db_check_password_length() {
 }
 
 /**
- * db_echo_sql - log the database call SQL to the systems tmpdir
+ * Log the database call SQL to the systems tmpdir. Used as part of Cacti's lib functionality.
  *
- * @param  (string) The SQL data to be executed
- * @param  (bool)   Not used
+ * @param string $line The SQL data to be executed.
+ * @param bool $force Not used.
  *
- * @return (string) the last database error if any
+ * @return string The last database error if any.
  */
 function db_echo_sql($line, $force = false) {
 	global $config;
@@ -2518,9 +2547,9 @@ function db_echo_sql($line, $force = false) {
 }
 
 /**
- * db_error - return the last error from the database
+ * Return the last error from the database. Used as part of Cacti's lib functionality.
  *
- * @return (string) the last database error if any
+ * @return string The last database error if any.
  */
 function db_error() {
 	global $database_last_error;
@@ -2529,12 +2558,12 @@ function db_error() {
 }
 
 /**
- * db_get_default_database - Get the database name of the current database or
- *  return the default database name
+ * Get the database name of the current database or return the default database name. Used as part
+ * of Cacti's lib functionality.
  *
- * @param  (bool|resource) The connection name or false if one is not passed
+ * @param bool|resource $db_conn The connection name or false if one is not passed.
  *
- * @return (string) either current db name or  default database if no connection/name
+ * @return string Either current db name or default database if no connection/name.
  */
 function db_get_default_database($db_conn = false) {
 	global $database_default;
@@ -2546,29 +2575,24 @@ function db_get_default_database($db_conn = false) {
 }
 
 /**
- * db_force_remote_cnn - alias for db_switch_remote_to_main()
+ * Alias for db_switch_remote_to_main() Switches the local database connection to the main server
+ * This is required for CLI script that wish to talk to the main database server since by default
+ * they are connected to the local database server. Used as part of Cacti's lib functionality.
  *
- * Switches the local database connection to the main server
- * This is required for CLI script that wish to talk to the main
- * database server since by default they are connected to the local
- * database server.
- *
- * @return (void)
+ * @return void The status of the switch.
  */
 function db_force_remote_cnn() {
 	return db_switch_remote_to_main();
 }
 
 /**
- * db_switch_remote_to_main - force the local connection to the main database connection
+ * Force the local connection to the main database connection This function needs to be used with
+ * caution. It is for switching a database connection from the remote connection or the main Cacti
+ * poller back to the local connection for all db* calls that do not require the connection to be
+ * passed. It's to be used by CLI script, that by default connect to the local database, back and
+ * forth to the remote or main database server.
  *
- * This function needs to be used with caution.  It is for switching a database connection
- * from the remote connection or the main Cacti poller back to the local connection
- * for all db* calls that do not require the connection to be passed.  It's to be used
- * by CLI script, that by default connect to the local database, back and forth to the
- * remote or main database server.
- *
- * @returns (bool) If the switch was successful
+ * @return bool If the switch was successful.
  */
 function db_switch_remote_to_main() {
     global $config, $database_sessions, $database_hostname, $database_port, $database_default;
@@ -2584,15 +2608,13 @@ function db_switch_remote_to_main() {
 }
 
 /**
- * db_switch_main_to_local - force the main cacti connection to the local poller
+ * Force the main cacti connection to the local poller This function needs to be used with
+ * caution. It is for switching a database connection from the remote connection or the main Cacti
+ * poller back to the local connection for all db* calls that do not require the connection to be
+ * passed. It's to be used by CLI script, that by default connect to the local database, back and
+ * forth to the remote or main database server.
  *
- * This function needs to be used with caution.  It is for switching a database connection
- * from the remote connection or the main Cacti poller back to the local connection
- * for all db* calls that do not require the connection to be passed.  It's to be used
- * by CLI script, that by default connect to the local database, back and forth to the
- * remote or main database server.
- *
- * @returns (bool) If the switch was successful
+ * @return bool If the switch was successful.
  */
 function db_switch_main_to_local() {
     global $config, $database_sessions, $database_hostname, $database_port, $database_default;
@@ -2608,15 +2630,17 @@ function db_switch_main_to_local() {
 }
 
 /**
- * db_dump_data - dump data into a file by mysqldump, minimize password be caught.
+ * Dump data into a file by mysqldump, minimize password be caught. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (string)     $database - default $database_default
- * @param  (string)     $tables - default all tables
- * @param  (array)      $credentials - array($name => value, ...) for user, password, host, port, ssl ...
- * @param  (string|bool) $output_file - dump file name, default /tmp/cacti.dump.sql
- * @param  (string)     $options - option strings for mysqldump, if --defaults-extra-file set, dump the data directly
+ * @param string $database Default $database_default.
+ * @param string $tables Default all tables.
+ * @param array $credentials Array($name => value, ...) for user, password, host, port, ssl ...
+ * @param string|bool $output_file Dump file name, default /tmp/cacti.dump.sql.
+ * @param string $options Option strings for mysqldump, if --defaults-extra-file set, dump the
+ *   data directly.
  *
- * @return (int) return status of the executed command
+ * @return int Return status of the executed command.
  */
 function db_dump_data($database = '', $tables = '', $credentials = array(), $output_file = false, $options = '--extended-insert=FALSE') {
 	global $database_default, $database_username, $database_password;
@@ -2688,19 +2712,17 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 }
 
 /**
- * cacti_fetch_by_id - Fetch a single row by its integer primary key.
+ * Fetch a single row by its integer primary key. Sanitizes the table name, column list, and ID
+ * column to prevent injection. Returns false when the ID is non-positive or no row is found. Used
+ * as part of Cacti's lib functionality.
  *
- * Sanitizes the table name, column list, and ID column to prevent
- * injection. Returns false when the ID is non-positive or no row
- * is found.
+ * @param string $table Table name (alphanumeric + underscore only).
+ * @param int $id The row ID to look up.
+ * @param string|array $columns Column(s) to select ('*' for all).
+ * @param string $id_column Name of the primary key column.
+ * @param mixed $db_conn Optional database connection.
  *
- * @param  string       $table      Table name (alphanumeric + underscore only)
- * @param  int          $id         The row ID to look up
- * @param  string|array $columns    Column(s) to select ('*' for all)
- * @param  string       $id_column  Name of the primary key column
- * @param  mixed        $db_conn    Optional database connection
- *
- * @return array|false  The row as an associative array, or false
+ * @return array|false The row as an associative array, or false.
  */
 function cacti_fetch_by_id($table, $id, $columns = '*', $id_column = 'id', $db_conn = false) {
 	$id = intval($id);

@@ -226,6 +226,12 @@ switch (get_request_var('action')) {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's sites functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	if (isset_request_var('save_component_site')) {
@@ -267,6 +273,14 @@ function form_save() {
 	}
 }
 
+/**
+ * Handles the duplicate site. Used as part of Cacti's sites functionality.
+ *
+ * @param mixed $template_id The template ID.
+ * @param string $name The name.
+ *
+ * @return void No value is returned.
+ */
 function duplicate_site($template_id, $name) {
 	if (!is_array($template_id)) {
 		$template_id = array($template_id);
@@ -316,6 +330,12 @@ function duplicate_site($template_id, $name) {
 /* ------------------------
     The 'actions' function
    ------------------------ */
+/**
+ * ------------------------ The 'actions' function ------------------------. Used as part of
+ * Cacti's sites functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_actions() {
 	global $site_actions;
@@ -417,6 +437,12 @@ function form_actions() {
 /* ---------------------
     Site Functions
    --------------------- */
+/**
+ * --------------------- Site Functions ---------------------. Used as part of Cacti's sites
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function site_edit() {
 	global $fields_site_edit;
@@ -457,6 +483,11 @@ function site_edit() {
 	form_save_button('sites.php', 'return');
 }
 
+/**
+ * Handles the sites. Used as part of Cacti's sites functionality.
+ *
+ * @return void No value is returned.
+ */
 function sites() {
 	global $site_actions, $item_rows, $config;
 

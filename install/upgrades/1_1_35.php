@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1 1 35. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_1_35() {
 	db_install_execute("DELETE FROM data_input_data
 		WHERE data_input_field_id=0");

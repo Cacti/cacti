@@ -22,6 +22,19 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the import XML data. Used as part of Cacti's lib functionality.
+ *
+ * @param & $xml_data The XML data.
+ * @param bool $import_as_new The import as new.
+ * @param int $profile_id The profile ID.
+ * @param bool $remove_orphans The remove orphans.
+ * @param bool $replace_svalues The replace svalues.
+ * @param array $import_hashes The import hashes.
+ * @param string $class The class.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false, $replace_svalues = false, $import_hashes = array(), $class = '') {
 	global $config, $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only;
 	global $import_debug_info, $import_messages, $legacy_template;
@@ -324,6 +337,13 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 	return $info_array;
 }
 
+/**
+ * Determines whether cacti public key. Used as part of Cacti's lib functionality.
+ *
+ * @param string $public_key The public key.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function is_cacti_public_key($public_key) {
 	$public_key = trim($public_key);
 	$keys[] = get_public_key_sha1();
@@ -338,22 +358,44 @@ function is_cacti_public_key($public_key) {
 	return false;
 }
 
+/**
+ * Retrieves the public key sha1. Used as part of Cacti's lib functionality.
+ *
+ * @return string The resulting string.
+ */
 function get_public_key_sha1() {
 	return get_public_key();
 }
 
+/**
+ * Retrieves the public key sha256. Used as part of Cacti's lib functionality.
+ *
+ * @return string The resulting string.
+ */
 function get_public_key_sha256() {
 	$public_key = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApH0rQ6cEYMCeHh5b7zCw\n5Mxzrj5N6PNW4NJE6YvjpzR40SE/B+vGnwpQZB+bmAVPJcn7TgUf5+ZnPoLL7BNn\nfFhDOREzQYhcTGTxTFQ/AD/DdgzyALdWsV14mwkaxKchnY3XZY1Jg/tm+AFOBrEX\n3Oa4pkOf7+V2HXVhbMhWrsoW5/tI8AQBQtzadqxXDGMpwlwKb6QNlUPk1slQFn3e\nk9rpWgq/84OxsJs2MVFyo/Nh6ehu8cE7OYHOJ/1qQ+8w99ro+zllwLqStY3/Z3Bl\nQmGcllo3/LfnWc10aqdtpFOxWcJwzkQ1vvjzAuWYPmW/fNbft3+pRuS7sa2jj/oN\nvQIDAQAB\n-----END PUBLIC KEY-----";
 
 	return $public_key;
 }
 
+/**
+ * Retrieves the public key. Used as part of Cacti's lib functionality.
+ *
+ * @return string The resulting string.
+ */
 function get_public_key() {
 	$public_key = "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMbPpuQfwmg93oOGjdLKrAqwEPwvvNjC\nbk2YZiDglh8lQJxNQI9glG1Z/ptvqprFO3iSx9rTP4vzZ0Ek2+EMYTMCAwEAAQ==\n-----END PUBLIC KEY-----";
 
     return $public_key;
 }
 
+/**
+ * Handles the import package get public key. Used as part of Cacti's lib functionality.
+ *
+ * @param string $xmlfile The xmlfile.
+ *
+ * @return string The resulting string.
+ */
 function import_package_get_public_key($xmlfile) {
 	$data = import_package_get_details($xmlfile);
 
@@ -364,6 +406,13 @@ function import_package_get_public_key($xmlfile) {
 	}
 }
 
+/**
+ * Handles the import package get name. Used as part of Cacti's lib functionality.
+ *
+ * @param string $xmlfile The xmlfile.
+ *
+ * @return string The resulting string.
+ */
 function import_package_get_name($xmlfile) {
 	$data = import_package_get_details($xmlfile);
 
@@ -374,6 +423,13 @@ function import_package_get_name($xmlfile) {
 	}
 }
 
+/**
+ * Handles the import package get details. Used as part of Cacti's lib functionality.
+ *
+ * @param string $xmlfile The xmlfile.
+ *
+ * @return array An array of results.
+ */
 function import_package_get_details($xmlfile) {
 	$filename = "compress.zlib://$xmlfile";
 
@@ -436,10 +492,16 @@ function import_package_get_details($xmlfile) {
 	return $return;
 }
 
-/* import_validate_signature - Report, as a strict boolean, whether a Package is
- * signed by a key Cacti trusts. The verdict is the return value itself, so a
- * caller can not treat a populated result as a pass (GHSA-274c-97hj-pv2v). A
- * Package that carries no key names no signer, so there is nothing to trust. */
+/**
+ * Report, as a strict boolean, whether a Package is * signed by a key Cacti trusts. The verdict
+ * is the return value itself, so a * caller can not treat a populated result as a pass
+ * (GHSA-274c-97hj-pv2v). A * Package that carries no key names no signer, so there is nothing to
+ * trust. Used as part of Cacti's lib functionality.
+ *
+ * @param string $xmlfile The Package to check.
+ *
+ * @return bool True when the Package carries an official or an accepted key.
+ */
 function import_validate_signature($xmlfile) : bool {
 	// Read the raw package details rather than the get-public-key helper: that
 	// helper substitutes Cacti's official key when <publickey> is absent, which
@@ -453,6 +515,14 @@ function import_validate_signature($xmlfile) : bool {
 	return is_cacti_public_key(trim((string) $data['public_key']));
 }
 
+/**
+ * Handles the import read package data. Used as part of Cacti's lib functionality.
+ *
+ * @param string $xmlfile The xmlfile.
+ * @param & $public_key The public key.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function import_read_package_data($xmlfile, &$public_key) {
 	$public_key = import_package_get_public_key($xmlfile);
 
@@ -553,28 +623,26 @@ function import_read_package_data($xmlfile, &$public_key) {
 }
 
 /**
- * import_package - This function will selectively import some or all of the
- *   components of a Cacti, Provide a preview of the import, or provide information
- *   about the Package depending upon the settings provided below.
+ * This function will selectively import some or all of the components of a Cacti, Provide a
+ * preview of the import, or provide information about the Package depending upon the settings
+ * provided below. This function can also read from the $_REQUEST environment certain overrides
+ * for Graph Size, and Image format when importing through the GUI. Used as part of Cacti's lib
+ * functionality.
  *
- * This function can also read from the $_REQUEST environment certain overrides for
- * Graph Size, and Image format when importing through the GUI.
+ * @param string $xmlfile The XML file to process.
+ * @param int $profile_id The Data Source Profile to use for the packages.
+ * @param bool $remove_orphans Boolean true to remove Graph Template orphans after import.
+ * @param bool $replace_svalues Boolean that if true, all suggested values for Graph Templates and
+ *   Data Templates will be replaced with the values in the package.
+ * @param bool $preview If true, only generate a preview of what will be imported and the
+ *   corresponding changes.
+ * @param bool $info_only Return only the information about the package, not details.
+ * @param bool $limitex Limit the execution time to 50 seconds to process for larger packages.
+ * @param array $import_hashes The hashes to import from the package.
+ * @param array $import_files The XML resource files and script files to import from the package.
+ * @param string $class The Class of the Package in the case of a Device Template.
  *
- * @param  (string)      $xmlfile - The XML file to process
- * @param  (int)         $profile_id - The Data Source Profile to use for the packages
- * @param  (bool)        $remove_orphans - Boolean true to remove Graph Template orphans after import
- * @param  (bool)        $replace_svalues - Boolean that if true, all suggested values for Graph Templates
- *                       and Data Templates will be replaced with the values in the
- *                       package.
- * @param  (bool)        $preview - If true, only generate a preview of what will be imported
- *                       and the corresponding changes.
- * @param  (bool)        $info_only - Return only the information about the package, not details
- * @param  (bool)        $limitex - Limit the execution time to 50 seconds to process for larger
- *                       packages.
- * @param  (array)       $import_hashes - The hashes to import from the package
- * @param  (array)       $import_files - The XML resource files and script files to import from the package
- * @param  (string)      $class - The Class of the Package in the case of a Device Template
- *
+ * @return mixed The results of the import package.
  */
 function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $replace_svalues = false,
 	$preview = false, $info_only = false, $limitex = true, $import_hashes = array(), $import_files = array(), $class = '') {
@@ -749,6 +817,17 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 	return array($debug_data, $filestatus);
 }
 
+/**
+ * Handles the XML to graph template. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash The hash.
+ * @param & $xml_array The XML array.
+ * @param & $hash_cache The hash cache.
+ * @param string $hash_version The hash version.
+ * @param bool $remove_orphans The remove orphans.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, $remove_orphans = false) {
 	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $cacti_version_codes;
 	global $preview_only, $graph_item_types, $import_debug_info;
@@ -1128,6 +1207,17 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 	return $hash_cache;
 }
 
+/**
+ * Handles the XML to data template. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash The hash.
+ * @param & $xml_array The XML array.
+ * @param & $hash_cache The hash cache.
+ * @param bool $import_as_new The import as new.
+ * @param int $profile_id The profile ID.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, $profile_id) {
 	global $struct_data_source, $struct_data_source_item, $import_template_id, $preview_only;
 	global $ignorable_hashes, $import_debug_info, $legacy_template;
@@ -1400,6 +1490,17 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	return $hash_cache;
 }
 
+/**
+ * Handles the XML to data query. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash The hash.
+ * @param & $xml_array The XML array.
+ * @param & $hash_cache The hash cache.
+ * @param & $files The files.
+ * @param bool $replace_svalues The replace svalues.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_svalues = false) {
 	global $config, $fields_data_query_edit, $fields_data_query_item_edit, $preview_only, $import_debug_info;
 
@@ -1668,6 +1769,15 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 	return $hash_cache;
 }
 
+/**
+ * Handles the XML to GPRINT preset. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash The hash.
+ * @param & $xml_array The XML array.
+ * @param & $hash_cache The hash cache.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 	global $fields_grprint_presets_edit, $preview_only, $import_debug_info;
 
@@ -1719,6 +1829,17 @@ function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
+/**
+ * Handles the XML to data source profile. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash The hash.
+ * @param & $xml_array The XML array.
+ * @param & $hash_cache The hash cache.
+ * @param bool $import_as_new The import as new.
+ * @param int $profile_id The profile ID.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as_new, $profile_id) {
 	global $fields_profile_edit, $fields_profile_rra_edit, $import_template_id, $preview_only, $import_debug_info;
 
@@ -1795,6 +1916,17 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 
 }
 
+/**
+ * Handles the XML to host template. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash The hash.
+ * @param & $xml_array The XML array.
+ * @param & $hash_cache The hash cache.
+ * @param & $host_template_data The host template data.
+ * @param string $class The class.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_data, $class = '') {
 	global $fields_host_template_edit, $preview_only, $import_debug_info;
 
@@ -1958,6 +2090,15 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_
 	return $hash_cache;
 }
 
+/**
+ * Handles the XML to CDEF. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash The hash.
+ * @param & $xml_array The XML array.
+ * @param & $hash_cache The hash cache.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 	global $fields_cdef_edit, $preview_only, $import_debug_info;
 
@@ -2106,6 +2247,15 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
+/**
+ * Handles the XML to vdef. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash The hash.
+ * @param & $xml_array The XML array.
+ * @param & $hash_cache The hash cache.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 	global $config, $preview_only, $import_debug_info;
 
@@ -2214,6 +2364,14 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
+/**
+ * Handles the XML detect ignorable hash cache. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash The hash.
+ * @param & $xml_array The XML array.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function xml_detect_ignorable_hash_cache($hash, &$xml_array) {
 	global $ignorable_hashes;
 
@@ -2248,6 +2406,15 @@ function xml_detect_ignorable_hash_cache($hash, &$xml_array) {
 	return $found;
 }
 
+/**
+ * Handles the XML to data input method. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash The hash.
+ * @param & $xml_array The XML array.
+ * @param & $hash_cache The hash cache.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	global $fields_data_input_edit, $fields_data_input_field_edit, $fields_data_input_field_edit_1;
 	global $preview_only, $import_debug_info, $ignorable_hashes;
@@ -2408,6 +2575,15 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
+/**
+ * Handles the compare data. Used as part of Cacti's lib functionality.
+ *
+ * @param array $save The save.
+ * @param array $previous_data The previous data.
+ * @param string $table The table.
+ *
+ * @return int The resulting integer value.
+ */
 function compare_data($save, $previous_data, $table) {
 	global $preview_only, $import_debug_info;
 
@@ -2491,6 +2667,14 @@ function compare_data($save, $previous_data, $table) {
 	}
 }
 
+/**
+ * Handles the hash to friendly name. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash The hash.
+ * @param bool $display_type_name The display type name.
+ *
+ * @return string The resulting string.
+ */
 function hash_to_friendly_name($hash, $display_type_name) {
 	global $hash_type_names;
 
@@ -2578,6 +2762,15 @@ function hash_to_friendly_name($hash, $display_type_name) {
 	}
 }
 
+/**
+ * Handles the resolve hash to ID. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash The hash.
+ * @param & $hash_cache_array The hash cache array.
+ * @param string $table The table.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function resolve_hash_to_id($hash, &$hash_cache_array, $table) {
 	global $import_debug_info;
 
@@ -2613,6 +2806,13 @@ function resolve_hash_to_id($hash, &$hash_cache_array, $table) {
 	}
 }
 
+/**
+ * Parses the XML hash. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash The hash.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function parse_xml_hash($hash) {
 	global $legacy_template, $import_messages;
 
@@ -2662,6 +2862,13 @@ function parse_xml_hash($hash) {
 	return $parsed_hash;
 }
 
+/**
+ * Checks the hash type. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash_type The hash type.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function check_hash_type($hash_type) {
 	global $hash_type_codes, $import_messages;
 
@@ -2682,6 +2889,13 @@ function check_hash_type($hash_type) {
 	return $current_type;
 }
 
+/**
+ * Checks the hash version. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash_version The hash version.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function check_hash_version($hash_version) {
 	global $cacti_version_codes, $config, $import_messages;
 
@@ -2714,6 +2928,13 @@ function check_hash_version($hash_version) {
 	return $current_version;
 }
 
+/**
+ * Retrieves the version index. Used as part of Cacti's lib functionality.
+ *
+ * @param string $string_version The string version.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function get_version_index($string_version) {
 	global $cacti_version_codes;
 
@@ -2731,6 +2952,13 @@ function get_version_index($string_version) {
 	return -1;
 }
 
+/**
+ * Handles the XML character decode. Used as part of Cacti's lib functionality.
+ *
+ * @param string $text The text.
+ *
+ * @return string The resulting string.
+ */
 function xml_character_decode($text) {
 	if (function_exists('html_entity_decode')) {
 		return html_entity_decode($text, ENT_QUOTES, 'UTF-8');
@@ -2741,6 +2969,16 @@ function xml_character_decode($text) {
 	}
 }
 
+/**
+ * Handles the import display results. Used as part of Cacti's lib functionality.
+ *
+ * @param array $import_debug_info The import debug info.
+ * @param array $filestatus The filestatus.
+ * @param bool $web The web.
+ * @param bool $preview The preview.
+ *
+ * @return void No value is returned.
+ */
 function import_display_results($import_debug_info, $filestatus, $web = false, $preview = false) {
 	global $hash_type_names, $ignorable_hashes;
 
@@ -2876,6 +3114,13 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 	}
 }
 
+/**
+ * Handles the XML to array. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $data The data.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function xml_to_array($data) {
     if (is_object($data)) {
         $data = get_object_vars($data);
@@ -2883,6 +3128,13 @@ function xml_to_array($data) {
     return (is_array($data)) ? array_map(__FUNCTION__,$data) : $data;
 }
 
+/**
+ * Handles the import is base64 encoded. Used as part of Cacti's lib functionality.
+ *
+ * @param string $string The string.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function import_is_base64_encoded($string) {
 	if (preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $string)) {
 		return true;

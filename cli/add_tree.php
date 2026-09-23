@@ -329,12 +329,21 @@ if (cacti_sizeof($parms)) {
 	exit(0);
 }
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Tree Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help() {
 	display_version();
 

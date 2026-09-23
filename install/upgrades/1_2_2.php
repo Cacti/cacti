@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1 2 2. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_2_2() {
 	db_install_execute("ALTER TABLE poller_time MODIFY COLUMN id bigint(20) unsigned auto_increment");
 

@@ -56,6 +56,12 @@ if ($is_tmp && $is_save && $action == 'save') {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's templates import functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	global $preview_only, $messages, $import_messages;
@@ -147,6 +153,13 @@ function form_save() {
 	}
 }
 
+/**
+ * Handles the prepare template display. Used as part of Cacti's templates import functionality.
+ *
+ * @param & $import_info The import info.
+ *
+ * @return array An array of results.
+ */
 function prepare_template_display(&$import_info) {
 	global $hash_type_names;
 
@@ -206,6 +219,13 @@ function prepare_template_display(&$import_info) {
 	return $templates;
 }
 
+/**
+ * Displays the template data. Used as part of Cacti's templates import functionality.
+ *
+ * @param & $templates The templates.
+ *
+ * @return void No value is returned.
+ */
 function display_template_data(&$templates) {
 	global $config;
 
@@ -371,6 +391,11 @@ function display_template_data(&$templates) {
 	}
 }
 
+/**
+ * Handles the bad tmp. Used as part of Cacti's templates import functionality.
+ *
+ * @return void No value is returned.
+ */
 function bad_tmp() {
 	html_start_box(__('Import Template'), '60%', '', '1', 'center', '');
 	form_alternate_row();
@@ -378,6 +403,11 @@ function bad_tmp() {
 	html_end_box();
 }
 
+/**
+ * Handles the import. Used as part of Cacti's templates import functionality.
+ *
+ * @return void No value is returned.
+ */
 function import() {
 	global $hash_type_names, $fields_template_import;
 
@@ -530,6 +560,13 @@ function import() {
 	<?php
 }
 
+/**
+ * Determines whether tmp writable. Used as part of Cacti's templates import functionality.
+ *
+ * @param string $tmp_dir The tmp dir.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function is_tmp_writable($tmp_dir) {
 	$tmp_dir = sys_get_temp_dir();
 	$tmp_len = strlen($tmp_dir);

@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1 1 28. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_1_28() {
 	db_install_add_key('poller', 'index', 'disabled', array('disabled'));
 	db_install_drop_key('host', 'key', 'poller_id');

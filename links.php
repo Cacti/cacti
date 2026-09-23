@@ -134,6 +134,11 @@ default:
 	break;
 }
 
+/**
+ * Handles the form actions. Used as part of Cacti's links functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_actions() {
 	global $link_actions;
 
@@ -241,6 +246,11 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * Handles the pages. Used as part of Cacti's links functionality.
+ *
+ * @return void No value is returned.
+ */
 function pages() {
 	global $item_rows, $config, $link_actions;
 
@@ -454,6 +464,13 @@ function pages() {
 	form_end();
 }
 
+/**
+ * Handles the page delete. Used as part of Cacti's links functionality.
+ *
+ * @param int $id The ID.
+ *
+ * @return void No value is returned.
+ */
 function page_delete($id) {
 	db_execute_prepared('DELETE FROM external_links WHERE id = ?', array($id));
 	db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($id+10000));
@@ -462,6 +479,11 @@ function page_delete($id) {
 	page_resort();
 }
 
+/**
+ * Handles the page resort. Used as part of Cacti's links functionality.
+ *
+ * @return void No value is returned.
+ */
 function page_resort() {
 	$pages = db_fetch_assoc("SELECT * FROM external_links ORDER BY sortorder");
 
@@ -474,6 +496,15 @@ function page_resort() {
 	}
 }
 
+/**
+ * Handles the page move. Used as part of Cacti's links functionality.
+ *
+ * @param int $pageid The pageid.
+ * @param mixed $junk The junk.
+ * @param int $direction The direction.
+ *
+ * @return void No value is returned.
+ */
 function page_move($pageid, $junk, $direction) {
 	$oldorder = db_fetch_cell_prepared('SELECT sortorder FROM external_links WHERE id = ?', array($pageid));
 	$neworder = $oldorder + $direction;
@@ -485,6 +516,11 @@ function page_move($pageid, $junk, $direction) {
 	}
 }
 
+/**
+ * Handles the edit page. Used as part of Cacti's links functionality.
+ *
+ * @return void No value is returned.
+ */
 function edit_page() {
 	global $config, $poller_intervals;
 

@@ -30,15 +30,32 @@ class MibCache{
 	private $cache__tables         = array();
 	private $cache__tables_columns = array();
 
+	/**
+	 * Handles the construct. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $mib The MIB.
+	 *
+	 * @return mixed The result of the operation, or false on failure.
+	 */
 	public function __construct($mib='CACTI-MIB') {
 		$this->active_mib = $mib;
 		return $this;
 	}
 
+	/**
+	 * Handles the destruct. Used as part of Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 	public function __destruct() {
 
 	}
 
+	/**
+	 * Handles the uninstall. Used as part of Cacti's lib functionality.
+	 *
+	 * @return mixed The result of the operation, or false on failure.
+	 */
 	public function uninstall() {
 		/* avoid that our default mib will be dropped by some plugin developer */
 		if ($this->active_mib == 'CACTI-MIB') {
@@ -51,6 +68,16 @@ class MibCache{
 		}
 	}
 
+	/**
+	 * Handles the install. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed $path The path.
+	 * @param bool $replace The replace.
+	 * @param string $mib_name The MIB name.
+	 * @param bool $manage_transaction The manage transaction.
+	 *
+	 * @return void No value is returned.
+	 */
 	public function install($path, $replace=false, $mib_name='optional', $manage_transaction=true) {
 		global $config;
 
@@ -172,6 +199,13 @@ class MibCache{
 		}
 	}
 
+	/**
+	 * Handles the MIB. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $mib The MIB.
+	 *
+	 * @return object The result of the operation, or false on failure.
+	 */
 	public function mib($mib) {
 		$this->active_mib = $mib;
 		$this->active_object = '';
@@ -180,11 +214,25 @@ class MibCache{
 		return $this;
 	}
 
+	/**
+	 * Handles the object. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $object The object.
+	 *
+	 * @return object The result of the operation, or false on failure.
+	 */
 	public function object($object) {
 		$this->active_object = $object;
 		return $this;
 	}
 
+	/**
+	 * Handles the table. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $table The table.
+	 *
+	 * @return object The result of the operation, or false on failure.
+	 */
 	public function table($table) {
 		if ($this->active_table != $table) {
 			if (!isset($this->cache__tables[$this->active_mib][$table])) {
@@ -220,16 +268,35 @@ class MibCache{
 		}
 	}
 
+	/**
+	 * Handles the row. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed $index The index.
+	 *
+	 * @return object The result of the operation, or false on failure.
+	 */
 	public function row($index) {
 		/* limited to one single $index so far */
 		$this->active_table_entry = $index;
 		return $this;
 	}
 
+	/**
+	 * Handles the gettype. Used as part of Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 	public function gettype() {
 
 	}
 
+	/**
+	 * Sets the. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed $value The value.
+	 *
+	 * @return mixed The result of the operation, or false on failure.
+	 */
 	public function set($value) {
 		return db_execute_prepared('UPDATE `snmpagent_cache`
 			SET `value` = ?
@@ -238,6 +305,11 @@ class MibCache{
 			array($value, $this->active_mib, $this->active_object));
 	}
 
+	/**
+	 * Retrieves the. Used as part of Cacti's lib functionality.
+	 *
+	 * @return mixed The result of the operation, or false on failure.
+	 */
 	public function get() {
 		return db_fetch_row_prepared('SELECT *
 			FROM snmpagent_cache
@@ -246,6 +318,11 @@ class MibCache{
 			array($this->active_object, $this->active_mib));
 	}
 
+	/**
+	 * Handles the count. Used as part of Cacti's lib functionality.
+	 *
+	 * @return mixed The result of the operation, or false on failure.
+	 */
 	public function count() {
 		return db_execute_prepared('UPDATE snmpagent_cache
 			SET `value` = CASE
@@ -256,6 +333,13 @@ class MibCache{
 			array($this->active_mib, $this->active_object));
 	}
 
+	/**
+	 * Handles the insert. Used as part of Cacti's lib functionality.
+	 *
+	 * @param array $values The values.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function insert($values) {
 		$oid_entry = $this->exists();
 		if ($oid_entry == false) {
@@ -285,6 +369,13 @@ class MibCache{
 		return false;
 	}
 
+	/**
+	 * Handles the select. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed $column The column.
+	 *
+	 * @return mixed The result of the operation, or false on failure.
+	 */
 	public function select($column=false) {
 		$result = array();
 		if ($this->active_table_entry) {
@@ -415,6 +506,11 @@ class MibCache{
 		return false;
 	}
 
+	/**
+	 * Deletes the. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function delete() {
 		$oid_entry = $this->exists();
 		if ($oid_entry !== false) {
@@ -431,6 +527,13 @@ class MibCache{
 		return false;
 	}
 
+	/**
+	 * Updates the. Used as part of Cacti's lib functionality.
+	 *
+	 * @param array $values The values.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function update($values) {
 		$oid_entry = $this->exists();
 		if ($oid_entry !== false) {
@@ -459,11 +562,23 @@ class MibCache{
 		return false;
 	}
 
+	/**
+	 * Handles the replace. Used as part of Cacti's lib functionality.
+	 *
+	 * @param array $values The values.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function replace($values) {
 		$this->delete();
 		return $this->insert($values);
 	}
 
+	/**
+	 * Handles the truncate. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function truncate() {
 		$oid_entry = $this->cache__tables[$this->active_mib][$this->active_table] . '.1.%';
 		db_execute_prepared('DELETE FROM `snmpagent_cache`
@@ -475,6 +590,11 @@ class MibCache{
 		return true;
 	}
 
+	/**
+	 * Handles the columns. Used as part of Cacti's lib functionality.
+	 *
+	 * @return mixed The result of the operation, or false on failure.
+	 */
 	public function columns() {
 		/* As defined by SMI the OID value assigned to the row must be the same as the OID value assigned to the table containing
 		   the row with addition of a single value of one. */
@@ -488,6 +608,11 @@ class MibCache{
 			array($filter));
 	}
 
+	/**
+	 * Handles the exists. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	private function exists() {
 		$oid_entry = $this->cache__tables[$this->active_mib][$this->active_table] . '.1';
 

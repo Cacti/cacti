@@ -22,9 +22,14 @@
  +-------------------------------------------------------------------------+
 */
 
-/* get_cdef_item_name - resolves a single CDEF item into its text-based representation
-   @arg $cdef_item_id - the id of the individual cdef item
-   @returns - a text-based representation of the cdef item */
+/**
+ * Resolves a single CDEF item into its text-based representation. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $cdef_item_id The id of the individual cdef item.
+ *
+ * @return string A text-based representation of the cdef item.
+ */
 function get_cdef_item_name($cdef_item_id) 	{
 	global $cdef_functions, $cdef_operators;
 
@@ -74,10 +79,15 @@ function get_cdef_item_name($cdef_item_id) 	{
 	return null;
 }
 
-/* get_cdef - resolves an entire CDEF into its text-based representation for use in the RRDtool 'graph'
-     string. this name will be resolved recursively if necessary
-   @arg $cdef_id - the id of the cdef to resolve
-   @returns - a text-based representation of the cdef */
+/**
+ * Resolves an entire CDEF into its text-based representation for use in the RRDtool 'graph'
+ * string. this name will be resolved recursively if necessary. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $cdef_id The id of the cdef to resolve.
+ *
+ * @return string A text-based representation of the cdef.
+ */
 function get_cdef($cdef_id) {
 	$visited   = array();
 	$expansion = 0;
@@ -87,7 +97,18 @@ function get_cdef($cdef_id) {
 	return get_cdef_recursive($cdef_id, $visited, $expansion, $cache, $cache_bytes);
 }
 
-/* get_cdef_recursive - resolves nested CDEFs while rejecting cycles and excessive depth */
+/**
+ * Resolves nested CDEFs while rejecting cycles and excessive depth. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param mixed $cdef_id The CDEF ID.
+ * @param & $visited The visited.
+ * @param & $expansion The expansion.
+ * @param & $cache The cache.
+ * @param & $cache_bytes The cache bytes.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function get_cdef_recursive($cdef_id, &$visited, &$expansion, &$cache, &$cache_bytes) {
 	if (isset($visited[$cdef_id])) {
 		cacti_log(sprintf('ERROR: CDEF %d contains a recursive cycle.', $cdef_id), false, 'CDEF');
@@ -216,13 +237,14 @@ function get_cdef_recursive($cdef_id, &$visited, &$expansion, &$cache, &$cache_b
 }
 
 /**
- * Determines whether deleting a CDEF would leave a live reference behind.
+ * Determines whether deleting a CDEF would leave a live reference behind. References owned by
+ * another CDEF in the same delete request are ignored. Database errors fail closed so an
+ * uncertain dependency cannot be deleted. Used as part of Cacti's lib functionality.
  *
- * References owned by another CDEF in the same delete request are ignored.
- * Database errors fail closed so an uncertain dependency cannot be deleted.
- *
- * @param int        $cdef_id      CDEF being considered for deletion.
+ * @param int $cdef_id CDEF being considered for deletion.
  * @param array<int> $deleting_ids All CDEF IDs in the delete request.
+ *
+ * @return bool True on success, false otherwise.
  */
 function cdef_is_in_use($cdef_id, $deleting_ids = array()) {
 	foreach (array('graph_templates_item', 'aggregate_graph_templates_item', 'aggregate_graphs_graph_item') as $table) {

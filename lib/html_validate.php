@@ -22,33 +22,66 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Validates if the given value is equal to the comparison value. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param mixed $value The value to be validated.
+ * @param mixed $c_value The value to compare against.
+ *
+ * @return void No value is returned.
+ */
 function input_validate_input_equals($value, $c_value) {
 	if ($value != $c_value) {
 		die_html_input_error();
 	}
 }
 
+/**
+ * Validates if the given value is a number. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $value The value to be validated.
+ *
+ * @return void No value is returned.
+ */
 function input_validate_input_number($value) {
 	if ((!is_numeric($value)) && ($value != '')) {
 		die_html_input_error();
 	}
 }
 
+/**
+ * Validates the input value against a given regular expression. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param string $value The input value to be validated.
+ * @param string $regex The regular expression to validate the input value against.
+ *
+ * @return void No value is returned.
+ */
 function input_validate_input_regex($value, $regex) {
 	if ($value != null && $value != '' && (!preg_match('/' . $regex . '/', $value))) {
 		die_html_input_error();
 	}
 }
 
+/**
+ * Logs an input validation error for a given variable. This function logs a debug backtrace
+ * message indicating that input validation was not performed for the specified variable. Used as
+ * part of Cacti's lib functionality.
+ *
+ * @param string $variable The name of the variable for which input validation was not performed.
+ *
+ * @return void No value is returned.
+ */
 function html_log_input_error($variable) {
 	cacti_debug_backtrace("Input Validation Not Performed for '$variable'");
 }
 
 /**
- * Writes a structured security event for an input validation failure.
- *
- * Rejected values and request payloads are deliberately excluded to avoid
- * copying credentials or other sensitive input into the security log.
+ * Writes a structured security event for an input validation failure. Rejected values and request
+ * payloads are deliberately excluded to avoid copying credentials or other sensitive input into
+ * the security log. Used as part of Cacti's lib functionality.
  *
  * @param mixed $variable Name of the rejected input variable.
  *
@@ -76,6 +109,16 @@ function security_log_input_validation_failure($variable) {
 	return $event_id;
 }
 
+/**
+ * Terminates the script execution and outputs an error message for HTML input validation errors.
+ * Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $variable The name of the variable that caused the validation error.
+ * @param mixed $value The value of the variable that caused the validation error.
+ * @param string $message An optional custom error message.
+ *
+ * @return void No value is returned.
+ */
 function die_html_input_error($variable = '', $value = '', $message = '') {
 	global $config;
 	$event_id = security_log_input_validation_failure($variable);

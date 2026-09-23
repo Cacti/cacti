@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1 1 37. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_1_37() {
 	db_install_execute('ALTER TABLE host MODIFY COLUMN snmp_sysObjectID varchar(128) NOT NULL DEFAULT ""');
 }

@@ -64,6 +64,12 @@ default:
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's automation networks functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	if (isset_request_var('save_component_network')) {
@@ -73,6 +79,14 @@ function form_save() {
 	}
 }
 
+/**
+ * API helper that handles networks remove. Used as part of Cacti's automation networks
+ * functionality.
+ *
+ * @param int $network_id The network ID.
+ *
+ * @return void No value is returned.
+ */
 function api_networks_remove($network_id){
 	db_execute_prepared('DELETE FROM automation_networks
 		WHERE id = ?',
@@ -83,6 +97,14 @@ function api_networks_remove($network_id){
 		array($network_id));
 }
 
+/**
+ * API helper that handles networks enable. Used as part of Cacti's automation networks
+ * functionality.
+ *
+ * @param int $network_id The network ID.
+ *
+ * @return void No value is returned.
+ */
 function api_networks_enable($network_id){
 	db_execute_prepared('UPDATE automation_networks
 		SET enabled="on"
@@ -90,6 +112,14 @@ function api_networks_enable($network_id){
 		array($network_id));
 }
 
+/**
+ * API helper that handles networks disable. Used as part of Cacti's automation networks
+ * functionality.
+ *
+ * @param int $network_id The network ID.
+ *
+ * @return void No value is returned.
+ */
 function api_networks_disable($network_id){
 	db_execute_prepared('UPDATE automation_networks
 		SET enabled=""
@@ -97,6 +127,14 @@ function api_networks_disable($network_id){
 		array($network_id));
 }
 
+/**
+ * API helper that handles networks cancel. Used as part of Cacti's automation networks
+ * functionality.
+ *
+ * @param int $network_id The network ID.
+ *
+ * @return void No value is returned.
+ */
 function api_networks_cancel($network_id){
 	db_execute_prepared('UPDATE IGNORE automation_processes
 		SET command="cancel"
@@ -105,6 +143,15 @@ function api_networks_cancel($network_id){
 		array($network_id));
 }
 
+/**
+ * API helper that handles networks discover. Used as part of Cacti's automation networks
+ * functionality.
+ *
+ * @param int $network_id The network ID.
+ * @param bool $discover_debug The discover debug.
+ *
+ * @return void No value is returned.
+ */
 function api_networks_discover($network_id, $discover_debug) {
 	global $config;
 
@@ -155,6 +202,13 @@ function api_networks_discover($network_id, $discover_debug) {
 	force_session_data();
 }
 
+/**
+ * Saves an automation network. Used as part of Cacti's automation networks functionality.
+ *
+ * @param array $post The post variables from the form.
+ *
+ * @return mixed The ID of the saved network or false on failure.
+ */
 function api_networks_save($post) {
 	if (empty($post['network_id'])) {
 		$save['id']            = form_input_validate($post['id'], 'id', '^[0-9]+$', false, 3);
@@ -273,6 +327,12 @@ function api_networks_save($post) {
 /* ------------------------
     The 'actions' function
    ------------------------ */
+/**
+ * ------------------------ The 'actions' function ------------------------. Used as part of
+ * Cacti's automation networks functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_actions() {
 	global $config, $network_actions, $fields_networkss_edit;
@@ -410,6 +470,11 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * Handles the network edit. Used as part of Cacti's automation networks functionality.
+ *
+ * @return void No value is returned.
+ */
 function network_edit() {
 	global $config, $ping_methods;;
 
@@ -983,6 +1048,15 @@ function network_edit() {
 	<?php
 }
 
+/**
+ * Retrieves the networks. Used as part of Cacti's automation networks functionality.
+ *
+ * @param & $sql_where The SQL where.
+ * @param int $rows The rows.
+ * @param bool $apply_limits The apply limits.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function get_networks(&$sql_where, $rows, $apply_limits = true) {
 	if (get_request_var('filter') != '') {
 		$sql_where = ' WHERE (automation_networks.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
@@ -1007,6 +1081,11 @@ function get_networks(&$sql_where, $rows, $apply_limits = true) {
 	return db_fetch_assoc($query_string);
 }
 
+/**
+ * Handles the networks. Used as part of Cacti's automation networks functionality.
+ *
+ * @return void No value is returned.
+ */
 function networks() {
 	global $network_actions, $networkss, $config, $item_rows;
 
@@ -1185,6 +1264,11 @@ function networks() {
 	form_end();
 }
 
+/**
+ * Handles the networks filter. Used as part of Cacti's automation networks functionality.
+ *
+ * @return void No value is returned.
+ */
 function networks_filter() {
 	global $item_rows;
 

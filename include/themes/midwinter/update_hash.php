@@ -22,9 +22,24 @@
   +-------------------------------------------------------------------------+
 */
 
+/**
+ * Updates the hash. Used as part of Cacti's include functionality.
+ *
+ * @param string $file The file.
+ *
+ * @return void No value is returned.
+ */
 function update_hash($file) {
 }
 
+/**
+ * Handles the file search. Used as part of Cacti's include functionality.
+ *
+ * @param string $folder The folder.
+ * @param array $pattern_array The pattern array.
+ *
+ * @return array An array of results.
+ */
 function file_search($folder, $pattern_array) {
 	$return = array();
 	$iti = new RecursiveDirectoryIterator($folder);
@@ -37,6 +52,13 @@ function file_search($folder, $pattern_array) {
 	return $return;
 }
 
+/**
+ * Handles the file hash. Used as part of Cacti's include functionality.
+ *
+ * @param array $match The match.
+ *
+ * @return string The resulting string.
+ */
 function file_hash($match) {
 	global $cssFile;
 	$md5File = dirname($cssFile) . '/' . $match[2];
@@ -47,6 +69,13 @@ function file_hash($match) {
 	return $result;
 }
 
+/**
+ * Handles the file update. Used as part of Cacti's include functionality.
+ *
+ * @param string $cssFile The cssfile.
+ *
+ * @return void No value is returned.
+ */
 function file_update($cssFile) {
 	$fileContents = file($cssFile);
 	$fileUpdated  = preg_replace_callback_array(

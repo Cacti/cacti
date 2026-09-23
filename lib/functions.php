@@ -23,15 +23,15 @@
 */
 
 /**
- * title_trim - takes a string of text, truncates it to $max_length and appends
- * three periods onto the end
+ * Takes a string of text, truncates it to $max_length and appends three periods onto the end.
+ * Used as part of Cacti's lib functionality.
  *
- * @param $text - the string to evaluate
- * @param $max_length - the maximum number of characters the string can contain
- *   before it is truncated
+ * @param string $text The string to evaluate.
+ * @param int $max_length The maximum number of characters the string can contain before it is
+ *   truncated.
  *
- * @return - the truncated string if len($text) is greater than $max_length, else
- *   the original string
+ * @return string The truncated string if len($text) is greater than $max_length, else the
+ *   original string.
  */
 function title_trim($text, $max_length) {
 	if (strlen($text) > $max_length) {
@@ -42,13 +42,14 @@ function title_trim($text, $max_length) {
 }
 
 /**
- * filter_value - a quick way to highlight text in a table from general filtering
+ * A quick way to highlight text in a table from general filtering. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $text - the string to filter
- * @param $filter - the search term to filter for
- * @param $href - the href if you wish to have an anchor returned
+ * @param mixed $value The string to filter.
+ * @param string $filter The search term to filter for.
+ * @param string $href The href if you wish to have an anchor returned.
  *
- * @return - the filtered string
+ * @return string The filtered string.
  */
 function filter_value($value, $filter, $href = '') {
 	static $charset;
@@ -81,63 +82,71 @@ function filter_value($value, $filter, $href = '') {
 }
 
 /**
- * set_graph_config_option - deprecated - wrapper to set_user_setting().
+ * Deprecated - wrapper to set_user_setting(). Used as part of Cacti's lib functionality.
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- * @param $value       - the values to be saved
- * @param $user        - the user id, otherwise the session user
+ * @param string $config_name The name of the configuration setting as specified $settings array.
+ * @param mixed $value The values to be saved.
+ * @param mixed $user The user id, otherwise the session user.
  *
- * @return            - void
+ * @return void No value is returned.
+ *
+ * @deprecated v1.0
  */
 function set_graph_config_option($config_name, $value, $user = -1) {
 	set_user_setting($config_name, $value, $user);
 }
 
 /**
- * graph_config_value_exists - deprecated - wrapper to user_setting_exists
+ * Deprecated - wrapper to user_setting_exists. Used as part of Cacti's lib functionality.
  *
- * @param $config_name - the name of the configuration setting as specified $settings_user array
- *   in 'include/global_settings.php'
- * @param $user_id - the id of the user to check the configuration value for
+ * @param string $config_name The name of the configuration setting as specified $settings_user
+ *   array in 'include/global_settings.php'.
+ * @param int $user_id The id of the user to check the configuration value for.
  *
- * @return (bool) - true if a value exists, false if a value does not exist
+ * @return bool True if a value exists, false if a value does not exist.
+ *
+ * @deprecated v1.0
  */
 function graph_config_value_exists($config_name, $user_id) {
 	return user_setting_exists($config_name, $user_id);
 }
 
 /**
- * read_default_graph_config_option - deprecated - wrapper to read_default_user_setting
+ * Deprecated - wrapper to read_default_user_setting. Used as part of Cacti's lib functionality.
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- *   in 'include/global_settings.php'
+ * @param string $config_name The name of the configuration setting as specified $settings array
+ *   in 'include/global_settings.php'.
  *
- * @return - the default value of the configuration option
+ * @return string The default value of the configuration option.
+ *
+ * @deprecated v1.0
  */
 function read_default_graph_config_option($config_name) {
 	return read_default_user_setting($config_name);
 }
 
 /**
- * read_graph_config_option - deprecated - finds the current value of a graph configuration setting
+ * Deprecated - finds the current value of a graph configuration setting. Used as part of Cacti's
+ * lib functionality.
  *
- * @param $config_name - the name of the configuration setting as specified $settings_user array
- *   in 'include/global_settings.php'
+ * @param string $config_name The name of the configuration setting as specified $settings_user
+ *   array in 'include/global_settings.php'.
+ * @param bool $force The force.
  *
- * @return - the current value of the graph configuration option
+ * @return string The current value of the graph configuration option.
+ *
+ * @deprecated v1.0
  */
 function read_graph_config_option($config_name, $force = false) {
 	return read_user_setting($config_name, false, $force);
 }
 
 /**
- * save_user_setting - sets/updates aLL user settings
+ * Sets/updates aLL user settings. Used as part of Cacti's lib functionality.
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- * @param $value       - the values to be saved
- * @param $user        - the user id, otherwise the session user
+ * @param mixed $user The user id, otherwise the session user.
  *
- * @return            - void
+ * @return void No value is returned.
  */
 function save_user_settings($user = -1) {
 	global $settings_user;
@@ -183,13 +192,13 @@ function save_user_settings($user = -1) {
 }
 
 /**
- * set_user_setting - sets/updates a user setting with the given value.
+ * Sets/updates a user setting with the given value. Used as part of Cacti's lib functionality.
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- * @param $value       - the values to be saved
- * @param $user        - the user id, otherwise the session user
+ * @param string $config_name The name of the configuration setting as specified $settings array.
+ * @param mixed $value The values to be saved.
+ * @param mixed $user The user id, otherwise the session user.
  *
- * @return          - void
+ * @return void No value is returned.
  */
 function set_user_setting($config_name, $value, $user = -1) {
 	global $settings_user;
@@ -222,13 +231,14 @@ function set_user_setting($config_name, $value, $user = -1) {
 }
 
 /**
- * user_setting_exists - determines if a value exists for the current user/setting specified
+ * Determines if a value exists for the current user/setting specified. Used as part of Cacti's
+ * lib functionality.
  *
- * @param $config_name - the name of the configuration setting as specified $settings_user array
- *   in 'include/global_settings.php'
- * @param $user_id - the id of the user to check the configuration value for
+ * @param string $config_name The name of the configuration setting as specified $settings_user
+ *   array in 'include/global_settings.php'.
+ * @param mixed $user_id The id of the user to check the configuration value for.
  *
- * @return (bool) - true if a value exists, false if a value does not exist
+ * @return bool True if a value exists, false if a value does not exist.
  */
 function user_setting_exists($config_name, $user_id) {
 	static $user_setting_values = array();
@@ -254,11 +264,14 @@ function user_setting_exists($config_name, $user_id) {
 }
 
 /**
- * clear_user_setting - if a value exists for the current user/setting specified, removes it
+ * If a value exists for the current user/setting specified, removes it. Used as part of Cacti's
+ * lib functionality.
  *
- * @param $config_name - the name of the configuration setting as specified $settings_user array
- *   in 'include/global_settings.php'
- * @param $user_id - the id of the user to remove the configuration value for
+ * @param string $config_name The name of the configuration setting as specified $settings_user
+ *   array in 'include/global_settings.php'.
+ * @param mixed $user The id of the user to check the configuration value for.
+ *
+ * @return void No value is returned.
  */
 function clear_user_setting($config_name, $user = -1) {
 	global $settings_user;
@@ -278,12 +291,13 @@ function clear_user_setting($config_name, $user = -1) {
 }
 
 /**
- * read_default_user_setting - finds the default value of a user configuration setting
+ * Finds the default value of a user configuration setting. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- *   in 'include/global_settings.php'
+ * @param string $config_name The name of the configuration setting as specified $settings array
+ *   in 'include/global_settings.php'.
  *
- * @return - the default value of the configuration option
+ * @return string The default value of the configuration option.
  */
 function read_default_user_setting($config_name) {
 	global $config, $settings_user;
@@ -302,15 +316,16 @@ function read_default_user_setting($config_name) {
 }
 
 /**
- * read_user_setting - finds the current value of a graph configuration setting
+ * Finds the current value of a graph configuration setting. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $config_name - the name of the configuration setting as specified $settings_user array
- *   in 'include/global_settings.php'
- * @param $default - the default value is none is set
- * @param $force - pull the data from the database if true ignoring session
- * @param $user - assume this user's identity
+ * @param string $config_name The name of the configuration setting as specified $settings_user
+ *   array in 'include/global_settings.php'.
+ * @param mixed $default The default value is none is set.
+ * @param bool $force Pull the data from the database if true ignoring session.
+ * @param mixed $user Assume this user's identity.
  *
- * @return - the current value of the user setting
+ * @return mixed The current value of the user setting.
  */
 function read_user_setting($config_name, $default = false, $force = false, $user = 0) {
 	global $config;
@@ -389,12 +404,12 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 }
 
 /**
- * is_remote_path_setting - determines of a Cacti setting should be maintained
- *   on the Remote Data Collector separate from the Main cacti server
+ * Determines of a Cacti setting should be maintained on the Remote Data Collector separate from
+ * the Main cacti server. Used as part of Cacti's lib functionality.
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
+ * @param string $config_name The name of the configuration setting as specified $settings array.
  *
- * @return (bool) - true if the setting should be saved locally
+ * @return bool True if the setting should be saved locally.
  */
 function is_remote_path_setting($config_name) {
 	global $config;
@@ -407,13 +422,14 @@ function is_remote_path_setting($config_name) {
 }
 
 /**
- * set_config_option - sets/updates a cacti config option with the given value.
+ * Sets/updates a cacti config option with the given value. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- * @param $value       - the values to be saved
- * @param $remote      - push the setting to the remote with the exception of path variables
+ * @param string $config_name The name of the configuration setting as specified $settings array.
+ * @param mixed $value The values to be saved.
+ * @param bool $remote Push the setting to the remote with the exception of path variables.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function set_config_option($config_name, $value, $remote = false) {
 	global $config;
@@ -485,12 +501,13 @@ function set_config_option($config_name, $value, $remote = false) {
 }
 
 /**
- * config_value_exists - determines if a value exists for the current user/setting specified
+ * Determines if a value exists for the current user/setting specified. Used as part of Cacti's
+ * lib functionality.
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- *   in 'include/global_settings.php'
+ * @param string $config_name The name of the configuration setting as specified $settings array
+ *   in 'include/global_settings.php'.
  *
- * @return - true if a value exists, false if a value does not exist
+ * @return bool True if a value exists, false if a value does not exist.
  */
 function config_value_exists($config_name) {
 	static $config_values = array();
@@ -509,12 +526,13 @@ function config_value_exists($config_name) {
 }
 
 /**
- * read_default_config_option - finds the default value of a Cacti configuration setting
+ * Finds the default value of a Cacti configuration setting. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- *   in 'include/global_settings.php'
+ * @param string $config_name The name of the configuration setting as specified $settings array
+ *   in 'include/global_settings.php'.
  *
- * @return - the default value of the configuration option
+ * @return mixed The default value of the configuration option.
  */
 function read_default_config_option($config_name) {
 	global $config, $settings;
@@ -534,6 +552,11 @@ function read_default_config_option($config_name) {
 	}
 }
 
+/**
+ * Handles the prime common config settings. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function prime_common_config_settings() {
 	global $config;
 
@@ -669,13 +692,14 @@ function prime_common_config_settings() {
 }
 
 /**
- * Finds the current value of a Cacti configuration setting
+ * Finds the current value of a Cacti configuration setting. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $config_name    The name of the configuration setting as specified
- *                        as a key in $settings array in
- *                        'include/global_settings.php'
+ * @param string $config_name The name of the configuration setting as specified as a key in
+ *   $settings array in 'include/global_settings.php'.
+ * @param bool $force Pull the data from the database if true ignoring session.
  *
- * @return string|false   The current value of the configuration option
+ * @return string|false The current value of the configuration option.
  */
 function read_config_option($config_name, $force = false) {
 	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
@@ -764,10 +788,10 @@ function read_config_option($config_name, $force = false) {
 }
 
 /**
- * get_selected_theme - checks the user settings and if the user selected
- * theme is set, returns it otherwise returns the system default.
+ * Checks the user settings and if the user selected theme is set, returns it otherwise returns
+ * the system default. Used as part of Cacti's lib functionality.
  *
- * @return - the theme name
+ * @return string The theme name.
  */
 function get_selected_theme() {
 	global $config, $themes;
@@ -827,17 +851,17 @@ function get_selected_theme() {
 }
 
 /**
- * form_input_validate - validates the value of a form field and Takes the appropriate action if the input
- * is not valid
+ * Validates the value of a form field and Takes the appropriate action if the input is not valid.
+ * Used as part of Cacti's lib functionality.
  *
- * @param string $field_value    value of the form field
- * @param string $field_name     name of the $_POST field as specified in the HTML
- * @param string $regexp_match   (optionally) enter a regular expression to match the value against
- * @param bool $allow_nulls      whether to allow an empty string as a value or not
- * @param int $custom_message    the ID of the message to raise upon an error which is defined in the
- *   $messages array in 'include/global_arrays.php'
+ * @param string $field_value Value of the form field.
+ * @param string $field_name Name of the $_POST field as specified in the HTML.
+ * @param string $regexp_match (optionally) enter a regular expression to match the value against.
+ * @param bool $allow_nulls Whether to allow an empty string as a value or not.
+ * @param int $custom_message The ID of the message to raise upon an error which is defined in the
+ *   $messages array in 'include/global_arrays.php'.
  *
- * @return string                the original $field_value
+ * @return string The original $field_value.
  */
 function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
 	global $messages;
@@ -872,9 +896,13 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 }
 
 /**
- * check_changed - determines if a request variable has changed between page loads
+ * Determines if a request variable has changed between page loads. Used as part of Cacti's lib
+ * functionality.
  *
- * @return - true if the value changed between loads
+ * @param mixed $request The request.
+ * @param string $session The session.
+ *
+ * @return int True if the value changed between loads.
  */
 function check_changed($request, $session) {
 	if ((isset_request_var($request)) && (isset($_SESSION[$session]))) {
@@ -885,10 +913,10 @@ function check_changed($request, $session) {
 }
 
 /**
- * is_error_message - finds whether an error message has been raised and has not been outputted to the
- * user
+ * Finds whether an error message has been raised and has not been outputted to the user. Used as
+ * part of Cacti's lib functionality.
  *
- * @return - whether the messages array contains an error or not
+ * @return bool Whether the messages array contains an error or not.
  */
 function is_error_message() {
 	global $config, $messages;
@@ -900,6 +928,13 @@ function is_error_message() {
 	}
 }
 
+/**
+ * Get the level for the current message. Used as part of Cacti's lib functionality.
+ *
+ * @param array $current_message The current message.
+ *
+ * @return int Int.
+ */
 function get_message_level($current_message) {
 	$current_level = MESSAGE_LEVEL_NONE;
 
@@ -920,11 +955,11 @@ function get_message_level($current_message) {
 }
 
 /**
- * get_format_message_instance - finds the level of the current message instance
+ * Finds the level of the current message instance. Used as part of Cacti's lib functionality.
  *
- * @param message array the message instance
+ * @param mixed $current_message Message array the message instance.
  *
- * @return - a formatted message
+ * @return string A formatted message.
  */
 function get_format_message_instance($current_message) {
 	if (is_array($current_message)) {
@@ -960,9 +995,9 @@ function get_format_message_instance($current_message) {
 }
 
 /**
- * get_message_max_type - finds the message and returns its type
+ * Finds the message and returns its type. Used as part of Cacti's lib functionality.
  *
- * @return - the message type 'info', 'warn', 'error' or 'csrf'
+ * @return int The message type 'info', 'warn', 'error' or 'csrf'.
  */
 function get_message_max_type() {
 	global $messages;
@@ -989,9 +1024,15 @@ function get_message_max_type() {
 }
 
 /**
- * raise_message - mark a message to be displayed to the user once display_output_messages() is called
+ * Mark a message to be displayed to the user once display_output_messages() is called. Used as
+ * part of Cacti's lib functionality.
  *
- * @param $message_id - the ID of the message to raise as defined in $messages in 'include/global_arrays.php'
+ * @param mixed $message_id The ID of the message to raise as defined in $messages in
+ *   'include/global_arrays.php'.
+ * @param string $message Text of the message to be displayed.
+ * @param int $message_level Level of the message to be displayed.
+ *
+ * @return bool Bool.
  */
 function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
 	global $config, $messages, $no_http_headers;
@@ -1040,15 +1081,14 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 }
 
 /**
- * raise_message_javascript - raises a message that will appear in the UI
- * as the result of an server side error that can not be captured
- * normally.
+ * Raises a message that will appear in the UI as the result of an server side error that can not
+ * be captured normally. Used as part of Cacti's lib functionality.
  *
- * @param  (string) The title for the dialog title bar
- * @param  (string) Header section for the message
- * @param  (string) The actual error message to display
+ * @param string $title The title for the dialog title bar.
+ * @param string $header Header section for the message.
+ * @param string $message The actual error message to display.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function raise_message_javascript($title, $header, $message) {
 	?>
@@ -1070,8 +1110,10 @@ function raise_message_javascript($title, $header, $message) {
 }
 
 /**
- * display_output_messages - displays all of the cached messages from the raise_message() function and clears
- * the message cache
+ * Displays all of the cached messages from the raise_message() function and clears the message
+ * cache. Used as part of Cacti's lib functionality.
+ *
+ * @return mixed JSON encoded array of messages to be displayed to the user, false if no messages.
  */
 function display_output_messages() {
 	global $messages;
@@ -1107,12 +1149,22 @@ function display_output_messages() {
 	return json_encode($omessage);
 }
 
+/**
+ * Displays a custom error message. This function raises a custom error message using the provided
+ * message. Used as part of Cacti's lib functionality.
+ *
+ * @param string $message The error message to be displayed.
+ *
+ * @return void No value is returned.
+ */
 function display_custom_error_message($message) {
 	raise_message('custom_error', $message);
 }
 
 /**
- * clear_messages - clears the message cache
+ * Clears the message cache. Used as part of Cacti's lib functionality.
+ *
+ * @return bool Returns false if the session_status function does not exist.
  */
 function clear_messages() {
 	// This function should always exist, if not its an invalid install
@@ -1135,14 +1187,21 @@ function clear_messages() {
 }
 
 /**
- * kill_session_var - kills a session variable using unset()
+ * Kills a session variable using unset(). Used as part of Cacti's lib functionality.
+ *
+ * @param string $var_name The var name.
+ *
+ * @return void No value is returned.
  */
 function kill_session_var($var_name) {
 	unset($_SESSION[$var_name]);
 }
 
 /**
- * force_session_data - forces session data into the session if the session was closed for some reason
+ * Forces session data into the session if the session was closed for some reason. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @return bool Bool.
  */
 function force_session_data() {
 	// This function should always exist, if not its an invalid install
@@ -1160,16 +1219,14 @@ function force_session_data() {
 }
 
 /**
- * array_rekey - changes an array in the form:
+ * Changes an array in the form: '$arr[0] = array('id' => 23, 'name' => 'blah')' to the form '$arr
+ * = array(23 => 'blah')'. Used as part of Cacti's lib functionality.
  *
- * '$arr[0] = array('id' => 23, 'name' => 'blah')' to the form
- * '$arr = array(23 => 'blah')'
+ * @param array $array The original array to manipulate.
+ * @param string $key The name of the key.
+ * @param string $key_value The name of the key value.
  *
- * @param array  $array		The original array to manipulate
- * @param string $key		The name of the key
- * @param string $key_value	The name of the key value
- *
- * @return array the modified array
+ * @return array The modified array.
  */
 function array_rekey($array, $key, $key_value) {
 	$ret_array = array();
@@ -1192,7 +1249,9 @@ function array_rekey($array, $key, $key_value) {
 }
 
 /**
- * cacti_log_file - returns the log filename
+ * Returns the log filename. Used as part of Cacti's lib functionality.
+ *
+ * @return string String.
  */
 function cacti_log_file() {
 	global $config;
@@ -1204,6 +1263,13 @@ function cacti_log_file() {
 	return $logfile;
 }
 
+/**
+ * Gets the selective log level for the current script Note that the results of this function are
+ * cached internally so do not refresh if called again after updating the value. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @return mixed Mixed.
+ */
 function get_selective_log_level() {
 	static $force_level = null;
 
@@ -1253,12 +1319,15 @@ function get_selective_log_level() {
 }
 
 /**
- * cacti_log - logs a string to Cacti's log file or optionally to the browser
+ * Logs a string to Cacti's log file or optionally to the browser. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $string - the string to append to the log file
- * @param $output - (bool) whether to output the log line to the browser using print() or not
- * @param $environ - (string) tells from where the script was called from
- * @param $level - (int) only log if above the specified log level
+ * @param mixed $string The string to append to the log file.
+ * @param bool $output (bool) whether to output the log line to the browser using print() or not.
+ * @param string $environ (string) tells from where the script was called from.
+ * @param mixed $level (int) only log if above the specified log level.
+ *
+ * @return bool Bool.
  */
 function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	global $config, $database_log;
@@ -1391,17 +1460,18 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 }
 
 /**
- * tail_file - Emulates the tail function with PHP native functions.
- * It is used in 0.8.6 to speed the viewing of the Cacti log file, which
- * can be problematic in the 0.8.6 branch.
+ * Emulates the tail function with PHP native functions. It is used in 0.8.6 to speed the viewing
+ * of the Cacti log file, which can be problematic in the 0.8.6 branch.
  *
- * @param $file_name    - (char constant) the name of the file to tail
- * @param $line_cnt     - (int constant)  the number of lines to count
- * @param $message_type - (int constant) the type of message to return
- * @param $filter       - (char) the filtering expression to search for
- * @param $page_nr      - (int) the page we want to show rows for
- * @param $total_rows   - (int) the total number of rows in the logfile
- * @param $matches      - (bool) match or does not match the filter
+ * @param string $file_name (char constant) the name of the file to tail.
+ * @param mixed $number_of_lines The number of lines.
+ * @param mixed $message_type (int constant) the type of message to return.
+ * @param mixed $filter (char) the filtering expression to search for.
+ * @param & $page_nr (int) the page we want to show rows for.
+ * @param & $total_rows (int) the total number of rows in the logfile.
+ * @param mixed $matches (bool) match or does not match the filter.
+ *
+ * @return array Array.
  */
 function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows = 0, $matches = true) {
 	if (!file_exists($file_name)) {
@@ -1470,14 +1540,14 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 }
 
 /**
- * determine_display_log_entry - function to determine if we display the line
+ * Function to determine if we display the line. Used as part of Cacti's lib functionality.
  *
- * @param $message_type
- * @param $line
- * @param $filter
- * @param $matches
+ * @param int $message_type The message type.
+ * @param string $line The line.
+ * @param string $filter The filter.
+ * @param bool $matches The matches.
  *
- * @return - should the entry be displayed
+ * @return mixed Should the entry be displayed.
  */
 function determine_display_log_entry($message_type, $line, $filter, $matches = true) {
 	static $thold_enabled = null;
@@ -1607,12 +1677,16 @@ function determine_display_log_entry($message_type, $line, $filter, $matches = t
 }
 
 /**
- * update_host_status - updates the host table with information about its status.
- * It will also output to the appropriate log file when an event occurs.
+ * Updates the host table with information about its status. It will also output to the
+ * appropriate log file when an event occurs. Used as part of Cacti's lib functionality.
  *
- * @param $status - (int constant) the status of the host (Up/Down)
- * @param $host_id - (int) the host ID for the results
- * @param $ping - (class array) results of the ping command.
+ * @param int $status (int constant) the status of the host (Up/Down).
+ * @param int $host_id (int) the host ID for the results.
+ * @param & $ping (class array) results of the ping command.
+ * @param int $ping_availability The availability of the ping.
+ * @param bool $print_data_to_stdout Whether to print the data to the standard output.
+ *
+ * @return void No value is returned.
  */
 function update_host_status($status, $host_id, &$ping, $ping_availability, $print_data_to_stdout) {
 	$issue_log_message   = false;
@@ -1848,11 +1922,12 @@ function update_host_status($status, $host_id, &$ping, $ping_availability, $prin
 }
 
 /**
- * is_hexadecimal - test whether a string represents a hexadecimal number,
- * ignoring space and tab, and case insensitive.
+ * Test whether a string represents a hexadecimal number, ignoring space and tab, and case
+ * insensitive. Used as part of Cacti's lib functionality.
  *
- * @param $result - the string to test
- * @param 1 if the argument is hex, 0 otherwise, and false on error
+ * @param string $result The string to test.
+ *
+ * @return bool Bool.
  */
 function is_hexadecimal($result) {
 	$hexstr = str_replace(array(' ', '-'), ':', trim($result));
@@ -1871,11 +1946,11 @@ function is_hexadecimal($result) {
 }
 
 /**
- * strip_domain - removes the domain from a hostname
+ * Removes the domain from a hostname. Used as part of Cacti's lib functionality.
  *
- * @param $hostname - the hostname for a device
+ * @param string $hostname The hostname for a device.
  *
- * @return - the stripped hostname
+ * @return string The stripped hostname.
  */
 function strip_domain($hostname) {
 	if (is_ipaddress($hostname)) {
@@ -1891,11 +1966,11 @@ function strip_domain($hostname) {
 
 
 /**
- * is_mac_address - determines if the result value is a mac address
+ * Determines if the result value is a mac address. Used as part of Cacti's lib functionality.
  *
- * @param $result - some string to be evaluated
+ * @param string $result Some string to be evaluated.
  *
- * @return - either to result is a mac address of not
+ * @return mixed Either to result is a mac address of not.
  */
 function is_mac_address($result) {
 	if (!defined('FILTER_VALIDATE_MAC')) {
@@ -1909,6 +1984,14 @@ function is_mac_address($result) {
 	}
 }
 
+/**
+ * Determines if string is a hex value WARNING: The passed parameter may be altered by this
+ * function. Used as part of Cacti's lib functionality.
+ *
+ * @param & $result The result.
+ *
+ * @return bool Bool.
+ */
 function is_hex_string(&$result) {
 	if ($result == '') {
 		return false;
@@ -1952,11 +2035,12 @@ function is_hex_string(&$result) {
 }
 
 /**
- * prepare_validate_result - determines if the result value is valid or not.  If not valid returns a "U"
+ * Determines if the result value is valid or not. If not valid returns a "U". Used as part of
+ * Cacti's lib functionality.
  *
- * @param $result - the result from the poll, the result can be modified in the call
+ * @param & $result The result from the poll, the result can be modified in the call.
  *
- * @return - either to result is valid or not
+ * @return mixed Either to result is valid or not.
  */
 function prepare_validate_result(&$result) {
 	/* first trim the string */
@@ -2010,11 +2094,12 @@ function prepare_validate_result(&$result) {
 }
 
 /**
- * strip_alpha - remove non-numeric data from a string and return the numeric part
+ * Remove non-numeric data from a string and return the numeric part. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $string - the string to be evaluated
+ * @param mixed $string The string to be evaluated.
  *
- * @return - either the numeric value or false if not numeric
+ * @return mixed Either the numeric value or false if not numeric.
  */
 function strip_alpha($string) {
 	/* strip all non numeric data */
@@ -2030,12 +2115,13 @@ function strip_alpha($string) {
 }
 
 /**
- * is_valid_pathname - takes a pathname are verifies it matches file name rules
+ * Takes a pathname are verifies it matches file name rules. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $path - the pathname to be tested
+ * @param string $path The pathname to be tested.
  *
- * @return - either true or false
-*/
+ * @return bool Either true or false.
+ */
 function is_valid_pathname($path) {
 	if (preg_match('/^([a-zA-Z0-9\_\.\-\\\:\/]+)$/', trim($path))) {
 		return true;
@@ -2045,12 +2131,15 @@ function is_valid_pathname($path) {
 }
 
 /**
- * dsv_log - provides debug logging when tracing Graph/Data Source creation
+ * Provides debug logging when tracing Graph/Data Source creation. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $message - the message to output to the log
- * @param $data    - the data to be carried with the message
- * @param $level   - the level to log the dsv_log at or above
-*/
+ * @param string $message The message to output to the log.
+ * @param mixed $data The data to be carried with the message.
+ * @param int $level The level to log the dsv_log at or above.
+ *
+ * @return void No value is returned.
+ */
 function dsv_log($message, $data = null, $level = POLLER_VERBOSITY_LOW) {
 	if (read_config_option('data_source_trace') == 'on') {
 		cacti_log(($message . ' = ') . (is_array($data) ? json_encode($data) : ($data === null ? 'NULL' : $data)), false, 'DSTRACE', $level);
@@ -2058,16 +2147,16 @@ function dsv_log($message, $data = null, $level = POLLER_VERBOSITY_LOW) {
 }
 
 /**
- * test_data_sources
+ * Test_data_sources Tests all data sources to confirm that it returns valid data. This function
+ * is used by automation to prevent the creation of graphs that will never generate data.
  *
- * Tests all data sources to confirm that it returns valid data.  This
- * function is used by automation to prevent the creation of graphs
- * that will never generate data.
+ * @param int $graph_template_id The Graph Template to test.
+ * @param int $host_id The Host to test.
+ * @param int $snmp_query_id The SNMP query ID.
+ * @param string $snmp_index The SNMP index.
+ * @param array $values The values.
  *
- * @param $graph_template_id - The Graph Template to test
- * @param $host_id - The Host to test
- *
- * @return boolean true or false
+ * @return boolean True or false.
  */
 function test_data_sources($graph_template_id, $host_id, $snmp_query_id = 0, $snmp_index = '', $values = array()) {
 	$data_template_ids = array_rekey(
@@ -2102,16 +2191,16 @@ function test_data_sources($graph_template_id, $host_id, $snmp_query_id = 0, $sn
 }
 
 /**
- * test_data_source
+ * Test_data_source Tests a single data source to confirm that it returns valid data. This
+ * function is used by automation to prevent the creation of graphs that will never generate data.
  *
- * Tests a single data source to confirm that it returns valid data.  This
- * function is used by automation to prevent the creation of graphs
- * that will never generate data.
+ * @param int $data_template_id The Graph Template to test.
+ * @param int $host_id The Host to test.
+ * @param int $snmp_query_id The data query id.
+ * @param string $snmp_index The data query index.
+ * @param array $suggested_vals The suggested vals.
  *
- * @param $graph_template_id - The Graph Template to test
- * @param $host_id - The Host to test
- *
- * @return boolean true or false
+ * @return boolean True or false.
  */
 function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp_index = '', $suggested_vals = array()) {
 	global $called_by_script_server;
@@ -2539,13 +2628,14 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 }
 
 /**
- * get_full_test_script_path - gets the full path to the script to execute to obtain data for a
- * given data template for testing. this function does not work on SNMP actions, only
- * script-based actions
+ * Gets the full path to the script to execute to obtain data for a given data template for
+ * testing. this function does not work on SNMP actions, only script-based actions. Used as part
+ * of Cacti's lib functionality.
  *
- * @param $data_template_id - (int) the ID of the data template
+ * @param int $data_template_id (int) the ID of the data template.
+ * @param int $host_id The ID of the host device.
  *
- * @return string - the full script path or (bool) false for an error
+ * @return string The full script path or (bool) false for an error.
  */
 function get_full_test_script_path($data_template_id, $host_id) {
 	global $config;
@@ -2604,12 +2694,13 @@ function get_full_test_script_path($data_template_id, $host_id) {
 }
 
 /**
- * get_full_script_path - gets the full path to the script to execute to obtain data for a
- * given data source. this function does not work on SNMP actions, only script-based actions
+ * Gets the full path to the script to execute to obtain data for a given data source. this
+ * function does not work on SNMP actions, only script-based actions. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $local_data_id - (int) the ID of the data source
+ * @param int $local_data_id (int) the ID of the data source.
  *
- * @return - the full script path or (bool) false for an error
+ * @return mixed The full script path or (bool) false for an error.
  */
 function get_full_script_path($local_data_id) {
 	global $config;
@@ -2660,12 +2751,12 @@ function get_full_script_path($local_data_id) {
 }
 
 /**
- * get_data_source_item_name - gets the name of a data source item or generates a new one if one does not
- * already exist
+ * Gets the name of a data source item or generates a new one if one does not already exist. Used
+ * as part of Cacti's lib functionality.
  *
- * @param $data_template_rrd_id - (int) the ID of the data source item
+ * @param int $data_template_rrd_id (int) the ID of the data source item.
  *
- * @return - the name of the data source item or an empty string for an error
+ * @return mixed The name of the data source item or an empty string for an error.
  */
 function get_data_source_item_name($data_template_rrd_id) {
 	if (empty($data_template_rrd_id)) {
@@ -2694,12 +2785,14 @@ function get_data_source_item_name($data_template_rrd_id) {
 }
 
 /**
- * get_data_source_path - gets the full path to the .rrd file associated with a given data source
+ * Gets the full path to the .rrd file associated with a given data source. Used as part of
+ * Cacti's lib functionality.
  *
- * @param $local_data_id - (int) the ID of the data source
- * @param $expand_paths - (bool) whether to expand the <path_rra> variable into its full path or not
+ * @param int $local_data_id (int) the ID of the data source.
+ * @param bool $expand_paths (bool) whether to expand the <path_rra> variable into its full path
+ *   or not.
  *
- * @return - the full path to the data source or an empty string for an error
+ * @return string The full path to the data source or an empty string for an error.
  */
 function get_data_source_path($local_data_id, $expand_paths) {
 	global $config;
@@ -2740,13 +2833,13 @@ function get_data_source_path($local_data_id, $expand_paths) {
 }
 
 /**
- * stri_replace - a case insensitive string replace
+ * A case insensitive string replace. Used as part of Cacti's lib functionality.
  *
- * @param $find - needle
- * @param $replace - replace needle with this
- * @param $string - haystack
+ * @param string $find Needle.
+ * @param string $replace Replace needle with this.
+ * @param string $string Haystack.
  *
- * @return - the original string with '$find' replaced by '$replace'
+ * @return string The original string with '$find' replaced by '$replace'.
  */
 function stri_replace($find, $replace, $string) {
 	$parts = explode(strtolower($find), strtolower($string));
@@ -2765,12 +2858,12 @@ function stri_replace($find, $replace, $string) {
 }
 
 /**
- * clean_up_lines - runs a string through a regular expression designed to remove
- * new lines and the spaces around them
+ * Runs a string through a regular expression designed to remove new lines and the spaces around
+ * them. Used as part of Cacti's lib functionality.
  *
- * @param $string - the string to modify/clean
+ * @param mixed $string The string to modify/clean.
  *
- * @return string	The modified string
+ * @return string The modified string.
  */
 function clean_up_lines($string) {
 	if ($string != '') {
@@ -2781,12 +2874,12 @@ function clean_up_lines($string) {
 }
 
 /**
- * clean_up_name - runs a string through a series of regular expressions designed to
- * eliminate "bad" characters
+ * Runs a string through a series of regular expressions designed to eliminate "bad" characters.
+ * Used as part of Cacti's lib functionality.
  *
- * @param $string - the string to modify/clean
+ * @param mixed $string The string to modify/clean.
  *
- * @return string	The modified string
+ * @return string The modified string.
  */
 function clean_up_name($string) {
 	if ($string != '') {
@@ -2799,12 +2892,12 @@ function clean_up_name($string) {
 }
 
 /**
- * clean_up_file name - runs a string through a series of regular expressions designed to
- * eliminate "bad" characters
+ * Clean_up_file name - runs a string through a series of regular expressions designed to
+ * eliminate "bad" characters. Used as part of Cacti's lib functionality.
  *
- * @param $string - the string to modify/clean
+ * @param mixed $string The string to modify/clean.
  *
- * @return string	The modified string
+ * @return string The modified string.
  */
 function clean_up_file_name($string) {
 	if ($string != '') {
@@ -2817,12 +2910,12 @@ function clean_up_file_name($string) {
 }
 
 /**
- * clean_up_path - takes any path and makes sure it contains the correct directory
- * separators based on the current operating system
+ * Takes any path and makes sure it contains the correct directory separators based on the current
+ * operating system. Used as part of Cacti's lib functionality.
  *
- * @param $path - the path to modify
+ * @param mixed $path The path to modify.
  *
- * @return - the modified path
+ * @return mixed The modified path.
  */
 function clean_up_path($path) {
 	global $config;
@@ -2839,22 +2932,23 @@ function clean_up_path($path) {
 }
 
 /**
- * cacti_has_control_chars - test whether a string contains control characters
+ * Test whether a string contains control characters. Used as part of Cacti's lib functionality.
  *
- * @param  (string) $value - String to test
+ * @param string $value String to test.
  *
- * @return (bool) True when a control character is present
+ * @return bool True when a control character is present.
  */
 function cacti_has_control_chars($value) {
 	return preg_match('/[\x00-\x1F\x7F]/', (string) $value) === 1;
 }
 
 /**
- * cacti_log_safe_value - escape control characters before logging rejected values
+ * Escape control characters before logging rejected values. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (mixed) $value - Value to format for logs
+ * @param mixed $value Value to format for logs.
  *
- * @return (string) Log-safe representation
+ * @return string Log-safe representation.
  */
 function cacti_log_safe_value($value) {
 	$encoded = json_encode((string) $value);
@@ -2867,33 +2961,33 @@ function cacti_log_safe_value($value) {
 }
 
 /**
- * cacti_rrdtool_valid_path - validate a path before sending it to RRDtool stdin
+ * Validate a path before sending it to RRDtool stdin. Used as part of Cacti's lib functionality.
  *
- * @param  (string) $path - Path to validate
+ * @param string $path Path to validate.
  *
- * @return (bool) True when the path is safe for a single RRDtool stdin command
+ * @return bool True when the path is safe for a single RRDtool stdin command.
  */
 function cacti_rrdtool_valid_path($path) {
 	return is_string($path) && $path !== '' && !cacti_has_control_chars($path);
 }
 
 /**
- * cacti_rrdtool_valid_path_token - validate a single RRDtool stdin path token
+ * Validate a single RRDtool stdin path token. Used as part of Cacti's lib functionality.
  *
- * @param  (string) $path - Path token to validate
+ * @param string $path Path token to validate.
  *
- * @return (bool) True when the path is safe as one whitespace-delimited token
+ * @return bool True when the path is safe as one whitespace-delimited token.
  */
 function cacti_rrdtool_valid_path_token($path) {
 	return cacti_rrdtool_valid_path($path) && preg_match('/\s/', $path) !== 1;
 }
 
 /**
- * cacti_rrdtool_valid_bound - validate a numeric RRDtool DS bound
+ * Validate a numeric RRDtool DS bound. Used as part of Cacti's lib functionality.
  *
- * @param  (string) $value - Value to validate
+ * @param string $value Value to validate.
  *
- * @return (bool) True when the value is U or an RRDtool numeric value
+ * @return bool True when the value is U or an RRDtool numeric value.
  */
 function cacti_rrdtool_valid_bound($value) {
 	$value = trim((string) $value);
@@ -2902,22 +2996,22 @@ function cacti_rrdtool_valid_bound($value) {
 }
 
 /**
- * cacti_rrdtool_valid_ds_name - validate an RRDtool data source name
+ * Validate an RRDtool data source name. Used as part of Cacti's lib functionality.
  *
- * @param  (string) $name - Data source name
+ * @param string $name Data source name.
  *
- * @return (bool) True when valid for RRDtool DS syntax
+ * @return bool True when valid for RRDtool DS syntax.
  */
 function cacti_rrdtool_valid_ds_name($name) {
 	return is_string($name) && preg_match('/^[a-zA-Z0-9_-]{1,19}$/', $name) === 1;
 }
 
 /**
- * cacti_rrdtool_valid_ds_template - validate an RRDtool update template
+ * Validate an RRDtool update template. Used as part of Cacti's lib functionality.
  *
- * @param  (string) $template - Colon-delimited data source names
+ * @param string $template Colon-delimited data source names.
  *
- * @return (bool) True when every template member is a safe DS name
+ * @return bool True when every template member is a safe DS name.
  */
 function cacti_rrdtool_valid_ds_template($template) {
 	if (!is_string($template) || $template === '' || cacti_has_control_chars($template)) {
@@ -2936,11 +3030,12 @@ function cacti_rrdtool_valid_ds_template($template) {
 }
 
 /**
- * get_data_source_title - returns the title of a data source without using the title cache
+ * Returns the title of a data source without using the title cache. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $local_data_id - (int) the ID of the data source to get a title for
+ * @param int $local_data_id (int) the ID of the data source to get a title for.
  *
- * @return - the data source title
+ * @return string The data source title.
  */
 function get_data_source_title($local_data_id) {
 	$data = db_fetch_row_prepared('SELECT
@@ -2973,33 +3068,36 @@ function get_data_source_title($local_data_id) {
 }
 
 /**
- * get_device_name - returns the description of the device in cacti host table
+ * Returns the description of the device in cacti host table. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $host_id - (int) the ID of the device to get a description for
+ * @param int $host_id (int) the ID of the device to get a description for.
  *
- * @return - the device name
+ * @return mixed The device name.
  */
 function get_device_name($host_id) {
 	return db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id));
 }
 
 /**
- * get_color - returns the hex color value from the cacti colors table
+ * Returns the hex color value from the cacti colors table. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $color_id - (int) the ID of the cacti color
- * @return - the hex color value
+ * @param int $color_id (int) the ID of the cacti color.
  *
+ * @return mixed The hex color value.
  */
 function get_color($color_id) {
 	return db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($color_id));
 }
 
 /**
- * get_graph_title_cache - returns the title of the graph using the title cache
+ * Returns the title of the graph using the title cache. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $local_graph_id - (int) the ID of the graph to get the title for
+ * @param int $local_graph_id (int) the ID of the graph to get the title for.
  *
- * @return - the graph title
+ * @return mixed The graph title.
  */
 function get_graph_title_cache($local_graph_id) {
 	return db_fetch_cell_prepared('SELECT title_cache
@@ -3009,11 +3107,12 @@ function get_graph_title_cache($local_graph_id) {
 }
 
 /**
- * get_graph_title - returns the title of a graph without using the title cache
+ * Returns the title of a graph without using the title cache. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $local_graph_id - (int) the ID of the graph to get a title for
+ * @param int $local_graph_id (int) the ID of the graph to get a title for.
  *
- * @return string	The graph title
+ * @return string The graph title.
  */
 function get_graph_title($local_graph_id) {
 	$graph = db_fetch_row_prepared('SELECT gl.host_id, gl.snmp_query_id,
@@ -3037,10 +3136,10 @@ function get_graph_title($local_graph_id) {
 }
 
 /**
- * get_guest_account - return the guest account as defined in the system
- *   if there is one, else return 0.
+ * Return the guest account as defined in the system if there is one, else return 0. Used as part
+ * of Cacti's lib functionality.
  *
- * @return (int) the guest account if greater than 0
+ * @return int The guest account if greater than 0.
  */
 function get_guest_account() {
 	$user = db_fetch_cell_prepared("SELECT id
@@ -3057,13 +3156,13 @@ function get_guest_account() {
 }
 
 /**
- * get_template_account - return the template account given a user.
- *   if a user is not given, provide the 'default' template account.
- *   This function is hookable by third party plugins.
+ * Return the template account given a user. if a user is not given, provide the 'default'
+ * template account. This function is hookable by third party plugins. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (int|string) either the username or user_id of the user
+ * @param int|string $user Either the username or user_id of the user.
  *
- * @return (int) the template account if one exist for the user
+ * @return int The template account if one exist for the user.
  */
 function get_template_account($user = '') {
 	if ($user == '') {
@@ -3104,19 +3203,20 @@ function get_template_account($user = '') {
 }
 
 /**
- * get_username - returns the username for the selected user
+ * Returns the username for the selected user. Used as part of Cacti's lib functionality.
  *
- * @param $user_id - (int) the ID of the user
+ * @param mixed $user_id (int) the ID of the user.
  *
- * @return - the username */
+ * @return mixed The username.
+ */
 function get_username($user_id) {
 	return db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($user_id));
 }
 
 /**
- * get_execution_user - returns the username of the running process
+ * Returns the username of the running process. Used as part of Cacti's lib functionality.
  *
- * @return - the username
+ * @return string The username.
  */
 function get_execution_user() {
 	if (function_exists('posix_getpwuid')) {
@@ -3129,12 +3229,12 @@ function get_execution_user() {
 }
 
 /**
- * generate_data_source_path - creates a new data source path from scratch using the first data source
- * item name and updates the database with the new value
+ * Creates a new data source path from scratch using the first data source item name and updates
+ * the database with the new value. Used as part of Cacti's lib functionality.
  *
- * @param $local_data_id - (int) the ID of the data source to generate a new path for
+ * @param int $local_data_id (int) the ID of the data source to generate a new path for.
  *
- * @return - the new generated path
+ * @return mixed The new generated path.
  */
 function generate_data_source_path($local_data_id) {
 	global $config;
@@ -3214,15 +3314,16 @@ function generate_data_source_path($local_data_id) {
 }
 
 /**
- * generate graph_best_cf - takes the requested consolidation function and maps against
- * the list of available consolidation functions for the consolidation functions and returns
- * the most appropriate.  Typically, this will be the requested value
+ * Generate graph_best_cf - takes the requested consolidation function and maps against the list
+ * of available consolidation functions for the consolidation functions and returns the most
+ * appropriate. Typically, this will be the requested value. Used as part of Cacti's lib
+ * functionality.
  *
- *  @param $data_template_id
- *  @param $requested_cf
- *  @param $ds_step
+ * @param mixed $local_data_id This needs to be mixed to accommodate special types that are null.
+ * @param mixed $requested_cf The requested CF in the Graph.
+ * @param int $ds_step The DS step.
  *
- *  @return - the best cf to use
+ * @return string The best cf to use.
  */
 function generate_graph_best_cf($local_data_id, $requested_cf, $ds_step = 60) {
 	static $best_cf = 1;
@@ -3253,11 +3354,11 @@ function generate_graph_best_cf($local_data_id, $requested_cf, $ds_step = 60) {
 }
 
 /**
- * get_rrd_cfs - reads the RRDfile and gets the RRAs stored in it.
+ * Reads the RRDfile and gets the RRAs stored in it. Used as part of Cacti's lib functionality.
  *
- * @param $local_data_id
+ * @param int $local_data_id The local data ID.
  *
- * @return - array of the CF functions
+ * @return array Of the CF functions.
  */
 function get_rrd_cfs($local_data_id) {
 	global $consolidation_functions;
@@ -3325,12 +3426,12 @@ function get_rrd_cfs($local_data_id) {
 }
 
 /**
- * generate_graph_def_name - takes a number and turns each digit into its letter-based
- * counterpart for RRDtool DEF names (ex 1 -> a, 2 -> b, etc)
+ * Takes a number and turns each digit into its letter-based counterpart for RRDtool DEF names (ex
+ * 1 -> a, 2 -> b, etc). Used as part of Cacti's lib functionality.
  *
- * @param $graph_item_id - (int) the ID to generate a letter-based representation of
+ * @param int $graph_item_id (int) the ID to generate a letter-based representation of.
  *
- * @return - a letter-based representation of the input argument
+ * @return string A letter-based representation of the input argument.
  */
 function generate_graph_def_name($graph_item_id) {
 	$lookup_table = array('a','b','c','d','e','f','g','h','i','j');
@@ -3349,11 +3450,13 @@ function generate_graph_def_name($graph_item_id) {
 }
 
 /**
- * generate_data_input_field_sequences - re-numbers the sequences of each field associated
- * with a particular data input method based on its position within the input string
+ * Re-numbers the sequences of each field associated with a particular data input method based on
+ * its position within the input string. Used as part of Cacti's lib functionality.
  *
- * @param $string - the input string that contains the field variables in a certain order
- * @param $data_input_id - (int) the ID of the data input method
+ * @param string $string The input string that contains the field variables in a certain order.
+ * @param int $data_input_id (int) the ID of the data input method.
+ *
+ * @return void No value is returned.
  */
 function generate_data_input_field_sequences($string, $data_input_id) {
 	global $config, $registered_cacti_names;
@@ -3378,14 +3481,16 @@ function generate_data_input_field_sequences($string, $data_input_id) {
 }
 
 /**
- * move_graph_group - takes a graph group (parent+children) and swaps it with another graph
- * group
+ * Takes a graph group (parent+children) and swaps it with another graph group. Used as part of
+ * Cacti's lib functionality.
  *
- * @param $graph_template_item_id - (int) the ID of the (parent) graph item that was clicked
- * @param $graph_group_array - (array) an array containing the graph group to be moved
- * @param $target_id - (int) the ID of the (parent) graph item of the target group
- * @param $direction - ('next' or 'previous') whether the graph group is to be swapped with
- *   group above or below the current group
+ * @param int $graph_template_item_id (int) the ID of the (parent) graph item that was clicked.
+ * @param array $graph_group_array (array) an array containing the graph group to be moved.
+ * @param int $target_id (int) the ID of the (parent) graph item of the target group.
+ * @param string $direction ('next' or 'previous') whether the graph group is to be swapped with
+ *   group above or below the current group.
+ *
+ * @return void No value is returned.
  */
 function move_graph_group($graph_template_item_id, $graph_group_array, $target_id, $direction) {
 	$graph_item = db_fetch_row_prepared('SELECT local_graph_id, graph_template_id
@@ -3482,12 +3587,12 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 }
 
 /**
- * get_graph_group - returns an array containing each item in the graph group given a single
- * graph item in that group
+ * Returns an array containing each item in the graph group given a single graph item in that
+ * group. Used as part of Cacti's lib functionality.
  *
- * @param $graph_template_item_id - (int) the ID of the graph item to return the group of
+ * @param int $graph_template_item_id (int) the ID of the graph item to return the group of.
  *
- * @return - (array) an array containing each item in the graph group
+ * @return array (array) an array containing each item in the graph group.
  */
 function get_graph_group($graph_template_item_id) {
 	global $graph_item_types;
@@ -3557,12 +3662,13 @@ function get_graph_group($graph_template_item_id) {
 }
 
 /**
- * get_graph_parent - returns the ID of the next or previous parent graph item id
+ * Returns the ID of the next or previous parent graph item id. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $graph_template_item_id - the ID of the current graph item
- * @param $direction - ('next' or 'previous') whether to find the next or previous parent
+ * @param int $graph_template_item_id The ID of the current graph item.
+ * @param string $direction ('next' or 'previous') whether to find the next or previous parent.
  *
- * @return - the ID of the next or previous parent graph item id
+ * @return int The ID of the next or previous parent graph item id.
  */
 function get_graph_parent($graph_template_item_id, $direction) {
 	$graph_item = db_fetch_row_prepared('SELECT sequence, local_graph_id, graph_template_id
@@ -3600,12 +3706,13 @@ function get_graph_parent($graph_template_item_id, $direction) {
 }
 
 /**
- * build_where_from_array - builds a parameterized WHERE clause from an associative array
+ * Builds a parameterized WHERE clause from an associative array. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $filters - associative array of field => value pairs
- * @param $params  - (byref) array to append parameter values to
+ * @param array $filters Associative array of field => value pairs.
+ * @param & $params (byref) array to append parameter values to.
  *
- * @return - (string) the WHERE clause fragment, or '1=1' if filters is empty
+ * @return string (string) the WHERE clause fragment, or '1=1' if filters is empty.
  */
 function build_where_from_array($filters, &$params) {
 	if (empty($filters)) {
@@ -3628,15 +3735,15 @@ function build_where_from_array($filters, &$params) {
 }
 
 /**
- * get_item - returns the ID of the next or previous item id
+ * Returns the ID of the next or previous item id. Used as part of Cacti's lib functionality.
  *
- * @param $tblname - the table name that contains the target id
- * @param $field - the field name that contains the target id
- * @param $startid - (int) the current id
- * @param $lmt_query - an SQL "where" clause to limit the query
- * @param $direction - ('next' or 'previous') whether to find the next or previous item id
+ * @param string $tblname The table name that contains the target id.
+ * @param string $field The field name that contains the target id.
+ * @param int $startid (int) the current id.
+ * @param string|array $lmt_query An SQL "where" clause to limit the query.
+ * @param string $direction ('next' or 'previous') whether to find the next or previous item id.
  *
- * @return - (int) the ID of the next or previous item id
+ * @return int (int) the ID of the next or previous item id.
  */
 function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 	$params = array();
@@ -3678,14 +3785,14 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 }
 
 /**
- * get_sequence - returns the next available sequence id
+ * Returns the next available sequence id. Used as part of Cacti's lib functionality.
  *
- * @param $id - (int) the current id
- * @param $field - the field name that contains the target id
- * @param $table_name - the table name that contains the target id
- * @param $group_query - an SQL "where" clause to limit the query
+ * @param mixed $id (int) the current id.
+ * @param string $field The field name that contains the target id.
+ * @param string $table_name The table name that contains the target id.
+ * @param string $group_query An SQL "where" clause to limit the query.
  *
- * @return - (int) the next available sequence id
+ * @return int (int) the next available sequence id.
  */
 function get_sequence($id, $field, $table_name, $group_query) {
 	if (empty($id)) {
@@ -3717,11 +3824,14 @@ function get_sequence($id, $field, $table_name, $group_query) {
 }
 
 /**
- * move_item_down - moves an item down by swapping it with the item below it
+ * Moves an item down by swapping it with the item below it. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $table_name - the table name that contains the target id
- * @param $current_id - (int) the current id
- * @param $group_query - an SQL "where" clause to limit the query
+ * @param string $table_name The table name that contains the target id.
+ * @param int $current_id (int) the current id.
+ * @param string $group_query An SQL "where" clause to limit the query.
+ *
+ * @return void No value is returned.
  */
 function move_item_down($table_name, $current_id, $group_query = '') {
 	$next_item = get_item($table_name, 'sequence', $current_id, $group_query, 'next');
@@ -3748,11 +3858,14 @@ function move_item_down($table_name, $current_id, $group_query = '') {
 }
 
 /**
- * move_item_up - moves an item down by swapping it with the item above it
+ * Moves an item down by swapping it with the item above it. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $table_name - the table name that contains the target id
- * @param $current_id - (int) the current id
- * @param $group_query - an SQL "where" clause to limit the query
+ * @param string $table_name The table name that contains the target id.
+ * @param int $current_id (int) the current id.
+ * @param string $group_query An SQL "where" clause to limit the query.
+ *
+ * @return void No value is returned.
  */
 function move_item_up($table_name, $current_id, $group_query = '') {
 	$last_item = get_item($table_name, 'sequence', $current_id, $group_query, 'previous');
@@ -3779,12 +3892,12 @@ function move_item_up($table_name, $current_id, $group_query = '') {
 }
 
 /**
- * exec_into_array - executes a command and puts each line of its output into
- * an array
+ * Executes a command and puts each line of its output into an array. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $command_line - the command to execute
+ * @param string $command_line The command to execute.
  *
- * @return - (array) an array containing the command output
+ * @return array (array) an array containing the command output.
  */
 function exec_into_array($command_line) {
 	$out = array();
@@ -3795,9 +3908,10 @@ function exec_into_array($command_line) {
 }
 
 /**
- * get_web_browser - determines the current web browser in use by the client
+ * Determines the current web browser in use by the client. Used as part of Cacti's lib
+ * functionality.
  *
- * @return - ('ie' or 'moz' or 'other')
+ * @return string ('ie' or 'moz' or 'other').
  */
 function get_web_browser() {
 	if (!empty($_SERVER['HTTP_USER_AGENT'])) {
@@ -3814,7 +3928,12 @@ function get_web_browser() {
 }
 
 /**
- * draw_login_status - provides a consistent login status page for all pages that use it
+ * Provides a consistent login status page for all pages that use it. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param bool $using_guest_account The using guest account.
+ *
+ * @return void No value is returned.
  */
 function draw_login_status($using_guest_account = false) {
 	global $config;
@@ -3864,11 +3983,12 @@ function draw_login_status($using_guest_account = false) {
 }
 
 /**
- * draw_navigation_text - determines the top header navigation text for the current page and displays it to
+ * Determines the top header navigation text for the current page and displays it to. Used as part
+ * of Cacti's lib functionality.
  *
- * @param $type - Either 'url' or 'title'
+ * @param string $type Either 'url' or 'title'.
  *
- * @return - Either the navigation text or title
+ * @return string Either the navigation text or title.
  */
 function draw_navigation_text($type = 'url') {
 	global $config, $navigation;
@@ -4082,11 +4202,12 @@ function draw_navigation_text($type = 'url') {
 }
 
 /**
- * resolve_navigation_variables - substitute any variables contained in the navigation text
+ * Substitute any variables contained in the navigation text. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $text - the text to substitute in
+ * @param string $text The text to substitute in.
  *
- * @return - the original navigation text with all substitutions made
+ * @return string The original navigation text with all substitutions made.
  */
 function resolve_navigation_variables($text) {
 	$graphTitle = get_graph_title(get_filter_request_var('local_graph_id'));
@@ -4105,11 +4226,13 @@ function resolve_navigation_variables($text) {
 }
 
 /**
- * get_associated_rras - returns a list of all RRAs referenced by a particular graph
+ * Returns a list of all RRAs referenced by a particular graph. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $local_graph_id - (int) the ID of the graph to retrieve a list of RRAs for
+ * @param int $local_graph_id (int) the ID of the graph to retrieve a list of RRAs for.
+ * @param string $sql_where An additional sql_where clause to add toe the query.
  *
- * @return - (array) an array containing the name and id of each RRA found
+ * @return mixed (array) an array containing the name and id of each RRA found.
  */
 function get_associated_rras($local_graph_id, $sql_where = '') {
 	return db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . "
@@ -4132,12 +4255,12 @@ function get_associated_rras($local_graph_id, $sql_where = '') {
 }
 
 /**
- * get_nearest_timespan - returns the nearest defined timespan.  Used for adding a default
- * graph timespan for data source profile rras.
+ * Returns the nearest defined timespan. Used for adding a default graph timespan for data source
+ * profile rras.
  *
- * @param $timespan - (int) the timespan to fine a default for
+ * @param int $timespan (int) the timespan to fine a default for.
  *
- * @return - (int) the timespan to apply for the data source profile rra value
+ * @return int (int) the timespan to apply for the data source profile rra value.
  */
 function get_nearest_timespan($timespan) {
 	global $timespans;
@@ -4159,9 +4282,10 @@ function get_nearest_timespan($timespan) {
 }
 
 /**
- * get_browser_query_string - returns the full url, including args requested by the browser
+ * Returns the full url, including args requested by the browser. Used as part of Cacti's lib
+ * functionality.
  *
- * @return - the url requested by the browser
+ * @return string The url requested by the browser.
  */
 function get_browser_query_string() {
 	if (!empty($_SERVER['REQUEST_URI'])) {
@@ -4172,9 +4296,12 @@ function get_browser_query_string() {
 }
 
 /**
- * get_current_page - returns the basename of the current page in a web server friendly way
+ * Returns the basename of the current page in a web server friendly way. Used as part of Cacti's
+ * lib functionality.
  *
- * @return string	The basename of the current script file
+ * @param bool $basename Whether to return only the filename.
+ *
+ * @return string The basename of the current script file.
  */
 function get_current_page($basename = true) {
 	if (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
@@ -4197,12 +4324,13 @@ function get_current_page($basename = true) {
 }
 
 /**
- * get_hash_graph_template - returns the current unique hash for a graph template
+ * Returns the current unique hash for a graph template. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $graph_template_id - (int) the ID of the graph template to return a hash for
- * @param $sub_type (optional) return the hash for a particular subtype of this type
+ * @param int $graph_template_id (int) the ID of the graph template to return a hash for.
+ * @param string $sub_type (optional) return the hash for a particular subtype of this type.
  *
- * @return - a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash.
  */
 function get_hash_graph_template($graph_template_id, $sub_type = 'graph_template') {
 	switch ($sub_type) {
@@ -4228,12 +4356,12 @@ function get_hash_graph_template($graph_template_id, $sub_type = 'graph_template
 }
 
 /**
- * get_hash_data_template - returns the current unique hash for a data template
+ * Returns the current unique hash for a data template. Used as part of Cacti's lib functionality.
  *
- * @param $graph_template_id - (int) the ID of the data template to return a hash for
- * @param $sub_type (optional) return the hash for a particular subtype of this type
+ * @param int $data_template_id The ID of the data template to return a hash for.
+ * @param string $sub_type (optional) return the hash for a particular subtype of this type.
  *
- * @return - a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash.
  */
 function get_hash_data_template($data_template_id, $sub_type = 'data_template') {
 	switch ($sub_type) {
@@ -4256,12 +4384,13 @@ function get_hash_data_template($data_template_id, $sub_type = 'data_template') 
 }
 
 /**
- * get_hash_data_input - returns the current unique hash for a data input method
+ * Returns the current unique hash for a data input method. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $graph_template_id - (int) the ID of the data input method to return a hash for
- * @param $sub_type (optional) return the hash for a particular subtype of this type
+ * @param int $data_input_id The ID of the data input method to return a hash for.
+ * @param string $sub_type (optional) return the hash for a particular subtype of this type.
  *
- * @return - a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash.
  */
 function get_hash_data_input($data_input_id, $sub_type = 'data_input_method') {
 	switch ($sub_type) {
@@ -4284,12 +4413,12 @@ function get_hash_data_input($data_input_id, $sub_type = 'data_input_method') {
 }
 
 /**
- * get_hash_cdef - returns the current unique hash for a cdef
+ * Returns the current unique hash for a cdef. Used as part of Cacti's lib functionality.
  *
- * @param $graph_template_id - (int) the ID of the cdef to return a hash for
- * @param $sub_type (optional) return the hash for a particular subtype of this type
+ * @param int $cdef_id The ID of the cdef to return a hash for.
+ * @param string $sub_type (optional) return the hash for a particular subtype of this type.
  *
- * @return - a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash.
  */
 function get_hash_cdef($cdef_id, $sub_type = 'cdef') {
 	if (!is_numeric($cdef_id)) {
@@ -4316,11 +4445,11 @@ function get_hash_cdef($cdef_id, $sub_type = 'cdef') {
 }
 
 /**
- * get_hash_gprint - returns the current unique hash for a gprint preset
+ * Returns the current unique hash for a gprint preset. Used as part of Cacti's lib functionality.
  *
- * @param $graph_template_id - (int) the ID of the gprint preset to return a hash for
+ * @param int $gprint_id The ID of the gprint preset to return a hash for.
  *
- * @return - a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash.
  */
 function get_hash_gprint($gprint_id) {
 	$hash = db_fetch_cell_prepared('SELECT hash FROM graph_templates_gprint WHERE id = ?', array($gprint_id));
@@ -4333,12 +4462,12 @@ function get_hash_gprint($gprint_id) {
 }
 
 /**
- * returns the current unique hash for a vdef
+ * Returns the current unique hash for a vdef. Used as part of Cacti's lib functionality.
  *
- * @param $graph_template_id - the ID of the vdef to return a hash for
- * @param $sub_type          - return the hash for a particular subtype of this type
+ * @param int $vdef_id The ID of the vdef to return a hash for.
+ * @param string $sub_type Return the hash for a particular subtype of this type.
  *
- * @return - a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash.
  */
 function get_hash_vdef($vdef_id, $sub_type = 'vdef') {
 	switch ($sub_type) {
@@ -4361,11 +4490,11 @@ function get_hash_vdef($vdef_id, $sub_type = 'vdef') {
 }
 
 /**
- * get_hash_data_source_profile - returns the current unique hash for a vdef
+ * Returns the current unique hash for a vdef. Used as part of Cacti's lib functionality.
  *
- * @param $data_source_profile_id - the ID of the data_source_profile to return a hash for
+ * @param int $data_source_profile_id The ID of the data_source_profile to return a hash for.
  *
- * @return - a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash.
  */
 function get_hash_data_source_profile($data_source_profile_id) {
 	$hash = db_fetch_cell_prepared('SELECT hash FROM data_source_profiles WHERE id = ?', array($data_source_profile_id));
@@ -4378,11 +4507,11 @@ function get_hash_data_source_profile($data_source_profile_id) {
 }
 
 /**
- * get_hash_host_template - returns the current unique hash for a gprint preset
+ * Returns the current unique hash for a gprint preset. Used as part of Cacti's lib functionality.
  *
- * @param $host_template_id - the ID of the host template to return a hash for
+ * @param int $host_template_id The ID of the host template to return a hash for.
  *
- * @return - a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash.
  */
 function get_hash_host_template($host_template_id) {
 	$hash = db_fetch_cell_prepared('SELECT hash FROM host_template WHERE id = ?', array($host_template_id));
@@ -4395,12 +4524,12 @@ function get_hash_host_template($host_template_id) {
 }
 
 /**
- * get_hash_data_query - returns the current unique hash for a data query
+ * Returns the current unique hash for a data query. Used as part of Cacti's lib functionality.
  *
- * @param $graph_template_id - the ID of the data query to return a hash for
- * @param $sub_type return the hash for a particular subtype of this type
+ * @param int $data_query_id The ID of the data query to return a hash for.
+ * @param string $sub_type Return the hash for a particular subtype of this type.
  *
- * @return - a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash.
  */
 function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
 	switch ($sub_type) {
@@ -4429,12 +4558,13 @@ function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
 }
 
 /**
- * get_hash_version - returns the item type and cacti version in a hash format
+ * Returns the item type and cacti version in a hash format. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $type - the type of item to represent ('graph_template','data_template',
- *   'data_input_method','cdef','vdef','gprint_preset','data_query','host_template')
+ * @param string $type The type of item to represent ('graph_template','data_template',
+ *   'data_input_method','cdef','vdef','gprint_preset','data_query','host_template').
  *
- * @return - a 24-bit hexadecimal hash (8-bits for type, 16-bits for version)
+ * @return string A 24-bit hexadecimal hash (8-bits for type, 16-bits for version).
  */
 function get_hash_version($type) {
 	global $hash_type_codes, $cacti_version_codes, $config;
@@ -4443,9 +4573,9 @@ function get_hash_version($type) {
 }
 
 /**
- * generate_hash - generates a new unique hash
+ * Generates a new unique hash. Used as part of Cacti's lib functionality.
  *
- * @return - a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash.
  */
 function generate_hash() {
 	try {
@@ -4456,10 +4586,14 @@ function generate_hash() {
 }
 
 /**
- * debug_log_insert_section_start - creates a header item for breaking down the debug log
+ * Creates a header item for breaking down the debug log. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $type - the 'category' or type of debug message
- * @param $text - section header
+ * @param string $type The 'category' or type of debug message.
+ * @param string $text Section header.
+ * @param bool $allowcopy Allow clipboard copy details.
+ *
+ * @return void No value is returned.
  */
 function debug_log_insert_section_start($type, $text, $allowcopy = false) {
 	$copy_prefix = '';
@@ -4475,19 +4609,24 @@ function debug_log_insert_section_start($type, $text, $allowcopy = false) {
 }
 
 /**
- * debug_log_insert_section_end - finalizes the header started with the start function
+ * Finalizes the header started with the start function. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $type - the 'category' or type of debug message
+ * @param string $type The 'category' or type of debug message.
+ *
+ * @return void No value is returned.
  */
 function debug_log_insert_section_end($type) {
 	debug_log_insert($type, '</div></td></tr></table></td></tr></td></table>');
 }
 
 /**
- * debug_log_insert - inserts a line of text into the debug log
+ * Inserts a line of text into the debug log. Used as part of Cacti's lib functionality.
  *
- * @param $type - the 'category' or type of debug message
- * @param $text - the actual debug message
+ * @param string $type The 'category' or type of debug message.
+ * @param string $text The actual debug message.
+ *
+ * @return void No value is returned.
  */
 function debug_log_insert($type, $text) {
 	global $config;
@@ -4508,10 +4647,12 @@ function debug_log_insert($type, $text) {
 }
 
 /**
- * debug_log_clear - clears the debug log for a particular category
+ * Clears the debug log for a particular category. Used as part of Cacti's lib functionality.
  *
- * @param $type - the 'category' to clear the debug log for. omitting this argument
- *   implies all categories
+ * @param string $type The 'category' to clear the debug log for. omitting this argument implies
+ *   all categories.
+ *
+ * @return void No value is returned.
  */
 function debug_log_clear($type = '') {
 	if ($type == '') {
@@ -4524,13 +4665,12 @@ function debug_log_clear($type = '') {
 }
 
 /**
- * debug_log_return - returns the debug log for a particular category.
+ * Returns the debug log for a particular category. NOTE: Escaping is done in the insert
+ * functions. Used as part of Cacti's lib functionality.
  *
- * NOTE: Escaping is done in the insert functions.
+ * @param string $type The 'category' to return the debug log for.
  *
- * @param $type - the 'category' to return the debug log for.
- *
- * @return - the full debug log for a particular category
+ * @return string The full debug log for a particular category.
  */
 function debug_log_return($type) {
 	$log_text = '';
@@ -4563,12 +4703,12 @@ function debug_log_return($type) {
 }
 
 /**
- * sanitize_search_string - cleans up a search string submitted by the user to be passed
- * to the database. NOTE: some of the code for this function came from the phpBB project.
+ * Cleans up a search string submitted by the user to be passed to the database. NOTE: some of the
+ * code for this function came from the phpBB project. Used as part of Cacti's lib functionality.
  *
- * @param $string - the original raw search string
+ * @param string $string The original raw search string.
  *
- * @return - the sanitized search string
+ * @return string The sanitized search string.
  */
 function sanitize_search_string($string) {
 	static $drop_char_match = array('(',')','^', '$', '<', '>', '`', '\'', '"', '|', ',', '?', '+', '[', ']', '{', '}', '#', ';', '!', '=', '*');
@@ -4592,14 +4732,14 @@ function sanitize_search_string($string) {
 }
 
 /**
- * cleans up a URI, e.g. from REQUEST_URI and/or QUERY_STRING
- * in case of XSS attack, expect the result to be broken
- * we do NOT sanitize in a way, that attacks are converted to valid HTML
- * it is ok, when the result is broken but the application stays alive
+ * Cleans up a URI, e.g. from REQUEST_URI and/or QUERY_STRING in case of XSS attack, expect the
+ * result to be broken we do NOT sanitize in a way, that attacks are converted to valid HTML it is
+ * ok, when the result is broken but the application stays alive. Used as part of Cacti's lib
+ * functionality.
  *
- * @param string $uri   - the uri to be sanitized
+ * @param string $uri The uri to be sanitized.
  *
- * @return string    - the sanitized uri
+ * @return string The sanitized uri.
  */
 function sanitize_uri($uri) {
 	static $drop_char_match = array(
@@ -4640,11 +4780,11 @@ function sanitize_uri($uri) {
 }
 
 /**
- * Checks to see if a string is urlencoded
+ * Checks to see if a string is urlencoded. Used as part of Cacti's lib functionality.
  *
- * @param  string $string the string to be validated
+ * @param string $string The string to be validated.
  *
- * @return boolean - true is the string is urlencoded otherwise false
+ * @return boolean True is the string is urlencoded otherwise false.
  */
 function is_urlencoded($string) {
 	if ($string != urldecode($string)) {
@@ -4655,11 +4795,11 @@ function is_urlencoded($string) {
 }
 
 /**
- * Checks to see if a string is base64 encoded
+ * Checks to see if a string is base64 encoded. Used as part of Cacti's lib functionality.
  *
- * @param string $data   - the string to be validated
+ * @param string $data The string to be validated.
  *
- * @return boolean    - true is the string is base64 otherwise false
+ * @return boolean True is the string is base64 otherwise false.
  */
 function is_base64_encoded($data) {
 	// Perform a simple check first
@@ -4682,12 +4822,12 @@ function is_base64_encoded($data) {
 }
 
 /**
- * cleans up a CDEF/VDEF string
- * the CDEF/VDEF must have passed all magic string replacements beforehand
+ * Cleans up a CDEF/VDEF string the CDEF/VDEF must have passed all magic string replacements
+ * beforehand. Used as part of Cacti's lib functionality.
  *
- * @param string $cdef   - the CDEF/VDEF to be sanitized
+ * @param string $cdef The CDEF/VDEF to be sanitized.
  *
- * @return string    - the sanitized CDEF/VDEF
+ * @return string The sanitized CDEF/VDEF.
  */
 function sanitize_cdef($cdef) {
 	static $drop_char_match =   array('^', '$', '<', '>', '`', '\'', '"', '|', '[', ']', '{', '}', ';', '!');
@@ -4697,13 +4837,13 @@ function sanitize_cdef($cdef) {
 }
 
 /**
- * validates that a user-supplied filename resolves to a path within a given
- * base directory to guard against directory traversal and injection
+ * Validates that a user-supplied filename resolves to a path within a given base directory to
+ * guard against directory traversal and injection. Used as part of Cacti's lib functionality.
  *
- * @param string $filename The user-supplied filename
- * @param string $base_dir The base directory the file must reside in
+ * @param string $filename The user-supplied filename.
+ * @param string $base_dir The base directory the file must reside in.
  *
- * @return mixed The validated real path, or false if invalid
+ * @return mixed The validated real path, or false if invalid.
  */
 function validate_path_within($filename, $base_dir) {
 	$filename = basename($filename);
@@ -4722,13 +4862,13 @@ function validate_path_within($filename, $base_dir) {
 }
 
 /**
- * Validate that a relative path resolves within a base directory.
- * Allows subdirectory paths but rejects '..' traversal components.
+ * Validate that a relative path resolves within a base directory. Allows subdirectory paths but
+ * rejects '..' traversal components. Used as part of Cacti's lib functionality.
  *
- * @param string $path     The user-supplied relative path
- * @param string $base_dir The base directory the path must stay within
+ * @param string $path The user-supplied relative path.
+ * @param string $base_dir The base directory the path must stay within.
  *
- * @return mixed The validated real path, or false if invalid
+ * @return mixed The validated real path, or false if invalid.
  */
 function validate_relative_path_within($path, $base_dir) {
 	if (!is_string($path) || $path === '' || strpos($path, "\0") !== false) {
@@ -4787,9 +4927,12 @@ function validate_relative_path_within($path, $base_dir) {
 }
 
 /**
- * @param string $items   An array of serialized items from a post
+ * Verifies all selected items are numeric to guard against injection. Used as part of Cacti's lib
+ * functionality.
  *
- * @return array          The sanitized selected items array
+ * @param string $items An array of serialized items from a post.
+ *
+ * @return array The sanitized selected items array.
  */
 function sanitize_unserialize_selected_items($items) {
 	if ($items != '') {
@@ -4820,6 +4963,13 @@ function sanitize_unserialize_selected_items($items) {
 	return $items;
 }
 
+/**
+ * Handles the cacti escapeshellcmd. Used as part of Cacti's lib functionality.
+ *
+ * @param string $string The string.
+ *
+ * @return string The resulting string.
+ */
 function cacti_escapeshellcmd($string) {
 	global $config;
 
@@ -4841,12 +4991,12 @@ function cacti_escapeshellcmd($string) {
 }
 
 /**
- * mimics escapeshellarg, even for windows
+ * Mimics escapeshellarg, even for windows. Used as part of Cacti's lib functionality.
  *
- * @param $string 	- the string to be escaped
- * @param $quote 	- true: do NOT remove quotes from result; false: do remove quotes
+ * @param string $string The string to be escaped.
+ * @param bool $quote True: do NOT remove quotes from result; false: do remove quotes.
  *
- * @return			- the escaped [quoted|unquoted] string
+ * @return string The escaped [quoted|unquoted] string.
  */
 function cacti_escapeshellarg($string, $quote = true) {
 	global $config;
@@ -4894,17 +5044,17 @@ function cacti_escapeshellarg($string, $quote = true) {
 }
 
 /**
- * cacti_escapeshellarg_cmd - escape an argument that will reach cmd.exe on Windows.
+ * Escape an argument that will reach cmd.exe on Windows. On Windows, exec()/shell_exec()/popen()
+ * route through cmd.exe, which ignores the \" escape and toggles quote-state on every ", so
+ * cacti_escapeshellarg() alone cannot stop the command operators & | ^ < > ( ). Device- and
+ * request-supplied values that reach a Windows shell (SNMP fields, hostnames, data-input values)
+ * never legitimately contain these, so strip them before quoting. On Unix this is exactly
+ * cacti_escapeshellarg(). GHSA-rjvj-r52f-8v5q. Used as part of Cacti's lib functionality.
  *
- * On Windows, exec()/shell_exec()/popen() route through cmd.exe, which ignores
- * the \" escape and toggles quote-state on every ", so cacti_escapeshellarg()
- * alone cannot stop the command operators & | ^ < > ( ). Device- and
- * request-supplied values that reach a Windows shell (SNMP fields, hostnames,
- * data-input values) never legitimately contain these, so strip them before
- * quoting. On Unix this is exactly cacti_escapeshellarg(). GHSA-rjvj-r52f-8v5q.
+ * @param string $string The value to place in a Windows command line.
+ * @param bool $quote Whether to wrap the result in quotes.
+ * @param bool $strip_env The strip ENV.
  *
- * @param  string $string The value to place in a Windows command line.
- * @param  bool   $quote  Whether to wrap the result in quotes.
  * @return string The escaped value.
  */
 function cacti_escapeshellarg_cmd($string, $quote = true, $strip_env = false) {
@@ -4925,11 +5075,11 @@ function cacti_escapeshellarg_cmd($string, $quote = true, $strip_env = false) {
 }
 
 /**
- * set a page refresh in Cacti through a callback
+ * Set a page refresh in Cacti through a callback. Used as part of Cacti's lib functionality.
  *
- * @param $refresh - an array containing the page, seconds, and logout
+ * @param array $refresh An array containing the page, seconds, and logout.
  *
- * @return         - nill
+ * @return void Nill.
  */
 function set_page_refresh($refresh) {
 	if (isset($refresh['seconds'])) {
@@ -4953,6 +5103,11 @@ function set_page_refresh($refresh) {
 	}
 }
 
+/**
+ * Handles the bottom footer. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function bottom_footer() {
 	global $config, $no_session_write;
 
@@ -4980,6 +5135,11 @@ function bottom_footer() {
 	db_close();
 }
 
+/**
+ * Handles the top header. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function top_header() {
 	global $config;
 
@@ -4988,6 +5148,11 @@ function top_header() {
 	}
 }
 
+/**
+ * Handles the top graph header. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function top_graph_header() {
 	global $config;
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
@@ -4995,6 +5160,11 @@ function top_graph_header() {
 	}
 }
 
+/**
+ * Handles the general header. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function general_header() {
 	global $config;
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
@@ -5002,6 +5172,13 @@ function general_header() {
 	}
 }
 
+/**
+ * Handles the appendheadersuppression. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $url The URL.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function appendHeaderSuppression($url) {
 	if (strpos($url, 'header=false') === false) {
 		return $url . (strpos($url, '?') ? '&':'?') . 'header=false';
@@ -5010,6 +5187,14 @@ function appendHeaderSuppression($url) {
 	return $url;
 }
 
+/**
+ * Handles the admin email. Used as part of Cacti's lib functionality.
+ *
+ * @param string $subject The subject.
+ * @param string $message The message.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function admin_email($subject, $message) {
 	if (read_config_option('admin_user') > 0) {
 		if (read_config_option('notify_admin') == 'on') {
@@ -5050,6 +5235,19 @@ function admin_email($subject, $message) {
 	}
 }
 
+/**
+ * Handles the send mail. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $to The to.
+ * @param mixed $from The from.
+ * @param string $subject The subject.
+ * @param string $body The body.
+ * @param mixed $attachments The attachments.
+ * @param mixed $headers The headers.
+ * @param bool $html The HTML.
+ *
+ * @return string The resulting string.
+ */
 function send_mail($to, $from, $subject, $body, $attachments = '', $headers = '', $html = false) {
 	if (!is_array($from)) {
 		$name = '';
@@ -5091,71 +5289,42 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 }
 
 /**
- * mailer - function to send mails to users
+ * Function to send mails to users. Used as part of Cacti's lib functionality.
  *
- * @param $from        - single contact (see below)
- * @param $to          - single or multiple contacts (see below)
- * @param $cc          - none, single or multiple contacts (see below)
- * @param $bcc         - none, single or multiple contacts (see below)
- * @param $replyto     - none, single or multiple contacts (see below)
- *                       note that this value is used when hitting reply (overriding the default of using from)
- * @param $subject     - the email subject
- * @param $body        - the email body, in HTML format.  If content_text is not set, the function will attempt to extract
- *                       from the HTML format.
- * @param $body_text   - the email body in TEXT format.  If set, it will override the stripping tags method
- * @param $attachments - the emails attachments as an array
- * @param $headers     - an array of name value pairs representing custom headers.
- * @param $html        - if set to true, html is the default, otherwise text format will be used
+ * @param array|string $from Single contact (see below).
+ * @param array|string $to Single or multiple contacts (see below).
+ * @param null|array|string $cc None, single or multiple contacts (see below).
+ * @param null|array|string $bcc None, single or multiple contacts (see below).
+ * @param null|array|string $replyto None, single or multiple contacts (see below) note that this
+ *   value is used when hitting reply (overriding the default of using from).
+ * @param null|string $subject The email subject.
+ * @param null|string $body The email body, in HTML format. If content_text is not set, the
+ *   function will attempt to extract from the HTML format.
+ * @param null|string $body_text The email body in TEXT format. If set, it will override the
+ *   stripping tags method.
+ * @param null|array|string $attachments The emails attachments as an array.
+ * @param null|array $headers An array of name value pairs representing custom headers.
+ * @param boolean $html If set to true, html is the default, otherwise text format will be used
+ *   For contact parameters, they can accept arrays containing zero or more values in the forms of:
+ *   1. A comma delimited string: 'email@email.com,email2@email.com,email3@email.com' Emails can
+ *   also be as follows: "Your Name" <myemail@mydomain.com>, ... 2. An array of Emails and Names:
+ *   array( 'email1@email.com' => 'My email', 'email2@email.com' => 'Your email', 'email3@email.com'
+ *   => 'Whose email' ); 3. An array of arrays with keys of 'email' and 'name': array( array(
+ *   'email' => 'email1@email.com', 'name' => 'My email' ), array( 'email' => 'email2@email.com',
+ *   'name' => 'Your email' ), array( 'email' => 'email3@email.com', 'name' => 'Whose email' ) );
+ *   The $from field will only use the first contact specified. If no contact is provided for
+ *   $replyto then $from is used for that too. If $from is empty, it will default to cacti@<server>
+ *   or if no server name can be found, it will use cacti@cacti.net. The $attachments parameter may
+ *   either be a single string, or a list of attachments either as strings or an array. The array
+ *   can have the following keys: filename : name of the file to attach (display name for graphs)
+ *   display : displayed name of the attachment mime_type : MIME type to be set against the
+ *   attachment. If blank or missing mailer will attempt to auto detect attachment : String
+ *   containing attachment for image-based attachments (<GRAPH> or <GRAPH:#> activates graph mode
+ *   and requires $body parameter is HTML containing one of those values) inline : Whether to attach
+ *   'inline' (default for graph mode) or as 'attachment' (default for all others) encoding :
+ *   Encoding type, normally base64.
  *
- * For contact parameters, they can accept arrays containing zero or more values in the forms of:
- *
- *     1. A comma delimited string:
- *
- *        'email@email.com,email2@email.com,email3@email.com'
- *
- *        Emails can also be as follows: "Your Name" <myemail@mydomain.com>, ...
- *
- *     2. An array of Emails and Names:
- *
- *     array(
- *       'email1@email.com' => 'My email',
- *       'email2@email.com' => 'Your email',
- *       'email3@email.com' => 'Whose email'
- *     );
- *
- *     3. An array of arrays with keys of 'email' and 'name':
- *
- *     array(
- *       array(
- *         'email' => 'email1@email.com',
- *         'name'  => 'My email'
- *       ),
- *       array(
- *         'email' => 'email2@email.com',
- *         'name'  => 'Your email'
- *       ),
- *       array(
- *         'email' => 'email3@email.com',
- *         'name'  => 'Whose email'
- *       )
- *     );
- *
- * The $from field will only use the first contact specified.
- *
- * If no contact is provided for $replyto then $from is used for that too.
- * If $from is empty, it will default to cacti@<server> or if no server name can
- * be found, it will use cacti@cacti.net.
- *
- * The $attachments parameter may either be a single string, or a list of attachments
- * either as strings or an array.  The array can have the following keys:
- *
- * filename    : name of the file to attach (display name for graphs)
- * display     : displayed name of the attachment
- * mime_type   : MIME type to be set against the attachment.  If blank or missing mailer will attempt to auto detect
- * attachment  : String containing attachment for image-based attachments (<GRAPH> or <GRAPH:#> activates graph mode
- *               and requires $body parameter is HTML containing one of those values)
- * inline      : Whether to attach 'inline' (default for graph mode) or as 'attachment' (default for all others)
- * encoding    : Encoding type, normally base64
+ * @return string String.
  */
 function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '', $attachments = '', $headers = '', $html = true) {
 	global $config, $cacti_locale, $mail_methods;
@@ -5490,6 +5659,14 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	return $error;
 }
 
+/**
+ * Handles the record mailer error. Used as part of Cacti's lib functionality.
+ *
+ * @param string $retError The reterror.
+ * @param string $mailError The mailerror.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function record_mailer_error($retError, $mailError) {
 	$errorInfo = empty($retError) ? $mailError : $retError;
 	cacti_log('ERROR: ' . $errorInfo, false, 'CMDPHP MAILER');
@@ -5497,6 +5674,15 @@ function record_mailer_error($retError, $mailError) {
 	return $errorInfo;
 }
 
+/**
+ * Handles the add email details. Used as part of Cacti's lib functionality.
+ *
+ * @param array $emails The emails.
+ * @param & $result The result.
+ * @param callable $addFunc The addfunc.
+ *
+ * @return string The resulting string.
+ */
 function add_email_details($emails, &$result, callable $addFunc) {
 	$arrText = array();
 
@@ -5522,6 +5708,15 @@ function add_email_details($emails, &$result, callable $addFunc) {
 	return $text;
 }
 
+/**
+ * Parses the email details. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $emails The emails.
+ * @param int $max_records The max records.
+ * @param array $details The details.
+ *
+ * @return array An array of results.
+ */
 function parse_email_details($emails, $max_records = 0, $details = array()) {
 	if (!is_array($emails)) {
 		$emails = array($emails);
@@ -5577,6 +5772,13 @@ function parse_email_details($emails, $max_records = 0, $details = array()) {
 	return $results;
 }
 
+/**
+ * Handles the split emaildetail. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $email The email.
+ *
+ * @return array An array of results.
+ */
 function split_emaildetail($email) {
 	$rname = '';
 	$rmail = '';
@@ -5632,6 +5834,13 @@ function split_emaildetail($email) {
 	return array('name' => $rname, 'email' => mb_strtolower($rmail));
 }
 
+/**
+ * Creates the emailtext. Used as part of Cacti's lib functionality.
+ *
+ * @param array $e The e.
+ *
+ * @return string The resulting string.
+ */
 function create_emailtext($e) {
 	if (empty($e['email'])) {
 		$text = '';
@@ -5646,6 +5855,18 @@ function create_emailtext($e) {
 	return $text;
 }
 
+/**
+ * Handles the ping mail server. Used as part of Cacti's lib functionality.
+ *
+ * @param string $host The host.
+ * @param int $port The port.
+ * @param string $user The user.
+ * @param string $password The password.
+ * @param int $timeout The timeout.
+ * @param string $secure The secure.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure = 'none') {
 	global $config;
 
@@ -5697,6 +5918,11 @@ function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure
 	return $results;
 }
 
+/**
+ * Handles the email test. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function email_test() {
 	global $config;
 
@@ -5784,8 +6010,14 @@ function email_test() {
 }
 
 /**
- * gethostbyaddr_wtimeout - This function provides a good method of performing
- * a rapid lookup of a DNS entry for a host so long as you don't have to look far.
+ * This function provides a good method of performing a rapid lookup of a DNS entry for a host so
+ * long as you don't have to look far. Used as part of Cacti's lib functionality.
+ *
+ * @param string $ip The IP Address.
+ * @param string $dns The DNS Server to use.
+ * @param int $timeout The timeout in milliseconds.
+ *
+ * @return string String.
  */
 function get_dns_from_ip ($ip, $dns, $timeout = 1000) {
 	/* random transaction number (for routers etc to get the reply back) */
@@ -5889,6 +6121,11 @@ function get_dns_from_ip ($ip, $dns, $timeout = 1000) {
 	return strtoupper($ip);
 }
 
+/**
+ * Handles the poller maintenance. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function poller_maintenance () {
 	global $config;
 
@@ -5904,6 +6141,11 @@ function poller_maintenance () {
 	exec_background($command_string, $extra_args);
 }
 
+/**
+ * Handles the clog admin. Used as part of Cacti's lib functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function clog_admin() {
 	if (!isset($_SESSION['sess_clog_level'])) {
 		clog_authorized();
@@ -5916,6 +6158,11 @@ function clog_admin() {
 	}
 }
 
+/**
+ * Handles the clog authorized. Used as part of Cacti's lib functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function clog_authorized() {
 	if (!isset($_SESSION['sess_clog_level'])) {
 		if (isset($_SESSION['sess_user_id'])) {
@@ -5942,6 +6189,17 @@ function clog_authorized() {
 	}
 }
 
+/**
+ * Handles the cacti debug backtrace. Used as part of Cacti's lib functionality.
+ *
+ * @param string $entry The entry.
+ * @param bool $html The HTML.
+ * @param bool $record The record.
+ * @param int $limit The limit.
+ * @param int $skip The skip.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limit = 0, $skip = 0) {
 	global $config;
 
@@ -5996,17 +6254,17 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limi
 }
 
 /**
- * calculate_percentiles - Given and array of numbers, calculate the Nth percentile,
- * optionally, return an array of numbers containing elements required for
- * a whisker chart.
+ * Given and array of numbers, calculate the Nth percentile, optionally, return an array of
+ * numbers containing elements required for a whisker chart. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $data       - an array of data
- * @param $percentile - the Nth percentile to calculate.  By default 95th.
- * @param $whisker    - if whisker is true, an array of values will be returned
- *                      including 25th, median, 75th, and 90th percentiles.
+ * @param array $data An array of data.
+ * @param mixed $percentile The Nth percentile to calculate. By default 95th.
+ * @param bool $whisker If whisker is true, an array of values will be returned including 25th,
+ *   median, 75th, and 90th percentiles.
  *
- * @return - either the Nth percentile, the elements for a whisker chart,
- *            or false if there is insufficient data to determine.
+ * @return mixed Either the Nth percentile, the elements for a whisker chart, or false if there is
+ *   insufficient data to determine.
  */
 function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 	if ($percentile > 0 && $percentile < 1) {
@@ -6063,6 +6321,13 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 	return $results;
 }
 
+/**
+ * Retrieves the timeinstate. Used as part of Cacti's lib functionality.
+ *
+ * @param array $host The host.
+ *
+ * @return string The resulting string.
+ */
 function get_timeinstate($host) {
 	$interval = read_config_option('poller_interval');
 	if ($host['availability_method'] == 0) {
@@ -6088,10 +6353,28 @@ function get_timeinstate($host) {
 	return ($time > 0) ? get_daysfromtime($time) : __('N/A');
 }
 
+/**
+ * Retrieves the uptime. Used as part of Cacti's lib functionality.
+ *
+ * @param array $host The host.
+ *
+ * @return string The resulting string.
+ */
 function get_uptime($host) {
 	return ($host['snmp_sysUpTimeInstance'] > 0) ? get_daysfromtime(intval($host['snmp_sysUpTimeInstance']/100)) : __('N/A');
 }
 
+/**
+ * Retrieves the daysfromtime. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $time The time.
+ * @param bool $secs The secs.
+ * @param string $pad The pad.
+ * @param int $format The format.
+ * @param bool $all The all.
+ *
+ * @return string The resulting string.
+ */
 function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT_SHORT, $all = false) {
 	global $days_from_time_settings;
 
@@ -6131,6 +6414,15 @@ function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT
 	return trim($result,$text['suffix']);
 }
 
+/**
+ * Handles the padleft. Used as part of Cacti's lib functionality.
+ *
+ * @param string $pad The pad.
+ * @param string $value The value.
+ * @param int $min The min.
+ *
+ * @return string The resulting string.
+ */
 function padleft($pad = '', $value = '', $min = 2) {
 	$result = "$value";
 	if (strlen($result) < $min && $pad != '') {
@@ -6143,6 +6435,14 @@ function padleft($pad = '', $value = '', $min = 2) {
 	return $result;
 }
 
+/**
+ * Retrieves the classic tabimage. Used as part of Cacti's lib functionality.
+ *
+ * @param string $text The text.
+ * @param bool $down The down.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function get_classic_tabimage($text, $down = false) {
 	global $config, $dejavu_paths;
 
@@ -6289,6 +6589,11 @@ function get_classic_tabimage($text, $down = false) {
 	}
 }
 
+/**
+ * Handles the cacti OID numeric format. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function cacti_oid_numeric_format() {
 	if (function_exists('snmp_set_oid_output_format')) {
 		snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
@@ -6297,6 +6602,13 @@ function cacti_oid_numeric_format() {
 	}
 }
 
+/**
+ * Handles the ignoreerrorhandler. Used as part of Cacti's lib functionality.
+ *
+ * @param string $message The message.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function IgnoreErrorHandler($message) {
 	global $snmp_error;
 
@@ -6337,6 +6649,17 @@ function IgnoreErrorHandler($message) {
 	return false;
 }
 
+/**
+ * Handles the cactierrorhandler. Used as part of Cacti's lib functionality.
+ *
+ * @param int $level The level.
+ * @param string $message The message.
+ * @param string $file The file.
+ * @param int $line The line.
+ * @param array $context The context.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 	global $phperrors;
 
@@ -6404,6 +6727,11 @@ function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 	return false;
 }
 
+/**
+ * Handles the cactishutdownhandler. Used as part of Cacti's lib functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function CactiShutdownHandler() {
 	global $phperrors;
 	$error = error_get_last();
@@ -6449,12 +6777,11 @@ function CactiShutdownHandler() {
 }
 
 /**
- * enable_device_debug - Enables device debug for a device
- * if it is disabled.
+ * Enables device debug for a device if it is disabled. Used as part of Cacti's lib functionality.
  *
- * @param $host_id - the device id to search for
+ * @param int $host_id The device id to search for.
  *
- * @return - void
+ * @return bool True on success, false otherwise.
  */
 function enable_device_debug($host_id) {
 	$device_debug = read_config_option('selective_device_debug', true);
@@ -6469,12 +6796,11 @@ function enable_device_debug($host_id) {
 }
 
 /**
- * disable_device_debug - Disables device debug for a device
- * if it is enabled.
+ * Disables device debug for a device if it is enabled. Used as part of Cacti's lib functionality.
  *
- * @param $host_id - the device id to search for
+ * @param int $host_id The device id to search for.
  *
- * @return - void
+ * @return bool True on success, false otherwise.
  */
 function disable_device_debug($host_id) {
 	$device_debug = read_config_option('selective_device_debug', true);
@@ -6491,12 +6817,11 @@ function disable_device_debug($host_id) {
 }
 
 /**
- * is_device_debug_enabled - Determines if device debug is enabled
- * for a device.
+ * Determines if device debug is enabled for a device. Used as part of Cacti's lib functionality.
  *
- * @param $host_id - the device id to search for
+ * @param int $host_id The device id to search for.
  *
- * @return - boolean true or false
+ * @return bool True or false.
  */
 function is_device_debug_enabled($host_id) {
 	$device_debug = read_config_option('selective_device_debug', true);
@@ -6511,12 +6836,15 @@ function is_device_debug_enabled($host_id) {
 }
 
 /**
- * call_remote_data_collector - Call the remote data collector with the correct URI
+ * Call the remote data collector with the correct URI. Used as part of Cacti's lib functionality.
  *
- * @param - string - The hostname
- * @param string - The URL to query
+ * @param int $poller_id - string - The hostname.
+ * @param string $url String - The URL to query.
+ * @param string $logtype The log type for logging messages (default: 'WEBUI').
  *
- * @return - The results in raw form
+ * @return mixed The results in raw form.
+ *
+ * @throws Throwable If an error occurs during the Remote Agent request.
  */
 function call_remote_data_collector($poller_id, $url, $logtype = 'WEBUI') {
 	$hostname = db_fetch_cell_prepared('SELECT hostname
@@ -6551,10 +6879,10 @@ function call_remote_data_collector($poller_id, $url, $logtype = 'WEBUI') {
 }
 
 /**
- * get_url_type - Determines if remote communications are over
- * http or https for remote services.
+ * Determines if remote communications are over http or https for remote services. Used as part of
+ * Cacti's lib functionality.
  *
- * @return - http or https
+ * @return string Http or https.
  */
 function get_url_type() {
 	if (read_config_option('force_https') == 'on') {
@@ -6565,14 +6893,13 @@ function get_url_type() {
 }
 
 /**
- * get_default_contextoption - Sets default context options for self-signed SSL
- * related protocols if necessary. Allows plugins to add additional header information
- * to fulfill system setup related requirements like the usage of Web Single Login
- * cookies for example.
+ * Sets default context options for self-signed SSL related protocols if necessary. Allows plugins
+ * to add additional header information to fulfill system setup related requirements like the
+ * usage of Web Single Login cookies for example. Used as part of Cacti's lib functionality.
  *
- * @param  (int|bool) A numeric timeout value, or null if not set
+ * @param int|bool $timeout A numeric timeout value, or null if not set.
  *
- * @return (array)    An array to a context
+ * @return array An array to a context.
  */
 function get_default_contextoption($timeout = false) {
 	$fgc_contextoption = array();
@@ -6616,10 +6943,12 @@ function get_default_contextoption($timeout = false) {
 }
 
 /**
- * repair_system_data_input_methods - This utility will repair
- * system data input methods when they are detected on the system
+ * This utility will repair system data input methods when they are detected on the system. Used
+ * as part of Cacti's lib functionality.
  *
- * @return - null
+ * @param string $step The step.
+ *
+ * @return void Null.
  */
 function repair_system_data_input_methods($step = 'import') {
 	$system_hashes = array(
@@ -6816,6 +7145,14 @@ if (isset($config['cacti_server_os']) && $config['cacti_server_os'] == 'win32' &
 		define('SIGINT', 2);
 	}
 
+	/**
+	 * Handles the posix kill. Used as part of Cacti's lib functionality.
+	 *
+	 * @param int $pid The PID.
+	 * @param int $signal The signal.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	function posix_kill($pid, $signal = SIGTERM) {
 		$wmi   = new COM('winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2');
 		$procs = $wmi->ExecQuery("SELECT ProcessId FROM Win32_Process WHERE ProcessId='" . $pid . "'");
@@ -6841,6 +7178,13 @@ if (isset($config['cacti_server_os']) && $config['cacti_server_os'] == 'win32' &
 	}
 }
 
+/**
+ * Determines whether ipaddress. Used as part of Cacti's lib functionality.
+ *
+ * @param string $ip_address The IP address.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function is_ipaddress($ip_address = '') {
 	/* Strip IPv6 Scope ID (Zone Index) for validation, as
 	   filter_var rejects valid link-local addresses like fe80::1%eth0 */
@@ -6865,9 +7209,10 @@ function is_ipaddress($ip_address = '') {
 }
 
 /**
- * date_time_format		create a format string for date/time
+ * Date_time_format create a format string for date/time. Used as part of Cacti's lib
+ * functionality.
  *
- * @return string returns	date time format
+ * @return string Returns date time format.
  */
 function date_time_format() {
 	$datechar = array(
@@ -6905,7 +7250,12 @@ function date_time_format() {
 }
 
 /**
- * get_cacti_version    Generic function to get the cacti version
+ * Get_cacti_version Generic function to get the cacti version. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @return string The string version.
+ *
+ * @deprecated 1.3
  */
 function get_cacti_version() {
 	static $version = '';
@@ -6918,7 +7268,12 @@ function get_cacti_version() {
 }
 
 /**
- * get_cacti_version_text    Return the cacti version text including beta moniker
+ * Get_cacti_version_text Return the cacti version text including beta moniker. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param bool $include_version The include version.
+ *
+ * @return string The string version.
  */
 function get_cacti_version_text($include_version = true) {
 	if ($include_version) {
@@ -6929,7 +7284,9 @@ function get_cacti_version_text($include_version = true) {
 }
 
 /**
- * get_cacti_cli_version() {
+ * Get_cacti_cli_version() {. Used as part of Cacti's lib functionality.
+ *
+ * @return string The resulting string.
  */
 function get_cacti_cli_version() {
 	$dbversion = get_cacti_version();
@@ -6938,7 +7295,13 @@ function get_cacti_cli_version() {
 }
 
 /**
- * cacti_version_compare - Compare Cacti version numbers
+ * Compare Cacti version numbers. Used as part of Cacti's lib functionality.
+ *
+ * @param string $version1 The version1.
+ * @param string $version2 The version2.
+ * @param string $operator The operator.
+ *
+ * @return bool The result of the comparison.
  */
 function cacti_version_compare($version1, $version2, $operator = '>') {
 	if ($version1 == 'new_install') {
@@ -6982,7 +7345,15 @@ function cacti_version_compare($version1, $version2, $operator = '>') {
 }
 
 /**
- * version_to_decimal - convert version string to decimal
+ * Convert version string to decimal. Used as part of Cacti's lib functionality.
+ *
+ * @param string $version Version to convert.
+ * @param int $length Length of output.
+ *
+ * @return int|string Int|string.
+ *
+ * @deprecated 1.3.0 Use version_to_bits instead
+ * @phpstan-return ($hex is true ? string : int)
  */
 function version_to_decimal($version, $length = 1) {
 	$newver = '';
@@ -7019,14 +7390,25 @@ function version_to_decimal($version, $length = 1) {
 }
 
 /**
- * cacti_gethostinfo - obtains the dns information for a host
+ * Obtains the dns information for a host. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hostname The hostname.
+ * @param mixed $type The type.
+ *
+ * @return mixed Mixed.
  */
 function cacti_gethostinfo($hostname, $type = DNS_ALL) {
 	return dns_get_record($hostname, $type);
 }
 
 /**
- * cacti_gethostbyname - a ip/ipv6 replacement for php's gethostbyname function
+ * A ip/ipv6 replacement for php's gethostbyname function. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param string $hostname The hostname.
+ * @param mixed $type The type.
+ *
+ * @return string The hostname.
  */
 function cacti_gethostbyname($hostname, $type = '') {
 	if ($type == '') {
@@ -7058,6 +7440,13 @@ function cacti_gethostbyname($hostname, $type = '') {
 	return $hostname;
 }
 
+/**
+ * Retrieves the nonsystem data input. Used as part of Cacti's lib functionality.
+ *
+ * @param int $data_input_id The data input ID.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function get_nonsystem_data_input($data_input_id) {
 	global $hash_system_data_inputs;
 
@@ -7069,6 +7458,13 @@ function get_nonsystem_data_input($data_input_id) {
 	return $diid;
 }
 
+/**
+ * Retrieves the rrdtool version. Used as part of Cacti's lib functionality.
+ *
+ * @param bool $force The force.
+ *
+ * @return string The resulting string.
+ */
 function get_rrdtool_version($force = false) {
 	static $version = '';
 
@@ -7079,6 +7475,11 @@ function get_rrdtool_version($force = false) {
 	return $version;
 }
 
+/**
+ * Retrieves the installed rrdtool version. Used as part of Cacti's lib functionality.
+ *
+ * @return string|false The resulting string.
+ */
 function get_installed_rrdtool_version() {
 	global $config, $rrdtool_versions;
 	static $version = '';
@@ -7103,6 +7504,13 @@ function get_installed_rrdtool_version() {
 	return $version;
 }
 
+/**
+ * Retrieves the MD5 hash. Used as part of Cacti's lib functionality.
+ *
+ * @param string $path The path.
+ *
+ * @return string The resulting string.
+ */
 function get_md5_hash($path) {
 	$md5 = 0;
 
@@ -7124,6 +7532,13 @@ function get_md5_hash($path) {
 	return $md5;
 }
 
+/**
+ * Retrieves the include relpath. Used as part of Cacti's lib functionality.
+ *
+ * @param string $path The path.
+ *
+ * @return string The resulting string.
+ */
 function get_include_relpath($path) {
 	global $config;
 	$basePath = rtrim($config['base_path'],'/') . '/';
@@ -7144,6 +7559,15 @@ function get_include_relpath($path) {
 	return $npath;
 }
 
+/**
+ * Formatted output of javascript include with MD5 hash for uniqueness. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param string $path Path to include.
+ * @param boolean $async Load asynchronously.
+ *
+ * @return string String.
+ */
 function get_md5_include_js($path, $async = false) {
 	global $config;
 
@@ -7159,6 +7583,14 @@ function get_md5_include_js($path, $async = false) {
 	}
 }
 
+/**
+ * Formatted output of stylesheet include with MD5 hash for uniqueness. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param string $path Path to include.
+ *
+ * @return string String.
+ */
 function get_md5_include_css($path) {
 	global $config;
 
@@ -7170,6 +7602,13 @@ function get_md5_include_css($path) {
 	return '<link href=\''. $config['url_path'] . $relpath . '?' . get_md5_hash($relpath) . '\' type=\'text/css\' rel=\'stylesheet\'>' . PHP_EOL;
 }
 
+/**
+ * Determines whether resource writable. Used as part of Cacti's lib functionality.
+ *
+ * @param string $path The path.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function is_resource_writable($path) {
 	if (empty($path)) {
 		return false;
@@ -7199,6 +7638,17 @@ function is_resource_writable($path) {
 	return false;
 }
 
+/**
+ * Recursively change ownership of files/directories. It should be noted that this function exits
+ * on the first failure that it finds and returns false. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param string $path Path to be updated.
+ * @param string|integer $uid String or integer of user to set.
+ * @param string|integer $gid String or integer of group to set.
+ *
+ * @return bool Bool.
+ */
 function recursive_chown($path, $uid, $gid) {
     $d = opendir($path);
 
@@ -7224,6 +7674,15 @@ function recursive_chown($path, $uid, $gid) {
 	return true;
 }
 
+/**
+ * Verifies that a theme exists. If the theme does exist return its name, otherwise returns the
+ * default theme. Used as part of Cacti's lib functionality.
+ *
+ * @param string|null $theme The theme.
+ * @param string $defaultTheme The defaulttheme.
+ *
+ * @return string String.
+ */
 function get_validated_theme($theme, $defaultTheme) {
 	global $config;
 	if (isset($theme) && strlen($theme)) {
@@ -7236,6 +7695,16 @@ function get_validated_theme($theme, $defaultTheme) {
 	return $defaultTheme;
 }
 
+/**
+ * ****************** THIS FUNCTION DOESN'T APPEAR TO BE USED ANYWHERE *********************
+ * Verifies that a language exists. If the language does exist, returns its name, otherwise
+ * returns the default language.
+ *
+ * @param string $language The language.
+ * @param string $defaultLanguage The defaultlanguage.
+ *
+ * @return string String.
+ */
 function get_validated_language($language, $defaultLanguage) {
 	if (isset($language) && strlen($language)) {
 		return $language;
@@ -7244,6 +7713,12 @@ function get_validated_language($language, $defaultLanguage) {
 	return $defaultLanguage;
 }
 
+/**
+ * Attempts to return the currently running user via a number of methods. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @return string String.
+ */
 function get_running_user() {
 	global $config;
 
@@ -7330,6 +7805,11 @@ function get_running_user() {
 	return (empty($tmp_user) ? 'apache' : $tmp_user);
 }
 
+/**
+ * Returns a string for debugging purposes. Used as part of Cacti's lib functionality.
+ *
+ * @return string String.
+ */
 function get_debug_prefix() {
 	$dateTime = new DateTime('NOW');
 	$dateTime = $dateTime->format('Y-m-d H:i:s.u');
@@ -7337,6 +7817,13 @@ function get_debug_prefix() {
 	return sprintf('<[ %s | %7d ]> -- ', $dateTime, getmypid());
 }
 
+/**
+ * Gets the current client addr This function relies on an administrator to set the appropriate
+ * proxy headers that are allowed in the `config.php` include. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @return string|false String|false.
+ */
 function get_client_addr() {
 	global $config, $allowed_proxy_headers;
 
@@ -7378,8 +7865,10 @@ function get_client_addr() {
 }
 
 /**
- * get_cacti_base_tables - Extracts all the base Cacti tables from the
- * cacti.sql file in the base Cacti directory.
+ * Extracts all the base Cacti tables from the cacti.sql file in the base Cacti directory. Used as
+ * part of Cacti's lib functionality.
+ *
+ * @return array An array of results.
  */
 function get_cacti_base_tables() {
 	global $config;
@@ -7404,6 +7893,13 @@ function get_cacti_base_tables() {
 	return $base_tables;
 }
 
+/**
+ * Handles the cacti pton. Used as part of Cacti's lib functionality.
+ *
+ * @param string $ipaddr The ipaddr.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function cacti_pton($ipaddr) {
 	// Strip out the netmask, if there is one.
 	$subnet_pos = strpos($ipaddr, '/');
@@ -7457,6 +7953,13 @@ function cacti_pton($ipaddr) {
 	return $result;
 }
 
+/**
+ * Handles the cacti ntop. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $addr The addr.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function cacti_ntop($addr) {
 	if (empty($addr)) {
 		return false;
@@ -7471,6 +7974,14 @@ function cacti_ntop($addr) {
 	return @inet_ntop($addr);
 }
 
+/**
+ * Handles the cacti ntoc. Used as part of Cacti's lib functionality.
+ *
+ * @param string $subnet The subnet.
+ * @param bool $ipv6 The ipv6.
+ *
+ * @return int The resulting integer value.
+ */
 function cacti_ntoc($subnet, $ipv6 = false) {
 	$result = false;
 	$count = 0;
@@ -7485,6 +7996,14 @@ function cacti_ntoc($subnet, $ipv6 = false) {
 	return $count;
 }
 
+/**
+ * Handles the cacti ptoa. Used as part of Cacti's lib functionality.
+ *
+ * @param string $title The title.
+ * @param string $addr The addr.
+ *
+ * @return void No value is returned.
+ */
 function cacti_ptoa($title, $addr) {
 	// Let's display it as hexadecimal format
 	foreach(str_split($addr) as $char) {
@@ -7493,11 +8012,12 @@ function cacti_ptoa($title, $addr) {
 }
 
 /**
- * cacti_csv_safe - sanitzes a string for inclusion in a CSV file to prevent formula injection
+ * Sanitzes a string for inclusion in a CSV file to prevent formula injection. Used as part of
+ * Cacti's lib functionality.
  *
- * @param $value - (string) The string to be sanitized
+ * @param mixed $value (string) The string to be sanitized.
  *
- * @returns - (string) The sanitized string
+ * @return string (string) The sanitized string.
  */
 function cacti_csv_safe($value) {
 	if (!is_string($value) && !is_numeric($value)) {
@@ -7522,37 +8042,25 @@ function cacti_csv_safe($value) {
 }
 
 /**
- * cacti_input_string_is_safe - guard against shell metacharacters smuggled
- *   into a data_input.input_string template. The placeholder syntax is
- *   <field_name>, never <;rm -rf /;>, so any character outside a placeholder
- *   that could be interpreted by a shell is taken as a command-injection
- *   attempt. The same regex gates both the GUI save path (data_input.php)
- *   and XML/package import (lib/import.php) so the two cannot drift.
+ * Guard against shell metacharacters smuggled into a data_input.input_string template. The
+ * placeholder syntax is <field_name>, never <;rm -rf /;>, so any character outside a placeholder
+ * that could be interpreted by a shell is taken as a command-injection attempt. The same regex
+ * gates both the GUI save path (data_input.php) and XML/package import (lib/import.php) so the
+ * two cannot drift. However, for backward compatibility, we check the setting of allow unsafe
+ * metacharacters for administrators that may have historically used simple commands for data
+ * input methods including things like ps -ef | grep string | wc -l which have been historically
+ * allowed, but are unsafe for web applications. Otherwise, the following are blocked: ; & | ` $ \
+ * \n \r ' " < > ( ) { } These cover the original set plus single-quote, double-quote, redirect
+ * operators (<>), and subshell delimiters ((){}), which were absent before and allowed bypass
+ * payloads such as /bin/sh -c 'id' or cmd > /tmp/x. Placeholder names match [a-zA-Z0-9_]+, the
+ * same grammar that generate_data_input_field_sequences() and get_full_script_path() use, so
+ * digit-suffixed tokens such as <arg1> and <host_id2> are recognised. Paired surrounding quotes
+ * ("<x>" or '<x>') are stripped together with the placeholder so that legitimate shell-arg
+ * quoting in templates such as <path_cacti>/scripts/x.php "<reason>" is preserved.
  *
- *   However, for backward compatibility, we check the setting of
- *   allow unsafe metacharacters for administrators that may have historically
- *   used simple commands for data input methods including things like
- *   ps -ef | grep string | wc -l which have been historically allowed,
- *   but are unsafe for web applications.
+ * @param string $input_string The candidate input_string template.
  *
- *   Otherwise, the following are blocked: ; & | ` $ \ \n \r ' " < > ( ) { }
- *
- *   These cover the original set plus single-quote, double-quote, redirect
- *   operators (<>), and subshell delimiters ((){}), which were absent before
- *   and allowed bypass payloads such as /bin/sh -c 'id' or cmd > /tmp/x.
- *
- *   Placeholder names match [a-zA-Z0-9_]+, the same grammar that
- *   generate_data_input_field_sequences() and get_full_script_path()
- *   use, so digit-suffixed tokens such as <arg1> and <host_id2> are
- *   recognised. Paired surrounding quotes ("<x>" or '<x>') are stripped
- *   together with the placeholder so that legitimate shell-arg quoting
- *   in templates such as
- *     <path_cacti>/scripts/x.php "<reason>"
- *   is preserved.
- *
- * @param string $input_string The candidate input_string template
- *
- * @return bool True if the value is safe to persist
+ * @return bool True if the value is safe to persist.
  */
 function cacti_input_string_is_safe($input_string) {
 	if ($input_string === '' || $input_string === null) {
@@ -7579,24 +8087,21 @@ function cacti_input_string_is_safe($input_string) {
 }
 
 /**
- * cacti_exec - run an external command via proc_open with a discrete argv array.
+ * Run an external command via proc_open with a discrete argv array. No shell is involved: the
+ * argv array is passed directly to execve(), so shell metacharacters in argument values are
+ * inert. Callers must still validate argument semantics (e.g. rrdtool DEF lines) themselves. This
+ * is the argv-array counterpart to exec_with_timeout() in lib/poller.php, which accepts a
+ * pre-built shell string. Use cacti_exec() when the binary and arguments are known separately;
+ * use exec_with_timeout() when migrating legacy shell_exec() callers that already assemble the
+ * command string. Requires PHP 7.4+ (array form of proc_open). The 1.2.x branch targets PHP 7.4
+ * as its minimum, so no version gate is needed. Used as part of Cacti's lib functionality.
  *
- * No shell is involved: the argv array is passed directly to execve(), so shell
- * metacharacters in argument values are inert. Callers must still validate
- * argument semantics (e.g. rrdtool DEF lines) themselves.
- *
- * This is the argv-array counterpart to exec_with_timeout() in lib/poller.php,
- * which accepts a pre-built shell string. Use cacti_exec() when the binary and
- * arguments are known separately; use exec_with_timeout() when migrating legacy
- * shell_exec() callers that already assemble the command string.
- *
- * Requires PHP 7.4+ (array form of proc_open). The 1.2.x branch targets PHP 7.4
- * as its minimum, so no version gate is needed.
- *
- * @param string $binary   Path to the executable. Must not start with '-'.
- * @param array  $args     Ordered argument strings (not shell-escaped).
- * @param array  &$output  Receives stdout lines on success; empty array on empty output.
- * @param mixed  $timeout  False for 4 hour timeout or seconds before the process is killed (default 30).
+ * @param string $binary Path to the executable. Must not start with '-'.
+ * @param array $args Ordered argument strings (not shell-escaped).
+ * @param array& $output Array &$output Receives stdout lines on success; empty array on empty
+ *   output.
+ * @param mixed $timeout False for 4 hour timeout or seconds before the process is killed (default
+ *   30).
  *
  * @return int Exit code, or 255 on spawn failure, error with binary or timeout.
  */
@@ -7710,16 +8215,14 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 }
 
 /**
- * cacti_exec_string - run a command and return stdout as a single string.
+ * Run a command and return stdout as a single string. Convenience wrapper around cacti_exec() for
+ * callers that previously used shell_exec() and expect a string return value.
  *
- * Convenience wrapper around cacti_exec() for callers that previously used
- * shell_exec() and expect a string return value.
+ * @param string $binary The binary.
+ * @param array $args The args.
+ * @param int $timeout The timeout.
  *
- * @param string $binary
- * @param array  $args
- * @param int    $timeout
- *
- * @return string|false stdout on exit code 0, false on failure.
+ * @return string|false Stdout on exit code 0, false on failure.
  */
 function cacti_exec_string($binary, array $args = array(), $timeout = 30) {
 	$output = array();
@@ -7728,19 +8231,45 @@ function cacti_exec_string($binary, array $args = array(), $timeout = 30) {
 	return ($exit === 0) ? implode("\n", $output) : false;
 }
 
+/**
+ * Handles the cacti sizeof. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $array The array.
+ *
+ * @return int The resulting integer value.
+ */
 function cacti_sizeof($array) {
 	return ($array === false || !is_array($array)) ? 0 : sizeof($array);
 }
 
+/**
+ * Handles the cacti count. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $array The array.
+ *
+ * @return int The resulting integer value.
+ */
 function cacti_count($array) {
 	return ($array === false || !is_array($array)) ? 0 : count($array);
 }
 
+/**
+ * Determines whether function enabled. Used as part of Cacti's lib functionality.
+ *
+ * @param string $name The name.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function is_function_enabled($name) {
 	return function_exists($name) &&
 		!in_array($name, array_map('trim', explode(',', (string) ini_get('disable_functions'))), true);
 }
 
+/**
+ * Determines whether page AJAX. Used as part of Cacti's lib functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function is_page_ajax() {
 	if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' ) {
 		return true;
@@ -7749,6 +8278,11 @@ function is_page_ajax() {
 	return false;
 }
 
+/**
+ * Handles the raise AJAX permission denied. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function raise_ajax_permission_denied() {
 	if (is_page_ajax()) {
 		header('HTTP/1.1 401 ' . __('Permission Denied'));
@@ -7758,11 +8292,12 @@ function raise_ajax_permission_denied() {
 }
 
 /**
- * cacti_session_start - Create a Cacti session from the settings set by the administrator
+ * Create a Cacti session from the settings set by the administrator. Used as part of Cacti's lib
+ * functionality.
  *
- * @param bool $regenerate - If you are logging in for the first time, regenerate the token
+ * @param bool $regenerate If you are logging in for the first time, regenerate the token.
  *
- * @return - null
+ * @return bool Null.
  */
 function cacti_session_start($regenerate = false) {
 	global $config;
@@ -7801,13 +8336,12 @@ function cacti_session_start($regenerate = false) {
 }
 
 /**
- * cacti_session_regenerate - This function will regenerate a session token in cases
- * where the user logs in for the first time, or their session token has existed
- * too long. We forcibly destroy old session data as it will remove the entry from
- * the Cacti sessions table immediately thus reducing the number of inactive
- * sessions in the sessions table.
+ * This function will regenerate a session token in cases where the user logs in for the first
+ * time, or their session token has existed too long. We forcibly destroy old session data as it
+ * will remove the entry from the Cacti sessions table immediately thus reducing the number of
+ * inactive sessions in the sessions table. Used as part of Cacti's lib functionality.
  *
- * @return array - The prior sessions data
+ * @return array The prior sessions data.
  */
 function cacti_session_regenerate() {
 	if (session_status() === PHP_SESSION_ACTIVE) {
@@ -7821,19 +8355,19 @@ function cacti_session_regenerate() {
 }
 
 /**
- * cacti_session_close - Closes the open Cacti session if it is open
- * it can be re-opened afterwards in the case after a long running query
+ * Closes the open Cacti session if it is open it can be re-opened afterwards in the case after a
+ * long running query. Used as part of Cacti's lib functionality.
  *
- * @return - null
+ * @return void Null.
  */
 function cacti_session_close() {
 	session_write_close();
 }
 
 /**
- * cacti_session_destroy - Destroys the login current session
+ * Destroys the login current session. Used as part of Cacti's lib functionality.
  *
- * @return - null
+ * @return void Null.
  */
 function cacti_session_destroy() {
 	session_unset();
@@ -7841,10 +8375,12 @@ function cacti_session_destroy() {
 }
 
 /**
- * cacti_cookie_set - Allows for settings an arbitrary cookie name and value
- * used for CSRF protection.
+ * Allows for settings an arbitrary cookie name and value used for CSRF protection.
  *
- * @return - null
+ * @param mixed $session The session.
+ * @param mixed $val The val.
+ *
+ * @return void Null.
  */
 function cacti_cookie_set($session, $val) {
 	global $config;
@@ -7878,9 +8414,10 @@ function cacti_cookie_set($session, $val) {
 }
 
 /**
- * cacti_cookie_logout - Clears the Cacti and the 'keep me logged in' cookies
+ * Clears the Cacti and the 'keep me logged in' cookies. Used as part of Cacti's lib
+ * functionality.
  *
- * @return - null
+ * @return void Null.
  */
 function cacti_cookie_logout() {
 	global $config;
@@ -7918,9 +8455,13 @@ function cacti_cookie_logout() {
 }
 
 /**
- * cacti_cookie_session_set - Sets the cacti 'keep me logged in' cookie
+ * Sets the cacti 'keep me logged in' cookie. Used as part of Cacti's lib functionality.
  *
- * @return - null
+ * @param string $user The user.
+ * @param int $realm The realm.
+ * @param string $nssecret The nssecret.
+ *
+ * @return void Null.
  */
 function cacti_cookie_session_set($user, $realm, $nssecret) {
 	global $config;
@@ -7956,9 +8497,9 @@ function cacti_cookie_session_set($user, $realm, $nssecret) {
 }
 
 /**
- * cacti_cookie_session_logout - Logs out of Cacti and the remember me session
+ * Logs out of Cacti and the remember me session. Used as part of Cacti's lib functionality.
  *
- * @return - null
+ * @return void Null.
  */
 function cacti_cookie_session_logout() {
 	global $config;
@@ -7992,10 +8533,10 @@ function cacti_cookie_session_logout() {
 }
 
 /**
- * cacti_browser_zone_set - Set the PHP timezone to the
- * browsers timezone if enabled.
+ * Set the PHP timezone to the browsers timezone if enabled. Used as part of Cacti's lib
+ * functionality.
  *
- * @return - null
+ * @return void Null.
  */
 function cacti_browser_zone_set() {
 	if (cacti_browser_zone_enabled()) {
@@ -8007,10 +8548,9 @@ function cacti_browser_zone_set() {
 }
 
 /**
- * cacti_system_zone_set - Set the PHP timezone to the
- * systems timezone.
+ * Set the PHP timezone to the systems timezone. Used as part of Cacti's lib functionality.
  *
- * @return - null
+ * @return void Null.
  */
 function cacti_system_zone_set() {
 	if (cacti_browser_zone_enabled()) {
@@ -8021,6 +8561,11 @@ function cacti_system_zone_set() {
 	}
 }
 
+/**
+ * Handles the cacti browser zone enabled. Used as part of Cacti's lib functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function cacti_browser_zone_enabled() {
 	$system_setting = read_config_option('client_timezone_support');
 
@@ -8037,11 +8582,12 @@ function cacti_browser_zone_enabled() {
 	}
 }
 /**
- * cacti_time_zone_set - Given an offset in minutes, attempt
- * to set a PHP date.timezone.  There are some oddballs that
- * we have to accommodate.
+ * Given an offset in minutes, attempt to set a PHP date.timezone. There are some oddballs that we
+ * have to accommodate. Used as part of Cacti's lib functionality.
  *
- * @return - null
+ * @param mixed $gmt_offset The gmt offset.
+ *
+ * @return void Null.
  */
 function cacti_time_zone_set($gmt_offset) {
 	if (!cacti_browser_zone_enabled()) {
@@ -8140,6 +8686,14 @@ function cacti_time_zone_set($gmt_offset) {
 	}
 }
 
+/**
+ * Handles the debounce run notification. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $id The ID.
+ * @param int $frequency The frequency.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function debounce_run_notification($id, $frequency = 7200) {
 	$full = 'debounce_' . $id;
 	$key   = substr($full, 0, 50);
@@ -8167,6 +8721,13 @@ function debounce_run_notification($id, $frequency = 7200) {
 	return false;
 }
 
+/**
+ * Handles the cacti unserialize. Used as part of Cacti's lib functionality.
+ *
+ * @param string $strobj The strobj.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function cacti_unserialize($strobj) {
 	if ($strobj === null || $strobj === '') {
 		return false;
@@ -8175,6 +8736,13 @@ function cacti_unserialize($strobj) {
 	return @unserialize($strobj, array('allowed_classes' => false));
 }
 
+/**
+ * Handles the cacti format ipv6 colon. Used as part of Cacti's lib functionality.
+ *
+ * @param string $address The address.
+ *
+ * @return string The resulting string.
+ */
 function cacti_format_ipv6_colon($address) {
 	if (!filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
 		return $address;
@@ -8192,27 +8760,20 @@ function cacti_format_ipv6_colon($address) {
 }
 
 /**
- * cacti_path_is_within - Check whether a candidate path resolves to a
- * location inside a given base directory.  Both paths are resolved via
- * realpath() so symlinks and relative components are handled.
+ * Check whether a candidate path resolves to a location inside a given base directory. Both paths
+ * are resolved via realpath() so symlinks and relative components are handled. Windows notes: -
+ * comparison is case-insensitive (NTFS is case-preserving but not case-sensitive). - both
+ * backslashes and forward slashes are normalised to '/' before the comparison. - the long-path
+ * prefixes "\\?\" and "\\?\UNC\" that realpath may return for deep trees or UNC shares are
+ * stripped so a candidate returned in extended form still matches a base in classic form (and
+ * vice versa). - UNC shares ("\\server\share\path") are supported. The leading "\\" is preserved
+ * as "//" after slash normalisation so the prefix check still discriminates "//server/share" from
+ * "//server/shareX". Used as part of Cacti's lib functionality.
  *
- * Windows notes:
- *   - comparison is case-insensitive (NTFS is case-preserving but not
- *     case-sensitive).
- *   - both backslashes and forward slashes are normalised to '/' before
- *     the comparison.
- *   - the long-path prefixes "\\?\" and "\\?\UNC\" that realpath may
- *     return for deep trees or UNC shares are stripped so a candidate
- *     returned in extended form still matches a base in classic form
- *     (and vice versa).
- *   - UNC shares ("\\server\share\path") are supported.  The leading
- *     "\\" is preserved as "//" after slash normalisation so the prefix
- *     check still discriminates "//server/share" from "//server/shareX".
+ * @param string $candidate The path to test.
+ * @param string $base The base directory that must contain it.
  *
- * @param  string $candidate  The path to test
- * @param  string $base       The base directory that must contain it
- *
- * @return bool  True when $candidate is strictly inside $base
+ * @return bool True when $candidate is strictly inside $base.
  */
 function cacti_path_is_within($candidate, $base) {
 	$resolved = realpath($candidate);
@@ -8236,14 +8797,14 @@ function cacti_path_is_within($candidate, $base) {
 }
 
 /**
- * cacti_normalize_windows_path - Internal helper for cacti_path_is_within.
+ * Internal helper for cacti_path_is_within. Lowercases the path for case-insensitive comparison,
+ * converts all backslashes to forward slashes, strips Windows long-path prefixes (\\?\UNC\
+ * becomes \\, \\?\ is removed), and trims trailing slashes. Used as part of Cacti's lib
+ * functionality.
  *
- * Lowercases the path for case-insensitive comparison, converts all
- * backslashes to forward slashes, strips Windows long-path prefixes
- * (\\?\UNC\ becomes \\, \\?\ is removed), and trims trailing slashes.
+ * @param string $path A path already passed through realpath().
  *
- * @param  string $path  A path already passed through realpath()
- * @return string        Normalised path suitable for strpos comparison
+ * @return string Normalised path suitable for strpos comparison.
  */
 function cacti_normalize_windows_path($path) {
 	$lower = strtolower((string) $path);
@@ -8268,11 +8829,12 @@ function cacti_normalize_windows_path($path) {
 }
 
 /**
- * cacti_header - Redirect to the default if the HTTP_REFERER is empty
+ * Redirect to the default if the HTTP_REFERER is empty. Used as part of Cacti's lib
+ * functionality.
  *
- * @param string $default The default to redirect to unless
+ * @param string $default The default to redirect to unless.
  *
- * @return void
+ * @return void No value is returned.
  */
 function cacti_header($default = 'index.php') {
 	$save_url = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? $default, $default);
@@ -8282,17 +8844,15 @@ function cacti_header($default = 'index.php') {
 }
 
 /**
- * cacti_redirect - Redirect to a validated URL.
+ * Redirect to a validated URL. Uses validate_redirect_url() to ensure the target is safe before
+ * sending the Location header. Falls back to $default when the URL is empty or fails validation.
+ * Used as part of Cacti's lib functionality.
  *
- * Uses validate_redirect_url() to ensure the target is safe before
- * sending the Location header. Falls back to $default when the URL
- * is empty or fails validation.
+ * @param string $url Target URL (empty to use HTTP_REFERER).
+ * @param string $default Fallback URL when input is empty or invalid.
+ * @param int $status HTTP status code for the redirect.
  *
- * @param  string $url      Target URL (empty to use HTTP_REFERER)
- * @param  string $default  Fallback URL when input is empty or invalid
- * @param  int    $status   HTTP status code for the redirect
- *
- * @return void  (exits after sending the header)
+ * @return void (exits after sending the header).
  */
 function cacti_redirect($url = '', $default = 'index.php', $status = 302) {
 	$safe_url = validate_redirect_url(
@@ -8305,15 +8865,14 @@ function cacti_redirect($url = '', $default = 'index.php', $status = 302) {
 }
 
 /**
- * cacti_redact_sensitive - Replace sensitive values in an associative array.
+ * Replace sensitive values in an associative array. Walks the array recursively and replaces any
+ * value whose key matches a known sensitive name (password, token, community, etc.) with
+ * '[REDACTED]'. Safe for logging request data or debug dumps. Used as part of Cacti's lib
+ * functionality.
  *
- * Walks the array recursively and replaces any value whose key matches
- * a known sensitive name (password, token, community, etc.) with
- * '[REDACTED]'. Safe for logging request data or debug dumps.
+ * @param mixed $data Array to redact (non-arrays returned unchanged).
  *
- * @param  mixed $data  Array to redact (non-arrays returned unchanged)
- *
- * @return mixed  The redacted copy
+ * @return mixed The redacted copy.
  */
 function cacti_redact_sensitive($data) {
 	if (!is_array($data)) {
@@ -8332,12 +8891,14 @@ function cacti_redact_sensitive($data) {
 }
 
 /**
- * cacti_is_sensitive_key - Returns true if the given key name suggests
- * the value holds a secret (password, token, SNMP community, etc.).
+ * Returns true if the given key name suggests the value holds a secret (password, token, SNMP
+ * community, etc.). Exposed so callers that log a single "$key => $value" pair (for example the
+ * poller cache diff log) can redact without building an intermediate array. Used as part of
+ * Cacti's lib functionality.
  *
- * Exposed so callers that log a single "$key => $value" pair (for
- * example the poller cache diff log) can redact without building an
- * intermediate array.
+ * @param mixed $key The key.
+ *
+ * @return bool True on success, false otherwise.
  */
 function cacti_is_sensitive_key($key) {
 	static $sensitive_keys = array(
@@ -8359,24 +8920,27 @@ function cacti_is_sensitive_key($key) {
 }
 
 /**
- * cacti_redact_value - Returns '[REDACTED]' if the key is sensitive,
- * otherwise returns the original value. Companion to cacti_redact_sensitive
- * for scalar log statements.
+ * Returns '[REDACTED]' if the key is sensitive, otherwise returns the original value. Companion
+ * to cacti_redact_sensitive for scalar log statements. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $key The key.
+ * @param mixed $value The value.
+ *
+ * @return mixed The result of the operation, or false on failure.
  */
 function cacti_redact_value($key, $value) {
 	return cacti_is_sensitive_key($key) ? '[REDACTED]' : $value;
 }
 
 /**
- * cacti_temp_file - Execute a callback with a temporary file, then clean up.
+ * Execute a callback with a temporary file, then clean up. Creates a temp file via tempnam(),
+ * passes its path to $callback, and deletes the file in a finally block regardless of exceptions.
+ * Used as part of Cacti's lib functionality.
  *
- * Creates a temp file via tempnam(), passes its path to $callback,
- * and deletes the file in a finally block regardless of exceptions.
+ * @param string $prefix Prefix for the temp filename.
+ * @param callable $callback Receives the temp file path as its argument.
  *
- * @param  string   $prefix    Prefix for the temp filename
- * @param  callable $callback  Receives the temp file path as its argument
- *
- * @return mixed  The return value of $callback, or false on tempnam failure
+ * @return mixed The return value of $callback, or false on tempnam failure.
  */
 function cacti_temp_file($prefix, $callback) {
 	$path = tempnam(sys_get_temp_dir(), $prefix);
@@ -8397,25 +8961,19 @@ function cacti_temp_file($prefix, $callback) {
 
 
 /**
- * cacti_validate_theme - returns the requested theme name iff it names a
- * real directory under include/themes/ that contains an rrdtheme.php file.
- * Otherwise returns the configured default theme.
+ * Returns the requested theme name iff it names a real directory under include/themes/ that
+ * contains an rrdtheme.php file. Otherwise returns the configured default theme. Root-cause
+ * mitigation for LFI via the graph_theme request parameter. basename() on the request value is
+ * not sufficient because an attacker who can place files at predictable paths (plugin uploads,
+ * session files, log rotation) can satisfy a basename + is_dir check with an attacker-controlled
+ * directory. This helper builds the allowlist from the filesystem once per request (cached
+ * statically) and rejects anything that is not a genuine shipped theme. Applies to:
+ * GHSA-rm7p-qcqm-x5m6 (unauth LFI via graph_theme + rrdtool IPC) GHSA-cx5r-8q6h-r772 (pre-auth
+ * LFI via graph_theme). Used as part of Cacti's lib functionality.
  *
- * Root-cause mitigation for LFI via the graph_theme request parameter.
- * basename() on the request value is not sufficient because an attacker
- * who can place files at predictable paths (plugin uploads, session files,
- * log rotation) can satisfy a basename + is_dir check with an
- * attacker-controlled directory. This helper builds the allowlist from the
- * filesystem once per request (cached statically) and rejects anything
- * that is not a genuine shipped theme.
+ * @param string $requested The raw value from the request.
  *
- * Applies to:
- *   GHSA-rm7p-qcqm-x5m6 (unauth LFI via graph_theme + rrdtool IPC)
- *   GHSA-cx5r-8q6h-r772 (pre-auth LFI via graph_theme)
- *
- * @param string $requested  The raw value from the request
- *
- * @return string  A validated theme name safe for path concatenation
+ * @return string A validated theme name safe for path concatenation.
  */
 function cacti_validate_theme($requested) {
 	global $config;
@@ -8456,31 +9014,23 @@ function cacti_validate_theme($requested) {
 }
 
 /**
- * cacti_html_context_escape - escape a value for safe insertion into a
- * specific HTML / JS / URL / CSS context.
+ * Escape a value for safe insertion into a specific HTML / JS / URL / CSS context. Different
+ * contexts require different escape rules. Using the wrong escape (e.g., htmlspecialchars for a
+ * JavaScript string) leaves exploitable holes. This helper picks the right primitive per context
+ * and fails closed when an unknown context is passed. Root-cause mitigation for context-confusion
+ * XSS: GHSA-7gx8-f5q4-86mv (tooltip HTML attr via SNMP description) GHSA-m544-32jr-54xw (JS
+ * string via session referer in auth_profile) GHSA-6233-v5hc-6gvf (HTML element via Report Tree
+ * titles) GHSA-977w-79m7-xjc4 (HTML element via SNMP data in graph export) GHSA-cfhh-pwvx-gp5g
+ * (reflected XSS via rfilter PCRE differential) Usage: print cacti_html_context_escape($value,
+ * CACTI_ESC_ELEMENT); print "<a title='" . cacti_html_context_escape($v, CACTI_ESC_ATTR) . "'>";
+ * print "var x = '" . cacti_html_context_escape($v, CACTI_ESC_JS_STRING) . "';"; print "<a
+ * href='?q=" . cacti_html_context_escape($v, CACTI_ESC_URL) . "'>";. Used as part of Cacti's lib
+ * functionality.
  *
- * Different contexts require different escape rules. Using the wrong escape
- * (e.g., htmlspecialchars for a JavaScript string) leaves exploitable holes.
- * This helper picks the right primitive per context and fails closed when
- * an unknown context is passed.
+ * @param mixed $value The value to escape.
+ * @param string $context One of CACTI_ESC_* constants.
  *
- * Root-cause mitigation for context-confusion XSS:
- *   GHSA-7gx8-f5q4-86mv (tooltip HTML attr via SNMP description)
- *   GHSA-m544-32jr-54xw (JS string via session referer in auth_profile)
- *   GHSA-6233-v5hc-6gvf (HTML element via Report Tree titles)
- *   GHSA-977w-79m7-xjc4 (HTML element via SNMP data in graph export)
- *   GHSA-cfhh-pwvx-gp5g (reflected XSS via rfilter PCRE differential)
- *
- * Usage:
- *   print cacti_html_context_escape($value, CACTI_ESC_ELEMENT);
- *   print "<a title='" . cacti_html_context_escape($v, CACTI_ESC_ATTR) . "'>";
- *   print "var x = '" . cacti_html_context_escape($v, CACTI_ESC_JS_STRING) . "';";
- *   print "<a href='?q=" . cacti_html_context_escape($v, CACTI_ESC_URL) . "'>";
- *
- * @param mixed  $value    The value to escape
- * @param string $context  One of CACTI_ESC_* constants
- *
- * @return string  The escaped value safe for the given context
+ * @return string The escaped value safe for the given context.
  */
 function cacti_html_context_escape($value, $context) {
 	$value = (string) $value;
@@ -8528,36 +9078,22 @@ function cacti_html_context_escape($value, $context) {
 }
 
 /**
- * cacti_validate_sort_column - returns $column if it exactly matches an
- * entry in $allowed (strict comparison), otherwise returns $default or the
- * first allowlist entry.
+ * Returns $column if it exactly matches an entry in $allowed (strict comparison), otherwise
+ * returns $default or the first allowlist entry. Root-cause mitigation for ORDER BY SQL injection
+ * via unsanitized sort_column request parameters. The allowlist may contain: - bare column names:
+ * 'name', 'hostname', 'time' - fully-qualified names: 'h.description', 'dl.host_id' - function
+ * expressions: 'INET_ATON(hostname)', 'LENGTH(description)' Callers pass the exact SQL fragment
+ * they want to allow. Matching is strict (===), case-sensitive, and whitespace-sensitive. Request
+ * values that don't match any allowlist entry fall through to $default. Example (with function
+ * expression): $col = cacti_validate_sort_column( get_request_var('sort_column'),
+ * array('description', 'hostname', 'INET_ATON(hostname)'), 'description' ); Applies to GHSA-3p6w,
+ * GHSA-84q3, GHSA-gp82 and future ORDER BY reports. Used as part of Cacti's lib functionality.
  *
- * Root-cause mitigation for ORDER BY SQL injection via unsanitized
- * sort_column request parameters.
+ * @param string $column Requested sort column.
+ * @param array $allowed Allowlist of acceptable SQL fragments.
+ * @param string $default Fallback when $column is not in $allowed.
  *
- * The allowlist may contain:
- *   - bare column names:  'name', 'hostname', 'time'
- *   - fully-qualified names:  'h.description', 'dl.host_id'
- *   - function expressions:  'INET_ATON(hostname)', 'LENGTH(description)'
- *
- * Callers pass the exact SQL fragment they want to allow. Matching is
- * strict (===), case-sensitive, and whitespace-sensitive. Request values
- * that don't match any allowlist entry fall through to $default.
- *
- * Example (with function expression):
- *   $col = cacti_validate_sort_column(
- *       get_request_var('sort_column'),
- *       array('description', 'hostname', 'INET_ATON(hostname)'),
- *       'description'
- *   );
- *
- * Applies to GHSA-3p6w, GHSA-84q3, GHSA-gp82 and future ORDER BY reports.
- *
- * @param string $column   Requested sort column
- * @param array  $allowed  Allowlist of acceptable SQL fragments
- * @param string $default  Fallback when $column is not in $allowed
- *
- * @return string  Safe SQL fragment
+ * @return string Safe SQL fragment.
  */
 function cacti_validate_sort_column(string $column, array $allowed, string $default = '') : string {
 	if (in_array($column, $allowed, true)) {
@@ -8568,19 +9104,16 @@ function cacti_validate_sort_column(string $column, array $allowed, string $defa
 }
 
 /**
- * escape_page_action - Look up a drp_action key in an actions array and return
- * the matching label, html_escape()'d and ready for direct output.
+ * Look up a drp_action key in an actions array and return the matching label, html_escape()'d and
+ * ready for direct output. The key is used only for the array lookup, so a non-scalar or unknown
+ * key yields $default. Plugin hooks (api_plugin_hook_function) may substitute labels containing
+ * HTML, so the result is escaped here; callers output it directly without a second html_escape().
  *
- * The key is used only for the array lookup, so a non-scalar or unknown key
- * yields $default. Plugin hooks (api_plugin_hook_function) may substitute
- * labels containing HTML, so the result is escaped here; callers output it
- * directly without a second html_escape().
+ * @param array $actions Associative array mapping drp_action values to labels.
+ * @param mixed $drp_action The drp_action key to look up; non-scalar keys yield $default.
+ * @param string $default Label to return when the key is absent from the array.
  *
- * @param array  $actions     Associative array mapping drp_action values to labels.
- * @param mixed  $drp_action  The drp_action key to look up; non-scalar keys yield $default.
- * @param string $default     Label to return when the key is absent from the array.
- *
- * @return string  The html_escape()'d matched label, or $default.
+ * @return string The html_escape()'d matched label, or $default.
  */
 function escape_page_action(array $actions, $drp_action, string $default = ''): string {
 	if (!is_string($drp_action) && !is_int($drp_action)) {
@@ -8591,19 +9124,17 @@ function escape_page_action(array $actions, $drp_action, string $default = ''): 
 }
 
 /**
- * cacti_http - SSRF-hardened HTTP GET.
+ * SSRF-hardened HTTP GET. Wraps file_get_contents() with a stream context that enables TLS peer
+ * verification, disables redirect-following, and rejects non-http(s) schemes. Callers may pass an
+ * optional host allowlist; if set, only matching hostnames pass. Used as part of Cacti's lib
+ * functionality.
  *
- * Wraps file_get_contents() with a stream context that enables TLS peer
- * verification, disables redirect-following, and rejects non-http(s)
- * schemes. Callers may pass an optional host allowlist; if set, only
- * matching hostnames pass.
+ * @param string $url Absolute http(s) URL to fetch.
+ * @param int $timeout Seconds before the request is aborted.
+ * @param array $allowlist Optional case-insensitive list of allowed hostnames (exact match).
+ * @param & $status By-ref HTTP status code, or 0 on transport failure.
  *
- * @param string $url        Absolute http(s) URL to fetch.
- * @param int    $timeout    Seconds before the request is aborted.
- * @param array  $allowlist  Optional case-insensitive list of allowed hostnames (exact match).
- * @param int    $status     By-ref HTTP status code, or 0 on transport failure.
- *
- * @return mixed  Response body string on 2xx, false on any failure.
+ * @return mixed Response body string on 2xx, false on any failure.
  */
 function cacti_http($url, $timeout = 10, array $allowlist = array(), &$status = 0) {
 	$status = 0;
@@ -8663,17 +9194,15 @@ function cacti_http($url, $timeout = 10, array $allowlist = array(), &$status = 
 }
 
 /**
- * cacti_plugin_path - Resolve a file inside a named plugin's directory.
+ * Resolve a file inside a named plugin's directory. Builds and realpath-validates
+ * base_path/plugins/<plugin>/<relative> to prevent ../ traversal leaving the plugin subtree.
+ * Returns the validated absolute path on success, or false if the plugin name is unsafe or the
+ * resulting path escapes plugins/<plugin>/. Used as part of Cacti's lib functionality.
  *
- * Builds and realpath-validates base_path/plugins/<plugin>/<relative>
- * to prevent ../ traversal leaving the plugin subtree. Returns the
- * validated absolute path on success, or false if the plugin name is
- * unsafe or the resulting path escapes plugins/<plugin>/.
+ * @param string $plugin Plugin directory name (e.g. 'thold').
+ * @param string $relative Relative file path under the plugin directory (e.g. 'setup.php').
  *
- * @param string $plugin    Plugin directory name (e.g. 'thold').
- * @param string $relative  Relative file path under the plugin directory (e.g. 'setup.php').
- *
- * @return string|false     Validated absolute path, or false on rejection.
+ * @return string|false Validated absolute path, or false on rejection.
  */
 function cacti_plugin_path($plugin, $relative = '') {
 	global $config;
@@ -8700,11 +9229,11 @@ function cacti_plugin_path($plugin, $relative = '') {
 }
 
 /**
- * sanitize_sql_column - sanitizes a column name to prevent SQL injection
+ * Sanitizes a column name to prevent SQL injection. Used as part of Cacti's lib functionality.
  *
- * @param string $column - the column name to sanitize
+ * @param string $column The column name to sanitize.
  *
- * @return string - the sanitized column name
+ * @return string The sanitized column name.
  */
 function sanitize_sql_column($column) {
 	if (is_array($column)) {

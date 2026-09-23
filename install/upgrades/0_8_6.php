@@ -27,6 +27,11 @@ include_once($config['base_path'] . "/lib/data_query.php");
 include_once($config["base_path"] . "/lib/import.php");
 include_once($config["base_path"] . "/lib/poller.php");
 
+/**
+ * Handles the upgrade to 0 8 6. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_0_8_6() {
 
 	db_install_drop_table('snmp_query_field');

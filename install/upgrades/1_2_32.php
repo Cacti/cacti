@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1 2 32. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_2_32() {
 	/* #7728 landed these columns in cacti.sql and in upgrade_to_1_2_31() after
 	 * 1.2.31 had already shipped. Installs sitting on 1.2.31 never re-run that

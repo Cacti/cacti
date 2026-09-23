@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1 2 5. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_2_5() {
 	db_install_execute("UPDATE graph_local AS gl
 		INNER JOIN graph_templates_item AS gti

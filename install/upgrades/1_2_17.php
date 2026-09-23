@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1 2 17. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_2_17() {
 	// Correct max values in templates and data sources: GAUGE/ABSOLUTE (1,4)
 	db_install_execute("ALTER TABLE graph_templates_graph ROW_FORMAT=Dynamic, DROP INDEX title_cache, ADD INDEX title_cache(title_cache)");
@@ -82,6 +87,11 @@ function upgrade_to_1_2_17() {
 		AND gl.snmp_query_graph_id = 0");
 }
 
+/**
+ * Handles the database fix mediumint columns. Used as part of Cacti's install functionality.
+ *
+ * @return int The resulting integer value.
+ */
 function database_fix_mediumint_columns() {
 	global $database_default;
 
@@ -216,6 +226,14 @@ function database_fix_mediumint_columns() {
 	return $total;
 }
 
+/**
+ * Handles the database get column attribs. Used as part of Cacti's install functionality.
+ *
+ * @param string $table The table.
+ * @param string $column The column.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function database_get_column_attribs($table, $column) {
 	return db_fetch_row("SHOW COLUMNS FROM $table LIKE '$column'");
 }

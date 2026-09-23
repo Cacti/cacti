@@ -22,6 +22,16 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Deletes graphs based on the provided local graph IDs and delete type. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param & $local_graph_ids An array of local graph IDs to be deleted.
+ * @param int $delete_type The type of deletion to perform: - 1: Remove graphs only. - 2: Remove
+ *   graphs and all associated data sources.
+ *
+ * @return void No value is returned.
+ */
 function api_delete_graphs(&$local_graph_ids, $delete_type) {
 	/* check for a bad local_graph_id = 0, and remove graphs */
 	api_graph_remove_bad_graphs($local_graph_ids);
@@ -106,6 +116,14 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 	set_config_option('time_last_change_graph', time());
 }
 
+/**
+ * Removes a graph and its associated items from the database. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $local_graph_id The ID of the local graph to be removed.
+ *
+ * @return void No value is returned.
+ */
 function api_graph_remove($local_graph_id) {
 	if (empty($local_graph_id)) {
 		$local_graph_ids = array($local_graph_id);
@@ -130,6 +148,14 @@ function api_graph_remove($local_graph_id) {
 	set_config_option('time_last_change_graph', time());
 }
 
+/**
+ * Removes bad graphs from the provided list of local graph IDs and deletes corresponding entries
+ * from the database. Used as part of Cacti's lib functionality.
+ *
+ * @param & $local_graph_ids An array of local graph IDs to be checked and cleaned.
+ *
+ * @return void No value is returned.
+ */
 function api_graph_remove_bad_graphs(&$local_graph_ids = array()) {
 	if (cacti_sizeof($local_graph_ids)) {
 		$bad_graph = array_search(0, $local_graph_ids);
@@ -156,6 +182,15 @@ function api_graph_remove_bad_graphs(&$local_graph_ids = array()) {
 	set_config_option('time_last_change_graph', time());
 }
 
+/**
+ * Removes aggregate items associated with the given local graph IDs. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param mixed $local_graph_ids An array of local graph IDs or a comma-separated string of local
+ *   graph IDs.
+ *
+ * @return void No value is returned.
+ */
 function api_graph_remove_aggregate_items($local_graph_ids) {
 	if (!is_array($local_graph_ids)) {
 		$local_graph_ids = explode(',', $local_graph_ids);
@@ -178,6 +213,14 @@ function api_graph_remove_aggregate_items($local_graph_ids) {
 	}
 }
 
+/**
+ * Removes multiple graphs based on their local graph IDs. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $local_graph_ids An array of local graph IDs to be removed.
+ *
+ * @return void No value is returned.
+ */
 function api_graph_remove_multi($local_graph_ids) {
 	/* check for a bad local_graph_id = 0, and remove graphs */
 	api_graph_remove_bad_graphs($local_graph_ids);
@@ -235,11 +278,16 @@ function api_graph_remove_multi($local_graph_ids) {
 	}
 }
 
-/* api_resize_graphs - resizes the selected graph, overriding the template value
-   @arg $graph_templates_graph_id - the id of the graph to resize
-   @arg $graph_width - the width of the resized graph
-   @arg $graph_height - the height of the resized graph
-  */
+/**
+ * Resizes the selected graph, overriding the template value. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $local_graph_id The ID of the local graph to resize.
+ * @param int $graph_width The width of the resized graph.
+ * @param int $graph_height The height of the resized graph.
+ *
+ * @return void No value is returned.
+ */
 function api_resize_graphs($local_graph_id, $graph_width, $graph_height) {
 	/* get graphs template id */
 	db_execute_prepared('UPDATE graph_templates_graph
@@ -248,9 +296,13 @@ function api_resize_graphs($local_graph_id, $graph_width, $graph_height) {
 		array($graph_width, $graph_height, $local_graph_id));
 }
 
-/* api_reapply_suggested_graph_title - reapplies the suggested name to a graph title
-   @param int $graph_templates_graph_id - the id of the graph to reapply the name to
-*/
+/**
+ * Reapplies the suggested name to a graph title. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_graph_id The ID of the local graph to update.
+ *
+ * @return bool True if the title was successfully updated, false otherwise.
+ */
 function api_reapply_suggested_graph_title($local_graph_id) {
 	global $config;
 
@@ -326,10 +378,13 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	return false;
 }
 
-/* api_get_graphs_from_datasource - gets all graphs related to a data source
-   @arg $local_data_id - the id of the data source
-   @returns - array($id => $name_cache) returns the graph id's and names of the graphs
-  */
+/**
+ * Gets all graphs related to a data source. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_data_id The id of the data source.
+ *
+ * @return array Array($id => $name_cache) returns the graph id's and names of the graphs.
+ */
 function api_get_graphs_from_datasource($local_data_id) {
 	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT graph_templates_graph.local_graph_id AS id,
 		graph_templates_graph.title_cache AS name
@@ -342,6 +397,20 @@ function api_get_graphs_from_datasource($local_data_id) {
 		AND data_template_rrd.local_data_id = ?', array($local_data_id)), 'id', 'name');
 }
 
+/**
+ * Duplicates a graph or graph template. Used as part of Cacti's lib functionality.
+ *
+ * @param int $_local_graph_id The ID of the local graph to duplicate. If provided, the function
+ *   will duplicate this graph.
+ * @param int $_graph_template_id The ID of the graph template to duplicate. If provided, the
+ *   function will duplicate this template.
+ * @param string $graph_title The title for the new graph or template. Placeholders in the title
+ *   will be replaced accordingly.
+ * @param bool $map_to_data_query Whether to map the duplicated graph template to a data query.
+ *   Default is true.
+ *
+ * @return int|false The ID of the newly created local graph or graph template, or false on failure.
+ */
 function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title, $map_to_data_query = true) {
 	global $struct_graph, $struct_graph_item;
 	$transaction_started = false;
@@ -677,6 +746,14 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 	}
 }
 
+/**
+ * Changes the device associated with a given graph. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_graph_id The ID of the local graph to update.
+ * @param int $host_id The ID of the new host to associate with the graph.
+ *
+ * @return bool Returns true if the device was successfully changed, false otherwise.
+ */
 function api_graph_change_device($local_graph_id, $host_id) {
 	$proceed = false;
 

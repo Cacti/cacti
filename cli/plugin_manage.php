@@ -179,6 +179,13 @@ if (cacti_sizeof($plugins)) {
 	}
 }
 
+/**
+ * Handles the plugin manage install allrealms. Used as part of Cacti's CLI functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return void No value is returned.
+ */
 function plugin_manage_install_allrealms($plugin) {
 	print "NOTE: Enabling Plugin '$plugin' permissions for administrative accounts" . PHP_EOL;
 
@@ -193,7 +200,9 @@ function plugin_manage_install_allrealms($plugin) {
 }
 
 /**
- * display_version - displays version information
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
  */
 function display_version() {
 	$version = get_cacti_cli_version();
@@ -201,7 +210,9 @@ function display_version() {
 }
 
 /**
- *display_help - displays the usage of the function
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
  */
 function display_help () {
 	print 'usage: plugin_manage.php [--plugin=S] [--install --enable --allperms] [--uninstall ] [--disable]' . PHP_EOL . PHP_EOL;

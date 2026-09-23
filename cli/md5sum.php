@@ -230,6 +230,15 @@ if ($create) {
 	}
 }
 
+/**
+ * Handles the dirtoarray. Used as part of Cacti's CLI functionality.
+ *
+ * @param mixed $dir The dir.
+ * @param mixed $base The base.
+ * @param mixed $ignore The ignore.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function dirToArray($dir,$base,$ignore) {
 	global $debug,$quiet;
 
@@ -285,12 +294,21 @@ function dirToArray($dir,$base,$ignore) {
 	return $result;
 }
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti md5sum Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help() {
 	display_version();
 
@@ -310,6 +328,15 @@ function display_help() {
 	print "\nWhen no filename is passed, .md5sum is assumed. Only one filename allowed\n";
 }
 
+/**
+ * Handles the fail. Used as part of Cacti's CLI functionality.
+ *
+ * @param mixed $exit_value The exit value.
+ * @param mixed $args The args.
+ * @param int $display_help The display help.
+ *
+ * @return void No value is returned.
+ */
 function fail($exit_value,$args = array(),$display_help = 0) {
 	global $quiet,$fail_msg;
 
@@ -335,6 +362,15 @@ function fail($exit_value,$args = array(),$display_help = 0) {
 	exit($exit_value);
 }
 
+/**
+ * Handles the define exit. Used as part of Cacti's CLI functionality.
+ *
+ * @param mixed $name The name.
+ * @param mixed $value The value.
+ * @param mixed $text The text.
+ *
+ * @return void No value is returned.
+ */
 function define_exit($name, $value, $text) {
 	global $fail_msg;
 

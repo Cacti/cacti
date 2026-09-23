@@ -22,6 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the graph template to XML. Used as part of Cacti's lib functionality.
+ *
+ * @param int $graph_template_id The graph template ID.
+ *
+ * @return string The resulting string.
+ */
 function graph_template_to_xml($graph_template_id) {
 	global $struct_graph, $fields_graph_template_input_edit, $struct_graph_item, $export_errors;
 
@@ -177,6 +184,13 @@ function graph_template_to_xml($graph_template_id) {
 	return $xml_text;
 }
 
+/**
+ * Handles the data template to XML. Used as part of Cacti's lib functionality.
+ *
+ * @param int $data_template_id The data template ID.
+ *
+ * @return string The resulting string.
+ */
 function data_template_to_xml($data_template_id) {
 	global $struct_data_source, $struct_data_source_item, $export_errors;
 
@@ -295,6 +309,13 @@ function data_template_to_xml($data_template_id) {
 	return $xml_text;
 }
 
+/**
+ * Handles the data input method to XML. Used as part of Cacti's lib functionality.
+ *
+ * @param int $data_input_id The data input ID.
+ *
+ * @return string The resulting string.
+ */
 function data_input_method_to_xml($data_input_id) {
 	global $fields_data_input_edit, $fields_data_input_field_edit, $fields_data_input_field_edit_1, $export_errors;
 
@@ -379,9 +400,12 @@ function data_input_method_to_xml($data_input_id) {
 }
 
 
-/** encode a cdef along with all cdef_items as XML text
- * @param int $cdef_id	- the id of the cdef that has to be encoded
- * @return string		- the resulting XML text
+/**
+ * Encode a cdef along with all cdef_items as XML text. Used as part of Cacti's lib functionality.
+ *
+ * @param int $cdef_id The id of the cdef that has to be encoded.
+ *
+ * @return string The resulting XML text.
  */
 function cdef_to_xml($cdef_id) {
 	global $fields_cdef_edit, $export_errors;
@@ -455,9 +479,12 @@ function cdef_to_xml($cdef_id) {
 	return $xml_text;
 }
 
-/** encode given VDEF as XML string
- * @param int $vdef_id  - id of VDEF
- * @return string       - XML text of encoded VDEF
+/**
+ * Encode given VDEF as XML string. Used as part of Cacti's lib functionality.
+ *
+ * @param int $vdef_id Id of VDEF.
+ *
+ * @return string XML text of encoded VDEF.
  */
 function vdef_to_xml($vdef_id) {
 	global $config;
@@ -519,6 +546,13 @@ function vdef_to_xml($vdef_id) {
 	return $xml_text;
 }
 
+/**
+ * Handles the GPRINT preset to XML. Used as part of Cacti's lib functionality.
+ *
+ * @param int $gprint_preset_id The GPRINT preset ID.
+ *
+ * @return string The resulting string.
+ */
 function gprint_preset_to_xml($gprint_preset_id) {
 	global $fields_grprint_presets_edit, $export_errors;
 
@@ -551,6 +585,13 @@ function gprint_preset_to_xml($gprint_preset_id) {
 	return $xml_text;
 }
 
+/**
+ * Handles the data source profile to XML. Used as part of Cacti's lib functionality.
+ *
+ * @param int $data_source_profile_id The data source profile ID.
+ *
+ * @return string The resulting string.
+ */
 function data_source_profile_to_xml($data_source_profile_id) {
 	global $fields_profile_edit, $fields_profile_rra_edit, $export_errors;
 
@@ -635,6 +676,13 @@ function data_source_profile_to_xml($data_source_profile_id) {
 	return $xml_text;
 }
 
+/**
+ * Handles the host template to XML. Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_template_id The host template ID.
+ *
+ * @return string The resulting string.
+ */
 function host_template_to_xml($host_template_id) {
 	global $fields_host_template_edit, $export_errors;
 
@@ -715,6 +763,13 @@ function host_template_to_xml($host_template_id) {
 	return $xml_text;
 }
 
+/**
+ * Handles the data query to XML. Used as part of Cacti's lib functionality.
+ *
+ * @param int $data_query_id The data query ID.
+ *
+ * @return string The resulting string.
+ */
 function data_query_to_xml($data_query_id) {
 	global $fields_data_query_edit, $fields_data_query_item_edit, $export_errors;
 
@@ -873,6 +928,15 @@ function data_query_to_xml($data_query_id) {
 	return $xml_text;
 }
 
+/**
+ * Handles the resolve dependencies. Used as part of Cacti's lib functionality.
+ *
+ * @param string $type The type.
+ * @param int $id The ID.
+ * @param array $dep_array The dep array.
+ *
+ * @return array An array of results.
+ */
 function resolve_dependencies($type, $id, $dep_array) {
 	/* make sure we define our variables */
 	if (!isset($dep_array[$type])) {
@@ -1092,6 +1156,15 @@ function resolve_dependencies($type, $id, $dep_array) {
 	return $dep_array;
 }
 
+/**
+ * Retrieves the item XML. Used as part of Cacti's lib functionality.
+ *
+ * @param string $type The type.
+ * @param int $id The ID.
+ * @param bool $follow_deps The follow deps.
+ *
+ * @return string The resulting string.
+ */
 function get_item_xml($type, $id, $follow_deps) {
 	$xml_text = '';
 	$xml_indent = '';
@@ -1161,6 +1234,13 @@ function get_item_xml($type, $id, $follow_deps) {
 	return $xml_text;
 }
 
+/**
+ * Handles the XML character encode. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $text The text.
+ *
+ * @return string The resulting string.
+ */
 function xml_character_encode($text) {
 	return html_escape($text);
 }

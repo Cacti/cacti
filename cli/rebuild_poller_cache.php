@@ -253,6 +253,17 @@ pushout_debug('Polling Ending');
 
 exit(0);
 
+/**
+ * Handles the pushout master handler. Used as part of Cacti's CLI functionality.
+ *
+ * @param bool $forcerun The forcerun.
+ * @param int $host_id The host ID.
+ * @param int $host_template_id The host template ID.
+ * @param int $data_template_id The data template ID.
+ * @param int $threads The threads.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function pushout_master_handler($forcerun, $host_id, $host_template_id, $data_template_id, $threads) {
 	global $type;
 
@@ -316,12 +327,13 @@ function pushout_master_handler($forcerun, $host_id, $host_template_id, $data_te
 }
 
 /**
- * pushout_launch_child - this function will launch collector children based upon
- *   the maximum number of threads and the process type
+ * This function will launch collector children based upon the maximum number of threads and the
+ * process type. Used as part of Cacti's CLI functionality.
  *
- * @param $thread_id  (int)    The Thread id to launch
+ * @param int $thread_id (int) The Thread id to launch.
+ * @param int $threads The number of threads to run with.
  *
- * @return - NULL
+ * @return void NULL.
  */
 function pushout_launch_child($thread_id, $threads) {
 	global $config, $debug, $host_template_id, $data_template_id;
@@ -336,10 +348,10 @@ function pushout_launch_child($thread_id, $threads) {
 }
 
 /**
- * pushout_processes_running - given a type, determine the number
- *   of sub-type or children that are currently running
+ * Given a type, determine the number of sub-type or children that are currently running. Used as
+ * part of Cacti's CLI functionality.
  *
- * @return - (int) The number of running processes
+ * @return int (int) The number of running processes.
  */
 function pushout_processes_running() {
 	$running = db_fetch_cell('SELECT COUNT(*)
@@ -355,12 +367,12 @@ function pushout_processes_running() {
 }
 
 /**
- * pushout_debug - this simple routine prints a standard message to the console
- *   when running in debug mode.
+ * This simple routine prints a standard message to the console when running in debug mode. Used
+ * as part of Cacti's CLI functionality.
  *
- * @param $message - (string) The message to display
+ * @param string $message (string) The message to display.
  *
- * @return - NULL
+ * @return void NULL.
  */
 function pushout_debug($message) {
 	global $debug;
@@ -371,14 +383,18 @@ function pushout_debug($message) {
 }
 
 /**
- * display_version - displays version information
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
  */
 function display_version() {
 	print 'Cacti Rebuild poller cache Tool, Version ' . CACTI_VERSION . ' ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**
- * display_help - generic help screen for utilities
+ * Generic help screen for utilities. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
  */
 function display_help() {
 	display_version();
@@ -402,11 +418,12 @@ function display_help() {
 }
 
 /**
- * sig_handler - provides a generic means to catch exceptions to the Cacti log.
+ * Provides a generic means to catch exceptions to the Cacti log. Used as part of Cacti's CLI
+ * functionality.
  *
- * @param $signo - (int) the signal that was thrown by the interface.
+ * @param int $signo (int) the signal that was thrown by the interface.
  *
- * @return - null
+ * @return void Null.
  */
 function sig_handler($signo) {
 	global $type, $thread_id;
@@ -432,10 +449,10 @@ function sig_handler($signo) {
 }
 
 /**
- * pushout_kill_running_processes - this function is part of an interrupt
- *   handler to kill children processes when the parent is killed
+ * This function is part of an interrupt handler to kill children processes when the parent is
+ * killed. Used as part of Cacti's CLI functionality.
  *
- * @return - NULL
+ * @return void NULL.
  */
 function pushout_kill_running_processes() {
 	global $type;

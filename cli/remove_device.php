@@ -206,12 +206,21 @@ if (cacti_sizeof($parms)) {
 	exit(0);
 }
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Remove Device Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help() {
 	display_version();
 
@@ -232,6 +241,14 @@ function display_help() {
 	print '    --quiet             batch mode value return' . PHP_EOL . PHP_EOL;
 }
 
+/**
+ * Handles the preg array key match. Used as part of Cacti's CLI functionality.
+ *
+ * @param string $needle The needle.
+ * @param mixed $haystack The haystack.
+ *
+ * @return array An array of results.
+ */
 function preg_array_key_match($needle, $haystack) {
 	global $debug;
 

@@ -112,12 +112,21 @@ if (!empty($host_id)) {
 
 print "DS Added - DS[$local_data_id]\n";
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Data Source, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help() {
 	display_version();
 	print "usage: add_datasource.php --host-id=[ID] --data-template-id=[ID]\n\n";

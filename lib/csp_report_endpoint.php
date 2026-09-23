@@ -30,10 +30,14 @@
  * already set up $config and that function is available. */
 
 /**
- * Self-contained logger for the CSP report endpoint. Prefers cacti_log()
- * when a parent caller has already bootstrapped $config; otherwise writes
- * to PHP's default error log. Either way the report lands somewhere an
- * operator can read it without depending on the Cacti DB.
+ * Contained logger for the CSP report endpoint. Prefers cacti_log() when a parent caller has
+ * already bootstrapped $config; otherwise writes to PHP's default error log. Either way the
+ * report lands somewhere an operator can read it without depending on the Cacti DB. Used as part
+ * of Cacti's lib functionality.
+ *
+ * @param mixed $message The message.
+ *
+ * @return void No value is returned.
  */
 function csp_report_log($message) {
 	$message = preg_replace('/[\x00-\x1f\x7f]/', ' ', (string) $message);
@@ -48,8 +52,13 @@ function csp_report_log($message) {
 }
 
 /**
- * Strip log-injection characters from a CSP report field before interpolation.
- * A crafted report body with embedded CR/LF would forge extra log lines.
+ * Strip log-injection characters from a CSP report field before interpolation. A crafted report
+ * body with embedded CR/LF would forge extra log lines. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param mixed $v The v.
+ *
+ * @return string The resulting string.
  */
 function csp_report_sanitize_field($v) {
 	if (!is_string($v)) {
@@ -64,19 +73,17 @@ function csp_report_sanitize_field($v) {
 }
 
 /**
- * Validate and normalise a raw CSP report POST.
+ * Validate and normalise a raw CSP report POST. Kept as a pure function so it can be exercised in
+ * unit tests without an actual HTTP request context. Returns a result array rather than throwing
+ * so the caller controls the HTTP response code. Used as part of Cacti's lib functionality.
  *
- * Kept as a pure function so it can be exercised in unit tests without
- * an actual HTTP request context. Returns a result array rather than
- * throwing so the caller controls the HTTP response code.
+ * @param array $headers Associative array of request headers (CONTENT_TYPE key).
+ * @param string $body Raw POST body.
+ * @param int $maxBytes Upper bound enforced before JSON parse; 16 KB is large enough for any real
+ *   report but small enough to prevent the process from buffering an attacker- supplied
+ *   multi-megabyte payload into memory.
  *
- * @param array  $headers  Associative array of request headers (CONTENT_TYPE key).
- * @param string $body     Raw POST body.
- * @param int    $maxBytes Upper bound enforced before JSON parse; 16 KB is
- *                         large enough for any real report but small enough
- *                         to prevent the process from buffering an attacker-
- *                         supplied multi-megabyte payload into memory.
- * @return array           ['ok' => bool, 'reason' => string, 'summary' => string]
+ * @return array ['ok' => bool, 'reason' => string, 'summary' => string].
  */
 function csp_report_validate_payload(array $headers, $body, $maxBytes) {
 	$ct = isset($headers['CONTENT_TYPE']) ? strtolower(trim($headers['CONTENT_TYPE'])) : '';
@@ -185,10 +192,14 @@ $result = csp_report_validate_payload(
 	16384
 );
 
-/* Per-IP / per-minute rate cap. The endpoint is unauthenticated by design
- * (the browser fires reports without credentials) so an attacker can flood
- * cacti_log / error_log unless we drop excess events. We always return the
- * normal HTTP status so probing cannot infer the cap. */
+/**
+ * IP / per-minute rate cap. The endpoint is unauthenticated by design * (the browser fires
+ * reports without credentials) so an attacker can flood * cacti_log / error_log unless we drop
+ * excess events. We always return the * normal HTTP status so probing cannot infer the cap. Used
+ * as part of Cacti's lib functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function csp_report_should_log() : bool {
 	$cap = 30;
 
@@ -253,10 +264,14 @@ function csp_report_should_log() : bool {
 }
 
 /**
- * Drop counter files from earlier minutes. Nothing removed them before, so a
- * host taking reports accumulated one file per address per minute until it ran
- * out of inodes. Pruning here keeps the directory to roughly the number of
- * addresses reporting right now.
+ * Drop counter files from earlier minutes. Nothing removed them before, so a host taking reports
+ * accumulated one file per address per minute until it ran out of inodes. Pruning here keeps the
+ * directory to roughly the number of addresses reporting right now. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param mixed $dir The dir.
+ *
+ * @return void No value is returned.
  */
 function csp_report_prune_buckets($dir) : void {
 	/* One request in twenty does the sweep. Every request paying for it would

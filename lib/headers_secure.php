@@ -26,9 +26,11 @@
  */
 class CactiSecureHeaders {
 	/**
-	 * Per-request cryptographic nonce. 18 bytes base64url-encoded (RFC 4648 §5)
-	 * yields 24 chars with no padding. Base64url avoids '+' and '/' which are
-	 * not safe unquoted in CSP values.
+	 * Request cryptographic nonce. 18 bytes base64url-encoded (RFC 4648 §5) yields 24 chars with no
+	 * padding. Base64url avoids '+' and '/' which are not safe unquoted in CSP values. Used as part
+	 * of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
 	 */
 	public static function getNonce() {
 		static $nonce = null;
@@ -73,15 +75,21 @@ class CactiSecureHeaders {
 	}
 
 	/**
-	 * `nonce="..."` attribute string for inline <script>/<style> tags.
+	 * `nonce="..."` attribute string for inline <script>/<style> tags. Used as part of Cacti's lib
+	 * functionality.
+	 *
+	 * @return string The resulting string.
 	 */
 	public static function getNonceAttribute() {
 		return 'nonce="' . self::getNonce() . '"';
 	}
 
 	/**
-	 * Reads the configured CSP script mode and normalises it to a known token.
-	 * Returns '' when read_config_option is unavailable (early CLI bootstrap).
+	 * Reads the configured CSP script mode and normalises it to a known token. Returns '' when
+	 * read_config_option is unavailable (early CLI bootstrap). Used as part of Cacti's lib
+	 * functionality.
+	 *
+	 * @return string The resulting string.
 	 */
 	public static function getCspMode() {
 		if (!function_exists('read_config_option')) {
@@ -95,7 +103,10 @@ class CactiSecureHeaders {
 	}
 
 	/**
-	 * True when the active mode requires per-request nonces in the CSP.
+	 * True when the active mode requires per-request nonces in the CSP. Used as part of Cacti's lib
+	 * functionality.
+	 *
+	 * @return bool True on success, false otherwise.
 	 */
 	public static function isNonceMode() {
 		$mode = self::getCspMode();
@@ -103,15 +114,16 @@ class CactiSecureHeaders {
 	}
 
 	/**
-	 * Pure function: build the CSP policy body string from its inputs.
-	 * Keeping construction separate from emission makes it unit-testable
-	 * without relying on header() side-effects.
+	 * Pure function: build the CSP policy body string from its inputs. Keeping construction separate
+	 * from emission makes it unit-testable without relying on header() side-effects. Used as part of
+	 * Cacti's lib functionality.
 	 *
-	 * @param string $mode       One of '', 'unsafe-eval', 'nonce', 'nonce-report'.
-	 * @param string $nonce      Base64url nonce; ignored when mode is not nonce-based.
+	 * @param string $mode One of '', 'unsafe-eval', 'nonce', 'nonce-report'.
+	 * @param string $nonce Base64url nonce; ignored when mode is not nonce-based.
 	 * @param string $alternates Space-separated alternate source hosts (already sanitized).
 	 * @param string $report_uri Pre-validated report URI; appended only for nonce modes.
-	 * @return string            Full CSP value, suitable for use after the header name.
+	 *
+	 * @return string Full CSP value, suitable for use after the header name.
 	 */
 	public static function buildCspPolicy($mode, $nonce, $alternates, $report_uri = '') {
 		if ($mode === 'nonce' || $mode === 'nonce-report') {
@@ -160,9 +172,13 @@ class CactiSecureHeaders {
 	}
 
 	/**
-	 * Strip characters that are not valid inside a CSP source list token.
-	 * html_escape() is wrong for CSP context because it leaves ';' intact,
-	 * which would terminate a directive early and allow header injection.
+	 * Strip characters that are not valid inside a CSP source list token. html_escape() is wrong for
+	 * CSP context because it leaves ';' intact, which would terminate a directive early and allow
+	 * header injection. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed $raw The raw.
+	 *
+	 * @return string The resulting string.
 	 */
 	private static function sanitizeCspSources($raw) {
 		if (!is_string($raw) || $raw === '') {
@@ -173,14 +189,13 @@ class CactiSecureHeaders {
 	}
 
 	/**
-	 * Default CSP violation report URI. Derived from $url_path so installs
-	 * at /, /cacti2, or behind a rewriting reverse proxy still point at the
-	 * bundled csp_report.php shim. Falls back to /cacti/csp_report.php only
-	 * when $url_path is unset or unreadable.
+	 * Default CSP violation report URI. Derived from $url_path so installs at /, /cacti2, or behind a
+	 * rewriting reverse proxy still point at the bundled csp_report.php shim. Falls back to
+	 * /cacti/csp_report.php only when $url_path is unset or unreadable. The result is always
+	 * normalised to start with a single '/' and to collapse any duplicate path separators introduced
+	 * by trailing slashes in the configured base. Used as part of Cacti's lib functionality.
 	 *
-	 * The result is always normalised to start with a single '/' and to
-	 * collapse any duplicate path separators introduced by trailing slashes
-	 * in the configured base.
+	 * @return string The resulting string.
 	 */
 	private static function defaultReportUri() {
 		$base = '';
@@ -212,8 +227,10 @@ class CactiSecureHeaders {
 	 */
 
 	/**
-	 * Emit the full security-header set. Safe to call multiple times;
-	 * headers_sent() short-circuits re-emission after output begins.
+	 * Emit the full security-header set. Safe to call multiple times; headers_sent() short-circuits
+	 * re-emission after output begins. Used as part of Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
 	 */
 	public static function emitHeaders() {
 		if (headers_sent()) {

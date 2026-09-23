@@ -98,6 +98,12 @@ switch (get_request_var('action')) {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's host templates functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	/* ================= input validation ================= */
@@ -130,6 +136,12 @@ function form_save() {
 /* ------------------------
     The "actions" function
    ------------------------ */
+/**
+ * ------------------------ The "actions" function ------------------------. Used as part of
+ * Cacti's host templates functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function template_item_add_dq() {
 	/* ================= input validation ================= */
@@ -145,6 +157,11 @@ function template_item_add_dq() {
 	raise_message(41);
 }
 
+/**
+ * Handles the template item add gt. Used as part of Cacti's host templates functionality.
+ *
+ * @return void No value is returned.
+ */
 function template_item_add_gt() {
 	/* ================= input validation ================= */
 	get_filter_request_var('host_template_id');
@@ -159,6 +176,11 @@ function template_item_add_gt() {
 	raise_message(41);
 }
 
+/**
+ * Handles the form actions. Used as part of Cacti's host templates functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_actions() {
 	global $host_actions;
 
@@ -277,6 +299,12 @@ function form_actions() {
 /* ---------------------
     Template Functions
    --------------------- */
+/**
+ * --------------------- Template Functions ---------------------. Used as part of Cacti's host
+ * templates functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function template_item_remove_gt_confirm() {
 	/* ================= input validation ================= */
@@ -336,6 +364,11 @@ function template_item_remove_gt_confirm() {
 	<?php
 }
 
+/**
+ * Handles the template item remove gt. Used as part of Cacti's host templates functionality.
+ *
+ * @return void No value is returned.
+ */
 function template_item_remove_gt() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -350,6 +383,12 @@ function template_item_remove_gt() {
 	raise_message(41);
 }
 
+/**
+ * Handles the template item remove dq confirm. Used as part of Cacti's host templates
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function template_item_remove_dq_confirm() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -405,6 +444,11 @@ function template_item_remove_dq_confirm() {
 	<?php
 }
 
+/**
+ * Handles the template item remove dq. Used as part of Cacti's host templates functionality.
+ *
+ * @return void No value is returned.
+ */
 function template_item_remove_dq() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -419,6 +463,11 @@ function template_item_remove_dq() {
 	raise_message(41);
 }
 
+/**
+ * Handles the template edit. Used as part of Cacti's host templates functionality.
+ *
+ * @return void No value is returned.
+ */
 function template_edit() {
 	global $fields_host_template_edit;
 
@@ -634,6 +683,11 @@ function template_edit() {
 	<?php
 }
 
+/**
+ * Handles the template. Used as part of Cacti's host templates functionality.
+ *
+ * @return void No value is returned.
+ */
 function template() {
 	global $host_actions, $item_rows, $device_classes;
 

@@ -132,16 +132,35 @@ while(1) {
 	}
 }
 
+/**
+ * Handles the cache read. Used as part of Cacti's snmpagent persist functionality.
+ *
+ * @param string $oid The OID.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function cache_read($oid) {
 	global $cache;
 	return (isset($cache[$oid]) && $cache[$oid]) ? $cache[$oid] : false;
 }
 
+/**
+ * Handles the cache get next. Used as part of Cacti's snmpagent persist functionality.
+ *
+ * @param string $oid The OID.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function cache_get_next($oid) {
 	global $cache;
 	return (isset($cache[$oid]['next'])) ? $cache[$oid]['next'] : false;
 }
 
+/**
+ * Handles the cache refresh. Used as part of Cacti's snmpagent persist functionality.
+ *
+ * @return void No value is returned.
+ */
 function cache_refresh() {
 	global $config, $cache, $cache_last_refresh;
 

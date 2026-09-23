@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the prime default settings. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function prime_default_settings() {
 	global $settings;
 
@@ -65,10 +70,23 @@ function prime_default_settings() {
 	$_SESSION['settings_primed'] = true;
 }
 
+/**
+ * Handles the install create CSRF secret. Used as part of Cacti's install functionality.
+ *
+ * @param string $file The file.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function install_create_csrf_secret($file) {
 	return csrf_write_secret_atomic($file, csrf_generate_secret());
 }
 
+/**
+ * Handles the install test local database connection. Used as part of Cacti's install
+ * functionality.
+ *
+ * @return string|false The resulting string.
+ */
 function install_test_local_database_connection() {
 	global $database_type, $database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
 
@@ -99,6 +117,12 @@ function install_test_local_database_connection() {
 	}
 }
 
+/**
+ * Handles the install test remote database connection. Used as part of Cacti's install
+ * functionality.
+ *
+ * @return string The resulting string.
+ */
 function install_test_remote_database_connection() {
 	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca;
 
@@ -129,6 +153,11 @@ function install_test_remote_database_connection() {
 	}
 }
 
+/**
+ * Handles the install test temporary table. Used as part of Cacti's install functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function install_test_temporary_table() {
 	$table = 'test_temp_' . rand();
 
@@ -143,6 +172,15 @@ function install_test_temporary_table() {
 	return true;
 }
 
+/**
+ * Handles the DB install execute. Used as part of Cacti's install functionality.
+ *
+ * @param string $sql The SQL.
+ * @param array $params The params.
+ * @param bool $log The log.
+ *
+ * @return int The resulting integer value.
+ */
 function db_install_execute($sql, $params = array(), $log = true) {
 	$status = (db_execute_prepared($sql, $params, $log) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
 
@@ -153,6 +191,17 @@ function db_install_execute($sql, $params = array(), $log = true) {
 	return $status;
 }
 
+/**
+ * Provides database fetch functions during install. Used as part of Cacti's install
+ * functionality.
+ *
+ * @param string $func The func.
+ * @param string $sql The SQL.
+ * @param array $params The params.
+ * @param boolean $log The log.
+ *
+ * @return array Array.
+ */
 function db_install_fetch_function($func, $sql, $params = array(), $log = true) {
 	global $database_last_error;
 
@@ -176,18 +225,54 @@ function db_install_fetch_function($func, $sql, $params = array(), $log = true) 
 	return array('status' => $status, 'data' => $data);
 }
 
+/**
+ * Handles the DB install fetch assoc. Used as part of Cacti's install functionality.
+ *
+ * @param string $sql The SQL.
+ * @param array $params The params.
+ * @param bool $log The log.
+ *
+ * @return array An array of results.
+ */
 function db_install_fetch_assoc($sql, $params = array(), $log = true) {
 	return db_install_fetch_function('db_fetch_assoc_prepared', $sql, $params, $log);
 }
 
+/**
+ * Handles the DB install fetch cell. Used as part of Cacti's install functionality.
+ *
+ * @param string $sql The SQL.
+ * @param array $params The params.
+ * @param bool $log The log.
+ *
+ * @return array An array of results.
+ */
 function db_install_fetch_cell($sql, $params = array(), $log = true) {
 	return db_install_fetch_function('db_fetch_cell_prepared', $sql, $params, $log);
 }
 
+/**
+ * Handles the DB install fetch row. Used as part of Cacti's install functionality.
+ *
+ * @param string $sql The SQL.
+ * @param array $params The params.
+ * @param bool $log The log.
+ *
+ * @return array An array of results.
+ */
 function db_install_fetch_row($sql, $params = array(), $log = true) {
 	return db_install_fetch_function('db_fetch_row_prepared', $sql, $params, $log);
 }
 
+/**
+ * Handles the DB install add column. Used as part of Cacti's install functionality.
+ *
+ * @param string $table The table.
+ * @param array $column The column.
+ * @param bool $ignore The ignore.
+ *
+ * @return int The resulting integer value.
+ */
 function db_install_add_column($table, $column, $ignore = true) {
 	// Example: db_install_add_column ('plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
 	global $database_last_error;
@@ -210,6 +295,17 @@ function db_install_add_column($table, $column, $ignore = true) {
 	return $status;
 }
 
+/**
+ * Handles the DB install add key. Used as part of Cacti's install functionality.
+ *
+ * @param string $table The table.
+ * @param string $type The type.
+ * @param string $key The key.
+ * @param mixed $columns The columns.
+ * @param string $using The using.
+ *
+ * @return int The resulting integer value.
+ */
 function db_install_add_key($table, $type, $key, $columns, $using = '') {
 	if (!is_array($columns)) {
 		$columns = array($columns);
@@ -241,6 +337,15 @@ function db_install_add_key($table, $type, $key, $columns, $using = '') {
 	return $status;
 }
 
+/**
+ * Handles the DB install drop key. Used as part of Cacti's install functionality.
+ *
+ * @param string $table The table.
+ * @param string $type The type.
+ * @param string $key The key.
+ *
+ * @return int The resulting integer value.
+ */
 function db_install_drop_key($table, $type, $key) {
 	$type = strtoupper(str_ireplace('UNIQUE ', '', $type));
 	if ($type == 'KEY' && $key == 'PRIMARY') {
@@ -258,6 +363,13 @@ function db_install_drop_key($table, $type, $key) {
 	return $status;
 }
 
+/**
+ * Handles the DB install drop table. Used as part of Cacti's install functionality.
+ *
+ * @param string $table The table.
+ *
+ * @return int The resulting integer value.
+ */
 function db_install_drop_table($table) {
 	$sql = 'DROP TABLE `' . $table . '`';
 
@@ -270,6 +382,14 @@ function db_install_drop_table($table) {
 	return $status;
 }
 
+/**
+ * Handles the DB install rename table. Used as part of Cacti's install functionality.
+ *
+ * @param string $table The table.
+ * @param string $newname The newname.
+ *
+ * @return int The resulting integer value.
+ */
 function db_install_rename_table($table, $newname) {
 	$sql = 'RENAME TABLE `' . $table . '` TO `' . $newname . '`';
 
@@ -282,6 +402,14 @@ function db_install_rename_table($table, $newname) {
 	return $status;
 }
 
+/**
+ * Handles the DB install drop column. Used as part of Cacti's install functionality.
+ *
+ * @param string $table The table.
+ * @param string $column The column.
+ *
+ * @return int The resulting integer value.
+ */
 function db_install_drop_column($table, $column) {
 	$sql = 'ALTER TABLE `' . $table . '` DROP `' . $column . '`';
 
@@ -294,6 +422,15 @@ function db_install_drop_column($table, $column) {
 	return $status;
 }
 
+/**
+ * Handles the DB install add cache. Used as part of Cacti's install functionality.
+ *
+ * @param int $status The status.
+ * @param string $sql The SQL.
+ * @param mixed $params The params.
+ *
+ * @return void No value is returned.
+ */
 function db_install_add_cache($status, $sql, $params = NULL) {
 	global $cacti_upgrade_version, $database_last_error, $database_upgrade_status;
 
@@ -353,6 +490,13 @@ function db_install_add_cache($status, $sql, $params = NULL) {
 	}
 }
 
+/**
+ * Handles the find search paths. Used as part of Cacti's install functionality.
+ *
+ * @param string $os The OS.
+ *
+ * @return array An array of results.
+ */
 function find_search_paths($os = 'unix') {
 	global $config;
 
@@ -421,6 +565,14 @@ function find_search_paths($os = 'unix') {
 	return $search_paths;
 }
 
+/**
+ * Handles the DB install swap setting. Used as part of Cacti's install functionality.
+ *
+ * @param string $old_setting The old setting.
+ * @param string $new_setting The new setting.
+ *
+ * @return void No value is returned.
+ */
 function db_install_swap_setting($old_setting, $new_setting) {
 	$exists = db_install_fetch_cell('SELECT COUNT(*) FROM settings WHERE name = ?', array($new_setting));
 	if (empty($exists['data'])) {
@@ -432,6 +584,13 @@ function db_install_swap_setting($old_setting, $new_setting) {
 	}
 }
 
+/**
+ * Handles the find best path. Used as part of Cacti's install functionality.
+ *
+ * @param string $binary_name The binary name.
+ *
+ * @return string The resulting string.
+ */
 function find_best_path($binary_name) {
 	global $config;
 
@@ -448,6 +607,11 @@ function find_best_path($binary_name) {
 	return '';
 }
 
+/**
+ * Handles the install setup get templates. Used as part of Cacti's install functionality.
+ *
+ * @return array An array of results.
+ */
 function install_setup_get_templates() {
 	global $config;
 
@@ -532,6 +696,11 @@ function install_setup_get_templates() {
 	return $info;
 }
 
+/**
+ * Handles the install setup get tables. Used as part of Cacti's install functionality.
+ *
+ * @return array|false An array of results.
+ */
 function install_setup_get_tables() {
 	/* ensure all tables are utf8 enabled */
 	$db_tables = get_cacti_base_tables();
@@ -578,6 +747,13 @@ function install_setup_get_tables() {
 	return $t;
 }
 
+/**
+ * Handles the to array. Used as part of Cacti's install functionality.
+ *
+ * @param SimpleXMLElement|false|string|array $data The data.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function to_array ($data) {
 	if (is_object($data)) {
 		$data = get_object_vars($data);
@@ -585,10 +761,17 @@ function to_array ($data) {
 	return (is_array($data)) ? array_map(__FUNCTION__,$data) : $data;
 }
 
-/* Here, we define each name, default value, type, and path check for each value
-we want the user to input. The "name" field must exist in the 'settings' table for
-this to work. Cacti also uses different default values depending on what OS it is
-running on. */
+/**
+ * Here, we define each name, default value, type, and path check for each value we want the user
+ * to input. The "name" field must exist in the 'settings' table for this to work. Cacti also uses
+ * different default values depending on what OS it is running on. Used as part of Cacti's install
+ * functionality.
+ *
+ * @param string $name The name.
+ * @param array $defaultPaths The defaultpaths.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 
 function install_tool_path($name, $defaultPaths) {
 	global $config, $settings;
@@ -636,6 +819,11 @@ function install_tool_path($name, $defaultPaths) {
 	return $tool;
 }
 
+/**
+ * Handles the install file paths. Used as part of Cacti's install functionality.
+ *
+ * @return array An array of results.
+ */
 function install_file_paths() {
 	global $config, $settings;
 
@@ -770,6 +958,11 @@ function install_file_paths() {
 	return $input;
 }
 
+/**
+ * Handles the remote update config file. Used as part of Cacti's install functionality.
+ *
+ * @return string The resulting string.
+ */
 function remote_update_config_file() {
 	global $config, $rdatabase_type, $rdatabase_hostname, $rdatabase_username,
 		$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries,
@@ -864,12 +1057,13 @@ function remote_update_config_file() {
 }
 
 /**
- * set_install_config_option - Set a config option into the local database only
+ * Set a config option into the local database only. Used as part of Cacti's install
+ * functionality.
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- * @param $value       - the values to be saved
+ * @param string $name The name of the configuration setting as specified $settings array.
+ * @param mixed $value The values to be saved.
  *
- * @return null        - nothing is returned
+ * @return null Nothing is returned.
  */
 function set_install_config_option($name, $value) {
 	global $config, $local_db_cnn_id;
@@ -901,6 +1095,11 @@ function set_install_config_option($name, $value) {
 	}
 }
 
+/**
+ * Handles the import colors. Used as part of Cacti's install functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function import_colors() {
 	global $config;
 
@@ -930,26 +1129,81 @@ function import_colors() {
 	return true;
 }
 
+/**
+ * Handles the log install debug. Used as part of Cacti's install functionality.
+ *
+ * @param string $section The section.
+ * @param string $text The text.
+ * @param bool $background The background.
+ *
+ * @return void No value is returned.
+ */
 function log_install_debug($section, $text, $background = false) {
 	log_install_and_file(POLLER_VERBOSITY_DEBUG, $text, $section, $background);
 }
 
+/**
+ * Handles the log install low. Used as part of Cacti's install functionality.
+ *
+ * @param string $section The section.
+ * @param string $text The text.
+ * @param bool $background The background.
+ *
+ * @return void No value is returned.
+ */
 function log_install_low($section, $text, $background = false) {
 	log_install_and_file(POLLER_VERBOSITY_LOW, $text, $section, $background);
 }
 
+/**
+ * Handles the log install medium. Used as part of Cacti's install functionality.
+ *
+ * @param string $section The section.
+ * @param string $text The text.
+ * @param bool $background The background.
+ *
+ * @return void No value is returned.
+ */
 function log_install_medium($section, $text, $background = false) {
 	log_install_and_file(POLLER_VERBOSITY_MEDIUM, $text, $section, $background);
 }
 
+/**
+ * Handles the log install high. Used as part of Cacti's install functionality.
+ *
+ * @param string $section The section.
+ * @param string $text The text.
+ * @param bool $background The background.
+ *
+ * @return void No value is returned.
+ */
 function log_install_high($section, $text, $background = false) {
 	log_install_and_file(POLLER_VERBOSITY_HIGH, $text, $section, $background);
 }
 
+/**
+ * Handles the log install always. Used as part of Cacti's install functionality.
+ *
+ * @param string $section The section.
+ * @param string $text The text.
+ * @param bool $background The background.
+ *
+ * @return void No value is returned.
+ */
 function log_install_always($section, $text, $background = false) {
 	log_install_and_file(POLLER_VERBOSITY_NONE, $text, $section, $background);
 }
 
+/**
+ * Handles the log install and file. Used as part of Cacti's install functionality.
+ *
+ * @param int $level The level.
+ * @param string $text The text.
+ * @param string $section The section.
+ * @param bool $background The background.
+ *
+ * @return void No value is returned.
+ */
 function log_install_and_file($level, $text, $section = '', $background = false) {
 	$level = log_install_level_sanitize($level);
 	$name = 'INSTALL:';
@@ -963,6 +1217,13 @@ function log_install_and_file($level, $text, $section = '', $background = false)
 	}
 }
 
+/**
+ * Handles the log install section level. Used as part of Cacti's install functionality.
+ *
+ * @param string $section The section.
+ *
+ * @return int The resulting integer value.
+ */
 function log_install_section_level($section) {
 	$log_level = POLLER_VERBOSITY_NONE;
 	$log_install = log_install_level('log_install', POLLER_VERBOSITY_NONE);
@@ -978,11 +1239,28 @@ function log_install_section_level($section) {
 	return $log_level;
 }
 
+/**
+ * Handles the log install level. Used as part of Cacti's install functionality.
+ *
+ * @param string $option The option.
+ * @param int $default_level The default level.
+ *
+ * @return int The resulting integer value.
+ */
 function log_install_level($option, $default_level) {
 	$level = read_config_option($option, true);
 	return log_install_level_sanitize($level, $default_level, $option);
 }
 
+/**
+ * // TODO: Why is option passed to this function? Used as part of Cacti's install functionality.
+ *
+ * @param mixed $level The level.
+ * @param int $default_level The default level.
+ * @param string $option The option.
+ *
+ * @return int The resulting integer value.
+ */
 function log_install_level_sanitize($level, $default_level = POLLER_VERBOSITY_NONE, $option = '') {
 	if (empty($level) || !is_numeric($level)) {
 		$level = $default_level;
@@ -998,6 +1276,13 @@ function log_install_level_sanitize($level, $default_level = POLLER_VERBOSITY_NO
 	return $level;
 }
 
+/**
+ * Handles the log install level name. Used as part of Cacti's install functionality.
+ *
+ * @param int $level The level.
+ *
+ * @return string The resulting string.
+ */
 function log_install_level_name($level) {
 	$name = 'Unknown (' . $level . ')';
 	switch ($level) {
@@ -1020,6 +1305,17 @@ function log_install_level_name($level) {
 	return $name;
 }
 
+/**
+ * Handles the log install to file. Used as part of Cacti's install functionality.
+ *
+ * @param string $section The section.
+ * @param string $data The data.
+ * @param int $flags The flags.
+ * @param int $level The level.
+ * @param bool $force The force.
+ *
+ * @return void No value is returned.
+ */
 function log_install_to_file($section, $data, $flags = FILE_APPEND, $level = POLLER_VERBOSITY_DEBUG, $force = false) {
 	global $config, $debug;
 	$log_level = log_install_section_level($section);
@@ -1048,10 +1344,13 @@ function log_install_to_file($section, $data, $flags = FILE_APPEND, $level = POL
 	}
 }
 
-/** repair_automation() - Repairs mangled automation graph rules based
- *  upon the change in the way that Cacti imports the Graph Templates after
- *  Cacti 1.2.4.
- **/
+/**
+ * Repair_automation() - Repairs mangled automation graph rules based upon the change in the way
+ * that Cacti imports the Graph Templates after Cacti 1.2.4. Used as part of Cacti's install
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function repair_automation() {
 	log_install_always('', 'Repairing Automation Rules');
 
@@ -1117,6 +1416,11 @@ function repair_automation() {
 	}
 }
 
+/**
+ * Handles the install full sync. Used as part of Cacti's install functionality.
+ *
+ * @return array An array of results.
+ */
 function install_full_sync() {
 	global $config;
 

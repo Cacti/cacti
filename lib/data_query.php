@@ -22,6 +22,25 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Executes a data query for a given host and SNMP query ID. This function handles various
+ * scenarios such as host status, poller assignment, and data query type. It also manages
+ * re-indexing, orphaned data, and updates related caches. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $host_id The ID of the host for which the data query is being run.
+ * @param int $snmp_query_id The ID of the SNMP query to execute.
+ * @param bool $automation Whether the query is being run as part of an automation process.
+ *   Default is false.
+ * @param bool $force Whether to force the re-indexing and cache updates. Default is false.
+ *
+ * @return mixed Returns false if the query fails or the host is down/disabled. Returns true or
+ *   the result of the query execution otherwise.
+ *
+ * @global array $config      Global configuration array.
+ * @global array $input_types Global array of input types.
+ * @throws Exception If there are issues with database queries or remote calls.
+ */
 function run_data_query($host_id, $snmp_query_id, $automation = false, $force = false) {
 	global $config, $input_types;
 
@@ -462,6 +481,14 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 	return (isset($result) ? $result : true);
 }
 
+/**
+ * Removes disabled items from the database based on the provided orphaned IDs. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param array $orphaned_ids An array of orphaned `local_data_id` values to be removed.
+ *
+ * @return void No value is returned.
+ */
 function data_query_remove_disabled_items($orphaned_ids) {
 	if (cacti_sizeof($orphaned_ids)) {
 		db_execute_prepared('DELETE FROM poller_item
@@ -486,6 +513,18 @@ function data_query_remove_disabled_items($orphaned_ids) {
 	}
 }
 
+/**
+ * Checks if a new sort field is suitable for updating the sort field of a host's SNMP query. Used
+ * as part of Cacti's lib functionality.
+ *
+ * @param string $new_sort_field The new sort field to validate.
+ * @param string $old_sort_field The current sort field to compare against.
+ * @param int $host_id The ID of the host associated with the SNMP query.
+ * @param int $snmp_query_id The ID of the SNMP query being validated.
+ *
+ * @return bool Returns true if the new sort field is suitable and the sort field can be updated;
+ *   otherwise, returns false if the new sort field is not suitable.
+ */
 function query_check_suitable($new_sort_field, $old_sort_field, $host_id, $snmp_query_id) {
 	if ($new_sort_field == $old_sort_field) {
 		query_debug_timer_offset('data_query', __esc('Checking for Sort Field change.  No changes detected.'));
@@ -527,6 +566,14 @@ function query_check_suitable($new_sort_field, $old_sort_field, $host_id, $snmp_
 	return true;
 }
 
+/**
+ * Remaps SNMP indexes for local data entries and updates associated graph templates. Used as part
+ * of Cacti's lib functionality.
+ *
+ * @param array $local_data An array of local data IDs to process.
+ *
+ * @return void No value is returned.
+ */
 function data_query_remap_indexes($local_data) {
 	if (cacti_sizeof($local_data)) {
 		foreach($local_data as $id) {
@@ -555,6 +602,17 @@ function data_query_remap_indexes($local_data) {
 	}
 }
 
+/**
+ * Updates the input method for a given SNMP query ID by changing the associated data input ID in
+ * the database. This function ensures that the data templates and their associated data inputs
+ * are updated correctly when the input method changes. Used as part of Cacti's lib functionality.
+ *
+ * @param int $snmp_query_id The ID of the SNMP query to update.
+ * @param int $previous_input_id The previous data input ID associated with the SNMP query.
+ * @param int $new_input_id The new data input ID to associate with the SNMP query (optional).
+ *
+ * @return void No value is returned.
+ */
 function data_query_update_input_method($snmp_query_id, $previous_input_id, $new_input_id = '') {
 	$change_data_input = false;
 
@@ -596,6 +654,17 @@ function data_query_update_input_method($snmp_query_id, $previous_input_id, $new
 	}
 }
 
+/**
+ * Retrieves the data query array for a given SNMP query ID. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $snmp_query_id The ID of the SNMP query to retrieve the data query array for.
+ *
+ * @return array The parsed data query array. Returns an empty array if the XML file cannot be
+ *   found.
+ *
+ * @throws Exception If there is an error during the XML file processing.
+ */
 function get_data_query_array($snmp_query_id) {
 	global $config, $data_query_xml_arrays;
 
@@ -642,6 +711,15 @@ function get_data_query_array($snmp_query_id) {
 	return $data_query_xml_arrays[$snmp_query_id];
 }
 
+/**
+ * Executes a data query script for a specified host and SNMP query ID. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param int $host_id The ID of the host for which the data query is executed.
+ * @param int $snmp_query_id The ID of the SNMP query associated with the data query.
+ *
+ * @return bool Returns true on successful execution and data retrieval, or false on failure.
+ */
 function query_script_host($host_id, $snmp_query_id) {
 	$script_queries = get_data_query_array($snmp_query_id);
 
@@ -768,6 +846,12 @@ function query_script_host($host_id, $snmp_query_id) {
 	return true;
 }
 
+/**
+ * Starts the query debug timer by recording the current time. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function query_debug_timer_start() {
 	global $query_debug_timer, $query_debug_start;
 
@@ -776,6 +860,14 @@ function query_debug_timer_start() {
 	$query_debug_start = $query_debug_timer;
 }
 
+/**
+ * Logs the time offset for debugging purposes. Used as part of Cacti's lib functionality.
+ *
+ * @param string $section The section or context of the debug log entry.
+ * @param string $message A descriptive message to include in the debug log.
+ *
+ * @return float The time delta (in seconds) since the last recorded timestamp.
+ */
 function query_debug_timer_offset($section, $message) {
 	global $query_debug_timer, $query_debug_start;
 
@@ -794,6 +886,15 @@ function query_debug_timer_offset($section, $message) {
 	return $delta;
 }
 
+/**
+ * Stops the query debug timer, calculates the elapsed time, and logs the result. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param string $section The section or context in which the debug timer is being stopped.
+ * @param string $message A custom message to include in the debug log entry.
+ *
+ * @return float The delta time (time elapsed since the last checkpoint) in seconds.
+ */
 function query_debug_timer_stop($section, $message) {
 	global $query_debug_timer, $query_debug_start;
 
@@ -809,6 +910,17 @@ function query_debug_timer_stop($section, $message) {
 	return $delta;
 }
 
+/**
+ * Queries SNMP data for a specific host and SNMP query ID. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $host_id The ID of the host to query.
+ * @param int $snmp_query_id The ID of the SNMP query to execute.
+ *
+ * @return bool Returns true on success, or false on failure.
+ *
+ * @throws Exception If there are issues with the SNMP session or query execution.
+ */
 function query_snmp_host($host_id, $snmp_query_id) {
 	global $config, $data_query_rewrite_indexes_cache;
 
@@ -1473,6 +1585,21 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	return true;
 }
 
+/**
+ * Formats a data query record for insertion into the database. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $host_id The ID of the host associated with the data query.
+ * @param int $snmp_query_id The ID of the SNMP query being processed.
+ * @param string $field_name The name of the field being queried.
+ * @param mixed $rewrite_value Optional value used to rewrite the SNMP field value.
+ * @param string $value The value retrieved from the SNMP query.
+ * @param string $snmp_index The SNMP index associated with the value.
+ * @param string $oid The Object Identifier (OID) for the SNMP query.
+ *
+ * @return string A formatted string representing the data query record, ready for database
+ *   insertion.
+ */
 function data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value, $snmp_index, $oid) {
 	global $data_query_rewrite_indexes_cache;
 	if ($rewrite_value !== null) {
@@ -1492,12 +1619,33 @@ function data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrit
 	return "($host_id, $snmp_query_id, " . db_qstr($field_name) . ', ' . db_qstr($value) . ', ' . db_qstr($snmp_index) . ', ' . db_qstr($oid) . ', 1)';
 }
 
+/**
+ * Validates if a given string contains only Unicode letters, numbers, whitespace, and a specific
+ * set of special characters. Used as part of Cacti's lib functionality.
+ *
+ * @param string $value The input string to validate.
+ *
+ * @return int Returns 1 if the string matches the pattern, 0 if it does not.
+ */
 function data_query_ctype_print_unicode($value) {
 	$pattern = "~^[\pL\pN\s\"\~" . preg_quote("!#$%&'()*+,-./:;<=>?@[\]^_`{|}´") . "]+$~u";
 
 	return preg_match($pattern, $value);
 }
 
+/**
+ * Updates the SNMP host cache for a specific host and SNMP query using the provided data buffer.
+ * Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_id The ID of the host whose SNMP cache is being updated.
+ * @param int $snmp_query_id The ID of the SNMP query associated with the cache entries.
+ * @param & $output_array An array of records to be inserted or updated in the cache. Each record
+ *   should be a string formatted as: "(host_id, snmp_query_id, field_name, field_value, snmp_index,
+ *   oid, present)".
+ * @param & $empty_types An array of field names to be marked as present in the cache.
+ *
+ * @return void No value is returned.
+ */
 function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$output_array, &$empty_types) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
 	db_execute_prepared('UPDATE host_snmp_cache
@@ -1564,16 +1712,23 @@ function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$ou
 		array($host_id, $snmp_query_id));
 }
 
-/* data_query_rewrite_indexes - returns array of rewritten indexes
-	@arg $errmsg array that will contain warnings if any
-	@arg $host_id
-	@arg $snmp_query_id
-	@arg $rewrite_index - value of <rewrite_index> from data query XML
-	@arg $snmp_indexes - array of snmp indexes as it used in query_snmp_host() or single index
-	@arg $fields_processed - array of field names that are already processed in query_snmp_host(),
-		refusing non-processed (e.g. stale) fields to be used as index rewrite source
-	@returns - (array) of original snmp indexes associated with rewritten ones
-*/
+/**
+ * Returns array of rewritten indexes. Used as part of Cacti's lib functionality.
+ *
+ * @param & $errmsg Array that will contain warnings if any.
+ * @param int $host_id The ID of the host for which the SNMP query is being processed.
+ * @param int $snmp_query_id The ID of the SNMP query being processed.
+ * @param string $rewrite_index Value of <rewrite_index> from data query XML.
+ * @param array|string $snmp_indexes Array of snmp indexes as it used in query_snmp_host() or
+ *   single index.
+ * @param array|bool $fields_processed Array of field names that are already processed in
+ *   query_snmp_host(), refusing non-processed (e.g. stale) fields to be used as index rewrite
+ *   source.
+ *
+ * @return array|string|null (array) of original snmp indexes associated with rewritten ones.
+ *
+ * @throws Exception This function does not explicitly throw exceptions, but database or other errors
+ */
 
 function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite_index, $snmp_indexes, $fields_processed = false) {
 	global $data_query_rewrite_indexes_cache;
@@ -1654,11 +1809,17 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 	return $out;
 }
 
-/* rewrite_snmp_enum_value - returns rewritten $value based on rewrite map
-	@arg $field_name - name of field being rewritten, used for cache purposes
-	@arg $value - value to be translated
-	@arg $map - translation map in serialize()/array form
-	@returns - rewritten value if possible, original one otherwise*/
+/**
+ * Returns rewritten $value based on rewrite map. Used as part of Cacti's lib functionality.
+ *
+ * @param string|null $field_name Name of field being rewritten, used for cache purposes.
+ * @param string|null $value Value to be translated.
+ * @param mixed $map Translation map in serialize()/array form.
+ *
+ * @return string|null Rewritten value if possible, original one otherwise.
+ *
+ * @throws Exception If the translation map cannot be parsed.
+ */
 function rewrite_snmp_enum_value($field_name, $value = null, $map = null) {
 	static $mapcache = array();
 
@@ -1719,13 +1880,17 @@ function rewrite_snmp_enum_value($field_name, $value = null, $map = null) {
 	return $value;
 }
 
-/* data_query_index - returns an array containing the data query ID and index value given
-	a data query index type/value combination and a host ID
-   @arg $index_type - the name of the index to match
-   @arg $index_value - the value of the index to match
-   @arg $host_id - (int) the host ID to match
-   @arg $data_query_id - (int) the data query ID to match
-   @returns - (array) the data query ID and index that matches the three arguments */
+/**
+ * Returns an array containing the data query ID and index value given a data query index
+ * type/value combination and a host ID. Used as part of Cacti's lib functionality.
+ *
+ * @param string $index_type The name of the index to match.
+ * @param string $index_value The value of the index to match.
+ * @param int $host_id (int) the host ID to match.
+ * @param int $data_query_id (int) the data query ID to match.
+ *
+ * @return string|null (array) the data query ID and index that matches the three arguments.
+ */
 function data_query_index($index_type, $index_value, $host_id, $data_query_id) {
 	return db_fetch_cell_prepared("SELECT snmp_index
 		FROM host_snmp_cache
@@ -1736,15 +1901,15 @@ function data_query_index($index_type, $index_value, $host_id, $data_query_id) {
 		array($index_type, $index_value, $host_id, $data_query_id));
 }
 
-/* data_query_field_list - returns an array containing data query information for a given data source
-   @arg $data_template_data_id - the ID of the data source to retrieve information for
-   @returns - (array) an array that looks like:
-	Array
-	(
-	   [index_type] => ifIndex
-	   [index_value] => 3
-	   [output_type] => 13
-	) */
+/**
+ * Returns an array containing data query information for a given data source. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param int $data_template_data_id The ID of the data source to retrieve information for.
+ *
+ * @return array (array) an array that looks like: Array ( [index_type] => ifIndex [index_value]
+ *   => 3 [output_type] => 13 ).
+ */
 function data_query_field_list($data_template_data_id) {
 	if (!is_numeric($data_template_data_id)) {
 		return 0;
@@ -1766,20 +1931,29 @@ function data_query_field_list($data_template_data_id) {
 	}
 }
 
-/* encode_data_query_index - encodes a data query index value so that it can be included
-	inside of a form
-   @arg $index - the index name to encode
-   @returns - the encoded data query index */
+/**
+ * Encodes a data query index value so that it can be included inside of a form. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param string $index The index name to encode.
+ *
+ * @return string The encoded data query index.
+ */
 function encode_data_query_index($index) {
 	return md5($index);
 }
 
-/* decode_data_query_index - decodes a data query index value so that it can be read from
-	a form
-   @arg $encoded_index - the index that was encoded with encode_data_query_index()
-   @arg $data_query_id - the id of the data query that this index belongs to
-   @arg $encoded_index - the id of the host that this index belongs to
-   @returns - the decoded data query index */
+/**
+ * Decodes a data query index value so that it can be read from a form. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param string $encoded_index The index that was encoded with encode_data_query_index() the id
+ *   of the host that this index belongs to.
+ * @param int $data_query_id The id of the data query that this index belongs to.
+ * @param int $host_id The ID of the host associated with the SNMP index.
+ *
+ * @return mixed The decoded data query index.
+ */
 function decode_data_query_index($encoded_index, $data_query_id, $host_id) {
 	/* yes, i know MySQL has a MD5() function that would make this a bit quicker. however i would like to
 	keep things abstracted for now so Cacti works with ADODB fully when i get around to porting my db calls */
@@ -1798,10 +1972,15 @@ function decode_data_query_index($encoded_index, $data_query_id, $host_id) {
 	}
 }
 
-/* update_data_query_cache - updates the local data query cache for each graph AND data
-	source tied to this host/data query
-   @arg $host_id - the id of the host to refresh
-   @arg $data_query_id - the id of the data query to refresh */
+/**
+ * Updates the local data query cache for each graph AND data source tied to this host/data query.
+ * Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_id The id of the host to refresh.
+ * @param int $data_query_id The id of the data query to refresh.
+ *
+ * @return void No value is returned.
+ */
 function update_data_query_cache($host_id, $data_query_id) {
 	$graphs = db_fetch_assoc_prepared('SELECT *
 		FROM graph_local
@@ -1835,9 +2014,20 @@ function update_data_query_cache($host_id, $data_query_id) {
 	query_debug_timer_offset('data_query', __esc('Re-Indexing Data Query complete'));
 }
 
-/* update_graph_data_query_cache - updates the local data query cache for a particular
-	graph
-   @arg $local_graph_id - the id of the graph to update the data query cache for */
+/**
+ * Updates the local data query cache for a particular graph. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $local_graph_id The id of the graph to update the data query cache for.
+ * @param int $host_id The ID of the host associated with the graph. If not provided, it will be
+ *   fetched from the database.
+ * @param int $data_query_id The ID of the data query. If not provided, it will be fetched based
+ *   on the graph's output type.
+ * @param string $previous_index The previous index value. If the current index differs from this
+ *   value, the graph's index will be updated.
+ *
+ * @return void No value is returned.
+ */
 function update_graph_data_query_cache($local_graph_id, $host_id = '', $data_query_id = '', $previous_index = '') {
 	global $data_query_id_cache;
 
@@ -1892,9 +2082,20 @@ function update_graph_data_query_cache($local_graph_id, $host_id = '', $data_que
 	}
 }
 
-/* update_data_source_data_query_cache - updates the local data query cache for a particular
-	data source
-   @arg $local_data_id - the id of the data source to update the data query cache for */
+/**
+ * Updates the local data query cache for a particular data source. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $local_data_id The id of the data source to update the data query cache for.
+ * @param int $host_id The ID of the host associated with the data source. If not provided, it
+ *   will be fetched from the database.
+ * @param int $data_query_id The ID of the SNMP query. If not provided, it will be determined
+ *   based on the data source's output type.
+ * @param string $previous_index The previous index value. If the current index matches the
+ *   previous index, no update will occur.
+ *
+ * @return bool Returns true if the data query cache was updated successfully, false otherwise.
+ */
 function update_data_source_data_query_cache($local_data_id, $host_id = '', $data_query_id = '', $previous_index = '') {
 	global $data_query_id_cache;
 
@@ -1950,13 +2151,16 @@ function update_data_source_data_query_cache($local_data_id, $host_id = '', $dat
 	return false;
 }
 
-/* get_formatted_data_query_indexes - obtains a list of indexes for a host/data query that
-	is sorted by the chosen index field and formatted using the data query index title
-	format
-   @arg $host_id - the id of the host which contains the data query
-   @arg $data_query_id - the id of the data query to retrieve a list of indexes for
-   @returns - an array formatted like the following:
-	$arr[snmp_index] = 'formatted data query index string' */
+/**
+ * Obtains a list of indexes for a host/data query that is sorted by the chosen index field and
+ * formatted using the data query index title format. Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_id The id of the host which contains the data query.
+ * @param int $data_query_id The id of the data query to retrieve a list of indexes for.
+ *
+ * @return array An array formatted like the following: $arr[snmp_index] = 'formatted data query
+ *   index string'.
+ */
 function get_formatted_data_query_indexes($host_id, $data_query_id) {
 	global $config;
 
@@ -2032,12 +2236,16 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 	return $sorted_results;
 }
 
-/* get_formatted_data_query_index - obtains a single index for a host/data query/data query
-	index that is formatted using the data query index title format
-   @arg $host_id - the id of the host which contains the data query
-   @arg $data_query_id - the id of the data query which contains the data query index
-   @arg $data_query_index - the index to retrieve the formatted name for
-   @returns - a string containing the formatted name for the given data query index */
+/**
+ * Obtains a single index for a host/data query/data query index that is formatted using the data
+ * query index title format. Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_id The id of the host which contains the data query.
+ * @param int $data_query_id The id of the data query which contains the data query index.
+ * @param string $data_query_index The index to retrieve the formatted name for.
+ *
+ * @return string A string containing the formatted name for the given data query index.
+ */
 function get_formatted_data_query_index($host_id, $data_query_id, $data_query_index) {
 	/* from the xml; cached in 'host_snmp_query' */
 	$sort_cache = db_fetch_row_prepared('SELECT sort_field, title_format
@@ -2049,6 +2257,15 @@ function get_formatted_data_query_index($host_id, $data_query_id, $data_query_in
 	return substitute_snmp_query_data($sort_cache['title_format'], $host_id, $data_query_id, $data_query_index);
 }
 
+/**
+ * Calculates or sets the 'index_order' key in the provided raw XML array. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param & $raw_xml The raw XML data array passed by reference. It may be modified to include the
+ *   'index_order' key if it is not already set.
+ *
+ * @return void No value is returned.
+ */
 function calculate_or_set_index_order(&$raw_xml) {
 	if (!isset($raw_xml['index_order']) && isset($raw_xml['fields']) && is_array($raw_xml['fields'])) {
 		foreach($raw_xml['fields'] as $name => $attribs) {
@@ -2060,13 +2277,19 @@ function calculate_or_set_index_order(&$raw_xml) {
 	}
 }
 
-/* get_ordered_index_type_list - builds an ordered list of data query index types that are
-	valid given a list of data query indexes that will be checked against the data query
-	cache
-   @arg $host_id - the id of the host which contains the data query
-   @arg $data_query_id - the id of the data query to build the type list from
-   @returns - an array of data query types either ordered or unordered depending on whether
-	the xml file has a manual ordering preference specified */
+/**
+ * Builds an ordered list of data query index types that are valid given a list of data query
+ * indexes that will be checked against the data query cache. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $host_id The id of the host which contains the data query.
+ * @param int $data_query_id The id of the data query to build the type list from.
+ *
+ * @return array An array of data query types either ordered or unordered depending on whether the
+ *   xml file has a manual ordering preference specified.
+ *
+ * @throws Exception If database queries fail or unexpected conditions occur.
+ */
 function get_ordered_index_type_list($host_id, $data_query_id) {
 	$raw_xml = get_data_query_array($data_query_id);
 
@@ -2253,12 +2476,18 @@ function get_ordered_index_type_list($host_id, $data_query_id) {
 	return $return_array;
 }
 
-/* update_data_query_sort_cache - updates the sort cache for a particular host/data query
-	combination. this works by fetching a list of valid data query index types and choosing
-	the first one in the list. the user can optionally override how the cache is updated
-	in the data query xml file
-   @arg $host_id - the id of the host which contains the data query
-   @arg $data_query_id - the id of the data query update the sort cache for */
+/**
+ * Updates the sort cache for a particular host/data query combination. this works by fetching a
+ * list of valid data query index types and choosing the first one in the list. the user can
+ * optionally override how the cache is updated in the data query xml file. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param int $host_id The id of the host which contains the data query.
+ * @param int $data_query_id The id of the data query update the sort cache for.
+ *
+ * @return string|false Returns the sort field if the update is successful, or `false` if no valid
+ *   index types are found.
+ */
 function update_data_query_sort_cache($host_id, $data_query_id) {
 	$raw_xml = get_data_query_array($data_query_id);
 
@@ -2293,9 +2522,15 @@ function update_data_query_sort_cache($host_id, $data_query_id) {
 	return $sort_field;
 }
 
-/* update_data_query_sort_cache_by_host - updates the sort cache for all data queries associated
-	with a particular host. see update_data_query_sort_cache() for details about updating the cache
-   @arg $host_id - the id of the host to update the cache for */
+/**
+ * Updates the sort cache for all data queries associated with a particular host. see
+ * update_data_query_sort_cache() for details about updating the cache. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param int $host_id The id of the host to update the cache for.
+ *
+ * @return void No value is returned.
+ */
 function update_data_query_sort_cache_by_host($host_id) {
 	$data_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
 		FROM host_snmp_query
@@ -2309,12 +2544,18 @@ function update_data_query_sort_cache_by_host($host_id) {
 	}
 }
 
-/* get_best_data_query_index_type - returns the best available data query index type using the
-	sort cache
-   @arg $host_id - the id of the host which contains the data query
-   @arg $data_query_id - the id of the data query to fetch the best data query index type for
-   @returns - a string containing best data query index type. this will be one of the
-	valid input field names as specified in the data query xml file */
+/**
+ * Returns the best available data query index type using the sort cache. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param int $host_id The id of the host which contains the data query.
+ * @param int $data_query_id The id of the data query to fetch the best data query index type for.
+ *
+ * @return mixed A string containing best data query index type. this will be one of the valid
+ *   input field names as specified in the data query xml file.
+ *
+ * @throws Exception If there is an issue with database operations or XML parsing.
+ */
 function get_best_data_query_index_type($host_id, $data_query_id) {
 	$index_type = db_fetch_cell_prepared('SELECT sort_field
 		FROM host_snmp_query
@@ -2360,12 +2601,16 @@ function get_best_data_query_index_type($host_id, $data_query_id) {
 	return $index_type;
 }
 
-/* get_script_query_path - builds the complete script query executable path
-   @arg $args - the variable that contains any arguments to be appended to the argument
-	list (variables will be substituted in this function)
-   @arg $script_path - the path on the disk to the script file
-   @arg $host_id - the id of the host that this script query belongs to
-   @returns - a full path to the script query script containing all arguments */
+/**
+ * Builds the complete script query executable path. Used as part of Cacti's lib functionality.
+ *
+ * @param string $args The variable that contains any arguments to be appended to the argument
+ *   list (variables will be substituted in this function).
+ * @param string $script_path The path on the disk to the script file.
+ * @param int $host_id The id of the host that this script query belongs to.
+ *
+ * @return string A full path to the script query script containing all arguments.
+ */
 function get_script_query_path($args, $script_path, $host_id) {
 	global $config;
 
@@ -2421,10 +2666,11 @@ function get_script_query_path($args, $script_path, $host_id) {
 
 
 /**
- * verify a given index_order
- * @param array $raw_xml 	- parsed XML array
+ * Verify a given index_order. Used as part of Cacti's lib functionality.
  *
- * @return bool 			- index_order field valid
+ * @param array $raw_xml Parsed XML array.
+ *
+ * @return bool Index_order field valid.
  */
 function verify_index_order($raw_xml) {
 	/* invalid xml check */
@@ -2462,12 +2708,12 @@ function verify_index_order($raw_xml) {
 }
 
 /**
- * perform sql updates for all required tables for new index_sort_order
- * @arg array $snmp_query_array
- *   host_id, snmp_query_id, snmp_index_on, snmp_query_graph_id,
- *   snmp_index,data_template_data_id, local_data_id
+ * Perform sql updates for all required tables for new index_sort_order. Used as part of Cacti's
+ * lib functionality.
  *
- * this code stems from lib/template.php, function create_complete_graph_from_template
+ * @param array $local_data An associative array containing the local data information.
+ *
+ * @return void No value is returned.
  */
 function update_snmp_index_order($local_data) {
 	if (cacti_sizeof($local_data)) {
@@ -2516,10 +2762,13 @@ function update_snmp_index_order($local_data) {
 }
 
 /**
- * verify that a Data Query Graph Template is properly mapped
- * @param int $snmp_query_graph_id - the snmp query graph id
- * @param array $post - the save post data
- * @return bool - whether the check passed or not
+ * Verify that a Data Query Graph Template is properly mapped. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $snmp_query_graph_id The snmp query graph id.
+ * @param array $post The save post data.
+ *
+ * @return bool Whether the check passed or not.
  */
 function api_data_query_errors($snmp_query_graph_id, $post) {
 	$graph_template_id = db_fetch_cell_prepared('SELECT gt.id
@@ -2556,12 +2805,12 @@ function api_data_query_errors($snmp_query_graph_id, $post) {
 }
 
 /**
- * data_query_duplicate - Duplicate a Data query
+ * Duplicate a Data query. Used as part of Cacti's lib functionality.
  *
- * @param int - The original Data Query id
- * @param string - The new name of the Data Query
+ * @param int $_data_query_id Int - The original Data Query id.
+ * @param string $data_query_name String - The new name of the Data Query.
  *
- * @return int|false - The id of the new data query or false on failure
+ * @return int|false The id of the new data query or false on failure.
  */
 function data_query_duplicate($_data_query_id, $data_query_name) {
 	$data_query = db_fetch_row_prepared('SELECT *

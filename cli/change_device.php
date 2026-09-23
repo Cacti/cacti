@@ -506,7 +506,17 @@ if (!$quietMode) {
 exit($failed > 0 ? 1 : 0);
 
 
-/* load_and_validate_device - fetch a device, apply overrides, and validate */
+/**
+ * Fetch a device, apply overrides, and validate. Used as part of Cacti's CLI functionality.
+ *
+ * @param mixed $device_id The device ID.
+ * @param mixed $overrides The overrides.
+ * @param mixed $host_templates The host templates.
+ * @param bool $source_host The source host.
+ * @param & $original The original.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function load_and_validate_device($device_id, $overrides, $host_templates, $source_host = false, &$original = null) {
 	if ($source_host === false) {
 		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($device_id));
@@ -607,17 +617,36 @@ function load_and_validate_device($device_id, $overrides, $host_templates, $sour
 	return $host;
 }
 
-/* is_unsigned_integer - validates a non-negative base-10 integer */
+/**
+ * Validates a non-negative base-10 integer. Used as part of Cacti's CLI functionality.
+ *
+ * @param mixed $value The value.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function is_unsigned_integer($value) {
 	return ctype_digit((string) $value);
 }
 
-/* is_valid_device_id - validates a positive device id */
+/**
+ * Validates a positive device id. Used as part of Cacti's CLI functionality.
+ *
+ * @param mixed $value The value.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function is_valid_device_id($value) {
 	return is_unsigned_integer($value) && intval($value) > 0;
 }
 
-/* reference_id_exists - validates fixed device relation tables */
+/**
+ * Validates fixed device relation tables. Used as part of Cacti's CLI functionality.
+ *
+ * @param mixed $table The table.
+ * @param mixed $id The ID.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function reference_id_exists($table, $id) {
 	static $cache = array();
 
@@ -638,7 +667,14 @@ function reference_id_exists($table, $id) {
 	return $cache[$key];
 }
 
-/* validate_device_field_values - validates values not fully constrained by api_device_save */
+/**
+ * Validates values not fully constrained by api_device_save. Used as part of Cacti's CLI
+ * functionality.
+ *
+ * @param mixed $host The host.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function validate_device_field_values($host) {
 	$lengths = array(
 		'description'          => 150,
@@ -685,7 +721,11 @@ function validate_device_field_values($host) {
 	return true;
 }
 
-/* device_editable_fields - fields persisted by save_device */
+/**
+ * Fields persisted by save_device. Used as part of Cacti's CLI functionality.
+ *
+ * @return array An array of results.
+ */
 function device_editable_fields() {
 	return array(
 		'description'          => 'Description',
@@ -719,7 +759,14 @@ function device_editable_fields() {
 	);
 }
 
-/* device_has_changes - checks whether the proposed editable fields differ */
+/**
+ * Checks whether the proposed editable fields differ. Used as part of Cacti's CLI functionality.
+ *
+ * @param mixed $original The original.
+ * @param mixed $proposed The proposed.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function device_has_changes($original, $proposed) {
 	foreach (device_editable_fields() as $field => $label) {
 		$old_value = isset($original[$field]) ? $original[$field] : '';
@@ -733,7 +780,14 @@ function device_has_changes($original, $proposed) {
 	return false;
 }
 
-/* device_has_requested_changes - compares only explicitly requested overrides */
+/**
+ * Compares only explicitly requested overrides. Used as part of Cacti's CLI functionality.
+ *
+ * @param mixed $original The original.
+ * @param mixed $overrides The overrides.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function device_has_requested_changes($original, $overrides) {
 	$editable_fields = device_editable_fields();
 
@@ -756,12 +810,27 @@ function device_has_requested_changes($original, $overrides) {
 	return false;
 }
 
-/* device_editable_state_changed - detects concurrent edits after preview */
+/**
+ * Detects concurrent edits after preview. Used as part of Cacti's CLI functionality.
+ *
+ * @param mixed $original The original.
+ * @param mixed $current The current.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function device_editable_state_changed($original, $current) {
 	return device_has_changes($original, $current);
 }
 
-/* preview_device_changes - show what fields will change for a device */
+/**
+ * Show what fields will change for a device. Used as part of Cacti's CLI functionality.
+ *
+ * @param mixed $device_id The device ID.
+ * @param mixed $original The original.
+ * @param mixed $host The host.
+ *
+ * @return void No value is returned.
+ */
 function preview_device_changes($device_id, $original, $host) {
 	global $host_templates;
 
@@ -807,7 +876,16 @@ function preview_device_changes($device_id, $original, $host) {
 	print "\n";
 }
 
-/* save_device - save a validated device and report the result */
+/**
+ * Save a validated device and report the result. Used as part of Cacti's CLI functionality.
+ *
+ * @param mixed $device_id The device ID.
+ * @param mixed $host The host.
+ * @param mixed $quietMode The quietmode.
+ * @param mixed $host_templates The host templates.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function save_device($device_id, $host, $quietMode, $host_templates) {
 	if (!$quietMode) {
 		print "Changing device-id: $device_id to {$host['description']} ({$host['hostname']}) as \"{$host_templates[$host['host_template_id']]}\" using SNMP v{$host['snmp_version']}\n";
@@ -840,13 +918,22 @@ function save_device($device_id, $host, $quietMode, $host_templates) {
 	}
 }
 
-/* clear_cli_messages - isolate API validation state without starting a web session */
+/**
+ * Isolate API validation state without starting a web session. Used as part of Cacti's CLI
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function clear_cli_messages() {
 	kill_session_var('sess_error_fields');
 	kill_session_var('sess_messages');
 }
 
-/* device_override_definitions - defines CSV aliases and shared numeric validation */
+/**
+ * Defines CSV aliases and shared numeric validation. Used as part of Cacti's CLI functionality.
+ *
+ * @return array An array of results.
+ */
 function device_override_definitions() {
 	return array(
 		'id'           => array('key' => 'id'),
@@ -881,7 +968,11 @@ function device_override_definitions() {
 	);
 }
 
-/* csv_column_map - maps CSV header names to override keys */
+/**
+ * Maps CSV header names to override keys. Used as part of Cacti's CLI functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function csv_column_map() {
 	$map = array();
 
@@ -892,7 +983,15 @@ function csv_column_map() {
 	return $map;
 }
 
-/* convert_override_value - converts CSV string values to the expected override format */
+/**
+ * Converts CSV string values to the expected override format. Used as part of Cacti's CLI
+ * functionality.
+ *
+ * @param mixed $column The column.
+ * @param mixed $value The value.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function convert_override_value($column, $value) {
 	$definitions = device_override_definitions();
 
@@ -977,7 +1076,15 @@ function convert_override_value($column, $value) {
 	}
 }
 
-/* parse_csv_file - reads a CSV file and returns an array of [device_id, overrides] pairs */
+/**
+ * Reads a CSV file and returns an array of [device_id, overrides] pairs. Used as part of Cacti's
+ * CLI functionality.
+ *
+ * @param mixed $file The file.
+ * @param & $failed The failed.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function parse_csv_file($file, &$failed) {
 	if (!is_readable($file)) {
 		print "ERROR: file '$file' is not readable or does not exist.\n";
@@ -1108,7 +1215,14 @@ function parse_csv_file($file, &$failed) {
 	return $device_list;
 }
 
-/* read_csv_row - reads standards-compliant CSV across supported PHP versions */
+/**
+ * Reads standards-compliant CSV across supported PHP versions. Used as part of Cacti's CLI
+ * functionality.
+ *
+ * @param mixed $fh The fh.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function read_csv_row($fh) {
 	if (PHP_VERSION_ID >= 70400) {
 		return fgetcsv($fh, 0, ',', '"', '');
@@ -1118,12 +1232,21 @@ function read_csv_row($fh) {
 }
 
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Change Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help() {
 	display_version();
 

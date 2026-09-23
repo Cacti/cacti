@@ -23,13 +23,13 @@
 */
 
 /**
- * api_device_crc_update - update hash stored in settings table to inform
- * remote pollers to update their caches
+ * Update hash stored in settings table to inform remote pollers to update their caches. Used as
+ * part of Cacti's lib functionality.
  *
- * @param  (int)    The id of the poller impacted by hash update
- * @param  (string) The hash variable prefix for the replication setting.
+ * @param int $poller_id The id of the poller impacted by hash update.
+ * @param string $variable The hash variable prefix for the replication setting.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function api_device_cache_crc_update($poller_id, $variable = 'poller_replicate_device_cache_crc') {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
@@ -38,9 +38,11 @@ function api_device_cache_crc_update($poller_id, $variable = 'poller_replicate_d
 }
 
 /**
- * api_device_remove - removes a device
+ * Removes a device. Used as part of Cacti's lib functionality.
  *
- * @param  $device_id - the id of the device to remove
+ * @param int $device_id The id of the device to remove.
+ *
+ * @return void No value is returned.
  */
 function api_device_remove($device_id) {
 	global $config;
@@ -93,10 +95,12 @@ function api_device_remove($device_id) {
 }
 
 /**
- * api_device_purge_from_remote - removes a device from a remote data collectors
+ * Removes a device from a remote data collectors. Used as part of Cacti's lib functionality.
  *
- * @param  $device_ids - device id or an array of device_ids of a host or hosts
- * @param  $poller_id  - the previous poller if it changed
+ * @param array|int $device_ids Device id or an array of device_ids of a host or hosts.
+ * @param int $poller_id The previous poller if it changed.
+ *
+ * @return void No value is returned.
  */
 function api_device_purge_from_remote($device_ids, $poller_id = 0) {
 	if (!is_array($device_ids)) {
@@ -138,10 +142,10 @@ function api_device_purge_from_remote($device_ids, $poller_id = 0) {
 }
 
 /**
- * api_device_purge_deleted_devices - Remove any devices from the database that are
- *   marked for deletion.
+ * Remove any devices from the database that are marked for deletion. Used as part of Cacti's lib
+ * functionality.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function api_device_purge_deleted_devices() {
 	$devices = db_fetch_assoc_prepared('SELECT id, poller_id
@@ -169,12 +173,12 @@ function api_device_purge_deleted_devices() {
 }
 
 /**
- * api_device_remove_multi - removes multiple devices in one call
+ * Removes multiple devices in one call. Used as part of Cacti's lib functionality.
  *
- * @param  (array) An array of device id's to remove
- * @param  (int)   Boolean to keep data source and graphs or remove
+ * @param array $device_ids An array of device id's to remove.
+ * @param int $delete_type Boolean to keep data source and graphs or remove.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function api_device_remove_multi($device_ids, $delete_type = 2) {
 	global $config;
@@ -261,11 +265,11 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 }
 
 /**
- * api_device_disable_devices - Disable an array of device ids
+ * Disable an array of device ids. Used as part of Cacti's lib functionality.
  *
- * @param  (array) An array of device ids
+ * @param array $device_ids An array of device ids.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function api_device_disable_devices($device_ids) {
 	global $config;
@@ -302,11 +306,11 @@ function api_device_disable_devices($device_ids) {
 }
 
 /**
- * api_device_enable_devices - Enable an array of device ids
+ * Enable an array of device ids. Used as part of Cacti's lib functionality.
  *
- * @param  (array) An array of device ids
+ * @param array $device_ids An array of device ids.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function api_device_enable_devices($device_ids) {
 	global $config;
@@ -398,13 +402,13 @@ function api_device_enable_devices($device_ids) {
 }
 
 /**
- * api_device_change_options - Given an array of device ids and the
- *   post variable, update a series of Device settings.
+ * Given an array of device ids and the post variable, update a series of Device settings. Used as
+ * part of Cacti's lib functionality.
  *
- * @param  (array) An array of device ids
- * @param  (array) An array representing the $_POST variable
+ * @param array $device_ids An array of device ids.
+ * @param array $post An array representing the $_POST variable.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function api_device_change_options($device_ids, $post) {
 	global $config, $fields_host_edit;
@@ -475,12 +479,12 @@ function api_device_change_options($device_ids, $post) {
 }
 
 /**
- * api_device_clear_statistics - Clear all device level statistics and reset as if the
- *   device was new in Cacti
+ * Clear all device level statistics and reset as if the device was new in Cacti. Used as part of
+ * Cacti's lib functionality.
  *
- * @param  (array) An array of device ids
+ * @param array $device_ids An array of device ids.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function api_device_clear_statistics($device_ids) {
 	global $config;
@@ -519,12 +523,12 @@ function api_device_clear_statistics($device_ids) {
 }
 
 /**
- * api_device_sync_device_templates - Sync an array of device ids with their
- *   parent Device Template
+ * Sync an array of device ids with their parent Device Template. Used as part of Cacti's lib
+ * functionality.
  *
- * @param (array) An array of device ids
+ * @param array $device_ids An array of device ids.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function api_device_sync_device_templates($device_ids) {
 	global $config;
@@ -542,12 +546,13 @@ function api_device_sync_device_templates($device_ids) {
 }
 
 /**
- * api_device_dq_add - adds a device->data query mapping
- * @param  (int)  The id of the device which contains the mapping
- * @param  (int)  The id of the data query to remove the mapping for
- * @param  (int)  The reindex method to user when adding the data query
+ * Adds a device->data query mapping. Used as part of Cacti's lib functionality.
  *
- * @return (void)
+ * @param int $device_id The id of the device which contains the mapping.
+ * @param int $data_query_id The id of the data query to remove the mapping for.
+ * @param int $reindex_method The reindex method to user when adding the data query.
+ *
+ * @return void No value is returned.
  */
 function api_device_dq_add($device_id, $data_query_id, $reindex_method) {
 	global $config;
@@ -579,12 +584,12 @@ function api_device_dq_add($device_id, $data_query_id, $reindex_method) {
 }
 
 /**
- * api_device_dq_remove - removes a device->data query mapping
+ * Removes a device->data query mapping. Used as part of Cacti's lib functionality.
  *
- * @param  (int) The id of the device which contains the mapping
- * @param  (int) The id of the data query to remove the mapping for
+ * @param int $device_id The id of the device which contains the mapping.
+ * @param int $data_query_id The id of the data query to remove the mapping for.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function api_device_dq_remove($device_id, $data_query_id) {
 	global $config;
@@ -633,13 +638,13 @@ function api_device_dq_remove($device_id, $data_query_id) {
 }
 
 /**
- * api_device_dq_change - changes a device->data query mapping
+ * Changes a device->data query mapping. Used as part of Cacti's lib functionality.
  *
- * @param  (int) The id of the device which contains the mapping
- * @param  (int) The id of the data query to remove the mapping for
- * @param  (int) The reindex method to use when changing the data query
+ * @param int $device_id The id of the device which contains the mapping.
+ * @param int $data_query_id The id of the data query to remove the mapping for.
+ * @param int $reindex_method The reindex method to use when changing the data query.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
 	global $config;
@@ -681,12 +686,12 @@ function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
 }
 
 /**
- * api_device_gt_remove - removes a device->graph template mapping
+ * Removes a device->graph template mapping. Used as part of Cacti's lib functionality.
  *
- * @param  (int) The id of the device which contains the mapping
- * @param  (int) The id of the graph template to remove the mapping for
+ * @param int $device_id The id of the device which contains the mapping.
+ * @param int $graph_template_id The id of the graph template to remove the mapping for.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function api_device_gt_remove($device_id, $graph_template_id) {
 	global $config;
@@ -715,12 +720,13 @@ function api_device_gt_remove($device_id, $graph_template_id) {
 }
 
 /**
- * api_device_replicate_out - Replace device settings to the remote data collectors
+ * Replace device settings to the remote data collectors. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (int) The id of the device
- * @param  (int) The poller id of the device.  If null, we determine it
+ * @param int $device_id The id of the device.
+ * @param int $poller_id The poller id of the device. If null, we determine it.
  *
- * @return (void)
+ * @return void Returns true on success, false on failure.
  */
 function api_device_replicate_out($device_id, $poller_id = 1) {
 	global $config;
@@ -898,43 +904,46 @@ function api_device_replicate_out($device_id, $poller_id = 1) {
 }
 
 /**
- * api_device_save - Save a device and update the poller cache for the device is required.
- *   The function will determine if the poller cache needs updating by reviewing the changed
- *   settings.  If no settings changed that require an update of the poller cache, the
- *   device level settings will simply be updated, otherwise the poller cache will be refreshed
- *   for the device.
+ * Save a device and update the poller cache for the device is required. The function will
+ * determine if the poller cache needs updating by reviewing the changed settings. If no settings
+ * changed that require an update of the poller cache, the device level settings will simply be
+ * updated, otherwise the poller cache will be refreshed for the device. Used as part of Cacti's
+ * lib functionality.
  *
- * @param  (int)    The id of the device
- * @param  (int)    The device template for the device
- * @param  (string) A device description
- * @param  (string) The devices hostname
- * @param  (string) The devices snmp community in the case of v1/v2c
- * @param  (int)    The devices snmp_version 1|2|3
- * @param  (string) The devices snmp username in the case of v3
- * @param  (string) The devices snmp auth password in the case of v3
- * @param  (int)    The devices snmp port if in use.  Default to 161
- * @param  (int)    The devices snmp timeout in milliseconds
- * @param  (bool)   True of 'on' if the device is disabled
- * @param  (int)    The devices availability/reachability type
- * @param  (int)    The devices availability/reachability test ping method
- * @param  (int)    The devices ping port to be used in the case of TCP or UDP
- * @param  (int)    The ping timeout in milliseconds
- * @param  (int)    The number of times to retry the ping of the device
- * @param  (strong) Operator notes for the device.  Can be used by plugins
- * @param  (int)    The snmp authentication protocol
- * @param  (string) The snmp privilege protocol passphrase
- * @param  (int)    The snmp privilege protocol to use
- * @param  (string) The snmp context to use to reach the device
- * @param  (string) The snmp engine id if required to reach the devices
- * @param  (int)    The maximum number of OID's to gather in a single snmpget request
- * @param  (int)    When using spine, the number of threads to use to collect data source information
- * @param  (int)    The id of the data collector.  The default is 1
- * @param  (int)    The id of the site that the device belongs to
- * @param  (string) External ID's to be used by plugins and other cmdb like functions
- * @param  (string) A location attribute such as rack and enclosure, closet location within a site.
- * @param  (int)    A variable that tells cacti to find detect the optimal bulk walk size for the device
+ * @param int $id The id of the device.
+ * @param int $device_template_id The device template for the device.
+ * @param string $description A device description.
+ * @param string $hostname The devices hostname.
+ * @param string $snmp_community The devices snmp community in the case of v1/v2c.
+ * @param int $snmp_version The devices snmp_version 1|2|3.
+ * @param string $snmp_username The devices snmp username in the case of v3.
+ * @param string $snmp_password The devices snmp auth password in the case of v3.
+ * @param int $snmp_port The devices snmp port if in use. Default to 161.
+ * @param int $snmp_timeout The devices snmp timeout in milliseconds.
+ * @param bool $disabled True of 'on' if the device is disabled.
+ * @param int $availability_method The devices availability/reachability type.
+ * @param int $ping_method The devices availability/reachability test ping method.
+ * @param int $ping_port The devices ping port to be used in the case of TCP or UDP.
+ * @param int $ping_timeout The ping timeout in milliseconds.
+ * @param int $ping_retries The number of times to retry the ping of the device.
+ * @param strong $notes Operator notes for the device. Can be used by plugins.
+ * @param int $snmp_auth_protocol The snmp authentication protocol.
+ * @param string $snmp_priv_passphrase The snmp privilege protocol passphrase.
+ * @param int $snmp_priv_protocol The snmp privilege protocol to use.
+ * @param string $snmp_context The snmp context to use to reach the device.
+ * @param string $snmp_engine_id The snmp engine id if required to reach the devices.
+ * @param int $max_oids The maximum number of OID's to gather in a single snmpget request.
+ * @param int $device_threads When using spine, the number of threads to use to collect data
+ *   source information.
+ * @param int $poller_id The id of the data collector. The default is 1.
+ * @param int $site_id The id of the site that the device belongs to.
+ * @param string $external_id External ID's to be used by plugins and other cmdb like functions.
+ * @param string $location A location attribute such as rack and enclosure, closet location within
+ *   a site.
+ * @param int $bulk_walk_size A variable that tells cacti to find detect the optimal bulk walk
+ *   size for the device.
  *
- * @return (int)    The id of the device
+ * @return int The id of the device.
  */
 function api_device_save($id, $device_template_id, $description, $hostname, $snmp_community, $snmp_version,
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
@@ -1191,12 +1200,12 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 }
 
 /**
- * api_device_quick_save - checks if the poller cache needs to be
- *   rebuilt as a part of a device save.
+ * Checks if the poller cache needs to be rebuilt as a part of a device save. Used as part of
+ * Cacti's lib functionality.
  *
- * @param  (array) The devices "save" structure for the device
+ * @param & $save The devices "save" structure for the device.
  *
- * @return (bool)  If the device can be quickly saved, or will the device have to be pushed out
+ * @return bool If the device can be quickly saved, or will the device have to be pushed out.
  */
 function api_device_quick_save(&$save) {
 	if ($save['id'] > 0) {
@@ -1235,12 +1244,12 @@ function api_device_quick_save(&$save) {
 }
 
 /**
- * api_device_update_host_template - changes the host template of a host
+ * Changes the host template of a host. Used as part of Cacti's lib functionality.
  *
- * @param  (int)  The id of the device which contains the mapping
- * @param  (int)  The id of the device template alter the device to
+ * @param int $device_id The id of the device which contains the mapping.
+ * @param int $device_template_id The id of the device template alter the device to.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function api_device_update_host_template($device_id, $device_template_id) {
 	global $config;
@@ -1404,15 +1413,13 @@ function api_device_update_host_template($device_id, $device_template_id) {
 }
 
 /**
- * api_device_change_field_match - Checks the global $device_change_fileds array
- *   against the field name and returns true or false if it matches the rule
+ * Checks the global $device_change_fileds array against the field name and returns true or false
+ * if it matches the rule This function can be used by plugins to allow the modification of
+ * additional device fields from the change device rule.
  *
- * This function can be used by plugins to allow the modification of additional
- * device fields from the change device rule.
+ * @param string $field_name String The field name to check.
  *
- * @param  string      The field name to check
- *
- * @return bool        True or false if it matches one of the rules
+ * @return bool True or false if it matches one of the rules.
  */
 function api_device_change_field_match($field_name) {
 	global $device_change_fields;
@@ -1439,13 +1446,14 @@ function api_device_change_field_match($field_name) {
 }
 
 /**
- * api_device_template_sync_template - updates the device template mapping for all devices mapped to a template
+ * Updates the device template mapping for all devices mapped to a template. Used as part of
+ * Cacti's lib functionality.
  *
- * @param  (int)       The device template to synchronize
- * @param  (int|array) An array of device_ids or a string with a single device_id
- * @param  (bool)      Also update mapping of down devices
+ * @param int $device_template The device template to synchronize.
+ * @param int|array $device_ids An array of device_ids or a string with a single device_id.
+ * @param bool $down_devices Also update mapping of down devices.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function api_device_template_sync_template($device_template, $device_ids = '', $down_devices = false) {
 	if ($down_devices == true) {
@@ -1479,13 +1487,15 @@ function api_device_template_sync_template($device_template, $device_ids = '', $
 }
 
 /**
- * api_device_ping_device - given a device id and optional indicator of where the ping request
- *   came from, ping the device.  The ping results are echoed to standard output for the browser
+ * Given a device id and optional indicator of where the ping request came from, ping the device.
+ * The ping results are echoed to standard output for the browser. Used as part of Cacti's lib
+ * functionality.
  *
- * @param (int)  The device id in question
- * @param (bool) Whether the source of the ping request is coming from a remote data collector.
+ * @param int $device_id The device id in question.
+ * @param bool $from_remote Whether the source of the ping request is coming from a remote data
+ *   collector.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function api_device_ping_device($device_id, $from_remote = false) {
 	global $config, $snmp_error;
@@ -1645,12 +1655,13 @@ function api_device_ping_device($device_id, $from_remote = false) {
 }
 
 /**
- * api_duplicate_device_template - given a device_template_id, and a title, duplicate it.
+ * Given a device_template_id, and a title, duplicate it. Used as part of Cacti's lib
+ * functionality.
  *
- * @param (int)    The Device Template id to duplicate
- * @param (string) The name of the new Device Template
+ * @param int $_host_template_id The Device Template id to duplicate.
+ * @param string $host_template_title The name of the new Device Template.
  *
- * @return (void)
+ * @return void The result of the duplication process.
  */
 function api_duplicate_device_template($_host_template_id, $host_template_title) {
 	global $fields_host_template_edit;
@@ -1702,13 +1713,13 @@ function api_duplicate_device_template($_host_template_id, $host_template_title)
 }
 
 /**
- * api_clone_message - Displays a clone specific log
- *   message if there to CLI and the Cacti log
+ * Displays a clone specific log message if there to CLI and the Cacti log. Used as part of
+ * Cacti's lib functionality.
  *
- * @param string - The message to output
- * @param bool - Is the output for CLI or the web only
+ * @param string $message String - The message to output.
+ * @param bool $force Bool - Is the output for CLI or the web only.
  *
- * @return null
+ * @return void Null.
  */
 function api_clone_message($message, $force = false) {
 	global $debug, $config;
@@ -1723,16 +1734,15 @@ function api_clone_message($message, $force = false) {
 }
 
 /**
- * api_clone_get_unique_name - Get a unique name for
- *   a cacti object based upon the table and column
- *   name.
+ * Get a unique name for a cacti object based upon the table and column name. Used as part of
+ * Cacti's lib functionality.
  *
- * @param string - The desired object name
- * @param string - The table to be checked for that name
- * @param string - The column name to check for the name
+ * @param string $name String - The desired object name.
+ * @param string $table String - The table to be checked for that name.
+ * @param string $column String - The column name to check for the name.
  *
- * @return string|bool - The correct name for the object, else false
- *    If more than 20 attempts are made to find a good name.
+ * @return string|bool The correct name for the object, else false If more than 20 attempts are
+ *   made to find a good name.
  */
 function api_clone_get_unique_name($name, $table, $column = 'name') {
 	$i = 0;
@@ -1760,13 +1770,13 @@ function api_clone_get_unique_name($name, $table, $column = 'name') {
 }
 
 /**
- * api_clone_get_unique_filename - Get a unique file name for
- *   a Cacti object based upon the file name.
+ * Get a unique file name for a Cacti object based upon the file name. Used as part of Cacti's lib
+ * functionality.
  *
- * @param string - The current filename
+ * @param string $file_name String - The current filename.
  *
- * @return string|bool - The correct name for the object, else false
- *    If more than 20 attempts are made to find a good name.
+ * @return string|bool The correct name for the object, else false If more than 20 attempts are
+ *   made to find a good name.
  */
 function api_clone_get_unique_filename($file_name) {
 	$i = 1;
@@ -1790,22 +1800,23 @@ function api_clone_get_unique_filename($file_name) {
 }
 
 /**
- * api_clone_device_template_check_for_errors - This function will validate the
- *   input and return warnings and errors before allowing users to proceed.  This
- *   option is skipped when using the quiet option.
+ * This function will validate the input and return warnings and errors before allowing users to
+ * proceed. This option is skipped when using the quiet option. Used as part of Cacti's lib
+ * functionality.
  *
- * @param int    - The device template id to be cloned
- * @param string - The include Graph Templates list
- * @param string - The clone Graph Templates list
- * @param string - The include Data Queries list
- * @param string - The clone Data Queries list
- * @param string - The include Data Templates list
- * @param string - The clone Data Templates list
- * @param string - The suffix for the clone operation
- * @param bool   - Should Data Query XML be cloned.  Will be updated if incorrect.
- * @param bool   - Should Data Input Method be cloned.  Will be updated if incorrect.
+ * @param int $device_template_id Int - The device template id to be cloned.
+ * @param string $device_template_name String - The include Graph Templates list.
+ * @param string $include_gt String - The clone Graph Templates list.
+ * @param string $clone_gt String - The include Data Queries list.
+ * @param string $include_dq String - The clone Data Queries list.
+ * @param string $clone_dq String - The include Data Templates list.
+ * @param string $include_dt String - The clone Data Templates list.
+ * @param string $clone_dt String - The suffix for the clone operation.
+ * @param & $suffix Bool - Should Data Query XML be cloned. Will be updated if incorrect.
+ * @param & $clone_xml Bool - Should Data Input Method be cloned. Will be updated if incorrect.
+ * @param & $clone_script The clone script.
  *
- * @return array - An array of warning and error message to provide to the user.
+ * @return array An array of warning and error message to provide to the user.
  */
 function api_clone_device_template_check_for_errors($device_template_id, $device_template_name, $include_gt, $clone_gt,
 	$include_dq, $clone_dq, $include_dt, $clone_dt, &$suffix, &$clone_xml, &$clone_script) {
@@ -2263,14 +2274,13 @@ function api_clone_device_template_check_for_errors($device_template_id, $device
 }
 
 /**
- * api_clone_device_template_get_objects - This function returns the core components
- *   from the Device Template for validating cloning actions.  Once these values
- *   are returned, the device template API will be able to clone the Device
- *   Template without errors.
+ * This function returns the core components from the Device Template for validating cloning
+ * actions. Once these values are returned, the device template API will be able to clone the
+ * Device Template without errors. Used as part of Cacti's lib functionality.
  *
- * @param int - The Device Template ID to return objects for
+ * @param int $device_template_id Int - The Device Template ID to return objects for.
  *
- * @return array - All the Device Template Objects
+ * @return array All the Device Template Objects.
  */
 function api_clone_device_template_get_objects($device_template_id) {
 	global $config;
@@ -2406,23 +2416,24 @@ function api_clone_device_template_get_objects($device_template_id) {
 }
 
 /**
- * api_clone_device_template - Clones a device template and in some cases
- *   also updates duplicates Graph Templates, Data Templates, Data Input Methods
- *   and making copies of scripts, and XML files as well.
+ * Clones a device template and in some cases also updates duplicates Graph Templates, Data
+ * Templates, Data Input Methods and making copies of scripts, and XML files as well. Used as part
+ * of Cacti's lib functionality.
  *
- * @param int    - The Device Template ID
- * @param string - The proposed Device Template Name
- * @param string - A comma delimited list of Graph Template ID's to Include
- * @param string - A comma delimited list of Graph Template ID's to Clone
- * @param string - A comma delimited list of Data Query ID's to Include
- * @param string - A comma delimited list of Data Query ID's to Clone
- * @param string - A comma delimited list of Data Templates to Include
- * @param string - A comma delimited list of Data Templates to Clone
- * @param string - The suffix to use for Cloning objects
- * @param bool   - Boolean to direct Cacti to clone the XML
- * @param bool   - Boolean to direct to Clone scripts
+ * @param int $template_id Int - The Device Template ID.
+ * @param string $template_name String - The proposed Device Template Name.
+ * @param string $include_gt String - A comma delimited list of Graph Template ID's to Include.
+ * @param string $clone_gt String - A comma delimited list of Graph Template ID's to Clone.
+ * @param string $include_dq String - A comma delimited list of Data Query ID's to Include.
+ * @param string $clone_dq String - A comma delimited list of Data Query ID's to Clone.
+ * @param string $include_dt String - A comma delimited list of Data Templates to Include.
+ * @param string $clone_dt String - A comma delimited list of Data Templates to Clone.
+ * @param string $suffix String - The suffix to use for Cloning objects.
+ * @param bool $clone_xml Bool - Boolean to direct Cacti to clone the XML.
+ * @param bool $clone_script Bool - Boolean to direct to Clone scripts.
+ * @param bool $cli Whether the function is being called from the command line interface.
  *
- * @return int|false - Either the new Device Template ID or false on error
+ * @return int|false Either the new Device Template ID or false on error.
  */
 function api_clone_device_template($template_id, $template_name, $include_gt, $clone_gt,
 	$include_dq, $clone_dq, $include_dt, $clone_dt, $suffix, $clone_xml, $clone_script, $cli = false) {

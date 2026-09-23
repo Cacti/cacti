@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1 1 34. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_1_34() {
 	if (!db_column_exists('automation_snmp_items', 'snmp_community')) {
 		db_install_execute('ALTER TABLE `automation_snmp_items`

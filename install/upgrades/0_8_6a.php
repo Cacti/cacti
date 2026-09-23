@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 0 8 6a. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_0_8_6a() {
 	/* fix import/export template bug */
 	$results = db_install_fetch_assoc('SELECT id FROM data_template');

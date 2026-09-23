@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1 2 26. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_2_26() {
 	db_install_execute("ALTER TABLE `settings` MODIFY `value` varchar(4096) not null default ''");
 	db_install_execute("ALTER TABLE `settings_user` MODIFY `value` varchar(4096) not null default ''");

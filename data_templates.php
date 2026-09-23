@@ -80,6 +80,12 @@ switch (get_request_var('action')) {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's data templates functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	if (isset_request_var('save_component_template')) {
@@ -352,6 +358,12 @@ function form_save() {
 /* ------------------------
     The "actions" function
    ------------------------ */
+/**
+ * ------------------------ The "actions" function ------------------------. Used as part of
+ * Cacti's data templates functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_actions() {
 	global $ds_actions;
@@ -517,6 +529,12 @@ function form_actions() {
 /* ----------------------------
     template - Data Templates
    ---------------------------- */
+/**
+ * ---------------------------- template - Data Templates ----------------------------. Used as
+ * part of Cacti's data templates functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function template_rrd_remove() {
 	/* ================= input validation ================= */
@@ -541,6 +559,11 @@ function template_rrd_remove() {
 	header('Location: data_templates.php?action=template_edit&id=' . get_request_var('data_template_id'));
 }
 
+/**
+ * Handles the template RRD add. Used as part of Cacti's data templates functionality.
+ *
+ * @return void No value is returned.
+ */
 function template_rrd_add() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -596,6 +619,11 @@ function template_rrd_add() {
 	header('Location: data_templates.php?action=template_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
 }
 
+/**
+ * Handles the template edit. Used as part of Cacti's data templates functionality.
+ *
+ * @return void No value is returned.
+ */
 function template_edit() {
 	global $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit, $fields_host_edit, $hash_system_data_inputs;
 
@@ -983,6 +1011,11 @@ function template_edit() {
 	<?php
 }
 
+/**
+ * Handles the template. Used as part of Cacti's data templates functionality.
+ *
+ * @return void No value is returned.
+ */
 function template() {
 	global $ds_actions, $item_rows;
 

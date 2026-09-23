@@ -81,6 +81,15 @@ if ($table == '') {
 	print sqltable_to_php($table, $create, $plugin);
 }
 
+/**
+ * Handles the sqltable to PHP. Used as part of Cacti's CLI functionality.
+ *
+ * @param string $table The table.
+ * @param bool $create The create.
+ * @param string $plugin The plugin.
+ *
+ * @return string The resulting string.
+ */
 function sqltable_to_php($table, $create, $plugin = '') {
 	global $config, $database_default;
 
@@ -213,17 +222,33 @@ function sqltable_to_php($table, $create, $plugin = '') {
 	return $text;
 }
 
+/**
+ * Handles the SQL clean. Used as part of Cacti's CLI functionality.
+ *
+ * @param string $text The text.
+ *
+ * @return string The resulting string.
+ */
 function sql_clean($text) {
 	$text = str_replace(array("\\", '/', "'", '"', '|'), '', $text);
 	return $text;
 }
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti SQL to PHP Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help() {
 	display_version();
 

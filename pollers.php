@@ -272,6 +272,12 @@ switch (get_request_var('action')) {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's pollers functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	if (isset_request_var('save_component_poller')) {
@@ -339,6 +345,15 @@ function form_save() {
 	}
 }
 
+/**
+ * Handles the poller check duplicate poller ID. Used as part of Cacti's pollers functionality.
+ *
+ * @param int $poller_id The poller ID.
+ * @param string $hostname The hostname.
+ * @param string $column The column.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 	$ip_addresses  = array();
 	$ip_hostnames  = array();
@@ -423,6 +438,14 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 	}
 }
 
+/**
+ * Handles the poller host duplicate. Used as part of Cacti's pollers functionality.
+ *
+ * @param int $poller_id The poller ID.
+ * @param string $host The host.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function poller_host_duplicate($poller_id, $host) {
 	if ($host == 'localhost') {
 		return true;
@@ -435,6 +458,11 @@ function poller_host_duplicate($poller_id, $host) {
 	}
 }
 
+/**
+ * Handles the form actions. Used as part of Cacti's pollers functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_actions() {
 	global $config, $poller_actions;
 
@@ -624,6 +652,12 @@ function form_actions() {
 /* ---------------------
     Site Functions
    --------------------- */
+/**
+ * --------------------- Site Functions ---------------------. Used as part of Cacti's pollers
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function poller_edit() {
 	global $fields_poller_edit;
@@ -767,6 +801,13 @@ function poller_edit() {
 	form_save_button('pollers.php', 'return');
 }
 
+/**
+ * Handles the test database connection. Used as part of Cacti's pollers functionality.
+ *
+ * @param array $poller The poller.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function test_database_connection($poller = array()) {
 	if (!cacti_sizeof($poller)) {
 		$poller['dbtype'] = 'mysql';
@@ -822,6 +863,11 @@ function test_database_connection($poller = array()) {
     }
 }
 
+/**
+ * Handles the pollers. Used as part of Cacti's pollers functionality.
+ *
+ * @return void No value is returned.
+ */
 function pollers() {
 	global $poller_actions, $poller_status, $item_rows;
 

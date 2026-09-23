@@ -75,8 +75,10 @@ default :
 	break;
 }
 
-/*
- * Fill RRDCleaner's table
+/**
+ * * Fill RRDCleaner's table. Used as part of Cacti's rrdcleaner functionality.
+ *
+ * @return void No value is returned.
  */
 function rrdclean_fill_table() {
  	global $config, $rra_path;
@@ -98,8 +100,11 @@ function rrdclean_fill_table() {
 	restore_error_handler();
 }
 
-/*
- * Determine the last time the rrdcleaner table was updated
+/**
+ * * Determine the last time the rrdcleaner table was updated. Used as part of Cacti's rrdcleaner
+ * functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
  */
 function rrdcleaner_lastupdate() {
 	$status = db_fetch_row("SHOW TABLE STATUS LIKE 'data_source_purge_temp'");
@@ -109,8 +114,10 @@ function rrdcleaner_lastupdate() {
 	}
 }
 
-/*
- * Delete RRDCleaner's intermediate tables
+/**
+ * * Delete RRDCleaner's intermediate tables. Used as part of Cacti's rrdcleaner functionality.
+ *
+ * @return void No value is returned.
  */
 function rrdclean_truncate_tables() {
 	global $config;
@@ -132,8 +139,16 @@ function rrdclean_truncate_tables() {
 	restore_error_handler();
 }
 
-/*
- * PHP Error Handler
+/**
+ * * PHP Error Handler. Used as part of Cacti's rrdcleaner functionality.
+ *
+ * @param int $errno The errno.
+ * @param string $errmsg The errmsg.
+ * @param string $filename The filename.
+ * @param int $linenum The linenum.
+ * @param array $vars The vars.
+ *
+ * @return bool True on success, false otherwise.
  */
 function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 	global $debug;
@@ -173,9 +188,11 @@ function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
 	return;
 }
 
-/*
- * Find all unused files from Cacti tables
- * and get file system information for them
+/**
+ * * Find all unused files from Cacti tables * and get file system information for them. Used as
+ * part of Cacti's rrdcleaner functionality.
+ *
+ * @return void No value is returned.
  */
 function get_files() {
 	global $config, $rra_path;
@@ -267,8 +284,10 @@ function get_files() {
 	restore_error_handler();
 }
 
-/*
- * Display all rrd file entries
+/**
+ * * Display all rrd file entries. Used as part of Cacti's rrdcleaner functionality.
+ *
+ * @return void No value is returned.
  */
 function list_rrd() {
 	global $config, $item_rows, $ds_actions, $rra_path;
@@ -421,6 +440,13 @@ function list_rrd() {
 	restore_error_handler();
 }
 
+/**
+ * Handles the rrdcleaner legend. Used as part of Cacti's rrdcleaner functionality.
+ *
+ * @param mixed $total_size The total size.
+ *
+ * @return void No value is returned.
+ */
 function rrdcleaner_legend($total_size) {
 	html_start_box('', '100%', '', '3', 'center', '');
 	print '<tr>';
@@ -431,6 +457,11 @@ function rrdcleaner_legend($total_size) {
 	html_end_box(false);
 }
 
+/**
+ * Removes the all rrds. Used as part of Cacti's rrdcleaner functionality.
+ *
+ * @return void No value is returned.
+ */
 function remove_all_rrds() {
 	global $config, $rra_path;
 
@@ -457,9 +488,11 @@ function remove_all_rrds() {
 	restore_error_handler();
 }
 
-/*
- * Read all checked list items and put them into
- * a temporary table for the poller
+/**
+ * * Read all checked list items and put them into * a temporary table for the poller. Used as
+ * part of Cacti's rrdcleaner functionality.
+ *
+ * @return void No value is returned.
  */
 function do_rrd() {
 	global $config, $rra_path;
@@ -498,6 +531,11 @@ function do_rrd() {
 	restore_error_handler();
 }
 
+/**
+ * Handles the filter. Used as part of Cacti's rrdcleaner functionality.
+ *
+ * @return string The resulting string.
+ */
 function filter() {
 	global $item_rows;
 

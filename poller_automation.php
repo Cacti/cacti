@@ -55,9 +55,14 @@ if ($config['poller_id'] > 1) {
 	}
 }
 
-/** sig_handler - provides a generic means to catch exceptions to the Cacti log.
- * @arg $signo  - (int) the signal that was thrown by the interface.
- * @return      - null */
+/**
+ * Provides a generic means to catch exceptions to the Cacti log. Used as part of Cacti's poller
+ * automation functionality.
+ *
+ * @param int $signo (int) the signal that was thrown by the interface.
+ *
+ * @return void Null.
+ */
 function sig_handler($signo) {
 	global $network_id, $thread, $master, $poller_id;
 
@@ -406,6 +411,14 @@ if (!$master && $thread == 0) {
 
 exit(0);
 
+/**
+ * Handles the discoverdevices. Used as part of Cacti's poller automation functionality.
+ *
+ * @param int $network_id The network ID.
+ * @param int $thread The thread.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function discoverDevices($network_id, $thread) {
 	$network = db_fetch_row_prepared('SELECT *
 		FROM automation_networks
@@ -884,13 +897,21 @@ function discoverDevices($network_id, $thread) {
 	return true;
 }
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's poller automation functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_version();
     print "Cacti Network Discovery Scanner, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+/**
+ * Displays the usage of the function. Used as part of Cacti's poller automation functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help () {
 	display_version();
 
@@ -911,14 +932,36 @@ function display_help () {
 	print "    --debug       - Display verbose output during execution\n\n";
 }
 
+/**
+ * Handles the isprocessrunning. Used as part of Cacti's poller automation functionality.
+ *
+ * @param int $pid The PID.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function isProcessRunning($pid) {
     return cacti_process_still_running($pid);
 }
 
+/**
+ * Handles the killprocess. Used as part of Cacti's poller automation functionality.
+ *
+ * @param int $pid The PID.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function killProcess($pid) {
 	return cacti_process_kill($pid, SIGTERM, 'AUTOM8');
 }
 
+/**
+ * Handles the removemyprocess. Used as part of Cacti's poller automation functionality.
+ *
+ * @param int $pid The PID.
+ * @param int $network_id The network ID.
+ *
+ * @return void No value is returned.
+ */
 function removeMyProcess($pid, $network_id) {
 	db_execute_prepared('DELETE FROM automation_processes
 		WHERE pid = ?
@@ -931,6 +974,14 @@ function removeMyProcess($pid, $network_id) {
 		array($pid, $network_id));
 }
 
+/**
+ * Handles the rerundataqueries. Used as part of Cacti's poller automation functionality.
+ *
+ * @param int $host_id The host ID.
+ * @param & $network The network.
+ *
+ * @return void No value is returned.
+ */
 function rerunDataQueries($host_id, &$network) {
 	if ($network['rerun_data_queries'] == 'on') {
 		$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
@@ -946,6 +997,16 @@ function rerunDataQueries($host_id, &$network) {
 	}
 }
 
+/**
+ * Handles the registertask. Used as part of Cacti's poller automation functionality.
+ *
+ * @param int $network_id The network ID.
+ * @param int $pid The PID.
+ * @param int $poller_id The poller ID.
+ * @param string $task The task.
+ *
+ * @return void No value is returned.
+ */
 function registerTask($network_id, $pid, $poller_id, $task = 'collector') {
 	db_execute_prepared("REPLACE INTO automation_processes
 		(pid, poller_id, network_id, task, status, heartbeat, command)
@@ -953,6 +1014,14 @@ function registerTask($network_id, $pid, $poller_id, $task = 'collector') {
 		array($pid, $poller_id, $network_id, $task));
 }
 
+/**
+ * Handles the endtask. Used as part of Cacti's poller automation functionality.
+ *
+ * @param int $network_id The network ID.
+ * @param int $pid The PID.
+ *
+ * @return void No value is returned.
+ */
 function endTask($network_id, $pid) {
 	db_execute_prepared("UPDATE automation_processes
 		SET status='done', heartbeat=NOW()
@@ -961,6 +1030,14 @@ function endTask($network_id, $pid) {
 		array($pid, $network_id));
 }
 
+/**
+ * Handles the addupdevice. Used as part of Cacti's poller automation functionality.
+ *
+ * @param int $network_id The network ID.
+ * @param int $pid The PID.
+ *
+ * @return void No value is returned.
+ */
 function addUpDevice($network_id, $pid) {
 	db_execute_prepared('UPDATE automation_processes
 		SET up_hosts=up_hosts+1, heartbeat=NOW()
@@ -969,6 +1046,14 @@ function addUpDevice($network_id, $pid) {
 		array($pid, $network_id));
 }
 
+/**
+ * Handles the addsnmpdevice. Used as part of Cacti's poller automation functionality.
+ *
+ * @param int $network_id The network ID.
+ * @param int $pid The PID.
+ *
+ * @return void No value is returned.
+ */
 function addSNMPDevice($network_id, $pid) {
 	db_execute_prepared('UPDATE automation_processes
 		SET snmp_hosts=snmp_hosts+1, heartbeat=NOW()
@@ -977,6 +1062,14 @@ function addSNMPDevice($network_id, $pid) {
 		array($pid, $network_id));
 }
 
+/**
+ * Handles the reportnetworkstatus. Used as part of Cacti's poller automation functionality.
+ *
+ * @param int $network_id The network ID.
+ * @param array $old_devices The old devices.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function reportNetworkStatus($network_id, $old_devices) {
 	$details = db_fetch_row_prepared('SELECT notification_enabled, notification_email,
 		notification_fromname, notification_fromemail
@@ -1158,6 +1251,15 @@ function reportNetworkStatus($network_id, $old_devices) {
 	}
 }
 
+/**
+ * Handles the populatedeviceindex. Used as part of Cacti's poller automation functionality.
+ *
+ * @param & $ids The IDS.
+ * @param bool $is_new The is new.
+ * @param array $devices The devices.
+ *
+ * @return void No value is returned.
+ */
 function populateDeviceIndex(&$ids, $is_new, $devices) {
 	$field = ($is_new ? 'new' : 'old');
 
@@ -1172,6 +1274,14 @@ function populateDeviceIndex(&$ids, $is_new, $devices) {
 	}
 }
 
+/**
+ * Handles the cleartask. Used as part of Cacti's poller automation functionality.
+ *
+ * @param int $network_id The network ID.
+ * @param int $pid The PID.
+ *
+ * @return void No value is returned.
+ */
 function clearTask($network_id, $pid) {
 	db_execute_prepared('DELETE
 		FROM automation_processes
@@ -1185,12 +1295,27 @@ function clearTask($network_id, $pid) {
 		array($network_id));
 }
 
+/**
+ * Handles the clearalltasks. Used as part of Cacti's poller automation functionality.
+ *
+ * @param int $network_id The network ID.
+ *
+ * @return void No value is returned.
+ */
 function clearAllTasks($network_id) {
 	db_execute_prepared('DELETE FROM automation_processes
 		WHERE network_id = ?',
 		array($network_id));
 }
 
+/**
+ * Handles the markiprunning. Used as part of Cacti's poller automation functionality.
+ *
+ * @param string $ip_address The IP address.
+ * @param int $network_id The network ID.
+ *
+ * @return void No value is returned.
+ */
 function markIPRunning($ip_address, $network_id) {
 	db_execute_prepared('UPDATE automation_ips
 		SET status=1
@@ -1199,6 +1324,14 @@ function markIPRunning($ip_address, $network_id) {
 		array($ip_address, $network_id));
 }
 
+/**
+ * Handles the markipdone. Used as part of Cacti's poller automation functionality.
+ *
+ * @param string $ip_address The IP address.
+ * @param int $network_id The network ID.
+ *
+ * @return void No value is returned.
+ */
 function markIPDone($ip_address, $network_id) {
 	db_execute_prepared('UPDATE automation_ips
 		SET status=2
@@ -1207,6 +1340,13 @@ function markIPDone($ip_address, $network_id) {
 		array($ip_address, $network_id));
 }
 
+/**
+ * Handles the getnetworkdevices. Used as part of Cacti's poller automation functionality.
+ *
+ * @param int $network_id The network ID.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function getNetworkDevices($network_id) {
 	return db_fetch_assoc_prepared('SELECT id, hostname, ip, sysName, snmp, up, time
 		FROM automation_devices
@@ -1215,6 +1355,14 @@ function getNetworkDevices($network_id) {
 		array($network_id));
 }
 
+/**
+ * Handles the updatedowndevice. Used as part of Cacti's poller automation functionality.
+ *
+ * @param int $network_id The network ID.
+ * @param string $ip The IP.
+ *
+ * @return void No value is returned.
+ */
 function updateDownDevice($network_id, $ip) {
 	$exists = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM automation_devices

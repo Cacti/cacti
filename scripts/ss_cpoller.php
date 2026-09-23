@@ -33,6 +33,15 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_cpoller', $_SERVER['argv']);
 }
 
+/**
+ * Handles the ss cpoller. Used as part of Cacti's scripts functionality.
+ *
+ * @param string $cmd The cmd.
+ * @param string $arg1 The arg1.
+ * @param string $arg2 The arg2.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_cpoller($cmd = 'index', $arg1 = '', $arg2 = '') {
 	if ($cmd == 'index') {
 		$collectors = db_fetch_assoc('SELECT id FROM poller ORDER BY id');

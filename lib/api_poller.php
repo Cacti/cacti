@@ -22,6 +22,22 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * API helper that handles poller cache item add. Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_id The host ID.
+ * @param mixed $host_field_override The host field override.
+ * @param int $local_data_id The local data ID.
+ * @param int $rrd_step The RRD step.
+ * @param int $poller_action_id The poller action ID.
+ * @param string $data_source_item_name The data source item name.
+ * @param int $num_rrd_items The num RRD items.
+ * @param string $arg1 The arg1.
+ * @param string $arg2 The arg2.
+ * @param string $arg3 The arg3.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function api_poller_cache_item_add($host_id, $host_field_override, $local_data_id, $rrd_step, $poller_action_id, $data_source_item_name, $num_rrd_items, $arg1 = '', $arg2 = '', $arg3 = '') {
 	static $hosts = array();
 
@@ -101,6 +117,15 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 	}
 }
 
+/**
+ * API helper that handles poller get RRD next step. Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_id The host ID.
+ * @param int $rrd_step The RRD step.
+ * @param int $local_data_id The local data ID.
+ *
+ * @return int The resulting integer value.
+ */
 function api_poller_get_rrd_next_step($host_id, $rrd_step, $local_data_id) {
 	global $config;
 

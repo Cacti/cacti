@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1 0 4. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_0_4() {
 	db_install_add_key('poller_output_boost', 'KEY', 'PRIMARY', array('local_data_id', 'time', 'rrd_name'), 'BTREE');
 }

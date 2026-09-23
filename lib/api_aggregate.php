@@ -23,14 +23,14 @@
  */
 
 /**
- * Create or update aggregate graph.
- * Save all graph definitions, but omit graph items. Wipe out host_id and graph_template_id.
+ * Create or update aggregate graph. Save all graph definitions, but omit graph items. Wipe out
+ * host_id and graph_template_id. Used as part of Cacti's lib functionality.
  *
- * @param int $local_graph_id        - ID of an already existing aggregate graph.
- * @param int $graph_template_id     - ID of the corresponding graph_template.
- * @param string $graph_title        - Title for new graph.
- * @param int $aggregate_template_id - ID of aggregate template (0 if no template).
- * @param array $new_data            - Key/value pairs with new graph data.
+ * @param int $_local_graph_id The local graph ID.
+ * @param int $_graph_template_id The graph template ID.
+ * @param string $_graph_title The title of the graph.
+ * @param int $_aggregate_template_id The aggregate template ID (optional, default is 0).
+ * @param array $graph_data Additional graph data (optional).
  *
  * @return int ID of the new graph.
  */
@@ -57,9 +57,10 @@ function aggregate_graph_save($_local_graph_id, $_graph_template_id, $_graph_tit
 }
 
 /**
- * Creates or updates basic aggregate graph data in graph_local.
+ * Creates or updates basic aggregate graph data in graph_local. Used as part of Cacti's lib
+ * functionality.
  *
- * @param int $id - ID of existing aggregate graph if updating or 0 if creating a new one.
+ * @param int $id ID of existing aggregate graph if updating or 0 if creating a new one.
  *
  * @return int ID of graph.
  */
@@ -77,16 +78,17 @@ function aggregate_graph_local_save($id = 0) {
 }
 
 /**
- * Create or update aggregate graphs data in graph_templates_graph.
- * Graph must already exist in graph_local eg. local_graph_id must never be 0
+ * Create or update aggregate graphs data in graph_templates_graph. Graph must already exist in
+ * graph_local eg. local_graph_id must never be 0. Used as part of Cacti's lib functionality.
  *
- * @param int $local_graph_id        - ID of graph.
- * @param int $graph_template_id     - Graph template this graph is based on.
- * @param string $graph_title        - Title of graph. Used only for new graphs.
- * @param int $aggregate_template_id - ID of aggregate template this graph is based on (0 if not aggregate template based).
- * @param array $new_data            - Key/value pairs with new graph data.
+ * @param int $local_graph_id ID of graph.
+ * @param int $graph_template_id Graph template this graph is based on.
+ * @param string $graph_title Title of graph. Used only for new graphs.
+ * @param int $aggregate_template_id ID of aggregate template this graph is based on (0 if not
+ *   aggregate template based).
+ * @param array $new_data Key/value pairs with new graph data.
  *
- * @return int ID of record in graph_templates_graph
+ * @return int ID of record in graph_templates_graph.
  */
 function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_id, $graph_title = '', $aggregate_template_id = 0, $new_data = array()) {
 	cacti_log(__FUNCTION__ . ' local_graph: ' . $local_graph_id . ' template: ' . $graph_template_id . ' title: ' . $graph_title . ' aggregate template: '. $aggregate_template_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -172,25 +174,29 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
 	return $graph_templates_graph_id;
 }
 
-/** aggregate_graphs_insert_graph_items	- inserts all graph items of an existing graph
- * @param int $_new_graph_id			- id of the new graph
- * @param int $_old_graph_id			- id of the old graph
- * @param int $_graph_template_id		- template id of the old graph if the old graph is 0
- * @param int $_skip					- graph items to be skipped, array starts at 1
- * @param int $_totali                  - graph items to be totaled, array starts at 1
- * @param int $_graph_item_sequence		- sequence number of the next graph item to be inserted
- * @param int $_selected_graph_index	- index of current graph to be inserted
- * @param array $_color_templates		- the color templates to be used
- * @param array $_graph_item_types		- graph_type_ids to override types from original graph item
- * @param array $_cdefs					- cdef_ids to override cdef from original graph item
- * @param int $_graph_type				- conversion to AREA/STACK or LINE required?
- * @param int $_gprint_prefix			- prefix for the legend line
- * @param int $_gprint_format			- flag to determine if the source graphs GPRINT title should be included
- * @param int $_total					- Totalling: graph items AND/OR legend
- * @param int $_total_type				- Totalling: SIMILAR/ALL data sources
- * @param array $member_graph			- Totalling: Used for determining the consolidation function id
- * @return int							- id of the next graph item to be inserted
- *  */
+/**
+ * Inserts all graph items of an existing graph. Used as part of Cacti's lib functionality.
+ *
+ * @param int $_new_graph_id Id of the new graph.
+ * @param int $_old_graph_id Id of the old graph.
+ * @param int $_graph_template_id Template id of the old graph if the old graph is 0.
+ * @param int $_skip Graph items to be skipped, array starts at 1.
+ * @param int $_totali Graph items to be totaled, array starts at 1.
+ * @param int $_graph_item_sequence Sequence number of the next graph item to be inserted.
+ * @param int $_selected_graph_index Index of current graph to be inserted.
+ * @param array $_color_templates The color templates to be used.
+ * @param array $_graph_item_types Graph_type_ids to override types from original graph item.
+ * @param array $_cdefs Cdef_ids to override cdef from original graph item.
+ * @param int $_graph_type Conversion to AREA/STACK or LINE required?
+ * @param int $_gprint_prefix Prefix for the legend line.
+ * @param int $_gprint_format Flag to determine if the source graphs GPRINT title should be
+ *   included.
+ * @param int $_total Totalling: graph items AND/OR legend.
+ * @param int $_total_type Totalling: SIMILAR/ALL data sources.
+ * @param array $member_graphs Array of member graphs (default is empty array).
+ *
+ * @return int Id of the next graph item to be inserted.
+ */
 function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_graph_template_id,
 	$_skip, $_totali, $_graph_item_sequence, $_selected_graph_index, $_color_templates, $_graph_item_types, $_cdefs,
 	$_graph_type, $_gprint_prefix, $_gprint_format, $_total, $_total_type = '', $member_graphs = array()) {
@@ -479,10 +485,12 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 }
 
 /**
- * insert or update aggregate graph items in DB tables
- * @param array $items
- * @param string $table
- * @return bool true if save was successful, false otherwise
+ * Insert or update aggregate graph items in DB tables. Used as part of Cacti's lib functionality.
+ *
+ * @param array $items The items.
+ * @param string $table The table.
+ *
+ * @return bool True if save was successful, false otherwise.
  */
 function aggregate_graph_items_save($items, $table) {
 	$defaults = array();
@@ -554,11 +562,13 @@ function aggregate_graph_items_save($items, $table) {
 }
 
 /**
- * Validate extra graph parameters posted from graph edit form.
- * You can check for validation errors with cacti function is_error_message
- * @param array $posted      - values posted from form
- * @param bool $has_override - form had override checkboxes
- * @return array             - cleaned up graph parameters
+ * Validate extra graph parameters posted from graph edit form. You can check for validation
+ * errors with cacti function is_error_message. Used as part of Cacti's lib functionality.
+ *
+ * @param array $posted Values posted from form.
+ * @param bool $has_override Form had override checkboxes.
+ *
+ * @return array Cleaned up graph parameters.
  */
 function aggregate_validate_graph_params($posted, $has_override = false) {
 	$check_post_params = array(
@@ -622,11 +632,13 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 }
 
 /**
- * Populate graph items array with posted values.
- * $graph_items array must be keyed on graph item id.
- * @param array $posted      - values posted from form
- * @param array $graph_items - reference to graph items array to update with form values
+ * Populate graph items array with posted values. $graph_items array must be keyed on graph item
+ * id. Used as part of Cacti's lib functionality.
  *
+ * @param array $posted Values posted from form.
+ * @param & $graph_items Reference to graph items array to update with form values.
+ *
+ * @return void No value is returned.
  */
 function aggregate_validate_graph_items($posted, &$graph_items) {
 	foreach ($_POST as $var => $val) {
@@ -672,10 +684,13 @@ function aggregate_validate_graph_items($posted, &$graph_items) {
 }
 
 /**
- * cleanup of graph items of the new graph
- * @param int $base			- base graph id
- * @param int $aggregate	- graph id of aggregate
- * @param int $reorder		- type of reordering
+ * Cleanup of graph items of the new graph. Used as part of Cacti's lib functionality.
+ *
+ * @param int $base Base graph id.
+ * @param int $aggregate Graph id of aggregate.
+ * @param int $reorder Type of reordering.
+ *
+ * @return void No value is returned.
  */
 function aggregate_graphs_cleanup($base, $aggregate, $reorder) {
 	global $config;
@@ -695,11 +710,15 @@ function aggregate_graphs_cleanup($base, $aggregate, $reorder) {
 }
 
 /**
- * reorder graph items
- * @param int $base              - base graph id
- * @param int $aggregate         - graph id of aggregate
- * @param int $reorder           - type of reordering
- * @param int $graph_type        - type of graph
+ * Reorder graph items. Used as part of Cacti's lib functionality.
+ *
+ * @param int $base Base graph id.
+ * @param string $graph_template_id The ID of the graph template.
+ * @param int $aggregate Graph id of aggregate.
+ * @param int $reorder Type of reordering.
+ * @param int $graph_type Type of graph.
+ *
+ * @return bool Bool.
  */
 function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reorder, $graph_type) {
 	global $config;
@@ -867,11 +886,13 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 }
 
 /**
- * push_out_aggregates				- update all aggregates based upon the template
- * @param int aggregate_template_id	- the aggregate template id
- * @param int local_graph_id		- the specific aggregate graph to update
- * @return bool true when every selected aggregate was updated
- *  */
+ * Update all aggregates based upon the template. Used as part of Cacti's lib functionality.
+ *
+ * @param int $aggregate_template_id Int aggregate_template_id - the aggregate template id.
+ * @param int $local_graph_id Int local_graph_id - the specific aggregate graph to update.
+ *
+ * @return bool True when every selected aggregate was updated.
+ */
 function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 	$attribs                    = array();
 	$attribs['skipped_items']   = array();
@@ -1074,11 +1095,16 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 }
 
 /**
- * aggregate_create_update - either create or update an aggregate based on criteria
- * @param int $local_graph_id  - the local graph id of the existing graph.  0 if one needs to be created
- * @param array $member_graphs - the graphs that will be included in this aggregate
- * @return array $attribs      - the attributes for this new graph
- *  */
+ * Either create or update an aggregate based on criteria. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param & $local_graph_id The local graph id of the existing graph. 0 if one needs to be created.
+ * @param array $member_graphs The graphs that will be included in this aggregate.
+ * @param array $attribs An array of attributes for the aggregate graph.
+ * @param bool $manage_transaction The manage transaction.
+ *
+ * @return array $attribs - the attributes for this new graph.
+ */
 function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs, $manage_transaction = true) {
 	global $config;
 	cacti_log(__FUNCTION__ . ' called. Graph id: ' . $local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -1353,6 +1379,18 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs, $ma
 	return true;
 }
 
+/**
+ * Handles the percentile type aggregation for member graphs. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $member_graphs An array of member graphs to be aggregated.
+ * @param array $skipped_items An array of items that were skipped during the aggregation process.
+ * @param int $local_graph_id The ID of the local graph being processed.
+ * @param int $_total The total value calculated during the aggregation.
+ * @param string $_total_type The type of total calculation (e.g., 'sum', 'average').
+ *
+ * @return void No value is returned.
+ */
 function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_graph_id, $_total, $_total_type) {
 	$special_comments  = null;
 	$special_hrules    = null;
@@ -1565,6 +1603,18 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 	}
 }
 
+/**
+ * Handles the aggregation of stacked lines for a given graph. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $local_graph_id The ID of the local graph.
+ * @param string $_orig_graph_type The original type of the graph.
+ * @param int $_total The total value to be aggregated.
+ * @param string $_total_type The type of the total value.
+ * @param string $_total_prefix The prefix for the total value.
+ *
+ * @return void No value is returned.
+ */
 function aggregate_handle_stacked_lines($local_graph_id, $_orig_graph_type, $_total, $_total_type, $_total_prefix) {
 	// Handle the stacked line cases switch line widths
 	$width = '0.01';
@@ -1630,6 +1680,15 @@ function aggregate_handle_stacked_lines($local_graph_id, $_orig_graph_type, $_to
 		array(GRAPH_ITEM_TYPE_LINESTACK, $local_graph_id));
 }
 
+/**
+ * Retrieves data sources for aggregation. Used as part of Cacti's lib functionality.
+ *
+ * @param & $graph_array Array of graphs to aggregate.
+ * @param & $data_sources Array to store the retrieved data sources.
+ * @param & $graph_template Template for the graphs.
+ *
+ * @return bool True on success, false on failure.
+ */
 function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_template) {
 	/* find out which (if any) data sources are being used by this graph, so we can tell the user */
 	if (isset($graph_array)) {
@@ -1699,10 +1758,14 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 }
 
 /**
- * draw_aggregate_template_graph_items_list - draw graph item list
+ * Draw graph item list. Used as part of Cacti's lib functionality.
  *
- * @param int $_graph_template_id - id of the graph for which the items shall be listed
- # @param int $_object            - either the aggregate or aggregate_template
+ * @param int $_graph_id The ID of the graph. Default is 0.
+ * @param int $_graph_template_id Id of the graph for which the items shall be listed # @param int
+ *   $_object - either the aggregate or aggregate_template.
+ * @param array $_object An array of objects related to the graph. Default is an empty array.
+ *
+ * @return void No value is returned.
  */
 function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0, $_object = array()) {
 	global $config, $graph_item_types, $consolidation_functions;
@@ -1946,10 +2009,13 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 }
 
 /**
- * draw graph configuration form so user can override some graph template parameters
+ * Draw graph configuration form so user can override some graph template parameters. Used as part
+ * of Cacti's lib functionality.
  *
- * @param int $aggregate_template_id - aggregate graph template being edited
- * @param int $graph_template_id     - graph template this aggregate template is based on
+ * @param int $aggregate_template_id Aggregate graph template being edited.
+ * @param int $graph_template_id Graph template this aggregate template is based on.
+ *
+ * @return void No value is returned.
  */
 function draw_aggregate_template_graph_config($aggregate_template_id, $graph_template_id) {
 	global $struct_graph;

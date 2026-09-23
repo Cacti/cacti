@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1 2 8. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_2_8() {
 	db_install_execute('ALTER TABLE host_snmp_cache ROW_FORMAT=Dynamic, DROP INDEX snmp_index, DROP INDEX field_value');
 	db_install_execute('ALTER TABLE host_snmp_cache MODIFY COLUMN snmp_index VARCHAR(255) NOT NULL default ""');

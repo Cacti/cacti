@@ -45,7 +45,13 @@ process_user_input($timespan, $timeshift);
 /* save session variables */
 finalize_timespan($timespan);
 
-/* initialize the timespan selector for first use */
+/**
+ * Initialize the timespan selector for first use. Used as part of Cacti's lib functionality.
+ *
+ * @param & $timespan The timespan.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function initialize_timespan(&$timespan) {
 	/* initialize the default timespan if not set */
 	if ((!isset($_SESSION['sess_current_timespan'])) || (isset_request_var('button_clear'))) {
@@ -60,7 +66,11 @@ function initialize_timespan(&$timespan) {
 	}
 }
 
-/* preformat for timespan selector */
+/**
+ * Preformat for timespan selector. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function process_html_variables() {
 	if (isset_request_var('predefined_timespan')) {
 		if (!is_numeric(get_filter_request_var('predefined_timespan'))) {
@@ -108,7 +118,14 @@ function process_html_variables() {
 }
 
 /* when a span time preselection has been defined update the span time fields */
-/* someone hit a button and not a dropdown */
+/**
+ * Someone hit a button and not a dropdown. Used as part of Cacti's lib functionality.
+ *
+ * @param & $timespan The timespan.
+ * @param int $timeshift The timeshift.
+ *
+ * @return void No value is returned.
+ */
 function process_user_input(&$timespan, $timeshift) {
 	/* catch the case where the session is not set for some reason */
 	if (isset($_SESSION['sess_current_date1']) && isset($_SESSION['sess_current_date2'])) {
@@ -174,7 +191,14 @@ function process_user_input(&$timespan, $timeshift) {
 	}
 }
 
-/* establish graph timespan from either a user select or the default */
+/**
+ * Establish graph timespan from either a user select or the default. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param & $timespan The timespan.
+ *
+ * @return void No value is returned.
+ */
 function set_preset_timespan(&$timespan) {
 	/* no current timespan: get default timespan */
 	if (!isset($_SESSION['sess_current_timespan'])) {
@@ -207,6 +231,13 @@ function set_preset_timespan(&$timespan) {
 	$_SESSION['custom'] = 0;
 }
 
+/**
+ * Handles the finalize timespan. Used as part of Cacti's lib functionality.
+ *
+ * @param & $timespan The timespan.
+ *
+ * @return void No value is returned.
+ */
 function finalize_timespan(&$timespan) {
 	if (!isset($timespan['current_value_date1'])) {
 		/* default end date is now default time span */
@@ -249,7 +280,12 @@ function finalize_timespan(&$timespan) {
 	}
 }
 
-/* establish graph timeshift from either a user select or the default */
+/**
+ * Establish graph timeshift from either a user select or the default. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @return int The resulting integer value.
+ */
 function set_timeshift() {
 	global $config, $graph_timeshifts_vals;
 

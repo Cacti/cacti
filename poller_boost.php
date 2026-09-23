@@ -353,6 +353,14 @@ if ($child == false) {
 	exit($completion_recorded === false || $rrd_updates < 0 ? 1 : 0);
 }
 
+/**
+ * Provides a generic means to catch exceptions to the Cacti log. Used as part of Cacti's poller
+ * boost functionality.
+ *
+ * @param int $signo The signal that was thrown by the interface.
+ *
+ * @return void No value is returned.
+ */
 function sig_handler($signo) {
 	global $child, $config, $current_lock;
 
@@ -384,6 +392,13 @@ function sig_handler($signo) {
 	}
 }
 
+/**
+ * Handles the boost kill running processes. Used as part of Cacti's poller boost functionality.
+ *
+ * @param int $wait_seconds The wait seconds.
+ *
+ * @return void No value is returned.
+ */
 function boost_kill_running_processes($wait_seconds = 10) {
 	$processes = db_fetch_assoc_prepared('SELECT *
 		FROM processes
@@ -446,6 +461,11 @@ function boost_kill_running_processes($wait_seconds = 10) {
 	return false;
 }
 
+/**
+ * Handles the boost processes running. Used as part of Cacti's poller boost functionality.
+ *
+ * @return int The resulting integer value.
+ */
 function boost_processes_running() {
 	$running = db_fetch_cell('SELECT COUNT(*)
 		FROM processes
@@ -455,12 +475,26 @@ function boost_processes_running() {
 	return $running;
 }
 
+/**
+ * Handles the boost completed children. Used as part of Cacti's poller boost functionality.
+ *
+ * @param string $run_id The run ID.
+ *
+ * @return int The resulting integer value.
+ */
 function boost_completed_children($run_id) {
 	return (int) db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM poller_output_boost_processes
 		WHERE run_id = ?', array($run_id));
 }
 
+/**
+ * Handles the boost failed children. Used as part of Cacti's poller boost functionality.
+ *
+ * @param string $run_id The run ID.
+ *
+ * @return int The resulting integer value.
+ */
 function boost_failed_children($run_id) {
 	return (int) db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM poller_output_boost_processes
@@ -468,6 +502,11 @@ function boost_failed_children($run_id) {
 		AND CAST(status AS SIGNED) < 0', array($run_id));
 }
 
+/**
+ * Handles the boost prepare process table. Used as part of Cacti's poller boost functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function boost_prepare_process_table() {
 	global $start_time, $archive_table, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
 	global $boost_run_arch_tables, $run_id;
@@ -629,6 +668,11 @@ function boost_prepare_process_table() {
 	return true;
 }
 
+/**
+ * Handles the boost prune memstats. Used as part of Cacti's poller boost functionality.
+ *
+ * @return void No value is returned.
+ */
 function boost_prune_memstats() {
 	$processes = read_config_option('boost_parallel');
 
@@ -638,6 +682,11 @@ function boost_prune_memstats() {
 		array($processes));
 }
 
+/**
+ * Handles the boost launch children. Used as part of Cacti's poller boost functionality.
+ *
+ * @return int The resulting integer value.
+ */
 function boost_launch_children() {
 	global $config, $debug, $run_id;
 
@@ -676,6 +725,16 @@ function boost_launch_children() {
 	return $processes;
 }
 
+/**
+ * Handles the boost time to run. Used as part of Cacti's poller boost functionality.
+ *
+ * @param bool $forcerun The forcerun.
+ * @param int $current_time The current time.
+ * @param int $last_run_time The last run time.
+ * @param int $next_run_time The next run time.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_time) {
 	$run_now = false;
 
@@ -753,6 +812,13 @@ function boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_t
 	return $run_now;
 }
 
+/**
+ * Handles the boost output RRD data. Used as part of Cacti's poller boost functionality.
+ *
+ * @param int $child The child.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function boost_output_rrd_data($child) {
 	global $start, $archive_table, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used, $run_id;
 
@@ -849,11 +915,16 @@ function boost_output_rrd_data($child) {
 	return $processed_rows;
 }
 
-/* boost_process_local_data_ids - grabs data from the 'poller_output' table and feeds the *completed*
-     results to RRDTool for processing
-	 @arg $child - the current process
-	 @arg $rrdtool_pipe - the socket that has been opened for the RRDtool operation
-	 @arg $max_rows - maximum rows to materialize in one page */
+/**
+ * Grabs data from the 'poller_output' table and feeds the *completed* results to RRDTool for
+ * processing. Used as part of Cacti's poller boost functionality.
+ *
+ * @param int $child The current process.
+ * @param mixed $rrdtool_pipe The socket that has been opened for the RRDtool operation.
+ * @param mixed $max_rows Maximum rows to materialize in one page.
+ *
+ * @return int The number of processed local_data_ids.
+ */
 function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 	global $config, $archive_table, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used, $current_lock;
 	global $run_id, $max_run_duration;
@@ -1353,6 +1424,17 @@ function boost_process_local_data_ids($child, $rrdtool_pipe, $max_rows) {
 	return $updates_ok && $results !== false ? cacti_sizeof($results) : -1;
 }
 
+/**
+ * Handles the boost process output. Used as part of Cacti's poller boost functionality.
+ *
+ * @param int $local_data_id The local data ID.
+ * @param array $outarray The outarray.
+ * @param string $rrd_path The RRD path.
+ * @param array $rrd_tmplp The RRD tmplp.
+ * @param mixed $rrdtool_pipe The rrdtool pipe.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe) {
 	$outbuf = '';
 	if (cacti_sizeof($outarray)) {
@@ -1382,6 +1464,13 @@ function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, 
 	return true;
 }
 
+/**
+ * Handles the boost log statistics. Used as part of Cacti's poller boost functionality.
+ *
+ * @param int $rrd_updates The RRD updates.
+ *
+ * @return void No value is returned.
+ */
 function boost_log_statistics($rrd_updates) {
 	global $start, $boost_stats_log, $verbose;
 
@@ -1479,6 +1568,14 @@ function boost_log_statistics($rrd_updates) {
 	db_execute('DELETE FROM settings WHERE name LIKE \'stats_detail_boost_%\'');
 }
 
+/**
+ * Handles the boost log child statistics. Used as part of Cacti's poller boost functionality.
+ *
+ * @param int $rrd_updates The RRD updates.
+ * @param int $child The child.
+ *
+ * @return void No value is returned.
+ */
 function boost_log_child_statistics($rrd_updates, $child) {
 	global $start, $boost_stats_log, $verbose;
 
@@ -1536,6 +1633,13 @@ function boost_log_child_statistics($rrd_updates, $child) {
 	}
 }
 
+/**
+ * Handles the boost purge cached png files. Used as part of Cacti's poller boost functionality.
+ *
+ * @param bool $forcerun The forcerun.
+ *
+ * @return void No value is returned.
+ */
 function boost_purge_cached_png_files($forcerun) {
 	global $config;
 
@@ -1606,13 +1710,21 @@ function boost_purge_cached_png_files($forcerun) {
 }
 
 /* do NOT run this script through a web browser */
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's poller boost functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_version();
 	print "Cacti Boost RRD Update Poller, Version $version " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+/**
+ * Displays the usage of the function. Used as part of Cacti's poller boost functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help () {
 	display_version();
 

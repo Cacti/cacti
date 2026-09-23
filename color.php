@@ -78,6 +78,12 @@ switch (get_request_var('action')) {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's color functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	if (isset_request_var('save_component_color')) {
@@ -135,6 +141,12 @@ function form_save() {
 /* -----------------------
     Color Functions
    ----------------------- */
+/**
+ * ----------------------- Color Functions -----------------------. Used as part of Cacti's color
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_actions() {
 	global $color_actions;
@@ -216,6 +228,13 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * Handles the color import processor. Used as part of Cacti's color functionality.
+ *
+ * @param & $colors The colors.
+ *
+ * @return array An array of results.
+ */
 function color_import_processor(&$colors) {
 	$i            = 0;
 	$header       = [];
@@ -325,6 +344,11 @@ function color_import_processor(&$colors) {
 	return $return_array;
 }
 
+/**
+ * Handles the color import. Used as part of Cacti's color functionality.
+ *
+ * @return void No value is returned.
+ */
 function color_import() {
 	form_start('color.php?action=import', '', true);
 
@@ -388,6 +412,11 @@ function color_import() {
 	form_save_button('', 'import', 'import', false);
 }
 
+/**
+ * Handles the color edit. Used as part of Cacti's color functionality.
+ *
+ * @return void No value is returned.
+ */
 function color_edit() {
 	global $fields_color_edit;
 
@@ -444,6 +473,11 @@ function color_edit() {
 	<?php
 }
 
+/**
+ * Processes the request vars. Used as part of Cacti's color functionality.
+ *
+ * @return void No value is returned.
+ */
 function process_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -489,6 +523,11 @@ function process_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Handles the color. Used as part of Cacti's color functionality.
+ *
+ * @return void No value is returned.
+ */
 function color() {
 	global $color_actions, $item_rows;
 
@@ -726,6 +765,11 @@ function color() {
 	form_end();
 }
 
+/**
+ * Handles the color export. Used as part of Cacti's color functionality.
+ *
+ * @return void No value is returned.
+ */
 function color_export() {
 	process_request_vars();
 

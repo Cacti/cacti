@@ -65,6 +65,11 @@ switch (get_request_var('action')) {
 	break;
 }
 
+/**
+ * Handles the manager. Used as part of Cacti's managers functionality.
+ *
+ * @return void No value is returned.
+ */
 function manager() {
 	global $config, $manager_actions, $item_rows;
 
@@ -268,6 +273,11 @@ function manager() {
 	form_end();
 }
 
+/**
+ * Handles the manager edit. Used as part of Cacti's managers functionality.
+ *
+ * @return void No value is returned.
+ */
 function manager_edit() {
 	global $config, $snmp_auth_protocols, $snmp_priv_protocols, $snmp_versions,
 		$tabs_manager_edit, $fields_manager_edit, $manager_notification_actions;
@@ -377,6 +387,14 @@ function manager_edit() {
 	<?php
 }
 
+/**
+ * Handles the manager notifications. Used as part of Cacti's managers functionality.
+ *
+ * @param int $id The ID.
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function manager_notifications($id, $header_label) {
 	global $item_rows, $manager_notification_actions;
 
@@ -628,6 +646,14 @@ function manager_notifications($id, $header_label) {
     form_end();
 }
 
+/**
+ * Handles the manager logs. Used as part of Cacti's managers functionality.
+ *
+ * @param int $id The ID.
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function manager_logs($id, $header_label) {
 	$severity_levels = array(
 		SNMPAGENT_EVENT_SEVERITY_LOW      => 'LOW',
@@ -866,6 +892,11 @@ function manager_logs($id, $header_label) {
 	<?php
 }
 
+/**
+ * Handles the form save. Used as part of Cacti's managers functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_save() {
 	if (!isset_request_var('tab')) {
 		set_request_var('tab', 'general');
@@ -934,6 +965,11 @@ function form_save() {
 	header('Location: managers.php?action=edit&header=false&id=' . (empty($manager_id) ? get_nfilter_request_var('id') : $manager_id) );
 }
 
+/**
+ * Handles the form actions. Used as part of Cacti's managers functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_actions() {
 	global $manager_actions, $manager_notification_actions;
 

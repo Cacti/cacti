@@ -239,12 +239,21 @@ if (cacti_sizeof($parms) == 0) {
 	}
 }
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Permissions Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help() {
 	display_version();
 
@@ -259,6 +268,11 @@ function display_help() {
 	print "    --list-graphs --host-id=[ID]\n";
 }
 
+/**
+ * Displays the list of groups. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function displayGroups() {
     /**
      * Todo implement

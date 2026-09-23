@@ -129,6 +129,12 @@ switch (get_request_var('action')) {
 /* --------------------------
     Global Form Functions
    -------------------------- */
+/**
+ * -------------------------- Global Form Functions --------------------------. Used as part of
+ * Cacti's graphs functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function get_ajax_graph_items() {
 	$rrd_id  = get_filter_request_var('rrd_id');
@@ -185,6 +191,11 @@ function get_ajax_graph_items() {
 	print json_encode($items);
 }
 
+/**
+ * Handles the add tree names to actions array. Used as part of Cacti's graphs functionality.
+ *
+ * @return void No value is returned.
+ */
 function add_tree_names_to_actions_array() {
 	global $graph_actions;
 
@@ -203,6 +214,14 @@ function add_tree_names_to_actions_array() {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's graphs functionality.
+ *
+ * @param string $variable The variable.
+ *
+ * @return string The resulting string.
+ */
 
 function parse_validate_graph_template_id($variable) {
 	$output_type_id = 0;
@@ -222,6 +241,11 @@ function parse_validate_graph_template_id($variable) {
 	return $output_type_id;
 }
 
+/**
+ * Handles the form save. Used as part of Cacti's graphs functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_save() {
 	/* ================= input validation ================= */
 	get_filter_request_var('local_graph_id');
@@ -481,6 +505,14 @@ function form_save() {
 /* ------------------------
     The "actions" function
    ------------------------ */
+/**
+ * ------------------------ The "actions" function ------------------------. Used as part of
+ * Cacti's graphs functionality.
+ *
+ * @param int $local_graph_id The local graph ID.
+ *
+ * @return string The resulting string.
+ */
 
 function get_current_graph_template($local_graph_id) {
 	$graph_local = db_fetch_row_prepared('SELECT *
@@ -532,6 +564,13 @@ function get_current_graph_template($local_graph_id) {
 	}
 }
 
+/**
+ * Retrieves the common graph templates. Used as part of Cacti's graphs functionality.
+ *
+ * @param & $graph The graph.
+ *
+ * @return string The resulting string.
+ */
 function get_common_graph_templates(&$graph) {
 	$dqid = 0;
 
@@ -596,6 +635,11 @@ function get_common_graph_templates(&$graph) {
 	return $gtsql;
 }
 
+/**
+ * Handles the form actions. Used as part of Cacti's graphs functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_actions() {
 	global $graph_actions, $struct_aggregate;
 
@@ -1404,6 +1448,12 @@ function form_actions() {
 /* -----------------------
     item - Graph Items
    ----------------------- */
+/**
+ * ----------------------- item - Graph Items -----------------------. Used as part of Cacti's
+ * graphs functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function item() {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item;
@@ -1481,6 +1531,14 @@ function item() {
 /* ------------------------------------
     graph - Graphs
    ------------------------------------ */
+/**
+ * ------------------------------------ graph - Graphs ------------------------------------. Used
+ * as part of Cacti's graphs functionality.
+ *
+ * @param int $local_graph_id The local graph ID.
+ *
+ * @return bool True on success, false otherwise.
+ */
 
 function is_multi_device_graph($local_graph_id) {
 	$devices = db_fetch_cell_prepared('SELECT COUNT(DISTINCT host_id)
@@ -1495,6 +1553,11 @@ function is_multi_device_graph($local_graph_id) {
 	return $devices > 1 ? true : false;
 }
 
+/**
+ * Handles the graph edit. Used as part of Cacti's graphs functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function graph_edit() {
 	global $config, $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
 
@@ -1929,6 +1992,11 @@ function graph_edit() {
 	}
 }
 
+/**
+ * Validates the graph request vars. Used as part of Cacti's graphs functionality.
+ *
+ * @return void No value is returned.
+ */
 function validate_graph_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1999,6 +2067,11 @@ function validate_graph_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Handles the graph management. Used as part of Cacti's graphs functionality.
+ *
+ * @return void No value is returned.
+ */
 function graph_management() {
 	global $graph_actions, $graph_sources, $item_rows, $config;
 

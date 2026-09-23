@@ -45,6 +45,12 @@ switch (get_request_var('action')) {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's templates export functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	global $export_types, $export_errors;
@@ -82,6 +88,12 @@ function form_save() {
 /* ---------------------------
     Template Export Functions
    --------------------------- */
+/**
+ * --------------------------- Template Export Functions ---------------------------. Used as part
+ * of Cacti's templates export functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function export() {
 	global $export_types;

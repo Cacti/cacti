@@ -118,6 +118,12 @@ switch (get_request_var('action')) {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's data sources functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	if ((isset_request_var('save_component_data_source_new')) && (!isempty_request_var('data_template_id'))) {
@@ -365,6 +371,12 @@ function form_save() {
 /* ------------------------
     The "actions" function
    ------------------------ */
+/**
+ * ------------------------ The "actions" function ------------------------. Used as part of
+ * Cacti's data sources functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_actions() {
 	global $ds_actions;
@@ -608,6 +620,14 @@ function form_actions() {
 /* ----------------------------
     data - Custom Data
    ---------------------------- */
+/**
+ * ---------------------------- data - Custom Data ----------------------------. Used as part of
+ * Cacti's data sources functionality.
+ *
+ * @param bool $incform The incform.
+ *
+ * @return void No value is returned.
+ */
 
 function data_edit($incform = true) {
 	/* ================= input validation ================= */
@@ -722,6 +742,12 @@ function data_edit($incform = true) {
 /* ------------------------
     Data Source Functions
    ------------------------ */
+/**
+ * ------------------------ Data Source Functions ------------------------. Used as part of
+ * Cacti's data sources functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function ds_rrd_remove() {
 	/* ================= input validation ================= */
@@ -740,6 +766,11 @@ function ds_rrd_remove() {
 	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('local_data_id'));
 }
 
+/**
+ * Handles the DS RRD add. Used as part of Cacti's data sources functionality.
+ *
+ * @return void No value is returned.
+ */
 function ds_rrd_add() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -756,9 +787,10 @@ function ds_rrd_add() {
 }
 
 /**
- * Determines whether the current user is authorized to modify the given data source.
- * Data sources tied to a device (host_id > 0) require the caller to be authorized for
- * that device; host-independent data sources (host_id = 0) are not device-scoped.
+ * Determines whether the current user is authorized to modify the given data source. Data sources
+ * tied to a device (host_id > 0) require the caller to be authorized for that device;
+ * host-independent data sources (host_id = 0) are not device-scoped. Used as part of Cacti's data
+ * sources functionality.
  *
  * @param int $local_data_id The data source to check.
  *
@@ -774,6 +806,11 @@ function data_source_authorized($local_data_id) {
 	return is_device_allowed($host_id);
 }
 
+/**
+ * Handles the DS disable. Used as part of Cacti's data sources functionality.
+ *
+ * @return void No value is returned.
+ */
 function ds_disable() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -790,6 +827,11 @@ function ds_disable() {
 	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('id'));
 }
 
+/**
+ * Handles the DS enable. Used as part of Cacti's data sources functionality.
+ *
+ * @return void No value is returned.
+ */
 function ds_enable() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -806,6 +848,11 @@ function ds_enable() {
 	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('id'));
 }
 
+/**
+ * Handles the DS edit. Used as part of Cacti's data sources functionality.
+ *
+ * @return void No value is returned.
+ */
 function ds_edit() {
 	global $struct_data_source, $struct_data_source_item;
 
@@ -1249,6 +1296,14 @@ function ds_edit() {
 	bottom_footer();
 }
 
+/**
+ * Retrieves the poller interval. Used as part of Cacti's data sources functionality.
+ *
+ * @param int $seconds The seconds.
+ * @param int $data_source_profile_id The data source profile ID.
+ *
+ * @return string The resulting string.
+ */
 function get_poller_interval($seconds, $data_source_profile_id) {
 	if ($seconds == 0 || $data_source_profile_id == 0) {
 		return '<em>' . __('External') . '</em>';
@@ -1261,6 +1316,11 @@ function get_poller_interval($seconds, $data_source_profile_id) {
 	}
 }
 
+/**
+ * Validates the data source vars. Used as part of Cacti's data sources functionality.
+ *
+ * @return void No value is returned.
+ */
 function validate_data_source_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1326,6 +1386,11 @@ function validate_data_source_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Handles the DS. Used as part of Cacti's data sources functionality.
+ *
+ * @return void No value is returned.
+ */
 function ds() {
 	global $ds_actions, $item_rows, $sampling_intervals;
 
@@ -1784,6 +1849,13 @@ function ds() {
 	form_end();
 }
 
+/**
+ * Retrieves the graphs aggregates URL. Used as part of Cacti's data sources functionality.
+ *
+ * @param int $local_data_id The local data ID.
+ *
+ * @return string The resulting string.
+ */
 function get_graphs_aggregates_url($local_data_id) {
 	$graphs = db_fetch_row_prepared('SELECT GROUP_CONCAT(DISTINCT gl.id) AS graphs, COUNT(DISTINCT gl.id) AS total
 		FROM data_local AS dl

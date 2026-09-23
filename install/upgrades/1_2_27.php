@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1 2 27. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_2_27() {
 	db_install_execute("ALTER TABLE `poller_item` MODIFY `snmp_priv_protocol` char(7) NOT NULL DEFAULT ''");
 	db_install_execute("ALTER TABLE `host` MODIFY `snmp_priv_protocol` char(7) DEFAULT ''");

@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1 2 1. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_2_1() {
 	db_install_execute("UPDATE host SET deleted='' WHERE deleted IS NULL");
 	db_install_execute("ALTER TABLE host MODIFY COLUMN deleted char(3) NOT NULL default ''");

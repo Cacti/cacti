@@ -221,6 +221,11 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * Handles the tree get max sequence. Used as part of Cacti's tree functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function tree_get_max_sequence() {
 	$max_seq = db_fetch_cell('SELECT MAX(sequence) FROM graph_tree');
 
@@ -231,6 +236,11 @@ function tree_get_max_sequence() {
 	return $max_seq;
 }
 
+/**
+ * Handles the tree check sequences. Used as part of Cacti's tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function tree_check_sequences() {
 	$bad_seq = db_fetch_cell('SELECT COUNT(sequence)
 		FROM graph_tree
@@ -260,16 +270,31 @@ function tree_check_sequences() {
 	}
 }
 
+/**
+ * Handles the tree sort name asc. Used as part of Cacti's tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function tree_sort_name_asc() {
 	// resequence the list so it has no gaps, alphabetically ascending
 	db_execute('SET @seq = 0; UPDATE graph_tree SET sequence = (@seq:=@seq+1) ORDER BY name;');
 }
 
+/**
+ * Handles the tree sort name desc. Used as part of Cacti's tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function tree_sort_name_desc() {
 	// resequence the list so it has no gaps, alphabetically ascending
 	db_execute('SET @seq = 0; UPDATE graph_tree SET sequence = (@seq:=@seq+1) ORDER BY name DESC;');
 }
 
+/**
+ * Handles the tree down. Used as part of Cacti's tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function tree_down() {
 	tree_check_sequences();
 
@@ -298,6 +323,11 @@ function tree_down() {
 	exit;
 }
 
+/**
+ * Handles the tree up. Used as part of Cacti's tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function tree_up() {
 	tree_check_sequences();
 
@@ -326,6 +356,11 @@ function tree_up() {
 	exit;
 }
 
+/**
+ * Handles the tree dnd. Used as part of Cacti's tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function tree_dnd() {
 	if (isset_request_var('tree_ids') && is_array(get_nfilter_request_var('tree_ids'))) {
 		$tids     = get_nfilter_request_var('tree_ids');
@@ -360,6 +395,11 @@ function tree_dnd() {
 	exit;
 }
 
+/**
+ * Retrieves the host sort type. Used as part of Cacti's tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function get_host_sort_type() {
 	if (isset_request_var('nodeid')) {
 		$ndata = explode('_', get_request_var('nodeid'));
@@ -393,6 +433,11 @@ function get_host_sort_type() {
 	}
 }
 
+/**
+ * Sets the host sort type. Used as part of Cacti's tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function set_host_sort_type() {
 	$type   = '';
 	$branch = '';
@@ -443,6 +488,11 @@ function set_host_sort_type() {
 	return;
 }
 
+/**
+ * Retrieves the branch sort type. Used as part of Cacti's tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function get_branch_sort_type() {
 	if (isset_request_var('nodeid')) {
 		$ndata = explode('_', get_request_var('nodeid'));
@@ -494,6 +544,11 @@ function get_branch_sort_type() {
 	}
 }
 
+/**
+ * Sets the branch sort type. Used as part of Cacti's tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function set_branch_sort_type() {
 	$type   = '';
 	$branch = '';
@@ -572,6 +627,12 @@ function set_branch_sort_type() {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_save() {
 	/* clear graph tree cache on save - affects current user only, other users should see changes in <5 minutes */
 	if (isset($_SESSION['dhtml_tree'])) {
@@ -648,6 +709,14 @@ function form_save() {
 	}
 }
 
+/**
+ * Handles the sort recursive. Used as part of Cacti's tree functionality.
+ *
+ * @param int $branch The branch.
+ * @param int $tree_id The tree ID.
+ *
+ * @return void No value is returned.
+ */
 function sort_recursive($branch, $tree_id) {
 	$leaves = db_fetch_assoc_prepared('SELECT *
 		FROM graph_tree_items
@@ -677,6 +746,14 @@ function sort_recursive($branch, $tree_id) {
 	}
 }
 
+/**
+ * Handles the leaves exist. Used as part of Cacti's tree functionality.
+ *
+ * @param int $parent The parent.
+ * @param int $tree_id The tree ID.
+ *
+ * @return int The resulting integer value.
+ */
 function leaves_exist($parent, $tree_id) {
 	return db_fetch_assoc_prepared('SELECT COUNT(*)
 		FROM graph_tree_items
@@ -690,6 +767,12 @@ function leaves_exist($parent, $tree_id) {
 /* -----------------------
     Tree Item Functions
    ----------------------- */
+/**
+ * ----------------------- Tree Item Functions -----------------------. Used as part of Cacti's
+ * tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_actions() {
 	global $tree_actions;
 
@@ -853,6 +936,14 @@ function form_actions() {
 /* ---------------------
     Tree Functions
    --------------------- */
+/**
+ * --------------------- Tree Functions ---------------------. Used as part of Cacti's tree
+ * functionality.
+ *
+ * @param bool $partial The partial.
+ *
+ * @return void No value is returned.
+ */
 
 function tree_edit($partial = false) {
 	global $fields_tree_edit;
@@ -2041,6 +2132,11 @@ function tree_edit($partial = false) {
 	}
 }
 
+/**
+ * Displays the sites. Used as part of Cacti's tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_sites() {
 	if (get_nfilter_request_var('filter') != '') {
 		$sql_where = 'WHERE
@@ -2061,6 +2157,11 @@ function display_sites() {
 	}
 }
 
+/**
+ * Displays the hosts. Used as part of Cacti's tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_hosts() {
 	$sql_where = '';
 
@@ -2084,6 +2185,11 @@ function display_hosts() {
 	}
 }
 
+/**
+ * Displays the graphs. Used as part of Cacti's tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_graphs() {
 	$sql_where = '';
 
@@ -2131,6 +2237,11 @@ function display_graphs() {
 	}
 }
 
+/**
+ * Handles the tree. Used as part of Cacti's tree functionality.
+ *
+ * @return void No value is returned.
+ */
 function tree() {
 	global $tree_actions, $item_rows;
 

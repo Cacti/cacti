@@ -20,8 +20,12 @@ declare(strict_types = 1);
  */
 class CactiSecureType {
 	/**
-	 * Safely casts a value to an integer.
-	 * Returns 0 if the value is null or non-numeric, preventing PHP 8.6 warnings.
+	 * Safely casts a value to an integer. Returns 0 if the value is null or non-numeric, preventing
+	 * PHP 8.6 warnings. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed $value The value.
+	 *
+	 * @return int The resulting integer value.
 	 */
 	public static function toInt(mixed $value): int {
 		if ($value === null || !is_numeric($value)) {
@@ -32,8 +36,12 @@ class CactiSecureType {
 	}
 
 	/**
-	 * Safely casts a value to a string.
-	 * Returns an empty string if the value is null, preventing PHP 8.6 fatal errors.
+	 * Safely casts a value to a string. Returns an empty string if the value is null, preventing PHP
+	 * 8.6 fatal errors. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed $value The value.
+	 *
+	 * @return string The resulting string.
 	 */
 	public static function toString(mixed $value): string {
 		if ($value === null) {
@@ -44,18 +52,26 @@ class CactiSecureType {
 	}
 
 	/**
-	 * Parses a value as a boolean using FILTER_VALIDATE_BOOLEAN rules, not a
-	 * (bool) cast. '1', 'true', 'on' and 'yes' are true, in any case and with
-	 * surrounding whitespace ignored; everything else is false, including
-	 * unrecognised strings such as 'banana' and numbers other than 1.
+	 * Parses a value as a boolean using FILTER_VALIDATE_BOOLEAN rules, not a (bool) cast. '1',
+	 * 'true', 'on' and 'yes' are true, in any case and with surrounding whitespace ignored;
+	 * everything else is false, including unrecognised strings such as 'banana' and numbers other
+	 * than 1. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed $value The value.
+	 *
+	 * @return bool True on success, false otherwise.
 	 */
 	public static function toBool(mixed $value): bool {
 		return filter_var($value, FILTER_VALIDATE_BOOLEAN);
 	}
 
 	/**
-	 * Ensures a value is an array.
-	 * Returns [] if the value is false or null, preventing autovivification errors.
+	 * Ensures a value is an array. Returns [] if the value is false or null, preventing
+	 * autovivification errors. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed $value The value.
+	 *
+	 * @return array An array of results.
 	 */
 	public static function toArray(mixed $value): array {
 		if (!is_array($value)) {

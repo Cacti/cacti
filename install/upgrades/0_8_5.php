@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 0 8 5. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_0_8_5() {
 	/* bug#109 */
 	db_install_execute("UPDATE host_snmp_cache set field_name='ifDescr' where field_name='ifDesc' and snmp_query_id=1;");

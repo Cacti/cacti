@@ -73,6 +73,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * Handles the add tree names to actions array. Used as part of Cacti's aggregate graphs
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function add_tree_names_to_actions_array() {
 	global $graph_actions;
 
@@ -86,6 +92,11 @@ function add_tree_names_to_actions_array() {
 	}
 }
 
+/**
+ * Handles the form save. Used as part of Cacti's aggregate graphs functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_save() {
 	if (!isset_request_var('save_component_graph')) {
 		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
@@ -251,6 +262,12 @@ function form_save() {
 /* ------------------------
     The "actions" function
    ------------------------ */
+/**
+ * ------------------------ The "actions" function ------------------------. Used as part of
+ * Cacti's aggregate graphs functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_actions() {
 	global $graph_actions, $agg_item_actions;
@@ -548,6 +565,11 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * Handles the graph edit. Used as part of Cacti's aggregate graphs functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function graph_edit() {
 	global $config, $struct_graph, $struct_aggregate_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
 
@@ -1054,6 +1076,11 @@ function graph_edit() {
 	}
 }
 
+/**
+ * Handles the aggregate items. Used as part of Cacti's aggregate graphs functionality.
+ *
+ * @return void No value is returned.
+ */
 function aggregate_items() {
 	global $agg_item_actions, $item_rows;
 
@@ -1334,6 +1361,15 @@ function aggregate_items() {
 	form_end();
 }
 
+/**
+ * Handles the aggregate make SQL where. Used as part of Cacti's aggregate graphs functionality.
+ *
+ * @param string $sql_where The SQL where.
+ * @param array $items The items.
+ * @param string $field The field.
+ *
+ * @return string The resulting string.
+ */
 function aggregate_make_sql_where($sql_where, $items, $field) {
 	if ($sql_where != '') {
 		$sql_where .= ' AND (';
@@ -1389,6 +1425,14 @@ function aggregate_make_sql_where($sql_where, $items, $field) {
 	return trim($sql_where);
 }
 
+/**
+ * Handles the aggregate format text. Used as part of Cacti's aggregate graphs functionality.
+ *
+ * @param string $text The text.
+ * @param string $filter The filter.
+ *
+ * @return string The resulting string.
+ */
 function aggregate_format_text($text, $filter) {
 	$items = explode(' ', $filter);
 	$tags  = array();
@@ -1416,6 +1460,11 @@ function aggregate_format_text($text, $filter) {
 	return $text;
 }
 
+/**
+ * Handles the aggregate graph. Used as part of Cacti's aggregate graphs functionality.
+ *
+ * @return void No value is returned.
+ */
 function aggregate_graph() {
 	global $graph_actions, $item_rows;
 
@@ -1666,6 +1715,11 @@ function aggregate_graph() {
 	form_end();
 }
 
+/**
+ * Handles the purge old graphs. Used as part of Cacti's aggregate graphs functionality.
+ *
+ * @return void No value is returned.
+ */
 function purge_old_graphs() {
 	/* workaround to handle purged graphs */
 	$old_graphs = array_rekey(db_fetch_assoc('SELECT DISTINCT local_graph_id

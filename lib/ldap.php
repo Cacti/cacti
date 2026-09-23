@@ -65,6 +65,34 @@ Error codes:
 99	PHP LDAP not enabled
 
 */
+/**
+ * Cacti_ldap_auth. Used as part of Cacti's lib functionality.
+ *
+ * @param string $username Username of the user.
+ * @param string $password Password of the user.
+ * @param string $dn LDAP DN for binding.
+ * @param string $host Hostname or IP of LDAP server, Default = Configured settings value.
+ * @param int $port Port of the LDAP server uses, Default = Configured settings value.
+ * @param int $port_ssl Port of the LDAP server uses for SSL, Default = Configured settings value.
+ * @param int $version '2' or '3', LDAP protocol version, Default = Configured settings value.
+ * @param int $encryption '0' None, '1' SSL, '2' TLS, Default = Configured settings value.
+ * @param int $referrals '0' Referrals from server are ignored, '1' Referrals from server are
+ *   processed, Default = Configured setting value.
+ * @param mixed $group_require '0' Group membership is not required, '1' Group membership is
+ *   required '1' DN or '2' Username, user group member ship type.
+ * @param string $group_dn LDAP Group DN.
+ * @param string $group_attrib Name of the LDAP Attrib that contains members.
+ * @param int $group_member_type The group member type.
+ *
+ * @return array Of values 'error_num' = error number returned 'error_text' = error text Error
+ *   codes: # Text ============================================================== 0 Authentication
+ *   Success 1 Authentication Failure 2 No username defined 3 Protocol error, unable to set version
+ *   4 Unable to set referrals option 5 Protocol error, unable to start TLS communications 6 Unable
+ *   to create LDAP object 7 Protocol error 8 Insufficient access 9 Unable to connect to server 10
+ *   Timeout 11 General bind error 12 Group DN not found 99 PHP LDAP not enabled.
+ *
+ * @deprecated: 1.3
+ */
 function cacti_ldap_auth($username, $password = '', $dn = '', $host = '', $port = '', $port_ssl = '', $version = '',
 	$encryption = '', $referrals = '', $group_require = '', $group_dn = '', $group_attrib = '', $group_member_type = '') {
 
@@ -145,6 +173,38 @@ Error codes:
 99	PHP LDAP not enabled
 
 */
+/**
+ * Cacti_ldap_search_dn. Used as part of Cacti's lib functionality.
+ *
+ * @param string $username Username to search for in the LDAP directory.
+ * @param string $dn Configured LDAP DN for binding, '<username>' will be replaced with $username.
+ * @param string $host Hostname or IP of LDAP server, Default = Configured settings value.
+ * @param int $port Port of the LDAP server uses, Default = Configured settings value.
+ * @param int $port_ssl Port of the LDAP server uses for SSL, Default = Configured settings value.
+ * @param int $version '2' or '3', LDAP protocol version, Default = Configured settings value.
+ * @param int $encryption '0' None, '1' SSL, '2' TLS, Default = Configured settings value.
+ * @param int $referrals '0' Referrals from server are ignored, '1' Referrals from server are
+ *   processed, Default = Configured setting value.
+ * @param int $mode '0' No Searching, '1' Anonymous Searching, '2' Specific Searching, Default =
+ *   Configured settings value.
+ * @param string $search_base Search base DN, Default = Configured settings value.
+ * @param string $search_filter Filter to find the user, Default = Configured settings value.
+ * @param string $specific_dn DN for binding to perform user search, Default = Configured settings
+ *   value.
+ * @param string $specific_password Password for binding to perform user search, Default -
+ *   Configured settings value.
+ *
+ * @return array Of values 'error_num' = error number returned 'error_text' = error text 'dn' =
+ *   found dn of user Error codes: # Text
+ *   ============================================================== 0 Authentication Success 1 No
+ *   username defined 2 Unable to create LDAP connection object 3 Unable to find users DN 4 Protocol
+ *   error, unable to set version 5 Protocol error, unable to start TLS communications 6 Protocol
+ *   error 7 Invalid credential 8 Insufficient access 9 Unable to connect to server 10 Timeout 11
+ *   General bind error 12 Unable to set referrals option 13 More than one matching user found 14
+ *   Specific DN and Password required 15 Unable to find user from DN 99 PHP LDAP not enabled.
+ *
+ * @deprecated: 1.3
+ */
 function cacti_ldap_search_dn($username, $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
 	$referrals = '', $mode = '', $search_base = '', $search_filter = '', $specific_dn = '', $specific_password = '') {
 
@@ -223,6 +283,39 @@ Error codes:
 15      CN unknown on LDAP
 99      PHP LDAP not enabled
 */
+/**
+ * Cacti_ldap_search_cn. Used as part of Cacti's lib functionality.
+ *
+ * @param string $username Username to search for in the LDAP directory.
+ * @param array $cn Array of CN to search on LDAP.
+ * @param string $dn Configured LDAP DN for binding, '<username>' will be replaced with $username.
+ * @param string $host Hostname or IP of LDAP server, Default = Configured settings value.
+ * @param int $port Port of the LDAP server uses, Default = Configured settings value.
+ * @param int $port_ssl Port of the LDAP server uses for SSL, Default = Configured settings value.
+ * @param int $version '2' or '3', LDAP protocol version, Default = Configured settings value.
+ * @param int $encryption '0' None, '1' SSL, '2' TLS, Default = Configured settings value.
+ * @param int $referrals '0' Referrals from server are ignored, '1' Referrals from server are
+ *   processed, Default = Configured setting value.
+ * @param int $mode '0' No Searching, '1' Anonymous Searching, '2' Specific Searching, Default =
+ *   Configured settings value.
+ * @param string $search_base Search base DN, Default = Configured settings value.
+ * @param string $search_filter Filter to find the user, Default = Configured settings value.
+ * @param string $specific_dn DN for binding to perform user search, Default = Configured settings
+ *   value.
+ * @param string $specific_password Password for binding to perform user search, Default -
+ *   Configured settings value.
+ *
+ * @return array Of values 'cn' = array of values 'error_num' = error number returned 'error_text'
+ *   = error text 'dn' = found dn of user Error codes: # Text
+ *   ============================================================== 0 User found 1 No username
+ *   defined 2 Unable to create LDAP connection object 3 Unable to find users DN 4 Protocol error,
+ *   unable to set version 5 Protocol error, unable to start TLS communications 6 Protocol error 7
+ *   Invalid credential 8 Insufficient access 9 Unable to connect to server 10 Timeout 11 General
+ *   bind error 12 Unable to set referrals option 13 More than one matching user found 14 Specific
+ *   DN and Password required 15 CN unknown on LDAP 99 PHP LDAP not enabled.
+ *
+ * @deprecated: 1.3
+ */
 function cacti_ldap_search_cn($username, $cn = array(), $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
 	$referrals = '', $mode = '', $search_base = '', $search_filter = '', $specific_dn = '', $specific_password = '') {
 
@@ -268,6 +361,16 @@ abstract class LdapError {
 	const EmptyPassword         = 17;
 	const Disabled              = 99;
 
+	/**
+	 * Handles the geterrordetails. Used as part of Cacti's lib functionality.
+	 *
+	 * @param int $returnError The returnerror.
+	 * @param mixed $ldapConn The ldapconn.
+	 * @param string $ldapServer The ldapserver.
+	 * @param int $ldapError The ldaperror.
+	 *
+	 * @return array An array of results.
+	 */
 	public static function GetErrorDetails($returnError, $ldapConn = null, $ldapServer = '', $ldapError = 0) {
 		$error_num  = $returnError;
 		$error_text = '';
@@ -391,6 +494,11 @@ class Ldap {
 	public $specific_dn;
 	public $specific_password;
 
+	/**
+	 * Handles the construct. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	function __construct() {
 		/* Initialize LDAP parameters for Authenticate */
 		$this->dn         = read_config_option('ldap_dn');
@@ -428,14 +536,35 @@ class Ldap {
 		return true;
 	}
 
+	/**
+	 * Handles the destruct. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	function __destruct() {
 		return true;
 	}
 
+	/**
+	 * Handles the errorhandler. Used as part of Cacti's lib functionality.
+	 *
+	 * @param int $level The level.
+	 * @param string $message The message.
+	 * @param string $file The file.
+	 * @param int $line The line.
+	 * @param array $context The context.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	function ErrorHandler($level, $message, $file, $line, $context = []) {
 		return true;
 	}
 
+	/**
+	 * Handles the setldaphandler. Used as part of Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 	function SetLdapHandler() {
 		/* drop out of cactis error handler */
 		restore_error_handler();
@@ -446,6 +575,11 @@ class Ldap {
 		cacti_session_close();
 	}
 
+	/**
+	 * Handles the restorecactihandler. Used as part of Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 	function RestoreCactiHandler() {
 		/* drop out of ldaps error handler */
 		restore_error_handler();
@@ -456,12 +590,25 @@ class Ldap {
 		cacti_session_start();
 	}
 
+	/**
+	 * Handles the recorderror. Used as part of Cacti's lib functionality.
+	 *
+	 * @param array $output The output.
+	 * @param string $section The section.
+	 *
+	 * @return void No value is returned.
+	 */
 	function RecordError($output, $section = 'LDAP') {
 		$logDN = empty($output['dn']) ? '' : (', DN: ' . $output['dn']);
 		cacti_log($section . ': ' . $output['error_text'] . $logDN, false, 'AUTH');
 		cacti_log($section . ': ' . $output['stack'], false, 'AUTH', $this->debug);
 	}
 
+	/**
+	 * Handles the connect. Used as part of Cacti's lib functionality.
+	 *
+	 * @return array An array of results.
+	 */
 	function Connect() {
 		$output    = array();
 		$ldap_conn = null;
@@ -626,6 +773,11 @@ class Ldap {
 		}
 	}
 
+	/**
+	 * Handles the authenticate. Used as part of Cacti's lib functionality.
+	 *
+	 * @return array An array of results.
+	 */
 	function Authenticate() {
 		$output = array();
 
@@ -741,6 +893,11 @@ class Ldap {
 		return $output;
 	}
 
+	/**
+	 * Handles the getmask. Used as part of Cacti's lib functionality.
+	 *
+	 * @return int The resulting integer value.
+	 */
 	function GetMask() {
 		if (!defined('ENT_HTML401')) {
 			return ENT_COMPAT;
@@ -749,6 +906,11 @@ class Ldap {
 		}
 	}
 
+	/**
+	 * Handles the search. Used as part of Cacti's lib functionality.
+	 *
+	 * @return array An array of results.
+	 */
 	function Search() {
 		$output = array();
 
@@ -859,6 +1021,11 @@ class Ldap {
 		return $output;
 	}
 
+	/**
+	 * Handles the getcn. Used as part of Cacti's lib functionality.
+	 *
+	 * @return array An array of results.
+	 */
 	function Getcn() {
 		$output = array();
 
@@ -981,6 +1148,16 @@ class Ldap {
 		return $output;
 	}
 
+	/**
+	 * Handles the isuserinldapgroup. Used as part of Cacti's lib functionality.
+	 *
+	 * @param object $ldapConn The ldapconn.
+	 * @param string $ldapbasedn The ldapbasedn.
+	 * @param string $groupDN The groupdn.
+	 * @param string $ldapUser The ldapuser.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	function isUserInLDAPGroup($ldapConn, $ldapbasedn, $groupDN, $ldapUser) {
 		$query       = cacti_ldap_filter(
 			'(&(distinguishedName=<user>)(memberOf:1.2.840.113556.1.4.1941:=<group>))',
@@ -1000,16 +1177,14 @@ class Ldap {
 }
 
 /**
- * Build an LDAP filter string with safe variable substitution.
+ * Build an LDAP filter string with safe variable substitution. Each placeholder in $template
+ * (e.g. <username>) is replaced with the ldap_escape()'d value from $vars. This prevents LDAP
+ * filter injection attacks. Used as part of Cacti's lib functionality.
  *
- * Each placeholder in $template (e.g. <username>) is replaced with
- * the ldap_escape()'d value from $vars. This prevents LDAP filter
- * injection attacks.
+ * @param string $template Filter template with <key> placeholders.
+ * @param array $vars Associative array of key => value pairs.
  *
- * @param  string $template Filter template with <key> placeholders
- * @param  array  $vars     Associative array of key => value pairs
- *
- * @return string The assembled, injection-safe LDAP filter
+ * @return string The assembled, injection-safe LDAP filter.
  */
 function cacti_ldap_filter($template, $vars) {
 	$map = array();

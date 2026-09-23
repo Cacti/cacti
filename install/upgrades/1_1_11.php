@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1 1 11. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_1_11() {
 	db_install_execute('ALTER TABLE poller_data_template_field_mappings
 		MODIFY COLUMN data_name VARCHAR(40) NOT NULL DEFAULT "",

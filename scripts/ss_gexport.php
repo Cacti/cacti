@@ -33,6 +33,15 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_gexport', $_SERVER['argv']);
 }
 
+/**
+ * Handles the ss gexport. Used as part of Cacti's scripts functionality.
+ *
+ * @param string $cmd The cmd.
+ * @param string $arg1 The arg1.
+ * @param string $arg2 The arg2.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_gexport($cmd = 'index', $arg1 = '', $arg2 = '') {
 	if ($cmd == 'index') {
 		if (db_table_exists('graph_exports')) {

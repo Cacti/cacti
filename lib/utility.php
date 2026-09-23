@@ -22,10 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
-/* update_replication_crc - update hash stored in settings table to inform
-   remote pollers to replicate tables
-   @arg $poller_id - the id of the poller impacted by hash update
-   @arg $variable  - the variable name to store in the settings table */
+/**
+ * Update hash stored in settings table to inform remote pollers to replicate tables. Used as part
+ * of Cacti's lib functionality.
+ *
+ * @param int $poller_id The id of the poller impacted by hash update.
+ * @param string $variable The variable name to store in the settings table.
+ *
+ * @return void No value is returned.
+ */
 function update_replication_crc($poller_id, $variable) {
 	try {
 		$entropy = bin2hex(random_bytes(16));
@@ -40,6 +45,11 @@ function update_replication_crc($poller_id, $variable) {
 		array($setting_name, $hash));
 }
 
+/**
+ * Handles the repopulate poller cache. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function repopulate_poller_cache() {
 	global $config;
 
@@ -122,6 +132,15 @@ function repopulate_poller_cache() {
 	}
 }
 
+/**
+ * Updates the poller cache from query. Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_id The host ID.
+ * @param int $data_query_id The data query ID.
+ * @param array $local_data_ids The local data IDS.
+ *
+ * @return void No value is returned.
+ */
 function update_poller_cache_from_query($host_id, $data_query_id, $local_data_ids) {
 	global $config;
 
@@ -170,6 +189,15 @@ function update_poller_cache_from_query($host_id, $data_query_id, $local_data_id
 	}
 }
 
+/**
+ * Rebuilds the poller cache entries for a single data source. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param mixed $data_source A data_local row, or the local_data_id to read one with.
+ * @param bool $commit Whether to write the rebuilt entries straight to poller_item.
+ *
+ * @return array The rebuilt poller items, or an empty array when they were committed.
+ */
 function update_poller_cache($data_source, $commit = false) {
 	global $config;
 
@@ -598,6 +626,13 @@ function update_poller_cache($data_source, $commit = false) {
 	}
 }
 
+/**
+ * Handles the push out data input method. Used as part of Cacti's lib functionality.
+ *
+ * @param int $data_input_id The data input ID.
+ *
+ * @return void No value is returned.
+ */
 function push_out_data_input_method($data_input_id) {
 	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*, COALESCE(h.poller_id, 1) AS poller_id
 		FROM data_local AS dl
@@ -644,10 +679,15 @@ function push_out_data_input_method($data_input_id) {
 	}
 }
 
-/** mass update of poller cache - can run in parallel to poller
- * @param array/int $local_data_ids - either a scalar (all ids) or an array of data source to act on
- * @param array $poller_items - the new items for poller cache
- * @param int $poller_id - the poller_id of the buffer
+/**
+ * Mass update of poller cache - can run in parallel to poller. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array/int $local_data_ids Either a scalar (all ids) or an array of data source to act on.
+ * @param & $poller_items The new items for poller cache.
+ * @param int $poller_id The poller_id of the buffer.
+ *
+ * @return void No value is returned.
  */
 function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items, $poller_id = 1) {
 	global $config;
@@ -825,11 +865,15 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 	set_config_option('time_last_change_poller_item', time());
 }
 
-/** for a given data template, update all input data and the poller cache
- * @param int $host_id - id of host, if any
- * @param int $local_data_id - id of a single data source, if any
- * @param int $data_template_id - id of data template
- * works on table data_input_data and poller cache
+/**
+ * For a given data template, update all input data and the poller cache. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param int $host_id Id of host, if any.
+ * @param int $local_data_id Id of a single data source, if any.
+ * @param int $data_template_id Id of data template works on table data_input_data and poller cache.
+ *
+ * @return void No value is returned.
  */
 function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	global $config;
@@ -1078,6 +1122,13 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	api_data_source_cache_crc_update($poller_id);
 }
 
+/**
+ * Handles the data input whitelist check. Used as part of Cacti's lib functionality.
+ *
+ * @param int $data_input_id The data input ID.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function data_input_whitelist_check($data_input_id) {
 	global $config;
 
@@ -1144,6 +1195,14 @@ function data_input_whitelist_check($data_input_id) {
 	}
 }
 
+/**
+ * Legacy wrapper function for Cacti plugins that may still be using the function under it's old
+ * name. Used as part of Cacti's lib functionality.
+ *
+ * @param int $poller_id The poller to get server info from.
+ *
+ * @return array Information about the database server.
+ */
 function utilities_get_mysql_info($poller_id = 1) {
 	global $local_db_cnn_id;
 
@@ -1176,6 +1235,11 @@ function utilities_get_mysql_info($poller_id = 1) {
 	);
 }
 
+/**
+ * Handles the utilities get mysql recommendations. Used as part of Cacti's lib functionality.
+ *
+ * @return int The resulting integer value.
+ */
 function utilities_get_mysql_recommendations() {
 	global $config, $local_db_cnn_id;
 
@@ -1763,6 +1827,11 @@ function utilities_get_mysql_recommendations() {
 	return $result;
 }
 
+/**
+ * Handles the utilities PHP modules. Used as part of Cacti's lib functionality.
+ *
+ * @return string The resulting string.
+ */
 function utilities_php_modules() {
 	/*
 	   Gather phpinfo into a string variable - This has to be done before
@@ -1787,6 +1856,13 @@ function utilities_php_modules() {
 	return $php_info;
 }
 
+/**
+ * Handles the memory bytes. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $val The val.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function memory_bytes($val) {
 	$val  = trim($val);
 	$last = strtolower($val[strlen($val)-1]);
@@ -1803,6 +1879,13 @@ function memory_bytes($val) {
 	return $val;
 }
 
+/**
+ * Handles the memory readable. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $val The val.
+ *
+ * @return string The resulting string.
+ */
 function memory_readable($val) {
 	if ($val < 1024) {
 		$val_label = 'bytes';
@@ -1820,6 +1903,11 @@ function memory_readable($val) {
 	return $val . $val_label;
 }
 
+/**
+ * Handles the utilities get system memory. Used as part of Cacti's lib functionality.
+ *
+ * @return array An array of results.
+ */
 function utilities_get_system_memory() {
 	global $config;
 
@@ -1893,6 +1981,14 @@ function utilities_get_system_memory() {
 	return $memInfo;
 }
 
+/**
+ * Handles the utility PHP sort extensions. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $a The a.
+ * @param mixed $b The b.
+ *
+ * @return int The resulting integer value.
+ */
 function utility_php_sort_extensions($a, $b) {
 	$name_a = isset($a['name']) ? $a['name'] : '';
 	$name_b = isset($b['name']) ? $b['name'] : '';
@@ -1900,6 +1996,11 @@ function utility_php_sort_extensions($a, $b) {
 }
 
 
+/**
+ * Handles the utility PHP extensions. Used as part of Cacti's lib functionality.
+ *
+ * @return array An array of results.
+ */
 function utility_php_extensions() {
 	global $config;
 
@@ -1923,6 +2024,14 @@ function utility_php_extensions() {
 	return $ext;
 }
 
+/**
+ * Handles the utility PHP verify extensions. Used as part of Cacti's lib functionality.
+ *
+ * @param & $extensions The extensions.
+ * @param string $source The source.
+ *
+ * @return void No value is returned.
+ */
 function utility_php_verify_extensions(&$extensions, $source) {
 	global $config;
 
@@ -1968,6 +2077,11 @@ function utility_php_verify_extensions(&$extensions, $source) {
 	}
 }
 
+/**
+ * Handles the utility PHP recommends. Used as part of Cacti's lib functionality.
+ *
+ * @return array An array of results.
+ */
 function utility_php_recommends() {
 	global $config;
 
@@ -1992,6 +2106,16 @@ function utility_php_recommends() {
 	return $ext;
 }
 
+/**
+ * Handles the utility get formatted bytes. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $input_value The input value.
+ * @param string $wanted_type The wanted type.
+ * @param & $output_value The output value.
+ * @param string $default_type The default type.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value, $default_type = 'B') {
 
 	$default_type = strtoupper($default_type);
@@ -2025,6 +2149,14 @@ function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value,
 	return $input_value;
 }
 
+/**
+ * Handles the utility PHP verify recommends. Used as part of Cacti's lib functionality.
+ *
+ * @param & $recommends The recommends.
+ * @param string $source The source.
+ *
+ * @return void No value is returned.
+ */
 function utility_php_verify_recommends(&$recommends, $source) {
 	global $original_memory_limit;
 
@@ -2080,6 +2212,13 @@ function utility_php_verify_recommends(&$recommends, $source) {
 	);
 }
 
+/**
+ * Handles the utility PHP set recommends text. Used as part of Cacti's lib functionality.
+ *
+ * @param & $recs The recs.
+ *
+ * @return void No value is returned.
+ */
 function utility_php_set_recommends_text(&$recs) {
 	if (is_array($recs) && cacti_sizeof($recs)) {
 		foreach ($recs as $name => $recommends) {
@@ -2100,6 +2239,11 @@ function utility_php_set_recommends_text(&$recs) {
 	}
 }
 
+/**
+ * Handles the utility PHP optionals. Used as part of Cacti's lib functionality.
+ *
+ * @return array An array of results.
+ */
 function utility_php_optionals() {
 	global $config;
 
@@ -2123,6 +2267,14 @@ function utility_php_optionals() {
 	return $opt;
 }
 
+/**
+ * Handles the utility PHP verify optionals. Used as part of Cacti's lib functionality.
+ *
+ * @param & $optionals The optionals.
+ * @param string $source The source.
+ *
+ * @return void No value is returned.
+ */
 function utility_php_verify_optionals(&$optionals, $source) {
 	if (empty($optionals)) {
 		$optionals = array(
@@ -2143,6 +2295,13 @@ function utility_php_verify_optionals(&$optionals, $source) {
 	$optionals['TrueType Text'][$source] = function_exists('imagettftext');
 }
 
+/**
+ * Handles the utility PHP set installed. Used as part of Cacti's lib functionality.
+ *
+ * @param & $extensions The extensions.
+ *
+ * @return void No value is returned.
+ */
 function utility_php_set_installed(&$extensions) {
 	foreach ($extensions as $name=>$extension) {
 		$extensions[$name]['installed'] = $extension['web'] && $extension['cli'];

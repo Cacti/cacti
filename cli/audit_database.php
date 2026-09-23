@@ -140,9 +140,9 @@ if (cacti_sizeof($parms)) {
 
 
 /**
- * audit_database_option_value - quote and escape a MySQL option-file value
+ * Quote and escape a MySQL option-file value. Used as part of Cacti's CLI functionality.
  *
- * @param  mixed $value The value to encode.
+ * @param mixed $value The value to encode.
  *
  * @return string|false The encoded value, or false when it contains a NUL byte.
  */
@@ -163,17 +163,15 @@ function audit_database_option_value($value) {
 }
 
 /**
- * audit_database_defaults_file - writes the database credentials to a private
- * file for --defaults-extra-file.
+ * Writes the database credentials to a private file for --defaults-extra-file. The password is
+ * deliberately kept off the command line. Anything passed as an argument is readable from the
+ * process list by every local user for the lifetime of the command. Used as part of Cacti's CLI
+ * functionality.
  *
- * The password is deliberately kept off the command line. Anything passed as
- * an argument is readable from the process list by every local user for the
- * lifetime of the command.
- *
- * @param  string $username The database user.
- * @param  string $password The database password.
- * @param  string $hostname The database host.
- * @param  string $port     The database port.
+ * @param string $username The database user.
+ * @param string $password The database password.
+ * @param string $hostname The database host.
+ * @param string $port The database port.
  *
  * @return string|false The path to the file, or false when it cannot be created.
  */
@@ -221,6 +219,11 @@ function audit_database_defaults_file($username, $password, $hostname, $port) {
 	return $path;
 }
 
+/**
+ * Handles the upgrade database. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_database() {
 	global $config;
 
@@ -394,6 +397,13 @@ function upgrade_database() {
 	cacti_log(sprintf('NOTE: Audit Upgrade completed in %.2f seconds.', $end - $start), true, 'UPGRADE');
 }
 
+/**
+ * Handles the plugin installed. Used as part of Cacti's CLI functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function plugin_installed($plugin) {
 	$installed = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM plugin_config
@@ -404,6 +414,13 @@ function plugin_installed($plugin) {
 	return $installed ? true:false;
 }
 
+/**
+ * Handles the repair database. Used as part of Cacti's CLI functionality.
+ *
+ * @param bool $run The run.
+ *
+ * @return void No value is returned.
+ */
 function repair_database($run = true) {
 	global $altersopt, $database_default;
 
@@ -478,6 +495,13 @@ function repair_database($run = true) {
 	return $bad === 0;
 }
 
+/**
+ * Handles the report audit results. Used as part of Cacti's CLI functionality.
+ *
+ * @param bool $output The output.
+ *
+ * @return array An array of results.
+ */
 function report_audit_results($output = true) {
 	global $config, $database_default, $altersopt;
 
@@ -868,6 +892,13 @@ function report_audit_results($output = true) {
 	return cacti_sizeof($alters) ? false : true;
 }
 
+/**
+ * Handles the make column props. Used as part of Cacti's CLI functionality.
+ *
+ * @param & $dbc The dbc.
+ *
+ * @return string The resulting string.
+ */
 function make_column_props(&$dbc) {
 	$alter_cmd = '';
 
@@ -911,6 +942,14 @@ function make_column_props(&$dbc) {
 	return $alter_cmd;
 }
 
+/**
+ * Handles the make column alter. Used as part of Cacti's CLI functionality.
+ *
+ * @param string $table The table.
+ * @param array $dbc The dbc.
+ *
+ * @return string The resulting string.
+ */
 function make_column_alter($table, $dbc) {
 	$alter_cmd = 'MODIFY COLUMN ' . audit_quote_identifier($dbc['table_field']) . ' ' .
 		$dbc['table_type'] . ($dbc['table_null'] == 'NO' ? ' NOT NULL':'');
@@ -920,6 +959,14 @@ function make_column_alter($table, $dbc) {
 	return $alter_cmd;
 }
 
+/**
+ * Handles the make column add. Used as part of Cacti's CLI functionality.
+ *
+ * @param string $table The table.
+ * @param array $dbc The dbc.
+ *
+ * @return string The resulting string.
+ */
 function make_column_add($table, $dbc) {
 	$after = get_previous_column($table, $dbc['table_field']);
 	if ($after != 'first') {
@@ -936,6 +983,14 @@ function make_column_add($table, $dbc) {
 	return $alter_cmd;
 }
 
+/**
+ * Retrieves the previous column. Used as part of Cacti's CLI functionality.
+ *
+ * @param string $table The table.
+ * @param string $column The column.
+ *
+ * @return string The resulting string.
+ */
 function get_previous_column($table, $column) {
 	$sequence = db_fetch_cell_prepared('SELECT table_sequence
 		FROM table_columns
@@ -958,6 +1013,14 @@ function get_previous_column($table, $column) {
 	}
 }
 
+/**
+ * Handles the make index alter. Used as part of Cacti's CLI functionality.
+ *
+ * @param string $table The table.
+ * @param string $key The key.
+ *
+ * @return array An array of results.
+ */
 function make_index_alter($table, $key) {
 	$alter_cmds = array();
 	$alter_cmd  = '';
@@ -1028,6 +1091,14 @@ function make_index_alter($table, $key) {
 	return $alter_cmds;
 }
 
+/**
+ * Retrieves the sequence count. Used as part of Cacti's CLI functionality.
+ *
+ * @param string $table The table.
+ * @param string $index The index.
+ *
+ * @return int The resulting integer value.
+ */
 function get_sequence_count($table, $index) {
 	$indexes = db_fetch_assoc("SHOW INDEXES IN $table");
 	$sequence_cnt = 0;
@@ -1043,6 +1114,15 @@ function get_sequence_count($table, $index) {
 	return $sequence_cnt;
 }
 
+/**
+ * Retrieves the column sequence number. Used as part of Cacti's CLI functionality.
+ *
+ * @param string $table The table.
+ * @param string $index The index.
+ * @param string $column The column.
+ *
+ * @return int The resulting integer value.
+ */
 function get_column_sequence_number($table, $index, $column) {
 	$indexes = db_fetch_assoc("SHOW INDEXES IN $table");
 
@@ -1061,6 +1141,13 @@ function get_column_sequence_number($table, $index, $column) {
 	return -1;
 }
 
+/**
+ * Creates the tables. Used as part of Cacti's CLI functionality.
+ *
+ * @param bool $load The load.
+ *
+ * @return void No value is returned.
+ */
 function create_tables($load = true) {
 	global $config, $database_default, $database_username, $database_password, $database_port, $database_hostname;
 	global $altersopt;
@@ -1164,6 +1251,11 @@ function create_tables($load = true) {
 	}
 }
 
+/**
+ * Loads the audit database. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function load_audit_database() {
 	global $config, $database_default, $database_username, $database_password;
 
@@ -1250,12 +1342,21 @@ function load_audit_database() {
 	}
 }
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Audit Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help() {
 	display_version();
 

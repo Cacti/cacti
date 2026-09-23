@@ -96,10 +96,20 @@ if ($finding_count > 0) {
 print 'Graph template input integrity audit passed.' . PHP_EOL;
 exit(0);
 
+/**
+ * Display_version. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	print 'Cacti Graph Template Input Audit, Version ' . get_cacti_cli_version() . ', ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help() {
 	display_version();
 	print PHP_EOL . 'Usage: audit_graph_template_inputs.php [--help|--version]' . PHP_EOL . PHP_EOL;
