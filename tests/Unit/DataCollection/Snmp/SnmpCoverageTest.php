@@ -136,12 +136,14 @@ test('prefer_engine_time forces the spine-compatible engine-OID preference', fun
 	$now = 1784363931;
 
 	// spine (poller.c) always prefers a numeric engine time over sysUpTime with no
-	// magnitude comparison of its own; the recache baseline must use the same rule
+	// magnitude comparison and no wall-clock awareness of its own; the recache
+	// baseline must use the exact same rule
 	expect(cacti_snmp_select_uptime(999999999, 600, $now, true))->toBe(60000)
 		->and(cacti_snmp_select_uptime(4000000, 600, $now, true))->toBe(60000)
 		->and(cacti_snmp_select_uptime(false, 600, $now, true))->toBe(60000)
-		// the wall-clock rejection still applies regardless of $prefer_engine_time
-		->and(cacti_snmp_select_uptime(3015, $now, $now, true))->toBe(3015)
+		// spine has no wall-clock rejection either, so an OpenBSD-style engine time
+		// that looks like the Unix clock must still be used here, not rejected
+		->and(cacti_snmp_select_uptime(3015, $now, $now, true))->toBe($now * 100)
 		->and(cacti_snmp_select_uptime('U', 'U', $now, true))->toBeFalse();
 });
 
