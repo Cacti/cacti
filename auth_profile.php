@@ -593,6 +593,8 @@ function settings_javascript() {
 											$('#'+id).val(data);
 											if ($('#'+id).selectmenu('instance')) {
 												$('#'+id).selectmenu('refresh');
+											} else if ($('#'+id).hasClass('select2-hidden-accessible')) {
+												$('#'+id).trigger('change.select2');
 											}
 										}
 									} else {

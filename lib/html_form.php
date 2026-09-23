@@ -945,7 +945,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		if ($previous_id != '' && $previous_value != '') {
 			print "<option value='" . html_escape($previous_id) . "' selected>" . html_escape($previous_value) . '</option>';
 		} elseif (!empty($none_entry)) {
-			print "<option value='0' selected>" . html_escape($none_entry) . '</option>';
+			print "<option value='' selected>" . html_escape($none_entry) . '</option>';
 		}
 
 		print '</select>';

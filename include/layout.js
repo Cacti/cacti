@@ -5231,3 +5231,17 @@ function checkSNMPPassphraseConfirm(type) {
 		}
 	}
 }
+
+/* resolves a dotted-path function name (e.g. 'Foo.bar') against context and invokes it;
+ * used by select2-callback's opt-in $on_change contract */
+function executeFunctionByName(functionName, context /*, args */) {
+	var args       = Array.prototype.slice.call(arguments, 2);
+	var namespaces = functionName.split('.');
+	var func       = namespaces.pop();
+
+	for (var i = 0; i < namespaces.length; i++) {
+		context = context[namespaces[i]];
+	}
+
+	return context[func].apply(context, args);
+}

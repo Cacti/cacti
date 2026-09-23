@@ -247,7 +247,10 @@ function get_site_locations() {
 
 	if (cacti_sizeof($locations)) {
 		foreach($locations as $l) {
-			$return[] = array('label' => $l['location'], 'value' => $l['location'], 'id' => $l['location']);
+			/* label must be html_escape()'d to match the select2-callback client
+			 * contract (layout.js decodeHtmlEntities()'s it once for display);
+			 * value/id stay raw since that's what gets persisted back to host.location */
+			$return[] = array('label' => html_escape($l['location']), 'value' => $l['location'], 'id' => $l['location']);
 		}
 	}
 
@@ -1220,10 +1223,14 @@ function device_javascript() {
 
 		if ($('#ping_method').selectmenu('instance')) {
 			$('#ping_method').selectmenu('refresh');
+		} else if ($('#ping_method').hasClass('select2-hidden-accessible')) {
+			$('#ping_method').trigger('change.select2');
 		}
 
 		if ($('#availability_method').selectmenu('instance')) {
 			$('#availability_method').selectmenu('refresh');
+		} else if ($('#availability_method').hasClass('select2-hidden-accessible')) {
+			$('#availability_method').trigger('change.select2');
 		}
 	}
 

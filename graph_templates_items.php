@@ -613,6 +613,8 @@ function item_edit() {
 
 				if ($('#task_item_id').selectmenu('instance')) {
 					$('#task_item_id').selectmenu('refresh');
+				} else if ($('#task_item_id').hasClass('select2-hidden-accessible')) {
+					$('#task_item_id').trigger('change.select2');
 				}
 			});
 		});
