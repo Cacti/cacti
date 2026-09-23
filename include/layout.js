@@ -104,6 +104,11 @@ let select2Setup = {
 	displayDefaultLabel : false,
 }
 
+/* size the open dropdown to fit its options instead of the (possibly narrower) control */
+if (typeof $ !== 'undefined' && $.fn.select2) {
+	$.fn.select2.defaults.set('dropdownAutoWidth', true);
+}
+
 window.paceOptions = {
 	ajax: true,
 	document: true,
@@ -997,6 +1002,19 @@ function applySkin() {
 		});
 	}
 
+	/* applySkin() runs more than once per page view (initial load, then again
+	 * after every AJAX load/filter apply); tear down any select2 widget still
+	 * attached before setSelectMenus()/the blocks below re-initialize, instead
+	 * of relying only on the :not(.select2-hidden-accessible) guards to skip
+	 * them, so a widget can never end up duplicated. Must run before
+	 * setSelectMenus() so its catch-all init below still re-enhances plain
+	 * <select> elements that this teardown just destroyed. */
+	$('.select2-hidden-accessible').each(function() {
+		if ($(this).data('select2')) {
+			$(this).select2('destroy');
+		}
+	});
+
 	setSelectMenus();
 
 	setGraphTabs();
@@ -1164,19 +1182,19 @@ function applySkin() {
 
 	renderLanguages();
 
-	$('select.select2').each(function() {
-		if ($(this).closest('.ui-dialog').length) {
-			var dropdownParent = $(this).closest('.ui-dialog');
+	$('select.select2:not(.select2-hidden-accessible)').each(function() {
+		var options = {
+			minimumResultsForSearch: select2SearchRows
+		};
 
-			$(this).select2({
-				dropdownParent: dropdownParent
-			});
-		} else {
-			$(this).select2({});
+		if ($(this).closest('.ui-dialog').length) {
+			options.dropdownParent = $(this).closest('.ui-dialog');
 		}
+
+		$(this).select2(options);
 	});
 
-	$('select.select2-nosearch').each(function() {
+	$('select.select2-nosearch:not(.select2-hidden-accessible)').each(function() {
 		if ($(this).closest('.ui-dialog').length) {
 			var dropdownParent = $(this).closest('.ui-dialog');
 
@@ -1191,7 +1209,7 @@ function applySkin() {
 		}
 	});
 
-	$('select.select2-tags').each(function() {
+	$('select.select2-tags:not(.select2-hidden-accessible)').each(function() {
 		if ($(this).closest('.ui-dialog').length) {
 			var dropdownParent = $(this).closest('.ui-dialog');
 
@@ -1206,48 +1224,165 @@ function applySkin() {
 		}
 	});
 
-	$('select.select2-multi').each(function() {
-		if ($(this).closest('.ui-dialog').length) {
-			var dropdownParent = $(this).closest('.ui-dialog');
-
-			$(this).select2({
-				dropdownParent: dropdownParent
-			});
-		} else {
-			$(this).select2({});
-		}
-	});
-
-	$('select.select2-multi-tags').each(function() {
-		if ($(this).closest('.ui-dialog').length) {
-			var dropdownParent = $(this).closest('.ui-dialog');
-
-			$(this).select2({
-				tags: true,
-				dropdownParent: dropdownParent
-			});
-		} else {
-			$(this).select2({
-				tags: true
-			});
-		}
-	});
-
-	$('select.select2-callback').each(function() {
-		var callbackUrl = $(this).data('callback');
+	$('select.select2-multi:not(.select2-hidden-accessible)').each(function() {
 		var options = {
-			dropdownParent: $(this).closest('.ui-dialog').length ? $(this).closest('.ui-dialog') : document.body,
+			minimumResultsForSearch: select2SearchRows
+		};
+
+		if ($(this).closest('.ui-dialog').length) {
+			options.dropdownParent = $(this).closest('.ui-dialog');
+		}
+
+		$(this).select2(options);
+	});
+
+	/* multi-select that reports "N selected"/"All selected" instead of one chip per option */
+	/* select2 normally puts a multi-select's type-to-filter box inside the control itself,
+	 * which grows its height and shoves the surrounding form down when opened. Build adapters
+	 * that instead search from the floating dropdown panel (how single-selects behave) and
+	 * drop the inline box entirely, so the control stays a fixed height whether open or closed */
+	var multiCountDropdownAdapter, multiCountSelectionAdapter;
+	if ($.fn.select2 && $.fn.select2.amd) {
+		/* string-form require() resolves synchronously; the array form defers via
+		 * setTimeout, which would leave these undefined when the init loop below runs */
+		var s2amd            = $.fn.select2.amd;
+		var Utils            = s2amd.require('select2/utils');
+		var Dropdown         = s2amd.require('select2/dropdown');
+		var DropdownSearch   = s2amd.require('select2/dropdown/search');
+		var MinResults       = s2amd.require('select2/dropdown/minimumResultsForSearch');
+		var AttachBody       = s2amd.require('select2/dropdown/attachBody');
+		var MultipleSelection = s2amd.require('select2/selection/multiple');
+		var EventRelay       = s2amd.require('select2/selection/eventRelay');
+
+		multiCountDropdownAdapter = Utils.Decorate(
+			Utils.Decorate(
+				Utils.Decorate(Dropdown, DropdownSearch),
+				MinResults
+			),
+			AttachBody
+		);
+
+		multiCountSelectionAdapter = Utils.Decorate(MultipleSelection, EventRelay);
+	}
+
+	$('select.select2-multi-count:not(.select2-hidden-accessible)').each(function() {
+		var $select      = $(this);
+		var allText      = $select.data('select-all-text') || multiSelectAllText;
+		var countText    = $select.data('select-count-text') || multiSelectCountText;
+		var allValue     = $select.data('select-all-value');
+
+		var options = {
+			/* without this select2 defaults width to 'resolve', which sizes the control
+			 * (and thus the body-attached dropdown) to the native multi-select's wide
+			 * content box instead of the rendered summary label */
+			width: 'auto',
+			minimumResultsForSearch: select2SearchRows,
+			closeOnSelect: false,
+			/* checkbox-styled option rows, closer to the old jquery-multiselect look;
+			 * the checked mark itself is drawn from [aria-selected] via CSS */
+			templateResult: function(state) {
+				if (!state.id) {
+					return state.text;
+				}
+
+				return $('<span class="select2-checkbox-option">').text(state.text);
+			}
+		};
+
+		if (multiCountDropdownAdapter && multiCountSelectionAdapter) {
+			options.dropdownAdapter  = multiCountDropdownAdapter;
+			options.selectionAdapter = multiCountSelectionAdapter;
+		}
+
+		if ($select.closest('.ui-dialog').length) {
+			options.dropdownParent = $select.closest('.ui-dialog');
+		}
+
+		$select.select2(options);
+
+		function updateSelect2CountLabel() {
+			var selected  = $select.val() || [];
+			var rendered  = $select.next('.select2-container').find('.select2-selection__rendered');
+			/* own span instead of bare text, so it can be centered independently of
+			 * whatever else (e.g. select2's inline search box) shares this container */
+			var label     = $('<span class="select2-count-label">');
+
+			if (selected.length == 0 || (allValue !== undefined && $.inArray(String(allValue), selected) > -1)) {
+				label.text(allText);
+			} else {
+				label.text(selected.length + ' ' + countText);
+			}
+
+			rendered.empty().append(label);
+		}
+
+		$select.on('select2:select select2:unselect change', updateSelect2CountLabel);
+
+		updateSelect2CountLabel();
+	});
+
+	$('select.select2-multi-tags:not(.select2-hidden-accessible)').each(function() {
+		if ($(this).closest('.ui-dialog').length) {
+			var dropdownParent = $(this).closest('.ui-dialog');
+
+			$(this).select2({
+				tags: true,
+				dropdownParent: dropdownParent
+			});
+		} else {
+			$(this).select2({
+				tags: true
+			});
+		}
+	});
+
+	/* ajax-backed lookup select: replaces the legacy .drop-callback/makeCallbacks() autocomplete
+	 * widget for filter fields opted into it (see form_callback()'s $class parameter) */
+	$('select.select2-callback:not(.select2-hidden-accessible)').each(function() {
+		var $select       = $(this);
+		var action        = $select.data('action');
+		var requestVars   = $select.data('variables');
+		var changeFunc    = $select.data('callback');
+		var noAny         = $select.data('noany');
+		var noNone        = $select.data('nonone');
+
+		var options = {
+			dropdownParent: $select.closest('.ui-dialog').length ? $select.closest('.ui-dialog') : document.body,
+			minimumInputLength: 0,
 			ajax: {
 				type: 'post',
 				dataType: 'json',
 				delay: 250,
 				cache: false,
 				url: function(params) {
-					if (params.term !== undefined && params.term != '') {
-						return callbackUrl + '&search=' + encodeURIComponent(params.term) + '&page=' + (encodeURIComponent(params.page || 1));
-					} else {
-						return callbackUrl + '&page=' + (encodeURIComponent(params.page || 1));
+					var url = pageName + '?action=' + encodeURIComponent(action);
+
+					if (requestVars) {
+						$.each(requestVars.split(','), function(index, field) {
+							if ($('#' + field).length) {
+								url += '&' + encodeURIComponent(field) + '=' + encodeURIComponent($('#' + field).val());
+							}
+						});
 					}
+
+					if (noAny == 1 || noAny === '1') {
+						url += '&noany=1';
+					}
+
+					if (noNone == 1 || noNone === '1') {
+						url += '&nonone=1';
+					}
+
+					if (params.term !== undefined && params.term != '') {
+						url += '&term=' + encodeURIComponent(params.term);
+					}
+
+					return url + '&page=' + encodeURIComponent(params.page || 1);
+				},
+				data: function() {
+					/* these callback actions are regular POST endpoints guarded by the
+					 * same CSRF check as any other form submission */
+					return { __csrf_magic: csrfMagicToken };
 				},
 				processResults: function(data) {
 					return {
@@ -1259,7 +1394,17 @@ function applySkin() {
 			}
 		};
 
-		$(this).select2(options);
+		$select.select2(options);
+
+		if (changeFunc) {
+			/* namespaced + unbound-before-rebound: applySkin() destroys/recreates this
+			 * select2 widget on every AJAX filter reload, but that destroy doesn't remove
+			 * a plain jQuery listener bound to the underlying <select> itself, so without
+			 * this the handler would accumulate and fire the callback multiple times */
+			$select.off('select2:select.select2Callback').on('select2:select.select2Callback', function() {
+				executeFunctionByName(changeFunc.replace('(', '').replace(')', ''), window);
+			});
+		}
 	});
 }
 
@@ -3855,41 +4000,87 @@ function setSelectMenus() {
 
 	$('select.colordropdown').dropcolor();
 
-	$('select').not('.colordropdown').not('.drop-icon').not('.multi-select').not('.graph-multiselect').not('#user_language')
-		.not('.select2').not('.select2-nosearch').not('.select2-tags').not('.select2-multi').not('.select2-multi-tags').not('.select2-callback')
+	$('select').not('.colordropdown').not('.drop-icon').not('.multiselect').not('#user_language').not('#i18n_default_language')
+		.not('.select2').not('.select2-nosearch').not('.select2-tags').not('.select2-multi').not('.select2-multi-tags').not('.select2-multi-count').not('.select2-callback')
+		.not('.select2-hidden-accessible')
 		.each(function() {
-		if ($(this).prop('multiple') != true) {
-			$(this).each(function() {
-				let id = $(this).attr('id');
-				let text = 'hello';
+		var $this = $(this);
 
-				$(this).selectmenu({
-					open: function(event, ui) {
-						let instance = $(this).selectmenu('instance');
+		/* a plugin may have already deliberately widget-ified this element with
+		 * jQuery UI selectmenu itself; don't layer select2 on top of that too */
+		if ($this.selectmenu('instance')) {
+			return;
+		}
 
-						instance.menuInstance.focus(null, instance._getSelectedItem());
+		var options = {
+			width: 'auto',
+			minimumResultsForSearch: select2SearchRows
+		};
 
-						let search = instance.menuWrap.find('input');
+		if ($this.closest('.ui-dialog').length) {
+			options.dropdownParent = $this.closest('.ui-dialog');
+		}
 
-						if (search.length > 0) {
-							search.trigger('focus');
-						}
-					},
-					change: function(event, ui) {
-						$(this).val(ui.item.value).trigger('change');
-					},
-					position: {
-						my: 'left top',
-						at: 'left bottom',
-						collision: 'flip'
-					},
-					width: 'auto'
-				});
+		$this.select2(options);
+	});
 
-				$('#'+id+'-menu').css('max-height', '250px');
+	/* graph_template_id's '-1' option means "All Templates"; picking it clears every
+	 * other selection and picking anything else clears '-1', mirroring the old
+	 * jquery.multiselect uncheckAll/click handlers this replaces */
+	var graphTemplateValueAtOpen = null;
+
+	$('#graph_template_id.select2-multi-count').off('select2:select.graphTemplateSentinel select2:unselect.graphTemplateSentinel select2:open.graphTemplateSentinel select2:close.graphTemplateSentinel')
+		.on('select2:open.graphTemplateSentinel', function(event) {
+		graphTemplateValueAtOpen = ($(this).val() || []).join(',');
+	}).on('select2:select.graphTemplateSentinel', function(event) {
+		var $this    = $(this);
+		var instance = $this.data('select2');
+
+		if (!instance) {
+			return;
+		}
+
+		/* unselect through select2's own event bus (not just the underlying <option>s)
+		 * so the open dropdown's checkboxes redraw along with the selection - a plain
+		 * .prop('selected', ...) + change only updates the "N Selected" summary label */
+		if (event.params.data.id == '-1') {
+			$this.find('option:selected').not('[value="-1"]').each(function() {
+				instance.trigger('unselect', { data: { id: this.value, text: this.text, element: this } });
 			});
 		} else {
-			$(this).addClass('ui-state-default ui-corner-all');
+			var $allOption = $this.find('option[value="-1"]:selected');
+
+			if ($allOption.length) {
+				instance.trigger('unselect', { data: { id: '-1', text: $allOption.text(), element: $allOption[0] } });
+			}
+		}
+
+		/* belt-and-suspenders: force the open dropdown's checkboxes to match the
+		 * current selection right now, rather than trusting internal event-ordering
+		 * between the data and results adapters to have already redrawn them */
+		if (instance.results && instance.results.setClasses) {
+			instance.results.setClasses();
+		}
+	}).on('select2:unselect.graphTemplateSentinel', function(event) {
+		var $this      = $(this);
+		var instance   = $this.data('select2');
+		var $allOption = $this.find('option[value="-1"]');
+
+		if (instance && $allOption.length && $this.find('option:selected').length == 0) {
+			instance.trigger('select', { data: { id: '-1', text: $allOption.text(), element: $allOption[0] } });
+		}
+
+		if (instance && instance.results && instance.results.setClasses) {
+			instance.results.setClasses();
+		}
+	}).on('select2:close.graphTemplateSentinel', function(event) {
+		var currentValue = ($(this).val() || []).join(',');
+
+		/* only reload if the selection actually changed while open - just opening
+		 * and closing without picking anything shouldn't refresh the page */
+		if (currentValue !== graphTemplateValueAtOpen) {
+			/* defer past select2's own close teardown so the reload isn't torn down with it */
+			setTimeout(applyGraphFilter, 0);
 		}
 	});
 
@@ -3905,6 +4096,9 @@ function setSelectMenus() {
 	/* shrink down */
 	msWidth -= 20;
 
+	/* legacy jquery.multiselect widget, preserved for any plugin/theme still emitting its
+	 * own class='graph-multiselect' element; core's own #graph_template_id now uses
+	 * select2-multi-count (see above) and no longer matches this selector */
 	$('#graph_template_id.graph-multiselect').hide().multiselect({
 		menuHeight: $(window).height()*.7,
 		menuWidth: 'auto',
@@ -3975,6 +4169,8 @@ function setupObjectChange() {
 			$('#' + id).button('disable');
 		} else if ($('#' + id).selectmenu('instance')) {
                 $('#' + id).selectmenu('disable');
+		} else if ($('#' + id).hasClass('select2-hidden-accessible')) {
+			$('#' + id).trigger('change.select2');
 		}
 	}
 
@@ -3989,6 +4185,8 @@ function setupObjectChange() {
 			$('#' + id).button('enable');
 		} else if ($('#' + id).selectmenu('instance')) {
 			$('#' + id).selectmenu('enable');
+		} else if ($('#' + id).hasClass('select2-hidden-accessible')) {
+			$('#' + id).trigger('change.select2');
 		}
 	}
 
@@ -5511,6 +5709,8 @@ function setSNMPSecurity() {
 			var selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
 			if (selectmenu) {
 				$('#snmp_security_level').selectmenu('refresh');
+			} else if ($('#snmp_security_level').hasClass('select2-hidden-accessible')) {
+				$('#snmp_security_level').trigger('change.select2');
 			}
 
 			$('#snmp_password').delayKeyup(function () {
@@ -5661,6 +5861,12 @@ function setSNMP() {
 		$('#snmp_security_level').selectmenu('refresh');
 		$('#snmp_auth_protocol').selectmenu('refresh');
 		$('#snmp_priv_protocol').selectmenu('refresh');
+	}
+
+	if ($('#snmp_security_level').hasClass('select2-hidden-accessible')) {
+		$('#snmp_security_level').trigger('change.select2');
+		$('#snmp_auth_protocol').trigger('change.select2');
+		$('#snmp_priv_protocol').trigger('change.select2');
 	}
 }
 

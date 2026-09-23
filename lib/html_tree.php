@@ -1014,16 +1014,19 @@ function create_tree_filter() : array {
 			],
 			[
 				'graph_template_id' => [
-					'method'         => 'drop_multi',
-					'friendly_name'  => __('Template'),
-					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => ['options' => ['regexp' => '/^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)(,(cg_[0-9]+|dq_[0-9]+|-?[0-9]+))*$/']],
-					'default'        => '-1',
-					'dynamic'        => false,
-					'class'          => 'graph-multiselect',
-					'pageset'        => true,
-					'array'          => $normalized_templates,
-					'value'          => gnrv('graph_template_id')
+					'method'            => 'drop_multi',
+					'friendly_name'     => __('Template'),
+					'filter'            => FILTER_VALIDATE_REGEXP,
+					'filter_options'    => ['options' => ['regexp' => '/^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)(,(cg_[0-9]+|dq_[0-9]+|-?[0-9]+))*$/']],
+					'default'           => '-1',
+					'dynamic'           => false,
+					'class'             => 'select2-multi-count',
+					'select_all_text'   => __('All Graph Templates'),
+					'select_count_text' => __('Templates Selected'),
+					'select_all_value'  => '-1',
+					'pageset'           => true,
+					'array'             => $normalized_templates,
+					'value'             => gnrv('graph_template_id')
 				],
 			],
 			[

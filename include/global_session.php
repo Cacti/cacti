@@ -135,4 +135,5 @@ if ($graphs) {
 	var sessionNotices=<?php print display_output_messages(); ?>;
     var sessionMessage={};
 	var csrfMagicToken='<?php print csrf_get_tokens(); ?>';
+	var select2SearchRows=<?php print intval(read_config_option('select2_search_rows')); ?>;
 </script>

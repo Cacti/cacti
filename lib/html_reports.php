@@ -1461,11 +1461,23 @@ function reports_item_edit() : void {
 			$.getJSON(strURL, function(data) {
 				$.get('?action=ajax_get_branches&tree_id=' + $('#tree_id').val(), function(data) {
 					var selectmenu = $('#branch_id').selectmenu('instance');
+					var select2    = $('#branch_id').hasClass('select2-hidden-accessible');
+
+					/* replaceWith() only swaps the <select> itself; a live Select2 instance's
+					 * sibling .select2-container is left orphaned in the DOM unless torn down
+					 * first, which would leave a duplicate control once re-initialized below */
+					if (select2) {
+						$('#branch_id').select2('destroy');
+					}
 
 					$('#branch_id').replaceWith(data);
 
 					if (selectmenu) {
 						$('#branch_id').selectmenu();
+					} else if (select2) {
+						$('#branch_id').select2({
+							minimumResultsForSearch: select2SearchRows
+						});
 					}
 				});
 			});
@@ -1500,15 +1512,21 @@ function reports_item_edit() : void {
 		function resetSelects(data) {
 			if (data.site_id) {
 				$('#site_id').val('-1');
+
 				if ($('#site_id').selectmenu('instance')) {
 					$('#site_id').selectmenu('refresh');
+				} else if ($('#site_id').hasClass('select2-hidden-accessible')) {
+					$('#site_id').trigger('change.select2');
 				}
 			}
 
 			if (data.host_template_id) {
 				$('#host_template_id').val('-1');
+
 				if ($('#host_template_id').selectmenu('instance')) {
 					$('#host_template_id').selectmenu('refresh');
+				} else if ($('#host_template_id').hasClass('select2-hidden-accessible')) {
+					$('#host_template_id').trigger('change.select2');
 				}
 			}
 
