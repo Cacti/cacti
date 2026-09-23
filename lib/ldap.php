@@ -478,6 +478,9 @@ class Ldap {
 	public string $cn_email;
 
 	function __construct(int $domain_id) {
+		$this->debug = POLLER_VERBOSITY_HIGH;
+		$this->host  = '';
+
 		if ($domain_id > 0) {
 			$domain = db_fetch_row_prepared('SELECT *
 				FROM user_domains
@@ -489,6 +492,10 @@ class Ldap {
 					FROM user_domains_ldap
 					WHERE domain_id = ?',
 					[$domain_id]);
+
+				if (!cacti_sizeof($settings)) {
+					return;
+				}
 
 				// Initialize LDAP parameters for Authenticate
 				$this->dn                = $settings['dn'];
@@ -664,6 +671,7 @@ class Ldap {
 				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorVersion, $ldap_conn, $this->host);
 				Ldap::RecordError($output);
 				ldap_close($ldap_conn);
+				$this->connection = [];
 
 				return [
 					'ldap_conn' => $ldap_conn,
@@ -681,7 +689,7 @@ class Ldap {
 
 			$bind_timeout = $this->bind_timeout;
 
-			if (defined('LDAP_OPT_TIMELIMIT')) {
+			if (defined('LDAP_OPT_TIMEOUT')) {
 				cacti_log("LDAP: Setting Bind Timeout to $bind_timeout seconds", false, 'AUTH', $this->debug);
 				ldap_set_option($ldap_conn, LDAP_OPT_TIMEOUT, $bind_timeout);
 			}
@@ -694,6 +702,7 @@ class Ldap {
 					Ldap::RecordError($output);
 
 					ldap_close($ldap_conn);
+					$this->connection = [];
 
 					return [
 						'ldap_conn' => $ldap_conn,
@@ -710,6 +719,7 @@ class Ldap {
 					Ldap::RecordError($output);
 
 					ldap_close($ldap_conn);
+					$this->connection = [];
 
 					return [
 						'ldap_conn' => $ldap_conn,
@@ -760,11 +770,23 @@ class Ldap {
 
 		// Decode username, and remove bad characters
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-		$this->username = str_replace(['&', '|', '(', ')', '*', '>', '<', '!', '='], '', $this->username);
 		$this->password = html_entity_decode($this->password, $this->GetMask(), 'UTF-8');
-		$this->dn       = str_replace('<username>', $this->username, $this->dn);
+
+		/**
+		 * The blocklist above only strips search filter metacharacters. A DN has a
+		 * separate grammar (RFC 4514) in which the comma, backslash, plus, quote,
+		 * semicolon, hash and surrounding whitespace all survive it, so an
+		 * unescaped username can graft extra RDNs onto the configured template.
+		 * Escape at the point of use and leave $this->username as typed, because
+		 * the group comparison below and the log lines still want the raw value.
+		 */
+		$this->dn       = str_replace('<username>', ldap_escape($this->username, '', LDAP_ESCAPE_DN), $this->dn);
 
 		if ($this->password == '') {
+			ldap_close($ldap_conn);
+			$this->connection = [];
+			$this->RestoreCactiHandler();
+
 			return LdapError::GetErrorDetails(LdapError::EmptyPassword);
 		}
 
@@ -785,13 +807,8 @@ class Ldap {
 						$ldap_group_response = Ldap::isUserInLDAPGroup($ldap_conn, $this->search_base, $this->group_dn, $this->dn);
 					}
 				} elseif ($this->group_member_type == 2) {
-					// Do a lookup to find this user's true DN.
-					/* ldap_exop_whoami is not yet included in PHP. For reference, the
-					 * feature request: http://bugs.php.net/bug.php?id=42060
-					 * And the patch against latest PHP release:
-					 * http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/databases/php-ldap/files/ldap-ctrl-exop.patch
-					 */
-					$true_dn_result = ldap_search($ldap_conn, $this->search_base, '(|(uid=' . $this->dn . ')(cn=' . $this->dn . ')(userPrincipalName=' . $this->dn . '))', ['dn']);
+					$filter_user    = ldap_escape($this->username, '', LDAP_ESCAPE_FILTER);
+					$true_dn_result = ldap_search($ldap_conn, $this->search_base, '(|(uid=' . $filter_user . ')(cn=' . $filter_user . ')(userPrincipalName=' . $filter_user . '))', ['dn']);
 					$first_entry    = ldap_first_entry($ldap_conn, $true_dn_result);
 
 					// we will test in two ways
@@ -810,6 +827,7 @@ class Ldap {
 					$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess, $ldap_conn, $this->host);
 					Ldap::RecordError($output);
 					ldap_close($ldap_conn);
+					$this->connection = [];
 					$this->RestoreCactiHandler();
 
 					return $output;
@@ -817,6 +835,7 @@ class Ldap {
 					$output = LdapError::GetErrorDetails(LdapError::SearchFoundNoGroup, $ldap_conn, $this->host);
 					Ldap::RecordError($output);
 					ldap_close($ldap_conn);
+					$this->connection = [];
 					$this->RestoreCactiHandler();
 
 					return $output;
@@ -852,6 +871,7 @@ class Ldap {
 
 		// Close LDAP connection
 		ldap_close($ldap_conn);
+		$this->connection = [];
 
 		if ($output['error_num'] > 0) {
 			Ldap::RecordError($output);
@@ -896,8 +916,7 @@ class Ldap {
 
 		// Decode username, and remove bad characters
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-		$this->username = str_replace(['&', '|', '(', ')', '*', '>', '<', '!', '='], '', $this->username);
-		$this->dn       = str_replace('<username>', $this->username, $this->dn);
+		$this->dn       = str_replace('<username>', ldap_escape($this->username, '', LDAP_ESCAPE_DN), $this->dn);
 
 		if ($this->mode == 0) {
 			// Just bind mode, make dn and return
@@ -924,7 +943,7 @@ class Ldap {
 			$this->specific_password = '';
 		}
 
-		$this->search_filter = str_replace('<username>', $this->username, $this->search_filter);
+		$this->search_filter = str_replace('<username>', ldap_escape($this->username, '', LDAP_ESCAPE_FILTER), $this->search_filter);
 
 		// Fix encoding on ldap specific search DN and password
 		$this->specific_password = html_entity_decode($this->specific_password, $this->GetMask(), 'UTF-8');
@@ -980,6 +999,7 @@ class Ldap {
 		}
 
 		ldap_close($ldap_conn);
+		$this->connection = [];
 
 		if ($output['error_num'] > 0) {
 			Ldap::RecordError($output, 'LDAP_SEARCH');
@@ -1016,13 +1036,15 @@ class Ldap {
 
 		// Decode username, and remove bad characters
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-		$this->username = str_replace(['&', '|', '(', ')', '*', '>', '<', '!', '='], '', $this->username);
-		$this->dn       = str_replace('<username>', $this->username, $this->dn);
+		$this->dn       = str_replace('<username>', ldap_escape($this->username, '', LDAP_ESCAPE_DN), $this->dn);
 
 		if ($this->mode == 0) {
 			// Just bind mode, make dn and return
 			$output       = LdapError::GetErrorDetails(LdapError::Success);
 			$output['dn'] = $this->dn;
+			ldap_close($ldap_conn);
+			$this->connection = [];
+			$this->RestoreCactiHandler();
 
 			return $output;
 		}
@@ -1032,6 +1054,9 @@ class Ldap {
 			if (empty($this->specific_dn) || empty($this->specific_password)) {
 				$output       = LdapError::GetErrorDetails(LdapError::UndefinedDnOrPassword);
 				$output['dn'] = $this->dn;
+				ldap_close($ldap_conn);
+				$this->connection = [];
+				$this->RestoreCactiHandler();
 
 				return $output;
 			}
@@ -1041,7 +1066,7 @@ class Ldap {
 			$this->specific_password = '';
 		}
 
-		$this->search_filter = str_replace('<username>', $this->username, $this->search_filter);
+		$this->search_filter = str_replace('<username>', ldap_escape($this->username, '', LDAP_ESCAPE_FILTER), $this->search_filter);
 
 		// Fix encoding on ldap specific search DN and password
 		$this->specific_password = html_entity_decode($this->specific_password, $this->GetMask(), 'UTF-8');
@@ -1055,8 +1080,7 @@ class Ldap {
 			if ($ldap_results) {
 				$ldap_entries =  ldap_get_entries($ldap_conn, $ldap_results);
 
-				// We find 1 entries
-				if ($ldap_entries !== false && $ldap_entries['count'] === 1) {
+				if ($ldap_entries !== false && isset($ldap_entries['count']) && $ldap_entries['count'] === 1) {
 					$output = LdapError::GetErrorDetails(LdapError::Success);
 
 					// check if we got an full username entry
@@ -1072,8 +1096,10 @@ class Ldap {
 					} else {
 						$output['cn'][$this->cn[1]] = '';
 					}
-				} else {
+				} elseif (is_array($ldap_entries) && isset($ldap_entries['count']) && $ldap_entries['count'] > 1) {
 					$output = LdapError::GetErrorDetails(LdapError::SearchFoundMultiUser);
+				} else {
+					$output = LdapError::GetErrorDetails(LdapError::SearchFoundNoUser);
 				}
 			} else {
 				// no search results, user not found
@@ -1105,6 +1131,7 @@ class Ldap {
 		}
 
 		ldap_close($ldap_conn);
+		$this->connection = [];
 
 		if ($output['error_num'] > 0) {
 			Ldap::RecordError($output, 'LDAP_SEARCH_CN');
@@ -1116,7 +1143,10 @@ class Ldap {
 	}
 
 	function isUserInLDAPGroup(object $ldapConn, string $ldapbasedn, string $groupDN, string $ldapUser) : bool {
-		$query       = "(&(distinguishedName=$ldapUser)(memberOf:1.2.840.113556.1.4.1941:=$groupDN))";
+		$query = cacti_ldap_filter(
+			'(&(distinguishedName=<user>)(memberOf:1.2.840.113556.1.4.1941:=<group>))',
+			['user' => $ldapUser, 'group' => $groupDN]
+		);
 		$ldapSearch  = ldap_search($ldapConn, $ldapbasedn, $query, ['dn']);
 
 		if ($ldapSearch) {
@@ -1132,4 +1162,22 @@ class Ldap {
 			return false;
 		}
 	}
+}
+
+/**
+ * Build an LDAP filter string with safe variable substitution.
+ *
+ * @param string               $template Filter template with <key> placeholders
+ * @param array<string, mixed> $vars     Associative array of key => value pairs
+ *
+ * @return string The assembled, injection-safe LDAP filter
+ */
+function cacti_ldap_filter(string $template, array $vars) : string {
+	$map = [];
+
+	foreach ($vars as $key => $value) {
+		$map['<' . $key . '>'] = ldap_escape((string) $value, '', LDAP_ESCAPE_FILTER);
+	}
+
+	return strtr($template, $map);
 }

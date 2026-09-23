@@ -34,7 +34,17 @@
 // --- Stub: sanitize_sql_column (lib/functions.php) ---
 
 function stub_sanitize_sql_column(string $column): string {
-	return preg_replace('/[^a-zA-Z0-9_().]/', '', $column) ?? '';
+	$result = preg_replace('/[^a-zA-Z0-9_().]/', '', $column) ?? '';
+
+	if ($result === '') {
+		return '';
+	}
+
+	if (str_contains($result, '(') && preg_match('/^(?:INET_ATON|NATURAL_SORT_KEY)\([a-zA-Z_][a-zA-Z0-9_.]*\)$/i', $result) !== 1) {
+		return '';
+	}
+
+	return $result;
 }
 
 // --- Stub: direction enforcement used in html_reports.php, api_automation.php,
@@ -56,6 +66,31 @@ test('sanitize_sql_column: qualified column passes unchanged', function () {
 
 test('sanitize_sql_column: function call with parens passes', function () {
 	expect(stub_sanitize_sql_column('INET_ATON(ip)'))->toBe('INET_ATON(ip)');
+});
+
+test('sanitize_sql_column: NATURAL_SORT_KEY wrapper passes', function () {
+	expect(stub_sanitize_sql_column('NATURAL_SORT_KEY(hostname)'))->toBe('NATURAL_SORT_KEY(hostname)');
+});
+
+test('sanitize_sql_column: subquery payload bypassing GHSA-q9xg-p762-9jm3 is rejected (GHSA-8j73-cvf6-jrvx)', function () {
+	$payload = '(SELECT(0)FROM(SELECT(SLEEP(5)))a)';
+	$output  = stub_sanitize_sql_column($payload);
+
+	expect($output)->not->toBe($payload);
+	expect(strtoupper($output))->not->toContain('SELECT');
+	expect(strtoupper($output))->not->toContain('SLEEP');
+});
+
+test('sanitize_sql_column: REGEXP exfiltration subquery payload is rejected (GHSA-8j73-cvf6-jrvx)', function () {
+	$payload = '(SELECT(0)FROM(SELECT(SLEEP(5))FROM(user_auth)WHERE(BINARY(username)REGEXP(0x5e61646d696e24)))a)';
+	$output  = stub_sanitize_sql_column($payload);
+
+	expect(strtoupper($output))->not->toContain('SELECT');
+	expect(strtoupper($output))->not->toContain('FROM');
+});
+
+test('sanitize_sql_column: a function name that is not on the wrapper allowlist is rejected', function () {
+	expect(stub_sanitize_sql_column('SLEEP(5)'))->not->toBe('SLEEP(5)');
 });
 
 test('sanitize_sql_column: column with underscore and digits passes', function () {

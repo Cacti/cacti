@@ -1,0 +1,59 @@
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# +-------------------------------------------------------------------------+
+
+name: LDAP login e2e
+
+on:
+  pull_request:
+    paths:
+      - 'lib/ldap.php'
+      - 'lib/auth.php'
+      - 'auth_login.php'
+      - 'user_domains.php'
+      - 'tests/e2e/docker-compose.yml'
+      - 'tests/e2e/entrypoint.sh'
+      - 'tests/e2e/Dockerfile'
+      - 'tests/e2e/tests/ldap-login.spec.ts'
+      - 'tests/e2e/ldap_login_docker.sh'
+      - 'tests/e2e/extract_csrf.php'
+      - 'tests/e2e/ldap/**'
+      - '.github/workflows/ldap-e2e.yml'
+  push:
+    branches: [develop]
+    paths:
+      - 'lib/ldap.php'
+      - 'lib/auth.php'
+      - 'auth_login.php'
+      - 'user_domains.php'
+      - 'tests/e2e/docker-compose.yml'
+      - 'tests/e2e/entrypoint.sh'
+      - 'tests/e2e/Dockerfile'
+      - 'tests/e2e/tests/ldap-login.spec.ts'
+      - 'tests/e2e/ldap_login_docker.sh'
+      - 'tests/e2e/extract_csrf.php'
+      - 'tests/e2e/ldap/**'
+      - '.github/workflows/ldap-e2e.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ldap-e2e-develop-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ldap-login:
+    name: OpenLDAP domain login
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Run LDAP login e2e
+        env:
+          HOST_PORT: "18090"
+        run: tests/e2e/ldap_login_docker.sh

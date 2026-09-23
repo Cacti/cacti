@@ -23,6 +23,12 @@ if (!function_exists('gnrv')) {
 	}
 }
 
+if (!function_exists('gfrv')) {
+	function gfrv(string $name, int $filter = FILTER_VALIDATE_INT, array $options = []) : mixed {
+		return $_REQUEST[$name] ?? ($options['default'] ?? '');
+	}
+}
+
 /*
  * #7338: tests/Unit/Ui/Aggregate/AggregateFormFieldNamesTest.php only regex-matches
  * aggregate_graphs.php's source text; it never runs api_aggregate_convert_template()

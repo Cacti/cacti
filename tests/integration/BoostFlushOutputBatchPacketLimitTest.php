@@ -55,6 +55,28 @@ class BoostPacketLookupPDO extends FakeMySQLPDO {
 	}
 }
 
+class BoostFailingChunkPDO extends BoostPacketLookupPDO {
+	public int $insert_attempts = 0;
+
+	public function prepare(string $query, array $options = []): PDOStatement|false {
+		if (stripos($query, 'max_allowed_packet') !== false) {
+			$this->packet_lookups++;
+
+			return parent::prepare("SELECT 'max_allowed_packet' AS Variable_name, '512' AS Value", $options);
+		}
+
+		if (stripos(ltrim($query), 'INSERT IGNORE INTO poller_output_boost') === 0) {
+			$this->insert_attempts++;
+
+			if ($this->insert_attempts === 2) {
+				throw new RuntimeException('injected second-chunk failure');
+			}
+		}
+
+		return parent::prepare($query, $options);
+	}
+}
+
 beforeEach(function () {
 	global $database_sessions, $database_hostname, $database_port, $database_default;
 
@@ -102,4 +124,21 @@ test('max_allowed_packet is read once per connection, not once per process', fun
 		$count = (int) $conn->query('SELECT COUNT(*) AS c FROM poller_output_boost')->fetch(PDO::FETCH_ASSOC)['c'];
 		expect($count)->toBe($expected);
 	}
+});
+
+test('a failed chunk stops the batch before later tuples are staged', function () {
+	$conn   = new BoostFailingChunkPDO();
+	$output = str_repeat('x', 300);
+
+	$result = boost_flush_output_batch([
+		"(11,'first','2024-01-01 00:00:00','{$output}')",
+		"(12,'failed','2024-01-01 00:00:00','{$output}')",
+		"(13,'later','2024-01-01 00:00:00','{$output}')",
+	], $conn);
+
+	$ids = $conn->query('SELECT local_data_id FROM poller_output_boost ORDER BY local_data_id')->fetchAll(PDO::FETCH_COLUMN);
+
+	expect($result)->toBeFalse()
+		->and($conn->insert_attempts)->toBe(2)
+		->and($ids)->toBe([11]);
 });

@@ -3022,11 +3022,14 @@ function get_full_test_script_path(int $data_template_id, int $host_id) : mixed 
 	if (cacti_sizeof($data) && is_array($host)) {
 		foreach ($data as $item) {
 			if (isset($host[$item['data_name']])) {
-				$value = cacti_escapeshellarg($host[$item['data_name']]);
+				/* only the hostname column may legitimately need percent
+				 * stripping on Windows; other host columns (e.g. SNMP
+				 * community/credentials) can contain a literal '%'. */
+				$value = cacti_escapeshellarg_cmd($host[$item['data_name']], true, $item['data_name'] === 'hostname');
 			} elseif ($item['data_name'] == 'host_id' || $item['data_name'] == 'hostid') {
 				$value = cacti_escapeshellarg($host['id']);
 			} else {
-				$value = cacti_escapeshellarg((string) $item['value']);
+				$value = cacti_escapeshellarg_cmd((string) $item['value']);
 			}
 
 			$full_path = str_replace('<' . $item['data_name'] . '>', $value, $full_path);
@@ -3076,7 +3079,7 @@ function get_full_script_path(int $local_data_id) : mixed {
 		return false;
 	}
 
-	$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " dif.data_name, did.value
+	$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " dif.data_name, dif.type_code, did.value
 		FROM data_input_fields AS dif
 		LEFT JOIN data_input_data AS did
 		ON dif.id = did.data_input_field_id
@@ -3089,7 +3092,10 @@ function get_full_script_path(int $local_data_id) : mixed {
 
 	if (cacti_sizeof($data)) {
 		foreach ($data as $item) {
-			$value = cacti_escapeshellarg($item['value']);
+			/* only hostname-class fields may legitimately need percent
+			 * stripping on Windows; other input fields (e.g. SNMP
+			 * community/credentials) can contain a literal '%'. */
+			$value = cacti_escapeshellarg_cmd($item['value'], true, $item['type_code'] === 'hostname');
 
 			if ($value == '') {
 				$value = "''";
@@ -5214,9 +5220,14 @@ function cacti_redirect(string $path, array $params = []) : never {
 
 /**
  * Strips any character that cannot safely appear in a SQL identifier.
- * Allows word characters, dots (table.column), parentheses and INET_ATON-style
- * wrappers already used by the sort helpers.  Use before concatenating a
- * user-supplied sort column into an ORDER BY clause.
+ * Allows word characters and dots (table.column). Parentheses are only
+ * permitted when the entire value is one of the known safe function-call
+ * wrappers (INET_ATON(col), NATURAL_SORT_KEY(col)) around a plain identifier;
+ * any other use of '(' -- including MySQL subquery syntax, which needs only
+ * alphanumerics and parentheses -- is rejected back to the default rather
+ * than passed through, since a bare character-class allowlist alone cannot
+ * distinguish a function wrapper from a subquery.
+ * Use before concatenating a user-supplied sort column into an ORDER BY clause.
  *
  * @param string $column  Raw sort-column value from user input.
  * @param string $default Fallback returned when all characters are stripped (default 'id').
@@ -5226,7 +5237,15 @@ function cacti_redirect(string $path, array $params = []) : never {
 function sanitize_sql_column(string $column, string $default = 'id') : string {
 	$result = preg_replace('/[^a-zA-Z0-9_().]/', '', $column) ?? '';
 
-	return $result !== '' ? $result : $default;
+	if ($result === '') {
+		return $default;
+	}
+
+	if (str_contains($result, '(') && preg_match('/^(?:INET_ATON|NATURAL_SORT_KEY)\([a-zA-Z_][a-zA-Z0-9_.]*\)$/i', $result) !== 1) {
+		return $default;
+	}
+
+	return $result;
 }
 
 /**
@@ -5572,6 +5591,36 @@ function cacti_escapeshellarg(string $string, bool $quote = true) : string {
 			return $string;
 		}
 	}
+}
+
+/**
+ * cacti_escapeshellarg_cmd - escape an argument that will reach cmd.exe on Windows.
+ *
+ * On Windows, exec()/shell_exec()/popen() route through cmd.exe, which ignores
+ * the \" escape and toggles quote-state on every ", so cacti_escapeshellarg()
+ * alone cannot stop the operators & | ^ < > ( ). Device- and request-supplied
+ * values that reach a Windows shell never legitimately contain these, so strip
+ * them before quoting. On Unix this is exactly cacti_escapeshellarg().
+ * GHSA-rjvj-r52f-8v5q.
+ *
+ * @param string $string The value to place in a Windows command line.
+ * @param bool   $quote  Whether to wrap the result in quotes.
+ *
+ * @return string The escaped value.
+ */
+function cacti_escapeshellarg_cmd(string $string, bool $quote = true, bool $strip_env = false) : string {
+	if (CACTI_SERVER_OS == 'win32') {
+		$string = str_replace(['"', '&', '|', '^', '<', '>', '(', ')'], '', $string);
+
+		/* cmd.exe expands %VAR% even inside quotes. Only values that never
+		 * legitimately contain a percent (a hostname or IP) may strip it; SNMP
+		 * community and credential values can contain %, so callers opt in. */
+		if ($strip_env) {
+			$string = str_replace('%', '', $string);
+		}
+	}
+
+	return cacti_escapeshellarg($string, $quote);
 }
 
 /**

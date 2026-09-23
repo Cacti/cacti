@@ -403,7 +403,7 @@ function domain_edit() : void {
 			'description'   => __('Should LDAP verify TLS Certificates when received by the Client.'),
 			'method'        => 'drop_array',
 			'value'         => '|arg1:tls_certificate|',
-			'default'       => LDAP_OPT_X_TLS_NEVER,
+			'default'       => LDAP_OPT_X_TLS_DEMAND,
 			'array'         => $ldap_tls_cert_req
 		],
 		'referrals' => [

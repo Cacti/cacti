@@ -144,22 +144,57 @@ switch (grv('action')) {
 
 		break;
 	case 'copy_node':
+		if (!is_tree_allowed((int) grv('tree_id'))) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+
+			exit;
+		}
+
 		api_tree_copy_node(grv('tree_id'), grv('id'), grv('parent'), grv('position'));
 
 		break;
 	case 'create_node':
+		if (!is_tree_allowed((int) grv('tree_id'))) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+
+			exit;
+		}
+
 		api_tree_create_node(grv('tree_id'), grv('id'), grv('position'), gnrv('text'));
 
 		break;
 	case 'delete_node':
+		if (!is_tree_allowed((int) grv('tree_id'))) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+
+			exit;
+		}
+
 		api_tree_delete_node(grv('tree_id'), grv('id'));
 
 		break;
 	case 'move_node':
+		if (!is_tree_allowed((int) grv('tree_id'))) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+
+			exit;
+		}
+
 		api_tree_move_node(grv('tree_id'), grv('id'), grv('parent'), grv('position'));
 
 		break;
 	case 'rename_node':
+		if (!is_tree_allowed((int) grv('tree_id'))) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+
+			exit;
+		}
+
 		api_tree_rename_node(grv('tree_id'), grv('id'), gnrv('text'));
 
 		break;
@@ -1265,7 +1300,7 @@ function tree_edit(bool $partial = false) : void {
 				}
 			})
 			.on('create_node.jstree', function (e, data) {
-				$.get('?action=create_node', { 'id' : data.node.parent, 'tree_id' : $('#id').val(), 'position' : data.position, 'text' : data.node.text })
+				$.post('?action=create_node', { 'id' : data.node.parent, 'tree_id' : $('#id').val(), 'position' : data.position, 'text' : data.node.text, '__csrf_magic' : csrfMagicToken })
 					.done(function (d) {
 						data.instance.set_id(data.node, d.id);
 						data.instance.set_text(data.node, d.text);
@@ -1281,7 +1316,7 @@ function tree_edit(bool $partial = false) : void {
 					});
 			})
 			.on('rename_node.jstree', function (e, data) {
-				$.get('?action=rename_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'text' : data.text })
+				$.post('?action=rename_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'text' : data.text, '__csrf_magic' : csrfMagicToken })
 					.done(function (d) {
 						if (d.result == 'false') {
 							data.instance.set_text(data.node, d.text);
@@ -1296,7 +1331,7 @@ function tree_edit(bool $partial = false) : void {
 					});
 			})
 			.on('move_node.jstree', function (e, data) {
-				$.get('?action=move_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
+				$.post('?action=move_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position, '__csrf_magic' : csrfMagicToken })
 					.always(function () {
 						var st = data.instance.get_state();
 						data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
@@ -1313,7 +1348,7 @@ function tree_edit(bool $partial = false) : void {
 					$('#graphs').jstree().deselect_all();
 				}
 
-				$.get('?action=copy_node', { 'id' : data.original.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
+				$.post('?action=copy_node', { 'id' : data.original.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position, '__csrf_magic' : csrfMagicToken })
 					.always(function () {
 						var st = data.instance.get_state();
 						data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });

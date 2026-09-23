@@ -41,23 +41,24 @@ cmd_exec	./lib/functions.php			$output = shell_exec('powershell -Command "Get-Wm
 cmd_exec	./lib/functions.php			$processExists   = trim((string) shell_exec($checkProcessCmd));
 cmd_exec	./lib/functions.php		exec($command_line, $out, $return_code);
 cmd_exec	./lib/functions.php		return exec('whoami') ?: '';
+cmd_exec	./lib/functions.php	 * On Windows, exec()/shell_exec()/popen() route through cmd.exe, which ignores
 cmd_exec	./lib/installer.php						$output = shell_exec(
 cmd_exec	./lib/installer.php						$output = shell_exec(cacti_escapeshellcmd(str_replace('\\', '/', $path)) . ' --version 2>&1');
 cmd_exec	./lib/installer.php			$check    = shell_exec("$composer install --dry-run --no-interaction --working-dir=$base 2>&1");
 cmd_exec	./lib/installer.php			$output = shell_exec("$composer install --no-interaction --no-progress --working-dir=$base 2>&1");
 cmd_exec	./lib/installer.php			$process = proc_open(
-cmd_exec	./lib/ping.php							$result = shell_exec('ping -6 -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg($this->host['hostname']));
-cmd_exec	./lib/ping.php							$result = shell_exec('ping -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg($this->host['hostname']) . ' 2>&1');
-cmd_exec	./lib/ping.php							$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
-cmd_exec	./lib/ping.php							$result = shell_exec('ping6 -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
-cmd_exec	./lib/ping.php						$result = shell_exec('chcp 437 && ping -w ' . $this->timeout . ' -n ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
-cmd_exec	./lib/ping.php						$result = shell_exec('ping ' . cacti_escapeshellarg($this->host['hostname']));
-cmd_exec	./lib/ping.php						$result = shell_exec('ping -i ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
-cmd_exec	./lib/ping.php						$result = shell_exec('ping -m ' . ceil($this->timeout / 1000) . ' -n ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
-cmd_exec	./lib/ping.php						$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
-cmd_exec	./lib/ping.php						$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
-cmd_exec	./lib/ping.php						$result = shell_exec('ping -w ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
-cmd_exec	./lib/ping.php					$result = shell_exec(cacti_escapeshellarg($fping) . ' -q -t ' . $this->timeout . ' -c 1 -r ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']) . ' 2>&1');
+cmd_exec	./lib/ping.php							$result = shell_exec('ping -6 -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
+cmd_exec	./lib/ping.php							$result = shell_exec('ping -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true) . ' 2>&1');
+cmd_exec	./lib/ping.php							$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
+cmd_exec	./lib/ping.php							$result = shell_exec('ping6 -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
+cmd_exec	./lib/ping.php						$result = shell_exec('chcp 437 && ping -w ' . $this->timeout . ' -n ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
+cmd_exec	./lib/ping.php						$result = shell_exec('ping ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
+cmd_exec	./lib/ping.php						$result = shell_exec('ping -i ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
+cmd_exec	./lib/ping.php						$result = shell_exec('ping -m ' . ceil($this->timeout / 1000) . ' -n ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
+cmd_exec	./lib/ping.php						$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
+cmd_exec	./lib/ping.php						$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
+cmd_exec	./lib/ping.php						$result = shell_exec('ping -w ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true));
+cmd_exec	./lib/ping.php					$result = shell_exec(cacti_escapeshellarg($fping) . ' -q -t ' . $this->timeout . ' -c 1 -r ' . $this->retries . ' ' . cacti_escapeshellarg_cmd($this->host['hostname'], true, true) . ' 2>&1');
 cmd_exec	./lib/poller.php										$output = system($php_path . ' -l ' . $tmpfile, $exit);
 cmd_exec	./lib/poller.php						pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args . ' ' . $redirect_args, 'r'));
 cmd_exec	./lib/poller.php						pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args, 'r'));
@@ -92,7 +93,6 @@ cmd_exec	./lib/utility.php			exec('wmic os get TotalVisibleMemorySize', $memInfo
 cmd_exec	./lib/utility.php		$json       = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./lib/utility.php		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./lib/utility.php		$json     = shell_exec($php . ' -q ' . $php_file);
-cmd_exec	./poller_realtime.php					shell_exec($command);
 cmd_exec	./poller_realtime.php	shell_exec("$command_string $extra_args");
 cmd_exec	./poller_spikekill.php				$response = exec(cacti_escapeshellcmd((string) read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./remote_agent.php									$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
@@ -149,7 +149,6 @@ fs_write	./cli/import_template.php				$fp       = fopen($filename,'r');
 fs_write	./cli/input_whitelist.php				$filesystem->writeFile($config['input_whitelist'], json_encode($input));
 fs_write	./cli/md5sum.php			$filesystem->writeFile($md5_file, $output);
 fs_write	./cli/migrate_poller.php		$result = file_put_contents($migration_log_file, date('Y-m-d H:i:s') . " - $message" . PHP_EOL, FILE_APPEND);
-fs_write	./cli/refresh_csrf.php			$filesystem->writeFile(CACTI_CSRF_SECRET, '<?php $secret = "' . $new_secret . '";' . PHP_EOL);
 fs_write	./cli/rrdresize.php					if (!file_put_contents($tmp_xml_file, $rrd_new_header . $rrd_new_body . '</rrd>')) {
 fs_write	./cli/rrdresize.php		$log_handle = fopen($tmp_backup_folder . 'tmp_rrdresize.log', 'w');
 fs_write	./cli/splice_rrd.php				if (($f = @fopen($path, 'a'))) {
@@ -157,11 +156,14 @@ fs_write	./cli/splice_rrd.php			if (($f = @fopen($path, 'w'))) {
 fs_write	./cli/splice_rrd.php		return file_put_contents($xmlfile, $output);
 fs_write	./cli/splice_rrd.php	file_put_contents($newxmlfile, $new_xml);
 fs_write	./host.php		$stdout = fopen('php://output', 'w');
+fs_write	./include/csrf.php			$fh        = fopen($file, 'w');
+fs_write	./include/csrf.php			$fh = @fopen($path, 'a');
+fs_write	./include/csrf.php		$fh = @fopen($path, 'w');
 fs_write	./include/global_languages.php			file_put_contents($config['i18n_log'], $text . $eol, $mode);
 fs_write	./include/global_languages.php			file_put_contents($config['i18n_text_log'], $text . $eol, $mode);
 fs_write	./include/themes/midwinter/update_hash.php			file_put_contents($cssFile, $fileUpdated);
 fs_write	./install/functions.php						$fp = fopen($config_file, 'w');
-fs_write	./install/functions.php				$fh = fopen($file, 'w');
+fs_write	./install/functions.php					$fh = fopen($file, 'w');
 fs_write	./install/functions.php			file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
 fs_write	./install/functions.php			file_put_contents(CACTI_PATH_LOG . '/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
 fs_write	./install/functions.php			file_put_contents(CACTI_PATH_LOG . '/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
@@ -169,7 +171,7 @@ fs_write	./lib/CactiFilesystem.php			$this->filesystem->dumpFile($filename, $con
 fs_write	./lib/CactiFilesystem.php			self::default()->writeFile($filename, $content);
 fs_write	./lib/api_device.php							if (file_put_contents($new_xmlfile, $data) === false) {
 fs_write	./lib/boost.php								if ($fileptr = fopen($cache_file, 'rb')) {
-fs_write	./lib/boost.php							if ($fileptr = fopen($cache_file, 'w')) {
+fs_write	./lib/boost.php		$fileptr = fopen($temp_file, 'wb');
 fs_write	./lib/clog_webapi.php					$log_fh = fopen($logfile, 'w');
 fs_write	./lib/csp_report_endpoint.php	$inputStream = fopen('php://input', 'rb');
 fs_write	./lib/database.php					file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
@@ -385,6 +387,8 @@ header_redirect	./data_sources.php									header('Location: data_sources.php?ac
 header_redirect	./data_sources.php				header('Location: data_sources.php');
 header_redirect	./data_sources.php			header('Location: data_sources.php');
 header_redirect	./data_sources.php			header('Location: data_sources.php');
+header_redirect	./data_sources.php			header('Location: data_sources.php');
+header_redirect	./data_sources.php			header('Location: data_sources.php');
 header_redirect	./data_sources.php			header('Location: data_sources.php?action=ds_edit&host_id=' . grv('host_id') . '&new=1');
 header_redirect	./data_sources.php			header('Location: data_sources.php?action=ds_edit&id=' . (empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) . '&host_id=' . grv('host_id') . '&view_rrd=' . (isrv('current_rrd') ? gnrv('current_rrd') : '0'));
 header_redirect	./data_sources.php		header('Location: data_sources.php?action=ds_edit&id=' . grv('id') . "&view_rrd=$data_template_rrd_id");
@@ -443,7 +447,7 @@ header_redirect	./include/auth.php					header('Location: ' . CACTI_PATH_URL . 'a
 header_redirect	./include/auth.php			header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?ref=' . rawurlencode(validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php')));
 header_redirect	./include/auth.php		header('Location: ' . CACTI_PATH_URL . 'install/');
 header_redirect	./include/content/index.php	header('Location:../index.php');
-header_redirect	./include/csrf.php		header('Location: ' . sanitize_uri($_SERVER['REQUEST_URI']));
+header_redirect	./include/csrf.php		header('Location: ' . $redirect_target);
 header_redirect	./include/fa/css/index.php	header('Location:../index.php');
 header_redirect	./include/fa/index.php	header('Location:../index.php');
 header_redirect	./include/fa/js/index.php	header('Location:../index.php');
@@ -512,6 +516,12 @@ header_redirect	./lib/html_graph.php			header('Location: permission_denied.php')
 header_redirect	./lib/html_graph.php			header('Location: permission_denied.php');
 header_redirect	./lib/html_graph.php			header('Location: permission_denied.php');
 header_redirect	./lib/html_graph.php		header('Location: graph_view.php?action=list');
+header_redirect	./lib/html_reports.php					header('Location: ' . get_reports_page());
+header_redirect	./lib/html_reports.php				header('Location: ' . get_reports_page());
+header_redirect	./lib/html_reports.php				header('Location: ' . get_reports_page());
+header_redirect	./lib/html_reports.php				header('Location: ' . get_reports_page());
+header_redirect	./lib/html_reports.php				header('Location: ' . get_reports_page());
+header_redirect	./lib/html_reports.php				header('Location: ' . get_reports_page());
 header_redirect	./lib/html_reports.php			header('Location: ' . get_reports_page() . '?action=item_edit&id=' . gnrv('report_id') . '&item_id=' . (empty($item_id) ? gnrv('id') : $item_id));
 header_redirect	./lib/html_reports.php			header('Location: ' . get_reports_page());
 header_redirect	./lib/html_reports.php			header('Location: ' . get_reports_page());
@@ -553,6 +563,7 @@ header_redirect	./package_import.php					header('Location: package_import.php');
 header_redirect	./package_import.php				header('Location: package_import.php');
 header_redirect	./package_import.php				header('Location: package_import.php');
 header_redirect	./package_import.php				header('Location: package_import.php?package_location=0');
+header_redirect	./package_import.php			header('Location: package_import.php');
 header_redirect	./package_import.php			header('Location: package_import.php');
 header_redirect	./package_import.php			header('Location: package_import.php?package_location=' . $package_location);
 header_redirect	./package_keys.php			header('Location: package_keys.php?header=false');
@@ -605,6 +616,11 @@ header_redirect	./templates_export.php					header('Location: templates_export.ph
 header_redirect	./templates_import.php				header('Location: templates_import.php');
 header_redirect	./templates_import.php				header('Location: templates_import.php');
 header_redirect	./tests/index.php	header('Location:../index.php');
+header_redirect	./tree.php				header('Location: tree.php');
+header_redirect	./tree.php				header('Location: tree.php');
+header_redirect	./tree.php				header('Location: tree.php');
+header_redirect	./tree.php				header('Location: tree.php');
+header_redirect	./tree.php				header('Location: tree.php');
 header_redirect	./tree.php			header('Location: tree.php');
 header_redirect	./tree.php			header('Location: tree.php');
 header_redirect	./tree.php			header('Location: tree.php');

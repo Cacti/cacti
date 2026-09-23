@@ -72,7 +72,7 @@ beforeEach(function () {
 
 	$this->db_globals = [$database_sessions, $database_hostname, $database_port, $database_default];
 
-	$dsn  = getenv('CACTI_TEST_MYSQL_DSN')  ?: 'mysql:host=127.0.0.1;port=33061;dbname=cacti_test';
+	$dsn  = getenv('CACTI_TEST_MYSQL_DSN') ?: 'mysql:host=127.0.0.1;port=33061;dbname=cacti_test';
 	$user = getenv('CACTI_TEST_MYSQL_USER') ?: 'root';
 	$pass = getenv('CACTI_TEST_MYSQL_PASS') ?: 'root';
 
@@ -126,7 +126,7 @@ test('a row from a still-open poll round survives the archive cleanup by moving 
 		boost_handoff_extract_sql($contents, "INSERT IGNORE INTO poller_output_boost\n\t\t\t\tSELECT *", 'AND time >= FROM_UNIXTIME(?)'));
 
 	$delete_sql = str_replace('$table', 'poller_output_boost_arch_handoff_test',
-		boost_handoff_extract_sql($contents, 'DELETE IGNORE', 'WHERE local_data_id = ?'));
+		rtrim(boost_handoff_extract_sql($contents, 'DELETE FROM `$table`', 'WHERE local_data_id = ?'), '"'));
 
 	$local_data_id = 42;
 	$cutoff        = 1_700_000_000; // the in-progress-round safety cutoff ($timestamp)
@@ -180,7 +180,7 @@ test('closed-round rows are removed from the archive table and not duplicated in
 		boost_handoff_extract_sql($contents, "INSERT IGNORE INTO poller_output_boost\n\t\t\t\tSELECT *", 'AND time >= FROM_UNIXTIME(?)'));
 
 	$delete_sql = str_replace('$table', 'poller_output_boost_arch_handoff_test',
-		boost_handoff_extract_sql($contents, 'DELETE IGNORE', 'WHERE local_data_id = ?'));
+		rtrim(boost_handoff_extract_sql($contents, 'DELETE FROM `$table`', 'WHERE local_data_id = ?'), '"'));
 
 	$local_data_id = 9;
 	$cutoff        = 1_700_000_000;
@@ -199,33 +199,27 @@ test('closed-round rows are removed from the archive table and not duplicated in
 	expect((int) db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost'))->toBe(0);
 });
 
-test('a forwarded row left in the archive table would collide with itself on the next run -- proving why the delete must not be narrowed', function () use ($boostLibPath) {
+test('the temporary merge coalesces duplicate archive and live keys', function () use ($boostLibPath) {
 	if (!isset($this->pdo) || !$this->pdo instanceof PDO) {
 		return;
 	}
 
-	// This reconstructs the exact hazard the wide (non-time-narrowed) delete
-	// avoids: run the archive-side temp-table seed query verbatim from the
-	// source (no time filter, not INSERT IGNORE) against a row that was
-	// forwarded to the live table but hypothetically left behind in the
-	// archive table, to prove such a leftover would break the next run's
-	// own merge query with a primary-key collision.
+	// Run both temp-table seed statements verbatim. They deliberately use
+	// INSERT IGNORE so a retry row present in both the archive and live tables
+	// is processed once instead of aborting the handoff on a primary-key clash.
 	$contents = file_get_contents($boostLibPath);
 
-	// Two `INSERT INTO `{$temp_table}`` statements exist in this function:
-	// the first seeds from the archive table (no time filter, no IGNORE),
-	// the second seeds from the live table (time < $timestamp, no IGNORE).
-	$first_seed_pos  = strpos($contents, 'INSERT INTO `{$temp_table}`');
-	$second_seed_pos = strpos($contents, 'INSERT INTO `{$temp_table}`', $first_seed_pos + 1);
+	$first_seed_pos  = strpos($contents, 'INSERT IGNORE INTO `{$temp_table}`');
+	$second_seed_pos = strpos($contents, 'INSERT IGNORE INTO `{$temp_table}`', $first_seed_pos + 1);
 
 	expect($first_seed_pos)->not->toBeFalse();
 	expect($second_seed_pos)->not->toBeFalse();
 
 	$seed_sql = rtrim(str_replace(['{$temp_table}', '{$table}'], ['poller_output_boost_temp_test', 'poller_output_boost_arch_handoff_test'],
-		boost_handoff_extract_sql(substr($contents, $first_seed_pos, $second_seed_pos - $first_seed_pos), 'INSERT INTO `{$temp_table}`', 'WHERE local_data_id = ?"')), '"');
+		boost_handoff_extract_sql(substr($contents, $first_seed_pos, $second_seed_pos - $first_seed_pos), 'INSERT IGNORE INTO `{$temp_table}`', 'WHERE local_data_id = ?"')), '"');
 
 	$live_seed_sql = rtrim(str_replace('{$temp_table}', 'poller_output_boost_temp_test',
-		boost_handoff_extract_sql(substr($contents, $second_seed_pos), 'INSERT INTO `{$temp_table}`', 'AND time < FROM_UNIXTIME(?)"')), '"');
+		boost_handoff_extract_sql(substr($contents, $second_seed_pos), 'INSERT IGNORE INTO `{$temp_table}`', 'AND time < FROM_UNIXTIME(?)"')), '"');
 
 	$this->pdo->exec('CREATE TEMPORARY TABLE poller_output_boost_temp_test LIKE poller_output_boost');
 
@@ -245,14 +239,14 @@ test('a forwarded row left in the archive table would collide with itself on the
 
 	db_execute_prepared($seed_sql, [$local_data_id], false);
 
-	// The live-table seed (not INSERT IGNORE, matching production) must now
-	// fail on the primary-key collision with the row the archive seed just
-	// inserted -- demonstrating why the actual fix deletes the whole
-	// archive slice instead of leaving this row behind.
 	$next_cutoff = $row_time + 3600;
-	$collision   = db_execute_prepared($live_seed_sql, [$local_data_id, $next_cutoff], false);
+	$merged      = db_execute_prepared($live_seed_sql, [$local_data_id, $next_cutoff], false);
 
-	expect($collision)->toBeFalse();
+	expect($merged)->not->toBeFalse();
+
+	$rows = db_fetch_assoc('SELECT output FROM poller_output_boost_temp_test');
+	expect($rows)->toHaveCount(1)
+		->and($rows[0]['output'])->toBe('from-archive');
 
 	$this->pdo->exec('DROP TEMPORARY TABLE IF EXISTS poller_output_boost_temp_test');
 });

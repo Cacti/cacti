@@ -426,7 +426,9 @@ function bandwidth_summation(int $local_data_id, int $start_time, int $end_time,
 			$sum = array_sum($fetch_array['values'][$i]);
 
 			if (cacti_count($fetch_array['values'][$i]) > 0) {
-				$sum = ($sum * $ds_steps * $rra_steps);
+				$requested_step = $ds_steps * $rra_steps;
+				$effective_step = $fetch_array['timestamp']['step'] ?? 0;
+				$sum *= $effective_step > 0 ? $effective_step : $requested_step;
 			} else {
 				$sum = 0;
 			}
@@ -466,11 +468,12 @@ function is_graphable_item(string $item) : bool {
  *                                  either be absolute (unix timestamp) or relative (to now)
  * @param int   $graph_end          The end time to use for the data calculation. this value can
  *                                  either be absolute (unix timestamp) or relative (to now)
+ * @param int   $resolution         Effective RRA resolution selected for the graph
  *
  * @return string - a string containing the Nth percentile suitable for placing on the graph
  */
 function variable_nth_percentile(array &$regexp_match_array, array &$graph, array &$graph_item, array &$graph_items,
-	int $graph_start, int $graph_end) : string {
+	int $graph_start, int $graph_end, int $resolution = 0) : string {
 	global $graph_item_types;
 
 	$nth_cache        = [];
@@ -539,33 +542,33 @@ function variable_nth_percentile(array &$regexp_match_array, array &$graph, arra
 			case 'current':
 				// Query data for the individual case
 				$local_data_array = array_intersect_key($local_data_array, array_flip([$graph_item['local_data_id']]));
-				$nth_cache        = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
+				$nth_cache        = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution);
 
 				break;
 			case 'max':
 				// Query data for the individual case
 				$local_data_array = array_intersect_key($local_data_array, array_flip([$graph_item['local_data_id']]));
-				$nth_cache        = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
+				$nth_cache        = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution, true);
 
 				break;
 			case 'total':
 			case 'all_max_current':
 				if (cacti_sizeof($local_data_array)) {
-					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
+					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution);
 				}
 
 				break;
 			case 'total_peak':
 			case 'all_max_peak':
 				if (cacti_sizeof($local_data_array)) {
-					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
+					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution, true);
 				}
 
 				break;
 			case 'aggregate':
 			case 'aggregate_sum':
 				if (cacti_sizeof($local_data_array)) {
-					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
+					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution);
 				}
 
 				break;
@@ -573,7 +576,7 @@ function variable_nth_percentile(array &$regexp_match_array, array &$graph, arra
 			case 'aggregate_max':
 			case 'aggregate_sum_peak':
 				if (cacti_sizeof($local_data_array)) {
-					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
+					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution, true);
 				}
 
 				break;
@@ -593,11 +596,11 @@ function variable_nth_percentile(array &$regexp_match_array, array &$graph, arra
 
 					if ($type == 'aggregate_current') {
 						if (cacti_sizeof($local_data_array)) {
-							$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
+							$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution);
 						}
 					} else {
 						if (cacti_sizeof($local_data_array)) {
-							$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
+							$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, $resolution, true);
 						}
 					}
 				}

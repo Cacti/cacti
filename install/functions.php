@@ -267,16 +267,25 @@ function prime_default_settings() : void {
 }
 
 function install_create_csrf_secret(string $file) : bool {
+	$file = csrf_secret_file_path($file);
+
 	if (!file_exists($file)) {
 		if (is_resource_writable($file)) {
-			// Write the file
-			$fh = fopen($file, 'w');
+			/* Match csrf_get_secret(): the legacy HMAC secret must not be
+			   created world-readable when the web server uses umask 0022. */
+			$old_umask = umask(0027);
 
-			if ($fh !== false) {
-				fwrite($fh, csrf_get_secret());
-				fclose($fh);
-			} else {
-				return false;
+			try {
+				$fh = fopen($file, 'w');
+
+				if ($fh !== false) {
+					fwrite($fh, csrf_get_secret());
+					fclose($fh);
+				} else {
+					return false;
+				}
+			} finally {
+				umask($old_umask);
 			}
 
 			return true;

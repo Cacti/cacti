@@ -693,6 +693,15 @@ function reports_load_format_file(string $format_file, mixed &$output, bool &$re
 		$format_file = 'cacti_group.format';
 	}
 
+	// format files are always flat files directly under CACTI_PATH_FORMATS;
+	// basename() strips any directory traversal or absolute-path component a
+	// stored report's format_file value might carry.
+	$format_file = basename($format_file);
+
+	if ($format_file === '' || $format_file === '.' || $format_file === '..') {
+		return false;
+	}
+
 	$format_file = CACTI_PATH_FORMATS . '/' . $format_file;
 
 	if (file_exists($format_file) && is_readable($format_file)) {

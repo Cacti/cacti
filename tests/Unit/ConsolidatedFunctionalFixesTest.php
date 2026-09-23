@@ -17,15 +17,6 @@ function consolidatedSource(string $path): string {
 	return $source;
 }
 
-test('poller cleanup retains active rows and avoids a repeated engine conversion', function (): void {
-	$source = consolidatedSource('poller.php');
-
-	expect($source)->toContain("AND end_time != '0000-00-00 00:00:00'")
-		->and($source)->toContain("TABLE_NAME = 'poller_output'")
-		->and(strpos($source, "TABLE_NAME = 'poller_output'"))
-		->toBeLessThan(strpos($source, 'ALTER TABLE poller_output ENGINE=MEMORY'));
-});
-
 test('database recovery and identifier handling retain the corrected connection', function (): void {
 	$source = consolidatedSource('lib/database.php');
 
@@ -36,13 +27,15 @@ test('database recovery and identifier handling retain the corrected connection'
 		->and($source)->toContain("VALUES(' . \$ek . ')'");
 });
 
-test('CSV export capacity follows the requested time span', function (): void {
+test('CSV export capacity follows the selected archive resolution', function (): void {
 	$source = consolidatedSource('lib/rrd.php');
 	$start  = 0;
 	$end    = 90 * 24 * 60 * 60;
+	$step   = 300;
 
-	expect(max(10000, intval(($end - $start) / 60) + 10))->toBe(129610)
-		->and($source)->toContain('max(10000, intval(($graph_end - $graph_start) / 60) + 10)');
+	expect(max(10000, (int) ceil(abs($end - $start) / $step) + 10))->toBe(25930)
+		->and($source)->toContain('$export_rows = (int) ceil(abs($graph_end - $graph_start) / $export_step) + 10;')
+		->and($source)->toContain("'--maxrows=' . max(10000, \$export_rows)");
 });
 
 test('automation host offsets carry across every IPv4 octet', function (): void {

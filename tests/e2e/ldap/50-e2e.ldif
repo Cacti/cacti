@@ -1,0 +1,14 @@
+dn: ou=users,dc=example,dc=org
+objectClass: organizationalUnit
+ou: users
+
+dn: cn=ldapuser,ou=users,dc=example,dc=org
+objectClass: inetOrgPerson
+objectClass: posixAccount
+cn: ldapuser
+sn: User
+uid: ldapuser
+uidNumber: 10001
+gidNumber: 10001
+homeDirectory: /home/ldapuser
+userPassword: ldap-e2e-pass
