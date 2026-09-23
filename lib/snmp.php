@@ -65,17 +65,20 @@ use phpsnmp\SNMP;
  * @param mixed    $system_uptime      sysUpTime in hundredths of a second.
  * @param mixed    $engine_time        snmpEngineTime in seconds.
  * @param int|null $now                Current Unix time, injectable for tests.
- * @param bool     $prefer_engine_time When true, skip the "prefer whichever is larger"
- *                                     comparison and always use engine time once it
- *                                     passes the numeric/wall-clock checks. Spine's own
- *                                     reindex assert re-check (poller.c) always prefers
- *                                     the engine OID whenever it is numeric, with no
+ * @param bool     $prefer_engine_time When true, skip BOTH the wall-clock rejection and
+ *                                     the "prefer whichever is larger" comparison, and
+ *                                     always use engine time once it is numeric and
+ *                                     positive. Spine's own reindex assert re-check
+ *                                     (poller.c) always prefers the engine OID whenever
+ *                                     it is numeric - with no wall-clock awareness and no
  *                                     magnitude comparison of its own; the recache
  *                                     baseline stored for spine to compare against must
- *                                     use the same rule, or a device whose engine time is
- *                                     legitimately smaller than sysUpTime (e.g. the SNMP
- *                                     agent restarted more recently than the OS) causes a
- *                                     permanent mismatch and an infinite RECACHE ASSERT loop.
+ *                                     use the exact same rule, or a device whose engine
+ *                                     time is legitimately smaller than sysUpTime (e.g.
+ *                                     the SNMP agent restarted more recently than the OS),
+ *                                     or an OpenBSD-style agent returning the Unix clock
+ *                                     as engine time, causes a permanent mismatch and an
+ *                                     infinite RECACHE ASSERT loop.
  *
  * @return int|false Selected uptime in hundredths of a second.
  */
@@ -86,18 +89,24 @@ function cacti_snmp_select_uptime($system_uptime, $engine_time, $now = null, $pr
 		return $system_uptime;
 	}
 
-	$engine_time = (int) $engine_time;
+	$engine_time   = (int) $engine_time;
+	$engine_uptime = $engine_time * 100;
+
+	// spine's own reindex re-check has no wall-clock awareness at all - it
+	// unconditionally prefers any numeric engine time. Paths that must agree
+	// with spine's live comparison value have to replicate that exactly,
+	// including on OpenBSD-style agents that return the Unix clock as engine
+	// time, or the stored baseline and spine's re-check permanently disagree
+	// and the RECACHE ASSERT loop persists for those devices too.
+	if ($prefer_engine_time) {
+		return $engine_uptime;
+	}
+
 	$now         = $now ?? time();
 	$epoch_range = 5 * 366 * 86400;
 
 	if ($now > $epoch_range && abs($engine_time - $now) <= $epoch_range) {
 		return $system_uptime;
-	}
-
-	$engine_uptime = $engine_time * 100;
-
-	if ($prefer_engine_time) {
-		return $engine_uptime;
 	}
 
 	return $system_uptime === false || $engine_uptime >= $system_uptime ? $engine_uptime : $system_uptime;
