@@ -1062,11 +1062,11 @@ function form_callback(string $form_name, string $classic_sql, string $column_di
 			$prev_val = $none_entry;
 		}
 
-		print "<select id='" . htmle($form_name) . "' name='" . htmle($form_name) . "' class='" . htmle($class) . "'"
-			. " data-action='" . htmle($action) . "' data-variables='" . htmle($request_vars) . "' data-callback='" . htmle($on_change) . "'>";
+		print "<select id='" . html_escape_attr($form_name) . "' name='" . html_escape_attr($form_name) . "' class='" . html_escape_attr($class) . "'"
+			. " data-action='" . html_escape_attr($action) . "' data-variables='" . html_escape_attr($request_vars) . "' data-callback='" . html_escape_attr($on_change) . "'>";
 
 		if ($previous_id != '' && $prev_val != '') {
-			print "<option value='" . htmle($previous_id) . "' selected>" . htmle($prev_val) . '</option>';
+			print "<option value='" . html_escape_attr($previous_id) . "' selected>" . htmle($prev_val) . '</option>';
 		} elseif (!empty($none_entry)) {
 			print "<option value='0' selected>" . htmle($none_entry) . '</option>';
 		}
@@ -1318,15 +1318,15 @@ function form_multi_dropdown(string $form_name, array $array_display, mixed $pre
 	$select2Attrs = '';
 
 	if ($select_all_text != '') {
-		$select2Attrs .= " data-select-all-text='" . htmle($select_all_text) . "'";
+		$select2Attrs .= " data-select-all-text='" . html_escape_attr($select_all_text) . "'";
 	}
 
 	if ($select_count_text != '') {
-		$select2Attrs .= " data-select-count-text='" . htmle($select_count_text) . "'";
+		$select2Attrs .= " data-select-count-text='" . html_escape_attr($select_count_text) . "'";
 	}
 
 	if ($select_all_value != '') {
-		$select2Attrs .= " data-select-all-value='" . htmle($select_all_value) . "'";
+		$select2Attrs .= " data-select-all-value='" . html_escape_attr($select_all_value) . "'";
 	}
 
 	print "<select style='height:20px;' size='1' class='$class'$select2Attrs id='$form_name' name='$form_name" . "[]' multiple>";
