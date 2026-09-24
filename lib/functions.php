@@ -38,6 +38,120 @@ require_once __DIR__ . '/remote_agent_transport.php';
 require_once __DIR__ . '/client_address.php';
 
 /**
+ * Performs an SSRF-hardened outbound HTTP request.
+ *
+ * Every outbound fetch of an admin-supplied URL (OpenID discovery documents,
+ * JWKS, userinfo, token endpoints, etc.) must go through this function rather
+ * than raw curl/file_get_contents. It forces TLS peer verification, refuses
+ * redirects, and rejects hosts that resolve to loopback/private/link-local/
+ * reserved address space so a configured URL cannot be abused to reach
+ * internal services.
+ *
+ * @param string $method  HTTP method, e.g. 'GET' or 'POST'.
+ * @param string $url     The absolute http(s) URL to fetch.
+ * @param array  $options Optional: 'body' (string), 'headers' (array of 'Name: value'
+ *                        strings), 'timeout' (int seconds, default 10), 'allowed_hosts'
+ *                        (array restricting the request to those hostnames only).
+ *
+ * @return array{success: bool, status: int, body: string, error: string}
+ */
+function cacti_http(string $method, string $url, array $options = []) : array {
+	$parts = parse_url($url);
+
+	if ($parts === false || empty($parts['scheme']) || empty($parts['host'])) {
+		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Invalid URL'];
+	}
+
+	if (!in_array(strtolower($parts['scheme']), ['https', 'http'], true)) {
+		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Unsupported URL scheme'];
+	}
+
+	if (isset($options['allowed_hosts']) && !in_array($parts['host'], $options['allowed_hosts'], true)) {
+		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Host not allowed'];
+	}
+
+	if (!cacti_http_host_is_safe($parts['host'])) {
+		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Target host resolves to a disallowed address'];
+	}
+
+	$ch = curl_init();
+
+	curl_setopt_array($ch, [
+		CURLOPT_URL             => $url,
+		CURLOPT_CUSTOMREQUEST   => strtoupper($method),
+		CURLOPT_RETURNTRANSFER  => true,
+		CURLOPT_FOLLOWLOCATION  => false,
+		CURLOPT_SSL_VERIFYPEER  => true,
+		CURLOPT_SSL_VERIFYHOST  => 2,
+		CURLOPT_TIMEOUT         => (int) ($options['timeout'] ?? 10),
+		CURLOPT_CONNECTTIMEOUT  => 5,
+		CURLOPT_PROTOCOLS       => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+		CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+	]);
+
+	if (isset($options['body'])) {
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $options['body']);
+	}
+
+	if (!empty($options['headers'])) {
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $options['headers']);
+	}
+
+	$body   = curl_exec($ch);
+	$status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	$error  = curl_error($ch);
+
+	curl_close($ch);
+
+	if ($body === false) {
+		return ['success' => false, 'status' => $status, 'body' => '', 'error' => $error !== '' ? $error : 'Request failed'];
+	}
+
+	return [
+		'success' => $status >= 200 && $status < 300,
+		'status'  => $status,
+		'body'    => $body,
+		'error'   => $status >= 300 ? 'HTTP ' . $status : ''
+	];
+}
+
+/**
+ * Rejects hostnames that resolve to loopback, private, link-local, or other
+ * non-public address space, as a basic SSRF guard for cacti_http().
+ *
+ * @param string $host The hostname or IP literal from the target URL.
+ *
+ * @return bool True when every resolved address is public/routable.
+ */
+function cacti_http_host_is_safe(string $host) : bool {
+	if (filter_var($host, FILTER_VALIDATE_IP)) {
+		$ips = [$host];
+	} else {
+		$records = @dns_get_record($host, DNS_A + DNS_AAAA);
+
+		if (!is_array($records)) {
+			return false;
+		}
+
+		$ips = array_filter(array_map(static function ($record) {
+			return $record['ip'] ?? ($record['ipv6'] ?? null);
+		}, $records));
+	}
+
+	if (empty($ips)) {
+		return false;
+	}
+
+	foreach ($ips as $ip) {
+		if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/**
  * Takes a string of text, truncates it to $max_length and appends
  * three periods onto the end
  *

@@ -90,10 +90,10 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 
 			break;
 		case AUTH_METHOD_LDAP: // LDAP Authentication
-		case AUTH_METHOD_DOMAIN: // LDAP Domains login
-			cacti_log("DEBUG: Domains User '" . $username . "' to attempt login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+		case AUTH_METHOD_PROVIDERS: // Login Providers
+			cacti_log("DEBUG: Provider User '" . $username . "' to attempt login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
-			$user = domains_login_process($username);
+			$user = login_providers_login_process($username);
 
 			break;
 		default: // Login Realm not determined
@@ -201,7 +201,7 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 		// remember me support.  Not for guest of basic auth. The transition
 		// gate must pass first so a locked or missing account cannot mint a token.
 		if ($auth_method != AUTH_METHOD_BASIC && $user['id'] !== get_guest_account()) {
-			if (!$error && isrv('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
+			if (!$error && isrv('remember_me') && read_config_option('auth_cache_enabled') == 'on' && auth_realm_allows_cookies((int) $realm)) {
 				set_auth_cookie($user);
 			}
 		}
@@ -318,7 +318,7 @@ html_auth_header(
 	</td>
 </tr>
 <?php
-if (read_config_option('auth_method') == AUTH_METHOD_LDAP || read_config_option('auth_method') == AUTH_METHOD_DOMAIN) {
+if (read_config_option('auth_method') == AUTH_METHOD_LDAP || read_config_option('auth_method') == AUTH_METHOD_PROVIDERS) {
 	$realms = get_auth_realms(true);
 
 	// try and remember previously selected realm
@@ -364,6 +364,19 @@ if (read_config_option('auth_cache_enabled') == 'on' && $is_https) { ?>
 	</td>
 </tr>
 <?php
+$sso_providers = get_sso_login_providers();
+
+if (cacti_sizeof($sso_providers)) {
+	foreach ($sso_providers as $sso_provider) { ?>
+	<tr>
+		<td colspan='2'>
+			<a class='ui-button ui-corner-all ui-widget' href='login_sso.php?action=login&realm=<?php print $sso_provider['realm'];?>'><?php print __esc('Login with %s', $sso_provider['label']);?></a>
+		</td>
+	</tr>
+<?php
+	}
+}
+
 $error_message = '';
 
 if ($error_msg) {
