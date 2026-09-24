@@ -1623,6 +1623,33 @@ function cacti_build_https_redirect_url(string $server_name, string $request_uri
 }
 
 /**
+ * Resolves a trusted host for the force_https redirect from the admin-configured
+ * base_url, in preference to the request's Host/SERVER_NAME.
+ *
+ * SERVER_NAME mirrors the client Host header under the common Apache default
+ * UseCanonicalName Off, so validating its format alone (see
+ * cacti_build_https_redirect_url()) still lets an attacker redirect to another
+ * valid-looking hostname. base_url is the trusted source Cacti already uses for
+ * absolute URLs, so it is preferred when configured.
+ *
+ * @return string A bare host (no scheme, no port) safe to pass to
+ *                cacti_build_https_redirect_url(), or '' when base_url is unset.
+ */
+function cacti_force_https_host() : string {
+	$base = trim((string) read_config_option('base_url'));
+
+	if ($base !== '') {
+		$host = parse_url($base, PHP_URL_HOST);
+
+		if (is_string($host) && $host !== '') {
+			return $host;
+		}
+	}
+
+	return '';
+}
+
+/**
  * Validates if the given string is a valid regular expression.
  *
  * This function checks if the provided regular expression is valid and safe to use.

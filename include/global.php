@@ -582,11 +582,27 @@ db_cacti_initialized($config['is_web']);
 if ($config['is_web']) {
 	if (read_config_option('force_https') == 'on') {
 		if (!cacti_is_https()) {
-			$location = cacti_build_https_redirect_url(
-				$_SERVER['SERVER_NAME'] ?? '',
-				$_SERVER['REQUEST_URI'] ?? '',
-				CACTI_PATH_URL
-			);
+			/* SERVER_NAME mirrors the client Host header under the common Apache
+			 * default UseCanonicalName Off, so validating its format alone still
+			 * lets an attacker redirect to another valid-looking hostname (open
+			 * redirect / cache poisoning). Prefer the admin-configured base_url,
+			 * the trusted source Cacti already uses for absolute URLs, and only
+			 * fall back to the validated request host when it is not set. */
+			$https_host = cacti_force_https_host();
+
+			if ($https_host !== '') {
+				$location = cacti_build_https_redirect_url(
+					$https_host,
+					$_SERVER['REQUEST_URI'] ?? '',
+					CACTI_PATH_URL
+				);
+			} else {
+				$location = cacti_build_https_redirect_url(
+					$_SERVER['SERVER_NAME'] ?? '',
+					$_SERVER['REQUEST_URI'] ?? '',
+					CACTI_PATH_URL
+				);
+			}
 
 			if ($location === '') {
 				http_response_code(400);
