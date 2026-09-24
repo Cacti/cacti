@@ -383,7 +383,7 @@ while (1) {
  * Handles the parseargs. Used as part of Cacti's script server functionality.
  *
  * @param string $string The string.
- * @param & $str_list The str list.
+ * @param array &$str_list The str list.
  * @param bool $debug The debug.
  *
  * @return bool True on success, false otherwise.

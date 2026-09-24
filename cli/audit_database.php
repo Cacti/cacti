@@ -895,7 +895,7 @@ function report_audit_results($output = true) {
 /**
  * Handles the make column props. Used as part of Cacti's CLI functionality.
  *
- * @param & $dbc The dbc.
+ * @param mixed &$dbc The dbc.
  *
  * @return string The resulting string.
  */

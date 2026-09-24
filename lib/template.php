@@ -1568,7 +1568,7 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
  *   the necessary data query information here. it must contain the following information:
  *   $snmp_query_array['snmp_query_id'] $snmp_query_array['snmp_index_on']
  *   $snmp_query_array['snmp_query_graph_id'] $snmp_query_array['snmp_index'].
- * @param & $suggested_vals Any additional information to be included in the new graphs or data
+ * @param mixed &$suggested_vals Any additional information to be included in the new graphs or data
  *   sources must be included in the array. data is to be included in the following format:
  *   $values['cg'][graph_template_id]['graph_template'][field_name] = $value // graph template
  *   $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] =
@@ -2328,8 +2328,8 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
  *
  * @param int $graph_template_id The graph template ID.
  * @param int $host_id The host ID.
- * @param & $data_template The data template.
- * @param & $snmp_query_array The SNMP query array.
+ * @param mixed &$data_template The data template.
+ * @param mixed &$snmp_query_array The SNMP query array.
  *
  * @return mixed The result of the operation, or false on failure.
  */

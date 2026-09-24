@@ -48,7 +48,7 @@ finalize_timespan($timespan);
 /**
  * Initialize the timespan selector for first use. Used as part of Cacti's lib functionality.
  *
- * @param & $timespan The timespan.
+ * @param mixed &$timespan The timespan.
  *
  * @return bool True on success, false otherwise.
  */
@@ -121,7 +121,7 @@ function process_html_variables() {
 /**
  * Someone hit a button and not a dropdown. Used as part of Cacti's lib functionality.
  *
- * @param & $timespan The timespan.
+ * @param mixed &$timespan The timespan.
  * @param int $timeshift The timeshift.
  *
  * @return void No value is returned.
@@ -195,7 +195,7 @@ function process_user_input(&$timespan, $timeshift) {
  * Establish graph timespan from either a user select or the default. Used as part of Cacti's lib
  * functionality.
  *
- * @param & $timespan The timespan.
+ * @param mixed &$timespan The timespan.
  *
  * @return void No value is returned.
  */
@@ -234,7 +234,7 @@ function set_preset_timespan(&$timespan) {
 /**
  * Handles the finalize timespan. Used as part of Cacti's lib functionality.
  *
- * @param & $timespan The timespan.
+ * @param mixed &$timespan The timespan.
  *
  * @return void No value is returned.
  */

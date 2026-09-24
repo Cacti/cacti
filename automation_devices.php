@@ -420,7 +420,7 @@ function process_request_vars() {
 /**
  * Retrieves the discovery results. Used as part of Cacti's automation devices functionality.
  *
- * @param & $total_rows The total rows.
+ * @param int  &$total_rows The total rows.
  * @param int $rows The rows.
  * @param bool $export The export.
  *

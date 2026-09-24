@@ -205,7 +205,7 @@ if ($audit) {
 exit(0);
 
 /**
- * * display_version - displays version information. Used as part of Cacti's CLI functionality.
+ * display_version - displays version information. Used as part of Cacti's CLI functionality.
  *
  * @return void No value is returned.
  */
@@ -215,7 +215,7 @@ function display_version() {
 }
 
 /**
- * * display_help - displays the usage of the function. Used as part of Cacti's CLI functionality.
+ * display_help - displays the usage of the function. Used as part of Cacti's CLI functionality.
  *
  * @return void No value is returned.
  */

@@ -978,7 +978,7 @@ function removeMyProcess($pid, $network_id) {
  * Handles the rerundataqueries. Used as part of Cacti's poller automation functionality.
  *
  * @param int $host_id The host ID.
- * @param & $network The network.
+ * @param mixed &$network The network.
  *
  * @return void No value is returned.
  */
@@ -1254,7 +1254,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 /**
  * Handles the populatedeviceindex. Used as part of Cacti's poller automation functionality.
  *
- * @param & $ids The IDS.
+ * @param mixed &$ids The IDS.
  * @param bool $is_new The is new.
  * @param array $devices The devices.
  *

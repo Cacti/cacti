@@ -292,8 +292,8 @@ function poller_cactid_arguments($base_path, $debug) {
  * has expired. Used as part of Cacti's lib functionality.
  *
  * @param string $cmd Command to execute.
- * @param & $output A return array of output.
- * @param & $return_code The return code from the script.
+ * @param mixed &$output A return array of output.
+ * @param mixed &$return_code The return code from the script.
  * @param int $timeout Timeout in seconds.
  *
  * @return string|bool Either the last line of output or false on error.
@@ -601,7 +601,7 @@ function update_reindex_cache($host_id, $data_query_id) {
  *
  * @param int $host_id The host ID.
  * @param int $data_query_id The data query ID.
- * @param & $recache_stack The recache stack.
+ * @param mixed &$recache_stack The recache stack.
  *
  * @return void No value is returned.
  */
@@ -665,7 +665,7 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
  * Grabs data from the 'poller_output' table and feeds the *completed* results to RRDtool for
  * processing. Used as part of Cacti's lib functionality.
  *
- * @param & $rrdtool_pipe The array of pipes containing the file descriptor for rrdtool.
+ * @param mixed &$rrdtool_pipe The array of pipes containing the file descriptor for rrdtool.
  * @param int $remainder Don't use LIMIT if true.
  *
  * @return int The number of rrdfiles processed.
@@ -1947,7 +1947,7 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
  * functionality.
  *
  * @param object $conn Connection to remote database.
- * @param & $data Associative array of the table data.
+ * @param mixed &$data Associative array of the table data.
  * @param string $table The remote table to replicate to.
  * @param int $remote_poller_id The remote data collector's id.
  * @param bool $truncate A flag that if true, truncates, otherwise updates.
@@ -2257,7 +2257,7 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
  * Handles the replicate table to poller. Used as part of Cacti's lib functionality.
  *
  * @param mixed $conn The conn.
- * @param & $data The data.
+ * @param mixed &$data The data.
  * @param string $table The table.
  * @param mixed $exclude The exclude.
  *
@@ -2513,7 +2513,7 @@ function should_ignore_from_replication($path) {
 /**
  * Retrieves the remote poller IDS from graphs. Used as part of Cacti's lib functionality.
  *
- * @param & $graphs The graphs.
+ * @param mixed &$graphs The graphs.
  *
  * @return array An array of results.
  */
@@ -2540,7 +2540,7 @@ function get_remote_poller_ids_from_graphs(&$graphs) {
 /**
  * Retrieves the remote poller IDS from data sources. Used as part of Cacti's lib functionality.
  *
- * @param & $data_sources The data sources.
+ * @param mixed &$data_sources The data sources.
  *
  * @return array An array of results.
  */
@@ -2567,7 +2567,7 @@ function get_remote_poller_ids_from_data_sources(&$data_sources) {
 /**
  * Retrieves the remote poller IDS from devices. Used as part of Cacti's lib functionality.
  *
- * @param & $devices The devices.
+ * @param mixed &$devices The devices.
  *
  * @return array An array of results.
  */

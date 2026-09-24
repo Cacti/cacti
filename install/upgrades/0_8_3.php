@@ -26,7 +26,7 @@ include_once($config['base_path'] . '/lib/template.php');
 include_once($config['base_path'] . '/lib/utility.php');
 
 /**
- * Handles the upgrade to 0 8 3. Used as part of Cacti's install functionality.
+ * Handles the upgrade to 0.8.3. Used as part of Cacti's install functionality.
  *
  * @return void No value is returned.
  */

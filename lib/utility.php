@@ -684,7 +684,7 @@ function push_out_data_input_method($data_input_id) {
  * functionality.
  *
  * @param array/int $local_data_ids Either a scalar (all ids) or an array of data source to act on.
- * @param & $poller_items The new items for poller cache.
+ * @param mixed &$poller_items The new items for poller cache.
  * @param int $poller_id The poller_id of the buffer.
  *
  * @return void No value is returned.
@@ -2027,7 +2027,7 @@ function utility_php_extensions() {
 /**
  * Handles the utility PHP verify extensions. Used as part of Cacti's lib functionality.
  *
- * @param & $extensions The extensions.
+ * @param mixed &$extensions The extensions.
  * @param string $source The source.
  *
  * @return void No value is returned.
@@ -2111,7 +2111,7 @@ function utility_php_recommends() {
  *
  * @param mixed $input_value The input value.
  * @param string $wanted_type The wanted type.
- * @param & $output_value The output value.
+ * @param mixed &$output_value The output value.
  * @param string $default_type The default type.
  *
  * @return mixed The result of the operation, or false on failure.
@@ -2152,7 +2152,7 @@ function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value,
 /**
  * Handles the utility PHP verify recommends. Used as part of Cacti's lib functionality.
  *
- * @param & $recommends The recommends.
+ * @param mixed &$recommends The recommends.
  * @param string $source The source.
  *
  * @return void No value is returned.
@@ -2215,7 +2215,7 @@ function utility_php_verify_recommends(&$recommends, $source) {
 /**
  * Handles the utility PHP set recommends text. Used as part of Cacti's lib functionality.
  *
- * @param & $recs The recs.
+ * @param mixed &$recs The recs.
  *
  * @return void No value is returned.
  */
@@ -2270,7 +2270,7 @@ function utility_php_optionals() {
 /**
  * Handles the utility PHP verify optionals. Used as part of Cacti's lib functionality.
  *
- * @param & $optionals The optionals.
+ * @param mixed &$optionals The optionals.
  * @param string $source The source.
  *
  * @return void No value is returned.
@@ -2298,7 +2298,7 @@ function utility_php_verify_optionals(&$optionals, $source) {
 /**
  * Handles the utility PHP set installed. Used as part of Cacti's lib functionality.
  *
- * @param & $extensions The extensions.
+ * @param mixed &$extensions The extensions.
  *
  * @return void No value is returned.
  */

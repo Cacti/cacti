@@ -116,7 +116,7 @@ function usort_natural($a, $b) {
  * Takes the list of templates and perform a final sort. Used as part of Cacti's lib
  * functionality.
  *
- * @param & $array The array.
+ * @param mixed &$array The array.
  * @param mixed $subkey The subkey.
  * @param int $sort The sort.
  *

@@ -182,8 +182,8 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
  * Handles the nth percentile fetch statistics. Used as part of Cacti's lib functionality.
  *
  * @param int $percentile The percentile.
- * @param & $local_data_ids The local data IDS.
- * @param & $fetch_array The fetch array.
+ * @param mixed &$local_data_ids The local data IDS.
+ * @param mixed &$fetch_array The fetch array.
  * @param string $cf The cf.
  *
  * @return array An array of results.
@@ -432,13 +432,13 @@ function is_graphable_item($item) {
  * Given a Nth percentile variable, calculate the Nth percentile and format it for display on the
  * graph. Used as part of Cacti's lib functionality.
  *
- * @param & $regexp_match_array The array that contains each argument in the Nth percentile
+ * @param mixed &$regexp_match_array The array that contains each argument in the Nth percentile
  *   variable. it should be formatted like so: $arr[0] // full variable string $arr[1] // Nth
  *   percentile $arr[2] // bits or bytes $arr[3] // power of 10 divisor $arr[4] // current, total,
  *   max, total_peak, all_max_current, all_max_peak $arr[5] // digits of floating point precision.
- * @param & $graph An array that contains the current graph data.
- * @param & $graph_item An array that contains the current graph item.
- * @param & $graph_items An array that contains all graph items.
+ * @param mixed &$graph An array that contains the current graph data.
+ * @param mixed &$graph_item An array that contains the current graph item.
+ * @param mixed &$graph_items An array that contains all graph items.
  * @param int $graph_start The start time to use for the data calculation. this value can either
  *   be absolute (unix timestamp) or relative (to now).
  * @param int $graph_end The end time to use for the data calculation. this value can either be
@@ -632,13 +632,13 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
  * Given a bandwidth summation variable, calculate the summation and format it for display on the
  * graph. Used as part of Cacti's lib functionality.
  *
- * @param & $regexp_match_array The array that contains each argument in the bandwidth summation
+ * @param mixed &$regexp_match_array The array that contains each argument in the bandwidth summation
  *   variable. it should be formatted like so: $arr[0] // full variable string $arr[1] // power of
  *   10 divisor or 'auto' $arr[2] // current, total $arr[3] // digits of floating point precision
  *   $arr[4] // seconds to perform the calculation for or 'auto'.
- * @param & $graph An array that contains the current graph data.
- * @param & $graph_item An array that contains the current graph item.
- * @param & $graph_items An array that contains all graph items.
+ * @param mixed &$graph An array that contains the current graph data.
+ * @param mixed &$graph_item An array that contains the current graph item.
+ * @param mixed &$graph_items An array that contains all graph items.
  * @param int $graph_start The start time to use for the data calculation. this value can either
  *   be absolute (unix timestamp) or relative (to now).
  * @param int $graph_end The end time to use for the data calculation. this value can either be

@@ -567,7 +567,7 @@ function get_current_graph_template($local_graph_id) {
 /**
  * Retrieves the common graph templates. Used as part of Cacti's graphs functionality.
  *
- * @param & $graph The graph.
+ * @param mixed &$graph The graph.
  *
  * @return string The resulting string.
  */

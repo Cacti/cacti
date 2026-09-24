@@ -1051,7 +1051,7 @@ function network_edit() {
 /**
  * Retrieves the networks. Used as part of Cacti's automation networks functionality.
  *
- * @param & $sql_where The SQL where.
+ * @param mixed &$sql_where The SQL where.
  * @param int $rows The rows.
  * @param bool $apply_limits The apply limits.
  *

@@ -23,7 +23,7 @@
 */
 
 /**
- * This simple routine print's a standard message to the console when running in debug mode. Used
+ * This simple routine prints a standard message to the console when running in debug mode. Used
  * as part of Cacti's lib functionality.
  *
  * @param string $message The message.
@@ -73,7 +73,7 @@ function log_dsdebug_statistics($type, $checks, $issues) {
  * @param int $linenum (int) The line number where the error occurred.
  * @param array $vars (mixed) The current state of PHP variables.
  *
- * @return bool (bool) always returns true for some reason.
+ * @return void
  */
 function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
@@ -116,7 +116,7 @@ function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
 /**
  * Handles the dsdebug poller output. Used as part of Cacti's lib functionality.
  *
- * @param & $rrd_update_array The RRD update array.
+ * @param mixed &$rrd_update_array The RRD update array.
  *
  * @return void No value is returned.
  */

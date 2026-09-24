@@ -148,7 +148,7 @@ function remote_agent_strip_domain($host) {
  *
  * @param mixed $key The key.
  *
- * @return mixed The result of the operation, or false on failure.
+ * @return bool|null The cached boolean result, or null on a cache miss.
  */
 function remote_agent_auth_cache_get($key) {
 	if (function_exists('apcu_fetch')) {

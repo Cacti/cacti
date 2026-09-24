@@ -701,7 +701,7 @@ function api_plugin_db_add_column($plugin, $table, $column) {
  * API helper that handles plugin can install. Used as part of Cacti's lib functionality.
  *
  * @param string $plugin The plugin.
- * @param & $message The message.
+ * @param mixed &$message The message.
  *
  * @return bool True on success, false otherwise.
  */

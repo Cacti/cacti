@@ -28,7 +28,7 @@
  *
  * @param int $cdef_item_id The id of the individual cdef item.
  *
- * @return string A text-based representation of the cdef item.
+ * @return string|null A text-based representation of the cdef item, or null when the item is missing, corrupt, or references an unknown function/operator.
  */
 function get_cdef_item_name($cdef_item_id) 	{
 	global $cdef_functions, $cdef_operators;
@@ -102,10 +102,10 @@ function get_cdef($cdef_id) {
  * functionality.
  *
  * @param mixed $cdef_id The CDEF ID.
- * @param & $visited The visited.
- * @param & $expansion The expansion.
- * @param & $cache The cache.
- * @param & $cache_bytes The cache bytes.
+ * @param array &$visited The visited.
+ * @param int &$expansion The expansion.
+ * @param array &$cache The cache.
+ * @param int &$cache_bytes The cache bytes.
  *
  * @return mixed The result of the operation, or false on failure.
  */

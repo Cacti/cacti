@@ -1869,9 +1869,7 @@ function build_rule_item_filter($automation_rule_items, $prefix = '') {
 }
 
 /**
- * * build_sort_order * @arg $index_order sort order given by e.g. xml_array[index_order_type] *
- * @arg $default_order default order if any * return sql sort order string. Used as part of
- * Cacti's lib functionality.
+ * build_sort_order - builds the sql sort order string. Used as part of Cacti's lib functionality.
  *
  * @param string $index_order The index order to build the sort order from.
  * @param string $default_order The default order to use if no index order is provided.
@@ -1980,8 +1978,8 @@ function get_matching_graphs($rule, $rule_type, $sql_where = '') {
 }
 
 /**
- * * get_created_graphs * @arg $rule provide snmp_query_id, graph_type_id * return all graphs that
- * have already been created for the given selection. Used as part of Cacti's lib functionality.
+ * get_created_graphs - returns all graphs that have already been created for the given
+ * selection. Used as part of Cacti's lib functionality.
  *
  * @param array $rule An associative array containing the criteria for selecting the created graphs.
  *
@@ -2095,8 +2093,8 @@ function get_query_fields($table, $excluded_fields) {
 }
 
 /**
- * * get_field_names * @arg $snmp_query_id snmp query id * return all field names for that snmp
- * query, taken from snmp_cache. Used as part of Cacti's lib functionality.
+ * get_field_names - returns all field names for that snmp query, taken from snmp_cache. Used as
+ * part of Cacti's lib functionality.
  *
  * @param string $snmp_query_id The ID of the SNMP query for which to retrieve field names.
  *
@@ -3780,7 +3778,7 @@ function automation_primeIPAddressTable($network_id) {
  * Validates if the given device is a valid SNMP device. Used as part of Cacti's lib
  * functionality.
  *
- * @param & $device Reference to the device array to be validated.
+ * @param mixed &$device Reference to the device array to be validated.
  *
  * @return bool Returns true if the device is a valid SNMP device, false otherwise.
  */

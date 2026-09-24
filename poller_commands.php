@@ -264,7 +264,7 @@ if ($host_id === false) {
  * Handles the commands master handler. Used as part of Cacti's poller commands functionality.
  *
  * @param bool $forcerun The forcerun.
- * @param & $hosts The hosts.
+ * @param array &$hosts The hosts.
  * @param int $threads The threads.
  *
  * @return void No value is returned.

@@ -247,7 +247,7 @@ if ($install_failed || $installer->getStep() === Installer::STEP_ERROR) {
 /**
  * Gets the install options from a json file. Used as part of Cacti's CLI functionality.
  *
- * @param & $options The options.
+ * @param array &$options The options.
  * @param string $file The file.
  * @param bool $json The JSON.
  *
@@ -283,7 +283,7 @@ function get_install_option(&$options, $file, $json = true) {
 /**
  * Sets and optional displays debug line of action. Used as part of Cacti's CLI functionality.
  *
- * @param & $options The options.
+ * @param mixed &$options The options.
  * @param string $key The key.
  * @param string $display_name The display name.
  * @param mixed $value The value.
@@ -301,7 +301,7 @@ function set_install_option(&$options, $key, $display_name, $value) {
  * Sets sub-options that have multiple key/value combinations with optional prefix. Used as part
  * of Cacti's CLI functionality.
  *
- * @param & $options The options.
+ * @param mixed &$options The options.
  * @param string $key The key.
  * @param string $display_name The display name.
  * @param mixed $value The value.

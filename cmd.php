@@ -608,7 +608,7 @@ function record_cmdphp_started() {
  * Handles the open SNMP session. Used as part of Cacti's cmd functionality.
  *
  * @param int $host_id The host ID.
- * @param & $item The item.
+ * @param mixed &$item The item.
  *
  * @return mixed The result of the operation, or false on failure.
  */
@@ -640,7 +640,7 @@ function open_snmp_session($host_id, &$item) {
  * Handles the SNMP mark host down. Used as part of Cacti's cmd functionality.
  *
  * @param int $host_id The host ID.
- * @param & $item The item.
+ * @param mixed &$item The item.
  *
  * @return void No value is returned.
  */
@@ -712,8 +712,8 @@ function update_system_mibs($host_id) {
 /**
  * Handles the collect device data. Used as part of Cacti's cmd functionality.
  *
- * @param & $item The item.
- * @param & $error_ds The error DS.
+ * @param mixed &$item The item.
+ * @param mixed &$error_ds The error DS.
  *
  * @return string The resulting string.
  */
@@ -830,7 +830,7 @@ function collect_device_data(&$item, &$error_ds) {
 /**
  * Handles the ping and reindex check. Used as part of Cacti's cmd functionality.
  *
- * @param & $item The item.
+ * @param mixed &$item The item.
  * @param bool $mibs The mibs.
  *
  * @return bool True on success, false otherwise.

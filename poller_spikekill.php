@@ -249,7 +249,7 @@ function purge_spike_backups() {
  * Handles the kill spikes. Used as part of Cacti's poller spikekill functionality.
  *
  * @param array $templates The templates.
- * @param & $found The found.
+ * @param mixed &$found The found.
  *
  * @return int The resulting integer value.
  */

@@ -487,7 +487,7 @@ function boost_validate_poller_ownership($results, $poller_id, $conn = false) {
  * queries. Additionally, it manages error handling and configuration options related to the boost
  * functionality. Used as part of Cacti's lib functionality.
  *
- * @param & $results An array of poller results, where each result contains: - 'local_data_id':
+ * @param mixed &$results An array of poller results, where each result contains: - 'local_data_id':
  *   The ID of the local data source. - 'rrd_name': The name of the RRD file. - 'time': The
  *   timestamp of the data. - 'output': The output value to be stored.
  *
@@ -661,7 +661,7 @@ function boost_fetch_cache_check($local_data_id, $rrdtool_pipe = false) {
  * 'boost_png_cache_enable' is set to 'on' and the caching state is determined to be valid,
  * caching is enabled. Used as part of Cacti's lib functionality.
  *
- * @param & $graph_data_array Reference to the graph data array containing parameters that
+ * @param mixed &$graph_data_array Reference to the graph data array containing parameters that
  *   influence caching behavior.
  *
  * @return bool Returns true if a cached image should be returned, false otherwise.
@@ -844,7 +844,7 @@ function boost_replace_cache_file_on_windows($temp_file, $cache_file) {
  * @param int $local_graph_id The ID of the local graph to check.
  * @param mixed $rra_id The RRA ID associated with the graph.
  * @param mixed $rrdtool_pipe Optional RRDTool pipe for processing (default: null).
- * @param & $graph_data_array Reference to an array containing graph data (default: empty array).
+ * @param mixed &$graph_data_array Reference to an array containing graph data (default: empty array).
  * @param bool $return Whether to return the result (default: true).
  *
  * @return string|false Returns the cached image data if available and valid, or false otherwise.
@@ -1051,7 +1051,7 @@ function boost_prep_graph_array($graph_data_array) {
  * dimensions. It then writes the graph image data to the cache file if the cache directory is
  * writable. Used as part of Cacti's lib functionality.
  *
- * @param & $output The graph image data to be cached.
+ * @param mixed &$output The graph image data to be cached.
  * @param int $local_graph_id The ID of the local graph.
  * @param int $rra_id The RRA (Round Robin Archive) ID.
  *
@@ -1761,7 +1761,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
  * of Cacti's lib functionality.
  *
  * @param string $rrd_path The path to the RRD file.
- * @param & $rrdtool_pipe The rrdtool pipe resource for executing commands.
+ * @param mixed &$rrdtool_pipe The rrdtool pipe resource for executing commands.
  *
  * @return int|string The last update time of the RRD file as a timestamp, or the current time if
  *   the path is empty.
@@ -1915,7 +1915,7 @@ function boost_get_rrd_filename_and_template($local_data_id) {
  *
  * @param int $local_data_id The ID of the local data source to create.
  * @param bool $show_source If true, returns the RRDTool command instead of executing it.
- * @param & $rrdtool_pipe The RRDTool pipe resource for executing commands.
+ * @param mixed &$rrdtool_pipe The RRDTool pipe resource for executing commands.
  *
  * @return mixed Returns the RRDTool command string if $show_source is true, -1 if the file
  *   already exists, false if no RRA is associated with the data source, or the result of the
@@ -2152,8 +2152,8 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
  * @param int $local_data_id The data source to obtain information from.
  * @param string $rrd_path The path to the RRD file.
  * @param string $rrd_update_template The order in which values need to be added.
- * @param & $rrd_update_values Values to include in the database.
- * @param & $rrdtool_pipe Optional. The RRDTool pipe resource for communication.
+ * @param mixed &$rrd_update_values Values to include in the database.
+ * @param mixed &$rrdtool_pipe Optional. The RRDTool pipe resource for communication.
  *
  * @return string Returns 'OK' on successful update or if the RRD file is invalid or missing.
  */

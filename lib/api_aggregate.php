@@ -636,7 +636,7 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
  * id. Used as part of Cacti's lib functionality.
  *
  * @param array $posted Values posted from form.
- * @param & $graph_items Reference to graph items array to update with form values.
+ * @param mixed &$graph_items Reference to graph items array to update with form values.
  *
  * @return void No value is returned.
  */
@@ -1098,7 +1098,7 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
  * Either create or update an aggregate based on criteria. Used as part of Cacti's lib
  * functionality.
  *
- * @param & $local_graph_id The local graph id of the existing graph. 0 if one needs to be created.
+ * @param mixed &$local_graph_id The local graph id of the existing graph. 0 if one needs to be created.
  * @param array $member_graphs The graphs that will be included in this aggregate.
  * @param array $attribs An array of attributes for the aggregate graph.
  * @param bool $manage_transaction The manage transaction.
@@ -1683,9 +1683,9 @@ function aggregate_handle_stacked_lines($local_graph_id, $_orig_graph_type, $_to
 /**
  * Retrieves data sources for aggregation. Used as part of Cacti's lib functionality.
  *
- * @param & $graph_array Array of graphs to aggregate.
- * @param & $data_sources Array to store the retrieved data sources.
- * @param & $graph_template Template for the graphs.
+ * @param mixed &$graph_array Array of graphs to aggregate.
+ * @param mixed &$data_sources Array to store the retrieved data sources.
+ * @param mixed &$graph_template Template for the graphs.
  *
  * @return bool True on success, false on failure.
  */

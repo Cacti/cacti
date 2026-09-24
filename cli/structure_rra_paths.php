@@ -343,7 +343,7 @@ function update_database($info) {
  * @param string $path The path.
  * @param string|int $user The user.
  *
- * @return void Bool.
+ * @return bool True on success, false on failure.
  */
 function sp_recursive_chown($path, $user) {
 	$directory = rtrim($path, '/');
@@ -367,7 +367,7 @@ function sp_recursive_chown($path, $user) {
  * @param string $path The path.
  * @param string|int $group The group.
  *
- * @return void Bool.
+ * @return bool True on success, false on failure.
  */
 function sp_recursive_chgrp($path, $group) {
 	$directory = rtrim($path, '/');

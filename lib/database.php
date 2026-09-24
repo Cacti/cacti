@@ -239,7 +239,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
  * Check the database connection. If the connection is gone attempt to reconnect, otherwise return
  * the connection. Used as part of Cacti's lib functionality.
  *
- * @param & $db_conn Bool|object &$db_conn The connection to check. Replaced with the new.
+ * @param mixed &$db_conn Bool|object &$db_conn The connection to check. Replaced with the new.
  * @param bool $log Whether or not to log the connection check.
  *
  * @return bool True when the database is connected, otherwise false.
@@ -392,7 +392,7 @@ function db_get_active_replicas() {
 /**
  * Closes the open connection. Used as part of Cacti's lib functionality.
  *
- * @param & $db_conn Either the connection to use of false to use the default.
+ * @param mixed &$db_conn Either the connection to use of false to use the default.
  *
  * @return bool The result of the close command.
  */

@@ -156,7 +156,7 @@ function form_save() {
 /**
  * Handles the prepare template display. Used as part of Cacti's templates import functionality.
  *
- * @param & $import_info The import info.
+ * @param array &$import_info The import info.
  *
  * @return array An array of results.
  */
@@ -222,7 +222,7 @@ function prepare_template_display(&$import_info) {
 /**
  * Displays the template data. Used as part of Cacti's templates import functionality.
  *
- * @param & $templates The templates.
+ * @param array &$templates The templates.
  *
  * @return void No value is returned.
  */

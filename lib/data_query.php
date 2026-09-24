@@ -1639,10 +1639,10 @@ function data_query_ctype_print_unicode($value) {
  *
  * @param int $host_id The ID of the host whose SNMP cache is being updated.
  * @param int $snmp_query_id The ID of the SNMP query associated with the cache entries.
- * @param & $output_array An array of records to be inserted or updated in the cache. Each record
+ * @param mixed &$output_array An array of records to be inserted or updated in the cache. Each record
  *   should be a string formatted as: "(host_id, snmp_query_id, field_name, field_value, snmp_index,
  *   oid, present)".
- * @param & $empty_types An array of field names to be marked as present in the cache.
+ * @param mixed &$empty_types An array of field names to be marked as present in the cache.
  *
  * @return void No value is returned.
  */
@@ -1715,7 +1715,7 @@ function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$ou
 /**
  * Returns array of rewritten indexes. Used as part of Cacti's lib functionality.
  *
- * @param & $errmsg Array that will contain warnings if any.
+ * @param mixed &$errmsg Array that will contain warnings if any.
  * @param int $host_id The ID of the host for which the SNMP query is being processed.
  * @param int $snmp_query_id The ID of the SNMP query being processed.
  * @param string $rewrite_index Value of <rewrite_index> from data query XML.
@@ -2261,7 +2261,7 @@ function get_formatted_data_query_index($host_id, $data_query_id, $data_query_in
  * Calculates or sets the 'index_order' key in the provided raw XML array. Used as part of Cacti's
  * lib functionality.
  *
- * @param & $raw_xml The raw XML data array passed by reference. It may be modified to include the
+ * @param mixed &$raw_xml The raw XML data array passed by reference. It may be modified to include the
  *   'index_order' key if it is not already set.
  *
  * @return void No value is returned.

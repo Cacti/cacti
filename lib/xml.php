@@ -56,7 +56,7 @@ function xml2array($data) {
  * Retrieves the children. Used as part of Cacti's lib functionality.
  *
  * @param mixed $vals The vals.
- * @param & $i The i.
+ * @param mixed &$i The i.
  *
  * @return array An array of results.
  */
@@ -160,9 +160,9 @@ function rrdxport2array($data) {
  * Retrieves the RRD children. Used as part of Cacti's lib functionality.
  *
  * @param mixed $vals The vals.
- * @param & $i The i.
- * @param & $column The column.
- * @param & $row The row.
+ * @param mixed &$i The i.
+ * @param mixed &$column The column.
+ * @param mixed &$row The row.
  *
  * @return array An array of results.
  */

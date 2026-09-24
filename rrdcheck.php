@@ -57,7 +57,7 @@ function rrdcheck_purge() {
 }
 
 /**
- * * Display all rrdcheck entries. Used as part of Cacti's rrdcheck functionality.
+ * Display all rrdcheck entries. Used as part of Cacti's rrdcheck functionality.
  *
  * @return void No value is returned.
  */
@@ -226,7 +226,7 @@ function rrdcheck_display_problems() {
 /**
  * Handles the filter. Used as part of Cacti's rrdcheck functionality.
  *
- * @return string The resulting string.
+ * @return void
  */
 function filter() {
 	global $item_rows;

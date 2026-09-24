@@ -1212,8 +1212,8 @@ function is_tmp_writable() {
 /**
  * Handles the package prepare import array. Used as part of Cacti's package import functionality.
  *
- * @param & $templates The templates.
- * @param & $files The files.
+ * @param mixed &$templates The templates.
+ * @param mixed &$files The files.
  * @param string $package_name The package name.
  * @param string $package_filename The package filename.
  * @param array $import_info The import info.

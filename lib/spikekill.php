@@ -878,8 +878,8 @@ class spikekill {
 	/**
 	 * Handles the calculatevarianceaverages. Used as part of Cacti's lib functionality.
 	 *
-	 * @param & $rra The RRA.
-	 * @param & $samples The samples.
+	 * @param mixed &$rra The RRA.
+	 * @param mixed &$samples The samples.
 	 *
 	 * @return void No value is returned.
 	 */
@@ -925,8 +925,8 @@ class spikekill {
 	/**
 	 * Handles the calculateoverallstatistics. Used as part of Cacti's lib functionality.
 	 *
-	 * @param & $rra The RRA.
-	 * @param & $samples The samples.
+	 * @param mixed &$rra The RRA.
+	 * @param mixed &$samples The samples.
 	 *
 	 * @return void No value is returned.
 	 */
@@ -1186,8 +1186,8 @@ class spikekill {
 	/**
 	 * Handles the updatexml. Used as part of Cacti's lib functionality.
 	 *
-	 * @param & $output The output.
-	 * @param & $rra The RRA.
+	 * @param mixed &$output The output.
+	 * @param mixed &$rra The RRA.
 	 *
 	 * @return array An array of results.
 	 */
@@ -1399,7 +1399,7 @@ class spikekill {
 	/**
 	 * Handles the removecomments. Used as part of Cacti's lib functionality.
 	 *
-	 * @param & $output The output.
+	 * @param mixed &$output The output.
 	 *
 	 * @return array An array of results.
 	 */

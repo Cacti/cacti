@@ -207,7 +207,7 @@ function html_graph_template_multiselect() {
 /**
  * Draws an area the contains full sized graphs. Used as part of Cacti's lib functionality.
  *
- * @param & $graph_array The array to contains graph information. for each graph in the array, the
+ * @param mixed &$graph_array The array to contains graph information. for each graph in the array, the
  *   following two keys must exist $arr[0]["local_graph_id"] // graph id $arr[0]["title_cache"] //
  *   graph title.
  * @param string $no_graphs_message Display this message if no graphs are found in $graph_array.
@@ -304,7 +304,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 /**
  * Draws an area the contains thumbnail sized graphs. Used as part of Cacti's lib functionality.
  *
- * @param & $graph_array The array to contains graph information. for each graph in the array, the
+ * @param mixed &$graph_array The array to contains graph information. for each graph in the array, the
  *   following two keys must exist $arr[0]["local_graph_id"] // graph id $arr[0]["title_cache"] //
  *   graph title.
  * @param string $no_graphs_message Display this message if no graphs are found in $graph_array.
@@ -1783,7 +1783,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 }
 
 /**
- * * Deprecated functions. Used as part of Cacti's lib functionality.
+ * Deprecated functions. Used as part of Cacti's lib functionality.
  *
  * @param string $matrix_name The name to be displayed in the matrix header.
  * @param string $matrix_text_color The color of the text in the matrix header.

@@ -555,7 +555,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 /**
  * Handles the rrdtool trim output. Used as part of Cacti's lib functionality.
  *
- * @param & $output The output.
+ * @param mixed &$output The output.
  *
  * @return void No value is returned.
  */
@@ -1372,8 +1372,8 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
  *
  * @param int $graph_start The graph start.
  * @param int $graph_end The graph end.
- * @param & $graph The graph.
- * @param & $graph_data_array The graph data array.
+ * @param mixed &$graph The graph.
+ * @param mixed &$graph_data_array The graph data array.
  *
  * @return string The resulting string.
  */
@@ -1708,7 +1708,7 @@ function rrdtool_invalid_cdef_response($graph_data_array, $cdef_id, $graph_id, $
  * @param mixed $rra_id The RRA ID.
  * @param array $graph_data_array The graph data array.
  * @param mixed $rrdtool_pipe The rrdtool pipe.
- * @param & $xport_meta The xport meta.
+ * @param mixed &$xport_meta The xport meta.
  * @param int $user The user.
  *
  * @return mixed The result of the operation, or false on failure.
@@ -2985,7 +2985,7 @@ function rrdtool_escape_string($text, $ignore_percent = true) {
  * @param int $local_graph_id The local graph ID.
  * @param int $rra_id The RRA ID.
  * @param array $xport_data_array The xport data array.
- * @param & $xport_meta The xport meta.
+ * @param mixed &$xport_meta The xport meta.
  * @param int $user The user.
  *
  * @return mixed The result of the operation, or false on failure.
@@ -2997,7 +2997,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 /**
  * Handles the rrdtool function format graph date. Used as part of Cacti's lib functionality.
  *
- * @param & $graph_data_array The graph data array.
+ * @param mixed &$graph_data_array The graph data array.
  *
  * @return string The resulting string.
  */
@@ -3049,7 +3049,7 @@ function rrdtool_function_format_graph_date(&$graph_data_array) {
 /**
  * Handles the rrdtool function theme font options. Used as part of Cacti's lib functionality.
  *
- * @param & $graph_data_array The graph data array.
+ * @param mixed &$graph_data_array The graph data array.
  *
  * @return string The resulting string.
  */
@@ -3559,7 +3559,7 @@ function rrdtool_function_contains_cf($local_data_id, $cf) {
  * Compares cacti information to rrd file information. Used as part of Cacti's lib functionality.
  *
  * @param int $data_source_id The id of the data source.
- * @param & $info Rrdtool info as an array.
+ * @param mixed &$info Rrdtool info as an array.
  *
  * @return array Build like $info defining html class in case of error.
  */
