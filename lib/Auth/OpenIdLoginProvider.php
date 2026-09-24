@@ -29,6 +29,20 @@ use Firebase\JWT\JWT;
  * token's signature and decoding its claims.
  */
 class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLoginProviderInterface {
+	public static function collectParameters(): array {
+		return [
+			'client_id'       => form_input_validate(gnrv('client_id'), 'client_id', '', true, 3),
+			'client_secret'   => form_input_validate(gnrv('client_secret'), 'client_secret', '', true, 3),
+			'scopes'          => form_input_validate(gnrv('scopes'), 'scopes', '', true, 3),
+			'discovery_url'   => form_input_validate(gnrv('discovery_url'), 'discovery_url', '', true, 3),
+			'claim_username'  => gnrv('oidc_claim_username'),
+			'claim_full_name' => gnrv('oidc_claim_full_name'),
+			'claim_email'     => gnrv('oidc_claim_email'),
+			'group_claim'     => gnrv('oidc_group_claim'),
+			'group_name'      => gnrv('oidc_group_name'),
+		];
+	}
+
 	public function getButtonLabel(): string {
 		return $this->param('button_label') !== '' ? (string) $this->param('button_label') : $this->getName();
 	}

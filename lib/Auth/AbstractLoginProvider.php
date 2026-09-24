@@ -77,6 +77,58 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 	}
 
 	/**
+	 * Reads and validates this provider type's own settings from the current
+	 * request (a submitted login_providers.php form), returning the flat
+	 * array to be JSON-encoded into the `parameters` column. Only the fields
+	 * relevant to this specific type are read, so switching a provider's
+	 * type does not leave stale settings from another type behind.
+	 */
+	abstract public static function collectParameters(): array;
+
+	/**
+	 * Persists a login_providers row (insert or update, per sql_save()'s
+	 * usual "id" convention) from already-validated general fields plus the
+	 * type-specific parameters collected via collectParameters().
+	 *
+	 * @param array $general    Validated id/name/description/type/... fields.
+	 * @param array $parameters The type-specific settings to JSON-encode.
+	 *
+	 * @return int|false The row id on success, false on failure.
+	 */
+	public static function persist(array $general, array $parameters): int|false {
+		$general['parameters'] = json_encode($parameters);
+
+		$id = sql_save($general, 'login_providers', 'id');
+
+		if ($id && (int) $general['type'] !== PROVIDER_TYPE_SAML2 && (int) $general['type'] !== PROVIDER_TYPE_OPENID) {
+			// LDAP/AD copy a template account rather than authenticate it directly.
+			db_execute_prepared('UPDATE user_auth
+				SET enabled = ""
+				WHERE id = ?',
+				[$general['user_id']]);
+		}
+
+		return $id;
+	}
+
+	public static function deleteById(int $id): void {
+		db_execute_prepared('DELETE FROM login_providers WHERE id = ?', [$id]);
+	}
+
+	public static function enableById(int $id): void {
+		db_execute_prepared('UPDATE login_providers SET enabled = "on" WHERE id = ?', [$id]);
+	}
+
+	public static function disableById(int $id): void {
+		db_execute_prepared('UPDATE login_providers SET enabled = "" WHERE id = ?', [$id]);
+	}
+
+	public static function makeDefaultById(int $id): void {
+		db_execute('UPDATE login_providers SET is_default = 0');
+		db_execute_prepared('UPDATE login_providers SET is_default = 1 WHERE id = ?', [$id]);
+	}
+
+	/**
 	 * Group membership gate shared by every provider.
 	 *
 	 * An admin who leaves the "required group" field blank wants every

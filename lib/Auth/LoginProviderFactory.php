@@ -32,6 +32,21 @@ final class LoginProviderFactory {
 	}
 
 	/**
+	 * Reads and validates the type-specific settings for a submitted
+	 * login_providers.php form, dispatching to the right provider class's
+	 * own collectParameters() so each type owns its own field set.
+	 */
+	public static function collectParameters(int $type): array {
+		return match ($type) {
+			PROVIDER_TYPE_LDAP   => LdapLoginProvider::collectParameters(),
+			PROVIDER_TYPE_AD     => ActiveDirectoryLoginProvider::collectParameters(),
+			PROVIDER_TYPE_SAML2  => SamlLoginProvider::collectParameters(),
+			PROVIDER_TYPE_OPENID => OpenIdLoginProvider::collectParameters(),
+			default              => [],
+		};
+	}
+
+	/**
 	 * Loads and instantiates the provider behind a login realm id (realm - 1000).
 	 *
 	 * @return LoginProviderInterface|null Null when the realm has no matching, enabled provider.

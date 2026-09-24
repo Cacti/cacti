@@ -28,6 +28,26 @@ use OneLogin\Saml2\Settings as SamlSettings;
  * every SAML message travels through the user's browser, not server-to-server.
  */
 class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginProviderInterface {
+	public static function collectParameters(): array {
+		return [
+			'sp_entity_id'           => form_input_validate(gnrv('sp_entity_id'), 'sp_entity_id', '', true, 3),
+			'name_id_format'         => gnrv('name_id_format'),
+			'sign_authn_requests'    => isrv('sign_authn_requests') ? 'on' : '',
+			'want_assertions_signed' => isrv('want_assertions_signed') ? 'on' : '',
+			'sp_x509cert'            => form_input_validate(gnrv('sp_x509cert'), 'sp_x509cert', '', true, 3),
+			'sp_private_key'         => form_input_validate(gnrv('sp_private_key'), 'sp_private_key', '', true, 3),
+			'idp_entity_id'          => form_input_validate(gnrv('idp_entity_id'), 'idp_entity_id', '', true, 3),
+			'idp_sso_url'            => form_input_validate(gnrv('idp_sso_url'), 'idp_sso_url', '', true, 3),
+			'idp_slo_url'            => form_input_validate(gnrv('idp_slo_url'), 'idp_slo_url', '', true, 3),
+			'idp_x509cert'           => form_input_validate(gnrv('idp_x509cert'), 'idp_x509cert', '', true, 3),
+			'claim_username'         => gnrv('saml_claim_username'),
+			'claim_full_name'        => gnrv('saml_claim_full_name'),
+			'claim_email'            => gnrv('saml_claim_email'),
+			'group_claim'            => gnrv('saml_group_claim'),
+			'group_name'             => gnrv('saml_group_name'),
+		];
+	}
+
 	public function getButtonLabel(): string {
 		return $this->param('button_label') !== '' ? (string) $this->param('button_label') : $this->getName();
 	}

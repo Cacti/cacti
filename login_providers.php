@@ -21,6 +21,9 @@ require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
+use Cacti\Auth\AbstractLoginProvider;
+use Cacti\Auth\LoginProviderFactory;
+
 $actions = [
 	1 => __('Delete'),
 	2 => __('Disable'),
@@ -80,19 +83,13 @@ function form_save() : void {
 		$save['enabled']            = (isrv('enabled') ? form_input_validate(gnrv('enabled'), 'enabled', '', true, 3) : '');
 		$save['debug']              = (isrv('debug') ? form_input_validate(gnrv('debug'), 'debug', '', true, 3) : '');
 		$save['allow_auth_cookies'] = (isrv('allow_auth_cookies') ? form_input_validate(gnrv('allow_auth_cookies'), 'allow_auth_cookies', '', true, 3) : '');
-		$save['parameters']         = json_encode(provider_collect_parameters((int) $save['type']));
+
+		$parameters = LoginProviderFactory::collectParameters((int) $save['type']);
 
 		if (is_error_message() === false) {
-			$id = sql_save($save, 'login_providers', 'id');
+			$id = AbstractLoginProvider::persist($save, $parameters);
 
 			if ($id) {
-				if ((int) $save['type'] !== PROVIDER_TYPE_SAML2 && (int) $save['type'] !== PROVIDER_TYPE_OPENID) {
-					// Disable template user from logging in directly
-					db_execute_prepared('UPDATE user_auth
-						SET enabled=""
-						WHERE id = ?', [$save['user_id']]);
-				}
-
 				raise_message(1);
 			} else {
 				raise_message(2);
@@ -107,94 +104,6 @@ function form_save() : void {
 	header('Location: login_providers.php');
 }
 
-/**
- * Pulls the request fields relevant to the given provider type and returns
- * them as the flat array to be stored (JSON encoded) in the `parameters`
- * column. Only the fields belonging to the selected type are persisted, so
- * switching a provider's type does not leave stale settings from another
- * type behind.
- *
- * @param int $type One of the PROVIDER_TYPE_* constants.
- *
- * @return array
- */
-function provider_collect_parameters(int $type) : array {
-	switch ($type) {
-		case PROVIDER_TYPE_LDAP:
-		case PROVIDER_TYPE_AD:
-			// ================= input validation =================
-			gfrv('port');
-			gfrv('port_ssl');
-			gfrv('proto_version');
-			gfrv('encryption');
-			gfrv('tls_certificate');
-			gfrv('referrals');
-			gfrv('mode');
-			gfrv('group_member_type');
-			// ====================================================
-
-			return [
-				'server'            => form_input_validate(gnrv('server'), 'server', '', false, 3),
-				'port'              => (int) gnrv('port'),
-				'port_ssl'          => (int) gnrv('port_ssl'),
-				'proto_version'     => (int) gnrv('proto_version'),
-				'network_timeout'   => (int) gnrv('network_timeout'),
-				'bind_timeout'      => (int) gnrv('bind_timeout'),
-				'encryption'        => (int) gnrv('encryption'),
-				'tls_certificate'   => (int) gnrv('tls_certificate'),
-				'referrals'         => (int) gnrv('referrals'),
-				'mode'              => (int) gnrv('mode'),
-				'dn'                => form_input_validate(gnrv('dn'), 'dn', '', true, 3),
-				// A blank group_dn is the "no restriction" behavior; there is no
-				// separate enable/disable checkbox for this.
-				'group_dn'          => form_input_validate(gnrv('group_dn'), 'group_dn', '', true, 3),
-				'group_attrib'      => form_input_validate(gnrv('group_attrib'), 'group_attrib', '', true, 3),
-				'group_member_type' => (int) gnrv('group_member_type'),
-				'search_base'       => form_input_validate(gnrv('search_base'), 'search_base', '', true, 3),
-				'search_filter'     => form_input_validate(gnrv('search_filter'), 'search_filter', '', true, 3),
-				'specific_dn'       => form_input_validate(gnrv('specific_dn'), 'specific_dn', '', true, 3),
-				'specific_password' => form_input_validate(gnrv('specific_password'), 'specific_password', '', true, 3),
-				'claim_full_name'   => gnrv('claim_full_name'),
-				'claim_email'       => gnrv('claim_email'),
-			];
-
-		case PROVIDER_TYPE_SAML2:
-			return [
-				'sp_entity_id'           => form_input_validate(gnrv('sp_entity_id'), 'sp_entity_id', '', true, 3),
-				'name_id_format'         => gnrv('name_id_format'),
-				'sign_authn_requests'    => isrv('sign_authn_requests') ? 'on' : '',
-				'want_assertions_signed' => isrv('want_assertions_signed') ? 'on' : '',
-				'sp_x509cert'            => form_input_validate(gnrv('sp_x509cert'), 'sp_x509cert', '', true, 3),
-				'sp_private_key'         => form_input_validate(gnrv('sp_private_key'), 'sp_private_key', '', true, 3),
-				'idp_entity_id'          => form_input_validate(gnrv('idp_entity_id'), 'idp_entity_id', '', true, 3),
-				'idp_sso_url'            => form_input_validate(gnrv('idp_sso_url'), 'idp_sso_url', '', true, 3),
-				'idp_slo_url'            => form_input_validate(gnrv('idp_slo_url'), 'idp_slo_url', '', true, 3),
-				'idp_x509cert'           => form_input_validate(gnrv('idp_x509cert'), 'idp_x509cert', '', true, 3),
-				'claim_username'         => gnrv('saml_claim_username'),
-				'claim_full_name'        => gnrv('saml_claim_full_name'),
-				'claim_email'            => gnrv('saml_claim_email'),
-				'group_claim'            => gnrv('saml_group_claim'),
-				'group_name'             => gnrv('saml_group_name'),
-			];
-
-		case PROVIDER_TYPE_OPENID:
-			return [
-				'client_id'       => form_input_validate(gnrv('client_id'), 'client_id', '', true, 3),
-				'client_secret'   => form_input_validate(gnrv('client_secret'), 'client_secret', '', true, 3),
-				'scopes'          => form_input_validate(gnrv('scopes'), 'scopes', '', true, 3),
-				'discovery_url'   => form_input_validate(gnrv('discovery_url'), 'discovery_url', '', true, 3),
-				'claim_username'  => gnrv('oidc_claim_username'),
-				'claim_full_name' => gnrv('oidc_claim_full_name'),
-				'claim_email'     => gnrv('oidc_claim_email'),
-				'group_claim'     => gnrv('oidc_group_claim'),
-				'group_name'      => gnrv('oidc_group_name'),
-			];
-
-		default:
-			return [];
-	}
-}
-
 function form_actions() : void {
 	global $actions;
 
@@ -205,22 +114,22 @@ function form_actions() : void {
 		if ($selected_items != false) {
 			if (gnrv('drp_action') == '1') { // delete
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-					provider_remove($selected_items[$i]);
+					AbstractLoginProvider::deleteById((int) $selected_items[$i]);
 				}
 			} elseif (gnrv('drp_action') == '2') { // disable
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-					provider_disable($selected_items[$i]);
+					AbstractLoginProvider::disableById((int) $selected_items[$i]);
 				}
 			} elseif (gnrv('drp_action') == '3') { // enable
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-					provider_enable($selected_items[$i]);
+					AbstractLoginProvider::enableById((int) $selected_items[$i]);
 				}
 			} elseif (gnrv('drp_action') == '4') { // default
 				if (cacti_sizeof($selected_items) > 1) {
 					// error message
 				} else {
 					for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-						provider_default($selected_items[$i]);
+						AbstractLoginProvider::makeDefaultById((int) $selected_items[$i]);
 					}
 				}
 			}
@@ -281,27 +190,6 @@ function form_actions() : void {
 
 		form_continue_confirmation($form_data);
 	}
-}
-
-/* -----------------------
-    Provider Functions
-   ----------------------- */
-
-function provider_remove(int $id) : void {
-	db_execute_prepared('DELETE FROM login_providers WHERE id = ?', [$id]);
-}
-
-function provider_disable(int $id) : void {
-	db_execute_prepared('UPDATE login_providers SET enabled = "" WHERE id = ?', [$id]);
-}
-
-function provider_enable(int $id) : void {
-	db_execute_prepared('UPDATE login_providers SET enabled = "on" WHERE id = ?', [$id]);
-}
-
-function provider_default(int $id) : void {
-	db_execute('UPDATE login_providers SET is_default = 0');
-	db_execute_prepared('UPDATE login_providers SET is_default = 1 WHERE id = ?', [$id]);
 }
 
 function provider_edit() : void {

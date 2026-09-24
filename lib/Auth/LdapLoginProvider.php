@@ -29,6 +29,44 @@ use Ldap;
  * procedural domains_login_process()/domains_ldap_*() functions.
  */
 class LdapLoginProvider extends AbstractLoginProvider implements CredentialLoginProviderInterface {
+	public static function collectParameters(): array {
+		// ================= input validation =================
+		gfrv('port');
+		gfrv('port_ssl');
+		gfrv('proto_version');
+		gfrv('encryption');
+		gfrv('tls_certificate');
+		gfrv('referrals');
+		gfrv('mode');
+		gfrv('group_member_type');
+		// ====================================================
+
+		return [
+			'server'            => form_input_validate(gnrv('server'), 'server', '', false, 3),
+			'port'              => (int) gnrv('port'),
+			'port_ssl'          => (int) gnrv('port_ssl'),
+			'proto_version'     => (int) gnrv('proto_version'),
+			'network_timeout'   => (int) gnrv('network_timeout'),
+			'bind_timeout'      => (int) gnrv('bind_timeout'),
+			'encryption'        => (int) gnrv('encryption'),
+			'tls_certificate'   => (int) gnrv('tls_certificate'),
+			'referrals'         => (int) gnrv('referrals'),
+			'mode'              => (int) gnrv('mode'),
+			'dn'                => form_input_validate(gnrv('dn'), 'dn', '', true, 3),
+			// A blank group_dn is the "no restriction" behavior; there is no
+			// separate enable/disable checkbox for this.
+			'group_dn'          => form_input_validate(gnrv('group_dn'), 'group_dn', '', true, 3),
+			'group_attrib'      => form_input_validate(gnrv('group_attrib'), 'group_attrib', '', true, 3),
+			'group_member_type' => (int) gnrv('group_member_type'),
+			'search_base'       => form_input_validate(gnrv('search_base'), 'search_base', '', true, 3),
+			'search_filter'     => form_input_validate(gnrv('search_filter'), 'search_filter', '', true, 3),
+			'specific_dn'       => form_input_validate(gnrv('specific_dn'), 'specific_dn', '', true, 3),
+			'specific_password' => form_input_validate(gnrv('specific_password'), 'specific_password', '', true, 3),
+			'claim_full_name'   => gnrv('claim_full_name'),
+			'claim_email'       => gnrv('claim_email'),
+		];
+	}
+
 	public function authenticate(string $username, string $password): LoginResult {
 		if ($username === '') {
 			return LoginResult::failure(__('Access Denied!  Login Failed.'));
