@@ -458,7 +458,7 @@ function ping_device() {
 /**
  * Handles the poll for data. Used as part of Cacti's remote agent functionality.
  *
- * @return mixed The result of the operation, or false on failure.
+ * @return array|null An empty array when the poller ID is invalid; otherwise the polled results are printed as JSON and no value is returned.
  */
 function poll_for_data() {
 	global $config;
