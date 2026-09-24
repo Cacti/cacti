@@ -117,7 +117,7 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 			$ldap->dn       = $dn;
 
 			// Presence of a required group, not a separate checkbox, turns the gate on.
-			$ldap->group_require = trim((string) $this->param('group_dn')) !== '' ? 1 : 0;
+			$ldap->group_require = trim((string) $this->param('group_dn')) !== '';
 
 			$response = $ldap->Authenticate();
 
@@ -155,9 +155,9 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 	}
 
 	protected function buildLdap(string $server): Ldap {
-		// domain_id 0 skips Ldap's own DB lookup; every property is set from
-		// our already-decoded `parameters` JSON below instead.
-		$ldap = new Ldap(0);
+		// Ldap has no DB lookup of its own; every property below is set from
+		// our already-decoded `parameters` JSON.
+		$ldap = new Ldap();
 
 		$ldap->host              = $server;
 		$ldap->port               = (int) $this->param('port', 389);

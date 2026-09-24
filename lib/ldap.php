@@ -69,7 +69,7 @@
  */
 function cacti_ldap_auth(string $username, string $password = '', string $dn = '', string $host = '', int $port = 0, int $port_ssl = 0, int $version = 0,
 	int $encryption = 0, int $referrals = 0, mixed $group_require = false, string $group_dn = '', string $group_attrib = '', int $group_member_type = 0) : array {
-	$ldap = new Ldap(0);
+	$ldap = new Ldap();
 
 	if (!empty($username)) {
 		$ldap->username = $username;
@@ -196,7 +196,7 @@ function cacti_ldap_auth(string $username, string $password = '', string $dn = '
 function cacti_ldap_search_dn(string $username, string $dn = '', string $host = '', int $port = 0, int $port_ssl = 0,
 	int $version = 0, int $encryption = 0, int $referrals = 0, int $mode = 0, string $search_base = '',
 	string $search_filter = '', string $specific_dn = '', string $specific_password = '') : array {
-	$ldap = new Ldap(0);
+	$ldap = new Ldap();
 
 	if (!empty($username)) {
 		$ldap->username = $username;
@@ -322,7 +322,7 @@ function cacti_ldap_search_cn(string $username, array $cn = [], string $dn = '',
 	int $port = 0, int $port_ssl = 0, int $version = 0, int $encryption = 0,
 	int $referrals = 0, int $mode = 0, string $search_base = '', string $search_filter = '',
 	string $specific_dn = '', string $specific_password = '') : array {
-	$ldap = new Ldap(0);
+	$ldap = new Ldap();
 
 	if (!empty($username)) {
 		$ldap->username = $username;
@@ -477,54 +477,13 @@ class Ldap {
 	public string $cn_full_name;
 	public string $cn_email;
 
-	function __construct(int $domain_id) {
+	function __construct() {
+		// No DB lookup here: Cacti\Auth\LdapLoginProvider::buildLdap() is the
+		// single source of truth for mapping login_providers.parameters onto
+		// these properties, so this class stays a pure connection/protocol
+		// wrapper with no direct DB coupling.
 		$this->debug = POLLER_VERBOSITY_HIGH;
 		$this->host  = '';
-
-		if ($domain_id > 0) {
-			$provider = db_fetch_row_prepared('SELECT *
-				FROM login_providers
-				WHERE id = ?',
-				[$domain_id]);
-
-			if (cacti_sizeof($provider)) {
-				$settings = json_decode((string) $provider['parameters'], true);
-
-				if (!is_array($settings)) {
-					return;
-				}
-
-				// Initialize LDAP parameters for Authenticate
-				$this->dn                = $settings['dn'] ?? '';
-				$this->host              = $settings['server'] ?? '';
-				$this->port               = (int) ($settings['port'] ?? 389);
-				$this->port_ssl           = (int) ($settings['port_ssl'] ?? 636);
-				$this->version            = (int) ($settings['proto_version'] ?? 3);
-				$this->encryption         = (int) ($settings['encryption'] ?? 0);
-				$this->referrals          = (int) ($settings['referrals'] ?? 0);
-				$this->tls_certificate    = (int) ($settings['tls_certificate'] ?? LDAP_OPT_X_TLS_DEMAND);
-				$this->network_timeout    = (int) ($settings['network_timeout'] ?? 2);
-				$this->bind_timeout       = (int) ($settings['bind_timeout'] ?? 2);
-				$this->debug              = ($provider['debug'] ?? '') == 'on' ? POLLER_VERBOSITY_LOW : POLLER_VERBOSITY_HIGH;
-
-				// For group membership checks: a blank group_dn disables the check
-				$this->group_dn           = $settings['group_dn'] ?? '';
-				$this->group_require      = trim((string) $this->group_dn) !== '' ? 1 : 0;
-				$this->group_attrib       = $settings['group_attrib'] ?? '';
-				$this->group_member_type  = (int) ($settings['group_member_type'] ?? 1);
-
-				// Initialize LDAP parameters for Search
-				$this->mode               = (int) ($settings['mode'] ?? 0);
-				$this->search_base        = $settings['search_base'] ?? '';
-				$this->search_filter      = $settings['search_filter'] ?? '';
-				$this->specific_dn        = $settings['specific_dn'] ?? '';
-				$this->specific_password  = $settings['specific_password'] ?? '';
-
-				// CN Search settings
-				$this->cn_full_name       = $settings['claim_full_name'] ?? '';
-				$this->cn_email           = $settings['claim_email'] ?? '';
-			}
-		}
 	}
 
 	function __destruct() {
