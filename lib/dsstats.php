@@ -155,7 +155,8 @@ function dsstats_get_and_store_ds_avgpeak_values($interval, $type, $thread_id = 
 			$local_data_id = $file['local_data_id'];
 
 			if ($file['data_source_path'] != '') {
-				$rrdfile = str_replace('<path_rra>', $config['rra_path'], $file['data_source_path']);
+				/* resolve through get_data_source_path() so the RRA containment check applies here too */
+				$rrdfile = get_data_source_path($local_data_id, true);
 
 				$stats[$file['local_data_id']] = dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $interval, $pipes);
 			} else {
