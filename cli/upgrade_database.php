@@ -174,7 +174,7 @@ print PHP_EOL;
  *
  * @param string $cacti_version The cacti version.
  *
- * @return string The resulting string.
+ * @return int The most severe DB_STATUS_* constant encountered for the given Cacti version.
  */
 function db_install_errors($cacti_version) {
 	global $database_upgrade_status, $debug, $database_statuses;

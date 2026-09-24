@@ -568,7 +568,7 @@ function form_actions() {
 /**
  * Handles the graph edit. Used as part of Cacti's aggregate graphs functionality.
  *
- * @return bool True on success, false otherwise.
+ * @return bool|null False when the requested aggregate graph preview does not exist; no value is returned otherwise.
  */
 function graph_edit() {
 	global $config, $struct_graph, $struct_aggregate_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
