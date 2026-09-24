@@ -21,27 +21,42 @@ declare(strict_types = 1);
 
 require_once dirname(__DIR__, 4) . '/lib/functions.php';
 
-// realpath()-based checks require CACTI_PATH_RRA to be a real directory, so build
-// one instead of pointing the constant at a fictional path.
 if (!defined('CACTI_PATH_RRA')) {
-	$rra_dir = sys_get_temp_dir() . '/cacti_rra_' . bin2hex(random_bytes(6));
-	mkdir($rra_dir . '/1', 0755, true);
-	file_put_contents($rra_dir . '/host_ds.rrd', 'x');
-	file_put_contents($rra_dir . '/1/host_ds.rrd', 'x');
+	define('CACTI_PATH_RRA', sys_get_temp_dir() . '/cacti_rra_' . bin2hex(random_bytes(6)));
+}
 
-	define('CACTI_PATH_RRA', $rra_dir);
+// realpath()-based checks below require CACTI_PATH_RRA to be a real, existing
+// directory. Another test file loaded earlier in the same process (e.g.
+// RrdProxyProtocolTest.php) may already have defined the constant to a purely
+// illustrative, non-existent path, so make sure it actually exists on disk
+// here regardless of who defined it, and skip the fixture-dependent
+// assertions below if this process cannot create it (e.g. no permission).
+$rra_ready = is_dir(CACTI_PATH_RRA . '/1') || @mkdir(CACTI_PATH_RRA . '/1', 0755, true);
+
+if ($rra_ready) {
+	file_put_contents(CACTI_PATH_RRA . '/host_ds.rrd', 'x');
+	file_put_contents(CACTI_PATH_RRA . '/1/host_ds.rrd', 'x');
+	$rra_ready = realpath(CACTI_PATH_RRA) !== false;
 }
 
 function data_source_path_test_base() : string {
-	return realpath(CACTI_PATH_RRA);
+	return (string) realpath(CACTI_PATH_RRA);
 }
 
-test('a file directly under the RRA directory is contained', function () : void {
+test('a file directly under the RRA directory is contained', function () use ($rra_ready) : void {
+	if (!$rra_ready) {
+		$this->markTestSkipped('CACTI_PATH_RRA does not resolve to a directory this process can create fixtures under');
+	}
+
 	expect(data_source_path_within_rra(data_source_path_test_base() . '/host_ds.rrd'))->toBeTrue()
 		->and(data_source_path_within_rra(data_source_path_test_base() . '/1/host_ds.rrd'))->toBeTrue();
 });
 
-test('a not-yet-created file under the RRA directory is still contained', function () : void {
+test('a not-yet-created file under the RRA directory is still contained', function () use ($rra_ready) : void {
+	if (!$rra_ready) {
+		$this->markTestSkipped('CACTI_PATH_RRA does not resolve to a directory this process can create fixtures under');
+	}
+
 	expect(data_source_path_within_rra(data_source_path_test_base() . '/1/new_ds.rrd'))->toBeTrue();
 });
 
@@ -62,10 +77,14 @@ test('a relative path or a lookalike prefix is rejected', function () : void {
 
 test('empty and null-byte paths are rejected', function () : void {
 	expect(data_source_path_within_rra(''))->toBeFalse()
-		->and(data_source_path_within_rra(data_source_path_test_base() . "/x\0.rrd"))->toBeFalse();
+		->and(data_source_path_within_rra("/tmp/x\0.rrd"))->toBeFalse();
 });
 
-test('a symlink pivot below the RRA directory is rejected even for a not-yet-created file', function () : void {
+test('a symlink pivot below the RRA directory is rejected even for a not-yet-created file', function () use ($rra_ready) : void {
+	if (!$rra_ready) {
+		$this->markTestSkipped('CACTI_PATH_RRA does not resolve to a directory this process can create fixtures under');
+	}
+
 	$outside = sys_get_temp_dir() . '/cacti_rra_outside_' . bin2hex(random_bytes(6));
 	mkdir($outside, 0755, true);
 
@@ -82,4 +101,5 @@ test('a symlink pivot below the RRA directory is rejected even for a not-yet-cre
 		rmdir($outside);
 	}
 });
+
 
