@@ -241,16 +241,16 @@ function create_user_log_filter() : array {
 	$all     = ['-1' => __('All')];
 	$deleted = ['-2' => __('Deleted/Invalid')];
 	$users   = db_fetch_assoc('SELECT DISTINCT id,
-		IF(ud.domain_name != "",
-			CONCAT(ua.username, " (", ud.domain_name, ")"),
+		IF(ud.name != "",
+			CONCAT(ua.username, " (", ud.name, ")"),
 			IF(ua.realm = 0,
 				CONCAT(ua.username, " (' . __esc('Local Auth') . ')"),
 				CONCAT(ua.username, " (' . __esc('Basic Auth') . ')")
 			)
 		) AS name
 		FROM user_auth AS ua
-		LEFT JOIN user_domains AS ud
-		ON ua.realm = ud.domain_id+1000
+		LEFT JOIN login_providers AS ud
+		ON ua.realm = ud.id+1000
 		ORDER BY username, realm');
 
 	if (cacti_sizeof($users)) {

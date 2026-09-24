@@ -1512,7 +1512,7 @@ function form_font_box(string $form_name, mixed $prev_val, mixed $default_val,
  *
  * $form_data = array(
  *	'general' => array(
- *		'page'       => 'user_domains.php',
+ *		'page'       => 'login_providers.php',
  *		'actions'    => $actions,
  *		'eaction'    => 'action_variable', // Extra Action
  *		'optvar'     => 'drp_action'

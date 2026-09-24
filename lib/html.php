@@ -3554,7 +3554,7 @@ function html_help_page(string $page) : mixed {
 		'sites.php'                   => 'Sites.html',
 		'automation_tree_rules.php'   => 'Tree-Rules.html',
 		'tree.php'                    => 'Trees.html',
-		'user_domains.php'            => 'User-Domains.html',
+		'login_providers.php'         => 'Login-Providers.html',
 		'user_group_admin.php'        => 'User-Group-Management.html',
 		'user_admin.php'              => 'User-Management.html',
 		'vdef.php'                    => 'VDEFs.html',

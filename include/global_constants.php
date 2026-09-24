@@ -542,10 +542,12 @@ define('AUTH_METHOD_NONE', 0);
 define('AUTH_METHOD_CACTI', 1);
 define('AUTH_METHOD_BASIC', 2);
 define('AUTH_METHOD_LDAP', 3);
-define('AUTH_METHOD_DOMAIN', 4);
+define('AUTH_METHOD_PROVIDERS', 4);
 
-define('DOMAIN_TYPE_LDAP', 1);
-define('DOMAIN_TYPE_AD', 2);
+define('PROVIDER_TYPE_LDAP', 1);
+define('PROVIDER_TYPE_AD', 2);
+define('PROVIDER_TYPE_SAML2', 3);
+define('PROVIDER_TYPE_OPENID', 4);
 
 define('OPTIONS_WEB', 'sess_config_array');
 define('OPTIONS_CLI', 'config_options_array');

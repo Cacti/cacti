@@ -228,6 +228,8 @@ function upgrade_to_1_3_0() : void {
 		ldap_convert_1_3_0();
 	}
 
+	login_providers_convert_1_3_0();
+
 	upgrade_dsstats();
 
 	$data               = [];
@@ -892,6 +894,99 @@ function upgrade_reports() : void {
 	db_install_execute('UPDATE reports SET attachment_type = ? WHERE attachment_type = ?', [REPORTS_TYPE_INLINE_PNG, 91]);
 	db_install_execute('UPDATE reports SET attachment_type = ? WHERE attachment_type = ?', [REPORTS_TYPE_INLINE_JPG, 92]);
 	db_install_execute('UPDATE reports SET attachment_type = ? WHERE attachment_type = ?', [REPORTS_TYPE_INLINE_GIF, 93]);
+}
+
+/**
+ * Renames "User Domains" to "Login Providers": collapses `user_domains` and
+ * `user_domains_ldap` into a single `login_providers` table, moving every
+ * LDAP/AD connection attribute into a `parameters` JSON column so SAML2 and
+ * OpenID providers (which have no legacy table of their own) can use the
+ * same column for their settings.
+ *
+ * Runs after ldap_convert_1_3_0(), so a legacy single-LDAP config has already
+ * landed in user_domains/user_domains_ldap and is migrated along with it.
+ * Provider ids are carried over unchanged (old domain_id becomes the new id)
+ * so existing user_auth.realm values (1000 + domain_id) keep resolving.
+ */
+function login_providers_convert_1_3_0() : void {
+	if (db_table_exists('login_providers')) {
+		return;
+	}
+
+	db_install_execute("CREATE TABLE login_providers (
+		id int(10) unsigned NOT NULL AUTO_INCREMENT,
+		name varchar(64) NOT NULL default '',
+		description varchar(255) NOT NULL default '',
+		type tinyint(3) unsigned NOT NULL default '1',
+		button_label varchar(50) NOT NULL default '',
+		enabled char(2) NOT NULL default 'on',
+		debug char(2) NOT NULL default '',
+		is_default tinyint(3) unsigned NOT NULL default '0',
+		allow_auth_cookies char(2) NOT NULL default 'on',
+		user_id int(10) unsigned NOT NULL default '0',
+		parameters longtext,
+		PRIMARY KEY (id)
+	) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Table to Hold Login Providers (LDAP/AD/SAML2/OpenID)'");
+
+	if (!db_table_exists('user_domains')) {
+		return;
+	}
+
+	$domains = db_fetch_assoc('SELECT * FROM user_domains');
+
+	foreach ($domains as $domain) {
+		$parameters = [];
+
+		if (db_table_exists('user_domains_ldap')) {
+			$ldap = db_fetch_row_prepared('SELECT *
+				FROM user_domains_ldap
+				WHERE domain_id = ?',
+				[$domain['domain_id']]);
+
+			if (cacti_sizeof($ldap)) {
+				$parameters = [
+					'server'            => $ldap['server'],
+					'port'              => (int) $ldap['port'],
+					'port_ssl'          => (int) $ldap['port_ssl'],
+					'proto_version'     => (int) $ldap['proto_version'],
+					'network_timeout'   => (int) $ldap['network_timeout'],
+					'bind_timeout'      => (int) $ldap['bind_timeout'],
+					'encryption'        => (int) $ldap['encryption'],
+					'tls_certificate'   => (int) $ldap['tls_certificate'],
+					'referrals'         => (int) $ldap['referrals'],
+					'mode'              => (int) $ldap['mode'],
+					'dn'                => $ldap['dn'],
+					// group_require is gone: a non-blank group_dn now IS the requirement
+					'group_dn'          => $ldap['group_dn'],
+					'group_attrib'      => $ldap['group_attrib'],
+					'group_member_type' => (int) $ldap['group_member_type'],
+					'search_base'       => $ldap['search_base'],
+					'search_filter'     => $ldap['search_filter'],
+					'specific_dn'       => $ldap['specific_dn'],
+					'specific_password' => $ldap['specific_password'],
+					'claim_full_name'   => $ldap['cn_full_name'],
+					'claim_email'       => $ldap['cn_email'],
+				];
+			}
+		}
+
+		db_install_execute('INSERT INTO login_providers
+			(id, name, type, enabled, debug, is_default, user_id, parameters)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+			[
+				$domain['domain_id'],
+				$domain['domain_name'],
+				(int) $domain['type'],
+				$domain['enabled'],
+				$domain['debug'] ?? '',
+				(int) $domain['defdomain'],
+				(int) $domain['user_id'],
+				json_encode($parameters),
+			]);
+	}
+
+	db_install_execute('DROP TABLE IF EXISTS user_domains_ldap');
+	db_install_execute('DROP TABLE IF EXISTS user_domains');
 }
 
 function ldap_convert_1_3_0() : void {
