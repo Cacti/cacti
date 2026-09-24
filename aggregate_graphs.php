@@ -1624,7 +1624,13 @@ function aggregate_graph() {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where .= " AND (gtg.title_cache LIKE " . db_qstr('%' . get_request_var('filter') . '%') .
-			" OR ag.title_format LIKE " . db_qstr('%' . get_request_var('filter') . '%') . ")";
+			" OR ag.title_format LIKE " . db_qstr('%' . get_request_var('filter') . '%');
+
+		if (ctype_digit(get_request_var('filter'))) {
+			$sql_where .= ' OR gl.id = ' . (int) get_request_var('filter');
+		}
+
+		$sql_where .= ')';
 	}
 
 	if (get_request_var('template_id') == '-1') {
