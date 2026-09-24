@@ -513,7 +513,7 @@ exit($failed > 0 ? 1 : 0);
  * @param mixed $overrides The overrides.
  * @param mixed $host_templates The host templates.
  * @param bool $source_host The source host.
- * @param & $original The original.
+ * @param mixed &$original The original.
  *
  * @return bool True on success, false otherwise.
  */
@@ -1081,7 +1081,7 @@ function convert_override_value($column, $value) {
  * CLI functionality.
  *
  * @param mixed $file The file.
- * @param & $failed The failed.
+ * @param mixed &$failed The failed.
  *
  * @return bool True on success, false otherwise.
  */

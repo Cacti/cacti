@@ -1237,7 +1237,7 @@ function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user_id
  * @param string $sql_where The Tree SQL where when searching for specific content.
  * @param string $sql_order The SQL Order clause to use for the sorting of items.
  * @param int $sql_limit The limit on items to return. If empty or -1, return all items.
- * @param & $total_rows The number of rows found, to be returned to the caller.
+ * @param mixed &$total_rows The number of rows found, to be returned to the caller.
  * @param int $user_id If checking a user, specify the user_id otherwise for the current user
  *   leave blank.
  *
@@ -1374,7 +1374,7 @@ function get_policies($user_id) {
  * @param string $sql_where The Tree SQL where when searching for specific content.
  * @param string $sql_order The SQL Order clause to use for the sorting of items.
  * @param int $sql_limit The limit on items to return. If empty or -1, return all items.
- * @param & $total_rows The number of rows found, to be returned to the caller.
+ * @param mixed &$total_rows The number of rows found, to be returned to the caller.
  * @param int $user_id If checking a user, specify the user_id otherwise for the current user
  *   leave blank.
  *
@@ -1476,7 +1476,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
  * @param string $sql_where The SQL where when searching for specific content.
  * @param string $sql_order The SQL Order clause to use for the sorting of graphs.
  * @param int $sql_limit The limit on items to return. If empty or -1, return all items.
- * @param & $total_rows The number of rows found, to be returned to the caller.
+ * @param mixed &$total_rows The number of rows found, to be returned to the caller.
  * @param int $user_id If checking a user, specify the user_id otherwise for the current user
  *   leave blank.
  * @param int $graph_id If just searching for if a single graph is permitted, the id of that graph.
@@ -1579,7 +1579,7 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
  * @param string $sql_where The SQL where when searching for specific content.
  * @param string $sql_order The SQL Order clause to use for the sorting of graphs.
  * @param int $sql_limit The limit on items to return. If empty or -1, return all items.
- * @param & $total_rows The number of rows found, to be returned to the caller.
+ * @param mixed &$total_rows The number of rows found, to be returned to the caller.
  * @param int $user_id If checking a user, specify the user_id otherwise for the current user
  *   leave blank.
  * @param int $graph_id If just searching for if a single graph is permitted, the id of that graph.
@@ -1856,7 +1856,7 @@ function get_simple_graph_template_perms($user_id) {
  * @param string $sql_where The SQL where when searching for specific content.
  * @param string $sql_order The SQL Order clause to use for the sorting of graphs.
  * @param int $sql_limit The limit on items to return. If empty or -1, return all items.
- * @param & $total_rows The number of rows found, to be returned to the caller.
+ * @param mixed &$total_rows The number of rows found, to be returned to the caller.
  * @param int $user_id If checking a user, specify the user_id otherwise for the current user
  *   leave blank.
  * @param int $graph_template_id If just searching for if a single graph template is permitted,
@@ -2296,8 +2296,8 @@ function get_policy_where($graph_auth_method, $policies, $sql_where) {
  * other words why was the user either permitted to or denied access to the Graph. Used as part of
  * Cacti's lib functionality.
  *
- * @param & $graph The graph data.
- * @param & $policies The policies to evaluate.
+ * @param mixed &$graph The graph data.
+ * @param mixed &$policies The policies to evaluate.
  *
  * @return string The permission string.
  */
@@ -2502,7 +2502,7 @@ function get_permission_string(&$graph, &$policies) {
  * @param string $sql_where The SQL Order clause to use for the sorting of graphs.
  * @param int $sql_order The limit on items to return. If empty or -1, return all items.
  * @param int $sql_limit The number of rows found, to be returned to the caller.
- * @param & $total_rows If checking a user, specify the user_id otherwise for the current user
+ * @param mixed &$total_rows If checking a user, specify the user_id otherwise for the current user
  *   leave blank.
  * @param int $user_id If just searching for if a single graph template is permitted, the id of
  *   that graph template.
@@ -2620,7 +2620,7 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
  * @param bool $sql_where Is the Tree in Edit mode or not.
  * @param string $sql_order The SQL Where used to get the values or the values.
  * @param string $sql_limit The SQL Order clause to use for the sorting of branches.
- * @param & $total_rows The limit on items to return. If empty or -1, return all items.
+ * @param mixed &$total_rows The limit on items to return. If empty or -1, return all items.
  * @param int $user_id The number of rows found, to be returned to the caller.
  *
  * @return array An array of permitted Tree branches.
@@ -2788,7 +2788,7 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
  * @param string $sql_where The SQL Where used to get the values or the values.
  * @param string $sql_order The SQL Order clause to use for the sorting of devices.
  * @param int $sql_limit The limit on items to return. If empty or -1, return all items.
- * @param & $total_rows The number of rows found, to be returned to the caller.
+ * @param mixed &$total_rows The number of rows found, to be returned to the caller.
  * @param int $user_id If checking a user, specify the user_id otherwise for the current user
  *   leave blank.
  * @param int $device_id The ID of a specific device to retrieve. Default is 0.
@@ -2907,7 +2907,7 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
  * @param string $sql_where The SQL Where used to get the values or the values.
  * @param string $sql_order The SQL Order clause to use for the sorting of devices.
  * @param int $sql_limit The limit on items to return. If empty or -1, return all items.
- * @param & $total_rows The number of rows found, to be returned to the caller.
+ * @param mixed &$total_rows The number of rows found, to be returned to the caller.
  * @param int $user_id If checking a user, specify the user_id otherwise for the current user
  *   leave blank.
  * @param int $site_id If checking a single site, specify the site_id.
@@ -2978,7 +2978,7 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
  * @param string $sql_where The SQL Where used to get the values or the values.
  * @param string $sql_order The SQL Order clause to use for the sorting of devices.
  * @param int $sql_limit The limit on items to return. If empty or -1, return all items.
- * @param & $total_rows The number of rows found, to be returned to the caller.
+ * @param mixed &$total_rows The number of rows found, to be returned to the caller.
  * @param int $user_id If checking a user, specify the user_id otherwise for the current user
  *   leave blank.
  *
@@ -3089,7 +3089,7 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
  * @param string $sql_where The SQL Where used to get the values or the values.
  * @param string $sql_order The SQL Order clause to use for the sorting of devices.
  * @param int $sql_limit The limit on items to return. If empty or -1, return all items.
- * @param & $total_rows The number of rows found, to be returned to the caller.
+ * @param mixed &$total_rows The number of rows found, to be returned to the caller.
  * @param int $user_id If checking a user, specify the user_id otherwise for the current user
  *   leave blank.
  * @param int $graph_template_id If checking a single graph template, specify the graph_template_id.

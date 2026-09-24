@@ -1203,7 +1203,7 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
  * Checks if the poller cache needs to be rebuilt as a part of a device save. Used as part of
  * Cacti's lib functionality.
  *
- * @param & $save The devices "save" structure for the device.
+ * @param mixed &$save The devices "save" structure for the device.
  *
  * @return bool If the device can be quickly saved, or will the device have to be pushed out.
  */
@@ -1812,9 +1812,9 @@ function api_clone_get_unique_filename($file_name) {
  * @param string $clone_dq String - The include Data Templates list.
  * @param string $include_dt String - The clone Data Templates list.
  * @param string $clone_dt String - The suffix for the clone operation.
- * @param & $suffix Bool - Should Data Query XML be cloned. Will be updated if incorrect.
- * @param & $clone_xml Bool - Should Data Input Method be cloned. Will be updated if incorrect.
- * @param & $clone_script The clone script.
+ * @param mixed &$suffix Bool - Should Data Query XML be cloned. Will be updated if incorrect.
+ * @param mixed &$clone_xml Bool - Should Data Input Method be cloned. Will be updated if incorrect.
+ * @param mixed &$clone_script The clone script.
  *
  * @return array An array of warning and error message to provide to the user.
  */

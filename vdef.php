@@ -876,8 +876,8 @@ function vdef_filter() {
 /**
  * Retrieves the vdef records. Used as part of Cacti's vdef functionality.
  *
- * @param & $total_rows The total rows.
- * @param & $rows The rows.
+ * @param mixed &$total_rows The total rows.
+ * @param mixed &$rows The rows.
  *
  * @return mixed The result of the operation, or false on failure.
  */

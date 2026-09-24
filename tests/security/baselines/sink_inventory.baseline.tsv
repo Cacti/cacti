@@ -343,9 +343,9 @@ dynamic_include	./lib/aggregate.php:790		include_once($config['base_path'] . '/l
 dynamic_include	./lib/api_aggregate.php:1777		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/api_aggregate.php:209		include_once($config['base_path'] . '/lib/api_aggregate.php');
 dynamic_include	./lib/api_aggregate.php:698		include_once($config['base_path'] . '/lib/api_aggregate.php');
-dynamic_include	./lib/api_automation.php:2586		include_once($config['base_path'] . '/lib/template.php');
-dynamic_include	./lib/api_automation.php:2587		include_once($config['base_path'] . '/lib/api_automation_tools.php');
-dynamic_include	./lib/api_automation.php:2588		include_once($config['base_path'] . '/lib/utility.php');
+dynamic_include	./lib/api_automation.php:2584		include_once($config['base_path'] . '/lib/template.php');
+dynamic_include	./lib/api_automation.php:2585		include_once($config['base_path'] . '/lib/api_automation_tools.php');
+dynamic_include	./lib/api_automation.php:2586		include_once($config['base_path'] . '/lib/utility.php');
 dynamic_include	./lib/api_device.php:955		include_once($config['base_path'] . '/lib/utility.php');
 dynamic_include	./lib/api_device.php:956		include_once($config['base_path'] . '/lib/variables.php');
 dynamic_include	./lib/api_device.php:957		include_once($config['base_path'] . '/lib/data_query.php');
@@ -842,8 +842,8 @@ header_redirect	./include/fa/svgs/solid/index.php:25	header("Location:../index.p
 header_redirect	./include/fa/webfonts/index.php:25	header("Location:../index.php");
 header_redirect	./include/global.php:434				header('Location: ' . $location);
 header_redirect	./include/index.php:25	header("Location:../index.php");
-header_redirect	./include/js/LC_MESSAGES/index.php:25	header("Location:../index.php");
 header_redirect	./include/js/index.php:25	header("Location:../index.php");
+header_redirect	./include/js/LC_MESSAGES/index.php:25	header("Location:../index.php");
 header_redirect	./include/themes/classic/default/index.php:25	header("Location:../index.php");
 header_redirect	./include/themes/classic/images/index.php:25	header("Location:../index.php");
 header_redirect	./include/themes/classic/index.php:25	header("Location:../index.php");

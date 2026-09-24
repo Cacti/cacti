@@ -1467,8 +1467,8 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
  * @param mixed $number_of_lines The number of lines.
  * @param mixed $message_type (int constant) the type of message to return.
  * @param mixed $filter (char) the filtering expression to search for.
- * @param & $page_nr (int) the page we want to show rows for.
- * @param & $total_rows (int) the total number of rows in the logfile.
+ * @param mixed &$page_nr (int) the page we want to show rows for.
+ * @param mixed &$total_rows (int) the total number of rows in the logfile.
  * @param mixed $matches (bool) match or does not match the filter.
  *
  * @return array Array.
@@ -1682,7 +1682,7 @@ function determine_display_log_entry($message_type, $line, $filter, $matches = t
  *
  * @param int $status (int constant) the status of the host (Up/Down).
  * @param int $host_id (int) the host ID for the results.
- * @param & $ping (class array) results of the ping command.
+ * @param mixed &$ping (class array) results of the ping command.
  * @param int $ping_availability The availability of the ping.
  * @param bool $print_data_to_stdout Whether to print the data to the standard output.
  *
@@ -1988,7 +1988,7 @@ function is_mac_address($result) {
  * Determines if string is a hex value WARNING: The passed parameter may be altered by this
  * function. Used as part of Cacti's lib functionality.
  *
- * @param & $result The result.
+ * @param mixed &$result The result.
  *
  * @return bool Bool.
  */
@@ -2038,7 +2038,7 @@ function is_hex_string(&$result) {
  * Determines if the result value is valid or not. If not valid returns a "U". Used as part of
  * Cacti's lib functionality.
  *
- * @param & $result The result from the poll, the result can be modified in the call.
+ * @param mixed &$result The result from the poll, the result can be modified in the call.
  *
  * @return mixed Either to result is valid or not.
  */
@@ -3710,7 +3710,7 @@ function get_graph_parent($graph_template_item_id, $direction) {
  * functionality.
  *
  * @param array $filters Associative array of field => value pairs.
- * @param & $params (byref) array to append parameter values to.
+ * @param mixed &$params (byref) array to append parameter values to.
  *
  * @return string (string) the WHERE clause fragment, or '1=1' if filters is empty.
  */
@@ -5678,7 +5678,7 @@ function record_mailer_error($retError, $mailError) {
  * Handles the add email details. Used as part of Cacti's lib functionality.
  *
  * @param array $emails The emails.
- * @param & $result The result.
+ * @param mixed &$result The result.
  * @param callable $addFunc The addfunc.
  *
  * @return string The resulting string.
@@ -9132,7 +9132,7 @@ function escape_page_action(array $actions, $drp_action, string $default = ''): 
  * @param string $url Absolute http(s) URL to fetch.
  * @param int $timeout Seconds before the request is aborted.
  * @param array $allowlist Optional case-insensitive list of allowed hostnames (exact match).
- * @param & $status By-ref HTTP status code, or 0 on transport failure.
+ * @param mixed &$status By-ref HTTP status code, or 0 on transport failure.
  *
  * @return mixed Response body string on 2xx, false on any failure.
  */

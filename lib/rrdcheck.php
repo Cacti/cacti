@@ -819,7 +819,7 @@ function rrdcheck_rrdtool_init() {
  * functionality.
  *
  * @param array|string $command (string) The rrdtool command to execute.
- * @param & $pipes (array) An array of stdin and stdout pipes to read and write data from.
+ * @param mixed &$pipes (array) An array of stdin and stdout pipes to read and write data from.
  *
  * @return mixed (string) The output from RRDtool.
  */

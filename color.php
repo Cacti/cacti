@@ -231,7 +231,7 @@ function form_actions() {
 /**
  * Handles the color import processor. Used as part of Cacti's color functionality.
  *
- * @param & $colors The colors.
+ * @param mixed &$colors The colors.
  *
  * @return array An array of results.
  */

@@ -80,7 +80,7 @@ function csp_report_sanitize_field($v) {
  * @param array $headers Associative array of request headers (CONTENT_TYPE key).
  * @param string $body Raw POST body.
  * @param int $maxBytes Upper bound enforced before JSON parse; 16 KB is large enough for any real
- *   report but small enough to prevent the process from buffering an attacker- supplied
+ *   report but small enough to prevent the process from buffering an attacker-supplied
  *   multi-megabyte payload into memory.
  *
  * @return array ['ok' => bool, 'reason' => string, 'summary' => string].
@@ -193,9 +193,9 @@ $result = csp_report_validate_payload(
 );
 
 /**
- * IP / per-minute rate cap. The endpoint is unauthenticated by design * (the browser fires
- * reports without credentials) so an attacker can flood * cacti_log / error_log unless we drop
- * excess events. We always return the * normal HTTP status so probing cannot infer the cap. Used
+ * IP / per-minute rate cap. The endpoint is unauthenticated by design (the browser fires
+ * reports without credentials) so an attacker can flood cacti_log / error_log unless we drop
+ * excess events. We always return the normal HTTP status so probing cannot infer the cap. Used
  * as part of Cacti's lib functionality.
  *
  * @return bool True on success, false otherwise.

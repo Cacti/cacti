@@ -25,7 +25,7 @@
 /**
  * Handles the import XML data. Used as part of Cacti's lib functionality.
  *
- * @param & $xml_data The XML data.
+ * @param mixed &$xml_data The XML data.
  * @param bool $import_as_new The import as new.
  * @param int $profile_id The profile ID.
  * @param bool $remove_orphans The remove orphans.
@@ -519,7 +519,7 @@ function import_validate_signature($xmlfile) : bool {
  * Handles the import read package data. Used as part of Cacti's lib functionality.
  *
  * @param string $xmlfile The xmlfile.
- * @param & $public_key The public key.
+ * @param mixed &$public_key The public key.
  *
  * @return mixed The result of the operation, or false on failure.
  */
@@ -821,8 +821,8 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
  * Handles the XML to graph template. Used as part of Cacti's lib functionality.
  *
  * @param string $hash The hash.
- * @param & $xml_array The XML array.
- * @param & $hash_cache The hash cache.
+ * @param mixed &$xml_array The XML array.
+ * @param mixed &$hash_cache The hash cache.
  * @param string $hash_version The hash version.
  * @param bool $remove_orphans The remove orphans.
  *
@@ -1211,8 +1211,8 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
  * Handles the XML to data template. Used as part of Cacti's lib functionality.
  *
  * @param string $hash The hash.
- * @param & $xml_array The XML array.
- * @param & $hash_cache The hash cache.
+ * @param mixed &$xml_array The XML array.
+ * @param mixed &$hash_cache The hash cache.
  * @param bool $import_as_new The import as new.
  * @param int $profile_id The profile ID.
  *
@@ -1494,9 +1494,9 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
  * Handles the XML to data query. Used as part of Cacti's lib functionality.
  *
  * @param string $hash The hash.
- * @param & $xml_array The XML array.
- * @param & $hash_cache The hash cache.
- * @param & $files The files.
+ * @param mixed &$xml_array The XML array.
+ * @param mixed &$hash_cache The hash cache.
+ * @param mixed &$files The files.
  * @param bool $replace_svalues The replace svalues.
  *
  * @return mixed The result of the operation, or false on failure.
@@ -1773,8 +1773,8 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
  * Handles the XML to GPRINT preset. Used as part of Cacti's lib functionality.
  *
  * @param string $hash The hash.
- * @param & $xml_array The XML array.
- * @param & $hash_cache The hash cache.
+ * @param mixed &$xml_array The XML array.
+ * @param mixed &$hash_cache The hash cache.
  *
  * @return mixed The result of the operation, or false on failure.
  */
@@ -1833,8 +1833,8 @@ function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
  * Handles the XML to data source profile. Used as part of Cacti's lib functionality.
  *
  * @param string $hash The hash.
- * @param & $xml_array The XML array.
- * @param & $hash_cache The hash cache.
+ * @param mixed &$xml_array The XML array.
+ * @param mixed &$hash_cache The hash cache.
  * @param bool $import_as_new The import as new.
  * @param int $profile_id The profile ID.
  *
@@ -1920,9 +1920,9 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
  * Handles the XML to host template. Used as part of Cacti's lib functionality.
  *
  * @param string $hash The hash.
- * @param & $xml_array The XML array.
- * @param & $hash_cache The hash cache.
- * @param & $host_template_data The host template data.
+ * @param mixed &$xml_array The XML array.
+ * @param mixed &$hash_cache The hash cache.
+ * @param mixed &$host_template_data The host template data.
  * @param string $class The class.
  *
  * @return mixed The result of the operation, or false on failure.
@@ -2094,8 +2094,8 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_
  * Handles the XML to CDEF. Used as part of Cacti's lib functionality.
  *
  * @param string $hash The hash.
- * @param & $xml_array The XML array.
- * @param & $hash_cache The hash cache.
+ * @param mixed &$xml_array The XML array.
+ * @param mixed &$hash_cache The hash cache.
  *
  * @return mixed The result of the operation, or false on failure.
  */
@@ -2251,8 +2251,8 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
  * Handles the XML to vdef. Used as part of Cacti's lib functionality.
  *
  * @param string $hash The hash.
- * @param & $xml_array The XML array.
- * @param & $hash_cache The hash cache.
+ * @param mixed &$xml_array The XML array.
+ * @param mixed &$hash_cache The hash cache.
  *
  * @return mixed The result of the operation, or false on failure.
  */
@@ -2368,7 +2368,7 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
  * Handles the XML detect ignorable hash cache. Used as part of Cacti's lib functionality.
  *
  * @param string $hash The hash.
- * @param & $xml_array The XML array.
+ * @param mixed &$xml_array The XML array.
  *
  * @return bool True on success, false otherwise.
  */
@@ -2410,8 +2410,8 @@ function xml_detect_ignorable_hash_cache($hash, &$xml_array) {
  * Handles the XML to data input method. Used as part of Cacti's lib functionality.
  *
  * @param string $hash The hash.
- * @param & $xml_array The XML array.
- * @param & $hash_cache The hash cache.
+ * @param mixed &$xml_array The XML array.
+ * @param mixed &$hash_cache The hash cache.
  *
  * @return mixed The result of the operation, or false on failure.
  */
@@ -2766,7 +2766,7 @@ function hash_to_friendly_name($hash, $display_type_name) {
  * Handles the resolve hash to ID. Used as part of Cacti's lib functionality.
  *
  * @param string $hash The hash.
- * @param & $hash_cache_array The hash cache array.
+ * @param mixed &$hash_cache_array The hash cache array.
  * @param string $table The table.
  *
  * @return mixed The result of the operation, or false on failure.

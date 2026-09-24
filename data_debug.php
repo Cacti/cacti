@@ -412,8 +412,8 @@ function validate_request_vars() {
 /**
  * Handles the debug get filter. Used as part of Cacti's data debug functionality.
  *
- * @param & $sql_where The SQL where.
- * @param & $dd_join The dd join.
+ * @param mixed &$sql_where The SQL where.
+ * @param mixed &$dd_join The dd join.
  *
  * @return void No value is returned.
  */

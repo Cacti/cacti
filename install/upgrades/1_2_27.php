@@ -23,7 +23,7 @@
 */
 
 /**
- * Handles the upgrade to 1 2 27. Used as part of Cacti's install functionality.
+ * Handles the upgrade to 1.2.27. Used as part of Cacti's install functionality.
  *
  * @return void No value is returned.
  */

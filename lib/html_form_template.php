@@ -27,7 +27,7 @@
  * template. Used as part of Cacti's lib functionality.
  *
  * @param int $graph_template_id The id of the graph template to base the form after.
- * @param & $values_array Any values that should be included by default on the form.
+ * @param mixed &$values_array Any values that should be included by default on the form.
  * @param string $field_name_format All fields on the form will be named using the following
  *   format, the following variables can be used: |field| - the current field name.
  * @param string $header_title The title to use on the header for this form.
@@ -299,7 +299,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
  *
  * @param int $data_template_id The id of the data template to base the form after.
  * @param int $local_data_id Specify the id of the associated data source if it exists.
- * @param & $values_array Any values that should be included by default on the form.
+ * @param mixed &$values_array Any values that should be included by default on the form.
  * @param string $field_name_format All fields on the form will be named using the following
  *   format, the following variables can be used: |field| - the current field name.
  * @param string $header_title The title to use on the header for this form.
@@ -394,7 +394,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
  * particular data template. Used as part of Cacti's lib functionality.
  *
  * @param int $data_template_id The id of the data template to base the form after.
- * @param & $values_array Any values that should be included by default on the form.
+ * @param mixed &$values_array Any values that should be included by default on the form.
  * @param string $field_name_format All fields on the form will be named using the following
  *   format, the following variables can be used: |field| - the current field name |id| - the id of
  *   the current data source item.

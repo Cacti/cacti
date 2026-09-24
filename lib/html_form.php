@@ -196,7 +196,7 @@ function draw_edit_form($array) {
  * Draws a single control to be used on an html edit form.
  *
  * @param string $field_name The name of the control.
- * @param & $field_array An array containing data for this control. see include/global_form.php
+ * @param mixed &$field_array An array containing data for this control. see include/global_form.php
  *   for more specific syntax.
  *
  * @return void No value is returned.

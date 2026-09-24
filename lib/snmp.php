@@ -530,7 +530,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 /**
  * Handles the cacti get SNMP auth args. Used as part of Cacti's lib functionality.
  *
- * @param & $version The version.
+ * @param mixed &$version The version.
  * @param mixed $community The community.
  * @param mixed $auth_proto The auth proto.
  * @param mixed $auth_user The auth user.
@@ -626,7 +626,7 @@ function cacti_get_snmpv3_auth_args($auth_proto, $auth_user, $auth_pass, $priv_p
  * @param object $session Native SNMP session wrapper.
  * @param string $method Native SNMP method name.
  * @param array $args Method arguments.
- * @param & $warning Captured warning message.
+ * @param mixed &$warning Captured warning message.
  *
  * @return mixed Native SNMP method result.
  */
@@ -1474,10 +1474,10 @@ function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid 
  *
  * @param mixed $version The version.
  * @param mixed $community The community.
- * @param & $port The port.
- * @param & $timeout The timeout.
- * @param & $retries The retries.
- * @param & $max_oids The max OIDS.
+ * @param mixed &$port The port.
+ * @param mixed &$timeout The timeout.
+ * @param mixed &$retries The retries.
+ * @param mixed &$max_oids The max OIDS.
  *
  * @return bool True on success, false otherwise.
  */

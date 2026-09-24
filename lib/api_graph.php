@@ -26,7 +26,7 @@
  * Deletes graphs based on the provided local graph IDs and delete type. Used as part of Cacti's
  * lib functionality.
  *
- * @param & $local_graph_ids An array of local graph IDs to be deleted.
+ * @param mixed &$local_graph_ids An array of local graph IDs to be deleted.
  * @param int $delete_type The type of deletion to perform: - 1: Remove graphs only. - 2: Remove
  *   graphs and all associated data sources.
  *
@@ -152,7 +152,7 @@ function api_graph_remove($local_graph_id) {
  * Removes bad graphs from the provided list of local graph IDs and deletes corresponding entries
  * from the database. Used as part of Cacti's lib functionality.
  *
- * @param & $local_graph_ids An array of local graph IDs to be checked and cleaned.
+ * @param mixed &$local_graph_ids An array of local graph IDs to be checked and cleaned.
  *
  * @return void No value is returned.
  */

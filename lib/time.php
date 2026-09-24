@@ -27,7 +27,7 @@
  * let php * do all the time calculations to cover: * leap years, daylight savings and weekdays
  * ... Used as part of Cacti's lib functionality.
  *
- * @param & $span Array &$timespan (begin_now, end_now).
+ * @param mixed &$span Array &$timespan (begin_now, end_now).
  * @param int $curr_time Base date (time since epoch).
  * @param int $timespan_given Timespan as given by global_arrays.php($graph_timespans).
  * @param int $first_weekdayid First weekday (numeric representation).
@@ -172,7 +172,7 @@ function month_shift($shift_size) {
  * given boundaries * returns - true, if begin AND end match month begin/end boundaries. Used as
  * part of Cacti's lib functionality.
  *
- * @param & $span A $timespan array with given boundaries.
+ * @param mixed &$span A $timespan array with given boundaries.
  *
  * @return bool True, if begin AND end match month begin/end boundaries.
  */
@@ -198,7 +198,7 @@ function check_month_boundaries(&$span) {
  * $direction - shift left/right (-/+) * @arg $shift_size - amount of shift * returns -
  * time-since-epoch for shifted right boundary. Used as part of Cacti's lib functionality.
  *
- * @param & $span The timespan array.
+ * @param mixed &$span The timespan array.
  * @param string $direction A shift left/right (-/+).
  * @param mixed $shift_size The amount of shift.
  *
@@ -221,7 +221,7 @@ function shift_right_boundary(&$span, $direction, $shift_size) {
  * shifting right * @arg $timeshift - amount of shifting. Used as part of Cacti's lib
  * functionality.
  *
- * @param & $span The span.
+ * @param mixed &$span The span.
  * @param string $direction The direction either "-" for shifting left, "+" for shifting right.
  * @param mixed $shift_size An amount of shifting.
  *

@@ -26,7 +26,7 @@
  * Replaces all variables contained in $form_array with their actual values. Used as part of
  * Cacti's lib functionality.
  *
- * @param & $form_array An array that contains all of the information needed to draw the html
+ * @param mixed &$form_array An array that contains all of the information needed to draw the html
  *   form. see the arrays contained in include/global_settings.php for the exact syntax of this
  *   array.
  * @param mixed $arg1 An array that represents the |arg1:| variable (see include/global_form.php

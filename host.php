@@ -1559,7 +1559,7 @@ function host_validate_vars() {
 /**
  * Retrieves the device records. Used as part of Cacti's host functionality.
  *
- * @param & $total_rows The total rows.
+ * @param mixed &$total_rows The total rows.
  * @param int $rows The rows.
  *
  * @return mixed The result of the operation, or false on failure.

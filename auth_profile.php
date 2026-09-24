@@ -294,7 +294,7 @@ function form_save() {
  * -------------------------- User Settings Functions --------------------------. Used as part of
  * Cacti's auth profile functionality.
  *
- * @return bool True on success, false otherwise.
+ * @return void
  */
 
 function settings() {

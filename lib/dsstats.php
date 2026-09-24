@@ -195,7 +195,7 @@ function dsstats_get_and_store_ds_avgpeak_values($interval, $type, $thread_id = 
  * This routine provide bulk database insert services to the various tables that store the average
  * and peak information for Data Sources. Used as part of Cacti's lib functionality.
  *
- * @param & $stats_array (mixed) A multi dimensional array keyed by the local_data_id that
+ * @param mixed &$stats_array (mixed) A multi dimensional array keyed by the local_data_id that
  *   contains both the average and max values for each internal RRDfile Data Source.
  * @param string $interval (string) 'daily', 'weekly', 'monthly', and 'yearly'. Used for
  *   determining the table to update during the dumping of the buffer.
@@ -261,7 +261,7 @@ function dsstats_write_buffer(&$stats_array, $interval) {
  * @param int $local_data_id (string) The rrdfile to process.
  * @param string $rrdfile (string) The rrdfile to process.
  * @param string $interval (string) The interval type to process.
- * @param & $pipes (resource) Pipes to the background RRDtool process.
+ * @param mixed &$pipes (resource) Pipes to the background RRDtool process.
  *
  * @return array (mixed) An array of AVERAGE, and MAX values in an RRDfile by Data Source name.
  */
@@ -661,7 +661,7 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
  * transaction overhead and therefore chose this method. Used as part of Cacti's lib
  * functionality.
  *
- * @param & $rrd_update_array (mixed) The output from the poller output table to be processed by
+ * @param mixed &$rrd_update_array (mixed) The output from the poller output table to be processed by
  *   dsstats.
  *
  * @return void NULL.
@@ -1090,7 +1090,7 @@ function dsstats_rrdtool_init() {
  * functionality.
  *
  * @param string $command (string) The rrdtool command to execute.
- * @param & $pipes (array) An array of stdin and stdout pipes to read and write data from.
+ * @param mixed &$pipes (array) An array of stdin and stdout pipes to read and write data from.
  *
  * @return string (string) The output from RRDtool.
  */

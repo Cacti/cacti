@@ -85,10 +85,10 @@ function clog_get_graphs_from_datasource($local_data_id) {
  * log, or boost log) and extracts the corresponding file path and base name. Optionally, it can
  * verify if the file exists. Used as part of Cacti's lib functionality.
  *
- * @param & $file The input filename to validate. This will be modified to contain only the base
+ * @param mixed &$file The input filename to validate. This will be modified to contain only the base
  *   name of the file.
- * @param & $filepath The output variable that will hold the directory path of the validated file.
- * @param & $filename The output variable that will hold the base name of the validated file.
+ * @param mixed &$filepath The output variable that will hold the directory path of the validated file.
+ * @param mixed &$filename The output variable that will hold the base name of the validated file.
  * @param bool $filecheck If true, the function will check if the resolved file exists. Defaults
  *   to false.
  *

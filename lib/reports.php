@@ -648,9 +648,9 @@ function generate_report($report, $force = false) {
  * part of Cacti's lib functionality.
  *
  * @param string $format_file The file to read from the formats directory.
- * @param & $output The html and css output from that file.
- * @param & $report_tag_included A boolean that informs the caller if the report tag is present.
- * @param & $theme The theme to use for display.
+ * @param mixed &$output The html and css output from that file.
+ * @param mixed &$report_tag_included A boolean that informs the caller if the report tag is present.
+ * @param mixed &$theme The theme to use for display.
  *
  * @return bool Whether or not the format file was processed correctly.
  */
@@ -789,7 +789,7 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
  *
  * @param int $reports_id Id of report report.
  * @param int $output Type of output.
- * @param & $theme The format of the output.
+ * @param mixed &$theme The format of the output.
  *
  * @return string Generated html output.
  */
@@ -978,8 +978,8 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 /**
  * Handles the expand branch. Used as part of Cacti's lib functionality.
  *
- * @param & $report The report.
- * @param & $item The item.
+ * @param mixed &$report The report.
+ * @param mixed &$item The item.
  * @param int $branch_id The branch ID.
  * @param int $output The output.
  * @param bool $format_ok The format ok.
@@ -1061,7 +1061,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 /**
  * Expand a device for including into report. Used as part of Cacti's lib functionality.
  *
- * @param & $report Parameters for this report mail report.
+ * @param mixed &$report Parameters for this report mail report.
  * @param int $item Current graph item.
  * @param int $device_id The id of the host to include.
  * @param int $output Type of output.
@@ -1208,7 +1208,7 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 /**
  * Expand a tree for including into report. Used as part of Cacti's lib functionality.
  *
- * @param & $report Parameters for this report mail report.
+ * @param mixed &$report Parameters for this report mail report.
  * @param int $item Current graph item.
  * @param int $parent The tree parent.
  * @param int $output Type of output.
@@ -1687,7 +1687,7 @@ function necturally_sort_graphs($a, $b) {
  * Draw graph area. Used as part of Cacti's lib functionality.
  *
  * @param array $graphs Array of graphs.
- * @param & $report Report parameters.
+ * @param mixed &$report Report parameters.
  * @param int $item Current item.
  * @param int $timespan Requested timespan.
  * @param int $output Type of output.

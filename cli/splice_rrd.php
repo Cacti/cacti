@@ -364,9 +364,9 @@ memoryUsage();
  * closest match and save that into the final array, that will then be written back out to an XML
  * file and re-loaded into an RRDfile. Used as part of Cacti's CLI functionality.
  *
- * @param & $new_rrd The new RRD.
- * @param & $old_flat The old flat.
- * @param & $old_dsnames The old dsnames.
+ * @param mixed &$new_rrd The new RRD.
+ * @param mixed &$old_flat The old flat.
+ * @param mixed &$old_dsnames The old dsnames.
  *
  * @return void No value is returned.
  */
@@ -427,7 +427,7 @@ function spliceRRDs(&$new_rrd, &$old_flat, &$old_dsnames) {
  * this function will prefer that table over traversing the array. Used as part of Cacti's CLI
  * functionality.
  *
- * @param & $old_flat The old flat.
+ * @param mixed &$old_flat The old flat.
  * @param mixed $dsnum The dsnum.
  * @param mixed $cf The cf.
  * @param mixed $time The time.
@@ -599,7 +599,7 @@ function memoryUsage() {
  * $newxml[$datasourceid][$cf][$timestamp] = value $newxml['mintime'] = value The data will only
  * go back as far as the source RRDfile. Used as part of Cacti's CLI functionality.
  *
- * @param & $xml The xml data to be flattened.
+ * @param mixed &$xml The xml data to be flattened.
  *
  * @return array The flattened XML file.
  */
@@ -688,7 +688,7 @@ function flattenXML(&$xml) {
  * Obtains the max value from the timestamp array for use in debug output. Used as part of Cacti's
  * CLI functionality.
  *
- * @param & $data An array of objects to get the max from.
+ * @param mixed &$data An array of objects to get the max from.
  *
  * @return float The maximum value.
  */
@@ -708,7 +708,7 @@ function getMaxValue(&$data) {
  * Obtains the average value from the timestamp array for use in debug output. Used as part of
  * Cacti's CLI functionality.
  *
- * @param & $data An array of objects to get the average from.
+ * @param mixed &$data An array of objects to get the average from.
  *
  * @return float The average value.
  */
@@ -738,7 +738,7 @@ function getAvgValue(&$data) {
  * $rrd['rra'][$rra_num]['database'][$cdp_ds_num]['time'];. Used as part of Cacti's CLI
  * functionality.
  *
- * @param & $output The output.
+ * @param mixed &$output The output.
  *
  * @return array The processed XML data.
  */
@@ -936,7 +936,7 @@ function backupRRDFile($rrdfile) {
  * with the remainder of the XML data for future processing. Used as part of Cacti's CLI
  * functionality.
  *
- * @param & $output The output from the RRDtool command.
+ * @param mixed &$output The output from the RRDtool command.
  *
  * @return array The updated XML object.
  */
@@ -1029,7 +1029,7 @@ function createTable() {
  * dump data into the new XML file. Used as part of Cacti's CLI functionality.
  *
  * @param mixed $db The DB.
- * @param & $records The records.
+ * @param mixed &$records The records.
  *
  * @return void No value is returned.
  */

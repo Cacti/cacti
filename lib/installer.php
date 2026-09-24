@@ -438,7 +438,7 @@ class Installer implements JsonSerializable {
 	 * lib functionality.
 	 *
 	 * @param mixed $param Value to be set if it can be mapped to True or False.
-	 * @param & $field Variable reference to be set.
+	 * @param mixed &$field Variable reference to be set.
 	 * @param string $option Name of the option.
 	 * @param bool $save Indication to save state.
 	 *
@@ -4120,7 +4120,7 @@ class Installer implements JsonSerializable {
 	/**
 	 * Handles the formatmodulestatus. Used as part of Cacti's lib functionality.
 	 *
-	 * @param & $module The module.
+	 * @param mixed &$module The module.
 	 * @param string $name The name.
 	 * @param string $badColor The badcolor.
 	 *
