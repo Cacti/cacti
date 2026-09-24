@@ -2731,12 +2731,58 @@ function get_data_source_path($local_data_id, $expand_paths) {
 		/* whether to show the "actual" path or the <path_rra> variable name (for edit boxes) */
 		if ($expand_paths == true) {
 			$data_source_path = str_replace('<path_rra>/', $config['rra_path'] . '/', $data_source_path);
+
+			/* data_source_path is stored without path validation, so a custom
+			 * value can hold a traversal or an absolute path and steer the RRD
+			 * write outside the RRA directory (into the web root, for example).
+			 * Contain it here, where every consumer resolves the path, and fall
+			 * back to the generated location when it escapes. */
+			if (!data_source_path_within_rra($data_source_path)) {
+				cacti_log(sprintf('SECURITY: Data source %d has a data_source_path that escapes the RRA directory (%s).  Using the generated path instead.', $local_data_id, $data_source['data_source_path']), false, 'POLLER');
+
+				$data_source_path = str_replace('<path_rra>/', $config['rra_path'] . '/', generate_data_source_path($local_data_id));
+			}
 		}
 
 		$data_source_path_cache[$local_data_id] = $data_source_path;
 
 		return $data_source_path;
 	}
+}
+
+/**
+ * data_source_path_within_rra - checks that an expanded RRD path stays in the RRA dir
+ *
+ * Containment is lexical so it holds for RRD files that do not exist yet: the
+ * path must sit under the configured RRA directory and no segment below it may
+ * be a parent reference. Absolute paths elsewhere, and traversal such as
+ * <path_rra>/../x, are both rejected.
+ *
+ * @param string $path The expanded data source path
+ *
+ * @return bool True when the path resolves inside the RRA directory
+ */
+function data_source_path_within_rra($path) {
+	global $config;
+
+	if ($path === '' || strpos($path, "\0") !== false) {
+		return false;
+	}
+
+	$base   = str_replace('\\', '/', $config['rra_path']);
+	$target = str_replace('\\', '/', $path);
+
+	if (strncmp($target, $base . '/', strlen($base) + 1) !== 0) {
+		return false;
+	}
+
+	foreach (explode('/', substr($target, strlen($base) + 1)) as $segment) {
+		if ($segment === '..') {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 /**
