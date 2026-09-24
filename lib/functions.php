@@ -1485,12 +1485,20 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 
 	$filter = strtolower($filter);
 
+	/* the raw line only ever has the numeric device id, not its description; resolve
+	 * ids once up front so the filter below can still match on the description */
+	$host_descriptions = array();
+
+	if ($filter != '') {
+		$host_descriptions = array_rekey(db_fetch_assoc('SELECT id, description FROM host'), 'id', 'description');
+	}
+
 	$fp = fopen($file_name, 'r');
 
 	/* Count all lines in the logfile */
 	$total_rows = 0;
 	while (($line = fgets($fp)) !== false) {
-		if (determine_display_log_entry($message_type, $line, $filter, $matches)) {
+		if (determine_display_log_entry($message_type, $line, $filter, $matches, $host_descriptions)) {
 			++$total_rows;
 		}
 	}
@@ -1517,7 +1525,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 	$file_array = array();
 	$i = 0;
 	while (($line = fgets($fp)) !== false) {
-		$display = determine_display_log_entry($message_type, $line, $filter, $matches);
+		$display = determine_display_log_entry($message_type, $line, $filter, $matches, $host_descriptions);
 
 		if ($display === false) {
 			continue;
@@ -1546,10 +1554,12 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
  * @param string $line The line.
  * @param string $filter The filter.
  * @param bool $matches The matches.
+ * @param array $host_descriptions Optional id => description map used to let $filter also
+ *   match a device's description, since the raw line only contains its numeric id.
  *
  * @return mixed Should the entry be displayed.
  */
-function determine_display_log_entry($message_type, $line, $filter, $matches = true) {
+function determine_display_log_entry($message_type, $line, $filter, $matches = true, $host_descriptions = array()) {
 	static $thold_enabled = null;
 
 	if ($thold_enabled == null) {
@@ -1654,18 +1664,26 @@ function determine_display_log_entry($message_type, $line, $filter, $matches = t
 
 	/* match any lines that match the search string */
 	if ($display === true && $filter != '') {
+		$search_line = $line;
+
+		if (cacti_sizeof($host_descriptions) && strpos($line, 'Device[') !== false) {
+			$search_line = preg_replace_callback('/Device\[(\d+)\]/', function($dmatch) use ($host_descriptions) {
+				return isset($host_descriptions[$dmatch[1]]) ? $dmatch[0] . ' (' . $host_descriptions[$dmatch[1]] . ')' : $dmatch[0];
+			}, $line);
+		}
+
 		if ($matches) {
-			if (validate_is_regex($filter) === true && preg_match('/' . $filter . '/i', $line)) {
+			if (validate_is_regex($filter) === true && preg_match('/' . $filter . '/i', $search_line)) {
 				return $line;
-			} elseif (stripos($line, $filter) !== false) {
+			} elseif (stripos($search_line, $filter) !== false) {
 				return $line;
 			}
 		} else {
 			if (validate_is_regex($filter) === true) {
-				if (!preg_match('/' . $filter . '/i', $line)) {
+				if (!preg_match('/' . $filter . '/i', $search_line)) {
 					return $line;
 				}
-			} elseif (!stripos($line, $filter) !== false) {
+			} elseif (!stripos($search_line, $filter) !== false) {
 				return $line;
 			}
 		}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/autoload.php" beStrictAboutOutputDuringTests="false">
+	<testsuites>
+		<testsuite name="clog device description filter regression">
+			<file>Unit/ClogDeviceDescriptionFilterTest.php</file>
+		</testsuite>
+	</testsuites>
+</phpunit>
