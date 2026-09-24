@@ -2455,7 +2455,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$graph_item_color_code = '';
 			if (!empty($graph_item['hex'])) {
 				$graph_item_color_code = '#' . $graph_item['hex'];
-				$graph_item_color_code .= $graph_item['alpha'];
+				// alpha is user-controlled and concatenated raw into the shell command
+				// line (escape_command() is a no-op), so escape it like every other argument.
+				$graph_item_color_code .= cacti_escapeshellarg($graph_item['alpha']);
 			}
 
 			/* initialize dash support */
@@ -2466,12 +2468,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_LINESTACK ||
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_HRULE ||
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_VRULE) {
+				// dashes / dash_offset are user-controlled and concatenated raw into the
+				// shell command line (escape_command() is a no-op), so escape them.
 				if (!empty($graph_item['dashes'])) {
-					$dash .= ':dashes=' . $graph_item['dashes'];
+					$dash .= ':dashes=' . cacti_escapeshellarg($graph_item['dashes']);
 				}
 
 				if (!empty($graph_item['dash_offset'])) {
-					$dash .= ':dash-offset=' . $graph_item['dash_offset'];
+					$dash .= ':dash-offset=' . cacti_escapeshellarg($graph_item['dash_offset']);
 				}
 			}
 
