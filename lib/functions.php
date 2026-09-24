@@ -3253,7 +3253,15 @@ function data_source_path_within_rra(string $path) : bool {
 		$parts[] = $segment;
 	}
 
-	$base_real = realpath(CACTI_PATH_RRA);
+	// realpath() re-stats every ancestor directory of the RRA root on each call;
+	// that root doesn't change within a process, so resolve it once and reuse it.
+	static $base_real_cache = [];
+
+	if (!array_key_exists(CACTI_PATH_RRA, $base_real_cache)) {
+		$base_real_cache[CACTI_PATH_RRA] = realpath(CACTI_PATH_RRA);
+	}
+
+	$base_real = $base_real_cache[CACTI_PATH_RRA];
 
 	if ($base_real === false) {
 		return false;
