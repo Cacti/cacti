@@ -1597,7 +1597,9 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 /**
  * Builds a forced-HTTPS redirect using a server-configured host name.
  *
- * @param string $server_name  The web server's configured name.
+ * @param string $server_name  The web server's configured name, optionally
+ *                             followed by ':port' (IPv6 literals must be
+ *                             bracketed first, e.g. '[::1]:8080').
  * @param string $request_uri  The requested local path and query string.
  * @param string $default_path A local fallback when the request URI is invalid.
  *
@@ -1607,7 +1609,42 @@ function validate_redirect_url($url = '', $default = 'index.php') {
  */
 function cacti_build_https_redirect_url(string $server_name, string $request_uri, string $default_path = '/') : string {
 	$server_name = trim($server_name);
-	$host        = trim($server_name, '[]');
+
+	if ($server_name === '') {
+		return '';
+	}
+
+	/* split an optional port off first; a bracketed IPv6 literal keeps its
+	 * embedded colons and is only split on a ']:port' suffix, so a bare,
+	 * unbracketed IPv6 address (multiple colons, no brackets) is never
+	 * mistaken for a host:port pair */
+	if ($server_name[0] === '[') {
+		$close = strpos($server_name, ']');
+
+		if ($close === false) {
+			return '';
+		}
+
+		$host = substr($server_name, 1, $close - 1);
+		$port = '';
+
+		if (isset($server_name[$close + 1])) {
+			if ($server_name[$close + 1] !== ':') {
+				return '';
+			}
+
+			$port = substr($server_name, $close + 2);
+		}
+	} elseif (substr_count($server_name, ':') === 1) {
+		[$host, $port] = explode(':', $server_name, 2);
+	} else {
+		$host = $server_name;
+		$port = '';
+	}
+
+	if ($port !== '' && (!ctype_digit($port) || (int) $port < 1 || (int) $port > 65535)) {
+		return '';
+	}
 
 	if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
 		$host = '[' . $host . ']';
@@ -1619,7 +1656,50 @@ function cacti_build_https_redirect_url(string $server_name, string $request_uri
 	$path = validate_redirect_url($request_uri, $default_path);
 	$path = '/' . ltrim($path, '/');
 
-	return 'https://' . $host . $path;
+	return 'https://' . $host . ($port !== '' ? ':' . $port : '') . $path;
+}
+
+/**
+ * Resolves a trusted host for the force_https redirect from the admin-configured
+ * base_url, in preference to the request's Host/SERVER_NAME.
+ *
+ * SERVER_NAME mirrors the client Host header under the common Apache default
+ * UseCanonicalName Off, so validating its format alone (see
+ * cacti_build_https_redirect_url()) still lets an attacker redirect to another
+ * valid-looking hostname. base_url is the trusted source Cacti already uses for
+ * absolute URLs, so it is preferred when configured.
+ *
+ * @return string A bare host, or 'host:port' when base_url configures a
+ *                non-default port, safe to pass to
+ *                cacti_build_https_redirect_url(), or '' when base_url is unset.
+ */
+function cacti_force_https_host() : string {
+	$base = trim((string) read_config_option('base_url'));
+
+	if ($base === '') {
+		return '';
+	}
+
+	/* base_url is stored in scheme-less form (e.g. 'monitor.example/cacti')
+	 * until the first linked graph report is rendered, see the same check in
+	 * lib/reports.php; parse_url() cannot extract a host without a scheme, so
+	 * add one for parsing purposes only. */
+	$parseable = (substr($base, 0, 4) === 'http') ? $base : 'http://' . $base;
+
+	$host = parse_url($parseable, PHP_URL_HOST);
+	$port = parse_url($parseable, PHP_URL_PORT);
+
+	if (!is_string($host) || $host === '') {
+		return '';
+	}
+
+	/* bracket a literal IPv6 host before appending a port so the two remain
+	 * unambiguous when cacti_build_https_redirect_url() splits them back apart */
+	if (strpos($host, ':') !== false) {
+		$host = '[' . $host . ']';
+	}
+
+	return ($port !== null && $port !== false) ? $host . ':' . $port : $host;
 }
 
 /**

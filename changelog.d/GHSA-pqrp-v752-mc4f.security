@@ -1,0 +1,1 @@
+Stop disabled accounts authenticating via a previously issued remember-me cookie and revoke tokens when an account is disabled

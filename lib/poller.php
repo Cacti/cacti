@@ -150,9 +150,16 @@ function exec_background(string $filename, string|array $args = '', string|array
 					pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args . ' ' . $redirect_args, 'r'));
 				}
 			} elseif ($redirect_args == '') {
-				exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
+				// filename is user-influenced (e.g. a configured PHP/script binary
+				// path) and was passed to the shell unescaped on non-win32; escape
+				// it like every other argument here.
+				$safe_filename = cacti_escapeshellarg($filename);
+
+				exec($safe_filename . ' ' . $args . ' > /dev/null 2>&1 &');
 			} else {
-				exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
+				$safe_filename = cacti_escapeshellarg($filename);
+
+				exec($safe_filename . ' ' . $args . ' ' . $redirect_args . ' &');
 			}
 		}
 	} else {

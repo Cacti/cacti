@@ -3225,7 +3225,7 @@ parameters:
 		-
 			message: '#^Cannot access offset ''enabled'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 3
+			count: 4
 			path: lib/auth.php
 
 		-
@@ -3860,6 +3860,12 @@ parameters:
 
 		-
 			message: '#^Cannot access offset ''active'' on array\|bool\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: lib/functions.php
+
+		-
+			message: '#^Cannot access offset ''data_source_path'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: lib/functions.php
