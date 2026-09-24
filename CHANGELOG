@@ -1,6 +1,11 @@
 Cacti CHANGELOG
 
 1.2.x
+-security: Contain data_source_path within the RRA directory (GHSA-9qff-xccr-rrc5)
+-security: Harden package import path traversal defenses (GHSA-vp35-4h28-r883)
+-security: Stop disabled accounts authenticating and revoke tokens on disable (GHSA-pqrp-v752-mc4f)
+-security: Escape graph-item style fields in the RRDtool graph command (GHSA-vq9v-6ggh-phhr)
+-security: Prefer base_url over the client Host header for the force_https redirect (GHSA-3466-fp7g-c9rf)
 -security: Authorize Data Source enable/disable against the owning device before mutating (GHSA-2fhv-c794-v433)
 -security: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating (GHSA-prxj-84qq-v5jq)
 -security: Escape template name and dependency path in the Template Import preview (GHSA-xvwr-hvpm-67jw)

@@ -183,10 +183,7 @@ if ($prev_heartbeat !== false && (!is_numeric($prev_heartbeat) || $prev_heartbea
 	$sql_params[] = $prev_heartbeat;
 }
 
-$sql_params1 = array_merge(array($config['rra_path']), $sql_params);
-
 $rrdfiles = db_fetch_assoc_prepared("SELECT dtr.local_data_id, dtd.name_cache, dt.name,
-	REPLACE(dtd.data_source_path, '<path_rra>', ?) AS rrd,
 	dtr.rrd_heartbeat, GROUP_CONCAT(DISTINCT dtr.data_source_name) AS data_sources
 	FROM data_template_data AS dtd
 	INNER JOIN data_template AS dt
@@ -196,7 +193,16 @@ $rrdfiles = db_fetch_assoc_prepared("SELECT dtr.local_data_id, dtd.name_cache, d
 	WHERE dtd.local_data_id > 0
 	$sql_where
 	GROUP BY dtd.local_data_id",
-	$sql_params1);
+	$sql_params);
+
+/* resolve through get_data_source_path() so the RRA containment check applies to this consumer too */
+if (cacti_sizeof($rrdfiles)) {
+	foreach ($rrdfiles as &$rrdfile_row) {
+		$rrdfile_row['rrd'] = get_data_source_path($rrdfile_row['local_data_id'], true);
+	}
+
+	unset($rrdfile_row);
+}
 
 $total_heartbeats = array_rekey($rrdfiles, 'rrd_heartbeat', 'rrd_heartbeat');
 
