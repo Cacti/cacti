@@ -299,11 +299,11 @@ cacti_log("RRDSTRUCT STATS: $stats", false, 'SYSTEM');
 print "NOTE: RRD Restructure Complete: $stats" . PHP_EOL;
 
 /**
- * struct_debug - Simple debug function for restructuring
+ * Simple debug function for restructuring. Used as part of Cacti's CLI functionality.
  *
- * @param  (string) - The output string
+ * @param string $string The output string.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function struct_debug($string) {
 	global $debug;
@@ -314,12 +314,12 @@ function struct_debug($string) {
 }
 
 /**
- * update database - update database pointers to point to the new
- * database location
+ * Update database - update database pointers to point to the new database location. Used as part
+ * of Cacti's CLI functionality.
  *
- * @param  (array) - $info - an array of local_data_id, new_rrd_path, and the new_data_source_path
+ * @param array $info $info - an array of local_data_id, new_rrd_path, and the new_data_source_path.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function update_database($info) {
 	/* update table poller_item */
@@ -338,12 +338,12 @@ function update_database($info) {
 }
 
 /**
- * sp_recursive_chown - Recursively chown on a path
+ * Recursively chown on a path. Used as part of Cacti's CLI functionality.
  *
- * @param  (string)     $path
- * @param  (string|int) $user
+ * @param string $path The path.
+ * @param string|int $user The user.
  *
- * @return (void)
+ * @return bool True on success, false on failure.
  */
 function sp_recursive_chown($path, $user) {
 	$directory = rtrim($path, '/');
@@ -362,12 +362,12 @@ function sp_recursive_chown($path, $user) {
 }
 
 /**
- * sp_recursive_chgrp - Recursively chgrp on a path
+ * Recursively chgrp on a path. Used as part of Cacti's CLI functionality.
  *
- * @param  (string)     $path
- * @param  (string|int) $group
+ * @param string $path The path.
+ * @param string|int $group The group.
  *
- * @return (void)
+ * @return bool True on success, false on failure.
  */
 function sp_recursive_chgrp($path, $group) {
 	$directory = rtrim($path, '/');
@@ -386,7 +386,9 @@ function sp_recursive_chgrp($path, $group) {
 }
 
 /**
- * display_version - displays version information
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
  */
 function display_version() {
 	$version = get_cacti_cli_version();
@@ -394,7 +396,9 @@ function display_version() {
 }
 
 /**
- * display_help - displays help information
+ * Displays help information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
  */
 function display_help() {
 	display_version();

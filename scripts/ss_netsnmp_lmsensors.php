@@ -35,6 +35,18 @@ if (!isset($called_by_script_server)) {
 # ------------------------------------------------------------------------------------
 # main function
 # ------------------------------------------------------------------------------------
+/**
+ * # ------------------------------------------------------------------------------------. Used as
+ * part of Cacti's scripts functionality.
+ *
+ * @param int $host_id The host ID.
+ * @param string $sensor_type The sensor type.
+ * @param string $cacti_request The cacti request.
+ * @param string $data_request The data request.
+ * @param string $data_request_key The data request key.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request = '', $data_request = '', $data_request_key = '') {
 	$host = db_fetch_row_prepared('SELECT *
 		FROM host

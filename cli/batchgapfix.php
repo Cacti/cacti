@@ -424,9 +424,14 @@ if ($child == 0) {
 
 exit(0);
 
-/** sig_handler - provides a generic means to catch exceptions to the Cacti log.
- * @arg $signo  - (int) the signal that was thrown by the interface.
- * @return      - null */
+/**
+ * Provides a generic means to catch exceptions to the Cacti log. Used as part of Cacti's CLI
+ * functionality.
+ *
+ * @param int $signo (int) the signal that was thrown by the interface.
+ *
+ * @return void Null.
+ */
 function sig_handler($signo) {
 	global $child, $type;
 
@@ -446,6 +451,13 @@ function sig_handler($signo) {
 	}
 }
 
+/**
+ * Debug. Used as part of Cacti's CLI functionality.
+ *
+ * @param string $string The string.
+ *
+ * @return void No value is returned.
+ */
 function debug($string) {
 	global $debug;
 
@@ -454,11 +466,21 @@ function debug($string) {
 	}
 }
 
+/**
+ * Display_version. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
     $version = get_cacti_cli_version();
     print "Cacti Batch Graph Gap Fill Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help() {
 	display_version();
 

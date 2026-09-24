@@ -32,6 +32,11 @@ if (php_sapi_name() == 'cli') {
 	return;
 }
 
+/**
+ * Handles the cacti DB session check. Used as part of Cacti's include functionality.
+ *
+ * @return void No value is returned.
+ */
 function cacti_db_session_check() {
 	if (!db_column_exists('sessions', 'user_id')) {
 		db_execute('ALTER TABLE sessions
@@ -46,6 +51,14 @@ function cacti_db_session_check() {
 	}
 }
 
+/**
+ * Handles the cacti DB session open. Used as part of Cacti's include functionality.
+ *
+ * @param string $savePath The savepath.
+ * @param string $sessionName The sessionname.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function cacti_db_session_open($savePath = '', $sessionName = '') {
 	// Cacti database is already active
 	cacti_db_session_check();
@@ -53,11 +66,23 @@ function cacti_db_session_open($savePath = '', $sessionName = '') {
 	return true;
 }
 
+/**
+ * Handles the cacti DB session close. Used as part of Cacti's include functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function cacti_db_session_close() {
 	// Cacti database is not closed by sessions
 	return true;
 }
 
+/**
+ * Handles the cacti DB session read. Used as part of Cacti's include functionality.
+ *
+ * @param string $id The ID.
+ *
+ * @return string The resulting string.
+ */
 function cacti_db_session_read($id) {
 	db_execute_prepared('UPDATE IGNORE sessions
 		SET access = ?
@@ -77,6 +102,14 @@ function cacti_db_session_read($id) {
 	return $session;
 }
 
+/**
+ * Handles the cacti DB session write. Used as part of Cacti's include functionality.
+ *
+ * @param string $id The ID.
+ * @param string $data The data.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function cacti_db_session_write($id, $data) {
 	$access = time();
 
@@ -120,6 +153,13 @@ function cacti_db_session_write($id, $data) {
 	return true;
 }
 
+/**
+ * Handles the cacti DB session destroy. Used as part of Cacti's include functionality.
+ *
+ * @param string $id The ID.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function cacti_db_session_destroy($id) {
 	db_execute_prepared('DELETE FROM sessions
 		WHERE id = ?',
@@ -128,6 +168,13 @@ function cacti_db_session_destroy($id) {
 	return true;
 }
 
+/**
+ * Handles the cacti DB session clean. Used as part of Cacti's include functionality.
+ *
+ * @param mixed $max The max.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function cacti_db_session_clean($max) {
 	$old = time() - $max;
 

@@ -47,12 +47,19 @@ switch(get_request_var('action')) {
 
 bottom_footer();
 
+/**
+ * Handles the rrdcheck purge. Used as part of Cacti's rrdcheck functionality.
+ *
+ * @return void No value is returned.
+ */
 function rrdcheck_purge() {
 	db_execute('TRUNCATE TABLE rrdcheck');
 }
 
-/*
- * Display all rrdcheck entries
+/**
+ * Display all rrdcheck entries. Used as part of Cacti's rrdcheck functionality.
+ *
+ * @return void No value is returned.
  */
 function rrdcheck_display_problems() {
 	global $config, $item_rows;
@@ -216,6 +223,11 @@ function rrdcheck_display_problems() {
 }
 
 
+/**
+ * Handles the filter. Used as part of Cacti's rrdcheck functionality.
+ *
+ * @return void
+ */
 function filter() {
 	global $item_rows;
 

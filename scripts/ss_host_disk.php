@@ -36,6 +36,18 @@ if (!isset($called_by_script_server)) {
 	include_once(dirname(__FILE__) . '/../lib/snmp.php');
 }
 
+/**
+ * Handles the ss host disk. Used as part of Cacti's scripts functionality.
+ *
+ * @param string $hostname The hostname.
+ * @param int $host_id The host ID.
+ * @param mixed $snmp_auth The SNMP auth.
+ * @param string $cmd The cmd.
+ * @param string $arg1 The arg1.
+ * @param string $arg2 The arg2.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_host_disk($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'index', $arg1 = '', $arg2 = '') {
 	$snmp = explode(':', $snmp_auth);
 	$snmp_version   = $snmp[0];
@@ -166,6 +178,13 @@ function ss_host_disk($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'ind
 	}
 }
 
+/**
+ * Handles the ss host disk reindex. Used as part of Cacti's scripts functionality.
+ *
+ * @param array $arr The arr.
+ *
+ * @return array An array of results.
+ */
 function ss_host_disk_reindex($arr) {
 	$return_arr = array();
 

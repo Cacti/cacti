@@ -260,6 +260,15 @@ if ($host_id === false) {
 	unregister_process('commands', 'child', $host_id + 1000);
 }
 
+/**
+ * Handles the commands master handler. Used as part of Cacti's poller commands functionality.
+ *
+ * @param bool $forcerun The forcerun.
+ * @param array &$hosts The hosts.
+ * @param int $threads The threads.
+ *
+ * @return void No value is returned.
+ */
 function commands_master_handler($forcerun, &$hosts, $threads) {
 	commands_debug("There are " . cacti_sizeof($hosts) . " to reindex");
 
@@ -303,12 +312,12 @@ function commands_master_handler($forcerun, &$hosts, $threads) {
 }
 
 /**
- * commands_launch_child - this function will launch collector children based upon
- *   the maximum number of threads and the process type
+ * This function will launch collector children based upon the maximum number of threads and the
+ * process type. Used as part of Cacti's poller commands functionality.
  *
- * @param  (int)  $host_id - The Cacti host_id
+ * @param int $host_id The Cacti host_id.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function commands_launch_child($host_id) {
 	global $config, $seebug;
@@ -323,10 +332,10 @@ function commands_launch_child($host_id) {
 }
 
 /**
- * commands_processes_running - given a type, determine the number
- *   of sub-type or children that are currently running
+ * Given a type, determine the number of sub-type or children that are currently running. Used as
+ * part of Cacti's poller commands functionality.
  *
- * @return (int) The number of running processes
+ * @return int The number of running processes.
  */
 function commands_processes_running() {
 	$running = db_fetch_cell('SELECT COUNT(*)
@@ -342,12 +351,12 @@ function commands_processes_running() {
 }
 
 /**
- * commands_debug - this simple routine prints a standard message to the console
- *   when running in debug mode.
+ * This simple routine prints a standard message to the console when running in debug mode. Used
+ * as part of Cacti's poller commands functionality.
  *
- * @param  (string)  $message - The message to display
+ * @param string $message The message to display.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function commands_debug($message) {
 	global $seebug;
@@ -358,11 +367,12 @@ function commands_debug($message) {
 }
 
 /**
- * sig_handler - provides a generic means to catch exceptions to the Cacti log.
+ * Provides a generic means to catch exceptions to the Cacti log. Used as part of Cacti's poller
+ * commands functionality.
  *
- * @param  (int) $signo - the signal that was thrown by the interface.
+ * @param int $signo The signal that was thrown by the interface.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function sig_handler($signo) {
 	global $type, $host_id, $poller_id;
@@ -390,10 +400,10 @@ function sig_handler($signo) {
 }
 
 /**
- * commands_kill_running_processes - this function is part of an interrupt
- *   handler to kill children processes when the parent is killed
+ * This function is part of an interrupt handler to kill children processes when the parent is
+ * killed. Used as part of Cacti's poller commands functionality.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function commands_kill_running_processes() {
     global $type;
@@ -418,9 +428,9 @@ function commands_kill_running_processes() {
 }
 
 /**
- * display_version - displays version information
+ * Displays version information. Used as part of Cacti's poller commands functionality.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function display_version() {
 	$version = get_cacti_version();
@@ -428,9 +438,9 @@ function display_version() {
 }
 
 /**
- * display_help - displays help information
+ * Displays help information. Used as part of Cacti's poller commands functionality.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function display_help () {
 	display_version();

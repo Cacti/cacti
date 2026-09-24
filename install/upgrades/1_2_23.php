@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1.2.23. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_2_23() {
 	db_install_execute("CREATE TABLE IF NOT EXISTS `rrdcheck` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,

@@ -22,10 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
-/* api_data_source_crc_update - update hash stored in settings table to inform
-   remote pollers to update their caches
-   @arg $poller_id - the id of the poller impacted by hash update
-   @arg $variable  - the hash variable prefix for the replication setting. */
+/**
+ * Update hash stored in settings table to inform remote pollers to update their caches. Used as
+ * part of Cacti's lib functionality.
+ *
+ * @param int $poller_id The id of the poller impacted by hash update.
+ * @param string $variable The hash variable prefix for the replication setting.
+ *
+ * @return void No value is returned.
+ */
 function api_data_source_cache_crc_update($poller_id, $variable = 'poller_replicate_data_source_cache_crc') {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
 
@@ -34,8 +39,13 @@ function api_data_source_cache_crc_update($poller_id, $variable = 'poller_replic
 		array($hash));
 }
 
-/* api_data_source_deletable - tells you if a data source can be removed
-   @arg $local_data_id - the id of the poller impacted by hash update */
+/**
+ * Tells you if a data source can be removed. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_data_id The id of the poller impacted by hash update.
+ *
+ * @return bool Returns true if the data source can be deleted, false otherwise.
+ */
 function api_data_source_deletable($local_data_id) {
 	$graphs = db_fetch_cell_prepared('SELECT COUNT(DISTINCT gti.local_graph_id)
 		FROM data_local AS dl
@@ -54,6 +64,13 @@ function api_data_source_deletable($local_data_id) {
 	}
 }
 
+/**
+ * Removes a data source from the system. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_data_id The ID of the local data source to be removed.
+ *
+ * @return void No value is returned.
+ */
 function api_data_source_remove($local_data_id) {
 	if (empty($local_data_id)) {
 		return;
@@ -174,6 +191,13 @@ function api_data_source_remove($local_data_id) {
 	api_data_source_cache_crc_update($poller_id);
 }
 
+/**
+ * Removes multiple data sources from the system. Used as part of Cacti's lib functionality.
+ *
+ * @param array $local_data_ids An array of local data IDs to be removed.
+ *
+ * @return void No value is returned.
+ */
 function api_data_source_remove_multi($local_data_ids) {
 	// Shortcut out if no data
 	if (!cacti_sizeof($local_data_ids)) {
@@ -321,6 +345,14 @@ function api_data_source_remove_multi($local_data_ids) {
 	}
 }
 
+/**
+ * Enables a data source by setting its status to 'on' in the database. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param int $local_data_id The ID of the local data source to enable.
+ *
+ * @return void No value is returned.
+ */
 function api_data_source_enable($local_data_id) {
 	db_execute_prepared("UPDATE data_template_data
 		SET active = 'on'
@@ -342,6 +374,14 @@ function api_data_source_enable($local_data_id) {
 	update_poller_cache($local_data_id, true);
  }
 
+/**
+ * Disables a data source by deleting its poller items and updating its status. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param int $local_data_id The ID of the local data source to be disabled.
+ *
+ * @return void No value is returned.
+ */
 function api_data_source_disable($local_data_id) {
 	db_execute_prepared('DELETE FROM poller_item
 		WHERE local_data_id = ?',
@@ -369,6 +409,14 @@ function api_data_source_disable($local_data_id) {
 	}
 }
 
+/**
+ * Disables multiple data sources by their local data IDs. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $local_data_ids An array of local data IDs to be disabled.
+ *
+ * @return void No value is returned.
+ */
 function api_data_source_disable_multi($local_data_ids) {
 	/* initialize variables */
 	$ids_to_disable = '';
@@ -446,6 +494,15 @@ function api_data_source_disable_multi($local_data_ids) {
 	}
 }
 
+/**
+ * Retrieves the interface speed for a given data source. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $data_local An associative array containing the following keys: - 'host_id': The
+ *   ID of the host. - 'snmp_query_id': The ID of the SNMP query. - 'snmp_index': The SNMP index.
+ *
+ * @return int The interface speed in bits per second.
+ */
 function api_data_source_get_interface_speed($data_local) {
 	$ifHighSpeed = db_fetch_cell_prepared('SELECT field_value
 		FROM host_snmp_cache
@@ -498,6 +555,14 @@ function api_data_source_get_interface_speed($data_local) {
 	return $speed;
 }
 
+/**
+ * Change the host for a list of data sources. Used as part of Cacti's lib functionality.
+ *
+ * @param array $data_sources An array of data source IDs to be updated.
+ * @param int $device_id The ID of the new host device.
+ *
+ * @return void No value is returned.
+ */
 function api_data_source_change_host($data_sources, $device_id) {
 	if (cacti_sizeof($data_sources)) {
 		foreach($data_sources as $data_source) {
@@ -520,6 +585,14 @@ function api_data_source_change_host($data_sources, $device_id) {
 	}
 }
 
+/**
+ * Reapplies suggested data source data for a given local data ID. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $local_data_id The local data ID for which to reapply suggested data source data.
+ *
+ * @return void No value is returned.
+ */
 function api_reapply_suggested_data_source_data($local_data_id) {
 	$data_template_data_id = db_fetch_cell_prepared('SELECT id
 		FROM data_template_data
@@ -607,6 +680,15 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 	}
 }
 
+/**
+ * API helper that handles duplicate data source. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $_local_data_id The local data ID.
+ * @param mixed $_data_template_id The data template ID.
+ * @param mixed $data_source_title The data source title.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_source_title) {
 	global $struct_data_source, $struct_data_source_item;
 
@@ -751,6 +833,15 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 	}
 }
 
+/**
+ * Duplicates a data input entry and its associated fields. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $_data_input_id The ID of the data input entry to duplicate.
+ * @param string $input_title The title for the new duplicated data input entry.
+ *
+ * @return mixed The ID of the newly created data input entry on success, or false on failure.
+ */
 function api_data_input_duplicate($_data_input_id, $input_title) {
 	$orig_input = db_fetch_row_prepared('SELECT *
 		FROM data_input
@@ -799,6 +890,14 @@ function api_data_input_duplicate($_data_input_id, $input_title) {
 	return false;
 }
 
+/**
+ * Removes a data input and its associated fields and data. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $id The ID of the data input to be removed.
+ *
+ * @return void No value is returned.
+ */
 function api_data_input_remove($id) {
 	$data_input_fields = db_fetch_assoc_prepared('SELECT id
 		FROM data_input_fields
@@ -825,6 +924,16 @@ function api_data_input_remove($id) {
 	update_replication_crc(0, 'poller_replicate_data_input_crc');
 }
 
+/**
+ * Checks if the number of input fields in the input string is greater than the existing input
+ * fields in the database. Used as part of Cacti's lib functionality.
+ *
+ * @param int $id The ID of the data input.
+ * @param string $input_string The input string containing the input fields.
+ *
+ * @return bool Returns true if the number of input fields in the input string is greater than the
+ *   existing input fields, otherwise false.
+ */
 function api_data_input_more_inputs($id, $input_string) {
 	$input_string = str_replace('<path_cacti>', '', $input_string);
 	$inputs = substr_count($input_string, '<');

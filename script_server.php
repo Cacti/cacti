@@ -379,6 +379,15 @@ while (1) {
 	}
 }
 
+/**
+ * Handles the parseargs. Used as part of Cacti's script server functionality.
+ *
+ * @param string $string The string.
+ * @param array &$str_list The str list.
+ * @param bool $debug The debug.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function parseArgs($string, &$str_list, $debug = false) {
 	$delimiters = array("'",'"');
 	$delimited  = false;
@@ -490,12 +499,13 @@ function parseArgs($string, &$str_list, $debug = false) {
 }
 
 /**
- * Check whether a resolved script path is below one of the configured roots.
+ * Check whether a resolved script path is below one of the configured roots. Used as part of
+ * Cacti's script server functionality.
  *
  * @param mixed $resolved_path The realpath() result for the candidate file.
- * @param array $roots         Configured Cacti path roots.
+ * @param array $roots Configured Cacti path roots.
  *
- * @return bool
+ * @return bool Bool.
  */
 function script_server_path_is_allowed($resolved_path, array $roots) {
 	static $normalized_roots = [];
@@ -536,7 +546,11 @@ function script_server_path_is_allowed($resolved_path, array $roots) {
 }
 
 /**
- * sig_handler - properly handle signals and shutdown
+ * Properly handle signals and shutdown. Used as part of Cacti's script server functionality.
+ *
+ * @param int $signo The signal that was thrown by the interface.
+ *
+ * @return void No value is returned.
  */
 function sig_handler($signo) {
 	global $include_file, $function, $parameters;
@@ -560,9 +574,9 @@ function sig_handler($signo) {
 }
 
 /**
- * display_version - displays version information
+ * Displays version information. Used as part of Cacti's script server functionality.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function display_version() {
 	$version = get_cacti_version();
@@ -570,9 +584,9 @@ function display_version() {
 }
 
 /**
- * display_help - displays help information
+ * Displays help information. Used as part of Cacti's script server functionality.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function display_help () {
 	display_version();

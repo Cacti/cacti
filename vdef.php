@@ -94,6 +94,14 @@ switch (get_request_var('action')) {
 /* --------------------------
     Global Form Functions
    -------------------------- */
+/**
+ * -------------------------- Global Form Functions --------------------------. Used as part of
+ * Cacti's vdef functionality.
+ *
+ * @param int $vdef_id The vdef ID.
+ *
+ * @return void No value is returned.
+ */
 
 function draw_vdef_preview($vdef_id) {
 	?>
@@ -108,6 +116,12 @@ function draw_vdef_preview($vdef_id) {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's vdef functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function vdef_form_save() {
 	if (isset_request_var('save_component_vdef')) {
@@ -154,6 +168,14 @@ function vdef_form_save() {
 	}
 }
 
+/**
+ * Handles the duplicate vdef. Used as part of Cacti's vdef functionality.
+ *
+ * @param int $_vdef_id The vdef ID.
+ * @param string $vdef_title The vdef title.
+ *
+ * @return void No value is returned.
+ */
 function duplicate_vdef($_vdef_id, $vdef_title) {
 	global $fields_vdef_edit;
 
@@ -205,6 +227,12 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 /* ------------------------
     The 'actions' function
    ------------------------ */
+/**
+ * ------------------------ The 'actions' function ------------------------. Used as part of
+ * Cacti's vdef functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function vdef_form_actions() {
 	global $vdef_actions;
@@ -313,6 +341,12 @@ function vdef_form_actions() {
 /* --------------------------
     VDEF Item Functions
    -------------------------- */
+/**
+ * -------------------------- VDEF Item Functions --------------------------. Used as part of
+ * Cacti's vdef functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function vdef_item_remove_confirm() {
 	global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
@@ -363,6 +397,11 @@ function vdef_item_remove_confirm() {
 	form_end();
 }
 
+/**
+ * Handles the vdef item remove. Used as part of Cacti's vdef functionality.
+ *
+ * @return void No value is returned.
+ */
 function vdef_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('vdef_id');
@@ -373,6 +412,11 @@ function vdef_item_remove() {
 		array(get_request_var('id')));
 }
 
+/**
+ * Handles the vdef item edit. Used as part of Cacti's vdef functionality.
+ *
+ * @return void No value is returned.
+ */
 function vdef_item_edit() {
 	global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
 
@@ -505,6 +549,12 @@ function vdef_item_edit() {
 /* ---------------------
     VDEF Functions
    --------------------- */
+/**
+ * --------------------- VDEF Functions ---------------------. Used as part of Cacti's vdef
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function item_movedown() {
 	/* ================= input validation ================= */
@@ -515,6 +565,11 @@ function item_movedown() {
 	move_item_down('vdef_items', get_request_var('id'), 'vdef_id=' . get_request_var('vdef_id'));
 }
 
+/**
+ * Handles the item moveup. Used as part of Cacti's vdef functionality.
+ *
+ * @return void No value is returned.
+ */
 function item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -524,6 +579,11 @@ function item_moveup() {
 	move_item_up('vdef_items', get_request_var('id'), 'vdef_id=' . get_request_var('vdef_id'));
 }
 
+/**
+ * Handles the vdef item dnd. Used as part of Cacti's vdef functionality.
+ *
+ * @return void No value is returned.
+ */
 function vdef_item_dnd() {
 	/* ================= Input validation ================= */
 	get_filter_request_var('id');
@@ -553,6 +613,11 @@ function vdef_item_dnd() {
 	header('Location: vdef.php?action=edit&header=false&id=' . get_request_var('id'));
 }
 
+/**
+ * Handles the vdef edit. Used as part of Cacti's vdef functionality.
+ *
+ * @return void No value is returned.
+ */
 function vdef_edit() {
 	global $vdef_item_types;
 
@@ -715,6 +780,11 @@ function vdef_edit() {
 	<?php
 }
 
+/**
+ * Handles the vdef filter. Used as part of Cacti's vdef functionality.
+ *
+ * @return void No value is returned.
+ */
 function vdef_filter() {
 	global $item_rows;
 
@@ -803,6 +873,14 @@ function vdef_filter() {
 	html_end_box();
 }
 
+/**
+ * Retrieves the vdef records. Used as part of Cacti's vdef functionality.
+ *
+ * @param mixed &$total_rows The total rows.
+ * @param mixed &$rows The rows.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function get_vdef_records(&$total_rows, &$rows) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
@@ -850,6 +928,13 @@ function get_vdef_records(&$total_rows, &$rows) {
 		$sql_limit");
 }
 
+/**
+ * Handles the vdef. Used as part of Cacti's vdef functionality.
+ *
+ * @param bool $refresh The refresh.
+ *
+ * @return void No value is returned.
+ */
 function vdef($refresh = true) {
 	global $vdef_actions;
 

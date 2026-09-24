@@ -112,6 +112,13 @@ switch (get_request_var('action')) {
 
 exit;
 
+/**
+ * Debug. Used as part of Cacti's remote agent functionality.
+ *
+ * @param mixed $message The message.
+ *
+ * @return void No value is returned.
+ */
 function debug($message) {
 	global $debug;
 
@@ -120,6 +127,13 @@ function debug($message) {
 	}
 }
 
+/**
+ * Handles the remote agent strip domain. Used as part of Cacti's remote agent functionality.
+ *
+ * @param mixed $host The host.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function remote_agent_strip_domain($host) {
 	if (strpos($host, '.') !== false) {
 		$parts = explode('.', $host);
@@ -129,6 +143,13 @@ function remote_agent_strip_domain($host) {
 	}
 }
 
+/**
+ * Handles the remote agent auth cache get. Used as part of Cacti's remote agent functionality.
+ *
+ * @param mixed $key The key.
+ *
+ * @return bool|null The cached boolean result, or null on a cache miss.
+ */
 function remote_agent_auth_cache_get($key) {
 	if (function_exists('apcu_fetch')) {
 		$success = false;
@@ -142,12 +163,26 @@ function remote_agent_auth_cache_get($key) {
 	return null;
 }
 
+/**
+ * Handles the remote agent auth cache set. Used as part of Cacti's remote agent functionality.
+ *
+ * @param mixed $key The key.
+ * @param mixed $value The value.
+ * @param int $ttl The ttl.
+ *
+ * @return void No value is returned.
+ */
 function remote_agent_auth_cache_set($key, $value, $ttl = 30) {
 	if (function_exists('apcu_store')) {
 		apcu_store($key, (bool)$value, $ttl);
 	}
 }
 
+/**
+ * Handles the remote client authorized. Used as part of Cacti's remote agent functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function remote_client_authorized() {
 	global $config, $poller_db_cnn_id;
 
@@ -249,6 +284,11 @@ function remote_client_authorized() {
 	return true;
 }
 
+/**
+ * Retrieves the graph data. Used as part of Cacti's remote agent functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function get_graph_data() {
 	get_filter_request_var('graph_start');
 	get_filter_request_var('graph_end');
@@ -321,6 +361,11 @@ function get_graph_data() {
 	return true;
 }
 
+/**
+ * Retrieves the SNMP data. Used as part of Cacti's remote agent functionality.
+ *
+ * @return void No value is returned.
+ */
 function get_snmp_data() {
 	$host_id = get_filter_request_var('host_id');
 	$oid     = get_nfilter_request_var('oid');
@@ -356,6 +401,11 @@ function get_snmp_data() {
 	print $output;
 }
 
+/**
+ * Retrieves the SNMP data walk. Used as part of Cacti's remote agent functionality.
+ *
+ * @return void No value is returned.
+ */
 function get_snmp_data_walk() {
 	$host_id = get_filter_request_var('host_id');
 	$oid     = get_nfilter_request_var('oid');
@@ -395,11 +445,21 @@ function get_snmp_data_walk() {
 	}
 }
 
+/**
+ * Handles the ping device. Used as part of Cacti's remote agent functionality.
+ *
+ * @return void No value is returned.
+ */
 function ping_device() {
 	$host_id = get_filter_request_var('host_id');
 	api_device_ping_device($host_id, true);
 }
 
+/**
+ * Handles the poll for data. Used as part of Cacti's remote agent functionality.
+ *
+ * @return array|null An empty array when the poller ID is invalid; otherwise the polled results are printed as JSON and no value is returned.
+ */
 function poll_for_data() {
 	global $config;
 
@@ -545,6 +605,11 @@ function poll_for_data() {
 	print json_encode($return);
 }
 
+/**
+ * Handles the run remote data query. Used as part of Cacti's remote agent functionality.
+ *
+ * @return void No value is returned.
+ */
 function run_remote_data_query() {
 	$host_id = get_filter_request_var('host_id');
 	$data_query_id = get_filter_request_var('data_query_id');
@@ -554,6 +619,11 @@ function run_remote_data_query() {
 	}
 }
 
+/**
+ * Handles the run remote discovery. Used as part of Cacti's remote agent functionality.
+ *
+ * @return void No value is returned.
+ */
 function run_remote_discovery() {
 	global $config;
 

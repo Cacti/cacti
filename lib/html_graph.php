@@ -22,6 +22,14 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Initializes the session variables for real-time data step and window. This function checks if
+ * the session variables 'sess_realtime_dsstep' and 'sess_realtime_window' are set. If they are
+ * not set, it initializes them with the values from the configuration options 'realtime_interval'
+ * and 'realtime_gwindow' respectively. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function initialize_realtime_step_and_window() {
 	global $realtime_default_size, $realtime_sizes;
 
@@ -42,6 +50,18 @@ function initialize_realtime_step_and_window() {
 	$_SESSION['sess_realtime_size'] = $realtime_size;
 }
 
+/**
+ * Sets the default graph action based on user settings and permissions. This function checks if a
+ * request variable 'action' is set. If not, it sets up a default action based on the user's
+ * settings and permissions. The function prioritizes the following actions: 'tree', 'list', and
+ * 'preview', in that order. If none of these actions are allowed it attempts to find the first
+ * action that the user has permission to. If it can not find one of these the user is actually in
+ * an area that they do not have permission to, so we raise a message. The function leverages the
+ * session sess_graph_view_action to remember the last page that the user visited. There are only
+ * three good values here: tree, preview, and list. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function set_default_graph_action() {
 	if (!isset_request_var('action')) {
 		/* setup the default action */
@@ -89,6 +109,11 @@ function set_default_graph_action() {
 	}
 }
 
+/**
+ * Wrapper for plugins - it is used in mactrack, microtic, hmib, ...
+ *
+ * @return void No value is returned.
+ */
 function html_graph_validate_preview_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -148,6 +173,24 @@ function html_graph_validate_preview_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Generates the HTML for the graph preview filter form. This function creates a form that allows
+ * users to filter and preview graphs based on various criteria such as site, location, host,
+ * template, and time span. Used as part of Cacti's lib functionality.
+ *
+ * @param string $page The current page URL.
+ * @param string $action The action to be performed on form submission.
+ * @param string $devices_where SQL condition for filtering devices (optional).
+ * @param string $templates_where SQL condition for filtering templates (optional).
+ *
+ * @return void No value is returned.
+ *
+ * @global array $graphs_per_page Array of graphs per page options.
+ * @global array $realtime_window Array of real-time window options.
+ * @global array $realtime_refresh Array of real-time refresh interval options.
+ * @global array $graph_timeshifts Array of graph time shift options.
+ * @global array $graph_timespans Array of graph time span options.
+ */
 function html_graph_preview_filter($page, $action, $devices_where = '', $templates_where = '') {
 	global $graphs_per_page, $realtime_window, $realtime_refresh, $realtime_sizes, $graph_timeshifts, $graph_timespans, $config;
 
@@ -489,6 +532,19 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 	<?php
 }
 
+/**
+ * Generates new graphs for a given host and host template. This function processes the selected
+ * graphs array and generates the corresponding graphs for the specified host and host template.
+ * If no fields are drawn on the form, it saves the graphs without prompting the user. Used as
+ * part of Cacti's lib functionality.
+ *
+ * @param string $page The page URL to redirect to after saving the graphs.
+ * @param int $host_id The ID of the host for which the graphs are being generated.
+ * @param int $host_template_id The ID of the host template used for generating the graphs.
+ * @param array $selected_graphs_array An array of selected graphs to be generated.
+ *
+ * @return void No value is returned.
+ */
 function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_graphs_array) {
 	$snmp_query_id     = 0;
 	$num_output_fields = array();
@@ -543,6 +599,19 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 	bottom_footer();
 }
 
+/**
+ * Generates custom HTML form data for graph creation based on the provided parameters. Used as
+ * part of Cacti's lib functionality.
+ *
+ * @param int $host_id The ID of the host.
+ * @param int $host_template_id The ID of the host template.
+ * @param int $snmp_query_id The ID of the SNMP query.
+ * @param string $form_type The type of form ('cg' for graph template, 'sg' for SNMP query).
+ * @param string $form_id1 The ID of the form element.
+ * @param array $form_array2 An array of form elements.
+ *
+ * @return array An array of output fields for the form.
+ */
 function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $form_type, $form_id1, $form_array2) {
 	/* ================= input validation ================= */
 	input_validate_input_number($form_id1);

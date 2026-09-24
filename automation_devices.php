@@ -86,6 +86,11 @@ switch(get_request_var('action')) {
 		break;
 }
 
+/**
+ * Handles the form actions. Used as part of Cacti's automation devices functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_actions() {
 	global $device_actions, $availability_options;
 
@@ -255,6 +260,11 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * Displays the discovery page. Used as part of Cacti's automation devices functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_discovery_page() {
 	global $item_rows, $os_arr, $status_arr, $networks, $device_actions;
 
@@ -345,6 +355,11 @@ function display_discovery_page() {
 	bottom_footer();
 }
 
+/**
+ * Processes the request vars. Used as part of Cacti's automation devices functionality.
+ *
+ * @return void No value is returned.
+ */
 function process_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -402,6 +417,15 @@ function process_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Retrieves the discovery results. Used as part of Cacti's automation devices functionality.
+ *
+ * @param int  &$total_rows The total rows.
+ * @param int $rows The rows.
+ * @param bool $export The export.
+ *
+ * @return array An array of results.
+ */
 function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 	global $os_arr, $status_arr, $networks, $device_actions;
 
@@ -476,6 +500,11 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 	}
 }
 
+/**
+ * Renders the filter. Used as part of Cacti's automation devices functionality.
+ *
+ * @return void No value is returned.
+ */
 function draw_filter() {
 	global $item_rows, $os_arr, $status_arr, $networks, $device_actions;
 
@@ -643,6 +672,11 @@ function draw_filter() {
 	html_end_box();
 }
 
+/**
+ * Handles the export discovery results. Used as part of Cacti's automation devices functionality.
+ *
+ * @return void No value is returned.
+ */
 function export_discovery_results() {
 	$results = get_discovery_results($total_rows, 0, true);
 
@@ -676,6 +710,11 @@ function export_discovery_results() {
 	}
 }
 
+/**
+ * Handles the purge discovery results. Used as part of Cacti's automation devices functionality.
+ *
+ * @return void No value is returned.
+ */
 function purge_discovery_results() {
 	get_filter_request_var('network');
 
@@ -690,6 +729,13 @@ function purge_discovery_results() {
 	exit;
 }
 
+/**
+ * Handles the SNMP data. Used as part of Cacti's automation devices functionality.
+ *
+ * @param string $item The item.
+ *
+ * @return string The resulting string.
+ */
 function snmp_data($item) {
 	if ($item == '') {
 		return __('N/A');
@@ -698,6 +744,13 @@ function snmp_data($item) {
 	}
 }
 
+/**
+ * Handles the export data. Used as part of Cacti's automation devices functionality.
+ *
+ * @param string $item The item.
+ *
+ * @return string The resulting string.
+ */
 function export_data($item) {
 	if ($item == '') {
 		return 'N/A';

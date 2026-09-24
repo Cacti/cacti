@@ -22,6 +22,14 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Simple function to convert an XML string to an array. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param string $data The xml string.
+ *
+ * @return mixed The processed xml to an array.
+ */
 function xml2array($data) {
 	/* mvo voncken@mailandnews.com
 	original ripped from  on the php-manual:gdemartini@bol.com.br
@@ -44,6 +52,14 @@ function xml2array($data) {
 	return $tree;
 }
 
+/**
+ * Retrieves the children. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $vals The vals.
+ * @param mixed &$i The i.
+ *
+ * @return array An array of results.
+ */
 function get_children($vals, &$i) {
 	$children = array();
 
@@ -84,6 +100,13 @@ function get_children($vals, &$i) {
 	}
 }
 
+/**
+ * Handles the rrdxport2array. Used as part of Cacti's lib functionality.
+ *
+ * @param string $data The data.
+ *
+ * @return array An array of results.
+ */
 function rrdxport2array($data) {
 	// Bug force encoding to UTF-8
 	$data = str_replace(array('US-ASCII', 'ISO-8859-1'), 'UTF-8', $data);
@@ -133,6 +156,16 @@ function rrdxport2array($data) {
 	return $tree;
 }
 
+/**
+ * Retrieves the RRD children. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $vals The vals.
+ * @param mixed &$i The i.
+ * @param mixed &$column The column.
+ * @param mixed &$row The row.
+ *
+ * @return array An array of results.
+ */
 function get_rrd_children($vals, &$i, &$column, &$row) {
 	$children = array();
 

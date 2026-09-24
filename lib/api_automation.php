@@ -22,6 +22,17 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Displays the hosts that match the given rule. Used as part of Cacti's lib functionality.
+ *
+ * @param array $rule The rule to match hosts against. The type of this parameter depends on the
+ *   rule_type.
+ * @param int $rule_type The type of rule being applied. This determines how the rule is
+ *   interpreted.
+ * @param string $url The URL to be used for displaying the matching hosts.
+ *
+ * @return void No value is returned.
+ */
 function display_matching_hosts($rule, $rule_type, $url) {
 	global $device_actions, $item_rows;
 
@@ -329,6 +340,16 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	form_end();
 }
 
+/**
+ * Displays matching graphs based on the provided rule and rule type. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $rule The rule to match graphs against.
+ * @param int $rule_type The type of the rule.
+ * @param string $url The URL to be used for displaying the graphs.
+ *
+ * @return void No value is returned.
+ */
 function display_matching_graphs($rule, $rule_type, $url) {
 	global $graph_actions, $item_rows;
 
@@ -622,6 +643,15 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	form_end();
 }
 
+/**
+ * Displays new graphs based on the provided rule and URL. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $rule An array containing the rules for displaying new graphs.
+ * @param string $url The URL to be used for displaying the new graphs.
+ *
+ * @return void No value is returned.
+ */
 function display_new_graphs($rule, $url) {
 	global $config, $item_rows;
 
@@ -970,6 +1000,17 @@ function display_new_graphs($rule, $url) {
 	print '<br>';
 }
 
+/**
+ * Displays matching trees based on the provided rule ID and type. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $rule_id The ID of the rule to match.
+ * @param int $rule_type The type of the rule to match.
+ * @param array $item The item array to be processed.
+ * @param string $url The URL associated with the item.
+ *
+ * @return void No value is returned.
+ */
 function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	global $automation_tree_header_types;
 	global $device_actions, $item_rows;
@@ -1299,6 +1340,15 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	print "</form>\n";
 }
 
+/**
+ * Checks if a specified column exists in the given tables. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param string $column The name of the column to check for.
+ * @param array $tables An array of table names to search for the column.
+ *
+ * @return bool Returns true if the column exists in any of the tables, false otherwise.
+ */
 function api_automation_column_exists($column, $tables) {
 	$column = str_replace(array('h.', 'ht.', 'gt.', 'gl.', 'gtg.'), array('', '', '', '', ''), $column);
 
@@ -1313,6 +1363,16 @@ function api_automation_column_exists($column, $tables) {
 	return false;
 }
 
+/**
+ * Displays match rule items. Used as part of Cacti's lib functionality.
+ *
+ * @param string $title The title to display.
+ * @param mixed $rule_id The rule ID.
+ * @param int $rule_type The type of the rule.
+ * @param string $module The module associated with the rule.
+ *
+ * @return void No value is returned.
+ */
 function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 	global $automation_op_array, $automation_oper, $automation_tree_header_types;
 
@@ -1380,6 +1440,16 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 	html_end_box(true);
 }
 
+/**
+ * Displays the graph rule items. Used as part of Cacti's lib functionality.
+ *
+ * @param string $title The title of the graph rule.
+ * @param mixed $rule_id The rule ID.
+ * @param int $rule_type The type of the rule.
+ * @param string $module The module associated with the rule.
+ *
+ * @return void No value is returned.
+ */
 function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 	global $automation_op_array, $automation_oper, $automation_tree_header_types;
 
@@ -1442,6 +1512,17 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 
 }
 
+/**
+ * Displays the tree rule items. Used as part of Cacti's lib functionality.
+ *
+ * @param string $title The title of the tree rule items.
+ * @param mixed $rule_id The rule ID.
+ * @param string $item_type The type of the item.
+ * @param int $rule_type The type of the rule.
+ * @param string $module The module associated with the rule.
+ *
+ * @return void No value is returned.
+ */
 function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $module) {
 	global $automation_tree_header_types, $tree_sort_types, $host_group_types;
 
@@ -1510,6 +1591,15 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 	html_end_box(true);
 }
 
+/**
+ * Duplicates automation graph rules based on the given ID and title. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $_id The ID of the automation graph rule to duplicate.
+ * @param string $_title The title for the duplicated automation graph rule.
+ *
+ * @return void No value is returned.
+ */
 function duplicate_automation_graph_rules($_id, $_title) {
 	global $fields_automation_graph_rules_edit1, $fields_automation_graph_rules_edit2, $fields_automation_graph_rules_edit3;
 
@@ -1553,6 +1643,16 @@ function duplicate_automation_graph_rules($_id, $_title) {
 	}
 }
 
+/**
+ * Duplicates an automation tree rule and its associated match and action rule items. Used as part
+ * of Cacti's lib functionality.
+ *
+ * @param int $_id The ID of the existing automation tree rule to duplicate.
+ * @param string $_title The title for the new duplicated rule, with '<rule_name>' placeholder
+ *   replaced by the original rule's name.
+ *
+ * @return void No value is returned.
+ */
 function duplicate_automation_tree_rules($_id, $_title) {
 	global $fields_automation_tree_rules_edit1, $fields_automation_tree_rules_edit2, $fields_automation_tree_rules_edit3;
 
@@ -1599,6 +1699,16 @@ function duplicate_automation_tree_rules($_id, $_title) {
 	}
 }
 
+/**
+ * Builds the SQL HAVING clause for a graph object based on the provided rule and filter. Used as
+ * part of Cacti's lib functionality.
+ *
+ * @param array $rule An associative array containing the rule details, including 'snmp_query_id'.
+ * @param string $filter The filter string to be used in the LIKE clause. If null or empty, no
+ *   HAVING clause is generated.
+ *
+ * @return string The generated SQL HAVING clause if the filter is not empty, otherwise null.
+ */
 function build_graph_object_sql_having($rule, $filter) {
 	if ($filter != '') {
 		$field_names = get_field_names($rule['snmp_query_id']);
@@ -1619,6 +1729,14 @@ function build_graph_object_sql_having($rule, $filter) {
 	}
 }
 
+/**
+ * Builds a SQL query string for retrieving data based on the provided rule. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param array $rule An associative array containing the rule parameters.
+ *
+ * @return string The constructed SQL query string.
+ */
 function build_data_query_sql($rule) {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' called: ' . json_encode($rule), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -1654,6 +1772,15 @@ function build_data_query_sql($rule) {
 	return $sql_query;
 }
 
+/**
+ * Builds a SQL filter string based on the provided rule ID and rule type. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param int $rule_id The ID of the rule to build the filter for.
+ * @param int $rule_type The type of the rule to build the filter for.
+ *
+ * @return string The constructed SQL filter string.
+ */
 function build_matching_objects_filter($rule_id, $rule_type) {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . " called rule id: $rule_id", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -1689,6 +1816,14 @@ function build_matching_objects_filter($rule_id, $rule_type) {
 	return $sql_filter;
 }
 
+/**
+ * Builds a filter string for automation rule items. Used as part of Cacti's lib functionality.
+ *
+ * @param array $automation_rule_items An array of automation rule items to be filtered.
+ * @param string $prefix An optional prefix to be added to the filter string.
+ *
+ * @return string The constructed filter string.
+ */
 function build_rule_item_filter($automation_rule_items, $prefix = '') {
 	global $automation_op_array, $automation_oper;
 
@@ -1733,11 +1868,13 @@ function build_rule_item_filter($automation_rule_items, $prefix = '') {
 	return $sql_filter;
 }
 
-/*
- * build_sort_order
- * @arg $index_order	sort order given by e.g. xml_array[index_order_type]
- * @arg $default_order	default order if any
- * return				sql sort order string
+/**
+ * build_sort_order - builds the sql sort order string. Used as part of Cacti's lib functionality.
+ *
+ * @param string $index_order The index order to build the sort order from.
+ * @param string $default_order The default order to use if no index order is provided.
+ *
+ * @return string The built sort order.
  */
 function build_sort_order($index_order, $default_order = '') {
 	$function = automation_function_with_pid(__FUNCTION__);
@@ -1767,11 +1904,13 @@ function build_sort_order($index_order, $default_order = '') {
 }
 
 /**
- * get an array of hosts matching a host_match rule
- * @param array $rule		- rule
- * @param int $rule_type	- rule type
- * @param string $sql_where - additional where clause
- * @return array			- array of matching hosts
+ * Get an array of hosts matching a host_match rule. Used as part of Cacti's lib functionality.
+ *
+ * @param array $rule Rule.
+ * @param int $rule_type Rule type.
+ * @param string $sql_where Additional where clause.
+ *
+ * @return array Of matching hosts.
  */
 function get_matching_hosts($rule, $rule_type, $sql_where='') {
 	$function = automation_function_with_pid(__FUNCTION__);
@@ -1799,11 +1938,13 @@ function get_matching_hosts($rule, $rule_type, $sql_where='') {
 }
 
 /**
- * get an array of graphs matching a graph_match rule
- * @param array $rule		- rule
- * @param int $rule_type	- rule type
- * @param string $sql_where - additional where clause
- * @return array			- matching graphs
+ * Get an array of graphs matching a graph_match rule. Used as part of Cacti's lib functionality.
+ *
+ * @param array $rule Rule.
+ * @param int $rule_type Rule type.
+ * @param string $sql_where Additional where clause.
+ *
+ * @return array Matching graphs.
  */
 function get_matching_graphs($rule, $rule_type, $sql_where = '') {
 	$function = automation_function_with_pid(__FUNCTION__);
@@ -1836,10 +1977,13 @@ function get_matching_graphs($rule, $rule_type, $sql_where = '') {
 	return $results;
 }
 
-/*
- * get_created_graphs
- * @arg $rule		provide snmp_query_id, graph_type_id
- * return			all graphs that have already been created for the given selection
+/**
+ * get_created_graphs - returns all graphs that have already been created for the given
+ * selection. Used as part of Cacti's lib functionality.
+ *
+ * @param array $rule An associative array containing the criteria for selecting the created graphs.
+ *
+ * @return array An array of graphs that match the specified rule.
  */
 function get_created_graphs($rule) {
 	$function = automation_function_with_pid(__FUNCTION__);
@@ -1897,6 +2041,15 @@ function get_created_graphs($rule) {
 	return $items;
 }
 
+/**
+ * Retrieves the fields of a given table, excluding specified fields. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param string $table The name of the table to retrieve fields from.
+ * @param array $excluded_fields An array of field names to exclude from the result.
+ *
+ * @return array An array of field names from the table, excluding the specified fields.
+ */
 function get_query_fields($table, $excluded_fields) {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' called', false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -1939,10 +2092,13 @@ function get_query_fields($table, $excluded_fields) {
 	return $new_fields;
 }
 
-/*
- * get_field_names
- * @arg $snmp_query_id	snmp query id
- * return				all field names for that snmp query, taken from snmp_cache
+/**
+ * get_field_names - returns all field names for that snmp query, taken from snmp_cache. Used as
+ * part of Cacti's lib functionality.
+ *
+ * @param string $snmp_query_id The ID of the SNMP query for which to retrieve field names.
+ *
+ * @return array|bool An array of field names associated with the specified SNMP query ID.
  */
 function get_field_names($snmp_query_id) {
 	$function = automation_function_with_pid(__FUNCTION__);
@@ -1957,6 +2113,14 @@ function get_field_names($snmp_query_id) {
 	return $fields;
 }
 
+/**
+ * Handles the array to list. Used as part of Cacti's lib functionality.
+ *
+ * @param array $array The array.
+ * @param string $sql_column The SQL column.
+ *
+ * @return string The resulting string.
+ */
 function array_to_list($array, $sql_column) {
 	$function = automation_function_with_pid(__FUNCTION__);
 
@@ -1985,6 +2149,14 @@ function array_to_list($array, $sql_column) {
 	}
 }
 
+/**
+ * Subtracts the elements of one array from another. Used as part of Cacti's lib functionality.
+ *
+ * @param array $big_array The array from which elements will be subtracted.
+ * @param array $small_array The array containing elements to subtract from the first array.
+ *
+ * @return array The resulting array after subtraction.
+ */
 function array_minus($big_array, $small_array) {
 	# remove all unwanted fields
 	if (cacti_sizeof($small_array)) {
@@ -1998,11 +2170,31 @@ function array_minus($big_array, $small_array) {
 	return $big_array;
 }
 
+/**
+ * Replaces all occurrences of the search string with the replacement string in the target string.
+ * Used as part of Cacti's lib functionality.
+ *
+ * @param string $search The value being searched for.
+ * @param array|string $replace The replacement value that replaces found search values.
+ * @param string $target The string being searched and replaced on.
+ *
+ * @return array List<string> The resulting string after the replacements have been made.
+ */
 function automation_string_replace($search, $replace, $target) {
 	$repl = preg_replace('/' . $search . '/i', $replace, $target);
 	return preg_split('/\\\\n/', $repl, -1, PREG_SPLIT_NO_EMPTY);
 }
 
+/**
+ * Edits a global item based on the provided rule ID, rule item ID, and rule type. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param int $rule_id The ID of the rule to be edited.
+ * @param int $rule_item_id The ID of the rule item to be edited.
+ * @param int $rule_type The type of the rule to be edited.
+ *
+ * @return void No value is returned.
+ */
 function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 	global $config, $fields_automation_match_rule_item_edit, $fields_automation_graph_rule_item_edit;
 	global $fields_automation_tree_rule_item_edit, $automation_tree_header_types;
@@ -2182,9 +2374,12 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 }
 
 /**
- * hook executed for a graph template
- * @param $host_id - the host to perform automation on
- * @param $graph_template_id - the graph_template_id to perform automation on
+ * Hook executed for a graph template. Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_id The host to perform automation on.
+ * @param int $graph_template_id The graph_template_id to perform automation on.
+ *
+ * @return void No value is returned.
  */
 function automation_hook_graph_template($host_id, $graph_template_id) {
 	global $config;
@@ -2200,8 +2395,11 @@ function automation_hook_graph_template($host_id, $graph_template_id) {
 }
 
 /**
- * hook executed for a new graph on a tree
- * @param $data - data passed from hook
+ * Hook executed for a new graph on a tree. Used as part of Cacti's lib functionality.
+ *
+ * @param array $data Data passed from hook.
+ *
+ * @return array Array.
  */
 function automation_hook_graph_create_tree($data) {
 	global $config;
@@ -2222,8 +2420,12 @@ function automation_hook_graph_create_tree($data) {
 }
 
 /**
- * run rules for a data query
- * @param $data - data passed from hook
+ * Run rules for a data query. Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_id The ID of the host for which the data query is to be executed.
+ * @param int $snmp_query_id The ID of the SNMP query to be executed.
+ *
+ * @return void No value is returned.
  */
 function automation_execute_data_query($host_id, $snmp_query_id) {
 	global $config;
@@ -2281,21 +2483,15 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
 }
 
 /**
- * automation_graph_automation_eligible
+ * Automation_graph_automation_eligible This function determines if a Graph Template is eligible
+ * for automation. If there are any of the following that have designated allowing for an
+ * over-ride, but to not have a default value, then the Graph Template is not eligible for
+ * automatic automation. Data Input Fields Data Template Data Fields Graph Template Fields. Used
+ * as part of Cacti's lib functionality.
  *
- * This function determines if a Graph Template is eligible for
- * automation.  If there are any of the following that have
- * designated allowing for an over-ride, but to not have a default
- * value, then the Graph Template is not eligible for automatic
- * automation.
+ * @param int $graph_template_id The graph template ID.
  *
- * Data Input Fields
- * Data Template Data Fields
- * Graph Template Fields
- *
- * @param $graph_template_id
- *
- * @return boolean eligibility
+ * @return boolean Eligibility.
  */
 function automation_graph_automation_eligible($graph_template_id) {
 	$graph_template = db_fetch_row_prepared('SELECT *
@@ -2375,8 +2571,12 @@ function automation_graph_automation_eligible($graph_template_id) {
 }
 
 /**
- * run rules for a graph template
- * @param $data - data passed from hook
+ * Run rules for a graph template. Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_id The ID of the host for which the graph template is to be executed.
+ * @param int $graph_template_id The ID of the graph template to be executed.
+ *
+ * @return void No value is returned.
  */
 function automation_execute_graph_template($host_id, $graph_template_id) {
 	global $config;
@@ -2459,8 +2659,11 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 }
 
 /**
- * run rules for a new device in a tree
- * @param $host_id - the host id of the device
+ * Run rules for a new device in a tree. Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_id The host id of the device.
+ *
+ * @return void No value is returned.
  */
 function automation_execute_device_create_tree($host_id) {
 	global $config;
@@ -2517,8 +2720,11 @@ function automation_execute_device_create_tree($host_id) {
 }
 
 /**
- * run rules for a new graph on a tree
- * @param $data - data passed from hook
+ * Run rules for a new graph on a tree. Used as part of Cacti's lib functionality.
+ *
+ * @param int $graph_id The ID of the graph to be used in the tree creation process.
+ *
+ * @return void No value is returned.
  */
 function automation_execute_graph_create_tree($graph_id) {
 	global $config;
@@ -2573,10 +2779,13 @@ function automation_execute_graph_create_tree($graph_id) {
 }
 
 /**
- * create all graphs for a data query
- * @param int $host_id			- host id
- * @param int $snmp_query_id	- snmp query id
- * @param array $rule			- matching rule
+ * Create all graphs for a data query. Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_id Host id.
+ * @param int $snmp_query_id Snmp query id.
+ * @param array $rule Matching rule.
+ *
+ * @return bool Bool.
  */
 function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 	global $config, $automation_op_array, $automation_oper;
@@ -2727,14 +2936,14 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 }
 
 /**
- * create_all_header_nodes - walk across all tree rule items
- *   - get all related rule items
- *   - take header type into account
- *   - create (multiple) header nodes
+ * Walk across all tree rule items - get all related rule items - take header type into account -
+ * create (multiple) header nodes. Used as part of Cacti's lib functionality.
  *
- * @arg $item_id	id of the host/graph we're working on
- * @arg $rule		the rule we're working on
- * returns			the last tree item that was hooked into the tree
+ * @param int $item_id Id of the host/graph we're working on.
+ * @param array $rule The rule we're working on returns the last tree item that was hooked into
+ *   the tree.
+ *
+ * @return int The last tree item that was hooked into the tree.
  */
 function create_all_header_nodes($item_id, $rule) {
 	global $config, $automation_tree_header_types;
@@ -2816,17 +3025,16 @@ function create_all_header_nodes($item_id, $rule) {
 }
 
 /**
- * create_multi_header_node - work on a single header item
- *   - evaluate replacement rule
- *   - this may return an array of new header items
- *   - walk that array to create all header items for this single rule item
+ * Work on a single header item - evaluate replacement rule - this may return an array of new
+ * header items - walk that array to create all header items for this single rule item. Used as
+ * part of Cacti's lib functionality.
  *
- * @arg $target     string (name) of the object; e.g. ht.name
- * @arg $rule       rule
- * @arg $tree_item  rule item; replacement_pattern may result in multi-line replacement
- * @arg $parent_tree_item_id  parent tree item id
+ * @param string $object The object where the multi-header node will be created.
+ * @param array $rule Rule.
+ * @param array $tree_item Rule item; replacement_pattern may result in multi-line replacement.
+ * @param int $parent_tree_item_id Parent tree item id *return id of the header that was hooked in.
  *
- * *return          id of the header that was hooked in
+ * @return int Int.
  */
 function create_multi_header_node($object, $rule, $tree_item, $parent_tree_item_id){
 	global $config;
@@ -2853,14 +3061,14 @@ function create_multi_header_node($object, $rule, $tree_item, $parent_tree_item_
 }
 
 /**
- * create a single tree header node
+ * Create a single tree header node. Used as part of Cacti's lib functionality.
  *
- * @param string $title				- graph title
- * @param array $rule				- rule
- * @param array $item				- item
- * @param int $parent_tree_item_id	- parent item id
+ * @param string $title Graph title.
+ * @param array $rule Rule.
+ * @param array $item Item.
+ * @param int $parent_tree_item_id Parent item id.
  *
- * @return int						- id of new item
+ * @return int Id of new item.
  */
 function create_header_node($title, $rule, $item, $parent_tree_item_id) {
 	global $config;
@@ -2890,11 +3098,13 @@ function create_header_node($title, $rule, $item, $parent_tree_item_id) {
 }
 
 /**
- * add a device to the tree
- * @param int $host_id	- host id
- * @param int $parent	- parent id
- * @param array $rule 	- rule
- * @return int			- id of new item
+ * Add a device to the tree. Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_id Host id.
+ * @param int $parent Parent id.
+ * @param array $rule Rule.
+ *
+ * @return int Id of new item.
  */
 function create_device_node($host_id, $parent, $rule) {
 	global $config;
@@ -2931,11 +3141,13 @@ function create_device_node($host_id, $parent, $rule) {
 }
 
 /**
- * add a site to the tree
- * @param int $site_id	- site id
- * @param int $parent	- parent id
- * @param array $rule 	- rule
- * @return int			- id of new item
+ * Add a site to the tree. Used as part of Cacti's lib functionality.
+ *
+ * @param int $site_id Site id.
+ * @param int $parent Parent id.
+ * @param array $rule Rule.
+ *
+ * @return int Id of new item.
  */
 function create_site_node($site_id, $parent, $rule) {
 	global $config;
@@ -2972,11 +3184,13 @@ function create_site_node($site_id, $parent, $rule) {
 }
 
 /**
- * add a device to the tree
- * @param int $graph_id	- graph id
- * @param int $parent	- parent id
- * @param array $rule	- rule
- * @return int			- id of new item
+ * Add a device to the tree. Used as part of Cacti's lib functionality.
+ *
+ * @param int $graph_id Graph id.
+ * @param int $parent Parent id.
+ * @param array $rule Rule.
+ *
+ * @return int Id of new item.
  */
 function create_graph_node($graph_id, $parent, $rule) {
 	global $config;
@@ -3012,6 +3226,12 @@ function create_graph_node($graph_id, $parent, $rule) {
 	return $new_item;
 }
 
+/**
+ * Executes tasks that need to be performed at the end of the poller process. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_poller_bottom() {
 	global $config;
 
@@ -3027,6 +3247,15 @@ function automation_poller_bottom() {
 	exec_background($command_string, $extra_args);
 }
 
+/**
+ * Adds a device to the automation system. Used as part of Cacti's lib functionality.
+ *
+ * @param array $device An associative array containing device details.
+ * @param bool $web Optional. Indicates if the request is coming from a web interface. Default is
+ *   false.
+ *
+ * @return int The ID of the device that was added.
+ */
 function automation_add_device($device, $web = false) {
 	global $plugins, $config;
 
@@ -3093,6 +3322,15 @@ function automation_add_device($device, $web = false) {
 	return $host_id;
 }
 
+/**
+ * Adds a host to a specified tree in the automation process. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $host_id The ID of the host to be added.
+ * @param int $tree The tree structure where the host will be added.
+ *
+ * @return void No value is returned.
+ */
 function automation_add_tree($host_id, $tree) {
 	automation_debug("     Adding to tree\n");
 	if ($tree > 1000000) {
@@ -3110,6 +3348,16 @@ function automation_add_tree($host_id, $tree) {
 	$nodeId = api_tree_item_save(0, $tree_id, 3, $parent, '', 0, $host_id, 0, 1, 1, false);
 }
 
+/**
+ * Finds the operating system based on system description, system object, and system name. Used as
+ * part of Cacti's lib functionality.
+ *
+ * @param string $sysDescr The system description.
+ * @param string $sysObject The system object identifier.
+ * @param string $sysName The system name.
+ *
+ * @return array|false The matched automation template row, or false if none found.
+ */
 function automation_find_os($sysDescr, $sysObject, $sysName) {
 	$sql_where  = '';
 	$params     = array();
@@ -3149,6 +3397,13 @@ function automation_find_os($sysDescr, $sysObject, $sysName) {
 	}
 }
 
+/**
+ * Logs debug information for automation processes. Used as part of Cacti's lib functionality.
+ *
+ * @param string $text The debug text to be logged.
+ *
+ * @return void No value is returned.
+ */
 function automation_debug($text) {
 	global $debug, $config;
 	static $message = '';
@@ -3175,6 +3430,13 @@ function automation_debug($text) {
 	}
 }
 
+/**
+ * Converts a subnet mask to CIDR notation. Used as part of Cacti's lib functionality.
+ *
+ * @param string $mask The subnet mask to convert.
+ *
+ * @return float|false The CIDR notation as a float, or false on failure.
+ */
 function automation_masktocidr($mask) {
 	$cidr = false;
 	$long = ip2long($mask);
@@ -3186,11 +3448,27 @@ function automation_masktocidr($mask) {
 	return $cidr;
 }
 
+/**
+ * Retrieves a valid IP address from the given range. Used as part of Cacti's lib functionality.
+ *
+ * @param string $range The range of IP addresses to validate.
+ *
+ * @return string|false Returns a valid IP address as a string if found, or false if no valid IP
+ *   address is found.
+ */
 function automation_get_valid_ip($range) {
 	$long = ip2long($range);
 	return $long === false ? false : long2ip($long);
 }
 
+/**
+ * Retrieves a valid subnet CIDR from the given range. Used as part of Cacti's lib functionality.
+ *
+ * @param string $range The IP range to validate and extract the subnet CIDR from.
+ *
+ * @return array|false Returns an array containing the valid subnet CIDR if found, otherwise
+ *   returns false if the range is invalid.
+ */
 function automation_get_valid_subnet_cidr($range) {
 	$long = ip2long($range);
 	if ($long !== false) {
@@ -3215,6 +3493,13 @@ function automation_get_valid_subnet_cidr($range) {
 	return $long === false ? false : array('cidr' => $cidr, 'subnet' => long2ip($long));
 }
 
+/**
+ * Retrieves a valid mask for the given range. Used as part of Cacti's lib functionality.
+ *
+ * @param string $range The range for which to get the valid mask.
+ *
+ * @return array|false The valid mask for the specified range.
+ */
 function automation_get_valid_mask($range) {
 	$cidr = false;
 	if (is_numeric($range)) {
@@ -3240,6 +3525,13 @@ function automation_get_valid_mask($range) {
 	return $mask;
 }
 
+/**
+ * Retrieves network information for a given range. Used as part of Cacti's lib functionality.
+ *
+ * @param string $range The network range to retrieve information for.
+ *
+ * @return array|false An associative array containing network information.
+ */
 function automation_get_network_info($range) {
 	$network   = false;
 	$broadcast = false;
@@ -3344,6 +3636,14 @@ function automation_get_network_info($range) {
 	return $detail;
 }
 
+/**
+ * Calculates the start time for an automation process based on the given range. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param string $range The range value used to calculate the start time.
+ *
+ * @return string|false The calculated start time.
+ */
 function automation_calculate_start($range) {
 	$detail = automation_get_network_info($range);
 
@@ -3356,6 +3656,13 @@ function automation_calculate_start($range) {
 	return false;
 }
 
+/**
+ * Calculate the total number of IPs in a given range. Used as part of Cacti's lib functionality.
+ *
+ * @param string $range The IP range in CIDR notation (e.g., '192.168.1.0/24').
+ *
+ * @return int|false The total number of IPs in the specified range.
+ */
 function automation_calculate_total_ips($range) {
 	$detail = automation_get_network_info($range);
 
@@ -3368,6 +3675,16 @@ function automation_calculate_total_ips($range) {
 	return false;
 }
 
+/**
+ * Retrieves the next host in the automation sequence. Used as part of Cacti's lib functionality.
+ *
+ * @param string $start The starting point for the host retrieval.
+ * @param int $total The total number of hosts available.
+ * @param int $count The current count of hosts processed.
+ * @param string $range The range within which to retrieve the next host.
+ *
+ * @return string|false Returns the next host as a string, or false if no more hosts are available.
+ */
 function automation_get_next_host($start, $total, $count, $range) {
 	if ($count == $total || $total < 1) {
 		return false;
@@ -3398,6 +3715,15 @@ function automation_get_next_host($start, $total, $count, $range) {
 	}
 }
 
+/**
+ * Primes the IP address table for a given network. This function initializes or updates the IP
+ * address table associated with the specified network ID. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $network_id The ID of the network for which the IP address table is to be primed.
+ *
+ * @return void No value is returned.
+ */
 function automation_primeIPAddressTable($network_id) {
 	$subNets = db_fetch_cell_prepared('SELECT subnet_range
 		FROM automation_networks
@@ -3448,6 +3774,14 @@ function automation_primeIPAddressTable($network_id) {
 	automation_debug("A Total of $total IP Addresses Primed\n");
 }
 
+/**
+ * Validates if the given device is a valid SNMP device. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param mixed &$device Reference to the device array to be validated.
+ *
+ * @return bool Returns true if the device is a valid SNMP device, false otherwise.
+ */
 function automation_valid_snmp_device(&$device) {
 	global $snmp_logging;
 
@@ -3578,9 +3912,16 @@ function automation_valid_snmp_device(&$device) {
 	return $host_up;
 }
 
-/*	gethostbyaddr_wtimeout - This function provides a good method of performing
-  a rapid lookup of a DNS entry for a host so long as you don't have to look far.
-*/
+/**
+ * This function provides a good method of performing a rapid lookup of a DNS entry for a host so
+ * long as you don't have to look far. Used as part of Cacti's lib functionality.
+ *
+ * @param string $ip The IP address to look up.
+ * @param string $dns The DNS server to use for the lookup.
+ * @param int $timeout The timeout for the DNS lookup in milliseconds. Default is 1000 ms.
+ *
+ * @return string The DNS name associated with the IP address, or null if not found.
+ */
 function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 	/* random transaction number (for routers etc to get the reply back) */
 	$data = rand(10, 99);
@@ -3681,6 +4022,13 @@ function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 	return strtoupper($ip);
 }
 
+/**
+ * API helper that handles automation is time to start. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $network_id The network ID.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_automation_is_time_to_start($network_id) {
 	$net = db_fetch_row_prepared('SELECT *
 		FROM automation_networks
@@ -3795,6 +4143,13 @@ function api_automation_is_time_to_start($network_id) {
 	}
 }
 
+/**
+ * Handles the calculatenextstart. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $net The net.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function calculateNextStart($net) {
 	$now = time();
 
@@ -3810,6 +4165,15 @@ function calculateNextStart($net) {
 	return $next;
 }
 
+/**
+ * Handles the calculatenextstartforyear. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $net The net.
+ * @param mixed $year The year.
+ * @param mixed $now The now.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function calculateNextStartForYear($net, $year, $now) {
 	$dates = array();
 
@@ -3987,6 +4351,14 @@ function calculateNextStartForYear($net, $year, $now) {
 	return false;
 }
 
+/**
+ * Pings a NetBIOS name for a given IP address. Used as part of Cacti's lib functionality.
+ *
+ * @param string $ip The IP address to ping.
+ * @param int $timeout_ms The timeout in milliseconds for the ping. Default is 1000 ms.
+ *
+ * @return mixed Returns the netbios name is successful or false otherwise.
+ */
 function ping_netbios_name($ip, $timeout_ms = 1000) {
 	$handle = @fsockopen("udp://$ip", 137);
 
@@ -4034,6 +4406,14 @@ function ping_netbios_name($ip, $timeout_ms = 1000) {
 	}
 }
 
+/**
+ * Updates the automation settings for a specific device. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $host_id The ID of the host device to update.
+ *
+ * @return void No value is returned.
+ */
 function automation_update_device($host_id) {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' Device[' . $host_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
@@ -4086,10 +4466,23 @@ function automation_update_device($host_id) {
 	automation_execute_device_create_tree($host_id);
 }
 
+/**
+ * Executes an automation function with a process ID. Used as part of Cacti's lib functionality.
+ *
+ * @param string $functionName The name of the function to be executed.
+ *
+ * @return string The function name with the process ID appended.
+ */
 function automation_function_with_pid($functionName) {
 	return automation_get_pid() . ' ' . $functionName . '()';
 }
 
+/**
+ * Retrieves the process ID (PID) for the automation process. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @return string The PID of the automation process.
+ */
 function automation_get_pid() {
 	static $pid;
 	if (!isset($pid)) {
@@ -4098,6 +4491,14 @@ function automation_get_pid() {
 	return "[PID: $pid]";
 }
 
+/**
+ * Changes the type of a tree rule leaf. Used as part of Cacti's lib functionality.
+ *
+ * @param string $leaf_type The new type of the leaf.
+ * @param string $rule_id The ID of the rule to be updated.
+ *
+ * @return void No value is returned.
+ */
 function automation_change_tree_rule_leaf_type($leaf_type, $rule_id) {
 	$function = automation_function_with_pid(__FUNCTION__);
 

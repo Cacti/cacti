@@ -44,6 +44,13 @@ process_tree_settings();
 /* setup realtime defaults if they are not set */
 initialize_realtime_step_and_window();
 
+/**
+ * Retrieves a list of tree branches that match a search string and returns them as a JSON object
+ * to the page for filtering the tree list by matching branch object. Used as part of Cacti's
+ * graph view functionality.
+ *
+ * @return void No value is returned.
+ */
 function get_matching_nodes() {
 	$my_matches = array();
 	$match = array();

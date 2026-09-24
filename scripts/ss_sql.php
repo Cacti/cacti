@@ -31,6 +31,11 @@ if (!isset($called_by_script_server)) {
 	print call_user_func('ss_sql');
 }
 
+/**
+ * Handles the ss SQL. Used as part of Cacti's scripts functionality.
+ *
+ * @return string The resulting string.
+ */
 function ss_sql() {
 	global $database_username;
 	global $database_password;

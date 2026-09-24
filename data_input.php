@@ -101,7 +101,9 @@ switch (get_request_var('action')) {
 }
 
 /**
- * form_save - Saves the data input method
+ * Saves the data input method. Used as part of Cacti's data input functionality.
+ *
+ * @return void No value is returned.
  */
 function form_save() {
 	global $config, $registered_cacti_names;
@@ -203,6 +205,14 @@ function form_save() {
 	}
 }
 
+/**
+ * Handles the data input save message. Used as part of Cacti's data input functionality.
+ *
+ * @param int $data_input_id The data input ID.
+ * @param string $type The type.
+ *
+ * @return void No value is returned.
+ */
 function data_input_save_message($data_input_id, $type = 'input') {
 	$counts = db_fetch_row_prepared("SELECT
 		SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
@@ -230,6 +240,11 @@ function data_input_save_message($data_input_id, $type = 'input') {
 	}
 }
 
+/**
+ * Handles the form actions. Used as part of Cacti's data input functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_actions() {
 	global $di_actions;
 
@@ -326,6 +341,12 @@ function form_actions() {
 /* --------------------------
     CDEF Item Functions
    -------------------------- */
+/**
+ * -------------------------- CDEF Item Functions --------------------------. Used as part of
+ * Cacti's data input functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function field_remove_confirm() {
 	/* ================= input validation ================= */
@@ -379,6 +400,11 @@ function field_remove_confirm() {
 	<?php
 }
 
+/**
+ * Handles the field remove. Used as part of Cacti's data input functionality.
+ *
+ * @return void No value is returned.
+ */
 function field_remove() {
 	global $registered_cacti_names;
 
@@ -410,6 +436,11 @@ function field_remove() {
 	update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 }
 
+/**
+ * Handles the field edit. Used as part of Cacti's data input functionality.
+ *
+ * @return void No value is returned.
+ */
 function field_edit() {
 	global $registered_cacti_names, $fields_data_input_field_edit_1, $fields_data_input_field_edit_2, $fields_data_input_field_edit;
 
@@ -517,6 +548,12 @@ function field_edit() {
 /* -----------------------
     Data Input Functions
    ----------------------- */
+/**
+ * ----------------------- Data Input Functions -----------------------. Used as part of Cacti's
+ * data input functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function data_edit() {
 	global $config, $fields_data_input_edit;
@@ -768,6 +805,11 @@ function data_edit() {
 	<?php
 }
 
+/**
+ * Handles the data. Used as part of Cacti's data input functionality.
+ *
+ * @return void No value is returned.
+ */
 function data() {
 	global $input_types, $di_actions, $item_rows;
 

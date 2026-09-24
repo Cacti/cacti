@@ -54,31 +54,23 @@ if ($config['php_snmp_support']) {
 use phpsnmp\SNMP;
 
 /**
- * Select a reliable uptime value from sysUpTime and snmpEngineTime.
+ * Select a reliable uptime value from sysUpTime and snmpEngineTime. Some agents, notably OpenBSD
+ * snmpd, return the current Unix timestamp for snmpEngineTime. That value is not an uptime and
+ * must not replace the real sysUpTime value. Legitimate engine time remains useful after the
+ * 32-bit TimeTicks value wraps, so retain the existing preference when it is at least the system
+ * uptime and does not resemble wall-clock time. Used as part of Cacti's lib functionality.
  *
- * Some agents, notably OpenBSD snmpd, return the current Unix timestamp for
- * snmpEngineTime. That value is not an uptime and must not replace the real
- * sysUpTime value. Legitimate engine time remains useful after the 32-bit
- * TimeTicks value wraps, so retain the existing preference when it is at
- * least the system uptime and does not resemble wall-clock time.
- *
- * @param mixed    $system_uptime      sysUpTime in hundredths of a second.
- * @param mixed    $engine_time        snmpEngineTime in seconds.
- * @param int|null $now                Current Unix time, injectable for tests.
- * @param bool     $prefer_engine_time When true, skip BOTH the wall-clock rejection and
- *                                     the "prefer whichever is larger" comparison, and
- *                                     always use engine time once it is numeric and
- *                                     positive. Spine's own reindex assert re-check
- *                                     (poller.c) always prefers the engine OID whenever
- *                                     it is numeric - with no wall-clock awareness and no
- *                                     magnitude comparison of its own; the recache
- *                                     baseline stored for spine to compare against must
- *                                     use the exact same rule, or a device whose engine
- *                                     time is legitimately smaller than sysUpTime (e.g.
- *                                     the SNMP agent restarted more recently than the OS),
- *                                     or an OpenBSD-style agent returning the Unix clock
- *                                     as engine time, causes a permanent mismatch and an
- *                                     infinite RECACHE ASSERT loop.
+ * @param mixed $system_uptime sysUpTime in hundredths of a second.
+ * @param mixed $engine_time snmpEngineTime in seconds.
+ * @param int|null $now Current Unix time, injectable for tests.
+ * @param bool $prefer_engine_time When true, skip BOTH the wall-clock rejection and the "prefer
+ *   whichever is larger" comparison, and always use engine time once it is numeric and positive.
+ *   Spine's own reindex assert re-check (poller.c) always prefers the engine OID whenever it is
+ *   numeric - with no wall-clock awareness and no magnitude comparison of its own; the recache
+ *   baseline stored for spine to compare against must use the exact same rule, or a device whose
+ *   engine time is legitimately smaller than sysUpTime (e.g. the SNMP agent restarted more recently
+ *   than the OS), or an OpenBSD-style agent returning the Unix clock as engine time, causes a
+ *   permanent mismatch and an infinite RECACHE ASSERT loop.
  *
  * @return int|false Selected uptime in hundredths of a second.
  */
@@ -112,6 +104,27 @@ function cacti_snmp_select_uptime($system_uptime, $engine_time, $now = null, $pr
 	return $system_uptime === false || $engine_uptime >= $system_uptime ? $engine_uptime : $system_uptime;
 }
 
+/**
+ * Handles the cacti SNMP session. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hostname The hostname.
+ * @param mixed $community The community.
+ * @param mixed $version The version.
+ * @param mixed $auth_user The auth user.
+ * @param mixed $auth_pass The auth pass.
+ * @param mixed $auth_proto The auth proto.
+ * @param mixed $priv_pass The priv pass.
+ * @param mixed $priv_proto The priv proto.
+ * @param mixed $context The context.
+ * @param mixed $engineid The engineid.
+ * @param mixed $port The port.
+ * @param mixed $timeout_ms The timeout ms.
+ * @param mixed $retries The retries.
+ * @param mixed $max_oids The max OIDS.
+ * @param mixed $bulk_walk_size The bulk walk size.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '', $engineid = '',
 	$port = 161, $timeout_ms = 500, $retries = 0, $max_oids = 10, $bulk_walk_size = 10) {
@@ -181,6 +194,29 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $a
 	return $session;
 }
 
+/**
+ * Gets a single SNMP value through the native extension or configured binary. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param string $hostname The hostname.
+ * @param mixed $community The community.
+ * @param string $oid The OID.
+ * @param mixed $version The version.
+ * @param mixed $auth_user The auth user.
+ * @param mixed $auth_pass The auth pass.
+ * @param mixed $auth_proto The auth proto.
+ * @param mixed $priv_pass The priv pass.
+ * @param mixed $priv_proto The priv proto.
+ * @param mixed $context The context.
+ * @param mixed $port The port.
+ * @param mixed $timeout_ms The timeout ms.
+ * @param mixed $retries The retries.
+ * @param mixed $environ The environ.
+ * @param mixed $engineid The engineid.
+ * @param int $value_output_format The value output format.
+ *
+ * @return string Formatted SNMP value, or `U` when the request fails.
+ */
 function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
 	$port = 161, $timeout_ms = 500, $retries = 0, $environ = 'SNMP',
@@ -276,6 +312,28 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 	return $snmp_value;
 }
 
+/**
+ * Handles the cacti SNMP get raw. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hostname The hostname.
+ * @param mixed $community The community.
+ * @param string $oid The OID.
+ * @param mixed $version The version.
+ * @param mixed $auth_user The auth user.
+ * @param string $auth_pass The auth pass.
+ * @param mixed $auth_proto The auth proto.
+ * @param mixed $priv_pass The priv pass.
+ * @param mixed $priv_proto The priv proto.
+ * @param mixed $context The context.
+ * @param mixed $port The port.
+ * @param mixed $timeout_ms The timeout ms.
+ * @param mixed $retries The retries.
+ * @param mixed $environ The environ.
+ * @param string $engineid The engineid.
+ * @param int $value_output_format The value output format.
+ *
+ * @return string The resulting string.
+ */
 function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
 	$port = 161, $timeout_ms = 500, $retries = 0, $environ = SNMP_POLLER,
@@ -362,6 +420,28 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 	return $snmp_value;
 }
 
+/**
+ * Handles the cacti SNMP getnext. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hostname The hostname.
+ * @param mixed $community The community.
+ * @param mixed $oid The OID.
+ * @param mixed $version The version.
+ * @param mixed $auth_user The auth user.
+ * @param mixed $auth_pass The auth pass.
+ * @param mixed $auth_proto The auth proto.
+ * @param mixed $priv_pass The priv pass.
+ * @param mixed $priv_proto The priv proto.
+ * @param mixed $context The context.
+ * @param mixed $port The port.
+ * @param mixed $timeout_ms The timeout ms.
+ * @param mixed $retries The retries.
+ * @param mixed $environ The environ.
+ * @param string $engineid The engineid.
+ * @param int $value_output_format The value output format.
+ *
+ * @return string The resulting string.
+ */
 function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
 	$port = 161, $timeout_ms = 500, $retries = 0, $environ = 'SNMP',
@@ -447,6 +527,21 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 	return $snmp_value;
 }
 
+/**
+ * Handles the cacti get SNMP auth args. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed &$version The version.
+ * @param mixed $community The community.
+ * @param mixed $auth_proto The auth proto.
+ * @param mixed $auth_user The auth user.
+ * @param mixed $auth_pass The auth pass.
+ * @param mixed $priv_proto The priv proto.
+ * @param mixed $priv_pass The priv pass.
+ * @param mixed $context The context.
+ * @param mixed $engineid The engineid.
+ *
+ * @return array An array of results.
+ */
 function cacti_get_snmp_auth_args(&$version, $community, $auth_proto, $auth_user, $auth_pass,
 	$priv_proto, $priv_pass, $context, $engineid) {
 
@@ -468,6 +563,19 @@ function cacti_get_snmp_auth_args(&$version, $community, $auth_proto, $auth_user
 		$priv_pass, $context, $engineid);
 }
 
+/**
+ * Handles the cacti get snmpv3 auth args. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $auth_proto The auth proto.
+ * @param mixed $auth_user The auth user.
+ * @param mixed $auth_pass The auth pass.
+ * @param mixed $priv_proto The priv proto.
+ * @param mixed $priv_pass The priv pass.
+ * @param mixed $context The context.
+ * @param mixed $engineid The engineid.
+ *
+ * @return array An array of results.
+ */
 function cacti_get_snmpv3_auth_args($auth_proto, $auth_user, $auth_pass, $priv_proto, $priv_pass, $context, $engineid) {
 	global $snmp_priv_protocols, $snmp_auth_protocols;
 
@@ -511,15 +619,14 @@ function cacti_get_snmpv3_auth_args($auth_proto, $auth_user, $auth_pass, $priv_p
 }
 
 /**
- * Calls a native SNMP session method and captures its suppressed warning.
- *
- * Some PHP SNMP failures emit their only useful diagnostic as a warning while
- * leaving the session error number and message empty.
+ * Calls a native SNMP session method and captures its suppressed warning. Some PHP SNMP failures
+ * emit their only useful diagnostic as a warning while leaving the session error number and
+ * message empty. Used as part of Cacti's lib functionality.
  *
  * @param object $session Native SNMP session wrapper.
- * @param string $method  Native SNMP method name.
- * @param array  $args    Method arguments.
- * @param string $warning Captured warning message.
+ * @param string $method Native SNMP method name.
+ * @param array $args Method arguments.
+ * @param mixed &$warning Captured warning message.
  *
  * @return mixed Native SNMP method result.
  */
@@ -566,14 +673,15 @@ function cacti_snmp_session_call($session, $method, $args, &$warning) {
 }
 
 /**
- * Logs the error reported by a native SNMP session operation.
+ * Logs the error reported by a native SNMP session operation. Used as part of Cacti's lib
+ * functionality.
  *
- * @param object       $session Native SNMP session wrapper.
- * @param array        $info    Session connection metadata.
- * @param string|array $oid     OID or OID list used by the failed operation.
- * @param string       $warning Warning captured while calling the operation.
+ * @param object $session Native SNMP session wrapper.
+ * @param array $info Session connection metadata.
+ * @param string|array $oid OID or OID list used by the failed operation.
+ * @param string $warning Warning captured while calling the operation.
  *
- * @return void
+ * @return void No value is returned.
  */
 function cacti_snmp_log_session_error($session, $info, $oid, $warning = '') {
 	$error_number = $session->getErrno();
@@ -598,6 +706,18 @@ function cacti_snmp_log_session_error($session, $info, $oid, $warning = '') {
 	cacti_log("WARNING: SNMP Error:'$error', Device:'" . $info['hostname'] . "', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
 }
 
+/**
+ * Handles the cacti SNMP session walk. Used as part of Cacti's lib functionality.
+ *
+ * @param object $session The session.
+ * @param mixed $oid The OID.
+ * @param bool $dummy The dummy.
+ * @param mixed $max_repetitions The max repetitions.
+ * @param mixed $non_repeaters The non repeaters.
+ * @param int $value_output_format The value output format.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetitions = NULL,
 	$non_repeaters = NULL, $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
 
@@ -672,6 +792,15 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 	return $out;
 }
 
+/**
+ * Handles the cacti SNMP session get. Used as part of Cacti's lib functionality.
+ *
+ * @param object $session The session.
+ * @param mixed $oid The OID.
+ * @param bool $strip_alpha The strip alpha.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
 	$info = $session->info;
 
@@ -719,6 +848,14 @@ function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
 	return $out;
 }
 
+/**
+ * Handles the cacti SNMP session getnext. Used as part of Cacti's lib functionality.
+ *
+ * @param object $session The session.
+ * @param mixed $oid The OID.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function cacti_snmp_session_getnext($session, $oid) {
 	$info = $session->info;
 	if (is_array($oid) && cacti_sizeof($oid) == 0) {
@@ -767,12 +904,42 @@ function cacti_snmp_session_getnext($session, $oid) {
 	return $out;
 }
 
+/**
+ * Handles the cacti SNMP validate OID. Used as part of Cacti's lib functionality.
+ *
+ * @param string $oid The OID.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function cacti_snmp_validate_oid($oid) {
 	$oid = ltrim((string) $oid, '.');
 
 	return $oid !== '' && preg_match('/^(?:0|[1-9][0-9]*)(?:\.(?:0|[1-9][0-9]*))*$/D', $oid) === 1;
 }
 
+/**
+ * Handles the cacti SNMP walk. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hostname The hostname.
+ * @param mixed $community The community.
+ * @param string $oid The OID.
+ * @param mixed $version The version.
+ * @param mixed $auth_user The auth user.
+ * @param mixed $auth_pass The auth pass.
+ * @param mixed $auth_proto The auth proto.
+ * @param mixed $priv_pass The priv pass.
+ * @param mixed $priv_proto The priv proto.
+ * @param mixed $context The context.
+ * @param mixed $port The port.
+ * @param mixed $timeout_ms The timeout ms.
+ * @param mixed $retries The retries.
+ * @param mixed $bulk_walk_size The bulk walk size.
+ * @param mixed $environ The environ.
+ * @param mixed $engineid The engineid.
+ * @param int $value_output_format The value output format.
+ *
+ * @return array An array of results.
+ */
 function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
 	$port = 161, $timeout_ms = 500, $retries = 0, $bulk_walk_size = 10, $environ = 'SNMP',
@@ -952,6 +1119,16 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 	return $snmp_array;
 }
 
+/**
+ * Formats the SNMP string. Used as part of Cacti's lib functionality.
+ *
+ * @param string $string The string.
+ * @param bool $snmp_oid_included The SNMP OID included.
+ * @param int $value_output_format The value output format.
+ * @param bool $strip_alpha The strip alpha.
+ *
+ * @return string The resulting string.
+ */
 function format_snmp_string($string, $snmp_oid_included, $value_output_format = SNMP_STRING_OUTPUT_GUESS, $strip_alpha = false) {
 	global $banned_snmp_strings;
 
@@ -1146,13 +1323,13 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 }
 
 /**
- * snmp_format_target - format hostname:port for binary SNMP commands,
- * forcing udp6: transport for IPv6 to prevent DNS ambiguity.
+ * Format hostname:port for binary SNMP commands, forcing udp6: transport for IPv6 to prevent DNS
+ * ambiguity. Used as part of Cacti's lib functionality.
  *
- * @param string $hostname - The target hostname or IP
- * @param int    $port     - The SNMP port
+ * @param string $hostname The target hostname or IP.
+ * @param int $port The SNMP port.
  *
- * @return string The formatted target string
+ * @return string The formatted target string.
  */
 function snmp_format_target($hostname, $port) {
 	global $config;
@@ -1178,7 +1355,13 @@ function snmp_format_target($hostname, $port) {
 }
 
 /**
- * Return a Net-SNMP target as one unescaped argv value.
+ * Return a Net-SNMP target as one unescaped argv value. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param mixed $hostname The hostname.
+ * @param mixed $port The port.
+ *
+ * @return string The resulting string.
  */
 function snmp_format_target_arg($hostname, $port) {
 	if (strpos($hostname, ':') !== false) {
@@ -1191,14 +1374,26 @@ function snmp_format_target_arg($hostname, $port) {
 }
 
 /**
- * Derive a process timeout that allows Net-SNMP to perform every retry.
+ * Derive a process timeout that allows Net-SNMP to perform every retry. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param mixed $timeout The timeout.
+ * @param mixed $retries The retries.
+ *
+ * @return mixed The result of the operation, or false on failure.
  */
 function cacti_snmp_command_timeout($timeout, $retries) {
 	return max(1, ((int) $timeout * ((int) $retries + 1)) + 1);
 }
 
 /**
- * Log binary SNMP use without placing communities or SNMPv3 secrets in logs.
+ * Log binary SNMP use without placing communities or SNMPv3 secrets in logs. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param mixed $binary The binary.
+ * @param array $args The args.
+ *
+ * @return void No value is returned.
  */
 function cacti_snmp_debug_command($binary, array $args) {
 	if (isset($_SESSION)) {
@@ -1207,6 +1402,14 @@ function cacti_snmp_debug_command($binary, array $args) {
 	}
 }
 
+/**
+ * Escapes an SNMP command argument for the active server operating system. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param string $string Argument to escape.
+ *
+ * @return string Escaped command argument.
+ */
 function snmp_escape_string($string) {
 	global $config;
 
@@ -1232,6 +1435,18 @@ function snmp_escape_string($string) {
 	return cacti_escapeshellarg($string);
 }
 
+/**
+ * Selects the native PHP extension or command-line SNMP implementation. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param string $type SNMP operation type.
+ * @param mixed $version SNMP protocol version.
+ * @param mixed $context SNMPv3 context.
+ * @param mixed $engineid SNMPv3 engine identifier.
+ * @param int $value_output_format Requested output format.
+ *
+ * @return int One of the `SNMP_METHOD_*` constants.
+ */
 function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid = '',
     $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
 
@@ -1254,6 +1469,18 @@ function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid 
 	}
 }
 
+/**
+ * Handles the cacti SNMP options sanitize. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $version The version.
+ * @param mixed $community The community.
+ * @param mixed &$port The port.
+ * @param mixed &$timeout The timeout.
+ * @param mixed &$retries The retries.
+ * @param mixed &$max_oids The max OIDS.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function cacti_snmp_options_sanitize($version, $community, &$port, &$timeout, &$retries, &$max_oids) {
 	/* determine default retries */
 	if ($retries == 0 || !is_numeric($retries)) {

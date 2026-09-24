@@ -221,6 +221,13 @@ $fields_reports_edit = array(
 		),
 );
 
+/**
+ * Updates the sequence of report items based on the provided order. This function validates the
+ * input, retrieves the report items from the request, and updates their sequence in the database.
+ * Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function reports_item_dnd() {
 	/* ================= Input validation ================= */
 	get_filter_request_var('id');
@@ -253,6 +260,13 @@ function reports_item_dnd() {
     }
 }
 
+/**
+ * Save the report form data. This function handles the saving of report form data, including
+ * validation and database operations. It processes both the main report and individual report
+ * items. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function reports_form_save() {
 	global $config, $messages;
 
@@ -416,6 +430,12 @@ function reports_form_save() {
 /* ------------------------
  The 'actions' function
  ------------------------ */
+/**
+ * ------------------------ The 'actions' function ------------------------. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function reports_form_actions() {
 	global $config, $reports_actions;
 
@@ -596,6 +616,14 @@ function reports_form_actions() {
 /* --------------------------
  Report Item Functions
  -------------------------- */
+/**
+ * -------------------------- Report Item Functions --------------------------. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param int $id The ID of the report to be sent.
+ *
+ * @return void No value is returned.
+ */
 function reports_send($id) {
 	global $config;
 
@@ -632,6 +660,13 @@ function reports_send($id) {
 	}
 }
 
+/**
+ * Moves a report item down in the order. This function validates the input parameters and then
+ * calls the move_item_down function to move the specified report item down in the order within
+ * the report. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function reports_item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -645,6 +680,14 @@ function reports_item_movedown() {
 	move_item_down('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
 }
 
+/**
+ * Moves a report item up in the order. This function handles the movement of a report item up in
+ * the order within the reports_items table. It retrieves the item_id and id from the request
+ * variables, and then calls the move_item_up function to perform the actual movement. Used as
+ * part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function reports_item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -658,6 +701,13 @@ function reports_item_moveup() {
 	move_item_up('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
 }
 
+/**
+ * Removes a report item from the database. This function deletes a report item from the
+ * `reports_items` table based on the provided `item_id`. The `item_id` is retrieved from the
+ * request variables. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function reports_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -672,6 +722,16 @@ function reports_item_remove() {
 	db_execute_prepared('DELETE FROM reports_items WHERE id = ?', array($item_id));
 }
 
+/**
+ * Resequence the items of a report based on their current sequence. This function fetches all
+ * items of a given report, ordered by their current sequence, and then updates each item's
+ * sequence to ensure they are sequentially numbered starting from 1. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $report_id The ID of the report whose items need to be resequenced.
+ *
+ * @return void No value is returned.
+ */
 function reports_item_resequence($report_id) {
 	$items = db_fetch_assoc_prepared('SELECT *
 		FROM reports_items
@@ -693,6 +753,15 @@ function reports_item_resequence($report_id) {
 	}
 }
 
+/**
+ * Validates and stores report item request variables in the session. This function performs input
+ * validation and session storage for various report item request variables. It checks if the
+ * request variables have changed and validates them against the database. If any validation
+ * fails, it resets the corresponding request variables. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @return string JSON encoded array of reset request variables.
+ */
 function reports_item_validate() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -881,6 +950,13 @@ function reports_item_validate() {
 	return json_encode($reset);
 }
 
+/**
+ * Edit a report item. This function handles the editing of a report item, including fetching
+ * existing data, initializing form fields, and rendering the form for editing. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function reports_item_edit() {
 	global $config, $item_types, $graph_timespans, $alignment;
 
@@ -1434,6 +1510,14 @@ function reports_item_edit() {
 /* ---------------------
  Report Functions
  --------------------- */
+/**
+ * --------------------- Report Functions ---------------------. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $report_id The ID of the report. If greater than 0, additional tabs are shown.
+ *
+ * @return void No value is returned.
+ */
 
 function reports_tabs($report_id) {
 	global $config;
@@ -1476,6 +1560,13 @@ function reports_tabs($report_id) {
 	}
 }
 
+/**
+ * Edit and manage reports. This function handles the editing and management of reports, including
+ * input validation, session storage, and displaying the report details, items, events, and
+ * preview. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function reports_edit() {
 	global $config, $attach_types, $alignment, $reports_interval, $fields_reports_edit;
 
@@ -1668,8 +1759,13 @@ function reports_edit() {
 	}
 }
 
-/* display_reports_items		display the list of all items related to a single report
- * @arg $report_id				id of the report
+/**
+ * Display_reports_items display the list of all items related to a single report * @arg
+ * $report_id id of the report. Used as part of Cacti's lib functionality.
+ *
+ * @param int $report_id The ID of the report whose items are to be displayed.
+ *
+ * @return void No value is returned.
  */
 function display_reports_items($report_id) {
 	global $graph_timespans;
@@ -1837,14 +1933,32 @@ function display_reports_items($report_id) {
 	}
 }
 
+/**
+ * Retrieves the appropriate reports page based on the user's permissions. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @return string The path to the appropriate reports page.
+ */
 function get_reports_page() {
 	return (is_realm_allowed(21) ? 'reports_admin.php' : 'reports_user.php');
 }
 
+/**
+ * Checks if the current user has administrative privileges for reports. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @return bool Returns true if the user has reports administrative privileges, false otherwise.
+ */
 function is_reports_admin() {
 	return (is_realm_allowed(21) ? true:false);
 }
 
+/**
+ * Generates and displays the reports page with filtering, sorting, and pagination options. Used
+ * as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function reports() {
 	global $config, $item_rows, $reports_interval;
 	global $reports_actions, $attach_types;
@@ -2130,14 +2244,38 @@ function reports() {
 	<?php
 }
 
+/**
+ * Checks if an account exists for the given user ID. Used as part of Cacti's lib functionality.
+ *
+ * @param int $user_id The ID of the user to check.
+ *
+ * @return mixed The ID of the user if the account exists, or false if it does not.
+ */
 function reports_html_account_exists($user_id) {
 	return db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', array($user_id));
 }
 
+/**
+ * Disables an HTML report by setting its 'enabled' field to an empty string. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param int $report_id The ID of the report to disable.
+ *
+ * @return void No value is returned.
+ */
 function reports_html_report_disable($report_id) {
 	db_execute_prepared('UPDATE reports SET enabled="" WHERE id = ?', array($report_id));
 }
 
+/**
+ * Sets a variable in the reports item array based on the request variable. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param array $reports_item The reports item array to be modified.
+ * @param string $var_id The ID of the request variable to check and set.
+ *
+ * @return array The modified reports item array.
+ */
 function set_reports_item_var($reports_item, $var_id) {
 	// if a different host_id was selected, use it
 	if (isset_request_var($var_id) && get_filter_request_var($var_id) >= 0) {
@@ -2152,6 +2290,15 @@ function set_reports_item_var($reports_item, $var_id) {
 	return $reports_item;
 }
 
+/**
+ * Generates a HTML select element for branches based on the provided tree ID. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param int $tree_id The ID of the tree to filter branches by. If 0 or not provided, all
+ *   branches are shown.
+ *
+ * @return string The HTML select element as a string.
+ */
 function reports_get_branch_select($tree_id) {
 	$sql_where = '';
 	if ($tree_id > 0) {

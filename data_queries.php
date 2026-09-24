@@ -125,6 +125,12 @@ switch (get_request_var('action')) {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's data queries functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	if (isset_request_var('save_component_snmp_query')) {
@@ -354,6 +360,11 @@ function form_save() {
 	}
 }
 
+/**
+ * Handles the form actions. Used as part of Cacti's data queries functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_actions() {
 	global $dq_actions;
 
@@ -461,6 +472,12 @@ function form_actions() {
 /* ----------------------------
     Data Query Graph Functions
    ---------------------------- */
+/**
+ * ---------------------------- Data Query Graph Functions ----------------------------. Used as
+ * part of Cacti's data queries functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function data_query_item_movedown_gsv() {
 	/* ================= input validation ================= */
@@ -471,6 +488,11 @@ function data_query_item_movedown_gsv() {
 	move_item_down('snmp_query_graph_sv', get_request_var('id'), array('snmp_query_graph_id' => get_request_var('snmp_query_graph_id'), 'field_name' => get_nfilter_request_var('field_name')));
 }
 
+/**
+ * Handles the data query item moveup gsv. Used as part of Cacti's data queries functionality.
+ *
+ * @return void No value is returned.
+ */
 function data_query_item_moveup_gsv() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -480,6 +502,11 @@ function data_query_item_moveup_gsv() {
 	move_item_up('snmp_query_graph_sv', get_request_var('id'), array('snmp_query_graph_id' => get_request_var('snmp_query_graph_id'), 'field_name' => get_nfilter_request_var('field_name')));
 }
 
+/**
+ * Handles the data query item remove gsv. Used as part of Cacti's data queries functionality.
+ *
+ * @return void No value is returned.
+ */
 function data_query_item_remove_gsv() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -490,6 +517,11 @@ function data_query_item_remove_gsv() {
 		array(get_request_var('id')));
 }
 
+/**
+ * Handles the data query item movedown dssv. Used as part of Cacti's data queries functionality.
+ *
+ * @return void No value is returned.
+ */
 function data_query_item_movedown_dssv() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -500,6 +532,11 @@ function data_query_item_movedown_dssv() {
 	move_item_down('snmp_query_graph_rrd_sv', get_request_var('id'), array('data_template_id' => get_request_var('data_template_id'), 'snmp_query_graph_id' => get_request_var('snmp_query_graph_id'), 'field_name' => get_nfilter_request_var('field_name')));
 }
 
+/**
+ * Handles the data query item moveup dssv. Used as part of Cacti's data queries functionality.
+ *
+ * @return void No value is returned.
+ */
 function data_query_item_moveup_dssv() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -510,6 +547,15 @@ function data_query_item_moveup_dssv() {
 	move_item_up('snmp_query_graph_rrd_sv', get_request_var('id'), array('data_template_id' => get_request_var('data_template_id'), 'snmp_query_graph_id' => get_request_var('snmp_query_graph_id'), 'field_name' => get_nfilter_request_var('field_name')));
 }
 
+/**
+ * Handles the data query sv check sequences. Used as part of Cacti's data queries functionality.
+ *
+ * @param string $type The type.
+ * @param int $snmp_query_graph_id The SNMP query graph ID.
+ * @param string $field_name The field name.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name) {
 	if ($type == 'ds' || $type == 'gr') {
 		if ($type == 'ds') {
@@ -561,6 +607,11 @@ function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name)
 	}
 }
 
+/**
+ * Handles the data query item remove dssv. Used as part of Cacti's data queries functionality.
+ *
+ * @return void No value is returned.
+ */
 function data_query_item_remove_dssv() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -572,6 +623,11 @@ function data_query_item_remove_dssv() {
 		array(get_request_var('id')));
 }
 
+/**
+ * Handles the data query item remove confirm. Used as part of Cacti's data queries functionality.
+ *
+ * @return void No value is returned.
+ */
 function data_query_item_remove_confirm() {
 	global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
 
@@ -610,6 +666,11 @@ function data_query_item_remove_confirm() {
 	form_end();
 }
 
+/**
+ * Handles the data query item remove. Used as part of Cacti's data queries functionality.
+ *
+ * @return void No value is returned.
+ */
 function data_query_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -636,6 +697,11 @@ function data_query_item_remove() {
 		array(get_request_var('id')));
 }
 
+/**
+ * Handles the data query item edit. Used as part of Cacti's data queries functionality.
+ *
+ * @return void No value is returned.
+ */
 function data_query_item_edit() {
 	global $fields_data_query_item_edit;
 
@@ -1057,6 +1123,14 @@ function data_query_item_edit() {
 /* ---------------------
     Data Query Functions
    --------------------- */
+/**
+ * --------------------- Data Query Functions ---------------------. Used as part of Cacti's data
+ * queries functionality.
+ *
+ * @param int $id The ID.
+ *
+ * @return void No value is returned.
+ */
 
 function data_query_remove($id) {
 	$snmp_query_graph = db_fetch_assoc_prepared('SELECT id
@@ -1101,6 +1175,11 @@ function data_query_remove($id) {
 	update_replication_crc(0, 'poller_replicate_snmp_query_crc');
 }
 
+/**
+ * Handles the data query edit. Used as part of Cacti's data queries functionality.
+ *
+ * @return void No value is returned.
+ */
 function data_query_edit() {
 	global $fields_data_query_edit, $config;
 
@@ -1268,6 +1347,11 @@ function data_query_edit() {
 	<?php
 }
 
+/**
+ * Handles the data query. Used as part of Cacti's data queries functionality.
+ *
+ * @return void No value is returned.
+ */
 function data_query() {
 	global $dq_actions, $item_rows;
 

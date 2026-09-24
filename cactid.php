@@ -31,9 +31,14 @@ if (function_exists('pcntl_async_signals')) {
 
 ini_set('output_buffering', 'Off');
 
-/* sig_handler - provides a generic means to catch exceptions to the Cacti log.
-   @arg $signo - (int) the signal that was thrown by the interface.
-   @returns - null */
+/**
+ * Provides a generic means to catch exceptions to the Cacti log. Used as part of Cacti's cactid
+ * functionality.
+ *
+ * @param int $signo (int) the signal that was thrown by the interface.
+ *
+ * @return void Null.
+ */
 function sig_handler($signo) {
 	global $config, $hostname;
 
@@ -158,6 +163,13 @@ while (true) {
 	$logrecon  = true;
 }
 
+/**
+ * Wait_for_start. Used as part of Cacti's cactid functionality.
+ *
+ * @param int $frequency The frequency.
+ *
+ * @return int Int.
+ */
 function wait_for_start($frequency = -1) {
 	$prev_time = -1;
 	$i = 0;
@@ -194,6 +206,11 @@ function wait_for_start($frequency = -1) {
 	return $frequency;
 }
 
+/**
+ * Run_poller. Used as part of Cacti's cactid functionality.
+ *
+ * @return void No value is returned.
+ */
 function run_poller() {
 	global $config, $debug;
 
@@ -208,6 +225,11 @@ function run_poller() {
 	exec_background_process($php_binary, $command);
 }
 
+/**
+ * Get_options. Used as part of Cacti's cactid functionality.
+ *
+ * @return array Array.
+ */
 function get_options() {
 	$parms = $_SERVER['argv'];
 	array_shift($parms);
@@ -252,6 +274,13 @@ function get_options() {
 	return $options;
 }
 
+/**
+ * Debug. Used as part of Cacti's cactid functionality.
+ *
+ * @param string $string The string.
+ *
+ * @return void No value is returned.
+ */
 function debug($string) {
 	global $debug;
 
@@ -262,13 +291,22 @@ function debug($string) {
 	}
 }
 
+/**
+ * Display_version. Used as part of Cacti's cactid functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	global $config;
 
 	print 'The Cacti Daemon (cactid), Version ' . CACTI_VERSION . ', ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*	display_help - displays the usage of the function */
+/**
+ * Displays the usage of the function. Used as part of Cacti's cactid functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help () {
 	display_version();
 

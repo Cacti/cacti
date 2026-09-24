@@ -183,12 +183,21 @@ if (cacti_sizeof($graph)) {
 	}
 }
 
+/**
+ * Display_version. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Graph Repair Tool, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/* display_help - displays the usage of the function */
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help() {
 	print "usage: repair_graphs.php [--host-id=ID] --data-template-id=[ID]\n";
 	print "	--graph-template-id=[ID] [--show-sql] [--execute]\n\n";

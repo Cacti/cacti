@@ -96,6 +96,12 @@ switch (get_request_var('action')) {
 /* --------------------------
  The Save Function
  -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's automation tree rules functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function automation_tree_rules_form_save() {
 
@@ -223,6 +229,12 @@ function automation_tree_rules_form_save() {
 /* ------------------------
  The 'actions' function
  ------------------------ */
+/**
+ * ------------------------ The 'actions' function ------------------------. Used as part of
+ * Cacti's automation tree rules functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function automation_tree_rules_form_actions() {
 	global $automation_tree_rules_actions;
@@ -342,6 +354,12 @@ function automation_tree_rules_form_actions() {
 	bottom_footer();
 }
 
+/**
+ * Handles the automation tree rules change leaf. Used as part of Cacti's automation tree rules
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_tree_rules_change_leaf() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -354,6 +372,12 @@ function automation_tree_rules_change_leaf() {
 /* --------------------------
  Rule Item Functions
  -------------------------- */
+/**
+ * -------------------------- Rule Item Functions --------------------------. Used as part of
+ * Cacti's automation tree rules functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function automation_tree_rules_item_movedown() {
 	/* ================= input validation ================= */
@@ -369,6 +393,12 @@ function automation_tree_rules_item_movedown() {
 	}
 }
 
+/**
+ * Handles the automation tree rules item moveup. Used as part of Cacti's automation tree rules
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_tree_rules_item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -383,6 +413,12 @@ function automation_tree_rules_item_moveup() {
 	}
 }
 
+/**
+ * Handles the automation tree rules item remove. Used as part of Cacti's automation tree rules
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_tree_rules_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -399,6 +435,12 @@ function automation_tree_rules_item_remove() {
 }
 
 
+/**
+ * Handles the automation tree rules item edit. Used as part of Cacti's automation tree rules
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_tree_rules_item_edit() {
 	global $config;
 
@@ -509,6 +551,12 @@ function toggle_operator() {
 /* ---------------------
  Rule Functions
  --------------------- */
+/**
+ * --------------------- Rule Functions ---------------------. Used as part of Cacti's automation
+ * tree rules functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function automation_tree_rules_remove() {
 	/* ================= input validation ================= */
@@ -538,6 +586,12 @@ function automation_tree_rules_remove() {
 	}
 }
 
+/**
+ * Handles the automation tree rules edit. Used as part of Cacti's automation tree rules
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_tree_rules_edit() {
 	global $config;
 	global $fields_automation_tree_rules_edit1, $fields_automation_tree_rules_edit2, $fields_automation_tree_rules_edit3;
@@ -804,6 +858,11 @@ function automation_tree_rules_edit() {
 	<?php
 }
 
+/**
+ * Handles the automation tree rules. Used as part of Cacti's automation tree rules functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_tree_rules() {
 	global $automation_tree_rules_actions, $config, $item_rows;
 	global $automation_tree_item_types, $host_group_types;

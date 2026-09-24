@@ -22,14 +22,14 @@
  */
 
 /**
- * Validate one raw remove_graphs.php option before getopt() can discard it.
+ * Validate one raw remove_graphs.php option before getopt() can discard it. Used as part of
+ * Cacti's lib functionality.
  *
  * @param string $parameter The raw command-line argument.
  * @param string $shortopts The getopt() short-option declaration.
- * @param array  $longopts  The getopt() long-option declarations.
+ * @param array $longopts The getopt() long-option declarations.
  *
- * @return bool True only when the argument matches a declared option and its
- *              required value shape.
+ * @return bool True only when the argument matches a declared option and its required value shape.
  */
 function cacti_remove_graphs_parameter_is_valid($parameter, $shortopts, $longopts) {
 	if (strpos($parameter, '-') === 0 && strpos($parameter, '--') !== 0) {
@@ -62,7 +62,8 @@ function cacti_remove_graphs_parameter_is_valid($parameter, $shortopts, $longopt
 }
 
 /**
- * Return the validation error for a remove_graphs.php regular expression.
+ * Return the validation error for a remove_graphs.php regular expression. Used as part of Cacti's
+ * lib functionality.
  *
  * @param string $regex The expression supplied by the operator.
  *
@@ -79,7 +80,8 @@ function cacti_remove_graphs_regex_error($regex) {
 }
 
 /**
- * Determine whether getopt() observed the remove_graphs.php quiet flag.
+ * Determine whether getopt() observed the remove_graphs.php quiet flag. Used as part of Cacti's
+ * lib functionality.
  *
  * @param array $options Parsed getopt() options.
  *
@@ -90,13 +92,14 @@ function cacti_remove_graphs_quiet_enabled($options) {
 }
 
 /**
- * Build the prepared host/filter predicate for graph-name reapplication.
+ * Build the prepared host/filter predicate for graph-name reapplication. Used as part of Cacti's
+ * lib functionality.
  *
  * @param string $host_id A single id, comma-delimited ids, zero, or "all".
- * @param string $filter  Optional graph name/title filter.
+ * @param string $filter Optional graph name/title filter.
  *
- * @return array|false A SQL fragment and parameter list, or false for an
- *                     invalid or missing host selector.
+ * @return array|false A SQL fragment and parameter list, or false for an invalid or missing host
+ *   selector.
  */
 function cacti_reapply_names_where($host_id, $filter) {
 	$host_id = trim($host_id);

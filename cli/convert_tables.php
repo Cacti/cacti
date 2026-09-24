@@ -251,6 +251,14 @@ if (cacti_sizeof($tables)) {
 	}
 }
 
+/**
+ * Outputs the or log. Used as part of Cacti's CLI functionality.
+ *
+ * @param bool $installer The installer.
+ * @param string $text The text.
+ *
+ * @return void No value is returned.
+ */
 function print_or_log($installer, $text) {
 	if ($installer) {
 		log_install_and_file(POLLER_VERBOSITY_MEDIUM, rtrim($text), 'CONVERT', true);
@@ -259,6 +267,14 @@ function print_or_log($installer, $text) {
 	}
 }
 
+/**
+ * Handles the record log. Used as part of Cacti's CLI functionality.
+ *
+ * @param bool $installer The installer.
+ * @param string $text The text.
+ *
+ * @return void No value is returned.
+ */
 function record_log($installer, $text) {
 	if ($installer) {
 		log_install_and_file(POLLER_VERBOSITY_MEDIUM, rtrim($text), 'CONVERT', true);
@@ -267,13 +283,21 @@ function record_log($installer, $text) {
 	}
 }
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Conversion Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help () {
 	display_version();
 

@@ -295,18 +295,17 @@ float_debug('Polling Ending');
 exit(0);
 
 /**
- * float_rrdfile - Takes the last known data for a data range
- *   and uses it to float a range.  It is sensitive to daily and other
- *   RRA's and will float around those ranges to ensure that there are
- *   no spikes.
+ * Takes the last known data for a data range and uses it to float a range. It is sensitive to
+ * daily and other RRA's and will float around those ranges to ensure that there are no spikes.
+ * Used as part of Cacti's CLI functionality.
  *
- * @param  (string) The RRDfile to update
- * @param  (int)    The local data id of the data source
- * @param  (int)    Any step size smaller than this will be skipped
- * @param  (int)    The float range start time as a unix timestamp
- * @param  (int)    The float range end time as a unix timestamp
+ * @param string $rrd_path The RRDfile to update.
+ * @param int $local_data_id The local data id of the data source.
+ * @param int $step Any step size smaller than this will be skipped.
+ * @param int $start_time The float range start time as a unix timestamp.
+ * @param int $end_time The float range end time as a unix timestamp.
  *
- * @return (bool)   True if successful otherwise false
+ * @return bool True if successful otherwise false.
  */
 function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time) {
 	global $seebug;
@@ -487,6 +486,22 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 	}
 }
 
+/**
+ * Handles the float master handler. Used as part of Cacti's CLI functionality.
+ *
+ * @param bool $forcerun The forcerun.
+ * @param bool $resume The resume.
+ * @param int $host_id The host ID.
+ * @param int $host_template_id The host template ID.
+ * @param int $graph_template_id The graph template ID.
+ * @param array $local_graph_ids The local graph IDS.
+ * @param int $threads The threads.
+ * @param mixed $step The step.
+ * @param int $start_time The start time.
+ * @param int $end_time The end time.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $graph_template_id, $local_graph_ids, $threads, $step, $start_time, $end_time) {
 	global $type;
 
@@ -608,14 +623,15 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 }
 
 /**
- * flaot_launch_child - this function will launch collector children based upon
- *   the maximum number of threads and the process type
+ * This function will launch collector children based upon the maximum number of threads and the
+ * process type. Used as part of Cacti's CLI functionality.
  *
- * @param $thread_id  (int)    The Thread id to launch
- * @param $start_time (int)    The float window start time as a timestamp
- * @param $end_time   (int)    The float window end time as a timestamp
+ * @param int $thread_id (int) The Thread id to launch.
+ * @param mixed $step The RRDstep for the RRDfile.
+ * @param int $start_time (int) The float window start time as a timestamp.
+ * @param int $end_time (int) The float window end time as a timestamp.
  *
- * @return - NULL
+ * @return void NULL.
  */
 function float_launch_child($thread_id, $step, $start_time, $end_time) {
 	global $config, $seebug;
@@ -650,10 +666,10 @@ function float_launch_child($thread_id, $step, $start_time, $end_time) {
 }
 
 /**
- * float_processes_running - given a type, determine the number
- *   of sub-type or children that are currently running
+ * Given a type, determine the number of sub-type or children that are currently running. Used as
+ * part of Cacti's CLI functionality.
  *
- * @return - (int) The number of running processes
+ * @return int (int) The number of running processes.
  */
 function float_processes_running() {
 	$running = db_fetch_cell('SELECT COUNT(*)
@@ -669,12 +685,12 @@ function float_processes_running() {
 }
 
 /**
- * float_debug - this simple routine prints a standard message to the console
- *   when running in debug mode.
+ * This simple routine prints a standard message to the console when running in debug mode. Used
+ * as part of Cacti's CLI functionality.
  *
- * @param $message - (string) The message to display
+ * @param string $message (string) The message to display.
  *
- * @return - NULL
+ * @return void NULL.
  */
 function float_debug($message) {
 	global $seebug;
@@ -685,7 +701,9 @@ function float_debug($message) {
 }
 
 /**
- * display_version - displays version information
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
  */
 function display_version() {
 	$version = get_cacti_version();
@@ -693,7 +711,9 @@ function display_version() {
 }
 
 /**
- * display_help - generic help screen for utilities
+ * Generic help screen for utilities. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
  */
 function display_help () {
 	display_version();
@@ -726,11 +746,12 @@ function display_help () {
 }
 
 /**
- * sig_handler - provides a generic means to catch exceptions to the Cacti log.
+ * Provides a generic means to catch exceptions to the Cacti log. Used as part of Cacti's CLI
+ * functionality.
  *
- * @param $signo - (int) the signal that was thrown by the interface.
+ * @param int $signo (int) the signal that was thrown by the interface.
  *
- * @return - null
+ * @return void Null.
  */
 function sig_handler($signo) {
 	global $type, $thread_id;
@@ -754,10 +775,10 @@ function sig_handler($signo) {
 }
 
 /**
- * float_kill_running_processes - this function is part of an interrupt
- *   handler to kill children processes when the parent is killed
+ * This function is part of an interrupt handler to kill children processes when the parent is
+ * killed. Used as part of Cacti's CLI functionality.
  *
- * @return - NULL
+ * @return void NULL.
  */
 function float_kill_running_processes() {
 	global $type;

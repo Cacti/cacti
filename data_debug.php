@@ -141,6 +141,11 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * Handles the debug runall filtered. Used as part of Cacti's data debug functionality.
+ *
+ * @return void No value is returned.
+ */
 function debug_runall_filtered() {
 	$info = array(
 		'rrd_folder_writable' => '',
@@ -191,6 +196,13 @@ function debug_runall_filtered() {
 		array($now, $info, $_SESSION['sess_user_id']));
 }
 
+/**
+ * Handles the debug process status. Used as part of Cacti's data debug functionality.
+ *
+ * @param int $id The ID.
+ *
+ * @return string The resulting string.
+ */
 function debug_process_status($id) {
 	$status = db_fetch_row_prepared('SELECT done, IFNULL(issue, "waiting") AS issue
 		FROM data_debug
@@ -208,6 +220,11 @@ function debug_process_status($id) {
 	}
 }
 
+/**
+ * Handles the form actions. Used as part of Cacti's data debug functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_actions() {
 	global $actions, $assoc_actions;
 
@@ -244,6 +261,13 @@ function form_actions() {
 	}
 }
 
+/**
+ * Handles the debug rerun. Used as part of Cacti's data debug functionality.
+ *
+ * @param array $selected_items The selected items.
+ *
+ * @return void No value is returned.
+ */
 function debug_rerun($selected_items) {
 	$info = array(
 		'rrd_folder_writable' => '',
@@ -294,6 +318,13 @@ function debug_rerun($selected_items) {
 	}
 }
 
+/**
+ * Handles the debug delete. Used as part of Cacti's data debug functionality.
+ *
+ * @param array $selected_items The selected items.
+ *
+ * @return void No value is returned.
+ */
 function debug_delete($selected_items) {
 	if (!empty($selected_items)) {
 		foreach($selected_items as $id) {
@@ -305,6 +336,11 @@ function debug_delete($selected_items) {
 	}
 }
 
+/**
+ * Validates the request vars. Used as part of Cacti's data debug functionality.
+ *
+ * @return void No value is returned.
+ */
 function validate_request_vars() {
     /* ================= input validation and session storage ================= */
     $filters = array(
@@ -373,6 +409,14 @@ function validate_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Handles the debug get filter. Used as part of Cacti's data debug functionality.
+ *
+ * @param mixed &$sql_where The SQL where.
+ * @param mixed &$dd_join The dd join.
+ *
+ * @return void No value is returned.
+ */
 function debug_get_filter(&$sql_where, &$dd_join) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('rfilter') != '') {
@@ -435,6 +479,11 @@ function debug_get_filter(&$sql_where, &$dd_join) {
 	// Get the SQL Where and Join
 }
 
+/**
+ * Handles the debug wizard. Used as part of Cacti's data debug functionality.
+ *
+ * @return void No value is returned.
+ */
 function debug_wizard() {
 	global $actions;
 
@@ -657,6 +706,11 @@ function debug_wizard() {
 	form_end();
 }
 
+/**
+ * Handles the debug view. Used as part of Cacti's data debug functionality.
+ *
+ * @return void No value is returned.
+ */
 function debug_view() {
 	global $config, $refresh;
 
@@ -952,6 +1006,13 @@ function debug_view() {
 	<?php
 }
 
+/**
+ * Handles the debug icon valid result. Used as part of Cacti's data debug functionality.
+ *
+ * @param mixed $result The result.
+ *
+ * @return string The resulting string.
+ */
 function debug_icon_valid_result($result) {
 	if ($result === '' || $result === false) {
 		return '<i class="fa fa-spinner fa-pulse fa-fw"></i>';
@@ -976,6 +1037,13 @@ function debug_icon_valid_result($result) {
 	}
 }
 
+/**
+ * Handles the debug icon. Used as part of Cacti's data debug functionality.
+ *
+ * @param mixed $result The result.
+ *
+ * @return string The resulting string.
+ */
 function debug_icon($result) {
 	if ($result === '' || $result === false) {
 		return '<i class="fa fa-spinner fa-pulse fa-fw"></i>';
@@ -996,6 +1064,11 @@ function debug_icon($result) {
 	return '<i class="fa fa-exclamation-triangle" style="color:orange"></i>';
 }
 
+/**
+ * Handles the data debug filter. Used as part of Cacti's data debug functionality.
+ *
+ * @return void No value is returned.
+ */
 function data_debug_filter() {
 	global $item_rows, $page_refresh_interval;
 

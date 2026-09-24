@@ -95,6 +95,14 @@ switch (get_request_var('action')) {
 /* --------------------------
     Global Form Functions
    -------------------------- */
+/**
+ * -------------------------- Global Form Functions --------------------------. Used as part of
+ * Cacti's CDEF functionality.
+ *
+ * @param int $cdef_id The CDEF ID.
+ *
+ * @return void No value is returned.
+ */
 
 function draw_cdef_preview($cdef_id) {
 	?>
@@ -110,6 +118,12 @@ function draw_cdef_preview($cdef_id) {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's CDEF functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 
@@ -173,6 +187,14 @@ function form_save() {
 	}
 }
 
+/**
+ * Handles the duplicate CDEF. Used as part of Cacti's CDEF functionality.
+ *
+ * @param int $_cdef_id The CDEF ID.
+ * @param string $cdef_title The CDEF title.
+ *
+ * @return void No value is returned.
+ */
 function duplicate_cdef($_cdef_id, $cdef_title) {
 	global $fields_cdef_edit;
 
@@ -214,6 +236,12 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 /* ------------------------
     The 'actions' function
    ------------------------ */
+/**
+ * ------------------------ The 'actions' function ------------------------. Used as part of
+ * Cacti's CDEF functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_actions() {
 	global $cdef_actions;
@@ -327,6 +355,12 @@ function form_actions() {
 /* --------------------------
     CDEF Item Functions
    -------------------------- */
+/**
+ * -------------------------- CDEF Item Functions --------------------------. Used as part of
+ * Cacti's CDEF functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function cdef_item_remove_confirm() {
 	global $cdef_functions, $cdef_item_types, $custom_cdef_data_source_types;
@@ -369,6 +403,11 @@ function cdef_item_remove_confirm() {
 	form_end();
 }
 
+/**
+ * Handles the item movedown. Used as part of Cacti's CDEF functionality.
+ *
+ * @return void No value is returned.
+ */
 function item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -378,6 +417,11 @@ function item_movedown() {
 	move_item_down('cdef_items', get_request_var('id'), 'cdef_id=' . get_request_var('cdef_id'));
 }
 
+/**
+ * Handles the item moveup. Used as part of Cacti's CDEF functionality.
+ *
+ * @return void No value is returned.
+ */
 function item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -387,6 +431,11 @@ function item_moveup() {
 	move_item_up('cdef_items', get_request_var('id'), 'cdef_id=' . get_request_var('cdef_id'));
 }
 
+/**
+ * Handles the CDEF item remove. Used as part of Cacti's CDEF functionality.
+ *
+ * @return void No value is returned.
+ */
 function cdef_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -399,6 +448,11 @@ function cdef_item_remove() {
 		array(get_request_var('cdef_id'), get_request_var('id')));
 }
 
+/**
+ * Handles the item edit. Used as part of Cacti's CDEF functionality.
+ *
+ * @return void No value is returned.
+ */
 function item_edit() {
 	global $cdef_item_types, $cdef_functions, $cdef_operators, $custom_data_source_types;
 
@@ -533,6 +587,12 @@ function item_edit() {
 /* ---------------------
     CDEF Functions
    --------------------- */
+/**
+ * --------------------- CDEF Functions ---------------------. Used as part of Cacti's CDEF
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function cdef_item_dnd() {
 	/* ================= Input validation ================= */
@@ -563,6 +623,11 @@ function cdef_item_dnd() {
 	header('Location: cdef.php?action=edit&header=false&id=' . get_request_var('id'));
 }
 
+/**
+ * Handles the CDEF edit. Used as part of Cacti's CDEF functionality.
+ *
+ * @return void No value is returned.
+ */
 function cdef_edit() {
 	global $cdef_item_types, $fields_cdef_edit;
 
@@ -705,6 +770,11 @@ function cdef_edit() {
 	<?php
 }
 
+/**
+ * Handles the CDEF. Used as part of Cacti's CDEF functionality.
+ *
+ * @return void No value is returned.
+ */
 function cdef() {
 	global $cdef_actions, $item_rows;
 

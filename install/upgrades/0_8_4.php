@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 0.8.4. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_0_8_4() {
 	global $database_log;
 
@@ -904,6 +909,13 @@ function upgrade_to_0_8_4() {
 }
 
 
+/**
+ * Retrieves the hash round robin archive. Used as part of Cacti's install functionality.
+ *
+ * @param mixed $rra_id The RRA ID.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function get_hash_round_robin_archive($rra_id) {
     $hash = db_fetch_cell_prepared('SELECT hash FROM rra WHERE id = ?', array($rra_id));
     if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {

@@ -80,6 +80,12 @@ if (isset_request_var('update_policy')) {
 /* --------------------------
     Actions Function
    -------------------------- */
+/**
+ * -------------------------- Actions Function --------------------------. Used as part of Cacti's
+ * user admin functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function update_policies() {
 	$policies = array('policy_graphs', 'policy_trees', 'policy_hosts', 'policy_graph_templates');
@@ -96,6 +102,11 @@ function update_policies() {
 	exit;
 }
 
+/**
+ * Handles the form actions. Used as part of Cacti's user admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_actions() {
 	global $user_actions, $auth_realms;
 
@@ -470,6 +481,12 @@ function form_actions() {
 /* --------------------------
     Save Function
    -------------------------- */
+/**
+ * -------------------------- Save Function --------------------------. Used as part of Cacti's
+ * user admin functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	global $settings_user;
@@ -700,6 +717,11 @@ function form_save() {
 	header('Location: user_admin.php?action=user_edit&header=false&id=' . (empty($user_id) ? get_filter_request_var('id') : $user_id));
 }
 
+/**
+ * Handles the perm remove. Used as part of Cacti's user admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function perm_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -737,6 +759,14 @@ function perm_remove() {
 	header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_request_var('user_id'));
 }
 
+/**
+ * Handles the graph perms edit. Used as part of Cacti's user admin functionality.
+ *
+ * @param string $tab The tab.
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function graph_perms_edit($tab, $header_label) {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -1509,6 +1539,13 @@ function graph_perms_edit($tab, $header_label) {
 	}
 }
 
+/**
+ * Handles the user realms edit. Used as part of Cacti's user admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function user_realms_edit($header_label) {
 	global $user_auth_realms, $user_auth_roles;
 
@@ -1726,6 +1763,13 @@ function user_realms_edit($header_label) {
 	form_save_button('user_admin.php', 'return');
 }
 
+/**
+ * Handles the settings edit. Used as part of Cacti's user admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function settings_edit($header_label) {
 	global $settings_user, $tabs_graphs, $graph_views;
 
@@ -1838,6 +1882,12 @@ function settings_edit($header_label) {
 /* --------------------------
     User Administration
    -------------------------- */
+/**
+ * -------------------------- User Administration --------------------------. Used as part of
+ * Cacti's user admin functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function user_edit() {
 	global $config, $fields_user_user_edit_host;
@@ -2077,6 +2127,11 @@ function user_edit() {
 	}
 }
 
+/**
+ * Handles the user. Used as part of Cacti's user admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function user() {
 	global $config, $auth_realms, $user_actions, $item_rows;
 
@@ -2420,6 +2475,11 @@ function user() {
 	form_end();
 }
 
+/**
+ * Processes the graph request vars. Used as part of Cacti's user admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function process_graph_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2454,6 +2514,11 @@ function process_graph_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Processes the group request vars. Used as part of Cacti's user admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function process_group_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2483,6 +2548,11 @@ function process_group_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Processes the device request vars. Used as part of Cacti's user admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function process_device_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2517,6 +2587,11 @@ function process_device_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Processes the template request vars. Used as part of Cacti's user admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function process_template_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2551,6 +2626,11 @@ function process_template_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Processes the tree request vars. Used as part of Cacti's user admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function process_tree_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2585,6 +2665,13 @@ function process_tree_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Handles the graph filter. Used as part of Cacti's user admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function graph_filter($header_label) {
 	global $config, $item_rows;
 
@@ -2705,6 +2792,13 @@ function graph_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * Handles the group filter. Used as part of Cacti's user admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function group_filter($header_label) {
 	global $config, $item_rows;
 
@@ -2802,6 +2896,13 @@ function group_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * Handles the device filter. Used as part of Cacti's user admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function device_filter($header_label) {
 	global $config, $item_rows;
 
@@ -2918,6 +3019,13 @@ function device_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * Handles the template filter. Used as part of Cacti's user admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function template_filter($header_label) {
 	global $config, $item_rows;
 
@@ -3015,6 +3123,13 @@ function template_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * Handles the tree filter. Used as part of Cacti's user admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function tree_filter($header_label) {
 	global $config, $item_rows;
 
@@ -3112,6 +3227,13 @@ function tree_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * Handles the member filter. Used as part of Cacti's user admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function member_filter($header_label) {
 	global $config, $item_rows;
 

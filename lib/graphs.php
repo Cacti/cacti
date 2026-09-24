@@ -22,6 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Retrieves the graph template details. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_graph_id The local graph ID.
+ *
+ * @return array An array of results.
+ */
 function get_graph_template_details($local_graph_id) {
 	global $config;
 

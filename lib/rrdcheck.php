@@ -23,6 +23,14 @@
 */
 
 
+/**
+ * Retrieves the rrdfiles. Used as part of Cacti's lib functionality.
+ *
+ * @param int $thread_id The thread ID.
+ * @param int $max_threads The max threads.
+ *
+ * @return array An array of results.
+ */
 function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 	global $config;
 
@@ -70,12 +78,12 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 }
 
 /**
- * rrdcheck_debug - this simple routine prints a standard message to the console
- *   when running in debug mode.
+ * This simple routine prints a standard message to the console when running in debug mode. Used
+ * as part of Cacti's lib functionality.
  *
- * @param $message - (string) The message to display
+ * @param string $message (string) The message to display.
  *
- * @return - NULL
+ * @return void NULL.
  */
 function rrdcheck_debug($message) {
 	global $debug;
@@ -86,12 +94,12 @@ function rrdcheck_debug($message) {
 }
 
 /**
- * do_rrdcheck - this routine is a generic routine that
- *   check all RRDfiles (missing files, ...) and stored information (NaN)
+ * This routine is a generic routine that check all RRDfiles (missing files, ...) and stored
+ * information (NaN). Used as part of Cacti's lib functionality.
  *
- * @param $thread_id - (int) the rrdcheck parallel thread id
+ * @param int $thread_id (int) the rrdcheck parallel thread id.
  *
- * @return - NULL
+ * @return void NULL.
  */
 function do_rrdcheck($thread_id = 1) {
 	global $config, $type;
@@ -543,12 +551,12 @@ function do_rrdcheck($thread_id = 1) {
 }
 
 /**
- * rrdcheck_log_statistics - provides generic timing message to both the Cacti log and the settings
- *   table so that the statistics can be graphed as well.
+ * Provides generic timing message to both the Cacti log and the settings table so that the
+ * statistics can be graphed as well. Used as part of Cacti's lib functionality.
  *
- * @param $type - (string) the type of statistics to log, either 'HOURLY', 'BOOST'.
+ * @param string $type (string) the type of statistics to log, either 'HOURLY', 'BOOST'.
  *
- * @return - NULL
+ * @return void NULL.
  */
 function rrdcheck_log_statistics($type) {
 	global $start;
@@ -613,13 +621,13 @@ function rrdcheck_log_statistics($type) {
 }
 
 /**
- * rrdcheck_log_child_stats - logs rrdcheck child process information
+ * Logs rrdcheck child process information. Used as part of Cacti's lib functionality.
  *
- * @param $type        - (string) The type of child, MAJOR, DAILY, BOOST
- * @param $thread_id   - (int) The parallel thread id
- * @param $total_time  - (int) The total time to collect date
+ * @param string $type (string) The type of child, MAJOR, DAILY, BOOST.
+ * @param int $thread_id (int) The parallel thread id.
+ * @param float $total_time (int) The total time to collect date.
  *
- * @return - NULL
+ * @return void NULL.
  */
 function rrdcheck_log_child_stats($type, $thread_id, $total_time) {
 	$rrd_user = db_fetch_cell_prepared("SELECT SUM(value)
@@ -653,16 +661,16 @@ function rrdcheck_log_child_stats($type, $thread_id, $total_time) {
 }
 
 /**
- * rrdcheck_error_handler - this routine logs all PHP error transactions
- *   to make sure they are properly logged.
+ * This routine logs all PHP error transactions to make sure they are properly logged. Used as
+ * part of Cacti's lib functionality.
  *
- * @param $errno    - (int) The errornum reported by the system
- * @param $errmsg   - (string) The error message provides by the error
- * @param $filename - (string) The filename that encountered the error
- * @param $linenum  - (int) The line number where the error occurred
- * @param $vars     - (mixed) The current state of PHP variables.
+ * @param int $errno (int) The errornum reported by the system.
+ * @param string $errmsg (string) The error message provides by the error.
+ * @param string $filename (string) The filename that encountered the error.
+ * @param int $linenum (int) The line number where the error occurred.
+ * @param array $vars (mixed) The current state of PHP variables.
  *
- * @returns - (bool) always returns true for some reason
+ * @return bool (bool) always returns true for some reason.
  */
 function rrdcheck_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
@@ -703,11 +711,11 @@ function rrdcheck_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
 }
 
 /**
- * rrdcheck_boost_bottom - this routine accommodates rrdcheck after the boost process
- *   has completed.  The use of boost will require boost version 2.5 or above.  The idea
- *   if that rrdcheck will be started on the boost cycle.
+ * This routine accommodates rrdcheck after the boost process has completed. The use of boost will
+ * require boost version 2.5 or above. The idea if that rrdcheck will be started on the boost
+ * cycle. Used as part of Cacti's lib functionality.
  *
- * @return - NULL
+ * @return void NULL.
  */
 function rrdcheck_boost_bottom() {
 	global $config;
@@ -733,11 +741,10 @@ function rrdcheck_boost_bottom() {
 }
 
 /**
- * rrdcheck_poller_bottom - this routine launches the main rrdcheck poller.
- *   It is forked independently
- *   to the Cacti poller after all polling has finished.
+ * This routine launches the main rrdcheck poller. It is forked independently to the Cacti poller
+ * after all polling has finished. Used as part of Cacti's lib functionality.
  *
- * @return - NULL
+ * @return void NULL.
  */
 function rrdcheck_poller_bottom () {
 	global $config;
@@ -764,12 +771,12 @@ function rrdcheck_poller_bottom () {
 }
 
 /**
- * rrdcheck_rrdtool_init - this routine provides a bi-directional socket based connection to RRDtool.
- *   it provides a high speed connection to rrdfile in the case where the traditional Cacti call does
- *   not when performing fetch type calls.
+ * This routine provides a bi-directional socket based connection to RRDtool. it provides a high
+ * speed connection to rrdfile in the case where the traditional Cacti call does not when
+ * performing fetch type calls. Used as part of Cacti's lib functionality.
  *
- * @return - (mixed) An array that includes both the process resource and the pipes to communicate
- *   with RRDtool.
+ * @return array (mixed) An array that includes both the process resource and the pipes to
+ *   communicate with RRDtool.
  */
 function rrdcheck_rrdtool_init() {
 	global $config;
@@ -805,16 +812,16 @@ function rrdcheck_rrdtool_init() {
 }
 
 /**
- * rrdcheck_rrdtool_execute - this routine passes commands to RRDtool and returns the information
- *   back to rrdcheck.  It is important to note here that RRDtool needs to provide an either 'OK'
- *   or 'ERROR' response across the pipe as it does not provide EOF characters to key upon.
- *   This may not be the best method and may be changed after I have a conversation with a few
- *   developers.
+ * This routine passes commands to RRDtool and returns the information back to rrdcheck. It is
+ * important to note here that RRDtool needs to provide an either 'OK' or 'ERROR' response across
+ * the pipe as it does not provide EOF characters to key upon. This may not be the best method and
+ * may be changed after I have a conversation with a few developers. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $command - (string) The rrdtool command to execute
- * @param $pipes   - (array) An array of stdin and stdout pipes to read and write data from
+ * @param array|string $command (string) The rrdtool command to execute.
+ * @param mixed &$pipes (array) An array of stdin and stdout pipes to read and write data from.
  *
- * @returns - (string) The output from RRDtool
+ * @return mixed (string) The output from RRDtool.
  */
 function rrdcheck_rrdtool_execute($command, &$pipes) {
 	static $broken = false;
@@ -870,22 +877,24 @@ function rrdcheck_rrdtool_execute($command, &$pipes) {
 }
 
 /**
- * rrdcheck_rrdtool_close - this routine closes the RRDtool process thus also
- *   closing the pipes.
+ * This routine closes the RRDtool process thus also closing the pipes. Used as part of Cacti's
+ * lib functionality.
  *
- * @return - NULL
+ * @param resource $process The process.
+ *
+ * @return int NULL.
  */
 function rrdcheck_rrdtool_close($process) {
 	proc_close($process);
 }
 
 /**
- * rrdcheck_launch_children - this function will launch collector children based upon
- *   the maximum number of threads and the process type
+ * This function will launch collector children based upon the maximum number of threads and the
+ * process type. Used as part of Cacti's lib functionality.
  *
- * @param $type - (string) The process type
+ * @param string $type (string) The process type.
  *
- * @return - NULL
+ * @return int NULL.
  */
 function rrdcheck_launch_children($type) {
 	global $config, $debug;
@@ -914,12 +923,12 @@ function rrdcheck_launch_children($type) {
 }
 
 /**
- * rrdcheck_get_subtype - this function determine the applicable
- *   sub-type (child name) and return if based upon a type
+ * This function determine the applicable sub-type (child name) and return if based upon a type.
+ * Used as part of Cacti's lib functionality.
  *
- * @param $type - (string) The process type
+ * @param string $type (string) The process type.
  *
- * @return - (string) The sub type
+ * @return string (string) The sub type.
  */
 function rrdcheck_get_subtype($type) {
 	switch($type) {
@@ -936,10 +945,10 @@ function rrdcheck_get_subtype($type) {
 }
 
 /**
- * rrdcheck_kill_running_processes - this function is part of an interrupt
- *   handler to kill children processes when the parent is killed
+ * This function is part of an interrupt handler to kill children processes when the parent is
+ * killed. Used as part of Cacti's lib functionality.
  *
- * @return - NULL
+ * @return void NULL.
  */
 function rrdcheck_kill_running_processes() {
 	global $type;
@@ -973,12 +982,12 @@ function rrdcheck_kill_running_processes() {
 }
 
 /**
- * rrdcheck_processes_running - given a type, determine the number
- *   of sub-type or children that are currently running
+ * Given a type, determine the number of sub-type or children that are currently running. Used as
+ * part of Cacti's lib functionality.
  *
- * @param $type - (string) The process type
+ * @param string $type (string) The process type.
  *
- * @return - (int) The number of running processes
+ * @return int (int) The number of running processes.
  */
 function rrdcheck_processes_running($type) {
 	$sub_type = rrdcheck_get_subtype($type);

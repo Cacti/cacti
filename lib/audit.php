@@ -18,21 +18,24 @@
 /**
  * Quote a MySQL identifier used by the database audit repair builder.
  *
- * @param string $identifier Identifier from the canonical audit schema
+ * @param string $identifier Identifier from the canonical audit schema.
  *
- * @return string Backtick-quoted identifier
+ * @return string Backtick-quoted identifier.
  */
 function audit_quote_identifier(string $identifier) : string {
 	return '`' . str_replace('`', '``', $identifier) . '`';
 }
 
 /**
- * Return the core schema tables that are absent from the live database.
+ * Return the core schema tables that are absent from the live database. Used as part of Cacti's
+ * lib functionality.
  *
- * @param array<int, mixed> $expected_tables Tables recorded in the canonical audit schema
- * @param array<int, mixed> $actual_tables   Tables present in the selected database
+ * @param array $expected_tables Array<int, mixed> $expected_tables Tables recorded in the
+ *   canonical audit schema.
+ * @param array $actual_tables Array<int, mixed> $actual_tables Tables present in the selected
+ *   database.
  *
- * @return array<int, string> Missing table names in deterministic order
+ * @return array Array<int, string> Missing table names in deterministic order.
  */
 function audit_missing_core_tables(array $expected_tables, array $actual_tables) : array {
 	$expected_tables = array_values(array_unique(array_filter($expected_tables, 'is_string')));
@@ -45,9 +48,11 @@ function audit_missing_core_tables(array $expected_tables, array $actual_tables)
 }
 
 /**
- * Return the core table names declared by cacti.sql.
+ * Return the core table names declared by cacti.sql. Used as part of Cacti's lib functionality.
  *
- * @return array<int, string> Canonical table names in schema order
+ * @param string $schema_sql The schema SQL.
+ *
+ * @return array Array<int, string> Canonical table names in schema order.
  */
 function audit_schema_table_names(string $schema_sql) : array {
 	preg_match_all('/^CREATE TABLE\s+`?([A-Za-z0-9_]+)`?\s*\(/m', $schema_sql, $matches);
@@ -56,13 +61,14 @@ function audit_schema_table_names(string $schema_sql) : array {
 }
 
 /**
- * Check an already-fetched SHOW COLUMNS result for an exact column name.
+ * Check an already-fetched SHOW COLUMNS result for an exact column name. Legacy Cacti schemas
+ * contain names such as "max-access" that are not valid inputs to the generic identifier-based
+ * database helpers. Used as part of Cacti's lib functionality.
  *
- * Legacy Cacti schemas contain names such as "max-access" that are not valid
- * inputs to the generic identifier-based database helpers.
+ * @param array $columns Array<int, array<string, mixed>> $columns SHOW COLUMNS rows.
+ * @param string $column Expected column name.
  *
- * @param array<int, array<string, mixed>> $columns SHOW COLUMNS rows
- * @param string                           $column  Expected column name
+ * @return bool True on success, false otherwise.
  */
 function audit_column_exists(array $columns, string $column) : bool {
 	foreach($columns as $candidate) {
@@ -75,12 +81,13 @@ function audit_column_exists(array $columns, string $column) : bool {
 }
 
 /**
- * Extract one canonical CREATE TABLE statement from cacti.sql.
+ * Extract one canonical CREATE TABLE statement from cacti.sql. Used as part of Cacti's lib
+ * functionality.
  *
- * @param string $schema_sql Full contents of cacti.sql
- * @param string $table      Valid Cacti table identifier
+ * @param string $schema_sql Full contents of cacti.sql.
+ * @param string $table Valid Cacti table identifier.
  *
- * @return string|false The CREATE TABLE statement, or false when unavailable
+ * @return string|false The CREATE TABLE statement, or false when unavailable.
  */
 function audit_extract_create_table(string $schema_sql, string $table) {
 	if (!preg_match('/^[A-Za-z0-9_]+$/D', $table)) {

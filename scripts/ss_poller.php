@@ -60,6 +60,11 @@ if (!isset($called_by_script_server)) {
 	}
 }
 
+/**
+ * Handles the ss thold time. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_thold_time() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_thold"'));
 
@@ -71,6 +76,11 @@ function ss_thold_time() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
+/**
+ * Handles the ss thold checks. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_thold_checks() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_thold"'));
 
@@ -82,6 +92,11 @@ function ss_thold_checks() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
+/**
+ * Handles the ss thold hstats. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_thold_hstats() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_thold"'));
 
@@ -97,6 +112,11 @@ function ss_thold_hstats() {
 	return empty($stats) ? 'TotalDevices:0 DownDevices:0' : trim($stats);
 }
 
+/**
+ * Handles the ss monitor time. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_monitor_time() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_monitor"'));
 
@@ -108,6 +128,11 @@ function ss_monitor_time() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
+/**
+ * Handles the ss monitor stats. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_monitor_stats() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_monitor"'));
 
@@ -127,6 +152,11 @@ function ss_monitor_stats() {
 	return empty($stats) ? 'Reboots:0 DownDevices:0 Notifications:0 Purges:0' : trim($stats);
 }
 
+/**
+ * Handles the ss syslog time. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_syslog_time() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="syslog_stats"'));
 
@@ -138,6 +168,11 @@ function ss_syslog_time() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
+/**
+ * Handles the ss syslog stats. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_syslog_stats() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="syslog_stats"'));
 
@@ -163,6 +198,11 @@ function ss_syslog_stats() {
 	return empty($stats) ? 'deletes:0 incoming:0 removes:0 xfers:0 alerts:0 alarms:0 reports:0' : trim($stats);
 }
 
+/**
+ * Handles the ss poller. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_poller() {
 	$stats = db_fetch_cell('SELECT value
 		FROM settings
@@ -171,6 +211,11 @@ function ss_poller() {
 	return empty($stats) ? 'Time:0 Method:0 Processes:0 Threads:0 Hosts:0 HostsPerProcess:0 DataSources:0 RRDsProcessed:0' : trim($stats);
 }
 
+/**
+ * Handles the ss webseer counts. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_webseer_counts() {
 	$stats = array();
 	if (db_table_exists('plugin_webseer_urls')) {
@@ -184,6 +229,11 @@ function ss_webseer_counts() {
 	return !cacti_sizeof($stats) ? 'triggered:0 successful:0 disabled:0' : 'triggered:' . $stats['triggered'] . ' successful:' . $stats['successful'] . ' disabled:' . $stats['disabled'];
 }
 
+/**
+ * Handles the ss webseer stats. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_webseer_stats() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_webseer"'));
 
@@ -201,6 +251,11 @@ function ss_webseer_stats() {
 	return empty($stats) ? 'Time:0 Checks:0 Servers:0' : trim($stats);
 }
 
+/**
+ * Handles the ss poller items. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_poller_items() {
 	$poller_cache = db_fetch_assoc('SELECT action, COUNT(*) AS count
 		FROM poller_item
@@ -221,6 +276,11 @@ function ss_poller_items() {
 	);
 }
 
+/**
+ * Handles the ss recache. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_recache() {
 	$stats = db_fetch_cell('SELECT value
 		FROM settings
@@ -230,6 +290,11 @@ function ss_recache() {
 	return empty($stats) ? 'RecacheTime:0 DevicesRecached:0' : trim($stats);
 }
 
+/**
+ * Handles the ss boost. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_boost() {
 	$stats = db_fetch_cell('SELECT value
 		FROM settings
@@ -238,6 +303,11 @@ function ss_boost() {
 	return empty($stats) ? 'Time:0 RRDUpdates:0' : trim($stats);
 }
 
+/**
+ * Handles the ss boost mem. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_boost_mem() {
 	$stats = db_fetch_cell('SELECT SUM(value)
 		FROM settings
@@ -246,6 +316,11 @@ function ss_boost_mem() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
+/**
+ * Handles the ss boost table. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_boost_table() {
 	$stats = db_fetch_cell('SELECT DATA_LENGTH+INDEX_LENGTH AS tbl_len
 		FROM INFORMATION_SCHEMA.TABLES
@@ -255,6 +330,11 @@ function ss_boost_table() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
+/**
+ * Handles the ss boost records. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_boost_records() {
 	$stats = db_fetch_cell('SELECT TABLE_ROWS
 		FROM INFORMATION_SCHEMA.TABLES
@@ -264,6 +344,11 @@ function ss_boost_records() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
+/**
+ * Handles the ss boost avg size. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_boost_avg_size() {
 	$stats = db_fetch_cell('SELECT AVG_ROW_LENGTH
 		FROM INFORMATION_SCHEMA.TABLES
@@ -273,6 +358,11 @@ function ss_boost_avg_size() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
+/**
+ * Handles the ss boost timing. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_boost_timing() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_detail_boost"'));
 
@@ -296,6 +386,11 @@ function ss_boost_timing() {
 	return empty($stats) ? 'get_records:0 results_cycle:0 rrd_filename_and_template:0 rrd_lastupdate:0 rrdupdate:0 delete:0' : trim($stats);
 }
 
+/**
+ * Handles the ss export. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_export() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_export"'));
 

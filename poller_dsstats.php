@@ -192,6 +192,11 @@ if (!$forcerun) {
 
 exit(0);
 
+/**
+ * Handles the dsstats purge hourly cache. Used as part of Cacti's poller dsstats functionality.
+ *
+ * @return void No value is returned.
+ */
 function dsstats_purge_hourly_cache() {
 	$hourly_window  = date('Y-m-d H:i:s', time() - (read_config_option('dsstats_hourly_duration') * 60));
 
@@ -201,6 +206,12 @@ function dsstats_purge_hourly_cache() {
 	}
 }
 
+/**
+ * Handles the dsstats insert hourly data into cache. Used as part of Cacti's poller dsstats
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function dsstats_insert_hourly_data_into_cache() {
 	/* store the current averages into the hourly table */
 	db_execute("INSERT INTO data_source_stats_hourly
@@ -212,6 +223,14 @@ function dsstats_insert_hourly_data_into_cache() {
 		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)");
 }
 
+/**
+ * Handles the dsstats master handler. Used as part of Cacti's poller dsstats functionality.
+ *
+ * @param string $type The type.
+ * @param mixed $forcerun The forcerun.
+ *
+ * @return void No value is returned.
+ */
 function dsstats_master_handler($type, $forcerun) {
 	/* read some important settings relative to timing from the database */
 	$major_time     = date('H:i:s', strtotime(read_config_option('dsstats_major_update_time')));
@@ -298,7 +317,9 @@ function dsstats_master_handler($type, $forcerun) {
 }
 
 /**
- * display_version - displays version information
+ * Displays version information. Used as part of Cacti's poller dsstats functionality.
+ *
+ * @return void No value is returned.
  */
 function display_version() {
 	$version = get_cacti_version();
@@ -306,7 +327,9 @@ function display_version() {
 }
 
 /**
- * display_help - generic help screen for utilities
+ * Generic help screen for utilities. Used as part of Cacti's poller dsstats functionality.
+ *
+ * @return void No value is returned.
  */
 function display_help () {
 	display_version();
@@ -327,11 +350,12 @@ function display_help () {
 }
 
 /**
- * sig_handler - provides a generic means to catch exceptions to the Cacti log.
+ * Provides a generic means to catch exceptions to the Cacti log. Used as part of Cacti's poller
+ * dsstats functionality.
  *
- * @param $signo - (int) the signal that was thrown by the interface.
+ * @param int $signo (int) the signal that was thrown by the interface.
  *
- * @return - null
+ * @return void Null.
  */
 function sig_handler($signo) {
 	global $type, $thread_id;

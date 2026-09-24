@@ -33,6 +33,14 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_hstats', $_SERVER['argv']);
 }
 
+/**
+ * Handles the ss hstats. Used as part of Cacti's scripts functionality.
+ *
+ * @param int $host_id The host ID.
+ * @param string $stat The stat.
+ *
+ * @return string The resulting string.
+ */
 function ss_hstats($host_id = 0, $stat = '') {
 	$allowed_columns = array(
 		'polling_time'  => 'polling_time',

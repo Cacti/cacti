@@ -97,7 +97,7 @@ function boostMariaDbLoadProductionFunctions($root) {
 
 	$source = file_get_contents($root . '/lib/boost.php');
 	$start  = strpos($source, 'function boost_process_table_exists_uncached(');
-	$end    = strpos($source, "\n/**\n * boost_array_orderby", $start);
+	$end    = strpos($source, "\nfunction boost_array_orderby(", $start);
 
 	expect($start)->not->toBeFalse()
 		->and($end)->not->toBeFalse();

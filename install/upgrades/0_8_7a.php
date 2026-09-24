@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 0.8.7a. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_0_8_7a() {
 	/* add alpha channel to graph items */
 	db_install_add_column('graph_templates_item', array('name' => 'alpha', 'type' => 'char(2)', 'NULL' => false, 'after' => 'color_id', 'default' => 'FF'));

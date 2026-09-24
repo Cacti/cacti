@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1.2.11. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_2_11() {
 	db_install_execute("CREATE TABLE IF NOT EXISTS `processes` (
 		`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

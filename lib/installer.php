@@ -132,13 +132,13 @@ class Installer implements JsonSerializable {
 	private $automationRange;
 	private $snmpOptions;
 
-	/*
-	 * class Installer initialization
+	/**
+	 * * class Installer initialization * * usage: * $installer = new Installer($installData) * * @arg
+	 * installData - array of fields to update. Used as part of Cacti's lib functionality.
 	 *
-	 * usage:
-	 *    $installer = new Installer($installData)
+	 * @param mixed $install_params The install params.
 	 *
-	 * @arg installData - array of fields to update
+	 * @return void No value is returned.
 	 */
 	public function __construct($install_params = array()) {
 		log_install_high('step', 'Install Parameters: ' . clean_up_lines(var_export($install_params, true)));
@@ -249,6 +249,12 @@ class Installer implements JsonSerializable {
 	/* jsonSerialize() - provides JSON object of return data with optional
 	 *                   values output dependent on Runtime mode */
 	#[ReturnTypeWillChange]
+	/**
+	 * jsonSerialize() - provides JSON object of return data with optional values output dependent on
+	 * Runtime mode. Used as part of Cacti's lib functionality.
+	 *
+	 * @return array An array of options data.
+	 */
 	public function jsonSerialize() {
 		if (empty($this->output)) {
 			$this->output = $this->processCurrentStep();
@@ -284,19 +290,34 @@ class Installer implements JsonSerializable {
 		return array_merge($basics, $webdata);
 	}
 
-	/* getData() - alias for jsonSerialize() */
+	/**
+	 * getData() - alias for jsonSerialize(). Used as part of Cacti's lib functionality.
+	 *
+	 * @return array A serialized json string.
+	 */
 	public function getData() {
 		return $this->jsonSerialize();
 	}
 
-	/* getErrors() - retrieve an array of all recorded errors */
+	/**
+	 * getErrors() - retrieve an array of all recorded errors. Used as part of Cacti's lib
+	 * functionality.
+	 *
+	 * @return array An array of errors.
+	 */
 	public function getErrors() {
 		return (isset($this->errors) && !empty($this->errors)) ? $this->errors : array();
 	}
 
-	/* processParameters - process array of parameters to override defaults
-	 * @arg params_install - array of parameters to process where key
-	 *                       matches XXX from setXXX/getXXX functions */
+	/**
+	 * Process array of parameters to override defaults * @arg params_install - array of parameters to
+	 * process where key * matches XXX from setXXX/getXXX functions. Used as part of Cacti's lib
+	 * functionality.
+	 *
+	 * @param array $params_install Array of parameters to process where key.
+	 *
+	 * @return void No value is returned.
+	 */
 	protected function processParameters($params_install = array()) {
 		if (empty($params_install) || !is_array($params_install)) {
 			$params_install = array();
@@ -372,9 +393,14 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/* setDefaults - apply default values from array object
-	 * @arg install_params - optional key/value array where key matches
-	 *                       XXX from setXXX/getXXX functions  */
+	/**
+	 * Apply default values from array object * @arg install_params - optional key/value array where
+	 * key matches * XXX from setXXX/getXXX functions. Used as part of Cacti's lib functionality.
+	 *
+	 * @param array $install_params Optional key/value array where key matches.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function setDefaults($install_params = array()) {
 		$this->tables             = $this->getTables();
 
@@ -405,11 +431,19 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/* setTrueFalse() - determine whether @param can be mapped to either
-	 *                  True or False and if so, assign result to $field
-	 * @param  - value to be set if it can be mapped to True or False
-	 * @field  - variable reference to be set
-	 * @option - name of the option */
+	/**
+	 * setTrueFalse() - determine whether @param can be mapped to either * True or False and if so,
+	 * assign result to $field * @param - value to be set if it can be mapped to True or False *
+	 * @field - variable reference to be set * @option - name of the option. Used as part of Cacti's
+	 * lib functionality.
+	 *
+	 * @param mixed $param Value to be set if it can be mapped to True or False.
+	 * @param mixed &$field Variable reference to be set.
+	 * @param string $option Name of the option.
+	 * @param bool $save Indication to save state.
+	 *
+	 * @return bool The result of the function.
+	 */
 	private function setTrueFalse($param, &$field, $option = '', $save = true) {
 		$value = null;
 		if ($param === true || $param === 'true' || $param === 'on' || $param === 1 || $param === '1') {
@@ -430,12 +464,20 @@ class Installer implements JsonSerializable {
 		return $result;
 	}
 
-	/* addError() - adds a new error to the array or updates an existing one
-	 * @step    - Which step of the installer reports the error and
-	 *          - should be Installer::STEP_ constant
-	 * @section - Title of section causing a problem
-	 * @item    - Individual item that caused the problem
-	 * @text    - Descriptive text of the error */
+	/**
+	 * addError() - adds a new error to the array or updates an existing one * @step - Which step of
+	 * the installer reports the error and * - should be Installer::STEP_ constant * @section - Title
+	 * of section causing a problem * @item - Individual item that caused the problem * @text -
+	 * Descriptive text of the error. Used as part of Cacti's lib functionality.
+	 *
+	 * @param int $step Which step of the installer reports the error and should be Installer::STEP_
+	 *   constant.
+	 * @param string $section Title of section causing a problem.
+	 * @param string $item Individual item that caused the problem.
+	 * @param mixed $text Descriptive text of the error.
+	 *
+	 * @return void No value is returned.
+	 */
 	public function addError($step, $section, $item, $text = false) {
 		if (!isset($this->errors[$section])) {
 			$this->errors[$section] = array();
@@ -456,17 +498,30 @@ class Installer implements JsonSerializable {
 		log_install_debug('errors-json', clean_up_lines(var_export($this->errors, true)));
 	}
 
-	/* setProgress() - set the progress point of Installer::STEP_INSTALL
-	 * @param_progress - one of Installer::PROGRESS_ constants */
+	/**
+	 * setProgress() - set the progress point of Installer::STEP_INSTALL * @param_progress - one of
+	 * Installer::PROGRESS_ constants. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed $param_process The param process.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function setProgress($param_process) {
 		log_install_medium('', "Progress: $param_process");
 		set_install_config_option('install_progress', $param_process);
 		set_install_config_option('install_updated', microtime(true));
 	}
 
-	/* sanitizeRRDVersion() - ensure version number is valid
-	 * @param_rrdver    - version to be sanitized
-	 * @default_version - version to return if not sanitized */
+	/**
+	 * sanitizeRRDVersion() - ensure version number is valid * @param_rrdver - version to be sanitized
+	 * * @default_version - version to return if not sanitized. Used as part of Cacti's lib
+	 * functionality.
+	 *
+	 * @param string $param_rrdver The version to be sanitized.
+	 * @param string $default_version The default version if any.
+	 *
+	 * @return string The rrdtool version.
+	 */
 	private function sanitizeRRDVersion($param_rrdver, $default_version = '') {
 		$rrdver = $default_version;
 		if (isset($param_rrdver) && strlen($param_rrdver)) {
@@ -501,9 +556,12 @@ class Installer implements JsonSerializable {
 	 *                                                                *
 	 ******************************************************************/
 
-	/* getPermissions() - gets the permissions for folders that we require
-	 *                    to be available for writing during install or
-	 *                    always (after install) */
+	/**
+	 * getPermissions() - gets the permissions for folders that we require * to be available for
+	 * writing during install or * always (after install). Used as part of Cacti's lib functionality.
+	 *
+	 * @return array An array of permissions.
+	 */
 	private function getPermissions() {
 		global $config;
 
@@ -576,9 +634,14 @@ class Installer implements JsonSerializable {
 		return $permissions;
 	}
 
-	/* setRuntime() - sets the runtime mode of the Installer
-	 * @param_runtime - Default is 'unknown', acceptable modes are 'Cli'
-	 *                  and 'Json' */
+	/**
+	 * setRuntime() - sets the runtime mode of the Installer * @param_runtime - Default is 'unknown',
+	 * acceptable modes are 'Cli' * and 'Json'. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $param_runtime Default is 'unknown', acceptable modes are 'Cli' and 'Json'.
+	 *
+	 * @return void No value is returned.
+	 */
 	public function setRuntime($param_runtime = 'unknown') {
 		if ($param_runtime == 'Web' || $param_runtime == 'Cli' || $param_runtime == 'Json') {
 			$this->runtime = $param_runtime;
@@ -587,6 +650,11 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * Handles the getlanguage. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	private function getLanguage() {
 		$language = read_config_option('install_language', true);
 		if (empty($language)) {
@@ -599,11 +667,16 @@ class Installer implements JsonSerializable {
 		return $language;
 	}
 
-	/* setLanguage() - sets the language of the Installer
-	 * @param_language - Must be a valid language which is returned from
-	 *                   apply_locale() function located in Core
+	/**
+	 * setLanguage() - sets the language of the Installer * @param_language - Must be a valid language
+	 * which is returned from * apply_locale() function located in Core * * Errors: will add an error
+	 * at STEP_WELCOME if invalid language. Used as part of Cacti's lib functionality.
 	 *
-	 * Errors: will add an error at STEP_WELCOME if invalid language */
+	 * @param string $param_language Must be a valid language which is returned from apply_locale()
+	 *   function located in Core.
+	 *
+	 * @return void Errors: will add an error at STEP_WELCOME if invalid language.
+	 */
 	private function setLanguage($param_language = '') {
 		if (isset($param_language) && strlen($param_language)) {
 			$language = apply_locale($param_language);
@@ -622,10 +695,15 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/* setEula() - sets whether the Eula was accepted or not
-	 * @param_eula - valid values are 'Accepted', 'True'
+	/**
+	 * setEula() - sets whether the Eula was accepted or not * @param_eula - valid values are
+	 * 'Accepted', 'True' * * Errors: will add an error at STEP_WELCOME if not accepted. Used as part
+	 * of Cacti's lib functionality.
 	 *
-	 * Errors: will add an error at STEP_WELCOME if not accepted */
+	 * @param string $param_eula The param eula.
+	 *
+	 * @return void Errors: will add an error at STEP_WELCOME if not accepted.
+	 */
 	private function setEula($param_eula = '') {
 		if ($param_eula == 'Accepted' || $param_eula === 'true') {
 			$param_eula = 1;
@@ -640,8 +718,12 @@ class Installer implements JsonSerializable {
 		set_install_config_option('install_eula', $this->eula);
 	}
 
-	/* getRRDVersion() - gets the RRDVersion from the system or if overridden
-	 *                  during the installer, from the installer option */
+	/**
+	 * getRRDVersion() - gets the RRDVersion from the system or if overridden * during the installer,
+	 * from the installer option. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string String.
+	 */
 	private function getRRDVersion() {
 		$rrdver = read_config_option('install_rrdtool_version', true);
 		if (empty($rrdver)) {
@@ -656,7 +738,12 @@ class Installer implements JsonSerializable {
 		return $rrdver;
 	}
 
-	/* setCSRFSecret() - Initializes the installer-owned CSRF secret */
+	/**
+	 * setCSRFSecret() - Initializes the installer-owned CSRF secret. Used as part of Cacti's lib
+	 * functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function setCSRFSecret() {
 		global $config;
 
@@ -711,13 +798,16 @@ class Installer implements JsonSerializable {
 		$this->setProgress(Installer::PROGRESS_CSRF_END);
 	}
 
-	/* setRRDVersion() - sets the RRDVersion installer option, overrides
-	 *                 - system default.
-	 * @param_rrdver - a valid version number.
-	 * @prefix       - a display prefix, not used in values
+	/**
+	 * setRRDVersion() - sets the RRDVersion installer option, overrides * - system default. *
+	 * @param_rrdver - a valid version number. * @prefix - a display prefix, not used in values * *
+	 * Errors: will add an error at STEP_BINARY_LOCATIONS if invalid version * was detected.
 	 *
-	 * Errors: will add an error at STEP_BINARY_LOCATIONS if invalid version
-	 *         was detected */
+	 * @param string $param_rrdver A valid version number.
+	 * @param string $prefix A display prefix, not used in values.
+	 *
+	 * @return void Errors: will add an error at STEP_BINARY_LOCATIONS if invalid version was detected.
+	 */
 	private function setRRDVersion($param_rrdver = '', $prefix = '') {
 		global $config;
 		if (isset($param_rrdver) && strlen($param_rrdver)) {
@@ -732,7 +822,11 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/* getTheme() - gets the current theme */
+	/**
+	 * getTheme() - gets the current theme. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The current theme.
+	 */
 	private function getTheme() {
 		$theme = read_config_option('install_theme', true);
 		if (empty($theme)) {
@@ -749,11 +843,15 @@ class Installer implements JsonSerializable {
 		return $theme;
 	}
 
-	/* setTheme() - sets the Theme installer option, override the system default.
-	 * @param_theme - a valid theme which must exist in /include/themes/
+	/**
+	 * setTheme() - sets the Theme installer option, override the system default. * @param_theme - a
+	 * valid theme which must exist in /include/themes/ * * Errors: will add an error at
+	 * STEP_BINARY_WELCOME if invalid theme * was detected. Used as part of Cacti's lib functionality.
 	 *
-	 * Errors: will add an error at STEP_BINARY_WELCOME if invalid theme
-	 *         was detected */
+	 * @param string $param_theme A valid theme which must exist in /include/themes/.
+	 *
+	 * @return void Errors: will add an error at STEP_BINARY_WELCOME if invalid theme was detected.
+	 */
 	private function setTheme($param_theme = '') {
 		global $config;
 		if (isset($param_theme) && strlen($param_theme)) {
@@ -774,12 +872,14 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/* getPaths() - gets the various programs/paths to that are defined in
-	 *              $this->paths (setup in constructor) where they are
-         *              either prefixed with path_ or specifically the sendmail
-	 *              path.  If a default exists, that is usd, otherwise the
-	 *              system configuration option is read and set back into
-	 *		$this->paths array */
+	/**
+	 * getPaths() - gets the various programs/paths to that are defined in * $this->paths (setup in
+	 * constructor) where they are * either prefixed with path_ or specifically the sendmail * path.
+	 * If a default exists, that is usd, otherwise the * system configuration option is read and set
+	 * back into * $this->paths array. Used as part of Cacti's lib functionality.
+	 *
+	 * @return array An array of paths.
+	 */
 	public function getPaths() {
 		$paths = array();
 		foreach ($this->paths as $name => $array) {
@@ -794,12 +894,17 @@ class Installer implements JsonSerializable {
 		return $paths;
 	}
 
-	/* setPaths() - sets paths set in the array, checking for a number of
-	 *              issues.  The array should be key->path which is compared
-	 *              against $this->paths
+	/**
+	 * setPaths() - sets paths set in the array, checking for a number of * issues. The array should
+	 * be key->path which is compared * against $this->paths * * Errors: will add an error to
+	 * STEP_BINARY_LOCATIONS if a problem is * found with the value. Used as part of Cacti's lib
+	 * functionality.
 	 *
-	 * Errors: will add an error to STEP_BINARY_LOCATIONS if a problem is
-	 *         found with the value. */
+	 * @param array $param_paths A list of paths.
+	 *
+	 * @return void Errors: will add an error to STEP_BINARY_LOCATIONS if a problem is found with the
+	 *   value.
+	 */
 	private function setPaths($param_paths = array()) {
 		global $config;
 
@@ -860,10 +965,13 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/* getProfile() - gets the data source profile to be used as the system
-	 *                default once installation has been completed.  It is
-	 *		  also used by the package installation to attribute
-	 *                the installed packages to this collector */
+	/**
+	 * getProfile() - gets the data source profile to be used as the system * default once
+	 * installation has been completed. It is * also used by the package installation to attribute *
+	 * the installed packages to this collector.
+	 *
+	 * @return int Int.
+	 */
 	private function getProfile() {
 		$db_profile = read_config_option('install_profile', true);
 		if (empty($db_profile) && db_table_exists('data_source_profiles')) {
@@ -877,12 +985,16 @@ class Installer implements JsonSerializable {
 		return $db_profile;
 	}
 
-	/* setProfile() - sets the data source profile as the default one to be
-	 *                be used by the system.
-	 * @param_profile - must be an existing data_source_profile id
+	/**
+	 * setProfile() - sets the data source profile as the default one to be * be used by the system. *
+	 * @param_profile - must be an existing data_source_profile id * * Error: will add an error to
+	 * STEP_PROFILE_AND_AUTOMATION when an * invalid id is passed.
 	 *
-	 * Error: will add an error to STEP_PROFILE_AND_AUTOMATION when an
-	 *        invalid id is passed */
+	 * @param int $param_profile Must be an existing data_source_profile id.
+	 *
+	 * @return void Error: will add an error to STEP_PROFILE_AND_AUTOMATION when an invalid id is
+	 *   passed.
+	 */
 	private function setProfile($param_profile = null) {
 		if (db_table_exists('data_source_profiles')) {
 			if (!empty($param_profile)) {
@@ -900,8 +1012,12 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/* getAutomationMode() - Gets the automation mode option, if not found
-	 *                       uses the system default */
+	/**
+	 * getAutomationMode() - Gets the automation mode option, if not found * uses the system default.
+	 * Used as part of Cacti's lib functionality.
+	 *
+	 * @return int Int.
+	 */
 	public function getAutomationMode() {
 		$enabled = read_config_option('install_automation_mode', true);
 		log_install_debug('automation', 'automation_mode: ' . clean_up_lines($enabled));
@@ -919,12 +1035,17 @@ class Installer implements JsonSerializable {
 		return $enabled;
 	}
 
-	/* setAutomationMode() - sets whether the automation system should
-	 *                       be enabled or disabled by default.
-	 * @param_mode - must be a valid true or false value
+	/**
+	 * setAutomationMode() - sets whether the automation system should * be enabled or disabled by
+	 * default. * @param_mode - must be a valid true or false value * * Errors: will add an error to
+	 * STEP_PROFILE_AND_AUTOMATION if an * invalid value is passed. Used as part of Cacti's lib
+	 * functionality.
 	 *
-	 * Errors: will add an error to STEP_PROFILE_AND_AUTOMATION if an
-	 *         invalid value is passed */
+	 * @param int $param_mode Must be a valid true or false value.
+	 *
+	 * @return void Errors: will add an error to STEP_PROFILE_AND_AUTOMATION if an invalid value is
+	 *   passed.
+	 */
 	private function setAutomationMode($param_mode = null) {
 		if ($param_mode != null) {
 			if (!$this->setTrueFalse($param_mode, $this->automationMode, 'automation_mode')) {
@@ -934,19 +1055,27 @@ class Installer implements JsonSerializable {
 		log_install_medium('automation',"setAutomationMode($param_mode) returns with $this->automationMode");
 	}
 
-	/* getAutomationOverride() - gets whether the automation snmp options
-	 *                           are being overridden */
+	/**
+	 * getAutomationOverride() - gets whether the automation snmp options * are being overridden. Used
+	 * as part of Cacti's lib functionality.
+	 *
+	 * @return string String.
+	 */
 	public function getAutomationOverride() {
 		return read_config_option('install_automation_override', true);
 	}
 
-	/* setAutomationOverride() - sets whether the extra snmp options are to
-	 *                           be overwritten by the SnmpOptions provided
+	/**
+	 * setAutomationOverride() - sets whether the extra snmp options are to * be overwritten by the
+	 * SnmpOptions provided * * @param_override - must be a valid true or false value * * Errors: will
+	 * add an error to STEP_PROFILE_AND_AUTOMATION if an * invalid value is passed. Used as part of
+	 * Cacti's lib functionality.
 	 *
-	 * @param_override - must be a valid true or false value
+	 * @param string $param_override Must be a valid true or false value.
 	 *
-	 * Errors: will add an error to STEP_PROFILE_AND_AUTOMATION if an
-	 *         invalid value is passed */
+	 * @return void Errors: will add an error to STEP_PROFILE_AND_AUTOMATION if an invalid value is
+	 *   passed.
+	 */
 	private function setAutomationOverride($param_override = null) {
 		if ($param_override != null) {
 			if (!$this->setTrueFalse($param_override, $this->automationOverride, 'automation_override')) {
@@ -956,13 +1085,18 @@ class Installer implements JsonSerializable {
 		log_install_medium('automation',"setAutomationOverride($param_override) returns with $this->automationOverride");
 	}
 
-	/* setCronInterval() - sets the expected system cron interval but does
-	 *                     not actually affect the system cron
-	 * @param_interval - a value that must exist in the system global
-	 *                   variables $cron_intervals
+	/**
+	 * setCronInterval() - sets the expected system cron interval but does * not actually affect the
+	 * system cron * @param_interval - a value that must exist in the system global * variables
+	 * $cron_intervals * * Errors: will set an error in STEP_PROFILE_AND_AUTOMATION when an * invalid
+	 * value is passed. Used as part of Cacti's lib functionality.
 	 *
-	 * Errors: will set an error in STEP_PROFILE_AND_AUTOMATION when an
-	 *         invalid value is passed */
+	 * @param string $param_interval A value that must exist in the system global variables
+	 *   $cron_intervals.
+	 *
+	 * @return void Errors: will set an error in STEP_PROFILE_AND_AUTOMATION when an invalid value is
+	 *   passed.
+	 */
 	private function setCronInterval($param_interval = null) {
 		global $cron_intervals;
 		if ($param_interval != null) {
@@ -976,10 +1110,12 @@ class Installer implements JsonSerializable {
 		log_install_medium('automation',"setCronInterval($param_interval) returns with $this->cronInterval");
 	}
 
-	/* getAutomationRange() - get the default network range to be used by
-	 *                        Automation for scanning the network.  If no
-	 *                        previous value is found, defaults to
-	 *                        192.168.1.0/24 */
+	/**
+	 * getAutomationRange() - get the default network range to be used by * Automation for scanning
+	 * the network. If no * previous value is found, defaults to * 192.168.1.0/24.
+	 *
+	 * @return string The specified network range.
+	 */
 	public function getAutomationRange() {
 		$range = read_config_option('install_automation_range', true);
 		if (empty($range) && db_table_exists('automation_networks')) {
@@ -998,14 +1134,18 @@ class Installer implements JsonSerializable {
 		return $result;
 	}
 
-	/* setAutomationRange() - sets the network range to be used by
-	 *                        Automation when scanning the network
-	 * @param_range - a valid network range which is converted and returned
-	 *                by cacti_pton().  If the return value is false, it is
-	 *                considered invalid
+	/**
+	 * setAutomationRange() - sets the network range to be used by * Automation when scanning the
+	 * network * @param_range - a valid network range which is converted and returned * by
+	 * cacti_pton(). If the return value is false, it is * considered invalid * * Errors: will add an
+	 * error to STEP_PROFILE_AND_AUTOMATION if an * invalid value is passed.
 	 *
-	 * Errors: will add an error to STEP_PROFILE_AND_AUTOMATION if an
-	 *         invalid value is passed */
+	 * @param string $param_range A valid network range which is converted and returned by
+	 *   cacti_pton(). If the return value is false, it is considered invalid.
+	 *
+	 * @return void Errors: will add an error to STEP_PROFILE_AND_AUTOMATION if an invalid value is
+	 *   passed.
+	 */
 	private function setAutomationRange($param_range = null) {
 		if (!empty($param_range)) {
 			$param_array = explode(",", $param_range);
@@ -1028,9 +1168,12 @@ class Installer implements JsonSerializable {
 		log_install_medium('automation',"setAutomationRange($param_range) returns with $this->automationRange");
 	}
 
-	/* getSnmpOptions() - gets an array of all the extra SNMP options to be
-	 *                    set which Automation will use when scanning the
-	 *                    network */
+	/**
+	 * getSnmpOptions() - gets an array of all the extra SNMP options to be * set which Automation
+	 * will use when scanning the * network. Used as part of Cacti's lib functionality.
+	 *
+	 * @return array The snmp option strings.
+	 */
 	private function getSnmpOptions() {
 		global $fields_snmp_item_with_retry;
 		$db_snmp_options = db_fetch_assoc('SELECT name, value FROM settings where name like \'install_snmp_option_%\'');
@@ -1044,11 +1187,16 @@ class Installer implements JsonSerializable {
 		return $options;
 	}
 
-	/* setSnmpOptions() - sets the extra SNMP options to be used by
-	 *                    Automation when scanning the network
+	/**
+	 * setSnmpOptions() - sets the extra SNMP options to be used by * Automation when scanning the
+	 * network * * Errors: will add an error to STEP_PROFILE_AND_AUTOMATION if an * invalid value is
+	 * passed.
 	 *
-	 * Errors: will add an error to STEP_PROFILE_AND_AUTOMATION if an
-	 *         invalid value is passed */
+	 * @param array $param_snmp_options An array of snmp options Errors: will add an error to
+	 *   STEP_PROFILE_AND_AUTOMATION if an invalid value is passed.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function setSnmpOptions($param_snmp_options = array()) {
 		global $fields_snmp_item_with_retry;
 		$known_snmp_options = $fields_snmp_item_with_retry;
@@ -1095,8 +1243,12 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/* getModules() - returns a list of required modules and their
-	 *                installation status */
+	/**
+	 * getModules() - returns a list of required modules and their * installation status. Used as part
+	 * of Cacti's lib functionality.
+	 *
+	 * @return array An array of modules.
+	 */
 	private function getModules() {
 		global $config;
 
@@ -1115,6 +1267,13 @@ class Installer implements JsonSerializable {
 		return $this->extensions;
 	}
 
+	/**
+	 * Handles the getdefaulttemplate. Used as part of Cacti's lib functionality.
+	 *
+	 * @param bool $force The force.
+	 *
+	 * @return int The resulting integer value.
+	 */
 	private function getDefaultTemplate($force = false) {
 		global $config;
 
@@ -1152,6 +1311,13 @@ class Installer implements JsonSerializable {
 		return $default_template;
 	}
 
+	/**
+	 * Handles the setdefaulttemplate. Used as part of Cacti's lib functionality.
+	 *
+	 * @param int $param_default_template The param default template.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function setDefaultTemplate($param_default_template = '') {
 		$default_template = null;
 		if (!empty($param_default_template)) {
@@ -1178,8 +1344,12 @@ class Installer implements JsonSerializable {
 		log_install_always('template','setDefaultTemplate(): Device default template is \'' . $default_template . '\'');
 	}
 
-	/* getTemplates() - returns a list of expected templates and whether
-	 *                  they have been selected for installation */
+	/**
+	 * getTemplates() - returns a list of expected templates and whether * they have been selected for
+	 * installation. Used as part of Cacti's lib functionality.
+	 *
+	 * @return array Array<string, bool>.
+	 */
 	private function getTemplates() {
 		$known_templates = install_setup_get_templates();
 
@@ -1229,8 +1399,15 @@ class Installer implements JsonSerializable {
 		return $selected;
 	}
 
-	/* isCompleteSelectionPayload - confirms that a browser submitted every
-	 * server-rendered checkbox and only supported boolean values. */
+	/**
+	 * Confirms that a browser submitted every * server-rendered checkbox and only supported boolean
+	 * values. Used as part of Cacti's lib functionality.
+	 *
+	 * @param array $submitted The submitted.
+	 * @param array $expected The expected.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	private static function isCompleteSelectionPayload($submitted, $expected) {
 		unset($submitted['all']);
 
@@ -1251,19 +1428,30 @@ class Installer implements JsonSerializable {
 		return true;
 	}
 
-	/* isTableSelectable() - determines whether the web installer renders a
-	 *                       conversion checkbox for a table */
+	/**
+	 * isTableSelectable() - determines whether the web installer renders a * conversion checkbox for
+	 * a table. Used as part of Cacti's lib functionality.
+	 *
+	 * @param array $table The table.
+	 *
+	 * @return bool Whether the table can be selected in the web installer.
+	 */
 	private static function isTableSelectable($table) {
 		return isset($table['Rows']) && is_numeric($table['Rows']) && $table['Rows'] < 1000000;
 	}
 
-	/* setTemplates() - sets a list of templates that should be installed
-	 *                  during the installServer() phase.
-	 * @param_templates - an array of templates to install in the form of
-	 *                    'template'=>(true|false)
+	/**
+	 * setTemplates() - sets a list of templates that should be installed * during the installServer()
+	 * phase. * @param_templates - an array of templates to install in the form of *
+	 * 'template'=>(true|false) * * Errors: will add an error to STEP_TEMPLATE_INSTALL if a template
+	 * is * passed that is not expected. Used as part of Cacti's lib functionality.
 	 *
-	 * Errors: will add an error to STEP_TEMPLATE_INSTALL if a template is
-	 *         passed that is not expected */
+	 * @param array $param_templates An array of templates to install in the form of
+	 *   'template'=>(true|false) Errors: will add an error to STEP_TEMPLATE_INSTALL if a template is
+	 *   passed that is not expected.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function setTemplates($param_templates = array()) {
 		if (is_array($param_templates)) {
 			$known_templates = install_setup_get_templates();
@@ -1349,8 +1537,12 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/* getTables() - gets a list of tables that require conversion to
-	 *               mb4_unicode_utf8 */
+	/**
+	 * getTables() - gets a list of tables that require conversion to * mb4_unicode_utf8. Used as part
+	 * of Cacti's lib functionality.
+	 *
+	 * @return array Array.
+	 */
 	private function getTables() {
 		$known_tables = install_setup_get_tables();
 
@@ -1383,12 +1575,16 @@ class Installer implements JsonSerializable {
 		return $selected;
 	}
 
-	/* setTables - sets a list of tables to be converted to the latest
-	 *             default coalition
-	 * @param_tables - array of table names
+	/**
+	 * Sets a list of tables to be converted to the latest * default coalition * @param_tables - array
+	 * of table names * * Errors: does not add errors as a table may not be present in the *
+	 * conversion list due to being converted elsewhere. Used as part of Cacti's lib functionality.
 	 *
-	 * Errors: does not add errors as a table may not be present in the
-	 *         conversion list due to being converted elsewhere */
+	 * @param array $param_tables Array of table names Errors: does not add errors as a table may not
+	 *   be present in the.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function setTables($param_tables = array()) {
 		if (is_array($param_tables)) {
 			$known_tables = install_setup_get_tables();
@@ -1464,7 +1660,11 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/* getMode - gets the current mode */
+	/**
+	 * Gets the current mode. Used as part of Cacti's lib functionality.
+	 *
+	 * @return int The resulting integer value.
+	 */
 	public function getMode() {
 		if (isset($this->mode)) {
 			$mode = $this->mode;
@@ -1502,10 +1702,16 @@ class Installer implements JsonSerializable {
 		return $mode;
 	}
 
-	/* setMode() - sets the current mode of operation
-	 * @param_mode - the mode to set, must be one of the MODE_ constants
+	/**
+	 * setMode() - sets the current mode of operation * @param_mode - the mode to set, must be one of
+	 * the MODE_ constants * * Errors: will add an error when an invalid value is passed. Used as part
+	 * of Cacti's lib functionality.
 	 *
-	 * Errors: will add an error when an invalid value is passed */
+	 * @param int $param_mode The mode to set, must be one of the MODE_ constants Errors: will add an
+	 *   error when an invalid value is passed.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function setMode($param_mode = 0) {
 		if (intval($param_mode) > Installer::MODE_NONE && intval($param_mode) <= Installer::MODE_DOWNGRADE) {
 			log_install_high('mode','setMode(' . $param_mode . ')');
@@ -1517,7 +1723,11 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/* getSetDefault() - returns the default step */
+	/**
+	 * getSetDefault() - returns the default step. Used as part of Cacti's lib functionality.
+	 *
+	 * @return int The resulting integer value.
+	 */
 	private function getStepDefault() {
 		$mode = $this->getMode();
 		$step = $mode == Installer::MODE_NONE ? Installer::STEP_COMPLETE : Installer::STEP_WELCOME;
@@ -1525,13 +1735,23 @@ class Installer implements JsonSerializable {
 		return $step;
 	}
 
-	/* getStep() - returns the current step */
+	/**
+	 * getStep() - returns the current step. Used as part of Cacti's lib functionality.
+	 *
+	 * @return int The resulting integer value.
+	 */
 	public function getStep() {
 		return $this->stepCurrent;
 	}
 
-	/* setStep() - sets the current step
-	 * @param_step - must be a valid value as defined by STEP_ constants */
+	/**
+	 * setStep() - sets the current step * @param_step - must be a valid value as defined by STEP_
+	 * constants. Used as part of Cacti's lib functionality.
+	 *
+	 * @param int $param_step Must be a valid value as defined by STEP_ constants.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function setStep($param_step = -1) {
 		$step = Installer::STEP_WELCOME;
 		if (empty($param_step)) {
@@ -1572,12 +1792,21 @@ class Installer implements JsonSerializable {
 		set_install_config_option('install_next', $this->stepNext);
 	}
 
-	/* Some utility functions */
+	/**
+	 * Some utility functions. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 
 	public function shouldRedirectToHome() {
 		return ($this->old_cacti_version == CACTI_VERSION);
 	}
 
+	/**
+	 * Handles the shouldexitwithreason. Used as part of Cacti's lib functionality.
+	 *
+	 * @return int|false The resulting integer value.
+	 */
 	public function shouldExitWithReason() {
 		if ($this->isDatabaseEmpty()) {
 			return Installer::EXIT_DB_EMPTY;
@@ -1588,6 +1817,15 @@ class Installer implements JsonSerializable {
 		return false;
 	}
 
+	/**
+	 * Handles the isvalidcollation. Used as part of Cacti's lib functionality.
+	 *
+	 * @param array $collation_vars The collation vars.
+	 * @param array $charset_vars The charset vars.
+	 * @param string $type The type.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function isValidCollation($collation_vars, $charset_vars, $type) {
 		$collation_value = '';
 		$charset_value   = '';
@@ -1605,32 +1843,67 @@ class Installer implements JsonSerializable {
 			$charset_value   == 'utf8mb4');
 	}
 
+	/**
+	 * Handles the isdatabaseempty. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function isDatabaseEmpty() {
 		return empty($this->old_cacti_version);
 	}
 
+	/**
+	 * Handles the isdatabasetooold. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function isDatabaseTooOld() {
 		return preg_match('/^0\.6/', $this->old_cacti_version);
 	}
 
+	/**
+	 * Handles the isnewinstall. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function isNewInstall() {
 		return ($this->old_cacti_version == 'new_install');
 	}
 
+	/**
+	 * Handles the ispre v0 8 upgradeneeded. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function isPre_v0_8_UpgradeNeeded() {
 		return version_compare($this->old_cacti_version, '0.8.5a', '<=');
 	}
 
+	/**
+	 * Handles the hasremotedatabaseinfo. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function hasRemoteDatabaseInfo() {
 		global $rdatabase_default;
 		return !empty($rdatabase_default);
 	}
 
+	/**
+	 * Handles the isconfigurationwritable. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function isConfigurationWritable() {
 		global $config;
 		return is_resource_writable($config['base_path'] . '/include/config.php');
 	}
 
+	/**
+	 * Handles the isremotedatabasegood. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function isRemoteDatabaseGood() {
 		global $rdatabase_default, $rdatabase_username, $rdatabase_hostname, $rdatabase_port;
 		return (isset($rdatabase_default) &&
@@ -1639,6 +1912,13 @@ class Installer implements JsonSerializable {
 			isset($rdatabase_port)) ? true : false;
 	}
 
+	/**
+	 * Handles the exitwithreason. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed $reason The reason.
+	 *
+	 * @return string The resulting string.
+	 */
 	public function exitWithReason($reason) {
 		global $config;
 
@@ -1652,6 +1932,13 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * Handles the exitwithunknownreason. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $reason The reason.
+	 *
+	 * @return string The resulting string.
+	 */
 	private function exitWithUnknownReason($reason) {
 		$output  = Installer::sectionTitleError();
 		$output .= Installer::sectionNormal(__('The Installer could not proceed due to an unexpected error.'));
@@ -1660,6 +1947,11 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * Handles the exitdbtooold. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	private function exitDbTooOld() {
 		global $database_username, $database_default;
 		$output  = Installer::sectionTitleError();
@@ -1671,6 +1963,11 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * Handles the exitsqlneeded. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	private function exitSqlNeeded() {
 		global $config, $database_username, $database_default, $database_password;
 		$output  = Installer::sectionTitleError();
@@ -1691,7 +1988,11 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
-	/* updateButtons() - update the buttons used by the installer */
+	/**
+	 * updateButtons() - update the buttons used by the installer.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function updateButtons() {
 		if (empty($this->buttonNext)) {
 			$this->buttonNext = new InstallerButton();
@@ -1777,10 +2078,12 @@ class Installer implements JsonSerializable {
 		$this->buttonPrevious->setStep($this->stepPrevious);
 	}
 
-	/**************************************************
-	 * The following sections of code are all related
-	 * to the installation process of the current step
-	 **************************************************/
+	/**
+	 * * The following sections of code are all related * to the installation process of the current
+	 * step. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	public function processCurrentStep() {
 		$exitReason = $this->shouldExitWithReason();
 		if ($exitReason !== false) {
@@ -1821,6 +2124,11 @@ class Installer implements JsonSerializable {
 		return $this->exitWithReason((0 - $this->stepCurrent));
 	}
 
+	/**
+	 * Handles the processstepwelcome. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	public function processStepWelcome() {
 		global $config, $cacti_version_codes;
 
@@ -1891,6 +2199,11 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * Handles the processstepcheckdependencies. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	public function processStepCheckDependencies() {
 		global $config, $local_db_cnn_id, $remote_db_cnn_id;
 		global $database_default, $database_username, $database_port;
@@ -2135,6 +2448,11 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * Handles the processstepmode. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	public function processStepMode() {
 		global $config;
 		global $database_default, $database_username, $database_hostname, $database_port;
@@ -2295,6 +2613,11 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * Handles the processstepbinarylocations. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	public function processStepBinaryLocations() {
 		$output = Installer::sectionTitle(__('Critical Binary Locations and Versions'));
 		$output .= Installer::sectionNormal(__('Make sure all of these values are correct before continuing.'));
@@ -2373,6 +2696,11 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * Handles the processsteppermissioncheck. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	public function processStepPermissionCheck() {
 		global $config;
 
@@ -2502,6 +2830,11 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * Handles the processstepinputvalidation. Used as part of Cacti's lib functionality.
+	 *
+	 * @return mixed The result of the operation, or false on failure.
+	 */
 	public function processStepInputValidation() {
 		$output  = Installer::sectionTitle(__('Input Validation Whitelist Protection'));
 		$output .= Installer::sectionNormal(__('Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure.'));
@@ -2529,6 +2862,11 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * Handles the processstepprofileandautomation. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	public function processStepProfileAndAutomation() {
 		global $cron_intervals;
 
@@ -2635,6 +2973,11 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * Handles the processsteptemplateinstall. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	public function processStepTemplateInstall() {
 		$output = Installer::sectionTitle(__('Template Setup'));
 
@@ -2680,6 +3023,11 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * Handles the processstepchecktables. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	public function processStepCheckTables() {
 		global $config;
 		$output = Installer::sectionTitle(__('Server Collation'));
@@ -2784,6 +3132,11 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * Handles the processstepinstallconfirm. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	public function processStepInstallConfirm() {
 		switch ($this->mode) {
 			case Installer::MODE_UPGRADE:
@@ -2821,6 +3174,11 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * Handles the processstepinstall. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	public function processStepInstall() {
 		global $config;
 		$time = read_config_option('install_updated', true);
@@ -2933,6 +3291,11 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * Handles the processstepcomplete. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	public function processStepComplete() {
 		global $cacti_version_codes, $database_statuses;
 
@@ -3071,11 +3434,12 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
-	/*****************************************************************
-	 *                                                               *
-	 * The following functions perform the leg work for installation *
-	 *                                                               *
-	 *****************************************************************/
+	/**
+	 * * * * The following functions perform the leg work for installation * * *. Used as part of
+	 * Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 
 	private function install() {
 		global $config;
@@ -3149,6 +3513,11 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * Handles the validatecoreschema. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	private function validateCoreSchema() {
 		global $config, $database_default;
 
@@ -3183,6 +3552,11 @@ class Installer implements JsonSerializable {
 		return '';
 	}
 
+	/**
+	 * Handles the installtemplate. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	private function installTemplate() {
 		global $config;
 
@@ -3259,6 +3633,11 @@ class Installer implements JsonSerializable {
 		return '';
 	}
 
+	/**
+	 * Handles the installpoller. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	private function installPoller() {
 		log_install_always('', __('Updating remote configuration file'));
 		global $local_db_cnn_id;
@@ -3278,6 +3657,11 @@ class Installer implements JsonSerializable {
 		return $failure;
 	}
 
+	/**
+	 * Handles the installserver. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	private function installServer() {
 		global $config;
 
@@ -3477,6 +3861,11 @@ class Installer implements JsonSerializable {
 		return '';
 	}
 
+	/**
+	 * Handles the convertdatabase. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	private function convertDatabase() {
 		global $config;
 
@@ -3508,6 +3897,11 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * Handles the upgradedatabase. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	private function upgradeDatabase() {
 		global $cacti_version_codes, $config, $cacti_upgrade_version, $database_statuses, $database_upgrade_status;
 		$failure = DB_STATUS_SKIPPED;
@@ -3583,6 +3977,13 @@ class Installer implements JsonSerializable {
 		return false;
 	}
 
+	/**
+	 * Handles the checkdatabaseupgrade. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $cacti_upgrade_version The cacti upgrade version.
+	 *
+	 * @return int The resulting integer value.
+	 */
 	private function checkDatabaseUpgrade($cacti_upgrade_version) {
 		global $database_upgrade_status;
 		$failure = DB_STATUS_SKIPPED;
@@ -3605,6 +4006,14 @@ class Installer implements JsonSerializable {
 		return $failure;
 	}
 
+	/**
+	 * Handles the begininstall. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $backgroundArg The backgroundarg.
+	 * @param mixed $installer The installer.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public static function beginInstall($backgroundArg, $installer = null) {
 		$eula = read_config_option('install_eula', true);
 		if (empty($eula)) {
@@ -3662,12 +4071,16 @@ class Installer implements JsonSerializable {
 		return $success;
 	}
 
-	/*
-	 * Installer timestamps are stored as (string) microtime(true), which has no
-	 * fractional part whenever the float lands on a whole second, and an install
-	 * carried over from an older release may hold a bare integer.  'U.u' rejects
-	 * both, so fall back to whole seconds rather than let a log message abort the
-	 * install with a format() call on false.
+	/**
+	 * * Installer timestamps are stored as (string) microtime(true), which has no * fractional part
+	 * whenever the float lands on a whole second, and an install * carried over from an older release
+	 * may hold a bare integer. 'U.u' rejects * both, so fall back to whole seconds rather than let a
+	 * log message abort the * install with a format() call on false. Used as part of Cacti's lib
+	 * functionality.
+	 *
+	 * @param mixed $value The value.
+	 *
+	 * @return DateTime The result of the operation, or false on failure.
 	 */
 	public static function dateFromMicrotime($value) {
 		$date = DateTime::createFromFormat('U.u', (string) $value);
@@ -3679,6 +4092,11 @@ class Installer implements JsonSerializable {
 		return $date === false ? new DateTime() : $date;
 	}
 
+	/**
+	 * Handles the getinstalllog. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	public static function getInstallLog() {
 		global $config;
 
@@ -3699,6 +4117,15 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * Handles the formatmodulestatus. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed &$module The module.
+	 * @param string $name The name.
+	 * @param string $badColor The badcolor.
+	 *
+	 * @return string The resulting string.
+	 */
 	public static function formatModuleStatus(&$module, $name, $badColor = 'red') {
 		$pcntl_special = false;
 		if ($name == 'pcntl') {
@@ -3724,6 +4151,14 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * Handles the setphpoption. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $option_name The option name.
+	 * @param mixed $option_value The option value.
+	 *
+	 * @return void No value is returned.
+	 */
 	public static function setPhpOption($option_name, $option_value) {
 		log_install_always('', __('Setting PHP Option %s = %s', $option_name, $option_value));
 		$value = ini_get($option_name);
@@ -3736,6 +4171,14 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * Handles the fullsyncdatacollectorlog. Used as part of Cacti's lib functionality.
+	 *
+	 * @param array $poller_ids The poller IDS.
+	 * @param string $format The format.
+	 *
+	 * @return void No value is returned.
+	 */
 	private static function fullSyncDataCollectorLog($poller_ids, $format) {
 		if (cacti_sizeof($poller_ids) > 0) {
 			foreach($poller_ids as $id) {
@@ -3745,6 +4188,11 @@ class Installer implements JsonSerializable {
 			}
 		}
 	}
+	/**
+	 * Handles the fullsyncdatacollectors. Used as part of Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 	private static function fullSyncDataCollectors() {
 		// Perform full sync to complete upgrade
 		$status = install_full_sync();
@@ -3759,6 +4207,11 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * Handles the disableinvalidplugins. Used as part of Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 	private static function disableInvalidPlugins() {
 		global $plugins_integrated, $config;
 
@@ -3814,12 +4267,14 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/*****************************************************************
-	 *                                                               *
-	 * The following functions are for rendering output which is     *
-	 * returned when $this->Runtime is in Web mode only		 *
-	 *                                                               *
-	 *****************************************************************/
+	/**
+	 * * * * The following functions are for rendering output which is * * returned when
+	 * $this->Runtime is in Web mode only * * *. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $title The title.
+	 *
+	 * @return string The resulting string.
+	 */
 
 
 	public static function sectionTitleError($title = '') {
@@ -3829,6 +4284,15 @@ class Installer implements JsonSerializable {
 		return Installer::sectionTitle($title, null, 'cactiInstallSectionTitleError');
 	}
 
+	/**
+	 * Handles the sectiontitle. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $title The title.
+	 * @param mixed $id The ID.
+	 * @param string $class The class.
+	 *
+	 * @return string The resulting string.
+	 */
 	public static function sectionTitle($title = '', $id = '', $class = '') {
 		if (empty($class)) {
 			$class = '';
@@ -3841,6 +4305,15 @@ class Installer implements JsonSerializable {
 		return Installer::section($title, $id, $class, 'cactiInstallSectionTitle', 'h2');
 	}
 
+	/**
+	 * Handles the sectionsubtitle. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $title The title.
+	 * @param string $id The ID.
+	 * @param string $class The class.
+	 *
+	 * @return string The resulting string.
+	 */
 	public static function sectionSubTitle($title = '', $id = '', $class = '') {
 		if (empty($class)) {
 			$class = '';
@@ -3856,10 +4329,24 @@ class Installer implements JsonSerializable {
 		return $subtitle;
 	}
 
+	/**
+	 * Handles the sectionsubtitleend. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	public static function sectionSubTitleEnd() {
 		return '</div>';
 	}
 
+	/**
+	 * Handles the sectionnormal. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $text The text.
+	 * @param string $id The ID.
+	 * @param string $class The class.
+	 *
+	 * @return string The resulting string.
+	 */
 	public static function sectionNormal($text = '', $id = '', $class = '') {
 		if (empty($class)) {
 			$class = '';
@@ -3874,6 +4361,16 @@ class Installer implements JsonSerializable {
 		return Installer::section($text, $id, trim($class), 'cactiInstallSection', 'p');
 	}
 
+	/**
+	 * Handles the sectionnote. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $text The text.
+	 * @param string $id The ID.
+	 * @param string $class The class.
+	 * @param string $title The title.
+	 *
+	 * @return string The resulting string.
+	 */
 	public static function sectionNote($text = '', $id = '', $class = '', $title = '') {
 		if (empty($class)) {
 			$class = '';
@@ -3892,6 +4389,16 @@ class Installer implements JsonSerializable {
 		return Installer::section('<span class="cactiInstallSectionNoteTitle">' . $title . '</span><span class=\'cactiInstallSectionNoteBody\'>' . $text . '</span>', $id, trim($class), '', 'p');
 	}
 
+	/**
+	 * Handles the sectionwarning. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $text The text.
+	 * @param string $id The ID.
+	 * @param string $class The class.
+	 * @param string $title The title.
+	 *
+	 * @return string The resulting string.
+	 */
 	public static function sectionWarning($text = '', $id = '', $class = '', $title = '') {
 		if (empty($class)) {
 			$class = '';
@@ -3910,6 +4417,15 @@ class Installer implements JsonSerializable {
 		return Installer::section('<span class="cactiInstallSectionWarningTitle">' . $title . '</span><span class=\'cactiInstallSectionWarningBody\'>' . $text . '</span>', $id, trim($class), '', 'p');
 	}
 
+	/**
+	 * Handles the sectionerror. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $text The text.
+	 * @param string $id The ID.
+	 * @param string $class The class.
+	 *
+	 * @return string The resulting string.
+	 */
 	public static function sectionError($text = '', $id = '', $class = '') {
 		if (empty($class)) {
 			$class = '';
@@ -3924,6 +4440,16 @@ class Installer implements JsonSerializable {
 		return Installer::section('<span class="cactiInstallSectionErrorTitle">' . __('ERROR:') . '</span><span class=\'cactiInstallSectionErrorBody\'>' . $text . '</span>', $id, trim($class), '', 'p');
 	}
 
+	/**
+	 * Handles the sectioncode. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $text The text.
+	 * @param string $id The ID.
+	 * @param string $class The class.
+	 * @param string $elementType The elementtype.
+	 *
+	 * @return string The resulting string.
+	 */
 	public static function sectionCode($text = '', $id = '', $class = '', $elementType = 'p') {
 		if (empty($class)) {
 			$class = '';
@@ -3938,6 +4464,17 @@ class Installer implements JsonSerializable {
 		return Installer::section($text, $id, trim($class), '', $elementType);
 	}
 
+	/**
+	 * Handles the section. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $text The text.
+	 * @param string $id The ID.
+	 * @param string $class The class.
+	 * @param string $baseClass The baseclass.
+	 * @param string $elementType The elementtype.
+	 *
+	 * @return string The resulting string.
+	 */
 	public static function section($text = '', $id = '', $class = '', $baseClass = 'cactiInstallSection', $elementType = 'div') {
 		if (empty($elementType)) {
 			$elementType = 'div';
@@ -3973,6 +4510,13 @@ class InstallerButton implements JsonSerializable {
 	public $Visible = true;
 	public $Enabled = true;
 
+	/**
+	 * Handles the construct. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed $params The params.
+	 *
+	 * @return void No value is returned.
+	 */
 	public function __construct($params = array()) {
 		if (empty($params) || !is_array($params)) {
 			$params = array();
@@ -3996,12 +4540,25 @@ class InstallerButton implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * setStep() - sets the current step. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed $step The step.
+	 *
+	 * @return void No value is returned.
+	 */
 	public function setStep($step) {
 		$this->Step = $step;
 		$this->Enabled = !empty($this->Step);
 	}
 
 	#[ReturnTypeWillChange]
+	/**
+	 * jsonSerialize() - provides JSON object of return data with optional values output dependent on
+	 * Runtime mode. Used as part of Cacti's lib functionality.
+	 *
+	 * @return array An array of options data.
+	 */
 	public function jsonSerialize() {
 		return array(
 			'Text' => $this->Text,

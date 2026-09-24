@@ -64,6 +64,12 @@ switch (get_request_var('action')) {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's user domains functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	global $registered_cacti_names;
@@ -166,6 +172,11 @@ function form_save() {
 	header('Location: user_domains.php?header=false&action=edit&domain_id=' . (empty($domain_id) ? get_nfilter_request_var('domain_id') : $domain_id));
 }
 
+/**
+ * Handles the form actions. Used as part of Cacti's user domains functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_actions() {
 	global $actions;
 
@@ -286,25 +297,59 @@ function form_actions() {
 /* -----------------------
     Domain Functions
    ----------------------- */
+/**
+ * ----------------------- Domain Functions -----------------------. Used as part of Cacti's user
+ * domains functionality.
+ *
+ * @param int $domain_id The domain ID.
+ *
+ * @return void No value is returned.
+ */
 
 function domain_remove($domain_id) {
 	db_execute_prepared('DELETE FROM user_domains WHERE domain_id = ?', array($domain_id));
 	db_execute_prepared('DELETE FROM user_domains_ldap WHERE domain_id = ?', array($domain_id));
 }
 
+/**
+ * Handles the domain disable. Used as part of Cacti's user domains functionality.
+ *
+ * @param int $domain_id The domain ID.
+ *
+ * @return void No value is returned.
+ */
 function domain_disable($domain_id) {
 	db_execute_prepared('UPDATE user_domains SET enabled = "" WHERE domain_id = ?', array($domain_id));
 }
 
+/**
+ * Handles the domain enable. Used as part of Cacti's user domains functionality.
+ *
+ * @param int $domain_id The domain ID.
+ *
+ * @return void No value is returned.
+ */
 function domain_enable($domain_id) {
 	db_execute_prepared('UPDATE user_domains SET enabled = "on" WHERE domain_id = ?', array($domain_id));
 }
 
+/**
+ * Handles the domain default. Used as part of Cacti's user domains functionality.
+ *
+ * @param int $domain_id The domain ID.
+ *
+ * @return void No value is returned.
+ */
 function domain_default($domain_id) {
 	db_execute('UPDATE user_domains SET defdomain = 0');
 	db_execute_prepared('UPDATE user_domains SET defdomain = 1 WHERE domain_id = ?', array($domain_id));
 }
 
+/**
+ * Handles the domain edit. Used as part of Cacti's user domains functionality.
+ *
+ * @return void No value is returned.
+ */
 function domain_edit() {
 	global $ldap_versions, $ldap_encryption, $ldap_modes, $domain_types;
 
@@ -606,6 +651,11 @@ function domain_edit() {
 	form_save_button('user_domains.php', 'return', 'domain_id');
 }
 
+/**
+ * Handles the domains. Used as part of Cacti's user domains functionality.
+ *
+ * @return void No value is returned.
+ */
 function domains() {
 	global $domain_types, $actions, $item_rows;
 

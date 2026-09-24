@@ -36,13 +36,21 @@ require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/boost.php');
 require_once($config['base_path'] . '/lib/dsstats.php');
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's poller recovery functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_version();
 	print "Cacti Boost RRD Update Poller, Version $version " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+/**
+ * Displays the usage of the function. Used as part of Cacti's poller recovery functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help () {
 	display_version();
 
@@ -55,6 +63,14 @@ function display_help () {
 	print "    --debug   - Display verbose output during execution\n\n";
 }
 
+/**
+ * Provides a generic means to catch exceptions to the Cacti log. Used as part of Cacti's poller
+ * recovery functionality.
+ *
+ * @param int $signo The signal that was thrown by the interface.
+ *
+ * @return void No value is returned.
+ */
 function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
@@ -72,6 +88,13 @@ function sig_handler($signo) {
 
 }
 
+/**
+ * Debug. Used as part of Cacti's poller recovery functionality.
+ *
+ * @param string $string The string.
+ *
+ * @return void No value is returned.
+ */
 function debug($string) {
 	global $debug;
 
@@ -80,6 +103,15 @@ function debug($string) {
 	}
 }
 
+/**
+ * Delete only rows which were acknowledged by the main collector. Used as part of Cacti's poller
+ * recovery functionality.
+ *
+ * @param array $rows The rows.
+ * @param mixed $conn The conn.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function recovery_delete_acknowledged_rows($rows, $conn) {
 	foreach (array_chunk($rows, 500) as $chunk) {
 		$clauses = array();

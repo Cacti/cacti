@@ -38,17 +38,19 @@ if (!isset($called_by_script_server)) {
 
 if (!function_exists('ss_counter_step')) {
 	/**
-	 * Apply a Counter32/Counter64 wrap-corrected delta to a running total.
+	 * Apply a Counter32/Counter64 wrap-corrected delta to a running total. Counter32 (2^32) fits in
+	 * PHP_INT_MAX on 64-bit but saturates on 32-bit; Counter64 (2^64) overflows PHP_INT on every
+	 * supported runtime. ext-gmp is a Cacti dependency, so prefer arbitrary-precision arithmetic and
+	 * fall back to float (with documented precision loss) only when gmp is unavailable. Returns a
+	 * numeric string. If $running is 'U' or non-numeric, the first computed delta replaces it -- 'U'
+	 * does not persist. Used as part of Cacti's scripts functionality.
 	 *
-	 * Counter32 (2^32) fits in PHP_INT_MAX on 64-bit but saturates on 32-bit;
-	 * Counter64 (2^64) overflows PHP_INT on every supported runtime. ext-gmp
-	 * is a Cacti dependency, so prefer arbitrary-precision arithmetic and
-	 * fall back to float (with documented precision loss) only when gmp is
-	 * unavailable.
+	 * @param mixed $running The running.
+	 * @param string $current The current.
+	 * @param string $previous The previous.
+	 * @param string $modulus The modulus.
 	 *
-	 * Returns a numeric string. If $running is 'U' or non-numeric, the
-	 * first computed delta replaces it -- 'U' does not persist.
-	 * @param mixed $running
+	 * @return string The resulting string.
 	 */
 	function ss_counter_step($running, string $current, string $previous, string $modulus) : string {
 		if (!function_exists('gmp_init')) {
@@ -80,6 +82,13 @@ if (!function_exists('ss_counter_step')) {
 	}
 }
 
+/**
+ * Handles the ss net SNMP disk io. Used as part of Cacti's scripts functionality.
+ *
+ * @param mixed $host_id_or_hostname The host ID or hostname.
+ *
+ * @return string The resulting string.
+ */
 function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 	global $environ, $poller_id, $config;
 

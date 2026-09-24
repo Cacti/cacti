@@ -207,6 +207,11 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 	}
 }
 
+/**
+ * Handles the retrieve plugin list. Used as part of Cacti's plugins functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function retrieve_plugin_list() {
 	$pluginslist = array();
 	$temp = db_fetch_assoc('SELECT directory FROM plugin_config ORDER BY name');
@@ -222,10 +227,22 @@ update_show_current();
 
 bottom_footer();
 
+/**
+ * Handles the plugins temp table exists. Used as part of Cacti's plugins functionality.
+ *
+ * @param string $table The table.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function plugins_temp_table_exists($table) {
 	return cacti_sizeof(db_fetch_row("SHOW TABLES LIKE '$table'"));
 }
 
+/**
+ * Handles the plugins load temp table. Used as part of Cacti's plugins functionality.
+ *
+ * @return string The resulting string.
+ */
 function plugins_load_temp_table() {
 	global $config, $plugins, $plugins_integrated, $local_db_cnn_id;
 
@@ -389,6 +406,11 @@ function plugins_load_temp_table() {
 	return $table;
 }
 
+/**
+ * Updates the show current. Used as part of Cacti's plugins functionality.
+ *
+ * @return void No value is returned.
+ */
 function update_show_current () {
 	global $plugins, $pluginslist, $config, $status_names, $actions, $item_rows;
 
@@ -721,6 +743,16 @@ function update_show_current () {
 	db_execute("DROP TABLE $table");
 }
 
+/**
+ * Formats the plugin row. Used as part of Cacti's plugins functionality.
+ *
+ * @param array $plugin The plugin.
+ * @param bool $last_plugin The last plugin.
+ * @param bool $include_ordering The include ordering.
+ * @param string $table The table.
+ *
+ * @return string The resulting string.
+ */
 function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 	global $status_names, $config;
 	static $first_plugin = true;
@@ -803,6 +835,14 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 	return $row;
 }
 
+/**
+ * Handles the plugin required for others. Used as part of Cacti's plugins functionality.
+ *
+ * @param array $plugin The plugin.
+ * @param string $table The table.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function plugin_required_for_others($plugin, $table) {
 	$required_for_others = db_fetch_cell("SELECT GROUP_CONCAT(directory)
 		FROM $table
@@ -821,12 +861,28 @@ function plugin_required_for_others($plugin, $table) {
 	}
 }
 
+/**
+ * Handles the plugin required installed. Used as part of Cacti's plugins functionality.
+ *
+ * @param array $plugin The plugin.
+ * @param string $table The table.
+ *
+ * @return string The resulting string.
+ */
 function plugin_required_installed($plugin, $table) {
 	$not_installed = '';
 	api_plugin_can_install($plugin['infoname'], $not_installed);
 	return $not_installed;
 }
 
+/**
+ * Handles the plugin actions. Used as part of Cacti's plugins functionality.
+ *
+ * @param array $plugin The plugin.
+ * @param string $table The table.
+ *
+ * @return string The resulting string.
+ */
 function plugin_actions($plugin, $table) {
 	global $config, $pluginslist, $plugins_integrated;
 

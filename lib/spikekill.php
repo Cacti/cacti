@@ -80,6 +80,21 @@ class spikekill {
 	// For error handling
 	private $errors = array();
 
+	/**
+	 * Handles the construct. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $rrdfile The rrdfile.
+	 * @param string $method The method.
+	 * @param string $avgnan The avgnan.
+	 * @param string $stddev The stddev.
+	 * @param string $out_start The out start.
+	 * @param string $out_end The out end.
+	 * @param string $outliers The outliers.
+	 * @param string $percent The percent.
+	 * @param string $numspike The numspike.
+	 *
+	 * @return void No value is returned.
+	 */
 	public function __construct($rrdfile = '', $method = '', $avgnan = '', $stddev = '',
 		$out_start = '', $out_end = '', $outliers = '', $percent = '', $numspike = '') {
 
@@ -152,17 +167,39 @@ class spikekill {
 		$this->davgnan   = read_config_option('spikekill_avgnan', true);
 	}
 
+	/**
+	 * Handles the destruct. Used as part of Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 	public function __destruct() {
 	}
 
+	/**
+	 * Sets the error. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $string The string.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function set_error($string) {
 		$this->errors[] = $string;
 	}
 
+	/**
+	 * Determines whether error set. Used as part of Cacti's lib functionality.
+	 *
+	 * @return mixed The result of the operation, or false on failure.
+	 */
 	private function is_error_set() {
 		return cacti_sizeof($this->errors);
 	}
 
+	/**
+	 * Retrieves the errors. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	public function get_errors() {
 		$output = '';
 
@@ -175,10 +212,22 @@ class spikekill {
 		return $output;
 	}
 
+	/**
+	 * Retrieves the output. Used as part of Cacti's lib functionality.
+	 *
+	 * @param bool $html The HTML.
+	 *
+	 * @return string The resulting string.
+	 */
 	public function get_output($html = true) {
 		return $this->strout;
 	}
 
+	/**
+	 * Handles the initialize spikekill. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	private function initialize_spikekill() {
 		/* additional error check */
 		if ($this->rrdfile == '') {
@@ -382,6 +431,11 @@ class spikekill {
 		return false;
 	}
 
+	/**
+	 * Removes the spikes. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function remove_spikes() {
 		global $config;
 
@@ -763,7 +817,14 @@ class spikekill {
 		return true;
 	}
 
-	/* All Functions */
+	/**
+	 * All Functions. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $xmlfile The xmlfile.
+	 * @param string $rrdfile The rrdfile.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function createRRDFileFromXML($xmlfile, $rrdfile) {
 		/* execute the dump command */
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
@@ -776,10 +837,25 @@ class spikekill {
 		}
 	}
 
+	/**
+	 * Handles the writexmlfile. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $output The output.
+	 * @param string $xmlfile The xmlfile.
+	 *
+	 * @return mixed The result of the operation, or false on failure.
+	 */
 	private function writeXMLFile($output, $xmlfile) {
 		return file_put_contents($xmlfile, $output);
 	}
 
+	/**
+	 * Handles the backuprrdfile. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $rrdfile The rrdfile.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	private function backupRRDFile($rrdfile) {
 		$backupdir = read_config_option('spikekill_backupdir');
 
@@ -799,6 +875,14 @@ class spikekill {
 		return copy($rrdfile, $backupdir . "/" . $newfile);
 	}
 
+	/**
+	 * Handles the calculatevarianceaverages. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed &$rra The RRA.
+	 * @param mixed &$samples The samples.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function calculateVarianceAverages(&$rra, &$samples) {
 		if (cacti_sizeof($samples)) {
 			foreach($samples as $rra_num => $dses) {
@@ -838,6 +922,14 @@ class spikekill {
 		}
 	}
 
+	/**
+	 * Handles the calculateoverallstatistics. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed &$rra The RRA.
+	 * @param mixed &$samples The samples.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function calculateOverallStatistics(&$rra, &$samples) {
 		$rra_num = 0;
 
@@ -989,6 +1081,13 @@ class spikekill {
 		}
 	}
 
+	/**
+	 * Handles the outputstatistics. Used as part of Cacti's lib functionality.
+	 *
+	 * @param array $rra The RRA.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function outputStatistics($rra) {
 		if (cacti_sizeof($rra)) {
 			if (!$this->html) {
@@ -1084,6 +1183,14 @@ class spikekill {
 		}
 	}
 
+	/**
+	 * Handles the updatexml. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed &$output The output.
+	 * @param mixed &$rra The RRA.
+	 *
+	 * @return array An array of results.
+	 */
 	private function updateXML(&$output, &$rra) {
 		$rra_num   = 0;
 		$ds_num    = 0;
@@ -1289,6 +1396,13 @@ class spikekill {
 		return $new_array;
 	}
 
+	/**
+	 * Handles the removecomments. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed &$output The output.
+	 *
+	 * @return array An array of results.
+	 */
 	private function removeComments(&$output) {
 		$new_array = [];
 
@@ -1332,6 +1446,13 @@ class spikekill {
 		}
 	}
 
+	/**
+	 * Handles the displaytime. Used as part of Cacti's lib functionality.
+	 *
+	 * @param mixed $pdp The pdp.
+	 *
+	 * @return string The resulting string.
+	 */
 	private function displayTime($pdp) {
 		$total_time = $pdp * $this->step; // seconds
 
@@ -1356,12 +1477,26 @@ class spikekill {
 		}
 	}
 
+	/**
+	 * Debug. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $string The string.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function debug($string) {
 		if ($this->debug) {
 			print 'DEBUG: ' . $string . "\n";
 		}
 	}
 
+	/**
+	 * Handles the processstandarddeviationcalculation. Used as part of Cacti's lib functionality.
+	 *
+	 * @param array $samples The samples.
+	 *
+	 * @return mixed The result of the operation, or false on failure.
+	 */
 	private function processStandardDeviationCalculation($samples) {
 		$my_samples = $samples;
 
@@ -1378,6 +1513,13 @@ class spikekill {
 		return $this->calculateStandardDeviation($my_samples);
 	}
 
+	/**
+	 * Handles the calculatestandarddeviation. Used as part of Cacti's lib functionality.
+	 *
+	 * @param array $items The items.
+	 *
+	 * @return mixed The result of the operation, or false on failure.
+	 */
 	private function calculateStandardDeviation($items) {
 		$sum         = 0;
 		$total_items = 0;

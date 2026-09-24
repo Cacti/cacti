@@ -36,14 +36,21 @@ require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/rrd.php');
 require_once($config['base_path'] . '/lib/reports.php');
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's poller reports functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_version();
 	print "Cacti Reporting Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/** display_help - generic help screen for utilities
- * @return		 - null */
+/**
+ * Generic help screen for utilities. Used as part of Cacti's poller reports functionality.
+ *
+ * @return void Null.
+ */
 function display_help () {
 	display_version();
 
@@ -55,9 +62,14 @@ function display_help () {
 	print "    --debug     - Display verbose output during execution\n\n";
 }
 
-/** sig_handler - provides a generic means to catch exceptions to the Cacti log.
- * @arg $signo 	- (int) the signal that was thrown by the interface.
- * @return 		- null */
+/**
+ * Provides a generic means to catch exceptions to the Cacti log. Used as part of Cacti's poller
+ * reports functionality.
+ *
+ * @param int $signo (int) the signal that was thrown by the interface.
+ *
+ * @return void Null.
+ */
 function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:

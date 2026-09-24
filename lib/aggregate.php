@@ -22,6 +22,21 @@
  +-------------------------------------------------------------------------+
  */
 
+/**
+ * Builds a URL for the children graphs of an aggregate graph. This function constructs a URL that
+ * links to the children graphs of a specified aggregate graph. It first prunes the graphs
+ * associated with the given local graph ID, then fetches the aggregate graph data and its
+ * associated child graph IDs. If child graph IDs are found, it constructs a URL with the
+ * appropriate query parameters and returns it as a hyperlink. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $local_graph_id The ID of the local graph.
+ * @param int $graph_start Optional. The start time for the graph. Default is -1.
+ * @param int $graph_end Optional. The end time for the graph. Default is -1.
+ * @param int $rra_id Optional. The RRA ID for the graph. Default is -1.
+ *
+ * @return string The constructed URL as a hyperlink.
+ */
 function aggregate_build_children_url($local_graph_id, $graph_start = -1, $graph_end = -1, $rra_id = -1) {
 	global $config;
 
@@ -53,6 +68,16 @@ function aggregate_build_children_url($local_graph_id, $graph_start = -1, $graph
 	}
 }
 
+/**
+ * Converts a list of graphs to use an aggregate template. This function takes an array of graph
+ * IDs and applies an aggregate template to each graph. It saves the new aggregate graph
+ * configuration to the database and updates the aggregate graph items. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param array $graphs An array of graph IDs to be converted.
+ *
+ * @return void No value is returned.
+ */
 function api_aggregate_convert_template($graphs) {
 	$aggregate_template_id = get_nfilter_request_var('aggregate_template_id');
 	$aggregate_template    = db_fetch_row_prepared('SELECT *
@@ -112,6 +137,19 @@ function api_aggregate_convert_template($graphs) {
 	}
 }
 
+/**
+ * Associates a list of graphs with a local graph in the aggregate graphs. This function retrieves
+ * the aggregate template and aggregate ID for the given local graph ID. If an aggregate ID is
+ * found, it determines the maximum sequence number for the aggregate graph items. It then
+ * iterates over the provided graphs and inserts or replaces each graph into the aggregate graph
+ * items with the appropriate sequence number. Finally, it pushes out the aggregates using the
+ * aggregate template and local graph ID. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_graph_id The ID of the local graph to associate with.
+ * @param array $graphs An array of graph IDs to associate with the local graph.
+ *
+ * @return void No value is returned.
+ */
 function api_aggregate_associate($local_graph_id, $graphs) {
 	$aggregate_template = db_fetch_cell_prepared('SELECT aggregate_template_id
 		FROM aggregate_graphs
@@ -152,6 +190,19 @@ function api_aggregate_associate($local_graph_id, $graphs) {
 	}
 }
 
+/**
+ * Disassociates a list of graphs from an aggregate graph. This function removes the association
+ * between a specified local graph and a list of graphs from the aggregate graph. It first
+ * retrieves the aggregate template ID and aggregate ID for the given local graph ID. If an
+ * aggregate ID is found, it iterates through the list of graphs and deletes each association from
+ * the `aggregate_graphs_items` table. Finally, it calls the `push_out_aggregates` function to
+ * update the aggregate template. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_graph_id The ID of the local graph to disassociate.
+ * @param array $graphs An array of graph IDs to be disassociated from the aggregate graph.
+ *
+ * @return void No value is returned.
+ */
 function api_aggregate_disassociate($local_graph_id, $graphs) {
 	$aggregate_template = db_fetch_cell_prepared('SELECT aggregate_template_id
 		FROM aggregate_graphs
@@ -181,6 +232,15 @@ function api_aggregate_disassociate($local_graph_id, $graphs) {
 	}
 }
 
+/**
+ * Creates an aggregate graph from a list of graphs. Used as part of Cacti's lib functionality.
+ *
+ * @param string $aggregate_name The name of the aggregate graph to be created.
+ * @param array $graphs An array of graph IDs to be included in the aggregate graph.
+ * @param int $agg_template_id Optional. The ID of the aggregate template to use. Default is 0.
+ *
+ * @return void No value is returned.
+ */
 function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
 	/* get the first aggregate graph */
 	if ($agg_template_id == 0) {
@@ -257,12 +317,15 @@ function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
 
 
 /**
- * aggregate_error_handler	- PHP error handler
- * @param int $errno		- error id
- * @param string $errmsg	- error message
- * @param string $filename	- file name
- * @param int $linenum		- line of error
- * @param array $vars		- additional variables
+ * PHP error handler. Used as part of Cacti's lib functionality.
+ *
+ * @param int $errno Error id.
+ * @param string $errmsg Error message.
+ * @param string $filename File name.
+ * @param int $linenum Line of error.
+ * @param array $vars Additional variables.
+ *
+ * @return bool Bool.
  */
 function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 	$errno = $errno & error_reporting();
@@ -317,13 +380,16 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars = [
 }
 
 /**
- * get_next_sequence 			- returns the next available sequence id
+ * Returns the next available sequence id. Used as part of Cacti's lib functionality.
  *
- * @param int $id 				- the current id
- * @param string $field 		- the field name that contains the target id
- * @param string $table_name 	- the table name that contains the target id
- * @param string $group_query 	- an SQL 'where' clause to limit the query
- + @returns int					- the next available sequence id
+ * @param int $id The current id.
+ * @param string $field The field name that contains the target id.
+ * @param string $table_name The table name that contains the target id.
+ * @param string $group_query An SQL 'where' clause to limit the query + @returns int - the next
+ *   available sequence id.
+ * @param string $key_field The key field.
+ *
+ * @return int The next available sequence id.
  */
 function get_next_sequence($id, $field, $table_name, $group_query, $key_field='id') {
 	cacti_log(__FUNCTION__ . '  called. Id: ' . $id . ' field: ' . $field . ' table: ' . $table_name, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -343,9 +409,11 @@ function get_next_sequence($id, $field, $table_name, $group_query, $key_field='i
 }
 
 /**
- * find out, if this is a pure STACKed graph
- * @param int $_local_graph_id	- graph to be examined
- * @return bool					- true, if pure STACKed graph
+ * Find out, if this is a pure STACKed graph. Used as part of Cacti's lib functionality.
+ *
+ * @param int $_local_graph_id Graph to be examined.
+ *
+ * @return bool True, if pure STACKed graph.
  */
 function aggregate_is_pure_stacked_graph($_local_graph_id) {
 	cacti_log(__FUNCTION__ . ' local_graph: ' . $_local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -374,9 +442,11 @@ function aggregate_is_pure_stacked_graph($_local_graph_id) {
 }
 
 /**
- * find out, if graph has a STACK
- * @param int $_local_graph_id	- graph to be examined
- * @return bool					- true, if pure STACKed graph
+ * Find out, if graph has a STACK. Used as part of Cacti's lib functionality.
+ *
+ * @param int $_local_graph_id Graph to be examined.
+ *
+ * @return bool True, if pure STACKed graph.
  */
 function aggregate_is_stacked_graph($_local_graph_id) {
 	cacti_log(__FUNCTION__ . ' local_graph: ' . $_local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -404,6 +474,16 @@ function aggregate_is_stacked_graph($_local_graph_id) {
 	return $_stacked_graph;
 }
 
+/**
+ * Converts the graph type of a specific graph item from an old type to a new type. Used as part
+ * of Cacti's lib functionality.
+ *
+ * @param int $_graph_id The ID of the graph whose item type is to be converted.
+ * @param int $_old_type The current type of the graph item.
+ * @param int $_new_type The new type to which the graph item should be converted.
+ *
+ * @return void No value is returned.
+ */
 function aggregate_conditional_convert_graph_type($_graph_id, $_old_type, $_new_type) {
 	cacti_log(__FUNCTION__ . '  called: graph: ' . $_graph_id . ' old item type: ' . $_old_type . ' new item type: ' . $_new_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
@@ -425,6 +505,16 @@ function aggregate_conditional_convert_graph_type($_graph_id, $_old_type, $_new_
 	}
 }
 
+/**
+ * Changes the graph type of an aggregate graph item based on the provided old and new graph
+ * types. Used as part of Cacti's lib functionality.
+ *
+ * @param int $graph_index The index of the graph item within the aggregate.
+ * @param int $old_graph_type The current graph type of the item.
+ * @param int $new_graph_type The desired new graph type for the item.
+ *
+ * @return int The resulting graph type after applying the change.
+ */
 function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_type) {
 	cacti_log(__FUNCTION__ . ' called. Index ' . $graph_index . ' old type ' . $old_graph_type . ' Graph Type: ' . $new_graph_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
@@ -526,10 +616,12 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 }
 
 /**
- * duplicate_color_template				- duplicate color template
+ * Duplicate color template. Used as part of Cacti's lib functionality.
  *
- * @param int $_color_template_id		- id of the base color template
- * @param string $color_template_title	- title of the duplicated color template
+ * @param int $_color_template_id Id of the base color template.
+ * @param string $color_template_title Title of the duplicated color template.
+ *
+ * @return void No value is returned.
  */
 function duplicate_color_template($_color_template_id, $color_template_title) {
 	cacti_log(__FUNCTION__ . ' called. Color Template Id: ' . $_color_template_id . ' Title: ' . $color_template_title, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -575,7 +667,10 @@ function duplicate_color_template($_color_template_id, $color_template_title) {
 }
 
 /**
- * aggregate_cdef_make0			- return the id of a 'Make 0' cdef, create that cdef if necessary
+ * Return the id of a 'Make 0' cdef, create that cdef if necessary. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @return int Id of the 'Make 0' cdef.
  */
 function aggregate_cdef_make0() {
 	global $config;
@@ -632,7 +727,15 @@ function aggregate_cdef_make0() {
  * @param int $_graph_item_sequence	- current graph item sequence
  * @param int $_total_type			- what type of totalling is required?
  */
-/* Return a usable aggregate CDEF expression, or null when the item must be skipped. */
+/**
+ * Return a usable aggregate CDEF expression, or null when the item must be skipped. Used as part
+ * of Cacti's lib functionality.
+ *
+ * @param mixed $cdefs The cdefs.
+ * @param mixed $cdef_id The CDEF ID.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function aggregate_cdef_for_totalling($cdefs, $cdef_id) {
 	if (!isset($cdefs[$cdef_id]) || $cdefs[$cdef_id]['cdef_text'] === null || $cdefs[$cdef_id]['cdef_text'] === '') {
 		return null;
@@ -641,7 +744,15 @@ function aggregate_cdef_for_totalling($cdefs, $cdef_id) {
 	return $cdefs[$cdef_id]['cdef_text'];
 }
 
-/* Validate every target before aggregate_cdef_totalling() performs any writes. */
+/**
+ * Validate every target before aggregate_cdef_totalling() performs any writes. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param mixed $graph_template_items The graph template items.
+ * @param mixed $cdefs The cdefs.
+ *
+ * @return array An array of results.
+ */
 function aggregate_prepare_cdef_totalling($graph_template_items, $cdefs) {
 	$items = array();
 
@@ -664,6 +775,15 @@ function aggregate_prepare_cdef_totalling($graph_template_items, $cdefs) {
 	return array('items' => $items, 'invalid_cdef_id' => null);
 }
 
+/**
+ * Create a totalling CDEF, if need be. Used as part of Cacti's lib functionality.
+ *
+ * @param int $_new_graph_id Id of new graph.
+ * @param int $_graph_item_sequence Current graph item sequence.
+ * @param int $_total_type What type of totalling is required?
+ *
+ * @return void No value is returned.
+ */
 function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total_type) {
 	global $config;
 
@@ -823,10 +943,13 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 	return true;
 }
 
-/** auto_hr			- set a new hr when items are skipped
- * @param array $s	- array of skipped items
- * @param array $h	- array of items with HR
- * returns array	- array with new HR markers
+/**
+ * Set a new hr when items are skipped. Used as part of Cacti's lib functionality.
+ *
+ * @param array $s Array of skipped items.
+ * @param array $h Array of items with HR returns array - array with new HR markers.
+ *
+ * @return array With new HR markers.
  */
 function auto_hr($s, $h) {
 	cacti_log(__FUNCTION__ . ' called', true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -848,9 +971,12 @@ function auto_hr($s, $h) {
 	return $h;
 }
 
-/** auto_title					- generate a title suggested to the user
- * @param int $_local_graph_id	- the id of the graph stanza
- * returns string				- the title
+/**
+ * Generate a title suggested to the user. Used as part of Cacti's lib functionality.
+ *
+ * @param int $_local_graph_id The id of the graph stanza returns string - the title.
+ *
+ * @return string The title.
  */
 function auto_title($_local_graph_id) {
 	cacti_log(__FUNCTION__ . ' called. Local Graph Id: ' . $_local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -879,6 +1005,14 @@ function auto_title($_local_graph_id) {
 	return $graph_title;
 }
 
+/**
+ * Removes multiple aggregate graphs and their associated items from the database. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param array $graphs An array of graph IDs to be removed.
+ *
+ * @return void No value is returned.
+ */
 function api_aggregate_remove_multi($graphs) {
 	global $config;
 
@@ -908,7 +1042,15 @@ function api_aggregate_remove_multi($graphs) {
 	}
 }
 
-/* To-do remove orphaned elements */
+/**
+ * Do remove orphaned elements. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_graph_id Optional. The ID of a specific local graph to prune. If greater than
+ *   0, only the specified local graph and its associated items will be pruned. Defaults to 0, which
+ *   means all orphaned graphs will be pruned.
+ *
+ * @return void No value is returned.
+ */
 function aggregate_prune_graphs($local_graph_id = 0) {
 	$aggregate_graphs = array();
 	$local_graph_ids  = array();
@@ -973,6 +1115,14 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 	}
 }
 
+/**
+ * Converts a list of graphs to a specific graph template. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $graphs An array of graph IDs to be converted.
+ *
+ * @return void No value is returned.
+ */
 function api_aggregate_convert_to_graph($graphs) {
 	if (cacti_sizeof($graphs)) {
 		foreach($graphs as $graph) {

@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1.2.0. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_2_0() {
 	db_install_add_column('user_domains_ldap', array('name' => 'cn_full_name', 'type' => 'varchar(50)', 'NULL' => true, 'default' => ''));
 	db_install_add_column('user_domains_ldap', array('name' => 'cn_email', 'type' => 'varchar(50)', 'NULL' => true, 'default' => ''));

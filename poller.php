@@ -49,6 +49,14 @@ if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 	$poller_db_cnn_id = false;
 }
 
+/**
+ * Provides a generic means to catch exceptions to the Cacti log. Used as part of Cacti's poller
+ * functionality.
+ *
+ * @param int $signo The signal that was thrown by the interface.
+ *
+ * @return void No value is returned.
+ */
 function sig_handler($signo) {
 	global $poller_db_cnn_id;
 
@@ -921,6 +929,11 @@ while ($poller_runs_completed < $poller_runs) {
 	}
 }
 
+/**
+ * Handles the poller heartbeat check. Used as part of Cacti's poller functionality.
+ *
+ * @return void No value is returned.
+ */
 function poller_heartbeat_check() {
 	$poller_interval = read_config_option('poller_interval');
 
@@ -974,6 +987,11 @@ if ($poller_id == 1) {
 	api_plugin_hook('poller_bottom');
 }
 
+/**
+ * Handles the host status cache check. Used as part of Cacti's poller functionality.
+ *
+ * @return void No value is returned.
+ */
 function host_status_cache_check() {
 	$current = db_fetch_cell("SELECT MD5(variable)
 		FROM (
@@ -995,6 +1013,13 @@ function host_status_cache_check() {
 	}
 }
 
+/**
+ * Handles the bad index check. Used as part of Cacti's poller functionality.
+ *
+ * @param bool $mibs The mibs.
+ *
+ * @return void No value is returned.
+ */
 function bad_index_check($mibs) {
 	if ($mibs == true) {
 		$bad_index_devices = db_fetch_cell('SELECT GROUP_CONCAT(DISTINCT dl.host_id)
@@ -1023,6 +1048,11 @@ function bad_index_check($mibs) {
 	}
 }
 
+/**
+ * Handles the poller table maintenance. Used as part of Cacti's poller functionality.
+ *
+ * @return void No value is returned.
+ */
 function poller_table_maintenance() {
 	// catch the unlikely event that the poller_output_boost is missing
 	if (!db_table_exists('poller_output_boost')) {
@@ -1048,6 +1078,11 @@ function poller_table_maintenance() {
 	}
 }
 
+/**
+ * Handles the poller replicate check. Used as part of Cacti's poller functionality.
+ *
+ * @return void No value is returned.
+ */
 function poller_replicate_check() {
     global $config;
     include_once($config['base_path'] . '/lib/poller.php');
@@ -1076,6 +1111,13 @@ function poller_replicate_check() {
 	}
 }
 
+/**
+ * Handles the poller enabled check. Used as part of Cacti's poller functionality.
+ *
+ * @param int $poller_id The poller ID.
+ *
+ * @return void No value is returned.
+ */
 function poller_enabled_check($poller_id) {
 	global $poller_db_cnn_id;
 
@@ -1107,6 +1149,20 @@ function poller_enabled_check($poller_id) {
 	}
 }
 
+/**
+ * Handles the log cacti stats. Used as part of Cacti's poller functionality.
+ *
+ * @param float $loop_start The loop start.
+ * @param string $method The method.
+ * @param int $concurrent_processes The concurrent processes.
+ * @param int $max_threads The max threads.
+ * @param int $num_hosts The num hosts.
+ * @param int $hosts_per_process The hosts per process.
+ * @param int $num_polling_items The num polling items.
+ * @param int $rrds_processed The rrds processed.
+ *
+ * @return void No value is returned.
+ */
 function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads, $num_hosts,
 	$hosts_per_process, $num_polling_items, $rrds_processed) {
 	global $poller_id, $poller_db_cnn_id, $logged;
@@ -1184,6 +1240,11 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	$logged = true;
 }
 
+/**
+ * Handles the multiple poller boost check. Used as part of Cacti's poller functionality.
+ *
+ * @return void No value is returned.
+ */
 function multiple_poller_boost_check() {
 	$pollers = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled="" AND id > 1');
 
@@ -1197,7 +1258,10 @@ function multiple_poller_boost_check() {
 }
 
 /**
- * function for bulk spikekill that only runs on the main cacti server
+ * Function for bulk spikekill that only runs on the main cacti server. Used as part of Cacti's
+ * poller functionality.
+ *
+ * @return void No value is returned.
  */
 function spikekill_poller_bottom () {
     global $config;
@@ -1208,12 +1272,21 @@ function spikekill_poller_bottom () {
     exec_background($command_string, $extra_args);
 }
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's poller functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_version();
 	print "Cacti Main Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * Displays the usage of the function. Used as part of Cacti's poller functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help() {
 	display_version();
 

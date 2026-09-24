@@ -109,6 +109,12 @@ switch (get_request_var('action')) {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's graph templates items functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	if (isset_request_var('save_component_item')) {
@@ -347,6 +353,12 @@ function form_save() {
 /* -----------------------
     item - Graph Items
    ----------------------- */
+/**
+ * ----------------------- item - Graph Items -----------------------. Used as part of Cacti's
+ * graph templates items functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function item_movedown() {
 	/* ================= input validation ================= */
@@ -380,6 +392,11 @@ function item_movedown() {
 	}
 }
 
+/**
+ * Handles the item moveup. Used as part of Cacti's graph templates items functionality.
+ *
+ * @return void No value is returned.
+ */
 function item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -412,6 +429,11 @@ function item_moveup() {
 	}
 }
 
+/**
+ * Handles the item remove. Used as part of Cacti's graph templates items functionality.
+ *
+ * @return void No value is returned.
+ */
 function item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -441,6 +463,11 @@ function item_remove() {
 	db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_item_id = ?', array(get_request_var('id')));
 }
 
+/**
+ * Handles the item edit. Used as part of Cacti's graph templates items functionality.
+ *
+ * @return void No value is returned.
+ */
 function item_edit() {
 	global $struct_graph_item, $graph_item_types, $consolidation_functions;
 

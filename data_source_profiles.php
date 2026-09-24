@@ -104,6 +104,11 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * Handles the form save. Used as part of Cacti's data source profiles functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_save() {
 	// make sure ids are numeric
 	if (isset_request_var('id') && ! is_numeric(get_filter_request_var('id'))) {
@@ -244,6 +249,12 @@ function form_save() {
 /* ------------------------
     The 'actions' function
    ------------------------ */
+/**
+ * ------------------------ The 'actions' function ------------------------. Used as part of
+ * Cacti's data source profiles functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_actions() {
 	global $profile_actions;
@@ -339,6 +350,15 @@ function form_actions() {
 /* --------------------------
     CDEF Item Functions
    -------------------------- */
+/**
+ * -------------------------- CDEF Item Functions --------------------------. Used as part of
+ * Cacti's data source profiles functionality.
+ *
+ * @param mixed $source_profile The source profile.
+ * @param string $title_format The title format.
+ *
+ * @return void No value is returned.
+ */
 
 function duplicate_data_source_profile($source_profile, $title_format) {
 	if (!is_array($source_profile)) {
@@ -396,6 +416,12 @@ function duplicate_data_source_profile($source_profile, $title_format) {
 	}
 }
 
+/**
+ * Handles the profile item remove confirm. Used as part of Cacti's data source profiles
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function profile_item_remove_confirm() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -433,6 +459,11 @@ function profile_item_remove_confirm() {
 	form_end();
 }
 
+/**
+ * Handles the profile item remove. Used as part of Cacti's data source profiles functionality.
+ *
+ * @return void No value is returned.
+ */
 function profile_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -442,6 +473,11 @@ function profile_item_remove() {
 }
 
 
+/**
+ * Handles the item edit. Used as part of Cacti's data source profiles functionality.
+ *
+ * @return void No value is returned.
+ */
 function item_edit() {
 	global $fields_profile_rra_edit, $aggregation_levels;
 
@@ -586,6 +622,12 @@ function item_edit() {
 /* ---------------------
     Profile Functions
    --------------------- */
+/**
+ * --------------------- Profile Functions ---------------------. Used as part of Cacti's data
+ * source profiles functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function profile_edit() {
 	global $fields_profile_edit, $timespans;
@@ -770,6 +812,16 @@ function profile_edit() {
 	<?php
 }
 
+/**
+ * Retrieves the size. Used as part of Cacti's data source profiles functionality.
+ *
+ * @param int $id The ID.
+ * @param string $type The type.
+ * @param string $cfs The cfs.
+ * @param int $rows The rows.
+ *
+ * @return string The resulting string.
+ */
 function get_size($id, $type, $cfs = '', $rows = 1) {
 	// On x86_64 platform, here is the equation
 	// file_size = $header + (# data sources * 300) + (# cfs * #rows in all RRAs)
@@ -803,6 +855,13 @@ function get_size($id, $type, $cfs = '', $rows = 1) {
 	}
 }
 
+/**
+ * Retrieves the span. Used as part of Cacti's data source profiles functionality.
+ *
+ * @param int $duration The duration.
+ *
+ * @return string The resulting string.
+ */
 function get_span($duration) {
 	$years  = '';
 	$months = '';
@@ -855,6 +914,11 @@ function get_span($duration) {
 	return $output;
 }
 
+/**
+ * Handles the profile. Used as part of Cacti's data source profiles functionality.
+ *
+ * @return void No value is returned.
+ */
 function profile() {
 	global $profile_actions, $item_rows, $sampling_intervals, $heartbeats, $config;
 

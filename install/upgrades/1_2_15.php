@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1.2.15. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_2_15() {
 	db_install_execute('ALTER TABLE plugin_config MODIFY COLUMN `version` VARCHAR(10) NOT NULL default ""');
 }

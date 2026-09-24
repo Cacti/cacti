@@ -99,6 +99,11 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * Handles the form automation SNMP save. Used as part of Cacti's automation SNMP functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_automation_snmp_save() {
 	if (isset_request_var('save_component_automation_snmp')) {
 		/* ================= input validation ================= */
@@ -168,6 +173,12 @@ function form_automation_snmp_save() {
 /* ------------------------
  The 'actions' function
  ------------------------ */
+/**
+ * ------------------------ The 'actions' function ------------------------. Used as part of
+ * Cacti's automation SNMP functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_automation_snmp_actions() {
 	global $config, $automation_snmp_actions;
 
@@ -267,6 +278,15 @@ function form_automation_snmp_actions() {
 /* --------------------------
  SNMP Options Functions
  -------------------------- */
+/**
+ * -------------------------- SNMP Options Functions --------------------------. Used as part of
+ * Cacti's automation SNMP functionality.
+ *
+ * @param int $id The ID.
+ * @param string $new_name The new name.
+ *
+ * @return void No value is returned.
+ */
 
 function automation_duplicate_snmp_option($id, $new_name) {
 	$name = db_fetch_cell_prepared('SELECT name
@@ -298,6 +318,11 @@ function automation_duplicate_snmp_option($id, $new_name) {
 	}
 }
 
+/**
+ * Handles the automation SNMP item dnd. Used as part of Cacti's automation SNMP functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_snmp_item_dnd() {
    /* ================= Input validation ================= */
     get_filter_request_var('id');
@@ -324,6 +349,12 @@ function automation_snmp_item_dnd() {
 	exit;
 }
 
+/**
+ * Handles the automation SNMP item movedown. Used as part of Cacti's automation SNMP
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_snmp_item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -333,6 +364,11 @@ function automation_snmp_item_movedown() {
 	move_item_down('automation_snmp_items', get_request_var('item_id'), 'snmp_id=' . get_request_var('id'));
 }
 
+/**
+ * Handles the automation SNMP item moveup. Used as part of Cacti's automation SNMP functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_snmp_item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -342,6 +378,12 @@ function automation_snmp_item_moveup() {
 	move_item_up('automation_snmp_items', get_request_var('item_id'), 'snmp_id=' . get_request_var('id'));
 }
 
+/**
+ * Handles the automation SNMP item remove confirm. Used as part of Cacti's automation SNMP
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_snmp_item_remove_confirm() {
     /* ================= input validation ================= */
     get_filter_request_var('id');
@@ -400,6 +442,11 @@ function automation_snmp_item_remove_confirm() {
 
 }
 
+/**
+ * Handles the automation SNMP item remove. Used as part of Cacti's automation SNMP functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_snmp_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -408,6 +455,11 @@ function automation_snmp_item_remove() {
 	db_execute_prepared('DELETE FROM automation_snmp_items WHERE id = ?', array(get_request_var('item_id')));
 }
 
+/**
+ * Handles the automation SNMP item edit. Used as part of Cacti's automation SNMP functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_snmp_item_edit() {
 	global $config, $snmp_auth_protocols, $snmp_priv_protocols, $snmp_versions, $snmp_security_levels;
 
@@ -481,6 +533,11 @@ function automation_snmp_item_edit() {
 	<?php
 }
 
+/**
+ * Handles the automation SNMP edit. Used as part of Cacti's automation SNMP functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_snmp_edit() {
 	global $config, $fields_automation_snmp_edit;
 
@@ -649,6 +706,11 @@ function automation_snmp_edit() {
     <?php
 }
 
+/**
+ * Handles the automation SNMP. Used as part of Cacti's automation SNMP functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_snmp() {
 	global $config, $item_rows, $automation_snmp_actions;
 
