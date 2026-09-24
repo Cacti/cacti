@@ -47,6 +47,11 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * Handles the form save. Used as part of Cacti's graph templates inputs functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_save() {
 	if ((isset_request_var('save_component_input')) && (!is_error_message())) {
 		$graph_input_values = array();
@@ -142,6 +147,13 @@ function form_save() {
 /* ------------------------------------
     input - Graph Template Item Inputs
    ------------------------------------ */
+/**
+ * ------------------------------------ input - Graph Template Item Inputs
+ * ------------------------------------. Used as part of Cacti's graph templates inputs
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function input_remove() {
 	if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -173,6 +185,11 @@ function input_remove() {
 	}
 }
 
+/**
+ * Handles the input edit. Used as part of Cacti's graph templates inputs functionality.
+ *
+ * @return void No value is returned.
+ */
 function input_edit() {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item, $fields_graph_template_input_edit;
 

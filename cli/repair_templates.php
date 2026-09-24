@@ -135,13 +135,21 @@ if (cacti_sizeof($damaged_template_ids)) {
 	print "NOTE: No Damaged Graph Templates Found\n";
 }
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Template Repair Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/* display_help - displays the usage of the function */
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help () {
 	display_version();
 

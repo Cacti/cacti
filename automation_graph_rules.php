@@ -103,6 +103,12 @@ switch (get_request_var('action')) {
 /* --------------------------
  The Save Function
  -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's automation graph rules functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function save() {
 	if (isset_request_var('save_component_automation_graph_rule')) {
@@ -242,6 +248,12 @@ function save() {
 /* ------------------------
  The 'actions' function
  ------------------------ */
+/**
+ * ------------------------ The 'actions' function ------------------------. Used as part of
+ * Cacti's automation graph rules functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function automation_graph_rules_form_actions() {
 	global $config, $automation_graph_rules_actions;
@@ -369,6 +381,12 @@ function automation_graph_rules_form_actions() {
 /* --------------------------
  Rule Item Functions
  -------------------------- */
+/**
+ * -------------------------- Rule Item Functions --------------------------. Used as part of
+ * Cacti's automation graph rules functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_graph_rules_item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -383,6 +401,12 @@ function automation_graph_rules_item_movedown() {
 	}
 }
 
+/**
+ * Handles the automation graph rules item moveup. Used as part of Cacti's automation graph rules
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_graph_rules_item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -397,6 +421,12 @@ function automation_graph_rules_item_moveup() {
 	}
 }
 
+/**
+ * Handles the automation graph rules item remove. Used as part of Cacti's automation graph rules
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_graph_rules_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -411,6 +441,12 @@ function automation_graph_rules_item_remove() {
 
 }
 
+/**
+ * Handles the automation graph rules item edit. Used as part of Cacti's automation graph rules
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_graph_rules_item_edit() {
 	global $config;
 
@@ -469,6 +505,12 @@ function automation_graph_rules_item_edit() {
 /* ---------------------
  Rule Functions
  --------------------- */
+/**
+ * --------------------- Rule Functions ---------------------. Used as part of Cacti's automation
+ * graph rules functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function automation_graph_rules_remove() {
 	/* ================= input validation ================= */
@@ -498,6 +540,12 @@ function automation_graph_rules_remove() {
 	}
 }
 
+/**
+ * Handles the automation change query type. Used as part of Cacti's automation graph rules
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_change_query_type() {
 	$id = get_filter_request_var('id');
 
@@ -531,6 +579,12 @@ function automation_change_query_type() {
 	}
 }
 
+/**
+ * Handles the automation graph rules edit. Used as part of Cacti's automation graph rules
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_graph_rules_edit() {
 	global $config;
 	global $fields_automation_graph_rules_edit1, $fields_automation_graph_rules_edit2, $fields_automation_graph_rules_edit3;
@@ -737,6 +791,12 @@ function automation_graph_rules_edit() {
 	<?php
 }
 
+/**
+ * Handles the automation graph rules. Used as part of Cacti's automation graph rules
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function automation_graph_rules() {
 	global $automation_graph_rules_actions, $config, $item_rows;
 

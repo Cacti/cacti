@@ -22,10 +22,22 @@
  +-------------------------------------------------------------------------+
  */
 
+/**
+ * Handles the snmpagent enabled. Used as part of Cacti's lib functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function snmpagent_enabled() {
 	return read_config_option('enable_snmp_agent') == 'on';
 }
 
+/**
+ * Handles the snmpagent cacti stats update. Used as part of Cacti's lib functionality.
+ *
+ * @param array $data The data.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function snmpagent_cacti_stats_update($data){
 	$mc = new MibCache();
 
@@ -64,6 +76,11 @@ function snmpagent_cacti_stats_update($data){
 	$mc->object('cactiStatsLastUpdate')->set( time() );
 }
 
+/**
+ * Handles the snmpagent global settings update. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function snmpagent_global_settings_update(){
 	$mc = new MibCache();
 	$mc->object('cactiApplVersion')->set( snmpagent_read('cactiApplVersion') );
@@ -95,6 +112,13 @@ function snmpagent_global_settings_update(){
 	$mc->object('boostApplLastUpdate')->set( time() );
 }
 
+/**
+ * Handles the snmpagent API device new. Used as part of Cacti's lib functionality.
+ *
+ * @param array $device The device.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function snmpagent_api_device_new($device){
 	if (!snmpagent_enabled()) {
 		return false;
@@ -149,6 +173,13 @@ function snmpagent_api_device_new($device){
 }
 
 
+/**
+ * Handles the snmpagent data source action bottom. Used as part of Cacti's lib functionality.
+ *
+ * @param array $data The data.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function snmpagent_data_source_action_bottom($data){
 	if (!snmpagent_enabled()) {
 		return false;
@@ -168,6 +199,13 @@ function snmpagent_data_source_action_bottom($data){
 	}
 }
 
+/**
+ * Handles the snmpagent graphs action bottom. Used as part of Cacti's lib functionality.
+ *
+ * @param array $data The data.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function snmpagent_graphs_action_bottom($data){
 	if (!snmpagent_enabled()) {
 		return false;
@@ -187,6 +225,13 @@ function snmpagent_graphs_action_bottom($data){
 	}
 }
 
+/**
+ * Handles the snmpagent device action bottom. Used as part of Cacti's lib functionality.
+ *
+ * @param array $data The data.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function snmpagent_device_action_bottom($data){
 	if (!snmpagent_enabled()) {
 		return false;
@@ -286,6 +331,13 @@ function snmpagent_device_action_bottom($data){
 	}
 }
 
+/**
+ * Handles the snmpagent poller exiting. Used as part of Cacti's lib functionality.
+ *
+ * @param int $poller_index The poller index.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function snmpagent_poller_exiting($poller_index = 1){
 	if (!snmpagent_enabled()) {
 		return false;
@@ -314,6 +366,11 @@ function snmpagent_poller_exiting($poller_index = 1){
 	}
 }
 
+/**
+ * Handles the snmpagent poller bottom. Used as part of Cacti's lib functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function snmpagent_poller_bottom() {
 	global $config;
 
@@ -560,6 +617,11 @@ function snmpagent_poller_bottom() {
 	}
 }
 
+/**
+ * Handles the snmpagent get pluginslist. Used as part of Cacti's lib functionality.
+ *
+ * @return array An array of results.
+ */
 function snmpagent_get_pluginslist(){
 	global $config, $plugins, $plugins_integrated;
 	/* update the list of known plugins only once per polling cycle. In all other cases we would
@@ -593,9 +655,10 @@ function snmpagent_get_pluginslist(){
 }
 
 /**
- * snmpagent_cache_install()
- * Generates a SNMP caching tables reflecting all objects of the Cacti MIB
- * @return
+ * Snmpagent_cache_install() Generates a SNMP caching tables reflecting all objects of the Cacti
+ * MIB. Used as part of Cacti's lib functionality.
+ *
+ * @return bool Bool.
  */
 function snmpagent_cache_install() {
 	global $config;
@@ -636,6 +699,11 @@ function snmpagent_cache_install() {
 	return true;
 }
 
+/**
+ * Handles the snmpagent cache uninstall. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function snmpagent_cache_uninstall() {
 	/* drop everything if not empty */
 
@@ -651,14 +719,29 @@ function snmpagent_cache_uninstall() {
 	}
 }
 
+/**
+ * Handles the snmpagent cache initialized. Used as part of Cacti's lib functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function snmpagent_cache_initialized() {
 	return db_fetch_cell('SELECT COUNT(*) FROM `snmpagent_cache`') > 0;
 }
 
+/**
+ * Handles the snmpagent cache rebuilt. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function snmpagent_cache_rebuilt(){
 	snmpagent_cache_install();
 }
 
+/**
+ * Handles the snmpagent cache init. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function snmpagent_cache_init(){
 	/* fill up the cache with a minimum of data and ignore all values that
 	   *  will be updated automatically at the bottom of the next poller run
@@ -772,6 +855,13 @@ function snmpagent_cache_init(){
 	}
 }
 
+/**
+ * Handles the snmpagent read. Used as part of Cacti's lib functionality.
+ *
+ * @param string $object The object.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function snmpagent_read($object){
 	switch($object) {
 		case 'cactiApplVersion':
@@ -814,6 +904,17 @@ function snmpagent_read($object){
 	return $value;
 }
 
+/**
+ * Handles the snmpagent notification. Used as part of Cacti's lib functionality.
+ *
+ * @param string $notification The notification.
+ * @param string $mib The MIB.
+ * @param array $varbinds The varbinds.
+ * @param int $severity The severity.
+ * @param mixed $overwrite The overwrite.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMPAGENT_EVENT_SEVERITY_MEDIUM, $overwrite = false){
 	global $config, $snmpagent_event_severity;
 

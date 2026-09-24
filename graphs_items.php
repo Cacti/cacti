@@ -89,6 +89,12 @@ switch (get_request_var('action')) {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's graphs items functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	if (isset_request_var('save_component_item')) {
@@ -244,6 +250,12 @@ function form_save() {
 /* -----------------------
     item - Graph Items
    ----------------------- */
+/**
+ * ----------------------- item - Graph Items -----------------------. Used as part of Cacti's
+ * graphs items functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function item_movedown() {
 	global $graph_item_types;
@@ -263,6 +275,11 @@ function item_movedown() {
 	}
 }
 
+/**
+ * Handles the item moveup. Used as part of Cacti's graphs items functionality.
+ *
+ * @return void No value is returned.
+ */
 function item_moveup() {
 	global $graph_item_types;
 
@@ -281,6 +298,11 @@ function item_moveup() {
 	}
 }
 
+/**
+ * Handles the item remove. Used as part of Cacti's graphs items functionality.
+ *
+ * @return void No value is returned.
+ */
 function item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -289,6 +311,11 @@ function item_remove() {
 	db_execute_prepared('DELETE FROM graph_templates_item WHERE id = ?', array(get_request_var('id')));
 }
 
+/**
+ * Validates the item vars. Used as part of Cacti's graphs items functionality.
+ *
+ * @return void No value is returned.
+ */
 function validate_item_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -310,6 +337,11 @@ function validate_item_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Handles the item edit. Used as part of Cacti's graphs items functionality.
+ *
+ * @return void No value is returned.
+ */
 function item_edit() {
 	global $struct_graph_item, $graph_item_types, $consolidation_functions;
 

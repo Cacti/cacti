@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 0.8.1. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_0_8_1() {
 	db_install_add_column('user_log', array('name' => 'user_id', 'type' => 'mediumint(8)', 'NULL' => false, 'after' => 'username'));
 	db_install_add_column('user_auth', array('name' => 'realm', 'type' => 'mediumint(8)', 'NULL' => false, 'after' => 'password'));

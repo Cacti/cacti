@@ -209,12 +209,21 @@ if (cacti_sizeof($data_queries)) {
 
 }
 
+/**
+ * Display_version. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Reindex Host Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*	display_help - displays the usage of the function */
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help () {
 	display_version();
 	print 'usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]]' . PHP_EOL;
@@ -226,6 +235,13 @@ function display_help () {
 	print '--debug                  - Display verbose output during execution' . PHP_EOL;
 }
 
+/**
+ * Debug. Used as part of Cacti's CLI functionality.
+ *
+ * @param mixed $message The message.
+ *
+ * @return void No value is returned.
+ */
 function debug($message) {
 	global $debug;
 

@@ -22,19 +22,26 @@
  +-------------------------------------------------------------------------+
 */
 
-/* draw_nontemplated_fields_graph - draws a form that consists of all non-templated graph fields associated
-     with a particular graph template
-   @arg $graph_template_id - the id of the graph template to base the form after
-   @arg $values_array - any values that should be included by default on the form
-   @arg $field_name_format - all fields on the form will be named using the following format, the following
-     variables can be used:
-       |field| - the current field name
-   @arg $header_title - the title to use on the header for this form
-   @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not
-   @arg $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
-     html input elements or omitted altogether?
-   @arg $snmp_query_graph_id - if this graph template is part of a data query, specify the graph id here. this
-     will be used to determine if a given field is using suggested values */
+/**
+ * Draws a form that consists of all non-templated graph fields associated with a particular graph
+ * template. Used as part of Cacti's lib functionality.
+ *
+ * @param int $graph_template_id The id of the graph template to base the form after.
+ * @param mixed &$values_array Any values that should be included by default on the form.
+ * @param string $field_name_format All fields on the form will be named using the following
+ *   format, the following variables can be used: |field| - the current field name.
+ * @param string $header_title The title to use on the header for this form.
+ * @param bool $alternate_colors (bool) - whether to alternate colors for each row on the form or
+ *   not.
+ * @param bool $include_hidden_fields (bool) - should elements that are not to be displayed be
+ *   represented as hidden html input elements or omitted altogether?
+ * @param int $snmp_query_graph_id If this graph template is part of a data query, specify the
+ *   graph id here. this will be used to determine if a given field is using suggested values.
+ *
+ * @return int The number of fields drawn.
+ *
+ * @global array $struct_graph The global array containing the structure of the graph fields.
+ */
 function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $field_name_format = '|field|', $header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	global $struct_graph;
 
@@ -103,16 +110,22 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 	return $num_fields_drawn;
 }
 
-/* draw_nontemplated_fields_graph_item - draws a form that consists of all non-templated graph item fields
-     associated with a particular graph template
-   @arg $graph_template_id - the id of the graph template to base the form after
-   @arg $local_graph_id - specify the id of the associated graph if it exists
-   @arg $field_name_format - all fields on the form will be named using the following format, the following
-     variables can be used:
-       |field| - the current field name
-       |id| - the current graph input id
-   @arg $header_title - the title to use on the header for this form
-   @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not */
+/**
+ * Draws a form that consists of all non-templated graph item fields associated with a particular
+ * graph template. Used as part of Cacti's lib functionality.
+ *
+ * @param int $graph_template_id The id of the graph template to base the form after.
+ * @param int $local_graph_id Specify the id of the associated graph if it exists.
+ * @param string $field_name_format All fields on the form will be named using the following
+ *   format, the following variables can be used: |field| - the current field name |id| - the
+ *   current graph input id.
+ * @param string $header_title The title to use on the header for this form.
+ * @param bool $alternate_colors (bool) - whether to alternate colors for each row on the form or
+ *   not.
+ * @param string $locked Whether the fields are locked. Default is 'false'.
+ *
+ * @return int The number of fields drawn.
+ */
 function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id, $field_name_format = '|field|_|id|', $header_title = '', $alternate_colors = true, $locked = 'false') {
 	global $struct_graph_item;
 
@@ -280,20 +293,27 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 	return $num_fields_drawn;
 }
 
-/* draw_nontemplated_fields_data_source - draws a form that consists of all non-templated data source fields
-     associated with a particular data template
-   @arg $data_template_id - the id of the data template to base the form after
-   @arg $local_data_id - specify the id of the associated data source if it exists
-   @arg $values_array - any values that should be included by default on the form
-   @arg $field_name_format - all fields on the form will be named using the following format, the following
-     variables can be used:
-       |field| - the current field name
-   @arg $header_title - the title to use on the header for this form
-   @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not
-   @arg $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
-     html input elements or omitted altogether?
-   @arg $snmp_query_graph_id - if this data template is part of a data query, specify the graph id here. this
-     will be used to determine if a given field is using suggested values */
+/**
+ * Draws a form that consists of all non-templated data source fields associated with a particular
+ * data template. Used as part of Cacti's lib functionality.
+ *
+ * @param int $data_template_id The id of the data template to base the form after.
+ * @param int $local_data_id Specify the id of the associated data source if it exists.
+ * @param mixed &$values_array Any values that should be included by default on the form.
+ * @param string $field_name_format All fields on the form will be named using the following
+ *   format, the following variables can be used: |field| - the current field name.
+ * @param string $header_title The title to use on the header for this form.
+ * @param bool $alternate_colors (bool) - whether to alternate colors for each row on the form or
+ *   not.
+ * @param bool $include_hidden_fields (bool) - should elements that are not to be displayed be
+ *   represented as hidden html input elements or omitted altogether?
+ * @param int $snmp_query_graph_id If this data template is part of a data query, specify the
+ *   graph id here. this will be used to determine if a given field is using suggested values.
+ *
+ * @return int The number of fields drawn.
+ *
+ * @global array $struct_data_source The structure of the data source fields.
+ */
 function draw_nontemplated_fields_data_source($data_template_id, $local_data_id, &$values_array, $field_name_format = '|field|', $header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	global $struct_data_source;
 
@@ -369,22 +389,27 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 	return $num_fields_drawn;
 }
 
-/* draw_nontemplated_fields_data_source_item - draws a form that consists of all non-templated data source
-     item fields associated with a particular data template
-   @arg $data_template_id - the id of the data template to base the form after
-   @arg $values_array - any values that should be included by default on the form
-   @arg $field_name_format - all fields on the form will be named using the following format, the following
-     variables can be used:
-       |field| - the current field name
-       |id| - the id of the current data source item
-   @arg $header_title - the title to use on the header for this form
-   @arg $draw_title_for_each_item (bool) - should a separate header be drawn for each data source item, or
-     should all data source items be drawn under one header?
-   @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not
-   @arg $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
-     html input elements or omitted altogether?
-   @arg $snmp_query_graph_id - if this graph template is part of a data query, specify the graph id here. this
-     will be used to determine if a given field is using suggested values */
+/**
+ * Draws a form that consists of all non-templated data source item fields associated with a
+ * particular data template. Used as part of Cacti's lib functionality.
+ *
+ * @param int $data_template_id The id of the data template to base the form after.
+ * @param mixed &$values_array Any values that should be included by default on the form.
+ * @param string $field_name_format All fields on the form will be named using the following
+ *   format, the following variables can be used: |field| - the current field name |id| - the id of
+ *   the current data source item.
+ * @param string $header_title The title to use on the header for this form.
+ * @param bool $draw_title_for_each_item (bool) - should a separate header be drawn for each data
+ *   source item, or should all data source items be drawn under one header?
+ * @param bool $alternate_colors (bool) - whether to alternate colors for each row on the form or
+ *   not.
+ * @param bool $include_hidden_fields (bool) - should elements that are not to be displayed be
+ *   represented as hidden html input elements or omitted altogether?
+ * @param int $snmp_query_graph_id If this graph template is part of a data query, specify the
+ *   graph id here. this will be used to determine if a given field is using suggested values.
+ *
+ * @return int The number of fields drawn.
+ */
 function draw_nontemplated_fields_data_source_item($data_template_id, &$values_array, $field_name_format = '|field_id|', $header_title = '', $draw_title_for_each_item = true, $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	global $struct_data_source_item;
 
@@ -493,20 +518,24 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 	return $num_fields_drawn;
 }
 
-/* draw_nontemplated_fields_custom_data - draws a form that consists of all non-templated custom data fields
-     associated with a particular data template
-   @arg $data_template_id - the id of the data template to base the form after
-   @arg $field_name_format - all fields on the form will be named using the following format, the following
-     variables can be used:
-       |id| - the id of the current field
-   @arg $header_title - the title to use on the header for this form
-   @arg $draw_title_for_each_item (bool) - should a separate header be drawn for each data source item, or
-     should all data source items be drawn under one header?
-   @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not
-   @arg $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
-     html input elements or omitted altogether?
-   @arg $snmp_query_id - if this graph template is part of a data query, specify the data query id here. this
-     will be used to determine if a given field is associated with a suggested value */
+/**
+ * Draws a form that consists of all non-templated custom data fields associated with a particular
+ * data template. Used as part of Cacti's lib functionality.
+ *
+ * @param int $data_template_data_id The ID of the data template data.
+ * @param string $field_name_format All fields on the form will be named using the following
+ *   format, the following variables can be used: |id| - the id of the current field.
+ * @param string $header_title The title to use on the header for this form.
+ * @param bool $alternate_colors (bool) - whether to alternate colors for each row on the form or
+ *   not.
+ * @param bool $include_hidden_fields (bool) - should elements that are not to be displayed be
+ *   represented as hidden html input elements or omitted altogether?
+ * @param int $snmp_query_id If this graph template is part of a data query, specify the data
+ *   query id here. this will be used to determine if a given field is associated with a suggested
+ *   value.
+ *
+ * @return int The number of fields drawn.
+ */
 function draw_nontemplated_fields_custom_data($data_template_data_id, $field_name_format = '|field|',
 	$header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_id = 0) {
 
@@ -607,14 +636,19 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 	return $num_fields_drawn;
 }
 
-/* draw_custom_data_row - draws a single row representing 'custom data' for a single data input field.
-     this function is where additional logic can be applied to control how a certain field of custom
-     data is represented on the HTML form
-   @arg $field_name - the name of this form element
-   @arg $data_input_field_id - the id of the data input field that this row represents
-   @arg $data_template_data_id - the id of the data source data element that this data input field
-     belongs to
-   @arg $current_value - the current value of this field */
+/**
+ * Draws a single row representing 'custom data' for a single data input field. this function is
+ * where additional logic can be applied to control how a certain field of custom data is
+ * represented on the HTML form. Used as part of Cacti's lib functionality.
+ *
+ * @param string $field_name The name of this form element.
+ * @param int $data_input_field_id The id of the data input field that this row represents.
+ * @param int $data_template_data_id The id of the data source data element that this data input
+ *   field belongs to.
+ * @param mixed $current_value The current value of this field.
+ *
+ * @return void No value is returned.
+ */
 function draw_custom_data_row($field_name, $data_input_field_id, $data_template_data_id, $current_value) {
 	$field = db_fetch_row_prepared('SELECT data_name, type_code
 		FROM data_input_fields

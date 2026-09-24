@@ -544,7 +544,14 @@ db_close();
 
 exit(0);
 
-// function to assist in logging
+/**
+ * Function to assist in logging. Used as part of Cacti's cmd functionality.
+ *
+ * @param int $host_id The host ID.
+ * @param int $level The level.
+ *
+ * @return int The resulting integer value.
+ */
 function debug_level($host_id, $level) {
 	global $debug;
 
@@ -563,7 +570,14 @@ function debug_level($host_id, $level) {
 	return $level;
 }
 
-// let the poller server know about cmd.php being finished
+/**
+ * Let the poller server know about cmd.php being finished. Used as part of Cacti's cmd
+ * functionality.
+ *
+ * @param int $pid The PID.
+ *
+ * @return void No value is returned.
+ */
 function record_cmdphp_done($pid = '') {
 	global $poller_id, $poller_db_cnn_id;
 
@@ -576,7 +590,11 @@ function record_cmdphp_done($pid = '') {
 		array($poller_id, $pid), true, $poller_db_cnn_id);
 }
 
-// let cacti processes know that a poller has started
+/**
+ * Let cacti processes know that a poller has started. Used as part of Cacti's cmd functionality.
+ *
+ * @return void No value is returned.
+ */
 function record_cmdphp_started() {
 	global $poller_id, $poller_db_cnn_id;
 
@@ -586,6 +604,14 @@ function record_cmdphp_started() {
 		array($poller_id, getmypid()), true, $poller_db_cnn_id);
 }
 
+/**
+ * Handles the open SNMP session. Used as part of Cacti's cmd functionality.
+ *
+ * @param int $host_id The host ID.
+ * @param mixed &$item The item.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function open_snmp_session($host_id, &$item) {
 	global $sessions, $downhosts;
 
@@ -610,6 +636,14 @@ function open_snmp_session($host_id, &$item) {
 	return $sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']];
 }
 
+/**
+ * Handles the SNMP mark host down. Used as part of Cacti's cmd functionality.
+ *
+ * @param int $host_id The host ID.
+ * @param mixed &$item The item.
+ *
+ * @return void No value is returned.
+ */
 function snmp_mark_host_down($host_id, &$item) {
 	global $sessions, $downhosts;
 
@@ -617,6 +651,13 @@ function snmp_mark_host_down($host_id, &$item) {
 	$downhosts[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']] = true;
 }
 
+/**
+ * Updates the system mibs. Used as part of Cacti's cmd functionality.
+ *
+ * @param int $host_id The host ID.
+ *
+ * @return void No value is returned.
+ */
 function update_system_mibs($host_id) {
 	$system_mibs = array(
 		'snmp_sysDescr'             => '.1.3.6.1.2.1.1.1.0',
@@ -668,6 +709,14 @@ function update_system_mibs($host_id) {
 	}
 }
 
+/**
+ * Handles the collect device data. Used as part of Cacti's cmd functionality.
+ *
+ * @param mixed &$item The item.
+ * @param mixed &$error_ds The error DS.
+ *
+ * @return string The resulting string.
+ */
 function collect_device_data(&$item, &$error_ds) {
 	global $print_data_to_stdout, $using_proc_function, $sessions, $pipes, $cactiphp;
 
@@ -778,6 +827,14 @@ function collect_device_data(&$item, &$error_ds) {
 	return $output;
 }
 
+/**
+ * Handles the ping and reindex check. Used as part of Cacti's cmd functionality.
+ *
+ * @param mixed &$item The item.
+ * @param bool $mibs The mibs.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function ping_and_reindex_check(&$item, $mibs) {
 	global $poller_id, $print_data_to_stdout, $sessions, $set_spike_kill, $poller_db_cnn_id, $pipes, $cactiphp, $using_proc_function;
 
@@ -993,6 +1050,11 @@ function ping_and_reindex_check(&$item, $mibs) {
 	return $host_down;
 }
 
+/**
+ * Retrieves the max column width. Used as part of Cacti's cmd functionality.
+ *
+ * @return int The resulting integer value.
+ */
 function get_max_column_width() {
 	$pcol_data = db_fetch_row("SHOW COLUMNS FROM poller_output WHERE Field='output'");
 	$bcol_data = db_fetch_row("SHOW COLUMNS FROM poller_output_boost WHERE Field='output'");
@@ -1012,6 +1074,14 @@ function get_max_column_width() {
 	return min($pmax, $bmax);
 }
 
+/**
+ * Provides a generic means to catch exceptions to the Cacti log. Used as part of Cacti's cmd
+ * functionality.
+ *
+ * @param int $signo The signal that was thrown by the interface.
+ *
+ * @return void No value is returned.
+ */
 function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
@@ -1029,15 +1099,20 @@ function sig_handler($signo) {
 	}
 }
 
+/**
+ * Display_version. Used as part of Cacti's cmd functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_version();
 	print "Cacti Legacy Host Data Collector, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**
- * display_help - displays the usage of the function
+ * Displays the usage of the function. Used as part of Cacti's cmd functionality.
  *
- * @return (void)
+ * @return void No value is returned.
  */
 function display_help () {
 	display_version();

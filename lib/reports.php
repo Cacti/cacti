@@ -23,10 +23,12 @@
 */
 
 /**
- * duplicate_reports - duplicates a report and all items
+ * Duplicates a report and all items. Used as part of Cacti's lib functionality.
  *
- * @param int $_id       - id of the report
- * @param string $_title - title of the new report
+ * @param int $_id Id of the report.
+ * @param string $_title Title of the new report.
+ *
+ * @return void No value is returned.
  */
 function duplicate_reports($_id, $_title) {
 	global $fields_reports_edit;
@@ -71,6 +73,16 @@ function duplicate_reports($_id, $_title) {
 	}
 }
 
+/**
+ * Handles the reports add devices. Used as part of Cacti's lib functionality.
+ *
+ * @param int $report_id The report ID.
+ * @param array $device_ids The device IDS.
+ * @param array $timespan The timespan.
+ * @param string $align The align.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function reports_add_devices($report_id, $device_ids, $timespan, $align) {
 	if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) $report_id, 'reports')) {
 		raise_message('reports_not_owner');
@@ -154,6 +166,16 @@ function reports_add_devices($report_id, $device_ids, $timespan, $align) {
 	}
 }
 
+/**
+ * Handles the reports add graphs. Used as part of Cacti's lib functionality.
+ *
+ * @param int $report_id The report ID.
+ * @param int $local_graph_id The local graph ID.
+ * @param array $timespan The timespan.
+ * @param string $align The align.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
 	if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) $report_id, 'reports')) {
 		raise_message('reports_not_owner');
@@ -212,9 +234,10 @@ function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
 }
 
 /**
- * reports_date_time_format - fetches the date/time formatting information for current user
+ * Fetches the date/time formatting information for current user. Used as part of Cacti's lib
+ * functionality.
  *
- * @return string - string defining the datetime format specific to this user
+ * @return string Defining the datetime format specific to this user.
  */
 function reports_date_time_format() {
 	$datechar = array(
@@ -262,14 +285,15 @@ function reports_date_time_format() {
 }
 
 /**
- * reports_interval_start - computes the next start time for the given set of parameters
+ * Computes the next start time for the given set of parameters. Used as part of Cacti's lib
+ * functionality.
  *
- * @param int $interval  - given interval
- * @param int $count     - given repeat count
- * @param int $offset    - offset in seconds to be added to the new start time
- * @param int $timestamp - current start time for report
+ * @param int $interval Given interval.
+ * @param int $count Given repeat count.
+ * @param int $offset Offset in seconds to be added to the new start time.
+ * @param int $timestamp Current start time for report.
  *
- * @return - new timestamp
+ * @return int New timestamp.
  */
 function reports_interval_start($interval, $count, $offset, $timestamp) {
 	global $reports_interval;
@@ -330,17 +354,17 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
 }
 
 /**
- * utime_add - add offsets to given timestamp
+ * Add offsets to given timestamp. Used as part of Cacti's lib functionality.
  *
- * @param int $timestamp- base timestamp
- * @param int $yr		- offset in years
- * @param int $mon		- offset in months
- * @param int $day		- offset in days
- * @param int $hr		- offset in hours
- * @param int $min		- offset in minutes
- * @param int $sec		- offset in seconds
+ * @param int $timestamp Base timestamp.
+ * @param int $yr Offset in years.
+ * @param int $mon Offset in months.
+ * @param int $day Offset in days.
+ * @param int $hr Offset in hours.
+ * @param int $min Offset in minutes.
+ * @param int $sec Offset in seconds.
  *
- * @return				- unix time
+ * @return int Unix time.
  */
 function utime_add($timestamp, $yr = 0, $mon = 0, $day = 0, $hr = 0, $min = 0, $sec = 0) {
 	$dt = localtime($timestamp, true);
@@ -358,11 +382,15 @@ function utime_add($timestamp, $yr = 0, $mon = 0, $day = 0, $hr = 0, $min = 0, $
 }
 
 /**
- * reports_log - logs a string to Cacti's log file or optionally to the browser
+ * Logs a string to Cacti's log file or optionally to the browser. Used as part of Cacti's lib
+ * functionality.
  *
- * @param string $string  - the string to append to the log file
- * @param bool $output    - whether to output the log line to the browser using pring() or not
- * @param string $environ - tell's from where the script was called from
+ * @param string $string The string to append to the log file.
+ * @param bool $output Whether to output the log line to the browser using pring() or not.
+ * @param string $environ Tell's from where the script was called from.
+ * @param int $level The logging verbosity to use.
+ *
+ * @return void No value is returned.
  */
 function reports_log($string, $output = false, $environ = 'REPORTS', $level = POLLER_VERBOSITY_NONE) {
 	# Define REPORTS_DEBUG if not already set
@@ -383,10 +411,13 @@ function reports_log($string, $output = false, $environ = 'REPORTS', $level = PO
 }
 
 /**
- * generate_report - create the complete mail for a single report and send it
+ * Create the complete mail for a single report and send it. Used as part of Cacti's lib
+ * functionality.
  *
- * @param array $report - complete row of reports table for the report to work upon
- * @param bool $force   - when forced, lastsent time will not be entered (e.g. Send Now)
+ * @param array $report Complete row of reports table for the report to work upon.
+ * @param bool $force When forced, lastsent time will not be entered (e.g. Send Now).
+ *
+ * @return bool The success of the report.
  */
 function generate_report($report, $force = false) {
 	global $config, $alignment, $reports_interval, $attach_types;
@@ -612,11 +643,16 @@ function generate_report($report, $force = false) {
 	}
 }
 
-/** reports_load_format_file  read the format file from disk and determines its formatting
- * @param string $format_file		- the file to read from the formats directory
- * @param string $output			- the html and css output from that file
- * @param bool $report_tag_included - a boolean that informs the caller if the report tag is present
- * @return bool						- whether or not the format file was processed correctly
+/**
+ * Reports_load_format_file read the format file from disk and determines its formatting. Used as
+ * part of Cacti's lib functionality.
+ *
+ * @param string $format_file The file to read from the formats directory.
+ * @param mixed &$output The html and css output from that file.
+ * @param mixed &$report_tag_included A boolean that informs the caller if the report tag is present.
+ * @param mixed &$theme The theme to use for display.
+ *
+ * @return bool Whether or not the format file was processed correctly.
  */
 function reports_load_format_file($format_file, &$output, &$report_tag_included, &$theme) {
 	global $config;
@@ -666,11 +702,15 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 }
 
 /**
- * determine, if the given tree has graphs; taking permissions into account
- * @param int $tree_id			- tree id
- * @param int $branch_id		- branch id
- * @param int $effective_user	- user id
- * @param string $search_key	- search key
+ * Determine, if the given tree has graphs; taking permissions into account. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param int $tree_id Tree id.
+ * @param int $branch_id Branch id.
+ * @param int $effective_user User id.
+ * @param string $search_key Search key.
+ *
+ * @return int Int.
  */
 function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_key) {
 	global $config;
@@ -743,10 +783,15 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 }
 
 
-/** reports_generate_html  print report to html for online verification
- * @param int $reports_id	- id of report report
- * @param int $output		- type of output
- * @return string			- generated html output
+/**
+ * Reports_generate_html print report to html for online verification. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $reports_id Id of report report.
+ * @param int $output Type of output.
+ * @param mixed &$theme The format of the output.
+ *
+ * @return string Generated html output.
  */
 function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$theme = '') {
 	global $config;
@@ -930,6 +975,18 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 	}
 }
 
+/**
+ * Handles the expand branch. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed &$report The report.
+ * @param mixed &$item The item.
+ * @param int $branch_id The branch ID.
+ * @param int $output The output.
+ * @param bool $format_ok The format ok.
+ * @param string $theme The theme.
+ *
+ * @return string The resulting string.
+ */
 function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme = 'classic') {
 	$outstr = '';
 
@@ -954,14 +1011,17 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 	return $outstr;
 }
 
-/**
- * return html code for an embedded image
- * @param array $report	- parameters for this report mail report
- * @param $item			- current graph item
- * @param $timespan		- timespan
- * @param $output		- type of output
- * @return string		- generated html
- */
+ /**
+  * Return html code for an embedded image. Used as part of Cacti's lib functionality.
+  *
+  * @param array $report Parameters for this report mail report.
+  * @param array $item Current graph item.
+  * @param array $timespan Timespan.
+  * @param int $output Type of output.
+  * @param mixed $theme The theme to render with.
+  *
+  * @return string Generated html.
+  */
  function reports_graph_image($report, $item, $timespan, $output, $theme = 'classic') {
  	global $config;
 
@@ -999,15 +1059,16 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 }
 
 /**
- * expand a device for including into report
+ * Expand a device for including into report. Used as part of Cacti's lib functionality.
  *
- * @param array $report		- parameters for this report mail report
- * @param int $item			- current graph item
- * @param int $device_id    - the id of the host to include
- * @param int $output		- type of output
- * @param bool $format_ok	- use css styling
+ * @param mixed &$report Parameters for this report mail report.
+ * @param int $item Current graph item.
+ * @param int $device_id The id of the host to include.
+ * @param int $output Type of output.
+ * @param bool $format_ok Use css styling.
+ * @param mixed $theme The theme to use for output.
  *
- * @return string			- html
+ * @return string Html.
  */
 function reports_expand_device(&$report, $item, $device_id, $output, $format_ok, $theme = 'classic') {
 	global $config, $alignment;
@@ -1145,15 +1206,17 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 }
 
 /**
- * expand a tree for including into report
+ * Expand a tree for including into report. Used as part of Cacti's lib functionality.
  *
- * @param array $report		- parameters for this report mail report
- * @param int $item			- current graph item
- * @param int $output		- type of output
- * @param bool $format_ok	- use css styling
- * @param bool $nested		- nested tree?
+ * @param mixed &$report Parameters for this report mail report.
+ * @param int $item Current graph item.
+ * @param int $parent The tree parent.
+ * @param int $output Type of output.
+ * @param bool $format_ok Use css styling.
+ * @param string $theme The theme.
+ * @param bool $nested Nested tree?
  *
- * @return string			- html
+ * @return string Html.
  */
 function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $theme = 'classic', $nested = false) {
 	global $config, $alignment;
@@ -1608,10 +1671,12 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 }
 
 /**
- * natural sort function
- * @param $a
- * @param $b
- * @return string
+ * Natural sort function. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $a The first string for sort.
+ * @param mixed $b The second string for sort.
+ *
+ * @return int String.
  */
 function necturally_sort_graphs($a, $b) {
 	return strnatcasecmp($a['title_cache'], $b['title_cache']);
@@ -1619,14 +1684,17 @@ function necturally_sort_graphs($a, $b) {
 
 
 /**
- * draw graph area
- * @param array $graphs		- array of graphs
- * @param array $report		- report parameters
- * @param int $item			- current item
- * @param int $timespan		- requested timespan
- * @param int $output		- type of output
- * @param bool $format_ok	- use css styling
- * @return string
+ * Draw graph area. Used as part of Cacti's lib functionality.
+ *
+ * @param array $graphs Array of graphs.
+ * @param mixed &$report Report parameters.
+ * @param int $item Current item.
+ * @param int $timespan Requested timespan.
+ * @param int $output Type of output.
+ * @param bool $format_ok Use css styling.
+ * @param string $theme The output format to use.
+ *
+ * @return string String.
  */
 function reports_graph_area($graphs, &$report, $item, $timespan, $output, $format_ok, $theme = 'classic') {
 	global $alignment;
@@ -1689,10 +1757,11 @@ function reports_graph_area($graphs, &$report, $item, $timespan, $output, $forma
 }
 
 /**
- * convert png images stream to jpeg using php-gd
+ * Convert png images stream to jpeg using php-gd. Used as part of Cacti's lib functionality.
  *
- * @param string $png_data	- the png image as a stream
- * @return string			- the jpeg image as a stream
+ * @param string $png_data The png image as a stream.
+ *
+ * @return string The jpeg image as a stream.
  */
 function png2jpeg ($png_data) {
 	global $config;
@@ -1730,10 +1799,11 @@ function png2jpeg ($png_data) {
 }
 
 /**
- * convert png images stream to gif using php-gd
+ * Convert png images stream to gif using php-gd. Used as part of Cacti's lib functionality.
  *
- * @param string $png_data	- the png image as a stream
- * @return string			- the gif image as a stream
+ * @param string $png_data The png image as a stream.
+ *
+ * @return string The gif image as a stream.
  */
 function png2gif ($png_data) {
 	global $config;
@@ -1771,8 +1841,9 @@ function png2gif ($png_data) {
 }
 
 /**
- * get available format files for cacti reporting
- * @return array	- available format files
+ * Get available format files for cacti reporting. Used as part of Cacti's lib functionality.
+ *
+ * @return array Available format files.
  */
 function reports_get_format_files() {
 	global $config;
@@ -1814,7 +1885,10 @@ function reports_get_format_files() {
 }
 
 /**
- * define the reports code that will be processed at the end of each polling event
+ * Define the reports code that will be processed at the end of each polling event. Used as part
+ * of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
  */
 function reports_poller_bottom() {
 	global $config;
@@ -1826,8 +1900,11 @@ function reports_poller_bottom() {
 }
 
 /**
- * Setup the new dropdown action for Graph Management
- * @arg $action		actions to be performed from dropdown
+ * Setup the new dropdown action for Graph Management. Used as part of Cacti's lib functionality.
+ *
+ * @param array $action Actions to be performed from dropdown.
+ *
+ * @return array An array of results.
  */
 function reports_graphs_action_array($action) {
 	$action['reports'] = __('Add to Report');
@@ -1835,12 +1912,14 @@ function reports_graphs_action_array($action) {
 }
 
 /**
- * reports_graphs_action_prepare - perform reports_graph prepare action
- * @param array $save - drp_action: selected action from dropdown
- *              graph_array: graphs titles selected from graph management's list
- *              graph_list: graphs selected from graph management's list
- * returns array $save				-
- *  */
+ * Perform reports_graph prepare action. Used as part of Cacti's lib functionality.
+ *
+ * @param array $save Drp_action: selected action from dropdown graph_array: graphs titles
+ *   selected from graph management's list graph_list: graphs selected from graph management's list
+ *   returns array $save -.
+ *
+ * @return mixed $save.
+ */
 function reports_graphs_action_prepare($save) {
 	global $config, $graph_timespans, $alignment;
 
@@ -1872,10 +1951,12 @@ function reports_graphs_action_prepare($save) {
 }
 
 /**
- * reports_graphs_action_execute - perform reports_graph execute action
- * @param string $action - action to be performed
- * return -
- *  */
+ * Perform reports_graph execute action. Used as part of Cacti's lib functionality.
+ *
+ * @param string $action Action to be performed return -.
+ *
+ * @return string $action.
+ */
 function reports_graphs_action_execute($action) {
 	global $config;
 

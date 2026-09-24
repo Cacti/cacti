@@ -8,12 +8,14 @@
 */
 
 /**
- * Test whether a graph template input may select a graph item field.
+ * Test whether a graph template input may select a graph item field. This is an application
+ * allowlist, not a database schema check. Structural columns such as id, hash, local_graph_id,
+ * and graph_template_id must never become user-controlled graph input fields even though they
+ * exist in the graph_templates_item table. Used as part of Cacti's lib functionality.
  *
- * This is an application allowlist, not a database schema check. Structural
- * columns such as id, hash, local_graph_id, and graph_template_id must never
- * become user-controlled graph input fields even though they exist in the
- * graph_templates_item table.
+ * @param mixed $column_name The column name.
+ *
+ * @return bool True on success, false otherwise.
  */
 function graph_template_input_column_is_allowed($column_name) {
 	static $allowed_columns = array(
@@ -40,7 +42,13 @@ function graph_template_input_column_is_allowed($column_name) {
 }
 
 /**
- * Validate the storage shape of a graph template input value.
+ * Validate the storage shape of a graph template input value. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param mixed $column_name The column name.
+ * @param mixed $value The value.
+ *
+ * @return bool True on success, false otherwise.
  */
 function graph_template_input_value_is_allowed($column_name, $value) {
 	if (!graph_template_input_column_is_allowed($column_name) || !is_scalar($value)) {
@@ -93,7 +101,14 @@ function graph_template_input_value_is_allowed($column_name, $value) {
 }
 
 /**
- * Verify that an input and all selected template items share one owner.
+ * Verify that an input and all selected template items share one owner. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param int $input_id The input ID.
+ * @param int $graph_template_id The graph template ID.
+ * @param array<int|string> $graph_template_item_ids The graph template item IDS.
+ *
+ * @return bool True on success, false otherwise.
  */
 function graph_template_input_relationships_are_valid($input_id, $graph_template_id, $graph_template_item_ids) {
 	$input_id          = (int) $input_id;
@@ -133,7 +148,12 @@ function graph_template_input_relationships_are_valid($input_id, $graph_template
 }
 
 /**
- * Validate graph-input references in one decoded XML graph template.
+ * Validate graph-input references in one decoded XML graph template. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $xml_array The XML array.
+ *
+ * @return bool True on success, false otherwise.
  */
 function graph_template_input_xml_preflight($xml_array) {
 	if (!is_array($xml_array) || (isset($xml_array['inputs']) && !is_array($xml_array['inputs']))) {

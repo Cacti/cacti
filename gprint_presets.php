@@ -59,6 +59,12 @@ switch (get_request_var('action')) {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's GPRINT presets functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	if (isset_request_var('save_component_gprint_presets')) {
@@ -95,6 +101,12 @@ function form_save() {
 /* -----------------------------------
     gprint_presets - GPRINT Presets
    ----------------------------------- */
+/**
+ * ----------------------------------- gprint_presets - GPRINT Presets
+ * -----------------------------------. Used as part of Cacti's GPRINT presets functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_actions() {
 	global $gprint_actions;
@@ -174,6 +186,11 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * Handles the GPRINT presets edit. Used as part of Cacti's GPRINT presets functionality.
+ *
+ * @return void No value is returned.
+ */
 function gprint_presets_edit() {
 	global $fields_grprint_presets_edit;
 
@@ -213,6 +230,11 @@ function gprint_presets_edit() {
 	form_save_button('gprint_presets.php');
 }
 
+/**
+ * Handles the GPRINT presets. Used as part of Cacti's GPRINT presets functionality.
+ *
+ * @return void No value is returned.
+ */
 function gprint_presets() {
 	global $gprint_actions, $item_rows;
 

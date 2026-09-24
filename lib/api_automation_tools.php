@@ -22,6 +22,13 @@
  +-------------------------------------------------------------------------+
  */
 
+/**
+ * Retrieves a list of host templates from the database. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @return array An associative array of host templates with template IDs as keys and template
+ *   names as values.
+ */
 function getHostTemplates() {
 	$tmpArray = db_fetch_assoc('SELECT id, name FROM host_template ORDER BY id');
 
@@ -37,9 +44,11 @@ function getHostTemplates() {
 }
 
 /**
- * Normalizes database IDs and builds placeholders for a prepared IN clause.
+ * Normalizes database IDs and builds placeholders for a prepared IN clause. Used as part of
+ * Cacti's lib functionality.
  *
- * @param mixed $ids A positive integer ID, an array of positive integer IDs, or false/an empty array for no filter.
+ * @param mixed $ids A positive integer ID, an array of positive integer IDs, or false/an empty
+ *   array for no filter.
  *
  * @return array|false Prepared placeholders and integer parameters, or false when validation fails.
  */
@@ -81,6 +90,14 @@ function automation_prepare_id_list($ids) {
 	);
 }
 
+/**
+ * Retrieves hosts based on their description. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $hostTemplateIds An array of host template IDs to filter the hosts by, or false to
+ *   retrieve all hosts.
+ *
+ * @return mixed Returns an array of hosts that match the given description, or false on failure.
+ */
 function getHostsByDescription($hostTemplateIds = false) {
 	$hosts = array();
 	$filter = automation_prepare_id_list($hostTemplateIds);
@@ -111,6 +128,11 @@ function getHostsByDescription($hostTemplateIds = false) {
 	return $hosts;
 }
 
+/**
+ * Retrieves a list of sites. Used as part of Cacti's lib functionality.
+ *
+ * @return array An array containing the list of sites.
+ */
 function getSites() {
 	$sites = array();
 	$tmpArray = db_fetch_assoc('SELECT * FROM sites ORDER BY id');
@@ -124,6 +146,14 @@ function getSites() {
 	return $sites;
 }
 
+/**
+ * Retrieves a list of hosts. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $hostTemplateIds An array of host template IDs to filter the hosts by. If false,
+ *   all hosts will be retrieved.
+ *
+ * @return mixed Returns an array of hosts if successful, or false on failure.
+ */
 function getHosts($hostTemplateIds = false) {
 	$hosts = array();
 	$filter = automation_prepare_id_list($hostTemplateIds);
@@ -154,6 +184,13 @@ function getHosts($hostTemplateIds = false) {
 	return $hosts;
 }
 
+/**
+ * Retrieves the input fields for a given template ID. Used as part of Cacti's lib functionality.
+ *
+ * @param int $templateId The ID of the template to retrieve input fields for.
+ *
+ * @return array An array of input fields associated with the specified template ID.
+ */
 function getInputFields($templateId) {
 	$fields = array();
 
@@ -196,6 +233,11 @@ function getInputFields($templateId) {
 	return $fields;
 }
 
+/**
+ * Retrieves a list of addresses. Used as part of Cacti's lib functionality.
+ *
+ * @return array An array of addresses.
+ */
 function getAddresses() {
 	$addresses = array();
 	$tmpArray  = db_fetch_assoc('SELECT id, hostname FROM host ORDER BY hostname');
@@ -209,6 +251,14 @@ function getAddresses() {
 	return $addresses;
 }
 
+/**
+ * Retrieves SNMP fields for a given host. Used as part of Cacti's lib functionality.
+ *
+ * @param int $hostId The ID of the host for which to retrieve SNMP fields.
+ * @param int $snmp_query_id The ID of the SNMP query. Default is an empty string.
+ *
+ * @return array An array of SNMP fields for the specified host.
+ */
 function getSNMPFields($hostId, $snmp_query_id = '') {
 	$fieldNames = array();
 
@@ -233,6 +283,15 @@ function getSNMPFields($hostId, $snmp_query_id = '') {
 	return $fieldNames;
 }
 
+/**
+ * Retrieves SNMP values for a given host and field. Used as part of Cacti's lib functionality.
+ *
+ * @param int $hostId The ID of the host to query.
+ * @param string $field The specific field to retrieve values for.
+ * @param int $snmp_query_id The ID of the SNMP query to use. Default is an empty string.
+ *
+ * @return array An array of SNMP values.
+ */
 function getSNMPValues($hostId, $field, $snmp_query_id = '') {
 	$values   = array();
 
@@ -258,6 +317,11 @@ function getSNMPValues($hostId, $field, $snmp_query_id = '') {
 	return $values;
 }
 
+/**
+ * Retrieves a list of SNMP queries. Used as part of Cacti's lib functionality.
+ *
+ * @return array An array containing SNMP queries.
+ */
 function getSNMPQueries() {
 	$queries  = array();
 	$tmpArray = db_fetch_assoc('SELECT id, name FROM snmp_query ORDER by id');
@@ -271,6 +335,14 @@ function getSNMPQueries() {
 	return $queries;
 }
 
+/**
+ * Retrieves the SNMP query types for a given SNMP query ID. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $snmpQueryId The ID of the SNMP query.
+ *
+ * @return array An array of SNMP query types.
+ */
 function getSNMPQueryTypes($snmpQueryId) {
 	$types    = array();
 
@@ -289,6 +361,11 @@ function getSNMPQueryTypes($snmpQueryId) {
 	return $types;
 }
 
+/**
+ * Retrieves a list of graph templates. Used as part of Cacti's lib functionality.
+ *
+ * @return array An array of graph templates.
+ */
 function getGraphTemplates() {
 	$graph_templates = array();
 
@@ -303,6 +380,15 @@ function getGraphTemplates() {
 	return $graph_templates;
 }
 
+/**
+ * Retrieves graph templates associated with the given host template IDs. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param mixed $host_template_ids An array of host template IDs to filter the graph templates by.
+ *   If false, all graph templates will be retrieved.
+ *
+ * @return mixed Returns an array of graph templates if found, or false on failure.
+ */
 function getGraphTemplatesByHostTemplate($host_template_ids = false) {
 	$graph_templates = array();
 	$filter = automation_prepare_id_list($host_template_ids);
@@ -333,6 +419,14 @@ function getGraphTemplatesByHostTemplate($host_template_ids = false) {
 	return $graph_templates;
 }
 
+/**
+ * Displays the query types. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $types An array of query types to display.
+ * @param bool $quietMode Optional. If set to true, suppresses output. Default is false.
+ *
+ * @return void No value is returned.
+ */
 function displayQueryTypes($types, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known SNMP Query Types: (id, name)' . PHP_EOL;
@@ -349,6 +443,14 @@ function displayQueryTypes($types, $quietMode = false) {
 	}
 }
 
+/**
+ * Displays the host templates. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $host_templates An array of host templates to display.
+ * @param bool $quietMode Optional. If set to true, suppresses output. Default is false.
+ *
+ * @return void No value is returned.
+ */
 function displayHostTemplates($host_templates, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Valid Device Templates: (id, name)' . PHP_EOL;
@@ -365,6 +467,13 @@ function displayHostTemplates($host_templates, $quietMode = false) {
 	}
 }
 
+/**
+ * Displays the list of communities. Used as part of Cacti's lib functionality.
+ *
+ * @param bool $quietMode If set to true, suppresses output.
+ *
+ * @return void No value is returned.
+ */
 function displayCommunities($quietMode = false) {
 	if (!$quietMode) {
 		print 'Known SNMP Communities: (community)' . PHP_EOL;
@@ -385,6 +494,15 @@ function displayCommunities($quietMode = false) {
 	}
 }
 
+/**
+ * Displays SNMP fields for a given host. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $fields An array of SNMP fields to display.
+ * @param int $hostId The ID of the host for which the SNMP fields are displayed.
+ * @param bool $quietMode If true, suppresses output. Default is false.
+ *
+ * @return void No value is returned.
+ */
 function displaySNMPFields($fields, $hostId, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known SNMP Fields for host-id ' . $hostId . ': (name)' . PHP_EOL;
@@ -401,6 +519,16 @@ function displaySNMPFields($fields, $hostId, $quietMode = false) {
 	}
 }
 
+/**
+ * Displays SNMP values for a given host. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $values The SNMP values to display.
+ * @param int $hostId The ID of the host.
+ * @param string $field The field to display.
+ * @param bool $quietMode If true, suppresses output. Default is false.
+ *
+ * @return void No value is returned.
+ */
 function displaySNMPValues($values, $hostId, $field, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known SNMP Values for Field ' . $field . ' and host-id ' . $hostId . ': (name)' . PHP_EOL;
@@ -417,6 +545,14 @@ function displaySNMPValues($values, $hostId, $field, $quietMode = false) {
 	}
 }
 
+/**
+ * Displays SNMP queries. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $queries An array of SNMP queries to display.
+ * @param bool $quietMode If set to true, suppresses output. Default is false.
+ *
+ * @return void No value is returned.
+ */
 function displaySNMPQueries($queries, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known SNMP Queries: (id, name)' . PHP_EOL;
@@ -433,6 +569,14 @@ function displaySNMPQueries($queries, $quietMode = false) {
 	}
 }
 
+/**
+ * Displays input fields. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $input_fields An array of input fields to be displayed.
+ * @param bool $quietMode If set to true, suppresses output. Default is false.
+ *
+ * @return void No value is returned.
+ */
 function displayInputFields($input_fields, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known Input Fields: (name, default, description)' . PHP_EOL;
@@ -449,6 +593,14 @@ function displayInputFields($input_fields, $quietMode = false) {
 	}
 }
 
+/**
+ * Displays the provided graph templates. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $templates An array of graph templates to be displayed.
+ * @param bool $quietMode If set to true, suppresses output. Default is false.
+ *
+ * @return void No value is returned.
+ */
 function displayGraphTemplates($templates, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known Graph Templates: (id, name)' . PHP_EOL;
@@ -465,6 +617,14 @@ function displayGraphTemplates($templates, $quietMode = false) {
 	}
 }
 
+/**
+ * Displays a list of hosts. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $hosts An array of host information to be displayed.
+ * @param bool $quietMode If set to true, suppresses output. Default is false.
+ *
+ * @return void No value is returned.
+ */
 function displayHosts($hosts, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known Devices: (id, hostname, template, description)' . PHP_EOL;
@@ -481,6 +641,14 @@ function displayHosts($hosts, $quietMode = false) {
 	}
 }
 
+/**
+ * Displays a list of sites. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $sites An array of sites to display.
+ * @param bool $quietMode If true, suppresses output. Default is false.
+ *
+ * @return void No value is returned.
+ */
 function displaySites($sites, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known Sites: (id, name)' . PHP_EOL;
@@ -497,6 +665,13 @@ function displaySites($sites, $quietMode = false) {
 	}
 }
 
+/**
+ * Displays the trees. Used as part of Cacti's lib functionality.
+ *
+ * @param bool $quietMode If set to true, the function will operate in quiet mode.
+ *
+ * @return void No value is returned.
+ */
 function displayTrees($quietMode = false) {
 	global $tree_sort_types;
 
@@ -521,6 +696,16 @@ function displayTrees($quietMode = false) {
 	}
 }
 
+/**
+ * Displays the tree nodes for a given tree. Used as part of Cacti's lib functionality.
+ *
+ * @param int $tree_id The ID of the tree to display nodes for.
+ * @param string $nodeType The type of nodes to display (optional).
+ * @param int $parentNode The ID of the parent node to start displaying from (optional).
+ * @param bool $quietMode Whether to suppress output (optional).
+ *
+ * @return void No value is returned.
+ */
 function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode = false) {
 	global $tree_sort_types, $tree_item_types, $host_group_types;
 
@@ -613,6 +798,13 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 	}
 }
 
+/**
+ * Displays the Round-Robin Archives (RRAs). Used as part of Cacti's lib functionality.
+ *
+ * @param bool $quietMode If set to true, suppresses output.
+ *
+ * @return void No value is returned.
+ */
 function displayRRAs($quietMode = false) {
 	if (!$quietMode) {
 		print 'Known RRAs: (id, steps, rows, name)' . PHP_EOL;
@@ -634,6 +826,14 @@ function displayRRAs($quietMode = false) {
 	}
 }
 
+/**
+ * Displays the graphs for a given host. Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_id The ID of the host whose graphs are to be displayed.
+ * @param bool $quietMode If set to true, suppresses output. Default is false.
+ *
+ * @return void No value is returned.
+ */
 function displayHostGraphs($host_id, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known Device Graphs: (id, name, template)' . PHP_EOL;
@@ -664,6 +864,13 @@ function displayHostGraphs($host_id, $quietMode = false) {
 	}
 }
 
+/**
+ * Displays the list of users. Used as part of Cacti's lib functionality.
+ *
+ * @param bool $quietMode If set to true, suppresses output.
+ *
+ * @return void No value is returned.
+ */
 function displayUsers($quietMode = false) {
 	if (!$quietMode) {
 		print 'Known Users: (id, username, full_name)'. PHP_EOL;

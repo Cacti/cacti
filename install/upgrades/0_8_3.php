@@ -25,6 +25,11 @@
 include_once($config['base_path'] . '/lib/template.php');
 include_once($config['base_path'] . '/lib/utility.php');
 
+/**
+ * Handles the upgrade to 0.8.3. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_0_8_3() {
 	if (db_column_exists('user_auth', 'graph_policy')) {
 		db_install_execute("ALTER TABLE `user_auth` CHANGE `graph_policy` `policy_graphs` TINYINT( 1 ) UNSIGNED DEFAULT '1' NOT NULL;");

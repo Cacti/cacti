@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1.2.3. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_2_3() {
 	// Correct max values in templates and data sources: GAUGE/ABSOLUTE (1,4)
 	db_install_execute("UPDATE data_template_rrd

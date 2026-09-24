@@ -22,38 +22,30 @@
  +-------------------------------------------------------------------------+
 */
 
-/* html_start_box - draws the start of an HTML box with an optional title
-   @arg $title - the title of this box ("" for no title)
-   @arg $width - the width of the box in pixels or percent
-   @arg $div - end with a starting div
-   @arg $cell_padding - the amount of cell padding to use inside of the box
-   @arg $align - the HTML alignment to use for the box (center, left, or right)
-   @arg $add_text - the url to use when the user clicks 'Add' in the upper-right
-        corner of the box ("" for no 'Add' link)
-        This function has two method.  This first is for legacy behavior where you
-        you pass in a href to the function, and an optional label as $add_label
-        The new format accepts an array of hrefs to add to the start box.  The format
-        of the array is as follows:
-
-        $add_text = array(
-            array(
-                'id' => 'uniqueid',
-                'href' => 'value',
-                'title' => 'title',
-                'callback' => true|false,
-                'class' => 'fa fa-icon'
-            ),
-            ...
-        );
-
-        If the callback is true, the Cacti attribute will be added to the href
-        to present only the contents and not to include both the headers.  If
-        the link must go off page, simply make sure $callback is false.  There
-        is a requirement to use fontawesome icon sets for this class, but it
-        can include other classes.  In addition, the href can be a hash '#' if
-        your page has a ready function that has it's own javascript.
-   @arg $add_label - used with legacy behavior to add specific text to the link.
-        This parameter is only used in the legacy behavior.
+/**
+ * Draws the start of an HTML box with an optional title. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param string $title The title of this box ("" for no title).
+ * @param string $width The width of the box in pixels or percent.
+ * @param bool $div End with a starting div.
+ * @param int $cell_padding The amount of cell padding to use inside of the box.
+ * @param string $align The HTML alignment to use for the box (center, left, or right).
+ * @param mixed $add_text The url to use when the user clicks 'Add' in the upper-right corner of
+ *   the box ("" for no 'Add' link) This function has two method. This first is for legacy behavior
+ *   where you you pass in a href to the function, and an optional label as $add_label The new
+ *   format accepts an array of hrefs to add to the start box. The format of the array is as
+ *   follows: $add_text = array( array( 'id' => 'uniqueid', 'href' => 'value', 'title' => 'title',
+ *   'callback' => true|false, 'class' => 'fa fa-icon' ), ... ); If the callback is true, the Cacti
+ *   attribute will be added to the href to present only the contents and not to include both the
+ *   headers. If the link must go off page, simply make sure $callback is false. There is a
+ *   requirement to use fontawesome icon sets for this class, but it can include other classes. In
+ *   addition, the href can be a hash '#' if your page has a ready function that has it's own
+ *   javascript.
+ * @param mixed $add_label Used with legacy behavior to add specific text to the link. This
+ *   parameter is only used in the legacy behavior.
+ *
+ * @return void No value is returned.
  */
 function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, $add_label = false) {
    global $config;
@@ -183,9 +175,14 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 	$table_suffix++;
 }
 
-/* html_end_box - draws the end of an HTML box
-   @arg $trailing_br (bool) - whether to draw a trailing <br> tag after ending
-   @arg $div (bool) - whether type of box is div or table */
+/**
+ * Draws the end of an HTML box. Used as part of Cacti's lib functionality.
+ *
+ * @param bool $trailing_br (bool) - whether to draw a trailing <br> tag after ending.
+ * @param bool $div (bool) - whether type of box is div or table.
+ *
+ * @return void No value is returned.
+ */
 function html_end_box($trailing_br = true, $div = false) {
 	if ($div) {
 		print '</div></div>';
@@ -198,23 +195,30 @@ function html_end_box($trailing_br = true, $div = false) {
 	}
 }
 
-/* html_graph_template_multiselect - kept as a no-op for plugin/theme backward compatibility;
-   #graph_template_id is now handled by the select2-multi-count catch-all in layout.js */
+/**
+ * Kept as a no-op for plugin/theme backward compatibility; #graph_template_id is now handled by
+ * the select2-multi-count catch-all in layout.js. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function html_graph_template_multiselect() {
 }
 
-/* html_graph_area - draws an area the contains full sized graphs
-   @arg $graph_array - the array to contains graph information. for each graph in the
-        array, the following two keys must exist
-        $arr[0]["local_graph_id"] // graph id
-        $arr[0]["title_cache"] // graph title
-   @arg $no_graphs_message - display this message if no graphs are found in $graph_array
-   @arg $extra_url_args - extra arguments to append to the url
-   @arg $header - html to use as a header
-   @arg $columns - the number of columns to present
-   @arg $tree_id - the tree id if this is a tree thumbnail
-   @arg $branch_id - the branch id if this is a tree thumbnail
-*/
+/**
+ * Draws an area the contains full sized graphs. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed &$graph_array The array to contains graph information. for each graph in the array, the
+ *   following two keys must exist $arr[0]["local_graph_id"] // graph id $arr[0]["title_cache"] //
+ *   graph title.
+ * @param string $no_graphs_message Display this message if no graphs are found in $graph_array.
+ * @param string $extra_url_args Extra arguments to append to the url.
+ * @param string $header Html to use as a header.
+ * @param int $columns The number of columns to present.
+ * @param int $tree_id The tree id if this is a tree thumbnail.
+ * @param int $branch_id The branch id if this is a tree thumbnail.
+ *
+ * @return void No value is returned.
+ */
 function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0, $tree_id = 0, $branch_id = 0) {
 	global $config;
 
@@ -297,18 +301,21 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 	}
 }
 
-/* html_graph_thumbnail_area - draws an area the contains thumbnail sized graphs
-   @arg $graph_array - the array to contains graph information. for each graph in the
-        array, the following two keys must exist
-        $arr[0]["local_graph_id"] // graph id
-        $arr[0]["title_cache"] // graph title
-   @arg $no_graphs_message - display this message if no graphs are found in $graph_array
-   @arg $extra_url_args - extra arguments to append to the url
-   @arg $header - html to use as a header
-   @arg $columns - the number of columns to present
-   @arg $tree_id - the tree id if this is a tree thumbnail
-   @arg $branch_id - the branch id if this is a tree thumbnail
-*/
+/**
+ * Draws an area the contains thumbnail sized graphs. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed &$graph_array The array to contains graph information. for each graph in the array, the
+ *   following two keys must exist $arr[0]["local_graph_id"] // graph id $arr[0]["title_cache"] //
+ *   graph title.
+ * @param string $no_graphs_message Display this message if no graphs are found in $graph_array.
+ * @param string $extra_url_args Extra arguments to append to the url.
+ * @param string $header Html to use as a header.
+ * @param int $columns The number of columns to present.
+ * @param int $tree_id The tree id if this is a tree thumbnail.
+ * @param int $branch_id The branch id if this is a tree thumbnail.
+ *
+ * @return void No value is returned.
+ */
 function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0, $tree_id = 0, $branch_id = 0) {
 	global $config;
 	$i = 0; $k = 0; $j = 0;
@@ -437,6 +444,20 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 	}
 }
 
+/**
+ * Generates and prints HTML for graph drilldown icons. This function creates a set of icons for
+ * various graph-related actions such as viewing graph details, exporting CSV data, viewing time
+ * graphs, editing devices, editing graph templates, viewing graphs in real-time, and killing
+ * spikes in graphs. It also allows for plugin hooks to add additional icons. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param int $local_graph_id The ID of the local graph.
+ * @param string $type The type of icons to generate, default is 'graph_buttons'.
+ * @param int $tree_id The ID of the tree, default is 0.
+ * @param int $branch_id The ID of the branch, default is 0.
+ *
+ * @return void No value is returned.
+ */
 function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_id = 0, $branch_id = 0) {
 	global $config;
 
@@ -501,17 +522,24 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 	print '</div>';
 }
 
-/* html_nav_bar - draws a navigation bar which includes previous/next links as well as current
-	page information
-   @arg $base_url - the base URL will all filter options except page (should include url_path)
-   @arg $max_pages - the maximum number of pages to display
-   @arg $current_page - the current page in the navigation system
-   @arg $rows_per_page - the number of rows that are displayed on a single page
-   @arg $total_rows - the total number of rows in the navigation system
-   @arg $object - the object types that is being displayed
-   @arg $page_var - the object types that is being displayed
-   @arg $return_to - paint the resulting page into this dom object
-   @arg $page_count - provide a page count */
+/**
+ * Draws a navigation bar which includes previous/next links as well as current page information.
+ * Used as part of Cacti's lib functionality.
+ *
+ * @param string $base_url The base URL will all filter options except page (should include
+ *   url_path).
+ * @param int $max_pages The maximum number of pages to display.
+ * @param int $current_page The current page in the navigation system.
+ * @param int $rows_per_page The number of rows that are displayed on a single page.
+ * @param int $total_rows The total number of rows in the navigation system.
+ * @param int $colspan The number of columns to span for the navigation bar (default is 30).
+ * @param string $object The object types that is being displayed.
+ * @param string $page_var The object types that is being displayed.
+ * @param string $return_to Paint the resulting page into this dom object.
+ * @param bool $page_count Provide a page count.
+ *
+ * @return string The generated HTML for the navigation bar.
+ */
 function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = '', $page_var = 'page', $return_to = '', $page_count = true) {
 	if ($object == '') $object = __('Rows');
 
@@ -582,19 +610,25 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 	return $nav;
 }
 
-/* html_header_sort - draws a header row suitable for display inside of a box element.  When
-        a user selects a column header, the callback function "filename" will be called to handle
-        the sort the column and display the altered results.
-   @arg $header_items - an array containing a list of column items to display.  The
-        format is similar to the html_header, with the exception that it has three
-        dimensions associated with each element (db_column => display_text, default_sort_order)
-        alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
-   @arg $sort_column - the value of current sort column.
-   @arg $sort_direction - the value the current sort direction.  The actual sort direction
-        will be opposite this direction if the user selects the same named column.
-   @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
-   @arg $url - a base url to redirect sort actions to
-   @arg $return_to - the id of the object to inject output into as a result of the sort action */
+/**
+ * Draws a header row suitable for display inside of a box element. When a user selects a column
+ * header, the callback function "filename" will be called to handle the sort the column and
+ * display the altered results. Used as part of Cacti's lib functionality.
+ *
+ * @param array $header_items An array containing a list of column items to display. The format is
+ *   similar to the html_header, with the exception that it has three dimensions associated with
+ *   each element (db_column => display_text, default_sort_order) alternatively (db_column =>
+ *   array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah')).
+ * @param string $sort_column The value of current sort column.
+ * @param string $sort_direction The value the current sort direction. The actual sort direction
+ *   will be opposite this direction if the user selects the same named column.
+ * @param int $last_item_colspan The TD 'colspan' to apply to the last cell in the row.
+ * @param string $url A base url to redirect sort actions to.
+ * @param string $return_to The id of the object to inject output into as a result of the sort
+ *   action.
+ *
+ * @return void No value is returned.
+ */
 function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $url = '', $return_to = '') {
 	static $page_count = 0;
 
@@ -762,19 +796,27 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 	$page_count++;
 }
 
-/* html_header_sort_checkbox - draws a header row with a 'select all' checkbox in the last cell
-        suitable for display inside of a box element.  When a user selects a column header,
-        the callback function "filename" will be called to handle the sort the column and display
-        the altered results.
-   @arg $header_items - an array containing a list of column items to display.  The
-        format is similar to the html_header, with the exception that it has three
-        dimensions associated with each element (db_column => display_text, default_sort_order)
-        alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
-   @arg $sort_column - the value of current sort column.
-   @arg $sort_direction - the value the current sort direction.  The actual sort direction
-        will be opposite this direction if the user selects the same named column.
-   @arg $form_action - the url to post the 'select all' form to
-   @arg $return_to - the id of the object to inject output into as a result of the sort action */
+/**
+ * Draws a header row with a 'select all' checkbox in the last cell suitable for display inside of
+ * a box element. When a user selects a column header, the callback function "filename" will be
+ * called to handle the sort the column and display the altered results. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param array $header_items An array containing a list of column items to display. The format is
+ *   similar to the html_header, with the exception that it has three dimensions associated with
+ *   each element (db_column => display_text, default_sort_order) alternatively (db_column =>
+ *   array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah')).
+ * @param string $sort_column The value of current sort column.
+ * @param string $sort_direction The value the current sort direction. The actual sort direction
+ *   will be opposite this direction if the user selects the same named column.
+ * @param bool $include_form Whether to include the 'select all' form.
+ * @param string $form_action The url to post the 'select all' form to.
+ * @param string $return_to The id of the object to inject output into as a result of the sort
+ *   action.
+ * @param string $prefix The prefix to use for the checkbox names.
+ *
+ * @return void No value is returned.
+ */
 function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '', $return_to = '', $prefix = 'chk') {
 	static $page_count = 0;
 
@@ -944,10 +986,17 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	$page_count++;
 }
 
-/* html_header - draws a header row suitable for display inside of a box element
-   @arg $header_items - an array containing a list of items to be included in the header
-        alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
-   @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
+/**
+ * Draws a header row suitable for display inside of a box element. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $header_items An array containing a list of items to be included in the header
+ *   alternatively and array of header names and alignment array('display' = 'blah', 'align' =
+ *   'blah').
+ * @param int $last_item_colspan The TD 'colspan' to apply to the last cell in the row.
+ *
+ * @return void No value is returned.
+ */
 function html_header($header_items, $last_item_colspan = 1) {
 	print "<tr class='tableHeader " . (!$last_item_colspan > 1 ? 'tableFixed':'') . "'>";
 
@@ -983,11 +1032,16 @@ function html_header($header_items, $last_item_colspan = 1) {
 	print '</tr>';
 }
 
-/* html_section_header - draws a header row suitable for display inside of a box element
-         but for display as a section title and not as a series of table header columns
-   @arg $header_name - an array of the display name of the header for the section and
-        optional alignment.
-   @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
+/**
+ * Draws a header row suitable for display inside of a box element but for display as a section
+ * title and not as a series of table header columns. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $header_item An array of the display name of the header for the section and
+ *   optional alignment.
+ * @param int $last_item_colspan The TD 'colspan' to apply to the last cell in the row.
+ *
+ * @return void No value is returned.
+ */
 function html_section_header($header_item, $last_item_colspan = 1) {
 	print "<tr class='tableHeader " . (!$last_item_colspan > 1 ? 'tableFixed':'') . "'>";
 
@@ -1000,11 +1054,20 @@ function html_section_header($header_item, $last_item_colspan = 1) {
 	print '</tr>';
 }
 
-/* html_header_checkbox - draws a header row with a 'select all' checkbox in the last cell
-        suitable for display inside of a box element
-   @arg $header_items - an array containing a list of items to be included in the header
-        alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
-   @arg $form_action - the url to post the 'select all' form to */
+/**
+ * Draws a header row with a 'select all' checkbox in the last cell suitable for display inside of
+ * a box element. Used as part of Cacti's lib functionality.
+ *
+ * @param array $header_items An array containing a list of items to be included in the header
+ *   alternatively and array of header names and alignment array('display' = 'blah', 'align' =
+ *   'blah').
+ * @param bool $include_form Whether to include the 'select all' form.
+ * @param string $form_action The url to post the 'select all' form to.
+ * @param bool $resizable Whether the table is resizable.
+ * @param string $prefix The prefix to use for the checkbox names.
+ *
+ * @return void No value is returned.
+ */
 function html_header_checkbox($header_items, $include_form = true, $form_action = '', $resizable = true, $prefix = 'chk') {
 	/* default to the 'current' file */
 	if ($form_action == '') { $form_action = get_current_page(); }
@@ -1041,18 +1104,20 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 	print '</tr>';
 }
 
-/* html_create_list - draws the items for an html dropdown given an array of data
-   @arg $form_data - an array containing data for this dropdown. it can be formatted
-        in one of two ways:
-        $array["id"] = "value";
-        -- or --
-        $array[0]["id"] = 43;
-        $array[0]["name"] = "Red";
-   @arg $column_display - used to identify the key to be used for display data. this
-        is only applicable if the array is formatted using the second method above
-   @arg $column_id - used to identify the key to be used for id data. this
-        is only applicable if the array is formatted using the second method above
-   @arg $form_previous_value - the current value of this form element */
+/**
+ * Draws the items for an html dropdown given an array of data. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $form_data An array containing data for this dropdown. it can be formatted in one
+ *   of two ways: $array["id"] = "value"; -- or -- $array[0]["id"] = 43; $array[0]["name"] = "Red";.
+ * @param string $column_display Used to identify the key to be used for display data. this is
+ *   only applicable if the array is formatted using the second method above.
+ * @param string $column_id Used to identify the key to be used for id data. this is only
+ *   applicable if the array is formatted using the second method above.
+ * @param mixed $form_previous_value The current value of this form element.
+ *
+ * @return void No value is returned.
+ */
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
 	if (empty($column_display)) {
 		if (cacti_sizeof($form_data)) {
@@ -1086,11 +1151,11 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 }
 
 /**
- * Sanifizes html to remove harmful content
+ * Sanifizes html to remove harmful content. Used as part of Cacti's lib functionality.
  *
- * @param string $string The string to be sanifized
+ * @param string $string The string to be sanifized.
  *
- * @return string The sanitized string
+ * @return string The sanitized string.
  */
 function html_purify($string) {
 	global $config;
@@ -1123,16 +1188,24 @@ function html_purify($string) {
 	return $purifier->purify($string);
 }
 
-/* html_escape_request_var - sanitizes a request variable for display
-   @arg $string - string the request variable to escape
-   @returns $new_string - the escaped request variable to be returned. */
+/**
+ * Sanitizes a request variable for display. Used as part of Cacti's lib functionality.
+ *
+ * @param string $string String the request variable to escape.
+ *
+ * @return string $new_string - the escaped request variable to be returned.
+ */
 function html_escape_request_var($string) {
 	return html_escape(get_request_var($string));
 }
 
-/* html_escape - sanitizes a string for display
-   @arg $string - string the string to escape
-   @returns $new_string - the escaped string to be returned. */
+/**
+ * Sanitizes a string for display. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $string String the string to escape.
+ *
+ * @return string $new_string - the escaped string to be returned.
+ */
 function html_escape($string) {
 	static $charset;
 
@@ -1153,12 +1226,17 @@ function html_escape($string) {
 	}
 }
 
-/* html_split_string - takes a string and breaks it into a number of <br> separated segments
-   @arg $string - string to be modified and returned
-   @arg $length - the maximal string length to split to
-   @arg $forgiveness - the maximum number of characters to walk back from to determine
-        the correct break location.
-   @returns $new_string - the modified string to be returned. */
+/**
+ * Takes a string and breaks it into a number of <br> separated segments. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param string $string String to be modified and returned.
+ * @param int $length The maximal string length to split to.
+ * @param int $forgiveness The maximum number of characters to walk back from to determine the
+ *   correct break location.
+ *
+ * @return string $new_string - the modified string to be returned.
+ */
 function html_split_string($string, $length = 90, $forgiveness = 10) {
 	$new_string = '';
 	$j    = 0;
@@ -1187,14 +1265,19 @@ function html_split_string($string, $length = 90, $forgiveness = 10) {
 	return $new_string;
 }
 
-/* draw_graph_items_list - draws a nicely formatted list of graph items for display
-        on an edit form
-   @arg $item_list - an array representing the list of graph items. this array should
-        come directly from the output of db_fetch_assoc()
-   @arg $filename - the filename to use when referencing any external url
-   @arg $url_data - any extra GET url information to pass on when referencing any
-        external url
-   @arg $disable_controls - whether to hide all edit/delete functionality on this form */
+/**
+ * Draws a nicely formatted list of graph items for display on an edit form. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param array $item_list An array representing the list of graph items. this array should come
+ *   directly from the output of db_fetch_assoc().
+ * @param string $filename The filename to use when referencing any external url.
+ * @param string $url_data Any extra GET url information to pass on when referencing any external
+ *   url.
+ * @param bool $disable_controls Whether to hide all edit/delete functionality on this form.
+ *
+ * @return void No value is returned.
+ */
 function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
 	global $config;
 
@@ -1359,10 +1442,13 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	}
 }
 
-/* is_menu_pick_active - determines if current selection is active
-   @arg $menu_url - url of current page
-   @returns true if active, false if not
-*/
+/**
+ * Determines if current selection is active. Used as part of Cacti's lib functionality.
+ *
+ * @param string $menu_url Url of current page.
+ *
+ * @return true If active, false if not.
+ */
 function is_menu_pick_active($menu_url) {
 	static $url_array, $url_parts;
 
@@ -1459,7 +1545,13 @@ function is_menu_pick_active($menu_url) {
 	return false;
 }
 
-/* draw_menu - draws the cacti menu for display in the console */
+/**
+ * Draws the cacti menu for display in the console. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $user_menu The user menu to display.
+ *
+ * @return void No value is returned.
+ */
 function draw_menu($user_menu = '') {
 	global $config, $user_auth_realm_filenames, $menu, $menu_glyphs;
 
@@ -1597,12 +1689,17 @@ function draw_menu($user_menu = '') {
 	print '</ul></div></td></tr></table></td></tr>';
 }
 
-/* draw_actions_dropdown - draws a table the allows the user to select an action to perform
-        on one or more data elements
-   @arg $actions_array - an array that contains a list of possible actions. this array should
-        be compatible with the form_dropdown() function
-   @arg $delete_action - if there is a delete action that should suppress removal of rows
-        specify it here.  If you don't want any delete actions, set to 0.*/
+/**
+ * Draws a table the allows the user to select an action to perform on one or more data elements.
+ * Used as part of Cacti's lib functionality.
+ *
+ * @param array $actions_array An array that contains a list of possible actions. this array
+ *   should be compatible with the form_dropdown() function.
+ * @param int $delete_action If there is a delete action that should suppress removal of rows
+ *   specify it here. If you don't want any delete actions, set to 0.
+ *
+ * @return void No value is returned.
+ */
 function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	global $config;
 
@@ -1685,8 +1782,16 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	<?php
 }
 
-/*
- * Deprecated functions
+/**
+ * Deprecated functions. Used as part of Cacti's lib functionality.
+ *
+ * @param string $matrix_name The name to be displayed in the matrix header.
+ * @param string $matrix_text_color The color of the text in the matrix header.
+ * @param int $column_span The number of columns the header item should span. Default is 1.
+ *
+ * @return void No value is returned.
+ *
+ * @deprecated This function is deprecated
  */
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) {
 	?>
@@ -1696,6 +1801,16 @@ function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1
 	<?php
 }
 
+/**
+ * Generates an HTML table row with a single cell containing the provided text. This function
+ * creates a table row (`<tr>`) with a single table data cell (`<td>`) that contains the provided
+ * text. The text is escaped using the `htmle` function to prevent XSS attacks. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param string $text The text to be displayed inside the table cell.
+ *
+ * @return void No value is returned.
+ */
 function form_area($text) {
 	?>
 	<tr>
@@ -1707,11 +1822,12 @@ function form_area($text) {
 }
 
 /**
- * is_console_page - determines if current passed url is considered to be a console page
+ * Determines if current passed url is considered to be a console page. Used as part of Cacti's
+ * lib functionality.
  *
- * @param url - url to be checked
+ * @param string $url Url - url to be checked.
  *
- * @return true if console page, false if not
+ * @return true If console page, false if not.
  */
 function is_console_page($url) {
 	global $menu;
@@ -1745,6 +1861,11 @@ function is_console_page($url) {
 	return false;
 }
 
+/**
+ * Handles the HTML show tabs left. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function html_show_tabs_left() {
 	global $config, $tabs_left;
 
@@ -2009,6 +2130,11 @@ function html_show_tabs_left() {
 	}
 }
 
+/**
+ * Handles the HTML graph tabs right. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function html_graph_tabs_right() {
 	global $config, $tabs_right;
 
@@ -2119,6 +2245,20 @@ function html_graph_tabs_right() {
 	}
 }
 
+/**
+ * Generates an HTML host filter dropdown or input field based on configuration. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param mixed $host_id The ID of the host to be selected by default. Defaults to '-1'.
+ * @param string $call_back The JavaScript function to call when the selection changes. Defaults
+ *   to 'applyFilter'.
+ * @param string $sql_where Additional SQL WHERE clause to filter the devices. Defaults to an
+ *   empty string.
+ * @param bool $noany Whether to exclude the 'Any' option from the dropdown. Defaults to false.
+ * @param bool $nonone Whether to exclude the 'None' option from the dropdown. Defaults to false.
+ *
+ * @return void No value is returned.
+ */
 function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
 	$theme = get_selected_theme();
 
@@ -2176,6 +2316,20 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 	}
 }
 
+/**
+ * Generates an HTML dropdown filter for selecting a site. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param mixed $site_id The ID of the site to be selected by default. Defaults to '-1'.
+ * @param string $call_back The JavaScript function to call when the selection changes. Defaults
+ *   to 'applyFilter'.
+ * @param string $sql_where Additional SQL WHERE clause to filter the sites. Defaults to an empty
+ *   string.
+ * @param bool $noany Whether to exclude the 'Any' option from the dropdown. Defaults to false.
+ * @param bool $nonone Whether to exclude the 'None' option from the dropdown. Defaults to false.
+ *
+ * @return void No value is returned.
+ */
 function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
 	$theme = get_selected_theme();
 
@@ -2210,6 +2364,22 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 	<?php
 }
 
+/**
+ * Generates an HTML dropdown filter for selecting a location. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param string $location The currently selected location value. Default is an empty string.
+ * @param string $call_back The JavaScript function to call when the selection changes. Default is
+ *   'applyFilter'.
+ * @param string $sql_where Additional SQL WHERE clause to filter the locations. Default is an
+ *   empty string.
+ * @param bool $noany If true, the "Any" option will not be included in the dropdown. Default is
+ *   false.
+ * @param bool $nonone If true, the "None" option will not be included in the dropdown. Default is
+ *   false.
+ *
+ * @return void No value is returned.
+ */
 function html_location_filter($location = '', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
 	$theme = get_selected_theme();
 
@@ -2250,6 +2420,13 @@ function html_location_filter($location = '', $call_back = 'applyFilter', $sql_w
 	<?php
 }
 
+/**
+ * Generates the HTML for spike kill actions. This function is responsible for creating the HTML
+ * elements necessary for spike kill actions within the application. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function html_spikekill_actions() {
 	switch(get_nfilter_request_var('action')) {
 		case 'spikemenu':
@@ -2287,10 +2464,31 @@ function html_spikekill_actions() {
 	}
 }
 
+/**
+ * Retrieves the spike kill setting for a given name. This function reads a user-specific setting
+ * for the provided name. If the user-specific setting is not available, it falls back to the
+ * default configuration option. Used as part of Cacti's lib functionality.
+ *
+ * @param string $name The name of the setting to retrieve.
+ *
+ * @return mixed The value of the spike kill setting.
+ */
 function html_spikekill_setting($name) {
 	return read_user_setting($name, read_config_option($name), true);
 }
 
+/**
+ * Generates an HTML list item for a spike kill menu. Used as part of Cacti's lib functionality.
+ *
+ * @param string $text The text content of the menu item.
+ * @param string $icon The icon class for the menu item.
+ * @param string $class Additional CSS classes for the menu item.
+ * @param string $id The ID attribute for the menu item.
+ * @param mixed $data_graph The data-graph attribute for the menu item.
+ * @param string $subitem Submenu items in HTML format.
+ *
+ * @return string The generated HTML for the menu item.
+ */
 function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $data_graph = '', $subitem = '') {
 	$output = '<li ';
 
@@ -2318,6 +2516,16 @@ function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $dat
 	return $output;
 }
 
+/**
+ * Generates the HTML for the SpikeKill menu. This function creates a menu for configuring the
+ * SpikeKill settings in Cacti. It includes options for various replacement methods, standard
+ * deviations, variance percentages, variance outliers, kills per RRA, and absolute maximum
+ * values. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_graph_id The ID of the local graph.
+ *
+ * @return void No value is returned.
+ */
 function html_spikekill_menu($local_graph_id) {
 	global $settings;
 	$ravgnan1 = html_spikekill_menu_item(__('Average'), html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'fa fa-check':'fa', 'skmethod', 'method_avg');
@@ -2353,6 +2561,11 @@ function html_spikekill_menu($local_graph_id) {
 	print html_spikekill_menu_item(__('Settings'), 'fa fa-cog', '', '', '', $ravgnan . $rstddev . $rkills);
 }
 
+/**
+ * Handles the HTML spikekill js. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function html_spikekill_js() {
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
@@ -2479,10 +2692,16 @@ function html_spikekill_js() {
 	<?php
 }
 
-/* html_common_header - prints a common set of header, css and javascript links
-   @arg title - the title of the page to place in the browser
-   @arg selectedTheme - optionally sets a specific theme over the current one
-*/
+/**
+ * Prints a common set of header, css and javascript links. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param string $title Title - the title of the page to place in the browser.
+ * @param string $selectedTheme selectedTheme - optionally sets a specific theme over the current
+ *   one.
+ *
+ * @return void No value is returned.
+ */
 function html_common_header($title, $selectedTheme = '') {
 	global $config, $path2calendar, $path2timepicker, $path2colorpicker, $path2ms, $path2msfilter;
 
@@ -2693,6 +2912,16 @@ function html_common_header($title, $selectedTheme = '') {
 	api_plugin_hook('page_head');
 }
 
+/**
+ * Generates the URL for the help page corresponding to the given page. This function maps a given
+ * page to its corresponding help documentation URL. It uses a predefined array of page-to-help
+ * mappings and allows for plugin hooks to modify or extend these mappings. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param string $page The page for which the help URL is to be generated.
+ *
+ * @return mixed The URL to the help documentation if the page is found, false otherwise.
+ */
 function html_help_page($page) {
 	global $config, $help;
 

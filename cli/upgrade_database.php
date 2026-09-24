@@ -169,6 +169,13 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
 
 print PHP_EOL;
 
+/**
+ * Handles the DB install errors. Used as part of Cacti's CLI functionality.
+ *
+ * @param string $cacti_version The cacti version.
+ *
+ * @return string The resulting string.
+ */
 function db_install_errors($cacti_version) {
 	global $database_upgrade_status, $debug, $database_statuses;
 
@@ -206,13 +213,21 @@ function db_install_errors($cacti_version) {
 	return $error_status;
 }
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Upgrade Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*  display_help - displays the usage of the function */
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help () {
 	display_version();
 

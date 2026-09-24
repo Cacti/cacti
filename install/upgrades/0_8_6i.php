@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 0.8.6i. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_0_8_6i() {
 	/* once again, larger fields for OIDs and the like */
 	db_install_execute("ALTER TABLE `poller_item` MODIFY COLUMN `arg1` TEXT;");

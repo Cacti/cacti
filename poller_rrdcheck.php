@@ -175,6 +175,13 @@ if (!$forcerun) {
 
 exit(0);
 
+/**
+ * Handles the rrdcheck master handler. Used as part of Cacti's poller rrdcheck functionality.
+ *
+ * @param bool $forcerun The forcerun.
+ *
+ * @return void No value is returned.
+ */
 function rrdcheck_master_handler($forcerun) {
 	global $type;
 
@@ -227,7 +234,9 @@ function rrdcheck_master_handler($forcerun) {
 }
 
 /**
- * display_version - displays version information
+ * Displays version information. Used as part of Cacti's poller rrdcheck functionality.
+ *
+ * @return void No value is returned.
  */
 function display_version() {
 	$version = get_cacti_version();
@@ -235,7 +244,9 @@ function display_version() {
 }
 
 /**
- * display_help - generic help screen for utilities
+ * Generic help screen for utilities. Used as part of Cacti's poller rrdcheck functionality.
+ *
+ * @return void No value is returned.
  */
 function display_help () {
 	display_version();
@@ -256,11 +267,12 @@ function display_help () {
 }
 
 /**
- * sig_handler - provides a generic means to catch exceptions to the Cacti log.
+ * Provides a generic means to catch exceptions to the Cacti log. Used as part of Cacti's poller
+ * rrdcheck functionality.
  *
- * @param $signo - (int) the signal that was thrown by the interface.
+ * @param int $signo (int) the signal that was thrown by the interface.
  *
- * @return - null
+ * @return void Null.
  */
 function sig_handler($signo) {
 	global $type, $thread_id;

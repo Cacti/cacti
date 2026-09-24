@@ -212,6 +212,18 @@ define('CACTI_COUNTRY', $cacti_country);
 define('CACTI_LANGUAGE', $lang2locale[CACTI_LOCALE]['language']);
 define('CACTI_LANGUAGE_FILE', $catalogue);
 
+/**
+ * Generates the path to a JavaScript language file. Used as part of Cacti's include
+ * functionality.
+ *
+ * @param array $names An array of language file names.
+ * @param string|null $prefix An optional prefix for the language file.
+ * @param string|null $base_path An optional base path for the language file. Defaults to
+ *   CACTI_PATH_INCLUDE/js/LC_MESSAGES/.
+ * @param string|null $extension An optional file extension for the language file. Defaults to 'js'.
+ *
+ * @return string The path to the JavaScript language file.
+ */
 function get_js_language_file($names, $prefix = null, $base_path = null, $extension = null) {
 	global $config;
 
@@ -223,6 +235,18 @@ function get_js_language_file($names, $prefix = null, $base_path = null, $extens
 	return get_language_file($extension, $prefix, $names, $base_path);
 }
 
+/**
+ * Retrieves the path to a .mo language file based on the provided parameters. Used as part of
+ * Cacti's include functionality.
+ *
+ * @param array $names An array of language names to search for.
+ * @param string|null $prefix A prefix to prepend to the language file name. Default is null.
+ * @param string|null $base_path The base path where the language files are located. Default is
+ *   null.
+ * @param string|null $extension The file extension of the language file. Default is 'mo'.
+ *
+ * @return string The path to the .mo language file.
+ */
 function get_mo_language_file($names, $prefix = null, $base_path = null, $extension = null) {
 	global $config;
 
@@ -234,6 +258,18 @@ function get_mo_language_file($names, $prefix = null, $base_path = null, $extens
 	return get_language_file($extension, $prefix, $names, $base_path);
 }
 
+/**
+ * Retrieves the appropriate language file based on the provided parameters. Used as part of
+ * Cacti's include functionality.
+ *
+ * @param string $extension The file extension to append to the language file name.
+ * @param string $prefix The prefix to prepend to the language file name.
+ * @param array $names An array of potential language file names to search for.
+ * @param string|null $base_path The base path where the language files are located. Defaults to
+ *   CACTI_PATH_BASE if not provided.
+ *
+ * @return string The path to the found language file, or an empty string if no file is found.
+ */
 function get_language_file($extension, $prefix, $names, $base_path = null) {
 	global $config;
 
@@ -259,6 +295,16 @@ function get_language_file($extension, $prefix, $names, $base_path = null) {
 	return '';
 }
 
+/**
+ * Retrieves the source language files based on the specified internationalization handler. Used
+ * as part of Cacti's include functionality.
+ *
+ * @param string|null $i18n_handler The internationalization handler to use. If null or empty,
+ *   defaults to checking both PHPGETTEXT and MOTRANSLATOR handlers.
+ *
+ * @return array|null An array containing the handler, paths, and files for the selected
+ *   internationalization provider, or null if no valid provider is found.
+ */
 function get_src_language_files($i18n_handler) {
 	global $config;
 
@@ -351,6 +397,18 @@ function get_src_language_files($i18n_handler) {
 
 
 
+/**
+ * Loads the gettext translation for the specified domain. This function reads the translation
+ * file for the given domain and returns a gettext_reader object. It also handles deprecation
+ * errors for PHP 8 and logs the loading process for debugging purposes. Used as part of Cacti's
+ * include functionality.
+ *
+ * @param string $domain The domain for which the translation should be loaded.
+ *
+ * @return \gettext_reader \gettext_reader The gettext_reader object for the specified domain.
+ *
+ * @throws Exception If the translation file cannot be read or is invalid.
+ */
 function load_gettext_original($domain) {
 	global $cacti_textdomains;
 
@@ -377,6 +435,16 @@ function load_gettext_original($domain) {
 	return $i18n_domain;
 }
 
+/**
+ * Loads a gettext MO translator for the specified domain. Used as part of Cacti's include
+ * functionality.
+ *
+ * @param string $domain The domain for which to load the translator.
+ *
+ * @return mixed The initialized translator object.
+ *
+ * @throws Exception If the translation file cannot be read.
+ */
 function load_gettext_motranslator($domain) {
 	global $cacti_textdomains;
 
@@ -397,6 +465,18 @@ function load_gettext_motranslator($domain) {
 	return $input;
 }
 
+/**
+ * Loads and returns a Gettext\Translator instance for the specified domain. This function reads a
+ * .mo file for the given domain, creates a Gettext\Translator instance, and loads the
+ * translations from the .mo file into the translator. Used as part of Cacti's include
+ * functionality.
+ *
+ * @param string $domain The domain for which to load the translations.
+ *
+ * @return mixed The translator instance loaded with the domain's translations.
+ *
+ * @throws Exception If the .mo file cannot be read or is invalid.
+ */
 function load_gettext_oscarotero($domain) {
 	global $cacti_textdomains;
 
@@ -424,6 +504,14 @@ function load_gettext_oscarotero($domain) {
 	return $i18n_domain;
 }
 
+/**
+ * Applies the locale based on the provided language or autodetects it from the browser settings.
+ * Used as part of Cacti's include functionality.
+ *
+ * @param string $language The language code to apply.
+ *
+ * @return mixed The applied locale if successful, or false if no valid locale could be set.
+ */
 function apply_locale($language) {
 	global $cacti_locale, $cacti_country, $lang2locale;
 
@@ -463,7 +551,13 @@ function apply_locale($language) {
 	return false;
 }
 
-/* best effort function to repair locale */
+/**
+ * Best effort function to repair locale. Used as part of Cacti's include functionality.
+ *
+ * @param mixed $language The language.
+ *
+ * @return string The resulting string.
+ */
 function repair_locale($language) {
 	global $lang2locale;
 
@@ -490,28 +584,45 @@ function repair_locale($language) {
 }
 
 /**
- * Universal escaping wrappers
+ * Universal escaping wrappers. Used as part of Cacti's include functionality.
+ *
+ * @return string The resulting string.
  */
 function __esc() {
 	return htmlspecialchars( call_user_func_array('__', func_get_args()), ENT_QUOTES);
 }
 
+/**
+ * Handles the esc n. Used as part of Cacti's include functionality.
+ *
+ * @return string The resulting string.
+ */
 function __esc_n() {
 	return htmlspecialchars( call_user_func_array('__n', func_get_args()), ENT_QUOTES);
 }
 
+/**
+ * Handles the esc x. Used as part of Cacti's include functionality.
+ *
+ * @return string The resulting string.
+ */
 function __esc_x() {
 	return htmlspecialchars( call_user_func_array('__x', func_get_args()), ENT_QUOTES);
 }
 
+/**
+ * Handles the esc xn. Used as part of Cacti's include functionality.
+ *
+ * @return string The resulting string.
+ */
 function __esc_xn() {
 	return htmlspecialchars( call_user_func_array('__xn', func_get_args()), ENT_QUOTES);
 }
 
 /**
- * load_fallback_procedure - loads wrapper package if native language (English) has to be used
+ * Loads wrapper package if native language (English) has to be used.
  *
- * @return
+ * @return void No value is returned.
  */
 function load_fallback_procedure(){
 	global $cacti_textdomains, $cacti_locale, $cacti_country, $lang2locale;
@@ -527,6 +638,15 @@ function load_fallback_procedure(){
 	define('CACTI_LANGUAGE_HANDLER', CACTI_LANGUAGE_HANDLER_DEFAULT);
 }
 
+/**
+ * Translates a given text string using the specified domain. Used as part of Cacti's include
+ * functionality.
+ *
+ * @param string|null $text The text string to be translated. If null, an empty string is used.
+ * @param string $domain The domain to use for translation. Defaults to 'cacti'.
+ *
+ * @return string The translated text, or the original text if translation is not available.
+ */
 function __gettext($text, $domain = 'cacti') {
 	global $i18n;
 
@@ -553,6 +673,17 @@ function __gettext($text, $domain = 'cacti') {
 	return __uf($translated);
 }
 
+/**
+ * Translates and pluralizes a given string based on the provided number. Used as part of Cacti's
+ * include functionality.
+ *
+ * @param string|null $singular The singular form of the string.
+ * @param string|null $plural The plural form of the string.
+ * @param int $number The number to determine singular or plural form.
+ * @param string $domain The translation domain to use (default is 'cacti').
+ *
+ * @return string The translated and pluralized string.
+ */
 function __n($singular, $plural, $number, $domain = 'cacti') {
 	global $i18n;
 
@@ -563,10 +694,27 @@ function __n($singular, $plural, $number, $domain = 'cacti') {
 	}
 }
 
+/**
+ * Replaces double percent signs (%%) with a single percent sign (%) in the given text. Used as
+ * part of Cacti's include functionality.
+ *
+ * @param string|null $text The input text which may contain double percent signs. If null, an
+ *   empty string will be used.
+ *
+ * @return string The processed text with double percent signs replaced by single percent signs.
+ */
 function __uf($text) {
 	return str_replace('%%', '%', $text);
 }
 
+/**
+ * Translates and formats a string based on the provided arguments. This function uses gettext for
+ * translation and sprintf for formatting. It supports different text domains and various
+ * formatting options. Used as part of Cacti's include functionality.
+ *
+ * @return string Returns the translated and formatted string, or an empty string when no
+ *   arguments are provided.
+ */
 function __() {
 	global $i18n;
 
@@ -635,6 +783,18 @@ function __() {
 	}
 }
 
+/**
+ * Translates and pluralizes a string based on the given context and number. Used as part of
+ * Cacti's include functionality.
+ *
+ * @param string $context The context for the translation.
+ * @param string $singular The singular form of the string to be translated.
+ * @param string $plural The plural form of the string to be translated.
+ * @param int $number The number to determine singular or plural form.
+ * @param string $domain The text domain for the translation. Default is 'cacti'.
+ *
+ * @return string The translated and correctly pluralized string.
+ */
 function __xn($context, $singular, $plural, $number, $domain = 'cacti') {
 	$xsingular = $context . chr(4) . $singular;
 	$xplural = $context . chr(4) . $plural;
@@ -648,6 +808,13 @@ function __xn($context, $singular, $plural, $number, $domain = 'cacti') {
 	}
 }
 
+/**
+ * Translates a message with context using gettext and formats it with the provided arguments.
+ * Used as part of Cacti's include functionality.
+ *
+ * @return false|string The translated and formatted message string, or false if the number of
+ *   arguments is less than 2.
+ */
 function __x() {
 	global $i18n;
 
@@ -683,6 +850,18 @@ function __x() {
 	}
 }
 
+/**
+ * Formats a given timestamp according to a specified format and translates date components. Used
+ * as part of Cacti's include functionality.
+ *
+ * @param string $format The format string to use for formatting the date.
+ * @param int|false $timestamp The timestamp to format. If false, the current time is used.
+ *   Default is false.
+ * @param string $domain The translation domain to use for translating date components. Default is
+ *   'cacti'.
+ *
+ * @return string The formatted and translated date string.
+ */
 function __date($format, $timestamp = false, $domain = 'cacti') {
 	global $i18n_date_placeholders;
 
@@ -714,9 +893,9 @@ function __date($format, $timestamp = false, $domain = 'cacti') {
 }
 
 /**
- * get_list_of_locales - returns the default settings being used for i18n
+ * Returns the default settings being used for i18n.
  *
- * @return array a multi-dimensional array with the locale code as main key
+ * @return array A multi-dimensional array with the locale code as main key.
  */
 function get_list_of_locales() {
 	$lang2locale = array(
@@ -776,9 +955,9 @@ function get_list_of_locales() {
 }
 
 /**
- * get_installed_locales - finds all installed locales
+ * Finds all installed locales. Used as part of Cacti's include functionality.
  *
- * @return - an associative array of all installed locales (e.g. 'en' => 'English')
+ * @return array An associative array of all installed locales (e.g. 'en' => 'English').
  */
 function get_installed_locales() {
 	global $config, $lang2locale;
@@ -811,10 +990,15 @@ function get_installed_locales() {
 	return $supported_languages;
 }
 
-/* read_user_i18n_setting - finds the current value of a i18n configuration setting
-   @arg $config_name - the name of the configuration setting as specified $settings_user array
-     in 'include/global_settings.php'
-   @returns - the current value of the i18n configuration option or the system default value */
+/**
+ * Finds the current value of a i18n configuration setting. Used as part of Cacti's include
+ * functionality.
+ *
+ * @param string $config_name The name of the configuration setting as specified $settings_user
+ *   array in 'include/global_settings.php'.
+ *
+ * @return mixed The current value of the i18n configuration option or the system default value.
+ */
 function read_user_i18n_setting($config_name) {
 	global $config;
 
@@ -858,9 +1042,13 @@ function read_user_i18n_setting($config_name) {
 }
 
 /**
- * number_format_i18n - local specific number format wrapper
+ * Local specific number format wrapper. Used as part of Cacti's include functionality.
  *
- * @return - formatted number in the correct locale
+ * @param mixed $number The number to format.
+ * @param mixed $decimals The number of decimal points. If null, defaults to 0.
+ * @param mixed $baseu The base unit for formatting large numbers (default is 1024).
+ *
+ * @return string Formatted number in the correct locale.
  */
 function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 	global $cacti_locale, $cacti_country;
@@ -941,6 +1129,11 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 	return $number;
 }
 
+/**
+ * Retrieves the default language for a new user. Used as part of Cacti's include functionality.
+ *
+ * @return string The default language code for a new user.
+ */
 function get_new_user_default_language() {
 	$accepted = repair_locale(read_config_option('i18n_default_language'));
 	if ($accepted == '') {
@@ -949,6 +1142,16 @@ function get_new_user_default_language() {
 	return $accepted;
 }
 
+/**
+ * Logs internationalization (i18n) debug messages to a specified log file. Used as part of
+ * Cacti's include functionality.
+ *
+ * @param string $text The debug message to log.
+ * @param int $mode The file append mode. Default is FILE_APPEND.
+ * @param string $eol The end-of-line character(s) to use. Default is PHP_EOL.
+ *
+ * @return void No value is returned.
+ */
 function i18n_debug($text, $mode = FILE_APPEND, $eol = PHP_EOL) {
 	global $config;
 
@@ -957,6 +1160,16 @@ function i18n_debug($text, $mode = FILE_APPEND, $eol = PHP_EOL) {
 	}
 }
 
+/**
+ * Logs internationalization text for debugging purposes. Used as part of Cacti's include
+ * functionality.
+ *
+ * @param string $text The text to be logged.
+ * @param int $mode The file append mode. Default is FILE_APPEND.
+ * @param string $eol The end-of-line character(s) to append to the text. Default is PHP_EOL.
+ *
+ * @return void No value is returned.
+ */
 function i18n_text_debug($text, $mode = FILE_APPEND, $eol = PHP_EOL) {
 	global $config;
 

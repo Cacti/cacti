@@ -22,9 +22,14 @@
  +-------------------------------------------------------------------------+
 */
 
-/* get_vdef_item_name - resolves a single VDEF item into its text-based representation
-   @param $vdef_item_id - the id of the individual vdef item
-   @returns - a text-based representation of the vdef item */
+/**
+ * Resolves a single VDEF item into its text-based representation. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $vdef_item_id The id of the individual vdef item.
+ *
+ * @return string A text-based representation of the vdef item.
+ */
 function get_vdef_item_name($vdef_item_id) 	{
 	global $vdef_functions, $vdef_item_types;
 
@@ -38,10 +43,16 @@ function get_vdef_item_name($vdef_item_id) 	{
 	}
 }
 
-/* get_vdef - resolves an entire VDEF into its text-based representation for use in the RRDtool 'graph'
-     string. this name will be resolved recursively if necessary
-   @param $vdef_id - the id of the vdef to resolve
-   @returns - a text-based representation of the vdef */
+/**
+ * Resolves an entire VDEF into its text-based representation for use in the RRDtool 'graph'
+ * string. this name will be resolved recursively if necessary. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $vdef_id The id of the vdef to resolve.
+ * @param bool $display The display.
+ *
+ * @return string A text-based representation of the vdef.
+ */
 function get_vdef($vdef_id, $display = false) {
 	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ? ORDER BY sequence', array($vdef_id));
 
@@ -67,6 +78,11 @@ function get_vdef($vdef_id, $display = false) {
 	return $vdef_string;
 }
 
+/**
+ * Handles the preset vdef form list. Used as part of Cacti's lib functionality.
+ *
+ * @return array An array of results.
+ */
 function preset_vdef_form_list() {
 	$fields_vdef_edit = array(
 		'name' => array(
@@ -81,6 +97,11 @@ function preset_vdef_form_list() {
 	return $fields_vdef_edit;
 }
 
+/**
+ * Handles the preset vdef item form list. Used as part of Cacti's lib functionality.
+ *
+ * @return array An array of results.
+ */
 function preset_vdef_item_form_list() {
 	$fields_vdef_item_edit = array(
 		'sequence' => 'sequence',

@@ -123,6 +123,12 @@ switch (get_request_var('action')) {
 /* -----------------------
     Utilities Functions
    ----------------------- */
+/**
+ * ----------------------- Utilities Functions -----------------------. Used as part of Cacti's
+ * utilities functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function rebuild_resource_cache() {
 	db_execute('DELETE FROM settings WHERE name LIKE "md5dirsum%"');
@@ -133,6 +139,11 @@ function rebuild_resource_cache() {
 	cacti_log('NOTE: Poller Resource Cache scheduled for rebuild by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 }
 
+/**
+ * Handles the utilities view tech. Used as part of Cacti's utilities functionality.
+ *
+ * @return void No value is returned.
+ */
 function utilities_view_tech() {
 	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id, $remote_db_cnn_id;
 
@@ -926,6 +937,11 @@ function utilities_view_tech() {
 	bottom_footer();
 }
 
+/**
+ * Handles the utilities view user log. Used as part of Cacti's utilities functionality.
+ *
+ * @return void No value is returned.
+ */
 function utilities_view_user_log() {
 	global $auth_realms, $item_rows;
 
@@ -1211,6 +1227,11 @@ function utilities_view_user_log() {
 	}
 }
 
+/**
+ * Handles the utilities clear user log. Used as part of Cacti's utilities functionality.
+ *
+ * @return void No value is returned.
+ */
 function utilities_clear_user_log() {
 	$users = db_fetch_assoc('SELECT DISTINCT username FROM user_auth');
 
@@ -1263,6 +1284,11 @@ function utilities_clear_user_log() {
 	}
 }
 
+/**
+ * Handles the utilities view logfile. Used as part of Cacti's utilities functionality.
+ *
+ * @return void No value is returned.
+ */
 function utilities_view_logfile() {
 	global $log_tail_lines, $page_refresh_interval, $config;
 
@@ -1589,6 +1615,11 @@ function utilities_view_logfile() {
 	bottom_footer();
 }
 
+/**
+ * Handles the utilities clear logfile. Used as part of Cacti's utilities functionality.
+ *
+ * @return void No value is returned.
+ */
 function utilities_clear_logfile() {
 	load_current_session_value('refresh', 'sess_logfile_refresh', read_config_option('log_refresh_interval'));
 
@@ -1629,6 +1660,11 @@ function utilities_clear_logfile() {
 	html_end_box();
 }
 
+/**
+ * Handles the utilities view SNMP cache. Used as part of Cacti's utilities functionality.
+ *
+ * @return void No value is returned.
+ */
 function utilities_view_snmp_cache() {
 	global $poller_actions, $item_rows;
 
@@ -1913,6 +1949,11 @@ function utilities_view_snmp_cache() {
 	}
 }
 
+/**
+ * Handles the utilities view poller cache. Used as part of Cacti's utilities functionality.
+ *
+ * @return void No value is returned.
+ */
 function utilities_view_poller_cache() {
 	global $poller_actions, $item_rows;
 
@@ -2284,6 +2325,11 @@ function utilities_view_poller_cache() {
 	}
 }
 
+/**
+ * Handles the utilities. Used as part of Cacti's utilities functionality.
+ *
+ * @return void No value is returned.
+ */
 function utilities() {
 	global $config, $utilities;
 
@@ -2419,6 +2465,11 @@ function utilities() {
 	html_end_box();
 }
 
+/**
+ * Handles the purge data source statistics. Used as part of Cacti's utilities functionality.
+ *
+ * @return void No value is returned.
+ */
 function purge_data_source_statistics() {
 	$tables = array(
 		'data_source_stats_daily',
@@ -2441,6 +2492,11 @@ function purge_data_source_statistics() {
 	}
 }
 
+/**
+ * Handles the boost display run status. Used as part of Cacti's utilities functionality.
+ *
+ * @return void No value is returned.
+ */
 function boost_display_run_status() {
 	global $config, $refresh_interval, $boost_utilities_interval, $boost_refresh_interval, $boost_max_runtime;
 
@@ -2913,12 +2969,9 @@ function boost_display_run_status() {
 }
 
 /**
+ * Snmpagent_utilities_run_cache(). Used as part of Cacti's utilities functionality.
  *
- *
- * snmpagent_utilities_run_cache()
- *
- * @param mixed
- * @return
+ * @return void No value is returned.
  */
 function snmpagent_utilities_run_cache() {
 	global $item_rows;
@@ -3139,6 +3192,11 @@ function snmpagent_utilities_run_cache() {
 	<?php
 }
 
+/**
+ * Handles the snmpagent utilities run eventlog. Used as part of Cacti's utilities functionality.
+ *
+ * @return void No value is returned.
+ */
 function snmpagent_utilities_run_eventlog(){
 	global $item_rows;
 

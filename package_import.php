@@ -58,6 +58,11 @@ switch(get_request_var('action')) {
 		break;
 }
 
+/**
+ * Checks the tmp dir. Used as part of Cacti's package import functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function check_tmp_dir() {
 	if (is_tmp_writable()) {
 		return true;
@@ -81,6 +86,12 @@ function check_tmp_dir() {
 	}
 }
 
+/**
+ * Handles the package import write session file. Used as part of Cacti's package import
+ * functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function package_import_write_session_file() {
 	if (!isset($_SESSION['sess_import_package'])) {
 		return false;
@@ -104,6 +115,11 @@ function package_import_write_session_file() {
 	return $xmlfile;
 }
 
+/**
+ * Handles the form save. Used as part of Cacti's package import functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_save() {
 	global $config, $preview_only;
 
@@ -253,6 +269,13 @@ function form_save() {
 	}
 }
 
+/**
+ * Handles the package file get contents. Used as part of Cacti's package import functionality.
+ *
+ * @param string $filename The filename.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function package_file_get_contents($filename) {
 	if (isset($_SESSION['sess_import_package'])) {
 		$xmlfile = package_import_write_session_file();
@@ -301,6 +324,11 @@ function package_file_get_contents($filename) {
 	return false;
 }
 
+/**
+ * Handles the package diff file. Used as part of Cacti's package import functionality.
+ *
+ * @return void No value is returned.
+ */
 function package_diff_file() {
 	global $config;
 
@@ -349,6 +377,11 @@ function package_diff_file() {
 	}
 }
 
+/**
+ * Handles the package get details. Used as part of Cacti's package import functionality.
+ *
+ * @return void No value is returned.
+ */
 function package_get_details() {
 	$package_ids      = get_filter_request_var('package_ids', FILTER_VALIDATE_IS_NUMERIC_LIST);
 	$package_location = get_filter_request_var('package_location');
@@ -410,6 +443,14 @@ function package_get_details() {
 	}
 }
 
+/**
+ * Handles the package public key is trusted. Used as part of Cacti's package import
+ * functionality.
+ *
+ * @param mixed $public_key The public key.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function package_public_key_is_trusted($public_key) {
 	if ($public_key == '') {
 		return false;
@@ -432,6 +473,14 @@ function package_public_key_is_trusted($public_key) {
 	return false;
 }
 
+/**
+ * Handles the import validate public key. Used as part of Cacti's package import functionality.
+ *
+ * @param string $xmlfile The xmlfile.
+ * @param bool $accept The accept.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function import_validate_public_key($xmlfile, $accept = false) {
 	$public_key = get_public_key();
 
@@ -496,6 +545,13 @@ function import_validate_public_key($xmlfile, $accept = false) {
 	return false;
 }
 
+/**
+ * Handles the package validate signature. Used as part of Cacti's package import functionality.
+ *
+ * @param mixed $xmlfile The xmlfile.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function package_validate_signature($xmlfile) {
 	global $config;
 
@@ -519,6 +575,17 @@ function package_validate_signature($xmlfile) {
 	}
 }
 
+/**
+ * Handles the import display package data. Used as part of Cacti's package import functionality.
+ *
+ * @param array $templates The templates.
+ * @param array $files The files.
+ * @param string $package_name The package name.
+ * @param mixed $xmlfile The xmlfile.
+ * @param array $data The data.
+ *
+ * @return void No value is returned.
+ */
 function import_display_package_data($templates, $files, $package_name, $xmlfile, $data) {
 	global $config, $device_classes;
 
@@ -794,6 +861,11 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 	<?php
 }
 
+/**
+ * Validates the request vars. Used as part of Cacti's package import functionality.
+ *
+ * @return void No value is returned.
+ */
 function validate_request_vars() {
 	$default_profile = get_default_profile();
 
@@ -836,6 +908,13 @@ function validate_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Retrieves the import form. Used as part of Cacti's package import functionality.
+ *
+ * @param int $default_profile The default profile.
+ *
+ * @return array An array of results.
+ */
 function get_import_form($default_profile) {
 	global $image_types;
 
@@ -951,6 +1030,11 @@ function get_import_form($default_profile) {
 	return array_merge($form, $form2);
 }
 
+/**
+ * Retrieves the default profile. Used as part of Cacti's package import functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function get_default_profile() {
 	$default_profile = db_fetch_cell('SELECT id
 		FROM data_source_profiles
@@ -966,6 +1050,11 @@ function get_default_profile() {
 	return $default_profile;
 }
 
+/**
+ * Handles the package import. Used as part of Cacti's package import functionality.
+ *
+ * @return void No value is returned.
+ */
 function package_import() {
 	global $actions, $hash_type_names;
 
@@ -1069,6 +1158,11 @@ function package_import() {
 	form_end();
 }
 
+/**
+ * Handles the form dialog box. Used as part of Cacti's package import functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_dialog_box() {
 	print '<div style="display:none">
 		<div id="import_dialog" title="">
@@ -1077,14 +1171,35 @@ function form_dialog_box() {
 	</div>';
 }
 
+/**
+ * Retrieves the repo file. Used as part of Cacti's package import functionality.
+ *
+ * @param string $repo_id The repo ID.
+ * @param string $filename The filename.
+ * @param bool $javascript The javascript.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function get_repo_file($repo_id, $filename = 'package.manifest', $javascript = false) {
 	return false;
 }
 
+/**
+ * Retrieves the repo manifest file. Used as part of Cacti's package import functionality.
+ *
+ * @param string $repo_id The repo ID.
+ *
+ * @return string The resulting string.
+ */
 function get_repo_manifest_file($repo_id) {
 	return get_repo_file($repo_id, 'package.manifest');
 }
 
+/**
+ * Determines whether tmp writable. Used as part of Cacti's package import functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function is_tmp_writable() {
 	$tmp_dir  = sys_get_temp_dir();
 	$tmp_len  = strlen($tmp_dir);
@@ -1094,6 +1209,17 @@ function is_tmp_writable() {
 	return $is_tmp;
 }
 
+/**
+ * Handles the package prepare import array. Used as part of Cacti's package import functionality.
+ *
+ * @param mixed &$templates The templates.
+ * @param mixed &$files The files.
+ * @param string $package_name The package name.
+ * @param string $package_filename The package filename.
+ * @param array $import_info The import info.
+ *
+ * @return void No value is returned.
+ */
 function package_prepare_import_array(&$templates, &$files, $package_name, $package_filename, $import_info) {
 	global $hash_type_names;
 

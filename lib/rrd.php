@@ -30,6 +30,13 @@ if (read_config_option('storage_location')) {
 	$encryption = true;
 }
 
+/**
+ * Handles the escape command. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $command The command.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function escape_command($command) {
 	// The rrdtool remote protocol (rrdtool -) is newline-delimited. RRD_NL
 	// line-continuations are already collapsed to spaces before this point, so
@@ -41,9 +48,13 @@ function escape_command($command) {
 	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
 }
 
-/** set the language environment variable for rrdtool functions
- * @param string $lang		- the desired language to set
- * @return null
+/**
+ * Set the language environment variable for rrdtool functions. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param string $lang The desired language to set.
+ *
+ * @return void Null.
  */
 function rrdtool_set_language($lang = -1) {
 	global $prev_lang;
@@ -57,8 +68,11 @@ function rrdtool_set_language($lang = -1) {
 	}
 }
 
-/** restore the default language environment variable after rrdtool functions
- * @return null
+/**
+ * Restore the default language environment variable after rrdtool functions. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @return void Null.
  */
 function rrdtool_reset_language() {
 	global $prev_lang;
@@ -66,6 +80,13 @@ function rrdtool_reset_language() {
 	putenv('LANG=' . $prev_lang);
 }
 
+/**
+ * Handles the RRD init. Used as part of Cacti's lib functionality.
+ *
+ * @param bool $output_to_term The output to term.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function rrd_init($output_to_term = true) {
 	global $config;
 
@@ -75,6 +96,13 @@ function rrd_init($output_to_term = true) {
 	return call_user_func_array($function, $args);
 }
 
+/**
+ * Handles the RRD init. Used as part of Cacti's lib functionality.
+ *
+ * @param bool $output_to_term The output to term.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function __rrd_init($output_to_term = true) {
 	global $config;
 
@@ -98,6 +126,13 @@ function __rrd_init($output_to_term = true) {
 	return popen($command, 'w');
 }
 
+/**
+ * Handles the RRD proxy init. Used as part of Cacti's lib functionality.
+ *
+ * @param string $logopt The logopt.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function __rrd_proxy_init($logopt = 'WEBLOG') {
 	global $encryption;
 	$terminator = "_EOT_\r\n";
@@ -186,6 +221,11 @@ function __rrd_proxy_init($logopt = 'WEBLOG') {
 	}
 }
 
+/**
+ * Handles the RRD close. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function rrd_close() {
 	global $config;
 	$args = func_get_args();
@@ -194,6 +234,13 @@ function rrd_close() {
 	return call_user_func_array($function, $args);
 }
 
+/**
+ * Handles the RRD close. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $rrdtool_pipe The rrdtool pipe.
+ *
+ * @return void No value is returned.
+ */
 function __rrd_close($rrdtool_pipe) {
 	/* close the rrdtool file descriptor */
 	if (is_resource($rrdtool_pipe)) {
@@ -203,6 +250,13 @@ function __rrd_close($rrdtool_pipe) {
 	rrdtool_reset_language();
 }
 
+/**
+ * Handles the RRD proxy close. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $rrdp The rrdp.
+ *
+ * @return void No value is returned.
+ */
 function __rrd_proxy_close($rrdp) {
 	/* close the rrdtool proxy server connection */
 	$terminator = "_EOT_\r\n";
@@ -217,6 +271,14 @@ function __rrd_proxy_close($rrdp) {
 	}
 }
 
+/**
+ * Handles the encrypt. Used as part of Cacti's lib functionality.
+ *
+ * @param string $output The output.
+ * @param string $rsa_key The RSA key.
+ *
+ * @return string The resulting string.
+ */
 function encrypt($output, $rsa_key) {
 	global $encryption;
 
@@ -246,6 +308,13 @@ function encrypt($output, $rsa_key) {
 	}
 }
 
+/**
+ * Handles the decrypt. Used as part of Cacti's lib functionality.
+ *
+ * @param string $input The input.
+ *
+ * @return string|false The resulting string.
+ */
 function decrypt($input) {
 	global $encryption;
 
@@ -290,6 +359,11 @@ function decrypt($input) {
 	}
 }
 
+/**
+ * Handles the rrdtool execute. Used as part of Cacti's lib functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function rrdtool_execute() {
 	global $config;
 
@@ -300,6 +374,19 @@ function rrdtool_execute() {
 	return call_user_func_array($function, $args);
 }
 
+/**
+ * Execute an RRDtool command and return the output. Used as part of Cacti's lib functionality.
+ *
+ * @param string|array $command_line The RRDtool command to execute. An array is quoted here, one
+ *   element per argument. A caller passing a string quotes each variable argument with
+ *   cacti_escapeshellarg() as it builds the line; the assembled line is never quoted.
+ * @param bool $log_to_stdout Whether to echo output to stdout.
+ * @param int $output_flag Output format constant (RRDTOOL_OUTPUT_*).
+ * @param mixed $rrdtool_pipe An open RRDtool pipe resource, or null.
+ * @param string $logopt Logging context identifier.
+ *
+ * @return mixed The command output in the requested format.
+ */
 function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = false, $logopt = 'WEBLOG') {
 	global $config;
 
@@ -465,6 +552,13 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 	}
 }
 
+/**
+ * Handles the rrdtool trim output. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed &$output The output.
+ *
+ * @return void No value is returned.
+ */
 function rrdtool_trim_output(&$output) {
 	global $config;
 
@@ -486,6 +580,18 @@ function rrdtool_trim_output(&$output) {
 	}
 }
 
+/**
+ * Execute an RRDtool command through the remote proxy. Used as part of Cacti's lib functionality.
+ *
+ * @param string|array $command_line RRDtool command string, or one string argument per array
+ *   element.
+ * @param bool $log_to_stdout Whether to echo log output.
+ * @param int $output_flag Requested RRDTOOL_OUTPUT_* result mode.
+ * @param mixed $rrdp Existing proxy connection tuple, or an empty value.
+ * @param string $logopt Logging context identifier.
+ *
+ * @return mixed Output in the requested mode, or false when transport/protocol validation fails.
+ */
 function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp='', $logopt = 'WEBLOG') {
 	global $config, $encryption;
 
@@ -616,6 +722,13 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 	}
 }
 
+/**
+ * Handles the rrdtool function interface speed. Used as part of Cacti's lib functionality.
+ *
+ * @param array $data_local The data local.
+ *
+ * @return string The resulting string.
+ */
 function rrdtool_function_interface_speed($data_local) {
 	$ifHighSpeed = db_fetch_cell_prepared('SELECT field_value
 		FROM host_snmp_cache
@@ -652,6 +765,15 @@ function rrdtool_function_interface_speed($data_local) {
 	return $speed;
 }
 
+/**
+ * Handles the rrdtool function create. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_data_id The local data ID.
+ * @param bool $show_source The show source.
+ * @param mixed $rrdtool_pipe The rrdtool pipe.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = false) {
 	global $config, $data_source_types, $consolidation_functions, $encryption;
 
@@ -886,6 +1008,14 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 	}
 }
 
+/**
+ * Handles the rrdtool function update. Used as part of Cacti's lib functionality.
+ *
+ * @param array $update_cache_array The update cache array.
+ * @param mixed $rrdtool_pipe The rrdtool pipe.
+ *
+ * @return int The resulting integer value.
+ */
 function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
@@ -1011,6 +1141,13 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 	return $rrds_processed;
 }
 
+/**
+ * Handles the rrdtool function tune. Used as part of Cacti's lib functionality.
+ *
+ * @param array $rrd_tune_array The RRD tune array.
+ *
+ * @return void No value is returned.
+ */
 function rrdtool_function_tune($rrd_tune_array) {
 	global $config, $data_source_types;
 
@@ -1056,8 +1193,16 @@ function rrdtool_function_tune($rrd_tune_array) {
 	}
 }
 
-/* Convert RRDtool fetch output into Cacti's timestamp-indexed representation.
- * RRDtool emits one bucket after the requested end; keep consumers on (start, end].
+/**
+ * Convert RRDtool fetch output into Cacti's timestamp-indexed representation. * RRDtool emits one
+ * bucket after the requested end; keep consumers on (start, end]. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param string $output Raw RRDtool fetch output.
+ * @param int $normalized_end_time Absolute requested end timestamp.
+ * @param bool $show_unknown Preserve unknown values as 'U'.
+ *
+ * @return array Parsed data source names, timestamps, effective step, and values.
  */
 function rrdtool_parse_fetch_output($output, $normalized_end_time, $show_unknown = false) {
 	$fetch_array        = array();
@@ -1144,34 +1289,31 @@ function rrdtool_parse_fetch_output($output, $normalized_end_time, $show_unknown
 	return $fetch_array;
 }
 
-/* rrdtool_function_fetch - given a data source, return all of its data in an array
-   @arg $local_data_id - the data source to fetch data for
-   @arg $start_time - the start time to use for the data calculation. this value can
-     either be absolute (unix timestamp) or relative (to now)
-   @arg $end_time - the end time to use for the data calculation. this value can
-     either be absolute (unix timestamp) or relative (to now)
-   @arg $resolution - the accuracy of the data measured in seconds
-   @arg $show_unknown - Show unknown 'NAN' values in the output as 'U'
-   @arg $rrdtool_file - Don't force Cacti to calculate the file
-   @arg $cf - Specify the consolidation function to use
-   @arg $rrdtool_pipe - a pipe to an rrdtool command
-   @returns - (array) an array containing all data in this data source broken down
-     by each data source item. the maximum of all data source items is included in
-     an item called 'nth_percentile_maximum'.  The array will look as follows:
-
-     $fetch_array['data_source_names'][0] = 'ds1'
-     $fetch_array['data_source_names'][1] = 'ds2'
-     $fetch_array['data_source_names'][2] = 'nth_percentile_maximum'
-     $fetch_array['start_time'] = $timestamp;
-     $fetch_array['end_time']   = $timestamp;
-     $fetch_array['values'][$dsindex1][...]  = $value;
-     $fetch_array['values'][$dsindex2][...]  = $value;
-     $fetch_array['values'][$nth_index][...] = $value;
-
-     Again, the 'nth_percentile_maximum' will have the maximum value amongst all the
-     data sources for each set of data.  So, if you have traffic_in and traffic_out,
-     each member element in the array will have the maximum of traffic_in and traffic_out
-     in it.
+/**
+ * Given a data source, return all of its data in an array. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $local_data_id The data source to fetch data for.
+ * @param int $start_time The start time to use for the data calculation. this value can either be
+ *   absolute (unix timestamp) or relative (to now).
+ * @param int $end_time The end time to use for the data calculation. this value can either be
+ *   absolute (unix timestamp) or relative (to now).
+ * @param int $resolution The accuracy of the data measured in seconds.
+ * @param bool $show_unknown Show unknown 'NAN' values in the output as 'U'.
+ * @param string $rrdtool_file Don't force Cacti to calculate the file.
+ * @param string $cf Specify the consolidation function to use.
+ * @param mixed $rrdtool_pipe A pipe to an rrdtool command.
+ *
+ * @return array (array) an array containing all data in this data source broken down by each data
+ *   source item. the maximum of all data source items is included in an item called
+ *   'nth_percentile_maximum'. The array will look as follows: $fetch_array['data_source_names'][0]
+ *   = 'ds1' $fetch_array['data_source_names'][1] = 'ds2' $fetch_array['data_source_names'][2] =
+ *   'nth_percentile_maximum' $fetch_array['start_time'] = $timestamp; $fetch_array['end_time'] =
+ *   $timestamp; $fetch_array['values'][$dsindex1][...] = $value;
+ *   $fetch_array['values'][$dsindex2][...] = $value; $fetch_array['values'][$nth_index][...] =
+ *   $value; Again, the 'nth_percentile_maximum' will have the maximum value amongst all the data
+ *   sources for each set of data. So, if you have traffic_in and traffic_out, each member element
+ *   in the array will have the maximum of traffic_in and traffic_out in it.
  */
 function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE', $rrdtool_pipe = false) {
 	global $config;
@@ -1225,6 +1367,16 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	return rrdtool_parse_fetch_output($output, $normalized_end_time, $show_unknown);
 }
 
+/**
+ * Handles the RRD function process graph options. Used as part of Cacti's lib functionality.
+ *
+ * @param int $graph_start The graph start.
+ * @param int $graph_end The graph end.
+ * @param mixed &$graph The graph.
+ * @param mixed &$graph_data_array The graph data array.
+ *
+ * @return string The resulting string.
+ */
 function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &$graph_data_array) {
 	global $config, $image_types;
 
@@ -1520,7 +1672,17 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	return $graph_opts;
 }
 
-/* Return the established graph failure response for an invalid CDEF. */
+/**
+ * Return the established graph failure response for an invalid CDEF. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param mixed $graph_data_array The graph data array.
+ * @param mixed $cdef_id The CDEF ID.
+ * @param mixed $graph_id The graph ID.
+ * @param mixed $error_image The error image.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function rrdtool_invalid_cdef_response($graph_data_array, $cdef_id, $graph_id, $error_image = null) {
 	$message = __('ERROR: Invalid CDEF %d for graph %d.', $cdef_id, $graph_id);
 
@@ -1539,6 +1701,18 @@ function rrdtool_invalid_cdef_response($graph_data_array, $cdef_id, $graph_id, $
 	return call_user_func($error_image, $message);
 }
 
+/**
+ * Handles the rrdtool function graph. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_graph_id The local graph ID.
+ * @param mixed $rra_id The RRA ID.
+ * @param array $graph_data_array The graph data array.
+ * @param mixed $rrdtool_pipe The rrdtool pipe.
+ * @param mixed &$xport_meta The xport meta.
+ * @param int $user The user.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = false, &$xport_meta = array(), $user = 0) {
 	global $config, $consolidation_functions, $graph_item_types, $encryption;
 
@@ -2789,6 +2963,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 }
 
+/**
+ * Handles the rrdtool escape string. Used as part of Cacti's lib functionality.
+ *
+ * @param string $text The text.
+ * @param bool $ignore_percent The ignore percent.
+ *
+ * @return string The resulting string.
+ */
 function rrdtool_escape_string($text, $ignore_percent = true) {
 	if ($ignore_percent) {
 		return str_replace(array('"', ':'), array('\"', '\:'), $text);
@@ -2797,10 +2979,28 @@ function rrdtool_escape_string($text, $ignore_percent = true) {
 	}
 }
 
+/**
+ * Handles the rrdtool function xport. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_graph_id The local graph ID.
+ * @param int $rra_id The RRA ID.
+ * @param array $xport_data_array The xport data array.
+ * @param mixed &$xport_meta The xport meta.
+ * @param int $user The user.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta, $user = 0) {
 	return rrdtool_function_graph($local_graph_id, $rra_id, $xport_data_array, null, $xport_meta, $user);
 }
 
+/**
+ * Handles the rrdtool function format graph date. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed &$graph_data_array The graph data array.
+ *
+ * @return string The resulting string.
+ */
 function rrdtool_function_format_graph_date(&$graph_data_array) {
 	global $datechar;
 
@@ -2846,6 +3046,13 @@ function rrdtool_function_format_graph_date(&$graph_data_array) {
 	return $graph_legend;
 }
 
+/**
+ * Handles the rrdtool function theme font options. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed &$graph_data_array The graph data array.
+ *
+ * @return string The resulting string.
+ */
 function rrdtool_function_theme_font_options(&$graph_data_array) {
 	global $config;
 
@@ -2912,10 +3119,28 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 	return $graph_opts;
 }
 
+/**
+ * Handles the rrdtool set font. Used as part of Cacti's lib functionality.
+ *
+ * @param string $type The type.
+ * @param string $no_legend The no legend.
+ * @param array $themefonts The themefonts.
+ *
+ * @return string The resulting string.
+ */
 function rrdtool_set_font($type, $no_legend = '', $themefonts = array()) {
 	return rrdtool_function_set_font($type, $no_legend, $themefonts);
 }
 
+/**
+ * Handles the rrdtool function set font. Used as part of Cacti's lib functionality.
+ *
+ * @param string $type The type.
+ * @param string $no_legend The no legend.
+ * @param array $themefonts The themefonts.
+ *
+ * @return string The resulting string.
+ */
 function rrdtool_function_set_font($type, $no_legend, $themefonts) {
 	global $config;
 
@@ -2954,6 +3179,15 @@ function rrdtool_function_set_font($type, $no_legend, $themefonts) {
 	return '--font ' . strtoupper($type) . ':' . floatval($size) . ':' . $font . RRD_NL;
 }
 
+/**
+ * Handles the RRD substitute host query data. Used as part of Cacti's lib functionality.
+ *
+ * @param string $txt_graph_item The txt graph item.
+ * @param array $graph The graph.
+ * @param array $graph_item The graph item.
+ *
+ * @return string The resulting string.
+ */
 function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	/* replace host variables in graph elements */
 	$host_id = 0;
@@ -2993,6 +3227,16 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	}
 }
 
+/**
+ * Handles the rrdtool function get resstep. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $local_data_ids The local data IDS.
+ * @param int $graph_start The graph start.
+ * @param int $graph_end The graph end.
+ * @param string $type The type.
+ *
+ * @return int The resulting integer value.
+ */
 function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end, $type = 'res') {
 	if (!is_array($local_data_ids)) {
 		$local_data_ids = array($local_data_ids);
@@ -3038,14 +3282,13 @@ function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end,
 }
 
 /**
- * rrdtool_file_exists - given a data source path check either
- * the local file system of the rrdtool proxy to see if the
- * data source path exists.
+ * Given a data source path check either the local file system of the rrdtool proxy to see if the
+ * data source path exists. Used as part of Cacti's lib functionality.
  *
- * @param string $data_source_path The data source rrdfile path
- * @param mixed  $rrdtool_pipe     The rrdtool pipe if available
+ * @param string $data_source_path The data source rrdfile path.
+ * @param mixed $rrdtool_pipe The rrdtool pipe if available.
  *
- * @return bool A boolean to tell if the file exists
+ * @return bool A boolean to tell if the file exists.
  */
 function rrdtool_file_exists($data_source_path, $rrdtool_pipe = null) {
 	if (!cacti_rrdtool_valid_path($data_source_path)) {
@@ -3064,13 +3307,14 @@ function rrdtool_file_exists($data_source_path, $rrdtool_pipe = null) {
 }
 
 /**
- * rrdtool_build_path_command - build a validated RRDtool command with a path argument
+ * Build a validated RRDtool command with a path argument. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (string) $command - RRDtool command verb
- * @param  (string) $path    - RRDtool file or directory path
- * @param  (string) $suffix  - Optional validated command suffix
+ * @param string $command RRDtool command verb.
+ * @param string $path RRDtool file or directory path.
+ * @param string $suffix Optional validated command suffix.
  *
- * @return (string|bool) RRDtool command string or false when unsafe
+ * @return string|bool RRDtool command string or false when unsafe.
  */
 function rrdtool_build_path_command($command, $path, $suffix = '') {
 	if (!is_string($command) || preg_match('/^[A-Za-z0-9_-]+$/', $command) !== 1 || !cacti_rrdtool_valid_path_token($path) || cacti_has_control_chars($suffix)) {
@@ -3081,17 +3325,18 @@ function rrdtool_build_path_command($command, $path, $suffix = '') {
 }
 
 /**
- * rrdtool_execute_path_command - execute a validated RRDtool command with a path argument
+ * Execute a validated RRDtool command with a path argument. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (string) $command       - RRDtool command verb
- * @param  (string) $path          - RRDtool file or directory path
- * @param  (string) $suffix        - Optional validated command suffix
- * @param  (bool)   $log_to_stdout - Whether to log to stdout
- * @param  (int)    $output_flag   - RRDtool output flag
- * @param  (mixed)  $rrdtool_pipe  - RRDtool pipe
- * @param  (string) $logopt        - Log facility
+ * @param string $command RRDtool command verb.
+ * @param string $path RRDtool file or directory path.
+ * @param string $suffix Optional validated command suffix.
+ * @param bool $log_to_stdout Whether to log to stdout.
+ * @param int $output_flag RRDtool output flag.
+ * @param mixed $rrdtool_pipe RRDtool pipe.
+ * @param string $logopt Log facility.
  *
- * @return (mixed) RRDtool output or false when validation fails
+ * @return mixed RRDtool output or false when validation fails.
  */
 function rrdtool_execute_path_command($command, $path, $suffix = '', $log_to_stdout = false, $output_flag = RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe = false, $logopt = 'WEBLOG') {
 	$cmd_line = rrdtool_build_path_command($command, $path, $suffix);
@@ -3104,16 +3349,16 @@ function rrdtool_execute_path_command($command, $path, $suffix = '', $log_to_std
 }
 
 /**
- * rrdtool_execute_restore_command - execute a validated RRDtool restore command
+ * Execute a validated RRDtool restore command. Used as part of Cacti's lib functionality.
  *
- * @param  (string) $xml_file      - XML dump path
- * @param  (string) $rrd_file      - RRD output path
- * @param  (bool)   $log_to_stdout - Whether to log to stdout
- * @param  (int)    $output_flag   - RRDtool output flag
- * @param  (mixed)  $rrdtool_pipe  - RRDtool pipe
- * @param  (string) $logopt        - Log facility
+ * @param string $xml_file XML dump path.
+ * @param string $rrd_file RRD output path.
+ * @param bool $log_to_stdout Whether to log to stdout.
+ * @param int $output_flag RRDtool output flag.
+ * @param mixed $rrdtool_pipe RRDtool pipe.
+ * @param string $logopt Log facility.
  *
- * @return (mixed) RRDtool output or false when validation fails
+ * @return mixed RRDtool output or false when validation fails.
  */
 function rrdtool_execute_restore_command($xml_file, $rrd_file, $log_to_stdout = false, $output_flag = RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe = false, $logopt = 'WEBLOG') {
 	if (!cacti_rrdtool_valid_path_token($xml_file) || !cacti_rrdtool_valid_path_token($rrd_file)) {
@@ -3124,11 +3369,11 @@ function rrdtool_execute_restore_command($xml_file, $rrd_file, $log_to_stdout = 
 }
 
 /**
- * rrdtool_function_info - given a data source id, return rrdtool info array
+ * Given a data source id, return rrdtool info array. Used as part of Cacti's lib functionality.
  *
- * @param  (int)   $local_data_id - data source id
+ * @param int $local_data_id Data source id.
  *
- * @return (array) an array containing all data from rrdtool info command
+ * @return array An array containing all data from rrdtool info command.
  */
 function rrdtool_function_info($local_data_id) {
 	/* Get the path to rrdtool file */
@@ -3177,6 +3422,13 @@ function rrdtool_function_info($local_data_id) {
 	return $rrd_info;
 }
 
+/**
+ * Handles the rrdtool function info from DS. Used as part of Cacti's lib functionality.
+ *
+ * @param int $data_source_id The data source ID.
+ *
+ * @return array An array of results.
+ */
 function rrdtool_function_info_from_ds($data_source_id) {
 	global $data_source_types, $consolidation_functions;
 
@@ -3279,12 +3531,13 @@ function rrdtool_function_info_from_ds($data_source_id) {
 }
 
 /**
- * rrdtool_function_contains_cf  verifies if the RRDfile contains the 'MAX' consolidation function
+ * Rrdtool_function_contains_cf verifies if the RRDfile contains the 'MAX' consolidation function.
+ * Used as part of Cacti's lib functionality.
  *
- * @param  (int)  $local_data_id - the id of the data source
- * @param  (int)  $cf - the consolidation function to search for
+ * @param int $local_data_id The id of the data source.
+ * @param int $cf The consolidation function to search for.
  *
- * @return (bool) true or false depending on the result
+ * @return bool True or false depending on the result.
  */
 function rrdtool_function_contains_cf($local_data_id, $cf) {
 	$info = rrdtool_function_info($local_data_id);
@@ -3303,12 +3556,12 @@ function rrdtool_function_contains_cf($local_data_id, $cf) {
 }
 
 /**
- * rrdtool_cacti_compare - compares cacti information to rrd file information
+ * Compares cacti information to rrd file information. Used as part of Cacti's lib functionality.
  *
- * @param $data_source_idi  the id of the data source
- * @param $info				rrdtool info as an array
+ * @param int $data_source_id The id of the data source.
+ * @param mixed &$info Rrdtool info as an array.
  *
- * @return					array build like $info defining html class in case of error
+ * @return array Build like $info defining html class in case of error.
  */
 function rrdtool_cacti_compare($data_source_id, &$info) {
 	global $data_source_types, $consolidation_functions;
@@ -3526,12 +3779,13 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 }
 
 /**
- * rrdtool_info2html - take output from rrdtool info array and build html table
+ * Take output from rrdtool info array and build html table. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (array) $info_array - array of rrdtool info data
- * @param  (array) $diff - array of differences between definition and current rrd file settings
+ * @param array $info_array Array of rrdtool info data.
+ * @param array $diff Array of differences between definition and current rrd file settings.
  *
- * @return (string) - html code
+ * @return string Html code.
  */
 function rrdtool_info2html($info_array, $diff=array()) {
 	global $config;
@@ -3663,15 +3917,26 @@ function rrdtool_info2html($info_array, $diff=array()) {
 }
 
 /**
- * rrdtool_tune - create rrdtool tune/resize commands html+cli enabled
+ * Create rrdtool tune/resize commands html+cli enabled. Used as part of Cacti's lib
+ * functionality.
  *
- * @param (string) $rrd_file - rrd file name
- * @param (array)  $diff - array of discrepancies between cacti settings and rrd file info
- * @param (bool)   $show_source - only show text+commands or execute all commands, execute is for cli mode only!
+ * @param string $rrd_file Rrd file name.
+ * @param array $diff Array of discrepancies between cacti settings and rrd file info.
+ * @param bool $show_source Only show text+commands or execute all commands, execute is for cli
+ *   mode only!
+ *
+ * @return void No value is returned.
  */
 function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 	$rrd_path = read_config_option('path_rrdtool');
 
+	/**
+	 * A function used by the rrdtool_tune function to output data.
+	 *
+	 * @param array $array The array of leaves.
+	 *
+	 * @return void No value is returned.
+	 */
 	function print_leaves($array) {
 		foreach ($array as $key => $line) {
 			if (!is_array($line)) {
@@ -3768,11 +4033,12 @@ function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 }
 
 /**
- * rrd_check - Given a data source id, check the rrdtool file to the data source definition
+ * Given a data source id, check the rrdtool file to the data source definition. Used as part of
+ * Cacti's lib functionality.
  *
- * @param  (int) $data_source_id - data source id
+ * @param int $data_source_id Data source id.
  *
- * @return (array) an array containing issues with the rrdtool file definition vs data source
+ * @return array An array containing issues with the rrdtool file definition vs data source.
  */
 function rrd_check($data_source_id) {
 	global $rrd_tune_array, $data_source_types;
@@ -3783,11 +4049,12 @@ function rrd_check($data_source_id) {
 }
 
 /**
- * rrd_repair - Given a data source id, update the rrdtool file to match the data source definition
+ * Given a data source id, update the rrdtool file to match the data source definition. Used as
+ * part of Cacti's lib functionality.
  *
- * @param  (int) $data_source_id - data source id
+ * @param int $data_source_id Data source id.
  *
- * @return (int) 1 success, 2 false
+ * @return int 1 success, 2 false.
  */
 function rrd_repair($data_source_id) {
 	global $rrd_tune_array, $data_source_types;
@@ -3798,13 +4065,14 @@ function rrd_repair($data_source_id) {
 }
 
 /**
- * rrd_datasource_add - add a (list of) datasource(s) to an (array of) rrd file(s)
+ * Add a (list of) datasource(s) to an (array of) rrd file(s). Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (array) $file_array - array of rrd files
- * @param  (array) $ds_array   - array of datasource parameters
- * @param  (bool) $debug       - debug mode
+ * @param array $file_array Array of rrd files.
+ * @param array $ds_array Array of datasource parameters.
+ * @param bool $debug Debug mode.
  *
- * @return (mixed) - success (bool) or error message (array)
+ * @return mixed Success (bool) or error message (array).
  */
 function rrd_datasource_add($file_array, $ds_array, $debug) {
 	global $data_source_types, $consolidation_functions;
@@ -3879,13 +4147,14 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
 }
 
 /**
- * rrd_rra_delete - delete a (list of) rra(s) from an (array of) rrd file(s)
+ * Delete a (list of) rra(s) from an (array of) rrd file(s). Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (array) $file_array - array of rrd files
- * @param  (array) $rra_array  - array of rra parameters
- * @param  (bool) $debug       - debug mode
+ * @param array $file_array Array of rrd files.
+ * @param array $rra_array Array of rra parameters.
+ * @param bool $debug Debug mode.
  *
- * @return (mixed) true for success (bool) or error message (array)
+ * @return mixed True for success (bool) or error message (array).
  */
 function rrd_rra_delete($file_array, $rra_array, $debug) {
 	$rrdtool_pipe = rrd_init();
@@ -3944,14 +4213,15 @@ function rrd_rra_delete($file_array, $rra_array, $debug) {
 }
 
 /**
- * rrd_rra_clone - clone a (list of) rra(s) from an (array of) rrd file(s)
+ * Clone a (list of) rra(s) from an (array of) rrd file(s). Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (array)  $file_array - array of rrd files
- * @param  (string) $cf         - new consolidation function
- * @param  (array)  $rra_array  - array of rra parameters
- * @param  (bool)   $debug      - debug mode
+ * @param array $file_array Array of rrd files.
+ * @param string $cf New consolidation function.
+ * @param array $rra_array Array of rra parameters.
+ * @param bool $debug Debug mode.
  *
- * @return (mixed)  success (bool) or error message (array)
+ * @return mixed Success (bool) or error message (array).
  */
 function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
 	$rrdtool_pipe = rrd_init();
@@ -4010,17 +4280,17 @@ function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
 }
 
 /**
- * rrd_append_ds - appends a <DS> subtree to an RRD XML structure
+ * Appends a <DS> subtree to an RRD XML structure. Used as part of Cacti's lib functionality.
  *
- * @param  (object) $dom     - the DOM object, where the RRD XML is stored
- * @param  (string) $version - rrd file version
- * @param  (string) $name    - name of the new ds
- * @param  (string) $type    - type of the new ds
- * @param  (int)    $min_hb  - heartbeat of the new ds
- * @param  (string) $min     - min value of the new ds or [NaN|U]
- * @param  (string) $max     - max value of the new ds or [NaN|U]
+ * @param object $dom The DOM object, where the RRD XML is stored.
+ * @param string $version Rrd file version.
+ * @param string $name Name of the new ds.
+ * @param string $type Type of the new ds.
+ * @param int $min_hb Heartbeat of the new ds.
+ * @param string $min Min value of the new ds or [NaN|U].
+ * @param string $max Max value of the new ds or [NaN|U].
  *
- * @return (object) - modified DOM
+ * @return object Modified DOM.
  */
 function rrd_append_ds($dom, $version, $name, $type, $min_hb, $min, $max) {
 	/* rrdtool version dependencies */
@@ -4068,15 +4338,16 @@ function rrd_append_ds($dom, $version, $name, $type, $min_hb, $min, $max) {
 }
 
 /**
- * rrd_append_compute_ds - COMPUTE DS: appends a <DS> subtree to an RRD XML structure
+ * COMPUTE DS: appends a <DS> subtree to an RRD XML structure. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (object) $dom     - the DOM object, where the RRD XML is stored
- * @param  (string) $version - rrd file version
- * @param  (string) $name    - name of the new ds
- * @param  (string) $type    - type of the new ds
- * @param  (int)    $cdef    - the cdef rpn used for COMPUTE
+ * @param object $dom The DOM object, where the RRD XML is stored.
+ * @param string $version Rrd file version.
+ * @param string $name Name of the new ds.
+ * @param string $type Type of the new ds.
+ * @param int $cdef The cdef rpn used for COMPUTE.
  *
- * @return (object) - modified DOM
+ * @return object Modified DOM.
  */
 function rrd_append_compute_ds($dom, $version, $name, $type, $cdef) {
 	/* rrdtool version dependencies */
@@ -4121,12 +4392,13 @@ function rrd_append_compute_ds($dom, $version, $name, $type, $cdef) {
 }
 
 /**
- * rrd_append_cdp_prep_ds - append a <DS> subtree to the <CDP_PREP> subtrees of a RRD XML structure
+ * Append a <DS> subtree to the <CDP_PREP> subtrees of a RRD XML structure. Used as part of
+ * Cacti's lib functionality.
  *
- * @param (object) $dom     - the DOM object, where the RRD XML is stored
- * @param (string) $version - rrd file version
+ * @param object $dom The DOM object, where the RRD XML is stored.
+ * @param string $version Rrd file version.
  *
- * @return (object) - the modified DOM object
+ * @return object The modified DOM object.
  */
 function rrd_append_cdp_prep_ds($dom, $version) {
 	/* get all <cdp_prep><ds> entries */
@@ -4164,11 +4436,12 @@ function rrd_append_cdp_prep_ds($dom, $version) {
 }
 
 /**
- * rrd_append_value - append a <V>alue element to the <DATABASE> subtrees of a RRD XML structure
+ * Append a <V>alue element to the <DATABASE> subtrees of a RRD XML structure. Used as part of
+ * Cacti's lib functionality.
  *
- * @param  (object) $dom - the DOM object, where the RRD XML is stored
+ * @param object $dom The DOM object, where the RRD XML is stored.
  *
- * @return (object) - the modified DOM object
+ * @return object The modified DOM object.
  */
 function rrd_append_value($dom) {
 	/* get XPATH notation required for positioning */
@@ -4192,12 +4465,13 @@ function rrd_append_value($dom) {
 }
 
 /**
- * rrd_delete_rra - delete an <RRA> subtree from the <RRD> XML structure
+ * Delete an <RRA> subtree from the <RRD> XML structure. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (object) $dom     - the DOM document, where the RRD XML is stored
- * @param  (array) $rra_parm - a single rra parameter set, given by the user
+ * @param object $dom The DOM document, where the RRD XML is stored.
+ * @param array $rra_parm A single rra parameter set, given by the user.
  *
- * @return (object) - the modified DOM object
+ * @return object The modified DOM object.
  */
 function rrd_delete_rra($dom, $rra_parm) {
 	/* find all RRA DOMNodes */
@@ -4229,13 +4503,14 @@ function rrd_delete_rra($dom, $rra_parm) {
 }
 
 /**
- * rrd_copy_rra - clone an <RRA> subtree of the <RRD> XML structure, replacing cf
+ * Clone an <RRA> subtree of the <RRD> XML structure, replacing cf. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (object) $dom     - the DOM document, where the RRD XML is stored
- * @param  (string) $cf      - new consolidation function
- * @param  (array) $rra_parm - a single rra parameter set, given by the user
+ * @param object $dom The DOM document, where the RRD XML is stored.
+ * @param string $cf New consolidation function.
+ * @param array $rra_parm A single rra parameter set, given by the user.
  *
- * @return (object) - the modified DOM object
+ * @return object The modified DOM object.
  */
 function rrd_copy_rra($dom, $cf, $rra_parm) {
 	/* find all RRA DOMNodes */
@@ -4277,6 +4552,13 @@ function rrd_copy_rra($dom, $cf, $rra_parm) {
 	return $dom;
 }
 
+/**
+ * Handles the rrdtool parse error. Used as part of Cacti's lib functionality.
+ *
+ * @param string $string The string.
+ *
+ * @return string The resulting string.
+ */
 function rrdtool_parse_error($string) {
 	global $config;
 
@@ -4319,6 +4601,15 @@ function rrdtool_parse_error($string) {
 	return $string;
 }
 
+/**
+ * Handles the rrdtool create error image. Used as part of Cacti's lib functionality.
+ *
+ * @param string $string The string.
+ * @param mixed $width The width.
+ * @param mixed $height The height.
+ *
+ * @return string The resulting string.
+ */
 function rrdtool_create_error_image($string, $width = '', $height = '') {
 	global $config, $dejavu_paths;
 
@@ -4477,20 +4768,19 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 }
 
 /**
- * gradient - Add gradient support for AREA type charts. This function adds several CDEF with different shading
+ * Add gradient support for AREA type charts. This function adds several CDEF with different
+ * shading. Used as part of Cacti's lib functionality.
  *
- * @param  (bool)   $vname       - the data source name
- * @param  (string) $start_color - the start color for the gradient
- * @param  (string) $end_color   - the end color for the gradient
- * @param  (bool)   $label       - any label attached to it
- * @param  (string) $steps       - defaults to 20
- * @param  (bool)   $lower       - defaults to faulse
- * @param  (string) $alpha       - Alpha channel to be used
+ * @param bool $vname The data source name.
+ * @param string $start_color The start color for the gradient.
+ * @param string $end_color The end color for the gradient.
+ * @param bool $label Any label attached to it.
+ * @param string $steps Defaults to 20.
+ * @param bool $lower Defaults to faulse.
+ * @param string $alpha Alpha channel to be used.
  *
- * @return (string) - the additional CDEF/AREA command lines for rrdtool
- *
- * License: GPLv2
- * Original Code: https://github.com/lingej/pnp4nagios/blob/master/share/pnp/application/helpers/rrd.php
+ * @return string The additional CDEF/AREA command lines for rrdtool License: GPLv2 Original Code:
+ *   https://github.com/lingej/pnp4nagios/blob/master/share/pnp/application/helpers/rrd.php.
  */
 function gradient($vname = false, $start_color = '#0000a0', $end_color = '#f0f0f0', $label = false, $steps = 20, $lower = false, $alpha = 'FF') {
 	if (preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i',$start_color,$matches)) {
@@ -4549,22 +4839,18 @@ function gradient($vname = false, $start_color = '#0000a0', $end_color = '#f0f0f
 }
 
 /**
- * colourBrightness - Adjust the brightness of a hex color for gradient charts.
- * Positive percent lightens; negative percent darkens.
+ * Adjust the brightness of a hex color for gradient charts. Positive percent lightens; negative
+ * percent darkens. Used as part of Cacti's lib functionality.
  *
- * @param  (string) $hex     - The hex representation of a color (with or without leading #)
- * @param  (float)  $percent - Brightness adjustment: decimal in [-1, 1] (e.g. 0.4 = +40%)
- *                             or coerced integer in [-100, 100] (e.g. 40 = +40%). Values
- *                             outside [-100, 100] are normalized then clamped to [-1, 1].
- *                             NOTE: values in the open interval (1.0, 2.0) are treated as
- *                             integers and divided by 100 (e.g. 1.5 -> 0.015). The value
- *                             1.0 itself is NOT divided — it means 100% original color
- *                             (the identity). Use 0.01 to express "1% brighter".
+ * @param string $hex The hex representation of a color (with or without leading #).
+ * @param float $percent Brightness adjustment: decimal in [-1, 1] (e.g. 0.4 = +40%) or coerced
+ *   integer in [-100, 100] (e.g. 40 = +40%). Values outside [-100, 100] are normalized then clamped
+ *   to [-1, 1]. NOTE: values in the open interval (1.0, 2.0) are treated as integers and divided by
+ *   100 (e.g. 1.5 -> 0.015). The value 1.0 itself is NOT divided — it means 100% original color
+ *   (the identity). Use 0.01 to express "1% brighter".
  *
- * @return (string) - the adjusted color in the same format as the input
- *
- * License:			GPLv2
- * Original Code		http://www.barelyfitz.com/projects/csscolor/
+ * @return string The adjusted color in the same format as the input License: GPLv2 Original Code
+ *   http://www.barelyfitz.com/projects/csscolor/.
  */
 function colourBrightness($hex, $percent) {
  	// Work out if hash given
@@ -4623,12 +4909,12 @@ function colourBrightness($hex, $percent) {
 }
 
 /**
- * add_business_hours - Add business hours highlight support for all rrdtool based charts
+ * Add business hours highlight support for all rrdtool based charts. Used as part of Cacti's lib
+ * functionality.
  *
- * @param  (array)  $data    - The graph_array data containing all rrdtool graph options
+ * @param array $data The graph_array data containing all rrdtool graph options.
  *
- * @return (array) - the graph_array containing AREA definitions for the business hours
- *
+ * @return array The graph_array containing AREA definitions for the business hours.
  */
 function add_business_hours($data) {
     if (read_config_option('business_hours_enable') == 'on') {

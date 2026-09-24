@@ -131,6 +131,11 @@ if ($total_errors == 0 && $total_repairs == 0) {
 	printf('WARNING: Found %s and repaired %s Cacti database issues.' . PHP_EOL . PHP_EOL, $total_errors, $total_repairs);
 }
 
+/**
+ * Handles the table structural repair. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function table_structural_repair() {
 	global $config, $local, $total_errors, $total_repairs;
 	global $debug, $force, $rtables, $form, $dynamic, $base_tables, $database_default;
@@ -169,6 +174,11 @@ function table_structural_repair() {
 	}
 }
 
+/**
+ * Handles the simple checks. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function simple_checks() {
 	global $total_errors, $total_repairs;
 
@@ -357,6 +367,11 @@ function simple_checks() {
 	}
 }
 
+/**
+ * Handles the detailed checks. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function detailed_checks() {
 	global $force, $total_errors, $total_repairs;
 
@@ -612,12 +627,12 @@ function detailed_checks() {
 }
 
 /**
- * There have been reports of data_input_data not including the correct information for
- * snmp columns.  This is likely caused by a legacy bug in Cacti where snmp information
- * was not properly copied to the data_input_data table upon change.
+ * There have been reports of data_input_data not including the correct information for snmp
+ * columns. This is likely caused by a legacy bug in Cacti where snmp information was not properly
+ * copied to the data_input_data table upon change. Therefore, let's detect that bogus information
+ * for the snmp Data Input types only for now. Used as part of Cacti's CLI functionality.
  *
- * Therefore, let's detect that bogus information for the snmp Data Input types only
- * for now.
+ * @return void No value is returned.
  */
 function snmp_repairs() {
 	global $force, $total_errors, $total_repairs, $repaired_hosts;
@@ -718,10 +733,22 @@ function snmp_repairs() {
 	}
 }
 
+/**
+ * Outputs the separator. Used as part of Cacti's CLI functionality.
+ *
+ * @param bool $nl The nl.
+ *
+ * @return void No value is returned.
+ */
 function print_separator($nl = false) {
 	print ($nl ? PHP_EOL:'') . str_repeat('-', 90) . PHP_EOL;
 }
 
+/**
+ * Handles the SNMP index repairs. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function snmp_index_repairs() {
 	global $config, $force, $total_errors, $total_repairs, $repaired_hosts;
 
@@ -1216,7 +1243,9 @@ function snmp_index_repairs() {
 }
 
 /**
- * display_version - displays version information
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
  */
 function display_version() {
 	$version = get_cacti_cli_version();
@@ -1224,7 +1253,9 @@ function display_version() {
 }
 
 /**
- * display_help - displays the usage of the function
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
  */
 function display_help () {
 	display_version();

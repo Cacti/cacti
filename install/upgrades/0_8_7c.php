@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 0.8.7c. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_0_8_7c() {
 	/* speed up the UI, missed in 0.8.7b upgrade, avoid failures if index already exists */
 	db_install_add_key('data_local', 'index', 'host_id', array('host_id'));

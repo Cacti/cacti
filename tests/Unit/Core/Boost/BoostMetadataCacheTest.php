@@ -40,7 +40,7 @@ function boostMetadataLoadFunctions($root) {
 
 	$source = file_get_contents($root . '/lib/boost.php');
 	$start  = strpos($source, 'function boost_get_unused_data_source_names(');
-	$end    = strpos($source, "\n/**\n * boost_process_poller_output", $start);
+	$end    = strpos($source, "\nfunction boost_process_poller_output(", $start);
 
 	expect($start)->not->toBeFalse()
 		->and($end)->not->toBeFalse();

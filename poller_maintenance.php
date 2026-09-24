@@ -133,6 +133,11 @@ if (!$force) {
 
 exit(0);
 
+/**
+ * Handles the reindex devices. Used as part of Cacti's poller maintenance functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function reindex_devices() {
 	global $config;
 
@@ -176,6 +181,11 @@ function reindex_devices() {
 	}
 }
 
+/**
+ * Removes the aged row cache. Used as part of Cacti's poller maintenance functionality.
+ *
+ * @return void No value is returned.
+ */
 function remove_aged_row_cache() {
 	$classes = array_rekey(
 		db_fetch_assoc('SELECT REPLACE(name, "time_last_change_", "") AS name, value
@@ -193,6 +203,13 @@ function remove_aged_row_cache() {
 	}
 }
 
+/**
+ * Handles the logrotate check. Used as part of Cacti's poller maintenance functionality.
+ *
+ * @param bool $force The force.
+ *
+ * @return void No value is returned.
+ */
 function logrotate_check($force) {
 	global $disable_log_rotation;
 
@@ -237,6 +254,11 @@ function logrotate_check($force) {
 	}
 }
 
+/**
+ * Handles the authcache purge. Used as part of Cacti's poller maintenance functionality.
+ *
+ * @return void No value is returned.
+ */
 function authcache_purge() {
 	/* removing security tokens older than 90 days */
 	if (read_config_option('auth_cache_enabled') == 'on') {
@@ -248,6 +270,13 @@ function authcache_purge() {
 	}
 }
 
+/**
+ * Handles the rrdfile purge. Used as part of Cacti's poller maintenance functionality.
+ *
+ * @param bool $force The force.
+ *
+ * @return void No value is returned.
+ */
 function rrdfile_purge($force) {
 	global $archived, $purged, $poller_start;
 
@@ -295,8 +324,10 @@ function rrdfile_purge($force) {
 }
 
 /**
- * realtime_purge_cache() - This function will purge files in the realtime directory
- * that are older than 2 hours without changes
+ * Realtime_purge_cache() - This function will purge files in the realtime directory that are
+ * older than 2 hours without changes. Used as part of Cacti's poller maintenance functionality.
+ *
+ * @return void No value is returned.
  */
 function realtime_purge_cache() {
 	/* remove all Realtime files over than 2 hours */
@@ -322,7 +353,11 @@ function realtime_purge_cache() {
 	db_execute('DELETE FROM poller_output_realtime WHERE time < FROM_UNIXTIME(UNIX_TIMESTAMP()-300)');
 }
 
-// logrotate_rotatenow - Rotates the cacti log
+/**
+ * Rotates the cacti log. Used as part of Cacti's poller maintenance functionality.
+ *
+ * @return void No value is returned.
+ */
 function logrotate_rotatenow() {
 	global $config;
 
@@ -372,7 +407,14 @@ function logrotate_rotatenow() {
 }
 
 /**
- * logrotate_file_rotate() - rotates the specified log file, appending date given
+ * Logrotate_file_rotate() - rotates the specified log file, appending date given. Used as part of
+ * Cacti's poller maintenance functionality.
+ *
+ * @param string $name The name.
+ * @param string $log The log.
+ * @param object $date The date.
+ *
+ * @return int Int.
  */
 function logrotate_file_rotate($name, $log, $date) {
 	if (empty($log)) {
@@ -421,7 +463,15 @@ function logrotate_file_rotate($name, $log, $date) {
 }
 
 /**
- * logrotate_file_clean - Cleans up any old log files that should be removed
+ * Cleans up any old log files that should be removed. Used as part of Cacti's poller maintenance
+ * functionality.
+ *
+ * @param string $name The name.
+ * @param string $log The log.
+ * @param object $date The date.
+ * @param int $rotation The rotation.
+ *
+ * @return bool Bool.
  */
 function logrotate_file_clean($name, $log, $date, $rotation) {
 	global $config;
@@ -481,7 +531,10 @@ function logrotate_file_clean($name, $log, $date, $rotation) {
 }
 
 /**
- * secpass_check_expired - Checks user accounts to determine if the accounts and/or their passwords should be expired
+ * Checks user accounts to determine if the accounts and/or their passwords should be expired.
+ * Used as part of Cacti's poller maintenance functionality.
+ *
+ * @return void No value is returned.
  */
 function secpass_check_expired () {
 	maint_debug('Checking for Account / Password expiration');
@@ -530,7 +583,14 @@ function secpass_check_expired () {
 	}
 }
 
-// remove_files - remove all unwanted files; the list is given by table data_source_purge_action
+/**
+ * Remove all unwanted files; the list is given by table data_source_purge_action. Used as part of
+ * Cacti's poller maintenance functionality.
+ *
+ * @param array $file_array The file array.
+ *
+ * @return void No value is returned.
+ */
 function remove_files($file_array) {
 	global $config, $debug, $archived, $purged;
 
@@ -683,6 +743,13 @@ function remove_files($file_array) {
 	maint_debug('RRDClean has finished a purge pass of ' . cacti_sizeof($file_array) . ' items');
 }
 
+/**
+ * Handles the rrdclean create path. Used as part of Cacti's poller maintenance functionality.
+ *
+ * @param string $path The path.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function rrdclean_create_path($path) {
 	global $config;
 
@@ -706,7 +773,11 @@ function rrdclean_create_path($path) {
 	return is_dir($path) && is_writable($path);
 }
 
-// cleanup_ds_and_graphs - courtesy John Rembo
+/**
+ * Courtesy John Rembo. Used as part of Cacti's poller maintenance functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function cleanup_ds_and_graphs() {
 	global $config;
 
@@ -767,6 +838,13 @@ function cleanup_ds_and_graphs() {
 	maint_debug('removed graphs:' . cacti_count($remove_lgis) . ' removed data-sources:' . cacti_count($remove_ldis));
 }
 
+/**
+ * Handles the maint debug. Used as part of Cacti's poller maintenance functionality.
+ *
+ * @param string $message The message.
+ *
+ * @return void No value is returned.
+ */
 function maint_debug($message) {
 	global $debug;
 
@@ -776,7 +854,9 @@ function maint_debug($message) {
 }
 
 /**
- * display_version - displays version information
+ * Displays version information. Used as part of Cacti's poller maintenance functionality.
+ *
+ * @return void No value is returned.
  */
 function display_version() {
 	$version = get_cacti_version();
@@ -784,7 +864,9 @@ function display_version() {
 }
 
 /**
- * display_help - displays the usage of the function
+ * Displays the usage of the function. Used as part of Cacti's poller maintenance functionality.
+ *
+ * @return void No value is returned.
  */
 function display_help() {
 	display_version();

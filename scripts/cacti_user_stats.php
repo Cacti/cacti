@@ -165,6 +165,11 @@ print
 	' uactive:'   . $user_counter_active .
 	' usleeping:' . $user_counter_sleeping;
 
+/**
+ * Retrieves the session save path. Used as part of Cacti's scripts functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function get_session_save_path() {
 	if (session_save_path() !== '') {
 		/* if default temp path is not in use */

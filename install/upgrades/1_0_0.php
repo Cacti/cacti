@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1.0.0. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_0_0() {
 	global $config, $plugins_integrated;
 
@@ -1815,6 +1820,11 @@ function upgrade_to_1_0_0() {
 	db_install_drop_key('data_input', 'index', 'name');
 }
 
+/**
+ * Handles the upgrade realms. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_realms() {
 	$upgrade_realms = array(
 		array('new_realm' => 101, 'file_pattern' => 'plugins.php'),

@@ -62,7 +62,10 @@ switch (get_request_var('action')) {
     The Save Function
    -------------------------- */
 /**
- * aggregate_form_save	the save function
+ * Aggregate_form_save the save function. Used as part of Cacti's aggregate templates
+ * functionality.
+ *
+ * @return void No value is returned.
  */
 function aggregate_form_save() {
 	/* make sure we are saving aggregate template */
@@ -256,6 +259,15 @@ function aggregate_form_save() {
 }
 
 
+/**
+ * Handles the aggregate get graph items. Used as part of Cacti's aggregate templates
+ * functionality.
+ *
+ * @param mixed $table The table.
+ * @param mixed $id The ID.
+ *
+ * @return void No value is returned.
+ */
 function aggregate_get_graph_items($table, $id) {
 
 }
@@ -264,7 +276,10 @@ function aggregate_get_graph_items($table, $id) {
     The 'actions' function
    ------------------------ */
 /**
- * aggregate_form_actions		the action function
+ * Aggregate_form_actions the action function. Used as part of Cacti's aggregate templates
+ * functionality.
+ *
+ * @return void No value is returned.
  */
 function aggregate_form_actions() {
 	global $aggregate_actions, $config;
@@ -345,7 +360,10 @@ function aggregate_form_actions() {
 }
 
 /**
- * aggregate_template_edit	edit the color template
+ * Aggregate_template_edit edit the color template. Used as part of Cacti's aggregate templates
+ * functionality.
+ *
+ * @return void No value is returned.
  */
 function aggregate_template_edit() {
 	global $image_types, $struct_aggregate_template;
@@ -548,7 +566,9 @@ function aggregate_template_edit() {
 }
 
 /**
- * aggregate_template
+ * Aggregate_template. Used as part of Cacti's aggregate templates functionality.
+ *
+ * @return void No value is returned.
  */
 function aggregate_template() {
 	global $aggregate_actions, $item_rows, $config;

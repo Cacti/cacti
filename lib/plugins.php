@@ -22,24 +22,48 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the do hook. Used as part of Cacti's lib functionality.
+ *
+ * @param string $name The name.
+ *
+ * @return array An array of results.
+ */
 function do_hook($name) {
 	$data = func_get_args();
 	$data = api_plugin_hook($name, $data);
 	return $data;
 }
 
+/**
+ * Handles the do hook function. Used as part of Cacti's lib functionality.
+ *
+ * @param string $name The name.
+ * @param mixed $parm The parm.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function do_hook_function($name,$parm=NULL) {
 	return api_plugin_hook_function($name, $parm);
 }
 
+/**
+ * API helper that handles user realm auth. Used as part of Cacti's lib functionality.
+ *
+ * @param string $filename The filename.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_user_realm_auth($filename = '') {
 	return api_plugin_user_realm_auth($filename);
 }
 
 /**
- * This function executes a hook.
- * @param string $name Name of hook to fire
- * @return mixed $data
+ * This function executes a hook. Used as part of Cacti's lib functionality.
+ *
+ * @param string $name Name of hook to fire.
+ *
+ * @return mixed $data.
  */
 function api_plugin_hook($name) {
 	global $config, $plugin_hooks, $plugins_integrated;
@@ -107,6 +131,14 @@ function api_plugin_hook($name) {
 	return $args;
 }
 
+/**
+ * API helper that handles plugin hook function. Used as part of Cacti's lib functionality.
+ *
+ * @param string $name The name.
+ * @param mixed $parm The parm.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function api_plugin_hook_function($name, $parm = NULL) {
 	global $config, $plugin_hooks, $plugins_integrated;
 
@@ -181,6 +213,16 @@ function api_plugin_hook_function($name, $parm = NULL) {
 	return $ret;
 }
 
+/**
+ * API helper that handles plugin run plugin hook. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hook The hook.
+ * @param string $plugin The plugin.
+ * @param string $function The function.
+ * @param mixed $args The args.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 	global $config, $menu;
 
@@ -246,6 +288,17 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 	return $args;
 }
 
+/**
+ * API helper that handles plugin run plugin hook function. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param string $hook The hook.
+ * @param string $plugin The plugin.
+ * @param string $function The function.
+ * @param mixed $ret The ret.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function api_plugin_run_plugin_hook_function($hook, $plugin, $function, $ret) {
 	global $config;
 
@@ -291,6 +344,16 @@ function api_plugin_run_plugin_hook_function($hook, $plugin, $function, $ret) {
 	return $ret;
 }
 
+/**
+ * API helper that handles plugin hook is remote collect. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param string $hook The hook.
+ * @param string $plugin The plugin.
+ * @param array $required_capabilities The required capabilities.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities) {
 	if (isset($required_capabilities[$hook])) {
 		foreach($required_capabilities[$hook] as $capability) {
@@ -303,6 +366,13 @@ function api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilitie
 	return false;
 }
 
+/**
+ * API helper that handles plugin get dependencies. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function api_plugin_get_dependencies($plugin) {
 	global $config;
 
@@ -332,6 +402,14 @@ function api_plugin_get_dependencies($plugin) {
 	return false;
 }
 
+/**
+ * API helper that handles plugin minimum version. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ * @param string $version The version.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_plugin_minimum_version($plugin, $version) {
 	if (strlen($version)) {
 		$plugin_version = db_fetch_cell_prepared('SELECT version
@@ -348,6 +426,13 @@ function api_plugin_minimum_version($plugin, $version) {
 	return $result;
 }
 
+/**
+ * API helper that handles plugin installed. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_plugin_installed($plugin) {
 	$plugin_data = db_fetch_row_prepared('SELECT directory, status
 		FROM plugin_config
@@ -363,6 +448,13 @@ function api_plugin_installed($plugin) {
 	return false;
 }
 
+/**
+ * API helper that handles plugin remote capabilities. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function api_plugin_remote_capabilities($plugin) {
 	global $config, $info_data;
 
@@ -391,6 +483,14 @@ function api_plugin_remote_capabilities($plugin) {
 	return false;
 }
 
+/**
+ * API helper that handles plugin has capability. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ * @param string $capability The capability.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_plugin_has_capability($plugin, $capability) {
 	$capabilities = api_plugin_remote_capabilities($plugin);
 
@@ -401,6 +501,16 @@ function api_plugin_has_capability($plugin, $capability) {
 	}
 }
 
+/**
+ * API helper that handles plugin status run. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hook The hook.
+ * @param array $required_capabilities The required capabilities.
+ * @param string $plugin_capabilities The plugin capabilities.
+ * @param string $plugin The plugin.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities, $plugin = '') {
 	global $config;
 
@@ -458,6 +568,15 @@ function api_plugin_status_run($hook, $required_capabilities, $plugin_capabiliti
 	return false;
 }
 
+/**
+ * API helper that handles plugin DB table create. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ * @param string $table The table.
+ * @param array $data The data.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_db_table_create($plugin, $table, $data) {
 	global $config;
 
@@ -477,6 +596,13 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 	}
 }
 
+/**
+ * API helper that handles plugin drop table. Used as part of Cacti's lib functionality.
+ *
+ * @param string $table The table.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_drop_table($table) {
 	if (!db_is_safe_identifier($table)) {
 		return;
@@ -487,6 +613,13 @@ function api_plugin_drop_table($table) {
 	api_plugin_drop_remote_table($table);
 }
 
+/**
+ * API helper that handles plugin DB changes remove. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_db_changes_remove($plugin) {
 	$tables = db_fetch_assoc_prepared("SELECT `table`
 		FROM plugin_db_changes
@@ -528,6 +661,15 @@ function api_plugin_db_changes_remove($plugin) {
 	}
 }
 
+/**
+ * API helper that handles plugin DB add column. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ * @param string $table The table.
+ * @param array $column The column.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_db_add_column($plugin, $table, $column) {
 	global $config, $database_default;
 
@@ -555,6 +697,14 @@ function api_plugin_db_add_column($plugin, $table, $column) {
 	}
 }
 
+/**
+ * API helper that handles plugin can install. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ * @param mixed &$message The message.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_plugin_can_install($plugin, &$message) {
 	$dependencies = api_plugin_get_dependencies($plugin);
 	$message = '';
@@ -577,6 +727,13 @@ function api_plugin_can_install($plugin, &$message) {
 	return $proceed;
 }
 
+/**
+ * API helper that handles plugin install. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_plugin_install($plugin) {
 	global $config;
 
@@ -673,6 +830,11 @@ function api_plugin_install($plugin) {
 	api_plugin_replicate_config();
 }
 
+/**
+ * API helper that handles plugin uninstall integrated. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_uninstall_integrated() {
 	global $config, $plugin_hooks, $plugins_integrated;
 
@@ -681,14 +843,36 @@ function api_plugin_uninstall_integrated() {
 	}
 }
 
+/**
+ * API helper that handles plugin hooks found. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function api_plugin_hooks_found($plugin) {
 	return db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_hooks WHERE name = ?', array($plugin)) ? true:false;
 }
 
+/**
+ * API helper that handles plugin realms found. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function api_plugin_realms_found($plugin) {
 	return db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_realms WHERE plugin = ?', array($plugin)) ? true:false;
 }
 
+/**
+ * API helper that handles plugin uninstall. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ * @param bool $tables The tables.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_uninstall($plugin, $tables = true) {
 	global $config;
 
@@ -736,6 +920,13 @@ function api_plugin_uninstall($plugin, $tables = true) {
 	}
 }
 
+/**
+ * API helper that handles plugin check config. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_plugin_check_config($plugin) {
 	global $config;
 
@@ -760,6 +951,13 @@ function api_plugin_check_config($plugin) {
 	return false;
 }
 
+/**
+ * API helper that handles plugin enable. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_enable($plugin) {
 	$ready = api_plugin_check_config($plugin);
 
@@ -773,6 +971,13 @@ function api_plugin_enable($plugin) {
 	}
 }
 
+/**
+ * API helper that handles plugin is enabled. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_plugin_is_enabled($plugin) {
 	static $pstatus = [];
 
@@ -796,6 +1001,13 @@ function api_plugin_is_enabled($plugin) {
 	return false;
 }
 
+/**
+ * API helper that handles plugin disable. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_disable($plugin) {
 	api_plugin_disable_hooks($plugin);
 
@@ -807,6 +1019,11 @@ function api_plugin_disable($plugin) {
 	api_plugin_replicate_config();
 }
 
+/**
+ * API helper that handles plugin replicate config. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_replicate_config() {
 	global $config;
 
@@ -831,6 +1048,13 @@ function api_plugin_replicate_config() {
 	}
 }
 
+/**
+ * API helper that handles plugin drop remote table. Used as part of Cacti's lib functionality.
+ *
+ * @param string $table The table.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_drop_remote_table($table) {
 	global $config;
 
@@ -863,6 +1087,13 @@ function api_plugin_drop_remote_table($table) {
 	}
 }
 
+/**
+ * API helper that handles plugin disable all. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_disable_all($plugin) {
 	api_plugin_disable_hooks_all($plugin);
 
@@ -874,6 +1105,13 @@ function api_plugin_disable_all($plugin) {
 	api_plugin_replicate_config();
 }
 
+/**
+ * API helper that handles plugin moveup. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_moveup($plugin) {
 	$id = db_fetch_cell_prepared('SELECT id
 		FROM plugin_config
@@ -901,6 +1139,13 @@ function api_plugin_moveup($plugin) {
 	api_plugin_replicate_config();
 }
 
+/**
+ * API helper that handles plugin movedown. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_movedown($plugin) {
 	$id = db_fetch_cell_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin));
 
@@ -920,6 +1165,17 @@ function api_plugin_movedown($plugin) {
 	api_plugin_replicate_config();
 }
 
+/**
+ * API helper that handles plugin register hook. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ * @param string $hook The hook.
+ * @param string $function The function.
+ * @param string $file The file.
+ * @param bool $enable The enable.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_plugin_register_hook($plugin, $hook, $function, $file, $enable = false) {
 	$status = 0;
 
@@ -976,6 +1232,13 @@ function api_plugin_register_hook($plugin, $hook, $function, $file, $enable = fa
 	api_plugin_replicate_config();
 }
 
+/**
+ * API helper that handles plugin remove hooks. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_remove_hooks($plugin) {
 	db_execute_prepared('DELETE FROM plugin_hooks
 		WHERE name = ?',
@@ -984,6 +1247,13 @@ function api_plugin_remove_hooks($plugin) {
 	api_plugin_replicate_config();
 }
 
+/**
+ * API helper that handles plugin enable hooks. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_enable_hooks($plugin) {
 	db_execute_prepared('UPDATE plugin_hooks
 		SET status = 1
@@ -993,6 +1263,13 @@ function api_plugin_enable_hooks($plugin) {
 	api_plugin_replicate_config();
 }
 
+/**
+ * API helper that handles plugin disable hooks. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_disable_hooks($plugin) {
 	db_execute_prepared("UPDATE plugin_hooks
 		SET status = 4
@@ -1005,6 +1282,13 @@ function api_plugin_disable_hooks($plugin) {
 	api_plugin_replicate_config();
 }
 
+/**
+ * API helper that handles plugin disable hooks all. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_disable_hooks_all($plugin) {
 	db_execute_prepared('UPDATE plugin_hooks
 		SET status = 0
@@ -1014,6 +1298,14 @@ function api_plugin_disable_hooks_all($plugin) {
 	api_plugin_replicate_config();
 }
 
+/**
+ * API helper that handles plugin valid entrypoint. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ * @param string $function The function.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_plugin_valid_entrypoint($plugin, $function) {
 	// Check for invalid entrypoint install/upgrade
 	$backtrace = debug_backtrace();
@@ -1027,6 +1319,16 @@ function api_plugin_valid_entrypoint($plugin, $function) {
 	return true;
 }
 
+/**
+ * API helper that handles plugin register realm. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ * @param string $file The file.
+ * @param string $display The display.
+ * @param mixed $admin The admin.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 	$files = explode(',', $file);
 
@@ -1134,6 +1436,13 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 	api_plugin_replicate_config();
 }
 
+/**
+ * API helper that handles plugin remove realms. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_remove_realms($plugin) {
 	$realms = db_fetch_assoc_prepared('SELECT id
 		FROM plugin_realms
@@ -1158,6 +1467,11 @@ function api_plugin_remove_realms($plugin) {
 	api_plugin_replicate_config();
 }
 
+/**
+ * API helper that handles plugin load realms. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function api_plugin_load_realms() {
 	global $user_auth_realms, $user_auth_realm_filenames;
 
@@ -1178,6 +1492,13 @@ function api_plugin_load_realms() {
 	}
 }
 
+/**
+ * API helper that handles plugin user realm auth. Used as part of Cacti's lib functionality.
+ *
+ * @param string $filename The filename.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function api_plugin_user_realm_auth($filename = '') {
 	global $user_auth_realm_filenames;
 	/* list all realms that this user has access to */
@@ -1191,6 +1512,11 @@ function api_plugin_user_realm_auth($filename = '') {
 	return false;
 }
 
+/**
+ * Handles the plugin config arrays. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function plugin_config_arrays() {
 	global $config, $menu;
 
@@ -1201,12 +1527,26 @@ function plugin_config_arrays() {
 	api_plugin_load_realms();
 }
 
+/**
+ * Handles the plugin draw navigation text. Used as part of Cacti's lib functionality.
+ *
+ * @param array $nav The nav.
+ *
+ * @return array An array of results.
+ */
 function plugin_draw_navigation_text($nav) {
 	$nav['plugins.php:'] = array('title' => __('Plugins'), 'mapping' => 'index.php:', 'url' => 'plugins.php', 'level' => '1');
 
 	return $nav;
 }
 
+/**
+ * Handles the plugin is compatible. Used as part of Cacti's lib functionality.
+ *
+ * @param string $plugin The plugin.
+ *
+ * @return array An array of results.
+ */
 function plugin_is_compatible($plugin) {
 	global $config;
 
@@ -1223,6 +1563,15 @@ function plugin_is_compatible($plugin) {
 	return array('compat' => true, 'requires' => __('Requires: Cacti >= %s', $info['compat']));
 }
 
+/**
+ * Handles the plugin load info defaults. Used as part of Cacti's lib functionality.
+ *
+ * @param string $file The file.
+ * @param mixed $info The info.
+ * @param array $defaults The defaults.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function plugin_load_info_defaults($file, $info, $defaults = array()) {
 	$result = $info;
 	$dir    = @basename(@dirname($file));
@@ -1265,6 +1614,14 @@ function plugin_load_info_defaults($file, $info, $defaults = array()) {
 	return $result;
 }
 
+/**
+ * Removes rows left behind by plugins that are no longer installed. A plugin directory can
+ * disappear without its uninstall ever running, and the rows keyed on that directory then outlive
+ * it. The realm rows matter most: they carry user and group grants, and a later plugin taking the
+ * same realm id would inherit them. Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function plugin_clean_old_plugin_info() {
 	db_execute_prepared('DELETE ph
 		FROM plugin_hooks AS ph
@@ -1302,6 +1659,13 @@ function plugin_clean_old_plugin_info() {
 	}
 }
 
+/**
+ * Handles the plugin load info file. Used as part of Cacti's lib functionality.
+ *
+ * @param string $file The file.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function plugin_load_info_file($file) {
 	$info = false;
 	if (file_exists($file)) {

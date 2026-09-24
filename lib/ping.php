@@ -43,24 +43,51 @@ class Net_Ping
 	var $avail_method;
 	var $ping_type;
 
+	/**
+	 * Handles the construct. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	function __construct() {
 		$this->port = 33439;
 		return true;
 	}
 
+	/**
+	 * Handles the destruct. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	function __destruct() {
 		return true;
 	}
 
+	/**
+	 * Handles the close socket. Used as part of Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 	function close_socket() {
 		@socket_shutdown($this->socket, 2);
 		socket_close($this->socket);
 	}
 
+	/**
+	 * Handles the start time. Used as part of Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 	function start_time() {
 		$this->timer_start_time = microtime(true);
 	}
 
+	/**
+	 * Retrieves the time. Used as part of Cacti's lib functionality.
+	 *
+	 * @param int $acc The acc.
+	 *
+	 * @return mixed The result of the operation, or false on failure.
+	 */
 	function get_time($acc=2) {
 		// format start time
 		$start_time = $this->timer_start_time;
@@ -69,6 +96,11 @@ class Net_Ping
 		return number_format ($end_time - $start_time, $acc);
 	}
 
+	/**
+	 * Builds the UDP packet. Used as part of Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 	function build_udp_packet() {
 		$data  = 'cacti-monitoring-system'; // the actual test data
 
@@ -77,18 +109,44 @@ class Net_Ping
 		$this->request_len = strlen($this->request);
 	}
 
+	/**
+	 * Handles the ping error handler. Used as part of Cacti's lib functionality.
+	 *
+	 * @param int $errno The errno.
+	 * @param string $errmsg The errmsg.
+	 * @param string $filename The filename.
+	 * @param int $linenum The linenum.
+	 * @param array $vars The vars.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	function ping_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 		return true;
 	}
 
+	/**
+	 * Sets the ping error handler. Used as part of Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 	function set_ping_error_handler() {
 		set_error_handler(array($this, 'ping_error_handler'));
 	}
 
+	/**
+	 * Handles the restore cacti error handler. Used as part of Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 	function restore_cacti_error_handler() {
 		restore_error_handler();
 	}
 
+	/**
+	 * Builds the icmp packet. Used as part of Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 	function build_icmp_packet() {
 		$seq_low   = rand(0,255);
 		$seq_high  = rand(0,255);
@@ -109,6 +167,13 @@ class Net_Ping
 		$this->request_len = strlen($this->request);
 	}
 
+	/**
+	 * Retrieves the checksum. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $data The data.
+	 *
+	 * @return string The resulting string.
+	 */
 	function get_checksum($data) {
 		if (strlen($data)%2) {
 			$data .= "\x00";
@@ -124,6 +189,11 @@ class Net_Ping
 		return pack('n*', ~$sum);
 	}
 
+	/**
+	 * Handles the ping icmp. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	function ping_icmp() {
 		global $config;
 
@@ -252,6 +322,11 @@ class Net_Ping
 		}
 	}
 
+	/**
+	 * Handles the seteuid. Used as part of Cacti's lib functionality.
+	 *
+	 * @return int The resulting integer value.
+	 */
 	function seteuid() {
 		global $config;
 		$cacti_user = '';
@@ -266,6 +341,13 @@ class Net_Ping
 		return $cacti_user;
 	}
 
+	/**
+	 * Handles the setuid. Used as part of Cacti's lib functionality.
+	 *
+	 * @param int $cacti_poller_account The cacti poller account.
+	 *
+	 * @return void No value is returned.
+	 */
 	function setuid($cacti_poller_account) {
 		global $config;
 
@@ -276,6 +358,11 @@ class Net_Ping
 		}
 	}
 
+	/**
+	 * Handles the ping SNMP. Used as part of Cacti's lib functionality.
+	 *
+	 * @return mixed The result of the operation, or false on failure.
+	 */
 	function ping_snmp() {
 		/* initialize variables */
 		$this->snmp_status   = 'down';
@@ -317,6 +404,14 @@ class Net_Ping
 		return $result;
 	}
 
+	/**
+	 * Retrieves the SNMP result. Used as part of Cacti's lib functionality.
+	 *
+	 * @param object $session The session.
+	 * @param string $oid The OID.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	function get_snmp_result($session, $oid) {
 		/* getnext does not work in php versions less than 5 */
 		if (($this->avail_method == AVAIL_SNMP_GET_NEXT) &&
@@ -344,6 +439,11 @@ class Net_Ping
 		}
 	} /* ping_snmp */
 
+	/**
+	 * Handles the ping UDP. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	function ping_udp() {
 		$this->set_ping_error_handler();
 
@@ -481,6 +581,11 @@ class Net_Ping
 		}
 	} /* end ping_udp */
 
+	/**
+	 * Handles the ping TCP. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	function ping_tcp() {
 		$this->set_ping_error_handler();
 
@@ -621,6 +726,16 @@ class Net_Ping
 		}
 	} /* end ping_tcp */
 
+	/**
+	 * Handles the ping. Used as part of Cacti's lib functionality.
+	 *
+	 * @param int $avail_method The avail method.
+	 * @param int $ping_type The ping type.
+	 * @param int $timeout The timeout.
+	 * @param int $retries The retries.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	function ping($avail_method = AVAIL_SNMP_AND_PING, $ping_type = PING_ICMP, $timeout=500, $retries=3) {
 		$this->set_ping_error_handler();
 
@@ -736,6 +851,13 @@ class Net_Ping
 		}
 	} /* end_ping */
 
+	/**
+	 * Determines whether ipaddress. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $ip_address The IP address.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	function is_ipaddress($ip_address = '') {
 		/* Strip IPv6 Scope ID (Zone Index) for validation, as
 		   filter_var rejects valid link-local addresses like fe80::1%eth0 */
@@ -759,6 +881,13 @@ class Net_Ping
 		}
 	}
 
+	/**
+	 * Handles the strip IP address. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $ip_address The IP address.
+	 *
+	 * @return string The resulting string.
+	 */
 	function strip_ip_address($ip_address) {
 		/* clean up hostname if specifying snmp_transport */
 		if (strpos($ip_address, 'tcp6:') !== false) {

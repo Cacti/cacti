@@ -39,6 +39,19 @@ class CactiTableFilter {
 	public $default_filter = array();
 
 
+	/**
+	 * Handles the construct. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $form_header The form header.
+	 * @param string $form_action The form action.
+	 * @param string $form_id The form ID.
+	 * @param string $form_width The form width.
+	 * @param string $session_var The session var.
+	 * @param string $action_url The action URL.
+	 * @param mixed $action_label The action label.
+	 *
+	 * @return void No value is returned.
+	 */
 	public function __construct($form_header = '', $form_action = '', $form_id = '',
 		$form_width = '', $session_var = '', $action_url = '', $action_label = '') {
 		global $item_rows;
@@ -96,10 +109,23 @@ class CactiTableFilter {
 		);
 	}
 
+	/**
+	 * Handles the destruct. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function __destruct() {
 		return true;
 	}
 
+	/**
+	 * Sets the filter row. Used as part of Cacti's lib functionality.
+	 *
+	 * @param array $array The array.
+	 * @param bool $index The index.
+	 *
+	 * @return void No value is returned.
+	 */
 	public function set_filter_row($array, $index = false) {
 		if ($index === false) {
 			$this->filter_array['rows'][] = $array;
@@ -108,6 +134,13 @@ class CactiTableFilter {
 		}
 	}
 
+	/**
+	 * Retrieves the filter row. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $index The index.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function get_filter_row($index) {
 		if ($index === false ) {
 			return false;
@@ -118,14 +151,34 @@ class CactiTableFilter {
 		}
 	}
 
+	/**
+	 * Sets the filter array. Used as part of Cacti's lib functionality.
+	 *
+	 * @param array $array The array.
+	 *
+	 * @return void No value is returned.
+	 */
 	public function set_filter_array($array) {
 		$this->filter_array = $array;
 	}
 
+	/**
+	 * Retrieves the filter. Used as part of Cacti's lib functionality.
+	 *
+	 * @return array An array of results.
+	 */
 	public function get_filter() {
 		return $this->filter_array;
 	}
 
+	/**
+	 * Sets the sort array. Used as part of Cacti's lib functionality.
+	 *
+	 * @param string $sort_column The sort column.
+	 * @param string $sort_direction The sort direction.
+	 *
+	 * @return void No value is returned.
+	 */
 	public function set_sort_array($sort_column, $sort_direction) {
 		$this->filter_array['sort'] = array(
 			'sort_column' => $sort_column,
@@ -133,6 +186,11 @@ class CactiTableFilter {
 		);
 	}
 
+	/**
+	 * Handles the filter render. Used as part of Cacti's lib functionality.
+	 *
+	 * @return bool True on success, false otherwise.
+	 */
 	public function filter_render() {
 		/* setup filter variables */
 		$this->sanitize_filter_variables();
@@ -146,6 +204,11 @@ class CactiTableFilter {
 		return true;
 	}
 
+	/**
+	 * Creates the filter. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	private function create_filter() {
 		if (!cacti_sizeof($this->filter_array)) {
 			$this->filter_array = $this->default_filter;
@@ -201,6 +264,11 @@ class CactiTableFilter {
 		html_end_box(true, true);
 	}
 
+	/**
+	 * Creates the javascript. Used as part of Cacti's lib functionality.
+	 *
+	 * @return string The resulting string.
+	 */
 	private function create_javascript() {
 		$applyFilter = '"' . $this->form_action;
 		$clearFilter = $applyFilter;
@@ -279,6 +347,11 @@ class CactiTableFilter {
 		<?php
 	}
 
+	/**
+	 * Handles the sanitize filter variables. Used as part of Cacti's lib functionality.
+	 *
+	 * @return void No value is returned.
+	 */
 	private function sanitize_filter_variables() {
 		$filters = array();
 

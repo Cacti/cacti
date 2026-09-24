@@ -113,6 +113,25 @@ if ($cmd == 'index') {
 	}
 }
 
+/**
+ * Retrieves the CPU usage. Used as part of Cacti's scripts functionality.
+ *
+ * @param string $hostname The hostname.
+ * @param string $snmp_community The SNMP community.
+ * @param int $snmp_version The SNMP version.
+ * @param string $snmp_auth_username The SNMP auth username.
+ * @param string $snmp_auth_password The SNMP auth password.
+ * @param string $snmp_auth_protocol The SNMP auth protocol.
+ * @param string $snmp_priv_passphrase The SNMP priv passphrase.
+ * @param string $snmp_priv_protocol The SNMP priv protocol.
+ * @param string $snmp_context The SNMP context.
+ * @param int $snmp_port The SNMP port.
+ * @param int $snmp_timeout The SNMP timeout.
+ * @param mixed $ping_retries The ping retries.
+ * @param int $max_oids The max OIDS.
+ *
+ * @return array An array of results.
+ */
 function get_cpu_usage($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids) {
 	$arr = reindex(cacti_snmp_walk($hostname, $snmp_community, '.1.3.6.1.2.1.25.3.3.1', $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
 	$return_arr = array();
@@ -129,6 +148,25 @@ function get_cpu_usage($hostname, $snmp_community, $snmp_version, $snmp_auth_use
 	return $return_arr;
 }
 
+/**
+ * Retrieves the indexes. Used as part of Cacti's scripts functionality.
+ *
+ * @param string $hostname The hostname.
+ * @param string $snmp_community The SNMP community.
+ * @param int $snmp_version The SNMP version.
+ * @param string $snmp_auth_username The SNMP auth username.
+ * @param string $snmp_auth_password The SNMP auth password.
+ * @param string $snmp_auth_protocol The SNMP auth protocol.
+ * @param string $snmp_priv_passphrase The SNMP priv passphrase.
+ * @param string $snmp_priv_protocol The SNMP priv protocol.
+ * @param string $snmp_context The SNMP context.
+ * @param int $snmp_port The SNMP port.
+ * @param int $snmp_timeout The SNMP timeout.
+ * @param mixed $ping_retries The ping retries.
+ * @param int $max_oids The max OIDS.
+ *
+ * @return array An array of results.
+ */
 function get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids) {
 	$arr = reindex(cacti_snmp_walk($hostname, $snmp_community, '.1.3.6.1.2.1.25.3.3.1', $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
 	$return_arr = array();
@@ -145,6 +183,13 @@ function get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_usern
 	return $return_arr;
 }
 
+/**
+ * Handles the reindex. Used as part of Cacti's scripts functionality.
+ *
+ * @param array $arr The arr.
+ *
+ * @return array An array of results.
+ */
 function reindex($arr) {
 	$return_arr = array();
 

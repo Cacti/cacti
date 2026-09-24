@@ -81,6 +81,11 @@ $total = database_fix_mediumint_columns();
 
 print "NOTE: Column widths adjusted on $total Tables!" . PHP_EOL;
 
+/**
+ * Handles the database fix mediumint columns. Used as part of Cacti's CLI functionality.
+ *
+ * @return int The resulting integer value.
+ */
 function database_fix_mediumint_columns() {
 	global $database_default;
 
@@ -216,10 +221,25 @@ function database_fix_mediumint_columns() {
 	return $total;
 }
 
+/**
+ * Handles the database get column attribs. Used as part of Cacti's CLI functionality.
+ *
+ * @param string $table The table.
+ * @param string $column The column.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function database_get_column_attribs($table, $column) {
 	return db_fetch_row("SHOW COLUMNS FROM $table LIKE '$column'");
 }
 
+/**
+ * Debug. Used as part of Cacti's CLI functionality.
+ *
+ * @param string $string The string.
+ *
+ * @return void No value is returned.
+ */
 function debug($string) {
 	global $debug;
 
@@ -228,12 +248,21 @@ function debug($string) {
 	}
 }
 
+/**
+ * Display_version. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Fix Database Range Issue, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help () {
 	display_version();
 	print 'usage: fix_mediumint.php [--debug]' . PHP_EOL . PHP_EOL;

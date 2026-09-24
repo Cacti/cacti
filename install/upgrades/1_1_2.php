@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1.1.2. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_1_2() {
 	db_install_drop_key('graph_templates_item', 'key', 'local_graph_id');
 	db_install_add_key('graph_templates_item', 'index', 'local_graph_id_sequence', array('local_graph_id', 'sequence'));

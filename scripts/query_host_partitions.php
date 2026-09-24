@@ -123,6 +123,13 @@ if ($cmd == 'index') {
 	print 'ERROR: Invalid command given' . PHP_EOL;
 }
 
+/**
+ * Handles the reindex. Used as part of Cacti's scripts functionality.
+ *
+ * @param array $arr The arr.
+ *
+ * @return array An array of results.
+ */
 function reindex($arr) {
 	$return_arr = array();
 

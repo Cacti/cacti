@@ -22,14 +22,18 @@
  +-------------------------------------------------------------------------+
 */
 
-/* get_timespan		 		- returns start/end time for given date and timespan
- * 							  do NOT use absolute numbers of seconds but let php
- * 							  do all the time calculations to cover:
- * 							  leap years, daylight savings and weekdays ...
-   @arg $span				- array &$timespan (begin_now, end_now)
-   @arg $curr_time	 		- base date (time since epoch)
-   @arg $timespan_given		- timespan as given by global_arrays.php($graph_timespans)
-   @arg $first_weekdayid	- first weekday (numeric representation) */
+/**
+ * Returns start/end time for given date and timespan * do NOT use absolute numbers of seconds but
+ * let php * do all the time calculations to cover: * leap years, daylight savings and weekdays
+ * ... Used as part of Cacti's lib functionality.
+ *
+ * @param mixed &$span Array &$timespan (begin_now, end_now).
+ * @param int $curr_time Base date (time since epoch).
+ * @param int $timespan_given Timespan as given by global_arrays.php($graph_timespans).
+ * @param int $first_weekdayid First weekday (numeric representation).
+ *
+ * @return void No value is returned.
+ */
 function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 	# unless changed later, $span['end_now'] is always $curr_time
 	$span['begin_now'] 	= $curr_time; # initialization only!
@@ -150,18 +154,27 @@ function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 	$span['current_value_date2'] = date('Y-m-d H:i',$span['end_now']);
 }
 
-/* month_shift		- check for shifting one or more months
- * @arg $shift_size	- requested shift amount
- * returns			- true, if month shifting required, else false
+/**
+ * Check for shifting one or more months * @arg $shift_size - requested shift amount * returns -
+ * true, if month shifting required, else false. Used as part of Cacti's lib functionality.
+ *
+ * @param string $shift_size The requested shift amount.
+ *
+ * @return bool True, if month shifting required, else false.
  */
 function month_shift($shift_size) {
 	# is monthly shifting required?
 	return ( strpos(strtolower($shift_size), 'month') !== false);
 }
 
-/* check_month_boundaries 	- check given boundaries for begin/end of month matching
- * @arg $span				- array $timespan with given boundaries
- * returns					- true, if begin AND end match month begin/end boundaries
+/**
+ * Check given boundaries for begin/end of month matching * @arg $span - array $timespan with
+ * given boundaries * returns - true, if begin AND end match month begin/end boundaries. Used as
+ * part of Cacti's lib functionality.
+ *
+ * @param mixed &$span A $timespan array with given boundaries.
+ *
+ * @return bool True, if begin AND end match month begin/end boundaries.
  */
 function check_month_boundaries(&$span) {
 	# check left boundary -----------------------------------------------
@@ -180,11 +193,16 @@ function check_month_boundaries(&$span) {
 	return ( $begin_match && $end_match );
 }
 
-/* shift_right_boundary	- shift right boundary with end-of-month adjustment
- * @arg $span			- timespan array
- * @arg $direction		- shift left/right (-/+)
- * @arg $shift_size		- amount of shift
- * returns				- time-since-epoch for shifted right boundary
+/**
+ * Shift right boundary with end-of-month adjustment * @arg $span - timespan array * @arg
+ * $direction - shift left/right (-/+) * @arg $shift_size - amount of shift * returns -
+ * time-since-epoch for shifted right boundary. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed &$span The timespan array.
+ * @param string $direction A shift left/right (-/+).
+ * @param mixed $shift_size The amount of shift.
+ *
+ * @return int Time-since-epoch for shifted right boundary.
  */
 function shift_right_boundary(&$span, $direction, $shift_size) {
 	# first, get begin of the month, $span['end_now'] belongs to
@@ -197,10 +215,17 @@ function shift_right_boundary(&$span, $direction, $shift_size) {
 	return strtotime('+1 month', $begin_of_shifted_month) - 1;
 }
 
-/* shift_time		- shift given timespan left/right
- * @arg &$span		- given timespan (start/end time as time-since-epoch and human readable)
- * @arg $direction	- "-" for shifting left, "+" for shifting right
- * @arg $timeshift	- amount of shifting
+/**
+ * Shift given timespan left/right * @arg &$span - given timespan (start/end time as
+ * time-since-epoch and human readable) * @arg $direction - "-" for shifting left, "+" for
+ * shifting right * @arg $timeshift - amount of shifting. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param mixed &$span The span.
+ * @param string $direction The direction either "-" for shifting left, "+" for shifting right.
+ * @param mixed $shift_size An amount of shifting.
+ *
+ * @return void No value is returned.
  */
 function shift_time(&$span, $direction, $shift_size) {
 	# move left/right according to $direction

@@ -161,12 +161,21 @@ rrd_close($rrdtool_pipe);
 /* close db */
 db_close();
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's poller realtime functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_version();
 	print "Cacti Realtime Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * Displays the usage of the function. Used as part of Cacti's poller realtime functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help() {
 	display_version();
 
@@ -182,7 +191,16 @@ function display_help() {
 	print "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
 }
 
-/* process_poller_output REAL TIME MODIFIED */
+/**
+ * Process_poller_output REAL TIME MODIFIED. Used as part of Cacti's poller realtime
+ * functionality.
+ *
+ * @param mixed $rrdtool_pipe The rrdtool pipe.
+ * @param string $poller_id The poller ID.
+ * @param int $interval The interval.
+ *
+ * @return int The resulting integer value.
+ */
 function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 	global $config;
 

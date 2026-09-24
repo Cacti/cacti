@@ -144,6 +144,11 @@ unregister_process('spikekill', 'master', 0);
 
 exit(0);
 
+/**
+ * Handles the timetorun. Used as part of Cacti's poller spikekill functionality.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function timeToRun() {
 	global $forcerun;
 
@@ -181,6 +186,13 @@ function timeToRun() {
 	}
 }
 
+/**
+ * Debug. Used as part of Cacti's poller spikekill functionality.
+ *
+ * @param mixed $message The message.
+ *
+ * @return void No value is returned.
+ */
 function debug($message) {
 	global $debug;
 
@@ -190,6 +202,11 @@ function debug($message) {
 }
 
 
+/**
+ * Handles the purge spike backups. Used as part of Cacti's poller spikekill functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function purge_spike_backups() {
 	$directory = read_config_option('spikekill_backupdir');
 	$retention = read_config_option('spikekill_purge');
@@ -228,6 +245,14 @@ function purge_spike_backups() {
 	return $purges;
 }
 
+/**
+ * Handles the kill spikes. Used as part of Cacti's poller spikekill functionality.
+ *
+ * @param array $templates The templates.
+ * @param mixed &$found The found.
+ *
+ * @return int The resulting integer value.
+ */
 function kill_spikes($templates, &$found) {
 	global $debug, $config;
 
@@ -258,12 +283,21 @@ function kill_spikes($templates, &$found) {
 	return cacti_sizeof($rrdfiles);
 }
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's poller spikekill functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_version();
 	print "Cacti SpikeKiller Batch Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * Displays the usage of the function. Used as part of Cacti's poller spikekill functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help() {
 	display_version();
 

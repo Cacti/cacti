@@ -185,6 +185,12 @@ switch (get_request_var('action')) {
 /* --------------------------
     Global Form Functions
    -------------------------- */
+/**
+ * -------------------------- Global Form Functions --------------------------. Used as part of
+ * Cacti's host functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function host_reindex() {
 	global $config;
@@ -206,6 +212,11 @@ function host_reindex() {
 	raise_message('host_reindex', __('Device Reindex Completed in %0.2f seconds.  There were %d items updated.', $total_time, $items), MESSAGE_LEVEL_INFO);
 }
 
+/**
+ * Handles the add tree names to actions array. Used as part of Cacti's host functionality.
+ *
+ * @return void No value is returned.
+ */
 function add_tree_names_to_actions_array() {
 	global $device_actions;
 
@@ -219,6 +230,11 @@ function add_tree_names_to_actions_array() {
 	}
 }
 
+/**
+ * Retrieves the site locations. Used as part of Cacti's host functionality.
+ *
+ * @return void No value is returned.
+ */
 function get_site_locations() {
 	$return  = array();
 	$term    = get_nfilter_request_var('term');
@@ -266,6 +282,12 @@ function get_site_locations() {
 /* --------------------------
     The Save Function
    -------------------------- */
+/**
+ * -------------------------- The Save Function --------------------------. Used as part of
+ * Cacti's host functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	if (isset_request_var('save_component_host')) {
@@ -304,6 +326,12 @@ function form_save() {
 /* ------------------------
     The "actions" function
    ------------------------ */
+/**
+ * ------------------------ The "actions" function ------------------------. Used as part of
+ * Cacti's host functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_actions() {
 	global $device_actions, $device_change_fields, $fields_host_edit;
@@ -585,6 +613,12 @@ function form_actions() {
 /* -------------------
 	Device Export Function
    ------------------- */
+/**
+ * ------------------- Device Export Function -------------------. Used as part of Cacti's host
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function host_export() {
 	host_validate_vars();
@@ -624,6 +658,12 @@ function host_export() {
 /* -------------------
     Data Query Functions
    ------------------- */
+/**
+ * ------------------- Data Query Functions -------------------. Used as part of Cacti's host
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function host_add_query() {
 	/* ================= input validation ================= */
@@ -635,6 +675,11 @@ function host_add_query() {
 	api_device_dq_add(get_request_var('host_id'), get_request_var('snmp_query_id'), get_request_var('reindex_method'));
 }
 
+/**
+ * Handles the host reload query. Used as part of Cacti's host functionality.
+ *
+ * @return void No value is returned.
+ */
 function host_reload_query() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -644,6 +689,11 @@ function host_reload_query() {
 	run_data_query(get_request_var('host_id'), get_request_var('id'));
 }
 
+/**
+ * Handles the host remove query. Used as part of Cacti's host functionality.
+ *
+ * @return void No value is returned.
+ */
 function host_remove_query() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -653,6 +703,11 @@ function host_remove_query() {
 	api_device_dq_remove(get_request_var('host_id'), get_request_var('id'));
 }
 
+/**
+ * Handles the host change query. Used as part of Cacti's host functionality.
+ *
+ * @return void No value is returned.
+ */
 function host_change_query() {
 	/* ================= input validation ================= */
 	get_filter_request_var('data_query_id');
@@ -663,6 +718,11 @@ function host_change_query() {
 	api_device_dq_change(get_request_var('host_id'), get_request_var('data_query_id'), get_request_var('reindex_method'));
 }
 
+/**
+ * Handles the host add gt. Used as part of Cacti's host functionality.
+ *
+ * @return void No value is returned.
+ */
 function host_add_gt() {
 	/* ================= input validation ================= */
 	get_filter_request_var('host_id');
@@ -679,6 +739,11 @@ function host_add_gt() {
 	api_plugin_hook_function('add_graph_template_to_host', array('host_id' => get_nfilter_request_var('host_id'), 'graph_template_id' => get_nfilter_request_var('graph_template_id')));
 }
 
+/**
+ * Handles the host remove gt. Used as part of Cacti's host functionality.
+ *
+ * @return void No value is returned.
+ */
 function host_remove_gt() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -691,6 +756,12 @@ function host_remove_gt() {
 /* ---------------------
     Device Functions
    --------------------- */
+/**
+ * --------------------- Device Functions ---------------------. Used as part of Cacti's host
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function host_edit() {
 	global $fields_host_edit, $reindex_types;
@@ -1025,6 +1096,14 @@ function host_edit() {
 	api_plugin_hook('host_edit_bottom');
 }
 
+/**
+ * Handles the device reindex methods. Used as part of Cacti's host functionality.
+ *
+ * @param array $item The item.
+ * @param array $host The host.
+ *
+ * @return void No value is returned.
+ */
 function device_reindex_methods($item, $host) {
 	global $config, $reindex_types, $reindex_types_tips;
 
@@ -1051,6 +1130,11 @@ function device_reindex_methods($item, $host) {
 	}
 }
 
+/**
+ * Handles the device change javascript. Used as part of Cacti's host functionality.
+ *
+ * @return void No value is returned.
+ */
 function device_change_javascript() {
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
@@ -1095,6 +1179,11 @@ function device_change_javascript() {
 	api_plugin_hook('device_change_javascript');
 }
 
+/**
+ * Handles the device javascript. Used as part of Cacti's host functionality.
+ *
+ * @return void No value is returned.
+ */
 function device_javascript() {
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
@@ -1401,6 +1490,11 @@ function device_javascript() {
 	<?php
 }
 
+/**
+ * Handles the host validate vars. Used as part of Cacti's host functionality.
+ *
+ * @return void No value is returned.
+ */
 function host_validate_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1462,6 +1556,14 @@ function host_validate_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Retrieves the device records. Used as part of Cacti's host functionality.
+ *
+ * @param mixed &$total_rows The total rows.
+ * @param int $rows The rows.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function get_device_records(&$total_rows, $rows) {
 	$sql_where = '';
 
@@ -1555,6 +1657,11 @@ function get_device_records(&$total_rows, $rows) {
 	return db_fetch_assoc($sql_query);
 }
 
+/**
+ * Handles the host. Used as part of Cacti's host functionality.
+ *
+ * @return void No value is returned.
+ */
 function host() {
 	global $device_actions, $item_rows, $config;
 

@@ -22,6 +22,16 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Retrieves the titles of data sources based on the provided local data IDs. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param array $local_data_ids An array of local data IDs for which to retrieve titles.
+ *
+ * @return array An array of data source titles corresponding to the provided IDs.
+ *
+ * @deprecated Use get_data_source_titles() directly instead.
+ */
 function clog_get_datasource_titles($local_data_ids) {
 	static $title_cache = null;
 
@@ -44,6 +54,17 @@ function clog_get_datasource_titles($local_data_ids) {
 	return $titles;
 }
 
+/**
+ * Retrieves a list of graphs associated with a specific data source. This function queries the
+ * database to fetch all distinct graphs that are linked to the provided local data ID. The result
+ * is returned as an associative array where the keys are the graph IDs and the values are the
+ * graph names. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_data_id The ID of the local data source to fetch graphs for.
+ *
+ * @return array An associative array of graphs, where the keys are graph IDs and the values are
+ *   graph names.
+ */
 function clog_get_graphs_from_datasource($local_data_id) {
 	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT
 		gtg.local_graph_id AS id,
@@ -58,6 +79,22 @@ function clog_get_graphs_from_datasource($local_data_id) {
 		array($local_data_id)), 'id', 'name');
 }
 
+/**
+ * Validates and processes a given filename, determining its path and base name. This function
+ * checks if the provided filename matches specific log file patterns (e.g., standard log, error
+ * log, or boost log) and extracts the corresponding file path and base name. Optionally, it can
+ * verify if the file exists. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed &$file The input filename to validate. This will be modified to contain only the base
+ *   name of the file.
+ * @param mixed &$filepath The output variable that will hold the directory path of the validated file.
+ * @param mixed &$filename The output variable that will hold the base name of the validated file.
+ * @param bool $filecheck If true, the function will check if the resolved file exists. Defaults
+ *   to false.
+ *
+ * @return bool Returns true if the file is valid (and exists if $filecheck is true), or false
+ *   otherwise.
+ */
 function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = false) {
 	global $config;
 
@@ -97,6 +134,12 @@ function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = fal
 	return ($filecheck ? file_exists($filefull) : !empty($filefull));
 }
 
+/**
+ * Purges or clears a specified log file within the Cacti application. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function clog_purge_logfile() {
 	global $config;
 
@@ -139,6 +182,12 @@ function clog_purge_logfile() {
 	}
 }
 
+/**
+ * Displays the log file viewer for Cacti, allowing users to view, filter, and manage log entries.
+ * Used as part of Cacti's lib functionality.
+ *
+ * @return void No value is returned.
+ */
 function clog_view_logfile() {
 	global $config;
 
@@ -375,6 +424,15 @@ function clog_view_logfile() {
 	bottom_footer();
 }
 
+/**
+ * Custom sorting function for log file names. Used as part of Cacti's lib functionality.
+ *
+ * @param string $a The first file name to compare.
+ * @param string $b The second file name to compare.
+ *
+ * @return int Returns < 0 if $a is less than $b, 0 if they are equal, and > 0 if $a is greater
+ *   than $b.
+ */
 function filter_sort($a, $b) {
 	$a_parts = explode('-', $a);
 	$b_parts = explode('-', $b);
@@ -395,6 +453,14 @@ function filter_sort($a, $b) {
 	return strcmp($b_date . '-' . str_replace('_','+',$b_parts[0]), $a_date . '-' . str_replace('_','+',$a_parts[0]));
 }
 
+/**
+ * Retrieves a list of log files from the configured log directories. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @return array An array of log file names, including standard, stderr, and boost logs. Notes: -
+ *   If the configured log path is not readable, it defaults to 'cacti.log'. - The function ensures
+ *   that archived log files are included in the result.
+ */
 function clog_get_logfiles() {
 	global $config;
 
@@ -485,6 +551,14 @@ function clog_get_logfiles() {
 	return array_unique(array_merge($stdFileArray, $stdLogFileArray, $stdErrFileArray));
 }
 
+/**
+ * Handles the filter. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $clogAdmin The clogadmin.
+ * @param mixed $selectedFile The selectedfile.
+ *
+ * @return string The resulting string.
+ */
 function filter($clogAdmin, $selectedFile) {
 	global $page_refresh_interval, $log_tail_lines, $config;
 	?>
@@ -671,6 +745,13 @@ function filter($clogAdmin, $selectedFile) {
 	<?php
 }
 
+/**
+ * Retrieves an array of regular expressions. Used as part of Cacti's lib functionality.
+ *
+ * @return array Returns an array of regular expressions.
+ *
+ * @deprecated Use text_get_regex_array() directly instead.
+ */
 function clog_get_regex_array() {
 	static $regex_array = array();
 
@@ -702,6 +783,16 @@ function clog_get_regex_array() {
 	return $regex_array;
 }
 
+/**
+ * Parses the given matches using a regular expression and optionally generates a link. Used as
+ * part of Cacti's lib functionality.
+ *
+ * @param array $matches The matches to be parsed, typically from a regular expression.
+ *
+ * @return mixed The result of the `text_regex_parser` function.
+ *
+ * @deprecated This function is deprecated. Use `text_regex_parser()` directly instead.
+ */
 function clog_regex_parser($matches) {
 	$result = $matches[0];
 	$match = $matches[0];
@@ -739,6 +830,16 @@ function clog_regex_parser($matches) {
 	return $result;
 }
 
+/**
+ * Processes a regex match for a device and optionally generates a link. Used as part of Cacti's
+ * lib functionality.
+ *
+ * @param array $matches An array of regex matches to process.
+ *
+ * @return mixed The result of the `text_regex_device` function.
+ *
+ * @deprecated Use `text_regex_device()` directly instead.
+ */
 function clog_regex_device($matches) {
 	global $config;
 
@@ -773,6 +874,16 @@ function clog_regex_device($matches) {
 	return $result;
 }
 
+/**
+ * Processes a regex match for a data source and optionally generates a link. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param array $matches An array of regex matches to process.
+ *
+ * @return mixed The result of the `text_regex_datasource()` function.
+ *
+ * @deprecated Use `text_regex_datasource()` directly instead.
+ */
 function clog_regex_datasource($matches) {
 	global $config;
 
@@ -837,6 +948,13 @@ function clog_regex_datasource($matches) {
 	return $result;
 }
 
+/**
+ * Handles the clog REGEX datainput. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $matches The matches.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function clog_regex_datainput($matches) {
 	global $config;
 
@@ -861,6 +979,15 @@ function clog_regex_datainput($matches) {
 	return $result;
 }
 
+/**
+ * Logs and processes regex matches for a poller. Used as part of Cacti's lib functionality.
+ *
+ * @param array $matches An array of regex matches to be processed.
+ *
+ * @return mixed The result of the `text_regex_poller()` function.
+ *
+ * @deprecated Use `text_regex_poller()` directly instead.
+ */
 function clog_regex_poller($matches) {
 	global $config;
 
@@ -889,6 +1016,16 @@ function clog_regex_poller($matches) {
 	return $result;
 }
 
+/**
+ * Processes regex matches for a data query and optionally generates a link. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param array $matches An array of regex matches to process.
+ *
+ * @return mixed The result of the `text_regex_dataquery` function.
+ *
+ * @deprecated Use `text_regex_dataquery` directly instead.
+ */
 function clog_regex_dataquery($matches) {
 	global $config;
 
@@ -917,6 +1054,16 @@ function clog_regex_dataquery($matches) {
 	return $result;
 }
 
+/**
+ * Processes regex matches for a RRA and optionally generates a link. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $matches An array of regex matches to process.
+ *
+ * @return mixed The result of the `text_regex_rra` function.
+ *
+ * @deprecated Use `text_regex_rra()` directly instead.
+ */
 function clog_regex_rra($matches) {
 	global $config;
 
@@ -935,6 +1082,16 @@ function clog_regex_rra($matches) {
 	return $result;
 }
 
+/**
+ * Processes regex matches for graphs and optionally generates a link. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $matches An array of regex matches to process.
+ *
+ * @return mixed The result of the `text_regex_graphs` function.
+ *
+ * @deprecated Use `text_regex_graphs()` directly instead.
+ */
 function clog_regex_graphs($matches) {
 	global $config;
 
@@ -975,6 +1132,16 @@ function clog_regex_graphs($matches) {
 	return $result;
 }
 
+/**
+ * Processes regex matches for graph templates and optionally generates a link. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param array $matches An array of regex matches to process.
+ *
+ * @return mixed The result of the `text_regex_graphtemplates` function.
+ *
+ * @deprecated Use `text_regex_graphtemplates()` directly instead.
+ */
 function clog_regex_graphtemplates($matches) {
 	global $config;
 
@@ -1003,6 +1170,16 @@ function clog_regex_graphtemplates($matches) {
 	return $result;
 }
 
+/**
+ * Processes regex matches for users and optionally generates a link. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $matches An array of regex matches to process.
+ *
+ * @return mixed The result of the `text_regex_users` function.
+ *
+ * @deprecated Use `text_regex_users()` directly instead.
+ */
 function clog_regex_users($matches) {
 	global $config;
 
@@ -1040,6 +1217,16 @@ function clog_regex_users($matches) {
 	return $result;
 }
 
+/**
+ * Processes regex matches for rules and optionally generates a link. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $matches An array of regex matches to process.
+ *
+ * @return mixed The result of the `text_regex_rule` function.
+ *
+ * @deprecated Use `text_regex_rule()` directly instead.
+ */
 function clog_regex_rule($matches) {
 	global $config;
 

@@ -24,7 +24,11 @@
 
 require_once($config['include_path'] .'/vendor/csrf/csrf-conf.php');
 
-/* cross site request forgery library */
+/**
+ * Cross site request forgery library. Used as part of Cacti's include functionality.
+ *
+ * @return void No value is returned.
+ */
 function csrf_startup() {
 	global $config;
 
@@ -65,6 +69,11 @@ function csrf_startup() {
 	}
 }
 
+/**
+ * Handles the cacti CSRF install pending. Used as part of Cacti's include functionality.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function cacti_csrf_install_pending() {
 	global $config;
 
@@ -73,7 +82,12 @@ function cacti_csrf_install_pending() {
 }
 
 /**
- * Read a packager-managed CSRF secret from outside the Cacti document root.
+ * Read a packager-managed CSRF secret from outside the Cacti document root. Used as part of
+ * Cacti's include functionality.
+ *
+ * @param mixed $path The path.
+ *
+ * @return string The resulting string.
  */
 function cacti_csrf_read_external_secret($path) {
 	$path = cacti_csrf_external_secret_path($path);
@@ -91,13 +105,24 @@ function cacti_csrf_read_external_secret($path) {
 	return cacti_csrf_secret_is_valid($secret) ? $secret : '';
 }
 
+/**
+ * Handles the cacti CSRF secret is valid. Used as part of Cacti's include functionality.
+ *
+ * @param mixed $secret The secret.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function cacti_csrf_secret_is_valid($secret) {
 	return is_string($secret) && strlen($secret) >= 32 && strlen($secret) <= 4096;
 }
 
 /**
- * Decode the wrapper written by older refresh_csrf.php versions while also
- * accepting packager-managed raw secrets.
+ * Decode the wrapper written by older refresh_csrf.php versions while also accepting
+ * packager-managed raw secrets. Used as part of Cacti's include functionality.
+ *
+ * @param mixed $secret The secret.
+ *
+ * @return string The resulting string.
  */
 function cacti_csrf_parse_secret_contents($secret) {
 	if (!is_string($secret)) {
@@ -118,7 +143,12 @@ function cacti_csrf_parse_secret_contents($secret) {
 }
 
 /**
- * Preserve the installer's historical support for a configured directory.
+ * Preserve the installer's historical support for a configured directory. Used as part of Cacti's
+ * include functionality.
+ *
+ * @param mixed $path The path.
+ *
+ * @return mixed The result of the operation, or false on failure.
  */
 function cacti_csrf_external_secret_path($path) {
 	if (!is_string($path) || $path === '') {
@@ -137,8 +167,12 @@ function cacti_csrf_external_secret_path($path) {
 }
 
 /**
- * Ensure an external secret resolves to a pre-existing directory outside the
- * Cacti document root.
+ * Ensure an external secret resolves to a pre-existing directory outside the Cacti document root.
+ * Used as part of Cacti's include functionality.
+ *
+ * @param mixed $path The path.
+ *
+ * @return bool True on success, false otherwise.
  */
 function cacti_csrf_external_path_is_safe($path) {
 	global $config;
@@ -175,6 +209,13 @@ function cacti_csrf_external_path_is_safe($path) {
 	return true;
 }
 
+/**
+ * Handles the cacti session cookie failure. Used as part of Cacti's include functionality.
+ *
+ * @param bool $write_log The write log.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function cacti_session_cookie_failure($write_log = true) {
 	global $config;
 
@@ -194,6 +235,14 @@ function cacti_session_cookie_failure($write_log = true) {
 	exit;
 }
 
+/**
+ * Handle a request that failed CSRF validation. The installer runs its steps over JSON, so a
+ * plain redirect leaves it stuck on a dead XHR. That branch answers with a scoped payload
+ * carrying a fresh token instead, which install.js retries against once. See issue #7343. Used as
+ * part of Cacti's include functionality.
+ *
+ * @return void No value is returned.
+ */
 function csrf_error_callback() {
 	$session_name = session_name();
 
@@ -218,8 +267,11 @@ function csrf_error_callback() {
 }
 
 /**
- * Reject state changes transported through a URL or an unsupported method.
- * csrf-magic validates the token before page dispatch for every POST request.
+ * Reject state changes transported through a URL or an unsupported method. csrf-magic validates
+ * the token before page dispatch for every POST request. Used as part of Cacti's include
+ * functionality.
+ *
+ * @return void No value is returned.
  */
 function csrf_require_post() {
 	if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {

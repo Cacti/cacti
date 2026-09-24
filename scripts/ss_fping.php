@@ -38,6 +38,16 @@ if (!isset($called_by_script_server)) {
 	include_once(dirname(__FILE__) . '/../lib/ping.php');
 }
 
+/**
+ * Handles the ss fping. Used as part of Cacti's scripts functionality.
+ *
+ * @param string $hostname The hostname.
+ * @param int $ping_sweeps The ping sweeps.
+ * @param string $ping_type The ping type.
+ * @param int $port The port.
+ *
+ * @return string The resulting string.
+ */
 function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port = 80) {
 	/* record start time */
 	$ss_fping_start = microtime(true);

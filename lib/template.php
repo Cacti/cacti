@@ -22,10 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
-/* push_out_data_source_custom_data - pushes out the "custom data" associated with a data
-	template to all of its children. this includes all fields inherited from the host
-	and the data template
-   @arg $data_template_id - the id of the data template to push out values for */
+/**
+ * Pushes out the "custom data" associated with a data template to all of its children. this
+ * includes all fields inherited from the host and the data template. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $data_template_id The id of the data template to push out values for.
+ *
+ * @return bool Bool.
+ */
 function push_out_data_source_custom_data($data_template_id) {
 	/* valid data template id? */
 	if (empty($data_template_id)) {
@@ -156,9 +161,15 @@ function push_out_data_source_custom_data($data_template_id) {
 	}
 }
 
-/* push out changed data template fields to related data sources
- * @parm string $did_vals	- data input data fields
- * @parm string $ds_in_str	- all data sources, formatted as SQL 'IN' clause
+/**
+ * Push out changed data template fields to related data sources * @parm string $did_vals - data
+ * input data fields * @parm string $ds_in_str - all data sources, formatted as SQL 'IN' clause.
+ * Used as part of Cacti's lib functionality.
+ *
+ * @param string $did_vals The data input data fields.
+ * @param string $ds_in_str All data sources, formatted as SQL 'IN' clause.
+ *
+ * @return void No value is returned.
  */
 function push_out_data_source_templates($did_vals, $ds_in_str) {
 	/* update all templated input fields */
@@ -170,9 +181,14 @@ function push_out_data_source_templates($did_vals, $ds_in_str) {
 	}
 }
 
-/* push_out_data_source_item - pushes out templated data template item fields to all matching
-	children
-   @arg $data_template_rrd_id - the id of the data template item to push out values for */
+/**
+ * Pushes out templated data template item fields to all matching children. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param int $data_template_rrd_id The id of the data template item to push out values for.
+ *
+ * @return bool Bool.
+ */
 function push_out_data_source_item($data_template_rrd_id) {
 	global $struct_data_source_item;
 
@@ -196,8 +212,14 @@ function push_out_data_source_item($data_template_rrd_id) {
 	}
 }
 
-/* push_out_data_source - pushes out templated data template fields to all matching children
-   @arg $data_template_data_id - the id of the data template to push out values for */
+/**
+ * Pushes out templated data template fields to all matching children. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param int $data_template_data_id The id of the data template to push out values for.
+ *
+ * @return bool Bool.
+ */
 function push_out_data_source($data_template_data_id) {
 	global $struct_data_source;
 
@@ -225,15 +247,14 @@ function push_out_data_source($data_template_data_id) {
 }
 
 /**
- * data_input_field_always_checked - check for data query custom fields
+ * Check for data query custom fields This function will tell cacti which data input fields must
+ * always carry the data source information since it's key to linking data query information into
+ * the data source. Used as part of Cacti's lib functionality.
  *
- * This function will tell cacti which data input fields must always
- * carry the data source information since it's key to linking
- * data query information into the data source
+ * @param int $data_input_field_id Data_input_field_id - The data input field.
+ * @param bool $return_ids Return_ids - Return an array of special ids.
  *
- * @param data_input_field_id - The data input field
- * @param return_ids - Return an array of special ids
- * @return boolean - true or false
+ * @return boolean True or false.
  */
 function data_input_field_always_checked($data_input_field_id = 0, $return_ids = false) {
 	static $always_checked = array();
@@ -270,12 +291,16 @@ function data_input_field_always_checked($data_input_field_id = 0, $return_ids =
 	}
 }
 
-/* change_data_template - changes the data template for a particular data source to
-	$data_template_id
-   @arg $local_data_id - the id of the data source to change the data template for
-   @arg $data_template_id - id the of the data template to change to. specify '0' for no
-   @arg $profile - a structure of data source profile attributes
-	data template */
+/**
+ * Changes the data template for a particular data source to $data_template_id. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param int $local_data_id The id of the data source to change the data template for.
+ * @param int $data_template_id Id the of the data template to change to. specify '0' for no.
+ * @param array $profile A structure of data source profile attributes data template.
+ *
+ * @return void No value is returned.
+ */
 function change_data_template($local_data_id, $data_template_id, $profile = array()) {
 	global $struct_data_source, $struct_data_source_item;
 
@@ -405,11 +430,14 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 }
 
 /**
- * push_out_graph - pushes out templated graph template fields to all matching children
+ * Pushes out templated graph template fields to all matching children. Used as part of Cacti's
+ * lib functionality.
  *
- *  @param $graph_template_graph_id - the id of the graph template to push out values for
- *  @param $push_title - (boolean) if the pattern for the title changes, push out those changes
- *     to the various graphs.
+ * @param int $graph_template_graph_id The id of the graph template to push out values for.
+ * @param bool $push_title (boolean) if the pattern for the title changes, push out those changes
+ *   to the various graphs.
+ *
+ * @return bool Bool.
  */
 function push_out_graph($graph_template_graph_id, $push_title = true) {
 	global $struct_graph;
@@ -452,15 +480,21 @@ function push_out_graph($graph_template_graph_id, $push_title = true) {
 	}
 }
 
-/* push_out_graph_input - pushes out the value of a graph input to a single child item. this function
-	differs from other push_out_* functions in that it does not push out the value of this element to
-	all attached children. instead, it obtains the current value of the graph input based on other
-	graph items and pushes out the 'active' value
-   @arg $graph_template_input_id - the id of the graph input to push out values for
-   @arg $graph_template_item_id - the id the graph template item to push out
-   @arg $session_members - when looking for the 'active' value of the graph input, ignore these graph
-	template items. typically you want to ignore all items that were just selected and have yet to be
-	saved to the database. this is because these items most likely contain incorrect data */
+/**
+ * Pushes out the value of a graph input to a single child item. this function differs from other
+ * push_out_* functions in that it does not push out the value of this element to all attached
+ * children. instead, it obtains the current value of the graph input based on other graph items
+ * and pushes out the 'active' value. Used as part of Cacti's lib functionality.
+ *
+ * @param int $graph_template_input_id The id of the graph input to push out values for.
+ * @param int $graph_template_item_id The id the graph template item to push out.
+ * @param array $session_members When looking for the 'active' value of the graph input, ignore
+ *   these graph template items. typically you want to ignore all items that were just selected and
+ *   have yet to be saved to the database. this is because these items most likely contain incorrect
+ *   data.
+ *
+ * @return void No value is returned.
+ */
 function push_out_graph_input($graph_template_input_id, $graph_template_item_id, $session_members) {
 	$graph_input = db_fetch_row_prepared('SELECT graph_template_id, column_name
 		FROM graph_template_input
@@ -544,12 +578,15 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 }
 
 /**
- * push_out_graph_item - pushes out templated graph template item fields to all matching
- *   children. if the graph template item is part of a graph input, the field will not be
- *   pushed out
+ * Pushes out templated graph template item fields to all matching children. if the graph template
+ * item is part of a graph input, the field will not be pushed out. Used as part of Cacti's lib
+ * functionality.
  *
- * @param $graph_template_item_id - (int) the id of the graph template item to push out values for
- * @param $task_item_changed - (boolean) Add additional steps if the task items changed
+ * @param int $graph_template_item_id (int) the id of the graph template item to push out values
+ *   for.
+ * @param bool $task_item_changed (boolean) Add additional steps if the task items changed.
+ *
+ * @return bool Bool.
  */
 function push_out_graph_item($graph_template_item_id, $task_item_changed = false) {
 	global $struct_graph_item;
@@ -580,6 +617,14 @@ function push_out_graph_item($graph_template_item_id, $task_item_changed = false
 	update_graph_template_items($graph_template_id, $graph_template_item_id, $task_item_changed);
 }
 
+/**
+ * Updates the graph data source output type. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_graph_id The local graph ID.
+ * @param int $output_type_id The output type ID.
+ *
+ * @return void No value is returned.
+ */
 function update_graph_data_source_output_type($local_graph_id, $output_type_id) {
 	$graph_local = db_fetch_row_prepared('SELECT *
 		FROM graph_local
@@ -639,19 +684,14 @@ function update_graph_data_source_output_type($local_graph_id, $output_type_id) 
 }
 
 /**
- * graph_template_has_override
+ * Graph_template_has_override This function determines if a Graph Template has fields that allow
+ * changing of their values at create time. Data that is considered for override includes data in:
+ * Data Input Fields Data Template Data Fields Graph Template Fields. Used as part of Cacti's lib
+ * functionality.
  *
- * This function determines if a Graph Template has fields that
- * allow changing of their values at create time.  Data that
- * is considered for override includes data in:
+ * @param int $graph_template_id The graph template ID.
  *
- * Data Input Fields
- * Data Template Data Fields
- * Graph Template Fields
- *
- * @param $graph_template_id
- *
- * @return boolean override allowed
+ * @return boolean Override allowed.
  */
 function graph_template_has_override($graph_template_id) {
 	$graph_template = db_fetch_row_prepared('SELECT *
@@ -729,6 +769,13 @@ function graph_template_has_override($graph_template_id) {
 	return false;
 }
 
+/**
+ * Parses the graph template ID. Used as part of Cacti's lib functionality.
+ *
+ * @param mixed $value The value.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function parse_graph_template_id($value) {
 	if (strpos($value, '_') !== false) {
 		$template_parts = explode('_', $value);
@@ -743,6 +790,13 @@ function parse_graph_template_id($value) {
 	}
 }
 
+/**
+ * Handles the resequence graphs simple. Used as part of Cacti's lib functionality.
+ *
+ * @param int $graph_template_id The graph template ID.
+ *
+ * @return void No value is returned.
+ */
 function resequence_graphs_simple($graph_template_id) {
 	$template_items = db_fetch_assoc_prepared('SELECT *
 		FROM graph_templates_item
@@ -761,6 +815,15 @@ function resequence_graphs_simple($graph_template_id) {
 	}
 }
 
+/**
+ * Handles the resequence graphs. Used as part of Cacti's lib functionality.
+ *
+ * @param int $graph_template_id The graph template ID.
+ * @param int $local_graph_id The local graph ID.
+ * @param bool $force The force.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = false) {
 	static $repairs = 0;
 	static $template_item_ids = array();
@@ -886,13 +949,16 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = fal
 }
 
 /**
- * retemplate_graphs - reapply the graph template as it currently exists to all
- *   graphs using that template.  This is important when you have graphs that
- *   have multiple versions of a template.
+ * Reapply the graph template as it currently exists to all graphs using that template. This is
+ * important when you have graphs that have multiple versions of a template. Used as part of
+ * Cacti's lib functionality.
  *
- * @param $graph_template_id - the graph template id to retemplate
- * @param $local_graph_id    - optional local graph id
- * @param $sequence_only     - optional only perform a resequence on graphs that have a mismatch on graph items
+ * @param int $graph_template_id The graph template id to retemplate.
+ * @param int $local_graph_id Optional local graph id.
+ * @param bool $sequence_only Optional only perform a resequence on graphs that have a mismatch on
+ *   graph items.
+ *
+ * @return void No value is returned.
  */
 function retemplate_graphs($graph_template_id, $local_graph_id = 0, $sequence_only = false) {
 	if (!$sequence_only || $local_graph_id > 0) {
@@ -941,15 +1007,17 @@ function retemplate_graphs($graph_template_id, $local_graph_id = 0, $sequence_on
 }
 
 /**
- * change_graph_template - generic routine that changes the graph template for a particular
- *   graph to a specific graph_template_id which can be considered a generic
- *   re-templating function.
+ * Generic routine that changes the graph template for a particular graph to a specific
+ * graph_template_id which can be considered a generic re-templating function. Used as part of
+ * Cacti's lib functionality.
  *
- * @param $local_graph_id    - the id of the graph to change the graph template for
- * @param $graph_template_id - the id the of the graph template to change to. specify
- *   '0' for no graph template
- * @param $force - if true and the target graph template has more or less graph items than
- *   the current graph, perform a deeper re-template activity, or a full repair
+ * @param int $local_graph_id The id of the graph to change the graph template for.
+ * @param int $graph_template_id The id the of the graph template to change to. specify '0' for no
+ *   graph template.
+ * @param bool $force If true and the target graph template has more or less graph items than the
+ *   current graph, perform a deeper re-template activity, or a full repair.
+ *
+ * @return bool Bool.
  */
 function change_graph_template($local_graph_id, $graph_template_id, $force = false) {
 	global $struct_graph, $struct_graph_item;
@@ -1188,18 +1256,17 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
 }
 
 /**
- * update_graph_template_items - update a graph template item for a graph template
- *   this function is used to push out graph item changes to graphs of a specific
- *   template.  It will be called when you are saving a graph item.  In cases where
- *   the Graph Item is new, it will update all graphs with a new item.  When
- *   the graph item exists, it'll just walk through all columns and update the values
+ * Update a graph template item for a graph template this function is used to push out graph item
+ * changes to graphs of a specific template. It will be called when you are saving a graph item.
+ * In cases where the Graph Item is new, it will update all graphs with a new item. When the graph
+ * item exists, it'll just walk through all columns and update the values.
  *
- * @param $graph_template_id - (int) The graph template id to update
- * @param $graph_template_item_id - (int) The graph template item id from the template
- * @param $task_item_changes - (boolean) Tells us if this is a new graph item or one that
- *   needs to be pushed to all graphs
+ * @param int $graph_template_id (int) The graph template id to update.
+ * @param int $graph_template_item_id (int) The graph template item id from the template.
+ * @param bool $task_item_changed Tells us if this is a new graph item or one that needs to be
+ *   pushed to all graphs.
  *
- * @return null
+ * @return void Null.
  */
 function update_graph_template_items($graph_template_id, $graph_template_item_id, $task_item_changed) {
 	global $struct_graph_item;
@@ -1384,10 +1451,15 @@ function update_graph_template_items($graph_template_id, $graph_template_item_id
 	}
 }
 
-/* graph_to_graph_template - converts a graph to a graph template
-   @arg $local_graph_id - the id of the graph to be converted
-   @arg $graph_title - the graph title to use for the new graph template. the variable
-	<graph_title> will be substituted for the current graph title */
+/**
+ * Converts a graph to a graph template. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_graph_id The id of the graph to be converted.
+ * @param string $graph_title The graph title to use for the new graph template. the variable
+ *   <graph_title> will be substituted for the current graph title.
+ *
+ * @return void No value is returned.
+ */
 function graph_to_graph_template($local_graph_id, $graph_title) {
 	/* create a new graph template entry */
 	$title_template = db_fetch_cell_prepared('SELECT title
@@ -1431,10 +1503,15 @@ function graph_to_graph_template($local_graph_id, $graph_title) {
 	db_execute_prepared('DELETE FROM graph_tree_items WHERE local_graph_id = ?', array($local_graph_id));
 }
 
-/* data_source_to_data_template - converts a data source to a data template
-   @arg $local_data_id - the id of the data source to be converted
-   @arg $data_source_title - the data source title to use for the new data template. the variable
-	<ds_title> will be substituted for the current data source title */
+/**
+ * Converts a data source to a data template. Used as part of Cacti's lib functionality.
+ *
+ * @param int $local_data_id The id of the data source to be converted.
+ * @param string $data_source_title The data source title to use for the new data template. the
+ *   variable <ds_title> will be substituted for the current data source title.
+ *
+ * @return void No value is returned.
+ */
 function data_source_to_data_template($local_data_id, $data_source_title) {
 	/* create a new graph template entry */
 	$title_template = db_fetch_cell_prepared('SELECT name
@@ -1480,27 +1557,36 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 	db_execute_prepared('DELETE FROM poller_item WHERE local_data_id= ?', array($local_data_id));
 }
 
-/* create_complete_graph_from_template - creates a graph and all necessary data sources based on a
-	graph template
-   @arg $graph_template_id - the id of the graph template that will be used to create the new
-	graph
-   @arg $host_id - the id of the host to associate the new graph and data sources with
-   @arg $snmp_query_array - if the new data sources are to be based on a data query, specify the
-	necessary data query information here. it must contain the following information:
-	  $snmp_query_array['snmp_query_id']
-	  $snmp_query_array['snmp_index_on']
-	  $snmp_query_array['snmp_query_graph_id']
-	  $snmp_query_array['snmp_index']
-   @arg $suggested_vals - any additional information to be included in the new graphs or
-	data sources must be included in the array. data is to be included in the following format:
-	  $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
-	  $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
-	  $values['cg'][data_template_id]['data_template'][field_name] = $value  // data template
-	  $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item
-	  $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value  // graph template (w/ data query)
-	  $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
-	  $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
-	  $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query) */
+/**
+ * Creates a graph and all necessary data sources based on a graph template. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param int $graph_template_id The id of the graph template that will be used to create the new
+ *   graph.
+ * @param int $host_id The id of the host to associate the new graph and data sources with.
+ * @param array $snmp_query_array If the new data sources are to be based on a data query, specify
+ *   the necessary data query information here. it must contain the following information:
+ *   $snmp_query_array['snmp_query_id'] $snmp_query_array['snmp_index_on']
+ *   $snmp_query_array['snmp_query_graph_id'] $snmp_query_array['snmp_index'].
+ * @param mixed &$suggested_vals Any additional information to be included in the new graphs or data
+ *   sources must be included in the array. data is to be included in the following format:
+ *   $values['cg'][graph_template_id]['graph_template'][field_name] = $value // graph template
+ *   $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] =
+ *   $value // graph template item $values['cg'][data_template_id]['data_template'][field_name] =
+ *   $value // data template
+ *   $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] =
+ *   $value // data template item
+ *   $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value // graph
+ *   template (w/ data query)
+ *   $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name]
+ *   = $value // graph template item (w/ data query)
+ *   $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value // data
+ *   template (w/ data query)
+ *   $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name]
+ *   = $value // data template item (w/ data query).
+ *
+ * @return mixed False if failing, otherwise the local_data_id data in a cache array.
+ */
 function create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, &$suggested_vals) {
 	global $config;
 
@@ -1869,20 +1955,31 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	return $cache_array;
 }
 
-/* create_graph_custom_data_compatible - checks to see if this graphs data sources have custom
-   data source properties.  If so, then you must duplicate the Data Source and not use
-   the existing one.
-   @arg $suggested_vals - any additional information to be included in the new graphs or
-	data sources must be included in the array. data is to be included in the following format:
-	  $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
-	  $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
-	  $values['cg'][data_template_id]['data_template'][field_name] = $value  // data template
-	  $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item
-	  $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value  // graph template (w/ data query)
-	  $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
-	  $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
-	  $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query)
-   @arg $previous_data_source - the previous data source if this data source id duplicate. */
+/**
+ * Checks to see if this graphs data sources have custom data source properties. If so, then you
+ * must duplicate the Data Source and not use the existing one. Used as part of Cacti's lib
+ * functionality.
+ *
+ * @param array $suggested_vals Any additional information to be included in the new graphs or
+ *   data sources must be included in the array. data is to be included in the following format:
+ *   $values['cg'][graph_template_id]['graph_template'][field_name] = $value // graph template
+ *   $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] =
+ *   $value // graph template item $values['cg'][data_template_id]['data_template'][field_name] =
+ *   $value // data template
+ *   $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] =
+ *   $value // data template item
+ *   $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value // graph
+ *   template (w/ data query)
+ *   $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name]
+ *   = $value // graph template item (w/ data query)
+ *   $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value // data
+ *   template (w/ data query)
+ *   $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name]
+ *   = $value // data template item (w/ data query).
+ * @param array $previous_data_source The previous data source if this data source id duplicate.
+ *
+ * @return bool Bool.
+ */
 function create_graph_custom_data_compatible($suggested_vals, $previous_data_source) {
 	$compatible = true;
 
@@ -2112,6 +2209,17 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 	return $compatible;
 }
 
+/**
+ * Creates the save graph. Used as part of Cacti's lib functionality.
+ *
+ * @param int $host_id The host ID.
+ * @param string $form_type The form type.
+ * @param int $form_id1 The form id1.
+ * @param array $form_array2 The form array2.
+ * @param mixed $values The values.
+ *
+ * @return void No value is returned.
+ */
 function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $values) {
 	/* ================= input validation ================= */
 	input_validate_input_number($form_id1);
@@ -2215,6 +2323,16 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 	}
 }
 
+/**
+ * Handles the data source exists. Used as part of Cacti's lib functionality.
+ *
+ * @param int $graph_template_id The graph template ID.
+ * @param int $host_id The host ID.
+ * @param mixed &$data_template The data template.
+ * @param mixed &$snmp_query_array The SNMP query array.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function data_source_exists($graph_template_id, $host_id, &$data_template, &$snmp_query_array) {
 	if (cacti_sizeof($snmp_query_array)) {
 		$input_fields = db_fetch_cell_prepared('SELECT
@@ -2308,6 +2426,14 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 	}
 }
 
+/**
+ * Handles the verify data input. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash The hash.
+ * @param string $input_string The input string.
+ *
+ * @return array An array of results.
+ */
 function verify_data_input($hash, $input_string) {
 	$input = db_fetch_row_prepared('SELECT *
 		FROM data_input
@@ -2323,6 +2449,14 @@ function verify_data_input($hash, $input_string) {
 	}
 }
 
+/**
+ * Handles the verify data input whitelist. Used as part of Cacti's lib functionality.
+ *
+ * @param string $hash The hash.
+ * @param string $input_string The input string.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function verify_data_input_whitelist($hash, $input_string) {
 	global $config;
 
@@ -2345,6 +2479,13 @@ function verify_data_input_whitelist($hash, $input_string) {
 	}
 }
 
+/**
+ * Handles the graph template whitelist check. Used as part of Cacti's lib functionality.
+ *
+ * @param int $graph_template_id The graph template ID.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function graph_template_whitelist_check($graph_template_id) {
 	global $config;
 

@@ -27,6 +27,13 @@ top_header();
 
 api_plugin_hook('console_before');
 
+/**
+ * Handles the render external links. Used as part of Cacti's index functionality.
+ *
+ * @param string $style The style.
+ *
+ * @return void No value is returned.
+ */
 function render_external_links($style = 'FRONT') {
 	global $config;
 

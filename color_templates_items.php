@@ -77,7 +77,10 @@ switch (get_request_var('action')) {
     The Save Function
    -------------------------- */
 /**
- * aggregate_color_item_form_save	the save function
+ * Aggregate_color_item_form_save the save function. Used as part of Cacti's color templates items
+ * functionality.
+ *
+ * @return void No value is returned.
  */
 function aggregate_color_item_form_save() {
 
@@ -127,6 +130,12 @@ function aggregate_color_item_form_save() {
 /* -----------------------
     item - Graph Items
    ----------------------- */
+/**
+ * ----------------------- item - Graph Items -----------------------. Used as part of Cacti's
+ * color templates items functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function color_templates_item_dnd() {
    /* ================= Input validation ================= */
@@ -157,7 +166,10 @@ function color_templates_item_dnd() {
 }
 
 /**
- * aggregate_color_item_movedown		move item down
+ * Aggregate_color_item_movedown move item down. Used as part of Cacti's color templates items
+ * functionality.
+ *
+ * @return void No value is returned.
  */
 function aggregate_color_item_movedown() {
 	/* ================= input validation ================= */
@@ -206,7 +218,10 @@ function aggregate_color_item_movedown() {
 
 
 /**
- * aggregate_color_item_moveup		move item up
+ * Aggregate_color_item_moveup move item up. Used as part of Cacti's color templates items
+ * functionality.
+ *
+ * @return void No value is returned.
  */
 function aggregate_color_item_moveup() {
 	/* ================= input validation ================= */
@@ -253,6 +268,12 @@ function aggregate_color_item_moveup() {
 		array($current_sequence['sequence'], get_request_var('color_template_id'), $previous_sequence['color_template_item_id']));
 }
 
+/**
+ * Handles the aggregate color item remove confirm. Used as part of Cacti's color templates items
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
 function aggregate_color_item_remove_confirm() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -329,7 +350,10 @@ function aggregate_color_item_remove_confirm() {
 }
 
 /**
- * aggregate_color_item_remove		remove item
+ * Aggregate_color_item_remove remove item. Used as part of Cacti's color templates items
+ * functionality.
+ *
+ * @return void No value is returned.
  */
 function aggregate_color_item_remove() {
 	/* ================= input validation ================= */
@@ -343,7 +367,10 @@ function aggregate_color_item_remove() {
 }
 
 /**
- * aggregate_color_item_edit		edit item
+ * Aggregate_color_item_edit edit item. Used as part of Cacti's color templates items
+ * functionality.
+ *
+ * @return void No value is returned.
  */
 function aggregate_color_item_edit() {
 	global $struct_color_template_item;

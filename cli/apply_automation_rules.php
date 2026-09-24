@@ -171,13 +171,21 @@ if (cacti_sizeof($devices)) {
 	print 'DEBUG: No devices found for this automation pass.' . PHP_EOL;
 }
 
-/*  display_version - displays version information */
+/**
+ * Displays version information. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Apply Automation Rules Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*	display_help - displays the usage of the function */
+/**
+ * Displays the usage of the function. Used as part of Cacti's CLI functionality.
+ *
+ * @return void No value is returned.
+ */
 function display_help () {
 	display_version();
 

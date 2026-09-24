@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Handles the upgrade to 1.1.26. Used as part of Cacti's install functionality.
+ *
+ * @return void No value is returned.
+ */
 function upgrade_to_1_1_26() {
 	db_install_add_key('host', 'key', 'status', array('status'));
 	db_install_add_key('user_auth_cache', 'key', 'last_update', array('last_update'));

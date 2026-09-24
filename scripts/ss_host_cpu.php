@@ -36,6 +36,18 @@ if (!isset($called_by_script_server)) {
 	include_once(dirname(__FILE__) . '/../lib/snmp.php');
 }
 
+/**
+ * Handles the ss host CPU. Used as part of Cacti's scripts functionality.
+ *
+ * @param string $hostname The hostname.
+ * @param int $host_id The host ID.
+ * @param mixed $snmp_auth The SNMP auth.
+ * @param string $cmd The cmd.
+ * @param string $arg1 The arg1.
+ * @param string $arg2 The arg2.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function ss_host_cpu($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'index', $arg1 = '', $arg2 = '') {
 	$snmp = explode(':', $snmp_auth);
 	$snmp_version = $snmp[0];
@@ -140,6 +152,25 @@ function ss_host_cpu($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'inde
 	}
 }
 
+/**
+ * Handles the ss host CPU get CPU usage. Used as part of Cacti's scripts functionality.
+ *
+ * @param string $hostname The hostname.
+ * @param string $snmp_community The SNMP community.
+ * @param int $snmp_version The SNMP version.
+ * @param string $snmp_auth_username The SNMP auth username.
+ * @param string $snmp_auth_password The SNMP auth password.
+ * @param string $snmp_auth_protocol The SNMP auth protocol.
+ * @param string $snmp_priv_passphrase The SNMP priv passphrase.
+ * @param string $snmp_priv_protocol The SNMP priv protocol.
+ * @param string $snmp_context The SNMP context.
+ * @param int $snmp_port The SNMP port.
+ * @param int $snmp_timeout The SNMP timeout.
+ * @param mixed $ping_retries The ping retries.
+ * @param int $max_oids The max OIDS.
+ *
+ * @return array An array of results.
+ */
 function ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids) {
 	$arr = ss_host_cpu_reindex(cacti_snmp_walk($hostname, $snmp_community, '.1.3.6.1.2.1.25.3.3.1.2', $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
 	$return_arr = array();
@@ -166,6 +197,25 @@ function ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $s
 	}
 }
 
+/**
+ * Handles the ss host CPU get indexes. Used as part of Cacti's scripts functionality.
+ *
+ * @param string $hostname The hostname.
+ * @param string $snmp_community The SNMP community.
+ * @param int $snmp_version The SNMP version.
+ * @param string $snmp_auth_username The SNMP auth username.
+ * @param string $snmp_auth_password The SNMP auth password.
+ * @param string $snmp_auth_protocol The SNMP auth protocol.
+ * @param string $snmp_priv_passphrase The SNMP priv passphrase.
+ * @param string $snmp_priv_protocol The SNMP priv protocol.
+ * @param string $snmp_context The SNMP context.
+ * @param int $snmp_port The SNMP port.
+ * @param int $snmp_timeout The SNMP timeout.
+ * @param mixed $ping_retries The ping retries.
+ * @param int $max_oids The max OIDS.
+ *
+ * @return array An array of results.
+ */
 function ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids) {
 	$arr = ss_host_cpu_reindex(cacti_snmp_walk($hostname, $snmp_community, '.1.3.6.1.2.1.25.3.3.1.2', $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
 	$return_arr = array();
@@ -183,6 +233,13 @@ function ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snm
 	return $return_arr;
 }
 
+/**
+ * Handles the ss host CPU reindex. Used as part of Cacti's scripts functionality.
+ *
+ * @param array $arr The arr.
+ *
+ * @return array An array of results.
+ */
 function ss_host_cpu_reindex($arr) {
 	$return_arr = array();
 

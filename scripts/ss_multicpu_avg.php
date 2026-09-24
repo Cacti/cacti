@@ -8,6 +8,13 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_multicpu_avg', $_SERVER['argv']);
 }
 
+/**
+ * Handles the ss multicpu avg. Used as part of Cacti's scripts functionality.
+ *
+ * @param int $device_id The device ID.
+ *
+ * @return string The resulting string.
+ */
 function ss_multicpu_avg($device_id) {
 	$host = db_fetch_row_prepared('SELECT *
 		FROM host

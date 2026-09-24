@@ -180,6 +180,14 @@ if (isset_request_var('update_policy')) {
 /* --------------------------
     Actions Function
    -------------------------- */
+/**
+ * -------------------------- Actions Function --------------------------. Used as part of Cacti's
+ * user group admin functionality.
+ *
+ * @param int $id The ID.
+ *
+ * @return void No value is returned.
+ */
 
 function user_group_disable($id) {
 	db_execute_prepared("UPDATE user_auth_group SET enabled = '' WHERE id = ?", array($id));
@@ -187,12 +195,26 @@ function user_group_disable($id) {
 	reset_group_perms($id);
 }
 
+/**
+ * Handles the user group enable. Used as part of Cacti's user group admin functionality.
+ *
+ * @param int $id The ID.
+ *
+ * @return void No value is returned.
+ */
 function user_group_enable($id) {
 	db_execute_prepared("UPDATE user_auth_group SET enabled = 'on' WHERE id = ?", array($id));
 
 	reset_group_perms($id);
 }
 
+/**
+ * Handles the user group remove. Used as part of Cacti's user group admin functionality.
+ *
+ * @param int $id The ID.
+ *
+ * @return void No value is returned.
+ */
 function user_group_remove($id) {
 	$users = array_rekey(db_fetch_assoc_prepared('SELECT user_id
 		FROM user_auth_group_members
@@ -208,6 +230,14 @@ function user_group_remove($id) {
 	}
 }
 
+/**
+ * Handles the user group copy. Used as part of Cacti's user group admin functionality.
+ *
+ * @param int $id The ID.
+ * @param string $prefix The prefix.
+ *
+ * @return void No value is returned.
+ */
 function user_group_copy($id, $prefix = 'New Group') {
 	static $count = 1;
 
@@ -255,6 +285,11 @@ function user_group_copy($id, $prefix = 'New Group') {
 	$count++;
 }
 
+/**
+ * Updates the policies. Used as part of Cacti's user group admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function update_policies() {
 	$policies = array('policy_graphs', 'policy_trees', 'policy_hosts', 'policy_graph_templates');
 
@@ -270,6 +305,11 @@ function update_policies() {
 	exit;
 }
 
+/**
+ * Handles the form actions. Used as part of Cacti's user group admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function form_actions() {
 	global $group_actions, $user_auth_realms;
 
@@ -535,6 +575,12 @@ function form_actions() {
 /* --------------------------
     Save Function
    -------------------------- */
+/**
+ * -------------------------- Save Function --------------------------. Used as part of Cacti's
+ * user group admin functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function form_save() {
 	global $settings_user;
@@ -625,6 +671,12 @@ function form_save() {
 /* --------------------------
     Graph Permissions
    -------------------------- */
+/**
+ * -------------------------- Graph Permissions --------------------------. Used as part of
+ * Cacti's user group admin functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function perm_remove() {
 	/* ================= input validation ================= */
@@ -647,6 +699,13 @@ function perm_remove() {
 	header('Location: user_group_admin.php?action=edit&header=false&tab=gperms&id=' . get_request_var('group_id'));
 }
 
+/**
+ * Handles the user group members edit. Used as part of Cacti's user group admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function user_group_members_edit($header_label) {
 	global $config, $auth_realms;
 
@@ -744,6 +803,15 @@ function user_group_members_edit($header_label) {
 	form_end();
 }
 
+/**
+ * Handles the user group graph perms edit. Used as part of Cacti's user group admin
+ * functionality.
+ *
+ * @param string $tab The tab.
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function user_group_graph_perms_edit($tab, $header_label) {
 	global $config, $assoc_actions;
 
@@ -1383,6 +1451,14 @@ function user_group_graph_perms_edit($tab, $header_label) {
 	}
 }
 
+/**
+ * Handles the user group is member. Used as part of Cacti's user group admin functionality.
+ *
+ * @param int $user_id The user ID.
+ * @param int $group_id The group ID.
+ *
+ * @return int The resulting integer value.
+ */
 function user_group_is_member($user_id, $group_id) {
 	return db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM user_auth_group_members
@@ -1391,6 +1467,13 @@ function user_group_is_member($user_id, $group_id) {
 		array($user_id, $group_id));
 }
 
+/**
+ * Handles the user group realms edit. Used as part of Cacti's user group admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function user_group_realms_edit($header_label) {
 	global $user_auth_realms, $user_auth_roles;
 
@@ -1608,6 +1691,13 @@ function user_group_realms_edit($header_label) {
 	form_save_button('user_group_admin.php', 'return');
 }
 
+/**
+ * Handles the user group settings edit. Used as part of Cacti's user group admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function user_group_settings_edit($header_label) {
 	global $settings_user, $tabs_graphs, $graph_views;
 
@@ -1720,6 +1810,12 @@ function user_group_settings_edit($header_label) {
 /* --------------------------
     User Administration
    -------------------------- */
+/**
+ * -------------------------- User Administration --------------------------. Used as part of
+ * Cacti's user group admin functionality.
+ *
+ * @return void No value is returned.
+ */
 
 function group_edit() {
 	global $config, $fields_user_group_edit;
@@ -1855,6 +1951,15 @@ function group_edit() {
 	}
 }
 
+/**
+ * Determines whether user group realm allowed. Used as part of Cacti's user group admin
+ * functionality.
+ *
+ * @param int $realm_id The realm ID.
+ * @param int $group_id The group ID.
+ *
+ * @return mixed The result of the operation, or false on failure.
+ */
 function is_user_group_realm_allowed($realm_id, $group_id) {
 	return db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM user_auth_group_realm
@@ -1863,6 +1968,11 @@ function is_user_group_realm_allowed($realm_id, $group_id) {
 		array($group_id, $realm_id));
 }
 
+/**
+ * Handles the user group. Used as part of Cacti's user group admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function user_group() {
 	global $group_actions, $item_rows;
 
@@ -2076,6 +2186,11 @@ function user_group() {
 	form_end();
 }
 
+/**
+ * Processes the graph request vars. Used as part of Cacti's user group admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function process_graph_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2110,6 +2225,11 @@ function process_graph_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Processes the device request vars. Used as part of Cacti's user group admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function process_device_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2144,6 +2264,11 @@ function process_device_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Processes the template request vars. Used as part of Cacti's user group admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function process_template_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2178,6 +2303,11 @@ function process_template_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Processes the tree request vars. Used as part of Cacti's user group admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function process_tree_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2207,6 +2337,11 @@ function process_tree_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Processes the member request vars. Used as part of Cacti's user group admin functionality.
+ *
+ * @return void No value is returned.
+ */
 function process_member_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2236,6 +2371,13 @@ function process_member_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * Handles the graph filter. Used as part of Cacti's user group admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function graph_filter($header_label) {
 	global $config, $item_rows;
 
@@ -2356,6 +2498,13 @@ function graph_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * Handles the device filter. Used as part of Cacti's user group admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function device_filter($header_label) {
 	global $config, $item_rows;
 
@@ -2472,6 +2621,13 @@ function device_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * Handles the template filter. Used as part of Cacti's user group admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function template_filter($header_label) {
 	global $config, $item_rows;
 
@@ -2569,6 +2725,13 @@ function template_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * Handles the tree filter. Used as part of Cacti's user group admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function tree_filter($header_label) {
 	global $config, $item_rows;
 
@@ -2666,6 +2829,13 @@ function tree_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * Handles the member filter. Used as part of Cacti's user group admin functionality.
+ *
+ * @param string $header_label The header label.
+ *
+ * @return void No value is returned.
+ */
 function member_filter($header_label) {
 	global $config, $item_rows;
 
