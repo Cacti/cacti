@@ -1,0 +1,1 @@
+Contain data_source_path within the RRA directory to stop RRD writes escaping it via a crafted custom path

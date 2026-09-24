@@ -170,6 +170,15 @@ function check_auth_cookie() : int|false {
 					return false;
 				}
 
+				// a disabled account must not authenticate from a cookie issued before it was disabled
+				if ($user_info['enabled'] != 'on') {
+					db_execute_prepared('DELETE FROM user_auth_cache
+						WHERE user_id = ?',
+						[$user_info['id']]);
+
+					return false;
+				}
+
 				if (!auth_cookie_user_currently_allowed($user_info)) {
 					db_execute_prepared('DELETE FROM user_auth_cache
 						WHERE user_id = ?',

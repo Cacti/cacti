@@ -64,8 +64,8 @@ cmd_exec	./lib/poller.php						pclose(popen('start "Cactiplus" /I ' . $filename 
 cmd_exec	./lib/poller.php						pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args, 'r'));
 cmd_exec	./lib/poller.php					$fp = popen($command, 'r');
 cmd_exec	./lib/poller.php					$fp = popen($command, 'rb');
-cmd_exec	./lib/poller.php					exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
-cmd_exec	./lib/poller.php					exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
+cmd_exec	./lib/poller.php					exec($safe_filename . ' ' . $args . ' ' . $redirect_args . ' &');
+cmd_exec	./lib/poller.php					exec($safe_filename . ' ' . $args . ' > /dev/null 2>&1 &');
 cmd_exec	./lib/poller.php				$output = shell_exec($command);
 cmd_exec	./lib/poller.php			$setsid_path = trim(shell_exec('which setsid 2>/dev/null') ?? '');
 cmd_exec	./lib/poller.php		$process = @proc_open($command, $descriptors, $pipes, null, null, ['bypass_shell' => true]);
