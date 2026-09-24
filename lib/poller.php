@@ -662,6 +662,82 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
 }
 
 /**
+ * Batch-prefetches the per-data-source RRD field-name metadata process_poller_output() needs
+ * while walking a poller_output result set, keyed by local_data_id, instead of running one of
+ * these queries per matching row with no local_data_id-change check at all. Used as part of
+ * Cacti's lib functionality.
+ *
+ * @param array $local_data_ids Distinct local_data_ids in this batch.
+ * @param array $data_template_id_by_id local_data_id => data_template_id map, used to pick the
+ *   templated vs non-templated nt_rrd_field_names query.
+ *
+ * @return array Two maps keyed by local_data_id under the 'unused' and 'nt' keys; each value
+ *   matches the shape the old per-call array_rekey() produced.
+ */
+function poller_prefetch_rrd_field_names($local_data_ids, $data_template_id_by_id) {
+	$unused_by_id = array();
+	$nt_by_id     = array();
+
+	if (!cacti_sizeof($local_data_ids)) {
+		return array('unused' => $unused_by_id, 'nt' => $nt_by_id);
+	}
+
+	$templated_ids     = array();
+	$non_templated_ids = array();
+
+	foreach ($local_data_ids as $local_data_id) {
+		if ((isset($data_template_id_by_id[$local_data_id]) ? $data_template_id_by_id[$local_data_id] : 0) > 0) {
+			$templated_ids[] = $local_data_id;
+		} else {
+			$non_templated_ids[] = $local_data_id;
+		}
+	}
+
+	/* non-templated data sources have no graph_templates_item linkage at all, so every
+	 * row would match "unused" here; only templated ids used this heuristic previously */
+	foreach (array_chunk($templated_ids, 1000) as $chunk) {
+		$rows = db_fetch_assoc('SELECT DISTINCT dtr.local_data_id, dtr.data_source_name
+			FROM data_template_rrd AS dtr
+			LEFT JOIN graph_templates_item AS gti
+			ON dtr.id = gti.task_item_id
+			WHERE dtr.local_data_id IN (' . implode(',', $chunk) . ')
+			AND gti.task_item_id IS NULL');
+
+		foreach ($rows as $row) {
+			$unused_by_id[$row['local_data_id']][$row['data_source_name']] = $row['data_source_name'];
+		}
+	}
+
+	foreach (array_chunk($templated_ids, 1000) as $chunk) {
+		$rows = db_fetch_assoc('SELECT DISTINCT dtr.local_data_id, dtr.data_source_name, dif.data_name
+			FROM graph_templates_item AS gti
+			INNER JOIN data_template_rrd AS dtr
+			ON gti.task_item_id = dtr.id
+			INNER JOIN data_input_fields AS dif
+			ON dtr.data_input_field_id = dif.id
+			WHERE dtr.local_data_id IN (' . implode(',', $chunk) . ')');
+
+		foreach ($rows as $row) {
+			$nt_by_id[$row['local_data_id']][$row['data_name']] = $row['data_source_name'];
+		}
+	}
+
+	foreach (array_chunk($non_templated_ids, 1000) as $chunk) {
+		$rows = db_fetch_assoc('SELECT DISTINCT dtr.local_data_id, dtr.data_source_name, dif.data_name
+			FROM data_template_rrd AS dtr
+			INNER JOIN data_input_fields AS dif
+			ON dtr.data_input_field_id = dif.id
+			WHERE dtr.local_data_id IN (' . implode(',', $chunk) . ')');
+
+		foreach ($rows as $row) {
+			$nt_by_id[$row['local_data_id']][$row['data_name']] = $row['data_source_name'];
+		}
+	}
+
+	return array('unused' => $unused_by_id, 'nt' => $nt_by_id);
+}
+
+/**
  * Grabs data from the 'poller_output' table and feeds the *completed* results to RRDtool for
  * processing. Used as part of Cacti's lib functionality.
  *
@@ -712,6 +788,30 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 	}
 
 	if (cacti_sizeof($results)) {
+		/* only rows whose output enters the MULTI/invalid-output paths below ever read the
+		 * prefetched metadata; skip the batch queries entirely when none of them do */
+		$metadata_local_data_ids = array();
+
+		foreach ($results as $item) {
+			$value = $item['output'];
+
+			if ((is_numeric($value)) || ($value == 'U' && $item['rrd_name'] != '') || is_hexadecimal($value)) {
+				continue;
+			}
+
+			$metadata_local_data_ids[] = $item['local_data_id'];
+		}
+
+		/* batch-prefetch the RRD field-name metadata the loop below needs, rather than
+		 * re-querying it per row whenever the output contains a ':' */
+		$prefetch_field_names = poller_prefetch_rrd_field_names(
+			array_values(array_unique(array_map('intval', $metadata_local_data_ids))),
+			array_column($results, 'data_template_id', 'local_data_id')
+		);
+
+		$unused_data_source_names_by_id = $prefetch_field_names['unused'];
+		$nt_rrd_field_names_by_id       = $prefetch_field_names['nt'];
+
 		/* create an array keyed off of each .rrd file */
 		foreach ($results as $item) {
 			/* trim the default characters, but add single and double quotes */
@@ -754,16 +854,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 				$values = preg_split('/\s+/', $value);
 
 				if ($data_template_id > 0) {
-					$unused_data_source_names = array_rekey(
-						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-							FROM data_template_rrd AS dtr
-							LEFT JOIN graph_templates_item AS gti
-							ON dtr.id = gti.task_item_id
-							WHERE dtr.local_data_id = ?
-							AND gti.task_item_id IS NULL',
-							array($local_data_id)),
-						'data_source_name', 'data_source_name'
-					);
+					$unused_data_source_names = isset($unused_data_source_names_by_id[$local_data_id]) ? $unused_data_source_names_by_id[$local_data_id] : array();
 				} else {
 					$unused_data_source_names = array();
 				}
@@ -794,29 +885,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 							$rrd_update_array[$rrd_path]['template'] = $rrd_tmpl;
 						} else {
 							// Handle data source without a data template
-							if ($data_template_id > 0) {
-								$nt_rrd_field_names = array_rekey(
-									db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
-										FROM graph_templates_item AS gti
-										INNER JOIN data_template_rrd AS dtr
-										ON gti.task_item_id = dtr.id
-										INNER JOIN data_input_fields AS dif
-										ON dtr.data_input_field_id = dif.id
-										WHERE dtr.local_data_id = ?',
-										array($local_data_id)),
-									'data_name', 'data_source_name'
-								);
-							} else {
-								$nt_rrd_field_names = array_rekey(
-									db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
-										FROM data_template_rrd AS dtr
-										INNER JOIN data_input_fields AS dif
-										ON dtr.data_input_field_id = dif.id
-										WHERE dtr.local_data_id = ?',
-										array($local_data_id)),
-									'data_name', 'data_source_name'
-								);
-							}
+							$nt_rrd_field_names = isset($nt_rrd_field_names_by_id[$local_data_id]) ? $nt_rrd_field_names_by_id[$local_data_id] : array();
 
 							if (cacti_sizeof($nt_rrd_field_names)) {
 								if (isset($nt_rrd_field_names[$matches[0]])) {
@@ -845,42 +914,8 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 					}
 				}
 			} else {
-				if ($data_template_id > 0) {
-					$unused_data_source_names = array_rekey(
-						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-							FROM data_template_rrd AS dtr
-							LEFT JOIN graph_templates_item AS gti
-							ON dtr.id = gti.task_item_id
-							WHERE dtr.local_data_id = ?
-							AND gti.task_item_id IS NULL',
-							array($local_data_id)),
-						'data_source_name', 'data_source_name'
-					);
-
-					$nt_rrd_field_names = array_rekey(
-						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
-							FROM graph_templates_item AS gti
-							INNER JOIN data_template_rrd AS dtr
-							ON gti.task_item_id = dtr.id
-							INNER JOIN data_input_fields AS dif
-							ON dtr.data_input_field_id = dif.id
-							WHERE dtr.local_data_id = ?',
-							array($local_data_id)),
-						'data_name', 'data_source_name'
-					);
-				} else {
-					$unused_data_source_names = array();
-
-					$nt_rrd_field_names = array_rekey(
-						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
-							FROM data_template_rrd AS dtr
-							INNER JOIN data_input_fields AS dif
-							ON dtr.data_input_field_id = dif.id
-							WHERE dtr.local_data_id = ?',
-							array($local_data_id)),
-						'data_name', 'data_source_name'
-					);
-				}
+				$unused_data_source_names = isset($unused_data_source_names_by_id[$local_data_id]) ? $unused_data_source_names_by_id[$local_data_id] : array();
+				$nt_rrd_field_names       = isset($nt_rrd_field_names_by_id[$local_data_id]) ? $nt_rrd_field_names_by_id[$local_data_id] : array();
 
 				$expected = '';
 
