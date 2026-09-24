@@ -91,7 +91,7 @@ function cacti_http(string $method, string $url, array $options = []) : array {
 	$resolve = [];
 
 	foreach ($safeIps as $ip) {
-		$resolve[] = $parts['host'] . ':' . $port . ':' . $ip;
+		$resolve[] = cacti_http_bracket_ipv6($parts['host']) . ':' . $port . ':' . cacti_http_bracket_ipv6($ip);
 	}
 
 	curl_setopt_array($ch, [
@@ -147,10 +147,15 @@ function cacti_http(string $method, string $url, array $options = []) : array {
  * @return string[] The resolved addresses, or [] if none/any is unsafe.
  */
 function cacti_http_resolve_safe_ips(string $host) : array {
-	if (filter_var($host, FILTER_VALIDATE_IP)) {
-		$ips = [$host];
+	// parse_url() can hand back an IPv6 literal wrapped in [brackets]; strip
+	// them for validation/DNS purposes, they get re-added (where curl
+	// requires them) when building the CURLOPT_RESOLVE entry below.
+	$bareHost = trim($host, '[]');
+
+	if (filter_var($bareHost, FILTER_VALIDATE_IP)) {
+		$ips = [$bareHost];
 	} else {
-		$records = @dns_get_record($host, DNS_A + DNS_AAAA);
+		$records = @dns_get_record($bareHost, DNS_A + DNS_AAAA);
 
 		if (!is_array($records)) {
 			return [];
@@ -172,6 +177,21 @@ function cacti_http_resolve_safe_ips(string $host) : array {
 	}
 
 	return array_values($ips);
+}
+
+/**
+ * Wraps an IPv6 address in [brackets] (the syntax CURLOPT_RESOLVE and URLs
+ * require to disambiguate its colons from a host:port:address separator);
+ * IPv4 addresses and hostnames are returned unchanged.
+ *
+ * @param string $host An IPv6/IPv4 address or hostname, optionally already bracketed.
+ *
+ * @return string
+ */
+function cacti_http_bracket_ipv6(string $host) : string {
+	$bare = trim($host, '[]');
+
+	return filter_var($bare, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? '[' . $bare . ']' : $host;
 }
 
 /**

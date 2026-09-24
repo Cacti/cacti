@@ -48,7 +48,7 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 	}
 
 	public function getButtonLabel(): string {
-		return $this->param('button_label') !== '' ? (string) $this->param('button_label') : $this->getName();
+		return $this->buttonLabel !== '' ? $this->buttonLabel : $this->getName();
 	}
 
 	public function initiate(): never {
@@ -94,6 +94,10 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 		}
 
 		if (!hash_equals($saved['state'], (string) gnrv('state'))) {
+			if ($this->debugEnabled) {
+				cacti_log('OIDC: state mismatch on callback for provider \'' . $this->getName() . '\'', false, 'AUTH');
+			}
+
 			return LoginResult::failure(__('Access Denied!  Login Failed.'));
 		}
 
@@ -118,6 +122,10 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 		]);
 
 		if (!$token['success']) {
+			if ($this->debugEnabled) {
+				cacti_log('OIDC: token exchange failed for provider \'' . $this->getName() . '\': ' . ($token['error'] ?? ''), false, 'AUTH');
+			}
+
 			return LoginResult::failure(__('Access Denied!  Login Failed.'));
 		}
 
@@ -130,6 +138,10 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 		$claims = $this->verifyIdToken((string) $tokens['id_token'], $discovery, $saved['nonce']);
 
 		if ($claims === null) {
+			if ($this->debugEnabled) {
+				cacti_log('OIDC: ID token verification failed for provider \'' . $this->getName() . '\'', false, 'AUTH');
+			}
+
 			return LoginResult::failure(__('Access Denied!  Login Failed.'));
 		}
 

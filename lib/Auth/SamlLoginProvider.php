@@ -60,7 +60,7 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 	}
 
 	public function getButtonLabel(): string {
-		return $this->param('button_label') !== '' ? (string) $this->param('button_label') : $this->getName();
+		return $this->buttonLabel !== '' ? $this->buttonLabel : $this->getName();
 	}
 
 	public function initiate(): never {
@@ -89,8 +89,16 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 
 		unset($_SESSION['sess_saml_request_' . $this->getId()]);
 
+		// A missing/expired session entry means this browser never called
+		// initiate() for this provider - fail closed rather than passing null
+		// to processResponse(), which would skip InResponseTo validation and
+		// accept an unsolicited, IdP-initiated assertion (login CSRF).
+		if (empty($saved['request_id'])) {
+			return LoginResult::failure(__('Access Denied!  Login Failed.'));
+		}
+
 		$auth = new SamlAuth($this->buildSettings());
-		$auth->processResponse($saved['request_id'] ?? null);
+		$auth->processResponse($saved['request_id']);
 
 		if ($auth->getErrors()) {
 			return LoginResult::failure(__('Access Denied!  Login Failed.'));
@@ -171,7 +179,7 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 
 		return [
 			'strict' => true,
-			'debug'  => ($this->parameters['debug'] ?? '') === 'on',
+			'debug'  => $this->debugEnabled,
 			'sp'     => [
 				'entityId'                 => $entityId,
 				'assertionConsumerService' => [
@@ -200,8 +208,11 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 			],
 			'security' => [
 				'authnRequestsSigned'  => (bool) $this->param('sign_authn_requests', false),
+				// wantMessagesSigned would additionally require the outer SAML Response
+				// message itself to be signed - stricter than what the "Require Signed
+				// Assertions" checkbox promises, and would reject IdPs that only sign
+				// the assertion. Leave it off; wantAssertionsSigned alone covers the UI setting.
 				'wantAssertionsSigned' => (bool) $this->param('want_assertions_signed', true),
-				'wantMessagesSigned'   => (bool) $this->param('want_assertions_signed', true),
 				'signatureAlgorithm'   => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
 				'digestAlgorithm'      => 'http://www.w3.org/2001/04/xmlenc#sha256',
 			],

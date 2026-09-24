@@ -4077,7 +4077,12 @@ function login_providers_login_process(string $username) : array {
 
 		cacti_log(sprintf("LOGIN FAILED: Provider '%s' Error for user '%s' from IP address %s", $provider->getName(), $username, get_client_addr()), false, 'AUTH');
 
-		auth_process_lockout($username, $realm);
+		// Only an actual wrong username/password counts toward the lockout
+		// counter - an LDAP outage or a group-membership denial is not
+		// evidence of a credential-guessing attempt against this account.
+		if ($result->isCredentialFailure) {
+			auth_process_lockout($username, $realm);
+		}
 
 		return [];
 	}
@@ -4498,6 +4503,35 @@ function auth_display_custom_error_message(string $message) : void {
 	}
 
 	print '</center></body></html>';
+}
+
+/**
+ * Overrides a freshly authenticated user's login_opts with the highest
+ * (MAX) login_opts configured across their groups, when any group sets one.
+ * Shared by every login path (password and SSO) so a group-derived landing
+ * page preference applies consistently regardless of how the user signed in.
+ *
+ * @param array $user The user_auth row (must include 'id' and 'login_opts').
+ *
+ * @return array The same row, with 'login_opts' overridden if applicable.
+ */
+function auth_apply_group_login_opts(array $user) : array {
+	if (db_table_exists('user_auth_group')) {
+		$group_options = db_fetch_cell_prepared('SELECT MAX(login_opts)
+			FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_members AS uagm
+			ON uag.id=uagm.group_id
+			WHERE user_id = ?
+			AND login_opts != 4',
+			[$user['id']]
+		);
+
+		if (!empty($group_options)) {
+			$user['login_opts'] = $group_options;
+		}
+	}
+
+	return $user;
 }
 
 /**

@@ -28,6 +28,8 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 	protected readonly bool $enabled;
 	protected readonly bool $allowAuthCookies;
 	protected readonly int $templateUserId;
+	protected readonly string $buttonLabel;
+	protected readonly bool $debugEnabled;
 
 	/** @var array<string, mixed> Decoded `parameters` JSON for this provider row. */
 	protected readonly array $parameters;
@@ -42,6 +44,10 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 		$this->enabled           = ($row['enabled'] ?? '')              === 'on';
 		$this->allowAuthCookies  = ($row['allow_auth_cookies'] ?? 'on') === 'on';
 		$this->templateUserId    = (int) ($row['user_id'] ?? 0);
+		// button_label/debug are top-level login_providers columns, not part
+		// of the type-specific `parameters` JSON - read them from the row.
+		$this->buttonLabel       = (string) ($row['button_label'] ?? '');
+		$this->debugEnabled      = ($row['debug'] ?? '') === 'on';
 
 		$decoded = json_decode((string) ($row['parameters'] ?? ''), true);
 

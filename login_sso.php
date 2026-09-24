@@ -211,5 +211,7 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 		$_SESSION[SESS_USER_LANGUAGE] = read_user_setting('user_language');
 	}
 
+	$user = auth_apply_group_login_opts($user);
+
 	auth_login_redirect($user['login_opts']);
 }

@@ -220,20 +220,7 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 				$_SESSION[SESS_CHANGE_PASSWORD] = true;
 			}
 
-			if (db_table_exists('user_auth_group')) {
-				$group_options = db_fetch_cell_prepared('SELECT MAX(login_opts)
-					FROM user_auth_group AS uag
-					INNER JOIN user_auth_group_members AS uagm
-					ON uag.id=uagm.group_id
-					WHERE user_id = ?
-					AND login_opts != 4',
-					[$_SESSION[SESS_USER_ID]]
-				);
-
-				if (!empty($group_options)) {
-					$user['login_opts'] = $group_options;
-				}
-			}
+			$user = auth_apply_group_login_opts($user);
 
 			if (user_setting_exists('user_language', $_SESSION[SESS_USER_ID])) {
 				$_SESSION[SESS_USER_LANGUAGE] = read_user_setting('user_language');

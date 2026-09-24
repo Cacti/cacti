@@ -25,13 +25,16 @@ namespace Cacti\Auth;
  */
 final class LoginResult {
 	/**
-	 * @param bool       $success    Whether authentication (and group gating) succeeded.
-	 * @param array|null $user       The matching user_auth row, or null if not yet provisioned.
-	 * @param string     $error      Human readable failure reason, empty on success.
-	 * @param string     $username   The identity asserted by the provider (login/subject/NameID).
-	 * @param array      $claims     Normalized claims: full_name, email, groups (array of strings).
-	 * @param bool       $rememberMe Whether the user opted into a "remember me" auth cookie
-	 *                               before being redirected to the IdP.
+	 * @param bool       $success             Whether authentication (and group gating) succeeded.
+	 * @param array|null $user                The matching user_auth row, or null if not yet provisioned.
+	 * @param string     $error               Human readable failure reason, empty on success.
+	 * @param string     $username            The identity asserted by the provider (login/subject/NameID).
+	 * @param array      $claims              Normalized claims: full_name, email, groups (array of strings).
+	 * @param bool       $rememberMe          Whether the user opted into a "remember me" auth cookie
+	 *                                        before being redirected to the IdP.
+	 * @param bool       $isCredentialFailure Whether this failure was specifically a wrong username/password
+	 *                                        (should count toward lockout), as opposed to a connection,
+	 *                                        configuration, or group-membership failure (should not).
 	 */
 	public function __construct(
 		public readonly bool $success,
@@ -40,11 +43,12 @@ final class LoginResult {
 		public readonly string $username = '',
 		public readonly array $claims = [],
 		public readonly bool $rememberMe = false,
+		public readonly bool $isCredentialFailure = false,
 	) {
 	}
 
-	public static function failure(string $error): self {
-		return new self(false, null, $error);
+	public static function failure(string $error, bool $isCredentialFailure = false): self {
+		return new self(false, null, $error, isCredentialFailure: $isCredentialFailure);
 	}
 
 	public static function authenticated(string $username, array $claims = [], ?array $user = null, bool $rememberMe = false): self {

@@ -27,4 +27,11 @@ interface CredentialLoginProviderInterface extends LoginProviderInterface {
 	 * membership and claims (full name / email) for account provisioning.
 	 */
 	public function authenticate(string $username, string $password): LoginResult;
+
+	/**
+	 * The user_auth.id to copy from when a successfully authenticated
+	 * username has no existing account yet, or 0 if this provider never
+	 * auto-provisions accounts.
+	 */
+	public function getTemplateUserId(): int;
 }

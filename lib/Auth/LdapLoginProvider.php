@@ -124,9 +124,14 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 			if (($response['error_num'] ?? null) === 0) {
 				return LoginResult::authenticated($username, $this->resolveClaims($server, $username));
 			}
+
+			// LdapError::Failure (1) is the specific "invalid credentials" bind
+			// result; every other code here is a connection, protocol, or group
+			// membership failure and must not count toward the lockout counter.
+			$lastErrorNum = $response['error_num'] ?? null;
 		}
 
-		return LoginResult::failure(__('Access Denied!  Login Failed.'));
+		return LoginResult::failure(__('Access Denied!  Login Failed.'), isCredentialFailure: ($lastErrorNum ?? null) === 1);
 	}
 
 	/**
@@ -168,7 +173,7 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 		$ldap->encryption         = (int) $this->param('encryption', 0);
 		$ldap->tls_certificate    = (int) $this->param('tls_certificate', LDAP_OPT_X_TLS_DEMAND);
 		$ldap->referrals          = (int) $this->param('referrals', 0);
-		$ldap->debug              = ($this->parameters['debug'] ?? '') === 'on' ? POLLER_VERBOSITY_LOW : POLLER_VERBOSITY_HIGH;
+		$ldap->debug              = $this->debugEnabled ? POLLER_VERBOSITY_LOW : POLLER_VERBOSITY_HIGH;
 		$ldap->dn                 = (string) $this->param('dn');
 
 		$ldap->group_dn           = (string) $this->param('group_dn');

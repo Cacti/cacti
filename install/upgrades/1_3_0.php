@@ -909,13 +909,15 @@ function upgrade_reports() : void {
  * landed in user_domains/user_domains_ldap and is migrated along with it.
  * Provider ids are carried over unchanged (old domain_id becomes the new id)
  * so existing user_auth.realm values (1000 + domain_id) keep resolving.
+ *
+ * Resumable by design: CREATE/INSERT use IF NOT EXISTS/ON DUPLICATE KEY
+ * UPDATE and the legacy tables are only dropped after every row has been
+ * carried over, so an upgrade interrupted partway through (crash, timeout)
+ * can simply be re-run to completion instead of leaving a half-migrated,
+ * unrecoverable login_providers table.
  */
 function login_providers_convert_1_3_0() : void {
-	if (db_table_exists('login_providers')) {
-		return;
-	}
-
-	db_install_execute("CREATE TABLE login_providers (
+	db_install_execute("CREATE TABLE IF NOT EXISTS login_providers (
 		id int(10) unsigned NOT NULL AUTO_INCREMENT,
 		name varchar(64) NOT NULL default '',
 		description varchar(255) NOT NULL default '',
@@ -977,7 +979,15 @@ function login_providers_convert_1_3_0() : void {
 
 		db_install_execute('INSERT INTO login_providers
 			(id, name, type, enabled, debug, is_default, user_id, parameters)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+			ON DUPLICATE KEY UPDATE
+				name       = VALUES(name),
+				type       = VALUES(type),
+				enabled    = VALUES(enabled),
+				debug      = VALUES(debug),
+				is_default = VALUES(is_default),
+				user_id    = VALUES(user_id),
+				parameters = VALUES(parameters)',
 			[
 				$domain['domain_id'],
 				$domain['domain_name'],

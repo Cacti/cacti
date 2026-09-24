@@ -252,7 +252,7 @@ function provider_edit() : void {
 			'value'         => '|arg1:type|',
 			'array'         => $provider_types,
 			'default'       => PROVIDER_TYPE_LDAP,
-			'on_change'     => 'initProviderType()',
+			'on_change'     => 'initProviderType(true)',
 		],
 		'button_label' => [
 			'method'        => 'textbox',
@@ -720,7 +720,7 @@ function provider_edit() : void {
 		var samlFields = <?php print json_encode(array_keys($fields_saml)); ?>;
 		var oidcFields = <?php print json_encode(array_keys($fields_openid)); ?>;
 
-		function initProviderType() {
+		function initProviderType(applyClaimDefault) {
 			var type = parseInt($('#type').val());
 			var groups = {
 				<?php print PROVIDER_TYPE_LDAP; ?>: ldapFields,
@@ -736,6 +736,23 @@ function provider_edit() : void {
 				});
 				toggleFields(toggles);
 			});
+
+			// Only swap the Full Name attribute default (OpenLDAP's 'cn' vs
+			// Active Directory's 'displayName') on an actual user-driven type
+			// change, and only while the field still holds one of those two
+			// stock defaults - never on initial page load, so an existing
+			// provider's saved (possibly blank/customized) value is untouched.
+			if (!applyClaimDefault) {
+				return;
+			}
+
+			var ldapDefault = 'cn';
+			var adDefault   = 'displayName';
+			var current     = $('#claim_full_name').val();
+
+			if (current === '' || current === ldapDefault || current === adDefault) {
+				$('#claim_full_name').val(type === <?php print PROVIDER_TYPE_AD; ?> ? adDefault : ldapDefault);
+			}
 		}
 
 		function initGroupMember() {

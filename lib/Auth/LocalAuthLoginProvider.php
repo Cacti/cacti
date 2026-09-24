@@ -54,6 +54,12 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 		return true;
 	}
 
+	public function getTemplateUserId() : int {
+		// Local accounts are never auto-provisioned from a template; the
+		// user_auth row must already exist under AUTH_METHOD_CACTI.
+		return 0;
+	}
+
 	public function authenticate(string $username, string $password) : LoginResult {
 		global $error, $error_msg;
 
