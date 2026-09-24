@@ -23,6 +23,7 @@
 */
 
 require_once(__DIR__ . '/client_address.php');
+require_once(__DIR__ . '/ldap.php');
 
 include(__DIR__ . '/../include/vendor/GoogleAuthenticator/FixedBitNotation.php');
 include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleAuthenticatorInterface.php');
@@ -30,6 +31,8 @@ include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleAuthenticator.ph
 include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleQrUrl.php');
 include(__DIR__ . '/../include/vendor/GoogleAuthenticator/RuntimeException.php');
 
+use Cacti\Auth\CredentialLoginProviderInterface;
+use Cacti\Auth\LoginProviderFactory;
 use phpseclib4\Crypt\RSA;
 
 /**
@@ -214,6 +217,10 @@ function auth_cookie_user_currently_allowed(array $user_info) : bool {
 		return false;
 	}
 
+	if (!auth_realm_allows_cookies((int) ($user_info['realm'] ?? 0))) {
+		return false;
+	}
+
 	return auth_user_has_access($user_info);
 }
 
@@ -298,7 +305,7 @@ function is_template_account(null|int|string $user_id) : bool {
 		return true;
 	} else {
 		$domain_template = db_fetch_cell_prepared('SELECT COUNT(*)
-			FROM user_domains
+			FROM login_providers
 			WHERE user_id = ?',
 			[$user_id]);
 
@@ -711,11 +718,14 @@ function auth_reset_token_replace(int $user_id, string $hash, int $timeout_minut
  * @return array An array of authentication realms
  */
 function get_auth_realms(bool $login = false) : array {
-	if (read_config_option('auth_method') == AUTH_METHOD_DOMAIN) {
-		$drealms = db_fetch_assoc('SELECT domain_id, domain_name
-			FROM user_domains
+	if (read_config_option('auth_method') == AUTH_METHOD_PROVIDERS) {
+		// SAML2/OpenID are redirect-only and cannot be driven from this username
+		// + password realm dropdown; they get their own login page buttons instead.
+		$drealms = db_fetch_assoc('SELECT id, name
+			FROM login_providers
 			WHERE enabled="on"
-			ORDER BY domain_name');
+			AND type IN (' . PROVIDER_TYPE_LDAP . ', ' . PROVIDER_TYPE_AD . ')
+			ORDER BY name');
 
 		if (cacti_sizeof($drealms)) {
 			if ($login) {
@@ -725,16 +735,17 @@ function get_auth_realms(bool $login = false) : array {
 				];
 
 				foreach ($drealms as $realm) {
-					$new_realms[1000 + $realm['domain_id']] = [
-						'name'     => $realm['domain_name'],
+					$new_realms[1000 + $realm['id']] = [
+						'name'     => $realm['name'],
 						'selected' => false
 					];
 				}
 
-				$default_realm = db_fetch_cell('SELECT domain_id
-					FROM user_domains
-					WHERE defdomain=1
-					AND enabled="on"');
+				$default_realm = db_fetch_cell('SELECT id
+					FROM login_providers
+					WHERE is_default=1
+					AND enabled="on"
+					AND type IN (' . PROVIDER_TYPE_LDAP . ', ' . PROVIDER_TYPE_AD . ')');
 
 				if (!empty($default_realm)) {
 					$new_realms[1000 + $default_realm]['selected'] = true;
@@ -745,7 +756,7 @@ function get_auth_realms(bool $login = false) : array {
 				$new_realms['0'] = __('Local');
 
 				foreach ($drealms as $realm) {
-					$new_realms[1000 + $realm['domain_id']] = $realm['domain_name'];
+					$new_realms[1000 + $realm['id']] = $realm['name'];
 				}
 			}
 
@@ -766,6 +777,60 @@ function get_auth_realms(bool $login = false) : array {
 		'3' => ['name' => __('LDAP')],
 		'2' => ['name' => __('Web Basic')],
 	];
+}
+
+/**
+ * Returns the enabled SAML2/OpenID Login Providers, for rendering as
+ * "Login with <button label>" buttons on the login page. Unlike
+ * get_auth_realms(), these are never part of the username/password realm
+ * dropdown since authenticating with them always starts with a browser
+ * redirect to the external IdP, handled by login_sso.php.
+ *
+ * @return array<int, array{realm: int, label: string}>
+ */
+function get_sso_login_providers() : array {
+	if (read_config_option('auth_method') != AUTH_METHOD_PROVIDERS) {
+		return [];
+	}
+
+	$providers = db_fetch_assoc('SELECT id, name, button_label
+		FROM login_providers
+		WHERE enabled = "on"
+		AND type IN (' . PROVIDER_TYPE_SAML2 . ', ' . PROVIDER_TYPE_OPENID . ')
+		ORDER BY name');
+
+	$buttons = [];
+
+	foreach ($providers as $provider) {
+		$buttons[] = [
+			'realm' => 1000 + $provider['id'],
+			'label' => $provider['button_label'] !== '' ? $provider['button_label'] : $provider['name'],
+		];
+	}
+
+	return $buttons;
+}
+
+/**
+ * Whether a login realm's provider allows "remember me" auth cookies.
+ * Realms below 1000 (local/basic/single-LDAP) always defer to the global
+ * auth_cache_enabled setting only, since they have no per-provider row.
+ *
+ * @param int $realm The login realm (0/2/3, or 1000 + login_providers.id).
+ *
+ * @return bool
+ */
+function auth_realm_allows_cookies(int $realm) : bool {
+	if ($realm < 1000) {
+		return true;
+	}
+
+	$allowed = db_fetch_cell_prepared('SELECT allow_auth_cookies
+		FROM login_providers
+		WHERE id = ?',
+		[$realm - 1000]);
+
+	return $allowed === false || $allowed === 'on';
 }
 
 /**
@@ -3976,15 +4041,17 @@ function local_auth_login_process(string $username) : array {
 }
 
 /**
- * Login to an LDAP domain account or generate an error
- * if there is an error, the globals error and error_msg will be set to notify the caller
- * that error and not to proceed with login.
+ * Login through a Login Provider (LDAP, Active Directory, SAML2, or OpenID).
+ *
+ * SAML2 and OpenID are redirect-only flows and cannot authenticate from a
+ * posted username/password, so a realm resolving to one of those types is
+ * rejected here; those providers are driven from login_sso.php instead.
  *
  * @param string $username The username of the user attempting to log in.
  *
  * @return array The user information if the login was successful, otherwise an empty array.
  */
-function domains_login_process(string $username) : array {
+function login_providers_login_process(string $username) : array {
 	global $realm, $error, $error_msg;
 
 	$realm    = gfrv('realm');
@@ -3994,7 +4061,7 @@ function domains_login_process(string $username) : array {
 		$error     = true;
 		$error_msg = __('Access Denied!  Login Failed.');
 
-		cacti_log('LOGIN FAILED: Empty Domains Username provided, from IP address' . get_client_addr(), false, 'AUTH');
+		cacti_log('LOGIN FAILED: Empty Provider Username provided, from IP address ' . get_client_addr(), false, 'AUTH');
 
 		return [];
 	}
@@ -4020,305 +4087,97 @@ function domains_login_process(string $username) : array {
 		return [];
 	}
 
-	$user    = [];
-	$ldap_dn = '';
-
-	if ($realm >= 1000 && $password != '') {
-		// get user DN
-		$ldap_dn_search_response = domains_ldap_search_dn($username, $realm);
-
-		if (is_array($ldap_dn_search_response) && $ldap_dn_search_response['error_num'] == '0') {
-			$ldap_dn = $ldap_dn_search_response['dn'];
-		} else {
-			$error     = true;
-			$error_msg = __('Access Denied!  Login Failed.');
-
-			cacti_log('LOGIN FAILED: LDAP Error: ' . (is_array($ldap_dn_search_response) ? $ldap_dn_search_response['error_text'] : 'No LDAP configuration for realm') . '. From IP address ' . get_client_addr(), false, 'AUTH');
-		}
-
-		if (!$error) {
-			// auth user with LDAP
-			$ldap_auth_response = domains_ldap_auth($username, $password, $ldap_dn, $realm);
-
-			if (is_array($ldap_auth_response) && $ldap_auth_response['error_num'] == '0') {
-				// User ok
-				$domain_name = db_fetch_cell_prepared('SELECT domain_name
-					FROM user_domains
-					WHERE domain_id = ?',
-					[$realm - 1000]);
-
-				// Locate user in database
-				cacti_log(sprintf("LOGIN: LDAP User '%s' Authenticated from Domain '%s' from IP address %s", $username, $domain_name, get_client_addr()), false, 'AUTH');
-
-				$user = db_fetch_row_prepared('SELECT *
-					FROM user_auth
-					WHERE username = ?
-					AND realm = ?',
-					[$username, $realm]);
-
-				// Create user from template if requested
-				$template_user = db_fetch_cell_prepared('SELECT user_id
-					FROM user_domains
-					WHERE domain_id = ?',
-					[$realm - 1000]);
-
-				$template_username = db_fetch_cell_prepared('SELECT username
-					FROM user_auth
-					WHERE id = ?',
-					[$template_user]);
-
-				if (!cacti_sizeof($user) && $template_user > 0 && $username != '') {
-					cacti_log("NOTE: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
-
-					// check that template user exists
-					$user_template = db_fetch_row_prepared('SELECT *
-						FROM user_auth
-						WHERE id = ?',
-						[$template_user]);
-
-					if (cacti_sizeof($user_template)) {
-						// template user found
-						$cn_full_name = db_fetch_cell_prepared('SELECT cn_full_name
-							FROM user_domains_ldap
-							WHERE domain_id = ?',
-							[$realm - 1000]);
-
-						$cn_email = db_fetch_cell_prepared('SELECT cn_email
-							FROM user_domains_ldap
-							WHERE domain_id = ?',
-							[$realm - 1000]);
-
-						if ($cn_full_name != '' || $cn_email != '') {
-							$ldap_cn_search_response = domains_ldap_search_cn($username, [$cn_full_name, $cn_email], $realm);
-
-							if (isset($ldap_cn_search_response['cn'])) {
-								$data_override = [];
-
-								if (array_key_exists($cn_full_name, $ldap_cn_search_response['cn'])) {
-									$data_override['full_name'] = $ldap_cn_search_response['cn'][$cn_full_name];
-								} else {
-									$data_override['full_name'] = '';
-								}
-
-								if (array_key_exists($cn_email, $ldap_cn_search_response['cn'])) {
-									$data_override['email_address'] = $ldap_cn_search_response['cn'][$cn_email];
-								} else {
-									$data_override['email_address'] = '';
-								}
-
-								user_copy($user_template['username'], $username, 0, $realm, false, $data_override);
-							} else {
-								cacti_log('LOGIN: fields not found code: ' . (is_array($ldap_cn_search_response) ? $ldap_cn_search_response['error_num'] : ''), false, 'AUTH');
-								user_copy($user_template['username'], $username, 0, $realm);
-							}
-						} else {
-							user_copy($user_template['username'], $username, 0, $realm);
-						}
-
-						// requery newly created user
-						$user = db_fetch_row_prepared('SELECT *
-							FROM user_auth
-							WHERE username = ?
-							AND realm = ?',
-							[$username, $realm]);
-					} else {
-						// error
-						$error     = true;
-						$error_msg = __('Access Denied!  Template user id %s does not exist.  Please contact your Administrator.', $template_user);
-
-						cacti_log("LOGIN FAILED: Template user id '" . $template_user . "' does not exist.", false, 'AUTH');
-					}
-				}
-
-				if (!$error && !cacti_sizeof($user)) {
-					$error     = true;
-					$error_msg = __('Access Denied!  Domain template is not configured.  Please contact your Administrator.');
-
-					cacti_log("LOGIN FAILED: LDAP user '" . $username . "' authenticated but the domain has no template and no existing account.", false, 'AUTH');
-				}
-			} else {
-				$error     = true;
-				$error_msg = __('Access Denied!  Login Failed.');
-
-				cacti_log('LOGIN FAILED: LDAP Error: ' . (is_array($ldap_auth_response) ? $ldap_auth_response['error_text'] : 'No LDAP configuration for realm') . ', from IP address ' . get_client_addr(), false, 'AUTH');
-
-				if (is_array($ldap_auth_response) && $ldap_auth_response['error_num'] == 1) {
-					auth_process_lockout($username, $realm);
-				}
-			}
-		}
-	} elseif ($password == '') {
-		// error
+	if ($realm < 1000 || $password == '') {
+		/**
+		 * Realms below 1000 are the local and legacy realms, so there is no
+		 * login_providers row to authenticate against. Without this arm the call
+		 * returned an empty user with $error still false, which auth_login.php
+		 * treats as an authenticated user with no account yet and provisions from
+		 * the template.
+		 */
 		$error     = true;
-		$error_msg = __('Access Denied!  No password provided by user.');
+		$error_msg = $password == '' ? __('Access Denied!  No password provided by user.') : __('Access Denied!  Login Failed.');
 
-		cacti_log(sprintf("LOGIN FAILED: LDAP No password provided for user '%s' from IP address %s", $username, get_client_addr()), false, 'AUTH');
+		cacti_log(sprintf("LOGIN FAILED: Login Realm '%s' is not a credential-based Login Provider for user '%s' from IP address %s", $realm, $username, get_client_addr()), false, 'AUTH');
 
 		auth_process_lockout($username, $realm);
-	} else {
-		/**
-		 * Realms at or below 3 are the local and legacy realms, so there is no
-		 * user_domains row to bind against. Without this arm the call returned an
-		 * empty user with $error still false, which auth_login.php treats as an
-		 * authenticated user with no account yet and provisions from the template.
-		 */
+
+		return [];
+	}
+
+	$provider = LoginProviderFactory::fromRealm((int) $realm);
+
+	if (!$provider instanceof CredentialLoginProviderInterface) {
 		$error     = true;
 		$error_msg = __('Access Denied!  Login Failed.');
 
-		cacti_log(sprintf("LOGIN FAILED: Login Realm '%s' is not an LDAP domain for user '%s' from IP address %s", $realm, $username, get_client_addr()), false, 'AUTH');
+		cacti_log(sprintf("LOGIN FAILED: Login Realm '%s' is not a credential-based Login Provider for user '%s' from IP address %s", $realm, $username, get_client_addr()), false, 'AUTH');
+
+		return [];
 	}
 
-	return is_array($user) ? $user : [];
-}
+	$result = $provider->authenticate($username, $password);
 
-/**
- * Authentications a LDAP domain login
- *
- * @param string $username The username to authenticate.
- * @param string $password The password for the user. Default is an empty string.
- * @param string $dn       The distinguished name (DN) for the LDAP search. Default is an empty string.
- * @param int    $realm    The realm ID for the LDAP domain. Default is 0.
- *
- * @return mixed - Returns an array with the authentication response if successful, or false if authentication fails.
- */
-function domains_ldap_auth(string $username, string $password = '', string $dn = '', int $realm = 0) : mixed {
-	$ldap  = new Ldap($realm - 1000);
-	$debug = $ldap->debug;
+	if (!$result->success) {
+		$error     = true;
+		$error_msg = $result->error !== '' ? $result->error : __('Access Denied!  Login Failed.');
 
-	if ($ldap->host === '') {
-		return LdapError::GetErrorDetails(LdapError::ConnectionUnavailable, false, '');
+		cacti_log(sprintf("LOGIN FAILED: Provider '%s' Error for user '%s' from IP address %s", $provider->getName(), $username, get_client_addr()), false, 'AUTH');
+
+		auth_process_lockout($username, $realm);
+
+		return [];
 	}
 
-	cacti_log(sprintf('LDAP: Initiating login for User \'%s\'', $username), false, 'AUTH', $debug);
+	cacti_log(sprintf("LOGIN: User '%s' Authenticated via Provider '%s' from IP address %s", $result->username, $provider->getName(), get_client_addr()), false, 'AUTH');
 
-	if (!empty($username)) {
-		$ldap->username = $username;
-	}
+	$user = db_fetch_row_prepared('SELECT *
+		FROM user_auth
+		WHERE username = ?
+		AND realm = ?',
+		[$result->username, $realm]);
 
-	if (!empty($password)) {
-		$ldap->password = $password;
-	}
+	$templateUserId = $provider->getTemplateUserId();
 
-	/**
-	 * If the server list is a space delimited set of servers
-	 * process each server until you get a bind, or fail
-	 */
-	$ldap_servers = preg_split('/\s+/', $ldap->host);
+	if (!cacti_sizeof($user) && $templateUserId > 0 && $result->username != '') {
+		$template = db_fetch_row_prepared('SELECT *
+			FROM user_auth
+			WHERE id = ?',
+			[$templateUserId]);
 
-	$response = [];
+		if (!cacti_sizeof($template)) {
+			$error     = true;
+			$error_msg = __('Access Denied!  Template user id %s does not exist.  Please contact your Administrator.', $templateUserId);
 
-	if (!is_array($ldap_servers)) {
-		return $response;
-	}
+			cacti_log("LOGIN FAILED: Template user id '" . $templateUserId . "' does not exist.", false, 'AUTH');
 
-	foreach ($ldap_servers as $ldap_server) {
-		$ldap->host = $ldap_server;
-
-		$response = $ldap->Authenticate();
-
-		if ($response['error_num'] == 0) {
-			cacti_log(sprintf('LDAP: Login for User \'%s\' Succeeded on Server %s', $username, $ldap_server), false, 'AUTH', $debug);
-
-			return $response;
+			return [];
 		}
+
+		cacti_log("NOTE: User '" . $result->username . "' does not exist, copying template user", false, 'AUTH');
+
+		user_copy($template['username'], $result->username, 0, $realm, false, [
+			'full_name'     => $result->claims['full_name'] ?? '',
+			'email_address' => $result->claims['email'] ?? '',
+		]);
+
+		$user = db_fetch_row_prepared('SELECT *
+			FROM user_auth
+			WHERE username = ?
+			AND realm = ?',
+			[$result->username, $realm]);
 	}
 
-	cacti_log(sprintf('LDAP: Login for User \'%s\' Failed on All Servers', $username), false, 'AUTH', $debug);
+	if (!cacti_sizeof($user)) {
+		$error     = true;
+		$error_msg = __('Access Denied!  Provider template is not configured.  Please contact your Administrator.');
 
-	return $response;
-}
+		cacti_log("LOGIN FAILED: user '" . $result->username . "' authenticated but the provider has no template and no existing account.", false, 'AUTH');
 
-/**
- * Searches the user dn for existence
- *
- * @param string $username The username to search for in the LDAP directory.
- * @param int    $realm    The realm identifier used to fetch LDAP domain configuration from the database.
- *
- * @return mixed - Returns an array with the LDAP search response if successful, or false if the search fails.
- */
-function domains_ldap_search_dn(string $username, int $realm) : mixed {
-	$ldap  = new Ldap($realm - 1000);
-	$debug = $ldap->debug;
-
-	cacti_log(sprintf('LDAP: Initiating search for User \'%s\'', $username), false, 'AUTH', $debug);
-
-	if (!empty($username)) {
-		$ldap->username = $username;
+		return [];
 	}
 
-	/**
-	 * If the server list is a space delimited set of servers
-	 * process each server until you get a bind, or fail
-	 */
-	$ldap_servers = preg_split('/\s+/', $ldap->host);
-
-	$response = [];
-
-	if (!is_array($ldap_servers)) {
-		return $response;
-	}
-
-	foreach ($ldap_servers as $ldap_server) {
-		$ldap->host = $ldap_server;
-
-		$response = $ldap->Search();
-
-		if ($response['error_num'] == 0) {
-			cacti_log(sprintf('LDAP: Search for User \'%s\' at Server \'%s\' Succeeded', $username, $ldap_server), false, 'AUTH', $debug);
-
-			return $response;
-		}
-	}
-
-	cacti_log(sprintf('LDAP: Search for User \'%s\' on all Servers Failed', $username), false, 'AUTH', $debug);
-
-	return $response;
-}
-
-/**
- * Searches for a common name (CN) in an LDAP directory based on the provided username and realm.
- *
- * @param string $username The username to search for in the LDAP directory.
- * @param array  $cn       An array of common names (CN) to search for.
- * @param int    $realm    The realm ID used to fetch LDAP domain configuration from the database.
- *
- * @return mixed - Returns an array with the LDAP response if successful, or false if the search fails.
- */
-function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0) : mixed {
-	$ldap  = new Ldap($realm - 1000);
-	$debug = $ldap->debug;
-
-	cacti_log(sprintf('LDAP: Initiating CN Search for User \'%s\'', $username), false, 'AUTH', $debug);
-
-	if (!empty($username)) {
-		$ldap->username = $username;
-	}
-
-	/* If the server list is a space delimited set of servers
-	 * process each server until you get a bind, or fail
-	 */
-	$ldap_servers = preg_split('/\s+/', $ldap->host);
-	$response     = [];
-
-	if (!is_array($ldap_servers)) {
-		return $response;
-	}
-
-	foreach ($ldap_servers as $ldap_server) {
-		$ldap->host = $ldap_server;
-
-		$response = $ldap->Getcn();
-
-		if ($response['error_num'] == 0) {
-			cacti_log(sprintf('LDAP: Search for User \'%s\' CN at Server \'%s\' Succeeded', $username, $ldap_server), false, 'AUTH', $debug);
-
-			return $response;
-		}
-	}
-
-	cacti_log(sprintf('LDAP: Search for User \'%s\' CN on all Servers Failed', $username), false, 'AUTH', $debug);
-
-	return $response;
+	return $user;
 }
 
 /**

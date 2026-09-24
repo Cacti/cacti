@@ -8,29 +8,28 @@
 $repoRoot     = dirname(__DIR__, 4);
 $ldapSource   = file_get_contents($repoRoot . '/lib/ldap.php');
 $authSource   = file_get_contents($repoRoot . '/lib/auth.php');
-$domainSource = file_get_contents($repoRoot . '/user_domains.php');
+$domainSource = file_get_contents($repoRoot . '/login_providers.php');
 
-test('domains_login_process does not interpolate LDAP error_text into the login page', function () use ($authSource) {
-	$start = strpos($authSource, 'function domains_login_process(');
+test('login_providers_login_process does not interpolate LDAP error_text into the login page', function () use ($authSource) {
+	$start = strpos($authSource, 'function login_providers_login_process(');
 	$body  = substr($authSource, $start, 9000);
 
 	expect($body)->not->toContain("__('LDAP Search Error: %s'");
 	expect($body)->not->toContain("__('Access Denied!  LDAP Error: %s'");
 });
 
-test('domains_login_process locks out on error_num not error_text', function () use ($authSource) {
-	$start = strpos($authSource, 'function domains_login_process(');
+test('login_providers_login_process locks out via auth_process_lockout on failure', function () use ($authSource) {
+	$start = strpos($authSource, 'function login_providers_login_process(');
 	$body  = substr($authSource, $start, 9000);
 
-	expect($body)->toContain("error_num'] == 1");
-	expect($body)->not->toContain("error_text'] == 1");
+	expect($body)->toContain('auth_process_lockout($username, $realm);');
 });
 
-test('domains_login_process fails when LDAP succeeded but the domain has no template and no user', function () use ($authSource) {
-	$start = strpos($authSource, 'function domains_login_process(');
+test('login_providers_login_process fails when authenticated but the provider has no template and no user', function () use ($authSource) {
+	$start = strpos($authSource, 'function login_providers_login_process(');
 	$body  = substr($authSource, $start, 9000);
 
-	expect($body)->toContain('Domain template is not configured');
+	expect($body)->toContain('Provider template is not configured');
 });
 
 test('Authenticate restores the Cacti handler on an empty password', function () use ($ldapSource) {

@@ -482,50 +482,47 @@ class Ldap {
 		$this->host  = '';
 
 		if ($domain_id > 0) {
-			$domain = db_fetch_row_prepared('SELECT *
-				FROM user_domains
-				WHERE domain_id = ?',
+			$provider = db_fetch_row_prepared('SELECT *
+				FROM login_providers
+				WHERE id = ?',
 				[$domain_id]);
 
-			if (cacti_sizeof($domain)) {
-				$settings = db_fetch_row_prepared('SELECT *
-					FROM user_domains_ldap
-					WHERE domain_id = ?',
-					[$domain_id]);
+			if (cacti_sizeof($provider)) {
+				$settings = json_decode((string) $provider['parameters'], true);
 
-				if (!cacti_sizeof($settings)) {
+				if (!is_array($settings)) {
 					return;
 				}
 
 				// Initialize LDAP parameters for Authenticate
-				$this->dn                = $settings['dn'];
-				$this->host              = $settings['server'];
-				$this->port              = $settings['port'];
-				$this->port_ssl          = $settings['port_ssl'];
-				$this->version           = $settings['proto_version'];
-				$this->encryption        = $settings['encryption'];
-				$this->referrals         = $settings['referrals'];
-				$this->tls_certificate   = $settings['tls_certificate'];
-				$this->network_timeout   = $settings['network_timeout'];
-				$this->bind_timeout      = $settings['bind_timeout'];
-				$this->debug             = $domain['debug'] == 'on' ? POLLER_VERBOSITY_LOW : POLLER_VERBOSITY_HIGH;
+				$this->dn                = $settings['dn'] ?? '';
+				$this->host              = $settings['server'] ?? '';
+				$this->port               = (int) ($settings['port'] ?? 389);
+				$this->port_ssl           = (int) ($settings['port_ssl'] ?? 636);
+				$this->version            = (int) ($settings['proto_version'] ?? 3);
+				$this->encryption         = (int) ($settings['encryption'] ?? 0);
+				$this->referrals          = (int) ($settings['referrals'] ?? 0);
+				$this->tls_certificate    = (int) ($settings['tls_certificate'] ?? LDAP_OPT_X_TLS_DEMAND);
+				$this->network_timeout    = (int) ($settings['network_timeout'] ?? 2);
+				$this->bind_timeout       = (int) ($settings['bind_timeout'] ?? 2);
+				$this->debug              = ($provider['debug'] ?? '') == 'on' ? POLLER_VERBOSITY_LOW : POLLER_VERBOSITY_HIGH;
 
-				// For group membership checks
-				$this->group_require     = $settings['group_require'] == 'on' ? true : false;
-				$this->group_dn          = $settings['group_dn'];
-				$this->group_attrib      = $settings['group_attrib'];
-				$this->group_member_type = $settings['group_member_type'];
+				// For group membership checks: a blank group_dn disables the check
+				$this->group_dn           = $settings['group_dn'] ?? '';
+				$this->group_require      = trim((string) $this->group_dn) !== '' ? 1 : 0;
+				$this->group_attrib       = $settings['group_attrib'] ?? '';
+				$this->group_member_type  = (int) ($settings['group_member_type'] ?? 1);
 
 				// Initialize LDAP parameters for Search
-				$this->mode              = $settings['mode'];
-				$this->search_base       = $settings['search_base'];
-				$this->search_filter     = $settings['search_filter'];
-				$this->specific_dn       = $settings['specific_dn'];
-				$this->specific_password = $settings['specific_password'];
+				$this->mode               = (int) ($settings['mode'] ?? 0);
+				$this->search_base        = $settings['search_base'] ?? '';
+				$this->search_filter      = $settings['search_filter'] ?? '';
+				$this->specific_dn        = $settings['specific_dn'] ?? '';
+				$this->specific_password  = $settings['specific_password'] ?? '';
 
 				// CN Search settings
-				$this->cn_full_name      = $settings['cn_full_name'];
-				$this->cn_email          = $settings['cn_email'];
+				$this->cn_full_name       = $settings['claim_full_name'] ?? '';
+				$this->cn_email           = $settings['claim_email'] ?? '';
 			}
 		}
 	}
