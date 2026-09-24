@@ -2,7 +2,7 @@
 <phpunit bootstrap="vendor/autoload.php" beStrictAboutOutputDuringTests="false">
 	<testsuites>
 		<testsuite name="clog device description filter regression">
-			<file>Unit/ClogDeviceDescriptionFilterTest.php</file>
+			<file>Unit/Core/Clog/ClogDeviceDescriptionFilterTest.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>

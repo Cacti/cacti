@@ -1667,8 +1667,17 @@ function determine_display_log_entry($message_type, $line, $filter, $matches = t
 		$search_line = $line;
 
 		if (cacti_sizeof($host_descriptions) && strpos($line, 'Device[') !== false) {
-			$search_line = preg_replace_callback('/Device\[(\d+)\]/', function($dmatch) use ($host_descriptions) {
-				return isset($host_descriptions[$dmatch[1]]) ? $dmatch[0] . ' (' . $host_descriptions[$dmatch[1]] . ')' : $dmatch[0];
+			// Device[] can hold a comma/space separated id list, matching clog_regex_device()
+			$search_line = preg_replace_callback('/Device\[([, \d]+)\]/', function($dmatch) use ($host_descriptions) {
+				$descriptions = array();
+
+				foreach (preg_split('/[,\s]+/', trim($dmatch[1]), -1, PREG_SPLIT_NO_EMPTY) as $id) {
+					if (isset($host_descriptions[$id])) {
+						$descriptions[] = $host_descriptions[$id];
+					}
+				}
+
+				return cacti_sizeof($descriptions) ? $dmatch[0] . ' (' . implode(', ', $descriptions) . ')' : $dmatch[0];
 			}, $line);
 		}
 

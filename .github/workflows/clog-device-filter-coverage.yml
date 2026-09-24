@@ -6,14 +6,14 @@ on:
     paths:
       - '.github/workflows/clog-device-filter-coverage.yml'
       - 'lib/functions.php'
-      - 'tests/Unit/ClogDeviceDescriptionFilterTest.php'
+      - 'tests/Unit/Core/Clog/ClogDeviceDescriptionFilterTest.php'
       - 'tests/phpunit-clog-device-filter.xml'
   pull_request:
     branches: [1.2.x]
     paths:
       - '.github/workflows/clog-device-filter-coverage.yml'
       - 'lib/functions.php'
-      - 'tests/Unit/ClogDeviceDescriptionFilterTest.php'
+      - 'tests/Unit/Core/Clog/ClogDeviceDescriptionFilterTest.php'
       - 'tests/phpunit-clog-device-filter.xml'
   workflow_dispatch:
 

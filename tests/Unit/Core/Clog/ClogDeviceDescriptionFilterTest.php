@@ -18,8 +18,8 @@
  * @group regression
  */
 
-require_once dirname(__DIR__, 2) . '/lib/functions.php';
-require_once dirname(__DIR__, 2) . '/lib/html_utility.php';
+require_once dirname(__DIR__, 4) . '/lib/functions.php';
+require_once dirname(__DIR__, 4) . '/lib/html_utility.php';
 
 if (!function_exists('api_plugin_is_enabled')) {
 	function api_plugin_is_enabled($plugin) {
@@ -54,4 +54,13 @@ test('lines without a Device[] tag are unaffected by the host description map', 
 
 	expect(determine_display_log_entry(-1, $line, 'no poller commands', true, array('11804' => 'se-boi-3504')))->toBe($line)
 		->and(determine_display_log_entry(-1, $line, 'se-boi-3504', true, array('11804' => 'se-boi-3504')))->toBeFalse();
+});
+
+test('a comma/space separated Device[] id list resolves every description', function () {
+	$line = "14/09/2026 15:49:21 - PCOMMAND Device[11804, 11805] NOTE: Recache Event Detected for Devices\n";
+
+	$host_descriptions = array('11804' => 'se-boi-3504', '11805' => 'se-boi-3505');
+
+	expect(determine_display_log_entry(-1, $line, 'se-boi-3504', true, $host_descriptions))->toBe($line)
+		->and(determine_display_log_entry(-1, $line, 'se-boi-3505', true, $host_descriptions))->toBe($line);
 });
