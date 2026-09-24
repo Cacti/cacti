@@ -749,6 +749,7 @@ require_once(CACTI_PATH_INCLUDE . '/domain.php');
 // vendor directory may not exist yet; CactiCsrfGuard degrades in that case.
 if (is_file($vendor_autoload)) {
 	require_once($vendor_autoload);
+	require_once(CACTI_PATH_LIBRARY . '/api_queue.php');
 }
 
 require_once(CACTI_PATH_INCLUDE . '/csrf.php');

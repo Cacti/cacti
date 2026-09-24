@@ -121,6 +121,7 @@ dynamic_include	./cli/upgrade_database.php			include($upgrade_file);
 dynamic_include	./include/global.php		require_once($vendor_autoload);
 dynamic_include	./include/global_languages.php				require_once($providerFull);
 dynamic_include	./index.php							require_once($file);
+dynamic_include	./lib/api_queue.php		require_once($queue_autoloader);
 dynamic_include	./lib/installer.php					include_once($upgrade_file);
 dynamic_include	./lib/plugins.php						include_once($full_path);
 dynamic_include	./lib/plugins.php			require_once($setup_file);
