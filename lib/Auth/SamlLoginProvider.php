@@ -139,12 +139,23 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 
 		// Let Cacti's own logout.php own session teardown/cookie clearing;
 		// this only validates the SAML message itself. stay:true keeps
-		// processSLO() from redirecting/exiting on our behalf when the
-		// message is a LogoutRequest.
-		$auth->processSLO(keepLocalSession: true, stay: true);
+		// processSLO() from redirecting/exiting on our behalf and instead
+		// returns the IdP LogoutResponse URL when the message was a
+		// LogoutRequest (a LogoutResponse being processed returns nothing
+		// further to send).
+		$responseUrl = $auth->processSLO(keepLocalSession: true, stay: true);
 
 		if ($auth->getErrors()) {
 			cacti_log('LOGIN: SAML SLO error for provider \'' . $this->getName() . '\': ' . implode(', ', $auth->getErrors()), false, 'AUTH');
+		}
+
+		// A LogoutRequest is not complete until the IdP receives this
+		// LogoutResponse; redirecting only to Cacti's own logout page would
+		// leave federated logout unacknowledged at the IdP.
+		if (is_string($responseUrl) && $responseUrl !== '') {
+			header('Location: ' . $responseUrl);
+
+			exit;
 		}
 
 		header('Location: ' . rtrim((string) read_config_option('base_url'), '/') . '/logout.php');

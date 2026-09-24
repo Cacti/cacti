@@ -936,8 +936,9 @@ function login_providers_convert_1_3_0() : void {
 		return;
 	}
 
-	$domains = db_fetch_assoc('SELECT * FROM user_domains');
-	$domains = is_array($domains) ? $domains : [];
+	$domains          = db_fetch_assoc('SELECT * FROM user_domains');
+	$domains          = is_array($domains) ? $domains : [];
+	$migration_failed = false;
 
 	foreach ($domains as $domain) {
 		$parameters = [];
@@ -980,7 +981,7 @@ function login_providers_convert_1_3_0() : void {
 			}
 		}
 
-		db_install_execute('INSERT INTO login_providers
+		$status = db_install_execute('INSERT INTO login_providers
 			(id, name, type, enabled, debug, is_default, user_id, parameters)
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 			ON DUPLICATE KEY UPDATE
@@ -1001,6 +1002,24 @@ function login_providers_convert_1_3_0() : void {
 				(int) $domain['user_id'],
 				json_encode($parameters),
 			]);
+
+		if ($status !== DB_STATUS_SUCCESS) {
+			$migration_failed = true;
+		}
+	}
+
+	// Only drop the legacy tables once every row is confirmed migrated - a
+	// transient SQL error here must not destroy the only copy of an
+	// unmigrated provider; a re-run of this upgrade will retry via the
+	// ON DUPLICATE KEY UPDATE above.
+	if ($migration_failed) {
+		return;
+	}
+
+	$migrated_count = db_fetch_cell('SELECT COUNT(*) FROM login_providers');
+
+	if ((int) $migrated_count < cacti_sizeof($domains)) {
+		return;
 	}
 
 	db_install_execute('DROP TABLE IF EXISTS user_domains_ldap');

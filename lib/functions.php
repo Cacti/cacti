@@ -175,12 +175,39 @@ function cacti_http_resolve_safe_ips(string $host) : array {
 	}
 
 	foreach ($ips as $ip) {
-		if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+		// An IPv4-mapped IPv6 literal (::ffff:x.x.x.x) is structurally valid
+		// IPv6 and can pass the private/reserved check below on the IPv6
+		// side while curl still connects via the embedded IPv4 address -
+		// validate that embedded address instead when present.
+		$mapped = cacti_http_ipv4_mapped_address($ip);
+
+		if (!filter_var($mapped ?? $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
 			return [];
 		}
 	}
 
 	return array_values($ips);
+}
+
+/**
+ * Extracts the embedded IPv4 address from an IPv4-mapped IPv6 literal
+ * (the ::ffff:0:0/96 range, e.g. "::ffff:169.254.169.254"), or null if
+ * $ip is not one.
+ *
+ * @param string $ip An IP literal, IPv4 or IPv6.
+ *
+ * @return string|null The embedded IPv4 address, or null.
+ */
+function cacti_http_ipv4_mapped_address(string $ip) : ?string {
+	$binary = @inet_pton($ip);
+
+	if ($binary === false || strlen($binary) !== 16 || substr($binary, 0, 10) !== str_repeat("\x00", 10) || substr($binary, 10, 2) !== "\xff\xff") {
+		return null;
+	}
+
+	$embedded = inet_ntop(substr($binary, 12, 4));
+
+	return $embedded !== false ? $embedded : null;
 }
 
 /**

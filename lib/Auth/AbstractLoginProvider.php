@@ -106,8 +106,10 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 
 		$id = sql_save($general, 'login_providers', 'id');
 
-		if ($id && (int) $general['type'] !== PROVIDER_TYPE_SAML2 && (int) $general['type'] !== PROVIDER_TYPE_OPENID) {
-			// LDAP/AD copy a template account rather than authenticate it directly.
+		if ($id) {
+			// Every provider type (LDAP/AD/SAML2/OpenID) copies a template
+			// account rather than authenticating it directly, so the template
+			// itself must never be directly usable as a local login.
 			db_execute_prepared('UPDATE user_auth
 				SET enabled = ""
 				WHERE id = ?',

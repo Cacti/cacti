@@ -1039,16 +1039,25 @@ class Ldap {
 				if ($ldap_entries !== false && isset($ldap_entries['count']) && $ldap_entries['count'] === 1) {
 					$output = LdapError::GetErrorDetails(LdapError::Success);
 
+					// ldap_get_entries() always lowercases attribute keys
+					// regardless of the case requested (e.g. AD's
+					// "displayName" comes back as "displayname"); look the
+					// value up case-insensitively but keep it under the
+					// originally-requested key so callers reading
+					// $cn[$this->cn[0]] still match what they asked for.
+					$attr0 = strtolower($this->cn[0]);
+					$attr1 = strtolower($this->cn[1]);
+
 					// check if we got an full username entry
-					if (array_key_exists($this->cn[0], $ldap_entries[0])) {
-						$output['cn'][$this->cn[0]] = $ldap_entries[0][$this->cn[0]][0];
+					if (array_key_exists($attr0, $ldap_entries[0])) {
+						$output['cn'][$this->cn[0]] = $ldap_entries[0][$attr0][0];
 					} else {
 						$output['cn'][$this->cn[0]] = '';
 					}
 
 					// check if we got an email entry
-					if (array_key_exists($this->cn[1], $ldap_entries[0])) {
-						$output['cn'][$this->cn[1]] = $ldap_entries[0][$this->cn[1]][0];
+					if (array_key_exists($attr1, $ldap_entries[0])) {
+						$output['cn'][$this->cn[1]] = $ldap_entries[0][$attr1][0];
 					} else {
 						$output['cn'][$this->cn[1]] = '';
 					}
