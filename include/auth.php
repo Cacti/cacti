@@ -99,6 +99,12 @@ if ($auth_method != 0) {
 				AND username = ?',
 				array($username));
 
+			if (cacti_sizeof($current_user) && $current_user['enabled'] != 'on') {
+				cacti_log("LOGIN FAILED: User '" . $current_user['username'] . "' is disabled and was refused Basic Authentication", false, 'AUTH');
+
+				$current_user = array();
+			}
+
 			if (cacti_sizeof($current_user)) {
 				/* GHSA-273r-qr93-wgcp: regenerate session id on auth transition */
 				if (!cacti_auth_transition((int)$current_user['id'], 'basic_auth')) {

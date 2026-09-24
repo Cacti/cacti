@@ -165,17 +165,27 @@ function check_auth_cookie() {
 
 		if ($user_id > 0 && $user_id != get_guest_account()) {
 			if ($realm_id == -1) {
-				$user_info = db_fetch_row_prepared('SELECT id, realm, username
+				$user_info = db_fetch_row_prepared('SELECT id, realm, username, enabled
 					FROM user_auth
 					WHERE id = ?
 					AND realm = 0',
 					array($user_id));
 			} else {
-				$user_info = db_fetch_row_prepared('SELECT id, realm, username
+				$user_info = db_fetch_row_prepared('SELECT id, realm, username, enabled
 					FROM user_auth
 					WHERE id = ?
 					AND realm = ?',
 					array($user_id, $realm_id));
+			}
+
+			/* a disabled account must not be able to authenticate from a cookie
+			   it was issued before it was disabled */
+			if (cacti_sizeof($user_info) && $user_info['enabled'] != 'on') {
+				db_execute_prepared('DELETE FROM user_auth_cache
+					WHERE user_id = ?',
+					array($user_info['id']));
+
+				return false;
 			}
 
 			if (cacti_sizeof($user_info)) {
