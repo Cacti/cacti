@@ -1,0 +1,1 @@
+Escape the executable path in exec_background() on non-win32, closing a command injection gap in poller automation

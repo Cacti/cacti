@@ -1,0 +1,1 @@
+Prefer the configured base_url over the client Host header when building the force_https redirect
