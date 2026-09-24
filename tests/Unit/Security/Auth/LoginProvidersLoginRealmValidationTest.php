@@ -130,7 +130,9 @@ final class LoginResult {
 		public $user = null,
 		public $error = '',
 		public $username = '',
-		public $claims = []
+		public $claims = [],
+		public $rememberMe = false,
+		public $isCredentialFailure = false
 	) {
 	}
 }
@@ -140,7 +142,7 @@ class StubCredentialProvider implements CredentialLoginProviderInterface {
 		$GLOBALS['provider_calls']++;
 
 		if (empty($GLOBALS['auth_success'])) {
-			return new LoginResult(false, null, 'Access Denied!  Login Failed.');
+			return new LoginResult(false, null, 'Access Denied!  Login Failed.', '', [], false, true);
 		}
 
 		return new LoginResult(true, null, '', $username, $GLOBALS['claims']);

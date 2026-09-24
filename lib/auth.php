@@ -736,6 +736,8 @@ function get_auth_realms(bool $login = false) : array {
 			AND type IN (' . PROVIDER_TYPE_LDAP . ', ' . PROVIDER_TYPE_AD . ')
 			ORDER BY name');
 
+		$drealms = is_array($drealms) ? $drealms : [];
+
 		if (cacti_sizeof($drealms)) {
 			if ($login) {
 				$new_realms['0'] = [
@@ -4104,6 +4106,8 @@ function login_providers_login_process(string $username) : array {
 		AND realm = ?',
 		[$result->username, $realm]);
 
+	$user = is_array($user) ? $user : [];
+
 	$templateUserId = $provider->getTemplateUserId();
 
 	if (!cacti_sizeof($user) && $templateUserId > 0 && $result->username != '') {
@@ -4111,6 +4115,8 @@ function login_providers_login_process(string $username) : array {
 			FROM user_auth
 			WHERE id = ?',
 			[$templateUserId]);
+
+		$template = is_array($template) ? $template : [];
 
 		if (!cacti_sizeof($template)) {
 			$error     = true;
@@ -4133,6 +4139,8 @@ function login_providers_login_process(string $username) : array {
 			WHERE username = ?
 			AND realm = ?',
 			[$result->username, $realm]);
+
+		$user = is_array($user) ? $user : [];
 	}
 
 	if (!cacti_sizeof($user)) {

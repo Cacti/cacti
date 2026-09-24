@@ -134,12 +134,14 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 	 * SLS binding carries LogoutRequest/LogoutResponse messages, which
 	 * processResponse() (built for AuthnResponse) does not understand.
 	 */
-	public function processLogout(): void {
+	public function processLogout(): never {
 		$auth = new SamlAuth($this->buildSettings());
 
 		// Let Cacti's own logout.php own session teardown/cookie clearing;
-		// this only validates the SAML message itself.
-		$auth->processSLO(true);
+		// this only validates the SAML message itself. stay:true keeps
+		// processSLO() from redirecting/exiting on our behalf when the
+		// message is a LogoutRequest.
+		$auth->processSLO(keepLocalSession: true, stay: true);
 
 		if ($auth->getErrors()) {
 			cacti_log('LOGIN: SAML SLO error for provider \'' . $this->getName() . '\': ' . implode(', ', $auth->getErrors()), false, 'AUTH');

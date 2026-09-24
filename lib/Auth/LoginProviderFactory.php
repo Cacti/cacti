@@ -58,6 +58,8 @@ final class LoginProviderFactory {
 			AND enabled = "on"',
 			[$realm - 1000]);
 
+		$row = is_array($row) ? $row : [];
+
 		if (!cacti_sizeof($row)) {
 			return null;
 		}

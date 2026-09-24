@@ -86,6 +86,8 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 			AND realm = 0',
 			[$username]);
 
+		$user = is_array($user) ? $user : [];
+
 		return cacti_sizeof($user) ? LoginResult::authenticated($username, [], $user) : LoginResult::failure('');
 	}
 
@@ -127,6 +129,8 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 				AND realm = 0',
 				[$username]);
 		}
+
+		$user = is_array($user) ? $user : [];
 
 		if (cacti_sizeof($user)) {
 			if ($user['enabled'] != 'on') {

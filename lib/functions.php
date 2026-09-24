@@ -56,6 +56,10 @@ require_once __DIR__ . '/client_address.php';
  * @return array{success: bool, status: int, body: string, error: string}
  */
 function cacti_http(string $method, string $url, array $options = []) : array {
+	if ($url === '' || $method === '') {
+		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Invalid URL'];
+	}
+
 	$parts = parse_url($url);
 
 	if ($parts === false || empty($parts['scheme']) || empty($parts['host'])) {
@@ -122,7 +126,7 @@ function cacti_http(string $method, string $url, array $options = []) : array {
 
 	curl_close($ch);
 
-	if ($body === false) {
+	if (!is_string($body)) {
 		return ['success' => false, 'status' => $status, 'body' => '', 'error' => $error !== '' ? $error : 'Request failed'];
 	}
 

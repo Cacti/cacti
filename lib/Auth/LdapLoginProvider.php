@@ -110,6 +110,8 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 			return LoginResult::failure(__('Access Denied!  Login Failed.'));
 		}
 
+		$lastErrorNum = null;
+
 		foreach ($servers as $server) {
 			$ldap           = $this->buildLdap($server);
 			$ldap->username = $username;
@@ -131,7 +133,7 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 			$lastErrorNum = $response['error_num'] ?? null;
 		}
 
-		return LoginResult::failure(__('Access Denied!  Login Failed.'), isCredentialFailure: ($lastErrorNum ?? null) === 1);
+		return LoginResult::failure(__('Access Denied!  Login Failed.'), isCredentialFailure: $lastErrorNum === 1);
 	}
 
 	/**

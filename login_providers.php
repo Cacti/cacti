@@ -210,6 +210,7 @@ function provider_edit() : void {
 
 	if (!ierv('id')) {
 		$provider = db_fetch_row_prepared('SELECT * FROM login_providers WHERE id = ?', [grv('id')]);
+		$provider = is_array($provider) ? $provider : [];
 
 		if (cacti_sizeof($provider)) {
 			$type = (int) $provider['type'];
@@ -707,9 +708,11 @@ function provider_edit() : void {
 
 	html_start_box($header_label, '100%', true, 3, 'center', '');
 
+	$fields_all = $fields_general + $fields_ldap + $fields_saml + $fields_openid;
+
 	draw_edit_form([
 		'config' => [],
-		'fields' => inject_form_variables($fields_general + $fields_ldap + $fields_saml + $fields_openid, $provider)
+		'fields' => inject_form_variables($fields_all, $provider)
 	]);
 
 	html_end_box(true, true);

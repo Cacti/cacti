@@ -123,7 +123,7 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 
 		if (!$token['success']) {
 			if ($this->debugEnabled) {
-				cacti_log('OIDC: token exchange failed for provider \'' . $this->getName() . '\': ' . ($token['error'] ?? ''), false, 'AUTH');
+				cacti_log('OIDC: token exchange failed for provider \'' . $this->getName() . '\': ' . $token['error'], false, 'AUTH');
 			}
 
 			return LoginResult::failure(__('Access Denied!  Login Failed.'));
@@ -270,7 +270,18 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 			}
 		}
 
-		return $discovery;
+		$result = [
+			'authorization_endpoint' => (string) $discovery['authorization_endpoint'],
+			'token_endpoint'         => (string) $discovery['token_endpoint'],
+			'jwks_uri'               => (string) $discovery['jwks_uri'],
+			'issuer'                 => (string) ($discovery['issuer'] ?? ''),
+		];
+
+		if (!empty($discovery['userinfo_endpoint'])) {
+			$result['userinfo_endpoint'] = (string) $discovery['userinfo_endpoint'];
+		}
+
+		return $result;
 	}
 
 	protected function redirectUri(): string {

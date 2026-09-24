@@ -74,9 +74,9 @@ try {
 
 			break;
 		case 'login':
+			// initiate() never returns; no break needed (or reachable) after it.
 			$provider->initiate();
 
-			break;
 		case 'sls':
 			if (!$provider instanceof SamlLoginProvider) {
 				header('HTTP/1.1 404 Not Found');
@@ -86,9 +86,8 @@ try {
 
 			// SLS carries LogoutRequest/LogoutResponse messages, not the
 			// AuthnResponse login_sso_complete()/complete() understand.
+			// processLogout() never returns; no break needed (or reachable) after it.
 			$provider->processLogout();
-
-			break;
 		case 'acs':
 		case 'callback':
 			login_sso_complete($provider, (int) $realm);
@@ -136,6 +135,8 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 		AND realm = ?',
 		[$result->username, $realm]);
 
+	$user = is_array($user) ? $user : [];
+
 	$templateUserId = method_exists($provider, 'getTemplateUserId') ? $provider->getTemplateUserId() : 0;
 
 	if (!cacti_sizeof($user) && $templateUserId > 0 && $result->username != '') {
@@ -143,6 +144,8 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 			FROM user_auth
 			WHERE id = ?',
 			[$templateUserId]);
+
+		$template = is_array($template) ? $template : [];
 
 		if (!cacti_sizeof($template)) {
 			cacti_log("LOGIN FAILED: Template user id '" . $templateUserId . "' does not exist.", false, 'AUTH');
@@ -162,6 +165,8 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 			WHERE username = ?
 			AND realm = ?',
 			[$result->username, $realm]);
+
+		$user = is_array($user) ? $user : [];
 	}
 
 	if (!cacti_sizeof($user)) {

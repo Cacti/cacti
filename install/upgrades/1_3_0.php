@@ -937,6 +937,7 @@ function login_providers_convert_1_3_0() : void {
 	}
 
 	$domains = db_fetch_assoc('SELECT * FROM user_domains');
+	$domains = is_array($domains) ? $domains : [];
 
 	foreach ($domains as $domain) {
 		$parameters = [];
@@ -946,6 +947,8 @@ function login_providers_convert_1_3_0() : void {
 				FROM user_domains_ldap
 				WHERE domain_id = ?',
 				[$domain['domain_id']]);
+
+			$ldap = is_array($ldap) ? $ldap : [];
 
 			if (cacti_sizeof($ldap)) {
 				$parameters = [

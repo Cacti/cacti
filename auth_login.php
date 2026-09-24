@@ -118,11 +118,13 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 	// Guest account checking - Not for builtin
 	if (!$error && !cacti_sizeof($user) && get_guest_account() > 0) {
 		// Locate guest user record
-		$user = db_fetch_row_prepared('SELECT *
+		$guestRow = db_fetch_row_prepared('SELECT *
 			FROM user_auth
 			WHERE id = ?',
 			[get_guest_account()]
 		);
+
+		$user = is_array($guestRow) ? $guestRow : [];
 
 		if ($user) {
 			cacti_log("LOGIN: Authenticated user '" . $username . "' using guest account '" . $user['username'] . "'", false, 'AUTH');
