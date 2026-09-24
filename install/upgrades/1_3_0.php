@@ -228,8 +228,6 @@ function upgrade_to_1_3_0() : void {
 		ldap_convert_1_3_0();
 	}
 
-	login_providers_convert_1_3_0();
-
 	upgrade_dsstats();
 
 	$data               = [];
@@ -671,6 +669,10 @@ function upgrade_to_1_3_0() : void {
 	if (!db_column_exists('user_domains_ldap', 'bind_timeout')) {
 		db_install_execute('ALTER TABLE  user_domains_ldap ADD COLUMN bind_timeout INT unsigned NOT NULL default 2 AFTER network_timeout');
 	}
+
+	// Runs last: reads the now schema-complete user_domains/user_domains_ldap
+	// rows (every legacy column above has landed) before dropping them.
+	login_providers_convert_1_3_0();
 }
 
 /**

@@ -93,11 +93,11 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 			return LoginResult::failure(__('Access Denied!  Login Failed.'));
 		}
 
-		if (!hash_equals($saved['state'], (string) ($_GET['state'] ?? ''))) {
+		if (!hash_equals($saved['state'], (string) gnrv('state'))) {
 			return LoginResult::failure(__('Access Denied!  Login Failed.'));
 		}
 
-		$code = (string) ($_GET['code'] ?? '');
+		$code = (string) gnrv('code');
 
 		if ($code === '') {
 			return LoginResult::failure(__('Access Denied!  Login Failed.'));

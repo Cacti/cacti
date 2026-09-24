@@ -99,7 +99,7 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 
 			$response = $search->Search();
 
-			if (($response['error_num'] ?? null) === '0') {
+			if (($response['error_num'] ?? null) === 0) {
 				$dn = $response['dn'];
 
 				break;
@@ -121,7 +121,7 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 
 			$response = $ldap->Authenticate();
 
-			if (($response['error_num'] ?? null) === '0') {
+			if (($response['error_num'] ?? null) === 0) {
 				return LoginResult::authenticated($username, $this->resolveClaims($server, $username));
 			}
 		}
