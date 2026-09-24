@@ -36,10 +36,10 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 	 * @param array $row A row from the `login_providers` table.
 	 */
 	public function __construct(array $row) {
-		$this->id               = (int) ($row['id'] ?? 0);
+		$this->id                = (int) ($row['id'] ?? 0);
 		$this->name              = (string) ($row['name'] ?? '');
 		$this->type              = (int) ($row['type'] ?? 0);
-		$this->enabled           = ($row['enabled'] ?? '') === 'on';
+		$this->enabled           = ($row['enabled'] ?? '')              === 'on';
 		$this->allowAuthCookies  = ($row['allow_auth_cookies'] ?? 'on') === 'on';
 		$this->templateUserId    = (int) ($row['user_id'] ?? 0);
 

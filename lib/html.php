@@ -2783,10 +2783,10 @@ function html_business_hours_filter(string $callBack = 'applyGraphFilter') : str
  * @param mixed  $host_id   - The ID of the host to be selected by default. Defaults to '-1'.
  * @param string $call_back - The JavaScript function to call when the selection changes. Defaults to 'applyFilter'.
  * @param string $sql_where - Not applied: the option list is populated via the shared
- *                            'ajax_hosts' action, which is not safe to pass caller-supplied
- *                            raw SQL to over the client/server boundary. Callers that need to
- *                            constrain the device list must add their own SQL-safe filtering
- *                            (e.g. by request var) inside their page's own 'ajax_hosts' handler.
+ *                          'ajax_hosts' action, which is not safe to pass caller-supplied
+ *                          raw SQL to over the client/server boundary. Callers that need to
+ *                          constrain the device list must add their own SQL-safe filtering
+ *                          (e.g. by request var) inside their page's own 'ajax_hosts' handler.
  * @param bool   $noany     - Whether to exclude the 'Any' option from the dropdown. Defaults to false.
  * @param bool   $nonone    - Whether to exclude the 'None' option from the dropdown. Defaults to false.
  *

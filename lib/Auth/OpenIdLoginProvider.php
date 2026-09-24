@@ -151,7 +151,7 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 			}
 		}
 
-		$usernameClaim = (string) $this->param('claim_username', 'preferred_username');
+		$usernameClaim  = (string) $this->param('claim_username', 'preferred_username');
 		$username       = (string) ($claims[$usernameClaim] ?? $claims['sub'] ?? '');
 
 		if ($username === '') {
@@ -199,8 +199,8 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 			return null;
 		}
 
-		$audience = (array) ($decoded['aud'] ?? []);
-		$clientId = (string) $this->param('client_id');
+		$audience        = (array) ($decoded['aud'] ?? []);
+		$clientId        = (string) $this->param('client_id');
 		$audienceMatches = in_array($clientId, $audience, true) || ($decoded['aud'] ?? null) === $clientId;
 
 		if (!$audienceMatches) {

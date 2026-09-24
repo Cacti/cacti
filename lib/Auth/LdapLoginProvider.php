@@ -94,7 +94,7 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 		$dn = '';
 
 		foreach ($servers as $server) {
-			$search = $this->buildLdap($server);
+			$search           = $this->buildLdap($server);
 			$search->username = $username;
 
 			$response = $search->Search();
@@ -111,7 +111,7 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 		}
 
 		foreach ($servers as $server) {
-			$ldap = $this->buildLdap($server);
+			$ldap           = $this->buildLdap($server);
 			$ldap->username = $username;
 			$ldap->password = $password;
 			$ldap->dn       = $dn;
@@ -140,7 +140,7 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 			return ['full_name' => '', 'email' => ''];
 		}
 
-		$ldap = $this->buildLdap($server);
+		$ldap           = $this->buildLdap($server);
 		$ldap->username = $username;
 		$ldap->cn       = [$fullNameAttr, $emailAttr];
 
@@ -159,7 +159,7 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 		// our already-decoded `parameters` JSON.
 		$ldap = new Ldap();
 
-		$ldap->host              = $server;
+		$ldap->host               = $server;
 		$ldap->port               = (int) $this->param('port', 389);
 		$ldap->port_ssl           = (int) $this->param('port_ssl', 636);
 		$ldap->version            = (int) $this->param('proto_version', 3);

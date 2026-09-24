@@ -25,13 +25,13 @@ namespace Cacti\Auth;
  */
 final class LoginResult {
 	/**
-	 * @param bool        $success    Whether authentication (and group gating) succeeded.
-	 * @param array|null  $user       The matching user_auth row, or null if not yet provisioned.
-	 * @param string      $error      Human readable failure reason, empty on success.
-	 * @param string      $username   The identity asserted by the provider (login/subject/NameID).
-	 * @param array       $claims     Normalized claims: full_name, email, groups (array of strings).
-	 * @param bool        $rememberMe Whether the user opted into a "remember me" auth cookie
-	 *                                before being redirected to the IdP.
+	 * @param bool       $success    Whether authentication (and group gating) succeeded.
+	 * @param array|null $user       The matching user_auth row, or null if not yet provisioned.
+	 * @param string     $error      Human readable failure reason, empty on success.
+	 * @param string     $username   The identity asserted by the provider (login/subject/NameID).
+	 * @param array      $claims     Normalized claims: full_name, email, groups (array of strings).
+	 * @param bool       $rememberMe Whether the user opted into a "remember me" auth cookie
+	 *                               before being redirected to the IdP.
 	 */
 	public function __construct(
 		public readonly bool $success,

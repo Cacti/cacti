@@ -62,7 +62,7 @@ switch (grv('action')) {
 }
 
 /* --------------------------
-    The Save Function
+	The Save Function
    -------------------------- */
 
 function form_save() : void {
@@ -716,17 +716,17 @@ function provider_edit() : void {
 
 	?>
 	<script type='text/javascript'>
-		var ldapFields = <?php print json_encode(array_keys($fields_ldap));?>;
-		var samlFields = <?php print json_encode(array_keys($fields_saml));?>;
-		var oidcFields = <?php print json_encode(array_keys($fields_openid));?>;
+		var ldapFields = <?php print json_encode(array_keys($fields_ldap)); ?>;
+		var samlFields = <?php print json_encode(array_keys($fields_saml)); ?>;
+		var oidcFields = <?php print json_encode(array_keys($fields_openid)); ?>;
 
 		function initProviderType() {
 			var type = parseInt($('#type').val());
 			var groups = {
-				<?php print PROVIDER_TYPE_LDAP;?>: ldapFields,
-				<?php print PROVIDER_TYPE_AD;?>: ldapFields,
-				<?php print PROVIDER_TYPE_SAML2;?>: samlFields,
-				<?php print PROVIDER_TYPE_OPENID;?>: oidcFields
+				<?php print PROVIDER_TYPE_LDAP; ?>: ldapFields,
+				<?php print PROVIDER_TYPE_AD; ?>: ldapFields,
+				<?php print PROVIDER_TYPE_SAML2; ?>: samlFields,
+				<?php print PROVIDER_TYPE_OPENID; ?>: oidcFields
 			};
 
 			[ldapFields, samlFields, oidcFields].forEach(function(fields) {

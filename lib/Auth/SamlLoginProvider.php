@@ -187,7 +187,7 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 				'privateKey'    => (string) $this->param('sp_private_key'),
 			],
 			'idp' => [
-				'entityId' => (string) $this->param('idp_entity_id'),
+				'entityId'            => (string) $this->param('idp_entity_id'),
 				'singleSignOnService' => [
 					'url'     => (string) $this->param('idp_sso_url'),
 					'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',

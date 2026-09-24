@@ -373,7 +373,7 @@ if (cacti_sizeof($sso_providers)) {
 	foreach ($sso_providers as $sso_provider) { ?>
 	<tr>
 		<td colspan='2'>
-			<a class='ui-button ui-corner-all ui-widget sso-login-link' data-realm='<?php print $sso_provider['realm'];?>' href='login_sso.php?action=login&realm=<?php print $sso_provider['realm'];?>'><?php print __esc('Login with %s', $sso_provider['label']);?></a>
+			<a class='ui-button ui-corner-all ui-widget sso-login-link' data-realm='<?php print $sso_provider['realm']; ?>' href='login_sso.php?action=login&realm=<?php print $sso_provider['realm']; ?>'><?php print __esc('Login with %s', $sso_provider['label']); ?></a>
 		</td>
 	</tr>
 <?php

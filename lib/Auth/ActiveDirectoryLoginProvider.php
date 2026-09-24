@@ -28,7 +28,7 @@ namespace Cacti\Auth;
 class ActiveDirectoryLoginProvider extends LdapLoginProvider {
 	protected function resolveClaims(string $server, string $username): array {
 		if (trim((string) $this->param('claim_full_name')) === '' && trim((string) $this->param('claim_email')) === '') {
-			$ldap = $this->buildLdap($server);
+			$ldap           = $this->buildLdap($server);
 			$ldap->username = $username;
 			$ldap->cn       = ['displayName', 'mail'];
 
