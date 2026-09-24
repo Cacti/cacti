@@ -156,15 +156,6 @@ function check_auth_cookie() : int|false {
 					[$user_id, $realm_id]);
 			}
 
-			// a disabled account must not authenticate from a cookie issued before it was disabled
-			if (cacti_sizeof($user_info) && $user_info['enabled'] != 'on') {
-				db_execute_prepared('DELETE FROM user_auth_cache
-					WHERE user_id = ?',
-					[$user_info['id']]);
-
-				return false;
-			}
-
 			if (cacti_sizeof($user_info)) {
 				$secret = hash('sha512', $token, false);
 
@@ -176,6 +167,15 @@ function check_auth_cookie() : int|false {
 				);
 
 				if (empty($found)) {
+					return false;
+				}
+
+				// a disabled account must not authenticate from a cookie issued before it was disabled
+				if ($user_info['enabled'] != 'on') {
+					db_execute_prepared('DELETE FROM user_auth_cache
+						WHERE user_id = ?',
+						[$user_info['id']]);
+
 					return false;
 				}
 

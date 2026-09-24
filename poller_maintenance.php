@@ -939,7 +939,7 @@ function cleanup_ds_and_graphs() : mixed {
 	foreach ($rrds as $item) {
 		$ldi      = $item['local_data_id'];
 		$name     = $item['name_cache'];
-		/* resolve through get_data_source_path() so the RRA containment check applies here too */
+		// resolve through get_data_source_path() so the RRA containment check applies here too
 		$real_pth = get_data_source_path($ldi, true);
 
 		if (!file_exists($real_pth)) {

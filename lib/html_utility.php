@@ -1598,8 +1598,8 @@ function validate_redirect_url($url = '', $default = 'index.php') {
  * Builds a forced-HTTPS redirect using a server-configured host name.
  *
  * @param string $server_name  The web server's configured name, optionally
- *                              followed by ':port' (IPv6 literals must be
- *                              bracketed first, e.g. '[::1]:8080').
+ *                             followed by ':port' (IPv6 literals must be
+ *                             bracketed first, e.g. '[::1]:8080').
  * @param string $request_uri  The requested local path and query string.
  * @param string $default_path A local fallback when the request URI is invalid.
  *
@@ -1636,7 +1636,7 @@ function cacti_build_https_redirect_url(string $server_name, string $request_uri
 			$port = substr($server_name, $close + 2);
 		}
 	} elseif (substr_count($server_name, ':') === 1) {
-		list($host, $port) = explode(':', $server_name, 2);
+		[$host, $port] = explode(':', $server_name, 2);
 	} else {
 		$host = $server_name;
 		$port = '';

@@ -3259,7 +3259,7 @@ function data_source_path_within_rra(string $path) : bool {
 		return false;
 	}
 
-	/* block symlink pivots below the RRA directory, even for RRD files that don't exist yet */
+	// block symlink pivots below the RRA directory, even for RRD files that don't exist yet
 	$walk = $base_real;
 
 	foreach ($parts as $segment) {
