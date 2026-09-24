@@ -578,6 +578,14 @@ function form_save() : void {
 			db_execute_prepared('DELETE FROM sessions WHERE user_id = ?', [$save['id']]);
 		}
 
+		// disabling here has to revoke like user_disable() does, or the account
+		// keeps its remember-me token and stays logged in on its current session
+		if (!empty($save['id']) && $save['enabled'] != 'on') {
+			db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', [$save['id']]);
+			db_execute_prepared('DELETE FROM user_auth_row_cache WHERE user_id = ?', [$save['id']]);
+			db_execute_prepared('DELETE FROM sessions WHERE user_id = ?', [$save['id']]);
+		}
+
 		$save = api_plugin_hook_function('user_admin_setup_sql_save', $save);
 
 		if (!is_error_message()) {
