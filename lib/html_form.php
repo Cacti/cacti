@@ -788,8 +788,7 @@ function form_cert_box(string $form_name, mixed $stored_val, mixed $default_val,
 		$stored_val = $default_val;
 	}
 
-	$error_class  = '';
-	$textarea_val = '';
+	$error_class = '';
 
 	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
 		if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
@@ -798,13 +797,11 @@ function form_cert_box(string $form_name, mixed $stored_val, mixed $default_val,
 		}
 	}
 
-	// Repopulate only what the admin just typed in this submission (e.g. a
-	// sibling field failed validation) - never the stored certificate.
-	if (isset($_SESSION[SESS_FIELD_VALUES])) {
-		if (!empty($_SESSION[SESS_FIELD_VALUES][$form_name])) {
-			$textarea_val = $_SESSION[SESS_FIELD_VALUES][$form_name];
-		}
-	}
+	// Unconditionally blank: form_input_validate() writes SESS_FIELD_VALUES
+	// on every submission (even a successful save), and that save's redirect
+	// runs before bottom_footer() clears it - repopulating from it here would
+	// echo the just-submitted certificate back on the very next page load.
+	$textarea_val = '';
 
 	if (trim((string) $stored_val) == '') {
 		$extra_data = '';
@@ -845,8 +842,7 @@ function form_cert_box(string $form_name, mixed $stored_val, mixed $default_val,
  * @return void
  */
 function form_privkey_box(string $form_name, mixed $stored_val, int $form_rows, int $form_columns) : void {
-	$error_class  = '';
-	$textarea_val = '';
+	$error_class = '';
 
 	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
 		if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
@@ -855,13 +851,12 @@ function form_privkey_box(string $form_name, mixed $stored_val, int $form_rows, 
 		}
 	}
 
-	// Repopulate only what the admin just typed in this submission (e.g. a
-	// sibling field failed validation) - never the stored/encrypted value.
-	if (isset($_SESSION[SESS_FIELD_VALUES])) {
-		if (!empty($_SESSION[SESS_FIELD_VALUES][$form_name])) {
-			$textarea_val = $_SESSION[SESS_FIELD_VALUES][$form_name];
-		}
-	}
+	// Unconditionally blank: form_input_validate() writes SESS_FIELD_VALUES
+	// on every submission (even a successful save), and that save's redirect
+	// runs before bottom_footer() clears it - repopulating from it here would
+	// echo the just-submitted plaintext private key back on the very next
+	// page load. Never restore this field's value from session.
+	$textarea_val = '';
 
 	if (trim((string) $stored_val) == '') {
 		$extra_data = "<span class='cactiTooltipHint fa-solid fa-circle-xmark' style='padding:5px;font-size:16px;color:red' title='" . __esc('No Private Key is currently stored') . "'>" . __esc('[not set]') . '</span>';

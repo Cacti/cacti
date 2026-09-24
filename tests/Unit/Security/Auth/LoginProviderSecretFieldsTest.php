@@ -69,8 +69,55 @@ test('decrypting with the wrong key or malformed ciphertext fails safely instead
 
 	$ciphertext = cacti_encrypt_secret_with_key($plaintext, $key);
 
-	expect(cacti_decrypt_secret_with_key($ciphertext, $wrongKey))->not->toBe($plaintext);
+	expect(cacti_decrypt_secret_with_key($ciphertext, $wrongKey))->toBeFalse();
 	expect(cacti_decrypt_secret_with_key('not-even-base64-iv-data', $key))->toBeFalse();
+});
+
+test('a tampered ciphertext byte is rejected by the GCM authentication tag instead of decrypting to modified plaintext', function () {
+	$key       = random_bytes(32);
+	$plaintext = 'do not modify me';
+
+	$ciphertext = cacti_encrypt_secret_with_key($plaintext, $key);
+	$raw        = base64_decode($ciphertext, true);
+
+	// Flip a bit well past the IV+tag prefix, inside the actual ciphertext bytes.
+	$flipAt        = strlen($raw) - 1;
+	$raw[$flipAt]  = chr(ord($raw[$flipAt]) ^ 0xFF);
+	$tampered      = base64_encode($raw);
+
+	expect(cacti_decrypt_secret_with_key($tampered, $key))->toBeFalse();
+});
+
+test('decryptedPrivateKey() falls back to a legacy plaintext PEM that predates encryption', function () {
+	$legacyPem = "-----BEGIN PRIVATE KEY-----\nlegacy-unencrypted-material\n-----END PRIVATE KEY-----";
+
+	$provider = new \Cacti\Auth\SamlLoginProvider([
+		'id'         => 1,
+		'name'       => 'Test SAML',
+		'type'       => PROVIDER_TYPE_SAML2,
+		'enabled'    => 'on',
+		'parameters' => json_encode(['sp_private_key' => $legacyPem]),
+	]);
+
+	$method = new ReflectionMethod($provider, 'decryptedPrivateKey');
+	$method->setAccessible(true);
+
+	expect($method->invoke($provider))->toBe($legacyPem);
+});
+
+test('decryptedPrivateKey() returns "" for data that is neither valid ciphertext nor a PEM', function () {
+	$provider = new \Cacti\Auth\SamlLoginProvider([
+		'id'         => 1,
+		'name'       => 'Test SAML',
+		'type'       => PROVIDER_TYPE_SAML2,
+		'enabled'    => 'on',
+		'parameters' => json_encode(['sp_private_key' => 'total garbage, neither base64 nor a PEM']),
+	]);
+
+	$method = new ReflectionMethod($provider, 'decryptedPrivateKey');
+	$method->setAccessible(true);
+
+	expect($method->invoke($provider))->toBe('');
 });
 
 test('form_cert_box() shows the expiration date of a pasted valid certificate', function () {

@@ -36,7 +36,11 @@ use Cacti\Auth\LoginProviderFactory;
 use phpseclib4\Crypt\RSA;
 
 if (!defined('CACTI_SECRET_CIPHER')) {
-	define('CACTI_SECRET_CIPHER', 'aes-256-cbc');
+	define('CACTI_SECRET_CIPHER', 'aes-256-gcm');
+}
+
+if (!defined('CACTI_SECRET_TAG_LENGTH')) {
+	define('CACTI_SECRET_TAG_LENGTH', 16);
 }
 
 /**
@@ -4303,6 +4307,14 @@ function rsa_check_keypair() : void {
  * secrets that are shared server-wide configuration, not owned by a user.
  *
  * @return string The raw (binary) 256-bit key.
+ *
+ * @throws \RuntimeException If the persisted key is present but corrupt
+ *                           (not valid base64, or not exactly 32 bytes
+ *                           once decoded). Silently substituting a fresh,
+ *                           unpersisted key here would make every existing
+ *                           ciphertext permanently undecryptable and every
+ *                           newly encrypted value unreadable on the very
+ *                           next request, without any indication why.
  */
 function cacti_secret_key() : string {
 	$key = read_config_option('secret_encryption_key');
@@ -4320,33 +4332,52 @@ function cacti_secret_key() : string {
 
 	$decoded = base64_decode($key, true);
 
-	return $decoded !== false ? $decoded : random_bytes(32);
+	if ($decoded === false || strlen($decoded) !== 32) {
+		throw new \RuntimeException('The secret_encryption_key setting is missing or corrupt; encrypted secrets cannot be read or written until it is restored.');
+	}
+
+	return $decoded;
 }
 
 /**
  * Encrypts an arbitrary secret (e.g. a pasted SAML private key) for storage,
- * using Cacti's per-installation AES-256-CBC key. Modeled on plugin_servcheck's
+ * using Cacti's per-installation AES-256-GCM key. Modeled on plugin_servcheck's
  * servcheck_encrypt_credential(): a fresh random IV per call, prefixed onto
- * the ciphertext and base64-encoded as a single stored string.
+ * the ciphertext and base64-encoded as a single stored string. GCM's
+ * authentication tag is stored alongside so decryption can detect a
+ * tampered/corrupted database value instead of silently accepting it.
  *
  * @param string $plaintext The secret to encrypt.
  *
- * @return string The base64-encoded IV + ciphertext, or '' for an empty input.
+ * @return string The base64-encoded IV + tag + ciphertext, or '' for an empty input.
+ *
+ * @throws \RuntimeException If the per-installation key is missing/corrupt; see cacti_secret_key().
  */
 function cacti_encrypt_secret(string $plaintext) : string {
 	return cacti_encrypt_secret_with_key($plaintext, cacti_secret_key());
 }
 
 /**
- * Decrypts a secret produced by cacti_encrypt_secret().
+ * Decrypts a secret produced by cacti_encrypt_secret(). Degrades to false
+ * (rather than throwing) when the per-installation key itself is
+ * missing/corrupt, since a read failure must not crash the whole page -
+ * callers already treat false as "cannot use this secret".
  *
- * @param string $ciphertext The base64-encoded IV + ciphertext.
+ * @param string $ciphertext The base64-encoded IV + tag + ciphertext.
  *
  * @return string|false The decrypted secret, '' for an empty input, or false
- *                       if the stored data is malformed and cannot be decrypted.
+ *                      if the stored data or the encryption key is invalid.
  */
 function cacti_decrypt_secret(string $ciphertext) : string|false {
-	return cacti_decrypt_secret_with_key($ciphertext, cacti_secret_key());
+	try {
+		$key = cacti_secret_key();
+	} catch (\RuntimeException $e) {
+		cacti_log('ERROR: ' . $e->getMessage(), false, 'AUTH');
+
+		return false;
+	}
+
+	return cacti_decrypt_secret_with_key($ciphertext, $key);
 }
 
 /**
@@ -4357,29 +4388,36 @@ function cacti_decrypt_secret(string $ciphertext) : string|false {
  * @param string $plaintext The secret to encrypt.
  * @param string $key       The raw (binary) 256-bit AES key.
  *
- * @return string The base64-encoded IV + ciphertext, or '' for an empty input.
+ * @return string The base64-encoded IV + tag + ciphertext, or '' for an empty input.
  */
 function cacti_encrypt_secret_with_key(string $plaintext, string $key) : string {
 	if ($plaintext === '') {
 		return '';
 	}
 
-	$iv_length = openssl_cipher_iv_length(CACTI_SECRET_CIPHER);
-	$iv        = openssl_random_pseudo_bytes($iv_length);
-	$encrypted = openssl_encrypt($plaintext, CACTI_SECRET_CIPHER, $key, OPENSSL_RAW_DATA, $iv);
+	$iv  = openssl_random_pseudo_bytes(openssl_cipher_iv_length(CACTI_SECRET_CIPHER));
+	$tag = '';
 
-	return base64_encode($iv . $encrypted);
+	$encrypted = openssl_encrypt($plaintext, CACTI_SECRET_CIPHER, $key, OPENSSL_RAW_DATA, $iv, $tag, '', CACTI_SECRET_TAG_LENGTH);
+
+	if ($encrypted === false) {
+		throw new \RuntimeException('Failed to encrypt secret.');
+	}
+
+	return base64_encode($iv . $tag . $encrypted);
 }
 
 /**
  * Core decryption logic behind cacti_decrypt_secret(); see
- * cacti_encrypt_secret_with_key().
+ * cacti_encrypt_secret_with_key(). openssl_decrypt() itself returns false
+ * whenever the GCM tag fails to verify, so a tampered/corrupted database
+ * value is rejected rather than being silently accepted as valid plaintext.
  *
- * @param string $ciphertext The base64-encoded IV + ciphertext.
+ * @param string $ciphertext The base64-encoded IV + tag + ciphertext.
  * @param string $key        The raw (binary) 256-bit AES key.
  *
  * @return string|false The decrypted secret, '' for an empty input, or false
- *                       if the stored data is malformed and cannot be decrypted.
+ *                      if the stored data is malformed, tampered, or cannot be decrypted.
  */
 function cacti_decrypt_secret_with_key(string $ciphertext, string $key) : string|false {
 	if ($ciphertext === '') {
@@ -4388,16 +4426,18 @@ function cacti_decrypt_secret_with_key(string $ciphertext, string $key) : string
 
 	$raw = base64_decode($ciphertext, true);
 
-	$iv_length = openssl_cipher_iv_length(CACTI_SECRET_CIPHER);
+	$iv_length  = openssl_cipher_iv_length(CACTI_SECRET_CIPHER);
+	$tag_length = CACTI_SECRET_TAG_LENGTH;
 
-	if ($raw === false || strlen($raw) <= $iv_length) {
+	if ($raw === false || strlen($raw) <= $iv_length + $tag_length) {
 		return false;
 	}
 
 	$iv         = substr($raw, 0, $iv_length);
-	$ciphertext = substr($raw, $iv_length);
+	$tag        = substr($raw, $iv_length, $tag_length);
+	$ciphertext = substr($raw, $iv_length + $tag_length);
 
-	return openssl_decrypt($ciphertext, CACTI_SECRET_CIPHER, $key, OPENSSL_RAW_DATA, $iv);
+	return openssl_decrypt($ciphertext, CACTI_SECRET_CIPHER, $key, OPENSSL_RAW_DATA, $iv, $tag, '');
 }
 
 /**

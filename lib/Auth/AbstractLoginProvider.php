@@ -108,15 +108,30 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 	/**
 	 * Encrypts a freshly submitted secret for storage, or - when the "privkey"
 	 * field was left blank because it never redisplays its stored value -
-	 * keeps the existing (already-encrypted) value for $key unchanged.
+	 * keeps the existing value for $key unchanged, EXCEPT that a legacy
+	 * plaintext value (one that predates encryption being added, e.g. a
+	 * provider saved before this feature existed) is transparently
+	 * encrypted at this point too, so a plain "Save" upgrades it instead of
+	 * leaving it unencrypted at rest indefinitely.
 	 *
 	 * @param string $submitted The raw value read from the request, '' if left blank.
 	 * @param string $key       The parameters[] key being saved.
 	 *
-	 * @return string The value to store: freshly encrypted, the untouched existing value, or ''.
+	 * @return string The value to store: freshly encrypted, the existing value re-encrypted
+	 *                if it was still legacy plaintext, or ''.
 	 */
 	protected static function encryptOrKeepExisting(string $submitted, string $key): string {
-		return $submitted !== '' ? cacti_encrypt_secret($submitted) : self::existingParameter((int) gnrv('id'), $key);
+		if ($submitted !== '') {
+			return cacti_encrypt_secret($submitted);
+		}
+
+		$existing = self::existingParameter((int) gnrv('id'), $key);
+
+		if ($existing === '') {
+			return '';
+		}
+
+		return cacti_decrypt_secret($existing) !== false ? $existing : cacti_encrypt_secret($existing);
 	}
 
 	/**

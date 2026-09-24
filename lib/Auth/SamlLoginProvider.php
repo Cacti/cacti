@@ -69,12 +69,21 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 	 * Decrypts the stored SP private key for use in buildSettings().
 	 * Malformed/undecryptable ciphertext (e.g. a corrupted row, or the
 	 * server-wide encryption key having changed) degrades to "no private
-	 * key configured" rather than throwing, since the key is optional.
+	 * key configured" rather than throwing, since the key is optional -
+	 * EXCEPT that a value which fails to decrypt is also tried as-is, since
+	 * a provider saved before encryption was added still holds the raw PEM
+	 * directly; only if that raw value doesn't look like a private key
+	 * either do we give up.
 	 */
 	private function decryptedPrivateKey(): string {
-		$decrypted = cacti_decrypt_secret((string) $this->param('sp_private_key'));
+		$stored    = (string) $this->param('sp_private_key');
+		$decrypted = cacti_decrypt_secret($stored);
 
-		return $decrypted !== false ? $decrypted : '';
+		if ($decrypted !== false) {
+			return $decrypted;
+		}
+
+		return str_contains($stored, 'PRIVATE KEY') ? $stored : '';
 	}
 
 	public function getButtonLabel(): string {
