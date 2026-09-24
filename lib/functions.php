@@ -2880,7 +2880,15 @@ function data_source_path_within_rra($path) {
 		$parts[] = $segment;
 	}
 
-	$base_real = realpath($config['rra_path']);
+	/* realpath() re-stats every ancestor directory of the RRA root on each call;
+	 * that root doesn't change within a process, so resolve it once and reuse it. */
+	static $base_real_cache = array();
+
+	if (!array_key_exists($config['rra_path'], $base_real_cache)) {
+		$base_real_cache[$config['rra_path']] = realpath($config['rra_path']);
+	}
+
+	$base_real = $base_real_cache[$config['rra_path']];
 
 	if ($base_real === false) {
 		return false;
