@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -security: Escape the device Location filter option value to stop stored XSS
 -security: Drop client-forgeable HTTP_PHP_AUTH_USER/HTTP_REMOTE_USER headers from HTTP Basic Auth
 -feature: Update phpseclib to version 4.0.1
+-issue#8063: Support searching by graph ID on the Graphs list/preview and Aggregate Graphs pages
 -issue#7029: Propagate replacement database handles to reconnecting callers
 -issue#7344: Share and preserve realtime graph sizing in Inline and New Window modes
 -issue#7328: Align graph, CSV export, percentile, and summation sample windows

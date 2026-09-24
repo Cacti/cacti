@@ -474,7 +474,7 @@ case 'preview':
 	/* create filter for sql */
 	$sql_where  = '';
 	if (!isempty_request_var('rfilter')) {
-		$sql_where .= ' gtg.title_cache ' . db_qstr_rlike(get_request_var('rfilter'));
+		$sql_where .= ' (gtg.title_cache ' . db_qstr_rlike(get_request_var('rfilter')) . ' OR gl.id = ' . db_qstr(get_request_var('rfilter')) . ')';
 	}
 
 	$sql_where .= ($sql_or != '' && $sql_where != '' ? ' AND ':'') . $sql_or;
@@ -762,7 +762,7 @@ case 'list':
 	/* create filter for sql */
 	$sql_where  = '';
 	if (!isempty_request_var('rfilter')) {
-		$sql_where .= ' gtg.title_cache ' . db_qstr_rlike(get_request_var('rfilter'));
+		$sql_where .= ' (gtg.title_cache ' . db_qstr_rlike(get_request_var('rfilter')) . ' OR gl.id = ' . db_qstr(get_request_var('rfilter')) . ')';
 	}
 
 	if (!isempty_request_var('site_id') && get_request_var('site_id') > 0) {

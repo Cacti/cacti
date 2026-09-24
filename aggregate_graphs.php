@@ -1624,7 +1624,8 @@ function aggregate_graph() {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where .= " AND (gtg.title_cache LIKE " . db_qstr('%' . get_request_var('filter') . '%') .
-			" OR ag.title_format LIKE " . db_qstr('%' . get_request_var('filter') . '%') . ")";
+			" OR ag.title_format LIKE " . db_qstr('%' . get_request_var('filter') . '%') .
+			" OR gl.id = " . db_qstr(get_request_var('filter')) . ")";
 	}
 
 	if (get_request_var('template_id') == '-1') {
