@@ -28,6 +28,7 @@ Cacti CHANGELOG
 -security: Restore the Cacti error handler on LDAP bind-only and empty-password paths
 -issue#7969: Restore excluded integration and mutation regression coverage
 -issue#7969: Align Rocky Linux compatibility checks with the supported PHP runtime
+-issue#8063: Support searching by graph ID on the Graphs list/preview and Aggregate Graphs pages
 -issue: Fail closed when OAuth callback state is absent or mismatched
 -issue#7979: Fail closed on invalid, cyclic, or oversized CDEF definitions
 -issue#7959: Stop source checkouts from loading a partial Composer dependency tree
