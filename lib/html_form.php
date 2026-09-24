@@ -262,6 +262,25 @@ function draw_edit_control(string $field_name, array &$field_array) : void {
 			);
 
 			break;
+		case 'textcert':
+			form_cert_box(
+				$field_name,
+				$field_array['value'],
+				($field_array['default'] ?? ''),
+				$field_array['textarea_rows'],
+				$field_array['textarea_cols']
+			);
+
+			break;
+		case 'privkey':
+			form_privkey_box(
+				$field_name,
+				$field_array['value'],
+				$field_array['textarea_rows'],
+				$field_array['textarea_cols']
+			);
+
+			break;
 		case 'drop_array':
 			form_dropdown(
 				$field_name,
@@ -745,6 +764,106 @@ function form_dirpath_box(string $form_name, mixed $prev_val, mixed $default_val
 	}
 
 	print " id='$form_name' name='$form_name' placeholder='" . __esc('Enter a valid directory path') . "' size='$form_size'" . (!empty($max_length) ? " maxlength='$max_length'" : '') . " value='" . htmle($prev_val) . "'>" . $extra_data;
+}
+
+/**
+ * Draws a textarea for pasting a PEM certificate and, like
+ * form_filepath_box()/form_dirpath_box(), shows a status indicator next to
+ * it - here the certificate's expiration date (YYYY-MM-DD) rather than a
+ * found/not-found file check.
+ *
+ * @param string $form_name    The name of this form element
+ * @param mixed  $prev_val     The current value of this form element
+ * @param mixed  $default_val  The value of this form element to use if there is no current value available
+ * @param int    $form_rows    The number of rows for the textarea
+ * @param int    $form_columns The number of columns for the textarea
+ *
+ * @return void
+ */
+function form_cert_box(string $form_name, mixed $prev_val, mixed $default_val, int $form_rows, int $form_columns) : void {
+	if ($prev_val == '') {
+		$prev_val = $default_val;
+	}
+
+	$error_class = '';
+
+	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
+		if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
+			$error_class = ' txtErrorTextBox';
+			unset($_SESSION[SESS_ERROR_FIELDS][$form_name]);
+		}
+	}
+
+	if (isset($_SESSION[SESS_FIELD_VALUES])) {
+		if (!empty($_SESSION[SESS_FIELD_VALUES][$form_name])) {
+			$prev_val = $_SESSION[SESS_FIELD_VALUES][$form_name];
+		}
+	}
+
+	if (trim((string) $prev_val) == '') {
+		$extra_data = '';
+	} else {
+		// @ - openssl_x509_parse() emits a warning for non-PEM input; the
+		// false return value already tells us the certificate is invalid.
+		$parsed = @openssl_x509_parse((string) $prev_val);
+
+		if ($parsed === false || empty($parsed['validTo_time_t'])) {
+			$extra_data = "<span class='cactiTooltipHint fa-solid fa-circle-xmark deviceDown' style='padding:5px;font-size:16px' title='" . __esc('Not a valid Certificate') . "'></span>";
+		} else {
+			$expires = date('Y-m-d', $parsed['validTo_time_t']);
+
+			if ($parsed['validTo_time_t'] < time()) {
+				$extra_data = "<span class='cactiTooltipHint fa-solid fa-circle-xmark deviceDown' style='padding:5px;font-size:16px' title='" . __esc('Certificate expired on %s', $expires) . "'>" . __esc('Expired: %s', $expires) . '</span>';
+			} else {
+				$extra_data = "<span class='cactiTooltipHint fa-solid fa-circle-check deviceUp' style='padding:5px;font-size:16px' title='" . __esc('Certificate expires on %s', $expires) . "'>" . __esc('Good Till: %s', $expires) . '</span>';
+			}
+		}
+	}
+
+	print "<textarea class='ui-state-default ui-corner-all$error_class' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name' placeholder='" . __esc('Paste your Certificate Here') . "'>" . htmle($prev_val) . '</textarea>' . $extra_data;
+}
+
+/**
+ * Draws a textarea for pasting a private key that, unlike every other
+ * field, never redisplays its stored value - the textarea is always left
+ * blank, and leaving it blank on save means "keep the existing key"
+ * rather than "clear it". The status area (styled like form_cert_box()'s
+ * expiration date) instead shows whether a key is currently stored.
+ *
+ * @param string $form_name    The name of this form element
+ * @param mixed  $stored_val   The current (still-encrypted) stored value; only its
+ *                             presence is used, its content is never displayed
+ * @param int    $form_rows    The number of rows for the textarea
+ * @param int    $form_columns The number of columns for the textarea
+ *
+ * @return void
+ */
+function form_privkey_box(string $form_name, mixed $stored_val, int $form_rows, int $form_columns) : void {
+	$error_class  = '';
+	$textarea_val = '';
+
+	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
+		if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
+			$error_class = ' txtErrorTextBox';
+			unset($_SESSION[SESS_ERROR_FIELDS][$form_name]);
+		}
+	}
+
+	// Repopulate only what the admin just typed in this submission (e.g. a
+	// sibling field failed validation) - never the stored/encrypted value.
+	if (isset($_SESSION[SESS_FIELD_VALUES])) {
+		if (!empty($_SESSION[SESS_FIELD_VALUES][$form_name])) {
+			$textarea_val = $_SESSION[SESS_FIELD_VALUES][$form_name];
+		}
+	}
+
+	if (trim((string) $stored_val) == '') {
+		$extra_data = "<span class='cactiTooltipHint fa-solid fa-circle-xmark' style='padding:5px;font-size:16px;color:red' title='" . __esc('No Private Key is currently stored') . "'>" . __esc('[not set]') . '</span>';
+	} else {
+		$extra_data = "<span class='cactiTooltipHint fa-solid fa-circle-check' style='padding:5px;font-size:16px;color:green' title='" . __esc('A Private Key is currently stored. Leave blank to keep it unchanged.') . "'>" . __esc('[stored]') . '</span>';
+	}
+
+	print "<textarea class='ui-state-default ui-corner-all$error_class' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name' placeholder='" . __esc('Paste your Private Key Here') . "'>" . htmle($textarea_val) . '</textarea>' . $extra_data;
 }
 
 /**

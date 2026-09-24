@@ -39,8 +39,10 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 			// itself when the settings are used, not at form-save time.
 			// no-validation: PEM certificate blob, validated by onelogin/php-saml itself
 			'sp_x509cert'            => form_input_validate(gnrv('sp_x509cert'), 'sp_x509cert', '', true, 3),
+			// The "privkey" field never redisplays its stored value, so a blank
+			// submission means "keep the existing key" rather than "clear it".
 			// no-validation: PEM private key blob, an arbitrary secret with no format to enforce here
-			'sp_private_key'         => form_input_validate(gnrv('sp_private_key'), 'sp_private_key', '', true, 3),
+			'sp_private_key'         => self::encryptOrKeepExisting(form_input_validate(gnrv('sp_private_key'), 'sp_private_key', '', true, 3), 'sp_private_key'),
 			// no-validation: admin-entered IdP entity ID URI, free text
 			'idp_entity_id'          => form_input_validate(gnrv('idp_entity_id'), 'idp_entity_id', '', true, 3),
 			// no-validation: admin-entered IdP SSO URL, used server-side only by onelogin/php-saml
@@ -57,6 +59,18 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 			'group_claim'            => gnrv('saml_group_claim'),
 			'group_name'             => gnrv('saml_group_name'),
 		];
+	}
+
+	/**
+	 * Decrypts the stored SP private key for use in buildSettings().
+	 * Malformed/undecryptable ciphertext (e.g. a corrupted row, or the
+	 * server-wide encryption key having changed) degrades to "no private
+	 * key configured" rather than throwing, since the key is optional.
+	 */
+	private function decryptedPrivateKey(): string {
+		$decrypted = cacti_decrypt_secret((string) $this->param('sp_private_key'));
+
+		return $decrypted !== false ? $decrypted : '';
 	}
 
 	public function getButtonLabel(): string {
@@ -205,7 +219,7 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 				],
 				'NameIDFormat'  => (string) $this->param('name_id_format', 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'),
 				'x509cert'      => (string) $this->param('sp_x509cert'),
-				'privateKey'    => (string) $this->param('sp_private_key'),
+				'privateKey'    => $this->decryptedPrivateKey(),
 			],
 			'idp' => [
 				'entityId'            => (string) $this->param('idp_entity_id'),

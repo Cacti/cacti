@@ -35,6 +35,10 @@ use Cacti\Auth\CredentialLoginProviderInterface;
 use Cacti\Auth\LoginProviderFactory;
 use phpseclib4\Crypt\RSA;
 
+if (!defined('CACTI_SECRET_CIPHER')) {
+	define('CACTI_SECRET_CIPHER', 'aes-256-cbc');
+}
+
 /**
  * Clears a users security token
  *
@@ -4288,6 +4292,112 @@ function rsa_check_keypair() : void {
 			(`name`, `value`) VALUES ('rsa_public_key', ?), ('rsa_private_key', ?), ('rsa_fingerprint', ?)",
 			[$public, $private, $fingerprint]);
 	}
+}
+
+/**
+ * Returns the raw per-installation symmetric key used by
+ * cacti_encrypt_secret()/cacti_decrypt_secret(), generating and persisting
+ * a new one on first use. Modeled on plugin_servcheck's
+ * servcheck_encrypt_credential() key handling, but Cacti-wide (a `settings`
+ * row, not a per-user setting) since callers like Login Providers store
+ * secrets that are shared server-wide configuration, not owned by a user.
+ *
+ * @return string The raw (binary) 256-bit key.
+ */
+function cacti_secret_key() : string {
+	$key = read_config_option('secret_encryption_key');
+
+	if (empty($key)) {
+		$key = base64_encode(random_bytes(32));
+
+		// INSERT IGNORE: if a concurrent request already generated and stored
+		// a key, keep that one rather than clobbering it with a second,
+		// mutually-incompatible key that would strand the loser's ciphertext.
+		db_execute_prepared('INSERT IGNORE INTO settings (`name`, `value`) VALUES (?, ?)', ['secret_encryption_key', $key]);
+
+		$key = (string) read_config_option('secret_encryption_key', true);
+	}
+
+	$decoded = base64_decode($key, true);
+
+	return $decoded !== false ? $decoded : random_bytes(32);
+}
+
+/**
+ * Encrypts an arbitrary secret (e.g. a pasted SAML private key) for storage,
+ * using Cacti's per-installation AES-256-CBC key. Modeled on plugin_servcheck's
+ * servcheck_encrypt_credential(): a fresh random IV per call, prefixed onto
+ * the ciphertext and base64-encoded as a single stored string.
+ *
+ * @param string $plaintext The secret to encrypt.
+ *
+ * @return string The base64-encoded IV + ciphertext, or '' for an empty input.
+ */
+function cacti_encrypt_secret(string $plaintext) : string {
+	return cacti_encrypt_secret_with_key($plaintext, cacti_secret_key());
+}
+
+/**
+ * Decrypts a secret produced by cacti_encrypt_secret().
+ *
+ * @param string $ciphertext The base64-encoded IV + ciphertext.
+ *
+ * @return string|false The decrypted secret, '' for an empty input, or false
+ *                       if the stored data is malformed and cannot be decrypted.
+ */
+function cacti_decrypt_secret(string $ciphertext) : string|false {
+	return cacti_decrypt_secret_with_key($ciphertext, cacti_secret_key());
+}
+
+/**
+ * Core encryption logic behind cacti_encrypt_secret(), split out so it can
+ * be exercised against an explicit key (e.g. in unit tests) without the
+ * `settings` table key-persistence cacti_secret_key() requires.
+ *
+ * @param string $plaintext The secret to encrypt.
+ * @param string $key       The raw (binary) 256-bit AES key.
+ *
+ * @return string The base64-encoded IV + ciphertext, or '' for an empty input.
+ */
+function cacti_encrypt_secret_with_key(string $plaintext, string $key) : string {
+	if ($plaintext === '') {
+		return '';
+	}
+
+	$iv_length = openssl_cipher_iv_length(CACTI_SECRET_CIPHER);
+	$iv        = openssl_random_pseudo_bytes($iv_length);
+	$encrypted = openssl_encrypt($plaintext, CACTI_SECRET_CIPHER, $key, OPENSSL_RAW_DATA, $iv);
+
+	return base64_encode($iv . $encrypted);
+}
+
+/**
+ * Core decryption logic behind cacti_decrypt_secret(); see
+ * cacti_encrypt_secret_with_key().
+ *
+ * @param string $ciphertext The base64-encoded IV + ciphertext.
+ * @param string $key        The raw (binary) 256-bit AES key.
+ *
+ * @return string|false The decrypted secret, '' for an empty input, or false
+ *                       if the stored data is malformed and cannot be decrypted.
+ */
+function cacti_decrypt_secret_with_key(string $ciphertext, string $key) : string|false {
+	if ($ciphertext === '') {
+		return '';
+	}
+
+	$raw = base64_decode($ciphertext, true);
+
+	$iv_length = openssl_cipher_iv_length(CACTI_SECRET_CIPHER);
+
+	if ($raw === false || strlen($raw) <= $iv_length) {
+		return false;
+	}
+
+	$iv         = substr($raw, 0, $iv_length);
+	$ciphertext = substr($raw, $iv_length);
+
+	return openssl_decrypt($ciphertext, CACTI_SECRET_CIPHER, $key, OPENSSL_RAW_DATA, $iv);
 }
 
 /**

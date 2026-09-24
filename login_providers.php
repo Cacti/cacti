@@ -314,7 +314,8 @@ function provider_edit() : void {
 			'value'         => '|arg1:server|',
 			'default'       => '',
 			'size'          => 80,
-			'max_length'    => '255'
+			'max_length'    => '255',
+			'placeholder'   => __('dc1.example.com dc2.example.com')
 		],
 		'port' => [
 			'friendly_name' => __('Port Standard'),
@@ -394,7 +395,8 @@ function provider_edit() : void {
 			'method'        => 'textbox',
 			'value'         => '|arg1:dn|',
 			'max_length'    => '255',
-			'size'          => 100
+			'size'          => 100,
+			'placeholder'   => __('uid=<username>,ou=people,dc=example,dc=com')
 		],
 		'group_header' => [
 			'friendly_name' => __('Group Membership'),
@@ -405,14 +407,16 @@ function provider_edit() : void {
 			'description'   => __('Distinguished Name of the group that the user must be a member of in order to login. Leave blank to allow any successfully authenticated user to login.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:group_dn|',
-			'max_length'    => '255'
+			'max_length'    => '255',
+			'placeholder'   => __('ou=cacti-admins,dc=example,dc=com')
 		],
 		'group_attrib' => [
 			'friendly_name' => __('Group Member Attribute'),
 			'description'   => __('This refers to the specific attribute within the LDAP directory that holds the usernames of group members. It is crucial to ensure that the attribute value aligns with the configuration specified in the "Distinguished Name" or that the actual attribute value is searchable using the settings outlined in the "Distinguished Name".'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:group_attrib|',
-			'max_length'    => '255'
+			'max_length'    => '255',
+			'placeholder'   => __('memberUid')
 		],
 		'group_member_type' => [
 			'friendly_name' => __('Group Member Type'),
@@ -430,21 +434,24 @@ function provider_edit() : void {
 			'description'   => __('Search base for searching the LDAP directory, such as <i>"dc=win2kdomain,dc=local"</i> or <i>"ou=people,dc=domain,dc=local"</i>.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:search_base|',
-			'max_length'    => '255'
+			'max_length'    => '255',
+			'placeholder'   => __('ou=people,dc=example,dc=com')
 		],
 		'search_filter' => [
 			'friendly_name' => __('Search Filter'),
 			'description'   => __('Search filter to use to locate the user in the LDAP directory, such as for windows: <i>"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))"</i> or for OpenLDAP: <i>"(&(objectClass=account)(uid=&lt;username&gt))"</i>.  "&lt;username&gt" is replaced with the username that was supplied at the login prompt.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:search_filter|',
-			'max_length'    => '512'
+			'max_length'    => '512',
+			'placeholder'   => __('(&(objectClass=account)(uid=<username>))')
 		],
 		'specific_dn' => [
 			'friendly_name' => __('Search Distinguished Name (DN)'),
 			'description'   => __('Distinguished Name for Specific Searching binding to the LDAP directory.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:specific_dn|',
-			'max_length'    => '255'
+			'max_length'    => '255',
+			'placeholder'   => __('cn=svc-cacti,ou=service,dc=example,dc=com')
 		],
 		'specific_password' => [
 			'friendly_name' => __('Search Password'),
@@ -488,7 +495,8 @@ function provider_edit() : void {
 				__('Metadata URL: %s', rtrim((string) read_config_option('base_url'), '/') . '/login_sso.php?action=metadata&realm={realm}'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:sp_entity_id|',
-			'max_length'    => '255'
+			'max_length'    => '255',
+			'placeholder'   => __('https://cacti.example.com')
 		],
 		'name_id_format' => [
 			'friendly_name' => __('NameID Format'),
@@ -519,15 +527,15 @@ function provider_edit() : void {
 		'sp_x509cert' => [
 			'friendly_name' => __('SP Certificate (PEM)'),
 			'description'   => __('Only required when signing AuthnRequests or supporting encrypted assertions.'),
-			'method'        => 'textarea',
+			'method'        => 'textcert',
 			'textarea_rows' => 4,
 			'textarea_cols' => 60,
 			'value'         => '|arg1:sp_x509cert|',
 		],
 		'sp_private_key' => [
 			'friendly_name' => __('SP Private Key (PEM)'),
-			'description'   => __('Only required when signing AuthnRequests or supporting encrypted assertions.'),
-			'method'        => 'textarea',
+			'description'   => __('Only required when signing AuthnRequests or supporting encrypted assertions. Stored encrypted; leave blank to keep the existing key unchanged.'),
+			'method'        => 'privkey',
 			'textarea_rows' => 4,
 			'textarea_cols' => 60,
 			'value'         => '|arg1:sp_private_key|',
@@ -542,26 +550,29 @@ function provider_edit() : void {
 			'description'   => __('The unique identifier (issuer) of the Identity Provider, from its metadata.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:idp_entity_id|',
-			'max_length'    => '255'
+			'max_length'    => '255',
+			'placeholder'   => __('https://idp.example.com/metadata')
 		],
 		'idp_sso_url' => [
 			'friendly_name' => __('IDP Single Sign-On URL'),
 			'description'   => __('The URL the browser is redirected to in order to authenticate.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:idp_sso_url|',
-			'max_length'    => '255'
+			'max_length'    => '255',
+			'placeholder'   => __('https://idp.example.com/sso')
 		],
 		'idp_slo_url' => [
 			'friendly_name' => __('IDP Single Logout URL'),
 			'description'   => __('The URL used for Single Logout requests. Optional.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:idp_slo_url|',
-			'max_length'    => '255'
+			'max_length'    => '255',
+			'placeholder'   => __('https://idp.example.com/slo')
 		],
 		'idp_x509cert' => [
 			'friendly_name' => __('IDP Certificate (PEM)'),
 			'description'   => __('The Identity Provider\'s public signing certificate, used to validate SAML Responses.'),
-			'method'        => 'textarea',
+			'method'        => 'textcert',
 			'textarea_rows' => 6,
 			'textarea_cols' => 60,
 			'value'         => '|arg1:idp_x509cert|',
@@ -600,14 +611,16 @@ function provider_edit() : void {
 			'description'   => __('The SAML Attribute carrying the user\'s group membership, e.g. "memberOf" or "groups". Leave blank to skip group checking.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:group_claim|',
-			'max_length'    => '255'
+			'max_length'    => '255',
+			'placeholder'   => __('memberOf')
 		],
 		'saml_group_name' => [
 			'friendly_name' => __('Required Group'),
 			'description'   => __('The group name/DN that must appear in the Group Claim Attribute above for the user to be allowed to login. Leave blank to allow any successfully authenticated user to login.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:group_name|',
-			'max_length'    => '255'
+			'max_length'    => '255',
+			'placeholder'   => __('cn=cacti-admins,ou=groups,dc=example,dc=com')
 		],
 	];
 
@@ -654,7 +667,8 @@ function provider_edit() : void {
 			'description'   => __('The Identity Provider\'s OpenID Connect discovery document URL, typically ending in "/.well-known/openid-configuration".'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:discovery_url|',
-			'max_length'    => '255'
+			'max_length'    => '255',
+			'placeholder'   => __('https://idp.example.com/.well-known/openid-configuration')
 		],
 		'oidc_claims_header' => [
 			'friendly_name' => __('Claims'),
@@ -693,14 +707,16 @@ function provider_edit() : void {
 			'description'   => __('The ID Token/UserInfo claim carrying the user\'s group membership, e.g. "groups". Leave blank to skip group checking.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:group_claim|',
-			'max_length'    => '255'
+			'max_length'    => '255',
+			'placeholder'   => __('groups')
 		],
 		'oidc_group_name' => [
 			'friendly_name' => __('Required Group'),
 			'description'   => __('The group name that must appear in the Group Claim above for the user to be allowed to login. Leave blank to allow any successfully authenticated user to login.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:group_name|',
-			'max_length'    => '255'
+			'max_length'    => '255',
+			'placeholder'   => __('cacti-admins')
 		],
 	];
 

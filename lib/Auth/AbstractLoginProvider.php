@@ -83,6 +83,43 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 	}
 
 	/**
+	 * Reads a single still-stored (possibly encrypted) parameter value from
+	 * an existing provider row. For secret fields that never redisplay
+	 * their value in the form (e.g. a "privkey" field), leaving the field
+	 * blank on save means "keep the existing value" - this is how
+	 * collectParameters() implementations look that existing value up.
+	 *
+	 * @param int    $id  The login_providers.id being edited, or <= 0 for a new provider.
+	 * @param string $key The parameters[] key to read.
+	 *
+	 * @return string The existing value, or '' for a new provider or a missing key.
+	 */
+	protected static function existingParameter(int $id, string $key): string {
+		if ($id <= 0) {
+			return '';
+		}
+
+		$parameters = json_decode((string) db_fetch_cell_prepared('SELECT parameters FROM login_providers WHERE id = ?', [$id]), true);
+		$parameters = is_array($parameters) ? $parameters : [];
+
+		return (string) ($parameters[$key] ?? '');
+	}
+
+	/**
+	 * Encrypts a freshly submitted secret for storage, or - when the "privkey"
+	 * field was left blank because it never redisplays its stored value -
+	 * keeps the existing (already-encrypted) value for $key unchanged.
+	 *
+	 * @param string $submitted The raw value read from the request, '' if left blank.
+	 * @param string $key       The parameters[] key being saved.
+	 *
+	 * @return string The value to store: freshly encrypted, the untouched existing value, or ''.
+	 */
+	protected static function encryptOrKeepExisting(string $submitted, string $key): string {
+		return $submitted !== '' ? cacti_encrypt_secret($submitted) : self::existingParameter((int) gnrv('id'), $key);
+	}
+
+	/**
 	 * Reads and validates this provider type's own settings from the current
 	 * request (a submitted login_providers.php form), returning the flat
 	 * array to be JSON-encoded into the `parameters` column. Only the fields
