@@ -2008,8 +2008,8 @@ function aggregate_graph() : void {
 		$sql_params[] = '%' . grv('filter') . '%';
 
 		if (ctype_digit(grv('filter'))) {
-			$sql_where     .= ' OR gl.id = ?';
-			$sql_params[]   = (int) grv('filter');
+			$sql_where .= ' OR gl.id = ?';
+			$sql_params[] = (int) grv('filter');
 		}
 
 		$sql_where .= ')';
