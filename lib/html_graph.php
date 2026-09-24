@@ -944,7 +944,13 @@ function html_graph_preview_view() : void {
 	$sql_where  = '';
 
 	if (!ierv('rfilter')) {
-		$sql_where .= ' (gtg.title_cache RLIKE ' . db_qstr(grv('rfilter')) . ' OR gl.id = ' . db_qstr(grv('rfilter')) . ')';
+		$sql_where .= ' (gtg.title_cache RLIKE ' . db_qstr(grv('rfilter'));
+
+		if (ctype_digit(grv('rfilter'))) {
+			$sql_where .= ' OR gl.id = ' . (int) grv('rfilter');
+		}
+
+		$sql_where .= ')';
 	}
 
 	$sql_where .= ($sql_or != '' && $sql_where != '' ? ' AND ' : '') . $sql_or;
@@ -1342,7 +1348,13 @@ function html_graph_list_view() : void {
 	$sql_where  = '';
 
 	if (!ierv('rfilter')) {
-		$sql_where .= ' (gtg.title_cache RLIKE ' . db_qstr(grv('rfilter')) . ' OR gl.id = ' . db_qstr(grv('rfilter')) . ')';
+		$sql_where .= ' (gtg.title_cache RLIKE ' . db_qstr(grv('rfilter'));
+
+		if (ctype_digit(grv('rfilter'))) {
+			$sql_where .= ' OR gl.id = ' . (int) grv('rfilter');
+		}
+
+		$sql_where .= ')';
 	}
 
 	if (!ierv('site_id') && grv('site_id') > 0) {

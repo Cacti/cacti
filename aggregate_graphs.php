@@ -2002,11 +2002,17 @@ function aggregate_graph() : void {
 
 	// form the 'where' clause for our main sql query
 	if (grv('filter') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . '(gtg.title_cache LIKE ? OR ag.title_format LIKE ? OR gl.id = ?)';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . '(gtg.title_cache LIKE ? OR ag.title_format LIKE ?';
 
 		$sql_params[] = '%' . grv('filter') . '%';
 		$sql_params[] = '%' . grv('filter') . '%';
-		$sql_params[] = grv('filter');
+
+		if (ctype_digit(grv('filter'))) {
+			$sql_where     .= ' OR gl.id = ?';
+			$sql_params[]   = (int) grv('filter');
+		}
+
+		$sql_where .= ')';
 	}
 
 	if (grv('template_id') == '0') {
