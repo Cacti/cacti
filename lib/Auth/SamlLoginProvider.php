@@ -35,10 +35,12 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 			'name_id_format'         => gnrv('name_id_format'),
 			'sign_authn_requests'    => isrv('sign_authn_requests') ? 'on' : '',
 			'want_assertions_signed' => isrv('want_assertions_signed') ? 'on' : '',
+			// The "textcert" field never redisplays its stored value, so a blank
+			// submission means "keep the existing certificate" rather than "clear it".
 			// PEM certificate blob; onelogin/php-saml validates the structure
 			// itself when the settings are used, not at form-save time.
 			// no-validation: PEM certificate blob, validated by onelogin/php-saml itself
-			'sp_x509cert'            => form_input_validate(gnrv('sp_x509cert'), 'sp_x509cert', '', true, 3),
+			'sp_x509cert'            => self::keepExistingIfBlank(form_input_validate(gnrv('sp_x509cert'), 'sp_x509cert', '', true, 3), 'sp_x509cert'),
 			// The "privkey" field never redisplays its stored value, so a blank
 			// submission means "keep the existing key" rather than "clear it".
 			// no-validation: PEM private key blob, an arbitrary secret with no format to enforce here
@@ -49,10 +51,12 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 			'idp_sso_url'            => form_input_validate(gnrv('idp_sso_url'), 'idp_sso_url', '', true, 3),
 			// no-validation: admin-entered IdP SLO URL, used server-side only by onelogin/php-saml
 			'idp_slo_url'            => form_input_validate(gnrv('idp_slo_url'), 'idp_slo_url', '', true, 3),
+			// The "textcert" field never redisplays its stored value, so a blank
+			// submission means "keep the existing certificate" rather than "clear it".
 			// PEM certificate blob; onelogin/php-saml validates the structure
 			// itself when the settings are used, not at form-save time.
 			// no-validation: PEM certificate blob, validated by onelogin/php-saml itself
-			'idp_x509cert'           => form_input_validate(gnrv('idp_x509cert'), 'idp_x509cert', '', true, 3),
+			'idp_x509cert'           => self::keepExistingIfBlank(form_input_validate(gnrv('idp_x509cert'), 'idp_x509cert', '', true, 3), 'idp_x509cert'),
 			'claim_username'         => gnrv('saml_claim_username'),
 			'claim_full_name'        => gnrv('saml_claim_full_name'),
 			'claim_email'            => gnrv('saml_claim_email'),

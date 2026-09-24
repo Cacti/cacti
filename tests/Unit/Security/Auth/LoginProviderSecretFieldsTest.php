@@ -88,6 +88,20 @@ test('form_cert_box() shows the expiration date of a pasted valid certificate', 
 	expect($html)->toContain('deviceUp');
 });
 
+test('form_cert_box() never redisplays the stored certificate, like form_privkey_box()', function () {
+	$pem = login_provider_test_cert(30);
+
+	ob_start();
+	form_cert_box('idp_x509cert', $pem, '', 6, 60);
+	$html = ob_get_clean();
+
+	expect($html)->not->toContain('BEGIN CERTIFICATE');
+
+	$matched = preg_match("/<textarea[^>]*>(.*?)<\/textarea>/s", $html, $matches);
+	expect($matched)->toBe(1);
+	expect($matches[1])->toBe('');
+});
+
 test('form_cert_box() flags a pasted value that is not a valid certificate', function () {
 	ob_start();
 	form_cert_box('idp_x509cert', 'not a certificate', '', 6, 60);
@@ -149,4 +163,25 @@ test('form_privkey_box() shows [not set] when nothing is stored', function () {
 	$html = ob_get_clean();
 
 	expect($html)->toContain('[not set]');
+});
+
+test('keepExistingIfBlank() saves the freshly submitted value without touching the database', function () {
+	$method = new ReflectionMethod(\Cacti\Auth\SamlLoginProvider::class, 'keepExistingIfBlank');
+	$method->setAccessible(true);
+
+	expect($method->invoke(null, 'fresh-cert-pem', 'sp_x509cert'))->toBe('fresh-cert-pem');
+});
+
+test('keepExistingIfBlank()/encryptOrKeepExisting() resolve to "" for a blank field with no existing provider row, without touching the database', function () {
+	$GLOBALS['_CACTI_REQUEST']['id'] = 0;
+
+	$keepExisting = new ReflectionMethod(\Cacti\Auth\SamlLoginProvider::class, 'keepExistingIfBlank');
+	$keepExisting->setAccessible(true);
+	expect($keepExisting->invoke(null, '', 'sp_x509cert'))->toBe('');
+
+	$encryptOrKeep = new ReflectionMethod(\Cacti\Auth\SamlLoginProvider::class, 'encryptOrKeepExisting');
+	$encryptOrKeep->setAccessible(true);
+	expect($encryptOrKeep->invoke(null, '', 'sp_private_key'))->toBe('');
+
+	unset($GLOBALS['_CACTI_REQUEST']['id']);
 });

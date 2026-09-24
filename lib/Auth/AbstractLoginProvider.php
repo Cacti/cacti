@@ -120,6 +120,21 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 	}
 
 	/**
+	 * Non-secret counterpart to encryptOrKeepExisting(), for fields such as
+	 * a "textcert" certificate that also never redisplay their stored value
+	 * (so it can be pasted over without first being cleared) but don't need
+	 * encryption at rest. A blank submission keeps the existing value.
+	 *
+	 * @param string $submitted The raw value read from the request, '' if left blank.
+	 * @param string $key       The parameters[] key being saved.
+	 *
+	 * @return string The value to store: the freshly submitted value, or the untouched existing value.
+	 */
+	protected static function keepExistingIfBlank(string $submitted, string $key): string {
+		return $submitted !== '' ? $submitted : self::existingParameter((int) gnrv('id'), $key);
+	}
+
+	/**
 	 * Reads and validates this provider type's own settings from the current
 	 * request (a submitted login_providers.php form), returning the flat
 	 * array to be JSON-encoded into the `parameters` column. Only the fields

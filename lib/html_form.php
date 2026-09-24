@@ -767,25 +767,29 @@ function form_dirpath_box(string $form_name, mixed $prev_val, mixed $default_val
 }
 
 /**
- * Draws a textarea for pasting a PEM certificate and, like
- * form_filepath_box()/form_dirpath_box(), shows a status indicator next to
- * it - here the certificate's expiration date (YYYY-MM-DD) rather than a
- * found/not-found file check.
+ * Draws a textarea for pasting a PEM certificate that, like
+ * form_privkey_box(), never redisplays the stored value - the textarea is
+ * always left blank, and leaving it blank on save means "keep the existing
+ * certificate" rather than clearing it. Like form_filepath_box()/
+ * form_dirpath_box(), a status indicator next to it shows the certificate's
+ * expiration date (YYYY-MM-DD) rather than a found/not-found file check.
  *
  * @param string $form_name    The name of this form element
- * @param mixed  $prev_val     The current value of this form element
- * @param mixed  $default_val  The value of this form element to use if there is no current value available
+ * @param mixed  $stored_val   The current (PEM) stored value; only used to
+ *                             compute the expiration status, never displayed
+ * @param mixed  $default_val  The value to check for a stored certificate when there is no current value
  * @param int    $form_rows    The number of rows for the textarea
  * @param int    $form_columns The number of columns for the textarea
  *
  * @return void
  */
-function form_cert_box(string $form_name, mixed $prev_val, mixed $default_val, int $form_rows, int $form_columns) : void {
-	if ($prev_val == '') {
-		$prev_val = $default_val;
+function form_cert_box(string $form_name, mixed $stored_val, mixed $default_val, int $form_rows, int $form_columns) : void {
+	if ($stored_val == '') {
+		$stored_val = $default_val;
 	}
 
-	$error_class = '';
+	$error_class  = '';
+	$textarea_val = '';
 
 	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
 		if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
@@ -794,18 +798,20 @@ function form_cert_box(string $form_name, mixed $prev_val, mixed $default_val, i
 		}
 	}
 
+	// Repopulate only what the admin just typed in this submission (e.g. a
+	// sibling field failed validation) - never the stored certificate.
 	if (isset($_SESSION[SESS_FIELD_VALUES])) {
 		if (!empty($_SESSION[SESS_FIELD_VALUES][$form_name])) {
-			$prev_val = $_SESSION[SESS_FIELD_VALUES][$form_name];
+			$textarea_val = $_SESSION[SESS_FIELD_VALUES][$form_name];
 		}
 	}
 
-	if (trim((string) $prev_val) == '') {
+	if (trim((string) $stored_val) == '') {
 		$extra_data = '';
 	} else {
 		// @ - openssl_x509_parse() emits a warning for non-PEM input; the
 		// false return value already tells us the certificate is invalid.
-		$parsed = @openssl_x509_parse((string) $prev_val);
+		$parsed = @openssl_x509_parse((string) $stored_val);
 
 		if ($parsed === false || empty($parsed['validTo_time_t'])) {
 			$extra_data = "<span class='cactiTooltipHint fa-solid fa-circle-xmark deviceDown' style='padding:5px;font-size:16px' title='" . __esc('Not a valid Certificate') . "'></span>";
@@ -820,7 +826,7 @@ function form_cert_box(string $form_name, mixed $prev_val, mixed $default_val, i
 		}
 	}
 
-	print "<textarea class='ui-state-default ui-corner-all$error_class' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name' placeholder='" . __esc('Paste your Certificate Here') . "'>" . htmle($prev_val) . '</textarea>' . $extra_data;
+	print "<textarea class='ui-state-default ui-corner-all$error_class' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name' placeholder='" . __esc('Paste your Certificate Here') . "'>" . htmle($textarea_val) . '</textarea>' . $extra_data;
 }
 
 /**
