@@ -54,14 +54,32 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 
 	public function initiate(): never {
 		$auth = new SamlAuth($this->buildSettings());
-		$auth->login();
+
+		// Capture the AuthnRequest ID so complete() can require the IdP's
+		// response carry a matching InResponseTo, closing the unsolicited-
+		// assertion login CSRF window (logging a browser in as whatever account
+		// the IdP names, even without that browser having requested it).
+		$redirectUrl = $auth->login(null, [], false, false, true);
+
+		$_SESSION['sess_saml_request_' . $this->getId()] = [
+			'request_id' => $auth->getLastRequestID(),
+			// Carried across the IdP redirect since the login form's checkbox
+			// state cannot otherwise survive the round trip.
+			'remember'   => isrv('remember_me'),
+		];
+
+		header('Location: ' . $redirectUrl);
 
 		exit;
 	}
 
 	public function complete(): LoginResult {
+		$saved = $_SESSION['sess_saml_request_' . $this->getId()] ?? [];
+
+		unset($_SESSION['sess_saml_request_' . $this->getId()]);
+
 		$auth = new SamlAuth($this->buildSettings());
-		$auth->processResponse();
+		$auth->processResponse($saved['request_id'] ?? null);
 
 		if ($auth->getErrors()) {
 			return LoginResult::failure(__('Access Denied!  Login Failed.'));
@@ -88,7 +106,29 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 		return LoginResult::authenticated($username, [
 			'full_name' => (string) $this->firstAttribute($attributes, (string) $this->param('claim_full_name')),
 			'email'     => (string) $this->firstAttribute($attributes, (string) $this->param('claim_email')),
-		]);
+		], null, (bool) ($saved['remember'] ?? false));
+	}
+
+	/**
+	 * Validates an IdP-initiated or SP-initiated Single Logout message and
+	 * clears the local Cacti session. Kept separate from complete(): SAML's
+	 * SLS binding carries LogoutRequest/LogoutResponse messages, which
+	 * processResponse() (built for AuthnResponse) does not understand.
+	 */
+	public function processLogout(): void {
+		$auth = new SamlAuth($this->buildSettings());
+
+		// Let Cacti's own logout.php own session teardown/cookie clearing;
+		// this only validates the SAML message itself.
+		$auth->processSLO(true);
+
+		if ($auth->getErrors()) {
+			cacti_log('LOGIN: SAML SLO error for provider \'' . $this->getName() . '\': ' . implode(', ', $auth->getErrors()), false, 'AUTH');
+		}
+
+		header('Location: ' . rtrim((string) read_config_option('base_url'), '/') . '/logout.php');
+
+		exit;
 	}
 
 	/** The SP metadata XML this Cacti instance publishes for the IdP to consume. */
@@ -113,9 +153,10 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 	}
 
 	protected function buildSettings(): array {
-		$acsUrl      = rtrim((string) read_config_option('base_url'), '/') . '/login_sso.php?action=acs&realm=' . $this->getId();
-		$sloUrl      = rtrim((string) read_config_option('base_url'), '/') . '/login_sso.php?action=sls&realm=' . $this->getId();
-		$entityId    = (string) $this->param('sp_entity_id') ?: rtrim((string) read_config_option('base_url'), '/') . '/login_sso.php?action=metadata&realm=' . $this->getId();
+		$realm       = 1000 + $this->getId();
+		$acsUrl      = rtrim((string) read_config_option('base_url'), '/') . '/login_sso.php?action=acs&realm=' . $realm;
+		$sloUrl      = rtrim((string) read_config_option('base_url'), '/') . '/login_sso.php?action=sls&realm=' . $realm;
+		$entityId    = (string) $this->param('sp_entity_id') ?: rtrim((string) read_config_option('base_url'), '/') . '/login_sso.php?action=metadata&realm=' . $realm;
 
 		return [
 			'strict' => true,

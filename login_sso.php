@@ -35,6 +35,15 @@ use Cacti\Auth\LoginProviderFactory;
 use Cacti\Auth\RedirectLoginProviderInterface;
 use Cacti\Auth\SamlLoginProvider;
 
+// Login Providers must be the active global authentication method; leaving
+// an SSO row enabled after switching back to local/basic auth must not
+// leave a bookmarked/guessed login_sso.php URL still able to authenticate.
+if ((int) read_config_option('auth_method') !== AUTH_METHOD_PROVIDERS) {
+	auth_display_custom_error_message(__('Access Denied!  Login Failed.'));
+
+	exit;
+}
+
 $realm = gfrv('realm');
 
 if ($realm < 1000) {
@@ -43,40 +52,64 @@ if ($realm < 1000) {
 	exit;
 }
 
-$provider = LoginProviderFactory::fromRealm((int) $realm);
+try {
+	$provider = LoginProviderFactory::fromRealm((int) $realm);
 
-if (!$provider instanceof RedirectLoginProviderInterface) {
+	if (!$provider instanceof RedirectLoginProviderInterface) {
+		auth_display_custom_error_message(__('Access Denied!  Login Failed.'));
+
+		exit;
+	}
+
+	switch (grv('action')) {
+		case 'metadata':
+			if (!$provider instanceof SamlLoginProvider) {
+				header('HTTP/1.1 404 Not Found');
+
+				exit;
+			}
+
+			header('Content-Type: text/xml');
+			print $provider->getMetadata();
+
+			break;
+		case 'login':
+			$provider->initiate();
+
+			break;
+		case 'sls':
+			if (!$provider instanceof SamlLoginProvider) {
+				header('HTTP/1.1 404 Not Found');
+
+				exit;
+			}
+
+			// SLS carries LogoutRequest/LogoutResponse messages, not the
+			// AuthnResponse login_sso_complete()/complete() understand.
+			$provider->processLogout();
+
+			break;
+		case 'acs':
+		case 'callback':
+			login_sso_complete($provider, (int) $realm);
+
+			break;
+		default:
+			header('HTTP/1.1 404 Not Found');
+
+			break;
+	}
+} catch (\Throwable $e) {
+	// A temporary IdP outage or bad configuration (e.g. discovery/JSON/XML
+	// failures inside the provider classes) must not surface a raw
+	// exception/HTTP 500 at this unauthenticated public boundary.
+	$providerName = isset($provider) ? $provider->getName() : 'realm ' . $realm;
+
+	cacti_log('LOGIN FAILED: SSO Provider \'' . $providerName . '\' threw ' . get_class($e) . ': ' . $e->getMessage(), false, 'AUTH');
+
 	auth_display_custom_error_message(__('Access Denied!  Login Failed.'));
 
 	exit;
-}
-
-switch (grv('action')) {
-	case 'metadata':
-		if (!$provider instanceof SamlLoginProvider) {
-			header('HTTP/1.1 404 Not Found');
-
-			exit;
-		}
-
-		header('Content-Type: text/xml');
-		print $provider->getMetadata();
-
-		break;
-	case 'login':
-		$provider->initiate();
-
-		break;
-	case 'acs':
-	case 'callback':
-	case 'sls':
-		login_sso_complete($provider, (int) $realm);
-
-		break;
-	default:
-		header('HTTP/1.1 404 Not Found');
-
-		break;
 }
 
 /**
@@ -170,7 +203,7 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 	$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'] ?? '';
 	$_SESSION[SESS_CLIENT_ADDR] = $client_addr;
 
-	if ($provider->allowsAuthCookies() && read_config_option('auth_cache_enabled') == 'on') {
+	if ($result->rememberMe && $provider->allowsAuthCookies() && read_config_option('auth_cache_enabled') == 'on') {
 		set_auth_cookie($user);
 	}
 

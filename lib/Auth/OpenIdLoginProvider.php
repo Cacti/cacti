@@ -59,6 +59,9 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 			'state'    => $state,
 			'nonce'    => $nonce,
 			'verifier' => $verifier,
+			// Carried across the IdP redirect since the login form's checkbox
+			// state cannot otherwise survive the round trip.
+			'remember' => isrv('remember_me'),
 		];
 
 		$query = http_build_query([
@@ -134,7 +137,11 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 			if ($userinfo['success']) {
 				$decoded = json_decode($userinfo['body'], true);
 
-				if (is_array($decoded)) {
+				// The UserInfo response is a second, separate credential-bearing
+				// fetch; only trust it when its subject matches the already-verified
+				// ID token, or a substituted/inconsistent response could overwrite
+				// identity claims such as sub/preferred_username.
+				if (is_array($decoded) && isset($decoded['sub'], $claims['sub']) && hash_equals((string) $claims['sub'], (string) $decoded['sub'])) {
 					$claims = array_merge($claims, $decoded);
 				}
 			}
@@ -157,7 +164,7 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 		return LoginResult::authenticated($username, [
 			'full_name' => (string) ($claims[(string) $this->param('claim_full_name', 'name')] ?? ''),
 			'email'     => (string) ($claims[(string) $this->param('claim_email', 'email')] ?? ''),
-		]);
+		], null, (bool) ($saved['remember'] ?? false));
 	}
 
 	/**
@@ -189,8 +196,22 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 		}
 
 		$audience = (array) ($decoded['aud'] ?? []);
+		$clientId = (string) $this->param('client_id');
+		$audienceMatches = in_array($clientId, $audience, true) || ($decoded['aud'] ?? null) === $clientId;
 
-		if (!in_array($this->param('client_id'), $audience, true) && ($decoded['aud'] ?? null) !== $this->param('client_id')) {
+		if (!$audienceMatches) {
+			return null;
+		}
+
+		// A multi-audience token MUST carry an azp identifying this client, and
+		// an azp that is present but wrong is rejected even for a single audience.
+		$azp = $decoded['azp'] ?? null;
+
+		if ($azp !== null && (string) $azp !== $clientId) {
+			return null;
+		}
+
+		if (count($audience) > 1 && $azp === null) {
 			return null;
 		}
 
@@ -206,7 +227,13 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 	 *               jwks_uri: string, issuer: string, userinfo_endpoint?: string}
 	 */
 	protected function discover(): array {
-		$response = cacti_http('GET', (string) $this->param('discovery_url'));
+		$discoveryUrl = (string) $this->param('discovery_url');
+
+		if (!str_starts_with($discoveryUrl, 'https://')) {
+			throw new \RuntimeException('OpenID discovery URL must use HTTPS');
+		}
+
+		$response = cacti_http('GET', $discoveryUrl);
 
 		if (!$response['success']) {
 			throw new \RuntimeException('Unable to fetch OpenID discovery document');
@@ -218,10 +245,19 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 			throw new \RuntimeException('Invalid OpenID discovery document');
 		}
 
+		// A discovery document served from a plain-HTTP issuer could point every
+		// downstream endpoint at HTTP too, exposing the client secret,
+		// authorization code, and tokens in transit and allowing key substitution.
+		foreach (['authorization_endpoint', 'token_endpoint', 'jwks_uri', 'userinfo_endpoint'] as $endpoint) {
+			if (!empty($discovery[$endpoint]) && !str_starts_with((string) $discovery[$endpoint], 'https://')) {
+				throw new \RuntimeException('OpenID endpoint must use HTTPS: ' . $endpoint);
+			}
+		}
+
 		return $discovery;
 	}
 
 	protected function redirectUri(): string {
-		return rtrim((string) read_config_option('base_url'), '/') . '/login_sso.php?action=callback&realm=' . $this->getId();
+		return rtrim((string) read_config_option('base_url'), '/') . '/login_sso.php?action=callback&realm=' . (1000 + $this->getId());
 	}
 }

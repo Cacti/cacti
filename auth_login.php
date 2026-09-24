@@ -373,7 +373,7 @@ if (cacti_sizeof($sso_providers)) {
 	foreach ($sso_providers as $sso_provider) { ?>
 	<tr>
 		<td colspan='2'>
-			<a class='ui-button ui-corner-all ui-widget' href='login_sso.php?action=login&realm=<?php print $sso_provider['realm'];?>'><?php print __esc('Login with %s', $sso_provider['label']);?></a>
+			<a class='ui-button ui-corner-all ui-widget sso-login-link' data-realm='<?php print $sso_provider['realm'];?>' href='login_sso.php?action=login&realm=<?php print $sso_provider['realm'];?>'><?php print __esc('Login with %s', $sso_provider['label']);?></a>
 		</td>
 	</tr>
 <?php
@@ -433,6 +433,14 @@ html_auth_footer('login', $error_message, "
 					storage.set('user_realm', $('#realm').val());
 				}
 				$('#auth').off('submit').trigger('submit');
+			});
+
+			// SSO buttons are plain links (they leave the page for the IdP), so the
+			// remember_me checkbox state has to be appended to the href by hand.
+			$('.sso-login-link').on('click', function() {
+				if ($('#remember_me').is(':checked')) {
+					this.href += '&remember_me=1';
+				}
 			});
 
 		});

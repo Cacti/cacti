@@ -956,8 +956,11 @@ function login_providers_convert_1_3_0() : void {
 					'referrals'         => (int) $ldap['referrals'],
 					'mode'              => (int) $ldap['mode'],
 					'dn'                => $ldap['dn'],
-					// group_require is gone: a non-blank group_dn now IS the requirement
-					'group_dn'          => $ldap['group_dn'],
+					// group_require is gone: a non-blank group_dn now IS the requirement.
+					// Only carry group_dn over when the legacy checkbox was actually on -
+					// installs that left group_dn populated but group_require off must not
+					// suddenly start enforcing membership (and locking users out) after upgrade.
+					'group_dn'          => $ldap['group_require'] == 'on' ? $ldap['group_dn'] : '',
 					'group_attrib'      => $ldap['group_attrib'],
 					'group_member_type' => (int) $ldap['group_member_type'],
 					'search_base'       => $ldap['search_base'],

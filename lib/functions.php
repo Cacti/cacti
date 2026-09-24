@@ -62,7 +62,9 @@ function cacti_http(string $method, string $url, array $options = []) : array {
 		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Invalid URL'];
 	}
 
-	if (!in_array(strtolower($parts['scheme']), ['https', 'http'], true)) {
+	$scheme = strtolower($parts['scheme']);
+
+	if (!in_array($scheme, ['https', 'http'], true)) {
 		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Unsupported URL scheme'];
 	}
 
@@ -70,11 +72,27 @@ function cacti_http(string $method, string $url, array $options = []) : array {
 		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Host not allowed'];
 	}
 
-	if (!cacti_http_host_is_safe($parts['host'])) {
+	$safeIps = cacti_http_resolve_safe_ips($parts['host']);
+
+	if (empty($safeIps)) {
 		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Target host resolves to a disallowed address'];
 	}
 
 	$ch = curl_init();
+
+	$port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
+
+	// Pin the connection to the address(es) just validated via CURLOPT_RESOLVE,
+	// so curl's own DNS lookup at connect time cannot return a different
+	// (private/loopback) address than the one already checked above - the
+	// classic SSRF-via-DNS-rebinding bypass of a separate preflight check.
+	// TLS hostname/certificate verification below still runs against
+	// $parts['host'], unaffected by which address it is pinned to.
+	$resolve = [];
+
+	foreach ($safeIps as $ip) {
+		$resolve[] = $parts['host'] . ':' . $port . ':' . $ip;
+	}
 
 	curl_setopt_array($ch, [
 		CURLOPT_URL             => $url,
@@ -83,6 +101,7 @@ function cacti_http(string $method, string $url, array $options = []) : array {
 		CURLOPT_FOLLOWLOCATION  => false,
 		CURLOPT_SSL_VERIFYPEER  => true,
 		CURLOPT_SSL_VERIFYHOST  => 2,
+		CURLOPT_RESOLVE         => $resolve,
 		CURLOPT_TIMEOUT         => (int) ($options['timeout'] ?? 10),
 		CURLOPT_CONNECTTIMEOUT  => 5,
 		CURLOPT_PROTOCOLS       => CURLPROTO_HTTP | CURLPROTO_HTTPS,
@@ -116,21 +135,25 @@ function cacti_http(string $method, string $url, array $options = []) : array {
 }
 
 /**
- * Rejects hostnames that resolve to loopback, private, link-local, or other
- * non-public address space, as a basic SSRF guard for cacti_http().
+ * Resolves a hostname (or validates an IP literal) once and returns its
+ * addresses only when every one of them is public/routable - never
+ * loopback/private/link-local/reserved space. Used both to decide whether
+ * cacti_http() may proceed and, via CURLOPT_RESOLVE, to pin the connection
+ * to these exact addresses so a second, independent DNS lookup at connect
+ * time cannot substitute a different (unsafe) address (DNS rebinding).
  *
  * @param string $host The hostname or IP literal from the target URL.
  *
- * @return bool True when every resolved address is public/routable.
+ * @return string[] The resolved addresses, or [] if none/any is unsafe.
  */
-function cacti_http_host_is_safe(string $host) : bool {
+function cacti_http_resolve_safe_ips(string $host) : array {
 	if (filter_var($host, FILTER_VALIDATE_IP)) {
 		$ips = [$host];
 	} else {
 		$records = @dns_get_record($host, DNS_A + DNS_AAAA);
 
 		if (!is_array($records)) {
-			return false;
+			return [];
 		}
 
 		$ips = array_filter(array_map(static function ($record) {
@@ -139,16 +162,16 @@ function cacti_http_host_is_safe(string $host) : bool {
 	}
 
 	if (empty($ips)) {
-		return false;
+		return [];
 	}
 
 	foreach ($ips as $ip) {
 		if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
-			return false;
+			return [];
 		}
 	}
 
-	return true;
+	return array_values($ips);
 }
 
 /**

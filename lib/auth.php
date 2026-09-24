@@ -825,12 +825,16 @@ function auth_realm_allows_cookies(int $realm) : bool {
 		return true;
 	}
 
+	// Disabling or deleting a provider must revoke the ability for its
+	// existing remember-me cookies to keep restoring a session; a missing
+	// or disabled row is treated as "deny", not "allow".
 	$allowed = db_fetch_cell_prepared('SELECT allow_auth_cookies
 		FROM login_providers
-		WHERE id = ?',
+		WHERE id = ?
+		AND enabled = "on"',
 		[$realm - 1000]);
 
-	return $allowed === false || $allowed === 'on';
+	return $allowed === 'on';
 }
 
 /**

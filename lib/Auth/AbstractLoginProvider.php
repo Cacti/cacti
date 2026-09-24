@@ -124,6 +124,15 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 	}
 
 	public static function makeDefaultById(int $id): void {
+		// get_auth_realms() only ever offers LDAP/AD rows as the login-page
+		// default realm; making a SAML2/OpenID row "default" would silently
+		// leave that dropdown pointing at nothing.
+		$type = db_fetch_cell_prepared('SELECT type FROM login_providers WHERE id = ?', [$id]);
+
+		if ((int) $type !== PROVIDER_TYPE_LDAP && (int) $type !== PROVIDER_TYPE_AD) {
+			return;
+		}
+
 		db_execute('UPDATE login_providers SET is_default = 0');
 		db_execute_prepared('UPDATE login_providers SET is_default = 1 WHERE id = ?', [$id]);
 	}
