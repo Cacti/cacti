@@ -22,6 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
+use Cacti\Auth\BasicAuthLoginProvider;
+use Cacti\Auth\LocalAuthLoginProvider;
+
 // include ldap support
 require_once(__DIR__ . '/lib/ldap.php');
 
@@ -80,13 +83,13 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 		case AUTH_METHOD_CACTI: // Local authentication
 			cacti_log("DEBUG: Local User '" . $username . "' to attempt login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
-			$user = local_auth_login_process($username);
+			$user = (new LocalAuthLoginProvider())->authenticate($username, gnrv('login_password'))->user ?? [];
 
 			break;
 		case AUTH_METHOD_BASIC: // Basic authentication
 			cacti_log("DEBUG: Basic Auth User '" . $username . "' attempting to login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
-			$user = basic_auth_login_process($username);
+			$user = (new BasicAuthLoginProvider())->resolve($username)->user ?? [];
 
 			break;
 		case AUTH_METHOD_LDAP: // LDAP Authentication
