@@ -693,7 +693,9 @@ function poller_prefetch_rrd_field_names($local_data_ids, $data_template_id_by_i
 		}
 	}
 
-	foreach (array_chunk($local_data_ids, 1000) as $chunk) {
+	/* non-templated data sources have no graph_templates_item linkage at all, so every
+	 * row would match "unused" here; only templated ids used this heuristic previously */
+	foreach (array_chunk($templated_ids, 1000) as $chunk) {
 		$rows = db_fetch_assoc('SELECT DISTINCT dtr.local_data_id, dtr.data_source_name
 			FROM data_template_rrd AS dtr
 			LEFT JOIN graph_templates_item AS gti
@@ -786,10 +788,24 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 	}
 
 	if (cacti_sizeof($results)) {
+		/* only rows whose output enters the MULTI/invalid-output paths below ever read the
+		 * prefetched metadata; skip the batch queries entirely when none of them do */
+		$metadata_local_data_ids = array();
+
+		foreach ($results as $item) {
+			$value = $item['output'];
+
+			if ((is_numeric($value)) || ($value == 'U' && $item['rrd_name'] != '') || is_hexadecimal($value)) {
+				continue;
+			}
+
+			$metadata_local_data_ids[] = $item['local_data_id'];
+		}
+
 		/* batch-prefetch the RRD field-name metadata the loop below needs, rather than
 		 * re-querying it per row whenever the output contains a ':' */
 		$prefetch_field_names = poller_prefetch_rrd_field_names(
-			array_values(array_unique(array_map('intval', array_column($results, 'local_data_id')))),
+			array_values(array_unique(array_map('intval', $metadata_local_data_ids))),
 			array_column($results, 'data_template_id', 'local_data_id')
 		);
 
