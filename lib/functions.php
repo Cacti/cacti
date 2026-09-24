@@ -3221,10 +3221,11 @@ function get_data_source_path(int $local_data_id, bool $expand_paths) : string {
 /**
  * data_source_path_within_rra - checks that an expanded RRD path stays in the RRA dir
  *
- * Containment is lexical so it holds for RRD files that do not exist yet: the
- * path must sit under CACTI_PATH_RRA and no segment below it may be a parent
- * reference. Absolute paths elsewhere, and traversal such as <path_rra>/../x,
- * are both rejected.
+ * Containment is both lexical and realpath-based: the path must sit under
+ * CACTI_PATH_RRA with no parent-reference segment, and no existing ancestor
+ * segment may be a symlink that pivots the resolved location outside the RRA
+ * tree. The final RRD file itself is allowed not to exist yet, mirroring
+ * validate_relative_path_within()'s handling of not-yet-created files.
  *
  * @param string $path The expanded data source path
  *
@@ -3242,13 +3243,40 @@ function data_source_path_within_rra(string $path) : bool {
 		return false;
 	}
 
+	$parts = [];
+
 	foreach (explode('/', substr($target, strlen($base) + 1)) as $segment) {
-		if ($segment === '..') {
+		if ($segment === '' || $segment === '.' || $segment === '..') {
+			return false;
+		}
+
+		$parts[] = $segment;
+	}
+
+	$base_real = realpath(CACTI_PATH_RRA);
+
+	if ($base_real === false) {
+		return false;
+	}
+
+	/* block symlink pivots below the RRA directory, even for RRD files that don't exist yet */
+	$walk = $base_real;
+
+	foreach ($parts as $segment) {
+		$walk .= '/' . $segment;
+
+		if (file_exists($walk) && is_link($walk)) {
 			return false;
 		}
 	}
 
-	return true;
+	if (file_exists($walk)) {
+		return cacti_path_is_within($walk, $base_real);
+	}
+
+	$parent = realpath(dirname($walk));
+
+	return $parent !== false && cacti_path_is_within($parent, $base_real);
 }
 
 /**

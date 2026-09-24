@@ -939,8 +939,8 @@ function cleanup_ds_and_graphs() : mixed {
 	foreach ($rrds as $item) {
 		$ldi      = $item['local_data_id'];
 		$name     = $item['name_cache'];
-		$ds_pth   = $item['data_source_path'];
-		$real_pth = str_replace('<path_rra>', CACTI_PATH_RRA, $ds_pth);
+		/* resolve through get_data_source_path() so the RRA containment check applies here too */
+		$real_pth = get_data_source_path($ldi, true);
 
 		if (!file_exists($real_pth)) {
 			if (!in_array($ldi, $remove_ldis, true)) {

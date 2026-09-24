@@ -164,7 +164,8 @@ function dsstats_get_and_store_ds_avgpeak_values(string $interval, string $type,
 			$dsses += $file['dsses'];
 
 			if ($file['data_source_path'] != '') {
-				$rrdfile       = str_replace('<path_rra>', CACTI_PATH_RRA, $file['data_source_path']);
+				/* resolve through get_data_source_path() so the RRA containment check applies here too */
+				$rrdfile       = get_data_source_path($file['local_data_id'], true);
 				$local_data_id = $file['local_data_id'];
 				$dsnames       = explode(',', $file['dsnames']);
 
