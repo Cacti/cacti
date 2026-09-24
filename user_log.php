@@ -240,7 +240,7 @@ function create_user_log_filter() : array {
 
 	$all     = ['-1' => __('All')];
 	$deleted = ['-2' => __('Deleted/Invalid')];
-	$users   = db_fetch_assoc('SELECT DISTINCT id,
+	$users   = db_fetch_assoc('SELECT DISTINCT ua.id,
 		IF(ud.name != "",
 			CONCAT(ua.username, " (", ud.name, ")"),
 			IF(ua.realm = 0,
@@ -252,6 +252,8 @@ function create_user_log_filter() : array {
 		LEFT JOIN login_providers AS ud
 		ON ua.realm = ud.id+1000
 		ORDER BY username, realm');
+
+	$users = is_array($users) ? $users : [];
 
 	if (cacti_sizeof($users)) {
 		$users = array_rekey($users, 'id', 'name');
