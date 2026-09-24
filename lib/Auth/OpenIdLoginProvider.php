@@ -31,9 +31,13 @@ use Firebase\JWT\JWT;
 class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLoginProviderInterface {
 	public static function collectParameters(): array {
 		return [
+			// no-validation: OAuth2 client identifier issued by the IdP, free text
 			'client_id'       => form_input_validate(gnrv('client_id'), 'client_id', '', true, 3),
+			// no-validation: OAuth2 client secret, an arbitrary secret with no format to enforce
 			'client_secret'   => form_input_validate(gnrv('client_secret'), 'client_secret', '', true, 3),
+			// no-validation: space-delimited OAuth2 scope list, free text
 			'scopes'          => form_input_validate(gnrv('scopes'), 'scopes', '', true, 3),
+			// no-validation: scheme is enforced separately in discover() (HTTPS required)
 			'discovery_url'   => form_input_validate(gnrv('discovery_url'), 'discovery_url', '', true, 3),
 			'claim_username'  => gnrv('oidc_claim_username'),
 			'claim_full_name' => gnrv('oidc_claim_full_name'),

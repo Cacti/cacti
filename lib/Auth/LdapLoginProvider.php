@@ -42,6 +42,7 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 		// ====================================================
 
 		return [
+			// no-validation: admin-entered LDAP server hostname(s)/IPs, space delimited
 			'server'            => form_input_validate(gnrv('server'), 'server', '', false, 3),
 			'port'              => (int) gnrv('port'),
 			'port_ssl'          => (int) gnrv('port_ssl'),
@@ -52,15 +53,26 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 			'tls_certificate'   => (int) gnrv('tls_certificate'),
 			'referrals'         => (int) gnrv('referrals'),
 			'mode'              => (int) gnrv('mode'),
+			// DN template with a <username> placeholder; ldap_escape() downstream
+			// (lib/ldap.php) escapes the substituted value before use.
+			// no-validation: DN template, escaped downstream before use
 			'dn'                => form_input_validate(gnrv('dn'), 'dn', '', true, 3),
 			// A blank group_dn is the "no restriction" behavior; there is no
 			// separate enable/disable checkbox for this.
+			// no-validation: LDAP group DN, admin-entered directory identifier
 			'group_dn'          => form_input_validate(gnrv('group_dn'), 'group_dn', '', true, 3),
+			// no-validation: LDAP attribute name, admin-entered directory schema value
 			'group_attrib'      => form_input_validate(gnrv('group_attrib'), 'group_attrib', '', true, 3),
 			'group_member_type' => (int) gnrv('group_member_type'),
+			// no-validation: LDAP search base DN, admin-entered directory identifier
 			'search_base'       => form_input_validate(gnrv('search_base'), 'search_base', '', true, 3),
+			// LDAP search filter template; ldap_escape() downstream (lib/ldap.php)
+			// escapes the substituted value before use.
+			// no-validation: search filter template, escaped downstream before use
 			'search_filter'     => form_input_validate(gnrv('search_filter'), 'search_filter', '', true, 3),
+			// no-validation: LDAP bind DN for the specific-search mode, admin-entered
 			'specific_dn'       => form_input_validate(gnrv('specific_dn'), 'specific_dn', '', true, 3),
+			// no-validation: LDAP bind password, an arbitrary secret with no format to enforce
 			'specific_password' => form_input_validate(gnrv('specific_password'), 'specific_password', '', true, 3),
 			'claim_full_name'   => gnrv('claim_full_name'),
 			'claim_email'       => gnrv('claim_email'),

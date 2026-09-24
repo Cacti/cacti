@@ -75,13 +75,19 @@ function form_save() : void {
 
 		$save                       = [];
 		$save['id']                 = gnrv('id');
+		// no-validation: admin-chosen display name, free text
 		$save['name']               = form_input_validate(gnrv('name'), 'name', '', false, 3);
+		// no-validation: admin-chosen free-text description
 		$save['description']        = form_input_validate(gnrv('description'), 'description', '', true, 3);
 		$save['type']               = gnrv('type');
+		// no-validation: admin-chosen SSO login button text, free text
 		$save['button_label']       = form_input_validate(gnrv('button_label'), 'button_label', '', true, 3);
 		$save['user_id']            = gnrv('user_id');
+		// no-validation: checkbox values are constrained to 'on'/'' by the isrv() guard, not a text field
 		$save['enabled']            = (isrv('enabled') ? form_input_validate(gnrv('enabled'), 'enabled', '', true, 3) : '');
+		// no-validation: checkbox values are constrained to 'on'/'' by the isrv() guard, not a text field
 		$save['debug']              = (isrv('debug') ? form_input_validate(gnrv('debug'), 'debug', '', true, 3) : '');
+		// no-validation: checkbox values are constrained to 'on'/'' by the isrv() guard, not a text field
 		$save['allow_auth_cookies'] = (isrv('allow_auth_cookies') ? form_input_validate(gnrv('allow_auth_cookies'), 'allow_auth_cookies', '', true, 3) : '');
 
 		$parameters = LoginProviderFactory::collectParameters((int) $save['type']);
