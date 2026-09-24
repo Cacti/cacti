@@ -3253,7 +3253,12 @@ function data_source_path_within_rra(string $path) : bool {
 		$parts[] = $segment;
 	}
 
-	$base_real = realpath(CACTI_PATH_RRA);
+	// CACTI_PATH_RRA never changes within a process, so resolve it once instead of re-stat'ing every call
+	static $base_real = null;
+
+	if ($base_real === null) {
+		$base_real = realpath(CACTI_PATH_RRA);
+	}
 
 	if ($base_real === false) {
 		return false;
