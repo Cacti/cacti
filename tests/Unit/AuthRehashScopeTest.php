@@ -20,35 +20,51 @@
  * correct password on a locked account.
  */
 
-$authSrc = file_get_contents(dirname(__DIR__, 2) . '/lib/auth.php');
+$localAuthSrc = file_get_contents(dirname(__DIR__, 2) . '/lib/Auth/LocalAuthLoginProvider.php');
 
-function _local_login_body(string $src): string {
-	$start = strpos($src, 'function local_auth_login_process(');
+function _local_auth_fn_body(string $src, string $fn): string {
+	$start = strpos($src, "function $fn(");
 	expect($start)->not->toBeFalse();
-	$end = strpos($src, "\nfunction ", $start + 1);
 
-	return substr($src, $start, ($end === false ? strlen($src) : $end) - $start);
+	$depth = 0;
+	$len   = strlen($src);
+
+	for ($i = strpos($src, '{', $start); $i < $len; $i++) {
+		if ($src[$i] === '{') {
+			$depth++;
+		} elseif ($src[$i] === '}') {
+			$depth--;
+
+			if ($depth === 0) {
+				return substr($src, $start, $i - $start + 1);
+			}
+		}
+	}
+
+	expect(false)->toBeTrue("$fn() is unbalanced");
 }
 
-test('the rehash update is scoped to realm 0', function () use ($authSrc) {
-	$body = _local_login_body($authSrc);
+test('the rehash update is scoped to realm 0', function () use ($localAuthSrc) {
+	$body = _local_auth_fn_body($localAuthSrc, 'rehashIfNeeded');
 
-	$update = strpos($body, 'UPDATE user_auth');
-	expect($update)->not->toBeFalse();
-
-	// the write that follows must carry the realm predicate
-	$tail = substr($body, $update);
-	expect($tail)->toContain('SET password = ?');
+	expect($body)->toContain('SET password = ?');
 	expect(preg_match('/UPDATE user_auth\s+SET password = \?\s+WHERE username = \?\s+AND realm = 0/', $body))->toBe(1);
 });
 
-test('rehash only runs after a successful login, without a second verify', function () use ($authSrc) {
-	$body = _local_login_body($authSrc);
+test('rehash only runs after a successful login, without a second verify', function () use ($localAuthSrc) {
+	$authenticateBody = _local_auth_fn_body($localAuthSrc, 'authenticate');
 
-	// gated on the successful secpass result, not an independent re-verify
-	expect($body)->toContain('if (cacti_sizeof($user)) {');
+	// verifyCredential() failure returns before rehashIfNeeded() is ever called
+	$guard  = strpos($authenticateBody, '!cacti_sizeof($user)');
+	$rehash = strpos($authenticateBody, 'rehashIfNeeded(');
+	expect($guard)->not->toBeFalse();
+	expect($rehash)->not->toBeFalse();
+	expect($guard)->toBeLessThan($rehash);
+
+	$rehashBody = _local_auth_fn_body($localAuthSrc, 'rehashIfNeeded');
+
 	// the redundant second password verification is gone
-	expect($body)->not->toContain('$valid = compat_password_verify(');
-	// and it no longer re-reads the hash it already has from secpass_login_process()
-	expect($body)->not->toContain("db_fetch_cell_prepared('SELECT password");
+	expect($rehashBody)->not->toContain('compat_password_verify(');
+	// and it no longer re-reads the hash it already has from verifyCredential()
+	expect($rehashBody)->not->toContain("db_fetch_cell_prepared('SELECT password");
 });

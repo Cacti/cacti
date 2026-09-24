@@ -44,6 +44,7 @@
         "ext-sockets": "*",
         "ext-sqlite3": "*",
         "ext-xml": "*",
+        "firebase/php-jwt": "^7.2",
         "greew/oauth2-azure-provider": "^2.0",
         "hayageek/oauth2-yahoo": "^2.0",
         "jfcherng/php-diff": "^6.16",
@@ -51,6 +52,7 @@
         "league/oauth2-google": "^5.0",
         "lipis/flag-icons": "^7.5.0",
         "mikepultz/netdns2": "^2.0",
+        "onelogin/php-saml": "^4.3",
         "php-mqtt/client": "^2.2",
         "phpseclib/phpseclib": "^4.0",
         "psr/log": "^3.0",
@@ -123,7 +125,8 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "Cacti\\Console\\": "lib/Console/"
+            "Cacti\\Console\\": "lib/Console/",
+            "Cacti\\Auth\\": "lib/Auth/"
         }
     },
     "config": {

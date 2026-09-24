@@ -38,6 +38,194 @@ require_once __DIR__ . '/remote_agent_transport.php';
 require_once __DIR__ . '/client_address.php';
 
 /**
+ * Performs an SSRF-hardened outbound HTTP request.
+ *
+ * Every outbound fetch of an admin-supplied URL (OpenID discovery documents,
+ * JWKS, userinfo, token endpoints, etc.) must go through this function rather
+ * than raw curl/file_get_contents. It forces TLS peer verification, refuses
+ * redirects, and rejects hosts that resolve to loopback/private/link-local/
+ * reserved address space so a configured URL cannot be abused to reach
+ * internal services.
+ *
+ * @param string $method  HTTP method, e.g. 'GET' or 'POST'.
+ * @param string $url     The absolute http(s) URL to fetch.
+ * @param array  $options Optional: 'body' (string), 'headers' (array of 'Name: value'
+ *                        strings), 'timeout' (int seconds, default 10), 'allowed_hosts'
+ *                        (array restricting the request to those hostnames only).
+ *
+ * @return array{success: bool, status: int, body: string, error: string}
+ */
+function cacti_http(string $method, string $url, array $options = []) : array {
+	if ($url === '' || $method === '') {
+		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Invalid URL'];
+	}
+
+	$parts = parse_url($url);
+
+	if ($parts === false || empty($parts['scheme']) || empty($parts['host'])) {
+		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Invalid URL'];
+	}
+
+	$scheme = strtolower($parts['scheme']);
+
+	if (!in_array($scheme, ['https', 'http'], true)) {
+		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Unsupported URL scheme'];
+	}
+
+	if (isset($options['allowed_hosts']) && !in_array($parts['host'], $options['allowed_hosts'], true)) {
+		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Host not allowed'];
+	}
+
+	$safeIps = cacti_http_resolve_safe_ips($parts['host']);
+
+	if (empty($safeIps)) {
+		return ['success' => false, 'status' => 0, 'body' => '', 'error' => 'Target host resolves to a disallowed address'];
+	}
+
+	$ch = curl_init();
+
+	$port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
+
+	// Pin the connection to the address(es) just validated via CURLOPT_RESOLVE,
+	// so curl's own DNS lookup at connect time cannot return a different
+	// (private/loopback) address than the one already checked above - the
+	// classic SSRF-via-DNS-rebinding bypass of a separate preflight check.
+	// TLS hostname/certificate verification below still runs against
+	// $parts['host'], unaffected by which address it is pinned to.
+	$resolve = [];
+
+	foreach ($safeIps as $ip) {
+		$resolve[] = cacti_http_bracket_ipv6($parts['host']) . ':' . $port . ':' . cacti_http_bracket_ipv6($ip);
+	}
+
+	curl_setopt_array($ch, [
+		CURLOPT_URL             => $url,
+		CURLOPT_CUSTOMREQUEST   => strtoupper($method),
+		CURLOPT_RETURNTRANSFER  => true,
+		CURLOPT_FOLLOWLOCATION  => false,
+		CURLOPT_SSL_VERIFYPEER  => true,
+		CURLOPT_SSL_VERIFYHOST  => 2,
+		CURLOPT_RESOLVE         => $resolve,
+		CURLOPT_TIMEOUT         => (int) ($options['timeout'] ?? 10),
+		CURLOPT_CONNECTTIMEOUT  => 5,
+		CURLOPT_PROTOCOLS       => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+		CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+	]);
+
+	if (isset($options['body'])) {
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $options['body']);
+	}
+
+	if (!empty($options['headers'])) {
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $options['headers']);
+	}
+
+	$body   = curl_exec($ch);
+	$status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	$error  = curl_error($ch);
+
+	curl_close($ch);
+
+	if (!is_string($body)) {
+		return ['success' => false, 'status' => $status, 'body' => '', 'error' => $error !== '' ? $error : 'Request failed'];
+	}
+
+	return [
+		'success' => $status >= 200 && $status < 300,
+		'status'  => $status,
+		'body'    => $body,
+		'error'   => $status >= 300 ? 'HTTP ' . $status : ''
+	];
+}
+
+/**
+ * Resolves a hostname (or validates an IP literal) once and returns its
+ * addresses only when every one of them is public/routable - never
+ * loopback/private/link-local/reserved space. Used both to decide whether
+ * cacti_http() may proceed and, via CURLOPT_RESOLVE, to pin the connection
+ * to these exact addresses so a second, independent DNS lookup at connect
+ * time cannot substitute a different (unsafe) address (DNS rebinding).
+ *
+ * @param string $host The hostname or IP literal from the target URL.
+ *
+ * @return string[] The resolved addresses, or [] if none/any is unsafe.
+ */
+function cacti_http_resolve_safe_ips(string $host) : array {
+	// parse_url() can hand back an IPv6 literal wrapped in [brackets]; strip
+	// them for validation/DNS purposes, they get re-added (where curl
+	// requires them) when building the CURLOPT_RESOLVE entry below.
+	$bareHost = trim($host, '[]');
+
+	if (filter_var($bareHost, FILTER_VALIDATE_IP)) {
+		$ips = [$bareHost];
+	} else {
+		$records = @dns_get_record($bareHost, DNS_A + DNS_AAAA);
+
+		if (!is_array($records)) {
+			return [];
+		}
+
+		$ips = array_filter(array_map(static function ($record) {
+			return $record['ip'] ?? ($record['ipv6'] ?? null);
+		}, $records));
+	}
+
+	if (empty($ips)) {
+		return [];
+	}
+
+	foreach ($ips as $ip) {
+		// An IPv4-mapped IPv6 literal (::ffff:x.x.x.x) is structurally valid
+		// IPv6 and can pass the private/reserved check below on the IPv6
+		// side while curl still connects via the embedded IPv4 address -
+		// validate that embedded address instead when present.
+		$mapped = cacti_http_ipv4_mapped_address($ip);
+
+		if (!filter_var($mapped ?? $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+			return [];
+		}
+	}
+
+	return array_values($ips);
+}
+
+/**
+ * Extracts the embedded IPv4 address from an IPv4-mapped IPv6 literal
+ * (the ::ffff:0:0/96 range, e.g. "::ffff:169.254.169.254"), or null if
+ * $ip is not one.
+ *
+ * @param string $ip An IP literal, IPv4 or IPv6.
+ *
+ * @return string|null The embedded IPv4 address, or null.
+ */
+function cacti_http_ipv4_mapped_address(string $ip) : ?string {
+	$binary = @inet_pton($ip);
+
+	if ($binary === false || strlen($binary) !== 16 || substr($binary, 0, 10) !== str_repeat("\x00", 10) || substr($binary, 10, 2) !== "\xff\xff") {
+		return null;
+	}
+
+	$embedded = inet_ntop(substr($binary, 12, 4));
+
+	return $embedded !== false ? $embedded : null;
+}
+
+/**
+ * Wraps an IPv6 address in [brackets] (the syntax CURLOPT_RESOLVE and URLs
+ * require to disambiguate its colons from a host:port:address separator);
+ * IPv4 addresses and hostnames are returned unchanged.
+ *
+ * @param string $host An IPv6/IPv4 address or hostname, optionally already bracketed.
+ *
+ * @return string
+ */
+function cacti_http_bracket_ipv6(string $host) : string {
+	$bare = trim($host, '[]');
+
+	return filter_var($bare, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? '[' . $bare . ']' : $host;
+}
+
+/**
  * Takes a string of text, truncates it to $max_length and appends
  * three periods onto the end
  *

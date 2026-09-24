@@ -954,13 +954,13 @@ $auth_methods = [
 	AUTH_METHOD_BASIC => __('Web Basic Authentication')
 ];
 
-if (function_exists('ldap_connect')) {
-	$auth_methods[AUTH_METHOD_DOMAIN] = __('LDAP/AD User Domains');
-}
+$auth_methods[AUTH_METHOD_PROVIDERS] = __('Login Providers');
 
-$domain_types = [
-	DOMAIN_TYPE_LDAP => __('LDAP'),
-	DOMAIN_TYPE_AD   => __('Active Directory')
+$provider_types = [
+	PROVIDER_TYPE_LDAP   => __('LDAP'),
+	PROVIDER_TYPE_AD     => __('Active Directory'),
+	PROVIDER_TYPE_SAML2  => __('SAML2'),
+	PROVIDER_TYPE_OPENID => __('OpenID Connect'),
 ];
 
 $auth_realms = get_auth_realms();
@@ -1135,7 +1135,7 @@ if (POLLER_ID || $config['connection'] == 'online') { // @phpstan-ignore-line
 			'settings.php'         => __('Settings'),
 			'user_admin.php'       => __('Users'),
 			'user_group_admin.php' => __('User Groups'),
-			'user_domains.php'     => __('User Domains')
+			'login_providers.php'  => __('Login Providers')
 		],
 		__('Utilities') => [
 			'utilities.php'  => __('System Utilities'),
@@ -1446,7 +1446,7 @@ $user_auth_realm_filenames = [
 	'package_keys.php'           => 29,
 	'tree.php'                   => 4,
 	'user_admin.php'             => 1,
-	'user_domains.php'           => 1,
+	'login_providers.php'        => 1,
 	'user_group_admin.php'       => 1,
 	'utilities.php'              => 15,
 	'user_log.php'               => 15,
@@ -2780,16 +2780,16 @@ $navigation = [
 		'url'     => '',
 		'level'   => '2'
 	],
-	'user_domains.php:' => [
-		'title'   => __('User Domains'),
+	'login_providers.php:' => [
+		'title'   => __('Login Providers'),
 		'mapping' => 'index.php:',
-		'url'     => 'user_domains.php',
+		'url'     => 'login_providers.php',
 		'level'   => '1'
 	],
-	'user_domains.php:edit' => [
+	'login_providers.php:edit' => [
 		'title'   => __('(Edit)'),
-		'mapping' => 'user_domains.php:,index.php:',
-		'url'     => 'user_domains.php',
+		'mapping' => 'login_providers.php:,index.php:',
+		'url'     => 'login_providers.php',
 		'level'   => '2'
 	],
 	'user_group_admin.php:' => [

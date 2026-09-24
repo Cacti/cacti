@@ -60,9 +60,11 @@ if (is_install_needed() && !defined('IN_CACTI_INSTALL')) {
 
 /**
  * The logout page does not require authentication
- * so, short cut the process.
+ * so, short cut the process. login_sso.php is the public SAML2/OpenID
+ * redirect+callback endpoint: every request to it is, by definition, still
+ * unauthenticated, so it must never hit the login-page redirect below.
  */
-if (get_current_page() == 'logout.php' || get_current_page() == 'auth_changepassword.php' || get_current_page() == 'auth_resetpassword.php') {
+if (get_current_page() == 'logout.php' || get_current_page() == 'auth_changepassword.php' || get_current_page() == 'auth_resetpassword.php' || get_current_page() == 'login_sso.php') {
 	return true;
 }
 

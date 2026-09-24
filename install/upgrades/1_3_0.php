@@ -669,6 +669,10 @@ function upgrade_to_1_3_0() : void {
 	if (!db_column_exists('user_domains_ldap', 'bind_timeout')) {
 		db_install_execute('ALTER TABLE  user_domains_ldap ADD COLUMN bind_timeout INT unsigned NOT NULL default 2 AFTER network_timeout');
 	}
+
+	// Runs last: reads the now schema-complete user_domains/user_domains_ldap
+	// rows (every legacy column above has landed) before dropping them.
+	login_providers_convert_1_3_0();
 }
 
 /**
@@ -892,6 +896,134 @@ function upgrade_reports() : void {
 	db_install_execute('UPDATE reports SET attachment_type = ? WHERE attachment_type = ?', [REPORTS_TYPE_INLINE_PNG, 91]);
 	db_install_execute('UPDATE reports SET attachment_type = ? WHERE attachment_type = ?', [REPORTS_TYPE_INLINE_JPG, 92]);
 	db_install_execute('UPDATE reports SET attachment_type = ? WHERE attachment_type = ?', [REPORTS_TYPE_INLINE_GIF, 93]);
+}
+
+/**
+ * Renames "User Domains" to "Login Providers": collapses `user_domains` and
+ * `user_domains_ldap` into a single `login_providers` table, moving every
+ * LDAP/AD connection attribute into a `parameters` JSON column so SAML2 and
+ * OpenID providers (which have no legacy table of their own) can use the
+ * same column for their settings.
+ *
+ * Runs after ldap_convert_1_3_0(), so a legacy single-LDAP config has already
+ * landed in user_domains/user_domains_ldap and is migrated along with it.
+ * Provider ids are carried over unchanged (old domain_id becomes the new id)
+ * so existing user_auth.realm values (1000 + domain_id) keep resolving.
+ *
+ * Resumable by design: CREATE/INSERT use IF NOT EXISTS/ON DUPLICATE KEY
+ * UPDATE and the legacy tables are only dropped after every row has been
+ * carried over, so an upgrade interrupted partway through (crash, timeout)
+ * can simply be re-run to completion instead of leaving a half-migrated,
+ * unrecoverable login_providers table.
+ */
+function login_providers_convert_1_3_0() : void {
+	db_install_execute("CREATE TABLE IF NOT EXISTS login_providers (
+		id int(10) unsigned NOT NULL AUTO_INCREMENT,
+		name varchar(64) NOT NULL default '',
+		description varchar(255) NOT NULL default '',
+		type tinyint(3) unsigned NOT NULL default '1',
+		button_label varchar(50) NOT NULL default '',
+		enabled char(2) NOT NULL default 'on',
+		debug char(2) NOT NULL default '',
+		is_default tinyint(3) unsigned NOT NULL default '0',
+		allow_auth_cookies char(2) NOT NULL default 'on',
+		user_id int(10) unsigned NOT NULL default '0',
+		parameters longtext,
+		PRIMARY KEY (id)
+	) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Table to Hold Login Providers (LDAP/AD/SAML2/OpenID)'");
+
+	if (!db_table_exists('user_domains')) {
+		return;
+	}
+
+	$domains          = db_fetch_assoc('SELECT * FROM user_domains');
+	$domains          = is_array($domains) ? $domains : [];
+	$migration_failed = false;
+
+	foreach ($domains as $domain) {
+		$parameters = [];
+
+		if (db_table_exists('user_domains_ldap')) {
+			$ldap = db_fetch_row_prepared('SELECT *
+				FROM user_domains_ldap
+				WHERE domain_id = ?',
+				[$domain['domain_id']]);
+
+			$ldap = is_array($ldap) ? $ldap : [];
+
+			if (cacti_sizeof($ldap)) {
+				$parameters = [
+					'server'            => $ldap['server'],
+					'port'              => (int) $ldap['port'],
+					'port_ssl'          => (int) $ldap['port_ssl'],
+					'proto_version'     => (int) $ldap['proto_version'],
+					'network_timeout'   => (int) $ldap['network_timeout'],
+					'bind_timeout'      => (int) $ldap['bind_timeout'],
+					'encryption'        => (int) $ldap['encryption'],
+					'tls_certificate'   => (int) $ldap['tls_certificate'],
+					'referrals'         => (int) $ldap['referrals'],
+					'mode'              => (int) $ldap['mode'],
+					'dn'                => $ldap['dn'],
+					// group_require is gone: a non-blank group_dn now IS the requirement.
+					// Only carry group_dn over when the legacy checkbox was actually on -
+					// installs that left group_dn populated but group_require off must not
+					// suddenly start enforcing membership (and locking users out) after upgrade.
+					'group_dn'          => $ldap['group_require'] == 'on' ? $ldap['group_dn'] : '',
+					'group_attrib'      => $ldap['group_attrib'],
+					'group_member_type' => (int) $ldap['group_member_type'],
+					'search_base'       => $ldap['search_base'],
+					'search_filter'     => $ldap['search_filter'],
+					'specific_dn'       => $ldap['specific_dn'],
+					'specific_password' => $ldap['specific_password'],
+					'claim_full_name'   => $ldap['cn_full_name'],
+					'claim_email'       => $ldap['cn_email'],
+				];
+			}
+		}
+
+		$status = db_install_execute('INSERT INTO login_providers
+			(id, name, type, enabled, debug, is_default, user_id, parameters)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+			ON DUPLICATE KEY UPDATE
+				name       = VALUES(name),
+				type       = VALUES(type),
+				enabled    = VALUES(enabled),
+				debug      = VALUES(debug),
+				is_default = VALUES(is_default),
+				user_id    = VALUES(user_id),
+				parameters = VALUES(parameters)',
+			[
+				$domain['domain_id'],
+				$domain['domain_name'],
+				(int) $domain['type'],
+				$domain['enabled'],
+				$domain['debug'] ?? '',
+				(int) $domain['defdomain'],
+				(int) $domain['user_id'],
+				json_encode($parameters),
+			]);
+
+		if ($status !== DB_STATUS_SUCCESS) {
+			$migration_failed = true;
+		}
+	}
+
+	// Only drop the legacy tables once every row is confirmed migrated - a
+	// transient SQL error here must not destroy the only copy of an
+	// unmigrated provider; a re-run of this upgrade will retry via the
+	// ON DUPLICATE KEY UPDATE above.
+	if ($migration_failed) {
+		return;
+	}
+
+	$migrated_count = db_fetch_cell('SELECT COUNT(*) FROM login_providers');
+
+	if ((int) $migrated_count < cacti_sizeof($domains)) {
+		return;
+	}
+
+	db_install_execute('DROP TABLE IF EXISTS user_domains_ldap');
+	db_install_execute('DROP TABLE IF EXISTS user_domains');
 }
 
 function ldap_convert_1_3_0() : void {

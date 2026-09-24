@@ -20,14 +20,29 @@
  * valid usernames).
  */
 
-$authSrc = file_get_contents(dirname(__DIR__, 2) . '/lib/auth.php');
+$authSrc      = file_get_contents(dirname(__DIR__, 2) . '/lib/auth.php');
+$localAuthSrc = file_get_contents(dirname(__DIR__, 2) . '/lib/Auth/LocalAuthLoginProvider.php');
 
 function _auth_fn_body(string $src, string $fn): string {
 	$start = strpos($src, "function $fn(");
 	expect($start)->not->toBeFalse();
-	$end = strpos($src, "\nfunction ", $start + 1);
 
-	return substr($src, $start, ($end === false ? strlen($src) : $end) - $start);
+	$depth = 0;
+	$len   = strlen($src);
+
+	for ($i = strpos($src, '{', $start); $i < $len; $i++) {
+		if ($src[$i] === '{') {
+			$depth++;
+		} elseif ($src[$i] === '}') {
+			$depth--;
+
+			if ($depth === 0) {
+				return substr($src, $start, $i - $start + 1);
+			}
+		}
+	}
+
+	expect(false)->toBeTrue("$fn() is unbalanced");
 }
 
 test('the lockout counter is incremented atomically in SQL', function () use ($authSrc) {
@@ -40,15 +55,15 @@ test('the lockout counter is incremented atomically in SQL', function () use ($a
 	expect($body)->not->toContain('failed_attempts = ?');
 });
 
-test('an unknown username is verified against a fixed hash for constant time', function () use ($authSrc) {
-	$body = _auth_fn_body($authSrc, 'secpass_login_process');
+test('an unknown username is verified against a fixed hash for constant time', function () use ($localAuthSrc) {
+	$body = _auth_fn_body($localAuthSrc, 'verifyCredential');
 
 	// the else (no such user) branch runs a throw-away verify so timing matches
 	expect($body)->toContain("compat_password_verify((string) \$password, '\$2y\$");
 });
 
-test('the timing dummy is a valid cost-matched bcrypt hash', function () use ($authSrc) {
-	preg_match("/compat_password_verify\(\(string\) \\\$password, '(\\\$2y\\\$[^']+)'\)/", $authSrc, $m);
+test('the timing dummy is a valid cost-matched bcrypt hash', function () use ($localAuthSrc) {
+	preg_match("/compat_password_verify\(\(string\) \\\$password, '(\\\$2y\\\$[^']+)'\)/", $localAuthSrc, $m);
 	expect($m[1] ?? '')->not->toBe('');
 
 	$info = password_get_info($m[1]);

@@ -89,7 +89,7 @@ function upgrade_to_0_8_7() : void {
 	if ($auth_method_results['data'] !== false) {
 		if ($global_auth == 'on') {
 			if ($ldap_enabled == 'on') {
-				db_install_execute("REPLACE INTO settings VALUES ('auth_method','" . AUTH_METHOD_DOMAIN . "')");
+				db_install_execute("REPLACE INTO settings VALUES ('auth_method','" . AUTH_METHOD_PROVIDERS . "')");
 			} else {
 				db_install_execute("REPLACE INTO settings VALUES ('auth_method','" . AUTH_METHOD_CACTI . "')");
 			}

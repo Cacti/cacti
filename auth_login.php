@@ -22,6 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
+use Cacti\Auth\BasicAuthLoginProvider;
+use Cacti\Auth\LocalAuthLoginProvider;
+
 // include ldap support
 require_once(__DIR__ . '/lib/ldap.php');
 
@@ -80,20 +83,20 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 		case AUTH_METHOD_CACTI: // Local authentication
 			cacti_log("DEBUG: Local User '" . $username . "' to attempt login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
-			$user = local_auth_login_process($username);
+			$user = (new LocalAuthLoginProvider())->authenticate($username, gnrv('login_password'))->user ?? [];
 
 			break;
 		case AUTH_METHOD_BASIC: // Basic authentication
 			cacti_log("DEBUG: Basic Auth User '" . $username . "' attempting to login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
-			$user = basic_auth_login_process($username);
+			$user = (new BasicAuthLoginProvider())->resolve($username)->user ?? [];
 
 			break;
 		case AUTH_METHOD_LDAP: // LDAP Authentication
-		case AUTH_METHOD_DOMAIN: // LDAP Domains login
-			cacti_log("DEBUG: Domains User '" . $username . "' to attempt login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+		case AUTH_METHOD_PROVIDERS: // Login Providers
+			cacti_log("DEBUG: Provider User '" . $username . "' to attempt login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
-			$user = domains_login_process($username);
+			$user = login_providers_login_process($username);
 
 			break;
 		default: // Login Realm not determined
@@ -115,11 +118,13 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 	// Guest account checking - Not for builtin
 	if (!$error && !cacti_sizeof($user) && get_guest_account() > 0) {
 		// Locate guest user record
-		$user = db_fetch_row_prepared('SELECT *
+		$guestRow = db_fetch_row_prepared('SELECT *
 			FROM user_auth
 			WHERE id = ?',
 			[get_guest_account()]
 		);
+
+		$user = is_array($guestRow) ? $guestRow : [];
 
 		if ($user) {
 			cacti_log("LOGIN: Authenticated user '" . $username . "' using guest account '" . $user['username'] . "'", false, 'AUTH');
@@ -201,7 +206,7 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 		// remember me support.  Not for guest of basic auth. The transition
 		// gate must pass first so a locked or missing account cannot mint a token.
 		if ($auth_method != AUTH_METHOD_BASIC && $user['id'] !== get_guest_account()) {
-			if (!$error && isrv('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
+			if (!$error && isrv('remember_me') && read_config_option('auth_cache_enabled') == 'on' && auth_realm_allows_cookies((int) $realm)) {
 				set_auth_cookie($user);
 			}
 		}
@@ -217,20 +222,7 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 				$_SESSION[SESS_CHANGE_PASSWORD] = true;
 			}
 
-			if (db_table_exists('user_auth_group')) {
-				$group_options = db_fetch_cell_prepared('SELECT MAX(login_opts)
-					FROM user_auth_group AS uag
-					INNER JOIN user_auth_group_members AS uagm
-					ON uag.id=uagm.group_id
-					WHERE user_id = ?
-					AND login_opts != 4',
-					[$_SESSION[SESS_USER_ID]]
-				);
-
-				if (!empty($group_options)) {
-					$user['login_opts'] = $group_options;
-				}
-			}
+			$user = auth_apply_group_login_opts($user);
 
 			if (user_setting_exists('user_language', $_SESSION[SESS_USER_ID])) {
 				$_SESSION[SESS_USER_LANGUAGE] = read_user_setting('user_language');
@@ -318,7 +310,7 @@ html_auth_header(
 	</td>
 </tr>
 <?php
-if (read_config_option('auth_method') == AUTH_METHOD_LDAP || read_config_option('auth_method') == AUTH_METHOD_DOMAIN) {
+if (read_config_option('auth_method') == AUTH_METHOD_LDAP || read_config_option('auth_method') == AUTH_METHOD_PROVIDERS) {
 	$realms = get_auth_realms(true);
 
 	// try and remember previously selected realm
@@ -364,6 +356,19 @@ if (read_config_option('auth_cache_enabled') == 'on' && $is_https) { ?>
 	</td>
 </tr>
 <?php
+$sso_providers = get_sso_login_providers();
+
+if (cacti_sizeof($sso_providers)) {
+	foreach ($sso_providers as $sso_provider) { ?>
+	<tr>
+		<td colspan='2'>
+			<a class='ui-button ui-corner-all ui-widget sso-login-link' data-realm='<?php print $sso_provider['realm']; ?>' href='login_sso.php?action=login&realm=<?php print $sso_provider['realm']; ?>'><?php print __esc('Login with %s', $sso_provider['label']); ?></a>
+		</td>
+	</tr>
+<?php
+	}
+}
+
 $error_message = '';
 
 if ($error_msg) {
@@ -417,6 +422,14 @@ html_auth_footer('login', $error_message, "
 					storage.set('user_realm', $('#realm').val());
 				}
 				$('#auth').off('submit').trigger('submit');
+			});
+
+			// SSO buttons are plain links (they leave the page for the IdP), so the
+			// remember_me checkbox state has to be appended to the href by hand.
+			$('.sso-login-link').on('click', function() {
+				if ($('#remember_me').is(':checked')) {
+					this.href += '&remember_me=1';
+				}
 			});
 
 		});

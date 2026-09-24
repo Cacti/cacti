@@ -1873,11 +1873,8 @@ function replicate_out(int $remote_poller_id = 1, string $class = 'all') : bool 
 		$data = db_fetch_assoc('SELECT * FROM user_auth_row_cache');
 		replicate_out_table($rcnn_id, $data, 'user_auth_row_cache', $remote_poller_id);
 
-		$data = db_fetch_assoc('SELECT * FROM user_domains');
-		replicate_out_table($rcnn_id, $data, 'user_domains', $remote_poller_id);
-
-		$data = db_fetch_assoc('SELECT * FROM user_domains_ldap');
-		replicate_out_table($rcnn_id, $data, 'user_domains_ldap', $remote_poller_id);
+		$data = db_fetch_assoc('SELECT * FROM login_providers');
+		replicate_out_table($rcnn_id, $data, 'login_providers', $remote_poller_id);
 	}
 
 	if ($class == 'all' || $class == 'data') {

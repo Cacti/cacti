@@ -69,7 +69,7 @@
  */
 function cacti_ldap_auth(string $username, string $password = '', string $dn = '', string $host = '', int $port = 0, int $port_ssl = 0, int $version = 0,
 	int $encryption = 0, int $referrals = 0, mixed $group_require = false, string $group_dn = '', string $group_attrib = '', int $group_member_type = 0) : array {
-	$ldap = new Ldap(0);
+	$ldap = new Ldap();
 
 	if (!empty($username)) {
 		$ldap->username = $username;
@@ -196,7 +196,7 @@ function cacti_ldap_auth(string $username, string $password = '', string $dn = '
 function cacti_ldap_search_dn(string $username, string $dn = '', string $host = '', int $port = 0, int $port_ssl = 0,
 	int $version = 0, int $encryption = 0, int $referrals = 0, int $mode = 0, string $search_base = '',
 	string $search_filter = '', string $specific_dn = '', string $specific_password = '') : array {
-	$ldap = new Ldap(0);
+	$ldap = new Ldap();
 
 	if (!empty($username)) {
 		$ldap->username = $username;
@@ -322,7 +322,7 @@ function cacti_ldap_search_cn(string $username, array $cn = [], string $dn = '',
 	int $port = 0, int $port_ssl = 0, int $version = 0, int $encryption = 0,
 	int $referrals = 0, int $mode = 0, string $search_base = '', string $search_filter = '',
 	string $specific_dn = '', string $specific_password = '') : array {
-	$ldap = new Ldap(0);
+	$ldap = new Ldap();
 
 	if (!empty($username)) {
 		$ldap->username = $username;
@@ -477,57 +477,13 @@ class Ldap {
 	public string $cn_full_name;
 	public string $cn_email;
 
-	function __construct(int $domain_id) {
+	function __construct() {
+		// No DB lookup here: Cacti\Auth\LdapLoginProvider::buildLdap() is the
+		// single source of truth for mapping login_providers.parameters onto
+		// these properties, so this class stays a pure connection/protocol
+		// wrapper with no direct DB coupling.
 		$this->debug = POLLER_VERBOSITY_HIGH;
 		$this->host  = '';
-
-		if ($domain_id > 0) {
-			$domain = db_fetch_row_prepared('SELECT *
-				FROM user_domains
-				WHERE domain_id = ?',
-				[$domain_id]);
-
-			if (cacti_sizeof($domain)) {
-				$settings = db_fetch_row_prepared('SELECT *
-					FROM user_domains_ldap
-					WHERE domain_id = ?',
-					[$domain_id]);
-
-				if (!cacti_sizeof($settings)) {
-					return;
-				}
-
-				// Initialize LDAP parameters for Authenticate
-				$this->dn                = $settings['dn'];
-				$this->host              = $settings['server'];
-				$this->port              = $settings['port'];
-				$this->port_ssl          = $settings['port_ssl'];
-				$this->version           = $settings['proto_version'];
-				$this->encryption        = $settings['encryption'];
-				$this->referrals         = $settings['referrals'];
-				$this->tls_certificate   = $settings['tls_certificate'];
-				$this->network_timeout   = $settings['network_timeout'];
-				$this->bind_timeout      = $settings['bind_timeout'];
-				$this->debug             = $domain['debug'] == 'on' ? POLLER_VERBOSITY_LOW : POLLER_VERBOSITY_HIGH;
-
-				// For group membership checks
-				$this->group_require     = $settings['group_require'] == 'on' ? true : false;
-				$this->group_dn          = $settings['group_dn'];
-				$this->group_attrib      = $settings['group_attrib'];
-				$this->group_member_type = $settings['group_member_type'];
-
-				// Initialize LDAP parameters for Search
-				$this->mode              = $settings['mode'];
-				$this->search_base       = $settings['search_base'];
-				$this->search_filter     = $settings['search_filter'];
-				$this->specific_dn       = $settings['specific_dn'];
-				$this->specific_password = $settings['specific_password'];
-
-				// CN Search settings
-				$this->cn_full_name      = $settings['cn_full_name'];
-				$this->cn_email          = $settings['cn_email'];
-			}
-		}
 	}
 
 	function __destruct() {
@@ -1083,16 +1039,25 @@ class Ldap {
 				if ($ldap_entries !== false && isset($ldap_entries['count']) && $ldap_entries['count'] === 1) {
 					$output = LdapError::GetErrorDetails(LdapError::Success);
 
+					// ldap_get_entries() always lowercases attribute keys
+					// regardless of the case requested (e.g. AD's
+					// "displayName" comes back as "displayname"); look the
+					// value up case-insensitively but keep it under the
+					// originally-requested key so callers reading
+					// $cn[$this->cn[0]] still match what they asked for.
+					$attr0 = strtolower($this->cn[0]);
+					$attr1 = strtolower($this->cn[1]);
+
 					// check if we got an full username entry
-					if (array_key_exists($this->cn[0], $ldap_entries[0])) {
-						$output['cn'][$this->cn[0]] = $ldap_entries[0][$this->cn[0]][0];
+					if (array_key_exists($attr0, $ldap_entries[0])) {
+						$output['cn'][$this->cn[0]] = $ldap_entries[0][$attr0][0];
 					} else {
 						$output['cn'][$this->cn[0]] = '';
 					}
 
 					// check if we got an email entry
-					if (array_key_exists($this->cn[1], $ldap_entries[0])) {
-						$output['cn'][$this->cn[1]] = $ldap_entries[0][$this->cn[1]][0];
+					if (array_key_exists($attr1, $ldap_entries[0])) {
+						$output['cn'][$this->cn[1]] = $ldap_entries[0][$attr1][0];
 					} else {
 						$output['cn'][$this->cn[1]] = '';
 					}
