@@ -1013,15 +1013,15 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
  *
  * @param array $update_cache_array The update cache array.
  * @param mixed $rrdtool_pipe The rrdtool pipe.
- * @param array $unused_data_source_names_by_template Optional data_template_id => unused
+ * @param array $unused_data_source_names_by_id Optional local_data_id => unused
  *   data-source-name map, prefetched by poller_prefetch_rrd_field_names() in
  *   process_poller_output(). Avoids a per-item query for the common case where the caller
- *   already resolved this; falls back to a live per-item query for any data_template_id not
+ *   already resolved this; falls back to a live per-item query for any local_data_id not
  *   present in the map (e.g. a caller that didn't prefetch).
  *
  * @return int The resulting integer value.
  */
-function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $unused_data_source_names_by_template = array()) {
+function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $unused_data_source_names_by_id = array()) {
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
 
@@ -1060,8 +1060,8 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $un
 			}
 
 			if ($data_template_id > 0) {
-				if (isset($unused_data_source_names_by_template[$data_template_id])) {
-					$unused_data_source_names = $unused_data_source_names_by_template[$data_template_id];
+				if (isset($unused_data_source_names_by_id[$rrd_fields['local_data_id']])) {
+					$unused_data_source_names = $unused_data_source_names_by_id[$rrd_fields['local_data_id']];
 				} else {
 					$unused_data_source_names = array_rekey(
 						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
