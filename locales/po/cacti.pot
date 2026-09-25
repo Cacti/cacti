@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-24 08:17-0400\n"
+"POT-Creation-Date: 2026-09-24 18:57-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -130,9 +130,9 @@ msgstr ""
 #: host_templates.php:49 host_templates.php:623 host_templates.php:681
 #: include/global_arrays.php:1801 include/global_settings.php:345
 #: lib/api_automation.php:1437 lib/api_automation.php:1535
-#: lib/api_automation.php:1644 lib/html.php:1826 lib/html_form.php:1826
+#: lib/api_automation.php:1644 lib/html.php:1826 lib/html_form.php:1945
 #: lib/html_reports.php:2019 lib/html_reports.php:2133 links.php:28
-#: login_providers.php:25 managers.php:31 package_keys.php:31
+#: login_providers.php:28 managers.php:31 package_keys.php:31
 #: package_repos.php:34 pollers.php:41 pollers.php:817 sites.php:29
 #: tree.php:1636 tree.php:1789 tree.php:1849 tree.php:1870 user_admin.php:28
 #: user_group_admin.php:33 vdef.php:29 vdef.php:638
@@ -253,7 +253,7 @@ msgstr ""
 msgid "Migrate to Aggregate Graphs"
 msgstr ""
 
-#: aggregate_graphs.php:929 aggregate_graphs.php:2062 graphs.php:2061
+#: aggregate_graphs.php:929 aggregate_graphs.php:2069 graphs.php:2061
 msgid "Aggregate Template"
 msgstr ""
 
@@ -291,17 +291,17 @@ msgid "Place Aggregate Graphs on Report"
 msgstr ""
 
 #: aggregate_graphs.php:955 graphs.php:2075 host.php:539
-#: lib/html_graph.php:1507 lib/html_reports.php:38
+#: lib/html_graph.php:1519 lib/html_reports.php:38
 msgid "Report Name"
 msgstr ""
 
 #: aggregate_graphs.php:961 graphs.php:2081 host.php:545
-#: lib/html_graph.php:1516 lib/html_reports.php:1873
+#: lib/html_graph.php:1528 lib/html_reports.php:1873
 msgid "Timespan"
 msgstr ""
 
 #: aggregate_graphs.php:967 graphs.php:2087 host.php:551
-#: lib/html_graph.php:1525
+#: lib/html_graph.php:1537
 msgid "Align"
 msgstr ""
 
@@ -384,7 +384,7 @@ msgid "Destination Branch:"
 msgstr ""
 
 #: aggregate_graphs.php:1068 data_sources.php:1292 lib/html_reports.php:1727
-#: user_admin.php:1879
+#: user_admin.php:1887
 #, php-format
 msgid "[edit: %s]"
 msgstr ""
@@ -433,15 +433,15 @@ msgstr ""
 msgid "Aggregate Preview %s"
 msgstr ""
 
-#: aggregate_graphs.php:1206 graphs.php:2638 lib/html_graph.php:2448
+#: aggregate_graphs.php:1206 graphs.php:2638 lib/html_graph.php:2460
 msgid "RRDtool Command:"
 msgstr ""
 
-#: aggregate_graphs.php:1208 graphs.php:2640 lib/html_graph.php:2455
+#: aggregate_graphs.php:1208 graphs.php:2640 lib/html_graph.php:2467
 msgid "RRDtool Says:"
 msgstr ""
 
-#: aggregate_graphs.php:1209 graphs.php:2642 lib/html_graph.php:2461
+#: aggregate_graphs.php:1209 graphs.php:2642 lib/html_graph.php:2473
 msgid "Not Checked"
 msgstr ""
 
@@ -487,13 +487,13 @@ msgstr ""
 #: graphs_new.php:349 host.php:1982 host_templates.php:896
 #: host_templates.php:1297 lib/api_automation.php:69 lib/api_automation.php:545
 #: lib/clog_webapi.php:715 lib/html.php:3343 lib/html_filter.php:126
-#: lib/html_graph.php:369 lib/html_graph.php:1140 lib/html_reports.php:2098
+#: lib/html_graph.php:369 lib/html_graph.php:1146 lib/html_reports.php:2098
 #: lib/html_reports.php:2184 lib/html_tree.php:153 lib/html_tree.php:1005
 #: managers.php:305 managers.php:498 plugins.php:629 rrdcheck.php:212
 #: rrdcleaner.php:478 settings.php:65 settings.php:343 settings.php:360
 #: settings.php:411 support.php:371 support.php:608 tree.php:897 tree.php:933
-#: tree.php:969 user_admin.php:2070 user_admin.php:2362 user_admin.php:2458
-#: user_group_admin.php:1994 user_group_admin.php:2076 user_log.php:275
+#: tree.php:969 user_admin.php:2078 user_admin.php:2370 user_admin.php:2466
+#: user_group_admin.php:1994 user_group_admin.php:2076 user_log.php:277
 #: utilities.php:325 utilities.php:779 utilities.php:1506 utilities.php:1697
 msgid "Search"
 msgstr ""
@@ -505,11 +505,11 @@ msgstr ""
 #: graphs_new.php:351 host.php:1984 host_templates.php:898
 #: host_templates.php:1299 lib/api_automation.php:71 lib/api_automation.php:547
 #: lib/clog_webapi.php:726 lib/html.php:3340 lib/html_filter.php:129
-#: lib/html_graph.php:371 lib/html_graph.php:1142 lib/html_reports.php:2100
+#: lib/html_graph.php:371 lib/html_graph.php:1148 lib/html_reports.php:2100
 #: lib/html_reports.php:2186 lib/html_tree.php:1007 managers.php:307
 #: managers.php:500 rrdcheck.php:214 rrdcleaner.php:480 support.php:373
-#: support.php:610 user_admin.php:2072 user_admin.php:2364 user_admin.php:2460
-#: user_group_admin.php:1996 user_group_admin.php:2078 user_log.php:277
+#: support.php:610 user_admin.php:2080 user_admin.php:2372 user_admin.php:2468
+#: user_group_admin.php:1996 user_group_admin.php:2078 user_log.php:279
 #: utilities.php:327 utilities.php:781 utilities.php:1508 utilities.php:1699
 msgid "Enter a search term"
 msgstr ""
@@ -520,11 +520,11 @@ msgstr ""
 #: include/global_arrays.php:1095 include/global_arrays.php:1375
 #: include/global_arrays.php:2152 lib/api_automation.php:230
 #: lib/api_automation.php:574 lib/api_automation.php:652 lib/html.php:2297
-#: lib/html_graph.php:331 lib/html_graph.php:447 lib/html_graph.php:1007
-#: lib/html_graph.php:1166 lib/html_graph.php:1239 lib/html_graph.php:1379
+#: lib/html_graph.php:331 lib/html_graph.php:447 lib/html_graph.php:1013
+#: lib/html_graph.php:1172 lib/html_graph.php:1245 lib/html_graph.php:1391
 #: lib/html_tree.php:1035 lib/html_tree.php:1144 lib/html_tree.php:1537
-#: support.php:1466 tree.php:875 tree.php:2214 user_admin.php:896
-#: user_admin.php:1175 user_admin.php:2382 user_admin.php:2412
+#: support.php:1466 tree.php:875 tree.php:2214 user_admin.php:904
+#: user_admin.php:1183 user_admin.php:2390 user_admin.php:2420
 #: user_group_admin.php:872 user_group_admin.php:1042 user_group_admin.php:2014
 #: user_group_admin.php:2044
 msgid "Graphs"
@@ -541,12 +541,12 @@ msgstr ""
 #: graphs_new.php:372 host.php:2023 host_templates.php:919
 #: host_templates.php:1320 lib/api_automation.php:110
 #: lib/api_automation.php:586 lib/clog_webapi.php:738 lib/html.php:2114
-#: lib/html_filter.php:150 lib/html_graph.php:412 lib/html_graph.php:1199
+#: lib/html_filter.php:150 lib/html_graph.php:412 lib/html_graph.php:1205
 #: lib/html_reports.php:2128 lib/html_reports.php:2225 lib/html_tree.php:1109
 #: managers.php:338 managers.php:530 plugins.php:682 rrdcheck.php:244
-#: rrdcleaner.php:510 support.php:421 support.php:650 user_admin.php:2120
-#: user_admin.php:2394 user_admin.php:2490 user_group_admin.php:2026
-#: user_group_admin.php:2108 user_log.php:316 utilities.php:357
+#: rrdcleaner.php:510 support.php:421 support.php:650 user_admin.php:2128
+#: user_admin.php:2402 user_admin.php:2498 user_group_admin.php:2026
+#: user_group_admin.php:2108 user_log.php:318 utilities.php:357
 #: utilities.php:820 utilities.php:1539 utilities.php:1738
 msgid "Go"
 msgstr ""
@@ -556,10 +556,10 @@ msgstr ""
 #: data_debug.php:1149 data_sources.php:1967 data_templates.php:1312
 #: graph_templates.php:2055 graphs.php:3295 host.php:2024
 #: lib/clog_webapi.php:739 lib/html_filter.php:151 lib/html_graph.php:413
-#: lib/html_graph.php:1200 lib/html_reports.php:2129 lib/html_tree.php:1110
-#: rrdcheck.php:245 rrdcleaner.php:511 user_admin.php:2121 user_admin.php:2395
-#: user_admin.php:2491 user_group_admin.php:2027 user_group_admin.php:2109
-#: user_log.php:317
+#: lib/html_graph.php:1206 lib/html_reports.php:2129 lib/html_tree.php:1110
+#: rrdcheck.php:245 rrdcleaner.php:511 user_admin.php:2129 user_admin.php:2403
+#: user_admin.php:2499 user_group_admin.php:2027 user_group_admin.php:2109
+#: user_log.php:319
 msgid "Apply filter to table"
 msgstr ""
 
@@ -570,12 +570,12 @@ msgstr ""
 #: graphs_new.php:377 host.php:2028 host_templates.php:924
 #: host_templates.php:1325 lib/api_automation.php:115
 #: lib/api_automation.php:591 lib/clog_webapi.php:743 lib/html_filter.php:155
-#: lib/html_filter.php:591 lib/html_graph.php:418 lib/html_graph.php:1204
+#: lib/html_filter.php:591 lib/html_graph.php:418 lib/html_graph.php:1210
 #: lib/html_reports.php:2230 lib/html_tree.php:1115 managers.php:343
 #: managers.php:535 plugins.php:683 rrdcheck.php:249 rrdcleaner.php:515
-#: settings.php:67 support.php:426 support.php:655 user_admin.php:2125
-#: user_admin.php:2399 user_admin.php:2495 user_group_admin.php:2031
-#: user_group_admin.php:2113 user_log.php:321 utilities.php:362
+#: settings.php:67 support.php:426 support.php:655 user_admin.php:2133
+#: user_admin.php:2407 user_admin.php:2503 user_group_admin.php:2031
+#: user_group_admin.php:2113 user_log.php:323 utilities.php:362
 #: utilities.php:825 utilities.php:1544 utilities.php:1743
 msgid "Clear"
 msgstr ""
@@ -585,10 +585,10 @@ msgstr ""
 #: data_debug.php:1154 data_sources.php:1972 data_templates.php:1317
 #: graph_templates.php:2060 graphs.php:3300 host.php:2029
 #: lib/clog_webapi.php:744 lib/html_filter.php:156 lib/html_graph.php:419
-#: lib/html_graph.php:1205 lib/html_tree.php:1116 rrdcheck.php:250
-#: rrdcleaner.php:516 user_admin.php:2126 user_admin.php:2400
-#: user_admin.php:2496 user_group_admin.php:2032 user_group_admin.php:2114
-#: user_log.php:322
+#: lib/html_graph.php:1211 lib/html_tree.php:1116 rrdcheck.php:250
+#: rrdcleaner.php:516 user_admin.php:2134 user_admin.php:2408
+#: user_admin.php:2504 user_group_admin.php:2032 user_group_admin.php:2114
+#: user_log.php:324
 msgid "Reset filter to default values"
 msgstr ""
 
@@ -597,20 +597,20 @@ msgstr ""
 msgid "Matching Graphs"
 msgstr ""
 
-#: aggregate_graphs.php:1746 aggregate_graphs.php:2050
-#: lib/api_automation.php:660 user_admin.php:904 user_group_admin.php:880
+#: aggregate_graphs.php:1746 aggregate_graphs.php:2057
+#: lib/api_automation.php:660 user_admin.php:912 user_group_admin.php:880
 msgid "Graph Title"
 msgstr ""
 
-#: aggregate_graphs.php:1751 aggregate_graphs.php:2056
+#: aggregate_graphs.php:1751 aggregate_graphs.php:2063
 #: automation_graph_rules.php:997 automation_tree_rules.php:1126
 #: data_debug.php:398 data_input.php:783 data_queries.php:1325
 #: data_sources.php:1632 data_templates.php:1125 graph_templates.php:1680
 #: graphs.php:3017 host.php:1631 host_templates.php:1077
 #: host_templates.php:1481 lib/api_automation.php:225 package_keys.php:173
 #: pollers.php:967 sites.php:543 support.php:1051 support.php:1094
-#: tree.php:2154 user_admin.php:904 user_admin.php:1026 user_admin.php:1175
-#: user_admin.php:1322 user_admin.php:1468 user_group_admin.php:654
+#: tree.php:2154 user_admin.php:912 user_admin.php:1034 user_admin.php:1183
+#: user_admin.php:1330 user_admin.php:1476 user_group_admin.php:654
 #: user_group_admin.php:880 user_group_admin.php:1040 user_group_admin.php:1202
 #: user_group_admin.php:1336
 msgid "ID"
@@ -620,9 +620,9 @@ msgstr ""
 msgid "Included in Aggregate"
 msgstr ""
 
-#: aggregate_graphs.php:1761 aggregate_graphs.php:2068 graph_templates.php:1721
-#: graphs.php:3041 host_templates.php:1487 lib/html_graph.php:1418
-#: lib/html_graph.php:1431 lib/spikekill.php:1029 plugins.php:1164
+#: aggregate_graphs.php:1761 aggregate_graphs.php:2075 graph_templates.php:1721
+#: graphs.php:3041 host_templates.php:1487 lib/html_graph.php:1430
+#: lib/html_graph.php:1443 lib/spikekill.php:1029 plugins.php:1164
 #: plugins.php:1241
 msgid "Size"
 msgstr ""
@@ -634,9 +634,9 @@ msgstr ""
 #: data_source_profiles.php:1475 data_sources.php:1718 data_sources.php:1719
 #: data_templates.php:1195 gprint_presets.php:281 graph_templates.php:1766
 #: host_templates.php:1132 include/global_settings.php:2330
-#: lib/api_automation.php:1615 links.php:348 login_providers.php:966
+#: lib/api_automation.php:1615 links.php:348 login_providers.php:896
 #: package_repos.php:513 package_repos.php:514 support.php:354 support.php:1243
-#: tree.php:2249 tree.php:2250 user_admin.php:2291 user_group_admin.php:1940
+#: tree.php:2249 tree.php:2250 user_admin.php:2299 user_group_admin.php:1940
 #: vdef.php:806
 msgid "No"
 msgstr ""
@@ -651,10 +651,10 @@ msgstr ""
 #: gprint_presets.php:281 graph_templates.php:1766 host_templates.php:1132
 #: include/global_settings.php:807 include/global_settings.php:2329
 #: lib/api_automation.php:1615 lib/installer.php:2409 lib/installer.php:2437
-#: lib/installer.php:4566 links.php:348 login_providers.php:964
-#: login_providers.php:966 package_repos.php:513 package_repos.php:514
+#: lib/installer.php:4566 links.php:348 login_providers.php:894
+#: login_providers.php:896 package_repos.php:513 package_repos.php:514
 #: support.php:355 support.php:1243 tree.php:2249 tree.php:2250
-#: user_admin.php:2289 user_group_admin.php:1938 vdef.php:806
+#: user_admin.php:2297 user_group_admin.php:1938 vdef.php:806
 msgid "Yes"
 msgstr ""
 
@@ -669,24 +669,24 @@ msgstr ""
 #: graph_templates.php:942 graph_templates.php:1931 graphs.php:875
 #: graphs.php:900 graphs.php:3109 graphs.php:3192 host.php:1848 host.php:1860
 #: lib/api_automation.php:41 lib/api_automation.php:54
-#: lib/api_automation.php:496 lib/api_automation.php:530 lib/auth.php:3479
-#: lib/auth.php:3529 lib/clog_webapi.php:598 lib/html.php:2812
+#: lib/api_automation.php:496 lib/api_automation.php:530 lib/auth.php:3499
+#: lib/auth.php:3549 lib/clog_webapi.php:598 lib/html.php:2812
 #: lib/html.php:2855 lib/html.php:2896 lib/html_graph.php:172
-#: lib/html_graph.php:219 lib/html_graph.php:225 lib/html_graph.php:1034
-#: lib/html_graph.php:1073 lib/html_graph.php:1079 lib/html_reports.php:1132
+#: lib/html_graph.php:219 lib/html_graph.php:225 lib/html_graph.php:1040
+#: lib/html_graph.php:1079 lib/html_graph.php:1085 lib/html_reports.php:1132
 #: lib/html_reports.php:1136 lib/html_reports.php:1258
 #: lib/html_reports.php:1268 lib/html_reports.php:2062
 #: lib/html_reports.php:2164 lib/html_reports.php:2174 lib/html_tree.php:948
-#: managers.php:296 rrdcheck.php:195 support.php:341 user_admin.php:2035
-#: user_admin.php:2343 user_admin.php:2441 user_group_admin.php:1975
-#: user_group_admin.php:2059 user_log.php:263 utilities.php:209
+#: managers.php:296 rrdcheck.php:195 support.php:341 user_admin.php:2043
+#: user_admin.php:2351 user_admin.php:2449 user_group_admin.php:1975
+#: user_group_admin.php:2059 user_log.php:265 utilities.php:209
 #: utilities.php:222 utilities.php:228 utilities.php:256 utilities.php:666
 #: utilities.php:679 utilities.php:685 utilities.php:713 utilities.php:1497
 #: utilities.php:1681 utilities.php:1684
 msgid "Any"
 msgstr ""
 
-#: aggregate_graphs.php:1896 aggregate_graphs.php:2093
+#: aggregate_graphs.php:1896 aggregate_graphs.php:2100
 #: automation_graph_rules.php:1023 automation_graph_rules.php:1024
 #: automation_networks.php:627 automation_tree_rules.php:1161
 #: data_debug.php:963 data_debug.php:1021 data_sources.php:1170
@@ -708,11 +708,11 @@ msgstr ""
 #: include/global_settings.php:925 include/global_settings.php:933
 #: include/global_settings.php:1718 include/global_settings.php:2415
 #: include/global_settings.php:2503 lib/api_automation.php:42
-#: lib/api_automation.php:497 lib/api_automation.php:701 lib/auth.php:3483
-#: lib/auth.php:3533 lib/auth.php:3580 lib/clog_webapi.php:599
+#: lib/api_automation.php:497 lib/api_automation.php:701 lib/auth.php:3503
+#: lib/auth.php:3553 lib/auth.php:3600 lib/clog_webapi.php:599
 #: lib/html.php:2810 lib/html.php:2856 lib/html.php:2897 lib/html.php:3369
-#: lib/html_form.php:410 lib/html_graph.php:173 lib/html_graph.php:222
-#: lib/html_graph.php:1035 lib/html_graph.php:1076 lib/html_reports.php:172
+#: lib/html_form.php:429 lib/html_graph.php:173 lib/html_graph.php:222
+#: lib/html_graph.php:1041 lib/html_graph.php:1082 lib/html_reports.php:172
 #: lib/html_reports.php:1143 lib/html_reports.php:1147
 #: lib/html_reports.php:1180 lib/html_reports.php:1258
 #: lib/html_reports.php:1264 lib/html_reports.php:1268
@@ -722,8 +722,8 @@ msgstr ""
 #: lib/html_reports.php:2063 lib/html_reports.php:2165 lib/html_tree.php:949
 #: lib/installer.php:3294 package_import.php:1299 rrdcheck.php:196
 #: settings.php:336 settings.php:358 settings.php:381 support.php:342
-#: templates_import.php:330 templates_import.php:362 user_admin.php:2036
-#: user_admin.php:2344 user_admin.php:2442 user_group_admin.php:1976
+#: templates_import.php:330 templates_import.php:362 user_admin.php:2044
+#: user_admin.php:2352 user_admin.php:2450 user_group_admin.php:1976
 #: user_group_admin.php:2060 utilities.php:210 utilities.php:259
 #: utilities.php:667 utilities.php:716
 msgid "None"
@@ -732,9 +732,9 @@ msgstr ""
 #: aggregate_graphs.php:1925 data_debug.php:1076 data_sources.php:1894
 #: graphs.php:943 graphs.php:3221 host.php:1961 include/global_arrays.php:3086
 #: include/global_settings.php:913 lib/api_automation.php:80
-#: lib/api_automation.php:565 lib/html_graph.php:314 lib/html_graph.php:1151
+#: lib/api_automation.php:565 lib/html_graph.php:314 lib/html_graph.php:1157
 #: lib/html_tree.php:1018 rrdcleaner.php:342 support.php:400
-#: user_admin.php:2373 user_admin.php:2469 user_group_admin.php:2005
+#: user_admin.php:2381 user_admin.php:2477 user_group_admin.php:2005
 #: user_group_admin.php:2087 utilities.php:768
 msgid "Template"
 msgstr ""
@@ -759,24 +759,24 @@ msgstr ""
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
 msgstr ""
 
-#: aggregate_graphs.php:1975 aggregate_graphs.php:2074
+#: aggregate_graphs.php:1975 aggregate_graphs.php:2081
 #: include/global_arrays.php:2940
 msgid "Aggregate Graphs"
 msgstr ""
 
-#: aggregate_graphs.php:2053
+#: aggregate_graphs.php:2060
 msgid "The title for the Aggregate Graphs"
 msgstr ""
 
-#: aggregate_graphs.php:2059
+#: aggregate_graphs.php:2066
 msgid "The internal database identifier for this object"
 msgstr ""
 
-#: aggregate_graphs.php:2065
+#: aggregate_graphs.php:2072
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
 msgstr ""
 
-#: aggregate_graphs.php:2101
+#: aggregate_graphs.php:2108
 msgid "No Aggregate Graphs Found"
 msgstr ""
 
@@ -939,12 +939,12 @@ msgid "Please enter your new Cacti password."
 msgstr ""
 
 #: auth_changepassword.php:370 include/global_form.php:1723
-#: lib/functions.php:4430 lib/html.php:3297
+#: lib/functions.php:4584 lib/html.php:3297
 msgid "Change Password"
 msgstr ""
 
-#: auth_changepassword.php:382 auth_login.php:306 auth_login.php:309
-#: lib/functions.php:6738 user_admin.php:384
+#: auth_changepassword.php:382 auth_login.php:298 auth_login.php:301
+#: lib/functions.php:6892 user_admin.php:384
 msgid "Username"
 msgstr ""
 
@@ -961,104 +961,104 @@ msgid "Confirm password"
 msgstr ""
 
 #: auth_changepassword.php:398 auth_resetpassword.php:362 graphs_new.php:382
-#: lib/html_filter.php:381 lib/html_form.php:1850 lib/html_form.php:1859
-#: lib/html_form.php:1870 lib/html_form.php:1952 lib/html_form.php:1962
+#: lib/html_filter.php:381 lib/html_form.php:1969 lib/html_form.php:1978
+#: lib/html_form.php:1989 lib/html_form.php:2071 lib/html_form.php:2081
 #: lib/html_graph.php:432 lib/html_tree.php:1129 pollers.php:840
 #: settings.php:290
 msgid "Save"
 msgstr ""
 
 #: auth_changepassword.php:400 auth_profile.php:514 auth_profile.php:622
-#: auth_resetpassword.php:336 auth_resetpassword.php:363 include/auth.php:347
-#: lib/html_form.php:1863 lib/html_form.php:1956 permission_denied.php:31
+#: auth_resetpassword.php:336 auth_resetpassword.php:363 include/auth.php:349
+#: lib/html_form.php:1982 lib/html_form.php:2075 permission_denied.php:31
 #: permission_denied.php:33 pollers.php:834
 msgid "Return"
 msgstr ""
 
-#: auth_login.php:74
+#: auth_login.php:77
 msgid ""
 "Cacti no longer supports No Authentication mode. Please contact your System "
 "Administrator."
 msgstr ""
 
-#: auth_login.php:101
+#: auth_login.php:104
 msgid ""
 "Unable to determine user Login Realm or Domain. Please contact your System "
 "Administrator."
 msgstr ""
 
-#: auth_login.php:128
+#: auth_login.php:133
 msgid ""
 "User was Authenticated, but the Template Account is disabled. Using Guest "
 "Account"
 msgstr ""
 
-#: auth_login.php:135
+#: auth_login.php:140
 #, php-format
 msgid ""
 "Access Denied!  Guest user id %s does not exist.  Please contact your "
 "Administrator."
 msgstr ""
 
-#: auth_login.php:173 include/auth.php:115 login_sso.php:143
+#: auth_login.php:178 include/auth.php:117 login_sso.php:181
 msgid "Access Denied!  User account disabled."
 msgstr ""
 
-#: auth_login.php:185 include/auth.php:121 login_sso.php:149
+#: auth_login.php:190 include/auth.php:123 login_sso.php:187
 msgid ""
 "You do not have access to any area of Cacti.  Contact your administrator."
 msgstr ""
 
-#: auth_login.php:198 include/auth.php:127 login_sso.php:155
+#: auth_login.php:203 include/auth.php:129 login_sso.php:193
 msgid "Access Denied! User account locked."
 msgstr ""
 
-#: auth_login.php:292 lib/html_tree.php:233
+#: auth_login.php:284 lib/html_tree.php:233
 msgid "Login to Cacti"
 msgstr ""
 
-#: auth_login.php:293
+#: auth_login.php:285
 msgid "User Login"
 msgstr ""
 
-#: auth_login.php:294
+#: auth_login.php:286
 msgid "Enter your Username and Password below"
 msgstr ""
 
-#: auth_login.php:314 include/global_form.php:1690 lib/functions.php:6739
+#: auth_login.php:306 include/global_form.php:1690 lib/functions.php:6893
 msgid "Password"
 msgstr ""
 
-#: auth_login.php:333 user_admin.php:396 user_admin.php:2099
-#: user_admin.php:2249 user_group_admin.php:657
+#: auth_login.php:325 user_admin.php:396 user_admin.php:2107
+#: user_admin.php:2257 user_group_admin.php:657
 msgid "Realm"
 msgstr ""
 
-#: auth_login.php:356
+#: auth_login.php:348
 msgid "Keep me signed in"
 msgstr ""
 
-#: auth_login.php:363
+#: auth_login.php:355
 msgid "Login"
 msgstr ""
 
-#: auth_login.php:373
+#: auth_login.php:365
 #, php-format
 msgid "Login with %s"
 msgstr ""
 
-#: auth_login.php:386
+#: auth_login.php:378
 msgid "Invalid User Name/Password Please Retype"
 msgstr ""
 
-#: auth_login.php:390
+#: auth_login.php:382
 msgid "User Account Disabled"
 msgstr ""
 
 #: auth_profile.php:95 include/global_settings.php:71
 #: include/global_settings.php:1585 include/global_settings.php:1819
-#: include/global_settings.php:1965 lib/html.php:3284 login_providers.php:337
-#: managers.php:42 user_admin.php:1855 user_group_admin.php:1716
+#: include/global_settings.php:1965 lib/html.php:3284 login_providers.php:232
+#: managers.php:42 user_admin.php:1863 user_group_admin.php:1716
 msgid "General"
 msgstr ""
 
@@ -1089,7 +1089,7 @@ msgid "Preview View"
 msgstr ""
 
 #: auth_profile.php:380 auth_profile.php:569 include/global_form.php:1665
-#: user_admin.php:2233
+#: user_admin.php:2241
 msgid "User Name"
 msgstr ""
 
@@ -1098,7 +1098,7 @@ msgid "The login name for this user."
 msgstr ""
 
 #: auth_profile.php:388 include/global_form.php:1673 user_admin.php:390
-#: user_admin.php:2241 user_group_admin.php:653 user_log.php:111
+#: user_admin.php:2249 user_group_admin.php:653 user_log.php:111
 msgid "Full Name"
 msgstr ""
 
@@ -1109,7 +1109,7 @@ msgid ""
 msgstr ""
 
 #: auth_profile.php:397 include/global_form.php:1681
-#: include/global_settings.php:2447 login_providers.php:604 package.php:415
+#: include/global_settings.php:2447 login_providers.php:507 package.php:415
 msgid "Email Address"
 msgstr ""
 
@@ -1143,7 +1143,7 @@ msgid ""
 "into using your session cookies."
 msgstr ""
 
-#: auth_profile.php:447 user_admin.php:1862 user_group_admin.php:1723
+#: auth_profile.php:447 user_admin.php:1870 user_group_admin.php:1723
 msgid "User Settings"
 msgstr ""
 
@@ -1200,9 +1200,9 @@ msgstr ""
 #: include/global_settings.php:2193 include/global_settings.php:2206
 #: include/global_settings.php:3116 lib/api_automation.php:56
 #: lib/api_automation.php:532 lib/html.php:3378 lib/html_reports.php:2176
-#: lib/html_utility.php:1731 links.php:462 login_providers.php:487
+#: lib/html_utility.php:1811 links.php:462 login_providers.php:383
 #: managers.php:157 managers.php:464 pollers.php:57 sites.php:592
-#: user_admin.php:1039 user_group_admin.php:691 utilities.php:224
+#: user_admin.php:1047 user_group_admin.php:691 utilities.php:224
 #: utilities.php:681 utilities.php:1164 utilities.php:1478
 msgid "Disabled"
 msgstr ""
@@ -1216,10 +1216,10 @@ msgstr ""
 #: include/global_settings.php:509 include/global_settings.php:525
 #: lib/api_automation.php:55 lib/api_automation.php:531
 #: lib/html_reports.php:2175 lib/html_reports.php:2411 links.php:318
-#: links.php:523 login_providers.php:381 login_providers.php:938
+#: links.php:523 login_providers.php:276 login_providers.php:868
 #: managers.php:157 managers.php:464 package_repos.php:366
-#: package_repos.php:484 sites.php:592 user_admin.php:1026 user_admin.php:1039
-#: user_admin.php:2245 user_group_admin.php:90 user_group_admin.php:656
+#: package_repos.php:484 sites.php:592 user_admin.php:1034 user_admin.php:1047
+#: user_admin.php:2253 user_group_admin.php:90 user_group_admin.php:656
 #: user_group_admin.php:691 user_group_admin.php:1920 utilities.php:223
 #: utilities.php:680 utilities.php:1478
 msgid "Enabled"
@@ -1293,14 +1293,14 @@ msgstr ""
 #: automation_devices.php:54 automation_devices.php:372
 #: automation_devices.php:682 automation_devices.php:683 host.php:1865
 #: lib/api_automation.php:59 lib/api_automation.php:535
-#: lib/html_utility.php:1740 pollers.php:56
+#: lib/html_utility.php:1820 pollers.php:56
 msgid "Down"
 msgstr ""
 
 #: automation_devices.php:55 automation_devices.php:372
 #: automation_devices.php:682 automation_devices.php:683 host.php:1864
 #: lib/api_automation.php:58 lib/api_automation.php:534
-#: lib/html_utility.php:1742
+#: lib/html_utility.php:1822
 msgid "Up"
 msgstr ""
 
@@ -1376,7 +1376,7 @@ msgstr ""
 #: include/global_arrays.php:2502 lib/api_automation.php:38
 #: lib/api_automation.php:192 lib/api_automation.php:1228 pollers.php:1003
 #: sites.php:555 support.php:1461 tree.php:874 tree.php:2208
-#: user_admin.php:1167 user_admin.php:2478 user_admin.php:2508
+#: user_admin.php:1175 user_admin.php:2486 user_admin.php:2516
 #: user_group_admin.php:1048 user_group_admin.php:2096
 #: user_group_admin.php:2126
 msgid "Devices"
@@ -1405,7 +1405,7 @@ msgstr ""
 #: automation_devices.php:320 host.php:1970 include/global_form.php:1280
 #: include/global_settings.php:2899 lib/api_automation.php:212
 #: lib/api_automation.php:684 lib/html.php:2892 lib/html_graph.php:288
-#: lib/html_graph.php:1114 package_repos.php:342 package_repos.php:475
+#: lib/html_graph.php:1120 package_repos.php:342 package_repos.php:475
 msgid "Location"
 msgstr ""
 
@@ -1417,8 +1417,8 @@ msgstr ""
 #: include/global_form.php:1265 include/global_form.php:1534
 #: include/global_form.php:1910 lib/api_automation.php:200
 #: lib/api_automation.php:1236 lib/installer.php:2321 lib/installer.php:3070
-#: login_providers.php:349 managers.php:124 package.php:341 support.php:1050
-#: support.php:1093 user_admin.php:1026 user_admin.php:1175
+#: login_providers.php:244 managers.php:124 package.php:341 support.php:1050
+#: support.php:1093 user_admin.php:1034 user_admin.php:1183
 #: user_group_admin.php:1039 user_group_admin.php:1904
 msgid "Description"
 msgstr ""
@@ -1447,7 +1447,7 @@ msgstr ""
 #: package_import.php:1209 package_import.php:1224 plugins.php:635
 #: plugins.php:638 plugins.php:1140 plugins.php:1211 plugins.php:1288
 #: pollers.php:979 templates_import.php:224 templates_import.php:263
-#: user_admin.php:1175 user_group_admin.php:1044 utilities.php:790
+#: user_admin.php:1183 user_group_admin.php:1044 utilities.php:790
 msgid "Status"
 msgstr ""
 
@@ -1479,7 +1479,7 @@ msgstr ""
 #: automation_networks.php:40 automation_snmp.php:35
 #: automation_templates.php:37 automation_tree_rules.php:36
 #: data_source_profiles.php:32 host.php:2033 lib/html_filter.php:398
-#: lib/html_form.php:1882 lib/html_form.php:1970
+#: lib/html_form.php:2001 lib/html_form.php:2089
 msgid "Export"
 msgstr ""
 
@@ -1489,7 +1489,7 @@ msgstr ""
 
 #: automation_devices.php:611 data_debug.php:1158 include/global_arrays.php:693
 #: lib/clog_webapi.php:274 lib/clog_webapi.php:748 lib/html_filter.php:407
-#: managers.php:540 rrdcheck.php:254 user_log.php:326 utilities.php:1748
+#: managers.php:540 rrdcheck.php:254 user_log.php:328 utilities.php:1748
 msgid "Purge"
 msgstr ""
 
@@ -1506,7 +1506,7 @@ msgstr ""
 #: automation_snmp.php:802 automation_snmp.php:803 automation_snmp.php:804
 #: data_debug.php:570 data_source_profiles.php:88 host.php:1756 host.php:1812
 #: host.php:1813 host.php:1814 host.php:1815 host.php:1816
-#: lib/functions.php:7114 lib/functions.php:7130 lib/html_reports.php:1895
+#: lib/functions.php:7268 lib/functions.php:7284 lib/html_reports.php:1895
 #: lib/html_reports.php:1922 lib/html_reports.php:1997
 #: lib/html_reports.php:1998 lib/html_reports.php:1999
 #: lib/html_reports.php:2516 lib/spikekill.php:1056 lib/spikekill.php:1057
@@ -1515,7 +1515,7 @@ msgstr ""
 #: lib/spikekill.php:1064 package_repos.php:512 plugins.php:1454
 #: plugins.php:1473 plugins.php:1477 plugins.php:1612 plugins.php:1747
 #: plugins.php:1751 pollers.php:1089 support.php:1893 support.php:1977
-#: support.php:1999 user_admin.php:2283 user_log.php:143 utilities.php:1223
+#: support.php:1999 user_admin.php:2291 user_log.php:143 utilities.php:1223
 #: utilities.php:1361 utilities.php:1369 utilities.php:1380 utilities.php:1391
 #: utilities.php:1414 utilities.php:1460 utilities.php:1663
 msgid "N/A"
@@ -1532,8 +1532,8 @@ msgstr ""
 
 #: automation_graph_rules.php:34 automation_networks.php:39
 #: automation_tree_rules.php:35 data_sources.php:42 host.php:42
-#: include/global_arrays.php:1804 links.php:29 login_providers.php:27
-#: login_providers.php:487 managers.php:33 managers.php:38 package_repos.php:36
+#: include/global_arrays.php:1804 links.php:29 login_providers.php:30
+#: login_providers.php:383 managers.php:33 managers.php:38 package_repos.php:36
 #: plugins.php:38 pollers.php:43 sites.php:31 user_admin.php:30
 #: user_group_admin.php:35
 msgid "Enable"
@@ -1541,7 +1541,7 @@ msgstr ""
 
 #: automation_graph_rules.php:36 automation_networks.php:36
 #: automation_tree_rules.php:37 data_sources.php:41 host.php:43
-#: include/global_arrays.php:1802 links.php:30 login_providers.php:26
+#: include/global_arrays.php:1802 links.php:30 login_providers.php:29
 #: managers.php:32 managers.php:37 package_repos.php:35 plugins.php:39
 #: pollers.php:42 sites.php:32 user_admin.php:31 user_group_admin.php:36
 msgid "Disable"
@@ -1606,7 +1606,7 @@ msgstr ""
 #: lib/api_automation.php:6329 lib/api_automation.php:6331
 #: lib/api_automation.php:6385 lib/api_automation.php:6387
 #: lib/api_automation.php:6437 lib/api_automation.php:6439
-#: lib/html_filter.php:390 lib/html_form.php:1879 lib/html_form.php:1968
+#: lib/html_filter.php:390 lib/html_form.php:1998 lib/html_form.php:2087
 #: package_import.php:41
 msgid "Import"
 msgstr ""
@@ -1842,7 +1842,7 @@ msgstr ""
 msgid "Can Not Perform Discovery for Disabled Network '%s'"
 msgstr ""
 
-#: automation_networks.php:496 host.php:435 lib/html_form.php:1713
+#: automation_networks.php:496 host.php:435 lib/html_form.php:1832
 msgid "Update this Field"
 msgstr ""
 
@@ -2003,10 +2003,10 @@ msgstr ""
 #: include/global_form.php:2415 lib/html_reports.php:2385
 #: lib/installer.php:2321 lib/installer.php:2402 lib/installer.php:2432
 #: lib/installer.php:3070 lib/installer.php:3161 lib/vdef.php:86
-#: login_providers.php:342 login_providers.php:922 managers.php:428
+#: login_providers.php:237 login_providers.php:852 managers.php:428
 #: package_import.php:383 package_import.php:1658 package_repos.php:327
 #: package_repos.php:467 pollers.php:72 sites.php:44 support.php:1139
-#: user_admin.php:1026 utilities.php:1627
+#: user_admin.php:1034 utilities.php:1627
 msgid "Name"
 msgstr ""
 
@@ -2392,7 +2392,7 @@ msgstr ""
 
 #: automation_networks.php:1103 include/global_arrays.php:980
 #: include/global_arrays.php:1356 include/global_settings.php:3142
-#: lib/html_reports.php:2519 user_admin.php:2054
+#: lib/html_reports.php:2519 user_admin.php:2062
 msgid "Never"
 msgstr ""
 
@@ -2511,9 +2511,9 @@ msgstr ""
 #: automation_templates.php:926 cdef.php:334 color_templates.php:503
 #: data_input.php:303 data_queries.php:554 data_source_profiles.php:883
 #: host_templates.php:437 host_templates.php:503 lib/clog_webapi.php:296
-#: lib/html.php:3345 lib/html_form.php:1769 lib/html_form.php:1825
-#: lib/html_form.php:1851 lib/html_form.php:1865 lib/html_form.php:1937
-#: lib/html_form.php:1958 lib/html_graph.php:1645 package_import.php:392
+#: lib/html.php:3345 lib/html_form.php:1888 lib/html_form.php:1944
+#: lib/html_form.php:1970 lib/html_form.php:1984 lib/html_form.php:2056
+#: lib/html_form.php:2077 lib/html_graph.php:1657 package_import.php:392
 #: package_keys.php:98 package_repos.php:225 package_repos.php:235
 #: package_repos.php:245 package_repos.php:255 plugins.php:834 plugins.php:847
 #: plugins.php:860 plugins.php:873 plugins.php:886 user_log.php:217
@@ -2525,7 +2525,7 @@ msgstr ""
 #: automation_templates.php:802 cdef.php:335 color_templates.php:504
 #: data_input.php:304 data_queries.php:555 data_source_profiles.php:884
 #: host_templates.php:438 host_templates.php:504 lib/clog_webapi.php:297
-#: lib/html.php:3346 lib/html_form.php:1770 package_import.php:392
+#: lib/html.php:3346 lib/html_form.php:1889 package_import.php:392
 #: package_keys.php:98 package_repos.php:226 package_repos.php:236
 #: package_repos.php:246 package_repos.php:256 user_log.php:218 vdef.php:327
 msgid "Continue"
@@ -2577,7 +2577,7 @@ msgid "Item"
 msgstr ""
 
 #: automation_snmp.php:729 graph_templates.php:1692 host_templates.php:1053
-#: host_templates.php:1457 include/auth.php:382 include/global_form.php:1181
+#: host_templates.php:1457 include/auth.php:384 include/global_form.php:1181
 #: include/global_form.php:1447 include/global_settings.php:982 package.php:363
 #: package_import.php:1078 package_import.php:1664 plugins.php:1235
 #: plugins.php:1312
@@ -2588,7 +2588,7 @@ msgstr ""
 msgid "Community"
 msgstr ""
 
-#: automation_snmp.php:737 lib/functions.php:6734
+#: automation_snmp.php:737 lib/functions.php:6888
 msgid "Port"
 msgstr ""
 
@@ -2795,10 +2795,10 @@ msgstr ""
 #: automation_templates.php:722 automation_templates.php:788
 #: automation_templates.php:912 cdef.php:329 cdef.php:622 data_input.php:449
 #: host.php:1819 host.php:1867 lib/api_automation.php:61
-#: lib/api_automation.php:537 lib/auth.php:2703 lib/functions.php:7134
-#: lib/html_utility.php:1744 lib/import.php:391 lib/installer.php:3298
+#: lib/api_automation.php:537 lib/auth.php:2723 lib/functions.php:7288
+#: lib/html_utility.php:1824 lib/import.php:391 lib/installer.php:3298
 #: lib/plugins.php:1894 lib/plugins.php:1895 lib/rrd.php:4674 lib/rrd.php:4686
-#: login_providers.php:963 package_import.php:849 package_import.php:1103
+#: login_providers.php:893 package_import.php:849 package_import.php:1103
 #: package_import.php:1179 package_import.php:1704 support.php:1303
 #: support.php:1304 support.php:1493 support.php:1962 support.php:1963
 #: utilities.php:1219
@@ -2868,7 +2868,7 @@ msgstr ""
 
 #: automation_templates.php:1048 automation_templates.php:1616
 #: data_sources.php:1662 package_import.php:1206 package_import.php:1221
-#: templates_import.php:260 user_admin.php:1321 user_group_admin.php:1202
+#: templates_import.php:260 user_admin.php:1329 user_group_admin.php:1202
 msgid "Template Name"
 msgstr ""
 
@@ -3271,8 +3271,8 @@ msgstr ""
 msgid "Notice: Cacti Daemon PID["
 msgstr ""
 
-#: cactid.php:160 help.php:44 lib/functions.php:7476 lib/functions.php:7563
-#: lib/functions.php:7703 lib/functions.php:7786 lib/functions.php:8896
+#: cactid.php:160 help.php:44 lib/functions.php:7630 lib/functions.php:7717
+#: lib/functions.php:7857 lib/functions.php:7940 lib/functions.php:9050
 #: poller.php:420 poller.php:609 poller.php:667 poller.php:714 poller.php:866
 #: poller.php:1015 poller.php:1412 poller.php:1428 poller_automation.php:57
 #: poller_boost.php:509 poller_maintenance.php:1069 poller_maintenance.php:1076
@@ -3476,7 +3476,7 @@ msgid ""
 "information."
 msgstr ""
 
-#: color.php:349 lib/html_form.php:605
+#: color.php:349 lib/html_form.php:624
 msgid "Select a File"
 msgstr ""
 
@@ -3766,7 +3766,7 @@ msgid "The Data Source to Debug"
 msgstr ""
 
 #: data_debug.php:387 lib/html.php:3296 support.php:526 user_log.php:110
-#: user_log.php:286
+#: user_log.php:288
 msgid "User"
 msgstr ""
 
@@ -3851,7 +3851,7 @@ msgstr ""
 #: data_sources.php:1954 data_sources.php:2011 graphs.php:3335 host.php:1649
 #: include/global_arrays.php:1096 include/global_arrays.php:1148
 #: include/global_arrays.php:2484 lib/api_automation.php:234 rrdcheck.php:272
-#: support.php:1471 user_admin.php:1175 user_group_admin.php:1043
+#: support.php:1471 user_admin.php:1183 user_group_admin.php:1043
 msgid "Data Sources"
 msgstr ""
 
@@ -4016,12 +4016,12 @@ msgstr ""
 #: graph_templates.php:1930 graphs.php:874 graphs.php:3108 graphs.php:3139
 #: graphs_new.php:308 host.php:1847 host_templates.php:793
 #: host_templates.php:1163 lib/clog_webapi.php:597 lib/clog_webapi.php:623
-#: lib/html.php:3368 lib/html_graph.php:171 lib/html_graph.php:1033
+#: lib/html.php:3368 lib/html_graph.php:171 lib/html_graph.php:1039
 #: lib/html_reports.php:1239 lib/html_reports.php:2168
 #: lib/html_reports.php:2646 lib/html_tree.php:947 managers.php:489
 #: package_import.php:1556 plugins.php:655 plugins.php:656 rrdcheck.php:194
 #: settings.php:335 settings.php:357 settings.php:380 support.php:590
-#: tree.php:872 user_admin.php:2034 user_admin.php:2048 user_admin.php:2058
+#: tree.php:872 user_admin.php:2042 user_admin.php:2056 user_admin.php:2066
 #: user_log.php:241 utilities.php:208 utilities.php:665
 msgid "All"
 msgstr ""
@@ -4031,7 +4031,7 @@ msgstr ""
 msgid "Deleted/Invalid"
 msgstr ""
 
-#: data_debug.php:984 user_log.php:148 user_log.php:267
+#: data_debug.php:984 user_log.php:148 user_log.php:269
 msgid "Failed"
 msgstr ""
 
@@ -4042,7 +4042,7 @@ msgstr ""
 #: data_debug.php:1055 data_sources.php:1873 graphs.php:3200 host.php:1667
 #: host.php:1943 include/global_settings.php:921 lib/api_automation.php:208
 #: lib/api_automation.php:680 lib/html.php:2851 lib/html.php:2854
-#: lib/html_graph.php:279 lib/html_graph.php:1105 lib/html_reports.php:1252
+#: lib/html_graph.php:279 lib/html_graph.php:1111 lib/html_reports.php:1252
 #: utilities.php:293 utilities.php:747
 msgid "Site"
 msgstr ""
@@ -4051,8 +4051,8 @@ msgstr ""
 #: graphs.php:930 graphs.php:2506 graphs.php:3209 graphs_new.php:325
 #: include/global_arrays.php:1044 include/global_arrays.php:1105
 #: include/global_arrays.php:1832 include/global_arrays.php:2001
-#: lib/api_automation.php:556 lib/functions.php:6733 lib/html.php:2817
-#: lib/html_graph.php:298 lib/html_graph.php:1124 lib/html_graph.php:1403
+#: lib/api_automation.php:556 lib/functions.php:6887 lib/html.php:2817
+#: lib/html_graph.php:298 lib/html_graph.php:1130 lib/html_graph.php:1415
 #: lib/html_reports.php:1281 utilities.php:302 utilities.php:458
 #: utilities.php:756
 msgid "Device"
@@ -4063,7 +4063,7 @@ msgstr ""
 msgid "Profile"
 msgstr ""
 
-#: data_debug.php:1105 lib/clog_webapi.php:629 login_providers.php:395
+#: data_debug.php:1105 lib/clog_webapi.php:629 login_providers.php:290
 msgid "Debug"
 msgstr ""
 
@@ -4072,11 +4072,11 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
-#: data_debug.php:1136 rrdcheck.php:232 user_log.php:304 user_log.php:344
+#: data_debug.php:1136 rrdcheck.php:232 user_log.php:306 user_log.php:346
 msgid "Attempts"
 msgstr ""
 
-#: data_debug.php:1160 user_log.php:328
+#: data_debug.php:1160 user_log.php:330
 msgid "Purge User log of all but the last login attempt"
 msgstr ""
 
@@ -4629,8 +4629,8 @@ msgstr ""
 #: lib/api_automation.php:6298 lib/api_automation.php:6300
 #: lib/api_automation.php:6329 lib/api_automation.php:6331
 #: lib/api_automation.php:6385 lib/api_automation.php:6387
-#: lib/api_automation.php:6437 lib/api_automation.php:6439 user_admin.php:800
-#: user_admin.php:1089 user_admin.php:1259 user_admin.php:1415
+#: lib/api_automation.php:6437 lib/api_automation.php:6439 user_admin.php:808
+#: user_admin.php:1097 user_admin.php:1267 user_admin.php:1423
 #: user_group_admin.php:773 user_group_admin.php:957 user_group_admin.php:1135
 #: user_group_admin.php:1280
 msgid "Update"
@@ -4927,7 +4927,7 @@ msgid "The name of this Data Source Profile."
 msgstr ""
 
 #: data_source_profiles.php:1392 include/global_arrays.php:1284
-#: include/global_form.php:281 login_providers.php:28 login_providers.php:930
+#: include/global_form.php:281 login_providers.php:31 login_providers.php:860
 #: package_repos.php:37 package_repos.php:373 package_repos.php:489
 #: plugins.php:670
 msgid "Default"
@@ -5580,7 +5580,7 @@ msgstr ""
 msgid "No Data Templates Found"
 msgstr ""
 
-#: data_templates.php:1259 lib/functions.php:6705
+#: data_templates.php:1259 lib/functions.php:6859
 msgid "Method"
 msgstr ""
 
@@ -5950,7 +5950,7 @@ msgstr ""
 #: graph_templates.php:1740 graph_templates.php:2042 graph_templates.php:2074
 #: graph_templates.php:2076 graphs_new.php:577 host_templates.php:865
 #: include/global_arrays.php:1382 include/global_arrays.php:2412
-#: lib/html_tree.php:682 lib/package.php:309 user_admin.php:1327
+#: lib/html_tree.php:682 lib/package.php:309 user_admin.php:1335
 #: user_group_admin.php:1194
 msgid "Graph Templates"
 msgstr ""
@@ -6387,8 +6387,8 @@ msgstr ""
 msgid "Choose the Device that this Graph belongs to."
 msgstr ""
 
-#: graphs.php:2554 lib/html.php:564 lib/html_graph.php:1906
-#: lib/html_graph.php:2228
+#: graphs.php:2554 lib/html.php:564 lib/html_graph.php:1918
+#: lib/html_graph.php:2240
 msgid "Edit Graph Template"
 msgstr ""
 
@@ -6416,12 +6416,12 @@ msgstr ""
 msgid "Graph Item Fields"
 msgstr ""
 
-#: graphs.php:3011 include/global_form.php:2055 lib/html_graph.php:1388
-#: lib/html_graph.php:1426 lib/html_reports.php:1312 tree.php:982
+#: graphs.php:3011 include/global_form.php:2055 lib/html_graph.php:1400
+#: lib/html_graph.php:1438 lib/html_reports.php:1312 tree.php:982
 msgid "Graph Name"
 msgstr ""
 
-#: graphs.php:3014 lib/html_graph.php:1390 lib/html_graph.php:1428
+#: graphs.php:3014 lib/html_graph.php:1402 lib/html_graph.php:1440
 msgid ""
 "The Title of this Graph.  Generally programmatically generated from the "
 "Graph Template definition or Suggested Naming rules.  The max length of the "
@@ -6434,19 +6434,19 @@ msgid ""
 "or debugging."
 msgstr ""
 
-#: graphs.php:3023 lib/html_graph.php:1408
+#: graphs.php:3023 lib/html_graph.php:1420
 msgid "Source Type"
 msgstr ""
 
-#: graphs.php:3026 lib/html_graph.php:1410
+#: graphs.php:3026 lib/html_graph.php:1422
 msgid "The underlying source that this Graph was based upon."
 msgstr ""
 
-#: graphs.php:3029 lib/html_graph.php:1413
+#: graphs.php:3029 lib/html_graph.php:1425
 msgid "Source Name"
 msgstr ""
 
-#: graphs.php:3032 lib/html_graph.php:1415
+#: graphs.php:3032 lib/html_graph.php:1427
 msgid "The Graph Template or Data Query that this Graph was based upon."
 msgstr ""
 
@@ -6454,7 +6454,7 @@ msgstr ""
 msgid "The image format of the Graph."
 msgstr ""
 
-#: graphs.php:3044 lib/html_graph.php:1420 lib/html_graph.php:1433
+#: graphs.php:3044 lib/html_graph.php:1432 lib/html_graph.php:1445
 msgid "The size of this Graph when not in Preview mode."
 msgstr ""
 
@@ -6529,12 +6529,12 @@ msgid "(Select a graph type to create)"
 msgstr ""
 
 #: graphs_new.php:571 include/global_arrays.php:1087
-#: include/global_arrays.php:1179 lib/html_form.php:1856 lib/html_form.php:1873
-#: lib/html_form.php:1950 lib/html_form.php:1964 tree.php:1610
+#: include/global_arrays.php:1179 lib/html_form.php:1975 lib/html_form.php:1992
+#: lib/html_form.php:2069 lib/html_form.php:2083 tree.php:1610
 msgid "Create"
 msgstr ""
 
-#: graphs_new.php:581 graphs_new.php:890 lib/html.php:1241 user_admin.php:1554
+#: graphs_new.php:581 graphs_new.php:890 lib/html.php:1241 user_admin.php:1562
 #: user_group_admin.php:1417
 msgid "Select All"
 msgstr ""
@@ -6941,7 +6941,7 @@ msgstr ""
 msgid "Fail"
 msgstr ""
 
-#: host.php:1115 lib/functions.php:6748 lib/functions.php:6753
+#: host.php:1115 lib/functions.php:6902 lib/functions.php:6907
 msgid "Success"
 msgstr ""
 
@@ -6984,7 +6984,7 @@ msgstr ""
 #: host.php:1625 include/global_form.php:1272 include/global_form.php:1918
 #: lib/api_automation.php:204 lib/api_automation.php:676
 #: lib/api_automation.php:961 lib/api_automation.php:1240 managers.php:127
-#: pollers.php:149 pollers.php:973 user_admin.php:1175
+#: pollers.php:149 pollers.php:973 user_admin.php:1183
 #: user_group_admin.php:1045
 msgid "Hostname"
 msgstr ""
@@ -7114,7 +7114,7 @@ msgid "Not Up"
 msgstr ""
 
 #: host.php:1866 lib/api_automation.php:60 lib/api_automation.php:536
-#: lib/html.php:87 lib/html_utility.php:1741 pollers.php:58
+#: lib/html.php:87 lib/html_utility.php:1821 pollers.php:58
 msgid "Recovering"
 msgstr ""
 
@@ -7319,8 +7319,8 @@ msgstr ""
 msgid "Search for Device Templates that use this specific Graph Template"
 msgstr ""
 
-#: host_templates.php:875 host_templates.php:1276 lib/html_graph.php:1209
-#: lib/html_graph.php:1540
+#: host_templates.php:875 host_templates.php:1276 lib/html_graph.php:1215
+#: lib/html_graph.php:1552
 msgid "View"
 msgstr ""
 
@@ -7437,11 +7437,11 @@ msgstr ""
 msgid "No Device Template Archives Found"
 msgstr ""
 
-#: include/auth.php:167
+#: include/auth.php:169
 msgid "Cacti is Locked Out for Maintenance"
 msgstr ""
 
-#: include/auth.php:168
+#: include/auth.php:170
 msgid ""
 "The primary Cacti administrator has locked out the Cacti user interface for "
 "maintenance for activities such as upgrades.  If you feel this is in error, "
@@ -7449,47 +7449,47 @@ msgid ""
 "for approximately 30 minutes."
 msgstr ""
 
-#: include/auth.php:221
+#: include/auth.php:223
 msgid "Not Logged In"
 msgstr ""
 
-#: include/auth.php:222
+#: include/auth.php:224
 msgid "You must be logged in to access this area of Cacti."
 msgstr ""
 
-#: include/auth.php:227
+#: include/auth.php:229
 msgid "FATAL: You must be logged in to access this area of Cacti."
 msgstr ""
 
-#: include/auth.php:347 include/auth.php:349 lib/auth.php:4676
+#: include/auth.php:349 include/auth.php:351 lib/auth.php:4629
 #: permission_denied.php:31 permission_denied.php:33
 msgid "Login Again"
 msgstr ""
 
-#: include/auth.php:356 lib/functions.php:9463 permission_denied.php:43
+#: include/auth.php:358 lib/functions.php:9617 permission_denied.php:43
 msgid "Permission Denied"
 msgstr ""
 
-#: include/auth.php:357 lib/functions.php:9464 permission_denied.php:46
+#: include/auth.php:359 lib/functions.php:9618 permission_denied.php:46
 msgid ""
 "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr ""
 
-#: include/auth.php:357 lib/functions.php:9464 permission_denied.php:44
+#: include/auth.php:359 lib/functions.php:9618 permission_denied.php:44
 msgid "You are not permitted to access this section of Cacti."
 msgstr ""
 
-#: include/auth.php:360
+#: include/auth.php:362
 msgid "Installation In Progress"
 msgstr ""
 
-#: include/auth.php:361
+#: include/auth.php:363
 msgid ""
 "Only Cacti Administrators with Install/Upgrade privilege may login at this "
 "time"
 msgstr ""
 
-#: include/auth.php:361
+#: include/auth.php:363
 msgid "There is an Installation or Upgrade in progress."
 msgstr ""
 
@@ -7503,11 +7503,11 @@ msgid ""
 "try again."
 msgstr ""
 
-#: include/global.php:758
+#: include/global.php:771
 msgid "The Main Data Collector has returned to an Online Status"
 msgstr ""
 
-#: include/global.php:762
+#: include/global.php:775
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
 msgstr ""
 
@@ -8281,12 +8281,12 @@ msgid "Web Basic Authentication"
 msgstr ""
 
 #: include/global_arrays.php:957 include/global_arrays.php:1138
-#: include/global_arrays.php:2784 login_providers.php:885
-#: login_providers.php:943
+#: include/global_arrays.php:2784 login_providers.php:815
+#: login_providers.php:873
 msgid "Login Providers"
 msgstr ""
 
-#: include/global_arrays.php:960 lib/auth.php:776
+#: include/global_arrays.php:960 lib/auth.php:792
 msgid "LDAP"
 msgstr ""
 
@@ -8318,7 +8318,7 @@ msgstr ""
 msgid "Demand"
 msgstr ""
 
-#: include/global_arrays.php:983 user_admin.php:750 user_group_admin.php:731
+#: include/global_arrays.php:983 user_admin.php:758 user_group_admin.php:731
 msgid "Allow"
 msgstr ""
 
@@ -8502,7 +8502,7 @@ msgid "Sites"
 msgstr ""
 
 #: include/global_arrays.php:1094 include/global_arrays.php:1376 tree.php:2087
-#: tree.php:2088 tree.php:2138 user_admin.php:1474 user_admin.php:2538
+#: tree.php:2088 tree.php:2138 user_admin.php:1482 user_admin.php:2546
 #: user_group_admin.php:1328 user_group_admin.php:2156
 msgid "Trees"
 msgstr ""
@@ -8576,7 +8576,7 @@ msgid "Settings"
 msgstr ""
 
 #: include/global_arrays.php:1136 include/global_arrays.php:2766
-#: user_admin.php:2108 user_admin.php:2144 user_admin.php:2270
+#: user_admin.php:2116 user_admin.php:2152 user_admin.php:2278
 #: user_group_admin.php:660 user_group_admin.php:2170
 msgid "Users"
 msgstr ""
@@ -8606,7 +8606,7 @@ msgstr ""
 #: include/global_arrays.php:1144 include/global_arrays.php:1188
 #: include/global_arrays.php:1258 include/global_arrays.php:1364
 #: include/global_arrays.php:2388 links.php:104 links.php:249 links.php:290
-#: links.php:346 links.php:447 user_admin.php:1632 user_group_admin.php:1497
+#: links.php:346 links.php:447 user_admin.php:1640 user_group_admin.php:1497
 msgid "External Links"
 msgstr ""
 
@@ -8816,7 +8816,7 @@ msgstr ""
 msgid "System Stats"
 msgstr ""
 
-#: include/global_arrays.php:1244 login_providers.php:606
+#: include/global_arrays.php:1244 login_providers.php:509
 msgid "Unspecified"
 msgstr ""
 
@@ -8838,7 +8838,7 @@ msgstr ""
 msgid "Console Access"
 msgstr ""
 
-#: include/global_arrays.php:1361 lib/html_graph.php:1540
+#: include/global_arrays.php:1361 lib/html_graph.php:1552
 msgid "View Graphs"
 msgstr ""
 
@@ -9795,7 +9795,7 @@ msgid "List Mode"
 msgstr ""
 
 #: include/global_arrays.php:2176 include/global_settings.php:3308
-#: lib/html_graph.php:1598
+#: lib/html_graph.php:1610
 msgid "Preview Mode"
 msgstr ""
 
@@ -9812,8 +9812,8 @@ msgid "Graph Properties"
 msgstr ""
 
 #: include/global_arrays.php:2238 include/global_arrays.php:2244
-#: lib/functions.php:4642 lib/html.php:2285 lib/html.php:3277 links.php:262
-#: user_admin.php:1603 user_group_admin.php:1468
+#: lib/functions.php:4796 lib/html.php:2285 lib/html.php:3277 links.php:262
+#: user_admin.php:1611 user_group_admin.php:1468
 msgid "Console"
 msgstr ""
 
@@ -11819,7 +11819,7 @@ msgstr ""
 msgid "Visual"
 msgstr ""
 
-#: include/global_settings.php:79 lib/functions.php:6737 lib/functions.php:6742
+#: include/global_settings.php:79 lib/functions.php:6891 lib/functions.php:6896
 msgid "Authentication"
 msgstr ""
 
@@ -11855,11 +11855,11 @@ msgstr ""
 msgid "PHP Mail() Function"
 msgstr ""
 
-#: include/global_settings.php:159 lib/functions.php:6720
+#: include/global_settings.php:159 lib/functions.php:6874
 msgid "Sendmail"
 msgstr ""
 
-#: include/global_settings.php:160 lib/functions.php:6725
+#: include/global_settings.php:160 lib/functions.php:6879
 msgid "SMTP"
 msgstr ""
 
@@ -14035,7 +14035,7 @@ msgid ""
 msgstr ""
 
 #: include/global_settings.php:2007 include/global_settings.php:2015
-#: include/global_settings.php:2023 login_providers.php:375
+#: include/global_settings.php:2023 login_providers.php:270
 msgid "No User"
 msgstr ""
 
@@ -14047,7 +14047,7 @@ msgstr ""
 msgid "The name of the guest user for viewing graphs; is 'No User' by default."
 msgstr ""
 
-#: include/global_settings.php:2020 login_providers.php:371
+#: include/global_settings.php:2020 login_providers.php:266
 msgid "User Template"
 msgstr ""
 
@@ -14437,7 +14437,7 @@ msgstr ""
 msgid "Sendmail Options"
 msgstr ""
 
-#: include/global_settings.php:2359 lib/functions.php:6720
+#: include/global_settings.php:2359 lib/functions.php:6874
 msgid "Sendmail Path"
 msgstr ""
 
@@ -14990,8 +14990,8 @@ msgid ""
 "RRDtool proxy server."
 msgstr ""
 
-#: include/global_settings.php:2904 lib/auth.php:732 lib/auth.php:755
-#: lib/auth.php:765 lib/auth.php:775 user_admin.php:2059
+#: include/global_settings.php:2904 lib/auth.php:748 lib/auth.php:771
+#: lib/auth.php:781 lib/auth.php:791 user_admin.php:2067
 msgid "Local"
 msgstr ""
 
@@ -16394,8 +16394,8 @@ msgstr ""
 msgid "Contact:"
 msgstr ""
 
-#: lib/api_device.php:1811 lib/functions.php:6751 lib/functions.php:6753
-#: lib/functions.php:6757
+#: lib/api_device.php:1811 lib/functions.php:6905 lib/functions.php:6907
+#: lib/functions.php:6911
 msgid "Ping Results"
 msgstr ""
 
@@ -16615,191 +16615,172 @@ msgstr ""
 msgid "New Branch"
 msgstr ""
 
-#: lib/auth.php:777
+#: lib/auth.php:793
 msgid "Web Basic"
 msgstr ""
 
-#: lib/auth.php:2531
+#: lib/auth.php:2551
 msgid "Device:(Hide Disabled)"
 msgstr ""
 
-#: lib/auth.php:2550 lib/auth.php:2552 lib/auth.php:2558 lib/auth.php:2560
+#: lib/auth.php:2570 lib/auth.php:2572 lib/auth.php:2578 lib/auth.php:2580
 #, php-format
 msgid "Graph:(%s%s)"
 msgstr ""
 
-#: lib/auth.php:2573 lib/auth.php:2579 lib/auth.php:2646 lib/auth.php:2648
-#: lib/auth.php:2652 lib/auth.php:2654
+#: lib/auth.php:2593 lib/auth.php:2599 lib/auth.php:2666 lib/auth.php:2668
+#: lib/auth.php:2672 lib/auth.php:2674
 #, php-format
 msgid "Device:(%s%s)"
 msgstr ""
 
-#: lib/auth.php:2587 lib/auth.php:2593 lib/auth.php:2662 lib/auth.php:2664
-#: lib/auth.php:2668 lib/auth.php:2670
+#: lib/auth.php:2607 lib/auth.php:2613 lib/auth.php:2682 lib/auth.php:2684
+#: lib/auth.php:2688 lib/auth.php:2690
 #, php-format
 msgid "Template:(%s%s)"
 msgstr ""
 
-#: lib/auth.php:2600
+#: lib/auth.php:2620
 #, php-format
 msgid "Graph+Device+Template:(%s%s)"
 msgstr ""
 
-#: lib/auth.php:2637 lib/auth.php:2639
+#: lib/auth.php:2657 lib/auth.php:2659
 #, php-format
 msgid "Device+Template:(%s%s)"
 msgstr ""
 
-#: lib/auth.php:2683 lib/auth.php:2690 lib/auth.php:2699
+#: lib/auth.php:2703 lib/auth.php:2710 lib/auth.php:2719
 msgid "Restricted By: "
 msgstr ""
 
-#: lib/auth.php:2687
+#: lib/auth.php:2707
 msgid "Granted By: "
 msgstr ""
 
-#: lib/auth.php:2694
+#: lib/auth.php:2714
 msgid "Granted"
 msgstr ""
 
-#: lib/auth.php:2696 lib/auth.php:2701
+#: lib/auth.php:2716 lib/auth.php:2721
 msgid "Restricted"
 msgstr ""
 
-#: lib/auth.php:2907
+#: lib/auth.php:2927
 msgid "Branch:"
 msgstr ""
 
-#: lib/auth.php:2916 lib/html_tree.php:1319 lib/reports.php:1216
+#: lib/auth.php:2936 lib/html_tree.php:1319 lib/reports.php:1216
 #: support.php:796
 msgid "Device:"
 msgstr ""
 
-#: lib/auth.php:3796 lib/auth.php:3932
+#: lib/auth.php:3816 lib/auth.php:3952
 msgid "Your account has been locked.  Please contact your Administrator."
 msgstr ""
 
-#: lib/auth.php:3888
+#: lib/auth.php:3908
 msgid "Access Denied!  Login Disabled."
 msgstr ""
 
-#: lib/auth.php:3938 lib/auth.php:3944 lib/auth.php:4061 lib/auth.php:4076
-#: lib/auth.php:4098 lib/auth.php:4111 lib/auth.php:4122 lib/auth.php:4199
-#: lib/auth.php:4272 login_sso.php:41 login_sso.php:49 login_sso.php:95
+#: lib/auth.php:3958 lib/auth.php:3964 lib/auth.php:4030 lib/auth.php:4045
+#: lib/auth.php:4067 lib/auth.php:4080 lib/auth.php:4091 login_sso.php:42
+#: login_sso.php:50 login_sso.php:59 login_sso.php:109 login_sso.php:127
 msgid "Access Denied!  Login Failed."
 msgstr ""
 
-#: lib/auth.php:3965
+#: lib/auth.php:3985
 msgid ""
 "Web Basic Authentication configured, but no username was passed from the web "
 "server. Please make sure you have authentication enabled on the web server."
 msgstr ""
 
-#: lib/auth.php:3979
+#: lib/auth.php:3999
 #, php-format
 msgid ""
 "%s authenticated by Web Server, but both Template and Guest Users are not "
 "defined in Cacti."
 msgstr ""
 
-#: lib/auth.php:4098 lib/auth.php:4239
+#: lib/auth.php:4067
 msgid "Access Denied!  No password provided by user."
 msgstr ""
 
-#: lib/auth.php:4149 lib/auth.php:4875 login_sso.php:117
+#: lib/auth.php:4127 lib/auth.php:4857 login_sso.php:153
 #, php-format
 msgid ""
 "Access Denied!  Template user id %s does not exist.  Please contact your "
 "Administrator."
 msgstr ""
 
-#: lib/auth.php:4172 login_sso.php:137
+#: lib/auth.php:4152 login_sso.php:175
 msgid ""
 "Access Denied!  Provider template is not configured.  Please contact your "
 "Administrator."
 msgstr ""
 
-#: lib/auth.php:4229
-msgid "Access Denied!  Login failed, account disabled."
-msgstr ""
-
-#: lib/auth.php:4255
-msgid "Access Denied! Login Failed."
-msgstr ""
-
-#: lib/auth.php:4255
-msgid "Reset password"
-msgstr ""
-
-#: lib/auth.php:4293
-msgid ""
-"Your Cacti administrator has forced complex passwords for logins and your "
-"current Cacti password does not match the new requirements.  Therefore, you "
-"must change your password now."
-msgstr ""
-
-#: lib/auth.php:4326
+#: lib/auth.php:4173
 #, php-format
 msgid "Password must be at least %d characters!"
 msgstr ""
 
-#: lib/auth.php:4332
+#: lib/auth.php:4179
 msgid "Your password must contain at least 1 numerical character!"
 msgstr ""
 
-#: lib/auth.php:4336
+#: lib/auth.php:4183
 msgid ""
 "Your password must contain a mix of lower case and upper case characters!"
 msgstr ""
 
-#: lib/auth.php:4342
+#: lib/auth.php:4189
 msgid "Your password must contain at least 1 special character!"
 msgstr ""
 
-#: lib/auth.php:4377
+#: lib/auth.php:4224
 msgid ""
 "This password appears to be a well known password, please use a different one"
 msgstr ""
 
-#: lib/auth.php:4669
+#: lib/auth.php:4622
 msgid "Cacti Login Failure"
 msgstr ""
 
-#: lib/auth.php:4951
+#: lib/auth.php:4933
 msgid ""
 "Authentication was previously not set.  Attempted to set to Local "
 "Authentication, but no Administrative account was found."
 msgstr ""
 
-#: lib/auth.php:4993 lib/auth.php:5034 lib/auth.php:5082
+#: lib/auth.php:4975 lib/auth.php:5016 lib/auth.php:5064
 msgid "Unknown error"
 msgstr ""
 
-#: lib/auth.php:4997 lib/auth.php:5038 lib/auth.php:5086
+#: lib/auth.php:4979 lib/auth.php:5020 lib/auth.php:5068
 msgid "ERROR: Unable to find user"
 msgstr ""
 
-#: lib/auth.php:5009
+#: lib/auth.php:4991
 msgid "2FA failed to be disabled"
 msgstr ""
 
-#: lib/auth.php:5012
+#: lib/auth.php:4994
 msgid "2FA is now disabled"
 msgstr ""
 
-#: lib/auth.php:5056
+#: lib/auth.php:5038
 msgid "2FA secret failed to be generated/updated"
 msgstr ""
 
-#: lib/auth.php:5059
+#: lib/auth.php:5041
 msgid "2FA secret has needs verification"
 msgstr ""
 
-#: lib/auth.php:5093
+#: lib/auth.php:5075
 msgid "ERROR: Code was not verified, please try again"
 msgstr ""
 
-#: lib/auth.php:5098
+#: lib/auth.php:5080
 msgid "2FA has been enabled and verified"
 msgstr ""
 
@@ -17525,219 +17506,219 @@ msgstr ""
 msgid "RRDfile not created yet"
 msgstr ""
 
-#: lib/functions.php:565 settings.php:1633
+#: lib/functions.php:639 settings.php:1633
 #, php-format
 msgid "Settings save to Data Collector %d skipped due to heartbeat."
 msgstr ""
 
-#: lib/functions.php:577 settings.php:1645
+#: lib/functions.php:651 settings.php:1645
 #, php-format
 msgid "Settings save to Data Collector %d Failed."
 msgstr ""
 
-#: lib/functions.php:1054
+#: lib/functions.php:1128
 #, php-format
 msgid ""
 "Form Validation Failed: Variable '%s' does not allow nulls and variable is "
 "null"
 msgstr ""
 
-#: lib/functions.php:1056
+#: lib/functions.php:1130
 #, php-format
 msgid "Form Validation Failed: Variable '%s' with Value '%s' Failed REGEX '%s'"
 msgstr ""
 
-#: lib/functions.php:1072
+#: lib/functions.php:1146
 msgid "One or more fields failed validation"
 msgstr ""
 
-#: lib/functions.php:1155 lib/html_utility.php:1743 lib/installer.php:2368
+#: lib/functions.php:1229 lib/html_utility.php:1823 lib/installer.php:2368
 #: lib/installer.php:4709
 msgid "Error"
 msgstr ""
 
-#: lib/functions.php:1159
+#: lib/functions.php:1233
 msgid "Information"
 msgstr ""
 
-#: lib/functions.php:1180 lib/functions.php:1297
+#: lib/functions.php:1254 lib/functions.php:1371
 msgid "Message Not Found."
 msgstr ""
 
-#: lib/functions.php:1853
+#: lib/functions.php:1927
 #, php-format
 msgid "Error %s is not readable"
 msgstr ""
 
-#: lib/functions.php:4404
+#: lib/functions.php:4558
 msgid "Logged in a Guest"
 msgstr ""
 
-#: lib/functions.php:4404 lib/functions.php:4424
+#: lib/functions.php:4558 lib/functions.php:4578
 msgid "Logged in as"
 msgstr ""
 
-#: lib/functions.php:4404
+#: lib/functions.php:4558
 msgid "Login as Regular User"
 msgstr ""
 
-#: lib/functions.php:4404
+#: lib/functions.php:4558
 msgid "guest"
 msgstr ""
 
-#: lib/functions.php:4407 lib/functions.php:4434 lib/html.php:3276
+#: lib/functions.php:4561 lib/functions.php:4588 lib/html.php:3276
 msgid "User Community"
 msgstr ""
 
-#: lib/functions.php:4408 lib/functions.php:4435 lib/html.php:3282
+#: lib/functions.php:4562 lib/functions.php:4589 lib/html.php:3282
 #: lib/utility.php:1420
 msgid "Documentation"
 msgstr ""
 
-#: lib/functions.php:4427
+#: lib/functions.php:4581
 #, php-format
 msgid "Logged in as %s"
 msgstr ""
 
-#: lib/functions.php:4429 lib/html.php:3311
+#: lib/functions.php:4583 lib/html.php:3311
 msgid "Edit Profile"
 msgstr ""
 
-#: lib/functions.php:4439 lib/html.php:3324
+#: lib/functions.php:4593 lib/html.php:3324
 msgid "Logout"
 msgstr ""
 
-#: lib/functions.php:4589
+#: lib/functions.php:4743
 msgid "Leaf"
 msgstr ""
 
-#: lib/functions.php:4609 lib/html_tree.php:830 lib/html_tree.php:894
+#: lib/functions.php:4763 lib/html_tree.php:830 lib/html_tree.php:894
 #: lib/html_tree.php:1283 lib/html_tree.php:1291 lib/html_tree.php:1714
 msgid "Non Query Based"
 msgstr ""
 
-#: lib/functions.php:4645
+#: lib/functions.php:4799
 #, php-format
 msgid "Link %s"
 msgstr ""
 
-#: lib/functions.php:5131
+#: lib/functions.php:5285
 msgid "Copy Section Output to Clipboard"
 msgstr ""
 
-#: lib/functions.php:6054
+#: lib/functions.php:6208
 msgid ""
 "Composer mail dependencies are missing or stale. Run composer install and "
 "try again."
 msgstr ""
 
-#: lib/functions.php:6110
+#: lib/functions.php:6264
 msgid "No OAuth2 refresh token is specified. Configure OAuth2 correctly."
 msgstr ""
 
-#: lib/functions.php:6133
+#: lib/functions.php:6287
 #, php-format
 msgid "OAuth2 token refresh failed: %s"
 msgstr ""
 
-#: lib/functions.php:6152
+#: lib/functions.php:6306
 #, php-format
 msgid "Unsupported OAuth2 provider: %s"
 msgstr ""
 
-#: lib/functions.php:6251
+#: lib/functions.php:6405
 msgid ""
 "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> "
 "link, please set the <b>Alert e-mail</b> setting."
 msgstr ""
 
-#: lib/functions.php:6348 lib/functions.php:6359 lib/functions.php:6365
-#: lib/functions.php:6373 lib/functions.php:6381 lib/functions.php:6401
+#: lib/functions.php:6502 lib/functions.php:6513 lib/functions.php:6519
+#: lib/functions.php:6527 lib/functions.php:6535 lib/functions.php:6555
 #, php-format
 msgid "Error attaching file: %s"
 msgstr ""
 
-#: lib/functions.php:6691
+#: lib/functions.php:6845
 msgid "SMTP error: "
 msgstr ""
 
-#: lib/functions.php:6703
+#: lib/functions.php:6857
 msgid ""
 "This is a test message generated from Cacti.  This message was sent to test "
 "the configuration of your Mail Settings."
 msgstr ""
 
-#: lib/functions.php:6704
+#: lib/functions.php:6858
 msgid "Your email settings are currently set as follows"
 msgstr ""
 
-#: lib/functions.php:6707
+#: lib/functions.php:6861
 msgid "Checking Configuration...<br>"
 msgstr ""
 
-#: lib/functions.php:6718
+#: lib/functions.php:6872
 msgid "PHP's Mailer Class"
 msgstr ""
 
-#: lib/functions.php:6724
+#: lib/functions.php:6878
 msgid "Method: SMTP"
 msgstr ""
 
-#: lib/functions.php:6739
+#: lib/functions.php:6893
 msgid "Not Shown for Security Reasons"
 msgstr ""
 
-#: lib/functions.php:6740
+#: lib/functions.php:6894
 msgid "Security"
 msgstr ""
 
-#: lib/functions.php:6748
+#: lib/functions.php:6902
 msgid "Ping Results:"
 msgstr ""
 
-#: lib/functions.php:6757
+#: lib/functions.php:6911
 msgid "Bypassed"
 msgstr ""
 
-#: lib/functions.php:6767
+#: lib/functions.php:6921
 msgid "Creating Message Text..."
 msgstr ""
 
-#: lib/functions.php:6770
+#: lib/functions.php:6924
 msgid "Sending Message..."
 msgstr ""
 
-#: lib/functions.php:6774
+#: lib/functions.php:6928
 msgid "Cacti Test Message"
 msgstr ""
 
-#: lib/functions.php:6777
+#: lib/functions.php:6931
 msgid "Success!"
 msgstr ""
 
-#: lib/functions.php:6780
+#: lib/functions.php:6934
 msgid "Message Not Sent due to ping failure."
 msgstr ""
 
-#: lib/functions.php:7118
+#: lib/functions.php:7272
 msgid "Since Install"
 msgstr ""
 
-#: lib/functions.php:7476 lib/functions.php:7563
+#: lib/functions.php:7630 lib/functions.php:7717
 #, php-format
 msgid ""
 "Cacti disabled plugin %s due to the following error: %s!  See the Cacti "
 "logfile for more details."
 msgstr ""
 
-#: lib/functions.php:7703
+#: lib/functions.php:7857
 #, php-format
 msgid ""
 "WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via "
 "DNS!"
 msgstr ""
 
-#: lib/functions.php:7786
+#: lib/functions.php:7940
 #, php-format
 msgid ""
 "Failed to Contact Remote Agent %s\n"
@@ -17745,29 +17726,29 @@ msgid ""
 "See Cacti Log for details."
 msgstr ""
 
-#: lib/functions.php:8249
+#: lib/functions.php:8403
 #, php-format
 msgid "- Dev %s"
 msgstr ""
 
-#: lib/functions.php:8251
+#: lib/functions.php:8405
 #, php-format
 msgid "- Beta %s"
 msgstr ""
 
-#: lib/functions.php:8319
+#: lib/functions.php:8473
 #, php-format
 msgid "Version %s %s"
 msgstr ""
 
-#: lib/functions.php:8893
+#: lib/functions.php:9047
 #, php-format
 msgid ""
 "WARNING: Key Cacti Include File \"%s\" missing.  Please locate and replace "
 "this file as we checked in \"%s\""
 msgstr ""
 
-#: lib/functions.php:10095
+#: lib/functions.php:10249
 msgid "System Device"
 msgstr ""
 
@@ -17799,7 +17780,7 @@ msgstr ""
 msgid "Data Query:"
 msgstr ""
 
-#: lib/html.php:546 lib/html_graph.php:1899
+#: lib/html.php:546 lib/html_graph.php:1911
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr ""
 
@@ -17811,7 +17792,7 @@ msgstr ""
 msgid "Time Graph View"
 msgstr ""
 
-#: lib/html.php:570 lib/html.php:572 lib/html_graph.php:1911
+#: lib/html.php:570 lib/html.php:572 lib/html_graph.php:1923
 msgid "Click to view just this Graph in Real-time"
 msgstr ""
 
@@ -18167,7 +18148,7 @@ msgstr ""
 msgid "Enter keyword"
 msgstr ""
 
-#: lib/html.php:3347 lib/html_graph.php:1651
+#: lib/html.php:3347 lib/html_graph.php:1663
 msgid "Ok"
 msgstr ""
 
@@ -18216,12 +18197,12 @@ msgstr ""
 msgid "Utility View"
 msgstr ""
 
-#: lib/html.php:3363 lib/html_graph.php:320 lib/html_graph.php:1157
+#: lib/html.php:3363 lib/html_graph.php:320 lib/html_graph.php:1163
 #: lib/html_tree.php:1024
 msgid "All Graph Templates"
 msgstr ""
 
-#: lib/html.php:3364 lib/html_graph.php:321 lib/html_graph.php:1158
+#: lib/html.php:3364 lib/html_graph.php:321 lib/html_graph.php:1164
 #: lib/html_tree.php:1025 settings.php:371
 msgid "Templates Selected"
 msgstr ""
@@ -18246,7 +18227,7 @@ msgstr ""
 msgid "Begin with"
 msgstr ""
 
-#: lib/html.php:3375 lib/html_form.php:1876 lib/html_form.php:1966
+#: lib/html.php:3375 lib/html_form.php:1995 lib/html_form.php:2085
 msgid "Close"
 msgstr ""
 
@@ -18409,64 +18390,112 @@ msgstr ""
 msgid "Clear Selected Timespan"
 msgstr ""
 
-#: lib/html_form.php:676
+#: lib/html_form.php:695
 msgid "File Found"
 msgstr ""
 
-#: lib/html_form.php:680
+#: lib/html_form.php:699
 msgid "Path is a Directory and not a File"
 msgstr ""
 
-#: lib/html_form.php:684
+#: lib/html_form.php:703
 msgid "File is Not Found"
 msgstr ""
 
-#: lib/html_form.php:696
+#: lib/html_form.php:715
 msgid "Enter a valid file path"
 msgstr ""
 
-#: lib/html_form.php:738
+#: lib/html_form.php:757
 msgid "Directory Found"
 msgstr ""
 
-#: lib/html_form.php:740
+#: lib/html_form.php:759
 msgid "Path is a File and not a Directory"
 msgstr ""
 
-#: lib/html_form.php:744
+#: lib/html_form.php:763
 msgid "Directory is Not found"
 msgstr ""
 
-#: lib/html_form.php:747
+#: lib/html_form.php:766
 msgid "Enter a valid directory path"
 msgstr ""
 
-#: lib/html_form.php:1408
+#: lib/html_form.php:811
+msgid "Not a valid Certificate"
+msgstr ""
+
+#: lib/html_form.php:816
+#, php-format
+msgid "Certificate expired on %s"
+msgstr ""
+
+#: lib/html_form.php:816
+#, php-format
+msgid "Expired: %s"
+msgstr ""
+
+#: lib/html_form.php:818
+#, php-format
+msgid "Certificate expires on %s"
+msgstr ""
+
+#: lib/html_form.php:818
+#, php-format
+msgid "Good Till: %s"
+msgstr ""
+
+#: lib/html_form.php:823
+msgid "Paste your Certificate Here"
+msgstr ""
+
+#: lib/html_form.php:861
+msgid "No Private Key is currently stored"
+msgstr ""
+
+#: lib/html_form.php:861
+msgid "[not set]"
+msgstr ""
+
+#: lib/html_form.php:863
+msgid "A Private Key is currently stored. Leave blank to keep it unchanged."
+msgstr ""
+
+#: lib/html_form.php:863
+msgid "[stored]"
+msgstr ""
+
+#: lib/html_form.php:866
+msgid "Paste your Private Key Here"
+msgstr ""
+
+#: lib/html_form.php:1527
 #, php-format
 msgid "Cacti Color (%s)"
 msgstr ""
 
-#: lib/html_form.php:1476
+#: lib/html_form.php:1595
 msgid "NO FONT VERIFICATION POSSIBLE"
 msgstr ""
 
-#: lib/html_form.php:1570
+#: lib/html_form.php:1689
 msgid "Proceed with action"
 msgstr ""
 
-#: lib/html_form.php:1769
+#: lib/html_form.php:1888
 msgid "Return to previous page"
 msgstr ""
 
-#: lib/html_form.php:2093
+#: lib/html_form.php:2212
 msgid "Warning Unsaved Form Data"
 msgstr ""
 
-#: lib/html_form.php:2095
+#: lib/html_form.php:2214
 msgid "Unsaved Changes Detected"
 msgstr ""
 
-#: lib/html_form.php:2096
+#: lib/html_form.php:2215
 msgid ""
 "You have unsaved changes on this form.  If you press 'Continue' these "
 "changes will be discarded.  Press 'Cancel' to continue editing the form."
@@ -18510,7 +18539,7 @@ msgstr ""
 msgid "Graph Preview Filters"
 msgstr ""
 
-#: lib/html_graph.php:442 lib/html_graph.php:1234
+#: lib/html_graph.php:442 lib/html_graph.php:1240
 msgid "[ Custom Graph List Applied - Filtering from List ]"
 msgstr ""
 
@@ -18561,68 +18590,68 @@ msgstr ""
 msgid "Custom Data [Template: %s]"
 msgstr ""
 
-#: lib/html_graph.php:1210
+#: lib/html_graph.php:1216
 msgid "View the selected Graphs in Preview mode"
 msgstr ""
 
-#: lib/html_graph.php:1224
+#: lib/html_graph.php:1230
 msgid "Report"
 msgstr ""
 
-#: lib/html_graph.php:1225
+#: lib/html_graph.php:1231
 msgid "Place the selected Graphs on an existing Report"
 msgstr ""
 
-#: lib/html_graph.php:1234
+#: lib/html_graph.php:1240
 msgid "Graph List View Filters"
 msgstr ""
 
-#: lib/html_graph.php:1393 sites.php:436 sites.php:537 tree.php:911
+#: lib/html_graph.php:1405 sites.php:436 sites.php:537 tree.php:911
 msgid "Site Name"
 msgstr ""
 
-#: lib/html_graph.php:1395
+#: lib/html_graph.php:1407
 msgid "The Site Name for this Graph."
 msgstr ""
 
-#: lib/html_graph.php:1398
+#: lib/html_graph.php:1410
 msgid "Site Location"
 msgstr ""
 
-#: lib/html_graph.php:1400
+#: lib/html_graph.php:1412
 msgid "The Site Location for this Graph."
 msgstr ""
 
-#: lib/html_graph.php:1405
+#: lib/html_graph.php:1417
 msgid "The device for this Graph."
 msgstr ""
 
-#: lib/html_graph.php:1502
+#: lib/html_graph.php:1514
 msgid "Select the Report to add the selected Graphs to."
 msgstr ""
 
-#: lib/html_graph.php:1637
+#: lib/html_graph.php:1649
 msgid "Add Selected Graphs to Report"
 msgstr ""
 
-#: lib/html_graph.php:1792
+#: lib/html_graph.php:1804
 msgid "GRAPH DOES NOT EXIST"
 msgstr ""
 
-#: lib/html_graph.php:1851 lib/html_graph.php:2210
+#: lib/html_graph.php:1863 lib/html_graph.php:2222
 #, php-format
 msgid "Graph Utility View for Graph: %s"
 msgstr ""
 
-#: lib/html_graph.php:1902
+#: lib/html_graph.php:1914
 msgid "CSV Export"
 msgstr ""
 
-#: lib/html_graph.php:2219
+#: lib/html_graph.php:2231
 msgid "Graph Source/Properties"
 msgstr ""
 
-#: lib/html_graph.php:2223
+#: lib/html_graph.php:2235
 msgid "Graph Data"
 msgstr ""
 
@@ -19026,7 +19055,7 @@ msgstr ""
 msgid "Send Report"
 msgstr ""
 
-#: lib/html_reports.php:1729 lib/import.php:3100 user_admin.php:1881
+#: lib/html_reports.php:1729 lib/import.php:3100 user_admin.php:1889
 msgid "[new]"
 msgstr ""
 
@@ -19229,37 +19258,37 @@ msgstr ""
 msgid "(Non Graph Template)"
 msgstr ""
 
-#: lib/html_utility.php:1647
+#: lib/html_utility.php:1727
 msgid ""
 "Cacti regular expressions are limited to 50 characters only for security "
 "reasons."
 msgstr ""
 
-#: lib/html_utility.php:1651
+#: lib/html_utility.php:1731
 msgid "Cacti regular expressions can not includes the semi-color character."
 msgstr ""
 
-#: lib/html_utility.php:1672
+#: lib/html_utility.php:1752
 msgid "There was an internal error!"
 msgstr ""
 
-#: lib/html_utility.php:1673
+#: lib/html_utility.php:1753
 msgid "Backtrack limit was exhausted!"
 msgstr ""
 
-#: lib/html_utility.php:1674
+#: lib/html_utility.php:1754
 msgid "Recursion limit was exhausted!"
 msgstr ""
 
-#: lib/html_utility.php:1675
+#: lib/html_utility.php:1755
 msgid "Bad UTF-8 error!"
 msgstr ""
 
-#: lib/html_utility.php:1676
+#: lib/html_utility.php:1756
 msgid "Bad UTF-8 offset error!"
 msgstr ""
 
-#: lib/html_utility.php:1735
+#: lib/html_utility.php:1815
 msgid "Down (Thold)"
 msgstr ""
 
@@ -22345,15 +22374,15 @@ msgstr ""
 msgid "Receivers"
 msgstr ""
 
-#: links.php:263 links.php:475 user_admin.php:1604 user_group_admin.php:1469
+#: links.php:263 links.php:475 user_admin.php:1612 user_group_admin.php:1469
 msgid "Top Tab"
 msgstr ""
 
-#: links.php:264 user_admin.php:1605 user_group_admin.php:1470
+#: links.php:264 user_admin.php:1613 user_group_admin.php:1470
 msgid "Bottom Console"
 msgstr ""
 
-#: links.php:265 user_admin.php:1606 user_group_admin.php:1471
+#: links.php:265 user_admin.php:1614 user_group_admin.php:1471
 msgid "Top Console"
 msgstr ""
 
@@ -22470,217 +22499,221 @@ msgstr ""
 msgid "External Links [new]"
 msgstr ""
 
-#: login_providers.php:258
+#: login_providers.php:173
 msgid "Click 'Continue' to Delete the following Login Provider."
 msgstr ""
 
-#: login_providers.php:259
+#: login_providers.php:174
 msgid "Click 'Continue' to Delete following Login Providers."
 msgstr ""
 
-#: login_providers.php:260
+#: login_providers.php:175
 msgid "Delete Login Provider"
 msgstr ""
 
-#: login_providers.php:261
+#: login_providers.php:176
 msgid "Delete Login Providers"
 msgstr ""
 
-#: login_providers.php:264
+#: login_providers.php:179
 msgid "Click 'Continue' to Disable the following Login Provider."
 msgstr ""
 
-#: login_providers.php:265
+#: login_providers.php:180
 msgid "Click 'Continue' to Disable following Login Providers."
 msgstr ""
 
-#: login_providers.php:266
+#: login_providers.php:181
 msgid "Disable Login Provider"
 msgstr ""
 
-#: login_providers.php:267
+#: login_providers.php:182
 msgid "Disable Login Providers"
 msgstr ""
 
-#: login_providers.php:270
+#: login_providers.php:185
 msgid "Click 'Continue' to Enable the following Login Provider."
 msgstr ""
 
-#: login_providers.php:271
+#: login_providers.php:186
 msgid "Click 'Continue' to Enable following Login Providers."
 msgstr ""
 
-#: login_providers.php:272
+#: login_providers.php:187
 msgid "Enable Login Provider"
 msgstr ""
 
-#: login_providers.php:273
+#: login_providers.php:188
 msgid "Enable Login Providers"
 msgstr ""
 
-#: login_providers.php:276
+#: login_providers.php:191
 msgid "Click 'Continue' to make the following Login Provider the default one."
 msgstr ""
 
-#: login_providers.php:277
+#: login_providers.php:192
 msgid "Make Selected Login Provider Default"
 msgstr ""
 
-#: login_providers.php:330
+#: login_providers.php:225
 #, php-format
 msgid "Login Provider [edit: %s]"
 msgstr ""
 
-#: login_providers.php:332
+#: login_providers.php:227
 msgid "Login Provider [new]"
 msgstr ""
 
-#: login_providers.php:343
+#: login_providers.php:238
 msgid ""
 "Enter a meaningful name for this Login Provider. This will be the name that "
 "appears in the Login Realm during login."
 msgstr ""
 
-#: login_providers.php:350
+#: login_providers.php:245
 msgid ""
 "An optional longer description of this Login Provider, for the benefit of "
 "other administrators."
 msgstr ""
 
-#: login_providers.php:356 login_providers.php:926
+#: login_providers.php:251 login_providers.php:856
 msgid "Provider Type"
 msgstr ""
 
-#: login_providers.php:357
+#: login_providers.php:252
 msgid "Choose the authentication method for this Login Provider."
 msgstr ""
 
-#: login_providers.php:365
+#: login_providers.php:260
 msgid "Login Button Label"
 msgstr ""
 
-#: login_providers.php:366
+#: login_providers.php:261
 msgid ""
 "For SAML2 and OpenID Providers, the text shown on the login page button, e."
 "g. \"Login with Azure AD\". Ignored for LDAP/Active Directory. Defaults to "
 "the Name above when left blank."
 msgstr ""
 
-#: login_providers.php:372
+#: login_providers.php:267
 msgid ""
 "The name of the user that Cacti will use as a template for new user accounts."
 msgstr ""
 
-#: login_providers.php:382
+#: login_providers.php:277
 msgid ""
 "If this checkbox is checked, users will be able to login using this Provider."
 msgstr ""
 
-#: login_providers.php:388
+#: login_providers.php:283
 msgid "Allow \"Remember Me\" Cookies"
 msgstr ""
 
-#: login_providers.php:389
+#: login_providers.php:284
 msgid ""
 "If unchecked, users authenticated through this Provider will never be "
 "offered a \"remember me\" auth cookie, even when the global setting is "
 "enabled."
 msgstr ""
 
-#: login_providers.php:396
+#: login_providers.php:291
 msgid ""
 "If testing the connection and you desire more details in your Cacti log, "
 "check this box."
 msgstr ""
 
-#: login_providers.php:412
+#: login_providers.php:307
 msgid "Connection"
 msgstr ""
 
-#: login_providers.php:416
+#: login_providers.php:311
 msgid "Server(s)"
 msgstr ""
 
-#: login_providers.php:417
+#: login_providers.php:312
 msgid ""
 "A space delimited list of DNS hostnames or IP address of for valid LDAP "
 "servers.  Cacti will attempt to use the LDAP servers from left to right to "
 "authenticate a user."
 msgstr ""
 
-#: login_providers.php:425
+#: login_providers.php:318
+msgid "dc1.example.com dc2.example.com"
+msgstr ""
+
+#: login_providers.php:321
 msgid "Port Standard"
 msgstr ""
 
-#: login_providers.php:426
+#: login_providers.php:322
 msgid "TCP/UDP port for Non SSL communications."
 msgstr ""
 
-#: login_providers.php:434
+#: login_providers.php:330
 msgid "Port SSL"
 msgstr ""
 
-#: login_providers.php:435
+#: login_providers.php:331
 msgid "TCP/UDP port for SSL communications."
 msgstr ""
 
-#: login_providers.php:443
+#: login_providers.php:339
 msgid "Protocol Version"
 msgstr ""
 
-#: login_providers.php:444
+#: login_providers.php:340
 msgid "Protocol Version that the server supports."
 msgstr ""
 
-#: login_providers.php:450
+#: login_providers.php:346
 msgid "Network Timeout"
 msgstr ""
 
-#: login_providers.php:451
+#: login_providers.php:347
 msgid "The timeout to connect to the LDAP server in seconds."
 msgstr ""
 
-#: login_providers.php:459
+#: login_providers.php:355
 msgid "Bind Timeout"
 msgstr ""
 
-#: login_providers.php:460
+#: login_providers.php:356
 msgid "The timeout to bind to the LDAP service in seconds."
 msgstr ""
 
-#: login_providers.php:468
+#: login_providers.php:364
 msgid "Encryption"
 msgstr ""
 
-#: login_providers.php:469
+#: login_providers.php:365
 msgid ""
 "Encryption that the server supports. TLS is only supported by Protocol "
 "Version 3."
 msgstr ""
 
-#: login_providers.php:475
+#: login_providers.php:371
 msgid "TLS Certificate Requirements"
 msgstr ""
 
-#: login_providers.php:476
+#: login_providers.php:372
 msgid "Should LDAP verify TLS Certificates when received by the Client."
 msgstr ""
 
-#: login_providers.php:483
+#: login_providers.php:379
 msgid "Referrals"
 msgstr ""
 
-#: login_providers.php:484
+#: login_providers.php:380
 msgid ""
 "Enable or Disable LDAP referrals.  If disabled, it may increase the speed of "
 "searches."
 msgstr ""
 
-#: login_providers.php:490
+#: login_providers.php:386
 msgid "Mode"
 msgstr ""
 
-#: login_providers.php:491
+#: login_providers.php:387
 msgid ""
 "Mode which cacti will attempt to authenticate against the LDAP server."
 "<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching "
@@ -22692,11 +22725,11 @@ msgid ""
 "Specific Password for binding to locate the users Distinguished Name (DN)."
 msgstr ""
 
-#: login_providers.php:497
+#: login_providers.php:393
 msgid "Distinguished Name (DN)"
 msgstr ""
 
-#: login_providers.php:498
+#: login_providers.php:394
 msgid ""
 "The \"Distinguished Name\" syntax, applicable for both OpenLDAP and Windows "
 "AD configurations, offers flexibility in defining user identity. For "
@@ -22709,26 +22742,34 @@ msgid ""
 "Group Membership\" enabled."
 msgstr ""
 
-#: login_providers.php:505 login_providers.php:700 login_providers.php:793
-#: user_admin.php:1857
+#: login_providers.php:399
+msgid "uid=<username>,ou=people,dc=example,dc=com"
+msgstr ""
+
+#: login_providers.php:402 login_providers.php:606 login_providers.php:702
+#: user_admin.php:1865
 msgid "Group Membership"
 msgstr ""
 
-#: login_providers.php:509
+#: login_providers.php:406
 msgid "Group Distinguished Name (DN)"
 msgstr ""
 
-#: login_providers.php:510
+#: login_providers.php:407
 msgid ""
 "Distinguished Name of the group that the user must be a member of in order "
 "to login. Leave blank to allow any successfully authenticated user to login."
 msgstr ""
 
-#: login_providers.php:516
+#: login_providers.php:411
+msgid "ou=cacti-admins,dc=example,dc=com"
+msgstr ""
+
+#: login_providers.php:414
 msgid "Group Member Attribute"
 msgstr ""
 
-#: login_providers.php:517
+#: login_providers.php:415
 msgid ""
 "This refers to the specific attribute within the LDAP directory that holds "
 "the usernames of group members. It is crucial to ensure that the attribute "
@@ -22737,35 +22778,43 @@ msgid ""
 "in the \"Distinguished Name\"."
 msgstr ""
 
-#: login_providers.php:523
+#: login_providers.php:419
+msgid "memberUid"
+msgstr ""
+
+#: login_providers.php:422
 msgid "Group Member Type"
 msgstr ""
 
-#: login_providers.php:524
+#: login_providers.php:423
 msgid ""
 "Defines if users use full Distinguished Name or just Username in the defined "
 "Group Member Attribute."
 msgstr ""
 
-#: login_providers.php:530
+#: login_providers.php:429
 msgid "Search Settings"
 msgstr ""
 
-#: login_providers.php:534
+#: login_providers.php:433
 msgid "Search Base"
 msgstr ""
 
-#: login_providers.php:535
+#: login_providers.php:434
 msgid ""
 "Search base for searching the LDAP directory, such as <i>\"dc=win2kdomain,"
 "dc=local\"</i> or <i>\"ou=people,dc=domain,dc=local\"</i>."
 msgstr ""
 
-#: login_providers.php:541
+#: login_providers.php:438
+msgid "ou=people,dc=example,dc=com"
+msgstr ""
+
+#: login_providers.php:441
 msgid "Search Filter"
 msgstr ""
 
-#: login_providers.php:542
+#: login_providers.php:442
 msgid ""
 "Search filter to use to locate the user in the LDAP directory, such as for "
 "windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)"
@@ -22774,313 +22823,363 @@ msgid ""
 "is replaced with the username that was supplied at the login prompt."
 msgstr ""
 
-#: login_providers.php:548
+#: login_providers.php:446
+msgid "(&(objectClass=account)(uid=<username>))"
+msgstr ""
+
+#: login_providers.php:449
 msgid "Search Distinguished Name (DN)"
 msgstr ""
 
-#: login_providers.php:549
+#: login_providers.php:450
 msgid ""
 "Distinguished Name for Specific Searching binding to the LDAP directory."
 msgstr ""
 
-#: login_providers.php:555
+#: login_providers.php:454
+msgid "cn=svc-cacti,ou=service,dc=example,dc=com"
+msgstr ""
+
+#: login_providers.php:457
 msgid "Search Password"
 msgstr ""
 
-#: login_providers.php:556
+#: login_providers.php:458
 msgid "Password for Specific Searching binding to the LDAP directory."
 msgstr ""
 
-#: login_providers.php:562 login_providers.php:675 login_providers.php:765
+#: login_providers.php:464 login_providers.php:581 login_providers.php:674
 msgid "Claims"
 msgstr ""
 
-#: login_providers.php:566 login_providers.php:686
+#: login_providers.php:468 login_providers.php:592
 msgid "Full Name Attribute"
 msgstr ""
 
-#: login_providers.php:567
+#: login_providers.php:469
 msgid ""
 "The LDAP attribute that will populate a new user's Full Name, e.g. "
 "\"displayName\" on Active Directory or \"cn\" on most OpenLDAP servers."
 msgstr ""
 
-#: login_providers.php:574 login_providers.php:693
+#: login_providers.php:476 login_providers.php:599
 msgid "Email Attribute"
 msgstr ""
 
-#: login_providers.php:575
+#: login_providers.php:477
 msgid ""
 "The LDAP attribute that will populate a new user's Email Address, e.g. \"mail"
 "\" on both Active Directory and most OpenLDAP servers."
 msgstr ""
 
-#: login_providers.php:585 login_providers.php:721
+#: login_providers.php:487 login_providers.php:629
 msgid "Service Provider (SP)"
 msgstr ""
 
-#: login_providers.php:586
+#: login_providers.php:488
 msgid ""
 "Settings describing Cacti itself, the Service Provider, as it will be known "
 "to the Identity Provider."
 msgstr ""
 
-#: login_providers.php:590
+#: login_providers.php:492
 msgid "SP Entity ID"
 msgstr ""
 
-#: login_providers.php:591
+#: login_providers.php:493
 msgid ""
 "Uniquely identifies this Cacti installation to the Identity Provider. Leave "
 "blank to default to the Metadata URL below."
 msgstr ""
 
-#: login_providers.php:592
+#: login_providers.php:494
 #, php-format
 msgid "Assertion Consumer Service (ACS) URL: %s"
 msgstr ""
 
-#: login_providers.php:593
+#: login_providers.php:495
 #, php-format
 msgid "Metadata URL: %s"
 msgstr ""
 
-#: login_providers.php:599
+#: login_providers.php:499
+msgid "https://cacti.example.com"
+msgstr ""
+
+#: login_providers.php:502
 msgid "NameID Format"
 msgstr ""
 
-#: login_providers.php:600
+#: login_providers.php:503
 msgid ""
 "The subject identifier format Cacti will request from the Identity Provider."
 msgstr ""
 
-#: login_providers.php:605
+#: login_providers.php:508
 msgid "Persistent"
 msgstr ""
 
-#: login_providers.php:611
+#: login_providers.php:514
 msgid "Sign AuthnRequests"
 msgstr ""
 
-#: login_providers.php:612
+#: login_providers.php:515
 msgid "Sign outbound Authentication Requests using the SP Private Key below."
 msgstr ""
 
-#: login_providers.php:618
+#: login_providers.php:521
 msgid "Require Signed Assertions"
 msgstr ""
 
-#: login_providers.php:619
+#: login_providers.php:522
 msgid ""
 "Reject SAML Responses whose Assertion is not signed by the Identity Provider."
 msgstr ""
 
-#: login_providers.php:625
+#: login_providers.php:528
 msgid "SP Certificate (PEM)"
 msgstr ""
 
-#: login_providers.php:626 login_providers.php:634
+#: login_providers.php:529
 msgid ""
 "Only required when signing AuthnRequests or supporting encrypted assertions."
 msgstr ""
 
-#: login_providers.php:633
+#: login_providers.php:536
 msgid "SP Private Key (PEM)"
 msgstr ""
 
-#: login_providers.php:641 login_providers.php:753
+#: login_providers.php:537
+msgid ""
+"Only required when signing AuthnRequests or supporting encrypted assertions. "
+"Stored encrypted; leave blank to keep the existing key unchanged."
+msgstr ""
+
+#: login_providers.php:544 login_providers.php:661
 msgid "Identity Provider (IDP)"
 msgstr ""
 
-#: login_providers.php:642
+#: login_providers.php:545
 msgid ""
 "Settings provided by the external Identity Provider, e.g. Azure AD, Okta, or "
 "ADFS."
 msgstr ""
 
-#: login_providers.php:646
+#: login_providers.php:549
 msgid "IDP Entity ID"
 msgstr ""
 
-#: login_providers.php:647
+#: login_providers.php:550
 msgid ""
 "The unique identifier (issuer) of the Identity Provider, from its metadata."
 msgstr ""
 
-#: login_providers.php:653
+#: login_providers.php:554
+msgid "https://idp.example.com/metadata"
+msgstr ""
+
+#: login_providers.php:557
 msgid "IDP Single Sign-On URL"
 msgstr ""
 
-#: login_providers.php:654
+#: login_providers.php:558
 msgid "The URL the browser is redirected to in order to authenticate."
 msgstr ""
 
-#: login_providers.php:660
+#: login_providers.php:562
+msgid "https://idp.example.com/sso"
+msgstr ""
+
+#: login_providers.php:565
 msgid "IDP Single Logout URL"
 msgstr ""
 
-#: login_providers.php:661
+#: login_providers.php:566
 msgid "The URL used for Single Logout requests. Optional."
 msgstr ""
 
-#: login_providers.php:667
+#: login_providers.php:570
+msgid "https://idp.example.com/slo"
+msgstr ""
+
+#: login_providers.php:573
 msgid "IDP Certificate (PEM)"
 msgstr ""
 
-#: login_providers.php:668
+#: login_providers.php:574
 msgid ""
 "The Identity Provider's public signing certificate, used to validate SAML "
 "Responses."
 msgstr ""
 
-#: login_providers.php:679
+#: login_providers.php:585
 msgid "Username Attribute"
 msgstr ""
 
-#: login_providers.php:680
+#: login_providers.php:586
 msgid ""
 "The SAML Attribute that identifies the Cacti username. Leave blank to use "
 "the Assertion's NameID."
 msgstr ""
 
-#: login_providers.php:687
+#: login_providers.php:593
 msgid "The SAML Attribute that will populate a new user's Full Name."
 msgstr ""
 
-#: login_providers.php:694
+#: login_providers.php:600
 msgid "The SAML Attribute that will populate a new user's Email Address."
 msgstr ""
 
-#: login_providers.php:704
+#: login_providers.php:610
 msgid "Group Claim Attribute"
 msgstr ""
 
-#: login_providers.php:705
+#: login_providers.php:611
 msgid ""
 "The SAML Attribute carrying the user's group membership, e.g. \"memberOf\" "
 "or \"groups\". Leave blank to skip group checking."
 msgstr ""
 
-#: login_providers.php:711 login_providers.php:804
+#: login_providers.php:615
+msgid "memberOf"
+msgstr ""
+
+#: login_providers.php:618 login_providers.php:714
 msgid "Required Group"
 msgstr ""
 
-#: login_providers.php:712
+#: login_providers.php:619
 msgid ""
 "The group name/DN that must appear in the Group Claim Attribute above for "
 "the user to be allowed to login. Leave blank to allow any successfully "
 "authenticated user to login."
 msgstr ""
 
-#: login_providers.php:722
+#: login_providers.php:623
+msgid "cn=cacti-admins,ou=groups,dc=example,dc=com"
+msgstr ""
+
+#: login_providers.php:630
 msgid ""
 "Settings describing Cacti itself, the OpenID Connect Relying Party, as "
 "registered with the Identity Provider."
 msgstr ""
 
-#: login_providers.php:726
+#: login_providers.php:634
 msgid "Redirect URI"
 msgstr ""
 
-#: login_providers.php:727
+#: login_providers.php:635
 #, php-format
 msgid "Register this callback URL with your Identity Provider: %s"
 msgstr ""
 
-#: login_providers.php:731
+#: login_providers.php:639
 msgid "Client ID"
 msgstr ""
 
-#: login_providers.php:732
+#: login_providers.php:640
 msgid "The OAuth2/OpenID Connect Client ID issued by the Identity Provider."
 msgstr ""
 
-#: login_providers.php:738
+#: login_providers.php:646
 msgid "Client Secret"
 msgstr ""
 
-#: login_providers.php:739
+#: login_providers.php:647
 msgid ""
 "The OAuth2/OpenID Connect Client Secret issued by the Identity Provider."
 msgstr ""
 
-#: login_providers.php:745
+#: login_providers.php:653
 msgid "Scopes"
 msgstr ""
 
-#: login_providers.php:746
+#: login_providers.php:654
 msgid "A space delimited list of OAuth2 scopes to request."
 msgstr ""
 
-#: login_providers.php:754
+#: login_providers.php:662
 msgid "Settings provided by the external OpenID Connect Identity Provider."
 msgstr ""
 
-#: login_providers.php:758
+#: login_providers.php:666
 msgid "Discovery URL"
 msgstr ""
 
-#: login_providers.php:759
+#: login_providers.php:667
 msgid ""
 "The Identity Provider's OpenID Connect discovery document URL, typically "
 "ending in \"/.well-known/openid-configuration\"."
 msgstr ""
 
-#: login_providers.php:769
+#: login_providers.php:671
+msgid "https://idp.example.com/.well-known/openid-configuration"
+msgstr ""
+
+#: login_providers.php:678
 msgid "Username Claim"
 msgstr ""
 
-#: login_providers.php:770
+#: login_providers.php:679
 msgid "The ID Token/UserInfo claim that identifies the Cacti username."
 msgstr ""
 
-#: login_providers.php:777
+#: login_providers.php:686
 msgid "Full Name Claim"
 msgstr ""
 
-#: login_providers.php:778
+#: login_providers.php:687
 msgid "The ID Token/UserInfo claim that will populate a new user's Full Name."
 msgstr ""
 
-#: login_providers.php:785
+#: login_providers.php:694
 msgid "Email Claim"
 msgstr ""
 
-#: login_providers.php:786
+#: login_providers.php:695
 msgid ""
 "The ID Token/UserInfo claim that will populate a new user's Email Address."
 msgstr ""
 
-#: login_providers.php:797
+#: login_providers.php:706
 msgid "Group Claim"
 msgstr ""
 
-#: login_providers.php:798
+#: login_providers.php:707
 msgid ""
 "The ID Token/UserInfo claim carrying the user's group membership, e.g. "
 "\"groups\". Leave blank to skip group checking."
 msgstr ""
 
-#: login_providers.php:805
+#: login_providers.php:711
+msgid "groups"
+msgstr ""
+
+#: login_providers.php:715
 msgid ""
 "The group name that must appear in the Group Claim above for the user to be "
 "allowed to login. Leave blank to allow any successfully authenticated user "
 "to login."
 msgstr ""
 
-#: login_providers.php:887
+#: login_providers.php:719
+msgid "cacti-admins"
+msgstr ""
+
+#: login_providers.php:817
 msgid "Providers"
 msgstr ""
 
-#: login_providers.php:934
+#: login_providers.php:864
 msgid "Effective User"
 msgstr ""
 
-#: login_providers.php:965
+#: login_providers.php:895
 msgid "None Selected"
 msgstr ""
 
-#: login_providers.php:972
+#: login_providers.php:902
 msgid "No Login Providers Found"
 msgstr ""
 
@@ -26624,7 +26723,7 @@ msgstr ""
 msgid "Sort Trees Descending"
 msgstr ""
 
-#: tree.php:2148 user_admin.php:1467 user_group_admin.php:1336
+#: tree.php:2148 user_admin.php:1475 user_group_admin.php:1336
 msgid "Tree Name"
 msgstr ""
 
@@ -26820,70 +26919,70 @@ msgstr ""
 msgid "Reset 2FA for Users"
 msgstr ""
 
-#: user_admin.php:604
+#: user_admin.php:612
 msgid "Unable to securely issue the password reset link."
 msgstr ""
 
-#: user_admin.php:751 user_group_admin.php:732
+#: user_admin.php:759 user_group_admin.php:732
 msgid "Deny"
 msgstr ""
 
-#: user_admin.php:780 user_group_admin.php:749
+#: user_admin.php:788 user_group_admin.php:749
 msgid ""
 "<b>Note:</b> System Graph Policy is 'Permissive' meaning the User must have "
 "access to at least one of Graph, Device, or Graph Template to gain access to "
 "the Graph"
 msgstr ""
 
-#: user_admin.php:782 user_group_admin.php:751
+#: user_admin.php:790 user_group_admin.php:751
 msgid ""
 "<b>Note:</b> System Graph Policy is 'Restrictive' meaning the User must have "
 "access to either the Graph or the Device and Graph Template to gain access "
 "to the Graph"
 msgstr ""
 
-#: user_admin.php:784 user_group_admin.php:753
+#: user_admin.php:792 user_group_admin.php:753
 msgid ""
 "<b>Note:</b> System Graph Policy is 'Device' meaning the User must have "
 "access to the Graph or Device to gain access to the Graph"
 msgstr ""
 
-#: user_admin.php:786 user_group_admin.php:755
+#: user_admin.php:794 user_group_admin.php:755
 msgid ""
 "<b>Note:</b> System Graph Policy is 'Graph Template' meaning the User must "
 "have access to the Graph or Graph Template to gain access to the Graph"
 msgstr ""
 
-#: user_admin.php:790 user_group_admin.php:763
+#: user_admin.php:798 user_group_admin.php:763
 msgid "Default Graph Policy"
 msgstr ""
 
-#: user_admin.php:795
+#: user_admin.php:803
 msgid "Default Graph Policy for this User"
 msgstr ""
 
-#: user_admin.php:904 user_admin.php:1175 user_admin.php:1323
-#: user_admin.php:1469 user_group_admin.php:880 user_group_admin.php:1041
+#: user_admin.php:912 user_admin.php:1183 user_admin.php:1331
+#: user_admin.php:1477 user_group_admin.php:880 user_group_admin.php:1041
 #: user_group_admin.php:1202 user_group_admin.php:1336
 msgid "Effective Policy"
 msgstr ""
 
-#: user_admin.php:921 user_group_admin.php:897
+#: user_admin.php:929 user_group_admin.php:897
 msgid "No Matching Graphs Found"
 msgstr ""
 
-#: user_admin.php:936 user_admin.php:942 user_admin.php:1224
-#: user_admin.php:1230 user_admin.php:1380 user_admin.php:1386
-#: user_admin.php:1523 user_admin.php:1529 user_group_admin.php:912
+#: user_admin.php:944 user_admin.php:950 user_admin.php:1232
+#: user_admin.php:1238 user_admin.php:1388 user_admin.php:1394
+#: user_admin.php:1531 user_admin.php:1537 user_group_admin.php:912
 #: user_group_admin.php:918 user_group_admin.php:1103 user_group_admin.php:1109
 #: user_group_admin.php:1248 user_group_admin.php:1254
 #: user_group_admin.php:1380 user_group_admin.php:1386
 msgid "Revoke Access"
 msgstr ""
 
-#: user_admin.php:937 user_admin.php:941 user_admin.php:1225
-#: user_admin.php:1229 user_admin.php:1381 user_admin.php:1385
-#: user_admin.php:1524 user_admin.php:1528 user_group_admin.php:65
+#: user_admin.php:945 user_admin.php:949 user_admin.php:1233
+#: user_admin.php:1237 user_admin.php:1389 user_admin.php:1393
+#: user_admin.php:1532 user_admin.php:1536 user_group_admin.php:65
 #: user_group_admin.php:913 user_group_admin.php:917 user_group_admin.php:1104
 #: user_group_admin.php:1108 user_group_admin.php:1249
 #: user_group_admin.php:1253 user_group_admin.php:1381
@@ -26891,252 +26990,252 @@ msgstr ""
 msgid "Grant Access"
 msgstr ""
 
-#: user_admin.php:1018 user_admin.php:2428 user_group_admin.php:1855
+#: user_admin.php:1026 user_admin.php:2436 user_group_admin.php:1855
 #: user_group_admin.php:1925
 msgid "Groups"
 msgstr ""
 
-#: user_admin.php:1026 user_admin.php:1036
+#: user_admin.php:1034 user_admin.php:1044
 msgid "Member"
 msgstr ""
 
-#: user_admin.php:1026
+#: user_admin.php:1034
 msgid "Policies (Graph/Device/Template)"
 msgstr ""
 
-#: user_admin.php:1036 user_group_admin.php:689
+#: user_admin.php:1044 user_group_admin.php:689
 msgid "Non Member"
 msgstr ""
 
-#: user_admin.php:1038 user_admin.php:2316 user_admin.php:2317
-#: user_admin.php:2318 user_group_admin.php:1948 user_group_admin.php:1949
+#: user_admin.php:1046 user_admin.php:2324 user_admin.php:2325
+#: user_admin.php:2326 user_group_admin.php:1948 user_group_admin.php:1949
 #: user_group_admin.php:1950
 msgid "ALLOW"
 msgstr ""
 
-#: user_admin.php:1038 user_admin.php:2316 user_admin.php:2317
-#: user_admin.php:2318 user_group_admin.php:1948 user_group_admin.php:1949
+#: user_admin.php:1046 user_admin.php:2324 user_admin.php:2325
+#: user_admin.php:2326 user_group_admin.php:1948 user_group_admin.php:1949
 #: user_group_admin.php:1950
 msgid "DENY"
 msgstr ""
 
-#: user_admin.php:1046
+#: user_admin.php:1054
 msgid "No Matching User Groups Found"
 msgstr ""
 
-#: user_admin.php:1060
+#: user_admin.php:1068
 msgid "Assign Membership"
 msgstr ""
 
-#: user_admin.php:1061
+#: user_admin.php:1069
 msgid "Remove Membership"
 msgstr ""
 
-#: user_admin.php:1079 user_group_admin.php:947
+#: user_admin.php:1087 user_group_admin.php:947
 msgid "Default Device Policy"
 msgstr ""
 
-#: user_admin.php:1084
+#: user_admin.php:1092
 msgid "Default Device Policy for this User"
 msgstr ""
 
-#: user_admin.php:1188 user_admin.php:1196 user_admin.php:1346
-#: user_admin.php:1354 user_admin.php:1491 user_admin.php:1499
+#: user_admin.php:1196 user_admin.php:1204 user_admin.php:1354
+#: user_admin.php:1362 user_admin.php:1499 user_admin.php:1507
 #: user_group_admin.php:1067 user_group_admin.php:1075
 #: user_group_admin.php:1215 user_group_admin.php:1223
 #: user_group_admin.php:1349 user_group_admin.php:1357
 msgid "Access Granted"
 msgstr ""
 
-#: user_admin.php:1190 user_admin.php:1194 user_admin.php:1348
-#: user_admin.php:1352 user_admin.php:1493 user_admin.php:1497
+#: user_admin.php:1198 user_admin.php:1202 user_admin.php:1356
+#: user_admin.php:1360 user_admin.php:1501 user_admin.php:1505
 #: user_group_admin.php:1069 user_group_admin.php:1073
 #: user_group_admin.php:1217 user_group_admin.php:1221
 #: user_group_admin.php:1351 user_group_admin.php:1355
 msgid "Access Restricted"
 msgstr ""
 
-#: user_admin.php:1209 user_group_admin.php:1088
+#: user_admin.php:1217 user_group_admin.php:1088
 msgid "No Matching Devices Found"
 msgstr ""
 
-#: user_admin.php:1249 user_group_admin.php:1125
+#: user_admin.php:1257 user_group_admin.php:1125
 msgid "Default Graph Template Policy"
 msgstr ""
 
-#: user_admin.php:1254
+#: user_admin.php:1262
 msgid "Default Graph Template Policy for this User"
 msgstr ""
 
-#: user_admin.php:1324 user_group_admin.php:1202
+#: user_admin.php:1332 user_group_admin.php:1202
 msgid "Total Graphs"
 msgstr ""
 
-#: user_admin.php:1365 user_group_admin.php:1233
+#: user_admin.php:1373 user_group_admin.php:1233
 msgid "No Matching Graph Templates Found"
 msgstr ""
 
-#: user_admin.php:1405 user_group_admin.php:1270
+#: user_admin.php:1413 user_group_admin.php:1270
 msgid "Default Tree Policy"
 msgstr ""
 
-#: user_admin.php:1410
+#: user_admin.php:1418
 msgid "Default Tree Policy for this User"
 msgstr ""
 
-#: user_admin.php:1508 user_group_admin.php:1366
+#: user_admin.php:1516 user_group_admin.php:1366
 msgid "No Matching Trees Found"
 msgstr ""
 
-#: user_admin.php:1553 user_group_admin.php:1416
+#: user_admin.php:1561 user_group_admin.php:1416
 msgid "User Permissions"
 msgstr ""
 
-#: user_admin.php:1610 user_group_admin.php:1475
+#: user_admin.php:1618 user_group_admin.php:1475
 msgid "External Link Permissions"
 msgstr ""
 
-#: user_admin.php:1692 user_group_admin.php:1555
+#: user_admin.php:1700 user_group_admin.php:1555
 msgid "Plugin Permissions"
 msgstr ""
 
-#: user_admin.php:1709 user_group_admin.php:1572
+#: user_admin.php:1717 user_group_admin.php:1572
 msgid "Legacy Permissions"
 msgstr ""
 
-#: user_admin.php:1771 user_group_admin.php:1635
+#: user_admin.php:1779 user_group_admin.php:1635
 #, php-format
 msgid "User Settings %s"
 msgstr ""
 
-#: user_admin.php:1856 user_group_admin.php:1718
+#: user_admin.php:1864 user_group_admin.php:1718
 msgid "Permissions"
 msgstr ""
 
-#: user_admin.php:1858 user_group_admin.php:1719
+#: user_admin.php:1866 user_group_admin.php:1719
 msgid "Graph Perms"
 msgstr ""
 
-#: user_admin.php:1859 user_group_admin.php:1720
+#: user_admin.php:1867 user_group_admin.php:1720
 msgid "Device Perms"
 msgstr ""
 
-#: user_admin.php:1860 user_group_admin.php:1721
+#: user_admin.php:1868 user_group_admin.php:1721
 msgid "Template Perms"
 msgstr ""
 
-#: user_admin.php:1861 user_group_admin.php:1722
+#: user_admin.php:1869 user_group_admin.php:1722
 msgid "Tree Perms"
 msgstr ""
 
-#: user_admin.php:1911
+#: user_admin.php:1919
 #, php-format
 msgid "User Management %s"
 msgstr ""
 
-#: user_admin.php:2049
+#: user_admin.php:2057
 msgid "< 1 Week Ago"
 msgstr ""
 
-#: user_admin.php:2050
+#: user_admin.php:2058
 msgid "< 1 Month Ago"
 msgstr ""
 
-#: user_admin.php:2051
+#: user_admin.php:2059
 msgid "> 1 Month Ago"
 msgstr ""
 
-#: user_admin.php:2052
+#: user_admin.php:2060
 msgid "> 2 Months Ago"
 msgstr ""
 
-#: user_admin.php:2053
+#: user_admin.php:2061
 msgid "> 4 Months Ago"
 msgstr ""
 
-#: user_admin.php:2060
+#: user_admin.php:2068
 msgid "Basic"
 msgstr ""
 
-#: user_admin.php:2061
+#: user_admin.php:2069
 msgid "LDAP/AD"
 msgstr ""
 
-#: user_admin.php:2062
+#: user_admin.php:2070
 msgid "Domain"
 msgstr ""
 
-#: user_admin.php:2081
+#: user_admin.php:2089
 msgid "Group"
 msgstr ""
 
-#: user_admin.php:2090 user_admin.php:2265
+#: user_admin.php:2098 user_admin.php:2273
 msgid "Last Login"
 msgstr ""
 
-#: user_admin.php:2142
+#: user_admin.php:2150
 msgid "User Management"
 msgstr ""
 
-#: user_admin.php:2237
+#: user_admin.php:2245
 msgid "User ID"
 msgstr ""
 
-#: user_admin.php:2253 user_group_admin.php:1908
+#: user_admin.php:2261 user_group_admin.php:1908
 msgid "Graph Policy"
 msgstr ""
 
-#: user_admin.php:2257 user_group_admin.php:1912
+#: user_admin.php:2265 user_group_admin.php:1912
 msgid "Device Policy"
 msgstr ""
 
-#: user_admin.php:2261 user_group_admin.php:1916
+#: user_admin.php:2269 user_group_admin.php:1916
 msgid "Template Policy"
 msgstr ""
 
-#: user_admin.php:2299 user_group_admin.php:677
+#: user_admin.php:2307 user_group_admin.php:677
 msgid "Unavailable"
 msgstr ""
 
-#: user_admin.php:2326
+#: user_admin.php:2334
 msgid "No Users Found"
 msgstr ""
 
-#: user_admin.php:2410 user_group_admin.php:2042
+#: user_admin.php:2418 user_group_admin.php:2042
 #, php-format
 msgid "Graph Permissions %s"
 msgstr ""
 
-#: user_admin.php:2414 user_admin.php:2510 user_admin.php:2526
-#: user_admin.php:2540 user_group_admin.php:2046 user_group_admin.php:2128
+#: user_admin.php:2422 user_admin.php:2518 user_admin.php:2534
+#: user_admin.php:2548 user_group_admin.php:2046 user_group_admin.php:2128
 #: user_group_admin.php:2144 user_group_admin.php:2158
 msgid "Only Show Exceptions"
 msgstr ""
 
-#: user_admin.php:2426
+#: user_admin.php:2434
 #, php-format
 msgid "Group Membership %s"
 msgstr ""
 
-#: user_admin.php:2430
+#: user_admin.php:2438
 msgid "Show All"
 msgstr ""
 
-#: user_admin.php:2506 user_group_admin.php:2124
+#: user_admin.php:2514 user_group_admin.php:2124
 #, php-format
 msgid "Device Permissions %s"
 msgstr ""
 
-#: user_admin.php:2522 user_group_admin.php:2140
+#: user_admin.php:2530 user_group_admin.php:2140
 #, php-format
 msgid "Template Permissions %s"
 msgstr ""
 
-#: user_admin.php:2524 user_group_admin.php:2142
+#: user_admin.php:2532 user_group_admin.php:2142
 msgid "Templatee"
 msgstr ""
 
-#: user_admin.php:2536 user_group_admin.php:2154
+#: user_admin.php:2544 user_group_admin.php:2154
 #, php-format
 msgid "Tree Permissions %s"
 msgstr ""
@@ -27360,7 +27459,7 @@ msgstr ""
 msgid "User Log Purged."
 msgstr ""
 
-#: user_log.php:114 user_log.php:295
+#: user_log.php:114 user_log.php:297
 msgid "Result"
 msgstr ""
 
@@ -27376,15 +27475,15 @@ msgstr ""
 msgid "(User Removed)"
 msgstr ""
 
-#: user_log.php:148 user_log.php:264
+#: user_log.php:148 user_log.php:266
 msgid "Success - Password"
 msgstr ""
 
-#: user_log.php:148 user_log.php:266
+#: user_log.php:148 user_log.php:268
 msgid "Success - Password Change"
 msgstr ""
 
-#: user_log.php:148 user_log.php:265
+#: user_log.php:148 user_log.php:267
 msgid "Success - Token"
 msgstr ""
 
@@ -27402,7 +27501,7 @@ msgstr ""
 msgid "Basic Auth"
 msgstr ""
 
-#: user_log.php:342
+#: user_log.php:344
 msgid "User Login History"
 msgstr ""
 

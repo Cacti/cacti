@@ -83,6 +83,73 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 	}
 
 	/**
+	 * Reads a single still-stored (possibly encrypted) parameter value from
+	 * an existing provider row. For secret fields that never redisplay
+	 * their value in the form (e.g. a "privkey" field), leaving the field
+	 * blank on save means "keep the existing value" - this is how
+	 * collectParameters() implementations look that existing value up.
+	 *
+	 * @param int    $id  The login_providers.id being edited, or <= 0 for a new provider.
+	 * @param string $key The parameters[] key to read.
+	 *
+	 * @return string The existing value, or '' for a new provider or a missing key.
+	 */
+	protected static function existingParameter(int $id, string $key): string {
+		if ($id <= 0) {
+			return '';
+		}
+
+		$parameters = json_decode((string) db_fetch_cell_prepared('SELECT parameters FROM login_providers WHERE id = ?', [$id]), true);
+		$parameters = is_array($parameters) ? $parameters : [];
+
+		return (string) ($parameters[$key] ?? '');
+	}
+
+	/**
+	 * Encrypts a freshly submitted secret for storage, or - when the "privkey"
+	 * field was left blank because it never redisplays its stored value -
+	 * keeps the existing value for $key unchanged, EXCEPT that a legacy
+	 * plaintext value (one that predates encryption being added, e.g. a
+	 * provider saved before this feature existed) is transparently
+	 * encrypted at this point too, so a plain "Save" upgrades it instead of
+	 * leaving it unencrypted at rest indefinitely.
+	 *
+	 * @param string $submitted The raw value read from the request, '' if left blank.
+	 * @param string $key       The parameters[] key being saved.
+	 *
+	 * @return string The value to store: freshly encrypted, the existing value re-encrypted
+	 *                if it was still legacy plaintext, or ''.
+	 */
+	protected static function encryptOrKeepExisting(string $submitted, string $key): string {
+		if ($submitted !== '') {
+			return cacti_encrypt_secret($submitted);
+		}
+
+		$existing = self::existingParameter((int) gnrv('id'), $key);
+
+		if ($existing === '') {
+			return '';
+		}
+
+		return cacti_decrypt_secret($existing) !== false ? $existing : cacti_encrypt_secret($existing);
+	}
+
+	/**
+	 * Non-secret counterpart to encryptOrKeepExisting(), for fields such as
+	 * a "textcert" certificate that also never redisplay their stored value
+	 * (so it can be pasted over without first being cleared) but don't need
+	 * encryption at rest. A blank submission keeps the existing value.
+	 *
+	 * @param string $submitted The raw value read from the request, '' if left blank.
+	 * @param string $key       The parameters[] key being saved.
+	 *
+	 * @return string The value to store: the freshly submitted value, or the untouched existing value.
+	 */
+	protected static function keepExistingIfBlank(string $submitted, string $key): string {
+		return $submitted !== '' ? $submitted : self::existingParameter((int) gnrv('id'), $key);
+	}
+
+	/**
 	 * Reads and validates this provider type's own settings from the current
 	 * request (a submitted login_providers.php form), returning the flat
 	 * array to be JSON-encoded into the `parameters` column. Only the fields
