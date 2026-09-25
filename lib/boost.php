@@ -517,8 +517,13 @@ function boost_poller_on_demand(&$results) {
 		/* install the boost error handler */
 		set_error_handler('boost_error_handler');
 
-		if (boost_check_correct_enabled() && read_config_option('boost_redirect') == '') {
-			if (cacti_sizeof($results)) {
+		if (boost_check_correct_enabled()) {
+			/* cmd.php already staged these rows into poller_output_boost when direct
+			 * redirection is active; once boost owns the pipeline, results reaching
+			 * here must never fall through to an inline RRD update instead. */
+			if (read_config_option('boost_redirect') == 'on') {
+				$return_value = false;
+			} elseif (cacti_sizeof($results)) {
 				if ($config['poller_id'] > 1 && !boost_validate_poller_ownership($results, $config['poller_id'], $conn)) {
 					cacti_log('ERROR: Boost rejected a handoff containing data sources not assigned to this poller.', false, 'BOOST');
 					restore_error_handler();
@@ -531,19 +536,21 @@ function boost_poller_on_demand(&$results) {
 
 				$value_tuples = array();
 
-				if (read_config_option('boost_redirect') == '') {
-					foreach ($results as $result) {
-						$value_tuples[] = '(' .
-							(int) $result['local_data_id'] . ',' .
-							db_qstr($result['rrd_name'], $conn) . ',' .
-							db_qstr($result['time'], $conn) . ',' .
-							db_qstr($result['output'], $conn) . ')';
-					}
-
-					$return_value = !boost_flush_output_batch($value_tuples, $conn);
-				} else {
-					$return_value = false;
+				foreach ($results as $result) {
+					$value_tuples[] = '(' .
+						(int) $result['local_data_id'] . ',' .
+						db_qstr($result['rrd_name'], $conn) . ',' .
+						db_qstr($result['time'], $conn) . ',' .
+						db_qstr($result['output'], $conn) . ')';
 				}
+
+				/* a staging failure must not fall through to an inline RRD update; that
+				 * would silently defeat Boost every time the insert fails */
+				if (!boost_flush_output_batch($value_tuples, $conn)) {
+					cacti_log('ERROR: Boost failed to stage poller output into poller_output_boost. Data will be retried, not written inline.', false, 'BOOST');
+				}
+
+				$return_value = false;
 			} else {
 				$return_value = false;
 			}
