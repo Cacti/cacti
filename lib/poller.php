@@ -662,6 +662,23 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
 }
 
 /**
+ * WARNING - BULK POLLER HOT PATH. READ BEFORE MODIFYING.
+ *
+ * This function runs every poll cycle over the entire poller_output set. Large
+ * installations exceed 2.5M poller_items and several million data sources, so any
+ * inefficiency here scales directly into poller slowdowns and database thrash.
+ * Future maintainers and AI assistants MUST, when changing this function:
+ *   - Perform the minimum number of database queries in this pass, and NEVER add
+ *     a query inside the per-row loop over the result set.
+ *   - Be cognizant of query shape: avoid large IN() lists (they have crashed some
+ *     MariaDB/MySQL releases) and full-table scans in this path.
+ *   - Avoid adding further loops over the poller_output result set; a single pass
+ *     is the goal.
+ *   - Cache field-name mappings statically, assuming the Data Template dictates
+ *     the field names for every instance (data_template_id > 0). Non-templated
+ *     (data_template_id == 0) manually created data sources are a rare exception,
+ *     resolved per data source and cached.
+ *
  * Grabs data from the 'poller_output' table and feeds the *completed* results to RRDtool for
  * processing. Used as part of Cacti's lib functionality.
  *
