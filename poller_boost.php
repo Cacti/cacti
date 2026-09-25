@@ -775,8 +775,15 @@ function boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_t
 		}
 
 		/* determine if you must output boost table now */
-		$max_records     = read_config_option('boost_rrd_update_max_records');
-		$current_records = boost_get_total_rows((int) $max_records);
+		$max_records = (int) read_config_option('boost_rrd_update_max_records');
+
+		/* an empty/zero setting must not be treated as "flush on every row" */
+		if ($max_records <= 0) {
+			$max_records = 1000000;
+			set_config_option('boost_rrd_update_max_records', '1000000');
+		}
+
+		$current_records = boost_get_total_rows($max_records);
 
 		boost_debug('Records Found:' . $current_records . ', Max Threshold:' . $max_records . '.');
 
