@@ -627,89 +627,95 @@ function poller_update_poller_reindex_from_buffer(int $host_id, int $data_query_
 }
 
 /**
- * poller_prefetch_rrd_field_names - batch-prefetches the per-data-source RRD
- * field-name metadata process_poller_output() and boost_process_local_data_ids()
- * need while walking a poller_output/poller_output_boost result set, keyed by
- * local_data_id.
+ * WARNING - CALLED FROM THE BULK POLLER/BOOST HOT PATH. READ BEFORE MODIFYING.
  *
- * Both callers used to run one of these queries per local_data_id boundary
- * (or, in process_poller_output()'s case, per matching row with no boundary
- * check at all). This replaces that with a single IN()-batched query per
- * metadata type, chunked at 1000 ids to stay clear of max_allowed_packet,
- * matching the array_chunk(..., 1000) convention used elsewhere
- * (lib/api_data_source.php, lib/api_graph.php).
+ * Resolves the "unused" (orphaned-from-graph) data source names for a single
+ * templated data source, caching the result by local_data_id in the caller's
+ * static $cache so each data source is queried at most once per poller process.
+ * Keep this a single indexed per-data-source query - never batch it into a large
+ * IN() list (those have crashed some MariaDB/MySQL releases) and never call it
+ * from a per-row loop without the cache guard. Templated field names themselves
+ * come from the static poller_data_template_field_mappings cache and need no query
+ * here; this orphan lookup is the only per-source hit for a templated source.
  *
- * @param array $local_data_ids         Distinct local_data_ids in this batch
- * @param array $data_template_id_by_id local_data_id => data_template_id map,
- *                                      used to pick the templated vs
- *                                      non-templated nt_rrd_field_names query
+ * @param int   $local_data_id The data source to resolve.
+ * @param array $cache         By reference. local_data_id => [ds_name => ds_name].
  *
- * @return array{unused: array, nt: array} Two maps keyed by local_data_id;
- *                                         each value matches the shape the
- *                                         old per-call array_rekey() produced
+ * @return array data_source_name => data_source_name for orphaned fields.
  */
-function poller_prefetch_rrd_field_names(array $local_data_ids, array $data_template_id_by_id) : array {
-	$unused_by_id = [];
-	$nt_by_id     = [];
+function poller_get_unused_data_source_names(int $local_data_id, array &$cache) : array {
+	if (!array_key_exists($local_data_id, $cache)) {
+		$cache[$local_data_id] = [];
 
-	if (!cacti_sizeof($local_data_ids)) {
-		return ['unused' => $unused_by_id, 'nt' => $nt_by_id];
-	}
-
-	$templated_ids     = [];
-	$non_templated_ids = [];
-
-	foreach ($local_data_ids as $local_data_id) {
-		if (($data_template_id_by_id[$local_data_id] ?? 0) > 0) {
-			$templated_ids[] = $local_data_id;
-		} else {
-			$non_templated_ids[] = $local_data_id;
-		}
-	}
-
-	foreach (array_chunk($local_data_ids, 1000) as $chunk) {
-		$rows = db_fetch_assoc('SELECT DISTINCT dtr.local_data_id, dtr.data_source_name
+		$rows = db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name
 			FROM data_template_rrd AS dtr
 			LEFT JOIN graph_templates_item AS gti
 			ON dtr.id = gti.task_item_id
-			WHERE ' . db_in_clause('dtr.local_data_id', $chunk) . '
-			AND gti.task_item_id IS NULL');
+			WHERE dtr.local_data_id = ?
+			AND gti.task_item_id IS NULL',
+			[$local_data_id]);
 
 		foreach ($rows as $row) {
-			$unused_by_id[$row['local_data_id']][$row['data_source_name']] = $row['data_source_name'];
+			$cache[$local_data_id][$row['data_source_name']] = $row['data_source_name'];
 		}
 	}
 
-	foreach (array_chunk($templated_ids, 1000) as $chunk) {
-		$rows = db_fetch_assoc('SELECT DISTINCT dtr.local_data_id, dtr.data_source_name, dif.data_name
-			FROM graph_templates_item AS gti
-			INNER JOIN data_template_rrd AS dtr
-			ON gti.task_item_id = dtr.id
-			INNER JOIN data_input_fields AS dif
-			ON dtr.data_input_field_id = dif.id
-			WHERE ' . db_in_clause('dtr.local_data_id', $chunk));
-
-		foreach ($rows as $row) {
-			$nt_by_id[$row['local_data_id']][$row['data_name']] = $row['data_source_name'];
-		}
-	}
-
-	foreach (array_chunk($non_templated_ids, 1000) as $chunk) {
-		$rows = db_fetch_assoc('SELECT DISTINCT dtr.local_data_id, dtr.data_source_name, dif.data_name
-			FROM data_template_rrd AS dtr
-			INNER JOIN data_input_fields AS dif
-			ON dtr.data_input_field_id = dif.id
-			WHERE ' . db_in_clause('dtr.local_data_id', $chunk));
-
-		foreach ($rows as $row) {
-			$nt_by_id[$row['local_data_id']][$row['data_name']] = $row['data_source_name'];
-		}
-	}
-
-	return ['unused' => $unused_by_id, 'nt' => $nt_by_id];
+	return $cache[$local_data_id];
 }
 
 /**
+ * WARNING - CALLED FROM THE BULK POLLER/BOOST HOT PATH. READ BEFORE MODIFYING.
+ *
+ * Resolves the data_name => data_source_name map for a single NON-templated
+ * (data_template_id == 0) manually created data source - a rare exception, since
+ * the Data Template dictates field names for the overwhelming majority of data
+ * sources (resolved from the static poller_data_template_field_mappings cache with
+ * no query). The result is cached by local_data_id in the caller's static $cache
+ * so each such source is queried at most once per poller process. Keep this a
+ * single indexed per-data-source query; never batch it into a large IN() list.
+ *
+ * @param int   $local_data_id The manually created data source to resolve.
+ * @param array $cache         By reference. local_data_id => [data_name => ds_name].
+ *
+ * @return array data_name => data_source_name.
+ */
+function poller_get_nt_rrd_field_names(int $local_data_id, array &$cache) : array {
+	if (!array_key_exists($local_data_id, $cache)) {
+		$cache[$local_data_id] = [];
+
+		$rows = db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
+			FROM data_template_rrd AS dtr
+			INNER JOIN data_input_fields AS dif
+			ON dtr.data_input_field_id = dif.id
+			WHERE dtr.local_data_id = ?',
+			[$local_data_id]);
+
+		foreach ($rows as $row) {
+			$cache[$local_data_id][$row['data_name']] = $row['data_source_name'];
+		}
+	}
+
+	return $cache[$local_data_id];
+}
+
+/**
+ * WARNING - BULK POLLER HOT PATH. READ BEFORE MODIFYING.
+ *
+ * This function runs every poll cycle over the entire poller_output set. Large
+ * installations exceed 2.5M poller_items and several million data sources, so any
+ * inefficiency here scales directly into poller slowdowns and database thrash.
+ * Future maintainers and AI assistants MUST, when changing this function:
+ *   - Perform the minimum number of database queries in this pass, and NEVER add
+ *     a query inside the per-row loop over the result set.
+ *   - Be cognizant of query shape: avoid large IN() lists (they have crashed some
+ *     MariaDB/MySQL releases) and full-table scans in this path.
+ *   - Avoid adding further loops over the poller_output result set; a single pass
+ *     is the goal.
+ *   - Cache field-name mappings statically, assuming the Data Template dictates
+ *     the field names for every instance (data_template_id > 0). Non-templated
+ *     (data_template_id == 0) manually created data sources are a rare exception,
+ *     resolved per data source and cached.
+ *
  * process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
  * results to RRDtool for processing
  *
@@ -723,6 +729,13 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 
 	static $rrd_field_names = [];
 	static $checked_bad     = false;
+
+	// per-data-source metadata caches, keyed by local_data_id and held static so each data
+	// source is queried at most once per poller process (not once per row or per re-entry):
+	//   $unused_cache - local_data_id => orphaned (not-on-graph) data source names (templated only)
+	//   $nt_cache     - local_data_id => data_name => data_source_name (non-templated, dt == 0)
+	static $unused_cache = [];
+	static $nt_cache     = [];
 
 	include_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
@@ -764,17 +777,6 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 	}
 
 	if (cacti_sizeof($results)) {
-		// batch-prefetch the RRD field-name metadata the loop below needs,
-		// rather than re-querying it per row whenever the output contains a
-		// ':' (previously not even gated by a local_data_id-change check).
-		$prefetch_field_names = poller_prefetch_rrd_field_names(
-			array_values(array_unique(array_map('intval', array_column($results, 'local_data_id')))),
-			array_column($results, 'data_template_id', 'local_data_id')
-		);
-
-		$unused_data_source_names_by_id = $prefetch_field_names['unused'];
-		$nt_rrd_field_names_by_id       = $prefetch_field_names['nt'];
-
 		// create an array keyed off of each .rrd file
 		foreach ($results as $item) {
 			// trim the default characters, but add single and double quotes
@@ -816,74 +818,67 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 				// multiple value output
 				$values = preg_split('/\s+/', $value);
 
-				if ($data_template_id > 0) {
-					$unused_data_source_names = $unused_data_source_names_by_id[$local_data_id] ?? [];
-				} else {
-					$unused_data_source_names = [];
-				}
+				// orphan filter applies to templated sources only; cached per data source
+				$unused_data_source_names = $data_template_id > 0 ? poller_get_unused_data_source_names($local_data_id, $unused_cache) : [];
+
+				// the Data Template dictates field names; only non-templated (dt == 0) sources
+				// need a per-instance lookup (rare exception), cached per data source
+				$nt_rrd_field_names = $data_template_id == 0 ? poller_get_nt_rrd_field_names($local_data_id, $nt_cache) : [];
 
 				foreach ($values as $value) {
 					$matches = explode(':', $value);
 
 					if (cacti_sizeof($matches) == 2) {
-						if (isset($rrd_field_names[$item['data_template_id'] . '_' . $matches[0]])) {
-							$field = $rrd_field_names[$item['data_template_id'] . '_' . $matches[0]]['data_source_name'];
+						$field = '';
 
-							if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$field])) {
-								continue;
+						if ($data_template_id > 0) {
+							if (isset($rrd_field_names[$data_template_id . '_' . $matches[0]])) {
+								$field = $rrd_field_names[$data_template_id . '_' . $matches[0]]['data_source_name'];
 							}
-
-							cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
-
-							if (is_numeric($matches[1]) || ($matches[1] == 'U')) {
-								$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = $matches[1];
-							} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[1]))) {
-								$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = hexdec($matches[1]);
-							} else {
-								$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = 'U';
-							}
-
-							$rrd_tmpl .= ($rrd_tmpl != '' ? ':' : '') . $field;
-
-							$rrd_update_array[$rrd_path]['template'] = $rrd_tmpl;
-						} else {
-							// Handle data source without a data template
-							$nt_rrd_field_names = $nt_rrd_field_names_by_id[$local_data_id] ?? [];
-
-							if (cacti_sizeof($nt_rrd_field_names)) {
-								if (isset($nt_rrd_field_names[$matches[0]])) {
-									$field = $nt_rrd_field_names[$matches[0]];
-
-									if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$field])) {
-										continue;
-									}
-
-									cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
-
-									if (is_numeric($matches[1]) || ($matches[1] == 'U')) {
-										$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = $matches[1];
-									} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[1]))) {
-										$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = hexdec($matches[1]);
-									} else {
-										$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = 'U';
-									}
-
-									$rrd_tmpl .= ($rrd_tmpl != '' ? ':' : '') . $field;
-								}
-							}
-
-							$rrd_update_array[$rrd_path]['template'] = $rrd_tmpl;
+						} elseif (isset($nt_rrd_field_names[$matches[0]])) {
+							$field = $nt_rrd_field_names[$matches[0]];
 						}
+
+						if ($field === '') {
+							continue;
+						}
+
+						if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$field])) {
+							continue;
+						}
+
+						cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
+
+						if (is_numeric($matches[1]) || ($matches[1] == 'U')) {
+							$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = $matches[1];
+						} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[1]))) {
+							$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = hexdec($matches[1]);
+						} else {
+							$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = 'U';
+						}
+
+						$rrd_tmpl .= ($rrd_tmpl != '' ? ':' : '') . $field;
+
+						$rrd_update_array[$rrd_path]['template'] = $rrd_tmpl;
 					}
 				}
 			} else {
-				// note: the $data_template_id == 0 branch here previously ran a
-				// query referencing gti.task_item_id without joining
-				// graph_templates_item, which threw an unknown-column SQL error
-				// whenever a non-templated data source hit this path. The
-				// prefetched map always uses the correct (joined) query.
-				$unused_data_source_names = $unused_data_source_names_by_id[$local_data_id] ?? [];
-				$nt_rrd_field_names       = $nt_rrd_field_names_by_id[$local_data_id] ?? [];
+				// orphan filter applies to templated sources only; cached per data source
+				$unused_data_source_names = $data_template_id > 0 ? poller_get_unused_data_source_names($local_data_id, $unused_cache) : [];
+
+				if ($data_template_id > 0) {
+					// expected field names for this template come from the static template cache
+					$nt_rrd_field_names = [];
+					$prefix             = $data_template_id . '_';
+
+					foreach ($rrd_field_names as $keyname => $mapping) {
+						if (str_starts_with($keyname, $prefix)) {
+							$nt_rrd_field_names[$mapping['data_source_name']] = $mapping['data_source_name'];
+						}
+					}
+				} else {
+					$nt_rrd_field_names = poller_get_nt_rrd_field_names($local_data_id, $nt_cache);
+				}
 
 				$expected = '';
 
