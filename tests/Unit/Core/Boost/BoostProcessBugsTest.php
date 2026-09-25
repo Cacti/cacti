@@ -330,18 +330,18 @@ test('boost_process_local_data_ids non-templated reset_template branch joins gti
 		'/FROM data_template_rrd AS dtr\s+WHERE dtr\.local_data_id = \? AND gti\.task_item_id IS NULL/'
 	);
 
-	// issue#7534 moved every unused_data_source_names/nt_rrd_field_names lookup
-	// out of this function and into the shared, batched poller_prefetch_rrd_field_names()
-	// helper (lib/poller.php), so the join no longer lives inline here at all —
-	// the function now delegates to the prefetch call instead.
+	// The unused_data_source_names/nt_rrd_field_names lookups live in the shared,
+	// cached per-data-source helpers in lib/poller.php, so the join no longer lives
+	// inline here at all; the function now delegates to those helpers instead.
 	expect($func_body)->not->toContain('LEFT JOIN graph_templates_item AS gti');
-	expect($func_body)->toContain('poller_prefetch_rrd_field_names(');
+	expect($func_body)->toContain('poller_get_unused_data_source_names(');
+	expect($func_body)->toContain('poller_get_nt_rrd_field_names(');
 });
 
-test('poller_prefetch_rrd_field_names joins graph_templates_item for the unused-names lookup', function () {
+test('poller_get_unused_data_source_names joins graph_templates_item for the unused-names lookup', function () {
 	$contents = file_get_contents(__DIR__ . '/../../../../lib/poller.php');
 
-	$func_pos = strpos($contents, 'function poller_prefetch_rrd_field_names(');
+	$func_pos = strpos($contents, 'function poller_get_unused_data_source_names(');
 	expect($func_pos)->not->toBeFalse();
 
 	$func_end  = strpos($contents, "\nfunction ", $func_pos + 1);

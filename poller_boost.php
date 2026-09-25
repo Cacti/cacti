@@ -906,6 +906,23 @@ function boost_archive_select_sql(string $table, int $last_id, int $child) : str
 }
 
 /**
+ * WARNING - BULK BOOST HOT PATH. READ BEFORE MODIFYING.
+ *
+ * This is the Boost-side counterpart to process_poller_output(); it walks the
+ * boosted poller output for many data sources every flush. Large installations
+ * exceed 2.5M poller_items and several million data sources, so any inefficiency
+ * here scales directly into poller slowdowns and database thrash. Future
+ * maintainers and AI assistants MUST, when changing this function:
+ *   - Perform the minimum number of database queries in this pass, and NEVER add
+ *     a query inside the per-row loop over the result set.
+ *   - Be cognizant of query shape: avoid large IN() lists (they have crashed some
+ *     MariaDB/MySQL releases) and full-table scans in this path.
+ *   - Avoid adding further loops over the result set; a single pass is the goal.
+ *   - Cache field-name mappings statically, assuming the Data Template dictates
+ *     the field names for every instance (data_template_id > 0). Non-templated
+ *     (data_template_id == 0) manually created data sources are a rare exception,
+ *     resolved per data source and cached.
+ *
  * boost_process_local_data_ids - grabs data from the 'poller_output' table and feeds the *completed*
  * results to RRDTool for processing
  *
@@ -922,6 +939,12 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 	// cache this call as it takes time
 	static $archive_tables  = false;
 	static $rrdtool_version = null;
+
+	// per-data-source metadata caches, keyed by local_data_id and held static so each data
+	// source is queried at most once per boost process (see poller_get_unused_data_source_names()
+	// and poller_get_nt_rrd_field_names() in lib/poller.php).
+	static $unused_cache = [];
+	static $nt_cache     = [];
 
 	require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
@@ -1027,21 +1050,6 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 	$updates_ok = true;
 
 	if (cacti_sizeof($results)) {
-		// batch-prefetch the RRD field-name metadata the loop below needs on
-		// every local_data_id boundary, rather than re-querying it per
-		// boundary (or per row, in the multi-value branch).
-		boost_timer('prefetch_rrd_field_names', BOOST_TIMER_START);
-
-		$prefetch_field_names = poller_prefetch_rrd_field_names(
-			array_values(array_unique(array_map('intval', array_column($results, 'local_data_id')))),
-			array_column($results, 'data_template_id', 'local_data_id')
-		);
-
-		$unused_data_source_names_by_id = $prefetch_field_names['unused'];
-		$nt_rrd_field_names_by_id       = $prefetch_field_names['nt'];
-
-		boost_timer('prefetch_rrd_field_names', BOOST_TIMER_END);
-
 		// create an array keyed off of each .rrd file
 		$local_data_id  = -1;
 		$time           = -1;
@@ -1092,7 +1100,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 			 * and discover the template for the next RRDfile.
 			 */
 			if ($local_data_id != $item['local_data_id']) {
-				$unused_data_source_names = $unused_data_source_names_by_id[$item['local_data_id']] ?? [];
+				$unused_data_source_names = poller_get_unused_data_source_names($item['local_data_id'], $unused_cache);
 
 				if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$item['rrd_name']])) {
 					continue;
@@ -1228,7 +1236,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 					$rrd_tmpl = '';
 				} else {
 					if ($item['data_template_id'] > 0) {
-						$unused_data_source_names = $unused_data_source_names_by_id[$item['local_data_id']] ?? [];
+						$unused_data_source_names = poller_get_unused_data_source_names($item['local_data_id'], $unused_cache);
 					} else {
 						$unused_data_source_names = [];
 					}
@@ -1269,7 +1277,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 							 * We have to check for Non-Templated Data Source first as they may not include
 							 * a graph.  So, for that case, we need the RRDfile to include all data sources
 							 */
-							$nt_rrd_field_names = $nt_rrd_field_names_by_id[$item['local_data_id']] ?? [];
+							$nt_rrd_field_names = $item['data_template_id'] == 0 ? poller_get_nt_rrd_field_names($item['local_data_id'], $nt_cache) : [];
 
 							if (cacti_sizeof($nt_rrd_field_names)) {
 								if (isset($nt_rrd_field_names[$matches[0]])) {
@@ -1307,8 +1315,21 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 				}
 			} else {
 				if ($reset_template) {
-					$unused_data_source_names = $unused_data_source_names_by_id[$item['local_data_id']] ?? [];
-					$nt_rrd_field_names       = $nt_rrd_field_names_by_id[$item['local_data_id']] ?? [];
+					$unused_data_source_names = $item['data_template_id'] > 0 ? poller_get_unused_data_source_names($item['local_data_id'], $unused_cache) : [];
+
+					if ($item['data_template_id'] > 0) {
+						// expected field names for this template come from the static template cache
+						$nt_rrd_field_names = [];
+						$prefix             = $item['data_template_id'] . '_';
+
+						foreach ($rrd_field_names as $keyname => $mapping) {
+							if (str_starts_with($keyname, $prefix)) {
+								$nt_rrd_field_names[$mapping['data_source_name']] = $mapping['data_source_name'];
+							}
+						}
+					} else {
+						$nt_rrd_field_names = poller_get_nt_rrd_field_names($item['local_data_id'], $nt_cache);
+					}
 				}
 
 				$expected = '';
