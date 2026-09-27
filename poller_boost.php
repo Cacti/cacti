@@ -1236,11 +1236,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 				if (!$reset_template) {
 					$rrd_tmpl = '';
 				} else {
-					if ($item['data_template_id'] > 0) {
-						$unused_data_source_names = poller_get_unused_data_source_names($item['local_data_id'], $unused_cache);
-					} else {
-						$unused_data_source_names = [];
-					}
+					$unused_data_source_names = $item['data_template_id'] > 0 ? poller_get_unused_data_source_names($item['local_data_id'], $unused_cache) : [];
 				}
 
 				foreach ($values as $value) {
