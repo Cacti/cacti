@@ -97,7 +97,7 @@ Windows users may need:
 composer install --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-posix
 ```
 
-Run nmp install within Cacti installation directory so that install the required cacti-frontend-assets:
+Run nmp install within Cacti installation directory so that to install the required cacti-frontend-assets:
 
 ```bash
 sudo -u <cacti user> npm install
