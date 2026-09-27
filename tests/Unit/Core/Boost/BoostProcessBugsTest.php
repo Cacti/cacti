@@ -359,6 +359,28 @@ test('poller_get_unused_data_source_names joins graph_templates_item for the unu
 	expect($join_pos)->toBeLessThan($where_pos);
 });
 
+test('GROUP_CONCAT field mappings are split into individual RRD fields', function () use ($boostPollerPath) {
+	// poller_data_template_field_mappings stores data_source_names via GROUP_CONCAT,
+	// so the $nt_rrd_field_names reconstruction must explode/trim the value rather
+	// than inserting a comma-joined 'in,out' as a single field.
+	foreach ([__DIR__ . '/../../../../lib/poller.php', $boostPollerPath] as $path) {
+		$contents = file_get_contents($path);
+
+		expect($contents)->toContain("explode(',', \$mapping['data_source_name'])");
+		expect($contents)->not->toContain("\$nt_rrd_field_names[\$mapping['data_source_name']] = \$mapping['data_source_name'];");
+	}
+});
+
+test('the orphan-name query is issued only for templated data sources', function () use ($boostPollerPath) {
+	// Non-templated (data_template_id == 0) items must not hit the metadata query;
+	// every call site is guarded by the template-id check.
+	foreach ([__DIR__ . '/../../../../lib/poller.php', $boostPollerPath] as $path) {
+		$contents = file_get_contents($path);
+
+		expect($contents)->not->toContain("\$unused_data_source_names = poller_get_unused_data_source_names(");
+	}
+});
+
 test('boost_output_rrd_data returns 0 not false when arch tables are not found', function () use ($boostPollerPath) {
 	$contents = file_get_contents($boostPollerPath);
 

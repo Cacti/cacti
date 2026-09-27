@@ -1100,7 +1100,8 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 			 * and discover the template for the next RRDfile.
 			 */
 			if ($local_data_id != $item['local_data_id']) {
-				$unused_data_source_names = poller_get_unused_data_source_names($item['local_data_id'], $unused_cache);
+				// orphan filter applies to templated sources only; cached per data source
+				$unused_data_source_names = $item['data_template_id'] > 0 ? poller_get_unused_data_source_names($item['local_data_id'], $unused_cache) : [];
 
 				if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$item['rrd_name']])) {
 					continue;
@@ -1324,7 +1325,14 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 
 						foreach ($rrd_field_names as $keyname => $mapping) {
 							if (str_starts_with($keyname, $prefix)) {
-								$nt_rrd_field_names[$mapping['data_source_name']] = $mapping['data_source_name'];
+								// data_source_names is GROUP_CONCAT'd, so a multi-source template yields e.g. 'in,out'
+								foreach (explode(',', $mapping['data_source_name']) as $field) {
+									$field = trim($field);
+
+									if ($field !== '') {
+										$nt_rrd_field_names[$field] = $field;
+									}
+								}
 							}
 						}
 					} else {

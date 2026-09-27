@@ -873,7 +873,14 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 
 					foreach ($rrd_field_names as $keyname => $mapping) {
 						if (str_starts_with($keyname, $prefix)) {
-							$nt_rrd_field_names[$mapping['data_source_name']] = $mapping['data_source_name'];
+							// data_source_names is GROUP_CONCAT'd, so a multi-source template yields e.g. 'in,out'
+							foreach (explode(',', $mapping['data_source_name']) as $field) {
+								$field = trim($field);
+
+								if ($field !== '') {
+									$nt_rrd_field_names[$field] = $field;
+								}
+							}
 						}
 					}
 				} else {
