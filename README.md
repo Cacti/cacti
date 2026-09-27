@@ -97,6 +97,15 @@ Windows users may need:
 composer install --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-posix
 ```
 
+Run nmp install within Cacti installation directory so that to install the required cacti-frontend-assets:
+
+```bash
+sudo -u <cacti user> npm install
+e.g.
+sudo -u www-data npm install
+```
+
+
 Then configure your database and web server, and complete setup using the official docs:
 
 https://github.com/Cacti/documentation
