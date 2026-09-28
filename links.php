@@ -414,13 +414,13 @@ function pages() {
 		foreach ($pages as $page) {
 			form_alternate_row('line' . $page['id']);
 
-			$actions = '<a class="pic"  href="' . html_escape('links.php?action=edit&id='.$page['id']) . '" title="' . __esc('Edit Page') . '"><img src="' . $config['url_path'] . 'images/application_edit.png" alt=""></a>';
+			$actions = '<a class="pic"  href="' . html_escape('links.php?action=edit&id='.$page['id']) . '" title="' . __esc('Edit Page') . '"><i class="fa fa-edit editTemplate"></i></a>';
 
 			if ($page['enabled'] == 'on') {
-				$actions .= '<a class="pic" href="' . html_escape('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><img src="' . $config['url_path'] . 'images/view_page.png" alt=""></a>';
+				$actions .= '<a class="pic" href="' . html_escape('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><i class="fa fa-eye deviceUp"></i></a>';
 			}
 
-			form_selectable_cell($actions, $page['id'], '50');
+			form_selectable_cell($actions, $page['id'], '1%');
 			form_selectable_ecell($page['contentfile'], $page['id']);
 			form_selectable_ecell($page['title'], $page['id']);
 			form_selectable_ecell($style_translate[$page['style']] . ($page['style'] == 'CONSOLE' ? ' ( ' . ($page['extendedstyle'] == '' ? __('External Links'):$page['extendedstyle']) . ' )':''), $page['id']);
@@ -439,7 +439,7 @@ function pages() {
 					$sort .= '<a class="pic fa fa-caret-down moveArrow cactiPostAction" href="#" data-url="' . html_escape('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				}
 
-				form_selectable_cell($sort, $page['id'], '', 'center');
+				form_selectable_cell($sort, $page['id'], '1%', 'center');
 			} else {
 				form_selectable_cell(__('Sort for Ordering'), $page['id']);
 			}
