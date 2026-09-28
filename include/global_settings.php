@@ -1723,7 +1723,7 @@ $settings = array(
 		),
 		'ldap_server' => array(
 			'friendly_name' => __('Server(s)'),
-			'description' => __('A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user.<br><br>When users authenticate with One-Time Passwords (OTP/MFA), configure only a single server (for example a load balancer VIP).  Failover across a multi-server list will re-attempt the bind on the next server with an already-consumed one-time password, which will fail.'),
+			'description' => __('A space delimited list of DNS hostnames or IP addresses for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user.<br><br>When users authenticate with One-Time Passwords (OTP/MFA), configure only a single server (for example a load balancer VIP).  Failover across a multi-server list will re-attempt the bind on the next server with an already-consumed one-time password, which will fail.'),
 			'method' => 'textbox',
 			'size' => '80',
 			'max_length' => '255'
