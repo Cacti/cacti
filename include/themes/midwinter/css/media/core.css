@@ -447,6 +447,7 @@ label.ui-state-hover > span {
 
 .drillDown {
     cursor: pointer;
+    font-size: 15px;
 }
 
 .monoSpace {

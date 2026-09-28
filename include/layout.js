@@ -4487,7 +4487,7 @@ function initializeGraphs(disable_cache) {
 
 			if (realtimeArray[graph_id]) {
 				$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
-				$(this).html("<img class='drillDown' title='"+realtimeClickOn+"' alt='' src='" + urlPath + "images/chart_curve_go.png'>");
+				$(this).html("<i class='drillDown fa fa-chart-area realTime' title='"+realtimeClickOn+"'></i>");
 
 				$('graph_id'+graph_id).tooltip().zoom({
 					inputfieldStartTime : 'date1',

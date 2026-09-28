@@ -184,7 +184,7 @@ function stopRealtime() {
 		var graph_id = key;
 
 		$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
-		$('#graph_'+graph_id+'_realtime').empty().html("<img class='drillDown' alt='' title='"+realtimeClickOn+"' src='"+urlPath+"images/chart_curve_go.png'>").find('img').tooltip();
+		$('#graph_'+graph_id+'_realtime').empty().html("<i class='drillDown fa fa-chart-area realTime' title='"+realtimeClickOn+"'></i>").find('i').tooltip();
 
 		// Disable right click
 		$(this).children().bind('contextmenu', function(event) {

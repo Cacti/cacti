@@ -361,6 +361,39 @@ label {
 
 .drillDown {
 	cursor: pointer;
+	font-size: 15px;
+}
+
+.actionCog {
+	color: rgba(16, 16, 16, 0.6) !important;
+}
+
+.fileCSV {
+	color:#9BB7D4 !important;
+}
+
+.threeBars {
+	color:#B55A30 !important;
+}
+
+.editDevice {
+	color:#F5DF4D !important;
+}
+
+.editTemplate {
+	color:#0072B5 !important;
+}
+
+.realTime {
+	color:#f3c300 !important;
+}
+
+.spikeKill {
+	color:#E9897E !important;
+}
+
+.viewSources {
+	color:#9a4eae !important;
 }
 
 .monoSpace {
