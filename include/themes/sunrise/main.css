@@ -421,6 +421,39 @@ label.ui-state-hover > span {
 
 .drillDown {
 	cursor: pointer;
+	font-size: 15px;
+}
+
+.actionCog {
+	color:#FDAC53 !important;
+}
+
+.fileCSV {
+	color:#9BB7D4 !important;
+}
+
+.threeBars {
+	color:#B55A30 !important;
+}
+
+.editDevice {
+	color:#F5DF4D !important;
+}
+
+.editTemplate {
+	color:#0072B5 !important;
+}
+
+.realTime {
+	color:#A0DAA9 !important;
+}
+
+.spikeKill {
+	color:#E9897E !important;
+}
+
+.viewSources {
+	color:#56C6A9 !important;
 }
 
 .monoSpace {
