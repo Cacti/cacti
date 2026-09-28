@@ -1,10 +1,10 @@
 .diff-wrapper.diff {
   --tab-size: 4;
-  background: repeating-linear-gradient(-45deg, whitesmoke, whitesmoke 0.5em, #e8e8e8 0.5em, #e8e8e8 1em);
+  background: transparent;
   border-collapse: collapse;
   border-spacing: 0;
-  border: 1px solid black;
-  color: black;
+  border: 1px solid rgba(127, 127, 127, 0.5);
+  color: inherit;
   empty-cells: show;
   font-family: monospace;
   font-size: 13px;
@@ -25,7 +25,7 @@
   border-collapse: separate;
   border: none;
   padding: 1px 2px;
-  background: #fff;
+  background: transparent;
 }
 .diff-wrapper.diff td:empty:after,
 .diff-wrapper.diff th:empty:after {
@@ -34,42 +34,42 @@
 }
 .diff-wrapper.diff td a,
 .diff-wrapper.diff th a {
-  color: #000;
+  color: inherit;
   cursor: inherit;
   pointer-events: none;
 }
 .diff-wrapper.diff thead th {
-  background: #a6a6a6;
-  border-bottom: 1px solid black;
+  background: rgba(127, 127, 127, 0.28);
+  border-bottom: 1px solid rgba(127, 127, 127, 0.5);
   padding: 4px;
   text-align: left;
 }
 .diff-wrapper.diff tbody.skipped {
-  border-top: 1px solid black;
+  border-top: 1px solid rgba(127, 127, 127, 0.5);
 }
 .diff-wrapper.diff tbody.skipped td,
 .diff-wrapper.diff tbody.skipped th {
   display: none;
 }
 .diff-wrapper.diff tbody th {
-  background: #cccccc;
-  border-right: 1px solid black;
+  background: rgba(127, 127, 127, 0.15);
+  border-right: 1px solid rgba(127, 127, 127, 0.5);
   text-align: right;
   vertical-align: top;
   width: 4em;
 }
 .diff-wrapper.diff tbody th.sign {
-  background: #fff;
+  background: transparent;
   border-right: none;
   padding: 1px 0;
   text-align: center;
   width: 1em;
 }
 .diff-wrapper.diff tbody th.sign.del {
-  background: #fbe1e1;
+  background: rgba(200, 60, 60, 0.22);
 }
 .diff-wrapper.diff tbody th.sign.ins {
-  background: #e1fbe1;
+  background: rgba(70, 180, 80, 0.22);
 }
 .diff-wrapper.diff.diff-html {
   white-space: pre-wrap;
@@ -92,16 +92,16 @@
 }
 .diff-wrapper.diff.diff-html .change.change-eq .old,
 .diff-wrapper.diff.diff-html .change.change-eq .new {
-  background: #fff;
+  background: rgba(0, 0, 0, 0.25);
 }
 .diff-wrapper.diff.diff-html .change .old {
-  background: #fbe1e1;
+  background: rgba(200, 60, 60, 0.22);
 }
 .diff-wrapper.diff.diff-html .change .new {
-  background: #e1fbe1;
+  background: rgba(70, 180, 80, 0.22);
 }
 .diff-wrapper.diff.diff-html .change .rep {
-  background: #fef6d9;
+  background: rgba(210, 170, 40, 0.22);
 }
 .diff-wrapper.diff.diff-html .change .old.none,
 .diff-wrapper.diff.diff-html .change .new.none,
@@ -115,8 +115,8 @@
   text-decoration: none;
 }
 .diff-wrapper.diff.diff-html .change ins {
-  background: #94f094;
+  background: rgba(70, 180, 80, 0.45);
 }
 .diff-wrapper.diff.diff-html .change del {
-  background: #f09494;
+  background: rgba(200, 60, 60, 0.45);
 }
