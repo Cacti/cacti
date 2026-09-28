@@ -120,3 +120,8 @@
 .diff-wrapper.diff.diff-html .change del {
   background: rgba(200, 60, 60, 0.45);
 }
+/* Dark color mode: band the code columns so they read as a panel distinct from the line-number gutter. */
+[data-theme-color='dark'] .diff-wrapper.diff.diff-html .change.change-eq .old,
+[data-theme-color='dark'] .diff-wrapper.diff.diff-html .change.change-eq .new {
+  background: rgba(0, 0, 0, 0.25);
+}

@@ -92,7 +92,7 @@
 }
 .diff-wrapper.diff.diff-html .change.change-eq .old,
 .diff-wrapper.diff.diff-html .change.change-eq .new {
-  background: transparent;
+  background: rgba(0, 0, 0, 0.25);
 }
 .diff-wrapper.diff.diff-html .change .old {
   background: rgba(200, 60, 60, 0.22);
