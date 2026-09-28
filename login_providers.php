@@ -309,7 +309,7 @@ function provider_edit() : void {
 		],
 		'server' => [
 			'friendly_name' => __('Server(s)'),
-			'description'   => __('A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user.'),
+			'description'   => __('A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user.<br><br>When users authenticate with One-Time Passwords (OTP/MFA), configure only a single server (for example a load balancer VIP).  Failover across a multi-server list will re-attempt the bind on the next server with an already-consumed one-time password, which will fail.'),
 			'method'        => 'textbox',
 			'value'         => '|arg1:server|',
 			'default'       => '',
@@ -384,7 +384,7 @@ function provider_edit() : void {
 		],
 		'mode' => [
 			'friendly_name' => __('Mode'),
-			'description'   => __('Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN).'),
+			'description'   => __('Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN).<br><br><i>One-Time Passwords (OTP/MFA)</i> - Cacti binds the user password only once, during final authentication; the DN lookup is performed separately.  When users authenticate with a one-time password, use <i>Specific Searching</i> with a dedicated service account (or <i>Anonymous Searching</i> where the directory permits it) so the directory lookup never consumes the user single-use code.  Avoid <i>No Searching</i> when locating the DN would otherwise require the user credentials.'),
 			'method'        => 'drop_array',
 			'value'         => '|arg1:mode|',
 			'array'         => $ldap_modes
