@@ -337,10 +337,10 @@ function pages() : void {
 			$menuicons = '<a class="pic"  href="' . htmle('links.php?action=edit&id=' . $page['id']) . '" title="' . __esc('Edit Page') . '"><i class="ti ti-edit editTemplate"></i></a>';
 
 			if ($page['enabled'] == 'on') {
-				$menuicons .= '<a class="pic" href="' . htmle('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><i class="ti ti-file deviceUp"></i></a>';
+				$menuicons .= '<a class="pic" href="' . htmle('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><i class="ti ti-eye deviceUp"></i></a>';
 			}
 
-			form_selectable_cell($menuicons, $page['id'], '3%');
+			form_selectable_cell($menuicons, $page['id'], '1%');
 			form_selectable_ecell($page['contentfile'], $page['id']);
 			form_selectable_ecell($page['title'], $page['id']);
 			form_selectable_ecell($style_translate[$page['style']] . ($page['style'] == 'CONSOLE' ? ' ( ' . ($page['extendedstyle'] == '' ? __('External Links') : $page['extendedstyle']) . ' )' : ''), $page['id']);
@@ -360,7 +360,7 @@ function pages() : void {
 					$sort .= '<a class="pic ti ti-caret-down-filled moveArrow cactiPostAction" href="#" data-url="' . html_escape_url('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				}
 
-				form_selectable_cell($sort, $page['id'], '', 'center');
+				form_selectable_cell($sort, $page['id'], '1%', 'center');
 			} else {
 				form_selectable_cell(__('Sort for Ordering'), $page['id']);
 			}
