@@ -55,7 +55,7 @@ beforeEach(function () {
 });
 
 test('htmx_version reads the version file', function () {
-	expect(htmx_version())->toBe('2.0.6');
+	expect(htmx_version())->toBe('2.0.10');
 });
 
 test('htmx_version returns empty string when the version file is missing', function () {
