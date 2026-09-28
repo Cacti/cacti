@@ -22,7 +22,7 @@ test('Boost hand-off batches expose database acknowledgement', function () {
 
 	expect($boost)->toContain('function boost_flush_output_batch($value_tuples, $conn = false)');
 	expect($boost)->toContain('$acknowledged = db_execute($sql_prefix . $out_buffer, true, $conn) !== false;');
-	expect($boost)->toContain('$return_value = !boost_flush_output_batch($value_tuples, $conn);');
+	expect($boost)->toContain('if (!boost_flush_output_batch($value_tuples, $conn)) {');
 });
 
 test('Recovery deletes only the exact rows acknowledged by the main collector', function () {
