@@ -489,7 +489,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 	}
 
 	if (is_realm_allowed(10) && $graph_template_id > 0) {
-		print "<a class='iconLink' role='link' href='" . html_escape($config['url_path'] . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><i class='drillDown fa fa-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
+		print "<a class='iconLink' role='link' title='" . __esc('Edit Graph Template') . "' href='" . html_escape($config['url_path'] . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><i class='drillDown fa fa-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
 		print '<br/>';
 	}
 
