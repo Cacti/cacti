@@ -19915,6 +19915,48 @@ msgstr "Grafiku veidņu skaits, kas izmanto šo VDEF."
 msgid "No VDEFs"
 msgstr "Nav VDEF"
 
+#: plugins.php
+msgid "Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables."
+msgstr ""
+
+#: plugins.php
+#, fuzzy
+#| msgid "Are you sure you want to Uninstall?"
+msgid "Are you sure you want to Force Uninstall the plugin"
+msgstr "Vai tiešām vēlaties atinstalēt?"
+
+#: plugins.php
+msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone."
+msgstr ""
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall Plugin"
+msgid "Force Uninstall Plugin"
+msgstr "Atinstalējiet spraudni"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall"
+msgid "Force Uninstall"
+msgstr "Noņemt"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Unable to Force Uninstall.  This Plugin is required by: %s"
+msgstr "Nevar atinstalēt. Šis spraudnis ir nepieciešams: %s"
+
+#: plugins.php
+msgid "Plugin '%s' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."
+msgstr ""
+
+#: plugins.php
+#, fuzzy
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
+msgstr "Nevar atinstalēt. Šis spraudnis ir nepieciešams: %s"
+
 #~ msgid "A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user."
 #~ msgstr "Derīgu LDAP serveru DNS saimniekdatoru nosaukumu vai IP adrešu saraksts ar atstarpi. Cacti mēģinās izmantot LDAP serverus no kreisās puses uz labo, lai autentificētu lietotāju."
 
