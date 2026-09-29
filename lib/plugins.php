@@ -569,7 +569,8 @@ function api_plugin_status_run($hook, $required_capabilities, $plugin_capabiliti
 }
 
 /**
- * API helper that handles plugin DB table create. Used as part of Cacti's lib functionality.
+ * API helper that handles plugin DB table create and update.
+ * Used as part of Cacti's lib functionality.
  *
  * @param string $plugin The plugin.
  * @param string $table The table.
@@ -593,6 +594,11 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 				VALUES (?, ?, '', 'create')",
 				[$plugin, $table]);
 		}
+	} elseif (db_update_table($table, $data, true)) {
+		db_execute_prepared("REPLACE INTO plugin_db_changes
+			(plugin, `table`, `column`, `method`)
+			VALUES (?, ?, '', 'create')",
+			[$plugin, $table]);
 	}
 }
 
