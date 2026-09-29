@@ -1468,7 +1468,7 @@ legend::before {
     width: 20px;
 }
 
-.piinstall, .pienable, .pidisable, .piuninstall, .pierror {
+.piinstall, .pienable, .pidisable, .piuninstall, .pierror, .piforceremove {
     padding: 0px 3px !important;
 }
 
