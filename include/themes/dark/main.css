@@ -3266,7 +3266,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	font-size: 14px;
 	line-height: 20px;
 	text-align: center;
-	vertical-align: top;
+	vertical-align: middle;
 }
 
 .jstree-default .jstree-anchor > .jstree-themeicon.ti-sitemap { color: #B0BEC5; }
