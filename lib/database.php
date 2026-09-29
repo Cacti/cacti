@@ -1673,7 +1673,6 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 			$columns_changed = true;
 		} else {
 			// Check that column is correct and fix it
-			// FIXME: Need to still check default value
 			$arr = db_fetch_row('SHOW columns FROM `' . $table . '` LIKE ' . db_qstr($column['name'], $db_conn), $log, $db_conn);
 
 			if (strpos(strtolower($arr['Type']), ' unsigned') !== false) {
@@ -1681,10 +1680,31 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 				$arr['unsigned'] = true;
 			}
 
+			// Detect drift in the column default (e.g. DEFAULT NULL vs DEFAULT '')
+			// which the type/NULL/unsigned/auto_increment checks below do not catch.
+			// Timestamp defaults are represented differently by the server, so they
+			// are left to the type comparison to avoid needless churn.
+			$default_differs = false;
+
+			if (isset($column['default'])) {
+				if (strtolower($column['type']) != 'timestamp') {
+					if ($arr['Default'] === null) {
+						$default_differs = true;
+					} elseif (is_numeric($column['default']) && is_numeric($arr['Default'])) {
+						$default_differs = ($column['default'] != $arr['Default']);
+					} else {
+						$default_differs = (strval($column['default']) !== strval($arr['Default']));
+					}
+				}
+			} elseif (isset($column['NULL']) && $column['NULL'] === true) {
+				$default_differs = ($arr['Default'] !== null);
+			}
+
 			if ($column['type'] != $arr['Type'] || (isset($column['NULL']) && ($column['NULL'] ? 'YES' : 'NO') != $arr['Null'])
 				|| (((!isset($column['unsigned']) || !$column['unsigned']) && isset($arr['unsigned']))
 					|| (isset($column['unsigned']) && $column['unsigned'] && !isset($arr['unsigned'])))
-				|| (isset($column['auto_increment']) && ($column['auto_increment'] ? 'auto_increment' : '') != $arr['Extra'])) {
+				|| (isset($column['auto_increment']) && ($column['auto_increment'] ? 'auto_increment' : '') != $arr['Extra'])
+				|| $default_differs) {
 				$definition = db_build_column_definition_sql($column, $db_conn, false);
 
 				if ($definition === false) {
