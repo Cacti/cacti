@@ -356,6 +356,9 @@ function grow_dhtml_trees() : void {
 					'graph_templates' : {
 						icon : 'ti ti-chart-infographic',
 						max_children : 0
+					},
+					'default' : {
+						icon : 'ti ti-folder'
 					}
 				},
 				'core' : {

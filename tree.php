@@ -1229,6 +1229,9 @@ function tree_edit(bool $partial = false) : void {
 					'graph' : {
 						icon : 'ti ti-chart-line',
 						max_children : 0
+					},
+					'default' : {
+						icon : 'ti ti-folder'
 					}
 				},
 				'contextmenu' : {

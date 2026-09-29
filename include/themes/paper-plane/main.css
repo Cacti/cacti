@@ -3272,6 +3272,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	vertical-align: middle;
 }
 
+.jstree-default .jstree-anchor > .jstree-themeicon.ti-folder { color: #F9A825; }
 .jstree-default .jstree-anchor > .jstree-themeicon.ti-sitemap { color: #546E7A; }
 .jstree-default .jstree-anchor > .jstree-themeicon.ti-building { color: #00897B; }
 .jstree-default .jstree-anchor > .jstree-themeicon.ti-map-pin { color: #E53935; }
@@ -3282,8 +3283,9 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 .jstree-default .jstree-anchor > .jstree-themeicon.ti-chart-histogram { color: #F57C00; }
 .jstree-default .jstree-anchor > .jstree-themeicon.ti-chart-infographic { color: #C2185B; }
 
-/* open/close carets as glyphs, centered to match the node glyphs */
-.jstree-default .jstree-ocl {
+/* open/close carets as glyphs, centered to match the node glyphs        */
+/* scoped to non-loading nodes so the AJAX loading throbber is preserved  */
+.jstree-default .jstree-node:not(.jstree-loading) > .jstree-ocl {
 	background: none !important;
 	font-family: "tabler-icons";
 	font-size: 14px;
@@ -3293,6 +3295,6 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	height: 20px;
 	color: #78909C;
 }
-.jstree-default .jstree-closed > .jstree-ocl::before { content: "\ea61"; }
-.jstree-default .jstree-open > .jstree-ocl::before { content: "\ea5f"; }
-.jstree-default .jstree-leaf > .jstree-ocl::before { content: ""; }
+.jstree-default .jstree-closed:not(.jstree-loading) > .jstree-ocl::before { content: "\ea61"; }
+.jstree-default .jstree-open:not(.jstree-loading) > .jstree-ocl::before { content: "\ea5f"; }
+.jstree-default .jstree-leaf:not(.jstree-loading) > .jstree-ocl::before { content: ""; }
