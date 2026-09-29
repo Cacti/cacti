@@ -1219,16 +1219,19 @@ function tree_edit(bool $partial = false) : void {
 			$("#ctree").jstree({
 				'types' : {
 					'site' : {
-						icon : 'images/site.png',
+						icon : 'ti ti-building',
 						max_children : 0
 					},
 					'device' : {
-						icon : 'images/server.png',
+						icon : 'ti ti-server',
 						max_children : 0
 					},
 					'graph' : {
-						icon : 'images/server_chart_curve.png',
+						icon : 'ti ti-chart-line',
 						max_children : 0
+					},
+					'default' : {
+						icon : 'ti ti-folder'
 					}
 				},
 				'contextmenu' : {
@@ -1519,17 +1522,17 @@ function tree_edit(bool $partial = false) : void {
 			.jstree({
 				'types' : {
 					'site' : {
-						icon : 'images/site.png',
+						icon : 'ti ti-building',
 						valid_children: 'none',
 						max_children : 0
 					},
 					'device' : {
-						icon : 'images/server.png',
+						icon : 'ti ti-server',
 						valid_children: 'none',
 						max_children : 0
 					},
 					'graph' : {
-						icon : 'images/server_chart_curve.png',
+						icon : 'ti ti-chart-line',
 						valid_children: 'none',
 						max_children : 0
 					}
@@ -1544,7 +1547,7 @@ function tree_edit(bool $partial = false) : void {
 					'always_copy' : true,
 					'check_while_dragging': true
 				},
-				'themes' : { 'stripes' : true },
+				'themes' : { 'stripes' : true, 'dots' : false },
 				'plugins' : plugins
 			})
 			.on('ready.jstree', function(e, data) {
