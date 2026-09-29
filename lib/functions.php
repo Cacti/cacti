@@ -8804,26 +8804,59 @@ function cacti_time_zone_set($gmt_offset) {
  * @return bool True on success, false otherwise.
  */
 function debounce_run_notification($id, $frequency = 7200) {
-	$full = 'debounce_' . $id;
-	$key   = substr($full, 0, 50);
-
-	if ($full !== $key) {
-		cacti_debug_backtrace("ERROR: debounce key was truncated from $full to $key");
-	}
+	$key = 'debounce_' . md5($id);
 
 	/* debounce admin emails */
 	$last = read_config_option($key);
 	$now  = time();
 
-	/* the stored value is written as a timestamp, but a setting that holds
-	   anything else makes the subtraction below a TypeError on PHP 8 where it
-	   was once a warning. develop already tests this with is_numeric(). */
-	if (!is_numeric($last)) {
-		$last = 0;
+	/* one-time migration: for ids short enough that the pre-md5 key
+	   (substr('debounce_' . $id, 0, 50)) was never truncated, fall back to that
+	   legacy key so an existing debounce window is still honored. A truncated
+	   (long) id can not be identified from the legacy key, so those windows reset. */
+	if ($last == '' && strlen('debounce_' . $id) <= 50) {
+		$last = read_config_option('debounce_' . $id);
 	}
 
-	if (empty($last) || $now - $last > $frequency) {
-		set_config_option($key, $now);
+	/* default to unset */
+	$last_timestamp = '';
+
+	if ($last != '' && is_numeric($last)) {
+		$last_timestamp = $last;
+	} elseif ($last != '') {
+		$last = json_decode($last, true);
+
+		/* a stored payload with a missing or non-numeric timestamp is treated as
+		   unset, so the subtraction below can not TypeError on PHP 8 */
+		if (isset($last['timestamp']) && is_numeric($last['timestamp'])) {
+			$last_timestamp = $last['timestamp'];
+		}
+	}
+
+	if (empty($last_timestamp) || $now - $last_timestamp > $frequency) {
+		$current = array(
+			'id'        => $id,
+			'timestamp' => $now,
+			'frequency' => $frequency
+		);
+
+		$encoded = json_encode($current);
+
+		/* settings.value is varchar(4096); the id here is only a human-readable
+		   diagnostic (the md5 key is authoritative), so trim it if a very long id
+		   would overflow the column and fail the write. */
+		if ($encoded === false || strlen($encoded) > 4096) {
+			$current['id'] = substr((string) $id, 0, 512);
+			$encoded       = json_encode($current);
+
+			if ($encoded === false) {
+				$current['id'] = '';
+				$encoded       = json_encode($current);
+			}
+		}
+
+		set_config_option($key, $encoded);
+
 		return true;
 	}
 

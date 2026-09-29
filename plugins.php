@@ -454,7 +454,7 @@ function update_show_current () {
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
-			'default' => 'name',
+			'default' => 'directory',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
