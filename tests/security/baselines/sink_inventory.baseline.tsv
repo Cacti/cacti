@@ -679,3 +679,6 @@ xml_parse	./cli/rrdresize.php						$rrd_data = json_decode(json_encode(simplexml
 xml_parse	./install/functions.php				$xmlget = simplexml_load_string($xml);
 xml_parse	./lib/import.php		$xmlget = simplexml_load_string($data);
 xml_parse	./lib/import.php		$xmlget = simplexml_load_string($xml);
+header_redirect	./plugins.php				header('Location: plugins.php');
+header_redirect	./plugins.php				header('Location: plugins.php');
+header_redirect	./plugins.php			header('Location: plugins.php');

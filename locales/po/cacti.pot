@@ -24928,3 +24928,30 @@ msgstr ""
 #: vdef.php
 msgid "No VDEFs"
 msgstr ""
+
+#: plugins.php
+msgid "Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables."
+msgstr ""
+
+#: plugins.php
+msgid "The directory for this Plugin is missing, so it can not be uninstalled normally.  Force Uninstall permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  Click 'Force Uninstall' below, or click 'Cancel'."
+msgstr ""
+
+#: plugins.php
+msgid "Are you sure you want to Force Uninstall?"
+msgstr ""
+
+#: plugins.php
+msgid "Force Uninstall"
+msgstr ""
+#: plugins.php
+msgid "Unable to Force Uninstall.  This Plugin is required by: '%s'"
+msgstr ""
+
+#: plugins.php
+msgid "Plugin '%s' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."
+msgstr ""
+
+#: plugins.php
+msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
+msgstr ""

@@ -254,6 +254,52 @@ switch($action) {
 		header('Location: plugins.php');
 
 		break;
+	case 'remove':
+		/* Force Uninstall of an orphaned plugin (e.g. its directory is missing),
+		   so its entries can be purged even though its own uninstall hook can no
+		   longer run. api_plugin_uninstall() skips the (unavailable) hook and
+		   removes the plugin's hooks, realms, plugin_config row, and - with
+		   $tables = true - the tables/columns it created (via plugin_db_changes).
+
+		   Guard the destructive path: only proceed when the plugin is genuinely
+		   orphaned (its directory is absent) and no other active plugin still
+		   requires it, so a forged POST can not force-remove a healthy or
+		   depended-upon plugin (which would run its uninstall hook and drop its
+		   tables without the intended confirmation). */
+		if (is_dir(CACTI_PATH_PLUGINS . '/' . $plugin)) {
+			raise_message('force_remove_present', __('Plugin \'%s\' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead.', $plugin), MESSAGE_LEVEL_ERROR);
+
+			header('Location: plugins.php');
+
+			break;
+		}
+
+		$required = db_fetch_cell_prepared('SELECT GROUP_CONCAT(directory)
+			FROM plugin_config
+			WHERE requires LIKE ?
+			AND status IN (1, 4, 7)',
+			['%' . $plugin . '%']);
+
+		if ($required != '') {
+			raise_message('force_remove_required', __('Plugin \'%s\' can not be Force Uninstalled because it is still required by: \'%s\'', $plugin, ucfirst($required)), MESSAGE_LEVEL_ERROR);
+
+			header('Location: plugins.php');
+
+			break;
+		}
+
+		define('IN_PLUGIN_INSTALL', 1);
+
+		api_plugin_uninstall($plugin, true);
+
+		/* The plugin's directory is gone, so api_plugin_uninstall() can not set
+		   $plugin_found and skips its own final replication; replicate here so
+		   remote pollers also drop the now-removed orphan. */
+		api_plugin_replicate_config();
+
+		header('Location: plugins.php');
+
+		break;
 	case 'remove_data':
 		api_plugin_remove_data($plugin);
 
@@ -602,6 +648,16 @@ function update_show_current() : void {
 	$uninstall_msg   = __esc('Uninstalling this Plugin and may remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click \'Uninstall\' below.  Otherwise click \'Cancel\'.');
 	$uninstall_title = __esc('Are you sure you want to Uninstall?');
 
+	/* JSON-encoded so the values are injected into JavaScript without inline
+	   PHP-in-quoted-string, and action=remove is carried in the dialog form
+	   (POST body) rather than a URL. */
+	$forceremove_cfg = json_encode([
+		'title'    => __('Are you sure you want to Force Uninstall?'),
+		'message'  => __('The directory for this Plugin is missing, so it can not be uninstalled normally.  Force Uninstall permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  Click \'Force Uninstall\' below, or click \'Cancel\'.'),
+		'continue' => __('Force Uninstall'),
+		'cancel'   => __('Cancel'),
+	]);
+
 	$rmdata_msg   = __esc('Removing Plugin Data and Settings for will remove all Plugin Data and Settings.  If you really want to Remove Data and Settings for this Plugin, click \'Remove Data\' below.  Otherwise click \'Cancel\'.');
 	$rmdata_title = __esc('Are you sure you want to Remove all Plugin Data and Settings?');
 
@@ -887,6 +943,21 @@ function update_show_current() : void {
 					var url            = $(this).attr('href');
 
 					displayDialog(url, dialogTitle, dialogMessage, dialogForm, buttonContinue, buttonCancel, 80, 400);
+				});
+
+				$('.piforceremove').off('click').on('click', function(event) {
+					event.preventDefault();
+
+					var cfg    = <?php print $forceremove_cfg; ?>;
+					var plugin = $(this).attr('data-plugin');
+					var form   = "<form id='dialogForm'>" +
+						"<input type='hidden' name='action' value='remove'>" +
+						"<input type='hidden' name='plugin'>" +
+						"</form>";
+
+					displayDialog('plugins.php', cfg.title, cfg.message, form, cfg.continue, cfg.cancel, 100, 500);
+
+					$('#dialogForm input[name=plugin]').val(plugin);
 				});
 
 				$('.pireadme').off('click').on('click', function(event) {
@@ -1927,7 +1998,19 @@ function plugin_actions(array $plugin, string $table) : string {
 
 			break;
 		case '-5': // Plugin directory missing
-			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is missing!') . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
+			if (is_dir(CACTI_PATH_PLUGINS . '/' . $plugin['plugin'])) {
+				/* Directory still present but not loadable (e.g. missing setup.php);
+				   withhold Force Uninstall and report the underlying error instead. */
+				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory \'%s\' is missing setup.php', $plugin['plugin']) . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
+			} else {
+				$required = plugin_required_for_others($plugin, $table);
+
+				if ($required != '') {
+					$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Force Uninstall.  This Plugin is required by: \'%s\'', ucfirst($required)) . "'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
+				} else {
+					$link .= "<a class='piforceremove' href='#' data-plugin='" . htmle($plugin['plugin']) . "' title='" . __esc('Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables.') . "'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
+				}
+			}
 
 			break;
 		case '-4': // Plugins should have INFO file since 1.0.0
