@@ -110,14 +110,48 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			   so its entries can be purged even though its own uninstall hook can no
 			   longer run. api_plugin_uninstall() skips the (unavailable) hook and
 			   removes the plugin's hooks, realms, plugin_config row, and - with
-			   $tables = true - the tables/columns it created (via plugin_db_changes). */
+			   $tables = true - the tables/columns it created (via plugin_db_changes).
+
+			   Guard the destructive path: only proceed when the plugin is genuinely
+			   orphaned (its directory is absent) and no other active plugin still
+			   requires it, so a forged POST can not force-remove a healthy or
+			   depended-upon plugin. */
 			if (!in_array($id, $pluginslist)) {
+				break;
+			}
+
+			if (is_dir($config['base_path'] . '/plugins/' . $id)) {
+				raise_message('force_remove_present', __('Plugin \'%s\' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead.', $id), MESSAGE_LEVEL_ERROR);
+
+				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
+				exit;
+
+				break;
+			}
+
+			$required = db_fetch_cell_prepared('SELECT GROUP_CONCAT(directory)
+				FROM plugin_config
+				WHERE requires LIKE ?
+				AND status IN (1, 4)',
+				array('%' . $id . '%'));
+
+			if ($required != '') {
+				raise_message('force_remove_required', __('Plugin \'%s\' can not be Force Uninstalled because it is still required by: \'%s\'', $id, ucfirst($required)), MESSAGE_LEVEL_ERROR);
+
+				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
+				exit;
+
 				break;
 			}
 
 			define('IN_PLUGIN_INSTALL', 1);
 
 			api_plugin_uninstall($id, true);
+
+			/* The plugin's directory is gone, so api_plugin_uninstall() can not set
+			   $plugin_found and skips its own final replication; replicate here so
+			   remote pollers also drop the now-removed orphan. */
+			api_plugin_replicate_config();
 
 			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 			exit;
@@ -979,7 +1013,17 @@ function plugin_actions($plugin, $table) {
 			$link .= "<a class='pienable cactiPostAction' href='" . html_escape($config['url_path'] . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin') . "'><i class='fa fa-circle deviceUp'></i></a>";
 			break;
 		case '-5': // Plugin directory missing
-			$link .= "<a class='piforceremove' href='#' data-url='" . html_escape($config['url_path'] . 'plugins.php?mode=remove&id=' . $plugin['directory']) . "' data-name='" . html_escape($plugin['infoname']) . "' title='" . __esc('Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables.') . "'><i class='fa fa-cog deviceUnknown'></i></a>";
+			if (is_dir($config['base_path'] . '/plugins/' . $plugin['directory'])) {
+				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory \'%s\' is missing setup.php', $plugin['directory']) . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
+			} else {
+				$required = plugin_required_for_others($plugin, $table);
+
+				if ($required != '') {
+					$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Force Uninstall.  This Plugin is required by: %s', ucfirst($required)) . "'><i class='fa fa-cog deviceUnknown'></i></a>";
+				} else {
+					$link .= "<a class='piforceremove' href='#' data-url='" . html_escape($config['url_path'] . 'plugins.php?mode=remove&id=' . $plugin['directory']) . "' data-name='" . html_escape($plugin['infoname']) . "' title='" . __esc('Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables.') . "'><i class='fa fa-cog deviceUnknown'></i></a>";
+				}
+			}
 			break;
 		case '-4': // Plugins should have INFO file since 1.0.0
 			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is not compatible (Pre-1.x)') . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";

@@ -19726,3 +19726,14 @@ msgstr ""
 #: plugins.php
 msgid "Force Uninstall"
 msgstr ""
+#: plugins.php
+msgid "Unable to Force Uninstall.  This Plugin is required by: %s"
+msgstr ""
+
+#: plugins.php
+msgid "Plugin '%s' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."
+msgstr ""
+
+#: plugins.php
+msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
+msgstr ""
