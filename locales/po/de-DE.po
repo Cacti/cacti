@@ -19917,6 +19917,48 @@ msgstr "Die Anzahl der Grafikvorlagen, die diesen VDEF verwenden."
 msgid "No VDEFs"
 msgstr "VDEFs"
 
+#: plugins.php
+msgid "Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables."
+msgstr ""
+
+#: plugins.php
+#, fuzzy
+#| msgid "Are you sure you want to Uninstall?"
+msgid "Are you sure you want to Force Uninstall the plugin"
+msgstr "Sind Sie sicher, dass Sie die Deinstallation durchführen möchten?"
+
+#: plugins.php
+msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone."
+msgstr ""
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall Plugin"
+msgid "Force Uninstall Plugin"
+msgstr "Plugin deinstallieren"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall"
+msgid "Force Uninstall"
+msgstr "Deinstallieren"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Unable to Force Uninstall.  This Plugin is required by: %s"
+msgstr "Nicht deinstallierbar.  Dieses Plugin wird benötigt von: %s"
+
+#: plugins.php
+msgid "Plugin '%s' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."
+msgstr ""
+
+#: plugins.php
+#, fuzzy
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
+msgstr "Nicht deinstallierbar.  Dieses Plugin wird benötigt von: %s"
+
 #~ msgid "A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user."
 #~ msgstr "Eine durch Leerzeichen getrennte Liste von DNS-Hostnamen oder IP-Adressen für gültige LDAP-Server. Cacti versucht, die LDAP-Server von links nach rechts zu verwenden, um einen Benutzer zu authentifizieren."
 
