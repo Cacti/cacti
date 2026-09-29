@@ -559,6 +559,11 @@ function api_plugin_db_table_create(string $plugin, string $table, array $data) 
 				db_execute("ALTER TABLE `$table` COLLATE = " . $data['collate']);
 			}
 		}
+	} elseif (db_update_table($table, $data, true)) {
+		db_execute_prepared("REPLACE INTO plugin_db_changes
+			(plugin, `table`, `column`, `method`)
+			VALUES (?, ?, '', 'create')",
+			[$plugin, $table]);
 	}
 }
 
