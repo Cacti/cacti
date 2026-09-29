@@ -19849,7 +19849,7 @@ msgid "Are you sure you want to Force Uninstall the plugin"
 msgstr "Ви впевнені в тому, що бажаєте видалити Правило '%s'?"
 
 #: plugins.php
-msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone."
+msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
 msgstr ""
 
 #: plugins.php
