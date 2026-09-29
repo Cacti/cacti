@@ -962,7 +962,7 @@ function html_graph_preview_view() : void {
 	}
 
 	if (!ierv('host_id') && grv('host_id') > 0) {
-		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=' . grv('host_id');
+		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=' . gfrv('host_id');
 	} elseif (ierv('host_id')) {
 		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=0';
 	}
@@ -1364,7 +1364,7 @@ function html_graph_list_view() : void {
 	}
 
 	if (!ierv('host_id') && grv('host_id') > 0) {
-		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=' . grv('host_id');
+		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=' . gfrv('host_id');
 	} elseif (ierv('host_id')) {
 		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=0';
 	}

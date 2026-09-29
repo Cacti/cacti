@@ -57,3 +57,21 @@ test('the cast covers the session sourced value as well as the request', functio
 
 	expect($session)->toBeLessThan($sink);
 });
+
+test('the preview-view WHERE sink validates host_id before the graph lookup', function () use ($src) {
+	expect(preg_match('/function html_graph_preview_view\(.*?\n}\n/s', $src, $matches))->toBe(1);
+
+	$body = $matches[0];
+
+	expect($body)->toContain("' gl.host_id=' . gfrv('host_id')")
+		->and($body)->not->toContain("' gl.host_id=' . grv('host_id')");
+});
+
+test('the list-view WHERE sink validates host_id before the graph lookup', function () use ($src) {
+	expect(preg_match('/function html_graph_list_view\(.*?\n}\n/s', $src, $matches))->toBe(1);
+
+	$body = $matches[0];
+
+	expect($body)->toContain("' gl.host_id=' . gfrv('host_id')")
+		->and($body)->not->toContain("' gl.host_id=' . grv('host_id')");
+});
