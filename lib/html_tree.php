@@ -272,6 +272,9 @@ function grow_dhtml_trees() {
 			})
 			.jstree({
 				'types' : {
+					'default' : {
+						icon : 'fa fa-folder'
+					},
 					'tree' : {
 						icon : 'fa fa-sitemap',
 						max_children : 0

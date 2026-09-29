@@ -1388,6 +1388,9 @@ function tree_edit($partial = false) {
 
 			$("#ctree").jstree({
 				'types' : {
+					'default' : {
+						icon : 'fa fa-folder'
+					},
 					'site' : {
 						icon : 'fa fa-building',
 						max_children : 0

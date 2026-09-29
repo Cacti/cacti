@@ -3084,6 +3084,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 }
 
 .jstree-default .jstree-anchor > .jstree-themeicon.fa-sitemap { color: #546E7A; }
+.jstree-default .jstree-anchor > .jstree-themeicon.fa-folder { color: #F9A825; }
 .jstree-default .jstree-anchor > .jstree-themeicon.fa-building { color: #00897B; }
 .jstree-default .jstree-anchor > .jstree-themeicon.fa-map-marker-alt { color: #E53935; }
 .jstree-default .jstree-anchor > .jstree-themeicon.fa-server { color: #1E88E5; }
@@ -3105,7 +3106,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	color: #78909C;
 }
 .jstree-default .jstree-open > .jstree-ocl,
-.jstree-default .jstree-closed > .jstree-ocl { padding-top: 4px; }
+.jstree-default .jstree-closed > .jstree-ocl { padding-top: 8px; }
 .jstree-default .jstree-closed > .jstree-ocl::before { content: "\f105"; }
 .jstree-default .jstree-open > .jstree-ocl::before { content: "\f107"; }
 .jstree-default .jstree-leaf > .jstree-ocl::before { content: ""; }
