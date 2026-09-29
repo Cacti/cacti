@@ -8804,26 +8804,36 @@ function cacti_time_zone_set($gmt_offset) {
  * @return bool True on success, false otherwise.
  */
 function debounce_run_notification($id, $frequency = 7200) {
-	$full = 'debounce_' . $id;
-	$key   = substr($full, 0, 50);
-
-	if ($full !== $key) {
-		cacti_debug_backtrace("ERROR: debounce key was truncated from $full to $key");
-	}
+	$key = 'debounce_' . md5($id);
 
 	/* debounce admin emails */
 	$last = read_config_option($key);
 	$now  = time();
 
-	/* the stored value is written as a timestamp, but a setting that holds
-	   anything else makes the subtraction below a TypeError on PHP 8 where it
-	   was once a warning. develop already tests this with is_numeric(). */
-	if (!is_numeric($last)) {
-		$last = 0;
+	/* default to unset */
+	$last_timestamp = '';
+
+	if ($last != '' && is_numeric($last)) {
+		$last_timestamp = $last;
+	} elseif ($last != '') {
+		$last = json_decode($last, true);
+
+		if (isset($last['timestamp'])) {
+			$last_timestamp = $last['timestamp'];
+		} else {
+			$last_timestamp = '';
+		}
 	}
 
-	if (empty($last) || $now - $last > $frequency) {
-		set_config_option($key, $now);
+	if (empty($last_timestamp) || $now - $last_timestamp > $frequency) {
+		$current = array(
+			'id'        => $id,
+			'timestamp' => $now,
+			'frequency' => $frequency
+		);
+
+		set_config_option($key, json_encode($current));
+
 		return true;
 	}
 
