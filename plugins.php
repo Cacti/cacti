@@ -653,7 +653,7 @@ function update_show_current() : void {
 	   (POST body) rather than a URL. */
 	$forceremove_cfg = json_encode([
 		'title'    => __('Are you sure you want to Force Uninstall?'),
-		'message'  => __('The directory for this Plugin is missing, so it can not be uninstalled normally.  Force Uninstall permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  Click \'Force Uninstall\' below, or click \'Cancel\'.'),
+		'message'  => __('The directory for this Plugin is missing, so it can not be uninstalled normally.  Force Uninstall permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click \'Force Uninstall\' below.  Otherwise click \'Cancel\'.'),
 		'continue' => __('Force Uninstall'),
 		'cancel'   => __('Cancel'),
 	]);
