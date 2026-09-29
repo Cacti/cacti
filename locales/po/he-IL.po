@@ -20000,6 +20000,50 @@ msgstr "מספר תבניות גרפים באמצעות VDEF זה."
 msgid "No VDEFs"
 msgstr "אין VDEFs"
 
+#: plugins.php
+msgid "Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables."
+msgstr ""
+
+#: plugins.php
+#, fuzzy
+#| msgid "Are you sure you want to Uninstall?"
+msgid "Are you sure you want to Force Uninstall the plugin"
+msgstr "האם אתה בטוח שברצונך להסיר את ההתקנה?"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
+msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
+msgstr "הסרת תוסף זה תסיר את כל נתוני הפלאגין וההגדרות. אם אתה באמת רוצה להסיר את תוסף, לחץ על &#39;הסר&#39; להלן. אחרת, לחץ על &#39;ביטול&#39;"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall Plugin"
+msgid "Force Uninstall Plugin"
+msgstr "הסרת התוסף"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall"
+msgid "Force Uninstall"
+msgstr "הסרת התקנה"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Unable to Force Uninstall.  This Plugin is required by: %s"
+msgstr "לא ניתן להסיר את ההתקנה. תוסף זה נדרש על ידי: %s"
+
+#: plugins.php
+msgid "Plugin '%s' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."
+msgstr ""
+
+#: plugins.php
+#, fuzzy
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
+msgstr "לא ניתן להסיר את ההתקנה. תוסף זה נדרש על ידי: %s"
+
 #~ msgid "A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user."
 #~ msgstr "רשימה מופרדת של שמות מארחי DNS או כתובת IP של שרתי LDAP חוקיים. קקטוסים ינסו להשתמש בשרתי LDAP משמאל לימין כדי לאמת משתמש."
 

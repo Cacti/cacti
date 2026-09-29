@@ -19846,6 +19846,50 @@ msgstr "Het aantal grafiektemplates die deze VDEF gebruiken."
 msgid "No VDEFs"
 msgstr "Geen VDEF's"
 
+#: plugins.php
+msgid "Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables."
+msgstr ""
+
+#: plugins.php
+#, fuzzy
+#| msgid "Are you sure you want to Uninstall?"
+msgid "Are you sure you want to Force Uninstall the plugin"
+msgstr "Weet u zeker dat u de installatie ongedaan wilt maken?"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
+msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
+msgstr "Als u deze plugin verwijdert, worden alle plugingegevens en instellingen verwijderd.  Als u de plugin echt wilt verwijderen, klik dan op 'Uninstall' hieronder.  Anders klikt u op 'Annuleren'."
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall Plugin"
+msgid "Force Uninstall Plugin"
+msgstr "De-installeer plugin"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall"
+msgid "Force Uninstall"
+msgstr "De-installeer"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Unable to Force Uninstall.  This Plugin is required by: %s"
+msgstr "Uninstalleren is niet mogelijk.  Deze plugin is vereist door: %s"
+
+#: plugins.php
+msgid "Plugin '%s' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."
+msgstr ""
+
+#: plugins.php
+#, fuzzy
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
+msgstr "Uninstalleren is niet mogelijk.  Deze plugin is vereist door: %s"
+
 #~ msgid "A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user."
 #~ msgstr "Een door spaties gescheiden lijst van DNS-hostnamen of IP-adressen voor geldige LDAP-servers. Cacti zal proberen de LDAP-servers van links naar rechts te gebruiken om een gebruiker te authenticeren."
 

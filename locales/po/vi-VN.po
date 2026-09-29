@@ -19761,6 +19761,50 @@ msgstr "Số lượng mẫu biểu đồ sử dụng VDEF này."
 msgid "No VDEFs"
 msgstr "Không có VDEF"
 
+#: plugins.php
+msgid "Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables."
+msgstr ""
+
+#: plugins.php
+#, fuzzy
+#| msgid "Are you sure you want to Uninstall?"
+msgid "Are you sure you want to Force Uninstall the plugin"
+msgstr "Bạn có chắc là muốn gỡ cài đặt không?"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
+msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
+msgstr "Gỡ cài đặt Plugin này sẽ xóa tất cả Dữ liệu và Cài đặt của Plugin. Nếu bạn thực sự muốn Gỡ cài đặt Plugin, nhấp vào &#39;Gỡ cài đặt&#39; bên dưới. Nếu không, nhấp vào &#39;Hủy&#39;"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall Plugin"
+msgid "Force Uninstall Plugin"
+msgstr "Gỡ cài đặt Plugin"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall"
+msgid "Force Uninstall"
+msgstr "Gỡ cài đặt"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Unable to Force Uninstall.  This Plugin is required by: %s"
+msgstr "Không thể gỡ cài đặt. Plugin này được yêu cầu bởi: %s"
+
+#: plugins.php
+msgid "Plugin '%s' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."
+msgstr ""
+
+#: plugins.php
+#, fuzzy
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
+msgstr "Không thể gỡ cài đặt. Plugin này được yêu cầu bởi: %s"
+
 #~ msgid "A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user."
 #~ msgstr "Danh sách tên máy chủ DNS hoặc địa chỉ IP được phân tách bằng dấu cách cho các máy chủ LDAP hợp lệ. Cacti sẽ cố gắng sử dụng các máy chủ LDAP từ trái sang phải để xác thực người dùng."
 

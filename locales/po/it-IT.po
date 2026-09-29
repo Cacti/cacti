@@ -19847,6 +19847,50 @@ msgstr "Il numero di modelli di grafici che utilizzano questo VDEF."
 msgid "No VDEFs"
 msgstr "Nessun VDEF"
 
+#: plugins.php
+msgid "Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables."
+msgstr ""
+
+#: plugins.php
+#, fuzzy
+#| msgid "Are you sure you want to Uninstall?"
+msgid "Are you sure you want to Force Uninstall the plugin"
+msgstr "Sei sicuro di voler disinstallare?"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
+msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
+msgstr "La disinstallazione di questo plugin rimuoverà tutti i dati e le impostazioni del plugin.  Se si desidera davvero disinstallare il plugin, fare clic su 'Disinstallare' qui sotto.  Altrimenti clicca su \"Annulla\"."
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall Plugin"
+msgid "Force Uninstall Plugin"
+msgstr "Disinstallare il plugin"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Uninstall"
+msgid "Force Uninstall"
+msgstr "Disinstalla"
+
+#: plugins.php
+#, fuzzy
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Unable to Force Uninstall.  This Plugin is required by: %s"
+msgstr "Impossibile da disinstallare.  Questo plugin è richiesto da: %s"
+
+#: plugins.php
+msgid "Plugin '%s' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."
+msgstr ""
+
+#: plugins.php
+#, fuzzy
+#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
+msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
+msgstr "Impossibile da disinstallare.  Questo plugin è richiesto da: %s"
+
 #~ msgid "A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user."
 #~ msgstr "Un elenco delimitato da spazi di nomi host DNS o indirizzi IP per server LDAP validi. Cacti tenterà di utilizzare i server LDAP da sinistra a destra per autenticare un utente."
 
