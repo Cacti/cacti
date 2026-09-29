@@ -3011,7 +3011,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	color: #78909C;
 }
 .jstree-default .jstree-open > .jstree-ocl,
-.jstree-default .jstree-closed > .jstree-ocl { padding-top: 8px; }
+.jstree-default .jstree-closed > .jstree-ocl { padding-top: 4px; }
 .jstree-default .jstree-closed > .jstree-ocl::before { content: "\f105"; }
 .jstree-default .jstree-open > .jstree-ocl::before { content: "\f107"; }
 .jstree-default .jstree-leaf > .jstree-ocl::before { content: ""; }
