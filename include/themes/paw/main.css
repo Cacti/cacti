@@ -1050,7 +1050,7 @@ legend {
 	display: inline-block;
 }
 
-.piinstall, .pienable, .pidisable, .piuninstall, .pierror, .pirmdata, .piload, .pireadme, .pichangelog, .pirestore, .pirmarchive {
+.piinstall, .pienable, .pidisable, .piuninstall, .pierror, .piforceremove, .pirmdata, .piload, .pireadme, .pichangelog, .pirestore, .pirmarchive {
 	padding: 0px 3px !important;
 }
 
