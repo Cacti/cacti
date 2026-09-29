@@ -2836,3 +2836,34 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	background: rgba(0,0,0,0.9);
 	color: white;
 }
+/* ======================================================================== */
+/* jsTree glyph icons - node type colors, sizing, and open/close carets     */
+/* ======================================================================== */
+.jstree-default .jstree-anchor > .jstree-themeicon {
+	background-image: none !important;
+	font-size: 14px;
+	line-height: 24px;
+	text-align: center;
+}
+
+.jstree-default .jstree-anchor > .jstree-themeicon.ti-sitemap { color: #546E7A; }
+.jstree-default .jstree-anchor > .jstree-themeicon.ti-building { color: #00897B; }
+.jstree-default .jstree-anchor > .jstree-themeicon.ti-map-pin { color: #E53935; }
+.jstree-default .jstree-anchor > .jstree-themeicon.ti-server { color: #1E88E5; }
+.jstree-default .jstree-anchor > .jstree-themeicon.ti-server-cog { color: #8E24AA; }
+.jstree-default .jstree-anchor > .jstree-themeicon.ti-list-search { color: #0097A7; }
+.jstree-default .jstree-anchor > .jstree-themeicon.ti-chart-line { color: #388E3C; }
+.jstree-default .jstree-anchor > .jstree-themeicon.ti-chart-histogram { color: #F57C00; }
+.jstree-default .jstree-anchor > .jstree-themeicon.ti-chart-infographic { color: #C2185B; }
+
+.jstree-default .jstree-ocl {
+	background: none !important;
+	font-family: "tabler-icons";
+	font-size: 14px;
+	line-height: 24px;
+	text-align: center;
+	color: #78909C;
+}
+.jstree-default .jstree-closed > .jstree-ocl::before { content: "\ea61"; }
+.jstree-default .jstree-open > .jstree-ocl::before { content: "\ea5f"; }
+.jstree-default .jstree-leaf > .jstree-ocl::before { content: ""; }

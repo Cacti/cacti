@@ -322,39 +322,39 @@ function grow_dhtml_trees() : void {
 			.jstree({
 				'types' : {
 					'tree' : {
-						icon : urlPath+'images/tree.png',
+						icon : 'ti ti-sitemap',
 						max_children : 0
 					},
 					'device' : {
-						icon : urlPath+'images/server.png',
+						icon : 'ti ti-server',
 						max_children : 0
 					},
 					'graph' : {
-						icon : urlPath+'images/server_chart_curve.png',
+						icon : 'ti ti-chart-line',
 						max_children : 0
 					},
 					'graph_template' : {
-						icon : urlPath+'images/server_chart.png',
+						icon : 'ti ti-chart-histogram',
 						max_children : 0
 					},
 					'data_query' : {
-						icon : urlPath+'images/server_dataquery.png',
+						icon : 'ti ti-list-search',
 						max_children : 0
 					},
 					'site' : {
-						icon : urlPath+'images/site.png',
+						icon : 'ti ti-building',
 						max_children : 0
 					},
 					'location' : {
-						icon : urlPath+'images/location.png',
+						icon : 'ti ti-map-pin',
 						max_children : 0
 					},
 					'host_template' : {
-						icon : urlPath+'images/server_device_template.png',
+						icon : 'ti ti-server-cog',
 						max_children : 0
 					},
 					'graph_templates' : {
-						icon : urlPath+'images/server_graph_template.png',
+						icon : 'ti ti-chart-infographic',
 						max_children : 0
 					}
 				},
