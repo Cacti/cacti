@@ -908,12 +908,13 @@ function update_show_current() : void {
 				$('.piforceremove').off('click').on('click', function(event) {
 					event.preventDefault();
 
+					var plugin         = $(this).attr('data-plugin');
+					var url            = '<?php print CACTI_PATH_URL; ?>plugins.php?action=remove&plugin=' + encodeURIComponent(plugin);
 					var dialogTitle    = '<?php print $forceremove_title; ?>';
 					var dialogMessage  = '<?php print $forceremove_msg; ?>';
-					var dialogForm     = '';
+					var dialogForm     = "<form id='dialogForm'></form>";
 					var buttonContinue = '<?php print __('Force Uninstall'); ?>';
 					var buttonCancel   = '<?php print __('Cancel'); ?>';
-					var url            = $(this).attr('href');
 
 					displayDialog(url, dialogTitle, dialogMessage, dialogForm, buttonContinue, buttonCancel, 100, 500);
 				});
@@ -1956,7 +1957,7 @@ function plugin_actions(array $plugin, string $table) : string {
 
 			break;
 		case '-5': // Plugin directory missing
-			$link .= "<a class='piforceremove' href='" . htmle(CACTI_PATH_URL . 'plugins.php?action=remove&plugin=' . $plugin['plugin']) . "' title='" . __esc('Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables.') . "'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
+			$link .= "<a class='piforceremove' href='#' data-plugin='" . htmle($plugin['plugin']) . "' title='" . __esc('Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables.') . "'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 
 			break;
 		case '-4': // Plugins should have INFO file since 1.0.0
