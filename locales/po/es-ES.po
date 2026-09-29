@@ -19853,8 +19853,10 @@ msgid "Are you sure you want to Force Uninstall the plugin"
 msgstr "¿está seguro de que desea desinstalar?"
 
 #: plugins.php
-msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone."
-msgstr ""
+#, fuzzy
+#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
+msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
+msgstr "La desinstalación de este plugin eliminará todos los datos y ajustes del plugin. Si realmente desea desinstalar el Plugin, haga clic en 'desinstalar'. De lo contrario, haga clic en 'Cancelar'"
 
 #: plugins.php
 #, fuzzy
