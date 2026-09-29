@@ -3477,9 +3477,10 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	background: none !important;
 	font-family: "tabler-icons";
 	font-size: 14px;
-	line-height: 20px;
-	text-align: center;
-	vertical-align: top;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 20px;
 	color: #78909C;
 }
 .jstree-default .jstree-closed > .jstree-ocl::before { content: "\ea61"; }
