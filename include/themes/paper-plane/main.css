@@ -3104,6 +3104,6 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	vertical-align: top;
 	color: #78909C;
 }
-.jstree-default .jstree-closed > .jstree-ocl::before { content: "\f054"; }
-.jstree-default .jstree-open > .jstree-ocl::before { content: "\f078"; }
+.jstree-default .jstree-closed > .jstree-ocl::before { content: "\f105"; }
+.jstree-default .jstree-open > .jstree-ocl::before { content: "\f107"; }
 .jstree-default .jstree-leaf > .jstree-ocl::before { content: ""; }
