@@ -272,40 +272,43 @@ function grow_dhtml_trees() {
 			})
 			.jstree({
 				'types' : {
+					'default' : {
+						icon : 'fa fa-folder'
+					},
 					'tree' : {
-						icon : urlPath+'images/tree.png',
+						icon : 'fa fa-sitemap',
 						max_children : 0
 					},
 					'device' : {
-						icon : urlPath+'images/server.png',
+						icon : 'fa fa-server',
 						max_children : 0
 					},
 					'graph' : {
-						icon : urlPath+'images/server_chart_curve.png',
+						icon : 'fa fa-chart-line',
 						max_children : 0
 					},
 					'graph_template' : {
-						icon : urlPath+'images/server_chart.png',
+						icon : 'fa fa-chart-bar',
 						max_children : 0
 					},
 					'data_query' : {
-						icon : urlPath+'images/server_dataquery.png',
+						icon : 'fa fa-database',
 						max_children : 0
 					},
 					'site' : {
-						icon : urlPath+'images/site.png',
+						icon : 'fa fa-building',
 						max_children : 0
 					},
 					'location' : {
-						icon : urlPath+'images/location.png',
+						icon : 'fa fa-map-marker-alt',
 						max_children : 0
 					},
 					'host_template' : {
-						icon : urlPath+'images/server_device_template.png',
+						icon : 'fa fa-cubes',
 						max_children : 0
 					},
 					'graph_templates' : {
-						icon : urlPath+'images/server_graph_template.png',
+						icon : 'fa fa-chart-pie',
 						max_children : 0
 					}
 				},
