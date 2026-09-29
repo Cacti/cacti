@@ -242,11 +242,17 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 /* jsTree glyph icons - node type colors, sizing, and open/close carets     */
 /* Dark theme palette (lighter, higher-contrast on dark backgrounds)        */
 /* ======================================================================== */
+
+/* remove the indent/connector dotted lines (also disabled via dots:false)  */
+.jstree-default .jstree-node { background: transparent !important; }
+
+/* node type glyphs, centered in the 20px node row */
 .jstree-default .jstree-anchor > .jstree-themeicon {
 	background-image: none !important;
 	font-size: 14px;
-	line-height: 24px;
+	line-height: 20px;
 	text-align: center;
+	vertical-align: top;
 }
 
 .jstree-default .jstree-anchor > .jstree-themeicon.ti-sitemap { color: #B0BEC5; }
@@ -259,12 +265,14 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 .jstree-default .jstree-anchor > .jstree-themeicon.ti-chart-histogram { color: #FFB74D; }
 .jstree-default .jstree-anchor > .jstree-themeicon.ti-chart-infographic { color: #F06292; }
 
+/* open/close carets as glyphs, centered to match the node glyphs */
 .jstree-default .jstree-ocl {
 	background: none !important;
 	font-family: "tabler-icons";
 	font-size: 14px;
-	line-height: 24px;
+	line-height: 20px;
 	text-align: center;
+	vertical-align: top;
 	color: #90A4AE;
 }
 .jstree-default .jstree-closed > .jstree-ocl::before { content: "\ea61"; }

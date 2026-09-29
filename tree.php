@@ -1544,7 +1544,7 @@ function tree_edit(bool $partial = false) : void {
 					'always_copy' : true,
 					'check_while_dragging': true
 				},
-				'themes' : { 'stripes' : true },
+				'themes' : { 'stripes' : true, 'dots' : false },
 				'plugins' : plugins
 			})
 			.on('ready.jstree', function(e, data) {
