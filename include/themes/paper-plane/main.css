@@ -3099,11 +3099,9 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	font-family: 'Font Awesome 5 Free';
 	font-weight: 900;
 	font-size: 14px;
-	line-height: 1;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	height: 20px;
+	line-height: 20px;
+	text-align: center;
+	vertical-align: middle;
 	color: #78909C;
 }
 .jstree-default .jstree-closed > .jstree-ocl::before { content: "\f105"; }
