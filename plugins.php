@@ -648,8 +648,15 @@ function update_show_current() : void {
 	$uninstall_msg   = __esc('Uninstalling this Plugin and may remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click \'Uninstall\' below.  Otherwise click \'Cancel\'.');
 	$uninstall_title = __esc('Are you sure you want to Uninstall?');
 
-	$forceremove_msg   = __esc('The directory for this Plugin is missing, so it can not be uninstalled normally.  Force Uninstall permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  Click \'Force Uninstall\' below, or click \'Cancel\'.');
-	$forceremove_title = __esc('Are you sure you want to Force Uninstall?');
+	/* JSON-encoded so the values are injected into JavaScript without inline
+	   PHP-in-quoted-string, and action=remove is carried in the dialog form
+	   (POST body) rather than a URL. */
+	$forceremove_cfg = json_encode([
+		'title'    => __('Are you sure you want to Force Uninstall?'),
+		'message'  => __('The directory for this Plugin is missing, so it can not be uninstalled normally.  Force Uninstall permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  Click \'Force Uninstall\' below, or click \'Cancel\'.'),
+		'continue' => __('Force Uninstall'),
+		'cancel'   => __('Cancel'),
+	]);
 
 	$rmdata_msg   = __esc('Removing Plugin Data and Settings for will remove all Plugin Data and Settings.  If you really want to Remove Data and Settings for this Plugin, click \'Remove Data\' below.  Otherwise click \'Cancel\'.');
 	$rmdata_title = __esc('Are you sure you want to Remove all Plugin Data and Settings?');
@@ -941,15 +948,16 @@ function update_show_current() : void {
 				$('.piforceremove').off('click').on('click', function(event) {
 					event.preventDefault();
 
-					var plugin         = $(this).attr('data-plugin');
-					var url            = '<?php print CACTI_PATH_URL; ?>plugins.php?action=remove&plugin=' + encodeURIComponent(plugin);
-					var dialogTitle    = '<?php print $forceremove_title; ?>';
-					var dialogMessage  = '<?php print $forceremove_msg; ?>';
-					var dialogForm     = "<form id='dialogForm'></form>";
-					var buttonContinue = '<?php print __('Force Uninstall'); ?>';
-					var buttonCancel   = '<?php print __('Cancel'); ?>';
+					var cfg    = <?php print $forceremove_cfg; ?>;
+					var plugin = $(this).attr('data-plugin');
+					var form   = "<form id='dialogForm'>" +
+						"<input type='hidden' name='action' value='remove'>" +
+						"<input type='hidden' name='plugin'>" +
+						"</form>";
 
-					displayDialog(url, dialogTitle, dialogMessage, dialogForm, buttonContinue, buttonCancel, 100, 500);
+					displayDialog('plugins.php', cfg.title, cfg.message, form, cfg.continue, cfg.cancel, 100, 500);
+
+					$('#dialogForm input[name=plugin]').val(plugin);
 				});
 
 				$('.pireadme').off('click').on('click', function(event) {
