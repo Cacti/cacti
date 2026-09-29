@@ -345,7 +345,7 @@ function form_save() : void {
 			// generate a new sequence if needed
 			if (ierv('sequence')) {
 				$sequence = gfrv('sequence');
-				srv('sequence', get_sequence($sequence, 'sequence', 'graph_templates_item', 'local_graph_id=' . grv('local_graph_id')));
+				srv('sequence', get_sequence($sequence, 'sequence', 'graph_templates_item', ['local_graph_id' => gfrv('local_graph_id')]));
 			}
 
 			$save['id']                           = gfrv('graph_template_item_id');
