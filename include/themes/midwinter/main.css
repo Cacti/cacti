@@ -245,3 +245,36 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	background: var(--background-lowlight);
 	color: var(--text-color-lighter);
 }
+/* ======================================================================== */
+/* jsTree glyph icons - node type colors, sizing, and open/close carets     */
+/* Dark theme palette (lighter, higher-contrast on dark backgrounds)        */
+/* ======================================================================== */
+.jstree-default .jstree-anchor > .jstree-themeicon {
+	background-image: none !important;
+	font-size: 14px;
+	line-height: 24px;
+	text-align: center;
+}
+
+.jstree-default .jstree-anchor > .jstree-themeicon.fa-sitemap { color: #B0BEC5; }
+.jstree-default .jstree-anchor > .jstree-themeicon.fa-building { color: #4DB6AC; }
+.jstree-default .jstree-anchor > .jstree-themeicon.fa-map-marker-alt { color: #EF5350; }
+.jstree-default .jstree-anchor > .jstree-themeicon.fa-server { color: #64B5F6; }
+.jstree-default .jstree-anchor > .jstree-themeicon.fa-cubes { color: #CE93D8; }
+.jstree-default .jstree-anchor > .jstree-themeicon.fa-database { color: #4DD0E1; }
+.jstree-default .jstree-anchor > .jstree-themeicon.fa-chart-line { color: #81C784; }
+.jstree-default .jstree-anchor > .jstree-themeicon.fa-chart-bar { color: #FFB74D; }
+.jstree-default .jstree-anchor > .jstree-themeicon.fa-chart-pie { color: #F06292; }
+
+.jstree-default .jstree-ocl {
+	background: none !important;
+	font-family: 'Font Awesome 5 Free';
+	font-weight: 900;
+	font-size: 14px;
+	line-height: 24px;
+	text-align: center;
+	color: #90A4AE;
+}
+.jstree-default .jstree-closed > .jstree-ocl::before { content: "\f054"; }
+.jstree-default .jstree-open > .jstree-ocl::before { content: "\f078"; }
+.jstree-default .jstree-leaf > .jstree-ocl::before { content: ""; }

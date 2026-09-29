@@ -1389,15 +1389,15 @@ function tree_edit($partial = false) {
 			$("#ctree").jstree({
 				'types' : {
 					'site' : {
-						icon : 'images/site.png',
+						icon : 'fa fa-building',
 						max_children : 0
 					},
 					'device' : {
-						icon : 'images/server.png',
+						icon : 'fa fa-server',
 						max_children : 0
 					},
 					'graph' : {
-						icon : 'images/server_chart_curve.png',
+						icon : 'fa fa-chart-line',
 						max_children : 0
 					}
 				},
@@ -1700,17 +1700,17 @@ function tree_edit($partial = false) {
 			.jstree({
 				'types' : {
 					'site' : {
-						icon : 'images/site.png',
+						icon : 'fa fa-building',
 						valid_children: 'none',
 						max_children : 0
 					},
 					'device' : {
-						icon : 'images/server.png',
+						icon : 'fa fa-server',
 						valid_children: 'none',
 						max_children : 0
 					},
 					'graph' : {
-						icon : 'images/server_chart_curve.png',
+						icon : 'fa fa-chart-line',
 						valid_children: 'none',
 						max_children : 0
 					}
