@@ -1172,7 +1172,7 @@ legend {
 	display: inline-block;
 }
 
-.piinstall, .pienable, .pidisable, .piuninstall, .pierror {
+.piinstall, .pienable, .pidisable, .piuninstall, .pierror, .piforceremove {
 	padding: 0px 3px !important;
 }
 

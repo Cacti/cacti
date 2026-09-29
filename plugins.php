@@ -551,15 +551,15 @@ function update_show_current () {
 
 			$('body').append(
 				"<div id='pluginForceRemove' style='display:none'>" +
-				"<p><?php print __esc('Are you sure you want to Force Uninstall the plugin'); ?> <b class='pluginName'></b>?</p>" +
-				"<p><?php print __esc('This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.'); ?></p>" +
+				"<p><?php print __esc('Are you sure you want to Force Uninstall the plugin'); ?> <span class='pluginName'></span>?</p>" +
+				"<p><?php print __esc('This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click \'Force Uninstall\' below.  Otherwise click \'Cancel\'.'); ?></p>" +
 				"</div>"
 			);
 
 			$('#pluginForceRemove .pluginName').text(name);
 
 			$('#pluginForceRemove').dialog({
-				modal: true,
+				modal: false,
 				resizable: false,
 				draggable: false,
 				width: 520,
