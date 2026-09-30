@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-bug: Do not replicate repository and tooling metadata files (.gitignore, .htaccess.dist, .mdl_style.rb, .mdlrc) to remote data collectors during file replication
 -bug: db_update_table() now reconciles unique_keys, so a plugin's UNIQUE index is no longer dropped (and a missing one is added) when an existing table is refreshed
 -security: Contain data_source_path within the RRA directory (GHSA-9qff-xccr-rrc5)
 -security: Harden package import path traversal defenses (GHSA-vp35-4h28-r883)
