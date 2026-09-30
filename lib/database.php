@@ -1753,14 +1753,16 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 
 	if (isset($data['keys'])) {
 		foreach ($data['keys'] as $k) {
-			$k['unique'] = false;
+			$k['unique']               = false;
+			$k['columns']              = db_index_columns_to_array($k['columns']);
 			$declared_keys[$k['name']] = $k;
 		}
 	}
 
 	if (isset($data['unique_keys'])) {
 		foreach ($data['unique_keys'] as $k) {
-			$k['unique'] = true;
+			$k['unique']               = true;
+			$k['columns']              = db_index_columns_to_array($k['columns']);
 			$declared_keys[$k['name']] = $k;
 		}
 	}
@@ -1852,6 +1854,35 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 	}
 
 	return true;
+}
+
+/**
+ * Normalizes an index column definition to a plain array of column names.
+ * Several plugins express a compound key's columns as a single 'col1`,`col2'
+ * string (the legacy form db_format_index_create() also accepts) rather than
+ * an array; both forms must compare cleanly against the SHOW INDEX column list
+ * during a schema refresh.
+ *
+ * @param mixed $columns An array of column names, or the legacy backtick-joined
+ *                       string form.
+ *
+ * @return array The column names with surrounding backticks and whitespace removed.
+ */
+function db_index_columns_to_array($columns) {
+	if (is_array($columns)) {
+		$parts = $columns;
+	} else {
+		// split the legacy 'col1`,`col2' string on the backtick-quoted comma
+		$parts = preg_split('/`\s*,\s*`/', trim((string) $columns));
+	}
+
+	$normalized = array();
+
+	foreach ($parts as $part) {
+		$normalized[] = trim($part, " \t\n\r\0\x0B`");
+	}
+
+	return $normalized;
 }
 
 /**
