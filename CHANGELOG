@@ -28,6 +28,7 @@ Cacti CHANGELOG
 -security: Keep LDAP directory errors out of the login page
 -security: Demand TLS certificates for new LDAP domains
 -security: Restore the Cacti error handler on LDAP bind-only and empty-password paths
+-issue#8120: Do not replicate repository and tooling metadata files (.gitignore, .htaccess.dist, .mdl_style.rb, .mdlrc) to remote data collectors during file replication
 -issue#8116: Restore legacy unique_keys[] support in db_table_create() and db_update_table() so plugins that declare UNIQUE indexes with that definition style keep them across a schema refresh
 -issue#8105: Add a Force Uninstall action to remove an orphaned plugin whose directory is missing
 -issue#7969: Restore excluded integration and mutation regression coverage
