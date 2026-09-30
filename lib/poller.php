@@ -1159,11 +1159,13 @@ function update_resource_cache($poller_id = 1) {
 			}
 		}
 
-		/* purge old entries */
+		/* purge old entries, including any that predate an exclusion rule (for
+		 * example a plugin's tests/ tree cached before it was excluded) whose
+		 * source files still exist on disk and would otherwise never be dropped */
 		$cache = db_fetch_assoc('SELECT path FROM poller_resource_cache');
 		if (cacti_sizeof($cache)) {
 			foreach($cache as $item) {
-				if (!file_exists($item['path'])) {
+				if (!file_exists($item['path']) || should_ignore_from_replication($item['path'])) {
 					db_execute_prepared('DELETE FROM poller_resource_cache
 						WHERE `path` = ?',
 						array($item['path']));
@@ -1183,6 +1185,13 @@ function update_resource_cache($poller_id = 1) {
 
 		if (cacti_sizeof($plugin_paths)) {
 			foreach ($plugin_paths as $path) {
+				// Skip excluded rows (e.g. plugins/foo/tests/Bar.php) so the
+				// collector never materializes their parent directories before
+				// resource_cache_out() declines to write the files themselves.
+				if (should_ignore_from_replication($path['path'])) {
+					continue;
+				}
+
 				$paths[$path['resource_type']] = array('recursive' => false, 'path' => dirname($mpath . '/' . $path['path']));
 			}
 		}
@@ -2525,10 +2534,28 @@ function remote_poller_up($poller_id) {
  * @return bool True on success, false otherwise.
  */
 function should_ignore_from_replication($path) {
+	global $config;
+
 	$entry = basename($path);
 
 	if ($entry == '.' || $entry == '..' || $entry == '.git' || $entry == '') {
 		return true;
+	}
+
+	$normalized = str_replace('\\', '/', $path);
+
+	// update_db_from_path() consults this helper with absolute file paths, so
+	// strip the installation root first. Otherwise an ancestor directory that
+	// merely happens to be named 'tests' (e.g. Cacti installed under
+	// /srv/tests/cacti) would reject every ordinary file. Cache-relative
+	// paths (plugins/foo/tests/Bar.php) do not start with the root and are
+	// left unchanged.
+	if (isset($config['base_path']) && $config['base_path'] != '') {
+		$base = rtrim(str_replace('\\', '/', $config['base_path']), '/');
+
+		if ($base != '' && strpos($normalized, $base . '/') === 0) {
+			$normalized = substr($normalized, strlen($base) + 1);
+		}
 	}
 
 	// Never replicate 'tests' directories - Cacti's own tests/ or any
@@ -2536,7 +2563,7 @@ function should_ignore_from_replication($path) {
 	// argument may be a bare entry name (change detection / cache-in) or a
 	// cache-relative path such as plugins/foo/tests/Bar.php (cache-out), so
 	// match a 'tests' segment anywhere in the path.
-	$segments = explode('/', str_replace('\\', '/', $path));
+	$segments = explode('/', $normalized);
 
 	if (in_array('tests', $segments, true)) {
 		return true;

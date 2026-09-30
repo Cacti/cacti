@@ -33,6 +33,13 @@
 require_once dirname(__DIR__, 4) . '/include/global_constants.php';
 require_once dirname(__DIR__, 4) . '/lib/poller.php';
 
+if (!isset($GLOBALS['config']['base_path'])) {
+	// Simulate an installation whose root itself contains a 'tests' ancestor
+	// (e.g. /srv/tests/cacti) so the absolute-path handling below is exercised
+	// even when no other test in the process has populated $config['base_path'].
+	$GLOBALS['config']['base_path'] = '/srv/tests/cacti';
+}
+
 test('a bare tests directory entry is ignored', function () {
 	expect(should_ignore_from_replication('tests'))->toBeTrue();
 });
@@ -58,6 +65,19 @@ test('real replicated files are not mistaken for tests', function () {
 		->and(should_ignore_from_replication('resource/script_server/contest.php'))->toBeFalse();
 });
 
+test('absolute file paths are matched relative to the installation root', function () {
+	// update_db_from_path() hands this helper absolute file paths. The
+	// installation root ($config['base_path']) is stripped first, so a 'tests'
+	// ancestor of the Cacti tree must never cause ordinary files to be
+	// excluded, while a real tests/ directory within the tree still is.
+	$base = rtrim(str_replace('\\', '/', $GLOBALS['config']['base_path']), '/');
+
+	expect(should_ignore_from_replication($base . '/lib/poller.php'))->toBeFalse()
+		->and(should_ignore_from_replication($base . '/scripts/ss_host_disk.php'))->toBeFalse()
+		->and(should_ignore_from_replication($base . '/tests/Unit/Foo.php'))->toBeTrue()
+		->and(should_ignore_from_replication($base . '/plugins/thold/tests/Bar.php'))->toBeTrue();
+});
+
 test('the plugin resource scan excludes tests directories', function () {
 	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
 
@@ -71,3 +91,32 @@ test('the plugin resource scan excludes tests directories', function () {
 
 	expect($body)->toContain("'.gitattributes', 'tests'");
 });
+
+test('cache-in purges pre-existing rows that are now excluded', function () {
+	// The main-server purge must drop rows whose source file still exists but
+	// is now excluded (e.g. a plugin tests/ tree cached before the upgrade),
+	// not only rows whose file has disappeared.
+	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
+
+	$start = strpos($source, 'function update_resource_cache(');
+	$end   = strpos($source, "\nfunction ", $start + 1);
+	$body  = $end === false ? substr($source, $start) : substr($source, $start, $end - $start);
+
+	expect($body)->toContain('!file_exists($item[\'path\']) || should_ignore_from_replication($item[\'path\'])');
+});
+
+test('cache-out skips excluded rows before building collector directories', function () {
+	// A remote collector builds plugin directories from cached rows before
+	// resource_cache_out() runs, so excluded paths must be filtered out first
+	// or it would recreate plugins/foo/tests/ from stale rows.
+	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
+
+	$start = strpos($source, 'WHERE `path` LIKE "plugins/%"');
+	expect($start)->not->toBeFalse();
+
+	$end  = strpos($source, 'foreach($paths as $type => $path)', $start);
+	$body = substr($source, $start, $end - $start);
+
+	expect($body)->toContain('should_ignore_from_replication($path[\'path\'])');
+});
+
