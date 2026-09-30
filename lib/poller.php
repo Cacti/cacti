@@ -1097,7 +1097,7 @@ function update_resource_cache($poller_id = 1) : bool {
 				if (is_dir($mpath . '/plugins/' . $path)) {
 					if (file_exists($mpath . '/plugins/' . $path . '/INFO')) {
 						$info            = parse_ini_file($mpath . '/plugins/' . $path . '/INFO', true);
-						$dir_exclusions  = ['..', '.', '.git', '.github', '.gitattributes'];
+						$dir_exclusions  = ['..', '.', '.git', '.github', '.gitattributes', 'tests'];
 						$file_exclusions = $excluded_extensions;
 
 						if (isset($info['info']['nosync'])) {
@@ -1153,12 +1153,14 @@ function update_resource_cache($poller_id = 1) : bool {
 			}
 		}
 
-		// purge old entries
+		// purge old entries, including any that predate an exclusion rule (for
+		// example a plugin's tests/ tree cached before it was excluded) whose
+		// source files still exist on disk and would otherwise never be dropped
 		$cache = db_fetch_assoc('SELECT path FROM poller_resource_cache');
 
 		if (cacti_sizeof($cache)) {
 			foreach ($cache as $item) {
-				if (!file_exists($item['path'])) {
+				if (!file_exists($item['path']) || should_ignore_from_replication($item['path'])) {
 					db_execute_prepared('DELETE FROM poller_resource_cache
 						WHERE `path` = ?',
 						[$item['path']]);
@@ -1179,6 +1181,13 @@ function update_resource_cache($poller_id = 1) : bool {
 
 		if (cacti_sizeof($plugin_paths)) {
 			foreach ($plugin_paths as $path) {
+				// Skip excluded rows (e.g. plugins/foo/tests/Bar.php) so the
+				// collector never materializes their parent directories before
+				// resource_cache_out() declines to write the files themselves.
+				if (should_ignore_from_replication($path['path'])) {
+					continue;
+				}
+
 				$paths[$path['resource_type']] = ['recursive' => false, 'path' => dirname($mpath . '/' . $path['path'])];
 			}
 		}
@@ -2576,7 +2585,38 @@ function remote_poller_up(int $poller_id) : bool {
 function should_ignore_from_replication(string $path) : bool {
 	$entry = basename($path);
 
-	return ($entry == '.' || $entry == '..' || $entry == '.git' || $entry == '');
+	if ($entry == '.' || $entry == '..' || $entry == '.git' || $entry == '') {
+		return true;
+	}
+
+	$normalized = str_replace('\\', '/', $path);
+
+	// update_db_from_path() consults this helper with absolute file paths, so
+	// strip the installation root first. Otherwise an ancestor directory that
+	// merely happens to be named 'tests' (e.g. Cacti installed under
+	// /srv/tests/cacti) would reject every ordinary file. Cache-relative
+	// paths (plugins/foo/tests/Bar.php) do not start with the root and are
+	// left unchanged.
+	if (defined('CACTI_PATH_BASE') && CACTI_PATH_BASE != '') {
+		$base = rtrim(str_replace('\\', '/', CACTI_PATH_BASE), '/');
+
+		if ($base != '' && str_starts_with($normalized, $base . '/')) {
+			$normalized = substr($normalized, strlen($base) + 1);
+		}
+	}
+
+	// Never replicate 'tests' directories - Cacti's own tests/ or any
+	// plugin's tests/ - or anything beneath them, in either direction. The
+	// argument may be a bare entry name (change detection / cache-in) or a
+	// cache-relative path such as plugins/foo/tests/Bar.php (cache-out), so
+	// match a 'tests' segment anywhere in the path.
+	$segments = explode('/', $normalized);
+
+	if (in_array('tests', $segments, true)) {
+		return true;
+	}
+
+	return false;
 }
 
 function get_remote_poller_ids_from_graphs(mixed $graphs) : array {
