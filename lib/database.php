@@ -1728,7 +1728,6 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 			$columns_changed = true;
 		} else {
 			// Check that column is correct and fix it
-			// FIXME: Need to still check default value
 			$arr = db_fetch_row("SHOW columns FROM `$table` LIKE '" . $column['name'] . "'", $log, $db_conn);
 
 			$arr = array_change_key_case(is_array($arr) ? $arr : [], CASE_LOWER);
@@ -1742,10 +1741,32 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 				$arr['unsigned'] = true;
 			}
 
+			// Detect drift in the column default (e.g. DEFAULT NULL vs DEFAULT '')
+			// which the type/NULL/unsigned/auto_increment checks below do not catch.
+			// Date/time defaults are represented differently by the server, so they
+			// are left to the type comparison to avoid needless churn.
+			$default_differs = false;
+			$live_default    = $arr['default'] ?? null;
+
+			if (isset($column['default'])) {
+				if (!in_array(cacti_strtolower($column['type']), ['timestamp', 'datetime', 'date'], true)) {
+					if ($live_default === null) {
+						$default_differs = true;
+					} elseif (is_numeric($column['default']) && is_numeric($live_default)) {
+						$default_differs = ($column['default'] != $live_default);
+					} else {
+						$default_differs = (strval($column['default']) !== strval($live_default));
+					}
+				}
+			} elseif (isset($column['NULL']) && $column['NULL'] === true) {
+				$default_differs = ($live_default !== null);
+			}
+
 			if ($column['type'] != $arr['type'] || (isset($column['NULL']) && ($column['NULL'] ? 'YES' : 'NO') != ($arr['null'] ?? ''))
 				|| (((!isset($column['unsigned']) || !$column['unsigned']) && isset($arr['unsigned']))
 					|| (isset($column['unsigned']) && $column['unsigned'] && !isset($arr['unsigned'])))
-				|| (isset($column['auto_increment']) && ($column['auto_increment'] ? 'auto_increment' : '') != ($arr['extra'] ?? ''))) {
+				|| (isset($column['auto_increment']) && ($column['auto_increment'] ? 'auto_increment' : '') != ($arr['extra'] ?? ''))
+				|| $default_differs) {
 				$alter_clauses[] = 'CHANGE `' . $column['name'] . '` ' . $column_definition($column, false);
 				$columns_changed = true;
 			}

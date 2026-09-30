@@ -559,6 +559,13 @@ function api_plugin_db_table_create(string $plugin, string $table, array $data) 
 				db_execute("ALTER TABLE `$table` COLLATE = " . $data['collate']);
 			}
 		}
+	} else {
+		// Table already exists: refresh its schema to match the definition.
+		// Do not record another 'create' change - plugin_db_changes has no
+		// unique key, so a REPLACE here would duplicate the ownership record
+		// on every call and could mark a pre-existing/shared table as
+		// plugin-created, causing it to be dropped on uninstall.
+		db_update_table($table, $data, true);
 	}
 }
 
