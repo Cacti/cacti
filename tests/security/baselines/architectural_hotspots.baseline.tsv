@@ -432,7 +432,8 @@ dynamic_include	./lib/rrdcheck.php:753			include_once($config['library_path'] . 
 dynamic_include	./lib/snmp.php:49		include_once($config['include_path'] . '/vendor/phpsnmp/extension.php');
 dynamic_include	./lib/snmp.php:51		include_once($config['include_path'] . '/vendor/phpsnmp/classSNMP.php');
 dynamic_include	./lib/snmpagent.php:1007				include_once($config['library_path'] . '/poller.php');
-dynamic_include	./lib/snmpagent.php:390			include_once($config['base_path'] . '/plugins/maint/functions.php');
+dynamic_include	./lib/snmpagent.php:395				include_once($config['base_path'] . '/plugins/maint/includes/functions.php');
+dynamic_include	./lib/snmpagent.php:397				include_once($config['base_path'] . '/plugins/maint/functions.php');
 dynamic_include	./lib/template.php:1593		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/timespan_settings.php:32	include_once($config['base_path'] . '/lib/time.php');
 dynamic_include	./lib/utility.php:147		include_once($config['library_path'] . '/api_data_source.php');
