@@ -387,7 +387,15 @@ function snmpagent_poller_bottom() {
 	}
 
 	if (api_plugin_is_enabled('maint')) {
-		include_once($config['base_path'] . '/plugins/maint/functions.php');
+		/* The maint plugin relocated its library to includes/functions.php. Prefer the
+		   new location and fall back to the legacy root path for older maint releases.
+		   This fallback will be unwound in a future release once those older maint
+		   versions are no longer supported. */
+		if (file_exists($config['base_path'] . '/plugins/maint/includes/functions.php')) {
+			include_once($config['base_path'] . '/plugins/maint/includes/functions.php');
+		} elseif (file_exists($config['base_path'] . '/plugins/maint/functions.php')) {
+			include_once($config['base_path'] . '/plugins/maint/functions.php');
+		}
 	}
 
 	$device_in_maintenance = false;
