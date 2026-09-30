@@ -85,9 +85,20 @@ class FakeMySQLPDO extends PDO {
 			return preg_replace('/^INSERT\s+IGNORE\s+INTO\b/is', 'INSERT OR IGNORE INTO', $trim);
 		}
 
-		// SHOW INDEXES FROM table
+		// SHOW INDEX FROM table - project the columns lib/database.php reads
+		// (Key_name, Seq_in_index, Column_name, Non_unique) from sqlite's index
+		// pragmas. Only explicitly created secondary indexes (origin 'c') are
+		// reported, matching the prior sqlite_master projection so PRIMARY KEY
+		// and UNIQUE-constraint autoindexes stay invisible as before.
 		if (preg_match('/^SHOW\s+(?:INDEX|INDEXES|KEYS)\s+FROM\s+`?([A-Za-z0-9_]+)`?\s*;?\s*$/i', $trim, $m)) {
-			return "SELECT name AS Key_name FROM sqlite_master WHERE type='index' AND tbl_name='{$m[1]}'";
+			$table = $m[1];
+
+			return "SELECT il.name AS Key_name, ii.seqno + 1 AS Seq_in_index, ii.name AS Column_name, "
+				. "CASE WHEN il.\"unique\" = 1 THEN 0 ELSE 1 END AS Non_unique "
+				. "FROM pragma_index_list('$table') AS il "
+				. "JOIN pragma_index_info(il.name) AS ii "
+				. "WHERE il.origin = 'c' "
+				. "ORDER BY il.name, ii.seqno";
 		}
 
 		// SHOW VARIABLES LIKE '...'  -> a synthetic single-row result so callers
