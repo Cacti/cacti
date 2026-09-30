@@ -1003,6 +1003,15 @@ function plugin_actions($plugin, $table) {
 		case '2': // Configuration issues
 			$link .= "<a class='piuninstall' href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><i class='fa fa-cog deviceDown'></i></a>";
 			break;
+		case '3': // Awaiting Upgrade
+			$required = plugin_required_for_others($plugin, $table);
+			if ($required != '') {
+				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: %s', ucfirst($required)) . "'><i class='fa fa-cog deviceUnknown'></i></a>";
+			} else {
+				$link .= "<a class='piuninstall' href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><i class='fa fa-cog deviceDown'></i></a>";
+			}
+			$link .= "<a class='pidisable cactiPostAction' href='" . html_escape($config['url_path'] . 'plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin') . "'><i class='fa fa-circle deviceRecovering'></i></a>";
+			break;
 		case '4':	// Installed but not active
 			$required = plugin_required_for_others($plugin, $table);
 			if ($required != '') {
