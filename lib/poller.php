@@ -1097,7 +1097,7 @@ function update_resource_cache($poller_id = 1) : bool {
 				if (is_dir($mpath . '/plugins/' . $path)) {
 					if (file_exists($mpath . '/plugins/' . $path . '/INFO')) {
 						$info            = parse_ini_file($mpath . '/plugins/' . $path . '/INFO', true);
-						$dir_exclusions  = ['..', '.', '.git', '.github', '.gitattributes'];
+						$dir_exclusions  = ['..', '.', '.git', '.github', '.gitattributes', 'tests'];
 						$file_exclusions = $excluded_extensions;
 
 						if (isset($info['info']['nosync'])) {
@@ -2576,7 +2576,22 @@ function remote_poller_up(int $poller_id) : bool {
 function should_ignore_from_replication(string $path) : bool {
 	$entry = basename($path);
 
-	return ($entry == '.' || $entry == '..' || $entry == '.git' || $entry == '');
+	if ($entry == '.' || $entry == '..' || $entry == '.git' || $entry == '') {
+		return true;
+	}
+
+	// Never replicate 'tests' directories - Cacti's own tests/ or any
+	// plugin's tests/ - or anything beneath them, in either direction. The
+	// argument may be a bare entry name (change detection / cache-in) or a
+	// cache-relative path such as plugins/foo/tests/Bar.php (cache-out), so
+	// match a 'tests' segment anywhere in the path.
+	$segments = explode('/', str_replace('\\', '/', $path));
+
+	if (in_array('tests', $segments, true)) {
+		return true;
+	}
+
+	return false;
 }
 
 function get_remote_poller_ids_from_graphs(mixed $graphs) : array {
