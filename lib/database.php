@@ -1628,6 +1628,17 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 		}
 	}
 
+	// Backward compatibility: fold a legacy unique_keys[] definition into keys[]
+	// with the unique flag so the shared key handling below applies to it.
+	if (isset($data['unique_keys']) && is_array($data['unique_keys'])) {
+		foreach ($data['unique_keys'] as $unique_key) {
+			$unique_key['unique'] = true;
+			$data['keys'][]       = $unique_key;
+		}
+
+		unset($data['unique_keys']);
+	}
+
 	if (!db_table_exists($table, $log, $db_conn)) {
 		return db_table_create($table, $data, $log, $db_conn);
 	}
@@ -1927,6 +1938,17 @@ function db_table_create(string $table, array $data, bool $log = true, mixed $db
 		if (!is_object($db_conn)) {
 			return false;
 		}
+	}
+
+	// Backward compatibility: fold a legacy unique_keys[] definition into keys[]
+	// with the unique flag so the shared key handling below applies to it.
+	if (isset($data['unique_keys']) && is_array($data['unique_keys'])) {
+		foreach ($data['unique_keys'] as $unique_key) {
+			$unique_key['unique'] = true;
+			$data['keys'][]       = $unique_key;
+		}
+
+		unset($data['unique_keys']);
 	}
 
 	if (!db_table_exists($table, $log, $db_conn)) {
