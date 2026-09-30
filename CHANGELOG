@@ -1,7 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
--bug: Restore legacy unique_keys[] support in db_table_create() and db_update_table() so plugins that declare UNIQUE indexes with that definition style keep them across a schema refresh
+-bug: Restore legacy unique_keys[] support in db_table_create() and db_update_table() so plugins that declare UNIQUE indexes with that definition style keep them across a schema refresh (#8116)
 -security: Validate host_id before it is concatenated into the graph_view list and preview filter WHERE clauses (GHSA-r7hc-hrpv-52gf) (#8100) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
 -security: Validate and bind local_graph_id in the aggregate graph item sequence query (GHSA-6mjm-5vwr-3fr2) (#8099) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
 -security: Grant AllowOverride All in docker/apache.conf so shipped .htaccess denies on log/cache/scripts/cli take effect (GHSA-fxfg-j995-j69j)
