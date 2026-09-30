@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-bug: db_update_table() now reconciles unique_keys, so a plugin's UNIQUE index is no longer dropped (and a missing one is added) when an existing table is refreshed
 -security: Contain data_source_path within the RRA directory (GHSA-9qff-xccr-rrc5)
 -security: Harden package import path traversal defenses (GHSA-vp35-4h28-r883)
 -security: Stop disabled accounts authenticating and revoke tokens on disable (GHSA-pqrp-v752-mc4f)

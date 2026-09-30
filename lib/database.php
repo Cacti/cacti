@@ -1738,34 +1738,55 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 	// Correct any indexes
 	$indexes = db_fetch_assoc("SHOW INDEX FROM `$table`", $log, $db_conn);
 	$allindexes = array();
+	$uniqueindex = array();
 
 	foreach ($indexes as $index) {
 		$allindexes[$index['Key_name']][$index['Seq_in_index']-1] = $index['Column_name'];
+		// Non_unique is 0 for a UNIQUE index, 1 otherwise.
+		$uniqueindex[$index['Key_name']] = ($index['Non_unique'] == 0);
 	}
 
-	foreach ($allindexes as $n => $index) {
-		if ($n != 'PRIMARY' && isset($data['keys'])) {
-			$removeindex = true;
-			foreach ($data['keys'] as $k) {
-				if ($k['name'] == $n) {
-					$removeindex = false;
-					$add = array_diff($k['columns'], $index);
-					$del = array_diff($index, $k['columns']);
-					if (!empty($add) || !empty($del)) {
-						$columns = db_format_index_create($k['columns']);
+	// Reconcile the regular keys and the unique_keys together so a unique index
+	// declared under unique_keys is neither dropped as "undeclared" nor recreated
+	// as a non-unique index.
+	$declared_keys = array();
 
-						if (!db_is_safe_identifier($n) || !db_is_safe_identifier($k['name']) || $columns === false) {
-							return false;
-						}
+	if (isset($data['keys'])) {
+		foreach ($data['keys'] as $k) {
+			$k['unique'] = false;
+			$declared_keys[$k['name']] = $k;
+		}
+	}
 
-						$alter_clauses[] = "DROP INDEX `$n`";
-						$alter_clauses[] = 'ADD INDEX `' . $k['name'] . '` (' . $columns . ')';
-					}
-					break;
-				}
+	if (isset($data['unique_keys'])) {
+		foreach ($data['unique_keys'] as $k) {
+			$k['unique'] = true;
+			$declared_keys[$k['name']] = $k;
+		}
+	}
+
+	if (cacti_sizeof($declared_keys)) {
+		foreach ($allindexes as $n => $index) {
+			if ($n == 'PRIMARY') {
+				continue;
 			}
 
-			if ($removeindex) {
+			if (isset($declared_keys[$n])) {
+				$k   = $declared_keys[$n];
+				$add = array_diff($k['columns'], $index);
+				$del = array_diff($index, $k['columns']);
+
+				if (!empty($add) || !empty($del) || $uniqueindex[$n] !== $k['unique']) {
+					$columns = db_format_index_create($k['columns']);
+
+					if (!db_is_safe_identifier($n) || $columns === false) {
+						return false;
+					}
+
+					$alter_clauses[] = "DROP INDEX `$n`";
+					$alter_clauses[] = 'ADD ' . ($k['unique'] ? 'UNIQUE ' : '') . 'INDEX `' . $n . '` (' . $columns . ')';
+				}
+			} else {
 				if (!db_is_safe_identifier($n)) {
 					return false;
 				}
@@ -1773,19 +1794,17 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 				$alter_clauses[] = "DROP INDEX `$n`";
 			}
 		}
-	}
 
-	// Add any indexes
-	if (isset($data['keys'])) {
-		foreach ($data['keys'] as $k) {
-			if (!isset($allindexes[$k['name']])) {
+		// Add any missing indexes (regular and unique alike)
+		foreach ($declared_keys as $name => $k) {
+			if (!isset($allindexes[$name])) {
 				$columns = db_format_index_create($k['columns']);
 
-				if (!db_is_safe_identifier($k['name']) || $columns === false) {
+				if (!db_is_safe_identifier($name) || $columns === false) {
 					return false;
 				}
 
-				$alter_clauses[] = 'ADD INDEX `' . $k['name'] . '` (' . $columns . ')';
+				$alter_clauses[] = 'ADD ' . ($k['unique'] ? 'UNIQUE ' : '') . 'INDEX `' . $name . '` (' . $columns . ')';
 			}
 		}
 	}
