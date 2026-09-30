@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-bug: Do not replicate repository and tooling metadata files (.gitignore, .htaccess.dist, .mdl_style.rb, .mdlrc) to remote data collectors during file replication
 -security: Validate host_id before it is concatenated into the graph_view list and preview filter WHERE clauses (GHSA-r7hc-hrpv-52gf) (#8100) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
 -security: Validate and bind local_graph_id in the aggregate graph item sequence query (GHSA-6mjm-5vwr-3fr2) (#8099) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
 -security: Grant AllowOverride All in docker/apache.conf so shipped .htaccess denies on log/cache/scripts/cli take effect (GHSA-fxfg-j995-j69j)

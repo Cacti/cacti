@@ -2589,6 +2589,14 @@ function should_ignore_from_replication(string $path) : bool {
 		return true;
 	}
 
+	// Never replicate repository and tooling metadata files that may live in
+	// Cacti's base directory or any other cached directory (scripts, resource,
+	// plugins, etc.). These are development artifacts with no runtime purpose
+	// on a remote data collector.
+	if (in_array($entry, ['.gitignore', '.htaccess.dist', '.mdl_style.rb', '.mdlrc'], true)) {
+		return true;
+	}
+
 	$normalized = str_replace('\\', '/', $path);
 
 	// update_db_from_path() consults this helper with absolute file paths, so
