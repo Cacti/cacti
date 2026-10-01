@@ -536,102 +536,12 @@ default:
 			currentLanguage    = $('#i18n_default_language').val();
 			currentLangSupport = $('#i18n_language_support').val();
 
-			$('#selective_plugin_debug').multiselect({
-				menuHeight: $(window).height()*.7,
-				menuWidth: 230,
-				linkInfo: faIcons,
-				noneSelectedText: '<?php print __('Select Plugin(s)');?>',
-				selectedText: function(numChecked, numTotal, checkedItems) {
-					myReturn = numChecked + ' <?php print __('Plugins Selected');?>';
-					return myReturn;
-				},
-				checkAllText: '<?php print __('All');?>',
-				uncheckAllText: '<?php print __('None');?>',
-				uncheckall: function() {
-					$(this).multiselect('widget').find(':checkbox:first').each(function() {
-						$(this).prop('checked', true);
-					});
-				}
-			}).multiselectfilter( {
-				label: '<?php print __('Search');?>',
-				placeholder: '<?php print __('Enter keyword');?>',
-				width: '150'
-			});
-
-			$('#selective_debug').multiselect({
-				menuHeight: $(window).height()*.7,
-				menuWidth: 230,
-				linkInfo: faIcons,
-				noneSelectedText: '<?php print __('Select File(s)');?>',
-				selectedText: function(numChecked, numTotal, checkedItems) {
-					myReturn = numChecked + ' <?php print __('Files Selected');?>';
-					return myReturn;
-				},
-				checkAllText: '<?php print __('All');?>',
-				uncheckAllText: '<?php print __('None');?>',
-			}).multiselectfilter( {
-				label: '<?php print __('Search');?>',
-				placeholder: '<?php print __('Enter keyword');?>',
-				width: '150'
-			});
-
 			$('#graph_auth_method').on('change', function() {
 				permsChanger();
 			});
 
 			$('#i18n_default_language, #i18n_auto_detection, #i18n_language_support').on('change', function() {
 				langDetectionChanger();
-			});
-		} else if (currentTab == 'spikes') {
-			$('#spikekill_templates').multiselect({
-				menuHeight: $(window).height()*.7,
-				menuWidth: 'auto',
-				linkInfo: faIcons,
-				noneSelectedText: '<?php print __('Select Template(s)');?>',
-				selectedText: function(numChecked, numTotal, checkedItems) {
-					myReturn = numChecked + ' <?php print __('Templates Selected');?>';
-					$.each(checkedItems, function(index, value) {
-						if (value.value == '0') {
-							myReturn='<?php print __('All Templates Selected');?>';
-							return false;
-						}
-					});
-					return myReturn;
-				},
-				checkAllText: '<?php print __('All');?>',
-				uncheckAllText: '<?php print __('None');?>',
-				uncheckAll: function() {
-					$(this).multiselect('widget').find(':checkbox:first').each(function() {
-						$(this).prop('checked', true);
-					});
-				},
-				click: function(event, ui) {
-					checked=$(this).multiselect('widget').find('input:checked').length;
-
-					if (ui.value == '0') {
-						if (ui.checked == true) {
-							$('#host').multiselect('uncheckAll');
-							$(this).multiselect('widget').find(':checkbox:first').each(function() {
-								$(this).prop('checked', true);
-							});
-						}
-					}else if (checked == 0) {
-						$(this).multiselect('widget').find(':checkbox:first').each(function() {
-							$(this).click();
-						});
-					}else if ($(this).multiselect('widget').find('input:checked:first').val() == '0') {
-						if (checked > 0) {
-							$(this).multiselect('widget').find(':checkbox:first').each(function() {
-								$(this).click();
-								$(this).prop('disable', true);
-							});
-						}
-					}
-				}
-			}).multiselectfilter( {
-				label: '<?php print __('Search');?>',
-				placeholder: '<?php print __('Enter keyword');?>',
-				width: '150'
 			});
 		} else if (currentTab == 'data') {
 			$('#storage_location').on('change', function() {

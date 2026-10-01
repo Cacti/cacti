@@ -722,7 +722,7 @@ function network_edit() {
 			7 => __('Saturday')
 			),
 		'value' => '|arg1:day_of_week|',
-		'class' => 'day_of_week'
+		'class' => 'multiselect day_of_week'
 		),
 	'month' => array(
 		'method' => 'drop_multi',
@@ -743,7 +743,7 @@ function network_edit() {
 			12 => __('December')
 			),
 		'value' => '|arg1:month|',
-		'class' => 'month'
+		'class' => 'multiselect month'
 		),
 	'day_of_month' => array(
 		'method' => 'drop_multi',
@@ -751,7 +751,7 @@ function network_edit() {
 		'description' => __('What Day(s) of the Month will this Network Range be discovered.'),
 		'array' => array(1 => '1', 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 => __('Last')),
 		'value' => '|arg1:day_of_month|',
-		'class' => 'days_of_month'
+		'class' => 'multiselect days_of_month'
 		),
 	'monthly_week' => array(
 		'method' => 'drop_multi',
@@ -764,7 +764,7 @@ function network_edit() {
 			'32' => __('Last')
 			),
 		'value' => '|arg1:monthly_week|',
-		'class' => 'monthly_week'
+		'class' => 'multiselect monthly_week'
 		),
 	'monthly_day' => array(
 		'method' => 'drop_multi',
@@ -780,7 +780,7 @@ function network_edit() {
 			7 => __('Saturday')
 			),
 		'value' => '|arg1:monthly_day|',
-		'class' => 'monthly_day'
+		'class' => 'multiselect monthly_day'
 		),
 	'spacer1' => array(
 		'method' => 'spacer',
