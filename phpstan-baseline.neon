@@ -4809,7 +4809,7 @@ parameters:
 		-
 			message: '#^Parameter \#2 \$result of function ldap_get_entries expects LDAP\\Result, array\|LDAP\\Result given\.$#'
 			identifier: argument.type
-			count: 3
+			count: 6
 			path: lib/ldap.php
 
 		-

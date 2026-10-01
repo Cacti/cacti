@@ -26,6 +26,7 @@ require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Cacti\Auth\AbstractLoginProvider;
 use Cacti\Auth\LoginProviderFactory;
 
 set_default_action();
@@ -1760,7 +1761,10 @@ function user_group_auto_assignment_inject_fields(array $fields, array $group) :
 		// always qualify via their group claim.
 		$instance = LoginProviderFactory::create($provider);
 
-		if (!$instance->supportsAutoAssignment()) {
+		// Only login_providers rows (LDAP/AD/SAML2/OpenID) reach here, all of
+		// which extend AbstractLoginProvider; the instanceof keeps the capability
+		// call off the base LoginProviderInterface.
+		if (!$instance instanceof AbstractLoginProvider || !$instance->supportsAutoAssignment()) {
 			continue;
 		}
 
@@ -1862,12 +1866,12 @@ function group_edit() : void {
 
 			html_start_box($header_label, '100%', true, 3, 'center', '');
 
+			$group_row   = (isset($group) && is_array($group)) ? $group : [];
+			$edit_fields = user_group_auto_assignment_inject_fields($fields_user_group_edit, $group_row);
+
 			draw_edit_form([
 				'config' => ['no_form_tag' => true],
-				'fields' => inject_form_variables(
-					user_group_auto_assignment_inject_fields($fields_user_group_edit, (isset($group) ? $group : [])),
-					(isset($group) ? $group : [])
-				)
+				'fields' => inject_form_variables($edit_fields, $group_row)
 			]);
 
 			html_end_box(true, true);
