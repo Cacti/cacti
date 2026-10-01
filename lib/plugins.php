@@ -516,7 +516,9 @@ function api_plugin_db_table_create(string $plugin, string $table, array $data) 
 		}
 
 		if (isset($data['primary'])) {
-			$sql .= ",\n PRIMARY KEY (`" . $data['primary'] . '`)';
+			// db_format_index_create() accepts a scalar column name (the legacy form,
+			// required for backward compatibility) or an array of columns.
+			$sql .= ",\n PRIMARY KEY (" . db_format_index_create($data['primary']) . ')';
 		}
 
 		if (isset($data['keys']) && cacti_sizeof($data['keys'])) {
