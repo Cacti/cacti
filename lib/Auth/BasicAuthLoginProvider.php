@@ -56,6 +56,11 @@ final class BasicAuthLoginProvider implements PreAuthenticatedLoginProviderInter
 		return false;
 	}
 
+	public function supportsAutoAssignment() : bool {
+		// Basic Auth has no directory/IdP group source to resolve.
+		return false;
+	}
+
 	public function resolve(string $username) : LoginResult {
 		$user = basic_auth_login_process($username);
 
