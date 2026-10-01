@@ -8371,7 +8371,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 	}
 
 	if (!empty($stderr)) {
-		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' stderr: ' . trim($stderr) . ' (cacti_exec)', false, 'SYSTEM', POLLER_VERBOSITY_MEDIUM);
+		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' stderr: ' . trim($stderr) . ' (cacti_exec)', false, 'SYSTEM', POLLER_VERBOSITY_LOW);
 	}
 
 	$stdout  = rtrim($stdout, "\n");
