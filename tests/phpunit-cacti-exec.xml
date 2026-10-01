@@ -4,6 +4,7 @@
 		<testsuite name="cacti_exec regression">
 			<file>Unit/CactiExecContractTest.php</file>
 			<file>integration/CactiExecExitCodeTest.php</file>
+			<file>integration/CactiExecLogDescribeTest.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>
