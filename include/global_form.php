@@ -275,6 +275,7 @@ $fields_profile_edit = [
 		'description'   => __('How data is to be entered in RRAs.'),
 		'array'         => $consolidation_functions,
 		'sql'           => 'SELECT consolidation_function_id AS id, data_source_profile_id FROM data_source_profiles_cf WHERE data_source_profile_id="|arg1:id|"',
+		'class'         => 'multiselect',
 	],
 	'default' => [
 		'method'        => 'checkbox',
