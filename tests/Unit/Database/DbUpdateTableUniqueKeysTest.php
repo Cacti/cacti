@@ -67,6 +67,23 @@ test('db_update_table reconciles a declared index and corrects uniqueness drift'
 		->and($body)->toContain("? 'UNIQUE ' : ''");
 });
 
+test('db_update_table normalizes the declared primary before diffing the live key', function () use ($source) {
+	$body = _db_unique_keys_body($source, 'db_update_table');
+
+	// the existing-primary branch must convert $data['primary'] (a scalar, the
+	// legacy backtick-joined string, or an array) to an array before array_diff()
+	// so a legacy scalar primary no longer raises "Argument #1 is not an array"
+	expect($body)->toContain("\$primary_columns = db_index_columns_to_array(\$data['primary'])")
+		->and($body)->toContain("array_diff(\$primary_columns, \$allindexes['PRIMARY'])")
+		->and($body)->toContain("array_diff(\$allindexes['PRIMARY'], \$primary_columns)");
+});
+
+test('db_index_columns_to_array normalizes a legacy scalar primary to a single-column array', function () {
+	// the exact value a legacy plugin passes as 'primary' => 'id'
+	expect(db_index_columns_to_array('id'))->toBe(array('id'))
+		->and(db_index_columns_to_array('`id`'))->toBe(array('id'));
+});
+
 test('db_table_create honors the legacy unique_keys definition', function () use ($source) {
 	$body = _db_unique_keys_body($source, 'db_table_create');
 
