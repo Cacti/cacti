@@ -8196,6 +8196,63 @@ function cacti_input_string_is_safe($input_string) {
 }
 
 /**
+ * Build a credential-redacted, human-readable description of a cacti_exec() invocation for
+ * logging. The values following -c, -A and -X (SNMP community string and SNMPv3 auth/priv
+ * passphrases) are replaced with [REDACTED] so secrets never reach the log. When an argument looks
+ * like a Net-SNMP target (host:port or udp6:[addr]:port) and resolves to a device hostname, the
+ * line is prefixed with Device[id] so Cacti's log filtering and description resolution work the
+ * same way they do for poller output. Used as part of Cacti's lib functionality.
+ *
+ * @param string $binary The executable path.
+ * @param array $args The ordered argument list passed to cacti_exec().
+ *
+ * @return string A single-line, secret-free description safe for cacti_log().
+ */
+function cacti_exec_log_describe($binary, array $args) {
+	$parts       = array();
+	$redact_next = false;
+	$host        = '';
+
+	foreach ($args as $arg) {
+		$arg = (string) $arg;
+
+		if ($redact_next) {
+			$parts[]     = '[REDACTED]';
+			$redact_next = false;
+			continue;
+		}
+
+		/* -c (community), -A (auth passphrase) and -X (priv passphrase) carry secrets */
+		if ($arg === '-c' || $arg === '-A' || $arg === '-X') {
+			$parts[]     = $arg;
+			$redact_next = true;
+			continue;
+		}
+
+		$parts[] = $arg;
+
+		/* Net-SNMP target: host:port, ipv4:port, or (udp6|tcp6):[ipv6]:port */
+		if ($host === '' &&
+			preg_match('/^(?:(?:udp|tcp)6?:)?(?:\[([0-9A-Fa-f:]+)\]|([0-9A-Za-z._-]+)):\d+$/', $arg, $m)) {
+			$host = (isset($m[1]) && $m[1] !== '') ? $m[1] : $m[2];
+		}
+	}
+
+	$prefix = '';
+
+	if ($host !== '' && function_exists('db_fetch_cell_prepared')) {
+		$host_id = db_fetch_cell_prepared('SELECT id FROM host WHERE hostname = ? AND deleted = "" LIMIT 1',
+			array($host));
+
+		if (!empty($host_id)) {
+			$prefix = 'Device[' . $host_id . '] ';
+		}
+	}
+
+	return $prefix . trim($binary . ' ' . implode(' ', $parts));
+}
+
+/**
  * Run an external command via proc_open with a discrete argv array. No shell is involved: the
  * argv array is passed directly to execve(), so shell metacharacters in argument values are
  * inert. Callers must still validate argument semantics (e.g. rrdtool DEF lines) themselves. This
@@ -8245,7 +8302,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 	$process = proc_open($argv, $descriptors, $pipes);
 
 	if (!is_resource($process)) {
-		cacti_log('ERROR: cacti_exec() failed to spawn: ' . $binary, false, 'SYSTEM');
+		cacti_log('ERROR: ' . cacti_exec_log_describe($binary, $args) . ' failed to spawn (cacti_exec)', false, 'SYSTEM');
 		return 255;
 	}
 
@@ -8298,7 +8355,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		proc_terminate($process, 9);
 		proc_close($process);
 
-		cacti_log('ERROR: cacti_exec() timed out after ' . $timeout . 's: ' . $binary, false, 'SYSTEM');
+		cacti_log('ERROR: ' . cacti_exec_log_describe($binary, $args) . ' timed out after ' . $timeout . 's (cacti_exec)', false, 'SYSTEM');
 
 		return 1;
 	}
@@ -8314,7 +8371,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 	}
 
 	if (!empty($stderr)) {
-		cacti_log('WARNING: cacti_exec() stderr: ' . trim($stderr), false, 'SYSTEM', POLLER_VERBOSITY_MEDIUM);
+		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' stderr: ' . trim($stderr) . ' (cacti_exec)', false, 'SYSTEM', POLLER_VERBOSITY_MEDIUM);
 	}
 
 	$stdout  = rtrim($stdout, "\n");
