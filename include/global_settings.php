@@ -410,18 +410,22 @@ $settings['logging'] = [
 		'default'       => ''
 	],
 	'selective_debug' => [
-		'friendly_name' => __('Selective File Debug'),
-		'description'   => __('Select which files you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files selected will be treated as they are in Debug mode.'),
-		'method'        => 'drop_multi',
-		'array'         => $logfiles,
-		'default'       => ''
+		'friendly_name'     => __('Selective File Debug'),
+		'description'       => __('Select which files you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files selected will be treated as they are in Debug mode.'),
+		'method'            => 'drop_multi',
+		'array'             => $logfiles,
+		'select_all_text'   => __('Select File(s)'),
+		'select_count_text' => __('Files Selected'),
+		'default'           => ''
 	],
 	'selective_plugin_debug' => [
-		'friendly_name' => __('Selective Plugin Debug'),
-		'description'   => __('Select which Plugins you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files used by this plugin will be treated as they are in Debug mode.'),
-		'method'        => 'drop_multi',
-		'array'         => $logplugins,
-		'default'       => ''
+		'friendly_name'     => __('Selective Plugin Debug'),
+		'description'       => __('Select which Plugins you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files used by this plugin will be treated as they are in Debug mode.'),
+		'method'            => 'drop_multi',
+		'array'             => $logplugins,
+		'select_all_text'   => __('Select Plugin(s)'),
+		'select_count_text' => __('Plugins Selected'),
+		'default'           => ''
 	],
 	'selective_device_debug' => [
 		'friendly_name' => __('Selective Device Debug'),
@@ -3129,10 +3133,12 @@ $settings['spikes'] = [
 		'size'          => '10'
 	],
 	'spikekill_templates' => [
-		'friendly_name' => __('Graph Templates to Spike Kill'),
-		'method'        => 'drop_multi',
-		'description'   => __('When performing batch spike removal, only the templates selected below will be acted on.'),
-		'array'         => [],
+		'friendly_name'     => __('Graph Templates to Spike Kill'),
+		'method'            => 'drop_multi',
+		'description'       => __('When performing batch spike removal, only the templates selected below will be acted on.'),
+		'array'             => [],
+		'select_all_text'   => __('Select Template(s)'),
+		'select_count_text' => __('Templates Selected'),
 	],
 	'spikekill_purge' => [
 		'friendly_name' => __('Backup Retention'),

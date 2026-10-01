@@ -1425,10 +1425,20 @@ function form_multi_dropdown(string $form_name, array $array_display, mixed $pre
 		}
 	}
 
-	$class = "multiselect $class";
+	/* The drop_multi form method renders a select2 'N Selected' multi dropdown by default.
+	 * A caller keeps the legacy jquery-multiselect widget (e.g. the Scheduler used by
+	 * Automation Networks, and the Data Source Profiles Consolidation Functions) by
+	 * including 'multiselect' in $class; those pages supply their own .multiselect() init
+	 * and must not also be decorated by select2. */
+	$class = trim($class);
 
-	if ($class != '') {
-		$class .= " $class";
+	if (preg_match('/(^|\s)multiselect(\s|$)/', $class)) {
+		/* legacy opt-in wins: strip any select2-multi-count so applySkin() does not
+		 * also decorate the field and collide with the page's own .multiselect() init */
+		$class = preg_replace('/(^|\s)select2-multi-count(?=\s|$)/', '', $class) ?? $class;
+		$class = trim(preg_replace('/\s+/', ' ', $class) ?? $class);
+	} elseif (!preg_match('/(^|\s)select2-multi-count(\s|$)/', $class)) {
+		$class = trim('select2-multi-count ' . $class);
 	}
 
 	if ($on_change != '') {
