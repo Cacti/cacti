@@ -8302,7 +8302,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 	$process = proc_open($argv, $descriptors, $pipes);
 
 	if (!is_resource($process)) {
-		cacti_log('ERROR: ' . cacti_exec_log_describe($binary, $args) . ' failed to spawn (cacti_exec)', false, 'SYSTEM');
+		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' failed to spawn (cacti_exec)', false, 'SYSTEM');
 		return 255;
 	}
 
@@ -8355,7 +8355,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		proc_terminate($process, 9);
 		proc_close($process);
 
-		cacti_log('ERROR: ' . cacti_exec_log_describe($binary, $args) . ' timed out after ' . $timeout . 's (cacti_exec)', false, 'SYSTEM');
+		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' timed out after ' . $timeout . 's (cacti_exec)', false, 'SYSTEM');
 
 		return 1;
 	}
