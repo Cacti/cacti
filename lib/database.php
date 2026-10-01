@@ -1830,8 +1830,11 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 
 			$alter_clauses[] = 'ADD PRIMARY KEY (' . $primary . ')';
 		} else {
-			$add = array_diff($data['primary'], $allindexes['PRIMARY']);
-			$del = array_diff($allindexes['PRIMARY'], $data['primary']);
+			// Accept an array of columns or the legacy scalar/backtick-joined string
+			// form (kept for backward compatibility) before diffing the live PK.
+			$primary_columns = db_index_columns_to_array($data['primary']);
+			$add = array_diff($primary_columns, $allindexes['PRIMARY']);
+			$del = array_diff($allindexes['PRIMARY'], $primary_columns);
 			if (!empty($add) || !empty($del)) {
 				$primary = db_format_index_create($data['primary']);
 
