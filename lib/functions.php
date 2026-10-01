@@ -8222,18 +8222,27 @@ function cacti_exec_log_describe($binary, array $args) {
 			continue;
 		}
 
-		/* -c (community), -A (auth passphrase) and -X (priv passphrase) carry secrets */
+		/*
+		 * -c (community), -A (auth passphrase) and -X (priv passphrase) carry secrets. Net-SNMP
+		 * accepts the value either split from its flag (-c secret) or attached to it (-csecret),
+		 * so redact both forms rather than trusting only the split form cacti_exec() generates.
+		 */
 		if ($arg === '-c' || $arg === '-A' || $arg === '-X') {
 			$parts[]     = $arg;
 			$redact_next = true;
 			continue;
 		}
 
+		if (preg_match('/^-[cAX]./', $arg)) {
+			$parts[] = substr($arg, 0, 2) . '[REDACTED]';
+			continue;
+		}
+
 		$parts[] = $arg;
 
-		/* Net-SNMP target: host:port, ipv4:port, or (udp6|tcp6):[ipv6]:port */
+		/* Net-SNMP target: host:port, ipv4:port, or (udp6|tcp6):[ipv6]:port (zone id included) */
 		if ($host === '' &&
-			preg_match('/^(?:(?:udp|tcp)6?:)?(?:\[([0-9A-Fa-f:]+)\]|([0-9A-Za-z._-]+)):\d+$/', $arg, $m)) {
+			preg_match('/^(?:(?:udp|tcp)6?:)?(?:\[([^\]]+)\]|([0-9A-Za-z._-]+)):\d+$/', $arg, $m)) {
 			$host = (isset($m[1]) && $m[1] !== '') ? $m[1] : $m[2];
 		}
 	}
