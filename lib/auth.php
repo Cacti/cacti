@@ -4160,6 +4160,12 @@ function login_providers_login_process(string $username) : array {
 		return [];
 	}
 
+	// Reconcile automatic User Group assignments so group changes in the
+	// directory/IdP take effect on this login.
+	if (method_exists($provider, 'applyAutoAssignments')) {
+		$provider->applyAutoAssignments((int) $user['id'], $result->username, $result->claims['groups'] ?? []);
+	}
+
 	return $user;
 }
 

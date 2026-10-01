@@ -152,6 +152,9 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 		return LoginResult::authenticated($username, [
 			'full_name' => (string) $this->firstAttribute($attributes, (string) $this->param('claim_full_name')),
 			'email'     => (string) $this->firstAttribute($attributes, (string) $this->param('claim_email')),
+			// The raw SAML2 group attribute values feed automatic User Group
+			// assignment at login time (see AbstractLoginProvider::applyAutoAssignments()).
+			'groups'    => array_values(array_map('strval', (array) $memberships)),
 		], null, (bool) ($saved['remember'] ?? false));
 	}
 

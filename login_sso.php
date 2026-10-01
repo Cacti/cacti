@@ -177,6 +177,13 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 		exit;
 	}
 
+	// Reconcile automatic User Group assignments from the IdP's group claim
+	// before the access checks below, so a group that grants (or was meant to
+	// grant) access is reflected on this very login.
+	if (method_exists($provider, 'applyAutoAssignments')) {
+		$provider->applyAutoAssignments((int) $user['id'], $result->username, $result->claims['groups'] ?? []);
+	}
+
 	if (($user['enabled'] ?? '') != 'on') {
 		auth_display_custom_error_message(__('Access Denied!  User account disabled.'));
 

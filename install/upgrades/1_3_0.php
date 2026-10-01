@@ -35,6 +35,10 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_column('user_auth', ['name' => 'tfa_enabled', 'type' => 'char(3)', 'NULL' => false, 'default' => '']);
 	db_install_add_column('user_auth', ['name' => 'tfa_secret', 'type' => 'char(50)', 'NULL' => false, 'default' => '']);
 
+	// JSON map of login_providers.id => IDP group name used for automatic
+	// User Group assignment at login time.
+	db_install_add_column('user_auth_group', ['name' => 'auto_assignments', 'type' => 'longtext', 'NULL' => true, 'after' => 'enabled']);
+
 	db_install_add_column('poller', ['name' => 'log_level', 'type' => 'int', 'NULL' => false, 'default' => '-1', 'after' => 'status']);
 	db_install_add_column('poller', ['name' => 'dbsslkey', 'type' => 'varchar(255)', 'after' => 'dbssl']);
 	db_install_add_column('poller', ['name' => 'dbsslcert', 'type' => 'varchar(255)', 'after' => 'dbsslkey']);

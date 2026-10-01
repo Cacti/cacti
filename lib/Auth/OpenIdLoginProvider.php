@@ -180,6 +180,9 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 		return LoginResult::authenticated($username, [
 			'full_name' => (string) ($claims[(string) $this->param('claim_full_name', 'name')] ?? ''),
 			'email'     => (string) ($claims[(string) $this->param('claim_email', 'email')] ?? ''),
+			// The OpenID group claim values feed automatic User Group
+			// assignment at login time (see AbstractLoginProvider::applyAutoAssignments()).
+			'groups'    => array_values(array_map('strval', $memberships)),
 		], null, (bool) ($saved['remember'] ?? false));
 	}
 

@@ -3048,6 +3048,7 @@ CREATE TABLE `user_auth_group` (
   `policy_hosts` tinyint(3) unsigned NOT NULL default '1',
   `policy_graph_templates` tinyint(3) unsigned NOT NULL default '1',
   `enabled` char(2) NOT NULL default 'on',
+  `auto_assignments` longtext,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Table that Contains User Groups';
 

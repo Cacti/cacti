@@ -26,6 +26,7 @@ require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Cacti\Auth\LoginProviderFactory;
 
 set_default_action();
 
@@ -71,6 +72,10 @@ $gperm_options = [
 ];
 
 $fields_user_group_edit = [
+	'spacer_general' => [
+		'friendly_name' => __('General'),
+		'method'        => 'spacer',
+		],
 	'name' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Group Name'),
@@ -93,7 +98,7 @@ $fields_user_group_edit = [
 		'default'       => ''
 		],
 	'grp1' => [
-		'friendly_name' => __('General Group Options'),
+		'friendly_name' => __('Group Options'),
 		'method'        => 'checkbox_group',
 		'description'   => __('Set any user account-specific options here.'),
 		'items'         => [
@@ -104,6 +109,10 @@ $fields_user_group_edit = [
 				'default'       => 'on'
 				]
 			]
+		],
+	'spacer_rights' => [
+		'friendly_name' => __('Rights'),
+		'method'        => 'spacer',
 		],
 	'show_tree' => [
 		'friendly_name' => __('Tree Rights'),
@@ -515,6 +524,24 @@ function form_save() : void {
 		$save['graph_settings'] = CactiValidator::validateInput(gnrv('graph_settings', ''), 'graph_settings', [], 3);
 		$save['login_opts']     = CactiValidator::validateInput(gnrv('login_opts'), 'login_opts', [], 3);
 		$save['enabled']        = CactiValidator::validateInput(gnrv('enabled', ''), 'enabled', [], 3);
+
+		// Collect the per-Login-Provider "Automatic Group Assignment" values
+		// into a JSON map keyed by provider id. Only non-blank values are
+		// stored so a provider that is never assigned here leaves no stale key
+		// behind to be evaluated at login time.
+		$providers        = db_fetch_assoc('SELECT id FROM login_providers ORDER BY id');
+		$providers        = is_array($providers) ? $providers : [];
+		$auto_assignments = [];
+
+		foreach ($providers as $provider) {
+			$group_name = trim((string) CactiValidator::validateInput(gnrv('auto_assign_' . $provider['id'], ''), 'auto_assign_' . $provider['id'], [], 3));
+
+			if ($group_name !== '') {
+				$auto_assignments[(string) $provider['id']] = $group_name;
+			}
+		}
+
+		$save['auto_assignments'] = json_encode($auto_assignments);
 
 		$save = api_plugin_hook_function('user_group_admin_setup_sql_save', $save);
 
@@ -1703,6 +1730,73 @@ function user_group_settings_edit(string $header_label) : void {
 	<?php
 }
 
+/**
+ * Build the per-Login-Provider "Automatic Group Assignment" text fields and
+ * splice them, behind an "Auto Assignment" spacer, into the General tab's
+ * field list just ahead of the "Rights" spacer. One text field is rendered
+ * per configured Login Provider; its stored value comes from this group's
+ * decoded `auto_assignments` JSON keyed by the provider id. When no Login
+ * Providers exist the field list is returned unchanged.
+ *
+ * @param array $fields The static General tab field definition.
+ * @param array $group  The user_auth_group row being edited (may be empty for a new group).
+ *
+ * @return array The field definition with the Auto Assignment section injected.
+ */
+function user_group_auto_assignment_inject_fields(array $fields, array $group) : array {
+	$providers = db_fetch_assoc('SELECT * FROM login_providers ORDER BY name');
+	$providers = is_array($providers) ? $providers : [];
+
+	$assignments = json_decode((string) ($group['auto_assignments'] ?? ''), true);
+	$assignments = is_array($assignments) ? $assignments : [];
+
+	$auto_fields = [];
+
+	foreach ($providers as $provider) {
+		// Only providers that can actually resolve a user's group membership
+		// are offered. For LDAP/AD this requires a bind that can search the
+		// directory (anonymous, or a stored service account); SAML2/OpenID
+		// always qualify via their group claim.
+		$instance = LoginProviderFactory::create($provider);
+
+		if (!$instance->supportsAutoAssignment()) {
+			continue;
+		}
+
+		$auto_fields['auto_assign_' . $provider['id']] = [
+			'method'        => 'textbox',
+			'friendly_name' => $provider['name'],
+			'description'   => __('If your IdP returns Group information and any of your users are a member of this group, they will be auto-added to it.  If, when they login, they are not a member of this group but have it assigned, they will be removed from it.  Enter the plain Group Name (for example "Cacti Admins"), not a full DN.'),
+			'value'         => (string) ($assignments[$provider['id']] ?? ''),
+			'max_length'    => '255',
+		];
+	}
+
+	if (!cacti_sizeof($auto_fields)) {
+		return $fields;
+	}
+
+	// Prepend the Auto Assignment spacer ahead of the per-provider fields.
+	$auto_fields = ['spacer_auto_assignment' => [
+		'friendly_name' => __('Auto Assignment'),
+		'method'        => 'spacer',
+	]] + $auto_fields;
+
+	// Insert the Auto Assignment section ahead of the Rights spacer so it
+	// lands between the General and Rights sections.
+	$rebuilt = [];
+
+	foreach ($fields as $key => $field) {
+		if ($key === 'spacer_rights') {
+			$rebuilt = array_merge($rebuilt, $auto_fields);
+		}
+
+		$rebuilt[$key] = $field;
+	}
+
+	return $rebuilt;
+}
+
 function group_edit() : void {
 	global $fields_user_group_edit;
 
@@ -1769,7 +1863,10 @@ function group_edit() : void {
 
 			draw_edit_form([
 				'config' => ['no_form_tag' => true],
-				'fields' => inject_form_variables($fields_user_group_edit, (isset($group) ? $group : []))
+				'fields' => inject_form_variables(
+					user_group_auto_assignment_inject_fields($fields_user_group_edit, (isset($group) ? $group : [])),
+					(isset($group) ? $group : [])
+				)
 			]);
 
 			html_end_box(true, true);
