@@ -51,6 +51,15 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 		return $this->buttonLabel !== '' ? $this->buttonLabel : $this->getName();
 	}
 
+	/**
+	 * Automatic User Group assignment needs a configured group claim; without
+	 * one complete() reports no groups, so a saved rule could only ever
+	 * evaluate to non-membership and strip the user from the group.
+	 */
+	public function supportsAutoAssignment(): bool {
+		return (string) $this->param('group_claim') !== '';
+	}
+
 	public function initiate(): never {
 		$discovery = $this->discover();
 

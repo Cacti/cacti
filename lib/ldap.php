@@ -918,7 +918,20 @@ class Ldap {
 		$matched = [];
 
 		foreach ($groupNames as $group) {
-			if ($this->UserInGroupByName($ldap_conn, $search_base, $username_esc, $user_dn, $user_dn_esc, (string) $group, $is_ad)) {
+			$in = $this->UserInGroupByName($ldap_conn, $search_base, $username_esc, $user_dn, $user_dn_esc, (string) $group, $is_ad);
+
+			if ($in === null) {
+				// Membership for at least one rule could not be determined (a
+				// probe errored); fail safe for the whole set so the caller
+				// leaves every assignment untouched rather than revoking
+				// memberships on a transient directory error.
+				ldap_close($ldap_conn);
+				$this->RestoreCactiHandler();
+
+				return null;
+			}
+
+			if ($in === true) {
 				$matched[] = $group;
 			}
 		}
@@ -998,11 +1011,70 @@ class Ldap {
 	 * @param string $group        The configured group name or DN.
 	 * @param bool   $is_ad        Whether the directory is Active Directory.
 	 *
-	 * @return bool True when the user is a member of the group.
+	 * @return bool|null True when the user is a member, false when confirmed not
+	 *                   a member, and null when membership could not be
+	 *                   determined (every probe errored) so the caller can
+	 *                   preserve existing assignments rather than revoke them.
 	 */
-	protected function UserInGroupByName($ldap_conn, string $search_base, string $username_esc, string $user_dn, string $user_dn_esc, string $group, bool $is_ad) : bool {
-		if ($group === '') {
+	protected function UserInGroupByName($ldap_conn, string $search_base, string $username_esc, string $user_dn, string $user_dn_esc, string $group, bool $is_ad) : ?bool {
+		$queries = $this->BuildGroupMembershipQueries($search_base, $username_esc, $user_dn, $user_dn_esc, $group, $is_ad);
+
+		if (!cacti_sizeof($queries)) {
 			return false;
+		}
+
+		$errored = false;
+
+		foreach ($queries as $query) {
+			if ($query['read']) {
+				$search = @ldap_read($ldap_conn, $query['base'], $query['filter'], $query['return']);
+			} else {
+				$search = @ldap_search($ldap_conn, $query['base'], $query['filter'], $query['return']);
+			}
+
+			if ($search === false) {
+				// A failed search (timeout, dropped connection, bad base) is not
+				// a confirmed non-membership; remember it so an all-errored,
+				// no-match outcome is reported as undetermined (null) below.
+				$errored = true;
+
+				continue;
+			}
+
+			$results = @ldap_get_entries($ldap_conn, $search);
+
+			if ($results === false) {
+				$errored = true;
+
+				continue;
+			}
+
+			if (is_array($results) && isset($results['count']) && $results['count'] > 0) {
+				return true;
+			}
+		}
+
+		return $errored ? null : false;
+	}
+
+	/**
+	 * Build the shape-specific membership probes for one group, keyed by the
+	 * directory type. Separated from execution so the query construction (in
+	 * particular the Active Directory handling) is unit-testable without a live
+	 * directory.
+	 *
+	 * @param string $search_base  The base DN to search under.
+	 * @param string $username_esc The filter-escaped username.
+	 * @param string $user_dn      The resolved user DN ('' when unresolved).
+	 * @param string $user_dn_esc  The filter-escaped user DN ('' when unresolved).
+	 * @param string $group        The configured group name or DN.
+	 * @param bool   $is_ad        Whether the directory is Active Directory.
+	 *
+	 * @return array List of ['base','read','filter','return'] probe descriptors.
+	 */
+	protected function BuildGroupMembershipQueries(string $search_base, string $username_esc, string $user_dn, string $user_dn_esc, string $group, bool $is_ad) : array {
+		if ($group === '') {
+			return [];
 		}
 
 		$group_esc = ldap_escape($group, '', LDAP_ESCAPE_FILTER);
@@ -1043,6 +1115,15 @@ class Ldap {
 				$queries[] = ['base' => $group, 'read' => true, 'filter' => "(&(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames))(|(member=$user_dn_esc)(uniqueMember=$user_dn_esc)))", 'return' => ['1.1']];
 			}
 		} else {
+			// Active Directory group objects are objectClass=group, matched by
+			// neither posixGroup nor groupOfNames, so AD needs its own cn-scoped
+			// subtree search. member:1.2.840.113556.1.4.1941
+			// (LDAP_MATCHING_RULE_IN_CHAIN) matches direct AND nested membership
+			// in a single query.
+			if ($is_ad && $user_dn !== '') {
+				$queries[] = ['base' => $search_base, 'read' => false, 'filter' => "(&(objectClass=group)(cn=$group_cn_esc)(member:1.2.840.113556.1.4.1941:=$user_dn_esc))", 'return' => ['cn']];
+			}
+
 			// Bare group name: fall back to a cn subtree search. memberOf cannot
 			// be used here because it stores DNs, not names.
 			$queries[] = ['base' => $search_base, 'read' => false, 'filter' => "(&(objectClass=posixGroup)(cn=$group_cn_esc)(memberUid=$username_esc))", 'return' => ['memberUid']];
@@ -1052,23 +1133,7 @@ class Ldap {
 			}
 		}
 
-		foreach ($queries as $query) {
-			if ($query['read']) {
-				$search = @ldap_read($ldap_conn, $query['base'], $query['filter'], $query['return']);
-			} else {
-				$search = @ldap_search($ldap_conn, $query['base'], $query['filter'], $query['return']);
-			}
-
-			if ($search !== false) {
-				$results = @ldap_get_entries($ldap_conn, $search);
-
-				if (is_array($results) && isset($results['count']) && $results['count'] > 0) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return $queries;
 	}
 
 	function Search() : array {

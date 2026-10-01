@@ -245,10 +245,12 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 	}
 
 	/**
-	 * Whether this provider can resolve a user's group membership well enough
-	 * to drive automatic User Group assignment. True for every provider that
-	 * reports groups from an IdP claim (SAML2/OpenID); the LDAP family narrows
-	 * this to the search modes that can enumerate groups.
+	 * Whether this provider can currently resolve a user's group membership
+	 * well enough to drive automatic User Group assignment. Subclasses narrow
+	 * this: SAML2/OpenID require a configured group claim, and the LDAP family
+	 * requires a search mode that can enumerate groups. When false,
+	 * applyAutoAssignments() does nothing, so a provider that cannot report
+	 * groups never strips a user from their assigned groups.
 	 */
 	public function supportsAutoAssignment(): bool {
 		return true;
@@ -275,6 +277,15 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 			return;
 		}
 
+		// A provider that cannot currently resolve group membership must not run:
+		// a SAML2/OpenID provider with no group claim configured, or an LDAP
+		// provider without a searchable bind, would report an empty membership
+		// set that is then treated as authoritative non-membership and strips
+		// the user from every assigned group.
+		if (!$this->supportsAutoAssignment()) {
+			return;
+		}
+
 		// group_id => configured group name, for rules targeting this provider.
 		$rules = $this->loadAutoAssignmentRules();
 
@@ -297,7 +308,7 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 			$matchSet[strtolower(trim((string) $match))] = true;
 		}
 
-		$changed = false;
+		$changed = 0;
 
 		foreach ($rules as $groupId => $requiredName) {
 			if (isset($matchSet[strtolower(trim($requiredName))])) {
@@ -311,10 +322,14 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 					[$userId, $groupId]);
 			}
 
-			$changed = true;
+			// Only a mutation that actually changed a row should invalidate the
+			// permission cache: INSERT IGNORE on an existing member and DELETE of
+			// a non-member both affect zero rows, and rotating the auth key /
+			// dropping user_auth_cache on every login otherwise is needless churn.
+			$changed += (int) db_affected_rows();
 		}
 
-		if ($changed) {
+		if ($changed > 0) {
 			reset_user_perms($userId);
 		}
 	}

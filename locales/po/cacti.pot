@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-09-28 15:59-0400\n"
+"POT-Creation-Date: 2026-10-01 18:09-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Cacti Developers <developers@cacti.net>>\n"
+"Last-Translator: Cacti Developers <developers@cacti.net>\n"
 "Language-Team: Cacti Developers <developers@cacti.net>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -21190,6 +21190,16 @@ msgstr ""
 
 #: plugins.php
 #, php-format
+msgid "Plugin '%s' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."
+msgstr ""
+
+#: plugins.php
+#, php-format
+msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
+msgstr ""
+
+#: plugins.php
+#, php-format
 msgid "Plugin '%s' has passed it's Configuration Check test and can not be Installed"
 msgstr ""
 
@@ -21204,6 +21214,18 @@ msgstr ""
 
 #: plugins.php
 msgid "Are you sure you want to Uninstall?"
+msgstr ""
+
+#: plugins.php
+msgid "Are you sure you want to Force Uninstall?"
+msgstr ""
+
+#: plugins.php
+msgid "The directory for this Plugin is missing, so it can not be uninstalled normally.  Force Uninstall permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
+msgstr ""
+
+#: plugins.php
+msgid "Force Uninstall"
 msgstr ""
 
 #: plugins.php
@@ -21661,7 +21683,12 @@ msgid "Plugin was Disabled due to a Plugin Error.  Click to Re-enable the Plugin
 msgstr ""
 
 #: plugins.php
-msgid "Plugin directory is missing!"
+#, php-format
+msgid "Unable to Force Uninstall.  This Plugin is required by: '%s'"
+msgstr ""
+
+#: plugins.php
+msgid "Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables."
 msgstr ""
 
 #: plugins.php
@@ -24136,7 +24163,7 @@ msgid "A more descriptive name for this group, that can include spaces or specia
 msgstr ""
 
 #: user_group_admin.php
-msgid "General Group Options"
+msgid "Group Options"
 msgstr ""
 
 #: user_group_admin.php
@@ -24145,6 +24172,10 @@ msgstr ""
 
 #: user_group_admin.php
 msgid "Allow Users of this Group to keep custom User Settings"
+msgstr ""
+
+#: user_group_admin.php
+msgid "Rights"
 msgstr ""
 
 #: user_group_admin.php
@@ -24285,6 +24316,14 @@ msgstr ""
 
 #: user_group_admin.php
 msgid "Default Tree Policy for this User Group"
+msgstr ""
+
+#: user_group_admin.php
+msgid "If your IdP returns Group information and any of your users are a member of this group, they will be auto-added to it.  If, when they login, they are not a member of this group but have it assigned, they will be removed from it.  Enter the plain Group Name (for example \"Cacti Admins\"), not a full DN."
+msgstr ""
+
+#: user_group_admin.php
+msgid "Auto Assignment"
 msgstr ""
 
 #: user_group_admin.php
@@ -24927,31 +24966,4 @@ msgstr ""
 
 #: vdef.php
 msgid "No VDEFs"
-msgstr ""
-
-#: plugins.php
-msgid "Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables."
-msgstr ""
-
-#: plugins.php
-msgid "The directory for this Plugin is missing, so it can not be uninstalled normally.  Force Uninstall permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
-msgstr ""
-
-#: plugins.php
-msgid "Are you sure you want to Force Uninstall?"
-msgstr ""
-
-#: plugins.php
-msgid "Force Uninstall"
-msgstr ""
-#: plugins.php
-msgid "Unable to Force Uninstall.  This Plugin is required by: '%s'"
-msgstr ""
-
-#: plugins.php
-msgid "Plugin '%s' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."
-msgstr ""
-
-#: plugins.php
-msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
 msgstr ""
