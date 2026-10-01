@@ -1220,6 +1220,14 @@ function update_resource_cache($poller_id = 1) : bool {
  * @return void
  */
 function cache_in_path(string $path, string $type, bool $recursive = true) : void {
+	// Skip tooling/dev artifacts (.gitignore, .mdlrc, tests/, ...) up front.
+	// update_db_from_path() never caches them, so without this a poll would
+	// re-log and re-process each one every cycle (its md5 is never stored, so
+	// it is always re-detected as "changed").
+	if (should_ignore_from_replication($path)) {
+		return;
+	}
+
 	if (is_dir($path)) {
 		$curr_md5      = md5sum_path($path, $recursive);
 		$settings_path = "md5dirsum_$type";
