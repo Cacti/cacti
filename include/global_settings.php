@@ -295,6 +295,7 @@ $settings = array(
 			'description' => __('Select which files you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files selected will be treated as they are in Debug mode.'),
 			'method' => 'drop_multi',
 			'array' => $logfiles,
+			'class' => 'multiselect',
 			'default' => ''
 		),
 		'selective_plugin_debug' => array(
@@ -302,6 +303,7 @@ $settings = array(
 			'description' => __('Select which Plugins you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files used by this plugin will be treated as they are in Debug mode.'),
 			'method' => 'drop_multi',
 			'array' => $logplugins,
+			'class' => 'multiselect',
 			'default' => ''
 		),
 		'selective_device_debug' => array(
@@ -2576,7 +2578,8 @@ $settings = array(
 			'friendly_name' => __('Graph Templates to Spike Kill'),
 			'method' => 'drop_multi',
 			'description' => __('When performing batch spike removal, only the templates selected below will be acted on.'),
-			'array' => array()
+			'array' => array(),
+			'class' => 'multiselect'
 		),
 		'spikekill_purge' => array(
 			'friendly_name' => __('Backup Retention'),
