@@ -26,7 +26,6 @@ require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Cacti\Auth\AbstractLoginProvider;
 use Cacti\Auth\LoginProviderFactory;
 
 set_default_action();
@@ -1761,10 +1760,7 @@ function user_group_auto_assignment_inject_fields(array $fields, array $group) :
 		// always qualify via their group claim.
 		$instance = LoginProviderFactory::create($provider);
 
-		// Only login_providers rows (LDAP/AD/SAML2/OpenID) reach here, all of
-		// which extend AbstractLoginProvider; the instanceof keeps the capability
-		// call off the base LoginProviderInterface.
-		if (!$instance instanceof AbstractLoginProvider || !$instance->supportsAutoAssignment()) {
+		if (!$instance->supportsAutoAssignment()) {
 			continue;
 		}
 

@@ -39,4 +39,10 @@ interface LoginProviderInterface {
 	 * The global auth_cache_enabled setting is still checked first by the caller.
 	 */
 	public function allowsAuthCookies(): bool;
+
+	/**
+	 * Whether this provider can currently resolve a user's group membership
+	 * well enough to drive automatic User Group assignment.
+	 */
+	public function supportsAutoAssignment(): bool;
 }

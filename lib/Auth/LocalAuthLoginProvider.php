@@ -54,6 +54,11 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 		return true;
 	}
 
+	public function supportsAutoAssignment() : bool {
+		// Local accounts have no directory/IdP group source to resolve.
+		return false;
+	}
+
 	public function getTemplateUserId() : int {
 		// Local accounts are never auto-provisioned from a template; the
 		// user_auth row must already exist under AUTH_METHOD_CACTI.
