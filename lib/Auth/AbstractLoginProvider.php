@@ -188,6 +188,10 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 
 	public static function deleteById(int $id): void {
 		db_execute_prepared('DELETE FROM login_providers WHERE id = ?', [$id]);
+
+		// Drop any automatic User Group assignment rules that referenced this
+		// provider so they are not left behind to be evaluated at login.
+		self::purgeAutoAssignments($id);
 	}
 
 	public static function enableById(int $id): void {
@@ -238,5 +242,190 @@ abstract class AbstractLoginProvider implements LoginProviderInterface {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Whether this provider can currently resolve a user's group membership
+	 * well enough to drive automatic User Group assignment. Subclasses narrow
+	 * this: SAML2/OpenID require a configured group claim, and the LDAP family
+	 * requires a search mode that can enumerate groups. When false,
+	 * applyAutoAssignments() does nothing, so a provider that cannot report
+	 * groups never strips a user from their assigned groups.
+	 */
+	public function supportsAutoAssignment(): bool {
+		return true;
+	}
+
+	/**
+	 * Apply this provider's automatic User Group assignments for a user who
+	 * has just authenticated.
+	 *
+	 * Every User Group whose `auto_assignments` JSON holds a rule for THIS
+	 * provider id is evaluated: when the user is a member of the configured
+	 * group they are added to that Cacti User Group, and when they are not they
+	 * are removed from it (so a user who loses the directory/IdP group also
+	 * loses the Cacti group on their next login). User Groups with no rule for
+	 * this provider are never touched, so memberships assigned by hand are
+	 * preserved.
+	 *
+	 * @param int    $userId      The user_auth.id that just authenticated.
+	 * @param string $username    The authenticated username (needed for live LDAP lookups).
+	 * @param array  $memberships The group names the IdP reported (SAML2/OpenID); unused by LDAP.
+	 */
+	public function applyAutoAssignments(int $userId, string $username, array $memberships = []): void {
+		if ($userId <= 0) {
+			return;
+		}
+
+		// A provider that cannot currently resolve group membership must not run:
+		// a SAML2/OpenID provider with no group claim configured, or an LDAP
+		// provider without a searchable bind, would report an empty membership
+		// set that is then treated as authoritative non-membership and strips
+		// the user from every assigned group.
+		if (!$this->supportsAutoAssignment()) {
+			return;
+		}
+
+		// group_id => configured group name, for rules targeting this provider.
+		$rules = $this->loadAutoAssignmentRules();
+
+		if (!cacti_sizeof($rules)) {
+			return;
+		}
+
+		$matches = $this->resolveGroupMatches($username, $memberships, array_values(array_unique($rules)));
+
+		// A null result means membership could not be determined (e.g. the LDAP
+		// directory was unreachable); leave every assignment as-is rather than
+		// revoking memberships on a transient failure.
+		if ($matches === null) {
+			return;
+		}
+
+		$matchSet = [];
+
+		foreach ($matches as $match) {
+			$matchSet[strtolower(trim((string) $match))] = true;
+		}
+
+		$changed = 0;
+
+		foreach ($rules as $groupId => $requiredName) {
+			if (isset($matchSet[strtolower(trim($requiredName))])) {
+				db_execute_prepared('INSERT IGNORE INTO user_auth_group_members
+					(user_id, group_id) VALUES (?, ?)',
+					[$userId, $groupId]);
+			} else {
+				db_execute_prepared('DELETE FROM user_auth_group_members
+					WHERE user_id = ?
+					AND group_id = ?',
+					[$userId, $groupId]);
+			}
+
+			// Only a mutation that actually changed a row should invalidate the
+			// permission cache: INSERT IGNORE on an existing member and DELETE of
+			// a non-member both affect zero rows, and rotating the auth key /
+			// dropping user_auth_cache on every login otherwise is needless churn.
+			$changed += (int) db_affected_rows();
+		}
+
+		if ($changed > 0) {
+			reset_user_perms($userId);
+		}
+	}
+
+	/**
+	 * Load the automatic-assignment rules that target this provider.
+	 *
+	 * @return array<int, string> Map of user_auth_group.id => configured group name.
+	 */
+	protected function loadAutoAssignmentRules(): array {
+		$groups = db_fetch_assoc("SELECT id, auto_assignments
+			FROM user_auth_group
+			WHERE auto_assignments IS NOT NULL
+			AND auto_assignments != ''
+			AND auto_assignments != '[]'
+			AND auto_assignments != '{}'");
+
+		$groups = is_array($groups) ? $groups : [];
+
+		$providerKey = (string) $this->id;
+		$rules       = [];
+
+		foreach ($groups as $group) {
+			$assignments = json_decode((string) $group['auto_assignments'], true);
+
+			if (!is_array($assignments) || !array_key_exists($providerKey, $assignments)) {
+				continue;
+			}
+
+			$requiredName = trim((string) $assignments[$providerKey]);
+
+			if ($requiredName === '') {
+				continue;
+			}
+
+			$rules[(int) $group['id']] = $requiredName;
+		}
+
+		return $rules;
+	}
+
+	/**
+	 * Resolve which of the configured group names the user is a member of.
+	 *
+	 * The default (SAML2/OpenID) matches the names against the IdP-supplied
+	 * claim list; LDAP overrides this to query the directory live. Returns null
+	 * only when membership could not be determined at all.
+	 *
+	 * @param string $username    The authenticated username.
+	 * @param array  $memberships The IdP-reported group names.
+	 * @param array  $groupNames  The configured group names to test.
+	 *
+	 * @return array|null The subset of $groupNames the user belongs to, or null if undeterminable.
+	 */
+	protected function resolveGroupMatches(string $username, array $memberships, array $groupNames): ?array {
+		$matched = [];
+
+		foreach ($groupNames as $name) {
+			if ($this->groupMembershipAllows($memberships, (string) $name)) {
+				$matched[] = $name;
+			}
+		}
+
+		return $matched;
+	}
+
+	/**
+	 * Remove a deleted provider's rules from every User Group's
+	 * `auto_assignments` JSON, so a stale provider id cannot linger and be
+	 * re-evaluated should its id later be reused. Called from deleteById().
+	 *
+	 * @param int $id The login_providers.id being removed.
+	 */
+	protected static function purgeAutoAssignments(int $id): void {
+		$providerKey = (string) $id;
+
+		$groups = db_fetch_assoc("SELECT id, auto_assignments
+			FROM user_auth_group
+			WHERE auto_assignments IS NOT NULL
+			AND auto_assignments != ''
+			AND auto_assignments != '[]'
+			AND auto_assignments != '{}'");
+
+		$groups = is_array($groups) ? $groups : [];
+
+		foreach ($groups as $group) {
+			$assignments = json_decode((string) $group['auto_assignments'], true);
+
+			if (!is_array($assignments) || !array_key_exists($providerKey, $assignments)) {
+				continue;
+			}
+
+			unset($assignments[$providerKey]);
+
+			db_execute_prepared('UPDATE user_auth_group SET auto_assignments = ? WHERE id = ?',
+				[json_encode($assignments), $group['id']]);
+		}
 	}
 }

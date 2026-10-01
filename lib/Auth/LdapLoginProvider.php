@@ -137,6 +137,70 @@ class LdapLoginProvider extends AbstractLoginProvider implements CredentialLogin
 	}
 
 	/**
+	 * Automatic User Group assignment is only offered for LDAP providers that
+	 * can enumerate groups without the user's own credentials: Anonymous
+	 * Searching, or Specific Searching with a stored service account. In every
+	 * other mode there is no bind capable of reading group objects, so the
+	 * field is hidden and no assignment runs.
+	 */
+	public function supportsAutoAssignment(): bool {
+		$mode = (int) $this->param('mode');
+
+		if ($mode === 1) { // Anonymous Searching
+			return true;
+		}
+
+		if ($mode === 2) { // Specific Searching (service account)
+			return (string) $this->param('specific_dn') !== ''
+				&& (string) $this->param('specific_password') !== '';
+		}
+
+		return false;
+	}
+
+	/**
+	 * Resolve which of the configured raw group names the user belongs to by
+	 * querying the directory live (the directory, not a claim, is the source of
+	 * truth for LDAP). Returns null when no server could be searched so the
+	 * caller leaves existing assignments untouched instead of revoking them on
+	 * a transient outage.
+	 *
+	 * @param string $username    The authenticated username.
+	 * @param array  $memberships Unused for LDAP (no claim is carried).
+	 * @param array  $groupNames  The raw group names configured for this provider.
+	 */
+	protected function resolveGroupMatches(string $username, array $memberships, array $groupNames): ?array {
+		if (!cacti_sizeof($groupNames)) {
+			return [];
+		}
+
+		$servers = preg_split('/\s+/', trim((string) $this->param('server')));
+
+		if (!is_array($servers)) {
+			return null;
+		}
+
+		foreach ($servers as $server) {
+			if ($server === '') {
+				continue;
+			}
+
+			$ldap           = $this->buildLdap($server);
+			$ldap->username = $username;
+
+			$matched = $ldap->ResolveGroupMemberships($username, $groupNames);
+
+			// null means this server could not be searched; try the next one.
+			// A non-null array (even empty) is authoritative for this login.
+			if ($matched !== null) {
+				return $matched;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * @return array{full_name: string, email: string}
 	 */
 	protected function resolveClaims(string $server, string $username): array {
