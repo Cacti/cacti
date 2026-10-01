@@ -120,3 +120,28 @@ test('cache-out skips excluded rows before building collector directories', func
 	expect($body)->toContain('should_ignore_from_replication($path[\'path\'])');
 });
 
+test('cache-in change detection skips ignored paths before logging or updating', function () {
+	// Regression guard for the per-poll-cycle log spam fix. cache_in_path()
+	// runs change detection *before* update_db_from_path(), so it must consult
+	// should_ignore_from_replication() up front and return. Without that early
+	// return an ignored dotfile (.gitignore, .mdlrc, ...) is logged and
+	// re-processed every cycle: its md5 is never stored, so it is forever
+	// re-detected as "changed". Pin the guard ahead of the first
+	// change-detection log line so the regression cannot silently return.
+	$source = file_get_contents(dirname(__DIR__, 4) . '/lib/poller.php');
+
+	expect($source)->not->toBeFalse();
+
+	$start = strpos($source, 'function cache_in_path(');
+	expect($start)->not->toBeFalse();
+
+	$end  = strpos($source, "\nfunction ", $start + 1);
+	$body = $end === false ? substr($source, $start) : substr($source, $start, $end - $start);
+
+	$guard = strpos($body, 'should_ignore_from_replication($path)');
+	$log   = strpos($body, 'NOTE: Detecting Resource Change');
+
+	expect($guard)->not->toBeFalse()
+		->and($log)->not->toBeFalse()
+		->and($guard)->toBeLessThan($log);
+});
