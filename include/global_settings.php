@@ -295,6 +295,8 @@ $settings = array(
 			'description' => __('Select which files you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files selected will be treated as they are in Debug mode.'),
 			'method' => 'drop_multi',
 			'array' => $logfiles,
+			'select_all_text' => __('Select File(s)'),
+			'select_count_text' => __('Files Selected'),
 			'default' => ''
 		),
 		'selective_plugin_debug' => array(
@@ -302,6 +304,8 @@ $settings = array(
 			'description' => __('Select which Plugins you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files used by this plugin will be treated as they are in Debug mode.'),
 			'method' => 'drop_multi',
 			'array' => $logplugins,
+			'select_all_text' => __('Select Plugin(s)'),
+			'select_count_text' => __('Plugins Selected'),
 			'default' => ''
 		),
 		'selective_device_debug' => array(
