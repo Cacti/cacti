@@ -534,6 +534,7 @@ function form_save() : void {
 		$auto_assignments = [];
 
 		foreach ($providers as $provider) {
+			// no-validation: free-text IdP/directory group name; escaped at every sink (ldap_escape in group lookups, prepared statements / json_encode on store)
 			$group_name = trim((string) CactiValidator::validateInput(gnrv('auto_assign_' . $provider['id'], ''), 'auto_assign_' . $provider['id'], [], 3));
 
 			if ($group_name !== '') {
