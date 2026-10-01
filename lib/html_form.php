@@ -1297,9 +1297,9 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 
 	/* The drop_multi form method renders a select2 'N Selected' multi dropdown by default.
 	 * A caller keeps the legacy jquery-multiselect widget (e.g. the Scheduler used by
-	 * Automation Networks, Data Source Profiles and Settings selective debug) by including
-	 * 'multiselect' in $class; those pages supply their own .multiselect() init and must not
-	 * also be decorated by select2. */
+	 * Automation Networks, and the Data Source Profiles Consolidation Functions) by
+	 * including 'multiselect' in $class; those pages supply their own .multiselect() init
+	 * and must not also be decorated by select2. */
 	$class = trim($class);
 
 	if (!preg_match('/(^|\s)multiselect(\s|$)/', $class) &&
