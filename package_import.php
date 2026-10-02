@@ -2000,7 +2000,7 @@ function get_repo_file(string $repo_id, string $filename = 'package.manifest', b
 			}
 
 			if (!$javascript) {
-				raise_message('repo_missing', __('The Repo \'%s\' is NOT Reachable on GitHub or the \'%s\' file is missing or it could be an invalid branch.  Valid Package Locations are normally: https://github.com/Author/RepoName/.', $repo['name'], $filename), MESSAGE_LEVEL_ERROR);
+				raise_message('repo_missing', __esc('The Repo \'%s\' is NOT Reachable on GitHub or the \'%s\' file is missing or it could be an invalid branch.  Valid Package Locations are normally: https://github.com/Author/RepoName/.', $repo['name'], $filename), MESSAGE_LEVEL_ERROR);
 			}
 		} elseif ($repo['repo_type'] == 2) { // Direct URL
 			$file = $repo['repo_location'] . '/' . $filename;

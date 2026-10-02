@@ -3381,7 +3381,7 @@ function api_device_template_archive_for_export(int $id) : mixed {
 			$success = package_template($xml_data, $info, $files, $debug);
 
 			if ($export_errors || !$success) {
-				raise_message('package_error_' . $id, __('There were errors packaging your Device Template: %s.  Errors Follow. ', $info['name']) . str_replace("\n", '<br>', $debug), MESSAGE_LEVEL_ERROR);
+				raise_message('package_error_' . $id, __esc('There were errors packaging your Device Template: %s.  Errors Follow. ', $info['name']) . str_replace("\n", '<br>', $debug), MESSAGE_LEVEL_ERROR);
 
 				return false;
 			}
@@ -3464,7 +3464,7 @@ function api_device_template_archive(int $id, string $archive_note) : bool {
 			$success = package_template($xml_data, $info, $files, $debug);
 
 			if ($export_errors || !$success) {
-				raise_message('package_error_' . $id, __('There were errors packaging your Device Template: %s.  Errors Follow. ', $info['name']) . str_replace("\n", '<br>', $debug), MESSAGE_LEVEL_ERROR);
+				raise_message('package_error_' . $id, __esc('There were errors packaging your Device Template: %s.  Errors Follow. ', $info['name']) . str_replace("\n", '<br>', $debug), MESSAGE_LEVEL_ERROR);
 
 				return false;
 			}

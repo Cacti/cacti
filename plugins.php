@@ -171,7 +171,7 @@ if (isrv('plugin')) {
 	}
 
 	if (in_array($plugin, $plugins_integrated, true)) {
-		raise_message('invalid_plugin_action', __esc('The action \'%s\' \'%s\' on Plugin \'%s\' can not be taken as the Plugin is integrated.', $display_action, $plugin), MESSAGE_LEVEL_ERROR);
+		raise_message('invalid_plugin_action', __esc('The action \'%s\' on Plugin \'%s\' can not be taken as the Plugin is integrated.', $display_action, $plugin), MESSAGE_LEVEL_ERROR);
 		header('Location: plugins.php');
 
 		exit;

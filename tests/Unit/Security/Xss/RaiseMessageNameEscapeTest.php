@@ -9,13 +9,15 @@
 
 /*
  * GHSA-9737-rqh3-h7fh: names interpolated into raise_message() went through
- * __() (no escaping) across many pages. Those sinks now use __esc(). None carry
- * a URL. This asserts no name-bearing unescaped form remains in the swept files.
+ * __() (no escaping) across many pages. Those sinks now use __esc(). A static
+ * URL in the message text does not exempt a line whose interpolated value still
+ * needs escaping. This asserts no name-bearing unescaped form remains in the
+ * swept files.
  */
 
 $root = dirname(__DIR__, 4);
 
-$files = array('/lib/api_device.php', '/host.php', '/lib/utility.php');
+$files = array('/lib/api_device.php', '/host.php', '/lib/utility.php', '/package_repos.php', '/package_import.php');
 
 test('no name-bearing raise_message(..., __(...$...)) remains in the swept files', function () use ($root, $files) {
 	foreach ($files as $file) {
@@ -26,10 +28,11 @@ test('no name-bearing raise_message(..., __(...$...)) remains in the swept files
 				&& strpos($line, ', __(') !== false
 				&& strpos($line, '$') !== false
 				&& strpos($line, 'html_escape') === false
-				// messages that intentionally build HTML or carry a URL are
-				// excluded from the sweep, exactly as the conversion was
+				// messages that intentionally build an HTML anchor or issue a
+				// redirect are excluded, exactly as the conversion was; a static
+				// URL in display text is not a reason to skip escaping
 				&& preg_match('/<[a-zA-Z\/]|&[a-z]+;|&#/', $line) === 0
-				&& preg_match('/http|href|<a |url_path|Location:/', $line) === 0) {
+				&& preg_match('/href|<a |url_path|Location:/', $line) === 0) {
 				expect($line)->toBe('__swept__:' . $file);
 			}
 		}
