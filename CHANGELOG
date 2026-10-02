@@ -1,6 +1,15 @@
 Cacti CHANGELOG
 
 1.2.x
+-security#GHSA-227p-wv52-pjg5: Escape the spike-removal RRD path passed to the removespikes shell command
+-security#GHSA-2x86-jpm8-9vgp: Confine the data-query XML file existence check to the Cacti base path
+-security#GHSA-4gph-8x7q-h365: Escape the device description in the report-add status message
+-security#GHSA-73qf-hq23-c4m7: Authorize the tree copy, lock and unlock actions against per-tree access before mutating
+-security#GHSA-f7jw-gfhr-cxwm: Escape the Resulting Branch value in the automation tree-rule matching preview
+-security#GHSA-h5wg-qf6f-7f6r: Reject unsafe identifiers in the plugin table create and drop helpers
+-security#GHSA-m57p-vf3v-cpgg: Escape the SNMP-sourced device description in the automation tree-rule matching preview
+-security#GHSA-m6wx-f538-m6q3: Enforce the .log extension on the Boost debug log path setting
+-security#GHSA-r6jp-ff29-v9qw: Escape the imported template name in the template-import preview
 -security#GHSA-4rmr-wvjq-qxc2: Run the per-page realm check after Basic Auth and guest login instead of returning early
 -security#GHSA-j67j-wpm4-9g3x: Require a CSRF-token POST for the user and group update_policy action
 -security#GHSA-2p3x-f5jm-rg6p: Break the View-Graphs to poller remote code execution chain

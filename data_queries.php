@@ -1222,7 +1222,14 @@ function data_query_edit() {
 		$replace      = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
 		$xml_filename = str_replace($search, $replace, $snmp_query['xml_path']);
 
-		if ((file_exists($xml_filename)) && (is_file($xml_filename))) {
+		// Confine the resolved path to the Cacti base path so this located/not-located
+		// check cannot be used as a filesystem existence oracle (GHSA-2x86-jpm8-9vgp).
+		// cacti_path_is_within() normalizes Windows casing/long-path forms and matches
+		// the containment check used by the XML loader in lib/data_query.php.  Reject a
+		// NUL byte first so realpath() cannot throw a ValueError on PHP 8+.
+		if ($xml_filename !== '' && strpos($xml_filename, "\0") === false &&
+			cacti_path_is_within($xml_filename, $config['base_path']) &&
+			is_file($xml_filename)) {
 			$text = "<span class='deviceUp'>" . __('Successfully located XML file') . "</span>";
 			$xml_file_exists = true;
 		} else {
