@@ -813,6 +813,15 @@ if ($config['is_web']) {
 	if (isrv('action')) {
 		$action = gnrv('action');
 
+		// GHSA-w3qw-762w-6g9v: an array-form action[] makes every scalar
+		// $action == $bad comparison below false, slipping a state-changing
+		// action past this guard. A real action is never an array here.
+		if (is_array($action)) {
+			header('Allow: POST');
+			http_response_code(405);
+			exit;
+		}
+
 		// State-changing actions must arrive by POST with a CSRF token. Their
 		// links use cactiPostAction so the query fields and token are submitted
 		// in the request body instead of remaining cross-origin GET targets.

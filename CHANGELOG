@@ -1,20 +1,25 @@
 Cacti CHANGELOG
 
 1.3.0-dev
--security: Validate host_id before it is concatenated into the graph_view list and preview filter WHERE clauses (GHSA-r7hc-hrpv-52gf) (#8100) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
--security: Validate and bind local_graph_id in the aggregate graph item sequence query (GHSA-6mjm-5vwr-3fr2) (#8099) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
--security: Grant AllowOverride All in docker/apache.conf so shipped .htaccess denies on log/cache/scripts/cli take effect (GHSA-fxfg-j995-j69j)
--security: Authorize the bulk Change Data Source Profile action against the owning device (GHSA-fc82-w6xq-4jg7)
--security: Authorize Data Source enable/disable against the owning device before mutating (GHSA-2fhv-c794-v433)
--security: Confine Reports format_file to a bare filename to close a path traversal/LFI regression (GHSA-5x27-wqpm-m24v)
--security: Reject ORDER BY sort_column subquery payloads that bypassed the GHSA-q9xg-p762-9jm3 fix (GHSA-8j73-cvf6-jrvx)
--security: Authorize Report save/edit against report ownership to close an authenticated IDOR (GHSA-8f5c-3h59-q7gc)
--security: Stop building the Realtime RRD create command through a shell and validate DS bounds are numeric before they reach it (GHSA-f88m-q789-g22j)
--security: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating (GHSA-prxj-84qq-v5jq)
--security: Authorize single-item Report actions (remove/move) against report ownership to close a guest-bind IDOR (GHSA-j5jh-fhwg-r56x)
--security: Use validate_redirect_url() for the CSRF timeout redirect to close a tab-based open redirect bypass (GHSA-c725-4jm5-9fx5)
--security: Require Package Management permission to trust new package signers (GHSA-gxgm-8rhv-r7jv)
--security: Harden cmd.exe shell sinks and strip %VAR% from hostnames on win32 (GHSA-rjvj-r52f-8v5q) (#8056)
+-security#GHSA-77pr-g949-4v5f: Authorize the target graph before Spike Kill rewrites its RRD history (#8141)
+-security#GHSA-w3qw-762w-6g9v: Reject array-form GET actions that bypass the POST and CSRF guard (#8141)
+-security#GHSA-xhpr-w454-cc9w: Cast the stored data-query output_type before building the poller cache query (#8141)
+-security#GHSA-j3px-vw6r-g25x: Escape stored snmp_index values in the New Graphs data-query pivot (#8141)
+-security#GHSA-h745-3r76-g253: Escape the data-query and field names in the New Graphs parse error messages (#8141)
+-security#GHSA-r7hc-hrpv-52gf: Validate host_id before it is concatenated into the graph_view list and preview filter WHERE clauses (#8100) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
+-security#GHSA-6mjm-5vwr-3fr2: Validate and bind local_graph_id in the aggregate graph item sequence query (#8099) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
+-security#GHSA-fxfg-j995-j69j: Grant AllowOverride All in docker/apache.conf so shipped .htaccess denies on log/cache/scripts/cli take effect
+-security#GHSA-fc82-w6xq-4jg7: Authorize the bulk Change Data Source Profile action against the owning device
+-security#GHSA-2fhv-c794-v433: Authorize Data Source enable/disable against the owning device before mutating
+-security#GHSA-5x27-wqpm-m24v: Confine Reports format_file to a bare filename to close a path traversal/LFI regression
+-security#GHSA-8j73-cvf6-jrvx: Reject ORDER BY sort_column subquery payloads that bypassed the GHSA-q9xg-p762-9jm3 fix
+-security#GHSA-8f5c-3h59-q7gc: Authorize Report save/edit against report ownership to close an authenticated IDOR
+-security#GHSA-f88m-q789-g22j: Stop building the Realtime RRD create command through a shell and validate DS bounds are numeric before they reach it
+-security#GHSA-prxj-84qq-v5jq: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating
+-security#GHSA-j5jh-fhwg-r56x: Authorize single-item Report actions (remove/move) against report ownership to close a guest-bind IDOR
+-security#GHSA-c725-4jm5-9fx5: Use validate_redirect_url() for the CSRF timeout redirect to close a tab-based open redirect bypass
+-security#GHSA-gxgm-8rhv-r7jv: Require Package Management permission to trust new package signers
+-security#GHSA-rjvj-r52f-8v5q: Harden cmd.exe shell sinks and strip %VAR% from hostnames on win32 (#8056)
 -security: Reject SHA-1 signatures across every package import path
 -security: Escape path_dsstats_log before it reaches the dsstats poller shell redirect
 -security: Revoke anonymous access when the guest account is disabled
@@ -490,12 +495,12 @@ Cacti CHANGELOG
 -issue#6183: Checkbox is displayed always on in some cases
 
 1.2.29
--security#GHSA-pv2c-97pp-vxwg: Local File Inclusion (LFI) Vulnerability via Poller Standard Error Log Path
--security#GHSA-f9c7-7rc3-574c: SQL Injection vulnerability when using tree rules through Automation API
+-security#GHSA-pv2c-97pp-vxwg: CVE-2024-45598 Local File Inclusion (LFI) Vulnerability via Poller Standard Error Log Path
+-security#GHSA-f9c7-7rc3-574c: CVE-2025-24368 SQL Injection vulnerability when using tree rules through Automation API
 -security#GHSA-vj9g-P7F2-4wqj: SQL Injection vulnerability when view host template
--security#GHSA-fh3x-69rr-qqpp: SQL Injection vulnerability when request automation devices
--security#GHSA-c5j8-jxj3-hh36: Authenticated RCE via multi-line SNMP responses
--security#GHSA-fxrq-fr7h-9rqq: Arbitrary File Creation leading to RCE
+-security#GHSA-fh3x-69rr-qqpp: CVE-2024-54145 SQL Injection vulnerability when request automation devices
+-security#GHSA-c5j8-jxj3-hh36: CVE-2025-22604 Authenticated RCE via multi-line SNMP responses
+-security#GHSA-fxrq-fr7h-9rqq: CVE-2025-24367 Arbitrary File Creation leading to RCE
 -issue#5843: Issue with temporary tables with use of microtime
 -issue#5847: Presets Time in Cacti 1.2.28 Not Automatically Updating...
 -issue#5848: RRDfile Auto Clean not working
@@ -517,10 +522,10 @@ Cacti CHANGELOG
 -feature#5933: Only attempt to change the table type and character encoding for built-in Cacti tables
 
 1.2.28
--security#GHSA-49f2-hwx9-qffr: XSS vulnerability when creating external links with the consolenewsection parameter
--security#GHSA-fgc6-g8gc-wcg5: XSS vulnerability when creating external links with the title parameter
--security#GHSA-gxq4-mv8h-6qj4: RCE vulnerability can be executed via Log Poisoning
--security#GHSA-wh9c-v56x-v77c: XSS vulnerability when creating external links with the fileurl parameter
+-security#GHSA-49f2-hwx9-qffr: CVE-2024-43365 XSS vulnerability when creating external links with the consolenewsection parameter
+-security#GHSA-fgc6-g8gc-wcg5: CVE-2024-43364 XSS vulnerability when creating external links with the title parameter
+-security#GHSA-gxq4-mv8h-6qj4: CVE-2024-43363 RCE vulnerability can be executed via Log Poisoning
+-security#GHSA-wh9c-v56x-v77c: CVE-2024-43362 XSS vulnerability when creating external links with the fileurl parameter
 -issue#5636: When using LDAP authentication the first time, warnings may appear in logs
 -issue#5754: When installing, a replication loop for plugin_realms may occur
 -issue#5759: When installing, remote poller may attempt to sync with other pollers
@@ -557,15 +562,15 @@ Cacti CHANGELOG
 -feature: Improve the performance of the repopulation of the poller cache
 
 1.2.27
--security#GHSA-37x7-mfjv-mm7m: Authentication Bypass when using using older password hashes
--security#GHSA-7cmj-g5qc-pj88: RCE vulnerability when importing packages
--security#GHSA-cx8g-hvq8-p2rv: RCE vulnerability when plugins include files
--security#GHSA-gj3f-p326-gh8r: SQL Injection vulnerability when using tree rules through Automation API
--security#GHSA-grj5-8fcj-34gh: XSS vulnerability when using JavaScript based messaging API
--security#GHSA-jrxg-8wh8-943x: SQL Injection vulnerability when using form templates
--security#GHSA-p4ch-7hjw-6m87: XSS vulnerability when reading tree rules with Automation API
--security#GHSA-rqc8-78cm-85j3: XSS vulnerability when managing data queries
--security#GHSA-vjph-r677-6pcc: SQL Injection vulnerability when retrieving graphs using Automation API
+-security#GHSA-37x7-mfjv-mm7m: CVE-2024-34340 Authentication Bypass when using using older password hashes
+-security#GHSA-7cmj-g5qc-pj88: CVE-2024-25641 RCE vulnerability when importing packages
+-security#GHSA-cx8g-hvq8-p2rv: CVE-2024-31459 RCE vulnerability when plugins include files
+-security#GHSA-gj3f-p326-gh8r: CVE-2024-31460 SQL Injection vulnerability when using tree rules through Automation API
+-security#GHSA-grj5-8fcj-34gh: CVE-2024-29894 XSS vulnerability when using JavaScript based messaging API
+-security#GHSA-jrxg-8wh8-943x: CVE-2024-31458 SQL Injection vulnerability when using form templates
+-security#GHSA-p4ch-7hjw-6m87: CVE-2024-31444 XSS vulnerability when reading tree rules with Automation API
+-security#GHSA-rqc8-78cm-85j3: CVE-2024-31443 XSS vulnerability when managing data queries
+-security#GHSA-vjph-r677-6pcc: CVE-2024-31445 SQL Injection vulnerability when retrieving graphs using Automation API
 -issue#5622: Improve PHP 8.3 support
 -issue#5628: When importing packages via command line, data source profile could not be selected
 -issue#5629: When changing password, returning to previous page does not always work
@@ -637,24 +642,24 @@ Cacti CHANGELOG
 -feature#5597: Add OSCX 6x00 templates
 
 1.2.25
--security#GHSA-77rf-774j-6h3p: Protect against Insecure deserialization of filter data
--security#GHSA-gx8c-xvjh-9qh4: Protect against Cross-Site Scripting vulnerability when creating new graphs
--security#GHSA-6r43-q2fw-5wrg: Protect against Unauthenticated SQL Injection when viewing graphs
--security#GHSA-6jhp-mgqg-fhqg: Protect against SQL Injection when saving data with sql_save()
--security#GHSA-g6ff-58cj-x3cp: Protect against Authenticated command injection when using SNMP options
--security#GHSA-q4wh-3f9w-836h: Protect against Authenticated SQL injection vulnerability when managing graphs
--security#GHSA-gj95-7xr8-9p7g: Protect against Authenticated SQL injection vulnerability when managing reports
--security#GHSA-v5w7-hww7-2f22: Protect against SQL Injection when using regular expressions
--security#GHSA-4pjv-rmrp-r59x: Protect against Open redirect in change password functionality
--security#GHSA-rwhh-xxm6-vcrv: Protect against Cross-Site Scripting vulnerability with Device Name when managing Data Sources
--security#GHSA-24w4-4hp2-3j8h: Protect against Cross-Site Scripting vulnerability with Device Name when administrating Reports
--security#GHSA-5hpr-4hhc-8q42: Protect against Cross-Site Scripting vulnerability with Device Name when editing Graphs whilst managing Reports
--security#GHSA-vqcc-5v63-g9q7: Protect against Cross-Site Scripting vulnerability with Device Name when managing Data Sources
--security#GHSA-9fj7-8f2j-2rw2: Protect against Cross-Site Scripting vulnerability with Device Name when debugging data queries
--security#GHSA-6hrc-2cfc-8hm7: Protect against Cross-Site Scripting vulnerability with Data Source Name when managing Graphs
--security#GHSA-hrg9-qqqx-wc4h: Protect against Cross-Site Scripting vulnerability with Data Source Name when debugging Data Queries
--security#GHSA-r8qq-88g3-hmgv: Protect against Cross-Site Scripting vulnerability with Data Source Information when managing Data Sources
--security#GHSA-rf5w-pq3f-9876: Protect against Privilege escalation when Cacti installed using Windows Installer defaults
+-security#GHSA-77rf-774j-6h3p: CVE-2023-30534 Protect against Insecure deserialization of filter data
+-security#GHSA-gx8c-xvjh-9qh4: CVE-2023-39360 Protect against Cross-Site Scripting vulnerability when creating new graphs
+-security#GHSA-6r43-q2fw-5wrg: CVE-2023-39361 Protect against Unauthenticated SQL Injection when viewing graphs
+-security#GHSA-6jhp-mgqg-fhqg: CVE-2023-39357 Protect against SQL Injection when saving data with sql_save()
+-security#GHSA-g6ff-58cj-x3cp: CVE-2023-39362 Protect against Authenticated command injection when using SNMP options
+-security#GHSA-q4wh-3f9w-836h: CVE-2023-39359 Protect against Authenticated SQL injection vulnerability when managing graphs
+-security#GHSA-gj95-7xr8-9p7g: CVE-2023-39358 Protect against Authenticated SQL injection vulnerability when managing reports
+-security#GHSA-v5w7-hww7-2f22: CVE-2023-39365 Protect against SQL Injection when using regular expressions
+-security#GHSA-4pjv-rmrp-r59x: CVE-2023-39364 Protect against Open redirect in change password functionality
+-security#GHSA-rwhh-xxm6-vcrv: CVE-2023-39366 Protect against Cross-Site Scripting vulnerability with Device Name when managing Data Sources
+-security#GHSA-24w4-4hp2-3j8h: CVE-2023-39510 Protect against Cross-Site Scripting vulnerability with Device Name when administrating Reports
+-security#GHSA-5hpr-4hhc-8q42: CVE-2023-39511 Protect against Cross-Site Scripting vulnerability with Device Name when editing Graphs whilst managing Reports
+-security#GHSA-vqcc-5v63-g9q7: CVE-2023-39512 Protect against Cross-Site Scripting vulnerability with Device Name when managing Data Sources
+-security#GHSA-9fj7-8f2j-2rw2: CVE-2023-39513 Protect against Cross-Site Scripting vulnerability with Device Name when debugging data queries
+-security#GHSA-6hrc-2cfc-8hm7: CVE-2023-39514 Protect against Cross-Site Scripting vulnerability with Data Source Name when managing Graphs
+-security#GHSA-hrg9-qqqx-wc4h: CVE-2023-39515 Protect against Cross-Site Scripting vulnerability with Data Source Name when debugging Data Queries
+-security#GHSA-r8qq-88g3-hmgv: CVE-2023-39516 Protect against Cross-Site Scripting vulnerability with Data Source Information when managing Data Sources
+-security#GHSA-rf5w-pq3f-9876: CVE-2023-31132 Protect against Privilege escalation when Cacti installed using Windows Installer defaults
 -issue#2959: When rebuilding the Poller Cache from command line, allow it to be multi-threaded
 -issue#4045: When searching tree or list views, the URL does not update after changes
 -issue#5254: When creating a Data Source Template with a specific snmp port, the port is not always applied
