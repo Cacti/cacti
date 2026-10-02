@@ -265,7 +265,7 @@ case 'save':
 
 			foreach($pollers as $p => $t) {
 				if ($t > $gone_time) {
-					raise_message('poller_' . $p, __('Settings save to Data Collector %d skipped due to heartbeat.', $p), MESSAGE_LEVEL_WARN);
+					raise_message('poller_' . $p, __esc('Settings save to Data Collector %d skipped due to heartbeat.', $p), MESSAGE_LEVEL_WARN);
 				} else {
 					$rcnn_id = poller_connect_to_remote($p);
 
@@ -277,7 +277,7 @@ case 'save':
 
 					// check if we still have rcnn_id, if it's now become false, we had a problem
 					if (!$rcnn_id) {
-						raise_message('poller_' . $p, __('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
+						raise_message('poller_' . $p, __esc('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
 					}
 				}
 			}

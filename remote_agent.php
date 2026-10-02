@@ -186,8 +186,12 @@ function remote_agent_auth_cache_set($key, $value, $ttl = 30) {
 function remote_client_authorized() {
 	global $config, $poller_db_cnn_id;
 
-	/* don't allow to run from the command line */
-	$client_addr = get_client_addr();
+	/* GHSA-h96j-8xhc-2p3w: authorize on the genuine TCP peer, not
+	 * get_client_addr(), which honours client-settable proxy headers
+	 * (X-Forwarded-For, etc.). A remote data collector connects directly, so a
+	 * forwarded header must never be allowed to decide this access check. A
+	 * proxied deployment must list the proxy's own address as a poller. */
+	$client_addr = $_SERVER['REMOTE_ADDR'] ?? false;
 	if ($client_addr === false) {
 		return false;
 	}

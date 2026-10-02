@@ -121,7 +121,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			}
 
 			if (is_dir($config['base_path'] . '/plugins/' . $id)) {
-				raise_message('force_remove_present', __('Plugin \'%s\' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead.', $id), MESSAGE_LEVEL_ERROR);
+				raise_message('force_remove_present', __esc('Plugin \'%s\' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead.', $id), MESSAGE_LEVEL_ERROR);
 
 				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 				exit;
@@ -136,7 +136,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 				array('%' . $id . '%'));
 
 			if ($required != '') {
-				raise_message('force_remove_required', __('Plugin \'%s\' can not be Force Uninstalled because it is still required by: \'%s\'', $id, ucfirst($required)), MESSAGE_LEVEL_ERROR);
+				raise_message('force_remove_required', __esc('Plugin \'%s\' can not be Force Uninstalled because it is still required by: \'%s\'', $id, ucfirst($required)), MESSAGE_LEVEL_ERROR);
 
 				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 				exit;

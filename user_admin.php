@@ -35,6 +35,15 @@ $user_actions = array(
 set_default_action();
 
 if (isset_request_var('update_policy')) {
+	/* GHSA-j67j-wpm4-9g3x: update_policy is read before the action dispatcher, so
+	 * the global.php GET/CSRF denylist cannot cover it. Require a CSRF-token POST
+	 * before rewriting the user's permission policy. */
+	if (!isset($_POST['__csrf_magic'])) {
+		header('Allow: POST');
+		http_response_code(405);
+		exit;
+	}
+
 	update_policies();
 } else {
 	switch (get_request_var('action')) {
