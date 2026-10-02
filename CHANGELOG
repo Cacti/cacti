@@ -15,7 +15,6 @@ Cacti CHANGELOG
 -security#GHSA-j3px-vw6r-g25x: Escape stored snmp_index values in the New Graphs data-query pivot
 -security#GHSA-h745-3r76-g253: Escape the data-query and field names in the New Graphs parse error messages
 -security#GHSA-297h-95ff-r767: Escape the log-file names in the log viewer file selector
--security#GHSA-r7hc-hrpv-52gf: Validate host_id before the graph_view filter WHERE clauses
 -security: Strip cmd.exe metacharacters from SNMP, script query, and data query arguments on win32
 -security: Strip CR/LF from escape_command to stop rrdtool-protocol injection
 -security#GHSA-5c9j-rhf5-rj4h: Harden Net-SNMP command execution and SNMP cache processing
@@ -32,7 +31,7 @@ Cacti CHANGELOG
 -security: Cast graph and device ids to int in get_allowed_* permission filters
 -security: Set the Secure session cookie behind a trusted TLS-terminating proxy
 -security: Escape path_dsstats_log before logging
--security#GHSA-6mjm-5vwr-3fr2: Escape aggregate graph local_graph_id before SQL use
+-security: Escape aggregate graph local_graph_id before SQL use
 -security: Reject Windows-special log filename forms in the clog purge validation
 -security: Substitute query data before escaping graph titles and axis labels
 -security: Build forced-HTTPS redirects from the server-configured name
