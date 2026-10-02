@@ -213,7 +213,7 @@ fs_write	./script_server.php		define('STDIN', fopen('php://stdin', 'r'));
 fs_write	./script_server.php		define('STDOUT', fopen('php://stdout', 'w'));
 fs_write	./scripts/ss_net_snmp_disk_bytes.php				file_put_contents("$tmpdir/$tmpfile", $data);
 fs_write	./scripts/ss_net_snmp_disk_io.php				file_put_contents("$tmpdir/$tmpfile", $data);
-fs_write	./snmpagent_mibcachechild.php			file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
+fs_write	./snmpagent_mibcachechild.php				file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
 fs_write	./snmpagent_mibcachechild.php		$lock = fopen($path_mibcache_lock, 'w');
 fs_write	./support.php		$fp = @fopen($file, 'rb');
 fs_write	./templates_import.php				$fp       = fopen($_FILES['import_file']['tmp_name'],'r');
@@ -680,5 +680,5 @@ header_redirect	./utilities.php			header('Location: utilities.php?action=view_sn
 xml_parse	./cli/genmanifest.php							$xmldata = simplexml_load_string($data);
 xml_parse	./cli/rrdresize.php						$rrd_data = json_decode((string) json_encode(simplexml_load_string($file_dump)), true);
 xml_parse	./install/functions.php				$xmlget = simplexml_load_string($xml);
-xml_parse	./lib/import.php		$xmlget = simplexml_load_string((string) $data);
 xml_parse	./lib/import.php		$xmlget = simplexml_load_string($xml);
+xml_parse	./lib/import.php		$xmlget = simplexml_load_string((string) $data);
