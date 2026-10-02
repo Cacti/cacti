@@ -124,7 +124,7 @@ foreach ($parms as $parameter) {
 
 			break;
 		case '--child':
-			$thread_id = $value;
+			$thread_id = (int) $value;
 
 			break;
 		case '--force':
@@ -398,7 +398,7 @@ function sig_handler(int $signo) : void {
 				pushout_kill_running_processes();
 			}
 
-			unregister_process('pushout' . $rp_type, 'rmaster', $thread_id, getmypid());
+			unregister_process('pushout' . $rp_type, 'rmaster', $thread_id, (int) getmypid());
 
 			exit(1);
 		default:

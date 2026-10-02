@@ -45,7 +45,7 @@ $columns = 80;
 
 if (CACTI_SERVER_OS == 'unix' && stream_isatty(STDIN)) {
 	$stty  = shell_exec('stty size');
-	$sizes = explode(' ', $stty);
+	$sizes = explode(' ', (string) $stty);
 
 	if (!empty($sizes[1])) {
 		$columns = $sizes[1];

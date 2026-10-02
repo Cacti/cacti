@@ -90,7 +90,7 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case '--child':
-				$thread_id = $value;
+				$thread_id = (int) $value;
 
 				break;
 			case '--version':
@@ -482,7 +482,7 @@ function sig_handler($signo) : void {
 				dsstats_kill_running_processes();
 			}
 
-			unregister_process('dsstats', $type, $thread_id, getmypid());
+			unregister_process('dsstats', $type, $thread_id, (int) getmypid());
 
 			exit(1);
 		default:

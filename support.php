@@ -1175,7 +1175,7 @@ function show_database_tables() : void {
 function show_cacti_changelog() : void {
 	$changelog = file(CACTI_PATH_BASE . '/CHANGELOG');
 
-	foreach ($changelog as $s) {
+	foreach (($changelog ?: []) as $s) {
 		if (trim($s) == '') {
 			continue;
 		}
@@ -2020,7 +2020,7 @@ function show_tech_environment() : void {
 
 	if ($php_binary != '' && file_exists($php_binary) && is_executable($php_binary)) {
 		$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions');
-		$cli_ext  = @json_decode($cli_json, true);
+		$cli_ext  = @json_decode((string) $cli_json, true);
 
 		if (is_array($cli_ext)) {
 			foreach ($cli_ext as $name => $ext) {
@@ -2176,7 +2176,7 @@ function support_redact(string $value) : string {
 	$value = preg_replace_callback('/(?:[0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}/', function ($m) {
 		return filter_var($m[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false ? '<ipv6>' : $m[0];
 	}, $value);
-	$value = preg_replace('/\b(?:\d{1,3}\.){3}\d{1,3}\b/', '<ipv4>', $value);
+	$value = preg_replace('/\b(?:\d{1,3}\.){3}\d{1,3}\b/', '<ipv4>', (string) $value);
 
 	// FQDNs (foo.bar.example).  The alphabetic TLD requirement leaves version
 	// numbers such as 1.7.2 untouched.  This must run before the node-name
@@ -2184,7 +2184,7 @@ function support_redact(string $value) : string {
 	// in "db01.local"), masking the node name first would strip the prefix and
 	// leave a bare suffix ("local") that no longer looks like an FQDN, leaking
 	// part of the domain.
-	$value = preg_replace('/\b(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}\b/', '<host>', $value);
+	$value = preg_replace('/\b(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}\b/', '<host>', (string) $value);
 
 	// Replace this host's own node name wherever it appears (php_uname, SNMP banner, etc.).
 	$node = function_exists('php_uname') ? php_uname('n') : '';
@@ -2194,7 +2194,7 @@ function support_redact(string $value) : string {
 	}
 
 	// /home/<user>/ and /Users/<user>/ path segments.
-	$value = preg_replace('#/(?:home|Users)/[^/\s]+#', '/home/<redacted>', $value);
+	$value = preg_replace('#/(?:home|Users)/[^/\s]+#', '/home/<redacted>', (string) $value);
 
 	return $value;
 }

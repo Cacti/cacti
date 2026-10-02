@@ -1087,7 +1087,7 @@ function number_format_i18n(mixed $number, mixed $decimals = null, mixed $baseu 
 		cacti_log('DEBUG: Number format \'' . $fmt_key . '\' was unavailable, using older methods', false, 'i18n', POLLER_VERBOSITY_HIGH);
 	}
 
-	$origlocales = explode(';', setlocale(LC_ALL, null));
+	$origlocales = explode(';', (string) setlocale(LC_ALL, null));
 	setlocale(LC_ALL, $cacti_locale);
 	$locale = localeconv();
 

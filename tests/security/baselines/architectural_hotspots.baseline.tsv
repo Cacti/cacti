@@ -67,7 +67,7 @@ cmd_exec	./lib/poller.php					$fp = popen($command, 'rb');
 cmd_exec	./lib/poller.php					exec($safe_filename . ' ' . $args . ' ' . $redirect_args . ' &');
 cmd_exec	./lib/poller.php					exec($safe_filename . ' ' . $args . ' > /dev/null 2>&1 &');
 cmd_exec	./lib/poller.php				$output = shell_exec($command);
-cmd_exec	./lib/poller.php			$setsid_path = trim(shell_exec('which setsid 2>/dev/null') ?? '');
+cmd_exec	./lib/poller.php			$setsid_path = trim((string) shell_exec('which setsid 2>/dev/null'));
 cmd_exec	./lib/poller.php		$process = @proc_open($command, $descriptors, $pipes, null, null, ['bypass_shell' => true]);
 cmd_exec	./lib/poller.php		$process = proc_open('exec ' . $cmd_full, $descriptors, $pipes);
 cmd_exec	./lib/poller.php	 *                                    of the proc_open() and proc_close() functions (php 4.3+)

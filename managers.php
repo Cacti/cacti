@@ -653,7 +653,7 @@ function manager_logs(int $id, string $header_label) : void {
 				$description = '';
 				$lines       = preg_split('/\r\n|\r|\n/', $item['description']);
 
-				foreach ($lines as $line) {
+				foreach (($lines ?: []) as $line) {
 					$description .= htmle(trim($line)) . '<br>';
 				}
 

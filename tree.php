@@ -641,7 +641,7 @@ function sort_recursive(int $branch, int $tree_id) : void {
 }
 
 function leaves_exist(int $parent, int $tree_id) : int {
-	return db_fetch_assoc_prepared('SELECT COUNT(*)
+	return (int) db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM graph_tree_items
 		WHERE graph_tree_id = ?
 		AND parent = ?

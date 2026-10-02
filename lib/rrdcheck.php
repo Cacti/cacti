@@ -403,9 +403,9 @@ function do_rrdcheck(int $thread_id = 1) : void {
 
 						if ($first) {
 							// get the data source names
-							$data_source_names = preg_split('/\s+/', $line);
+							$data_source_names = preg_split('/\s+/', $line) ?: [];
 
-							foreach ($data_source_names as $index => $name) {
+							foreach (($data_source_names ?: []) as $index => $name) {
 								$nan_24[$index] = 0;
 								$nan_1[$index]  = 0;
 							}

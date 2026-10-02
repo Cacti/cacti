@@ -2585,7 +2585,7 @@ function verify_data_input_whitelist(string $hash, string $input_string) : mixed
 		return true;
 	}
 
-	$whitelist = json_decode(file_get_contents(CACTI_WHITELIST), true);
+	$whitelist = json_decode((string) file_get_contents(CACTI_WHITELIST), true);
 
 	if (isset($whitelist[$hash])) {
 		if ($input_string == $whitelist[$hash]) {
@@ -2614,7 +2614,7 @@ function graph_template_whitelist_check(int $graph_template_id) : bool {
 
 	// load whitelist, but only once within process execution
 	if ($data_input_whitelist == null) {
-		$data_input_whitelist = json_decode(file_get_contents(CACTI_WHITELIST), true);
+		$data_input_whitelist = json_decode((string) file_get_contents(CACTI_WHITELIST), true);
 
 		if ($data_input_whitelist === null) {
 			cacti_log('ERROR: Failed to parse input whitelist file: ' . CACTI_WHITELIST);

@@ -3983,7 +3983,7 @@ function rrdtool_function_theme_font_options(array &$graph_data_array) : string 
 			}
 		}
 
-		if (isset(${$themeborder}) && cacti_version_compare($rrdversion, '1.4', '>=')) { // @phpstan-ignore-line
+		if (isset(${$themeborder}) && cacti_version_compare($rrdversion, '1.4', '>=')) {
 			$graph_opts .= '--border ' . ${$themeborder} . RRD_NL; // @phpstan-ignore-line
 		}
 
@@ -5006,7 +5006,7 @@ function rrd_datasource_add(array $file_array, array $ds_array, bool $debug) : m
 			 * version 0003 => RRDtool 1.2.x, 1.3.x, 1.4.x, 1.5.x, 1.6.x
 			 */
 			$version_node = $dom->getElementsByTagName('version')->item(0);
-			$version      = $version_node !== null ? trim($version_node->nodeValue) : RRD_FILE_VERSION3;
+			$version      = $version_node !== null ? trim((string) $version_node->nodeValue) : RRD_FILE_VERSION3;
 
 			// now start XML processing
 			foreach ($ds_array as $ds) {

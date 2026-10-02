@@ -206,9 +206,9 @@ if ($output !== false && $output != '') {
 	}
 
 	if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
-		$image = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
+		$image = rrdtool_create_error_image((string) $error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
 	} else {
-		$image = rrdtool_create_error_image($error);
+		$image = rrdtool_create_error_image((string) $error);
 	}
 
 	ob_end_clean();

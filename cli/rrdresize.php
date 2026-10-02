@@ -237,7 +237,7 @@ $known_ds_types = [1 => 'GAUGE', 2 => 'COUNTER', 3 => 'DERIVE', 4 => 'ABSOLUTE']
 
 if ($scanned_directory['folders']) {
 	// create backup folder
-	if (!mkdir($tmp_backup_folder)) {
+	if (!mkdir((string) $tmp_backup_folder)) {
 		print 'ERROR: Unable to create a backup folder!' . PHP_EOL;
 
 		exit(1);
@@ -556,7 +556,7 @@ if ($scanned_directory['folders']) {
 					// ## log_missing
 					continue;
 				} else {
-					$rrd_data = json_decode(json_encode(simplexml_load_string($file_dump)), true);
+					$rrd_data = json_decode((string) json_encode(simplexml_load_string($file_dump)), true);
 
 					if ($rrd_data === false) {
 						f_notify(false, "\033[0;31m[FAILED]\033[0m");
@@ -939,7 +939,7 @@ function rrdtool_parse_info(string $lines) : array {
 		$key_count = count($keys);
 		$pointer   = &$store;
 
-		foreach ($keys as $key_num => $key) {
+		foreach (($keys ?: []) as $key_num => $key) {
 			$pointer = &$pointer[$key];
 
 			if ($key_num + 1 === $key_count) {
@@ -978,7 +978,7 @@ function rrdtool_pipe_execute(string $command, mixed $pipes) : string {
 		$line = fgets($pipes[1], 8092);
 
 		// return the complete output cause the logic behind a proxy should be as simple as possible
-		if (substr_count($line, 'OK u')) {
+		if (substr_count((string) $line, 'OK u')) {
 			break;
 		}
 		$stdout .= $line;

@@ -38,7 +38,7 @@ function ss_apache_stats(string $host = '', string $section = 'all') : mixed {
 	$url          = "http://$host/server-status?auto";
 	$result       = file_get_contents($url);
 	$array_result = [];
-	$array_result =  explode("\n",$result);
+	$array_result =  explode("\n",(string) $result);
 	$i            = 0;
 	$output       = '';
 	$line         = [];

@@ -1282,8 +1282,8 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 							$owner_id      = fileowner(CACTI_PATH_RRA);
 							$group_id      = filegroup(CACTI_PATH_RRA);
 
-							if ((chown($host_dir, $owner_id)) &&
-								(chgrp($host_dir, $group_id))) {
+							if ($owner_id !== false && $group_id !== false &&
+								chown($host_dir, $owner_id) && chgrp($host_dir, $group_id)) {
 								// permissions set ok
 							} else {
 								cacti_log("ERROR: Unable to set directory permissions for '" . $host_dir . "'", false);
@@ -3373,7 +3373,7 @@ function api_device_template_archive_for_export(int $id) : mixed {
 			if (cacti_sizeof($files)) {
 				foreach ($files as $file) {
 					if (str_contains($file['file'], '.xml')) {
-						$files = array_merge($files, find_dependent_files(file_get_contents($file['file'])));
+						$files = array_merge($files, find_dependent_files((string) file_get_contents($file['file'])));
 					}
 				}
 			}
@@ -3456,7 +3456,7 @@ function api_device_template_archive(int $id, string $archive_note) : bool {
 			if (cacti_sizeof($files)) {
 				foreach ($files as $file) {
 					if (str_contains($file['file'], '.xml')) {
-						$files = array_merge($files, find_dependent_files(file_get_contents($file['file'])));
+						$files = array_merge($files, find_dependent_files((string) file_get_contents($file['file'])));
 					}
 				}
 			}
@@ -3470,7 +3470,7 @@ function api_device_template_archive(int $id, string $archive_note) : bool {
 			}
 
 			if ($package_file != '' && file_exists($package_file)) {
-				$archive = base64_encode(file_get_contents($package_file));
+				$archive = base64_encode((string) file_get_contents($package_file));
 				$md5sum  = md5($archive);
 
 				db_execute_prepared('INSERT INTO host_template_archive

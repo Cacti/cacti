@@ -125,7 +125,7 @@ function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 
 	if (!db_table_exists('host_value_cache')) {
 		if (is_file("$tmpdir/$tmpfile")) {
-			$previous = json_decode(file_get_contents("$tmpdir/$tmpfile"), true);
+			$previous = json_decode((string) file_get_contents("$tmpdir/$tmpfile"), true);
 			$found    = true;
 		}
 	} else {

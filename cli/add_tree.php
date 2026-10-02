@@ -48,7 +48,8 @@ if (cacti_sizeof($parms)) {
 	$siteId     = 0;   // The ID of the site to add
 
 	$sortMethods = ['manual' => 1, 'alpha' => 2, 'natural' => 4, 'numeric' => 3];
-	$nodeTypes   = ['header' => 1, 'graph' => 2, 'host' => 3];
+	// 'site' reuses the host type id; api_tree_item_save() only uses the type to gate the title requirement
+	$nodeTypes   = ['header' => 1, 'graph' => 2, 'host' => 3, 'site' => 3];
 
 	$hostId         = 0;
 	$hostGroupStyle = 1; // 1 = Graph Template,  2 = Data Query Index
@@ -103,6 +104,10 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--host-id':
 				$hostId = intval($value);
+
+				break;
+			case '--site-id':
+				$siteId = intval($value);
 
 				break;
 			case '--quiet':

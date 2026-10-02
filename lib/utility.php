@@ -1048,7 +1048,7 @@ function data_input_whitelist_check(int $data_input_id) : bool {
 			'hash', ['id', 'name', 'input_string']
 		);
 
-		$data_input_whitelist = json_decode(file_get_contents(CACTI_WHITELIST), true);
+		$data_input_whitelist = json_decode((string) file_get_contents(CACTI_WHITELIST), true);
 
 		if ($data_input_whitelist === null) {
 			cacti_log('ERROR: Failed to parse input whitelist file: ' . CACTI_WHITELIST);
@@ -1717,11 +1717,11 @@ function utilities_php_modules() : string {
 	// Remove nasty style sheets, links and other junk
 	$php_info = str_replace("\n", '', $php_info);
 	$php_info = preg_replace('/^.*\<body\>/', '', $php_info);
-	$php_info = preg_replace('/\<\/body\>.*$/', '', $php_info);
-	$php_info = preg_replace('/(\<a name.*\>)([^<>]*)(\<\/a\>)/U', '$2', $php_info);
-	$php_info = preg_replace('/\<img.*\>/U', '', $php_info);
-	$php_info = preg_replace('/\<div[^<>]*\>\<\/div\>/U', '', $php_info);
-	$php_info = preg_replace('/\<\/?address\>/', '', $php_info);
+	$php_info = preg_replace('/\<\/body\>.*$/', '', (string) $php_info);
+	$php_info = preg_replace('/(\<a name.*\>)([^<>]*)(\<\/a\>)/U', '$2', (string) $php_info);
+	$php_info = preg_replace('/\<img.*\>/U', '', (string) $php_info);
+	$php_info = preg_replace('/\<div[^<>]*\>\<\/div\>/U', '', (string) $php_info);
+	$php_info = preg_replace('/\<\/?address\>/', '', (string) $php_info);
 
 	return $php_info;
 }
@@ -1790,7 +1790,7 @@ function utilities_get_system_memory() : array {
 		}
 
 		if ($file != '') {
-			$data = explode("\n", file_get_contents($file));
+			$data = explode("\n", (string) file_get_contents($file));
 
 			foreach ($data as $l) {
 				if (trim($l) != '') {
@@ -1912,7 +1912,7 @@ function utility_php_recommends() : array {
 	$php_file   = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' recommends';
 	$json       = shell_exec($php . ' -q ' . $php_file);
 	$ext        = ['web' => '', 'cli' => ''];
-	$ext['cli'] = @json_decode($json, true);
+	$ext['cli'] = @json_decode((string) $json, true);
 
 	utility_php_verify_recommends($ext['web'], 'web');
 	utility_php_set_recommends_text($ext);

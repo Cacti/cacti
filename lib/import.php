@@ -397,7 +397,7 @@ function import_package_get_details(string $xmlfile) : array {
 
 	$return = [];
 	$data   = file_get_contents($filename);
-	$xmlget = simplexml_load_string($data);
+	$xmlget = simplexml_load_string((string) $data);
 	$pkgarr = xml_to_array($xmlget);
 	$return = $pkgarr['info'];
 
@@ -548,14 +548,14 @@ function import_read_package_data(string $xmlfile, string &$public_key, bool $pr
 		while (!feof($f)) {
 			$x = fgets($f);
 
-			if (strlen($x) == 0) {
+			if (strlen((string) $x) == 0) {
 				cacti_log('FATAL: Unable to read Cacti Package ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);
 				fclose($f);
 
 				return false;
 			}
 
-			if (str_contains($x, '<signature>')) {
+			if (str_contains((string) $x, '<signature>')) {
 				$binary_signature =  base64_decode(trim(str_replace(['<signature>', '</signature>'], ['', ''], $x)), true);
 				$x                = "   <signature></signature>\n";
 
@@ -573,7 +573,7 @@ function import_read_package_data(string $xmlfile, string &$public_key, bool $pr
 	}
 
 	// Package signatures use SHA-256 regardless of key representation.
-	$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
+	$ok = openssl_verify($xml, (string) $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
 
 	if ($ok == 1) {
 		cacti_log('NOTE: File is Signed Correctly', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
@@ -661,7 +661,7 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 		$binary_signature = base64_decode($f['filesignature'], true);
 		$fdata            = base64_decode($f['data'], true);
 
-		$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
+		$ok = openssl_verify((string) $fdata, (string) $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
 
 		if ($ok == 1) {
 			cacti_log('NOTE: File OK: ' . $f['name'], false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
@@ -751,11 +751,11 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 						$file = fopen($filename, 'wb');
 
 						if (is_resource($file)) {
-							$bytesWritten = fwrite($file, $fdata, strlen($fdata));
+							$bytesWritten = fwrite($file, $fdata, strlen((string) $fdata));
 							fclose($file);
 							clearstatcache();
 
-							if ($bytesWritten === strlen($fdata)) {
+							if ($bytesWritten === strlen((string) $fdata)) {
 								$filestatus[$filename] = __('written');
 							} else {
 								$filestatus[$filename] = __('incomplete write');
@@ -784,7 +784,7 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 			} else {
 				cacti_log('Previewing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
-				$new = md5($fdata);
+				$new = md5((string) $fdata);
 
 				if (file_exists($filename)) {
 					$existing = md5_file($filename);
@@ -843,7 +843,7 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 			$name  = $f['name'];
 
 			if (isset($f['type']) && $f['type'] == 'template') {
-				$template_data = xml2array($fdata);
+				$template_data = xml2array((string) $fdata);
 
 				if (cacti_sizeof($template_data)) {
 					foreach ($template_data as $hash => $tdata) {
@@ -3169,7 +3169,7 @@ function import_display_results(array $import_debug_info, array $filestatus, boo
 		print ob_get_clean();
 	} else {
 		$output = ob_get_clean();
-		$output = explode("\n", $output);
+		$output = explode("\n", (string) $output);
 
 		if (cacti_sizeof($output)) {
 			foreach ($output as $line) {

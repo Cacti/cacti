@@ -105,7 +105,7 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case '--child':
-				$thread_id = $value;
+				$thread_id = (int) $value;
 
 				break;
 			case '--host-id':
@@ -197,7 +197,7 @@ if (!is_numeric($end_time)) {
 
 // validate the start and end times are sane
 if ($start_time >= $end_time) {
-	printf('ERROR: The Start Time \'%s\' is equal or grater to the End Time \'%s\' is not a valid date/time' . PHP_EOL, date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time));
+	printf('ERROR: The Start Time \'%s\' is equal or grater to the End Time \'%s\' is not a valid date/time' . PHP_EOL, date('Y-m-d H:i:s', (int) $start_time), date('Y-m-d H:i:s', $end_time));
 
 	exit(1);
 }
@@ -359,6 +359,8 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 
 			$fp = fopen($tmp_file, 'w');
 
+			$lf = false;
+
 			if ($seebug) {
 				$lf = fopen(sys_get_temp_dir() . '/cacti_float_rrdfiles.log', 'a');
 			}
@@ -378,7 +380,7 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 						 * <pdp_per_row>24</pdp_per_row> <!-- 7200 seconds -->
 						 * split the database record into pieces
 						 */
-						$parts = preg_split('/[\s]+/', trim($line));
+						$parts = preg_split('/[\s]+/', trim($line)) ?: [];
 
 						/**
 						 * We use this just in case we need to update
@@ -397,7 +399,7 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 						$line .= PHP_EOL;
 					} elseif ($in_database) {
 						// split the database record into pieces
-						$parts  = preg_split('/[\s]+/', trim($line));
+						$parts  = preg_split('/[\s]+/', trim($line)) ?: [];
 
 						$timestamp = intval($parts[5]);
 
@@ -413,9 +415,9 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 						} elseif ($prev_data != '') {
 							if ($seebug) {
 								if ($step !== false) {
-									fwrite($lf, sprintf('In Range: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s, Step:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time, $step));
+									is_resource($lf) && fwrite($lf, sprintf('In Range: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s, Step:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time, $step));
 								} else {
-									fwrite($lf, sprintf('In Range: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
+									is_resource($lf) && fwrite($lf, sprintf('In Range: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
 								}
 							}
 
@@ -427,15 +429,15 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 								$nline = $db_prefix . implode(' ', $parts) . ' ' . $prev_data . PHP_EOL;
 
 								if ($seebug) {
-									fwrite($lf, sprintf('Pruning: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
-									fwrite($lf, sprintf("PreLine: %s\nOldLine: %s\nNewLine: %s\n\n", trim($prev_line), trim($line), trim($nline)));
+									is_resource($lf) && fwrite($lf, sprintf('Pruning: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
+									is_resource($lf) && fwrite($lf, sprintf("PreLine: %s\nOldLine: %s\nNewLine: %s\n\n", trim($prev_line), trim($line), trim($nline)));
 								}
 
 								$line = $nline;
 							} else {
 								if ($seebug) {
-									fwrite($lf, sprintf('Not Pruning: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
-									fwrite($lf, sprintf("PreLine: %s\nOldLine: %s\n\n", trim($prev_line), trim($line)));
+									is_resource($lf) && fwrite($lf, sprintf('Not Pruning: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
+									is_resource($lf) && fwrite($lf, sprintf("PreLine: %s\nOldLine: %s\n\n", trim($prev_line), trim($line)));
 								}
 
 								$in_range = false;
@@ -468,7 +470,7 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 				}
 
 				if ($seebug) {
-					fclose($lf);
+					is_resource($lf) && fclose($lf);
 				}
 
 				if ($return == 0) {
@@ -693,7 +695,7 @@ function sig_handler(int $signo) : void {
 				float_kill_running_processes();
 			}
 
-			unregister_process('rfloat', 'rmaster', $thread_id, getmypid());
+			unregister_process('rfloat', 'rmaster', $thread_id, (int) getmypid());
 
 			exit(1);
 		default:

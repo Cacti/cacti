@@ -336,7 +336,7 @@ function migrate_all_devices(int $source_poller, int $dest_poller, bool $quietMo
 
 		print PHP_EOL;
 		print 'Are you sure you want to continue? (y/N): ';
-		$confirmation = trim(fgets(STDIN));
+		$confirmation = trim((string) fgets(STDIN));
 
 		if (cacti_strtolower($confirmation) !== 'y') {
 			print 'Migration cancelled by user' . PHP_EOL;
@@ -431,7 +431,7 @@ function migrate_from_host_ids(string $host_ids_string, int $source_poller, int 
 
 		print PHP_EOL;
 		print 'Are you sure you want to continue? (y/N): ';
-		$confirmation = trim(fgets(STDIN));
+		$confirmation = trim((string) fgets(STDIN));
 
 		if (cacti_strtolower($confirmation) !== 'y') {
 			print 'Migration cancelled by user' . PHP_EOL;

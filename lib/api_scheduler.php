@@ -402,7 +402,7 @@ function api_scheduler_augment_save(array $save, array $post) : array {
 				$timestamp += 86400;
 			}
 
-			$save['next_start'] = date('Y-m-d H:i:s', $timestamp);
+			$save['next_start'] = date('Y-m-d H:i:s', (int) $timestamp);
 		} else {
 			// the time is in the future, we are safe to store it
 			$save['next_start'] = date('Y-m-d H:i:s', $start_at);

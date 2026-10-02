@@ -1001,7 +1001,7 @@ function db_fetch_insert_id(mixed $db_conn = false) : mixed {
 		}
 	}
 
-	if (is_object($db_conn)) {
+	if ($db_conn instanceof PDO) {
 		return $db_conn->lastInsertId();
 	}
 
@@ -1442,7 +1442,7 @@ function db_cacti_initialized(bool $is_web = true) : bool {
 		$db_conn = false;
 	}
 
-	if (!is_object($db_conn)) {
+	if (!($db_conn instanceof PDO)) {
 		return false;
 	}
 
@@ -2123,12 +2123,12 @@ function db_begin_transaction(mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	// check for a connection being passed, if not use legacy behavior
-	if (!is_object($db_conn)) {
+	if (!($db_conn instanceof PDO)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 		}
 
-		if (!is_object($db_conn)) {
+		if (!($db_conn instanceof PDO)) {
 			return false;
 		}
 	}
@@ -2147,12 +2147,12 @@ function db_commit_transaction(mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	// check for a connection being passed, if not use legacy behavior
-	if (!is_object($db_conn)) {
+	if (!($db_conn instanceof PDO)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 		}
 
-		if (!is_object($db_conn)) {
+		if (!($db_conn instanceof PDO)) {
 			return false;
 		}
 	}
@@ -2179,12 +2179,12 @@ function db_rollback_transaction(mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	// check for a connection being passed, if not use legacy behavior
-	if (!is_object($db_conn)) {
+	if (!($db_conn instanceof PDO)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 		}
 
-		if (!is_object($db_conn)) {
+		if (!($db_conn instanceof PDO)) {
 			return false;
 		}
 	}
@@ -2465,7 +2465,7 @@ function db_qstr(mixed $s, mixed $db_conn = false) : string {
 		return 'NULL';
 	}
 
-	if (is_object($db_conn)) {
+	if ($db_conn instanceof PDO) {
 		return $db_conn->quote($s);
 	}
 
@@ -2865,7 +2865,7 @@ function db_get_permissions(bool $include_unknown = false, bool $log = false, mi
 							$db_grant_perms = preg_split('/,[ ]*/', $db_grant_match[1]);
 
 							if (cacti_sizeof($db_grant_perms)) {
-								foreach ($db_grant_perms as $db_grant_perm) {
+								foreach (($db_grant_perms ?: []) as $db_grant_perm) {
 									$db_grant_perm = cacti_strtoupper($db_grant_perm);
 
 									if ($db_grant_perm == 'ALL' ||

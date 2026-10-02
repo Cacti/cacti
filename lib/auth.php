@@ -420,7 +420,7 @@ function get_basic_auth_username() : string|false {
 			$found   = false;
 
 			if (cacti_sizeof($records)) {
-				foreach ($records as $r) {
+				foreach (($records ?: []) as $r) {
 					if (trim($r) === '') {
 						continue;
 					}
@@ -5201,7 +5201,7 @@ function remote_agent_validate_effective_user(mixed $value, ?callable $lookup = 
 		return false;
 	}
 
-	$lookup ??= static fn (int $id) : array|false => db_fetch_row_prepared(
+	$lookup ??= static fn (int $id) : array => db_fetch_row_prepared(
 		'SELECT id, enabled
 		FROM user_auth
 		WHERE id = ?',

@@ -169,7 +169,7 @@ print 'valid:' . $user_logins_valid .
 function get_session_save_path() : mixed {
 	if (session_save_path() !== '') {
 		// if default temp path is not in use
-		return realpath(session_save_path());
+		return realpath((string) session_save_path());
 	}
 
 	if (function_exists('sys_get_temp_dir')) {

@@ -345,7 +345,7 @@ if ($child == false) {
 
 		cacti_log('INFO: Boost unregistering master process', true, 'BOOST');
 
-		unregister_process('boost', 'master', POLLER_ID, getmypid());
+		unregister_process('boost', 'master', POLLER_ID, (int) getmypid());
 
 		// log the end time of the process
 		set_config_option('boost_last_end_time', time());
@@ -426,9 +426,9 @@ function sig_handler(int $signo) : void {
 			}
 
 			if ($child) {
-				unregister_process('boost', 'child', $child, getmypid());
+				unregister_process('boost', 'child', $child, (int) getmypid());
 			} else {
-				unregister_process('boost', 'master', POLLER_ID, getmypid());
+				unregister_process('boost', 'master', POLLER_ID, (int) getmypid());
 			}
 
 			exit;
@@ -1239,7 +1239,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 					$unused_data_source_names = $item['data_template_id'] > 0 ? poller_get_unused_data_source_names($item['local_data_id'], $unused_cache) : [];
 				}
 
-				foreach ($values as $value) {
+				foreach (($values ?: []) as $value) {
 					$matches = explode(':', $value);
 
 					if (cacti_sizeof($matches) == 2) {

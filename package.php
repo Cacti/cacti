@@ -102,7 +102,7 @@ function form_save() : void {
 		if (cacti_sizeof($files)) {
 			foreach ($files as $file) {
 				if (str_contains($file['file'], '.xml')) {
-					$files = array_merge($files, find_dependent_files(file_get_contents($file['file'])));
+					$files = array_merge($files, find_dependent_files((string) file_get_contents($file['file'])));
 				}
 			}
 		}

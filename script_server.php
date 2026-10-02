@@ -147,10 +147,10 @@ $start = microtime(true);
 $include_file = '';
 
 if (CACTI_SERVER_OS == 'win32') {
-	cacti_log('DEBUG: GETCWD: ' . cacti_strtolower(strtr(getcwd(),'\\','/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+	cacti_log('DEBUG: GETCWD: ' . cacti_strtolower(strtr((string) getcwd(),'\\','/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 	cacti_log('DEBUG: DIRNAM: ' . cacti_strtolower(strtr(__DIR__,'\\','/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 } else {
-	cacti_log('DEBUG: GETCWD: ' . strtr(getcwd(),'\\','/'), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+	cacti_log('DEBUG: GETCWD: ' . strtr((string) getcwd(),'\\','/'), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 	cacti_log('DEBUG: DIRNAM: ' . strtr(__DIR__,'\\','/'), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 }
 
@@ -237,13 +237,13 @@ while (1) {
 						case 0:
 							// cut off include file as first part of input string and keep rest for further parsing
 							$include_file = trim(substr($input_string,0,$pos));
-							$input_string = trim(strchr($input_string, ' ')) . ' ';
+							$input_string = trim((string) strchr($input_string, ' ')) . ' ';
 
 							break;
 						case 1:
 							// cut off function as second part of input string and keep rest for further parsing
 							$function     = trim(substr($input_string,0,$pos), "' ");
-							$input_string = trim(strchr($input_string, ' ')) . ' ';
+							$input_string = trim((string) strchr($input_string, ' ')) . ' ';
 
 							break;
 						case 2:

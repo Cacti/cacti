@@ -217,12 +217,6 @@ parameters:
 			path: api/include/db_functions.php
 
 		-
-			message: '#^Parameter \#1 \$string of method Psr\\Http\\Message\\StreamInterface\:\:write\(\) expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 18
-			path: api/public/index.php
-
-		-
 			message: '#^Cannot access offset ''login_opts'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
@@ -239,12 +233,6 @@ parameters:
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 6
 			path: auth_2fa.php
-
-		-
-			message: '#^Argument of an invalid type list\<array\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: auth_changepassword.php
 
 		-
 			message: '#^Cannot access offset ''password'' on array\|bool\.$#'
@@ -269,48 +257,6 @@ parameters:
 			identifier: offsetAccess.notFound
 			count: 2
 			path: auth_changepassword.php
-
-		-
-			message: '#^Cannot access offset ''id'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 5
-			path: auth_login.php
-
-		-
-			message: '#^Cannot access offset ''login_opts'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
-			path: auth_login.php
-
-		-
-			message: '#^Cannot access offset ''must_change_password'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: auth_login.php
-
-		-
-			message: '#^Cannot access offset ''username'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
-			path: auth_login.php
-
-		-
-			message: '#^Cannot access offset ''username'' on non\-empty\-array\|true\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
-			path: auth_login.php
-
-		-
-			message: '#^Parameter \#1 \$user of function auth_user_has_access expects array, array\|bool given\.$#'
-			identifier: argument.type
-			count: 1
-			path: auth_login.php
-
-		-
-			message: '#^Parameter \#1 \$user of function set_auth_cookie expects array, array\|bool given\.$#'
-			identifier: argument.type
-			count: 1
-			path: auth_login.php
 
 		-
 			message: '#^Cannot access offset ''tfa_enabled'' on array\|bool\.$#'
@@ -607,12 +553,6 @@ parameters:
 			path: cli/add_device.php
 
 		-
-			message: '#^Parameter \#2 \$device_template_id of function api_device_save expects int, int\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/add_device.php
-
-		-
 			message: '#^Parameter \#23 \$max_oids of function api_device_save expects int, int\|string given\.$#'
 			identifier: argument.type
 			count: 1
@@ -673,19 +613,7 @@ parameters:
 			path: cli/add_graphs.php
 
 		-
-			message: '#^Parameter \#2 \$snmp_query_id of function getSNMPFields expects int, int\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/add_graphs.php
-
-		-
 			message: '#^Parameter \#2 \$string of function explode expects string, list\<mixed\>\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/add_graphs.php
-
-		-
-			message: '#^Parameter \#3 \$snmp_query_id of function getSNMPValues expects int, int\|string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: cli/add_graphs.php
@@ -695,12 +623,6 @@ parameters:
 			identifier: encapsedStringPart.nonString
 			count: 1
 			path: cli/add_graphs.php
-
-		-
-			message: '#^Function fetchCurl\(\) should return string\|false but returns string\|true\.$#'
-			identifier: return.type
-			count: 1
-			path: cli/add_site.php
 
 		-
 			message: '#^Parameter \#2 \$doMap of function mapDevices expects bool, string\|true given\.$#'
@@ -713,12 +635,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: cli/add_site.php
-
-		-
-			message: '#^Offset ''graph''\|''header''\|''host''\|''site'' might not exist on array\{header\: 1, graph\: 2, host\: 3\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: cli/add_tree.php
 
 		-
 			message: '#^Parameter \#9 \$host_grouping_type of function api_tree_item_save expects int, int\|string given\.$#'
@@ -736,12 +652,6 @@ parameters:
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 9
-			path: cli/audit_database.php
-
-		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
 			path: cli/audit_database.php
 
 		-
@@ -865,24 +775,6 @@ parameters:
 			path: cli/clone_device_template.php
 
 		-
-			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: cli/clone_device_template.php
-
-		-
-			message: '#^Parameter \#1 \$stream of function fgets expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/clone_device_template.php
-
-		-
-			message: '#^Parameter \#1 \$string of function trim expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/clone_device_template.php
-
-		-
 			message: '#^Parameter \#2 \$device_template_name of function api_clone_device_template_check_for_errors expects string, list\<mixed\>\|string\|false given\.$#'
 			identifier: argument.type
 			count: 1
@@ -985,36 +877,6 @@ parameters:
 			path: cli/fix_mediumint.php
 
 		-
-			message: '#^Cannot access offset 2 on list\<string\>\|false\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: cli/float_rrdfiles.php
-
-		-
-			message: '#^Cannot access offset 5 on list\<string\>\|false\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: cli/float_rrdfiles.php
-
-		-
-			message: '#^Cannot access offset 7 on list\<string\>\|false\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
-			path: cli/float_rrdfiles.php
-
-		-
-			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/float_rrdfiles.php
-
-		-
-			message: '#^Parameter \#1 \$stream of function fwrite expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 6
-			path: cli/float_rrdfiles.php
-
-		-
 			message: '#^Parameter \#10 \$end_time of function float_master_handler expects int, int\|string given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1023,7 +885,7 @@ parameters:
 		-
 			message: '#^Parameter \#2 \$timestamp of function date expects int\|null, int\|string given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 1
 			path: cli/float_rrdfiles.php
 
 		-
@@ -1033,25 +895,7 @@ parameters:
 			path: cli/float_rrdfiles.php
 
 		-
-			message: '#^Parameter \#3 \$taskid of function register_process_start expects int, int\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/float_rrdfiles.php
-
-		-
-			message: '#^Parameter \#3 \$taskid of function unregister_process expects int, int\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/float_rrdfiles.php
-
-		-
 			message: '#^Parameter \#4 \$host_template_id of function float_master_handler expects int, int\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/float_rrdfiles.php
-
-		-
-			message: '#^Parameter \#4 \$pid of function unregister_process expects int, int\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: cli/float_rrdfiles.php
@@ -1123,31 +967,13 @@ parameters:
 			path: cli/genmanifest.php
 
 		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: cli/genmanifest.php
-
-		-
 			message: '#^Parameter \#2 \$content of method CactiFilesystem\:\:writeFile\(\) expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: cli/genmanifest.php
 
 		-
-			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/import_package.php
-
-		-
 			message: '#^Parameter \#1 \$stream of function fread expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/import_package.php
-
-		-
-			message: '#^Parameter \#1 \$string of function strlen expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: cli/import_package.php
@@ -1159,19 +985,7 @@ parameters:
 			path: cli/import_package.php
 
 		-
-			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/import_template.php
-
-		-
 			message: '#^Parameter \#1 \$stream of function fread expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/import_template.php
-
-		-
-			message: '#^Parameter \#1 \$string of function strlen expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: cli/import_template.php
@@ -1201,12 +1015,6 @@ parameters:
 			path: cli/input_whitelist.php
 
 		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: cli/input_whitelist.php
-
-		-
 			message: '#^Parameter \#2 \$content of method CactiFilesystem\:\:writeFile\(\) expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1217,12 +1025,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: cli/install_cacti.php
-
-		-
-			message: '#^Parameter \#1 \$basePath of method CactiMd5FileFinder\:\:findHashes\(\) expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/md5sum.php
 
 		-
 			message: '#^Cannot access offset ''description'' on non\-empty\-array\|true\.$#'
@@ -1255,12 +1057,6 @@ parameters:
 			path: cli/migrate_poller.php
 
 		-
-			message: '#^Parameter \#1 \$string of function trim expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: cli/migrate_poller.php
-
-		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 1
@@ -1273,58 +1069,10 @@ parameters:
 			path: cli/poller_graphs_reapply_names.php
 
 		-
-			message: '#^Binary operation "\-" between 0\|string and 1 results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 2
-			path: cli/poller_reindex_hosts.php
-
-		-
-			message: '#^Parameter \#3 \$taskid of function register_process_start expects int, int\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/poller_reindex_hosts.php
-
-		-
-			message: '#^Parameter \#3 \$taskid of function unregister_process expects int, int\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/poller_reindex_hosts.php
-
-		-
-			message: '#^Parameter \#4 \$pid of function unregister_process expects int, int\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/poller_reindex_hosts.php
-
-		-
 			message: '#^Parameter \#5 \$threads of function reindex_master_handler expects int, int\<min, \-1\>\|int\<1, max\>\|string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: cli/poller_reindex_hosts.php
-
-		-
-			message: '#^Binary operation "\-" between 0\|string and 1 results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 2
-			path: cli/rebuild_poller_cache.php
-
-		-
-			message: '#^Parameter \#3 \$taskid of function register_process_start expects int, int\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/rebuild_poller_cache.php
-
-		-
-			message: '#^Parameter \#3 \$taskid of function unregister_process expects int, int\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/rebuild_poller_cache.php
-
-		-
-			message: '#^Parameter \#4 \$pid of function unregister_process expects int, int\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/rebuild_poller_cache.php
 
 		-
 			message: '#^Parameter \#5 \$threads of function pushout_master_handler expects int, int\<min, \-1\>\|int\<1, max\>\|string given\.$#'
@@ -1341,12 +1089,6 @@ parameters:
 		-
 			message: '#^Binary operation "\-" between 80\|non\-falsy\-string and 5 results in an error\.$#'
 			identifier: binaryOp.invalid
-			count: 1
-			path: cli/remove_broken_graphs.php
-
-		-
-			message: '#^Parameter \#2 \$string of function explode expects string, string\|false\|null given\.$#'
-			identifier: argument.type
 			count: 1
 			path: cli/remove_broken_graphs.php
 
@@ -1453,12 +1195,6 @@ parameters:
 			path: cli/rrdresize.php
 
 		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: cli/rrdresize.php
-
-		-
 			message: '#^Cannot access offset ''data_template_id'' on non\-empty\-array\|true\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
@@ -1471,31 +1207,7 @@ parameters:
 			path: cli/rrdresize.php
 
 		-
-			message: '#^Parameter \#1 \$directory of function mkdir expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/rrdresize.php
-
-		-
-			message: '#^Parameter \#1 \$haystack of function substr_count expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/rrdresize.php
-
-		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/rrdresize.php
-
-		-
 			message: '#^Parameter \#1 \$value of function count expects array\|Countable, list\<string\>\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/rrdresize.php
-
-		-
-			message: '#^Parameter \#1 \$value of function sizeof expects array\|Countable, array\|bool given\.$#'
 			identifier: argument.type
 			count: 1
 			path: cli/rrdresize.php
@@ -1507,45 +1219,15 @@ parameters:
 			path: cli/rrdresize.php
 
 		-
-			message: '#^Parameter \#1 \$string of function cacti_strtolower expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/show_perms.php
-
-		-
 			message: '#^Call to an undefined method object\:\:exec\(\)\.$#'
 			identifier: method.notFound
 			count: 4
 			path: cli/splice_rrd.php
 
 		-
-			message: '#^Function loadTable invoked with 2 parameters, 3 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: cli/splice_rrd.php
-
-		-
 			message: '#^Parameter \#1 \$output of function preProcessXML expects array, list\<string\>\|false given\.$#'
 			identifier: argument.type
 			count: 2
-			path: cli/splice_rrd.php
-
-		-
-			message: '#^Parameter \#1 \$string of function strlen expects string, string\|false\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/splice_rrd.php
-
-		-
-			message: '#^Parameter \#1 \$string of function trim expects string, array\<string\>\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: cli/splice_rrd.php
-
-		-
-			message: '#^Parameter \#2 \$string of function explode expects string, string\|false\|null given\.$#'
-			identifier: argument.type
-			count: 1
 			path: cli/splice_rrd.php
 
 		-
@@ -1629,12 +1311,6 @@ parameters:
 		-
 			message: '#^Function get_max_column_width\(\) should return int but returns int\|string\.$#'
 			identifier: return.type
-			count: 1
-			path: cmd.php
-
-		-
-			message: '#^Parameter \#1 \$haystack of function substr_count expects string, string\|false given\.$#'
-			identifier: argument.type
 			count: 1
 			path: cmd.php
 
@@ -1855,12 +1531,6 @@ parameters:
 			path: data_source_profiles.php
 
 		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: data_source_profiles.php
-
-		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 2
@@ -1981,12 +1651,6 @@ parameters:
 			path: gprint_presets.php
 
 		-
-			message: '#^Parameter \#1 \$string of function rrdtool_create_error_image expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: graph_image.php
-
-		-
 			message: '#^Offset ''graph_height'' might not exist on array\{graph_start\?\: mixed, graph_end\?\: mixed, graph_height\?\: mixed, graph_width\: mixed, graph_nolegend\: mixed, print_source\?\: mixed, disable_cache\?\: true, graph_theme\?\: string, \.\.\.\}\.$#'
 			identifier: offsetAccess.notFound
 			count: 1
@@ -1996,30 +1660,6 @@ parameters:
 			message: '#^Offset ''graph_height'' might not exist on array\{graph_start\?\: mixed, graph_end\?\: mixed, graph_height\?\: mixed, graph_width\: mixed, graph_nolegend\?\: mixed, print_source\?\: mixed, disable_cache\?\: true, graph_theme\?\: string, \.\.\.\}\.$#'
 			identifier: offsetAccess.notFound
 			count: 1
-			path: graph_json.php
-
-		-
-			message: '#^Parameter \#1 \$string of function base64_encode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: graph_json.php
-
-		-
-			message: '#^Parameter \#1 \$string of function rrdtool_create_error_image expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: graph_json.php
-
-		-
-			message: '#^Parameter \#1 \$string of function strlen expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: graph_json.php
-
-		-
-			message: '#^Parameter \#3 \$offset of function strpos expects int, int\<0, max\>\|false given\.$#'
-			identifier: argument.type
-			count: 3
 			path: graph_json.php
 
 		-
@@ -2037,12 +1677,6 @@ parameters:
 		-
 			message: '#^Offset ''graph_start'' might not exist on array\{ds_step\: mixed, graph_height\: mixed, graph_width\: mixed, graph_nolegend\?\: ''true'', graph_start\?\: mixed, graph_end\: mixed, print_source\?\: mixed, image_format\: ''png''\|''svg\+xml'', \.\.\.\}\.$#'
 			identifier: offsetAccess.notFound
-			count: 1
-			path: graph_realtime.php
-
-		-
-			message: '#^Parameter \#1 \$string of function base64_encode expects string, string\|false given\.$#'
-			identifier: argument.type
 			count: 1
 			path: graph_realtime.php
 
@@ -2299,18 +1933,6 @@ parameters:
 			path: host.php
 
 		-
-			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: host.php
-
-		-
-			message: '#^Parameter \#1 \$stream of function fputcsv expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: host.php
-
-		-
 			message: '#^Cannot access offset ''name'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 3
@@ -2371,70 +1993,16 @@ parameters:
 			path: include/global_languages.php
 
 		-
-			message: '#^Parameter \#2 \$string of function explode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: include/global_languages.php
-
-		-
-			message: '#^Cannot call method close\(\) on Directory\|false\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: include/global_settings.php
-
-		-
-			message: '#^Cannot call method read\(\) on Directory\|false\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: include/global_settings.php
-
-		-
 			message: '#^Parameter \#2 \$subject of function preg_replace_callback_array expects array\|string, list\<string\>\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: include/themes/midwinter/update_hash.php
 
 		-
-			message: '#^Variable \$argc might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: install/cli_check.php
-
-		-
-			message: '#^Variable \$argv might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: install/cli_check.php
-
-		-
-			message: '#^Variable \$argv might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: install/cli_test.php
-
-		-
 			message: '#^Parameter \#2 \$subject of function preg_match expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: install/functions.php
-
-		-
-			message: '#^Parameter \#1 \$haystack of function stripos expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: install/install.php
-
-		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: install/step_json.php
-
-		-
-			message: '#^Parameter \#1 \$string of function strlen expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: install/step_json.php
 
 		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
@@ -2581,26 +2149,8 @@ parameters:
 			path: lib/aggregate.php
 
 		-
-			message: '#^Offset ''cdef_text'' might not exist on array\{id\: mixed, name\?\: mixed, cdef_text\?\: string\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 3
-			path: lib/aggregate.php
-
-		-
-			message: '#^Offset ''name'' might not exist on array\{id\: mixed, name\?\: mixed, cdef_text\?\: string\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: lib/aggregate.php
-
-		-
 			message: '#^Offset int\<min, \-1\>\|int\<1, max\> might not exist on array\{1\: ''Error'', 2\: ''Warning'', 4\: ''Parsing Error'', 8\: ''Notice'', 16\: ''Core Error'', 32\: ''Core Warning'', 64\: ''Compile Error'', 128\: ''Compile Warning'', \.\.\.\}\.$#'
 			identifier: offsetAccess.notFound
-			count: 1
-			path: lib/aggregate.php
-
-		-
-			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, string\|null given\.$#'
-			identifier: argument.type
 			count: 1
 			path: lib/aggregate.php
 
@@ -2727,7 +2277,7 @@ parameters:
 		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
-			count: 12
+			count: 10
 			path: lib/api_automation.php
 
 		-
@@ -2774,6 +2324,24 @@ parameters:
 
 		-
 			message: '#^Function create_header_node\(\) should return bool\|int but returns int\|false\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: lib/api_automation.php
+
+		-
+			message: '#^Function get_field_names\(\) should return array but returns array\|bool\.$#'
+			identifier: return.type
+			count: 1
+			path: lib/api_automation.php
+
+		-
+			message: '#^Function get_matching_graphs\(\) should return array but returns array\|bool\.$#'
+			identifier: return.type
+			count: 1
+			path: lib/api_automation.php
+
+		-
+			message: '#^Function get_matching_hosts\(\) should return array but returns array\|bool\.$#'
 			identifier: return.type
 			count: 1
 			path: lib/api_automation.php
@@ -3049,31 +2617,7 @@ parameters:
 			path: lib/api_device.php
 
 		-
-			message: '#^Parameter \#1 \$string of function base64_encode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/api_device.php
-
-		-
-			message: '#^Parameter \#1 \$xml_data of function find_dependent_files expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: lib/api_device.php
-
-		-
 			message: '#^Parameter \#2 \$data_query_name of function data_query_duplicate expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/api_device.php
-
-		-
-			message: '#^Parameter \#2 \$group of function chgrp expects int\|string, int\<0, max\>\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/api_device.php
-
-		-
-			message: '#^Parameter \#2 \$user of function chown expects int\|string, int\<0, max\>\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: lib/api_device.php
@@ -3157,12 +2701,6 @@ parameters:
 			path: lib/api_graph.php
 
 		-
-			message: '#^Parameter \#2 \$timestamp of function date expects int\|null, float\|int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/api_scheduler.php
-
-		-
 			message: '#^Cannot access offset ''graph_tree_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
@@ -3199,7 +2737,7 @@ parameters:
 			path: lib/api_tree.php
 
 		-
-			message: '#^Anonymous function should return array\|false but returns array\|bool\.$#'
+			message: '#^Anonymous function should return array but returns array\|bool\.$#'
 			identifier: return.type
 			count: 1
 			path: lib/auth.php
@@ -3207,13 +2745,7 @@ parameters:
 		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
-			count: 4
-			path: lib/auth.php
-
-		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
+			count: 3
 			path: lib/auth.php
 
 		-
@@ -3225,7 +2757,7 @@ parameters:
 		-
 			message: '#^Cannot access offset ''enabled'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 4
+			count: 3
 			path: lib/auth.php
 
 		-
@@ -3237,7 +2769,7 @@ parameters:
 		-
 			message: '#^Cannot access offset ''id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 12
+			count: 10
 			path: lib/auth.php
 
 		-
@@ -3303,18 +2835,6 @@ parameters:
 		-
 			message: '#^Cannot access offset ''username'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 6
-			path: lib/auth.php
-
-		-
-			message: '#^Parameter \#1 \$user of function set_auth_cookie expects array, array\|bool given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/auth.php
-
-		-
-			message: '#^Parameter \#1 \$user_info of function auth_cookie_user_currently_allowed expects array, array\|bool given\.$#'
-			identifier: argument.type
 			count: 1
 			path: lib/auth.php
 
@@ -3328,24 +2848,6 @@ parameters:
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 2
-			path: lib/boost.php
-
-		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: lib/boost.php
-
-		-
-			message: '#^Call to an undefined method object\:\:count\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: lib/boost.php
-
-		-
-			message: '#^Call to an undefined method object\:\:set\(\)\.$#'
-			identifier: method.notFound
-			count: 14
 			path: lib/boost.php
 
 		-
@@ -3373,46 +2875,10 @@ parameters:
 			path: lib/boost.php
 
 		-
-			message: '#^Parameter \#1 \$string of function strlen expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 2
-			path: lib/boost.php
-
-		-
-			message: '#^Parameter \#2 \$data of function fwrite expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/boost.php
-
-		-
-			message: '#^Parameter \#2 \$group of function chgrp expects int\|string, int\<0, max\>\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/boost.php
-
-		-
 			message: '#^Parameter \#2 \$length of function fread expects int\<1, max\>, int\<0, max\>\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: lib/boost.php
-
-		-
-			message: '#^Parameter \#2 \$user of function chown expects int\|string, int\<0, max\>\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/boost.php
-
-		-
-			message: '#^Cannot access offset ''type'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/cdef.php
-
-		-
-			message: '#^Cannot access offset ''value'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/cdef.php
 
 		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
@@ -3427,34 +2893,10 @@ parameters:
 			path: lib/clog_webapi.php
 
 		-
-			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/clog_webapi.php
-
-		-
 			message: '#^Function csp_report_sanitize_field\(\) should return string but returns string\|null\.$#'
 			identifier: return.type
 			count: 1
 			path: lib/csp_report_endpoint.php
-
-		-
-			message: '#^Parameter \#1 \$string of function strlen expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/csp_report_endpoint.php
-
-		-
-			message: '#^Parameter \#1 \$string of function substr expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/csp_report_endpoint.php
-
-		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: lib/data_query.php
 
 		-
 			message: '#^Binary operation "\." between ''SECURITY\: data…'' and array\<string\>\|string\|null results in an error\.$#'
@@ -3553,24 +2995,6 @@ parameters:
 			path: lib/data_query.php
 
 		-
-			message: '#^Parameter \#1 \$ip of function inet_ntop expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: lib/data_query.php
-
-		-
-			message: '#^Parameter \#1 \$string of function bin2hex expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/data_query.php
-
-		-
-			message: '#^Parameter \#1 \$string of function mb_detect_encoding expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/data_query.php
-
-		-
 			message: '#^Parameter \#2 \$array of function implode expects array, array\|false given\.$#'
 			identifier: argument.type
 			count: 1
@@ -3583,12 +3007,6 @@ parameters:
 			path: lib/data_query.php
 
 		-
-			message: '#^Parameter \#2 \$string of function explode expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/data_query.php
-
-		-
 			message: '#^Parameter \#2 \$subject of function preg_match expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
@@ -3596,18 +3014,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#3 \$oid of function cacti_snmp_get expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/data_query.php
-
-		-
-			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, string\|false\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/data_query.php
-
-		-
-			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: lib/data_query.php
@@ -3640,54 +3046,6 @@ parameters:
 			message: '#^Argument of an invalid type array\|true supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 3
-			path: lib/database.php
-
-		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: lib/database.php
-
-		-
-			message: '#^Call to an undefined method object\:\:beginTransaction\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: lib/database.php
-
-		-
-			message: '#^Call to an undefined method object\:\:commit\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: lib/database.php
-
-		-
-			message: '#^Call to an undefined method object\:\:inTransaction\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: lib/database.php
-
-		-
-			message: '#^Call to an undefined method object\:\:lastInsertId\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: lib/database.php
-
-		-
-			message: '#^Call to an undefined method object\:\:prepare\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: lib/database.php
-
-		-
-			message: '#^Call to an undefined method object\:\:quote\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: lib/database.php
-
-		-
-			message: '#^Call to an undefined method object\:\:rollBack\(\)\.$#'
-			identifier: method.notFound
-			count: 1
 			path: lib/database.php
 
 		-
@@ -3841,19 +3199,7 @@ parameters:
 			path: lib/export.php
 
 		-
-			message: '#^Argument of an invalid type array\|null supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: lib/functions.php
-
-		-
 			message: '#^Argument of an invalid type array\|string\|null supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: lib/functions.php
-
-		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 1
 			path: lib/functions.php
@@ -3915,7 +3261,7 @@ parameters:
 		-
 			message: '#^Cannot access offset ''value'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
+			count: 1
 			path: lib/functions.php
 
 		-
@@ -3931,12 +3277,6 @@ parameters:
 			path: lib/functions.php
 
 		-
-			message: '#^Function rrdtool_function_stats\(\) should return string but returns string\|false\.$#'
-			identifier: return.type
-			count: 3
-			path: lib/graph_variables.php
-
-		-
 			message: '#^Parameter \#1 \.\.\.\$arg1 of function max expects non\-empty\-array, list given\.$#'
 			identifier: argument.type
 			count: 1
@@ -3946,12 +3286,6 @@ parameters:
 			message: '#^Parameter \#2 \$precision of function round expects int, float\|int\|string given\.$#'
 			identifier: argument.type
 			count: 1
-			path: lib/graph_variables.php
-
-		-
-			message: '#^Parameter \#2 \$start_time of function bandwidth_summation expects int, float\|int given\.$#'
-			identifier: argument.type
-			count: 3
 			path: lib/graph_variables.php
 
 		-
@@ -4022,18 +3356,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$realm of function is_realm_allowed expects int, float\|int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/html.php
-
-		-
-			message: '#^Parameter \#1 \$string of function base64_encode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 4
-			path: lib/html.php
-
-		-
-			message: '#^Parameter \#1 \$string of function trim expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: lib/html.php
@@ -4297,12 +3619,6 @@ parameters:
 			path: lib/html_reports.php
 
 		-
-			message: '#^Parameter \#1 \$string of function htmle expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/html_reports.php
-
-		-
 			message: '#^Argument of an invalid type array\|string supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 1
@@ -4381,12 +3697,6 @@ parameters:
 			path: lib/html_tree.php
 
 		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 2
-			path: lib/html_utility.php
-
-		-
 			message: '#^Offset ''message'' might not exist on array\{type\: int, message\: string, file\: string, line\: int\}\|null\.$#'
 			identifier: offsetAccess.notFound
 			count: 1
@@ -4396,12 +3706,6 @@ parameters:
 			message: '#^Offset int\<min, \-1\>\|int\<1, max\> might not exist on array\{1\: string, 2\: string, 3\: string, 4\: string, 5\: string\}\.$#'
 			identifier: offsetAccess.notFound
 			count: 1
-			path: lib/html_utility.php
-
-		-
-			message: '#^Parameter \#1 \$string of function htmle expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 3
 			path: lib/html_utility.php
 
 		-
@@ -4471,42 +3775,6 @@ parameters:
 			path: lib/import.php
 
 		-
-			message: '#^Parameter \#1 \$data of function openssl_verify expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: lib/import.php
-
-		-
-			message: '#^Parameter \#1 \$data of function simplexml_load_string expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/import.php
-
-		-
-			message: '#^Parameter \#1 \$data of function xml2array expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/import.php
-
-		-
-			message: '#^Parameter \#1 \$haystack of function str_contains expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/import.php
-
-		-
-			message: '#^Parameter \#1 \$string of function md5 expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/import.php
-
-		-
-			message: '#^Parameter \#1 \$string of function strlen expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 3
-			path: lib/import.php
-
-		-
 			message: '#^Parameter \#1 \$xml_data of function import_xml_data expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
@@ -4525,18 +3793,6 @@ parameters:
 			path: lib/import.php
 
 		-
-			message: '#^Parameter \#2 \$signature of function openssl_verify expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 4
-			path: lib/import.php
-
-		-
-			message: '#^Parameter \#2 \$string of function explode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/import.php
-
-		-
 			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
@@ -4546,18 +3802,6 @@ parameters:
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 6
-			path: lib/installer.php
-
-		-
-			message: '#^Argument of an invalid type array\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 2
-			path: lib/installer.php
-
-		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
 			path: lib/installer.php
 
 		-
@@ -4603,18 +3847,6 @@ parameters:
 			path: lib/installer.php
 
 		-
-			message: '#^Parameter \#1 \$haystack of function str_contains expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: lib/installer.php
-
-		-
-			message: '#^Parameter \#1 \$text of static method Installer\:\:sectionNormal\(\) expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 10
-			path: lib/installer.php
-
-		-
 			message: '#^Parameter \#2 \$subject of function preg_match expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
@@ -4633,151 +3865,13 @@ parameters:
 			path: lib/installer.php
 
 		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 2
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''bind_timeout'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''cn_email'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''cn_full_name'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
 			message: '#^Cannot access offset ''count'' on non\-empty\-array\<int\|string, array\|int\>\|false\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: lib/ldap.php
 
 		-
-			message: '#^Cannot access offset ''debug'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''dn'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
 			message: '#^Cannot access offset ''dn'' on array\|int\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''encryption'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''group_attrib'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''group_dn'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''group_member_type'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''group_require'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''mode'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''network_timeout'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''port'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''port_ssl'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''proto_version'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''referrals'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''search_base'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''search_filter'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''server'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''specific_dn'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''specific_password'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/ldap.php
-
-		-
-			message: '#^Cannot access offset ''tls_certificate'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: lib/ldap.php
@@ -4825,12 +3919,6 @@ parameters:
 			path: lib/mib_cache.php
 
 		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: lib/package.php
-
-		-
 			message: '#^Call to an undefined method object\:\:prepare\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -4849,36 +3937,6 @@ parameters:
 			path: lib/package.php
 
 		-
-			message: '#^Parameter \#1 \$data of function openssl_sign expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/package.php
-
-		-
-			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/package.php
-
-		-
-			message: '#^Parameter \#1 \$stream of function fwrite expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/package.php
-
-		-
-			message: '#^Parameter \#1 \$text of function xml_character_decode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/package.php
-
-		-
-			message: '#^Parameter \#1 \$xml_data of function find_dependent_files expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: lib/package.php
-
-		-
 			message: '#^Method Net_Ping\:\:seteuid\(\) should return int but returns int\|string\.$#'
 			identifier: return.type
 			count: 1
@@ -4888,18 +3946,6 @@ parameters:
 			message: '#^Parameter \#1 \$array of function array_sum expects array, array\|false given\.$#'
 			identifier: argument.type
 			count: 1
-			path: lib/ping.php
-
-		-
-			message: '#^Parameter \#1 \$haystack of function strpos expects string, string\|false\|null given\.$#'
-			identifier: argument.type
-			count: 3
-			path: lib/ping.php
-
-		-
-			message: '#^Parameter \#1 \$string of function substr expects string, string\|false\|null given\.$#'
-			identifier: argument.type
-			count: 3
 			path: lib/ping.php
 
 		-
@@ -4987,25 +4033,7 @@ parameters:
 			path: lib/plugins.php
 
 		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, bool\|string given\.$#'
-			identifier: argument.type
-			count: 2
-			path: lib/plugins.php
-
-		-
-			message: '#^Parameter \#1 \$string of function base64_encode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 7
-			path: lib/plugins.php
-
-		-
 			message: '#^Parameter \#1 \$string of function strlen expects string, array\<string\>\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/plugins.php
-
-		-
-			message: '#^Parameter \#1 \$string of function strlen expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: lib/plugins.php
@@ -5067,13 +4095,7 @@ parameters:
 		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
-			count: 8
-			path: lib/poller.php
-
-		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
+			count: 5
 			path: lib/poller.php
 
 		-
@@ -5203,27 +4225,9 @@ parameters:
 			path: lib/poller.php
 
 		-
-			message: '#^Cannot call method close\(\) on Directory\|false\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: lib/poller.php
-
-		-
-			message: '#^Cannot call method read\(\) on Directory\|false\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: lib/poller.php
-
-		-
 			message: '#^Function exec_poll_php\(\) should return string but returns string\|false\|null\.$#'
 			identifier: return.type
 			count: 1
-			path: lib/poller.php
-
-		-
-			message: '#^Parameter \#1 \$array of function array_column expects array, array\|bool given\.$#'
-			identifier: argument.type
-			count: 2
 			path: lib/poller.php
 
 		-
@@ -5239,12 +4243,6 @@ parameters:
 			path: lib/poller.php
 
 		-
-			message: '#^Parameter \#1 \$haystack of function substr_count expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/poller.php
-
-		-
 			message: '#^Parameter \#1 \$num1 of function bcadd expects numeric\-string, 0\|numeric\-string given\.$#'
 			identifier: argument.type
 			count: 1
@@ -5252,24 +4250,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$results of function boost_poller_on_demand expects array, array\|bool given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/poller.php
-
-		-
-			message: '#^Parameter \#1 \$string of function base64_encode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: lib/poller.php
-
-		-
-			message: '#^Parameter \#1 \$string of function substr expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/poller.php
-
-		-
-			message: '#^Parameter \#1 \$string of function trim expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: lib/poller.php
@@ -5283,7 +4263,7 @@ parameters:
 		-
 			message: '#^Parameter \#2 \$data of function replicate_out_table expects array, array\|bool given\.$#'
 			identifier: argument.type
-			count: 28
+			count: 27
 			path: lib/poller.php
 
 		-
@@ -5297,18 +4277,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: lib/poller.php
-
-		-
-			message: '#^Parameter \#4 \$pid of function register_process expects int, int\|false given\.$#'
-			identifier: argument.type
-			count: 3
-			path: lib/poller.php
-
-		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 2
-			path: lib/reports.php
 
 		-
 			message: '#^Cannot access offset ''alignment'' on array\|bool\.$#'
@@ -5431,12 +4399,6 @@ parameters:
 			path: lib/reports.php
 
 		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/reports.php
-
-		-
 			message: '#^Parameter \#1 \$report of function expand_branch expects array, array\|bool given\.$#'
 			identifier: argument.type
 			count: 1
@@ -5461,21 +4423,9 @@ parameters:
 			path: lib/reports.php
 
 		-
-			message: '#^Parameter \#1 \$string of function base64_encode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/reports.php
-
-		-
 			message: '#^Parameter \#2 \$baseTimestamp of function strtotime expects int\|null, int\|false given\.$#'
 			identifier: argument.type
 			count: 1
-			path: lib/reports.php
-
-		-
-			message: '#^Parameter \#2 \$timestamp of function date expects int\|null, int\|false given\.$#'
-			identifier: argument.type
-			count: 11
 			path: lib/reports.php
 
 		-
@@ -5557,12 +4507,6 @@ parameters:
 			path: lib/rrd.php
 
 		-
-			message: '#^Cannot access offset ''end_time'' on array\<''start_time''\|int\<0, max\>, non\-empty\-array\<string, ''U''\|numeric\-string\>\|string\>\|false\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: lib/rrd.php
-
-		-
 			message: '#^Cannot access offset ''local_graph_id'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
@@ -5584,12 +4528,6 @@ parameters:
 			message: '#^Cannot access property \$parentNode on DOMElement\|null\.$#'
 			identifier: property.nonObject
 			count: 2
-			path: lib/rrd.php
-
-		-
-			message: '#^Cannot assign offset string to array\<string, string\>\|string\.$#'
-			identifier: offsetAssign.dimType
-			count: 3
 			path: lib/rrd.php
 
 		-
@@ -5641,12 +4579,6 @@ parameters:
 			path: lib/rrd.php
 
 		-
-			message: '#^Parameter \#1 \$string of function trim expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/rrd.php
-
-		-
 			message: '#^Parameter \#2 \$graph of function rrdtool_resolve_graph_text expects array, array\|bool given\.$#'
 			identifier: argument.type
 			count: 5
@@ -5681,18 +4613,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: lib/rrd.php
-
-		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: lib/rrdcheck.php
-
-		-
-			message: '#^Cannot access offset int\<0, max\> on list\<string\>\|false\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 6
-			path: lib/rrdcheck.php
 
 		-
 			message: '#^Parameter \#2 \$length of function array_chunk expects int\<1, max\>, int given\.$#'
@@ -5743,31 +4663,7 @@ parameters:
 			path: lib/snmp.php
 
 		-
-			message: '#^Parameter \#1 \$haystack of function str_contains expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/snmp.php
-
-		-
-			message: '#^Parameter \#1 \$haystack of function str_starts_with expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/snmp.php
-
-		-
 			message: '#^Parameter \#1 \$string of function format_snmp_string expects string, array\<string\>\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/snmp.php
-
-		-
-			message: '#^Parameter \#1 \$string of function trim expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 3
-			path: lib/snmp.php
-
-		-
-			message: '#^Parameter \#2 \$string of function explode expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: lib/snmp.php
@@ -5848,30 +4744,6 @@ parameters:
 			message: '#^Argument of an invalid type array\|true supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 3
-			path: lib/snmpagent.php
-
-		-
-			message: '#^Call to an undefined method object\:\:row\(\)\.$#'
-			identifier: method.notFound
-			count: 18
-			path: lib/snmpagent.php
-
-		-
-			message: '#^Call to an undefined method object\:\:select\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: lib/snmpagent.php
-
-		-
-			message: '#^Call to an undefined method object\:\:set\(\)\.$#'
-			identifier: method.notFound
-			count: 58
-			path: lib/snmpagent.php
-
-		-
-			message: '#^Call to an undefined method object\:\:truncate\(\)\.$#'
-			identifier: method.notFound
-			count: 1
 			path: lib/snmpagent.php
 
 		-
@@ -6067,12 +4939,6 @@ parameters:
 			path: lib/template.php
 
 		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: lib/template.php
-
-		-
 			message: '#^Parameter \#3 \$profile of function change_data_template expects array, array\|bool given\.$#'
 			identifier: argument.type
 			count: 1
@@ -6082,12 +4948,6 @@ parameters:
 			message: '#^Parameter \#1 \$key of function array_key_exists expects int\|string, float\|int\|string given\.$#'
 			identifier: argument.type
 			count: 1
-			path: lib/timespan_settings.php
-
-		-
-			message: '#^Parameter \#2 \$timestamp of function date expects int\|null, float\|int\|string\|false given\.$#'
-			identifier: argument.type
-			count: 2
 			path: lib/timespan_settings.php
 
 		-
@@ -6169,24 +5029,6 @@ parameters:
 			path: lib/utility.php
 
 		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/utility.php
-
-		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/utility.php
-
-		-
-			message: '#^Parameter \#2 \$string of function explode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: lib/utility.php
-
-		-
 			message: '#^Parameter \#2 \$string2 of function strcasecmp expects string, int\|string given\.$#'
 			identifier: argument.type
 			count: 2
@@ -6196,12 +5038,6 @@ parameters:
 			message: '#^Parameter \#2 \$version2 of function version_compare expects string, int\|string given\.$#'
 			identifier: argument.type
 			count: 1
-			path: lib/utility.php
-
-		-
-			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, string\|null given\.$#'
-			identifier: argument.type
-			count: 5
 			path: lib/utility.php
 
 		-
@@ -6463,33 +5299,15 @@ parameters:
 			path: managers.php
 
 		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: managers.php
-
-		-
 			message: '#^Cannot access offset ''description'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: managers.php
 
 		-
-			message: '#^Parameter \#1 \$string of function htmle expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: oauth2.php
-
-		-
 			message: '#^Cannot access offset ''name'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 5
-			path: package.php
-
-		-
-			message: '#^Parameter \#1 \$xml_data of function find_dependent_files expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
 			path: package.php
 
 		-
@@ -6499,39 +5317,9 @@ parameters:
 			path: package_import.php
 
 		-
-			message: '#^Parameter \#1 \$a of class Diff constructor expects array, list\<string\>\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: package_import.php
-
-		-
-			message: '#^Parameter \#1 \$data of function openssl_verify expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 4
-			path: package_import.php
-
-		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 4
-			path: package_import.php
-
-		-
 			message: '#^Parameter \#1 \$string of function base64_encode expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 2
-			path: package_import.php
-
-		-
-			message: '#^Parameter \#2 \$b of class Diff constructor expects array, list\<string\>\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: package_import.php
-
-		-
-			message: '#^Parameter \#2 \$signature of function openssl_verify expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 4
 			path: package_import.php
 
 		-
@@ -6697,18 +5485,6 @@ parameters:
 			path: poller_automation.php
 
 		-
-			message: '#^Parameter \#1 \$haystack of function str_contains expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: poller_automation.php
-
-		-
-			message: '#^Parameter \#1 \$haystack of function strpos expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: poller_automation.php
-
-		-
 			message: '#^Parameter \#1 \$pid of function killProcess expects int, int\|false given\.$#'
 			identifier: argument.type
 			count: 2
@@ -6721,39 +5497,9 @@ parameters:
 			path: poller_automation.php
 
 		-
-			message: '#^Parameter \#1 \$string of function cacti_strtolower expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: poller_automation.php
-
-		-
-			message: '#^Parameter \#1 \$string of function substr expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: poller_automation.php
-
-		-
 			message: '#^Parameter \#2 \$network of function rerunDataQueries expects array, array\|bool given\.$#'
 			identifier: argument.type
 			count: 2
-			path: poller_automation.php
-
-		-
-			message: '#^Parameter \#2 \$pid of function addSNMPDevice expects int, int\|false given\.$#'
-			identifier: argument.type
-			count: 3
-			path: poller_automation.php
-
-		-
-			message: '#^Parameter \#2 \$pid of function addUpDevice expects int, int\|false given\.$#'
-			identifier: argument.type
-			count: 3
-			path: poller_automation.php
-
-		-
-			message: '#^Parameter \#2 \$pid of function clearTask expects int, int\|false given\.$#'
-			identifier: argument.type
-			count: 3
 			path: poller_automation.php
 
 		-
@@ -6775,12 +5521,6 @@ parameters:
 			path: poller_boost.php
 
 		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: poller_boost.php
-
-		-
 			message: '#^Cannot access offset ''Value'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
@@ -6799,12 +5539,6 @@ parameters:
 			path: poller_boost.php
 
 		-
-			message: '#^Parameter \#1 \$array of function array_column expects array, array\|bool given\.$#'
-			identifier: argument.type
-			count: 2
-			path: poller_boost.php
-
-		-
 			message: '#^Parameter \#3 \$last_run_time of function boost_time_to_run expects int, float\|int\|string\|false given\.$#'
 			identifier: argument.type
 			count: 1
@@ -6815,48 +5549,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: poller_boost.php
-
-		-
-			message: '#^Parameter \#4 \$pid of function unregister_process expects int, int\|false given\.$#'
-			identifier: argument.type
-			count: 3
-			path: poller_boost.php
-
-		-
-			message: '#^Parameter \#4 \$pid of function unregister_process expects int, int\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: poller_commands.php
-
-		-
-			message: '#^Parameter \#2 \$thread_id of function dsstats_log_child_stats expects int, int\|string given\.$#'
-			identifier: argument.type
-			count: 2
-			path: poller_dsstats.php
-
-		-
-			message: '#^Parameter \#3 \$taskid of function register_process_start expects int, int\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: poller_dsstats.php
-
-		-
-			message: '#^Parameter \#3 \$taskid of function unregister_process expects int, int\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: poller_dsstats.php
-
-		-
-			message: '#^Parameter \#3 \$thread_id of function dsstats_get_and_store_ds_avgpeak_values expects int, int\|string given\.$#'
-			identifier: argument.type
-			count: 4
-			path: poller_dsstats.php
-
-		-
-			message: '#^Parameter \#4 \$pid of function unregister_process expects int, int\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: poller_dsstats.php
 
 		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
@@ -6937,19 +5629,7 @@ parameters:
 			path: poller_maintenance.php
 
 		-
-			message: '#^Parameter \#2 \$group of function chgrp expects int\|string, int\<0, max\>\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: poller_maintenance.php
-
-		-
 			message: '#^Parameter \#2 \$permissions of function chmod expects int, float\|int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: poller_maintenance.php
-
-		-
-			message: '#^Parameter \#2 \$user of function chown expects int\|string, int\<0, max\>\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: poller_maintenance.php
@@ -6959,18 +5639,6 @@ parameters:
 			identifier: encapsedStringPart.nonString
 			count: 3
 			path: poller_maintenance.php
-
-		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: poller_realtime.php
-
-		-
-			message: '#^Parameter \#1 \$command of function shell_exec expects string, array\<string\>\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: poller_realtime.php
 
 		-
 			message: '#^Parameter \#1 \$haystack of function strpos expects string, array\<string\>\|string given\.$#'
@@ -7033,26 +5701,8 @@ parameters:
 			path: poller_rrdcheck.php
 
 		-
-			message: '#^Parameter \#3 \$taskid of function unregister_process expects int, int\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: poller_rrdcheck.php
-
-		-
-			message: '#^Parameter \#4 \$pid of function unregister_process expects int, int\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: poller_rrdcheck.php
-
-		-
 			message: '#^Argument of an invalid type float\|int\|list\<string\>\|string\|false\|null supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
-			count: 1
-			path: poller_spikekill.php
-
-		-
-			message: '#^Parameter \#1 \$haystack of function substr_count expects string, string\|false given\.$#'
-			identifier: argument.type
 			count: 1
 			path: poller_spikekill.php
 
@@ -7070,12 +5720,6 @@ parameters:
 
 		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: pollers.php
-
-		-
-			message: '#^Argument of an invalid type list\<array\>\|false supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 1
 			path: pollers.php
@@ -7225,18 +5869,6 @@ parameters:
 			path: script_server.php
 
 		-
-			message: '#^Parameter \#1 \$str of function strtr expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: script_server.php
-
-		-
-			message: '#^Parameter \#1 \$string of function trim expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: script_server.php
-
-		-
 			message: '#^Cannot access offset ''hostname'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 6
@@ -7325,24 +5957,6 @@ parameters:
 			identifier: binaryOp.invalid
 			count: 1
 			path: scripts/cacti_user_stats.php
-
-		-
-			message: '#^Parameter \#1 \$path of function realpath expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: scripts/cacti_user_stats.php
-
-		-
-			message: '#^Parameter \#1 \$string of function trim expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: scripts/sql.php
-
-		-
-			message: '#^Parameter \#2 \$string of function explode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: scripts/ss_apache_stats.php
 
 		-
 			message: '#^Cannot access offset ''hostname'' on array\|bool\.$#'
@@ -8209,12 +6823,6 @@ parameters:
 			path: scripts/ss_net_snmp_disk_bytes.php
 
 		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: scripts/ss_net_snmp_disk_bytes.php
-
-		-
 			message: '#^Cannot access offset ''hostname'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 4
@@ -8296,12 +6904,6 @@ parameters:
 			message: '#^Cannot access offset ''snmp_version'' on array\|bool\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 4
-			path: scripts/ss_net_snmp_disk_io.php
-
-		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
 			path: scripts/ss_net_snmp_disk_io.php
 
 		-
@@ -8415,12 +7017,6 @@ parameters:
 		-
 			message: '#^Offset 1 might not exist on array\{\}\|array\{non\-empty\-string, numeric\-string\}\.$#'
 			identifier: offsetAccess.notFound
-			count: 1
-			path: scripts/ss_netsnmp_lmsensors.php
-
-		-
-			message: '#^Parameter \#1 \$string of function trim expects string, float\|int\|string given\.$#'
-			identifier: argument.type
 			count: 1
 			path: scripts/ss_netsnmp_lmsensors.php
 
@@ -8617,24 +7213,6 @@ parameters:
 			path: scripts/ss_poller.php
 
 		-
-			message: '#^Parameter \#1 \$string of function trim expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: scripts/ss_sql.php
-
-		-
-			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: scripts/ss_sql.php
-
-		-
-			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, string\|null given\.$#'
-			identifier: argument.type
-			count: 5
-			path: scripts/ss_sql.php
-
-		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 3
@@ -8671,12 +7249,6 @@ parameters:
 			path: snmpagent_mibcachechild.php
 
 		-
-			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: snmpagent_mibcachechild.php
-
-		-
 			message: '#^Function get_options\(\) should return array but returns array\<string, list\<mixed\>\|string\|false\>\|false\.$#'
 			identifier: return.type
 			count: 1
@@ -8689,32 +7261,14 @@ parameters:
 			path: snmpagent_persist.php
 
 		-
-			message: '#^Parameter \#1 \$string of function trim expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 3
-			path: snmpagent_persist.php
-
-		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 7
 			path: support.php
 
 		-
-			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: support.php
-
-		-
 			message: '#^Function support_redact\(\) should return string but returns string\|null\.$#'
 			identifier: return.type
-			count: 1
-			path: support.php
-
-		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false\|null given\.$#'
-			identifier: argument.type
 			count: 1
 			path: support.php
 
@@ -8725,28 +7279,10 @@ parameters:
 			path: support.php
 
 		-
-			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, string\|null given\.$#'
-			identifier: argument.type
-			count: 3
-			path: support.php
-
-		-
 			message: '#^Parameter \#3 \$subject of function str_ireplace expects array\<string\>\|string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: support.php
-
-		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: templates_import.php
-
-		-
-			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: templates_import.php
 
 		-
 			message: '#^Parameter \#1 \$stream of function fread expects resource, resource\|false given\.$#'
@@ -8845,12 +7381,6 @@ parameters:
 			path: user_admin.php
 
 		-
-			message: '#^Cannot access offset ''domain_name'' on array\|bool\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: user_domains.php
-
-		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 4
@@ -8902,18 +7432,6 @@ parameters:
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 3
-			path: utilities.php
-
-		-
-			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: utilities.php
-
-		-
-			message: '#^Parameter \#1 \$stream of function fwrite expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 1
 			path: utilities.php
 
 		-

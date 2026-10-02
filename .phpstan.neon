@@ -38,6 +38,7 @@ parameters:
         - identifier: if.alwaysFalse
         - identifier: notEqual.alwaysFalse
         - identifier: notEqual.alwaysTrue
+        - identifier: notIdentical.alwaysTrue
         - identifier: equal.alwaysTrue
         - identifier: if.alwaysTrue
         - identifier: while.alwaysTrue
@@ -46,6 +47,7 @@ parameters:
         - identifier: identical.alwaysFalse
         - identifier: booleanAnd.leftAlwaysTrue
         - identifier: booleanAnd.leftAlwaysFalse
+        - identifier: booleanAnd.alwaysFalse
         - identifier: function.alreadyNarrowedType
 # L9       - '/^Parameter #1 \$value of function strval expects bool\|float\|int\|resource\|string\|null, mixed given.$/'
 # L9       - '/^Parameter #1 \$value of function intval expects array\|bool\|float\|int\|resource\|string\|null, mixed given.$/'

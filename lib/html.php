@@ -766,7 +766,7 @@ function html_header_sort(array $header_items, string $sort_column, string $sort
 		'columns'  => $header_items
 	];
 
-	print "<thead><tr class='tableHeader' data-columns='" . base64_encode(json_encode($table_visibility)) . "'>";
+	print "<thead><tr class='tableHeader' data-columns='" . base64_encode((string) json_encode($table_visibility)) . "'>";
 
 	$i = 1;
 
@@ -964,7 +964,7 @@ function html_header_sort_checkbox(array $header_items, string $sort_column, str
 		'columns'  => $header_items
 	];
 
-	print "<thead><tr class='tableHeader' data-columns='" . base64_encode(json_encode($table_visibility)) . "'>";
+	print "<thead><tr class='tableHeader' data-columns='" . base64_encode((string) json_encode($table_visibility)) . "'>";
 
 	foreach ($header_items as $db_column => $display_array) {
 		// if the column is not visible, don't display it
@@ -1113,7 +1113,7 @@ function html_header(array $header_items, int $last_item_colspan = 1, bool $resi
 		'columns'  => $header_items
 	];
 
-	print "<thead><tr class='tableHeader " . ($last_item_colspan > 1 || !$resizable ? 'tableFixed' : '') . "' data-columns='" . base64_encode(json_encode($table_visibility)) . "'>";
+	print "<thead><tr class='tableHeader " . ($last_item_colspan > 1 || !$resizable ? 'tableFixed' : '') . "' data-columns='" . base64_encode((string) json_encode($table_visibility)) . "'>";
 
 	$i = 0;
 
@@ -1205,7 +1205,7 @@ function html_header_checkbox(array $header_items, bool $include_form = true, st
 		'columns'  => $header_items
 	];
 
-	print "<thead><tr class='tableHeader " . (!$resizable ? 'tableFixed' : '') . "' data-columns='" . base64_encode(json_encode($table_visibility)) . "'>";
+	print "<thead><tr class='tableHeader " . (!$resizable ? 'tableFixed' : '') . "' data-columns='" . base64_encode((string) json_encode($table_visibility)) . "'>";
 
 	foreach ($header_items as $item) {
 		if (is_array($item)) {
@@ -2327,7 +2327,7 @@ function html_show_tabs_left() : void {
 	ob_start();
 	api_plugin_hook('top_graph_header_tabs');
 
-	$tab_text = trim(ob_get_clean());
+	$tab_text = trim((string) ob_get_clean());
 	$tab_text = str_replace('<a', '', $tab_text);
 	$tab_text = str_replace('</a>', '|', $tab_text);
 	$tab_text = str_replace('<img', '', $tab_text);

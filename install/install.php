@@ -68,7 +68,7 @@ if (CACTI_SERVER_OS == 'unix') {
 		} elseif (file_exists('/etc/os-release')) {
 			$contents = file_get_contents('/etc/os-release');
 
-			if (stripos($contents, 'debian') !== false || stripos($contents, 'ubuntu')) {
+			if (stripos((string) $contents, 'debian') !== false || stripos((string) $contents, 'ubuntu')) {
 				$help = 'Installing-Under-Ubuntu-Debian.html';
 			}
 		}

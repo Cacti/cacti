@@ -56,15 +56,18 @@ global $weekly_timespans, $yearly_timespans;
 
 // Workaround End
 
-while (false !== ($entry = $dir->read())) {
-	if ($entry != '.' && $entry != '..') {
-		if (is_dir(CACTI_PATH_INCLUDE . '/themes/' . $entry)) {
-			$themes[$entry] = __(ucwords($entry));
+if ($dir !== false) {
+	while (false !== ($entry = $dir->read())) {
+		if ($entry != '.' && $entry != '..') {
+			if (is_dir(CACTI_PATH_INCLUDE . '/themes/' . $entry)) {
+				$themes[$entry] = __(ucwords($entry));
+			}
 		}
 	}
+
+	asort($themes);
+	$dir->close();
 }
-asort($themes);
-$dir->close();
 
 // tab information
 $tabs = [

@@ -74,14 +74,14 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
 			$verror = validate_parameters($params, $allowed_hosts_filter);
 
 			if ($verror) {
-				$response->getBody()->write(json_encode($verror));
+				$response->getBody()->write((string) json_encode($verror));
 
 				cacti_log($verror . ' By HOST: ' . $client_ip, false, 'API');
 
 				return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
 			}
 
-			$json = json_encode(get_hosts($params));
+			$json = (string) json_encode(get_hosts($params));
 
 			$response->getBody()->write($json);
 
@@ -95,14 +95,14 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
 			$verror = validate_parameters($params, $allowed_host_templates_filter);
 
 			if ($verror) {
-				$response->getBody()->write(json_encode($verror));
+				$response->getBody()->write((string) json_encode($verror));
 
 				cacti_log($verror . ' By HOST: ' . $client_ip, false, 'API');
 
 				return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
 			}
 
-			$json = json_encode(get_host_templates($params['template_id'] ?? 0));
+			$json = (string) json_encode(get_host_templates($params['template_id'] ?? 0));
 
 			$response->getBody()->write($json);
 
@@ -112,7 +112,7 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
 		$infoGroup->get('/graph_list', function (Request $request, Response $response) {
 			$params  = $request->getQueryParams();
 			$host_id = $params['host_id'] ?? 0;
-			$json    = json_encode(get_graph_list($host_id));
+			$json    = (string) json_encode(get_graph_list($host_id));
 
 			$response->getBody()->write($json);
 
@@ -126,14 +126,14 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
 			$verror = validate_parameters($params, $allowed_automation_networks_filter);
 
 			if ($verror) {
-				$response->getBody()->write(json_encode($verror));
+				$response->getBody()->write((string) json_encode($verror));
 
 				cacti_log($verror . ' By HOST: ' . $client_ip, false, 'API');
 
 				return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
 			}
 
-			$json = json_encode(get_automation_networks($params));
+			$json = (string) json_encode(get_automation_networks($params));
 
 			$response->getBody()->write($json);
 
@@ -148,13 +148,13 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
 			$poller_id = $params['poller_id'] ?? 0;
 			$hosts     = get_poller_status($poller_id);
 
-			$response->getBody()->write(json_encode($hosts));
+			$response->getBody()->write((string) json_encode($hosts));
 
 			return $response->withHeader('Content-Type', 'application/json');
 		});
 
 		$statusGroup->get('/cacti_status', function (Request $request, Response $response) {
-			$json = json_encode(get_cacti_status());
+			$json = (string) json_encode(get_cacti_status());
 
 			$response->getBody()->write($json);
 
@@ -162,7 +162,7 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
 		});
 
 		$statusGroup->get('/cacti_db_status', function (Request $request, Response $response) {
-			$json = json_encode(get_cacti_db_status());
+			$json = (string) json_encode(get_cacti_db_status());
 
 			$response->getBody()->write($json);
 
@@ -170,7 +170,7 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
 		});
 
 		$statusGroup->get('/boost_status', function (Request $request, Response $response) {
-			$json = json_encode(get_boost_status());
+			$json = (string) json_encode(get_boost_status());
 
 			$response->getBody()->write($json);
 
@@ -178,7 +178,7 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
 		});
 
 		$statusGroup->get('/dsstats', function (Request $request, Response $response) {
-			$json = json_encode(get_dsstats_status());
+			$json = (string) json_encode(get_dsstats_status());
 
 			$response->getBody()->write($json);
 
@@ -189,19 +189,19 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
 			$ping_result = db_fetch_row('SELECT 1 from version');
 
 			if (!$ping_result) {
-				$response->getBody()->write(json_encode(['error' => 'Database connection failed']));
+				$response->getBody()->write((string) json_encode(['error' => 'Database connection failed']));
 
 				return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
 			}
 
-			$response->getBody()->write(json_encode(['status' => 'Database connection test successful']));
+			$response->getBody()->write((string) json_encode(['status' => 'Database connection test successful']));
 
 			return $response->withHeader('Content-Type', 'application/json');
 		});
 
 		// automation status endpoint
 		$statusGroup->get('/automation', function (Request $request, Response $response) {
-			$json = json_encode(get_automation_status());
+			$json = (string) json_encode(get_automation_status());
 
 			$response->getBody()->write($json);
 
@@ -219,14 +219,14 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
 				$verror = validate_parameters($params, $allowed_thold_filter);
 
 				if ($verror) {
-					$response->getBody()->write(json_encode($verror));
+					$response->getBody()->write((string) json_encode($verror));
 
 					cacti_log($verror . ' By HOST: ' . $client_ip, false, 'API');
 
 					return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
 				}
 
-				$json = json_encode(get_thresholds($params));
+				$json = (string) json_encode(get_thresholds($params));
 
 				$response->getBody()->write($json);
 
@@ -234,7 +234,7 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
 			});
 
 			$tholdGroup->get('/status', function (Request $request, Response $response) {
-				$json = json_encode(get_threshold_status());
+				$json = (string) json_encode(get_threshold_status());
 
 				$response->getBody()->write($json);
 

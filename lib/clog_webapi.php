@@ -181,11 +181,15 @@ function clog_purge_logfile(string $action = 'purge') : void {
 
 				$log_fh = fopen($logfile, 'w');
 
-				fclose($log_fh);
+				if (is_resource($log_fh)) {
+					fclose($log_fh);
 
-				raise_message('clog_removed', $imessage, MESSAGE_LEVEL_INFO);
+					raise_message('clog_removed', $imessage, MESSAGE_LEVEL_INFO);
 
-				cacti_log($message, false, 'WEBUI');
+					cacti_log($message, false, 'WEBUI');
+				} else {
+					raise_message('clog_removed', __('Unable to open log file \'%s\' for writing.', basename($logfile)), MESSAGE_LEVEL_ERROR);
+				}
 			}
 		} else {
 			raise_message('clog_permissions');

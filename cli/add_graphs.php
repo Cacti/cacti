@@ -429,7 +429,7 @@ if (cacti_sizeof($parms)) {
 
 	// process the snmp fields
 	if ($graph_type == 'dq' || $graph_type == 'ds' || $listSNMPFields || $listSNMPValues) {
-		$snmpFields = getSNMPFields($host_id, $dsGraph['snmpQueryId']);
+		$snmpFields = getSNMPFields($host_id, (int) $dsGraph['snmpQueryId']);
 
 		if ($listSNMPFields) {
 			displaySNMPFields($snmpFields, $host_id, $quietMode);
@@ -489,7 +489,7 @@ if (cacti_sizeof($parms)) {
 				}
 			}
 
-			$snmpValues = getSNMPValues($host_id, $snmpField, $dsGraph['snmpQueryId']);
+			$snmpValues = getSNMPValues($host_id, $snmpField, (int) $dsGraph['snmpQueryId']);
 
 			$snmpValue      = '';
 			$snmpValueRegex = '';

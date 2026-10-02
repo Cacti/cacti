@@ -103,7 +103,7 @@ if ($audit) {
 		exit(1);
 	}
 
-	$input = json_decode(file_get_contents($config['input_whitelist']), true);
+	$input = json_decode((string) file_get_contents($config['input_whitelist']), true);
 
 	$totals = 0;
 	$items  = cacti_sizeof($input);
@@ -148,7 +148,7 @@ if ($audit) {
 		WHERE input_string != ""');
 
 	if (file_exists($config['input_whitelist'])) {
-		$input_ws = json_decode(file_get_contents($config['input_whitelist']), true);
+		$input_ws = json_decode((string) file_get_contents($config['input_whitelist']), true);
 	} else {
 		$input_ws = [];
 	}

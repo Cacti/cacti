@@ -1777,7 +1777,7 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 				$multi_ok   = false;
 
 				if (cacti_sizeof($values)) {
-					foreach ($values as $value) {
+					foreach (($values ?: []) as $value) {
 						$matches = explode(':', $value);
 
 						if (isset($rrd_field_names[$matches[0]])) {
@@ -2330,11 +2330,11 @@ function boost_rrdtool_function_create(int $local_data_id, bool $show_source, mi
 							$pgroup_id = fileowner(CACTI_PATH_RRA . $spath);
 
 							if ($powner_id != $owner_id) {
-								$success = chown(CACTI_PATH_RRA . $spath, $owner_id);
+								$success = $owner_id !== false && chown(CACTI_PATH_RRA . $spath, $owner_id);
 							}
 
 							if ($pgroup_id != $group_id && $success) {
-								$success = chgrp(CACTI_PATH_RRA . $spath, $group_id);
+								$success = $group_id !== false && chgrp(CACTI_PATH_RRA . $spath, $group_id);
 							}
 
 							if (!$success) {

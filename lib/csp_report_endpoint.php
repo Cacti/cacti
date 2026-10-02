@@ -62,8 +62,8 @@ function csp_report_sanitize_field($v): string {
 	// Strip CR/LF and other C0 controls; truncate to 256 chars for log sanity.
 	$v = preg_replace('/[\x00-\x1f\x7f]/', ' ', $v);
 
-	if (strlen($v) > 256) {
-		$v = substr($v, 0, 253) . '...';
+	if (strlen((string) $v) > 256) {
+		$v = substr((string) $v, 0, 253) . '...';
 	}
 
 	return $v;

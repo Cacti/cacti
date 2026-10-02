@@ -133,7 +133,7 @@ function cacti_ldap_auth(string $username, string $password = '', string $dn = '
 
 	$response = [];
 
-	foreach ($ldap_servers as $ldap_server) {
+	foreach (($ldap_servers ?: []) as $ldap_server) {
 		$ldap->host = $ldap_server;
 
 		$response = $ldap->Authenticate();
@@ -257,7 +257,7 @@ function cacti_ldap_search_dn(string $username, string $dn = '', string $host = 
 
 	$response = [];
 
-	foreach ($ldap_servers as $ldap_server) {
+	foreach (($ldap_servers ?: []) as $ldap_server) {
 		$ldap->host = $ldap_server;
 
 		$response = $ldap->Search();

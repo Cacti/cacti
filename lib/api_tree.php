@@ -882,6 +882,7 @@ int $host_id, int $site_id, int $host_grouping_type, int $sort_children_type, bo
 	$save['parent']             = $parent_tree_item_id;
 	$save['local_graph_id']     = form_input_validate($local_graph_id, 'local_graph_id', '', true, 3);
 	$save['host_id']            = form_input_validate($host_id, 'host_id', '', true, 3);
+	$save['site_id']            = form_input_validate($site_id, 'site_id', '^[-0-9]+$', true, 3);
 	$save['host_grouping_type'] = form_input_validate($host_grouping_type, 'host_grouping_type', '', true, 3);
 	$save['sort_children_type'] = form_input_validate($sort_children_type, 'sort_children_type', '', true, 3);
 

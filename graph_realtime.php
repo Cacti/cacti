@@ -321,7 +321,7 @@ switch (grv('action')) {
 		$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256',session_id()) . '_lgi_' . grv('local_graph_id') . '.png';
 
 		if (file_exists($graph_rrd)) {
-			print base64_encode(file_get_contents($graph_rrd));
+			print base64_encode((string) file_get_contents($graph_rrd));
 		}
 
 		exit;

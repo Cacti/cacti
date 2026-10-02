@@ -77,7 +77,7 @@ function exec_poll_php(string $command, bool $using_proc_function, array $pipes,
 
 			$output = fgets($pipes[1], 8192);
 
-			if (substr_count($output, 'ERROR') > 0) {
+			if (substr_count((string) $output, 'ERROR') > 0) {
 				$output = 'U';
 			}
 		}
@@ -293,7 +293,7 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 	$setsid = '';
 
 	if (CACTI_SERVER_OS != 'win32') {
-		$setsid_path = trim(shell_exec('which setsid 2>/dev/null') ?? '');
+		$setsid_path = trim((string) shell_exec('which setsid 2>/dev/null'));
 
 		if ($setsid_path !== '') {
 			$setsid = 'setsid -- ';
@@ -825,7 +825,7 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 				// need a per-instance lookup (rare exception), cached per data source
 				$nt_rrd_field_names = $data_template_id == 0 ? poller_get_nt_rrd_field_names($local_data_id, $nt_cache) : [];
 
-				foreach ($values as $value) {
+				foreach (($values ?: []) as $value) {
 					$matches = explode(':', $value);
 
 					if (cacti_sizeof($matches) == 2) {
@@ -1307,6 +1307,10 @@ function update_db_from_path(string $path, string $type, bool $recursive = true)
 	if (is_dir($path)) {
 		$pobject = dir($path);
 
+		if ($pobject === false) {
+			return;
+		}
+
 		while (($entry = $pobject->read()) !== false) {
 			if (!should_ignore_from_replication($entry)) {
 				$spath = ltrim(trim(str_replace(CACTI_PATH_BASE, '', $path), '/ \\') . '/' . $entry, '/ \\');
@@ -1349,7 +1353,7 @@ function update_db_from_path(string $path, string $type, bool $recursive = true)
 					$save['md5sum']        = md5_file($entry_path);
 					$save['update_time']   = date('Y-m-d H:i:s');
 					$save['attributes']    = $attributes;
-					$save['contents']      = base64_encode(file_get_contents($entry_path));
+					$save['contents']      = base64_encode((string) file_get_contents($entry_path));
 
 					sql_save($save, 'poller_resource_cache');
 				}
@@ -1386,7 +1390,7 @@ function update_db_from_path(string $path, string $type, bool $recursive = true)
 				$save['md5sum']        = md5_file($path);
 				$save['update_time']   = date('Y-m-d H:i:s');
 				$save['attributes']    = $attributes;
-				$save['contents']      = base64_encode(file_get_contents($path));
+				$save['contents']      = base64_encode((string) file_get_contents($path));
 
 				sql_save($save, 'poller_resource_cache');
 			}
@@ -1442,7 +1446,7 @@ function resource_cache_out(string $type, array $path) : void {
 						// If for some reason, the attributes are empty, assume 0644
 						$attributes = empty($e['attributes']) ? 33188 : $e['attributes'];
 
-						$extension = substr(strrchr($e['path'], '.'), 1);
+						$extension = substr((string) strrchr($e['path'], '.'), 1);
 						$exit      = -1;
 						$contents  = base64_decode(db_fetch_cell_prepared('SELECT contents
 							FROM poller_resource_cache
@@ -1538,6 +1542,10 @@ function md5sum_path(string $path, bool $recursive = true) : mixed {
 
 	$filemd5s = [];
 	$pobject  = dir($path);
+
+	if ($pobject === false) {
+		return false;
+	}
 
 	$excluded_extensions = ['tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo'];
 
@@ -3030,7 +3038,7 @@ function register_process_start_locked(string $tasktype, string $taskname, int $
 	if (!cacti_sizeof($r)) {
 		cacti_log(sprintf('NOTE: Registering process! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 
-		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
+		register_process($tasktype, $taskname, $taskid, (int) $pid, $timeout);
 	} elseif ($r['timeout_exceeded']) {
 		if ($r['pid'] > 0) {
 			if (cacti_process_still_running((int) $r['pid'])) {
@@ -3040,7 +3048,7 @@ function register_process_start_locked(string $tasktype, string $taskname, int $
 			}
 
 			unregister_process($tasktype, $taskname, $taskid);
-			register_process($tasktype, $taskname, $taskid, $pid, $timeout);
+			register_process($tasktype, $taskname, $taskid, (int) $pid, $timeout);
 		} else {
 			// Should never be reached
 			cacti_log(sprintf('ERROR: Failed registering process.  Invalid pid found.  Unable to kill! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $r['pid']), false, 'POLLER');
@@ -3055,7 +3063,7 @@ function register_process_start_locked(string $tasktype, string $taskname, int $
 		cacti_log(sprintf('WARNING: Detected process that is exited and did not unregister first! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER');
 
 		unregister_process($tasktype, $taskname, $taskid);
-		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
+		register_process($tasktype, $taskname, $taskid, (int) $pid, $timeout);
 	}
 
 	return true;

@@ -473,7 +473,7 @@ function profile_validate_upload() : bool {
 			return false;
 		}
 
-		return json_decode(file_get_contents($_FILES['import_file']['tmp_name']), true);
+		return json_decode((string) file_get_contents($_FILES['import_file']['tmp_name']), true);
 	}
 
 	raise_message('nfu2', __('No file uploaded.'), MESSAGE_LEVEL_ERROR);
