@@ -233,7 +233,7 @@ Cacti CHANGELOG
 -security#GHSA-fh3x-69rr-qqpp: CVE-2024-54145 SQL Injection vulnerability when request automation devices
 -security#GHSA-fxrq-fr7h-9rqq: CVE-2025-24367 Arbitrary File Creation leading to RCE
 -security#GHSA-pv2c-97pp-vxwg: CVE-2024-45598 Local File Inclusion (LFI) Vulnerability via Poller Standard Error Log Path
--security#GHSA-vj9g-P7F2-4wqj: SQL Injection vulnerability when view host template
+-security#GHSA-vj9g-P7F2-4wqj: CVE-2024-54146 SQL Injection vulnerability when view host template
 -issue#5843: Temporary table names may incorrectly think they have a schema
 -issue#5847: When using Preset Time to view graphs, it is using a fixed point rather than relative time
 -issue#5848: Fix issue where RRA files are not automatically removed
