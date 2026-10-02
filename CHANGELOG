@@ -413,6 +413,16 @@ Cacti CHANGELOG
 -feature#7681: Add fail2ban support with a stable authentication-failure log line and a bundled filter
 
 1.2.32
+-security#GHSA-p3rg-7pc3-2h86: Dummy-verify passwords for unknown users to close a login-timing enumeration side channel
+-security#GHSA-92jm-r83q-cjr8: Validate the hgd graph-template id as a number before the tree-view graph SQL filter
+-security#GHSA-4j2v-vxgp-83ch: Validate the hgd graph-template id for host-leaf Graph Template grouping before the SQL filter
+-security#GHSA-q46f-rxh6-8pw2: Bind the reverse-DNS hostname when updating automation_ips
+-security#GHSA-gf3f-mwjj-vj2v: Validate the automation tree rule item field against existing columns before storage
+-security#GHSA-jv53-qfw3-v2fh: Validate the automation graph rule item field against existing columns before storage
+-security#GHSA-mgcq-r6vm-4xhw: Escape SNMP and Data Query names in Reports tree titles
+-security#GHSA-v2mq-mxpw-55pf: Escape graph preset names rendered in the gprint presets list
+-security#GHSA-4fr7-45gj-5cx6: Validate and escape data_source_path before RRDtool execution
+-security#GHSA-fgwr-944r-wg98: Validate rrd and data_source path tokens in the CLI maintenance tools and Boost
 -security#GHSA-227p-wv52-pjg5: Escape the spike-removal RRD path passed to the removespikes shell command
 -security#GHSA-2x86-jpm8-9vgp: Confine the data-query XML file existence check to the Cacti base path
 -security#GHSA-4gph-8x7q-h365: Escape the device description in the report-add status message
