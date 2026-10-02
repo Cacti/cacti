@@ -56,7 +56,6 @@ cmd_exec	./lib/ping.php:275							$result = shell_exec($ping_path . ' -W ' . cei
 cmd_exec	./lib/poller.php:100					$fp = popen($command, 'r');
 cmd_exec	./lib/poller.php:102					$fp = popen($command, 'rb');
 cmd_exec	./lib/poller.php:115				$output = shell_exec($command);
-cmd_exec	./lib/poller.php:1436										$output = system($php_path . ' -l ' . $tmpfile, $exit);
 cmd_exec	./lib/poller.php:157					pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args, 'r'));
 cmd_exec	./lib/poller.php:159					pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args . ' ' . $redirect_args, 'r'));
 cmd_exec	./lib/poller.php:163				exec($safe_filename . ' ' . $args . ' > /dev/null 2>&1 &');
@@ -875,7 +874,6 @@ header_redirect	./lib/auth.php:4854					header('Location: index.php');
 header_redirect	./lib/auth.php:4860					header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
 header_redirect	./lib/auth.php:4862					header('Location: ' . $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':''));
 header_redirect	./lib/auth.php:4867				header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
-header_redirect	./lib/auth.php:5061			header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php')));
 header_redirect	./lib/clog_webapi.php:150			header('Location: ' . get_current_page());
 header_redirect	./lib/functions.php:8842		header('Location: ' . $save_url);
 header_redirect	./lib/functions.php:8863		header('Location: ' . $safe_url, true, $status);
