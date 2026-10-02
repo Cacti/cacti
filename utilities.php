@@ -189,9 +189,14 @@ function utilities_clear_logfile() : void {
 			}
 
 			$log_fh = fopen($logfile, 'w');
-			is_resource($log_fh) && fwrite($log_fh, __('%s - WEBUI NOTE: Cacti Log Cleared from Web Management Interface.', $date) . PHP_EOL);
-			is_resource($log_fh) && fclose($log_fh);
-			print '<tr><td>' . __('Cacti Log Cleared') . '</td></tr>';
+
+			if (is_resource($log_fh)) {
+				fwrite($log_fh, __('%s - WEBUI NOTE: Cacti Log Cleared from Web Management Interface.', $date) . PHP_EOL);
+				fclose($log_fh);
+				print '<tr><td>' . __('Cacti Log Cleared') . '</td></tr>';
+			} else {
+				print "<tr><td class='deviceDown'><b>" . __('Error: Unable to clear log, no write permissions.') . '<b></td></tr>';
+			}
 		} else {
 			print "<tr><td class='deviceDown'><b>" . __('Error: Unable to clear log, no write permissions.') . '<b></td></tr>';
 		}

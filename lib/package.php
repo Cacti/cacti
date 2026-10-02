@@ -749,8 +749,15 @@ function package_template(string &$template, array &$info, array &$files, string
 	$debug .= 'NOTE: Creating compressed template xml "' . clean_up_name($name) . ".xml.gz\"\n";
 
 	$f = fopen("compress.zlib://$tmpdir/" . clean_up_name($name) . '.xml.gz','wb');
-	is_resource($f) && fwrite($f, $xml, strlen($xml));
-	is_resource($f) && fclose($f);
+
+	if (!is_resource($f)) {
+		$debug .= "ERROR: Could not open package file for writing\n";
+
+		return false;
+	}
+
+	fwrite($f, $xml, strlen($xml));
+	fclose($f);
 
 	$package_file = $tmpdir . '/' . clean_up_name($name) . '.xml.gz';
 

@@ -310,13 +310,14 @@ class MibCache {
 
 				if ($num_columns && $entries && cacti_sizeof($entries)) {
 					$num_entries        = cacti_sizeof($entries);
-					$entries_per_object = (int) ($num_entries / $num_columns);
+					$entries_per_object = $num_entries / $num_columns;
 
 					for ($i = 0; $i < $entries_per_object; $i++) {
 						$result[$i] = [];
 
 						for ($j = 0; $j < $num_columns; $j++) {
-							$result[$i][$entries[$i + $j * $entries_per_object]['name']] = $entries[$i + $j * $entries_per_object]['value'];
+							$index                                = (int) ($i + $j * $entries_per_object);
+							$result[$i][$entries[$index]['name']] = $entries[$index]['value'];
 						}
 					}
 

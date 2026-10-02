@@ -2330,11 +2330,11 @@ function boost_rrdtool_function_create(int $local_data_id, bool $show_source, mi
 							$pgroup_id = fileowner(CACTI_PATH_RRA . $spath);
 
 							if ($powner_id != $owner_id) {
-								$success = chown(CACTI_PATH_RRA . $spath, (string) $owner_id);
+								$success = $owner_id !== false && chown(CACTI_PATH_RRA . $spath, $owner_id);
 							}
 
 							if ($pgroup_id != $group_id && $success) {
-								$success = chgrp(CACTI_PATH_RRA . $spath, (string) $group_id);
+								$success = $group_id !== false && chgrp(CACTI_PATH_RRA . $spath, $group_id);
 							}
 
 							if (!$success) {

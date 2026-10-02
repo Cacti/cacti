@@ -1282,8 +1282,8 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 							$owner_id      = fileowner(CACTI_PATH_RRA);
 							$group_id      = filegroup(CACTI_PATH_RRA);
 
-							if ((chown($host_dir, (string) $owner_id)) &&
-								(chgrp($host_dir, (string) $group_id))) {
+							if ($owner_id !== false && $group_id !== false &&
+								chown($host_dir, $owner_id) && chgrp($host_dir, $group_id)) {
 								// permissions set ok
 							} else {
 								cacti_log("ERROR: Unable to set directory permissions for '" . $host_dir . "'", false);
