@@ -534,19 +534,23 @@ function script_server_path_is_allowed($resolved_path, array $roots) {
 
 	// Quick short circuit based upon prior checks
 	if ($resolved_path === false || !is_string($resolved_path)) {
-	 	return false;
-	} elseif (isset($resolved_paths[$resolved_path])) {
-		if ($resolved_paths[$resolved_path]) {
-			return true;
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 	$opath            = $resolved_path;
 	$resolved_path    = rtrim(str_replace('\\', '/', $resolved_path), '/');
 	$case_insensitive = (DIRECTORY_SEPARATOR === '\\');
 	$cache_key        = implode("\0", $roots);
+
+	/* The allow/deny result depends on both the candidate path and the root
+	 * set, so the result cache must be keyed by both. Keying by path alone
+	 * would leak a decision made under one set of roots into a later call
+	 * using a different, possibly more restrictive, set of roots. */
+	$result_key = $cache_key . "\0" . $opath;
+
+	if (isset($resolved_paths[$result_key])) {
+		return $resolved_paths[$result_key];
+	}
 
 	if (!isset($normalized_roots[$cache_key])) {
 		$normalized_roots[$cache_key] = [];
@@ -565,18 +569,14 @@ function script_server_path_is_allowed($resolved_path, array $roots) {
 
 		if ($case_insensitive) {
 			if (stripos($resolved_path, $prefix) === 0) {
-				$resolved_paths[$opath] = true;
-				return true;
+				return $resolved_paths[$result_key] = true;
 			}
 		} elseif (strpos($resolved_path, $prefix) === 0) {
-			$resolved_paths[$opath] = true;
-			return true;
+			return $resolved_paths[$result_key] = true;
 		}
 	}
 
-	$resolved_paths[$opath] = false;
-
-	return false;
+	return $resolved_paths[$result_key] = false;
 }
 
 /**
