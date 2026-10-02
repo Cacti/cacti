@@ -600,6 +600,16 @@ if ($config['is_web']) {
 	if (isset_request_var('action')) {
 		$action = get_nfilter_request_var('action');
 
+		/* GHSA-w3qw-762w-6g9v: an array-form action[] value makes every scalar
+		 * $action == $bad comparison below false, silently slipping a
+		 * state-changing action past this GET guard. A real action is never an
+		 * array here, so fail closed before the denylist is consulted. */
+		if (is_array($action)) {
+			header('Allow: POST');
+			http_response_code(405);
+			exit;
+		}
+
 		/* State changing actions must arrive by POST with a CSRF token. The
 		   actions below were reachable by GET, so a cross origin <img> or link
 		   could delete or reorder a template item, a tree branch or a link page

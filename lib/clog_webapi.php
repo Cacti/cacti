@@ -577,7 +577,7 @@ function filter($clogAdmin, $selectedFile) {
 
 						if (cacti_sizeof($logFileArray)) {
 							foreach ($logFileArray as $logFile) {
-								print "<option value='" . $logFile . "'";
+								print "<option value='" . html_escape($logFile) . "'";
 
 								if ($selectedFile == $logFile) {
 									print ' selected';
@@ -588,7 +588,7 @@ function filter($clogAdmin, $selectedFile) {
 								$logDate = cacti_count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
 								$logName = $logParts[0];
 
-								print '>' . $logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'') . "</option>\n";
+								print '>' . html_escape($logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'')) . "</option>\n";
 							}
 						}
 						?>
