@@ -1404,7 +1404,7 @@ function aggregate_make_sql_where($sql_where, $items, $field) {
 				} elseif (strtolower($i) == 'or') {
 					$sql_where .= ' OR ';
 				} else {
-					$sql_where .= ($termcount > 0 ? ' OR ':'') . $field . " LIKE '%" . trim($i) . "%'";
+					$sql_where .= ($termcount > 0 ? ' OR ':'') . $field . ' LIKE ' . db_qstr('%' . trim($i) . '%');
 					$termcount++;
 				}
 			}

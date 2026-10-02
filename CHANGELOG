@@ -5,11 +5,18 @@ Cacti CHANGELOG
 -security#GHSA-2x86-jpm8-9vgp: Confine the data-query XML file existence check to the Cacti base path
 -security#GHSA-4gph-8x7q-h365: Escape the device description in the report-add status message
 -security#GHSA-73qf-hq23-c4m7: Authorize the tree copy, lock and unlock actions against per-tree access before mutating
+-security#GHSA-929h-4c93-hxcg: Quote the aggregate graph filter LIKE term
+-security#GHSA-cg45-2mww-g98p: Revoke the server-side remember-me row on the auth_changepassword nopassword path
 -security#GHSA-f7jw-gfhr-cxwm: Escape the Resulting Branch value in the automation tree-rule matching preview
 -security#GHSA-h5wg-qf6f-7f6r: Reject unsafe identifiers in the plugin table create and drop helpers
+-security#GHSA-m3fh-gxqj-76hq: Strip control characters from the SNMPv3 credential device fields
 -security#GHSA-m57p-vf3v-cpgg: Escape the SNMP-sourced device description in the automation tree-rule matching preview
+-security#GHSA-m67r-fcmw-gvv7: Confine the imported data-query xml_path to the Cacti tree
 -security#GHSA-m6wx-f538-m6q3: Enforce the .log extension on the Boost debug log path setting
+-security#GHSA-mpfm-qhvj-5879: Validate the theme in rrdtool_create_error_image() through the theme allowlist
 -security#GHSA-r6jp-ff29-v9qw: Escape the imported template name in the template-import preview
+-security#GHSA-vx2m-q53g-hmrf: Escape host_snmp_cache.field_name in the automation pivot CASE WHEN builders
+-security#GHSA-xq26-f282-f998: Enforce a retention window on the remember-me cookie token check
 -security#GHSA-4rmr-wvjq-qxc2: Run the per-page realm check after Basic Auth and guest login instead of returning early
 -security#GHSA-j67j-wpm4-9g3x: Require a CSRF-token POST for the user and group update_policy action
 -security#GHSA-2p3x-f5jm-rg6p: Break the View-Graphs to poller remote code execution chain
