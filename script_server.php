@@ -209,9 +209,12 @@ while (1) {
 			if (!$called_by_script_server) {
 				fputs(STDOUT, 'PHP Script Server Shutdown request received, exiting' . PHP_EOL);
 				fflush(STDOUT);
+
 				cacti_log('DEBUG: PHP Script Server Shutdown request received, exiting', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 			}
+
 			db_close();
+
 			exit(0);
 		}
 
@@ -223,20 +226,23 @@ while (1) {
 
 				if ($pos > 0) {
 					switch ($i) {
-					case 0:
-						/* cut off include file as first part of input string and keep rest for further parsing */
-						$include_file = trim(substr($input_string,0,$pos));
-						$input_string = trim(strchr($input_string, ' ')) . ' ';
-						break;
-					case 1:
-						/* cut off function as second part of input string and keep rest for further parsing */
-						$function = trim(substr($input_string,0,$pos), "' ");
-						$input_string = trim(strchr($input_string, ' ')) . ' ';
-						break;
-					case 2:
-						/* take the rest as parameter(s) to the function stripped off previously */
-						$parameters = trim($input_string);
-						break 2;
+						case 0:
+							/* cut off include file as first part of input string and keep rest for further parsing */
+							$include_file = trim(substr($input_string,0,$pos));
+							$input_string = trim(strchr($input_string, ' ')) . ' ';
+
+							break;
+						case 1:
+							/* cut off function as second part of input string and keep rest for further parsing */
+							$function = trim(substr($input_string,0,$pos), "' ");
+							$input_string = trim(strchr($input_string, ' ')) . ' ';
+
+							break;
+						case 2:
+							/* take the rest as parameter(s) to the function stripped off previously */
+							$parameters = trim($input_string);
+
+							break 2;
 					}
 				} else {
 					break;
@@ -278,8 +284,10 @@ while (1) {
 				} else {
 					cacti_log("WARNING: Script file '$include_file' could not be resolved. Rejected.", false, 'PHPSVR');
 				}
+
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
+
 				continue;
 			}
 
@@ -287,8 +295,10 @@ while (1) {
 
 			if (!file_exists($include_file)) {
 				cacti_log('WARNING: PHP Script File to be included, does not exist', false, 'PHPSVR');
+
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
+
 				continue;
 			}
 
@@ -310,8 +320,10 @@ while (1) {
 
 			if (!function_exists($function)) {
 				cacti_log("WARNING: Function does not exist  INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", false, 'PHPSVR');
+
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
+
 				continue;
 			}
 
@@ -323,15 +335,19 @@ while (1) {
 				$ref = new ReflectionFunction($function);
 			} catch (ReflectionException $e) {
 				cacti_log("WARNING: Function '$function' not introspectable. Rejected.", false, 'PHPSVR');
+
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
+
 				continue;
 			}
 
 			if ($ref->isInternal()) {
 				cacti_log("WARNING: Refusing to dispatch PHP internal function '$function' from script server.", false, 'PHPSVR');
+
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
+
 				continue;
 			}
 
@@ -339,8 +355,10 @@ while (1) {
 
 			if ($fn_file === false) {
 				cacti_log("WARNING: Function '$function' has no source file. Rejected.", false, 'PHPSVR');
+
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
+
 				continue;
 			}
 
@@ -352,8 +370,10 @@ while (1) {
 
 			if (!script_server_path_is_allowed($fn_real, $allowed_roots)) {
 				cacti_log("WARNING: Function '$function' defined outside the allowed script roots ('$fn_file'). Rejected.", false, 'PHPSVR');
+
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
+
 				continue;
 			}
 
@@ -375,6 +395,7 @@ while (1) {
 	/* end the process if the runtime exceeds MAX_POLLER_RUNTIME */
 	if (($start + MAX_POLLER_RUNTIME) < time()) {
 		cacti_log('Maximum runtime of ' . MAX_POLLER_RUNTIME . ' seconds exceeded for the Script Server. Exiting.', true, 'PHPSVR');
+
 		exit (-1);
 	}
 }
@@ -509,14 +530,27 @@ function parseArgs($string, &$str_list, $debug = false) {
  */
 function script_server_path_is_allowed($resolved_path, array $roots) {
 	static $normalized_roots = [];
+	static $resolved_paths   = [];
 
+	// Quick short circuit based upon prior checks
 	if ($resolved_path === false || !is_string($resolved_path)) {
 		return false;
 	}
 
-	$resolved_path = rtrim(str_replace('\\', '/', $resolved_path), '/');
+	$opath            = $resolved_path;
+	$resolved_path    = rtrim(str_replace('\\', '/', $resolved_path), '/');
 	$case_insensitive = (DIRECTORY_SEPARATOR === '\\');
-	$cache_key = implode("\0", $roots);
+	$cache_key        = implode("\0", $roots);
+
+	/* The allow/deny result depends on both the candidate path and the root
+	 * set, so the result cache must be keyed by both. Keying by path alone
+	 * would leak a decision made under one set of roots into a later call
+	 * using a different, possibly more restrictive, set of roots. */
+	$result_key = $cache_key . "\0" . $opath;
+
+	if (isset($resolved_paths[$result_key])) {
+		return $resolved_paths[$result_key];
+	}
 
 	if (!isset($normalized_roots[$cache_key])) {
 		$normalized_roots[$cache_key] = [];
@@ -535,14 +569,14 @@ function script_server_path_is_allowed($resolved_path, array $roots) {
 
 		if ($case_insensitive) {
 			if (stripos($resolved_path, $prefix) === 0) {
-				return true;
+				return $resolved_paths[$result_key] = true;
 			}
 		} elseif (strpos($resolved_path, $prefix) === 0) {
-			return true;
+			return $resolved_paths[$result_key] = true;
 		}
 	}
 
-	return false;
+	return $resolved_paths[$result_key] = false;
 }
 
 /**
