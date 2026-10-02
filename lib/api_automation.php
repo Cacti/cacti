@@ -1271,9 +1271,10 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
 			for ($j = 0; cacti_sizeof($replacement); $j++) {
 				if ($j > 0) {
 					$repl .= '<br>';
-					$repl .= str_pad('', $j * 3, '-') . '&nbsp;' . array_shift($replacement);
+					// GHSA-f7jw-gfhr-cxwm: the replacement values carry attacker-influenced device/data fields; escape them while keeping the <br> layout.
+					$repl .= str_pad('', $j * 3, '-') . '&nbsp;' . htmle((string) array_shift($replacement));
 				} else {
-					$repl  = array_shift($replacement);
+					$repl  = htmle((string) array_shift($replacement));
 				}
 			}
 
@@ -1883,7 +1884,7 @@ function build_data_query_sql(array $rule) : string {
 	if (cacti_sizeof($field_names) > 0) {
 		foreach (($field_names ?: []) as $column) {
 			$field_name = $column['field_name'];
-			$sql_query .= ",\n\tMAX(CASE WHEN field_name='$field_name' THEN field_value ELSE NULL END) AS '$field_name'";
+			$sql_query .= ",\n\tMAX(CASE WHEN field_name = " . db_qstr($field_name) . ' THEN field_value ELSE NULL END) AS ' . db_qstr($field_name);
 		}
 	}
 
@@ -2273,7 +2274,7 @@ function make_host_snnp_cache_sql() : string|false {
 		$sql = "\t\tSELECT host_id ";
 
 		foreach ($fields as $field) {
-			$sql .= ",\n\t\t\tMAX(CASE WHEN field_name = '{$field['field_name']}' THEN field_value ELSE NULL END) AS `{$field['field_name']}`";
+			$sql .= ",\n\t\t\tMAX(CASE WHEN field_name = " . db_qstr($field['field_name']) . ' THEN field_value ELSE NULL END) AS ' . db_qstr($field['field_name']);
 		}
 
 		$sql .= "\n\t\t\tFROM host_snmp_cache AS hsc GROUP BY host_id";
@@ -3223,7 +3224,7 @@ function create_dq_graphs(int $host_id, int $snmp_query_id, array $rule) : bool 
 
 	if (cacti_sizeof($field_names) > 0) {
 		foreach ($field_names as $column) {
-			$sql_query .= ", MAX(CASE WHEN field_name ='$column' THEN field_value ELSE NULL END) AS '$column'";
+			$sql_query .= ', MAX(CASE WHEN field_name = ' . db_qstr($column) . ' THEN field_value ELSE NULL END) AS ' . db_qstr($column);
 			$i++;
 		}
 	}

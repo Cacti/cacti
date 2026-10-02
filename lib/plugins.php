@@ -462,6 +462,13 @@ function api_plugin_status_run(string $hook, array $required_capabilities, strin
 function api_plugin_db_table_create(string $plugin, string $table, array $data) : void {
 	include_once(CACTI_PATH_LIBRARY . '/database.php');
 
+	// GHSA-h5wg-qf6f-7f6r: reject an unsafe DDL identifier outright; normalizing it could silently collide with an unrelated table.
+	if ($table === '' || !preg_match('/^[a-zA-Z0-9_]+$/', $table)) {
+		cacti_log("ERROR: Refusing to create plugin table with invalid identifier '$table'", false, 'PLUGIN');
+
+		return;
+	}
+
 	$result = db_fetch_assoc('SHOW TABLES');
 	$tables = [];
 
@@ -572,7 +579,14 @@ function api_plugin_db_table_create(string $plugin, string $table, array $data) 
 }
 
 function api_plugin_drop_table(string $table) : void {
-	db_execute("DROP TABLE IF EXISTS $table");
+	// GHSA-h5wg-qf6f-7f6r: reject an unsafe identifier outright so a crafted name cannot extend the DROP across other tables or collide after normalization.
+	if ($table === '' || !preg_match('/^[a-zA-Z0-9_]+$/', $table)) {
+		cacti_log("ERROR: Refusing to drop plugin table with invalid identifier '$table'", false, 'PLUGIN');
+
+		return;
+	}
+
+	db_execute('DROP TABLE IF EXISTS `' . $table . '`');
 
 	api_plugin_drop_remote_table($table);
 }
@@ -1030,6 +1044,13 @@ function api_plugin_replicate_config() : void {
 function api_plugin_drop_remote_table(string $table) : void {
 	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
+	// GHSA-h5wg-qf6f-7f6r: self-protect so no caller can push an unsafe identifier to the remote pollers.
+	if ($table === '' || !preg_match('/^[a-zA-Z0-9_]+$/', $table)) {
+		cacti_log("ERROR: Refusing to drop remote plugin table with invalid identifier '$table'", false, 'PLUGIN');
+
+		return;
+	}
+
 	$gone_time = read_config_option('poller_interval') * 2;
 
 	$pollers = array_rekey(
@@ -1047,7 +1068,7 @@ function api_plugin_drop_remote_table(string $table) : void {
 			$rcnn_id = poller_connect_to_remote($poller_id);
 
 			if ($rcnn_id !== false) {
-				db_execute("DROP TABLE IF EXISTS $table", false, $rcnn_id);
+				db_execute('DROP TABLE IF EXISTS `' . $table . '`', false, $rcnn_id);
 			}
 		}
 	}

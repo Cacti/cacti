@@ -1839,7 +1839,7 @@ function aggregate_make_sql_where(string $sql_where, array $items, string $field
 				} elseif (cacti_strtolower($i) == 'or') {
 					$sql_where .= ' OR ';
 				} else {
-					$sql_where .= ($termcount > 0 ? ' OR ' : '') . $field . " LIKE '%" . trim($i) . "%'";
+					$sql_where .= ($termcount > 0 ? ' OR ' : '') . $field . ' LIKE ' . db_qstr('%' . trim($i) . '%');
 					$termcount++;
 				}
 			}

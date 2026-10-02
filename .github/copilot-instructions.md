@@ -70,6 +70,7 @@
   - Escape output for HTML attribute contexts with `html_escape_attr()`, not `htmle()`/`html_escape()`; only the attribute helper double-encodes to stop pre-encoded entities from breaking out of the attribute.
 
 ## Workflows you’ll actually use
+- **Windows/WSL**: When working in VS Code from a Windows machine, run all fixes, builds, linters, tests, and git operations inside WSL (a Linux distro) rather than native Windows. The toolchain (PHP 8.3, Composer, `php-cs-fixer`, Pest) and the repo's tab indentation / `\n` line-ending conventions are Linux-first; running them on native Windows produces spurious diffs and failures. Edit the WSL-mounted checkout (e.g. under `/mnt/c/...` or a native WSL path) and invoke `composer` scripts such as `composer php-cs-fixit` from the WSL shell.
 - Install deps: `composer install` (CI validates via `.github/workflows/syntax.yml`).
 - Install/upgrade DB: `php -q cli/install_cacti.php --accept-eula --install --force` and `php -q cli/upgrade_database.php --forcever=$(cat include/cacti_version)`.
 - Run poller: `php poller.php --poller=1 --force --debug` (daemon debug: `./cactid.php --foreground --debug`).

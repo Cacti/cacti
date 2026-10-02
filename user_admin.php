@@ -2224,6 +2224,29 @@ function user() : void {
 		$sql_where",
 		$sql_params);
 
+	// GHSA-m49v-hr7h-wwcj: keep every sort key on a displayed column so ORDER BY cannot pivot onto user_auth.password/locked/tfa_secret.
+	// update_order_string() has already merged the request value into $_SESSION['sort_data'], so validate the stored keys too,
+	// not just the current request, and clear both session entries (data + string) if any key is disallowed.
+	$allowed_sort = ['username', 'id', 'full_name', 'enabled', 'realm', 'policy_graphs', 'policy_hosts', 'policy_graph_templates', 'dtime'];
+	$order_page   = get_order_string_page(false);
+	$sort_ok      = in_array(grv('sort_column'), $allowed_sort, true);
+
+	if ($sort_ok && isset($_SESSION['sort_data'][$order_page]) && is_array($_SESSION['sort_data'][$order_page])) {
+		foreach (array_keys($_SESSION['sort_data'][$order_page]) as $stored_column) {
+			if (!in_array($stored_column, $allowed_sort, true)) {
+				$sort_ok = false;
+
+				break;
+			}
+		}
+	}
+
+	if (!$sort_ok) {
+		set_request_var('sort_column', 'username');
+		unset($_SESSION['sort_data'][$order_page]);
+		unset($_SESSION['sort_string'][$order_page]);
+	}
+
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 

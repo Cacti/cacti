@@ -5,6 +5,26 @@ Cacti CHANGELOG
 -security#GHSA-m6wx-f538-m6q3: Apply the .log extension whitelist to path_boost_log to block log-poisoning RCE
 -security#GHSA-73qf-hq23-c4m7: Authorize tree lock, unlock, and get_node against per-tree access before dispatch
 -security#GHSA-967c-6qj7-q7rh: Confirm the rrdtool control-character strip closes the RRD-create |query_*| injection path
+-security#GHSA-f7jw-gfhr-cxwm: Escape the automation tree-rule preview Resulting Branch values
+-security#GHSA-rp5g-r5vp-q7j6: Quote the db_column_exists() LIKE term so the SQLi-defense helper is not itself injectable
+-security#GHSA-vx2m-q53g-hmrf: Escape host_snmp_cache.field_name in the automation pivot CASE WHEN builders
+-security#GHSA-h5wg-qf6f-7f6r: Confine plugin DDL table identifiers in api_plugin_drop_table and api_plugin_db_table_create
+-security#GHSA-929h-4c93-hxcg: Quote the aggregate_make_sql_where() LIKE filter term
+-security#GHSA-mfw8-r3jx-67ff: Use db_qstr() instead of addslashes() for the cli add_graphs REGEXP clause
+-security#GHSA-m49v-hr7h-wwcj: Restrict the user_admin sort_column to displayed columns so ORDER BY cannot pivot onto user_auth secrets
+-security#GHSA-mpfm-qhvj-5879: Validate the theme in rrdtool_create_error_image() through the theme allowlist
+-security#GHSA-m3fh-gxqj-76hq: Strip control characters from the SNMPv3 credential device fields
+-security#GHSA-cg45-2mww-g98p: Revoke the server-side remember-me row on the auth_changepassword nopassword path
+-security#GHSA-xq26-f282-f998: Enforce a retention window on the remember-me cookie token check
+-security#GHSA-m67r-fcmw-gvv7: Confine the imported data-query xml_path to the Cacti tree
+-security#GHSA-4gph-8x7q-h365: Confirm the report-add device description status message is escaped (regression test)
+-security#GHSA-977w-79m7-xjc4: Confirm the graph export legend columns are html-escaped (regression test)
+-security#GHSA-mgcq-r6vm-4xhw: Confirm the Reports Data Query name is html-escaped (regression test)
+-security#GHSA-5p79-q5q3-84vw: Confirm die_html_input_error escapes the echoed variable and value (regression test)
+-security#GHSA-cfhh-pwvx-gp5g: Confirm the aggregate rfilter is no longer echoed into a raw HTML attribute (regression test)
+-security#GHSA-wfcf-2x67-2jxg: Confirm the user_admin group filter is a bound parameter (regression test)
+-security#GHSA-pjq5-3268-g222: Confirm path_dsstats_log is escaped before the dsstats shell redirect (regression test)
+-security#GHSA-wp33-g6gc-444m: Confirm the data_templates rrd_maximum/rrd_minimum validator is anchored (regression test)
 -security#GHSA-69vw-qxxv-p8w2: Stop auto-granting an admin session when auth_method is None and fail closed pending a manual reset
 -security#GHSA-r7hc-hrpv-52gf: Validate host_id before it is concatenated into the graph_view list and preview filter WHERE clauses (#8100) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
 -security#GHSA-6mjm-5vwr-3fr2: Validate and bind local_graph_id in the aggregate graph item sequence query (#8099) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
