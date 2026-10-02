@@ -9,7 +9,10 @@ if ($ARGV[0] eq "") {
 	$log_path = $ARGV[0];
 }
 
-open(PROCESS,"wc -l $log_path |");
+# GHSA-x5pw-cg7j-mj4r: run wc through a list-form open with no shell, so a
+# crafted log path cannot start a second shell and undo the argument escaping
+# Cacti already applied to this field.
+open(PROCESS, '-|', 'wc', '-l', '--', $log_path);
 $webhits = <PROCESS>;
 close(PROCESS);
 $webhits =~ s/[\s]*([0-9]+).*//;

@@ -1462,10 +1462,10 @@ function form_actions() : void {
 						[$local_graph_id]);
 
 					if (api_graph_change_device($local_graph_id, $host_id)) {
-						raise_message('moved_' . $local_graph_id, __('Graph %s Moved to new Device', $title), MESSAGE_LEVEL_INFO);
+						raise_message('moved_' . $local_graph_id, __esc('Graph %s Moved to new Device', $title), MESSAGE_LEVEL_INFO);
 						$success++;
 					} else {
-						raise_message('notmoved_' . $local_graph_id, __('Graph %s not Moved.  Device missing Data Query', $title), MESSAGE_LEVEL_WARN);
+						raise_message('notmoved_' . $local_graph_id, __esc('Graph %s not Moved.  Device missing Data Query', $title), MESSAGE_LEVEL_WARN);
 						$failures++;
 					}
 				}

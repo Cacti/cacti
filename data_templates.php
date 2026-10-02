@@ -274,7 +274,7 @@ function form_save() : void {
 
 			if (cacti_sizeof($data_template_fields)) {
 				foreach ($data_template_fields as $data_template_field) {
-					raise_message('data_template_rrd_' . $data_template_field['dtr_id'], __('Field "%s" is missing an Output Field.  Select the Output Field associated with this Data Source, and press Save again.', $data_template_field['data_source_name']), MESSAGE_LEVEL_WARN);
+					raise_message('data_template_rrd_' . $data_template_field['dtr_id'], __esc('Field "%s" is missing an Output Field.  Select the Output Field associated with this Data Source, and press Save again.', $data_template_field['data_source_name']), MESSAGE_LEVEL_WARN);
 				}
 			}
 		}
@@ -463,7 +463,7 @@ function form_actions() : void {
 							$php_binary = read_config_option('path_php_binary');
 							exec_background($php_binary, CACTI_PATH_CLI . '/rebuild_poller_cache.php --data-template-id=' . $selected_items[$i]);
 
-							raise_message('repopulate_' . $i, __('The Poller Cache operation has been launched in background for Data Template ID %d.', $selected_items[$i]), MESSAGE_LEVEL_INFO);
+							raise_message('repopulate_' . $i, __esc('The Poller Cache operation has been launched in background for Data Template ID %d.', $selected_items[$i]), MESSAGE_LEVEL_INFO);
 						}
 					}
 				}

@@ -5253,7 +5253,13 @@ $.widget('custom.dropcolor', {
 		if (hex != null) {
 			this.wrapper.find('#bgc').css('background-color', '#' + hex[1]);
 		}
-		this.input = $('<input class="ui-autocomplete-input ui-state-default ui-selectmenu-text" style="background:transparent;border:0px;padding:0px;padding-left:24px;margin-left:-24px" value="' + value + '">')
+		// GHSA-9x9h-2577-9w86: build the input as a node so a colour name cannot
+		// break out of the value attribute once the browser decodes the entities.
+		this.input = $('<input>', {
+			'class': 'ui-autocomplete-input ui-state-default ui-selectmenu-text',
+			style: 'background:transparent;border:0px;padding:0px;padding-left:24px;margin-left:-24px',
+			value: value
+		})
 			.appendTo(this.wrapper)
 			.on('click', function () {
 				$(this).autocomplete('search', '');
@@ -5273,8 +5279,9 @@ $.widget('custom.dropcolor', {
 					$(this).data('ui-autocomplete')._renderItem = function (ul, item) {
 						var regExp = /\(([^)]+)\)/;
 						var hex = regExp.exec(item.label);
-						var mylabel = $($.parseHTML(item.label));
-						var label = mylabel.text();
+						// GHSA-9x9h-2577-9w86: item.label is plain text; drop the
+						// parseHTML round-trip that re-parses it as HTML.
+						var label = item.label;
 
 						if (hex !== null) {
 							color = hex[1];

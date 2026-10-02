@@ -119,9 +119,9 @@ function form_save() : void {
 					$data = file_get_contents($file, false, $context);
 
 					if ($data != '') {
-						raise_message('repo_exists', __('The Repo \'%s\' is Reachable on GitHub.', $save['name']), MESSAGE_LEVEL_INFO);
+						raise_message('repo_exists', __esc('The Repo \'%s\' is Reachable on GitHub.', $save['name']), MESSAGE_LEVEL_INFO);
 					} else {
-						raise_message('repo_missing', __('The Repo \'%s\' is NOT Reachable on GitHub or the package.manifest file is missing or it could be an invalid branch.  Valid Package Locations are normally: https://github.com/Author/RepoName/.', $save['name']), MESSAGE_LEVEL_WARN);
+						raise_message('repo_missing', __esc('The Repo \'%s\' is NOT Reachable on GitHub or the package.manifest file is missing or it could be an invalid branch.  Valid Package Locations are normally: https://github.com/Author/RepoName/.', $save['name']), MESSAGE_LEVEL_WARN);
 					}
 				} elseif ($save['repo_type'] == 2) {
 					$file = $save['repo_location'] . '/package.manifest';
@@ -136,17 +136,17 @@ function form_save() : void {
 					$data = file_get_contents($file, false, stream_context_create($context));
 
 					if ($data != '') {
-						raise_message('repo_exists', __('The Repo \'%s\' is Reachable at the URL Location.', $save['name']), MESSAGE_LEVEL_INFO);
+						raise_message('repo_exists', __esc('The Repo \'%s\' is Reachable at the URL Location.', $save['name']), MESSAGE_LEVEL_INFO);
 					} else {
-						raise_message('repo_missing', __('The Repo \'%s\' is NOT Reachable at the URL Location or the package.manifest file is missing.', $save['name']), MESSAGE_LEVEL_WARN);
+						raise_message('repo_missing', __esc('The Repo \'%s\' is NOT Reachable at the URL Location or the package.manifest file is missing.', $save['name']), MESSAGE_LEVEL_WARN);
 					}
 				} else {
 					$file = $save['repo_location'] . '/package.manifest';
 
 					if (file_exists($file)) {
-						raise_message('repo_exists', __('The Repo \'%s\' is Reachable on the Local Cacti Server.', $save['name']), MESSAGE_LEVEL_INFO);
+						raise_message('repo_exists', __esc('The Repo \'%s\' is Reachable on the Local Cacti Server.', $save['name']), MESSAGE_LEVEL_INFO);
 					} else {
-						raise_message('repo_missing', __('The Repo \'%s\' is NOT Reachable on the Local Cacti Server or the package.manifest file is missing.', $save['name']), MESSAGE_LEVEL_WARN);
+						raise_message('repo_missing', __esc('The Repo \'%s\' is NOT Reachable on the Local Cacti Server or the package.manifest file is missing.', $save['name']), MESSAGE_LEVEL_WARN);
 					}
 				}
 

@@ -768,11 +768,11 @@ function sync_color_templates(int $color_template) : void {
 	}
 
 	if ($failed > 0) {
-		raise_message('color_template_sync', __('Color Template \'%s\' failed to push out %d Aggregate Templates or Graphs', $name, $failed), MESSAGE_LEVEL_ERROR);
+		raise_message('color_template_sync', __esc('Color Template \'%s\' failed to push out %d Aggregate Templates or Graphs', $name, $failed), MESSAGE_LEVEL_ERROR);
 	} elseif ($found) {
-		raise_message('color_template_sync', __('Color Template \'%s\' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
+		raise_message('color_template_sync', __esc('Color Template \'%s\' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
 	} else {
-		raise_message('color_template_sync', __('Color Template \'%s\' had no Aggregate Templates or Graphs using this Color Template.', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
+		raise_message('color_template_sync', __esc('Color Template \'%s\' had no Aggregate Templates or Graphs using this Color Template.', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
 	}
 }
 

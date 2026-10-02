@@ -63,7 +63,7 @@ function support_lockout() : void {
 	$admin = read_config_option('admin_user', true);
 
 	if ($admin != $_SESSION[SESS_USER_ID]) {
-		raise_message('lockout_user', __('Only the Primary Cacti Administrator \'%s\' can lockout the Cacti system.', get_username($admin)), MESSAGE_LEVEL_ERROR);
+		raise_message('lockout_user', __esc('Only the Primary Cacti Administrator \'%s\' can lockout the Cacti system.', get_username($admin)), MESSAGE_LEVEL_ERROR);
 	} else {
 		$status    = read_config_option('cacti_lockout_status', true);
 		$is_locked = ($status != '');
@@ -79,11 +79,11 @@ function support_lockout() : void {
 		} elseif ($is_locked !== ($expected === 'locked')) {
 			raise_message('lockout', __('The Cacti maintenance lockout state was changed by another administrator since this page was loaded.  Please review the current status and try again.'), MESSAGE_LEVEL_INFO);
 		} elseif (!$is_locked) {
-			raise_message('lockout', __('Cacti has been locked out by \'%s\'.  Press the button again after Cacti maintenance is over.', get_username($admin)), MESSAGE_LEVEL_WARN);
+			raise_message('lockout', __esc('Cacti has been locked out by \'%s\'.  Press the button again after Cacti maintenance is over.', get_username($admin)), MESSAGE_LEVEL_WARN);
 			cacti_log('WARNING: Cacti has been locked out by the primary administrator!');
 			set_config_option('cacti_lockout_status', json_encode(['session' => session_id(), 'time' => time()]));
 		} else {
-			raise_message('lockout', __('Cacti maintenance lockout has been cleared by \'%s\'.  Press the button again after Cacti maintenance is over.', get_username($admin)), MESSAGE_LEVEL_INFO);
+			raise_message('lockout', __esc('Cacti maintenance lockout has been cleared by \'%s\'.  Press the button again after Cacti maintenance is over.', get_username($admin)), MESSAGE_LEVEL_INFO);
 			cacti_log('WARNING: Cacti maintenance lockout has been cleared by the primary administrator!');
 			set_config_option('cacti_lockout_status', '');
 		}
