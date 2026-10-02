@@ -4915,88 +4915,33 @@ function auth_login_create_user_from_template(string $username, int $realm) : ar
 }
 
 /**
- * Attempts to switch Cacti from No Authentication to Local authentication,
- * or generate an error on failure through the globals error, and error_msg.
+ * Refuses the deprecated No Authentication mode instead of recovering from it
+ * automatically. When auth_method is None this fails closed with an error, so an
+ * unauthenticated request can no longer be auto-granted a session (GHSA-69vw).
  *
  * @param int $auth_method The current authentication method.
  *
- * @return bool Returns false if no administrative account is found, otherwise does not return.
+ * @return bool Always returns false when authentication is configured; does not return when auth_method is None.
  */
 function check_reset_no_authentication(int $auth_method) : bool {
 	global $error, $error_msg;
 
 	if ($auth_method == AUTH_METHOD_NONE) {
-		$admin_id = db_execute_prepared('SELECT id
-			FROM user_auth
-			WHERE id = ?',
-			[read_config_option('admin_user')]);
+		// GHSA-69vw-qxxv-p8w2: this recovery path formerly auto-migrated the
+		// deprecated No Authentication mode to Local auth - wiping the admin
+		// password, flipping auth_method, and handing the triggering, still
+		// unauthenticated, request a full admin session. On a legacy
+		// auth_method=0 instance (written by upgrades from <= 0.8.7) the first
+		// visitor therefore became admin and locked the real admin out. Fail
+		// closed: never mutate credentials or establish a session from an
+		// unauthenticated request; an administrator must set a supported
+		// auth_method value in the settings table before login can proceed.
+		$error     = true;
+		$error_msg = __('Authentication is set to None, which is no longer supported. A system administrator must set a supported \'auth_method\' value in the Cacti settings table before login can proceed.');
 
-		cacti_log('Admin User (' . read_config_option('admin_user') . ' vs ' . $admin_id . ')', true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
+		cacti_log('LOGIN FAILED: auth_method is set to None (0); refusing to auto-provision an administrative session from IP address ' . get_client_addr(), false, 'AUTH');
 
-		if (!$admin_id) {
-			$admin_sql_query = 'SELECT TOP 1 id FROM (
-				SELECT ua.id
-				FROM user_auth AS ua
-				INNER JOIN user_auth_realm AS uar
-				ON uar.user_id = ua.id
-				WHERE uar.realm_id = ?';
-
-			$admin_sql_params = [15];
-
-			if (db_table_exists('user_auth_group_realm')) {
-				$admin_sql_query .= '
-				UNION
-				SELECT ua.id
-				FROM user_auth AS ua
-				INNER JOIN user_auth_group_members AS uagm
-				ON uagm.user_id = ua.id
-				INNER JOIN user_auth_group AS uag
-				ON uag.id = uagm.group_id
-				INNER JOIN user_auth_group_realm AS uagr
-				ON uagr.group_id=uag.group_id
-				WHERE uag.enabled="on" AND ua.enabled="on"
-				AND uagr.realm_id = ?';
-
-				$admin_sql_params[] = 15;
-			}
-
-			$admin_sql_query .= '
-				) AS id';
-
-			cacti_log('SQL query ' . $admin_sql_query, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
-			cacti_log('SQL param ' . implode(',', $admin_sql_params), true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
-			$admin_id = db_fetch_cell_prepared($admin_sql_query, $admin_sql_params);
-			cacti_log('SQL result ' . $admin_id, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
-		}
-
-		if (!$admin_id) {
-			$admin_id = db_fetch_cell('SELECT id FROM user_auth WHERE username = \'admin\'');
-			cacti_log('Final attempt ' . $admin_id, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
-		}
-
-		if (!$admin_id) {
-			$error     = true;
-			$error_msg = __('Authentication was previously not set.  Attempted to set to Local Authentication, but no Administrative account was found.');
-
-			return false;
-		}
-
-		// Authentication method is currently set to none
-		// lets switch this to basic and allow setting of
-		// a password.
-		db_execute_prepared("UPDATE user_auth SET
-			password = '',
-			must_change_password = 'on',
-			password_change = 'on'
-			WHERE id = ?",
-			[$admin_id]);
-
-		$auth_method = AUTH_METHOD_CACTI;
-		set_config_option('auth_method', $auth_method, true);
-
-		$_SESSION[SESS_USER_ID]         = $admin_id;
-		$_SESSION[SESS_CHANGE_PASSWORD] = true;
-		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url($_SERVER['HTTP_REFERER'] ?? 'index.php')));
+		auth_display_custom_error_message($error_msg);
 
 		exit;
 	}
