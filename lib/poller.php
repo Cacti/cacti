@@ -1469,7 +1469,12 @@ function resource_cache_out($type, $path) {
 
 							if ((is_writeable($tmpdir) && !file_exists($tmpfile)) || (file_exists($tmpfile) && is_writable($tmpfile))) {
 								if (file_put_contents($tmpfile, $contents) !== false) {
-									$output = system($php_path . ' -l ' . $tmpfile, $exit);
+									// GHSA-4p7f-qcc2-vmx7: run the admin-set path_php_binary shell-free with discrete
+									// args so a value like "php -r ..." or a path containing spaces cannot inject
+									// extra PHP options at this sink.
+									$syntax_output = array();
+									$exit          = cacti_exec($php_path, array('-l', $tmpfile), $syntax_output);
+									$output        = implode("\n", $syntax_output);
 
 									if ($exit == 0) {
 										cacti_log("INFO: Updating '$mypath' from Cache!", false, 'REPLICATE');

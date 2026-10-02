@@ -1,6 +1,20 @@
 Cacti CHANGELOG
 
 1.2.x
+-security#GHSA-69vw-qxxv-p8w2: Remove the No Authentication mode and its auto-admin grant, migrating legacy auth_method=0 to Builtin login
+-security#GHSA-jpf3-w6p4-pjrf: Validate the automation tree rule item field against existing columns before storage
+-security#GHSA-4p7f-qcc2-vmx7: Escape path_php_binary in the resource-cache PHP syntax-check system() call
+-security#GHSA-hcj6-pmvx-fwgr: Strip CR/LF in escape_command so interpolated data cannot inject a second rrdtool command
+-security#GHSA-967c-6qj7-q7rh: Close the rrd_maximum |query_*| newline injection via the escape_command control-character strip
+-security#GHSA-9ffc-rr2g-c8hh: Reject spoofable Remote-User and PHP_AUTH_USER headers under web basic auth
+-security#GHSA-c3wx-gf8r-j4m7: Escape the device Location option value in host.php
+-security#GHSA-34x4-x9jp-6w4c: Escape the RRD file path arguments in the CLI maintenance tools
+-security#GHSA-m49v-hr7h-wwcj: Constrain the user_admin sort_column to displayed columns to block an ORDER BY pivot
+-security#GHSA-q8j8-p456-wr4f: Escape LIKE wildcards in the sites.php name filter
+-security#GHSA-fchr-jrc7-94v5: Authorize tree node modify and lock actions against per-tree access
+-security#GHSA-hc4f-f236-v98q: Authorize Reports item read and write against report ownership
+-security#GHSA-62fx-cvfm-wqx7: Anchor the rrd_maximum and rrd_minimum validation regex on the data source form
+-security#GHSA-wp33-g6gc-444m: Anchor the rrd_maximum and rrd_minimum validation regex on the data template form
 -security#GHSA-227p-wv52-pjg5: Escape the spike-removal RRD path passed to the removespikes shell command
 -security#GHSA-2x86-jpm8-9vgp: Confine the data-query XML file existence check to the Cacti base path
 -security#GHSA-4gph-8x7q-h365: Escape the device description in the report-add status message
