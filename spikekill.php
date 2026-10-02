@@ -41,13 +41,18 @@ if (isrv('method')) {
 	}
 }
 
-if (is_realm_allowed(1043)) {
+$local_graph_id = gfrv('local_graph_id');
+
+// GHSA-77pr-g949-4v5f: the Spike Kill realm (1043) only grants use of the
+// feature, not access to a specific graph. Authorize the target graph too so a
+// realm holder cannot destroy the RRD history of a graph they are denied.
+if (is_realm_allowed(1043) && is_graph_allowed($local_graph_id)) {
 	$local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT data_template_rrd.local_data_id
 		FROM graph_templates_item
 		LEFT JOIN data_template_rrd
 		ON graph_templates_item.task_item_id=data_template_rrd.id
 		WHERE graph_templates_item.local_graph_id = ?',
-		[gfrv('local_graph_id')]);
+		[$local_graph_id]);
 
 	$results = '';
 
@@ -112,7 +117,7 @@ if (is_realm_allowed(1043)) {
 		}
 	}
 
-	print json_encode(['local_graph_id' => grv('local_graph_id'), 'results' => $results]);
+	print json_encode(['local_graph_id' => $local_graph_id, 'results' => $results]);
 } else {
 	print __('FATAL: Spike Kill Not Allowed') . PHP_EOL;
 }
