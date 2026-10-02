@@ -159,6 +159,7 @@ Cacti CHANGELOG
 -security#GHSA-mjvw-mhj5-9jcj: CVE-2026-40084 Arbitrary File Read via path traversal in Report format_file parameter
 -security#GHSA-pf37-v86f-5xwp: CVE-2026-39951 Stored SQL Injection via graph_name_regexp in Reports feature
 -security#GHSA-pr9x-34w8-4mf7: CVE-2026-39899 Path traversal via filename parameter in package_import.php
+-security#GHSA-r7hc-hrpv-52gf: Validate host_id before it reaches the graph template query
 -security#GHSA-rm7p-qcqm-x5m6: CVE-2026-39938 Unauthenticated LFI via graph_theme and rrdtool IPC serialization hardening
 -security#GHSA-vp35-4h28-r883: CVE-2026-39939 Path traversal in Package Import file write allows arbitrary file creation in webroot
 -security#GHSA-w47c-53f9-w47g: CVE-2026-39947 RRDtool IPC pipe poisoning via is_numeric newline bypass in rrdtool_function_update
