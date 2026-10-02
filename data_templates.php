@@ -262,7 +262,7 @@ function form_save() {
 				array($data_template_id));
 			if (cacti_sizeof($data_template_fields)) {
 				foreach ($data_template_fields as $data_template_field) {
-					raise_message('data_template_rrd_' . $data_template_field['dtr_id'], __('Field "%s" is missing an Output Field', $data_template_field['data_source_name']), MESSAGE_LEVEL_WARN);
+					raise_message('data_template_rrd_' . $data_template_field['dtr_id'], __esc('Field "%s" is missing an Output Field', $data_template_field['data_source_name']), MESSAGE_LEVEL_WARN);
 				}
 			}
 		}

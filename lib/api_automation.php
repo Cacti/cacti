@@ -1248,7 +1248,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	} else {
 		$sql_field = '"SQL Injection" AS source ';
 		cacti_log("Attempted SQL Injection found in Tree Automation for the field variable {$item['field']}.", false, 'AUTOM8');
-		raise_message('sql_injection', __("Attempted SQL Injection found in Tree Automation for the field variable {$item['field']}."), MESSAGE_LEVEL_ERROR);
+		raise_message('sql_injection', __esc("Attempted SQL Injection found in Tree Automation for the field variable {$item['field']}."), MESSAGE_LEVEL_ERROR);
 	}
 
 	/* now we build up a new query for counting the rows */

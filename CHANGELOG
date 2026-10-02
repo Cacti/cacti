@@ -1,6 +1,13 @@
 Cacti CHANGELOG
 
 1.2.x
+-security#GHSA-4rmr-wvjq-qxc2: Run the per-page realm check after Basic Auth and guest login instead of returning early
+-security#GHSA-j67j-wpm4-9g3x: Require a CSRF-token POST for the user and group update_policy action
+-security#GHSA-2p3x-f5jm-rg6p: Break the View-Graphs to poller remote code execution chain
+-security#GHSA-x5pw-cg7j-mj4r: Run the bundled webhits poller script wc through a shell-free open
+-security#GHSA-9737-rqh3-h7fh: Escape interpolated names in raise_message across the UI
+-security#GHSA-9x9h-2577-9w86: Build the colordropdown autocomplete from nodes and text, not HTML strings
+-security#GHSA-h96j-8xhc-2p3w: Authorize remote_agent on the genuine peer address, not forwarded headers
 -security#GHSA-9qff-xccr-rrc5: Contain data_source_path within the RRA directory
 -security#GHSA-vp35-4h28-r883: CVE-2026-39939 Harden package import path traversal defenses
 -security#GHSA-pqrp-v752-mc4f: Stop disabled accounts authenticating and revoke tokens on disable

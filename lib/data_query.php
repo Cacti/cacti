@@ -2791,7 +2791,7 @@ function api_data_query_errors($snmp_query_graph_id, $post) {
 	if (cacti_sizeof($data_sources)) {
 		foreach($data_sources as $ds) {
 			if (!isset($post['dsdt_' . $ds['data_template_id'] . '_' . $ds['id'] . '_check'])) {
-				raise_message('mapping_error', __('You must select an XML output column for Data Source \'%s\' and toggle the checkbox to its right', $ds['data_source_name']), MESSAGE_LEVEL_ERROR);
+				raise_message('mapping_error', __esc('You must select an XML output column for Data Source \'%s\' and toggle the checkbox to its right', $ds['data_source_name']), MESSAGE_LEVEL_ERROR);
 
 				$errors = true;
 			}

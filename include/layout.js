@@ -4663,7 +4663,13 @@ $.widget('custom.dropcolor', {
 		if (hex != null) {
 			this.wrapper.find('#bgc').css('background-color', '#'+hex[1]);
 		}
-		this.input = $('<input class="ui-autocomplete-input ui-state-default ui-selectmenu-text" style="background:transparent;border:0px;padding:0px;padding-left:24px;margin-left:-24px" value="'+value+'">')
+		// GHSA-9x9h-2577-9w86: build the input as a node so a colour name cannot
+		// break out of the value attribute once the browser decodes the entities.
+		this.input = $('<input>', {
+			'class': 'ui-autocomplete-input ui-state-default ui-selectmenu-text',
+			style: 'background:transparent;border:0px;padding:0px;padding-left:24px;margin-left:-24px',
+			value: value
+		})
 		.appendTo(this.wrapper)
 		.on('click', function() {
 			$(this).autocomplete('search', '');
@@ -4681,17 +4687,20 @@ $.widget('custom.dropcolor', {
 			},
 			create: function() {
 				$(this).data('ui-autocomplete')._renderItem = function(ul, item) {
+					// GHSA-9x9h-2577-9w86: build nodes and insert the label as text,
+					// dropping the parseHTML round-trip, so a decoded colour name
+					// cannot be re-parsed as HTML.
 					var regExp = /\(([^)]+)\)/;
-					var hex   = regExp.exec(item.label);
-					var mylabel = $($.parseHTML(item.label));
-					var label = mylabel.text();
+					var hex    = regExp.exec(item.label);
+					var icon   = $('<span>', { 'class': 'ui-icon color-icon' });
 
 					if (hex !== null) {
-						color = hex[1];
-						return $('<li>').attr('data-value', item.value).html('<div><span style="background-color:#'+color+';" class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
-					} else {
-						return $('<li>').attr('data-value', item.value).html('<div><span class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
+						icon.css('background-color', '#' + hex[1]);
 					}
+
+					return $('<li>').attr('data-value', item.value)
+						.append($('<div>').append(icon).append(document.createTextNode(item.label)))
+						.appendTo(ul);
 				}
 
 				$(this).data('ui-autocomplete')._resizeMenu = function () {
