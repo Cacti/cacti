@@ -1884,7 +1884,7 @@ function build_data_query_sql(array $rule) : string {
 	if (cacti_sizeof($field_names) > 0) {
 		foreach (($field_names ?: []) as $column) {
 			$field_name = $column['field_name'];
-			$sql_query .= ",\n\tMAX(CASE WHEN field_name = " . db_qstr($field_name) . " THEN field_value ELSE NULL END) AS " . db_qstr($field_name);
+			$sql_query .= ",\n\tMAX(CASE WHEN field_name = " . db_qstr($field_name) . ' THEN field_value ELSE NULL END) AS ' . db_qstr($field_name);
 		}
 	}
 
@@ -2274,7 +2274,7 @@ function make_host_snnp_cache_sql() : string|false {
 		$sql = "\t\tSELECT host_id ";
 
 		foreach ($fields as $field) {
-			$sql .= ",\n\t\t\tMAX(CASE WHEN field_name = " . db_qstr($field['field_name']) . " THEN field_value ELSE NULL END) AS " . db_qstr($field['field_name']);
+			$sql .= ",\n\t\t\tMAX(CASE WHEN field_name = " . db_qstr($field['field_name']) . ' THEN field_value ELSE NULL END) AS ' . db_qstr($field['field_name']);
 		}
 
 		$sql .= "\n\t\t\tFROM host_snmp_cache AS hsc GROUP BY host_id";
@@ -3224,7 +3224,7 @@ function create_dq_graphs(int $host_id, int $snmp_query_id, array $rule) : bool 
 
 	if (cacti_sizeof($field_names) > 0) {
 		foreach ($field_names as $column) {
-			$sql_query .= ", MAX(CASE WHEN field_name = " . db_qstr($column) . " THEN field_value ELSE NULL END) AS " . db_qstr($column);
+			$sql_query .= ', MAX(CASE WHEN field_name = ' . db_qstr($column) . ' THEN field_value ELSE NULL END) AS ' . db_qstr($column);
 			$i++;
 		}
 	}

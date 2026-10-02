@@ -24,9 +24,14 @@ test('db_column_exists quotes its LIKE term on the query connection (GHSA-rp5g)'
 
 test('automation pivot builders escape field_name (GHSA-vx2m)', function () use ($root) {
 	$s = file_get_contents($root . '/lib/api_automation.php');
+	// The leading literal's quote style varies (strings with \n\t stay double-quoted, others are single),
+	// so count both forms of the db_qstr()-escaped pivot.
+	$escaped = substr_count($s, 'CASE WHEN field_name = " . db_qstr(')
+		+ substr_count($s, "CASE WHEN field_name = ' . db_qstr(");
+
 	expect($s)->not->toContain("CASE WHEN field_name='")
 		->and($s)->not->toContain("CASE WHEN field_name ='")
-		->and(substr_count($s, 'CASE WHEN field_name = " . db_qstr('))->toBeGreaterThanOrEqual(3);
+		->and($escaped)->toBeGreaterThanOrEqual(3);
 });
 
 test('aggregate LIKE filter term is quoted (GHSA-929h)', function () use ($root) {
