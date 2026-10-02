@@ -18,7 +18,7 @@ $root = dirname(__DIR__, 4);
 
 test('automation Resulting Branch values are escaped (GHSA-f7jw)', function () use ($root) {
 	$s = file_get_contents($root . '/lib/api_automation.php');
-	expect($s)->toContain('html_escape(array_shift($replacement))');
+	expect($s)->toContain('html_escape((string) array_shift($replacement))');
 });
 
 test('automation pivot builders escape field_name (GHSA-vx2m)', function () use ($root) {

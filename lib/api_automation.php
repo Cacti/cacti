@@ -1312,9 +1312,9 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 				if ($j > 0) {
 					$repl .= '<br>';
 					// GHSA-f7jw-gfhr-cxwm: the replacement values carry attacker-influenced device/data fields; escape them while keeping the <br> layout.
-					$repl .= str_pad('', $j*3, '-') . '&nbsp;' . html_escape(array_shift($replacement));
+					$repl .= str_pad('', $j*3, '-') . '&nbsp;' . html_escape((string) array_shift($replacement));
 				} else {
-					$repl  = html_escape(array_shift($replacement));
+					$repl  = html_escape((string) array_shift($replacement));
 				}
 			}
 			cacti_log($function . " replacement: $repl", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
