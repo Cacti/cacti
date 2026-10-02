@@ -1,13 +1,13 @@
 Cacti CHANGELOG
 
 1.3.0-dev
--security#GHSA-4rmr-wvjq-qxc2: Run the per-page realm check after Basic Auth and guest login instead of returning early
--security#GHSA-j67j-wpm4-9g3x: Require a CSRF-token POST for the user and group update_policy action
--security#GHSA-2p3x-f5jm-rg6p: Break the View-Graphs to poller remote code execution chain
--security#GHSA-x5pw-cg7j-mj4r: Run the bundled webhits poller script wc through a shell-free open
--security#GHSA-9737-rqh3-h7fh: Escape interpolated names in raise_message across the UI
--security#GHSA-9x9h-2577-9w86: Build the colordropdown autocomplete from nodes and text, not HTML strings
--security#GHSA-h96j-8xhc-2p3w: Authorize remote_agent on the genuine peer address, not forwarded headers
+-security#GHSA-4rmr-wvjq-qxc2: Run the per-page realm check after Basic Auth and guest login instead of returning early (#8145)
+-security#GHSA-j67j-wpm4-9g3x: Require a CSRF-token POST for the user and group update_policy action (#8145)
+-security#GHSA-2p3x-f5jm-rg6p: Break the View-Graphs to poller remote code execution chain (#8145)
+-security#GHSA-x5pw-cg7j-mj4r: Run the bundled webhits poller script wc through a shell-free open (#8145)
+-security#GHSA-9737-rqh3-h7fh: Escape interpolated names in raise_message across the UI (#8145)
+-security#GHSA-9x9h-2577-9w86: Build the colordropdown autocomplete from nodes and text, not HTML strings (#8145)
+-security#GHSA-h96j-8xhc-2p3w: Authorize remote_agent on the genuine peer address, not forwarded headers (#8145)
 -security: Validate host_id before it is concatenated into the graph_view list and preview filter WHERE clauses (GHSA-r7hc-hrpv-52gf) (#8100) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
 -security: Validate and bind local_graph_id in the aggregate graph item sequence query (GHSA-6mjm-5vwr-3fr2) (#8099) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
 -security: Grant AllowOverride All in docker/apache.conf so shipped .htaccess denies on log/cache/scripts/cli take effect (GHSA-fxfg-j995-j69j)
