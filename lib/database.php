@@ -870,9 +870,9 @@ function db_fetch_cell_return(PDOStatement $query, string $col_name = '') : mixe
  * @param mixed  $db_conn The connection to use or false to use the default
  * @param float  $timeout Server-side statement timeout in seconds, 0 disables
  *
- * @return array The first row of the result, or an empty array if none found
+ * @return bool|array The first row of the result or false if failed
  */
-function db_fetch_row(string $sql, bool $log = true, mixed $db_conn = false, float $timeout = 0) : array {
+function db_fetch_row(string $sql, bool $log = true, mixed $db_conn = false, float $timeout = 0) : bool|array {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -891,18 +891,16 @@ function db_fetch_row(string $sql, bool $log = true, mixed $db_conn = false, flo
  * @param mixed  $db_conn The connection to use or false to use the default
  * @param float  $timeout Server-side statement timeout in seconds, 0 disables
  *
- * @return array The first row of the result, or an empty array if none found
+ * @return bool|array The first row of the result or false if failed
  */
-function db_fetch_row_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, float $timeout = 0) : array {
+function db_fetch_row_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, float $timeout = 0) : bool|array {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
 		db_echo_sql('db_fetch_row_prepared(\'' . clean_up_lines($sql) . '\', $params = (\'' . implode('\', \'', $params) . '\'), $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') . ')' . "\n");
 	}
 
-	$result = db_execute_prepared($sql, $params, $log, $db_conn, 'Row', false, 'db_fetch_row_return', [], $timeout);
-
-	return is_array($result) ? $result : [];
+	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', false, 'db_fetch_row_return', [], $timeout);
 }
 
 /**
@@ -933,9 +931,9 @@ function db_fetch_row_return(PDOStatement $query) : array {
  * @param mixed  $db_conn The connection to use or false to use the default
  * @param float  $timeout Server-side statement timeout in seconds, 0 disables
  *
- * @return array The entire result set, or an empty array on error
+ * @return bool|array The entire result set or false on error
  */
-function db_fetch_assoc(string $sql, bool $log = true, mixed $db_conn = false, float $timeout = 0) : array {
+function db_fetch_assoc(string $sql, bool $log = true, mixed $db_conn = false, float $timeout = 0) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -954,18 +952,16 @@ function db_fetch_assoc(string $sql, bool $log = true, mixed $db_conn = false, f
  * @param mixed  $db_conn The connection to use or false to use the default
  * @param float  $timeout Server-side statement timeout in seconds, 0 disables
  *
- * @return array The entire result set, or an empty array on error
+ * @return mixed The entire result or false on error
  */
-function db_fetch_assoc_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, float $timeout = 0) : array {
+function db_fetch_assoc_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, float $timeout = 0) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
 		db_echo_sql('db_fetch_assoc_prepared($sql, $params = array(), $log = true, $db_conn = false)' . "\n");
 	}
 
-	$result = db_execute_prepared($sql, $params, $log, $db_conn, 'Row', [], 'db_fetch_assoc_return', [], $timeout);
-
-	return is_array($result) ? $result : [];
+	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', [], 'db_fetch_assoc_return', [], $timeout);
 }
 
 /**
