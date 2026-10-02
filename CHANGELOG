@@ -182,7 +182,6 @@ Cacti CHANGELOG
 -issue#7695: Keep an empty argument on the command line
 -issue#7696: Repair the string sanitisers in lib/functions.php
 -issue#7697: Guard two divisions PHP 8 made fatal
--issue#7693: Validate host_id before it reaches the graph template query
 -issue#7707: Bind the MIB column names in MibCache::select()
 -issue#7719: Spike Kill text output applied the large value scientific notation format to the column left of the value it belonged to, starting with Variance
 -issue#7732: Bind device IDs and escape graph and device HTML sinks
@@ -428,6 +427,7 @@ Cacti CHANGELOG
 -security#GHSA-xq98-376r-hv9j: CVE-2026-40079 Command Injection via escape_command() no-op in RRDtool execution
 -security#GHSA-69gg-mjfm-jjpc: CVE-2026-39893 Pre-authentication SQL injection via rfilter RLIKE clause in graph_view.php
 -security#GHSA-c4qp-j9r9-fq24: CVE-2026-39902 Authenticated RCE on Data Input
+-security#GHSA-r7hc-hrpv-52gf: Validate host_id before it reaches the graph template query
 -security#GHSA-rm7p-qcqm-x5m6: CVE-2026-39938 Unauthenticated LFI via graph_theme and rrdtool IPC serialization hardening
 -security#GHSA-vp35-4h28-r883: CVE-2026-39939 Path traversal in Package Import file write allows arbitrary file creation in webroot
 -security#GHSA-8522-5p3m-754c: CVE-2026-39949 Authenticated Remote Code Execution via Host Variable Injection
