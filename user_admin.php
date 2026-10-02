@@ -2224,6 +2224,12 @@ function user() : void {
 		$sql_where",
 		$sql_params);
 
+	// GHSA-m49v-hr7h-wwcj: keep sort_column on a displayed column so ORDER BY cannot pivot onto user_auth.password/locked/tfa_secret.
+	if (!in_array(grv('sort_column'), ['username', 'id', 'full_name', 'enabled', 'realm', 'policy_graphs', 'policy_hosts', 'policy_graph_templates', 'dtime'], true)) {
+		set_request_var('sort_column', 'username');
+		unset($_SESSION['sort_string'][get_order_string_page(true)]);
+	}
+
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 

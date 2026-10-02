@@ -462,6 +462,9 @@ function api_plugin_status_run(string $hook, array $required_capabilities, strin
 function api_plugin_db_table_create(string $plugin, string $table, array $data) : void {
 	include_once(CACTI_PATH_LIBRARY . '/database.php');
 
+	// GHSA-h5wg-qf6f-7f6r: confine the table identifier to a safe DDL name.
+	$table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
+
 	$result = db_fetch_assoc('SHOW TABLES');
 	$tables = [];
 
@@ -572,7 +575,10 @@ function api_plugin_db_table_create(string $plugin, string $table, array $data) 
 }
 
 function api_plugin_drop_table(string $table) : void {
-	db_execute("DROP TABLE IF EXISTS $table");
+	// GHSA-h5wg-qf6f-7f6r: confine the identifier so a crafted name cannot extend the DROP across other tables.
+	$table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
+
+	db_execute('DROP TABLE IF EXISTS `' . $table . '`');
 
 	api_plugin_drop_remote_table($table);
 }
@@ -1047,7 +1053,7 @@ function api_plugin_drop_remote_table(string $table) : void {
 			$rcnn_id = poller_connect_to_remote($poller_id);
 
 			if ($rcnn_id !== false) {
-				db_execute("DROP TABLE IF EXISTS $table", false, $rcnn_id);
+				db_execute('DROP TABLE IF EXISTS `' . preg_replace('/[^a-zA-Z0-9_]/', '', $table) . '`', false, $rcnn_id);
 			}
 		}
 	}

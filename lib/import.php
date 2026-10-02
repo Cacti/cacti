@@ -1695,9 +1695,14 @@ function xml_to_data_query(string $hash, array &$xml_array, array &$hash_cache, 
 	if (isset($save['xml_path'])) {
 		$path = str_replace('<path_cacti>', CACTI_PATH_BASE, $save['xml_path']);
 
-		if (!file_exists($path)) {
+		// GHSA-m67r-fcmw-gvv7: confine the imported path to the Cacti tree so it cannot probe arbitrary files.
+		$allowed_base = realpath(CACTI_PATH_BASE);
+		$resolved     = realpath($path);
+		$contained    = ($allowed_base !== false && $resolved !== false && strpos(str_replace('\\', '/', $resolved), str_replace('\\', '/', $allowed_base) . '/') === 0);
+
+		if (!$contained) {
 			$files[$path] = 'missing';
-		} elseif (!is_readable($path)) {
+		} elseif (!is_readable($resolved)) {
 			$files[$path] = 'notreadable';
 		} else {
 			$files[$path] = 'found';
