@@ -67,7 +67,8 @@ test('sql.php uses no bare escapeshellarg calls', function () use ($sqlPhpPath) 
 test('sql.php handles null return from shell_exec', function () use ($sqlPhpPath) {
 	$contents = file_get_contents($sqlPhpPath);
 
-	expect($contents)->toContain("?? ''");
+	// (string) cast coerces both null and false from shell_exec() to ''.
+	expect($contents)->toContain('(string) $sql');
 });
 
 test('sql.php returns U on empty/null shell_exec output', function () use ($sqlPhpPath) {
