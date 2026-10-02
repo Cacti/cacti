@@ -1,0 +1,13 @@
+diff --git a/node_modules/pace-js/pace.js b/node_modules/pace-js/pace.js
+index 0831a47..092b731 100644
+--- a/node_modules/pace-js/pace.js
++++ b/node_modules/pace-js/pace.js
+@@ -273,7 +273,7 @@
+ 				}
+ 				this.el = document.createElement('div');
+ 				this.el.className = "pace pace-active";
+-				document.body.className = document.body.className.replace(/(pace-done )|/, 'pace-running ');
++				document.body.className = document.body.className.replace(/(pace-done )/, 'pace-running ');
+ 				var _custom_class_name = (options.className !== '') ? ' '+options.className : '';
+ 				this.el.innerHTML = '<div class="pace-progress'+_custom_class_name+'">\n  <div class="pace-progress-inner"></div>\n</div>\n<div class="pace-activity"></div>';
+ 				if (targetElement.firstChild != null) {

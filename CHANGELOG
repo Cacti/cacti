@@ -147,6 +147,11 @@ Cacti CHANGELOG
 -feature#8032: Update phpseclib to version 4.0.1
 -feature#7887: Update bundled jQuery UI to 1.14.2 and jQuery Tablesorter to 2.31.3
 -feature: Update bundled DOMPurify to 3.4.16
+-feature: Update bundled d3 to 7.9.0
+-feature: Update bundled billboard.js to 4.1.0
+-feature: Update bundled jQuery Tablesorter to 2.32.0
+-feature: Update bundled screenfull to 5.2.0
+-feature: Manage bundled front-end JavaScript libraries through npm so Dependabot can track them
 
 1.2.31
 -security#GHSA-23g4-vf2j-94w4: CVE-2026-39894 RRDtool metric shift via LC_NUMERIC locale comma decimal formatting

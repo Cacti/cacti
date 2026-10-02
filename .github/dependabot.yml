@@ -20,3 +20,17 @@ updates:
       composer-1-2-x: {patterns: ["*"]}
     labels: [dependencies, composer, 1.2.x]
     commit-message: {prefix: deps, include: scope}
+  - package-ecosystem: npm
+    directory: /
+    target-branch: 1.2.x
+    schedule: {interval: weekly, day: monday}
+    open-pull-requests-limit: 5
+    cooldown: {default-days: 7}
+    groups:
+      npm-1-2-x: {patterns: ["*"]}
+    labels: [dependencies, "area:ui", 1.2.x]
+    commit-message: {prefix: deps, include: scope}
+    ignore:
+      - dependency-name: jquery
+        update-types: ["version-update:semver-major"]
+
