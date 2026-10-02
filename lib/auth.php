@@ -4355,6 +4355,12 @@ function secpass_login_process($username) {
 			return array();
 		}
 	} else {
+		if (trim($password) != '') {
+			// Dummy verify so a non-existent account costs the same as a real one,
+			// closing a username-enumeration login-timing side channel (GHSA-p3rg-7pc3-2h86)
+			compat_password_verify($password, '$2y$10$qgRPCKzfZe/81cu3L9PMA.zjHKgXHc6iRfsedEe4NmSMbXrod1uEq');
+		}
+
 		/* error */
 		$error     = true;
 		$error_msg = __('Access Denied!  Login Failed.');
