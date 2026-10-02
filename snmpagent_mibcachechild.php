@@ -89,18 +89,20 @@ if ($mibcache_changed !== null || file_exists($path_mibcache) === false) {
 	// create lock file
 	$lock = fopen($path_mibcache_lock, 'w');
 
-	if (is_resource($lock)) {
-		// Note: If SNMPAgent plugin has been disabled the cache will be truncated automatically
-		if (cacti_sizeof($cache)) {
-			file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
-		}
-
-		// destroy lock file
-		fclose($lock);
-		unlink($path_mibcache_lock);
-	} else {
+	if (!is_resource($lock)) {
 		cacti_log('WARNING: Unable to open MIB cache lock file; skipping cache rebuild to avoid clobbering a concurrent writer.', false, 'SNMPAGENT');
+
+		return;
 	}
+
+	// Note: If SNMPAgent plugin has been disabled the cache will be truncated automatically
+	if (cacti_sizeof($cache)) {
+		file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
+	}
+
+	// destroy lock file
+	fclose($lock);
+	unlink($path_mibcache_lock);
 }
 
 return;
