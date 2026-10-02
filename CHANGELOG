@@ -38,30 +38,30 @@ Cacti CHANGELOG
 -security#GHSA-j3px-vw6r-g25x: Escape stored snmp_index values in the New Graphs data-query pivot
 -security#GHSA-h745-3r76-g253: Escape the data-query and field names in the New Graphs parse error messages
 -security#GHSA-297h-95ff-r767: Escape the log-file names in the log viewer file selector
--security: Strip cmd.exe metacharacters from SNMP, script query, and data query arguments on win32
--security: Strip CR/LF from escape_command to stop rrdtool-protocol injection
+-security#8055: Harden - Strip cmd.exe metacharacters from SNMP, script query, and data query arguments on win32
+-security#8055: Harden - Strip CR/LF from escape_command to stop rrdtool-protocol injection
 -security#GHSA-5c9j-rhf5-rj4h: Harden Net-SNMP command execution and SNMP cache processing
--security: Escape the device Location filter option value to stop stored XSS
--security: Drop client-forgeable HTTP_PHP_AUTH_USER/HTTP_REMOTE_USER headers from HTTP Basic Auth
--security: Reject clean-client login requests when the session cookie was not accepted
--security: Fail closed on a posted LDAP realm that is not a configured domain
--security: Keep LDAP directory errors out of the login page
--security: Demand TLS certificates for new LDAP installs
--security: Restore the Cacti error handler on LDAP bind-only and empty-password paths
--security: Harden CLI shell arguments, database credentials, and temporary RRD files
--security: Update bundled DOMPurify to 3.4.14
--security: Revoke anonymous access when the guest account is disabled
--security: Cast graph and device ids to int in get_allowed_* permission filters
--security: Set the Secure session cookie behind a trusted TLS-terminating proxy
--security: Escape path_dsstats_log before logging
--security: Escape aggregate graph local_graph_id before SQL use
--security: Reject Windows-special log filename forms in the clog purge validation
--security: Substitute query data before escaping graph titles and axis labels
--security: Build forced-HTTPS redirects from the server-configured name
--security: Constrain external-link includes to regular files inside the configured content directory
--security: Harden advisory command execution and database DDL sink validation
+-security#8055: Harden - Escape the device Location filter option value to stop stored XSS
+-security#8055: Harden - Drop client-forgeable HTTP_PHP_AUTH_USER/HTTP_REMOTE_USER headers from HTTP Basic Auth
+-security#7990: Harden - Reject clean-client login requests when the session cookie was not accepted
+-security#8008: Harden - Fail closed on a posted LDAP realm that is not a configured domain
+-security#8008: Harden - Keep LDAP directory errors out of the login page
+-security#8008: Harden - Demand TLS certificates for new LDAP installs
+-security#8008: Harden - Restore the Cacti error handler on LDAP bind-only and empty-password paths
+-security#7972: Harden - Harden CLI shell arguments, database credentials, and temporary RRD files
+-security#7912: Harden - Update bundled DOMPurify to 3.4.14
+-security#7847: Harden - Revoke anonymous access when the guest account is disabled
+-security#7847: Harden - Cast graph and device ids to int in get_allowed_* permission filters
+-security#7847: Harden - Set the Secure session cookie behind a trusted TLS-terminating proxy
+-security#7847: Harden - Escape path_dsstats_log before logging
+-security#7847: Harden - Escape aggregate graph local_graph_id before SQL use
+-security#7847: Harden - Reject Windows-special log filename forms in the clog purge validation
+-security#7845: Harden - Substitute query data before escaping graph titles and axis labels
+-security#7832: Harden - Build forced-HTTPS redirects from the server-configured name
+-security#7817: Harden - Constrain external-link includes to regular files inside the configured content directory
+-security#7235: Harden - Harden advisory command execution and database DDL sink validation
 -security#GHSA-2pmj-f26c-3ghv: Restrict graph input fields across the template, graph and import handoffs
--security: Treat a non-boolean signature result as a failure in import_package
+-security#7675: Harden - Treat a non-boolean signature result as a failure in import_package
 -issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
 -issue#6684: Prevent VDEF-backed aggregate graph items from being emitted as XPORT data sources
@@ -137,16 +137,16 @@ Cacti CHANGELOG
 -issue#8063: Support searching by graph ID on the Graphs list/preview and Aggregate Graphs pages
 -issue#8104: Hash the debounce notification key to stop 50-character truncation errors
 -issue#8105: Add a Force Uninstall action to remove an orphaned plugin whose directory is missing
--issue: Do not replicate repository and tooling metadata files to remote data collectors during file replication
--issue: db_update_table() now reconciles unique_keys, so a plugin's UNIQUE index is no longer dropped (and a missing one is added) when an existing table is refreshed
--issue: Restore qualified plugin table metadata lookups (plugin_syslog#331)
--issue: Restore RRDproxy encryption with Composer-managed phpseclib 3
--issue: Commit transactions on MySQL as well as MariaDB
+-issue#8121: Do not replicate repository and tooling metadata files to remote data collectors during file replication
+-issue#8115: db_update_table() now reconciles unique_keys, so a plugin's UNIQUE index is no longer dropped (and a missing one is added) when an existing table is refreshed
+-issue#7826: Restore qualified plugin table metadata lookups (plugin_syslog#331)
+-issue#7804: Restore RRDproxy encryption with Composer-managed phpseclib 3
+-issue#7930: Commit transactions on MySQL as well as MariaDB
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
--feature: Update phpseclib to version 4.0.1
--feature: Update bundled jQuery UI to 1.14.2 and jQuery Tablesorter to 2.31.3
+-feature#8032: Update phpseclib to version 4.0.1
+-feature#7887: Update bundled jQuery UI to 1.14.2 and jQuery Tablesorter to 2.31.3
 
 1.2.31
 -security#GHSA-23g4-vf2j-94w4: CVE-2026-39894 RRDtool metric shift via LC_NUMERIC locale comma decimal formatting
