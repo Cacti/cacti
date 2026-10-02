@@ -625,7 +625,7 @@ function host_export() : void {
 	if (cacti_sizeof($hosts)) {
 		$columns = array_keys($hosts[0]);
 
-		fputcsv($stdout, $columns);
+		is_resource($stdout) && fputcsv($stdout, $columns);
 
 		foreach ($hosts as $h) {
 			// Flatten embedded newlines as the previous export format did, then
@@ -641,11 +641,11 @@ function host_export() : void {
 				$h[$hc] = $v;
 			}
 
-			fputcsv($stdout, $h);
+			is_resource($stdout) && fputcsv($stdout, $h);
 		}
 	}
 
-	fclose($stdout);
+	is_resource($stdout) && fclose($stdout);
 }
 
 function host_add_query() : void {

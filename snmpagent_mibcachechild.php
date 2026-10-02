@@ -95,7 +95,7 @@ if ($mibcache_changed !== null || file_exists($path_mibcache) === false) {
 	}
 
 	// destroy lock file
-	fclose($lock);
+	is_resource($lock) && fclose($lock);
 	unlink($path_mibcache_lock);
 }
 

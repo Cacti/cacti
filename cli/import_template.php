@@ -125,9 +125,9 @@ if (cacti_sizeof($parms)) {
 		if (file_exists($filename) && is_readable($filename)) {
 			$fp       = fopen($filename,'r');
 			$xml_data = fread($fp,filesize($filename));
-			fclose($fp);
+			is_resource($fp) && fclose($fp);
 
-			print 'Read ' . strlen($xml_data) . ' bytes of XML data' . PHP_EOL;
+			print 'Read ' . strlen((string) $xml_data) . ' bytes of XML data' . PHP_EOL;
 
 			$debug_data = import_xml_data($xml_data, false, $id, $remove_orphans, $replace_svalues);
 

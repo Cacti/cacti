@@ -619,7 +619,7 @@ function logrotate_file_rotate(string $name, string $log, object $date) : int {
 			if (rename($log, $log . '-' . $ext)) {
 				touch($log);
 				chown($log, $owner);
-				chgrp($log, $group);
+				chgrp($log, (string) $group);
 				chmod($log, $perms);
 
 				cacti_log('Cacti Log Rotation - Created ' . $name . ' Log : ' . basename($log) . '-' . $ext, true, 'MAINT');
@@ -911,8 +911,8 @@ function rrdclean_create_path(string $path) : bool {
 
 				// NOTE: chown/chgrp fails for non-root users, checking their
 				// result is therefore irrelevant
-				@chown($path, $owner_id);
-				@chgrp($path, $group_id);
+				@chown($path, (string) $owner_id);
+				@chgrp($path, (string) $group_id);
 			}
 		} else {
 			cacti_log("ERROR: RRDfile Maintenance unable to create directory '" . $path . "'", false, 'MAINT');

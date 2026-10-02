@@ -202,11 +202,11 @@ if ($output !== false && $output != '') {
 		}
 
 		// Check for additional data points from graphv output
-		$graph_start_pos = strpos($output, 'graph_start =', $image_begin_pos);
+		$graph_start_pos = strpos($output, 'graph_start =', (int) $image_begin_pos);
 
 		if (!$graph_start_pos) {
 			// Find the end of the line of the image definition row, after this the raw image data will come
-			$image_data_line_end = strpos($output, "\n", $image_begin_pos);
+			$image_data_line_end = strpos($output, "\n", (int) $image_begin_pos);
 
 			if ($image_data_line_end !== false) {
 				$image_data_pos = $image_data_line_end + 1;
@@ -216,7 +216,7 @@ if ($output !== false && $output != '') {
 			}
 		} else {
 			// Find the end of the line of the image definition row, after this the raw image data will come
-			$image_data_line_end = strpos($output, "\n", $image_begin_pos);
+			$image_data_line_end = strpos($output, "\n", (int) $image_begin_pos);
 
 			if ($image_data_line_end !== false) {
 				$image_data_pos = $image_data_line_end + 1;
@@ -314,9 +314,9 @@ if ($output !== false && $output != '') {
 	}
 
 	if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
-		$image = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
+		$image = rrdtool_create_error_image((string) $error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
 	} else {
-		$image = rrdtool_create_error_image($error);
+		$image = rrdtool_create_error_image((string) $error);
 	}
 
 	if (isset($graph_data_array['graph_width'])) {
@@ -342,12 +342,12 @@ if ($output !== false && $output != '') {
 	if ($image != false) {
 		$oarray['image'] = base64_encode($image);
 	} else {
-		$oarray['image'] = base64_encode(file_get_contents(__DIR__ . '/images/cacti_error_image.png'));
+		$oarray['image'] = base64_encode((string) file_get_contents(__DIR__ . '/images/cacti_error_image.png'));
 	}
 }
 
 header('Content-Type: application/json');
 header('Cache-Control: max-age=15');
 $json = json_encode($oarray);
-header('Content-Length: ' . strlen($json));
+header('Content-Length: ' . strlen((string) $json));
 print $json;

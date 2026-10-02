@@ -351,7 +351,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 		} else {
 			$output = fgets($pipes[1], 1024);
 
-			if (substr_count($output, 'Started') != 0) {
+			if (substr_count((string) $output, 'Started') != 0) {
 				cacti_log('PHP Script Server Started Properly', $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_HIGH);
 			}
 

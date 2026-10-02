@@ -976,7 +976,7 @@ class Installer implements JsonSerializable {
 					// cacti_escapeshellcmd() replaces backslashes on Windows; normalize first
 					$output = shell_exec(cacti_escapeshellcmd(str_replace('\\', '/', $path)) . ' --version 2>&1');
 
-					if ($output === null || !str_contains($output, 'Composer')) {
+					if ($output === null || !str_contains((string) $output, 'Composer')) {
 						$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $name, __('Composer did not return expected result'));
 						$should_set = false;
 					}
@@ -1645,7 +1645,7 @@ class Installer implements JsonSerializable {
 		$selected     = [];
 		$select_count = 0;
 
-		foreach ($known_tables as $known) {
+		foreach (($known_tables ?: []) as $known) {
 			$table  = $known['Name'];
 			$key    = $known['Name'];
 			$option = '';
@@ -2226,7 +2226,7 @@ class Installer implements JsonSerializable {
 		$themes      = glob($themePath . '*', GLOB_ONLYDIR);
 		$themeOutput = '<select id=\'theme\' name=\'theme\'>';
 
-		foreach ($themes as $themeFolder) {
+		foreach (($themes ?: []) as $themeFolder) {
 			$theme = substr($themeFolder, strlen($themePath));
 
 			if (file_exists($themePath . $theme . '/main.css')) {
@@ -2383,7 +2383,7 @@ class Installer implements JsonSerializable {
 
 				html_end_box(false);
 
-				$output .= Installer::sectionNormal(ob_get_contents());
+				$output .= Installer::sectionNormal((string) ob_get_contents());
 				ob_clean();
 
 				$output .= Installer::sectionSubTitleEnd();
@@ -2417,7 +2417,7 @@ class Installer implements JsonSerializable {
 
 		html_end_box(false);
 
-		$output .= Installer::sectionNormal(ob_get_contents());
+		$output .= Installer::sectionNormal((string) ob_get_contents());
 		ob_clean();
 
 		$output .= Installer::sectionSubTitleEnd();
@@ -2445,7 +2445,7 @@ class Installer implements JsonSerializable {
 
 		html_end_box();
 
-		$output .= Installer::sectionNormal(ob_get_contents());
+		$output .= Installer::sectionNormal((string) ob_get_contents());
 		ob_clean();
 
 		$output .= Installer::sectionSubTitleEnd();
@@ -2748,7 +2748,7 @@ class Installer implements JsonSerializable {
 
 		$html = ob_get_contents();
 
-		$output .= Installer::sectionNormal($html);
+		$output .= Installer::sectionNormal((string) $html);
 
 		ob_end_clean();
 
@@ -2953,7 +2953,7 @@ class Installer implements JsonSerializable {
 			$html = ob_get_contents();
 			ob_end_clean();
 
-			$output .= Installer::sectionNormal($html);
+			$output .= Installer::sectionNormal((string) $html);
 
 			$output .= Installer::sectionTitle(__('Default Profile'));
 			$output .= Installer::sectionNormal(__('Please select the default Data Source Profile to be used for polling sources. This is the maximum amount of time between scanning devices for information so the lower the polling interval, the more work is placed on the Cacti Server host. Long retention profiles store more data, so they take up more disk capacity. Their advantage is that older data is not as consolidated and is therefore more accurate than using shorter retention.'));
@@ -2987,7 +2987,7 @@ class Installer implements JsonSerializable {
 			$html = ob_get_contents();
 			ob_end_clean();
 
-			$output .= Installer::sectionNormal($html);
+			$output .= Installer::sectionNormal((string) $html);
 
 			$output .= Installer::sectionTitle(__('Default Automation Network'));
 			$output .= Installer::sectionNormal(__('Cacti can automatically scan the network once installation has completed. This will utilise the network range below to work out the range of IPs that can be scanned.  A predefined set of options are defined for scanning which include using both \'public\' and \'private\' communities.'));
@@ -3031,7 +3031,7 @@ class Installer implements JsonSerializable {
 			);
 			$html = ob_get_contents();
 
-			$output .= Installer::sectionNormal($html);
+			$output .= Installer::sectionNormal((string) $html);
 			$output .= Installer::sectionSubTitle(__('Additional SNMP Options'), 'automation_snmp_options');
 
 			ob_clean();
@@ -3042,7 +3042,7 @@ class Installer implements JsonSerializable {
 				]
 			);
 			$html = ob_get_contents();
-			$output .= Installer::sectionNormal($html);
+			$output .= Installer::sectionNormal((string) $html);
 			ob_end_clean();
 		} else {
 			$output  = Installer::sectionTitleError(__('Error Locating Profiles'));
@@ -3092,7 +3092,7 @@ class Installer implements JsonSerializable {
 			form_end_row();
 		}
 		html_end_box(false);
-		$output .= Installer::sectionNormal(ob_get_contents());
+		$output .= Installer::sectionNormal((string) ob_get_contents());
 		ob_end_clean();
 		$output .= Installer::sectionNormal(__('Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press \'Next\' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes.'));
 
@@ -3160,7 +3160,7 @@ class Installer implements JsonSerializable {
 				html_start_box(__('Tables'), '100%', false, 3, 'center', '', false);
 				html_header_checkbox([__('Name'), __('Collation'), __('Row Format'), __('Engine'), __('Rows')]);
 
-				foreach ($tables as $id => $p) {
+				foreach (($tables ?: []) as $id => $p) {
 					$enabled = self::isTableSelectable($p);
 
 					$style = ($enabled ? '' : 'text-decoration: line-through;');
@@ -3196,7 +3196,7 @@ class Installer implements JsonSerializable {
 				}
 
 				$output .= Installer::sectionNormal(__('The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process.'));
-				$output .= Installer::sectionNormal(ob_get_contents());
+				$output .= Installer::sectionNormal((string) ob_get_contents());
 
 				ob_end_clean();
 			}
@@ -3676,7 +3676,7 @@ class Installer implements JsonSerializable {
 			return;
 		}
 
-		if (str_contains($check, 'Nothing to install, update or remove')) {
+		if (str_contains((string) $check, 'Nothing to install, update or remove')) {
 			log_install_always('', __('Composer dependencies are current, no vendor refresh needed.'));
 
 			return;

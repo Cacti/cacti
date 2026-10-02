@@ -259,7 +259,7 @@ function upgrade_database() : void {
 	$preorder[] = CACTI_PATH_PLUGINS . '/thold';
 	$preorder[] = CACTI_PATH_PLUGINS . '/syslog';
 
-	foreach ($plugins as $p) {
+	foreach (($plugins ?: []) as $p) {
 		if (str_contains($p, 'thold')) {
 			// Skip, upgrading this first
 		} elseif (str_contains($p, 'syslog')) {

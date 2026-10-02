@@ -93,7 +93,7 @@ if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 gc_enable();
 
 while (true) {
-	$input = trim(fgets(STDIN));
+	$input = trim((string) fgets(STDIN));
 
 	switch($input) {
 		case '':
@@ -104,7 +104,7 @@ while (true) {
 
 			break;
 		case 'get':
-			$oid = trim(fgets(STDIN));
+			$oid = trim((string) fgets(STDIN));
 
 			if ($data = cache_read($oid)) {
 				fwrite(STDOUT, $oid . $eol . (isset($smi_base_datatypes[$data['type']]) ? $smi_base_datatypes[$data['type']] : 'INTEGER') . $eol . $data['value'] . $eol);
@@ -114,7 +114,7 @@ while (true) {
 
 			break;
 		case 'getnext':
-			$oid = trim(fgets(STDIN));
+			$oid = trim((string) fgets(STDIN));
 
 			if ($next_oid = cache_get_next($oid)) {
 				if ($data = cache_read($next_oid)) {

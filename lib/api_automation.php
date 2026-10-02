@@ -1815,7 +1815,7 @@ function build_graph_object_sql_having(array $rule, string $filter) : string {
 
 			$i = 0;
 
-			foreach ($field_names as $column) {
+			foreach (($field_names ?: []) as $column) {
 				/* The name becomes an identifier in the generated SQL, and it
 				 * arrives from snmp_query_field, which a data query XML import
 				 * populates. A backtick in it would close the quoting the
@@ -1881,7 +1881,7 @@ function build_data_query_sql(array $rule) : string {
 	$sql_query   = "\n\tSELECT h.hostname AS automation_host, host_id, \n\th.disabled, $sdisabled \n\th.status, snmp_query_id, snmp_index ";
 
 	if (cacti_sizeof($field_names) > 0) {
-		foreach ($field_names as $column) {
+		foreach (($field_names ?: []) as $column) {
 			$field_name = $column['field_name'];
 			$sql_query .= ",\n\tMAX(CASE WHEN field_name='$field_name' THEN field_value ELSE NULL END) AS '$field_name'";
 		}
@@ -2089,9 +2089,9 @@ function build_sort_order(string $index_order, string $default_order = '') : str
  * @param int    $rule_type The type of rule to apply.
  * @param string $sql_where Optional SQL WHERE clause to filter the results.
  *
- * @return array|bool - The list of matching hosts.
+ * @return array The list of matching hosts.
  */
-function get_matching_hosts(array $rule, int $rule_type, string $sql_where = '') : array|bool {
+function get_matching_hosts(array $rule, int $rule_type, string $sql_where = '') : array {
 	$function = automation_function_with_pid(__FUNCTION__);
 
 	cacti_log($function . ' called: ' . json_encode($rule) . ' type: ' . $rule_type, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2144,9 +2144,9 @@ function get_matching_hosts(array $rule, int $rule_type, string $sql_where = '')
  * @param int    $rule_type The type of rule to apply.
  * @param string $sql_where Optional SQL WHERE clause to further filter the results.
  *
- * @return array|bool The list of matching graphs.
+ * @return array The list of matching graphs.
  */
-function get_matching_graphs(array $rule, int $rule_type, string $sql_where = '') : array|bool {
+function get_matching_graphs(array $rule, int $rule_type, string $sql_where = '') : array {
 	$function = automation_function_with_pid(__FUNCTION__);
 
 	cacti_log($function . ' called: ' . json_encode($rule) . ' type: ' . $rule_type, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2360,9 +2360,9 @@ function get_query_fields(string $table, array $excluded_fields) : array {
  *
  * @param string $snmp_query_id The ID of the SNMP query for which to retrieve field names.
  *
- * @return array|bool An array of field names associated with the specified SNMP query ID.
+ * @return array An array of field names associated with the specified SNMP query ID.
  */
-function get_field_names(string $snmp_query_id) : array|bool {
+function get_field_names(string $snmp_query_id) : array {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . " called: $snmp_query_id", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 

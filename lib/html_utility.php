@@ -930,7 +930,7 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 				$valid  = true;
 				$values = preg_split('/,/', $_REQUEST[$name], -1, PREG_SPLIT_NO_EMPTY);
 
-				foreach ($values as $number) {
+				foreach (($values ?: []) as $number) {
 					if (!is_numeric($number)) {
 						$valid = false;
 
@@ -956,7 +956,7 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 
 		if ($value === false) {
 			if ($filter == FILTER_VALIDATE_IS_REGEX) {
-				raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', htmle(get_nfilter_request_var($name)), htmle($custom_error)), MESSAGE_LEVEL_ERROR);
+				raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', htmle((string) get_nfilter_request_var($name)), htmle((string) $custom_error)), MESSAGE_LEVEL_ERROR);
 				set_request_var($name, '');
 			} else {
 				die_html_input_error($name, get_nfilter_request_var($name));
@@ -1189,7 +1189,7 @@ function validate_store_request_vars(array $filters, string $sess_prefix = '') :
 					$valid  = true;
 					$values = preg_split('/,/', $_REQUEST[$variable], -1, PREG_SPLIT_NO_EMPTY);
 
-					foreach ($values as $number) {
+					foreach (($values ?: []) as $number) {
 						if (!is_numeric($number)) {
 							$valid = false;
 
@@ -1226,10 +1226,10 @@ function validate_store_request_vars(array $filters, string $sess_prefix = '') :
 				if ($value === false) {
 					if ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
 						raise_message('custom', __('The regular expression "%s" is not valid. Error is %s',
-							htmle(get_nfilter_request_var($variable)), htmle($custom_error)), MESSAGE_LEVEL_ERROR);
+							htmle((string) get_nfilter_request_var($variable)), htmle((string) $custom_error)), MESSAGE_LEVEL_ERROR);
 						set_request_var($variable, '');
 					} else {
-						die_html_input_error($variable, get_nfilter_request_var($variable), htmle($custom_error));
+						die_html_input_error($variable, get_nfilter_request_var($variable), htmle((string) $custom_error));
 					}
 				} else {
 					set_request_var($variable, $value);

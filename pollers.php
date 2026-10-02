@@ -401,7 +401,7 @@ function poller_check_duplicate_poller_id(int $poller_id, string $hostname, stri
 		$ip_hostnames[$hostname] = $hostname;
 
 		if (cacti_sizeof($addresses)) {
-			foreach ($addresses as $address) {
+			foreach (($addresses ?: []) as $address) {
 				if (isset($address['target'])) {
 					$ip_hostnames[$address['host']] = $address['host'];
 				}

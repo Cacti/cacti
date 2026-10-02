@@ -1619,7 +1619,7 @@ function api_plugin_archive_restore(string $plugin, string $id, string $type = '
 			foreach ($archive_files as $basefile => $pharpath) {
 				$output = file_get_contents("phar://my.tgz{$pharpath}");
 
-				if (strlen($output)) {
+				if (strlen((string) $output)) {
 					$rfile = ltrim($basefile, '/');
 
 					/**
@@ -1757,7 +1757,7 @@ function api_plugin_archive(string $plugin, string $note = '') : void {
 					$md5sum,
 					date('Y-m-d H:i:s'),
 					$note,
-					base64_encode(file_get_contents($tmpafile))
+					base64_encode((string) file_get_contents($tmpafile))
 				]
 			);
 
@@ -2195,9 +2195,9 @@ function plugin_fetch_latest_plugins() : mixed {
 								$requires,
 								date('Y-m-d H:i:s', strtotime($json_data[0]['published_at'])),
 								base64_encode($json_data[0]['body']),
-								base64_encode($ofiles['info']),
-								base64_encode($ofiles['readme']),
-								base64_encode($ofiles['changelog']),
+								base64_encode((string) $ofiles['info']),
+								base64_encode((string) $ofiles['readme']),
+								base64_encode((string) $ofiles['changelog']),
 								base64_encode($ofiles['archive'])
 							]
 						);
@@ -2340,9 +2340,9 @@ function plugin_fetch_latest_plugins() : mixed {
 							$requires,
 							$published_at,
 							'',
-							base64_encode($ofiles['info']),
-							base64_encode($ofiles['readme']),
-							base64_encode($ofiles['changelog']),
+							base64_encode((string) $ofiles['info']),
+							base64_encode((string) $ofiles['readme']),
+							base64_encode((string) $ofiles['changelog']),
 							base64_encode($ofiles['archive'])
 						]
 					);
@@ -2418,7 +2418,7 @@ function plugin_make_github_request(string $url, string $type = 'json') : mixed 
 		$error = curl_error($ch);
 
 		if ($info['http_code'] == 403 || $info['http_code'] == 429) {
-			$json_data = json_decode($data, true);
+			$json_data = json_decode((string) $data, true);
 
 			if (isset($json_data['message'])) {
 				raise_message('rate_limited', $json_data['message'], MESSAGE_LEVEL_ERROR);
@@ -2431,7 +2431,7 @@ function plugin_make_github_request(string $url, string $type = 'json') : mixed 
 
 		if ($errno == 0) {
 			if ($type == 'json') {
-				return json_decode($data, true);
+				return json_decode((string) $data, true);
 			}
 
 			if ($type == 'raw') {

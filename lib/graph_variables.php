@@ -83,7 +83,7 @@ function rrdtool_function_stats(mixed $local_data_ids, int $start_seconds, int $
 	include_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	if (!is_array($local_data_ids)) {
-		return json_encode([]);
+		return (string) json_encode([]);
 	}
 
 	// initialize some variables
@@ -202,7 +202,7 @@ function rrdtool_function_stats(mixed $local_data_ids, int $start_seconds, int $
 	 * good data.  Else prepare a new array with summary data.
 	 */
 	if (!$good_data) {
-		return json_encode([]);
+		return (string) json_encode([]);
 	}
 
 	$stats = [];
@@ -217,7 +217,7 @@ function rrdtool_function_stats(mixed $local_data_ids, int $start_seconds, int $
 		$stats['peak'] = [];
 	}
 
-	return json_encode($stats);
+	return (string) json_encode($stats);
 }
 
 function nth_percentile_fetch_statistics(int $percentile, array &$local_data_ids, array &$fetch_array, string $cf) : array {
@@ -716,7 +716,7 @@ function variable_bandwidth_summation(array &$regexp_match_array, array &$graph,
 
 	switch($regexp_match_array[2]) {
 		case 'current':
-			$summation_cache[$graph_item['local_data_id']] = bandwidth_summation($graph_item['local_data_id'], $summation_timespan_start, $graph_end, $rra_step, $ds_step);
+			$summation_cache[$graph_item['local_data_id']] = bandwidth_summation($graph_item['local_data_id'], (int) $summation_timespan_start, $graph_end, $rra_step, $ds_step);
 
 			break;
 		case 'total':
@@ -724,13 +724,13 @@ function variable_bandwidth_summation(array &$regexp_match_array, array &$graph,
 				if (!empty($graph_element['data_template_rrd_id']) &&
 					!empty($graph_element['local_data_id']) &&
 					is_graphable_item($graph_item_types[$graph_element['graph_type_id']])) {
-					$summation_cache[$graph_element['local_data_id']] = bandwidth_summation($graph_element['local_data_id'], $summation_timespan_start, $graph_end, $rra_step, $ds_step);
+					$summation_cache[$graph_element['local_data_id']] = bandwidth_summation($graph_element['local_data_id'], (int) $summation_timespan_start, $graph_end, $rra_step, $ds_step);
 				}
 			}
 
 			break;
 		case 'atomic':
-			$summation_cache[$graph_item['local_data_id']] = bandwidth_summation($graph_item['local_data_id'], $summation_timespan_start, $graph_end, $rra_step, 1);
+			$summation_cache[$graph_item['local_data_id']] = bandwidth_summation($graph_item['local_data_id'], (int) $summation_timespan_start, $graph_end, $rra_step, 1);
 
 			break;
 	}

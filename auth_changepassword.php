@@ -318,7 +318,7 @@ if (isrv('ref')) {
 			}
 
 			if (!$valid && cacti_sizeof($server_info)) {
-				foreach ($server_info as $record) {
+				foreach (($server_info ?: []) as $record) {
 					if (isset($record['host']) && $record['host'] == $server_ref) {
 						$valid = true;
 

@@ -62,7 +62,7 @@ function form_save() : void {
 			// file upload
 			$fp       = fopen($_FILES['import_file']['tmp_name'],'r');
 			$xml_data = fread($fp,filesize($_FILES['import_file']['tmp_name']));
-			fclose($fp);
+			is_resource($fp) && fclose($fp);
 		} else {
 			header('Location: templates_import.php');
 
@@ -101,7 +101,7 @@ function form_save() : void {
 		foreach ($_POST as $var => $val) {
 			if (str_contains($var, 'chk_')) {
 				$id = base64_decode(str_replace('chk_', '', $var), true);
-				$id = json_decode($id, true);
+				$id = json_decode((string) $id, true);
 
 				if (isset($id['hash'])) {
 					$import_hashes[] = $id['hash'];

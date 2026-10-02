@@ -74,7 +74,7 @@ function sig_handler($signo) : void {
 		case SIGTERM:
 		case SIGINT:
 			if ($thread > 0) {
-				clearTask($network_id, getmypid());
+				clearTask($network_id, (int) getmypid());
 
 				exit(0);
 			}
@@ -92,7 +92,7 @@ function sig_handler($signo) : void {
 					}
 				}
 
-				clearTask($network_id, getmypid());
+				clearTask($network_id, (int) getmypid());
 
 				sleep(5);
 
@@ -113,7 +113,7 @@ function sig_handler($signo) : void {
 					}
 				}
 
-				clearTask($network_id, getmypid());
+				clearTask($network_id, (int) getmypid());
 			}
 
 			exit(0);
@@ -541,7 +541,7 @@ function discoverDevices(int $network_id, int $thread) : bool {
 						[$dnsname, $device['ip_address']]);
 
 					$device['dnsname']       = $dnsname;
-					$device['dnsname_short'] = explode('.', cacti_strtolower($dnsname))[0];
+					$device['dnsname_short'] = explode('.', cacti_strtolower((string) $dnsname))[0];
 				} elseif ($network['enable_netbios'] == 'on') {
 					automation_debug('Device: ' . $device['ip_address'] . ', Checking DNS: Not found, Checking NetBIOS:');
 
@@ -645,7 +645,7 @@ function discoverDevices(int $network_id, int $thread) : bool {
 							automation_debug(' Responded');
 
 							$stats['ping']++;
-							addUpDevice($network_id, getmypid());
+							addUpDevice($network_id, (int) getmypid());
 						}
 					}
 
@@ -679,10 +679,10 @@ function discoverDevices(int $network_id, int $thread) : bool {
 						if (cacti_sizeof($exists)) {
 							if ($exists['deleted'] != 'on') {
 								if ($exists['status'] == 3 || $exists['status'] == 2) {
-									addUpDevice($network_id, getmypid());
+									addUpDevice($network_id, (int) getmypid());
 
 									if ($exists['snmp_version'] > 0) {
-										addSNMPDevice($network_id, getmypid());
+										addSNMPDevice($network_id, (int) getmypid());
 									}
 
 									// Rerun data queries if specified
@@ -702,8 +702,8 @@ function discoverDevices(int $network_id, int $thread) : bool {
 								$hostname = gethostbyaddr($device['ip_address']);
 
 								if ($hostname != $device['ip_address']) {
-									if (str_contains($hostname, '.')) {
-										$hostname = substr($hostname, 0, strpos($hostname, '.') - 1);
+									if (str_contains((string) $hostname, '.')) {
+										$hostname = substr((string) $hostname, 0, strpos((string) $hostname, '.') - 1);
 									}
 								}
 
@@ -745,7 +745,7 @@ function discoverDevices(int $network_id, int $thread) : bool {
 
 								$stats['snmp']++;
 
-								addSNMPDevice($network_id, getmypid());
+								addSNMPDevice($network_id, (int) getmypid());
 
 								automation_debug(' Responded');
 
@@ -924,10 +924,10 @@ function discoverDevices(int $network_id, int $thread) : bool {
 			} else {
 				if ($exists['deleted'] != 'on') {
 					if ($exists['status'] == 3 || $exists['status'] == 2) {
-						addUpDevice($network_id, getmypid());
+						addUpDevice($network_id, (int) getmypid());
 
 						if ($exists['snmp_version'] > 0) {
-							addSNMPDevice($network_id, getmypid());
+							addSNMPDevice($network_id, (int) getmypid());
 						}
 
 						// Rerun data queries if specified

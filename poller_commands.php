@@ -393,9 +393,9 @@ function sig_handler(int $signo) : void {
 			}
 
 			if ($type == 'master') {
-				unregister_process('commands', $type, $poller_id, getmypid());
+				unregister_process('commands', $type, $poller_id, (int) getmypid());
 			} else {
-				unregister_process('commands', $type, $host_id + 1000, getmypid());
+				unregister_process('commands', $type, $host_id + 1000, (int) getmypid());
 			}
 
 			exit(1);

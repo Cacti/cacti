@@ -997,12 +997,12 @@ function format_snmp_string(string $string, bool $snmp_oid_included, int $value_
 
 	if ($snmp_oid_included) {
 		// strip off all leading junk (the oid and stuff)
-		$string_array = explode('=', $string, 2);
+		$string_array = explode('=', (string) $string, 2);
 
 		if (cacti_sizeof($string_array) == 1) {
 			// trim excess first
-			$string = trim($string);
-		} elseif ((str_starts_with($string, '.')) || (str_contains($string, '::'))) {
+			$string = trim((string) $string);
+		} elseif ((str_starts_with((string) $string, '.')) || (str_contains((string) $string, '::'))) {
 			// drop the OID from the array
 			array_shift($string_array);
 			$string = trim(implode('=', $string_array));
@@ -1010,7 +1010,7 @@ function format_snmp_string(string $string, bool $snmp_oid_included, int $value_
 			$string = trim(implode('=', $string_array));
 		}
 	} else {
-		$string = trim($string);
+		$string = trim((string) $string);
 	}
 
 	// remove quotes and extraneous data
@@ -1087,7 +1087,7 @@ function format_snmp_string(string $string, bool $snmp_oid_included, int $value_
 	}
 
 	// Trim the string of trailing and leading spaces
-	$string = trim($string);
+	$string = trim((string) $string);
 
 	// convert hex strings to numeric values
 	if (is_hex_string($string)) {

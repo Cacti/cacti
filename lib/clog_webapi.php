@@ -181,7 +181,7 @@ function clog_purge_logfile(string $action = 'purge') : void {
 
 				$log_fh = fopen($logfile, 'w');
 
-				fclose($log_fh);
+				is_resource($log_fh) && fclose($log_fh);
 
 				raise_message('clog_removed', $imessage, MESSAGE_LEVEL_INFO);
 

@@ -260,10 +260,14 @@ if (cacti_sizeof($parms)) {
 	if (!$quiet) {
 		$fin = fopen('php://stdin', 'r');
 
+		if ($fin === false) {
+			exit(1);
+		}
+
 		while (true) {
 			printf(PHP_EOL . 'Precheck completed with no Errors.  Do you want to continue [Y|N]? ');
 
-			$line = cacti_strtolower(trim(fgets($fin)));
+			$line = cacti_strtolower(trim((string) fgets($fin)));
 
 			if ($line == 'y') {
 				fclose($fin);

@@ -272,8 +272,8 @@ if (!file_exists($rrdtool)) {
 
 $response = shell_exec(cacti_escapeshellcmd($rrdtool));
 
-if (strlen($response)) {
-	$response_array = explode(' ', $response);
+if (strlen((string) $response)) {
+	$response_array = explode(' ', (string) $response);
 	print 'NOTE: Using ' . $response_array[0] . ' Version ' . $response_array[1] . PHP_EOL;
 } else {
 	print 'FATAL: RRDTool not found in configuration or path.' . PHP_EOL . 'Please insure RRDTool can be found using one of these methods!' . PHP_EOL;
@@ -815,7 +815,7 @@ function processXML(array &$output) : array {
 	if (cacti_sizeof($output)) {
 		foreach ($output as $line) {
 			if (substr_count($line, '<row>')) {
-				$line   = trim(str_replace('<row>', '', str_replace('</row>', '', $line)));
+				$line   = trim(str_replace('<row>', '', str_replace('</row>', '', (string) $line)));
 				$larray = explode('<v>', $line);
 				$time   = trim(str_replace('<date>', '', str_replace('</date>', '', $larray[0])));
 

@@ -544,7 +544,7 @@ if (cacti_sizeof($parms)) {
 		print "Adding $description ($ip) as \"" . $host_templates[$template_id] . "\" using SNMP v$snmp_ver with username \"$snmp_username\"" . PHP_EOL;
 	}
 
-	$host_id = api_device_save(0, $template_id, $description, $ip,
+	$host_id = api_device_save(0, (int) $template_id, $description, $ip,
 		$community, $snmp_ver, $snmp_username, $snmp_password,
 		$snmp_port, $snmp_timeout, $disable, $avail, $ping_method,
 		$ping_port, $ping_timeout, $ping_retries, $notes,

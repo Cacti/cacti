@@ -1330,7 +1330,7 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 					} elseif (str_starts_with($field_array['source'], 'OID2HEX/REGEXP:')) {
 						$value = preg_replace('/' . str_replace('OID2HEX/REGEXP:', '', $field_array['source']) . '/', '\\1', $oid);
 
-						$parts    = explode('.', $value);
+						$parts    = explode('.', (string) $value);
 						$ip_value = '';
 
 						foreach ($parts as $idx => $part) {
@@ -1350,7 +1350,7 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 
 						// Check for ip address and shorten
 						if (is_ipaddress($ip_value)) {
-							$value = inet_ntop(inet_pton($ip_value));
+							$value = inet_ntop((string) inet_pton($ip_value));
 						}
 					}
 
@@ -1412,7 +1412,7 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 
 						foreach ($values as $key => $value) {
 							if (str_starts_with($field_array['source'], 'VALUE/REGEXP:')) {
-								$values[$key]['value'] = preg_replace('/' . str_replace('VALUE/REGEXP:', '', $field_array['source']) . '/', '\\1', $values[$key]['value']);
+								$values[$key]['value'] = preg_replace('/' . str_replace('VALUE/REGEXP:', '', $field_array['source']) . '/', '\\1', (string) $values[$key]['value']);
 							}
 						}
 					}
@@ -1662,7 +1662,7 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 
 						// Check for ip address and shorten
 						if (is_ipaddress($ip_value)) {
-							$parse_value = inet_ntop(inet_pton($ip_value));
+							$parse_value = inet_ntop((string) inet_pton($ip_value));
 						}
 
 						debug_log_insert('data_query', __esc('Found item [%s=\'%s\'] index: %s [from regexp oid parse]', $field_name, $parse_value, $snmp_index));
@@ -1747,8 +1747,8 @@ function data_query_format_record(int $host_id, int $snmp_query_id, string $fiel
 
 	$data_query_rewrite_indexes_cache[$hash][$snmp_index] = $value;
 
-	if (mb_detect_encoding($value, mb_detect_order(), true) === false) {
-		$value = bin2hex($value);
+	if (mb_detect_encoding((string) $value, mb_detect_order(), true) === false) {
+		$value = bin2hex((string) $value);
 	}
 
 	return "($host_id, $snmp_query_id, " . db_qstr($field_name) . ', ' . db_qstr($value) . ', ' . db_qstr($snmp_index) . ', ' . db_qstr($oid) . ', 1)';
@@ -2023,7 +2023,7 @@ function rewrite_snmp_enum_value(string|null $field_name, string|null $value = n
 
 	foreach ($mapcache[$field_name] as $src => $dst) {
 		if (preg_match($src, $value)) {
-			$nvalue = preg_replace($src, $dst, $value);
+			$nvalue = preg_replace($src, $dst, (string) $value);
 			debug_log_insert('data_query', __esc("rewrite_value: '%s' => '%s'", $value, $nvalue));
 			$value = $nvalue;
 
@@ -2799,7 +2799,7 @@ function get_script_query_path(string $args, string $script_path, int $host_id) 
 
 		$extra_arguments = '';
 
-		foreach ($parts as $index => $part) {
+		foreach (($parts ?: []) as $index => $part) {
 			/* only the hostname/IP placeholders are stripped of '%'; SNMP
 			 * community and credential substitutions may legitimately
 			 * contain one, so they keep their value unmodified. */

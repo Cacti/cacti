@@ -108,7 +108,7 @@ class MibCache {
 		}
 	}
 
-	public function mib(string $mib) : object {
+	public function mib(string $mib) : self {
 		$this->active_mib         = $mib;
 		$this->active_object      = '';
 		$this->active_table       = '';
@@ -117,13 +117,13 @@ class MibCache {
 		return $this;
 	}
 
-	public function object(string $object) : object {
+	public function object(string $object) : self {
 		$this->active_object = $object;
 
 		return $this;
 	}
 
-	public function table(string $table) : object {
+	public function table(string $table) : self {
 		if ($this->active_table != $table) {
 			if (!isset($this->cache__tables[$this->active_mib][$table])) {
 				$oid_table = db_fetch_cell_prepared('SELECT oid
@@ -161,7 +161,7 @@ class MibCache {
 		}
 	}
 
-	public function row(mixed $index) : object {
+	public function row(mixed $index) : self {
 		// limited to one single $index so far
 		$this->active_table_entry = $index;
 
@@ -310,7 +310,7 @@ class MibCache {
 
 				if ($num_columns && $entries && cacti_sizeof($entries)) {
 					$num_entries        = cacti_sizeof($entries);
-					$entries_per_object = $num_entries / $num_columns;
+					$entries_per_object = (int) ($num_entries / $num_columns);
 
 					for ($i = 0; $i < $entries_per_object; $i++) {
 						$result[$i] = [];
@@ -361,13 +361,13 @@ class MibCache {
 				if (cacti_sizeof($entries)) {
 					$num_objects        = cacti_sizeof($column);
 					$num_entries        = cacti_sizeof($entries);
-					$entries_per_object = ceil($num_entries / $num_objects);
+					$entries_per_object = (int) ceil($num_entries / $num_objects);
 
 					for ($i = 0; $i < $entries_per_object; $i++) {
 						$result[$i] = [];
 
 						for ($j = 0; $j < $num_objects; $j++) {
-							$index                                = (int) $i + ($j * $entries_per_object);
+							$index                                = (int) ($i + ($j * $entries_per_object));
 							$result[$i][$entries[$index]['name']] = $entries[$index]['value'];
 						}
 					}

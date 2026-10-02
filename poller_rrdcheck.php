@@ -179,7 +179,7 @@ rrdcheck_debug('Polling Ending');
 set_config_option('rrdcheck_last_run_time', time());
 
 if (!$forcerun) {
-	unregister_process('rrdcheck', $type, $thread_id);
+	unregister_process('rrdcheck', $type, (int) $thread_id);
 }
 
 exit(0);
@@ -287,7 +287,7 @@ function sig_handler(int $signo) : void {
 				rrdcheck_kill_running_processes();
 			}
 
-			unregister_process('rrdcheck', $type, $thread_id, getmypid());
+			unregister_process('rrdcheck', $type, $thread_id, (int) getmypid());
 
 			exit(1);
 		default:

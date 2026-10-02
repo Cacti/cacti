@@ -223,10 +223,10 @@ class Net_Ping {
 				 * www.google.com : xmt/rcv/%loss = 1/1/0%, min/avg/max = 25.6/25.6/25.6
 				 * 172.24.254.2 : xmt/rcv/%loss = 1/1/0%, min/avg/max = 7.01/7.01/7.01
 				 */
-				$position = strpos($result, 'min/avg/max =');
+				$position = strpos((string) $result, 'min/avg/max =');
 
 				if ($position > 0) {
-					$output              = substr($result, $position);
+					$output              = substr((string) $result, $position);
 					$results             = explode('/', $output);
 					$this->ping_status   = $results[3]; // avg
 					$this->ping_response = __('ICMP Ping Success (fping.exe) (%s ms)', $results[1]);
@@ -255,10 +255,10 @@ class Net_Ping {
 				 * Approximate round trip times in milli-seconds:
 				 * Minimum = 22ms, Maximum = 30ms, Average = 25ms
 				 */
-				$position = strpos($result, 'Minimum');
+				$position = strpos((string) $result, 'Minimum');
 
 				if ($position > 0) {
-					$output  = trim(substr($result, $position));
+					$output  = trim(substr((string) $result, $position));
 					$pieces  = explode(',', $output);
 					$results = explode('=', $pieces[2]); // Average
 
@@ -273,10 +273,10 @@ class Net_Ping {
 					return false;
 				}
 			} else {
-				$position = strpos($result, 'min/avg/max');
+				$position = strpos((string) $result, 'min/avg/max');
 
 				if ($position > 0) {
-					$output  = trim(str_replace(' ms', '', substr($result, $position)));
+					$output  = trim(str_replace(' ms', '', substr((string) $result, $position)));
 					$pieces  = explode('=', $output);
 					$results = explode('/', $pieces[1]);
 

@@ -557,7 +557,7 @@ function read_user_setting(string $config_name, mixed $default = false, bool $fo
 				[$config_name, $effective_uid]);
 		}
 
-		if (cacti_sizeof($db_setting)) {
+		if (is_array($db_setting) && cacti_sizeof($db_setting)) {
 			$user_config_array[$config_name] = $db_setting['value'];
 		} elseif ($default !== false) {
 			$user_config_array[$config_name] = $default;
@@ -6583,7 +6583,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 
 	// process custom headers
 	if (cacti_sizeof($headers)) {
-		foreach ($headers as $name => $value) {
+		foreach (($headers ?: []) as $name => $value) {
 			$emailMessage->getHeaders()->addTextHeader($name, $value);
 		}
 	}
@@ -9445,7 +9445,7 @@ function get_cacti_base_tables() : array {
 	}
 
 	if (cacti_sizeof($schema)) {
-		foreach ($schema as $line) {
+		foreach (($schema ?: []) as $line) {
 			if (str_contains($line, 'CREATE TABLE')) {
 				$table         = str_replace(['CREATE TABLE', '`', '(', ' '], '', $line);
 				$base_tables[] = trim($table);

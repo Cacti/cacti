@@ -272,7 +272,7 @@ function get_package_contents(string $export_type, int $export_item_id, bool $in
 		if (cacti_sizeof($files)) {
 			foreach ($files as $file) {
 				if (str_contains($file['file'], '.xml')) {
-					$files = array_merge($files, find_dependent_files(file_get_contents($file['file']), true));
+					$files = array_merge($files, find_dependent_files((string) file_get_contents($file['file']), true));
 				}
 			}
 		}
@@ -294,7 +294,7 @@ function get_package_contents(string $export_type, int $export_item_id, bool $in
 			if (cacti_sizeof($nfiles)) {
 				foreach ($nfiles as $file) {
 					if (str_contains($file['file'], '.xml')) {
-						$files = array_merge($files, find_dependent_files(file_get_contents($file['file']), true));
+						$files = array_merge($files, find_dependent_files((string) file_get_contents($file['file']), true));
 					}
 				}
 			}
@@ -423,7 +423,7 @@ function find_dependent_files(string $xml_data, bool $raise_message = false) : a
 			$line  = str_replace('<input_string>', '', $line);
 			$line  = str_replace('</input_string>', '', $line);
 			$line  = base64_decode($line, true);
-			$line  = xml_character_decode($line);
+			$line  = xml_character_decode((string) $line);
 			$line  = str_replace('><', '> <', $line);
 			$line  = str_replace('>""<', '>" "<', $line);
 			$line  = str_replace('>\'\'<', '>\' \'<', $line);
@@ -500,7 +500,7 @@ function find_paths(string $input, string $type = 'cacti_xml') : array {
 	$input = htmlspecialchars_decode($input);
 	$parts = preg_split('/\s+/', $input);
 
-	foreach ($parts as $part) {
+	foreach (($parts ?: []) as $part) {
 		$opath = htmlspecialchars($part);
 		$part  = str_replace('<path_cacti>', CACTI_PATH_BASE, $part);
 		$part  = str_replace('|path_cacti|', CACTI_PATH_BASE, $part);
@@ -701,7 +701,7 @@ function package_template(string &$template, array &$info, array &$files, string
 			$data = 'Not Found';
 		}
 
-		openssl_sign($data, $binary_signature, $private_key, OPENSSL_ALGO_SHA256);
+		openssl_sign((string) $data, $binary_signature, $private_key, OPENSSL_ALGO_SHA256);
 
 		if ($data) {
 			$data = base64_encode($data);
@@ -749,8 +749,8 @@ function package_template(string &$template, array &$info, array &$files, string
 	$debug .= 'NOTE: Creating compressed template xml "' . clean_up_name($name) . ".xml.gz\"\n";
 
 	$f = fopen("compress.zlib://$tmpdir/" . clean_up_name($name) . '.xml.gz','wb');
-	fwrite($f, $xml, strlen($xml));
-	fclose($f);
+	is_resource($f) && fwrite($f, $xml, strlen($xml));
+	is_resource($f) && fclose($f);
 
 	$package_file = $tmpdir . '/' . clean_up_name($name) . '.xml.gz';
 

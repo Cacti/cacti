@@ -870,9 +870,9 @@ function db_fetch_cell_return(PDOStatement $query, string $col_name = '') : mixe
  * @param mixed  $db_conn The connection to use or false to use the default
  * @param float  $timeout Server-side statement timeout in seconds, 0 disables
  *
- * @return bool|array The first row of the result or false if failed
+ * @return array The first row of the result, or an empty array if none found
  */
-function db_fetch_row(string $sql, bool $log = true, mixed $db_conn = false, float $timeout = 0) : bool|array {
+function db_fetch_row(string $sql, bool $log = true, mixed $db_conn = false, float $timeout = 0) : array {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -891,16 +891,18 @@ function db_fetch_row(string $sql, bool $log = true, mixed $db_conn = false, flo
  * @param mixed  $db_conn The connection to use or false to use the default
  * @param float  $timeout Server-side statement timeout in seconds, 0 disables
  *
- * @return bool|array The first row of the result or false if failed
+ * @return array The first row of the result, or an empty array if none found
  */
-function db_fetch_row_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, float $timeout = 0) : bool|array {
+function db_fetch_row_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, float $timeout = 0) : array {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
 		db_echo_sql('db_fetch_row_prepared(\'' . clean_up_lines($sql) . '\', $params = (\'' . implode('\', \'', $params) . '\'), $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') . ')' . "\n");
 	}
 
-	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', false, 'db_fetch_row_return', [], $timeout);
+	$result = db_execute_prepared($sql, $params, $log, $db_conn, 'Row', false, 'db_fetch_row_return', [], $timeout);
+
+	return is_array($result) ? $result : [];
 }
 
 /**
@@ -931,9 +933,9 @@ function db_fetch_row_return(PDOStatement $query) : array {
  * @param mixed  $db_conn The connection to use or false to use the default
  * @param float  $timeout Server-side statement timeout in seconds, 0 disables
  *
- * @return bool|array The entire result set or false on error
+ * @return array The entire result set, or an empty array on error
  */
-function db_fetch_assoc(string $sql, bool $log = true, mixed $db_conn = false, float $timeout = 0) : mixed {
+function db_fetch_assoc(string $sql, bool $log = true, mixed $db_conn = false, float $timeout = 0) : array {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -952,16 +954,18 @@ function db_fetch_assoc(string $sql, bool $log = true, mixed $db_conn = false, f
  * @param mixed  $db_conn The connection to use or false to use the default
  * @param float  $timeout Server-side statement timeout in seconds, 0 disables
  *
- * @return mixed The entire result or false on error
+ * @return array The entire result set, or an empty array on error
  */
-function db_fetch_assoc_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, float $timeout = 0) : mixed {
+function db_fetch_assoc_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, float $timeout = 0) : array {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
 		db_echo_sql('db_fetch_assoc_prepared($sql, $params = array(), $log = true, $db_conn = false)' . "\n");
 	}
 
-	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', [], 'db_fetch_assoc_return', [], $timeout);
+	$result = db_execute_prepared($sql, $params, $log, $db_conn, 'Row', [], 'db_fetch_assoc_return', [], $timeout);
+
+	return is_array($result) ? $result : [];
 }
 
 /**
@@ -1001,7 +1005,7 @@ function db_fetch_insert_id(mixed $db_conn = false) : mixed {
 		}
 	}
 
-	if (is_object($db_conn)) {
+	if ($db_conn instanceof PDO) {
 		return $db_conn->lastInsertId();
 	}
 
@@ -1442,7 +1446,7 @@ function db_cacti_initialized(bool $is_web = true) : bool {
 		$db_conn = false;
 	}
 
-	if (!is_object($db_conn)) {
+	if (!($db_conn instanceof PDO)) {
 		return false;
 	}
 
@@ -2123,12 +2127,12 @@ function db_begin_transaction(mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	// check for a connection being passed, if not use legacy behavior
-	if (!is_object($db_conn)) {
+	if (!($db_conn instanceof PDO)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 		}
 
-		if (!is_object($db_conn)) {
+		if (!($db_conn instanceof PDO)) {
 			return false;
 		}
 	}
@@ -2147,12 +2151,12 @@ function db_commit_transaction(mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	// check for a connection being passed, if not use legacy behavior
-	if (!is_object($db_conn)) {
+	if (!($db_conn instanceof PDO)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 		}
 
-		if (!is_object($db_conn)) {
+		if (!($db_conn instanceof PDO)) {
 			return false;
 		}
 	}
@@ -2179,12 +2183,12 @@ function db_rollback_transaction(mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	// check for a connection being passed, if not use legacy behavior
-	if (!is_object($db_conn)) {
+	if (!($db_conn instanceof PDO)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 		}
 
-		if (!is_object($db_conn)) {
+		if (!($db_conn instanceof PDO)) {
 			return false;
 		}
 	}
@@ -2465,7 +2469,7 @@ function db_qstr(mixed $s, mixed $db_conn = false) : string {
 		return 'NULL';
 	}
 
-	if (is_object($db_conn)) {
+	if ($db_conn instanceof PDO) {
 		return $db_conn->quote($s);
 	}
 
@@ -2865,7 +2869,7 @@ function db_get_permissions(bool $include_unknown = false, bool $log = false, mi
 							$db_grant_perms = preg_split('/,[ ]*/', $db_grant_match[1]);
 
 							if (cacti_sizeof($db_grant_perms)) {
-								foreach ($db_grant_perms as $db_grant_perm) {
+								foreach (($db_grant_perms ?: []) as $db_grant_perm) {
 									$db_grant_perm = cacti_strtoupper($db_grant_perm);
 
 									if ($db_grant_perm == 'ALL' ||

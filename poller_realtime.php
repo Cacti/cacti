@@ -293,7 +293,7 @@ function process_poller_output_rt(mixed $rrdtool_pipe, string $poller_id, int $i
 				);
 
 				if (cacti_sizeof($values)) {
-					foreach ($values as $value) {
+					foreach (($values ?: []) as $value) {
 						$matches = explode(':', $value);
 
 						if (isset($rrd_field_names[$matches[0]])) {

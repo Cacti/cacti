@@ -133,7 +133,7 @@ if (cacti_sizeof($directory)) {
 		pkg_debug('Processing files');
 
 		if (cacti_sizeof($files)) {
-			foreach ($files as $file) {
+			foreach (($files ?: []) as $file) {
 				pkg_debug("Processing file: $file");
 
 				if (is_readable($file)) {

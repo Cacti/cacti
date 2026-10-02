@@ -358,11 +358,11 @@ function reports_interval_start(int $interval, int $count, int $offset, int $tim
 			$nth_weekday  = ceil($day_of_month / 7);
 
 			$date_str     = '+' . $count . ' months';
-			$month_base   = strtotime($date_str, $timestamp);
+			$month_base   = (int) strtotime($date_str, $timestamp);
 			$new_month    = mktime((int) date('H', $month_base), (int) date('i', $month_base), (int) date('s', $month_base), (int) date('m', $month_base), 1, (int) date('Y', $month_base));
 
 			$date_str     = '+' . ($nth_weekday - 1) . ' week ' . $weekday;
-			$base         = strtotime($date_str, $new_month);
+			$base         = (int) strtotime($date_str, $new_month);
 			$ts           = mktime((int) date('H', $month_base), (int) date('i', $month_base), (int) date('s', $month_base), (int) date('m', $base), (int) date('d', $base), (int) date('Y', $base));
 
 			break;
@@ -711,7 +711,7 @@ function reports_load_format_file(string $format_file, mixed &$output, bool &$re
 	$output = '';
 
 	if (cacti_sizeof($contents)) {
-		foreach ($contents as $line) {
+		foreach (($contents ?: []) as $line) {
 			$line = trim($line);
 
 			if (substr_count($line, '<REPORT>')) {
@@ -856,7 +856,7 @@ function reports_generate_history_html(int $history_id, int $output = REPORTS_OU
 			$report = str_replace('<table>', '<table class="cactiTable">', $report);
 		}
 
-		$graph_data = json_decode(base64_decode($data['report_attachments'], true), true);
+		$graph_data = json_decode((string) base64_decode($data['report_attachments'], true), true);
 
 		foreach ($graph_data as $graph) {
 			$report = str_replace('<GRAPH:' . $graph['local_graph_id'] . ':' . $graph['timespan'] . '>',
@@ -1974,7 +1974,7 @@ function reports_get_format_files() : array {
 					$contents = file($dir . '/' . $file);
 
 					if (cacti_sizeof($contents)) {
-						foreach ($contents as $line) {
+						foreach (($contents ?: []) as $line) {
 							$line = trim($line);
 
 							if (substr_count($line, 'Description:') && str_starts_with($line, '#')) {
@@ -2335,7 +2335,7 @@ function reports_log_and_notify(int $id, int $start_time, string $report_type, s
 		$save['report_raw_output']  = $oput_raw;
 		$save['report_html_output'] = $oput_html;
 		$save['report_txt_output']  = $oput_text;
-		$save['report_attachments'] = base64_encode(json_encode($attachments));
+		$save['report_attachments'] = base64_encode((string) json_encode($attachments));
 		$save['send_type']          = $report['request_type'];
 		$save['send_time']          = date('Y-m-d H:i:s');
 		$save['run_time']           = $end_time - $start_time;

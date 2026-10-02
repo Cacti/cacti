@@ -166,7 +166,7 @@ if (!$quiet && $debug) {
 }
 
 try {
-	$file_array = $file_finder->findHashes($base_dir, $ignore_regex, $excluded_directories, $debug_callback);
+	$file_array = $file_finder->findHashes((string) $base_dir, $ignore_regex, $excluded_directories, $debug_callback);
 } catch (DirectoryNotFoundException | InvalidArgumentException $e) {
 	printf('ERROR: %s' . PHP_EOL, $e->getMessage());
 	exit(6);

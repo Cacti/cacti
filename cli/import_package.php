@@ -171,9 +171,9 @@ if (cacti_sizeof($parms)) {
 			$fp   = fopen($filename, 'r');
 			$data = fread($fp, filesize($filename));
 
-			fclose($fp);
+			is_resource($fp) && fclose($fp);
 
-			print 'Read ' . strlen($data) . ' bytes of Package data' . PHP_EOL;
+			print 'Read ' . strlen((string) $data) . ' bytes of Package data' . PHP_EOL;
 
 			$result = import_package($filename, $profile_id, $remove_orphans, $replace_svalues, $preview_only);
 

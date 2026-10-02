@@ -17,4 +17,4 @@ $cmd .= " status | awk '{print \$6 }'";
 $sql = shell_exec($cmd);
 
 // Cacti expects 'U' on error, not empty string or 0.
-print trim($sql ?? '') ?: 'U';
+print trim((string) $sql) ?: 'U';

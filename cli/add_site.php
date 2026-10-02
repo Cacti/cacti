@@ -549,7 +549,7 @@ function fetchCurl(string $url) : string|false {
 
 	$buffer = curl_exec($curl);
 
-	if ($buffer === false) {
+	if (!is_string($buffer)) {
 		$error = curl_error($curl);
 
 		echoQuiet('Error: cURL request failed: ' . $error . PHP_EOL);
