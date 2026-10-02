@@ -3767,37 +3767,29 @@ function local_auth_login_process($username) {
 		$user = secpass_login_process($username);
 
 		/**
-		 * If the password needs to be rehashed for security purposes,
-		 * do that now.
+		 * secpass_login_process() is the single password-verification path
+		 * (real hash for an existing user, dummy hash otherwise), so a non-empty
+		 * $user already means the password verified. Re-fetch the full row and
+		 * rehash if needed, but do NOT verify again: a second verify here made an
+		 * existing account cost two bcrypt operations versus one for an unknown
+		 * user, a login-timing enumeration oracle (GHSA-p3rg-7pc3-2h86).
 		 */
-		$stored_pass = db_fetch_cell_prepared('SELECT password
-			FROM user_auth
-			WHERE username = ?
-			AND realm = 0',
-			array($username));
+		if (cacti_sizeof($user)) {
+			$user = db_fetch_row_prepared('SELECT *
+				FROM user_auth
+				WHERE username = ?
+				AND realm = 0',
+				array($username));
 
-		if ($stored_pass != '') {
-			$password = get_nfilter_request_var('login_password');
+			$stored_pass = $user['password'];
 
-			$valid = compat_password_verify($password, $stored_pass);
-
-			cacti_log("DEBUG: User '" . $username . "' password for rehash is " . ($valid ? '':'in') . 'valid', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
-
-			if ($valid) {
-				$user = db_fetch_row_prepared('SELECT *
-					FROM user_auth
-					WHERE username = ?
-					AND realm = 0',
-					array($username));
-
-				if (compat_password_needs_rehash($stored_pass, PASSWORD_DEFAULT)) {
-					$password = compat_password_hash($password, PASSWORD_DEFAULT);
-					db_check_password_length();
-					db_execute_prepared('UPDATE user_auth
-						SET password = ?
-						WHERE username = ?',
-						array($password, $username));
-				}
+			if ($stored_pass != '' && compat_password_needs_rehash($stored_pass, PASSWORD_DEFAULT)) {
+				$password = compat_password_hash(get_nfilter_request_var('login_password'), PASSWORD_DEFAULT);
+				db_check_password_length();
+				db_execute_prepared('UPDATE user_auth
+					SET password = ?
+					WHERE username = ?',
+					array($password, $username));
 			}
 		}
 	}
@@ -4322,6 +4314,12 @@ function secpass_login_process($username) {
 
 	if (cacti_sizeof($user)) {
 		if ($user['enabled'] != 'on') {
+			if (trim($password) != '') {
+				// Match the enabled/unknown paths' single verify so a disabled
+				// account is not distinguishable by login timing (GHSA-p3rg-7pc3-2h86).
+				compat_password_verify($password, '$2y$10$qgRPCKzfZe/81cu3L9PMA.zjHKgXHc6iRfsedEe4NmSMbXrod1uEq');
+			}
+
 			$error     = true;
 			$error_msg = __('Access Denied!  Login Failed.');
 
