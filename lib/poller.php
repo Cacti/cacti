@@ -1471,7 +1471,8 @@ function resource_cache_out(string $type, array $path) : void {
 
 							if ((is_writable($tmpdir) && !file_exists($tmpfile)) || (file_exists($tmpfile) && is_writable($tmpfile))) {
 								if (file_put_contents($tmpfile, $contents) !== false) {
-									$output = system($php_path . ' -l ' . $tmpfile, $exit);
+									// GHSA-4p7f-qcc2-vmx7: path_php_binary is an admin-set value that reaches this shell; escape it like every other consumer.
+									$output = system(cacti_escapeshellcmd($php_path) . ' -l ' . cacti_escapeshellarg($tmpfile), $exit);
 
 									if ($exit == 0) {
 										cacti_log("INFO: Updating '$mypath' from Cache!", false, 'REPLICATE');

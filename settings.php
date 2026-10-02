@@ -1367,7 +1367,7 @@ function save_settings() : void {
 			} else {
 				$continue = true;
 
-				if ($field_name == 'path_cactilog' || $field_name == 'path_stderrlog') {
+				if ($field_name == 'path_cactilog' || $field_name == 'path_stderrlog' || $field_name == 'path_boost_log') {
 					$extension = pathinfo(gnrv($field_name), PATHINFO_EXTENSION);
 
 					if ($extension != 'log') {
