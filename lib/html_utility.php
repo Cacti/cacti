@@ -71,7 +71,7 @@ function inject_form_variables(array &$form_array, mixed $arg1 = [], mixed $arg2
 
 							// an empty field name in the variable means don't treat this as an array
 							if ($matches2 == '') {
-								if (is_array(${$matches1})) { // @phpstan-ignore-line
+								if (is_array(${$matches1})) {
 									// the existing value is already an array, leave it alone
 									$form_array[$field_name][$field_to_check] = ${$matches1};
 								} else {
@@ -82,7 +82,7 @@ function inject_form_variables(array &$form_array, mixed $arg1 = [], mixed $arg2
 								/* copy the value down from the array/key specified in the variable
 								 * replace up to three times for arg1:arg2:arg3 variables
 								 */
-								if (is_array(${$matches1})) { // @phpstan-ignore-line
+								if (is_array(${$matches1})) {
 									$array = ${$matches1};
 
 									if (isset($array[$matches2]) && $array[$matches2] != '') {

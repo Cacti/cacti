@@ -5363,8 +5363,8 @@ function automation_tree_rule_export(mixed $tree_rule_ids) : array {
 			unset($tree_rule['id']);
 
 			// pick up the tree and branch name as they may not be on the foreign system
-			$tree_rule['tree_data']        = db_fetch_row_prepared('SELECT name, sort_type FROM graph_tree WHERE id = ?', [$tree_rule['tree_id']]); // @phpstan-ignore-line
-			$tree_rule['tree_branch_data'] = automation_device_rule_export_branches($tree_rule['tree_id'], $tree_rule['tree_item_id']); // @phpstan-ignore-line
+			$tree_rule['tree_data']        = db_fetch_row_prepared('SELECT name, sort_type FROM graph_tree WHERE id = ?', [$tree_rule['tree_id']]);
+			$tree_rule['tree_branch_data'] = automation_device_rule_export_branches($tree_rule['tree_id'], $tree_rule['tree_item_id']);
 
 			// collapse the graph rule items
 			$tree_rule['tree_rule_items'] = $tree_rule_items;

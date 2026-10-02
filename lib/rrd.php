@@ -3983,7 +3983,7 @@ function rrdtool_function_theme_font_options(array &$graph_data_array) : string 
 			}
 		}
 
-		if (isset(${$themeborder}) && cacti_version_compare($rrdversion, '1.4', '>=')) { // @phpstan-ignore-line
+		if (isset(${$themeborder}) && cacti_version_compare($rrdversion, '1.4', '>=')) {
 			$graph_opts .= '--border ' . ${$themeborder} . RRD_NL; // @phpstan-ignore-line
 		}
 

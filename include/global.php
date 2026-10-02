@@ -726,7 +726,7 @@ define('CACTI_VERSION_BRIEF', get_cacti_version_text(false, CACTI_VERSION));
 define('CACTI_VERSION_BRIEF_FULL', get_cacti_version_text(false, CACTI_VERSION_FULL));
 define('CACTI_VERSION_TEXT', get_cacti_version_text(true, CACTI_VERSION));
 define('CACTI_VERSION_TEXT_FULL', get_cacti_version_text(true, CACTI_VERSION_FULL));
-define('CACTI_VERSION_TEXT_CLI', get_cacti_cli_version(true, CACTI_VERSION_FULL)); // @phpstan-ignore-line
+define('CACTI_VERSION_TEXT_CLI', get_cacti_cli_version(true, CACTI_VERSION_FULL));
 
 require_once(CACTI_PATH_LIBRARY . '/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/plugins.php');

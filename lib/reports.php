@@ -1594,7 +1594,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 
 							if (cacti_sizeof($outgraphs)) {
 								// let's sort the graphs naturally
-								usort($outgraphs, 'necturally_sort_graphs'); // @phpstan-ignore-line
+								usort($outgraphs, 'necturally_sort_graphs');
 
 								// start graph display
 								if ($title != '') {

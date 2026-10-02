@@ -1430,7 +1430,7 @@ class Installer implements JsonSerializable {
 	 *
 	 * @return array<string, bool>
 	 */
-	private function getTemplates() : array { // @phpstan-ignore-line
+	private function getTemplates() : array {
 		$known_templates = install_setup_get_templates();
 
 		$db_templates = array_rekey(

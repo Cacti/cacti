@@ -1533,7 +1533,7 @@ function get_device_records(int &$total_rows, int $rows) : mixed {
 				"(host.status = ? OR (status != 2
 					AND thold_failure_count > 0
 					AND status_event_count >= thold_failure_count)
-					AND NOT $host_where_disabled)"; // @phpstan-ignore-line
+					AND NOT $host_where_disabled)";
 
 			$sql_params[] = $status;
 		} else {

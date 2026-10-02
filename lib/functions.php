@@ -10076,9 +10076,9 @@ function substring_index(string $subject, string $delim, int $count) : string {
 	}
 
 	if ($count < 0) {
-		return implode($delim, array_slice(explode($delim, $subject), $count)); // @phpstan-ignore argument.type (guard above ensures $delim is non-empty)
+		return implode($delim, array_slice(explode($delim, $subject), $count));
 	} else {
-		return implode($delim, array_slice(explode($delim, $subject), 0, $count)); // @phpstan-ignore argument.type (guard above ensures $delim is non-empty)
+		return implode($delim, array_slice(explode($delim, $subject), 0, $count));
 	}
 }
 

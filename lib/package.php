@@ -284,7 +284,7 @@ function get_package_contents(string $export_type, int $export_item_id, bool $in
 	 * When exporting Graph Templates, you have to check for data queries
 	 * and process their XML files for additional scripts
 	 */
-	if ($export_type == 'graph_template' && cacti_sizeof($queries)) { // @phpstan-ignore-line - This values is set as a global in get_item_xml
+	if ($export_type == 'graph_template' && cacti_sizeof($queries)) {
 		foreach ($queries as $dq) {
 			$xml_data = get_item_xml('data_query', $dq['id'], $include_deps);
 

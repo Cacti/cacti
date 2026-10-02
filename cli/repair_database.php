@@ -112,7 +112,7 @@ detailed_checks();
 snmp_repairs();
 snmp_index_repairs();
 
-if (cacti_sizeof($repaired_hosts) && $total_repairs > 0) { // @phpstan-ignore booleanAnd.alwaysFalse
+if (cacti_sizeof($repaired_hosts) && $total_repairs > 0) {
 	print_separator(true);
 
 	printf('NOTE: Pushing out %s Devices after repairs!' . PHP_EOL . PHP_EOL, cacti_sizeof($repaired_hosts));
