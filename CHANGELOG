@@ -423,6 +423,7 @@ Cacti CHANGELOG
 -security#GHSA-v2mq-mxpw-55pf: Escape graph preset names rendered in the gprint presets list
 -security#GHSA-4fr7-45gj-5cx6: Validate and escape data_source_path before RRDtool execution
 -security#GHSA-fgwr-944r-wg98: Validate rrd and data_source path tokens in the CLI maintenance tools and Boost
+-security#GHSA-p5xj-48vc-mqrf: Cap remember-me token lifetime to 90 days via the login-time predicate and the poller_maintenance authcache purge
 -security#GHSA-227p-wv52-pjg5: Escape the spike-removal RRD path passed to the removespikes shell command
 -security#GHSA-2x86-jpm8-9vgp: Confine the data-query XML file existence check to the Cacti base path
 -security#GHSA-4gph-8x7q-h365: Escape the device description in the report-add status message
