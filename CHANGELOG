@@ -9,9 +9,15 @@ Cacti CHANGELOG
 -security#GHSA-2fhv-c794-v433: Authorize Data Source enable/disable against the owning device before mutating
 -security#GHSA-prxj-84qq-v5jq: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating
 -security#GHSA-xvwr-hvpm-67jw: Escape template name and dependency path in the Template Import preview
+-security#GHSA-77pr-g949-4v5f: Authorize the target graph before Spike Kill rewrites its RRD history
+-security#GHSA-w3qw-762w-6g9v: Reject array-form GET actions that bypass the POST and CSRF guard
+-security#GHSA-xhpr-w454-cc9w: Cast the stored data-query output_type before building the poller cache query
+-security#GHSA-j3px-vw6r-g25x: Escape stored snmp_index values in the New Graphs data-query pivot
+-security#GHSA-h745-3r76-g253: Escape the data-query and field names in the New Graphs parse error messages
+-security#GHSA-297h-95ff-r767: Escape the log-file names in the log viewer file selector
 -security: Strip cmd.exe metacharacters from SNMP, script query, and data query arguments on win32
 -security: Strip CR/LF from escape_command to stop rrdtool-protocol injection
--security: Harden Net-SNMP command execution and SNMP cache processing
+-security#GHSA-5c9j-rhf5-rj4h: Harden Net-SNMP command execution and SNMP cache processing
 -security: Escape the device Location filter option value to stop stored XSS
 -security: Drop client-forgeable HTTP_PHP_AUTH_USER/HTTP_REMOTE_USER headers from HTTP Basic Auth
 -security: Reject clean-client login requests when the session cookie was not accepted
@@ -31,7 +37,7 @@ Cacti CHANGELOG
 -security: Build forced-HTTPS redirects from the server-configured name
 -security: Constrain external-link includes to regular files inside the configured content directory
 -security: Harden advisory command execution and database DDL sink validation
--security: Restrict graph input fields across the template, graph and import handoffs
+-security#GHSA-2pmj-f26c-3ghv: Restrict graph input fields across the template, graph and import handoffs
 -security: Treat a non-boolean signature result as a failure in import_package
 -issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
 -issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata

@@ -257,7 +257,10 @@ function update_poller_cache($data_source, $commit = false) {
 
 			$params = array();
 			if (cacti_sizeof($field) && $field['output_type'] != '') {
-				$output_type_sql = ' AND sqgr.snmp_query_graph_id = ' . $field['output_type'];
+				/* GHSA-xhpr-w454-cc9w: output_type is a stored snmp_query_graph_id
+				 * interpolated into the query below; cast it so a tampered
+				 * data-query field cannot inject SQL second-hand. */
+				$output_type_sql = ' AND sqgr.snmp_query_graph_id = ' . (int) $field['output_type'];
 			} else {
 				$output_type_sql = '';
 			}
