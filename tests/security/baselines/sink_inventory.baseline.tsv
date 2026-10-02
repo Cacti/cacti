@@ -67,7 +67,7 @@ cmd_exec	./lib/poller.php					$fp = popen($command, 'rb');
 cmd_exec	./lib/poller.php					exec($safe_filename . ' ' . $args . ' ' . $redirect_args . ' &');
 cmd_exec	./lib/poller.php					exec($safe_filename . ' ' . $args . ' > /dev/null 2>&1 &');
 cmd_exec	./lib/poller.php				$output = shell_exec($command);
-cmd_exec	./lib/poller.php			$setsid_path = trim(shell_exec('which setsid 2>/dev/null') ?? '');
+cmd_exec	./lib/poller.php			$setsid_path = trim((string) shell_exec('which setsid 2>/dev/null'));
 cmd_exec	./lib/poller.php		$process = @proc_open($command, $descriptors, $pipes, null, null, ['bypass_shell' => true]);
 cmd_exec	./lib/poller.php		$process = proc_open('exec ' . $cmd_full, $descriptors, $pipes);
 cmd_exec	./lib/poller.php	 *                                    of the proc_open() and proc_close() functions (php 4.3+)
@@ -678,7 +678,7 @@ header_redirect	./utilities.php			header('Location: utilities.php');
 header_redirect	./utilities.php			header('Location: utilities.php?action=view_poller_cache');
 header_redirect	./utilities.php			header('Location: utilities.php?action=view_snmpagent_cache');
 xml_parse	./cli/genmanifest.php							$xmldata = simplexml_load_string($data);
-xml_parse	./cli/rrdresize.php						$rrd_data = json_decode(json_encode(simplexml_load_string($file_dump)), true);
+xml_parse	./cli/rrdresize.php						$rrd_data = json_decode((string) json_encode(simplexml_load_string($file_dump)), true);
 xml_parse	./install/functions.php				$xmlget = simplexml_load_string($xml);
-xml_parse	./lib/import.php		$xmlget = simplexml_load_string($data);
+xml_parse	./lib/import.php		$xmlget = simplexml_load_string((string) $data);
 xml_parse	./lib/import.php		$xmlget = simplexml_load_string($xml);
