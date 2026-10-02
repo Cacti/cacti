@@ -1,14 +1,14 @@
 Cacti CHANGELOG
 
 1.2.x
--security: Contain data_source_path within the RRA directory (GHSA-9qff-xccr-rrc5)
--security: Harden package import path traversal defenses (GHSA-vp35-4h28-r883)
--security: Stop disabled accounts authenticating and revoke tokens on disable (GHSA-pqrp-v752-mc4f)
--security: Escape graph-item style fields in the RRDtool graph command (GHSA-vq9v-6ggh-phhr)
--security: Prefer base_url over the client Host header for the force_https redirect (GHSA-3466-fp7g-c9rf)
--security: Authorize Data Source enable/disable against the owning device before mutating (GHSA-2fhv-c794-v433)
--security: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating (GHSA-prxj-84qq-v5jq)
--security: Escape template name and dependency path in the Template Import preview (GHSA-xvwr-hvpm-67jw)
+-security#GHSA-9qff-xccr-rrc5: Contain data_source_path within the RRA directory
+-security#GHSA-vp35-4h28-r883: Harden package import path traversal defenses
+-security#GHSA-pqrp-v752-mc4f: Stop disabled accounts authenticating and revoke tokens on disable
+-security#GHSA-vq9v-6ggh-phhr: Escape graph-item style fields in the RRDtool graph command
+-security#GHSA-3466-fp7g-c9rf: Prefer base_url over the client Host header for the force_https redirect
+-security#GHSA-2fhv-c794-v433: Authorize Data Source enable/disable against the owning device before mutating
+-security#GHSA-prxj-84qq-v5jq: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating
+-security#GHSA-xvwr-hvpm-67jw: Escape template name and dependency path in the Template Import preview
 -security: Strip cmd.exe metacharacters from SNMP, script query, and data query arguments on win32
 -security: Strip CR/LF from escape_command to stop rrdtool-protocol injection
 -security: Harden Net-SNMP command execution and SNMP cache processing
