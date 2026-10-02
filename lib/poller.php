@@ -1412,7 +1412,8 @@ function resource_cache_out(string $type, array $path) : void {
 	global $remote_db_cnn_id;
 
 	$settings_path = "md5dirsum_$type";
-	$php_path      = read_config_option('path_php_binary');
+	// Cast before it reaches cacti_escapeshellcmd()'s string parameter; read_config_option() can return null on a fresh install.
+	$php_path      = (string) read_config_option('path_php_binary');
 	$last_md5      = read_config_option($settings_path);
 	$curr_md5      = md5sum_path($path['path'], $path['recursive']);
 
@@ -1471,7 +1472,8 @@ function resource_cache_out(string $type, array $path) : void {
 
 							if ((is_writable($tmpdir) && !file_exists($tmpfile)) || (file_exists($tmpfile) && is_writable($tmpfile))) {
 								if (file_put_contents($tmpfile, $contents) !== false) {
-									$output = system($php_path . ' -l ' . $tmpfile, $exit);
+									// GHSA-4p7f-qcc2-vmx7: path_php_binary is an admin-set value that reaches this shell; escape it like every other consumer.
+									$output = system(cacti_escapeshellcmd($php_path) . ' -l ' . cacti_escapeshellarg($tmpfile), $exit);
 
 									if ($exit == 0) {
 										cacti_log("INFO: Updating '$mypath' from Cache!", false, 'REPLICATE');
