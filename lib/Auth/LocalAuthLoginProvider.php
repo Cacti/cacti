@@ -174,7 +174,15 @@ final class LocalAuthLoginProvider implements CredentialLoginProviderInterface {
 			// runs bcrypt (tens of ms) while the unknown-user path returns immediately,
 			// and the response-time delta lets an attacker enumerate valid usernames.
 			// The verify result is discarded; this fixed hash is tied to no account.
-			compat_password_verify((string) $password, '$2y$10$VWBpVwPd5enH/FIf0bNNxO0d12/V8EZag/sNP.SQqsyYWyOFXvaV.');
+			//
+			// Gate the dummy verify on the same non-empty condition the known-user
+			// path uses: that branch skips compat_password_verify() when the password
+			// is empty, so the dummy verify must skip it too. Otherwise an empty
+			// password would expose a reversed timing distinction (known user fast,
+			// unknown user slow) and still leak username validity.
+			if (trim($password) != '') {
+				compat_password_verify((string) $password, '$2y$10$VWBpVwPd5enH/FIf0bNNxO0d12/V8EZag/sNP.SQqsyYWyOFXvaV.');
+			}
 
 			// error
 			$error     = true;
