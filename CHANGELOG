@@ -1,25 +1,25 @@
 Cacti CHANGELOG
 
 1.3.0-dev
--security: Authorize the target graph before Spike Kill rewrites its RRD history (GHSA-77pr-g949-4v5f)
--security: Reject array-form GET actions that bypass the POST and CSRF guard (GHSA-w3qw-762w-6g9v)
--security: Cast the stored data-query output_type before building the poller cache query (GHSA-xhpr-w454-cc9w)
--security: Escape stored snmp_index values in the New Graphs data-query pivot (GHSA-j3px-vw6r-g25x)
--security: Escape the data-query and field names in the New Graphs parse error messages (GHSA-h745-3r76-g253)
--security: Validate host_id before it is concatenated into the graph_view list and preview filter WHERE clauses (GHSA-r7hc-hrpv-52gf) (#8100) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
--security: Validate and bind local_graph_id in the aggregate graph item sequence query (GHSA-6mjm-5vwr-3fr2) (#8099) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
--security: Grant AllowOverride All in docker/apache.conf so shipped .htaccess denies on log/cache/scripts/cli take effect (GHSA-fxfg-j995-j69j)
--security: Authorize the bulk Change Data Source Profile action against the owning device (GHSA-fc82-w6xq-4jg7)
--security: Authorize Data Source enable/disable against the owning device before mutating (GHSA-2fhv-c794-v433)
--security: Confine Reports format_file to a bare filename to close a path traversal/LFI regression (GHSA-5x27-wqpm-m24v)
--security: Reject ORDER BY sort_column subquery payloads that bypassed the GHSA-q9xg-p762-9jm3 fix (GHSA-8j73-cvf6-jrvx)
--security: Authorize Report save/edit against report ownership to close an authenticated IDOR (GHSA-8f5c-3h59-q7gc)
--security: Stop building the Realtime RRD create command through a shell and validate DS bounds are numeric before they reach it (GHSA-f88m-q789-g22j)
--security: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating (GHSA-prxj-84qq-v5jq)
--security: Authorize single-item Report actions (remove/move) against report ownership to close a guest-bind IDOR (GHSA-j5jh-fhwg-r56x)
--security: Use validate_redirect_url() for the CSRF timeout redirect to close a tab-based open redirect bypass (GHSA-c725-4jm5-9fx5)
--security: Require Package Management permission to trust new package signers (GHSA-gxgm-8rhv-r7jv)
--security: Harden cmd.exe shell sinks and strip %VAR% from hostnames on win32 (GHSA-rjvj-r52f-8v5q) (#8056)
+-security: GHSA-77pr-g949-4v5f Authorize the target graph before Spike Kill rewrites its RRD history
+-security: GHSA-w3qw-762w-6g9v Reject array-form GET actions that bypass the POST and CSRF guard
+-security: GHSA-xhpr-w454-cc9w Cast the stored data-query output_type before building the poller cache query
+-security: GHSA-j3px-vw6r-g25x Escape stored snmp_index values in the New Graphs data-query pivot
+-security: GHSA-h745-3r76-g253 Escape the data-query and field names in the New Graphs parse error messages
+-security: GHSA-r7hc-hrpv-52gf Validate host_id before it is concatenated into the graph_view list and preview filter WHERE clauses (#8100) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
+-security: GHSA-6mjm-5vwr-3fr2 Validate and bind local_graph_id in the aggregate graph item sequence query (#8099) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
+-security: GHSA-fxfg-j995-j69j Grant AllowOverride All in docker/apache.conf so shipped .htaccess denies on log/cache/scripts/cli take effect
+-security: GHSA-fc82-w6xq-4jg7 Authorize the bulk Change Data Source Profile action against the owning device
+-security: GHSA-2fhv-c794-v433 Authorize Data Source enable/disable against the owning device before mutating
+-security: GHSA-5x27-wqpm-m24v Confine Reports format_file to a bare filename to close a path traversal/LFI regression
+-security: GHSA-8j73-cvf6-jrvx Reject ORDER BY sort_column subquery payloads that bypassed the GHSA-q9xg-p762-9jm3 fix
+-security: GHSA-8f5c-3h59-q7gc Authorize Report save/edit against report ownership to close an authenticated IDOR
+-security: GHSA-f88m-q789-g22j Stop building the Realtime RRD create command through a shell and validate DS bounds are numeric before they reach it
+-security: GHSA-prxj-84qq-v5jq Authorize tree node create/delete/move/rename/copy against per-tree access before mutating
+-security: GHSA-j5jh-fhwg-r56x Authorize single-item Report actions (remove/move) against report ownership to close a guest-bind IDOR
+-security: GHSA-c725-4jm5-9fx5 Use validate_redirect_url() for the CSRF timeout redirect to close a tab-based open redirect bypass
+-security: GHSA-gxgm-8rhv-r7jv Require Package Management permission to trust new package signers
+-security: GHSA-rjvj-r52f-8v5q Harden cmd.exe shell sinks and strip %VAR% from hostnames on win32 (#8056)
 -security: Reject SHA-1 signatures across every package import path
 -security: Escape path_dsstats_log before it reaches the dsstats poller shell redirect
 -security: Revoke anonymous access when the guest account is disabled
