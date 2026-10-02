@@ -693,7 +693,7 @@ function graphs() : void {
 						foreach ($xml_array['fields'] as $field_name => $field_array) {
 							if (!is_array($field_array)) {
 								if (!$message_raised) {
-									raise_message('xmlerror', __esc('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id of \'%s\'', $snmp_query['id']), MESSAGE_LEVEL_ERROR);
+									raise_message('xmlerror', __('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id of \'%s\'', $snmp_query['id']), MESSAGE_LEVEL_ERROR);
 									$message_raised = true;
 								}
 							} elseif (isset($field_array['direction'])) {

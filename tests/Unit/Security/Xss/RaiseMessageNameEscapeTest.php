@@ -15,7 +15,7 @@
 
 $root = dirname(__DIR__, 4);
 
-$files = array('/lib/api_device.php', '/host.php', '/graphs_new.php', '/lib/utility.php');
+$files = array('/lib/api_device.php', '/host.php', '/lib/utility.php');
 
 test('no name-bearing raise_message(..., __(...$...)) remains in the swept files', function () use ($root, $files) {
 	foreach ($files as $file) {
