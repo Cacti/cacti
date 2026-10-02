@@ -1,6 +1,6 @@
 /*!
 * screenfull
-* v3.3.3 - 2018-09-04
+* v5.2.0 - 2021-11-03
 * (c) Sindre Sorhus; MIT License
 */
 (function () {
@@ -8,7 +8,6 @@
 
 	var document = typeof window !== 'undefined' && typeof window.document !== 'undefined' ? window.document : {};
 	var isCommonjs = typeof module !== 'undefined' && module.exports;
-	var keyboardAllowed = typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element;
 
 	var fn = (function () {
 		var val;
@@ -32,7 +31,7 @@
 				'webkitfullscreenerror'
 
 			],
-			// Old WebKit (Safari 5.1)
+			// Old WebKit
 			[
 				'webkitRequestFullScreen',
 				'webkitCancelFullScreen',
@@ -83,30 +82,47 @@
 	};
 
 	var screenfull = {
-		request: function (elem) {
-			var request = fn.requestFullscreen;
+		request: function (element, options) {
+			return new Promise(function (resolve, reject) {
+				var onFullScreenEntered = function () {
+					this.off('change', onFullScreenEntered);
+					resolve();
+				}.bind(this);
 
-			elem = elem || document.documentElement;
+				this.on('change', onFullScreenEntered);
 
-			// Work around Safari 5.1 bug: reports support for
-			// keyboard in fullscreen even though it doesn't.
-			// Browser sniffing, since the alternative with
-			// setTimeout is even worse.
-			if (/ Version\/5\.1(?:\.\d+)? Safari\//.test(navigator.userAgent)) {
-				elem[request]();
-			} else {
-				elem[request](keyboardAllowed ? Element.ALLOW_KEYBOARD_INPUT : {});
-			}
+				element = element || document.documentElement;
+
+				var returnPromise = element[fn.requestFullscreen](options);
+
+				if (returnPromise instanceof Promise) {
+					returnPromise.then(onFullScreenEntered).catch(reject);
+				}
+			}.bind(this));
 		},
 		exit: function () {
-			document[fn.exitFullscreen]();
+			return new Promise(function (resolve, reject) {
+				if (!this.isFullscreen) {
+					resolve();
+					return;
+				}
+
+				var onFullScreenExit = function () {
+					this.off('change', onFullScreenExit);
+					resolve();
+				}.bind(this);
+
+				this.on('change', onFullScreenExit);
+
+				var returnPromise = document[fn.exitFullscreen]();
+
+				if (returnPromise instanceof Promise) {
+					returnPromise.then(onFullScreenExit).catch(reject);
+				}
+			}.bind(this));
 		},
-		toggle: function (elem) {
-			if (this.isFullscreen) {
-				this.exit();
-			} else {
-				this.request(elem);
-			}
+		toggle: function (element, options) {
+			return this.isFullscreen ? this.exit() : this.request(element, options);
 		},
 		onchange: function (callback) {
 			this.on('change', callback);
@@ -131,9 +147,9 @@
 
 	if (!fn) {
 		if (isCommonjs) {
-			module.exports = false;
+			module.exports = {isEnabled: false};
 		} else {
-			window.screenfull = false;
+			window.screenfull = {isEnabled: false};
 		}
 
 		return;
@@ -151,7 +167,7 @@
 				return document[fn.fullscreenElement];
 			}
 		},
-		enabled: {
+		isEnabled: {
 			enumerable: true,
 			get: function () {
 				// Coerce to boolean in case of old WebKit
