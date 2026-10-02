@@ -49,7 +49,6 @@ Cacti CHANGELOG
 -security#8008: Harden - Demand TLS certificates for new LDAP installs
 -security#8008: Harden - Restore the Cacti error handler on LDAP bind-only and empty-password paths
 -security#7972: Harden - Harden CLI shell arguments, database credentials, and temporary RRD files
--security#7912: Harden - Update bundled DOMPurify to 3.4.14
 -security#7847: Harden - Revoke anonymous access when the guest account is disabled
 -security#7847: Harden - Cast graph and device ids to int in get_allowed_* permission filters
 -security#7847: Harden - Set the Secure session cookie behind a trusted TLS-terminating proxy
@@ -147,6 +146,7 @@ Cacti CHANGELOG
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
 -feature#8032: Update phpseclib to version 4.0.1
 -feature#7887: Update bundled jQuery UI to 1.14.2 and jQuery Tablesorter to 2.31.3
+-feature: Update bundled DOMPurify to 3.4.16
 
 1.2.31
 -security#GHSA-23g4-vf2j-94w4: CVE-2026-39894 RRDtool metric shift via LC_NUMERIC locale comma decimal formatting
