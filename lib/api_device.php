@@ -1000,7 +1000,7 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 		$save['snmp_priv_passphrase'] = preg_replace('/[\x00-\x1f\x7f]/', '', form_input_validate($snmp_priv_passphrase, 'snmp_priv_passphrase', '', true, 3));
 		$save['snmp_priv_protocol']   = form_input_validate($snmp_priv_protocol, 'snmp_priv_protocol', "^(?:\[None\]|DES|AES|AES128|AES192|AES192C|AES256|AES256C)$", true, 3);
 		$save['snmp_context']         = preg_replace('/[\x00-\x1f\x7f]/', '', form_input_validate($snmp_context, 'snmp_context', '', true, 3));
-		$save['snmp_engine_id']       = form_input_validate($snmp_engine_id, 'snmp_engine_id', '', true, 3);
+		$save['snmp_engine_id']       = preg_replace('/[\x00-\x1f\x7f]/', '', form_input_validate($snmp_engine_id, 'snmp_engine_id', '', true, 3));
 
 		if (strlen($save['snmp_password']) < 8 && $snmp_auth_protocol != '[None]') {
 			raise_message(32);

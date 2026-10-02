@@ -41,7 +41,11 @@ test('rrdtool_create_error_image validates the theme (GHSA-mpfm)', function () u
 
 test('SNMPv3 credential fields strip control characters (GHSA-m3fh)', function () use ($root) {
 	$s = file_get_contents($root . '/lib/api_device.php');
-	expect($s)->toContain('[\x00-\x1f\x7f]');
+
+	// Every credential field that reaches the net-snmp command line must be stripped, including snmp_engine_id (-e).
+	foreach (['snmp_community', 'snmp_username', 'snmp_password', 'snmp_priv_passphrase', 'snmp_context', 'snmp_engine_id'] as $field) {
+		expect($s)->toContain("preg_replace('/[\\x00-\\x1f\\x7f]/', '', form_input_validate(\$$field");
+	}
 });
 
 test('nopassword change revokes the server-side remember-me row (GHSA-cg45)', function () use ($root) {
@@ -54,8 +58,19 @@ test('remember-me token check enforces a retention window (GHSA-xq26)', function
 	expect($s)->toContain('AND last_update >= DATE_SUB(NOW(), INTERVAL 90 DAY)');
 });
 
-test('imported data-query xml_path is confined to the Cacti tree (GHSA-m67r)', function () use ($root) {
+test('imported data-query xml_path is confined by a lexical gate before canonicalization (GHSA-m67r)', function () use ($root) {
 	$s = file_get_contents($root . '/lib/import.php');
-	expect($s)->toContain('$contained')
-		->and($s)->toContain('realpath($config[');
+
+	// The lexical prefix/traversal gate must exist...
+	expect($s)->toContain('$lexically_contained')
+		->and($s)->toContain("strpos(\$path_norm, \$base_norm . '/') === 0")
+		->and($s)->toContain("strpos(\$path_norm, '/../') === false");
+
+	// ...and it must run before realpath() dereferences the attacker path, so a UNC path cannot be probed first.
+	$gate_pos     = strpos($s, '$lexically_contained =');
+	$realpath_pos = strpos($s, 'realpath($path)');
+
+	expect($gate_pos)->not->toBeFalse()
+		->and($realpath_pos)->not->toBeFalse()
+		->and($gate_pos)->toBeLessThan($realpath_pos);
 });

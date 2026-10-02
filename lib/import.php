@@ -1557,16 +1557,30 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 		$path = str_replace('<path_cacti>', $config['base_path'], $save['xml_path']);
 
 		// GHSA-m67r-fcmw-gvv7: confine the imported path to the Cacti tree so it cannot probe arbitrary files.
+		// Resolve only the trusted base; a lexical prefix/traversal check gates the attacker value so
+		// realpath() never touches a UNC/remote path (which on Windows would initiate SMB access) before containment is proven.
 		$allowed_base = realpath($config['base_path']);
-		$resolved     = realpath($path);
-		$contained    = ($allowed_base !== false && $resolved !== false && strpos(str_replace('\\', '/', $resolved), str_replace('\\', '/', $allowed_base) . '/') === 0);
+		$base_norm    = ($allowed_base !== false) ? str_replace('\\', '/', $allowed_base) : false;
+		$path_norm    = str_replace('\\', '/', $path);
 
-		if (!$contained) {
+		$lexically_contained = ($base_norm !== false
+			&& strpos($path_norm, $base_norm . '/') === 0
+			&& strpos($path_norm, '/../') === false
+			&& substr($path_norm, -3) !== '/..');
+
+		if (!$lexically_contained) {
 			$files[$path] = 'missing';
-		} elseif (!is_readable($resolved)) {
-			$files[$path] = 'notreadable';
 		} else {
-			$files[$path] = 'found';
+			// Candidate is lexically inside the tree; canonicalize now to catch symlink escapes.
+			$resolved = realpath($path);
+
+			if ($resolved === false || strpos(str_replace('\\', '/', $resolved) . '/', $base_norm . '/') !== 0) {
+				$files[$path] = 'missing';
+			} elseif (!is_readable($resolved)) {
+				$files[$path] = 'notreadable';
+			} else {
+				$files[$path] = 'found';
+			}
 		}
 	}
 
