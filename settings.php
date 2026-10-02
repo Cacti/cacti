@@ -100,7 +100,11 @@ case 'save':
 			} else {
 				$continue = true;
 
-				if ($field_name == 'path_cactilog' || $field_name == 'path_stderrlog') {
+				// path_boost_log is optional and defaults to blank; only enforce the
+				// .log extension when a value was supplied so saving Boost settings
+				// with debug logging disabled does not raise a false error (GHSA-m6wx-f538-m6q3)
+				if ($field_name == 'path_cactilog' || $field_name == 'path_stderrlog' ||
+					($field_name == 'path_boost_log' && get_nfilter_request_var($field_name) != '')) {
 					$extension = pathinfo(get_nfilter_request_var($field_name), PATHINFO_EXTENSION);
 
 					if ($extension != 'log') {
