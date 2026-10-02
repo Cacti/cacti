@@ -394,7 +394,7 @@ function reports_form_save() : void {
 
 			if ($regex_valid !== true) {
 				$_SESSION[SESS_ERROR_FIELDS]['graph_name_regexp'] = 3;
-				raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', htmle((string) $save['graph_name_regexp']), htmle((string) $regex_valid)), MESSAGE_LEVEL_ERROR);
+				raise_message('custom', __esc('The regular expression "%s" is not valid. Error is %s', htmle((string) $save['graph_name_regexp']), htmle((string) $regex_valid)), MESSAGE_LEVEL_ERROR);
 			}
 		}
 		$save['site_id']           = (isrv('site_id') ? form_input_validate(gnrv('site_id'), 'site_id', '^[-0-9]+$', true, 3) : 0);

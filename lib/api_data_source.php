@@ -564,10 +564,10 @@ function api_data_source_change_host(array $data_sources, int $device_id) : void
 					if (($old_rcnn_id = poller_push_to_remote_db_connect($old_poller_id, true)) !== false) {
 						poller_item_delete_for_data_source($data_source, $old_rcnn_id, false);
 					} else {
-						raise_message('poller_down_' . $old_poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $old_poller_id), MESSAGE_LEVEL_WARN);
+						raise_message('poller_down_' . $old_poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $old_poller_id), MESSAGE_LEVEL_WARN);
 					}
 				} else {
-					raise_message('poller_down_' . $old_poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $old_poller_id), MESSAGE_LEVEL_WARN);
+					raise_message('poller_down_' . $old_poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $old_poller_id), MESSAGE_LEVEL_WARN);
 				}
 			}
 

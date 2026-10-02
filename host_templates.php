@@ -270,7 +270,7 @@ function form_actions() : void {
 
 						db_execute_prepared('DELETE FROM host_template_archive WHERE id = ?', [$id]);
 
-						raise_message('archives_removed_' . $id, __('The Device Template Archive %s has been removed.', $name), MESSAGE_LEVEL_INFO);
+						raise_message('archives_removed_' . $id, __esc('The Device Template Archive %s has been removed.', $name), MESSAGE_LEVEL_INFO);
 					}
 				} elseif (gnrv('drp_action') == 2) {
 					top_header();

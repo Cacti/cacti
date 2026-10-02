@@ -128,8 +128,11 @@ function debug(string $message) : void {
 function remote_client_authorized() : bool {
 	global $poller_db_cnn_id, $remote_agent_whitelist;
 
-	// don't allow to run from the command line
-	$client_addr = get_client_addr();
+	// GHSA-h96j-8xhc-2p3w: authorize on the genuine TCP peer, not get_client_addr(),
+	// which honours client-settable proxy headers (X-Forwarded-For, etc.). A remote
+	// data collector connects directly, so a forwarded header must never decide this
+	// check. A proxied deployment must list the proxy's own address as a poller.
+	$client_addr = $_SERVER['REMOTE_ADDR'] ?? false;
 
 	if ($client_addr === false) {
 		return false;

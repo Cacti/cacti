@@ -144,7 +144,9 @@ if ($auth_method == AUTH_METHOD_BASIC && !isset($_SESSION[SESS_USER_ID])) {
 				VALUES (?, ?, 1, ?, NOW())',
 				[$username, $current_user['id'], $_SESSION[SESS_CLIENT_ADDR]]);
 
-			return true;
+			// GHSA-4rmr-wvjq-qxc2: fall through to the per-page realm check below
+			// instead of returning, so a Basic Auth login still has its
+			// authorization verified for the requested page.
 		} else {
 			require_once(CACTI_PATH_BASE . '/auth_login.php');
 		}
@@ -199,7 +201,9 @@ if (isset($guest_account)) {
 			WHERE id = ?',
 			[$_SESSION[SESS_USER_ID]]);
 
-		return true;
+		// GHSA-4rmr-wvjq-qxc2: fall through to the per-page realm check below
+		// instead of returning, so the guest account's access to this page is
+		// authorized rather than assumed.
 	}
 }
 

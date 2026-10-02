@@ -158,6 +158,15 @@ $fields_user_group_edit = [
 ];
 
 if (isrv('update_policy')) {
+	// GHSA-j67j-wpm4-9g3x: update_policy is read before the action dispatcher, so
+	// the global.php GET/CSRF denylist cannot cover it. Require a CSRF-token POST
+	// before rewriting the group's permission policy.
+	if (!isset($_POST['__csrf_magic'])) {
+		header('Allow: POST');
+		http_response_code(405);
+		exit;
+	}
+
 	update_policies();
 } else {
 	switch (grv('action')) {

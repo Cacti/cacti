@@ -164,14 +164,14 @@ if (isrv('plugin')) {
 	$display_action = ucwords(str_replace('_', ' ', $action));
 
 	if (!in_array($plugin, $pluginslist, true) && !in_array($action, $safe_actions, true)) {
-		raise_message('invalid_plugin', __('The action \'%s\' on Plugin \'%s\' can not be performed due to the Plugin in it\'s current state.', $display_action, $plugin), MESSAGE_LEVEL_ERROR);
+		raise_message('invalid_plugin', __esc('The action \'%s\' on Plugin \'%s\' can not be performed due to the Plugin in it\'s current state.', $display_action, $plugin), MESSAGE_LEVEL_ERROR);
 		header('Location: plugins.php');
 
 		exit;
 	}
 
 	if (in_array($plugin, $plugins_integrated, true)) {
-		raise_message('invalid_plugin_action', __('The action \'%s\' \'%s\' on Plugin \'%s\' can not be taken as the Plugin is integrated.', $display_action, $plugin), MESSAGE_LEVEL_ERROR);
+		raise_message('invalid_plugin_action', __esc('The action \'%s\' \'%s\' on Plugin \'%s\' can not be taken as the Plugin is integrated.', $display_action, $plugin), MESSAGE_LEVEL_ERROR);
 		header('Location: plugins.php');
 
 		exit;
@@ -267,7 +267,7 @@ switch($action) {
 		   depended-upon plugin (which would run its uninstall hook and drop its
 		   tables without the intended confirmation). */
 		if (is_dir(CACTI_PATH_PLUGINS . '/' . $plugin)) {
-			raise_message('force_remove_present', __('Plugin \'%s\' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead.', $plugin), MESSAGE_LEVEL_ERROR);
+			raise_message('force_remove_present', __esc('Plugin \'%s\' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead.', $plugin), MESSAGE_LEVEL_ERROR);
 
 			header('Location: plugins.php');
 
@@ -281,7 +281,7 @@ switch($action) {
 			['%' . $plugin . '%']);
 
 		if ($required != '') {
-			raise_message('force_remove_required', __('Plugin \'%s\' can not be Force Uninstalled because it is still required by: \'%s\'', $plugin, ucfirst($required)), MESSAGE_LEVEL_ERROR);
+			raise_message('force_remove_required', __esc('Plugin \'%s\' can not be Force Uninstalled because it is still required by: \'%s\'', $plugin, ucfirst($required)), MESSAGE_LEVEL_ERROR);
 
 			header('Location: plugins.php');
 
@@ -328,9 +328,9 @@ switch($action) {
 				WHERE directory = ?',
 				[$plugin]);
 
-			raise_message('plugin_good', __('Plugin \'%s\' has passed it\'s Configuration Check test and can not be Installed', $plugin), MESSAGE_LEVEL_INFO);
+			raise_message('plugin_good', __esc('Plugin \'%s\' has passed it\'s Configuration Check test and can not be Installed', $plugin), MESSAGE_LEVEL_INFO);
 		} elseif ($response === null) {
-			raise_message('plugin_good', __('Plugin \'%s\' Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update.', $plugin), MESSAGE_LEVEL_WARN);
+			raise_message('plugin_good', __esc('Plugin \'%s\' Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update.', $plugin), MESSAGE_LEVEL_WARN);
 		}
 
 		header('Location: plugins.php');

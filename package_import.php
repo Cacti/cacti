@@ -214,7 +214,7 @@ function form_actions() : void {
 
 						if (!is_dir($tmp_dir)) {
 							if (!mkdir($tmp_dir, 0777, true)) {
-								raise_message('tmpdir_fail', __('Unable to create package temporary directory %s.', $tmp_dir), MESSAGE_LEVEL_ERROR);
+								raise_message('tmpdir_fail', __esc('Unable to create package temporary directory %s.', $tmp_dir), MESSAGE_LEVEL_ERROR);
 
 								header('Location: package_import.php?package_location=' . $package_location);
 
@@ -230,9 +230,9 @@ function form_actions() : void {
 
 						if ($data !== false && cacti_sizeof($data[0])) {
 							import_display_results($data[0], [], true, true);
-							raise_message('import_success_' . md5($xmlfile), __('The Package %s Imported Successfully', $name), MESSAGE_LEVEL_INFO);
+							raise_message('import_success_' . md5($xmlfile), __esc('The Package %s Imported Successfully', $name), MESSAGE_LEVEL_INFO);
 						} else {
-							raise_message('import_fail_' . md5($xmlfile), __('The Package %s Import Failed', $name), MESSAGE_LEVEL_ERROR);
+							raise_message('import_fail_' . md5($xmlfile), __esc('The Package %s Import Failed', $name), MESSAGE_LEVEL_ERROR);
 						}
 
 						unlink($xmlfile);
@@ -600,9 +600,9 @@ function form_save() : void {
 			import_display_package_data($templates, $files, $package_name, $xmlfile, $data, false);
 		} else {
 			if ($data !== false) {
-				raise_message('import_success_' . md5($xmlfile), __('The Package %s Imported Successfully', $package_name), MESSAGE_LEVEL_INFO);
+				raise_message('import_success_' . md5($xmlfile), __esc('The Package %s Imported Successfully', $package_name), MESSAGE_LEVEL_INFO);
 			} else {
-				raise_message('import_fail_' . md5($xmlfile), __('The Package %s Import Failed', $package_name), MESSAGE_LEVEL_ERROR);
+				raise_message('import_fail_' . md5($xmlfile), __esc('The Package %s Import Failed', $package_name), MESSAGE_LEVEL_ERROR);
 			}
 
 			unlink($xmlfile);
@@ -940,7 +940,7 @@ function package_accept_key() : void {
 
 					unlink($xmlfile);
 				} else {
-					raise_message('repo_missing', __('The Repo \'%s\' is NOT Reachable at the URL Location or the package.manifest file is missing.', $repo['name']), MESSAGE_LEVEL_WARN);
+					raise_message('repo_missing', __esc('The Repo \'%s\' is NOT Reachable at the URL Location or the package.manifest file is missing.', $repo['name']), MESSAGE_LEVEL_WARN);
 					header('Location: package_import.php');
 
 					exit;
@@ -2019,7 +2019,7 @@ function get_repo_file(string $repo_id, string $filename = 'package.manifest', b
 			}
 
 			if (!$javascript) {
-				raise_message('repo_missing', __('The Repo \'%s\' is NOT Reachable at the URL Location or the package.manifest file is missing.', $repo['name']), MESSAGE_LEVEL_ERROR);
+				raise_message('repo_missing', __esc('The Repo \'%s\' is NOT Reachable at the URL Location or the package.manifest file is missing.', $repo['name']), MESSAGE_LEVEL_ERROR);
 			}
 		} else { // Server Directory
 			$file = $repo['repo_location'] . '/' . $filename;
@@ -2032,10 +2032,10 @@ function get_repo_file(string $repo_id, string $filename = 'package.manifest', b
 				}
 
 				if (!$javascript) {
-					raise_message('repo_exists', __('The Repo \'%s\' is Reachable on the Local Cacti Server.  But not data returned from the manifest file.', $repo['name']), MESSAGE_LEVEL_ERROR);
+					raise_message('repo_exists', __esc('The Repo \'%s\' is Reachable on the Local Cacti Server.  But not data returned from the manifest file.', $repo['name']), MESSAGE_LEVEL_ERROR);
 				}
 			} elseif (!$javascript) {
-				raise_message('repo_missing', __('The Repo \'%s\' is NOT Reachable on the Local Cacti Server or the package.manifest file is missing.', $repo['name']), MESSAGE_LEVEL_ERROR);
+				raise_message('repo_missing', __esc('The Repo \'%s\' is NOT Reachable on the Local Cacti Server or the package.manifest file is missing.', $repo['name']), MESSAGE_LEVEL_ERROR);
 			}
 		}
 	}

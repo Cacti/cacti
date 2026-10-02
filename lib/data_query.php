@@ -555,10 +555,10 @@ function data_query_remove_disabled_items(array $orphaned_ids) : void {
 						if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 							poller_item_delete_for_data_source($orphaned_ids, $rcnn_id, false);
 						} else {
-							raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+							raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 						}
 					} else {
-						raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+						raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 					}
 				}
 			}
@@ -2953,7 +2953,7 @@ function api_data_query_errors(int $snmp_query_graph_id, array $post) : bool {
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $ds) {
 			if (!isset($post['dsdt_' . $ds['data_template_id'] . '_' . $ds['id'] . '_check'])) {
-				raise_message('mapping_error', __('You must select an XML output column for Data Source \'%s\' and toggle the checkbox to its right', $ds['data_source_name']), MESSAGE_LEVEL_ERROR);
+				raise_message('mapping_error', __esc('You must select an XML output column for Data Source \'%s\' and toggle the checkbox to its right', $ds['data_source_name']), MESSAGE_LEVEL_ERROR);
 
 				$errors = true;
 			}

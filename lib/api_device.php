@@ -55,7 +55,7 @@ function api_device_remove(int $device_id) : void {
 	object_cache_get_totals('device_delete', $device_id);
 
 	if (!db_begin_transaction()) {
-		raise_message('device_remove_failed_' . $device_id, __('Unable to remove Device %s because a database transaction could not be started.', $device_id), MESSAGE_LEVEL_ERROR);
+		raise_message('device_remove_failed_' . $device_id, __esc('Unable to remove Device %s because a database transaction could not be started.', $device_id), MESSAGE_LEVEL_ERROR);
 
 		return;
 	}
@@ -78,7 +78,7 @@ function api_device_remove(int $device_id) : void {
 
 		if ($remaining_graphs === false || $remaining_graphs > 0) {
 			db_rollback_transaction();
-			raise_message('device_graph_remove_failed_' . $device_id, __('Unable to remove Device %s because Graph cleanup did not complete.', $device_id), MESSAGE_LEVEL_ERROR);
+			raise_message('device_graph_remove_failed_' . $device_id, __esc('Unable to remove Device %s because Graph cleanup did not complete.', $device_id), MESSAGE_LEVEL_ERROR);
 
 			return;
 		}
@@ -99,7 +99,7 @@ function api_device_remove(int $device_id) : void {
 	foreach ($cleanup_queries as [$sql, $params]) {
 		if (db_execute_prepared($sql, $params) === false) {
 			db_rollback_transaction();
-			raise_message('device_remove_failed_' . $device_id, __('Unable to remove Device %s because dependent database cleanup failed.', $device_id), MESSAGE_LEVEL_ERROR);
+			raise_message('device_remove_failed_' . $device_id, __esc('Unable to remove Device %s because dependent database cleanup failed.', $device_id), MESSAGE_LEVEL_ERROR);
 
 			return;
 		}
@@ -113,14 +113,14 @@ function api_device_remove(int $device_id) : void {
 
 	if ($removed === false) {
 		db_rollback_transaction();
-		raise_message('device_remove_failed_' . $device_id, __('Unable to remove Device %s because its primary database record could not be updated.', $device_id), MESSAGE_LEVEL_ERROR);
+		raise_message('device_remove_failed_' . $device_id, __esc('Unable to remove Device %s because its primary database record could not be updated.', $device_id), MESSAGE_LEVEL_ERROR);
 
 		return;
 	}
 
 	if (!db_commit_transaction()) {
 		db_rollback_transaction();
-		raise_message('device_remove_failed_' . $device_id, __('Unable to remove Device %s because its database transaction could not be committed.', $device_id), MESSAGE_LEVEL_ERROR);
+		raise_message('device_remove_failed_' . $device_id, __esc('Unable to remove Device %s because its database transaction could not be committed.', $device_id), MESSAGE_LEVEL_ERROR);
 
 		return;
 	}
@@ -178,10 +178,10 @@ function api_device_purge_from_remote(array|int $device_ids, int $poller_id = 0)
 				db_execute('DELETE FROM data_local       WHERE ' . db_in_clause('host_id', $int_device_ids), true, $rcnn_id);
 				db_execute('DELETE FROM graph_local      WHERE ' . db_in_clause('host_id', $int_device_ids), true, $rcnn_id);
 			} else {
-				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+				raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 			}
 		} else {
-			raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+			raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 		}
 
 		foreach ($device_ids as $id) {
@@ -405,11 +405,11 @@ function api_device_disable_devices(array $device_ids) : void {
 						AND (deleted = '' OR (deleted = 'on' AND disabled = ''))",
 						[$device_id], true, $rcnn_id);
 				} elseif (!isset($raised[$poller_id])) {
-					raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 					$raised[$poller_id] = true;
 				}
 			} elseif (!isset($raised[$poller_id])) {
-				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+				raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 				$raised[$poller_id] = true;
 			}
 		}
@@ -453,11 +453,11 @@ function api_device_enable_devices(array $device_ids) : void {
 						WHERE host_id = ?',
 						[$device_id], '', true, $rcnn_id);
 				} elseif (!isset($raised[$poller_id])) {
-					raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 					$raised[$poller_id] = true;
 				}
 			} elseif (!isset($raised[$poller_id])) {
-				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+				raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 
 				$raised[$poller_id] = true;
 			}
@@ -500,11 +500,11 @@ function api_device_enable_devices(array $device_ids) : void {
 				if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
 					poller_push_reindex_data_to_poller($device_id, 0, true, $rcnn_id);
 				} elseif (!isset($raised[$poller_id])) {
-					raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 					$raised[$poller_id] = true;
 				}
 			} elseif (!isset($raised[$poller_id])) {
-				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+				raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 				$raised[$poller_id] = true;
 			}
 		}
@@ -568,11 +568,11 @@ function api_device_change_options(array $device_ids, array $post) : void {
 								AND deleted = ''",
 								[gnrv($field_name), $device_id], true, $rcnn_id);
 						} elseif (!isset($raised[$poller_id])) {
-							raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+							raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 							$raised[$poller_id] = true;
 						}
 					} elseif (!isset($raised[$poller_id])) {
-						raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+						raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 						$raised[$poller_id] = true;
 					}
 				}
@@ -617,11 +617,11 @@ function api_device_clear_statistics(array $device_ids) : void {
 						AND deleted = ''",
 						[$device_id], true, $rcnn_id);
 				} elseif (!isset($raised[$poller_id])) {
-					raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 					$raised[$poller_id] = true;
 				}
 			} elseif (!isset($raised[$poller_id])) {
-				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+				raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 				$raised[$poller_id] = true;
 			}
 		}
@@ -674,10 +674,10 @@ function api_device_dq_add(int $device_id, int $data_query_id, string $reindex_m
 					VALUES (?, ?, ?)',
 					[$device_id, $data_query_id, $reindex_method], true, $rcnn_id);
 			} else {
-				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+				raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 			}
 		} else {
-			raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+			raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 		}
 	}
 
@@ -728,10 +728,10 @@ function api_device_dq_remove(int $device_id, int $data_query_id) : void {
 					AND host_id = ?',
 					[$data_query_id, $device_id], true, $rcnn_id);
 			} else {
-				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+				raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 			}
 		} else {
-			raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+			raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 		}
 	}
 }
@@ -771,10 +771,10 @@ function api_device_dq_change(int $device_id, int $data_query_id, string $reinde
 					WHERE data_query_id = ?
 					AND host_id = ?', [$data_query_id, $device_id], true, $rcnn_id);
 			} else {
-				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+				raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 			}
 		} else {
-			raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+			raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 		}
 	}
 
@@ -806,10 +806,10 @@ function api_device_gt_remove(int $device_id, int $graph_template_id) : void {
 					AND host_id = ?',
 					[$graph_template_id, $device_id], true, $rcnn_id);
 			} else {
-				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+				raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 			}
 		} else {
-			raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+			raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 		}
 	}
 }
@@ -1162,7 +1162,7 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 				if (remote_poller_up($previous_poller)) {
 					api_device_purge_from_remote($device_id, $previous_poller);
 				} else {
-					raise_message('poller_down_' . $save['id'], __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $previous_poller), MESSAGE_LEVEL_WARN);
+					raise_message('poller_down_' . $save['id'], __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $previous_poller), MESSAGE_LEVEL_WARN);
 					$raised = true;
 				}
 			}
@@ -1175,11 +1175,11 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 						$save['id'] = $device_id;
 						sql_save($save, 'host', 'id', true, $rcnn_id);
 					} elseif (!$raised) {
-						raise_message('poller_down_' . $save['id'], __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+						raise_message('poller_down_' . $save['id'], __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 						$raised = true;
 					}
 				} elseif (!$raised) {
-					raise_message('poller_down_' . $save['id'], __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					raise_message('poller_down_' . $save['id'], __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 					$raised = true;
 				}
 			}
@@ -1212,10 +1212,10 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 								WHERE host_id = ?',
 								[$device_id], true, $rcnn_id);
 						} elseif (!$raised) {
-							raise_message('poller_down_' . $save['id'], __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+							raise_message('poller_down_' . $save['id'], __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 						}
 					} elseif (!$raised) {
-						raise_message('poller_down_' . $save['id'], __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+						raise_message('poller_down_' . $save['id'], __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 					}
 				}
 			}
@@ -1407,11 +1407,11 @@ function api_device_update_host_template(int $device_id, int $device_template_id
 					AND deleted = ""',
 					[$device_template_id, $device_id], true, $rcnn_id);
 			} elseif (!isset($raised[$poller_id])) {
-				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+				raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 				$raised[$poller_id] = true;
 			}
 		} elseif (!isset($raised[$poller_id])) {
-			raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+			raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 			$raised[$poller_id] = true;
 		}
 	}
@@ -1438,11 +1438,11 @@ function api_device_update_host_template(int $device_id, int $device_template_id
 							VALUES (?, ?, ?)',
 							[$device_id, $snmp_query['snmp_query_id'], read_config_option('reindex_method')], true, $rcnn_id);
 					} elseif ($raised[$poller_id]) {
-						raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+						raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 						$raised[$poller_id] = true;
 					}
 				} elseif (!isset($raised[$poller_id])) {
-					raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 					$raised[$poller_id] = true;
 				}
 			}
@@ -1474,11 +1474,11 @@ function api_device_update_host_template(int $device_id, int $device_template_id
 							VALUES (?, ?)',
 							[$device_id, $graph_template['graph_template_id']], true, $rcnn_id);
 					} elseif (!isset($raised[$poller_id])) {
-						raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+						raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 						$raised[$poller_id] = true;
 					}
 				} elseif (!isset($raised[$poller_id])) {
-					raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 					$raised[$poller_id] = true;
 				}
 			}
@@ -1530,11 +1530,11 @@ function api_device_update_host_template(int $device_id, int $device_template_id
 							AND graph_template_id = ?',
 							[$device_id, $unused_graph_template['id']], true, $rcnn_id);
 					} elseif (!isset($raised[$poller_id])) {
-						raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+						raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 						$raised[$poller_id] = true;
 					}
 				} elseif (!isset($raised[$poller_id])) {
-					raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					raise_message('poller_down_' . $poller_id, __esc('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 					$raised[$poller_id] = true;
 				}
 			}
@@ -3393,17 +3393,17 @@ function api_device_template_archive_for_export(int $id) : mixed {
 
 				return $output;
 			} else {
-				raise_message("package_error_$id", __('Unable to find Package file for Device Template: %s.', $info['name']), MESSAGE_LEVEL_ERROR);
+				raise_message("package_error_$id", __esc('Unable to find Package file for Device Template: %s.', $info['name']), MESSAGE_LEVEL_ERROR);
 
 				return false;
 			}
 		} else {
-			raise_message("export_failed_$id", __('The Export Failed for %s!.  Check the Cacti Log for details', $info['name']), MESSAGE_LEVEL_ERROR);
+			raise_message("export_failed_$id", __esc('The Export Failed for %s!.  Check the Cacti Log for details', $info['name']), MESSAGE_LEVEL_ERROR);
 
 			return false;
 		}
 	} else {
-		raise_message("export_failed_$id", __('Export Could not find the Device Template with the ID %s!.  Check the Cacti Log for details', $id), MESSAGE_LEVEL_ERROR);
+		raise_message("export_failed_$id", __esc('Export Could not find the Device Template with the ID %s!.  Check the Cacti Log for details', $id), MESSAGE_LEVEL_ERROR);
 
 		return false;
 	}
@@ -3495,22 +3495,22 @@ function api_device_template_archive(int $id, string $archive_note) : bool {
 					]
 				);
 
-				raise_message("package_success_$id", __('The Device Template %s was Archived Successfully.', $info['name']), MESSAGE_LEVEL_INFO);
+				raise_message("package_success_$id", __esc('The Device Template %s was Archived Successfully.', $info['name']), MESSAGE_LEVEL_INFO);
 				unlink($package_file);
 
 				return true;
 			} else {
-				raise_message("package_error_$id", __('Unable to find Package file for Device Template: %s.', $info['name']), MESSAGE_LEVEL_ERROR);
+				raise_message("package_error_$id", __esc('Unable to find Package file for Device Template: %s.', $info['name']), MESSAGE_LEVEL_ERROR);
 
 				return false;
 			}
 		} else {
-			raise_message("export_failed_$id", __('The Export Failed for %s!.  Check the Cacti Log for details', $info['name']), MESSAGE_LEVEL_ERROR);
+			raise_message("export_failed_$id", __esc('The Export Failed for %s!.  Check the Cacti Log for details', $info['name']), MESSAGE_LEVEL_ERROR);
 
 			return false;
 		}
 	} else {
-		raise_message("export_failed_$id", __('Export Could not find the Device Template with the ID %s!.  Check the Cacti Log for details', $id), MESSAGE_LEVEL_ERROR);
+		raise_message("export_failed_$id", __esc('Export Could not find the Device Template with the ID %s!.  Check the Cacti Log for details', $id), MESSAGE_LEVEL_ERROR);
 
 		return false;
 	}

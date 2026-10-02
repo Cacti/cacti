@@ -444,7 +444,7 @@ function process_paths(string $line, array $files, bool $raise_message) : array 
 	if (cacti_sizeof($paths['missing_paths'])) {
 		if ($raise_message) {
 			foreach ($paths['missing_paths'] as $p) {
-				raise_message('missing_' . $p['file'], __('A Critical Template file \'%s\' is missing.  Please locate this file before packaging', $p['file']), MESSAGE_LEVEL_ERROR);
+				raise_message('missing_' . $p['file'], __esc('A Critical Template file \'%s\' is missing.  Please locate this file before packaging', $p['file']), MESSAGE_LEVEL_ERROR);
 			}
 		}
 	}

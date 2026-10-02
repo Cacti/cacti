@@ -956,7 +956,7 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 
 		if ($value === false) {
 			if ($filter == FILTER_VALIDATE_IS_REGEX) {
-				raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', htmle((string) get_nfilter_request_var($name)), htmle((string) $custom_error)), MESSAGE_LEVEL_ERROR);
+				raise_message('custom', __esc('The regular expression "%s" is not valid. Error is %s', htmle((string) get_nfilter_request_var($name)), htmle((string) $custom_error)), MESSAGE_LEVEL_ERROR);
 				set_request_var($name, '');
 			} else {
 				die_html_input_error($name, get_nfilter_request_var($name));
