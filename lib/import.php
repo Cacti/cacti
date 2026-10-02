@@ -1693,7 +1693,7 @@ function xml_to_data_query(string $hash, array &$xml_array, array &$hash_cache, 
 	}
 
 	if (isset($save['xml_path'])) {
-		$path = str_replace('<path_cacti>', CACTI_PATH_BASE, $save['xml_path']);
+		$path = str_replace('<path_cacti>', CACTI_PATH_BASE, (string) $save['xml_path']);
 
 		// GHSA-m67r-fcmw-gvv7: confine the imported path to the Cacti tree so it cannot probe arbitrary files.
 		// Resolve only the trusted base; a lexical prefix/traversal check gates the attacker value so

@@ -1272,9 +1272,9 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
 				if ($j > 0) {
 					$repl .= '<br>';
 					// GHSA-f7jw-gfhr-cxwm: the replacement values carry attacker-influenced device/data fields; escape them while keeping the <br> layout.
-					$repl .= str_pad('', $j * 3, '-') . '&nbsp;' . htmle(array_shift($replacement));
+					$repl .= str_pad('', $j * 3, '-') . '&nbsp;' . htmle((string) array_shift($replacement));
 				} else {
-					$repl  = htmle(array_shift($replacement));
+					$repl  = htmle((string) array_shift($replacement));
 				}
 			}
 

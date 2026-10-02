@@ -17,7 +17,7 @@ $root = dirname(__DIR__, 4);
 
 test('automation tree-rule preview escapes the Resulting Branch values (GHSA-f7jw)', function () use ($root) {
 	$s = file_get_contents($root . '/lib/api_automation.php');
-	expect($s)->toContain('htmle(array_shift($replacement))');
+	expect($s)->toContain('htmle((string) array_shift($replacement))');
 });
 
 test('report-add device description status is escaped (GHSA-4gph)', function () use ($root) {
