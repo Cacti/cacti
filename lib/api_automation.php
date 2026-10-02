@@ -1311,9 +1311,10 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 			for ($j=0; cacti_sizeof($replacement); $j++) {
 				if ($j > 0) {
 					$repl .= '<br>';
-					$repl .= str_pad('', $j*3, '-') . '&nbsp;' . array_shift($replacement);
+					// GHSA-f7jw-gfhr-cxwm: the replacement values carry attacker-influenced device/data fields; escape them while keeping the <br> layout.
+					$repl .= str_pad('', $j*3, '-') . '&nbsp;' . html_escape(array_shift($replacement));
 				} else {
-					$repl  = array_shift($replacement);
+					$repl  = html_escape(array_shift($replacement));
 				}
 			}
 			cacti_log($function . " replacement: $repl", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -1748,7 +1749,7 @@ function build_data_query_sql($rule) {
 	if (cacti_sizeof($field_names) > 0) {
 		foreach($field_names as $column) {
 			$field_name = $column['field_name'];
-			$sql_query .= ", MAX(CASE WHEN field_name='$field_name' THEN field_value ELSE NULL END) AS '$field_name'";
+			$sql_query .= ", MAX(CASE WHEN field_name = " . db_qstr($field_name) . " THEN field_value ELSE NULL END) AS " . db_qstr($field_name);
 			$i++;
 		}
 	}
@@ -2845,7 +2846,7 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 	$i = 0;
 	if (cacti_sizeof($field_names) > 0) {
 		foreach($field_names as $column) {
-			$sql_query .= ", MAX(CASE WHEN field_name ='$column' THEN field_value ELSE NULL END) AS '$column'";
+			$sql_query .= ", MAX(CASE WHEN field_name = " . db_qstr($column) . " THEN field_value ELSE NULL END) AS " . db_qstr($column);
 			$i++;
 		}
 	}

@@ -4649,7 +4649,8 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 		$font_file = 'C:/Windows/Fonts/Arial.ttf';
 	}
 
-	$themefile  = $config['base_path'] . '/include/themes/' . get_selected_theme() . '/rrdtheme.php';
+	// GHSA-mpfm-qhvj-5879: get_selected_theme() bypasses the theme allowlist, so validate it before it builds an include path.
+	$themefile  = $config['base_path'] . '/include/themes/' . cacti_validate_theme(get_selected_theme()) . '/rrdtheme.php';
 
 	if (file_exists($themefile) && is_readable($themefile)) {
 		include($themefile);

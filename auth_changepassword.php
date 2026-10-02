@@ -96,6 +96,8 @@ if ($user['password_change'] != 'on') {
 	/* destroy session information */
 	kill_session_var('sess_user_id');
 
+	// GHSA-cg45-2mww-g98p: revoke the server-side remember-me row too, not just the browser cookie.
+	clear_auth_cookie();
 	cacti_cookie_logout();
 
 	cacti_header('index.php');

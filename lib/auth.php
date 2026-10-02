@@ -191,11 +191,13 @@ function check_auth_cookie() {
 			if (cacti_sizeof($user_info)) {
 				$secret = hash('sha512', $token, false);
 
+				// GHSA-xq26-f282-f998: reject remember-me tokens past the 90-day retention window instead of trusting the cron purge alone.
 				$found  = db_fetch_cell_prepared('SELECT user_id
 					FROM user_auth_cache
 					WHERE user_id = ?
 					AND token = ?
-					AND hostname = ?',
+					AND hostname = ?
+					AND last_update >= DATE_SUB(NOW(), INTERVAL 90 DAY)',
 					array($user_info['id'], $secret, get_client_addr())
 				);
 

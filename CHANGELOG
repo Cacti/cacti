@@ -1,6 +1,14 @@
 Cacti CHANGELOG
 
 1.2.x
+-security#GHSA-f7jw-gfhr-cxwm: Escape the automation tree-rule preview Resulting Branch values
+-security#GHSA-vx2m-q53g-hmrf: Escape host_snmp_cache.field_name in the automation pivot CASE WHEN builders
+-security#GHSA-929h-4c93-hxcg: Quote the aggregate graph filter LIKE term
+-security#GHSA-mpfm-qhvj-5879: Validate the theme in rrdtool_create_error_image() through the theme allowlist
+-security#GHSA-m3fh-gxqj-76hq: Strip control characters from the SNMPv3 credential device fields
+-security#GHSA-cg45-2mww-g98p: Revoke the server-side remember-me row on the auth_changepassword nopassword path
+-security#GHSA-xq26-f282-f998: Enforce a retention window on the remember-me cookie token check
+-security#GHSA-m67r-fcmw-gvv7: Confine the imported data-query xml_path to the Cacti tree
 -security#GHSA-4rmr-wvjq-qxc2: Run the per-page realm check after Basic Auth and guest login instead of returning early
 -security#GHSA-j67j-wpm4-9g3x: Require a CSRF-token POST for the user and group update_policy action
 -security#GHSA-2p3x-f5jm-rg6p: Break the View-Graphs to poller remote code execution chain
