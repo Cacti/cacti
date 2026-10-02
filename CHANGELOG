@@ -1,6 +1,11 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security: Authorize the target graph before Spike Kill rewrites its RRD history (GHSA-77pr-g949-4v5f)
+-security: Reject array-form GET actions that bypass the POST and CSRF guard (GHSA-w3qw-762w-6g9v)
+-security: Cast the stored data-query output_type before building the poller cache query (GHSA-xhpr-w454-cc9w)
+-security: Escape stored snmp_index values in the New Graphs data-query pivot (GHSA-j3px-vw6r-g25x)
+-security: Escape the data-query and field names in the New Graphs parse error messages (GHSA-h745-3r76-g253)
 -security: Validate host_id before it is concatenated into the graph_view list and preview filter WHERE clauses (GHSA-r7hc-hrpv-52gf) (#8100) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
 -security: Validate and bind local_graph_id in the aggregate graph item sequence query (GHSA-6mjm-5vwr-3fr2) (#8099) - Special Thanks to Jiecub3, Aur0ra-m and lz2y
 -security: Grant AllowOverride All in docker/apache.conf so shipped .htaccess denies on log/cache/scripts/cli take effect (GHSA-fxfg-j995-j69j)

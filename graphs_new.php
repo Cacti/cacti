@@ -710,11 +710,11 @@ function graphs() : void {
 									}
 								}
 							} else {
-								raise_message('xmlfielderr' . $field_name, __('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id \'%s\'.  Field Name \'%s\' missing a \'direction\' attribute', $snmp_query['name'], $snmp_query['id'], $field_name), MESSAGE_LEVEL_ERROR);
+								raise_message('xmlfielderr' . $field_name, __esc('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id \'%s\'.  Field Name \'%s\' missing a \'direction\' attribute', $snmp_query['name'], $snmp_query['id'], $field_name), MESSAGE_LEVEL_ERROR);
 							}
 						}
 					} elseif (!$message_raised) {
-						raise_message('xmlerror', __('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id \'%s\'', $snmp_query['name'], $snmp_query['id']), MESSAGE_LEVEL_ERROR);
+						raise_message('xmlerror', __esc('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id \'%s\'', $snmp_query['name'], $snmp_query['id']), MESSAGE_LEVEL_ERROR);
 						$message_raised = true;
 					}
 				}
@@ -781,10 +781,13 @@ function graphs() : void {
 
 						if (cacti_sizeof($indexes)) {
 							foreach ($indexes as $index) {
+								// GHSA-j3px-vw6r-g25x: snmp_index is stored host_snmp_cache
+								// data; quote and escape it so a crafted index cannot break
+								// out of this IN() list.
 								if ($sql_where != '') {
-									$sql_where .= ", '" . $index['snmp_index'] . "'";
+									$sql_where .= ', ' . db_qstr($index['snmp_index']);
 								} else {
-									$sql_where .= " AND snmp_index IN('" . $index['snmp_index'] . "'";
+									$sql_where .= ' AND snmp_index IN(' . db_qstr($index['snmp_index']);
 								}
 							}
 
