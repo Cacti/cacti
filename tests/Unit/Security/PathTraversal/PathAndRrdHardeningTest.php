@@ -6,11 +6,11 @@
 */
 
 /*
- * Batch 7 develop-only path/RRD consolidation: the imported data-query xml_path
- * is confined to the Cacti tree (GHSA-m67r), rrdtool_create_error_image routes
- * the theme through the allowlist (GHSA-mpfm), path_dsstats_log is escaped
- * before the dsstats shell redirect (GHSA-pjq5), and the data_templates
- * rrd_maximum/rrd_minimum validator is anchored (GHSA-wp33).
+ * Path and RRD hardening: the imported data-query xml_path is confined to the
+ * Cacti tree (GHSA-m67r), rrdtool_create_error_image routes the theme through
+ * the allowlist (GHSA-mpfm), path_dsstats_log is escaped before the dsstats
+ * shell redirect (GHSA-pjq5), and the data_templates rrd_maximum/rrd_minimum
+ * validator is anchored (GHSA-wp33).
  */
 
 $root = dirname(__DIR__, 4);
@@ -18,7 +18,7 @@ $root = dirname(__DIR__, 4);
 test('imported data-query xml_path is confined to the Cacti tree (GHSA-m67r)', function () use ($root) {
 	$s = file_get_contents($root . '/lib/import.php');
 	expect($s)->toContain('realpath(CACTI_PATH_BASE)')
-		->and($s)->toContain('$contained');
+		->and($s)->toContain('$lexically_contained');
 });
 
 test('rrdtool_create_error_image validates the theme (GHSA-mpfm)', function () use ($root) {

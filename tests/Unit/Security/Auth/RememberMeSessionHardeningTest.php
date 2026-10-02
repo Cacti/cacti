@@ -6,10 +6,10 @@
 */
 
 /*
- * Batch 7 develop-only auth-session consolidation: the nopassword change path
- * must revoke the server-side remember-me row, not just the browser cookie
- * (GHSA-cg45), and the remember-me token check must enforce a retention window
- * instead of trusting the cron purge alone (GHSA-xq26).
+ * Remember-me session hardening: the nopassword change path must revoke the
+ * server-side remember-me row, not just the browser cookie (GHSA-cg45), and
+ * the remember-me token check must enforce a retention window instead of
+ * trusting the cron purge alone (GHSA-xq26).
  */
 
 $root = dirname(__DIR__, 4);

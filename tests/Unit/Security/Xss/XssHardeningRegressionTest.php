@@ -6,12 +6,11 @@
 */
 
 /*
- * Batch 7 develop-only XSS consolidation. The automation Resulting Branch cell
- * is the one live fix (GHSA-f7jw); the rest pin name sinks the broad develop
- * XSS hardening already closed: reports device-description status (GHSA-4gph),
- * graph export legend (GHSA-977w), Reports Data Query name (GHSA-mgcq),
- * die_html_input_error echo (GHSA-5p79), and the aggregate rfilter attribute
- * (GHSA-cfhh).
+ * XSS hardening regressions. The automation Resulting Branch cell is the one
+ * live fix (GHSA-f7jw); the rest pin name sinks the broad develop XSS hardening
+ * already closed: reports device-description status (GHSA-4gph), graph export
+ * legend (GHSA-977w), Reports Data Query name (GHSA-mgcq), die_html_input_error
+ * echo (GHSA-5p79), and the aggregate rfilter attribute (GHSA-cfhh).
  */
 
 $root = dirname(__DIR__, 4);

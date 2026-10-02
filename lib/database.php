@@ -1496,8 +1496,8 @@ function db_column_exists(string $table, string $column, bool $log = true, mixed
 		return $results[$index][$table][$column];
 	}
 
-	// GHSA-rp5g-r5vp-q7j6: this helper validates attacker-supplied identifiers, so its own LIKE term must be quoted.
-	$results[$index][$table][$column] = (db_fetch_cell("SHOW columns FROM `$table` LIKE " . db_qstr($column), '', $log, $db_conn) ? true : false);
+	// GHSA-rp5g-r5vp-q7j6: this helper validates attacker-supplied identifiers, so its own LIKE term must be quoted on the same connection that runs the query.
+	$results[$index][$table][$column] = (db_fetch_cell("SHOW columns FROM `$table` LIKE " . db_qstr($column, $db_conn), '', $log, $db_conn) ? true : false);
 
 	return $results[$index][$table][$column];
 }

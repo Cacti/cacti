@@ -6,7 +6,7 @@
 */
 
 /*
- * Batch 7 develop-only SQL-injection consolidation. Each assertion pins a
+ * SQL-injection hardening regressions. Each assertion pins a
  * sibling-of-already-fixed SQLi sink: db_column_exists (GHSA-rp5g), the
  * automation pivot builders (GHSA-vx2m), aggregate_make_sql_where (GHSA-929h),
  * cli/add_graphs REGEXP (GHSA-mfw8), the plugin DDL identifiers (GHSA-h5wg),
@@ -16,10 +16,10 @@
 
 $root = dirname(__DIR__, 4);
 
-test('db_column_exists quotes its LIKE term (GHSA-rp5g)', function () use ($root) {
+test('db_column_exists quotes its LIKE term on the query connection (GHSA-rp5g)', function () use ($root) {
 	$s = file_get_contents($root . '/lib/database.php');
-	expect($s)->toContain('db_qstr($column)')
-		->and($s)->not->toContain("LIKE '$column'");
+	expect($s)->toContain('db_qstr($column, $db_conn)')
+		->and($s)->not->toContain('LIKE \'$column\'');
 });
 
 test('automation pivot builders escape field_name (GHSA-vx2m)', function () use ($root) {
@@ -43,7 +43,7 @@ test('cli add_graphs uses db_qstr not addslashes for REGEXP (GHSA-mfw8)', functi
 test('plugin drop/create confine the table identifier (GHSA-h5wg)', function () use ($root) {
 	$s = file_get_contents($root . '/lib/plugins.php');
 	expect($s)->not->toContain('"DROP TABLE IF EXISTS $table"')
-		->and($s)->toContain("preg_replace('/[^a-zA-Z0-9_]/', '', $table)");
+		->and($s)->toContain('!preg_match(\'/^[a-zA-Z0-9_]+$/\', $table)');
 });
 
 test('user_admin clamps sort_column to displayed columns (GHSA-m49v)', function () use ($root) {
