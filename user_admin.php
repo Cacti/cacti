@@ -988,7 +988,9 @@ function graph_perms_edit($tab, $header_label) {
 			$(document).tooltip({
 				items: '[data-tooltip]',
 				content: function() {
-					return $(this).attr('data-tooltip');
+					// Render tooltip text as escaped content to prevent any markup
+					// in data-tooltip from being interpreted as HTML.
+					return $('<div>').text($(this).attr('data-tooltip') || '').html();
 				}
 			});
 		});
