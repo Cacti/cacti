@@ -28,6 +28,9 @@
  * @return void No value is returned.
  */
 function upgrade_to_1_2_32() {
+	require_once(__DIR__ . '/../../lib/traffic_legend.php');
+	upgrade_interface_traffic_legends();
+
 	/* #7728 landed these columns in cacti.sql and in upgrade_to_1_2_31() after
 	 * 1.2.31 had already shipped. Installs sitting on 1.2.31 never re-run that
 	 * file. db_install_add_column() is a no-op when the column exists, so
