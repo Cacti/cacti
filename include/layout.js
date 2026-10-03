@@ -4333,6 +4333,8 @@ function initializeGraphs(disable_cache) {
 			rra_id=0;
 		}
 
+		var graph_start = $(this).attr('graph_start') || '';
+		var graph_end = $(this).attr('graph_end') || '';
 		var graph_height = $(this).attr('graph_height');
 		var graph_width  = $(this).attr('graph_width');
 		var error_url    = urlPath + 'graph_view.php';
