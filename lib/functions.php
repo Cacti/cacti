@@ -8313,7 +8313,7 @@ function cacti_exec_log_describe($binary, array $args) {
  * is the argv-array counterpart to exec_with_timeout() in lib/poller.php, which accepts a
  * pre-built shell string. Use cacti_exec() when the binary and arguments are known separately;
  * use exec_with_timeout() when migrating legacy shell_exec() callers that already assemble the
- * command string. Requires PHP 7.4+ (array form of proc_open). The 1.2.x branch targets PHP 7.4
+ * command string. Requires PHP 8.2+ (array form of proc_open). The 1.2.x branch targets PHP 8.2
  * as its minimum, so no version gate is needed. Used as part of Cacti's lib functionality.
  *
  * @param string $binary Path to the executable. Must not start with '-'.
@@ -9496,4 +9496,144 @@ function sanitize_sql_column($column) {
 		return '';
 	}
 	return preg_replace('/[^a-zA-Z0-9_.]/', '', (string)$column);
+}
+
+if (!defined('CACTI_SECRET_CIPHER')) {
+	define('CACTI_SECRET_CIPHER', 'aes-256-gcm');
+}
+
+if (!defined('CACTI_SECRET_TAG_LENGTH')) {
+	define('CACTI_SECRET_TAG_LENGTH', 16);
+}
+
+/**
+ * Return the per-installation 256-bit secret key, generating and persisting one
+ * on first use. Lives in lib/functions.php (rather than lib/auth.php) so the CLI
+ * data collectors - poller.php, cmd.php and script_server.php - can seal and
+ * open cached secrets without pulling in the web authentication stack.
+ *
+ * @return string The raw (binary) 256-bit AES key.
+ *
+ * @throws \RuntimeException If the stored key is missing or corrupt; rotating in
+ *   an unpersisted key would strand every value encrypted under the old one.
+ */
+function cacti_secret_key() : string {
+	$key = read_config_option('secret_encryption_key');
+
+	if (empty($key)) {
+		$key = base64_encode(random_bytes(32));
+
+		// INSERT IGNORE: if a concurrent process already generated and stored a
+		// key, keep that one rather than clobbering it with a second,
+		// mutually-incompatible key that would strand the loser's ciphertext.
+		db_execute_prepared('INSERT IGNORE INTO settings (`name`, `value`) VALUES (?, ?)', array('secret_encryption_key', $key));
+
+		$key = (string) read_config_option('secret_encryption_key', true);
+	}
+
+	$decoded = base64_decode($key, true);
+
+	if ($decoded === false || strlen($decoded) !== 32) {
+		throw new \RuntimeException('The secret_encryption_key setting is missing or corrupt; encrypted secrets cannot be read or written until it is restored.');
+	}
+
+	return $decoded;
+}
+
+/**
+ * Encrypt an arbitrary secret for storage using Cacti's per-installation
+ * AES-256-GCM key. A fresh random IV is generated per call and prefixed onto
+ * the ciphertext; the GCM authentication tag is stored alongside so a tampered
+ * or corrupted value is rejected on decryption rather than silently accepted.
+ *
+ * @param string $plaintext The secret to encrypt.
+ *
+ * @return string The base64-encoded IV + tag + ciphertext, or '' for an empty input.
+ *
+ * @throws \RuntimeException If the per-installation key is missing/corrupt; see cacti_secret_key().
+ */
+function cacti_encrypt_secret(string $plaintext) : string {
+	return cacti_encrypt_secret_with_key($plaintext, cacti_secret_key());
+}
+
+/**
+ * Decrypt a secret produced by cacti_encrypt_secret(). Degrades to false
+ * (rather than throwing) when the per-installation key itself is missing or
+ * corrupt, since callers already treat false as "cannot use this secret".
+ *
+ * @param string $ciphertext The base64-encoded IV + tag + ciphertext.
+ *
+ * @return string|false The decrypted secret, '' for an empty input, or false
+ *                      if the stored data or the encryption key is invalid.
+ */
+function cacti_decrypt_secret(string $ciphertext) : string|false {
+	try {
+		$key = cacti_secret_key();
+	} catch (\RuntimeException $e) {
+		cacti_log('ERROR: ' . $e->getMessage(), false, 'AUTH');
+
+		return false;
+	}
+
+	return cacti_decrypt_secret_with_key($ciphertext, $key);
+}
+
+/**
+ * Core encryption logic behind cacti_encrypt_secret(), split out so it can be
+ * exercised against an explicit key (e.g. in unit tests) without the settings
+ * table key-persistence cacti_secret_key() requires.
+ *
+ * @param string $plaintext The secret to encrypt.
+ * @param string $key       The raw (binary) 256-bit AES key.
+ *
+ * @return string The base64-encoded IV + tag + ciphertext, or '' for an empty input.
+ */
+function cacti_encrypt_secret_with_key(string $plaintext, string $key) : string {
+	if ($plaintext === '') {
+		return '';
+	}
+
+	$iv  = openssl_random_pseudo_bytes(openssl_cipher_iv_length(CACTI_SECRET_CIPHER));
+	$tag = '';
+
+	$encrypted = openssl_encrypt($plaintext, CACTI_SECRET_CIPHER, $key, OPENSSL_RAW_DATA, $iv, $tag, '', CACTI_SECRET_TAG_LENGTH);
+
+	if ($encrypted === false) {
+		throw new \RuntimeException('Failed to encrypt secret.');
+	}
+
+	return base64_encode($iv . $tag . $encrypted);
+}
+
+/**
+ * Core decryption logic behind cacti_decrypt_secret(); see
+ * cacti_encrypt_secret_with_key(). openssl_decrypt() returns false whenever the
+ * GCM tag fails to verify, so a tampered/corrupted value is rejected rather
+ * than silently accepted as valid plaintext.
+ *
+ * @param string $ciphertext The base64-encoded IV + tag + ciphertext.
+ * @param string $key        The raw (binary) 256-bit AES key.
+ *
+ * @return string|false The decrypted secret, '' for an empty input, or false
+ *                      if the stored data is malformed, tampered, or cannot be decrypted.
+ */
+function cacti_decrypt_secret_with_key(string $ciphertext, string $key) : string|false {
+	if ($ciphertext === '') {
+		return '';
+	}
+
+	$raw = base64_decode($ciphertext, true);
+
+	$iv_length  = openssl_cipher_iv_length(CACTI_SECRET_CIPHER);
+	$tag_length = CACTI_SECRET_TAG_LENGTH;
+
+	if ($raw === false || strlen($raw) <= $iv_length + $tag_length) {
+		return false;
+	}
+
+	$iv         = substr($raw, 0, $iv_length);
+	$tag        = substr($raw, $iv_length, $tag_length);
+	$ciphertext = substr($raw, $iv_length + $tag_length);
+
+	return openssl_decrypt($ciphertext, CACTI_SECRET_CIPHER, $key, OPENSSL_RAW_DATA, $iv, $tag, '');
 }

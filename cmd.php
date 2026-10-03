@@ -120,6 +120,9 @@ require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/rrd.php');
 require_once($config['base_path'] . '/lib/ping.php');
 
+// decode the shared SNMP auth cache (or build a per-process copy) once at startup
+snmp_auth_cache_load();
+
 if ($version) {
 	display_version();
 	exit;

@@ -53,6 +53,8 @@ if ($config['php_snmp_support']) {
 
 use phpsnmp\SNMP;
 
+require_once(__DIR__ . '/cache.php');
+
 /**
  * Select a reliable uptime value from sysUpTime and snmpEngineTime. Some agents, notably OpenBSD
  * snmpd, return the current Unix timestamp for snmpEngineTime. That value is not an uptime and
@@ -559,8 +561,28 @@ function cacti_get_snmp_auth_args(&$version, $community, $auth_proto, $auth_user
 		return array();
 	}
 
-	return cacti_get_snmpv3_auth_args($auth_proto, $auth_user, $auth_pass, $priv_proto,
-		$priv_pass, $context, $engineid);
+	$cred = snmp_auth_cache_cred_lookup($community, $auth_user, $auth_pass, $auth_proto, $priv_pass, $priv_proto);
+
+	if (!is_array($cred)) {
+		$cred = snmp_build_v3_cred_args($auth_proto, $auth_user, $auth_pass, $priv_proto, $priv_pass);
+	}
+
+	if (empty($cred)) {
+		return array();
+	}
+
+	/* context and engine id are per-device, not part of the cached credential
+	 * identity, so they are appended here - the single place they enter the
+	 * SNMPv3 argument vector. */
+	if ($context != '') {
+		$cred = array_merge($cred, array('-n', (string) $context));
+	}
+
+	if ($engineid != '') {
+		$cred = array_merge($cred, array('-e', (string) $engineid));
+	}
+
+	return $cred;
 }
 
 /**
@@ -577,6 +599,38 @@ function cacti_get_snmp_auth_args(&$version, $community, $auth_proto, $auth_user
  * @return array An array of results.
  */
 function cacti_get_snmpv3_auth_args($auth_proto, $auth_user, $auth_pass, $priv_proto, $priv_pass, $context, $engineid) {
+	$args = snmp_build_v3_cred_args($auth_proto, $auth_user, $auth_pass, $priv_proto, $priv_pass);
+
+	if (empty($args)) {
+		return array();
+	}
+
+	if ($context != '') {
+		$args = array_merge($args, array('-n', (string) $context));
+	}
+
+	if ($engineid != '') {
+		$args = array_merge($args, array('-e', (string) $engineid));
+	}
+
+	return $args;
+}
+
+/**
+ * Build the credential-only portion of the SNMPv3 Net-SNMP argument vector
+ * (-u/-a/-A/-x/-X/-l), excluding the per-device context and engine id. This is
+ * the costly part of SNMPv3 argument hardening and the unit stored by the
+ * shared SNMP auth cache.
+ *
+ * @param mixed $auth_proto The auth protocol.
+ * @param mixed $auth_user The auth user.
+ * @param mixed $auth_pass The auth pass.
+ * @param mixed $priv_proto The priv protocol.
+ * @param mixed $priv_pass The priv pass.
+ *
+ * @return array Net-SNMP credential arguments, or array() when the protocols are invalid.
+ */
+function snmp_build_v3_cred_args($auth_proto, $auth_user, $auth_pass, $priv_proto, $priv_pass) {
 	global $snmp_priv_protocols, $snmp_auth_protocols;
 
 	$args = array('-u', (string) $auth_user);
@@ -605,17 +659,192 @@ function cacti_get_snmpv3_auth_args($auth_proto, $auth_user, $auth_pass, $priv_p
 		));
 	}
 
-	$args = array_merge($args, array('-l', $sec_level));
+	return array_merge($args, array('-l', $sec_level));
+}
 
-	if ($context != '') {
-		$args = array_merge($args, array('-n', (string) $context));
+/**
+ * Return the process-wide shared SNMP authentication cache.
+ *
+ * poller.php builds a map of sha1(credential tuple) => pre-hardened SNMPv3
+ * credential arguments once per credential change and seals it into a
+ * cross-process cache. cmd.php and script_server.php decode it once at startup
+ * so in-flight SNMP calls reuse the pre-hardened arguments instead of rebuilding
+ * them on every request. The live hardening path remains as a fallback whenever
+ * the cache is absent.
+ *
+ * @return \Cacti\Cache\SharedCache
+ */
+function snmp_auth_cache(): \Cacti\Cache\SharedCache {
+	static $cache = null;
+
+	if ($cache === null) {
+		$cache = new \Cacti\Cache\SharedCache('snmp_auth', array('encrypted' => true));
 	}
 
-	if ($engineid != '') {
-		$args = array_merge($args, array('-e', (string) $engineid));
+	return $cache;
+}
+
+/**
+ * Canonical cache key: sha1 over the six credential columns, in the DISTINCT
+ * query column order, of the pre-hardened values.
+ *
+ * @param mixed $community The community.
+ * @param mixed $username The username.
+ * @param mixed $password The password.
+ * @param mixed $auth_proto The auth protocol.
+ * @param mixed $priv_pass The priv passphrase.
+ * @param mixed $priv_proto The priv protocol.
+ *
+ * @return string
+ */
+function snmp_auth_cache_key($community, $username, $password, $auth_proto, $priv_pass, $priv_proto): string {
+	return sha1(implode("\x1f", array(
+		(string) $community, (string) $username, (string) $password,
+		(string) $auth_proto, (string) $priv_pass, (string) $priv_proto
+	)));
+}
+
+/**
+ * Distinct SNMP credential tuples from host and poller_item.
+ *
+ * @return array
+ */
+function snmp_auth_cache_rows(): array {
+	$columns = 'snmp_community, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol';
+
+	$hosts = db_fetch_assoc("SELECT DISTINCT $columns FROM host WHERE snmp_version > 0");
+	$items = db_fetch_assoc("SELECT DISTINCT $columns FROM poller_item WHERE snmp_version > 0");
+
+	return array_merge(is_array($hosts) ? $hosts : array(), is_array($items) ? $items : array());
+}
+
+/**
+ * Change token for the credential set, salted with the per-installation secret
+ * key so the plaintext checksum sidecar cannot be used to confirm a guessed
+ * credential set.
+ *
+ * @param array $rows The credential rows.
+ *
+ * @return string
+ */
+function snmp_auth_cache_signature(array $rows): string {
+	$salt = (string) read_config_option('secret_encryption_key');
+
+	return hash('sha256', $salt . serialize($rows));
+}
+
+/**
+ * Build the sha1(tuple) => pre-hardened SNMPv3 credential args map. v1/v2
+ * community hardening is trivial and resolved live, so only SNMPv3 tuples
+ * (those with a username) are stored.
+ *
+ * @param array $rows The credential rows.
+ *
+ * @return array
+ */
+function snmp_auth_cache_build_map(array $rows): array {
+	$map = array();
+
+	foreach ($rows as $row) {
+		$username = isset($row['snmp_username']) ? $row['snmp_username'] : '';
+
+		if ($username === '') {
+			continue;
+		}
+
+		$key = snmp_auth_cache_key(
+			$row['snmp_community'] ?? '', $username, $row['snmp_password'] ?? '',
+			$row['snmp_auth_protocol'] ?? '', $row['snmp_priv_passphrase'] ?? '', $row['snmp_priv_protocol'] ?? ''
+		);
+
+		if (isset($map[$key])) {
+			continue;
+		}
+
+		$map[$key] = snmp_build_v3_cred_args(
+			$row['snmp_auth_protocol'] ?? '', $username, $row['snmp_password'] ?? '',
+			$row['snmp_priv_protocol'] ?? '', $row['snmp_priv_passphrase'] ?? ''
+		);
 	}
 
-	return $args;
+	return $map;
+}
+
+/**
+ * Build the SNMP auth map directly from the database (no cache involved).
+ *
+ * @return array
+ */
+function snmp_auth_cache_build(): array {
+	return snmp_auth_cache_build_map(snmp_auth_cache_rows());
+}
+
+/**
+ * Rebuild and reseal the shared SNMP auth cache, but only when the credential
+ * set has changed since the last build. Intended to be called once at
+ * poller.php startup.
+ *
+ * @return void
+ */
+function snmp_auth_cache_refresh(): void {
+	$rows      = snmp_auth_cache_rows();
+	$signature = snmp_auth_cache_signature($rows);
+	$cache     = snmp_auth_cache();
+
+	if ($cache->checksum() === $signature) {
+		return;
+	}
+
+	$cache->store(snmp_auth_cache_build_map($rows), $signature);
+}
+
+/**
+ * Decode the shared SNMP auth cache into process memory exactly once. When no
+ * shared cache is available or populated, build a per-process copy from the
+ * database so lookups still succeed.
+ *
+ * @return void
+ */
+function snmp_auth_cache_load(): void {
+	static $loaded = false;
+
+	if ($loaded) {
+		return;
+	}
+
+	$loaded = true;
+
+	$data = snmp_auth_cache()->fetch();
+
+	if (!is_array($data)) {
+		$data = snmp_auth_cache_build();
+	}
+
+	$GLOBALS['snmp_auth_cache_map'] = $data;
+}
+
+/**
+ * Return the pre-hardened SNMPv3 credential args for a credential tuple, or null
+ * when the tuple is not cached (the caller then hardens live).
+ *
+ * @param mixed $community The community.
+ * @param mixed $username The username.
+ * @param mixed $password The password.
+ * @param mixed $auth_proto The auth protocol.
+ * @param mixed $priv_pass The priv passphrase.
+ * @param mixed $priv_proto The priv protocol.
+ *
+ * @return array|null
+ */
+function snmp_auth_cache_cred_lookup($community, $username, $password, $auth_proto, $priv_pass, $priv_proto): ?array {
+	if (!isset($GLOBALS['snmp_auth_cache_map'])) {
+		snmp_auth_cache_load();
+	}
+
+	$key = snmp_auth_cache_key($community, $username, $password, $auth_proto, $priv_pass, $priv_proto);
+	$map = $GLOBALS['snmp_auth_cache_map'] ?? array();
+
+	return (isset($map[$key]) && is_array($map[$key])) ? $map[$key] : null;
 }
 
 /**
