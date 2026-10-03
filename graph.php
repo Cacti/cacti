@@ -124,6 +124,31 @@ case 'view':
 	$i = 0;
 	if (cacti_sizeof($rras)) {
 		$graph_end   = time() - 30;
+		// Add a longer view using existing archives, without changing retention.
+		if (get_request_var('rra_id') == 'all') {
+			$two_year_span = $graph_end - strtotime('-2 years', $graph_end);
+			foreach ($rras as $archive) {
+				if ($archive['step'] * $archive['steps'] * $archive['rows'] >= $two_year_span) {
+					$average_step = $archive['step'] * $archive['steps'];
+					if ($average_step % 86400 == 0) {
+						$average_count = $average_step / 86400;
+						$average_unit = __n('Day', 'Days', $average_count);
+					} elseif ($average_step % 3600 == 0) {
+						$average_count = $average_step / 3600;
+						$average_unit = __n('Hour', 'Hours', $average_count);
+					} elseif ($average_step % 60 == 0) {
+						$average_count = $average_step / 60;
+						$average_unit = __n('Minute', 'Minutes', $average_count);
+					} else {
+						$average_count = $average_step;
+						$average_unit = __n('Second', 'Seconds', $average_count);
+					}
+					$two_year_name = __('2 Years (%s Average)', $average_count . ' ' . $average_unit);
+					$rras[] = array('id' => 0, 'name' => $two_year_name, 'timespan' => $two_year_span);
+					break;
+				}
+			}
+		}
 		foreach ($rras as $rra) {
 			if (!empty($rra['timespan'])) {
 				$graph_start = $graph_end - $rra['timespan'];
@@ -214,7 +239,7 @@ case 'view':
 				'&disable_cache=true'+
 				($('#thumbnails').val() == 'true' ? '&graph_nolegend=true':''))
 				.done(function(data) {
-					wrapper=$('#wrapper_'+data.local_graph_id+'[rra_id=\''+data.rra_id+'\']');
+					var wrapper = itemWrapper;
 					wrapper.html(
 						"<img class='graphimage' id='graph_"+data.local_graph_id+
 						"' src='data:image/"+data.type+";base64,"+data.image+
@@ -242,12 +267,7 @@ case 'view':
 					$('#graph_start').val(data.graph_start);
 					$('#graph_end').val(data.graph_end);
 
-					var gr_location = '#graph_'+data.local_graph_id;
-					if (data.rra_id > 0) {
-						gr_location += '[rra_id=\'' + data.rra_id + '\']';
-					}
-
-					$(gr_location).zoom({
+					wrapper.find('.graphimage').zoom({
 						inputfieldStartTime : 'date1',
 						inputfieldEndTime : 'date2',
 						serverTimeOffset : <?php print date('Z');?>
