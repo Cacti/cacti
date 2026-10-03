@@ -75,3 +75,68 @@ test('GHSA-g9c7: cacti_exec rejects binary strings that begin with dash', functi
 test('GHSA-g9c7: cacti_exec still rejects whitespace-mixed command strings', function () use ($functionsSource) {
 	expect($functionsSource)->toContain("preg_match('/\\s/', \$binary)");
 });
+
+// GHSA-fq9x: the data-input <field> substitution must be single-pass so a value
+// that happens to contain another field's <token> cannot re-inject that later
+// field's already-escaped payload into the first field's quoted region
+// (second-order placeholder re-substitution breakout).
+
+test('GHSA-fq9x: substitute_script_path replaces tokens in a single pass over the original template', function () use ($functionsSource) {
+	expect($functionsSource)->toContain('function substitute_script_path(');
+	// a single preg_replace_callback over the ORIGINAL template, not an
+	// iterative str_replace loop that re-scans substituted output.
+	expect($functionsSource)->toContain("preg_replace_callback('/<([A-Za-z0-9_]+)>/',");
+	expect($functionsSource)->toContain('array_key_exists($matches[1], $escaped_values)');
+});
+
+test('GHSA-fq9x: both path builders no longer re-scan the mutated buffer with str_replace', function () use ($functionsSource) {
+	// the vulnerable per-field, progressively-mutating substitution is gone...
+	expect($functionsSource)->not->toContain("\$full_path = str_replace('<' . \$item['data_name'] . '>', \$value, \$full_path);");
+	// ...and both callers now route through the single-pass helper.
+	expect(substr_count($functionsSource, '$full_path = substitute_script_path($full_path, $escaped_values);'))->toBe(2);
+});
+
+test('GHSA-fq9x: path tokens are merged after the field map so field names keep precedence', function () use ($functionsSource) {
+	// the field loop populates $escaped_values first, then the trusted path
+	// tokens are added with += (which does NOT overwrite existing field keys),
+	// preserving the historical field-first substitution order.
+	expect($functionsSource)->toContain("\$escaped_values += array(");
+	expect($functionsSource)->toContain("'path_cacti'      =>");
+});
+
+/*
+ * Behavioral proof that the real helper contains the second-order payload.
+ * The function body is pulled directly out of this repo's own lib/functions.php
+ * and eval()'d into scope (Test-only; never external/user input), following the
+ * extract-and-eval pattern used in SsHostDiskNegativeSizeTest.php and
+ * PercentileContractTest.php, because the 1.2.x unit bootstrap deliberately does
+ * not load lib/functions.php.
+ */
+if (!function_exists('substitute_script_path')) {
+	preg_match('/\nfunction substitute_script_path\b.*?\n\}/s', "\n" . $functionsSource, $sspMatch);
+
+	if (!empty($sspMatch)) {
+		eval($sspMatch[0]);
+	}
+}
+
+test('GHSA-fq9x: a field whose value is another field token is not re-substituted', function () {
+	expect(function_exists('substitute_script_path'))->toBeTrue();
+
+	// field1's escaped value literally contains <arg2>; arg2 carries a payload.
+	// A single pass must emit the literal "<arg2>" for field1 and must NOT
+	// splice arg2's PAYLOAD in its place.
+	$result = substitute_script_path('<field1>', array(
+		'field1' => '<arg2>',
+		'arg2'   => 'PAYLOAD',
+	));
+
+	expect($result)->toBe('<arg2>');
+	expect($result)->not->toContain('PAYLOAD');
+});
+
+test('GHSA-fq9x: unknown tokens are left intact and known tokens are replaced once', function () {
+	expect(substitute_script_path('<unknown>', array()))->toBe('<unknown>');
+	expect(substitute_script_path('<f>-<f>', array('f' => "'v'")))->toBe("'v'-'v'");
+	expect(substitute_script_path('<a><b>', array('a' => 'X', 'b' => 'Y')))->toBe('XY');
+});

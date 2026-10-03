@@ -40,6 +40,22 @@ get_filter_request_var('rra_id');
 get_filter_request_var('stdout');
 /* ==================================================== */
 
+/**
+ * Neutralize CSV/DDE formula injection and apply RFC 4180 quoting for a single
+ * spreadsheet cell. A leading =, +, -, @, tab or carriage return can be
+ * interpreted as a formula by spreadsheet applications, so such values are
+ * prefixed with a single quote; embedded double-quotes are doubled.
+ */
+function graph_xport_csv_cell($value) {
+	$value = (string) $value;
+
+	if ($value !== '' && in_array($value[0], array('=', '+', '-', '@', "\t", "\r"), true)) {
+		$value = "'" . $value;
+	}
+
+	return str_replace('"', '""', $value);
+}
+
 /* flush the headers now */
 ob_end_clean();
 
@@ -93,7 +109,10 @@ $xport_array = rrdtool_function_xport(get_request_var('local_graph_id'), get_req
 
 /* Make graph title the suggested file name */
 if (is_array($xport_array) && isset($xport_array['meta']) && is_array($xport_array['meta'])) {
-	$filename = $xport_array['meta']['title_cache'] . '.csv';
+	/* Strip characters that could break out of the quoted filename in the
+	 * Content-Disposition header (CR/LF header injection, quote escaping). */
+	$safe_title = str_replace(array("\r", "\n", '"', '\\'), '', (string) $xport_array['meta']['title_cache']);
+	$filename   = $safe_title . '.csv';
 } else {
 	$filename = 'graph_export.csv';
 }
@@ -133,8 +152,8 @@ if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
 	}
 
 	if (!$html) {
-		$output  = '"' . __('Title') . '","'          . $xport_array['meta']['title_cache']    . '"' . "\n";
-		$output .= '"' . __('Vertical Label') . '","' . $xport_array['meta']['vertical_label'] . '"' . "\n";
+		$output  = '"' . __('Title') . '","'          . graph_xport_csv_cell($xport_array['meta']['title_cache'])    . '"' . "\n";
+		$output .= '"' . __('Vertical Label') . '","' . graph_xport_csv_cell($xport_array['meta']['vertical_label']) . '"' . "\n";
 
 		$output .= '"' . __('Start Date') . '","'     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . '"' . "\n";
 		$output .= '"' . __('End Date') . '","'       . date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step']*($xport_array['meta']['rows']-1) : $xport_array['meta']['end']) . '"' . "\n";
@@ -162,10 +181,13 @@ if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
 		$header = '"' . __('Date') . '"';
 		for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 			$legend = isset($xport_array['meta']['legend']['col' . $i]) ? (string) $xport_array['meta']['legend']['col' . $i] : '';
-			/* RFC 4180 CSV quoting so a column name carrying a double-quote
-			 * or newline (often from SNMP-sourced ifAlias/ifDescr) cannot
-			 * break the CSV shape downstream. */
-			$header .= ',"' . str_replace(array("\r", "\n", '"'), array(' ', ' ', '""'), $legend) . '"';
+			/* Normalize embedded CR/LF to spaces so a column name (often from
+			 * SNMP-sourced ifAlias/ifDescr) cannot break the CSV shape, then
+			 * neutralize formula injection and apply RFC 4180 quoting through
+			 * the shared graph_xport_csv_cell() helper. Column legends are
+			 * attacker-influenced in the same way as the title/vertical label. */
+			$legend  = str_replace(array("\r", "\n"), ' ', $legend);
+			$header .= ',"' . graph_xport_csv_cell($legend) . '"';
 		}
 		$output .= $header . "\n";
 	} else {
