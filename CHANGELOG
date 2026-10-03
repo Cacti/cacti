@@ -57,9 +57,7 @@ Cacti CHANGELOG
 -security#GHSA-9qff-xccr-rrc5: Contain data_source_path within the RRA directory
 -security#GHSA-vp35-4h28-r883: CVE-2026-39939 Harden package import path traversal defenses
 -security#GHSA-pqrp-v752-mc4f: Stop disabled accounts authenticating and revoke tokens on disable
--security#GHSA-vq9v-6ggh-phhr: Escape graph-item style fields in the RRDtool graph command
 -security#GHSA-3466-fp7g-c9rf: Prefer base_url over the client Host header for the force_https redirect
--security#GHSA-2fhv-c794-v433: Authorize Data Source enable/disable against the owning device before mutating
 -security#GHSA-prxj-84qq-v5jq: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating
 -security#GHSA-xvwr-hvpm-67jw: Escape template name and dependency path in the Template Import preview
 -security#GHSA-77pr-g949-4v5f: Authorize the target graph before Spike Kill rewrites its RRD history
