@@ -3168,6 +3168,29 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 }
 
 /**
+ * substitute_script_path - performs a single-pass substitution of <field> tokens
+ * in a data-input command template using pre-escaped values.
+ *
+ * Each <name> token in the ORIGINAL template is replaced at most once from the
+ * supplied map; substituted values are never re-scanned, so a field whose value
+ * contains another field's <token> cannot splice an already-escaped payload into
+ * a neighbouring quoted region (second-order breakout, GHSA-fq9x-x3vf-3vf2).
+ *
+ * @param string $template       The command template containing <field> tokens
+ * @param array  $escaped_values Map of field name => already-escaped value
+ *
+ * @return string The template with all known tokens substituted once; unknown
+ *   tokens are left intact for the caller's trailing cleanup to strip
+ */
+function substitute_script_path(string $template, array $escaped_values) : string {
+	return preg_replace_callback('/<([A-Za-z0-9_]+)>/',
+		function(array $matches) use ($escaped_values) : string {
+			return array_key_exists($matches[1], $escaped_values) ? $escaped_values[$matches[1]] : $matches[0];
+		},
+		$template) ?? '';
+}
+
+/**
  * Gets the full path to the script to execute to obtain data for a
  * given data template for testing. this function does not work on
  * SNMP actions, only script-based actions
@@ -3207,6 +3230,8 @@ function get_full_test_script_path(int $data_template_id, int $host_id) : mixed 
 
 	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$host_id]);
 
+	$escaped_values = [];
+
 	if (cacti_sizeof($data) && is_array($host)) {
 		foreach ($data as $item) {
 			if (isset($host[$item['data_name']])) {
@@ -3220,13 +3245,22 @@ function get_full_test_script_path(int $data_template_id, int $host_id) : mixed 
 				$value = cacti_escapeshellarg_cmd((string) $item['value']);
 			}
 
-			$full_path = str_replace('<' . $item['data_name'] . '>', $value, $full_path);
+			$escaped_values[$item['data_name']] = $value;
 		}
 	}
 
-	$search    = ['<path_cacti>', '<path_snmpget>', '<path_php_binary>'];
-	$replace   = [CACTI_PATH_BASE, read_config_option('path_snmpget'), read_config_option('path_php_binary')];
-	$full_path = str_replace($search, $replace, $full_path);
+	/* the well-known path tokens resolve to trusted configuration values; field
+	 * names take precedence so behaviour matches the historical field-first order */
+	$escaped_values += [
+		'path_cacti'      => CACTI_PATH_BASE,
+		'path_snmpget'    => read_config_option('path_snmpget'),
+		'path_php_binary' => read_config_option('path_php_binary'),
+	];
+
+	/* single-pass substitution over the original template prevents a field whose
+	 * value contains another field's <token> from re-injecting an escaped payload
+	 * into an already-quoted region (GHSA-fq9x-x3vf-3vf2) */
+	$full_path = substitute_script_path($full_path, $escaped_values);
 
 	/**
 	 * sometimes a certain input value will not have anything entered... null out these fields
@@ -3278,6 +3312,8 @@ function get_full_script_path(int $local_data_id) : mixed {
 
 	$full_path = $data_source['input_string'];
 
+	$escaped_values = [];
+
 	if (cacti_sizeof($data)) {
 		foreach ($data as $item) {
 			/* only hostname-class fields may legitimately need percent
@@ -3289,13 +3325,22 @@ function get_full_script_path(int $local_data_id) : mixed {
 				$value = "''";
 			}
 
-			$full_path = str_replace('<' . $item['data_name'] . '>', $value, $full_path);
+			$escaped_values[$item['data_name']] = $value;
 		}
 	}
 
-	$search    = ['<path_cacti>', '<path_snmpget>', '<path_php_binary>'];
-	$replace   = [CACTI_PATH_BASE, read_config_option('path_snmpget'), read_config_option('path_php_binary')];
-	$full_path = str_replace($search, $replace, $full_path);
+	/* the well-known path tokens resolve to trusted configuration values; field
+	 * names take precedence so behaviour matches the historical field-first order */
+	$escaped_values += [
+		'path_cacti'      => CACTI_PATH_BASE,
+		'path_snmpget'    => read_config_option('path_snmpget'),
+		'path_php_binary' => read_config_option('path_php_binary'),
+	];
+
+	/* single-pass substitution over the original template prevents a field whose
+	 * value contains another field's <token> from re-injecting an escaped payload
+	 * into an already-quoted region (GHSA-fq9x-x3vf-3vf2) */
+	$full_path = substitute_script_path($full_path, $escaped_values);
 
 	/* sometimes a certain input value will not have anything entered... null out these fields
 	in the input string so we don't mess up the script */
