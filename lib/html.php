@@ -3265,7 +3265,7 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' https://api.qrserver.com <?php print $alternates; ?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates; ?>; <?php print $script_src; ?>; worker-src 'self' <?php print $alternates; ?>;">
 
 
-	<title><?php print $title; ?></title>
+	<title><?php print html_escape($title); ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<link rel='manifest' href='/manifest.json'>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute(); ?>>
