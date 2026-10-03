@@ -122,8 +122,10 @@ if ($xport_array['meta']['step'] > 0) {
 	$xport_array['meta']['missing_rows'] = max(0, $xport_array['meta']['expected_rows'] - $xport_array['meta']['rows']);
 }
 
-// Make graph title the suggested file name
-$filename = $xport_array['meta']['title_cache'] . '.csv';
+// Make graph title the suggested file name; strip characters that could break
+// out of the quoted filename in the Content-Disposition header (CR/LF header
+// injection, quote escaping).
+$filename = str_replace(["\r", "\n", '"', '\\'], '', (string) $xport_array['meta']['title_cache']) . '.csv';
 
 header('Content-type: application/vnd.ms-excel; charset=UTF-8');
 header('Content-Transfer-Encoding: binary');
