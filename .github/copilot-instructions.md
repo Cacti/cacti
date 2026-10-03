@@ -69,6 +69,9 @@
   - Use `cacti_redirect($path, $params)` for local redirects; it rejects absolute and protocol-relative destinations (checking both raw and percent-decoded forms) and terminates the request.
   - Escape output for HTML attribute contexts with `html_escape_attr()`, not `htmle()`/`html_escape()`; only the attribute helper double-encodes to stop pre-encoded entities from breaking out of the attribute.
 
+## Pull request pre-flight (MANDATORY)
+- **Before creating any pull request you MUST run `composer run-script php-cs-fixit`** to apply the repo's `php-cs-fixer` formatting rules, then commit any resulting changes. This script fixes in place (unlike the dry-run `composer phpcsfixer`), so creating a PR without running it is what trips the coding-standards job in CI. Run it from WSL (see Windows/WSL note below). Do not open the PR until the working tree is clean after the fixer runs.
+
 ## Workflows you’ll actually use
 - **Windows/WSL**: When working in VS Code from a Windows machine, run all fixes, builds, linters, tests, and git operations inside WSL (a Linux distro) rather than native Windows. The toolchain (PHP 8.3, Composer, `php-cs-fixer`, Pest) and the repo's tab indentation / `\n` line-ending conventions are Linux-first; running them on native Windows produces spurious diffs and failures. Edit the WSL-mounted checkout (e.g. under `/mnt/c/...` or a native WSL path) and invoke `composer` scripts such as `composer php-cs-fixit` from the WSL shell.
 - Install deps: `composer install` (CI validates via `.github/workflows/syntax.yml`).
