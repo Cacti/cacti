@@ -13,12 +13,12 @@ Cacti CHANGELOG
 -security#GHSA-gf3f-mwjj-vj2v: Validate the automation tree rule item field against existing columns before storage
 -security#GHSA-jv53-qfw3-v2fh: Validate the automation graph rule item field against existing columns before storage
 -security#GHSA-mgcq-r6vm-4xhw: Escape SNMP and Data Query names in Reports tree titles
--security#GHSA-v2mq-mxpw-55pf: Escape graph preset names rendered in the gprint presets list
+-security#GHSA-v2mq-mxpw-55pf: CVE-2026-46530 Escape graph preset names rendered in the gprint presets list
 -security#GHSA-4fr7-45gj-5cx6: Validate and escape data_source_path before RRDtool execution
 -security#GHSA-fgwr-944r-wg98: Validate rrd and data_source path tokens in the CLI maintenance tools and Boost
 -security#GHSA-p5xj-48vc-mqrf: Cap remember-me token lifetime to 90 days via the login-time predicate and the poller_maintenance authcache purge
 -security#GHSA-69vw-qxxv-p8w2: Remove the No Authentication mode and its auto-admin grant, migrating legacy auth_method=0 to Builtin login
--security#GHSA-jpf3-w6p4-pjrf: Validate the automation tree rule item field against existing columns before storage
+-security#GHSA-jpf3-w6p4-pjrf: CVE-2026-44480 Validate the automation tree rule item field against existing columns before storage
 -security#GHSA-4p7f-qcc2-vmx7: Escape path_php_binary in the resource-cache PHP syntax-check system() call
 -security#GHSA-hcj6-pmvx-fwgr: Strip CR/LF in escape_command so interpolated data cannot inject a second rrdtool command
 -security#GHSA-967c-6qj7-q7rh: Close the rrd_maximum |query_*| newline injection via the escape_command control-character strip
