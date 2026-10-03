@@ -2771,8 +2771,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					}
 
 					if ($graph_item['shift'] == CHECKED && abs($graph_item['value']) > 0) {
-						// create a SHIFT statement
-						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
+						// create a SHIFT statement (numeric-only to keep it off the rrdtool command line as an option/injection)
+						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . floatval($graph_item['value']);
 					}
 
 					break;
@@ -2782,7 +2782,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$txt_graph_items .= 'AREA:' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ':STACK';
 
 					if ($graph_item['shift'] == CHECKED && $graph_item['value'] > 0) {      // create a SHIFT statement
-						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
+						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . floatval($graph_item['value']);
 					}
 
 					break;
@@ -2794,7 +2794,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . $dash;
 
 					if ($graph_item['shift'] == CHECKED && $graph_item['value'] > 0) {      // create a SHIFT statement
-						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
+						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . floatval($graph_item['value']);
 					}
 
 					break;
@@ -2804,12 +2804,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$txt_graph_items .= 'LINE' . $graph_item['line_width'] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ':STACK' . $dash;
 
 					if ($graph_item['shift'] == CHECKED && $graph_item['value'] > 0) {      // create a SHIFT statement
-						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
+						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . floatval($graph_item['value']);
 					}
 
 					break;
 				case GRAPH_ITEM_TYPE_TIC:
-					$_fraction = (empty($graph_item['graph_type_id']) ? '' : (':' . $graph_item['value']));
+					$_fraction = (empty($graph_item['graph_type_id']) ? '' : (':' . floatval($graph_item['value'])));
 					$_legend   = ':' . cacti_escapeshellarg(rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id])) . $hardreturn[$graph_item_id]);
 					$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . $_fraction . $_legend;
 
