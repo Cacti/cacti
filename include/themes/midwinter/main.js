@@ -110,6 +110,26 @@ function updateNavigation() {
 		var menu_element = $('.cactiConsoleNavigationArea a[href^="'+window.location.pathname+'"').first();
 		if (menu_element.length !== 0) return midWinterNavigation(menu_element);
 	}
+
+	// Graph-only accounts and plugin pages may have no matching console menu.
+	let breadcrumbs = $('#breadcrumbs > li > a');
+	if (breadcrumbs.length === 0) {
+		return;
+	}
+
+	$('#navTitle .rubric, #navTitle .category, #navTitle .action').empty();
+	let slots = ['.rubric', '.category', '.action'];
+	breadcrumbs.each(function(index) {
+		let slot = Math.min(index, slots.length - 1);
+		let target = $('#navTitle ' + slots[slot]);
+		if (target.children().length) {
+			target.append(document.createTextNode(' / '));
+		}
+		target.append($(this).clone(false).removeAttr('id'));
+	});
+	$('#navTitle .separator').each(function(index) {
+		$(this).toggle(index < Math.min(breadcrumbs.length - 1, 2));
+	});
 }
 
 function setupTree() {
