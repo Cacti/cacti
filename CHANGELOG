@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security#GHSA-2fhv-c794-v433: Authorize Data Source enable/disable against the owning device before mutating
 -security#GHSA-4p7f-qcc2-vmx7: Escape path_php_binary before the resource-cache PHP syntax-check shell command
 -security#GHSA-967c-6qj7-q7rh: Confirm the rrdtool control-character strip closes the RRD-create |query_*| injection path
 -security#GHSA-f7jw-gfhr-cxwm: Escape the automation tree-rule preview Resulting Branch values
@@ -16,10 +17,10 @@ Cacti CHANGELOG
 -security#GHSA-xq26-f282-f998: Enforce a retention window on the remember-me cookie token check
 -security#GHSA-m67r-fcmw-gvv7: Confine the imported data-query xml_path to the Cacti tree
 -security#GHSA-4gph-8x7q-h365: Confirm the report-add device description status message is escaped (regression test)
--security#GHSA-977w-79m7-xjc4: Confirm the graph export legend columns are html-escaped (regression test)
+-security#GHSA-977w-79m7-xjc4: CVE-2026-40307 Confirm the graph export legend columns are html-escaped (regression test)
 -security#GHSA-mgcq-r6vm-4xhw: Confirm the Reports Data Query name is html-escaped (regression test)
--security#GHSA-5p79-q5q3-84vw: Confirm die_html_input_error escapes the echoed variable and value (regression test)
--security#GHSA-cfhh-pwvx-gp5g: Confirm the aggregate rfilter is no longer echoed into a raw HTML attribute (regression test)
+-security#GHSA-5p79-q5q3-84vw: CVE-2024-34705 Confirm die_html_input_error escapes the echoed variable and value (regression test)
+-security#GHSA-cfhh-pwvx-gp5g: CVE-2026-40940 Confirm the aggregate rfilter is no longer echoed into a raw HTML attribute (regression test)
 -security#GHSA-wfcf-2x67-2jxg: Confirm the user_admin group filter is a bound parameter (regression test)
 -security#GHSA-pjq5-3268-g222: Confirm path_dsstats_log is escaped before the dsstats shell redirect (regression test)
 -security#GHSA-wp33-g6gc-444m: Confirm the data_templates rrd_maximum/rrd_minimum validator is anchored (regression test)
@@ -36,19 +37,10 @@ Cacti CHANGELOG
 -security#GHSA-c725-4jm5-9fx5: Use validate_redirect_url() for the CSRF timeout redirect to close a tab-based open redirect bypass
 -security#GHSA-gxgm-8rhv-r7jv: Require Package Management permission to trust new package signers
 -security#GHSA-rjvj-r52f-8v5q: Harden cmd.exe shell sinks and strip %VAR% from hostnames on win32 (#8056)
--security: Reject SHA-1 signatures across every package import path
--security: Escape path_dsstats_log before it reaches the dsstats poller shell redirect
--security: Revoke anonymous access when the guest account is disabled
--security: Cast graph and device ids to int in get_allowed_* permission filters
--security: Honour a trusted forwarded proto when setting the Secure session cookie
--security: Confine automation sorting and pagination before SQL and HTML rendering
--security: Substitute query data before escaping graph titles and axis labels
--security: Build forced-HTTPS redirects from the server-configured name
--security: Replace sibling password-reset links and revoke authentication state after reset
+-security#8158: Harden - Reject SHA-1 signatures across every package import path
+-security#8158: Harden - Confine automation sorting and pagination before SQL and HTML rendering
+-security#8158: Harden - Replace sibling password-reset links and revoke authentication state after reset
 -security#GHSA-3jj2-v5ch-wmq5: Fail closed on a posted LDAP realm that is not a configured domain
--security: Keep LDAP directory errors out of the login page
--security: Demand TLS certificates for new LDAP domains
--security: Restore the Cacti error handler on LDAP bind-only and empty-password paths
 -issue#8120: Do not replicate repository and tooling metadata files (.gitignore, .htaccess.dist, .mdl_style.rb, .mdlrc) to remote data collectors during file replication
 -issue#8116: Restore legacy unique_keys[] support in db_table_create() and db_update_table() so plugins that declare UNIQUE indexes with that definition style keep them across a schema refresh
 -issue#8105: Add a Force Uninstall action to remove an orphaned plugin whose directory is missing
@@ -414,7 +406,8 @@ Cacti CHANGELOG
 
 1.2.32
 -security#GHSA-fq9x-x3vf-3vf2: Substitute data-input field tokens in a single pass so a composed value cannot re-inject an escaped payload into the script command line
--security#GHSA-hh7r-464j-rf39: Sanitize the Content-Disposition filename in the graph data export
+-security#GHSA-54hx-hxc4-jq7j: Numeric-cast the graph-item value for TICK fraction and SHIFT statements before the RRDtool command line
+-security#GHSA-hh7r-464j-rf39: Neutralize CSV formula injection and sanitize the Content-Disposition filename in the graph data export
 -security#GHSA-v99q-57w7-mpmg: Escape the page title rendered in the HTML title element
 -security#GHSA-f5f5-h85v-6m3h: Render user administration tooltip content as escaped text
 -security#GHSA-p3rg-7pc3-2h86: Dummy-verify passwords for unknown users to close a login-timing enumeration side channel
@@ -424,12 +417,12 @@ Cacti CHANGELOG
 -security#GHSA-gf3f-mwjj-vj2v: Validate the automation tree rule item field against existing columns before storage
 -security#GHSA-jv53-qfw3-v2fh: Validate the automation graph rule item field against existing columns before storage
 -security#GHSA-mgcq-r6vm-4xhw: Escape SNMP and Data Query names in Reports tree titles
--security#GHSA-v2mq-mxpw-55pf: Escape graph preset names rendered in the gprint presets list
+-security#GHSA-v2mq-mxpw-55pf: CVE-2026-46530 Escape graph preset names rendered in the gprint presets list
 -security#GHSA-4fr7-45gj-5cx6: Validate and escape data_source_path before RRDtool execution
 -security#GHSA-fgwr-944r-wg98: Validate rrd and data_source path tokens in the CLI maintenance tools and Boost
 -security#GHSA-p5xj-48vc-mqrf: Cap remember-me token lifetime to 90 days via the login-time predicate and the poller_maintenance authcache purge
--security#GHSA-69vw-qxxv-p8w2: Remove the No Authentication mode and stop auto-granting an admin session for a legacy auth_method=0
--security#GHSA-jpf3-w6p4-pjrf: Validate the automation tree rule item field against existing columns before storage
+-security#GHSA-69vw-qxxv-p8w2: Remove the No Authentication mode and its auto-admin grant, migrating legacy auth_method=0 to Builtin login
+-security#GHSA-jpf3-w6p4-pjrf: CVE-2026-44480 Validate the automation tree rule item field against existing columns before storage
 -security#GHSA-4p7f-qcc2-vmx7: Escape path_php_binary in the resource-cache PHP syntax-check system() call
 -security#GHSA-hcj6-pmvx-fwgr: Strip CR/LF in escape_command so interpolated data cannot inject a second rrdtool command
 -security#GHSA-967c-6qj7-q7rh: Close the rrd_maximum |query_*| newline injection via the escape_command control-character strip
@@ -446,11 +439,18 @@ Cacti CHANGELOG
 -security#GHSA-2x86-jpm8-9vgp: Confine the data-query XML file existence check to the Cacti base path
 -security#GHSA-4gph-8x7q-h365: Escape the device description in the report-add status message
 -security#GHSA-73qf-hq23-c4m7: Authorize the tree copy, lock and unlock actions against per-tree access before mutating
+-security#GHSA-929h-4c93-hxcg: Quote the aggregate graph filter LIKE term
+-security#GHSA-cg45-2mww-g98p: Revoke the server-side remember-me row on the auth_changepassword nopassword path
 -security#GHSA-f7jw-gfhr-cxwm: Escape the Resulting Branch value in the automation tree-rule matching preview
 -security#GHSA-h5wg-qf6f-7f6r: Reject unsafe identifiers in the plugin table create and drop helpers
+-security#GHSA-m3fh-gxqj-76hq: Strip control characters from the SNMPv3 credential device fields
 -security#GHSA-m57p-vf3v-cpgg: Escape the SNMP-sourced device description in the automation tree-rule matching preview
+-security#GHSA-m67r-fcmw-gvv7: Confine the imported data-query xml_path to the Cacti tree
 -security#GHSA-m6wx-f538-m6q3: Enforce the .log extension on the Boost debug log path setting
+-security#GHSA-mpfm-qhvj-5879: Validate the theme in rrdtool_create_error_image() through the theme allowlist
 -security#GHSA-r6jp-ff29-v9qw: Escape the imported template name in the template-import preview
+-security#GHSA-vx2m-q53g-hmrf: Escape host_snmp_cache.field_name in the automation pivot CASE WHEN builders
+-security#GHSA-xq26-f282-f998: Enforce a retention window on the remember-me cookie token check
 -security#GHSA-4rmr-wvjq-qxc2: Run the per-page realm check after Basic Auth and guest login instead of returning early
 -security#GHSA-j67j-wpm4-9g3x: Require a CSRF-token POST for the user and group update_policy action
 -security#GHSA-2p3x-f5jm-rg6p: Break the View-Graphs to poller remote code execution chain
@@ -458,18 +458,132 @@ Cacti CHANGELOG
 -security#GHSA-9737-rqh3-h7fh: Escape interpolated names in raise_message across the UI
 -security#GHSA-9x9h-2577-9w86: Build the colordropdown autocomplete from nodes and text, not HTML strings
 -security#GHSA-h96j-8xhc-2p3w: Authorize remote_agent on the genuine peer address, not forwarded headers
--security#GHSA-2fhv-c794-v433: Authorize Data Source enable/disable against the owning device before mutating
+-security#GHSA-9qff-xccr-rrc5: Contain data_source_path within the RRA directory
+-security#GHSA-vp35-4h28-r883: CVE-2026-39939 Harden package import path traversal defenses
+-security#GHSA-pqrp-v752-mc4f: Stop disabled accounts authenticating and revoke tokens on disable
+-security#GHSA-3466-fp7g-c9rf: Prefer base_url over the client Host header for the force_https redirect
 -security#GHSA-prxj-84qq-v5jq: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating
+-security#GHSA-xvwr-hvpm-67jw: Escape template name and dependency path in the Template Import preview
 -security#GHSA-77pr-g949-4v5f: Authorize the target graph before Spike Kill rewrites its RRD history
 -security#GHSA-w3qw-762w-6g9v: Reject array-form GET actions that bypass the POST and CSRF guard
 -security#GHSA-xhpr-w454-cc9w: Cast the stored data-query output_type before building the poller cache query
 -security#GHSA-j3px-vw6r-g25x: Escape stored snmp_index values in the New Graphs data-query pivot
 -security#GHSA-h745-3r76-g253: Escape the data-query and field names in the New Graphs parse error messages
-
-1.2.x
+-security#GHSA-297h-95ff-r767: Escape the log-file names in the log viewer file selector
+-security#8055: Harden - Strip cmd.exe metacharacters from SNMP, script query, and data query arguments on win32
+-security#8055: Harden - Strip CR/LF from escape_command to stop rrdtool-protocol injection
+-security#GHSA-5c9j-rhf5-rj4h: Harden Net-SNMP command execution and SNMP cache processing
+-security#8055: Harden - Escape the device Location filter option value to stop stored XSS
+-security#8055: Harden - Drop client-forgeable HTTP_PHP_AUTH_USER/HTTP_REMOTE_USER headers from HTTP Basic Auth
+-security#7990: Harden - Reject clean-client login requests when the session cookie was not accepted
+-security#8008: Harden - Fail closed on a posted LDAP realm that is not a configured domain
+-security#8008: Harden - Keep LDAP directory errors out of the login page
+-security#8008: Harden - Demand TLS certificates for new LDAP installs
+-security#8008: Harden - Restore the Cacti error handler on LDAP bind-only and empty-password paths
+-security#7972: Harden - Harden CLI shell arguments, database credentials, and temporary RRD files
+-security#7847: Harden - Revoke anonymous access when the guest account is disabled
+-security#7847: Harden - Cast graph and device ids to int in get_allowed_* permission filters
+-security#7847: Harden - Set the Secure session cookie behind a trusted TLS-terminating proxy
+-security#7847: Harden - Escape path_dsstats_log before logging
+-security#7847: Harden - Escape aggregate graph local_graph_id before SQL use
+-security#7847: Harden - Reject Windows-special log filename forms in the clog purge validation
+-security#7845: Harden - Substitute query data before escaping graph titles and axis labels
+-security#7832: Harden - Build forced-HTTPS redirects from the server-configured name
+-security#7817: Harden - Constrain external-link includes to regular files inside the configured content directory
+-security#7235: Harden - Harden advisory command execution and database DDL sink validation
+-security#GHSA-2pmj-f26c-3ghv: Restrict graph input fields across the template, graph and import handoffs
+-security#7675: Harden - Treat a non-boolean signature result as a failure in import_package
+-issue#5679: Attempt SNMP in Ping-OR-SNMP availability checks when ping fails
+-issue#6609: Return a controlled empty export when RRDtool XPORT omits metadata
+-issue#6684: Prevent VDEF-backed aggregate graph items from being emitted as XPORT data sources
+-issue#7027: Refuse to signal a process table PID that pid_t cannot hold
+-issue#7027: Detect reused process IDs before treating registry tasks as live
+-issue#7029: Propagate replacement database handles to reconnecting callers
 -issue#7212: Address a few small memory leaks in realtime graphing
+-issue#7216: Aggregate totalling legend printed untotalled single data source values
+-issue#7245: Raise execution time limit for bulk graph creation (PR #7378)
+-issue#7328: Align graph, CSV export, percentile, and summation sample windows
+-issue#7342: Reject wall-clock snmpEngineTime values when selecting device uptime
+-issue#7344: Share and preserve realtime graph sizing in Inline and New Window modes
 -issue#7359: Undefined variables detected with legacy plugins
+-issue#7382: Memoize db_get_table_column_types to cut redundant SHOW COLUMNS
+-issue#7385: Keep Automation Network schedule times in the server timezone
+-issue#7403: Scale lm-sensors get values consistently with query values
+-issue#7409: Commit transaction check uses the passed connection
+-issue#7410: Correct octet carry in automation_get_next_host for wide ranges
+-issue#7424: Correct SNMP disk counter wrap delta calculations
+-issue#7425: Guard process registration and cleanup against PID reuse
+-issue#7426: Stop tracking the generated CSRF secret so each install creates its own
+-issue#7427: Update device status by host id instead of non-unique hostname
+-issue#7429: Prevent monthly automation schedules from resetting next_start to 1970
+-issue#7430: Remove inert Automatically Trust Signer control from package import
+-issue#7456: Bind the selected operating system in automation discovery filters
+-issue#7490: Require complete graph template filter matches
+-issue#7493: SNMP walk for output_format fields used max OIDs instead of the device bulk walk size
+-issue#7506: Close open select menus when their scroll container moves
+-issue#7552: HTMLPurifier definition cache written inside the read-only library tree
+-issue#7553: Drop down menus do not update page content after upgrading to 1.2.31
+-issue#7591: Honor alternate frame ancestors
+-issue#7593: Guard request URI reads on 1.2.x
+-issue#7598: Bind host template ID filters as prepared parameters
+-issue#7600: Expire persistent auth tokens when permissions change
+-issue#7602: Launch cactid without a shell
+-issue#7604: Emit structured security events for validation failures
+-issue#7606: Log the reason a session read failed
+-issue#7617: Allow the graph tree sidebar to shrink with collapsed content
+-issue#7624: Restore select-all controls on 1.2.x
+-issue#7625: Fail closed on incomplete installer schemas
+-issue#7628: Reject incomplete selection payloads
+-issue#7630: Propagate background installation failures
+-issue#7666: cacti_exec() returned the wrong exit code and warned about a missing exit_code key
+-issue#7699: Guard three divisors that PHP 8 makes fatal
+-issue#7702: CSP report endpoint size limit never triggers and rate-limit buckets accumulate
+-issue#7708: Bind the MIB column names in MibCache::select()
+-issue#7711: Install the matrix PHP MySQL driver in the 1.2.x integration workflow
+-issue#7727: Log entry for Data Source validation has a double space
+-issue#7728: Fail closed during Boost handoff and preserve the direct-RRD fallback
+-issue#7747: Make 1.2 dependency builds reproducible
+-issue#7747: Keep missing PHP extensions visible to the Cacti installer
+-issue#7777: Url encode the base64 regex filter before it reaches the query string
+-issue#7801: Harden CSRF secret storage and state-changing browser request handoffs
+-issue#7809: Undefined array key "source" warning reindexing SNMP data queries with output-only fields
+-issue#7810: Stop using null as a graph CF cache offset on PHP 8.5
+-issue#7812: Clarify that missing SNMP notification receivers need no action when traps are disabled
+-issue#7819: Remove obsolete pre-PHP 8 compatibility branches
+-issue#7829: Report a missing session cookie instead of redirecting into a login loop
+-issue#7868: Apply Boost process-table columns on the 1.2.32 upgrade path
+-issue#7907: Reject CLI RLIKE patterns, remove the unused remove_graphs --graph-type option, and improve cli argument handling and exit status
+-issue#7954: Guard applySkin when cactiNonce is not defined
+-issue#7957: Stop treating every PID in a container as a reserved system PID
+-issue#7958: Repair batchgapfix --force, which aborted on PHP 8 and killed nothing
+-issue#7961: Preserve the full Plugin Management layout after dependency errors
+-issue#7967: Fail CSP Pest jobs when no tests execute
+-issue#7975: Harden malformed remember-me cookies and protocol-aware UI cookie flags
+-issue#7978: Revoke remember-me tokens before clearing cookies on every logout path
+-issue#7979: Fail closed on invalid, cyclic, or oversized CDEF definitions
+-issue#7981: Require a POST token for actions that reorder or delete items, trees and link pages
+-issue#7986: Preserve child exit codes observed by cacti_exec
+-issue#8025: An enum type in a table definition can cause problems when creating the table
+-issue#8042: Detect a real TTY instead of a dead github_actions check before calling stty size
+-issue#8063: Support searching by graph ID on the Graphs list/preview and Aggregate Graphs pages
+-issue#8104: Hash the debounce notification key to stop 50-character truncation errors
+-issue#8105: Add a Force Uninstall action to remove an orphaned plugin whose directory is missing
+-issue#8121: Do not replicate repository and tooling metadata files to remote data collectors during file replication
+-issue#8115: db_update_table() now reconciles unique_keys, so a plugin's UNIQUE index is no longer dropped (and a missing one is added) when an existing table is refreshed
+-issue#7826: Restore qualified plugin table metadata lookups (plugin_syslog#331)
+-issue#7804: Restore RRDproxy encryption with Composer-managed phpseclib 3
+-issue#7930: Commit transactions on MySQL as well as MariaDB
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
+-feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
+-feature#7388: Allow admin to pass CSV file to change device script for bulk changes
+-feature#8032: Update phpseclib to version 4.0.1
+-feature#7887: Update bundled jQuery UI to 1.14.2 and jQuery Tablesorter to 2.31.3
+-feature#8159: Update bundled DOMPurify to 3.4.16
+-feature#8159: Update bundled d3 to 7.9.0
+-feature#8159: Update bundled billboard.js to 4.1.0
+-feature#8159: Update bundled jQuery Tablesorter to 2.32.0
+-feature#8159: Update bundled screenfull to 5.2.0
+-feature#8159: Manage bundled front-end JavaScript libraries through npm so Dependabot can track them
 
 1.2.31
 -security#GHSA-6RVG-2VM8-5WRF: CVE-2026-22802 Authentication Bypass leads to information disclosure
