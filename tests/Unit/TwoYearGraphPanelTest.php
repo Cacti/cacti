@@ -17,6 +17,15 @@
  +-------------------------------------------------------------------------+
  */
 
+beforeEach(function () {
+	$this->originalTimezone = date_default_timezone_get();
+	date_default_timezone_set('UTC');
+});
+
+afterEach(function () {
+	date_default_timezone_set($this->originalTimezone);
+});
+
 $twoYearPanelFor = function ($date, $requested, $interval, $rows) {
 	$source = file_get_contents(dirname(__DIR__, 2) . '/graph.php');
 	$begin = strpos($source, "\t\t// Add a longer view");
