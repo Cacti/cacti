@@ -8364,87 +8364,61 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 	stream_set_blocking($pipes[1], false);
 	stream_set_blocking($pipes[2], false);
 
-	$stdout      = '';
-	$stderr      = '';
-	$idle_budget = (int) round(((float) $timeout) * 1000000);
-	$idle_left   = $idle_budget;
-	$exit        = null;
-	$open        = array(1 => $pipes[1], 2 => $pipes[2]);
+	$stdout    = '';
+	$stderr    = '';
+	$budget    = (int) round(((float) $timeout) * 1000000);
+	$remaining = $budget;
+	$exit      = null;
 
-	while ($idle_left > 0 && !empty($open)) {
-		$read   = array_values($open);
+	while ($remaining > 0) {
+		$read   = array($pipes[1], $pipes[2]);
 		$write  = array();
 		$except = array();
 
-		/* $timeout is a maximum idle gap, not total runtime: the wait refills
-		 * whenever the child produces output, so a long but actively streaming
-		 * response (a large snmpbulkwalk) is never killed mid-stream and is only
-		 * reaped after a genuine silent stall. Split the idle budget into whole
-		 * seconds + microseconds; the microsecond slot cannot hold the full value
-		 * on its own, and there is no fixed sleep, so a child that answers in 2ms
-		 * returns in 2ms. */
-		$sec   = (int) ($idle_left / 1000000);
-		$usec  = $idle_left % 1000000;
+		/* $timeout is a maximum idle gap, not a total runtime cap: the budget
+		 * refills whenever the child produces output, so a long but actively
+		 * streaming response (a large snmpbulkwalk) is never killed mid-stream and
+		 * is only reaped after a genuine silent stall. Split the budget into whole
+		 * seconds + microseconds and never sleep a fixed slice, so a child that
+		 * answers in 2ms returns in 2ms rather than waiting out a floor. */
+		$sec   = (int) ($remaining / 1000000);
+		$usec  = $remaining % 1000000;
 		$start = microtime(true);
-		$ready = @stream_select($read, $write, $except, $sec, $usec);
+		@stream_select($read, $write, $except, $sec, $usec);
 
-		if ($ready === false) {
-			break;
-		}
-
-		$progressed = false;
-		$closed     = false;
-
-		if ($ready > 0) {
-			foreach ($read as $pipe) {
-				$chunk = fread($pipe, 8192);
-
-				if ($chunk !== false && $chunk !== '') {
-					if ($pipe === $pipes[1]) {
-						$stdout .= $chunk;
-					} else {
-						$stderr .= $chunk;
-					}
-
-					$progressed = true;
-				}
-
-				/* Drop a pipe from the select set once it reaches EOF so a closed
-				 * pipe cannot spin stream_select() while the child lingers. */
-				if (feof($pipe)) {
-					unset($open[($pipe === $pipes[1]) ? 1 : 2]);
-					$closed = true;
-				}
-			}
-		}
-
-		if ($progressed) {
-			/* Output refills the idle budget; only a silent stretch counts down. */
-			$idle_left = $idle_budget;
-		} else {
-			$waited     = microtime(true) - $start;
-			$idle_left -= (int) ($waited * 1000000);
-
-			/* Where select() cannot block on a pipe (Windows), it returns at once
-			 * with nothing ready; yield briefly so the loop cannot peg a CPU. On
-			 * platforms where select() blocks, this never runs. */
-			if (!$closed && $waited < 0.002) {
-				usleep(2000);
-				$idle_left -= 2000;
-			}
-		}
+		$chunk_out = (string) stream_get_contents($pipes[1]);
+		$chunk_err = (string) stream_get_contents($pipes[2]);
+		$stdout   .= $chunk_out;
+		$stderr   .= $chunk_err;
 
 		$status = proc_get_status($process);
 
 		/* proc_get_status() returns false on a dead handle. Preserve a valid
 		 * exitcode while it is observable because a later status read or
-		 * proc_close() can return -1 after the child has already been reaped. */
+		 * proc_close() can return -1 after the child has already been reaped. Do
+		 * not leave the loop merely because the pipes reached EOF: a child can be
+		 * mid-reap for a few milliseconds after its output ends, and reading its
+		 * status in that window reports it still running, so keep polling until it
+		 * actually stops rather than mistaking the gap for a timeout. */
 		if (!is_array($status) || empty($status['running'])) {
 			if (is_array($status) && isset($status['exitcode']) && $status['exitcode'] >= 0) {
 				$exit = (int) $status['exitcode'];
 			}
 
 			break;
+		}
+
+		if ($chunk_out !== '' || $chunk_err !== '') {
+			/* Output refills the idle budget; only a silent stretch counts down. */
+			$remaining = $budget;
+		} else {
+			/* No output this pass. Yield briefly so an EOF or non-blocking pipe
+			 * cannot peg a CPU and so a just-terminated child has time to be reaped
+			 * before the next status read, then charge the whole idle slice (select
+			 * wait + yield) against the countdown so a genuinely silent child still
+			 * times out. */
+			usleep(2000);
+			$remaining -= (int) ((microtime(true) - $start) * 1000000);
 		}
 	}
 
