@@ -37,9 +37,9 @@ Cacti CHANGELOG
 -security#GHSA-c725-4jm5-9fx5: Use validate_redirect_url() for the CSRF timeout redirect to close a tab-based open redirect bypass
 -security#GHSA-gxgm-8rhv-r7jv: Require Package Management permission to trust new package signers
 -security#GHSA-rjvj-r52f-8v5q: Harden cmd.exe shell sinks and strip %VAR% from hostnames on win32 (#8056)
--security: Reject SHA-1 signatures across every package import path
--security: Confine automation sorting and pagination before SQL and HTML rendering
--security: Replace sibling password-reset links and revoke authentication state after reset
+-security#8158: Harden - Reject SHA-1 signatures across every package import path
+-security#8158: Harden - Confine automation sorting and pagination before SQL and HTML rendering
+-security#8158: Harden - Replace sibling password-reset links and revoke authentication state after reset
 -security#GHSA-3jj2-v5ch-wmq5: Fail closed on a posted LDAP realm that is not a configured domain
 -issue#8120: Do not replicate repository and tooling metadata files (.gitignore, .htaccess.dist, .mdl_style.rb, .mdlrc) to remote data collectors during file replication
 -issue#8116: Restore legacy unique_keys[] support in db_table_create() and db_update_table() so plugins that declare UNIQUE indexes with that definition style keep them across a schema refresh
@@ -578,12 +578,12 @@ Cacti CHANGELOG
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
 -feature#8032: Update phpseclib to version 4.0.1
 -feature#7887: Update bundled jQuery UI to 1.14.2 and jQuery Tablesorter to 2.31.3
--feature: Update bundled DOMPurify to 3.4.16
--feature: Update bundled d3 to 7.9.0
--feature: Update bundled billboard.js to 4.1.0
--feature: Update bundled jQuery Tablesorter to 2.32.0
--feature: Update bundled screenfull to 5.2.0
--feature: Manage bundled front-end JavaScript libraries through npm so Dependabot can track them
+-feature#8159: Update bundled DOMPurify to 3.4.16
+-feature#8159: Update bundled d3 to 7.9.0
+-feature#8159: Update bundled billboard.js to 4.1.0
+-feature#8159: Update bundled jQuery Tablesorter to 2.32.0
+-feature#8159: Update bundled screenfull to 5.2.0
+-feature#8159: Manage bundled front-end JavaScript libraries through npm so Dependabot can track them
 
 1.2.31
 -security#GHSA-6RVG-2VM8-5WRF: CVE-2026-22802 Authentication Bypass leads to information disclosure
