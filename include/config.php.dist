@@ -112,6 +112,16 @@ $disable_log_rotation = false;
 //$package_keys_path = '/etc/cacti/pki';
 
 /*
+ * Optional parameter to define the directory used by Cacti's shared object
+ * cache (for example the pre-hardened SNMP credential cache). When unset, Cacti
+ * uses cache/ below the installation path and creates it when needed. The
+ * directory must be private and writable by the poller/web server user; if it
+ * cannot be created or written, the shared cache degrades to per-process storage
+ * rather than falling back to a world-writable system temporary directory.
+ */
+//$config['cache_dir'] = '/var/www/html/cacti/cache';
+
+/*
  * Optional parameter to define a data input whitelist command string. This
  * whitelist file will help protect cacti from unauthorized changes to Cacti
  * data input command string.

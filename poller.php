@@ -40,6 +40,7 @@ require_once(CACTI_PATH_LIBRARY . '/dsdebug.php');
 require_once(CACTI_PATH_LIBRARY . '/boost.php');
 require_once(CACTI_PATH_LIBRARY . '/reports.php');
 require_once(CACTI_PATH_LIBRARY . '/rrdcheck.php');
+require_once(CACTI_PATH_LIBRARY . '/snmp.php');
 
 global $poller_db_cnn_id, $remote_db_cnn_id, $logged, $database_hostname;
 
@@ -211,6 +212,9 @@ api_plugin_hook('poller_top');
 if (CACTI_CONNECTION == 'online') {
 	update_resource_cache($poller_id);
 }
+
+// prime the shared SNMP auth cache (rebuilt only when credentials change)
+snmp_auth_cache_refresh();
 
 // get number of polling items from the database
 $poller_interval = intval(read_config_option('poller_interval'));

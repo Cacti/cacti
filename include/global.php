@@ -283,6 +283,19 @@ if (isset($i18n_text_log)) {
 	$config['i18n_text_log'] = $i18n_text_log;
 }
 
+/* Shared object cache directory (see $config['cache_dir'] in config.php).
+ * Default to a private cache/ under the install. If it cannot be created or is
+ * not writable the shared cache simply degrades to a process-local tier; never
+ * fall back to a world-writable shared temp directory, which would let a local
+ * user plant predictable cache files for the poller to read. */
+if (empty($config['cache_dir'])) {
+	$config['cache_dir'] = $config['base_path'] . '/cache';
+}
+
+if (!is_dir($config['cache_dir'])) {
+	@mkdir($config['cache_dir'], 0770, true);
+}
+
 // include base modules
 require_once(CACTI_PATH_LIBRARY . '/database.php');
 require_once(CACTI_PATH_LIBRARY . '/functions.php');

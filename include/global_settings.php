@@ -1010,7 +1010,7 @@ $settings['snmp'] = [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Auth Protocol (v3)'),
 		'description'   => __('Default SNMPv3 Authorization Protocol for all new Devices.'),
-		'default'       => 'MD5',
+		'default'       => 'SHA',
 		'array'         => $snmp_auth_protocols,
 	],
 	'snmp_username' => [
@@ -1033,7 +1033,7 @@ $settings['snmp'] = [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Privacy Protocol (v3)'),
 		'description'   => __('Default SNMPv3 Privacy Protocol for all new Devices.'),
-		'default'       => 'DES',
+		'default'       => 'AES',
 		'array'         => $snmp_priv_protocols,
 	],
 	'snmp_priv_passphrase' => [
@@ -1094,6 +1094,12 @@ $settings['snmp'] = [
 			fn () => new Assert\Range(min: 0, max: 100, notInRangeMessage: __('must be between {{ min }} and {{ max }}.')),
 		],
 	],
+	'snmp_md5_des_enabled' => [
+		'friendly_name' => __('Enable MD5 and DES for SNMPv3'),
+		'description'   => __('The MD5 authentication and DES privacy algorithms are legacy, weak, and unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When disabled, MD5 and DES are removed from the SNMPv3 Authentication and Privacy Protocol dropdowns shown when editing a Device and in the Automation SNMP Options, leaving only the stronger SHA and AES algorithms.'),
+		'method'        => 'checkbox',
+		'default'       => ''
+	],
 	'snmp_bulk_walk_size' => [
 		'friendly_name' => __('Bulkwalk Fetch Size'),
 		'description'   => __('How many OID\'s should be returned per snmpbulkwalk request?  For Devices with large SNMP trees, increasing this size will increase re-index performance over a WAN.'),
@@ -1121,6 +1127,12 @@ $settings['snmp'] = [
 		'default'       => '10',
 		'max_length'    => '10',
 		'size'          => '5'
+	],
+	'snmp_credential_cache' => [
+		'friendly_name' => __('Enable Credential Cache'),
+		'description'   => __('Pre-harden and cache SNMPv3 credential arguments once per credential change so each poller process reuses them instead of rebuilding them on every request.  This yields a marginal savings when collecting with SNMPv3 credentials through the Net-SNMP binaries.  The php-snmp extension handles most SNMPv3 gets in-process and bypasses this cache, but the Net-SNMP binaries (and therefore this cache) are still used for SNMP walks, hex output, requests that set a context or engine id, and protocol combinations that the running PHP version does not support.  Enable this if you collect any of those workloads with SNMPv3 credentials.'),
+		'method'        => 'checkbox',
+		'default'       => ''
 	],
 	'availability_header' => [
 		'friendly_name' => __('Availability/Reachability'),

@@ -136,6 +136,10 @@ cpu_cores_check();
 // Remove deleted devices
 remove_aged_row_cache();
 
+// Sweep this collector's SNMP credential cache (each collector has its own
+// host-local cache file / shared-memory segment, so this runs everywhere)
+snmp_credential_cache_maintenance();
+
 // Update Object Totals Caches
 if (POLLER_ID == 1) {
 	update_graphs_data_source_templates_totals($force);
@@ -165,6 +169,39 @@ if (!$force) {
 }
 
 exit(0);
+
+/**
+ * Sweep this collector's shared SNMP credential cache once a day. Each collector
+ * keeps its own host-local cache file / shared-memory segment, so this runs on
+ * every collector (not just the main one), using a per-poller lastrun marker so
+ * one collector's sweep does not suppress another's.
+ *
+ * @return void No value is returned.
+ */
+function snmp_credential_cache_maintenance() : void {
+	require_once(CACTI_PATH_LIBRARY . '/snmp.php');
+
+	if (!function_exists('snmp_auth_cache_rebuild') || !snmp_auth_cache_enabled()) {
+		return;
+	}
+
+	$setting  = 'snmp_cred_cache_lastrun_' . POLLER_ID;
+	$last_run = read_config_option($setting);
+	$now      = time();
+
+	if (empty($last_run)) {
+		set_config_option($setting, $now);
+		return;
+	}
+
+	if (date('z', $now) != date('z', $last_run)) {
+		set_config_option($setting, $now);
+
+		maint_debug('Rebuilding SNMP credential cache');
+
+		snmp_auth_cache_rebuild();
+	}
+}
 
 function unlock_cacti() : void {
 	$lockout = read_config_option('cacti_lockout_status', true);

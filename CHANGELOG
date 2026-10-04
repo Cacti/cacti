@@ -1,6 +1,9 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-feature#8166: Add a cross-process shared SNMP authentication cache (disabled by default) that pre-hardens SNMPv3 credential arguments once per credential change and seals them with the per-installation AES-256-GCM key, so poller, cmd and script server processes reuse them instead of rebuilding them on every request
+-feature#8166: Route SNMPv3 get/getnext through the in-process php-snmp extension when the running PHP version supports the configured auth/privacy protocols and no context/engine id is set, bypassing a per-request Net-SNMP binary spawn
+-feature#8166: Add an "Enable MD5 and DES for SNMPv3" setting (off by default) that removes the legacy MD5/DES algorithms from the Device and Automation SNMP Option pickers when disabled, and default new Devices to SHA/AES
 -security#GHSA-2fhv-c794-v433: Authorize Data Source enable/disable against the owning device before mutating
 -security#GHSA-4p7f-qcc2-vmx7: Escape path_php_binary before the resource-cache PHP syntax-check shell command
 -security#GHSA-967c-6qj7-q7rh: Confirm the rrdtool control-character strip closes the RRD-create |query_*| injection path
