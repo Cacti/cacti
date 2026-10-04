@@ -116,6 +116,16 @@ $disable_log_rotation = false;
 //$config['purifier_cache_path'] = '/var/cache/cacti/purifier';
 
 /**
+ * Optional parameter to define the directory used by Cacti's shared object
+ * cache (for example the pre-hardened SNMP credential cache). The directory
+ * must already exist and be writable by the poller/web server user. If unset,
+ * Cacti uses cache/ below the installation path; if that is missing or not
+ * writable, it falls back to the system temporary directory.
+ */
+
+//$config['cache_dir'] = '/var/www/html/cacti/cache';
+
+/**
  * Optional parameter to define a data input whitelist command string. This
  * whitelist file will help protect cacti from unauthorized changes to Cacti
  * data input command string.

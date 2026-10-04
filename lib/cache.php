@@ -577,6 +577,10 @@ class SharedCache {
 	private static function defaultCacheDir(): string {
 		global $config;
 
+		if (!empty($config['cache_dir'])) {
+			return $config['cache_dir'];
+		}
+
 		$base = $config['base_path'] ?? getcwd();
 
 		return $base . '/cache';
