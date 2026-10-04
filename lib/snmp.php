@@ -356,29 +356,35 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 		snmp_set_quick_print(0);
 
 		$timeout_us = (int) ($timeout_ms * 1000);
+		$snmp_value = 'U';
 
 		if (function_exists('snmp_set_enum_print')) {
 			snmp_set_enum_print(true);
 		}
 
-		if ($version == '1') {
-			$snmp_value = @snmpget($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
-		} elseif ($version == '2') {
-			$snmp_value = @snmp2_get($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
-		} else {
-			if ($priv_proto == '[None]' || $priv_pass == '') {
-				if ($auth_pass == '' || $auth_proto == '[None]') {
-					$sec_level   = 'noAuthNoPriv';
+		try {
+			if ($version == '1') {
+				$snmp_value = @snmpget($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
+			} elseif ($version == '2') {
+				$snmp_value = @snmp2_get($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
+			} else {
+				if ($priv_proto == '[None]' || $priv_pass == '') {
+					if ($auth_pass == '' || $auth_proto == '[None]') {
+						$sec_level   = 'noAuthNoPriv';
+					} else {
+						$sec_level   = 'authNoPriv';
+					}
+
+					$priv_proto = '';
 				} else {
-					$sec_level   = 'authNoPriv';
+					$sec_level = 'authPriv';
 				}
 
-				$priv_proto = '';
-			} else {
-				$sec_level = 'authPriv';
+				$snmp_value = @snmp3_get(snmp_format_agent($hostname, $port), $auth_user, $sec_level, snmp_native_protocol($auth_proto), $auth_pass, snmp_native_protocol($priv_proto), $priv_pass, $oid, $timeout_us, $retries);
 			}
-
-			$snmp_value = @snmp3_get(snmp_format_agent($hostname, $port), $auth_user, $sec_level, snmp_native_protocol($auth_proto), $auth_pass, snmp_native_protocol($priv_proto), $priv_pass, $oid, $timeout_us, $retries);
+		} catch (\Throwable $ex) {
+			$snmp_error = $ex->getMessage();
+			$snmp_value = false;
 		}
 
 		if ($snmp_value === false) {
@@ -464,24 +470,30 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 		snmp_set_quick_print(0);
 
 		$timeout_us = (int) ($timeout_ms * 1000);
+		$snmp_value = 'U';
 
-		if ($version == '1') {
-			$snmp_value = @snmpgetnext($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
-		} elseif ($version == '2') {
-			$snmp_value = @snmp2_getnext($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
-		} else {
-			if ($priv_proto == '[None]' || $priv_pass == '') {
-				if ($auth_pass == '' || $auth_proto == '[None]') {
-					$sec_level   = 'noAuthNoPriv';
-				} else {
-					$sec_level   = 'authNoPriv';
-				}
-				$priv_proto = '';
+		try {
+			if ($version == '1') {
+				$snmp_value = @snmpgetnext($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
+			} elseif ($version == '2') {
+				$snmp_value = @snmp2_getnext($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
 			} else {
-				$sec_level = 'authPriv';
-			}
+				if ($priv_proto == '[None]' || $priv_pass == '') {
+					if ($auth_pass == '' || $auth_proto == '[None]') {
+						$sec_level   = 'noAuthNoPriv';
+					} else {
+						$sec_level   = 'authNoPriv';
+					}
+					$priv_proto = '';
+				} else {
+					$sec_level = 'authPriv';
+				}
 
-			$snmp_value = @snmp3_getnext(snmp_format_agent($hostname, $port), $auth_user, $sec_level, snmp_native_protocol($auth_proto), $auth_pass, snmp_native_protocol($priv_proto), $priv_pass, $oid, $timeout_us, $retries);
+				$snmp_value = @snmp3_getnext(snmp_format_agent($hostname, $port), $auth_user, $sec_level, snmp_native_protocol($auth_proto), $auth_pass, snmp_native_protocol($priv_proto), $priv_pass, $oid, $timeout_us, $retries);
+			}
+		} catch (\Throwable $ex) {
+			$snmp_error = $ex->getMessage();
+			$snmp_value = false;
 		}
 
 		if ($snmp_value === false) {
@@ -761,19 +773,20 @@ function snmp_auth_cache_key($community, $username, $password, $auth_proto, $pri
 }
 
 /**
- * Distinct SNMP credential tuples from host and poller_item. Only read when the
+ * Distinct SNMPv3 credential tuples from host and poller_item. Only read when the
  * credential version token has moved, so the DISTINCT scan runs on a credential
  * change rather than on every poll. poller_item is included because a device can
  * carry a per-data-source SNMP override (e.g. a second agent on another port)
- * that the host row does not reflect.
+ * that the host row does not reflect. Only v3 rows are scanned because v1/v2
+ * community hardening is trivial and resolved live, so only v3 tuples are cached.
  *
  * @return array
  */
 function snmp_auth_cache_rows(): array {
 	$columns = 'snmp_community, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol';
 
-	$hosts = db_fetch_assoc("SELECT DISTINCT $columns FROM host WHERE snmp_version > 0");
-	$items = db_fetch_assoc("SELECT DISTINCT $columns FROM poller_item WHERE snmp_version > 0");
+	$hosts = db_fetch_assoc("SELECT DISTINCT $columns FROM host WHERE snmp_version = 3");
+	$items = db_fetch_assoc("SELECT DISTINCT $columns FROM poller_item WHERE snmp_version = 3");
 
 	return array_merge(is_array($hosts) ? $hosts : array(), is_array($items) ? $items : array());
 }
@@ -877,6 +890,23 @@ function snmp_auth_cache_refresh(): void {
 	}
 
 	$cache->store(snmp_auth_cache_build_map(snmp_auth_cache_rows()), $version);
+}
+
+/**
+ * Force a full rebuild of the shared SNMP auth cache from a fresh scan and
+ * reseal it at the current credential version. Unlike snmp_auth_cache_refresh()
+ * this skips the version check, so it can run out of band (poller maintenance)
+ * to sweep orphaned tuples that credential removals leave behind. Resealing at
+ * the current version means pollers keep using the cache with no startup rebuild.
+ *
+ * @return void
+ */
+function snmp_auth_cache_rebuild(): void {
+	if (!snmp_auth_cache_enabled()) {
+		return;
+	}
+
+	snmp_auth_cache()->store(snmp_auth_cache_build_map(snmp_auth_cache_rows()), snmp_cred_version());
 }
 
 /**
@@ -1839,7 +1869,7 @@ function cacti_snmp_get_multi($hostname, $community, $oids, $version, $auth_user
 			} else {
 				$values = @snmp3_get($agent, $auth_user, $sec_level, $auth_native, $auth_pass, $priv_native, $priv_pass, $chunk, $timeout_us, $retries);
 			}
-		} catch (Exception $e) {
+		} catch (\Throwable $e) {
 			$values     = false;
 			$snmp_error = $e->getMessage();
 		}
@@ -2001,9 +2031,10 @@ function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid 
 
 /**
  * Whether the running PHP build's procedural snmp3_*() calls accept the given
- * SNMPv3 auth and privacy protocol tokens. ext-snmp only began validating the
- * SHA-2 auth family and the AES-192/256[C] privacy tokens in PHP 8.6; earlier
- * builds raise a ValueError, so those combinations must use the Net-SNMP binary.
+ * SNMPv3 auth and privacy protocol tokens. ext-snmp accepts MD5/SHA/SHA256/SHA512
+ * auth and DES/AES/AES128 privacy from PHP 8.2; the SHA-224/SHA-384 auth variants
+ * and the AES-192/256[C] privacy tokens were only added in PHP 8.6. Earlier builds
+ * raise a ValueError for those, so those combinations must use the Net-SNMP binary.
  *
  * @param string $auth_proto Stored auth protocol token (e.g. SHA, SHA256).
  * @param string $priv_proto Stored privacy protocol token (e.g. AES, AES256C).
@@ -2014,17 +2045,18 @@ function snmp_php_v3_protocols_supported($auth_proto, $priv_proto) {
 	$auth = snmp_native_protocol($auth_proto);
 	$priv = snmp_native_protocol($priv_proto);
 
-	/* Allowlist of tokens the procedural snmp3_*() calls accept. The SHA-2 auth
-	 * family and the AES-192/256[C] privacy tokens were only validated from PHP
-	 * 8.6; earlier builds accept just MD5/SHA and DES/AES. An unknown token
-	 * (automation SNMP protocol fields are stored without an allowlist) is never
-	 * routed to snmp3_*(), which would otherwise raise an uncaught ValueError. */
-	$auth_ok = array('', '[None]', 'MD5', 'SHA');
-	$priv_ok = array('', '[None]', 'DES', 'AES');
+	/* Allowlist of tokens the procedural snmp3_*() calls accept. MD5/SHA/SHA256/
+	 * SHA512 auth and DES/AES/AES128 privacy are accepted from the PHP 8.2 floor;
+	 * the SHA-224/SHA-384 auth variants and AES-192/256[C] privacy tokens were
+	 * only added in PHP 8.6. An unknown token (automation SNMP protocol fields are
+	 * stored without an allowlist) is never routed to snmp3_*(), which would
+	 * otherwise raise an uncaught ValueError. */
+	$auth_ok = array('', '[None]', 'MD5', 'SHA', 'SHA256', 'SHA512');
+	$priv_ok = array('', '[None]', 'DES', 'AES', 'AES128');
 
 	if (PHP_VERSION_ID >= 80600) {
-		$auth_ok = array_merge($auth_ok, array('SHA224', 'SHA256', 'SHA384', 'SHA512'));
-		$priv_ok = array_merge($priv_ok, array('AES128', 'AES192', 'AES192C', 'AES256', 'AES256C'));
+		$auth_ok = array_merge($auth_ok, array('SHA224', 'SHA384'));
+		$priv_ok = array_merge($priv_ok, array('AES192', 'AES192C', 'AES256', 'AES256C'));
 	}
 
 	if (!in_array($auth, $auth_ok, true) || !in_array($priv, $priv_ok, true)) {

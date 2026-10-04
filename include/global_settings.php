@@ -1334,7 +1334,7 @@ $settings = array(
 		),
 		'snmp_credential_cache' => array(
 			'friendly_name' => __('Enable Credential Cache'),
-			'description' => __('Pre-harden and cache SNMPv3 credential arguments once per credential change so each poller process reuses them instead of rebuilding them on every request.  This yields a marginal savings when collecting with SNMPv3 credentials through the Net-SNMP binaries.  If the php-snmp extension is installed, SNMPv3 gets are handled in-process and bypass this cache, so it is safe to leave this disabled.'),
+			'description' => __('Pre-harden and cache SNMPv3 credential arguments once per credential change so each poller process reuses them instead of rebuilding them on every request.  This yields a marginal savings when collecting with SNMPv3 credentials through the Net-SNMP binaries.  The php-snmp extension handles most SNMPv3 gets in-process and bypasses this cache, but the Net-SNMP binaries (and therefore this cache) are still used for SNMP walks, hex output, requests that set a context or engine id, and protocol combinations that the running PHP version does not support.  Enable this if you collect any of those workloads with SNMPv3 credentials.'),
 			'method' => 'checkbox',
 			'default' => ''
 		),

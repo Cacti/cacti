@@ -961,8 +961,14 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 			FROM host
 			WHERE id = ?',
 			array($id));
+
+		$previous_snmp_version = db_fetch_cell_prepared('SELECT snmp_version
+			FROM host
+			WHERE id = ?',
+			array($id));
 	} else {
-		$previous_poller = 0;
+		$previous_poller       = 0;
+		$previous_snmp_version = 0;
 	}
 
 	/* fetch some cache variables */
@@ -1143,9 +1149,12 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 	}
 
 	if ($device_id > 0) {
-		/* bump the SNMP credential version so the next poll rebuilds the shared
-		 * credential cache from a fresh scan if these SNMP settings changed */
-		set_config_option('snmp_cred_version', uniqid('', true));
+		/* Only SNMPv3 credentials live in the shared credential cache, so only bump
+		 * the version when this host is v3 now or was v3 before the save; a host that
+		 * is non-v3 both before and after changes nothing the cache holds. */
+		if ($save['snmp_version'] == 3 || $previous_snmp_version == 3) {
+			set_config_option('snmp_cred_version', uniqid('', true));
+		}
 
 		if (read_config_option('extended_paths') == 'on'){
 			$pattern  = read_config_option('extended_paths_type');

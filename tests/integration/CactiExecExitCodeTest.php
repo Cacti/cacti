@@ -163,6 +163,11 @@ test('a fractional timeout is honored and reaps a silent child near its deadline
 	$elapsed = microtime(true) - $start;
 
 	expect($exit)->toBe(1);
+	// Lower bound: the child must survive until near its 0.5s deadline. An
+	// implementation that truncated 0.5 to an integer 0 would kill it almost
+	// immediately, so this proves the fractional timeout is actually honored
+	// rather than merely terminating before the child's 5s sleep.
+	expect($elapsed)->toBeGreaterThan(0.4);
 	expect($elapsed)->toBeLessThan(3.0);
 });
 

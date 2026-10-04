@@ -867,9 +867,22 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 	 */
 	set_config_option('time_last_change_poller_item', time());
 
-	/* bump the SNMP credential version so the next poll rebuilds the shared
-	 * credential cache from a fresh scan if any item SNMP credentials changed */
-	set_config_option('snmp_cred_version', uniqid('', true));
+	/* Only SNMPv3 credentials live in the shared credential cache. Bump the version
+	 * only when this flush touched v3 poller items, so a non-v3 (or non-SNMP) data
+	 * source change does not force a needless credential cache rebuild. */
+	if ($ids != '') {
+		$v3_items = db_fetch_cell_prepared("SELECT COUNT(*) FROM poller_item
+			WHERE poller_id = ?
+			AND local_data_id IN ($ids)
+			AND snmp_version = 3",
+			array($poller_id));
+	} else {
+		$v3_items = db_fetch_cell('SELECT COUNT(*) FROM poller_item WHERE snmp_version = 3');
+	}
+
+	if ($v3_items > 0) {
+		set_config_option('snmp_cred_version', uniqid('', true));
+	}
 }
 
 /**

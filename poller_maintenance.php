@@ -105,6 +105,8 @@ if ($config['poller_id'] == 1) {
 	secpass_check_expired();
 
 	reindex_devices();
+
+	snmp_credential_cache_maintenance();
 }
 
 // Check the realtime cache and poller
@@ -178,6 +180,40 @@ function reindex_devices() {
 				}
 			}
 		}
+	}
+}
+
+/**
+ * Rebuild the shared SNMP credential cache out of band, at most once a day, so
+ * orphaned tuples left behind by removed credentials are swept without a poller
+ * ever paying for the scan. Used as part of Cacti's poller maintenance
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
+function snmp_credential_cache_maintenance() {
+	global $config;
+
+	include_once($config['library_path'] . '/snmp.php');
+
+	if (!function_exists('snmp_auth_cache_rebuild') || !snmp_auth_cache_enabled()) {
+		return;
+	}
+
+	$last_run = read_config_option('snmp_cred_cache_lastrun');
+	$now      = time();
+
+	if (empty($last_run)) {
+		set_config_option('snmp_cred_cache_lastrun', $now);
+		return;
+	}
+
+	if (date('z', $now) != date('z', $last_run)) {
+		set_config_option('snmp_cred_cache_lastrun', $now);
+
+		maint_debug('Rebuilding SNMP credential cache');
+
+		snmp_auth_cache_rebuild();
 	}
 }
 
