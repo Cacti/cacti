@@ -233,7 +233,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 		return 'U';
 	}
 
-	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format) == SNMP_METHOD_PHP) {
+	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format, $auth_proto, $priv_proto) == SNMP_METHOD_PHP) {
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
 		snmp_set_quick_print(0);
@@ -350,7 +350,7 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 		return 'U';
 	}
 
-	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format) == SNMP_METHOD_PHP) {
+	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format, $auth_proto, $priv_proto) == SNMP_METHOD_PHP) {
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
 		snmp_set_quick_print(0);
@@ -458,7 +458,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 		return 'U';
 	}
 
-	if (snmp_get_method('getnext', $version, $context, $engineid, $value_output_format) == SNMP_METHOD_PHP) {
+	if (snmp_get_method('getnext', $version, $context, $engineid, $value_output_format, $auth_proto, $priv_proto) == SNMP_METHOD_PHP) {
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
 		snmp_set_quick_print(0);
@@ -753,17 +753,21 @@ function snmp_auth_cache_key($community, $username, $password, $auth_proto, $pri
 }
 
 /**
- * Distinct SNMP credential tuples from host and poller_item.
+ * Distinct SNMP credential tuples from the host table.
  *
  * @return array
  */
 function snmp_auth_cache_rows(): array {
 	$columns = 'snmp_community, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol';
 
+	/* Every poller_item SNMP credential is copied from its host, so the host
+	 * table already holds the full distinct credential set. Scanning host (a few
+	 * thousand rows) instead of poller_item (potentially millions, and unindexed
+	 * on these columns) keeps the per-startup refresh cheap; a credential that
+	 * somehow exists only on an item simply falls back to live hardening. */
 	$hosts = db_fetch_assoc("SELECT DISTINCT $columns FROM host WHERE snmp_version > 0");
-	$items = db_fetch_assoc("SELECT DISTINCT $columns FROM poller_item WHERE snmp_version > 0");
 
-	return array_merge(is_array($hosts) ? $hosts : array(), is_array($items) ? $items : array());
+	return is_array($hosts) ? $hosts : array();
 }
 
 /**
@@ -1257,7 +1261,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 
 	$path_snmpbulkwalk = read_config_option('path_snmpbulkwalk');
 
-	if (snmp_get_method('walk', $version, $context, $engineid, $value_output_format) == SNMP_METHOD_PHP) {
+	if (snmp_get_method('walk', $version, $context, $engineid, $value_output_format, $auth_proto, $priv_proto) == SNMP_METHOD_PHP) {
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
 
@@ -1767,7 +1771,7 @@ function cacti_snmp_get_multi($hostname, $community, $oids, $version, $auth_user
 	/* The array-OID form only exists on the procedural ext-snmp path; anything
 	 * that must use the binary (hex output, no ext-snmp) is served one OID at a
 	 * time through the usual single get. */
-	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format) != SNMP_METHOD_PHP || !function_exists('snmpget')) {
+	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format, $auth_proto, $priv_proto) != SNMP_METHOD_PHP || !function_exists('snmpget')) {
 		$results = array();
 
 		foreach ($oids as $oid) {
@@ -1926,7 +1930,7 @@ function snmp_escape_string($string) {
  * @return int One of the `SNMP_METHOD_*` constants.
  */
 function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid = '',
-    $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
+    $value_output_format = SNMP_STRING_OUTPUT_GUESS, $auth_proto = '', $priv_proto = '') {
 
 	global $config;
 
@@ -1945,11 +1949,22 @@ function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid 
 		return SNMP_METHOD_BINARY;
 	}
 
-	/* SNMPv3 get/getnext: the procedural snmp3_*() calls reach libnetsnmp directly
-	 * and handle the AESxxx[C] and SHA families on PHP 8.2+, so prefer them over
-	 * the binary and its per-call process spawn. */
+	/* SNMPv3 get/getnext: prefer the procedural snmp3_*() calls (they reach
+	 * libnetsnmp directly and avoid a per-call process spawn), but only when the
+	 * running PHP can actually service the request. The procedural API has no
+	 * context or engine-id parameters, and ext-snmp before PHP 8.6 rejects the
+	 * SHA-2 auth and AES-192/256[C] privacy tokens with a ValueError, so those
+	 * requests fall back to the Net-SNMP binary. */
 	if ($version == 3) {
-		return function_exists('snmp3_get') ? SNMP_METHOD_PHP : SNMP_METHOD_BINARY;
+		if (!function_exists('snmp3_get')) {
+			return SNMP_METHOD_BINARY;
+		}
+
+		if ($context != '' || $engineid != '' || !snmp_php_v3_protocols_supported($auth_proto, $priv_proto)) {
+			return SNMP_METHOD_BINARY;
+		}
+
+		return SNMP_METHOD_PHP;
 	}
 
 	if ($version == 1 && function_exists('snmpget')) {
@@ -1961,6 +1976,31 @@ function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid 
 	}
 
 	return SNMP_METHOD_BINARY;
+}
+
+/**
+ * Whether the running PHP build's procedural snmp3_*() calls accept the given
+ * SNMPv3 auth and privacy protocol tokens. ext-snmp only began validating the
+ * SHA-2 auth family and the AES-192/256[C] privacy tokens in PHP 8.6; earlier
+ * builds raise a ValueError, so those combinations must use the Net-SNMP binary.
+ *
+ * @param string $auth_proto Stored auth protocol token (e.g. SHA, SHA256).
+ * @param string $priv_proto Stored privacy protocol token (e.g. AES, AES256C).
+ *
+ * @return bool True when the procedural API accepts both tokens on this PHP.
+ */
+function snmp_php_v3_protocols_supported($auth_proto, $priv_proto) {
+	if (PHP_VERSION_ID >= 80600) {
+		return true;
+	}
+
+	$auth = snmp_native_protocol($auth_proto);
+	$priv = snmp_native_protocol($priv_proto);
+
+	$auth_ok = in_array($auth, array('', '[None]', 'MD5', 'SHA'), true);
+	$priv_ok = in_array($priv, array('', '[None]', 'DES', 'AES'), true);
+
+	return $auth_ok && $priv_ok;
 }
 
 /**

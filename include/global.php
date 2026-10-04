@@ -254,19 +254,16 @@ if (!isset($resource_path)) {
 }
 
 /* Shared object cache directory (see $config['cache_dir'] in config.php).
- * Default to cache/ under the install, then fall back to the system temp dir
- * when the chosen directory is missing or not writable, so the cache degrades
- * instead of failing hard. */
+ * Default to a private cache/ under the install. If it cannot be created or is
+ * not writable the shared cache simply degrades to a process-local tier; never
+ * fall back to a world-writable shared temp directory, which would let a local
+ * user plant predictable cache files for the poller to read. */
 if (empty($config['cache_dir'])) {
 	$config['cache_dir'] = $config['base_path'] . '/cache';
 }
 
 if (!is_dir($config['cache_dir'])) {
-	@mkdir($config['cache_dir'], 0775, true);
-}
-
-if (!is_dir($config['cache_dir']) || !is_writable($config['cache_dir'])) {
-	$config['cache_dir'] = sys_get_temp_dir();
+	@mkdir($config['cache_dir'], 0770, true);
 }
 
 if (isset($input_whitelist)) {

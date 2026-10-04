@@ -153,3 +153,51 @@ test('cacti_exec raises no exit_code warning while reading status', function () 
 
 	expect($exit_code_warnings)->toBe(array());
 });
+
+test('a fractional timeout is honored and reaps a silent child near its deadline', function () {
+	$out   = array();
+	$start = microtime(true);
+	// 0.5s idle budget against a 5s silent sleep: the child must be reaped well
+	// before its own sleep elapses, proving sub-second timeouts take effect.
+	$exit    = _exec_quietly(fn () => cacti_exec(PHP_BINARY, array('-r', 'usleep(5000000);'), $out, 0.5));
+	$elapsed = microtime(true) - $start;
+
+	expect($exit)->toBe(1);
+	expect($elapsed)->toBeLessThan(3.0);
+});
+
+test('a fast command returns promptly with no fixed per-read sleep floor', function () {
+	$out   = array();
+	$start = microtime(true);
+	// Five spawns; the old read loop floored each pass at 50ms. Require the whole
+	// batch to finish well under any such accumulated floor.
+	for ($i = 0; $i < 5; $i++) {
+		expect(cacti_exec(PHP_BINARY, array('-r', 'exit(0);'), $out))->toBe(0);
+	}
+
+	expect(microtime(true) - $start)->toBeLessThan(3.0);
+});
+
+test('streaming output refills the idle budget so a long but active child is not killed', function () {
+	$out = array();
+	// Total runtime (~2s) exceeds the 1s idle budget, but each 200ms gap stays
+	// well under it, so the idle timer resets on every line and the child runs
+	// to completion instead of being treated as a stall.
+	$script = 'for ($i = 0; $i < 10; $i++) { echo "tick$i\n"; usleep(200000); } exit(0);';
+	$exit   = cacti_exec(PHP_BINARY, array('-r', $script), $out, 1);
+
+	expect($exit)->toBe(0);
+	expect(count($out))->toBe(10);
+	expect($out[9])->toBe('tick9');
+});
+
+test('a silent child is terminated once the idle budget elapses', function () {
+	$out   = array();
+	$start = microtime(true);
+	// No output for longer than the 1s idle budget: must be reaped as a stall.
+	$exit    = _exec_quietly(fn () => cacti_exec(PHP_BINARY, array('-r', 'usleep(4000000);'), $out, 1));
+	$elapsed = microtime(true) - $start;
+
+	expect($exit)->toBe(1);
+	expect($elapsed)->toBeLessThan(3.5);
+});

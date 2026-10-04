@@ -85,12 +85,12 @@ class StaticBackend implements CacheBackend {
 }
 
 /**
- * Durable file tier. The payload is written as a PHP file that returns the
- * data, so once OPcache has compiled it the hot path is an opcode-cached
- * include rather than a disk read + unserialize. Shared across processes
- * because the file persists on disk.
+ * Durable file tier. The payload is written as a non-executable JSON data file
+ * and read back with file_get_contents(); it is never include()d, so a planted
+ * cache file cannot execute as PHP. Shared across processes because the file
+ * persists on disk.
  */
-class OpcacheFileBackend implements CacheBackend {
+class FileBackend implements CacheBackend {
 	public function __construct(private string $dir) {
 	}
 
@@ -107,19 +107,19 @@ class OpcacheFileBackend implements CacheBackend {
 	}
 
 	private function file(string $name): string {
-		return $this->dir . '/' . $name . '.cache.php';
+		return $this->dir . '/' . $name . '.cache';
 	}
 
 	public function write(string $name, string $payload, string $checksum): bool {
 		$file = $this->file($name);
 		$tmp  = $file . '.' . getmypid() . '.tmp';
 
-		$code = "<?php\n\nreturn array(\n"
-			. "\t'checksum' => " . var_export($checksum, true) . ",\n"
-			. "\t'payload'  => " . var_export(base64_encode($payload), true) . ",\n"
-			. ");\n";
+		$blob = json_encode(array(
+			'checksum' => $checksum,
+			'payload'  => base64_encode($payload),
+		));
 
-		if (@file_put_contents($tmp, $code, LOCK_EX) === false) {
+		if ($blob === false || @file_put_contents($tmp, $blob, LOCK_EX) === false) {
 			return false;
 		}
 
@@ -129,10 +129,6 @@ class OpcacheFileBackend implements CacheBackend {
 			@unlink($tmp);
 
 			return false;
-		}
-
-		if (function_exists('opcache_invalidate')) {
-			@opcache_invalidate($file, true);
 		}
 
 		return true;
@@ -146,7 +142,13 @@ class OpcacheFileBackend implements CacheBackend {
 			return null;
 		}
 
-		$data = @include $file;
+		$blob = @file_get_contents($file);
+
+		if ($blob === false) {
+			return null;
+		}
+
+		$data = json_decode($blob, true);
 
 		return is_array($data) ? $data : null;
 	}
@@ -174,10 +176,6 @@ class OpcacheFileBackend implements CacheBackend {
 
 		if (is_file($file)) {
 			@unlink($file);
-
-			if (function_exists('opcache_invalidate')) {
-				@opcache_invalidate($file, true);
-			}
 		}
 	}
 
@@ -363,7 +361,7 @@ class ShmopBackend implements CacheBackend {
  * priority shared tier; every consumer process fetch()es and decodes it a
  * single time into process memory.
  *
- * Tiers are tried in priority order; the default is the durable OPcache file,
+	 * Tiers are tried in priority order; the default is the durable file tier,
  * then POSIX shared memory, then a process-local static fallback. When only
  * the process-local tier is available there is no cross-process sharing and
  * each consumer must build its own copy.
@@ -395,7 +393,7 @@ class SharedCache {
 
 		$dir   = (string) ($options['cache_dir'] ?? self::defaultCacheDir());
 		$os    = (string) ($options['os_type'] ?? self::osType());
-		$order = $options['backends'] ?? array('opcache', 'shmop', 'static');
+		$order = $options['backends'] ?? array('file', 'shmop', 'static');
 
 		$this->backends = array();
 		$hasLocal       = false;
@@ -600,7 +598,7 @@ class SharedCache {
 		switch ($id) {
 			case 'opcache':
 			case 'file':
-				return new OpcacheFileBackend($dir);
+				return new FileBackend($dir);
 			case 'shmop':
 				return new ShmopBackend($dir, $os);
 			case 'static':
