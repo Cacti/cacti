@@ -508,8 +508,8 @@ function automation_snmp_item_edit() {
 	);
 
 	/* drop the legacy MD5/DES SNMPv3 algorithms from the pickers when disabled */
-	$fields_automation_snmp_item_edit['snmp_auth_protocol']['array'] = snmp_auth_protocol_options();
-	$fields_automation_snmp_item_edit['snmp_priv_protocol']['array'] = snmp_priv_protocol_options();
+	$fields_automation_snmp_item_edit['snmp_auth_protocol']['array'] = snmp_auth_protocol_options(isset($automation_snmp_item['snmp_auth_protocol']) ? $automation_snmp_item['snmp_auth_protocol'] : '');
+	$fields_automation_snmp_item_edit['snmp_priv_protocol']['array'] = snmp_priv_protocol_options(isset($automation_snmp_item['snmp_priv_protocol']) ? $automation_snmp_item['snmp_priv_protocol'] : '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),

@@ -835,8 +835,8 @@ function host_edit() {
 	}
 
 	/* drop the legacy MD5/DES SNMPv3 algorithms from the pickers when disabled */
-	$fields_host_edit['snmp_auth_protocol']['array'] = snmp_auth_protocol_options();
-	$fields_host_edit['snmp_priv_protocol']['array'] = snmp_priv_protocol_options();
+	$fields_host_edit['snmp_auth_protocol']['array'] = snmp_auth_protocol_options(isset($host['snmp_auth_protocol']) ? $host['snmp_auth_protocol'] : '');
+	$fields_host_edit['snmp_priv_protocol']['array'] = snmp_priv_protocol_options(isset($host['snmp_priv_protocol']) ? $host['snmp_priv_protocol'] : '');
 
 	draw_edit_form(
 		array(

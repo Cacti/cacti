@@ -676,16 +676,20 @@ function snmp_md5_des_enabled() {
 
 /**
  * Return the SNMPv3 authentication protocol choices for a form picker, dropping
- * the legacy MD5 entry when it has been disabled in Settings.
+ * the legacy MD5 entry when it has been disabled in Settings. An existing MD5
+ * selection ($current) is retained so editing a device/preset that already uses
+ * it does not silently reset the field to [None] on save.
+ *
+ * @param string $current The currently stored auth protocol for this form.
  *
  * @return array Map of protocol key => display label.
  */
-function snmp_auth_protocol_options() {
+function snmp_auth_protocol_options($current = '') {
 	global $snmp_auth_protocols;
 
 	$protocols = $snmp_auth_protocols;
 
-	if (!snmp_md5_des_enabled()) {
+	if (!snmp_md5_des_enabled() && $current !== 'MD5') {
 		unset($protocols['MD5']);
 	}
 
@@ -694,16 +698,20 @@ function snmp_auth_protocol_options() {
 
 /**
  * Return the SNMPv3 privacy protocol choices for a form picker, dropping the
- * legacy DES entry when it has been disabled in Settings.
+ * legacy DES entry when it has been disabled in Settings. An existing DES
+ * selection ($current) is retained so editing a device/preset that already uses
+ * it does not silently reset the field to [None] on save.
+ *
+ * @param string $current The currently stored privacy protocol for this form.
  *
  * @return array Map of protocol key => display label.
  */
-function snmp_priv_protocol_options() {
+function snmp_priv_protocol_options($current = '') {
 	global $snmp_priv_protocols;
 
 	$protocols = $snmp_priv_protocols;
 
-	if (!snmp_md5_des_enabled()) {
+	if (!snmp_md5_des_enabled() && $current !== 'DES') {
 		unset($protocols['DES']);
 	}
 
@@ -994,7 +1002,18 @@ function snmp_auth_cache_rows(): array {
 function snmp_auth_cache_signature(array $rows): string {
 	$salt = (string) read_config_option('secret_encryption_key');
 
-	return hash('sha256', $salt . serialize($rows));
+	/* Order-independent: hash the sorted per-tuple keys so the same credential set
+	 * yields the same token regardless of the row order a DISTINCT scan or a
+	 * registry rebuild happens to return. */
+	$keys = array();
+
+	foreach ($rows as $row) {
+		$keys[] = snmp_cred_registry_key($row);
+	}
+
+	sort($keys, SORT_STRING);
+
+	return hash('sha256', $salt . implode('|', $keys));
 }
 
 /**
@@ -1916,8 +1935,15 @@ function snmp_native_protocol($protocol) {
 function snmp_format_agent($hostname, $port) {
 	$hostname = trim((string) $hostname);
 
-	if (strpos($hostname, '[') !== false || preg_match('/^(udp6?|tcp6?|unix):/i', $hostname)) {
+	/* An explicit transport prefix carries its own target; leave it untouched. */
+	if (preg_match('/^(udp6?|tcp6?|unix):/i', $hostname)) {
 		return $hostname;
+	}
+
+	/* Already bracketed (IPv6): keep an embedded port, but attach the configured
+	 * one when the target is bracket-only, e.g. [2001:db8::1] -> [2001:db8::1]:1161. */
+	if (strpos($hostname, '[') !== false) {
+		return preg_match('/\]:\d+$/', $hostname) ? $hostname : $hostname . ':' . $port;
 	}
 
 	if (filter_var($hostname, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
@@ -2202,17 +2228,23 @@ function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid 
  * @return bool True when the procedural API accepts both tokens on this PHP.
  */
 function snmp_php_v3_protocols_supported($auth_proto, $priv_proto) {
-	if (PHP_VERSION_ID >= 80600) {
-		return true;
-	}
-
 	$auth = snmp_native_protocol($auth_proto);
 	$priv = snmp_native_protocol($priv_proto);
 
-	$auth_ok = in_array($auth, array('', '[None]', 'MD5', 'SHA'), true);
-	$priv_ok = in_array($priv, array('', '[None]', 'DES', 'AES'), true);
+	/* Allowlist of tokens the procedural snmp3_*() calls accept. The SHA-2 auth
+	 * family and the AES-192/256[C] privacy tokens were only validated from PHP
+	 * 8.6; earlier builds accept just MD5/SHA and DES/AES. An unknown token
+	 * (automation SNMP protocol fields are stored without an allowlist) is never
+	 * routed to snmp3_*(), which would otherwise raise an uncaught ValueError. */
+	$auth_ok = array('', '[None]', 'MD5', 'SHA');
+	$priv_ok = array('', '[None]', 'DES', 'AES');
 
-	return $auth_ok && $priv_ok;
+	if (PHP_VERSION_ID >= 80600) {
+		$auth_ok = array_merge($auth_ok, array('SHA224', 'SHA256', 'SHA384', 'SHA512'));
+		$priv_ok = array_merge($priv_ok, array('AES128', 'AES192', 'AES192C', 'AES256', 'AES256C'));
+	}
+
+	return in_array($auth, $auth_ok, true) && in_array($priv, $priv_ok, true);
 }
 
 /**

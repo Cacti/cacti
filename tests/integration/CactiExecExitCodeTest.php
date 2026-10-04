@@ -166,16 +166,20 @@ test('a fractional timeout is honored and reaps a silent child near its deadline
 	expect($elapsed)->toBeLessThan(3.0);
 });
 
-test('a fast command returns promptly with no fixed per-read sleep floor', function () {
+test('cacti_exec has no fixed per-read sleep floor', function () {
+	/* Deterministic regression guard: the old unconditional 50ms-per-pass sleep
+	 * is gone, so a fast command cannot inherit an N*50ms floor from the loop. */
+	$src = file_get_contents(dirname(__DIR__, 2) . '/lib/functions.php');
+	expect($src)->not->toContain('usleep(50000)');
+
 	$out   = array();
 	$start = microtime(true);
-	// Five spawns; the old read loop floored each pass at 50ms. Require the whole
-	// batch to finish well under any such accumulated floor.
-	for ($i = 0; $i < 5; $i++) {
+	for ($i = 0; $i < 20; $i++) {
 		expect(cacti_exec(PHP_BINARY, array('-r', 'exit(0);'), $out))->toBe(0);
 	}
-
-	expect(microtime(true) - $start)->toBeLessThan(3.0);
+	// Under the old floor, 20 spawns needed >=1s of pure sleep on top of spawn
+	// cost; this ceiling still catches a regression to any large fixed floor.
+	expect(microtime(true) - $start)->toBeLessThan(5.0);
 });
 
 test('streaming output refills the idle budget so a long but active child is not killed', function () {

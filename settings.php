@@ -479,11 +479,11 @@ default:
 
 	/* drop the legacy MD5/DES SNMPv3 algorithms from the default pickers when disabled */
 	if (isset($form_array['snmp_auth_protocol'])) {
-		$form_array['snmp_auth_protocol']['array'] = snmp_auth_protocol_options();
+		$form_array['snmp_auth_protocol']['array'] = snmp_auth_protocol_options(read_config_option('snmp_auth_protocol'));
 	}
 
 	if (isset($form_array['snmp_priv_protocol'])) {
-		$form_array['snmp_priv_protocol']['array'] = snmp_priv_protocol_options();
+		$form_array['snmp_priv_protocol']['array'] = snmp_priv_protocol_options(read_config_option('snmp_priv_protocol'));
 	}
 
 	draw_edit_form(

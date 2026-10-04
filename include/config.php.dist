@@ -117,10 +117,11 @@ $disable_log_rotation = false;
 
 /**
  * Optional parameter to define the directory used by Cacti's shared object
- * cache (for example the pre-hardened SNMP credential cache). The directory
- * must already exist and be writable by the poller/web server user. If unset,
- * Cacti uses cache/ below the installation path; if that is missing or not
- * writable, it falls back to the system temporary directory.
+ * cache (for example the pre-hardened SNMP credential cache). When unset, Cacti
+ * uses cache/ below the installation path and creates it when needed. The
+ * directory must be private and writable by the poller/web server user; if it
+ * cannot be created or written, the shared cache degrades to per-process storage
+ * rather than falling back to a world-writable system temporary directory.
  */
 
 //$config['cache_dir'] = '/var/www/html/cacti/cache';
