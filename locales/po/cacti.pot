@@ -19737,3 +19737,17 @@ msgstr ""
 #: plugins.php
 msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
 msgstr ""
+
+#: include/global_settings.php:1330
+msgid "Enable Credential Cache"
+msgstr ""
+
+#: include/global_settings.php:1331
+msgid ""
+"Pre-harden and cache SNMPv3 credential arguments once per credential change "
+"so each poller process reuses them instead of rebuilding them on every "
+"request.  This yields a marginal savings when collecting with SNMPv3 "
+"credentials through the Net-SNMP binaries.  If the php-snmp extension is "
+"installed, SNMPv3 gets are handled in-process and bypass this cache, so it "
+"is safe to leave this disabled."
+msgstr ""

@@ -39,6 +39,10 @@ Use these notes to navigate and contribute productively to this PHP codebase.
 - Request/validation: use `get_request_var/get_filter_request_var/get_nfilter_request_var`, `form_input_validate(...)`, and utilities like `sanitize_unserialize_selected_items(...)`. Don’t read `$_REQUEST` directly.
 - CSRF: AJAX posts include `__csrf_magic: csrfMagicToken` (see usages in `host_templates.php`, `data_queries.php`).
 - i18n: wrap UI strings with `__('...')`.
+  - Translatable strings are managed with GNU gettext. `locales/po/cacti.pot` is the source template; **Weblate owns syncing** the per-language `.po`/`.mo` files.
+  - **Never commit the per-language `.po` or compiled `.mo` files** — `locales/po/cacti.pot` is the only translation artifact a PR may add or modify.
+  - When a PR adds or changes a `__('...')` string, update `locales/po/cacti.pot` before pushing and stage **only** that file. Regenerate with `locales/update-pot.sh` (it runs `xgettext`), or, to keep the PR diff focused, append just the new `msgid` entries extracted with `xgettext`/`msggrep`. Validate with `msgfmt --check-format -o /dev/null locales/po/cacti.pot`.
+  - If `update-pot.sh` rewrites `.po`/`.mo` side effects, revert them (`git checkout -- locales/po/*.po locales/LC_MESSAGES`) so the PR touches `cacti.pot` only.
 
 ## CLI and daemon workflows
 - Install/upgrade: `php -q cli/install_cacti.php --accept-eula --install --force`; DB upgrade when needed: `php -q cli/upgrade_database.php --forcever=$(cat include/cacti_version)` (see README).
