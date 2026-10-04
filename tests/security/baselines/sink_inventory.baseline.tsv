@@ -407,7 +407,6 @@ dynamic_include	./poller_automation.php:44	require_once($config['base_path'] . '
 dynamic_include	./poller_automation.php:45	require_once($config['base_path'] . '/lib/template.php');
 dynamic_include	./poller_automation.php:46	require_once($config['base_path'] . '/lib/utility.php');
 dynamic_include	./pollers.php:26	require_once($config['base_path'] . '/lib/poller.php');
-dynamic_include	./lib/snmp.php:49		include_once($config['include_path'] . '/vendor/phpsnmp/extension.php');
 dynamic_include	./lib/data_query.php:102		include_once($config['library_path'] . '/poller.php');
 dynamic_include	./lib/data_query.php:103		include_once($config['library_path'] . '/api_data_source.php');
 dynamic_include	./lib/data_query.php:104		include_once($config['library_path'] . '/utility.php');
@@ -486,7 +485,6 @@ dynamic_include	./lib/boost.php:869		include_once($config['library_path'] . '/po
 dynamic_include	./lib/boost.php:1369		include_once($config['library_path'] . '/rrd.php');
 dynamic_include	./lib/boost.php:1955		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/boost.php:2307			include_once($config['library_path'] . '/poller.php');
-dynamic_include	./lib/mib_cache.php:90			include_once($config['include_path'] . '/vendor/phpsnmp/mib_parser.php');
 dynamic_include	./lib/html_tree.php:115		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/html_tree.php:539		include_once($config['base_path'] . '/lib/data_query.php');
 dynamic_include	./lib/html_tree.php:967		include($config['include_path'] . '/global_arrays.php');
