@@ -17,12 +17,33 @@ Use these notes to navigate and contribute productively to this PHP codebase.
 - Under the hood uses PDO; `global.php` decides between local/remote DB for remote pollers.
 - Logging: `cacti_log($msg, $echo=false, $subsystem='SYSTEM', $verbosity=POLLER_VERBOSITY_MEDIUM)`; log path via `cacti_log_file()`.
 
+## SNMP behavior
+- The PHP **script server** is a persistent process: the poller spawns `script_server.php` once (via `proc_open` in `cmd.php`/spine), then feeds it calls over STDIN. Each `scripts/ss_*.php` file is `include_once`'d once and its function is called many times **in-process**; the dispatch loop itself must never spawn a process per item.
+- `snmp_get_method()` in `lib/snmp.php` picks the transport:
+  - **Walks / bulk walks: Net-SNMP binary** (`snmpbulkwalk`). The procedural ext-snmp API cannot GETBULK; only the `SNMP` class can, and the class is avoided until PHP 8.6.
+  - **Explicit output value (hex / `-Ox`): binary.** The procedural calls cannot set an output format.
+  - **SNMPv3 single get/getnext: procedural php-snmp** (`snmp3_get`/`snmp3_getnext`), but only when the running PHP can service the request. These hit libnetsnmp directly and avoid a per-call process spawn. ext-snmp accepts MD5/SHA/SHA256/SHA512 auth and DES/AES/AES128 privacy from PHP 8.2, but the SHA-224/SHA-384 auth variants and the AES-192/256[C] privacy tokens only from PHP 8.6 (earlier builds raise an uncaught `ValueError`), and the procedural API has no context/engine-id parameters. So `snmp_get_method()` routes a v3 request to the procedural path only when the auth/priv tokens are supported by the running PHP and both context and engine id are empty; everything else (and all walks / hex output) falls back to the Net-SNMP binary. (v3 was historically forced to the binary; that is the behavior being changed.)
+  - **v1/v2 single get/getnext: procedural** (`snmpget`/`snmp2_get`).
+- **Protocol token spelling differs by path.** The binary CLI (`-a`/`-x`) wants the dashed form (`SHA-256`, `AES-256-C`); procedural php-snmp / native libnetsnmp wants the dash-less form (`SHA256`, `AES256C`). Cacti's `$snmp_auth_protocols`/`$snmp_priv_protocols` keys are dash-less (native) and values are dashed (binary). Normalize for the native path by stripping dashes.
+- **Procedural agent string needs bracketing:** IPv6 literal -> `[addr]:port`; a non-default port -> bracket the host; a DNS name being forced onto IPv6 -> bracket the name. The binary path uses `snmp_format_target*()` with the `udp6:` transport.
+- **`cacti_exec()` timeout is an idle timeout, not a total-runtime cap.** It resets whenever the child emits output, so a long but actively streaming `snmpbulkwalk` is never killed mid-stream and is reaped only after a genuine silent stall. There is no fixed `usleep`; `stream_select` gets a real seconds+microseconds split and blocks on output-or-timeout.
+- **SNMP process timeout = Net-SNMP's retry budget + ~0.5s smidge** (`cacti_snmp_command_timeout()`), passed as fractional seconds that `cacti_exec()` honors, so a hung binary is reaped just past its own timeout without killing one still performing its retries.
+- **DES/MD5 and the escape hatch:** the **Enable MD5 and DES for SNMPv3** setting is **off by default**, so new installs offer only the SHA/AES families in the dropdowns (matching hardened EL9/FIPS builds); enable it only for legacy devices that still require MD5/DES. Uninstalling php-snmp forces everything back to the binary path, and any SNMPv3 trouble with the procedural path is resolved the same way.
+- **Shared SNMP auth cache** (`Cacti\Cache\SharedCache`; built in `poller.php`, read in `cmd.php`/`script_server.php`) pre-hardens the **binary** SNMPv3 argument vector, keyed by a sha1 of the credential tuple and sealed with the per-installation AES-256-GCM secret key (`cacti_encrypt_secret()` in `lib/functions.php`). It serves the remaining binary paths and is one of the few intentional namespaced classes in the tree.
+- **The credential set is discovered by a scan gated on a cheap version token, not every poll.** `snmp_cred_version` (a tiny opaque value in `settings`) is bumped by `api_device_save()` and `poller_update_poller_cache_from_buffer()` whenever device/data-source SNMP settings may have changed (a plain `set_config_option`, so it needs no `lib/snmp.php`). `snmp_auth_cache_refresh()` compares it to the token stamped into the `SharedCache`; only when it differs does it run the full `host` + `poller_item` `SELECT DISTINCT` and rebuild. So normal polls never rescan, a credential change triggers exactly one rebuild, and removed/rotated credentials drop out naturally because the rebuild scans fresh. Do not reintroduce a per-poll scan or an unbounded credential blob in `settings` (the value column is `varchar(4096)`).
+- **The cache holds SNMPv3 credential vectors only.** v1/v2 are deliberately excluded: their entire hardening is wrapping the community in `['-c', <community>]`, which is cheaper to build inline than a sha1-keyed lookup, so `snmp_auth_cache_build_map()` skips any row without a username and `cacti_get_snmp_auth_args()` resolves v1/v2 directly without consulting the cache.
+- **Deferred to develop:** the PHP 8.6 `SNMP` class path (in-process GETBULK + output formats). Before enabling it, verify from public sources that the class supports AES256C (required by some Cisco devices).
+
 ## Web page conventions
 - Start with `include('./include/auth.php');` to enforce auth/session/CSRF.
 - Flow pattern: `set_default_action(); switch (get_request_var('action')) { ... }` with helpers like `top_header()` and `bottom_footer()` for layout (see `data_input.php`).
 - Request/validation: use `get_request_var/get_filter_request_var/get_nfilter_request_var`, `form_input_validate(...)`, and utilities like `sanitize_unserialize_selected_items(...)`. Don’t read `$_REQUEST` directly.
 - CSRF: AJAX posts include `__csrf_magic: csrfMagicToken` (see usages in `host_templates.php`, `data_queries.php`).
 - i18n: wrap UI strings with `__('...')`.
+  - Translatable strings are managed with GNU gettext. `locales/po/cacti.pot` is the source template; **Weblate owns syncing** the per-language `.po`/`.mo` files.
+  - **Never commit the per-language `.po` or compiled `.mo` files** — `locales/po/cacti.pot` is the only translation artifact a PR may add or modify.
+  - When a PR adds or changes a `__('...')` string, update `locales/po/cacti.pot` before pushing and stage **only** that file. Regenerate with `locales/update-pot.sh` (it runs `xgettext`), or, to keep the PR diff focused, append just the new `msgid` entries extracted with `xgettext`/`msggrep`. Validate with `msgfmt --check-format -o /dev/null locales/po/cacti.pot`.
+  - If `update-pot.sh` rewrites `.po`/`.mo` side effects, revert them (`git checkout -- locales/po/*.po locales/LC_MESSAGES`) so the PR touches `cacti.pot` only.
 
 ## CLI and daemon workflows
 - Install/upgrade: `php -q cli/install_cacti.php --accept-eula --install --force`; DB upgrade when needed: `php -q cli/upgrade_database.php --forcever=$(cat include/cacti_version)` (see README).
@@ -38,6 +59,7 @@ Use these notes to navigate and contribute productively to this PHP codebase.
 
 ## Workflows you’ll actually use
 - **Windows/WSL**: When working in VS Code from a Windows machine, run all fixes, builds, linters, tests, and git operations inside WSL (a Linux distro) rather than native Windows. The toolchain (PHP 8.3, Composer, `php-cs-fixer`, Pest) and the repo's tab indentation / `\n` line-ending conventions are Linux-first; running them on native Windows produces spurious diffs and failures. Edit the WSL-mounted checkout (e.g. under `/mnt/c/...` or a native WSL path) and invoke `composer` scripts such as `composer php-cs-fixit` from the WSL shell.
+- **Always drive WSL through a bash script file, never inline from PowerShell.** Passing anything non-trivial as `wsl bash -lc "..."` (or `wsl <cmd>`) lets PowerShell mangle the arguments first: quotes, `$`, backslashes, globs, `&&`, `|`, loops, here-strings and `grep`/`sed`/`awk` patterns get rewritten or split before `bash` ever sees them, producing "unexpected EOF", "command not found" and bogus failures. Write the commands into a `.sh` file and run it with a single clean argument: `wsl bash /mnt/c/.../script.sh`. Keep every multi-step, quoted, or pattern-bearing operation (searches, lint loops, gettext/pot work, git plumbing) in such a script.
 
 ## Testing, CI, and local checks
 - No PHPUnit; CI runs syntax checks and an end-to-end smoke: sets up Apache+MySQL, installs Cacti, enables plugins, runs poller, and spiders pages (see `.github/workflows/syntax.yml`, scripts in `tests/tools/`).
@@ -71,7 +93,7 @@ Use these notes to navigate and contribute productively to this PHP codebase.
   - Preserve the file’s indentation (tabs vs spaces) and brace style; do not reformat unrelated code.
   - Keep the Cacti GPL header block at the top of PHP files.
   - Use snake_case functions and procedural structure consistent with the codebase; avoid introducing namespaces unless integrating vendor code.
-  - Maintain PHP 5.4+ compatibility (CI tests 7.0–8.4). Avoid using features requiring >7.0 (e.g., union types, attributes, typed properties) in core code.
+  - Target PHP 8.2+, the 1.2.x floor (CI tests 8.2–8.4). Modern 8.2 syntax (typed properties, union types, enums, `match`, named arguments, `str_contains`) is allowed; match each file's existing conventions and do not reformat unrelated code.
   - Don’t change public function signatures in `lib/api_*.php` or widely used helpers without auditing usages.
   - For dependencies, prefer Composer-managed libs under `include/vendor` and keep versions pinned by `composer.lock`.
 

@@ -153,3 +153,60 @@ test('cacti_exec raises no exit_code warning while reading status', function () 
 
 	expect($exit_code_warnings)->toBe(array());
 });
+
+test('a fractional timeout is honored and reaps a silent child near its deadline', function () {
+	$out   = array();
+	$start = microtime(true);
+	// 0.5s idle budget against a 5s silent sleep: the child must be reaped well
+	// before its own sleep elapses, proving sub-second timeouts take effect.
+	$exit    = _exec_quietly(fn () => cacti_exec(PHP_BINARY, array('-r', 'usleep(5000000);'), $out, 0.5));
+	$elapsed = microtime(true) - $start;
+
+	expect($exit)->toBe(1);
+	// Lower bound: the child must survive until near its 0.5s deadline. An
+	// implementation that truncated 0.5 to an integer 0 would kill it almost
+	// immediately, so this proves the fractional timeout is actually honored
+	// rather than merely terminating before the child's 5s sleep.
+	expect($elapsed)->toBeGreaterThan(0.4);
+	expect($elapsed)->toBeLessThan(3.0);
+});
+
+test('cacti_exec has no fixed per-read sleep floor', function () {
+	/* Deterministic regression guard: the old unconditional 50ms-per-pass sleep
+	 * is gone, so a fast command cannot inherit an N*50ms floor from the loop. */
+	$src = file_get_contents(dirname(__DIR__, 2) . '/lib/functions.php');
+	expect($src)->not->toContain('usleep(50000)');
+
+	$out   = array();
+	$start = microtime(true);
+	for ($i = 0; $i < 20; $i++) {
+		expect(cacti_exec(PHP_BINARY, array('-r', 'exit(0);'), $out))->toBe(0);
+	}
+	// Under the old floor, 20 spawns needed >=1s of pure sleep on top of spawn
+	// cost; this ceiling still catches a regression to any large fixed floor.
+	expect(microtime(true) - $start)->toBeLessThan(5.0);
+});
+
+test('streaming output refills the idle budget so a long but active child is not killed', function () {
+	$out = array();
+	// Total runtime (~2s) exceeds the 1s idle budget, but each 200ms gap stays
+	// well under it, so the idle timer resets on every line and the child runs
+	// to completion instead of being treated as a stall.
+	$script = 'for ($i = 0; $i < 10; $i++) { echo "tick$i\n"; usleep(200000); } exit(0);';
+	$exit   = cacti_exec(PHP_BINARY, array('-r', $script), $out, 1);
+
+	expect($exit)->toBe(0);
+	expect(count($out))->toBe(10);
+	expect($out[9])->toBe('tick9');
+});
+
+test('a silent child is terminated once the idle budget elapses', function () {
+	$out   = array();
+	$start = microtime(true);
+	// No output for longer than the 1s idle budget: must be reaped as a stall.
+	$exit    = _exec_quietly(fn () => cacti_exec(PHP_BINARY, array('-r', 'usleep(4000000);'), $out, 1));
+	$elapsed = microtime(true) - $start;
+
+	expect($exit)->toBe(1);
+	expect($elapsed)->toBeLessThan(3.5);
+});

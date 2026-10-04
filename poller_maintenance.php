@@ -119,6 +119,10 @@ logrotate_check($force);
 // Remove deleted devices
 remove_aged_row_cache();
 
+// Sweep this collector's SNMP credential cache (each collector has its own
+// host-local cache file / shared-memory segment, so this runs everywhere)
+snmp_credential_cache_maintenance();
+
 if ($config['poller_id'] > 1) {
 	api_plugin_hook('poller_remote_maint');
 }
@@ -178,6 +182,43 @@ function reindex_devices() {
 				}
 			}
 		}
+	}
+}
+
+/**
+ * Rebuild the shared SNMP credential cache out of band, at most once a day, so
+ * orphaned tuples left behind by removed credentials are swept without a poller
+ * ever paying for the scan. Used as part of Cacti's poller maintenance
+ * functionality.
+ *
+ * @return void No value is returned.
+ */
+function snmp_credential_cache_maintenance() {
+	global $config;
+
+	include_once($config['library_path'] . '/snmp.php');
+
+	if (!function_exists('snmp_auth_cache_rebuild') || !snmp_auth_cache_enabled()) {
+		return;
+	}
+
+	/* each collector has its own host-local cache, so track the last run per
+	 * poller so one collector's sweep does not suppress another's */
+	$setting  = 'snmp_cred_cache_lastrun_' . $config['poller_id'];
+	$last_run = read_config_option($setting);
+	$now      = time();
+
+	if (empty($last_run)) {
+		set_config_option($setting, $now);
+		return;
+	}
+
+	if (date('z', $now) != date('z', $last_run)) {
+		set_config_option($setting, $now);
+
+		maint_debug('Rebuilding SNMP credential cache');
+
+		snmp_auth_cache_rebuild();
 	}
 }
 

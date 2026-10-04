@@ -541,3 +541,5 @@ sort_order_input	./host_templates.php:516				ORDER BY graph_templates.name', arr
 sort_order_input	./host_templates.php:554									ORDER BY gt.name', array(get_request_var('id'))),'name','id','','','');?>
 sort_order_input	./host_templates.php:573				ORDER BY snmp_query.name', array(get_request_var('id')));
 sort_order_input	./host_templates.php:608									ORDER BY snmp_query.name', array(get_request_var('id'))),'name','id','','','');?>
+dynamic_include	./poller.php:43	require_once($config['base_path'] . '/lib/snmp.php');
+dynamic_include	./poller_maintenance.php:199		include_once($config['library_path'] . '/snmp.php');

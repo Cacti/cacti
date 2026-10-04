@@ -120,6 +120,9 @@ require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/rrd.php');
 require_once($config['base_path'] . '/lib/ping.php');
 
+// decode the shared SNMP auth cache (or build a per-process copy) once at startup
+snmp_auth_cache_load();
+
 if ($version) {
 	display_version();
 	exit;
@@ -290,6 +293,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 	$output_count = 0;
 	$error_ds     = array();
 	$width_dses   = array();
+	$snmp_batch   = array();
 
 	/* startup Cacti php polling server and include the
 	 * include file for script processing
@@ -328,6 +332,12 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 
 		// check for host change
 		if ($host_id != $last_host) {
+			// flush the previous host's deferred SNMP batch before its stats/output flush
+			if (cacti_sizeof($snmp_batch)) {
+				cmd_snmp_collect_batch($snmp_batch, $output_array, $output_count, $width_dses, $error_ds, $itemcnt);
+				$snmp_batch = array();
+			}
+
 			$new_host       = true;
 			$host_down      = false;
 			$set_spike_kill = false;
@@ -387,38 +397,19 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 		$last_host = $host_id;
 
 		if (!$host_down) {
-			$output = collect_device_data($item, $error_ds);
-			$itemcnt++;
-
-			if (read_config_option('poller_debug') == 'on' && strlen($output) > $maxwidth) {
-				$width_dses[] = $ds;
-			}
-
-			if ($set_spike_kill && !substr_count($output, ':')) {
-				// insert a U in place of the actual value if the snmp agent restarts
-				$output_array[] = sprintf('(%d, %s, CURRENT_TIMESTAMP(), "U")', $item['local_data_id'], db_qstr($item['rrd_name'], $poller_db_cnn_id));
-			} else {
-				// otherwise, just insert the value received from the poller
-				$output_array[] = sprintf('(%d, %s, CURRENT_TIMESTAMP(), %s)', $item['local_data_id'], db_qstr($item['rrd_name'], $poller_db_cnn_id), db_qstr($output, $poller_db_cnn_id));
-			}
-
-			if ($output_count > 2000) {
-				cacti_log("Device[$host_id] Writing $output_count items to Poller Output Table", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
-
-				db_execute('INSERT IGNORE INTO poller_output
-					(local_data_id, rrd_name, time, output)
-					VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
-
-				if (read_config_option('boost_redirect') == 'on' && read_config_option('boost_rrd_update_enable') == 'on') {
-					db_execute('INSERT IGNORE INTO poller_output_boost
-						(local_data_id, rrd_name, time, output)
-						VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
+			if ($item['action'] == POLLER_ACTION_SNMP) {
+				// defer SNMP gets so they can be collected per host in max_oids-sized batches
+				if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
+					cacti_log("Device[$host_id] DS[$ds] ERROR: Invalid SNMP Data Source.  Please either delete it from the database, or correct it.", $print_data_to_stdout, 'POLLER');
+					$itemcnt++;
+					cmd_store_output($output_array, $output_count, $width_dses, $item, 'U');
+				} else {
+					$snmp_batch[] = $item;
 				}
-
-				$output_array = array();
-				$output_count = 0;
 			} else {
-				$output_count++;
+				$output = collect_device_data($item, $error_ds);
+				$itemcnt++;
+				cmd_store_output($output_array, $output_count, $width_dses, $item, $output);
 			}
 		}
 
@@ -428,6 +419,12 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 			cacti_log('WARNING: cmd.php poller has run over its polling interval and therefore is ending');
 			break;
 		}
+	}
+
+	// flush the final host's deferred SNMP batch
+	if (cacti_sizeof($snmp_batch)) {
+		cmd_snmp_collect_batch($snmp_batch, $output_array, $output_count, $width_dses, $error_ds, $itemcnt);
+		$snmp_batch = array();
 	}
 
 	// Record the last hosts polling time
@@ -612,6 +609,39 @@ function record_cmdphp_started() {
  *
  * @return mixed The result of the operation, or false on failure.
  */
+/**
+ * Build the per-item SNMP session identity key. Poller items on one host can
+ * override the endpoint and security tuple, so sessions (and the batch) must be
+ * keyed by the full identity, not just host/version/port. Used as part of
+ * Cacti's cmd functionality.
+ *
+ * @param int   $host_id The host ID.
+ * @param array $item    The poller item (or host row) carrying the SNMP fields.
+ *
+ * @return string The session identity key.
+ */
+function cmd_snmp_session_key($host_id, $item) {
+	/* serialize() gives an unambiguous, binary-safe encoding of every field
+	 * cacti_snmp_session() is opened with, so two distinct sessions can never
+	 * collide: a delimiter-joined subset could, because credential values may
+	 * themselves contain the delimiter, and hostname/snmp_timeout are both
+	 * overridable per data source. */
+	return $host_id . '_' . sha1(serialize(array(
+		'hostname'             => $item['hostname']             ?? '',
+		'snmp_version'         => $item['snmp_version']         ?? '',
+		'snmp_port'            => $item['snmp_port']            ?? '',
+		'snmp_community'       => $item['snmp_community']       ?? '',
+		'snmp_username'        => $item['snmp_username']        ?? '',
+		'snmp_password'        => $item['snmp_password']        ?? '',
+		'snmp_auth_protocol'   => $item['snmp_auth_protocol']   ?? '',
+		'snmp_priv_passphrase' => $item['snmp_priv_passphrase'] ?? '',
+		'snmp_priv_protocol'   => $item['snmp_priv_protocol']   ?? '',
+		'snmp_context'         => $item['snmp_context']         ?? '',
+		'snmp_engine_id'       => $item['snmp_engine_id']       ?? '',
+		'snmp_timeout'         => $item['snmp_timeout']         ?? ''
+	)));
+}
+
 function open_snmp_session($host_id, &$item) {
 	global $sessions, $downhosts;
 
@@ -619,21 +649,23 @@ function open_snmp_session($host_id, &$item) {
 		$item['max_oids'] = read_config_option('max_get_size');
 	}
 
-	if (!isset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']]) && !isset($downhosts[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']])) {
-		$sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']] = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
+	$key = cmd_snmp_session_key($host_id, $item);
+
+	if (!isset($sessions[$key]) && !isset($downhosts[$key])) {
+		$sessions[$key] = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
 			$item['snmp_username'], $item['snmp_password'], $item['snmp_auth_protocol'], $item['snmp_priv_passphrase'],
 			$item['snmp_priv_protocol'], $item['snmp_context'], $item['snmp_engine_id'], $item['snmp_port'],
 			$item['snmp_timeout'], read_config_option('snmp_retries'), $item['max_oids']);
 
-		if ($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']] === false) {
-			unset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']]);
-			$downhosts[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']] = true;
+		if ($sessions[$key] === false) {
+			unset($sessions[$key]);
+			$downhosts[$key] = true;
 
 			return false;
 		}
 	}
 
-	return $sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']];
+	return $sessions[$key];
 }
 
 /**
@@ -647,8 +679,216 @@ function open_snmp_session($host_id, &$item) {
 function snmp_mark_host_down($host_id, &$item) {
 	global $sessions, $downhosts;
 
-	unset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']]);
-	$downhosts[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']] = true;
+	$key = cmd_snmp_session_key($host_id, $item);
+
+	unset($sessions[$key]);
+	$downhosts[$key] = true;
+}
+
+/**
+ * Append a collected value to the poller output buffer, applying the spike-kill
+ * guard and flushing to poller_output once the buffer fills. Shared by the
+ * script and batched-SNMP collection paths. Used as part of Cacti's cmd functionality.
+ *
+ * @param array  &$output_array The pending poller_output rows.
+ * @param int    &$output_count The pending row count.
+ * @param array  &$width_dses   Data sources whose output exceeded the debug width.
+ * @param array  $item          The poller item.
+ * @param string $output        The collected value.
+ *
+ * @return void No value is returned.
+ */
+function cmd_store_output(&$output_array, &$output_count, &$width_dses, $item, $output) {
+	global $set_spike_kill, $maxwidth, $poller_db_cnn_id, $print_data_to_stdout;
+
+	$host_id = $item['host_id'];
+
+	if (read_config_option('poller_debug') == 'on' && strlen($output) > $maxwidth) {
+		$width_dses[] = $item['local_data_id'];
+	}
+
+	if ($set_spike_kill && !substr_count($output, ':')) {
+		// insert a U in place of the actual value if the snmp agent restarts
+		$output_array[] = sprintf('(%d, %s, CURRENT_TIMESTAMP(), "U")', $item['local_data_id'], db_qstr($item['rrd_name'], $poller_db_cnn_id));
+	} else {
+		// otherwise, just insert the value received from the poller
+		$output_array[] = sprintf('(%d, %s, CURRENT_TIMESTAMP(), %s)', $item['local_data_id'], db_qstr($item['rrd_name'], $poller_db_cnn_id), db_qstr($output, $poller_db_cnn_id));
+	}
+
+	if ($output_count > 2000) {
+		cacti_log("Device[$host_id] Writing $output_count items to Poller Output Table", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+
+		db_execute('INSERT IGNORE INTO poller_output
+			(local_data_id, rrd_name, time, output)
+			VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
+
+		if (read_config_option('boost_redirect') == 'on' && read_config_option('boost_rrd_update_enable') == 'on') {
+			db_execute('INSERT IGNORE INTO poller_output_boost
+				(local_data_id, rrd_name, time, output)
+				VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
+		}
+
+		$output_array = array();
+		$output_count = 0;
+	} else {
+		$output_count++;
+	}
+}
+
+/**
+ * Collect a host's deferred SNMP data sources in a single max_oids-sized batched
+ * request over the persistent session, then map each value back to its data
+ * source. Replaces one SNMP round trip per OID with one per max_get_size OIDs.
+ * Used as part of Cacti's cmd functionality.
+ *
+ * @param array &$snmp_batch   The deferred SNMP items for one host (keyed by local_data_id).
+ * @param array &$output_array The pending poller_output rows.
+ * @param int   &$output_count The pending row count.
+ * @param array &$width_dses   Data sources whose output exceeded the debug width.
+ * @param array &$error_ds     Data sources that returned an invalid response.
+ * @param int   &$itemcnt      The per-host collected item counter.
+ *
+ * @return void No value is returned.
+ */
+function cmd_snmp_collect_batch(&$snmp_batch, &$output_array, &$output_count, &$width_dses, &$error_ds, &$itemcnt) {
+	if (!cacti_sizeof($snmp_batch)) {
+		return;
+	}
+
+	/* Items on one host can override the SNMP endpoint/credentials per data
+	 * source, so partition the batch by the full session identity and collect
+	 * each partition through its own session. */
+	$groups = array();
+	foreach ($snmp_batch as $item) {
+		$groups[cmd_snmp_session_key($item['host_id'], $item)][] = $item;
+	}
+
+	foreach ($groups as $group) {
+		cmd_snmp_collect_group($group, $output_array, $output_count, $width_dses, $error_ds, $itemcnt);
+	}
+}
+
+/**
+ * Collect one SNMP session-identity partition of a host's deferred items in a
+ * single max_oids-sized batched request. Used as part of Cacti's cmd functionality.
+ *
+ * @param array $group         The deferred SNMP items sharing one session identity.
+ * @param array &$output_array The pending poller_output rows.
+ * @param int   &$output_count The pending row count.
+ * @param array &$width_dses   Data sources whose output exceeded the debug width.
+ * @param array &$error_ds     Data sources that returned an invalid response.
+ * @param int   &$itemcnt      The per-host collected item counter.
+ *
+ * @return void No value is returned.
+ */
+function cmd_snmp_collect_group($group, &$output_array, &$output_count, &$width_dses, &$error_ds, &$itemcnt) {
+	global $print_data_to_stdout;
+
+	$thread_start = microtime(true);
+	$first        = reset($group);
+	$host_id      = $first['host_id'];
+	$session      = open_snmp_session($host_id, $first);
+
+	if ($session === false) {
+		snmp_mark_host_down($host_id, $first);
+
+		foreach ($group as $item) {
+			$ds = $item['local_data_id'];
+			$error_ds[$ds] = $ds;
+			$itemcnt++;
+
+			if (read_config_option('spine_log_level') == 2) {
+				cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] OID:" . $item['arg1'] . ', output: U', $print_data_to_stdout, 'POLLER');
+			}
+
+			cmd_store_output($output_array, $output_count, $width_dses, $item, 'U');
+		}
+
+		return;
+	}
+
+	/* collect the partition's distinct OIDs in one call; the session chunks them
+	 * into max_oids-sized PDUs and returns the values keyed by numeric OID */
+	$oids = array();
+	foreach ($group as $item) {
+		$oid = trim($item['arg1']);
+		$oids[$oid] = $oid;
+	}
+
+	$requested = array_values($oids);
+	$results   = cacti_snmp_session_get($session, $requested, true);
+
+	$byoid = array();
+	if (is_array($results)) {
+		/* map by the (numeric) OID key the session returned */
+		foreach ($results as $roid => $value) {
+			$byoid[ltrim((string) $roid, '.')] = $value;
+		}
+
+		/* The session is configured for numeric OID keys, so a symbolic request
+		 * (e.g. IF-MIB::ifInOctets.1) comes back under its numeric OID and would
+		 * never match the item's arg1. Associate the results positionally with
+		 * the exact requested OID strings as well - the way cacti_snmp_get_multi()
+		 * does - so both symbolic and numeric requests resolve. */
+		$values = array_values($results);
+
+		foreach ($requested as $i => $roid) {
+			if (array_key_exists($i, $values)) {
+				$rkey = ltrim(trim((string) $roid), '.');
+
+				if (!isset($byoid[$rkey])) {
+					$byoid[$rkey] = $values[$i];
+				}
+			}
+		}
+	}
+
+	/* SNMPv1 GET PDUs fail the whole request with noSuchName when any single
+	 * OID is unavailable, so one stale data source would otherwise turn every
+	 * value in the batch into U. Retry just the unresolved OIDs one at a time
+	 * so a bad neighbour does not suppress otherwise-valid rows. */
+	if ($first['snmp_version'] == 1) {
+		foreach ($oids as $oid) {
+			$rkey = ltrim(trim((string) $oid), '.');
+
+			if (!isset($byoid[$rkey]) || $byoid[$rkey] === false) {
+				$single = cacti_snmp_session_get($session, $oid, true);
+
+				if ($single !== false) {
+					$byoid[$rkey] = is_array($single) ? reset($single) : $single;
+				}
+			}
+		}
+	}
+
+	$total_time = (microtime(true) - $thread_start) * 1000;
+
+	foreach ($group as $item) {
+		$ds     = $item['local_data_id'];
+		$key    = ltrim(trim($item['arg1']), '.');
+		$output = (isset($byoid[$key]) && $byoid[$key] !== false) ? $byoid[$key] : 'U';
+		$itemcnt++;
+
+		if ($output === 'U') {
+			$error_ds[$ds] = $ds;
+
+			if (read_config_option('spine_log_level') == 2) {
+				cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] OID:" . $item['arg1'] . ', output: U', $print_data_to_stdout, 'POLLER');
+			}
+		} elseif (!is_numeric($output) && prepare_validate_result($output) == false) {
+			$error_ds[$ds] = $ds;
+
+			if (read_config_option('spine_log_level') == 2) {
+				cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] OID:" . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER');
+			}
+
+			$output = 'U';
+		}
+
+		cacti_log("Device[$host_id] DS[$ds] TT[" . round($total_time, 2) . '] SNMP: v' . $item['snmp_version'] . ': ' . $item['hostname'] . ', dsname: ' . $item['rrd_name'] . ', oid: ' . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+
+		cmd_store_output($output_array, $output_count, $width_dses, $item, $output);
+	}
 }
 
 /**

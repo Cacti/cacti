@@ -834,6 +834,25 @@ function host_edit() {
 		$fields_host_edit['host_template_id']['value'] = get_filter_request_var('host_template_id');
 	}
 
+	/* drop the legacy MD5/DES SNMPv3 algorithms from the pickers when disabled */
+	$fields_host_edit['snmp_auth_protocol']['array'] = snmp_auth_protocol_options(isset($host['snmp_auth_protocol']) ? $host['snmp_auth_protocol'] : '');
+	$fields_host_edit['snmp_priv_protocol']['array'] = snmp_priv_protocol_options(isset($host['snmp_priv_protocol']) ? $host['snmp_priv_protocol'] : '');
+
+	/* On a new Device the auth/priv defaults come from the global setting, which on
+	 * an upgraded install may still be a legacy MD5/DES value that was just dropped
+	 * from the picker above - leaving the <select> with no option selected so the
+	 * browser submits [None]. When the legacy algorithms are disabled, default a new
+	 * Device to the strongest available option so the field has a valid selection. */
+	if (empty($host['id']) && !snmp_md5_des_enabled()) {
+		if (!isset($fields_host_edit['snmp_auth_protocol']['array'][read_config_option('snmp_auth_protocol')])) {
+			$fields_host_edit['snmp_auth_protocol']['value'] = 'SHA';
+		}
+
+		if (!isset($fields_host_edit['snmp_priv_protocol']['array'][read_config_option('snmp_priv_protocol')])) {
+			$fields_host_edit['snmp_priv_protocol']['value'] = 'AES';
+		}
+	}
+
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),

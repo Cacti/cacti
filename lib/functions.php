@@ -8313,8 +8313,9 @@ function cacti_exec_log_describe($binary, array $args) {
  * is the argv-array counterpart to exec_with_timeout() in lib/poller.php, which accepts a
  * pre-built shell string. Use cacti_exec() when the binary and arguments are known separately;
  * use exec_with_timeout() when migrating legacy shell_exec() callers that already assemble the
- * command string. Requires PHP 7.4+ (array form of proc_open). The 1.2.x branch targets PHP 7.4
- * as its minimum, so no version gate is needed. Used as part of Cacti's lib functionality.
+ * command string. The argv-array form of proc_open has been available since PHP 7.4, so it is
+ * used unconditionally on the PHP 8.2 1.2.x floor without a version gate. Used as part of Cacti's
+ * lib functionality.
  *
  * @param string $binary Path to the executable. Must not start with '-'.
  * @param array $args Ordered argument strings (not shell-escaped).
@@ -8366,25 +8367,40 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 
 	$stdout    = '';
 	$stderr    = '';
-	$remaining = (int) $timeout * 1000000;
+	$budget    = (int) round(((float) $timeout) * 1000000);
+	$remaining = $budget;
 	$exit      = null;
 
 	while ($remaining > 0) {
-		$start  = microtime(true);
 		$read   = array($pipes[1], $pipes[2]);
 		$write  = array();
 		$except = array();
-		stream_select($read, $write, $except, 0, $remaining);
 
-		usleep(50000);
+		/* $timeout is a maximum idle gap, not a total runtime cap: the budget
+		 * refills whenever the child produces output, so a long but actively
+		 * streaming response (a large snmpbulkwalk) is never killed mid-stream and
+		 * is only reaped after a genuine silent stall. Split the budget into whole
+		 * seconds + microseconds and never sleep a fixed slice, so a child that
+		 * answers in 2ms returns in 2ms rather than waiting out a floor. */
+		$sec   = (int) ($remaining / 1000000);
+		$usec  = $remaining % 1000000;
+		$start = microtime(true);
+		@stream_select($read, $write, $except, $sec, $usec);
 
-		$status  = proc_get_status($process);
-		$stdout .= stream_get_contents($pipes[1]);
-		$stderr .= stream_get_contents($pipes[2]);
+		$chunk_out = (string) stream_get_contents($pipes[1]);
+		$chunk_err = (string) stream_get_contents($pipes[2]);
+		$stdout   .= $chunk_out;
+		$stderr   .= $chunk_err;
+
+		$status = proc_get_status($process);
 
 		/* proc_get_status() returns false on a dead handle. Preserve a valid
 		 * exitcode while it is observable because a later status read or
-		 * proc_close() can return -1 after the child has already been reaped. */
+		 * proc_close() can return -1 after the child has already been reaped. Do
+		 * not leave the loop merely because the pipes reached EOF: a child can be
+		 * mid-reap for a few milliseconds after its output ends, and reading its
+		 * status in that window reports it still running, so keep polling until it
+		 * actually stops rather than mistaking the gap for a timeout. */
 		if (!is_array($status) || empty($status['running'])) {
 			if (is_array($status) && isset($status['exitcode']) && $status['exitcode'] >= 0) {
 				$exit = (int) $status['exitcode'];
@@ -8393,8 +8409,22 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 			break;
 		}
 
-		$remaining -= (int) ((microtime(true) - $start) * 1000000);
+		if ($chunk_out !== '' || $chunk_err !== '') {
+			/* Output refills the idle budget; only a silent stretch counts down. */
+			$remaining = $budget;
+		} else {
+			/* No output this pass. Yield briefly so an EOF or non-blocking pipe
+			 * cannot peg a CPU and so a just-terminated child has time to be reaped
+			 * before the next status read, then charge the whole idle slice (select
+			 * wait + yield) against the countdown so a genuinely silent child still
+			 * times out. */
+			usleep(2000);
+			$remaining -= (int) ((microtime(true) - $start) * 1000000);
+		}
 	}
+
+	$stdout .= (string) stream_get_contents($pipes[1]);
+	$stderr .= (string) stream_get_contents($pipes[2]);
 
 	fclose($pipes[1]);
 	fclose($pipes[2]);
@@ -9496,4 +9526,144 @@ function sanitize_sql_column($column) {
 		return '';
 	}
 	return preg_replace('/[^a-zA-Z0-9_.]/', '', (string)$column);
+}
+
+if (!defined('CACTI_SECRET_CIPHER')) {
+	define('CACTI_SECRET_CIPHER', 'aes-256-gcm');
+}
+
+if (!defined('CACTI_SECRET_TAG_LENGTH')) {
+	define('CACTI_SECRET_TAG_LENGTH', 16);
+}
+
+/**
+ * Return the per-installation 256-bit secret key, generating and persisting one
+ * on first use. Lives in lib/functions.php (rather than lib/auth.php) so the CLI
+ * data collectors - poller.php, cmd.php and script_server.php - can seal and
+ * open cached secrets without pulling in the web authentication stack.
+ *
+ * @return string The raw (binary) 256-bit AES key.
+ *
+ * @throws \RuntimeException If the stored key is missing or corrupt; rotating in
+ *   an unpersisted key would strand every value encrypted under the old one.
+ */
+function cacti_secret_key() : string {
+	$key = read_config_option('secret_encryption_key');
+
+	if (empty($key)) {
+		$key = base64_encode(random_bytes(32));
+
+		// INSERT IGNORE: if a concurrent process already generated and stored a
+		// key, keep that one rather than clobbering it with a second,
+		// mutually-incompatible key that would strand the loser's ciphertext.
+		db_execute_prepared('INSERT IGNORE INTO settings (`name`, `value`) VALUES (?, ?)', array('secret_encryption_key', $key));
+
+		$key = (string) read_config_option('secret_encryption_key', true);
+	}
+
+	$decoded = base64_decode($key, true);
+
+	if ($decoded === false || strlen($decoded) !== 32) {
+		throw new \RuntimeException('The secret_encryption_key setting is missing or corrupt; encrypted secrets cannot be read or written until it is restored.');
+	}
+
+	return $decoded;
+}
+
+/**
+ * Encrypt an arbitrary secret for storage using Cacti's per-installation
+ * AES-256-GCM key. A fresh random IV is generated per call and prefixed onto
+ * the ciphertext; the GCM authentication tag is stored alongside so a tampered
+ * or corrupted value is rejected on decryption rather than silently accepted.
+ *
+ * @param string $plaintext The secret to encrypt.
+ *
+ * @return string The base64-encoded IV + tag + ciphertext, or '' for an empty input.
+ *
+ * @throws \RuntimeException If the per-installation key is missing/corrupt; see cacti_secret_key().
+ */
+function cacti_encrypt_secret(string $plaintext) : string {
+	return cacti_encrypt_secret_with_key($plaintext, cacti_secret_key());
+}
+
+/**
+ * Decrypt a secret produced by cacti_encrypt_secret(). Degrades to false
+ * (rather than throwing) when the per-installation key itself is missing or
+ * corrupt, since callers already treat false as "cannot use this secret".
+ *
+ * @param string $ciphertext The base64-encoded IV + tag + ciphertext.
+ *
+ * @return string|false The decrypted secret, '' for an empty input, or false
+ *                      if the stored data or the encryption key is invalid.
+ */
+function cacti_decrypt_secret(string $ciphertext) : string|false {
+	try {
+		$key = cacti_secret_key();
+	} catch (\RuntimeException $e) {
+		cacti_log('ERROR: ' . $e->getMessage(), false, 'AUTH');
+
+		return false;
+	}
+
+	return cacti_decrypt_secret_with_key($ciphertext, $key);
+}
+
+/**
+ * Core encryption logic behind cacti_encrypt_secret(), split out so it can be
+ * exercised against an explicit key (e.g. in unit tests) without the settings
+ * table key-persistence cacti_secret_key() requires.
+ *
+ * @param string $plaintext The secret to encrypt.
+ * @param string $key       The raw (binary) 256-bit AES key.
+ *
+ * @return string The base64-encoded IV + tag + ciphertext, or '' for an empty input.
+ */
+function cacti_encrypt_secret_with_key(string $plaintext, string $key) : string {
+	if ($plaintext === '') {
+		return '';
+	}
+
+	$iv  = openssl_random_pseudo_bytes(openssl_cipher_iv_length(CACTI_SECRET_CIPHER));
+	$tag = '';
+
+	$encrypted = openssl_encrypt($plaintext, CACTI_SECRET_CIPHER, $key, OPENSSL_RAW_DATA, $iv, $tag, '', CACTI_SECRET_TAG_LENGTH);
+
+	if ($encrypted === false) {
+		throw new \RuntimeException('Failed to encrypt secret.');
+	}
+
+	return base64_encode($iv . $tag . $encrypted);
+}
+
+/**
+ * Core decryption logic behind cacti_decrypt_secret(); see
+ * cacti_encrypt_secret_with_key(). openssl_decrypt() returns false whenever the
+ * GCM tag fails to verify, so a tampered/corrupted value is rejected rather
+ * than silently accepted as valid plaintext.
+ *
+ * @param string $ciphertext The base64-encoded IV + tag + ciphertext.
+ * @param string $key        The raw (binary) 256-bit AES key.
+ *
+ * @return string|false The decrypted secret, '' for an empty input, or false
+ *                      if the stored data is malformed, tampered, or cannot be decrypted.
+ */
+function cacti_decrypt_secret_with_key(string $ciphertext, string $key) : string|false {
+	if ($ciphertext === '') {
+		return '';
+	}
+
+	$raw = base64_decode($ciphertext, true);
+
+	$iv_length  = openssl_cipher_iv_length(CACTI_SECRET_CIPHER);
+	$tag_length = CACTI_SECRET_TAG_LENGTH;
+
+	if ($raw === false || strlen($raw) <= $iv_length + $tag_length) {
+		return false;
+	}
+
+	$iv         = substr($raw, 0, $iv_length);
+	$tag        = substr($raw, $iv_length, $tag_length);
+	$ciphertext = substr($raw, $iv_length + $tag_length);
+
+	return openssl_decrypt($ciphertext, CACTI_SECRET_CIPHER, $key, OPENSSL_RAW_DATA, $iv, $tag, '');
 }

@@ -168,6 +168,9 @@ cacti_log('PHP Script Server has Started - Parent is ' . $environ, false, 'PHPSV
 fputs(STDOUT, 'PHP Script Server has Started - Parent is ' . $environ . "\n");
 fflush(STDOUT);
 
+require_once(__DIR__ . '/lib/snmp.php');
+snmp_auth_cache_load();
+
 /* process waits for input and then calls functions as required */
 while (1) {
 	$result = '';

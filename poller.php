@@ -40,6 +40,7 @@ require_once($config['base_path'] . '/lib/dsdebug.php');
 require_once($config['base_path'] . '/lib/boost.php');
 require_once($config['base_path'] . '/lib/reports.php');
 require_once($config['base_path'] . '/lib/rrdcheck.php');
+require_once($config['base_path'] . '/lib/snmp.php');
 
 global $poller_db_cnn_id, $remote_db_cnn_id, $logged;
 
@@ -214,6 +215,9 @@ api_plugin_hook('poller_top');
 if ($config['connection'] == 'online') {
 	update_resource_cache($poller_id);
 }
+
+// prime the shared SNMP auth cache (rebuilt only when credentials change)
+snmp_auth_cache_refresh();
 
 // get number of polling items from the database
 $poller_interval = read_config_option('poller_interval');

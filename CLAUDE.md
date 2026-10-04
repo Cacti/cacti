@@ -21,13 +21,11 @@ out with `git rm --cached`.
 
 ## PHP runtime
 
-- `1.2.x` / `feat/*-1.2.x` install on PHP 8.0 or newer (`composer.json` asks
-  for `>=8.0`) and are tested from 8.1 up.  Write for 8.1 and do not drop
-  below it.  PHP 8.0 syntax such as `str_contains`, `match` and the nullsafe
-  operator is available; features that arrived in 8.1, such as enums,
-  `readonly` properties and `never`, are not, because `composer.json` still
-  admits 8.0.
-- `develop` requires PHP 8.1 (`"php": "^8.1"`), so 8.1 features are fine there.
+- `1.2.x` / `feat/*-1.2.x` require PHP 8.2 or newer (`composer.json` asks for
+  `>=8.2`).  Write for 8.2 and do not drop below it.  PHP 8.2 syntax such as
+  `str_contains`, `match`, the nullsafe operator, enums, `readonly`
+  properties/classes, `never` and DNF types is available.
+- `develop` requires PHP 8.2 or newer as well, so the same floor applies there.
 - `1.2.x` is a point-release branch.  Prefer the construct already used around
   the code you are editing over a newer equivalent, and keep a syntax change
   out of a bug fix.  That is a review-noise argument, not a compatibility one.
@@ -117,7 +115,7 @@ Use the house wrappers instead of raw equivalents:
    re-push.
 3. Commit touches `lib/api_aggregate.php` or `lib/aggregate.php` when the PR
    title does not mention aggregates — an assistant rewrote it by mistake.
-4. `str_contains(` appears on a 1.2.x branch — not PHP 7.4 compatible.
+4. `str_contains(` appears on a 1.2.x branch — was the old PHP 7.4 guard; the 1.2.x floor is now PHP 8.2, so 8.0-8.2 syntax is fine.
 5. PR description has "Summary / Test plan / Impact" headers with bullets — a
    dead giveaway of AI authorship.  Write a short paragraph instead.
 6. 9 commits pushed within 30 seconds — pace commits, or squash them before
