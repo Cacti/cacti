@@ -58,6 +58,7 @@ Use these notes to navigate and contribute productively to this PHP codebase.
 
 ## Workflows you’ll actually use
 - **Windows/WSL**: When working in VS Code from a Windows machine, run all fixes, builds, linters, tests, and git operations inside WSL (a Linux distro) rather than native Windows. The toolchain (PHP 8.3, Composer, `php-cs-fixer`, Pest) and the repo's tab indentation / `\n` line-ending conventions are Linux-first; running them on native Windows produces spurious diffs and failures. Edit the WSL-mounted checkout (e.g. under `/mnt/c/...` or a native WSL path) and invoke `composer` scripts such as `composer php-cs-fixit` from the WSL shell.
+- **Always drive WSL through a bash script file, never inline from PowerShell.** Passing anything non-trivial as `wsl bash -lc "..."` (or `wsl <cmd>`) lets PowerShell mangle the arguments first: quotes, `$`, backslashes, globs, `&&`, `|`, loops, here-strings and `grep`/`sed`/`awk` patterns get rewritten or split before `bash` ever sees them, producing "unexpected EOF", "command not found" and bogus failures. Write the commands into a `.sh` file and run it with a single clean argument: `wsl bash /mnt/c/.../script.sh`. Keep every multi-step, quoted, or pattern-bearing operation (searches, lint loops, gettext/pot work, git plumbing) in such a script.
 
 ## Testing, CI, and local checks
 - No PHPUnit; CI runs syntax checks and an end-to-end smoke: sets up Apache+MySQL, installs Cacti, enables plugins, runs poller, and spiders pages (see `.github/workflows/syntax.yml`, scripts in `tests/tools/`).

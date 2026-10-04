@@ -24,6 +24,7 @@
 
 include('./include/auth.php');
 include_once('./lib/poller.php');
+include_once('./lib/snmp.php');
 
 /* set default action */
 set_default_action();
@@ -474,6 +475,15 @@ default:
 		}
 
 		$form_array['spikekill_templates']['array'] = $spikekill_templates;
+	}
+
+	/* drop the legacy MD5/DES SNMPv3 algorithms from the default pickers when disabled */
+	if (isset($form_array['snmp_auth_protocol'])) {
+		$form_array['snmp_auth_protocol']['array'] = snmp_auth_protocol_options();
+	}
+
+	if (isset($form_array['snmp_priv_protocol'])) {
+		$form_array['snmp_priv_protocol']['array'] = snmp_priv_protocol_options();
 	}
 
 	draw_edit_form(
