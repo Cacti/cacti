@@ -2004,7 +2004,8 @@ function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid 
 	 * libnetsnmp directly and avoid a per-call process spawn), but only when the
 	 * running PHP can actually service the request. The procedural API has no
 	 * context or engine-id parameters, and ext-snmp before PHP 8.6 rejects the
-	 * SHA-2 auth and AES-192/256[C] privacy tokens with a ValueError, so those
+	 * SHA-224/SHA-384 auth and AES-192/256[C] privacy tokens with a ValueError
+	 * (SHA256/SHA512 + DES/AES/AES128 are accepted from the 8.2 floor), so those
 	 * requests fall back to the Net-SNMP binary. */
 	if ($version == 3) {
 		if (!function_exists('snmp3_get')) {

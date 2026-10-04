@@ -8313,7 +8313,7 @@ function cacti_exec_log_describe($binary, array $args) {
  * is the argv-array counterpart to exec_with_timeout() in lib/poller.php, which accepts a
  * pre-built shell string. Use cacti_exec() when the binary and arguments are known separately;
  * use exec_with_timeout() when migrating legacy shell_exec() callers that already assemble the
- * command string. The argv-array form of proc_open() has been available since PHP 7.4, so it is
+ * command string. The argv-array form of proc_open has been available since PHP 7.4, so it is
  * used unconditionally on the PHP 8.2 1.2.x floor without a version gate. Used as part of Cacti's
  * lib functionality.
  *

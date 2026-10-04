@@ -93,7 +93,6 @@ cmd_exec	./lib/functions.php:7645				$shell = shell_exec(cacti_escapeshellcmd(re
 cmd_exec	./lib/functions.php:7918				exec('id -nu', $o, $r);
 cmd_exec	./lib/functions.php:7928				exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
 cmd_exec	./lib/functions.php:8315	 * use exec_with_timeout() when migrating legacy shell_exec() callers that already assemble the
-cmd_exec	./lib/functions.php:8316	 * command string. The argv-array form of proc_open() has been available since PHP 7.4, so it is
 cmd_exec	./lib/functions.php:8357		$process = proc_open($argv, $descriptors, $pipes);
 cmd_exec	./lib/functions.php:8469	 * callers that previously used shell_exec() and expect a string return value.
 cmd_exec	./lib/installer.php:942							$output = shell_exec(
