@@ -272,7 +272,7 @@ test('session warning handler delegates non-warning errors and error logging is 
 
 	expect(cacti_snmp_session_call($session, 'notice', [], $warning, false))->toBeTrue();
 
-	$session->errno = phpsnmp\SNMP::ERRNO_TIMEOUT;
+	$session->errno = \SNMP::ERRNO_TIMEOUT;
 	cacti_snmp_log_session_error($session, $session->info, ['.1', '.2']);
 	$session->errno = 8;
 	$session->error = "native\r\nerror";

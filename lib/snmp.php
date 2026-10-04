@@ -107,19 +107,22 @@ if (!defined('SNMP_STRING_OUTPUT_HEX')) {
 global $banned_snmp_strings;
 $banned_snmp_strings = ['End of MIB', 'No Such', 'No more'];
 
+/* ext-snmp's native \SNMP has no slot for Cacti's bulk_walk_size / value_output_format,
+   so subclass it to carry them. Only declarable when ext-snmp is loaded. */
 if (CACTI_PHP_SNMP) {
-	include_once(CACTI_PATH_INCLUDE . '/vendor/phpsnmp/extension.php');
+	class CactiSnmpNativeSession extends \SNMP {
+		public $bulk_walk_size;
+		public $value_output_format;
+	}
 }
-
-use phpsnmp\SNMP;
 
 /**
  * Session stand-in for an SNMPv3 device whose auth/privacy protocols the running
  * PHP's ext-snmp cannot service natively (e.g. AES-256 before PHP 8.6). It exposes
  * the same get/getnext/walk/close interface the cacti_snmp_session_*() helpers use,
  * delegating every call to cacti_snmp_*() which routes the request to the Net-SNMP
- * binary. Mirrors the vendored compatibility session, which cannot be instantiated
- * while the ext-snmp wrapper owns the phpsnmp\SNMP name.
+ * binary. Parallels CactiSnmpNativeSession, the ext-snmp subclass used when the
+ * running PHP can service the device's auth/privacy protocols natively.
  */
 class CactiSnmpBinarySession {
 	public $info;
@@ -229,15 +232,15 @@ function cacti_snmp_session(string $hostname, mixed $community, mixed $version, 
 
 	switch ($version) {
 		case '1':
-			$version = SNMP::VERSION_1;
+			$version = \SNMP::VERSION_1;
 
 			break;
 		case '2':
-			$version = SNMP::VERSION_2c;
+			$version = \SNMP::VERSION_2c;
 
 			break;
 		case '3':
-			$version = SNMP::VERSION_3;
+			$version = \SNMP::VERSION_3;
 
 			break;
 	}
@@ -245,7 +248,7 @@ function cacti_snmp_session(string $hostname, mixed $community, mixed $version, 
 	$timeout_us = (int) ($timeout_ms * 1000);
 
 	try {
-		$session = new SNMP($version, $hostname . ':' . (is_numeric($port) ? (int) $port : 161), ($version == 3 ? $auth_user : $community), $timeout_us, $retries);
+		$session = new CactiSnmpNativeSession($version, $hostname . ':' . (is_numeric($port) ? (int) $port : 161), ($version == 3 ? $auth_user : $community), $timeout_us, $retries);
 	} catch (Throwable $e) {
 		return false;
 	}
@@ -263,7 +266,7 @@ function cacti_snmp_session(string $hostname, mixed $community, mixed $version, 
 		$session->oid_increasing_check = false;
 	}
 
-	if ($version != SNMP::VERSION_3) {
+	if ($version != \SNMP::VERSION_3) {
 		return $session;
 	}
 
