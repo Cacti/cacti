@@ -2,7 +2,6 @@
 /*
  +-------------------------------------------------------------------------+
  | Copyright (C) 2004-2026 The Cacti Group                                 |
- | Portions Copyright (C) 2010 Boris Lytochkin, Sponsored by Yandex LLC    |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -110,15 +109,124 @@ $banned_snmp_strings = ['End of MIB', 'No Such', 'No more'];
 
 if (CACTI_PHP_SNMP) {
 	include_once(CACTI_PATH_INCLUDE . '/vendor/phpsnmp/extension.php');
-} else {
-	include_once(CACTI_PATH_INCLUDE . '/vendor/phpsnmp/classSNMP.php');
 }
 
 use phpsnmp\SNMP;
 
+/**
+ * Session stand-in for an SNMPv3 device whose auth/privacy protocols the running
+ * PHP's ext-snmp cannot service natively (e.g. AES-256 before PHP 8.6). It exposes
+ * the same get/getnext/walk/close interface the cacti_snmp_session_*() helpers use,
+ * delegating every call to cacti_snmp_*() which routes the request to the Net-SNMP
+ * binary. Mirrors the vendored compatibility session, which cannot be instantiated
+ * while the ext-snmp wrapper owns the phpsnmp\SNMP name.
+ */
+class CactiSnmpBinarySession {
+	public $info;
+	public $bulk_walk_size;
+	public $value_output_format = SNMP_STRING_OUTPUT_GUESS;
+
+	private $errno = 0;
+	private $params;
+
+	public function __construct(array $params, $bulk_walk_size) {
+		$this->params         = $params;
+		$this->bulk_walk_size = (int) $bulk_walk_size;
+		$this->info           = array(
+			'hostname' => $params['hostname'],
+			'timeout'  => $params['timeout'],
+		);
+	}
+
+	private function uniget($command, $oid) {
+		$p        = $this->params;
+		$function = 'cacti_snmp_' . $command;
+		$is_array = is_array($oid);
+		$oids     = $is_array ? $oid : array($oid);
+		$output   = array();
+
+		foreach ($oids as $o) {
+			$output[$o] = $function($p['hostname'], $p['community'], $o, $p['version'],
+				$p['auth_user'], $p['auth_pass'], $p['auth_proto'], $p['priv_pass'], $p['priv_proto'],
+				$p['context'], $p['port'], $p['timeout'], $p['retries'], 'SNMP', $p['engineid'],
+				$this->value_output_format);
+		}
+
+		if (!$is_array) {
+			return cacti_sizeof($output) ? array_shift($output) : false;
+		}
+
+		return $output;
+	}
+
+	public function get($oid) {
+		return $this->uniget('get', $oid);
+	}
+
+	public function getnext($oid) {
+		return $this->uniget('getnext', $oid);
+	}
+
+	public function walk($oid, $dummy = false, $max_repetitions = 10, $non_repeaters = 0) {
+		if (is_array($oid)) {
+			return false;
+		}
+
+		$p      = $this->params;
+		$result = cacti_snmp_walk($p['hostname'], $p['community'], $oid, $p['version'],
+			$p['auth_user'], $p['auth_pass'], $p['auth_proto'], $p['priv_pass'], $p['priv_proto'],
+			$p['context'], $p['port'], $p['timeout'], $p['retries'], $max_repetitions, 'SNMP',
+			$p['engineid'], $this->value_output_format);
+
+		$output = array();
+
+		if (is_array($result)) {
+			foreach ($result as $item) {
+				$output[$item['oid']] = $item['value'];
+			}
+		}
+
+		return $output;
+	}
+
+	public function close() {
+		return true;
+	}
+
+	public function getErrno() {
+		return $this->errno;
+	}
+
+	public function getError() {
+		return '';
+	}
+}
+
 function cacti_snmp_session(string $hostname, mixed $community, mixed $version, mixed $auth_user = '', mixed $auth_pass = '',
 	mixed $auth_proto = '', mixed $priv_pass = '', mixed $priv_proto = '', mixed $context = '', mixed $engineid = '',
 	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $max_oids = 10, mixed $bulk_walk_size = 10) : mixed {
+	/* A device the native ext-snmp session cannot serve - php-snmp not installed,
+	   or an SNMPv3 auth/privacy protocol this PHP rejects (e.g. AES-256 before PHP
+	   8.6) - uses a binary-delegating session that routes to the Net-SNMP binary. */
+	if (!CACTI_PHP_SNMP ||
+		($version == 3 && !snmp_php_v3_protocols_supported($auth_proto, $priv_proto))) {
+		return new CactiSnmpBinarySession(array(
+			'hostname'   => $hostname,
+			'community'  => $community,
+			'version'    => $version,
+			'auth_user'  => $auth_user,
+			'auth_pass'  => $auth_pass,
+			'auth_proto' => $auth_proto,
+			'priv_pass'  => $priv_pass,
+			'priv_proto' => $priv_proto,
+			'context'    => $context,
+			'engineid'   => $engineid,
+			'port'       => $port,
+			'timeout'    => $timeout_ms,
+			'retries'    => $retries,
+		), $bulk_walk_size);
+	}
+
 	switch ($version) {
 		case '1':
 			$version = SNMP::VERSION_1;
@@ -215,9 +323,9 @@ function cacti_snmp_get(string $hostname, mixed $community, string $oid, mixed $
 			if ($native_get !== null) {
 				$snmp_value = $native_get();
 			} elseif ($version == '1') {
-				$snmp_value = @snmpget($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
+				$snmp_value = @snmpget(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
 			} elseif ($version == '2') {
-				$snmp_value = @snmp2_get($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
+				$snmp_value = @snmp2_get(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
 			} else {
 				if ($priv_proto == '[None]' || $priv_pass == '') {
 					$sec_level  = ($auth_pass == '' || $auth_proto == '[None]') ? 'noAuthNoPriv' : 'authNoPriv';
@@ -318,9 +426,9 @@ function cacti_snmp_get_raw(string $hostname, mixed $community, string $oid, mix
 
 		try {
 			if ($version == '1') {
-				$snmp_value = @snmpget($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
+				$snmp_value = @snmpget(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
 			} elseif ($version == '2') {
-				$snmp_value = @snmp2_get($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
+				$snmp_value = @snmp2_get(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
 			} else {
 				if ($priv_proto == '[None]' || $priv_pass == '') {
 					$sec_level  = ($auth_pass == '' || $auth_proto == '[None]') ? 'noAuthNoPriv' : 'authNoPriv';
@@ -666,7 +774,9 @@ function cacti_snmp_session_call(object $session, string $method, array $args, s
 function cacti_snmp_log_session_error(object $session, array $info, string|array $oid, string $warning = '') : void {
 	$error_number = $session->getErrno();
 
-	if ($error_number == SNMP::ERRNO_TIMEOUT) {
+	/* the native SNMP class constant is unavailable without php-snmp; its value is
+	   stable and the binary session never reports a timeout errno */
+	if ($error_number == (class_exists('SNMP') ? \SNMP::ERRNO_TIMEOUT : 2)) {
 		$error = 'Timeout (' . round($info['timeout'] / 1000, 0) . ' ms)';
 	} else {
 		$error = trim((string) $session->getError());
