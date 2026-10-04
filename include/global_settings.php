@@ -1302,7 +1302,7 @@ $settings = array(
 			'friendly_name' => __('Enable MD5 and DES for SNMPv3'),
 			'description' => __('The MD5 authentication and DES privacy algorithms are legacy, weak, and unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When disabled, MD5 and DES are removed from the SNMPv3 Authentication and Privacy Protocol dropdowns shown when editing a Device and in the Automation SNMP Options, leaving only the stronger SHA and AES algorithms.'),
 			'method' => 'checkbox',
-			'default' => 'on'
+			'default' => ''
 		),
 		'snmp_bulk_walk_size' => array(
 			'friendly_name' => __('SNMP Bulkwalk Fetch Size'),
@@ -1336,7 +1336,7 @@ $settings = array(
 			'friendly_name' => __('Enable Credential Cache'),
 			'description' => __('Pre-harden and cache SNMPv3 credential arguments once per credential change so each poller process reuses them instead of rebuilding them on every request.  This yields a marginal savings when collecting with SNMPv3 credentials through the Net-SNMP binaries.  If the php-snmp extension is installed, SNMPv3 gets are handled in-process and bypass this cache, so it is safe to leave this disabled.'),
 			'method' => 'checkbox',
-			'default' => 'on'
+			'default' => ''
 		),
 		'poller_refresh_output_table' => array(
 			'friendly_name' => __('Refresh Poller Table Per Cycle'),
