@@ -87,7 +87,7 @@ class MibCache{
 			return false;
 		}
 
-		include_once($config['include_path'] . '/vendor/phpsnmp/mib_parser.php');
+		include_once(__DIR__ . '/mib_parser.php');
 
 		$old_memory_limit = ini_get('memory_limit');
 		$old_time_limit   = ini_get('max_execution_time');
