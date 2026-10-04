@@ -357,9 +357,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 
 		try {
 			if ($version == '1') {
-				$snmp_value = @snmpget($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
+				$snmp_value = @snmpget(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
 			} elseif ($version == '2') {
-				$snmp_value = @snmp2_get($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
+				$snmp_value = @snmp2_get(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
 			} else {
 				if ($priv_proto == '[None]' || $priv_pass == '') {
 					if ($auth_pass == '' || $auth_proto == '[None]') {
@@ -474,9 +474,9 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 
 		try {
 			if ($version == '1') {
-				$snmp_value = @snmpget($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
+				$snmp_value = @snmpget(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
 			} elseif ($version == '2') {
-				$snmp_value = @snmp2_get($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
+				$snmp_value = @snmp2_get(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
 			} else {
 				if ($priv_proto == '[None]' || $priv_pass == '') {
 					if ($auth_pass == '' || $auth_proto == '[None]') {
