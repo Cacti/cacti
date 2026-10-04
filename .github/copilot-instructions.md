@@ -17,6 +17,22 @@ Use these notes to navigate and contribute productively to this PHP codebase.
 - Under the hood uses PDO; `global.php` decides between local/remote DB for remote pollers.
 - Logging: `cacti_log($msg, $echo=false, $subsystem='SYSTEM', $verbosity=POLLER_VERBOSITY_MEDIUM)`; log path via `cacti_log_file()`.
 
+## SNMP behavior
+- The PHP **script server** is a persistent process: the poller spawns `script_server.php` once (via `proc_open` in `cmd.php`/spine), then feeds it calls over STDIN. Each `scripts/ss_*.php` file is `include_once`'d once and its function is called many times **in-process**; the dispatch loop itself must never spawn a process per item.
+- `snmp_get_method()` in `lib/snmp.php` picks the transport:
+  - **Walks / bulk walks: Net-SNMP binary** (`snmpbulkwalk`). The procedural ext-snmp API cannot GETBULK; only the `SNMP` class can, and the class is avoided until PHP 8.6.
+  - **Explicit output value (hex / `-Ox`): binary.** The procedural calls cannot set an output format.
+  - **SNMPv3 single get/getnext: procedural php-snmp** (`snmp3_get`/`snmp3_getnext`) on PHP 8.2+. These hit libnetsnmp directly and support the AESxxx[C] and SHA families, avoiding a per-call process spawn. (v3 was historically forced to the binary; that is the behavior being changed.)
+  - **v1/v2 single get/getnext: procedural** (`snmpget`/`snmp2_get`).
+- **Protocol token spelling differs by path.** The binary CLI (`-a`/`-x`) wants the dashed form (`SHA-256`, `AES-256-C`); procedural php-snmp / native libnetsnmp wants the dash-less form (`SHA256`, `AES256C`). Cacti's `$snmp_auth_protocols`/`$snmp_priv_protocols` keys are dash-less (native) and values are dashed (binary). Normalize for the native path by stripping dashes.
+- **Procedural agent string needs bracketing:** IPv6 literal -> `[addr]:port`; a non-default port -> bracket the host; a DNS name being forced onto IPv6 -> bracket the name. The binary path uses `snmp_format_target*()` with the `udp6:` transport.
+- **`cacti_exec()` timeout is an idle timeout, not a total-runtime cap.** It resets whenever the child emits output, so a long but actively streaming `snmpbulkwalk` is never killed mid-stream and is reaped only after a genuine silent stall. There is no fixed `usleep`; `stream_select` gets a real seconds+microseconds split and blocks on output-or-timeout.
+- **SNMP process timeout = Net-SNMP's retry budget + ~0.5s smidge** (`cacti_snmp_command_timeout()`), passed as fractional seconds that `cacti_exec()` honors, so a hung binary is reaped just past its own timeout without killing one still performing its retries.
+- **DES/MD5 and the escape hatch:** assume DES/MD5 work; if a hardened build (e.g. EL9/FIPS) lacks them, an operator can drop them from the dropdowns via a setting (future) or **uninstall php-snmp** to force everything back to the binary path. Any SNMPv3 trouble with the procedural path is resolved the same way.
+- **Shared SNMP auth cache** (`Cacti\Cache\SharedCache`; built in `poller.php`, read in `cmd.php`/`script_server.php`) pre-hardens the **binary** SNMPv3 argument vector, keyed by a sha1 of the credential tuple and sealed with the per-installation AES-256-GCM secret key (`cacti_encrypt_secret()` in `lib/functions.php`). It serves the remaining binary paths and is one of the few intentional namespaced classes in the tree.
+- **The cache holds SNMPv3 credential vectors only.** v1/v2 are deliberately excluded: their entire hardening is wrapping the community in `['-c', <community>]`, which is cheaper to build inline than a sha1-keyed lookup, so `snmp_auth_cache_build_map()` skips any row without a username and `cacti_get_snmp_auth_args()` resolves v1/v2 directly without consulting the cache.
+- **Deferred to develop:** the PHP 8.6 `SNMP` class path (in-process GETBULK + output formats). Before enabling it, verify from public sources that the class supports AES256C (required by some Cisco devices).
+
 ## Web page conventions
 - Start with `include('./include/auth.php');` to enforce auth/session/CSRF.
 - Flow pattern: `set_default_action(); switch (get_request_var('action')) { ... }` with helpers like `top_header()` and `bottom_footer()` for layout (see `data_input.php`).
@@ -71,7 +87,7 @@ Use these notes to navigate and contribute productively to this PHP codebase.
   - Preserve the file’s indentation (tabs vs spaces) and brace style; do not reformat unrelated code.
   - Keep the Cacti GPL header block at the top of PHP files.
   - Use snake_case functions and procedural structure consistent with the codebase; avoid introducing namespaces unless integrating vendor code.
-  - Maintain PHP 5.4+ compatibility (CI tests 7.0–8.4). Avoid using features requiring >7.0 (e.g., union types, attributes, typed properties) in core code.
+  - Target PHP 8.2+, the 1.2.x floor (CI tests 8.2–8.4). Modern 8.2 syntax (typed properties, union types, enums, `match`, named arguments, `str_contains`) is allowed; match each file's existing conventions and do not reformat unrelated code.
   - Don’t change public function signatures in `lib/api_*.php` or widely used helpers without auditing usages.
   - For dependencies, prefer Composer-managed libs under `include/vendor` and keep versions pinned by `composer.lock`.
 
