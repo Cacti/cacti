@@ -780,6 +780,17 @@ function snmp_auth_cache_build(): array {
 }
 
 /**
+ * Whether the shared SNMP credential cache is enabled (Console > Settings >
+ * Poller > Enable Credential Cache; defaults on). When off, every call hardens
+ * its SNMPv3 arguments live.
+ *
+ * @return bool
+ */
+function snmp_auth_cache_enabled(): bool {
+	return read_config_option('snmp_credential_cache') == 'on';
+}
+
+/**
  * Rebuild and reseal the shared SNMP auth cache, but only when the credential
  * set has changed since the last build. Intended to be called once at
  * poller.php startup.
@@ -787,6 +798,10 @@ function snmp_auth_cache_build(): array {
  * @return void
  */
 function snmp_auth_cache_refresh(): void {
+	if (!snmp_auth_cache_enabled()) {
+		return;
+	}
+
 	$rows      = snmp_auth_cache_rows();
 	$signature = snmp_auth_cache_signature($rows);
 	$cache     = snmp_auth_cache();
@@ -813,6 +828,12 @@ function snmp_auth_cache_load(): void {
 	}
 
 	$loaded = true;
+
+	if (!snmp_auth_cache_enabled()) {
+		$GLOBALS['snmp_auth_cache_map'] = array();
+
+		return;
+	}
 
 	$data = snmp_auth_cache()->fetch();
 

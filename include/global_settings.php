@@ -1326,6 +1326,12 @@ $settings = array(
 			'max_length' => '10',
 			'size' => '5'
 		),
+		'snmp_credential_cache' => array(
+			'friendly_name' => __('Enable Credential Cache'),
+			'description' => __('Pre-harden and cache SNMPv3 credential arguments once per credential change so each poller process reuses them instead of rebuilding them on every request.  This yields a marginal savings when collecting with SNMPv3 credentials through the Net-SNMP binaries.  Leave this enabled unless you are debugging credential handling.'),
+			'method' => 'checkbox',
+			'default' => 'on'
+		),
 		'poller_refresh_output_table' => array(
 			'friendly_name' => __('Refresh Poller Table Per Cycle'),
 			'description' => __('This setting is for a single poller systems only to rebuild the poller output table on each polling cycle to prevent the memory table from swapping on very large systems with large databases that could use swap.'),
