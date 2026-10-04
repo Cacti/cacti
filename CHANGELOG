@@ -13,12 +13,12 @@ Cacti CHANGELOG
 -security#GHSA-gf3f-mwjj-vj2v: Validate the automation tree rule item field against existing columns before storage
 -security#GHSA-jv53-qfw3-v2fh: Validate the automation graph rule item field against existing columns before storage
 -security#GHSA-mgcq-r6vm-4xhw: Escape SNMP and Data Query names in Reports tree titles
--security#GHSA-v2mq-mxpw-55pf: Escape graph preset names rendered in the gprint presets list
+-security#GHSA-v2mq-mxpw-55pf: CVE-2026-46530 Escape graph preset names rendered in the gprint presets list
 -security#GHSA-4fr7-45gj-5cx6: Validate and escape data_source_path before RRDtool execution
 -security#GHSA-fgwr-944r-wg98: Validate rrd and data_source path tokens in the CLI maintenance tools and Boost
 -security#GHSA-p5xj-48vc-mqrf: Cap remember-me token lifetime to 90 days via the login-time predicate and the poller_maintenance authcache purge
 -security#GHSA-69vw-qxxv-p8w2: Remove the No Authentication mode and its auto-admin grant, migrating legacy auth_method=0 to Builtin login
--security#GHSA-jpf3-w6p4-pjrf: Validate the automation tree rule item field against existing columns before storage
+-security#GHSA-jpf3-w6p4-pjrf: CVE-2026-44480 Validate the automation tree rule item field against existing columns before storage
 -security#GHSA-4p7f-qcc2-vmx7: Escape path_php_binary in the resource-cache PHP syntax-check system() call
 -security#GHSA-hcj6-pmvx-fwgr: Strip CR/LF in escape_command so interpolated data cannot inject a second rrdtool command
 -security#GHSA-967c-6qj7-q7rh: Close the rrd_maximum |query_*| newline injection via the escape_command control-character strip
@@ -57,9 +57,7 @@ Cacti CHANGELOG
 -security#GHSA-9qff-xccr-rrc5: Contain data_source_path within the RRA directory
 -security#GHSA-vp35-4h28-r883: CVE-2026-39939 Harden package import path traversal defenses
 -security#GHSA-pqrp-v752-mc4f: Stop disabled accounts authenticating and revoke tokens on disable
--security#GHSA-vq9v-6ggh-phhr: Escape graph-item style fields in the RRDtool graph command
 -security#GHSA-3466-fp7g-c9rf: Prefer base_url over the client Host header for the force_https redirect
--security#GHSA-2fhv-c794-v433: Authorize Data Source enable/disable against the owning device before mutating
 -security#GHSA-prxj-84qq-v5jq: Authorize tree node create/delete/move/rename/copy against per-tree access before mutating
 -security#GHSA-xvwr-hvpm-67jw: Escape template name and dependency path in the Template Import preview
 -security#GHSA-77pr-g949-4v5f: Authorize the target graph before Spike Kill rewrites its RRD history
