@@ -183,6 +183,7 @@ Cacti CHANGELOG
 -feature#8166: Add a cross-process shared SNMP authentication cache (disabled by default) that pre-hardens SNMPv3 credential arguments once per credential change and seals them with the per-installation AES-256-GCM key, so poller, cmd and script server processes reuse them instead of rebuilding them on every request
 -feature#8166: Rework cacti_exec() to use an idle (output-refilling) timeout and drop the fixed 50ms per-iteration sleep, so fast commands return immediately while a genuinely stalled child is still reaped, without misreading a just-terminated child as a timeout
 -feature#8166: Route SNMPv3 gets through the in-process php-snmp extension when it is available, bypassing the Net-SNMP binaries and their credential cache
+-feature#8166: Collect each device's SNMP data sources in cmd.php in a single max_oids-sized batched request over the persistent session, replacing one SNMP round trip per OID with one per max_get_size OIDs
 -feature#8166: Add an "Enable MD5 and DES for SNMPv3" setting (off by default) that removes the legacy MD5/DES algorithms from the Device and Automation SNMP Option pickers when disabled, matching hardened (FIPS) PHP and Net-SNMP builds
 
 1.2.31
