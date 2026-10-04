@@ -444,6 +444,11 @@ class SharedCache {
 			if ($backend->write($this->name, $wire, $sum)) {
 				return true;
 			}
+
+			/* The write failed; drop any stale entry in this higher tier so a
+			 * later fetch()/checksum() cannot read it in preference to the lower
+			 * tier we are about to try. */
+			$backend->clear($this->name);
 		}
 
 		return false;

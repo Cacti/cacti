@@ -265,7 +265,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 
 				$snmp_value = @snmp3_get(snmp_format_agent($hostname, $port), $auth_user, $sec_level, snmp_native_protocol($auth_proto), $auth_pass, snmp_native_protocol($priv_proto), $priv_pass, $oid, $timeout_us, $retries);
 			}
-		} catch (Exception $ex) {
+		} catch (\Throwable $ex) {
 			$snmp_error = $ex->getMessage();
 		}
 
@@ -1064,8 +1064,8 @@ function snmp_auth_cache_build(): array {
 
 /**
  * Whether the shared SNMP credential cache is enabled (Console > Settings >
- * Poller > Enable Credential Cache; defaults on). When off, every call hardens
- * its SNMPv3 arguments live.
+ * Poller > Enable Credential Cache; disabled by default). When off, every call
+ * hardens its SNMPv3 arguments live.
  *
  * @return bool
  */
@@ -2244,7 +2244,21 @@ function snmp_php_v3_protocols_supported($auth_proto, $priv_proto) {
 		$priv_ok = array_merge($priv_ok, array('AES128', 'AES192', 'AES192C', 'AES256', 'AES256C'));
 	}
 
-	return in_array($auth, $auth_ok, true) && in_array($priv, $priv_ok, true);
+	if (!in_array($auth, $auth_ok, true) || !in_array($priv, $priv_ok, true)) {
+		return false;
+	}
+
+	/* SNMPv3 privacy requires authentication. A privacy protocol selected without
+	 * an auth protocol is an invalid authPriv combination that would raise a
+	 * ValueError in snmp3_*(), so route it to the binary instead. */
+	$auth_set = !in_array($auth, array('', '[None]'), true);
+	$priv_set = !in_array($priv, array('', '[None]'), true);
+
+	if ($priv_set && !$auth_set) {
+		return false;
+	}
+
+	return true;
 }
 
 /**
