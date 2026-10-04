@@ -21,13 +21,11 @@ out with `git rm --cached`.
 
 ## PHP runtime
 
-- `1.2.x` / `feat/*-1.2.x` install on PHP 8.0 or newer (`composer.json` asks
-  for `>=8.0`) and are tested from 8.1 up.  Write for 8.1 and do not drop
-  below it.  PHP 8.0 syntax such as `str_contains`, `match` and the nullsafe
-  operator is available; features that arrived in 8.1, such as enums,
-  `readonly` properties and `never`, are not, because `composer.json` still
-  admits 8.0.
-- `develop` requires PHP 8.1 (`"php": "^8.1"`), so 8.1 features are fine there.
+- `1.2.x` / `feat/*-1.2.x` require PHP 8.2 or newer (`composer.json` asks for
+  `>=8.2`).  Write for 8.2 and do not drop below it.  PHP 8.2 syntax such as
+  `str_contains`, `match`, the nullsafe operator, enums, `readonly`
+  properties/classes, `never` and DNF types is available.
+- `develop` requires PHP 8.2 or newer as well, so the same floor applies there.
 - `1.2.x` is a point-release branch.  Prefer the construct already used around
   the code you are editing over a newer equivalent, and keep a syntax change
   out of a bug fix.  That is a review-noise argument, not a compatibility one.
