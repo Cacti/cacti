@@ -866,6 +866,12 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 	 * for Caching.
 	 */
 	set_config_option('time_last_change_poller_item', time());
+
+	/* fold any newly-written poller_item SNMP credential tuples into the shared
+	 * credential registry so the poller never has to re-scan the whole table. */
+	if (function_exists('snmp_cred_registry_merge_local_data_ids')) {
+		snmp_cred_registry_merge_local_data_ids($local_data_ids);
+	}
 }
 
 /**

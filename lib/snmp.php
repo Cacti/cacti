@@ -753,21 +753,233 @@ function snmp_auth_cache_key($community, $username, $password, $auth_proto, $pri
 }
 
 /**
- * Distinct SNMP credential tuples from the host table.
+ * The settings key holding the encrypted SNMP credential registry.
+ *
+ * @return string
+ */
+function snmp_cred_registry_setting(): string {
+	return 'snmp_cred_registry';
+}
+
+/**
+ * Reduce a credential row to the six columns the registry tracks.
+ *
+ * @param array $row A row carrying the SNMP credential columns.
+ *
+ * @return array The normalized six-column tuple.
+ */
+function snmp_cred_registry_tuple(array $row): array {
+	return array(
+		'snmp_community'       => (string) ($row['snmp_community'] ?? ''),
+		'snmp_username'        => (string) ($row['snmp_username'] ?? ''),
+		'snmp_password'        => (string) ($row['snmp_password'] ?? ''),
+		'snmp_auth_protocol'   => (string) ($row['snmp_auth_protocol'] ?? ''),
+		'snmp_priv_passphrase' => (string) ($row['snmp_priv_passphrase'] ?? ''),
+		'snmp_priv_protocol'   => (string) ($row['snmp_priv_protocol'] ?? ''),
+	);
+}
+
+/**
+ * Registry key for a credential row: the sha1 of its six-column tuple.
+ *
+ * @param array $row A row carrying the SNMP credential columns.
+ *
+ * @return string
+ */
+function snmp_cred_registry_key(array $row): string {
+	return snmp_auth_cache_key(
+		$row['snmp_community'] ?? '', $row['snmp_username'] ?? '', $row['snmp_password'] ?? '',
+		$row['snmp_auth_protocol'] ?? '', $row['snmp_priv_passphrase'] ?? '', $row['snmp_priv_protocol'] ?? ''
+	);
+}
+
+/**
+ * Decode the encrypted credential registry from the settings table.
+ *
+ * @return array|null The sha1 => tuple map, or null when absent/undecodable.
+ */
+function snmp_cred_registry_load(): ?array {
+	if (!function_exists('cacti_decrypt_secret')) {
+		return null;
+	}
+
+	$blob = read_config_option(snmp_cred_registry_setting());
+
+	if ($blob === '' || $blob === null || $blob === false) {
+		return null;
+	}
+
+	$plain = cacti_decrypt_secret((string) $blob);
+
+	if ($plain === false) {
+		return null;
+	}
+
+	$data = @unserialize($plain, array('allowed_classes' => false));
+
+	return is_array($data) ? $data : null;
+}
+
+/**
+ * Encrypt and persist the credential registry to the settings table.
+ *
+ * @param array $registry The sha1 => tuple map.
+ *
+ * @return bool True on success.
+ */
+function snmp_cred_registry_store(array $registry): bool {
+	if (!function_exists('cacti_encrypt_secret')) {
+		return false;
+	}
+
+	$blob = cacti_encrypt_secret(serialize($registry));
+
+	if ($blob === '' || $blob === false) {
+		return false;
+	}
+
+	set_config_option(snmp_cred_registry_setting(), $blob);
+
+	return true;
+}
+
+/**
+ * Full distinct credential scan across host and poller_item. Expensive, so it
+ * runs only to seed the registry when it is absent (first poll). poller_item is
+ * included because a device can carry per-data-source SNMP overrides (for
+ * example a second agent on another port) that the host row does not reflect.
+ *
+ * @return array The sha1 => tuple map.
+ */
+function snmp_cred_registry_build(): array {
+	$columns = 'snmp_community, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol';
+
+	$hosts = db_fetch_assoc("SELECT DISTINCT $columns FROM host WHERE snmp_version > 0");
+	$items = db_fetch_assoc("SELECT DISTINCT $columns FROM poller_item WHERE snmp_version > 0");
+
+	$registry = array();
+
+	foreach (array_merge(is_array($hosts) ? $hosts : array(), is_array($items) ? $items : array()) as $row) {
+		$registry[snmp_cred_registry_key($row)] = snmp_cred_registry_tuple($row);
+	}
+
+	return $registry;
+}
+
+/**
+ * Return the credential registry, seeding and persisting it from a one-time full
+ * scan when the settings value is absent. Memoized per process so a wave of
+ * data-source lookups reuses the decoded set.
+ *
+ * @return array The sha1 => tuple map.
+ */
+function snmp_cred_registry(): array {
+	static $registry = null;
+
+	if ($registry !== null) {
+		return $registry;
+	}
+
+	$loaded = snmp_cred_registry_load();
+
+	if ($loaded === null) {
+		$loaded = snmp_cred_registry_build();
+		snmp_cred_registry_store($loaded);
+	}
+
+	$registry = $loaded;
+
+	return $registry;
+}
+
+/**
+ * Fold credential rows into the stored registry, adding only tuples it does not
+ * already hold and resealing it when something changed. Load-only: when the
+ * registry has not been seeded yet it is left for the first poll to build, so a
+ * host or data-source save never triggers the full scan itself. A change drops
+ * the pre-hardened shared cache so the next poll rebuilds it.
+ *
+ * @param array $rows Rows carrying SNMP credential columns (+ snmp_version).
+ *
+ * @return bool True when the registry was updated.
+ */
+function snmp_cred_registry_add_rows(array $rows): bool {
+	if (!snmp_auth_cache_enabled() || !function_exists('cacti_encrypt_secret')) {
+		return false;
+	}
+
+	$registry = snmp_cred_registry_load();
+
+	if ($registry === null) {
+		return false;
+	}
+
+	$changed = false;
+
+	foreach ($rows as $row) {
+		if ((int) ($row['snmp_version'] ?? 0) <= 0) {
+			continue;
+		}
+
+		$key = snmp_cred_registry_key($row);
+
+		if (!isset($registry[$key])) {
+			$registry[$key] = snmp_cred_registry_tuple($row);
+			$changed = true;
+		}
+	}
+
+	if ($changed) {
+		snmp_cred_registry_store($registry);
+		snmp_auth_cache()->invalidate();
+	}
+
+	return $changed;
+}
+
+/**
+ * Fold the SNMP credential tuples of a just-written wave of poller_item rows into
+ * the registry. Bounded by the local_data_ids in the wave rather than the whole
+ * table, so the "data sources arrive in waves" path stays cheap.
+ *
+ * @param array $local_data_ids The local_data_id set just flushed to poller_item.
+ *
+ * @return void
+ */
+function snmp_cred_registry_merge_local_data_ids($local_data_ids): void {
+	if (!snmp_auth_cache_enabled() || !function_exists('cacti_encrypt_secret')) {
+		return;
+	}
+
+	if (snmp_cred_registry_load() === null) {
+		return;
+	}
+
+	$ids = array_filter(array_map('intval', (array) $local_data_ids));
+
+	if (empty($ids)) {
+		return;
+	}
+
+	$in      = implode(', ', $ids);
+	$columns = 'snmp_community, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_version';
+
+	$rows = db_fetch_assoc("SELECT DISTINCT $columns FROM poller_item WHERE snmp_version > 0 AND local_data_id IN ($in)");
+
+	if (is_array($rows) && cacti_sizeof($rows)) {
+		snmp_cred_registry_add_rows($rows);
+	}
+}
+
+/**
+ * Distinct SNMP credential tuples for the auth cache, sourced from the encrypted
+ * registry (built once, then maintained incrementally on host and data-source
+ * saves) rather than a per-poll table scan.
  *
  * @return array
  */
 function snmp_auth_cache_rows(): array {
-	$columns = 'snmp_community, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol';
-
-	/* Every poller_item SNMP credential is copied from its host, so the host
-	 * table already holds the full distinct credential set. Scanning host (a few
-	 * thousand rows) instead of poller_item (potentially millions, and unindexed
-	 * on these columns) keeps the per-startup refresh cheap; a credential that
-	 * somehow exists only on an item simply falls back to live hardening. */
-	$hosts = db_fetch_assoc("SELECT DISTINCT $columns FROM host WHERE snmp_version > 0");
-
-	return is_array($hosts) ? $hosts : array();
+	return array_values(snmp_cred_registry());
 }
 
 /**
