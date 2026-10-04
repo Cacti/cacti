@@ -105,8 +105,6 @@ if ($config['poller_id'] == 1) {
 	secpass_check_expired();
 
 	reindex_devices();
-
-	snmp_credential_cache_maintenance();
 }
 
 // Check the realtime cache and poller
@@ -120,6 +118,10 @@ logrotate_check($force);
 
 // Remove deleted devices
 remove_aged_row_cache();
+
+// Sweep this collector's SNMP credential cache (each collector has its own
+// host-local cache file / shared-memory segment, so this runs everywhere)
+snmp_credential_cache_maintenance();
 
 if ($config['poller_id'] > 1) {
 	api_plugin_hook('poller_remote_maint');
@@ -200,16 +202,19 @@ function snmp_credential_cache_maintenance() {
 		return;
 	}
 
-	$last_run = read_config_option('snmp_cred_cache_lastrun');
+	/* each collector has its own host-local cache, so track the last run per
+	 * poller so one collector's sweep does not suppress another's */
+	$setting  = 'snmp_cred_cache_lastrun_' . $config['poller_id'];
+	$last_run = read_config_option($setting);
 	$now      = time();
 
 	if (empty($last_run)) {
-		set_config_option('snmp_cred_cache_lastrun', $now);
+		set_config_option($setting, $now);
 		return;
 	}
 
 	if (date('z', $now) != date('z', $last_run)) {
-		set_config_option('snmp_cred_cache_lastrun', $now);
+		set_config_option($setting, $now);
 
 		maint_debug('Rebuilding SNMP credential cache');
 
