@@ -408,7 +408,6 @@ dynamic_include	./poller_automation.php:45	require_once($config['base_path'] . '
 dynamic_include	./poller_automation.php:46	require_once($config['base_path'] . '/lib/utility.php');
 dynamic_include	./pollers.php:26	require_once($config['base_path'] . '/lib/poller.php');
 dynamic_include	./lib/snmp.php:49		include_once($config['include_path'] . '/vendor/phpsnmp/extension.php');
-dynamic_include	./lib/snmp.php:51		include_once($config['include_path'] . '/vendor/phpsnmp/classSNMP.php');
 dynamic_include	./lib/data_query.php:102		include_once($config['library_path'] . '/poller.php');
 dynamic_include	./lib/data_query.php:103		include_once($config['library_path'] . '/api_data_source.php');
 dynamic_include	./lib/data_query.php:104		include_once($config['library_path'] . '/utility.php');

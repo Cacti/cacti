@@ -651,7 +651,13 @@ function open_snmp_session($host_id, &$item) {
 
 	$key = cmd_snmp_session_key($host_id, $item);
 
-	if (!isset($sessions[$key]) && !isset($downhosts[$key])) {
+	/* a host already marked down this run has no cached session, so return the
+	   down sentinel instead of falling through to an unset $sessions[$key] (null) */
+	if (isset($downhosts[$key])) {
+		return false;
+	}
+
+	if (!isset($sessions[$key])) {
 		$sessions[$key] = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
 			$item['snmp_username'], $item['snmp_password'], $item['snmp_auth_protocol'], $item['snmp_priv_passphrase'],
 			$item['snmp_priv_protocol'], $item['snmp_context'], $item['snmp_engine_id'], $item['snmp_port'],
