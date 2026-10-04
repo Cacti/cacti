@@ -8364,23 +8364,77 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 	stream_set_blocking($pipes[1], false);
 	stream_set_blocking($pipes[2], false);
 
-	$stdout    = '';
-	$stderr    = '';
-	$remaining = (int) $timeout * 1000000;
-	$exit      = null;
+	$stdout      = '';
+	$stderr      = '';
+	$idle_budget = (int) round(((float) $timeout) * 1000000);
+	$idle_left   = $idle_budget;
+	$exit        = null;
+	$open        = array(1 => $pipes[1], 2 => $pipes[2]);
 
-	while ($remaining > 0) {
-		$start  = microtime(true);
-		$read   = array($pipes[1], $pipes[2]);
+	while ($idle_left > 0 && !empty($open)) {
+		$read   = array_values($open);
 		$write  = array();
 		$except = array();
-		stream_select($read, $write, $except, 0, $remaining);
 
-		usleep(50000);
+		/* $timeout is a maximum idle gap, not total runtime: the wait refills
+		 * whenever the child produces output, so a long but actively streaming
+		 * response (a large snmpbulkwalk) is never killed mid-stream and is only
+		 * reaped after a genuine silent stall. Split the idle budget into whole
+		 * seconds + microseconds; the microsecond slot cannot hold the full value
+		 * on its own, and there is no fixed sleep, so a child that answers in 2ms
+		 * returns in 2ms. */
+		$sec   = (int) ($idle_left / 1000000);
+		$usec  = $idle_left % 1000000;
+		$start = microtime(true);
+		$ready = @stream_select($read, $write, $except, $sec, $usec);
 
-		$status  = proc_get_status($process);
-		$stdout .= stream_get_contents($pipes[1]);
-		$stderr .= stream_get_contents($pipes[2]);
+		if ($ready === false) {
+			break;
+		}
+
+		$progressed = false;
+		$closed     = false;
+
+		if ($ready > 0) {
+			foreach ($read as $pipe) {
+				$chunk = fread($pipe, 8192);
+
+				if ($chunk !== false && $chunk !== '') {
+					if ($pipe === $pipes[1]) {
+						$stdout .= $chunk;
+					} else {
+						$stderr .= $chunk;
+					}
+
+					$progressed = true;
+				}
+
+				/* Drop a pipe from the select set once it reaches EOF so a closed
+				 * pipe cannot spin stream_select() while the child lingers. */
+				if (feof($pipe)) {
+					unset($open[($pipe === $pipes[1]) ? 1 : 2]);
+					$closed = true;
+				}
+			}
+		}
+
+		if ($progressed) {
+			/* Output refills the idle budget; only a silent stretch counts down. */
+			$idle_left = $idle_budget;
+		} else {
+			$waited     = microtime(true) - $start;
+			$idle_left -= (int) ($waited * 1000000);
+
+			/* Where select() cannot block on a pipe (Windows), it returns at once
+			 * with nothing ready; yield briefly so the loop cannot peg a CPU. On
+			 * platforms where select() blocks, this never runs. */
+			if (!$closed && $waited < 0.002) {
+				usleep(2000);
+				$idle_left -= 2000;
+			}
+		}
+
+		$status = proc_get_status($process);
 
 		/* proc_get_status() returns false on a dead handle. Preserve a valid
 		 * exitcode while it is observable because a later status read or
@@ -8392,9 +8446,10 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 
 			break;
 		}
-
-		$remaining -= (int) ((microtime(true) - $start) * 1000000);
 	}
+
+	$stdout .= (string) stream_get_contents($pipes[1]);
+	$stderr .= (string) stream_get_contents($pipes[2]);
 
 	fclose($pipes[1]);
 	fclose($pipes[2]);
