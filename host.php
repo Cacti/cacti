@@ -834,6 +834,10 @@ function host_edit() {
 		$fields_host_edit['host_template_id']['value'] = get_filter_request_var('host_template_id');
 	}
 
+	/* drop the legacy MD5/DES SNMPv3 algorithms from the pickers when disabled */
+	$fields_host_edit['snmp_auth_protocol']['array'] = snmp_auth_protocol_options();
+	$fields_host_edit['snmp_priv_protocol']['array'] = snmp_priv_protocol_options();
+
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),

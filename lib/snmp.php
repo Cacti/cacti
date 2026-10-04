@@ -663,6 +663,54 @@ function snmp_build_v3_cred_args($auth_proto, $auth_user, $auth_pass, $priv_prot
 }
 
 /**
+ * Report whether the legacy MD5 authentication and DES privacy SNMPv3
+ * algorithms are offered to operators. Both are weak and are absent from
+ * hardened (FIPS) PHP and Net-SNMP builds, so the setting lets an operator drop
+ * them from the Device and Automation SNMP Option pickers.
+ *
+ * @return bool True when MD5/DES may be selected, false when they are disabled.
+ */
+function snmp_md5_des_enabled() {
+	return read_config_option('snmp_md5_des_enabled') == 'on';
+}
+
+/**
+ * Return the SNMPv3 authentication protocol choices for a form picker, dropping
+ * the legacy MD5 entry when it has been disabled in Settings.
+ *
+ * @return array Map of protocol key => display label.
+ */
+function snmp_auth_protocol_options() {
+	global $snmp_auth_protocols;
+
+	$protocols = $snmp_auth_protocols;
+
+	if (!snmp_md5_des_enabled()) {
+		unset($protocols['MD5']);
+	}
+
+	return $protocols;
+}
+
+/**
+ * Return the SNMPv3 privacy protocol choices for a form picker, dropping the
+ * legacy DES entry when it has been disabled in Settings.
+ *
+ * @return array Map of protocol key => display label.
+ */
+function snmp_priv_protocol_options() {
+	global $snmp_priv_protocols;
+
+	$protocols = $snmp_priv_protocols;
+
+	if (!snmp_md5_des_enabled()) {
+		unset($protocols['DES']);
+	}
+
+	return $protocols;
+}
+
+/**
  * Return the process-wide shared SNMP authentication cache.
  *
  * poller.php builds a map of sha1(credential tuple) => pre-hardened SNMPv3

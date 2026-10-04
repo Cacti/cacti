@@ -19751,3 +19751,16 @@ msgid ""
 "installed, SNMPv3 gets are handled in-process and bypass this cache, so it "
 "is safe to leave this disabled."
 msgstr ""
+
+#: include/global_settings.php:1302
+msgid "Enable MD5 and DES for SNMPv3"
+msgstr ""
+
+#: include/global_settings.php:1303
+msgid ""
+"The MD5 authentication and DES privacy algorithms are legacy, weak, and "
+"unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When disabled, MD5 "
+"and DES are removed from the SNMPv3 Authentication and Privacy Protocol "
+"dropdowns shown when editing a Device and in the Automation SNMP Options, "
+"leaving only the stronger SHA and AES algorithms."
+msgstr ""

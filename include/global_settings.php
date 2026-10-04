@@ -1298,6 +1298,12 @@ $settings = array(
 				60 => __('%d Seconds', 60)
 			)
 		),
+		'snmp_md5_des_enabled' => array(
+			'friendly_name' => __('Enable MD5 and DES for SNMPv3'),
+			'description' => __('The MD5 authentication and DES privacy algorithms are legacy, weak, and unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When disabled, MD5 and DES are removed from the SNMPv3 Authentication and Privacy Protocol dropdowns shown when editing a Device and in the Automation SNMP Options, leaving only the stronger SHA and AES algorithms.'),
+			'method' => 'checkbox',
+			'default' => 'on'
+		),
 		'snmp_bulk_walk_size' => array(
 			'friendly_name' => __('SNMP Bulkwalk Fetch Size'),
 			'description' => __('How many OID\'s should be returned per snmpbulkwalk request?  For Devices with large SNMP trees, increasing this size will increase re-index performance over a WAN.'),

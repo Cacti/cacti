@@ -507,6 +507,10 @@ function automation_snmp_item_edit() {
 			'value' => '|arg1:sequence|'),
 	);
 
+	/* drop the legacy MD5/DES SNMPv3 algorithms from the pickers when disabled */
+	$fields_automation_snmp_item_edit['snmp_auth_protocol']['array'] = snmp_auth_protocol_options();
+	$fields_automation_snmp_item_edit['snmp_priv_protocol']['array'] = snmp_priv_protocol_options();
+
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
 		'fields' => inject_form_variables($fields_automation_snmp_item_edit, (isset($automation_snmp_item) ? $automation_snmp_item : array()))
