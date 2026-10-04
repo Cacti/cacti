@@ -1143,19 +1143,9 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 	}
 
 	if ($device_id > 0) {
-		/* keep the shared SNMP credential registry current without a full
-		 * per-poll table scan: add this host's credential tuple when it is new. */
-		if (function_exists('snmp_cred_registry_add_rows') && $snmp_version > 0) {
-			snmp_cred_registry_add_rows(array(array(
-				'snmp_community'       => $snmp_community,
-				'snmp_username'        => $snmp_username,
-				'snmp_password'        => $snmp_password,
-				'snmp_auth_protocol'   => $snmp_auth_protocol,
-				'snmp_priv_passphrase' => $snmp_priv_passphrase,
-				'snmp_priv_protocol'   => $snmp_priv_protocol,
-				'snmp_version'         => $snmp_version,
-			)));
-		}
+		/* bump the SNMP credential version so the next poll rebuilds the shared
+		 * credential cache from a fresh scan if these SNMP settings changed */
+		set_config_option('snmp_cred_version', uniqid('', true));
 
 		if (read_config_option('extended_paths') == 'on'){
 			$pattern  = read_config_option('extended_paths_type');
