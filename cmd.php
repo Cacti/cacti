@@ -621,17 +621,24 @@ function record_cmdphp_started() {
  * @return string The session identity key.
  */
 function cmd_snmp_session_key($host_id, $item) {
-	return $host_id . '_' . sha1(implode('|', array(
-		$item['snmp_version']         ?? '',
-		$item['snmp_port']            ?? '',
-		$item['snmp_community']       ?? '',
-		$item['snmp_username']        ?? '',
-		$item['snmp_password']        ?? '',
-		$item['snmp_auth_protocol']   ?? '',
-		$item['snmp_priv_passphrase'] ?? '',
-		$item['snmp_priv_protocol']   ?? '',
-		$item['snmp_context']         ?? '',
-		$item['snmp_engine_id']       ?? ''
+	/* serialize() gives an unambiguous, binary-safe encoding of every field
+	 * cacti_snmp_session() is opened with, so two distinct sessions can never
+	 * collide: a delimiter-joined subset could, because credential values may
+	 * themselves contain the delimiter, and hostname/snmp_timeout are both
+	 * overridable per data source. */
+	return $host_id . '_' . sha1(serialize(array(
+		'hostname'             => $item['hostname']             ?? '',
+		'snmp_version'         => $item['snmp_version']         ?? '',
+		'snmp_port'            => $item['snmp_port']            ?? '',
+		'snmp_community'       => $item['snmp_community']       ?? '',
+		'snmp_username'        => $item['snmp_username']        ?? '',
+		'snmp_password'        => $item['snmp_password']        ?? '',
+		'snmp_auth_protocol'   => $item['snmp_auth_protocol']   ?? '',
+		'snmp_priv_passphrase' => $item['snmp_priv_passphrase'] ?? '',
+		'snmp_priv_protocol'   => $item['snmp_priv_protocol']   ?? '',
+		'snmp_context'         => $item['snmp_context']         ?? '',
+		'snmp_engine_id'       => $item['snmp_engine_id']       ?? '',
+		'snmp_timeout'         => $item['snmp_timeout']         ?? ''
 	)));
 }
 
@@ -808,12 +815,49 @@ function cmd_snmp_collect_group($group, &$output_array, &$output_count, &$width_
 		$oids[$oid] = $oid;
 	}
 
-	$results = cacti_snmp_session_get($session, array_values($oids), true);
+	$requested = array_values($oids);
+	$results   = cacti_snmp_session_get($session, $requested, true);
 
 	$byoid = array();
 	if (is_array($results)) {
+		/* map by the (numeric) OID key the session returned */
 		foreach ($results as $roid => $value) {
 			$byoid[ltrim((string) $roid, '.')] = $value;
+		}
+
+		/* The session is configured for numeric OID keys, so a symbolic request
+		 * (e.g. IF-MIB::ifInOctets.1) comes back under its numeric OID and would
+		 * never match the item's arg1. Associate the results positionally with
+		 * the exact requested OID strings as well - the way cacti_snmp_get_multi()
+		 * does - so both symbolic and numeric requests resolve. */
+		$values = array_values($results);
+
+		foreach ($requested as $i => $roid) {
+			if (array_key_exists($i, $values)) {
+				$rkey = ltrim(trim((string) $roid), '.');
+
+				if (!isset($byoid[$rkey])) {
+					$byoid[$rkey] = $values[$i];
+				}
+			}
+		}
+	}
+
+	/* SNMPv1 GET PDUs fail the whole request with noSuchName when any single
+	 * OID is unavailable, so one stale data source would otherwise turn every
+	 * value in the batch into U. Retry just the unresolved OIDs one at a time
+	 * so a bad neighbour does not suppress otherwise-valid rows. */
+	if ($first['snmp_version'] == 1) {
+		foreach ($oids as $oid) {
+			$rkey = ltrim(trim((string) $oid), '.');
+
+			if (!isset($byoid[$rkey]) || $byoid[$rkey] === false) {
+				$single = cacti_snmp_session_get($session, $oid, true);
+
+				if ($single !== false) {
+					$byoid[$rkey] = is_array($single) ? reset($single) : $single;
+				}
+			}
 		}
 	}
 

@@ -881,7 +881,20 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 	}
 
 	if ($v3_items > 0) {
-		set_config_option('snmp_cred_version', uniqid('', true));
+		$cred_version = uniqid('', true);
+		set_config_option('snmp_cred_version', $cred_version);
+
+		/* A remote collector builds its host-local credential cache from its own
+		 * database copy and reads this token from its own settings, so the main
+		 * database bump alone never invalidates it. Push the same token to the
+		 * affected remote poller so its next poll rebuilds the cache instead of
+		 * serving stale/rotated credentials until the daily out-of-band rebuild. */
+		if ($poller_id > 1 && remote_poller_up($poller_id)) {
+			if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (\'snmp_cred_version\', ?)',
+					array($cred_version), true, $rcnn_id);
+			}
+		}
 	}
 }
 

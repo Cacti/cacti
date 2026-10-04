@@ -720,7 +720,7 @@ $settings = array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Auth Protocol (v3)'),
 			'description' => __('Default SNMPv3 Authorization Protocol for all new Devices.'),
-			'default' => 'MD5',
+			'default' => 'SHA',
 			'array' => $snmp_auth_protocols,
 		),
 		'snmp_username' => array(
@@ -743,7 +743,7 @@ $settings = array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Privacy Protocol (v3)'),
 			'description' => __('Default SNMPv3 Privacy Protocol for all new Devices.'),
-			'default' => 'DES',
+			'default' => 'AES',
 			'array' => $snmp_priv_protocols,
 		),
 		'snmp_priv_passphrase' => array(

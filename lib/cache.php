@@ -168,7 +168,10 @@ class FileBackend implements CacheBackend {
 	public function readChecksum(string $name): ?string {
 		$data = $this->load($name);
 
-		return $data['checksum'] ?? null;
+		/* A corrupt cache file could decode to a non-string checksum; treat that
+		 * as absent so it falls through to a rebuild instead of raising a
+		 * TypeError from this ?string return. */
+		return (isset($data['checksum']) && is_string($data['checksum'])) ? $data['checksum'] : null;
 	}
 
 	public function clear(string $name): void {
