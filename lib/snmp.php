@@ -154,7 +154,7 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $a
 
 	try {
 		$session = @new SNMP($version, $snmp_hostname . ':' . $port, ($version == 3 ? $auth_user : $community), $timeout_us, $retries);
-	} catch (Exception $e) {
+	} catch (\Throwable $e) {
 		return false;
 	}
 
@@ -189,7 +189,7 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $a
 
 	try {
 		$session->setSecurity($sec_level, $auth_proto, $auth_pass, $priv_proto, $priv_pass, $context, $engineid);
-	} catch (Exception $e) {
+	} catch (\Throwable $e) {
 		return false;
 	}
 
@@ -2054,13 +2054,6 @@ function snmp_php_v3_protocols_supported($auth_proto, $priv_proto) {
 	 * otherwise raise an uncaught ValueError. */
 	$auth_ok = array('', '[None]', 'MD5', 'SHA', 'SHA256', 'SHA512');
 	$priv_ok = array('', '[None]', 'DES', 'AES', 'AES128');
-
-	/* PHASE 1 TEST (revert in phase 2): force the PHP 8.6 auth/priv tokens on
-	   every build so an AES-256/SHA-512 device takes the snmp3_*() route for a
-	   live test. Phase 2 deletes these two lines, leaving only the version gate
-	   below so pre-8.6 builds fall back to the Net-SNMP binary. */
-	$auth_ok = array_merge($auth_ok, array('SHA224', 'SHA384'));
-	$priv_ok = array_merge($priv_ok, array('AES192', 'AES192C', 'AES256', 'AES256C'));
 
 	if (PHP_VERSION_ID >= 80600) {
 		$auth_ok = array_merge($auth_ok, array('SHA224', 'SHA384'));
