@@ -10263,6 +10263,12 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr "Som standard kommer huvudsakliga Cacti Data Collector att cache hela webbplatsen och plugins till en resurscache. Därefter uppdaterar regelbundet fjärrdatasamlarna teman med eventuella uppdateringar från huvudsakliga Cacti Data Collector. Denna resurscache gör det möjligt för fjärrdatasamlare att själv uppgradera. Om du inte vill använda det här alternativet kan du inaktivera det med den här inställningen."
 
 #: include/global_settings.php
+#, fuzzy
+#| msgid "SNMP error"
+msgid "SNMP Behavior"
+msgstr "SNMP-fel"
+
+#: include/global_settings.php
 msgid "Additional Data Collector Settings"
 msgstr "Ytterligare inställningar för datainsamlare"
 
