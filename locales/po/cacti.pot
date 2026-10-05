@@ -25059,3 +25059,43 @@ msgstr ""
 #: lib/html_filter.php layouts.php
 msgid "Global"
 msgstr ""
+
+#: include/global_settings.php
+msgid "Page Filter Format"
+msgstr ""
+
+#: include/global_settings.php
+msgid "How table filters are presented. Modern collapses the filter into a Layouts selector with an Edit dialog that holds the filter fields; Legacy shows the classic inline filter. The Layouts selector is available in both."
+msgstr ""
+
+#: include/global_arrays.php
+msgid "Filters"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Edit Filter"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Filter Name"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Save As"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Edit the current filter"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Save this layout as a new personal layout"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Please enter a filter name."
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Save the layout before publishing it."
+msgstr ""

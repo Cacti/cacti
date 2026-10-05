@@ -1294,7 +1294,7 @@ legend {
 	border: 0;
 	border-radius: 0;
 	padding: 10px 14px;
-	background: #cf5a1e;
+	background: #b34d16;
 	color: #ffffff;
 	font-size: 14px;
 }
@@ -1343,7 +1343,7 @@ legend {
 }
 
 .ui-dialog.cactiFilterDialog .ui-dialog-buttonpane .ui-button:first-child {
-	background: #cf5a1e;
+	background: #b34d16;
 	color: #ffffff;
 	border-color: rgba(0, 0, 0, 0.25);
 }

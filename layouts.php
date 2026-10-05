@@ -54,13 +54,13 @@ function layouts_manage() : void {
 	$user_id  = isset($_SESSION['sess_user_id']) ? (int) $_SESSION['sess_user_id'] : 0;
 
 	if ($is_admin) {
-		$layouts = db_fetch_assoc('SELECT ul.*, ua.username
+		$layouts = db_fetch_assoc('SELECT ul.id, ul.user_id, ul.page, ul.name, ul.data, ua.username
 			FROM user_layouts AS ul
 			LEFT JOIN user_auth AS ua
 			ON ua.id = ul.user_id
 			ORDER BY ul.page, (ul.user_id = 0), ul.name');
 	} else {
-		$layouts = db_fetch_assoc_prepared('SELECT ul.*, ua.username
+		$layouts = db_fetch_assoc_prepared('SELECT ul.id, ul.user_id, ul.page, ul.name, ul.data, ua.username
 			FROM user_layouts AS ul
 			LEFT JOIN user_auth AS ua
 			ON ua.id = ul.user_id
@@ -133,8 +133,12 @@ function layouts_manage() : void {
 				return;
 			}
 
-			$.post('layouts.php', { action: action, id: id, __csrf_magic: csrfMagicToken }, function() {
-				document.location.reload();
+			$.post('layouts.php', { action: action, id: id, __csrf_magic: csrfMagicToken }, function(result) {
+				if (result && result.ok) {
+					document.location.reload();
+				} else {
+					alert(<?php print json_encode(__('The layout operation failed.')); ?>);
+				}
 			}, 'json').fail(function() {
 				alert(<?php print json_encode(__('The layout operation failed.')); ?>);
 			});

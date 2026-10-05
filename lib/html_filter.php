@@ -665,7 +665,7 @@ class CactiTableFilter {
 
 			html_filter_end_box();
 
-			return ob_get_clean();
+			return (string) ob_get_clean();
 		}
 
 		if (isset($this->filter_array['rows'])) {
@@ -705,7 +705,7 @@ class CactiTableFilter {
 
 		html_filter_end_box();
 
-		return ob_get_clean();
+		return (string) ob_get_clean();
 	}
 
 	/**
@@ -783,7 +783,7 @@ class CactiTableFilter {
 		// Edit dialog.
 		$title = $this->form_header != '' ? $this->form_header : __('Edit Filter');
 
-		print "<div id='" . $this->form_id . "_dialog' class='cactiFilterEditDialog' title='" . html_escape($title) . "' style='display:none;'>";
+		print "<div id='" . $this->form_id . "_dialog' class='cactiFilterEditDialog' title='" . html_escape_attr($title) . "' style='display:none;'>";
 		print "<form id='" . $this->form_id . "' action='" . $this->form_action . "' method='" . $this->form_method . "' class='cactiFilter'>";
 
 		// One filter variable per row in a single table so the label column
@@ -1152,7 +1152,7 @@ class CactiTableFilter {
 
 		if ($this->render_layouts) {
 			if ($this->use_modern_filter()) {
-				$script .= $this->create_modern_javascript($applyFilter);
+				$script .= $this->create_modern_javascript($applyFilter, $changeFunction, $clearFunction);
 			} else {
 				$script .= $this->create_layouts_javascript($applyFilter);
 			}
@@ -1326,7 +1326,7 @@ class CactiTableFilter {
 	 *
 	 * @return string
 	 */
-	private function create_modern_javascript(string $applyFilter) : string {
+	private function create_modern_javascript(string $applyFilter, string $changeFunction, string $clearFunction) : string {
 		$page     = filter_layouts_page_key($this->form_action != '' ? $this->form_action : get_current_page());
 		$can_glob = filter_layouts_can_manage_global();
 		$title    = $this->form_header != '' ? $this->form_header : __('Edit Filter');
@@ -1376,14 +1376,14 @@ class CactiTableFilter {
 		$js .= 'function layoutOpenDialog(forceNew) {' . PHP_EOL;
 		$js .= "\t$('#layout_name').val(forceNew ? '' : (layoutSelectedOption().attr('data-name') || ''));" . PHP_EOL;
 		$js .= "\tvar buttons = [" . PHP_EOL;
-		$js .= "\t\t{ text: " . json_encode(__('Search')) . ", click: function() { $(this).dialog('close'); applyFilter(); } }," . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode(__('Search')) . ", click: function() { $(this).dialog('close'); " . $changeFunction . '; } },' . PHP_EOL;
 		$js .= "\t\t{ text: " . json_encode(__('Save')) . ', click: function() { layoutDialogSave(forceNew); } },' . PHP_EOL;
 
 		if ($can_glob) {
 			$js .= "\t\t{ text: " . json_encode(__('Publish')) . ', click: function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { alert(' . json_encode(__('Save the layout before publishing it.')) . "); return; } layoutPost('layout_publish', { id: id }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); } }," . PHP_EOL;
 		}
 
-		$js .= "\t\t{ text: " . json_encode(__('Clear')) . ', click: function() { clearFilter(); } },' . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode(__('Clear')) . ', click: function() { ' . $clearFunction . '; } },' . PHP_EOL;
 		$js .= "\t\t{ text: " . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } }" . PHP_EOL;
 		$js .= "\t];" . PHP_EOL;
 		$js .= "\t$('#" . $this->form_id . "_dialog').dialog({ title: " . json_encode($title) . ", modal: true, width: 'auto', minWidth: 500, resizable: false, buttons: buttons });" . PHP_EOL;
@@ -1601,7 +1601,7 @@ function filter_layouts_get(int $id) {
 		return false;
 	}
 
-	$row = db_fetch_row_prepared('SELECT * FROM user_layouts WHERE id = ?', [$id]);
+	$row = db_fetch_row_prepared('SELECT id, user_id, page, name, data FROM user_layouts WHERE id = ?', [$id]);
 
 	return is_array($row) ? $row : false;
 }
@@ -1706,7 +1706,7 @@ function filter_layouts_save(string $name, string $url, int $id = 0) {
 	}
 
 	$save['page'] = $document['page'];
-	$save['name'] = substr($name, 0, 128);
+	$save['name'] = mb_substr($name, 0, 128);
 	$save['data'] = $json;
 
 	$saved_id = sql_save($save, 'user_layouts');
@@ -1734,7 +1734,7 @@ function filter_layouts_rename(int $id, string $name) : bool {
 		return false;
 	}
 
-	db_execute_prepared('UPDATE user_layouts SET name = ? WHERE id = ?', [substr($name, 0, 128), $id]);
+	db_execute_prepared('UPDATE user_layouts SET name = ? WHERE id = ?', [mb_substr($name, 0, 128), $id]);
 
 	return true;
 }

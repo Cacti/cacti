@@ -1486,7 +1486,7 @@ tr>td.textInfo.right {
 	border: 0;
 	border-radius: 0;
 	padding: 10px 14px;
-	background: #3f9142;
+	background: #357a39;
 	color: #ffffff;
 	font-size: 14px;
 }
@@ -1535,7 +1535,7 @@ tr>td.textInfo.right {
 }
 
 .ui-dialog.cactiFilterDialog .ui-dialog-buttonpane .ui-button:first-child {
-	background: #3f9142;
+	background: #357a39;
 	color: #ffffff;
 	border-color: rgba(0, 0, 0, 0.25);
 }

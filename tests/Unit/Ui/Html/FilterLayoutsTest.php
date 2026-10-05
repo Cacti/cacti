@@ -177,7 +177,7 @@ test('page action buttons (import, export, sort) render on the bar, not the dial
 test('the modern javascript wires the edit dialog save and publish actions', function () use ($root) {
 	$src = file_get_contents($root . '/lib/html_filter.php');
 
-	expect($src)->toContain('private function create_modern_javascript(string $applyFilter) : string {');
+	expect($src)->toContain('private function create_modern_javascript(string $applyFilter, string $changeFunction, string $clearFunction) : string {');
 	expect($src)->toContain('function layoutDialogSave(forceNew) {');
 	expect($src)->toContain('function layoutUpdateButtons() {');
 	expect($src)->toContain("layoutPost('layout_publish'");
