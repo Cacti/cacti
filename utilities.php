@@ -799,6 +799,8 @@ function utilities_view_tech() {
 		form_end_row();
 
 		utilities_get_mysql_recommendations();
+
+		utilities_get_mysql_capabilities();
 	} elseif (get_request_var('tab') == 'dbstatus') {
 		$status = db_fetch_assoc('show global status');
 
