@@ -10281,6 +10281,12 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr "Por padrão, o principal Cacti Data Collector armazenará em cache todo o site e plug-ins em um cache de recursos. Em seguida, periodicamente, os Coletores de Dados Remotos atualizarão os temas com todas as atualizações do Coletor de Dados Cacti principal. Esse cache de recursos permite essencialmente que os coletores de dados remotos se atualizem automaticamente. Se você não quiser usar esta opção, poderá desativá-la usando esta configuração."
 
 #: include/global_settings.php
+#, fuzzy
+#| msgid "SNMP error"
+msgid "SNMP Behavior"
+msgstr "Erro SNMP"
+
+#: include/global_settings.php
 msgid "Additional Data Collector Settings"
 msgstr "Status do coletor de dados remoto:"
 
