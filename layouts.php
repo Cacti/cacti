@@ -71,10 +71,10 @@ function layouts_manage() : void {
 	html_start_box(__('Filter Layouts'), '100%', true, 3, 'center', '');
 
 	$display_text = [
-		'name'  => ['display' => __('Name')],
-		'page'  => ['display' => __('Page')],
-		'owner' => ['display' => __('Owner')],
-		'url'   => ['display' => __('Filter')],
+		'name'   => ['display' => __('Name')],
+		'page'   => ['display' => __('Page')],
+		'owner'  => ['display' => __('Owner')],
+		'url'    => ['display' => __('Filter')],
 		'nosort' => ['display' => __('Actions'), 'align' => 'right'],
 	];
 

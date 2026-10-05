@@ -1055,7 +1055,7 @@ class CactiTableFilter {
 		print "<input type='text' id='layout_name' size='40' maxlength='128' class='ui-state-default ui-corner-all'>";
 		print '</form></div>' . PHP_EOL;
 
-		return ob_get_clean();
+		return (string) ob_get_clean();
 	}
 
 	private function create_layouts_javascript(string $applyFilter) : string {
@@ -1098,9 +1098,9 @@ class CactiTableFilter {
 
 		$js .= "\t$('#layout_save').click(function() { var id = layoutSelectedId(); if (id == 0) { $('#layout_new').click(); return; } if (!layoutEditable()) { alert(" . json_encode(__('You are not permitted to modify this layout.')) . "); return; } layoutPost('layout_save', { id: id, url: layoutFilterUrl() }, function(r) { if (layoutResultOk(r)) { if (r.url) { document.location = r.url; } else { window.location.reload(); } } }); });" . PHP_EOL;
 
-		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to rename.')) . "); return; } if (!layoutEditable()) { alert(" . json_encode(__('You are not permitted to modify this layout.')) . "); return; } var cur = $('#filter_layout option:selected').attr('data-name'); layoutNameDialog(" . json_encode(__('Rename Layout')) . ", cur, function(name) { layoutPost('layout_rename', { id: id, name: name }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); }); });" . PHP_EOL;
+		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to rename.')) . '); return; } if (!layoutEditable()) { alert(' . json_encode(__('You are not permitted to modify this layout.')) . "); return; } var cur = $('#filter_layout option:selected').attr('data-name'); layoutNameDialog(" . json_encode(__('Rename Layout')) . ", cur, function(name) { layoutPost('layout_rename', { id: id, name: name }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); }); });" . PHP_EOL;
 
-		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to delete.')) . "); return; } if (!layoutEditable()) { alert(" . json_encode(__('You are not permitted to modify this layout.')) . "); return; } if (confirm(" . json_encode(__('Delete the selected layout?')) . ")) { layoutPost('layout_delete', { id: id }, function(r) { if (layoutResultOk(r)) { document.location = " . json_encode($page) . "; } }); } });" . PHP_EOL;
+		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to delete.')) . '); return; } if (!layoutEditable()) { alert(' . json_encode(__('You are not permitted to modify this layout.')) . '); return; } if (confirm(' . json_encode(__('Delete the selected layout?')) . ")) { layoutPost('layout_delete', { id: id }, function(r) { if (layoutResultOk(r)) { document.location = " . json_encode($page) . '; } }); } });' . PHP_EOL;
 
 		$js .= "\t$('#layout_publish').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to publish.')) . "); return; } layoutPost('layout_publish', { id: id }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); });" . PHP_EOL;
 
@@ -1180,7 +1180,9 @@ function filter_layouts_get(int $id) {
 		return false;
 	}
 
-	return db_fetch_row_prepared('SELECT * FROM user_layouts WHERE id = ?', [$id]);
+	$row = db_fetch_row_prepared('SELECT * FROM user_layouts WHERE id = ?', [$id]);
+
+	return is_array($row) ? $row : false;
 }
 
 /**
@@ -1429,38 +1431,42 @@ function filter_layouts_handle_request() : void {
 			$row = filter_layouts_save($name, $url, $id);
 
 			if ($row === false) {
-				filter_layouts_json(['ok' => false]);
+				$result = ['ok' => false];
+			} else {
+				$sep = (strpos($row['url'], '?') !== false) ? '&' : '?';
+
+				$result = [
+					'ok'   => true,
+					'id'   => (int) $row['id'],
+					'name' => $row['name'],
+					'url'  => $row['url'] . $sep . 'filter_layout=' . $row['id'],
+				];
 			}
-
-			$sep = (strpos($row['url'], '?') !== false) ? '&' : '?';
-
-			filter_layouts_json([
-				'ok'   => true,
-				'id'   => (int) $row['id'],
-				'name' => $row['name'],
-				'url'  => $row['url'] . $sep . 'filter_layout=' . $row['id'],
-			]);
 
 			break;
 		case 'layout_rename':
 			$name = isset_request_var('name') ? get_nfilter_request_var('name') : '';
 
-			filter_layouts_json(['ok' => filter_layouts_rename($id, $name)]);
+			$result = ['ok' => filter_layouts_rename($id, $name)];
 
 			break;
 		case 'layout_delete':
-			filter_layouts_json(['ok' => filter_layouts_delete($id)]);
+			$result = ['ok' => filter_layouts_delete($id)];
 
 			break;
 		case 'layout_publish':
-			filter_layouts_json(['ok' => filter_layouts_publish($id)]);
+			$result = ['ok' => filter_layouts_publish($id)];
 
 			break;
 		case 'layout_unpublish':
 			$user_id = isset_request_var('user_id') ? (int) get_nfilter_request_var('user_id') : 0;
 
-			filter_layouts_json(['ok' => filter_layouts_unpublish($id, $user_id)]);
+			$result = ['ok' => filter_layouts_unpublish($id, $user_id)];
 
 			break;
+		default:
+			return;
 	}
+
+	filter_layouts_json($result);
 }
