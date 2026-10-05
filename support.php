@@ -1685,7 +1685,7 @@ function show_tech_summary() : void {
 
 	// Get Maximum Memory in GB for MySQL/MariaDB
 	if (POLLER_ID == 1) {
-		if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+		if ($database == 'MariaDB') {
 			$systemMemory = db_fetch_cell('SELECT
 				(@@GLOBAL.key_buffer_size
 				+ @@GLOBAL.query_cache_size
@@ -1737,7 +1737,7 @@ function show_tech_summary() : void {
 			+ @@GLOBAL.thread_stack
 			+ @@GLOBAL.binlog_cache_size) / 1024 / 1024 / 1024');
 	} else {
-		if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+		if ($database == 'MariaDB') {
 			$maxPossibleMyMemory = db_fetch_cell('SELECT (
 				(@@GLOBAL.key_buffer_size
 				+ @@GLOBAL.query_cache_size

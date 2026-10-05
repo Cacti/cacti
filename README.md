@@ -45,20 +45,19 @@ Minimum supported dependencies by branch:
 
 | Dependency | Cacti `1.2.x` | Cacti `develop` (1.3.x) |
 |---|---|---|
-| MariaDB | 5.6+ | 10.2.x+ |
-| MySQL | 5.6+ | 8.0+ |
-| PHP | 8.1+ | 8.3+ |
-| RRDtool | 1.4+ | 1.8+ |
-| Net-SNMP | 5.5+ | 5.8+ |
+| MariaDB | 10.5+ | 10.11+ |
+| MySQL | 8.0+ | 8.4+ |
+| PHP | 8.2+ | 8.3+ |
+| RRDtool | 1.7+ | 1.8+ |
+| Net-SNMP | 5.9+ | 5.9+ |
 
 Notes:
 
 - RRDtool 1.9+ is recommended for newer dynamic graph features in 1.3.x.
-- Net-SNMP 5.9+ is recommended for broader SNMPv3 protocol coverage.
 - A web server with PHP support is required.
 - PHP should be available as CLI or CGI for scheduled polling and maintenance scripts.
-- `php-snmp` is optional; validate behavior carefully if you depend on IPv6 and SNMPv3.
-- To force the Net-SNMP binaries while `php-snmp` remains installed, set `$php_snmp_support = false;` in `include/config.php`.
+- `php-snmp` is now fully supported. When both `php-snmp` and the Net-SNMP binaries are available, `php-snmp` is used by default; to force the Net-SNMP binaries, set `$php_snmp_support = false;` in `include/config.php`.
+- Full support for the upcoming PHP 8.6 release is planned, which brings significant performance improvements that speed up data collection in Script and Script Server data input methods.
 
 Operating system guidance:
 
