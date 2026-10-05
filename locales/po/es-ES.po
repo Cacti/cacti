@@ -19173,8 +19173,10 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
-msgstr "Instalado. <span class=\"deviceDown\">Nota: Si planea usar SNMPv3, debe eliminar php-snmp y usar el conjunto de herramientas Net-SNMP.</span>"
+#, fuzzy
+#| msgid "Installed"
+msgid "Installed."
+msgstr "Instalado"
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
@@ -19909,6 +19911,9 @@ msgstr ""
 #: include/global_settings.php:1303
 msgid "The MD5 authentication and DES privacy algorithms are legacy, weak, and unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When disabled, MD5 and DES are removed from the SNMPv3 Authentication and Privacy Protocol dropdowns shown when editing a Device and in the Automation SNMP Options, leaving only the stronger SHA and AES algorithms."
 msgstr ""
+
+#~ msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
+#~ msgstr "Instalado. <span class=\"deviceDown\">Nota: Si planea usar SNMPv3, debe eliminar php-snmp y usar el conjunto de herramientas Net-SNMP.</span>"
 
 #~ msgid "A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user."
 #~ msgstr "Una lista delimitada por espacios de nombres de host DNS o direcciones IP de servidores LDAP válidos. Cacti intentará utilizar los servidores LDAP de izquierda a derecha para autenticar a un usuario."
