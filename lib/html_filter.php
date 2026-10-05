@@ -727,14 +727,12 @@ class CactiTableFilter {
 		// page action buttons (Import, Export, Purge, Save, sort, ...) stay on the
 		// bar; the filter inputs move into the Edit dialog. go/clear are replaced
 		// by the dialog's Search/Clear footer actions.
-		$bar_fields  = [];
-		$bar_actions = [];
-		$dialog_rows = [];
+		$bar_fields    = [];
+		$bar_actions   = [];
+		$dialog_fields = [];
 
 		if (isset($this->filter_array['rows'])) {
 			foreach ($this->filter_array['rows'] as $row) {
-				$drow = [];
-
 				foreach ($row as $field_name => $field_array) {
 					$method = $field_array['method'] ?? '';
 
@@ -745,12 +743,8 @@ class CactiTableFilter {
 							$bar_actions[$field_name] = $field_array;
 						}
 					} else {
-						$drow[$field_name] = $field_array;
+						$dialog_fields[$field_name] = $field_array;
 					}
-				}
-
-				if (cacti_sizeof($drow)) {
-					$dialog_rows[] = $drow;
 				}
 			}
 		}
@@ -789,20 +783,26 @@ class CactiTableFilter {
 		print "<form id='" . $this->form_id . "' action='" . $this->form_action . "' method='" . $this->form_method . "' class='cactiFilter'>";
 
 		print "<div class='filterTable even'>";
-		print "<div class='filterRow'>";
+		print "<div class='filterRow cactiFilterEditRow'>";
 		print "<div class='filterColumn'><div class='filterFieldName'><label for='layout_name'>" . __('Filter Name') . '</label></div></div>';
 		print "<div class='filterColumn'><input type='text' id='layout_name' size='40' maxlength='128' class='ui-state-default ui-corner-all'></div>";
 		print '</div>';
 		print '</div>' . PHP_EOL;
 
-		foreach ($dialog_rows as $drow) {
-			print "<div class='filterTable even'>";
-			print "<div class='filterRow'>";
+		// One filter variable per row so the dialog is a clean, responsive form
+		// rather than mirroring the inline filter's multi-field row packing.
+		foreach ($dialog_fields as $field_name => $field_array) {
+			$method = $field_array['method'] ?? '';
 
-			foreach ($drow as $field_name => $field_array) {
+			if ($method === 'hidden' || $method === 'validate') {
 				print $this->emit_field($field_name, $field_array);
+
+				continue;
 			}
 
+			print "<div class='filterTable even'>";
+			print "<div class='filterRow cactiFilterEditRow'>";
+			print $this->emit_field($field_name, $field_array);
 			print '</div>';
 			print '</div>' . PHP_EOL;
 		}

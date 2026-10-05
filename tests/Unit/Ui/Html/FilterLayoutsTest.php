@@ -155,6 +155,12 @@ test('the modern filter keeps time controls on the bar and fields in the dialog'
 	expect($src)->toContain('cactiFilterEditDialog');
 	expect($src)->toContain("\$this->layout_button('layout_edit',");
 	expect($src)->toContain("\$this->layout_button('layout_saveas',");
+
+	// The dialog renders one filter variable per row rather than mirroring the
+	// inline filter's multi-field row grouping.
+	expect($src)->toContain('$dialog_fields[$field_name] = $field_array;');
+	expect($src)->toContain("<div class='filterRow cactiFilterEditRow'>");
+	expect($src)->not->toContain('$dialog_rows');
 });
 
 test('page action buttons (import, export, sort) render on the bar, not the dialog', function () use ($root) {
