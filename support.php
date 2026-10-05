@@ -1953,6 +1953,8 @@ function show_tech_summary() : void {
 
 	utilities_get_mysql_recommendations();
 
+	utilities_get_mysql_capabilities();
+
 	// Shareable diagnostics report (Feature: Copy Diagnostics).
 	// When the redact toggle is on, hostnames/IPs embedded in the SNMP version
 	// line and web server string are masked via support_redact(), and the RSA
