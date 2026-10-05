@@ -1,7 +1,6 @@
 Cacti CHANGELOG
 
 1.2.x
--issue#8173: Restore selected preset and custom date ranges for graph lists while preserving detailed panel ranges (PR#8178)
 -security#GHSA-fq9x-x3vf-3vf2: Substitute data-input field tokens in a single pass so a composed value cannot re-inject an escaped payload into the script command line
 -security#GHSA-54hx-hxc4-jq7j: Numeric-cast the graph-item value for TICK fraction and SHIFT statements before the RRDtool command line
 -security#GHSA-hh7r-464j-rf39: Neutralize CSV formula injection and sanitize the Content-Disposition filename in the graph data export
@@ -168,8 +167,9 @@ Cacti CHANGELOG
 -issue#8121: Do not replicate repository and tooling metadata files to remote data collectors during file replication
 -issue#8115: db_update_table() now reconciles unique_keys, so a plugin's UNIQUE index is no longer dropped (and a missing one is added) when an existing table is refreshed
 -issue#7826: Restore qualified plugin table metadata lookups (plugin_syslog#331)
--issue#7804: Restore RRDproxy encryption with Composer-managed phpseclib 3
+-issue#7804: Restore RRDproxy encryption with Composer-managed phpseclib 4
 -issue#7930: Commit transactions on MySQL as well as MariaDB
+-issue#8173: Restore selected preset and custom date ranges for graph lists while preserving detailed panel ranges (PR#8178)
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
