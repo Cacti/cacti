@@ -1142,10 +1142,10 @@ function utilities_get_mysql_recommendations() : int {
 
 	$recommendations = [
 		'version' => [
-			'value'   => ($database == 'MariaDB' ? '10.5' : '8.0'),
+			'value'   => ($database == 'MariaDB' ? '10.11' : '8.4'),
 			'class'   => 'warning',
 			'measure' => 'ge',
-			'comment' => __('MariaDB 10.5+ and MySQL 8.0+ are the recommended, supported releases (for example, the default database streams on Rocky Linux 9). Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability.')
+			'comment' => __('MariaDB 10.11+ and MySQL 8.4+ are the recommended, supported releases for Cacti 1.3.x (available on Rocky Linux 9 through the vendor module streams). Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability.')
 		]
 	];
 
