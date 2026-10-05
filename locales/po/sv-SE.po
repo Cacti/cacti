@@ -1,5 +1,17 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-09-28 15:57-0400\nPO-Revision-Date: 2026-10-05 08:24+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: developers@cacti.net\n"
+"POT-Creation-Date: 2026-09-28 15:57-0400\n"
+"PO-Revision-Date: 2026-10-05 16:12+0000\n"
+"Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
+"Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\n"
+"Language: sv-SE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -82,7 +94,7 @@ msgstr "Programmet distribueras i hopp om att det kommer att vara användbart, m
 #: sites.php tree.php user_admin.php user_domains.php user_group_admin.php
 #: vdef.php
 msgid "Delete"
-msgstr "Ta bort"
+msgstr "Radera"
 
 #: aggregate_graphs.php
 msgid "Convert to Normal Graph"
@@ -284,10 +296,8 @@ msgid "Preview"
 msgstr "Förhandsvisa"
 
 #: aggregate_graphs.php
-#, fuzzy
-#| msgid "Aggregate Graphs Accessed does not Exist"
 msgid "Aggregate Graph Accessed does not Exist"
-msgstr "Aggregate Graphs Accessed existerar inte"
+msgstr "Åtkommen aggregerad graf finns inte"
 
 #: aggregate_graphs.php
 msgid "Turn Off Graph Debug Mode"
@@ -409,7 +419,7 @@ msgstr "Del av aggregat"
 #: lib/html_reports.php lib/html_tree.php links.php managers.php plugins.php
 #: pollers.php sites.php tree.php user_admin.php
 msgid "Go"
-msgstr "Utför"
+msgstr "Start"
 
 #: aggregate_graphs.php automation_devices.php automation_snmp.php
 #: automation_templates.php cdef.php color.php data_debug.php data_input.php
@@ -419,7 +429,7 @@ msgstr "Utför"
 #: managers.php plugins.php pollers.php sites.php tree.php user_admin.php
 #: user_domains.php user_group_admin.php utilities.php
 msgid "Set/Refresh Filters"
-msgstr "Ange/uppdatera filter"
+msgstr "Ställ in/uppdatera filter"
 
 #: aggregate_graphs.php aggregate_templates.php automation_devices.php
 #: automation_graph_rules.php automation_networks.php automation_snmp.php
@@ -520,7 +530,7 @@ msgstr "Vilken som helst"
 #: lib/html_form.php lib/html_reports.php package_import.php settings.php
 #: templates_import.php user_admin.php user_group_admin.php utilities.php
 msgid "None"
-msgstr "inget"
+msgstr "Ingen"
 
 #: aggregate_graphs.php
 msgid "The title for the Aggregate Graphs"
@@ -543,10 +553,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "Inga aggregerade grafer hittades"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "Inga aggregerade mallar hittades"
+msgstr "Aggregerad mall hittades inte."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -742,10 +750,8 @@ msgid "You do not have access to any area of Cacti.  Contact your administrator.
 msgstr "Om du känner att detta är ett fel. Vänligen kontakta din Cacti Administrator."
 
 #: auth_login.php
-#, fuzzy
-#| msgid "Access Denied!  User account disabled."
 msgid "Access Denied! User account locked."
-msgstr "Åtkomst nekad!  Användarkontot är inaktiverat."
+msgstr "Åtkomst nekad! Användarkontot är låst."
 
 #: auth_login.php lib/html_tree.php
 msgid "Login to Cacti"
@@ -1038,7 +1044,7 @@ msgstr "Rensa Upptäckta enheter"
 #: lib/html.php lib/html_reports.php lib/spikekill.php plugins.php pollers.php
 #: user_admin.php utilities.php
 msgid "N/A"
-msgstr "N/A"
+msgstr "Ej tillämpligt"
 
 #: automation_graph_rules.php automation_snmp.php automation_tree_rules.php
 #: cdef.php color_templates.php data_input.php data_queries.php
@@ -1272,10 +1278,8 @@ msgid "Monthly on Day"
 msgstr "Månadligen på dagen"
 
 #: automation_networks.php
-#, fuzzy
-#| msgid "File not found"
 msgid "Network not found."
-msgstr "Filen hittades inte"
+msgstr "Nätverket hittades inte."
 
 #: automation_networks.php
 #, php-format
@@ -1752,7 +1756,7 @@ msgstr "Diskussioner"
 
 #: automation_networks.php
 msgid "Last Runtime"
-msgstr "Senaste Runtime"
+msgstr "Senaste körtid"
 
 #: automation_networks.php
 msgid "Next Start"
@@ -1940,7 +1944,7 @@ msgstr "Artikel#%d"
 
 #: automation_snmp.php
 msgid "none"
-msgstr "inget"
+msgstr "Ingen"
 
 #: automation_snmp.php automation_templates.php cdef.php color_templates.php
 #: data_queries.php lib/api_automation.php lib/html.php lib/html_reports.php
@@ -2086,10 +2090,8 @@ msgid "An attempt was made to perform a SQL injection in Tree automation"
 msgstr "Ett försök gjordes att utföra en SQL-injektion i Tree Automation"
 
 #: automation_tree_rules.php
-#, fuzzy
-#| msgid "The Field Name that shall be used for this Rule Item."
 msgid "Invalid Field Name specified for Tree Rule Item."
-msgstr "Det fältnamn som ska användas för denna Rule Item."
+msgstr "Ogiltigt fältnamn angivet för trädregelobjekt."
 
 #: automation_tree_rules.php
 msgid "Click 'Continue' to delete the following Rule(s)."
@@ -2195,14 +2197,12 @@ msgid "Notice: Cacti Daemon PID["
 msgstr "Observera: Cacti Daemon PID ["
 
 #: cdef.php
-#, fuzzy
-#| msgid "Invalid"
 msgid "Invalid CDEF"
-msgstr "Ogiltig"
+msgstr "Ogiltig CDEF"
 
 #: cdef.php
 msgid "One or more CDEFs are in use and cannot be deleted."
-msgstr ""
+msgstr "En eller flera CDEF:er används och kan inte tas bort."
 
 #: cdef.php
 msgid "Click 'Continue' to delete the following CDEF."
@@ -2546,10 +2546,8 @@ msgid "Delete Color Item"
 msgstr "Ta bort färgartikel"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "Inga färgmallar hittades"
+msgstr "Färgmall hittades inte."
 
 #: color_templates.php
 #, php-format
@@ -2583,10 +2581,8 @@ msgid "No Color Templates Found"
 msgstr "Inga färgmallar hittades"
 
 #: color_templates_items.php
-#, fuzzy
-#| msgid "Color Template Items"
 msgid "Color Template or Item not found."
-msgstr "Färgmallar Artiklar"
+msgstr "Färgmall eller objekt hittades inte."
 
 #: color_templates_items.php
 msgid "Click 'Continue' to delete the following Color Template Color."
@@ -2939,16 +2935,16 @@ msgstr "Felsökning"
 
 #: data_input.php
 msgid "Input string contains dangerous shell characters"
-msgstr ""
+msgstr "Indatasträngen innehåller farliga skaltecken"
 
 #: data_input.php
 msgid "Input Whitelisting is in effect.  Changes in this Data Input Method require rerunning of the Input Whitelist CLI script (cli/input_whitelist.php) using both the --audit and --update options before Data Source will be queried again."
-msgstr ""
+msgstr "Vitlistning av indata är aktiverad. Ändringar i denna datainmatningsmetod kräver att CLI-skriptet för vitlistning av indata (cli/input_whitelist.php) körs igen med både flaggorna --audit och --update innan datakällan frågas igen."
 
 #: data_input.php
 #, php-format
 msgid "Input field <%s> requires Special Type Code \"%s\"."
-msgstr ""
+msgstr "Inmatningsfältet <%s> kräver specialtypskoden \"%s\"."
 
 #: data_input.php
 msgid "Click 'Continue' to delete the following Data Input Method"
@@ -3084,10 +3080,8 @@ msgid "Delete Data Input Field"
 msgstr "Radera datainmatningsfältet"
 
 #: data_input.php
-#, fuzzy
-#| msgid "Update this Field"
 msgid "Update Whitelist"
-msgstr "Uppdatera detta fält"
+msgstr "Uppdatera vitlista"
 
 #: data_input.php include/global_arrays.php
 msgid "Data Input Methods"
@@ -3997,10 +3991,8 @@ msgid "Delete GPRINT Preset(s)"
 msgstr "Radera GPRINT-förinställningar"
 
 #: gprint_presets.php
-#, fuzzy
-#| msgid "GPRINT Preset"
 msgid "GPRINT Preset not found."
-msgstr "GPRINT Förinställning"
+msgstr "GPRINT-förinställning hittades inte."
 
 #: gprint_presets.php
 #, php-format
@@ -4060,10 +4052,8 @@ msgid "Viewing Graph"
 msgstr "Visa graf"
 
 #: graph.php
-#, fuzzy
-#| msgid "Data Source does not exist."
 msgid "The Graph you requested does not exist."
-msgstr "Datakällan finns inte."
+msgstr "Grafen du begärde finns inte."
 
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
@@ -4218,10 +4208,8 @@ msgid "No Inputs"
 msgstr "Inga ingångar"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "Inga grafmallar hittades"
+msgstr "Grafmall hittades inte."
 
 #: graph_templates.php
 #, php-format
@@ -4279,11 +4267,11 @@ msgstr "Inga grafmallar hittades"
 
 #: graph_templates_inputs.php
 msgid "The selected Field Type is not a valid Graph Item field."
-msgstr ""
+msgstr "Den valda fälttypen är inte ett giltigt grafobjektsfält."
 
 #: graph_templates_inputs.php
 msgid "The Graph Item Input relationship is invalid."
-msgstr ""
+msgstr "Kopplingen för grafobjektets indata är ogiltig."
 
 #: graph_templates_inputs.php
 #, php-format
@@ -4455,14 +4443,12 @@ msgid "Total Rows"
 msgstr "Totalt antal rader"
 
 #: graph_xport.php
-#, fuzzy
-#| msgid "Autocomplete Rows"
 msgid "Expected Rows"
-msgstr "Autofullständiga rader"
+msgstr "Förväntade rader"
 
 #: graph_xport.php
 msgid "Missing Rows"
-msgstr ""
+msgstr "Saknade rader"
 
 #: graph_xport.php lib/api_automation.php
 msgid "Graph ID"
@@ -4527,38 +4513,33 @@ msgstr "FEL: Ingen datakälla associerad. Kontrollera mall"
 
 #: graphs.php
 msgid "A Graph Item Input contains an invalid field or value."
-msgstr ""
+msgstr "En inmatning för grafobjekt innehåller ett ogiltigt fält eller värde."
 
 #: graphs.php
 msgid "Graph Item Input changes could not be saved."
-msgstr ""
+msgstr "Ändringarna för grafobjektets indata kunde inte sparas."
 
 #: graphs.php
 msgid "A Graph Item Input contains an invalid value."
-msgstr ""
+msgstr "En inmatning för grafobjekt innehåller ett ogiltigt värde."
 
 #: graphs.php
-#, fuzzy, php-format
-#| msgid "Add Graph Template to Device"
+#, php-format
 msgid "Graph %s Moved to new Device"
-msgstr "Lägg till grafmall till enhet"
+msgstr "Grafen %s flyttades till ny enhet"
 
 #: graphs.php
 #, php-format
 msgid "Graph %s not Moved.  Device missing Data Query"
-msgstr ""
+msgstr "Grafen %s flyttades inte. Enheten saknar datafråga"
 
 #: graphs.php lib/api_aggregate.php
-#, fuzzy
-#| msgid "The new Title of the aggregated Graph."
 msgid "Unable to start the aggregate graph update."
-msgstr "Den nya titeln på den aggregerade grafen."
+msgstr "Kunde inte starta uppdateringen av den aggregerade grafen."
 
 #: graphs.php lib/api_aggregate.php
-#, fuzzy
-#| msgid "The new Title of the aggregated Graph."
 msgid "Unable to commit the aggregate graph update."
-msgstr "Den nya titeln på den aggregerade grafen."
+msgstr "Kunde inte verkställa uppdateringen av den aggregerade grafen."
 
 #: graphs.php
 msgid "Click 'Continue' to delete the following Graph(s).  Note that if you choose to Delete Data Sources, only those Data Sources not in use elsewhere will also be Deleted."
@@ -4976,7 +4957,7 @@ msgstr "Det går inte att lägga till vissa enheter i rapporten \"%s\""
 
 #: host.php
 msgid "Click 'Continue' to enable the following Device(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att aktivera följande enhet (er)."
+msgstr "Klicka på \"Fortsätt\" för att aktivera följande enhet(er)."
 
 #: host.php
 msgid "Enable Device(s)"
@@ -4984,7 +4965,7 @@ msgstr "Aktivera enhet (er)"
 
 #: host.php
 msgid "Click 'Continue' to disable the following Device(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att inaktivera följande enhet (er)."
+msgstr "Klicka på \"Fortsätt\" för att inaktivera följande enhet(er)."
 
 #: host.php
 msgid "Disable Device(s)"
@@ -5020,7 +5001,7 @@ msgstr "Synkronisera enhet (er)"
 
 #: host.php
 msgid "Click 'Continue' to delete the following Device(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att radera följande enhet (er)."
+msgstr "Klicka på \"Fortsätt\" för att ta bort följande enhet(er)."
 
 #: host.php
 msgid "Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however."
@@ -5253,11 +5234,11 @@ msgstr "Värdnamn"
 
 #: host.php
 msgid "Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file."
-msgstr "Antingen en IP-adress eller värdnamn. Om ett värdnamn måste det kunna lösas av antingen DNS eller från din värdfil."
+msgstr "Antingen en IP-adress eller ett värdnamn.  Om det är ett värdnamn måste det kunna lösas med antingen DNS eller från din hosts-fil."
 
 #: host.php
 msgid "The internal database ID for this Device.  Useful when performing automation or debugging."
-msgstr "Den interna databasen ID för denna enhet. Användbar när du utför automatisering eller felsökning."
+msgstr "Det interna databas-ID:t för den här enheten.  Användbart vid automatisering eller felsökning."
 
 #: host.php
 msgid "The total number of Graphs generated from this Device."
@@ -5484,13 +5465,12 @@ msgstr "Det finns en installation eller uppgradering pågår."
 
 #: include/csrf.php
 msgid "The browser did not return the Cacti session cookie. Ensure cookies are enabled and verify the configured URL path and cookie domain."
-msgstr ""
+msgstr "Webbläsaren returnerade inte Cactis sessionskaka. Kontrollera att kakor är aktiverade och verifiera den konfigurerade URL-sökvägen och kakdomänen."
 
 #: include/csrf.php
-#, fuzzy, php-format
-#| msgid "Requires: Cacti >= %s"
+#, php-format
 msgid "Return to Cacti: %s"
-msgstr "Kräver: Cacti&gt; = %s"
+msgstr "Återgå till Cacti: %s"
 
 #: include/global.php
 msgid "The Main Data Collector has returned to an Online Status"
@@ -5717,10 +5697,8 @@ msgid "Unable to determine size of password field, please check permissions of d
 msgstr "Det går inte att bestämma storlek på lösenordsfältet, kolla behörigheter för db-användare"
 
 #: include/global_arrays.php
-#, fuzzy
-#| msgid "Unable to increase size of password field, pleas check permission of db user"
 msgid "Unable to increase size of password field, please check permission of db user"
-msgstr "Kan inte öka storleken på lösenordsfältet, vädjar kontrollera behörigheten för db-användare"
+msgstr "Kunde inte öka lösenordsfältets storlek. Kontrollera databas-användarens behörigheter"
 
 #: include/global_arrays.php
 msgid "LDAP/AD based password change not supported."
@@ -6388,7 +6366,7 @@ msgstr "Användardomäner"
 
 #: include/global_arrays.php
 msgid "Utilities"
-msgstr "Verktyg"
+msgstr "Tillbehör"
 
 #: include/global_arrays.php
 msgid "System Utilities"
@@ -6842,7 +6820,7 @@ msgstr "Skicka nu"
 
 #: include/global_arrays.php
 msgid "Take Ownership"
-msgstr "Ta äganderätt"
+msgstr "Ta över"
 
 #: include/global_arrays.php
 msgid "Inline PNG Image"
@@ -9427,56 +9405,48 @@ msgid "When checked, any attempts to access Cacti will be redirected to HTTPS to
 msgstr "När de är markerade försöker alla försök att komma åt Cacti till HTTPS för att säkerställa hög säkerhet."
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "Remote Data Collector Status:"
 msgid "Allow Unsafe Remote Data Collector HTTPS"
-msgstr "Fjärrstyrd datainsamlare Status:"
+msgstr "Tillåt osäker HTTPS för fjärransluten datainsamlare"
 
 #: include/global_settings.php
 msgid "Allow the use of Self Signed Certificates and allow the hostname of the Certificate to differ from that of the Remote Data Collector."
-msgstr ""
+msgstr "Tillåt användning av självsignerade certifikat och att certifikatets värdnamn skiljer sig från värdnamnet för den fjärranslutna datainsamlaren."
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "The name of this Data Input Method."
 msgid "Allow Unsafe Metacharacters in Data Input Methods"
-msgstr "Namnet på denna metod för datainmatning."
+msgstr "Tillåt osäkra metatecken i datainmatningsmetoder"
 
 #: include/global_settings.php
 msgid "Historically, Cacti administrators created simple Data Input Methods that include commands like \"ps -ef | grep something | wc -l\" to represent a numeric value for use in Cacti Graphs.  In earlier versions of Cacti, this was permitted.  However, this is an unsafe practice as it is a gateway for third party users to publish insecure Data Templates.  In modern Cacti, these types of practices should be avoided.  However, we provide this option if you have older Data Input Methods that contain these unsafe Meta Characters and have not converted them to local scripts in the 'scripts' directory.  When this option is unchecked, Cacti restricts shell-style metacharacters such as quotation marks, curly brackets, vertical bars, backslashes, and backticks.  Cacti continues to allow greater-than and less-than signs for things like <path_cacti> and for input parameters, but if this option is unchecked, that is the limit of their permitted use."
-msgstr ""
+msgstr "Historiskt har Cacti-administratörer skapat enkla datainmatningsmetoder med kommandon som \"ps -ef | grep something | wc -l\" för att representera ett numeriskt värde i Cacti-grafer. I äldre versioner av Cacti var detta tillåtet. Det är dock en osäker metod eftersom den gör det möjligt för tredje part att publicera osäkra datamallar. I moderna Cacti bör sådana metoder undvikas. Vi erbjuder ändå detta alternativ om du har äldre datainmatningsmetoder som innehåller dessa osäkra metatecken och inte har konverterat dem till lokala skript i katalogen 'scripts'. När alternativet är avmarkerat begränsar Cacti metatecken i skalstil, exempelvis citattecken, klammerparenteser, lodräta streck, omvänt snedstreck och bakåtcitattecken. Cacti tillåter fortsatt större än- och mindre än-tecken för exempelvis <path_cacti> och indataparametrar, men när alternativet är avmarkerat är det gränsen för deras tillåtna användning."
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "Content-Security Alternate Sources"
 msgid "Content-Security Script Policy"
-msgstr "Innehåll-Säkerhet Alternativa källor"
+msgstr "Skriptprincip för innehållssäkerhet"
 
 #: include/global_settings.php
 msgid "Controls the script-src CSP policy.  In Nonce Modes, Cacti Plugins that use inline JavaScript must include the nonce attribute from Cacti's builtin function 'CactiSecureHeaders::getNonceAttribute()'. Otherwise, those scripts will be blocked by the browser.  Currently, Cacti only allows reporting on Cacti Plugins that do not properly use Nonce Mode.  In the future, we will allow Administrators to block such plugins from using their inline JavaScript if they are not using Nonces."
-msgstr ""
+msgstr "Styr CSP-principen script-src. I nonce-lägen måste Cacti-insticksmoduler som använder inbäddad JavaScript inkludera nonce-attributet från Cactis inbyggda funktion 'CactiSecureHeaders::getNonceAttribute()'. Annars blockeras skripten av webbläsaren. För närvarande tillåter Cacti bara rapportering om Cacti-insticksmoduler som inte använder nonce-läget korrekt. I framtiden kommer administratörer att kunna blockera sådana insticksmoduler från att använda sin inbäddade JavaScript om de inte använder noncer."
 
 #: include/global_settings.php
 msgid "Allow Non-Nonced Inline JavaScript"
-msgstr ""
+msgstr "Tillåt inbäddad JavaScript utan nonce"
 
 #: include/global_settings.php
 msgid "Allow both unsafe-eval and Non-Nonced Inline JavaScript"
-msgstr ""
+msgstr "Tillåt både unsafe-eval och inbäddad JavaScript utan nonce"
 
 #: include/global_settings.php
 msgid "Nonce Mode - Reporting Only"
-msgstr ""
+msgstr "Nonce-läge – endast rapportering"
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "Cacti Report"
 msgid "CSP Violation Report URI"
-msgstr "Cacti-rapport"
+msgstr "URI för CSP-överträdelse­rapport"
 
 #: include/global_settings.php
 msgid "URL where browsers POST CSP violation reports in nonce-report and nonce modes. Leave empty to use <url_path>/csp_report.php. Must contain only safe URL characters."
-msgstr ""
+msgstr "URL där webbläsare skickar CSP-överträdelser med POST i lägena nonce-report och nonce. Lämna tomt för att använda <url_path>/csp_report.php. Får endast innehålla säkra URL-tecken."
 
 #: include/global_settings.php
 msgid "Content-Security Alternate Sources"
@@ -9488,7 +9458,7 @@ msgstr "Utrymme avgränsade domännamn som kommer att få åtkomst utanför sjä
 
 #: include/global_settings.php
 msgid "URL where browsers POST CSP violation reports in nonce-report and nonce modes. Leave empty to use /cacti/csp_report.php at the installation root. Must contain only safe URL characters."
-msgstr ""
+msgstr "URL där webbläsare skickar CSP-överträdelser med POST i lägena nonce-report och nonce. Lämna tomt för att använda /cacti/csp_report.php i installationsroten. Får endast innehålla säkra URL-tecken."
 
 #: include/global_settings.php
 msgid "Enable Automatic Graph Creation"
@@ -9798,17 +9768,15 @@ msgstr "I mycket stora system kan valda listor sakta ner användargränssnittet 
 
 #: include/global_settings.php
 msgid "Select Search Minimum Rows"
-msgstr ""
+msgstr "Välj minsta antal rader för sökning"
 
 #: include/global_settings.php
 msgid "The minimum number of options a dropdown must have before Cacti shows a search box inside it.  Choose 'Always' to show the search box regardless of the number of options."
-msgstr ""
+msgstr "Det minsta antal alternativ som en listruta måste ha innan Cacti visar en sökruta i den. Välj 'Alltid' om sökrutan ska visas oavsett antal alternativ."
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "Always On"
 msgid "Always"
-msgstr "Alltid på"
+msgstr "Alltid"
 
 #: include/global_settings.php
 msgid "Autocomplete Rows"
@@ -9839,14 +9807,12 @@ msgid "The Maximum width of the Tree to expand to, after which time, Tree branch
 msgstr "Trädets maximala bredd att expandera till, efter vilken tidpunkt trädgrenar kommer att bläddra på sidan."
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "Graph Template Options"
 msgid "Site Graph Template Expansion"
-msgstr "Grafmallalternativ"
+msgstr "Utökning av platsens grafmallar"
 
 #: include/global_settings.php
 msgid "When viewing Site Trees, should the Graph Templates branch be included as a Site sub-branch?"
-msgstr ""
+msgstr "Ska grenen Grafmallar inkluderas som en undergren till platsen när platsträd visas?"
 
 #: include/global_settings.php
 msgid "Filter Settings"
@@ -9889,10 +9855,8 @@ msgid "Default Graph Type"
 msgstr "Standard graftyp"
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "When creating graphs, what Graph Type would you like pre-selected?"
 msgid "When creating graphs, what Graph Type would you like preselected?"
-msgstr "När du skapar grafer, vilken graftyp vill du ha förvald?"
+msgstr "Vilken graftyp vill du ska vara förvald när grafer skapas?"
 
 #: include/global_settings.php
 msgid "All Types"
@@ -10251,10 +10215,8 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr "Som standard kommer huvudsakliga Cacti Data Collector att cache hela webbplatsen och plugins till en resurscache. Därefter uppdaterar regelbundet fjärrdatasamlarna teman med eventuella uppdateringar från huvudsakliga Cacti Data Collector. Denna resurscache gör det möjligt för fjärrdatasamlare att själv uppgradera. Om du inte vill använda det här alternativet kan du inaktivera det med den här inställningen."
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "SNMP error"
 msgid "SNMP Behavior"
-msgstr "SNMP-fel"
+msgstr "SNMP-beteende"
 
 #: include/global_settings.php
 msgid "Additional Data Collector Settings"
@@ -10548,10 +10510,8 @@ msgid "Password History"
 msgstr "Lösenordshistorik"
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "Remember this number of old passwords and disallow re-using them."
 msgid "Remember this number of old passwords and disallow reusing them."
-msgstr "Kom ihåg detta antal gamla lösenord och tillåt inte att de används igen."
+msgstr "Kom ihåg detta antal gamla lösenord och tillåt inte att de återanvänds."
 
 #: include/global_settings.php
 msgid "1 Change"
@@ -10605,7 +10565,7 @@ msgstr "Servrar"
 
 #: include/global_settings.php user_domains.php
 msgid "A space delimited list of DNS hostnames or IP addresses for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user.<br><br>For One-Time Password (OTP/MFA) logins, do not use a space delimited multi-server list.  On a failed bind Cacti advances to the next server and re-binds with the same credentials, and the already-consumed one-time code will be rejected.  Instead enter a single, resilient DNS name fronted by a DNS load balancer (VIP) so that server failover is handled below Cacti and only one authentication bind is ever performed."
-msgstr ""
+msgstr "En blankstegsavgränsad lista med DNS-värdnamn eller IP-adresser för giltiga LDAP-servrar. Cacti försöker använda LDAP-servrarna från vänster till höger för att autentisera en användare.<br><br>Använd inte en blankstegsavgränsad lista med flera servrar för inloggningar med engångslösenord (OTP/MFA). Vid en misslyckad bindning går Cacti vidare till nästa server och binder på nytt med samma inloggningsuppgifter och den redan förbrukade engångskoden avvisas. Ange i stället ett enda tåligt DNS-namn med en DNS-lastbalanserare (VIP) framför, så att serverväxlingen hanteras under Cacti och endast en autentiseringsbindning utförs."
 
 #: include/global_settings.php user_domains.php
 msgid "Port Standard"
@@ -10684,10 +10644,8 @@ msgid "Mode"
 msgstr "Läge"
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user's Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user's Distinguished Name (DN)."
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user's Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user's Distinguished Name (DN).<br><br><i>One-Time Passwords (OTP/MFA)</i> - Cacti binds the user's password only once, during final authentication.  <i>No Searching</i> performs no directory lookup and binds directly using the Distinguished Name (DN) template, so it is safe for OTP when the DN template alone identifies the user.  When a directory lookup is required to resolve the DN, use <i>Specific Searching</i> with a dedicated service account (or <i>Anonymous Searching</i> where the directory permits it) so the lookup never consumes the user's single-use code.  For resilient OTP deployments use a single DNS load balancer name in the Server(s) field rather than a space delimited multi-server list, which would re-attempt the bind with an already-consumed one-time password."
-msgstr "Läge vilken Cacti försöker autentisera mot LDAP-servern. <blockquote> <i>Ingen sökning</i> - <i>Sökning utan</i> Distinguished Name (DN) sker, försök bara binda med det angivna Distinguished Name-formatet (DN). <br><br> <i>Anonym Sökning</i> - Försök att söka efter användarnamn mot LDAP-katalog via anonym bindning för att lokalisera användarens Distinguished Name (DN). <br><br> <i>Särskild</i> sökning - Försök att söka efter användarnamn mot LDAP-katalog via Specifikt Distinguished Name (DN) och Specifikt lösenord för bindning för att lokalisera användarens Distinguished Name (DN)."
+msgstr "Läge som Cacti använder för att försöka autentisera mot LDAP-servern.<blockquote><i>Ingen sökning</i> – ingen sökning efter Distinguished Name (DN) utförs, utan Cacti försöker bara binda med det angivna formatet för Distinguished Name (DN).<br><br><i>Anonym sökning</i> – Cacti försöker söka efter användarnamnet i LDAP-katalogen via anonym bindning för att hitta användarens Distinguished Name (DN).<br><br><i>Specifik sökning</i> – Cacti försöker söka efter användarnamnet via specifikt Distinguished Name (DN) och specifikt lösenord för bindning för att hitta användarens Distinguished Name (DN).<br><br><i>Engångslösenord (OTP/MFA)</i> – Cacti binder användarens lösenord endast en gång, under den slutliga autentiseringen. <i>Ingen sökning</i> gör ingen kataloguppslagning och binder direkt med mallen för Distinguished Name (DN), vilket är säkert för OTP när enbart DN-mallen identifierar användaren. När en kataloguppslagning krävs för att lösa DN använder du <i>Specifik sökning</i> med ett särskilt tjänstekonto (eller <i>Anonym sökning</i> där katalogen tillåter det), så att uppslagningen aldrig förbrukar användarens engångskod. Använd ett enda DNS-namn för en DNS-lastbalanserare i fältet Server(ar) för feltåliga OTP-installationer, i stället för en blankstegsavgränsad lista med flera servrar som skulle försöka binda på nytt med ett redan förbrukat engångslösenord."
 
 #: include/global_settings.php user_domains.php
 msgid "Distinguished Name (DN)"
@@ -10783,7 +10741,7 @@ msgstr "Fält som ersätter det fullständiga namnet när du skapar en ny använ
 
 #: include/global_settings.php package_import.php
 msgid "Email"
-msgstr "eMail"
+msgstr "E-post"
 
 #: include/global_settings.php
 msgid "Field that will replace the Email taken from LDAP. (on windows: mail)"
@@ -11832,7 +11790,7 @@ msgstr "Skärmgrafer från denna aggregat"
 
 #: lib/api_aggregate.php
 msgid "Unable to create aggregate totals because a referenced CDEF is invalid or empty."
-msgstr ""
+msgstr "Kunde inte skapa sammanlagda totaler eftersom en refererad CDEF är ogiltig eller tom."
 
 #: lib/api_aggregate.php
 msgid "The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates."
@@ -12177,10 +12135,8 @@ msgid "Access Denied!  Template user id %s does not exist.  Please contact your 
 msgstr "Åtkomst nekad!  Mallens användar-ID %s finns inte.  Vänligen kontakta din administratör."
 
 #: lib/auth.php
-#, fuzzy
-#| msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
 msgid "Access Denied!  Domain template is not configured.  Please contact your Administrator."
-msgstr "Åtkomst nekad!  Mallens användar-ID %s finns inte.  Vänligen kontakta din administratör."
+msgstr "Åtkomst nekad! Domänmallen är inte konfigurerad. Kontakta din administratör."
 
 #: lib/auth.php
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
@@ -13342,7 +13298,7 @@ msgstr "Framgångsrik anslutning"
 
 #: lib/html.php pollers.php
 msgid "Connection Failed"
-msgstr "% 1"
+msgstr "Anslutningen misslyckades"
 
 #: lib/html.php
 msgid "The response to the last action was unexpected."
@@ -13522,20 +13478,16 @@ msgid "You have unsaved changes on this form.  If you press 'Continue' these cha
 msgstr "Du har osparade ändringar i detta formulär.  Om du trycker på \"Fortsätt\" kommer dessa ändringar att raderas.  Tryck på \"Avbryt\" för att fortsätta redigera formuläret."
 
 #: lib/html_form_template.php
-#, fuzzy
-#| msgid "Graph Template Input"
 msgid "Invalid Graph Template Input"
-msgstr "Grafmallinmatning"
+msgstr "Ogiltig grafmallindata"
 
 #: lib/html_form_template.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "The graph template cannot be rendered"
-msgstr "Inga grafmallar hittades"
+msgstr "Grafmallen kan inte återges"
 
 #: lib/html_form_template.php
 msgid "A Graph Item Input contains an invalid Field Type."
-msgstr ""
+msgstr "En inmatning för grafobjekt innehåller en ogiltig fälttyp."
 
 #: lib/html_form_template.php
 #, php-format
@@ -13783,7 +13735,7 @@ msgstr "Denna adress kommer att användas som e-postadresseradress"
 
 #: lib/html_reports.php
 msgid "To Email Address(es)"
-msgstr "Till E-postadress (er)"
+msgstr "Mottagaradress(er) för e-post"
 
 #: lib/html_reports.php
 msgid "Please separate multiple addresses by comma (,)"
@@ -13791,11 +13743,11 @@ msgstr "Separera flera adresser med kommatecken (,)"
 
 #: lib/html_reports.php
 msgid "BCC Address(es)"
-msgstr "BCC-adress (er)"
+msgstr "Bcc-adress(er)"
 
 #: lib/html_reports.php
 msgid "Blind carbon copy. Please separate multiple addresses by comma (,)"
-msgstr "Blind kol kopi. Separera flera adresser med kommatecken (,)"
+msgstr "Dold kopia. Separera flera adresser med kommatecken (,)"
 
 #: lib/html_reports.php
 msgid "Image attach type"
@@ -14157,10 +14109,8 @@ msgid "Cacti regular expressions can not includes the semi-color character."
 msgstr "Cacti-reguljära uttryck kan inte innehålla semifärgtecknet."
 
 #: lib/html_utility.php
-#, fuzzy
-#| msgid "Enter a regular expression"
 msgid "Invalid regular expression."
-msgstr "Ange ett reguljärt uttryck"
+msgstr "Ogiltigt reguljärt uttryck."
 
 #: lib/html_utility.php
 msgid "There was an internal error!"
@@ -14184,7 +14134,7 @@ msgstr "Fel UTF-8 förskjutningsfel!"
 
 #: lib/html_utility.php
 msgid "Cacti RLIKE filters do not support alternation or bounded-repeat characters."
-msgstr ""
+msgstr "Cacti RLIKE-filter stöder inte alternerings- eller begränsade upprepningstecken."
 
 #: lib/html_utility.php
 msgid "Down (Thold)"
@@ -14205,11 +14155,11 @@ msgstr "Valideringsfel"
 
 #: lib/import.php
 msgid "stream wrapper rejected"
-msgstr ""
+msgstr "Strömomslutare avvisades"
 
 #: lib/import.php
 msgid "path traversal rejected"
-msgstr ""
+msgstr "Sökvägstraversering avvisades"
 
 #: lib/import.php
 msgid "written"
@@ -14311,17 +14261,15 @@ msgstr "Banan är inte skrivbar"
 
 #: lib/installer.php
 msgid "The external CSRF secret must be outside the Cacti document root"
-msgstr ""
+msgstr "Den externa CSRF-hemligheten måste ligga utanför Cactis dokumentrot"
 
 #: lib/installer.php
-#, fuzzy
-#| msgid "Unable to retrieve table status"
 msgid "Unable to create the external CSRF secret"
-msgstr "Det gick inte att hämta tabellstatus"
+msgstr "Kunde inte skapa den externa CSRF-hemligheten"
 
 #: lib/installer.php
 msgid "Unable to persist the CSRF secret"
-msgstr ""
+msgstr "Kunde inte spara CSRF-hemligheten"
 
 #: lib/installer.php
 #, php-format
@@ -14377,14 +14325,12 @@ msgid "No matching snmp option exists"
 msgstr "Det finns inget matchande snmp-alternativ"
 
 #: lib/installer.php
-#, fuzzy
-#| msgid "Unable to retrieve table status"
 msgid "Unable to load the available templates"
-msgstr "Det gick inte att hämta tabellstatus"
+msgstr "Kunde inte läsa in de tillgängliga mallarna"
 
 #: lib/installer.php
 msgid "The template selection was incomplete. Reload this installer step and select the templates again."
-msgstr ""
+msgstr "Mallurvalet var ofullständigt. Läs in installationssteget igen och välj mallarna på nytt."
 
 #: lib/installer.php
 msgid "No matching template exists"
@@ -14392,11 +14338,11 @@ msgstr "Ingen matchande mall finns"
 
 #: lib/installer.php
 msgid "Unable to load the tables requiring conversion"
-msgstr ""
+msgstr "Kunde inte läsa in tabellerna som kräver konvertering"
 
 #: lib/installer.php
 msgid "The table selection was incomplete. Reload this installer step and select the tables again."
-msgstr ""
+msgstr "Tabellurvalet var ofullständigt. Läs in installationssteget igen och välj tabellerna på nytt."
 
 #: lib/installer.php
 msgid "The Installer could not proceed due to an unexpected error."
@@ -14551,7 +14497,7 @@ msgstr "PHP-rekommendationer"
 
 #: lib/installer.php
 msgid "Current"
-msgstr "Nuvarande"
+msgstr "Aktuell"
 
 #: lib/installer.php
 msgid "Recommended"
@@ -14582,10 +14528,8 @@ msgid "Restart Required"
 msgstr "Obligatorisk"
 
 #: lib/installer.php
-#, fuzzy
-#| msgid "The specificed value appears to be different in the running config versus the INI file."
 msgid "The specified value appears to be different in the running config versus the INI file."
-msgstr "Det specificerade värdet verkar vara annorlunda i den körande konfigurationen jämfört med INI-filen."
+msgstr "Det angivna värdet verkar skilja sig mellan den körande konfigurationen och INI-filen."
 
 #: lib/installer.php
 msgid "PHP - Module Support (Required)"
@@ -14880,10 +14824,8 @@ msgid "Therefore, several versions ago, Cacti was enhanced to provide Whitelist 
 msgstr "Därför förbättrades Cacti för flera versioner sedan för att ge whitelistfunktioner för dessa typer av datainmatningsmetoder. Även om detta säkerställer Cacti mer noggrant ökar det mängden arbete som krävs av Cacti-administratören för att importera och hantera mallar och paket."
 
 #: lib/installer.php
-#, fuzzy
-#| msgid "The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or arguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediatly disabled until the administrator validates that the Data Input Method is valid."
 msgid "The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or arguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediately disabled until the administrator validates that the Data Input Method is valid."
-msgstr "Så som vitlistningen fungerar är att när du först importerar en datainmatningsmetod, eller om du importerar en datainmatningsmetod igen, och skriptet och / eller arkiven ändras på något sätt kommer datainmatningsmetoden och alla motsvarande datakällor att vara direkt inaktiverad tills administratören validerar att datainmatningsmetoden är giltig."
+msgstr "Vitlistningen fungerar så att när du först importerar en datainmatningsmetod eller importerar den på nytt och skriptet och/eller argumenten ändras på något sätt, inaktiveras datainmatningsmetoden och alla motsvarande datakällor omedelbart tills administratören validerar att datainmatningsmetoden är giltig."
 
 #: lib/installer.php
 msgid "To make identifying Data Input Methods in this state, we have provided a validation script in Cacti's CLI directory that can be run with the following options:"
@@ -15163,20 +15105,20 @@ msgstr "Färdig%s Process för v%s"
 
 #: lib/installer.php
 msgid "ERROR: Unable to validate the installed database because cacti.sql could not be read"
-msgstr ""
+msgstr "FEL: Kunde inte validera den installerade databasen eftersom cacti.sql inte kunde läsas"
 
 #: lib/installer.php
 msgid "ERROR: Unable to validate the installed database because cacti.sql contains no table definitions"
-msgstr ""
+msgstr "FEL: Kunde inte validera den installerade databasen eftersom cacti.sql inte innehåller några tabelldefinitioner"
 
 #: lib/installer.php
 msgid "ERROR: Unable to query the installed database schema"
-msgstr ""
+msgstr "FEL: Kunde inte fråga den installerade databasens schema"
 
 #: lib/installer.php
 #, php-format
 msgid "ERROR: Required core database tables are missing: %s"
-msgstr ""
+msgstr "FEL: Obligatoriska kärntabeller i databasen saknas: %s"
 
 #: lib/installer.php
 #, php-format
@@ -15664,13 +15606,12 @@ msgstr "Hopp över rapportgränsen &#39; <i> %s</i> &#39; finns redan"
 #: lib/rrd.php
 #, php-format
 msgid "ERROR: Invalid CDEF %d for graph %d."
-msgstr ""
+msgstr "FEL: Ogiltig CDEF %d för graf %d."
 
 #: lib/rrd.php
-#, fuzzy, php-format
-#| msgid "ERROR: RRDfile %s not writeable"
+#, php-format
 msgid "ERROR: RRD file does not exist: %s"
-msgstr "FEL: RRDfile %s inte skrivbar"
+msgstr "FEL: RRD-filen finns inte: %s"
 
 #: lib/rrd.php
 #, php-format
@@ -15794,10 +15735,8 @@ msgid "rename %s to %s"
 msgstr "byt namn på %s till %s"
 
 #: lib/rrd.php
-#, fuzzy
-#| msgid "Enter a valid file path"
 msgid "ERROR: Invalid RRDfile path"
-msgstr "Ange en giltig filsökväg"
+msgstr "FEL: Ogiltig sökväg till RRD-fil"
 
 #: lib/rrd.php
 msgid "Error while parsing the XML of rrdtool dump"
@@ -15855,7 +15794,7 @@ msgstr "Okänt RRDtool-fel"
 #: lib/snmp.php
 #, php-format
 msgid "SNMP command: %s (%d arguments; credentials redacted)"
-msgstr ""
+msgstr "SNMP-kommando: %s (%d argument; inloggningsuppgifter maskerade)"
 
 #: lib/spikekill.php
 msgid "FATAL: You must specify an RRDfile!"
@@ -16191,10 +16130,8 @@ msgid "InnoDB will hold as much tables and indexes in system memory as is possib
 msgstr "InnoDB kommer att hålla så mycket tabeller och index i systemminnet som möjligt. Därför borde du göra innodb_buffer_pool stor nog att hålla så mycket av tabellerna och indexera i minnet. Att kontrollera storleken på katalogen / var / lib / mysql / cacti hjälper till att bestämma detta värde. Vi rekommenderar 25 %% av systemets totala minne, men dina krav varierar beroende på din systemstorlek."
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
-msgstr "Dessa inställningar bör förbli PÅ om inte dina Cacti-instanser körs på antingen ZFS eller FusionI / O, som båda har intern journalföring för att hantera plötsliga systemkrasch. Men om du har väldigt bra ström och dina system sällan går ner och du har säkerhetskopieringar, kan du stänga av denna inställning till OFF för nästan 50% ökning av databasprestanda."
+msgstr "Denna inställning bör vara PÅ om inte dina Cacti-instanser körs på ZFS eller FusionI/O, som båda har intern journalföring för att hantera plötsliga systemkrascher. Om du har mycket tillförlitlig strömförsörjning, systemen sällan går ned och du har säkerhetskopior kan du få nästan 50 % bättre databasprestanda genom att ställa in alternativet på AV."
 
 #: lib/utility.php
 msgid "This is where metadata is stored. If you had a lot of tables, it would be useful to increase this."
@@ -16363,7 +16300,7 @@ msgstr "Återställ filter"
 
 #: links.php user_admin.php user_group_admin.php
 msgid "Top Tab"
-msgstr "Översta fliken"
+msgstr "Toppflik"
 
 #: links.php user_admin.php user_group_admin.php
 msgid "Bottom Console"
@@ -16642,11 +16579,11 @@ msgstr "För att kunna använda detta tillägg måste du först <b><i class=\"de
 
 #: package_import.php
 msgid "Unable to create temporary package file."
-msgstr ""
+msgstr "Kunde inte skapa tillfällig paketfil."
 
 #: package_import.php
 msgid "The package signature could not be verified against a trusted author."
-msgstr ""
+msgstr "Paketsignaturen kunde inte verifieras mot en betrodd upphovsperson."
 
 #: package_import.php
 #, php-format
@@ -16659,10 +16596,8 @@ msgid "The Package %s Import Failed"
 msgstr "Import av paketet %s misslyckades"
 
 #: package_import.php
-#, fuzzy
-#| msgid "Enter a valid file path"
 msgid "Error: Invalid file path."
-msgstr "Ange en giltig filsökväg"
+msgstr "Fel: Ogiltig filsökväg."
 
 #: package_import.php
 msgid "Error in Package"
@@ -16723,7 +16658,7 @@ msgstr "Paketfiler"
 
 #: package_import.php
 msgid "Filename"
-msgstr "Byt namn"
+msgstr "Filnamn"
 
 #: package_import.php templates_import.php
 msgid "Differences"
@@ -17618,7 +17553,7 @@ msgstr "Ange stad eller ort"
 
 #: sites.php
 msgid "State"
-msgstr "Län"
+msgstr "Status"
 
 #: sites.php
 msgid "The state for the Site."
@@ -17753,10 +17688,8 @@ msgstr[0] "Duplicerad webbplats"
 msgstr[1] "Duplicera"
 
 #: sites.php
-#, fuzzy
-#| msgid "File not found"
 msgid "Site not found."
-msgstr "Filen hittades inte"
+msgstr "Platsen hittades inte."
 
 #: sites.php tree.php
 msgid "Site Name"
@@ -17936,10 +17869,8 @@ msgid "Un-Lock"
 msgstr "Låst"
 
 #: tree.php
-#, fuzzy
-#| msgid "Permission Denied.  You do not have permission to the requested action."
 msgid "You do not have permission to modify this tree."
-msgstr "Tillstånd nekat.  Du har inte behörighet att utföra den begärda åtgärden."
+msgstr "Du har inte behörighet att ändra detta träd."
 
 #: tree.php
 msgctxt "ordering of tree items"
@@ -18434,10 +18365,8 @@ msgid "Tree Perms"
 msgstr "Träd perm"
 
 #: user_admin.php
-#, fuzzy
-#| msgid "File not found"
 msgid "User not found."
-msgstr "Filen hittades inte"
+msgstr "Användaren hittades inte."
 
 #: user_admin.php
 #, php-format
@@ -18633,10 +18562,8 @@ msgid "Encryption that the server supports. TLS is only supported by Protocol Ve
 msgstr "Kryptering som servern stöder. TLS stöds endast av protokollversion 3."
 
 #: user_domains.php
-#, fuzzy
-#| msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user's Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user's Distinguished Name (DN)."
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN).<br><br><i>One-Time Passwords (OTP/MFA)</i> - Cacti binds the user's password only once, during final authentication.  <i>No Searching</i> performs no directory lookup and binds directly using the Distinguished Name (DN) template, so it is safe for OTP when the DN template alone identifies the user.  When a directory lookup is required to resolve the DN, use <i>Specific Searching</i> with a dedicated service account (or <i>Anonymous Searching</i> where the directory permits it) so the lookup never consumes the user's single-use code.  For resilient OTP deployments use a single DNS load balancer name in the Server(s) field rather than a space delimited multi-server list, which would re-attempt the bind with an already-consumed one-time password."
-msgstr "Läge vilken Cacti försöker autentisera mot LDAP-servern. <blockquote> <i>Ingen sökning</i> - <i>Sökning utan</i> Distinguished Name (DN) sker, försök bara binda med det angivna Distinguished Name-formatet (DN). <br><br> <i>Anonym Sökning</i> - Försök att söka efter användarnamn mot LDAP-katalog via anonym bindning för att lokalisera användarens Distinguished Name (DN). <br><br> <i>Särskild</i> sökning - Försök att söka efter användarnamn mot LDAP-katalog via Specifikt Distinguished Name (DN) och Specifikt lösenord för bindning för att lokalisera användarens Distinguished Name (DN)."
+msgstr "Läge som Cacti använder för att försöka autentisera mot LDAP-servern.<blockquote><i>Ingen sökning</i> – ingen sökning efter Distinguished Name (DN) utförs, utan Cacti försöker bara binda med det angivna formatet för Distinguished Name (DN).<br><br><i>Anonym sökning</i> – Cacti försöker söka efter användarnamnet i LDAP-katalogen via anonym bindning för att hitta användarens Distinguished Name (DN).<br><br><i>Specifik sökning</i> – Cacti försöker söka efter användarnamnet via specifikt Distinguished Name (DN) och specifikt lösenord för bindning för att hitta användarens Distinguished Name (DN).<br><br><i>Engångslösenord (OTP/MFA)</i> – Cacti binder användarens lösenord endast en gång, under den slutliga autentiseringen. <i>Ingen sökning</i> gör ingen kataloguppslagning och binder direkt med mallen för Distinguished Name (DN), vilket är säkert för OTP när enbart DN-mallen identifierar användaren. När en kataloguppslagning krävs för att lösa DN använder du <i>Specifik sökning</i> med ett särskilt tjänstekonto (eller <i>Anonym sökning</i> där katalogen tillåter det), så att uppslagningen aldrig förbrukar användarens engångskod. Använd ett enda DNS-namn för en DNS-lastbalanserare i fältet Server(ar) för feltåliga OTP-installationer, i stället för en blankstegsavgränsad lista med flera servrar som skulle försöka binda på nytt med ett redan förbrukat engångslösenord."
 
 #: user_domains.php
 msgid "Search base for searching the LDAP directory, such as <i>\"dc=win2kdomain,dc=local\"</i> or <i>\"ou=people,dc=domain,dc=local\"</i>."
@@ -18648,7 +18575,7 @@ msgstr "Sökfilter som ska användas för att lokalisera användaren i LDAP-kata
 
 #: user_domains.php
 msgid "eMail"
-msgstr "eMail"
+msgstr "E-post"
 
 #: user_domains.php
 msgid "Field that will replace the email taken from LDAP. (on windows: mail) "
@@ -19106,8 +19033,10 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
-msgstr "Installerad. <span class=\"deviceDown\">Obs: Om du planerar att använda SNMPv3 måste du ta bort php-snmp och använda verktyget Net-SNMP.</span>"
+#, fuzzy
+#| msgid "Installed"
+msgid "Installed."
+msgstr "Installerad"
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
@@ -19207,7 +19136,7 @@ msgstr "Användarinloggningar"
 
 #: utilities.php
 msgid "IP Address"
-msgstr "IP adress"
+msgstr "IP-adress"
 
 #: utilities.php
 msgid "(User Removed)"
@@ -19669,10 +19598,8 @@ msgid "Severity Level: %s"
 msgstr "Allvarighetsnivå: %s"
 
 #: vdef.php
-#, fuzzy
-#| msgid "File not found"
 msgid "VDEF not found."
-msgstr "Filen hittades inte"
+msgstr "VDEF hittades inte."
 
 #: vdef.php
 msgid "Click 'Continue' to delete the following VDEF."
@@ -19700,7 +19627,7 @@ msgstr[1] "Duplicera VDEFs"
 
 #: vdef.php
 msgid "VDEF or VDEF Item not found."
-msgstr ""
+msgstr "VDEF eller VDEF-objekt hittades inte."
 
 #: vdef.php
 msgid "Click 'Continue' to delete the following VDEF's."
@@ -19783,65 +19710,54 @@ msgstr "Inga VDEFs"
 
 #: plugins.php
 msgid "Plugin directory is missing.  Click to Force Uninstall and remove all of its entries from the Cacti plugin tables."
-msgstr ""
+msgstr "Insticksmodulens katalog saknas. Klicka för att framtvinga avinstallation och ta bort alla dess poster från Cactis tabeller för insticksmoduler."
 
 #: plugins.php
-#, fuzzy
-#| msgid "Are you sure you want to Uninstall?"
 msgid "Are you sure you want to Force Uninstall the plugin"
-msgstr "Är du säker på att du vill avinstallera?"
+msgstr "Är du säker på att du vill framtvinga avinstallation av insticksmodulen"
 
 #: plugins.php
-#, fuzzy
-#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
 msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
-msgstr "Avinstallation av det här pluginet tar bort alla plugindata och inställningar. Om du verkligen vill avinstallera pluggen klickar du på &quot;Avinstallera&quot; nedan. Annars klickar du på &quot;Avbryt&quot;"
+msgstr "Detta tar permanent bort alla dess poster från Cactis tabeller för insticksmoduler (konfiguration, hookar, behörigheter samt eventuella tabeller eller kolumner som den skapade). Det går inte att ångra. Om du verkligen vill framtvinga avinstallation av insticksmodulen klickar du på 'Framtvinga avinstallation' nedan. Klicka annars på 'Avbryt'."
 
 #: plugins.php
-#, fuzzy
-#| msgid "Uninstall Plugin"
 msgid "Force Uninstall Plugin"
-msgstr "Avinstallera plugin"
+msgstr "Framtvinga avinstallation av insticksmodul"
 
 #: plugins.php
-#, fuzzy
-#| msgid "Uninstall"
 msgid "Force Uninstall"
-msgstr "Avinstallera"
+msgstr "Framtvinga avinstallation"
 
 #: plugins.php
-#, fuzzy
-#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
 msgid "Unable to Force Uninstall.  This Plugin is required by: %s"
-msgstr "Kan inte avinstallera. Detta plugin krävs av: %s"
+msgstr "Kunde inte framtvinga avinstallation. Insticksmodulen krävs av: %s"
 
 #: plugins.php
 msgid "Plugin '%s' can not be Force Uninstalled because its directory is still present.  Use the normal Uninstall action instead."
-msgstr ""
+msgstr "Insticksmodulen '%s' kan inte framtvingat avinstalleras eftersom dess katalog fortfarande finns kvar. Använd den vanliga avinstallationsåtgärden i stället."
 
 #: plugins.php
-#, fuzzy
-#| msgid "Unable to Uninstall.  This Plugin is required by: %s"
 msgid "Plugin '%s' can not be Force Uninstalled because it is still required by: '%s'"
-msgstr "Kan inte avinstallera. Detta plugin krävs av: %s"
+msgstr "Insticksmodulen '%s' kan inte framtvingat avinstalleras eftersom den fortfarande krävs av: '%s'"
 
 #: include/global_settings.php:1330
-#, fuzzy
-#| msgid "Enable Image Caching"
 msgid "Enable Credential Cache"
-msgstr "Aktivera bildcaching"
+msgstr "Aktivera cache för inloggningsuppgifter"
 
 #: include/global_settings.php:1331
 msgid "Pre-harden and cache SNMPv3 credential arguments once per credential change so each poller process reuses them instead of rebuilding them on every request.  This yields a marginal savings when collecting with SNMPv3 credentials through the Net-SNMP binaries.  The php-snmp extension handles most SNMPv3 gets in-process and bypasses this cache, but the Net-SNMP binaries (and therefore this cache) are still used for SNMP walks, hex output, requests that set a context or engine id, and protocol combinations that the running PHP version does not support.  Enable this if you collect any of those workloads with SNMPv3 credentials."
-msgstr ""
+msgstr "Förhärda och cacha argument för SNMPv3-inloggningsuppgifter en gång per ändring, så att varje pollerprocess återanvänder dem i stället för att bygga om dem vid varje begäran. Det ger en mindre besparing vid insamling med SNMPv3-inloggningsuppgifter via Net-SNMP-binärerna. Tillägget php-snmp hanterar de flesta SNMPv3-hämtningar i processen och går förbi denna cache, men Net-SNMP-binärerna (och därmed denna cache) används fortfarande för SNMP-vandringar, hex-utdata, begäranden som anger kontext eller motor-id samt protokollkombinationer som den körande PHP-versionen inte stöder. Aktivera detta om du samlar in någon av dessa arbetslaster med SNMPv3-inloggningsuppgifter."
 
 #: include/global_settings.php:1302
 msgid "Enable MD5 and DES for SNMPv3"
-msgstr ""
+msgstr "Aktivera MD5 och DES för SNMPv3"
 
 #: include/global_settings.php:1303
 msgid "The MD5 authentication and DES privacy algorithms are legacy, weak, and unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When disabled, MD5 and DES are removed from the SNMPv3 Authentication and Privacy Protocol dropdowns shown when editing a Device and in the Automation SNMP Options, leaving only the stronger SHA and AES algorithms."
-msgstr ""
+msgstr "Autentiseringsalgoritmen MD5 och sekretessalgoritmen DES är äldre, svaga och otillgängliga i härdade PHP- och Net-SNMP-byggen (FIPS). När alternativet är inaktiverat tas MD5 och DES bort från listrutorna för SNMPv3-autentisering och sekretessprotokoll som visas när en enhet redigeras och i Automations SNMP-alternativ. Då återstår endast de starkare algoritmerna SHA och AES."
+
+#~ msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
+#~ msgstr "Installerad. <span class=\"deviceDown\">Obs: Om du planerar att använda SNMPv3 måste du ta bort php-snmp och använda verktyget Net-SNMP.</span>"
 
 #~ msgid "A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user."
 #~ msgstr "En rymdavgränsad lista med DNS -värdnamn eller IP -adress för giltiga LDAP -servrar. Cacti kommer att försöka använda LDAP -servrarna från vänster till höger för att autentisera en användare."
