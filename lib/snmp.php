@@ -1877,13 +1877,11 @@ function snmp_auth_cache_rebuild(): void {
  * @return void
  */
 function snmp_auth_cache_load(): void {
-	static $loaded = false;
-
-	if ($loaded) {
+	if (!empty($GLOBALS['snmp_auth_cache_loaded'])) {
 		return;
 	}
 
-	$loaded = true;
+	$GLOBALS['snmp_auth_cache_loaded'] = true;
 
 	if (!snmp_auth_cache_enabled()) {
 		$GLOBALS['snmp_auth_cache_map'] = [];
