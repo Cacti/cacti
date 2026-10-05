@@ -8,6 +8,8 @@
         <testsuite name="Installer Unit">
             <directory>tests/Unit/Installer</directory>
             <file>tests/Unit/Security/Csrf/InstallerCsrfRecoveryTest.php</file>
+            <!-- Covers the lib/utility.php MySQL capability helpers that the installer's recommendations step relies on. -->
+            <file>tests/Unit/Ui/Utility/MysqlCapabilityMatrixTest.php</file>
         </testsuite>
         <testsuite name="Installer Integration">
             <file>tests/integration/InstallerComposerContractTest.php</file>
