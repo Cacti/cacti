@@ -1,1 +1,1 @@
-Add saved filter layouts to the filter class with administrator publishing and a Presets > Filters management page
+Add saved filter layouts to the filter class with administrator publishing and a Presets > Filters management page, plus a per-user Modern or Legacy page filter format where Modern presents the Layouts selector with an Edit dialog holding the filter fields

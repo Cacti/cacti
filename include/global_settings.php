@@ -3186,6 +3186,16 @@ $settings_user = [
 			'array'         => $graph_views,
 			'default'       => '1'
 		],
+		'page_filter_format' => [
+			'friendly_name' => __('Page Filter Format'),
+			'description'   => __('How table filters are presented. Modern collapses the filter into a Layouts selector with an Edit dialog that holds the filter fields; Legacy shows the classic inline filter. The Layouts selector is available in both.'),
+			'method'        => 'drop_array',
+			'default'       => 'modern',
+			'array'         => [
+				'modern' => __('Modern'),
+				'legacy' => __('Legacy')
+			]
+		],
 		'client_timezone_support' => [
 			'friendly_name' => __('TimeZone Support'),
 			'description'   => __('How would you like Cacti to present dates?  This setting will also change the way that Cacti Graphs dates are represented.'),

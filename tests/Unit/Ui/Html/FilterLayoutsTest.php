@@ -111,6 +111,61 @@ test('the layout request handler only acts on csrf-protected POST requests', fun
 	expect($src)->toContain("case 'layout_publish':");
 });
 
+test('a per-user page filter format setting is registered and defaults to modern', function () use ($root) {
+	$src = file_get_contents($root . '/include/global_settings.php');
+
+	expect($src)->toContain("'page_filter_format' => [");
+	expect($src)->toContain("'modern' => __('Modern')");
+	expect($src)->toContain("'legacy' => __('Legacy')");
+	expect($src)->toContain("'default'       => 'modern',");
+});
+
+test('filter_layouts_user_format defaults to modern without an authenticated user', function () {
+	unset($_SESSION['sess_user_id']);
+
+	expect(filter_layouts_user_format())->toBe('modern');
+});
+
+test('the filter class renders a legacy or modern layout from the user preference', function () use ($root) {
+	$src = file_get_contents($root . '/lib/html_filter.php');
+
+	expect($src)->toContain('public string $filter_format   = \'modern\';');
+	expect($src)->toContain('$this->filter_format = filter_layouts_user_format();');
+	expect($src)->toContain('private function use_modern_filter() : bool {');
+	expect($src)->toContain('return $this->render_layouts && $this->filter_format === \'modern\';');
+
+	// Modern short-circuits create_filter() before the inline rendering.
+	expect($src)->toContain('if ($this->use_modern_filter()) {');
+	expect($src)->toContain('print $this->create_modern_filter();');
+});
+
+test('field rendering is shared so legacy and the modern dialog stay in sync', function () use ($root) {
+	$src = file_get_contents($root . '/lib/html_filter.php');
+
+	expect($src)->toContain('private function emit_field(string $field_name, array $field_array) : string {');
+	// Both the legacy loop and the modern dialog emit fields through the helper.
+	expect(substr_count($src, 'print $this->emit_field($field_name, $field_array);'))->toBeGreaterThan(1);
+});
+
+test('the modern filter keeps time controls on the bar and fields in the dialog', function () use ($root) {
+	$src = file_get_contents($root . '/lib/html_filter.php');
+
+	expect($src)->toContain('private function field_is_bar(string $field_name, array $field_array) : bool {');
+	expect($src)->toContain("=== 'timespan' || \$field_name === 'refresh'");
+	expect($src)->toContain('cactiFilterEditDialog');
+	expect($src)->toContain("\$this->layout_button('layout_edit',");
+	expect($src)->toContain("\$this->layout_button('layout_saveas',");
+});
+
+test('the modern javascript wires the edit dialog save and publish actions', function () use ($root) {
+	$src = file_get_contents($root . '/lib/html_filter.php');
+
+	expect($src)->toContain('private function create_modern_javascript(string $applyFilter) : string {');
+	expect($src)->toContain('function layoutDialogSave(forceNew) {');
+	expect($src)->toContain('function layoutUpdateButtons() {');
+	expect($src)->toContain("layoutPost('layout_publish'");
+});
+
 test('auth invokes the layout handler after authorization', function () use ($root) {
 	$src = file_get_contents($root . '/include/auth.php');
 

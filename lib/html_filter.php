@@ -57,6 +57,7 @@ class CactiTableFilter {
 	public bool   $has_associated  = false;
 	public bool   $has_refresh     = false;
 	public bool   $render_layouts  = true;
+	public string $filter_format   = 'modern';
 	public mixed  $inject_content  = false;
 	private bool  $initialized     = false;
 	private array $sort_array      = [];
@@ -121,6 +122,8 @@ class CactiTableFilter {
 		if (in_array($page, filter_layouts_preset_pages(), true)) {
 			$this->render_layouts = false;
 		}
+
+		$this->filter_format = filter_layouts_user_format();
 
 		$this->filter_array = $this->create_default();
 	}
@@ -426,6 +429,203 @@ class CactiTableFilter {
 		$this->initialized = true;
 	}
 
+	/**
+	 * Whether this filter should render in the modern (Layouts + Edit dialog)
+	 * layout. Modern requires saved layouts to be active on the page; preset
+	 * pages and an explicit legacy user preference fall back to the inline
+	 * filter.
+	 *
+	 * @return bool
+	 */
+	private function use_modern_filter() : bool {
+		return $this->render_layouts && $this->filter_format === 'modern';
+	}
+
+	/**
+	 * Whether a field stays on the modern filter bar rather than moving into the
+	 * Edit dialog. Time controls and the auto-refresh selector remain visible.
+	 *
+	 * @param string              $field_name  The field key.
+	 * @param array<string,mixed> $field_array The field definition.
+	 *
+	 * @return bool
+	 */
+	private function field_is_bar(string $field_name, array $field_array) : bool {
+		return ($field_array['method'] ?? '') === 'timespan' || $field_name === 'refresh';
+	}
+
+	/**
+	 * Render a single filter field (label + control) to HTML. Shared by the
+	 * legacy inline layout and the modern Edit dialog so field rendering lives
+	 * in one place.
+	 *
+	 * @param string              $field_name  The field key.
+	 * @param array<string,mixed> $field_array The field definition.
+	 *
+	 * @return string
+	 */
+	private function emit_field(string $field_name, array $field_array) : string {
+		ob_start();
+
+		if (isset($field_array['class'])) {
+			$class = ' ' . $field_array['class'];
+		} else {
+			$class = '';
+		}
+
+		if (!isset($field_array['value']) &&
+			$field_array['method'] != 'validate' &&
+			$field_array['method'] != 'submit' &&
+			$field_array['method'] != 'content' &&
+			$field_array['method'] != 'button' &&
+			$field_array['method'] != 'timespan') {
+			cacti_log("WARNING: The Filter Class value field $field_name is missing");
+
+			$field_array['value'] = '';
+		}
+
+		switch($field_array['method']) {
+			case 'content':
+				print '<div class="filterColumn">' . $field_array['content'] . '</div>';
+
+				break;
+			case 'validate':
+				// Just for validating other request variables
+
+				break;
+			case 'button':
+				print '<div class="filterColumnButton">' . PHP_EOL;
+
+				if (isset($field_array['display'])) {
+					print '<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"><span class="button-text">' . $field_array['display'] . '</span></button>';
+				} else {
+					print '<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"><i class="' . $field_array['class'] . '"></i></button>';
+				}
+
+				print '</div>' . PHP_EOL;
+
+				break;
+			case 'submit':
+				print '<div class="filterColumnButton">' . PHP_EOL;
+				print '<button type="submit" class="ui-button ui-corner-all ui-widget ui-state-active ' . $class . '" id="' . $field_name . '" ' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"><span class="button-text">' . $field_array['display'] . '</span></button>';
+				print '</div>' . PHP_EOL;
+
+				break;
+			case 'filter_checkbox':
+				print '<div class="filterColumn"><span>' . PHP_EOL;
+				print '<input type="checkbox" class="ui-button ui-corner-all ui-widget' . $class . '" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"' . ($field_array['value'] == 'on' || $field_array['value'] == 'true' ? ' checked' : '') . '>';
+				print '&nbsp;<label for="' . $field_name . '">' . $field_array['friendly_name'] . '</label>';
+				print '</span></div>' . PHP_EOL;
+
+				break;
+			case 'timespan':
+				print '<div class="filterColumn"><div class="filterFieldName">' . __('Presets') . '</div></div>' . PHP_EOL;
+
+				print '<div class="filterColumn">';
+				print '<select id="predefined_timespan" class="' . $class . '">';
+
+				$this->timespans = array_merge([GT_CUSTOM => __('Custom')], $this->timespans);
+
+				$start_val = 0;
+				$end_val   = cacti_sizeof($this->timespans);
+
+				if (cacti_sizeof($this->timespans)) {
+					foreach ($this->timespans as $value => $text) {
+						print "<option value='$value'" . ($_SESSION['sess_current_timespan'] == $value ? ' selected' : '') . '>' . htmle($text) . '</option>';
+					}
+				}
+				print '</select>';
+				print '</div>';
+
+				// From data
+				print '<div class="filterColumn">';
+				print __('From');
+				print '</div>';
+				print '<div class="filterColumn">';
+				print '<span>';
+				print '<input type="text" class="ui-state-default ui-corner-all' . $class . '" id="date1" size="18" value="' . ($_SESSION['sess_current_date1'] ?? '') . '">';
+				print '<i id="startDate" class="calendar ti ti-calendar-clock" title="' . __esc('Start Date Selector') . '"></i>';
+				print '</span>';
+				print '</div>';
+
+				// To Data
+				print '<div class="filterColumn">';
+				print __('From');
+				print '</div>';
+				print '<div class="filterColumn">';
+				print '<span>';
+				print '<input type="text" class="ui-state-default ui-corner-all' . $class . '" id="date2" size="18" value="' . ($_SESSION['sess_current_date2'] ?? '') . '">';
+				print '<i id="endDate" class="calendar ti ti-calendar-clock" title="' . __esc('End Date Selector') . '"></i>';
+				print '</span>';
+				print '</div>';
+
+				if (isset($field_array['shifter']) && $field_array['shifter'] === true) {
+					print '<div class="filterColumn">';
+					print '<span>';
+
+					print '<i id="shift_left" class="shiftArrow ti ti-player-track-prev" title="' . __esc('Shift Time Backward') . '"></i>';
+					print '<select id="predefined_timeshift" title="' . __esc('Define Shifting Interval') . '" class="' . $class . '">';
+
+					$start_val  = 1;
+					$end_val    = cacti_sizeof($this->timeshifts) + 1;
+
+					if (cacti_sizeof($this->timeshifts)) {
+						for ($shift_value = $start_val; $shift_value < $end_val; $shift_value++) {
+							print "<option value='$shift_value'" . ($_SESSION['sess_current_timeshift'] == $shift_value ? ' selected' : '') . '>' . htmle($this->timeshifts[$shift_value]) . '</option>';
+						}
+					}
+
+					print '</select>';
+					print '<i id="shift_right" class="shiftArrow ti ti-player-track-next" title="' . __esc('Shift Time Forward') . '"></i>';
+
+					print '</span>';
+					print '</div>';
+				}
+
+				if ((isset($field_array['refresh']) && $field_array['refresh'] === true) || (isset($field_array['clear']) && $field_array['clear'] === true)) {
+					print '<div class="filterColumn">';
+					print '<span>';
+
+					if (isset($field_array['refresh'])) {
+						print '<button type="button" class="ui-button ui-corner-all ui-widget" id="tsrefresh"' . ' title="' . __esc('Refresh Selected Timespan') . '"><span class="button-text">' . __esc('Refresh') . '</span></button>';
+					}
+
+					if (isset($field_array['clear'])) {
+						print '<button type="button" class="ui-button ui-corner-all ui-widget" id="tsclear"' . ' title="' . __esc('Clear Selected Timespan') . '"><span class="button-text">' . __esc('Clear') . '</span></span></button>';
+					}
+
+					print '</span>';
+					print '</div>';
+				}
+
+				break;
+			case 'hidden':
+				print '<div class="filterColumn" style="display:none">' . PHP_EOL;
+
+				draw_edit_control($field_name, $field_array);
+
+				print '</div>' . PHP_EOL;
+
+				break;
+			default:
+				if (isset($field_array['friendly_name'])) {
+					print '<div class="filterColumn"><div class="filterFieldName"><label for="' . $field_name . '">' . $field_array['friendly_name'] . '</label></div></div>' . PHP_EOL;
+				}
+
+				if (isrv($field_name) && !str_contains($field_array['method'], 'callback')) {
+					$field_array['value'] = gnrv($field_name);
+				}
+
+				print '<div class="filterColumn">' . PHP_EOL;
+
+				draw_edit_control($field_name, $field_array);
+
+				print '</div>' . PHP_EOL;
+		}
+
+		return (string) ob_get_clean();
+	}
+
 	private function create_filter() : string {
 		// Buffer output
 		ob_start();
@@ -460,6 +660,14 @@ class CactiTableFilter {
 			html_filter_start_box($this->form_header, $this->action_url, true, $this->show_columns, $this->action_label);
 		}
 
+		if ($this->use_modern_filter()) {
+			print $this->create_modern_filter();
+
+			html_filter_end_box();
+
+			return ob_get_clean();
+		}
+
 		if (isset($this->filter_array['rows'])) {
 			print "<form id='" . $this->form_id . "' action='" . $this->form_action . "' method='" . $this->form_method . "' class='cactiFilter'>";
 
@@ -473,161 +681,7 @@ class CactiTableFilter {
 				print "<div class='filterRow'>";
 
 				foreach ($row as $field_name => $field_array) {
-					if (isset($field_array['class'])) {
-						$class = ' ' . $field_array['class'];
-					} else {
-						$class = '';
-					}
-
-					if (!isset($field_array['value']) &&
-						$field_array['method'] != 'validate' &&
-						$field_array['method'] != 'submit' &&
-						$field_array['method'] != 'content' &&
-						$field_array['method'] != 'button' &&
-						$field_array['method'] != 'timespan') {
-						cacti_log("WARNING: The Filter Class value field $field_name is missing");
-
-						$field_array['value'] = '';
-					}
-
-					switch($field_array['method']) {
-						case 'content':
-							print '<div class="filterColumn">' . $field_array['content'] . '</div>';
-
-							break;
-						case 'validate':
-							// Just for validating other request variables
-
-							break;
-						case 'button':
-							print '<div class="filterColumnButton">' . PHP_EOL;
-
-							if (isset($field_array['display'])) {
-								print '<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"><span class="button-text">' . $field_array['display'] . '</span></button>';
-							} else {
-								print '<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"><i class="' . $field_array['class'] . '"></i></button>';
-							}
-
-							print '</div>' . PHP_EOL;
-
-							break;
-						case 'submit':
-							print '<div class="filterColumnButton">' . PHP_EOL;
-							print '<button type="submit" class="ui-button ui-corner-all ui-widget ui-state-active ' . $class . '" id="' . $field_name . '" ' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"><span class="button-text">' . $field_array['display'] . '</span></button>';
-							print '</div>' . PHP_EOL;
-
-							break;
-						case 'filter_checkbox':
-							print '<div class="filterColumn"><span>' . PHP_EOL;
-							print '<input type="checkbox" class="ui-button ui-corner-all ui-widget' . $class . '" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"' . ($field_array['value'] == 'on' || $field_array['value'] == 'true' ? ' checked' : '') . '>';
-							print '&nbsp;<label for="' . $field_name . '">' . $field_array['friendly_name'] . '</label>';
-							print '</span></div>' . PHP_EOL;
-
-							break;
-						case 'timespan':
-							print '<div class="filterColumn"><div class="filterFieldName">' . __('Presets') . '</div></div>' . PHP_EOL;
-
-							print '<div class="filterColumn">';
-							print '<select id="predefined_timespan" class="' . $class . '">';
-
-							$this->timespans = array_merge([GT_CUSTOM => __('Custom')], $this->timespans);
-
-							$start_val = 0;
-							$end_val   = cacti_sizeof($this->timespans);
-
-							if (cacti_sizeof($this->timespans)) {
-								foreach ($this->timespans as $value => $text) {
-									print "<option value='$value'" . ($_SESSION['sess_current_timespan'] == $value ? ' selected' : '') . '>' . htmle($text) . '</option>';
-								}
-							}
-							print '</select>';
-							print '</div>';
-
-							// From data
-							print '<div class="filterColumn">';
-							print __('From');
-							print '</div>';
-							print '<div class="filterColumn">';
-							print '<span>';
-							print '<input type="text" class="ui-state-default ui-corner-all' . $class . '" id="date1" size="18" value="' . ($_SESSION['sess_current_date1'] ?? '') . '">';
-							print '<i id="startDate" class="calendar ti ti-calendar-clock" title="' . __esc('Start Date Selector') . '"></i>';
-							print '</span>';
-							print '</div>';
-
-							// To Data
-							print '<div class="filterColumn">';
-							print __('From');
-							print '</div>';
-							print '<div class="filterColumn">';
-							print '<span>';
-							print '<input type="text" class="ui-state-default ui-corner-all' . $class . '" id="date2" size="18" value="' . ($_SESSION['sess_current_date2'] ?? '') . '">';
-							print '<i id="endDate" class="calendar ti ti-calendar-clock" title="' . __esc('End Date Selector') . '"></i>';
-							print '</span>';
-							print '</div>';
-
-							if (isset($field_array['shifter']) && $field_array['shifter'] === true) {
-								print '<div class="filterColumn">';
-								print '<span>';
-
-								print '<i id="shift_left" class="shiftArrow ti ti-player-track-prev" title="' . __esc('Shift Time Backward') . '"></i>';
-								print '<select id="predefined_timeshift" title="' . __esc('Define Shifting Interval') . '" class="' . $class . '">';
-
-								$start_val  = 1;
-								$end_val    = cacti_sizeof($this->timeshifts) + 1;
-
-								if (cacti_sizeof($this->timeshifts)) {
-									for ($shift_value = $start_val; $shift_value < $end_val; $shift_value++) {
-										print "<option value='$shift_value'" . ($_SESSION['sess_current_timeshift'] == $shift_value ? ' selected' : '') . '>' . htmle($this->timeshifts[$shift_value]) . '</option>';
-									}
-								}
-
-								print '</select>';
-								print '<i id="shift_right" class="shiftArrow ti ti-player-track-next" title="' . __esc('Shift Time Forward') . '"></i>';
-
-								print '</span>';
-								print '</div>';
-							}
-
-							if ((isset($field_array['refresh']) && $field_array['refresh'] === true) || (isset($field_array['clear']) && $field_array['clear'] === true)) {
-								print '<div class="filterColumn">';
-								print '<span>';
-
-								if (isset($field_array['refresh'])) {
-									print '<button type="button" class="ui-button ui-corner-all ui-widget" id="tsrefresh"' . ' title="' . __esc('Refresh Selected Timespan') . '"><span class="button-text">' . __esc('Refresh') . '</span></button>';
-								}
-
-								if (isset($field_array['clear'])) {
-									print '<button type="button" class="ui-button ui-corner-all ui-widget" id="tsclear"' . ' title="' . __esc('Clear Selected Timespan') . '"><span class="button-text">' . __esc('Clear') . '</span></span></button>';
-								}
-
-								print '</span>';
-								print '</div>';
-							}
-
-							break;
-						case 'hidden':
-							print '<div class="filterColumn" style="display:none">' . PHP_EOL;
-
-							draw_edit_control($field_name, $field_array);
-
-							print '</div>' . PHP_EOL;
-
-							break;
-						default:
-							if (isset($field_array['friendly_name'])) {
-								print '<div class="filterColumn"><div class="filterFieldName"><label for="' . $field_name . '">' . $field_array['friendly_name'] . '</label></div></div>' . PHP_EOL;
-							}
-
-							if (isrv($field_name) && !str_contains($field_array['method'], 'callback')) {
-								$field_array['value'] = gnrv($field_name);
-							}
-
-							print '<div class="filterColumn">' . PHP_EOL;
-
-							draw_edit_control($field_name, $field_array);
-
-							print '</div>' . PHP_EOL;
-					}
+					print $this->emit_field($field_name, $field_array);
 				}
 
 				if ($index == 0) {
@@ -652,6 +706,170 @@ class CactiTableFilter {
 		html_filter_end_box();
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * Render the modern filter: a compact bar (Layouts selector, time controls,
+	 * and layout action buttons) plus a hidden Edit dialog that holds the filter
+	 * name and all filterable fields. The dialog is activated by create_modern_
+	 * javascript().
+	 *
+	 * @return string
+	 */
+	private function create_modern_filter() : string {
+		$page     = filter_layouts_page_key($this->form_action != '' ? $this->form_action : get_current_page());
+		$layouts  = filter_layouts_get_available($page);
+		$can_glob = filter_layouts_can_manage_global();
+
+		$selected = isset_request_var('filter_layout') ? (int) get_nfilter_request_var('filter_layout') : 0;
+
+		// Split the configured fields: time controls and the refresh selector
+		// stay on the bar; everything else moves into the Edit dialog.
+		$bar_fields     = [];
+		$dialog_rows    = [];
+		$dialog_buttons = [];
+
+		if (isset($this->filter_array['rows'])) {
+			foreach ($this->filter_array['rows'] as $row) {
+				$drow = [];
+
+				foreach ($row as $field_name => $field_array) {
+					$method = $field_array['method'] ?? '';
+
+					if ($this->field_is_bar($field_name, $field_array)) {
+						$bar_fields[$field_name] = $field_array;
+					} elseif ($method === 'submit' || $method === 'button') {
+						// go/clear become dialog footer actions; the rest (import,
+						// export, purge, ...) render as a dialog button row.
+						if ($field_name !== 'go' && $field_name !== 'clear') {
+							$dialog_buttons[$field_name] = $field_array;
+						}
+					} else {
+						$drow[$field_name] = $field_array;
+					}
+				}
+
+				if (cacti_sizeof($drow)) {
+					$dialog_rows[] = $drow;
+				}
+			}
+		}
+
+		ob_start();
+
+		// Filter bar.
+		print "<div class='filterTable even cactiFilterModernBar'>";
+		print "<div class='filterRow'>";
+
+		print "<div class='filterColumn'><div class='filterFieldName'>" . __('Layouts') . '</div></div>';
+		print "<div class='filterColumn'>" . $this->layout_select($layouts, $selected, $can_glob) . '</div>';
+
+		foreach ($bar_fields as $field_name => $field_array) {
+			print $this->emit_field($field_name, $field_array);
+		}
+
+		print $this->layout_button('layout_edit',   __('Edit'),    __('Edit the current filter'));
+		print $this->layout_button('layout_rename', __('Rename'),  __('Rename the selected layout'));
+		print $this->layout_button('layout_delete', __('Delete'),  __('Delete the selected layout'));
+		print $this->layout_button('layout_saveas', __('Save As'), __('Save this layout as a new personal layout'));
+
+		print '</div>';
+		print '</div>' . PHP_EOL;
+
+		// Edit dialog.
+		$title = $this->form_header != '' ? $this->form_header : __('Edit Filter');
+
+		print "<div id='" . $this->form_id . "_dialog' class='cactiFilterEditDialog' title='" . html_escape($title) . "' style='display:none;'>";
+		print "<form id='" . $this->form_id . "' action='" . $this->form_action . "' method='" . $this->form_method . "' class='cactiFilter'>";
+
+		print "<div class='filterTable even'>";
+		print "<div class='filterRow'>";
+		print "<div class='filterColumn'><div class='filterFieldName'><label for='layout_name'>" . __('Filter Name') . '</label></div></div>';
+		print "<div class='filterColumn'><input type='text' id='layout_name' size='40' maxlength='128' class='ui-state-default ui-corner-all'></div>";
+		print '</div>';
+		print '</div>' . PHP_EOL;
+
+		foreach ($dialog_rows as $drow) {
+			print "<div class='filterTable even'>";
+			print "<div class='filterRow'>";
+
+			foreach ($drow as $field_name => $field_array) {
+				print $this->emit_field($field_name, $field_array);
+			}
+
+			print '</div>';
+			print '</div>' . PHP_EOL;
+		}
+
+		if (cacti_sizeof($dialog_buttons)) {
+			print "<div class='filterTable even'>";
+			print "<div class='filterRow'>";
+
+			foreach ($dialog_buttons as $field_name => $field_array) {
+				print $this->emit_field($field_name, $field_array);
+			}
+
+			print '</div>';
+			print '</div>' . PHP_EOL;
+		}
+
+		if ($this->inject_content !== false) {
+			print $this->inject_content;
+		}
+
+		print '</form>';
+		print '</div>' . PHP_EOL;
+
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Render the Layouts <select>. Each option carries the rebuilt navigation
+	 * url and the metadata the layout buttons use to decide what a user may do
+	 * with the row (own/global, editable).
+	 *
+	 * @param array<int, array<string,mixed>> $layouts  Available layout rows.
+	 * @param int                             $selected Currently selected id.
+	 * @param bool                            $can_glob Whether global layouts are manageable.
+	 *
+	 * @return string
+	 */
+	private function layout_select(array $layouts, int $selected, bool $can_glob) : string {
+		ob_start();
+
+		print "<select id='filter_layout' class='ui-state-default ui-corner-all'>";
+		print "<option value='0' data-url='' data-editable='1' data-global='0'>" . html_escape(__('(New Layout)')) . '</option>';
+
+		if (cacti_sizeof($layouts)) {
+			foreach ($layouts as $layout) {
+				$document = filter_layouts_decode($layout['data']);
+
+				if ($document === false) {
+					continue;
+				}
+
+				$url = filter_layouts_document_url($document);
+
+				if ($url === '') {
+					continue;
+				}
+
+				$sep   = (strpos($url, '?') !== false) ? '&' : '?';
+				$nav   = $url . $sep . 'filter_layout=' . $layout['id'];
+				$label = $layout['name'] . ($layout['user_id'] == 0 ? ' (' . __('Global') . ')' : '');
+
+				// A user may overwrite/rename/delete their own rows; global rows
+				// (user_id 0) only when they can manage global layouts.
+				$editable = ($layout['user_id'] != 0 || $can_glob) ? '1' : '0';
+				$global   = ($layout['user_id'] == 0) ? '1' : '0';
+
+				print "<option value='" . $layout['id'] . "' data-url='" . html_escape_url($nav) . "' data-name='" . html_escape_attr($layout['name']) . "' data-editable='" . $editable . "' data-global='" . $global . "'" . ($selected == $layout['id'] ? ' selected' : '') . '>' . html_escape($label) . '</option>';
+			}
+		}
+
+		print '</select>';
+
+		return (string) ob_get_clean();
 	}
 
 	private function make_function(string $buttonId, array $buttonArray, string $buttonAction) : string {
@@ -930,7 +1148,11 @@ class CactiTableFilter {
 	</script>" . PHP_EOL;
 
 		if ($this->render_layouts) {
-			$script .= $this->create_layouts_javascript($applyFilter);
+			if ($this->use_modern_filter()) {
+				$script .= $this->create_modern_javascript($applyFilter);
+			} else {
+				$script .= $this->create_layouts_javascript($applyFilter);
+			}
 		}
 
 		return $script;
@@ -1015,36 +1237,7 @@ class CactiTableFilter {
 		print "<div class='filterColumn'><div class='filterFieldName'>" . __('Layouts') . '</div></div>';
 
 		print "<div class='filterColumn'>";
-		print "<select id='filter_layout' class='ui-state-default ui-corner-all'>";
-		print "<option value='0' data-url=''>" . html_escape(__('(New Layout)')) . '</option>';
-
-		if (cacti_sizeof($layouts)) {
-			foreach ($layouts as $layout) {
-				$document = filter_layouts_decode($layout['data']);
-
-				if ($document === false) {
-					continue;
-				}
-
-				$url = filter_layouts_document_url($document);
-
-				if ($url === '') {
-					continue;
-				}
-
-				$sep   = (strpos($url, '?') !== false) ? '&' : '?';
-				$nav   = $url . $sep . 'filter_layout=' . $layout['id'];
-				$label = $layout['name'] . ($layout['user_id'] == 0 ? ' (' . __('Global') . ')' : '');
-
-				// A user may overwrite/rename/delete their own rows; global rows
-				// (user_id 0) only when they can manage global layouts.
-				$editable = ($layout['user_id'] != 0 || $can_glob) ? '1' : '0';
-
-				print "<option value='" . $layout['id'] . "' data-url='" . html_escape_url($nav) . "' data-name='" . html_escape_attr($layout['name']) . "' data-editable='" . $editable . "'" . ($selected == $layout['id'] ? ' selected' : '') . '>' . html_escape($label) . '</option>';
-			}
-		}
-
-		print '</select>';
+		print $this->layout_select($layouts, $selected, $can_glob);
 		print '</div>';
 
 		print $this->layout_button('layout_save',   __('Save'),   __('Overwrite the selected layout with the current filter'));
@@ -1120,6 +1313,93 @@ class CactiTableFilter {
 
 		return $js;
 	}
+
+	/**
+	 * Emit the modern filter JavaScript: the Layouts selector navigation, the
+	 * bar action buttons, and the Edit dialog (Search/Save/Publish/Clear/Cancel)
+	 * that applies, saves, or publishes the current filter.
+	 *
+	 * @param string $applyFilter The JS expression that builds the filter url.
+	 *
+	 * @return string
+	 */
+	private function create_modern_javascript(string $applyFilter) : string {
+		$page     = filter_layouts_page_key($this->form_action != '' ? $this->form_action : get_current_page());
+		$can_glob = filter_layouts_can_manage_global();
+		$title    = $this->form_header != '' ? $this->form_header : __('Edit Filter');
+
+		$js  = PHP_EOL . "<script type='text/javascript'>" . PHP_EOL;
+
+		$js .= 'function layoutFilterUrl() {' . PHP_EOL;
+		$js .= "\treturn " . $applyFilter . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
+		$js .= 'function layoutSelectedOption() {' . PHP_EOL;
+		$js .= "\treturn $('#filter_layout option:selected');" . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
+		$js .= 'function layoutSelectedId() {' . PHP_EOL;
+		$js .= "\treturn parseInt($('#filter_layout').val()) || 0;" . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
+		$js .= 'function layoutEditable() {' . PHP_EOL;
+		$js .= "\treturn layoutSelectedOption().attr('data-editable') != '0';" . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
+		$js .= 'function layoutPost(layoutAction, extra, onDone) {' . PHP_EOL;
+		$js .= "\tvar data = $.extend({ action: layoutAction, page: " . json_encode($page) . ', __csrf_magic: csrfMagicToken }, extra);' . PHP_EOL;
+		$js .= "\t$.post(" . json_encode($page) . ", data, function(result) { if (onDone) { onDone(result); } }, 'json').fail(function() { alert(" . json_encode(__('The layout operation failed.')) . '); });' . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
+		$js .= 'function layoutResultOk(r) {' . PHP_EOL;
+		$js .= "\tif (r && r.ok) { return true; } alert(" . json_encode(__('The layout operation failed.')) . '); return false;' . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
+		$js .= 'function layoutUpdateButtons() {' . PHP_EOL;
+		$js .= "\tvar id = layoutSelectedId();" . PHP_EOL;
+		$js .= "\tvar editable = layoutEditable();" . PHP_EOL;
+		$js .= "\t$('#layout_rename').toggle(id != 0 && editable);" . PHP_EOL;
+		$js .= "\t$('#layout_delete').toggle(id != 0 && editable);" . PHP_EOL;
+		$js .= "\t$('#layout_saveas').toggle(id != 0 && !editable);" . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
+		$js .= 'function layoutDialogSave(forceNew) {' . PHP_EOL;
+		$js .= "\tvar name = $('#layout_name').val();" . PHP_EOL;
+		$js .= "\tif (name == '') { alert(" . json_encode(__('Please enter a filter name.')) . '); return; }' . PHP_EOL;
+		$js .= "\tvar id = (forceNew || !layoutEditable()) ? 0 : layoutSelectedId();" . PHP_EOL;
+		$js .= "\tlayoutPost('layout_save', { id: id, name: name, url: layoutFilterUrl() }, function(r) { if (layoutResultOk(r) && r.url) { document.location = r.url; } });" . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
+		$js .= 'function layoutOpenDialog(forceNew) {' . PHP_EOL;
+		$js .= "\t$('#layout_name').val(forceNew ? '' : (layoutSelectedOption().attr('data-name') || ''));" . PHP_EOL;
+		$js .= "\tvar buttons = [" . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode(__('Search')) . ", click: function() { $(this).dialog('close'); applyFilter(); } }," . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode(__('Save')) . ', click: function() { layoutDialogSave(forceNew); } },' . PHP_EOL;
+
+		if ($can_glob) {
+			$js .= "\t\t{ text: " . json_encode(__('Publish')) . ', click: function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { alert(' . json_encode(__('Save the layout before publishing it.')) . "); return; } layoutPost('layout_publish', { id: id }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); } }," . PHP_EOL;
+		}
+
+		$js .= "\t\t{ text: " . json_encode(__('Clear')) . ', click: function() { clearFilter(); } },' . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } }" . PHP_EOL;
+		$js .= "\t];" . PHP_EOL;
+		$js .= "\t$('#" . $this->form_id . "_dialog').dialog({ title: " . json_encode($title) . ", modal: true, width: 'auto', minWidth: 500, resizable: false, buttons: buttons });" . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
+		$js .= '$(function() {' . PHP_EOL;
+		$js .= "\tlayoutUpdateButtons();" . PHP_EOL;
+		$js .= "\t$('#filter_layout').change(function() { var u = layoutSelectedOption().attr('data-url'); if (u != undefined && u != '') { document.location = u; } else { layoutUpdateButtons(); } });" . PHP_EOL;
+		$js .= "\t$('#layout_edit').click(function() { layoutOpenDialog(false); });" . PHP_EOL;
+		$js .= "\t$('#layout_saveas').click(function() { layoutOpenDialog(true); });" . PHP_EOL;
+		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } var cur = layoutSelectedOption().attr('data-name'); var name = prompt(" . json_encode(__('Rename Layout')) . ", cur); if (name != null && name != '') { layoutPost('layout_rename', { id: id, name: name }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); } });" . PHP_EOL;
+		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } if (confirm(" . json_encode(__('Delete the selected layout?')) . ")) { layoutPost('layout_delete', { id: id }, function(r) { if (layoutResultOk(r)) { document.location = " . json_encode($page) . '; } }); } });' . PHP_EOL;
+		$js .= "\t$('#layout_name').keydown(function(e) { if (e.keyCode == 13) { e.preventDefault(); layoutDialogSave(false); } });" . PHP_EOL;
+		$js .= '});' . PHP_EOL;
+
+		$js .= '</script>' . PHP_EOL;
+
+		return $js;
+	}
 }
 
 /**
@@ -1165,6 +1445,23 @@ function filter_layouts_page_key(string $page) : string {
  */
 function filter_layouts_can_manage_global() : bool {
 	return is_realm_allowed(15);
+}
+
+/**
+ * The current user's preferred page filter format. Modern renders the Layouts
+ * selector with an Edit dialog; legacy renders the classic inline filter.
+ * Defaults to modern for CLI and not-yet-authenticated contexts.
+ *
+ * @return string Either 'modern' or 'legacy'.
+ */
+function filter_layouts_user_format() : string {
+	if (function_exists('read_user_setting') && isset($_SESSION['sess_user_id'])) {
+		if (read_user_setting('page_filter_format', 'modern') === 'legacy') {
+			return 'legacy';
+		}
+	}
+
+	return 'modern';
 }
 
 /**
