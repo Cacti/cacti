@@ -3098,7 +3098,7 @@ $sched_types = [
 
 if (CACTI_SERVER_OS == 'unix') {
 	$dejavu_paths = [
-		'/usr/share/fonts/dejavu/', // RHEL/CentOS
+		'/usr/share/fonts/dejavu/', // Rocky/CentOS
 		'/usr/share/fonts/truetype/', // SLES
 		'/usr/share/fonts/truetype/dejavu/', // Ubuntu
 		'/usr/local/share/fonts/dejavu/', // FreeBSD
