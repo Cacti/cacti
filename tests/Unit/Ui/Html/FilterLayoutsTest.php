@@ -157,6 +157,17 @@ test('the modern filter keeps time controls on the bar and fields in the dialog'
 	expect($src)->toContain("\$this->layout_button('layout_saveas',");
 });
 
+test('page action buttons (import, export, sort) render on the bar, not the dialog', function () use ($root) {
+	$src = file_get_contents($root . '/lib/html_filter.php');
+
+	// Non go/clear buttons are collected as bar actions and emitted on the bar.
+	expect($src)->toContain('$bar_actions[$field_name] = $field_array;');
+	expect($src)->toContain('foreach ($bar_actions as $field_name => $field_array) {');
+
+	// The dialog no longer carries a page-action button row.
+	expect($src)->not->toContain('$dialog_buttons');
+});
+
 test('the modern javascript wires the edit dialog save and publish actions', function () use ($root) {
 	$src = file_get_contents($root . '/lib/html_filter.php');
 

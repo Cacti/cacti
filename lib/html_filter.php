@@ -723,11 +723,13 @@ class CactiTableFilter {
 
 		$selected = isset_request_var('filter_layout') ? (int) get_nfilter_request_var('filter_layout') : 0;
 
-		// Split the configured fields: time controls and the refresh selector
-		// stay on the bar; everything else moves into the Edit dialog.
-		$bar_fields     = [];
-		$dialog_rows    = [];
-		$dialog_buttons = [];
+		// Split the configured fields: time controls, the refresh selector, and
+		// page action buttons (Import, Export, Purge, Save, sort, ...) stay on the
+		// bar; the filter inputs move into the Edit dialog. go/clear are replaced
+		// by the dialog's Search/Clear footer actions.
+		$bar_fields  = [];
+		$bar_actions = [];
+		$dialog_rows = [];
 
 		if (isset($this->filter_array['rows'])) {
 			foreach ($this->filter_array['rows'] as $row) {
@@ -739,10 +741,8 @@ class CactiTableFilter {
 					if ($this->field_is_bar($field_name, $field_array)) {
 						$bar_fields[$field_name] = $field_array;
 					} elseif ($method === 'submit' || $method === 'button') {
-						// go/clear become dialog footer actions; the rest (import,
-						// export, purge, ...) render as a dialog button row.
 						if ($field_name !== 'go' && $field_name !== 'clear') {
-							$dialog_buttons[$field_name] = $field_array;
+							$bar_actions[$field_name] = $field_array;
 						}
 					} else {
 						$drow[$field_name] = $field_array;
@@ -773,6 +773,12 @@ class CactiTableFilter {
 		print $this->layout_button('layout_delete', __('Delete'),  __('Delete the selected layout'));
 		print $this->layout_button('layout_saveas', __('Save As'), __('Save this layout as a new personal layout'));
 
+		// Page actions (Import, Export, Purge, Save, sort asc/desc, ...) belong on
+		// the bar beside the Layouts selector, not inside the Edit dialog.
+		foreach ($bar_actions as $field_name => $field_array) {
+			print $this->emit_field($field_name, $field_array);
+		}
+
 		print '</div>';
 		print '</div>' . PHP_EOL;
 
@@ -794,18 +800,6 @@ class CactiTableFilter {
 			print "<div class='filterRow'>";
 
 			foreach ($drow as $field_name => $field_array) {
-				print $this->emit_field($field_name, $field_array);
-			}
-
-			print '</div>';
-			print '</div>' . PHP_EOL;
-		}
-
-		if (cacti_sizeof($dialog_buttons)) {
-			print "<div class='filterTable even'>";
-			print "<div class='filterRow'>";
-
-			foreach ($dialog_buttons as $field_name => $field_array) {
 				print $this->emit_field($field_name, $field_array);
 			}
 
