@@ -10313,6 +10313,12 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr "Pēc noklusējuma galvenais Cacti Data Collector kešatmiņā saglabās visu vietni un spraudņus resursu kešatmiņā. Pēc tam attālie datu vācēji periodiski atjauninās sevi ar jebkādiem atjauninājumiem no galvenā Cacti Data Collector. Šī resursu kešatmiņa būtībā ļauj attālajiem datu savācējiem pašiem veikt jaunināšanu. Ja nevēlaties izmantot šo opciju, varat to atspējot, izmantojot šo iestatījumu."
 
 #: include/global_settings.php
+#, fuzzy
+#| msgid "SNMP error"
+msgid "SNMP Behavior"
+msgstr "SNMP kļūda"
+
+#: include/global_settings.php
 msgid "Additional Data Collector Settings"
 msgstr "Papildu datu savācēja iestatījumi"
 
