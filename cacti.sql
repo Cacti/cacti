@@ -3199,6 +3199,25 @@ CREATE TABLE `user_auth_row_cache` (
 --
 
 --
+-- Table structure for table `user_layouts`
+--
+
+CREATE TABLE `user_layouts` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL default '0',
+  `page` varchar(64) NOT NULL default '',
+  `name` varchar(128) NOT NULL default '',
+  `data` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `page` (`page`)
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Stores user defined and published filter layouts';
+
+--
+-- Dumping data for table `user_layouts`
+--
+
+--
 -- Table structure for table `user_log`
 --
 
