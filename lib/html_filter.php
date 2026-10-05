@@ -769,8 +769,12 @@ class CactiTableFilter {
 
 		// Page actions (Import, Export, Purge, Save, sort asc/desc, ...) belong on
 		// the bar beside the Layouts selector, not inside the Edit dialog.
-		foreach ($bar_actions as $field_name => $field_array) {
-			print $this->emit_field($field_name, $field_array);
+		if (cacti_sizeof($bar_actions)) {
+			print "<div class='filterColumnButton'><span class='barSep'></span></div>";
+
+			foreach ($bar_actions as $field_name => $field_array) {
+				print $this->emit_field($field_name, $field_array);
+			}
 		}
 
 		print '</div>';
@@ -782,30 +786,35 @@ class CactiTableFilter {
 		print "<div id='" . $this->form_id . "_dialog' class='cactiFilterEditDialog' title='" . html_escape($title) . "' style='display:none;'>";
 		print "<form id='" . $this->form_id . "' action='" . $this->form_action . "' method='" . $this->form_method . "' class='cactiFilter'>";
 
-		print "<div class='filterTable even'>";
+		// One filter variable per row in a single table so the label column
+		// aligns across rows via the existing table-cell layout, in every theme.
+		print "<div class='filterTable even cactiFilterEditTable'>";
+
 		print "<div class='filterRow cactiFilterEditRow'>";
 		print "<div class='filterColumn'><div class='filterFieldName'><label for='layout_name'>" . __('Filter Name') . '</label></div></div>';
 		print "<div class='filterColumn'><input type='text' id='layout_name' size='40' maxlength='128' class='ui-state-default ui-corner-all'></div>";
-		print '</div>';
 		print '</div>' . PHP_EOL;
 
-		// One filter variable per row so the dialog is a clean, responsive form
-		// rather than mirroring the inline filter's multi-field row packing.
+		$hidden = '';
+
 		foreach ($dialog_fields as $field_name => $field_array) {
 			$method = $field_array['method'] ?? '';
 
 			if ($method === 'hidden' || $method === 'validate') {
-				print $this->emit_field($field_name, $field_array);
+				$hidden .= $this->emit_field($field_name, $field_array);
 
 				continue;
 			}
 
-			print "<div class='filterTable even'>";
 			print "<div class='filterRow cactiFilterEditRow'>";
 			print $this->emit_field($field_name, $field_array);
-			print '</div>';
 			print '</div>' . PHP_EOL;
 		}
+
+		print '</div>' . PHP_EOL;
+
+		// Hidden/validate fields stay in the form but outside the visible table.
+		print $hidden;
 
 		if ($this->inject_content !== false) {
 			print $this->inject_content;
@@ -1378,6 +1387,7 @@ class CactiTableFilter {
 		$js .= "\t\t{ text: " . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } }" . PHP_EOL;
 		$js .= "\t];" . PHP_EOL;
 		$js .= "\t$('#" . $this->form_id . "_dialog').dialog({ title: " . json_encode($title) . ", modal: true, width: 'auto', minWidth: 500, resizable: false, buttons: buttons });" . PHP_EOL;
+		$js .= "\t$('#" . $this->form_id . "_dialog').dialog('widget').addClass('cactiFilterDialog');" . PHP_EOL;
 		$js .= '}' . PHP_EOL;
 
 		$js .= '$(function() {' . PHP_EOL;

@@ -183,6 +183,17 @@ test('the modern javascript wires the edit dialog save and publish actions', fun
 	expect($src)->toContain("layoutPost('layout_publish'");
 });
 
+test('the edit dialog is tagged for theming and the modern theme skins it', function () use ($root) {
+	$src = file_get_contents($root . '/lib/html_filter.php');
+	$css = file_get_contents($root . '/include/themes/modern/main.css');
+
+	// The widget wrapper is tagged so themes can skin the dialog chrome.
+	expect($src)->toContain(".dialog('widget').addClass('cactiFilterDialog');");
+
+	expect($css)->toContain('.ui-dialog.cactiFilterDialog .ui-dialog-titlebar');
+	expect($css)->toContain('.ui-dialog.cactiFilterDialog .ui-dialog-buttonpane');
+});
+
 test('auth invokes the layout handler after authorization', function () use ($root) {
 	$src = file_get_contents($root . '/include/auth.php');
 
