@@ -12126,6 +12126,11 @@ msgstr "默認情況下，主仙人掌數據收集器會將整個網站和插件
 
 #: include/global_settings.php
 #, fuzzy
+msgid "SNMP Behavior"
+msgstr "SNMP錯誤"
+
+#: include/global_settings.php
+#, fuzzy
 msgid "Additional Data Collector Settings"
 msgstr "遠程數據收集器狀態："
 
