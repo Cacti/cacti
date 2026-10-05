@@ -184,9 +184,9 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 
 			$ver = db_get_global_variable('version', $cnn_id);
 
-			if (str_contains($ver, 'MariaDB')) {
+			if (stripos($ver, 'MariaDB') !== false) {
 				$srv              = 'MariaDB';
-				$ver              = str_replace('-MariaDB', '', $ver);
+				$ver              = str_ireplace('-MariaDB', '', $ver);
 				$required_modes[] = 'NO_ENGINE_SUBSTITUTION';
 			} else {
 				$srv = 'MySQL';
@@ -2958,9 +2958,9 @@ function get_mysql_info(int $poller_id = 1) : array {
 		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES', false, $local_db_cnn_id), 'Variable_name', 'Value');
 	}
 
-	if (str_contains($variables['version'], 'MariaDB')) {
+	if (stripos($variables['version'], 'MariaDB') !== false) {
 		$database = 'MariaDB';
-		$version  = str_replace('-MariaDB', '', $variables['version']);
+		$version  = str_ireplace('-MariaDB', '', $variables['version']);
 
 		if (isset($variables['innodb_version'])) {
 			$link_ver = substr($variables['innodb_version'], 0, 3);
