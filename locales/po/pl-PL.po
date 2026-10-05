@@ -10315,6 +10315,12 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr "Domyślnie główny moduł gromadzący dane Cacti buforuje całą witrynę internetową i wtyczki w pamięci podręcznej zasobów. Następnie, co jakiś czas, Remote Data Collectors będą aktualizować temat z wszelkimi aktualizacjami z głównego Cacti Data Collector. Ta pamięć podręczna zasobów zasadniczo umożliwia zdalnym modułom zbierającym dane samodzielną aktualizację. Jeśli nie chcesz korzystać z tej opcji, możesz ją wyłączyć za pomocą tego ustawienia."
 
 #: include/global_settings.php
+#, fuzzy
+#| msgid "SNMP error"
+msgid "SNMP Behavior"
+msgstr "Błąd SNMP"
+
+#: include/global_settings.php
 msgid "Additional Data Collector Settings"
 msgstr "Status zdalnego gromadzenia danych:"
 
