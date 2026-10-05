@@ -10280,6 +10280,12 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr "Varsayılan olarak, ana Kaktüs Veri Toplayıcı tüm web sitesini ve eklentileri bir Kaynak Önbelleği'nde önbelleğe alır. Ardından, Uzak Veri Toplayıcıları periyodik olarak kendilerini ana Kaktüs Veri Toplayıcısından gelen güncellemelerle güncelleyecektir. Bu Kaynak Önbellek, esasen Uzak Veri Toplayıcıların kendi kendini yükseltmelerine izin verir. Bu seçeneği kullanmak istemiyorsanız, bu ayarı kullanarak devre dışı bırakabilirsiniz."
 
 #: include/global_settings.php
+#, fuzzy
+#| msgid "SNMP error"
+msgid "SNMP Behavior"
+msgstr "SNMP hatası"
+
+#: include/global_settings.php
 msgid "Additional Data Collector Settings"
 msgstr "Uzaktan Veri Toplayıcı Durumu:"
 
