@@ -1,3 +1,25 @@
+# Normalize every text file to LF in the repository and the working tree, so a
+# checkout on Windows cannot reintroduce CRLF that php-cs-fixer then rejects.
+# Git auto-detects binary content; the explicit rules below guard common binary
+# types against accidental normalization.
+* text=auto eol=lf
+
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.eot   binary
+*.gz    binary
+*.zip   binary
+*.phar  binary
+
+# Patch files are applied byte-for-byte; never rewrite their line endings.
+*.patch -text
+
 # Every pull request appends to the same two anchors in CHANGELOG: the top of
 # the issue block and the end of the feature block. Concurrent PRs therefore
 # collide there even when they touch nothing else. check-changelog.py enforces
