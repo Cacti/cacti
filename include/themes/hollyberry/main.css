@@ -1309,6 +1309,82 @@ legend {
 	width: 55px;
 }
 
+/* Modern page filter dialog skin (page_filter_format = modern), scoped to the
+   cactiFilterDialog widget so other dialogs are unaffected. */
+.cactiFilterModernBar .barSep {
+	display: inline-block;
+	width: 1px;
+	height: 20px;
+	margin: 0 6px;
+	background-color: rgba(128, 128, 128, 0.45);
+	vertical-align: middle;
+}
+
+.ui-dialog.cactiFilterDialog {
+	padding: 0;
+	border-radius: 6px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+	overflow: hidden;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-titlebar {
+	border: 0;
+	border-radius: 0;
+	padding: 10px 14px;
+	background: #b3007d;
+	color: #ffffff;
+	font-size: 14px;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-title {
+	font-weight: bold;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
+	background: transparent;
+	border: 0;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-titlebar-close .ui-icon {
+	filter: invert(1) brightness(2);
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-content {
+	padding: 14px 16px;
+}
+
+.ui-dialog.cactiFilterDialog .cactiFilterEditTable {
+	white-space: normal;
+}
+
+.ui-dialog.cactiFilterDialog .cactiFilterEditRow .filterColumn:first-child {
+	min-width: 120px;
+	padding-right: 12px;
+	font-weight: bold;
+}
+
+.ui-dialog.cactiFilterDialog .cactiFilterEditRow .filterColumn:last-child select,
+.ui-dialog.cactiFilterDialog .cactiFilterEditRow .filterColumn:last-child input[type="text"] {
+	min-width: 220px;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-buttonpane {
+	margin: 0;
+	border-top: 1px solid rgba(0, 0, 0, 0.12);
+	padding: 8px 12px;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-buttonpane .ui-button {
+	margin: 0 0 0 6px;
+	padding: 5px 14px;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-buttonpane .ui-button:first-child {
+	background: #b3007d;
+	color: #ffffff;
+	border-color: rgba(0, 0, 0, 0.25);
+}
+
 .settingsFilter {
 	display: table;
 	white-space: nowrap;
