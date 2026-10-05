@@ -1254,6 +1254,28 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 	}
 
 	if ($device_id > 0) {
+		/* The shared credential cache holds only SNMPv3 tuples, keyed by the exact
+		 * credential fields. Bump the version only when this host's v3 membership or
+		 * one of those credential fields actually changed, so saving an unrelated
+		 * field (notes, availability, ...) does not force a needless cache rebuild. */
+		$was_v3       = isset($previous['snmp_version']) && $previous['snmp_version'] == 3;
+		$is_v3        = $save['snmp_version'] == 3;
+		$cred_changed = ($was_v3 != $is_v3);
+
+		if ($is_v3 && $was_v3) {
+			foreach (['snmp_community', 'snmp_username', 'snmp_password', 'snmp_auth_protocol', 'snmp_priv_passphrase', 'snmp_priv_protocol'] as $field) {
+				if ((string) ($previous[$field] ?? '') !== (string) ($save[$field] ?? '')) {
+					$cred_changed = true;
+
+					break;
+				}
+			}
+		}
+
+		if ($cred_changed) {
+			set_config_option('snmp_cred_version', uniqid('', true));
+		}
+
 		if (read_config_option('extended_paths') == 'on') {
 			$pattern  = read_config_option('extended_paths_type');
 			$maxdirs  = read_config_option('extended_paths_hashes');

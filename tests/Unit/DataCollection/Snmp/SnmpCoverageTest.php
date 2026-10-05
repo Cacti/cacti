@@ -131,6 +131,38 @@ function cacti_strtolower(string $value) : string {
 	return strtolower($value);
 }
 
+if (!function_exists('set_config_option')) {
+	function set_config_option(string $name, mixed $value) : void {
+		$GLOBALS['snmp_coverage_config'][$name] = $value;
+	}
+}
+
+if (!function_exists('db_fetch_assoc')) {
+	function db_fetch_assoc(string $sql) : array {
+		if (str_contains($sql, 'FROM host')) {
+			return $GLOBALS['snmp_coverage_host_rows'] ?? [];
+		}
+
+		if (str_contains($sql, 'FROM poller_item')) {
+			return $GLOBALS['snmp_coverage_item_rows'] ?? [];
+		}
+
+		return [];
+	}
+}
+
+if (!function_exists('cacti_encrypt_secret')) {
+	function cacti_encrypt_secret(string $plain) : string {
+		return 'enc:' . base64_encode($plain);
+	}
+}
+
+if (!function_exists('cacti_decrypt_secret')) {
+	function cacti_decrypt_secret(string $wire) : string|false {
+		return str_starts_with($wire, 'enc:') ? (base64_decode(substr($wire, 4), true) ?: false) : false;
+	}
+}
+
 require_once dirname(__DIR__, 4) . '/lib/snmp.php';
 
 test('uptime selection rejects wall-clock engine times and preserves wrap handling', function () : void {
@@ -272,7 +304,7 @@ test('session warning handler delegates non-warning errors and error logging is 
 
 	expect(cacti_snmp_session_call($session, 'notice', [], $warning, false))->toBeTrue();
 
-	$session->errno = phpsnmp\SNMP::ERRNO_TIMEOUT;
+	$session->errno = \SNMP::ERRNO_TIMEOUT;
 	cacti_snmp_log_session_error($session, $session->info, ['.1', '.2']);
 	$session->errno = 8;
 	$session->error = "native\r\nerror";
@@ -327,7 +359,9 @@ test('OID validation, escaping, method selection, options, and v3 auth cover all
 		->and(snmp_escape_string('public', 'win32'))->toBe("'public'")
 		->and(snmp_get_method('get', 1, '', '', SNMP_STRING_OUTPUT_GUESS, false))->toBe(SNMP_METHOD_BINARY)
 		->and(snmp_get_method('get', 1, '', '', SNMP_STRING_OUTPUT_HEX))->toBe(SNMP_METHOD_BINARY)
-		->and(snmp_get_method('get', 3))->toBe(SNMP_METHOD_BINARY)
+		->and(snmp_get_method('get', 3))->toBe(SNMP_METHOD_PHP)
+		->and(snmp_get_method('get', 3, 'ctx'))->toBe(SNMP_METHOD_BINARY)
+		->and(snmp_get_method('get', 3, auth_proto: 'INVALID'))->toBe(SNMP_METHOD_BINARY)
 		->and(snmp_get_method('walk', 1))->toBe(SNMP_METHOD_BINARY)
 		->and(snmp_get_method('get', 1))->toBe(SNMP_METHOD_PHP)
 		->and(snmp_get_method('get', 2))->toBe(SNMP_METHOD_PHP);
@@ -363,7 +397,7 @@ test('native sessions cover versions and security levels without network I/O', f
 		->and(cacti_snmp_session('127.0.0.1', '', '3', 'user', '', '[None]', '', '[None]'))->toBeObject()
 		->and(cacti_snmp_session('127.0.0.1', '', '3', 'user', 'secretpass', 'SHA', '', '[None]'))->toBeObject()
 		->and(cacti_snmp_session('127.0.0.1', '', '3', 'user', 'secretpass', 'SHA', 'privatepass', 'AES'))->toBeObject()
-		->and(cacti_snmp_session('127.0.0.1', '', '3', 'user', 'secretpass', 'INVALID', '', '[None]'))->toBeFalse()
+		->and(cacti_snmp_session('127.0.0.1', '', '3', 'user', 'secretpass', 'INVALID', '', '[None]'))->toBeObject()
 		->and(cacti_snmp_session('127.0.0.1', 'public', 'invalid'))->toBeFalse();
 
 	// cacti_snmp_session_from_host maps a device row onto the arguments above (#7835).
@@ -406,9 +440,9 @@ test('native and binary get operations cover success and failure results', funct
 	}))->toBe('U');
 
 	$_SESSION = [];
-	expect(cacti_snmp_get($host, 'public', $oid, 3, 'user', '', '[None]', '', '[None]', port: $port))->toBe('coverage value')
-		->and(cacti_snmp_get_raw($host, 'public', $oid, 3, 'user', '', '[None]', '', '[None]', port: $port))->toContain('coverage value')
-		->and(cacti_snmp_getnext($host, 'public', $oid, 3, 'user', '', '[None]', '', '[None]', port: $port))->toBe('coverage value');
+	expect(cacti_snmp_get($host, 'public', $oid, 3, 'user', '', '[None]', '', '[None]', port: $port))->not->toBe('U')
+		->and(cacti_snmp_get_raw($host, 'public', $oid, 3, 'user', '', '[None]', '', '[None]', port: $port))->not->toBe('U')
+		->and(cacti_snmp_getnext($host, 'public', $oid, 3, 'user', '', '[None]', '', '[None]', port: $port))->not->toBe('U');
 
 	putenv('CACTI_SNMP_PROBE_MODE=timeout');
 	expect(cacti_snmp_get($host, 'public', $oid, 1, port: $port, value_output_format: SNMP_STRING_OUTPUT_HEX))->toBe('U')
@@ -477,4 +511,228 @@ test('native and binary walks cover parsing, filtering, and diagnostics', functi
 		// matched device data.
 		->toContain('Exit Code')
 		->toContain('Missing credentials');
+});
+test('protocol pickers, native tokens, agent formatting, and v3 support gating', function () : void {
+	$GLOBALS['snmp_auth_protocols'] = ['MD5' => 'MD5', 'SHA' => 'SHA'];
+	$GLOBALS['snmp_priv_protocols'] = ['DES' => 'DES', 'AES' => 'AES'];
+
+	$GLOBALS['snmp_coverage_config']['snmp_md5_des_enabled'] = '';
+	expect(snmp_md5_des_enabled())->toBeFalse()
+		->and(snmp_auth_protocol_options())->not->toHaveKey('MD5')
+		->and(snmp_auth_protocol_options('MD5'))->toHaveKey('MD5')
+		->and(snmp_priv_protocol_options())->not->toHaveKey('DES')
+		->and(snmp_priv_protocol_options('DES'))->toHaveKey('DES');
+
+	$GLOBALS['snmp_coverage_config']['snmp_md5_des_enabled'] = 'on';
+	expect(snmp_md5_des_enabled())->toBeTrue()
+		->and(snmp_auth_protocol_options())->toHaveKey('MD5')
+		->and(snmp_priv_protocol_options())->toHaveKey('DES');
+
+	expect(snmp_native_protocol('SHA-256'))->toBe('SHA256')
+		->and(snmp_native_protocol('AES-256-C'))->toBe('AES256C');
+
+	expect(snmp_format_agent('udp:device', 161))->toBe('udp:device')
+		->and(snmp_format_agent('[2001:db8::1]', 161))->toBe('[2001:db8::1]:161')
+		->and(snmp_format_agent('[2001:db8::1]:1161', 500))->toBe('[2001:db8::1]:1161')
+		->and(snmp_format_agent('2001:db8::1', 1161))->toBe('[2001:db8::1]:1161')
+		->and(snmp_format_agent('127.0.0.1', 161))->toBe('127.0.0.1')
+		->and(snmp_format_agent('127.0.0.1', 1161))->toBe('127.0.0.1:1161')
+		->and(snmp_format_agent('unix:/var/agentx/master', 1161))->toBe('unix:/var/agentx/master')
+		->and(snmp_format_agent('udp6:[2001:db8::1]', 1161))->toBe('udp6:[2001:db8::1]:1161')
+		->and(snmp_format_agent('udp6:[2001:db8::1]:1161', 500))->toBe('udp6:[2001:db8::1]:1161')
+		->and(snmp_format_agent('udp:device:1161', 500))->toBe('udp:device:1161')
+		->and(snmp_format_agent('udp:device', 1161))->toBe('udp:device:1161');
+
+	expect(snmp_php_v3_protocols_supported('SHA', 'AES'))->toBeTrue()
+		->and(snmp_php_v3_protocols_supported('[None]', '[None]'))->toBeTrue()
+		->and(snmp_php_v3_protocols_supported('BOGUS', '[None]'))->toBeFalse()
+		->and(snmp_php_v3_protocols_supported('[None]', 'AES'))->toBeFalse();
+});
+
+test('v3 credential argument hardening and cache map construction', function () : void {
+	$GLOBALS['snmp_auth_protocols'] = ['SHA' => 'SHA'];
+	$GLOBALS['snmp_priv_protocols'] = ['AES' => 'AES'];
+
+	expect(snmp_build_v3_cred_args('[None]', 'user', '', '[None]', ''))->toBe(['-u', 'user', '-l', 'noAuthNoPriv'])
+		->and(snmp_build_v3_cred_args('SHA', 'user', 'secret', '[None]', ''))->toBe(['-u', 'user', '-a', 'SHA', '-A', 'secret', '-l', 'authNoPriv'])
+		->and(snmp_build_v3_cred_args('BOGUS', 'user', 'secret', '[None]', ''))->toBe([])
+		->and(snmp_build_v3_cred_args('SHA', 'user', 'secret', 'AES', 'priv'))->toBe(['-u', 'user', '-a', 'SHA', '-A', 'secret', '-x', 'AES', '-X', 'priv', '-l', 'authPriv'])
+		->and(snmp_build_v3_cred_args('BOGUS', 'user', 'secret', 'AES', 'priv'))->toBe([]);
+
+	$key = snmp_auth_cache_key('', 'user', 'secret', 'SHA', '', '[None]');
+	expect($key)->toBe(snmp_auth_cache_key('', 'user', 'secret', 'SHA', '', '[None]'))
+		->and(strlen($key))->toBe(40);
+
+	$rows = [
+		['snmp_username' => '', 'snmp_community' => 'public'],
+		['snmp_username' => 'user', 'snmp_community' => '', 'snmp_password' => 'secret', 'snmp_auth_protocol' => 'SHA', 'snmp_priv_passphrase' => '', 'snmp_priv_protocol' => '[None]'],
+		['snmp_username' => 'user', 'snmp_community' => '', 'snmp_password' => 'secret', 'snmp_auth_protocol' => 'SHA', 'snmp_priv_passphrase' => '', 'snmp_priv_protocol' => '[None]'],
+	];
+	expect(snmp_auth_cache_build_map($rows))->toHaveCount(1);
+});
+
+test('shared SNMP auth cache lifecycle', function () : void {
+	$dir = sys_get_temp_dir() . '/snmpcov_' . uniqid();
+	mkdir($dir);
+	$GLOBALS['config']['cache_dir']     = $dir;
+	$GLOBALS['snmp_auth_protocols']     = ['SHA' => 'SHA'];
+	$GLOBALS['snmp_priv_protocols']     = ['AES' => 'AES'];
+	$GLOBALS['snmp_coverage_host_rows'] = [
+		['snmp_community' => '', 'snmp_username' => 'user', 'snmp_password' => 'secret', 'snmp_auth_protocol' => 'SHA', 'snmp_priv_passphrase' => '', 'snmp_priv_protocol' => '[None]'],
+	];
+	$GLOBALS['snmp_coverage_item_rows'] = [];
+
+	unset($GLOBALS['snmp_coverage_config']['snmp_cred_version']);
+	$version = snmp_cred_version();
+	expect($version)->toBeString()->not->toBe('')
+		->and(snmp_cred_version())->toBe($version)
+		->and(snmp_auth_cache_rows())->toHaveCount(1)
+		->and(snmp_auth_cache_build())->toHaveCount(1);
+
+	// disabled: refresh/rebuild short-circuit; load yields an empty map
+	$GLOBALS['snmp_coverage_config']['snmp_credential_cache'] = '';
+	expect(snmp_auth_cache_enabled())->toBeFalse();
+	snmp_auth_cache_refresh();
+	snmp_auth_cache_rebuild();
+	unset($GLOBALS['snmp_auth_cache_loaded'], $GLOBALS['snmp_auth_cache_map']);
+	snmp_auth_cache_load();
+	expect($GLOBALS['snmp_auth_cache_map'])->toBe([]);
+
+	// enabled + empty cache: load() builds from the database (fallback branch)
+	$GLOBALS['snmp_coverage_config']['snmp_credential_cache'] = 'on';
+	snmp_auth_cache()->invalidate();
+	unset($GLOBALS['snmp_auth_cache_loaded'], $GLOBALS['snmp_auth_cache_map']);
+	snmp_auth_cache_load();
+	expect($GLOBALS['snmp_auth_cache_map'])->toHaveCount(1);
+
+	// refresh seals it (first stores, second short-circuits on checksum); rebuild forces it
+	snmp_auth_cache_refresh();
+	snmp_auth_cache_refresh();
+	snmp_auth_cache_rebuild();
+
+	// load() now decodes the sealed cache instead of rebuilding
+	unset($GLOBALS['snmp_auth_cache_loaded'], $GLOBALS['snmp_auth_cache_map']);
+	snmp_auth_cache_load();
+	expect($GLOBALS['snmp_auth_cache_map'])->toHaveCount(1);
+
+	// cred lookup: a matching tuple hits, an unknown tuple misses
+	expect(snmp_auth_cache_cred_lookup('', 'user', 'secret', 'SHA', '', '[None]'))->toBeArray()
+		->and(snmp_auth_cache_cred_lookup('', 'nobody', '', 'SHA', '', '[None]'))->toBeNull();
+
+	// cred lookup also seeds the map itself when it has not been loaded
+	unset($GLOBALS['snmp_auth_cache_loaded'], $GLOBALS['snmp_auth_cache_map']);
+	expect(snmp_auth_cache_cred_lookup('', 'user', 'secret', 'SHA', '', '[None]'))->toBeArray();
+
+	// a second load() short-circuits on the process guard
+	snmp_auth_cache_load();
+});
+
+test('binary-delegating session routes through the Net-SNMP command path', function () : void {
+	$host = getenv('CACTI_SNMP_COVERAGE_HOST') ?: '127.0.0.1';
+	$port = (int) (getenv('CACTI_SNMP_COVERAGE_PORT') ?: 21161);
+
+	putenv('CACTI_SNMP_PROBE_MODE=get');
+	$session = cacti_snmp_session($host, '', '3', 'user', 'secret', 'INVALID', '', '[None]', port: $port);
+	expect($session)->toBeObject();
+
+	expect($session->get('.1.3.6.1.2.1.1.1.0'))->toBeString()
+		->and($session->get(['.1.3.6.1.2.1.1.1.0']))->toBeArray()
+		->and($session->getnext('.1.3.6.1.2.1.1.1.0'))->toBeString()
+		->and($session->walk(['.1']))->toBeFalse()
+		->and($session->close())->toBeTrue()
+		->and($session->getErrno())->toBe(0)
+		->and($session->getError())->toBe('');
+
+	putenv('CACTI_SNMP_PROBE_MODE=walk');
+	expect($session->walk('.1.3.6.1.2.1.1'))->toBeArray();
+
+	// A v2 binary session walk returns parsed entries, exercising the result map.
+	$v2 = new CactiSnmpBinarySession([
+		'hostname'   => $host, 'community' => 'public', 'version' => '2',
+		'auth_user'  => '', 'auth_pass' => '', 'auth_proto' => '', 'priv_pass' => '',
+		'priv_proto' => '', 'context' => '', 'engineid' => '',
+		'port'       => $port, 'timeout' => 500, 'retries' => 0,
+	], 10);
+	expect($v2->walk('.1.3.6.1.2.1.1'))->toBeArray()->not->toBe([]);
+});
+
+test('multi-OID get batches, falls back, and maps results', function () : void {
+	$host = getenv('CACTI_SNMP_COVERAGE_HOST') ?: '127.0.0.1';
+	$port = (int) (getenv('CACTI_SNMP_COVERAGE_PORT') ?: 21161);
+	$oids = ['.1.3.6.1.2.1.1.1.0', '.1.3.6.1.2.1.1.3.0'];
+
+	putenv('CACTI_SNMP_PROBE_MODE=get');
+	expect(cacti_snmp_get_multi($host, 'public', $oids, 2, port: $port, max_oids: 1))->toHaveCount(2)
+		->and(cacti_snmp_get_multi($host, 'public', $oids, 1, port: $port))->toHaveCount(2)
+		->and(cacti_snmp_get_multi($host, '', $oids, 3, 'user', '', '[None]', '', '[None]', port: $port))->toHaveCount(2)
+		->and(cacti_snmp_get_multi($host, 'public', '.1.3.6.1.2.1.1.1.0', 1, port: $port, value_output_format: SNMP_STRING_OUTPUT_HEX))->toHaveCount(1)
+		->and(cacti_snmp_get_multi($host, 'public', [], 1, port: $port))->toBe([]);
+
+	$fail = cacti_snmp_get_multi($host, 'wrong', $oids, 2, port: $port, timeout_ms: 1, retries: 0);
+	expect($fail['.1.3.6.1.2.1.1.1.0'])->toBe('U');
+});
+
+test('v3 authNoPriv and authPriv exercise every security-level branch', function () : void {
+	$host = getenv('CACTI_SNMP_COVERAGE_HOST') ?: '127.0.0.1';
+	$port = (int) (getenv('CACTI_SNMP_COVERAGE_PORT') ?: 21161);
+	$oid  = '.1.3.6.1.2.1.1.1.0';
+
+	$GLOBALS['snmp_auth_protocols']                           = ['SHA' => 'SHA'];
+	$GLOBALS['snmp_priv_protocols']                           = ['AES' => 'AES', 'DES' => 'DES'];
+	$GLOBALS['snmp_coverage_config']['snmp_credential_cache'] = '';
+
+	// The fixture only serves a noAuthNoPriv user, so authNoPriv/authPriv requests
+	// return 'U' but still drive the native sec_level branches. A privacy protocol
+	// the running net-snmp rejects (DES on AES-only builds) makes snmp3_*() throw,
+	// which the native try/catch maps to 'U'.
+	foreach (['cacti_snmp_get', 'cacti_snmp_get_raw', 'cacti_snmp_getnext'] as $fn) {
+		expect($fn($host, '', $oid, 3, 'user', 'secretpass', 'SHA', '', '[None]', port: $port))->toBe('U')
+			->and($fn($host, '', $oid, 3, 'user', 'secretpass', 'SHA', 'privpass1', 'AES', port: $port))->toBe('U');
+
+		// hex output forces the Net-SNMP command path through cacti_get_snmpv3_auth
+		putenv('CACTI_SNMP_PROBE_MODE=get');
+		$fn($host, '', $oid, 3, 'user', 'secretpass', 'SHA', '', '[None]', port: $port, value_output_format: SNMP_STRING_OUTPUT_HEX);
+	}
+
+	// A native getter that throws drives the try/catch of each getter portably,
+	// independent of whether the running net-snmp rejects a given protocol.
+	$boom = function () : never { throw new RuntimeException('native failure'); };
+	expect(cacti_snmp_get_raw($host, 'public', $oid, 1, port: $port, native_get: $boom))->toBe('U')
+		->and(cacti_snmp_getnext($host, 'public', $oid, 1, port: $port, native_get: $boom))->toBe('U')
+		->and(cacti_snmp_get_multi($host, 'public', [$oid], 1, port: $port, native_get: $boom))->toBe([$oid => 'U']);
+
+	// native multi-get: authPriv success branch + sanitize failure
+	expect(cacti_snmp_get_multi($host, '', [$oid], 3, 'user', 'secretpass', 'SHA', 'privpass1', 'AES', port: $port))->toHaveCount(1)
+		->and(cacti_snmp_get_multi($host, '', [$oid], 0, port: $port))->toBe([]);
+
+	// result association without depending on MIB availability: numeric output makes
+	// a leading-dot request key-match verbatim, a dot-less request (net-snmp
+	// normalizes the returned key to a leading dot) falls through to the positional
+	// slot, and a duplicate dot-less OID exhausts it for the miss path.
+	snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
+	expect(cacti_snmp_get_multi($host, 'public', ['.1.3.6.1.2.1.1.1.0'], 2, port: $port))->toHaveCount(1)
+		->and(cacti_snmp_get_multi($host, 'public', ['1.3.6.1.2.1.1.1.0'], 2, port: $port))->toHaveCount(1)
+		->and(cacti_snmp_get_multi($host, 'public', ['1.3.6.1.2.1.1.1.0', '1.3.6.1.2.1.1.1.0'], 2, port: $port))->toHaveCount(1);
+});
+
+test('cached v3 auth assembly reuses pre-hardened credential args', function () : void {
+	$GLOBALS['snmp_auth_protocols']                           = ['SHA' => 'SHA'];
+	$GLOBALS['snmp_priv_protocols']                           = ['AES' => 'AES'];
+	$GLOBALS['snmp_coverage_config']['snmp_credential_cache'] = 'on';
+	$GLOBALS['snmp_auth_cache_loaded']                        = true;
+	$GLOBALS['snmp_auth_cache_map']                           = [];
+
+	// not cached -> builds live, then appends context + engine id
+	expect(cacti_get_snmpv3_auth('SHA', 'user', 'secret', 'AES', 'priv', 'ctx', 'engine'))
+		->toContain('-n')->toContain('-e');
+
+	// a cached tuple is reused verbatim
+	$key                                  = snmp_auth_cache_key('', 'user', 'secret', 'SHA', '', '[None]');
+	$GLOBALS['snmp_auth_cache_map'][$key] = ['-u', 'user', '-a', 'SHA', '-A', 'secret', '-l', 'authNoPriv'];
+	expect(cacti_get_snmpv3_auth('SHA', 'user', 'secret', '[None]', '', '', ''))->toContain('authNoPriv');
+
+	// an unknown protocol builds an empty arg list -> ''
+	expect(cacti_get_snmpv3_auth('BOGUS', 'user', 'secret', '[None]', '', '', ''))->toBe('');
+
+	$GLOBALS['snmp_coverage_config']['snmp_credential_cache'] = '';
 });

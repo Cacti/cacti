@@ -71,10 +71,10 @@ test('htmx.js.version content matches version pinned by the integrity attribute'
 	 * is stale relative to the vendored binary and browsers will refuse to
 	 * execute the script.
 	 */
-	expect(htmx_version())->toBe('2.0.10');
+	expect(htmx_version())->toBe('2.0.11');
 
 	expect(htmx_script_tag())->toContain(
-		"integrity='sha384-Q+Dky3iHVJOr6wUjQ4ulh6uQ76an/t+ak1+PjMVaxRjbZamFLAG+u9InkfjbsEQf'"
+		"integrity='sha384-gmJEF2eAKY4e+FDN+qtKIivWyb6ANwDB7JUdUybKgQspPKyEX/pIRZG/0uaRoW2C'"
 	);
 });
 

@@ -338,39 +338,37 @@ class Net_Ping {
 			$oid = '.1.3.6.1.2.1.1.3.0';
 		}
 
-		$session = cacti_snmp_session($this->host['hostname'], $this->host['snmp_community'],
-			$this->host['snmp_version'], $this->host['snmp_username'],
-			$this->host['snmp_password'], $this->host['snmp_auth_protocol'],
-			$this->host['snmp_priv_passphrase'], $this->host['snmp_priv_protocol'],
-			$this->host['snmp_context'], $this->host['snmp_engine_id'],
-			$this->host['snmp_port'], $this->host['snmp_timeout'],
-			$this->retries, read_config_option('max_get_size'));
-
-		if ($session === false) {
-			$this->snmp_status   = 'down';
-			$this->snmp_response = 'Failed to make SNMP session';
-
-			return false;
-		}
-
-		$result = $this->get_snmp_result($session, $oid);
+		/* Phase 1 (snmp3_get test): run the SNMPv3 availability check through the
+		   procedural cacti_snmp_get()/getnext() path (snmp_get_method -> snmp3_get)
+		   instead of the SNMP class session, so an unsupported privacy protocol is
+		   caught and can fall back to the Net-SNMP binary rather than raising an
+		   uncaught ValueError in SNMP::setSecurity(). */
+		$result = $this->get_snmp_result($oid);
 
 		if (!$result && $oid == '.1.3.6.1.2.1.1.3.0') {
-			$result = $this->get_snmp_result($session, '.1.3.6.1.6.3.10.2.1.3.0');
+			$result = $this->get_snmp_result('.1.3.6.1.6.3.10.2.1.3.0');
 		}
-
-		$session->close();
 
 		return $result;
 	}
 
-	function get_snmp_result(object $session, string $oid) : bool {
+	function get_snmp_result(string $oid) : bool {
+		$h = $this->host;
+
 		// getnext does not work in php versions less than 5
 		if (($this->avail_method == AVAIL_SNMP_GET_NEXT) &&
 			(version_compare('5', phpversion(), '<'))) {
-			$output = cacti_snmp_session_getnext($session, $oid);
+			$output = cacti_snmp_getnext($h['hostname'], $h['snmp_community'], $oid,
+				$h['snmp_version'], $h['snmp_username'], $h['snmp_password'],
+				$h['snmp_auth_protocol'], $h['snmp_priv_passphrase'], $h['snmp_priv_protocol'],
+				$h['snmp_context'], $h['snmp_port'], $h['snmp_timeout'], $this->retries,
+				'SNMP', $h['snmp_engine_id']);
 		} else {
-			$output = cacti_snmp_session_get($session, $oid);
+			$output = cacti_snmp_get($h['hostname'], $h['snmp_community'], $oid,
+				$h['snmp_version'], $h['snmp_username'], $h['snmp_password'],
+				$h['snmp_auth_protocol'], $h['snmp_priv_passphrase'], $h['snmp_priv_protocol'],
+				$h['snmp_context'], $h['snmp_port'], $h['snmp_timeout'], $this->retries,
+				'SNMP', $h['snmp_engine_id']);
 		}
 
 		// determine total time +- ~10%

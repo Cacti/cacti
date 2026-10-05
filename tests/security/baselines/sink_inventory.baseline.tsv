@@ -111,6 +111,7 @@ cmd_exec	./support.php				exec(cacti_escapeshellcmd(read_config_option('path_rrd
 cmd_exec	./support.php			$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions');
 cmd_exec	./support.php			$snmp_version   = (string) shell_exec(cacti_escapeshellcmd($snmpget_path) . ' -V 2>&1');
 cmd_exec	./support.php			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
+deserialize	./lib/cache.php			$data = @unserialize($wire, ['allowed_classes' => false]);
 deserialize	./lib/functions.php				$items = unserialize($unstripped, ['allowed_classes' => false]);
 deserialize	./lib/functions.php				$items = unserialize($unstripped, ['allowed_classes' => false]);
 deserialize	./lib/functions.php		return unserialize($strobj, ['allowed_classes' => false]);
@@ -172,6 +173,7 @@ fs_write	./lib/CactiFilesystem.php			self::default()->writeFile($filename, $cont
 fs_write	./lib/api_device.php							if (file_put_contents($new_xmlfile, $data) === false) {
 fs_write	./lib/boost.php								if ($fileptr = fopen($cache_file, 'rb')) {
 fs_write	./lib/boost.php		$fileptr = fopen($temp_file, 'wb');
+fs_write	./lib/cache.php			if ($blob === false || @file_put_contents($tmp, $blob, LOCK_EX) === false) {
 fs_write	./lib/clog_webapi.php					$log_fh = fopen($logfile, 'w');
 fs_write	./lib/csp_report_endpoint.php	$inputStream = fopen('php://input', 'rb');
 fs_write	./lib/database.php					file_put_contents(sys_get_temp_dir() . '/cacti-option.log',

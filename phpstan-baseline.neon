@@ -1945,6 +1945,18 @@ parameters:
 			path: include/auth.php
 
 		-
+			message: '#^Offset ''base_path'' does not exist on array\{cacti_server_os\: ''unix''\|''win32'', is_web\: bool, proxy_headers\: mixed, trusted_proxies\: mixed, poller_id\: mixed, path_csrf_secret\: mixed, php_snmp_support\: bool, php_path\?\: mixed, \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: include/global.php
+
+		-
+			message: '#^Offset ''cache_dir'' on array\{cacti_server_os\: ''unix''\|''win32'', is_web\: bool, proxy_headers\: mixed, trusted_proxies\: mixed, poller_id\: mixed, path_csrf_secret\: mixed, php_snmp_support\: bool, php_path\?\: mixed, \.\.\.\} in empty\(\) does not exist\.$#'
+			identifier: empty.offset
+			count: 1
+			path: include/global.php
+
+		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 1
@@ -2879,6 +2891,54 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: lib/boost.php
+
+		-
+			message: '#^Cannot access offset 1 on array\|false\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: lib/cache.php
+
+		-
+			message: '#^Method Cacti\\Cache\\ShmopBackend\:\:openForRead\(\) never returns resource so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: lib/cache.php
+
+		-
+			message: '#^Parameter \#1 \$shmop of function shmop_close expects Shmop, resource given\.$#'
+			identifier: argument.type
+			count: 1
+			path: lib/cache.php
+
+		-
+			message: '#^Parameter \#1 \$shmop of function shmop_delete expects Shmop, resource\|Shmop given\.$#'
+			identifier: argument.type
+			count: 1
+			path: lib/cache.php
+
+		-
+			message: '#^Parameter \#1 \$shmop of function shmop_read expects Shmop, resource\|Shmop given\.$#'
+			identifier: argument.type
+			count: 2
+			path: lib/cache.php
+
+		-
+			message: '#^Parameter \#1 \$shmop of function shmop_size expects Shmop, resource\|Shmop given\.$#'
+			identifier: argument.type
+			count: 2
+			path: lib/cache.php
+
+		-
+			message: '#^Property Cacti\\Cache\\SharedCache\:\:\$name \(string\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: lib/cache.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: lib/cache.php
 
 		-
 			message: '#^Argument of an invalid type array\|bool supplied for foreach, only iterables are supported\.$#'
@@ -4693,7 +4753,25 @@ parameters:
 			path: lib/snmp.php
 
 		-
-			message: '#^Parameter \#4 \$timeout of class phpsnmp\\SNMP constructor expects int\<\-1, max\>, int given\.$#'
+			message: '#^Parameter \#3 \$sec_level of function snmp3_get expects ''authNoPriv''\|''authPriv''\|''noAuthNoPriv'', ''''\|''authNoPriv''\|''authPriv''\|''noAuthNoPriv'' given\.$#'
+			identifier: argument.type
+			count: 1
+			path: lib/snmp.php
+
+		-
+			message: '#^Parameter \#4 \$auth_protocol of function snmp3_get expects ''MD5''\|''SHA''\|''SHA256''\|''SHA512'', string given\.$#'
+			identifier: argument.type
+			count: 3
+			path: lib/snmp.php
+
+		-
+			message: '#^Parameter \#4 \$auth_protocol of function snmp3_getnext expects ''MD5''\|''SHA''\|''SHA256''\|''SHA512'', string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: lib/snmp.php
+
+		-
+			message: '#^Parameter \#4 \$timeout of class CactiSnmpNativeSession constructor expects int\<\-1, max\>, int given\.$#'
 			identifier: argument.type
 			count: 1
 			path: lib/snmp.php
@@ -4701,7 +4779,7 @@ parameters:
 		-
 			message: '#^Parameter \#4 \$timeout of function snmp2_get expects int\<\-1, max\>, int given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 3
 			path: lib/snmp.php
 
 		-
@@ -4719,7 +4797,7 @@ parameters:
 		-
 			message: '#^Parameter \#4 \$timeout of function snmpget expects int\<\-1, max\>, int given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 3
 			path: lib/snmp.php
 
 		-
@@ -4731,6 +4809,42 @@ parameters:
 		-
 			message: '#^Parameter \#4 \$timeout of function snmprealwalk expects int\<\-1, max\>, int given\.$#'
 			identifier: argument.type
+			count: 1
+			path: lib/snmp.php
+
+		-
+			message: '#^Parameter \#6 \$priv_protocol of function snmp3_get expects ''AES''\|''AES128''\|''DES'', string given\.$#'
+			identifier: argument.type
+			count: 3
+			path: lib/snmp.php
+
+		-
+			message: '#^Parameter \#6 \$privacy_protocol of function snmp3_getnext expects ''AES''\|''AES128''\|''DES'', string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: lib/snmp.php
+
+		-
+			message: '#^Parameter \#8 \$object_id of function snmp3_get expects non\-empty\-string, string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: lib/snmp.php
+
+		-
+			message: '#^Parameter \#9 \$timeout of function snmp3_get expects int\<\-1, max\>, int given\.$#'
+			identifier: argument.type
+			count: 3
+			path: lib/snmp.php
+
+		-
+			message: '#^Parameter \#9 \$timeout of function snmp3_getnext expects int\<\-1, max\>, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: lib/snmp.php
+
+		-
+			message: '#^Trying to invoke non\-falsy\-string but it might not be a callable\.$#'
+			identifier: callable.nonCallable
 			count: 1
 			path: lib/snmp.php
 

@@ -641,6 +641,24 @@ function automation_snmp_item_edit() : void {
 			'value'         => '|arg1:sequence|'],
 	];
 
+	// drop the legacy MD5/DES SNMPv3 algorithms from the pickers when disabled
+	$fields_automation_snmp_item_edit['snmp_auth_protocol']['array'] = snmp_auth_protocol_options(isset($automation_snmp_item['snmp_auth_protocol']) ? $automation_snmp_item['snmp_auth_protocol'] : '');
+	$fields_automation_snmp_item_edit['snmp_priv_protocol']['array'] = snmp_priv_protocol_options(isset($automation_snmp_item['snmp_priv_protocol']) ? $automation_snmp_item['snmp_priv_protocol'] : '');
+
+	/* For a new Automation SNMP item the auth/priv defaults come from the global
+	 * setting, which on an upgraded install may still be a legacy MD5/DES value just
+	 * removed from the picker above; default a new item to the strongest available
+	 * option when the legacy algorithms are disabled so it is not left on [None]. */
+	if (empty($automation_snmp_item['id']) && !snmp_md5_des_enabled()) {
+		if (!isset($fields_automation_snmp_item_edit['snmp_auth_protocol']['array'][read_config_option('snmp_auth_protocol')])) {
+			$fields_automation_snmp_item_edit['snmp_auth_protocol']['value'] = 'SHA';
+		}
+
+		if (!isset($fields_automation_snmp_item_edit['snmp_priv_protocol']['array'][read_config_option('snmp_priv_protocol')])) {
+			$fields_automation_snmp_item_edit['snmp_priv_protocol']['value'] = 'AES';
+		}
+	}
+
 	draw_edit_form([
 		'config' => ['no_form_tag' => true],
 		'fields' => inject_form_variables($fields_automation_snmp_item_edit, $automation_snmp_item)
