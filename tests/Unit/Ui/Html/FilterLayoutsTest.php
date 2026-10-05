@@ -194,6 +194,13 @@ test('the edit dialog is tagged for theming and the modern theme skins it', func
 	expect($css)->toContain('.ui-dialog.cactiFilterDialog .ui-dialog-buttonpane');
 });
 
+test('removing a user deletes their own layouts but not published ones', function () use ($root) {
+	$src = file_get_contents($root . '/lib/auth.php');
+
+	// Scoped to user_id so published (user_id = 0) layouts are preserved.
+	expect($src)->toContain("DELETE FROM user_layouts WHERE user_id = ?', [\$user_id]");
+});
+
 test('auth invokes the layout handler after authorization', function () use ($root) {
 	$src = file_get_contents($root . '/include/auth.php');
 
