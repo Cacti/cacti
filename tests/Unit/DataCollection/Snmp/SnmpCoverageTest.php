@@ -410,10 +410,6 @@ test('native sessions cover versions and security levels without network I/O', f
 			'snmp_priv_passphrase' => 'privatepass', 'snmp_priv_protocol' => 'AES',
 		]))->toBeObject()
 		->and(cacti_snmp_session_from_host(['hostname' => '127.0.0.1', 'snmp_community' => 'public', 'snmp_version' => 'invalid']))->toBeFalse();
-
-	// A privacy protocol this net-snmp build rejects (DES on AES-only builds) makes
-	// setSecurity() throw, which cacti_snmp_session() catches and returns false.
-	cacti_snmp_session('127.0.0.1', '', '3', 'user', 'secretpass', 'SHA', 'privpass1', 'DES');
 });
 
 test('native and binary get operations cover success and failure results', function () : void {
@@ -686,17 +682,22 @@ test('v3 authNoPriv and authPriv exercise every security-level branch', function
 	// which the native try/catch maps to 'U'.
 	foreach (['cacti_snmp_get', 'cacti_snmp_get_raw', 'cacti_snmp_getnext'] as $fn) {
 		expect($fn($host, '', $oid, 3, 'user', 'secretpass', 'SHA', '', '[None]', port: $port))->toBe('U')
-			->and($fn($host, '', $oid, 3, 'user', 'secretpass', 'SHA', 'privpass1', 'AES', port: $port))->toBe('U')
-			->and($fn($host, '', $oid, 3, 'user', 'secretpass', 'SHA', 'privpass1', 'DES', port: $port))->toBe('U');
+			->and($fn($host, '', $oid, 3, 'user', 'secretpass', 'SHA', 'privpass1', 'AES', port: $port))->toBe('U');
 
 		// hex output forces the Net-SNMP command path through cacti_get_snmpv3_auth
 		putenv('CACTI_SNMP_PROBE_MODE=get');
 		$fn($host, '', $oid, 3, 'user', 'secretpass', 'SHA', '', '[None]', port: $port, value_output_format: SNMP_STRING_OUTPUT_HEX);
 	}
 
-	// native multi-get: authPriv success branch, DES throw branch, sanitize failure
+	// A native getter that throws drives the try/catch of each getter portably,
+	// independent of whether the running net-snmp rejects a given protocol.
+	$boom = function () : never { throw new RuntimeException('native failure'); };
+	expect(cacti_snmp_get_raw($host, 'public', $oid, 1, port: $port, native_get: $boom))->toBe('U')
+		->and(cacti_snmp_getnext($host, 'public', $oid, 1, port: $port, native_get: $boom))->toBe('U')
+		->and(cacti_snmp_get_multi($host, 'public', [$oid], 1, port: $port, native_get: $boom))->toBe([$oid => 'U']);
+
+	// native multi-get: authPriv success branch + sanitize failure
 	expect(cacti_snmp_get_multi($host, '', [$oid], 3, 'user', 'secretpass', 'SHA', 'privpass1', 'AES', port: $port))->toHaveCount(1)
-		->and(cacti_snmp_get_multi($host, '', [$oid], 3, 'user', 'secretpass', 'SHA', 'privpass1', 'DES', port: $port))->toHaveCount(1)
 		->and(cacti_snmp_get_multi($host, '', [$oid], 0, port: $port))->toBe([]);
 
 	// result association without depending on MIB availability: numeric output makes

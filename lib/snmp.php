@@ -284,9 +284,13 @@ function cacti_snmp_session(string $hostname, mixed $community, mixed $version, 
 
 	try {
 		$session->setSecurity($sec_level, $auth_proto, $auth_pass, $priv_proto, $priv_pass, $context, $engineid);
+		// @codeCoverageIgnoreStart
+		// setSecurity only throws for a protocol this net-snmp build rejects
+		// (e.g. DES on AES-only builds), which is not portably reproducible here.
 	} catch (Throwable) {
 		return false;
 	}
+	// @codeCoverageIgnoreEnd
 
 	return $session;
 }
@@ -404,7 +408,7 @@ function cacti_snmp_get(string $hostname, mixed $community, string $oid, mixed $
 function cacti_snmp_get_raw(string $hostname, mixed $community, string $oid, mixed $version, mixed $auth_user = '', string $auth_pass = '',
 	mixed $auth_proto = '', mixed $priv_pass = '', mixed $priv_proto = '', mixed $context = '',
 	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $environ = SNMP_POLLER,
-	string $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : string {
+	string $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS, ?callable $native_get = null) : string {
 	global $snmp_error;
 
 	$max_oids   = 1;
@@ -428,7 +432,9 @@ function cacti_snmp_get_raw(string $hostname, mixed $community, string $oid, mix
 		}
 
 		try {
-			if ($version == '1') {
+			if ($native_get !== null) {
+				$snmp_value = $native_get();
+			} elseif ($version == '1') {
 				$snmp_value = @snmpget(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
 			} elseif ($version == '2') {
 				$snmp_value = @snmp2_get(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
@@ -505,7 +511,7 @@ function cacti_snmp_get_raw(string $hostname, mixed $community, string $oid, mix
 function cacti_snmp_getnext(string $hostname, mixed $community, mixed $oid, mixed $version, mixed $auth_user = '', mixed $auth_pass = '',
 	mixed $auth_proto = '', mixed $priv_pass = '', mixed $priv_proto = '', mixed $context = '',
 	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $environ = 'SNMP',
-	string $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : string {
+	string $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS, ?callable $native_get = null) : string {
 	global $snmp_error;
 
 	$max_oids   = 1;
@@ -524,7 +530,9 @@ function cacti_snmp_getnext(string $hostname, mixed $community, mixed $oid, mixe
 		$timeout_us = (int) ($timeout_ms * 1000);
 
 		try {
-			if ($version == '1') {
+			if ($native_get !== null) {
+				$snmp_value = $native_get();
+			} elseif ($version == '1') {
 				$snmp_value = @snmpgetnext(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
 			} elseif ($version == '2') {
 				$snmp_value = @snmp2_getnext(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
@@ -1953,7 +1961,7 @@ function snmp_auth_cache_cred_lookup($community, $username, $password, $auth_pro
 function cacti_snmp_get_multi($hostname, $community, $oids, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
 	$port = 161, $timeout_ms = 500, $retries = 0, $max_oids = 10, $environ = 'SNMP',
-	$engineid = '', $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
+	$engineid = '', $value_output_format = SNMP_STRING_OUTPUT_GUESS, ?callable $native_get = null) {
 	global $snmp_error;
 
 	$snmp_error = '';
@@ -2013,7 +2021,9 @@ function cacti_snmp_get_multi($hostname, $community, $oids, $version, $auth_user
 
 	foreach (array_chunk($oids, max(1, (int) $max_oids)) as $chunk) {
 		try {
-			if ($version == '1') {
+			if ($native_get !== null) {
+				$values = $native_get();
+			} elseif ($version == '1') {
 				$values = @snmpget($agent, $community, $chunk, $timeout_us, $retries);
 			} elseif ($version == '2') {
 				$values = @snmp2_get($agent, $community, $chunk, $timeout_us, $retries);
