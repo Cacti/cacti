@@ -1391,15 +1391,19 @@ function utilities_mysql_version_introduced(string $version, array|string $intro
  * utilities_mysql_variable_status - determine the support status of a single
  * capability-matrix variable for a specific database engine and version.
  *
- * @param array  $cap      a single entry from utilities_mysql_variable_capabilities()
- * @param string $database the detected engine, either 'MariaDB' or 'MySQL'
- * @param string $version  the detected engine version string
+ * @param array       $cap      a single entry from utilities_mysql_variable_capabilities()
+ * @param string      $database the detected engine, either 'MariaDB' or 'MySQL'
+ * @param string|null $version  the detected engine version string, or null/empty when unknown
  *
  * @return string one of 'ok', 'deprecated', 'removed' or 'na'
  */
-function utilities_mysql_variable_status(array $cap, string $database, string $version) : string {
+function utilities_mysql_variable_status(array $cap, string $database, ?string $version) : string {
 	if (!isset($cap[$database]) || !is_array($cap[$database])) {
 		return 'na';
+	}
+
+	if ($version === null || $version === '') {
+		return 'ok';
 	}
 
 	$version = utilities_mysql_normalize_version($version);

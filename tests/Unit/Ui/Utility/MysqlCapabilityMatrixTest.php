@@ -120,3 +120,11 @@ test('version strings with non-numeric suffixes are normalized before comparison
 	expect(utilities_mysql_variable_status($fn, 'MySQL', '8.0.19-log'))->toBe('ok')
 		->and(utilities_mysql_variable_status($fn, 'MySQL', '8.0.20-log'))->toBe('deprecated');
 });
+
+test('an unknown (null or empty) version is treated as supported', function () {
+	$caps = utilities_mysql_variable_capabilities();
+	$cap  = $caps['innodb_file_format'];
+
+	expect(utilities_mysql_variable_status($cap, 'MariaDB', null))->toBe('ok')
+		->and(utilities_mysql_variable_status($cap, 'MySQL', ''))->toBe('ok');
+});
