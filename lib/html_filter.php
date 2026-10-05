@@ -721,8 +721,6 @@ class CactiTableFilter {
 		$layouts  = filter_layouts_get_available($page);
 		$can_glob = filter_layouts_can_manage_global();
 
-		$selected = isset_request_var('filter_layout') ? (int) get_nfilter_request_var('filter_layout') : 0;
-
 		// Split the configured fields: time controls, the refresh selector, and
 		// page action buttons (Import, Export, Purge, Save, sort, ...) stay on the
 		// bar; the filter inputs move into the Edit dialog. go/clear are replaced
@@ -756,7 +754,7 @@ class CactiTableFilter {
 		print "<div class='filterRow'>";
 
 		print "<div class='filterColumn'><div class='filterFieldName'>" . __('Layouts') . '</div></div>';
-		print "<div class='filterColumn'>" . $this->layout_select($layouts, $selected, $can_glob) . '</div>';
+		print "<div class='filterColumn'>" . $this->layout_select($layouts, $can_glob) . '</div>';
 
 		foreach ($bar_fields as $field_name => $field_array) {
 			print $this->emit_field($field_name, $field_array);
@@ -832,12 +830,13 @@ class CactiTableFilter {
 	 * with the row (own/global, editable).
 	 *
 	 * @param array<int, array<string,mixed>> $layouts  Available layout rows.
-	 * @param int                             $selected Currently selected id.
 	 * @param bool                            $can_glob Whether global layouts are manageable.
 	 *
 	 * @return string
 	 */
-	private function layout_select(array $layouts, int $selected, bool $can_glob) : string {
+	private function layout_select(array $layouts, bool $can_glob) : string {
+		$selected = isset_request_var('filter_layout') ? (int) get_nfilter_request_var('filter_layout') : 0;
+
 		ob_start();
 
 		print "<select id='filter_layout' class='ui-state-default ui-corner-all'>";
@@ -1226,12 +1225,6 @@ class CactiTableFilter {
 		$layouts  = filter_layouts_get_available($page);
 		$can_glob = filter_layouts_can_manage_global();
 
-		$selected = 0;
-
-		if (isset_request_var('filter_layout')) {
-			$selected = (int) get_nfilter_request_var('filter_layout');
-		}
-
 		ob_start();
 
 		print "<div class='filterTable even cactiFilterLayouts'>";
@@ -1240,7 +1233,7 @@ class CactiTableFilter {
 		print "<div class='filterColumn'><div class='filterFieldName'>" . __('Layouts') . '</div></div>';
 
 		print "<div class='filterColumn'>";
-		print $this->layout_select($layouts, $selected, $can_glob);
+		print $this->layout_select($layouts, $can_glob);
 		print '</div>';
 
 		print $this->layout_button('layout_save',   __('Save'),   __('Overwrite the selected layout with the current filter'));
