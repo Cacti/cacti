@@ -43,6 +43,7 @@ parameters:
         - identifier: if.alwaysTrue
         - identifier: while.alwaysTrue
         - identifier: greater.alwaysFalse
+        - identifier: greaterOrEqual.alwaysFalse
         - identifier: identical.alwaysTrue
         - identifier: identical.alwaysFalse
         - identifier: booleanAnd.leftAlwaysTrue

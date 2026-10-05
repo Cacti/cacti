@@ -111,8 +111,8 @@ $banned_snmp_strings = ['End of MIB', 'No Such', 'No more'];
    so subclass it to carry them. Only declarable when ext-snmp is loaded. */
 if (CACTI_PHP_SNMP) {
 	class CactiSnmpNativeSession extends \SNMP {
-		public $bulk_walk_size;
-		public $value_output_format;
+		public ?int $bulk_walk_size     = null;
+		public int $value_output_format = SNMP_STRING_OUTPUT_GUESS;
 	}
 }
 
@@ -125,14 +125,14 @@ if (CACTI_PHP_SNMP) {
  * running PHP can service the device's auth/privacy protocols natively.
  */
 class CactiSnmpBinarySession {
-	public $info;
-	public $bulk_walk_size;
-	public $value_output_format = SNMP_STRING_OUTPUT_GUESS;
+	public array $info              = [];
+	public int $bulk_walk_size      = 10;
+	public int $value_output_format = SNMP_STRING_OUTPUT_GUESS;
 
-	private $errno = 0;
-	private $params;
+	private int $errno              = 0;
+	private array $params           = [];
 
-	public function __construct(array $params, $bulk_walk_size) {
+	public function __construct(array $params, int $bulk_walk_size) {
 		$this->params         = $params;
 		$this->bulk_walk_size = (int) $bulk_walk_size;
 		$this->info           = [
@@ -141,7 +141,7 @@ class CactiSnmpBinarySession {
 		];
 	}
 
-	private function uniget($command, $oid) {
+	private function uniget(string $command, mixed $oid): mixed {
 		$p        = $this->params;
 		$function = 'cacti_snmp_' . $command;
 		$is_array = is_array($oid);
@@ -162,15 +162,15 @@ class CactiSnmpBinarySession {
 		return $output;
 	}
 
-	public function get($oid) {
+	public function get(mixed $oid): mixed {
 		return $this->uniget('get', $oid);
 	}
 
-	public function getnext($oid) {
+	public function getnext(mixed $oid): mixed {
 		return $this->uniget('getnext', $oid);
 	}
 
-	public function walk($oid, $dummy = false, $max_repetitions = 10, $non_repeaters = 0) {
+	public function walk(mixed $oid, bool $dummy = false, int $max_repetitions = 10, int $non_repeaters = 0): array|false {
 		if (is_array($oid)) {
 			return false;
 		}
@@ -192,15 +192,15 @@ class CactiSnmpBinarySession {
 		return $output;
 	}
 
-	public function close() {
+	public function close(): bool {
 		return true;
 	}
 
-	public function getErrno() {
+	public function getErrno(): int {
 		return $this->errno;
 	}
 
-	public function getError() {
+	public function getError(): string {
 		return '';
 	}
 }
@@ -1985,7 +1985,7 @@ function cacti_snmp_get_multi($hostname, $community, $oids, $version, $auth_user
 		return $results;
 	}
 
-	snmp_set_quick_print(0);
+	snmp_set_quick_print(false);
 
 	if (function_exists('snmp_set_enum_print')) {
 		snmp_set_enum_print(true);

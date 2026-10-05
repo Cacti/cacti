@@ -58,7 +58,7 @@ class MibCache {
 		$mp->add_mib($path, $mib_name);
 		$mp->generate();
 
-		if (isset($mp->mib) && isset($mp->oids) && $mp->mib) {
+		if (isset($mp->mib) && $mp->mib) {
 			// check if this mib has already been installed
 			$existing = db_fetch_cell_prepared('SELECT 1 FROM snmpagent_mibs WHERE `name` = ?', [$mp->mib]);
 

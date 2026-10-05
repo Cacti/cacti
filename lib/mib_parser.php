@@ -49,9 +49,9 @@
    *
 */
 class MibParser extends MibCache {
-	protected $parsed = [];
-	public $oids      = [];
-	public $mib       = false;
+	protected array $parsed = [];
+	public array $oids      = [];
+	public mixed $mib       = false;
 
 	/**
 	 * Constructor
@@ -62,8 +62,14 @@ class MibParser extends MibCache {
 		error_reporting(E_ALL);
 	}
 
-	function add_mib($filename, $mib_name) {
-		MibParser::parse_mib(file_get_contents($filename), $mib_name, true);
+	function add_mib(string $filename, string $mib_name): void {
+		$mibtext = file_get_contents($filename);
+
+		if ($mibtext === false) {
+			return;
+		}
+
+		MibParser::parse_mib($mibtext, $mib_name, true);
 	}
 
 	/**
@@ -86,7 +92,7 @@ class MibParser extends MibCache {
 
 					if ($token != '') {
 						// strip whitespaces from the end of the beginning of every object description row
-						$lines = preg_split('/\r\n|\r|\n/', $token);
+						$lines = preg_split('/\r\n|\r|\n/', $token) ?: [];
 						$token = '';
 
 						foreach ($lines as $line) {
@@ -207,8 +213,6 @@ class MibParser extends MibCache {
 		}
 
 		trigger_error("unknown token {$tokens[$index]} {$tokens[$index]}", E_USER_ERROR);
-
-		return $tokens[$index];
 	}
 
 	/**
@@ -308,8 +312,8 @@ class MibParser extends MibCache {
 	 *
 	 * @param  array   $tokens
 	 * @param  integer $index
-	 * @param  integer $start
-	 * @param  integer $end
+	 * @param  string  $start
+	 * @param  string  $end
 	 * @return array
 	 */
 	function parse_bracket_token($tokens, &$index, $start, $end) {
@@ -334,7 +338,7 @@ class MibParser extends MibCache {
 	 * @param boolean $full
 	 * @param mixed   $mib_name
 	 */
-	function parse_mib($mibtext, $mib_name, $full = false) {
+	function parse_mib($mibtext, $mib_name, $full = false): void {
 		$tokens = MibParser::get_tokens($mibtext);
 		$cnt    = count($tokens);
 		$rec    = [];
@@ -420,7 +424,7 @@ class MibParser extends MibCache {
 		}
 	}
 
-	function generate() {
+	function generate(): void {
 		$this->oids['enterprises'] = ['oid' => '.1.3.6.1.4.1'];
 
 		foreach ($this->parsed as $object) {
