@@ -10239,6 +10239,12 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr "Theo mặc định, Trình thu thập dữ liệu Cacti chính sẽ lưu trữ toàn bộ trang web và bổ sung vào Bộ đệm tài nguyên. Sau đó, định kỳ Trình thu thập dữ liệu từ xa sẽ cập nhật các chủ đề với bất kỳ cập nhật nào từ Trình thu thập dữ liệu Cacti chính. Resource Cache này về cơ bản cho phép Trình thu thập dữ liệu từ xa tự nâng cấp. Nếu bạn không muốn sử dụng tùy chọn này, bạn có thể tắt nó bằng cài đặt này."
 
 #: include/global_settings.php
+#, fuzzy
+#| msgid "SNMP error"
+msgid "SNMP Behavior"
+msgstr "Lỗi SNMP"
+
+#: include/global_settings.php
 msgid "Additional Data Collector Settings"
 msgstr "Trạng thái thu thập dữ liệu từ xa:"
 
