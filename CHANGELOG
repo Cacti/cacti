@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-feature#8189: Add a MySQL/MariaDB variable capability matrix to the Database section and stop recommending variables deprecated or removed on the detected server
 -security#GHSA-fq9x-x3vf-3vf2: Substitute data-input field tokens in a single pass so a composed value cannot re-inject an escaped payload into the script command line
 -security#GHSA-54hx-hxc4-jq7j: Numeric-cast the graph-item value for TICK fraction and SHIFT statements before the RRDtool command line
 -security#GHSA-hh7r-464j-rf39: Neutralize CSV formula injection and sanitize the Content-Disposition filename in the graph data export
