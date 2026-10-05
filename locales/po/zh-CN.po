@@ -10241,6 +10241,12 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr "默认情况下，主仙人掌数据收集器会将整个网站和插件缓存到资源缓存中。然后，远程数据收集器会定期使用主仙人掌数据收集器的任何更新来更新主题。该资源缓存实质上允许远程数据收集器进行自我升级。如果您不想使用此选项，则可以使用此设置禁用它。"
 
 #: include/global_settings.php
+#, fuzzy
+#| msgid "SNMP error"
+msgid "SNMP Behavior"
+msgstr "SNMP 出错"
+
+#: include/global_settings.php
 msgid "Additional Data Collector Settings"
 msgstr "远程数据采集器状态"
 
