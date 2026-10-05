@@ -1,0 +1,65 @@
+/* Keep complete graph panels visible when printing or saving as PDF. */
+@media print {
+	html, body, #cactiContent, #navigation_right, #main {
+		height: auto !important;
+		max-height: none !important;
+		overflow: visible !important;
+	}
+	html, body {
+		background: white !important;
+		color: #111 !important;
+		width: auto !important;
+	}
+	body {
+		opacity: 1 !important;
+		animation: none !important;
+	}
+	#cactiContent, #navigation_right {
+		display: block !important;
+		width: 100% !important;
+		margin: 0 !important;
+	}
+	#cactiPageHead, #breadCrumbBar, #navigation, .cactiShadow,
+	#cactiPageBottom, .noprint {
+		display: none !important;
+	}
+	.graphWrapperOuter, .graphWrapper {
+		width: 100% !important;
+		max-width: 100% !important;
+	}
+	.graphimage {
+		max-width: 100% !important;
+		height: auto !important;
+		/* Transparent images from dark themes need a contrasting backdrop. */
+		background-color: #161616 !important;
+		print-color-adjust: exact;
+		-webkit-print-color-adjust: exact;
+	}
+	.tableRowGraph {
+		break-inside: avoid;
+		page-break-inside: avoid;
+	}
+	#main .textHeaderDark {
+		color: #111 !important;
+		background: none !important;
+		font-size: 15pt !important;
+		line-height: 1.35 !important;
+		font-weight: 600 !important;
+		text-align: center !important;
+		padding: 0 0 4mm !important;
+		border-bottom: 1pt solid #777 !important;
+	}
+	#main .tableHeader {
+		background: none !important;
+	}
+	.tableRowGraph > td {
+		padding: 4mm 0 !important;
+	}
+	.graphWrapperOuter .center > span {
+		display: block;
+		font-size: 10pt !important;
+		font-weight: 600;
+		color: #222 !important;
+		padding-top: 2mm;
+	}
+}
