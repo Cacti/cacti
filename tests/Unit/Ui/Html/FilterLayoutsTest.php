@@ -27,17 +27,51 @@ test('filter_layouts_page_key reduces a url to its page basename', function () {
 	expect(filter_layouts_page_key('/var/www/host.php?a=b'))->toBe('host.php');
 });
 
-test('filter_layouts_valid_url accepts only same-site page references', function () {
-	expect(filter_layouts_valid_url('host.php'))->toBeTrue();
-	expect(filter_layouts_valid_url('host.php?filter=a&rows=30'))->toBeTrue();
-	expect(filter_layouts_valid_url('graph_view.php?action=tree'))->toBeTrue();
+test('filter_layouts_valid_page accepts only bare same-site page basenames', function () {
+	expect(filter_layouts_valid_page('host.php'))->toBeTrue();
+	expect(filter_layouts_valid_page('graph_view.php'))->toBeTrue();
 
-	// No scheme, host, traversal, or markup injection may be stored/navigated.
-	expect(filter_layouts_valid_url('http://evil.example/host.php'))->toBeFalse();
-	expect(filter_layouts_valid_url('javascript:alert(1)'))->toBeFalse();
-	expect(filter_layouts_valid_url('../host.php'))->toBeFalse();
-	expect(filter_layouts_valid_url('host.php?x="><script>alert(1)</script>'))->toBeFalse();
-	expect(filter_layouts_valid_url(''))->toBeFalse();
+	// No query, scheme, host, traversal, or markup may name a page.
+	expect(filter_layouts_valid_page('host.php?filter=a'))->toBeFalse();
+	expect(filter_layouts_valid_page('http://evil.example/host.php'))->toBeFalse();
+	expect(filter_layouts_valid_page('../host.php'))->toBeFalse();
+	expect(filter_layouts_valid_page(''))->toBeFalse();
+});
+
+test('filter_layouts_build_document normalizes a filter url into a stored document', function () {
+	$document = filter_layouts_build_document('host.php?rfilter=down&rows=30&filter_layout=5');
+
+	expect($document)->toBeArray();
+	expect($document['version'])->toBe(1);
+	expect($document['page'])->toBe('host.php');
+	// The re-selection marker is never persisted.
+	expect($document['filter'])->toBe(['rfilter' => 'down', 'rows' => '30']);
+
+	// Scheme, host, traversal, or markup payloads cannot name a page.
+	expect(filter_layouts_build_document('http://evil.example/host.php'))->toBeFalse();
+	expect(filter_layouts_build_document('javascript:alert(1)'))->toBeFalse();
+	expect(filter_layouts_build_document('../host.php?x=1'))->toBeFalse();
+});
+
+test('filter_layouts_document_url round-trips a document back to a safe url', function () {
+	$document = filter_layouts_build_document('host.php?rfilter=down&rows=30');
+
+	expect(filter_layouts_document_url($document))->toBe('host.php?rfilter=down&rows=30');
+	expect(filter_layouts_document_url(['version' => 1, 'page' => 'host.php', 'filter' => []]))->toBe('host.php');
+
+	// A document that does not name a safe page yields no navigable url.
+	expect(filter_layouts_document_url(['version' => 1, 'page' => '../evil.php', 'filter' => []]))->toBe('');
+});
+
+test('filter_layouts_decode rejects anything but a bounded version 1 document', function () {
+	expect(filter_layouts_decode('{"version":1,"page":"host.php","filter":{"rows":"30"}}'))->toBeArray();
+
+	expect(filter_layouts_decode(''))->toBeFalse();
+	expect(filter_layouts_decode('not json'))->toBeFalse();
+	expect(filter_layouts_decode('{"version":2,"page":"host.php"}'))->toBeFalse();
+	expect(filter_layouts_decode('{"version":1,"page":"../evil.php"}'))->toBeFalse();
+	expect(filter_layouts_decode('{"version":1,"page":"host.php","filter":"x"}'))->toBeFalse();
+	expect(filter_layouts_decode('{"version":1,"page":"host.php","filter":{}}' . str_repeat(' ', 8192)))->toBeFalse();
 });
 
 test('preset pages disable layouts by default', function () {
@@ -98,8 +132,9 @@ test('user_layouts is defined consistently across the schema files', function ()
 	expect($sql)->toContain('CREATE TABLE `user_layouts`');
 	expect($upg)->toContain('CREATE TABLE IF NOT EXISTS user_layouts');
 	expect($audit)->toContain("('user_layouts',1,'id'");
+	expect($audit)->toContain("('user_layouts',5,'data','text'");
 
-	foreach (['user_id', 'page', 'name', 'url'] as $column) {
+	foreach (['user_id', 'page', 'name', 'data'] as $column) {
 		expect($sql)->toContain("`$column`");
 	}
 });

@@ -92,10 +92,13 @@ function layouts_manage() : void {
 
 			form_alternate_row('line' . $layout['id'], true);
 
+			$document = filter_layouts_decode($layout['data']);
+			$summary  = $document !== false ? filter_layouts_document_url($document) : '';
+
 			form_selectable_cell(filter_value($layout['name'], ''), $layout['id']);
 			form_selectable_cell(html_escape($layout['page']), $layout['id']);
 			form_selectable_cell($owner, $layout['id']);
-			form_selectable_cell(html_escape($layout['url']), $layout['id']);
+			form_selectable_cell(html_escape($summary), $layout['id']);
 
 			$actions = "<a class='pic layoutAction' href='#' data-action='layout_delete' data-id='" . $layout['id'] . "' title='" . __esc('Delete') . "'><i class='fa fa-times deviceDown'></i></a>";
 

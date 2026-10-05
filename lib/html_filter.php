@@ -1020,7 +1020,18 @@ class CactiTableFilter {
 
 		if (cacti_sizeof($layouts)) {
 			foreach ($layouts as $layout) {
-				$url   = $layout['url'];
+				$document = filter_layouts_decode($layout['data']);
+
+				if ($document === false) {
+					continue;
+				}
+
+				$url = filter_layouts_document_url($document);
+
+				if ($url === '') {
+					continue;
+				}
+
 				$sep   = (strpos($url, '?') !== false) ? '&' : '?';
 				$nav   = $url . $sep . 'filter_layout=' . $layout['id'];
 				$label = $layout['name'] . ($layout['user_id'] == 0 ? ' (' . __('Global') . ')' : '');
@@ -1157,15 +1168,124 @@ function filter_layouts_can_manage_global() : bool {
 }
 
 /**
- * Whether a stored layout url is a safe, same-site page reference (no scheme,
- * host, or path traversal) before it is echoed back or navigated to.
+ * Whether a bare page basename is a safe, same-site page reference (no scheme,
+ * host, query, or path traversal) before a layout url is rebuilt from it.
  *
- * @param string $url Candidate layout url.
+ * @param string $page Candidate page basename.
  *
  * @return bool
  */
-function filter_layouts_valid_url(string $url) : bool {
-	return preg_match('/^[a-z0-9_]+\.php(\?[^\'"<>]*)?$/i', trim($url)) === 1;
+function filter_layouts_valid_page(string $page) : bool {
+	return preg_match('/^[a-z0-9_]+\.php$/i', trim($page)) === 1;
+}
+
+/**
+ * Parse a 'page.php?query' filter url into a versioned layout document. Only the
+ * page basename and flat scalar (or scalar-list) request vars are kept; the
+ * navigable url is rebuilt server side from this document, so no raw url is ever
+ * stored or trusted. The filter_layout re-selection marker is never persisted.
+ *
+ * @param string $url Full 'page.php?query' filter url.
+ *
+ * @return array{version:int,page:string,filter:array<string,mixed>}|false
+ */
+function filter_layouts_build_document(string $url) {
+	$url  = trim($url);
+	$qpos = strpos($url, '?');
+	$page = $qpos !== false ? substr($url, 0, $qpos) : $url;
+
+	// The path must already be a bare same-site page; a scheme, host, or
+	// traversal is rejected outright rather than normalized away.
+	if (!filter_layouts_valid_page($page)) {
+		return false;
+	}
+
+	$filter = [];
+
+	if ($qpos !== false) {
+		parse_str(substr($url, $qpos + 1), $parsed);
+
+		foreach ($parsed as $key => $value) {
+			if ($key === 'filter_layout' || !is_string($key) || preg_match('/^[a-zA-Z0-9_]+$/', $key) !== 1) {
+				continue;
+			}
+
+			if (is_array($value)) {
+				$flat = [];
+
+				foreach ($value as $sub_key => $sub_value) {
+					if (is_scalar($sub_value)) {
+						$flat[$sub_key] = (string) $sub_value;
+					}
+				}
+
+				$filter[$key] = $flat;
+			} elseif (is_scalar($value)) {
+				$filter[$key] = (string) $value;
+			}
+		}
+	}
+
+	if (cacti_sizeof($filter) > 128) {
+		return false;
+	}
+
+	return [
+		'version' => 1,
+		'page'    => $page,
+		'filter'  => $filter,
+	];
+}
+
+/**
+ * Rebuild the navigable 'page.php?query' url for a layout document.
+ *
+ * @param array<string,mixed> $document A decoded layout document.
+ *
+ * @return string The rebuilt url, or '' when the document is invalid.
+ */
+function filter_layouts_document_url(array $document) : string {
+	$page = (isset($document['page']) && is_string($document['page'])) ? $document['page'] : '';
+
+	if (!filter_layouts_valid_page($page)) {
+		return '';
+	}
+
+	$filter = (isset($document['filter']) && is_array($document['filter'])) ? $document['filter'] : [];
+	$query  = http_build_query($filter);
+
+	return $query !== '' ? $page . '?' . $query : $page;
+}
+
+/**
+ * Decode and validate a stored layout document. Rejects anything that is not a
+ * version 1 document naming a safe same-site page, bounding the byte size the
+ * same way the plugin query builder bounds its own filter documents.
+ *
+ * @param mixed $json The stored data column.
+ *
+ * @return array<string,mixed>|false The decoded document, or false when invalid.
+ */
+function filter_layouts_decode($json) {
+	if (!is_string($json) || $json === '' || strlen($json) > 8192) {
+		return false;
+	}
+
+	$document = json_decode($json, true);
+
+	if (!is_array($document) || ($document['version'] ?? null) !== 1) {
+		return false;
+	}
+
+	if (!isset($document['page']) || !is_string($document['page']) || !filter_layouts_valid_page($document['page'])) {
+		return false;
+	}
+
+	if (isset($document['filter']) && !is_array($document['filter'])) {
+		return false;
+	}
+
+	return $document;
 }
 
 /**
@@ -1204,7 +1324,7 @@ function filter_layouts_get_available(string $page, int $user_id = -1) : array {
 
 	$page = filter_layouts_page_key($page);
 
-	return db_fetch_assoc_prepared('SELECT id, user_id, page, name, url
+	return db_fetch_assoc_prepared('SELECT id, user_id, page, name, data
 		FROM user_layouts
 		WHERE page = ?
 		AND (user_id = ? OR user_id = 0)
@@ -1236,7 +1356,8 @@ function filter_layouts_user_can_edit($layout) : bool {
 
 /**
  * Create or update a layout. New layouts are owned by the current user; updates
- * are permitted only where filter_layouts_user_can_edit() allows.
+ * are permitted only where filter_layouts_user_can_edit() allows. The posted
+ * url is normalized into a stored JSON document rather than persisted verbatim.
  *
  * @param string $name Layout name.
  * @param string $url  Full 'page.php?query' filter url.
@@ -1247,15 +1368,16 @@ function filter_layouts_user_can_edit($layout) : bool {
 function filter_layouts_save(string $name, string $url, int $id = 0) {
 	$user_id = isset($_SESSION['sess_user_id']) ? (int) $_SESSION['sess_user_id'] : 0;
 	$name    = trim($name);
-	$url     = trim($url);
 
-	if (!filter_layouts_valid_url($url)) {
+	$document = filter_layouts_build_document($url);
+
+	if ($document === false) {
 		return false;
 	}
 
-	$page = filter_layouts_page_key($url);
+	$json = json_encode($document);
 
-	if ($page == '') {
+	if ($json === false || strlen($json) > 8192) {
 		return false;
 	}
 
@@ -1282,9 +1404,9 @@ function filter_layouts_save(string $name, string $url, int $id = 0) {
 		$save['user_id'] = $user_id;
 	}
 
-	$save['page'] = $page;
+	$save['page'] = $document['page'];
 	$save['name'] = substr($name, 0, 128);
-	$save['url']  = substr($url, 0, 1024);
+	$save['data'] = $json;
 
 	$saved_id = sql_save($save, 'user_layouts');
 
@@ -1433,13 +1555,15 @@ function filter_layouts_handle_request() : void {
 			if ($row === false) {
 				$result = ['ok' => false];
 			} else {
-				$sep = (strpos($row['url'], '?') !== false) ? '&' : '?';
+				$document = filter_layouts_decode($row['data']);
+				$nav      = $document !== false ? filter_layouts_document_url($document) : '';
+				$sep      = (strpos($nav, '?') !== false) ? '&' : '?';
 
 				$result = [
 					'ok'   => true,
 					'id'   => (int) $row['id'],
 					'name' => $row['name'],
-					'url'  => $row['url'] . $sep . 'filter_layout=' . $row['id'],
+					'url'  => $nav . $sep . 'filter_layout=' . $row['id'],
 				];
 			}
 

@@ -1295,7 +1295,7 @@ INSERT INTO `table_columns` VALUES ('user_layouts',1,'id','int(10) unsigned','NO
 INSERT INTO `table_columns` VALUES ('user_layouts',2,'user_id','int(10) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('user_layouts',3,'page','varchar(64)','NO','MUL','','');
 INSERT INTO `table_columns` VALUES ('user_layouts',4,'name','varchar(128)','NO','','','');
-INSERT INTO `table_columns` VALUES ('user_layouts',5,'url','varchar(1024)','NO','','','');
+INSERT INTO `table_columns` VALUES ('user_layouts',5,'data','text','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('user_log',1,'username','varchar(50)','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('user_log',2,'user_id','mediumint(8)','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('user_log',3,'time','timestamp','NO','PRI','0000-00-00 00:00:00','');
