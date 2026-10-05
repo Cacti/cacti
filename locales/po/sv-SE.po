@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-09-12 08:18+0000\n"
+"PO-Revision-Date: 2026-10-05 14:18+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -125,7 +125,7 @@ msgstr ""
 #: tree.php:1608 tree.php:1761 tree.php:1821 tree.php:1842 user_admin.php:28
 #: user_domains.php:30 user_group_admin.php:30 vdef.php:29 vdef.php:618
 msgid "Delete"
-msgstr "Ta bort"
+msgstr "Radera"
 
 #: aggregate_graphs.php:43
 msgid "Convert to Normal Graph"
@@ -555,7 +555,7 @@ msgstr "Del av aggregat"
 #: user_admin.php:2821 user_admin.php:2920 user_admin.php:3019
 #: user_admin.php:3118
 msgid "Go"
-msgstr "Utför"
+msgstr "Start"
 
 #: aggregate_graphs.php:1720 aggregate_graphs.php:2042
 #: automation_devices.php:606 automation_snmp.php:908
@@ -575,7 +575,7 @@ msgstr "Utför"
 #: utilities.php:340 utilities.php:685 utilities.php:1006 utilities.php:1969
 #: utilities.php:2245
 msgid "Set/Refresh Filters"
-msgstr "Ange / Uppdatera filter"
+msgstr "Ställ in/uppdatera filter"
 
 #: aggregate_graphs.php:1721 aggregate_graphs.php:2043
 #: aggregate_templates.php:634 automation_devices.php:607
@@ -761,7 +761,7 @@ msgstr "Vilken som helst"
 #: templates_import.php:361 user_admin.php:2553 user_admin.php:2778
 #: user_group_admin.php:2237 user_group_admin.php:2363 utilities.php:977
 msgid "None"
-msgstr "inget"
+msgstr "Ingen"
 
 #: aggregate_graphs.php:2112
 msgid "The title for the Aggregate Graphs"
@@ -1494,7 +1494,7 @@ msgstr "Rensning av upptäckta enheter"
 #: utilities.php:1710 utilities.php:1721 utilities.php:1744 utilities.php:1790
 #: utilities.php:2034
 msgid "N/A"
-msgstr "N/A"
+msgstr "Ej tillämpligt"
 
 #: automation_graph_rules.php:30 automation_networks.php:34
 #: automation_snmp.php:31 automation_tree_rules.php:30 cdef.php:30
@@ -1971,7 +1971,7 @@ msgstr "Förändra nätverk"
 #: automation_networks.php:733 automation_networks.php:1216 data_input.php:512
 #: include/global_arrays.php:518
 msgid "SNMP Get"
-msgstr "SNMP Get"
+msgstr "SNMP-hämtning"
 
 #: automation_networks.php:739 include/global_form.php:2026
 #: include/global_form.php:2129 include/global_settings.php:53
@@ -2564,7 +2564,7 @@ msgstr "Diskussioner"
 
 #: automation_networks.php:1391
 msgid "Last Runtime"
-msgstr "Senaste Runtime"
+msgstr "Senaste körtid"
 
 #: automation_networks.php:1396
 msgid "Next Start"
@@ -2876,7 +2876,7 @@ msgstr "Artikel # %d"
 
 #: automation_snmp.php:743
 msgid "none"
-msgstr "inget"
+msgstr "Ingen"
 
 #: automation_snmp.php:758 automation_templates.php:1043
 #: automation_templates.php:1157 automation_templates.php:1498 cdef.php:612
@@ -3895,7 +3895,7 @@ msgstr "Användaren som begärde debuggen."
 
 #: data_debug.php:462
 msgid "Started"
-msgstr "Startat"
+msgstr "Startad"
 
 #: data_debug.php:465
 msgid "The Date that the Debug was Started."
@@ -4807,7 +4807,7 @@ msgstr "%d Dag"
 #: include/global_settings.php:1974 include/global_settings.php:1975
 #, php-format
 msgid "%d Days"
-msgstr "%d Dagar"
+msgstr "%d dygn"
 
 #: data_source_profiles.php:859 include/global_arrays.php:745
 #: include/global_arrays.php:1666 include/global_arrays.php:1687
@@ -6518,7 +6518,7 @@ msgstr "Ändra enhetens inställningar"
 
 #: host.php:45 pollers.php:35
 msgid "Clear Statistics"
-msgstr "Tydlig statistik"
+msgstr "Rensa statistik"
 
 #: host.php:47
 msgid "Sync to Device Template"
@@ -6776,7 +6776,7 @@ msgstr "Data Query Debug Information"
 #: host.php:897 lib/functions.php:4786 tree.php:1724 tree.php:1798
 #: tree.php:1906 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
-msgstr "Kopiera"
+msgstr "kopia"
 
 #: host.php:898
 msgid "Hide"
@@ -6876,14 +6876,14 @@ msgstr "Värdnamn"
 #: host.php:1763
 msgid "Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file."
 msgstr ""
-"Antingen en IP-adress eller värdnamn. Om ett värdnamn måste det kunna lösas "
-"av antingen DNS eller från din värdfil."
+"Antingen en IP-adress eller ett värdnamn.  Om det är ett värdnamn måste det "
+"kunna lösas med antingen DNS eller från din hosts-fil."
 
 #: host.php:1769
 msgid "The internal database ID for this Device.  Useful when performing automation or debugging."
 msgstr ""
-"Den interna databasen ID för denna enhet. Användbar när du utför "
-"automatisering eller felsökning."
+"Det interna databas-ID:t för den här enheten.  Användbart vid automatisering "
+"eller felsökning."
 
 #: host.php:1775
 msgid "The number of threads to use to collect information for this Device.  Applies to spine only."
@@ -7791,7 +7791,7 @@ msgstr "DES"
 
 #: include/global_arrays.php:670
 msgid "AES"
-msgstr "DES"
+msgstr "AES"
 
 #: include/global_arrays.php:671
 msgid "AES-128"
@@ -7803,7 +7803,7 @@ msgstr "AES-192"
 
 #: include/global_arrays.php:673
 msgid "AES-192-C"
-msgstr "AES-192"
+msgstr "AES-192-C"
 
 #: include/global_arrays.php:674
 msgid "AES-256"
@@ -7811,7 +7811,7 @@ msgstr "AES-256"
 
 #: include/global_arrays.php:675
 msgid "AES-256-C"
-msgstr "AES-256"
+msgstr "AES-256-C"
 
 #: include/global_arrays.php:684
 msgid "Logfile Only"
@@ -8663,11 +8663,11 @@ msgstr "Senaste timmen"
 #: include/global_arrays.php:1567 include/global_arrays.php:1568
 #, php-format
 msgid "Last %d Hours"
-msgstr "Senaste %d timmar"
+msgstr "Senaste %d timmarna"
 
 #: include/global_arrays.php:1569
 msgid "Last Day"
-msgstr "Sista dagen"
+msgstr "Senaste dygnet"
 
 #: include/global_arrays.php:1570 include/global_arrays.php:1571
 #: include/global_arrays.php:1572
@@ -8677,7 +8677,7 @@ msgstr "Senaste %d dagar"
 
 #: include/global_arrays.php:1573
 msgid "Last Week"
-msgstr "Förra veckan"
+msgstr "Senaste veckan"
 
 #: include/global_arrays.php:1574
 #, php-format
@@ -8686,7 +8686,7 @@ msgstr "Senaste %d veckorna"
 
 #: include/global_arrays.php:1575
 msgid "Last Month"
-msgstr "Föregående månad"
+msgstr "Senaste månaden"
 
 #: include/global_arrays.php:1576 include/global_arrays.php:1577
 #: include/global_arrays.php:1578 include/global_arrays.php:1579
@@ -8896,7 +8896,7 @@ msgstr "Skicka nu"
 
 #: include/global_arrays.php:1798
 msgid "Take Ownership"
-msgstr "Ta äganderätt"
+msgstr "Ta över"
 
 #: include/global_arrays.php:1802
 msgid "Inline PNG Image"
@@ -9654,23 +9654,23 @@ msgstr "SNMP-säkerhetsnivå"
 
 #: include/global_form.php:54
 msgid "SNMP v3 Security Level to use when querying the device."
-msgstr "SNMP v3-säkerhetsnivå som ska användas när du frågar enheten."
+msgstr "Säkerhetsnivå för SNMP v3 som ska användas vid frågor till enheten."
 
 #: include/global_form.php:63
 msgid "SNMP Auth Protocol (v3)"
-msgstr "SNMP Auth-protokoll (v3)"
+msgstr "SNMP-autentiseringsprotokoll (v3)"
 
 #: include/global_form.php:64
 msgid "Choose the SNMPv3 Authorization Protocol."
-msgstr "Välj godkännandeprotokollet SNMPv3."
+msgstr "Välj auktoriseringsprotokoll för SNMPv3."
 
 #: include/global_form.php:72
 msgid "SNMP Username (v3)"
-msgstr "SNMP användarnamn (v3)"
+msgstr "SNMP-användarnamn (v3)"
 
 #: include/global_form.php:73
 msgid "SNMP v3 username for this device."
-msgstr "SNMP v3 användarnamn för den här enheten."
+msgstr "SNMP v3-användarnamn för den här enheten."
 
 #: include/global_form.php:81
 msgid "SNMP Password (v3)"
@@ -9678,7 +9678,7 @@ msgstr "SNMP-lösenord (v3)"
 
 #: include/global_form.php:82
 msgid "SNMP v3 password for this device."
-msgstr "SNMP v3 lösenord för den här enheten."
+msgstr "SNMP v3-lösenord för den här enheten."
 
 #: include/global_form.php:90
 msgid "SNMP Privacy Protocol (v3)"
@@ -9686,15 +9686,15 @@ msgstr "SNMP-sekretessprotokoll (v3)"
 
 #: include/global_form.php:91
 msgid "Choose the SNMPv3 Privacy Protocol."
-msgstr "Välj sekretessprotokollet SNMPv3."
+msgstr "Välj sekretessprotokoll för SNMPv3."
 
 #: include/global_form.php:99
 msgid "SNMP Privacy Passphrase (v3)"
-msgstr "SNMP-sekretessfrasfras (v3)"
+msgstr "SNMP-sekretesslösenfras (v3)"
 
 #: include/global_form.php:100
 msgid "Choose the SNMPv3 Privacy Passphrase."
-msgstr "Välj SNMPv3 Privacy Passphrase."
+msgstr "Välj sekretesslösenfras för SNMPv3."
 
 #: include/global_form.php:108 include/global_settings.php:916
 msgid "SNMP Context (v3)"
@@ -14851,7 +14851,7 @@ msgstr "Online"
 
 #: index.php:82
 msgid "Recovery"
-msgstr "Återhämtning"
+msgstr "Återställning"
 
 #: index.php:82
 msgid "Remote Data Collector Status:"
@@ -16693,7 +16693,7 @@ msgstr "Rotera Cacti-loggen"
 
 #: lib/html.php:3053
 msgid "Panels"
-msgstr "Paneler"
+msgstr "Rutor"
 
 #: lib/html.php:3054
 msgid "Help in Developing"
@@ -16904,7 +16904,7 @@ msgstr ""
 
 #: lib/html.php:3127 pollers.php:875
 msgid "Connection Failed"
-msgstr "% 1"
+msgstr "Anslutningen misslyckades"
 
 #: lib/html.php:3128 pollers.php:873
 msgid "Connection Successful"
@@ -16924,7 +16924,7 @@ msgstr "3: e musknapp"
 
 #: lib/html.php:3137
 msgid "Auto"
-msgstr "Auto"
+msgstr "Automatiskt"
 
 #: lib/html.php:3138
 msgid "Begin with"
@@ -17364,7 +17364,7 @@ msgstr "Denna adress kommer att användas som e-postadresseradress"
 
 #: lib/html_reports.php:193
 msgid "To Email Address(es)"
-msgstr "Till E-postadress (er)"
+msgstr "Mottagaradress(er) för e-post"
 
 #: lib/html_reports.php:199
 msgid "Please separate multiple addresses by comma (,)"
@@ -17372,11 +17372,11 @@ msgstr "Separera flera adresser med kommatecken (,)"
 
 #: lib/html_reports.php:204
 msgid "BCC Address(es)"
-msgstr "BCC-adress (er)"
+msgstr "Bcc-adress(er)"
 
 #: lib/html_reports.php:210
 msgid "Blind carbon copy. Please separate multiple addresses by comma (,)"
-msgstr "Blind kol kopi. Separera flera adresser med kommatecken (,)"
+msgstr "Dold kopia. Separera flera adresser med kommatecken (,)"
 
 #: lib/html_reports.php:215
 msgid "Image attach type"
@@ -18196,7 +18196,7 @@ msgstr "PHP-rekommendationer"
 
 #: lib/installer.php:2042
 msgid "Current"
-msgstr "Nuvarande"
+msgstr "Aktuell"
 
 #: lib/installer.php:2042
 msgid "Recommended"
@@ -18228,7 +18228,9 @@ msgstr "Obligatorisk"
 
 #: lib/installer.php:2082
 msgid "The specified value appears to be different in the running config versus the INI file."
-msgstr "Det angivna värdet verkar vara annorlunda i running config jämfört med INI-filen."
+msgstr ""
+"Det angivna värdet verkar skilja sig mellan den körande konfigurationen och "
+"INI-filen."
 
 #: lib/installer.php:2115
 msgid "PHP - Module Support (Required)"
@@ -18619,7 +18621,12 @@ msgstr ""
 
 #: lib/installer.php:2617
 msgid "The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or arguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediately disabled until the administrator validates that the Data Input Method is valid."
-msgstr "Vitlistningen fungerar så att när du först importerar en metod för datainmatning, eller när du återimporterar en metod för datainmatning och skriptet eller argumenten ändras på något sätt, inaktiveras metoden för datainmatning och alla motsvarande datakällor omedelbart tills administratören validerar att metoden för datainmatning är giltig."
+msgstr ""
+"Vitlistningen fungerar så att när du först importerar en datainmatningsmetod "
+"eller importerar den på nytt och skriptet och/eller argumenten ändras på "
+"något sätt, inaktiveras datainmatningsmetoden och alla motsvarande "
+"datakällor omedelbart tills administratören validerar att "
+"datainmatningsmetoden är giltig."
 
 #: lib/installer.php:2618
 msgid "To make identifying Data Input Methods in this state, we have provided a validation script in Cacti's CLI directory that can be run with the following options:"
@@ -19025,7 +19032,7 @@ msgstr "Lektionsbakgrundsprocess:%s%s"
 
 #: lib/installer.php:3192
 msgid "Complete"
-msgstr "Genomförd"
+msgstr "Slutförd"
 
 #: lib/installer.php:3193
 #, php-format
@@ -20343,7 +20350,7 @@ msgstr "Återställ filter"
 
 #: links.php:332 links.php:527 user_admin.php:1557 user_group_admin.php:1414
 msgid "Top Tab"
-msgstr "Översta fliken"
+msgstr "Toppflik"
 
 #: links.php:333 user_admin.php:1558 user_group_admin.php:1415
 msgid "Bottom Console"
@@ -20993,7 +21000,7 @@ msgstr "Paketfiler"
 
 #: package_import.php:1043
 msgid "Email"
-msgstr "eMail"
+msgstr "E-post"
 
 #: package_import.php:1080
 msgid "Import Package Filenames [ None selected imports all, Check to import selectively ]"
@@ -21003,7 +21010,7 @@ msgstr ""
 
 #: package_import.php:1087
 msgid "Filename"
-msgstr "Byt namn"
+msgstr "Filnamn"
 
 #: package_import.php:1129 package_import.php:1250 templates_import.php:352
 msgid "Differences"
@@ -22448,7 +22455,7 @@ msgstr "%d Dag"
 #: rrdcheck.php:240 rrdcheck.php:241
 #, php-format
 msgid "%d days"
-msgstr "%d dagar"
+msgstr "%d dygn"
 
 #: rrdcheck.php:245 rrdcheck.php:248
 msgid "Messages"
@@ -22670,7 +22677,7 @@ msgstr "Ange stad eller ort"
 
 #: sites.php:92 sites.php:662
 msgid "State"
-msgstr "Län"
+msgstr "Status"
 
 #: sites.php:93
 msgid "The state for the Site."
@@ -24168,7 +24175,7 @@ msgstr "Mall policy"
 
 #: user_admin.php:2286
 msgid "Unavailable"
-msgstr "Ej bokningsbar"
+msgstr "Inte tillgänglig"
 
 #: user_admin.php:2312
 msgid "No Users Found"
@@ -24796,7 +24803,7 @@ msgstr "Användarinloggningar"
 
 #: user_log.php:284
 msgid "IP Address"
-msgstr "IP adress"
+msgstr "IP-adress"
 
 #: user_log.php:302
 msgid "(User Removed)"
@@ -25052,7 +25059,7 @@ msgstr "Cacti Systemhjälpmedel"
 
 #: utilities.php:1397 utilities.php:1400
 msgid "Refresh Interval"
-msgstr "Ladda om interval"
+msgstr "Uppdateringsintervall"
 
 #: utilities.php:1494
 msgid "Overrun Warning"
@@ -25064,7 +25071,7 @@ msgstr "Tiden har löpt ut"
 
 #: utilities.php:1498
 msgid "Other"
-msgstr "Annat"
+msgstr "Övrigt"
 
 #: utilities.php:1555
 msgid "Cannot open directory"
