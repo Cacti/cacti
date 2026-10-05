@@ -1206,18 +1206,18 @@ function utilities_mysql_variable_capabilities() : array {
 		'innodb_file_format' => [
 			'description' => __('InnoDB on-disk file format (Antelope or Barracuda); Barracuda is now the only format.'),
 			'settings'    => __('Antelope, Barracuda.'),
-			'MariaDB'     => ['deprecated' => '10.2.0', 'removed' => '10.6.0'],
+			'MariaDB'     => ['deprecated' => '10.2.2', 'removed' => '10.3.1'],
 			'MySQL'       => ['deprecated' => '5.7.7', 'removed' => '8.0.0'],
 		],
 		'innodb_large_prefix' => [
 			'description' => __('Allow index key prefixes longer than 767 bytes (requires the Barracuda format).'),
 			'settings'    => __('ON/1 or OFF/0; this behaviour is now always enabled.'),
-			'MariaDB'     => ['deprecated' => '10.2.0', 'removed' => '10.6.0'],
+			'MariaDB'     => ['deprecated' => '10.2.2', 'removed' => '10.3.1'],
 			'MySQL'       => ['deprecated' => '5.7.7', 'removed' => '8.0.0'],
 		],
 		'innodb_buffer_pool_size' => [
 			'description' => __('Total memory InnoDB uses to cache table and index data.'),
-			'settings'    => __('Bytes; commonly 25%%-80%% of total system memory.'),
+			'settings'    => __('Bytes; commonly 25%-80% of total system memory.'),
 			'MariaDB'     => [],
 			'MySQL'       => [],
 		],
@@ -1297,7 +1297,7 @@ function utilities_mysql_variable_capabilities() : array {
 			'description' => __('Flush neighbouring dirty pages in the same extent when flushing a page.'),
 			'settings'    => __('0, 1, or 2; use 0 on SSD storage.'),
 			'MariaDB'     => [],
-			'MySQL'       => [],
+			'MySQL'       => ['deprecated' => '8.0.20', 'removed' => '8.4.0'],
 		],
 		'innodb_use_atomic_writes' => [
 			'description' => __('Use hardware atomic writes (MariaDB) so the doublewrite buffer can be safely disabled.'),
@@ -1306,10 +1306,59 @@ function utilities_mysql_variable_capabilities() : array {
 		],
 		'innodb_snapshot_isolation' => [
 			'description' => __('Enforce strict snapshot isolation for InnoDB transactions.'),
-			'settings'    => __('ON or OFF; MariaDB 11.4+. Set OFF for the Cacti poller.'),
-			'MariaDB'     => ['introduced' => '11.4.0'],
+			'settings'    => __('ON or OFF; back-ported to MariaDB 10.6.18+, 10.11.8+ and 11.4.2+. Set OFF for the Cacti poller.'),
+			'MariaDB'     => ['introduced' => ['10.6.18', '10.11.8', '11.4.2']],
 		],
 	];
+}
+
+/**
+ * utilities_mysql_branch - return the major.minor branch of a version string.
+ *
+ * @param string $version the version string, e.g. '10.6.18'
+ *
+ * @return string the branch, e.g. '10.6'
+ */
+function utilities_mysql_branch(string $version) : string {
+	$parts = explode('.', $version);
+
+	return $parts[0] . '.' . ($parts[1] ?? '0');
+}
+
+/**
+ * utilities_mysql_version_introduced - decide whether a variable that was
+ * introduced (and often back-ported to several stable branches) exists in the
+ * given version.  The variable is present when the version is at or after the
+ * introduction point for its own major.minor branch, or when the version lives
+ * on a branch newer than every branch that received a back-port (the feature
+ * then ships natively).
+ *
+ * @param string       $version the detected engine version string
+ * @param array|string $intro   one version, or a list of per-branch versions
+ *
+ * @return bool true when the variable exists in the version
+ */
+function utilities_mysql_version_introduced(string $version, array|string $intro) : bool {
+	if (!is_array($intro)) {
+		$intro = [$intro];
+	}
+
+	$vbranch = utilities_mysql_branch($version);
+	$newest  = '0';
+
+	foreach ($intro as $floor) {
+		$fbranch = utilities_mysql_branch((string) $floor);
+
+		if (version_compare($fbranch, $newest, '>')) {
+			$newest = $fbranch;
+		}
+
+		if ($vbranch === $fbranch) {
+			return version_compare($version, (string) $floor, '>=');
+		}
+	}
+
+	return version_compare($vbranch, $newest, '>');
 }
 
 /**
@@ -1329,7 +1378,7 @@ function utilities_mysql_variable_status(array $cap, string $database, string $v
 
 	$bounds = $cap[$database];
 
-	if (isset($bounds['introduced']) && version_compare($version, $bounds['introduced'], '<')) {
+	if (isset($bounds['introduced']) && !utilities_mysql_version_introduced($version, $bounds['introduced'])) {
 		return 'na';
 	}
 
@@ -1380,14 +1429,21 @@ function utilities_get_mysql_capabilities() : void {
 
 	$capabilities = utilities_mysql_variable_capabilities();
 
+	// Each column maps a short release label to a representative patch release of
+	// that series so version_compare reflects a current, fully patched server
+	// (including back-ported features).
 	$columns = [
-		'MariaDB' => ['10.5', '10.6', '11.4', '11.8'],
-		'MySQL'   => ['8.0', '8.4', '9.0'],
-	];
-
-	// Friendly labels for release families that do not map to a single version.
-	$column_labels = [
-		'MySQL' => ['9.0' => '9.x'],
+		'MariaDB' => [
+			'10.5' => '10.5.27',
+			'10.6' => '10.6.21',
+			'11.4' => '11.4.5',
+			'11.8' => '11.8.2',
+		],
+		'MySQL' => [
+			'8.0' => '8.0.40',
+			'8.4' => '8.4.4',
+			'9.x' => '9.1.0',
+		],
 	];
 
 	$total_columns = 1;
@@ -1415,8 +1471,7 @@ function utilities_get_mysql_capabilities() : void {
 	print "<tr class='tableHeader'>";
 
 	foreach ($columns as $engine => $versions) {
-		foreach ($versions as $v) {
-			$label = $column_labels[$engine][$v] ?? $v;
+		foreach ($versions as $label => $v) {
 			print "  <th class='tableSubHeaderColumn center'>" . html_escape($label) . '</th>';
 		}
 	}
@@ -1427,9 +1482,9 @@ function utilities_get_mysql_capabilities() : void {
 	foreach ($capabilities as $name => $cap) {
 		form_alternate_row();
 
-		$title = html_escape($cap['description']) . '<br><br><strong>' . __esc('Available settings:') . '</strong> ' . html_escape($cap['settings']);
+		$title = html_escape_attr($cap['description']) . '<br><br><strong>' . html_escape_attr(__('Available settings:')) . '</strong> ' . html_escape_attr($cap['settings']);
 
-		print "<td><span class='cactiTooltipHint' title='" . $title . "'>" . html_escape($name) . '</span></td>';
+		print "<td><span class='cactiTooltipHint' tabindex='0' title='" . $title . "'>" . html_escape($name) . '</span></td>';
 
 		foreach ($columns as $engine => $versions) {
 			foreach ($versions as $v) {
@@ -1690,10 +1745,10 @@ function utilities_get_mysql_recommendations() : int {
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used.')
 				],
 				'innodb_flush_neighbors' => [
-					'value'   => 'none',
-					'measure' => 'eq',
+					'value'   => '0',
+					'measure' => 'equalint',
 					'class'   => 'warning',
-					'comment' => __('If you have SSD disks, use this suggestion. Otherwise, do not set this setting.')
+					'comment' => __('If you have SSD disks, set this to 0. Otherwise, do not set this setting.')
 				]
 			];
 		} else {
@@ -1726,10 +1781,10 @@ function utilities_get_mysql_recommendations() : int {
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used.')
 				],
 				'innodb_flush_neighbors' => [
-					'value'   => 'none',
-					'measure' => 'eq',
+					'value'   => '0',
+					'measure' => 'equalint',
 					'class'   => 'warning',
-					'comment' => __('If you have SSD disks, use this suggestion. Otherwise, do not set this setting.')
+					'comment' => __('If you have SSD disks, set this to 0. Otherwise, do not set this setting.')
 				]
 			];
 
