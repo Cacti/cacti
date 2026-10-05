@@ -5,6 +5,7 @@ on:
     branches: [1.2.x]
     paths:
       - '.github/workflows/csv-window-coverage.yml'
+      - 'graph.php'
       - 'lib/rrd.php'
       - 'lib/graph_variables.php'
       - 'phpunit-csv.xml'
@@ -12,6 +13,7 @@ on:
       - 'tests/Unit/Core/Rrd/BandwidthEffectiveStepTest.php'
       - 'tests/Unit/Ui/Graph/CsvWindowResolutionContractTest.php'
       - 'tests/Unit/Ui/Graph/PercentileResolutionBehaviorTest.php'
+      - 'tests/Unit/TwoYearGraphPanelTest.php'
       - 'tests/integration/CsvWindowRrdIntegrationTest.php'
       - 'tests/composer.json'
       - 'tests/composer.lock'
@@ -19,6 +21,7 @@ on:
     branches: [1.2.x]
     paths:
       - '.github/workflows/csv-window-coverage.yml'
+      - 'graph.php'
       - 'lib/rrd.php'
       - 'lib/graph_variables.php'
       - 'phpunit-csv.xml'
@@ -26,6 +29,7 @@ on:
       - 'tests/Unit/Core/Rrd/BandwidthEffectiveStepTest.php'
       - 'tests/Unit/Ui/Graph/CsvWindowResolutionContractTest.php'
       - 'tests/Unit/Ui/Graph/PercentileResolutionBehaviorTest.php'
+      - 'tests/Unit/TwoYearGraphPanelTest.php'
       - 'tests/integration/CsvWindowRrdIntegrationTest.php'
       - 'tests/composer.json'
       - 'tests/composer.lock'
@@ -93,6 +97,7 @@ jobs:
             Unit/Core/Rrd/BandwidthEffectiveStepTest.php \
             Unit/Ui/Graph/CsvWindowResolutionContractTest.php \
             Unit/Ui/Graph/PercentileResolutionBehaviorTest.php \
+            Unit/TwoYearGraphPanelTest.php \
             integration/CsvWindowRrdIntegrationTest.php; do
             "${pest_runner}" --configuration=../phpunit-csv.xml "${test_file}"
           done
