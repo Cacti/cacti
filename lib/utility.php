@@ -1545,6 +1545,10 @@ function utilities_mysql_variable_status($cap, $database, $version) {
 		return 'na';
 	}
 
+	if ($version === null || $version === '') {
+		return 'ok';
+	}
+
 	$version = utilities_mysql_normalize_version($version);
 	$bounds  = $cap[$database];
 
