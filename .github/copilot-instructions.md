@@ -42,7 +42,7 @@ Use these notes to navigate and contribute productively to this PHP codebase.
 - i18n: wrap UI strings with `__('...')`.
   - Translatable strings are managed with GNU gettext. `locales/po/cacti.pot` is the source template; **Weblate owns syncing** the per-language `.po`/`.mo` files.
   - **Never commit the per-language `.po` or compiled `.mo` files** — `locales/po/cacti.pot` is the only translation artifact a PR may add or modify.
-  - When a PR adds or changes a `__('...')` string, update `locales/po/cacti.pot` before pushing and stage **only** that file. Regenerate with `locales/update-pot.sh` (it runs `xgettext`), or, to keep the PR diff focused, append just the new `msgid` entries extracted with `xgettext`/`msggrep`. Validate with `msgfmt --check-format -o /dev/null locales/po/cacti.pot`.
+  - **Any PR that adds, changes, or removes a `__('...')` string MUST update `locales/po/cacti.pot` in the same PR** before pushing, and stage **only** that file. This is mandatory, not optional — removing a translatable string counts, and it must be dropped from the template too. Regenerate with `locales/update-pot.sh` (it runs `xgettext`), or, to keep the PR diff focused, add or remove just the affected `msgid` entries extracted with `xgettext`/`msggrep`. Validate with `msgfmt --check-format -o /dev/null locales/po/cacti.pot`.
   - If `update-pot.sh` rewrites `.po`/`.mo` side effects, revert them (`git checkout -- locales/po/*.po locales/LC_MESSAGES`) so the PR touches `cacti.pot` only.
 
 ## CLI and daemon workflows
