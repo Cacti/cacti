@@ -23263,7 +23263,7 @@ msgid "Installed, but disabled by $php_snmp_support in include/config.php.  The 
 msgstr ""
 
 #: support.php
-msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset, or set $php_snmp_support = false; in include/config.php.</span>"
+msgid "Installed."
 msgstr ""
 
 #: support.php

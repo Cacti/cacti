@@ -1904,7 +1904,7 @@ function show_tech_summary() : void {
 	} elseif (!CACTI_PHP_SNMP) {
 		print __('Installed, but disabled by $php_snmp_support in include/config.php.  The Net-SNMP binaries are used instead.');
 	} else {
-		print __('Installed. <span class="deviceDown">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset, or set $php_snmp_support = false; in include/config.php.</span>');
+		print __('Installed.');
 	}
 	print '</td>';
 	form_end_row();

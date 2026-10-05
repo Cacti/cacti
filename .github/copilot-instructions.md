@@ -54,6 +54,11 @@
 - **CSRF**: AJAX posts include `__csrf_magic: csrfMagicToken`.
 - **Logging**: use `cacti_log(...)` and `cacti_log_file()`.
 - **i18n**: wrap UI strings with `__('...')`.
+  - Translatable strings are managed with GNU gettext. `locales/po/cacti.pot` is the source template; **Weblate owns syncing** the per-language `.po`/`.mo` files.
+  - **Any PR that adds, changes, or removes a `__('...')` (or `__n()`/`__esc()` etc.) string MUST update `locales/po/cacti.pot` in the same PR.** This is mandatory — a PR that touches translatable strings without updating `cacti.pot` is incomplete. Removing a string counts: it must be dropped from the template too.
+  - **Never commit the per-language `.po` or compiled `.mo` files** — `locales/po/cacti.pot` is the only translation artifact a PR may add or modify. Stage **only** that file.
+  - Regenerate with `locales/update-pot.sh` (it runs `xgettext`), or, to keep the diff focused, add/remove just the affected `msgid` entries. Validate with `msgfmt --check-format -o /dev/null locales/po/cacti.pot`.
+  - If `update-pot.sh` rewrites `.po`/`.mo` side effects, revert them (`git checkout -- locales/po/*.po locales/LC_MESSAGES`) so the PR touches `cacti.pot` only.
 - **Plugins**:
   - Hooks via `api_plugin_hook(...)` in `lib/plugins.php`.
   - Must have an `INFO` file (INI format).
