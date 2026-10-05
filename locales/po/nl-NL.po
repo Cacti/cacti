@@ -10277,6 +10277,12 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr "Standaard zal de belangrijkste Cacti Data Collector de hele website en plug-ins in een broncache opslaan. Vervolgens zullen de Remote Data Collectors periodiek thema's bijwerken met eventuele updates van de belangrijkste Cacti Data Collector. Met deze broncache kunnen externe gegevensverzamelaars in feite zelf upgraden. Als u deze optie niet wilt gebruiken, kunt u deze met deze instelling uitschakelen."
 
 #: include/global_settings.php
+#, fuzzy
+#| msgid "SNMP error"
+msgid "SNMP Behavior"
+msgstr "SNMP fout"
+
+#: include/global_settings.php
 msgid "Additional Data Collector Settings"
 msgstr "Status externe gegevensverzamelaar:"
 
