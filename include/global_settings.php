@@ -1099,6 +1099,12 @@ $settings['snmp'] = [
 		'method'        => 'spacer',
 		'collapsible'   => 'true'
 	],
+	'enable_snmp_agent' => [
+		'friendly_name' => __('SNMP Agent Support Enabled'),
+		'description'   => __('If this option is checked, Cacti will populate SNMP Agent tables with Cacti device and system information.  It does not enable the SNMP Agent itself.'),
+		'method'        => 'checkbox',
+		'default'       => 'on'
+	],
 	'snmp_md5_des_enabled' => [
 		'friendly_name' => __('Enable MD5 and DES for SNMPv3'),
 		'description'   => __('The MD5 authentication and DES privacy algorithms are legacy, weak, and unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When disabled, MD5 and DES are removed from the SNMPv3 Authentication and Privacy Protocol dropdowns shown when editing a Device and in the Automation SNMP Options, leaving only the stronger SHA and AES algorithms.'),
@@ -1622,12 +1628,6 @@ $settings['poller'] = [
 		'method'        => 'checkbox',
 		'default'       => 'on',
 		'tab'           => 'poller'
-	],
-	'enable_snmp_agent' => [
-		'friendly_name' => __('SNMP Agent Support Enabled'),
-		'description'   => __('If this option is checked, Cacti will populate SNMP Agent tables with Cacti device and system information.  It does not enable the SNMP Agent itself.'),
-		'method'        => 'checkbox',
-		'default'       => 'on'
 	],
 	'poller_type' => [
 		'friendly_name' => __('Poller Type'),
