@@ -4335,6 +4335,13 @@ function initializeGraphs(disable_cache) {
 
 		var graph_start = $(this).attr('graph_start') || '';
 		var graph_end = $(this).attr('graph_end') || '';
+		// Graph lists use the current date filters; detailed panels keep their own ranges.
+		if (rra_id == 0 && $('#date1').length && $('#date2').length &&
+			timestampDate1 > 0 && timestampDate2 > timestampDate1) {
+			graph_start = timestampDate1;
+			graph_end = timestampDate2;
+		}
+
 		var graph_height = $(this).attr('graph_height');
 		var graph_width  = $(this).attr('graph_width');
 		var error_url    = urlPath + 'graph_view.php';
