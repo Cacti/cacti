@@ -1245,9 +1245,9 @@ function utilities_get_mysql_info($poller_id = 1) {
 		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES', false, $local_db_cnn_id), 'Variable_name', 'Value');
 	}
 
-	if (strpos($variables['version'], 'MariaDB') !== false) {
+	if (stripos($variables['version'], 'MariaDB') !== false) {
 		$database = 'MariaDB';
-		$version  = str_replace('-MariaDB', '', $variables['version']);
+		$version  = str_ireplace('-MariaDB', '', $variables['version']);
 
 		if (isset($variables['innodb_version'])) {
 			$link_ver = substr($variables['innodb_version'], 0, 3);
@@ -1291,10 +1291,10 @@ function utilities_get_mysql_recommendations() {
 
 	$recommendations = array(
 		'version' => array(
-			'value' => '5.6',
+			'value' => ($database == 'MariaDB' ? '10.5' : '8.0'),
 			'class' => 'warning',
 			'measure' => 'ge',
-			'comment' => __('MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability.')
+			'comment' => __('MariaDB 10.5+ and MySQL 8.0+ are the recommended, supported releases (for example, the default database streams on Rocky Linux 9). Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability.')
 		)
 	);
 
@@ -1679,7 +1679,7 @@ function utilities_get_mysql_recommendations() {
 
 				if ($name == 'sort_buffer_size') {
 					if ($config['poller_id'] == 1) {
-						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+						if ($database == 'MariaDB') {
 							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
 								@@GLOBAL.query_cache_size +
 								@@GLOBAL.tmp_table_size +
@@ -1704,7 +1704,7 @@ function utilities_get_mysql_recommendations() {
 									@@GLOBAL.binlog_cache_size)');
 						}
 					} else {
-						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+						if ($database == 'MariaDB') {
 							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
 								@@GLOBAL.query_cache_size +
 								@@GLOBAL.tmp_table_size +
@@ -1731,7 +1731,7 @@ function utilities_get_mysql_recommendations() {
 					}
 				} else {
 					if ($config['poller_id'] == 1) {
-						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+						if ($database == 'MariaDB') {
 							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
 								@@GLOBAL.query_cache_size +
 								@@GLOBAL.tmp_table_size +
@@ -1756,7 +1756,7 @@ function utilities_get_mysql_recommendations() {
 									@@GLOBAL.binlog_cache_size)');
 						}
 					} else {
-						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+						if ($database == 'MariaDB') {
 							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
 								@@GLOBAL.query_cache_size +
 								@@GLOBAL.tmp_table_size +
