@@ -191,6 +191,7 @@ function snmp_credential_cache_maintenance() : void {
 
 	if (empty($last_run)) {
 		set_config_option($setting, $now);
+
 		return;
 	}
 

@@ -55,14 +55,14 @@ interface CacheBackend {
  */
 class StaticBackend implements CacheBackend {
 	/** @var array<string,array{p:string,c:string}> */
-	private static array $store = array();
+	private static array $store = [];
 
 	public function isAvailable(): bool {
 		return true;
 	}
 
 	public function write(string $name, string $payload, string $checksum): bool {
-		self::$store[$name] = array('p' => $payload, 'c' => $checksum);
+		self::$store[$name] = ['p' => $payload, 'c' => $checksum];
 
 		return true;
 	}
@@ -114,10 +114,10 @@ class FileBackend implements CacheBackend {
 		$file = $this->file($name);
 		$tmp  = $file . '.' . getmypid() . '.tmp';
 
-		$blob = json_encode(array(
+		$blob = json_encode([
 			'checksum' => $checksum,
 			'payload'  => base64_encode($payload),
-		));
+		]);
 
 		if ($blob === false || @file_put_contents($tmp, $blob, LOCK_EX) === false) {
 			return false;
@@ -364,7 +364,7 @@ class ShmopBackend implements CacheBackend {
  * priority shared tier; every consumer process fetch()es and decodes it a
  * single time into process memory.
  *
-	 * Tiers are tried in priority order; the default is the durable file tier,
+ * Tiers are tried in priority order; the default is the durable file tier,
  * then POSIX shared memory, then a process-local static fallback. When only
  * the process-local tier is available there is no cross-process sharing and
  * each consumer must build its own copy.
@@ -390,15 +390,15 @@ class SharedCache {
 	 * @param array  $options encrypted(bool), cache_dir(string), os_type(string),
 	 *                        backends(string[] priority list).
 	 */
-	public function __construct(string $name, array $options = array()) {
+	public function __construct(string $name, array $options = []) {
 		$this->name      = preg_replace('/[^A-Za-z0-9_\-]/', '_', $name);
 		$this->encrypted = (bool) ($options['encrypted'] ?? false);
 
 		$dir   = (string) ($options['cache_dir'] ?? self::defaultCacheDir());
 		$os    = (string) ($options['os_type'] ?? self::osType());
-		$order = $options['backends'] ?? array('file', 'shmop', 'static');
+		$order = $options['backends'] ?? ['file', 'shmop', 'static'];
 
-		$this->backends = array();
+		$this->backends = [];
 		$hasLocal       = false;
 
 		foreach ($order as $id) {
@@ -533,7 +533,7 @@ class SharedCache {
 	}
 
 	/**
-	 * @param mixed $data
+	 * @param  mixed        $data
 	 * @return string|false
 	 */
 	private function encode($data) {
@@ -574,7 +574,7 @@ class SharedCache {
 			$wire = $plain;
 		}
 
-		$data = @unserialize($wire, array('allowed_classes' => false));
+		$data = @unserialize($wire, ['allowed_classes' => false]);
 
 		// Our stored payloads are always arrays; a false result means failure.
 		return is_array($data) ? $data : false;

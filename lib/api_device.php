@@ -1258,14 +1258,15 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 		 * credential fields. Bump the version only when this host's v3 membership or
 		 * one of those credential fields actually changed, so saving an unrelated
 		 * field (notes, availability, ...) does not force a needless cache rebuild. */
-		$was_v3 = isset($previous['snmp_version']) && $previous['snmp_version'] == 3;
-		$is_v3  = $save['snmp_version'] == 3;
+		$was_v3       = isset($previous['snmp_version']) && $previous['snmp_version'] == 3;
+		$is_v3        = $save['snmp_version'] == 3;
 		$cred_changed = ($was_v3 != $is_v3);
 
 		if ($is_v3 && $was_v3) {
 			foreach (['snmp_community', 'snmp_username', 'snmp_password', 'snmp_auth_protocol', 'snmp_priv_passphrase', 'snmp_priv_protocol'] as $field) {
 				if ((string) ($previous[$field] ?? '') !== (string) ($save[$field] ?? '')) {
 					$cred_changed = true;
+
 					break;
 				}
 			}

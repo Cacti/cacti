@@ -893,7 +893,7 @@ function host_edit() : void {
 		$fields_host_edit['host_template_id']['value'] = gfrv('host_template_id');
 	}
 
-	/* drop the legacy MD5/DES SNMPv3 algorithms from the pickers when disabled */
+	// drop the legacy MD5/DES SNMPv3 algorithms from the pickers when disabled
 	$fields_host_edit['snmp_auth_protocol']['array'] = snmp_auth_protocol_options(isset($host['snmp_auth_protocol']) ? $host['snmp_auth_protocol'] : '');
 	$fields_host_edit['snmp_priv_protocol']['array'] = snmp_priv_protocol_options(isset($host['snmp_priv_protocol']) ? $host['snmp_priv_protocol'] : '');
 

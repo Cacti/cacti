@@ -135,18 +135,18 @@ class CactiSnmpBinarySession {
 	public function __construct(array $params, $bulk_walk_size) {
 		$this->params         = $params;
 		$this->bulk_walk_size = (int) $bulk_walk_size;
-		$this->info           = array(
+		$this->info           = [
 			'hostname' => $params['hostname'],
 			'timeout'  => $params['timeout'],
-		);
+		];
 	}
 
 	private function uniget($command, $oid) {
 		$p        = $this->params;
 		$function = 'cacti_snmp_' . $command;
 		$is_array = is_array($oid);
-		$oids     = $is_array ? $oid : array($oid);
-		$output   = array();
+		$oids     = $is_array ? $oid : [$oid];
+		$output   = [];
 
 		foreach ($oids as $o) {
 			$output[$o] = $function($p['hostname'], $p['community'], $o, $p['version'],
@@ -181,7 +181,7 @@ class CactiSnmpBinarySession {
 			$p['context'], $p['port'], $p['timeout'], $p['retries'], $max_repetitions, 'SNMP',
 			$p['engineid'], $this->value_output_format);
 
-		$output = array();
+		$output = [];
 
 		if (is_array($result)) {
 			foreach ($result as $item) {
@@ -213,7 +213,7 @@ function cacti_snmp_session(string $hostname, mixed $community, mixed $version, 
 	   8.6) - uses a binary-delegating session that routes to the Net-SNMP binary. */
 	if (!CACTI_PHP_SNMP ||
 		($version == 3 && !snmp_php_v3_protocols_supported($auth_proto, $priv_proto))) {
-		return new CactiSnmpBinarySession(array(
+		return new CactiSnmpBinarySession([
 			'hostname'   => $hostname,
 			'community'  => $community,
 			'version'    => $version,
@@ -227,7 +227,7 @@ function cacti_snmp_session(string $hostname, mixed $community, mixed $version, 
 			'port'       => $port,
 			'timeout'    => $timeout_ms,
 			'retries'    => $retries,
-		), $bulk_walk_size);
+		], $bulk_walk_size);
 	}
 
 	switch ($version) {
@@ -1490,7 +1490,6 @@ function cacti_snmp_options_sanitize(mixed $version, mixed $community, mixed &$p
 	return true;
 }
 
-
 /**
  * Report whether the legacy MD5 authentication and DES privacy SNMPv3
  * algorithms are offered to operators. Both are weak and are absent from
@@ -1576,7 +1575,7 @@ function snmp_native_protocol($protocol) {
 function snmp_format_agent($hostname, $port) {
 	$hostname = trim((string) $hostname);
 
-	/* An explicit transport prefix carries its own target; leave it untouched. */
+	// An explicit transport prefix carries its own target; leave it untouched.
 	if (preg_match('/^(udp6?|tcp6?|unix):/i', $hostname)) {
 		return $hostname;
 	}
@@ -1595,7 +1594,9 @@ function snmp_format_agent($hostname, $port) {
 		return $hostname;
 	}
 
-	return '[' . $hostname . ']:' . $port;
+	/* only an IPv6 literal needs bracketing; an IPv4 or DNS target with a
+	   non-default port is a plain host:port that net-snmp parses directly */
+	return $hostname . ':' . $port;
 }
 
 /**
@@ -1620,12 +1621,12 @@ function snmp_php_v3_protocols_supported($auth_proto, $priv_proto) {
 	 * only added in PHP 8.6. An unknown token (automation SNMP protocol fields are
 	 * stored without an allowlist) is never routed to snmp3_*(), which would
 	 * otherwise raise an uncaught ValueError. */
-	$auth_ok = array('', '[None]', 'MD5', 'SHA', 'SHA256', 'SHA512');
-	$priv_ok = array('', '[None]', 'DES', 'AES', 'AES128');
+	$auth_ok = ['', '[None]', 'MD5', 'SHA', 'SHA256', 'SHA512'];
+	$priv_ok = ['', '[None]', 'DES', 'AES', 'AES128'];
 
 	if (PHP_VERSION_ID >= 80600) {
-		$auth_ok = array_merge($auth_ok, array('SHA224', 'SHA384'));
-		$priv_ok = array_merge($priv_ok, array('AES192', 'AES192C', 'AES256', 'AES256C'));
+		$auth_ok = array_merge($auth_ok, ['SHA224', 'SHA384']);
+		$priv_ok = array_merge($priv_ok, ['AES192', 'AES192C', 'AES256', 'AES256C']);
 	}
 
 	if (!in_array($auth, $auth_ok, true) || !in_array($priv, $priv_ok, true)) {
@@ -1635,8 +1636,8 @@ function snmp_php_v3_protocols_supported($auth_proto, $priv_proto) {
 	/* SNMPv3 privacy requires authentication. A privacy protocol selected without
 	 * an auth protocol is an invalid authPriv combination that would raise a
 	 * ValueError in snmp3_*(), so route it to the binary instead. */
-	$auth_set = !in_array($auth, array('', '[None]'), true);
-	$priv_set = !in_array($priv, array('', '[None]'), true);
+	$auth_set = !in_array($auth, ['', '[None]'], true);
+	$priv_set = !in_array($priv, ['', '[None]'], true);
 
 	if ($priv_set && !$auth_set) {
 		return false;
@@ -1682,7 +1683,7 @@ function snmp_auth_cache(): \Cacti\Cache\SharedCache {
 	static $cache = null;
 
 	if ($cache === null) {
-		$cache = new \Cacti\Cache\SharedCache('snmp_auth', array('encrypted' => true));
+		$cache = new \Cacti\Cache\SharedCache('snmp_auth', ['encrypted' => true]);
 	}
 
 	return $cache;
@@ -1692,20 +1693,20 @@ function snmp_auth_cache(): \Cacti\Cache\SharedCache {
  * Canonical cache key: sha1 over the six credential columns, in the DISTINCT
  * query column order, of the pre-hardened values.
  *
- * @param mixed $community The community.
- * @param mixed $username The username.
- * @param mixed $password The password.
+ * @param mixed $community  The community.
+ * @param mixed $username   The username.
+ * @param mixed $password   The password.
  * @param mixed $auth_proto The auth protocol.
- * @param mixed $priv_pass The priv passphrase.
+ * @param mixed $priv_pass  The priv passphrase.
  * @param mixed $priv_proto The priv protocol.
  *
  * @return string
  */
 function snmp_auth_cache_key($community, $username, $password, $auth_proto, $priv_pass, $priv_proto): string {
-	return sha1(implode("\x1f", array(
+	return sha1(implode("\x1f", [
 		(string) $community, (string) $username, (string) $password,
 		(string) $auth_proto, (string) $priv_pass, (string) $priv_proto
-	)));
+	]));
 }
 
 /**
@@ -1715,17 +1716,17 @@ function snmp_auth_cache_key($community, $username, $password, $auth_proto, $pri
  * shared SNMP auth cache.
  *
  * @param mixed $auth_proto The auth protocol.
- * @param mixed $auth_user The auth user.
- * @param mixed $auth_pass The auth pass.
+ * @param mixed $auth_user  The auth user.
+ * @param mixed $auth_pass  The auth pass.
  * @param mixed $priv_proto The priv protocol.
- * @param mixed $priv_pass The priv pass.
+ * @param mixed $priv_pass  The priv pass.
  *
  * @return array Net-SNMP credential arguments, or array() when the protocols are invalid.
  */
 function snmp_build_v3_cred_args($auth_proto, $auth_user, $auth_pass, $priv_proto, $priv_pass) {
 	global $snmp_priv_protocols, $snmp_auth_protocols;
 
-	$args = array('-u', (string) $auth_user);
+	$args = ['-u', (string) $auth_user];
 
 	if ($priv_proto == '[None]' || $priv_pass == '') {
 		if ($auth_pass == '' || $auth_proto == '[None]') {
@@ -1734,24 +1735,24 @@ function snmp_build_v3_cred_args($auth_proto, $auth_user, $auth_pass, $priv_prot
 			$sec_level = 'authNoPriv';
 
 			if (!isset($snmp_auth_protocols[$auth_proto])) {
-				return array();
+				return [];
 			}
 
-			$args = array_merge($args, array('-a', (string) $snmp_auth_protocols[$auth_proto], '-A', (string) $auth_pass));
+			$args = array_merge($args, ['-a', (string) $snmp_auth_protocols[$auth_proto], '-A', (string) $auth_pass]);
 		}
 	} else {
 		if (!isset($snmp_auth_protocols[$auth_proto], $snmp_priv_protocols[$priv_proto])) {
-			return array();
+			return [];
 		}
 
 		$sec_level = 'authPriv';
-		$args = array_merge($args, array(
+		$args      = array_merge($args, [
 			'-a', (string) $snmp_auth_protocols[$auth_proto], '-A', (string) $auth_pass,
 			'-x', (string) $snmp_priv_protocols[$priv_proto], '-X', (string) $priv_pass
-		));
+		]);
 	}
 
-	return array_merge($args, array('-l', $sec_level));
+	return array_merge($args, ['-l', $sec_level]);
 }
 
 /**
@@ -1764,7 +1765,7 @@ function snmp_build_v3_cred_args($auth_proto, $auth_user, $auth_pass, $priv_prot
  * @return array
  */
 function snmp_auth_cache_build_map(array $rows): array {
-	$map = array();
+	$map = [];
 
 	foreach ($rows as $row) {
 		$username = isset($row['snmp_username']) ? $row['snmp_username'] : '';
@@ -1802,12 +1803,10 @@ function snmp_auth_cache_build_map(array $rows): array {
  * @return array
  */
 function snmp_auth_cache_rows(): array {
-	$columns = 'snmp_community, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol';
+	$hosts = db_fetch_assoc('SELECT DISTINCT snmp_community, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol FROM host WHERE snmp_version = 3');
+	$items = db_fetch_assoc('SELECT DISTINCT snmp_community, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol FROM poller_item WHERE snmp_version = 3');
 
-	$hosts = db_fetch_assoc("SELECT DISTINCT $columns FROM host WHERE snmp_version = 3");
-	$items = db_fetch_assoc("SELECT DISTINCT $columns FROM poller_item WHERE snmp_version = 3");
-
-	return array_merge(is_array($hosts) ? $hosts : array(), is_array($items) ? $items : array());
+	return array_merge(is_array($hosts) ? $hosts : [], is_array($items) ? $items : []);
 }
 
 /**
@@ -1845,7 +1844,7 @@ function snmp_auth_cache_refresh(): void {
 	$version = snmp_cred_version();
 	$cache   = snmp_auth_cache();
 
-	/* Nothing has changed since the cache was last built: skip the scan. */
+	// Nothing has changed since the cache was last built: skip the scan.
 	if ($cache->checksum() === $version) {
 		return;
 	}
@@ -1887,7 +1886,7 @@ function snmp_auth_cache_load(): void {
 	$loaded = true;
 
 	if (!snmp_auth_cache_enabled()) {
-		$GLOBALS['snmp_auth_cache_map'] = array();
+		$GLOBALS['snmp_auth_cache_map'] = [];
 
 		return;
 	}
@@ -1905,11 +1904,11 @@ function snmp_auth_cache_load(): void {
  * Return the pre-hardened SNMPv3 credential args for a credential tuple, or null
  * when the tuple is not cached (the caller then hardens live).
  *
- * @param mixed $community The community.
- * @param mixed $username The username.
- * @param mixed $password The password.
+ * @param mixed $community  The community.
+ * @param mixed $username   The username.
+ * @param mixed $password   The password.
  * @param mixed $auth_proto The auth protocol.
- * @param mixed $priv_pass The priv passphrase.
+ * @param mixed $priv_pass  The priv passphrase.
  * @param mixed $priv_proto The priv protocol.
  *
  * @return array|null
@@ -1920,7 +1919,7 @@ function snmp_auth_cache_cred_lookup($community, $username, $password, $auth_pro
 	}
 
 	$key = snmp_auth_cache_key($community, $username, $password, $auth_proto, $priv_pass, $priv_proto);
-	$map = $GLOBALS['snmp_auth_cache_map'] ?? array();
+	$map = $GLOBALS['snmp_auth_cache_map'] ?? [];
 
 	return (isset($map[$key]) && is_array($map[$key])) ? $map[$key] : null;
 }
@@ -1933,22 +1932,22 @@ function snmp_auth_cache_cred_lookup($community, $username, $password, $auth_pro
  * or no ext-snmp) fall back to per-OID cacti_snmp_get(). Used as part of Cacti's
  * lib functionality.
  *
- * @param string $hostname The hostname.
- * @param mixed  $community The community.
- * @param array  $oids The OIDs to fetch.
- * @param mixed  $version The version.
- * @param mixed  $auth_user The auth user.
- * @param mixed  $auth_pass The auth pass.
- * @param mixed  $auth_proto The auth protocol.
- * @param mixed  $priv_pass The priv passphrase.
- * @param mixed  $priv_proto The priv protocol.
- * @param mixed  $context The context.
- * @param mixed  $port The port.
- * @param mixed  $timeout_ms The timeout in milliseconds.
- * @param mixed  $retries The retries.
- * @param mixed  $max_oids The maximum OIDs per request.
- * @param mixed  $environ The environ.
- * @param string $engineid The engine id.
+ * @param string $hostname            The hostname.
+ * @param mixed  $community           The community.
+ * @param array  $oids                The OIDs to fetch.
+ * @param mixed  $version             The version.
+ * @param mixed  $auth_user           The auth user.
+ * @param mixed  $auth_pass           The auth pass.
+ * @param mixed  $auth_proto          The auth protocol.
+ * @param mixed  $priv_pass           The priv passphrase.
+ * @param mixed  $priv_proto          The priv protocol.
+ * @param mixed  $context             The context.
+ * @param mixed  $port                The port.
+ * @param mixed  $timeout_ms          The timeout in milliseconds.
+ * @param mixed  $retries             The retries.
+ * @param mixed  $max_oids            The maximum OIDs per request.
+ * @param mixed  $environ             The environ.
+ * @param string $engineid            The engine id.
  * @param int    $value_output_format The value output format.
  *
  * @return array Map of OID => formatted value ('U' on a per-OID failure).
@@ -1957,28 +1956,27 @@ function cacti_snmp_get_multi($hostname, $community, $oids, $version, $auth_user
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
 	$port = 161, $timeout_ms = 500, $retries = 0, $max_oids = 10, $environ = 'SNMP',
 	$engineid = '', $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
-
 	global $snmp_error;
 
 	$snmp_error = '';
 
 	if (!is_array($oids)) {
-		$oids = array($oids);
+		$oids = [$oids];
 	}
 
 	if (cacti_sizeof($oids) == 0) {
-		return array();
+		return [];
 	}
 
 	if (!cacti_snmp_options_sanitize($version, $community, $port, $timeout_ms, $retries, $max_oids)) {
-		return array();
+		return [];
 	}
 
 	/* The array-OID form only exists on the procedural ext-snmp path; anything
 	 * that must use the binary (hex output, no ext-snmp) is served one OID at a
 	 * time through the usual single get. */
 	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format, auth_proto: $auth_proto, priv_proto: $priv_proto) != SNMP_METHOD_PHP || !function_exists('snmpget')) {
-		$results = array();
+		$results = [];
 
 		foreach ($oids as $oid) {
 			$results[$oid] = cacti_snmp_get($hostname, $community, $oid, $version, $auth_user, $auth_pass,
@@ -2013,7 +2011,7 @@ function cacti_snmp_get_multi($hostname, $community, $oids, $version, $auth_user
 		$priv_native = snmp_native_protocol($priv_proto);
 	}
 
-	$results = array();
+	$results = [];
 
 	foreach (array_chunk($oids, max(1, (int) $max_oids)) as $chunk) {
 		try {
@@ -2058,4 +2056,3 @@ function cacti_snmp_get_multi($hostname, $community, $oids, $version, $auth_user
 
 	return $results;
 }
-

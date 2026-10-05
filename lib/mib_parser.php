@@ -49,9 +49,9 @@
    *
 */
 class MibParser extends MibCache {
-	protected $parsed = array();
-	public    $oids   = array();
-	public    $mib    = false;
+	protected $parsed = [];
+	public $oids      = [];
+	public $mib       = false;
 
 	/**
 	 * Constructor
@@ -69,32 +69,32 @@ class MibParser extends MibCache {
 	/**
 	 * Get Tokens
 	 *
-	 * @param string $text
+	 * @param  string $text
 	 * @return array
 	 */
 	function get_tokens($text) {
-		$in_quote = false;
+		$in_quote   = false;
 		$in_comment = false;
-		$token = '';
-		$tokens = array();
-		$length = strlen($text);
+		$token      = '';
+		$tokens     = [];
+		$length     = strlen($text);
 
-		for($i = 0; $i < $length; $i++) {
+		for ($i = 0; $i < $length; $i++) {
 			if ($in_quote) {
 				if ($text[$i] == '"') {
 					$in_quote = false;
 
 					if ($token != '') {
-						/* strip whitespaces from the end of the beginning of every object description row */
-						$lines = preg_split( '/\r\n|\r|\n/', $token);
+						// strip whitespaces from the end of the beginning of every object description row
+						$lines = preg_split('/\r\n|\r|\n/', $token);
 						$token = '';
 
-						foreach($lines as $line) {
+						foreach ($lines as $line) {
 							$token .= trim($line) . "\r\n";
 						}
 
 						$tokens[] = $token;
-						$token = '';
+						$token    = '';
 					}
 				} else {
 					$token .= $text[$i];
@@ -106,10 +106,10 @@ class MibParser extends MibCache {
 			} else {
 				switch($text[$i]) {
 					case ':':
-						if ($text[$i+1] == ':' && $text[$i+2] == '=') {
+						if ($text[$i + 1] == ':' && $text[$i + 2] == '=') {
 							if ($token != '') {
 								$tokens[] = $token;
-								$token = '';
+								$token    = '';
 							}
 
 							$tokens[] = '::=';
@@ -120,10 +120,10 @@ class MibParser extends MibCache {
 
 						break;
 					case '.':
-						if ($text[$i+1] == '.') {
+						if ($text[$i + 1] == '.') {
 							if ($token != '') {
 								$tokens[] = $token;
-								$token = '';
+								$token    = '';
 							}
 
 							$tokens[] = '..';
@@ -142,7 +142,7 @@ class MibParser extends MibCache {
 					case '|':
 						if ($token != '') {
 							$tokens[] = $token;
-							$token = '';
+							$token    = '';
 						}
 
 						$tokens[] = $text[$i];
@@ -154,13 +154,13 @@ class MibParser extends MibCache {
 					case "\r":
 						if ($token != '') {
 							$tokens[] = $token;
-							$token = '';
+							$token    = '';
 						}
 
 						break;
 					case '-':
-						if ($text[$i+1] == '-') {
-						  $in_comment = true;
+						if ($text[$i + 1] == '-') {
+							$in_comment = true;
 						} else {
 							$token .= $text[$i];
 						}
@@ -186,16 +186,16 @@ class MibParser extends MibCache {
 	/**
 	 * Parse simple token
 	 *
-	 * @param array $tokens
-	 * @param integer $index
-	 * @param array $allowed
+	 * @param  array   $tokens
+	 * @param  integer $index
+	 * @param  array   $allowed
 	 * @return array
 	 */
-	function parse_simple_token($tokens, &$index, $allowed=null) {
+	function parse_simple_token($tokens, &$index, $allowed = null) {
 		$index++;
 
 		if (is_array($allowed)) {
-			if (in_array(strtolower($tokens[$index]), $allowed)) {
+			if (in_array(strtolower($tokens[$index]), $allowed, true)) {
 				return $tokens[$index];
 			}
 		} elseif (is_null($allowed)) {
@@ -214,33 +214,34 @@ class MibParser extends MibCache {
 	/**
 	 * Parse SYNTAX token
 	 *
-	 * @param array $tokens
-	 * @param integer $index
+	 * @param  array   $tokens
+	 * @param  integer $index
 	 * @return array
 	 */
 	function parse_SYNTAX_token($tokens, &$index) {
 		$ret = null;
 
-		switch($tokens[$index+1]) {
+		switch($tokens[$index + 1]) {
 			case 'SEQUENCE':
-				if ($tokens[$index+2] == 'OF') {
+				if ($tokens[$index + 2] == 'OF') {
 					$index += 3;
+
 					if ($tokens[$index] == '{') {
-						$ret = array('SEQUENCE OF'=>MibParser::parse_bracket_token($tokens, $index, '{', '}'));
+						$ret = ['SEQUENCE OF'=>MibParser::parse_bracket_token($tokens, $index, '{', '}')];
 					} else {
-						$ret = array('SEQUENCE OF'=>$tokens[$index]);
+						$ret = ['SEQUENCE OF'=>$tokens[$index]];
 					}
 				}
 
 				break;
 			case 'OCTET':
-				if ($tokens[$index+2] == 'STRING') {
+				if ($tokens[$index + 2] == 'STRING') {
 					$index += 3;
 
 					if ($tokens[$index] == '{') {
-						$ret = array('OCTET STRING'=>MibParser::parse_bracket_token($tokens, $index, '{', '}'));
+						$ret = ['OCTET STRING'=>MibParser::parse_bracket_token($tokens, $index, '{', '}')];
 					} elseif ($tokens[$index] == '(') {
-						$ret = array('OCTET STRING'=>MibParser::parse_bracket_token($tokens, $index, '(', ')'));
+						$ret = ['OCTET STRING'=>MibParser::parse_bracket_token($tokens, $index, '(', ')')];
 					} else {
 						$ret = 'OCTET STRING';
 					}
@@ -248,12 +249,12 @@ class MibParser extends MibCache {
 
 				break;
 			case 'OBJECT':
-				if ($tokens[$index+2] == 'IDENTIFIER') {
+				if ($tokens[$index + 2] == 'IDENTIFIER') {
 					$index++;
-					$ret = $tokens[$index] . ' ' . $tokens[$index+1];
+					$ret = $tokens[$index] . ' ' . $tokens[$index + 1];
 					$index++;
 				} else {
-					trigger_error("unknown token {$tokens[$index+1]} {$tokens[$index+2]}", E_USER_ERROR);
+					trigger_error("unknown token {$tokens[$index + 1]} {$tokens[$index + 2]}", E_USER_ERROR);
 				}
 
 				break;
@@ -275,12 +276,12 @@ class MibParser extends MibCache {
 				$index++;
 				$ret = $tokens[$index];
 
-				if ($tokens[$index+1] == '{') {
+				if ($tokens[$index + 1] == '{') {
 					$index++;
-					$ret = array($ret=>MibParser::parse_bracket_token($tokens, $index, '{', '}'));
-				} elseif ($tokens[$index+1] == '(') {
+					$ret = [$ret=>MibParser::parse_bracket_token($tokens, $index, '{', '}')];
+				} elseif ($tokens[$index + 1] == '(') {
 					$index++;
-					$ret = array($ret=>MibParser::parse_bracket_token($tokens, $index, '(', ')'));
+					$ret = [$ret=>MibParser::parse_bracket_token($tokens, $index, '(', ')')];
 				}
 
 				break;
@@ -288,12 +289,12 @@ class MibParser extends MibCache {
 				$index++;
 				$ret = $tokens[$index];
 
-				if ($tokens[$index+1] == '{') {
+				if ($tokens[$index + 1] == '{') {
 					$index++;
-					$ret = array($ret=>MibParser::parse_bracket_token($tokens, $index, '{', '}'));
-				} elseif ($tokens[$index+1] == '(') {
+					$ret = [$ret=>MibParser::parse_bracket_token($tokens, $index, '{', '}')];
+				} elseif ($tokens[$index + 1] == '(') {
 					$index++;
-					$ret = array($ret=>MibParser::parse_bracket_token($tokens, $index, '(', ')'));
+					$ret = [$ret=>MibParser::parse_bracket_token($tokens, $index, '(', ')')];
 				}
 
 				break;
@@ -305,16 +306,16 @@ class MibParser extends MibCache {
 	/**
 	 * Parse bracket token
 	 *
-	 * @param array $tokens
-	 * @param integer $index
-	 * @param integer $start
-	 * @param integer $end
+	 * @param  array   $tokens
+	 * @param  integer $index
+	 * @param  integer $start
+	 * @param  integer $end
 	 * @return array
 	 */
 	function parse_bracket_token($tokens, &$index, $start, $end) {
 		$begin = $index + 1;
 
-		while($index + 1 < count($tokens) && $tokens[$index] != $end) {
+		while ($index + 1 < count($tokens) && $tokens[$index] != $end) {
 			$index++;
 
 			if ($tokens[$index] == $start) {
@@ -329,65 +330,66 @@ class MibParser extends MibCache {
 	/**
 	 * Parse a MIB file
 	 *
-	 * @param string $mibtext
+	 * @param string  $mibtext
 	 * @param boolean $full
+	 * @param mixed   $mib_name
 	 */
-	function parse_mib($mibtext, $mib_name, $full=false) {
+	function parse_mib($mibtext, $mib_name, $full = false) {
 		$tokens = MibParser::get_tokens($mibtext);
-		$cnt = count($tokens);
-		$rec = array();
+		$cnt    = count($tokens);
+		$rec    = [];
 
-		for($index = 0; $index < $cnt; $index++) {
-			if ($tokens[$index] == 'DEFINITIONS' && $tokens[$index+1] == "::=" && $tokens[$index+2] == "BEGIN"){
-				$mib_name = $tokens[$index-1];
+		for ($index = 0; $index < $cnt; $index++) {
+			if ($tokens[$index] == 'DEFINITIONS' && $tokens[$index + 1] == '::=' && $tokens[$index + 2] == 'BEGIN') {
+				$mib_name  = $tokens[$index - 1];
 				$this->mib = $mib_name;
-			} elseif (in_array($tokens[$index], array('OBJECT-IDENTITY', 'OBJECT-TYPE', 'OBJECT-GROUP', 'NOTIFICATION-GROUP', 'MODULE-IDENTITY', 'NOTIFICATION-TYPE'))) {
-				if ($tokens[$index-1] != ',' && $tokens[$index+1] != 'FROM' && $tokens[$index+1] != 'MACRO') {
+			} elseif (in_array($tokens[$index], ['OBJECT-IDENTITY', 'OBJECT-TYPE', 'OBJECT-GROUP', 'NOTIFICATION-GROUP', 'MODULE-IDENTITY', 'NOTIFICATION-TYPE'], true)) {
+				if ($tokens[$index - 1] != ',' && $tokens[$index + 1] != 'FROM' && $tokens[$index + 1] != 'MACRO') {
 					if (isset($rec['NAME']) && isset($rec['VALUE'])) {
 						$this->parsed[] = $rec;
 					}
 
-					$rec = array(
-						'NAME' => $tokens[$index-1],
+					$rec = [
+						'NAME' => $tokens[$index - 1],
 						'MIB'  => $mib_name,
 						'TYPE' => $tokens[$index]
-					);
+					];
 				}
-			} elseif ( $tokens[$index] == 'TEXTUAL-CONVENTION') {
-				if ($tokens[$index-1] == '::=') {
+			} elseif ($tokens[$index] == 'TEXTUAL-CONVENTION') {
+				if ($tokens[$index - 1] == '::=') {
 					if (isset($rec['NAME']) && isset($rec['VALUE'])) {
 						$this->parsed[] = $rec;
 					}
 
-					$rec = array(
-						'NAME'  => $tokens[$index-2],
+					$rec = [
+						'NAME'  => $tokens[$index - 2],
 						'MIB'   => $mib_name,
 						'TYPE'  => $tokens[$index],
 						'VALUE' => 'TEXTUAL-CONVENTION'
-					);
+					];
 				}
 			} elseif ($tokens[$index] == 'OBJECT') {
-				if ($tokens[$index+1] == 'IDENTIFIER' && $tokens[$index-1] != '(' && $tokens[$index-1] != '::=' && $tokens[$index-1] != 'SYNTAX' && $tokens[$index-2] != '(') {
+				if ($tokens[$index + 1] == 'IDENTIFIER' && $tokens[$index - 1] != '(' && $tokens[$index - 1] != '::=' && $tokens[$index - 1] != 'SYNTAX' && $tokens[$index - 2] != '(') {
 					if (isset($rec['NAME']) && isset($rec['VALUE'])) {
 						$this->parsed[] = $rec;
 					}
 
-					$rec = array(
-						'NAME' => $tokens[$index-1],
+					$rec = [
+						'NAME' => $tokens[$index - 1],
 						'MIB'  => $mib_name,
 						'TYPE' => $tokens[$index]
-					);
+					];
 				}
 			} elseif ($tokens[$index] == '{') {
 				MibParser::parse_bracket_token($tokens, $index, '{', '}');
 			} elseif (isset($rec['NAME'])) {
-				if ($tokens[$index] == '::=' && $tokens[$index+1] != 'TEXTUAL-CONVENTION') {
-					$rec['VALUE'] = MibParser::parse_simple_token($tokens, $index);
+				if ($tokens[$index] == '::=' && $tokens[$index + 1] != 'TEXTUAL-CONVENTION') {
+					$rec['VALUE']   = MibParser::parse_simple_token($tokens, $index);
 					$this->parsed[] = $rec;
-					$rec = array();
+					$rec            = [];
 				} elseif ($full) {
 					if ($tokens[$index] == 'ACCESS') {
-						$rec['ACCESS'] = MibParser::parse_simple_token($tokens, $index, array('read-only', 'not-accessible', 'read-write'));
+						$rec['ACCESS'] = MibParser::parse_simple_token($tokens, $index, ['read-only', 'not-accessible', 'read-write']);
 					} elseif ($tokens[$index] == 'OBJECTS') {
 						$rec['OBJECTS'] = MibParser::parse_simple_token($tokens, $index);
 					} elseif ($tokens[$index] == 'NOTIFICATIONS') {
@@ -399,11 +401,11 @@ class MibParser extends MibCache {
 					} elseif ($tokens[$index] == 'INDEX') {
 						$rec['INDEX'] = MibParser::parse_simple_token($tokens, $index);
 					} elseif ($tokens[$index] == 'MAX-ACCESS') {
-						$rec['MAX-ACCESS'] = MibParser::parse_simple_token($tokens, $index, array('read-only', 'not-accessible', 'read-write', 'read-create', 'accessible-for-notify'));
+						$rec['MAX-ACCESS'] = MibParser::parse_simple_token($tokens, $index, ['read-only', 'not-accessible', 'read-write', 'read-create', 'accessible-for-notify']);
 					} elseif ($tokens[$index] == 'REFERENCE') {
 						$rec['REFERENCE'] = MibParser::parse_simple_token($tokens, $index);
 					} elseif ($tokens[$index] == 'STATUS') {
-						$rec['STATUS'] = MibParser::parse_simple_token($tokens, $index, array('current', 'deprecated', 'obsolete', 'mandatory'));
+						$rec['STATUS'] = MibParser::parse_simple_token($tokens, $index, ['current', 'deprecated', 'obsolete', 'mandatory']);
 					} elseif ($tokens[$index] == 'SYNTAX') {
 						$rec['SYNTAX'] = MibParser::parse_SYNTAX_token($tokens, $index);
 					} elseif ($tokens[$index] == 'UNITS') {
@@ -418,10 +420,10 @@ class MibParser extends MibCache {
 		}
 	}
 
-	function generate(){
-		$this->oids['enterprises'] = array('oid' => '.1.3.6.1.4.1');
+	function generate() {
+		$this->oids['enterprises'] = ['oid' => '.1.3.6.1.4.1'];
 
-		foreach($this->parsed as $object) {
+		foreach ($this->parsed as $object) {
 			if (isset($object['VALUE'][0]) && !is_numeric($object['VALUE'][0])) {
 				if (isset($object['VALUE'][1]) && is_numeric($object['VALUE'][1])) {
 					if (isset($this->oids[$object['VALUE'][0]]['oid'])) {
@@ -431,57 +433,59 @@ class MibParser extends MibCache {
 							FROM snmpagent_cache
 							WHERE name = ?
 							LIMIT 1',
-							array($object['VALUE'][0]));
+							[$object['VALUE'][0]]);
 
 						$oid .= '.' . $object['VALUE'][1];
 					}
 
 					$syntax = null;
+
 					if (isset($object['SYNTAX'])) {
 						$syntax = is_array($object['SYNTAX']) ? key($object['SYNTAX']) : $object['SYNTAX'];
 					}
 
 					$parent_otype = strtoupper(substr($object['VALUE'][0], -5));
-					$otype = $object['TYPE'];
+					$otype        = $object['TYPE'];
 
-					if ($otype == 'OBJECT-TYPE' && $syntax !== null && !in_array(strtoupper(substr($object['NAME'], -5)), array('TABLE', 'ENTRY')) && !in_array($parent_otype, array('TABLE', 'ENTRY')) ) {
+					if ($otype == 'OBJECT-TYPE' && $syntax !== null && !in_array(strtoupper(substr($object['NAME'], -5)), ['TABLE', 'ENTRY'], true) && !in_array($parent_otype, ['TABLE', 'ENTRY'], true)) {
 						$oid .= '.0';
 						$otype = 'DATA';
 					}
 
-					$kind ='unknown';
-					if (in_array($otype, array('MODULE-IDENTITY', 'OBJECT-IDENTITY'))) {
+					$kind = 'unknown';
+
+					if (in_array($otype, ['MODULE-IDENTITY', 'OBJECT-IDENTITY'], true)) {
 						$kind = 'Node';
-					} else if (in_array($otype, array('NOTIFICATION-GROUP', 'OBJECT-GROUP'))) {
+					} elseif (in_array($otype, ['NOTIFICATION-GROUP', 'OBJECT-GROUP'], true)) {
 						$kind = 'Group';
-					} else if ($otype == 'OBJECT-TYPE' && strtoupper(substr($object['NAME'], -5)) == 'TABLE' && $syntax == 'SEQUENCE OF') {
+					} elseif ($otype == 'OBJECT-TYPE' && strtoupper(substr($object['NAME'], -5)) == 'TABLE' && $syntax == 'SEQUENCE OF') {
 						$kind = 'Table';
-					} else if ($otype == 'OBJECT-TYPE' && strtoupper(substr($object['NAME'], -5)) == 'ENTRY' && $parent_otype == 'TABLE') {
+					} elseif ($otype == 'OBJECT-TYPE' && strtoupper(substr($object['NAME'], -5)) == 'ENTRY' && $parent_otype == 'TABLE') {
 						$kind = 'Row';
-					} else if ($otype == 'OBJECT-TYPE' && $parent_otype == 'ENTRY') {
+					} elseif ($otype == 'OBJECT-TYPE' && $parent_otype == 'ENTRY') {
 						$kind = 'Column';
-					} else if ($otype == 'DATA') {
+					} elseif ($otype == 'DATA') {
 						$kind = 'Scalar';
-					} else if ($otype == 'NOTIFICATION-TYPE') {
+					} elseif ($otype == 'NOTIFICATION-TYPE') {
 						$kind = 'Notification';
 					}
 
-					$this->oids[$object['NAME']] = array(
+					$this->oids[$object['NAME']] = [
 						'oid'         => $oid,
-						'max-access'  => (isset($object['MAX-ACCESS'])? $object['MAX-ACCESS'] : 'not-accessible'),
+						'max-access'  => (isset($object['MAX-ACCESS']) ? $object['MAX-ACCESS'] : 'not-accessible'),
 						'syntax'      => $syntax,
 						'otype'       => $otype,
 						'kind'        => $kind,
 						'mib'         => $object['MIB'],
 						'description' => $object['DESCRIPTION']
-					);
+					];
 
 					if ($otype == 'OBJECT-GROUP' && isset($object['OBJECTS'])) {
-						$this->oids[$object['NAME']]['objects'] = array_diff($object['OBJECTS'], array(','));
+						$this->oids[$object['NAME']]['objects'] = array_diff($object['OBJECTS'], [',']);
 					} elseif ($otype == 'NOTIFICATION-GROUP' && isset($object['NOTIFICATIONS'])) {
-						$this->oids[$object['NAME']]['notifications'] = array_diff($object['NOTIFICATIONS'], array(','));
+						$this->oids[$object['NAME']]['notifications'] = array_diff($object['NOTIFICATIONS'], [',']);
 					} elseif ($otype == 'NOTIFICATION-TYPE' && isset($object['OBJECTS'])) {
-						$this->oids[$object['NAME']]['objects'] = array_diff($object['OBJECTS'], array(','));
+						$this->oids[$object['NAME']]['objects'] = array_diff($object['OBJECTS'], [',']);
 					}
 				} elseif ($object['VALUE'] == 'TEXTUAL-CONVENTION') {
 					$syntax = null;
@@ -490,10 +494,10 @@ class MibParser extends MibCache {
 						$syntax = is_array($object['SYNTAX']) ? key($object['SYNTAX']) : $object['SYNTAX'];
 					}
 
-					$kind = 'Textual-Convention';
+					$kind  = 'Textual-Convention';
 					$otype = 'TEXTUAL-CONVENTION';
 
-					$this->oids[$object['NAME']] = array(
+					$this->oids[$object['NAME']] = [
 						'oid'         => '',
 						'max-access'  => '',
 						'syntax'      => $syntax,
@@ -501,7 +505,7 @@ class MibParser extends MibCache {
 						'kind'        => $kind,
 						'mib'         => $object['MIB'],
 						'description' => $object['DESCRIPTION']
-					);
+					];
 				}
 			}
 		}
@@ -510,4 +514,3 @@ class MibParser extends MibCache {
 		unset($this->parsed);
 	}
 }
-

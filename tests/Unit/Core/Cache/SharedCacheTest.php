@@ -40,7 +40,7 @@ function sharedCacheRmTree(string $dir): void {
 		return;
 	}
 
-	foreach (glob($dir . '/*') ?: array() as $path) {
+	foreach (glob($dir . '/*') ?: [] as $path) {
 		if (is_dir($path)) {
 			sharedCacheRmTree($path);
 		} else {
@@ -55,14 +55,14 @@ test('store and fetch round-trip through the file tier across instances', functi
 	$dir = sharedCacheTmpDir();
 
 	try {
-		$data = array('k1' => array('a', 'b'), 'k2' => 42, 'k3' => 'value');
+		$data = ['k1' => ['a', 'b'], 'k2' => 42, 'k3' => 'value'];
 
-		$writer = new \Cacti\Cache\SharedCache('sc_roundtrip', array('cache_dir' => $dir, 'backends' => array('file')));
+		$writer = new \Cacti\Cache\SharedCache('sc_roundtrip', ['cache_dir' => $dir, 'backends' => ['file']]);
 		expect($writer->store($data, 'token-1'))->toBeTrue();
 		expect($writer->isShared())->toBeTrue();
 
-		/* a fresh instance has no in-process memo, so it must read from disk */
-		$reader = new \Cacti\Cache\SharedCache('sc_roundtrip', array('cache_dir' => $dir, 'backends' => array('file')));
+		// a fresh instance has no in-process memo, so it must read from disk
+		$reader = new \Cacti\Cache\SharedCache('sc_roundtrip', ['cache_dir' => $dir, 'backends' => ['file']]);
 		expect($reader->fetch())->toEqual($data);
 		expect($reader->checksum())->toBe('token-1');
 	} finally {
@@ -74,14 +74,14 @@ test('invalidate removes the stored entry from the file tier', function () {
 	$dir = sharedCacheTmpDir();
 
 	try {
-		$writer = new \Cacti\Cache\SharedCache('sc_invalidate', array('cache_dir' => $dir, 'backends' => array('file')));
-		$writer->store(array('v' => 1), 'token');
+		$writer = new \Cacti\Cache\SharedCache('sc_invalidate', ['cache_dir' => $dir, 'backends' => ['file']]);
+		$writer->store(['v' => 1], 'token');
 		expect(is_file($dir . '/sc_invalidate.cache'))->toBeTrue();
 
 		$writer->invalidate();
 		expect(is_file($dir . '/sc_invalidate.cache'))->toBeFalse();
 
-		$reader = new \Cacti\Cache\SharedCache('sc_invalidate', array('cache_dir' => $dir, 'backends' => array('file')));
+		$reader = new \Cacti\Cache\SharedCache('sc_invalidate', ['cache_dir' => $dir, 'backends' => ['file']]);
 		expect($reader->fetch())->toBeFalse();
 	} finally {
 		sharedCacheRmTree($dir);
@@ -92,13 +92,13 @@ test('a corrupt payload is treated as a miss rather than crashing', function () 
 	$dir = sharedCacheTmpDir();
 
 	try {
-		/* valid JSON envelope, but the payload is not a serialized value */
-		file_put_contents($dir . '/sc_corrupt.cache', json_encode(array(
+		// valid JSON envelope, but the payload is not a serialized value
+		file_put_contents($dir . '/sc_corrupt.cache', json_encode([
 			'checksum' => 'token',
 			'payload'  => base64_encode('this-is-not-serialized'),
-		)));
+		]));
 
-		$cache = new \Cacti\Cache\SharedCache('sc_corrupt', array('cache_dir' => $dir, 'backends' => array('file')));
+		$cache = new \Cacti\Cache\SharedCache('sc_corrupt', ['cache_dir' => $dir, 'backends' => ['file']]);
 		expect($cache->fetch())->toBeFalse();
 	} finally {
 		sharedCacheRmTree($dir);
@@ -111,7 +111,7 @@ test('malformed JSON in the cache file is treated as a miss', function () {
 	try {
 		file_put_contents($dir . '/sc_badjson.cache', 'not-valid-json{');
 
-		$cache = new \Cacti\Cache\SharedCache('sc_badjson', array('cache_dir' => $dir, 'backends' => array('file')));
+		$cache = new \Cacti\Cache\SharedCache('sc_badjson', ['cache_dir' => $dir, 'backends' => ['file']]);
 		expect($cache->fetch())->toBeFalse();
 		expect($cache->checksum())->toBeNull();
 	} finally {
@@ -125,12 +125,12 @@ test('a non-string checksum field does not raise a TypeError', function () {
 	try {
 		/* a corrupt file could decode to an array-valued checksum; readChecksum()
 		 * must treat that as absent instead of returning a non-string */
-		file_put_contents($dir . '/sc_badsum.cache', json_encode(array(
-			'checksum' => array('unexpected', 'array'),
-			'payload'  => base64_encode(serialize(array('x' => 1))),
-		)));
+		file_put_contents($dir . '/sc_badsum.cache', json_encode([
+			'checksum' => ['unexpected', 'array'],
+			'payload'  => base64_encode(serialize(['x' => 1])),
+		]));
 
-		$cache = new \Cacti\Cache\SharedCache('sc_badsum', array('cache_dir' => $dir, 'backends' => array('file')));
+		$cache = new \Cacti\Cache\SharedCache('sc_badsum', ['cache_dir' => $dir, 'backends' => ['file']]);
 		expect($cache->checksum())->toBeNull();
 	} finally {
 		sharedCacheRmTree($dir);
@@ -146,15 +146,15 @@ test('a failed higher-tier write falls through without serving stale data', func
 		 * root, where permission bits would be ignored */
 		mkdir($dir . '/sc_fallback.cache', 0770, true);
 
-		$writer = new \Cacti\Cache\SharedCache('sc_fallback', array('cache_dir' => $dir, 'backends' => array('file', 'static')));
+		$writer = new \Cacti\Cache\SharedCache('sc_fallback', ['cache_dir' => $dir, 'backends' => ['file', 'static']]);
 
-		/* no cross-process tier accepted the write */
-		expect($writer->store(array('fresh' => true), 'new'))->toBeFalse();
+		// no cross-process tier accepted the write
+		expect($writer->store(['fresh' => true], 'new'))->toBeFalse();
 
 		/* a fresh consumer still gets the new value from the process-local
 		 * fallback tier and never the unreadable stale directory entry */
-		$reader = new \Cacti\Cache\SharedCache('sc_fallback', array('cache_dir' => $dir, 'backends' => array('file', 'static')));
-		expect($reader->fetch())->toEqual(array('fresh' => true));
+		$reader = new \Cacti\Cache\SharedCache('sc_fallback', ['cache_dir' => $dir, 'backends' => ['file', 'static']]);
+		expect($reader->fetch())->toEqual(['fresh' => true]);
 	} finally {
 		@rmdir($dir . '/sc_fallback.cache');
 		sharedCacheRmTree($dir);
