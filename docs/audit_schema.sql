@@ -1291,6 +1291,11 @@ INSERT INTO `table_columns` VALUES ('login_providers',8,'is_default','tinyint(3)
 INSERT INTO `table_columns` VALUES ('login_providers',9,'allow_auth_cookies','char(2)','NO','','on','');
 INSERT INTO `table_columns` VALUES ('login_providers',10,'user_id','int(10) unsigned','NO','','0','');
 INSERT INTO `table_columns` VALUES ('login_providers',11,'parameters','longtext','YES','',NULL,'');
+INSERT INTO `table_columns` VALUES ('user_layouts',1,'id','int(10) unsigned','NO','PRI',NULL,'auto_increment');
+INSERT INTO `table_columns` VALUES ('user_layouts',2,'user_id','int(10) unsigned','NO','MUL','0','');
+INSERT INTO `table_columns` VALUES ('user_layouts',3,'page','varchar(64)','NO','MUL','','');
+INSERT INTO `table_columns` VALUES ('user_layouts',4,'name','varchar(128)','NO','','','');
+INSERT INTO `table_columns` VALUES ('user_layouts',5,'url','varchar(1024)','NO','','','');
 INSERT INTO `table_columns` VALUES ('user_log',1,'username','varchar(50)','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('user_log',2,'user_id','mediumint(8)','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('user_log',3,'time','timestamp','NO','PRI','0000-00-00 00:00:00','');
@@ -1739,6 +1744,9 @@ INSERT INTO `table_indexes` VALUES ('user_auth_row_cache',0,'PRIMARY',1,'user_id
 INSERT INTO `table_indexes` VALUES ('user_auth_row_cache',0,'PRIMARY',2,'class','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_auth_row_cache',0,'PRIMARY',3,'hash','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('login_providers',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('user_layouts',1,'page',1,'page','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('user_layouts',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('user_layouts',1,'user_id',1,'user_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_log',0,'PRIMARY',1,'username','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_log',0,'PRIMARY',2,'user_id','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_log',0,'PRIMARY',3,'time','A',2,NULL,NULL,'','BTREE','');

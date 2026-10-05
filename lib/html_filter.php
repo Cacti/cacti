@@ -56,6 +56,7 @@ class CactiTableFilter {
 	public bool   $has_named       = false;
 	public bool   $has_associated  = false;
 	public bool   $has_refresh     = false;
+	public bool   $render_layouts  = true;
 	public mixed  $inject_content  = false;
 	private bool  $initialized     = false;
 	private array $sort_array      = [];
@@ -111,6 +112,14 @@ class CactiTableFilter {
 
 		if ($this->action_url != '' && $this->action_label == '') {
 			$this->action_label = __('Add');
+		}
+
+		// Preset pages (CDEFs, VDEFs, Colors, ...) manage system presets, not
+		// per-user record lists, so they do not offer saved filter layouts.
+		$page = basename($this->form_action != '' ? $this->form_action : get_current_page());
+
+		if (in_array($page, filter_layouts_preset_pages(), true)) {
+			$this->render_layouts = false;
 		}
 
 		$this->filter_array = $this->create_default();
@@ -636,6 +645,10 @@ class CactiTableFilter {
 			print '</form>' . PHP_EOL;
 		}
 
+		if ($this->render_layouts) {
+			print $this->create_layouts();
+		}
+
 		html_filter_end_box();
 
 		return ob_get_clean();
@@ -867,7 +880,7 @@ class CactiTableFilter {
 			$changeReady = '';
 		}
 
-		return PHP_EOL . "<script type='text/javascript'>
+		$script = PHP_EOL . "<script type='text/javascript'>
 		$globalAdd
 		function applyFilter() {
 			strURL = $applyFilter
@@ -915,6 +928,12 @@ class CactiTableFilter {
 			$buttonReady
 		});
 	</script>" . PHP_EOL;
+
+		if ($this->render_layouts) {
+			$script .= $this->create_layouts_javascript($applyFilter);
+		}
+
+		return $script;
 	}
 
 	private function sanitize_filter_variables() : void {
@@ -969,5 +988,467 @@ class CactiTableFilter {
 		}
 
 		validate_store_request_vars($filters, $this->session_var);
+	}
+
+	private function layout_button(string $id, string $display, string $title) : string {
+		return '<div class="filterColumnButton">' .
+			'<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $id . '" title="' . html_escape($title) . '"><span class="button-text">' . html_escape($display) . '</span></button>' .
+			'</div>' . PHP_EOL;
+	}
+
+	private function create_layouts() : string {
+		$page     = filter_layouts_page_key($this->form_action != '' ? $this->form_action : get_current_page());
+		$layouts  = filter_layouts_get_available($page);
+		$can_glob = filter_layouts_can_manage_global();
+
+		$selected = 0;
+
+		if (isset_request_var('filter_layout')) {
+			$selected = (int) get_nfilter_request_var('filter_layout');
+		}
+
+		ob_start();
+
+		print "<div class='filterTable even cactiFilterLayouts'>";
+		print "<div class='filterRow'>";
+
+		print "<div class='filterColumn'><div class='filterFieldName'>" . __('Layouts') . '</div></div>';
+
+		print "<div class='filterColumn'>";
+		print "<select id='filter_layout' class='ui-state-default ui-corner-all'>";
+		print "<option value='0' data-url=''>" . html_escape(__('(New Layout)')) . '</option>';
+
+		if (cacti_sizeof($layouts)) {
+			foreach ($layouts as $layout) {
+				$url   = $layout['url'];
+				$sep   = (strpos($url, '?') !== false) ? '&' : '?';
+				$nav   = $url . $sep . 'filter_layout=' . $layout['id'];
+				$label = $layout['name'] . ($layout['user_id'] == 0 ? ' (' . __('Global') . ')' : '');
+
+				print "<option value='" . $layout['id'] . "' data-url='" . html_escape($nav) . "' data-name='" . html_escape($layout['name']) . "'" . ($selected == $layout['id'] ? ' selected' : '') . '>' . html_escape($label) . '</option>';
+			}
+		}
+
+		print '</select>';
+		print '</div>';
+
+		print $this->layout_button('layout_save',   __('Save'),   __('Overwrite the selected layout with the current filter'));
+		print $this->layout_button('layout_new',    __('New'),    __('Save the current filter as a new layout'));
+		print $this->layout_button('layout_rename', __('Rename'), __('Rename the selected layout'));
+		print $this->layout_button('layout_delete', __('Delete'), __('Delete the selected layout'));
+
+		if ($can_glob) {
+			print $this->layout_button('layout_publish', __('Publish'), __('Publish the selected layout so all users can see it'));
+		}
+
+		print '</div>';
+		print '</div>' . PHP_EOL;
+
+		// Hidden name-entry dialog reused by the New and Rename actions.
+		print "<div id='layoutNameDialog' title='" . __esc('Layout Name') . "' style='display:none;'>";
+		print "<form id='layoutNameForm' onsubmit='return false;'>";
+		print "<label for='layout_name'>" . __('Name') . '</label> ';
+		print "<input type='text' id='layout_name' size='40' maxlength='128' class='ui-state-default ui-corner-all'>";
+		print '</form></div>' . PHP_EOL;
+
+		return ob_get_clean();
+	}
+
+	private function create_layouts_javascript(string $applyFilter) : string {
+		$page = filter_layouts_page_key($this->form_action != '' ? $this->form_action : get_current_page());
+
+		$js  = PHP_EOL . "<script type='text/javascript'>" . PHP_EOL;
+		$js .= 'function layoutFilterUrl() {' . PHP_EOL;
+		$js .= "\treturn " . $applyFilter . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
+		$js .= 'function layoutSelectedId() {' . PHP_EOL;
+		$js .= "\treturn parseInt($('#filter_layout').val()) || 0;" . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
+		$js .= 'function layoutPost(layoutAction, extra, onDone) {' . PHP_EOL;
+		$js .= "\tvar data = $.extend({ action: layoutAction, page: " . json_encode($page) . ', __csrf_magic: csrfMagicToken }, extra);' . PHP_EOL;
+		$js .= "\t$.post(" . json_encode($page) . ", data, function(result) { if (onDone) { onDone(result); } }, 'json').fail(function() { alert(" . json_encode(__('The layout operation failed.')) . '); });' . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
+		$js .= 'function layoutNameDialog(title, value, onAccept) {' . PHP_EOL;
+		$js .= "\t$('#layout_name').val(value);" . PHP_EOL;
+		$js .= "\t$('#layoutNameDialog').dialog({ title: title, modal: true, width: 400, resizable: false, buttons: [" . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode(__('OK')) . ", click: function() { var n = $('#layout_name').val(); $(this).dialog('close'); if (n != '') { onAccept(n); } } }," . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } }" . PHP_EOL;
+		$js .= "\t] });" . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
+		$js .= '$(function() {' . PHP_EOL;
+		$js .= "\t$('#filter_layout').change(function() { var u = $('#filter_layout option:selected').attr('data-url'); if (u != undefined && u != '') { document.location = u; } });" . PHP_EOL;
+
+		$js .= "\t$('#layout_new').click(function() { layoutNameDialog(" . json_encode(__('New Layout')) . ", '', function(name) { layoutPost('layout_save', { name: name, url: layoutFilterUrl() }, function(r) { if (r.url) { document.location = r.url; } }); }); });" . PHP_EOL;
+
+		$js .= "\t$('#layout_save').click(function() { var id = layoutSelectedId(); if (id == 0) { $('#layout_new').click(); } else { layoutPost('layout_save', { id: id, url: layoutFilterUrl() }, function(r) { if (r.url) { document.location = r.url; } else { window.location.reload(); } }); } });" . PHP_EOL;
+
+		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to rename.')) . "); return; } var cur = $('#filter_layout option:selected').attr('data-name'); layoutNameDialog(" . json_encode(__('Rename Layout')) . ", cur, function(name) { layoutPost('layout_rename', { id: id, name: name }, function() { window.location.reload(); }); }); });" . PHP_EOL;
+
+		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to delete.')) . "); return; } if (confirm(" . json_encode(__('Delete the selected layout?')) . ")) { layoutPost('layout_delete', { id: id }, function() { document.location = " . json_encode($page) . "; }); } });" . PHP_EOL;
+
+		$js .= "\t$('#layout_publish').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to publish.')) . "); return; } layoutPost('layout_publish', { id: id }, function() { window.location.reload(); }); });" . PHP_EOL;
+
+		$js .= '});' . PHP_EOL;
+		$js .= '</script>' . PHP_EOL;
+
+		return $js;
+	}
+}
+
+/**
+ * Page basenames (the Console > Presets menu) that manage system presets rather
+ * than per-user record lists. Saved filter layouts default to off on these.
+ *
+ * @return array<int, string>
+ */
+function filter_layouts_preset_pages() : array {
+	return [
+		'data_source_profiles.php',
+		'automation_snmp.php',
+		'cdef.php',
+		'vdef.php',
+		'color.php',
+		'gprint_presets.php',
+	];
+}
+
+/**
+ * Reduce a page filename or stored layout url to its bare page basename.
+ *
+ * @param string $page A page filename or a 'page.php?query' style url.
+ *
+ * @return string The page basename, e.g. 'host.php'.
+ */
+function filter_layouts_page_key(string $page) : string {
+	$page = trim($page);
+	$qpos = strpos($page, '?');
+
+	if ($qpos !== false) {
+		$page = substr($page, 0, $qpos);
+	}
+
+	return basename($page);
+}
+
+/**
+ * Whether the current user may publish or manage global (user_id = 0) layouts.
+ * This is gated on the Settings/Utilities realm.
+ *
+ * @return bool
+ */
+function filter_layouts_can_manage_global() : bool {
+	return is_realm_allowed(15);
+}
+
+/**
+ * Whether a stored layout url is a safe, same-site page reference (no scheme,
+ * host, or path traversal) before it is echoed back or navigated to.
+ *
+ * @param string $url Candidate layout url.
+ *
+ * @return bool
+ */
+function filter_layouts_valid_url(string $url) : bool {
+	return preg_match('/^[a-z0-9_]+\.php(\?[^\'"<>]*)?$/i', trim($url)) === 1;
+}
+
+/**
+ * Fetch a single layout row by id.
+ *
+ * @param int $id Layout id.
+ *
+ * @return array<string,mixed>|false The row, or false when not found.
+ */
+function filter_layouts_get(int $id) {
+	if ($id <= 0) {
+		return false;
+	}
+
+	return db_fetch_row_prepared('SELECT * FROM user_layouts WHERE id = ?', [$id]);
+}
+
+/**
+ * The layouts a user may see on a page: their own plus any published ones.
+ *
+ * @param string $page    Page filename or url.
+ * @param int    $user_id User id, or -1 for the current session user.
+ *
+ * @return array<int, array<string,mixed>>
+ */
+function filter_layouts_get_available(string $page, int $user_id = -1) : array {
+	if (!db_table_exists('user_layouts')) {
+		return [];
+	}
+
+	if ($user_id < 0) {
+		$user_id = isset($_SESSION['sess_user_id']) ? (int) $_SESSION['sess_user_id'] : 0;
+	}
+
+	$page = filter_layouts_page_key($page);
+
+	return db_fetch_assoc_prepared('SELECT id, user_id, page, name, url
+		FROM user_layouts
+		WHERE page = ?
+		AND (user_id = ? OR user_id = 0)
+		ORDER BY (user_id = 0), name', [$page, $user_id]);
+}
+
+/**
+ * Whether the current user may modify a given layout row. Users own their own
+ * layouts; global layouts and other users' layouts require the Settings/
+ * Utilities realm.
+ *
+ * @param array<string,mixed>|false $layout Layout row.
+ *
+ * @return bool
+ */
+function filter_layouts_user_can_edit($layout) : bool {
+	if (!is_array($layout)) {
+		return false;
+	}
+
+	$user_id = isset($_SESSION['sess_user_id']) ? (int) $_SESSION['sess_user_id'] : 0;
+
+	if ($layout['user_id'] == 0) {
+		return filter_layouts_can_manage_global();
+	}
+
+	return ($layout['user_id'] == $user_id) || filter_layouts_can_manage_global();
+}
+
+/**
+ * Create or update a layout. New layouts are owned by the current user; updates
+ * are permitted only where filter_layouts_user_can_edit() allows.
+ *
+ * @param string $name Layout name.
+ * @param string $url  Full 'page.php?query' filter url.
+ * @param int    $id   Existing layout id to overwrite, or 0 to create.
+ *
+ * @return array<string,mixed>|false The saved row, or false on error.
+ */
+function filter_layouts_save(string $name, string $url, int $id = 0) {
+	$user_id = isset($_SESSION['sess_user_id']) ? (int) $_SESSION['sess_user_id'] : 0;
+	$name    = trim($name);
+	$url     = trim($url);
+
+	if (!filter_layouts_valid_url($url)) {
+		return false;
+	}
+
+	$page = filter_layouts_page_key($url);
+
+	if ($page == '') {
+		return false;
+	}
+
+	$save = [];
+
+	if ($id > 0) {
+		$existing = filter_layouts_get($id);
+
+		if ($existing === false || !filter_layouts_user_can_edit($existing)) {
+			return false;
+		}
+
+		$save['id']      = $id;
+		$save['user_id'] = $existing['user_id'];
+
+		if ($name == '') {
+			$name = $existing['name'];
+		}
+	} else {
+		if ($name == '') {
+			return false;
+		}
+
+		$save['user_id'] = $user_id;
+	}
+
+	$save['page'] = $page;
+	$save['name'] = substr($name, 0, 128);
+	$save['url']  = substr($url, 0, 1024);
+
+	$saved_id = sql_save($save, 'user_layouts');
+
+	if ($saved_id === false) {
+		return false;
+	}
+
+	return filter_layouts_get($saved_id);
+}
+
+/**
+ * Rename a layout.
+ *
+ * @param int    $id   Layout id.
+ * @param string $name New name.
+ *
+ * @return bool
+ */
+function filter_layouts_rename(int $id, string $name) : bool {
+	$layout = filter_layouts_get($id);
+	$name   = trim($name);
+
+	if ($layout === false || !filter_layouts_user_can_edit($layout) || $name == '') {
+		return false;
+	}
+
+	db_execute_prepared('UPDATE user_layouts SET name = ? WHERE id = ?', [substr($name, 0, 128), $id]);
+
+	return true;
+}
+
+/**
+ * Delete a layout.
+ *
+ * @param int $id Layout id.
+ *
+ * @return bool
+ */
+function filter_layouts_delete(int $id) : bool {
+	$layout = filter_layouts_get($id);
+
+	if ($layout === false || !filter_layouts_user_can_edit($layout)) {
+		return false;
+	}
+
+	db_execute_prepared('DELETE FROM user_layouts WHERE id = ?', [$id]);
+
+	return true;
+}
+
+/**
+ * Publish a layout to all users by moving it to user_id = 0. Requires the
+ * Settings/Utilities realm.
+ *
+ * @param int $id Layout id.
+ *
+ * @return bool
+ */
+function filter_layouts_publish(int $id) : bool {
+	if (!filter_layouts_can_manage_global()) {
+		return false;
+	}
+
+	$layout = filter_layouts_get($id);
+
+	if ($layout === false) {
+		return false;
+	}
+
+	db_execute_prepared('UPDATE user_layouts SET user_id = 0 WHERE id = ?', [$id]);
+
+	return true;
+}
+
+/**
+ * Unpublish a global layout by assigning it to a specific user. Requires the
+ * Settings/Utilities realm.
+ *
+ * @param int $id      Layout id.
+ * @param int $user_id Target owner user id.
+ *
+ * @return bool
+ */
+function filter_layouts_unpublish(int $id, int $user_id) : bool {
+	if (!filter_layouts_can_manage_global()) {
+		return false;
+	}
+
+	$layout = filter_layouts_get($id);
+
+	if ($layout === false || $user_id <= 0) {
+		return false;
+	}
+
+	db_execute_prepared('UPDATE user_layouts SET user_id = ? WHERE id = ?', [$user_id, $id]);
+
+	return true;
+}
+
+/**
+ * Emit a JSON response for a layout request and end the request.
+ *
+ * @param array<string,mixed> $data Response payload.
+ *
+ * @return never
+ */
+function filter_layouts_json(array $data) {
+	header('Content-type: application/json');
+
+	print json_encode($data);
+
+	exit;
+}
+
+/**
+ * Handle a saved-filter-layout AJAX request posted to any page. Invoked once
+ * per request from include/auth.php after the user has been authenticated and
+ * authorized for the current page, so every user can manage their own layouts
+ * from any filter while publishing stays gated on the Settings/Utilities realm.
+ *
+ * Only POST requests are acted on (Cacti validates the CSRF token on POST).
+ * Non-layout requests return immediately so normal page loads are unaffected.
+ *
+ * @return void
+ */
+function filter_layouts_handle_request() : void {
+	if (!isset($_SERVER['REQUEST_METHOD']) || strtoupper($_SERVER['REQUEST_METHOD']) !== 'POST') {
+		return;
+	}
+
+	if (!isset_request_var('action')) {
+		return;
+	}
+
+	$action = get_nfilter_request_var('action');
+
+	$id = isset_request_var('id') ? (int) get_nfilter_request_var('id') : 0;
+
+	switch ($action) {
+		case 'layout_save':
+			$name = isset_request_var('name') ? get_nfilter_request_var('name') : '';
+			$url  = isset_request_var('url') ? get_nfilter_request_var('url') : '';
+
+			$row = filter_layouts_save($name, $url, $id);
+
+			if ($row === false) {
+				filter_layouts_json(['ok' => false]);
+			}
+
+			$sep = (strpos($row['url'], '?') !== false) ? '&' : '?';
+
+			filter_layouts_json([
+				'ok'   => true,
+				'id'   => (int) $row['id'],
+				'name' => $row['name'],
+				'url'  => $row['url'] . $sep . 'filter_layout=' . $row['id'],
+			]);
+
+			break;
+		case 'layout_rename':
+			$name = isset_request_var('name') ? get_nfilter_request_var('name') : '';
+
+			filter_layouts_json(['ok' => filter_layouts_rename($id, $name)]);
+
+			break;
+		case 'layout_delete':
+			filter_layouts_json(['ok' => filter_layouts_delete($id)]);
+
+			break;
+		case 'layout_publish':
+			filter_layouts_json(['ok' => filter_layouts_publish($id)]);
+
+			break;
+		case 'layout_unpublish':
+			$user_id = isset_request_var('user_id') ? (int) get_nfilter_request_var('user_id') : 0;
+
+			filter_layouts_json(['ok' => filter_layouts_unpublish($id, $user_id)]);
+
+			break;
 	}
 }

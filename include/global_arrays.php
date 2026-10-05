@@ -1122,6 +1122,7 @@ if (POLLER_ID || $config['connection'] == 'online') { // @phpstan-ignore-line
 			'vdef.php'                 => __('VDEFs'),
 			'color.php'                => __('Colors'),
 			'gprint_presets.php'       => __('GPRINTs'),
+			'layouts.php'              => __('Filters'),
 		],
 		__('Import/Export') => [
 			'package_import.php'   => __('Import Packages'),
@@ -1437,6 +1438,7 @@ $user_auth_realm_filenames = [
 	'rrdcheck.php'               => 15,
 	'settings.php'               => 15,
 	'links.php'                  => 15,
+	'layouts.php'                => 15,
 	'data_queries.php'           => 13,
 	'templates_export.php'       => 16,
 	'templates_import.php'       => 17,
@@ -2305,6 +2307,12 @@ $navigation = [
 		'mapping' => 'index.php:,gprint_presets.php:',
 		'url'     => '',
 		'level'   => '2'
+	],
+	'layouts.php:' => [
+		'title'   => __('Filter Layouts'),
+		'mapping' => 'index.php:',
+		'url'     => 'layouts.php',
+		'level'   => '1'
 	],
 	'cdef.php:' => [
 		'title'   => __('CDEFs'),

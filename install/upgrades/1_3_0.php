@@ -30,6 +30,17 @@ function upgrade_to_1_3_0() : void {
 		PRIMARY KEY (key_id)
 	) ENGINE=InnoDB COMMENT='Serializes Cacti Process Registry Mutations'");
 
+	db_install_execute("CREATE TABLE IF NOT EXISTS user_layouts (
+		id int(10) unsigned NOT NULL auto_increment,
+		user_id int(10) unsigned NOT NULL default '0',
+		page varchar(64) NOT NULL default '',
+		name varchar(128) NOT NULL default '',
+		url varchar(1024) NOT NULL default '',
+		PRIMARY KEY (id),
+		KEY user_id (user_id),
+		KEY page (page)
+	) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Stores user defined and published filter layouts'");
+
 	db_install_change_column('version', ['name' => 'cacti', 'type' => 'char(30)', 'NULL' => false, 'default' => '']);
 
 	db_install_add_column('user_auth', ['name' => 'tfa_enabled', 'type' => 'char(3)', 'NULL' => false, 'default' => '']);

@@ -405,4 +405,9 @@ if (empty($_SESSION[SESS_USER_ID])) {
 		FROM user_auth
 		WHERE id = ?',
 		[$_SESSION[SESS_USER_ID]]);
+
+	// Handle saved filter-layout AJAX (save/rename/delete/publish) posted to
+	// any filter page, now that the user is authenticated and authorized for
+	// the current page. Returns immediately for all non-layout requests.
+	filter_layouts_handle_request();
 }
