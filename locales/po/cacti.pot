@@ -19038,7 +19038,7 @@ msgid "PHP SNMP"
 msgstr ""
 
 #: utilities.php
-msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
+msgid "Installed."
 msgstr ""
 
 #: utilities.php
