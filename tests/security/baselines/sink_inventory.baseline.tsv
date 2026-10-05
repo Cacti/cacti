@@ -111,7 +111,7 @@ cmd_exec	./support.php				exec(cacti_escapeshellcmd(read_config_option('path_rrd
 cmd_exec	./support.php			$cli_json = shell_exec(cacti_escapeshellcmd($php_binary) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions');
 cmd_exec	./support.php			$snmp_version   = (string) shell_exec(cacti_escapeshellcmd($snmpget_path) . ' -V 2>&1');
 cmd_exec	./support.php			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
-deserialize	./lib/cache.php			$data = @unserialize($wire, array('allowed_classes' => false));
+deserialize	./lib/cache.php			$data = @unserialize($wire, ['allowed_classes' => false]);
 deserialize	./lib/functions.php				$items = unserialize($unstripped, ['allowed_classes' => false]);
 deserialize	./lib/functions.php				$items = unserialize($unstripped, ['allowed_classes' => false]);
 deserialize	./lib/functions.php		return unserialize($strobj, ['allowed_classes' => false]);
