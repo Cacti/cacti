@@ -1232,12 +1232,6 @@ $settings = array(
 			'default' => 'on',
 			'tab' => 'poller'
 		),
-		'enable_snmp_agent' => array(
-			'friendly_name' => __('SNMP Agent Support Enabled'),
-			'description' => __('If this option is checked, Cacti will populate SNMP Agent tables with Cacti device and system information.  It does not enable the SNMP Agent itself.'),
-			'method' => 'checkbox',
-			'default' => 'on'
-		),
 		'poller_type' => array(
 			'friendly_name' => __('Poller Type'),
 			'description' => __('The poller type to use.  This setting will take affect at next polling interval.'),
@@ -1307,6 +1301,12 @@ $settings = array(
 		'snmp_behavior_header' => array(
 			'friendly_name' => __('SNMP Behavior'),
 			'method' => 'spacer',
+		),
+		'enable_snmp_agent' => array(
+			'friendly_name' => __('SNMP Agent Support Enabled'),
+			'description' => __('If this option is checked, Cacti will populate SNMP Agent tables with Cacti device and system information.  It does not enable the SNMP Agent itself.'),
+			'method' => 'checkbox',
+			'default' => 'on'
 		),
 		'snmp_md5_des_enabled' => array(
 			'friendly_name' => __('Enable MD5 and DES for SNMPv3'),

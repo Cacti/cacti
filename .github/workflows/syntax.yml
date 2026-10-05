@@ -148,56 +148,63 @@ jobs:
       run: php -v
       
     - name: Checkout Thold Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        owner: 'Cacti'
-        repository: 'plugin_thold'
+        repository: Cacti/plugin_thold
+        ref: 5b41aa07c97a8d7c44b841cf3cdaa74b9bbbec94
+        path: plugins/thold
+        persist-credentials: false
 
     - name: Checkout Monitor Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        owner: 'Cacti'
-        repository: 'plugin_monitor'
+        repository: Cacti/plugin_monitor
+        ref: 03ee6e9d23d57f2af3322c4a90ed8a819c799299
+        path: plugins/monitor
+        persist-credentials: false
 
     - name: Checkout MacTrack Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        owner: 'Cacti'
-        repository: 'plugin_mactrack'
+        repository: Cacti/plugin_mactrack
+        ref: c0cadecc5e3e026cab32d74328d649cdbc82d386
+        path: plugins/mactrack
+        persist-credentials: false
 
     - name: Checkout Intropage Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        owner: 'Cacti'
-        repository: 'plugin_intropage'
+        repository: Cacti/plugin_intropage
+        ref: 3496e4d6f7ce43f0e6c5f278cb4098f7e984c95a
+        path: plugins/intropage
+        persist-credentials: false
 
     - name: Checkout FlowView Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        owner: 'Cacti'
-        repository: 'plugin_flowview'
+        repository: Cacti/plugin_flowview
+        ref: 9d337039d53ca10a918c9875a83c84b983db72a5
+        path: plugins/flowview
+        persist-credentials: false
 
     - name: Checkout Audit Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        owner: 'Cacti'
-        repository: 'plugin_audit'
+        repository: Cacti/plugin_audit
+        ref: 668a6a91f1e560dab495b70686d73e9f8c460e5e
+        path: plugins/audit
+        persist-credentials: false
 
     - name: Checkout Syslog Plugin
-      uses: GuillaumeFalourd/clone-github-repo-action@v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        owner: 'Cacti'
-        repository: 'plugin_syslog'
+        repository: Cacti/plugin_syslog
+        ref: 84d22bb482a91f935cfb8ffc98cf7ac180942407
+        path: plugins/syslog
+        persist-credentials: false
 
-    - name: Move Plugins to Plugin Directory
+    - name: Enable Syslog batch installation
       run: |
-        mv plugin_thold ${{ github.workspace }}/plugins/thold
-        mv plugin_monitor ${{ github.workspace }}/plugins/monitor
-        mv plugin_mactrack ${{ github.workspace }}/plugins/mactrack
-        mv plugin_audit ${{ github.workspace }}/plugins/audit
-        mv plugin_flowview ${{ github.workspace }}/plugins/flowview
-        mv plugin_intropage ${{ github.workspace }}/plugins/intropage
-        mv plugin_syslog ${{ github.workspace }}/plugins/syslog
         # With syslog we have to enable batch installs using the lines below
         cd ${{ github.workspace }}/plugins/syslog
         cp -p config.php.dist config.php
