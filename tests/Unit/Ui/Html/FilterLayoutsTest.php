@@ -19,7 +19,7 @@
  * scanning source, matching the database-free unit-test convention.
  */
 
-$root = dirname(__DIR__, 2);
+$root = dirname(__DIR__, 4);
 
 test('filter_layouts_page_key reduces a url to its page basename', function () {
 	expect(filter_layouts_page_key('host.php?filter=x&rows=30'))->toBe('host.php');

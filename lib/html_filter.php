@@ -1025,7 +1025,11 @@ class CactiTableFilter {
 				$nav   = $url . $sep . 'filter_layout=' . $layout['id'];
 				$label = $layout['name'] . ($layout['user_id'] == 0 ? ' (' . __('Global') . ')' : '');
 
-				print "<option value='" . $layout['id'] . "' data-url='" . html_escape($nav) . "' data-name='" . html_escape($layout['name']) . "'" . ($selected == $layout['id'] ? ' selected' : '') . '>' . html_escape($label) . '</option>';
+				// A user may overwrite/rename/delete their own rows; global rows
+				// (user_id 0) only when they can manage global layouts.
+				$editable = ($layout['user_id'] != 0 || $can_glob) ? '1' : '0';
+
+				print "<option value='" . $layout['id'] . "' data-url='" . html_escape_url($nav) . "' data-name='" . html_escape_attr($layout['name']) . "' data-editable='" . $editable . "'" . ($selected == $layout['id'] ? ' selected' : '') . '>' . html_escape($label) . '</option>';
 			}
 		}
 
@@ -1079,18 +1083,26 @@ class CactiTableFilter {
 		$js .= "\t] });" . PHP_EOL;
 		$js .= '}' . PHP_EOL;
 
+		$js .= 'function layoutEditable() {' . PHP_EOL;
+		$js .= "\treturn $('#filter_layout option:selected').attr('data-editable') != '0';" . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
+		$js .= 'function layoutResultOk(r) {' . PHP_EOL;
+		$js .= "\tif (r && r.ok) { return true; } alert(" . json_encode(__('The layout operation failed.')) . '); return false;' . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
 		$js .= '$(function() {' . PHP_EOL;
 		$js .= "\t$('#filter_layout').change(function() { var u = $('#filter_layout option:selected').attr('data-url'); if (u != undefined && u != '') { document.location = u; } });" . PHP_EOL;
 
-		$js .= "\t$('#layout_new').click(function() { layoutNameDialog(" . json_encode(__('New Layout')) . ", '', function(name) { layoutPost('layout_save', { name: name, url: layoutFilterUrl() }, function(r) { if (r.url) { document.location = r.url; } }); }); });" . PHP_EOL;
+		$js .= "\t$('#layout_new').click(function() { layoutNameDialog(" . json_encode(__('New Layout')) . ", '', function(name) { layoutPost('layout_save', { name: name, url: layoutFilterUrl() }, function(r) { if (layoutResultOk(r) && r.url) { document.location = r.url; } }); }); });" . PHP_EOL;
 
-		$js .= "\t$('#layout_save').click(function() { var id = layoutSelectedId(); if (id == 0) { $('#layout_new').click(); } else { layoutPost('layout_save', { id: id, url: layoutFilterUrl() }, function(r) { if (r.url) { document.location = r.url; } else { window.location.reload(); } }); } });" . PHP_EOL;
+		$js .= "\t$('#layout_save').click(function() { var id = layoutSelectedId(); if (id == 0) { $('#layout_new').click(); return; } if (!layoutEditable()) { alert(" . json_encode(__('You are not permitted to modify this layout.')) . "); return; } layoutPost('layout_save', { id: id, url: layoutFilterUrl() }, function(r) { if (layoutResultOk(r)) { if (r.url) { document.location = r.url; } else { window.location.reload(); } } }); });" . PHP_EOL;
 
-		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to rename.')) . "); return; } var cur = $('#filter_layout option:selected').attr('data-name'); layoutNameDialog(" . json_encode(__('Rename Layout')) . ", cur, function(name) { layoutPost('layout_rename', { id: id, name: name }, function() { window.location.reload(); }); }); });" . PHP_EOL;
+		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to rename.')) . "); return; } if (!layoutEditable()) { alert(" . json_encode(__('You are not permitted to modify this layout.')) . "); return; } var cur = $('#filter_layout option:selected').attr('data-name'); layoutNameDialog(" . json_encode(__('Rename Layout')) . ", cur, function(name) { layoutPost('layout_rename', { id: id, name: name }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); }); });" . PHP_EOL;
 
-		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to delete.')) . "); return; } if (confirm(" . json_encode(__('Delete the selected layout?')) . ")) { layoutPost('layout_delete', { id: id }, function() { document.location = " . json_encode($page) . "; }); } });" . PHP_EOL;
+		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to delete.')) . "); return; } if (!layoutEditable()) { alert(" . json_encode(__('You are not permitted to modify this layout.')) . "); return; } if (confirm(" . json_encode(__('Delete the selected layout?')) . ")) { layoutPost('layout_delete', { id: id }, function(r) { if (layoutResultOk(r)) { document.location = " . json_encode($page) . "; } }); } });" . PHP_EOL;
 
-		$js .= "\t$('#layout_publish').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to publish.')) . "); return; } layoutPost('layout_publish', { id: id }, function() { window.location.reload(); }); });" . PHP_EOL;
+		$js .= "\t$('#layout_publish').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to publish.')) . "); return; } layoutPost('layout_publish', { id: id }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); });" . PHP_EOL;
 
 		$js .= '});' . PHP_EOL;
 		$js .= '</script>' . PHP_EOL;

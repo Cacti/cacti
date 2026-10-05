@@ -24971,3 +24971,91 @@ msgstr ""
 #: vdef.php
 msgid "No VDEFs"
 msgstr ""
+
+#: lib/html_filter.php
+msgid "Layouts"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "(New Layout)"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Overwrite the selected layout with the current filter"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Save the current filter as a new layout"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Rename the selected layout"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Delete the selected layout"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Publish the selected layout so all users can see it"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Layout Name"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "New Layout"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Rename Layout"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "The layout operation failed."
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Please select a layout to rename."
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Please select a layout to delete."
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Please select a layout to publish."
+msgstr ""
+
+#: lib/html_filter.php
+msgid "You are not permitted to modify this layout."
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Delete the selected layout?"
+msgstr ""
+
+#: layouts.php
+msgid "Filter Layouts"
+msgstr ""
+
+#: layouts.php
+msgid "User %d"
+msgstr ""
+
+#: layouts.php
+msgid "Published to all users"
+msgstr ""
+
+#: layouts.php
+msgid "Publish to all users"
+msgstr ""
+
+#: layouts.php
+msgid "No Filter Layouts Found"
+msgstr ""
+
+#: lib/html_filter.php layouts.php
+msgid "Global"
+msgstr ""
