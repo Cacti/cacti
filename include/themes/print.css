@@ -1,61 +1,67 @@
-/* Keep complete graph panels visible when printing or saving as PDF. */
+/* Shared print layout for the detailed time graph view.
+ * Match the current content so AJAX navigation also enters and leaves this scope.
+ */
 @media print {
-	html, body, #cactiContent, #navigation_right, #main {
+	html:has(.graphDetailView),
+	html:has(.graphDetailView) :is(body, #cactiContent, #navigation_right, #main) {
 		height: auto !important;
 		max-height: none !important;
 		overflow: visible !important;
 	}
-	html, body {
+	html:has(.graphDetailView), html:has(.graphDetailView) body {
 		background: white !important;
 		color: #111 !important;
 		width: auto !important;
 	}
-	body {
+	html:has(.graphDetailView) body {
 		opacity: 1 !important;
 		animation: none !important;
 	}
-	#cactiContent, #navigation_right {
+	html:has(.graphDetailView) :is(#cactiContent, #navigation_right) {
 		display: block !important;
 		width: 100% !important;
 		margin: 0 !important;
 	}
-	#cactiPageHead, #breadCrumbBar, #navigation, .cactiShadow,
-	#cactiPageBottom, .noprint {
+	html:has(.graphDetailView) :is(#cactiPageHead, #breadCrumbBar, #navigation,
+	.cactiShadow, #cactiPageBottom, .noprint) {
 		display: none !important;
 	}
-	.graphWrapperOuter, .graphWrapper {
+	html:has(.graphDetailView) :is(.graphWrapperOuter, .graphWrapper) {
 		width: 100% !important;
 		max-width: 100% !important;
 	}
-	.graphimage {
+	html:has(.graphDetailView) .graphimage {
 		max-width: 100% !important;
 		height: auto !important;
 		/* Transparent images from dark themes need a contrasting backdrop. */
-		background-color: #161616 !important;
+		background-color: var(--graph-print-background, white) !important;
 		print-color-adjust: exact;
 		-webkit-print-color-adjust: exact;
 	}
-	.tableRowGraph {
+	html:has(.graphDetailView) .tableRowGraph {
 		break-inside: avoid;
 		page-break-inside: avoid;
 	}
-	#main .textHeaderDark {
+	html:has(.graphDetailView) #main .textHeaderDark {
 		color: #111 !important;
 		background: none !important;
 		font-size: 15pt !important;
 		line-height: 1.35 !important;
 		font-weight: 600 !important;
 		text-align: center !important;
-		padding: 0 0 4mm !important;
+		white-space: normal !important;
+		text-wrap: balance;
+		overflow-wrap: anywhere;
+		padding: 0 4mm 4mm !important;
 		border-bottom: 1pt solid #777 !important;
 	}
-	#main .tableHeader {
+	html:has(.graphDetailView) #main .tableHeader {
 		background: none !important;
 	}
-	.tableRowGraph > td {
+	html:has(.graphDetailView) .tableRowGraph > td {
 		padding: 4mm 0 !important;
 	}
-	.graphWrapperOuter .center > span {
+	html:has(.graphDetailView) .graphWrapperOuter .center > span {
 		display: block;
 		font-size: 10pt !important;
 		font-weight: 600;

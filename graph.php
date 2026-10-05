@@ -77,13 +77,9 @@ if (!is_graph_allowed(get_request_var('local_graph_id'))) {
 
 $graph_title = get_graph_title(get_request_var('local_graph_id'));
 
-/* Load print layout only with the detailed graph view content, including AJAX navigation. */
-if (get_request_var('action') == 'view') {
-	print get_md5_include_css('include/themes/print.css');
-}
-
 if (get_request_var('action') != 'properties') {
-	print "<table width='100%' class='cactiTable'>";
+	$print_class = get_request_var('action') == 'view' ? ' graphDetailView' : '';
+	print "<table width='100%' class='cactiTable$print_class'>";
 }
 
 $rras = get_associated_rras(get_request_var('local_graph_id'), $sql_where);
