@@ -19910,6 +19910,281 @@ msgstr ""
 msgid "The MD5 authentication and DES privacy algorithms are legacy, weak, and unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When disabled, MD5 and DES are removed from the SNMPv3 Authentication and Privacy Protocol dropdowns shown when editing a Device and in the Automation SNMP Options, leaving only the stronger SHA and AES algorithms."
 msgstr ""
 
+#: lib/utility.php:1291
+msgid "Default collation used by the server when creating databases and tables."
+msgstr ""
+
+#: lib/utility.php:1292
+msgid "e.g. utf8mb4_unicode_ci, utf8mb4_general_ci."
+msgstr ""
+
+#: lib/utility.php:1297
+msgid "Default character set used by the server."
+msgstr ""
+
+#: lib/utility.php:1298 lib/utility.php:1304
+msgid "e.g. utf8mb4, utf8, latin1."
+msgstr ""
+
+#: lib/utility.php:1303
+msgid "Character set the client uses when sending statements to the server."
+msgstr ""
+
+#: lib/utility.php:1309
+msgid "Maximum number of simultaneous client connections permitted."
+msgstr ""
+
+#: lib/utility.php:1310
+msgid "Integer; default 151. Allow enough for the pollers plus user logins."
+msgstr ""
+
+#: lib/utility.php:1315
+msgid "Legacy name for the open-table cache; renamed to table_open_cache."
+msgstr ""
+
+#: lib/utility.php:1316
+msgid "Integer. Use table_open_cache on modern servers."
+msgstr ""
+
+#: lib/utility.php:1321
+msgid "Maximum size of one packet or any generated/intermediate string."
+msgstr ""
+
+#: lib/utility.php:1322
+msgid "Bytes; keep at or above 16M for remote pollers."
+msgstr ""
+
+#: lib/utility.php:1327
+msgid "Maximum size to which user-created MEMORY tables may grow."
+msgstr ""
+
+#: lib/utility.php:1328
+msgid "Bytes; sized relative to total system memory."
+msgstr ""
+
+#: lib/utility.php:1333
+msgid "Maximum size of internal in-memory temporary tables before they spill to disk."
+msgstr ""
+
+#: lib/utility.php:1334
+#, fuzzy
+#| msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
+msgid "Bytes; a larger value keeps temporary tables in memory."
+msgstr "При изпълнение на подзаявки с по-голям размер на временната таблица, запазете тези временни таблици в паметта."
+
+#: lib/utility.php:1339
+msgid "Minimum per-join buffer size for joins that do not use indexes."
+msgstr ""
+
+#: lib/utility.php:1340
+msgid "Bytes; per-connection allocation, default 262144."
+msgstr ""
+
+#: lib/utility.php:1345
+msgid "Per-session buffer allocated for sorts (ORDER BY / GROUP BY)."
+msgstr ""
+
+#: lib/utility.php:1346
+msgid "Bytes; per-connection allocation, default 2097152."
+msgstr ""
+
+#: lib/utility.php:1351
+msgid "Store each InnoDB table and its indexes in its own .ibd tablespace file."
+msgstr ""
+
+#: lib/utility.php:1352
+msgid "ON or OFF; ON is recommended."
+msgstr ""
+
+#: lib/utility.php:1357
+msgid "InnoDB on-disk file format (Antelope or Barracuda); Barracuda is now the only format."
+msgstr ""
+
+#: lib/utility.php:1358
+msgid "Antelope, Barracuda."
+msgstr ""
+
+#: lib/utility.php:1363
+msgid "Allow index key prefixes longer than 767 bytes (requires the Barracuda format)."
+msgstr ""
+
+#: lib/utility.php:1364
+msgid "ON/1 or OFF/0; this behaviour is now always enabled."
+msgstr ""
+
+#: lib/utility.php:1369
+msgid "Total memory InnoDB uses to cache table and index data."
+msgstr ""
+
+#: lib/utility.php:1370
+msgid "Bytes; commonly 25%-80% of total system memory."
+msgstr ""
+
+#: lib/utility.php:1375
+msgid "Write pages twice (the doublewrite buffer) to protect against partial page writes."
+msgstr ""
+
+#: lib/utility.php:1376
+msgid "ON or OFF."
+msgstr ""
+
+#: lib/utility.php:1381
+msgid "Legacy pool for the InnoDB internal data dictionary and structures."
+msgstr ""
+
+#: lib/utility.php:1382
+msgid "Bytes; obsolete on modern servers."
+msgstr ""
+
+#: lib/utility.php:1387
+msgid "Seconds an InnoDB transaction waits for a row lock before giving up."
+msgstr ""
+
+#: lib/utility.php:1388
+#, fuzzy
+#| msgid " seconds left."
+msgid "Seconds; default 50."
+msgstr "секунди."
+
+#: lib/utility.php:1393
+msgid "Method used to flush data and log files to disk."
+msgstr ""
+
+#: lib/utility.php:1394
+msgid "O_DIRECT, fsync, O_DSYNC, and similar."
+msgstr ""
+
+#: lib/utility.php:1399
+msgid "Controls how the redo log is written and flushed at transaction commit."
+msgstr ""
+
+#: lib/utility.php:1400
+msgid "0, 1, or 2."
+msgstr ""
+
+#: lib/utility.php:1405
+msgid "Legacy single setting for InnoDB file I/O threads, replaced by the read/write I/O thread settings."
+msgstr ""
+
+#: lib/utility.php:1406
+msgid "Integer; superseded by innodb_read_io_threads and innodb_write_io_threads."
+msgstr ""
+
+#: lib/utility.php:1411
+msgid "Write and flush the InnoDB redo log every N seconds."
+msgstr ""
+
+#: lib/utility.php:1412
+msgid "Seconds (1-2700); default 1."
+msgstr ""
+
+#: lib/utility.php:1417
+msgid "Number of I/O threads used for read operations in InnoDB."
+msgstr ""
+
+#: lib/utility.php:1418 lib/utility.php:1424
+#, fuzzy
+#| msgid "default"
+msgid "1-64; default 4."
+msgstr "по подазбиране"
+
+#: lib/utility.php:1423
+msgid "Number of I/O threads used for write operations in InnoDB."
+msgstr ""
+
+#: lib/utility.php:1429
+msgid "Number of regions the InnoDB buffer pool is divided into."
+msgstr ""
+
+#: lib/utility.php:1430
+msgid "1-64; MariaDB removed this in 10.6."
+msgstr ""
+
+#: lib/utility.php:1435
+msgid "Estimated I/O operations per second available to InnoDB background tasks."
+msgstr ""
+
+#: lib/utility.php:1436 lib/utility.php:1442
+msgid "Integer; use higher values for SSD/NVMe storage."
+msgstr ""
+
+#: lib/utility.php:1441
+msgid "Maximum IOPS InnoDB may use when flushing falls behind."
+msgstr ""
+
+#: lib/utility.php:1447
+msgid "Flush neighbouring dirty pages in the same extent when flushing a page."
+msgstr ""
+
+#: lib/utility.php:1448
+msgid "0, 1, or 2; use 0 on SSD storage."
+msgstr ""
+
+#: lib/utility.php:1453
+msgid "Use hardware atomic writes (MariaDB) so the doublewrite buffer can be safely disabled."
+msgstr ""
+
+#: lib/utility.php:1454
+msgid "ON or OFF; MariaDB only."
+msgstr ""
+
+#: lib/utility.php:1458
+msgid "Enforce strict snapshot isolation for InnoDB transactions."
+msgstr ""
+
+#: lib/utility.php:1459
+msgid "ON or OFF; back-ported to MariaDB 10.6.18+, 10.11.8+ and 11.4.2+. Set OFF for the Cacti poller."
+msgstr ""
+
+#: lib/utility.php:1577 lib/utility.php:1674
+#, fuzzy
+#| msgid "(Remove)"
+msgid "Removed"
+msgstr "(Изтрий)"
+
+#: lib/utility.php:1579 lib/utility.php:1673
+#, fuzzy
+#| msgid "Duplicate"
+msgid "Deprecated"
+msgstr "Дублирай"
+
+#: lib/utility.php:1581
+#, fuzzy
+#| msgid "Not Applicable"
+msgid "Not applicable to this engine"
+msgstr "Не е приложимо"
+
+#: lib/utility.php:1583 lib/utility.php:1672
+#, fuzzy
+#| msgid "Support"
+msgid "Supported"
+msgstr "Поддръжка"
+
+#: lib/utility.php:1628
+#, php-format
+msgid "%s Variable Capability Matrix"
+msgstr ""
+
+#: lib/utility.php:1628
+msgid "Support by engine and version for each Cacti-recommended variable"
+msgstr ""
+
+#: lib/utility.php:1657
+#, fuzzy
+#| msgid "Table Settings"
+msgid "Available settings:"
+msgstr "Настройки на таблицата"
+
+#: lib/utility.php:1675
+msgid "N/A - Not applicable to this engine"
+msgstr ""
+
+#: lib/utility.php:1929 lib/utility.php:1965
+#, fuzzy
+#| msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
+msgid "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
+msgstr "Ако имате SSD дискове, използвайте това предложение. В противен случай не настройвайте тази настройка."
+
 #~ msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
 #~ msgstr "Инсталиран. <span class=\"deviceDown\">Забележка: Ако планирате да използвате SNMPv3, трябва да премахнете php-snmp и да използвате Net-SNMP инструментариум.</span>"
 
