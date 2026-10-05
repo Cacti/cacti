@@ -10243,6 +10243,12 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr "기본적으로 기본 Cacti Data Collector는 전체 웹 사이트 및 플러그인을 자원 캐시에 캐시합니다. 그런 다음, 정기적으로 원격 데이터 콜렉터는 기본 Cacti Data Collector의 업데이트로 테마 자체를 업데이트합니다. 이 자원 캐시는 본질적으로 원격 데이터 콜렉터가 자체 업그레이드 할 수 있도록합니다. 이 옵션을 사용하지 않으려면이 설정을 사용하여 비활성화 할 수 있습니다."
 
 #: include/global_settings.php
+#, fuzzy
+#| msgid "SNMP error"
+msgid "SNMP Behavior"
+msgstr "SNMP 오류"
+
+#: include/global_settings.php
 msgid "Additional Data Collector Settings"
 msgstr "원격 데이터 수집기 상태 :"
 
