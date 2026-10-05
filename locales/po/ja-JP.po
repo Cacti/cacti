@@ -10238,6 +10238,12 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr "デフォルトでは、メインのCacti Data CollectorはWebサイト全体とプラグインをリソースキャッシュにキャッシュします。その後、リモートデータコレクターは、メインのCacti Data Collectorからの更新でテーマを定期的に更新します。このリソースキャッシュにより、基本的にリモートデータコレクターが自己アップグレードできます。このオプションを使用したくない場合は、この設定を使用して無効にすることができます。"
 
 #: include/global_settings.php
+#, fuzzy
+#| msgid "SNMP error"
+msgid "SNMP Behavior"
+msgstr "SNMPエラー"
+
+#: include/global_settings.php
 msgid "Additional Data Collector Settings"
 msgstr "リモートデータコレクタのステータス："
 
