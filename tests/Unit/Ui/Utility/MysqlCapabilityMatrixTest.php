@@ -103,3 +103,20 @@ test('utilities_mysql_version_introduced accepts a scalar or a per-branch list',
 		->and(utilities_mysql_version_introduced('10.11.7', ['10.6.18', '10.11.8', '11.4.2']))->toBeFalse()
 		->and(utilities_mysql_version_introduced('12.0.0', ['10.6.18', '10.11.8', '11.4.2']))->toBeTrue();
 });
+
+test('version strings with non-numeric suffixes are normalized before comparison', function () {
+	expect(utilities_mysql_normalize_version('10.11.2-MariaDB-1:10.11.2+maria~ubu2204'))->toBe('10.11.2')
+		->and(utilities_mysql_normalize_version('8.0.35-0ubuntu0.22.04.1'))->toBe('8.0.35');
+
+	$caps = utilities_mysql_variable_capabilities();
+
+	// A suffixed build on or past a removal boundary must still read removed.
+	$ff = $caps['innodb_file_format'];
+	expect(utilities_mysql_variable_status($ff, 'MariaDB', '10.5.27-1:10.5.27+maria~ubu2004'))->toBe('removed')
+		->and(utilities_mysql_variable_status($ff, 'MySQL', '8.0.35-0ubuntu0.22.04.1'))->toBe('removed');
+
+	// The suffix must not tip a build just under a boundary across it.
+	$fn = $caps['innodb_flush_neighbors'];
+	expect(utilities_mysql_variable_status($fn, 'MySQL', '8.0.19-log'))->toBe('ok')
+		->and(utilities_mysql_variable_status($fn, 'MySQL', '8.0.20-log'))->toBe('deprecated');
+});

@@ -1136,7 +1136,13 @@ function data_input_whitelist_check(int $data_input_id) : bool {
  * @return array the capability matrix keyed by variable name
  */
 function utilities_mysql_variable_capabilities() : array {
-	return [
+	static $matrix = null;
+
+	if ($matrix !== null) {
+		return $matrix;
+	}
+
+	$matrix = [
 		'collation_server' => [
 			'description' => __('Default collation used by the server when creating databases and tables.'),
 			'settings'    => __('e.g. utf8mb4_unicode_ci, utf8mb4_general_ci.'),
@@ -1310,6 +1316,26 @@ function utilities_mysql_variable_capabilities() : array {
 			'MariaDB'     => ['introduced' => ['10.6.18', '10.11.8', '11.4.2']],
 		],
 	];
+
+	return $matrix;
+}
+
+/**
+ * utilities_mysql_normalize_version - reduce a server version string to its
+ * leading numeric dotted component so version_compare() behaves predictably.
+ * Server version() output often carries suffixes such as '-1:10.11.2+maria...'
+ * or '-0ubuntu0.22.04.1' that version_compare() treats as pre-release markers.
+ *
+ * @param string $version the raw version string
+ *
+ * @return string the numeric major.minor.patch prefix, or the input unchanged
+ */
+function utilities_mysql_normalize_version(string $version) : string {
+	if (preg_match('/^[0-9]+(\.[0-9]+)*/', $version, $matches)) {
+		return $matches[0];
+	}
+
+	return $version;
 }
 
 /**
@@ -1376,7 +1402,8 @@ function utilities_mysql_variable_status(array $cap, string $database, string $v
 		return 'na';
 	}
 
-	$bounds = $cap[$database];
+	$version = utilities_mysql_normalize_version($version);
+	$bounds  = $cap[$database];
 
 	if (isset($bounds['introduced']) && !utilities_mysql_version_introduced($version, $bounds['introduced'])) {
 		return 'na';
