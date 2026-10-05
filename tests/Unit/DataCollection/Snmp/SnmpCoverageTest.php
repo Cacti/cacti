@@ -536,7 +536,12 @@ test('protocol pickers, native tokens, agent formatting, and v3 support gating',
 		->and(snmp_format_agent('[2001:db8::1]:1161', 500))->toBe('[2001:db8::1]:1161')
 		->and(snmp_format_agent('2001:db8::1', 1161))->toBe('[2001:db8::1]:1161')
 		->and(snmp_format_agent('127.0.0.1', 161))->toBe('127.0.0.1')
-		->and(snmp_format_agent('127.0.0.1', 1161))->toBe('127.0.0.1:1161');
+		->and(snmp_format_agent('127.0.0.1', 1161))->toBe('127.0.0.1:1161')
+		->and(snmp_format_agent('unix:/var/agentx/master', 1161))->toBe('unix:/var/agentx/master')
+		->and(snmp_format_agent('udp6:[2001:db8::1]', 1161))->toBe('udp6:[2001:db8::1]:1161')
+		->and(snmp_format_agent('udp6:[2001:db8::1]:1161', 500))->toBe('udp6:[2001:db8::1]:1161')
+		->and(snmp_format_agent('udp:device:1161', 500))->toBe('udp:device:1161')
+		->and(snmp_format_agent('udp:device', 1161))->toBe('udp:device:1161');
 
 	expect(snmp_php_v3_protocols_supported('SHA', 'AES'))->toBeTrue()
 		->and(snmp_php_v3_protocols_supported('[None]', '[None]'))->toBeTrue()

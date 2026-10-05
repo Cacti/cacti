@@ -1573,9 +1573,11 @@ function snmp_native_protocol($protocol) {
 /**
  * Build the agent target for the procedural php-snmp calls. libnetsnmp needs the
  * host bracketed once a non-default port is attached, and an IPv6 literal is
- * always bracketed so the trailing :port is not read as another hextet. An
- * explicit transport or a pre-bracketed target is left untouched. Used as part
- * of Cacti's lib functionality.
+ * always bracketed so the trailing :port is not read as another hextet. A target
+ * that already carries an explicit port (or a unix: socket, which has none) is
+ * left untouched; a transport-qualified target that omits the port still has the
+ * configured non-default port appended, matching the Net-SNMP binary path. Used
+ * as part of Cacti's lib functionality.
  *
  * @param string $hostname Device hostname or IP (may already carry a transport).
  * @param mixed  $port     SNMP port.
@@ -1585,9 +1587,23 @@ function snmp_native_protocol($protocol) {
 function snmp_format_agent($hostname, $port) {
 	$hostname = trim((string) $hostname);
 
-	// An explicit transport prefix carries its own target; leave it untouched.
-	if (preg_match('/^(udp6?|tcp6?|unix):/i', $hostname)) {
+	// A unix: socket has no port; leave it untouched.
+	if (preg_match('/^unix:/i', $hostname)) {
 		return $hostname;
+	}
+
+	/* A udp/tcp transport target carries its own host[:port]. Keep an explicit
+	 * port - [ipv6]:port or host:port - but append the configured non-default
+	 * port when the target omits one, matching the Net-SNMP binary path. */
+	if (preg_match('/^(udp6?|tcp6?):/i', $hostname)) {
+		$has_port = preg_match('/\]:\d+$/', $hostname) ||
+			(strpos($hostname, ']') === false && preg_match('/:\d+$/', $hostname));
+
+		if ($has_port || (int) $port === 161) {
+			return $hostname;
+		}
+
+		return $hostname . ':' . $port;
 	}
 
 	/* Already bracketed (IPv6): keep an embedded port, but attach the configured
@@ -1612,9 +1628,11 @@ function snmp_format_agent($hostname, $port) {
 /**
  * Whether the running PHP build's procedural snmp3_*() calls accept the given
  * SNMPv3 auth and privacy protocol tokens. ext-snmp accepts MD5/SHA/SHA256/SHA512
- * auth and DES/AES/AES128 privacy from PHP 8.2; the SHA-224/SHA-384 auth variants
- * and the AES-192/256[C] privacy tokens were only added in PHP 8.6. Earlier builds
- * raise a ValueError for those, so those combinations must use the Net-SNMP binary.
+ * auth and DES/AES/AES128 privacy from PHP 8.2. It has no SHA-224/SHA-384 auth
+ * mapping at all (SNMP::setSecurity() only knows SHA/SHA256/SHA512), so those
+ * always use the Net-SNMP binary; the AES-192/256[C] privacy tokens were added in
+ * PHP 8.6. ext-snmp raises a ValueError for any token it cannot map, so those
+ * combinations must use the Net-SNMP binary.
  *
  * @param string $auth_proto Stored auth protocol token (e.g. SHA, SHA256).
  * @param string $priv_proto Stored privacy protocol token (e.g. AES, AES256C).
@@ -1626,17 +1644,17 @@ function snmp_php_v3_protocols_supported($auth_proto, $priv_proto) {
 	$priv = snmp_native_protocol($priv_proto);
 
 	/* Allowlist of tokens the procedural snmp3_*() calls accept. MD5/SHA/SHA256/
-	 * SHA512 auth and DES/AES/AES128 privacy are accepted from the PHP 8.2 floor;
-	 * the SHA-224/SHA-384 auth variants and AES-192/256[C] privacy tokens were
-	 * only added in PHP 8.6. An unknown token (automation SNMP protocol fields are
-	 * stored without an allowlist) is never routed to snmp3_*(), which would
-	 * otherwise raise an uncaught ValueError. */
+	 * SHA512 auth and DES/AES/AES128 privacy are accepted from the PHP 8.2 floor.
+	 * ext-snmp has no SHA-224/SHA-384 auth mapping at all, so those are never
+	 * routed to snmp3_*() (they stay on the binary); the AES-192/256[C] privacy
+	 * tokens were only added in PHP 8.6. An unknown token (automation SNMP protocol
+	 * fields are stored without an allowlist) is never routed to snmp3_*(), which
+	 * would otherwise raise an uncaught ValueError. */
 	$auth_ok = ['', '[None]', 'MD5', 'SHA', 'SHA256', 'SHA512'];
 	$priv_ok = ['', '[None]', 'DES', 'AES', 'AES128'];
 
-	// @codeCoverageIgnoreStart these tokens are only accepted by ext-snmp on PHP 8.6+
+	// @codeCoverageIgnoreStart the AES-192/256 tokens are only accepted by ext-snmp on PHP 8.6+
 	if (PHP_VERSION_ID >= 80600) {
-		$auth_ok = array_merge($auth_ok, ['SHA224', 'SHA384']);
 		$priv_ok = array_merge($priv_ok, ['AES192', 'AES192C', 'AES256', 'AES256C']);
 	}
 	// @codeCoverageIgnoreEnd
