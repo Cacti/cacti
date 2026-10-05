@@ -2518,7 +2518,7 @@ function loadTopTab(href, id, force) {
 
 					checkForRedirects(html, href);
 
-					$('title').text(htmlTitle);
+					$('title').text(decodeHtmlEntities(htmlTitle));
 					$('#breadcrumbs').html(breadCrumbs);
 					$('div[class^="ui-"]').remove();
 					$('#cactiContent').replaceWith(html);
@@ -2696,7 +2696,7 @@ function loadPage(href, force) {
 						$('.cactiTreeNavigationArea').html(jstree);
 					}
 					$('#main').empty().hide();
-					$('title').text(htmlTitle);
+					$('title').text(decodeHtmlEntities(htmlTitle));
 					$('#breadcrumbs').html(breadCrumbs);
 					$('div[class^="ui-"]').remove();
 					$('#main').html(html);
@@ -2860,7 +2860,7 @@ function loadPageNoHeader(href, scroll, force) {
 					var html        = htmlObject.filter('#main').html();
 
 					$('#main').empty().hide();
-					$('title').text(htmlTitle);
+					$('title').text(decodeHtmlEntities(htmlTitle));
 					$('#breadcrumbs').html(breadCrumbs);
 					$('div[class^="ui-"]').remove();
 					$('#main').html(html);
