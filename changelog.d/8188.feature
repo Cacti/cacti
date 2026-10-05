@@ -1,0 +1,1 @@
+Add a MySQL/MariaDB variable capability matrix to the Database section showing per-version support for each recommended tuning variable, with hover hints, and stop recommending variables that are deprecated or removed on the detected server
