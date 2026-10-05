@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-09-28 15:57-0400\n"
-"PO-Revision-Date: 2026-09-12 08:18+0000\n"
-"Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
-"Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\n"
-"Language: sv-SE\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-09-28 15:57-0400\nPO-Revision-Date: 2026-10-05 08:24+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -431,7 +419,7 @@ msgstr "Utför"
 #: managers.php plugins.php pollers.php sites.php tree.php user_admin.php
 #: user_domains.php user_group_admin.php utilities.php
 msgid "Set/Refresh Filters"
-msgstr "Ange / Uppdatera filter"
+msgstr "Ange/uppdatera filter"
 
 #: aggregate_graphs.php aggregate_templates.php automation_devices.php
 #: automation_graph_rules.php automation_networks.php automation_snmp.php
@@ -1260,7 +1248,7 @@ msgstr "Klicka på &quot;Fortsätt&quot; för att avbryta när du går till Netw
 
 #: automation_networks.php data_input.php include/global_arrays.php
 msgid "SNMP Get"
-msgstr "SNMP Get"
+msgstr "SNMP-hämtning"
 
 #: automation_networks.php tree.php
 msgid "Manual"
@@ -2678,7 +2666,7 @@ msgstr "Användaren som begärde debuggen."
 
 #: data_debug.php
 msgid "Started"
-msgstr "Startat"
+msgstr "Startad"
 
 #: data_debug.php
 msgid "The Date that the Debug was Started."
@@ -3492,7 +3480,7 @@ msgstr "%d Dag"
 #: include/global_settings.php
 #, php-format
 msgid "%d Days"
-msgstr "%d Dagar"
+msgstr "%d dygn"
 
 #: data_source_profiles.php include/global_arrays.php
 #: include/global_settings.php
@@ -4942,7 +4930,7 @@ msgstr "Ändra enhetens inställningar"
 
 #: host.php pollers.php
 msgid "Clear Statistics"
-msgstr "Tydlig statistik"
+msgstr "Rensa statistik"
 
 #: host.php
 msgid "Sync to Device Template"
@@ -5145,7 +5133,7 @@ msgstr "Data Query Debug Information"
 
 #: host.php lib/functions.php tree.php user_admin.php user_group_admin.php
 msgid "Copy"
-msgstr "Kopiera"
+msgstr "kopia"
 
 #: host.php
 msgid "Hide"
@@ -6013,7 +6001,7 @@ msgstr "DES"
 
 #: include/global_arrays.php
 msgid "AES"
-msgstr "DES"
+msgstr "AES"
 
 #: include/global_arrays.php
 msgid "AES-128"
@@ -6025,7 +6013,7 @@ msgstr "AES-192"
 
 #: include/global_arrays.php
 msgid "AES-192-C"
-msgstr "AES-192"
+msgstr "AES-192-C"
 
 #: include/global_arrays.php
 msgid "AES-256"
@@ -6033,7 +6021,7 @@ msgstr "AES-256"
 
 #: include/global_arrays.php
 msgid "AES-256-C"
-msgstr "AES-256"
+msgstr "AES-256-C"
 
 #: include/global_arrays.php
 msgid "Logfile Only"
@@ -6400,7 +6388,7 @@ msgstr "Användardomäner"
 
 #: include/global_arrays.php
 msgid "Utilities"
-msgstr "Tillbehör"
+msgstr "Verktyg"
 
 #: include/global_arrays.php
 msgid "System Utilities"
@@ -6646,11 +6634,11 @@ msgstr "Senaste timmen"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Hours"
-msgstr "Senaste %d timmar"
+msgstr "Senaste %d timmarna"
 
 #: include/global_arrays.php
 msgid "Last Day"
-msgstr "Sista dagen"
+msgstr "Senaste dygnet"
 
 #: include/global_arrays.php
 #, php-format
@@ -6659,7 +6647,7 @@ msgstr "Senaste %d dagar"
 
 #: include/global_arrays.php
 msgid "Last Week"
-msgstr "Förra veckan"
+msgstr "Senaste veckan"
 
 #: include/global_arrays.php
 #, php-format
@@ -6668,7 +6656,7 @@ msgstr "Senaste %d veckorna"
 
 #: include/global_arrays.php
 msgid "Last Month"
-msgstr "Föregående månad"
+msgstr "Senaste månaden"
 
 #: include/global_arrays.php
 #, php-format
@@ -7571,23 +7559,23 @@ msgstr "SNMP-säkerhetsnivå"
 
 #: include/global_form.php
 msgid "SNMP v3 Security Level to use when querying the device."
-msgstr "SNMP v3-säkerhetsnivå som ska användas när du frågar enheten."
+msgstr "Säkerhetsnivå för SNMP v3 som ska användas vid frågor till enheten."
 
 #: include/global_form.php
 msgid "SNMP Auth Protocol (v3)"
-msgstr "SNMP Auth-protokoll (v3)"
+msgstr "SNMP-autentiseringsprotokoll (v3)"
 
 #: include/global_form.php
 msgid "Choose the SNMPv3 Authorization Protocol."
-msgstr "Välj godkännandeprotokollet SNMPv3."
+msgstr "Välj auktoriseringsprotokoll för SNMPv3."
 
 #: include/global_form.php
 msgid "SNMP Username (v3)"
-msgstr "SNMP Användarnamn (v3)"
+msgstr "SNMP-användarnamn (v3)"
 
 #: include/global_form.php
 msgid "SNMP v3 username for this device."
-msgstr "SNMP v3 användarnamn för den här enheten."
+msgstr "SNMP v3-användarnamn för den här enheten."
 
 #: include/global_form.php
 msgid "SNMP Password (v3)"
@@ -7595,7 +7583,7 @@ msgstr "SNMP-lösenord (v3)"
 
 #: include/global_form.php
 msgid "SNMP v3 password for this device."
-msgstr "SNMP v3 lösenord för den här enheten."
+msgstr "SNMP v3-lösenord för den här enheten."
 
 #: include/global_form.php
 msgid "SNMP Privacy Protocol (v3)"
@@ -7603,15 +7591,15 @@ msgstr "SNMP-sekretessprotokoll (v3)"
 
 #: include/global_form.php
 msgid "Choose the SNMPv3 Privacy Protocol."
-msgstr "Välj sekretessprotokollet SNMPv3."
+msgstr "Välj sekretessprotokoll för SNMPv3."
 
 #: include/global_form.php
 msgid "SNMP Privacy Passphrase (v3)"
-msgstr "SNMP-sekretessfrasfras (v3)"
+msgstr "SNMP-sekretesslösenfras (v3)"
 
 #: include/global_form.php
 msgid "Choose the SNMPv3 Privacy Passphrase."
-msgstr "Välj SNMPv3 Privacy Passphrase."
+msgstr "Välj sekretesslösenfras för SNMPv3."
 
 #: include/global_form.php include/global_settings.php
 msgid "SNMP Context (v3)"
@@ -11764,7 +11752,7 @@ msgstr "Online"
 
 #: index.php
 msgid "Recovery"
-msgstr "Återhämtning"
+msgstr "Återställning"
 
 #: index.php
 msgid "Remote Data Collector Status:"
@@ -13222,7 +13210,7 @@ msgstr "Diverse"
 
 #: lib/html.php
 msgid "Dashboards"
-msgstr "Dölj Cacti Dashboard"
+msgstr "Instrumentpaneler"
 
 #: lib/html.php
 msgid "Charts"
@@ -13450,7 +13438,7 @@ msgstr "Alltid på"
 
 #: lib/html.php
 msgid "Auto"
-msgstr "Auto"
+msgstr "Automatiskt"
 
 #: lib/html.php
 msgid "Always Off"
@@ -14081,7 +14069,7 @@ msgstr "Frekvens"
 
 #: lib/html_reports.php
 msgid "Last Run"
-msgstr "Sista körningen"
+msgstr "Senaste körning"
 
 #: lib/html_reports.php
 msgid "Next Run"
@@ -15139,7 +15127,7 @@ msgstr "Lektionsbakgrundsprocess:%s%s"
 
 #: lib/installer.php
 msgid "Complete"
-msgstr "Genomförd"
+msgstr "Slutförd"
 
 #: lib/installer.php
 #, php-format
@@ -17416,7 +17404,7 @@ msgstr "%d dag"
 #: rrdcheck.php
 #, php-format
 msgid "%d days"
-msgstr "%d dagar"
+msgstr "%d dygn"
 
 #: rrdcheck.php
 msgid "Messages"
@@ -18518,7 +18506,7 @@ msgstr "Mall policy"
 
 #: user_admin.php
 msgid "Unavailable"
-msgstr "Ej bokningsbar"
+msgstr "Inte tillgänglig"
 
 #: user_admin.php
 msgid "No Users Found"
@@ -19429,7 +19417,7 @@ msgstr "Cacti Systemhjälpmedel"
 
 #: utilities.php
 msgid "Refresh Interval"
-msgstr "Ladda om interval"
+msgstr "Uppdateringsintervall"
 
 #: utilities.php
 msgid "Overrun Warning"
@@ -19441,7 +19429,7 @@ msgstr "Tiden har löpt ut"
 
 #: utilities.php
 msgid "Other"
-msgstr "Annat"
+msgstr "Övrigt"
 
 #: utilities.php
 msgid "Cannot open directory"
