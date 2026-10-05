@@ -168,7 +168,7 @@ Cacti CHANGELOG
 -issue#8121: Do not replicate repository and tooling metadata files to remote data collectors during file replication
 -issue#8115: db_update_table() now reconciles unique_keys, so a plugin's UNIQUE index is no longer dropped (and a missing one is added) when an existing table is refreshed
 -issue#7826: Restore qualified plugin table metadata lookups (plugin_syslog#331)
--issue#7804: Restore RRDproxy encryption with Composer-managed phpseclib 3
+-issue#7804: Restore RRDproxy encryption with Composer-managed phpseclib 4
 -issue#7930: Commit transactions on MySQL as well as MariaDB
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
