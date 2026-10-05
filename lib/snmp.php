@@ -1428,9 +1428,11 @@ function snmp_get_method(string $type = 'walk', mixed $version = 1, mixed $conte
 			return SNMP_METHOD_BINARY;
 		}
 
+		// @codeCoverageIgnoreStart ext-snmp always provides snmp3_get()
 		if (!function_exists('snmp3_get')) {
 			return SNMP_METHOD_BINARY;
 		}
+		// @codeCoverageIgnoreEnd
 
 		if ($context != '' || $engineid != '' || !snmp_php_v3_protocols_supported($auth_proto, $priv_proto)) {
 			return SNMP_METHOD_BINARY;
@@ -1632,10 +1634,12 @@ function snmp_php_v3_protocols_supported($auth_proto, $priv_proto) {
 	$auth_ok = ['', '[None]', 'MD5', 'SHA', 'SHA256', 'SHA512'];
 	$priv_ok = ['', '[None]', 'DES', 'AES', 'AES128'];
 
+	// @codeCoverageIgnoreStart these tokens are only accepted by ext-snmp on PHP 8.6+
 	if (PHP_VERSION_ID >= 80600) {
 		$auth_ok = array_merge($auth_ok, ['SHA224', 'SHA384']);
 		$priv_ok = array_merge($priv_ok, ['AES192', 'AES192C', 'AES256', 'AES256C']);
 	}
+	// @codeCoverageIgnoreEnd
 
 	if (!in_array($auth, $auth_ok, true) || !in_array($priv, $priv_ok, true)) {
 		return false;
