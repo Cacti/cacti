@@ -10277,6 +10277,12 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr "डिफ़ॉल्ट रूप से, मुख्य कैक्टि डेटा कलेक्टर पूरी वेब साइट और प्लगइन्स को एक संसाधन कैश में कैश करेगा। फिर, समय-समय पर दूरस्थ डेटा कलेक्टर मुख्य कैक्टि डेटा कलेक्टर से किसी भी अपडेट के साथ थीम को अपडेट करेंगे। यह संसाधन कैश अनिवार्य रूप से दूरस्थ डेटा संग्राहक को आत्म उन्नयन के लिए अनुमति देता है। यदि आप इस विकल्प का उपयोग नहीं करना चाहते हैं, तो आप इस सेटिंग का उपयोग करके इसे अक्षम कर सकते हैं।"
 
 #: include/global_settings.php
+#, fuzzy
+#| msgid "SNMP error"
+msgid "SNMP Behavior"
+msgstr "SNMP त्रुटि"
+
+#: include/global_settings.php
 msgid "Additional Data Collector Settings"
 msgstr "दूरस्थ डेटा संग्राहक स्थिति:"
 
