@@ -145,11 +145,12 @@ test('batching 3 changed rows into a single poller_update_poller_cache_from_buff
 
 	expect($batchedQueries)->toBeLessThan($perRowQueries);
 
-	/* each flush does a present=0 UPDATE, an INSERT, a stale-row DELETE and the
-	   set_config_option() last-changed write, so 3 separate flushes cost 12
-	   statements and 1 batched flush costs 4 */
-	expect($perRowQueries)->toBe(12)
-		->and($batchedQueries)->toBe(4);
+	/* each flush does a present=0 UPDATE, an INSERT, a stale-row DELETE, the
+	   set_config_option() last-changed write, and a SELECT that scans the flushed
+	   rows for SNMPv3 items to gate the shared credential-cache version bump
+	   (#8166), so 3 separate flushes cost 15 statements and 1 batched flush costs 5 */
+	expect($perRowQueries)->toBe(15)
+		->and($batchedQueries)->toBe(5);
 });
 
 test('the batched flush leaves the same end-state as 3 per-row flushes would', function () {
