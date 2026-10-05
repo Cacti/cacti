@@ -1,10 +1,6 @@
 Cacti CHANGELOG
 
 1.3.0-dev
--feature#8166: Add a cross-process shared SNMP authentication cache (disabled by default) that pre-hardens SNMPv3 credential arguments once per credential change and seals them with the per-installation AES-256-GCM key, so poller, cmd and script server processes reuse them instead of rebuilding them on every request
--feature#8166: Route SNMPv3 get/getnext through the in-process php-snmp extension when the running PHP version supports the configured auth/privacy protocols and no context/engine id is set, bypassing a per-request Net-SNMP binary spawn
--feature#8166: Add an "Enable MD5 and DES for SNMPv3" setting (off by default) that removes the legacy MD5/DES algorithms from the Device and Automation SNMP Option pickers when disabled, and default new Devices to SHA/AES
--issue#8171: SNMPv3 devices using an auth/privacy protocol the running PHP cannot service natively (e.g. AES-256 before PHP 8.6) now collect through the Net-SNMP binary via a binary-delegating session instead of fataling the poller/device-edit, and the vendored classSNMP.php compatibility shim is removed
 -security#GHSA-2fhv-c794-v433: Authorize Data Source enable/disable against the owning device before mutating
 -security#GHSA-4p7f-qcc2-vmx7: Escape path_php_binary before the resource-cache PHP syntax-check shell command
 -security#GHSA-967c-6qj7-q7rh: Confirm the rrdtool control-character strip closes the RRD-create |query_*| injection path
@@ -45,6 +41,7 @@ Cacti CHANGELOG
 -security#8158: Harden - Confine automation sorting and pagination before SQL and HTML rendering
 -security#8158: Harden - Replace sibling password-reset links and revoke authentication state after reset
 -security#GHSA-3jj2-v5ch-wmq5: Fail closed on a posted LDAP realm that is not a configured domain
+-issue#8171: SNMPv3 devices using an auth/privacy protocol the running PHP cannot service natively (e.g. AES-256 before PHP 8.6) now collect through the Net-SNMP binary via a binary-delegating session instead of fataling the poller/device-edit, and the vendored classSNMP.php compatibility shim is removed
 -issue#8120: Do not replicate repository and tooling metadata files (.gitignore, .htaccess.dist, .mdl_style.rb, .mdlrc) to remote data collectors during file replication
 -issue#8116: Restore legacy unique_keys[] support in db_table_create() and db_update_table() so plugins that declare UNIQUE indexes with that definition style keep them across a schema refresh
 -issue#8105: Add a Force Uninstall action to remove an orphaned plugin whose directory is missing
@@ -230,6 +227,9 @@ Cacti CHANGELOG
 -issue#8040: Regenerate the vendored DOMPurify asset to match the pinned 3.4.15 release and keep node_modules during CI
 -issue#8041: Detect a real TTY instead of a dead github_actions check before calling stty size
 -issue#8043: Regenerate the vendored DOMPurify asset to match the pinned 3.4.15 release and keep node_modules during CI
+-feature#8166: Add a cross-process shared SNMP authentication cache (disabled by default) that pre-hardens SNMPv3 credential arguments once per credential change and seals them with the per-installation AES-256-GCM key, so poller, cmd and script server processes reuse them instead of rebuilding them on every request
+-feature#8166: Route SNMPv3 get/getnext through the in-process php-snmp extension when the running PHP version supports the configured auth/privacy protocols and no context/engine id is set, bypassing a per-request Net-SNMP binary spawn
+-feature#8166: Add an "Enable MD5 and DES for SNMPv3" setting (off by default) that removes the legacy MD5/DES algorithms from the Device and Automation SNMP Option pickers when disabled, and default new Devices to SHA/AES
 -feature#7884: Manage front-end JavaScript libraries with npm and Dependabot
 -feature#7884: Build release artifacts from managed dependencies, including DOMPurify 3.4.14 and phpseclib 4, and a reduced runtime tree
 -feature#7835: Add cacti_snmp_session_from_host() to build SNMP sessions from a device row

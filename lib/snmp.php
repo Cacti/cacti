@@ -311,7 +311,7 @@ function cacti_snmp_get(string $hostname, mixed $community, string $oid, mixed $
 		return 'U';
 	}
 
-	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format, $auth_proto, $priv_proto) == SNMP_METHOD_PHP) {
+	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format, auth_proto: $auth_proto, priv_proto: $priv_proto) == SNMP_METHOD_PHP) {
 		// make sure snmp* is verbose so we can see what types of data we are getting back
 		snmp_set_quick_print(false);
 
@@ -414,7 +414,7 @@ function cacti_snmp_get_raw(string $hostname, mixed $community, string $oid, mix
 		return 'U';
 	}
 
-	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format, $auth_proto, $priv_proto) == SNMP_METHOD_PHP) {
+	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format, auth_proto: $auth_proto, priv_proto: $priv_proto) == SNMP_METHOD_PHP) {
 		$snmp_value = false;
 
 		/* make sure snmp* is verbose so we can see what types of data
@@ -515,7 +515,7 @@ function cacti_snmp_getnext(string $hostname, mixed $community, mixed $oid, mixe
 		return 'U';
 	}
 
-	if (snmp_get_method('getnext', $version, $context, $engineid, $value_output_format, $auth_proto, $priv_proto) == SNMP_METHOD_PHP) {
+	if (snmp_get_method('getnext', $version, $context, $engineid, $value_output_format, auth_proto: $auth_proto, priv_proto: $priv_proto) == SNMP_METHOD_PHP) {
 		$snmp_value = false;
 
 		// make sure snmp* is verbose so we can see what types of data we are getting back
@@ -525,9 +525,9 @@ function cacti_snmp_getnext(string $hostname, mixed $community, mixed $oid, mixe
 
 		try {
 			if ($version == '1') {
-				$snmp_value = @snmpgetnext($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
+				$snmp_value = @snmpgetnext(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
 			} elseif ($version == '2') {
-				$snmp_value = @snmp2_getnext($hostname . ':' . $port, $community, $oid, $timeout_us, $retries);
+				$snmp_value = @snmp2_getnext(snmp_format_agent($hostname, $port), $community, $oid, $timeout_us, $retries);
 			} else {
 				if ($priv_proto == '[None]' || $priv_pass == '') {
 					$sec_level  = ($auth_pass == '' || $auth_proto == '[None]') ? 'noAuthNoPriv' : 'authNoPriv';
@@ -1392,8 +1392,8 @@ function snmp_escape_string(string $string, string $server_os = CACTI_SERVER_OS)
  * @return int One of the `SNMP_METHOD_*` constants.
  */
 function snmp_get_method(string $type = 'walk', mixed $version = 1, mixed $context = '', mixed $engineid = '',
-	int $value_output_format = SNMP_STRING_OUTPUT_GUESS, mixed $auth_proto = '', mixed $priv_proto = '',
-	bool $php_snmp = CACTI_PHP_SNMP) : int {
+	int $value_output_format = SNMP_STRING_OUTPUT_GUESS, bool $php_snmp = CACTI_PHP_SNMP, mixed $auth_proto = '',
+	mixed $priv_proto = '') : int {
 	if (!$php_snmp) {
 		return SNMP_METHOD_BINARY;
 	}
@@ -1408,12 +1408,18 @@ function snmp_get_method(string $type = 'walk', mixed $version = 1, mixed $conte
 
 	/* SNMPv3 get/getnext: prefer the procedural snmp3_*() calls (they reach
 	 * libnetsnmp directly and avoid a per-call process spawn), but only when the
-	 * running PHP can actually service the request. The procedural API has no
-	 * context or engine-id parameters, and ext-snmp before PHP 8.6 rejects the
-	 * SHA-224/SHA-384 auth and AES-192/256[C] privacy tokens with a ValueError
+	 * running PHP can actually service the request. Only get/getnext have a
+	 * procedural equivalent here (the native walk branch implements v1/v2 only),
+	 * so every other v3 operation stays on the Net-SNMP binary. The procedural API
+	 * has no context or engine-id parameters, and ext-snmp before PHP 8.6 rejects
+	 * the SHA-224/SHA-384 auth and AES-192/256[C] privacy tokens with a ValueError
 	 * (SHA256/SHA512 + DES/AES/AES128 are accepted from the 8.3 floor), so those
-	 * requests fall back to the Net-SNMP binary. */
+	 * requests fall back to the binary too. */
 	if ($version == 3) {
+		if ($type != 'get' && $type != 'getnext') {
+			return SNMP_METHOD_BINARY;
+		}
+
 		if (!function_exists('snmp3_get')) {
 			return SNMP_METHOD_BINARY;
 		}
@@ -1971,7 +1977,7 @@ function cacti_snmp_get_multi($hostname, $community, $oids, $version, $auth_user
 	/* The array-OID form only exists on the procedural ext-snmp path; anything
 	 * that must use the binary (hex output, no ext-snmp) is served one OID at a
 	 * time through the usual single get. */
-	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format, $auth_proto, $priv_proto) != SNMP_METHOD_PHP || !function_exists('snmpget')) {
+	if (snmp_get_method('get', $version, $context, $engineid, $value_output_format, auth_proto: $auth_proto, priv_proto: $priv_proto) != SNMP_METHOD_PHP || !function_exists('snmpget')) {
 		$results = array();
 
 		foreach ($oids as $oid) {
