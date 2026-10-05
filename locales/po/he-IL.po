@@ -10348,6 +10348,12 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr "כברירת מחדל, קקטוסים הנתונים הראשי של קקטוסים ישמור את כל אתר האינטרנט במטמון ותוספים למטמון משאבים. לאחר מכן, מעת לעת אספני הנתונים המרוחקים יתעדכנו בעצמם בעדכוני כל העדכונים של אספן הנתונים הראשי של הקקטוסים. מטמון משאבים זה מאפשר למעשה לאספני נתונים מרוחקים לשדרג עצמי. אם אינך מעוניין להשתמש באפשרות זו, תוכל להשבית אותה באמצעות הגדרה זו."
 
 #: include/global_settings.php
+#, fuzzy
+#| msgid "SNMP error"
+msgid "SNMP Behavior"
+msgstr "שגיאת SNMP"
+
+#: include/global_settings.php
 msgid "Additional Data Collector Settings"
 msgstr "נתונים מרוחקים מצב אספן:"
 
