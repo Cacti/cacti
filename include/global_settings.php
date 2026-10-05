@@ -1308,12 +1308,6 @@ $settings = array(
 			'friendly_name' => __('SNMP Behavior'),
 			'method' => 'spacer',
 		),
-		'oid_increasing_check_disable' => array(
-			'friendly_name' => __('Disable increasing OID Check'),
-			'description' => __('Controls disabling check for increasing OID while walking OID tree.'),
-			'method' => 'checkbox',
-			'default' => ''
-		),
 		'snmp_md5_des_enabled' => array(
 			'friendly_name' => __('Enable MD5 and DES for SNMPv3'),
 			'description' => __('The MD5 authentication and DES privacy algorithms are legacy, weak, and unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When disabled, MD5 and DES are removed from the SNMPv3 Authentication and Privacy Protocol dropdowns shown when editing a Device and in the Automation SNMP Options, leaving only the stronger SHA and AES algorithms.'),
@@ -1353,6 +1347,12 @@ $settings = array(
 				'150' => '150',
 				'200' => '200'
 			)
+		),
+		'oid_increasing_check_disable' => array(
+			'friendly_name' => __('Disable increasing OID Check'),
+			'description' => __('Controls disabling check for increasing OID while walking OID tree.'),
+			'method' => 'checkbox',
+			'default' => ''
 		),
 		'data_collector1_header' => array(
 			'friendly_name' => __('Additional Data Collector Settings'),
