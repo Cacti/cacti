@@ -20,6 +20,13 @@
 # Patch files are applied byte-for-byte; never rewrite their line endings.
 *.patch -text
 
+# Vendored third-party libraries are kept exactly as shipped upstream, including
+# their line endings, so they stay byte-identical to upstream and out of diffs
+# and code scanners. Do not normalize them.
+include/js/big.js                        -text
+include/js/jquery.tablesorter.js         -text
+include/js/jquery.tablesorter.widgets.js -text
+
 # Every pull request appends to the same two anchors in CHANGELOG: the top of
 # the issue block and the end of the feature block. Concurrent PRs therefore
 # collide there even when they touch nothing else. check-changelog.py enforces
