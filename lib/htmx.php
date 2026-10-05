@@ -89,7 +89,7 @@ function htmx_version(): string {
 }
 
 /**
- * Subresource Integrity hash pinned to the exact vendored htmx 2.0.10 build
+ * Subresource Integrity hash pinned to the exact vendored htmx 2.0.11 build
  * (include/js/htmx.js). This is a constant, not a value recomputed from the
  * served file at runtime: a self-referential hash gives no supply-chain
  * protection, since swapping htmx.js would simply re-hash to match it. With
@@ -98,7 +98,7 @@ function htmx_version(): string {
  * On an htmx upgrade, replace the vendored file and recompute this value:
  *   php -r 'echo "sha384-".base64_encode(hash_file("sha384","include/js/htmx.js",true));'
  */
-const HTMX_2_0_10_SRI = 'sha384-Q+Dky3iHVJOr6wUjQ4ulh6uQ76an/t+ak1+PjMVaxRjbZamFLAG+u9InkfjbsEQf';
+const HTMX_2_0_11_SRI = 'sha384-gmJEF2eAKY4e+FDN+qtKIivWyb6ANwDB7JUdUybKgQspPKyEX/pIRZG/0uaRoW2C';
 
 /**
  * Returns a <script> tag that loads the vendored htmx.js with an SRI
@@ -110,7 +110,7 @@ const HTMX_2_0_10_SRI = 'sha384-Q+Dky3iHVJOr6wUjQ4ulh6uQ76an/t+ak1+PjMVaxRjbZamF
  * navigation and AJAX submission model. Pages that want htmx behaviour opt in
  * per-element with explicit hx-* attributes.
  *
- * The integrity attribute uses the HTMX_2_0_10_SRI constant pinned to the
+ * The integrity attribute uses the HTMX_2_0_11_SRI constant pinned to the
  * vendored build (see that constant for why the hash is not recomputed here).
  *
  * The src is root-absolute (prefixed with CACTI_PATH_URL) so the asset
@@ -124,14 +124,14 @@ const HTMX_2_0_10_SRI = 'sha384-Q+Dky3iHVJOr6wUjQ4ulh6uQ76an/t+ak1+PjMVaxRjbZamF
  * stale hash after include/js/htmx.js changes.
  *
  * Two wiring pieces precede the script element:
- *   - an htmx-config meta that disables allowEval/allowScriptTags. htmx 2.0.10
+ *   - an htmx-config meta that disables allowEval/allowScriptTags. htmx 2.0.11
  *     defaults both to true, which Cacti's CSP (no unsafe-eval) forbids. The
  *     meta is read by htmx at load, so it must appear before the script.
  *   - an htmx:configRequest listener that adds the csrf-magic token to
  *     body-based (POST/PUT/PATCH) htmx requests. Cacti validates the
  *     __csrf_magic field on POSTs; layout.js injects it into $.post payloads,
  *     but htmx has no such hook, so the first hx-post would otherwise fail
- *     CSRF validation. GET and DELETE are excluded because htmx 2.0.10 encodes
+ *     CSRF validation. GET and DELETE are excluded because htmx 2.0.11 encodes
  *     their parameters into the URL (methodsThatUseUrlParams), which would
  *     leak the token into query strings and server logs.
  *
@@ -151,7 +151,7 @@ function htmx_script_tag(): string {
 	// md5 is a cache-buster for the asset URL only, recomputed on every call
 	// (not cached in a static) so an htmx.js upgrade is visible without a
 	// process restart. Integrity is the pinned constant, never derived from
-	// the served file (see HTMX_2_0_10_SRI).
+	// the served file (see HTMX_2_0_11_SRI).
 	$md5 = md5_file($js_path);
 
 	// CACTI_PATH_URL is defined by include/global_path.php during a normal
@@ -181,7 +181,7 @@ function htmx_script_tag(): string {
 		. "</script>\n";
 
 	$tag = "<script type='text/javascript' $nonce_attr src='" . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . "'"
-		. " integrity='" . HTMX_2_0_10_SRI . "'"
+		. " integrity='" . HTMX_2_0_11_SRI . "'"
 		. " crossorigin='anonymous'></script>\n";
 
 	// Both wiring pieces precede the script element (see the function doc):
