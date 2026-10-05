@@ -10220,6 +10220,10 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr ""
 
 #: include/global_settings.php
+msgid "SNMP Behavior"
+msgstr ""
+
+#: include/global_settings.php
 msgid "Additional Data Collector Settings"
 msgstr ""
 
