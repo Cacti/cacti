@@ -1278,12 +1278,6 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => ''
 		),
-		'oid_increasing_check_disable' => array(
-			'friendly_name' => __('Disable increasing OID Check'),
-			'description' => __('Controls disabling check for increasing OID while walking OID tree.'),
-			'method' => 'checkbox',
-			'default' => ''
-		),
 		'remote_agent_timeout' => array(
 			'friendly_name' => __('Remote Agent Timeout'),
 			'description' => __('The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information.'),
@@ -1298,11 +1292,41 @@ $settings = array(
 				60 => __('%d Seconds', 60)
 			)
 		),
+		'poller_refresh_output_table' => array(
+			'friendly_name' => __('Refresh Poller Table Per Cycle'),
+			'description' => __('This setting is for a single poller systems only to rebuild the poller output table on each polling cycle to prevent the memory table from swapping on very large systems with large databases that could use swap.'),
+			'method' => 'checkbox',
+			'default' => '',
+		),
+		'disable_cache_replication' => array(
+			'friendly_name' => __('Disable Resource Cache Replication'),
+			'description' => __('By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting.'),
+			'method' => 'checkbox',
+			'default' => ''
+		),
+		'snmp_behavior_header' => array(
+			'friendly_name' => __('SNMP Behavior'),
+			'method' => 'spacer',
+		),
 		'snmp_md5_des_enabled' => array(
 			'friendly_name' => __('Enable MD5 and DES for SNMPv3'),
 			'description' => __('The MD5 authentication and DES privacy algorithms are legacy, weak, and unavailable on hardened (FIPS) PHP and Net-SNMP builds.  When disabled, MD5 and DES are removed from the SNMPv3 Authentication and Privacy Protocol dropdowns shown when editing a Device and in the Automation SNMP Options, leaving only the stronger SHA and AES algorithms.'),
 			'method' => 'checkbox',
 			'default' => ''
+		),
+		'snmp_credential_cache' => array(
+			'friendly_name' => __('Enable Credential Cache'),
+			'description' => __('Pre-harden and cache SNMPv3 credential arguments once per credential change so each poller process reuses them instead of rebuilding them on every request.  This yields a marginal savings when collecting with SNMPv3 credentials through the Net-SNMP binaries.  The php-snmp extension handles most SNMPv3 gets in-process and bypasses this cache, but the Net-SNMP binaries (and therefore this cache) are still used for SNMP walks, hex output, requests that set a context or engine id, and protocol combinations that the running PHP version does not support.  Enable this if you collect any of those workloads with SNMPv3 credentials.'),
+			'method' => 'checkbox',
+			'default' => ''
+		),
+		'max_get_size' => array(
+			'friendly_name' => __('SNMP Get OID Limit'),
+			'description' => __('The default maximum number of SNMP Get OIDs to issue per snmpget request.  For Devices, this setting is controlled at the Device level.  You should only use this setting when using Cacti\'s SNMP API natively in your scripts or plugins.'),
+			'method' => 'textbox',
+			'default' => '10',
+			'max_length' => '10',
+			'size' => '5'
 		),
 		'snmp_bulk_walk_size' => array(
 			'friendly_name' => __('SNMP Bulkwalk Fetch Size'),
@@ -1324,29 +1348,9 @@ $settings = array(
 				'200' => '200'
 			)
 		),
-		'max_get_size' => array(
-			'friendly_name' => __('SNMP Get OID Limit'),
-			'description' => __('The default maximum number of SNMP Get OIDs to issue per snmpget request.  For Devices, this setting is controlled at the Device level.  You should only use this setting when using Cacti\'s SNMP API natively in your scripts or plugins.'),
-			'method' => 'textbox',
-			'default' => '10',
-			'max_length' => '10',
-			'size' => '5'
-		),
-		'snmp_credential_cache' => array(
-			'friendly_name' => __('Enable Credential Cache'),
-			'description' => __('Pre-harden and cache SNMPv3 credential arguments once per credential change so each poller process reuses them instead of rebuilding them on every request.  This yields a marginal savings when collecting with SNMPv3 credentials through the Net-SNMP binaries.  The php-snmp extension handles most SNMPv3 gets in-process and bypasses this cache, but the Net-SNMP binaries (and therefore this cache) are still used for SNMP walks, hex output, requests that set a context or engine id, and protocol combinations that the running PHP version does not support.  Enable this if you collect any of those workloads with SNMPv3 credentials.'),
-			'method' => 'checkbox',
-			'default' => ''
-		),
-		'poller_refresh_output_table' => array(
-			'friendly_name' => __('Refresh Poller Table Per Cycle'),
-			'description' => __('This setting is for a single poller systems only to rebuild the poller output table on each polling cycle to prevent the memory table from swapping on very large systems with large databases that could use swap.'),
-			'method' => 'checkbox',
-			'default' => '',
-		),
-		'disable_cache_replication' => array(
-			'friendly_name' => __('Disable Resource Cache Replication'),
-			'description' => __('By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting.'),
+		'oid_increasing_check_disable' => array(
+			'friendly_name' => __('Disable increasing OID Check'),
+			'description' => __('Controls disabling check for increasing OID while walking OID tree.'),
 			'method' => 'checkbox',
 			'default' => ''
 		),
