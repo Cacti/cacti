@@ -10435,6 +10435,12 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr "بشكل افتراضي ، سيقوم Cacti Data Collector الرئيسي بتخزين موقع الويب بالكامل والمكونات الإضافية في ذاكرة التخزين المؤقت للموارد.  بعد ذلك ، سيقوم جامعو البيانات عن بعد بشكل دوري بتحديث أنفسهم بأي تحديثات من Cacti Data Collector الرئيسي.  تسمح ذاكرة التخزين المؤقت للموارد هذه بشكل أساسي لجامعي البيانات عن بعد بالترقية الذاتية.  إذا كنت لا ترغب في استخدام هذا الخيار ، فيمكنك تعطيله باستخدام هذا الإعداد."
 
 #: include/global_settings.php
+#, fuzzy
+#| msgid "SNMP error"
+msgid "SNMP Behavior"
+msgstr "خطأ SNMP"
+
+#: include/global_settings.php
 msgid "Additional Data Collector Settings"
 msgstr "حالة جامع البيانات عن بعد:"
 
