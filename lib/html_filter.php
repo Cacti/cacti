@@ -488,6 +488,15 @@ class CactiTableFilter {
 			}
 		}
 
+		// Import/Export actions render as table-import / table-export glyph buttons.
+		if ($field_name === 'import' && ($field_array['method'] ?? '') === 'button') {
+			$field_array['glyph'] = 'ti ti-table-import';
+		}
+
+		if ($field_name === 'export' && ($field_array['method'] ?? '') === 'button') {
+			$field_array['glyph'] = 'ti ti-table-export';
+		}
+
 		if (isset($field_array['class'])) {
 			$class = ' ' . $field_array['class'];
 		} else {
@@ -806,10 +815,10 @@ class CactiTableFilter {
 		// Separate the always-present Layouts selector (plus any Rows/Refresh) from the layout buttons.
 		print "<div class='filterColumnButton'><span class='barSep'></span></div>";
 
-		print $this->layout_button('layout_edit',   __('Edit'),    __('Edit the current filter'));
-		print $this->layout_button('layout_rename', __('Rename'),  __('Rename the selected layout'), true);
-		print $this->layout_button('layout_delete', __('Delete'),  __('Delete the selected layout'), true);
-		print $this->layout_button('layout_saveas', __('Save As'), __('Save this layout as a new personal layout'), true);
+		print $this->layout_button('layout_edit',   __('Edit'),    __('Edit the current filter'), false, 'ti ti-edit');
+		print $this->layout_button('layout_rename', __('Rename'),  __('Rename the selected layout'), true, 'ti ti-forms');
+		print $this->layout_button('layout_delete', __('Delete'),  __('Delete the selected layout'), true, 'ti ti-trash');
+		print $this->layout_button('layout_saveas', __('Save As'), __('Save this layout as a new personal layout'), true, 'ti ti-device-floppy');
 
 		// Refresh (reload the current view, keeping the selected layout) as a glyph button, right of the Edit group.
 		print "<div class='filterColumnButton'><button type='button' class='ui-button ui-corner-all ui-widget' id='layout_refresh' title='" . __esc('Refresh page') . "'><i class='ti ti-refresh'></i></button></div>" . PHP_EOL;
@@ -1295,9 +1304,11 @@ class CactiTableFilter {
 		validate_store_request_vars($filters, $this->session_var);
 	}
 
-	private function layout_button(string $id, string $display, string $title, bool $hidden = false) : string {
+	private function layout_button(string $id, string $display, string $title, bool $hidden = false, string $glyph = '') : string {
+		$content = $glyph !== '' ? '<i class="' . html_escape($glyph) . '"></i>' : '<span class="button-text">' . html_escape($display) . '</span>';
+
 		return '<div class="filterColumnButton"' . ($hidden ? ' style="display:none"' : '') . '>' .
-			'<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $id . '" title="' . html_escape($title) . '"><span class="button-text">' . html_escape($display) . '</span></button>' .
+			'<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $id . '" title="' . html_escape($title) . '">' . $content . '</button>' .
 			'</div>' . PHP_EOL;
 	}
 
@@ -1317,13 +1328,13 @@ class CactiTableFilter {
 		print $this->layout_select($layouts, $can_glob);
 		print '</div>';
 
-		print $this->layout_button('layout_save',   __('Save'),   __('Overwrite the selected layout with the current filter'));
-		print $this->layout_button('layout_new',    __('New'),    __('Save the current filter as a new layout'));
-		print $this->layout_button('layout_rename', __('Rename'), __('Rename the selected layout'));
-		print $this->layout_button('layout_delete', __('Delete'), __('Delete the selected layout'));
+		print $this->layout_button('layout_save',   __('Save'),   __('Overwrite the selected layout with the current filter'), false, 'ti ti-device-floppy');
+		print $this->layout_button('layout_new',    __('New'),    __('Save the current filter as a new layout'), false, 'ti ti-file-plus');
+		print $this->layout_button('layout_rename', __('Rename'), __('Rename the selected layout'), false, 'ti ti-forms');
+		print $this->layout_button('layout_delete', __('Delete'), __('Delete the selected layout'), false, 'ti ti-trash');
 
 		if ($can_glob) {
-			print $this->layout_button('layout_publish', __('Publish'), __('Publish the selected layout so all users can see it'));
+			print $this->layout_button('layout_publish', __('Publish'), __('Publish the selected layout so all users can see it'), false, 'ti ti-world-up');
 		}
 
 		print '</div>';
