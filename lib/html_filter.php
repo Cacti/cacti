@@ -1431,6 +1431,9 @@ class CactiTableFilter {
 
 		$js .= 'var layoutDirty = false;' . PHP_EOL;
 
+		// Tracks whether the open dialog is still in "save as new" mode; cleared after the first successful save so later saves update the created layout.
+		$js .= 'var layoutDialogForceNew = false;' . PHP_EOL;
+
 		$js .= 'function layoutFilterUrl() {' . PHP_EOL;
 		$js .= "\treturn " . $applyFilter . PHP_EOL;
 		$js .= '}' . PHP_EOL;
@@ -1482,17 +1485,19 @@ class CactiTableFilter {
 		$js .= "\t\t\topt.val(r.id).text(r.name).attr('data-url', r.url || '').attr('data-name', r.name).attr('data-editable', '1');" . PHP_EOL;
 		$js .= "\t\t\t$('#filter_layout').val(r.id);" . PHP_EOL;
 		$js .= "\t\t\tlayoutUpdateButtons();" . PHP_EOL;
+		$js .= "\t\t\tlayoutDialogForceNew = false;" . PHP_EOL;
 		$js .= "\t\t}" . PHP_EOL;
 		$js .= "\t\tlayoutSetDirty(false);" . PHP_EOL;
 		$js .= "\t});" . PHP_EOL;
 		$js .= '}' . PHP_EOL;
 
 		$js .= 'function layoutOpenDialog(forceNew) {' . PHP_EOL;
+		$js .= "\tlayoutDialogForceNew = forceNew;" . PHP_EOL;
 		$js .= "\t$('#layout_name').val(forceNew ? '' : (layoutSelectedOption().attr('data-name') || ''));" . PHP_EOL;
 		$js .= "\tvar buttons = [" . PHP_EOL;
 		// when a layout is selected (incl. one just saved) apply its own url so filter_layout carries through, otherwise run the plain filter apply
 		$js .= "\t\t{ text: " . json_encode($applyLabel) . ", click: function() { if (!layoutDirty) { $(this).dialog('close'); var lu = layoutSelectedOption().attr('data-url'); if (layoutSelectedId() != 0 && lu != undefined && lu != '') { loadUrl({ url: correctUrlParameters(lu) }); } else { " . $changeFunction . '; } } } },' . PHP_EOL;
-		$js .= "\t\t{ text: " . json_encode(__('Save')) . ', click: function() { layoutDialogSave(forceNew); } },' . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode(__('Save')) . ', click: function() { layoutDialogSave(layoutDialogForceNew); } },' . PHP_EOL;
 
 		if ($can_glob) {
 			$js .= "\t\t{ text: " . json_encode(__('Publish')) . ', click: function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { alert(' . json_encode(__('Save the layout before publishing it.')) . "); return; } layoutPost('layout_publish', { id: id }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); } }," . PHP_EOL;
@@ -1504,7 +1509,7 @@ class CactiTableFilter {
 		$js .= "\tvar dw = $('#" . $this->form_id . "_dialog').dialog('widget');" . PHP_EOL;
 		$js .= "\tdw.addClass('cactiFilterDialog');" . PHP_EOL;
 		$js .= "\tdw.find('.ui-dialog-buttonpane button').first().addClass('layoutApplyBtn');" . PHP_EOL;
-		$js .= "\tlayoutSetDirty(forceNew || layoutSelectedId() == 0);" . PHP_EOL;
+		$js .= "\tlayoutSetDirty(forceNew || layoutSelectedId() == 0 || layoutDirty);" . PHP_EOL;
 		$js .= '}' . PHP_EOL;
 
 		$js .= 'function layoutRenameDialog(id, cur) {' . PHP_EOL;
@@ -1536,7 +1541,7 @@ class CactiTableFilter {
 		$js .= "\t$('#layout_refresh').click(function() { $(this).find('i').addClass('icon-rotate'); var u = layoutSelectedOption().attr('data-url'); if (layoutSelectedId() != 0 && u != undefined && u != '') { loadUrl({ url: correctUrlParameters(u) }); } else { " . $changeFunction . '; } });' . PHP_EOL;
 		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } layoutRenameDialog(id, layoutSelectedOption().attr('data-name') || ''); });" . PHP_EOL;
 		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } layoutDeleteDialog(id); });" . PHP_EOL;
-		$js .= "\t$('#layout_name').keydown(function(e) { if (e.keyCode == 13) { e.preventDefault(); layoutDialogSave(false); } });" . PHP_EOL;
+		$js .= "\t$('#layout_name').keydown(function(e) { if (e.keyCode == 13) { e.preventDefault(); layoutDialogSave(layoutDialogForceNew); } });" . PHP_EOL;
 		$js .= '});' . PHP_EOL;
 
 		$js .= '</script>' . PHP_EOL;

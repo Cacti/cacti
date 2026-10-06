@@ -98,9 +98,7 @@ function layouts_form_actions() : void {
 			}
 		}
 
-		header('Location: layouts.php');
-
-		exit;
+		cacti_redirect('layouts.php');
 	}
 
 	$ilist  = '';
