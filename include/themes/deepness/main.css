@@ -52,7 +52,7 @@
 	--dp-accent:        #18b981;
 	--dp-accent-hover:  #26cf94;
 	--dp-accent-deep:   #0c5f44;
-	--dp-accent-soft:   rgba(24, 185, 129, 0.8);
+	--dp-accent-soft:   rgba(24, 185, 129, 0.3);
 	--dp-link:          #3bc991;
 	--dp-link-hover:    #63dcaf;
 }
@@ -1563,7 +1563,7 @@ th.sortable {
 .tableHeader th.tableHeaderColumnSelected a:visited,
 .tableHeader th.tableHeaderColumnSelected a:hover,
 .tableHeader th.tableHeaderColumnSelected .fa {
-	color: var(--dp-page);
+	color: var(--dp-text);
 }
 
 .tableHeaderColumnHover {
@@ -1892,7 +1892,7 @@ div#gtabs {
 }
 
 .maintabs a.selected {
-	color: var(--dp-page);
+	color: var(--dp-text);
 	background-color: var(--dp-accent-soft);
 }
 
@@ -1970,7 +1970,7 @@ div.submenu span {
 }
 
 .tabs nav a.selected {
-	color: var(--dp-page);
+	color: var(--dp-text);
 	border-bottom: 1px solid var(--dp-accent);
 	background: var(--dp-accent-soft);
 }
@@ -2097,8 +2097,13 @@ tr th:last-child .checkbox {
 }
 
 #nav li a.selected {
-	color: var(--dp-page);
+	color: var(--dp-text);
 	background: var(--dp-accent-soft);
+}
+
+#nav li a.selected i,
+#nav li a.selected .menu_glyph {
+	color: var(--dp-text);
 }
 
 #nav li ul {
@@ -2216,7 +2221,7 @@ ul.pagination li span {
 
 ul.pagination li a.active {
 	background: var(--dp-accent-soft);
-	color: var(--dp-page);
+	color: var(--dp-text);
 }
 
 ul.pagination li a:hover:not(.active) {
