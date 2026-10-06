@@ -1240,6 +1240,9 @@ class CactiTableFilter {
 		$filters['page']['filter']  = FILTER_VALIDATE_INT;
 		$filters['page']['default'] = 1;
 
+		$filters['layout']['filter']  = FILTER_VALIDATE_INT;
+		$filters['layout']['default'] = 0;
+
 		if (!isrv('page')) {
 			srv('page', 1);
 		}
