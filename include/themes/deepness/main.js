@@ -57,8 +57,7 @@ function themeReady() {
 	/* Start clean up */
 
 	//login page
-	$('.cactiLoginLogo').html("<i class='fa fa-paw'/>").css('font-size: 20px');
-
+		$('.cactiLoginLogo').html("<i class='fa fa-yin-yang'/>").css('font-size: 20px');
 	/* clean up the navigation menu */
 	$('.cactiConsoleNavigationArea').find('#menu').appendTo($('.cactiConsoleNavigationArea').find('#navigation'));
 	$('.cactiConsoleNavigationArea').find('#navigation > table').remove();

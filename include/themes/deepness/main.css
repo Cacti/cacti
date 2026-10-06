@@ -174,6 +174,35 @@ input, select {
 	padding: 0.4em 0.4em 0.4em 0.4em;
 }
 
+/* Flat, theme-appropriate text fields - drop the jQuery UI ui-state-default gradient image */
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input.ui-state-default,
+textarea,
+textarea.ui-state-default {
+	background: var(--dp-panel);
+	background-image: none;
+	border: 1px solid var(--dp-border);
+	color: var(--dp-text);
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+textarea:focus {
+	background-image: none;
+	border-color: var(--dp-accent);
+}
+
 label {
 	white-space: nowrap;
 }
@@ -1852,6 +1881,7 @@ div#gtabs {
 }
 
 .maintabs a.selected {
+	color: var(--dp-page);
 	background-color: var(--dp-accent);
 }
 
@@ -1929,7 +1959,7 @@ div.submenu span {
 }
 
 .tabs nav a.selected {
-	color: var(--dp-text);
+	color: var(--dp-page);
 	border-bottom: 1px solid var(--dp-accent);
 	background: var(--dp-accent);
 }
@@ -2056,7 +2086,7 @@ tr th:last-child .checkbox {
 }
 
 #nav li a.selected {
-	color: var(--dp-text);
+	color: var(--dp-page);
 	background: var(--dp-accent);
 }
 
@@ -2083,27 +2113,32 @@ ul#nav {
 
 .clogError {
 	color: var(--dp-text);
-	background-color: #6f0a07;
+	background-color: rgba(201, 42, 42, 0.2);
 }
 
 .clogWarning {
-	background-color: #EACC00;
+	color: var(--dp-text);
+	background-color: rgba(234, 204, 0, 0.2);
 }
 
 .clogSQL {
-	background-color: #6DC8FE;
+	color: var(--dp-text);
+	background-color: rgba(109, 200, 254, 0.2);
 }
 
 .clogDebug {
-	background-color: #C4FD3D;
+	color: var(--dp-text);
+	background-color: rgba(196, 253, 61, 0.2);
 }
 
 .clogStats {
-	background-color: #96E78A;
+	color: var(--dp-text);
+	background-color: rgba(150, 231, 138, 0.2);
 }
 
 .clogLimit {
-	background-color: #EACC00;
+	color: var(--dp-text);
+	background-color: rgba(234, 204, 0, 0.2);
 }
 
 .clogStats td, .clogDebug td, .clogSQL td, .clogWarning td, .clogError td, .clogLimit td {
@@ -2170,7 +2205,7 @@ ul.pagination li span {
 
 ul.pagination li a.active {
 	background: var(--dp-accent);
-	color: var(--dp-text);
+	color: var(--dp-page);
 }
 
 ul.pagination li a:hover:not(.active) {
