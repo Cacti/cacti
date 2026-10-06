@@ -2247,7 +2247,7 @@ function plugin_fetch_latest_plugins() : mixed {
 
 			if (cacti_sizeof($develop) && isset($develop['pushed_at'])) {
 				$published_at = date('Y-m-d H:i:s', strtotime($develop['pushed_at']));
-				$tag_name     = 'develop';
+				$tag_name     = (isset($develop['default_branch']) && $develop['default_branch'] != '') ? $develop['default_branch'] : 'develop';
 
 				$unchanged = db_fetch_cell_prepared('SELECT COUNT(*)
 					FROM plugin_available
@@ -2259,7 +2259,7 @@ function plugin_fetch_latest_plugins() : mixed {
 
 				if ($unchanged) {
 					$skip = true;
-					cacti_log(sprintf('SKIPPED: Plugin:\'%s\', Tag/Release:\'%s\' Skipped as it has not changed', $plugin_name, 'develop'), false, 'PLUGIN');
+					cacti_log(sprintf('SKIPPED: Plugin:\'%s\', Tag/Release:\'%s\' Skipped as it has not changed', $plugin_name, $tag_name), false, 'PLUGIN');
 				} else {
 					$skip = false;
 				}
@@ -2269,15 +2269,15 @@ function plugin_fetch_latest_plugins() : mixed {
 
 					$pstart = microtime(true);
 
-					$avail_plugins[$plugin_name]['develop']['body']         = '';
-					$avail_plugins[$plugin_name]['develop']['published_at'] = $published_at;
+					$avail_plugins[$plugin_name][$tag_name]['body']         = '';
+					$avail_plugins[$plugin_name][$tag_name]['published_at'] = $published_at;
 
-					// insert develop
+					// insert default branch
 					$files = [
-						'changelog' => "$repo/repos/$user/plugin_{$plugin_name}/contents/CHANGELOG.md?ref=develop",
-						'readme'    => "$repo/repos/$user/plugin_{$plugin_name}/contents/README.md?ref=develop",
-						'info'      => "$repo/repos/$user/plugin_{$plugin_name}/contents/INFO?ref=develop",
-						'archive'   => "$repo/repos/$user/plugin_{$plugin_name}/tarball?ref=develop"
+						'changelog' => "$repo/repos/$user/plugin_{$plugin_name}/contents/CHANGELOG.md?ref=$tag_name",
+						'readme'    => "$repo/repos/$user/plugin_{$plugin_name}/contents/README.md?ref=$tag_name",
+						'info'      => "$repo/repos/$user/plugin_{$plugin_name}/contents/INFO?ref=$tag_name",
+						'archive'   => "$repo/repos/$user/plugin_{$plugin_name}/tarball?ref=$tag_name"
 					];
 
 					$ofiles = [];
@@ -2370,7 +2370,7 @@ function plugin_fetch_latest_plugins() : mixed {
 
 					$pend = microtime(true);
 
-					cacti_log(sprintf('UPDATED: Plugin:\'%s\', Tag/Release:\'%s\' Updated in %0.2f seconds.', $plugin_name, 'develop', $pend - $pstart), false, 'PLUGIN');
+					cacti_log(sprintf('UPDATED: Plugin:\'%s\', Tag/Release:\'%s\' Updated in %0.2f seconds.', $plugin_name, $tag_name, $pend - $pstart), false, 'PLUGIN');
 				}
 			}
 		}
