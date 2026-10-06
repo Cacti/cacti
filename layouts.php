@@ -64,9 +64,9 @@ switch (get_nfilter_request_var('action')) {
 function layouts_form_actions() : void {
 	global $actions;
 
-	/* ================= input validation ================= */
+	// ================= input validation =================
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
-	/* ==================================================== */
+	// ====================================================
 
 	$user_id = isset($_SESSION['sess_user_id']) ? (int) $_SESSION['sess_user_id'] : 0;
 
@@ -108,9 +108,9 @@ function layouts_form_actions() : void {
 
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ==== input validation ==== */
+			// ==== input validation ====
 			input_validate_input_number($matches[1], 'chk[1]');
-			/* ========================== */
+			// ==========================
 
 			$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT name FROM user_layouts WHERE id = ?', [$matches[1]])) . '</li>';
 			$iarray[] = $matches[1];
@@ -163,7 +163,7 @@ function layouts_manage() : void {
 	$is_admin = filter_layouts_can_manage_global();
 	$user_id  = isset($_SESSION['sess_user_id']) ? (int) $_SESSION['sess_user_id'] : 0;
 
-	$pageFilter = new CactiTableFilter(__('Layouts'), 'layouts.php', 'form_layouts', 'sess_layouts');
+	$pageFilter             = new CactiTableFilter(__('Layouts'), 'layouts.php', 'form_layouts', 'sess_layouts');
 	$pageFilter->rows_label = __('Layouts');
 	$pageFilter->render();
 
@@ -180,7 +180,7 @@ function layouts_manage() : void {
 	}
 
 	if (!$is_admin) {
-		$sql_where   .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'ul.user_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'ul.user_id = ?';
 		$sql_params[] = $user_id;
 	}
 
@@ -296,4 +296,3 @@ function layouts_page_name(string $page) : string {
 
 	return $page;
 }
-

@@ -1361,7 +1361,7 @@ class CactiTableFilter {
 
 		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to rename.')) . '); return; } if (!layoutEditable()) { alert(' . json_encode(__('You are not permitted to modify this layout.')) . "); return; } var cur = $('#filter_layout option:selected').attr('data-name'); layoutNameDialog(" . json_encode(__('Rename Layout')) . ", cur, function(name) { layoutPost('layout_rename', { id: id, name: name }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); }); });" . PHP_EOL;
 
-		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to delete.')) . '); return; } if (!layoutEditable()) { alert(' . json_encode(__('You are not permitted to modify this layout.')) . "); return; } var d = $('<div>').append($('<p>').text(" . json_encode(__('Delete the selected layout?')) . ")); $('body').append(d); d.dialog({ title: " . json_encode(__('Delete Layout')) . ", modal: true, width: 420, resizable: false, buttons: [ { text: " . json_encode(__('Delete')) . ", click: function() { $(this).dialog('close'); layoutPost('layout_delete', { id: id }, function(r) { if (layoutResultOk(r)) { document.location = " . json_encode($page) . "; } }); } }, { text: " . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } } ], close: function() { $(this).dialog('destroy').remove(); } }); });" . PHP_EOL;
+		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to delete.')) . '); return; } if (!layoutEditable()) { alert(' . json_encode(__('You are not permitted to modify this layout.')) . "); return; } var d = $('<div>').append($('<p>').text(" . json_encode(__('Delete the selected layout?')) . ")); $('body').append(d); d.dialog({ title: " . json_encode(__('Delete Layout')) . ', modal: true, width: 420, resizable: false, buttons: [ { text: ' . json_encode(__('Delete')) . ", click: function() { $(this).dialog('close'); layoutPost('layout_delete', { id: id }, function(r) { if (layoutResultOk(r)) { document.location = " . json_encode($page) . '; } }); } }, { text: ' . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } } ], close: function() { $(this).dialog('destroy').remove(); } }); });" . PHP_EOL;
 
 		$js .= "\t$('#layout_publish').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to publish.')) . "); return; } layoutPost('layout_publish', { id: id }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); });" . PHP_EOL;
 
@@ -1453,8 +1453,8 @@ class CactiTableFilter {
 		$js .= 'function layoutOpenDialog(forceNew) {' . PHP_EOL;
 		$js .= "\t$('#layout_name').val(forceNew ? '' : (layoutSelectedOption().attr('data-name') || ''));" . PHP_EOL;
 		$js .= "\tvar buttons = [" . PHP_EOL;
-		/* when a layout is selected (incl. one just saved) apply its own url so filter_layout carries through, otherwise run the plain filter apply */
-		$js .= "\t\t{ text: " . json_encode($applyLabel) . ", click: function() { if (!layoutDirty) { $(this).dialog('close'); var lu = layoutSelectedOption().attr('data-url'); if (layoutSelectedId() != 0 && lu != undefined && lu != '') { loadUrl({ url: lu }); } else { " . $changeFunction . "; } } } }," . PHP_EOL;
+		// when a layout is selected (incl. one just saved) apply its own url so filter_layout carries through, otherwise run the plain filter apply
+		$js .= "\t\t{ text: " . json_encode($applyLabel) . ", click: function() { if (!layoutDirty) { $(this).dialog('close'); var lu = layoutSelectedOption().attr('data-url'); if (layoutSelectedId() != 0 && lu != undefined && lu != '') { loadUrl({ url: lu }); } else { " . $changeFunction . '; } } } },' . PHP_EOL;
 		$js .= "\t\t{ text: " . json_encode(__('Save')) . ', click: function() { layoutDialogSave(forceNew); } },' . PHP_EOL;
 
 		if ($can_glob) {
@@ -1473,7 +1473,7 @@ class CactiTableFilter {
 		$js .= 'function layoutRenameDialog(id, cur) {' . PHP_EOL;
 		$js .= "\tvar d = $('<div>').append($('<p>').text(" . json_encode(__('Enter a new name for the layout.')) . ")).append($('<input type=\"text\" id=\"layoutRenameInput\" class=\"ui-state-default ui-corner-all\" size=\"40\" maxlength=\"128\">').val(cur));" . PHP_EOL;
 		$js .= "\t$('body').append(d);" . PHP_EOL;
-		$js .= "\td.dialog({ title: " . json_encode(__('Rename Layout')) . ", modal: true, width: 420, resizable: false, buttons: [" . PHP_EOL;
+		$js .= "\td.dialog({ title: " . json_encode(__('Rename Layout')) . ', modal: true, width: 420, resizable: false, buttons: [' . PHP_EOL;
 		$js .= "\t\t{ text: " . json_encode(__('OK')) . ", click: function() { var n = $('#layoutRenameInput').val(); if (n == '') { return; } $(this).dialog('close'); layoutPost('layout_rename', { id: id, name: n }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); } }," . PHP_EOL;
 		$js .= "\t\t{ text: " . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } }" . PHP_EOL;
 		$js .= "\t], close: function() { $(this).dialog('destroy').remove(); } });" . PHP_EOL;
@@ -1481,10 +1481,10 @@ class CactiTableFilter {
 		$js .= '}' . PHP_EOL;
 
 		$js .= 'function layoutDeleteDialog(id) {' . PHP_EOL;
-		$js .= "\tvar d = $('<div>').append($('<p>').text(" . json_encode(__('Delete the selected layout?')) . "));" . PHP_EOL;
+		$js .= "\tvar d = $('<div>').append($('<p>').text(" . json_encode(__('Delete the selected layout?')) . '));' . PHP_EOL;
 		$js .= "\t$('body').append(d);" . PHP_EOL;
-		$js .= "\td.dialog({ title: " . json_encode(__('Delete Layout')) . ", modal: true, width: 420, resizable: false, buttons: [" . PHP_EOL;
-		$js .= "\t\t{ text: " . json_encode(__('Delete')) . ", click: function() { $(this).dialog('close'); layoutPost('layout_delete', { id: id }, function(r) { if (layoutResultOk(r)) { document.location = " . json_encode($page) . "; } }); } }," . PHP_EOL;
+		$js .= "\td.dialog({ title: " . json_encode(__('Delete Layout')) . ', modal: true, width: 420, resizable: false, buttons: [' . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode(__('Delete')) . ", click: function() { $(this).dialog('close'); layoutPost('layout_delete', { id: id }, function(r) { if (layoutResultOk(r)) { document.location = " . json_encode($page) . '; } }); } },' . PHP_EOL;
 		$js .= "\t\t{ text: " . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } }" . PHP_EOL;
 		$js .= "\t], close: function() { $(this).dialog('destroy').remove(); } });" . PHP_EOL;
 		$js .= '}' . PHP_EOL;
