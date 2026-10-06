@@ -479,6 +479,15 @@ class CactiTableFilter {
 			$field_array['title'] = __('Refresh page');
 		}
 
+		// The Clear action renders as a compact eraser glyph button across every filter.
+		if ($field_name === 'clear' && ($field_array['method'] ?? '') === 'button') {
+			$field_array['glyph'] = 'ti ti-eraser';
+
+			if (empty($field_array['title'])) {
+				$field_array['title'] = __('Clear');
+			}
+		}
+
 		if (isset($field_array['class'])) {
 			$class = ' ' . $field_array['class'];
 		} else {
@@ -508,7 +517,9 @@ class CactiTableFilter {
 			case 'button':
 				print '<div class="filterColumnButton">' . PHP_EOL;
 
-				if (isset($field_array['display'])) {
+				if (!empty($field_array['glyph'])) {
+					print '<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"><i class="' . $field_array['glyph'] . '"></i></button>';
+				} elseif (isset($field_array['display'])) {
 					print '<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"><span class="button-text">' . $field_array['display'] . '</span></button>';
 				} else {
 					print '<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"><i class="' . $field_array['class'] . '"></i></button>';
@@ -599,11 +610,11 @@ class CactiTableFilter {
 					print '<span>';
 
 					if (isset($field_array['refresh'])) {
-						print '<button type="button" class="ui-button ui-corner-all ui-widget" id="tsrefresh"' . ' title="' . __esc('Refresh Selected Timespan') . '"><span class="button-text">' . __esc('Refresh') . '</span></button>';
+						print '<button type="button" class="ui-button ui-corner-all ui-widget" id="tsrefresh"' . ' title="' . __esc('Refresh Selected Timespan') . '"><i class="ti ti-refresh"></i></button>';
 					}
 
 					if (isset($field_array['clear'])) {
-						print '<button type="button" class="ui-button ui-corner-all ui-widget" id="tsclear"' . ' title="' . __esc('Clear Selected Timespan') . '"><span class="button-text">' . __esc('Clear') . '</span></span></button>';
+						print '<button type="button" class="ui-button ui-corner-all ui-widget" id="tsclear"' . ' title="' . __esc('Clear Selected Timespan') . '"><i class="ti ti-eraser"></i></button>';
 					}
 
 					print '</span>';
@@ -1084,9 +1095,9 @@ class CactiTableFilter {
 							}
 
 							if (!isset($field_array['refresh_function'])) {
-								$readyAdd .= "$('#tsrefresh').click( function() { refreshGraphTimespanFilter(); });" . PHP_EOL;
+								$readyAdd .= "$('#tsrefresh').click( function() { $(this).find('i').addClass('icon-rotate'); refreshGraphTimespanFilter(); });" . PHP_EOL;
 							} else {
-								$readyAdd .= "$('#tsrefresh').click( function() { " . $field_array['refresh_function'] . '; });' . PHP_EOL;
+								$readyAdd .= "$('#tsrefresh').click( function() { $(this).find('i').addClass('icon-rotate'); " . $field_array['refresh_function'] . '; });' . PHP_EOL;
 							}
 
 							if (!isset($field_array['clear_function'])) {
