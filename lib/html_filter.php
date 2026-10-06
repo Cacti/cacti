@@ -1363,7 +1363,7 @@ class CactiTableFilter {
 
 		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to rename.')) . '); return; } if (!layoutEditable()) { alert(' . json_encode(__('You are not permitted to modify this layout.')) . "); return; } var cur = $('#filter_layout option:selected').attr('data-name'); layoutNameDialog(" . json_encode(__('Rename Layout')) . ", cur, function(name) { layoutPost('layout_rename', { id: id, name: name }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); }); });" . PHP_EOL;
 
-		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to delete.')) . '); return; } if (!layoutEditable()) { alert(' . json_encode(__('You are not permitted to modify this layout.')) . '); return; } if (confirm(' . json_encode(__('Delete the selected layout?')) . ")) { layoutPost('layout_delete', { id: id }, function(r) { if (layoutResultOk(r)) { document.location = " . json_encode($page) . '; } }); } });' . PHP_EOL;
+		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to delete.')) . '); return; } if (!layoutEditable()) { alert(' . json_encode(__('You are not permitted to modify this layout.')) . "); return; } var d = $('<div>').append($('<p>').text(" . json_encode(__('Delete the selected layout?')) . ")); $('body').append(d); d.dialog({ title: " . json_encode(__('Delete Layout')) . ", modal: true, width: 420, resizable: false, buttons: [ { text: " . json_encode(__('Delete')) . ", click: function() { $(this).dialog('close'); layoutPost('layout_delete', { id: id }, function(r) { if (layoutResultOk(r)) { document.location = " . json_encode($page) . "; } }); } }, { text: " . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } } ], close: function() { $(this).dialog('destroy').remove(); } }); });" . PHP_EOL;
 
 		$js .= "\t$('#layout_publish').click(function() { var id = layoutSelectedId(); if (id == 0) { alert(" . json_encode(__('Please select a layout to publish.')) . "); return; } layoutPost('layout_publish', { id: id }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); });" . PHP_EOL;
 
@@ -1472,14 +1472,33 @@ class CactiTableFilter {
 		$js .= "\tlayoutSetDirty(forceNew || layoutSelectedId() == 0);" . PHP_EOL;
 		$js .= '}' . PHP_EOL;
 
+		$js .= 'function layoutRenameDialog(id, cur) {' . PHP_EOL;
+		$js .= "\tvar d = $('<div>').append($('<p>').text(" . json_encode(__('Enter a new name for the layout.')) . ")).append($('<input type=\"text\" id=\"layoutRenameInput\" class=\"ui-state-default ui-corner-all\" size=\"40\" maxlength=\"128\">').val(cur));" . PHP_EOL;
+		$js .= "\t$('body').append(d);" . PHP_EOL;
+		$js .= "\td.dialog({ title: " . json_encode(__('Rename Layout')) . ", modal: true, width: 420, resizable: false, buttons: [" . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode(__('OK')) . ", click: function() { var n = $('#layoutRenameInput').val(); if (n == '') { return; } $(this).dialog('close'); layoutPost('layout_rename', { id: id, name: n }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); } }," . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } }" . PHP_EOL;
+		$js .= "\t], close: function() { $(this).dialog('destroy').remove(); } });" . PHP_EOL;
+		$js .= "\t$('#layoutRenameInput').focus().select().keydown(function(e) { if (e.keyCode == 13) { e.preventDefault(); d.dialog('widget').find('.ui-dialog-buttonpane button').first().trigger('click'); } });" . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
+		$js .= 'function layoutDeleteDialog(id) {' . PHP_EOL;
+		$js .= "\tvar d = $('<div>').append($('<p>').text(" . json_encode(__('Delete the selected layout?')) . "));" . PHP_EOL;
+		$js .= "\t$('body').append(d);" . PHP_EOL;
+		$js .= "\td.dialog({ title: " . json_encode(__('Delete Layout')) . ", modal: true, width: 420, resizable: false, buttons: [" . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode(__('Delete')) . ", click: function() { $(this).dialog('close'); layoutPost('layout_delete', { id: id }, function(r) { if (layoutResultOk(r)) { document.location = " . json_encode($page) . "; } }); } }," . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } }" . PHP_EOL;
+		$js .= "\t], close: function() { $(this).dialog('destroy').remove(); } });" . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
 		$js .= '$(function() {' . PHP_EOL;
 		$js .= "\tlayoutUpdateButtons();" . PHP_EOL;
 		$js .= "\t$('#filter_layout').change(function() { layoutUpdateButtons(); var u = layoutSelectedOption().attr('data-url'); if (u != undefined && u != '') { loadUrl({ url: u }); } });" . PHP_EOL;
 		$js .= "\t$('#" . $this->form_id . "_dialog').on('change keyup', 'input, select, textarea', function() { layoutSetDirty(true); });" . PHP_EOL;
 		$js .= "\t$('#layout_edit').click(function() { layoutOpenDialog(false); });" . PHP_EOL;
 		$js .= "\t$('#layout_saveas').click(function() { layoutOpenDialog(true); });" . PHP_EOL;
-		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } var cur = layoutSelectedOption().attr('data-name'); var name = prompt(" . json_encode(__('Rename Layout')) . ", cur); if (name != null && name != '') { layoutPost('layout_rename', { id: id, name: name }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); } });" . PHP_EOL;
-		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } if (confirm(" . json_encode(__('Delete the selected layout?')) . ")) { layoutPost('layout_delete', { id: id }, function(r) { if (layoutResultOk(r)) { document.location = " . json_encode($page) . '; } }); } });' . PHP_EOL;
+		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } layoutRenameDialog(id, layoutSelectedOption().attr('data-name') || ''); });" . PHP_EOL;
+		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } layoutDeleteDialog(id); });" . PHP_EOL;
 		$js .= "\t$('#layout_name').keydown(function(e) { if (e.keyCode == 13) { e.preventDefault(); layoutDialogSave(false); } });" . PHP_EOL;
 		$js .= '});' . PHP_EOL;
 
