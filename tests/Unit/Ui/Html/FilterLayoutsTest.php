@@ -160,8 +160,8 @@ test('the modern filter keeps time controls on the bar and fields in the dialog'
 	expect($src)->toContain("\$field_array['friendly_name'] = __('Search');");
 	// The row-count selector is always labeled Rows.
 	expect($src)->toContain("\$field_array['friendly_name'] = __('Rows');");
-	// Bar selectors are ordered Rows, Search, then Refresh and separated from the buttons.
-	expect($src)->toContain("foreach (['rows', 'filter', 'rfilter', 'refresh'] as \$pref) {");
+	// Bar selectors are ordered Search, Rows, then Refresh and separated from the buttons.
+	expect($src)->toContain("foreach (['filter', 'rfilter', 'rows', 'refresh'] as \$pref) {");
 	expect($src)->toContain('$bar_fields = $ordered + $bar_fields;');
 	expect($src)->toContain('// Separate the always-present Layouts selector (plus any Rows/Refresh) from the layout buttons.');
 	// Two separators: selectors|buttons and buttons|page-actions.

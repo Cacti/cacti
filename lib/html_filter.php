@@ -825,12 +825,11 @@ class CactiTableFilter {
 			}
 		}
 
-		// Keep the bar selectors in a stable order: Rows first, Refresh second.
+		// Keep the bar selectors in a stable order: Search first (matching the legacy filters), then Rows, then Refresh.
 		if (cacti_sizeof($bar_fields)) {
 			$ordered = [];
 
-			// Keep the bar selectors in a stable order: Rows first, then Search, then Refresh.
-			foreach (['rows', 'filter', 'rfilter', 'refresh'] as $pref) {
+			foreach (['filter', 'rfilter', 'rows', 'refresh'] as $pref) {
 				if (isset($bar_fields[$pref])) {
 					$ordered[$pref] = $bar_fields[$pref];
 					unset($bar_fields[$pref]);
