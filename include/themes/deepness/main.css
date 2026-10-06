@@ -147,7 +147,7 @@ hr.menu {
 /* links */
 
 a, a:active, a:visited {
-	color: var(--dp-accent);
+	color: var(--dp-link);
 	text-decoration: none;
 	font-size: 12px;
 }
@@ -513,6 +513,54 @@ label {
 
 .deviceAlert {
 	color: #660000 !important;
+}
+
+/* Device status pills - rounded translucent badges per state (get_colored_device_status) */
+.deviceStatus {
+	display: inline-block;
+	padding: 1px 9px;
+	border: 1px solid transparent;
+	border-radius: 10px;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 16px;
+	white-space: nowrap;
+}
+
+.deviceStatus.deviceUp {
+	background-color: rgba(40, 180, 40, 0.15);
+	border-color: rgba(40, 180, 40, 0.55);
+	color: #46d246 !important;
+}
+
+.deviceStatus.deviceDown {
+	background-color: rgba(255, 64, 64, 0.15);
+	border-color: rgba(255, 64, 64, 0.55);
+	color: #ff6b6b !important;
+}
+
+.deviceStatus.deviceRecovering {
+	background-color: rgba(255, 143, 30, 0.15);
+	border-color: rgba(255, 143, 30, 0.55);
+	color: #ffab52 !important;
+}
+
+.deviceStatus.deviceError {
+	background-color: rgba(176, 90, 230, 0.15);
+	border-color: rgba(176, 90, 230, 0.5);
+	color: #c792ea !important;
+}
+
+.deviceStatus.deviceUnknown {
+	background-color: rgba(96, 140, 210, 0.15);
+	border-color: rgba(96, 140, 210, 0.5);
+	color: #8fb6e8 !important;
+}
+
+.deviceStatus.deviceDisabled {
+	background-color: rgba(161, 161, 161, 0.12);
+	border-color: rgba(161, 161, 161, 0.45);
+	color: #b8b8b8 !important;
 }
 
 .deviceUpBg {
