@@ -1124,6 +1124,422 @@ function data_input_whitelist_check(int $data_input_id) : bool {
 	}
 }
 
+/**
+ * utilities_mysql_variable_capabilities - return the support matrix for every
+ * MySQL/MariaDB system variable that Cacti recommends tuning.  Each entry
+ * carries a human readable description and its available settings (used for the
+ * hover hint), plus the per-engine version boundaries at which the variable was
+ * introduced, deprecated or removed.  A missing engine key means the variable
+ * does not exist for that engine (rendered as N/A); an empty engine array means
+ * the variable is supported for every version of that engine.
+ *
+ * @return array the capability matrix keyed by variable name
+ */
+function utilities_mysql_variable_capabilities() : array {
+	static $matrix = null;
+
+	if ($matrix !== null) {
+		return $matrix;
+	}
+
+	$matrix = [
+		'collation_server' => [
+			'description' => __('Default collation used by the server when creating databases and tables.'),
+			'settings'    => __('e.g. utf8mb4_unicode_ci, utf8mb4_general_ci.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'character_set_server' => [
+			'description' => __('Default character set used by the server.'),
+			'settings'    => __('e.g. utf8mb4, utf8, latin1.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'character_set_client' => [
+			'description' => __('Character set the client uses when sending statements to the server.'),
+			'settings'    => __('e.g. utf8mb4, utf8, latin1.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'max_connections' => [
+			'description' => __('Maximum number of simultaneous client connections permitted.'),
+			'settings'    => __('Integer; default 151. Allow enough for the pollers plus user logins.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'table_cache' => [
+			'description' => __('Legacy name for the open-table cache; renamed to table_open_cache.'),
+			'settings'    => __('Integer. Use table_open_cache on modern servers.'),
+			'MariaDB'     => ['removed' => '10.0.0'],
+			'MySQL'       => ['removed' => '5.1.3'],
+		],
+		'max_allowed_packet' => [
+			'description' => __('Maximum size of one packet or any generated/intermediate string.'),
+			'settings'    => __('Bytes; keep at or above 16M for remote pollers.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'max_heap_table_size' => [
+			'description' => __('Maximum size to which user-created MEMORY tables may grow.'),
+			'settings'    => __('Bytes; sized relative to total system memory.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'tmp_table_size' => [
+			'description' => __('Maximum size of internal in-memory temporary tables before they spill to disk.'),
+			'settings'    => __('Bytes; a larger value keeps temporary tables in memory.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'join_buffer_size' => [
+			'description' => __('Minimum per-join buffer size for joins that do not use indexes.'),
+			'settings'    => __('Bytes; per-connection allocation, default 262144.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'sort_buffer_size' => [
+			'description' => __('Per-session buffer allocated for sorts (ORDER BY / GROUP BY).'),
+			'settings'    => __('Bytes; per-connection allocation, default 2097152.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'innodb_file_per_table' => [
+			'description' => __('Store each InnoDB table and its indexes in its own .ibd tablespace file.'),
+			'settings'    => __('ON or OFF; ON is recommended.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'innodb_file_format' => [
+			'description' => __('InnoDB on-disk file format (Antelope or Barracuda); Barracuda is now the only format.'),
+			'settings'    => __('Antelope, Barracuda.'),
+			'MariaDB'     => ['deprecated' => '10.2.2', 'removed' => '10.3.1'],
+			'MySQL'       => ['deprecated' => '5.7.7', 'removed' => '8.0.0'],
+		],
+		'innodb_large_prefix' => [
+			'description' => __('Allow index key prefixes longer than 767 bytes (requires the Barracuda format).'),
+			'settings'    => __('ON/1 or OFF/0; this behaviour is now always enabled.'),
+			'MariaDB'     => ['deprecated' => '10.2.2', 'removed' => '10.3.1'],
+			'MySQL'       => ['deprecated' => '5.7.7', 'removed' => '8.0.0'],
+		],
+		'innodb_buffer_pool_size' => [
+			'description' => __('Total memory InnoDB uses to cache table and index data.'),
+			'settings'    => __('Bytes; commonly 25%-80% of total system memory.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'innodb_doublewrite' => [
+			'description' => __('Write pages twice (the doublewrite buffer) to protect against partial page writes.'),
+			'settings'    => __('ON or OFF.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'innodb_additional_mem_pool_size' => [
+			'description' => __('Legacy pool for the InnoDB internal data dictionary and structures.'),
+			'settings'    => __('Bytes; obsolete on modern servers.'),
+			'MariaDB'     => ['removed' => '10.0.0'],
+			'MySQL'       => ['removed' => '5.7.4'],
+		],
+		'innodb_lock_wait_timeout' => [
+			'description' => __('Seconds an InnoDB transaction waits for a row lock before giving up.'),
+			'settings'    => __('Seconds; default 50.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'innodb_flush_method' => [
+			'description' => __('Method used to flush data and log files to disk.'),
+			'settings'    => __('O_DIRECT, fsync, O_DSYNC, and similar.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'innodb_flush_log_at_trx_commit' => [
+			'description' => __('Controls how the redo log is written and flushed at transaction commit.'),
+			'settings'    => __('0, 1, or 2.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'innodb_file_io_threads' => [
+			'description' => __('Legacy single setting for InnoDB file I/O threads, replaced by the read/write I/O thread settings.'),
+			'settings'    => __('Integer; superseded by innodb_read_io_threads and innodb_write_io_threads.'),
+			'MariaDB'     => ['removed' => '5.5.0'],
+			'MySQL'       => ['removed' => '5.5.0'],
+		],
+		'innodb_flush_log_at_timeout' => [
+			'description' => __('Write and flush the InnoDB redo log every N seconds.'),
+			'settings'    => __('Seconds (1-2700); default 1.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'innodb_read_io_threads' => [
+			'description' => __('Number of I/O threads used for read operations in InnoDB.'),
+			'settings'    => __('1-64; default 4.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'innodb_write_io_threads' => [
+			'description' => __('Number of I/O threads used for write operations in InnoDB.'),
+			'settings'    => __('1-64; default 4.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'innodb_buffer_pool_instances' => [
+			'description' => __('Number of regions the InnoDB buffer pool is divided into.'),
+			'settings'    => __('1-64; MariaDB removed this in 10.6.'),
+			'MariaDB'     => ['deprecated' => '10.5.0', 'removed' => '10.6.0'],
+			'MySQL'       => [],
+		],
+		'innodb_io_capacity' => [
+			'description' => __('Estimated I/O operations per second available to InnoDB background tasks.'),
+			'settings'    => __('Integer; use higher values for SSD/NVMe storage.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'innodb_io_capacity_max' => [
+			'description' => __('Maximum IOPS InnoDB may use when flushing falls behind.'),
+			'settings'    => __('Integer; use higher values for SSD/NVMe storage.'),
+			'MariaDB'     => [],
+			'MySQL'       => [],
+		],
+		'innodb_flush_neighbors' => [
+			'description' => __('Flush neighbouring dirty pages in the same extent when flushing a page.'),
+			'settings'    => __('0, 1, or 2; use 0 on SSD storage.'),
+			'MariaDB'     => [],
+			'MySQL'       => ['deprecated' => '8.0.20', 'removed' => '8.4.0'],
+		],
+		'innodb_use_atomic_writes' => [
+			'description' => __('Use hardware atomic writes (MariaDB) so the doublewrite buffer can be safely disabled.'),
+			'settings'    => __('ON or OFF; MariaDB only.'),
+			'MariaDB'     => [],
+		],
+		'innodb_snapshot_isolation' => [
+			'description' => __('Enforce strict snapshot isolation for InnoDB transactions.'),
+			'settings'    => __('ON or OFF; back-ported to MariaDB 10.6.18+, 10.11.8+ and 11.4.2+. Set OFF for the Cacti poller.'),
+			'MariaDB'     => ['introduced' => ['10.6.18', '10.11.8', '11.4.2']],
+		],
+	];
+
+	return $matrix;
+}
+
+/**
+ * utilities_mysql_normalize_version - reduce a server version string to its
+ * leading numeric dotted component so version_compare() behaves predictably.
+ * Server version() output often carries suffixes such as '-1:10.11.2+maria...'
+ * or '-0ubuntu0.22.04.1' that version_compare() treats as pre-release markers.
+ *
+ * @param string $version the raw version string
+ *
+ * @return string the numeric major.minor.patch prefix, or the input unchanged
+ */
+function utilities_mysql_normalize_version(string $version) : string {
+	if (preg_match('/^[0-9]+(\.[0-9]+)*/', $version, $matches)) {
+		return $matches[0];
+	}
+
+	return $version;
+}
+
+/**
+ * utilities_mysql_branch - return the major.minor branch of a version string.
+ *
+ * @param string $version the version string, e.g. '10.6.18'
+ *
+ * @return string the branch, e.g. '10.6'
+ */
+function utilities_mysql_branch(string $version) : string {
+	$parts = explode('.', $version);
+
+	return $parts[0] . '.' . ($parts[1] ?? '0');
+}
+
+/**
+ * utilities_mysql_version_introduced - decide whether a variable that was
+ * introduced (and often back-ported to several stable branches) exists in the
+ * given version.  The variable is present when the version is at or after the
+ * introduction point for its own major.minor branch, or when the version lives
+ * on a branch newer than every branch that received a back-port (the feature
+ * then ships natively).
+ *
+ * @param string       $version the detected engine version string
+ * @param array|string $intro   one version, or a list of per-branch versions
+ *
+ * @return bool true when the variable exists in the version
+ */
+function utilities_mysql_version_introduced(string $version, array|string $intro) : bool {
+	if (!is_array($intro)) {
+		$intro = [$intro];
+	}
+
+	$vbranch = utilities_mysql_branch($version);
+	$newest  = '0';
+
+	foreach ($intro as $floor) {
+		$fbranch = utilities_mysql_branch((string) $floor);
+
+		if (version_compare($fbranch, $newest, '>')) {
+			$newest = $fbranch;
+		}
+
+		if ($vbranch === $fbranch) {
+			return version_compare($version, (string) $floor, '>=');
+		}
+	}
+
+	return version_compare($vbranch, $newest, '>');
+}
+
+/**
+ * utilities_mysql_variable_status - determine the support status of a single
+ * capability-matrix variable for a specific database engine and version.
+ *
+ * @param array       $cap      a single entry from utilities_mysql_variable_capabilities()
+ * @param string      $database the detected engine, either 'MariaDB' or 'MySQL'
+ * @param string|null $version  the detected engine version string, or null/empty when unknown
+ *
+ * @return string one of 'ok', 'deprecated', 'removed' or 'na'
+ */
+function utilities_mysql_variable_status(array $cap, string $database, ?string $version) : string {
+	if (!isset($cap[$database]) || !is_array($cap[$database])) {
+		return 'na';
+	}
+
+	if ($version === null || $version === '') {
+		return 'ok';
+	}
+
+	$version = utilities_mysql_normalize_version($version);
+	$bounds  = $cap[$database];
+
+	if (isset($bounds['introduced']) && !utilities_mysql_version_introduced($version, $bounds['introduced'])) {
+		return 'na';
+	}
+
+	if (isset($bounds['removed']) && version_compare($version, $bounds['removed'], '>=')) {
+		return 'removed';
+	}
+
+	if (isset($bounds['deprecated']) && version_compare($version, $bounds['deprecated'], '>=')) {
+		return 'deprecated';
+	}
+
+	return 'ok';
+}
+
+/**
+ * utilities_mysql_capability_cell - render the glyph for a capability-matrix
+ * cell based on the variable support status.
+ *
+ * @param string $status one of 'ok', 'deprecated', 'removed' or 'na'
+ *
+ * @return string the HTML glyph for the status
+ */
+function utilities_mysql_capability_cell(string $status) : string {
+	switch ($status) {
+		case 'removed':
+			return "<span class='deviceDown' title='" . __esc('Removed') . "'>R</span>";
+		case 'deprecated':
+			return "<span class='deviceRecovering' title='" . __esc('Deprecated') . "'>D</span>";
+		case 'na':
+			return "<span title='" . __esc('Not applicable to this engine') . "'>" . __('N/A') . '</span>';
+		default:
+			return "<i class='ti ti-check deviceUp' title='" . __esc('Supported') . "'></i>";
+	}
+}
+
+/**
+ * utilities_get_mysql_capabilities - render the MySQL/MariaDB capability matrix
+ * as a separate table in the Database section.  Each recommended variable is
+ * listed with its support status (supported, deprecated, removed or N/A) across
+ * the common MariaDB and MySQL releases.  Hovering a variable name shows a hint
+ * describing the feature and its available settings.
+ *
+ * @return void
+ */
+function utilities_get_mysql_capabilities() : void {
+	$mysql_info = get_mysql_info(POLLER_ID);
+	$database   = $mysql_info['database'];
+
+	$capabilities = utilities_mysql_variable_capabilities();
+
+	// Each column maps a short release label to a representative patch release of
+	// that series so version_compare reflects a current, fully patched server
+	// (including back-ported features).
+	$columns = [
+		'MariaDB' => [
+			'10.5' => '10.5.27',
+			'10.6' => '10.6.21',
+			'11.4' => '11.4.5',
+			'11.8' => '11.8.2',
+		],
+		'MySQL' => [
+			'8.0' => '8.0.40',
+			'8.4' => '8.4.4',
+			'9.x' => '9.1.0',
+		],
+	];
+
+	$total_columns = 1;
+
+	foreach ($columns as $versions) {
+		$total_columns += cacti_sizeof($versions);
+	}
+
+	print '<tr class="tableHeader tableFixed">';
+	print '<th colspan="2">' . __('%s Variable Capability Matrix', $database) . ' - ' . __('Support by engine and version for each Cacti-recommended variable') . '</th>';
+	print '</tr>';
+
+	form_alternate_row();
+	print "<td colspan='2' style='text-align:left;padding:0px'>";
+	print "<table id='mysql_capabilities' class='cactiTable' style='width:100%'>";
+	print '<thead>';
+	print "<tr class='tableHeader'>";
+	print "  <th class='tableSubHeaderColumn' rowspan='2'>" . __('Variable') . '</th>';
+
+	foreach ($columns as $engine => $versions) {
+		print "  <th class='tableSubHeaderColumn center' colspan='" . cacti_sizeof($versions) . "'>" . html_escape($engine) . '</th>';
+	}
+
+	print '</tr>';
+	print "<tr class='tableHeader'>";
+
+	foreach ($columns as $engine => $versions) {
+		foreach ($versions as $label => $v) {
+			print "  <th class='tableSubHeaderColumn center'>" . html_escape($label) . '</th>';
+		}
+	}
+
+	print '</tr>';
+	print '</thead>';
+
+	foreach ($capabilities as $name => $cap) {
+		form_alternate_row();
+
+		$title = html_escape_attr($cap['description']) . '<br><br><strong>' . html_escape_attr(__('Available settings:')) . '</strong> ' . html_escape_attr($cap['settings']);
+
+		print "<td><span class='cactiTooltipHint' tabindex='0' title='" . $title . "'>" . html_escape($name) . '</span></td>';
+
+		foreach ($columns as $engine => $versions) {
+			foreach ($versions as $v) {
+				$status = utilities_mysql_variable_status($cap, $engine, $v);
+				print "<td class='center'>" . utilities_mysql_capability_cell($status) . '</td>';
+			}
+		}
+
+		form_end_row();
+	}
+
+	form_alternate_row();
+	$legend  = "<i class='ti ti-check deviceUp'></i> " . __('Supported') . ' &nbsp; ';
+	$legend .= "<span class='deviceRecovering'>D</span> " . __('Deprecated') . ' &nbsp; ';
+	$legend .= "<span class='deviceDown'>R</span> " . __('Removed') . ' &nbsp; ';
+	$legend .= __('N/A - Not applicable to this engine');
+	print "<td colspan='" . $total_columns . "' class='left'>" . $legend . '</td>';
+	form_end_row();
+
+	print '</table>';
+	print '</td>';
+	form_end_row();
+}
+
 function utilities_get_mysql_recommendations() : int {
 	global $local_db_cnn_id;
 
@@ -1359,11 +1775,11 @@ function utilities_get_mysql_recommendations() : int {
 					'class'   => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used.')
 				],
-				'innodb_flush_neighbor_pages' => [
-					'value'   => 'none',
-					'measure' => 'eq',
+				'innodb_flush_neighbors' => [
+					'value'   => '0',
+					'measure' => 'equalint',
 					'class'   => 'warning',
-					'comment' => __('If you have SSD disks, use this suggestion. Otherwise, do not set this setting.')
+					'comment' => __('If you have SSD disks, set this to 0. Otherwise, do not set this setting.')
 				]
 			];
 		} else {
@@ -1395,11 +1811,11 @@ function utilities_get_mysql_recommendations() : int {
 					'class'   => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used.')
 				],
-				'innodb_flush_neighbor_pages' => [
-					'value'   => 'none',
-					'measure' => 'eq',
+				'innodb_flush_neighbors' => [
+					'value'   => '0',
+					'measure' => 'equalint',
 					'class'   => 'warning',
-					'comment' => __('If you have SSD disks, use this suggestion. Otherwise, do not set this setting.')
+					'comment' => __('If you have SSD disks, set this to 0. Otherwise, do not set this setting.')
 				]
 			];
 
@@ -1435,6 +1851,23 @@ function utilities_get_mysql_recommendations() : int {
 			'class'   => 'error',
 			'comment' => __('MariaDB 11.8 enabled innodb_snapshot_isolation=ON by default. This causes severe lock contention: UPDATE statements can block for tens of thousands of seconds on small tables under concurrent load, which stalls the Cacti poller. Set innodb_snapshot_isolation=OFF in your [mysqld] configuration. See MDEV-39628.')
 		];
+	}
+
+	// Drop any recommendation for a variable that is deprecated, removed or does
+	// not exist in the detected engine and version so we only suggest tunables
+	// that are actually present on this server.
+	$capabilities = utilities_mysql_variable_capabilities();
+
+	foreach (array_keys($recommendations) as $rec_name) {
+		if (!isset($capabilities[$rec_name])) {
+			continue;
+		}
+
+		$status = utilities_mysql_variable_status($capabilities[$rec_name], $database, $version);
+
+		if ($status == 'deprecated' || $status == 'removed' || $status == 'na') {
+			unset($recommendations[$rec_name]);
+		}
 	}
 
 	if (file_exists('/etc/my.cnf.d/server.cnf')) {
