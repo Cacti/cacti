@@ -210,3 +210,31 @@ test('a silent child is terminated once the idle budget elapses', function () {
 	expect($exit)->toBe(1);
 	expect($elapsed)->toBeLessThan(3.5);
 });
+test('an inherited SIGCHLD=SIG_IGN does not corrupt the exit code (remote poller context)', function () {
+	if (!function_exists('pcntl_signal') || !function_exists('pcntl_signal_get_handler') || !defined('SIGCHLD')) {
+		test()->markTestSkipped('pcntl with SIGCHLD is required to prove the reaping fix');
+	}
+
+	// The remote poller runs under pcntl_async_signals(); a SIGCHLD=SIG_IGN in
+	// the process tree makes the kernel auto-reap the child before proc_close()
+	// can read its status, which regressed cacti_exec() to -1 even though the
+	// command (e.g. php -l during replication) succeeded. The exit code must
+	// survive, and the caller's handler must be left untouched.
+	$previous = pcntl_signal_get_handler(SIGCHLD);
+	pcntl_signal(SIGCHLD, SIG_IGN);
+
+	try {
+		$out = array();
+		expect(cacti_exec(PHP_BINARY, array('-r', 'exit(0);'), $out))->toBe(0);
+		expect(cacti_exec(PHP_BINARY, array('-r', 'exit(3);'), $out))->toBe(3);
+
+		$out = array();
+		$rc  = cacti_exec(PHP_BINARY, array('-r', 'echo "No syntax errors detected\n"; exit(0);'), $out);
+		expect($rc)->toBe(0);
+		expect($out)->toBe(array('No syntax errors detected'));
+
+		expect(pcntl_signal_get_handler(SIGCHLD))->toBe(SIG_IGN);
+	} finally {
+		pcntl_signal(SIGCHLD, $previous);
+	}
+});

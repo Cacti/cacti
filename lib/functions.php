@@ -8354,9 +8354,27 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		2 => array('pipe', 'w'),
 	);
 
+	/* An inherited SIGCHLD=SIG_IGN (or a reaper handler) in the caller - the
+	 * remote poller runs under pcntl_async_signals() - lets the kernel reap this
+	 * child before proc_close() can read its status, which then returns -1 and
+	 * loses the exit code. Restore default reaping for the child's lifetime, then
+	 * put the previous disposition back on every return path. */
+	$restore_sigchld = function_exists('pcntl_signal')
+		&& function_exists('pcntl_signal_get_handler')
+		&& defined('SIGCHLD') && defined('SIG_DFL');
+	$prev_sigchld    = $restore_sigchld ? pcntl_signal_get_handler(SIGCHLD) : null;
+
+	if ($restore_sigchld) {
+		pcntl_signal(SIGCHLD, SIG_DFL);
+	}
+
 	$process = proc_open($argv, $descriptors, $pipes);
 
 	if (!is_resource($process)) {
+		if ($restore_sigchld) {
+			pcntl_signal(SIGCHLD, $prev_sigchld);
+		}
+
 		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' failed to spawn (cacti_exec)', false, 'SYSTEM');
 		return 255;
 	}
@@ -8439,6 +8457,10 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		proc_terminate($process, 9);
 		proc_close($process);
 
+		if ($restore_sigchld) {
+			pcntl_signal(SIGCHLD, $prev_sigchld);
+		}
+
 		cacti_log('WARNING: ' . cacti_exec_log_describe($binary, $args) . ' timed out after ' . $timeout . 's (cacti_exec)', false, 'SYSTEM');
 
 		return 1;
@@ -8449,6 +8471,10 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 	}
 
 	$close_exit = proc_close($process);
+
+	if ($restore_sigchld) {
+		pcntl_signal(SIGCHLD, $prev_sigchld);
+	}
 
 	if ($exit === null) {
 		$exit = $close_exit;
