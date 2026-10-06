@@ -1490,7 +1490,7 @@ class CactiTableFilter {
 		$js .= "\t$('#layout_name').val(forceNew ? '' : (layoutSelectedOption().attr('data-name') || ''));" . PHP_EOL;
 		$js .= "\tvar buttons = [" . PHP_EOL;
 		// when a layout is selected (incl. one just saved) apply its own url so filter_layout carries through, otherwise run the plain filter apply
-		$js .= "\t\t{ text: " . json_encode($applyLabel) . ", click: function() { if (!layoutDirty) { $(this).dialog('close'); var lu = layoutSelectedOption().attr('data-url'); if (layoutSelectedId() != 0 && lu != undefined && lu != '') { loadUrl({ url: lu }); } else { " . $changeFunction . '; } } } },' . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode($applyLabel) . ", click: function() { if (!layoutDirty) { $(this).dialog('close'); var lu = layoutSelectedOption().attr('data-url'); if (layoutSelectedId() != 0 && lu != undefined && lu != '') { loadUrl({ url: correctUrlParameters(lu) }); } else { " . $changeFunction . '; } } } },' . PHP_EOL;
 		$js .= "\t\t{ text: " . json_encode(__('Save')) . ', click: function() { layoutDialogSave(forceNew); } },' . PHP_EOL;
 
 		if ($can_glob) {
@@ -1527,11 +1527,12 @@ class CactiTableFilter {
 
 		$js .= '$(function() {' . PHP_EOL;
 		$js .= "\tlayoutUpdateButtons();" . PHP_EOL;
-		$js .= "\t$('#filter_layout').change(function() { layoutUpdateButtons(); var u = layoutSelectedOption().attr('data-url'); if (u != undefined && u != '') { loadUrl({ url: u }); } });" . PHP_EOL;
+		// correctUrlParameters rewrites action=tree to action=tree_content so the tree view regenerates graphs in #main instead of reloading the tree shell (no-op on other pages).
+		$js .= "\t$('#filter_layout').change(function() { layoutUpdateButtons(); var u = layoutSelectedOption().attr('data-url'); if (u != undefined && u != '') { loadUrl({ url: correctUrlParameters(u) }); } });" . PHP_EOL;
 		$js .= "\t$('#" . $this->form_id . "_dialog').on('change keyup', 'input, select, textarea', function() { layoutSetDirty(true); });" . PHP_EOL;
 		$js .= "\t$('#layout_edit').click(function() { layoutOpenDialog(false); });" . PHP_EOL;
 		$js .= "\t$('#layout_saveas').click(function() { layoutOpenDialog(true); });" . PHP_EOL;
-		$js .= "\t$('#layout_refresh').click(function() { $(this).find('i').addClass('icon-rotate'); var u = layoutSelectedOption().attr('data-url'); if (layoutSelectedId() != 0 && u != undefined && u != '') { loadUrl({ url: u }); } else { " . $changeFunction . '; } });' . PHP_EOL;
+		$js .= "\t$('#layout_refresh').click(function() { $(this).find('i').addClass('icon-rotate'); var u = layoutSelectedOption().attr('data-url'); if (layoutSelectedId() != 0 && u != undefined && u != '') { loadUrl({ url: correctUrlParameters(u) }); } else { " . $changeFunction . '; } });' . PHP_EOL;
 		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } layoutRenameDialog(id, layoutSelectedOption().attr('data-name') || ''); });" . PHP_EOL;
 		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } layoutDeleteDialog(id); });" . PHP_EOL;
 		$js .= "\t$('#layout_name').keydown(function(e) { if (e.keyCode == 13) { e.preventDefault(); layoutDialogSave(false); } });" . PHP_EOL;
