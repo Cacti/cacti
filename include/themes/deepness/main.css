@@ -2258,6 +2258,12 @@ ul#nav {
 .ui-tooltip {
 	max-width: 500px;
 	word-break: break-word;
+	background: var(--dp-elevated);
+	background-image: none;
+	border: 1px solid var(--dp-border-strong);
+	color: var(--dp-text);
+	border-radius: 5px;
+	box-shadow: 0 4px 14px var(--dp-overlay);
 }
 
 .ui-tooltip-content div.header {
