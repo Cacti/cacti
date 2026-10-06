@@ -1522,6 +1522,7 @@ function filter_layouts_preset_pages() : array {
 		'vdef.php',
 		'color.php',
 		'gprint_presets.php',
+		'layouts.php',
 	];
 }
 

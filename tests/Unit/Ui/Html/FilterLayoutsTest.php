@@ -237,7 +237,7 @@ test('layouts.php is admin-only and registered in the Presets menu', function ()
 	$arrays = file_get_contents($root . '/include/global_arrays.php');
 
 	expect($arrays)->toContain("'layouts.php'                => 15,");
-	expect($arrays)->toContain("'layouts.php'              => __('Filters'),");
+	expect($arrays)->toContain("'layouts.php'              => __('Layouts'),");
 });
 
 test('user_layouts is defined consistently across the schema files', function () use ($root) {
