@@ -1455,7 +1455,8 @@ class CactiTableFilter {
 		$js .= 'function layoutOpenDialog(forceNew) {' . PHP_EOL;
 		$js .= "\t$('#layout_name').val(forceNew ? '' : (layoutSelectedOption().attr('data-name') || ''));" . PHP_EOL;
 		$js .= "\tvar buttons = [" . PHP_EOL;
-		$js .= "\t\t{ text: " . json_encode($applyLabel) . ", click: function() { if (!layoutDirty) { $(this).dialog('close'); " . $changeFunction . "; } } }," . PHP_EOL;
+		/* when a layout is selected (incl. one just saved) apply its own url so filter_layout carries through, otherwise run the plain filter apply */
+		$js .= "\t\t{ text: " . json_encode($applyLabel) . ", click: function() { if (!layoutDirty) { $(this).dialog('close'); var lu = layoutSelectedOption().attr('data-url'); if (layoutSelectedId() != 0 && lu != undefined && lu != '') { loadUrl({ url: lu }); } else { " . $changeFunction . "; } } } }," . PHP_EOL;
 		$js .= "\t\t{ text: " . json_encode(__('Save')) . ', click: function() { layoutDialogSave(forceNew); } },' . PHP_EOL;
 
 		if ($can_glob) {
