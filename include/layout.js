@@ -3129,7 +3129,7 @@ function setupCollapsible() {
 			storage.set(id, 'hide');
 		} else {
 			$(this).removeClass('collapsed');
-			$(this).nextUntil('div.spacer').not('script').slideDown('slow');
+			$(this).nextUntil('div.spacer', 'div.formRow').slideDown('slow');
 			$(this).nextUntil('div.spacer', 'div.formRow').each(function(data) {
 				$(this).find('input, select').change();
 			});
