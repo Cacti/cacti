@@ -311,6 +311,7 @@ function create_graphs_preview_filter(string $session_var) : array {
 			[
 				'graph_template_id' => [
 					'method'            => 'drop_multi',
+					'bar'               => true,
 					'friendly_name'     => __('Template'),
 					'filter'            => FILTER_VALIDATE_REGEXP,
 					'filter_options'    => ['options' => ['regexp' => '/^(cg_[0-9]+|dq_[0-9]+|-?[0-9]+)$/']],

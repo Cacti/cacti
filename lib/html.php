@@ -2756,6 +2756,10 @@ function html_graph_order_filter_array() : array {
 		}
 	}
 
+	foreach (array_keys($return) as $return_key) {
+		$return[$return_key]['bar'] = true;
+	}
+
 	return $return;
 }
 

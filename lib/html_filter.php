@@ -733,6 +733,7 @@ class CactiTableFilter {
 		// by the dialog's Search/Clear footer actions.
 		$bar_fields      = [];
 		$bar_actions     = [];
+		$amalgam_fields  = [];
 		$timespan_fields = [];
 		$dialog_fields   = [];
 
@@ -741,7 +742,9 @@ class CactiTableFilter {
 				foreach ($row as $field_name => $field_array) {
 					$method = $field_array['method'] ?? '';
 
-					if ($method === 'timespan') {
+					if (!empty($field_array['bar'])) {
+						$amalgam_fields[$field_name] = $field_array;
+					} elseif ($method === 'timespan') {
 						$timespan_fields[$field_name] = $field_array;
 					} elseif ($this->field_is_bar($field_name, $field_array)) {
 						$bar_fields[$field_name] = $field_array;
@@ -806,7 +809,21 @@ class CactiTableFilter {
 		print '</div>';
 		print '</div>' . PHP_EOL;
 
-		// Timespan controls get their own second filter line, not the single bar.
+		// The Graph Template amalgam (Template + Source/Order/CF/Measure) gets its
+		// own second filter line.
+		if (cacti_sizeof($amalgam_fields)) {
+			print "<div class='filterTable even cactiFilterModernBar'>";
+			print "<div class='filterRow'>";
+
+			foreach ($amalgam_fields as $field_name => $field_array) {
+				print $this->emit_field($field_name, $field_array);
+			}
+
+			print '</div>';
+			print '</div>' . PHP_EOL;
+		}
+
+		// Timespan controls get their own third filter line.
 		if (cacti_sizeof($timespan_fields)) {
 			print "<div class='filterTable even cactiFilterModernBar'>";
 			print "<div class='filterRow'>";
@@ -1082,7 +1099,7 @@ class CactiTableFilter {
 						case 'drop_tree':
 							if ($field_array['method'] != 'textbox' && $this->dynamic) {
 								if (!isset($field_array['dynamic']) || $field_array['dynamic'] === true) {
-									if (!$this->use_modern_filter() || $this->field_is_bar($field_name, $field_array)) {
+									if (!$this->use_modern_filter() || $this->field_is_bar($field_name, $field_array) || !empty($field_array['bar'])) {
 										$changeChain .= ($changeChain != '' ? ', ' : '') . '#' . $field_name;
 									}
 								}
