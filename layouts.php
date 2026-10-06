@@ -32,6 +32,14 @@ require('./include/auth.php');
 set_default_action();
 
 switch (get_nfilter_request_var('action')) {
+	case 'layout_remove_confirm':
+		layouts_remove_confirm();
+
+		break;
+	case 'layout_rename_dialog':
+		layouts_rename_dialog();
+
+		break;
 	default:
 		top_header();
 
@@ -68,7 +76,7 @@ function layouts_manage() : void {
 			ORDER BY ul.page, ul.name', [$user_id]);
 	}
 
-	html_start_box(__('Filter Layouts'), '100%', true, 3, 'center', '');
+	html_start_box(__('Filter Layouts'), '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'name'   => ['display' => __('Name')],
@@ -100,13 +108,16 @@ function layouts_manage() : void {
 			form_selectable_cell($owner, $layout['id']);
 			form_selectable_cell(html_escape($summary), $layout['id']);
 
-			$actions = "<a class='pic layoutAction' href='#' data-action='layout_delete' data-id='" . $layout['id'] . "' title='" . __esc('Delete') . "'><i class='fa fa-times deviceDown'></i></a>";
+			$rename = "<a class='pic layoutRename' href='#' data-id='" . $layout['id'] . "' title='" . __esc('Rename') . "'><i class='fa fa-pencil'></i></a>";
+			$delete = "<a class='pic layoutDelete' href='#' data-id='" . $layout['id'] . "' title='" . __esc('Delete') . "'><i class='fa fa-times deviceDown'></i></a>";
+
+			$actions = $rename . ' ' . $delete;
 
 			if ($is_admin) {
 				if ($layout['user_id'] == 0) {
 					$actions = "<span title='" . __esc('Published to all users') . "'><i class='fa fa-globe'></i></span> " . $actions;
 				} else {
-					$actions = "<a class='pic layoutAction' href='#' data-action='layout_publish' data-id='" . $layout['id'] . "' title='" . __esc('Publish to all users') . "'><i class='fa fa-upload'></i></a> " . $actions;
+					$actions = "<a class='pic layoutPublish' href='#' data-id='" . $layout['id'] . "' title='" . __esc('Publish to all users') . "'><i class='fa fa-upload'></i></a> " . $actions;
 				}
 			}
 
@@ -121,29 +132,187 @@ function layouts_manage() : void {
 	html_end_box(false);
 
 	?>
+	<div id='cdialog'></div>
 	<script type='text/javascript'>
+	var layoutFailMsg = <?php print json_encode(__('The layout operation failed.')); ?>;
+
+	function layoutCloseDialog() {
+		if ($('#cdialog').hasClass('ui-dialog-content')) {
+			$('#cdialog').dialog('close');
+		}
+	}
+
+	function layoutActionPost(action, data) {
+		data.action       = action;
+		data.__csrf_magic = csrfMagicToken;
+
+		$.post('layouts.php', data, function(result) {
+			layoutCloseDialog();
+
+			if (result && result.ok) {
+				document.location.reload();
+			} else {
+				alert(layoutFailMsg);
+			}
+		}, 'json').fail(function() {
+			layoutCloseDialog();
+			alert(layoutFailMsg);
+		});
+	}
+
 	$(function() {
-		$('.layoutAction').click(function(event) {
+		$('.layoutDelete').click(function(event) {
 			event.preventDefault();
 
-			var action = $(this).attr('data-action');
-			var id     = $(this).attr('data-id');
+			var id = $(this).attr('data-id');
 
-			if (action == 'layout_delete' && !confirm(<?php print json_encode(__('Delete the selected layout?')); ?>)) {
-				return;
-			}
+			$.get('layouts.php?action=layout_remove_confirm&id=' + id).done(function(data) {
+				$('#cdialog').html(data);
 
-			$.post('layouts.php', { action: action, id: id, __csrf_magic: csrfMagicToken }, function(result) {
-				if (result && result.ok) {
-					document.location.reload();
-				} else {
-					alert(<?php print json_encode(__('The layout operation failed.')); ?>);
-				}
-			}, 'json').fail(function() {
-				alert(<?php print json_encode(__('The layout operation failed.')); ?>);
+				applySkin();
+
+				$('#continue').off('click').on('click', function() {
+					layoutActionPost('layout_delete', { id: $('#my_id').val() });
+				});
+
+				$('#cdialog').dialog({
+					title: <?php print json_encode(__('Delete Filter Layout')); ?>,
+					modal: true,
+					minHeight: 80,
+					minWidth: 400
+				});
+			}).fail(function(data) {
+				getPresentHTTPError(data);
 			});
+		});
+
+		$('.layoutRename').click(function(event) {
+			event.preventDefault();
+
+			var id = $(this).attr('data-id');
+
+			$.get('layouts.php?action=layout_rename_dialog&id=' + id).done(function(data) {
+				$('#cdialog').html(data);
+
+				applySkin();
+
+				$('#layout_new_name').focus().select();
+
+				$('#continue').off('click').on('click', function() {
+					var name = $('#layout_new_name').val();
+
+					if (name == '') {
+						return;
+					}
+
+					layoutActionPost('layout_rename', { id: $('#my_id').val(), name: name });
+				});
+
+				$('#layout_new_name').off('keydown').on('keydown', function(e) {
+					if (e.keyCode == 13) {
+						e.preventDefault();
+						$('#continue').click();
+					}
+				});
+
+				$('#cdialog').dialog({
+					title: <?php print json_encode(__('Rename Filter Layout')); ?>,
+					modal: true,
+					minHeight: 80,
+					minWidth: 400
+				});
+			}).fail(function(data) {
+				getPresentHTTPError(data);
+			});
+		});
+
+		$('.layoutPublish').click(function(event) {
+			event.preventDefault();
+
+			layoutActionPost('layout_publish', { id: $(this).attr('data-id') });
 		});
 	});
 	</script>
 	<?php
+}
+
+/**
+ * Render the jQuery UI confirmation body shown before deleting a layout. The
+ * markup is fetched over ajax into the management page's dialog container.
+ *
+ * @return void
+ */
+function layouts_remove_confirm() : void {
+	/* ==== input validation ==== */
+	$id = get_filter_request_var('id');
+	/* ========================== */
+
+	$layout = filter_layouts_get($id);
+
+	if ($layout === false || !filter_layouts_user_can_edit($layout)) {
+		print "<tr><td class='topBoxAlt'>" . __('The layout operation failed.') . '</td></tr>';
+
+		return;
+	}
+
+	html_start_box('', '100%', false, 3, 'center', '');
+
+	?>
+	<tr>
+		<td class='topBoxAlt'>
+			<p><?php print __('Click \'Continue\' to delete the following Filter Layout.'); ?></p>
+			<p><?php print __esc('Layout Name: %s', $layout['name']); ?></p>
+		</td>
+	</tr>
+	<tr>
+		<td class='right'>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' onClick='$("#cdialog").dialog("close");'><?php print __esc('Cancel'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' title='<?php print __esc('Delete Filter Layout'); ?>'><?php print __esc('Continue'); ?></button>
+			<input type='hidden' id='my_id' value='<?php print $layout['id']; ?>'>
+		</td>
+	</tr>
+	<?php
+
+	html_end_box();
+}
+
+/**
+ * Render the jQuery UI rename body shown before renaming a layout. The markup
+ * is fetched over ajax into the management page's dialog container.
+ *
+ * @return void
+ */
+function layouts_rename_dialog() : void {
+	/* ==== input validation ==== */
+	$id = get_filter_request_var('id');
+	/* ========================== */
+
+	$layout = filter_layouts_get($id);
+
+	if ($layout === false || !filter_layouts_user_can_edit($layout)) {
+		print "<tr><td class='topBoxAlt'>" . __('The layout operation failed.') . '</td></tr>';
+
+		return;
+	}
+
+	html_start_box('', '100%', false, 3, 'center', '');
+
+	?>
+	<tr>
+		<td class='topBoxAlt'>
+			<p><?php print __('Enter a new name for the Filter Layout.'); ?></p>
+			<p><?php print __('Name'); ?>
+			<input type='text' class='ui-state-default ui-corner-all' id='layout_new_name' size='40' maxlength='128' value='<?php print html_escape($layout['name']); ?>'></p>
+		</td>
+	</tr>
+	<tr>
+		<td class='right'>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' onClick='$("#cdialog").dialog("close");'><?php print __esc('Cancel'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' title='<?php print __esc('Rename Filter Layout'); ?>'><?php print __esc('Continue'); ?></button>
+			<input type='hidden' id='my_id' value='<?php print $layout['id']; ?>'>
+		</td>
+	</tr>
+	<?php
+
+	html_end_box();
 }
