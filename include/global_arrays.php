@@ -1122,7 +1122,7 @@ if (POLLER_ID || $config['connection'] == 'online') { // @phpstan-ignore-line
 			'vdef.php'                 => __('VDEFs'),
 			'color.php'                => __('Colors'),
 			'gprint_presets.php'       => __('GPRINTs'),
-			'layouts.php'              => __('Filters'),
+			'layouts.php'              => __('Layouts'),
 		],
 		__('Import/Export') => [
 			'package_import.php'   => __('Import Packages'),
@@ -2309,7 +2309,7 @@ $navigation = [
 		'level'   => '2'
 	],
 	'layouts.php:' => [
-		'title'   => __('Filter Layouts'),
+		'title'   => __('Layouts'),
 		'mapping' => 'index.php:',
 		'url'     => 'layouts.php',
 		'level'   => '1'

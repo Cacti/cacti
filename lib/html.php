@@ -2756,20 +2756,32 @@ function html_graph_order_filter_array() : array {
 		}
 	}
 
+	foreach (array_keys($return) as $return_key) {
+		$return[$return_key]['bar'] = true;
+	}
+
 	return $return;
 }
 
 function html_thumbnails_filter(string $callBack = 'applyGraphFilter') : string {
-	$output  = "<input id='thumbnails' type='checkbox' onClick='$callBack()' " . (grv('thumbnails') == 'true' ? 'checked' : '') . '>';
-	$output .= "<label for='thumbnails'>" . __('Thumbnails') . '</label>';
+	$checked = (grv('thumbnails') == 'true' ? ' checked' : '');
+
+	$output  = "<span class='nowrap'>";
+	$output .= "<label class='checkboxSwitch'><input class='formCheckbox' id='thumbnails' name='thumbnails' type='checkbox' onClick='$callBack()'$checked><span class='checkboxSlider checkboxRound'></span></label>";
+	$output .= "<label class='checkboxLabelWanted' for='thumbnails'>" . __('Thumbnails') . '</label>';
+	$output .= '</span>';
 
 	return $output;
 }
 
 function html_business_hours_filter(string $callBack = 'applyGraphFilter') : string {
 	if (read_config_option('business_hours_enable') == 'on') {
-		$output  = "<input id='business_hours' type='checkbox' onClick='$callBack()' " . (grv('business_hours') == 'true' ? 'checked' : '') . '>';
-		$output .= "<label for='business_hours'>" . __('Business Hours') . '</label>';
+		$checked = (grv('business_hours') == 'true' ? ' checked' : '');
+
+		$output  = "<span class='nowrap'>";
+		$output .= "<label class='checkboxSwitch'><input class='formCheckbox' id='business_hours' name='business_hours' type='checkbox' onClick='$callBack()'$checked><span class='checkboxSlider checkboxRound'></span></label>";
+		$output .= "<label class='checkboxLabelWanted' for='business_hours'>" . __('Business Hours') . '</label>';
+		$output .= '</span>';
 
 		return $output;
 	}

@@ -564,7 +564,7 @@ jQuery.tableDnD = {
                 }
                 currentLevel = indentLevel;
 
-                if (!$.isArray(data[currentID]))
+                if (!Array.isArray(data[currentID]))
                     data[currentID] = [];
                 rowID = getSerializeRegexp(rows[i].id);
                 rowID && data[currentID].push(rowID);
@@ -582,9 +582,9 @@ jQuery.fn.extend(
     {
         tableDnD             : $.tableDnD.build,
         tableDnDUpdate       : $.tableDnD.updateTables,
-        tableDnDSerialize    : $.proxy($.tableDnD.serialize, $.tableDnD),
+        tableDnDSerialize    : $.tableDnD.serialize.bind($.tableDnD),
         tableDnDSerializeAll : $.tableDnD.serializeTables,
-        tableDnDData         : $.proxy($.tableDnD.tableData, $.tableDnD)
+        tableDnDData         : $.tableDnD.tableData.bind($.tableDnD)
     }
 );
 
