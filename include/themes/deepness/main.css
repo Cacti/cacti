@@ -52,6 +52,7 @@
 	--dp-accent:        #18b981;
 	--dp-accent-hover:  #26cf94;
 	--dp-accent-deep:   #0c5f44;
+	--dp-accent-soft:   rgba(24, 185, 129, 0.8);
 	--dp-link:          #3bc991;
 	--dp-link-hover:    #63dcaf;
 }
@@ -1552,7 +1553,17 @@ th.sortable {
 }
 
 .tableHeaderColumnSelected {
-	background: var(--dp-accent);
+	background: var(--dp-accent-soft);
+}
+
+.tableHeader th.tableHeaderColumnSelected,
+.tableHeader th.tableHeaderColumnSelected div,
+.tableHeader th.tableHeaderColumnSelected a,
+.tableHeader th.tableHeaderColumnSelected a:link,
+.tableHeader th.tableHeaderColumnSelected a:visited,
+.tableHeader th.tableHeaderColumnSelected a:hover,
+.tableHeader th.tableHeaderColumnSelected .fa {
+	color: var(--dp-page);
 }
 
 .tableHeaderColumnHover {
@@ -1882,7 +1893,7 @@ div#gtabs {
 
 .maintabs a.selected {
 	color: var(--dp-page);
-	background-color: var(--dp-accent);
+	background-color: var(--dp-accent-soft);
 }
 
 .maintabs a:active {
@@ -1961,7 +1972,7 @@ div.submenu span {
 .tabs nav a.selected {
 	color: var(--dp-page);
 	border-bottom: 1px solid var(--dp-accent);
-	background: var(--dp-accent);
+	background: var(--dp-accent-soft);
 }
 
 .tabs li {
@@ -2087,7 +2098,7 @@ tr th:last-child .checkbox {
 
 #nav li a.selected {
 	color: var(--dp-page);
-	background: var(--dp-accent);
+	background: var(--dp-accent-soft);
 }
 
 #nav li ul {
@@ -2204,7 +2215,7 @@ ul.pagination li span {
 }
 
 ul.pagination li a.active {
-	background: var(--dp-accent);
+	background: var(--dp-accent-soft);
 	color: var(--dp-page);
 }
 
