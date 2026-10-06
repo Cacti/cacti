@@ -673,15 +673,15 @@ function upgrade_to_1_3_0() : void {
 
 	upgrade_reports();
 
-	if (!db_column_exists('user_domains', 'debug')) {
+	if (db_table_exists('user_domains') && !db_column_exists('user_domains', 'debug')) {
 		db_install_execute('ALTER TABLE user_domains ADD COLUMN debug CHAR(2) default "" AFTER enabled');
 	}
 
-	if (!db_column_exists('user_domains_ldap', 'network_timeout')) {
+	if (db_table_exists('user_domains_ldap') && !db_column_exists('user_domains_ldap', 'network_timeout')) {
 		db_install_execute('ALTER TABLE user_domains_ldap ADD COLUMN network_timeout INT unsigned NOT NULL default 2 AFTER proto_version');
 	}
 
-	if (!db_column_exists('user_domains_ldap', 'bind_timeout')) {
+	if (db_table_exists('user_domains_ldap') && !db_column_exists('user_domains_ldap', 'bind_timeout')) {
 		db_install_execute('ALTER TABLE  user_domains_ldap ADD COLUMN bind_timeout INT unsigned NOT NULL default 2 AFTER network_timeout');
 	}
 
@@ -1042,6 +1042,12 @@ function login_providers_convert_1_3_0() : void {
 }
 
 function ldap_convert_1_3_0() : void {
+	// Nothing to convert once the login_providers migration has dropped the
+	// legacy tables; a forced upgrade re-run must skip rather than fail.
+	if (!db_table_exists('user_domains_ldap')) {
+		return;
+	}
+
 	$ldap_fields = [
 		'ldap_server'            => 'server',
 		'ldap_port'              => 'port',
