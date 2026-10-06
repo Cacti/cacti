@@ -738,7 +738,7 @@
       $button
         .on({
           click: buttonClickHandler,
-          keydown: $.proxy(self._handleButtonKeyboardNav, self),
+          keydown: self._handleButtonKeyboardNav.bind(self),
           mouseenter: function() {
             if (!this.classList.contains('ui-state-disabled')) {
               this.classList.add('ui-state-hover');
@@ -993,7 +993,7 @@
 
         // setTimeout is to fix multiselect issue #14 and #47. caused by jQuery issue #3827
         // http://bugs.jquery.com/ticket/3827
-        setTimeout($.proxy(self.update, self), 10);
+        setTimeout(self.update.bind(self), 10);
       });
     },
 

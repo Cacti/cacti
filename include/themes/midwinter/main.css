@@ -281,3 +281,8 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 .jstree-default .jstree-closed:not(.jstree-loading) > .jstree-ocl::before { content: "\ea61"; }
 .jstree-default .jstree-open:not(.jstree-loading) > .jstree-ocl::before { content: "\ea5f"; }
 .jstree-default .jstree-leaf:not(.jstree-loading) > .jstree-ocl::before { content: ""; }
+
+.icon-rotate {
+	display: inline-block;
+	animation: fa-spin 1.5s linear infinite;
+}

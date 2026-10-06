@@ -152,6 +152,15 @@ test('the modern filter keeps time controls on the bar and fields in the dialog'
 
 	expect($src)->toContain('private function field_is_bar(string $field_name, array $field_array) : bool {');
 	expect($src)->toContain("=== 'timespan' || \$field_name === 'refresh'");
+	expect($src)->toContain("\$field_name === 'rows'");
+	// The row-count selector is always labeled Rows.
+	expect($src)->toContain("\$field_array['friendly_name'] = __('Rows');");
+	// Bar selectors are ordered Rows then Refresh and separated from the buttons.
+	expect($src)->toContain("foreach (['rows', 'refresh'] as \$pref) {");
+	expect($src)->toContain('$bar_fields = $ordered + $bar_fields;');
+	expect($src)->toContain('// Separate the always-present Layouts selector (plus any Rows/Refresh) from the layout buttons.');
+	// Two separators: selectors|buttons and buttons|page-actions.
+	expect(substr_count($src, "<span class='barSep'></span>"))->toBeGreaterThan(1);
 	expect($src)->toContain('cactiFilterEditDialog');
 	expect($src)->toContain("\$this->layout_button('layout_edit',");
 	expect($src)->toContain("\$this->layout_button('layout_saveas',");
@@ -161,6 +170,23 @@ test('the modern filter keeps time controls on the bar and fields in the dialog'
 	expect($src)->toContain('$dialog_fields[$field_name] = $field_array;');
 	expect($src)->toContain("<div class='filterRow cactiFilterEditRow'>");
 	expect($src)->not->toContain('$dialog_rows');
+});
+
+test('the modern dialog Apply action is labelled Apply and gated on a saved layout', function () use ($root) {
+	$src = file_get_contents($root . '/lib/html_filter.php');
+
+	// The apply action is labelled Apply and only fires once the filter is saved.
+	expect($src)->toContain("\$applyLabel = __('Apply');");
+	expect($src)->toContain('json_encode($applyLabel)');
+	expect($src)->toContain('if (!layoutDirty) {');
+
+	// Saving no longer reloads the page and the dialog is non-modal.
+	expect($src)->toContain('layoutSetDirty(false)');
+	expect($src)->toContain('modal: false');
+
+	// The stale hardcoded Search label and the Clear action are gone.
+	expect($src)->not->toContain('json_encode(__(\'Search\'))');
+	expect($src)->not->toContain('json_encode($clearLabel)');
 });
 
 test('page action buttons (import, export, sort) render on the bar, not the dialog', function () use ($root) {
@@ -188,7 +214,7 @@ test('the edit dialog is tagged for theming and the modern theme skins it', func
 	$css = file_get_contents($root . '/include/themes/modern/main.css');
 
 	// The widget wrapper is tagged so themes can skin the dialog chrome.
-	expect($src)->toContain(".dialog('widget').addClass('cactiFilterDialog');");
+	expect($src)->toContain("dw.addClass('cactiFilterDialog');");
 
 	expect($css)->toContain('.ui-dialog.cactiFilterDialog .ui-dialog-titlebar');
 	expect($css)->toContain('.ui-dialog.cactiFilterDialog .ui-dialog-buttonpane');
@@ -211,7 +237,7 @@ test('layouts.php is admin-only and registered in the Presets menu', function ()
 	$arrays = file_get_contents($root . '/include/global_arrays.php');
 
 	expect($arrays)->toContain("'layouts.php'                => 15,");
-	expect($arrays)->toContain("'layouts.php'              => __('Filters'),");
+	expect($arrays)->toContain("'layouts.php'              => __('Layouts'),");
 });
 
 test('user_layouts is defined consistently across the schema files', function () use ($root) {

@@ -1174,36 +1174,11 @@ function form_callback(string $form_name, string $classic_sql, string $column_di
 		}
 	}
 
-	/* opt-in via $class: preserves the legacy .drop-callback/makeCallbacks() autocomplete
-	 * widget below for every existing caller (including plugins) that does not explicitly
-	 * request the newer ajax-backed select2-callback rendering. */
-	if (preg_match('/(^|\s)select2-callback(\s|$)/', $class)) {
-		if (empty($previous_id) && $prev_val == '') {
-			$prev_val = $none_entry;
-		}
-
-		print "<select id='" . html_escape_attr($form_name) . "' name='" . html_escape_attr($form_name) . "' class='" . html_escape_attr($class) . "'"
-			. " data-action='" . html_escape_attr($action) . "' data-variables='" . html_escape_attr($request_vars) . "' data-callback='" . html_escape_attr($on_change) . "'>";
-
-		if ($previous_id != '' && $prev_val != '') {
-			print "<option value='" . html_escape_attr($previous_id) . "' selected>" . htmle($prev_val) . '</option>';
-		} elseif (!empty($none_entry)) {
-			print "<option value='0' selected>" . htmle($none_entry) . '</option>';
-		}
-
-		print '</select>';
-
-		return;
-	}
-
-	if ($class != '') {
-		$class = " class='$class' ";
-	}
-
-	$theme = get_selected_theme();
-
-	if (read_config_option('autocomplete') > 0) {
-		print "<select id='" . htmle($form_name) . "' name='" . htmle($form_name) . "'" . $class . '>';
+	/* A non-zero 'autocomplete' config renders the full option list inline as a
+	 * plain <select>; every other case uses the ajax-backed select2 lookup that
+	 * replaced the old .drop-callback autocomplete widget. */
+	if (read_config_option('autocomplete') > 0 && !preg_match('/(^|\s)select2-callback(\s|$)/', $class)) {
+		print "<select id='" . htmle($form_name) . "' name='" . htmle($form_name) . "'" . ($class != '' ? " class='$class'" : '') . '>';
 
 		if (!empty($none_entry)) {
 			print "<option value='0'" . (empty($prev_val) ? ' selected' : '') . ">$none_entry</option>";
@@ -1214,13 +1189,28 @@ function form_callback(string $form_name, string $classic_sql, string $column_di
 		html_create_list($form_data, $column_display, $column_id, $previous_id);
 
 		print '</select>';
-	} else {
-		if (empty($previous_id) && $prev_val == '') {
-			$prev_val = $none_entry;
-		}
 
-		print "<input id='$form_name' name='$form_name' type='text' class='drop-callback ui-state-default ui-corner-all' data-action='$action' data-variables='$request_vars' data-callback='$on_change' data-value='" . htmle($prev_val) . "' value='" . htmle($previous_id) . "'>";
+		return;
 	}
+
+	if (!preg_match('/(^|\s)select2-callback(\s|$)/', $class)) {
+		$class .= ($class != '' ? ' ' : '') . 'select2-callback';
+	}
+
+	if (empty($previous_id) && $prev_val == '') {
+		$prev_val = $none_entry;
+	}
+
+	print "<select id='" . html_escape_attr($form_name) . "' name='" . html_escape_attr($form_name) . "' class='" . html_escape_attr($class) . "'"
+		. " data-action='" . html_escape_attr($action) . "' data-variables='" . html_escape_attr($request_vars) . "' data-callback='" . html_escape_attr($on_change) . "'>";
+
+	if ($previous_id != '' && $prev_val != '') {
+		print "<option value='" . html_escape_attr($previous_id) . "' selected>" . htmle($prev_val) . '</option>';
+	} elseif (!empty($none_entry)) {
+		print "<option value='0' selected>" . htmle($none_entry) . '</option>';
+	}
+
+	print '</select>';
 }
 
 /**

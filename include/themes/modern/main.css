@@ -1470,6 +1470,10 @@ legend {
 	vertical-align: -10%;
 }
 
+.filterTable .filterColumn label.checkboxSwitch {
+	vertical-align: middle;
+}
+
 .filterTable .filterColumnButton {
 	display: table-cell;
 	padding: 5px 0px 5px 5px;
@@ -1482,6 +1486,16 @@ legend {
 
 /* Modern page filter (page_filter_format = modern): the Layouts bar and the
    jQuery UI Edit dialog (dialogClass cactiFilterDialog). */
+.cactiFilterModernBar .filterColumn,
+.cactiFilterModernBar .filterColumnButton {
+	vertical-align: middle;
+}
+
+.icon-rotate {
+	display: inline-block;
+	animation: fa-spin 1.5s linear infinite;
+}
+
 .cactiFilterModernBar .barSep {
 	display: inline-block;
 	width: 1px;

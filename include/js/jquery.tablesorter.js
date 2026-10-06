@@ -414,7 +414,7 @@
 			.bind( 'appendCache' + namespace, function( e, callback, init ) {
 				e.stopPropagation();
 				ts.appendCache( this.config, init );
-				if ( $.isFunction( callback ) ) {
+				if ( typeof callback === 'function' ) {
 					callback( this );
 				}
 			})
@@ -830,18 +830,18 @@
 				// check data-attribute first when set to 'basic'; don't use node.innerText - it's really slow!
 				// http://www.kellegous.com/j/2013/02/27/innertext-vs-textcontent/
 				if ( extract === 'basic' && typeof ( tmp = $node.attr( c.textAttribute ) ) !== 'undefined' ) {
-					return $.trim( tmp );
+					return ( tmp ).trim();
 				}
-				return $.trim( node.textContent || $node.text() );
+				return ( node.textContent || $node.text() ).trim();
 			} else {
 				if ( typeof extract === 'function' ) {
-					return $.trim( extract( $node[ 0 ], c.table, cellIndex ) );
+					return ( extract( $node[ 0 ], c.table, cellIndex ) ).trim();
 				} else if ( typeof ( tmp = ts.getColumnData( c.table, extract, cellIndex ) ) === 'function' ) {
-					return $.trim( tmp( $node[ 0 ], c.table, cellIndex ) );
+					return ( tmp( $node[ 0 ], c.table, cellIndex ) ).trim();
 				}
 			}
 			// fallback
-			return $.trim( $node[ 0 ].textContent || $node.text() );
+			return ( $node[ 0 ].textContent || $node.text() ).trim();
 		},
 
 		// centralized function to extract/parse cell contents
@@ -1027,7 +1027,7 @@
 				console[ console.table ? 'table' : 'log' ]( val );
 				if ( console.groupEnd ) { console.groupEnd(); }
 			}
-			if ( $.isFunction( callback ) ) {
+			if ( typeof callback === 'function' ) {
 				callback( table );
 			}
 		},
@@ -1190,7 +1190,7 @@
 					tmp = $header.hasClass( ts.css.sortAsc ) ?
 						'sortAsc' :
 						$header.hasClass( ts.css.sortDesc ) ? 'sortDesc' : 'sortNone',
-					txt = $.trim( $header.text() ) + ': ' + ts.language[ tmp ];
+					txt = ( $header.text() ).trim() + ': ' + ts.language[ tmp ];
 				if ( $header.hasClass( 'sorter-false' ) || nextSort === false ) {
 					txt += ts.language.sortDisabled;
 				} else {
@@ -1651,7 +1651,7 @@
 			// save sort before applying sortAppend
 			c.last.sortList = $.extend( [], c.sortList );
 			if ( c.sortList.length && c.sortAppend ) {
-				arry = $.isArray( c.sortAppend ) ? c.sortAppend : c.sortAppend[ c.sortList[ 0 ][ 0 ] ];
+				arry = Array.isArray( c.sortAppend ) ? c.sortAppend : c.sortAppend[ c.sortList[ 0 ][ 0 ] ];
 				if ( !ts.isEmptyObject( arry ) ) {
 					for ( indx = 0; indx < arry.length; indx++ ) {
 						if ( arry[ indx ][ 0 ] !== col && ts.isValueInArray( arry[ indx ][ 0 ], c.sortList ) < 0 ) {
@@ -1781,13 +1781,13 @@
 			if ( c.table.isUpdating ) {
 				c.$table.triggerHandler( 'updateComplete', c.table );
 			}
-			if ( $.isFunction( callback ) ) {
+			if ( typeof callback === 'function' ) {
 				callback( c.table );
 			}
 		},
 
 		checkResort : function( c, resort, callback ) {
-			var sortList = $.isArray( resort ) ? resort : c.sortList,
+			var sortList = Array.isArray( resort ) ? resort : c.sortList,
 				// if no resort parameter is passed, fallback to config.resort (true by default)
 				resrt = typeof resort === 'undefined' ? c.resort : resort;
 			// don't try to resort if the table is still processing
@@ -1831,7 +1831,7 @@
 			c.$table.triggerHandler( 'sortBeforeEnd', table );
 			c.$table.triggerHandler( 'sortEnd', table );
 			ts.applyWidget( table );
-			if ( $.isFunction( callback ) ) {
+			if ( typeof callback === 'function' ) {
 				callback( table );
 			}
 		},
@@ -1846,7 +1846,7 @@
 			ts.setHeadersCss( c );
 			ts.multisort( c );
 			ts.appendCache( c );
-			if ( $.isFunction( callback ) ) {
+			if ( typeof callback === 'function' ) {
 				callback( c.table );
 			}
 		},
@@ -2156,7 +2156,7 @@
 			} else {
 				// name can be either an array of widgets names,
 				// or a space/comma separated list of widget names
-				name = ( $.isArray( name ) ? name.join( ',' ) : name || '' ).toLowerCase().split( /[\s,]+/ );
+				name = ( Array.isArray( name ) ? name.join( ',' ) : name || '' ).toLowerCase().split( /[\s,]+/ );
 			}
 			len = name.length;
 			for ( index = 0; index < len; index++ ) {
@@ -2268,7 +2268,7 @@
 			}
 			num = parseFloat( str );
 			// return the text instead of zero
-			return isNaN( num ) ? $.trim( str ) : num;
+			return isNaN( num ) ? ( str ).trim() : num;
 		},
 
 		isDigit : function( str ) {
@@ -2409,7 +2409,7 @@
 				// include sorter class name 'sorter-text', etc; now works with 'sorter-my-custom-parser'
 				val = cl4ss.match( new RegExp( '\\s' + key + '-([\\w-]+)' ) )[ 1 ] || '';
 			}
-			return $.trim( val );
+			return ( val ).trim();
 		},
 
 		getColumnData : function( table, obj, indx, getCell, $headers ) {
@@ -2672,7 +2672,7 @@
 		format : function( str, table ) {
 			var c = table.config;
 			if ( str ) {
-				str = $.trim( c.ignoreCase ? str.toLocaleLowerCase() : str );
+				str = ( c.ignoreCase ? str.toLocaleLowerCase() : str ).trim();
 				str = c.sortLocaleCompare ? ts.replaceAccents( str ) : str;
 			}
 			return str;
@@ -2689,7 +2689,7 @@
 		format : function( str, table ) {
 			var num = ts.formatFloat( ( str || '' ).replace( ts.regex.nondigit, '' ), table );
 			return str && typeof num === 'number' ? num :
-				str ? $.trim( str && table.config.ignoreCase ? str.toLocaleLowerCase() : str ) : str;
+				str ? ( table.config.ignoreCase ? str.toLocaleLowerCase() : str ).trim() : str;
 		},
 		type : 'numeric'
 	});
@@ -2706,7 +2706,7 @@
 		format : function( str, table ) {
 			var num = ts.formatFloat( ( str || '' ).replace( ts.regex.nondigit, '' ), table );
 			return str && typeof num === 'number' ? num :
-				str ? $.trim( str && table.config.ignoreCase ? str.toLocaleLowerCase() : str ) : str;
+				str ? ( table.config.ignoreCase ? str.toLocaleLowerCase() : str ).trim() : str;
 		},
 		type : 'numeric'
 	});
@@ -2721,7 +2721,7 @@
 			return ts.regex.urlProtocolTest.test( str );
 		},
 		format : function( str ) {
-			return str ? $.trim( str.replace( ts.regex.urlProtocolReplace, '' ) ) : str;
+			return str ? ( str.replace( ts.regex.urlProtocolReplace, '' ) ).trim() : str;
 		},
 		type : 'text'
 	});

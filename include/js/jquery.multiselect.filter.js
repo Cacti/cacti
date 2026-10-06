@@ -107,7 +107,7 @@
       this._bindInputEvents();
       // automatically reset the widget on close?
       if (this.options.autoReset) {
-        $element.on('multiselectbeforeclose', $.proxy(this._reset, this));
+        $element.on('multiselectbeforeclose', this._reset.bind(this));
       }
 
       var $label = $(document.createElement('label')).text(opts.label).append(this.$input).addClass('ui-multiselect-filter-label');
@@ -172,8 +172,8 @@
             }
           }
         },
-        input: $.proxy(debounce(this._handler, this.options.debounceMS), this),
-        search: $.proxy(this._handler, this),
+        input: debounce(this._handler, this.options.debounceMS).bind(this),
+        search: this._handler.bind(this),
       });
     },
 

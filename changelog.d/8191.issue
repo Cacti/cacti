@@ -1,0 +1,1 @@
+Complete the jQuery 4 compatibility sweep of the bundled contextMenu, colorpicker, timepicker, tablesorter, multiselect and tableDnD plugins by replacing all removed helpers ($.isFunction, $.trim, $.isArray, $.proxy, $.type, $.isWindow, $.parseJSON)

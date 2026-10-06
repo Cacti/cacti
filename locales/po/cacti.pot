@@ -25313,23 +25313,7 @@ msgid "Delete the selected layout?"
 msgstr ""
 
 #: layouts.php
-msgid "Filter Layouts"
-msgstr ""
-
-#: layouts.php
 msgid "User %d"
-msgstr ""
-
-#: layouts.php
-msgid "Published to all users"
-msgstr ""
-
-#: layouts.php
-msgid "Publish to all users"
-msgstr ""
-
-#: layouts.php
-msgid "No Filter Layouts Found"
 msgstr ""
 
 #: lib/html_filter.php layouts.php
@@ -25374,4 +25358,100 @@ msgstr ""
 
 #: lib/html_filter.php
 msgid "Save the layout before publishing it."
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Apply"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Enter a new name for the layout."
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Refresh page"
+msgstr ""
+
+#: lib/html_filter.php
+msgid "Start of the custom time range. After setting the start and end dates, click the Refresh button to apply the time range."
+msgstr ""
+
+#: lib/html_filter.php
+msgid "End of the custom time range. After setting the start and end dates, click the Refresh button to apply the time range."
+msgstr ""
+
+#: layouts.php
+msgid "Make Global"
+msgstr ""
+
+#: layouts.php
+msgid "Make Local"
+msgstr ""
+
+#: layouts.php
+msgid "Make Layout Global"
+msgstr ""
+
+#: layouts.php
+msgid "Make Layouts Global"
+msgstr ""
+
+#: layouts.php
+msgid "Make Layout Local"
+msgstr ""
+
+#: layouts.php
+msgid "Make Layouts Local"
+msgstr ""
+
+#: layouts.php
+msgid "Delete Layout"
+msgstr ""
+
+#: layouts.php
+msgid "Delete Layouts"
+msgstr ""
+
+#: layouts.php
+msgid "No Layouts Found"
+msgstr ""
+
+#: layouts.php
+msgid "The name of this Layout."
+msgstr ""
+
+#: layouts.php
+msgid "The page this Layout applies to."
+msgstr ""
+
+#: layouts.php
+msgid "The owner of this Layout, or Global when shared with all users."
+msgstr ""
+
+#: layouts.php
+msgid "The stored filter this Layout applies."
+msgstr ""
+
+#: layouts.php
+msgid "Click 'Continue' to Delete the following Layout."
+msgstr ""
+
+#: layouts.php
+msgid "Click 'Continue' to Delete the following Layouts."
+msgstr ""
+
+#: layouts.php
+msgid "Click 'Continue' to make the following Layout Global to all users."
+msgstr ""
+
+#: layouts.php
+msgid "Click 'Continue' to make the following Layouts Global to all users."
+msgstr ""
+
+#: layouts.php
+msgid "Click 'Continue' to make the following Layout Local to you."
+msgstr ""
+
+#: layouts.php
+msgid "Click 'Continue' to make the following Layouts Local to you."
 msgstr ""

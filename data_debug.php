@@ -764,9 +764,9 @@ function debug_view() : void {
 	$debug_status = debug_process_status($id);
 
 	if ($debug_status == 'waiting') {
-		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till Complete ] %s', '<i class="reloadquery ti ti-refresh" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'), '100%', false, 3, 'center', '');
+		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till Complete ] %s', '<i class="reloadquery ti ti-refresh icon-rotate" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'), '100%', false, 3, 'center', '');
 	} elseif ($debug_status == 'analysis') {
-		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s', '<i class="reloadquery ti ti-refresh" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'), '100%', false, 3, 'center', '');
+		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s', '<i class="reloadquery ti ti-refresh icon-rotate" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'), '100%', false, 3, 'center', '');
 	} else {
 		html_start_box(__('Data Source Troubleshooter [ Analysis Complete! %s ]', '<a href="#" class="rerun linkEditMain" data-id="' . $id . '" style="cursor:pointer;">' . __('Rerun Analysis') . '</a>'), '100%', false, 3, 'center', '');
 	}
