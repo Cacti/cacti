@@ -213,6 +213,7 @@ button {
 	background-image: none;
 	border: 1px solid var(--dp-border-strong);
 	color: var(--dp-text);
+	text-transform: uppercase;
 }
 
 .ui-button:hover,
@@ -233,6 +234,7 @@ button[type="submit"] {
 	background-image: none;
 	border: 1px solid var(--dp-accent);
 	color: var(--dp-text);
+	text-transform: uppercase;
 }
 
 input[type="submit"]:hover,
