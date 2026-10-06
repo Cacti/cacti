@@ -123,7 +123,7 @@ test('the tablesorter transform replaces every removed jQuery API with native eq
 
 		// every removed jQuery 4 utility is rewritten to its native equivalent
 		assert.match(output, /typeof fn === 'function'/);
-		assert.match(output, /\( raw \)\.trim\(\)/);
+		assert.match(output, /String\(\( raw \) \?\? ''\)\.trim\(\)/);
 		assert.match(output, /typeof val === 'string'/);
 		assert.match(output, /\$\.isPlainObject\(obj\)/);
 		assert.match(output, /scope != null && scope === scope\.window/);

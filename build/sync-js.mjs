@@ -45,7 +45,7 @@ export const assetMap = Object.freeze({
 // files. No-ops once the upstream fixes are released and the pin is bumped.
 const tablesorterJquery4 = content => content
 	.replace(/\$\.isFunction\(\s*([^()]+?)\s*\)/g, "typeof $1 === 'function'")
-	.replace(/\$\.trim\(((?:[^()]|\([^()]*\))*)\)/g, '($1).trim()')
+	.replace(/\$\.trim\(((?:[^()]|\([^()]*\))*)\)/g, "String(($1) ?? '').trim()")
 	.replace(/\$\.type\(\s*([^()]+?)\s*\)\s*===\s*'string'/g, "typeof $1 === 'string'")
 	.replace(/\$\.type\(\s*([^()]+?)\s*\)\s*===\s*'object'/g, '$$.isPlainObject($1)')
 	.replace(/\$\.isWindow\(\s*([^()]+?)\s*\)/g, '($1 != null && $1 === $1.window)')
