@@ -503,6 +503,7 @@ header_redirect	./include/themes/sunrise/index.php	header('Location:../index.php
 header_redirect	./include/vendor/index.php	header("Location:../index.php");
 header_redirect	./include/views/index.php			header('Location:../index.php');
 header_redirect	./install/upgrades/index.php	header('Location:../../index.php');
+header_redirect	./layouts.php			header('Location: layouts.php');
 header_redirect	./lib/Auth/LocalAuthLoginProvider.php					header('Location: auth_changepassword.php');
 header_redirect	./lib/Auth/OpenIdLoginProvider.php			header('Location: ' . $discovery['authorization_endpoint'] . '?' . $query);
 header_redirect	./lib/Auth/SamlLoginProvider.php				header('Location: ' . $responseUrl);
