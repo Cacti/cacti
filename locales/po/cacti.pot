@@ -25313,23 +25313,7 @@ msgid "Delete the selected layout?"
 msgstr ""
 
 #: layouts.php
-msgid "Filter Layouts"
-msgstr ""
-
-#: layouts.php
 msgid "User %d"
-msgstr ""
-
-#: layouts.php
-msgid "Published to all users"
-msgstr ""
-
-#: layouts.php
-msgid "Publish to all users"
-msgstr ""
-
-#: layouts.php
-msgid "No Filter Layouts Found"
 msgstr ""
 
 #: lib/html_filter.php layouts.php
