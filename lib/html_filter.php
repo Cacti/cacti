@@ -451,7 +451,7 @@ class CactiTableFilter {
 	 * @return bool
 	 */
 	private function field_is_bar(string $field_name, array $field_array) : bool {
-		return ($field_array['method'] ?? '') === 'timespan' || $field_name === 'refresh' || $field_name === 'rows';
+		return ($field_array['method'] ?? '') === 'timespan' || $field_name === 'refresh' || $field_name === 'rows' || ($field_array['method'] ?? '') === 'filter_checkbox';
 	}
 
 	/**
@@ -518,9 +518,11 @@ class CactiTableFilter {
 
 				break;
 			case 'filter_checkbox':
+				$cb_title = html_escape_attr($field_array['title'] ?? $field_array['friendly_name']);
+
 				print '<div class="filterColumn"><span class="nowrap">' . PHP_EOL;
-				print '<label class="checkboxSwitch"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] . '"' : '') . '><input type="checkbox" class="formCheckbox' . $class . '" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] . '"' : '') . ($field_array['value'] == 'on' || $field_array['value'] == 'true' ? ' checked' : '') . '><span class="checkboxSlider checkboxRound"></span></label>';
-				print '<label class="checkboxLabel" for="' . $field_name . '">' . $field_array['friendly_name'] . '</label>';
+				print '<label class="checkboxSwitch" title="' . $cb_title . '"><input type="checkbox" class="formCheckbox' . $class . '" id="' . $field_name . '" title="' . $cb_title . '"' . ($field_array['value'] == 'on' || $field_array['value'] == 'true' ? ' checked' : '') . '><span class="checkboxSlider checkboxRound"></span></label>';
+				print '<label class="checkboxLabelWanted" for="' . $field_name . '">' . $field_array['friendly_name'] . '</label>';
 				print '</span></div>' . PHP_EOL;
 
 				break;

@@ -2764,7 +2764,7 @@ function html_thumbnails_filter(string $callBack = 'applyGraphFilter') : string 
 
 	$output  = "<span class='nowrap'>";
 	$output .= "<label class='checkboxSwitch'><input class='formCheckbox' id='thumbnails' name='thumbnails' type='checkbox' onClick='$callBack()'$checked><span class='checkboxSlider checkboxRound'></span></label>";
-	$output .= "<label class='checkboxLabel' for='thumbnails'>" . __('Thumbnails') . '</label>';
+	$output .= "<label class='checkboxLabelWanted' for='thumbnails'>" . __('Thumbnails') . '</label>';
 	$output .= '</span>';
 
 	return $output;
@@ -2776,7 +2776,7 @@ function html_business_hours_filter(string $callBack = 'applyGraphFilter') : str
 
 		$output  = "<span class='nowrap'>";
 		$output .= "<label class='checkboxSwitch'><input class='formCheckbox' id='business_hours' name='business_hours' type='checkbox' onClick='$callBack()'$checked><span class='checkboxSlider checkboxRound'></span></label>";
-		$output .= "<label class='checkboxLabel' for='business_hours'>" . __('Business Hours') . '</label>';
+		$output .= "<label class='checkboxLabelWanted' for='business_hours'>" . __('Business Hours') . '</label>';
 		$output .= '</span>';
 
 		return $output;
