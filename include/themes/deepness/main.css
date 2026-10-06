@@ -230,20 +230,20 @@ button:hover {
 input[type="submit"],
 input[type="submit"].ui-button,
 button[type="submit"] {
-	background: rgba(24, 185, 129, 0.35);
+	background: rgba(24, 185, 129, 0.8);
 	background-image: none;
 	border: 1px solid var(--dp-accent);
-	color: var(--dp-text);
+	color: var(--dp-page);
 	text-transform: uppercase;
 }
 
 input[type="submit"]:hover,
 input[type="submit"].ui-button:hover,
 button[type="submit"]:hover {
-	background: rgba(24, 185, 129, 0.5);
+	background: rgba(24, 185, 129, 0.95);
 	background-image: none;
 	border-color: var(--dp-accent-hover);
-	color: var(--dp-text);
+	color: var(--dp-page);
 }
 
 label {
