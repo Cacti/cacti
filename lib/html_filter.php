@@ -1278,8 +1278,8 @@ class CactiTableFilter {
 	}
 
 	private function layout_button(string $id, string $display, string $title, bool $hidden = false) : string {
-		return '<div class="filterColumnButton">' .
-			'<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $id . '"' . ($hidden ? ' style="display:none"' : '') . ' title="' . html_escape($title) . '"><span class="button-text">' . html_escape($display) . '</span></button>' .
+		return '<div class="filterColumnButton"' . ($hidden ? ' style="display:none"' : '') . '>' .
+			'<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $id . '" title="' . html_escape($title) . '"><span class="button-text">' . html_escape($display) . '</span></button>' .
 			'</div>' . PHP_EOL;
 	}
 
@@ -1424,9 +1424,9 @@ class CactiTableFilter {
 		$js .= 'function layoutUpdateButtons() {' . PHP_EOL;
 		$js .= "\tvar id = layoutSelectedId();" . PHP_EOL;
 		$js .= "\tvar editable = layoutEditable();" . PHP_EOL;
-		$js .= "\t$('#layout_rename').toggle(id != 0 && editable);" . PHP_EOL;
-		$js .= "\t$('#layout_delete').toggle(id != 0 && editable);" . PHP_EOL;
-		$js .= "\t$('#layout_saveas').toggle(id != 0 && !editable);" . PHP_EOL;
+		$js .= "\t$('#layout_rename').closest('.filterColumnButton').toggle(id != 0 && editable);" . PHP_EOL;
+		$js .= "\t$('#layout_delete').closest('.filterColumnButton').toggle(id != 0 && editable);" . PHP_EOL;
+		$js .= "\t$('#layout_saveas').closest('.filterColumnButton').toggle(id != 0 && !editable);" . PHP_EOL;
 		$js .= '}' . PHP_EOL;
 
 		$js .= 'function layoutSetDirty(dirty) {' . PHP_EOL;
