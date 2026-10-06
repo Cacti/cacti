@@ -451,7 +451,7 @@ class CactiTableFilter {
 	 * @return bool
 	 */
 	private function field_is_bar(string $field_name, array $field_array) : bool {
-		return ($field_array['method'] ?? '') === 'timespan' || $field_name === 'refresh' || $field_name === 'rows' || ($field_array['method'] ?? '') === 'filter_checkbox';
+		return ($field_array['method'] ?? '') === 'timespan' || $field_name === 'refresh' || $field_name === 'rows';
 	}
 
 	/**
@@ -520,10 +520,8 @@ class CactiTableFilter {
 			case 'filter_checkbox':
 				$cb_title = html_escape_attr($field_array['title'] ?? $field_array['friendly_name']);
 
-				print '<div class="filterColumn"><span class="nowrap">' . PHP_EOL;
-				print '<label class="checkboxSwitch" title="' . $cb_title . '"><input type="checkbox" class="formCheckbox' . $class . '" id="' . $field_name . '" title="' . $cb_title . '"' . ($field_array['value'] == 'on' || $field_array['value'] == 'true' ? ' checked' : '') . '><span class="checkboxSlider checkboxRound"></span></label>';
-				print '<label class="checkboxLabelWanted" for="' . $field_name . '">' . $field_array['friendly_name'] . '</label>';
-				print '</span></div>' . PHP_EOL;
+				print '<div class="filterColumn"><div class="filterFieldName">' . $field_array['friendly_name'] . '</div></div>' . PHP_EOL;
+				print '<div class="filterColumn"><label class="checkboxSwitch" title="' . $cb_title . '"><input type="checkbox" class="formCheckbox' . $class . '" id="' . $field_name . '" title="' . $cb_title . '"' . ($field_array['value'] == 'on' || $field_array['value'] == 'true' ? ' checked' : '') . '><span class="checkboxSlider checkboxRound"></span></label></div>' . PHP_EOL;
 
 				break;
 			case 'timespan':
@@ -1032,7 +1030,7 @@ class CactiTableFilter {
 
 							break;
 						case 'filter_checkbox':
-							if ($this->dynamic) {
+							if ($this->dynamic && !$this->use_modern_filter()) {
 								$clickChain .= ($clickChain != '' ? ', ' : '') . '#' . $field_name;
 							}
 
@@ -1084,7 +1082,9 @@ class CactiTableFilter {
 						case 'drop_tree':
 							if ($field_array['method'] != 'textbox' && $this->dynamic) {
 								if (!isset($field_array['dynamic']) || $field_array['dynamic'] === true) {
-									$changeChain .= ($changeChain != '' ? ', ' : '') . '#' . $field_name;
+									if (!$this->use_modern_filter() || $this->field_is_bar($field_name, $field_array)) {
+										$changeChain .= ($changeChain != '' ? ', ' : '') . '#' . $field_name;
+									}
 								}
 							}
 
@@ -1370,10 +1370,9 @@ class CactiTableFilter {
 		$can_glob = filter_layouts_can_manage_global();
 		$title    = $this->form_header != '' ? $this->form_header : __('Edit Filter');
 
-		// Label the dialog apply/clear actions with the page's own button text
-		// (e.g. Go), not a hardcoded Search that can collide with a filter field.
+		// Label the dialog apply action with the page's own button text (e.g. Go),
+		// not a hardcoded Search that can collide with a filter field.
 		$applyLabel = $this->filter_array['buttons']['go']['display'] ?? __('Go');
-		$clearLabel = $this->filter_array['buttons']['clear']['display'] ?? __('Clear');
 
 		$js  = PHP_EOL . "<script type='text/javascript'>" . PHP_EOL;
 
@@ -1427,7 +1426,6 @@ class CactiTableFilter {
 			$js .= "\t\t{ text: " . json_encode(__('Publish')) . ', click: function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { alert(' . json_encode(__('Save the layout before publishing it.')) . "); return; } layoutPost('layout_publish', { id: id }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); } }," . PHP_EOL;
 		}
 
-		$js .= "\t\t{ text: " . json_encode($clearLabel) . ', click: function() { ' . $clearFunction . '; } },' . PHP_EOL;
 		$js .= "\t\t{ text: " . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } }" . PHP_EOL;
 		$js .= "\t];" . PHP_EOL;
 		$js .= "\t$('#" . $this->form_id . "_dialog').dialog({ title: " . json_encode($title) . ", modal: true, width: 'auto', minWidth: 500, resizable: false, buttons: buttons });" . PHP_EOL;

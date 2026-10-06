@@ -172,21 +172,21 @@ test('the modern filter keeps time controls on the bar and fields in the dialog'
 	expect($src)->not->toContain('$dialog_rows');
 });
 
-test('the modern dialog apply/clear actions use the page configured button labels', function () use ($root) {
+test('the modern dialog apply action uses the page configured button label', function () use ($root) {
 	$src = file_get_contents($root . '/lib/html_filter.php');
 
-	// Apply/clear reuse the page's go/clear display text, not a hardcoded Search.
+	// Apply reuses the page's go display text, not a hardcoded Search.
 	expect($src)->toContain("\$applyLabel = \$this->filter_array['buttons']['go']['display'] ?? __('Go');");
-	expect($src)->toContain("\$clearLabel = \$this->filter_array['buttons']['clear']['display'] ?? __('Clear');");
 	expect($src)->toContain('json_encode($applyLabel)');
-	expect($src)->toContain('json_encode($clearLabel)');
 
-	// Apply invokes the configured change callback; clear the configured clear one.
+	// Apply invokes the configured change callback.
 	expect($src)->toContain("\$changeFunction . '; } },'");
-	expect($src)->toContain("\$clearFunction . '; } },'");
 
 	// The stale hardcoded Search label is gone from the dialog button set.
 	expect($src)->not->toContain('json_encode(__(\'Search\'))');
+
+	// The Clear action is no longer shown in the dialog.
+	expect($src)->not->toContain('json_encode($clearLabel)');
 });
 
 test('page action buttons (import, export, sort) render on the bar, not the dialog', function () use ($root) {
