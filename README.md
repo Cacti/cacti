@@ -146,13 +146,13 @@ Enterprise Networks and Data Centers.
 Cacti should be able to run on any Linux, UNIX, or Windows based operating
 system with the following requirements:
 
-- PHP 5.4+
+- PHP 8.2+
 
-- MySQL 5.1+
+- MariaDB 10.5+, MySQL 8.0+
 
-- RRDtool 1.3+, 1.5+ recommended
+- RRDtool 1.7+
 
-- NET-SNMP 5.5+
+- Net-SNMP 5.9+
 
 - Web Server with PHP support
 
@@ -161,11 +161,14 @@ for data gathering via cron.
 
 ### php-snmp
 
-We mark the php-snmp module as optional.  So long as you are not using ipv6
-devices, or using snmpv3 engine IDs or contexts, then using php-snmp should be
-safe.  Otherwise, you should consider uninstalling the php-snmp module as it
-will create problems.  We are aware of the problem with php-snmp and looking to
-get involved in the php project to resolve these issues.
+We mark the php-snmp module as fully supported, including IPv6 devices and
+SNMPv3 engine IDs and contexts.  If both php-snmp and the Net-SNMP binaries are
+available, php-snmp is used by default; to force the Net-SNMP binaries, set
+`$php_snmp_support = false;` in `include/config.php`.
+
+Full support for the upcoming PHP 8.6 release is planned, which brings
+significant performance improvements that speed up data collection in Script and
+Script Server data input methods.
 
 ### RRDtool
 

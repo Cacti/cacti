@@ -148,9 +148,9 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			$ver = db_get_global_variable('version', $cnn_id);
 
-			if (strpos($ver, 'MariaDB') !== false) {
+			if (stripos($ver, 'MariaDB') !== false) {
 				$srv = 'MariaDB';
-				$ver  = str_replace('-MariaDB', '', $ver);
+				$ver  = str_ireplace('-MariaDB', '', $ver);
 				$required_modes[] = 'NO_ENGINE_SUBSTITUTION';
 			} else {
 				$srv = 'MySQL';

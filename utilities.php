@@ -548,7 +548,7 @@ function utilities_view_tech() {
 
 		// Get Maximum Memory in GB for MySQL/MariaDB
 		if ($config['poller_id'] == 1) {
-			if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+			if ($database == 'MariaDB') {
 				$systemMemory = db_fetch_cell('SELECT
 					(@@GLOBAL.key_buffer_size
 					+ @@GLOBAL.query_cache_size
@@ -600,7 +600,7 @@ function utilities_view_tech() {
 				+ @@GLOBAL.thread_stack
 				+ @@GLOBAL.binlog_cache_size) / 1024 / 1024 / 1024');
 		} else {
-			if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+			if ($database == 'MariaDB') {
 				$maxPossibleMyMemory = db_fetch_cell('SELECT (
 					(@@GLOBAL.key_buffer_size
 					+ @@GLOBAL.query_cache_size
@@ -755,7 +755,7 @@ function utilities_view_tech() {
 		print '<td>' . __('PHP SNMP') . '</td>';
 		print '<td>';
 		if (function_exists('snmpget')) {
-			print __('Installed. <span class="deviceDown">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>');
+			print __('Installed.');
 		} else {
 			print __('Not Installed');
 		}
@@ -799,6 +799,8 @@ function utilities_view_tech() {
 		form_end_row();
 
 		utilities_get_mysql_recommendations();
+
+		utilities_get_mysql_capabilities();
 	} elseif (get_request_var('tab') == 'dbstatus') {
 		$status = db_fetch_assoc('show global status');
 

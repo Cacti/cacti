@@ -2919,7 +2919,7 @@ $graph_sources = array(
 
 if ($config['cacti_server_os'] == 'unix') {
 	$dejavu_paths = array(
-		'/usr/share/fonts/dejavu/', //RHEL/CentOS
+		'/usr/share/fonts/dejavu/', //Rocky/CentOS
 		'/usr/share/fonts/truetype/', //SLES
 		'/usr/share/fonts/truetype/dejavu/', //Ubuntu
 		'/usr/local/share/fonts/dejavu/', //FreeBSD
