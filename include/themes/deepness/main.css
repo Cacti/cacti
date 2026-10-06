@@ -528,9 +528,9 @@ label {
 }
 
 .deviceStatus.deviceUp {
-	background-color: rgba(40, 180, 40, 0.15);
-	border-color: rgba(40, 180, 40, 0.55);
-	color: #46d246 !important;
+	background-color: rgba(24, 185, 129, 0.15);
+	border-color: rgba(24, 185, 129, 0.55);
+	color: #3dd9a1 !important;
 }
 
 .deviceStatus.deviceDown {
