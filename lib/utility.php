@@ -1558,10 +1558,10 @@ function utilities_get_mysql_recommendations() : int {
 
 	$recommendations = [
 		'version' => [
-			'value'   => '5.6',
+			'value'   => ($database == 'MariaDB' ? '10.11' : '8.4'),
 			'class'   => 'warning',
 			'measure' => 'ge',
-			'comment' => __('MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability.')
+			'comment' => __('MariaDB 10.11+ and MySQL 8.4+ are the recommended, supported releases for Cacti 1.3.x (available on Rocky Linux 9 through the vendor module streams). Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability.')
 		]
 	];
 
@@ -1984,7 +1984,7 @@ function utilities_get_mysql_recommendations() : int {
 
 					if ($name == 'sort_buffer_size') {
 						if (POLLER_ID == 1) {
-							if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							if ($database == 'MariaDB') {
 								$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
 								@@GLOBAL.query_cache_size +
 								@@GLOBAL.tmp_table_size +
@@ -2009,7 +2009,7 @@ function utilities_get_mysql_recommendations() : int {
 									@@GLOBAL.binlog_cache_size)');
 							}
 						} else {
-							if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							if ($database == 'MariaDB') {
 								$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
 								@@GLOBAL.query_cache_size +
 								@@GLOBAL.tmp_table_size +
@@ -2036,7 +2036,7 @@ function utilities_get_mysql_recommendations() : int {
 						}
 					} else {
 						if (POLLER_ID == 1) {
-							if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							if ($database == 'MariaDB') {
 								$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
 								@@GLOBAL.query_cache_size +
 								@@GLOBAL.tmp_table_size +
@@ -2061,7 +2061,7 @@ function utilities_get_mysql_recommendations() : int {
 									@@GLOBAL.binlog_cache_size)');
 							}
 						} else {
-							if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							if ($database == 'MariaDB') {
 								$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
 								@@GLOBAL.query_cache_size +
 								@@GLOBAL.tmp_table_size +

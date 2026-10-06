@@ -646,6 +646,7 @@ function user_remove(int $user_id) : void {
 	db_execute_prepared('DELETE FROM user_auth_group_members WHERE user_id = ?', [$user_id]);
 	db_execute_prepared('DELETE FROM settings_user WHERE user_id = ?', [$user_id]);
 	db_execute_prepared('DELETE FROM settings_tree WHERE user_id = ?', [$user_id]);
+	db_execute_prepared('DELETE FROM user_layouts WHERE user_id = ?', [$user_id]);
 	db_execute_prepared('DELETE FROM sessions WHERE user_id = ?', [$user_id]);
 
 	api_plugin_hook_function('user_remove', $user_id);
