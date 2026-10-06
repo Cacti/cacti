@@ -1,0 +1,1 @@
+Make the 1.3.0 database upgrade resilient to forced re-runs after user_domains and user_domains_ldap have been consolidated into login_providers, skipping the legacy ALTER statements instead of failing when those tables are gone
