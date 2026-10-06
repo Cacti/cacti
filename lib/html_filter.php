@@ -835,6 +835,9 @@ class CactiTableFilter {
 		// Refresh (reload the current view, keeping the selected layout) as a glyph button, right of the Edit group.
 		print "<div class='filterColumnButton'><button type='button' class='ui-button ui-corner-all ui-widget' id='layout_refresh' title='" . __esc('Refresh page') . "'><i class='ti ti-refresh'></i></button></div>" . PHP_EOL;
 
+		// Clear (reset the filter to its defaults) as an eraser glyph button, right of Refresh.
+		print "<div class='filterColumnButton'><button type='button' class='ui-button ui-corner-all ui-widget' id='layout_clear' title='" . __esc('Clear') . "'><i class='ti ti-eraser'></i></button></div>" . PHP_EOL;
+
 		// Page actions (Import, Export, Purge, Save, sort asc/desc, ...) belong on
 		// the bar beside the Layouts selector, not inside the Edit dialog.
 		if (cacti_sizeof($bar_actions)) {
@@ -1546,6 +1549,7 @@ class CactiTableFilter {
 		$js .= "\t$('#layout_edit').click(function() { layoutOpenDialog(false); });" . PHP_EOL;
 		$js .= "\t$('#layout_saveas').click(function() { layoutOpenDialog(true); });" . PHP_EOL;
 		$js .= "\t$('#layout_refresh').click(function() { $(this).find('i').addClass('icon-rotate'); var u = layoutSelectedOption().attr('data-url'); if (layoutSelectedId() != 0 && u != undefined && u != '') { loadUrl({ url: correctUrlParameters(u) }); } else { " . $changeFunction . '; } });' . PHP_EOL;
+		$js .= "\t$('#layout_clear').click(function() { " . $clearFunction . '; });' . PHP_EOL;
 		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } layoutRenameDialog(id, layoutSelectedOption().attr('data-name') || ''); });" . PHP_EOL;
 		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } layoutDeleteDialog(id); });" . PHP_EOL;
 		$js .= "\t$('#layout_name').keydown(function(e) { if (e.keyCode == 13) { e.preventDefault(); layoutDialogSave(layoutDialogForceNew); } });" . PHP_EOL;

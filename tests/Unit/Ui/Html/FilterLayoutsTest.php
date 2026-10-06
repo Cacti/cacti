@@ -210,6 +210,9 @@ test('the modern javascript wires the edit dialog save and publish actions', fun
 	expect($src)->toContain('function layoutDialogSave(forceNew) {');
 	expect($src)->toContain('function layoutUpdateButtons() {');
 	expect($src)->toContain("layoutPost('layout_publish'");
+	// The bar Clear button (right of Refresh) resets the filter via the page clear action.
+	expect($src)->toContain("id='layout_clear'");
+	expect($src)->toContain("\$('#layout_clear').click(function() { \" . \$clearFunction");
 });
 
 test('the edit dialog is tagged for theming and the modern theme skins it', function () use ($root) {
