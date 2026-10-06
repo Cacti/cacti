@@ -2133,11 +2133,11 @@ th:last-child {
 
 tr.selected {
 	color: var(--dp-text);
-	background: var(--dp-selected);
+	background: rgba(24, 185, 129, 0.14);
 }
 
 tr.selected a.linkEditMain:visited {
-	color: yellow;
+	color: #6ee7b7;
 }
 
 tr:not(.selectable) a.linkEditMain:hover {
@@ -2145,11 +2145,15 @@ tr:not(.selectable) a.linkEditMain:hover {
 }
 
 tr.selectable a.linkEditMain:hover {
-	color: yellow;
+	color: #6ee7b7;
 }
 
 tr.selectable:hover:not(.selected) {
-	background: var(--dp-row-hover);
+	background: rgba(24, 185, 129, 0.08);
+}
+
+tr.selectable.selected:hover {
+	background: rgba(24, 185, 129, 0.2);
 }
 
 tr.selectable td {
@@ -2157,7 +2161,7 @@ tr.selectable td {
 }
 
 tr.selected a {
-	color: yellow;
+	color: #6ee7b7;
 }
 
 tr td:last-child .checkbox {
@@ -2513,17 +2517,13 @@ tr#realtime td:first-child {
 	width: 16px;
 	left: 4px;
 	bottom: 4px;
-	background-color: var(--dp-text);
-	background-image: url('./images/cacti_logo.svg');
-	background-repeat: no-repeat;
-	background-size: 7px;
-	background-position: center;
+	background-color: var(--dp-accent-hover);
 	-webkit-transition: .4s;
 	transition: .4s;
 }
 
 input:checked + .checkboxSlider {
-	background-color: var(--dp-accent);
+	background-color: rgba(24, 185, 129, 0.4);
 }
 
 input:disabled + .checkboxSlider {
@@ -2595,17 +2595,13 @@ input:checked + .checkboxSlider:before {
 	width: 16px;
 	left: 4px;
 	bottom: 4px;
-	background-color: var(--dp-text);
-	background-image: url('./images/cacti_logo.svg');
-	background-repeat: no-repeat;
-	background-size: 7px;
-	background-position: center;
+	background-color: var(--dp-accent-hover);
 	-webkit-transition: .4s;
 	transition: .4s;
 }
 
 input:checked + .radioSlider {
-	background-color: var(--dp-accent);
+	background-color: rgba(24, 185, 129, 0.4);
 }
 
 input:disabled + .radioSlider {
