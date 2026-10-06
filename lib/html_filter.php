@@ -473,6 +473,12 @@ class CactiTableFilter {
 			$field_array['friendly_name'] = __('Rows');
 		}
 
+		// Every page's Go submit action renders as a compact refresh glyph button.
+		if ($field_name === 'go' && ($field_array['method'] ?? '') === 'submit') {
+			$field_array['glyph'] = 'ti ti-refresh';
+			$field_array['title'] = __('Refresh page');
+		}
+
 		if (isset($field_array['class'])) {
 			$class = ' ' . $field_array['class'];
 		} else {
@@ -513,7 +519,7 @@ class CactiTableFilter {
 				break;
 			case 'submit':
 				print '<div class="filterColumnButton">' . PHP_EOL;
-				print '<button type="submit" class="ui-button ui-corner-all ui-widget ui-state-active ' . $class . '" id="' . $field_name . '" ' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"><span class="button-text">' . $field_array['display'] . '</span></button>';
+				print '<button type="submit" class="ui-button ui-corner-all ui-widget ui-state-active ' . $class . '" id="' . $field_name . '" ' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '">' . (!empty($field_array['glyph']) ? '<i class="' . $field_array['glyph'] . '"></i>' : '<span class="button-text">' . $field_array['display'] . '</span>') . '</button>';
 				print '</div>' . PHP_EOL;
 
 				break;
@@ -793,6 +799,9 @@ class CactiTableFilter {
 		print $this->layout_button('layout_rename', __('Rename'),  __('Rename the selected layout'), true);
 		print $this->layout_button('layout_delete', __('Delete'),  __('Delete the selected layout'), true);
 		print $this->layout_button('layout_saveas', __('Save As'), __('Save this layout as a new personal layout'), true);
+
+		// Refresh (reload the current view, keeping the selected layout) as a glyph button, right of the Edit group.
+		print "<div class='filterColumnButton'><button type='button' class='ui-button ui-corner-all ui-widget' id='layout_refresh' title='" . __esc('Refresh page') . "'><i class='ti ti-refresh'></i></button></div>" . PHP_EOL;
 
 		// Page actions (Import, Export, Purge, Save, sort asc/desc, ...) belong on
 		// the bar beside the Layouts selector, not inside the Edit dialog.
@@ -1495,6 +1504,7 @@ class CactiTableFilter {
 		$js .= "\t$('#" . $this->form_id . "_dialog').on('change keyup', 'input, select, textarea', function() { layoutSetDirty(true); });" . PHP_EOL;
 		$js .= "\t$('#layout_edit').click(function() { layoutOpenDialog(false); });" . PHP_EOL;
 		$js .= "\t$('#layout_saveas').click(function() { layoutOpenDialog(true); });" . PHP_EOL;
+		$js .= "\t$('#layout_refresh').click(function() { var u = layoutSelectedOption().attr('data-url'); if (layoutSelectedId() != 0 && u != undefined && u != '') { loadUrl({ url: u }); } else { " . $changeFunction . '; } });' . PHP_EOL;
 		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } layoutRenameDialog(id, layoutSelectedOption().attr('data-name') || ''); });" . PHP_EOL;
 		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } layoutDeleteDialog(id); });" . PHP_EOL;
 		$js .= "\t$('#layout_name').keydown(function(e) { if (e.keyCode == 13) { e.preventDefault(); layoutDialogSave(false); } });" . PHP_EOL;

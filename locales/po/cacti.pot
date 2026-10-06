@@ -25384,6 +25384,10 @@ msgstr ""
 msgid "Enter a new name for the layout."
 msgstr ""
 
+#: lib/html_filter.php
+msgid "Refresh page"
+msgstr ""
+
 #: layouts.php
 msgid "Make Global"
 msgstr ""
