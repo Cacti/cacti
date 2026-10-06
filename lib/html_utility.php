@@ -575,13 +575,13 @@ function form_process_visible_display_text(string $table_id, array $display_text
  * Format's a tables checkbox form element so that the cacti js actions work on it
  *
  * @param string $title    The title attribute for the checkbox, used for accessibility.
- * @param string $id       The unique identifier for the checkbox input element.
+ * @param mixed  $id       The unique identifier for the checkbox input element.
  * @param bool   $disabled Whether the checkbox should be disabled. Default is false.
  * @param bool   $checked  Whether the checkbox should be checked. Default is false.
  *
  * @return void
  */
-function form_checkbox_cell(string $title, string $id, bool $disabled = false, bool $checked = false) : void {
+function form_checkbox_cell(string $title, mixed $id, bool $disabled = false, bool $checked = false) : void {
 	print "\t<td class='checkbox' style='width:1%;'>\n";
 	print "\t\t<input type='checkbox' title='" . htmle($title) . "' class='checkbox" . ($disabled ? ' disabled' : '') . "' " . ($disabled ? " disabled='disabled'" : '') . ($checked ? " checked='checked'" : '') . " id='chk_" . $id . "' name='chk_" . $id . "'><label class='formCheckboxLabel' for='chk_" . $id . "'></label>\n";
 	print "\t</td>\n";
