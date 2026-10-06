@@ -414,7 +414,7 @@
 							}
 						}
 		,	'NAME':		function(color, that) {
-							var c = that._getSwatch($.trim(color));
+							var c = that._getSwatch((color).trim());
 							if (c) {
 								return new $.colorpicker.Color(c.r, c.g, c.b);
 							}
@@ -2554,7 +2554,7 @@
 					properties = this.options.altProperties.split(',');
 
 				for (index = 0; index <= properties.length; ++index) {
-					property = $.trim(properties[index]);
+					property = (properties[index]).trim();
 					switch (property) {
 						case 'color':
 						case 'fill':
@@ -3061,7 +3061,7 @@
 			var currentSwatches = this._getSwatches(),
 				name;
 			$.each(currentSwatches, function (nameOrIndex, swatch) {
-				name = $.isArray(currentSwatches) ? swatch.name : nameOrIndex;
+				name = Array.isArray(currentSwatches) ? swatch.name : nameOrIndex;
 				return callback(name, swatch);
 			});
 		},
@@ -3168,7 +3168,7 @@
             var that = this,
 				color;
 		
-			var formats = $.isArray(that.options.colorFormat)
+			var formats = Array.isArray(that.options.colorFormat)
 					? that.options.colorFormat
 					: [ that.options.colorFormat ];
 
@@ -3244,7 +3244,7 @@
 							},
 				channels	= color.getChannels();
 
-			if (!$.isArray(formats)) {
+			if (!Array.isArray(formats)) {
 				formats = [formats];
 			}
 

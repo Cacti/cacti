@@ -5,8 +5,8 @@
 // patches/tablesorter+2.32.0.patch) before this runs. screenfull ships ESM-only
 // since v6, so its copy is rewritten below (see postCopyTransforms) instead of
 // via patch-package, since node_modules/screenfull/index.js is itself valid.
-// tablesorter is also rewritten below to drop jQuery-4-incompatible $.isFunction
-// calls that its latest release still ships.
+// tablesorter is also rewritten below to drop jQuery-4-incompatible utility
+// calls ($.isFunction, $.trim, $.isArray, ...) that its latest release still ships.
 import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -39,6 +39,19 @@ export const assetMap = Object.freeze({
 // when loaded as a classic <script>. Rewrite that line to a global assignment.
 // Throws if the export line isn't found, so an upstream format change fails the
 // build instead of silently shipping a broken asset.
+// tablesorter 2.32.0 (latest release) still calls several jQuery utilities that
+// jQuery 4 removed ($.isFunction, $.trim, $.isArray, $.type, $.isWindow,
+// $.parseJSON); rewrite them natively at sync time for both the core and widgets
+// files. No-ops once the upstream fixes are released and the pin is bumped.
+const tablesorterJquery4 = content => content
+	.replace(/\$\.isFunction\(\s*([^()]+?)\s*\)/g, "typeof $1 === 'function'")
+	.replace(/\$\.trim\(((?:[^()]|\([^()]*\))*)\)/g, '($1).trim()')
+	.replace(/\$\.type\(\s*([^()]+?)\s*\)\s*===\s*'string'/g, "typeof $1 === 'string'")
+	.replace(/\$\.type\(\s*([^()]+?)\s*\)\s*===\s*'object'/g, '$$.isPlainObject($1)')
+	.replace(/\$\.isWindow\(\s*([^()]+?)\s*\)/g, '($1 != null && $1 === $1.window)')
+	.replace(/\$\.isArray\(/g, 'Array.isArray(')
+	.replace(/\$\.parseJSON\(/g, 'JSON.parse(');
+
 const postCopyTransforms = Object.freeze({
 	'include/js/screenfull.js': content => {
 		const transformed = content.replace(/\nexport default screenfull;\s*$/, '\nwindow.screenfull = screenfull;\n');
@@ -49,10 +62,8 @@ const postCopyTransforms = Object.freeze({
 
 		return transformed;
 	},
-	// tablesorter 2.32.0 (latest release) still calls $.isFunction, removed in jQuery 4.
-	// Shim it at sync time; no-ops once the upstream PR lands and the pin is bumped.
-	'include/js/jquery.tablesorter.js': content =>
-		content.replace(/\$\.isFunction\(\s*([^()]+?)\s*\)/g, "typeof $1 === 'function'"),
+	'include/js/jquery.tablesorter.js': tablesorterJquery4,
+	'include/js/jquery.tablesorter.widgets.js': tablesorterJquery4,
 });
 
 export function syncAssets(root = process.cwd(), log = console.log) {
