@@ -731,16 +731,19 @@ class CactiTableFilter {
 		// page action buttons (Import, Export, Purge, Save, sort, ...) stay on the
 		// bar; the filter inputs move into the Edit dialog. go/clear are replaced
 		// by the dialog's Search/Clear footer actions.
-		$bar_fields    = [];
-		$bar_actions   = [];
-		$dialog_fields = [];
+		$bar_fields      = [];
+		$bar_actions     = [];
+		$timespan_fields = [];
+		$dialog_fields   = [];
 
 		if (isset($this->filter_array['rows'])) {
 			foreach ($this->filter_array['rows'] as $row) {
 				foreach ($row as $field_name => $field_array) {
 					$method = $field_array['method'] ?? '';
 
-					if ($this->field_is_bar($field_name, $field_array)) {
+					if ($method === 'timespan') {
+						$timespan_fields[$field_name] = $field_array;
+					} elseif ($this->field_is_bar($field_name, $field_array)) {
 						$bar_fields[$field_name] = $field_array;
 					} elseif ($method === 'submit' || $method === 'button') {
 						if ($field_name !== 'go' && $field_name !== 'clear') {
@@ -802,6 +805,19 @@ class CactiTableFilter {
 
 		print '</div>';
 		print '</div>' . PHP_EOL;
+
+		// Timespan controls get their own second filter line, not the single bar.
+		if (cacti_sizeof($timespan_fields)) {
+			print "<div class='filterTable even cactiFilterModernBar'>";
+			print "<div class='filterRow'>";
+
+			foreach ($timespan_fields as $field_name => $field_array) {
+				print $this->emit_field($field_name, $field_array);
+			}
+
+			print '</div>';
+			print '</div>' . PHP_EOL;
+		}
 
 		// Edit dialog.
 		$title = $this->form_header != '' ? $this->form_header : __('Edit Filter');
