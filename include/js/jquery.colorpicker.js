@@ -2751,7 +2751,7 @@
 							:	(that.options.showAnim === 'fadeIn' ?
 									fade
 								:	show))]((that.options.showAnim ? that.options.duration : null), callback);
-				if ($.isFunction(callback) && (!that.options.showAnim || !that.options.duration)) {
+				if (typeof callback === 'function' && (!that.options.showAnim || !that.options.duration)) {
 					callback();
 				}
 			}

@@ -5,6 +5,8 @@
 // patches/tablesorter+2.32.0.patch) before this runs. screenfull ships ESM-only
 // since v6, so its copy is rewritten below (see postCopyTransforms) instead of
 // via patch-package, since node_modules/screenfull/index.js is itself valid.
+// tablesorter is also rewritten below to drop jQuery-4-incompatible $.isFunction
+// calls that its latest release still ships.
 import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -47,6 +49,10 @@ const postCopyTransforms = Object.freeze({
 
 		return transformed;
 	},
+	// tablesorter 2.32.0 (latest release) still calls $.isFunction, removed in jQuery 4.
+	// Shim it at sync time; no-ops once the upstream PR lands and the pin is bumped.
+	'include/js/jquery.tablesorter.js': content =>
+		content.replace(/\$\.isFunction\(\s*([^()]+?)\s*\)/g, "typeof $1 === 'function'"),
 });
 
 export function syncAssets(root = process.cwd(), log = console.log) {

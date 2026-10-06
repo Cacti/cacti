@@ -414,7 +414,7 @@
 			.bind( 'appendCache' + namespace, function( e, callback, init ) {
 				e.stopPropagation();
 				ts.appendCache( this.config, init );
-				if ( $.isFunction( callback ) ) {
+				if ( typeof callback === 'function' ) {
 					callback( this );
 				}
 			})
@@ -1027,7 +1027,7 @@
 				console[ console.table ? 'table' : 'log' ]( val );
 				if ( console.groupEnd ) { console.groupEnd(); }
 			}
-			if ( $.isFunction( callback ) ) {
+			if ( typeof callback === 'function' ) {
 				callback( table );
 			}
 		},
@@ -1781,7 +1781,7 @@
 			if ( c.table.isUpdating ) {
 				c.$table.triggerHandler( 'updateComplete', c.table );
 			}
-			if ( $.isFunction( callback ) ) {
+			if ( typeof callback === 'function' ) {
 				callback( c.table );
 			}
 		},
@@ -1831,7 +1831,7 @@
 			c.$table.triggerHandler( 'sortBeforeEnd', table );
 			c.$table.triggerHandler( 'sortEnd', table );
 			ts.applyWidget( table );
-			if ( $.isFunction( callback ) ) {
+			if ( typeof callback === 'function' ) {
 				callback( table );
 			}
 		},
@@ -1846,7 +1846,7 @@
 			ts.setHeadersCss( c );
 			ts.multisort( c );
 			ts.appendCache( c );
-			if ( $.isFunction( callback ) ) {
+			if ( typeof callback === 'function' ) {
 				callback( c.table );
 			}
 		},

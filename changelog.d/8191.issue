@@ -1,0 +1,1 @@
+Restore jQuery 4 compatibility in the bundled contextMenu, colorpicker, timepicker, and tablesorter libraries by replacing the removed $.isFunction helper
