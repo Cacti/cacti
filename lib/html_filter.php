@@ -786,10 +786,8 @@ class CactiTableFilter {
 			print $this->emit_field($field_name, $field_array);
 		}
 
-		// Separate the selectors (Layouts, Rows, Refresh) from the layout buttons.
-		if (cacti_sizeof($bar_fields)) {
-			print "<div class='filterColumnButton'><span class='barSep'></span></div>";
-		}
+		// Separate the always-present Layouts selector (plus any Rows/Refresh) from the layout buttons.
+		print "<div class='filterColumnButton'><span class='barSep'></span></div>";
 
 		print $this->layout_button('layout_edit',   __('Edit'),    __('Edit the current filter'));
 		print $this->layout_button('layout_rename', __('Rename'),  __('Rename the selected layout'), true);

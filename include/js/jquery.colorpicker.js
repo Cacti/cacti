@@ -2553,7 +2553,7 @@
 					property,
 					properties = this.options.altProperties.split(',');
 
-				for (index = 0; index <= properties.length; ++index) {
+				for (index = 0; index < properties.length; ++index) {
 					property = (properties[index]).trim();
 					switch (property) {
 						case 'color':

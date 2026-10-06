@@ -1,1 +1,1 @@
-Polish the modern page filter bar: show the Rows and Refresh selectors on the bar (Rows first, Refresh second), always label the row-count selector Rows, separate the selectors from the layout buttons, and label the Edit dialog apply/clear actions with the page's own button text
+Polish the modern page filter bar: show the Rows and Refresh selectors on the bar (Rows first, Refresh second), always label the row-count selector Rows, always separate the selectors from the layout buttons, and give the Edit dialog an Apply action that stays disabled until the layout is saved

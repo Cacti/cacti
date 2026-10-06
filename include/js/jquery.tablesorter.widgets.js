@@ -84,7 +84,7 @@
 			console.log('Storage >> Using', hasStorage ? storageType : 'cookies');
 		}
 		// *** get value ***
-		if ($.parseJSON) {
+		if (window.JSON && window.JSON.parse) {
 			if (hasStorage) {
 				values = JSON.parse( window[storageType][key] || 'null' ) || {};
 			} else {
