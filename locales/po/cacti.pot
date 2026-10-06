@@ -25388,6 +25388,14 @@ msgstr ""
 msgid "Refresh page"
 msgstr ""
 
+#: lib/html_filter.php
+msgid "Start of the custom time range. After setting the start and end dates, click the Refresh button to apply the time range."
+msgstr ""
+
+#: lib/html_filter.php
+msgid "End of the custom time range. After setting the start and end dates, click the Refresh button to apply the time range."
+msgstr ""
+
 #: layouts.php
 msgid "Make Global"
 msgstr ""

@@ -580,7 +580,7 @@ class CactiTableFilter {
 				print '</div>';
 				print '<div class="filterColumn">';
 				print '<span>';
-				print '<input type="text" class="ui-state-default ui-corner-all' . $class . '" id="date1" size="18" value="' . ($_SESSION['sess_current_date1'] ?? '') . '">';
+				print '<input type="text" class="ui-state-default ui-corner-all' . $class . '" id="date1" size="18" title="' . __esc('Start of the custom time range. After setting the start and end dates, click the Refresh button to apply the time range.') . '" value="' . ($_SESSION['sess_current_date1'] ?? '') . '">';
 				print '<i id="startDate" class="calendar ti ti-calendar-clock" title="' . __esc('Start Date Selector') . '"></i>';
 				print '</span>';
 				print '</div>';
@@ -591,7 +591,7 @@ class CactiTableFilter {
 				print '</div>';
 				print '<div class="filterColumn">';
 				print '<span>';
-				print '<input type="text" class="ui-state-default ui-corner-all' . $class . '" id="date2" size="18" value="' . ($_SESSION['sess_current_date2'] ?? '') . '">';
+				print '<input type="text" class="ui-state-default ui-corner-all' . $class . '" id="date2" size="18" title="' . __esc('End of the custom time range. After setting the start and end dates, click the Refresh button to apply the time range.') . '" value="' . ($_SESSION['sess_current_date2'] ?? '') . '">';
 				print '<i id="endDate" class="calendar ti ti-calendar-clock" title="' . __esc('End Date Selector') . '"></i>';
 				print '</span>';
 				print '</div>';
@@ -1088,36 +1088,37 @@ class CactiTableFilter {
 
 							break;
 						case 'timespan':
+							// Delegated bindings survive ajax content reloads that replace the timespan controls; direct .change()/.click() handlers would be lost after the first filter apply.
 							if (!isset($field_array['span_function'])) {
-								$readyAdd .= "$('#predefined_timespan').change( function() { applyGraphTimespan(); });" . PHP_EOL;
+								$readyAdd .= "$(document).off('change.cactiTimespan', '#predefined_timespan').on('change.cactiTimespan', '#predefined_timespan', function() { applyGraphTimespan(); });" . PHP_EOL;
 							} else {
-								$readyAdd .= "$('#predefined_timespan').change( function() { " . $field_array['span_function'] . '; });' . PHP_EOL;
+								$readyAdd .= "$(document).off('change.cactiTimespan', '#predefined_timespan').on('change.cactiTimespan', '#predefined_timespan', function() { " . $field_array['span_function'] . '; });' . PHP_EOL;
 							}
 
 							if (isset($field_array['shifter']) && $field_array['shifter'] === true) {
 								if (!isset($field_array['lshift_function'])) {
-									$readyAdd .= "$('#shift_left').click( function() { timeshiftGraphFilterLeft(); });" . PHP_EOL;
+									$readyAdd .= "$(document).off('click.cactiTimespan', '#shift_left').on('click.cactiTimespan', '#shift_left', function() { timeshiftGraphFilterLeft(); });" . PHP_EOL;
 								} else {
-									$readyAdd .= "$('#shift_left').click( function() { " . $field_array['lshift_function'] . '; });' . PHP_EOL;
+									$readyAdd .= "$(document).off('click.cactiTimespan', '#shift_left').on('click.cactiTimespan', '#shift_left', function() { " . $field_array['lshift_function'] . '; });' . PHP_EOL;
 								}
 
 								if (!isset($field_array['rshift_function'])) {
-									$readyAdd .= "$('#shift_right').click( function() { timeshiftGraphFilterRight(); });" . PHP_EOL;
+									$readyAdd .= "$(document).off('click.cactiTimespan', '#shift_right').on('click.cactiTimespan', '#shift_right', function() { timeshiftGraphFilterRight(); });" . PHP_EOL;
 								} else {
-									$readyAdd .= "$('#shift_right').click( function() { " . $field_array['rshift_function'] . '; });' . PHP_EOL;
+									$readyAdd .= "$(document).off('click.cactiTimespan', '#shift_right').on('click.cactiTimespan', '#shift_right', function() { " . $field_array['rshift_function'] . '; });' . PHP_EOL;
 								}
 							}
 
 							if (!isset($field_array['refresh_function'])) {
-								$readyAdd .= "$('#tsrefresh').click( function() { $(this).find('i').addClass('icon-rotate'); refreshGraphTimespanFilter(); });" . PHP_EOL;
+								$readyAdd .= "$(document).off('click.cactiTimespan', '#tsrefresh').on('click.cactiTimespan', '#tsrefresh', function() { $(this).find('i').addClass('icon-rotate'); refreshGraphTimespanFilter(); });" . PHP_EOL;
 							} else {
-								$readyAdd .= "$('#tsrefresh').click( function() { $(this).find('i').addClass('icon-rotate'); " . $field_array['refresh_function'] . '; });' . PHP_EOL;
+								$readyAdd .= "$(document).off('click.cactiTimespan', '#tsrefresh').on('click.cactiTimespan', '#tsrefresh', function() { $(this).find('i').addClass('icon-rotate'); " . $field_array['refresh_function'] . '; });' . PHP_EOL;
 							}
 
 							if (!isset($field_array['clear_function'])) {
-								$readyAdd .= "$('#tsclear').click( function() { clearGraphTimespanFilter(); });" . PHP_EOL;
+								$readyAdd .= "$(document).off('click.cactiTimespan', '#tsclear').on('click.cactiTimespan', '#tsclear', function() { clearGraphTimespanFilter(); });" . PHP_EOL;
 							} else {
-								$readyAdd .= "$('#tsclear').click( function() { " . $field_array['clear_function'] . '; });' . PHP_EOL;
+								$readyAdd .= "$(document).off('click.cactiTimespan', '#tsclear').on('click.cactiTimespan', '#tsclear', function() { " . $field_array['clear_function'] . '; });' . PHP_EOL;
 							}
 
 							break;
