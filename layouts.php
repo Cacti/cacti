@@ -213,18 +213,17 @@ function layouts_manage() : void {
 			'sort'    => 'ASC',
 			'tip'     => __('The name of this Layout.')
 		],
-		'page' => [
+		'nosort' => [
 			'display' => __('Page'),
 			'align'   => 'left',
-			'sort'    => 'ASC',
 			'tip'     => __('The page this Layout applies to.')
 		],
-		'nosort' => [
+		'nosort2' => [
 			'display' => __('Owner'),
 			'align'   => 'left',
 			'tip'     => __('The owner of this Layout, or Global when shared with all users.')
 		],
-		'nosort2' => [
+		'nosort3' => [
 			'display' => __('Filter'),
 			'align'   => 'left',
 			'tip'     => __('The stored filter this Layout applies.')
@@ -256,7 +255,7 @@ function layouts_manage() : void {
 			form_alternate_row('line' . $layout['id'], true);
 
 			form_selectable_cell(filter_value($layout['name'], grv('filter'), $edit_url), $layout['id']);
-			form_selectable_cell(html_escape($layout['page']), $layout['id']);
+			form_selectable_cell(html_escape(layouts_page_name($layout['page'])), $layout['id']);
 			form_selectable_cell($owner, $layout['id']);
 			form_selectable_cell(html_escape($summary), $layout['id']);
 			form_checkbox_cell($layout['name'], $layout['id']);
@@ -276,5 +275,24 @@ function layouts_manage() : void {
 	draw_actions_dropdown($actions);
 
 	form_end();
+}
+
+/**
+ * Resolve a layout's stored page basename to the friendly name the user sees in
+ * the Console navigation (e.g. 'host.php' becomes 'Devices'), falling back to the
+ * raw basename when the page is not registered.
+ *
+ * @param string $page The stored page basename.
+ *
+ * @return string
+ */
+function layouts_page_name(string $page) : string {
+	global $navigation;
+
+	if (isset($navigation[$page . ':']['title']) && $navigation[$page . ':']['title'] != '') {
+		return $navigation[$page . ':']['title'];
+	}
+
+	return $page;
 }
 
