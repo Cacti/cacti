@@ -158,7 +158,7 @@ test('the modern filter keeps time controls on the bar and fields in the dialog'
 	// Bar selectors are ordered Rows then Refresh and separated from the buttons.
 	expect($src)->toContain("foreach (['rows', 'refresh'] as \$pref) {");
 	expect($src)->toContain('$bar_fields = $ordered + $bar_fields;');
-	expect($src)->toContain('// Separate the selectors (Layouts, Rows, Refresh) from the layout buttons.');
+	expect($src)->toContain('// Separate the always-present Layouts selector (plus any Rows/Refresh) from the layout buttons.');
 	// Two separators: selectors|buttons and buttons|page-actions.
 	expect(substr_count($src, "<span class='barSep'></span>"))->toBeGreaterThan(1);
 	expect($src)->toContain('cactiFilterEditDialog');
@@ -214,7 +214,7 @@ test('the edit dialog is tagged for theming and the modern theme skins it', func
 	$css = file_get_contents($root . '/include/themes/modern/main.css');
 
 	// The widget wrapper is tagged so themes can skin the dialog chrome.
-	expect($src)->toContain(".dialog('widget').addClass('cactiFilterDialog');");
+	expect($src)->toContain("dw.addClass('cactiFilterDialog');");
 
 	expect($css)->toContain('.ui-dialog.cactiFilterDialog .ui-dialog-titlebar');
 	expect($css)->toContain('.ui-dialog.cactiFilterDialog .ui-dialog-buttonpane');
