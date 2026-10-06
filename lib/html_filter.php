@@ -497,6 +497,11 @@ class CactiTableFilter {
 			$field_array['glyph'] = 'ti ti-table-export';
 		}
 
+		// The Save Filter Defaults action renders as a floppy glyph button.
+		if ($field_name === 'save' && ($field_array['method'] ?? '') === 'button') {
+			$field_array['glyph'] = 'ti ti-device-floppy';
+		}
+
 		if (isset($field_array['class'])) {
 			$class = ' ' . $field_array['class'];
 		} else {
