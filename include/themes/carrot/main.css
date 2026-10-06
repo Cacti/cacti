@@ -1283,6 +1283,11 @@ legend {
 	vertical-align: middle;
 }
 
+/* Narrow the regex Search box on the modern bar to the normal filter width. */
+.cactiFilterModernBar input#rfilter {
+	width: 30ch;
+}
+
 .icon-rotate {
 	display: inline-block;
 	animation: fa-spin 1.5s linear infinite;

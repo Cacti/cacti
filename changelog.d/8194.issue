@@ -1,0 +1,1 @@
+Make the tablesorter $.trim rewrite null-safe so custom textExtraction or parser callbacks returning non-string or null values no longer throw

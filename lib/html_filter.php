@@ -451,7 +451,13 @@ class CactiTableFilter {
 	 * @return bool
 	 */
 	private function field_is_bar(string $field_name, array $field_array) : bool {
-		return ($field_array['method'] ?? '') === 'timespan' || $field_name === 'refresh' || $field_name === 'rows';
+		$method = $field_array['method'] ?? '';
+
+		// Search stays on the bar (right of Rows) so it is reachable without opening the Edit dialog.
+		return $method  === 'timespan'
+			|| $field_name === 'refresh'
+			|| $field_name === 'rows'
+			|| ($method === 'textbox' && ($field_name === 'filter' || $field_name === 'rfilter'));
 	}
 
 	/**
@@ -500,6 +506,16 @@ class CactiTableFilter {
 		// The Save Filter Defaults action renders as a floppy glyph button.
 		if ($field_name === 'save' && ($field_array['method'] ?? '') === 'button') {
 			$field_array['glyph'] = 'ti ti-device-floppy';
+		}
+
+		// The Purge action renders as a flame glyph button.
+		if ($field_name === 'purge' && ($field_array['method'] ?? '') === 'button') {
+			$field_array['glyph'] = 'ti ti-flame';
+		}
+
+		// The Rotate (log rotation) action renders as a rotate glyph button.
+		if ($field_name === 'rotate' && ($field_array['method'] ?? '') === 'button') {
+			$field_array['glyph'] = 'ti ti-rotate';
 		}
 
 		if (isset($field_array['class'])) {
@@ -778,6 +794,11 @@ class CactiTableFilter {
 					} elseif ($method === 'timespan') {
 						$timespan_fields[$field_name] = $field_array;
 					} elseif ($this->field_is_bar($field_name, $field_array)) {
+						// Bar-routed Search needs a persistent label; some pages (clog) omit friendly_name, relying on an adjacent field's label.
+						if (($field_name === 'filter' || $field_name === 'rfilter') && empty($field_array['friendly_name'])) {
+							$field_array['friendly_name'] = __('Search');
+						}
+
 						$bar_fields[$field_name] = $field_array;
 					} elseif ($method === 'submit' || $method === 'button') {
 						if ($field_name !== 'go' && $field_name !== 'clear') {
@@ -790,11 +811,30 @@ class CactiTableFilter {
 			}
 		}
 
-		// Keep the bar selectors in a stable order: Rows first, Refresh second.
+		// Mirror the bar Search into the Edit dialog so a saved layout's search term is visible and
+		// editable there too; the bar input stays canonical and the mirror is synced to it in JS.
+		foreach (['rfilter', 'filter'] as $search_name) {
+			if (isset($bar_fields[$search_name])) {
+				$mirror = $bar_fields[$search_name];
+
+				if (empty($mirror['friendly_name'])) {
+					$mirror['friendly_name'] = __('Search');
+				}
+
+				// The value is synced from the live bar input when the dialog opens, avoiding a stale copy.
+				$mirror['value'] = '';
+
+				$dialog_fields[$search_name . '_dialog'] = $mirror;
+
+				break;
+			}
+		}
+
+		// Keep the bar selectors in a stable order: Search first (matching the legacy filters), then Rows, then Refresh.
 		if (cacti_sizeof($bar_fields)) {
 			$ordered = [];
 
-			foreach (['rows', 'refresh'] as $pref) {
+			foreach (['filter', 'rfilter', 'rows', 'refresh'] as $pref) {
 				if (isset($bar_fields[$pref])) {
 					$ordered[$pref] = $bar_fields[$pref];
 					unset($bar_fields[$pref]);
@@ -827,6 +867,9 @@ class CactiTableFilter {
 
 		// Refresh (reload the current view, keeping the selected layout) as a glyph button, right of the Edit group.
 		print "<div class='filterColumnButton'><button type='button' class='ui-button ui-corner-all ui-widget' id='layout_refresh' title='" . __esc('Refresh page') . "'><i class='ti ti-refresh'></i></button></div>" . PHP_EOL;
+
+		// Clear (reset the filter to its defaults) as an eraser glyph button, right of Refresh.
+		print "<div class='filterColumnButton'><button type='button' class='ui-button ui-corner-all ui-widget' id='layout_clear' title='" . __esc('Clear') . "'><i class='ti ti-eraser'></i></button></div>" . PHP_EOL;
 
 		// Page actions (Import, Export, Purge, Save, sort asc/desc, ...) belong on
 		// the bar beside the Layouts selector, not inside the Edit dialog.
@@ -1494,6 +1537,8 @@ class CactiTableFilter {
 		$js .= 'function layoutOpenDialog(forceNew) {' . PHP_EOL;
 		$js .= "\tlayoutDialogForceNew = forceNew;" . PHP_EOL;
 		$js .= "\t$('#layout_name').val(forceNew ? '' : (layoutSelectedOption().attr('data-name') || ''));" . PHP_EOL;
+		// Reflect the live bar Search value into the dialog mirror each time the dialog opens.
+		$js .= "\t$('#rfilter_dialog, #filter_dialog').each(function() { $(this).val($('#' + this.id.replace('_dialog', '')).val()); });" . PHP_EOL;
 		$js .= "\tvar buttons = [" . PHP_EOL;
 		// when a layout is selected (incl. one just saved) apply its own url so filter_layout carries through, otherwise run the plain filter apply
 		$js .= "\t\t{ text: " . json_encode($applyLabel) . ", click: function() { if (!layoutDirty) { $(this).dialog('close'); var lu = layoutSelectedOption().attr('data-url'); if (layoutSelectedId() != 0 && lu != undefined && lu != '') { loadUrl({ url: correctUrlParameters(lu) }); } else { " . $changeFunction . '; } } } },' . PHP_EOL;
@@ -1536,12 +1581,17 @@ class CactiTableFilter {
 		// correctUrlParameters rewrites action=tree to action=tree_content so the tree view regenerates graphs in #main instead of reloading the tree shell (no-op on other pages).
 		$js .= "\t$('#filter_layout').change(function() { layoutUpdateButtons(); var u = layoutSelectedOption().attr('data-url'); if (u != undefined && u != '') { loadUrl({ url: correctUrlParameters(u) }); } });" . PHP_EOL;
 		$js .= "\t$('#" . $this->form_id . "_dialog').on('change keyup', 'input, select, textarea', function() { layoutSetDirty(true); });" . PHP_EOL;
+		// Editing the dialog Search mirror updates the canonical bar input it shadows.
+		$js .= "\t$('#rfilter_dialog, #filter_dialog').on('input', function() { $('#' + this.id.replace('_dialog', '')).val(this.value); });" . PHP_EOL;
 		$js .= "\t$('#layout_edit').click(function() { layoutOpenDialog(false); });" . PHP_EOL;
 		$js .= "\t$('#layout_saveas').click(function() { layoutOpenDialog(true); });" . PHP_EOL;
 		$js .= "\t$('#layout_refresh').click(function() { $(this).find('i').addClass('icon-rotate'); var u = layoutSelectedOption().attr('data-url'); if (layoutSelectedId() != 0 && u != undefined && u != '') { loadUrl({ url: correctUrlParameters(u) }); } else { " . $changeFunction . '; } });' . PHP_EOL;
+		$js .= "\t$('#layout_clear').click(function() { " . $clearFunction . '; });' . PHP_EOL;
 		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } layoutRenameDialog(id, layoutSelectedOption().attr('data-name') || ''); });" . PHP_EOL;
 		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } layoutDeleteDialog(id); });" . PHP_EOL;
 		$js .= "\t$('#layout_name').keydown(function(e) { if (e.keyCode == 13) { e.preventDefault(); layoutDialogSave(layoutDialogForceNew); } });" . PHP_EOL;
+		// Enter in the bar Search box applies the filter; delegated so it survives ajax content reloads.
+		$js .= "\t$(document).off('keydown.cactiSearch', '#filter, #rfilter').on('keydown.cactiSearch', '#filter, #rfilter', function(e) { if (e.keyCode == 13) { e.preventDefault(); " . $changeFunction . '; } });' . PHP_EOL;
 		$js .= '});' . PHP_EOL;
 
 		$js .= '</script>' . PHP_EOL;

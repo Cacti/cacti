@@ -151,12 +151,17 @@ test('the modern filter keeps time controls on the bar and fields in the dialog'
 	$src = file_get_contents($root . '/lib/html_filter.php');
 
 	expect($src)->toContain('private function field_is_bar(string $field_name, array $field_array) : bool {');
-	expect($src)->toContain("=== 'timespan' || \$field_name === 'refresh'");
+	expect($src)->toContain("\$field_name === 'refresh'");
 	expect($src)->toContain("\$field_name === 'rows'");
+	// Search is routed onto the bar (right of Rows) and applies on Enter.
+	expect($src)->toContain("\$field_name === 'filter' || \$field_name === 'rfilter'");
+	expect($src)->toContain('keydown.cactiSearch');
+	// Bar-routed Search carries a persistent label even when a page omits friendly_name.
+	expect($src)->toContain("\$field_array['friendly_name'] = __('Search');");
 	// The row-count selector is always labeled Rows.
 	expect($src)->toContain("\$field_array['friendly_name'] = __('Rows');");
-	// Bar selectors are ordered Rows then Refresh and separated from the buttons.
-	expect($src)->toContain("foreach (['rows', 'refresh'] as \$pref) {");
+	// Bar selectors are ordered Search, Rows, then Refresh and separated from the buttons.
+	expect($src)->toContain("foreach (['filter', 'rfilter', 'rows', 'refresh'] as \$pref) {");
 	expect($src)->toContain('$bar_fields = $ordered + $bar_fields;');
 	expect($src)->toContain('// Separate the always-present Layouts selector (plus any Rows/Refresh) from the layout buttons.');
 	// Two separators: selectors|buttons and buttons|page-actions.
@@ -207,6 +212,16 @@ test('the modern javascript wires the edit dialog save and publish actions', fun
 	expect($src)->toContain('function layoutDialogSave(forceNew) {');
 	expect($src)->toContain('function layoutUpdateButtons() {');
 	expect($src)->toContain("layoutPost('layout_publish'");
+	// The bar Clear button (right of Refresh) resets the filter via the page clear action.
+	expect($src)->toContain("id='layout_clear'");
+	expect($src)->toContain("\$('#layout_clear').click(function() { \" . \$clearFunction");
+	// Search is mirrored into the Edit dialog and kept in sync with the canonical bar input.
+	expect($src)->toContain("\$dialog_fields[\$search_name . '_dialog'] = \$mirror;");
+	expect($src)->toContain('#rfilter_dialog, #filter_dialog');
+	// Page-action Purge renders as a flame glyph button.
+	expect($src)->toContain("\$field_array['glyph'] = 'ti ti-flame';");
+	// Page-action Rotate (log rotation) renders as a rotate glyph button.
+	expect($src)->toContain("\$field_array['glyph'] = 'ti ti-rotate';");
 });
 
 test('the edit dialog is tagged for theming and the modern theme skins it', function () use ($root) {

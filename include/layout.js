@@ -3497,6 +3497,23 @@ function setupSpecialKeys() {
 	} else {
 		$('#filter, #rfilter').prop('size', '15');
 	}
+
+	// Clicking the search glyph applies the filter: submit its form, or on the modern bar (no form) trigger Enter.
+	$(document).off('click.cactiSearchIcon').on('click.cactiSearchIcon', 'i.ti.ti-search.filter', function () {
+		var input = $(this).prev('input').get(0);
+		if (!input) {
+			return;
+		}
+		if (input.form) {
+			if (typeof input.form.requestSubmit === 'function') {
+				input.form.requestSubmit();
+			} else {
+				$(input.form).trigger('submit');
+			}
+		} else {
+			$(input).trigger($.Event('keydown', { keyCode: 13, which: 13, key: 'Enter' }));
+		}
+	});
 }
 
 /**
