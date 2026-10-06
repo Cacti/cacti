@@ -1859,7 +1859,7 @@ function html_graph_single_view() : void {
 		$suffix = 'preview';
 	}
 
-	print "<div class='cactiTable'>";
+	print "<div class='cactiTable graphDetailView'>";
 
 	html_start_box(__esc('Graph Utility View for Graph: %s', $graph_title), '100%', true, 3, 'center', '');
 

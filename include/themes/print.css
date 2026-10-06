@@ -1,0 +1,83 @@
+/* Shared print layout for the detailed time graph view.
+ * Match the current content so AJAX navigation also enters and leaves this scope.
+ */
+@media print {
+	html:has(.graphDetailView),
+	html:has(.graphDetailView) :is(body, #cactiContent, #navigation_right, #main) {
+		height: auto !important;
+		max-height: none !important;
+		overflow: visible !important;
+	}
+	html:has(.graphDetailView), html:has(.graphDetailView) body {
+		background: white !important;
+		color: #111 !important;
+		width: auto !important;
+	}
+	html:has(.graphDetailView) body {
+		opacity: 1 !important;
+		animation: none !important;
+	}
+	html:has(.graphDetailView) :is(#cactiContent, #navigation_right) {
+		display: block !important;
+		width: 100% !important;
+		margin: 0 !important;
+	}
+	html:has(.graphDetailView) :is(#cactiPageHead, #breadCrumbBar, #navigation,
+	.cactiShadow, #cactiPageBottom, .noprint) {
+		display: none !important;
+	}
+	html:has(.graphDetailView) :is(.graphWrapperOuter, .graphWrapper) {
+		width: 100% !important;
+		max-width: 100% !important;
+	}
+	html:has(.graphDetailView) .graphDetailView .graphimage {
+		max-width: 100% !important;
+		height: auto !important;
+		/* Transparent images from dark themes need a contrasting backdrop. */
+		background-color: var(--graph-print-background, white) !important;
+		print-color-adjust: exact;
+		-webkit-print-color-adjust: exact;
+	}
+	html:has(.graphDetailView) .graphDetailView .graphWrapperOuter {
+		display: block !important;
+		break-inside: avoid;
+		page-break-inside: avoid;
+	}
+	html:has(.graphDetailView) .graphDetailView :is(.cactiTableTitleRow, .cactiTableTitle, .cactiTableTitle span) {
+		color: #111 !important;
+		background: none !important;
+		font-size: 15pt !important;
+		line-height: 1.35 !important;
+		font-weight: 600 !important;
+		text-align: center !important;
+		white-space: normal !important;
+		text-wrap: balance;
+		overflow-wrap: anywhere;
+		padding: 0 !important;
+		float: none !important;
+		height: auto !important;
+		width: 100% !important;
+	}
+	html:has(.graphDetailView) .graphDetailView .cactiTableTitleRow {
+		padding: 0 4mm 4mm !important;
+		box-sizing: border-box;
+		border-bottom: 1pt solid #777 !important;
+	}
+	html:has(.graphDetailView) .graphDetailView .graphPage {
+		display: block !important;
+	}
+	html:has(.graphDetailView) .graphDetailView .cactiTableButton {
+		display: none !important;
+	}
+	html:has(.graphDetailView) .graphDetailView .graphWrapperOuter {
+		padding: 4mm 0 !important;
+	}
+	html:has(.graphDetailView) .graphDetailView .graphWrapperOuter > div:nth-child(2) {
+		display: block;
+		font-size: 10pt !important;
+		font-weight: 600;
+		color: #222 !important;
+		text-align: center;
+		padding-top: 2mm;
+	}
+}
