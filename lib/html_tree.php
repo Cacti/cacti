@@ -1581,14 +1581,14 @@ function grow_right_pane_tree(int $tree_id, int $leaf_id, string $host_group_dat
  * Retrieves a list of graphs for a given host, graph template, and data query.
  *
  * @param int    $host_id            The ID of the host.
- * @param int    $graph_template_id  The ID of the graph template.
+ * @param string $graph_template_id  The ID(s) of the graph template(s).
  * @param int    $data_query_id      The ID of the data query.
  * @param string $host_grouping_type The type of host grouping (optional).
  * @param string $data_query_index   The index of the data query (optional).
  *
  * @return array An array of graphs for the specified host, graph template, and data query.
  */
-function get_host_graph_list(int $host_id, int $graph_template_id, int $data_query_id, string $host_grouping_type = '', string $data_query_index = '') : array {
+function get_host_graph_list(int $host_id, string $graph_template_id, int $data_query_id, string $host_grouping_type = '', string $data_query_index = '') : array {
 	$graph_list = [];
 	$sql_where  = '';
 
