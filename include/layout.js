@@ -3113,7 +3113,7 @@ function setupCollapsible() {
 
 		if (state == 'hide') {
 			$(this).addClass('collapsed');
-			$(this).nextUntil('div.spacer').hide();
+			$(this).nextUntil('div.spacer', 'div.formRow').hide();
 			$(this).find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
 			storage.set(id, 'hide');
 		}
@@ -3124,13 +3124,13 @@ function setupCollapsible() {
 
 		if ($(this).find('i').hasClass('fa-angle-double-up')) {
 			$(this).addClass('collapsed');
-			$(this).nextUntil('div.spacer').slideUp('slow');
+			$(this).nextUntil('div.spacer', 'div.formRow').slideUp('slow');
 			$(this).find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
 			storage.set(id, 'hide');
 		} else {
 			$(this).removeClass('collapsed');
-			$(this).nextUntil('div.spacer').slideDown('slow');
-			$(this).nextUntil('div.spacer').each(function(data) {
+			$(this).nextUntil('div.spacer').not('script').slideDown('slow');
+			$(this).nextUntil('div.spacer', 'div.formRow').each(function(data) {
 				$(this).find('input, select').change();
 			});
 			$(this).find('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
