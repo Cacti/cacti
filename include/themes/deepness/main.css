@@ -2800,3 +2800,18 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 .jstree-default .jstree-closed > .jstree-ocl::before { content: "\f105"; }
 .jstree-default .jstree-open > .jstree-ocl::before { content: "\f107"; }
 .jstree-default .jstree-leaf > .jstree-ocl::before { content: ""; }
+
+/* selected/hovered whole-row: use the theme's translucent emerald, not jstree's default blue */
+.jstree-default .jstree-wholerow-clicked {
+	background: var(--dp-accent-soft);
+}
+.jstree-default .jstree-wholerow-hovered {
+	background: var(--dp-row-hover);
+}
+.jstree-default .jstree-clicked,
+.jstree-default .jstree-anchor.jstree-clicked,
+.jstree-default .jstree-anchor:focus {
+	background: transparent;
+	box-shadow: none;
+	border-radius: 0;
+}
