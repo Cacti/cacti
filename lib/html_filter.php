@@ -451,7 +451,7 @@ class CactiTableFilter {
 	 * @return bool
 	 */
 	private function field_is_bar(string $field_name, array $field_array) : bool {
-		return ($field_array['method'] ?? '') === 'timespan' || $field_name === 'refresh';
+		return ($field_array['method'] ?? '') === 'timespan' || $field_name === 'refresh' || $field_name === 'rows';
 	}
 
 	/**
@@ -1324,6 +1324,11 @@ class CactiTableFilter {
 		$can_glob = filter_layouts_can_manage_global();
 		$title    = $this->form_header != '' ? $this->form_header : __('Edit Filter');
 
+		// Label the dialog apply/clear actions with the page's own button text
+		// (e.g. Go), not a hardcoded Search that can collide with a filter field.
+		$applyLabel = $this->filter_array['buttons']['go']['display'] ?? __('Go');
+		$clearLabel = $this->filter_array['buttons']['clear']['display'] ?? __('Clear');
+
 		$js  = PHP_EOL . "<script type='text/javascript'>" . PHP_EOL;
 
 		$js .= 'function layoutFilterUrl() {' . PHP_EOL;
@@ -1369,14 +1374,14 @@ class CactiTableFilter {
 		$js .= 'function layoutOpenDialog(forceNew) {' . PHP_EOL;
 		$js .= "\t$('#layout_name').val(forceNew ? '' : (layoutSelectedOption().attr('data-name') || ''));" . PHP_EOL;
 		$js .= "\tvar buttons = [" . PHP_EOL;
-		$js .= "\t\t{ text: " . json_encode(__('Search')) . ", click: function() { $(this).dialog('close'); " . $changeFunction . '; } },' . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode($applyLabel) . ", click: function() { $(this).dialog('close'); " . $changeFunction . '; } },' . PHP_EOL;
 		$js .= "\t\t{ text: " . json_encode(__('Save')) . ', click: function() { layoutDialogSave(forceNew); } },' . PHP_EOL;
 
 		if ($can_glob) {
 			$js .= "\t\t{ text: " . json_encode(__('Publish')) . ', click: function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { alert(' . json_encode(__('Save the layout before publishing it.')) . "); return; } layoutPost('layout_publish', { id: id }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); } }," . PHP_EOL;
 		}
 
-		$js .= "\t\t{ text: " . json_encode(__('Clear')) . ', click: function() { ' . $clearFunction . '; } },' . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode($clearLabel) . ', click: function() { ' . $clearFunction . '; } },' . PHP_EOL;
 		$js .= "\t\t{ text: " . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } }" . PHP_EOL;
 		$js .= "\t];" . PHP_EOL;
 		$js .= "\t$('#" . $this->form_id . "_dialog').dialog({ title: " . json_encode($title) . ", modal: true, width: 'auto', minWidth: 500, resizable: false, buttons: buttons });" . PHP_EOL;
