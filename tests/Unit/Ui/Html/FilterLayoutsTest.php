@@ -153,6 +153,8 @@ test('the modern filter keeps time controls on the bar and fields in the dialog'
 	expect($src)->toContain('private function field_is_bar(string $field_name, array $field_array) : bool {');
 	expect($src)->toContain("=== 'timespan' || \$field_name === 'refresh'");
 	expect($src)->toContain("\$field_name === 'rows'");
+	// The row-count selector is always labeled Rows.
+	expect($src)->toContain("\$field_array['friendly_name'] = __('Rows');");
 	expect($src)->toContain('cactiFilterEditDialog');
 	expect($src)->toContain("\$this->layout_button('layout_edit',");
 	expect($src)->toContain("\$this->layout_button('layout_saveas',");
