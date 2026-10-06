@@ -1283,6 +1283,11 @@ legend {
 	vertical-align: middle;
 }
 
+.icon-rotate {
+	display: inline-block;
+	animation: fa-spin 1.5s linear infinite;
+}
+
 .cactiFilterModernBar .barSep {
 	display: inline-block;
 	width: 1px;
