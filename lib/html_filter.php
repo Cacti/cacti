@@ -467,6 +467,12 @@ class CactiTableFilter {
 	private function emit_field(string $field_name, array $field_array) : string {
 		ob_start();
 
+		// The row-count selector is always labeled "Rows", regardless of any
+		// page-specific name (Devices, Trees, ...).
+		if ($field_name === 'rows' && isset($field_array['friendly_name'])) {
+			$field_array['friendly_name'] = __('Rows');
+		}
+
 		if (isset($field_array['class'])) {
 			$class = ' ' . $field_array['class'];
 		} else {
