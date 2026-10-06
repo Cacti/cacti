@@ -1798,7 +1798,7 @@ function makeFiltersResponsive() {
 
 				if (filterContents.find('#export').length) {
 					title = $('#export').attr('title');
-					filterHeader.find('div.cactiTableButton').append($('<span style="display:none;" class="cactiFilterExport"><i class="ti ti-chevron-down"></i></span>').attr('title', title));
+					filterHeader.find('div.cactiTableButton').append($('<span style="display:none;" class="cactiFilterExport"><i class="ti ti-table-export"></i></span>').attr('title', title));
 
 					$('.cactiFilterExport').off('click').on('click', function (event) {
 						event.stopPropagation();
@@ -1808,7 +1808,7 @@ function makeFiltersResponsive() {
 
 				if (filterContents.find('#import').length) {
 					title = $('#import').attr('title');
-					filterHeader.find('div.cactiTableButton').append($('<span style="display:none;" class="cactiFilterImport"><i class="ti ti-chevron-up"></i></span>').attr('title', title));
+					filterHeader.find('div.cactiTableButton').append($('<span style="display:none;" class="cactiFilterImport"><i class="ti ti-table-import"></i></span>').attr('title', title));
 
 					$('.cactiFilterImport').off('click').on('click', function (event) {
 						event.stopPropagation();
