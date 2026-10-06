@@ -518,9 +518,9 @@ class CactiTableFilter {
 
 				break;
 			case 'filter_checkbox':
-				print '<div class="filterColumn"><span>' . PHP_EOL;
-				print '<input type="checkbox" class="ui-button ui-corner-all ui-widget' . $class . '" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"' . ($field_array['value'] == 'on' || $field_array['value'] == 'true' ? ' checked' : '') . '>';
-				print '&nbsp;<label for="' . $field_name . '">' . $field_array['friendly_name'] . '</label>';
+				print '<div class="filterColumn"><span class="nowrap">' . PHP_EOL;
+				print '<label class="checkboxSwitch"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] . '"' : '') . '><input type="checkbox" class="formCheckbox' . $class . '" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] . '"' : '') . ($field_array['value'] == 'on' || $field_array['value'] == 'true' ? ' checked' : '') . '><span class="checkboxSlider checkboxRound"></span></label>';
+				print '<label class="checkboxLabel" for="' . $field_name . '">' . $field_array['friendly_name'] . '</label>';
 				print '</span></div>' . PHP_EOL;
 
 				break;
@@ -786,9 +786,9 @@ class CactiTableFilter {
 		}
 
 		print $this->layout_button('layout_edit',   __('Edit'),    __('Edit the current filter'));
-		print $this->layout_button('layout_rename', __('Rename'),  __('Rename the selected layout'));
-		print $this->layout_button('layout_delete', __('Delete'),  __('Delete the selected layout'));
-		print $this->layout_button('layout_saveas', __('Save As'), __('Save this layout as a new personal layout'));
+		print $this->layout_button('layout_rename', __('Rename'),  __('Rename the selected layout'), true);
+		print $this->layout_button('layout_delete', __('Delete'),  __('Delete the selected layout'), true);
+		print $this->layout_button('layout_saveas', __('Save As'), __('Save this layout as a new personal layout'), true);
 
 		// Page actions (Import, Export, Purge, Save, sort asc/desc, ...) belong on
 		// the bar beside the Layouts selector, not inside the Edit dialog.
@@ -1239,9 +1239,9 @@ class CactiTableFilter {
 		validate_store_request_vars($filters, $this->session_var);
 	}
 
-	private function layout_button(string $id, string $display, string $title) : string {
+	private function layout_button(string $id, string $display, string $title, bool $hidden = false) : string {
 		return '<div class="filterColumnButton">' .
-			'<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $id . '" title="' . html_escape($title) . '"><span class="button-text">' . html_escape($display) . '</span></button>' .
+			'<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $id . '"' . ($hidden ? ' style="display:none"' : '') . ' title="' . html_escape($title) . '"><span class="button-text">' . html_escape($display) . '</span></button>' .
 			'</div>' . PHP_EOL;
 	}
 
