@@ -1287,6 +1287,10 @@ legend {
 	vertical-align: -10%;
 }
 
+.filterTable .filterColumn label.checkboxSwitch {
+	vertical-align: middle;
+}
+
 .filterTable .filterColumnButton {
 	display: table-cell;
 	padding: 5px 0px 5px 5px;
