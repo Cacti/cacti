@@ -220,6 +220,8 @@ test('the modern javascript wires the edit dialog save and publish actions', fun
 	expect($src)->toContain('#rfilter_dialog, #filter_dialog');
 	// Page-action Purge renders as a flame glyph button.
 	expect($src)->toContain("\$field_array['glyph'] = 'ti ti-flame';");
+	// Page-action Rotate (log rotation) renders as a rotate glyph button.
+	expect($src)->toContain("\$field_array['glyph'] = 'ti ti-rotate';");
 });
 
 test('the edit dialog is tagged for theming and the modern theme skins it', function () use ($root) {

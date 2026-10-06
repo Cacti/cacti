@@ -513,6 +513,11 @@ class CactiTableFilter {
 			$field_array['glyph'] = 'ti ti-flame';
 		}
 
+		// The Rotate (log rotation) action renders as a rotate glyph button.
+		if ($field_name === 'rotate' && ($field_array['method'] ?? '') === 'button') {
+			$field_array['glyph'] = 'ti ti-rotate';
+		}
+
 		if (isset($field_array['class'])) {
 			$class = ' ' . $field_array['class'];
 		} else {
