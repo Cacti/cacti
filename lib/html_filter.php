@@ -753,6 +753,20 @@ class CactiTableFilter {
 			}
 		}
 
+		// Keep the bar selectors in a stable order: Rows first, Refresh second.
+		if (cacti_sizeof($bar_fields)) {
+			$ordered = [];
+
+			foreach (['rows', 'refresh'] as $pref) {
+				if (isset($bar_fields[$pref])) {
+					$ordered[$pref] = $bar_fields[$pref];
+					unset($bar_fields[$pref]);
+				}
+			}
+
+			$bar_fields = $ordered + $bar_fields;
+		}
+
 		ob_start();
 
 		// Filter bar.
@@ -764,6 +778,11 @@ class CactiTableFilter {
 
 		foreach ($bar_fields as $field_name => $field_array) {
 			print $this->emit_field($field_name, $field_array);
+		}
+
+		// Separate the selectors (Layouts, Rows, Refresh) from the layout buttons.
+		if (cacti_sizeof($bar_fields)) {
+			print "<div class='filterColumnButton'><span class='barSep'></span></div>";
 		}
 
 		print $this->layout_button('layout_edit',   __('Edit'),    __('Edit the current filter'));
