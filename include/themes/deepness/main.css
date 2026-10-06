@@ -204,6 +204,46 @@ textarea:focus {
 	border-color: var(--dp-accent);
 }
 
+/* Buttons - flat secondary by default (drops the jQuery UI ui-state-default gradient) */
+.ui-button,
+input[type="button"],
+input[type="reset"],
+button {
+	background: var(--dp-elevated);
+	background-image: none;
+	border: 1px solid var(--dp-border-strong);
+	color: var(--dp-text);
+}
+
+.ui-button:hover,
+input[type="button"]:hover,
+input[type="reset"]:hover,
+button:hover {
+	background: var(--dp-row-hover);
+	background-image: none;
+	border-color: var(--dp-accent);
+	color: var(--dp-text);
+}
+
+/* Primary action (submit, e.g. Go) - translucent emerald, a touch more prominent */
+input[type="submit"],
+input[type="submit"].ui-button,
+button[type="submit"] {
+	background: rgba(24, 185, 129, 0.35);
+	background-image: none;
+	border: 1px solid var(--dp-accent);
+	color: var(--dp-text);
+}
+
+input[type="submit"]:hover,
+input[type="submit"].ui-button:hover,
+button[type="submit"]:hover {
+	background: rgba(24, 185, 129, 0.5);
+	background-image: none;
+	border-color: var(--dp-accent-hover);
+	color: var(--dp-text);
+}
+
 label {
 	white-space: nowrap;
 }
