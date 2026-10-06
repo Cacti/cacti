@@ -156,6 +156,8 @@ test('the modern filter keeps time controls on the bar and fields in the dialog'
 	// Search is routed onto the bar (right of Rows) and applies on Enter.
 	expect($src)->toContain("\$field_name === 'filter' || \$field_name === 'rfilter'");
 	expect($src)->toContain('keydown.cactiSearch');
+	// Bar-routed Search carries a persistent label even when a page omits friendly_name.
+	expect($src)->toContain("\$field_array['friendly_name'] = __('Search');");
 	// The row-count selector is always labeled Rows.
 	expect($src)->toContain("\$field_array['friendly_name'] = __('Rows');");
 	// Bar selectors are ordered Rows, Search, then Refresh and separated from the buttons.

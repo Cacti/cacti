@@ -784,6 +784,11 @@ class CactiTableFilter {
 					} elseif ($method === 'timespan') {
 						$timespan_fields[$field_name] = $field_array;
 					} elseif ($this->field_is_bar($field_name, $field_array)) {
+						// Bar-routed Search needs a persistent label; some pages (clog) omit friendly_name, relying on an adjacent field's label.
+						if (($field_name === 'filter' || $field_name === 'rfilter') && empty($field_array['friendly_name'])) {
+							$field_array['friendly_name'] = __('Search');
+						}
+
 						$bar_fields[$field_name] = $field_array;
 					} elseif ($method === 'submit' || $method === 'button') {
 						if ($field_name !== 'go' && $field_name !== 'clear') {
