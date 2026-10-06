@@ -3426,6 +3426,7 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 
 	// Global styles
 	print get_md5_include_css('include/themes/' . $selectedTheme . '/main.css');
+	print get_md5_include_css('include/themes/print.css');
 
 	// Global scripts
 	print get_md5_include_js('include/js/screenfull.js', true);

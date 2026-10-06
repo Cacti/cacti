@@ -31,7 +31,7 @@
 /* Cacti core */
 @import 'css/media/hint.css';
 @import 'css/media/core.css?afd5bc6f4d45884846ab715f1583123c' all;
-@import 'css/media/print.css?f8c80271650344f45629199331592924' print;
+@import 'css/media/print.css?128a573aaa8b4140be2a13afc092db2a' print;
 
 /* compact mode */
 @import 'css/media/compact.css?0bda9f47e7be64d1c2709f24cd70ba00' screen;
