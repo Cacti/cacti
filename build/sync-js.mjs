@@ -50,7 +50,9 @@ const tablesorterJquery4 = content => content
 	.replace(/\$\.type\(\s*([^()]+?)\s*\)\s*===\s*'object'/g, '$$.isPlainObject($1)')
 	.replace(/\$\.isWindow\(\s*([^()]+?)\s*\)/g, '($1 != null && $1 === $1.window)')
 	.replace(/\$\.isArray\(/g, 'Array.isArray(')
-	.replace(/\$\.parseJSON\(/g, 'JSON.parse(');
+	.replace(/\$\.parseJSON\(/g, 'JSON.parse(')
+	// drop the redundant `str &&` guard inside the already-truthy `str ?` branch that CodeQL flags
+	.replace(/\( str && table\.config\.ignoreCase \?/g, '( table.config.ignoreCase ?');
 
 const postCopyTransforms = Object.freeze({
 	'include/js/screenfull.js': content => {

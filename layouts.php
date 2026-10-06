@@ -167,36 +167,37 @@ function layouts_manage() : void {
 	$pageFilter->rows_label = __('Layouts');
 	$pageFilter->render();
 
-	if (grv('rows') == '-1') {
-		$rows = read_config_option('num_rows_table');
-	} else {
-		$rows = grv('rows');
-	}
+	$rows = (grv('rows') == '-1') ? read_config_option('num_rows_table') : grv('rows');
+	$rows = (int) $rows;
+	$page = (int) grv('page');
+
+	$sql_where  = '';
+	$sql_params = [];
 
 	if (grv('filter') != '') {
-		$sql_where = 'WHERE ul.name LIKE ' . db_qstr('%' . grv('filter') . '%');
-	} else {
-		$sql_where = '';
+		$sql_where    = 'WHERE ul.name LIKE ?';
+		$sql_params[] = '%' . grv('filter') . '%';
 	}
 
 	if (!$is_admin) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'ul.user_id = ' . $user_id;
+		$sql_where   .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'ul.user_id = ?';
+		$sql_params[] = $user_id;
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(*)
+	$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
 		FROM user_layouts AS ul
-		$sql_where");
+		$sql_where", $sql_params);
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . (($page - 1) * $rows) . ', ' . $rows;
 
-	$layouts = db_fetch_assoc("SELECT ul.id, ul.user_id, ul.page, ul.name, ul.data, ua.username
+	$layouts = db_fetch_assoc_prepared("SELECT ul.id, ul.user_id, ul.page, ul.name, ul.data, ua.username
 		FROM user_layouts AS ul
 		LEFT JOIN user_auth AS ua
 		ON ua.id = ul.user_id
 		$sql_where
 		$sql_order
-		$sql_limit");
+		$sql_limit", $sql_params);
 
 	$nav = html_nav_bar('layouts.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Layouts'), 'page', 'main');
 
