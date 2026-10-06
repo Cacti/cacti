@@ -157,6 +157,10 @@ test('the modern filter keeps time controls on the bar and fields in the dialog'
 	expect($src)->toContain("\$field_array['friendly_name'] = __('Rows');");
 	// Bar selectors are ordered Rows then Refresh and separated from the buttons.
 	expect($src)->toContain("foreach (['rows', 'refresh'] as \$pref) {");
+	expect($src)->toContain('$bar_fields = $ordered + $bar_fields;');
+	expect($src)->toContain('// Separate the selectors (Layouts, Rows, Refresh) from the layout buttons.');
+	// Two separators: selectors|buttons and buttons|page-actions.
+	expect(substr_count($src, "<span class='barSep'></span>"))->toBeGreaterThan(1);
 	expect($src)->toContain('cactiFilterEditDialog');
 	expect($src)->toContain("\$this->layout_button('layout_edit',");
 	expect($src)->toContain("\$this->layout_button('layout_saveas',");
@@ -166,6 +170,23 @@ test('the modern filter keeps time controls on the bar and fields in the dialog'
 	expect($src)->toContain('$dialog_fields[$field_name] = $field_array;');
 	expect($src)->toContain("<div class='filterRow cactiFilterEditRow'>");
 	expect($src)->not->toContain('$dialog_rows');
+});
+
+test('the modern dialog apply/clear actions use the page configured button labels', function () use ($root) {
+	$src = file_get_contents($root . '/lib/html_filter.php');
+
+	// Apply/clear reuse the page's go/clear display text, not a hardcoded Search.
+	expect($src)->toContain("\$applyLabel = \$this->filter_array['buttons']['go']['display'] ?? __('Go');");
+	expect($src)->toContain("\$clearLabel = \$this->filter_array['buttons']['clear']['display'] ?? __('Clear');");
+	expect($src)->toContain('json_encode($applyLabel)');
+	expect($src)->toContain('json_encode($clearLabel)');
+
+	// Apply invokes the configured change callback; clear the configured clear one.
+	expect($src)->toContain("\$changeFunction . '; } },'");
+	expect($src)->toContain("\$clearFunction . '; } },'");
+
+	// The stale hardcoded Search label is gone from the dialog button set.
+	expect($src)->not->toContain('json_encode(__(\'Search\'))');
 });
 
 test('page action buttons (import, export, sort) render on the bar, not the dialog', function () use ($root) {

@@ -1337,10 +1337,13 @@ class CactiTableFilter {
 
 	/**
 	 * Emit the modern filter JavaScript: the Layouts selector navigation, the
-	 * bar action buttons, and the Edit dialog (Search/Save/Publish/Clear/Cancel)
-	 * that applies, saves, or publishes the current filter.
+	 * bar action buttons, and the Edit dialog. The dialog's apply and clear
+	 * actions reuse the page's configured go/clear button labels (e.g. Go), so
+	 * they match the inline filter and do not collide with a filter field.
 	 *
-	 * @param string $applyFilter The JS expression that builds the filter url.
+	 * @param string $applyFilter    The JS expression that builds the filter url.
+	 * @param string $changeFunction The JS apply callback (e.g. applyFilter()).
+	 * @param string $clearFunction  The JS clear callback (e.g. clearFilter()).
 	 *
 	 * @return string
 	 */
