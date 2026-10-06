@@ -151,12 +151,15 @@ test('the modern filter keeps time controls on the bar and fields in the dialog'
 	$src = file_get_contents($root . '/lib/html_filter.php');
 
 	expect($src)->toContain('private function field_is_bar(string $field_name, array $field_array) : bool {');
-	expect($src)->toContain("=== 'timespan' || \$field_name === 'refresh'");
+	expect($src)->toContain("\$field_name === 'refresh'");
 	expect($src)->toContain("\$field_name === 'rows'");
+	// Search is routed onto the bar (right of Rows) and applies on Enter.
+	expect($src)->toContain("\$field_name === 'filter' || \$field_name === 'rfilter'");
+	expect($src)->toContain('keydown.cactiSearch');
 	// The row-count selector is always labeled Rows.
 	expect($src)->toContain("\$field_array['friendly_name'] = __('Rows');");
-	// Bar selectors are ordered Rows then Refresh and separated from the buttons.
-	expect($src)->toContain("foreach (['rows', 'refresh'] as \$pref) {");
+	// Bar selectors are ordered Rows, Search, then Refresh and separated from the buttons.
+	expect($src)->toContain("foreach (['rows', 'filter', 'rfilter', 'refresh'] as \$pref) {");
 	expect($src)->toContain('$bar_fields = $ordered + $bar_fields;');
 	expect($src)->toContain('// Separate the always-present Layouts selector (plus any Rows/Refresh) from the layout buttons.');
 	// Two separators: selectors|buttons and buttons|page-actions.

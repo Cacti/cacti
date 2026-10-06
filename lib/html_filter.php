@@ -451,7 +451,13 @@ class CactiTableFilter {
 	 * @return bool
 	 */
 	private function field_is_bar(string $field_name, array $field_array) : bool {
-		return ($field_array['method'] ?? '') === 'timespan' || $field_name === 'refresh' || $field_name === 'rows';
+		$method = $field_array['method'] ?? '';
+
+		// Search stays on the bar (right of Rows) so it is reachable without opening the Edit dialog.
+		return $method  === 'timespan'
+			|| $field_name === 'refresh'
+			|| $field_name === 'rows'
+			|| ($method === 'textbox' && ($field_name === 'filter' || $field_name === 'rfilter'));
 	}
 
 	/**
@@ -794,7 +800,8 @@ class CactiTableFilter {
 		if (cacti_sizeof($bar_fields)) {
 			$ordered = [];
 
-			foreach (['rows', 'refresh'] as $pref) {
+			// Keep the bar selectors in a stable order: Rows first, then Search, then Refresh.
+			foreach (['rows', 'filter', 'rfilter', 'refresh'] as $pref) {
 				if (isset($bar_fields[$pref])) {
 					$ordered[$pref] = $bar_fields[$pref];
 					unset($bar_fields[$pref]);
@@ -1542,6 +1549,8 @@ class CactiTableFilter {
 		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } layoutRenameDialog(id, layoutSelectedOption().attr('data-name') || ''); });" . PHP_EOL;
 		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } layoutDeleteDialog(id); });" . PHP_EOL;
 		$js .= "\t$('#layout_name').keydown(function(e) { if (e.keyCode == 13) { e.preventDefault(); layoutDialogSave(layoutDialogForceNew); } });" . PHP_EOL;
+		// Enter in the bar Search box applies the filter; delegated so it survives ajax content reloads.
+		$js .= "\t$(document).off('keydown.cactiSearch', '#filter, #rfilter').on('keydown.cactiSearch', '#filter, #rfilter', function(e) { if (e.keyCode == 13) { e.preventDefault(); " . $changeFunction . '; } });' . PHP_EOL;
 		$js .= '});' . PHP_EOL;
 
 		$js .= '</script>' . PHP_EOL;
