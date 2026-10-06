@@ -2701,6 +2701,14 @@ td.center > table {
 	color: var(--dp-text);
 }
 
+/* stock select2.css paints disabled single/multi-selects #eee, which strands
+   this theme's light label text; keep them on a dark surface with muted text */
+.select2-container--default.select2-container--disabled .select2-selection--single,
+.select2-container--default.select2-container--disabled .select2-selection--multiple {
+	background: var(--dp-panel-alt);
+	color: var(--dp-text-muted);
+}
+
 /* match jQuery UI's shorter button height */
 .select2-container--default .select2-selection--single {
 	height: 24px;
@@ -2938,4 +2946,37 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	background: transparent;
 	box-shadow: none;
 	border-radius: 0;
+}
+
+/* ======================================================================== */
+/* Billboard charts - billboard.css ships light upstream defaults (#000      */
+/* axis/grid strokes, a white tooltip); like the Dark theme, repaint them    */
+/* onto dark surfaces here so they stay legible                              */
+/* ======================================================================== */
+
+/* axes, gridlines and other uncolored lines (data series set their own      */
+/* stroke inline, so this only affects the otherwise-black chrome lines)     */
+.bb path,
+.bb line {
+	stroke: var(--dp-text-muted);
+}
+
+.bb-tooltip {
+	background-color: var(--dp-elevated);
+	box-shadow: 7px 7px 12px -9px var(--dp-overlay);
+}
+
+.bb-tooltip tr {
+	border: 1px solid var(--dp-border);
+}
+
+.bb-tooltip th {
+	background-color: var(--dp-elevated);
+	color: var(--dp-text);
+}
+
+.bb-tooltip td {
+	background-color: var(--dp-panel);
+	border-left: 1px dotted var(--dp-border-strong);
+	color: var(--dp-text);
 }
