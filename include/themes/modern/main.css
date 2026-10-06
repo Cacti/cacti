@@ -1486,6 +1486,11 @@ legend {
 
 /* Modern page filter (page_filter_format = modern): the Layouts bar and the
    jQuery UI Edit dialog (dialogClass cactiFilterDialog). */
+.cactiFilterModernBar .filterColumn,
+.cactiFilterModernBar .filterColumnButton {
+	vertical-align: middle;
+}
+
 .cactiFilterModernBar .barSep {
 	display: inline-block;
 	width: 1px;

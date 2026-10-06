@@ -1370,11 +1370,11 @@ class CactiTableFilter {
 		$can_glob = filter_layouts_can_manage_global();
 		$title    = $this->form_header != '' ? $this->form_header : __('Edit Filter');
 
-		// Label the dialog apply action with the page's own button text (e.g. Go),
-		// not a hardcoded Search that can collide with a filter field.
-		$applyLabel = $this->filter_array['buttons']['go']['display'] ?? __('Go');
+		$applyLabel = __('Apply');
 
 		$js  = PHP_EOL . "<script type='text/javascript'>" . PHP_EOL;
+
+		$js .= 'var layoutDirty = false;' . PHP_EOL;
 
 		$js .= 'function layoutFilterUrl() {' . PHP_EOL;
 		$js .= "\treturn " . $applyFilter . PHP_EOL;
@@ -1409,32 +1409,52 @@ class CactiTableFilter {
 		$js .= "\t$('#layout_saveas').toggle(id != 0 && !editable);" . PHP_EOL;
 		$js .= '}' . PHP_EOL;
 
+		$js .= 'function layoutSetDirty(dirty) {' . PHP_EOL;
+		$js .= "\tlayoutDirty = dirty;" . PHP_EOL;
+		$js .= "\tvar b = $('#" . $this->form_id . "_dialog').dialog('widget').find('.ui-dialog-buttonpane button.layoutApplyBtn');" . PHP_EOL;
+		$js .= "\tif (b.length) { b.button(dirty ? 'disable' : 'enable'); }" . PHP_EOL;
+		$js .= '}' . PHP_EOL;
+
 		$js .= 'function layoutDialogSave(forceNew) {' . PHP_EOL;
 		$js .= "\tvar name = $('#layout_name').val();" . PHP_EOL;
 		$js .= "\tif (name == '') { alert(" . json_encode(__('Please enter a filter name.')) . '); return; }' . PHP_EOL;
 		$js .= "\tvar id = (forceNew || !layoutEditable()) ? 0 : layoutSelectedId();" . PHP_EOL;
-		$js .= "\tlayoutPost('layout_save', { id: id, name: name, url: layoutFilterUrl() }, function(r) { if (layoutResultOk(r) && r.url) { document.location = r.url; } });" . PHP_EOL;
+		$js .= "\tlayoutPost('layout_save', { id: id, name: name, url: layoutFilterUrl() }, function(r) {" . PHP_EOL;
+		$js .= "\t\tif (!layoutResultOk(r)) { return; }" . PHP_EOL;
+		$js .= "\t\tif (r.id) {" . PHP_EOL;
+		$js .= "\t\t\tvar opt = $('#filter_layout option[value=\"' + r.id + '\"]');" . PHP_EOL;
+		$js .= "\t\t\tif (opt.length == 0) { opt = $('<option>').appendTo('#filter_layout'); }" . PHP_EOL;
+		$js .= "\t\t\topt.val(r.id).text(r.name).attr('data-url', r.url || '').attr('data-name', r.name).attr('data-editable', '1');" . PHP_EOL;
+		$js .= "\t\t\t$('#filter_layout').val(r.id);" . PHP_EOL;
+		$js .= "\t\t\tlayoutUpdateButtons();" . PHP_EOL;
+		$js .= "\t\t}" . PHP_EOL;
+		$js .= "\t\tlayoutSetDirty(false);" . PHP_EOL;
+		$js .= "\t});" . PHP_EOL;
 		$js .= '}' . PHP_EOL;
 
 		$js .= 'function layoutOpenDialog(forceNew) {' . PHP_EOL;
 		$js .= "\t$('#layout_name').val(forceNew ? '' : (layoutSelectedOption().attr('data-name') || ''));" . PHP_EOL;
 		$js .= "\tvar buttons = [" . PHP_EOL;
-		$js .= "\t\t{ text: " . json_encode($applyLabel) . ", click: function() { $(this).dialog('close'); " . $changeFunction . '; } },' . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode($applyLabel) . ", click: function() { if (!layoutDirty) { $(this).dialog('close'); " . $changeFunction . "; } } }," . PHP_EOL;
 		$js .= "\t\t{ text: " . json_encode(__('Save')) . ', click: function() { layoutDialogSave(forceNew); } },' . PHP_EOL;
 
 		if ($can_glob) {
 			$js .= "\t\t{ text: " . json_encode(__('Publish')) . ', click: function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { alert(' . json_encode(__('Save the layout before publishing it.')) . "); return; } layoutPost('layout_publish', { id: id }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); } }," . PHP_EOL;
 		}
 
-		$js .= "\t\t{ text: " . json_encode(__('Cancel')) . ", click: function() { $(this).dialog('close'); } }" . PHP_EOL;
+		$js .= "\t\t{ text: " . json_encode(__('Close')) . ", click: function() { $(this).dialog('close'); } }" . PHP_EOL;
 		$js .= "\t];" . PHP_EOL;
-		$js .= "\t$('#" . $this->form_id . "_dialog').dialog({ title: " . json_encode($title) . ", modal: true, width: 'auto', minWidth: 500, resizable: false, buttons: buttons });" . PHP_EOL;
-		$js .= "\t$('#" . $this->form_id . "_dialog').dialog('widget').addClass('cactiFilterDialog');" . PHP_EOL;
+		$js .= "\t$('#" . $this->form_id . "_dialog').dialog({ title: " . json_encode($title) . ", modal: false, width: 'auto', minWidth: 500, resizable: false, buttons: buttons });" . PHP_EOL;
+		$js .= "\tvar dw = $('#" . $this->form_id . "_dialog').dialog('widget');" . PHP_EOL;
+		$js .= "\tdw.addClass('cactiFilterDialog');" . PHP_EOL;
+		$js .= "\tdw.find('.ui-dialog-buttonpane button').first().addClass('layoutApplyBtn');" . PHP_EOL;
+		$js .= "\tlayoutSetDirty(forceNew || layoutSelectedId() == 0);" . PHP_EOL;
 		$js .= '}' . PHP_EOL;
 
 		$js .= '$(function() {' . PHP_EOL;
 		$js .= "\tlayoutUpdateButtons();" . PHP_EOL;
-		$js .= "\t$('#filter_layout').change(function() { var u = layoutSelectedOption().attr('data-url'); if (u != undefined && u != '') { document.location = u; } else { layoutUpdateButtons(); } });" . PHP_EOL;
+		$js .= "\t$('#filter_layout').change(function() { layoutUpdateButtons(); var u = layoutSelectedOption().attr('data-url'); if (u != undefined && u != '') { loadUrl({ url: u }); } });" . PHP_EOL;
+		$js .= "\t$('#" . $this->form_id . "_dialog').on('change keyup', 'input, select, textarea', function() { layoutSetDirty(true); });" . PHP_EOL;
 		$js .= "\t$('#layout_edit').click(function() { layoutOpenDialog(false); });" . PHP_EOL;
 		$js .= "\t$('#layout_saveas').click(function() { layoutOpenDialog(true); });" . PHP_EOL;
 		$js .= "\t$('#layout_rename').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } var cur = layoutSelectedOption().attr('data-name'); var name = prompt(" . json_encode(__('Rename Layout')) . ", cur); if (name != null && name != '') { layoutPost('layout_rename', { id: id, name: name }, function(r) { if (layoutResultOk(r)) { window.location.reload(); } }); } });" . PHP_EOL;

@@ -1507,6 +1507,11 @@ table.cactiTable {
 
 /* Modern page filter dialog skin (page_filter_format = modern), scoped to the
    cactiFilterDialog widget so other dialogs are unaffected. */
+.cactiFilterModernBar .filterColumn,
+.cactiFilterModernBar .filterColumnButton {
+	vertical-align: middle;
+}
+
 .cactiFilterModernBar .barSep {
 	display: inline-block;
 	width: 1px;

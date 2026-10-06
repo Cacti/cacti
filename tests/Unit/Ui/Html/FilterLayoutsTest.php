@@ -172,20 +172,20 @@ test('the modern filter keeps time controls on the bar and fields in the dialog'
 	expect($src)->not->toContain('$dialog_rows');
 });
 
-test('the modern dialog apply action uses the page configured button label', function () use ($root) {
+test('the modern dialog Apply action is labelled Apply and gated on a saved layout', function () use ($root) {
 	$src = file_get_contents($root . '/lib/html_filter.php');
 
-	// Apply reuses the page's go display text, not a hardcoded Search.
-	expect($src)->toContain("\$applyLabel = \$this->filter_array['buttons']['go']['display'] ?? __('Go');");
+	// The apply action is labelled Apply and only fires once the filter is saved.
+	expect($src)->toContain("\$applyLabel = __('Apply');");
 	expect($src)->toContain('json_encode($applyLabel)');
+	expect($src)->toContain('if (!layoutDirty) {');
 
-	// Apply invokes the configured change callback.
-	expect($src)->toContain("\$changeFunction . '; } },'");
+	// Saving no longer reloads the page and the dialog is non-modal.
+	expect($src)->toContain('layoutSetDirty(false)');
+	expect($src)->toContain('modal: false');
 
-	// The stale hardcoded Search label is gone from the dialog button set.
+	// The stale hardcoded Search label and the Clear action are gone.
 	expect($src)->not->toContain('json_encode(__(\'Search\'))');
-
-	// The Clear action is no longer shown in the dialog.
 	expect($src)->not->toContain('json_encode($clearLabel)');
 });
 
