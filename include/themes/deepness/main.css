@@ -249,7 +249,14 @@ label {
 }
 
 .glyph_tab-console:before {
-	content: "\f6ad";
+	content: "";
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	background-color: currentColor;
+	-webkit-mask: url('./images/rockylinux.svg') no-repeat center / contain;
+	mask: url('./images/rockylinux.svg') no-repeat center / contain;
+	vertical-align: -0.125em;
 }
 
 .text_tab-console {
@@ -1011,6 +1018,31 @@ label {
 
 .cactiLoginLogo i, .cactiLogoutLogo i {
 	margin-right: 10px;
+}
+
+.cactiLoginLogo .rockyLogo, .cactiLogoutLogo .rockyLogo {
+	display: inline-block;
+	width: 48px;
+	height: 48px;
+	background-color: var(--dp-accent);
+	-webkit-mask: url('./images/rockylinux.svg') no-repeat center / contain;
+	mask: url('./images/rockylinux.svg') no-repeat center / contain;
+	vertical-align: middle;
+}
+
+/* Graph action icons: hidden until the row is hovered (ported from the dark theme) */
+.graphDrillDown {
+	vertical-align: top;
+	align-self: left;
+	z-index: 4;
+	padding: 3px;
+	height: 100%;
+	width: 22px;
+	min-width: 22px;
+}
+
+.iconWrapper {
+	display: none;
 }
 
 .loginArea, .logoutArea {
