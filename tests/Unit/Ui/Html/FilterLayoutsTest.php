@@ -215,6 +215,11 @@ test('the modern javascript wires the edit dialog save and publish actions', fun
 	// The bar Clear button (right of Refresh) resets the filter via the page clear action.
 	expect($src)->toContain("id='layout_clear'");
 	expect($src)->toContain("\$('#layout_clear').click(function() { \" . \$clearFunction");
+	// Search is mirrored into the Edit dialog and kept in sync with the canonical bar input.
+	expect($src)->toContain("\$dialog_fields[\$search_name . '_dialog'] = \$mirror;");
+	expect($src)->toContain('#rfilter_dialog, #filter_dialog');
+	// Page-action Purge renders as a flame glyph button.
+	expect($src)->toContain("\$field_array['glyph'] = 'ti ti-flame';");
 });
 
 test('the edit dialog is tagged for theming and the modern theme skins it', function () use ($root) {
