@@ -1529,7 +1529,7 @@ function makeFiltersResponsive() {
 				if (pageHasHidableColumnsAndProfile()) {
 					if (filterHeader.find('.cactiSwitchConstraints').length == 0) {
 						if (hScroll) {
-							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
+							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'auto' });
 							filterHeader.find('div.cactiTableButton').append('<span class="cactiSwitchConstraintWrapper"><a title="'+tableConstraints+'" class="linkOverDark cactiSwitchConstraints" href="#"><i id="overflow" class="fa fa-compress"></i></a></span>');
 						} else {
 							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
