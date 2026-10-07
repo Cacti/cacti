@@ -689,16 +689,16 @@ label {
 }
 
 .saveRow > input.ui-button {
-	border: 1px solid #93CEFF;
-	color: #93CEFF;
-	background: transparent;
+	border: 1px solid #bbbbbb;
+	color: #555555;
+	background: #ffffff;
 	outline-style: none;
 }
 
 .saveRow > input.ui-button:hover {
-	color: #FFFFFF;
-	border: 1px solid #FFFFFF;
-	background: #5CB85C;
+	color: #333333;
+	border: 1px solid #888888;
+	background: #ffffff;
 }
 
 .treeArea, .treeItemsArea {
@@ -941,16 +941,16 @@ label {
 }
 
 .cactiLoginTable input.ui-button {
-	border: 1px solid #93CEFF;
-	color: #93CEFF;
-	background: transparent;
+	border: 1px solid #bbbbbb;
+	color: #555555;
+	background: #ffffff;
 	outline-style: none;
 }
 
 .cactiLoginTable input.ui-button:hover {
-	color: #FFFFFF;
-	border: 1px solid #FFFFFF;
-	background: #5CB85C;
+	color: #333333;
+	border: 1px solid #888888;
+	background: #ffffff;
 }
 
 .loginErrors, .logoutErrors {
@@ -2866,6 +2866,19 @@ circle {
 	background: #f5f5f5 !important;
 	font-weight: normal;
 	color: #555555;
+}
+
+.ui-selectmenu-button, .ui-button, .ui-multiselect {
+	background: #ffffff !important;
+	color: #555555 !important;
+	border: 1px solid #bbbbbb !important;
+}
+
+.ui-selectmenu-button:hover, .ui-button:hover, .ui-button:focus, .ui-multiselect:hover {
+	background: #ffffff !important;
+	background-image: none !important;
+	color: #333333 !important;
+	border: 1px solid #888888 !important;
 }
 
 /* Select2 - adapt to look like a native Cacti/jQuery UI control.
