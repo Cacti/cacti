@@ -2006,6 +2006,7 @@ $i18n_themes = array(
 	__('Classic'),
 	__('Modern'),
 	__('Dark'),
+	__('Deepness'),
 	__('Paper-plane'),
 	__('Paw'),
 	__('Sunrise'),

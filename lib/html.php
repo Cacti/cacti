@@ -1716,7 +1716,6 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	?>
 	<div class='actionsDropdown'>
 		<div>
-			<span class='actionsDropdownArrow'><img src='<?php print $config['url_path']; ?>images/arrow.gif' alt=''></span>
 			<?php form_dropdown('drp_action', $actions_array, '', '', '0', '', '');?>
 			<span class='actionsDropdownButton'><input type='submit' class='ui-button ui-corner-all ui-widget' id='submit' value='<?php print __esc('Go');?>' title='<?php print __esc('Execute Action');?>'></span>
 		</div>
@@ -2839,6 +2838,9 @@ function html_common_header($title, $selectedTheme = '') {
 		var zoom_i18n_settings='<?php print __esc('Settings');?>';
 		var zoom_i18n_3rd_button='<?php print __esc('3rd Mouse Button');?>';
 	</script>
+<?php if (file_exists($config['base_path'] . '/include/themes/' . $selectedTheme . '/images/favicon.svg')) { ?>
+	<link href='<?php print $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.svg' rel='icon' type='image/svg+xml'>
+<?php } ?>
 	<link href='<?php print $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
 	<link href='<?php print $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
 	<?php

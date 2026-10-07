@@ -1453,29 +1453,29 @@ function load_current_session_value($request_var_name, $session_var_name, $defau
  */
 function get_colored_device_status($disabled, $status, $thold_failure_count = -1, $status_event_count = -1) {
 	if ($disabled) {
-		return "<span class='deviceDisabled'>" . __('Disabled') . "</span>";
+		return "<span class='deviceStatus deviceDisabled'>" . __('Disabled') . "</span>";
 	} else {
 		if ($status != HOST_RECOVERING && $thold_failure_count > 0) {
 			if ($status_event_count >= $thold_failure_count) {
-				return "<span class='deviceDown'>" . __('Down (Thold)') . "</span>";
+				return "<span class='deviceStatus deviceDown'>" . __('Down (Thold)') . "</span>";
 			}
 		}
 
 		switch ($status) {
 			case HOST_DOWN:
-				return "<span class='deviceDown'>" . __('Down') . "</span>";
+				return "<span class='deviceStatus deviceDown'>" . __('Down') . "</span>";
 				break;
 			case HOST_RECOVERING:
-				return "<span class='deviceRecovering'>" . __('Recovering') . "</span>";
+				return "<span class='deviceStatus deviceRecovering'>" . __('Recovering') . "</span>";
 				break;
 			case HOST_UP:
-				return "<span class='deviceUp'>" . __('Up') . "</span>";
+				return "<span class='deviceStatus deviceUp'>" . __('Up') . "</span>";
 				break;
 			case HOST_ERROR:
-				return "<span class='deviceError'>" . __('Error') . "</span>";
+				return "<span class='deviceStatus deviceError'>" . __('Error') . "</span>";
 				break;
 			default:
-				return "<span class='deviceUnknown'>" . __('Unknown') . "</span>";
+				return "<span class='deviceStatus deviceUnknown'>" . __('Unknown') . "</span>";
 				break;
 		}
 	}
