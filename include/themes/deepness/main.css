@@ -2462,11 +2462,11 @@ tr#realtime td:first-child {
 }
 
 .ui-corner-all {
-	border-radius: 0px !important;
-	-moz-border-radius-bottomright: 0px !important;
-	-moz-border-radius-bottomleft: 0px !important;
-	-moz-border-radius-topright: 0px !important;
-	-moz-border-radius-topleft: 0px !important;
+	border-radius: 4px !important;
+	-moz-border-radius-bottomright: 4px !important;
+	-moz-border-radius-bottomleft: 4px !important;
+	-moz-border-radius-topright: 4px !important;
+	-moz-border-radius-topleft: 4px !important;
 }
 
 #graph_view_tree_content2_child > tbody > .tableHeader {
