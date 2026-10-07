@@ -21,15 +21,7 @@
   +-------------------------------------------------------------------------+
 */
 
-// Host Autocomplete Magic
-var pageName = basename($(location).attr('pathname'));
-
 function themeReady() {
-	var pageName = basename($(location).attr('pathname'));
-	var hostTimer = false;
-	var clickTimeout = false;
-	var hostOpen = false;
-
 	if ($('#cactiPageBottom').length == 0) {
 		$('<div id="cactiPageBottom" class="cactiPageBottom"></a></div>').insertAfter('#cactiContent');
 	}
@@ -38,16 +30,16 @@ function themeReady() {
 	setMenuVisibility();
 
 	// Add nice search filter to filters
-	if ($('input[id="filter"]').length > 0 && $('input[id="filter"] > i[class="fa fa-search filter"]').length < 1) {
-		$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+	if ($('input[id="filter"]').length > 0 && $('input[id="filter"]').next('i[class="ti ti-search filter"]').length < 1) {
+		$('input[id="filter"]').after("<i class='ti ti-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
 	}
 
-	if ($('input[id="filterd"]').length > 0 && $('input[id="filterd"] > i[class="fa fa-search filter"]').length < 1) {
-		$('input[id="filterd"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+	if ($('input[id="filterd"]').length > 0 && $('input[id="filterd"]').next('i[class="ti ti-search filter"]').length < 1) {
+		$('input[id="filterd"]').after("<i class='ti ti-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
 	}
 
-	if ($('input[id="rfilter"]').length > 0 && $('input[id="rfilter"] > i[class="fa fa-search filter"]').length < 1) {
-		$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
+	if ($('input[id="rfilter"]').length > 0 && $('input[id="rfilter"]').next('i[class="ti ti-search filter"]').length < 1 && $('input[id="rfilter"]').closest('.cactiFilterEditTable').length < 1) {
+		$('input[id="rfilter"]').after("<i class='ti ti-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
 	}
 
 	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
@@ -57,7 +49,8 @@ function themeReady() {
 	/* Start clean up */
 
 	//login page
-		$('.cactiLoginLogo').html("<i class='rockyLogo'></i>").css('font-size: 20px');
+	$('.cactiLoginLogo').html("<i class='rockyLogo'></i>").css('font-size: 20px');
+
 	/* clean up the navigation menu */
 	$('.cactiConsoleNavigationArea').find('#menu').appendTo($('.cactiConsoleNavigationArea').find('#navigation'));
 	$('.cactiConsoleNavigationArea').find('#navigation > table').remove();
@@ -85,15 +78,15 @@ function themeReady() {
 		$('.menuHr').remove();
 		$('<div class="maintabs usertabs">'
 			+'<nav><ul>'
-				+'<li><a id="menu-user-help" class="usertabs-submenu" href="#"><i class="fa fa-question"></i></a></li>'
-				+'<li class="action-icon-user"><a class="pic" href="#"><i class="fa fa-user"></i></a></li>'
+				+'<li><a id="menu-user-help" class="usertabs-submenu" href="#"><i class="ti ti-question-mark"></i></a></li>'
+				+'<li class="action-icon-user"><a class="pic" href="#"><i class="ti ti-user"></i></a></li>'
 			+'</ul></nav>'
 		+'</div>').insertAfter('.maintabs');
 
 		$('<div class="dropdownMenu">'
 			+'<ul id="submenu-user-help" class="submenuoptions right" style="display:none;">'
 				+'<li><a href="https://www.cacti.net" target="_blank" rel="noopener"><span>'+cactiHome+'</span></a></li>'
-				+'<li><a href="https://github.com/cacti" target="_blank" rel="noopener"><span>'+cactiProjectPage+'</span></a></li>'
+				+'<li><a href="https://github.com/cacti" target="_blank rel="noopener""><span>'+cactiProjectPage+'</span></a></li>'
 				+'<li><hr class="menu"></li>'
 				+'<li><a href="https://forums.cacti.net/" target="_blank" rel="noopener"><span>'+cactiCommunityForum+'</span></a></li>'
 				+'<li><a href="https://github.com/Cacti/documentation/blob/develop/README.md" target="_blank" rel="noopener"><span>'+cactiDocumentation+'</span></a></li>'
@@ -111,7 +104,7 @@ function themeReady() {
 
 	$(window).trigger('resize');
 
-	$('.action-icon-user').unbind().click(function(event) {
+	$('.action-icon-user').off('click').on('click', function(event) {
 		event.preventDefault();
 
 		if ($('.menuoptions').is(':visible') === false) {
@@ -128,135 +121,21 @@ function themeReady() {
 	$('.tableHeader th').has('i.fa-sort').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-up').addClass('tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-down').addClass('tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-sort').hover(
-		function() {
+	$('.tableHeader th').has('i.fa-sort').on('mouseenter', function() {
 			$(this).addClass('tableHeaderColumnHover');
-		}, function() {
+		}).on('mouseleave', function() {
 			$(this).removeClass('tableHeaderColumnHover');
-		}
-	);
+		});
 
 	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
 
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 
-	$('select.colordropdown').dropcolor();
-
-	/* jQuery UI selectmenu is superseded by select2, applied later in applySkin();
-	 * don't double-widgetize every select here, just keep multi-selects' outline */
-	$('select').not('.colordropdown').filter(function() {
-		return $(this).prop('multiple') === true;
-	}).addClass('ui-state-default ui-corner-all');
-
-	$('#host').unbind().autocomplete({
-		source: pageName+'?action=ajax_hosts',
-		autoFocus: true,
-		minLength: 0,
-		select: function(event,ui) {
-			$('#host_id').val(ui.item.id);
-			callBack = $('#call_back').val();
-			if (callBack != 'undefined') {
-				if (callBack.indexOf('applyFilter') >= 0) {
-					applyFilter();
-				} else if (callBack.indexOf('applyGraphFilter') >= 0) {
-					applyGraphFilter();
-				}
-			} else if (typeof applyGraphFilter === 'function') {
-				applyGraphFilter();
-			} else {
-				applyFilter();
-			}
-		}
-	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
-
-	$('#host_click').css('z-index', '4');
-	$('#host_wrapper').unbind().dblclick(function() {
-		hostOpen = false;
-		clearTimeout(hostTimer);
-		clearTimeout(clickTimeout);
-		$('#host').autocomplete('close').select();
-	}).click(function() {
-		if (hostOpen) {
-			$('#host').autocomplete('close');
-			clearTimeout(hostTimer);
-			hostOpen = false;
-		} else {
-			clickTimeout = setTimeout(function() {
-				$('#host').autocomplete('search', '');
-				clearTimeout(hostTimer);
-				hostOpen = true;
-			}, 200);
-		}
-		$('#host').select();
-	}).on('mouseenter', function() {
-		$(this).addClass('ui-state-hover');
-		$('input#host').addClass('ui-state-hover');
-	}).on('mouseleave', function() {
-		$(this).removeClass('ui-state-hover');
-		$('#host').removeClass('ui-state-hover');
-		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
-		hostOpen = false;
-	});
-
-	var hostPrefix = '';
-	$('#host').autocomplete('widget').each(function() {
-		hostPrefix=$(this).attr('id');
-
-		if (hostPrefix != '') {
-			$('ul[id="'+hostPrefix+'"]').on('mouseenter', function() {
-				clearTimeout(hostTimer);
-			}).on('mouseleave', function() {
-				hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
-				$(this).removeClass('ui-state-hover');
-				$('input#host').removeClass('ui-state-hover');
-			});
-		}
-	});
-
-	/* Replace icons */
-	$('.fa-arrow-down').addClass('fa-chevron-down').removeClass('fa-arrow-down');
-	$('.fa-arrow-up').addClass('fa-chevron-up').removeClass('fa-arrow-up');
-	$('.fa-remove').addClass('fa-trash-o').removeClass('fa-remove');
-
-	// Hide the graph icons until you hover
-	$('.graphDrillDown').hover(
-	function() {
-		element = $(this);
-
-		// hide the previously shown element
-		if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
-			$('#dd'+graphMenuElement).find('.iconWrapper:first').hide(300);
-		}
-
-		clearTimeout(graphMenuTimer);
-		graphMenuTimer = setTimeout(function() { showGraphMenu(element); }, 400);
-	},
-	function() {
-		element = $(this);
-		clearTimeout(graphMenuTimer);
-		graphMenuTimer = setTimeout(function() { hideGraphMenu(element); }, 400);
-	});
-
-	function showGraphMenu(element) {
-		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').show(300, function() {
-			graphMenuElement = element.attr('id').replace('dd', '');;
-			$(this).find('.spikekillMenu').menu('enable');
-		});
-	}
-
-	function hideGraphMenu(element) {
-		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').hide(300, function() {
-			$(this).find('.spikekillMenu').menu('enable');
-		});
-	}
-
 	setNavigationScroll();
 }
 
 function setMenuVisibility() {
-	storage=Storages.localStorage;
+	storage=Storages.sessionStorage;
 
 	// Initialize the navigation settings
 	// This will setup the initial visibility of the menu
@@ -290,7 +169,7 @@ function setMenuVisibility() {
 	});
 
 	// Function to give life to the Navigation pane
-	$('#nav li:has(ul) a.active').unbind().click(function(event) {
+	$('#nav li:has(ul) a.active').off('click').on('click', function(event) {
 		event.preventDefault();
 
 		id = $(this).closest('.menuitem').attr('id');
@@ -319,4 +198,3 @@ function setMenuVisibility() {
 		});
 	});
 }
-
