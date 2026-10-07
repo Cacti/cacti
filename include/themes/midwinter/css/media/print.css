@@ -1,3 +1,7 @@
 .noprint {
     display: none;
 }
+
+html {
+    --graph-print-background: var(--background);
+}

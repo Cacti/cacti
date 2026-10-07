@@ -2272,6 +2272,10 @@ ul#nav {
 }
 
 @media print {
+	html {
+		--graph-print-background: #1d1f21;
+	}
+
 	.noprint {
 		display: none;
 	}

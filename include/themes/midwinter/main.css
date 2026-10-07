@@ -30,7 +30,7 @@
 @import url('./css/media/core.css?4866290090432c6765d9dc1e88990887') all;
 @import url('./css/media/core-portrait.css?1b6db673b2a1f9c4ec954843f2e76ca5') screen and (max-width: 600px);
 @import url('./css/media/core-landscape.css?e0d3497d8324f1695738d1ad40328d39') screen and (min-width: 601px);
-@import url('./css/media/print.css?f8c80271650344f45629199331592924') print;
+@import url('./css/media/print.css?128a573aaa8b4140be2a13afc092db2a') print;
 
 /* standard mode */
 @import url('./css/media/standard.css?2458dd4d97dd94d3891b48e239ff6dd8') screen;
