@@ -3111,9 +3111,9 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 /*
  * Filter-table toggle switches (1.2.x). Render the raw filter checkboxes
  * (<input type='checkbox'> directly inside a .filterTable wrapper) as on/off
- * toggle switches instead of native checkboxes, with the label text first and
- * the switch second. form_checkbox() switches (class 'formCheckbox') already
- * render as sliders and are left untouched.
+ * toggle switches styled to match this theme's form checkboxSlider, with the
+ * label text first and the switch second. form_checkbox() sliders (class
+ * 'formCheckbox') already render this way and are left untouched.
  */
 .filterTable span:has(> input[type='checkbox']:not(.formCheckbox)),
 .filterTable div:has(> input[type='checkbox']:not(.formCheckbox)) {
@@ -3133,11 +3133,11 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	height: 24px;
 	margin: 0;
 	padding: 0;
-	border-radius: 999px;
-	background: rgba(128, 128, 128, 0.45);
+	border-radius: 5px;
+	background: linear-gradient(#45484d, #000000);
 	cursor: pointer;
 	vertical-align: middle;
-	transition: background 0.3s;
+	transition: background 0.4s;
 }
 
 .filterTable input[type='checkbox']:not(.formCheckbox)::before {
@@ -3149,19 +3149,19 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	height: 16px;
 	border-radius: 50%;
 	background: #ffffff;
-	transition: transform 0.3s;
+	transition: transform 0.4s;
 }
 
 .filterTable input[type='checkbox']:not(.formCheckbox):checked {
-	background: #2b8235;
+	background: #31442b;
 }
 
 .filterTable input[type='checkbox']:not(.formCheckbox):checked::before {
-	transform: translateX(21px);
+	transform: translateX(20px);
 }
 
 .filterTable input[type='checkbox']:not(.formCheckbox):focus-visible {
-	outline: 2px solid #2b8235;
+	outline: 2px solid #31442b;
 	outline-offset: 1px;
 }
 
