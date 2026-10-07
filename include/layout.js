@@ -1548,7 +1548,7 @@ function makeFiltersResponsive() {
 								value: hScroll ? 'on':''
 								}, function() {
 								if (hScroll) {
-									$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
+									$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'auto' });
 									$('#overflow').removeClass('fa-expand').addClass('fa-compress');
 
 									resetTables();
@@ -3375,6 +3375,8 @@ function applyTableSizing() {
 			saveTableWidths(false);
 		}
 	});
+
+    $('.tableHeader').not('.tableFixed').find('th:last-child').resizable('disable');
 
 	saveTableWidths(true);
 }
