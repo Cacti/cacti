@@ -3012,15 +3012,15 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 
 .select2-container--default .select2-selection--single .select2-selection__rendered,
 .select2-container--default .select2-selection--single .select2-selection__placeholder {
-	color: #555555;
+	color: #333333;
 }
 
 /* select2 keeps --focus set after the dropdown closes; only --open should get the active look */
 .select2-container--default.select2-container--open .select2-selection--single,
 .select2-container--default.select2-container--open .select2-selection--multiple {
-	border-color: #d3d3d3;
-	background: #3a3b3c;
-	color: #ffffff;
+	border-color: #888888;
+	background: #ffffff;
+	color: #333333;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow b {
