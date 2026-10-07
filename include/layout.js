@@ -3693,7 +3693,9 @@ function applyTableSizing() {
 	});
 
 	$('.tableHeader').not('.tableFixed').each(function () {
-		$(this).find('th:visible').last().resizable('destroy');
+		$(this).find('th').filter(function () {
+			return $(this).css('display') != 'none';
+		}).last().resizable('destroy');
 	});
 
 	saveTableWidths(true);
