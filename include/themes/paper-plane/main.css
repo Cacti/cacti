@@ -639,18 +639,18 @@ label {
 }
 
 .tableRow {
-	color: white;
+	color: #333333;
 	line-height: 20px;
 }
 
 .odd {
 	border: none;
-	background: none repeat scroll 0 0 #222;
+	background: none repeat scroll 0 0 #e8e8e8;
 }
 
 .odd.tableRow {
-	color: #ccc;
-	background: none repeat scroll 0 0 #252525;
+	color: #333333;
+	background: none repeat scroll 0 0 #f0f0f0;
 }
 
 .tableRowGraph td {
@@ -661,21 +661,21 @@ label {
 
 .even {
 	border: none;
-	background: none repeat scroll 0 0 #222;
+	background: none repeat scroll 0 0 #e8e8e8;
 }
 
 .even.tableRow {
-	color: #ccc;
-	background: none repeat scroll 0 0 #222;
+	color: #333333;
+	background: none repeat scroll 0 0 #e8e8e8;
 }
 
 .even-alternate {
-	background: none repeat scroll 0 0 #252525;
+	background: none repeat scroll 0 0 #f0f0f0;
 }
 
 .even-alternate.tableRow {
-	color: #ccc;
-	background: none repeat scroll 0 0 #222;
+	color: #333333;
+	background: none repeat scroll 0 0 #e8e8e8;
 }
 
 .tableRow {
@@ -1317,7 +1317,7 @@ tr>td.textInfo.right {
 	margin-left: auto;
 	margin-right: auto;
 	border-color: #222;
-	color: #ccc;
+	color: #333333;
 }
 
 .cactiInstallLoaderSpinnerTheme {
