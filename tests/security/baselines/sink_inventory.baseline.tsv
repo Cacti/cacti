@@ -1022,3 +1022,7 @@ fs_write	./install/functions.php:1036						$fp = fopen($config_file, 'w');
 fs_write	./install/functions.php:1342			file_put_contents($config['base_path'] . '/log/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
 fs_write	./install/functions.php:1343			file_put_contents($config['base_path'] . '/log/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
 dynamic_include	./poller_maintenance.php:197		include_once($config['library_path'] . '/snmp.php');
+header_redirect	./include/themes/deepness/default/index.php:25	header("Location:../index.php");
+header_redirect	./include/themes/deepness/images/index.php:25	header("Location:../index.php");
+header_redirect	./include/themes/deepness/index.php:25	header("Location:../index.php");
+header_redirect	./plugins/index.php:25	header("Location:../index.php");
