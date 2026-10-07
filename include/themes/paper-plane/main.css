@@ -689,16 +689,16 @@ label {
 }
 
 .saveRow > input.ui-button {
-	border: 1px solid #bbbbbb;
-	color: #555555;
-	background: #ffffff;
+	border: 1px solid #555555;
+	color: #ffffff;
+	background: #3a3b3c;
 	outline-style: none;
 }
 
 .saveRow > input.ui-button:hover {
-	color: #333333;
-	border: 1px solid #888888;
-	background: #ffffff;
+	color: #ffffff;
+	border: 1px solid #777777;
+	background: #4a4b4d;
 }
 
 .treeArea, .treeItemsArea {
@@ -941,16 +941,16 @@ label {
 }
 
 .cactiLoginTable input.ui-button {
-	border: 1px solid #bbbbbb;
-	color: #555555;
-	background: #ffffff;
+	border: 1px solid #555555;
+	color: #ffffff;
+	background: #3a3b3c;
 	outline-style: none;
 }
 
 .cactiLoginTable input.ui-button:hover {
-	color: #333333;
-	border: 1px solid #888888;
-	background: #ffffff;
+	color: #ffffff;
+	border: 1px solid #777777;
+	background: #4a4b4d;
 }
 
 .loginErrors, .logoutErrors {
@@ -2868,13 +2868,26 @@ circle {
 	color: #555555;
 }
 
-.ui-selectmenu-button, .ui-button, .ui-multiselect {
+.ui-button {
+	background: #3a3b3c !important;
+	color: #ffffff !important;
+	border: 1px solid #555555 !important;
+}
+
+.ui-button:hover, .ui-button:focus {
+	background: #4a4b4d !important;
+	background-image: none !important;
+	color: #ffffff !important;
+	border: 1px solid #777777 !important;
+}
+
+.ui-selectmenu-button, .ui-multiselect {
 	background: #ffffff !important;
 	color: #555555 !important;
 	border: 1px solid #bbbbbb !important;
 }
 
-.ui-selectmenu-button:hover, .ui-button:hover, .ui-button:focus, .ui-multiselect:hover {
+.ui-selectmenu-button:hover, .ui-multiselect:hover {
 	background: #ffffff !important;
 	background-image: none !important;
 	color: #333333 !important;
