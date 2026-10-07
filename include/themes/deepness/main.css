@@ -56,6 +56,7 @@
 	--dp-accent-hover:  #26cf94;
 	--dp-accent-deep:   #0c5f44;
 	--dp-accent-soft:   rgba(24, 185, 129, 0.3);
+	--dp-accent-faint:  rgba(24, 185, 129, 0.15);
 	--dp-link:          #3bc991;
 	--dp-link-hover:    #63dcaf;
 }
@@ -1694,6 +1695,17 @@ th.sortable {
 .tableHeader th.tableHeaderColumnSelected a:hover,
 .tableHeader th.tableHeaderColumnSelected .fa {
 	color: var(--dp-text);
+}
+
+/* Sorted columns: primary a touch stronger than the secondary/subsequent */
+.tableHeader th.primarySort,
+.tableHeader th.tablesorter-headerAsc,
+.tableHeader th.tablesorter-headerDesc {
+	background: var(--dp-accent-soft);
+}
+
+.tableHeader th.secondarySort {
+	background: var(--dp-accent-faint);
 }
 
 .tableHeaderColumnHover {
