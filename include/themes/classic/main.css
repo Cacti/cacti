@@ -2426,7 +2426,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	height: 24px;
 	margin: 0;
 	padding: 0;
-	border-radius: 24px !important
+	border-radius: 24px !important;
 	background: rgba(128, 128, 128, 0.45);
 	cursor: pointer;
 	vertical-align: middle;
