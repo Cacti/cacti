@@ -97,7 +97,7 @@ check_tool() {
     fi
 
     # Verify the tool can actually load (catches missing Symfony/autoload issues)
-    if [ $($VENDOR_BIN/$tool --version > /dev/null 2>&1) -gt 0 ]; then
+    if ! "$VENDOR_BIN/$tool" --version > /dev/null 2>&1; then
         echo ""
         echo "ERROR: $label exists but failed to load. Autoload may be stale."
         echo ""
@@ -111,7 +111,7 @@ check_tool() {
 # ---- Lint / analysis tools ----
 
 run_lint() {
-    if [ -x "$VENDOR_BIN/phplint" ] && [ $("$VENDOR_BIN/phplint" --version > /dev/null 2>&1) -gt 0 ]; then
+    if [ -x "$VENDOR_BIN/phplint" ] && "$VENDOR_BIN/phplint" --version > /dev/null 2>&1; then
         echo "Running PHP lint (phplint)..."
 
         composer run-script lint
@@ -147,7 +147,7 @@ run_phpcsfixer() {
 
     echo "Running PHP CS Fixer (dry-run)..."
 
-    if [ $(composer run-script php-cs-fixer) -gt 0 ]; then
+    if ! composer run-script php-cs-fixer; then
         echo ""
         echo "TIP: To auto-fix formatting issues, run:"
         echo "  composer run-script php-cs-fixit"
@@ -164,17 +164,24 @@ run_phpstan() {
 
 # ---- Pre-flight checks (always run) ----
 
-run_preflight() {
-    check_php_version
+run_guards() {
     check_merge_conflicts
     check_composer_lock
     check_vendor_dev_deps
+}
+
+run_preflight() {
+    run_guards
+    check_php_version
     check_autoload_freshness
 }
 
 # ---- Main ----
 
 case "${1:-all}" in
+    guards)
+        run_guards
+        ;;
     lint)
         run_preflight
         run_lint
@@ -198,7 +205,7 @@ case "${1:-all}" in
         echo "Pre-flight checks passed."
         ;;
     *)
-        echo "Usage: $0 {lint|phpcsfixer|phpstan|all|preflight}"
+        echo "Usage: $0 {lint|phpcsfixer|phpstan|all|preflight|guards}"
         exit 1
         ;;
 esac

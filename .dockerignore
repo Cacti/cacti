@@ -12,3 +12,6 @@ cache/
 log/
 rra/*.rrd
 *.log
+
+# Local assistant state
+.omc
