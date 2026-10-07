@@ -2862,7 +2862,7 @@ circle {
 
 .ui-state-default, .ui-selectmenu-button, .ui-button {
 	border: 1px solid #d3d3d3;
-	background: #e6e6e6 !important;
+	background: #f5f5f5 !important;
 	font-weight: normal;
 	color: #555555;
 }
@@ -2875,7 +2875,7 @@ circle {
 .select2-container--default .select2-selection--multiple {
 	border: 1px solid #d3d3d3;
 	border-radius: 6px;
-	background: #e6e6e6;
+	background: #f5f5f5;
 	color: #555555;
 }
 
@@ -3039,14 +3039,14 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 
 .select2-dropdown {
 	border: 1px solid #d3d3d3;
-	background: #e6e6e6;
+	background: #f5f5f5;
 	color: #555555;
 }
 
 .select2-container--default .select2-search--dropdown .select2-search__field,
 .select2-container--default .select2-search--inline .select2-search__field {
 	border: 1px solid #d3d3d3;
-	background: #e6e6e6;
+	background: #f5f5f5;
 	color: #555555;
 }
 
