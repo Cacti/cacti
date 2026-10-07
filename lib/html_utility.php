@@ -1004,6 +1004,13 @@ function update_order_string($inplace = false) {
  */
 function get_order_string() {
 	$page        = get_order_string_page(true);
+
+	/* return the multi-column sort accumulated by update_order_string(), whose
+	   columns were already validated against the per-page allowlist on store */
+	if (isset($_SESSION['sort_string'][$page])) {
+		return $_SESSION['sort_string'][$page];
+	}
+
 	$sort_column = cacti_normalize_sort_column(get_nfilter_request_var('sort_column'));
 	$sort_dir    = cacti_normalize_sort_direction(get_nfilter_request_var('sort_direction'));
 
