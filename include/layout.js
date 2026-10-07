@@ -1529,7 +1529,7 @@ function makeFiltersResponsive() {
 				if (pageHasHidableColumnsAndProfile()) {
 					if (filterHeader.find('.cactiSwitchConstraints').length == 0) {
 						if (hScroll) {
-							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
+							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'auto' });
 							filterHeader.find('div.cactiTableButton').append('<span class="cactiSwitchConstraintWrapper"><a title="'+tableConstraints+'" class="linkOverDark cactiSwitchConstraints" href="#"><i id="overflow" class="fa fa-compress"></i></a></span>');
 						} else {
 							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
@@ -1548,7 +1548,7 @@ function makeFiltersResponsive() {
 								value: hScroll ? 'on':''
 								}, function() {
 								if (hScroll) {
-									$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
+									$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'auto' });
 									$('#overflow').removeClass('fa-expand').addClass('fa-compress');
 
 									resetTables();
@@ -3374,6 +3374,10 @@ function applyTableSizing() {
 		stop: function(event, ui) {
 			saveTableWidths(false);
 		}
+	});
+
+	$('.tableHeader').not('.tableFixed').each(function() {
+		$(this).find('th:visible').last().resizable('destroy');
 	});
 
 	saveTableWidths(true);
