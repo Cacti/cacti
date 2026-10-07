@@ -1741,7 +1741,7 @@ function markFilterTDs(child, filterNum) {
 
 function finalizeAuthProfileData(options, data) {
 	if (hScroll) {
-		$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
+		$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'auto' });
 		$('#overflow').removeClass('ti-arrows-diagonal').addClass('ti-arrows-diagonal-minimize-2');
 
 		resetTables();
@@ -1769,7 +1769,7 @@ function makeFiltersResponsive() {
 				if (pageHasHidableColumnsAndProfile()) {
 					if (filterHeader.find('.cactiSwitchConstraints').length == 0) {
 						if (hScroll) {
-							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
+							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'auto' });
 							filterHeader.find('div.cactiTableButton').append('<span class="cactiSwitchConstraintWrapper"><a title="' + tableConstraints + '" class="linkOverDark cactiSwitchConstraints" href="#"><i id="overflow" class="ti ti-arrows-diagonal-minimize-2"></i></a></span>');
 						} else {
 							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
@@ -3690,6 +3690,10 @@ function applyTableSizing() {
 		stop: function (event, ui) {
 			saveTableWidths(false);
 		}
+	});
+
+	$('.tableHeader').not('.tableFixed').each(function () {
+		$(this).find('th:visible').last().resizable('destroy');
 	});
 
 	saveTableWidths(true);
