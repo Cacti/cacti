@@ -3376,7 +3376,9 @@ function applyTableSizing() {
 		}
 	});
 
-    $('.tableHeader').not('.tableFixed').find('th:last-child').resizable('disable');
+	$('.tableHeader').not('.tableFixed').each(function() {
+		$(this).find('th:visible').last().resizable('destroy');
+	});
 
 	saveTableWidths(true);
 }
