@@ -3330,7 +3330,7 @@ text.bb-chart-arcs-gauge-title {
 	width: 45px;
 	height: 24px;
 	margin: 0;
-	border-radius: 5px;
+	border-radius: 12px;
 	background: rgba(128, 128, 128, 0.45);
 	cursor: pointer;
 	vertical-align: middle;
