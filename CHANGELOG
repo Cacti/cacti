@@ -1,7 +1,6 @@
 Cacti CHANGELOG
 
 1.2.x
--bug#8177: Prevent clipped detailed graph panels and improve theme visibility when printing or saving as PDF
 -feature#8189: Add a MySQL/MariaDB variable capability matrix to the Database section and stop recommending variables deprecated or removed on the detected server
 -security#GHSA-fq9x-x3vf-3vf2: Substitute data-input field tokens in a single pass so a composed value cannot re-inject an escaped payload into the script command line
 -security#GHSA-54hx-hxc4-jq7j: Numeric-cast the graph-item value for TICK fraction and SHIFT statements before the RRDtool command line
@@ -172,6 +171,7 @@ Cacti CHANGELOG
 -issue#7804: Restore RRDproxy encryption with Composer-managed phpseclib 4
 -issue#7930: Commit transactions on MySQL as well as MariaDB
 -issue#8173: Restore selected preset and custom date ranges for graph lists while preserving detailed panel ranges (PR#8178)
+-issue#8177: Prevent clipped detailed graph panels and improve theme visibility when printing or saving as PDF
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
