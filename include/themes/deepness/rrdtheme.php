@@ -33,7 +33,7 @@ $rrdcolors['axis']   = '2E6A50';
 $rrdcolors['arrow']  = '18B981';
 $rrdcolors['frame']  = '11161D';
 
-# RRDtool graph fonts in RRDtool 1.2+
+// RRDtool graph fonts in RRDtool 1.2+
 $rrdfonts['title']['font']     = 'Arial';
 $rrdfonts['title']['size']     = '11';
 $rrdfonts['axis']['font']      = 'Arial';
@@ -45,5 +45,5 @@ $rrdfonts['unit']['size']      = '8';
 $rrdfonts['watermark']['font'] = 'Arial';
 $rrdfonts['watermark']['size'] = '6';
 
-# Only supported in RRDtool 1.4+
+// Only supported in RRDtool 1.4+
 $rrdborder = 1;

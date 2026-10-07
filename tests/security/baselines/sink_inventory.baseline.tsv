@@ -478,6 +478,9 @@ header_redirect	./include/themes/carrot/index.php	header('Location:../index.php'
 header_redirect	./include/themes/dark/default/index.php	header('Location:../index.php');
 header_redirect	./include/themes/dark/images/index.php	header('Location:../index.php');
 header_redirect	./include/themes/dark/index.php	header('Location:../index.php');
+header_redirect	./include/themes/deepness/default/index.php	header('Location:../index.php');
+header_redirect	./include/themes/deepness/images/index.php	header("Location:../index.php");
+header_redirect	./include/themes/deepness/index.php	header('Location:../index.php');
 header_redirect	./include/themes/hollyberry/default/index.php	header('Location:../index.php');
 header_redirect	./include/themes/hollyberry/images/index.php	header('Location:../index.php');
 header_redirect	./include/themes/hollyberry/index.php	header('Location:../index.php');
