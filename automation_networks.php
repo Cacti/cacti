@@ -1323,7 +1323,7 @@ function networks_filter() {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='go' title='<?php print __esc('Search');?>' value='<?php print __esc('Go');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' title='<?php print __esc('Search');?>' value='<?php print __esc('Go');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' title='<?php print __esc('Clear Filtered');?>' value='<?php print __esc('Clear');?>'>
 						</span>
 					</td>
@@ -1351,10 +1351,6 @@ function networks_filter() {
 			}
 
 			$(function() {
-				$('#go').on('click', function() {
-					applyFilter();
-				});
-
 				$('#clear').on('click', function() {
 					clearFilter();
 				});

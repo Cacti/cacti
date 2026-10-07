@@ -1121,7 +1121,7 @@ function data_debug_filter() {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='purge' value='<?php print __esc('Purge');?>' title='<?php print __esc('Delete All Checks');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='runall' value='<?php print __esc('Run All');?>' title='<?php print __esc('Run checks on currently filtered Data Sources and preserve other results');?>'>
@@ -1248,10 +1248,6 @@ function data_debug_filter() {
 		}
 
 		$(function() {
-			$('#go').on('click', function() {
-				applyFilter()
-			});
-
 			// host_id already reloads via its own select2-callback data-callback wiring;
 			// select2 also fires a native change event, so including it here would
 			// apply the filter twice per selection

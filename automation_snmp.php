@@ -799,7 +799,7 @@ function automation_snmp() {
                     </td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
@@ -822,10 +822,6 @@ function automation_snmp() {
 	}
 
 	$(function() {
-		$('#refresh').on('click', function() {
-			applyFilter();
-		});
-
 		$('#rows').on('change', function() {
 			applyFilter();
 		});

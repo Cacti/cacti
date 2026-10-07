@@ -1120,7 +1120,7 @@ function template() {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
@@ -1144,7 +1144,7 @@ function template() {
 		}
 
 		$(function() {
-			$('#has_data, #refresh').on('click', function() {
+			$('#has_data').on('click', function() {
 				applyFilter();
 			});
 
