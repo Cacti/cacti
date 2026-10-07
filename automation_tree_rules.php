@@ -956,7 +956,7 @@ function automation_tree_rules() {
 						</td>
 						<td>
 							<span>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>'>
+								<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>'>
 								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'>
 							</span>
 						</td>
@@ -981,10 +981,6 @@ function automation_tree_rules() {
 
 			$(function() {
 				$('#rows, #status').on('change', function() {
-					applyFilter();
-				});
-
-				$('#refresh').on('click', function() {
 					applyFilter();
 				});
 

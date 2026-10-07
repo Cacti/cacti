@@ -2541,7 +2541,8 @@ function boost_display_run_status() {
 			applyFilter();
 		});
 
-		$('#go').on('click', function() {
+		$('#form_boost_utilities_stats').on('submit', function(event) {
+			event.preventDefault();
 			applyFilter();
 		});
 	});
@@ -2563,7 +2564,7 @@ function boost_display_run_status() {
 						?>
 					</td>
 					<td>
-						<input type='button' id='go' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Refresh');?>'>
+						<input type='submit' id='go' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Refresh');?>'>
 					</td>
 				</tr>
 			</table>
@@ -3296,10 +3297,6 @@ function snmpagent_utilities_run_eventlog(){
 	}
 
 	$(function() {
-		$('#refresh').on('click', function() {
-			applyFilter();
-		});
-
 		$('#severity, #receiver, #rows').on('change', function() {
 			applyFilter();
 		});
@@ -3377,7 +3374,7 @@ function snmpagent_utilities_run_eventlog(){
 						</td>
 						<td>
 							<span>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+								<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 								<input type='button' class='ui-button ui-corner-all ui-widget' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge Notification Log');?>'>
 							</span>

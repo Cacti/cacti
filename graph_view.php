@@ -1113,6 +1113,11 @@ case 'list':
 			viewGraphs();
 		});
 
+		$('#chk').on('submit', function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+
 		<?php html_graph_template_multiselect('list');?>
 	});
 	</script>
