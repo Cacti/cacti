@@ -1727,7 +1727,7 @@ th.sortable {
 .tableSubHeaderCheckbox {
 	max-width: 20px;
 	width: 20px;
-	background: var(--dp-accent);
+	text-align: center;
 }
 
 .tableRowGraph td {
@@ -2212,6 +2212,15 @@ tr td:last-child .checkbox {
 
 tr th:last-child .checkbox {
 	margin-right: 10px !important;
+}
+
+/* Square, emerald-accented table checkboxes (select-all + row selects); the
+   right margin above keeps them clear of the content scrollbar */
+input[type="checkbox"].checkbox {
+	accent-color: var(--dp-accent);
+	width: 15px;
+	height: 15px;
+	vertical-align: middle;
 }
 
 .fa-angle-double-up, .fa-angle-double-down {
