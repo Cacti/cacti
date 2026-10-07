@@ -2200,7 +2200,7 @@ tr.selectable a.linkEditMain:hover {
 }
 
 tr.selectable:hover:not(.selected) {
-	background: #444;
+	background: #1D1F21;
 	color: #fff;
 }
 
