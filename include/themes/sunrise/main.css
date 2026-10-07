@@ -3340,7 +3340,8 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	width: 45px;
 	height: 24px;
 	margin: 0;
-	border-radius: 12px;
+	padding: 0;
+	border-radius: 999px;
 	background: rgba(128, 128, 128, 0.45);
 	cursor: pointer;
 	vertical-align: middle;
