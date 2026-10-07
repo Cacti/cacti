@@ -2195,8 +2195,9 @@ tr.selectable {
 	white-space: nowrap;
 }
 
+tr.selectable:hover a.linkEditMain,
 tr.selectable a.linkEditMain:hover {
-	color: blue;
+	color: #7ee787;
 }
 
 tr.selectable:hover:not(.selected) {
