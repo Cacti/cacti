@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-09-28 15:57-0400\n"
-"PO-Revision-Date: 2026-01-16 03:18+0000\n"
-"Last-Translator: sucharlie <su.charlie@gmail.com>\n"
-"Language-Team: Chinese (Traditional Han script) <https://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hant/>\n"
-"Language: zh-TW\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-09-28 15:57-0400\nPO-Revision-Date: 2026-10-07 06:18+0000\nLast-Translator: YU HAO HUANG <mix@b51.tw>\nLanguage-Team: Chinese (Traditional Han script) <https://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hant/>\nLanguage: zh-TW\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 #, fuzzy
@@ -432,7 +420,6 @@ msgstr "匹配圖"
 #: lib/html_reports.php lib/html_tree.php links.php managers.php plugins.php
 #: pollers.php rrdcheck.php rrdcleaner.php settings.php sites.php tree.php
 #: user_admin.php user_domains.php user_group_admin.php utilities.php vdef.php
-#, fuzzy
 msgid "Search"
 msgstr "搜尋"
 
@@ -454,9 +441,8 @@ msgstr "圖表"
 #: lib/api_automation.php lib/html_reports.php links.php managers.php
 #: plugins.php pollers.php rrdcheck.php rrdcleaner.php sites.php tree.php
 #: user_admin.php user_domains.php user_group_admin.php utilities.php vdef.php
-#, fuzzy
 msgid "Default"
-msgstr "默认"
+msgstr "預設"
 
 #: aggregate_graphs.php
 #, fuzzy
@@ -473,7 +459,6 @@ msgstr "聚合的一部分"
 #: lib/clog_webapi.php lib/html.php lib/html_filter.php lib/html_graph.php
 #: lib/html_reports.php lib/html_tree.php links.php managers.php plugins.php
 #: pollers.php sites.php tree.php user_admin.php
-#, fuzzy
 msgid "Go"
 msgstr "送出"
 
@@ -484,7 +469,6 @@ msgstr "送出"
 #: graphs.php graphs_new.php host.php host_templates.php lib/html_graph.php
 #: managers.php plugins.php pollers.php sites.php tree.php user_admin.php
 #: user_domains.php user_group_admin.php utilities.php
-#, fuzzy
 msgid "Set/Refresh Filters"
 msgstr "設置/刷新過濾器"
 
@@ -498,7 +482,6 @@ msgstr "設置/刷新過濾器"
 #: lib/clog_webapi.php lib/html_filter.php lib/html_graph.php
 #: lib/html_reports.php lib/html_tree.php links.php managers.php plugins.php
 #: pollers.php sites.php tree.php user_admin.php user_domains.php
-#, fuzzy
 msgid "Clear"
 msgstr "清除"
 
@@ -509,7 +492,6 @@ msgstr "清除"
 #: graphs_new.php host.php host_templates.php lib/html_graph.php
 #: lib/html_tree.php managers.php plugins.php pollers.php sites.php tree.php
 #: user_admin.php user_domains.php user_group_admin.php utilities.php
-#, fuzzy
 msgid "Clear Filters"
 msgstr "清除過濾器"
 
@@ -933,7 +915,6 @@ msgid "Preview View"
 msgstr "預覽視圖"
 
 #: auth_profile.php include/global_form.php user_admin.php
-#, fuzzy
 msgid "User Name"
 msgstr "使用者名稱"
 
@@ -1187,7 +1168,6 @@ msgid "Reset fields to defaults"
 msgstr "將字段重置為默認值"
 
 #: automation_devices.php color.php host.php lib/html_form.php
-#, fuzzy
 msgid "Export"
 msgstr "匯出"
 
@@ -1197,7 +1177,6 @@ msgid "Export to a file"
 msgstr "導出到文件"
 
 #: automation_devices.php data_debug.php lib/clog_webapi.php managers.php
-#, fuzzy
 msgid "Purge"
 msgstr "清除"
 
@@ -1210,9 +1189,8 @@ msgstr "清除發現的設備"
 #: data_debug.php data_source_profiles.php host.php lib/functions.php
 #: lib/html.php lib/html_reports.php lib/spikekill.php plugins.php pollers.php
 #: user_admin.php utilities.php
-#, fuzzy
 msgid "N/A"
-msgstr "不适用"
+msgstr "N/A"
 
 #: automation_graph_rules.php automation_snmp.php automation_tree_rules.php
 #: cdef.php color_templates.php data_input.php data_queries.php
@@ -3099,7 +3077,6 @@ msgid "The Data Source to Debug"
 msgstr "要調試的數據源"
 
 #: data_debug.php lib/html.php utilities.php
-#, fuzzy
 msgid "User"
 msgstr "使用者"
 
@@ -3334,7 +3311,6 @@ msgid "Check"
 msgstr "檢查"
 
 #: data_debug.php include/global_form.php lib/rrd.php utilities.php
-#, fuzzy
 msgid "Value"
 msgstr "值"
 
@@ -3424,7 +3400,6 @@ msgstr "個人資料"
 #: data_debug.php data_sources.php data_templates.php graphs.php graphs_new.php
 #: host.php host_templates.php lib/clog_webapi.php lib/html_reports.php
 #: plugins.php settings.php tree.php user_admin.php utilities.php
-#, fuzzy
 msgid "All"
 msgstr "全部"
 
@@ -16455,9 +16430,8 @@ msgid "Report Item [new Report: %s]"
 msgstr "報告項目[新報告：%s]"
 
 #: lib/html_reports.php
-#, fuzzy
 msgid "Events"
-msgstr "活動"
+msgstr "事件"
 
 #: lib/html_reports.php
 #, fuzzy
@@ -18111,9 +18085,8 @@ msgid "%s - No"
 msgstr "%s Minutes"
 
 #: lib/installer.php
-#, fuzzy
 msgid "Cli"
-msgstr "經典"
+msgstr "cli命令"
 
 #: lib/installer.php
 #, fuzzy, php-format
@@ -18249,9 +18222,8 @@ msgid "Destination address not specified"
 msgstr "未指定目標地址"
 
 #: lib/ping.php
-#, fuzzy
 msgid "default"
-msgstr "默认"
+msgstr "預設"
 
 #: lib/ping.php
 msgid "Please upgrade to PHP 5.5.4+ for IPv6 support!"
@@ -19199,7 +19171,6 @@ msgid "Top Console"
 msgstr "頂級控制台"
 
 #: links.php
-#, fuzzy
 msgid "Page"
 msgstr "頁面"
 
@@ -22453,7 +22424,6 @@ msgid "User Logins"
 msgstr "用戶登錄"
 
 #: utilities.php
-#, fuzzy
 msgid "IP Address"
 msgstr "IP 位址"
 
@@ -22558,9 +22528,8 @@ msgid "User:"
 msgstr "使用者："
 
 #: utilities.php
-#, fuzzy
 msgid "Script:"
-msgstr "腳本"
+msgstr "腳本："
 
 #: utilities.php
 #, fuzzy
