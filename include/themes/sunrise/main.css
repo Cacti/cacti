@@ -3315,3 +3315,69 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 .jstree-default .jstree-closed > .jstree-ocl::before { content: "\f105"; }
 .jstree-default .jstree-open > .jstree-ocl::before { content: "\f107"; }
 .jstree-default .jstree-leaf > .jstree-ocl::before { content: ""; }
+
+/*
+ * Filter-table toggle switches (1.2.x). Render the raw filter checkboxes
+ * (<input type='checkbox'> directly inside a .filterTable wrapper) as on/off
+ * toggle switches styled to match this theme's form checkboxSlider, with the
+ * label text first and the switch second. form_checkbox() sliders (class
+ * 'formCheckbox') already render this way and are left untouched.
+ */
+.filterTable span:has(> input[type='checkbox']:not(.formCheckbox)),
+.filterTable div:has(> input[type='checkbox']:not(.formCheckbox)) {
+	display: inline-flex;
+	flex-direction: row-reverse;
+	align-items: center;
+	gap: 6px;
+}
+
+.filterTable input[type='checkbox']:not(.formCheckbox) {
+	-webkit-appearance: none;
+	appearance: none;
+	box-sizing: border-box;
+	position: relative;
+	flex: 0 0 auto;
+	width: 45px;
+	height: 24px;
+	margin: 0;
+	padding: 0;
+	border-radius: 24px !important;
+	background: rgba(147, 206, 255, 0.2);
+	cursor: pointer;
+	vertical-align: middle;
+	transition: background 0.4s;
+}
+
+.filterTable input[type='checkbox']:not(.formCheckbox)::before {
+	content: '';
+	position: absolute;
+	top: 4px;
+	left: 4px;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: #ffffff;
+	transition: transform 0.4s;
+}
+
+.filterTable input[type='checkbox']:not(.formCheckbox):checked {
+	background: rgba(255, 170, 0, 0.5);
+}
+
+.filterTable input[type='checkbox']:not(.formCheckbox):checked::before {
+	transform: translateX(20px);
+}
+
+.filterTable input[type='checkbox']:not(.formCheckbox):focus-visible {
+	outline: 2px solid rgba(255, 170, 0, 0.5);
+	outline-offset: 1px;
+}
+
+.filterTable input[type='checkbox']:not(.formCheckbox):disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.filterTable input[type='checkbox']:not(.formCheckbox) + label {
+	cursor: pointer;
+}
