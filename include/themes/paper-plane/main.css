@@ -656,7 +656,7 @@ label {
 .tableRowGraph td {
 	padding: 3px;
 	vertical-align: top;
-	background: none repeat scroll 0 0 #FFFFFF;
+	background: none repeat scroll 0 0 #222222;
 }
 
 .even {
@@ -1177,7 +1177,7 @@ legend {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-	color: #ddd;
+	color: #2d4ca8;
 	text-decoration: none;
 	font-size: 12px;
 	white-space: nowrap;
@@ -1185,7 +1185,7 @@ legend {
 }
 
 .linkEditMain:hover {
-	color: yellow;
+	color: #333333;
 	white-space: nowrap;
 	text-decoration: none;
 }
@@ -3102,3 +3102,58 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 .jstree-default .jstree-closed > .jstree-ocl::before { content: "\f105"; }
 .jstree-default .jstree-open > .jstree-ocl::before { content: "\f107"; }
 .jstree-default .jstree-leaf > .jstree-ocl::before { content: ""; }
+
+/* Tree search box sits in the dark tree nav area - keep it dark with light text */
+#searcher {
+	background: #262626 !important;
+	color: #ffffff !important;
+	border: 1px solid #555555 !important;
+}
+
+/* Device status pills - translucent badges per state (matches the Deepness theme) */
+.deviceStatus {
+	display: inline-block;
+	padding: 1px 9px;
+	border: 1px solid transparent;
+	border-radius: 10px;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 16px;
+	white-space: nowrap;
+}
+
+.deviceStatus.deviceUp {
+	background-color: rgba(46, 125, 50, 0.16);
+	border-color: rgba(46, 125, 50, 0.55);
+	color: #1b5e20 !important;
+}
+
+.deviceStatus.deviceDown {
+	background-color: rgba(198, 40, 40, 0.16);
+	border-color: rgba(198, 40, 40, 0.55);
+	color: #b71c1c !important;
+}
+
+.deviceStatus.deviceRecovering {
+	background-color: rgba(230, 126, 34, 0.16);
+	border-color: rgba(230, 126, 34, 0.55);
+	color: #d35400 !important;
+}
+
+.deviceStatus.deviceError {
+	background-color: rgba(123, 31, 162, 0.16);
+	border-color: rgba(123, 31, 162, 0.5);
+	color: #6a1b9a !important;
+}
+
+.deviceStatus.deviceUnknown {
+	background-color: rgba(21, 101, 192, 0.16);
+	border-color: rgba(21, 101, 192, 0.5);
+	color: #0d47a1 !important;
+}
+
+.deviceStatus.deviceDisabled {
+	background-color: rgba(97, 97, 97, 0.16);
+	border-color: rgba(97, 97, 97, 0.5);
+	color: #424242 !important;
+}
