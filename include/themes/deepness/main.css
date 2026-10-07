@@ -44,6 +44,9 @@
 	--dp-border-strong: #32415a;
 	--dp-overlay:       rgba(0, 0, 0, 0.55);
 
+	/* Chart gridlines */
+	--dp-grid:          #2b3647;
+
 	/* Text */
 	--dp-text:          #e6edf3;
 	--dp-text-muted:    #97a3b0;
@@ -53,6 +56,7 @@
 	--dp-accent-hover:  #26cf94;
 	--dp-accent-deep:   #0c5f44;
 	--dp-accent-soft:   rgba(24, 185, 129, 0.3);
+	--dp-accent-faint:  rgba(24, 185, 129, 0.15);
 	--dp-link:          #3bc991;
 	--dp-link-hover:    #63dcaf;
 }
@@ -259,6 +263,11 @@ label {
 	-webkit-mask: url('./images/rockylinux.svg') no-repeat center / contain;
 	mask: url('./images/rockylinux.svg') no-repeat center / contain;
 	vertical-align: -0.125em;
+}
+
+/* Emerald console glyph when the Console tab is not the active tab */
+#tab-console:not(.selected) .glyph_tab-console {
+	color: var(--dp-accent);
 }
 
 .text_tab-console {
@@ -1688,6 +1697,17 @@ th.sortable {
 	color: var(--dp-text);
 }
 
+/* Sorted columns: primary a touch stronger than the secondary/subsequent */
+.tableHeader th.primarySort,
+.tableHeader th.tablesorter-headerAsc,
+.tableHeader th.tablesorter-headerDesc {
+	background: var(--dp-accent-soft);
+}
+
+.tableHeader th.secondarySort {
+	background: var(--dp-accent-faint);
+}
+
 .tableHeaderColumnHover {
 	background: var(--dp-row-hover);
 }
@@ -1719,7 +1739,7 @@ th.sortable {
 .tableSubHeaderCheckbox {
 	max-width: 20px;
 	width: 20px;
-	background: var(--dp-accent);
+	text-align: center;
 }
 
 .tableRowGraph td {
@@ -2204,6 +2224,15 @@ tr td:last-child .checkbox {
 
 tr th:last-child .checkbox {
 	margin-right: 10px !important;
+}
+
+/* Square, emerald-accented table checkboxes (select-all + row selects); the
+   right margin above keeps them clear of the content scrollbar */
+input[type="checkbox"].checkbox {
+	accent-color: var(--dp-accent);
+	width: 15px;
+	height: 15px;
+	vertical-align: middle;
 }
 
 .fa-angle-double-up, .fa-angle-double-down {
@@ -2949,21 +2978,214 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 }
 
 /* ======================================================================== */
-/* Billboard charts - billboard.css ships light upstream defaults (#000      */
-/* axis/grid strokes, a white tooltip); like the Dark theme, repaint them    */
-/* onto dark surfaces here so they stay legible                              */
+/* Billboard charts (billboard.js 3.13) - billboard.css is not loaded on the  */
+/* AJAX overload path, so the full stylesheet is mirrored here (like the Dark */
+/* theme) repainted onto the theme palette via :root. Keep in sync with       */
+/* billboard.css.                                                             */
 /* ======================================================================== */
 
-/* axes, gridlines and other uncolored lines (data series set their own      */
-/* stroke inline, so this only affects the otherwise-black chrome lines)     */
-.bb path,
-.bb line {
+/*-- Chart --*/
+.bb svg {
+	font: 10px sans-serif;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.bb path, .bb line {
+	fill: none;
 	stroke: var(--dp-text-muted);
 }
 
+.bb text, .bb .bb-button {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+
+.bb-legend-item-tile,
+.bb-xgrid-focus,
+.bb-ygrid-focus,
+.bb-ygrid {
+	shape-rendering: crispEdges;
+}
+
+.bb-chart-arcs .bb-needle {
+	fill: var(--dp-text);
+}
+
+.bb-chart-arc .bb-gauge-value {
+	fill: var(--dp-text);
+}
+
+.bb-chart-arc path {
+	stroke: var(--dp-panel);
+}
+
+.bb-chart-arc rect {
+	stroke: var(--dp-panel);
+	stroke-width: 1;
+}
+
+.bb-chart-arc text {
+	fill: var(--dp-text);
+	font-size: 13px;
+}
+
+/*-- Funnel --*/
+.bb-chart-funnels path {
+	stroke-width: 0;
+}
+
+.bb-chart-funnels + .bb-chart-texts text {
+	font-size: 13px;
+	fill: var(--dp-text);
+}
+
+/*-- Axis --*/
+.bb-axis {
+	shape-rendering: crispEdges;
+}
+
+.bb-axis .bb-axis-x-tooltip, .bb-axis .bb-axis-y-tooltip, .bb-axis .bb-axis-y2-tooltip {
+	font-size: 1em;
+	fill: var(--dp-text);
+	white-space: nowrap;
+}
+
+/*-- Grid --*/
+.bb-grid {
+	pointer-events: none;
+}
+
+.bb-grid line {
+	stroke: var(--dp-grid);
+}
+
+.bb-grid text {
+	fill: var(--dp-text-muted);
+}
+
+.bb-xgrid, .bb-ygrid {
+	stroke-dasharray: 3 3;
+}
+
+/*-- Text on Chart --*/
+.bb-text.bb-empty {
+	fill: var(--dp-text-muted);
+	font-size: 2em;
+}
+
+/*-- Line --*/
+.bb-line {
+	stroke-width: 1px;
+}
+
+/*-- Point --*/
+.bb-circle._expanded_ {
+	stroke-width: 1px;
+	stroke: var(--dp-text);
+}
+
+.bb-selected-circle {
+	fill: var(--dp-text);
+	stroke-width: 2px;
+}
+
+/*-- Bar --*/
+.bb-bar {
+	stroke-width: 0;
+}
+
+.bb-bar._expanded_ {
+	fill-opacity: 0.75;
+}
+
+/*-- Candlestick --*/
+.bb-candlestick {
+	stroke-width: 1px;
+}
+
+.bb-candlestick._expanded_ {
+	fill-opacity: 0.75;
+}
+
+/*-- Focus --*/
+.bb-target.bb-focused, .bb-circles.bb-focused {
+	opacity: 1;
+}
+
+.bb-target.bb-focused path.bb-line, .bb-target.bb-focused path.bb-step, .bb-circles.bb-focused path.bb-line, .bb-circles.bb-focused path.bb-step {
+	stroke-width: 2px;
+}
+
+.bb-target.bb-defocused, .bb-circles.bb-defocused {
+	opacity: 0.3 !important;
+}
+
+.bb-target.bb-defocused .text-overlapping, .bb-circles.bb-defocused .text-overlapping {
+	opacity: 0.05 !important;
+}
+
+/*-- Region --*/
+.bb-region {
+	fill: var(--dp-accent);
+}
+
+.bb-region rect {
+	fill-opacity: 0.1;
+}
+
+/*-- Zoom region --*/
+.bb-zoom-brush {
+	fill-opacity: 0.1;
+}
+
+/*-- Brush --*/
+.bb-brush .extent {
+	fill-opacity: 0.1;
+}
+
+/*-- Legend --*/
+.bb-legend-item {
+	font-size: 12px;
+	user-select: none;
+}
+
+.bb-legend-item-hidden {
+	opacity: 0.15;
+}
+
+.bb-legend-background {
+	opacity: 0.75;
+	fill: var(--dp-panel);
+	stroke: var(--dp-border);
+	stroke-width: 1;
+}
+
+/*-- Title --*/
+.bb-title {
+	font: 14px sans-serif;
+}
+
+/*-- Treemap --*/
+.bb-chart-treemaps rect {
+	stroke: var(--dp-panel);
+	stroke-width: 1px;
+}
+
+/*-- Tooltip --*/
+.bb-tooltip-container {
+	z-index: 10;
+	user-select: none;
+}
+
 .bb-tooltip {
+	border-collapse: collapse;
+	border-spacing: 0;
 	background-color: var(--dp-elevated);
+	empty-cells: show;
+	opacity: 0.9;
 	box-shadow: 7px 7px 12px -9px var(--dp-overlay);
+	white-space: nowrap;
 }
 
 .bb-tooltip tr {
@@ -2972,11 +3194,114 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 
 .bb-tooltip th {
 	background-color: var(--dp-elevated);
+	font-size: 14px;
+	padding: 2px 5px;
+	text-align: left;
 	color: var(--dp-text);
 }
 
 .bb-tooltip td {
+	font-size: 13px;
+	padding: 3px 6px;
 	background-color: var(--dp-panel);
 	border-left: 1px dotted var(--dp-border-strong);
+}
+
+.bb-tooltip td > span, .bb-tooltip td > svg {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	margin-right: 6px;
+}
+
+.bb-tooltip.value {
+	text-align: right;
+}
+
+/*-- Area --*/
+.bb-area {
+	stroke-width: 0;
+	opacity: 0.2;
+}
+
+/*-- Arc --*/
+.bb-chart-arcs-title {
+	dominant-baseline: middle;
+	font-size: 1.3em;
+}
+
+text.bb-chart-arcs-gauge-title {
+	dominant-baseline: middle;
+	font-size: 2.7em;
+}
+
+.bb-chart-arcs .bb-chart-arcs-background {
+	fill: var(--dp-elevated);
+	stroke: none;
+}
+
+.bb-chart-arcs .bb-chart-arcs-gauge-unit {
+	fill: var(--dp-text);
+	font-size: 16px;
+}
+
+.bb-chart-arcs .bb-chart-arcs-gauge-max {
+	fill: var(--dp-text-muted);
+}
+
+.bb-chart-arcs .bb-chart-arcs-gauge-min {
+	fill: var(--dp-text-muted);
+}
+
+.bb-chart-arcs .bb-levels circle {
+	fill: none;
+	stroke: var(--dp-border-strong);
+	stroke-width: 0.5px;
+}
+
+.bb-chart-arcs .bb-levels text {
+	fill: var(--dp-text-muted);
+}
+
+/*-- Radar --*/
+.bb-chart-radars .bb-levels polygon {
+	fill: none;
+	stroke: var(--dp-border-strong);
+	stroke-width: 0.5px;
+}
+
+.bb-chart-radars .bb-levels text {
+	fill: var(--dp-text-muted);
+}
+
+.bb-chart-radars .bb-axis line {
+	stroke: var(--dp-border-strong);
+	stroke-width: 0.5px;
+}
+
+.bb-chart-radars .bb-axis text {
+	font-size: 1.15em;
+	cursor: default;
+}
+
+.bb-chart-radars .bb-shapes polygon {
+	fill-opacity: 0.2;
+	stroke-width: 1px;
+}
+
+/*-- Button --*/
+.bb-button {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+
+.bb-button .bb-zoom-reset {
+	font-size: 11px;
+	border: solid 1px var(--dp-border);
+	background-color: var(--dp-panel);
 	color: var(--dp-text);
+	padding: 5px;
+	border-radius: 5px;
+	cursor: pointer;
 }
