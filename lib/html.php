@@ -2109,7 +2109,6 @@ function draw_actions_dropdown(array $actions_array, int $delete_action = 1) : v
 	?>
 	<div class='actionsDropdown'>
 		<div>
-			<span class='actionsDropdownArrow'><img src='<?php print get_theme_paths('%s', 'images/arrow.gif') ?>' alt=''></span>
 			<?php form_dropdown('drp_action', $actions_array, '', '', '0', '', ''); ?>
 			<span class='actionsDropdownButton'><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' id='submit' value='<?php print __esc('Go'); ?>' title='<?php print __esc('Execute Action'); ?>' form='<?php print $form_id; ?>'><?php print __esc('Go'); ?></button></span>
 		</div>
