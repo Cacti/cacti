@@ -22,16 +22,16 @@
   +-------------------------------------------------------------------------+
 */
 
-$rrdcolors['back']   = '161616';
-$rrdcolors['canvas'] = '060606';
-$rrdcolors['shadea'] = '0B0B0B';
-$rrdcolors['shadeb'] = '292929';
-$rrdcolors['grid']   = '545454';
-$rrdcolors['mgrid']  = '6A6C6C';
-$rrdcolors['font']   = 'FFFFFF';
-$rrdcolors['axis']   = '2C4D43';
-$rrdcolors['arrow']  = '2C4D43';
-$rrdcolors['frame']  = '060606';
+$rrdcolors['back']   = '11161D';
+$rrdcolors['canvas'] = '0B0E13';
+$rrdcolors['shadea'] = '11161D';
+$rrdcolors['shadeb'] = '11161D';
+$rrdcolors['grid']   = '2B3647';
+$rrdcolors['mgrid']  = '3A4657';
+$rrdcolors['font']   = 'E6EDF3';
+$rrdcolors['axis']   = '2E6A50';
+$rrdcolors['arrow']  = '18B981';
+$rrdcolors['frame']  = '11161D';
 
 # RRDtool graph fonts in RRDtool 1.2+
 $rrdfonts['title']['font']     = 'Arial';
