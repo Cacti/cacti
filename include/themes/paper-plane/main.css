@@ -645,38 +645,43 @@ label {
 }
 
 .tableRow {
-	color: white;
+	color: #333333;
 	line-height: 20px;
 }
 
 .odd {
 	border: none;
-	background: none repeat scroll 0 0 #222;
+	background: none repeat scroll 0 0 #e8e8e8;
 }
 
 .odd.tableRow {
-	color: #CCC;
-	background: none repeat scroll 0 0 #252525;
+	color: #333333;
+	background: none repeat scroll 0 0 #f0f0f0;
+}
+
+.tableRowGraph td {
+	padding: 3px;
+	vertical-align: top;
+	background: none repeat scroll 0 0 #222222;
 }
 
 .even {
 	border: none;
-	background: none repeat scroll 0 0 #222;
-	color: #CCC;
+	background: none repeat scroll 0 0 #e8e8e8;
 }
 
 .even.tableRow {
-	color: #CCC;
-	background: none repeat scroll 0 0 #222;
+	color: #333333;
+	background: none repeat scroll 0 0 #e8e8e8;
 }
 
 .even-alternate {
-	background: none repeat scroll 0 0 #252525;
+	background: none repeat scroll 0 0 #f0f0f0;
 }
 
 .even-alternate.tableRow {
-	color: #CCC;
-	background: none repeat scroll 0 0 #222;
+	color: #333333;
+	background: none repeat scroll 0 0 #e8e8e8;
 }
 
 .tableRow {
@@ -691,16 +696,16 @@ label {
 }
 
 .saveRow > input.ui-button {
-	border: 1px solid #93CEFF;
-	color: #93CEFF;
-	background: transparent;
+	border: 1px solid #707274;
+	color: #ffffff;
+	background: #5c5e60;
 	outline-style: none;
 }
 
 .saveRow > input.ui-button:hover {
-	color: #FFFFFF;
-	border: 1px solid #FFFFFF;
-	background: #5CB85C;
+	color: #ffffff;
+	border: 1px solid #808284;
+	background: #6c6e70;
 }
 
 .treeArea, .treeItemsArea {
@@ -949,16 +954,16 @@ label {
 }
 
 .cactiAuthTable input.ui-button {
-	border: 1px solid #93CEFF;
-	color: #93CEFF;
-	background: transparent;
+	border: 1px solid #707274;
+	color: #ffffff;
+	background: #5c5e60;
 	outline-style: none;
 }
 
 .cactiAuthTable input.ui-button:hover {
-	color: #FFFFFF;
-	border: 1px solid #FFFFFF;
-	background: #5CB85C;
+	color: #ffffff;
+	border: 1px solid #808284;
+	background: #6c6e70;
 }
 
 .cactiAuthErrors {
@@ -1007,18 +1012,18 @@ legend {
 }
 
 .actionsDropdown > div > span.ui-selectmenu-button {
-	background: transparent;
+	background: #ffffff !important;
 	outline-style: none;
-	color: #93CEFF;
-	border: 1px solid #93CEFF;
+	color: #555555;
+	border: 1px solid #bbbbbb;
 }
 
 .actionsDropdown > div > span.ui-selectmenu-button:hover,
 .actionsDropdown > div > span.ui-selectmenu-button[aria-expanded="true"] {
 	outline-style: none;
-	color: #FFFFFF;
-	border: 1px solid #FFFFFF;
-	background: #5CB85C;
+	color: #333333;
+	border: 1px solid #888888;
+	background: #ffffff !important;
 }
 
 .actionsDropdownButton {
@@ -1030,17 +1035,17 @@ legend {
 }
 
 .actionsDropdownButton > input.ui-button {
-	border: 1px solid #93CEFF;
-	color: #93CEFF;
-	background: transparent;
+	border: 1px solid #555555;
+	color: #ffffff;
+	background: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%) !important;
 	outline-style: none;
 	padding: 4px;
 }
 
 .actionsDropdownButton > input.ui-button:hover {
-	color: #FFFFFF;
-	border: 1px solid #FFFFFF;
-	background: #5CB85C;
+	color: #ffffff;
+	border: 1px solid #777777;
+	background: linear-gradient(to bottom, #4a4b4c 0%, #200000 100%) !important;
 }
 
 .actionsDropdownArrow {
@@ -1202,7 +1207,7 @@ legend {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-	color: #DDD;
+	color: #1b7a3d;
 	text-decoration: none;
 	font-size: 12px;
 	white-space: nowrap;
@@ -1210,7 +1215,7 @@ legend {
 }
 
 .linkEditMain:hover {
-	color: yellow;
+	color: #333333;
 	white-space: nowrap;
 	text-decoration: none;
 }
@@ -1342,6 +1347,7 @@ tr>td.textInfo.right {
 	margin-left: auto;
 	margin-right: auto;
 	border-color: #222;
+	color: #333333;
 }
 
 .cactiInstallLoaderSpinnerTheme {
@@ -2380,13 +2386,14 @@ tr.selectable {
 	white-space: nowrap;
 }
 
+tr.selectable:hover a.linkEditMain,
 tr.selectable a.linkEditMain:hover {
-	color: blue;
+	color: #7ee787;
 }
 
 tr.selectable:hover:not(.selected) {
-	background: #444;
-	color: #FFF;
+	background: #1D1F21;
+	color: #fff;
 }
 
 tr.selected a {
@@ -2730,10 +2737,6 @@ tr#realtime td:first-child {
 	left: 4px;
 	bottom: 4px;
 	background-color: white;
-	background-image: url('./images/cacti_logo.svg');
-	background-repeat: no-repeat;
-	background-size: 7px;
-	background-position: center;
 	-webkit-transition: .4s;
 	transition: .4s;
 }
@@ -2812,10 +2815,6 @@ input:checked + .checkboxSlider:before {
 	left: 4px;
 	bottom: 4px;
 	background-color: white;
-	background-image: url('./images/cacti_logo.svg');
-	background-repeat: no-repeat;
-	background-size: 7px;
-	background-position: center;
 	-webkit-transition: .4s;
 	transition: .4s;
 }
@@ -3158,9 +3157,49 @@ circle {
 
 .ui-state-default, .ui-selectmenu-button, .ui-button {
 	border: 1px solid #d3d3d3;
-	background: #111 !important;
+	background: #f5f5f5 !important;
 	font-weight: normal;
 	color: #555555;
+}
+
+.ui-button {
+	background: #5c5e60 !important;
+	color: #ffffff !important;
+	border: 1px solid #707274 !important;
+}
+
+.ui-button:hover, .ui-button:focus {
+	background: #6c6e70 !important;
+	background-image: none !important;
+	color: #ffffff !important;
+	border: 1px solid #808284 !important;
+}
+
+/* Secondary buttons (type=button): lighter than the primary submit buttons */
+input[type='button'].ui-button {
+	background: #e6e6e6 !important;
+	color: #555555 !important;
+	border: 1px solid #d3d3d3 !important;
+}
+
+input[type='button'].ui-button:hover, input[type='button'].ui-button:focus {
+	background: #dadada !important;
+	background-image: none !important;
+	color: #212121 !important;
+	border: 1px solid #999999 !important;
+}
+
+.ui-selectmenu-button, .ui-multiselect {
+	background: #ffffff !important;
+	color: #555555 !important;
+	border: 1px solid #bbbbbb !important;
+}
+
+.ui-selectmenu-button:hover, .ui-multiselect:hover {
+	background: #ffffff !important;
+	background-image: none !important;
+	color: #333333 !important;
+	border: 1px solid #888888 !important;
 }
 
 /* Select2 - adapt to look like a native Cacti/jQuery UI control.
@@ -3171,8 +3210,8 @@ circle {
 .select2-container--default .select2-selection--multiple {
 	border: 1px solid #d3d3d3;
 	border-radius: 6px;
-	background: #111111;
-	color: #cccccc;
+	background: #f5f5f5;
+	color: #555555;
 }
 
 /* match jQuery UI's shorter button height */
@@ -3308,15 +3347,15 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 
 .select2-container--default .select2-selection--single .select2-selection__rendered,
 .select2-container--default .select2-selection--single .select2-selection__placeholder {
-	color: #cccccc;
+	color: #333333;
 }
 
 /* select2 keeps --focus set after the dropdown closes; only --open should get the active look */
 .select2-container--default.select2-container--open .select2-selection--single,
 .select2-container--default.select2-container--open .select2-selection--multiple {
-	border-color: #999999;
-	background: #dadada;
-	color: #212121;
+	border-color: #888888;
+	background: #ffffff;
+	color: #333333;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow b {
@@ -3397,3 +3436,57 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 .jstree-default .jstree-closed:not(.jstree-loading) > .jstree-ocl::before { content: "\ea61"; }
 .jstree-default .jstree-open:not(.jstree-loading) > .jstree-ocl::before { content: "\ea5f"; }
 .jstree-default .jstree-leaf:not(.jstree-loading) > .jstree-ocl::before { content: ""; }
+/* Tree search box sits in the dark tree nav area - keep it dark with light text */
+#searcher {
+	background: #262626 !important;
+	color: #ffffff !important;
+	border: 1px solid #555555 !important;
+}
+
+/* Device status pills - translucent badges per state (matches the Deepness theme) */
+.deviceStatus {
+	display: inline-block;
+	padding: 1px 9px;
+	border: 1px solid transparent;
+	border-radius: 10px;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 16px;
+	white-space: nowrap;
+}
+
+.deviceStatus.deviceUp {
+	background-color: rgba(46, 125, 50, 0.16);
+	border-color: rgba(46, 125, 50, 0.55);
+	color: #1b5e20 !important;
+}
+
+.deviceStatus.deviceDown {
+	background-color: rgba(198, 40, 40, 0.16);
+	border-color: rgba(198, 40, 40, 0.55);
+	color: #b71c1c !important;
+}
+
+.deviceStatus.deviceRecovering {
+	background-color: rgba(230, 126, 34, 0.16);
+	border-color: rgba(230, 126, 34, 0.55);
+	color: #d35400 !important;
+}
+
+.deviceStatus.deviceError {
+	background-color: rgba(123, 31, 162, 0.16);
+	border-color: rgba(123, 31, 162, 0.5);
+	color: #6a1b9a !important;
+}
+
+.deviceStatus.deviceUnknown {
+	background-color: rgba(21, 101, 192, 0.16);
+	border-color: rgba(21, 101, 192, 0.5);
+	color: #0d47a1 !important;
+}
+
+.deviceStatus.deviceDisabled {
+	background-color: rgba(97, 97, 97, 0.16);
+	border-color: rgba(97, 97, 97, 0.5);
+	color: #424242 !important;
+}
