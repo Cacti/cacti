@@ -2881,6 +2881,20 @@ circle {
 	border: 1px solid #808284 !important;
 }
 
+/* Secondary buttons (type=button): lighter than the primary submit buttons */
+input[type='button'].ui-button {
+	background: #e6e6e6 !important;
+	color: #555555 !important;
+	border: 1px solid #d3d3d3 !important;
+}
+
+input[type='button'].ui-button:hover, input[type='button'].ui-button:focus {
+	background: #dadada !important;
+	background-image: none !important;
+	color: #212121 !important;
+	border: 1px solid #999999 !important;
+}
+
 .ui-selectmenu-button, .ui-multiselect {
 	background: #ffffff !important;
 	color: #555555 !important;
