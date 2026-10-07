@@ -7646,7 +7646,9 @@ function CactiErrorHandler(int $level, string $message, string $file, int $line,
 		return true;
 	}
 
-	if (error_reporting() == 0) {
+	// Honor the @ operator: PHP 8 sets error_reporting() to a non-zero bitmask
+	// that excludes the suppressed level rather than to 0 as PHP 7 did.
+	if (!(error_reporting() & $level)) {
 		return true;
 	}
 
