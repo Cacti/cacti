@@ -2978,82 +2978,16 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 }
 
 /* ======================================================================== */
-/* Billboard charts - billboard.css ships light upstream defaults and is not */
-/* loaded on the AJAX overload path, so the required .bb rules are carried    */
-/* here (like the Dark theme), repainted onto the theme palette via :root.    */
+/* Billboard charts (billboard.js 3.13) - billboard.css is not loaded on the  */
+/* AJAX overload path, so the full stylesheet is mirrored here (like the Dark */
+/* theme) repainted onto the theme palette via :root. Keep in sync with       */
+/* billboard.css.                                                             */
 /* ======================================================================== */
-
-.bb-chart {
-}
-
-.bb-chart-arc path {
-	fill: var(--dp-text-muted);
-}
-
-.bb-tooltip {
-}
-
-.bb-legend-item {
-	fill: var(--dp-text-muted);
-}
-
-.bb-grid {
-	fill: var(--dp-text-muted);
-}
-
-.bb-axis {
-	fill: var(--dp-text-muted);
-}
-
-/*-- Tooltip --*/
-.bb-tooltip-container {
-	z-index: 10;
-}
-
-.bb-tooltip {
-	border-collapse: collapse;
-	border-spacing: 0;
-	background-color: var(--dp-elevated);
-	empty-cells: show;
-	box-shadow: 7px 7px 12px -9px var(--dp-overlay);
-	opacity: 0.9;
-}
-
-.bb-tooltip tr {
-	border: 1px solid var(--dp-border);
-}
-
-.bb-tooltip th {
-	background-color: var(--dp-elevated);
-	font-size: 14px;
-	padding: 2px 5px;
-	text-align: left;
-	color: var(--dp-text);
-}
-
-.bb-tooltip td {
-	font-size: 13px;
-	padding: 3px 6px;
-	background-color: var(--dp-panel);
-	border-left: 1px dotted var(--dp-border-strong);
-	color: var(--dp-text);
-}
-
-.bb-tooltip td > span {
-	display: inline-block;
-	width: 10px;
-	height: 10px;
-	margin-right: 6px;
-}
-
-.bb-tooltip td.value {
-	text-align: right;
-}
 
 /*-- Chart --*/
 .bb svg {
 	font: 10px sans-serif;
-	-webkit-tap-highlight-color: transparent;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 .bb path, .bb line {
@@ -3061,7 +2995,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	stroke: var(--dp-text-muted);
 }
 
-.bb text {
+.bb text, .bb .bb-button {
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	user-select: none;
@@ -3069,14 +3003,26 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 
 .bb-legend-item-tile,
 .bb-xgrid-focus,
-.bb-ygrid,
-.bb-event-rect,
-.bb-bars path {
+.bb-ygrid-focus,
+.bb-ygrid {
 	shape-rendering: crispEdges;
+}
+
+.bb-chart-arcs .bb-needle {
+	fill: var(--dp-text);
+}
+
+.bb-chart-arc .bb-gauge-value {
+	fill: var(--dp-text);
 }
 
 .bb-chart-arc path {
 	stroke: var(--dp-panel);
+}
+
+.bb-chart-arc rect {
+	stroke: var(--dp-panel);
+	stroke-width: 1;
 }
 
 .bb-chart-arc text {
@@ -3084,8 +3030,32 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	font-size: 13px;
 }
 
+/*-- Funnel --*/
+.bb-chart-funnels path {
+	stroke-width: 0;
+}
+
+.bb-chart-funnels + .bb-chart-texts text {
+	font-size: 13px;
+	fill: var(--dp-text);
+}
+
 /*-- Axis --*/
+.bb-axis {
+	shape-rendering: crispEdges;
+}
+
+.bb-axis .bb-axis-x-tooltip, .bb-axis .bb-axis-y-tooltip, .bb-axis .bb-axis-y2-tooltip {
+	font-size: 1em;
+	fill: var(--dp-text);
+	white-space: nowrap;
+}
+
 /*-- Grid --*/
+.bb-grid {
+	pointer-events: none;
+}
+
 .bb-grid line {
 	stroke: var(--dp-grid);
 }
@@ -3129,33 +3099,55 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	fill-opacity: 0.75;
 }
 
+/*-- Candlestick --*/
+.bb-candlestick {
+	stroke-width: 1px;
+}
+
+.bb-candlestick._expanded_ {
+	fill-opacity: 0.75;
+}
+
 /*-- Focus --*/
-.bb-target.bb-focused {
+.bb-target.bb-focused, .bb-circles.bb-focused {
 	opacity: 1;
 }
 
-.bb-target.bb-focused path.bb-line, .bb-target.bb-focused path.bb-step {
+.bb-target.bb-focused path.bb-line, .bb-target.bb-focused path.bb-step, .bb-circles.bb-focused path.bb-line, .bb-circles.bb-focused path.bb-step {
 	stroke-width: 2px;
 }
 
-.bb-target.bb-defocused {
+.bb-target.bb-defocused, .bb-circles.bb-defocused {
 	opacity: 0.3 !important;
+}
+
+.bb-target.bb-defocused .text-overlapping, .bb-circles.bb-defocused .text-overlapping {
+	opacity: 0.05 !important;
 }
 
 /*-- Region --*/
 .bb-region {
 	fill: var(--dp-accent);
-	fill-opacity: .1;
+}
+
+.bb-region rect {
+	fill-opacity: 0.1;
+}
+
+/*-- Zoom region --*/
+.bb-zoom-brush {
+	fill-opacity: 0.1;
 }
 
 /*-- Brush --*/
 .bb-brush .extent {
-	fill-opacity: .1;
+	fill-opacity: 0.1;
 }
 
 /*-- Legend --*/
 .bb-legend-item {
 	font-size: 12px;
+	user-select: none;
 }
 
 .bb-legend-item-hidden {
@@ -3174,6 +3166,58 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	font: 14px sans-serif;
 }
 
+/*-- Treemap --*/
+.bb-chart-treemaps rect {
+	stroke: var(--dp-panel);
+	stroke-width: 1px;
+}
+
+/*-- Tooltip --*/
+.bb-tooltip-container {
+	z-index: 10;
+	user-select: none;
+}
+
+.bb-tooltip {
+	border-collapse: collapse;
+	border-spacing: 0;
+	background-color: var(--dp-elevated);
+	empty-cells: show;
+	opacity: 0.9;
+	box-shadow: 7px 7px 12px -9px var(--dp-overlay);
+	white-space: nowrap;
+}
+
+.bb-tooltip tr {
+	border: 1px solid var(--dp-border);
+}
+
+.bb-tooltip th {
+	background-color: var(--dp-elevated);
+	font-size: 14px;
+	padding: 2px 5px;
+	text-align: left;
+	color: var(--dp-text);
+}
+
+.bb-tooltip td {
+	font-size: 13px;
+	padding: 3px 6px;
+	background-color: var(--dp-panel);
+	border-left: 1px dotted var(--dp-border-strong);
+}
+
+.bb-tooltip td > span, .bb-tooltip td > svg {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	margin-right: 6px;
+}
+
+.bb-tooltip.value {
+	text-align: right;
+}
+
 /*-- Area --*/
 .bb-area {
 	stroke-width: 0;
@@ -3184,6 +3228,11 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 .bb-chart-arcs-title {
 	dominant-baseline: middle;
 	font-size: 1.3em;
+}
+
+text.bb-chart-arcs-gauge-title {
+	dominant-baseline: middle;
+	font-size: 2.7em;
 }
 
 .bb-chart-arcs .bb-chart-arcs-background {
@@ -3204,6 +3253,55 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	fill: var(--dp-text-muted);
 }
 
-.bb-chart-arc .bb-gauge-value {
-	fill: var(--dp-text);
+.bb-chart-arcs .bb-levels circle {
+	fill: none;
+	stroke: var(--dp-border-strong);
+	stroke-width: 0.5px;
+}
+
+.bb-chart-arcs .bb-levels text {
+	fill: var(--dp-text-muted);
+}
+
+/*-- Radar --*/
+.bb-chart-radars .bb-levels polygon {
+	fill: none;
+	stroke: var(--dp-border-strong);
+	stroke-width: 0.5px;
+}
+
+.bb-chart-radars .bb-levels text {
+	fill: var(--dp-text-muted);
+}
+
+.bb-chart-radars .bb-axis line {
+	stroke: var(--dp-border-strong);
+	stroke-width: 0.5px;
+}
+
+.bb-chart-radars .bb-axis text {
+	font-size: 1.15em;
+	cursor: default;
+}
+
+.bb-chart-radars .bb-shapes polygon {
+	fill-opacity: 0.2;
+	stroke-width: 1px;
+}
+
+/*-- Button --*/
+.bb-button {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+
+.bb-button .bb-zoom-reset {
+	font-size: 11px;
+	border: solid 1px var(--dp-border);
+	background-color: var(--dp-panel);
+	color: var(--dp-text);
+	padding: 5px;
+	border-radius: 5px;
+	cursor: pointer;
 }
