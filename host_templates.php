@@ -884,7 +884,7 @@ function template() {
 				applyFilter();
 			});
 
-			$('#refresh, #has_hosts').on('click', function() {
+			$('#has_hosts').on('click', function() {
 				applyFilter();
 			});
 

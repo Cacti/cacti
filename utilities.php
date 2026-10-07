@@ -2548,8 +2548,8 @@ function boost_display_run_status() {
 	});
 	</script>
 	<tr class='even'>
-		<form id='form_boost_utilities_stats' method='post'>
 		<td>
+		<form id='form_boost_utilities_stats' method='post'>
 			<table>
 				<tr>
 					<td class='nowrap'>
@@ -2568,8 +2568,8 @@ function boost_display_run_status() {
 					</td>
 				</tr>
 			</table>
-		</td>
 		</form>
+		</td>
 	</tr>
 	<?php
 	html_end_box(true);

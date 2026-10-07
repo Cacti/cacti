@@ -341,7 +341,7 @@ function gprint_presets() {
 			}
 
 			$(function() {
-				$('#refresh, #has_graphs').on('click', function() {
+				$('#has_graphs').on('click', function() {
 					applyFilter();
 				});
 

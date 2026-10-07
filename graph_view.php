@@ -1113,7 +1113,7 @@ case 'list':
 			viewGraphs();
 		});
 
-		$('#chk').on('submit', function(event) {
+		$('#chk').off('submit').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});

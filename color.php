@@ -611,7 +611,7 @@ function color() {
 			}
 
 			$(function() {
-				$('#refresh, #has_graphs, #named').on('click', function() {
+				$('#has_graphs, #named').on('click', function() {
 					applyFilter();
 				});
 
