@@ -64,7 +64,21 @@ function __(string $text, mixed ...$args) : string { return $text; }
 
 $source = file_get_contents(dirname(__DIR__, 3) . '/lib/functions.php');
 preg_match('/function CactiErrorHandler\(.*?^}\R/ms', $source, $matches);
-eval('namespace CactiErrorHandlerSuppressionTest;' . $matches[0]);
+
+$handler = $matches[0];
+
+/*
+ * These cases exercise the error_reporting() mask and the logging path, not
+ * install mode.  This suite shares one PHP process with the rest of Pest, and
+ * another test file (tests/integration/BoostProcessTableUpgradeIntegrationTest)
+ * defines the global IN_CACTI_INSTALL constant at collection time.  A constant
+ * cannot be unset, so strip the install-mode short-circuit from the sandboxed
+ * copy; without this the handler would return true before reaching the branch
+ * under test whenever that other file has loaded first.
+ */
+$handler = preg_replace('/if \(defined\(\'IN_CACTI_INSTALL\'\)\) \{\s*return true;\s*\}\s*/', '', $handler, 1);
+
+eval('namespace CactiErrorHandlerSuppressionTest;' . $handler);
 
 beforeEach(function () {
 	$GLOBALS['ceh_log_calls']       = [];
