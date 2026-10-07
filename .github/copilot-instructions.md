@@ -6,7 +6,7 @@
 - **Core Purpose**: Polls devices (SNMP, scripts), stores time-series data in **RRDtool**, and renders historical graphs for network operations.
 
 - **Architecture**:
-  - **Frontend**: PHP 8.3+ web UI for configuration and visualization.
+  - **Frontend**: PHP web UI (supported versions are declared in `composer.json` and CI) for configuration and visualization.
   - **Backend**: MySQL/MariaDB for metadata/state/configuration/statistics; 
                  RRD files for metrics.
   - **Polling**: Scalable data collection via `cmd.php` (PHP) or `spine` (C), supporting remote pollers.
@@ -136,3 +136,13 @@
 
   - After moving a test between folders, update every path in it, and check each one individually. Setting them all to the repo-root depth silently breaks the `tests/`-internal ones. A `require` that resolves to a missing file is fatal during bootstrap and stops the whole suite rather than failing one test.
   - Verify a move by running the suite, not by reading the diff.
+
+## Shared tooling and operational boundaries
+
+Read [AGENTS.md](../AGENTS.md) for test layout and dependency constraints. Select
+runtimes through `mise`, matching `composer.json`, `.nvmrc` and the checked-out
+CI matrix. `composer check` is the canonical aggregate check; `npm test` covers
+frontend contracts. Install/upgrade and poller examples above modify a live
+installation and require a deliberately selected disposable environment or
+explicit deployment authorization. Keep private research notes and credentials
+out of tracked guidance. Preserve hook failures; missing checks are unverified.

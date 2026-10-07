@@ -101,8 +101,6 @@ include/vendor/csrf/csrf-secret.php
 
 # Ignore local developer tooling state (Claude Code, oh-my-claudecode, git worktrees, local notes)
 .claude/
-.omc/
-.worktrees/
 notepad.md
 
 # Ignore vendor folders
@@ -116,12 +114,9 @@ tests/vendor/**
 .env.*.local
 docker-compose.override.yml
 
-# Ignore Claude and Worktrees
-.worktrees/**
 .claude/**
 
 # Security research artifacts (never commit)
-CLAUDE.md
 reproduce_ghsa_*.php
 verify_task*.php
 .gemini_security/
@@ -133,7 +128,6 @@ verify_task*.php
 /tests/.phpunit.result.cache
 
 # Local autopilot/session data
-/.omc/
 /docs/superpowers/
 
 # Front-end JavaScript libraries built from package.json via `npm run build:js`.
@@ -159,3 +153,11 @@ verify_task*.php
 /include/js/lzjs.js
 /include/js/screenfull.js
 /include/js/select2.js
+
+# Local assistant sessions and isolated worktrees
+.omc/
+.worktrees/
+
+# Python tooling caches
+__pycache__/
+*.py[cod]
