@@ -173,6 +173,7 @@ Cacti CHANGELOG
 -issue#8173: Restore selected preset and custom date ranges for graph lists while preserving detailed panel ranges (PR#8178)
 -issue#8177: Prevent clipped detailed graph panels and improve theme visibility when printing or saving as PDF
 -issue#8209: Make filter Go buttons submit the form
+-issue#8210: Restore multi-column table sorting lost during filter hardening
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes
