@@ -689,16 +689,16 @@ label {
 }
 
 .saveRow > input.ui-button {
-	border: 1px solid #555555;
+	border: 1px solid #707274;
 	color: #ffffff;
-	background: #3a3b3c;
+	background: #5c5e60;
 	outline-style: none;
 }
 
 .saveRow > input.ui-button:hover {
 	color: #ffffff;
-	border: 1px solid #777777;
-	background: #4a4b4d;
+	border: 1px solid #808284;
+	background: #6c6e70;
 }
 
 .treeArea, .treeItemsArea {
@@ -941,16 +941,16 @@ label {
 }
 
 .cactiLoginTable input.ui-button {
-	border: 1px solid #555555;
+	border: 1px solid #707274;
 	color: #ffffff;
-	background: #3a3b3c;
+	background: #5c5e60;
 	outline-style: none;
 }
 
 .cactiLoginTable input.ui-button:hover {
 	color: #ffffff;
-	border: 1px solid #777777;
-	background: #4a4b4d;
+	border: 1px solid #808284;
+	background: #6c6e70;
 }
 
 .loginErrors, .logoutErrors {
@@ -1022,17 +1022,17 @@ legend {
 }
 
 .actionsDropdownButton > input.ui-button {
-	border: 1px solid #bbbbbb;
-	color: #555555;
-	background: #ffffff !important;
+	border: 1px solid #555555;
+	color: #ffffff;
+	background: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%) !important;
 	outline-style: none;
 	padding: 4px;
 }
 
 .actionsDropdownButton > input.ui-button:hover {
-	color: #333333;
-	border: 1px solid #888888;
-	background: #ffffff !important;
+	color: #ffffff;
+	border: 1px solid #777777;
+	background: linear-gradient(to bottom, #4a4b4c 0%, #200000 100%) !important;
 }
 
 .actionsDropdownArrow {
@@ -2869,16 +2869,16 @@ circle {
 }
 
 .ui-button {
-	background: #3a3b3c !important;
+	background: #5c5e60 !important;
 	color: #ffffff !important;
-	border: 1px solid #555555 !important;
+	border: 1px solid #707274 !important;
 }
 
 .ui-button:hover, .ui-button:focus {
-	background: #4a4b4d !important;
+	background: #6c6e70 !important;
 	background-image: none !important;
 	color: #ffffff !important;
-	border: 1px solid #777777 !important;
+	border: 1px solid #808284 !important;
 }
 
 .ui-selectmenu-button, .ui-multiselect {
