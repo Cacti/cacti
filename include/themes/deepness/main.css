@@ -264,6 +264,11 @@ label {
 	vertical-align: -0.125em;
 }
 
+/* Emerald console glyph when the Console tab is not the active tab */
+#tab-console:not(.selected) .glyph_tab-console {
+	color: var(--dp-accent);
+}
+
 .text_tab-console {
 	display: none;
 }
