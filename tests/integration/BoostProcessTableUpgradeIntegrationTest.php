@@ -28,13 +28,6 @@
  * for the same env vars.  Skips (does not fail) if unreachable.
  */
 
-// Production upgrade entry points define this before loading upgrade files.
-// It also makes schema probes bypass their runtime cache while this test
-// deliberately drops and recreates the same table between cases.
-if (!defined('IN_CACTI_INSTALL')) {
-	define('IN_CACTI_INSTALL', 1);
-}
-
 require_once __DIR__ . '/../Helpers/UnitStubs.php';
 require_once dirname(__DIR__, 2) . '/lib/database.php';
 require_once dirname(__DIR__, 2) . '/lib/boost.php';
@@ -57,6 +50,15 @@ beforeEach(function () {
 		test()->markTestSkipped('No MySQL/MariaDB test instance reachable at ' . $dsn . ': ' . $e->getMessage());
 
 		return;
+	}
+
+	// Define install mode only once the DB is in play, so collection-time loading
+	// of this integration test never leaks IN_CACTI_INSTALL into the rest of the
+	// shared-process unit suite. Upgrade files need it before they run, and it
+	// makes schema probes bypass their runtime cache while this test drops and
+	// recreates the same table between cases.
+	if (!defined('IN_CACTI_INSTALL')) {
+		define('IN_CACTI_INSTALL', 1);
 	}
 
 	$database_hostname = 'unit-test-host';

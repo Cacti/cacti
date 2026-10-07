@@ -286,3 +286,24 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	display: inline-block;
 	animation: fa-spin 1.5s linear infinite;
 }
+
+/* ======================================================================== */
+/* Billboard charts - billboard.css is not loaded on the AJAX overload path, */
+/* so the required .bb rules are carried here (moved out of the plugins).    */
+/* ======================================================================== */
+
+.bb-axis-x text, .bb-axis-y text, .bb-axis-y2 text, .bb-legend-item text {
+	fill: #7e818f;
+}
+
+.bb .bb-axis path, .bb .bb-axis line {
+	stroke: #7e818f;
+}
+
+.bb-chart-arc text {
+	fill: white;
+}
+
+.bb-chart-arc path {
+	stroke: #7e818f;
+}

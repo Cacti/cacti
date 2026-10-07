@@ -76,6 +76,7 @@ include/themes/custom.css
 !include/themes/carrot/*
 !include/themes/classic/*
 !include/themes/dark/*
+!include/themes/deepness/*
 !include/themes/hollyberry/*
 !include/themes/modern/*
 !include/themes/paper-plane/*
