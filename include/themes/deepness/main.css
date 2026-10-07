@@ -120,7 +120,7 @@ i.fa, i.fas, i.fab, i.far, i.fal {
 }
 
 .menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab, .menu_parent i.far, .menu_parent i.fal {
-	color: var(--dp-accent);
+	color: var(--dp-text);
 }
 
 fieldset {
