@@ -115,7 +115,8 @@ img {
 
 i.fa, i.fas, i.fab, i.far, i.fal {
 	padding: 0px 3px;
-	font-size: 13px;
+	font-size: 15px;
+	text-align: left;
 	vertical-align: middle;
 }
 
@@ -2267,7 +2268,7 @@ input[type="checkbox"].checkbox {
 }
 
 #nav li ul li a {
-	padding: 2px 4px 2px 32px;
+	padding: 2px 4px 2px 5px;
 	background: var(--dp-sidebar);
 }
 
@@ -2478,14 +2479,17 @@ tr#realtime td:first-child {
 }
 
 .menu_glyph {
-	font-size: 12px;
+	font-size: 18px;
 	vertical-align: middle;
 	text-align: left;
-	width: 20px;
+	width: 22px;
+	padding-right: 0px !important;
+	display: inline-block;
 }
 
 .menuitem span {
 	vertical-align: middle;
+	line-height: 20px;
 }
 
 .ui-autocomplete {
