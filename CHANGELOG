@@ -41,6 +41,7 @@ Cacti CHANGELOG
 -security#8158: Harden - Confine automation sorting and pagination before SQL and HTML rendering
 -security#8158: Harden - Replace sibling password-reset links and revoke authentication state after reset
 -security#GHSA-3jj2-v5ch-wmq5: Fail closed on a posted LDAP realm that is not a configured domain
+-issue#8221: Align the Deepness theme console menu icon sizing and alignment with the Modern theme and remove the sub-menu indentation
 -issue#8219: Fix the Deepness theme rendering the modern filter bar controls stacked vertically by porting the missing .filterRow/.filterColumn table-display rules from the other themes
 -issue#8220: Skin the modern filter Edit dialog (.ui-dialog.cactiFilterDialog titlebar/content/buttonpane) for the Deepness theme using its emerald palette so the dialog matches the theme instead of the default jQuery UI themeroller look
 -issue#8171: SNMPv3 devices using an auth/privacy protocol the running PHP cannot service natively (e.g. AES-256 before PHP 8.6) now collect through the Net-SNMP binary via a binary-delegating session instead of fataling the poller/device-edit, and the vendored classSNMP.php compatibility shim is removed
