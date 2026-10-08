@@ -929,8 +929,8 @@ a:visited.ui-button,
 .ui-widget-header .ui-state-focus,
 .ui-button:hover,
 .ui-button:focus {
-	border: 1px solid #155413;
-	background: #155413 url("images/ui-bg_highlight-soft_33_155413_1x100.png") 50% 50% repeat-x;
+	border: 1px solid #0c5f44;
+	background: #0c5f44;
 	font-weight: normal;
 	color: #ffffff;
 }
@@ -957,14 +957,14 @@ a.ui-button:focus {
 a.ui-button:active,
 .ui-button:active,
 .ui-button.ui-state-active:hover {
-	border: 1px solid #31442b;
-	background: #31442b url("images/ui-bg_highlight-hard_20_31442b_1x100.png") 50% 50% repeat-x;
+	border: 1px solid #0c5f44;
+	background: #0c5f44;
 	font-weight: normal;
 	color: #ffffff;
 }
 .ui-icon-background,
 .ui-state-active .ui-icon-background {
-	border: #31442b;
+	border: #0c5f44;
 	background-color: #ffffff;
 }
 .ui-state-active a,
