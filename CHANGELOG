@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.x
 -security#GHSA-x664-x4hf-p9xh: Require a POST request with a CSRF token for the User Log purge (utilities.php clear_user_log) so the state-changing action can no longer be triggered cross-site via a GET request
+-issue#8233: Harmonize all remaining Deepness theme greens to its emerald palette so info/success dialog text (.deviceUp), status text, the Up badge, tree border, reload icon, Pace bar and jQuery UI hover/active states no longer render as a clashing kelly/olive green
 -issue#8232: Use a clean green for the device-status .deviceUp color instead of a muddy olive, most visibly on the jQuery UI message dialog where info/success messages are rendered with that class
 -feature#8222: Add theme-appropriate host status pills to the Dark theme
 -feature#8189: Add a MySQL/MariaDB variable capability matrix to the Database section and stop recommending variables deprecated or removed on the detected server
