@@ -85,8 +85,8 @@ test('GHSA-fq9x: substitute_script_path replaces tokens in a single pass over th
 	expect($functionsSource)->toContain('function substitute_script_path(');
 	// a single preg_replace_callback over the ORIGINAL template, not an
 	// iterative str_replace loop that re-scans substituted output.
-	expect($functionsSource)->toContain("preg_replace_callback('/<([A-Za-z0-9_]+)>/',");
-	expect($functionsSource)->toContain('array_key_exists($matches[1], $escaped_values)');
+	expect($functionsSource)->toContain('>(?(1)');
+	expect($functionsSource)->toContain('array_key_exists($matches[2], $escaped_values)');
 });
 
 test('GHSA-fq9x: both path builders no longer re-scan the mutated buffer with str_replace', function () use ($functionsSource) {
