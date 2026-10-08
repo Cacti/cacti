@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-issue#8225: Restyle the Deepness theme login page with a flat deep-dark background and a bordered, slightly-greyer login box
 -feature#8189: Add a MySQL/MariaDB variable capability matrix to the Database section and stop recommending variables deprecated or removed on the detected server
 -security#GHSA-fq9x-x3vf-3vf2: Substitute data-input field tokens in a single pass so a composed value cannot re-inject an escaped payload into the script command line
 -security#GHSA-54hx-hxc4-jq7j: Numeric-cast the graph-item value for TICK fraction and SHIFT statements before the RRDtool command line
