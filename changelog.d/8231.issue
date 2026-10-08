@@ -1,0 +1,1 @@
+Recolor the device-status .deviceUp class from a muddy olive to a clean green so the 'good' color reads correctly, most visibly on the jQuery UI message dialog where core wraps info/success messages in a .deviceUp span
