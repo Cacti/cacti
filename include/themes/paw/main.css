@@ -119,7 +119,7 @@ a, a:active, a:visited {
 
 a:hover {
 	text-decoration: none;
-	color: #333333;
+	color: #15307a;
 }
 
 th .fa {
@@ -1106,7 +1106,7 @@ legend {
 }
 
 .linkEditMain:hover {
-	color: yellow;
+	color: #15307a;
 	white-space: nowrap;
 	text-decoration: none;
 }
@@ -2119,7 +2119,7 @@ tr.selected {
 }
 
 tr.selected a.linkEditMain:visited {
-	color: yellow;
+	color: #a9c7ff;
 }
 
 tr:not(.selectable) a.linkEditMain:hover {
@@ -2127,7 +2127,7 @@ tr:not(.selectable) a.linkEditMain:hover {
 }
 
 tr.selectable a.linkEditMain:hover {
-	color: yellow;
+	color: #15307a;
 }
 
 tr.selectable:hover:not(.selected) {
