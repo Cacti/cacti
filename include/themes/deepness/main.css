@@ -1475,14 +1475,18 @@ legend {
 .ui-dialog .ui-dialog-titlebar {
 	border: 0;
 	border-radius: 0;
-	padding: 10px 14px;
-	background: var(--dp-accent-deep);
+	padding: 0 8px;
+	height: 28px;
+	line-height: 28px;
+	background: var(--dp-header);
 	color: var(--dp-text);
-	font-size: 14px;
+	font-size: 1em;
+	font-weight: 700;
 }
 
 .ui-dialog .ui-dialog-title {
-	font-weight: bold;
+	font-weight: 700;
+	line-height: 28px;
 }
 
 .ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
@@ -1490,8 +1494,17 @@ legend {
 	border: 0;
 }
 
+.ui-dialog .ui-dialog-titlebar-close.ui-state-hover,
+.ui-dialog .ui-dialog-titlebar-close:hover,
+.ui-dialog .ui-dialog-titlebar-close:focus {
+	background: transparent;
+	border: 0;
+}
+
+/* X uses the white ui-icons_ffffff sprite via .ui-widget-header; keep it light
+   on the dark titlebar (drop the invert that turned it dark) */
 .ui-dialog .ui-dialog-titlebar-close .ui-icon {
-	filter: invert(1) brightness(2);
+	filter: none;
 }
 
 .ui-dialog .ui-dialog-content {
