@@ -2763,6 +2763,49 @@ td.center > table {
 	white-space: nowrap;
 }
 
+/* jQuery UI selectmenu + autocomplete - match the select2 dark look.
+   deepness's jquery-ui.css still ships the dark theme's themeroller colours
+   (black #000000 menu, green #155413 hover, olive #31442b active); restyle
+   the selectmenu button and the popup menus to this theme's palette so they
+   render like the select2 controls. */
+.ui-selectmenu-button.ui-button {
+	background: var(--dp-panel);
+	background-image: none;
+	border: 1px solid var(--dp-border);
+	border-radius: 6px;
+	color: var(--dp-text);
+}
+
+.ui-selectmenu-button.ui-button:hover,
+.ui-selectmenu-button.ui-selectmenu-button-open {
+	background: var(--dp-panel-alt);
+	border-color: var(--dp-border);
+	color: var(--dp-text);
+}
+
+.ui-selectmenu-menu .ui-menu,
+.ui-menu.ui-autocomplete {
+	background: var(--dp-panel);
+	background-image: none;
+	border: 1px solid var(--dp-border);
+	color: var(--dp-text);
+}
+
+.ui-selectmenu-menu .ui-menu .ui-menu-item-wrapper,
+.ui-menu.ui-autocomplete .ui-menu-item-wrapper {
+	color: var(--dp-text);
+}
+
+.ui-selectmenu-menu .ui-menu .ui-state-focus,
+.ui-selectmenu-menu .ui-menu .ui-state-active,
+.ui-menu.ui-autocomplete .ui-state-focus,
+.ui-menu.ui-autocomplete .ui-state-active {
+	background: var(--dp-header);
+	background-image: none;
+	border: 1px solid transparent;
+	color: var(--dp-text);
+}
+
 .ui-tabs-active .ui-tabs-anchor {
 	color: var(--dp-text) !important;
 }
