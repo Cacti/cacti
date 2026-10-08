@@ -2670,9 +2670,9 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
  *   tokens are left intact for the caller's trailing cleanup to strip.
  */
 function substitute_script_path($template, $escaped_values) {
-	return preg_replace_callback('/<([A-Za-z0-9_]+)>/',
+	return preg_replace_callback('/(["\'])?<([A-Za-z0-9_]+)>(?(1)\1)/',
 		function($matches) use ($escaped_values) {
-			return array_key_exists($matches[1], $escaped_values) ? $escaped_values[$matches[1]] : $matches[0];
+			return array_key_exists($matches[2], $escaped_values) ? $escaped_values[$matches[2]] : $matches[0];
 		},
 		(string) $template);
 }

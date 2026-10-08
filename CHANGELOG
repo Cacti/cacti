@@ -1,6 +1,8 @@
 Cacti CHANGELOG
 
 1.2.x
+-security#GHSA-5v3j-wcrr-jxjg: Shed matched quotes around resolved Data Input <field> tokens so an escaped value cannot break out of a quoted placeholder
+-security#GHSA-vhh2-gghg-whjg: Confirm the spikekill poller escapes the --rrdfile path (regression test)
 -issue#8233: Harmonize all remaining Deepness theme greens to its emerald palette so info/success dialog text (.deviceUp), status text, the Up badge, tree border, reload icon, Pace bar and jQuery UI hover/active states no longer render as a clashing kelly/olive green
 -issue#8232: Use a clean green for the device-status .deviceUp color instead of a muddy olive, most visibly on the jQuery UI message dialog where info/success messages are rendered with that class
 -feature#8222: Add theme-appropriate host status pills to the Dark theme
