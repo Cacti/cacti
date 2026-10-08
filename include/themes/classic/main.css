@@ -156,7 +156,11 @@ select {
 }
 
 tr.selected {
-	background-color: khaki;
+	background-color: #bcd6ef;
+}
+
+tr.selectable:hover:not(.selected) {
+	background: rgba(0, 67, 140, 0.1);
 }
 
 label {
