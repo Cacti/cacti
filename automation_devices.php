@@ -65,6 +65,8 @@ set_default_action();
 
 switch(grv('action')) {
 	case 'purge':
+		csrf_require_post();
+
 		purge_discovery_results();
 
 		break;
@@ -611,6 +613,7 @@ function create_automation_devices_filter() : array {
 				'display'  => __('Purge'),
 				'action'   => 'default',
 				'title'    => __('Purge the Discovered Devices from the Database'),
+				'callback' => 'postUrl({ url: \'automation_devices.php?action=purge\' }, { __csrf_magic: csrfMagicToken })'
 			]
 		],
 		'sort' => [

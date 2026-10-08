@@ -29,6 +29,8 @@ set_default_action();
 
 switch (grv('action')) {
 	case 'purge_execute':
+		csrf_require_post();
+
 		clear_user_log();
 		raise_message('purge_user_log', __('User Log Purged.'), MESSAGE_LEVEL_INFO);
 		header('location: user_log.php');
@@ -220,7 +222,7 @@ function purge_user_log() : void {
 				$(function() {
 					$('#pc').click(function() {
 						strURL = location.pathname+'?action=purge_execute';
-						loadUrl({url:strURL})
+						postUrl({url: strURL}, {__csrf_magic: csrfMagicToken});
 					});
 
 					$('#cancel').click(function() {

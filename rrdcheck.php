@@ -39,6 +39,8 @@ if (read_config_option('rrdcheck_enable') != 'on') {
 
 switch(grv('action')) {
 	case 'purge':
+		csrf_require_post();
+
 		rrdcheck_purge();
 
 	default:
@@ -250,10 +252,11 @@ function create_rrdcheck_filter() : array {
 				'title'   => __('Reset filter to default values'),
 			],
 			'purge' => [
-				'method'  => 'button',
-				'display' => __('Purge'),
-				'action'  => 'default',
-				'title'   => __('Purge Data Source Checks from the Database'),
+				'method'   => 'button',
+				'display'  => __('Purge'),
+				'action'   => 'default',
+				'title'    => __('Purge Data Source Checks from the Database'),
+				'callback' => 'postUrl({ url: \'rrdcheck.php?action=purge\' }, { __csrf_magic: csrfMagicToken })'
 			]
 		],
 		'sort' => [
