@@ -1,6 +1,10 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-security#GHSA-4qx8-jj2h-p7q2: Use hash_equals() for the 2FA bypass-cookie and password-reset token comparisons (timing side-channel)
+-security#GHSA-54fg-q9h9-88mm: Route package repository manifest fetches through cacti_http() to close the Direct-URL/GitHub SSRF
+-security#GHSA-5v3j-wcrr-jxjg: Shed matched quotes around resolved Data Input <field> tokens so an escaped value cannot break out of a quoted placeholder
+-security#GHSA-vhh2-gghg-whjg: Confirm the spikekill poller escapes the --rrdfile path (regression test)
 -security#GHSA-2fhv-c794-v433: Authorize Data Source enable/disable against the owning device before mutating
 -security#GHSA-4p7f-qcc2-vmx7: Escape path_php_binary before the resource-cache PHP syntax-check shell command
 -security#GHSA-967c-6qj7-q7rh: Confirm the rrdtool control-character strip closes the RRD-create |query_*| injection path
