@@ -178,6 +178,7 @@ Cacti CHANGELOG
 -issue#8225: Restyle the Deepness theme login page with a flat deep-dark background and a bordered, slightly-greyer login box
 -issue#8225: Skin the modern filter Edit dialog (.ui-dialog.cactiFilterDialog titlebar/content/buttonpane) for the Deepness theme using its emerald palette so the dialog matches the theme instead of the default jQuery UI themeroller look
 -issue#8227: Theme the jQuery UI selectmenu, autocomplete and dialog widgets in every theme to match that theme's select2 and html_start_box styling instead of the default jQuery UI themeroller look
+-issue#8227: Add the translucent device-status pill styling to the classic, midwinter, modern, paw and sunrise themes using each theme's own status hues and contrast, matching the deepness/dark/paper-plane pills
 -feature#7246: It should be possible to change the Device of a Graph if both Devices include the Data Query
 -feature#7364: Allow Users to Choose to Hide Graph Template on Site Trees
 -feature#7388: Allow admin to pass CSV file to change device script for bulk changes

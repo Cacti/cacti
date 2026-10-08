@@ -693,6 +693,54 @@ label {
 	color: #FF0000;
 }
 
+/* Device status pills - rounded translucent badges per state (get_colored_device_status) */
+.deviceStatus {
+	display: inline-block;
+	padding: 1px 9px;
+	border: 1px solid transparent;
+	border-radius: 10px;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 16px;
+	white-space: nowrap;
+}
+
+.deviceStatus.deviceUp {
+	background-color: rgba(40, 180, 40, 0.15);
+	border-color: rgba(40, 180, 40, 0.55);
+	color: #1b7a1b !important;
+}
+
+.deviceStatus.deviceDown {
+	background-color: rgba(211, 47, 47, 0.15);
+	border-color: rgba(211, 47, 47, 0.55);
+	color: #c62828 !important;
+}
+
+.deviceStatus.deviceRecovering {
+	background-color: rgba(255, 143, 30, 0.16);
+	border-color: rgba(255, 143, 30, 0.55);
+	color: #d35400 !important;
+}
+
+.deviceStatus.deviceError {
+	background-color: rgba(117, 15, 125, 0.14);
+	border-color: rgba(117, 15, 125, 0.5);
+	color: #6a1b9a !important;
+}
+
+.deviceStatus.deviceUnknown {
+	background-color: rgba(21, 101, 192, 0.14);
+	border-color: rgba(21, 101, 192, 0.5);
+	color: #1565c0 !important;
+}
+
+.deviceStatus.deviceDisabled {
+	background-color: rgba(97, 97, 97, 0.14);
+	border-color: rgba(97, 97, 97, 0.5);
+	color: #616161 !important;
+}
+
 .hostUp {
 	color: #000000;
 	font-size: 10px;
