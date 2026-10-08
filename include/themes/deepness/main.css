@@ -1465,6 +1465,46 @@ legend {
 	vertical-align: 10%;
 }
 
+.filterTable .filterRow {
+	display: table-row;
+}
+
+.filterTable .filterColumn {
+	display: table-cell;
+	padding: 5px 0px 5px 5px;
+	text-align: left;
+}
+
+.filterTable .filterColumn label {
+	vertical-align: -10%;
+}
+
+.filterTable .filterColumn label.checkboxSwitch {
+	vertical-align: middle;
+}
+
+.filterTable .filterColumnButton {
+	display: table-cell;
+	padding: 5px 0px 5px 5px;
+	text-align: left;
+}
+
+.filterTable .filterColumn:first-child {
+	width: 55px;
+}
+
+/* Modern page filter (page_filter_format = modern): the Layouts bar and the
+   jQuery UI Edit dialog (dialogClass cactiFilterDialog). */
+.cactiFilterModernBar .filterColumn,
+.cactiFilterModernBar .filterColumnButton {
+	vertical-align: middle;
+}
+
+/* Narrow the regex Search box on the modern bar to the normal filter width. */
+.cactiFilterModernBar input#rfilter {
+	width: 30ch;
+}
+
 .formRow {
 	display: table;
 	width: 100%;
