@@ -1015,7 +1015,7 @@ label {
 .loginArea input:-webkit-autofill:focus,
 .loginArea input:-webkit-autofill:active {
 	-webkit-text-fill-color: var(--dp-text);
-	-webkit-box-shadow: 0 0 0 1000px var(--dp-panel-alt) inset;
+	-webkit-box-shadow: 0 0 0 1000px var(--dp-panel) inset;
 	caret-color: var(--dp-text);
 	transition: background-color 9999s ease-in-out 0s;
 }
