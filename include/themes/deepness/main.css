@@ -998,24 +998,26 @@ label {
 }
 
 .loginCenter, .logoutCenter {
-	-moz-border-radius: 10px;
 	border-radius: 10px;
 	position: relative;
 	padding: 30px 0px 5px 20px;
-	background-color: var(--dp-panel);
 	top: 30%;
 	max-width: 360px;
 	max-height: 300px;
 	margin-left: auto;
 	margin-right: auto;
-	background: var(--dp-panel);
-	background: -moz-linear-gradient(top, var(--dp-panel) 0%, var(--dp-panel) 47%, var(--dp-panel-alt) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, var(--dp-panel)), color-stop(47%, var(--dp-panel)), color-stop(100%, var(--dp-panel-alt)));
-	background: -webkit-linear-gradient(top, var(--dp-panel) 0%, var(--dp-panel) 47%, var(--dp-panel-alt) 100%);
-	background: -o-linear-gradient(top, var(--dp-panel) 0%, var(--dp-panel) 47%, var(--dp-panel-alt) 100%);
-	background: -ms-linear-gradient(top, var(--dp-panel) 0%, var(--dp-panel) 47%, var(--dp-panel-alt) 100%);
-	background: linear-gradient(to bottom, var(--dp-panel) 0%, var(--dp-panel) 47%, var(--dp-panel-alt) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='var(--dp-panel)', endColorstr='var(--dp-panel)', GradientType=0 );
+	background: var(--dp-panel-alt);
+	border: 1px solid var(--dp-border);
+}
+
+.loginArea input:-webkit-autofill,
+.loginArea input:-webkit-autofill:hover,
+.loginArea input:-webkit-autofill:focus,
+.loginArea input:-webkit-autofill:active {
+	-webkit-text-fill-color: var(--dp-text);
+	-webkit-box-shadow: 0 0 0 1000px var(--dp-panel) inset;
+	caret-color: var(--dp-text);
+	transition: background-color 9999s ease-in-out 0s;
 }
 
 .cactiLoginLogo, .cactiLogoutLogo {
@@ -1084,15 +1086,7 @@ legend {
 }
 
 .loginBody, .logoutBody {
-	background: var(--dp-accent);
-	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzJkNGNhOCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxYTE5NWUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-	background: -moz-linear-gradient(left, var(--dp-accent) 0%, var(--dp-accent-deep) 100%);
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,var(--dp-accent)), color-stop(100%,var(--dp-accent-deep)));
-	background: -webkit-linear-gradient(left, var(--dp-accent) 0%,var(--dp-accent-deep) 100%);
-	background: -o-linear-gradient(left, var(--dp-accent) 0%,var(--dp-accent-deep) 100%);
-	background: -ms-linear-gradient(left, var(--dp-accent) 0%,var(--dp-accent-deep) 100%);
-	background: linear-gradient(to right, var(--dp-accent) 0%,var(--dp-accent-deep) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='var(--dp-accent)', endColorstr='var(--dp-accent-deep)',GradientType=1 );
+	background: var(--dp-page);
 }
 
 .versionInfo {
@@ -1463,6 +1457,71 @@ legend {
 
 .filterTable label {
 	vertical-align: 10%;
+}
+
+.ui-dialog.cactiFilterDialog {
+	padding: 0;
+	border-radius: 6px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+	overflow: hidden;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-titlebar {
+	border: 0;
+	border-radius: 0;
+	padding: 10px 14px;
+	background: var(--dp-accent-deep);
+	color: var(--dp-text);
+	font-size: 14px;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-title {
+	font-weight: bold;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
+	background: transparent;
+	border: 0;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-titlebar-close .ui-icon {
+	filter: invert(1) brightness(2);
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-content {
+	padding: 14px 16px;
+}
+
+.ui-dialog.cactiFilterDialog .cactiFilterEditTable {
+	white-space: normal;
+}
+
+.ui-dialog.cactiFilterDialog .cactiFilterEditRow .filterColumn:first-child {
+	min-width: 120px;
+	padding-right: 12px;
+	font-weight: bold;
+}
+
+.ui-dialog.cactiFilterDialog .cactiFilterEditRow .filterColumn:last-child select,
+.ui-dialog.cactiFilterDialog .cactiFilterEditRow .filterColumn:last-child input[type="text"] {
+	min-width: 220px;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-buttonpane {
+	margin: 0;
+	border-top: 1px solid var(--dp-border);
+	padding: 8px 12px;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-buttonpane .ui-button {
+	margin: 0 0 0 6px;
+	padding: 5px 14px;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-buttonpane .ui-button:first-child {
+	background: var(--dp-accent-deep);
+	color: var(--dp-text);
+	border-color: var(--dp-border-strong);
 }
 
 .formRow {
