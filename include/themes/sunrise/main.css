@@ -824,6 +824,54 @@ label.ui-state-hover > span {
 	color: #FF0000;
 }
 
+/* Device status pills - rounded translucent badges per state (get_colored_device_status) */
+.deviceStatus {
+	display: inline-block;
+	padding: 1px 9px;
+	border: 1px solid transparent;
+	border-radius: 10px;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 16px;
+	white-space: nowrap;
+}
+
+.deviceStatus.deviceUp {
+	background-color: rgba(60, 138, 60, 0.2);
+	border-color: rgba(60, 138, 60, 0.6);
+	color: #7bc47b !important;
+}
+
+.deviceStatus.deviceDown {
+	background-color: rgba(220, 60, 60, 0.18);
+	border-color: rgba(220, 60, 60, 0.6);
+	color: #ff6b6b !important;
+}
+
+.deviceStatus.deviceRecovering {
+	background-color: rgba(255, 193, 7, 0.16);
+	border-color: rgba(255, 193, 7, 0.55);
+	color: #ffd54f !important;
+}
+
+.deviceStatus.deviceError {
+	background-color: rgba(255, 170, 0, 0.16);
+	border-color: rgba(255, 170, 0, 0.55);
+	color: #ffb74d !important;
+}
+
+.deviceStatus.deviceUnknown {
+	background-color: rgba(96, 140, 210, 0.2);
+	border-color: rgba(96, 140, 210, 0.6);
+	color: #8fb6e8 !important;
+}
+
+.deviceStatus.deviceDisabled {
+	background-color: rgba(161, 161, 161, 0.14);
+	border-color: rgba(161, 161, 161, 0.5);
+	color: #bdbdbd !important;
+}
+
 .hostUp {
 	font-size: 10px;
 	font-weight: normal;
@@ -1380,6 +1428,97 @@ table.cactiTable {
 	border-color: rgba(255,255,255,0.2);
 	background-image: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.1));
 	background-repeat: repeat-x;
+}
+
+/* jQuery UI selectmenu + autocomplete + dialog - match this theme's select2 /
+   html_start_box styling instead of the jquery-ui.css themeroller look. */
+.ui-selectmenu-button.ui-button {
+	background: #000000;
+	border: 1px solid rgba(255,255,255,0.2);
+	border-radius: 6px;
+	color: #969BA3;
+}
+
+.ui-selectmenu-button.ui-button:hover,
+.ui-selectmenu-button.ui-selectmenu-button-open {
+	background: #000000;
+	border-color: rgba(255,255,255,0.2);
+	color: #969BA3;
+}
+
+.ui-selectmenu-menu .ui-menu,
+.ui-menu.ui-autocomplete {
+	background: #000000;
+	border: 1px solid rgba(255,255,255,0.2);
+	color: #969BA3;
+}
+
+.ui-selectmenu-menu .ui-menu .ui-menu-item-wrapper,
+.ui-menu.ui-autocomplete .ui-menu-item-wrapper {
+	color: #969BA3;
+}
+
+.ui-selectmenu-menu .ui-menu .ui-state-focus,
+.ui-selectmenu-menu .ui-menu .ui-state-active,
+.ui-menu.ui-autocomplete .ui-state-focus,
+.ui-menu.ui-autocomplete .ui-state-active {
+	background: #3d6fa0;
+	border: 1px solid transparent;
+	color: #ffffff;
+}
+
+.ui-dialog {
+	padding: 0;
+	border: 1px solid rgba(255,255,255,0.2);
+	border-radius: 6px;
+	background: #000000;
+	color: #969BA3;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+	overflow: hidden;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+	border: 0;
+	border-radius: 0;
+	padding: 0 8px;
+	box-sizing: border-box;
+	height: 22px;
+	line-height: 22px;
+	background: #000000;
+	color: #FFAA00;
+	font-size: 1em;
+	font-weight: bold;
+}
+
+.ui-dialog .ui-dialog-title {
+	font-weight: bold;
+	line-height: 22px;
+}
+
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close,
+.ui-dialog .ui-dialog-titlebar-close.ui-state-hover,
+.ui-dialog .ui-dialog-titlebar-close:hover,
+.ui-dialog .ui-dialog-titlebar-close:focus {
+	background: transparent;
+	border: 0;
+}
+
+.ui-dialog .ui-dialog-titlebar-close .ui-icon {
+	filter: brightness(0) invert(1);
+}
+
+.ui-dialog .ui-dialog-content {
+	background: #000000;
+	color: #969BA3;
+	padding: 14px 16px;
+	overflow: visible;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+	margin: 0;
+	border-top: 1px solid rgba(255,255,255,0.2);
+	background: #000000;
+	padding: 8px 12px;
 }
 
 .cactiTableTitle {
@@ -2555,6 +2694,29 @@ tr#realtime td:first-child {
 	border: 1px solid rgba(255,255,255,0.2);
 }
 
+/* Primary/active action button (submit, e.g. Go) and the dialog default
+   button - subtle on-palette blue (sunrise's hover/active accent #93CEFF) so
+   the active action reads clearly without the loud amber */
+input[type="submit"],
+input[type="submit"].ui-button,
+button[type="submit"],
+.ui-dialog .ui-dialog-buttonpane .ui-button:first-child {
+	background: rgba(147, 206, 255, 0.18);
+	background-image: none;
+	border: 1px solid rgba(147, 206, 255, 0.5);
+	color: #93CEFF;
+}
+
+input[type="submit"]:hover,
+input[type="submit"].ui-button:hover,
+button[type="submit"]:hover,
+.ui-dialog .ui-dialog-buttonpane .ui-button:first-child:hover {
+	background: rgba(147, 206, 255, 0.3);
+	background-image: none;
+	border-color: rgba(147, 206, 255, 0.75);
+	color: #bfe2ff;
+}
+
 .ui-autocomplete {
 	height: 300px;
 	overflow-y: auto;
@@ -3264,12 +3426,12 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 }
 
 .select2-container--default .select2-results__option--selected {
-	background: #3C8A3C;
+	background: #3d6fa0;
 	color: #ffffff;
 }
 
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-	background: #3C8A3C;
+	background: #3d6fa0;
 	color: #ffffff;
 }
 /* ======================================================================== */

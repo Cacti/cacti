@@ -1459,6 +1459,83 @@ legend {
 	vertical-align: 10%;
 }
 
+/* jQuery UI dialog (raise_message() and other general dialogs) - follow the
+   deepness palette instead of the dark-theme themeroller black/grey texture.
+   The scoped .cactiFilterDialog block below keeps its filter-specific tweaks. */
+.ui-dialog {
+	padding: 0;
+	border: 1px solid var(--dp-border);
+	border-radius: 6px;
+	background: var(--dp-panel);
+	color: var(--dp-text);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+	overflow: hidden;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+	border: 0;
+	border-radius: 0;
+	padding: 0 8px;
+	box-sizing: border-box;
+	height: 28px;
+	line-height: 28px;
+	background: var(--dp-header);
+	color: var(--dp-text);
+	font-size: 1em;
+	font-weight: 700;
+}
+
+.ui-dialog .ui-dialog-title {
+	font-weight: 700;
+	line-height: 28px;
+}
+
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
+	background: transparent;
+	border: 0;
+}
+
+.ui-dialog .ui-dialog-titlebar-close.ui-state-hover,
+.ui-dialog .ui-dialog-titlebar-close:hover,
+.ui-dialog .ui-dialog-titlebar-close:focus {
+	background: transparent;
+	border: 0;
+}
+
+/* X uses the white ui-icons_ffffff sprite via .ui-widget-header; keep it light
+   on the dark titlebar (drop the invert that turned it dark) */
+.ui-dialog .ui-dialog-titlebar-close .ui-icon {
+	filter: none;
+}
+
+.ui-dialog .ui-dialog-content {
+	background: var(--dp-panel);
+	background-image: none;
+	color: var(--dp-text);
+	padding: 14px 16px;
+	/* stock jquery-ui.css sets overflow:auto here, which shrink-wraps the
+	   content (BFC) and mis-aligns dialog text; keep it visible */
+	overflow: visible;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+	margin: 0;
+	border-top: 1px solid var(--dp-border);
+	background: var(--dp-panel);
+	padding: 8px 12px;
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-button {
+	margin: 0 0 0 6px;
+	padding: 5px 14px;
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-button:first-child {
+	background: var(--dp-accent-deep);
+	color: var(--dp-text);
+	border-color: var(--dp-border-strong);
+}
+
 .ui-dialog.cactiFilterDialog {
 	padding: 0;
 	border-radius: 6px;
@@ -2763,6 +2840,55 @@ td.center > table {
 	white-space: nowrap;
 }
 
+/* jQuery UI selectmenu + autocomplete - match the select2 dark look.
+   deepness's jquery-ui.css still ships the dark theme's themeroller colours
+   (black #000000 menu, green #155413 hover, olive #31442b active); restyle
+   the selectmenu button and the popup menus to this theme's palette so they
+   render like the select2 controls. */
+.ui-selectmenu-button.ui-button {
+	background: var(--dp-panel);
+	background-image: none;
+	border: 1px solid var(--dp-border);
+	border-radius: 6px;
+	color: var(--dp-text);
+}
+
+.ui-selectmenu-button.ui-button:hover,
+.ui-selectmenu-button.ui-selectmenu-button-open {
+	background: var(--dp-panel-alt);
+	border-color: var(--dp-border);
+	color: var(--dp-text);
+}
+
+.ui-selectmenu-menu .ui-menu,
+.ui-menu.ui-autocomplete {
+	background: var(--dp-panel);
+	background-image: none;
+	border: 1px solid var(--dp-border);
+	color: var(--dp-text);
+}
+
+.ui-selectmenu-menu .ui-menu .ui-menu-item-wrapper,
+.ui-menu.ui-autocomplete .ui-menu-item-wrapper {
+	color: var(--dp-text);
+}
+
+.ui-selectmenu-menu .ui-menu .ui-state-focus,
+.ui-menu.ui-autocomplete .ui-state-focus {
+	background: var(--dp-accent-faint);
+	background-image: none;
+	border: 1px solid transparent;
+	color: var(--dp-text);
+}
+
+.ui-selectmenu-menu .ui-menu .ui-state-active,
+.ui-menu.ui-autocomplete .ui-state-active {
+	background: var(--dp-accent-soft);
+	background-image: none;
+	border: 1px solid transparent;
+	color: var(--dp-text);
+}
+
 .ui-tabs-active .ui-tabs-anchor {
 	color: var(--dp-text) !important;
 }
@@ -2969,12 +3095,12 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 }
 
 .select2-container--default .select2-results__option--selected {
-	background: var(--dp-panel-alt);
+	background: var(--dp-accent-soft);
 	color: var(--dp-text);
 }
 
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-	background: var(--dp-header);
+	background: var(--dp-accent-faint);
 	color: var(--dp-text);
 }
 /* ======================================================================== */

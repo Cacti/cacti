@@ -245,6 +245,12 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 	background: var(--background-lowlight);
 	color: var(--text-color-lighter);
 }
+
+/* stock jquery-ui.css sets overflow:auto on .ui-dialog-content, which shrink-
+   wraps the content (BFC) and mis-aligns dialog text; keep it visible */
+.ui-dialog .ui-dialog-content {
+	overflow: visible;
+}
 /* ======================================================================== */
 /* jsTree glyph icons - node type colors, sizing, and open/close carets     */
 /* Dark theme palette (lighter, higher-contrast on dark backgrounds)        */

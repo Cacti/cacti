@@ -119,7 +119,7 @@ a, a:active, a:visited {
 
 a:hover {
 	text-decoration: none;
-	color: #333333;
+	color: #15307a;
 }
 
 th .fa {
@@ -693,6 +693,54 @@ label {
 	color: #FF0000;
 }
 
+/* Device status pills - rounded translucent badges per state (get_colored_device_status) */
+.deviceStatus {
+	display: inline-block;
+	padding: 1px 9px;
+	border: 1px solid transparent;
+	border-radius: 10px;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 16px;
+	white-space: nowrap;
+}
+
+.deviceStatus.deviceUp {
+	background-color: rgba(40, 180, 40, 0.15);
+	border-color: rgba(40, 180, 40, 0.55);
+	color: #1b7a1b !important;
+}
+
+.deviceStatus.deviceDown {
+	background-color: rgba(211, 47, 47, 0.15);
+	border-color: rgba(211, 47, 47, 0.55);
+	color: #c62828 !important;
+}
+
+.deviceStatus.deviceRecovering {
+	background-color: rgba(255, 143, 30, 0.16);
+	border-color: rgba(255, 143, 30, 0.55);
+	color: #d35400 !important;
+}
+
+.deviceStatus.deviceError {
+	background-color: rgba(117, 15, 125, 0.14);
+	border-color: rgba(117, 15, 125, 0.5);
+	color: #6a1b9a !important;
+}
+
+.deviceStatus.deviceUnknown {
+	background-color: rgba(21, 101, 192, 0.14);
+	border-color: rgba(21, 101, 192, 0.5);
+	color: #1565c0 !important;
+}
+
+.deviceStatus.deviceDisabled {
+	background-color: rgba(97, 97, 97, 0.14);
+	border-color: rgba(97, 97, 97, 0.5);
+	color: #616161 !important;
+}
+
 .hostUp {
 	color: #000000;
 	font-size: 10px;
@@ -1058,7 +1106,7 @@ legend {
 }
 
 .linkEditMain:hover {
-	color: yellow;
+	color: #15307a;
 	white-space: nowrap;
 	text-decoration: none;
 }
@@ -1197,6 +1245,103 @@ legend {
 	font-size: 1em;
 	font-weight: 700;
 	background: rgba(0,0,0,0.9);
+}
+
+/* jQuery UI selectmenu + autocomplete + dialog - match this theme's select2 /
+   html_start_box styling instead of the jquery-ui.css themeroller look. */
+.ui-selectmenu-button.ui-button {
+	background: #ffffff;
+	border: 1px solid #aaaaaa;
+	border-radius: 6px;
+	color: #222222;
+}
+
+.ui-selectmenu-button.ui-button:hover,
+.ui-selectmenu-button.ui-selectmenu-button-open {
+	background: #ffffff;
+	border-color: #aaaaaa;
+	color: #222222;
+}
+
+.ui-selectmenu-menu .ui-menu,
+.ui-menu.ui-autocomplete {
+	background: #ffffff;
+	border: 1px solid #aaaaaa;
+	color: #222222;
+}
+
+.ui-selectmenu-menu .ui-menu .ui-menu-item-wrapper,
+.ui-menu.ui-autocomplete .ui-menu-item-wrapper {
+	color: #222222;
+}
+
+.ui-selectmenu-menu .ui-menu .ui-state-focus,
+.ui-selectmenu-menu .ui-menu .ui-state-active,
+.ui-menu.ui-autocomplete .ui-state-focus,
+.ui-menu.ui-autocomplete .ui-state-active {
+	background: rgba(0,0,0,0.9);
+	border: 1px solid transparent;
+	color: #ffffff;
+}
+
+.ui-dialog {
+	padding: 0;
+	border: 1px solid #aaaaaa;
+	border-radius: 6px;
+	background: #ffffff;
+	color: #222222;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+	overflow: hidden;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+	border: 0;
+	border-radius: 0;
+	padding: 0 8px;
+	box-sizing: border-box;
+	height: 28px;
+	line-height: 28px;
+	background: rgba(0,0,0,0.9);
+	color: #ffffff;
+	font-size: 1em;
+	font-weight: bold;
+}
+
+.ui-dialog .ui-dialog-title {
+	font-weight: bold;
+	line-height: 28px;
+}
+
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close,
+.ui-dialog .ui-dialog-titlebar-close.ui-state-hover,
+.ui-dialog .ui-dialog-titlebar-close:hover,
+.ui-dialog .ui-dialog-titlebar-close:focus {
+	background: transparent;
+	border: 0;
+}
+
+.ui-dialog .ui-dialog-titlebar-close .ui-icon {
+	filter: brightness(0) invert(1);
+}
+
+.ui-dialog .ui-dialog-content {
+	background: #ffffff;
+	color: #222222;
+	padding: 14px 16px;
+	overflow: visible;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+	margin: 0;
+	border-top: 1px solid #aaaaaa;
+	background: #ffffff;
+	padding: 8px 12px;
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-button:first-child {
+	background: rgba(0,0,0,0.9);
+	color: #ffffff;
+	border-color: #000000;
 }
 
 .cactiTableTitle {
@@ -1974,7 +2119,7 @@ tr.selected {
 }
 
 tr.selected a.linkEditMain:visited {
-	color: yellow;
+	color: #a9c7ff;
 }
 
 tr:not(.selectable) a.linkEditMain:hover {
@@ -1982,7 +2127,7 @@ tr:not(.selectable) a.linkEditMain:hover {
 }
 
 tr.selectable a.linkEditMain:hover {
-	color: yellow;
+	color: #15307a;
 }
 
 tr.selectable:hover:not(.selected) {
