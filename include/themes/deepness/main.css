@@ -1512,6 +1512,9 @@ legend {
 	background-image: none;
 	color: var(--dp-text);
 	padding: 14px 16px;
+	/* stock jquery-ui.css sets overflow:auto here, which shrink-wraps the
+	   content (BFC) and mis-aligns dialog text; keep it visible */
+	overflow: visible;
 }
 
 .ui-dialog .ui-dialog-buttonpane {
