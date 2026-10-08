@@ -1462,7 +1462,7 @@ table.cactiTable {
 .ui-selectmenu-menu .ui-menu .ui-state-active,
 .ui-menu.ui-autocomplete .ui-state-focus,
 .ui-menu.ui-autocomplete .ui-state-active {
-	background: #3C8A3C;
+	background: #3d6fa0;
 	border: 1px solid transparent;
 	color: #ffffff;
 }
@@ -1481,6 +1481,7 @@ table.cactiTable {
 	border: 0;
 	border-radius: 0;
 	padding: 0 8px;
+	box-sizing: border-box;
 	height: 22px;
 	line-height: 22px;
 	background: #000000;
@@ -1518,6 +1519,12 @@ table.cactiTable {
 	border-top: 1px solid rgba(255,255,255,0.2);
 	background: #000000;
 	padding: 8px 12px;
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-button:first-child {
+	background: #FFAA00;
+	color: #1a1a1a;
+	border-color: #FFAA00;
 }
 
 .cactiTableTitle {
@@ -3402,12 +3409,12 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 }
 
 .select2-container--default .select2-results__option--selected {
-	background: #3C8A3C;
+	background: #3d6fa0;
 	color: #ffffff;
 }
 
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-	background: #3C8A3C;
+	background: #3d6fa0;
 	color: #ffffff;
 }
 /* ======================================================================== */

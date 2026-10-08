@@ -1298,6 +1298,7 @@ legend {
 	border: 0;
 	border-radius: 0;
 	padding: 0 8px;
+	box-sizing: border-box;
 	height: 28px;
 	line-height: 28px;
 	background: rgba(0,0,0,0.9);
@@ -1335,6 +1336,12 @@ legend {
 	border-top: 1px solid #aaaaaa;
 	background: #ffffff;
 	padding: 8px 12px;
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-button:first-child {
+	background: rgba(0,0,0,0.9);
+	color: #ffffff;
+	border-color: #000000;
 }
 
 .cactiTableTitle {
