@@ -2874,10 +2874,16 @@ td.center > table {
 }
 
 .ui-selectmenu-menu .ui-menu .ui-state-focus,
+.ui-menu.ui-autocomplete .ui-state-focus {
+	background: var(--dp-accent-faint);
+	background-image: none;
+	border: 1px solid transparent;
+	color: var(--dp-text);
+}
+
 .ui-selectmenu-menu .ui-menu .ui-state-active,
-.ui-menu.ui-autocomplete .ui-state-focus,
 .ui-menu.ui-autocomplete .ui-state-active {
-	background: var(--dp-header);
+	background: var(--dp-accent-soft);
 	background-image: none;
 	border: 1px solid transparent;
 	color: var(--dp-text);
@@ -3089,12 +3095,12 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 }
 
 .select2-container--default .select2-results__option--selected {
-	background: var(--dp-panel-alt);
+	background: var(--dp-accent-soft);
 	color: var(--dp-text);
 }
 
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-	background: var(--dp-header);
+	background: var(--dp-accent-faint);
 	color: var(--dp-text);
 }
 /* ======================================================================== */
