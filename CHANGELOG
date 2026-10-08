@@ -44,6 +44,7 @@ Cacti CHANGELOG
 -issue#8221: Align the Deepness theme console menu icon sizing and alignment with the Modern theme and remove the sub-menu indentation
 -issue#8219: Fix the Deepness theme rendering the modern filter bar controls stacked vertically by porting the missing .filterRow/.filterColumn table-display rules from the other themes
 -issue#8220: Skin the modern filter Edit dialog (.ui-dialog.cactiFilterDialog titlebar/content/buttonpane) for the Deepness theme using its emerald palette so the dialog matches the theme instead of the default jQuery UI themeroller look
+-issue#8224: Restyle the Deepness theme login page with a flat deep-dark background and a bordered, slightly-greyer login box
 -issue#8171: SNMPv3 devices using an auth/privacy protocol the running PHP cannot service natively (e.g. AES-256 before PHP 8.6) now collect through the Net-SNMP binary via a binary-delegating session instead of fataling the poller/device-edit, and the vendored classSNMP.php compatibility shim is removed
 -issue#8120: Do not replicate repository and tooling metadata files (.gitignore, .htaccess.dist, .mdl_style.rb, .mdlrc) to remote data collectors during file replication
 -issue#8116: Restore legacy unique_keys[] support in db_table_create() and db_update_table() so plugins that declare UNIQUE indexes with that definition style keep them across a schema refresh
