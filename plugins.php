@@ -307,6 +307,8 @@ switch($action) {
 
 		break;
 	case 'disable':
+		csrf_require_post();
+
 		api_plugin_disable($plugin);
 
 		header('Location: plugins.php');
@@ -943,6 +945,18 @@ function update_show_current() : void {
 					var url            = $(this).attr('href');
 
 					displayDialog(url, dialogTitle, dialogMessage, dialogForm, buttonContinue, buttonCancel, 80, 400);
+				});
+
+				$('.pidisable').off('click').on('click', function(event) {
+					event.preventDefault();
+
+					var url = $(this).attr('href');
+
+					if (url == '' || url == '#') {
+						return;
+					}
+
+					postUrl({ url: url }, { __csrf_magic: csrfMagicToken });
 				});
 
 				$('.piforceremove').off('click').on('click', function(event) {

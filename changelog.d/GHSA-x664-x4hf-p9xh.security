@@ -1,0 +1,1 @@
+Require a POST request with a CSRF token for state-changing GET actions (User Log purge, Automation Devices purge, RRDCheck purge, and plugin disable) so they can no longer be triggered cross-site via a GET request
