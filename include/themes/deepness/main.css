@@ -1459,6 +1459,66 @@ legend {
 	vertical-align: 10%;
 }
 
+/* jQuery UI dialog (raise_message() and other general dialogs) - follow the
+   deepness palette instead of the dark-theme themeroller black/grey texture.
+   The scoped .cactiFilterDialog block below keeps its filter-specific tweaks. */
+.ui-dialog {
+	padding: 0;
+	border: 1px solid var(--dp-border);
+	border-radius: 6px;
+	background: var(--dp-panel);
+	color: var(--dp-text);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+	overflow: hidden;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+	border: 0;
+	border-radius: 0;
+	padding: 10px 14px;
+	background: var(--dp-accent-deep);
+	color: var(--dp-text);
+	font-size: 14px;
+}
+
+.ui-dialog .ui-dialog-title {
+	font-weight: bold;
+}
+
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
+	background: transparent;
+	border: 0;
+}
+
+.ui-dialog .ui-dialog-titlebar-close .ui-icon {
+	filter: invert(1) brightness(2);
+}
+
+.ui-dialog .ui-dialog-content {
+	background: var(--dp-panel);
+	background-image: none;
+	color: var(--dp-text);
+	padding: 14px 16px;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+	margin: 0;
+	border-top: 1px solid var(--dp-border);
+	background: var(--dp-panel);
+	padding: 8px 12px;
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-button {
+	margin: 0 0 0 6px;
+	padding: 5px 14px;
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-button:first-child {
+	background: var(--dp-accent-deep);
+	color: var(--dp-text);
+	border-color: var(--dp-border-strong);
+}
+
 .ui-dialog.cactiFilterDialog {
 	padding: 0;
 	border-radius: 6px;
