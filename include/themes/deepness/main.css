@@ -344,13 +344,13 @@ label {
 
 .goodpassword {
 	padding: 4px;
-	color: green;
+	color: #3dd9a1;
 	font-size: 1.5em !important;
 	vertical-align: bottom;
 }
 
 .associated {
-	color: green;
+	color: #3dd9a1;
 	font-weight: bold;
 }
 
@@ -369,7 +369,7 @@ label {
 }
 
 .idle {
-	color: green;
+	color: #3dd9a1;
 	font-weight: bold;
 }
 
@@ -395,7 +395,7 @@ label {
 }
 
 .success {
-	color: green;
+	color: #3dd9a1;
 }
 
 .failed {
@@ -403,12 +403,12 @@ label {
 }
 
 .accessGranted {
-	color: green;
+	color: #3dd9a1;
 	font-weight: bold;
 }
 
 .accessGrantedItem {
-	color: green;
+	color: #3dd9a1;
 }
 
 .accessRestricted {
@@ -491,7 +491,7 @@ label {
 }
 
 .deviceUp {
-	color: rgba(40, 180, 40, 1.0) !important;
+	color: #3dd9a1 !important;
 }
 
 .deviceDown {
@@ -586,7 +586,7 @@ label {
 	color: rgba(22,22,22,0.8);
 	font-size: 10pt;
 	font-weight: bold;
-	background-color: rgba(148, 179, 107, 0.8);
+	background-color: #18b981;
 }
 
 .deviceDownBg {
@@ -660,7 +660,7 @@ label {
 }
 
 .beingGraphed {
-	color: rgba(148, 179, 107, 0.8);
+	color: #3bc991;
 }
 
 .notBeingGraphed {
@@ -754,7 +754,7 @@ label {
 	cursor: pointer;
 	padding: 1px;
 	vertical-align: middle;
-	color: lime;
+	color: var(--dp-accent);
 	font-weight: bold;
 	font-size: 14px;
 	margin-right: 10px;
@@ -816,7 +816,7 @@ label {
 
 .treeArea, .treeItemsArea {
 	width: 25%;
-	border: 1px solid #006400;
+	border: 1px solid var(--dp-accent-deep);
 	vertical-align: top;
 }
 
@@ -2524,7 +2524,7 @@ tr#realtime td:first-child {
 }
 
 .logInfo {
-	background-color: rgba(204, 255, 204, 0.2);
+	background-color: rgba(24, 185, 129, 0.2);
 	text-align: center;
 	width: 12.5%;
 	padding: 3px;

@@ -1,7 +1,7 @@
 /*! jQuery UI - v1.14.0 - 2024-08-09
 * https://jqueryui.com
 * Includes: draggable.css, core.css, resizable.css, selectable.css, sortable.css, accordion.css, autocomplete.css, menu.css, button.css, controlgroup.css, checkboxradio.css, datepicker.css, dialog.css, progressbar.css, selectmenu.css, slider.css, spinner.css, tabs.css, tooltip.css, theme.css
-* To view and modify this theme, visit https://jqueryui.com/themeroller/?ffDefault=Verdana%2CArial%2Csans-serif&fsDefault=1.1em&fwDefault=normal&cornerRadius=6px&bgColorHeader=%23444444&bgTextureHeader=highlight_soft&borderColorHeader=%23333333&fcHeader=%23ffffff&iconColorHeader=%23ffffff&bgColorContent=%23000000&bgTextureContent=loop&borderColorContent=%23555555&fcContent=%23ffffff&iconColorContent=%23cccccc&bgColorDefault=%23222222&bgTextureDefault=highlight_soft&borderColorDefault=%23444444&fcDefault=%23eeeeee&iconColorDefault=%23cccccc&bgColorHover=%23155413&bgTextureHover=highlight_soft&borderColorHover=%23155413&fcHover=%23ffffff&iconColorHover=%23ffffff&bgColorActive=%2331442b&bgTextureActive=highlight_hard&borderColorActive=%2331442b&fcActive=%23ffffff&iconColorActive=%23222222&bgColorHighlight=%23eeeeee&bgTextureHighlight=highlight_soft&borderColorHighlight=%23cccccc&fcHighlight=%232e7db2&iconColorHighlight=%234b8e0b&bgColorError=%23ffc73d&bgTextureError=glass&borderColorError=%23ffb73d&fcError=%23111111&iconColorError=%23a83300&bgColorOverlay=%235c5c5c&bgTextureOverlay=flat&bgImgOpacityOverlay=50&opacityOverlay=80&bgColorShadow=%230a1109&bgTextureShadow=flat&bgImgOpacityShadow=90&opacityShadow=90&thicknessShadow=6px&offsetTopShadow=6px&offsetLeftShadow=6px&cornerRadiusShadow=6px&bgImgOpacityHeader=44&bgImgOpacityContent=25&bgImgOpacityDefault=35&bgImgOpacityHover=33&bgImgOpacityActive=20&bgImgOpacityHighlight=80&bgImgOpacityError=40
+* To view and modify this theme, visit https://jqueryui.com/themeroller/?ffDefault=Verdana%2CArial%2Csans-serif&fsDefault=1.1em&fwDefault=normal&cornerRadius=6px&bgColorHeader=%23444444&bgTextureHeader=highlight_soft&borderColorHeader=%23333333&fcHeader=%23ffffff&iconColorHeader=%23ffffff&bgColorContent=%23000000&bgTextureContent=loop&borderColorContent=%23555555&fcContent=%23ffffff&iconColorContent=%23cccccc&bgColorDefault=%23222222&bgTextureDefault=highlight_soft&borderColorDefault=%23444444&fcDefault=%23eeeeee&iconColorDefault=%23cccccc&bgColorHover=%230c5f44&bgTextureHover=flat&borderColorHover=%230c5f44&fcHover=%23ffffff&iconColorHover=%23ffffff&bgColorActive=%23083f2e&bgTextureActive=flat&borderColorActive=%23083f2e&fcActive=%23ffffff&iconColorActive=%23222222&bgColorHighlight=%23eeeeee&bgTextureHighlight=highlight_soft&borderColorHighlight=%23cccccc&fcHighlight=%232e7db2&iconColorHighlight=%234b8e0b&bgColorError=%23ffc73d&bgTextureError=glass&borderColorError=%23ffb73d&fcError=%23111111&iconColorError=%23a83300&bgColorOverlay=%235c5c5c&bgTextureOverlay=flat&bgImgOpacityOverlay=50&opacityOverlay=80&bgColorShadow=%230a1109&bgTextureShadow=flat&bgImgOpacityShadow=90&opacityShadow=90&thicknessShadow=6px&offsetTopShadow=6px&offsetLeftShadow=6px&cornerRadiusShadow=6px&bgImgOpacityHeader=44&bgImgOpacityContent=25&bgImgOpacityDefault=35&bgImgOpacityHover=33&bgImgOpacityActive=20&bgImgOpacityHighlight=80&bgImgOpacityError=40
 * Copyright OpenJS Foundation and other contributors; Licensed MIT */
 
 .ui-draggable-handle {
@@ -929,8 +929,8 @@ a:visited.ui-button,
 .ui-widget-header .ui-state-focus,
 .ui-button:hover,
 .ui-button:focus {
-	border: 1px solid #155413;
-	background: #155413 url("images/ui-bg_highlight-soft_33_155413_1x100.png") 50% 50% repeat-x;
+	border: 1px solid #0c5f44;
+	background: #0c5f44;
 	font-weight: normal;
 	color: #ffffff;
 }
@@ -957,14 +957,14 @@ a.ui-button:focus {
 a.ui-button:active,
 .ui-button:active,
 .ui-button.ui-state-active:hover {
-	border: 1px solid #31442b;
-	background: #31442b url("images/ui-bg_highlight-hard_20_31442b_1x100.png") 50% 50% repeat-x;
+	border: 1px solid #083f2e;
+	background: #083f2e;
 	font-weight: normal;
 	color: #ffffff;
 }
 .ui-icon-background,
 .ui-state-active .ui-icon-background {
-	border: #31442b;
+	border: #0c5f44;
 	background-color: #ffffff;
 }
 .ui-state-active a,
