@@ -73,6 +73,8 @@ switch (get_request_var('action')) {
 		bottom_footer();
 		break;
 	case 'clear_user_log':
+		csrf_require_post();
+
 		utilities_clear_user_log();
 		utilities_view_user_log();
 		break;
@@ -1003,7 +1005,7 @@ function utilities_view_user_log() {
 
 	function purgeLog() {
 		strURL = urlPath+'utilities.php?action=clear_user_log&header=false';
-		loadPageNoHeader(strURL);
+		loadPageUsingPostUrl(strURL, 'main');
 	}
 
 	$(function() {
