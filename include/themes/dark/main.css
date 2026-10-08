@@ -482,6 +482,12 @@ label {
 	color: #bdbdbd !important;
 }
 
+/* Selected/hovered rows paint an opaque light-olive gradient; back the translucent pills with the theme's dark base so the light status text keeps WCAG contrast */
+tr.selected .deviceStatus,
+tr.selectable:hover:not(.selected) .deviceStatus {
+	background-color: #161616;
+}
+
 .deviceDownMuted {
 	color: #ffe333 !important;
 }
