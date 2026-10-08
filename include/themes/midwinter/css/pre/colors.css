@@ -52,6 +52,15 @@
     --scrollbar-thumb: hsl(var(--hue), 5%, 35%);
     --box-shadow-color: hsl(var(--hue), 7%, 0%);
     --separator: hsl(var(--hue), 7%, 55%);
+    /* Graph drilldown icon colours - distinct, task-appropriate hues */
+    --graph-icon-cog:       hsl(42, 72%, 60%);
+    --graph-icon-csv:       hsl(195, 55%, 58%);
+    --graph-icon-view:      hsl(28, 70%, 58%);
+    --graph-icon-device:    hsl(55, 68%, 60%);
+    --graph-icon-template:  hsl(222, 65%, 66%);
+    --graph-icon-realtime:  hsl(135, 48%, 58%);
+    --graph-icon-spikekill: hsl(2, 70%, 66%);
+    --graph-icon-sources:   hsl(168, 48%, 54%);
 }
 
 [data-theme-color='light'] {
@@ -105,4 +114,13 @@
     --scrollbar-thumb: hsl(var(--hue), 13%, 73%);
     --box-shadow-color: hsla(var(--contrast), 0%, 0%, 0.3);
     --separator: hsl(var(--hue), 7%, 65%);
+    /* Graph drilldown icon colours - distinct, task-appropriate hues */
+    --graph-icon-cog:       hsl(42, 80%, 42%);
+    --graph-icon-csv:       hsl(195, 65%, 40%);
+    --graph-icon-view:      hsl(28, 75%, 45%);
+    --graph-icon-device:    hsl(55, 75%, 40%);
+    --graph-icon-template:  hsl(222, 70%, 48%);
+    --graph-icon-realtime:  hsl(135, 55%, 36%);
+    --graph-icon-spikekill: hsl(2, 72%, 50%);
+    --graph-icon-sources:   hsl(168, 60%, 36%);
 }

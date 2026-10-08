@@ -662,6 +662,39 @@ label.ui-state-hover > span {
     cursor: pointer;
 }
 
+/* Graph drilldown action icons - theme-palette task colours */
+.actionCog {
+    color: var(--graph-icon-cog) !important;
+}
+
+.fileCSV {
+    color: var(--graph-icon-csv) !important;
+}
+
+.threeBars {
+    color: var(--graph-icon-view) !important;
+}
+
+.editDevice {
+    color: var(--graph-icon-device) !important;
+}
+
+.editTemplate {
+    color: var(--graph-icon-template) !important;
+}
+
+.realTime {
+    color: var(--graph-icon-realtime) !important;
+}
+
+.spikeKill {
+    color: var(--graph-icon-spikekill) !important;
+}
+
+.viewSources {
+    color: var(--graph-icon-sources) !important;
+}
+
 .monoSpace {
     font-family: var(--font-mono);
     font-size: var(--fs-small);
