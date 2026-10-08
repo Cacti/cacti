@@ -1659,7 +1659,7 @@ function form_end($ajax = true) {
 			title='<?php print __esc('Warning Unsaved Form Data');?>';
 			returnStr = '<div id="messageContainer" style="display:none">' +
 				'<h4><?php print __('Unsaved Changes Detected');?></h4>' +
-				'<p style="display:table-cell;overflow:auto"><?php print __esc("You have unsaved changes on this form.  If you press 'Continue' these changes will be discarded.  Press 'Cancel' to continue editing the form.");?></p>' +
+				'<p><?php print __esc("You have unsaved changes on this form.  If you press 'Continue' these changes will be discarded.  Press 'Cancel' to continue editing the form.");?></p>' +
 				'</div>';
 
 			$('#messageContainer').remove();
