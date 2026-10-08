@@ -1003,6 +1003,10 @@ label.ui-state-hover > span {
 
 .cactiAuthArea {
 	color: #9d9d9d;
+	padding: 20px;
+	border-radius: 10px;
+	background: rgba(0,0,0,0.35);
+	border: 1px solid rgba(255,255,255,0.2);
 }
 
 .cactiAuthTitle {
@@ -1041,6 +1045,16 @@ legend {
 	background-color: transparent;
 	color: #969BA3;
 	border: 1px solid rgba(255,255,255,0.2);
+}
+
+.cactiAuthBody input:-webkit-autofill,
+.cactiAuthBody input:-webkit-autofill:hover,
+.cactiAuthBody input:-webkit-autofill:focus,
+.cactiAuthBody input:-webkit-autofill:active {
+	-webkit-text-fill-color: #969BA3;
+	-webkit-box-shadow: 0 0 0 1000px #0c2233 inset;
+	caret-color: #969BA3;
+	transition: background-color 9999s ease-in-out 0s;
 }
 
 .versionInfo {

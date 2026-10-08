@@ -1031,14 +1031,19 @@ ul#breadcrumbs {
 	top: 30%;
 	width: 360px;
 	max-height: 300px;
-	background: rgba(255,255,255,1);
-	background: -ms-linear-gradient(top, #363636 0%, #071204 100%);
-	background: -moz-linear-gradient(top, #363636 0%, #071204 100%);
-	background: -o-linear-gradient(top, #363636 0%, #071204 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #363636), color-stop(100, #071204));
-	background: -webkit-linear-gradient(top, #363636 0%, #071204 100%);
-	background: linear-gradient(to bottom, #363636 0%, #071204 100%);
+	background: #363636;
+	border: 1px solid #4a4a4a;
 	text-shadow: 1px 1px 1px rgba(9, 61, 16, 0.66);
+}
+
+.cactiAuthBody input:-webkit-autofill,
+.cactiAuthBody input:-webkit-autofill:hover,
+.cactiAuthBody input:-webkit-autofill:focus,
+.cactiAuthBody input:-webkit-autofill:active {
+	-webkit-text-fill-color: #eeeeee;
+	-webkit-box-shadow: 0 0 0 1000px #222222 inset;
+	caret-color: #eeeeee;
+	transition: background-color 9999s ease-in-out 0s;
 }
 
 .cactiAuthArea hr {
@@ -1073,12 +1078,6 @@ legend {
 	width: 100%;
 	height: 100%;
 	background: #161616;
-	background-image: -ms-linear-gradient(top, #161616 0%, #000000 100%);
-	background-image: -moz-linear-gradient(top, #161616 0%, #000000 100%);
-	background-image: -o-linear-gradient(top, #161616 0%, #000000 100%);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #161616), color-stop(100, #000000));
-	background-image: -webkit-linear-gradient(top, #161616 0%, #000000 100%);
-	background-image: linear-gradient(to bottom, #161616 0%, #000000 100%);
 }
 
 .cactiAuthPanel {
