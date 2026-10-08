@@ -1,0 +1,1 @@
+Unify the login page styling across all core themes - a flat bordered login card and a browser-autofill override for every theme, flattened login-page gradients on the dark themes, and re-point the Deepness and MidWinter themes from the legacy .login* classes to the current .cactiAuth* login markup
