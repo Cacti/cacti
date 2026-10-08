@@ -1208,11 +1208,11 @@ ul#breadcrumbs {
     background: transparent url("./../../images/cacti_logo.svg") no-repeat 30px;
 }
 
-.logoutLeft, .loginLeft {
+.cactiAuthLeft {
     display: none;
 }
 
-.loginCenter, .logoutCenter {
+.cactiAuthCenter {
     display: flex !important;
     align-content: center;
     align-items: center;
@@ -1221,7 +1221,7 @@ ul#breadcrumbs {
     height: 100%;
 }
 
-.cactiLoginLogo, .cactiLogoutLogo {
+.cactiAuthLogo {
     position: relative;
     float: left;
     width: 50px;
@@ -1232,42 +1232,46 @@ ul#breadcrumbs {
     background: var(--text-color-highlight-a) url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 20px auto;
 }
 
-.loginArea, .logoutArea {
+.cactiAuthArea {
     margin: auto;
     color: var(--text-color-highlight);
+    padding: 20px;
+    border-radius: 10px;
+    background: var(--background-filter);
+    border: 1px solid var(--border-color);
 }
 
-.cactiLoginTable {
+.cactiAuthTable {
     width: 100%;
 }
 
-.cactiLoginTable tr{
+.cactiAuthTable tr{
     line-height: 30px;
 }
-.cactiLoginTable td {
+.cactiAuthTable td {
     width: 100%;
 }
 
-.cactiLoginTable td:nth-child(2){
+.cactiAuthTable td:nth-child(2){
     padding-bottom: 10px;
 }
 
-.cactiLoginTable tr:last-child td{
+.cactiAuthTable tr:last-child td{
     padding-top: 20px;
 }
 
-.cactiLoginTable td > * {
+.cactiAuthTable td > * {
     width: 100%;
     padding-right: 0;
     padding-left: 0;
 }
 
-.loginTitle {
+.cactiAuthTitle {
     display: flex;
     justify-content: flex-end;
 }
 
-.loginErrors, .logoutErrors {
+.cactiAuthErrors {
     min-height: 15px;
     text-align: center;
     color: red;
@@ -1290,11 +1294,11 @@ legend::before {
     background: transparent url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 60px auto;
 }
 */
-.logoutRight, .loginRight {
+.cactiAuthRight {
     display: none;
 }
 
-.loginBody, .logoutBody {
+.cactiAuthBody {
     font-size: 100%;
     display: flex !important;
     align-content: center;
@@ -1304,12 +1308,22 @@ legend::before {
     background: var(--background-menu);
 }
 
-.loginBody input, .logoutBody input {
+.cactiAuthBody input {
     color: white;
     border: 1px solid rgba(255,255,255,0.2);
 }
 
-.loginBody input[type="submit"] {
+.cactiAuthBody input:-webkit-autofill,
+.cactiAuthBody input:-webkit-autofill:hover,
+.cactiAuthBody input:-webkit-autofill:focus,
+.cactiAuthBody input:-webkit-autofill:active {
+    -webkit-text-fill-color: white;
+    -webkit-box-shadow: 0 0 0 1000px var(--background-filter) inset;
+    caret-color: white;
+    transition: background-color 9999s ease-in-out 0s;
+}
+
+.cactiAuthBody input[type="submit"] {
     background-color: var(--background-progress);
 }
 
@@ -1389,7 +1403,7 @@ legend::before {
     width: 2.0em;
 }
 
-.loginPanel {
+.cactiAuthPanel {
     padding: 4px 0;
 }
 
