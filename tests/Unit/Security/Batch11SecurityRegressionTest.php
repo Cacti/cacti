@@ -36,8 +36,8 @@ $userGroupSource = file_get_contents($root . '/user_group_admin.php');
 
 test('GHSA-fq9x: substitute_script_path substitutes tokens in a single pass', function () use ($functionsSource) {
 	expect($functionsSource)->toContain('function substitute_script_path(');
-	expect($functionsSource)->toContain("preg_replace_callback('/<([A-Za-z0-9_]+)>/',");
-	expect($functionsSource)->toContain('array_key_exists($matches[1], $escaped_values)');
+	expect($functionsSource)->toContain('>(?(1)');
+	expect($functionsSource)->toContain('array_key_exists($matches[2], $escaped_values)');
 });
 
 test('GHSA-fq9x: both path builders drop the iterative str_replace and call the helper', function () use ($functionsSource) {
