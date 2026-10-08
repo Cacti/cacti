@@ -1521,12 +1521,6 @@ table.cactiTable {
 	padding: 8px 12px;
 }
 
-.ui-dialog .ui-dialog-buttonpane .ui-button:first-child {
-	background: #FFAA00;
-	color: #1a1a1a;
-	border-color: #FFAA00;
-}
-
 .cactiTableTitle {
 	color: #FFAA00;
 	float: left;
@@ -2698,6 +2692,29 @@ tr#realtime td:first-child {
 	background: transparent;
 	color: #93CEFF;
 	border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Primary/active action button (submit, e.g. Go) and the dialog default
+   button - subtle on-palette blue (sunrise's hover/active accent #93CEFF) so
+   the active action reads clearly without the loud amber */
+input[type="submit"],
+input[type="submit"].ui-button,
+button[type="submit"],
+.ui-dialog .ui-dialog-buttonpane .ui-button:first-child {
+	background: rgba(147, 206, 255, 0.18);
+	background-image: none;
+	border: 1px solid rgba(147, 206, 255, 0.5);
+	color: #93CEFF;
+}
+
+input[type="submit"]:hover,
+input[type="submit"].ui-button:hover,
+button[type="submit"]:hover,
+.ui-dialog .ui-dialog-buttonpane .ui-button:first-child:hover {
+	background: rgba(147, 206, 255, 0.3);
+	background-image: none;
+	border-color: rgba(147, 206, 255, 0.75);
+	color: #bfe2ff;
 }
 
 .ui-autocomplete {
