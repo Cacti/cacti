@@ -51,7 +51,7 @@ switch ($action) {
 			LIMIT 1',
 			[$user_hash]);
 
-		if (!$hash || !hash_equals((string) $hash['hash'], (string) $user_hash)) {
+		if (!is_array($hash) || !hash_equals((string) $hash['hash'], (string) $user_hash)) {
 			$errorMessage = "<span class='badpassword_message'>" . __('Incorrect resetlink hash') . '</span>';
 			$action       = 'formidentity';
 		}
@@ -110,7 +110,7 @@ switch ($action) {
 			LIMIT 1',
 			[$user_hash]);
 
-		if (!$hash || !hash_equals((string) $hash['hash'], (string) $user_hash)) {
+		if (!is_array($hash) || !hash_equals((string) $hash['hash'], (string) $user_hash)) {
 			$errorMessage = "<span class='badpassword_message'>" . __('Incorrect resetlink hash') . '</span>';
 			$action       = 'formidentity';
 
