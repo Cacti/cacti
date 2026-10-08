@@ -1415,6 +1415,96 @@ legend {
 	border-color: linear-gradient(to bottom, #252426 0%, #0C0D0D 100%);
 }
 
+/* jQuery UI selectmenu + autocomplete + dialog - match this theme's select2 /
+   html_start_box styling instead of the jquery-ui.css themeroller look. */
+.ui-selectmenu-button.ui-button {
+	background: #000000;
+	border: 1px solid #555555;
+	border-radius: 6px;
+	color: #ffffff;
+}
+
+.ui-selectmenu-button.ui-button:hover,
+.ui-selectmenu-button.ui-selectmenu-button-open {
+	background: #000000;
+	border-color: #555555;
+	color: #ffffff;
+}
+
+.ui-selectmenu-menu .ui-menu,
+.ui-menu.ui-autocomplete {
+	background: #000000;
+	border: 1px solid #555555;
+	color: #ffffff;
+}
+
+.ui-selectmenu-menu .ui-menu .ui-menu-item-wrapper,
+.ui-menu.ui-autocomplete .ui-menu-item-wrapper {
+	color: #ffffff;
+}
+
+.ui-selectmenu-menu .ui-menu .ui-state-focus,
+.ui-selectmenu-menu .ui-menu .ui-state-active,
+.ui-menu.ui-autocomplete .ui-state-focus,
+.ui-menu.ui-autocomplete .ui-state-active {
+	background: #31442b;
+	border: 1px solid transparent;
+	color: #ffffff;
+}
+
+.ui-dialog {
+	padding: 0;
+	border: 1px solid #555555;
+	border-radius: 6px;
+	background: #000000;
+	color: #ffffff;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+	overflow: hidden;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+	border: 0;
+	border-radius: 0;
+	padding: 0 8px;
+	height: 22px;
+	line-height: 22px;
+	background: linear-gradient(to bottom, #252426 0%, #0C0D0D 100%);
+	color: #ffffff;
+	font-size: 1em;
+	font-weight: bold;
+}
+
+.ui-dialog .ui-dialog-title {
+	font-weight: bold;
+	line-height: 22px;
+}
+
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close,
+.ui-dialog .ui-dialog-titlebar-close.ui-state-hover,
+.ui-dialog .ui-dialog-titlebar-close:hover,
+.ui-dialog .ui-dialog-titlebar-close:focus {
+	background: transparent;
+	border: 0;
+}
+
+.ui-dialog .ui-dialog-titlebar-close .ui-icon {
+	filter: brightness(0) invert(1);
+}
+
+.ui-dialog .ui-dialog-content {
+	background: #000000;
+	color: #ffffff;
+	padding: 14px 16px;
+	overflow: visible;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+	margin: 0;
+	border-top: 1px solid #555555;
+	background: #000000;
+	padding: 8px 12px;
+}
+
 .cactiTableTitle {
 	float: left;
 	text-align: left;
