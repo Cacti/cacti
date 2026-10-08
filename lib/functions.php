@@ -3183,9 +3183,9 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
  *                tokens are left intact for the caller's trailing cleanup to strip
  */
 function substitute_script_path(string $template, array $escaped_values) : string {
-	return preg_replace_callback('/<([A-Za-z0-9_]+)>/',
+	return preg_replace_callback('/(["\'])?<([A-Za-z0-9_]+)>(?(1)\1)/',
 		function (array $matches) use ($escaped_values) : string {
-			return array_key_exists($matches[1], $escaped_values) ? $escaped_values[$matches[1]] : $matches[0];
+			return array_key_exists($matches[2], $escaped_values) ? $escaped_values[$matches[2]] : $matches[0];
 		},
 		$template) ?? '';
 }
