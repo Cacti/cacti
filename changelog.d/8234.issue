@@ -1,0 +1,1 @@
+Harmonize all remaining Deepness theme greens to its emerald palette so info/success dialog text (.deviceUp), status text, the Up badge, tree border, reload icon, Pace bar and jQuery UI hover/active states no longer render as a clashing kelly/olive green
