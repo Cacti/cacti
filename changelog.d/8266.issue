@@ -1,1 +1,1 @@
-Preserve authentication migration data and retryable upgrade versions on failures, propagate CLI and Composer errors, and serialize installer settings changes across CLI and background workers
+Preserve authentication migration data and retryable upgrade versions on failures, propagate CLI and Composer errors, preserve requested CLI debug levels, and serialize installer settings changes across CLI and background workers

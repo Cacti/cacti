@@ -110,16 +110,18 @@ try {
 	} elseif ($scenario === 'installer-lock') {
 		installer_fixture_check(register_process_start('install', 'master', 0, 86400), 'Could not register lock fixture');
 		set_config_option('install_eula', 'lock-owner-fixture');
+		set_config_option('log_install_json', '3');
 
 		try {
 			$output = [];
 			exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(CACTI_PATH_CLI . '/upgrade_database.php') . ' --forcever=1.2.28 2>&1', $output, $status);
 			installer_fixture_check($status !== 0 && str_contains(implode(PHP_EOL, $output), 'already in progress'), 'CLI upgrader ignored an active installer');
-			$arguments = ['--accept-eula', '--install', '--force', '--path=php_binary:' . PHP_BINARY, '--path=rrdtool:/usr/bin/rrdtool', '--path=snmpwalk:/usr/bin/snmpwalk', '--path=snmpget:/usr/bin/snmpget', '--path=snmpbulkwalk:/usr/bin/snmpbulkwalk', '--path=snmpgetnext:/usr/bin/snmpgetnext', '--path=fping:/usr/bin/fping'];
+			$arguments = ['--accept-eula', '--install', '--force', '--debug=json:5', '--path=php_binary:' . PHP_BINARY, '--path=rrdtool:/usr/bin/rrdtool', '--path=snmpwalk:/usr/bin/snmpwalk', '--path=snmpget:/usr/bin/snmpget', '--path=snmpbulkwalk:/usr/bin/snmpbulkwalk', '--path=snmpgetnext:/usr/bin/snmpgetnext', '--path=fping:/usr/bin/fping'];
 			$output    = [];
 			exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(CACTI_PATH_CLI . '/install_cacti.php') . ' ' . implode(' ', array_map('escapeshellarg', $arguments)) . ' 2>&1', $output, $status);
 			installer_fixture_check($status !== 0 && str_contains(implode(PHP_EOL, $output), 'already in progress'), 'CLI installer ignored an active installer');
 			installer_fixture_check(db_fetch_cell("SELECT value FROM settings WHERE name = 'install_eula'") === 'lock-owner-fixture', 'Blocked CLI installer overwrote the active installer settings');
+			installer_fixture_check(db_fetch_cell("SELECT value FROM settings WHERE name = 'log_install_json'") === '3', 'Blocked CLI installer overwrote the active installer logging settings');
 		} finally {
 			unregister_process('install', 'master', 0);
 		}

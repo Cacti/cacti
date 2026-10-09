@@ -34,6 +34,7 @@ $options = ['Runtime' => 'Cli'];
 
 $should_install = false;
 $force_install  = false;
+$log_options    = [];
 
 display_version();
 
@@ -73,10 +74,10 @@ if (cacti_sizeof($parms)) {
 				if ($tmplevel !== false) {
 					$level = $tmplevel;
 				} else {
-					$level = log_install_level($logname, POLLER_VERBOSITY_DEBUG) + 1;
+					$level = ($log_options[$logname] ?? log_install_level($logname, POLLER_VERBOSITY_DEBUG)) + 1;
 				}
-				$level = log_install_level_sanitize($level);
-				set_config_option($logname, $level);
+				$level                 = log_install_level_sanitize($level);
+				$log_options[$logname] = $level;
 
 				break;
 			case '--version':
@@ -207,6 +208,10 @@ if (!register_process_start('install', 'master', 0, 86400)) {
 
 try {
 	db_execute("DELETE FROM settings WHERE name like 'log_install%' or name = 'install_eula'");
+
+	foreach ($log_options as $logname => $level) {
+		set_config_option($logname, $level);
+	}
 
 	include_once(CACTI_PATH_LIBRARY . '/api_automation.php');
 	include_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');

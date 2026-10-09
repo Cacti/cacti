@@ -167,8 +167,9 @@ EXPECTED_TABLES="$(grep -c '^CREATE TABLE' cacti.sql)"
 
 printf 'Scenario: fresh CLI installation\n'
 reset_database "$REPO_DIR/cacti.sql"
-run_installer
+run_installer --debug=json:3
 assert_complete_install "$EXPECTED_TABLES"
+[ "$(db_cacti -e "SELECT value FROM settings WHERE name = 'log_install_json';")" = '3' ] || fail 'installer reset the requested debug level'
 
 printf 'Scenario: 1.2.22 to %s CLI upgrade\n' "$CACTI_VERSION"
 reset_database "$OLD_SCHEMA"
