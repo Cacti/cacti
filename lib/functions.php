@@ -2675,9 +2675,9 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
  * A resolved value that is NOT self-quoting - the trusted path_* tokens resolve to
  * raw configuration values that the callers do not shell-escape - is substituted
  * in place so the template keeps its own quotes. That leaves a spaced path such as
- * "<path_php_binary>" validly quoted for shell_exec() and leaves a bare
+ * "<path_php_binary>" validly quoted for the shell and leaves a bare
  * <path_cacti>/scripts/x.php unquoted for the PHP script server, which resolves the
- * first token with realpath() rather than through a shell.
+ * first token as a filesystem path rather than through a shell.
  *
  * @param string $template The command template containing <field> tokens.
  * @param array $escaped_values Map of field name => already-escaped value.
