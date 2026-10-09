@@ -5,6 +5,9 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/installer-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
       - 'cacti.sql'
       - 'cli/convert_tables.php'
       - 'cli/install_cacti.php'
@@ -23,6 +26,9 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/installer-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
       - 'cacti.sql'
       - 'cli/convert_tables.php'
       - 'cli/install_cacti.php'

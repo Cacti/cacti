@@ -5,6 +5,7 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/cookie-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
       - 'auth_2fa.php'
       - 'auth_changepassword.php'
       - 'auth_login.php'
@@ -30,6 +31,7 @@ on:
     branches: [develop]
     paths:
       - '.github/workflows/cookie-coverage.yml'
+      - '.github/actions/setup-php-composer/**'
       - 'auth_2fa.php'
       - 'auth_changepassword.php'
       - 'auth_login.php'
@@ -75,21 +77,20 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup PHP 8.4
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+      - name: Set up PHP and Cacti test dependencies
+        uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.4'
           coverage: none
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          dependency-mode: locked-tests
+          install-args: --prefer-dist --no-progress --no-interaction
 
       - name: Setup Node 22
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # 4.4.0
         with:
           node-version: '22'
           cache: npm
-
-      - name: Install PHP dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Install JavaScript dependencies
         run: npm ci
