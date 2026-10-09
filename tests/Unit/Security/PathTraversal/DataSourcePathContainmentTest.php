@@ -73,6 +73,50 @@ test('redundant slashes from a trailing-slash path_rra are contained, not an esc
 		->and(data_source_path_within_rra(data_source_path_test_base() . '/1//new_ds.rrd'))->toBeTrue();
 });
 
+test('a CACTI_PATH_RRA defined with a trailing slash still contains its files', function () use ($rra_ready) : void {
+	if (!$rra_ready) {
+		$this->markTestSkipped('CACTI_PATH_RRA does not resolve to a directory this process can create fixtures under');
+	}
+
+	if (!function_exists('shell_exec') || !defined('PHP_BINARY') || PHP_BINARY === '') {
+		$this->markTestSkipped('shell_exec()/PHP_BINARY unavailable, cannot exercise an isolated process');
+	}
+
+	// CACTI_PATH_RRA is an immutable constant, already defined in this process
+	// without a trailing slash (and realpath() would strip one anyway), so the
+	// trailing-slash form - the actual trigger, where the base needs rtrim() and
+	// not just the target - can only be exercised in a fresh process that
+	// defines the constant that way.
+	$rra       = data_source_path_test_base();
+	$functions = dirname(__DIR__, 4) . '/lib/functions.php';
+	$autoload  = dirname(__DIR__, 4) . '/vendor/autoload.php';
+
+	$code = sprintf(
+		'<?php $a = %s; if (is_file($a)) { require $a; } define(%s, %s); require %s; ' .
+		'echo (data_source_path_within_rra(%s) === true ' .
+		'&& data_source_path_within_rra(%s) === true ' .
+		'&& data_source_path_within_rra(%s) === false) ? "PASS" : "FAIL";',
+		var_export($autoload, true),
+		var_export('CACTI_PATH_RRA', true),
+		var_export($rra . '/', true),
+		var_export($functions, true),
+		var_export($rra . '/1/host_ds.rrd', true),
+		var_export($rra . '//1/host_ds.rrd', true),
+		var_export($rra . '/../resource/x.rrd', true)
+	);
+
+	$script = tempnam(sys_get_temp_dir(), 'cacti_rra_trailing_');
+	file_put_contents($script, $code);
+
+	try {
+		$output = shell_exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($script) . ' 2>&1');
+	} finally {
+		@unlink($script);
+	}
+
+	expect(trim((string) $output))->toBe('PASS');
+});
+
 test('an absolute path elsewhere is rejected', function () : void {
 	expect(data_source_path_within_rra('/var/www/html/cacti/resource/x.php'))->toBeFalse()
 		->and(data_source_path_within_rra('/tmp/x.rrd'))->toBeFalse();
