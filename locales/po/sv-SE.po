@@ -29,9 +29,7 @@ msgstr ""
 #: about.php:46
 #, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
-msgstr ""
-"Vänligen se den officiella %sCacti-webbplatsen %s för information, support "
-"och uppdateringar."
+msgstr "Vänligen se den officiella %1$sCacti-webbplatsen %2$s för information, support och uppdateringar."
 
 #: about.php:50
 msgid "Active Developers"
@@ -66,9 +64,7 @@ msgstr "Tack"
 #: about.php:88
 #, php-format
 msgid "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the very popular %sMRTG%s."
-msgstr ""
-"Ett mycket speciellt tack till %sTobi Oetiker %s, skaparen av %sRRDtool %s "
-"och den mycket populära %sMRTG %s."
+msgstr "Ett mycket speciellt tack till %1$sTobi Oetiker %2$s, skaparen av %3$sRRDtool %4$s och den mycket populära %5$sMRTG %6$s."
 
 #: about.php:91
 msgid "The users of Cacti"
@@ -402,7 +398,7 @@ msgstr "Visa artikeluppgifter"
 
 #: aggregate_graphs.php:1150
 msgid "Aggregate Preview Does Not Exist"
-msgstr "Sammanfattning Förhandsgranskning [ %s]"
+msgstr "Förhandsgranskningen av aggregatet finns inte"
 
 #: aggregate_graphs.php:1158
 #, php-format
@@ -943,7 +939,7 @@ msgstr "Ange ditt nuvarande lösenord och ditt nya <br> Cacti lösenord."
 
 #: auth_changepassword.php:412 auth_resetpassword.php:263
 msgid "Please enter your new Cacti password."
-msgstr "Ange ditt nuvarande lösenord och ditt nya <br> Cacti lösenord."
+msgstr "Ange ditt nya Cacti-lösenord."
 
 #: auth_changepassword.php:415 include/global_form.php:1698
 #: lib/functions.php:4080 lib/html.php:3070
@@ -1206,7 +1202,7 @@ msgstr "Aktiverad"
 
 #: auth_profile.php:604
 msgid "Enabling..."
-msgstr "Aktiverar …"
+msgstr "Aktiverar..."
 
 #: auth_profile.php:697
 msgid "Private Data Cleared"
@@ -1802,13 +1798,12 @@ msgstr "Importera regel för nätverksupptäckt"
 #: automation_networks.php:366
 #, php-format
 msgid "Can Not Restart Discovery for Discovery in Progress for Network '%s'"
-msgstr ""
-"Kan inte starta om Discovery för Discovery pågår för nätverket &#39; %s&#39;"
+msgstr "Kan inte starta om Discovery för Discovery pågår för nätverket ' %s'"
 
 #: automation_networks.php:370
 #, php-format
 msgid "Can Not Perform Discovery for Disabled Network '%s'"
-msgstr "Kan inte utföra discovery för funktionshindrade nätverk &quot; %s&quot;"
+msgstr "Kan inte utföra discovery för funktionshindrade nätverk \" %s\""
 
 #: automation_networks.php:439
 #, php-format
@@ -3817,7 +3812,7 @@ msgstr "Färgmall [ny]"
 #: color_templates.php:762
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "Färgmall '%s' hade %d Aggregatmallar utskjutna och %d Icke-templerade Aggregat utskjutna"
+msgstr "Färgmall '%1$s' hade %2$d Aggregatmallar utskjutna och %3$d Icke-templerade Aggregat utskjutna"
 
 #: color_templates.php:764
 #, php-format
@@ -4094,7 +4089,7 @@ msgstr "Resultat"
 
 #: data_debug.php:854
 msgid "<not set>"
-msgstr "Ej inställt"
+msgstr "<ej inställt>"
 
 #: data_debug.php:891 data_debug.php:945
 msgid "Data Source Repair Recommendations"
@@ -4107,7 +4102,7 @@ msgstr "Utlämning"
 #: data_debug.php:910
 #, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "För attrbitute ' %s' har problemet hittats ' %s'"
+msgstr "För attrbitute ' %1$s' har problemet hittats ' %2$s'"
 
 #: data_debug.php:925
 msgid "Apply Suggested Fixes"
@@ -4446,7 +4441,7 @@ msgstr "Associerade graf / datamallar [redigera: %s]"
 
 #: data_queries.php:638
 msgid "Associated Graph/Data Templates [new]"
-msgstr "Associerade graf / datamallar [redigera: %s]"
+msgstr "Associerade graf-/datamallar [nya]"
 
 #: data_queries.php:673
 msgid "Associated Data Templates"
@@ -4667,7 +4662,7 @@ msgstr "(Vissa delar endast läs)"
 #: data_source_profiles.php:524
 #, php-format
 msgid "RRA [edit: %s %s]"
-msgstr "RRA [redigera: %s %s]"
+msgstr "RRA [redigera: %1$s %2$s]"
 
 #: data_source_profiles.php:614
 #, php-format
@@ -4717,7 +4712,7 @@ msgstr "Radera datakällaprofil"
 #: data_source_profiles.php:799
 #, php-format
 msgid "%s KBytes per Data Sources and %s Bytes for the Header"
-msgstr "%s KBytes per datakällor och %s Bytes för rubriken"
+msgstr "%1$s KBytes per datakällor och %2$s Bytes för rubriken"
 
 #: data_source_profiles.php:808
 #, php-format
@@ -4922,19 +4917,19 @@ msgstr[1] "Följande grafer använder dessa datakällor."
 #: data_sources.php:551
 msgid "Leave the Graph Untouched"
 msgid_plural "Leave all Graphs untouched."
-msgstr[0] "Lämna grafen orörd"
+msgstr[0] "Lämna grafen orörd."
 msgstr[1] "Lämna alla grafer orörda."
 
 #: data_sources.php:555
 msgid "Delete all Graph Items that reference this Data Source."
 msgid_plural "Delete all Graph Items that reference these Data Sources"
-msgstr[0] "Ta bort alla grafobjekt som refererar till denna datakälla."
+msgstr[0] "Ta bort alla grafobjekt som refererar till denna datakälla"
 msgstr[1] "Ta bort alla grafobjekt som hänvisar till dessa datakällor"
 
 #: data_sources.php:559
 msgid "Delete all Graphs that reference this Data Source."
 msgid_plural "Delete all Graphs that reference these Data Sources"
-msgstr[0] "Ta bort alla grafer som refererar till denna datakälla."
+msgstr[0] "Ta bort alla grafer som refererar till denna datakälla"
 msgstr[1] "Ta bort alla grafer som hänvisar till dessa datakällor"
 
 #: data_sources.php:566
@@ -5351,7 +5346,7 @@ msgstr "Värdet kommer att härledas från enheten om det här fältet är tomt.
 
 #: data_templates.php:1007
 msgid "Custom Data Warning Message"
-msgstr "Anpassade data [dataingång: %s]"
+msgstr "Anpassat varningsmeddelande för data"
 
 #: data_templates.php:1008
 msgid "WARNING: Data Loss can Occur"
@@ -5608,7 +5603,7 @@ msgstr ""
 #: graph_templates.php:1163 graph_templates.php:1178
 #, php-format
 msgid "Sync of Graph Template '%s' Resulted in %s Repairs!"
-msgstr "Synkronisering av grafmallen '%s' resulterade i %s reparationer!"
+msgstr "Synkronisering av grafmallen '%1$s' resulterade i %2$s reparationer!"
 
 #: graph_templates.php:1165 graph_templates.php:1180
 #, php-format
@@ -6076,13 +6071,13 @@ msgstr "Radera metod"
 #: graphs.php:1773
 msgid "Delete the Data Sources referenced by this Graph"
 msgid_plural "Delete the Data Sources reference by these Graphs."
-msgstr[0] "Ta bort de datakällor som denna graf hänvisar till"
+msgstr[0] "Ta bort de datakällor som denna graf hänvisar till."
 msgstr[1] "Ta bort de datakällor som diagrammen hänvisar till."
 
 #: graphs.php:1777
 msgid "Leave the Data Source untouched."
 msgid_plural "Leave the Data Sources untouched"
-msgstr[0] "Låt datakällan vara orörd."
+msgstr[0] "Låt datakällan vara orörd"
 msgstr[1] "Lämna datakällorna orörda"
 
 #: graphs.php:1784
@@ -6274,7 +6269,7 @@ msgstr "Redigera grafmall."
 #: graphs.php:2275
 #, php-format
 msgid "Edit Data Source: '%s'."
-msgstr "Datakällor [ %s]"
+msgstr "Datakällor [ %s]."
 
 #: graphs.php:2284
 msgid "Unlock Graph."
@@ -6326,7 +6321,7 @@ msgstr "Nya grafer för [Alla enheter]"
 
 #: graphs.php:2685
 msgid "Graph Management [ Non Device Based ]"
-msgstr "User Group Management [redigera: %s]"
+msgstr "Grafhantering [ej enhetsbaserad]"
 
 #: graphs.php:2688
 #, php-format
@@ -6362,7 +6357,7 @@ msgstr "Standardinställningar sparade"
 #: graphs_new.php:338
 #, php-format
 msgid "New Graphs for [ %s ] (%s %s)"
-msgstr "Nya grafer för [ %s ] (%s %s)"
+msgstr "Nya grafer för [ %1$s ] (%2$s %3$s)"
 
 #: graphs_new.php:340
 msgid "New Graphs for [ All Devices ]"
@@ -6418,21 +6413,17 @@ msgstr "Välj alla rader"
 #: graphs_new.php:678
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
-msgstr ""
-"Fel vid analys av datafrågaresurs XML-fil för datafrågan '%s' med id '%s'"
+msgstr "Fel vid analys av datafrågaresurs XML-fil för datafrågan '%1$s' med id '%2$s'"
 
 #: graphs_new.php:695
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
-msgstr ""
-"Fel vid tolkning av dataförfrågningsresurs XML-fil för dataförfrågan \"%s\" "
-"med id \"%s\".  Fältnamn \"%s\" saknar ett \"riktning\" -attribut"
+msgstr "Fel vid tolkning av dataförfrågningsresurs XML-fil för dataförfrågan \"%1$s\" med id \"%2$s\".  Fältnamn \"%3$s\" saknar ett \"riktning\" -attribut"
 
 #: graphs_new.php:699
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
-msgstr ""
-"Fel vid analys av datafrågaresurs XML-fil för datafrågan '%s' med id '%s'"
+msgstr "Fel vid analys av datafrågaresurs XML-fil för datafrågan '%1$s' med id '%2$s'"
 
 #: graphs_new.php:740
 #, php-format
@@ -6482,17 +6473,12 @@ msgstr "Ange som standard"
 #: help.php:44
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
-msgstr ""
-"VARNING: Cacti Page:%s för användare:%s Genererade ett allvarligt fel %d!"
+msgstr "VARNING: Cacti Page:%1$s för användare:%2$s Genererade ett allvarligt fel %3$d!"
 
 #: help.php:74
 #, php-format
 msgid "The Document page '%s' count not be reached.  The Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally."
-msgstr ""
-"Antalet för dokumentsidan \"%s\" har inte uppnåtts.  Webbplatsen för Cacti-"
-"dokumentation kan inte nås.  Http-felet var \"%s\".  Överväg att ladda ner "
-"en officiell version för att få den senaste dokumentationen och vara värd "
-"för dokumentationen lokalt."
+msgstr "Antalet för dokumentsidan \"%1$s\" har inte uppnåtts.  Webbplatsen för Cacti-dokumentation kan inte nås.  Http-felet var \"%2$s\".  Överväg att ladda ner en officiell version för att få den senaste dokumentationen och vara värd för dokumentationen lokalt."
 
 #: help.php:88
 msgid "Cacti GitHub Site"
@@ -6555,9 +6541,7 @@ msgstr "ERROR: Ogiltigt enhets-ID."
 #: host.php:217
 #, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
-msgstr ""
-"Enhetens omindexering slutförd om %0.2f sekunder.  Det uppdaterades %d "
-"artiklar."
+msgstr "Enhetens omindexering slutförd om %1$0.2f sekunder.  Det uppdaterades %2$d artiklar."
 
 #: host.php:360
 #, php-format
@@ -6719,7 +6703,7 @@ msgstr "Visa Poller Cache"
 #: host.php:733
 #, php-format
 msgid " [ In state since '%s', Uptime since '%s' ]"
-msgstr " [ I skick sedan '%s', Drifttid sedan '%s' ]"
+msgstr " [ I skick sedan '%1$s', Drifttid sedan '%2$s' ]"
 
 #: host.php:748
 msgid "Create Graphs for this Device"
@@ -6793,7 +6777,7 @@ msgstr "Återindexmetod"
 #: host.php:982
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr " [%d objekt, %d rader]"
+msgstr " [%1$d objekt, %2$d rader]"
 
 #: host.php:982
 msgid "Fail"
@@ -7246,7 +7230,7 @@ msgstr "Den katalog som är markerad finns inte. Ange en giltig katalog."
 
 #: include/global_arrays.php:174
 msgid "The Cacti log file must have the extension '.log'"
-msgstr "Cacti loggfilen måste ha förlängningen &#39;.log&#39;"
+msgstr "Cacti loggfilen måste ha förlängningen '.log'"
 
 #: include/global_arrays.php:177
 msgid "Data Input for method does not appear to be whitelisted."
@@ -7965,7 +7949,7 @@ msgstr "Varje dag"
 
 #: include/global_arrays.php:899
 msgid "1 Thread"
-msgstr "% d tråd"
+msgstr "1 tråd"
 
 #: include/global_arrays.php:943
 msgid "Cacti Builtin Authentication"
@@ -8709,7 +8693,7 @@ msgstr "Dagskift"
 
 #: include/global_arrays.php:1583
 msgid "This Day"
-msgstr "%d dygn"
+msgstr "Denna dag"
 
 #: include/global_arrays.php:1584
 msgid "This Week"
@@ -10386,7 +10370,7 @@ msgstr "Right Axis Formatter (- right-axis-formatterare &lt;formatname&gt;)"
 
 #: include/global_form.php:912
 msgid "When you setup the right axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length and --right-axis-format.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "När du konfigurerar högeraxelns märkning ska du tillämpa en regel för dataformatet.  Format som stöds är \"numeric\" där data behandlas som numeriska, \"timestamp\" där värden tolkas som UNIX-tidsstämplar (antal sekunder sedan januari 1970) och uttrycks med strftime-format (standard är \"%Y-%m-%d %H:%M:%S\").  Se även --units-length och --right-axis-format.  Slutligen \"duration\" där värden tolkas som varaktighet i millisekunder.  Formatering följer reglerna för valstrfduration kvalificerad PRINT/GPRINT."
+msgstr "När du konfigurerar högeraxelns märkning ska du tillämpa en regel för dataformatet.  Format som stöds är \"numeric\" där data behandlas som numeriska, \"timestamp\" där värden tolkas som UNIX-tidsstämplar (antal sekunder sedan januari 1970) och uttrycks med strftime-format (standard är \"%1$Y-%2$m-%3$d %4$H:%5$M:%6$S\").  Se även --units-length och --right-axis-format.  Slutligen \"duration\" där värden tolkas som varaktighet i millisekunder.  Formatering följer reglerna för valstrfduration kvalificerad PRINT/GPRINT."
 
 #: include/global_form.php:915
 msgid "Left Axis Format (--left-axis-format &lt;format&gt;)"
@@ -10398,7 +10382,7 @@ msgstr "Vänsteraxelformaterare (--axelaxelformat &lt;formatnamn&gt;)"
 
 #: include/global_form.php:928
 msgid "When you setup the left axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "När du konfigurerar märkningen av vänster axel tillämpar du en regel för dataformatet.  Format som stöds är \"numeric\" där data behandlas som numeriska, \"timestamp\" där värden tolkas som UNIX-tidsstämplar (antal sekunder sedan januari 1970) och uttrycks med strftime-format (standard är \"%Y-%m-%d %H:%M:%S\").  Se även --units-length.  Slutligen \"duration\" där värden tolkas som varaktighet i millisekunder.  Formatering följer reglerna för valstrfduration kvalificerad PRINT/GPRINT."
+msgstr "När du konfigurerar märkningen av vänster axel tillämpar du en regel för dataformatet.  Format som stöds är \"numeric\" där data behandlas som numeriska, \"timestamp\" där värden tolkas som UNIX-tidsstämplar (antal sekunder sedan januari 1970) och uttrycks med strftime-format (standard är \"%1$Y-%2$m-%3$d %4$H:%5$M:%6$S\").  Se även --units-length.  Slutligen \"duration\" där värden tolkas som varaktighet i millisekunder.  Formatering följer reglerna för valstrfduration kvalificerad PRINT/GPRINT."
 
 #: include/global_form.php:931
 msgid "Legend Options"
@@ -12310,7 +12294,7 @@ msgstr "Standard SNMPv3 Privacy Protocol för alla nya enheter."
 
 #: include/global_settings.php:908
 msgid "Privacy Passphrase (v3)"
-msgstr "Sekretess lösenordsfras (v3)."
+msgstr "Sekretess lösenordsfras (v3)"
 
 #: include/global_settings.php:909
 msgid "Default SNMPv3 Privacy Passphrase for all new Devices."
@@ -12786,7 +12770,7 @@ msgstr "Den tid som dina öppettider slutar. Format: tt:mm"
 
 #: include/global_settings.php:1354
 msgid "Hide Weekends"
-msgstr "% d veckor"
+msgstr "Dölj helger"
 
 #: include/global_settings.php:1355
 msgid "Only show business hours during weekdays."
@@ -14517,7 +14501,7 @@ msgstr ""
 
 #: include/global_settings.php:2899
 msgid "Cacti Server Timezone"
-msgstr "Cacti Server v %s - Underhåll"
+msgstr "Cacti-serverns tidszon"
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -14620,8 +14604,7 @@ msgstr "Tillåt graf att sträcka sig till framtiden"
 #: include/global_settings.php:2994
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
 msgstr ""
-"När du visar Grafer tillåter du att Grafikdatum förlängs &quot;till "
-"framtiden&quot;"
+"När du visar Grafer tillåter du att Grafikdatum förlängs \"till framtiden\""
 
 #: include/global_settings.php:2999
 msgid "First Day of the Week"
@@ -14804,7 +14787,7 @@ msgstr "Användarinställningar"
 
 #: include/global_settings.php:3225
 msgid "1 Week"
-msgstr "% d Vecka"
+msgstr "1 vecka"
 
 #: include/global_settings.php:3238
 msgid "Auto Log Out Time"
@@ -15033,7 +15016,7 @@ msgstr ""
 #: lib/api_automation.php:979
 #, php-format
 msgid "Matching Objects [ %s ]&nbsp;"
-msgstr "Matchande objekt [ %s ]"
+msgstr "Matchande objekt [ %s ]&nbsp;"
 
 #: lib/api_automation.php:988
 msgid "Device Status"
@@ -15130,12 +15113,12 @@ msgstr "Skapa trädregel (graf)"
 #: lib/api_automation.php:2435
 #, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
-msgstr "Regelobjekt [redigera regelobjekt för %s: %s]"
+msgstr "Regelobjekt [redigera regelobjekt för %1$s: %2$s]"
 
 #: lib/api_automation.php:2437
 #, php-format
 msgid "Rule Item [new rule item for %s: %s]"
-msgstr "Regelobjekt [nytt regelobjekt för %s: %s]"
+msgstr "Regelobjekt [nytt regelobjekt för %1$s: %2$s]"
 
 #: lib/api_automation.php:3457
 msgid "Added by Cacti Automation"
@@ -15176,7 +15159,7 @@ msgstr "Ogiltig filändelse."
 #: lib/api_automation.php:5273 lib/api_automation.php:5275
 #, php-format
 msgid "Automation Network SNMP Rule '%s' %s!"
-msgstr "Automation Nätverk SNMP Regel '%s' %s!"
+msgstr "Automation Nätverk SNMP Regel '%1$s' %2$s!"
 
 #: lib/api_automation.php:5273 lib/api_automation.php:5275
 #: lib/api_automation.php:5309 lib/api_automation.php:5311
@@ -15194,7 +15177,7 @@ msgstr "Uppdatera"
 #: lib/api_automation.php:5279 lib/api_automation.php:5281
 #, php-format
 msgid "Automation Network SNMP Rule '%s' %s Failed!"
-msgstr "Automation Network SNMP-regel '%s' %s Misslyckades!"
+msgstr "Automation Network SNMP-regel '%1$s' %2$s Misslyckades!"
 
 #: lib/api_automation.php:5279 lib/api_automation.php:5281
 #: lib/api_automation.php:5315 lib/api_automation.php:5317
@@ -15234,12 +15217,12 @@ msgstr "Mall för okänd enhet"
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
 #, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "Automation Nätverksregel '%s' %s!"
+msgstr "Automation Nätverksregel '%1$s' %2$s!"
 
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
 msgid "Automation Network Rule '%s' %s Failed!"
-msgstr "Automation Network Rule '%s' %s Misslyckades!"
+msgstr "Automation Network Rule '%1$s' %2$s Misslyckades!"
 
 #: lib/api_automation.php:5418
 msgid "Automation Network Rule Import data is either for another object type or not JSON formatted."
@@ -15356,29 +15339,29 @@ msgstr "Enheten är inaktiverad"
 #: lib/auth.php:2355 lib/auth.php:2357 lib/auth.php:2363 lib/auth.php:2365
 #, php-format
 msgid "Graph:(%s%s)"
-msgstr "Diagram:(%s%s)"
+msgstr "Diagram:(%1$s%2$s)"
 
 #: lib/auth.php:2378 lib/auth.php:2384 lib/auth.php:2451 lib/auth.php:2453
 #: lib/auth.php:2457 lib/auth.php:2459
 #, php-format
 msgid "Device:(%s%s)"
-msgstr "Enhet:(%s%s)"
+msgstr "Enhet:(%1$s%2$s)"
 
 #: lib/auth.php:2392 lib/auth.php:2398 lib/auth.php:2467 lib/auth.php:2469
 #: lib/auth.php:2473 lib/auth.php:2475
 #, php-format
 msgid "Template:(%s%s)"
-msgstr "Mall:(%s%s)"
+msgstr "Mall:(%1$s%2$s)"
 
 #: lib/auth.php:2405
 #, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "Graf+Enhet+Mall:(%s%s)"
+msgstr "Graf+Enhet+Mall:(%1$s%2$s)"
 
 #: lib/auth.php:2442 lib/auth.php:2444
 #, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "Enhet+Mall:(%s%s)"
+msgstr "Enhet+Mall:(%1$s%2$s)"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
@@ -15582,12 +15565,12 @@ msgstr " - Admin vy"
 #: lib/clog_webapi.php:290
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "Logga [Totalt antal rader: %d %s - Filter aktivt]"
+msgstr "Logga [Totalt antal rader: %1$d %2$s - Filter aktivt]"
 
 #: lib/clog_webapi.php:292
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "Logga [Totalt antal rader: %d %s - Ofiltrerad]"
+msgstr "Logga [Totalt antal rader: %1$d %2$s - Ofiltrerad]"
 
 #: lib/clog_webapi.php:297 utilities.php:430 utilities.php:791
 #: utilities.php:1042 utilities.php:1045 utilities.php:1141 utilities.php:2008
@@ -15709,7 +15692,7 @@ msgstr "Running Data Query [ %s]."
 #: lib/data_query.php:113
 #, php-format
 msgid "Found Type = '%s' [%s]."
-msgstr "Hittade Typ = &#39; %s&#39; [ %s]."
+msgstr "Hittade Typ = &#39; %1$s&#39; [ %2$s]."
 
 #: lib/data_query.php:135
 #, php-format
@@ -15733,7 +15716,7 @@ msgstr "Hittade%s tabeller att konvertera"
 #: lib/data_query.php:303
 #, php-format
 msgid "Index Change Detected! CurrentIndex: %s, PreviousIndex: %s"
-msgstr "Indexändring upptäckt! CurrentIndex: %s, PreviousIndex: %s"
+msgstr "Indexändring upptäckt! CurrentIndex: %1$s, PreviousIndex: %2$s"
 
 #: lib/data_query.php:323
 #, php-format
@@ -15753,7 +15736,7 @@ msgstr "Verifiering av %s lokalt data-ID slutförd"
 #: lib/data_query.php:363
 #, php-format
 msgid "Found Changed %s and %s Orphaned Local Data ID's to Re-map."
-msgstr "Hittade ändrade%s och%s föräldralösa lokala data-ID för att mappa om."
+msgstr "Hittade ändrade%1$s och%2$s föräldralösa lokala data-ID för att mappa om."
 
 #: lib/data_query.php:366
 msgid "Done remapping Graphs to their new Indexes"
@@ -15774,9 +15757,7 @@ msgstr "Indexförbundet med lokala data komplett"
 #: lib/data_query.php:392
 #, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
-msgstr ""
-"Uppdatering av indexcache slutförd. Det fanns %s indexändringar och %s "
-"föräldralösa index."
+msgstr "Uppdatering av indexcache slutförd. Det fanns %1$s indexändringar och %2$s föräldralösa index."
 
 #: lib/data_query.php:396
 msgid "Update Poller Cache for Query complete"
@@ -15803,9 +15784,7 @@ msgstr "Kontrollera efter sorteringsändring. Inga ändringar upptäckts."
 #: lib/data_query.php:509
 #, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
-msgstr ""
-"Upptäckt nytt sorteringsfält: &#39; %s&#39; gammalt sorteringsfält &#39; "
-"%s&#39;"
+msgstr "Upptäckt nytt sorteringsfält: ' %1$s' gammalt sorteringsfält ' %2$s'"
 
 #: lib/data_query.php:526
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
@@ -15819,12 +15798,12 @@ msgstr "Nytt sorteringsfält validerat. Sorteringsfältet uppdateras."
 #: lib/data_query.php:626
 #, php-format
 msgid "Could not find data query XML file at '%s'"
-msgstr "Det gick inte att hitta XML-filen för datasökningen vid &quot; %s&quot;"
+msgstr "Det gick inte att hitta XML-filen för datasökningen vid \" %s\""
 
 #: lib/data_query.php:631
 #, php-format
 msgid "Found data query XML file at '%s'"
-msgstr "Funnet XML-fil för XML-sökning vid &quot; %s&quot;"
+msgstr "Funnet XML-fil för XML-sökning vid \" %s\""
 
 #: lib/data_query.php:654 lib/data_query.php:846 lib/data_query.php:2452
 msgid "Error parsing XML file into an array."
@@ -15858,7 +15837,7 @@ msgstr ""
 #: lib/data_query.php:690
 #, php-format
 msgid "Executing script for num of indexes '%s'"
-msgstr "Utför skript för antal index &quot; %s&quot;"
+msgstr "Utför skript för antal index \" %s\""
 
 #: lib/data_query.php:693
 #, php-format
@@ -15884,11 +15863,11 @@ msgstr "FEL: Datafrågan returnerade inga index."
 #: lib/data_query.php:715
 #, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
-msgstr "Utför script för lista över index &#39; %s&#39;, Index Count: %s"
+msgstr "Utför script för lista över index &#39; %1$s&#39;, Index Count: %2$s"
 
 #: lib/data_query.php:717
 msgid "Click to show Data Query output for 'index'"
-msgstr "Klicka för att visa Data Query output for &#39;index&#39;"
+msgstr "Klicka för att visa Data Query output for 'index'"
 
 #: lib/data_query.php:720
 #, php-format
@@ -15898,7 +15877,7 @@ msgstr "Hittade index: %s"
 #: lib/data_query.php:735 lib/data_query.php:1233
 #, php-format
 msgid "Click to show Data Query output for field '%s'"
-msgstr "Klicka för att visa Data Query-utgång för fältet &#39; %s&#39;"
+msgstr "Klicka för att visa Data Query-utgång för fältet ' %s'"
 
 #: lib/data_query.php:741
 #, php-format
@@ -15908,17 +15887,17 @@ msgstr "Sorteringsfältet returnerade inga data för fältnamnet %s, hoppar öve
 #: lib/data_query.php:743
 #, php-format
 msgid "Executing script query '%s'"
-msgstr "Utför skriptfrågan &#39; %s&#39;"
+msgstr "Utför skriptfrågan ' %s'"
 
 #: lib/data_query.php:754 lib/data_query.php:761
 #, php-format
 msgid "Found item [%s='%s'] index: %s"
-msgstr "Hittade objektet [ %s = &#39; %s&#39;] index: %s"
+msgstr "Hittade objektet [ %1$s = &#39; %2$s&#39;] index: %3$s"
 
 #: lib/data_query.php:799 lib/data_query.php:814
 #, php-format
 msgid "Total: %f, Delta: %f, %s"
-msgstr "Totalt: %f, Delta: %f, %s"
+msgstr "Totalt: %1$f, Delta: %2$f, %3$s"
 
 #: lib/data_query.php:839
 #, php-format
@@ -15936,7 +15915,7 @@ msgstr "Det gick inte att ladda SNMP-session."
 #: lib/data_query.php:886
 #, php-format
 msgid "Tested Bulk Walk Size %d with a response of %2.4f."
-msgstr "Testad Bulk Walk Size %d med svaret %2.4f."
+msgstr "Testad Bulk Walk Size %1$d med svaret %2$2.4f."
 
 #: lib/data_query.php:898
 #, php-format
@@ -15955,7 +15934,7 @@ msgstr "Bulk Walk Size är fastställd till %d."
 #: lib/data_query.php:935
 #, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
-msgstr "Utför SNMP för antal index @ &#39; %s&#39; Indexräkning: %s"
+msgstr "Utför SNMP för antal index @ &#39; %1$s&#39; Indexräkning: %2$s"
 
 #: lib/data_query.php:937
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
@@ -15966,8 +15945,7 @@ msgstr ""
 #: lib/data_query.php:940
 #, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
-msgstr ""
-"Utför SNMP-promenad för lista över index @ &#39; %s&#39; Indexräkning: %s"
+msgstr "Utför SNMP-promenad för lista över index @ &#39; %1$s&#39; Indexräkning: %2$s"
 
 #: lib/data_query.php:944
 msgid "No SNMP data returned"
@@ -15976,29 +15954,27 @@ msgstr "Ingen SNMP-data returnerad"
 #: lib/data_query.php:950
 #, php-format
 msgid "Index found at OID: '%s' value: '%s'"
-msgstr "Index hittat vid OID: &#39; %s&#39; värde: &#39; %s&#39;"
+msgstr "Index hittat vid OID: ' %1$s' värde: ' %2$s'"
 
 #: lib/data_query.php:966
 #, php-format
 msgid "List of indexes filtered by value @ '%s' Index Count: %s"
-msgstr "Filtrera lista över index @ &#39; %s&#39; Indexräkning: %s"
+msgstr "Filtrera lista över index @ &#39; %1$s&#39; Indexräkning: %2$s"
 
 #: lib/data_query.php:970
 #, php-format
 msgid "Filtered Index by value found at OID: '%s' value: '%s'"
-msgstr ""
-"Filtrerat index som hittades vid OID: &#39; %s&#39; -värde: &#39; %s&#39;"
+msgstr "Filtrerat index som hittades vid OID: ' %1$s' -värde: ' %2$s'"
 
 #: lib/data_query.php:987
 #, php-format
 msgid "Filtering list of indexes @ '%s' Index Count: %s"
-msgstr "Filtrera lista över index @ &#39; %s&#39; Indexräkning: %s"
+msgstr "Filtrera lista över index @ &#39; %1$s&#39; Indexräkning: %2$s"
 
 #: lib/data_query.php:991
 #, php-format
 msgid "Filtered Index found at OID: '%s' value: '%s'"
-msgstr ""
-"Filtrerat index som hittades vid OID: &#39; %s&#39; -värde: &#39; %s&#39;"
+msgstr "Filtrerat index som hittades vid OID: ' %1$s' -värde: ' %2$s'"
 
 #: lib/data_query.php:1011
 #, php-format
@@ -16010,7 +15986,7 @@ msgstr ""
 #: lib/data_query.php:1018
 #, php-format
 msgid "Inserting index data for field '%s' [value='%s']"
-msgstr "Infoga indexdata för fältet &#39; %s&#39; [value = &#39; %s&#39;]"
+msgstr "Infoga indexdata för fältet &#39; %1$s&#39; [value = &#39; %2$s&#39;]"
 
 #: lib/data_query.php:1023
 #, php-format
@@ -16020,60 +15996,54 @@ msgstr "Ligger inmatningsfältet &#39; %s&#39; [get]"
 #: lib/data_query.php:1032
 #, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
-msgstr "Funnet OID-omskrivningsregel: &#39;s / %s / %s /&#39;"
+msgstr "Funnet OID-omskrivningsregel: 's / %1$s / %2$s /'"
 
 #: lib/data_query.php:1043
 #, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
-msgstr "oid_rewrite vid OID: &#39; %s&#39; new OID: &#39; %s&#39;"
+msgstr "oid_rewrite vid OID: ' %1$s' new OID: ' %2$s'"
 
 #: lib/data_query.php:1064
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
-msgstr "Exekvering av SNMP får för data @ &#39; %s&#39; [value = &#39; %s&#39;]"
+msgstr "Exekvering av SNMP får för data @ &#39; %1$s&#39; [value = &#39; %2$s&#39;]"
 
 #: lib/data_query.php:1076
 #, php-format
 msgid "Field '%s' %s"
-msgstr "Fältet &#39; %s&#39; %s"
+msgstr "Fältet &#39; %1$s&#39; %2$s"
 
 #: lib/data_query.php:1140
 #, php-format
 msgid "Executing SNMP get for %s oids (%s)"
-msgstr "Exekvering av SNMP får för %s oids ( %s)"
+msgstr "Exekvering av SNMP får för %1$s oids ( %2$s)"
 
 #: lib/data_query.php:1167 lib/data_query.php:1260 lib/data_query.php:1269
 #, php-format
 msgid "Sort field returned no data for OID[%s], skipping."
 msgstr ""
 "Sorteringsfältet returnerade inte data. Kan inte fortsätta Reindexera för "
-"OID [ %s]"
+"OID [ %s]."
 
 #: lib/data_query.php:1171
 #, php-format
 msgid "Found result for data @ '%s' [value='%s']"
-msgstr "Hittade resultat för data @ &#39; %s&#39; [value = &#39; %s&#39;]"
+msgstr "Hittade resultat för data @ &#39; %1$s&#39; [value = &#39; %2$s&#39;]"
 
 #: lib/data_query.php:1179
 #, php-format
 msgid "Setting result for data @ '%s' [key='%s', value='%s']"
-msgstr ""
-"Inställning av resultat för data @ &#39; %s&#39; "
-"[nyckel = &#39; %s&#39;, värde = &#39; %s&#39;]"
+msgstr "Inställning av resultat för data @ &#39; %1$s&#39; [nyckel = &#39; %2$s&#39;, värde = &#39; %3$s&#39;]"
 
 #: lib/data_query.php:1183
 #, php-format
 msgid "Skipped result for data @ '%s' [key='%s', value='%s']"
-msgstr ""
-"Hoppad resultat för data @ &#39; %s&#39; "
-"[nyckel = &#39; %s&#39;, värde = &#39; %s&#39;]"
+msgstr "Hoppad resultat för data @ &#39; %1$s&#39; [nyckel = &#39; %2$s&#39;, värde = &#39; %3$s&#39;]"
 
 #: lib/data_query.php:1197
 #, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
-msgstr ""
-"Fick SNMP få resultat för data @ &#39; %s&#39; [value = &#39; %s&#39;] "
-"(index: %s)"
+msgstr "Fick SNMP få resultat för data @ &#39; %1$s&#39; [value = &#39; %2$s&#39;] (index: %3$s)"
 
 #: lib/data_query.php:1227
 #, php-format
@@ -16088,7 +16058,7 @@ msgstr "Ligger inmatningsfältet &#39; %s&#39; [gå]"
 #: lib/data_query.php:1275
 #, php-format
 msgid "Executing SNMP walk for data @ '%s'"
-msgstr "Utför SNMP-promenad för data @ &#39; %s&#39;"
+msgstr "Utför SNMP-promenad för data @ ' %s'"
 
 #: lib/data_query.php:1295 lib/data_query.php:1359 lib/data_query.php:1410
 #: lib/data_query.php:1463
@@ -16099,24 +16069,22 @@ msgstr "Inget index[%s] i value_index_parse, hoppar över."
 #: lib/data_query.php:1342
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
-msgstr "Hittade objektet [ %s = &#39; %s&#39;] index: %s [från %s]"
+msgstr "Hittade objektet [ %1$s = &#39; %2$s&#39;] index: %3$s [från %4$s]"
 
 #: lib/data_query.php:1386
 #, php-format
 msgid "Found OCTET STRING '%s' decoded value: '%s'"
-msgstr "Funnet OCTET STRING &#39; %s&#39; avkodat värde: &#39; %s&#39;"
+msgstr "Funnet OCTET STRING ' %1$s' avkodat värde: ' %2$s'"
 
 #: lib/data_query.php:1392 lib/data_query.php:1443
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
-msgstr "Hittade objekt [ %s = &#39; %s&#39;] index: %s [från regexp oid parse]"
+msgstr "Hittade objekt [ %1$s = &#39; %2$s&#39;] index: %3$s [från regexp oid parse]"
 
 #: lib/data_query.php:1472
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
-msgstr ""
-"Hittade objektet [ %s = &#39; %s&#39;] index: %s "
-"[från regexp oid value parse]"
+msgstr "Hittade objektet [ %1$s = &#39; %2$s&#39;] index: %3$s [från regexp oid value parse]"
 
 #: lib/data_query.php:1710
 #, php-format
@@ -16130,7 +16098,7 @@ msgstr "Det gick inte att tolka översättningskartan (REWRITE_VALUE)"
 #: lib/data_query.php:1750
 #, php-format
 msgid "rewrite_value: '%s' => '%s'"
-msgstr "oid_rewrite vid OID: &#39; %s&#39; new OID: &#39; %s&#39;"
+msgstr "oid_rewrite vid OID: ' %1$s' new OID: ' %2$s'"
 
 #: lib/data_query.php:1856
 msgid "Update graph data query cache complete"
@@ -16187,15 +16155,12 @@ msgstr "Datakälla är inte inställd som Aktiv"
 #: lib/dsdebug.php:277
 #, php-format
 msgid "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s"
-msgstr ""
-"RRD-filmapp (rra) är inte skrivbar av Poller.  Mappägare: %s.  Poller körs "
-"som: %s"
+msgstr "RRD-filmapp (rra) är inte skrivbar av Poller.  Mappägare: %1$s.  Poller körs som: %2$s"
 
 #: lib/dsdebug.php:282
 #, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
-msgstr ""
-"RRD-fil är inte skrivbar av Poller.  RRD-filägare: %s.  Poller körs som %s"
+msgstr "RRD-fil är inte skrivbar av Poller.  RRD-filägare: %1$s.  Poller körs som %2$s"
 
 #: lib/dsdebug.php:291
 msgid "RRDfile does not match Data Source"
@@ -16239,7 +16204,7 @@ msgstr "Formulärvalideringen misslyckades: Variabeln '%s' tillåter inte null o
 #: lib/functions.php:898
 #, php-format
 msgid "Form Validation Failed: Variable '%s' with Value '%s' Failed REGEX '%s'"
-msgstr "Formulärvalidering misslyckades: Variabel '%s' med värde '%s' misslyckades REGEX '%s'"
+msgstr "Formulärvalidering misslyckades: Variabel '%1$s' med värde '%2$s' misslyckades REGEX '%3$s'"
 
 #: lib/functions.php:914
 msgid "One or more fields failed validation"
@@ -16317,9 +16282,7 @@ msgstr "Länk %s"
 
 #: lib/functions.php:5465
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
-msgstr ""
-"Mailer Error: Nej <b>TO</b> adress set !! <br> Om du använder länken <i>Test "
-"Mail</i> , ange inställning för <b>Alert e-post</b> ."
+msgstr "Mailer Error: Nej TO adress set !! <br> Om du använder länken <i>Test Mail</i> , ange inställning för <b>Alert e-post</b> ."
 
 #: lib/functions.php:5812
 #, php-format
@@ -16405,16 +16368,12 @@ msgstr "Sedan Install"
 #: lib/functions.php:6565 lib/functions.php:6660
 #, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
-msgstr ""
-"Cacti inaktiverad plugin %s på grund av följande fel: %s! Se Cacti loggfilen "
-"för mer information."
+msgstr "Cacti inaktiverad plugin %1$s på grund av följande fel: %2$s! Se Cacti loggfilen för mer information."
 
 #: lib/functions.php:6752
 #, php-format
 msgid "WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!"
-msgstr ""
-"VARNING: PollerID:%s har ett ogiltigt värdnamn:%s.  Går det inte att nå via "
-"DNS!"
+msgstr "VARNING: PollerID:%1$s har ett ogiltigt värdnamn:%2$s.  Går det inte att nå via DNS!"
 
 #: lib/functions.php:6781
 #, php-format
@@ -16422,10 +16381,7 @@ msgid ""
 "Failed to Contact Remote Agent %s\n"
 "Reason: %s.\n"
 "See Cacti Log for details."
-msgstr ""
-"Misslyckades med att kontakta fjärragent %s\n"
-"Orsak: %s.\n"
-"Se Cacti Log för mer information."
+msgstr "Misslyckades med att kontakta fjärragent %1$s\nOrsak: %2$s.\nSe Cacti Log för mer information."
 
 #: lib/functions.php:7247
 #, php-format
@@ -16440,12 +16396,12 @@ msgstr "- Beta %s"
 #: lib/functions.php:7309
 #, php-format
 msgid "Version %s %s"
-msgstr "Version %s %s"
+msgstr "Version %1$s %2$s"
 
 #: lib/functions.php:7852
 #, php-format
 msgid "WARNING: Key Cacti Include File \"%s\" missing.  Please locate and replace this file as we checked in \"%s\""
-msgstr "VARNING: Key Cacti Include-filen \"%s\" saknas.  Leta reda på och ersätt den här filen som vi kontrollerade i \"%s\""
+msgstr "VARNING: Key Cacti Include-filen \"%1$s\" saknas.  Leta reda på och ersätt den här filen som vi kontrollerade i \"%2$s\""
 
 #: lib/functions.php:8996
 msgid "System Device"
@@ -16506,7 +16462,7 @@ msgstr "Föregående"
 #: lib/html.php:671
 #, php-format
 msgid "%d to %d of %s [ %s ]"
-msgstr "%d till %d av %s [ %s ]"
+msgstr "%1$d till %2$d av %3$s [ %4$s ]"
 
 #: lib/html.php:674 lib/html.php:703 lib/installer.php:1778
 msgid "Next"
@@ -16515,7 +16471,7 @@ msgstr "Nästa"
 #: lib/html.php:681
 #, php-format
 msgid "All %d %s"
-msgstr "Alla %d %s"
+msgstr "Alla %1$d %2$s"
 
 #: lib/html.php:700
 #, php-format
@@ -17021,7 +16977,7 @@ msgstr "Zoom Datum före den 1 januari 1993 stöds inte i Cacti!  Välj ett nyar
 #: lib/html.php:3403
 #, php-format
 msgid "Version %s | %s"
-msgstr "Version %s %s"
+msgstr "Version %1$s %2$s"
 
 #: lib/html_filter.php:89
 msgid "Apply filter to table"
@@ -17187,7 +17143,7 @@ msgstr "Skapa graf från %s"
 #: lib/html_graph.php:677
 #, php-format
 msgid "Create %s Graphs from %s"
-msgstr "Skapa %s grafer från %s"
+msgstr "Skapa %1$s grafer från %2$s"
 
 #: lib/html_graph.php:718
 #, php-format
@@ -17820,7 +17776,7 @@ msgstr "Valda"
 #: lib/html_utility.php:589 lib/html_utility.php:828
 #, php-format
 msgid "The regular expression \"%s\" is not valid. Error is %s"
-msgstr "Sökordet &quot; %s&quot; är inte giltigt. Felet är %s"
+msgstr "Sökordet &quot; %1$s&quot; är inte giltigt. Felet är %2$s"
 
 #: lib/html_utility.php:1040
 msgid "Cacti regular expressions are limited to 50 characters only for security reasons."
@@ -17858,9 +17814,7 @@ msgstr "Ladda ner"
 #: lib/html_validate.php:97
 #, php-format
 msgid "Validation error for variable %s with a value of %s.  See backtrace below for more details."
-msgstr ""
-"Valideringsfel för variabel %s med ett värde på %s. Se backtrace nedan för "
-"mer information."
+msgstr "Valideringsfel för variabel %1$s med ett värde på %2$s. Se backtrace nedan för mer information."
 
 #: lib/html_validate.php:115
 msgid "Validation Error"
@@ -17959,7 +17913,7 @@ msgstr "Vägen var inte skrivbar"
 #: lib/installer.php:786
 #, php-format
 msgid "Failed to set specified %sRRDTool version: %s"
-msgstr "Misslyckades med att ange specificerad %sRRDTool version: %s"
+msgstr "Misslyckades med att ange specificerad %1$sRRDTool version: %2$s"
 
 #: lib/installer.php:837
 msgid "Invalid Theme Specified"
@@ -17984,7 +17938,7 @@ msgstr "Oväntad sökvägsparameter"
 #: lib/installer.php:968
 #, php-format
 msgid "Failed to apply specified profile %s != %s"
-msgstr "Misslyckades med att ange specificerad profil %s! = %s"
+msgstr "Misslyckades med att ange specificerad profil %1$s! = %2$s"
 
 #: lib/installer.php:1015
 #, php-format
@@ -18323,7 +18277,7 @@ msgstr "Installationstyp"
 #: lib/installer.php:2239
 #, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "Uppgradera från <strong> %s</strong> till <strong> %s</strong>"
+msgstr "Uppgradera från <strong> %1$s</strong> till <strong> %2$s</strong>"
 
 #: lib/installer.php:2241
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
@@ -18353,7 +18307,7 @@ msgstr ""
 #: lib/installer.php:2250
 #, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "Nedgradera från <strong> %s</strong> till <strong> %s</strong>"
+msgstr "Nedgradera från <strong> %1$s</strong> till <strong> %2$s</strong>"
 
 #: lib/installer.php:2251
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
@@ -18901,9 +18855,7 @@ msgstr ""
 #: lib/installer.php:2936
 #, php-format
 msgid "Press '%s' then click '%s' to complete the installation process after selecting your Device Templates."
-msgstr ""
-"Tryck på &#39; %s&#39; och klicka sedan på &#39; %s&#39; för att slutföra "
-"installationsprocessen efter att du har valt din Enhetsmallar."
+msgstr "Tryck på &#39; %1$s&#39; och klicka sedan på &#39; %2$s&#39; för att slutföra installationsprocessen efter att du har valt din Enhetsmallar."
 
 #: lib/installer.php:2964
 msgid "The following General Install Options will be applied."
@@ -19028,7 +18980,7 @@ msgstr "Din Cacti Server installeras nu"
 #: lib/installer.php:3165
 #, php-format
 msgid "Spawning background process: %s %s"
-msgstr "Lektionsbakgrundsprocess:%s%s"
+msgstr "Lektionsbakgrundsprocess:%1$s%2$s"
 
 #: lib/installer.php:3192
 msgid "Complete"
@@ -19061,12 +19013,12 @@ msgstr "Börja"
 #: lib/installer.php:3359
 #, php-format
 msgid "Starting %s Process for v%s"
-msgstr "Starta%s Process för v%s"
+msgstr "Starta%1$s Process för v%2$s"
 
 #: lib/installer.php:3388
 #, php-format
 msgid "Finished %s Process for v%s"
-msgstr "Färdig%s Process för v%s"
+msgstr "Färdig%1$s Process för v%2$s"
 
 #: lib/installer.php:3428
 #, php-format
@@ -19076,17 +19028,17 @@ msgstr "Hittade%s mallar att installera"
 #: lib/installer.php:3438
 #, php-format
 msgid "About to import Package #%s '%s'."
-msgstr "Om att importera paket #%s '%s'."
+msgstr "Om att importera paket #%1$s '%2$s'."
 
 #: lib/installer.php:3447
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
-msgstr "Import av paket #%s '%s' under profil '%s' lyckades"
+msgstr "Import av paket #%1$s '%2$s' under profil '%3$s' lyckades"
 
 #: lib/installer.php:3453
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
-msgstr "Import av paket #%s '%s' under profilen '%s' misslyckades"
+msgstr "Import av paket #%1$s '%2$s' under profilen '%3$s' misslyckades"
 
 #: lib/installer.php:3469
 #, php-format
@@ -19104,7 +19056,7 @@ msgstr "Väntar på konfiguration"
 #: lib/installer.php:3532
 #, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr "Ställer in standard datakälla profil till %s (%s)"
+msgstr "Ställer in standard datakälla profil till %1$s (%2$s)"
 
 #: lib/installer.php:3557
 #, php-format
@@ -19114,9 +19066,7 @@ msgstr "Det gick inte att hitta den valda profilen (%s), inga ändringar gjordes
 #: lib/installer.php:3568
 #, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
-msgstr ""
-"Uppdaterar automatiseringsnätverket (%s), läge \"%s\" => \"%s\", undernät "
-"\"%s\" =>%s \""
+msgstr "Uppdaterar automatiseringsnätverket (%1$s), läge \"%2$s\" => \"%3$s\", undernät \"%4$s\" =>%5$s \""
 
 #: lib/installer.php:3583
 msgid "Failed to find automation network, no changes were made"
@@ -19221,7 +19171,7 @@ msgstr "Hittade%s tabeller att konvertera"
 #: lib/installer.php:3767
 #, php-format
 msgid "Converting Table #%s '%s'"
-msgstr "Konvertera tabell #%s '%s'"
+msgstr "Konvertera tabell #%1$s '%2$s'"
 
 #: lib/installer.php:3784
 msgid "No tables where found or selected for conversion"
@@ -19230,7 +19180,7 @@ msgstr "Inga tabeller var hittade eller valda för konvertering"
 #: lib/installer.php:3795
 #, php-format
 msgid "Switched from %s to %s"
-msgstr "Växlade från%s till%s"
+msgstr "Växlade från%1$s till%2$s"
 
 #: lib/installer.php:3799
 #, php-format
@@ -19240,7 +19190,7 @@ msgstr "OBS: Använda tillfällig fil för db-cache:%s"
 #: lib/installer.php:3822
 #, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
-msgstr "Uppgradering från v%s (DB%s) till v%s"
+msgstr "Uppgradering från v%1$s (DB%2$s) till v%3$s"
 
 #: lib/installer.php:3831
 #, php-format
@@ -19254,17 +19204,17 @@ msgstr "Installera avbruten på grund av inget EU-godkännande"
 #: lib/installer.php:3920
 #, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
-msgstr "Bakgrunden började redan på%s, detta försök till%s hoppades över"
+msgstr "Bakgrunden började redan på%1$s, detta försök till%2$s hoppades över"
 
 #: lib/installer.php:3946
 #, php-format
 msgid "Exception occurred during installation: #%s - %s"
-msgstr "Undantag inträffade under installationen: #%s - %s"
+msgstr "Undantag inträffade under installationen: #%1$s - %2$s"
 
 #: lib/installer.php:3956
 #, php-format
 msgid "Installation was started at %s, completed at %s"
-msgstr "Installation startades vid %s, slutförd vid %s"
+msgstr "Installation startades vid %1$s, slutförd vid %2$s"
 
 #: lib/installer.php:3997
 msgid "Both"
@@ -19296,12 +19246,12 @@ msgstr "Cli"
 #: lib/installer.php:4015
 #, php-format
 msgid "Setting PHP Option %s = %s"
-msgstr "Ställa in PHP-alternativ%s =%s"
+msgstr "Ställa in PHP-alternativ%1$s =%2$s"
 
 #: lib/installer.php:4023
 #, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
-msgstr "Det gick inte att ställa in PHP-alternativ%s, är%s (ska vara%s)"
+msgstr "Det gick inte att ställa in PHP-alternativ%1$s, är%2$s (ska vara%3$s)"
 
 #: lib/installer.php:4043
 msgid "No Remote Data Collectors found for full synchronization"
@@ -19326,19 +19276,17 @@ msgstr "Inget användarnamn definierat"
 #: lib/ldap.php:412
 #, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "Protokollfel, kan inte ställa in version (%s) på server (%s)"
+msgstr "Protokollfel, kan inte ställa in version (%1$s) på server (%2$s)"
 
 #: lib/ldap.php:416
 #, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
-msgstr ""
-"Protokollfel, Det går inte att ställa in hänvisningsalternativ (%s) på "
-"server (%s)"
+msgstr "Protokollfel, Det går inte att ställa in hänvisningsalternativ (%1$s) på server (%2$s)"
 
 #: lib/ldap.php:420
 #, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
-msgstr "Protokollfel, kan inte starta TLS-kommunikation (%s) på servern (%s)"
+msgstr "Protokollfel, kan inte starta TLS-kommunikation (%1$s) på servern (%2$s)"
 
 #: lib/ldap.php:424
 #, php-format
@@ -19348,7 +19296,7 @@ msgstr "Protokollfel, Allmänt misslyckande ( %s)"
 #: lib/ldap.php:428
 #, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
-msgstr "Protokollfel, Kan inte binda, LDAP-resultat: (%s) på server (%s)"
+msgstr "Protokollfel, Kan inte binda, LDAP-resultat: (%1$s) på server (%2$s)"
 
 #: lib/ldap.php:432
 #, php-format
@@ -19398,7 +19346,7 @@ msgstr "Ogiltigt lösenord har angetts. Inloggningen misslyckades."
 #: lib/ldap.php:473
 #, php-format
 msgid "Unexpected error %s (Ldap Error: %s) on Server (%s)"
-msgstr "Oväntat fel %s (Ldap-fel: %s) på servern (%s)"
+msgstr "Oväntat fel %1$s (Ldap-fel: %2$s) på servern (%3$s)"
 
 #: lib/ping.php:149
 msgid "ICMP Ping timed out"
@@ -19470,12 +19418,12 @@ msgstr "Ping utförs inte på grund av inställningen."
 #: lib/plugins.php:681
 #, php-format
 msgid "'%s' versions '%s' above or in range are required to install '%s'. "
-msgstr "'%s' versioner '%s' ovanför eller inom intervallet krävs för att installera '%s'. "
+msgstr "'%1$s' versioner '%2$s' ovanför eller inom intervallet krävs för att installera '%3$s'. "
 
 #: lib/plugins.php:685
 #, php-format
 msgid "'%s' must first be installed before '%s' is installed. "
-msgstr "'%s' måste först installeras innan '%s' installeras. "
+msgstr "'%1$s' måste först installeras innan '%2$s' installeras. "
 
 #: lib/plugins.php:708
 msgid "Plugin cannot be installed."
@@ -19491,16 +19439,12 @@ msgstr ""
 #: lib/plugins.php:751
 #, php-format
 msgid "The Plugin in the directory '%s' does not include an version function '%s()'.  This function must exist for the plugin to be installed."
-msgstr ""
-"Tillägget i katalogen \"%s\" innehåller inte en versionsfunktion \"%s()\".  "
-"Denna funktion måste finnas för att tillägget ska installeras."
+msgstr "Tillägget i katalogen \"%1$s\" innehåller inte en versionsfunktion \"%2$s()\".  Denna funktion måste finnas för att tillägget ska installeras."
 
 #: lib/plugins.php:784
 #, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
-msgstr ""
-"Tillägget i katalogen \"%s\" innehåller inte en installationsfunktion "
-"\"%s()\".  Denna funktion måste finnas för att tillägget ska installeras."
+msgstr "Tillägget i katalogen \"%1$s\" innehåller inte en installationsfunktion \"%2$s()\".  Denna funktion måste finnas för att tillägget ska installeras."
 
 #: lib/plugins.php:982
 #, php-format
@@ -19523,30 +19467,22 @@ msgstr "Arkivet för Plugin '%s' har tagits bort."
 #: lib/plugins.php:1491
 #, php-format
 msgid "Restore failed!  The Plugin '%s' archive Restore failed.  Unable to create directory '%s'."
-msgstr ""
-"Återställningen misslyckades!  Plugin '%s' arkiv Återställning "
-"misslyckades.  Det gick inte att skapa katalogen '%s'."
+msgstr "Återställningen misslyckades!  Plugin '%1$s' arkiv Återställning misslyckades.  Det gick inte att skapa katalogen '%2$s'."
 
 #: lib/plugins.php:1493
 #, php-format
 msgid "Restore failed!  The available Plugin '%s' Load failed.  Unable to create directory '%s'."
-msgstr ""
-"Återställningen misslyckades!  Den tillgängliga Plugin '%s'-laddningen "
-"misslyckades.  Det gick inte att skapa katalogen '%s'."
+msgstr "Återställningen misslyckades!  Den tillgängliga Plugin '%1$s'-laddningen misslyckades.  Det gick inte att skapa katalogen '%2$s'."
 
 #: lib/plugins.php:1592
 #, php-format
 msgid "Restore failed!  The archived Plugin '%s' Restore failed. Unable to create directory %s"
-msgstr ""
-"Återställningen misslyckades!  Det arkiverade pluginet '%s' Återställningen "
-"misslyckades. Det gick inte att skapa en katalog %s"
+msgstr "Återställningen misslyckades!  Det arkiverade pluginet '%1$s' Återställningen misslyckades. Det gick inte att skapa en katalog %2$s"
 
 #: lib/plugins.php:1594
 #, php-format
 msgid "Load failed!  The available Plugin '%s' Load failed. Unable to create directory %s"
-msgstr ""
-"Laddningen misslyckades!  Det tillgängliga pluginet '%s' Laddning "
-"misslyckades. Det gick inte att skapa en katalog %s"
+msgstr "Laddningen misslyckades!  Det tillgängliga pluginet '%1$s' Laddning misslyckades. Det gick inte att skapa en katalog %2$s"
 
 #: lib/plugins.php:1614
 #, php-format
@@ -19660,9 +19596,7 @@ msgstr ""
 #: lib/plugins.php:2238
 #, php-format
 msgid "There were '%s' Plugins found at The Cacti Groups GitHub site and '%s' Plugins Tags/Releases were retrieved and updated in %0.2f seconds."
-msgstr ""
-"Det fanns '%s' Plugins på The Cacti Groups GitHub-plats och '%s' Plugins "
-"Taggar/Releaser hämtades och uppdaterades på %0.2f sekunder."
+msgstr "Det fanns '%1$s' Plugins på The Cacti Groups GitHub-plats och '%2$s' Plugins Taggar/Releaser hämtades och uppdaterades på %3$0.2f sekunder."
 
 #: lib/plugins.php:2240
 #, php-format
@@ -19690,9 +19624,7 @@ msgstr ""
 #: lib/reports.php:625
 #, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
-msgstr ""
-"Problem med att skicka rapport '%s' Problem med e-postundersystemets fel är "
-"'%s'"
+msgstr "Problem med att skicka rapport '%1$s' Problem med e-postundersystemets fel är '%2$s'"
 
 #: lib/reports.php:634
 #, php-format
@@ -19732,7 +19664,7 @@ msgstr "Grafjustering:"
 #: lib/reports.php:2011
 #, php-format
 msgid "Created Report Graph Item '<i>%s</i>'"
-msgstr "Skapat rapportgrafjekt &quot; <i> %s</i> &quot;"
+msgstr "Skapat rapportgrafjekt \" <i> %s</i> \""
 
 #: lib/reports.php:2013
 #, php-format
@@ -19749,7 +19681,7 @@ msgstr "Hopp över rapportgränsen &#39; <i> %s</i> &#39; finns redan"
 #: lib/rrd.php:398
 #, php-format
 msgid "WARNING: RRDtool Crashed execution the following command line %s.  %s"
-msgstr "VARNING: RRDtool kraschade vid körning av följande kommandorad %s.  %s"
+msgstr "VARNING: RRDtool kraschade vid körning av följande kommandorad %1$s.  %2$s"
 
 #: lib/rrd.php:401
 msgid "RRDtool Command Crashed"
@@ -19758,24 +19690,22 @@ msgstr "RRDtool-kommandot kraschade"
 #: lib/rrd.php:3299
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr ""
-"Den nödvändiga RRD-filens stegstorlek är \"%s\" men det observerade steget "
-"är \"%s\""
+msgstr "Den nödvändiga RRD-filens stegstorlek är \"%1$s\" men det observerade steget är \"%2$s\""
 
 #: lib/rrd.php:3359
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "Typ för datakälla &#39; %s&#39; ska vara &#39; %s&#39;"
+msgstr "Typ för datakälla ' %1$s' ska vara ' %2$s'"
 
 #: lib/rrd.php:3365
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "Heartbeat för datakälla &#39; %s&#39; ska vara &#39; %s&#39;"
+msgstr "Heartbeat för datakälla ' %1$s' ska vara ' %2$s'"
 
 #: lib/rrd.php:3377
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr "RRD-minsta för datakälla &#39; %s&#39; ska vara &#39; %s&#39;"
+msgstr "RRD-minsta för datakälla ' %1$s' ska vara ' %2$s'"
 
 #: lib/rrd.php:3386
 #, php-format
@@ -19785,31 +19715,27 @@ msgstr "DS ‘%s’ saknas i Cactis definition"
 #: lib/rrd.php:3400 lib/rrd.php:3401
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Cacti RRA &#39; %s&#39; har samma CF / steg ( %s, %s) som &#39; %s&#39;"
+msgstr "Cacti RRA ' %1$s' har samma CF / steg ( %2$s, %3$s) som ' %4$s'"
 
 #: lib/rrd.php:3415 lib/rrd.php:3416
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Fil RRA &#39; %s&#39; har samma CF / steg ( %s, %s) som &#39; %s&#39;"
+msgstr "Fil RRA ' %1$s' har samma CF / steg ( %2$s, %3$s) som ' %4$s'"
 
 #: lib/rrd.php:3450
 #, php-format
 msgid "The pdp_per_row of '%s' is invalid for RRA '%s' should be '%s'.  Consider deleting and allowing Cacti to re-create RRDfile."
-msgstr ""
-"Pdp_per_row för '%s' är ogiltig för rra '%s' ska vara '%s'.  Överväg att ta "
-"bort och låta Cacti återskapa RRD-fil."
+msgstr "Pdp_per_row för '%1$s' är ogiltig för rra '%2$s' ska vara '%3$s'.  Överväg att ta bort och låta Cacti återskapa RRD-fil."
 
 #: lib/rrd.php:3454
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "XFF för Cacti RRA-id &#39; ‘%s’ ska vara ‘%s’"
+msgstr "XFF för Cacti RRA-id &#39; ‘%1$s’ ska vara ‘%2$s’"
 
 #: lib/rrd.php:3458
 #, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
-msgstr ""
-"Antalet rader för Cacti RRA-id '%s' är felaktigt.  Antalet rader är \"%s\" "
-"men bör vara \"%s\""
+msgstr "Antalet rader för Cacti RRA-id '%1$s' är felaktigt.  Antalet rader är \"%2$s\" men bör vara \"%3$s\""
 
 #: lib/rrd.php:3476
 #, php-format
@@ -19871,7 +19797,7 @@ msgstr "CDP Okända datapunkter (0)"
 
 #: lib/rrd.php:3663
 msgid "Errors Found"
-msgstr "Inga %s hittades"
+msgstr "Fel hittades"
 
 #: lib/rrd.php:3675
 msgid "Optional Tuning Recommendations"
@@ -19880,7 +19806,7 @@ msgstr "Datakällafält"
 #: lib/rrd.php:3700 lib/rrd.php:3703
 #, php-format
 msgid "rename %s to %s"
-msgstr "byt namn på %s till %s"
+msgstr "byt namn på %1$s till %2$s"
 
 #: lib/rrd.php:3770
 msgid "Error while parsing the XML of rrdtool dump"
@@ -19903,12 +19829,12 @@ msgstr "Ett fel uppstod när du analyserade XML-rttool-dumpningen"
 #: lib/rrd.php:4159
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
-msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) borttagen från filen RRD"
+msgstr "RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) borttagen från filen RRD"
 
 #: lib/rrd.php:4199
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) läggs till i RRD-filen"
+msgstr "RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) läggs till i RRD-filen"
 
 #: lib/rrd.php:4291 lib/rrd.php:4305
 #, php-format
@@ -19962,9 +19888,7 @@ msgstr "Grafen skapades inte för %s på grund av felaktiga data"
 #: lib/template.php:2296
 #, php-format
 msgid "NOTE: Graph not added for Data Query %s and index %s due to Data Source verification failure"
-msgstr ""
-"OBS: Grafen har inte lagts till för dataförfrågan %s och index %s på grund "
-"av datakällans verifieringsfel"
+msgstr "OBS: Grafen har inte lagts till för dataförfrågan %1$s och index %2$s på grund av datakällans verifieringsfel"
 
 #: lib/timespan_settings.php:136
 #, php-format
@@ -20049,36 +19973,11 @@ msgstr ""
 
 #: lib/utility.php:1224
 msgid "If this number is negative, reduce the innodb_buffer_pool_size until the join_buffer_size turns positive, but allocate approximately from between 25%-50% of memory to the innodb_buffer_pool_size if the database is hosted on the Cacti server, or upto 80% of the systems memory if the database is separate from the Cacti web server.  However, try to not go below the default of 262,144.  When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80% if the database is hosted on the Cacti web server and less if you intend to have very large RRDfiles or hundreds of thousands to millions long term."
-msgstr ""
-"Om detta tal är negativt, minska innodb_buffer_pool_size tills "
-"join_buffer_size blir positivt, men allokera ungefär mellan 25%-50% minne "
-"till innodb_buffer_pool_size om databasen är hostad på Cacti-servern, eller "
-"upp till 80% o f systemminnet om databasen är separat från Cacti-"
-"webbservern.  Försök dock att inte gå under standardvärdet på 262 144.  När "
-"du utför sammankopplingar, om de är mindre än denna storlek, kommer de att "
-"hållas i minnet och aldrig skrivas till en tillfällig fil.  Eftersom detta "
-"är en minnesallokering per anslutning måste man se till att inte öka den för "
-"mycket.  Summan av join_buffer_size + sort_buffer_size + read_buffer_size + "
-"read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB-"
-"minne bör vara under 80% i om databasen är värd på Cacti-webbservern och "
-"mindre om du tänker ha mycket stora RRD-filer eller hundratusentals till "
-"miljoner på lång sikt."
+msgstr "Om detta tal är negativt, minska innodb_buffer_pool_size tills join_buffer_size blir positivt, men allokera ungefär mellan 25%-50%1$ minne till innodb_buffer_pool_size om databasen är hostad på Cacti-servern, eller upp till 80%2$ o f systemminnet om databasen är separat från Cacti-webbservern.  Försök dock att inte gå under standardvärdet på 262 144.  När du utför sammankopplingar, om de är mindre än denna storlek, kommer de att hållas i minnet och aldrig skrivas till en tillfällig fil.  Eftersom detta är en minnesallokering per anslutning måste man se till att inte öka den för mycket.  Summan av join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB-minne bör vara under 80%3$ i om databasen är värd på Cacti-webbservern och mindre om du tänker ha mycket stora RRD-filer eller hundratusentals till miljoner på lång sikt."
 
 #: lib/utility.php:1230
 msgid "If this number is negative, reduce the innodb_buffer_pool_size until the sort_buffer_size turns positive, but allocate approximately from between 25%-50% of memory to the innodb_buffer_pool_size if the database is hosted on the Cacti server, or upto 80% of the system memory if the database is separate from the Cacti web server.  However, try to not go below the default setting of 2,097,152.  A sort buffer performs sorts for some queries using ORDER BY or GROUP BY. Configuring sort_buffer_size decides how much memory will be allocated for sort queries.  The sort_buffer_size may need to be adjusted from the default if the workload requires a significant number of sort queries. The sort_buffer_size is defined on a per-session variable.  Use the same equation as that of the join_buffer_size to determine the per connection possible memory."
-msgstr ""
-"Om detta tal är negativt, minska innodb_buffer_pool_size tills "
-"sort_buffer_size blir positivt, men allokera ungefär mellan 25%-50% minne "
-"till innodb_buffer_pool_size om databasen är hostad på Cacti-servern, eller "
-"upp till 80% o f systemminnet om databasen är separat från Cacti-"
-"webbservern.  Försök dock att inte gå under standardinställningen på 2 097 "
-"152.  En sorteringsbuffert utför sorteringar för vissa frågor som använder "
-"ORDER BY eller GROUP BY. Genom att konfigurera sort_buffer_size avgörs hur "
-"mycket minne som ska allokeras för sorteringsfrågor.  Sort_buffer_size kan "
-"behöva justeras från standardvärdet om arbetsbelastningen kräver ett stort "
-"antal sorteringsfrågor. Sort_buffer_size definieras som en variabel per "
-"session.  Använd samma ekvation som för join_buffer_size för att bestämma "
-"det möjliga minnet per anslutning."
+msgstr "Om detta tal är negativt, minska innodb_buffer_pool_size tills sort_buffer_size blir positivt, men allokera ungefär mellan 25%-50%1$ minne till innodb_buffer_pool_size om databasen är hostad på Cacti-servern, eller upp till 80%2$ o f systemminnet om databasen är separat från Cacti-webbservern.  Försök dock att inte gå under standardinställningen på 2 097 152.  En sorteringsbuffert utför sorteringar för vissa frågor som använder ORDER BY eller GROUP BY. Genom att konfigurera sort_buffer_size avgörs hur mycket minne som ska allokeras för sorteringsfrågor.  Sort_buffer_size kan behöva justeras från standardvärdet om arbetsbelastningen kräver ett stort antal sorteringsfrågor. Sort_buffer_size definieras som en variabel per session.  Använd samma ekvation som för join_buffer_size för att bestämma det möjliga minnet per anslutning."
 
 #: lib/utility.php:1236
 #, php-format
@@ -20148,10 +20047,7 @@ msgstr ""
 #: lib/utility.php:1298 lib/utility.php:1340
 #, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
-msgstr ""
-"Som av %s %s kan du styra hur ofta %s spolar transaktioner till disk. "
-"Standard är 1 sekund, men i hög I / O-system inställning till ett värde "
-"större än 1 kan skiv I / O vara mer sekventiell"
+msgstr "Som av %1$s %2$s kan du styra hur ofta %3$s spolar transaktioner till disk. Standard är 1 sekund, men i hög I / O-system inställning till ett värde större än 1 kan skiv I / O vara mer sekventiell"
 
 #: lib/utility.php:1303
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
@@ -20280,9 +20176,7 @@ msgstr "Ett användbart namn för denna VDEF."
 #: link.php:79
 #, php-format
 msgid "External Link ID '%s' with Title '%s' attempted to inject an invalid URL and was blocked!"
-msgstr ""
-"Extern länk ID '%s' med titel '%s' försökte injicera en ogiltig URL och "
-"blockerades!"
+msgstr "Extern länk ID '%1$s' med titel '%2$s' försökte injicera en ogiltig URL och blockerades!"
 
 #: links.php:76
 msgid "Your contentfile is not a valid URL.  Please enter a value URL"
@@ -20501,7 +20395,7 @@ msgstr "Du har blivit utloggad från Cacti på grund av %s."
 #: logout.php:61
 #, php-format
 msgid "Please close your browser or %sLogin Again%s"
-msgstr "Var god stäng din webbläsare eller %sLogin Again %s"
+msgstr "Var god stäng din webbläsare eller %1$sLogin Again %2$s"
 
 #: logout.php:62
 msgid "Cookies have been cleared"
@@ -20764,8 +20658,14 @@ msgid "Assign various searchable attributes to the Package."
 msgstr "Tilldela olika sökbara attribut till paketet."
 
 #: package.php:774
-msgid "Some Packages require additional changes outside of Cacti's scope such as setting up an SNMP Agent Extension on the Devices to be monitored.  You should add those instructions here.."
-msgstr "Vissa paket kräver ytterligare ändringar utanför Cactis räckvidd, t.ex. att konfigurera ett SNMP-agenttillägg på de enheter som ska övervakas.  Du bör lägga till dessa instruktioner här..."
+msgid ""
+"Some Packages require additional changes outside of Cacti's scope such as "
+"setting up an SNMP Agent Extension on the Devices to be monitored.  You "
+"should add those instructions here.."
+msgstr ""
+"Vissa paket kräver ytterligare ändringar utanför Cactis räckvidd, t.ex. att "
+"konfigurera ett SNMP-agenttillägg på de enheter som ska övervakas.  Du bör "
+"lägga till dessa instruktioner här.."
 
 #: package.php:781
 msgid "Author Information"
@@ -20899,7 +20799,7 @@ msgstr "Det går inte att få den publika nyckeln för detta paket.  Kontakta pa
 #: package_import.php:427
 #, php-format
 msgid "You have not Trusted this Package Author '%s'.  If you wish to import, check the Automatically Trust Author checkbox.  Otherwise, feel free to reach the author at the following Email address '%s'."
-msgstr "Du har inte litat på den här paketförfattaren '%s'.  Om du vill importera markerar du kryssrutan Automatically Trust Author.  Annars är du välkommen att kontakta författaren på följande e-postadress '%s'."
+msgstr "Du har inte litat på den här paketförfattaren '%1$s'.  Om du vill importera markerar du kryssrutan Automatically Trust Author.  Annars är du välkommen att kontakta författaren på följande e-postadress '%2$s'."
 
 #: package_import.php:738
 msgid "Repo File Missing or Damaged"
@@ -20921,7 +20821,7 @@ msgstr "Signaturen för ett eller flera paket är inte tillförlitlig.<br>"
 #: package_import.php:762
 #, php-format
 msgid "<b>Author:</b> &lt;%s&gt; %s.<br>"
-msgstr "<b>Författare:</b> &lt;%s&gt; %s.<br>"
+msgstr "<b>Författare:</b> &lt;%1$s&gt; %2$s.<br>"
 
 #: package_import.php:766
 #, php-format
@@ -21120,7 +21020,7 @@ msgstr "Inga paket funna"
 #: package_import.php:1946
 #, php-format
 msgid "The Repo '%s' is NOT Reachable on GitHub or the '%s' file is missing or it could be an invalid branch.  Valid Package Locations are normally: https://github.com/Author/RepoName/."
-msgstr "Repot '%s' är INTE nåbart på GitHub eller filen '%s' saknas eller så kan det vara en ogiltig gren.  Giltiga paketplatser är normalt: https://github.com/Author/RepoName/."
+msgstr "Repot '%1$s' är INTE nåbart på GitHub eller filen '%2$s' saknas eller så kan det vara en ogiltig gren.  Giltiga paketplatser är normalt: https://github.com/Author/RepoName/."
 
 #: package_import.php:1974
 #, php-format
@@ -21409,14 +21309,12 @@ msgstr "Arkiverade"
 #: plugins.php:165
 #, php-format
 msgid "The action '%s' on Plugin '%s' can not be performed due to the Plugin in it's current state."
-msgstr "Åtgärden '%s' på tillägget '%s' kan inte utföras på grund av tillägget i dess nuvarande tillstånd."
+msgstr "Åtgärden '%1$s' på tillägget '%2$s' kan inte utföras på grund av tillägget i dess nuvarande tillstånd."
 
 #: plugins.php:169
 #, php-format
 msgid "The action '%s' '%s' on Plugin '%s' can not be taken as the Plugin is integrated."
-msgstr ""
-"Åtgärden '%s' '%s' på Plugin '%s' kan inte vidtas eftersom Plugin är "
-"integrerat."
+msgstr "Åtgärden '%1$s' '%2$s' på Plugin '%3$s' kan inte vidtas eftersom Plugin är integrerat."
 
 #: plugins.php:218
 msgid "The fetch latest plugins process has been launched into background."
@@ -21907,8 +21805,7 @@ msgstr "Plugin-kataloger får inte innehålla mellanslag"
 #: plugins.php:1870
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
-msgstr ""
-"Plugin-katalogen är inte korrekt. Bör vara &#39; %s&#39; men är &#39; %s&#39;"
+msgstr "Plugin-katalogen är inte korrekt. Bör vara ' %1$s' men är ' %2$s'"
 
 #: plugins.php:1881
 msgid "Plugin is integrated into Cacti core"
@@ -21925,27 +21822,27 @@ msgstr "Aktivera insticksprogram"
 #: poller.php:405
 #, php-format
 msgid "WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!"
-msgstr "VARNING: %s är inte synkroniserad med pollerintervallet för Poller[%d]!  Pollerintervallet är %d sekunder, med ett maximum på %d sekunder, men det har gått %d sekunder sedan den senaste pollningen!"
+msgstr "VARNING: %1$s är inte synkroniserad med pollerintervallet för Poller[%2$d]!  Pollerintervallet är %3$d sekunder, med ett maximum på %4$d sekunder, men det har gått %5$d sekunder sedan den senaste pollningen!"
 
 #: poller.php:579
 #, php-format
 msgid "WARNING: There are %d processes detected as overrunning a polling cycle for Poller[%d], please investigate."
-msgstr "VARNING: Det finns %d processer som har upptäckts överskrida en pollningscykel för Poller[%d], undersök detta."
+msgstr "VARNING: Det finns %1$d processer som har upptäckts överskrida en pollningscykel för Poller[%2$d], undersök detta."
 
 #: poller.php:637
 #, php-format
 msgid "WARNING: Poller Output Table not empty for Poller[%d].  Issues: %d, %s."
-msgstr "VARNING: Poller-utmatningstabellen är inte tom för Poller[%d].  Problem: %d, %s."
+msgstr "VARNING: Poller-utmatningstabellen är inte tom för Poller[%1$d].  Problem: %2$d, %3$s."
 
 #: poller.php:671
 #, php-format
 msgid "ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!"
-msgstr "FEL: Ryggradsvägen: %s är ogiltig för Poller[%d].  Poller kan inte fortsätta!"
+msgstr "FEL: Ryggradsvägen: %1$s är ogiltig för Poller[%2$d].  Poller kan inte fortsätta!"
 
 #: poller.php:819
 #, php-format
 msgid "Maximum runtime of %d seconds exceeded for Poller[%d]. Exiting."
-msgstr "Maximal körtid på %d sekunder har överskridits för Poller[%d]. Avslutar."
+msgstr "Maximal körtid på %1$d sekunder har överskridits för Poller[%2$d]. Avslutar."
 
 #: poller.php:944
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
@@ -21954,7 +21851,7 @@ msgstr "VARNING: Cacti Polling Cycle överskred pollningsintervall med "
 #: poller.php:970
 #, php-format
 msgid "WARNING: PollerID:%s with Name:%s is in Heartbeat Status"
-msgstr "VARNING: PollerID:%s med namn:%s är i hjärtslagsstatus"
+msgstr "VARNING: PollerID:%1$s med namn:%2$s är i hjärtslagsstatus"
 
 #: poller.php:972
 msgid "Poller in Heartbeat Mode"
@@ -21963,12 +21860,12 @@ msgstr "Poller i hjärtslagsläge"
 #: poller.php:1253
 #, php-format
 msgid "WARNING: 24 hours Poller[%d] avg. run time is %f seconds (more than %d &#37; of time limit)"
-msgstr "VARNING: 24 timmar Poller[%d] genomsnittlig körtid är %f sekunder (mer än %d &#37; av tidsgränsen)"
+msgstr "VARNING: 24 timmar Poller[%1$d] genomsnittlig körtid är %2$f sekunder (mer än %3$d &#37; av tidsgränsen)"
 
 #: poller.php:1269
 #, php-format
 msgid "WARNING: In last hour Poller[%d] run time %d times reached more than %d &#37; of time limit"
-msgstr "VARNING: Under den senaste timmen har Poller[%d]-körtiden %d gånger nått mer än %d &#37; av tidsgränsen"
+msgstr "VARNING: Under den senaste timmen har Poller[%1$d]-körtiden %2$d gånger nått mer än %3$d &#37; av tidsgränsen"
 
 #: poller.php:1291
 msgid "Cacti System Notification"
@@ -22558,7 +22455,7 @@ msgstr "OBS! Sökvägsinställningar på den här fliken sparas endast lokalt!"
 #: settings.php:138
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Cacti-inställningar (%s)%s"
+msgstr "Cacti-inställningar (%1$s)%2$s"
 
 #: settings.php:248
 msgid "Changing Permission Model Warning"
@@ -23278,12 +23175,12 @@ msgstr "PHP-servrar"
 #: support.php:1370 support.php:1372 support.php:1378 support.php:1380
 #, php-format
 msgid "Main Server: Current: %s, Min Required: %s"
-msgstr "Nuvarande: %s, Min krävs: %s"
+msgstr "Nuvarande: %1$s, Min krävs: %2$s"
 
 #: support.php:1388 support.php:1390
 #, php-format
 msgid "Local Server: Current: %s, Min Required: %s"
-msgstr "Nuvarande: %s, Min krävs: %s"
+msgstr "Nuvarande: %1$s, Min krävs: %2$s"
 
 #: support.php:1395
 msgid "Minimum Connections:"
@@ -24368,15 +24265,7 @@ msgstr "Läge"
 
 #: user_domains.php:382
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN)."
-msgstr ""
-"Läge vilken Cacti försöker autentisera mot LDAP-servern. <blockquote> "
-"<i>Ingen sökning</i> - <i>Sökning utan</i> Distinguished Name (DN) sker, "
-"försök bara binda med det angivna Distinguished Name-formatet (DN). <br><br> "
-"<i>Anonym Sökning</i> - Försök att söka efter användarnamn mot LDAP-katalog "
-"via anonym bindning för att hitta användarna Distinguished Name (DN). "
-"<br><br> <i>Särskild</i> sökning - Försök söka efter användarnamn mot LDAP-"
-"katalog via Specifikt Distinguished Name (DN) och Specifikt lösenord för "
-"bindning för att hitta användarnas Distinguished Name (DN)."
+msgstr "Läge vilken Cacti försöker autentisera mot LDAP-servern. <blockquote> <i>Ingen sökning</i> - Sökning utan Distinguished Name (DN) sker, försök bara binda med det angivna Distinguished Name-formatet (DN). <br><br> <i>Anonym Sökning</i> - Försök att söka efter användarnamn mot LDAP-katalog via anonym bindning för att hitta användarna Distinguished Name (DN). <br><br> <i>Särskild</i> sökning - Försök söka efter användarnamn mot LDAP-katalog via Specifikt Distinguished Name (DN) och Specifikt lösenord för bindning för att hitta användarnas Distinguished Name (DN)."
 
 #: user_domains.php:388
 msgid "Distinguished Name (DN)"
@@ -25212,10 +25101,7 @@ msgstr "Runtime Statistik"
 #: utilities.php:1733
 #, php-format
 msgid "Records: %s (ds rows), Time: %s (secs), GetRows: %s (secs), ResultsCycle: %s (secs), FileAndTemplate: %s (secs), LastUpdate: %s (secs), RRDUpdate: %s (secs), Delete: %s (secs)"
-msgstr ""
-"Records: %s (ds-rader), Time: %s (sekunder), GetRows: %s (sekunder), "
-"ResultsCycle: %s (sekunder), FileAndTemplate: %s (sekunder), LastUpdate: %s "
-"(sekunder), RRDUpdate: %s (sekunder), Delete: %s (sekunder)"
+msgstr "Records: %1$s (ds-rader), Time: %2$s (sekunder), GetRows: %3$s (sekunder), ResultsCycle: %4$s (sekunder), FileAndTemplate: %5$s (sekunder), LastUpdate: %6$s (sekunder), RRDUpdate: %7$s (sekunder), Delete: %8$s (sekunder)"
 
 #: utilities.php:1744
 msgid "Previous Runtime Timers:"
@@ -25229,17 +25115,12 @@ msgstr "Process: %d"
 #: utilities.php:1779
 #, php-format
 msgid "Status: <span class=\"deviceUp\"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
-msgstr ""
-"Status: <span class=\"deviceUp\"><b>Kör</b></span>, Återstående: %s (dses), "
-"CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds "
-"rows)"
+msgstr "Status: <span class=\"deviceUp\"><b>Kör</b></span>, Återstående: %1$s (dses), CurrentRuntime: %2$s (secs), PrevRuntime: %3$s (secs), PrevProcessed: %4$10s (ds rows)"
 
 #: utilities.php:1781
 #, php-format
 msgid "Status: <span class=\"deviceRecovering\"><b>Idle</b></span>, PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
-msgstr ""
-"Status: <span class=\"deviceRecovering\"><b>Inaktiv</b></span>, PrevRuntime: "
-"%s (sek), PrevProcessed: %10s (ds-rader)"
+msgstr "Status: <span class=\"deviceRecovering\"><b>Inaktiv</b></span>, PrevRuntime: %1$s (sek), PrevProcessed: %2$10s (ds-rader)"
 
 #: utilities.php:1787
 msgid "Run Time Configuration"

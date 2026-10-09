@@ -25,7 +25,7 @@ _HTML_TAG = re.compile(r'<[^>]+>')
 # width, precision, and length modifiers. Ignores literal '%%'.
 # Examples matched: %s, %d, %0.2f, %1$0.2f, %02d, %-10s
 _PLACEHOLDER = re.compile(
-    r'%(?!%)'               # % not followed by % (ignore literal '%%')
+    r'(?<!%)%(?!%)'               # % not followed by % (ignore literal '%%')
     r'(?:[0-9]+\$)?'        # optional positional index, e.g. 1$
     r"[#0\- +']*"           # optional flags
     r'(?:[0-9]+|\*)?'       # optional width
@@ -36,7 +36,7 @@ _PLACEHOLDER = re.compile(
 
 # Positional: must include %<n>$ prefix
 _POSITIONAL = re.compile(
-    r'%(?!%)'
+    r'(?<!%)%(?!%)'
     r'[0-9]+\$'             # required positional index
     r"[#0\- +']*"
     r'(?:[0-9]+|\*)?'

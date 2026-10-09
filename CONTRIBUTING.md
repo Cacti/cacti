@@ -34,6 +34,13 @@ That chains the individual targets, each of which can be run on its own:
 
 Install the pre-commit hook with `composer install-hooks`.
 
+The native hook requires Composer development dependencies for PHP commits;
+configuration-only commits do not require PHP tooling. It supports macOS's
+system Bash and filenames containing spaces. If using the `pre-commit`
+framework instead, repository guards run on every commit, while PHP lint,
+formatting, and static analysis run for their relevant source/configuration
+changes. Missing tools and failed checks block relevant commits.
+
 ## Changelog
 
 Do not edit `CHANGELOG` directly. Add a fragment under `changelog.d/` named for
