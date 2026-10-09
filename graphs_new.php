@@ -460,13 +460,13 @@ function graphs() {
 
 	</script>
 	<form id='graphs_new' action='graphs_new.php'>
-		<table class='cactiTable'>
+		<table role='presentation' class='cactiTable'>
 			<tr><td style='width:70%;'>
-				<table class='filterTable'>
+				<table role='presentation' class='filterTable'>
 					<tr>
 						<?php print html_host_filter(get_request_var('host_id'), 'applyFilter', '', true, true);?>
 						<td>
-							<?php print __('Graph Types');?>
+							<label for='graph_type'><?php print __('Graph Types');?></label>
 						</td>
 						<td>
 							<select id='graph_type' name='graph_type'>
@@ -500,7 +500,7 @@ function graphs() {
 						<td id='text'></td>
 					</tr>
 				</table>
-				<table class='filterTable'>
+				<table role='presentation' class='filterTable'>
 					<tr>
 						<td>
 							<?php print __('Search');?>

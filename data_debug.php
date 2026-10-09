@@ -1090,12 +1090,12 @@ function data_debug_filter() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_data_debug' name='form_data_debug' action='data_debug.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<?php print html_site_filter(get_request_var('site_id'));?>
 					<?php print html_host_filter(get_request_var('host_id'), 'applyFilter', $host_where);?>
 					<td>
-						<?php print __('Template');?>
+						<label for='template_id'><?php print __('Template');?></label>
 					</td>
 					<td>
 						<select id='template_id' name='template_id'>
@@ -1129,7 +1129,7 @@ function data_debug_filter() {
 					</td>
 				</tr>
 			</table>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Profile');?>
@@ -1190,7 +1190,7 @@ function data_debug_filter() {
 					</td>
 				</tr>
 			</table>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Search');?>
