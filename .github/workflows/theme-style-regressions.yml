@@ -1,0 +1,52 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+name: Cacti 1.2 theme style regressions
+
+on:
+  push:
+    branches: [1.2.x]
+    paths:
+      - include/themes/**
+      - tests/e2e/theme-style-regressions.*
+      - tests/e2e/playwright.config.js
+      - tests/e2e/package*.json
+      - .github/workflows/theme-style-regressions.yml
+  pull_request:
+    branches: [1.2.x]
+    paths:
+      - include/themes/**
+      - tests/e2e/theme-style-regressions.*
+      - tests/e2e/playwright.config.js
+      - tests/e2e/package*.json
+      - .github/workflows/theme-style-regressions.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    name: Theme CSS browser contracts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea # v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tests/e2e/package-lock.json
+      - name: Install locked browser test dependencies
+        working-directory: tests/e2e
+        run: npm ci --ignore-scripts
+      - name: Install Chromium
+        working-directory: tests/e2e
+        run: node node_modules/@playwright/test/cli.js install --with-deps chromium
+      - name: Verify changed theme rules in Chromium
+        working-directory: tests/e2e
+        run: node node_modules/@playwright/test/cli.js test --config=playwright.config.js theme-style-regressions.spec.js --workers=1
