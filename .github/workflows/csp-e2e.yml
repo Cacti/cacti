@@ -151,15 +151,15 @@ jobs:
 
       - name: Install Playwright dependencies
         working-directory: tests/e2e
-        run: npm install
+        run: npm ci --ignore-scripts
 
       - name: Install Playwright browser (chromium)
         working-directory: tests/e2e
-        run: npx playwright install --with-deps chromium
+        run: node node_modules/@playwright/test/cli.js install --with-deps chromium
 
       - name: Run Playwright suite (core CSP)
         working-directory: tests/e2e
-        run: npx playwright test tests/csp.spec.ts
+        run: node node_modules/@playwright/test/cli.js test tests/csp.spec.ts
 
       - name: Run Playwright suite (plugin CSP -- thold + monitor)
         working-directory: tests/e2e
@@ -168,7 +168,7 @@ jobs:
         # GitHub Actions UI. The plugin spec depends on thold and
         # monitor sources baked into the image at build time; the
         # docker compose up --build above runs the clone.
-        run: npx playwright test tests/csp-plugins.spec.ts
+        run: node node_modules/@playwright/test/cli.js test tests/csp-plugins.spec.ts
 
       - name: Upload Playwright report
         if: failure()

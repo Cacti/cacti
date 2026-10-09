@@ -38,6 +38,7 @@ jobs:
   boost-mariadb:
     name: Boost MariaDB contracts
     runs-on: ubuntu-22.04
+    timeout-minutes: 15
     services:
       mysql:
         image: mariadb:10.6
@@ -54,7 +55,7 @@ jobs:
       uses: actions/checkout@v7
 
     - name: Install PHP 8.2
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea # v2
       with:
         php-version: '8.2'
         extensions: pdo_mysql
@@ -76,12 +77,13 @@ jobs:
   boost-contracts:
     name: Boost contracts
     runs-on: ubuntu-22.04
+    timeout-minutes: 10
     steps:
     - name: Checkout
       uses: actions/checkout@v7
 
     - name: Install PHP 8.2
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea # v2
       with:
         php-version: '8.2'
         coverage: none
@@ -97,6 +99,7 @@ jobs:
   javascript-contracts:
     name: JavaScript contracts
     runs-on: ubuntu-22.04
+    timeout-minutes: 10
     steps:
     - name: Checkout
       uses: actions/checkout@v7
@@ -138,14 +141,22 @@ jobs:
       uses: actions/checkout@v7
 
     - name: Install PHP ${{ matrix.php }}
-      uses: shivammathur/setup-php@v2
+      uses: ./.github/actions/setup-php-composer
       with:
         php-version: ${{ matrix.php }}
         extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring #optional
         ini-values: "post_max_size=256M, max_execution_time=60, date.timezone=America/New_York" #optional
+        dependency-mode: locked-integration
 
     - name: Check PHP version
       run: php -v
+
+    # Install as the runner before Apache setup transfers ownership to www-data.
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+
+    - name: Install dependencies
+      run: composer install --no-interaction --no-progress --prefer-dist
       
     - name: Checkout Thold Plugin
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -257,21 +268,6 @@ jobs:
 
     - name: Restart Apache2
       run: sudo systemctl restart apache2
-
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
-
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v6
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
-
-    - name: Install dependencies
-      run: sudo composer install --no-interaction --no-progress --prefer-dist
 
     - name: Create and Initialize Database
       env:
