@@ -23,6 +23,14 @@ on:
       - include/realtime.js
       - include/themes/midwinter/main.js
       - include/themes/sunrise/main.js
+      - host.php
+      - data_sources.php
+      - graphs.php
+      - graph.php
+      - lib/html.php
+      - lib/html_form.php
+      - include/top_general_header.php
+      - tests/fixtures/Core/GeneralMenuProbe.php
       - tests/integration/**
       - tests/e2e/**
       - .github/workflows/csp-e2e.yml
@@ -164,6 +172,19 @@ jobs:
       - name: Run Playwright suite (core CSP)
         working-directory: tests/e2e
         run: node node_modules/@playwright/test/cli.js test tests/csp.spec.ts
+
+      - name: Run editor and rendering semantics regressions
+        working-directory: tests/e2e
+        env:
+          CACTI_GENERAL_MENU_FIXTURE: ${{ runner.temp }}/cacti-general-menu.html
+        run: |
+          docker compose exec -T php php cli/import_package.php --filename=install/templates/Generic_SNMP_Device.xml.gz
+          git -C ../.. restore --source=HEAD --worktree -- scripts/ss_hstats.php scripts/ping.pl resource/snmp_queries/interface.xml
+          docker compose exec -T php php cli/add_device.php --description="E2E renderer device" --ip=127.0.0.1 --template=0 --version=0 --avail=none --disable=0
+          docker compose exec -T php php cli/add_graphs.php --graph-type=cg --graph-template-id=1 --host-id=1 --graph-title="E2E renderer graph"
+          docker compose exec -T php php cli/add_data_query.php --host-id=1 --data-query-id=1 --reindex-method=0
+          docker compose exec -T php php tests/fixtures/Core/GeneralMenuProbe.php > "$CACTI_GENERAL_MENU_FIXTURE"
+          node ./node_modules/@playwright/test/cli.js test tests/editor-rendering-semantics.spec.ts
 
       - name: Run Playwright suite (plugin CSP -- thold + monitor)
         working-directory: tests/e2e
