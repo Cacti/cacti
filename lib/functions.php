@@ -3261,8 +3261,21 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 			}
 
 			if ($ch === '\\' && $i + 1 < $len) {
-				$out .= $ch . $template[$i + 1];
-				$i   += 2;
+				$next = $template[$i + 1];
+
+				// only pair the backslash with a following quote/backslash so an
+				// escaped quote cannot toggle quote-state; for anything else -
+				// notably a <token> start - emit just the backslash and let the
+				// next iteration process the character so \<arg> still substitutes
+				if ($next === '"' || $next === "'" || $next === '\\') {
+					$out .= $ch . $next;
+					$i   += 2;
+
+					continue;
+				}
+
+				$out .= $ch;
+				$i++;
 
 				continue;
 			}
@@ -3276,8 +3289,18 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 			}
 
 			if ($ch === '\\' && $i + 1 < $len) {
-				$out .= $ch . $template[$i + 1];
-				$i          += 2;
+				$next = $template[$i + 1];
+
+				if ($next === '"' || $next === "'" || $next === '\\') {
+					$out .= $ch . $next;
+					$i          += 2;
+					$quoteEmpty  = false;
+
+					continue;
+				}
+
+				$out .= $ch;
+				$i++;
 				$quoteEmpty  = false;
 
 				continue;
