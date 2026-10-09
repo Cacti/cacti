@@ -1,0 +1,56 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+name: Public method API compatibility
+
+on:
+  push:
+    branches: [1.2.x]
+    paths:
+      - lib/ping.php
+      - lib/ldap.php
+      - lib/mib_cache.php
+      - lib/mib_parser.php
+      - tests/Unit/Core/PublicMethodVisibilityTest.php
+      - tests/fixtures/Core/PublicMethodContractProbe.php
+      - tests/fixtures/Core/public-method-signatures.json
+      - tests/phpunit-method-api.xml
+      - tests/composer*.json
+      - tests/composer.lock
+      - .github/workflows/public-method-api.yml
+  pull_request:
+    branches: [1.2.x]
+    paths:
+      - lib/ping.php
+      - lib/ldap.php
+      - lib/mib_cache.php
+      - lib/mib_parser.php
+      - tests/Unit/Core/PublicMethodVisibilityTest.php
+      - tests/fixtures/Core/PublicMethodContractProbe.php
+      - tests/fixtures/Core/public-method-signatures.json
+      - tests/phpunit-method-api.xml
+      - tests/composer*.json
+      - tests/composer.lock
+      - .github/workflows/public-method-api.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    name: PHP 8.2 public API contracts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea # v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - name: Install locked Cacti test dependencies
+        working-directory: tests
+        run: composer install --no-scripts --no-interaction --no-progress --prefer-dist
+      - name: Verify all 41 public method signatures
+        working-directory: tests
+        run: php vendor/bin/pest --configuration=phpunit-method-api.xml --colors=never
