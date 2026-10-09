@@ -1711,11 +1711,11 @@ function host() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_devices' action='host.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<?php api_plugin_hook('device_filter_start'); ?>
 					<td>
-						<?php print __('Site');?>
+						<label for='site_id'><?php print __('Site');?></label>
 					</td>
 					<td>
 						<select id='site_id'>
@@ -1805,7 +1805,7 @@ function host() {
 					</td>
 				</tr>
 			</table>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Search');?>

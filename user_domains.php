@@ -702,16 +702,16 @@ function domains() {
 	<tr class='even' class='noprint'>
 		<td class='noprint'>
 		<form id='form_domains' method='get' action='user_domains.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr class='noprint'>
 					<td>
-						<?php print __('Search');?>
+						<label for='filter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Domains');?>
+						<label for='rows'><?php print __('Domains');?></label>
 					</td>
 					<td>
 						<select id='rows'>

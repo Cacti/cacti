@@ -327,16 +327,16 @@ function pages() {
 	<tr class='even noprint'>
 		<td>
 			<form id='links' action='links.php' method='post'>
-			<table class='filterTable' cellpadding='2' cellspacing='0'>
+			<table role='presentation' class='filterTable' cellpadding='2' cellspacing='0'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
+						<label for='filter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Links');?>
+						<label for='rows'><?php print __('Links');?></label>
 					</td>
 					<td>
 						<select id='rows'>
