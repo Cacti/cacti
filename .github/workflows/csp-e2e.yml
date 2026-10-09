@@ -23,6 +23,8 @@ on:
       - include/realtime.js
       - include/themes/midwinter/main.js
       - include/themes/sunrise/main.js
+      - auth_login.php
+      - auth_changepassword.php
       - tests/integration/**
       - tests/e2e/**
       - .github/workflows/csp-e2e.yml
@@ -164,6 +166,12 @@ jobs:
       - name: Run Playwright suite (core CSP)
         working-directory: tests/e2e
         run: node node_modules/@playwright/test/cli.js test tests/csp.spec.ts
+
+      - name: Run authentication form semantics regressions
+        working-directory: tests/e2e
+        run: |
+          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti -e "UPDATE user_auth SET password_change='on' WHERE username='admin';"
+          node ./node_modules/@playwright/test/cli.js test tests/auth-form-semantics.spec.ts
 
       - name: Run Playwright suite (plugin CSP -- thold + monitor)
         working-directory: tests/e2e
