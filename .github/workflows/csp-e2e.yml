@@ -23,6 +23,22 @@ on:
       - include/realtime.js
       - include/themes/midwinter/main.js
       - include/themes/sunrise/main.js
+      - auth_login.php
+      - auth_changepassword.php
+      - install/install.php
+      - graph_realtime.php
+      - about.php
+      - include/content/iframe-example.html
+      - cdef.php
+      - color.php
+      - data_input.php
+      - data_queries.php
+      - data_source_profiles.php
+      - data_templates.php
+      - gprint_presets.php
+      - graph_templates.php
+      - vdef.php
+      - host_templates.php
       - tests/integration/**
       - tests/e2e/**
       - .github/workflows/csp-e2e.yml
@@ -173,6 +189,15 @@ jobs:
         # monitor sources baked into the image at build time; the
         # docker compose up --build above runs the clone.
         run: node node_modules/@playwright/test/cli.js test tests/csp-plugins.spec.ts
+
+      - name: Run template filter accessibility regressions
+        working-directory: tests/e2e
+        run: |
+          docker compose exec -T php php cli/import_package.php --filename=install/templates/Generic_SNMP_Device.xml.gz
+          # The package carries resource/script copies. Keep the application
+          # under test identical to the checkout after seeding its DB records.
+          git -C ../.. restore --source=HEAD --worktree -- scripts/ss_hstats.php scripts/ping.pl resource/snmp_queries/interface.xml
+          node ./node_modules/@playwright/test/cli.js test tests/template-filter-labels.spec.ts
 
       - name: Enable real-time popup in disposable fixture
         working-directory: tests/e2e

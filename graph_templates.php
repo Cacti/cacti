@@ -742,16 +742,16 @@ function template() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_graph_template' action='graph_templates.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
+						<label for='filter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Graph Templates');?>
+						<label for='rows'><?php print __('Graph Templates');?></label>
 					</td>
 					<td>
 						<select id='rows' name='rows'>

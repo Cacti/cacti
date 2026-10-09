@@ -667,7 +667,7 @@ function template_edit() {
 		$header_label = __esc('Data Templates [edit: %s]', $template['name']);
 
 		?>
-		<table style='width:100%'>
+		<table role='presentation' style='width:100%'>
 			<tr>
 				<td class='textInfo left' style='vertical-align:top;'>
 					<?php print html_escape($template['name']);?>
@@ -1073,16 +1073,16 @@ function template() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_data_template' action='data_templates.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
+						<label for='filter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Profile');?>
+						<label for='profile'><?php print __('Profile');?></label>
 					</td>
 					<td>
 						<select id='profile'>
@@ -1098,7 +1098,7 @@ function template() {
 						</select>
 					</td>
 					<td>
-						<?php print __('Data Templates');?>
+						<label for='rows'><?php print __('Data Templates');?></label>
 					</td>
 					<td>
 						<select id='rows' name='rows'>
