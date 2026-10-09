@@ -10800,3 +10800,39 @@ function validate_relative_path_within(mixed $path, string $base_dir) : mixed {
 
 	return $candidate;
 }
+
+/**
+ * Log an administrative action performed on a user account.
+ *
+ * @param mixed $user   Username of the affected account.
+ * @param mixed $action Action that was performed.
+ *
+ * @return bool Whether the message was written to the Cacti log.
+ */
+function log_user_action($user, $action) {
+
+	if ($user === '' || $action === '') {
+		return false;
+	}
+
+	if (!empty($_SESSION['sess_user_id'])) {
+		$acting_user_id = $_SESSION['sess_user_id'];
+		$acting_user    = get_username($acting_user_id);
+
+		if ($acting_user === false || $acting_user === '') {
+			$acting_user = 'user ID ' . $acting_user_id;
+		}
+	} elseif (PHP_SAPI === 'cli') {
+		$acting_user = get_execution_user();
+
+		if ($acting_user === '') {
+			$acting_user = 'unknown user';
+		}
+
+		$acting_user .= ' (CLI)';
+	} else {
+		$acting_user = 'unknown user';
+	}
+
+	return cacti_log("NOTE: User '$user' was $action by user '$acting_user'", false, PHP_SAPI === 'cli' ? 'CMDPHP' : 'WEBUI');
+}
