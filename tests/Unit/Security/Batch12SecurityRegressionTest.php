@@ -29,6 +29,7 @@ $resetSource     = file_get_contents($root . '/auth_resetpassword.php');
 $repoSource      = file_get_contents($root . '/package_repos.php');
 $functionsSource = file_get_contents($root . '/lib/functions.php');
 $spikekillSource = file_get_contents($root . '/poller_spikekill.php');
+$importSource    = file_get_contents($root . '/package_import.php');
 
 // =====================================================================
 // GHSA-4qx8: constant-time comparisons
@@ -53,6 +54,13 @@ test('GHSA-54fg: both repo fetch paths use cacti_http and drop raw file_get_cont
 		->and($repoSource)->toContain("cacti_http('GET', \$file, \$http_options)")
 		->and($repoSource)->not->toContain('file_get_contents($file')
 		->and($repoSource)->not->toContain('verify_peer');
+});
+
+test('GHSA-54fg: the import-time repo fetch routes remote reads through cacti_http', function () use ($importSource) {
+	expect($importSource)->toContain("cacti_http('GET', \$file, \$http_options)")
+		->and($importSource)->toContain("cacti_http('GET', \$file)")
+		->and($importSource)->not->toContain('verify_peer')
+		->and($importSource)->not->toContain('file_get_contents($file, false');
 });
 
 // =====================================================================
