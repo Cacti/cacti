@@ -3477,8 +3477,8 @@ function data_source_path_within_rra(string $path) : bool {
 	 * expansion every consumer performs yields '<rra>//0/x.rrd'. The doubled
 	 * slash is an empty path segment, not a traversal, so normalise it here
 	 * instead of rejecting a legitimate file as escaping the RRA directory. */
-	$base   = rtrim(preg_replace('#/+#', '/', str_replace('\\', '/', CACTI_PATH_RRA)) ?? '', '/');
-	$target = preg_replace('#/+#', '/', str_replace('\\', '/', $path)) ?? '';
+	$base   = rtrim((string) preg_replace('#/+#', '/', str_replace('\\', '/', (string) CACTI_PATH_RRA)), '/');
+	$target = (string) preg_replace('#/+#', '/', str_replace('\\', '/', $path));
 
 	if ($base === '' || $target === '') {
 		return false;
