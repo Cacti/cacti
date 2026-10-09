@@ -1005,7 +1005,7 @@ function graphs() {
 							<img src='" . $config['url_path'] . "images/arrow.gif' alt=''>
 						</td>
 						<td class='right' style='width:100%'>
-							" . __('Select a Graph Type to Create') . "
+							<label for='sgg_" . $snmp_query['id'] . "'>" . __('Select a Graph Type to Create') . "</label>
 						</td>
 						<td class='right'>
 							<input type='button' class='ui-button ui-corner-all ui-widget default' id='default_" .  $snmp_query['id'] . "' value='" . __esc('Set Default') . "' title='" . __esc('Make selection default') . "'>

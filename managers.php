@@ -492,10 +492,10 @@ function manager_notifications($id, $header_label) {
 	<tr class='even noprint'>
 		<td>
 			<form id='form_snmpagent_managers' name='form_snmpagent_managers' action='managers.php'>
-				<table class='filterTable'>
+				<table role='presentation' class='filterTable'>
 					<tr>
 						<td>
-							<?php print __('MIB');?>
+							<label for='mib'><?php print __('MIB');?></label>
 						</td>
 						<td>
 							<select id='mib' name='mib'>
