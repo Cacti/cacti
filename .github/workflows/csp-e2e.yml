@@ -23,6 +23,12 @@ on:
       - include/realtime.js
       - include/themes/midwinter/main.js
       - include/themes/sunrise/main.js
+      - automation_devices.php
+      - automation_networks.php
+      - automation_snmp.php
+      - automation_templates.php
+      - automation_graph_rules.php
+      - automation_tree_rules.php
       - tests/integration/**
       - tests/e2e/**
       - .github/workflows/csp-e2e.yml
@@ -164,6 +170,10 @@ jobs:
       - name: Run Playwright suite (core CSP)
         working-directory: tests/e2e
         run: node node_modules/@playwright/test/cli.js test tests/csp.spec.ts
+
+      - name: Run automation filter accessibility regressions
+        working-directory: tests/e2e
+        run: node ./node_modules/@playwright/test/cli.js test tests/automation-filter-labels.spec.ts
 
       - name: Run Playwright suite (plugin CSP -- thold + monitor)
         working-directory: tests/e2e
