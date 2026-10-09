@@ -518,7 +518,7 @@ function setupDefaultElements() {
 			});
 		} else {
 			$("#cactiConsoleBackdrop").click( function() {
-				window.open('https://cacti.net', '_blank');
+				window.open('https://cacti.net', '_blank', 'noopener');
 			});
 		}
 	}
