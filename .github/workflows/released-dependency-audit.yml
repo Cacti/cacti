@@ -1,0 +1,103 @@
+name: Released branch dependency audit
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/dependabot.yml'
+      - '.github/workflows/released-dependency-audit.yml'
+      - 'tests/tools/test_released_dependency_audit.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: released-dependency-audit-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit-contracts:
+    name: Audit reporting contracts
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout workflow tests
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install workflow parser
+        run: python3 -m pip install --disable-pip-version-check pyyaml==6.0.2
+      - name: Verify audit reporting and failure handling
+        run: python3 tests/tools/test_released_dependency_audit.py
+
+  audit:
+    name: Audit 1.2.x ${{ matrix.name }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {name: runtime-php, ecosystem: composer, directory: '.'}
+          - {name: test-php, ecosystem: composer, directory: tests}
+          - {name: frontend, ecosystem: npm, directory: '.'}
+          - {name: browser-tests, ecosystem: npm, directory: tests/e2e}
+    steps:
+      # Dependabot security PRs target develop; audit the released branch explicitly.
+      - name: Checkout released branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: 1.2.x
+          persist-credentials: false
+
+      - name: Set up Cacti Composer toolchain
+        if: matrix.ecosystem == 'composer'
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.3'
+          dependency-mode: audit
+          cache-dependency-path: ${{ matrix.directory }}/composer.lock
+
+      - name: Set up Node
+        if: matrix.ecosystem == 'npm'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4.4.0
+        with:
+          node-version: '22'
+
+      - name: Audit committed dependencies
+        working-directory: ${{ matrix.directory }}
+        env:
+          PACKAGE_ECOSYSTEM: ${{ matrix.ecosystem }}
+        run: |
+          set -euo pipefail
+          report="$GITHUB_WORKSPACE/dependency-audit.json"
+          audit_rc=0
+          if [ "$PACKAGE_ECOSYSTEM" = composer ]; then
+            composer --no-plugins --no-scripts audit --locked --no-interaction --format=json > "$report" || audit_rc=$?
+            jq -e 'has("advisories") and has("abandoned")' "$report" > /dev/null
+            count="$(jq '(.advisories | map(length) | add // 0) + (.abandoned | length)' "$report")"
+          else
+            npm audit --package-lock-only --ignore-scripts --json > "$report" || audit_rc=$?
+            jq -e '.metadata.vulnerabilities.total | type == "number"' "$report" > /dev/null
+            count="$(jq '.metadata.vulnerabilities.total' "$report")"
+          fi
+          if [ "$count" -gt 0 ]; then
+            # Match Cacti's existing advisory reporting policy: keep findings
+            # visible without failing unrelated PRs for a newly published CVE.
+            echo "::warning title=Released branch dependency audit::1.2.x $PACKAGE_ECOSYSTEM has $count advisory or abandoned-package records; see the audit artifact and prepare a compatibility-tested update PR."
+          elif [ "$audit_rc" -ne 0 ]; then
+            echo 'Dependency audit failed without a valid finding; investigate the audit service or lockfile.' >&2
+            exit "$audit_rc"
+          fi
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dependency-audit-1.2-${{ matrix.name }}
+          path: dependency-audit.json
+          if-no-files-found: error
