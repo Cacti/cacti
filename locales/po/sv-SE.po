@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-09-28 15:57-0400\n"
-"PO-Revision-Date: 2026-10-05 16:12+0000\n"
-"Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
-"Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\n"
-"Language: sv-SE\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-09-28 15:57-0400\nPO-Revision-Date: 2026-10-09 17:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -313,7 +301,7 @@ msgstr "Visa artikeluppgifter"
 
 #: aggregate_graphs.php
 msgid "Aggregate Preview Does Not Exist"
-msgstr "Sammanfattning Förhandsgranskning [ %s]"
+msgstr "Förhandsvisning av sammanställning saknas"
 
 #: aggregate_graphs.php
 #, php-format
@@ -679,7 +667,7 @@ msgstr "Ange ditt nuvarande lösenord och ditt nya <br> Cacti lösenord."
 
 #: auth_changepassword.php
 msgid "Please enter your new Cacti password."
-msgstr "Ange ditt nuvarande lösenord och ditt nya <br> Cacti lösenord."
+msgstr "Ange ditt nya Cacti-lösenord."
 
 #: auth_changepassword.php auth_login.php include/global_settings.php
 #: lib/functions.php
@@ -1211,7 +1199,7 @@ msgstr "Kan inte utföra discovery för funktionshindrade nätverk &quot; %s&quo
 #: automation_networks.php
 #, php-format
 msgid "ERROR: You must specify the day of the week.  Disabling Network %s!."
-msgstr "FEL: Du måste ange veckodag. Inaktiverar Network %s !."
+msgstr "FEL: Du måste ange veckodag. Inaktiverar nätverk %s!."
 
 #: automation_networks.php
 #, php-format
@@ -2523,14 +2511,14 @@ msgstr[1] "Duplicera färgmallar"
 #: color_templates.php
 msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
 msgid_plural "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Templates."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att skapa en aggregerad graf från vald graf (er)."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att skapa en aggregerad graf från vald graf (er)."
+msgstr[0] "Klicka på ”Fortsätt” för att synkronisera alla sammanställda grafer med den valda färgmallen."
+msgstr[1] "Klicka på ”Fortsätt” för att synkronisera alla sammanställda grafer med de valda färgmallarna."
 
 #: color_templates.php
 msgid "Synchronize Color Template"
 msgid_plural "Synchronize Color Templates"
-msgstr[0] "Synkronisera grafer till grafmallar"
-msgstr[1] "Synkronisera grafer till grafmallar"
+msgstr[0] "Synkronisera färgmall"
+msgstr[1] "Synkronisera färgmallar"
 
 #: color_templates.php
 msgid "Color Template Items [new]"
@@ -2854,7 +2842,7 @@ msgstr "Resultat"
 
 #: data_debug.php
 msgid "<not set>"
-msgstr "Ej inställt"
+msgstr "&lt;inte angiven&gt;"
 
 #: data_debug.php
 msgid "Data Source Repair Recommendations"
@@ -3142,7 +3130,7 @@ msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande datafrågo
 msgid "Delete Data Query"
 msgid_plural "Delete Data Queries"
 msgstr[0] "Ta bort datafråga"
-msgstr[1] "Ta bort datafråga"
+msgstr[1] "Ta bort datafrågor"
 
 #: data_queries.php
 msgid "Click 'Continue' to duplicate the following Data Query."
@@ -3157,8 +3145,8 @@ msgstr "Namnformat:"
 #: data_queries.php
 msgid "Duplicate Data Query"
 msgid_plural "Duplicate Data Queries"
-msgstr[0] "Ta bort datafråga"
-msgstr[1] "Ta bort datafråga"
+msgstr[0] "Duplicera datafråga"
+msgstr[1] "Duplicera datafrågor"
 
 #: data_queries.php
 msgid "Click 'Continue' to delete the following Data Query Graph Association."
@@ -3180,7 +3168,7 @@ msgstr "Associerade graf / datamallar [redigera: %s]"
 
 #: data_queries.php
 msgid "Associated Graph/Data Templates [new]"
-msgstr "Associerade graf / datamallar [redigera: %s]"
+msgstr "Associerade graf-/datamallar [ny]"
 
 #: data_queries.php
 msgid "Associated Data Templates"
@@ -3705,7 +3693,7 @@ msgstr "Vald datamallad"
 
 #: data_sources.php
 msgid "The name given to this data template.  Please note that you may only change Graph Templates to a 100%$ compatible Graph Template, which means that it includes identical Data Sources."
-msgstr "Namnet ges till den här datamallen. Observera att du bara kan ändra grafmallar till en 100% $ kompatibel grafmall, vilket innebär att den innehåller identiska datakällor."
+msgstr "Namnet som ges till denna datamall. Observera att du bara kan ändra grafmallar till en grafmall som är 100 % kompatibel, vilket innebär att den innehåller identiska datakällor."
 
 #: data_sources.php graph_view.php graphs.php include/global_arrays.php
 #: lib/api_automation.php lib/functions.php lib/html.php lib/html_reports.php
@@ -3924,7 +3912,7 @@ msgstr "Värdet kommer att härledas från enheten om det här fältet är tomt.
 
 #: data_templates.php
 msgid "Custom Data Warning Message"
-msgstr "Anpassade data [dataingång: %s]"
+msgstr "Anpassat datavarningsmeddelande"
 
 #: data_templates.php
 msgid "WARNING: Data Loss can Occur"
@@ -4719,7 +4707,7 @@ msgstr "Nya grafer för [Alla enheter]"
 
 #: graphs.php
 msgid "Graph Management [ Non Device Based ]"
-msgstr "User Group Management [redigera: %s]"
+msgstr "Grafhantering [inte enhetsbaserad]"
 
 #: graphs.php
 #, php-format
@@ -5798,7 +5786,7 @@ msgstr "Alla grafer har lagts till i rapporten. Dubbla grafer med samma tidsperi
 
 #: include/global_arrays.php
 msgid "Poller Resource Cache cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards."
-msgstr "Poller Resource Cache rensas. Main Data Collector kommer att återuppbyggas vid nästa poller start, och Remote Data Collectors synkroniseras därefter."
+msgstr "Pollarens resurscache har rensats. Huvuddatasamlaren byggs om vid nästa start av pollaren och fjärrdatainsamlarna synkroniseras därefter."
 
 #: include/global_arrays.php
 msgid "Permission Denied.  You do not have permission to the requested action."
@@ -5926,7 +5914,7 @@ msgstr "Bottom -&gt; Up"
 
 #: include/global_arrays.php tree.php
 msgid "Numeric"
-msgstr "﻿Numerisk"
+msgstr "Numerisk"
 
 #: include/global_arrays.php
 msgid "Timestamp"
@@ -6656,7 +6644,7 @@ msgstr "Dagskift"
 
 #: include/global_arrays.php
 msgid "This Day"
-msgstr "%d dygn"
+msgstr "Den här dagen"
 
 #: include/global_arrays.php
 msgid "This Week"
@@ -6740,11 +6728,11 @@ msgstr "%d GBytes"
 
 #: include/global_arrays.php
 msgid "2,000 Data Source Items"
-msgstr "2.000 datakälla objekt"
+msgstr "2 000 datakällobjekt"
 
 #: include/global_arrays.php
 msgid "5,000 Data Source Items"
-msgstr "5.000 datakälla objekt"
+msgstr "5 000 datakällobjekt"
 
 #: include/global_arrays.php
 msgid "10,000 Data Source Items"
@@ -8142,7 +8130,7 @@ msgstr "Right Axis Format (- right-axis-format &lt;format&gt;)"
 #: include/global_form.php
 #, php-format
 msgid "By default, the format of the axis labels gets determined automatically.  If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands."
-msgstr "Som standard bestäms axelmärkningens format automatiskt. Om du vill göra det själv använder du det här alternativet med samma% lf argument som du vet från PRINT och GPRINT-kommandona."
+msgstr "Som standard bestäms formatet för axelrubriker automatiskt. Om du vill ange det själv använder du det här alternativet med samma %lf-argument som används i kommandona PRINT och GPRINT."
 
 #: include/global_form.php
 msgid "Right Axis Formatter (--right-axis-formatter &lt;formatname&gt;)"
@@ -8170,7 +8158,7 @@ msgstr "Auto Padding"
 
 #: include/global_form.php
 msgid "Pad text so that legend and graph data always line up. Note: this could cause graphs to take longer to render because of the larger overhead. Also Auto Padding may not be accurate on all types of graphs, consistent labeling usually helps."
-msgstr "Padtext så att legend och grafdata alltid stämmer överens. Obs! Det kan leda till att grafer tar längre tid att göra på grund av större omkostnader. Också Auto Padding kanske inte är korrekt på alla typer av grafer, och det hjälper vanligtvis med konsekvent märkning."
+msgstr "Fyll ut text så att förklaringen och grafdata alltid linjerar. Obs! Detta kan göra att grafer tar längre tid att återge på grund av större resursåtgång. Automatisk utfyllnad är kanske inte korrekt för alla graftyper; konsekventa etiketter hjälper vanligen."
 
 #: include/global_form.php
 msgid "Dynamic Labels (--dynamic-labels)"
@@ -9454,7 +9442,7 @@ msgstr "Alternativa källor för innehållssäkerhet"
 
 #: include/global_settings.php
 msgid "Space delimited domain names that will be permitted to be accessed outside of the Web Server itself.  This is important for users choosing to use a CDN, or hosting site.  Sources can includes wildcards for example: *.mydomain.com, or a protocol, for example: https://*.example.com.  These Alternate Sources include Image, CSS and JavaScript types only."
-msgstr "Utrymme avgränsade domännamn som kommer att få åtkomst utanför själva webbservern. Detta är viktigt för användare som väljer att använda ett CDN eller en webbsajt. Källor kan innehålla jokertecken till exempel: *.mydomain.com eller ett protokoll, till exempel: https: //*.example.com. Dessa alternativa källor inkluderar endast bild-, CSS- och JavaScript -typer."
+msgstr "Blankstegsavgränsade domännamn som får nås utanför själva webbservern. Detta är viktigt för användare som väljer att använda ett CDN eller ett webbhotell. Källor kan innehålla jokertecken, till exempel: *.mydomain.com, eller ett protokoll, till exempel: https://*.example.com. Dessa alternativa källor omfattar bara bild-, CSS- och JavaScript-typer."
 
 #: include/global_settings.php
 msgid "URL where browsers POST CSP violation reports in nonce-report and nonce modes. Leave empty to use /cacti/csp_report.php at the installation root. Must contain only safe URL characters."
@@ -9708,7 +9696,7 @@ msgstr "Standard Pingport för alla nya enheter. Med TCP försöker Cacti att sy
 
 #: include/global_settings.php
 msgid "Default Ping Timeout value in milli-seconds for all new Devices.  The timeout values to use for Device SNMP, ICMP, UDP and TCP pinging.  ICMP Pings will be rounded up to the nearest second.  TCP and UDP connection timeouts on Windows are controlled by the operating system, and are therefore not recommended on Windows."
-msgstr "Standard Ping Timeout-värde i millisekunder för alla nya enheter. De tidsgränsvärden som ska användas för enhet SNMP, ICMP, UDP och TCP pinging. ICMP Pings rundas upp till närmaste sekund. TCP- och UDP-anslutningstider på Windows styrs av operativsystemet, och rekommenderas därför inte på Windows."
+msgstr "Standardvärde för pingtidsgräns i millisekunder för alla nya enheter. Tidsgränsvärden som används för enhetens SNMP-, ICMP-, UDP- och TCP-pingning. ICMP-pingar avrundas uppåt till närmaste sekund. Tidsgränser för TCP- och UDP-anslutningar i Windows styrs av operativsystemet och rekommenderas därför inte i Windows."
 
 #: include/global_settings.php
 msgid "The number of times Cacti will attempt to ping a Device before marking it as down."
@@ -10375,7 +10363,7 @@ msgstr "Standardtrådar per process"
 
 #: include/global_settings.php
 msgid "The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well."
-msgstr "Standard trådar tillåtna per process. OBS! Börjar i Cacti 1.2+, den här inställningen bibehålls i Data Collector, och detta är helt enkelt förinställd. Att använda ett högre antal när du använder Spine förbättrar prestanda. Se dock till att du har tillräckligt med MySQL / MariaDB-anslutningar för att stödja följande ekvation: anslutningar = datasamlare * processer * (trådar + skriptservrar). Du måste också se till att du har tillräckligt med extra förbindelser för användarinloggningsanslutningar."
+msgstr "Standardantalet tillåtna trådar per process. OBS! Från och med Cacti 1.2+ hanteras denna inställning i datasamlaren och här är den bara en förinställning. Ett högre antal med Spine förbättrar prestandan. Kontrollera dock att du har tillräckligt många MySQL-/MariaDB-anslutningar för ekvationen: connections = data collectors * processes * (threads + script servers). Du behöver också ha tillräckligt med lediga anslutningar för användarinloggningar."
 
 #: include/global_settings.php
 msgid "Authentication Method"
@@ -10705,7 +10693,7 @@ msgstr "Sökbas"
 
 #: include/global_settings.php
 msgid "Search base for searching the LDAP directory, such as <i>'dc=win2kdomain,dc=local'</i> or <i>'ou=people,dc=domain,dc=local'</i>."
-msgstr "Sök bas för att söka i LDAP-katalogen, till exempel <i>&quot;dc = win2kdomain, dc = local&quot;</i> eller <i>&quot;ou = people, dc = domain, dc = local&quot;</i> ."
+msgstr "Sökbas för sökning i LDAP-katalogen, till exempel <i>'dc=win2kdomain,dc=local'</i> eller <i>'ou=people,dc=domain,dc=local'</i>."
 
 #: include/global_settings.php user_domains.php
 msgid "Search Filter"
@@ -10713,7 +10701,7 @@ msgstr "Sökfilter"
 
 #: include/global_settings.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
-msgstr "Sökfilter som ska användas för att hitta användaren i LDAP-katalogen, t.ex. för Windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*)</i> )' eller för OpenLDAP: ' <i>(&amp;(objectClass=account)(uid=&lt;username&amp;gt</i>))'. \"&lt;username&amp;gt\" ersätts med det användarnamn som angavs vid inloggningsprompten. "
+msgstr "Sökfilter för att hitta användaren i LDAP-katalogen, till exempel i Windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> eller i OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>. '&lt;username&gt;' ersätts med användarnamnet som angavs vid inloggningen. "
 
 #: include/global_settings.php user_domains.php
 msgid "Search Distinguished Name (DN)"
@@ -11037,7 +11025,7 @@ msgstr "Aktivera direktpopulation av poller_output_boost-tabellen"
 
 #: include/global_settings.php
 msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
-msgstr "Aktiverar direktinsättning av poster i pollerutmatningshöjning med resultat i en 25% tidsminskning i varje pollscykel."
+msgstr "Aktiverar direktinfogning av poster i pollarens Boost-utdata, vilket förkortar varje pollningscykel med 25 %."
 
 #: include/global_settings.php
 msgid "Boost Debug Log"
@@ -11045,7 +11033,7 @@ msgstr "Boost Debug Log"
 
 #: include/global_settings.php
 msgid "If this field is non-blank, Boost will log RRDUpdate output from the boost\tpoller process."
-msgstr "Om det här fältet inte är tomt kommer Boost att logga RRDupdate-utmatning från boost poller-processen."
+msgstr "Om det här fältet inte är tomt loggar Boost RRDUpdate-utdata från boost\tpoller-processen."
 
 #: include/global_settings.php utilities.php
 msgid "Image Caching"
@@ -11409,7 +11397,7 @@ msgstr "Hur vill du att Cacti ska presentera datum?  Denna inställning kommer o
 
 #: include/global_settings.php
 msgid "Cacti Server Timezone"
-msgstr "Cacti Server v %s - Underhåll"
+msgstr "Cacti-serverns tidszon"
 
 #: include/global_settings.php
 msgid "My Browsers Timezone"
@@ -11683,7 +11671,7 @@ msgstr "Endast för användare med konsolåtkomst, hur länge kan den här anvä
 #: index.php
 #, php-format
 msgid "You are now logged into <a href=\"%s\"><b>Cacti</b></a>. You can follow these basic steps to get started."
-msgstr "Du är nu inloggad i <a href=\"%s\"><b>Cacti</b></a> . Du kan följa dessa grundläggande steg för att komma igång."
+msgstr "Du är nu inloggad i <a href=\"%s\"><b>Cacti</b></a>. Du kan följa dessa grundläggande steg för att komma igång."
 
 #: index.php
 #, php-format
@@ -11722,7 +11710,7 @@ msgstr "Antal offline poster:"
 
 #: index.php
 msgid "<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When <b>'online'</b>, you will be able to view and control much of the Main Cacti Web Site just as if you were logged into it.  Also, it's important to note that Remote Data Collectors are required to use the Cacti's Performance Boosting Services <b>'On Demand Updating'</b> feature, and we always recommend using Spine.  When the Remote Data Collector is <b>'offline'</b>, the Remote Data Collectors Web Site will contain much less information.  However, it will cache all updates until the Main Cacti Database and Web Server are reachable.  Then it will dump it's Boost table output back to the Main Cacti Database for updating."
-msgstr "<strong>OBS!</strong> Du är inloggad i en fjärrdatasamlare. När <b>&quot;online&quot;</b> kommer du att kunna se och kontrollera mycket av Main Cacti webbplatsen som om du var inloggad. Det är också viktigt att notera att Remote Data Collectors är skyldiga att använda Cacti&#39;s Performance Boosting Services <b>&quot;On Demand Update&quot;</b> -funktion, och vi rekommenderar alltid att använda Spine. När fjärrdatasamlaren är <b>&quot;offline&quot;</b> , innehåller webbplatsen för Remote Data Collectors mycket mindre information. Det kommer dock att cache alla uppdateringar tills Main Cacti Database och Web Server är nåbara. Då kommer det att dumpa det Boost tabellutmatning tillbaka till Main Cacti Database för uppdatering."
+msgstr "<strong>OBS!</strong> Du är inloggad i en fjärrdatainsamlare. När den är <b>'online'</b> kan du se och styra stora delar av Cactis huvudwebbplats, som om du vore inloggad där. Fjärrdatainsamlare måste använda funktionen <b>'On Demand Updating'</b> i Cactis tjänster för prestandaförbättring och vi rekommenderar alltid Spine. När fjärrdatainsamlaren är <b>'offline'</b> innehåller dess webbplats betydligt mindre information. Den cachelagrar dock alla uppdateringar tills Cactis huvudsakliga databas och webbserver kan nås. Därefter skriver den tillbaka utdata från sin Boost-tabell till Cactis huvuddatabas för uppdatering."
 
 #: index.php
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
@@ -11762,7 +11750,7 @@ msgstr "Initierar"
 #: install/install.php
 #, php-format
 msgid "Please wait while the installation system for Cacti Version %s initializes. You must have JavaScript enabled for this to work."
-msgstr "Vänta vänta medan installationssystemet för Cacti Version %s initialiseras. Du måste ha Javascript aktiverat för att detta ska fungera."
+msgstr "Vänta medan installationssystemet för Cacti version %s initieras. JavaScript måste vara aktiverat för att detta ska fungera."
 
 #: install/install.php
 msgid "FATAL: We are unable to continue with this installation. In order to install Cacti, PHP must be at version 5.4 or later."
@@ -11770,7 +11758,7 @@ msgstr "FATAL: Vi kan inte fortsätta med den här installationen. För att inst
 
 #: install/install.php
 msgid "See the PHP Manual: <a href=\"http://php.net/manual/en/book.json.php\">JavaScript Object Notation</a>."
-msgstr "Se PHP Manual: <a href=\"http://php.net/manual/en/book.json.php\">JavaScript Object Notation</a> ."
+msgstr "Se PHP-manualen: <a href=\"http://php.net/manual/en/book.json.php\">JavaScript Object Notation</a>."
 
 #: install/install.php
 msgid "The php-json module must also be installed."
@@ -11778,7 +11766,7 @@ msgstr "Den version av RRDtool som du har installerat."
 
 #: install/install.php
 msgid "See the PHP Manual: <a href=\"http://php.net/manual/en/ini.core.php#ini.disable-functions\">Disable Functions</a>."
-msgstr "Se PHP Manual: <a href=\"http://php.net/manual/en/ini.core.php#ini.disable-functions\">Inaktivera funktioner</a> ."
+msgstr "Se PHP-manualen: <a href=\"http://php.net/manual/en/ini.core.php#ini.disable-functions\">Inaktivera funktioner</a>."
 
 #: install/install.php
 msgid "The shell_exec() and/or exec() functions are currently blocked."
@@ -12480,7 +12468,7 @@ msgstr "FEL: Datafrågan returnerade inga index."
 #: lib/data_query.php
 #, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
-msgstr "Utför script för lista över index &#39; %s&#39;, Index Count: %s"
+msgstr "Kör skript för indexlistan ”%s”, antal index: %s"
 
 #: lib/data_query.php
 msgid "Click to show Data Query output for 'index'"
@@ -12861,7 +12849,7 @@ msgstr "Länk %s"
 
 #: lib/functions.php
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
-msgstr "Mailer Error: Nej <b>TO</b> adress set !! <br> Om du använder länken <i>Test Mail</i> , ange inställning för <b>Alert e-post</b> ."
+msgstr "E-postfel: ingen mottagaradress har angetts!!<br>Om du använder länken <i>Testmeddelande</i> anger du inställningen <b>Varnings-e-post</b>."
 
 #: lib/functions.php
 #, php-format
@@ -14372,7 +14360,7 @@ msgstr "Du <b>måste</b> då uppdatera &quot;include / config.php&quot; för att
 
 #: lib/installer.php
 msgid "NOTE: Your existing data will not be modified, nor will it or any history be available to the new install"
-msgstr "OBS! Din befintliga data kommer inte att ändras, och det kommer inte heller att finnas någon historik för den nya installationen"
+msgstr "OBS! Dina befintliga data ändras inte och varken data eller historik blir tillgängliga för den nya installationen."
 
 #: lib/installer.php
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
@@ -14392,7 +14380,7 @@ msgstr "På Linux / UNIX kör följande som &quot;root&quot; i ett skal:"
 
 #: lib/installer.php
 msgid "On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:"
-msgstr "På Windows måste du följa anvisningarna här <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Tidszonens beskrivningstabell</a> . När det är klart kan du utfärda följande kommando för att ge Cacti-användaren tillgång till tabellerna:"
+msgstr "I Windows måste du följa anvisningarna här: <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Beskrivningstabell för tidszoner</a>. När det är klart kan du köra följande kommando för att ge Cacti-användaren åtkomst till tabellerna:"
 
 #: lib/installer.php
 msgid "Then run the following within MySQL as an administrator:"
@@ -14444,7 +14432,7 @@ msgstr "Den här processen guidar dig genom stegen för att uppgradera från ver
 #: lib/installer.php
 #, php-format
 msgid "Also, if this is an upgrade, be sure to read the <a href=\"%s\">Upgrade</a> information file."
-msgstr "Om det här är en uppgradering, se till att du läser <a href=\"%s\">uppgraderingsinformationsfilen</a> ."
+msgstr "Om detta är en uppgradering bör du läsa informationsfilen <a href=\"%s\">Uppgradering</a>."
 
 #: lib/installer.php
 msgid "It is NOT recommended to downgrade as the database structure may be inconsistent"
@@ -14817,7 +14805,7 @@ msgstr "Input Validation Whitelist Protection"
 
 #: lib/installer.php
 msgid "Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure."
-msgstr "Inmatningsmetoder för Cacti-data som kallar ett skript kan utnyttjas på ett sätt som en icke-administratör kan utföra skador på endera filer som ägs av pollarkontot, och i fall där någon kör Cacti-pollaren som rot, kan kompromissa med operativsystemet så att angripare kan utnyttja din infrastruktur."
+msgstr "Cactis datainmatningsmetoder som anropar ett skript kan utnyttjas så att en person utan administratörsbehörighet kan skada filer som ägs av pollarkontot. Om någon kör Cacti-pollaren som root kan operativsystemet komprometteras, så att angripare kan utnyttja din infrastruktur."
 
 #: lib/installer.php
 msgid "Therefore, several versions ago, Cacti was enhanced to provide Whitelist capabilities on the these types of Data Input Methods.  Though this does secure Cacti more thoroughly, it does increase the amount of work required by the Cacti administrator to import and manage Templates and Packages."
@@ -15498,7 +15486,7 @@ msgstr "%s Version %s eller högre krävs för %s. "
 #: lib/plugins.php
 #, php-format
 msgid "%s is required for %s, and it is not installed. "
-msgstr "%s krävs för %s, och det är inte installerat. "
+msgstr "%s krävs för %s och är inte installerat. "
 
 #: lib/plugins.php
 msgid "Plugin cannot be installed."
@@ -15723,7 +15711,7 @@ msgstr "CDP Okända datapunkter (0)"
 
 #: lib/rrd.php
 msgid "Errors Found"
-msgstr "Inga %s hittades"
+msgstr "Fel hittades"
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
@@ -16065,12 +16053,12 @@ msgstr "OBS: Grafen har inte lagts till för dataförfrågan %s och index %s på
 
 #: lib/utility.php
 msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
-msgstr "MySQL 5.6+ och MariaDB 10.0 + är bra utgåvor, och är mycket bra versioner att välja. Se till att du kör den allra senaste versionen men som fixar en långvarig nätverksproblem med låg nivå som orsakade ryggraden många problem med tillförlitlighet."
+msgstr "MySQL 5.6+ och MariaDB 10.0+ är bra utgåvor och lämpliga versioner att välja. Se dock till att använda den senaste utgåvan, som åtgärdar ett långvarigt nätverksfel på låg nivå som har orsakat tillförlitlighetsproblem för Spine."
 
 #: lib/utility.php
 #, php-format
 msgid "It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3."
-msgstr "Vi rekommenderar att du aktiverar InnoDB i någon %s-version som är större än 5.1."
+msgstr "Vi rekommenderar starkt att du aktiverar InnoDB i alla %s-versioner senare än 5.5.3."
 
 #: lib/utility.php
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte."
@@ -16109,7 +16097,7 @@ msgstr "När du utför en undersökning med en större temporär tabellstorlek, 
 
 #: lib/utility.php
 msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.  If the recommendation is negative, you must decrease this and or the sort_buffer_size until the recommendation fits within the allowable memory."
-msgstr "När du utför sammankopplingar kommer de, om de är mindre än denna storlek, att sparas i minnet och aldrig skrivas till en temporär fil.  Eftersom detta är en minnesallokering per anslutning måste man vara försiktig så att den inte blir för hög.  Summan av join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB-minne bör vara under 80%.  Om rekommendationen är negativ måste du minska denna och eller sort_buffer_size tills rekommendationen passar inom det tillåtna minnet."
+msgstr "När joiner är mindre än denna storlek hålls de i minnet och skrivs aldrig till en temporär fil. Eftersom minne tilldelas per anslutning måste värdet hållas på en rimlig nivå. Summan av join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB-minne bör vara under 80 %. Om rekommendationen är negativ måste du minska detta och/eller sort_buffer_size tills rekommendationen ryms inom tillåtet minne."
 
 #: lib/utility.php
 #, php-format
@@ -16392,7 +16380,7 @@ msgstr "Webadressadress"
 
 #: links.php
 msgid "The valid URL to use for this external link.  Must include the type, for example http://www.cacti.net.  Note that many websites do not allow them to be embedded in an iframe from a foreign site, and therefore External Linking may not work."
-msgstr "Den giltiga webbadressen som ska användas för den här externa länken. Måste inkludera typen, till exempel http://www.cacti.net. Observera att många webbplatser inte tillåter dem att vara inbäddade i en iframe från en utländsk webbplats, och därför kan extern länkning inte fungera."
+msgstr "Den giltiga URL:en för denna externa länk. Den måste innehålla typen, till exempel http://www.cacti.net. Observera att många webbplatser inte tillåter inbäddning i en iframe från en extern webbplats och att extern länkning därför kanske inte fungerar."
 
 #: links.php
 msgid "If checked, the page will be available immediately to the admin user."
@@ -17674,8 +17662,8 @@ msgstr[1] "Radera webbplatser"
 #: sites.php
 msgid "Click 'Continue' to Duplicate the following Site."
 msgid_plural "Click 'Continue' to Duplicate all following Sites."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande träd."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande träd."
+msgstr[0] "Klicka på ”Fortsätt” för att duplicera följande plats."
+msgstr[1] "Klicka på ”Fortsätt” för att duplicera alla följande platser."
 
 #: sites.php
 msgid "Site Name:"
@@ -17766,7 +17754,7 @@ msgstr "Format för utdata"
 
 #: templates_export.php
 msgid "Choose the format to output the resulting XML file in."
-msgstr "Väj format för för den XML-fil som skrivs."
+msgstr "Välj formatet för den resulterande XML-filen."
 
 #: templates_export.php
 msgid "Output to the Browser (within Cacti)"
@@ -17839,7 +17827,7 @@ msgstr "Ouppfylld: %d"
 
 #: templates_import.php
 msgid "Some CDEF Items will not import due to an export error! Contact Template provider for an updated export."
-msgstr "Vissa CDEF-objekt kommer inte att importeras på grund av ett exportfel! Kontakta mallleverantören för en uppdaterad export."
+msgstr "Vissa CDEF-objekt importeras inte på grund av ett exportfel! Kontakta mallens leverantör för en uppdaterad export."
 
 #: templates_import.php
 msgid "Import Template"
@@ -17900,8 +17888,8 @@ msgstr "numeriska"
 #: tree.php
 msgid "Click 'Continue' to delete the following Tree."
 msgid_plural "Click 'Continue' to delete following Trees."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande träd."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande träd."
+msgstr[0] "Klicka på ”Fortsätt” för att ta bort följande träd."
+msgstr[1] "Klicka på ”Fortsätt” för att ta bort följande träd."
 
 #: tree.php
 msgid "Delete Tree"
@@ -17912,8 +17900,8 @@ msgstr[1] "Ta bort träd"
 #: tree.php
 msgid "Click 'Continue' to publish the following Tree."
 msgid_plural "Click 'Continue' to publish following Trees."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att publicera följande träd."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att publicera följande träd."
+msgstr[0] "Klicka på ”Fortsätt” för att publicera följande träd."
+msgstr[1] "Klicka på ”Fortsätt” för att publicera följande träd."
 
 #: tree.php
 msgid "Publish Tree"
@@ -17924,8 +17912,8 @@ msgstr[1] "Publicera träd"
 #: tree.php
 msgid "Click 'Continue' to un-publish the following Tree."
 msgid_plural "Click 'Continue' to un-publish following Trees."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att publicera följande träd."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att publicera följande träd."
+msgstr[0] "Klicka på ”Fortsätt” för att avpublicera följande träd."
+msgstr[1] "Klicka på ”Fortsätt” för att avpublicera följande träd."
 
 #: tree.php
 msgid "Un-publish Tree"
@@ -17936,8 +17924,8 @@ msgstr[1] "Un-publicera Trees"
 #: tree.php
 msgid "Click 'Continue' to un-lock the following Tree."
 msgid_plural "Click 'Continue' to un-lock following Trees."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att publicera följande träd."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att publicera följande träd."
+msgstr[0] "Klicka på ”Fortsätt” för att låsa upp följande träd."
+msgstr[1] "Klicka på ”Fortsätt” för att låsa upp följande träd."
 
 #: tree.php
 msgid "Un-lock Tree"
@@ -18145,7 +18133,7 @@ msgstr "Användarnamn:"
 
 #: user_admin.php
 msgid "Full Name:"
-msgstr "Ваше имя :"
+msgstr "Fullständigt namn:"
 
 #: user_admin.php
 msgid "Realm:"
@@ -18510,7 +18498,7 @@ msgstr[1] "Aktivera användardomäner"
 
 #: user_domains.php
 msgid "Click 'Continue' to make the following the following User Domain the default one."
-msgstr "Klicka på &quot;Fortsätt&quot; för att göra följande följande användardomän som standard."
+msgstr "Klicka på ”Fortsätt” för att göra följande användardomän till standarddomän."
 
 #: user_domains.php
 msgid "Make Selected Domain Default"
@@ -18567,11 +18555,11 @@ msgstr "Läge som Cacti använder för att försöka autentisera mot LDAP-server
 
 #: user_domains.php
 msgid "Search base for searching the LDAP directory, such as <i>\"dc=win2kdomain,dc=local\"</i> or <i>\"ou=people,dc=domain,dc=local\"</i>."
-msgstr "Sök bas för att söka i LDAP-katalogen, till exempel <i>&quot;dc = win2kdomain, dc = local&quot;</i> eller <i>&quot;ou = people, dc = domain, dc = local&quot;</i> ."
+msgstr "Sökbas för sökning i LDAP-katalogen, till exempel <i>\"dc=win2kdomain,dc=local\"</i> eller <i>\"ou=people,dc=domain,dc=local\"</i>."
 
 #: user_domains.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt."
-msgstr "Sökfilter som ska användas för att lokalisera användaren i LDAP-katalogen, till exempel för Windows: <i>&quot;(&amp; (objectclass = user) (objektkategori = användare) (userPrincipalName = &lt;användarnamn&gt; *))&quot;</i> eller för OpenLDAP: <i>&quot; = konto) (uid = &lt;användarnamn&gt;)) &quot;</i> . &quot;&lt;användarnamn&gt;&quot; ersätts med användarnamnet som levererades vid inloggningsprompten."
+msgstr "Sökfilter för att hitta användaren i LDAP-katalogen, till exempel i Windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> eller i OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>. \"&lt;username&gt\" ersätts med användarnamnet som angavs vid inloggningen."
 
 #: user_domains.php
 msgid "eMail"
@@ -18713,7 +18701,7 @@ msgstr[1] "Klicka på &quot;Fortsätt&quot; för att kopiera följande användar
 
 #: user_group_admin.php
 msgid "Group Prefix:"
-msgstr "Gruppprefix:"
+msgstr "Grupprefix:"
 
 #: user_group_admin.php
 msgid "New Group"
@@ -19033,10 +19021,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "Installerad"
+msgstr "Installerad."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
@@ -19366,7 +19352,7 @@ msgstr "Kan inte öppna katalogen"
 
 #: utilities.php
 msgid "Directory Does NOT Exist!!"
-msgstr "Directory existerar inte !!"
+msgstr "Katalogen finns INTE!!"
 
 #: utilities.php
 msgid "Current Boost Status"
@@ -19758,278 +19744,260 @@ msgstr "Autentiseringsalgoritmen MD5 och sekretessalgoritmen DES är äldre, sva
 
 #: lib/utility.php:1291
 msgid "Default collation used by the server when creating databases and tables."
-msgstr ""
+msgstr "Standardkollation som servern använder när databaser och tabeller skapas."
 
 #: lib/utility.php:1292
 msgid "e.g. utf8mb4_unicode_ci, utf8mb4_general_ci."
-msgstr ""
+msgstr "Till exempel utf8mb4_unicode_ci, utf8mb4_general_ci."
 
 #: lib/utility.php:1297
 msgid "Default character set used by the server."
-msgstr ""
+msgstr "Standardteckenuppsättning som servern använder."
 
 #: lib/utility.php:1298 lib/utility.php:1304
 msgid "e.g. utf8mb4, utf8, latin1."
-msgstr ""
+msgstr "Till exempel utf8mb4, utf8, latin1."
 
 #: lib/utility.php:1303
 msgid "Character set the client uses when sending statements to the server."
-msgstr ""
+msgstr "Teckenuppsättning som klienten använder när den skickar satser till servern."
 
 #: lib/utility.php:1309
 msgid "Maximum number of simultaneous client connections permitted."
-msgstr ""
+msgstr "Högsta tillåtna antal samtidiga klientanslutningar."
 
 #: lib/utility.php:1310
 msgid "Integer; default 151. Allow enough for the pollers plus user logins."
-msgstr ""
+msgstr "Heltal; standardvärde 151. Tillåt tillräckligt många för pollare och användarinloggningar."
 
 #: lib/utility.php:1315
 msgid "Legacy name for the open-table cache; renamed to table_open_cache."
-msgstr ""
+msgstr "Äldre namn på cachen för öppna tabeller; har bytt namn till table_open_cache."
 
 #: lib/utility.php:1316
 msgid "Integer. Use table_open_cache on modern servers."
-msgstr ""
+msgstr "Heltal. Använd table_open_cache på moderna servrar."
 
 #: lib/utility.php:1321
 msgid "Maximum size of one packet or any generated/intermediate string."
-msgstr ""
+msgstr "Största storlek för ett paket eller en genererad mellansträng."
 
 #: lib/utility.php:1322
 msgid "Bytes; keep at or above 16M for remote pollers."
-msgstr ""
+msgstr "Byte; behåll värdet på minst 16 M för fjärrpollare."
 
 #: lib/utility.php:1327
 msgid "Maximum size to which user-created MEMORY tables may grow."
-msgstr ""
+msgstr "Största storlek som användarskapade MEMORY-tabeller får växa till."
 
 #: lib/utility.php:1328
 msgid "Bytes; sized relative to total system memory."
-msgstr ""
+msgstr "Byte; dimensioneras i förhållande till systemets totala minne."
 
 #: lib/utility.php:1333
 msgid "Maximum size of internal in-memory temporary tables before they spill to disk."
-msgstr ""
+msgstr "Största storlek för interna temporära minnestabeller innan de skrivs till disk."
 
 #: lib/utility.php:1334
-#, fuzzy
-#| msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
 msgid "Bytes; a larger value keeps temporary tables in memory."
-msgstr "När du utför en undersökning med en större temporär tabellstorlek, behåll de tillfälliga tabellerna i minnet."
+msgstr "Byte; ett större värde håller kvar temporära tabeller i minnet."
 
 #: lib/utility.php:1339
 msgid "Minimum per-join buffer size for joins that do not use indexes."
-msgstr ""
+msgstr "Minsta buffertstorlek per join för joiner som inte använder index."
 
 #: lib/utility.php:1340
 msgid "Bytes; per-connection allocation, default 262144."
-msgstr ""
+msgstr "Byte; tilldelas per anslutning, standardvärde 262144."
 
 #: lib/utility.php:1345
 msgid "Per-session buffer allocated for sorts (ORDER BY / GROUP BY)."
-msgstr ""
+msgstr "Buffert som tilldelas per session för sorteringar (ORDER BY / GROUP BY)."
 
 #: lib/utility.php:1346
 msgid "Bytes; per-connection allocation, default 2097152."
-msgstr ""
+msgstr "Byte; tilldelas per anslutning, standardvärde 2097152."
 
 #: lib/utility.php:1351
 msgid "Store each InnoDB table and its indexes in its own .ibd tablespace file."
-msgstr ""
+msgstr "Lagra varje InnoDB-tabell och dess index i en egen .ibd-tabellrymdsfil."
 
 #: lib/utility.php:1352
 msgid "ON or OFF; ON is recommended."
-msgstr ""
+msgstr "ON eller OFF; ON rekommenderas."
 
 #: lib/utility.php:1357
 msgid "InnoDB on-disk file format (Antelope or Barracuda); Barracuda is now the only format."
-msgstr ""
+msgstr "InnoDB:s filformat på disk (Antelope eller Barracuda); Barracuda är nu det enda formatet."
 
 #: lib/utility.php:1358
 msgid "Antelope, Barracuda."
-msgstr ""
+msgstr "Antelope, Barracuda."
 
 #: lib/utility.php:1363
 msgid "Allow index key prefixes longer than 767 bytes (requires the Barracuda format)."
-msgstr ""
+msgstr "Tillåt indexnyckelprefix längre än 767 byte (kräver formatet Barracuda)."
 
 #: lib/utility.php:1364
 msgid "ON/1 or OFF/0; this behaviour is now always enabled."
-msgstr ""
+msgstr "ON/1 eller OFF/0; detta beteende är nu alltid aktiverat."
 
 #: lib/utility.php:1369
 msgid "Total memory InnoDB uses to cache table and index data."
-msgstr ""
+msgstr "Totalt minne som InnoDB använder för att cachelagra tabell- och indexdata."
 
 #: lib/utility.php:1370
 msgid "Bytes; commonly 25%-80% of total system memory."
-msgstr ""
+msgstr "Byte; vanligen 25–80 % av systemets totala minne."
 
 #: lib/utility.php:1375
 msgid "Write pages twice (the doublewrite buffer) to protect against partial page writes."
-msgstr ""
+msgstr "Skriv sidor två gånger (dubbel skrivbuffert) för att skydda mot partiella sidskrivningar."
 
 #: lib/utility.php:1376
 msgid "ON or OFF."
-msgstr ""
+msgstr "ON eller OFF."
 
 #: lib/utility.php:1381
 msgid "Legacy pool for the InnoDB internal data dictionary and structures."
-msgstr ""
+msgstr "Äldre pool för InnoDB:s interna dataordbok och strukturer."
 
 #: lib/utility.php:1382
 msgid "Bytes; obsolete on modern servers."
-msgstr ""
+msgstr "Byte; föråldrat på moderna servrar."
 
 #: lib/utility.php:1387
 msgid "Seconds an InnoDB transaction waits for a row lock before giving up."
-msgstr ""
+msgstr "Sekunder som en InnoDB-transaktion väntar på ett radlås innan den ger upp."
 
 #: lib/utility.php:1388
-#, fuzzy
-#| msgid " seconds left."
 msgid "Seconds; default 50."
-msgstr " sekunder kvar."
+msgstr "Sekunder; standardvärde 50."
 
 #: lib/utility.php:1393
 msgid "Method used to flush data and log files to disk."
-msgstr ""
+msgstr "Metod för att tömma data- och loggfiler till disk."
 
 #: lib/utility.php:1394
 msgid "O_DIRECT, fsync, O_DSYNC, and similar."
-msgstr ""
+msgstr "O_DIRECT, fsync, O_DSYNC och liknande."
 
 #: lib/utility.php:1399
 msgid "Controls how the redo log is written and flushed at transaction commit."
-msgstr ""
+msgstr "Styr hur redo-loggen skrivs och töms när transaktionen genomförs."
 
 #: lib/utility.php:1400
 msgid "0, 1, or 2."
-msgstr ""
+msgstr "0, 1 eller 2."
 
 #: lib/utility.php:1405
 msgid "Legacy single setting for InnoDB file I/O threads, replaced by the read/write I/O thread settings."
-msgstr ""
+msgstr "Äldre enskild inställning för InnoDB-filers I/O-trådar, ersatt av inställningarna för läs- och skriv-I/O-trådar."
 
 #: lib/utility.php:1406
 msgid "Integer; superseded by innodb_read_io_threads and innodb_write_io_threads."
-msgstr ""
+msgstr "Heltal; ersatt av innodb_read_io_threads och innodb_write_io_threads."
 
 #: lib/utility.php:1411
 msgid "Write and flush the InnoDB redo log every N seconds."
-msgstr ""
+msgstr "Skriv och töm InnoDB:s redo-logg var N:e sekund."
 
 #: lib/utility.php:1412
 msgid "Seconds (1-2700); default 1."
-msgstr ""
+msgstr "Sekunder (1–2700); standardvärde 1."
 
 #: lib/utility.php:1417
 msgid "Number of I/O threads used for read operations in InnoDB."
-msgstr ""
+msgstr "Antal I/O-trådar som används för läsåtgärder i InnoDB."
 
 #: lib/utility.php:1418 lib/utility.php:1424
-#, fuzzy
-#| msgid "default"
 msgid "1-64; default 4."
-msgstr "standard"
+msgstr "1–64; standardvärde 4."
 
 #: lib/utility.php:1423
 msgid "Number of I/O threads used for write operations in InnoDB."
-msgstr ""
+msgstr "Antal I/O-trådar som används för skrivåtgärder i InnoDB."
 
 #: lib/utility.php:1429
 msgid "Number of regions the InnoDB buffer pool is divided into."
-msgstr ""
+msgstr "Antal regioner som InnoDB:s buffertpool delas in i."
 
 #: lib/utility.php:1430
 msgid "1-64; MariaDB removed this in 10.6."
-msgstr ""
+msgstr "1–64; MariaDB tog bort detta i version 10.6."
 
 #: lib/utility.php:1435
 msgid "Estimated I/O operations per second available to InnoDB background tasks."
-msgstr ""
+msgstr "Beräknat antal I/O-åtgärder per sekund som är tillgängliga för InnoDB:s bakgrundsprocesser."
 
 #: lib/utility.php:1436 lib/utility.php:1442
 msgid "Integer; use higher values for SSD/NVMe storage."
-msgstr ""
+msgstr "Heltal; använd högre värden för SSD-/NVMe-lagring."
 
 #: lib/utility.php:1441
 msgid "Maximum IOPS InnoDB may use when flushing falls behind."
-msgstr ""
+msgstr "Högsta antal IOPS som InnoDB får använda när tömningen hamnar efter."
 
 #: lib/utility.php:1447
 msgid "Flush neighbouring dirty pages in the same extent when flushing a page."
-msgstr ""
+msgstr "Töm intilliggande smutsiga sidor i samma utsträckning när en sida töms."
 
 #: lib/utility.php:1448
 msgid "0, 1, or 2; use 0 on SSD storage."
-msgstr ""
+msgstr "0, 1 eller 2; använd 0 på SSD-lagring."
 
 #: lib/utility.php:1453
 msgid "Use hardware atomic writes (MariaDB) so the doublewrite buffer can be safely disabled."
-msgstr ""
+msgstr "Använd hårdvarans atomära skrivningar (MariaDB) så att dubbel skrivbuffert säkert kan inaktiveras."
 
 #: lib/utility.php:1454
 msgid "ON or OFF; MariaDB only."
-msgstr ""
+msgstr "ON eller OFF; endast MariaDB."
 
 #: lib/utility.php:1458
 msgid "Enforce strict snapshot isolation for InnoDB transactions."
-msgstr ""
+msgstr "Tillämpa strikt ögonblicksbildsisolering för InnoDB-transaktioner."
 
 #: lib/utility.php:1459
 msgid "ON or OFF; back-ported to MariaDB 10.6.18+, 10.11.8+ and 11.4.2+. Set OFF for the Cacti poller."
-msgstr ""
+msgstr "ON eller OFF; bakåtporterat till MariaDB 10.6.18+, 10.11.8+ och 11.4.2+. Ange OFF för Cacti-pollaren."
 
 #: lib/utility.php:1577 lib/utility.php:1674
-#, fuzzy
-#| msgid "(Remove)"
 msgid "Removed"
-msgstr "Ta bort"
+msgstr "Borttagen"
 
 #: lib/utility.php:1579 lib/utility.php:1673
-#, fuzzy
-#| msgid "Duplicate"
 msgid "Deprecated"
-msgstr "Duplicera"
+msgstr "Föråldrad"
 
 #: lib/utility.php:1581
-#, fuzzy
-#| msgid "Not Applicable"
 msgid "Not applicable to this engine"
-msgstr "Ej tillämpligt"
+msgstr "Gäller inte för denna motor"
 
 #: lib/utility.php:1583 lib/utility.php:1672
-#, fuzzy
-#| msgid "Support"
 msgid "Supported"
-msgstr "Support"
+msgstr "Stöds"
 
 #: lib/utility.php:1628
 #, php-format
 msgid "%s Variable Capability Matrix"
-msgstr ""
+msgstr "Kapacitetsmatris för variabeln %s"
 
 #: lib/utility.php:1628
 msgid "Support by engine and version for each Cacti-recommended variable"
-msgstr ""
+msgstr "Stöd per motor och version för varje variabel som Cacti rekommenderar"
 
 #: lib/utility.php:1657
-#, fuzzy
-#| msgid "Table Settings"
 msgid "Available settings:"
-msgstr "Tabellinställningar"
+msgstr "Tillgängliga inställningar:"
 
 #: lib/utility.php:1675
 msgid "N/A - Not applicable to this engine"
-msgstr ""
+msgstr "Inte tillämpligt – gäller inte för denna motor"
 
 #: lib/utility.php:1929 lib/utility.php:1965
-#, fuzzy
-#| msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgid "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
-msgstr "Om du har SSD-skivor, använd det här förslaget. Annars ställer du inte in den här inställningen."
+msgstr "Om du har SSD-diskar anger du 0 här. Annars ska du inte ange denna inställning."
 
 #~ msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
 #~ msgstr "Installerad. <span class=\"deviceDown\">Obs: Om du planerar att använda SNMPv3 måste du ta bort php-snmp och använda verktyget Net-SNMP.</span>"
