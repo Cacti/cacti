@@ -83,10 +83,10 @@ test('GHSA-g9c7: cacti_exec still rejects whitespace-mixed command strings', fun
 
 test('GHSA-fq9x: substitute_script_path replaces tokens in a single pass over the original template', function () use ($functionsSource) {
 	expect($functionsSource)->toContain('function substitute_script_path(');
-	// a single preg_replace_callback over the ORIGINAL template, not an
+	// a single-pass quote-state scanner over the ORIGINAL template, not an
 	// iterative str_replace loop that re-scans substituted output.
-	expect($functionsSource)->toContain('>(?(1)');
-	expect($functionsSource)->toContain('array_key_exists($matches[2], $escaped_values)');
+	expect($functionsSource)->toContain("preg_match('/\\G<([A-Za-z0-9_]+)>/'");
+	expect($functionsSource)->toContain('array_key_exists($m[1], $escaped_values)');
 });
 
 test('GHSA-fq9x: both path builders no longer re-scan the mutated buffer with str_replace', function () use ($functionsSource) {

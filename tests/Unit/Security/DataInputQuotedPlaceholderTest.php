@@ -22,10 +22,11 @@
 
 $functionsSource = file_get_contents(dirname(__DIR__, 3) . '/lib/functions.php');
 
-test('GHSA-5v3j: substitute_script_path consumes matched surrounding quotes', function () use ($functionsSource) {
-	expect($functionsSource)->toContain('>(?(1)')
-		->and($functionsSource)->toContain('array_key_exists($matches[2], $escaped_values)')
-		->and($functionsSource)->not->toContain('array_key_exists($matches[1], $escaped_values)');
+test('GHSA-5v3j: substitute_script_path is quote-aware and closes template quoting around values', function () use ($functionsSource) {
+	expect($functionsSource)->toContain("preg_match('/\\G<([A-Za-z0-9_]+)>/'")
+		->and($functionsSource)->toContain('$out .= $quote . $value . $quote;')
+		->and($functionsSource)->not->toContain('>(?(1)')
+		->and($functionsSource)->not->toContain('array_key_exists($matches[2], $escaped_values)');
 });
 
 if (!function_exists('substitute_script_path')) {
@@ -48,6 +49,16 @@ test('GHSA-5v3j: a double-quoted placeholder sheds the quotes so the value canno
 
 test('GHSA-5v3j: an unknown token keeps its literal form and quotes', function () {
 	expect(substitute_script_path('"<nope>"', ['arg1' => 'x']))->toBe('"<nope>"');
+});
+
+test('GHSA-5v3j: a token embedded in a larger quoted word keeps the value safely quoted', function () {
+	$esc = "'" . '$(id)' . "'";
+
+	// the template's quoting is closed around the already-escaped value, so an
+	// outer double quote cannot re-enable $(...) / backticks inside it
+	expect(substitute_script_path('"prefix<arg1>"', ['arg1' => $esc]))->toBe('"prefix"' . $esc . '""')
+		->and(substitute_script_path('"<arg1>suffix"', ['arg1' => $esc]))->toBe('""' . $esc . '"suffix"')
+		->and(substitute_script_path('"a<arg1>b"', ['arg1' => $esc]))->toBe('"a"' . $esc . '"b"');
 });
 
 test('GHSA-5v3j: single-pass fq9x behaviour is retained', function () {
