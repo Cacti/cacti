@@ -19,7 +19,7 @@
  * Fixed in #7235; this guards against regression.
  */
 
-$spikekillSource = file_get_contents(dirname(__DIR__, 3) . '/poller_spikekill.php');
+$spikekillSource = file_get_contents(dirname(__DIR__, 4) . '/poller_spikekill.php');
 
 test('GHSA-vhh2: the spikekill poller escapes the --rrdfile path', function () use ($spikekillSource) {
 	expect($spikekillSource)->toContain("' --rrdfile=' . cacti_escapeshellarg(\$f)")

@@ -20,7 +20,7 @@
  * matched pair of surrounding quotes when a token resolves.
  */
 
-$functionsSource = file_get_contents(dirname(__DIR__, 3) . '/lib/functions.php');
+$functionsSource = file_get_contents(dirname(__DIR__, 4) . '/lib/functions.php');
 
 test('GHSA-5v3j: substitute_script_path is quote-aware and closes template quoting around values', function () use ($functionsSource) {
 	expect($functionsSource)->toContain("preg_match('/\\G<([A-Za-z0-9_]+)>/'")
@@ -63,4 +63,14 @@ test('GHSA-5v3j: a token embedded in a larger quoted word keeps the value safely
 
 test('GHSA-5v3j: single-pass fq9x behaviour is retained', function () {
 	expect(substitute_script_path('<f>', ['f' => '<g>', 'g' => 'PWN']))->toBe('<g>');
+});
+
+test('GHSA-5v3j: a trusted raw path token keeps the template quoting (not shell-escaped)', function () {
+	// the path_* tokens resolve to raw, un-escaped config values. A template that
+	// quotes one must keep those quotes so a path containing spaces survives
+	// shell_exec(), while a bare path token stays unquoted so the PHP script
+	// server can realpath() the included file.
+	expect(substitute_script_path('"<path_php_binary>"', ['path_php_binary' => '/opt/php 8/bin/php']))->toBe('"/opt/php 8/bin/php"')
+		->and(substitute_script_path('<path_cacti>/scripts/ss_foo.php', ['path_cacti' => '/var/www/html']))->toBe('/var/www/html/scripts/ss_foo.php')
+		->and(substitute_script_path('"<path_cacti>/scripts/ss_foo.php"', ['path_cacti' => '/var/www/html']))->toBe('"/var/www/html/scripts/ss_foo.php"');
 });
