@@ -3183,6 +3183,9 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
  * anywhere else inside a quoted word ("prefix<arg>", "<arg>suffix", "<a><b>") has
  * the template's quoting briefly closed around the value, so $(...)/backticks in
  * the value cannot be re-interpreted by an outer double quote (GHSA-5v3j-wcrr-jxjg).
+ * A dangling (odd) run of template backslashes immediately before such a value is
+ * normalised to an even run first, so it cannot escape the quote that must open or
+ * close around the value and leave the shell with an unmatched quote.
  *
  * A resolved value that is NOT self-quoting - the trusted path_* tokens resolve to
  * raw configuration values that the callers do not shell-escape - is substituted
@@ -3219,9 +3222,19 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 				$valLen     = strlen($value);
 				$selfQuoted = $valLen >= 2 && ($value[0] === '"' || $value[0] === "'") && $value[$valLen - 1] === $value[0];
 
-				if ($quote === '' || !$selfQuoted) {
-					// outside any template quote, or a raw value: substitute in place
-					// so the template's own quotes (if any) survive around the value
+				if (!$selfQuoted) {
+					// trusted raw value (path_* config): substitute in place so the
+					// template's own quotes (if any) survive around the value
+					$out .= $value;
+				} elseif ($quote === '') {
+					// outside any template quote the value stands on its own quotes.
+					// A dangling (odd) run of backslashes right before it would escape
+					// its opening quote (\'x' -> literal quote + unmatched quote); shed
+					// one so the run is even and the quote still opens
+					if ((strlen($out) - strlen(rtrim($out, '\\'))) % 2 === 1) {
+						$out = substr($out, 0, -1);
+					}
+
 					$out .= $value;
 				} elseif ($quoteEmpty && ($i + $tokenLen) < $len && $template[$i + $tokenLen] === $quote) {
 					// template wrapped the token exactly ("<arg>"): drop the pair
@@ -3232,7 +3245,13 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 					$quote = '';
 				} else {
 					// token sits inside a larger quoted word: close the template's
-					// quoting around the value so it cannot be re-interpreted
+					// quoting around the value so it cannot be re-interpreted. A
+					// dangling backslash would escape that closing quote and leave the
+					// value inside the template's quote, so shed one if the run is odd
+					if ((strlen($out) - strlen(rtrim($out, '\\'))) % 2 === 1) {
+						$out = substr($out, 0, -1);
+					}
+
 					$out .= $quote . $value . $quote;
 				}
 

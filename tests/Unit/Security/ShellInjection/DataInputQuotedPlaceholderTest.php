@@ -75,10 +75,66 @@ test('GHSA-5v3j: a backslash before a token still substitutes the field (no over
 	$esc = "'" . '$(id)' . "'";
 
 	// a backslash must not swallow the following <token>; the field still
-	// resolves (matching the previous callback) while an escaped quote is
-	// still paired so it cannot toggle the scanner's quote-state
-	expect(substitute_script_path('\\<arg1>', ['arg1' => $esc]))->toBe('\\' . $esc)
+	// resolves while an odd backslash run is normalised so it cannot escape the
+	// value's opening quote (\'x' would otherwise leave an unmatched quote)
+	expect(substitute_script_path('\\<arg1>', ['arg1' => $esc]))->toBe($esc)
 		->and(substitute_script_path('\\\\<arg1>', ['arg1' => $esc]))->toBe('\\\\' . $esc)
 		->and(substitute_script_path('"a\\"<arg1>"', ['arg1' => $esc]))->toBe('"a\\""' . $esc . '""');
 });
+
+test('GHSA-5v3j: substituted templates round-trip through /bin/sh as safe literal arguments', function () {
+	// run a single already-quoted shell word through /bin/sh via `printf %s` and
+	// return [exitCode, stdout]; proves the substitution is a well-formed word
+	// that yields exactly the intended literal and never expands $(...)
+	$sh = static function (string $argument): array {
+		$spec  = [1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
+		$pipes = [];
+		$proc  = proc_open('printf %s ' . $argument, $spec, $pipes);
+
+		if (!is_resource($proc)) {
+			return [-1, ''];
+		}
+
+		$stdout = stream_get_contents($pipes[1]);
+
+		fclose($pipes[1]);
+		fclose($pipes[2]);
+
+		return [proc_close($proc), $stdout];
+	};
+
+	// cacti_escapeshellarg() single-quotes the value; $(id) would execute on any
+	// quoting break, so it must survive as the literal five bytes for every shape
+	$payloadRaw = '$(id)';
+	$payload    = "'" . $payloadRaw . "'";
+
+	$templates = [
+		'<arg1>', '"<arg1>"', "'<arg1>'",
+		'"prefix<arg1>"', '"<arg1>suffix"', '"a<arg1>b"',
+		'\\<arg1>', '\\\\<arg1>', '\\\\\\<arg1>', '"a\\"<arg1>"',
+	];
+
+	foreach ($templates as $tpl) {
+		[$code, $out] = $sh(substitute_script_path($tpl, ['arg1' => $payload]));
+
+		// parses cleanly (no unmatched-quote error) and $(id) stays literal
+		expect($code)->toBe(0)
+			->and($out)->toContain($payloadRaw)
+			->and($out)->not->toContain('uid=');
+	}
+
+	// benign round-trip across odd/even backslash counts: an odd run is normalised
+	// away so it cannot escape the value's quote, while an even run contributes its
+	// own literal backslashes from the template
+	$benignRaw = 'hello world';
+	$benign    = "'" . $benignRaw . "'";
+
+	foreach (['' => 0, '\\' => 0, '\\\\' => 1, '\\\\\\' => 1] as $prefix => $backslashes) {
+		[$code, $out] = $sh(substitute_script_path($prefix . '<arg1>', ['arg1' => $benign]));
+
+		expect($code)->toBe(0)
+			->and($out)->toBe(str_repeat('\\', $backslashes) . $benignRaw);
+	}
+})->skip(stripos(PHP_OS, 'WIN') === 0 || !function_exists('proc_open'), 'POSIX /bin/sh round-trip required');
+
 
