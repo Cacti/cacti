@@ -212,6 +212,16 @@ it('rejects invalid and missing dead-letter identifiers', function () {
 		->and(fn () => $transport->requeue('550e8400-e29b-41d4-a716-446655440000'))->toThrow(RuntimeException::class, 'not found');
 });
 
+it('dead-letters invalid delivery metadata instead of leaving a poison reservation', function () {
+	$transport = new CactiDatabaseQueueTransport('reports', 60);
+	$transport->send(queue_test_envelope([]));
+	$this->db->exec("UPDATE queue_messages SET metadata = '{'");
+
+	expect(fn () => $transport->get())->toThrow(CactiQueueMessageException::class);
+	expect($this->db->query('SELECT status FROM queue_messages')->fetchColumn())->toBe('dead');
+	expect(queue_test_messages($transport->get()))->toBe([]);
+});
+
 it('fails closed when persistence or claim database operations fail', function () {
 	$transport = new CactiDatabaseQueueTransport('reports');
 	$this->db->exec('DROP TABLE queue_messages');

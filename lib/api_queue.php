@@ -257,15 +257,16 @@ final class CactiDatabaseQueueTransport implements TransportInterface, CactiQueu
 
 		try {
 			$envelope = $this->serializer->decode(['body' => (string) $row['payload'], 'headers' => ['type' => (string) $row['message_type']]]);
+			$metadata = api_queue_json_decode((string) $row['metadata']);
+			$stamp    = new CactiQueueStamp((string) $row['queue_name'], (int) $row['priority'], (int) $row['max_attempts'], (string) ($metadata['correlation_id'] ?? ''));
 		} catch (Throwable $e) {
 			$this->markDead((int) $row['id'], $token, $e->getMessage());
 
 			throw new CactiQueueMessageException('Invalid queue message was moved to the dead-letter state.', 0, $e);
 		}
 
-		$metadata = api_queue_json_decode((string) $row['metadata']);
 		$stamps   = [
-			new CactiQueueStamp((string) $row['queue_name'], (int) $row['priority'], (int) $row['max_attempts'], (string) ($metadata['correlation_id'] ?? '')),
+			$stamp,
 			new CactiQueueReceiptStamp((int) $row['id'], $token, (int) $row['attempts']),
 			new TransportMessageIdStamp((string) $row['message_id']),
 		];

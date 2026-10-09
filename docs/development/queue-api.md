@@ -94,9 +94,9 @@ One installation may route different queues to different providers at the same t
 
 ## Verification
 
-The PHP 8.2 CI job runs the queue unit and MySQL 8.4 integration suites with Xdebug, publishes Clover and text reports, and enforces 100% line coverage for `lib/api_queue.php`.
+The PHP 8.3 CI job runs the queue unit and MySQL 8.4 integration suites with Xdebug, publishes a text report, and enforces 100% line coverage for `lib/api_queue.php`.
 
-Run the full producer-to-worker path in disposable PHP 8.2 and MySQL 8.4 containers with:
+Run the full producer-to-worker path in disposable PHP 8.3 and MySQL 8.4 containers with:
 
 ```console
 tests/e2e/queue/run.sh

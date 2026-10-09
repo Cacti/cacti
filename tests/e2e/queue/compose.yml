@@ -4,7 +4,7 @@ services:
       context: ../../../docker
       dockerfile: Dockerfile
       args:
-        PHP_VERSION: '8.2'
+        PHP_VERSION: '8.3'
     volumes:
       - ../../..:/var/www/html/cacti
       - ./config.php:/var/www/html/cacti/include/config.php:ro
