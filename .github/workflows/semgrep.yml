@@ -67,6 +67,9 @@ jobs:
           git cat-file -e "${base_sha}^{commit}"
           echo "sha=$base_sha" >> "$GITHUB_OUTPUT"
 
+      - name: Set up Docker with the public registry cache
+        uses: ./.github/actions/setup-ci-docker
+
       - name: Self-test the rules (blocking)
         run: |
           set -euo pipefail
