@@ -74,3 +74,14 @@ test('GHSA-5v3j: a trusted raw path token keeps the template quoting (not shell-
 		->and(substitute_script_path('<path_cacti>/scripts/ss_foo.php', ['path_cacti' => '/var/www/html']))->toBe('/var/www/html/scripts/ss_foo.php')
 		->and(substitute_script_path('"<path_cacti>/scripts/ss_foo.php"', ['path_cacti' => '/var/www/html']))->toBe('"/var/www/html/scripts/ss_foo.php"');
 });
+
+test('GHSA-5v3j: a backslash before a token still substitutes the field (no over-consume)', function () {
+	$esc = "'" . '$(id)' . "'";
+
+	// a backslash must not swallow the following <token>; the field still
+	// resolves (matching the previous callback) while an escaped quote is
+	// still paired so it cannot toggle the scanner's quote-state
+	expect(substitute_script_path('\\<arg1>', ['arg1' => $esc]))->toBe('\\' . $esc)
+		->and(substitute_script_path('\\\\<arg1>', ['arg1' => $esc]))->toBe('\\\\' . $esc)
+		->and(substitute_script_path('"a\\"<arg1>"', ['arg1' => $esc]))->toBe('"a\\""' . $esc . '""');
+});
