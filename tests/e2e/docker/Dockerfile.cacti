@@ -65,6 +65,10 @@ RUN mkdir -p /var/cacti-state \
 # container-friendly config, killing every protected request.
 COPY --chown=www-data:www-data . /var/www/html
 COPY tests/e2e/docker/write-config.php /usr/local/lib/cacti-write-config.php
+RUN mkdir -p /var/www/html/cache/boost /var/www/html/cache/mibcache \
+        /var/www/html/cache/purifier /var/www/html/cache/realtime \
+        /var/www/html/cache/spikekill /var/www/html/log /var/www/html/rra \
+ && chown -R www-data:www-data /var/www/html/cache /var/www/html/log /var/www/html/rra
 
 # Inline entrypoint. When ROLE=poller, generate a self-signed cert and switch Apache
 # to HTTPS on 443. Otherwise serve plain HTTP on 80.
