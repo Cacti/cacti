@@ -1,0 +1,41 @@
+name: Docker image health checks
+
+on:
+  pull_request:
+    paths:
+      - tests/e2e/Dockerfile
+      - tests/e2e/entrypoint.sh
+      - tests/e2e/checkout-plugin.sh
+      - tests/e2e/docker/Dockerfile.cacti
+      - tests/e2e/docker/write-config.php
+      - tests/e2e/docker/test-healthchecks.sh
+      - .github/workflows/docker-image-health.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  image-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Use the official Docker Hub image cache
+        run: |
+          set -euo pipefail
+          configuration="$RUNNER_TEMP/cacti-docker-daemon.json"
+          if sudo test -f /etc/docker/daemon.json; then
+            sudo cat /etc/docker/daemon.json | tee "$configuration" > /dev/null
+          else
+            printf '%s\n' '{}' > "$configuration"
+          fi
+          jq '."registry-mirrors" = (["https://mirror.gcr.io"] + (."registry-mirrors" // []) | unique)' "$configuration" > "$configuration.tmp"
+          sudo install -m 644 "$configuration.tmp" /etc/docker/daemon.json
+          sudo systemctl restart docker
+      - name: Build Cacti test images
+        run: |
+          docker build -f tests/e2e/Dockerfile -t cacti-health-fpm tests/e2e
+          docker build -f tests/e2e/docker/Dockerfile.cacti -t cacti-health-apache .
+      - name: Exercise live and failed image checks
+        run: bash tests/e2e/docker/test-healthchecks.sh cacti-health-fpm cacti-health-apache
