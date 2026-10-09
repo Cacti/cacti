@@ -19,6 +19,13 @@ on:
       - include/global.php
       - include/global_settings.php
       - csp_report.php
+      - auth_login.php
+      - auth_changepassword.php
+      - install/install.php
+      - graph_realtime.php
+      - about.php
+      - color.php
+      - include/content/iframe-example.html
       - tests/integration/**
       - tests/e2e/**
       - .github/workflows/csp-e2e.yml
@@ -160,6 +167,19 @@ jobs:
       - name: Run Playwright suite (core CSP)
         working-directory: tests/e2e
         run: npx playwright test tests/csp.spec.ts
+
+      - name: Prepare real-time popup for document tests
+        working-directory: tests/e2e
+        run: |
+          docker compose exec -T php mkdir -p /var/www/html/cacti/cache/realtime
+          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti \
+            -e "REPLACE INTO settings (name,value) VALUES ('realtime_enabled','on'),('realtime_cache_path','/var/www/html/cacti/cache/realtime');"
+          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti \
+            -e "UPDATE user_auth SET password_change='on' WHERE username='admin';"
+
+      - name: Run document semantics browser regressions
+        working-directory: tests/e2e
+        run: node ./node_modules/@playwright/test/cli.js test tests/document-semantics.spec.ts
 
       - name: Run Playwright suite (plugin CSP -- thold + monitor)
         working-directory: tests/e2e
