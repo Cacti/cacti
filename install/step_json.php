@@ -71,7 +71,7 @@ if (isrv('data') && gnrv('data')) {
 $json_level = log_install_level('json',POLLER_VERBOSITY_NONE);
 log_install_high('json','Start: ' . clean_up_lines(json_encode($initialData)));
 
-$initialData['Runtime'] = 'Web';
+$initialData = array_merge($initialData, ['Runtime' => 'Web']);
 
 if (isset($initialData['step']) && $initialData['step'] == Installer::STEP_TEST_REMOTE) {
 	$json       = install_test_remote_database_connection();
