@@ -1667,7 +1667,7 @@ function graph_edit() {
 			array(get_request_var('id')));
 
 		?>
-		<table style='width:100%;'>
+		<table role='presentation' style='width:100%;'>
 			<tr>
 				<td class='textInfo left' style='vertical-align:top'>
 					<?php print html_escape(get_graph_title(get_request_var('id')));?>

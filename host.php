@@ -800,7 +800,7 @@ function host_edit() {
 
 	if (!empty($host['id'])) {
 		?>
-		<table class='hostInfoHeader' style='width:100%'>
+		<table role='presentation' class='hostInfoHeader' style='width:100%'>
 			<tr>
 				<td class='textInfo left'>
 					<?php print html_escape($host['description']);?> (<?php print html_escape($host['hostname']);?>)
@@ -944,7 +944,7 @@ function host_edit() {
 		?>
 		<tr class='odd'>
 			<td class='saveRow' colspan='3'>
-				<table>
+				<table role='presentation'>
 					<tr style='line-height:10px;'>
 						<td class='nowrap templateAdd' style='padding-right:15px;'>
 							<?php print __('Add Graph Template');?>
@@ -977,7 +977,7 @@ function host_edit() {
 							<a id='dbghide' class='fa fa-times' href='#'><?php print __('Hide');?></a>
 						</span>
 					</div>
-					<table class='cactiTable' id='clipboardData<?php print $dbg_copy_uid;?>'>
+					<table role='presentation' class='cactiTable' id='clipboardData<?php print $dbg_copy_uid;?>'>
 						<tr class='tableRow'>
 							<td class='debug'>
 								<span><?php print debug_log_return('data_query');?></span>
@@ -1081,7 +1081,7 @@ function host_edit() {
 		?>
 		<tr class='odd'>
 			<td class='saveRow' colspan='4'>
-				<table style='width:20%'>
+				<table role='presentation' style='width:20%'>
 					<tr style='line-height:10px;'>
 						<td class='nowrap queryAdd' style='padding-right:15px;'>
 							<?php print __('Add Data Query');?>
