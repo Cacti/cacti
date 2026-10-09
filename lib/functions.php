@@ -9701,5 +9701,6 @@ function log_user_action($user, $action) {
 		$acting_user = 'unknown user';
 	}
 
-	return cacti_log("NOTE: User '$user' was $action by user '$acting_user'", false, PHP_SAPI === 'cli' ? 'CMDPHP' : 'WEBUI');
+	return cacti_log("NOTE: User '$user' was $action by user '$acting_user'", false, PHP_SAPI === 'cli' ? 'AUTHC' : 'AUTH');
 }
+
