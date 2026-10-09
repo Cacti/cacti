@@ -1,23 +1,24 @@
+# GitHub reads this configuration from develop, including updates for 1.2.x.
+# Group routine releases; unmatched major upgrades get individual PRs.
+# Cooldowns apply to version updates, not security fixes.
 version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
-    target-branch: develop
     schedule: {interval: weekly, day: friday}
     open-pull-requests-limit: 5
     cooldown: {default-days: 7}
     groups:
-      github-actions: {patterns: ["*"]}
+      github-actions: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, github_actions]
     commit-message: {prefix: ci, include: scope}
   - package-ecosystem: composer
     directory: /
-    target-branch: develop
     schedule: {interval: weekly, day: monday}
     open-pull-requests-limit: 5
     cooldown: {default-days: 7}
     groups:
-      composer: {patterns: ["*"]}
+      composer: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, composer]
     commit-message: {prefix: deps, include: scope}
   - package-ecosystem: github-actions
@@ -27,17 +28,16 @@ updates:
     open-pull-requests-limit: 5
     cooldown: {default-days: 7}
     groups:
-      github-actions-1-2-x: {patterns: ["*"]}
+      github-actions-1-2-x: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, github_actions, 1.2.x]
     commit-message: {prefix: ci, include: scope}
   - package-ecosystem: composer
     directory: /api
-    target-branch: develop
     schedule: {interval: weekly, day: monday}
     open-pull-requests-limit: 5
     cooldown: {default-days: 7}
     groups:
-      composer-api: {patterns: ["*"]}
+      composer-api: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, composer]
     commit-message: {prefix: deps, include: scope}
   - package-ecosystem: composer
@@ -47,17 +47,62 @@ updates:
     open-pull-requests-limit: 5
     cooldown: {default-days: 7}
     groups:
-      composer-1-2-x: {patterns: ["*"]}
+      composer-1-2-x: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, composer]
     commit-message: {prefix: deps, include: scope}
 
   - package-ecosystem: npm
     directory: /
-    target-branch: develop
     schedule: {interval: weekly, day: monday}
     open-pull-requests-limit: 5
     cooldown: {default-days: 7}
     groups:
-      npm: {patterns: ["*"]}
+      npm: {patterns: ["*"], update-types: [minor, patch]}
     labels: [dependencies, "area:ui"]
+    commit-message: {prefix: deps, include: scope}
+
+  - package-ecosystem: npm
+    directory: /
+    target-branch: 1.2.x
+    schedule: {interval: weekly, day: monday}
+    open-pull-requests-limit: 5
+    cooldown: {default-days: 7}
+    groups:
+      npm-1-2-x: {patterns: ["*"], update-types: [minor, patch]}
+    labels: [dependencies, "area:ui", 1.2.x]
+    commit-message: {prefix: deps, include: scope}
+    ignore:
+      - dependency-name: jquery
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: npm
+    directory: /tests/e2e
+    schedule: {interval: weekly, day: monday}
+    open-pull-requests-limit: 5
+    cooldown: {default-days: 7}
+    groups:
+      npm-e2e: {patterns: ["*"], update-types: [minor, patch]}
+    labels: [dependencies, "area:ui"]
+    commit-message: {prefix: deps, include: scope}
+
+  - package-ecosystem: npm
+    directory: /tests/e2e
+    target-branch: 1.2.x
+    schedule: {interval: weekly, day: monday}
+    open-pull-requests-limit: 5
+    cooldown: {default-days: 7}
+    groups:
+      npm-e2e-1-2-x: {patterns: ["*"], update-types: [minor, patch]}
+    labels: [dependencies, "area:ui", 1.2.x]
+    commit-message: {prefix: deps, include: scope}
+
+  - package-ecosystem: composer
+    directory: /tests
+    target-branch: 1.2.x
+    schedule: {interval: weekly, day: monday}
+    open-pull-requests-limit: 5
+    cooldown: {default-days: 7}
+    groups:
+      composer-tests-1-2-x: {patterns: ["*"], update-types: [minor, patch]}
+    labels: [dependencies, composer, 1.2.x]
     commit-message: {prefix: deps, include: scope}
