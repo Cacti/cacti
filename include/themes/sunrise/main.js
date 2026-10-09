@@ -36,7 +36,7 @@ function themeReady() {
 	$('#navigation_right').unbind().scroll(function (event) {
         var scroll_position_x = $('#navigation_right').scrollLeft();
         var scroll_position_y = $('#navigation_right').scrollTop();
-        $('.bottom_scroll_up').css({'color': ((scroll_position_x == 0 & scroll_position_y == 0) ? '' : '#93CEFF') });
+        $('.bottom_scroll_up').css({'color': ((scroll_position_x == 0 && scroll_position_y == 0) ? '' : '#93CEFF') });
     });
 
 	// Add nice search filter to filters

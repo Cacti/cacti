@@ -716,7 +716,7 @@ function initStorageItem(name, default_value, data_attribute= '') {
 
 function themeLoader(state='off', force = false) {
 	if (state === 'on') {
-		if (getDocumentAttribute('data-theme-state') !== 'ready' | force === true) {
+		if (getDocumentAttribute('theme-state') !== 'ready' || force === true) {
 			setDocumentAttribute('theme-state', 'loading');
 		}
 	} else {
@@ -1008,7 +1008,7 @@ function getFullscreenElement() {
 function toggleFullscreen(element = false){
 	if(getFullscreenElement()){
 		if(element === false) {
-			document.exitFullscreen();
+			document.exitFullscreen().catch(console.log);
 		}else {
 			document.documentElement.requestFullscreen().catch(console.log);
 		}
