@@ -35,7 +35,7 @@ function functionAt(source, start) {
 		if (source[offset] === '{') depth++;
 		if (source[offset] === '}' && --depth === 0) return source.slice(start, offset + 1);
 	}
-	throw new Error(`Unclosed production function ${name}`);
+	throw new Error(`Unclosed production function at offset ${start}`);
 }
 
 function load(file, names, globals) {
