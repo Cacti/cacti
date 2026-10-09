@@ -11,6 +11,9 @@ inputs:
   extensions:
     description: Comma-separated PHP extensions to enable.
     default: ''
+  ini-values:
+    description: Comma-separated php.ini settings.
+    default: ''
   dependency-mode:
     description: Stable cache namespace for the dependency contract.
     default: locked
@@ -30,6 +33,7 @@ runs:
         php-version: ${{ inputs.php-version }}
         coverage: ${{ inputs.coverage }}
         extensions: ${{ inputs.extensions }}
+        ini-values: ${{ inputs.ini-values }}
         tools: composer:2.10.2
 
     - name: Resolve Composer cache directory
