@@ -150,6 +150,13 @@ jobs:
 
     - name: Check PHP version
       run: php -v
+
+    # Install as the runner before Apache setup transfers ownership to www-data.
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+
+    - name: Install dependencies
+      run: composer install --no-interaction --no-progress --prefer-dist
       
     - name: Checkout Thold Plugin
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -261,12 +268,6 @@ jobs:
 
     - name: Restart Apache2
       run: sudo systemctl restart apache2
-
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
-
-    - name: Install dependencies
-      run: composer install --no-interaction --no-progress --prefer-dist
 
     - name: Create and Initialize Database
       env:
