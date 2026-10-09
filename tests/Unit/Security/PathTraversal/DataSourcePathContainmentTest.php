@@ -60,6 +60,19 @@ test('a not-yet-created file under the RRA directory is still contained', functi
 	expect(data_source_path_within_rra(data_source_path_test_base() . '/1/new_ds.rrd'))->toBeTrue();
 });
 
+test('redundant slashes from a trailing-slash path_rra are contained, not an escape', function () use ($rra_ready) : void {
+	if (!$rra_ready) {
+		$this->markTestSkipped('CACTI_PATH_RRA does not resolve to a directory this process can create fixtures under');
+	}
+
+	// A path_rra saved with a trailing slash makes the '<path_rra>/' -> rra . '/'
+	// expansion produce a doubled slash (rra//0/x.rrd); the file is still inside
+	// the RRA directory and must not be reported as escaping it.
+	expect(data_source_path_within_rra(data_source_path_test_base() . '//host_ds.rrd'))->toBeTrue()
+		->and(data_source_path_within_rra(data_source_path_test_base() . '//1/host_ds.rrd'))->toBeTrue()
+		->and(data_source_path_within_rra(data_source_path_test_base() . '/1//new_ds.rrd'))->toBeTrue();
+});
+
 test('an absolute path elsewhere is rejected', function () : void {
 	expect(data_source_path_within_rra('/var/www/html/cacti/resource/x.php'))->toBeFalse()
 		->and(data_source_path_within_rra('/tmp/x.rrd'))->toBeFalse();
@@ -68,6 +81,11 @@ test('an absolute path elsewhere is rejected', function () : void {
 test('traversal out of the RRA directory is rejected', function () : void {
 	expect(data_source_path_within_rra(data_source_path_test_base() . '/../resource/x.rrd'))->toBeFalse()
 		->and(data_source_path_within_rra(data_source_path_test_base() . '/a/../../etc/x'))->toBeFalse();
+});
+
+test('traversal is still rejected when wrapped in redundant slashes', function () : void {
+	expect(data_source_path_within_rra(data_source_path_test_base() . '//..//resource/x.rrd'))->toBeFalse()
+		->and(data_source_path_within_rra(data_source_path_test_base() . '/a//..//../etc/x'))->toBeFalse();
 });
 
 test('a relative path or a lookalike prefix is rejected', function () : void {
