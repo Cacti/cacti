@@ -23,6 +23,14 @@ on:
       - include/realtime.js
       - include/themes/midwinter/main.js
       - include/themes/sunrise/main.js
+      - graphs.php
+      - graphs_items.php
+      - graphs_new.php
+      - aggregate_graphs.php
+      - data_debug.php
+      - data_sources.php
+      - rrdcheck.php
+      - rrdcleaner.php
       - tests/integration/**
       - tests/e2e/**
       - .github/workflows/csp-e2e.yml
@@ -164,6 +172,12 @@ jobs:
       - name: Run Playwright suite (core CSP)
         working-directory: tests/e2e
         run: node node_modules/@playwright/test/cli.js test tests/csp.spec.ts
+
+      - name: Run graph and data filter accessibility regressions
+        working-directory: tests/e2e
+        run: |
+          docker compose exec -T php php cli/add_device.php --description="E2E filter device" --ip=127.0.0.1 --template=0 --version=0 --avail=none --disable=1
+          node ./node_modules/@playwright/test/cli.js test tests/graph-data-filters.spec.ts
 
       - name: Run Playwright suite (plugin CSP -- thold + monitor)
         working-directory: tests/e2e
