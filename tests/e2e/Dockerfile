@@ -78,6 +78,11 @@ RUN set -eux; \
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
+RUN printf '%s\n' '[www]' 'ping.path = /ping' > /usr/local/etc/php-fpm.d/zz-cacti-health.conf
+
+HEALTHCHECK --interval=10s --timeout=5s --start-period=20s --retries=3 \
+    CMD SCRIPT_NAME=/ping SCRIPT_FILENAME=/ping REQUEST_METHOD=GET \
+        cgi-fcgi -bind -connect 127.0.0.1:9000 | grep -q '^pong$'
 
 WORKDIR /var/www/html/cacti
 
