@@ -2272,7 +2272,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 	if ($theme == 'classic' || !read_config_option('autocomplete_enabled')) {
 		?>
 		<td>
-			<?php print __('Device');?>
+			<label for='host_id'><?php print __('Device');?></label>
 		</td>
 		<td>
 			<select id='host_id' name='host_id'>

@@ -149,16 +149,16 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	<tr class='even'>
 		<td>
 			<form method='post' id='form_automation_host' action='<?php print html_escape($url);?>'>
-				<table class='filterTable'>
+				<table role='presentation' class='filterTable'>
 					<tr>
 						<td>
-							<?php print __('Search');?>
+							<label for='filterd'><?php print __('Search');?></label>
 						</td>
 						<td>
 							<input type='text' class='ui-state-default ui-corner-all' id='filterd' size='25' value='<?php print html_escape_request_var('filterd');?>'>
 						</td>
 						<td>
-							<?php print __('Type');?>
+							<label for='host_template_id'><?php print __('Type');?></label>
 						</td>
 						<td>
 							<select id='host_template_id'>
@@ -452,10 +452,10 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	<tr class='even'>
 		<td>
 			<form id='form_graphs' action='<?php print html_escape($url);?>'>
-				<table class='filterTable'>
+				<table role='presentation' class='filterTable'>
 					<tr>
 						<td>
-							<?php print __('Device');?>
+							<label for='host_id'><?php print __('Device');?></label>
 						</td>
 						<td>
 							<select id='host_id'>
@@ -500,7 +500,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 						</td>
 					</tr>
 				</table>
-				<table class='filterTable'>
+				<table role='presentation' class='filterTable'>
 					<tr>
 						<td>
 							<?php print __('Search');?>
@@ -1117,16 +1117,16 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	?>
 	<tr class='even'>
 		<td>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
+						<label for='filter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Type');?>
+						<label for='host_template_id'><?php print __('Type');?></label>
 					</td>
 					<td>
 						<select id='host_template_id'>

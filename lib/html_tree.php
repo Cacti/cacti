@@ -1122,16 +1122,16 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	<tr class='even noprint' id='search'>
 		<td class='noprint'>
 		<form id='form_graph_view' method='post'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
+						<label for='rfilter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='55' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 					<td>
-						<?php print __('Template');?>
+						<label for='graph_template_id'><?php print __('Template');?></label>
 					</td>
 					<td>
 						<select id='graph_template_id' multiple class='select2-multi-count'
@@ -1182,7 +1182,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<td id='text'></td>
 				</tr>
 			</table>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Graphs');?>
@@ -1225,7 +1225,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	<tr class='even noprint'>
 		<td class='noprint'>
 		<form name='form_timespan_selector' method='post' action='<?php print $config['url_path'];?>graph_view.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr id='timespan'>
 					<td>
 						<?php print __('Presets');?>
@@ -1289,7 +1289,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					</td>
 				</tr>
 			</table>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr id='realtime' style='display:none;'>
 					<td>
 						<?php print __('Window');?>
