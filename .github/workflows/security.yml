@@ -38,6 +38,9 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Set up Docker with the public registry cache
+        uses: ./.github/actions/setup-ci-docker
+
       - name: Run Semgrep
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
