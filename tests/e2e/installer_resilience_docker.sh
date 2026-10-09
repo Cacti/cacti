@@ -195,6 +195,7 @@ VERSION_STATUS=$?
 set -e
 printf '%s\n' "$VERSION_OUTPUT"
 [ "$VERSION_STATUS" -ne 0 ] || fail 'installer ignored a rejected version write'
+[ "$(db_cacti -e "SELECT COUNT(*) FROM processes WHERE tasktype = 'install' AND taskname = 'master';")" -eq 0 ] || fail 'failed installer retained its process registration'
 [ "$(db_cacti -e 'SELECT cacti FROM version;')" = 'new_install' ] || fail 'failed version transaction did not roll back'
 
 printf 'Scenario: incomplete schema fails closed in CLI mode\n'
@@ -206,6 +207,7 @@ CLI_STATUS=$?
 set -e
 printf '%s\n' "$CLI_OUTPUT"
 [ "$CLI_STATUS" -ne 0 ] || fail 'CLI installer accepted an incomplete schema'
+[ "$(db_cacti -e "SELECT COUNT(*) FROM processes WHERE tasktype = 'install' AND taskname = 'master';")" -eq 0 ] || fail 'schema validation failure retained its process registration'
 grep -q 'user_auth_row_cache' <<< "$CLI_OUTPUT" || fail 'CLI failure did not identify the missing table'
 [ "$(db_cacti -e 'SELECT cacti FROM version;')" = 'new_install' ] || fail 'failed install advanced the version row'
 
@@ -223,5 +225,12 @@ set -e
 printf '%s\n' "$BACKGROUND_OUTPUT"
 [ "$BACKGROUND_STATUS" -ne 0 ] || fail 'background installer accepted an incomplete schema'
 [ "$(db_cacti -e "SELECT value FROM settings WHERE name = 'install_step';")" = '99' ] || fail 'background failure did not preserve STEP_ERROR'
+
+for scenario in domain-read ldap-read count-read upgrade-warning cli-failure composer-failure installer-lock; do
+	printf 'Scenario: %s\n' "$scenario"
+	reset_database "$REPO_DIR/cacti.sql"
+	docker exec -e CACTI_INSTALLER_FAILURE_FIXTURE=1 "$WEB_CONTAINER" \
+		php /var/www/html/cacti/tests/e2e/installer_failure_paths.php "$scenario"
+done
 
 printf 'PASS installer unit/integration Docker matrix\n'

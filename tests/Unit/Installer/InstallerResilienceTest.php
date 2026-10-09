@@ -119,7 +119,7 @@ test('installer command-line adapters propagate failures and release locks', fun
 		->and($installer)->toContain("['bypass_shell' => true]")
 		->and($import)->toContain('if (file_exists($filename) && !unlink($filename)) {')
 		->and($utility)->toContain('is_file($config_file) && is_readable($config_file)')
-		->and(substr_count($installer, 'shell_exec('))->toBe(4)
+		->and(substr_count($installer, 'shell_exec('))->toBe(2)
 		->and($installer)->not->toContain("cacti_escapeshellarg(CACTI_PATH_CLI . '/add_tree.php')")
 		->and($installer)->not->toContain("cacti_escapeshellarg(CACTI_PATH_CLI . '/convert_tables.php')");
 });

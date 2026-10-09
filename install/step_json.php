@@ -29,6 +29,15 @@ ob_start();
 define('IN_CACTI_INSTALL', 1);
 chdir(__DIR__ . '/../');
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+	http_response_code(405);
+	header('Allow: POST');
+	header('Content-Type: application/json');
+	print json_encode(['error' => 'Method not allowed']);
+
+	exit;
+}
+
 // set the json variable for request validation handling
 include_once('lib/functions.php');
 include_once('lib/html_utility.php');
@@ -62,7 +71,7 @@ if (isrv('data') && gnrv('data')) {
 $json_level = log_install_level('json',POLLER_VERBOSITY_NONE);
 log_install_high('json','Start: ' . clean_up_lines(json_encode($initialData)));
 
-$initialData = array_merge(['Runtime' => 'Web'], $initialData);
+$initialData['Runtime'] = 'Web';
 
 if (isset($initialData['step']) && $initialData['step'] == Installer::STEP_TEST_REMOTE) {
 	$json       = install_test_remote_database_connection();
