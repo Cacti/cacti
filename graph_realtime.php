@@ -375,7 +375,8 @@ if (read_config_option('realtime_enabled') == '') {
 $selectedTheme = get_selected_theme();
 
 ?>
-<html>
+<!DOCTYPE html>
+<html lang='<?php print CACTI_LOCALE;?>'>
 <head>
 	<?php html_common_header(__('Cacti Real-time Graphing'));?>
     <?php include($config['base_path'] . '/include/global_session.php'); ?>
