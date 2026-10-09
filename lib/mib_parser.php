@@ -56,13 +56,13 @@ class MibParser extends MibCache {
 	/**
 	 * Constructor
 	 */
-	function __construct() {
+	public function __construct() {
 		set_time_limit(0);
 		ini_set('memory_limit', '-1');
 		error_reporting(E_ALL);
 	}
 
-	function add_mib($filename, $mib_name) {
+	public function add_mib($filename, $mib_name) {
 		MibParser::parse_mib(file_get_contents($filename), $mib_name, true);
 	}
 
@@ -72,7 +72,7 @@ class MibParser extends MibCache {
 	 * @param string $text
 	 * @return array
 	 */
-	function get_tokens($text) {
+	public function get_tokens($text) {
 		$in_quote = false;
 		$in_comment = false;
 		$token = '';
@@ -191,7 +191,7 @@ class MibParser extends MibCache {
 	 * @param array $allowed
 	 * @return array
 	 */
-	function parse_simple_token($tokens, &$index, $allowed=null) {
+	public function parse_simple_token($tokens, &$index, $allowed=null) {
 		$index++;
 
 		if (is_array($allowed)) {
@@ -218,7 +218,7 @@ class MibParser extends MibCache {
 	 * @param integer $index
 	 * @return array
 	 */
-	function parse_SYNTAX_token($tokens, &$index) {
+	public function parse_SYNTAX_token($tokens, &$index) {
 		$ret = null;
 
 		switch($tokens[$index+1]) {
@@ -311,7 +311,7 @@ class MibParser extends MibCache {
 	 * @param integer $end
 	 * @return array
 	 */
-	function parse_bracket_token($tokens, &$index, $start, $end) {
+	public function parse_bracket_token($tokens, &$index, $start, $end) {
 		$begin = $index + 1;
 
 		while($index + 1 < count($tokens) && $tokens[$index] != $end) {
@@ -332,7 +332,7 @@ class MibParser extends MibCache {
 	 * @param string $mibtext
 	 * @param boolean $full
 	 */
-	function parse_mib($mibtext, $mib_name, $full=false) {
+	public function parse_mib($mibtext, $mib_name, $full=false) {
 		$tokens = MibParser::get_tokens($mibtext);
 		$cnt = count($tokens);
 		$rec = array();
@@ -418,7 +418,7 @@ class MibParser extends MibCache {
 		}
 	}
 
-	function generate(){
+	public function generate(){
 		$this->oids['enterprises'] = array('oid' => '.1.3.6.1.4.1');
 
 		foreach($this->parsed as $object) {
