@@ -3168,13 +3168,21 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 }
 
 /**
- * substitute_script_path - performs a single-pass substitution of <field> tokens
- * in a data-input command template using pre-escaped values.
+ * substitute_script_path - performs a single-pass, quote-aware substitution of
+ * <field> tokens in a data-input command template using pre-escaped values.
  *
  * Each <name> token in the ORIGINAL template is replaced at most once from the
  * supplied map; substituted values are never re-scanned, so a field whose value
  * contains another field's <token> cannot splice an already-escaped payload into
  * a neighbouring quoted region (second-order breakout, GHSA-fq9x-x3vf-3vf2).
+ *
+ * The scanner tracks the template's own shell-quoting state so a resolved value -
+ * which cacti_escapeshellarg() has already wrapped in its own quotes - is never
+ * left sitting inside a quote the template introduced. A token the template wraps
+ * exactly ("<arg>" or '<arg>') simply sheds that pair; a token embedded anywhere
+ * else inside a quoted word ("prefix<arg>", "<arg>suffix", "<a><b>") has the
+ * template's quoting briefly closed around the value, so $(...)/backticks in the
+ * value cannot be re-interpreted by an outer double quote (GHSA-5v3j-wcrr-jxjg).
  *
  * @param string $template       The command template containing <field> tokens
  * @param array  $escaped_values Map of field name => already-escaped value
@@ -3183,11 +3191,89 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
  *                tokens are left intact for the caller's trailing cleanup to strip
  */
 function substitute_script_path(string $template, array $escaped_values) : string {
-	return preg_replace_callback('/(["\'])?<([A-Za-z0-9_]+)>(?(1)\1)/',
-		function (array $matches) use ($escaped_values) : string {
-			return array_key_exists($matches[2], $escaped_values) ? $escaped_values[$matches[2]] : $matches[0];
-		},
-		$template) ?? '';
+	$out        = '';
+	$len        = strlen($template);
+	$quote      = '';    // active shell quote char the template opened ('', '"' or "'")
+	$quoteEmpty = false; // true while the open quote has emitted no content yet
+	$i          = 0;
+
+	while ($i < $len) {
+		$ch = $template[$i];
+
+		if ($ch === '<' && preg_match('/\G<([A-Za-z0-9_]+)>/', $template, $m, 0, $i)) {
+			$tokenLen = strlen($m[0]);
+
+			if (array_key_exists($m[1], $escaped_values)) {
+				$value = $escaped_values[$m[1]];
+
+				if ($quote === '') {
+					$out .= $value;
+				} elseif ($quoteEmpty && ($i + $tokenLen) < $len && $template[$i + $tokenLen] === $quote) {
+					// template wrapped the token exactly ("<arg>"): drop the pair
+					// so the already-escaped value stands on its own
+					$out   = substr($out, 0, -1);
+					$out  .= $value;
+					$i    += 1;
+					$quote = '';
+				} else {
+					// token sits inside a larger quoted word: close the template's
+					// quoting around the value so it cannot be re-interpreted
+					$out .= $quote . $value . $quote;
+				}
+
+				$i          += $tokenLen;
+				$quoteEmpty  = false;
+				continue;
+			}
+
+			// unknown token: leave intact for the caller's trailing cleanup
+			$out        .= $m[0];
+			$i          += $tokenLen;
+			$quoteEmpty  = false;
+			continue;
+		}
+
+		if ($quote === '') {
+			if ($ch === '"' || $ch === "'") {
+				$quote      = $ch;
+				$quoteEmpty = true;
+				$out       .= $ch;
+				$i++;
+				continue;
+			}
+
+			if ($ch === '\\' && $i + 1 < $len) {
+				$out .= $ch . $template[$i + 1];
+				$i   += 2;
+				continue;
+			}
+		} elseif ($quote === '"') {
+			if ($ch === '"') {
+				$quote = '';
+				$out  .= $ch;
+				$i++;
+				continue;
+			}
+
+			if ($ch === '\\' && $i + 1 < $len) {
+				$out        .= $ch . $template[$i + 1];
+				$i          += 2;
+				$quoteEmpty  = false;
+				continue;
+			}
+		} elseif ($ch === "'") { // inside a single-quoted region
+			$quote = '';
+			$out  .= $ch;
+			$i++;
+			continue;
+		}
+
+		$out        .= $ch;
+		$quoteEmpty  = false;
+		$i++;
+	}
+
+	return $out;
 }
 
 /**

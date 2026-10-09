@@ -67,25 +67,12 @@ test('GHSA-54fg: the import-time repo fetch routes remote reads through cacti_ht
 // GHSA-5v3j: quote-aware <field> substitution
 // =====================================================================
 
-test('GHSA-5v3j: substitute_script_path consumes matched surrounding quotes', function () use ($functionsSource) {
-	expect($functionsSource)->toContain('>(?(1)')
-		->and($functionsSource)->toContain('array_key_exists($matches[2], $escaped_values)')
-		->and($functionsSource)->not->toContain('array_key_exists($matches[1], $escaped_values)');
+test('GHSA-5v3j: substitute_script_path is quote-aware and closes template quoting around values', function () use ($functionsSource) {
+	expect($functionsSource)->toContain("preg_match('/\\G<([A-Za-z0-9_]+)>/'")
+		->and($functionsSource)->toContain('$out .= $quote . $value . $quote;')
+		->and($functionsSource)->not->toContain('>(?(1)')
+		->and($functionsSource)->not->toContain('array_key_exists($matches[2], $escaped_values)');
 });
-
-/*
- * Behavioral proof. The unit bootstrap loads lib/functions.php via
- * include/global.php, so substitute_script_path() is normally already defined;
- * extract-and-eval from this repo's own source is a fallback only. Input is
- * this repo's source, never user input.
- */
-if (!function_exists('substitute_script_path')) {
-	preg_match('/\nfunction substitute_script_path\b.*?\n\}/s', "\n" . $functionsSource, $sspMatch);
-
-	if (!empty($sspMatch)) {
-		eval($sspMatch[0]);
-	}
-}
 
 test('GHSA-5v3j: a double-quoted placeholder sheds the quotes so the value cannot break out', function () {
 	expect(function_exists('substitute_script_path'))->toBeTrue();
@@ -96,6 +83,16 @@ test('GHSA-5v3j: a double-quoted placeholder sheds the quotes so the value canno
 	expect(substitute_script_path('"<arg1>"', ['arg1' => $esc]))->toBe($esc)
 		->and(substitute_script_path("'<arg1>'", ['arg1' => $esc]))->toBe($esc)
 		->and(substitute_script_path('<arg1>', ['arg1' => $esc]))->toBe($esc);
+});
+
+test('GHSA-5v3j: a token embedded in a larger quoted word keeps the value safely quoted', function () {
+	$esc = "'" . '$(id)' . "'";
+
+	// the template's quoting is closed around the already-escaped value, so an
+	// outer double quote cannot re-enable $(...) / backticks inside it
+	expect(substitute_script_path('"prefix<arg1>"', ['arg1' => $esc]))->toBe('"prefix"' . $esc . '""')
+		->and(substitute_script_path('"<arg1>suffix"', ['arg1' => $esc]))->toBe('""' . $esc . '"suffix"')
+		->and(substitute_script_path('"a<arg1>b"', ['arg1' => $esc]))->toBe('"a"' . $esc . '"b"');
 });
 
 test('GHSA-5v3j: an unknown token keeps its literal form and quotes', function () {
