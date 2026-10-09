@@ -60,3 +60,14 @@ test('GHSA-5v3j: an unknown token keeps its literal form and quotes', function (
 test('GHSA-5v3j: single-pass fq9x behaviour is retained', function () {
 	expect(substitute_script_path('<f>', ['f' => '<g>', 'g' => 'PWN']))->toBe('<g>');
 });
+
+test('GHSA-5v3j: a trusted raw path token keeps the template quoting (not shell-escaped)', function () {
+	// the path_* tokens resolve to raw, un-escaped config values. A template that
+	// quotes one must keep those quotes so a path containing spaces survives the
+	// shell, while a bare path token stays unquoted so the PHP script server can
+	// resolve the included file as a filesystem path.
+	expect(substitute_script_path('"<path_php_binary>"', ['path_php_binary' => '/opt/php 8/bin/php']))->toBe('"/opt/php 8/bin/php"')
+		->and(substitute_script_path('<path_cacti>/scripts/ss_foo.php', ['path_cacti' => '/var/www/html']))->toBe('/var/www/html/scripts/ss_foo.php')
+		->and(substitute_script_path('"<path_cacti>/scripts/ss_foo.php"', ['path_cacti' => '/var/www/html']))->toBe('"/var/www/html/scripts/ss_foo.php"');
+});
+

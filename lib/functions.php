@@ -3178,11 +3178,18 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
  *
  * The scanner tracks the template's own shell-quoting state so a resolved value -
  * which cacti_escapeshellarg() has already wrapped in its own quotes - is never
- * left sitting inside a quote the template introduced. A token the template wraps
- * exactly ("<arg>" or '<arg>') simply sheds that pair; a token embedded anywhere
- * else inside a quoted word ("prefix<arg>", "<arg>suffix", "<a><b>") has the
- * template's quoting briefly closed around the value, so $(...)/backticks in the
- * value cannot be re-interpreted by an outer double quote (GHSA-5v3j-wcrr-jxjg).
+ * left sitting inside a quote the template introduced. A self-quoting value the
+ * template wraps exactly ("<arg>" or '<arg>') simply sheds that pair; one embedded
+ * anywhere else inside a quoted word ("prefix<arg>", "<arg>suffix", "<a><b>") has
+ * the template's quoting briefly closed around the value, so $(...)/backticks in
+ * the value cannot be re-interpreted by an outer double quote (GHSA-5v3j-wcrr-jxjg).
+ *
+ * A resolved value that is NOT self-quoting - the trusted path_* tokens resolve to
+ * raw configuration values that the callers do not shell-escape - is substituted
+ * in place so the template keeps its own quotes. That leaves a spaced path such as
+ * "<path_php_binary>" validly quoted for the shell and leaves a bare
+ * <path_cacti>/scripts/x.php unquoted for the PHP script server, which resolves the
+ * first token as a filesystem path rather than through a shell.
  *
  * @param string $template       The command template containing <field> tokens
  * @param array  $escaped_values Map of field name => already-escaped value
@@ -3206,13 +3213,21 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 			if (array_key_exists($m[1], $escaped_values)) {
 				$value = $escaped_values[$m[1]];
 
-				if ($quote === '') {
+				// a value is self-defending only when it carries its own matched
+				// shell quotes (cacti_escapeshellarg() output); trusted raw path_*
+				// values are not, so they keep whatever quoting the template gave
+				$valLen     = strlen($value);
+				$selfQuoted = $valLen >= 2 && ($value[0] === '"' || $value[0] === "'") && $value[$valLen - 1] === $value[0];
+
+				if ($quote === '' || !$selfQuoted) {
+					// outside any template quote, or a raw value: substitute in place
+					// so the template's own quotes (if any) survive around the value
 					$out .= $value;
 				} elseif ($quoteEmpty && ($i + $tokenLen) < $len && $template[$i + $tokenLen] === $quote) {
 					// template wrapped the token exactly ("<arg>"): drop the pair
 					// so the already-escaped value stands on its own
 					$out   = substr($out, 0, -1);
-					$out  .= $value;
+					$out .= $value;
 					$i    += 1;
 					$quote = '';
 				} else {
@@ -3223,13 +3238,15 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 
 				$i          += $tokenLen;
 				$quoteEmpty  = false;
+
 				continue;
 			}
 
 			// unknown token: leave intact for the caller's trailing cleanup
-			$out        .= $m[0];
+			$out .= $m[0];
 			$i          += $tokenLen;
 			$quoteEmpty  = false;
+
 			continue;
 		}
 
@@ -3237,38 +3254,43 @@ function substitute_script_path(string $template, array $escaped_values) : strin
 			if ($ch === '"' || $ch === "'") {
 				$quote      = $ch;
 				$quoteEmpty = true;
-				$out       .= $ch;
+				$out .= $ch;
 				$i++;
+
 				continue;
 			}
 
 			if ($ch === '\\' && $i + 1 < $len) {
 				$out .= $ch . $template[$i + 1];
 				$i   += 2;
+
 				continue;
 			}
 		} elseif ($quote === '"') {
 			if ($ch === '"') {
 				$quote = '';
-				$out  .= $ch;
+				$out .= $ch;
 				$i++;
+
 				continue;
 			}
 
 			if ($ch === '\\' && $i + 1 < $len) {
-				$out        .= $ch . $template[$i + 1];
+				$out .= $ch . $template[$i + 1];
 				$i          += 2;
 				$quoteEmpty  = false;
+
 				continue;
 			}
 		} elseif ($ch === "'") { // inside a single-quoted region
 			$quote = '';
-			$out  .= $ch;
+			$out .= $ch;
 			$i++;
+
 			continue;
 		}
 
-		$out        .= $ch;
+		$out .= $ch;
 		$quoteEmpty  = false;
 		$i++;
 	}
