@@ -28,7 +28,7 @@ if (php_sapi_name() != 'cli') {
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
-if (is_array($argv)) {
+if (isset($argv[1])) {
 	$value = intval($argv[1]);
 	print $value * $value;
 }
