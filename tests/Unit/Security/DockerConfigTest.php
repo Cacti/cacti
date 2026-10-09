@@ -82,3 +82,26 @@ test('Docker configuration writer requires its two CLI arguments', function () {
 	$result = runDockerConfig(array(dockerConfigWriter()));
 	expect($result[0])->not->toBe(0);
 });
+
+test('Docker configuration treats the database port as a PHP string literal', function () {
+	$port = "3306'; throw new RuntimeException('injected'); //";
+	$result = runDockerConfig(array(dockerConfigWriter(), $this->template, $this->config), array('DB_PORT' => $port));
+	expect($result[0])->toBe(0);
+	$read = runDockerConfig(array('-r', 'include $argv[1]; echo json_encode($database_port);', $this->config));
+	expect($read[0])->toBe(0);
+	expect(json_decode($read[1], true))->toBe($port);
+});
+
+test('FPM bootstrap rejects a CSP value that could escape its settings SQL', function () {
+	$process = proc_open(array('bash', __DIR__ . '/../../e2e/entrypoint.sh'),
+		array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')),
+		$pipes, null, array_merge(getenv(), array('CACTI_CSP_MODE' => "nonce'; DROP TABLE settings; --")));
+	fclose($pipes[0]);
+	$output = stream_get_contents($pipes[1]);
+	$error = stream_get_contents($pipes[2]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+	expect(proc_close($process))->not->toBe(0);
+	expect($output)->toBe('');
+	expect($error)->toContain('unsupported CACTI_CSP_MODE');
+});
