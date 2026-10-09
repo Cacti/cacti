@@ -20,6 +20,7 @@ $settings = array(
 	'database_default'  => array('DB_NAME', 'cacti'),
 	'database_username' => array('DB_USER', 'cactiuser'),
 	'database_password' => array('DB_PASS', 'cactiuser'),
+	'database_port'     => array('DB_PORT', '3306'),
 	'url_path'          => array(null, '/'),
 );
 foreach ($settings as $variable => $setting) {

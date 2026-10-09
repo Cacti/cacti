@@ -19,6 +19,11 @@ CSP_MODE="${CACTI_CSP_MODE:-nonce-report}"
 
 log() { printf '[entrypoint] %s\n' "$*" >&2; }
 
+case "$CSP_MODE" in
+    nonce|nonce-report|unsafe-eval) ;;
+    *) log 'unsupported CACTI_CSP_MODE'; exit 1 ;;
+esac
+
 # The minimal e2e image doesn't install every ext-* composer.json declares
 # (e.g. pcntl, posix, sqlite3), so the committed Composer platform check
 # would fail here even though the code paths this harness exercises don't
@@ -45,18 +50,11 @@ if [ ! -f "${config_php}" ] || [ "${FORCE_CONFIG}" = "1" ]; then
     else
         log "creating include/config.php from include/config.php.dist"
     fi
-    cp "${CACTI_ROOT}/include/config.php.dist" "${config_php}"
-    # Rewrite rules tolerate varying whitespace around '=' so they work
-    # against both the .dist (aligned) and hand-edited (single-space)
-    # variants of the template.
-    sed -i -E \
-        -e "s|^(\\\$database_hostname[[:space:]]*=[[:space:]]*)'[^']*';|\\1'${DB_HOST}';|" \
-        -e "s|^(\\\$database_username[[:space:]]*=[[:space:]]*)'[^']*';|\\1'${DB_USER}';|" \
-        -e "s|^(\\\$database_password[[:space:]]*=[[:space:]]*)'[^']*';|\\1'${DB_PASS}';|" \
-        -e "s|^(\\\$database_default[[:space:]]*=[[:space:]]*)'[^']*';|\\1'${DB_NAME}';|" \
-        -e "s|^(\\\$database_port[[:space:]]*=[[:space:]]*)'[^']*';|\\1'${DB_PORT}';|" \
-        -e "s|^(\\\$url_path[[:space:]]*=[[:space:]]*)'[^']*';|\\1'/';|" \
-        "${config_php}"
+    rm -f "${config_php}"
+    export DB_HOST DB_PORT DB_NAME DB_USER DB_PASS
+    php /usr/local/lib/cacti-write-config.php \
+        "${CACTI_ROOT}/include/config.php.dist" "${config_php}"
+    chown www-data:www-data "${config_php}"
 else
     log "include/config.php present; CACTI_FORCE_CONFIG unset. leaving it alone"
 fi
@@ -65,11 +63,14 @@ fi
 #    runtime). Retry for up to ~60s.
 log "waiting for MariaDB at ${DB_HOST}:${DB_PORT}"
 attempt=0
-until php -r "
-\$m = @new mysqli('${DB_HOST}', '${DB_USER}', '${DB_PASS}', '${DB_NAME}', ${DB_PORT});
-if (\$m->connect_errno) { exit(1); }
-exit(0);
-" 2>/dev/null; do
+export DB_HOST DB_PORT DB_NAME DB_USER DB_PASS
+# PHP variables must remain literal shell input; credentials come from getenv.
+# shellcheck disable=SC2016
+until php -r '
+mysqli_report(MYSQLI_REPORT_OFF);
+$m = @new mysqli(getenv("DB_HOST"), getenv("DB_USER"), getenv("DB_PASS"), getenv("DB_NAME"), (int) getenv("DB_PORT"));
+exit($m->connect_errno ? 1 : 0);
+' 2>/dev/null; do
     attempt=$((attempt + 1))
     if [ "${attempt}" -ge 30 ]; then
         log "MariaDB did not become reachable after ${attempt} attempts; aborting"

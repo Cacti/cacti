@@ -77,6 +77,7 @@ RUN set -eux; \
     rm -rf /opt/cacti-plugins/thold/.git /opt/cacti-plugins/monitor/.git
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY docker/write-config.php /usr/local/lib/cacti-write-config.php
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 WORKDIR /var/www/html/cacti
