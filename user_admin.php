@@ -863,7 +863,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table><tr>
+			<td><table role='presentation'><tr>
 			<td class='nowrap'><?php print __('Default Graph Policy for this User');?></td>
 			<td>
 				<?php form_dropdown('policy_graphs',$policy_array,'','',$policy['policy_graphs'],'',''); ?>
@@ -1145,7 +1145,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table><tr>
+			<td><table role='presentation'><tr>
 			<td class='nowrap'><?php print __('Default Device Policy for this User');?></td>
 			<td>
 				<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
@@ -1310,7 +1310,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table><tr>
+			<td><table role='presentation'><tr>
 			<td class='nowrap'><?php print __('Default Graph Template Policy for this User');?></td>
 			<td>
 				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
@@ -1454,7 +1454,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table><tr>
+			<td><table role='presentation'><tr>
 			<td class='nowrap'><?php print __('Default Tree Policy for this User');?></td>
 			<td>
 				<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
@@ -2280,16 +2280,16 @@ function user() {
 	<tr class='even'>
 		<td>
 		<form id='forms' action='user_admin.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
+						<label for='filter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Group');?>
+						<label for='group'><?php print __('Group');?></label>
 					</td>
 					<td>
 						<select id='group'>
@@ -2311,7 +2311,7 @@ function user() {
 						</select>
 					</td>
 					<td>
-						<?php print __('Last Login');?>
+						<label for='login'><?php print __('Last Login');?></label>
 					</td>
 					<td>
 						<select id='login'>
@@ -2325,7 +2325,7 @@ function user() {
 						</select>
 					</td>
 					<td>
-						<?php print __('Realm');?>
+						<label for='realm'><?php print __('Realm');?></label>
 					</td>
 					<td>
 						<select id='realm'>
@@ -2337,7 +2337,7 @@ function user() {
 						</select>
 					</td>
 					<td>
-						<?php print __('Users');?>
+						<label for='rows'><?php print __('Users');?></label>
 					</td>
 					<td>
 						<select id='rows'>
@@ -2763,16 +2763,16 @@ function graph_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id='forms' action='user_admin.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
+						<label for='filter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Template');?>
+						<label for='graph_template_id'><?php print __('Template');?></label>
 					</td>
 					<td>
 						<select id='graph_template_id'>
