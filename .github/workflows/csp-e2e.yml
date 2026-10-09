@@ -19,6 +19,16 @@ on:
       - include/global.php
       - include/global_settings.php
       - csp_report.php
+      - cdef.php
+      - color.php
+      - data_input.php
+      - data_queries.php
+      - data_source_profiles.php
+      - data_templates.php
+      - gprint_presets.php
+      - graph_templates.php
+      - vdef.php
+      - host_templates.php
       - tests/integration/**
       - tests/e2e/**
       - .github/workflows/csp-e2e.yml
@@ -160,6 +170,15 @@ jobs:
       - name: Run Playwright suite (core CSP)
         working-directory: tests/e2e
         run: node node_modules/@playwright/test/cli.js test tests/csp.spec.ts
+
+      - name: Run template filter accessibility regressions
+        working-directory: tests/e2e
+        run: |
+          docker compose exec -T php php cli/import_package.php --filename=install/templates/Generic_SNMP_Device.xml.gz
+          # The package carries resource/script copies. Keep the application
+          # under test identical to the checkout after seeding its DB records.
+          git -C ../.. restore --source=HEAD --worktree -- scripts/ss_hstats.php scripts/ping.pl resource/snmp_queries/interface.xml
+          node ./node_modules/@playwright/test/cli.js test tests/template-filter-labels.spec.ts
 
       - name: Run Playwright suite (plugin CSP -- thold + monitor)
         working-directory: tests/e2e
