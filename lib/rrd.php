@@ -2013,8 +2013,8 @@ function rrdtool_function_fetch(int $local_data_id, int $start_time, int $end_ti
 	$command = (new \Cacti\Rrd\DataSource\FetchCommandBuilder())->build(
 		$data_source_path,
 		$cf,
-		$start_time,
-		$end_time,
+		$normalized_start_time,
+		$normalized_end_time,
 		$resolution
 	);
 
