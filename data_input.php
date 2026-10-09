@@ -856,16 +856,16 @@ function data() {
 	<tr class='even noprint'>
 		<td class='noprint'>
 		<form id='form_data_input' method='get' action='data_input.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr class='noprint'>
 					<td>
-						<?php print __('Search');?>
+						<label for='filter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Input Methods');?>
+						<label for='rows'><?php print __('Input Methods');?></label>
 					</td>
 					<td>
 						<select id='rows' name='rows'>

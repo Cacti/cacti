@@ -793,16 +793,16 @@ function vdef_filter() {
 	<tr class='even'>
 		<td>
 			<form id='form_vdef' action='vdef.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
+						<label for='filter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('VDEFs');?>
+						<label for='rows'><?php print __('VDEFs');?></label>
 					</td>
 					<td>
 						<select id='rows'>

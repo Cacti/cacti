@@ -803,7 +803,7 @@ function data_query_item_edit() {
 						form_alternate_row();
 						?>
 						<td>
-							<table>
+							<table role='presentation'>
 								<tr>
 									<td style='width:200px;'>
 										<?php print __('Data Source');?>
@@ -912,16 +912,16 @@ function data_query_item_edit() {
 		form_alternate_row();
 		?>
 		<td colspan='4'>
-			<table>
+			<table role='presentation'>
 				<tr>
 					<td class='nowrap'>
-						<?php print __('Field Name');?>
+						<label for='svg_field'><?php print __('Field Name');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='svg_field' size='15'>
 					</td>
 					<td class='nowrap'>
-						<?php print __('Suggested Value');?>
+						<label for='svg_text'><?php print __('Suggested Value');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='svg_text' size='60'>
@@ -1020,7 +1020,7 @@ function data_query_item_edit() {
 				form_alternate_row();
 				?>
 				<td colspan='4'>
-					<table>
+					<table role='presentation'>
 						<tr>
 							<td class='nowrap'>
 								<?php print __('Field Name');?>
@@ -1405,16 +1405,16 @@ function data_query() {
 	<tr class='even noprint'>
 		<td class='noprint'>
 		<form id='form_data_queries' method='get' action='data_queries.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr class='noprint'>
 					<td>
-						<?php print __('Search');?>
+						<label for='filter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Data Queries');?>
+						<label for='rows'><?php print __('Data Queries');?></label>
 					</td>
 					<td>
 						<select id='rows' name='rows'>
