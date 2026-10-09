@@ -451,16 +451,16 @@ function template() {
 	<tr class='even'>
 		<td>
 			<form id='form_at' action='automation_templates.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
+						<label for='filter'><?php print __('Search');?></label>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Templates');?>
+						<label for='rows'><?php print __('Templates');?></label>
 					</td>
 					<td>
 						<select id='rows'>
