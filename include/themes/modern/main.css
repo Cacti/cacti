@@ -882,7 +882,6 @@ ul#breadcrumbs {
 	border-color: #f5f5f5 #e5e5e5 #ccc;
 	border-radius: 5px;
 	white-space: nowrap;
-	max-width: 100%;
 	box-shadow: 0 0 2px rgba(0,0,0,.2);
 	overflow: hidden;
 	max-width: 60%;
@@ -1025,19 +1024,18 @@ ul#breadcrumbs {
 	border-radius: 10px;
 	position: relative;
 	padding: 30px 0px 5px 20px;
-	background-color: snow;
 	top: 30%;
 	max-width: 360px;
 	max-height: 300px;
 	margin-left: auto;
 	margin-right: auto;
-	background: rgba(255,255,255,1);
-	background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(47%, rgba(246,246,246,1)), color-stop(100%, rgba(237,237,237,1)));
-	background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-	background: -o-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-	background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-	background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+	background-color: rgba(255,255,255,1);
+	background-image: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+	background-image: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(47%, rgba(246,246,246,1)), color-stop(100%, rgba(237,237,237,1)));
+	background-image: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+	background-image: -o-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+	background-image: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+	background-image: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
 	text-shadow: 1px 1px 1px rgba(9, 61, 16, 0.66);
 }
 
@@ -1393,7 +1391,6 @@ legend {
 }
 
 .cactiTable {
-	display: table;
 	width: 100%;
 	margin-left: auto;
 	margin-right: auto;
@@ -1930,7 +1927,7 @@ legend {
 	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 }
 
-.navBarNavigation a, navBarNavigation a:hover, navBarNavigation a:visited {
+.navBarNavigation a, .navBarNavigation a:hover, .navBarNavigation a:visited {
 	color: white;
 	font-weight: normal !important;
 }
@@ -2669,7 +2666,7 @@ tr#realtime td:first-child {
 }
 
 .code {
-	font-family: Consolas, Courier New;
+	font-family: Consolas, "Courier New", monospace;
 	font-size: 0.8em;
 	padding: 5px 15px 5px 15px;
 	background: #dfdfdf;
@@ -3141,7 +3138,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 /* open/close carets as glyphs, centered to match the node glyphs */
 .jstree-default .jstree-ocl {
 	background: none !important;
-	font-family: 'Font Awesome 5 Free';
+	font-family: 'Font Awesome 5 Free', sans-serif;
 	font-weight: 900;
 	font-size: 14px;
 	line-height: 20px;

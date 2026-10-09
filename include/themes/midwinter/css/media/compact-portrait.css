@@ -226,7 +226,7 @@ html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem:hover {
 }
 
 html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem span{
-    #TODO: color
+    /* TODO: color */
 }
 
 html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem:hover span {
