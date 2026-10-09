@@ -3457,7 +3457,9 @@ function get_data_source_path(int $local_data_id, bool $expand_paths) : string {
  * Containment is both lexical and realpath-based: the path must sit under
  * CACTI_PATH_RRA with no parent-reference segment, and no existing ancestor
  * segment may be a symlink that pivots the resolved location outside the RRA
- * tree. The final RRD file itself is allowed not to exist yet, mirroring
+ * tree. Redundant and trailing slashes (e.g. a path_rra setting saved with a
+ * trailing slash) are normalised first so they are not mistaken for an escape.
+ * The final RRD file itself is allowed not to exist yet, mirroring
  * validate_relative_path_within()'s handling of not-yet-created files.
  *
  * @param string $path The expanded data source path
@@ -3469,8 +3471,18 @@ function data_source_path_within_rra(string $path) : bool {
 		return false;
 	}
 
-	$base   = str_replace('\\', '/', CACTI_PATH_RRA);
-	$target = str_replace('\\', '/', $path);
+	/* Collapse repeated slashes and drop any trailing slash from the RRA root
+	 * before comparing. A path_rra setting saved with a trailing slash makes
+	 * CACTI_PATH_RRA end in '/', so the '<path_rra>/' -> CACTI_PATH_RRA . '/'
+	 * expansion every consumer performs yields '<rra>//0/x.rrd'. The doubled
+	 * slash is an empty path segment, not a traversal, so normalise it here
+	 * instead of rejecting a legitimate file as escaping the RRA directory. */
+	$base   = rtrim((string) preg_replace('#/+#', '/', str_replace('\\', '/', (string) CACTI_PATH_RRA)), '/');
+	$target = (string) preg_replace('#/+#', '/', str_replace('\\', '/', $path));
+
+	if ($base === '' || $target === '') {
+		return false;
+	}
 
 	if (strncmp($target, $base . '/', strlen($base) + 1) !== 0) {
 		return false;
