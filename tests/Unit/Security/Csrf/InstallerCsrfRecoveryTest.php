@@ -44,7 +44,7 @@ test('successful installer json responses roll the csrf token forward', function
 		->and($stepJson)->toContain("header('Cache-Control: no-store')")
 		->and($stepJson)->toContain("header('X-Content-Type-Options: nosniff')")
 		->and(strpos($stepJson, "\$response['csrfMagicToken'] = csrf_get_tokens();"))
-		->toBeLessThan(strpos($stepJson, "header('Content-Type: application/json')"));
+		->toBeLessThan(strrpos($stepJson, "header('Content-Type: application/json')"));
 });
 
 test('installer retries csrf timeouts once for every json action', function () use ($root) {
