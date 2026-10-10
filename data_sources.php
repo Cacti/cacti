@@ -933,7 +933,7 @@ function ds_edit() {
 			WHERE local_data_id = ?',
 			array(get_request_var('id')));
 		?>
-		<table style='width:100%'>
+		<table role='presentation' style='width:100%'>
 			<tr>
 				<td class='textInfo left' style='vertical-align:top;'>
 					<?php print html_escape(get_data_source_title(get_request_var('id')));?>
@@ -1245,7 +1245,7 @@ function ds_edit() {
 	/* display the debug mode box if the user wants it */
 	if ((isset($_SESSION['ds_debug_mode'])) && (isset_request_var('id'))) {
 		?>
-		<table style='width:100%'>
+		<table role='presentation' style='width:100%'>
 			<tr>
 				<td>
 					<span class='textInfo'><?php print __('Data Source Debug');?></span><br>
@@ -1259,7 +1259,7 @@ function ds_edit() {
 	/* display the debug mode box if the user wants it */
 	if ((isset($_SESSION['ds_info_mode'])) && (isset_request_var('id'))) {
 		?>
-		<table style='width:100%'>
+		<table role='presentation' style='width:100%'>
 			<tr>
 				<td><?php
 				$rrd_info = rrdtool_function_info(get_request_var('id'));
@@ -1483,12 +1483,12 @@ function ds() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_data_sources' name='form_data_sources' action='data_sources.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<?php print html_site_filter(get_request_var('site_id'));?>
 					<?php print html_host_filter(get_request_var('host_id'), 'applyFilter', $host_where);?>
 					<td>
-						<?php print __('Template');?>
+						<label for='template_id'><?php print __('Template');?></label>
 					</td>
 					<td>
 						<select id='template_id' name='template_id'>
@@ -1520,7 +1520,7 @@ function ds() {
 					</td>
 				</tr>
 			</table>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Profile');?>
@@ -1558,7 +1558,7 @@ function ds() {
 					</td>
 				</tr>
 			</table>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Search');?>
@@ -1567,7 +1567,7 @@ function ds() {
 						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='55' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 					<td>
-						<?php print __('Data Sources');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows' name='rows'>

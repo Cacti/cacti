@@ -265,7 +265,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 			?>
 			<td class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>' style='width:<?php print round(100 / $columns, 2);?>%;'>
 				<div>
-				<table style='text-align:center;margin:auto;'>
+				<table role='presentation' style='text-align:center;margin:auto;'>
 					<tr>
 						<td>
 							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
@@ -403,7 +403,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 			?>
 			<td class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>' style='width:<?php print round(100 / $columns, 2);?>%;'>
 				<div>
-				<table style='text-align:center;margin:auto;'>
+				<table role='presentation' style='text-align:center;margin:auto;'>
 					<tr>
 						<td>
 							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width');?>' graph_height='<?php print read_user_setting('default_height');?>'></div>
@@ -2245,6 +2245,38 @@ function html_graph_tabs_right() {
 }
 
 /**
+ * Renders the standard search caption and text input table cells.
+ *
+ * @param bool $with_name Preserve a native form name where the caller uses one.
+ * @param bool $rounded Preserve the caller's rounded input styling.
+ *
+ * @return void No value is returned.
+ */
+function html_search_filter($with_name = false, $rounded = true) {
+	print "<td><label for='filter'>" . __esc('Search') . '</label></td>';
+	print "<td><input type='text' class='ui-state-default" . ($rounded ? ' ui-corner-all' : '') . "' id='filter'";
+	print ($with_name ? " name='filter'" : '') . " size='25' value='" . html_escape_request_var('filter') . "'></td>";
+}
+
+/**
+ * Renders the standard row-count caption and dropdown table cells.
+ *
+ * @param string $caption Visible text used to label the rows control.
+ * @param bool $with_name Preserve a native form name where the caller uses one.
+ *
+ * @return void No value is returned.
+ */
+function html_rows_filter($caption, $with_name = false) {
+	global $item_rows;
+
+	print "<td><label for='rows'>" . html_escape($caption) . '</label></td>';
+	print "<td><select id='rows'" . ($with_name ? " name='rows'" : '') . '>';
+	print "<option value='-1'" . (get_request_var('rows') == '-1' ? ' selected' : '') . '>' . __esc('Default') . '</option>';
+	html_create_list($item_rows, '', '', get_request_var('rows'));
+	print '</select></td>';
+}
+
+/**
  * Generates an HTML host filter dropdown or input field based on configuration. Used as part of
  * Cacti's lib functionality.
  *
@@ -2272,7 +2304,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 	if ($theme == 'classic' || !read_config_option('autocomplete_enabled')) {
 		?>
 		<td>
-			<?php print __('Device');?>
+			<label for='host_id'><?php print __('Device');?></label>
 		</td>
 		<td>
 			<select id='host_id' name='host_id'>

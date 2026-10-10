@@ -327,27 +327,10 @@ function pages() {
 	<tr class='even noprint'>
 		<td>
 			<form id='links' action='links.php' method='post'>
-			<table class='filterTable' cellpadding='2' cellspacing='0'>
+			<table role='presentation' class='filterTable' cellpadding='2' cellspacing='0'>
 				<tr>
-					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-					</td>
-					<td>
-						<?php print __('Links');?>
-					</td>
-					<td>
-						<select id='rows'>
-							<option value=-1 <?php get_request_var('rows') == -1 ? 'selected':'';?>><?php print __('Default');?></option>
-							<?php
-							foreach ($item_rows as $key => $row) {
-								echo "<option value='" . $key . "'" . ($key == get_request_var('rows') ? ' selected' : '') . '>' . $row . '</option>';
-							}
-							?>
-						</select>
-					</td>
+					<?php html_search_filter();?>
+					<?php html_rows_filter(__('Rows'));?>
 					<td>
 						<span>
 							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __('Go');?>' title='<?php print __esc('Apply Filter');?>'>

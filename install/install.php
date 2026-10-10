@@ -91,7 +91,7 @@ if ($help != '') {
 
 ?>
 <!DOCTYPE html>
-<html>
+<html lang='<?php print CACTI_LOCALE;?>'>
 <head>
 <?php
 print html_common_header(__('Cacti Server v%s - Maintenance', CACTI_VERSION));

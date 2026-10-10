@@ -793,29 +793,10 @@ function vdef_filter() {
 	<tr class='even'>
 		<td>
 			<form id='form_vdef' action='vdef.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
-					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-					</td>
-					<td>
-						<?php print __('VDEFs');?>
-					</td>
-					<td>
-						<select id='rows'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
-							<?php
-							if (cacti_sizeof($item_rows)) {
-								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-								}
-							}
-							?>
-						</select>
-					</td>
+					<?php html_search_filter();?>
+					<?php html_rows_filter(__('Rows'));?>
                     <td>
 						<span>
 							<input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>

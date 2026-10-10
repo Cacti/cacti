@@ -971,29 +971,10 @@ function profile() {
 	<tr class='even'>
 		<td>
 			<form id='form_dsp' action='data_source_profiles.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
-					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-					</td>
-					<td>
-						<?php print __('Profiles');?>
-					</td>
-					<td>
-						<select id='rows' name='rows'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
-							<?php
-							if (cacti_sizeof($item_rows) > 0) {
-								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
-								}
-							}
-							?>
-						</select>
-					</td>
+					<?php html_search_filter(true);?>
+					<?php html_rows_filter(__('Rows'), true);?>
 					<td>
 						<span>
 							<input type='checkbox' id='has_data' <?php print (get_request_var('has_data') == 'true' ? 'checked':'');?>>

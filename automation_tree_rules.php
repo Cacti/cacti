@@ -465,7 +465,7 @@ function automation_tree_rules_item_edit() {
 		$item = db_fetch_row_prepared('SELECT * FROM automation_tree_rule_items WHERE id = ?', array(get_request_var('item_id')));
 			if ($item['field'] != AUTOMATION_TREE_ITEM_TYPE_STRING) {
 				?>
-<table style='width:100%;text-align:center;'>
+<table role='presentation' style='width:100%;text-align:center;'>
 	<tr>
 		<td class='textInfo' style='text-align:right;vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_tree_rules.php?action=item_edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&item_id=' . (isset_request_var('item_id') ? get_request_var('item_id') : 0) . '&rule_type=' . (isset_request_var('rule_type') ? get_request_var('rule_type') : 0) .'&show_trees=') . (isset($_SESSION['automation_tree_rules_show_trees']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_tree_rules_show_trees']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Created Trees');?></a><br>
 		</td>
@@ -627,7 +627,7 @@ function automation_tree_rules_edit() {
 
 	if (!isempty_request_var('id')) {
 		?>
-<table style='width:100%;text-align:center;'>
+<table role='presentation' style='width:100%;text-align:center;'>
 	<tr>
 		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_tree_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_tree_rules_show_objects']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_tree_rules_show_objects']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Eligible Objects');?></a><br>
 		</td>
@@ -921,16 +921,11 @@ function automation_tree_rules() {
 	<tr class='even'>
 		<td>
 			<form id='form_automation' action='automation_tree_rules.php'>
-				<table class='filterTable'>
+				<table role='presentation' class='filterTable'>
 					<tr>
+						<?php html_search_filter();?>
 						<td>
-							<?php print __('Search');?>
-						</td>
-						<td>
-							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-						</td>
-						<td>
-							<?php print __('Status');?>
+							<label for='status'><?php print __('Status');?></label>
 						</td>
 						<td>
 							<select id='status'>
@@ -939,21 +934,7 @@ function automation_tree_rules() {
 								<option value='-3' <?php print (get_request_var('status') == '-3' ? ' selected':'');?>><?php print __('Disabled');?></option>
 							</select>
 						</td>
-						<td>
-							<?php print __('Tree Rules');?>
-						</td>
-						<td>
-							<select id='rows'>
-								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
-								<?php
-								if (cacti_sizeof($item_rows) > 0) {
-								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected':'') . '>' . $value . "</option>\n";
-								}
-								}
-								?>
-							</select>
-						</td>
+						<?php html_rows_filter(__('Rows'));?>
 						<td>
 							<span>
 								<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>'>
