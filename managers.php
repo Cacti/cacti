@@ -150,12 +150,7 @@ function manager() {
 			<form id='form_snmpagent_managers' action='managers.php'>
 				<table class='filterTable'>
 					<tr>
-						<td>
-							<?php print __('Search'); ?>
-						</td>
-						<td>
-							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-						</td>
+						<?php html_search_filter();?>
 						<?php html_rows_filter(__('Receivers'));?>
 						<td>
 							<span>
@@ -495,12 +490,7 @@ function manager_notifications($id, $header_label) {
 								?>
 							</select>
 						</td>
-						<td>
-							<?php print __('Search');?>
-						</td>
-						<td>
-							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-						</td>
+						<?php html_search_filter();?>
 						<?php html_rows_filter(__('Receivers'), true);?>
 						<td>
 							<span>

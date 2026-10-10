@@ -858,12 +858,7 @@ function data() {
 		<form id='form_data_input' method='get' action='data_input.php'>
 			<table class='filterTable'>
 				<tr class='noprint'>
-					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-					</td>
+					<?php html_search_filter(true);?>
 					<?php html_rows_filter(__('Input Methods'), true);?>
 					<td>
 						<span>

@@ -2245,6 +2245,20 @@ function html_graph_tabs_right() {
 }
 
 /**
+ * Renders the standard search caption and text input table cells.
+ *
+ * @param bool $with_name Preserve a native form name where the caller uses one.
+ * @param bool $rounded Preserve the caller's rounded input styling.
+ *
+ * @return void No value is returned.
+ */
+function html_search_filter($with_name = false, $rounded = true) {
+	print "<td><label for='filter'>" . __esc('Search') . '</label></td>';
+	print "<td><input type='text' class='ui-state-default" . ($rounded ? ' ui-corner-all' : '') . "' id='filter'";
+	print ($with_name ? " name='filter'" : '') . " size='25' value='" . html_escape_request_var('filter') . "'></td>";
+}
+
+/**
  * Renders the standard row-count caption and dropdown table cells.
  *
  * @param string $caption Visible text used to label the rows control.
