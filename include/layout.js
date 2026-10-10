@@ -233,7 +233,9 @@ $.fn.delayKeyup = function(callback, ms){
 /** rebind - Shorthand for off(events).on(events, ...) to cleanly re-attach
  * an event handler, optionally for a delegated selector. */
 $.fn.rebind = function(events) {
-	if (arguments.length > 2 && typeof arguments[1] === 'string') {
+	// A string second argument is always a delegated selector (jQuery never
+	// treats a string as handler data), including the .on(map, selector) overload.
+	if (typeof arguments[1] === 'string') {
 		this.off(events, arguments[1]);
 	} else {
 		this.off(events);
