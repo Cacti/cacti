@@ -120,6 +120,14 @@ EOS
 
 EXPOSE 80 443
 
+HEALTHCHECK --interval=10s --timeout=5s --start-period=20s --retries=3 \
+    CMD if [ "${ROLE:-master}" = poller ]; then \
+        certificate=/var/cacti-state/tls/poller.crt; \
+        if [ ! -r "$certificate" ]; then certificate=/etc/ssl/private/poller.crt; fi; \
+        curl --fail --silent --show-error --max-time 4 \
+            --cacert "$certificate" https://127.0.0.1/index.php >/dev/null; \
+        else curl --fail --silent --show-error --max-time 4 http://127.0.0.1/index.php >/dev/null; fi
+
 USER www-data
 
 ENTRYPOINT ["/usr/local/bin/cacti-entrypoint.sh"]
