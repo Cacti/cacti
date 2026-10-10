@@ -171,6 +171,31 @@ run_installer --debug=json:3
 assert_complete_install "$EXPECTED_TABLES"
 [ "$(db_cacti -e "SELECT value FROM settings WHERE name = 'log_install_json';")" = '3' ] || fail 'installer reset the requested debug level'
 
+printf 'Scenario: table conversion rejects missing conversion options\n'
+if docker exec "$WEB_CONTAINER" php /var/www/html/cacti/cli/convert_tables.php; then
+	fail 'table converter returned success without a conversion option'
+fi
+
+printf 'Scenario: table conversion rejects disabled file-per-table\n'
+db_root -e 'SET GLOBAL innodb_file_per_table = OFF;'
+if docker exec "$WEB_CONTAINER" php /var/www/html/cacti/cli/convert_tables.php --innodb --table=host; then
+	fail 'table converter returned success with file-per-table disabled'
+fi
+db_root -e 'SET GLOBAL innodb_file_per_table = ON;'
+
+printf 'Scenario: installer logging mode loads the conversion helpers\n'
+docker exec "$WEB_CONTAINER" php /var/www/html/cacti/cli/convert_tables.php --installer --utf8 --table=host
+
+printf 'Scenario: row-format-only conversion does not require a charset change\n'
+db_cacti -e 'CREATE TABLE installer_conversion_fixture (id int unsigned NOT NULL PRIMARY KEY) ENGINE=InnoDB ROW_FORMAT=Compact DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;'
+docker exec "$WEB_CONTAINER" php /var/www/html/cacti/cli/convert_tables.php --innodb --dynamic --table=installer_conversion_fixture
+[ "$(db_cacti -e "SELECT ROW_FORMAT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'installer_conversion_fixture';")" = 'Dynamic' ] || fail 'row-format-only conversion did not convert the fixture table'
+
+printf 'Scenario: Aria conversion reaches the requested InnoDB engine\n'
+db_cacti -e 'ALTER TABLE installer_conversion_fixture ENGINE=Aria;'
+docker exec "$WEB_CONTAINER" php /var/www/html/cacti/cli/convert_tables.php --innodb --utf8 --table=installer_conversion_fixture
+[ "$(db_cacti -e "SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'installer_conversion_fixture';")" = 'InnoDB' ] || fail 'table converter left the fixture table using Aria'
+
 printf 'Scenario: 1.2.22 to %s CLI upgrade\n' "$CACTI_VERSION"
 reset_database "$OLD_SCHEMA"
 db_cacti -e "UPDATE version SET cacti = '1.2.22';"

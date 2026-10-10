@@ -110,7 +110,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--installer':
 				$installer = true;
-				require_once(__DIR__ . '../install/functions.php');
+				require_once(__DIR__ . '/../install/functions.php');
 
 				break;
 			case '--version':
@@ -146,7 +146,7 @@ if (!($innodb || $utf8 || $latin)) {
 	print_or_log($installer,  'ERROR: Must select either UTF8, LATIN1 or InnoDB conversion.' . PHP_EOL . PHP_EOL);
 	display_help();
 
-	exit;
+	exit(1);
 }
 
 if (!$local) {
@@ -198,7 +198,7 @@ if ($innodb) {
 	if (cacti_strtolower($file_per_table['Value']) != 'on') {
 		print_or_log($installer,  'innodb_file_per_table not enabled');
 
-		exit;
+		exit(1);
 	}
 }
 
@@ -232,6 +232,7 @@ if (cacti_sizeof($tables)) {
 				$canInnoDB  = true;
 			} elseif ($table_data['ENGINE'] == 'Aria') {
 				$canConvert = true;
+				$canInnoDB  = true;
 			}
 		}
 
@@ -259,19 +260,24 @@ if (cacti_sizeof($tables)) {
 			if ($table_data['TABLE_ROWS'] < $size || $force) {
 				print_or_log($installer,  "Converting Table > '$table'");
 
-				$sql = '';
+				$clauses = [];
+
+				if ($dynamic) {
+					$clauses[] = 'ROW_FORMAT=Dynamic';
+				}
 
 				if ($utf8) {
-					$sql .= ' CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
+					$clauses[] = 'CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
 				} elseif ($latin) {
-					$sql .= ' CONVERT TO CHARACTER SET latin1';
+					$clauses[] = 'CONVERT TO CHARACTER SET latin1';
 				}
 
 				if ($innodb && $canInnoDB) {
-					$sql .= (strlen($sql) ? ',' : '') . ' ENGINE=Innodb';
+					$clauses[] = 'ENGINE=InnoDB';
 				}
 
-				$status = db_execute("ALTER TABLE `$table`" . ($dynamic ? ' ROW_FORMAT=Dynamic, ' : '') . $sql);
+				$sql    = implode(', ', $clauses);
+				$status = db_execute("ALTER TABLE `$table` $sql");
 
 				if ($status === false) {
 					$conversion_failed = true;
