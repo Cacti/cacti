@@ -335,15 +335,7 @@ function pages() {
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
-					<td>
-						<?php print __('Links');?>
-					</td>
-					<td>
-						<select id='rows'>
-							<option value=-1 <?php get_request_var('rows') == -1 ? 'selected':'';?>><?php print __('Default');?></option>
-							<?php html_create_list($item_rows, '', '', get_request_var('rows'));?>
-						</select>
-					</td>
+					<?php html_rows_filter(__('Links'));?>
 					<td>
 						<span>
 							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __('Go');?>' title='<?php print __esc('Apply Filter');?>'>

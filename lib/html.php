@@ -2245,6 +2245,24 @@ function html_graph_tabs_right() {
 }
 
 /**
+ * Renders the standard row-count caption and dropdown table cells.
+ *
+ * @param string $caption Visible text used to label the rows control.
+ * @param bool $with_name Preserve a native form name where the caller uses one.
+ *
+ * @return void No value is returned.
+ */
+function html_rows_filter($caption, $with_name = false) {
+	global $item_rows;
+
+	print "<td><label for='rows'>" . html_escape($caption) . '</label></td>';
+	print "<td><select id='rows'" . ($with_name ? " name='rows'" : '') . '>';
+	print "<option value='-1'" . (get_request_var('rows') == '-1' ? ' selected' : '') . '>' . __esc('Default') . '</option>';
+	html_create_list($item_rows, '', '', get_request_var('rows'));
+	print '</select></td>';
+}
+
+/**
  * Generates an HTML host filter dropdown or input field based on configuration. Used as part of
  * Cacti's lib functionality.
  *

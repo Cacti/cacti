@@ -939,15 +939,7 @@ function automation_tree_rules() {
 								<option value='-3' <?php print (get_request_var('status') == '-3' ? ' selected':'');?>><?php print __('Disabled');?></option>
 							</select>
 						</td>
-						<td>
-							<?php print __('Tree Rules');?>
-						</td>
-						<td>
-							<select id='rows'>
-								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
-								<?php html_create_list($item_rows, '', '', get_request_var('rows'));?>
-							</select>
-						</td>
+						<?php html_rows_filter(__('Tree Rules'));?>
 						<td>
 							<span>
 								<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>'>

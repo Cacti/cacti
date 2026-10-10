@@ -838,15 +838,7 @@ function template() {
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
-					<td>
-						<?php print __('Device Templates');?>
-					</td>
-					<td>
-						<select id='rows'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
-							<?php html_create_list($item_rows, '', '', get_request_var('rows'));?>
-						</select>
-					</td>
+					<?php html_rows_filter(__('Device Templates'));?>
 					<td>
 						<span>
 							<input type='checkbox' id='has_hosts' <?php print (get_request_var('has_hosts') == 'true' ? 'checked':'');?>>
