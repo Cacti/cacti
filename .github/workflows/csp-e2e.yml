@@ -27,6 +27,9 @@ on:
       - auth_changepassword.php
       - tests/integration/**
       - tests/e2e/**
+      - lib/functions.php
+      - user_admin.php
+      - tests/fixtures/Core/UserActionLogProbe.php
       - .github/workflows/csp-e2e.yml
 
 permissions:
@@ -192,6 +195,14 @@ jobs:
       - name: Run client state browser regressions
         working-directory: tests/e2e
         run: node ./node_modules/@playwright/test/cli.js test tests/client-state.spec.ts
+
+      - name: Run native account audit regressions
+        working-directory: tests/e2e
+        env:
+          CACTI_USER_AUDIT_LOG: ../../log/cacti.log
+        run: |
+          bash test-user-action-log.sh
+          node node_modules/@playwright/test/cli.js test tests/user-action-audit.spec.ts
 
       - name: Upload Playwright report
         if: failure()
