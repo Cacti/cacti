@@ -397,6 +397,16 @@ switch($action) {
 
 		break;
 	case 'ajax_dnd':
+		if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+			header('Allow: POST');
+			http_response_code(405);
+			exit;
+		}
+
+		if (!csrf_check(false)) {
+			http_response_code(403);
+			exit;
+		}
 		$new_order = gnrv('dnd');
 
 		api_plugin_reorder($new_order);
@@ -877,7 +887,8 @@ function update_show_current() : void {
 //							console.log(row);
 						},
 						onDrop: function(table, row) {
-							loadUrl({url:'plugins.php?action=ajax_dnd&'+$.tableDnD.serialize()})
+							const request = cactiPreparePostRequest('plugins.php', 'action=ajax_dnd&' + $.tableDnD.serialize());
+							postUrl({url: request.url}, request.data);
 						}
 					});
 				}
