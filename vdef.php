@@ -752,7 +752,7 @@ function vdef_edit() {
 
 					applySkin();
 
-					$('#continue').off('click').on('click', function(data) {
+					$('#continue').rebind('click', function(data) {
 						$.post('vdef.php?action=item_remove', {
 							__csrf_magic: csrfMagicToken,
 							vdef_id: $('#my_vdef_id').val(),
