@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import fs from 'node:fs';
 
 async function login(page: Page): Promise<void> {
     await page.goto('/');
@@ -54,6 +55,9 @@ for (const route of [...routes, 'manager notifications']) {
             await page.goto(address);
             const select = page.locator('#rows');
             await expect(select).toHaveValue(rows);
+            expect(await select.evaluate(element => (element as HTMLSelectElement).labels?.length)).toBe(1);
+            const named = ['cdef.php', 'data_input.php', 'data_queries.php', 'data_source_profiles.php', 'data_templates.php', 'graph_templates.php', 'manager notifications'].includes(route);
+            expect(await select.getAttribute('name')).toBe(named ? 'rows' : null);
             const current = await select.locator('option').evaluateAll(items => items.map(item => ({
                 value: (item as HTMLOptionElement).value, text: item.textContent?.trim() ?? null,
             })));
@@ -68,3 +72,14 @@ for (const route of [...routes, 'manager notifications']) {
         }
     });
 }
+
+test('the native rows helper renders captions and options as plain text', async ({ page }) => {
+    const fixture = process.env.CACTI_ROWS_FILTER_FIXTURE;
+    expect(fixture, 'The native PHP fixture output is required.').toBeTruthy();
+    await page.setContent(fs.readFileSync(fixture!, 'utf8'));
+    const rows = page.getByLabel('<b>Rows & counts</b>', { exact: true });
+    await expect(rows).toHaveAttribute('id', 'rows');
+    await expect(rows).toHaveValue('30');
+    await expect(page.locator('option[value="30"]')).toHaveText('<i>30</i> & more');
+    await expect(page.locator('table b, table i, table script')).toHaveCount(0);
+});

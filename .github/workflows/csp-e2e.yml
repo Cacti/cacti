@@ -25,6 +25,8 @@ on:
       - include/themes/sunrise/main.js
       - tests/integration/**
       - tests/e2e/**
+      - lib/html.php
+      - tests/fixtures/Core/RowsFilterProbe.php
       - pollers.php
       - sites.php
       - links.php
@@ -206,7 +208,10 @@ jobs:
 
       - name: Run native row-option regressions
         working-directory: tests/e2e
-        run: node node_modules/@playwright/test/cli.js test tests/row-filter-options.spec.ts
+        run: |
+          docker compose exec -T php php tests/fixtures/Core/RowsFilterProbe.php > "$RUNNER_TEMP/cacti-row-filter.html"
+          export CACTI_ROWS_FILTER_FIXTURE="$RUNNER_TEMP/cacti-row-filter.html"
+          node node_modules/@playwright/test/cli.js test tests/row-filter-options.spec.ts
 
       - name: Upload Playwright report
         if: failure()
