@@ -1133,35 +1133,35 @@ class CactiTableFilter {
 						case 'timespan':
 							// Delegated bindings survive ajax content reloads that replace the timespan controls; direct .change()/.click() handlers would be lost after the first filter apply.
 							if (!isset($field_array['span_function'])) {
-								$readyAdd .= "$(document).off('change.cactiTimespan', '#predefined_timespan').on('change.cactiTimespan', '#predefined_timespan', function() { applyGraphTimespan(); });" . PHP_EOL;
+								$readyAdd .= "$(document).rebind('change.cactiTimespan', '#predefined_timespan', function() { applyGraphTimespan(); });" . PHP_EOL;
 							} else {
-								$readyAdd .= "$(document).off('change.cactiTimespan', '#predefined_timespan').on('change.cactiTimespan', '#predefined_timespan', function() { " . $field_array['span_function'] . '; });' . PHP_EOL;
+								$readyAdd .= "$(document).rebind('change.cactiTimespan', '#predefined_timespan', function() { " . $field_array['span_function'] . '; });' . PHP_EOL;
 							}
 
 							if (isset($field_array['shifter']) && $field_array['shifter'] === true) {
 								if (!isset($field_array['lshift_function'])) {
-									$readyAdd .= "$(document).off('click.cactiTimespan', '#shift_left').on('click.cactiTimespan', '#shift_left', function() { timeshiftGraphFilterLeft(); });" . PHP_EOL;
+									$readyAdd .= "$(document).rebind('click.cactiTimespan', '#shift_left', function() { timeshiftGraphFilterLeft(); });" . PHP_EOL;
 								} else {
-									$readyAdd .= "$(document).off('click.cactiTimespan', '#shift_left').on('click.cactiTimespan', '#shift_left', function() { " . $field_array['lshift_function'] . '; });' . PHP_EOL;
+									$readyAdd .= "$(document).rebind('click.cactiTimespan', '#shift_left', function() { " . $field_array['lshift_function'] . '; });' . PHP_EOL;
 								}
 
 								if (!isset($field_array['rshift_function'])) {
-									$readyAdd .= "$(document).off('click.cactiTimespan', '#shift_right').on('click.cactiTimespan', '#shift_right', function() { timeshiftGraphFilterRight(); });" . PHP_EOL;
+									$readyAdd .= "$(document).rebind('click.cactiTimespan', '#shift_right', function() { timeshiftGraphFilterRight(); });" . PHP_EOL;
 								} else {
-									$readyAdd .= "$(document).off('click.cactiTimespan', '#shift_right').on('click.cactiTimespan', '#shift_right', function() { " . $field_array['rshift_function'] . '; });' . PHP_EOL;
+									$readyAdd .= "$(document).rebind('click.cactiTimespan', '#shift_right', function() { " . $field_array['rshift_function'] . '; });' . PHP_EOL;
 								}
 							}
 
 							if (!isset($field_array['refresh_function'])) {
-								$readyAdd .= "$(document).off('click.cactiTimespan', '#tsrefresh').on('click.cactiTimespan', '#tsrefresh', function() { $(this).find('i').addClass('icon-rotate'); refreshGraphTimespanFilter(); });" . PHP_EOL;
+								$readyAdd .= "$(document).rebind('click.cactiTimespan', '#tsrefresh', function() { $(this).find('i').addClass('icon-rotate'); refreshGraphTimespanFilter(); });" . PHP_EOL;
 							} else {
-								$readyAdd .= "$(document).off('click.cactiTimespan', '#tsrefresh').on('click.cactiTimespan', '#tsrefresh', function() { $(this).find('i').addClass('icon-rotate'); " . $field_array['refresh_function'] . '; });' . PHP_EOL;
+								$readyAdd .= "$(document).rebind('click.cactiTimespan', '#tsrefresh', function() { $(this).find('i').addClass('icon-rotate'); " . $field_array['refresh_function'] . '; });' . PHP_EOL;
 							}
 
 							if (!isset($field_array['clear_function'])) {
-								$readyAdd .= "$(document).off('click.cactiTimespan', '#tsclear').on('click.cactiTimespan', '#tsclear', function() { clearGraphTimespanFilter(); });" . PHP_EOL;
+								$readyAdd .= "$(document).rebind('click.cactiTimespan', '#tsclear', function() { clearGraphTimespanFilter(); });" . PHP_EOL;
 							} else {
-								$readyAdd .= "$(document).off('click.cactiTimespan', '#tsclear').on('click.cactiTimespan', '#tsclear', function() { " . $field_array['clear_function'] . '; });' . PHP_EOL;
+								$readyAdd .= "$(document).rebind('click.cactiTimespan', '#tsclear', function() { " . $field_array['clear_function'] . '; });' . PHP_EOL;
 							}
 
 							break;
@@ -1591,7 +1591,7 @@ class CactiTableFilter {
 		$js .= "\t$('#layout_delete').click(function() { var id = layoutSelectedId(); if (id == 0 || !layoutEditable()) { return; } layoutDeleteDialog(id); });" . PHP_EOL;
 		$js .= "\t$('#layout_name').keydown(function(e) { if (e.keyCode == 13) { e.preventDefault(); layoutDialogSave(layoutDialogForceNew); } });" . PHP_EOL;
 		// Enter in the bar Search box applies the filter; delegated so it survives ajax content reloads.
-		$js .= "\t$(document).off('keydown.cactiSearch', '#filter, #rfilter').on('keydown.cactiSearch', '#filter, #rfilter', function(e) { if (e.keyCode == 13) { e.preventDefault(); " . $changeFunction . '; } });' . PHP_EOL;
+		$js .= "\t$(document).rebind('keydown.cactiSearch', '#filter, #rfilter', function(e) { if (e.keyCode == 13) { e.preventDefault(); " . $changeFunction . '; } });' . PHP_EOL;
 		$js .= '});' . PHP_EOL;
 
 		$js .= '</script>' . PHP_EOL;

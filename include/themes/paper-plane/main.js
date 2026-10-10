@@ -105,7 +105,7 @@ function themeReady() {
 	/* User Menu */
 	$('.menuoptions').parent().appendTo('body');
 
-	$('.action-icon-user').off('click').on('click', function(event) {
+	$('.action-icon-user').rebind('click', function(event) {
 		event.preventDefault();
 
 		if ($('.menuoptions').is(':visible') === false) {
@@ -118,7 +118,7 @@ function themeReady() {
 		return false;
 	});
 
-	$('.bottom_scroll_up').off('click').on('click', function(event) {
+	$('.bottom_scroll_up').rebind('click', function(event) {
 		event.preventDefault();
 		$('#navigation_right').animate({ scrollLeft:0, scrollTop: 0 }, 1000, 'easeInOutQuart');
 	});
@@ -187,7 +187,7 @@ function setMenuVisibility() {
 	});
 
 	// Function to give life to the Navigation pane
-	$('#nav li:has(ul) a.active').off('click').on('click', function(event) {
+	$('#nav li:has(ul) a.active').rebind('click', function(event) {
 		event.preventDefault();
 
 		id = $(this).closest('.menuitem').attr('id');

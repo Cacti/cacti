@@ -279,6 +279,20 @@ $.fn.delayKeyup = function (callback, ms) {
 };
 
 /**
+ * rebind - Shorthand for off(events).on(events, ...) to cleanly re-attach an
+ * event handler, optionally for a delegated selector.
+ */
+$.fn.rebind = function (events) {
+	if (arguments.length > 2 && typeof arguments[1] === 'string') {
+		this.off(events, arguments[1]);
+	} else {
+		this.off(events);
+	}
+
+	return this.on.apply(this, arguments);
+};
+
+/**
  * bindFirst - Function ensures that the event is found at the top
  * of the event stack.
  */
@@ -735,7 +749,7 @@ function updateCheckboxes(checkboxes, clicked_element) {
  *  taking action as required to enable or disable rows. */
 function applySelectorVisibilityAndActions() {
 	// Change for accessibility
-	$('input[type="radio"]').off('click').on('click', function () {
+	$('input[type="radio"]').rebind('click', function () {
 		if ($(this).is(':checked')) {
 			$(this).attr('aria-checked', 'true');
 		} else {
@@ -754,12 +768,12 @@ function applySelectorVisibilityAndActions() {
 	});
 
 	// Create Actions for Rows
-	$('tr[id^="gt_line"].selectable:not(.disabled_row)').off('click').on('click', function (event) {
+	$('tr[id^="gt_line"].selectable:not(.disabled_row)').rebind('click', function (event) {
 		selectUpdateRow(event, $(this));
 	});
 
 	// Create Actions for Rows
-	$('tr[id^="line"].selectable').filter(':not(.disabled_row)').off('click').on('click', function (event) {
+	$('tr[id^="line"].selectable').filter(':not(.disabled_row)').rebind('click', function (event) {
 		selectUpdateRow(event, $(this));
 	});
 }
@@ -845,7 +859,7 @@ function dqUpdateDeps(snmp_query_id) {
 		$('#all_' + snmp_query_id).prop('checked', false);
 	}
 
-	$('tr[id^="dqline' + snmp_query_id + '_"]').not('.disabled_row').off('click').on('click', function (event) {
+	$('tr[id^="dqline' + snmp_query_id + '_"]').not('.disabled_row').rebind('click', function (event) {
 		selectUpdateRow(event, $(this));
 	});
 }
@@ -943,8 +957,7 @@ function cactiReturnTo(href) {
 function setupSelectmenuScrollClose() {
 	$('.cactiConsoleContentArea, .cactiGraphContentArea, .cactiGraphContentAreaPreview, .cactiTreeNavigationArea')
 		.add(window)
-		.off('scroll.cactiSelectmenu')
-		.on('scroll.cactiSelectmenu', function () {
+		.rebind('scroll.cactiSelectmenu', function () {
 			if (!$('.ui-selectmenu-open').length) {
 				return;
 			}
@@ -1039,7 +1052,7 @@ function applySkin() {
 
 	setupObjectChange();
 
-	$('.helpPage').off('click').on('click', function (event) {
+	$('.helpPage').rebind('click', function (event) {
 		event.stopPropagation();
 
 		getCactiHelp($(this).attr('data-page'));
@@ -1058,7 +1071,7 @@ function applySkin() {
 	setupButtonStyle();
 
 	// Debug message actions
-	$('table.debug tr:nth-child(1)').off('click').on('click', function () {
+	$('table.debug tr:nth-child(1)').rebind('click', function () {
 		if ($(this).parent().find('table').is(':visible')) {
 			$(this).parent().find('table').slideUp('fast');
 		} else {
@@ -1066,7 +1079,7 @@ function applySkin() {
 		}
 	});
 
-	$('.cactiTableCopy').off('click').on('click', function (event) {
+	$('.cactiTableCopy').rebind('click', function (event) {
 		event.preventDefault();
 		event.stopPropagation();
 		var containerId = $(this).attr('id');
@@ -1399,7 +1412,7 @@ function applySkin() {
 			 * select2 widget on every AJAX filter reload, but that destroy doesn't remove
 			 * a plain jQuery listener bound to the underlying <select> itself, so without
 			 * this the handler would accumulate and fire the callback multiple times */
-			$select.off('select2:select.select2Callback').on('select2:select.select2Callback', function() {
+			$select.rebind('select2:select.select2Callback', function() {
 				executeFunctionByName(changeFunc.replace('(', '').replace(')', ''), window);
 			});
 		}
@@ -1776,7 +1789,7 @@ function makeFiltersResponsive() {
 							filterHeader.find('div.cactiTableButton').append('<span class="cactiSwitchConstraintWrapper"><a title="' + tableConstraints + '" class="linkOverDark cactiSwitchConstraints" href="#"><i id="overflow" class="ti ti-arrows-diagonal"></i></a></span>');
 						}
 
-						$('.cactiSwitchConstraints').off('click').on('click', function (event) {
+						$('.cactiSwitchConstraints').rebind('click', function (event) {
 							event.preventDefault();
 							event.stopPropagation();
 
@@ -1800,7 +1813,7 @@ function makeFiltersResponsive() {
 					title = $('#export').attr('title');
 					filterHeader.find('div.cactiTableButton').append($('<span style="display:none;" class="cactiFilterExport"><i class="ti ti-table-export"></i></span>').attr('title', title));
 
-					$('.cactiFilterExport').off('click').on('click', function (event) {
+					$('.cactiFilterExport').rebind('click', function (event) {
 						event.stopPropagation();
 						$('#export').trigger('click');
 					}).tooltip();
@@ -1810,7 +1823,7 @@ function makeFiltersResponsive() {
 					title = $('#import').attr('title');
 					filterHeader.find('div.cactiTableButton').append($('<span style="display:none;" class="cactiFilterImport"><i class="ti ti-table-import"></i></span>').attr('title', title));
 
-					$('.cactiFilterImport').off('click').on('click', function (event) {
+					$('.cactiFilterImport').rebind('click', function (event) {
 						event.stopPropagation();
 						$('#import').trigger('click');
 					}).tooltip();
@@ -1821,7 +1834,7 @@ function makeFiltersResponsive() {
 						filterHeader.find('div.cactiTableButton').append('<span title="' + clearFilterTitle + '" style="display:none;" class="cactiFilterClear"><i class="ti ti-trash"></i></span>');
 					}
 
-					$('.cactiFilterClear').off('click').on('click', function(event) {
+					$('.cactiFilterClear').rebind('click', function(event) {
 						event.stopPropagation();
 						$('#clear').trigger('click');
 					}).tooltip();
@@ -1849,7 +1862,7 @@ function makeFiltersResponsive() {
 					}
 				}
 
-				filterHeader.find('.cactiFilterState').off('click').on('click', function() {
+				filterHeader.find('.cactiFilterState').rebind('click', function() {
 					id = $(this).closest('.cactiTable').attr('id');
 					child = id + '_child';
 					toggleFilterAndIcon(id, child, false);
@@ -1933,7 +1946,7 @@ function setGraphTabs() {
 }
 
 function setupResponsiveMenuAndTabs() {
-	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').off('click').on('click', function (event) {
+	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').rebind('click', function (event) {
 		if (!shouldCaptureClick(event)) {
 			return;
 		}
@@ -2790,7 +2803,7 @@ function loadPageUsingPost(href, postData, returnLocation) {
 function setNavigationScroll() {
 	var object = '';
 
-	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').off('mousemove').on('mousemove', function (pos) {
+	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').rebind('mousemove', function (pos) {
 		object = '';
 
 		if ($('.cactiConsoleNavigationArea').length) {
@@ -2829,7 +2842,7 @@ function setNavigationScroll() {
 		}
 	});
 
-	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').off('mouseleave').on('mouseleave', function (pos) {
+	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').rebind('mouseleave', function (pos) {
 		if ($('.cactiConsoleNavigationArea').length) {
 			object = '.cactiConsoleNavigationArea';
 		} else if ($('.cactiTreeNavigationArea').length) {
@@ -3300,7 +3313,7 @@ function getPresentHTTPErrorOrRedirect(data, url) {
 function ajaxAnchors() {
 	var page = basename(location.pathname);
 
-	$(document).off('click.cactiPostAction', 'a.cactiPostAction').on('click.cactiPostAction', 'a.cactiPostAction', function (event) {
+	$(document).rebind('click.cactiPostAction', 'a.cactiPostAction', function (event) {
 		if (!shouldCaptureClick(event)) {
 			return;
 		}
@@ -3317,7 +3330,7 @@ function ajaxAnchors() {
 		return false;
 	});
 
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [href^="mailto"], [target="_blank"]').not('.cactiPostAction').off('click').on('click', function (event) {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [href^="mailto"], [target="_blank"]').not('.cactiPostAction').rebind('click', function (event) {
 		if (!shouldCaptureClick(event)) {
 			return;
 		}
@@ -3424,7 +3437,7 @@ function setupCollapsible() {
 		}
 	});
 
-	$('.collapsible').off('click').on('click', function (data) {
+	$('.collapsible').rebind('click', function (data) {
 		var id = $(this).attr('id') + '_cs';
 
 		if ($(this).find('i').hasClass('ti-chevrons-up')) {
@@ -3499,7 +3512,7 @@ function setupSpecialKeys() {
 	}
 
 	// Clicking the search glyph applies the filter: submit its form, or on the modern bar (no form) trigger Enter.
-	$(document).off('click.cactiSearchIcon').on('click.cactiSearchIcon', 'i.ti.ti-search.filter', function () {
+	$(document).rebind('click.cactiSearchIcon', 'i.ti.ti-search.filter', function () {
 		var input = $(this).prev('input').get(0);
 		if (!input) {
 			return;
@@ -4232,7 +4245,7 @@ function setupEllipsis() {
 		'</ul>' +
 		'</div>').appendTo('body');
 
-	$('.maintabs-submenu, .usertabs-submenu, .submenu-ellipsis').off('click').on('click', function (event) {
+	$('.maintabs-submenu, .usertabs-submenu, .submenu-ellipsis').rebind('click', function (event) {
 		event.preventDefault();
 
 		var submenu_index = $(this).attr('id').replace('menu-', 'submenu-');
@@ -4844,7 +4857,7 @@ function initializeGraphs(disable_cache) {
 
 		$(this).attr('href', urlPath + pageName + 'action=view' + (tree ? '-tree':'-preview') + '&local_graph_id=' + graph_id);
 
-		$(this).off('click').on('click', function (event) {
+		$(this).rebind('click', function (event) {
 			if (!shouldCaptureClick(event))
 				return;
 
@@ -4887,7 +4900,7 @@ function initializeGraphs(disable_cache) {
 
 		$(this).attr('href', url);
 
-		$(this).off('click').on('click', function (event) {
+		$(this).rebind('click', function (event) {
 			if (!shouldCaptureClick(event))
 				return;
 
@@ -4907,7 +4920,7 @@ function initializeGraphs(disable_cache) {
 		});
 	});
 
-	$('#form_graph_view').off('submit').on('submit', function (event) {
+	$('#form_graph_view').rebind('submit', function (event) {
 		event.preventDefault();
 		event.stopPropagation();
 		applyFilter();
@@ -5031,11 +5044,11 @@ function initializeGraphs(disable_cache) {
 			});
 	});
 
-	$('#realtimeoff').off('click').on('click', function () {
+	$('#realtimeoff').rebind('click', function () {
 		stopRealtime();
 	});
 
-	$('#ds_step').off('change').on('change', function () {
+	$('#ds_step').rebind('change', function () {
 		realtimeGrapher();
 	});
 
@@ -5051,7 +5064,7 @@ function initializeGraphs(disable_cache) {
 			'&graph_start=' + timestampDate1 +
 			'&graph_end=' + timestampDate2);
 
-		$(this).off('click').on('click', function (event) {
+		$(this).rebind('click', function (event) {
 			if (!shouldCaptureClick(event))
 				return;
 
@@ -5078,7 +5091,7 @@ function initializeGraphs(disable_cache) {
 			return false;
 		});
 
-		$(this).off('click').on('click', function (event) {
+		$(this).rebind('click', function (event) {
 			if (!shouldCaptureClick(event))
 				return;
 

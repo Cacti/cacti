@@ -1335,7 +1335,7 @@ function import_display_package_data(array $templates, array $files, string $pac
 			makePackagesClickable();
 		}
 
-		$('.diffme').off('click').on('click', function(event) {
+		$('.diffme').rebind('click', function(event) {
 			event.preventDefault();
 
 			var url = $(this).attr('href');
@@ -1868,11 +1868,11 @@ function package_import() : void {
 	$(function() {
 		refreshMSeconds = 9999999;
 
-		$('#package_location').off('change').on('change', function() {
+		$('#package_location').rebind('change', function() {
 			switchRepo();
 		});
 
-		$('#import_file').off('change').on('change', function() {
+		$('#import_file').rebind('change', function() {
 			var form = $('#import')[0];
 			var data = new FormData(form);
 			var formExtra = '?action=upload&package_location=0&preview_only=on';

@@ -265,13 +265,13 @@ midwinter.navigationBox.table = {
         const ns = midwinter.navigationBox.table;
 
         // bind toggle checkboxes
-        $box.off('change', '.plugin-table-toggle').on('change', '.plugin-table-toggle', (e) => {
+        $box.rebind('change', '.plugin-table-toggle', (e) => {
             const $el = $(e.currentTarget);
             ns._executeToggle($el.data('table'), $el.data('column'), e.target.checked);
         });
 
         // bind reset control button
-        $box.off('click', '[data-action="reset_table"]').on('click', '[data-action="reset_table"]', (e) => {
+        $box.rebind('click', '[data-action="reset_table"]', (e) => {
             const tableHash = $box.find('input[data-table]').first().data('table');
             ns._executeReset(tableHash);
         });

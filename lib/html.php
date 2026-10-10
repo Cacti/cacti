@@ -2158,7 +2158,7 @@ function draw_actions_dropdown(array $actions_array, int $delete_action = 1) : v
 			});
 		}
 
-		$('tr[id^="line"]').filter(':not(.disabled_row)').off('click').on('click', function(event) {
+		$('tr[id^="line"]').filter(':not(.disabled_row)').rebind('click', function(event) {
 			selectUpdateRow(event, $(this));
 		});
 	}
