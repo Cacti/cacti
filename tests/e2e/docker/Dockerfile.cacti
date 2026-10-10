@@ -56,8 +56,9 @@ RUN { \
 # into place, so the CLI loads no main ini and the call gets an empty path.
 RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
-RUN mkdir -p /var/cacti-state \
- && chown -R www-data:www-data /var/cacti-state
+RUN mkdir -p /var/cacti-state /var/run/apache2 /var/lock/apache2 \
+ && chown -R www-data:www-data /var/cacti-state /var/run/apache2 \
+        /var/lock/apache2 /var/lib/apache2 /etc/apache2
 
 # Bake the application into the image so the harness owns the file system.
 # The bind-mount approach used previously meant the host's
@@ -75,21 +76,21 @@ set -euo pipefail
 ROLE="${ROLE:-master}"
 
 if [ "$ROLE" = "poller" ]; then
-    if [ ! -f /etc/ssl/private/poller.crt ]; then
-        mkdir -p /etc/ssl/private
+    if [ ! -f /var/cacti-state/tls/poller.crt ]; then
+        mkdir -p -m 700 /var/cacti-state/tls
         openssl req -x509 -nodes -newkey rsa:2048 -days 30 \
             -subj "/CN=cacti-poller" \
             -addext "subjectAltName=DNS:cacti-poller,DNS:localhost,IP:127.0.0.1" \
-            -keyout /etc/ssl/private/poller.key \
-            -out /etc/ssl/private/poller.crt
-        chmod 600 /etc/ssl/private/poller.key
+            -keyout /var/cacti-state/tls/poller.key \
+            -out /var/cacti-state/tls/poller.crt
+        chmod 600 /var/cacti-state/tls/poller.key
     fi
     cat > /etc/apache2/sites-available/cacti-ssl.conf <<'CONF'
 <VirtualHost *:443>
     DocumentRoot /var/www/html
     SSLEngine on
-    SSLCertificateFile /etc/ssl/private/poller.crt
-    SSLCertificateKeyFile /etc/ssl/private/poller.key
+    SSLCertificateFile /var/cacti-state/tls/poller.crt
+    SSLCertificateKeyFile /var/cacti-state/tls/poller.key
     <Directory /var/www/html>
         AllowOverride All
         Require all granted
@@ -118,6 +119,8 @@ exec "$@"
 EOS
 
 EXPOSE 80 443
+
+USER www-data
 
 ENTRYPOINT ["/usr/local/bin/cacti-entrypoint.sh"]
 CMD ["apache2-foreground"]
