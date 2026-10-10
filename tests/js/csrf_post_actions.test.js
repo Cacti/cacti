@@ -75,6 +75,6 @@ test('cross-origin targets are rejected before a token is exposed', () => {
 });
 
 test('the state-action handler survives element-level unbind calls', () => {
-	assert.match(source, /\$\(document\)\.off\('click\.cactiPostAction', 'a\.cactiPostAction'\)\.on\('click\.cactiPostAction', 'a\.cactiPostAction'/);
+	assert.match(source, /\$\(document\)\.rebind\('click\.cactiPostAction', 'a\.cactiPostAction'/);
 	assert.doesNotMatch(source, /\$\('a\.cactiPostAction'\)\.off\('click\.cactiPostAction'/);
 });

@@ -2026,7 +2026,7 @@ function html_graph_single_view() : void {
 				});
 			});
 
-			$('a[id$="_util"]').off('click').on('click', function() {
+			$('a[id$="_util"]').rebind('click', function() {
 				graph_id = $(this).attr('id').replace('graph_', '').replace('_util', '');
 				rra_id = $(this).attr('rra_id');
 				graph_start = $(this).attr('graph_start');
@@ -2044,7 +2044,7 @@ function html_graph_single_view() : void {
 			});
 
 			$('a[id$="_csv"]').each(function() {
-				$(this).off('click').on('click', function(event) {
+				$(this).rebind('click', function(event) {
 					event.preventDefault();
 					event.stopPropagation();
 					document.location = $(this).attr('href');

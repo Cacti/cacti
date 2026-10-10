@@ -104,7 +104,7 @@ function themeReady() {
 
 	$(window).trigger('resize');
 
-	$('.action-icon-user').off('click').on('click', function(event) {
+	$('.action-icon-user').rebind('click', function(event) {
 		event.preventDefault();
 
 		if ($('.menuoptions').is(':visible') === false) {
@@ -169,7 +169,7 @@ function setMenuVisibility() {
 	});
 
 	// Function to give life to the Navigation pane
-	$('#nav li:has(ul) a.active').off('click').on('click', function(event) {
+	$('#nav li:has(ul) a.active').rebind('click', function(event) {
 		event.preventDefault();
 
 		id = $(this).closest('.menuitem').attr('id');

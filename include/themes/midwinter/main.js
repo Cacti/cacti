@@ -275,7 +275,7 @@ function hideConsoleNavigation() {
 }
 
 function updateAjaxAnchors() {
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [href^="mailto"], [target="_blank"]').off('click').on('click', function(event) {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [href^="mailto"], [target="_blank"]').rebind('click', function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -508,7 +508,7 @@ function setupTheme() {
 	const $settingsBox = $('[class^="mdw-ConsoleNavigationBox"][data-helper="settings"]');
 	$('[class^="compact_nav_icon"][data-helper="settings"]').toggleClass('hide', $settingsBox.has('li').length === 0);
 
-	$('#main').off('resize').on('resize', function() {
+	$('#main').rebind('resize', function() {
 		$('#main .saveRowParent').width($(this).width());
 	});
 }
@@ -1088,7 +1088,7 @@ function kioskMode(event = false) {
 		toggleConsoleNavigationBox(event);
 		setDocumentAttribute('kiosk-mode', 'on');
 		if(isMobile.any() != null) {
-			$('#mdw-Main').off('click').on('click', function(e) {
+			$('#mdw-Main').rebind('click', function(e) {
 				let tap;
 				mdw.cache.tab.count++;
 

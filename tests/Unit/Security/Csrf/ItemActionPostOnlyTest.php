@@ -157,9 +157,8 @@ test('the cactiPostAction handler posts the token and refuses another origin', f
 	/* The class has to be bound on its own, not only through the ajaxAnchors
 	   selector, because several tagged anchors carry none of the classes that
 	   selector names. */
-	expect($js)->toContain("$(document).off('click.cactiPostAction', 'a.cactiPostAction')")
-		->and($js)->toContain(".on('click.cactiPostAction', 'a.cactiPostAction'")
-		->and($js)->toContain(".not('.cactiPostAction').off('click')")
+	expect($js)->toContain("$(document).rebind('click.cactiPostAction', 'a.cactiPostAction'")
+		->and($js)->toContain(".not('.cactiPostAction').rebind('click'")
 		->and($js)->toContain('submitPageUsingPost')
 		->and($js)->toContain('cactiPreparePostRequestFromUrl');
 

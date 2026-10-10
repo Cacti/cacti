@@ -1397,16 +1397,16 @@ function grow_right_pane_tree(int $tree_id, int $leaf_id, string $host_group_dat
 	}
 
 	$(function() {
-		$('#go').off('click').on('click', function(event) {
+		$('#go').rebind('click', function(event) {
 			event.preventDefault();
 			applyGraphFilter();
 		});
 
-		$('#clear').off('click').on('click', function() {
+		$('#clear').rebind('click', function() {
 			clearGraphFilter();
 		});
 
-		$('#save').off('click').on('click', function() {
+		$('#save').rebind('click', function() {
 			 saveGraphFilter('tree');
 		});
 

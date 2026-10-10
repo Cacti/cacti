@@ -166,7 +166,7 @@ function setMenuVisibility() {
 	});
 
 	// Function to give life to the Navigation pane
-	$('#nav li:has(ul) a.active').off('click').on('click', function(event) {
+	$('#nav li:has(ul) a.active').rebind('click', function(event) {
 		event.preventDefault();
 
 		id = $(this).closest('.menuitem').attr('id');

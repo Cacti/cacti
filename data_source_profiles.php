@@ -1201,7 +1201,7 @@ function profile_edit() : void {
 
 					applySkin();
 
-					$('#continue').off('click').on('click', function(data) {
+					$('#continue').rebind('click', function(data) {
 						$.post('data_source_profiles.php?action=item_remove', {
 							__csrf_magic: csrfMagicToken,
 							id: $('#rra_id').val()
