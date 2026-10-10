@@ -22,18 +22,23 @@ $_SERVER['PHP_SELF'] = '/user_admin.php';
 $_SERVER['SERVER_NAME'] = 'localhost';
 require './include/global.php';
 
-function expectUserActionLog(string $action, string $actor): void {
+function probeUserActionLog(string $action, string $actor): void {
+	$before = file_get_contents(cacti_log_file());
+	log_user_action('e2e-log-probe', $action);
 	$log = file_get_contents(cacti_log_file());
 	$message = "User 'e2e-log-probe' was $action by user '$actor'";
-	if ($log === false || strpos($log, $message) === false) {
+	if ($before === false || $log === false || strpos(substr($log, strlen($before)), $message) === false) {
 		throw new RuntimeException('Expected native audit log record is missing.');
 	}
 }
 
+if (!is_file(cacti_log_file())) {
+	cacti_log('NOTE: Native audit fixture started', false, 'AUTHC');
+}
+
 if (PHP_SAPI === 'cli-server') {
 	unset($_SESSION['sess_user_id']);
-	log_user_action('e2e-log-probe', 'web probe');
-	expectUserActionLog('web probe', 'unknown user');
+	probeUserActionLog('web probe', 'unknown user');
 	print "PASS: anonymous web audit actor\n";
 	exit;
 }
@@ -46,24 +51,20 @@ if (log_user_action('', 'empty-user probe') !== false ||
 }
 
 $_SESSION['sess_user_id'] = 1;
-log_user_action('e2e-log-probe', 'admin probe');
-expectUserActionLog('admin probe', 'admin');
+probeUserActionLog('admin probe', 'admin');
 $_SESSION['sess_user_id'] = 2147483647;
-log_user_action('e2e-log-probe', 'missing actor probe');
-expectUserActionLog('missing actor probe', 'user ID 2147483647');
+probeUserActionLog('missing actor probe', 'user ID 2147483647');
 
 unset($_SESSION['sess_user_id']);
 $actor = get_execution_user();
-log_user_action('e2e-log-probe', 'cli probe');
-expectUserActionLog('cli probe', $actor . ' (CLI)');
+probeUserActionLog('cli probe', $actor . ' (CLI)');
 
 // Exercise the real whoami fallback when the execution environment cannot
 // resolve it. The runner disables POSIX lookup for this isolated process.
 $path = getenv('PATH');
 putenv('PATH=');
 try {
-	log_user_action('e2e-log-probe', 'unknown cli probe');
-	expectUserActionLog('unknown cli probe', 'unknown user (CLI)');
+	probeUserActionLog('unknown cli probe', 'unknown user (CLI)');
 } finally {
 	$path === false ? putenv('PATH') : putenv('PATH=' . $path);
 }
