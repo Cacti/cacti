@@ -79,6 +79,16 @@ RUN set -eux; \
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+# Match the checkout owner so the bind-mounted fixture remains writable without
+# a root entrypoint or world-writable application directories.
+ARG CACTI_E2E_UID=1001
+RUN test "$CACTI_E2E_UID" -gt 0 \
+ && addgroup -S cacti \
+ && adduser -S -D -H -u "$CACTI_E2E_UID" -G cacti cacti \
+ && sed -i '/^user =/d; /^group =/d' /usr/local/etc/php-fpm.d/www.conf
+
+USER cacti
+
 WORKDIR /var/www/html/cacti
 
 EXPOSE 9000

@@ -32,6 +32,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
+        CACTI_E2E_UID: ${CACTI_E2E_UID:-1001}
         # Pinning is intentionally loose; CI overrides via
         # `docker compose build --build-arg PLUGIN_*_REF=<sha>` when a
         # specific commit is needed. Public Cacti plugin repos clone over
