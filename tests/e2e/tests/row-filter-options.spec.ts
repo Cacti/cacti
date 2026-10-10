@@ -28,7 +28,7 @@ test.beforeAll(async ({ browser }) => {
     const saved = page.waitForResponse(response => response.url().includes('managers.php') && response.request().method() === 'POST');
     await page.getByRole('button', { name: 'Create', exact: true }).click();
     expect((await saved).status()).toBeLessThan(400);
-    await page.goto('/managers.php');
+    await page.goto('/managers.php?filter=&page=1&rows=-1');
     const link = page.getByRole('link', { name, exact: true });
     await expect(link).toBeVisible();
     managerId = new URL((await link.getAttribute('href'))!, page.url()).searchParams.get('id')!;
@@ -52,7 +52,14 @@ for (const route of [...routes, 'manager notifications']) {
             const address = route === 'manager notifications'
                 ? `/managers.php?action=edit&tab=notifications&id=${managerId}&rows=${rows}`
                 : `/${route}?rows=${rows}`;
-            await page.goto(address);
+            await page.goto(`${address}&filter=E2E%20rows%20filter`);
+            const search = page.getByLabel('Search', { exact: true });
+            await expect(search).toHaveAttribute('id', 'filter');
+            await expect(search).toHaveValue('E2E rows filter');
+            await expect(search).toHaveAttribute('size', '25');
+            const searchNamed = ['cdef.php', 'color.php', 'gprint_presets.php', 'data_input.php', 'data_queries.php', 'data_source_profiles.php', 'data_templates.php', 'graph_templates.php'].includes(route);
+            expect(await search.getAttribute('name')).toBe(searchNamed ? 'filter' : null);
+            await expect(search).toHaveClass(route === 'graph_templates.php' ? 'ui-state-default' : 'ui-state-default ui-corner-all');
             const select = page.locator('#rows');
             await expect(select).toHaveValue(rows);
             expect(await select.evaluate(element => (element as HTMLSelectElement).labels?.length)).toBe(1);
@@ -73,7 +80,7 @@ for (const route of [...routes, 'manager notifications']) {
     });
 }
 
-test('the native rows helper renders captions and options as plain text', async ({ page }) => {
+test('the native filter helpers render captions, options and search values as plain text', async ({ page }) => {
     const fixture = process.env.CACTI_ROWS_FILTER_FIXTURE;
     expect(fixture, 'The native PHP fixture output is required.').toBeTruthy();
     await page.setContent(fs.readFileSync(fixture!, 'utf8'));
@@ -81,5 +88,9 @@ test('the native rows helper renders captions and options as plain text', async 
     await expect(rows).toHaveAttribute('id', 'rows');
     await expect(rows).toHaveValue('30');
     await expect(page.locator('option[value="30"]')).toHaveText('<i>30</i> & more');
-    await expect(page.locator('table b, table i, table script')).toHaveCount(0);
+    const search = page.getByLabel('Search', { exact: true });
+    await expect(search).toHaveValue(`'\"<img src=x onerror=alert(1)>&`);
+    await expect(search).toHaveAttribute('name', 'filter');
+    await expect(search).toHaveClass('ui-state-default');
+    await expect(page.locator('table b, table i, table script, table img')).toHaveCount(0);
 });
