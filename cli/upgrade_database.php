@@ -128,72 +128,93 @@ if (cacti_version_compare($old_cacti_version,CACTI_VERSION,'=')) {
 	exit_version_error($old_cacti_version, 'Unable to identify version, cannot upgrade.');
 }
 
-print 'Upgrading from v' . get_cacti_version_text(false, $old_cacti_version) . PHP_EOL;
+if (!register_process_start('install', 'master', 0, 86400)) {
+	exit_error('An installation or upgrade is already in progress.');
+}
 
-$prev_cacti_version = $old_cacti_version;
-$orig_cacti_version = get_cacti_db_version();
+$upgrade_failed = false;
 
-// loop through versions from old version to the current, performing updates for each version in the chain
-foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code) {
-	// skip versions old than the database version
-	if (cacti_version_compare($old_cacti_version, $cacti_upgrade_version, '>=')) {
-		continue;
-	}
+try {
+	print 'Upgrading from v' . get_cacti_version_text(false, $old_cacti_version) . PHP_EOL;
 
-	// construct version upgrade include path
-	$upgrade_file     = CACTI_PATH_INSTALL . '/upgrades/' . str_replace('.', '_', $cacti_upgrade_version) . '.php';
-	$upgrade_function = 'upgrade_to_' . str_replace('.', '_', $cacti_upgrade_version);
+	$prev_cacti_version = $old_cacti_version;
+	$orig_cacti_version = get_cacti_db_version();
 
-	// check for upgrade version file, then include, check for function and execute
-	if (file_exists($upgrade_file)) {
-		print 'Performing Database Upgrade' . PHP_EOL;
-		print '  - from v' . $prev_cacti_version . ' (DB ' . $orig_cacti_version . ')' . PHP_EOL;
-		print '      to v' . $cacti_upgrade_version . PHP_EOL;
-		include($upgrade_file);
-
-		if (function_exists($upgrade_function)) {
-			call_user_func($upgrade_function);
-			$status = db_install_errors($cacti_upgrade_version);
-		} else {
-			$status = DB_STATUS_ERROR;
-			print 'Error: upgrade function (' . $upgrade_function . ') not found' . PHP_EOL;
+	// loop through versions from old version to the current, performing updates for each version in the chain
+	foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code) {
+		// skip versions old than the database version
+		if (cacti_version_compare($old_cacti_version, $cacti_upgrade_version, '>=')) {
+			continue;
 		}
 
-		if ($status == DB_STATUS_ERROR) {
+		// construct version upgrade include path
+		$upgrade_file     = CACTI_PATH_INSTALL . '/upgrades/' . str_replace('.', '_', $cacti_upgrade_version) . '.php';
+		$upgrade_function = 'upgrade_to_' . str_replace('.', '_', $cacti_upgrade_version);
+
+		// check for upgrade version file, then include, check for function and execute
+		if (file_exists($upgrade_file)) {
+			print 'Performing Database Upgrade' . PHP_EOL;
+			print '  - from v' . $prev_cacti_version . ' (DB ' . $orig_cacti_version . ')' . PHP_EOL;
+			print '      to v' . $cacti_upgrade_version . PHP_EOL;
+			include($upgrade_file);
+
+			if (function_exists($upgrade_function)) {
+				call_user_func($upgrade_function);
+				$status = db_install_errors($cacti_upgrade_version);
+			} else {
+				$status = DB_STATUS_ERROR;
+				print 'Error: upgrade function (' . $upgrade_function . ') not found' . PHP_EOL;
+			}
+
+			if ($status <= DB_STATUS_WARNING) {
+				$upgrade_failed = true;
+
+				break;
+			}
+
+			if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
+				if (!db_execute_prepared('UPDATE version SET cacti = ?', [$cacti_upgrade_version])) {
+					$upgrade_failed = true;
+
+					break;
+				}
+
+				$orig_cacti_version = $cacti_upgrade_version;
+			}
+
+			$prev_cacti_version = $cacti_upgrade_version;
+		}
+
+		if (!db_execute_prepared('UPDATE version SET cacti = ?', [$cacti_upgrade_version])) {
+			$upgrade_failed = true;
+
 			break;
 		}
 
-		if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
-			db_execute_prepared('UPDATE version SET cacti = ?', [$cacti_upgrade_version]);
+		if (cacti_version_compare(CACTI_VERSION, $cacti_upgrade_version, '=')) {
+			$upgrade_failed = !db_execute_prepared('UPDATE version SET cacti = ?', [CACTI_VERSION_FULL]);
 
-			$orig_cacti_version = $cacti_upgrade_version;
+			break;
 		}
-
-		$prev_cacti_version = $cacti_upgrade_version;
 	}
-
-	db_execute_prepared('UPDATE version SET cacti = ?', [$cacti_upgrade_version]);
-
-	if (cacti_version_compare(CACTI_VERSION, $cacti_upgrade_version, '=')) {
-		db_execute_prepared('UPDATE version SET cacti = ?', [CACTI_VERSION_FULL]);
-
-		break;
-	}
+} finally {
+	unregister_process('install', 'master', 0);
 }
 
 print PHP_EOL;
+exit($upgrade_failed ? 1 : 0);
 
 function exit_error(string $text) : void {
 	print "ERROR: $text" . PHP_EOL;
 
-	exit;
+	exit(1);
 }
 
 function exit_version_error(string $old_cacti_version, string $text) : void {
 	exit_error($text . PHP_EOL . '  - from: v' . get_cacti_version_text(false, $old_cacti_version) . PHP_EOL . '      to: v' . CACTI_VERSION_BRIEF_FULL);
 }
 
-function db_install_errors(string $cacti_version) : string {
+function db_install_errors(string $cacti_version) : int {
 	global $database_upgrade_status, $debug, $database_statuses;
 
 	$error_status = DB_STATUS_SKIPPED;

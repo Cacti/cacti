@@ -3666,11 +3666,11 @@ class Installer implements JsonSerializable {
 			putenv('COMPOSER_HOME=' . sys_get_temp_dir() . '/cacti-composer');
 		}
 
-		$composer = cacti_escapeshellcmd(str_replace('\\', '/', $composer));
-		$base     = cacti_escapeshellarg(CACTI_PATH_BASE);
-		$check    = shell_exec("$composer install --dry-run --no-interaction --working-dir=$base 2>&1");
+		$command = [$composer, 'install', '--no-interaction', '--working-dir=' . CACTI_PATH_BASE];
+		$result  = $this->runCommand([...$command, '--dry-run']);
+		$check   = implode(PHP_EOL, $result['output']);
 
-		if ($check === null) {
+		if ($result['exitCode'] !== 0) {
 			log_install_always('', __('WARNING: Composer could not be executed.  Run \'composer install\' from the Cacti directory manually and check its output.'));
 
 			return;
@@ -3711,13 +3711,13 @@ class Installer implements JsonSerializable {
 
 		log_install_always('', __('Refreshing Composer dependencies in include/vendor.'));
 
-		$output = shell_exec("$composer install --no-interaction --no-progress --working-dir=$base 2>&1");
+		$result = $this->runCommand([...$command, '--no-progress']);
 
-		if ($output !== null) {
-			log_install_debug('composer', $output);
+		if ($result['output'] !== []) {
+			log_install_debug('composer', implode(PHP_EOL, $result['output']));
 		}
 
-		if (!is_file(CACTI_PATH_INCLUDE . '/vendor/autoload.php')) {
+		if ($result['exitCode'] !== 0 || !is_file(CACTI_PATH_INCLUDE . '/vendor/autoload.php')) {
 			log_install_always('', __('WARNING: Composer refresh did not complete.  Run \'composer install\' from the Cacti directory manually.'));
 		} else {
 			log_install_always('', __('Composer dependencies refreshed.'));
@@ -4237,7 +4237,14 @@ class Installer implements JsonSerializable {
 			return ['exitCode' => 127, 'output' => [__('Unable to execute the configured PHP binary or CLI script')]];
 		}
 
-		$command   = [$phpBinary, '-q', $script, ...$arguments];
+		return $this->runCommand([$phpBinary, '-q', $script, ...$arguments]);
+	}
+
+	/**
+	 * @param  list<string>                                     $command
+	 * @return array{exitCode: int, output: array<int, string>}
+	 */
+	private function runCommand(array $command) : array {
 		$pipes     = [];
 		$errorFile = tmpfile();
 
@@ -4393,7 +4400,7 @@ class Installer implements JsonSerializable {
 				$failure = $ver_status;
 			}
 
-			if ($failure == DB_STATUS_ERROR) {
+			if ($failure <= DB_STATUS_WARNING) {
 				break;
 			}
 		}

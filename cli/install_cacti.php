@@ -34,6 +34,7 @@ $options = ['Runtime' => 'Cli'];
 
 $should_install = false;
 $force_install  = false;
+$log_options    = [];
 
 display_version();
 
@@ -73,10 +74,10 @@ if (cacti_sizeof($parms)) {
 				if ($tmplevel !== false) {
 					$level = $tmplevel;
 				} else {
-					$level = log_install_level($logname, POLLER_VERBOSITY_DEBUG) + 1;
+					$level = ($log_options[$logname] ?? log_install_level($logname, POLLER_VERBOSITY_DEBUG)) + 1;
 				}
-				$level = log_install_level_sanitize($level);
-				set_config_option($logname, $level);
+				$level                 = log_install_level_sanitize($level);
+				$log_options[$logname] = $level;
 
 				break;
 			case '--version':
@@ -197,97 +198,113 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-db_execute("DELETE FROM settings WHERE name like 'log_install%' or name = 'install_eula'");
-
-include_once(CACTI_PATH_LIBRARY . '/api_automation.php');
-include_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
-include_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
-include_once(CACTI_PATH_LIBRARY . '/api_device.php');
-include_once(CACTI_PATH_LIBRARY . '/data_query.php');
-include_once(CACTI_PATH_LIBRARY . '/import.php');
-include_once(CACTI_PATH_LIBRARY . '/installer.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
-include_once(CACTI_PATH_LIBRARY . '/utility.php');
 
-$options['Step'] = Installer::STEP_INSTALL_CONFIRM;
+if (!register_process_start('install', 'master', 0, 86400)) {
+	print 'An Installation was already in progress' . PHP_EOL;
 
-$results     = ['Step' => $options['Step']];
-$update_char = 'o';
-
-debug_install_array('Options', $options);
-$installer = new Installer($options);
-$results   = $installer->jsonSerialize();
-debug_install_array('Result', $results);
-
-process_install_errors($results);
-
-$install_mode = 'no';
-
-switch ($installer->getMode()) {
-	case Installer::MODE_INSTALL:
-		$install_mode = 'INSTALL CORE';
-
-		break;
-	case Installer::MODE_POLLER:
-		$install_mode = 'INSTALL POLLER';
-
-		break;
-	case Installer::MODE_UPGRADE:
-		$install_mode = 'UPGRADE';
-
-		break;
-	case Installer::MODE_DOWNGRADE:
-		$install_mode = 'DOWNGRADE';
-
-		break;
+	exit(1);
 }
-log_install_always('cli', 'Installer prepared for ' . $install_mode . ' action');
 
-$message = '';
+try {
+	db_execute("DELETE FROM settings WHERE name like 'log_install%' or name = 'install_eula'");
 
-if ($installer->getStep() == Installer::STEP_INSTALL_CONFIRM && $should_install) {
-	$time = '';
-
-	if ($force_install) {
-		$time = '-b';
+	foreach ($log_options as $logname => $level) {
+		set_config_option($logname, $level);
 	}
-	log_install_always('cli', 'Starting installation...');
-	Installer::beginInstall($time, $installer);
-	log_install_always('cli', 'Finished installation...');
+
+	include_once(CACTI_PATH_LIBRARY . '/api_automation.php');
+	include_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
+	include_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+	include_once(CACTI_PATH_LIBRARY . '/api_device.php');
+	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
+	include_once(CACTI_PATH_LIBRARY . '/import.php');
+	include_once(CACTI_PATH_LIBRARY . '/installer.php');
+	include_once(CACTI_PATH_LIBRARY . '/utility.php');
+
+	$options['Step'] = Installer::STEP_INSTALL_CONFIRM;
+
+	$results     = ['Step' => $options['Step']];
+	$update_char = 'o';
+
+	debug_install_array('Options', $options);
+	$installer = new Installer($options);
+	$results   = $installer->jsonSerialize();
+	debug_install_array('Result', $results);
+
+	process_install_errors($results);
+
+	$install_mode = 'no';
+
+	switch ($installer->getMode()) {
+		case Installer::MODE_INSTALL:
+			$install_mode = 'INSTALL CORE';
+
+			break;
+		case Installer::MODE_POLLER:
+			$install_mode = 'INSTALL POLLER';
+
+			break;
+		case Installer::MODE_UPGRADE:
+			$install_mode = 'UPGRADE';
+
+			break;
+		case Installer::MODE_DOWNGRADE:
+			$install_mode = 'DOWNGRADE';
+
+			break;
+	}
+	log_install_always('cli', 'Installer prepared for ' . $install_mode . ' action');
+
+	$message = '';
+
+	if ($installer->getStep() == Installer::STEP_INSTALL_CONFIRM && $should_install) {
+		$time = '';
+
+		if ($force_install) {
+			$time = '-b';
+		}
+		log_install_always('cli', 'Starting installation...');
+
+		Installer::beginInstall($time, $installer);
+		log_install_always('cli', 'Finished installation...');
+	}
+
+	$step     = $installer->getStep();
+	$exitCode = 0;
+	log_install_high('cli','getStep(): ' . $step);
+
+	switch ($installer->getStep()) {
+		case Installer::STEP_INSTALL:
+			log_install_always('cli', 'An Installation was already in progress');
+			$exitCode = 1;
+
+			break;
+		case Installer::STEP_INSTALL_CONFIRM:
+			log_install_always('cli', 'No errors were detected.  Install not performed as --install not specified');
+
+			break;
+		case Installer::STEP_ERROR:
+			log_install_always('cli', 'One or more errors occurred during install, please refer to log files');
+			process_install_errors(['Errors'=>$installer->getErrors()]);
+			$exitCode = 1;
+
+			break;
+		case Installer::STEP_COMPLETE:
+			log_install_always('cli', 'Installation has now completed, you may launch the web console');
+
+			break;
+		default:
+			log_install_always('cli', 'Unexpected step (' . $installer->getStep() . ')');
+			$exitCode = 1;
+
+			break;
+	}
+
+	print PHP_EOL;
+} finally {
+	unregister_process('install', 'master', 0);
 }
-
-$step     = $installer->getStep();
-$exitCode = 0;
-log_install_high('cli','getStep(): ' . $step);
-
-switch ($installer->getStep()) {
-	case Installer::STEP_INSTALL:
-		log_install_always('cli', 'An Installation was already in progress');
-		$exitCode = 1;
-
-		break;
-	case Installer::STEP_INSTALL_CONFIRM:
-		log_install_always('cli', 'No errors were detected.  Install not performed as --install not specified');
-
-		break;
-	case Installer::STEP_ERROR:
-		log_install_always('cli', 'One or more errors occurred during install, please refer to log files');
-		process_install_errors(['Errors'=>$installer->getErrors()]);
-		$exitCode = 1;
-
-		break;
-	case Installer::STEP_COMPLETE:
-		log_install_always('cli', 'Installation has now completed, you may launch the web console');
-
-		break;
-	default:
-		log_install_always('cli', 'Unexpected step (' . $installer->getStep() . ')');
-		$exitCode = 1;
-
-		break;
-}
-
-print PHP_EOL;
 
 exit($exitCode);
 
@@ -443,6 +460,8 @@ function process_install_errors(array $results) : void {
 
 		print PHP_EOL . 'Unable to continue as ' . $count . ' issue' . ($count == 1 ? '' : 's') . ' in ' . $sections . ' section' . ($sections == 1 ? '' : 's') . ' were found.' . PHP_EOL;
 
+		// exit does not execute the caller's finally block.
+		unregister_process('install', 'master', 0);
 		exit(1);
 	}
 }
