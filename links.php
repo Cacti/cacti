@@ -62,6 +62,16 @@ switch (grv('action')) {
 
 		break;
 	case 'ajax_dnd':
+		if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+			header('Allow: POST');
+			http_response_code(405);
+			exit;
+		}
+
+		if (!csrf_check(false)) {
+			http_response_code(403);
+			exit;
+		}
 		$new_order = gnrv('dnd');
 
 		links_reorder($new_order);
@@ -393,7 +403,8 @@ function pages() : void {
 			$('#dnd').find('tr:first').addClass('nodrag').addClass('nodrop');
 			$('#dnd').tableDnD({
 				onDrop: function(table, row) {
-					loadUrl({url:'links.php?action=ajax_dnd&'+$.tableDnD.serialize()})
+					const request = cactiPreparePostRequest('links.php', 'action=ajax_dnd&' + $.tableDnD.serialize());
+					postUrl({url: request.url}, request.data);
 				}
 			});
 		});
