@@ -32,6 +32,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
+        CACTI_E2E_UID: ${CACTI_E2E_UID:-1001}
         # Match the Dockerfile's immutable defaults. Environment overrides
         # accept commits, branches, or tags for compatibility experiments.
         PLUGIN_THOLD_REPO: ${PLUGIN_THOLD_REPO:-https://github.com/Cacti/plugin_thold.git}
