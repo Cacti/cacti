@@ -1419,13 +1419,7 @@ function data_query() {
 					<td>
 						<select id='rows' name='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
-							<?php
-							if (cacti_sizeof($item_rows)) {
-								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
-								}
-							}
-							?>
+							<?php html_create_list($item_rows, '', '', get_request_var('rows'));?>
 						</select>
 					</td>
 					<td>

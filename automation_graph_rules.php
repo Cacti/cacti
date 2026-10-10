@@ -905,13 +905,7 @@ function automation_graph_rules() {
 						<td>
 							<select id='rows'>
 								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
-								<?php
-								if (cacti_sizeof($item_rows) > 0) {
-									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected':'') . '>' . $value . "</option>\n";
-									}
-								}
-								?>
+								<?php html_create_list($item_rows, '', '', get_request_var('rows'));?>
 							</select>
 						</td>
 						<td>

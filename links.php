@@ -341,11 +341,7 @@ function pages() {
 					<td>
 						<select id='rows'>
 							<option value=-1 <?php get_request_var('rows') == -1 ? 'selected':'';?>><?php print __('Default');?></option>
-							<?php
-							foreach ($item_rows as $key => $row) {
-								echo "<option value='" . $key . "'" . ($key == get_request_var('rows') ? ' selected' : '') . '>' . $row . '</option>';
-							}
-							?>
+							<?php html_create_list($item_rows, '', '', get_request_var('rows'));?>
 						</select>
 					</td>
 					<td>
