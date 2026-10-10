@@ -117,6 +117,8 @@ if (cacti_sizeof($parms)) {
 
 print 'NOTE: ' . cacti_sizeof($plugins) . ' Plugins to be acted on.' . PHP_EOL;
 
+$success = true;
+
 if (cacti_sizeof($plugins)) {
 	foreach($plugins as $plugin) {
 		print "NOTE: Plugin '$plugin' processing started" . PHP_EOL;
@@ -131,9 +133,9 @@ if (cacti_sizeof($plugins)) {
 					$message = '';
 
 					if (api_plugin_can_install($plugin, $message)) {
-						api_plugin_install($plugin);
+						$result = api_plugin_install($plugin);
 
-						if (api_plugin_installed($plugin)) {
+						if ($result !== false && api_plugin_installed($plugin)) {
 							print "NOTE: Plugin $plugin installed successfully." . PHP_EOL;
 
 							$installed = true;
@@ -143,17 +145,26 @@ if (cacti_sizeof($plugins)) {
 
 								print "NOTE: Plugin $plugin enabled." . PHP_EOL;
 							}
-
+						} else {
+							$success = false;
+							print "ERROR: Plugin '$plugin' installation failed. Review the plugin setup and Cacti log before enabling it." . PHP_EOL;
 						}
 					} else {
+						$success = false;
 						print "WARNING: Plugin '$plugin' can not install.  Message is: $message" . PHP_EOL;
 					}
 				} else {
-					$installed = true;
-
-					print "WARNING: Plugin '$plugin' already installed." . PHP_EOL;
+					$status = db_fetch_cell_prepared('SELECT status FROM plugin_config WHERE directory = ?', array($plugin));
+					if ($status == 2) {
+						$success = false;
+						print "ERROR: Plugin '$plugin' needs configuration. Review the plugin setup and Cacti log before enabling it." . PHP_EOL;
+					} else {
+						$installed = true;
+						print "WARNING: Plugin '$plugin' already installed." . PHP_EOL;
+					}
 				}
 			} else {
+				$success = false;
 				print "WARNING: Plugin '$plugin' missing plugin directory.  Plugin not installed" . PHP_EOL;
 			}
 
@@ -178,6 +189,8 @@ if (cacti_sizeof($plugins)) {
 		}
 	}
 }
+
+exit($success ? 0 : 1);
 
 /**
  * Handles the plugin manage install allrealms. Used as part of Cacti's CLI functionality.

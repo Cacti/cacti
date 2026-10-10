@@ -164,6 +164,7 @@ Cacti CHANGELOG
 -issue#7979: Fail closed on invalid, cyclic, or oversized CDEF definitions
 -issue#7981: Require a POST token for actions that reorder or delete items, trees and link pages
 -issue#7986: Preserve child exit codes observed by cacti_exec
+-issue#8002: Propagate plugin install-hook failures to the API, web manager, and CLI while disabling hooks and retaining setup data for recovery
 -issue#8025: An enum type in a table definition can cause problems when creating the table
 -issue#8042: Detect a real TTY instead of a dead github_actions check before calling stty size
 -issue#8063: Support searching by graph ID on the Graphs list/preview and Aggregate Graphs pages
