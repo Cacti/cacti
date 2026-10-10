@@ -1,23 +1,31 @@
 repos:
   - repo: local
     hooks:
+      - id: repository-guards
+        name: Repository commit guards
+        entry: sh tests/tools/pre-commit-check.sh guards
+        language: system
+        pass_filenames: false
+        always_run: true
+
       - id: lintcheck
         name: PHP Lint Checking
         entry: sh tests/tools/pre-commit-check.sh lint
         language: system
         types: [php]
-        always_run: true
 
       - id: phpcsfixer
         name: PHP CS Fixer Validation
         entry: sh tests/tools/pre-commit-check.sh phpcsfixer
         language: system
-        types: [php]
-        always_run: true
+        types: [file]
+        files: '(\.php$|^composer\.json$)'
+        pass_filenames: false
 
       - id: phpstan
         name: PHPStan Validation
         entry: sh tests/tools/pre-commit-check.sh phpstan
         language: system
-        types: [php]
-        always_run: true
+        types: [file]
+        files: '(\.php$|^composer\.json$|^phpstan.*\.neon$)'
+        pass_filenames: false
