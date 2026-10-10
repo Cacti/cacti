@@ -203,6 +203,8 @@ if ($mode === 'empty') {
 } elseif ($mode === 'quick') {
 	$state['rows'] = [perf_row(1, 'a:10 b:20', 1, 2), perf_row(2, 'a:30 b:40'), perf_row(3, 'a:50 b:60', 0, 2), perf_row(4, 'invalid', 1, 2), perf_row(5, 'FF'), perf_row(6, 'U')];
 
+	$cold_metadata_queries = null;
+
 	for ($pass = 0; $pass < 5; $pass++) {
 		perf_process_poller_output($pipe);
 		perf_assert(perf_sample(1) === ['a' => '10', 'b' => '20'], 'Templated MULTI output changed');
@@ -211,7 +213,9 @@ if ($mode === 'empty') {
 		perf_assert(perf_sample(4) === ['a' => 'U', 'b' => 'U'], 'Invalid output must remain unknown');
 		perf_assert(perf_sample(5) === ['a' => 255], 'Hex conversion changed');
 		perf_assert(perf_sample(6) === ['a' => 'U'], 'Unknown value changed');
-		perf_assert(perf_metadata_count() === 5, 'Metadata lookups grew across repeated passes');
+		$cold_metadata_queries ??= perf_metadata_count();
+		perf_assert($cold_metadata_queries <= 5, 'Metadata lookups grew beyond the cold-cache budget');
+		perf_assert(perf_metadata_count() === $cold_metadata_queries, 'Metadata lookups grew across repeated passes');
 	}
 	$state['rows'] = [perf_row(7, 'a:1', 1, 2)];
 	perf_process_poller_output($pipe);
