@@ -65,7 +65,11 @@ RUN mkdir -p /var/cacti-state /var/run/apache2 /var/lock/apache2 \
 # include/config.php (whatever the developer had) clobbered our
 # container-friendly config, killing every protected request.
 COPY --chown=www-data:www-data . /var/www/html
-RUN rm -f /var/www/html/include/config.php
+COPY tests/e2e/docker/write-config.php /usr/local/lib/cacti-write-config.php
+RUN mkdir -p /var/www/html/cache/boost /var/www/html/cache/mibcache \
+        /var/www/html/cache/purifier /var/www/html/cache/realtime \
+        /var/www/html/cache/spikekill /var/www/html/log /var/www/html/rra \
+ && chown -R www-data:www-data /var/www/html/cache /var/www/html/log /var/www/html/rra
 
 # Inline entrypoint. When ROLE=poller, generate a self-signed cert and switch Apache
 # to HTTPS on 443. Otherwise serve plain HTTP on 80.
@@ -105,14 +109,9 @@ fi
 # Make sure include/config.php exists with the right DB pointer. We don't overwrite
 # an existing one (setup.sh may have customised it).
 if [ ! -f /var/www/html/include/config.php ] && [ -f /var/www/html/include/config.php.dist ]; then
-    cp /var/www/html/include/config.php.dist /var/www/html/include/config.php
-    sed -i \
-        -e "s/\\\$database_hostname *=.*/\$database_hostname = '${DB_HOST:-cacti-db}';/" \
-        -e "s/\\\$database_default *=.*/\$database_default  = '${DB_NAME:-cacti}';/" \
-        -e "s/\\\$database_username *=.*/\$database_username = '${DB_USER:-cactiuser}';/" \
-        -e "s/\\\$database_password *=.*/\$database_password = '${DB_PASS:-cactiuser}';/" \
-        -e "s|\\\$url_path *=.*|\$url_path = '/';|" \
-        /var/www/html/include/config.php
+    php /usr/local/lib/cacti-write-config.php \
+        /var/www/html/include/config.php.dist /var/www/html/include/config.php
+    chown www-data:www-data /var/www/html/include/config.php
 fi
 
 exec "$@"
