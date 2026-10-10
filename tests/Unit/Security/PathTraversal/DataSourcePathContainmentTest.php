@@ -163,5 +163,3 @@ test('a symlink pivot below the RRA directory is rejected even for a not-yet-cre
 		rmdir($outside);
 	}
 });
-
-
