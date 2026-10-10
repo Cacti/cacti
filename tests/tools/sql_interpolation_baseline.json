@@ -7,7 +7,6 @@
     "cli/add_tree.php": 3,
     "cli/analyze_database.php": 2,
     "cli/audit_database.php": 7,
-    "cli/convert_tables.php": 1,
     "cli/fix_mediumint.php": 1,
     "cli/repair_database.php": 1,
     "cli/repair_graphs.php": 3,
