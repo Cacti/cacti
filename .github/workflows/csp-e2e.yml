@@ -25,6 +25,25 @@ on:
       - include/themes/sunrise/main.js
       - tests/integration/**
       - tests/e2e/**
+      - pollers.php
+      - sites.php
+      - links.php
+      - user_domains.php
+      - managers.php
+      - cdef.php
+      - vdef.php
+      - color.php
+      - gprint_presets.php
+      - data_input.php
+      - data_queries.php
+      - data_source_profiles.php
+      - data_templates.php
+      - graph_templates.php
+      - host_templates.php
+      - automation_snmp.php
+      - automation_templates.php
+      - automation_graph_rules.php
+      - automation_tree_rules.php
       - .github/workflows/csp-e2e.yml
 
 permissions:
@@ -184,6 +203,10 @@ jobs:
       - name: Run client state browser regressions
         working-directory: tests/e2e
         run: node ./node_modules/@playwright/test/cli.js test tests/client-state.spec.ts
+
+      - name: Run native row-option regressions
+        working-directory: tests/e2e
+        run: node node_modules/@playwright/test/cli.js test tests/row-filter-options.spec.ts
 
       - name: Upload Playwright report
         if: failure()
