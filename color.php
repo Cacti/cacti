@@ -373,7 +373,7 @@ function color_import() {
 	html_start_box( __('Import Colors'), '100%', '', '3', 'center', '');
 
 	form_alternate_row();?>
-		<td width='50%'><font class='textEditTitle'><?php print __('Import Colors from Local File'); ?></font><br>
+		<td width='50%'><span class='textEditTitle'><?php print __('Import Colors from Local File'); ?></span><br>
 			<?php print __('Please specify the location of the CSV file containing your Color information.');?>
 		</td>
 		<td class='left'>
@@ -385,7 +385,7 @@ function color_import() {
 		</td>
 	</tr><?php
 	form_alternate_row();?>
-		<td width='50%'><font class='textEditTitle'><?php print __('Overwrite Existing Data?');?></font><br>
+		<td width='50%'><span class='textEditTitle'><?php print __('Overwrite Existing Data?');?></span><br>
 			<?php print __('Should the import process be allowed to overwrite existing data?  Please note, this does not mean delete old rows, only update duplicate rows.');?>
 		</td>
 		<td class='left'>

@@ -23,6 +23,22 @@ on:
       - include/realtime.js
       - include/themes/midwinter/main.js
       - include/themes/sunrise/main.js
+      - auth_login.php
+      - auth_changepassword.php
+      - install/install.php
+      - graph_realtime.php
+      - about.php
+      - include/content/iframe-example.html
+      - cdef.php
+      - color.php
+      - data_input.php
+      - data_queries.php
+      - data_source_profiles.php
+      - data_templates.php
+      - gprint_presets.php
+      - graph_templates.php
+      - vdef.php
+      - host_templates.php
       - tests/integration/**
       - tests/e2e/**
       - .github/workflows/csp-e2e.yml
@@ -164,6 +180,19 @@ jobs:
       - name: Run Playwright suite (core CSP)
         working-directory: tests/e2e
         run: node node_modules/@playwright/test/cli.js test tests/csp.spec.ts
+
+      - name: Prepare real-time popup for document tests
+        working-directory: tests/e2e
+        run: |
+          docker compose exec -T php mkdir -p /var/www/html/cacti/cache/realtime
+          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti \
+            -e "REPLACE INTO settings (name,value) VALUES ('realtime_enabled','on'),('realtime_cache_path','/var/www/html/cacti/cache/realtime');"
+          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti \
+            -e "UPDATE user_auth SET password_change='on' WHERE username='admin';"
+
+      - name: Run document semantics browser regressions
+        working-directory: tests/e2e
+        run: node ./node_modules/@playwright/test/cli.js test tests/document-semantics.spec.ts
 
       - name: Run Playwright suite (plugin CSP -- thold + monitor)
         working-directory: tests/e2e
