@@ -1,0 +1,14 @@
+name: Set up CI Docker
+description: Use an isolated Docker daemon with a public registry cache before falling back to Docker Hub.
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Docker with a registry mirror
+      uses: docker/setup-docker-action@e43656e248c0bd0647d3f5c195d116aacf6fcaf4 # v4
+      with:
+        version: v29.9.0
+        daemon-config: |
+          {
+            "registry-mirrors": ["https://mirror.gcr.io"]
+          }
