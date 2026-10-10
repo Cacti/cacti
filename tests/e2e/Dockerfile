@@ -84,6 +84,16 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=20s --retries=3 \
     CMD SCRIPT_NAME=/ping SCRIPT_FILENAME=/ping REQUEST_METHOD=GET \
         cgi-fcgi -bind -connect 127.0.0.1:9000 | grep -q '^pong$'
 
+# Match the checkout owner so the bind-mounted fixture remains writable without
+# a root entrypoint or world-writable application directories.
+ARG CACTI_E2E_UID=1001
+RUN test "$CACTI_E2E_UID" -gt 0 \
+ && addgroup -S cacti \
+ && adduser -S -D -H -u "$CACTI_E2E_UID" -G cacti cacti \
+ && sed -i '/^user =/d; /^group =/d' /usr/local/etc/php-fpm.d/www.conf
+
+USER cacti
+
 WORKDIR /var/www/html/cacti
 
 EXPOSE 9000
