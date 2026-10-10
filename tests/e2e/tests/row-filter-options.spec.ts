@@ -12,6 +12,13 @@ let managerId: string;
 test.beforeAll(async ({ browser }) => {
     const page = await browser.newPage();
     await login(page);
+    await page.goto('/auth_profile.php?action=edit&tab=general');
+    if (await page.locator('#selected_theme').inputValue() !== 'classic') {
+        const changed = page.waitForResponse(response => response.url().includes('action=update_data') && response.request().method() === 'POST');
+        await page.locator('#selected_theme').selectOption('classic');
+        expect((await changed).ok()).toBeTruthy();
+        await page.waitForLoadState('networkidle');
+    }
     const name = `E2E rows ${Date.now().toString(36)}`;
     await page.goto('/managers.php?action=edit&tab=general');
     await page.locator('#description').fill(name);
