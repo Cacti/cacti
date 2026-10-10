@@ -4,7 +4,7 @@
 # committed under include/vendor, so Composer is intentionally not installed
 # here.
 
-FROM php:8.2-fpm-alpine
+FROM php:8.2.34-fpm-alpine3.24@sha256:67d419a46a0f68727fa387817eabb448db7ffc48ac8b6146adaa2009974324f4
 
 LABEL org.opencontainers.image.title="cacti-e2e-php" \
       org.opencontainers.image.source="https://github.com/Cacti/cacti" \
@@ -12,13 +12,9 @@ LABEL org.opencontainers.image.title="cacti-e2e-php" \
 
 # Build-time packages for the ext compile, then runtime packages. Split into
 # two groups so the build-deps can be dropped in a single --virtual cleanup.
-# `git` is kept in the runtime layer because the plugin clone step below needs
-# it; alternative would be to clone in a builder stage, but a single image
-# stays simpler for CI debugging.
 RUN set -eux; \
     apk add --no-cache \
         bash \
-        git \
         mariadb-client \
         fcgi \
         libpng \
@@ -57,24 +53,24 @@ RUN set -eux; \
     apk del --no-network .build-deps; \
     rm -rf /var/cache/apk/*
 
-# Plugin clone for the CSP harness. Build args let CI pin a branch/tag without
-# editing the Dockerfile. Defaults track the 1.2.x development line because
-# that matches the Cacti branch this harness exercises. Clones go into a
+# Plugin checkout for the CSP harness. Defaults pin tested commits; build args
+# still accept commits, branches, or tags for compatibility experiments.
+# Checkouts go into a
 # staging directory; the entrypoint copies them into place under the bind-
 # mounted plugins/ tree at first start (the bind mount would otherwise hide
 # anything baked into the image).
 ARG PLUGIN_THOLD_REPO=https://github.com/Cacti/plugin_thold.git
-ARG PLUGIN_THOLD_REF=develop
+ARG PLUGIN_THOLD_REF=6bbfb58492b1e8ce2aeee4690659e54ceb4d1226
 ARG PLUGIN_MONITOR_REPO=https://github.com/Cacti/plugin_monitor.git
-ARG PLUGIN_MONITOR_REF=develop
+ARG PLUGIN_MONITOR_REF=353766eba575e6952470375550607e14b5a57a23
 
+COPY checkout-plugin.sh /usr/local/lib/cacti-checkout-plugin.sh
 RUN set -eux; \
+    apk add --no-cache --virtual .plugin-fetch git; \
     mkdir -p /opt/cacti-plugins; \
-    git clone --depth=1 --branch "${PLUGIN_THOLD_REF}" \
-        "${PLUGIN_THOLD_REPO}" /opt/cacti-plugins/thold; \
-    git clone --depth=1 --branch "${PLUGIN_MONITOR_REF}" \
-        "${PLUGIN_MONITOR_REPO}" /opt/cacti-plugins/monitor; \
-    rm -rf /opt/cacti-plugins/thold/.git /opt/cacti-plugins/monitor/.git
+    sh /usr/local/lib/cacti-checkout-plugin.sh "${PLUGIN_THOLD_REPO}" "${PLUGIN_THOLD_REF}" /opt/cacti-plugins/thold; \
+    sh /usr/local/lib/cacti-checkout-plugin.sh "${PLUGIN_MONITOR_REPO}" "${PLUGIN_MONITOR_REF}" /opt/cacti-plugins/monitor; \
+    apk del --no-network .plugin-fetch
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
