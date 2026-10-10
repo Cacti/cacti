@@ -727,8 +727,9 @@ function poller_get_nt_rrd_field_names(int $local_data_id, array &$cache) : arra
 function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 	global $debug;
 
-	static $rrd_field_names = [];
-	static $checked_bad     = false;
+	static $rrd_field_names        = [];
+	static $rrd_field_names_loaded = false;
+	static $checked_bad            = false;
 
 	// per-data-source metadata caches, keyed by local_data_id and held static so each data
 	// source is queried at most once per poller process (not once per row or per re-entry):
@@ -768,12 +769,13 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 		ORDER BY po.local_data_id
 		$limit");
 
-	if (!cacti_sizeof($rrd_field_names)) {
+	if (!$rrd_field_names_loaded) {
 		$rrd_field_names = array_rekey(
 			db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
 				CONCAT(data_template_id, "_", data_name) AS keyname, data_source_names AS data_source_name
 				FROM poller_data_template_field_mappings'),
 			'keyname', ['data_source_name']);
+		$rrd_field_names_loaded = true;
 	}
 
 	if (cacti_sizeof($results)) {

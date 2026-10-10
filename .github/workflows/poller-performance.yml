@@ -1,0 +1,120 @@
+name: Poller performance
+
+on:
+  pull_request:
+    branches: [develop, 1.2.x]
+  push:
+    branches: [develop, 1.2.x]
+  schedule:
+    - cron: '17 6 * * 1'
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      full:
+        description: Run synthetic scale benchmarks as well as regressions
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: poller-performance-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  select:
+    runs-on: ubuntu-24.04
+    outputs:
+      run: ${{ steps.select.outputs.run }}
+      full: ${{ steps.select.outputs.full }}
+      refs: ${{ steps.select.outputs.refs }}
+      matrix: ${{ steps.select.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - id: select
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.sha }}
+          FULL: ${{ inputs.full }}
+          TRACK: ${{ github.base_ref || github.ref_name }}
+        run: |
+          python3 tests/performance/test_ci_scope.py
+          python3 tests/performance/ci_scope.py
+
+  regressions:
+    needs: select
+    if: needs.select.outputs.run == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.select.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ matrix.ref }}
+          persist-credentials: false
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+      - name: Run isolated production-code regressions
+        run: |
+          php tests/performance/poller.php quick
+          php tests/performance/poller.php empty
+          php tests/performance/poller.php exec
+
+  scale:
+    needs: select
+    if: needs.select.outputs.full == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        ref: ${{ fromJSON(needs.select.outputs.refs) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ matrix.ref }}
+          persist-credentials: false
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.4'
+          coverage: none
+      - name: Record synthetic processing benchmarks
+        run: |
+          python3 tests/performance/verify_mutations.py
+          mkdir -p performance-results
+          php -d memory_limit=512M tests/performance/poller.php scale 150000 > performance-results/150000.json
+          php -d memory_limit=512M tests/performance/poller.php scale 1000000 > performance-results/1000000.json
+          php -d memory_limit=512M tests/performance/poller.php scale 2500000 > performance-results/2500000.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: poller-performance-${{ strategy.job-index }}
+          path: performance-results
+          retention-days: 90
+
+  gate:
+    name: Poller performance gate
+    needs: [select, regressions, scale]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require successful selection and selected tests
+        env:
+          SELECT: ${{ needs.select.result }}
+          REGRESSIONS: ${{ needs.regressions.result }}
+          SCALE: ${{ needs.scale.result }}
+          RUN: ${{ needs.select.outputs.run }}
+          FULL: ${{ needs.select.outputs.full }}
+        run: |
+          test "$SELECT" = success
+          if [ "$RUN" = true ]; then test "$REGRESSIONS" = success; fi
+          if [ "$FULL" = true ]; then test "$SCALE" = success; fi
