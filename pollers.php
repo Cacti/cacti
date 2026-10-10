@@ -924,12 +924,12 @@ function pollers() {
 	<tr class='even'>
 		<td>
 			<form id='form_poller' action='pollers.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<?php html_search_filter();?>
-					<?php html_rows_filter(__('Collectors'));?>
+					<?php html_rows_filter(__('Rows'));?>
 					<td>
-						<?php print __('Refresh');?>
+						<label for='refresh'><?php print __('Refresh');?></label>
 					</td>
 					<td>
 						<select id='refresh'>

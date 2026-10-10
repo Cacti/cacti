@@ -53,7 +53,7 @@ if (!isset_request_var('headercontent')) { ?>
 	<div id='cactiContent' class='cactiContent'>
 		<?php if (isset($user_menu) && is_array($user_menu)) {?>
 		<div style='display:none;' id='navigation' class='cactiConsoleNavigationArea'>
-			<table style='width:100%;'>
+			<table role='presentation' style='width:100%;'>
 				<?php draw_menu($user_menu);?>
 				<tr>
 					<td style='text-align:center;'>

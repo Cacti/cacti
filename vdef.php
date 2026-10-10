@@ -793,10 +793,10 @@ function vdef_filter() {
 	<tr class='even'>
 		<td>
 			<form id='form_vdef' action='vdef.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<?php html_search_filter();?>
-					<?php html_rows_filter(__('VDEFs'));?>
+					<?php html_rows_filter(__('Rows'));?>
                     <td>
 						<span>
 							<input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>

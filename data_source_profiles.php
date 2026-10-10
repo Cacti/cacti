@@ -971,10 +971,10 @@ function profile() {
 	<tr class='even'>
 		<td>
 			<form id='form_dsp' action='data_source_profiles.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<?php html_search_filter(true);?>
-					<?php html_rows_filter(__('Profiles'), true);?>
+					<?php html_rows_filter(__('Rows'), true);?>
 					<td>
 						<span>
 							<input type='checkbox' id='has_data' <?php print (get_request_var('has_data') == 'true' ? 'checked':'');?>>

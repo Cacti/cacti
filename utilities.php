@@ -1049,10 +1049,10 @@ function utilities_view_user_log() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_userlog' action='utilities.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('User');?>
+						<label for='username'><?php print __('User');?></label>
 					</td>
 					<td>
 						<select id='username'>
@@ -1082,7 +1082,7 @@ function utilities_view_user_log() {
 						</select>
 					</td>
 					<td>
-						<?php print __('Attempts');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>
@@ -1105,7 +1105,7 @@ function utilities_view_user_log() {
 					</td>
 				</tr>
 			</table>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Search');?>
@@ -1825,7 +1825,7 @@ function utilities_view_snmp_cache() {
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
-						<?php print __('Rows');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>
@@ -2138,7 +2138,7 @@ function utilities_view_poller_cache() {
 						</select>
 					</td>
 					<td>
-						<?php print __('Entries');?>
+						<label for='rows'><?php print __('Rows');?></label>
 					</td>
 					<td>
 						<select id='rows'>
@@ -3090,7 +3090,7 @@ function snmpagent_utilities_run_cache() {
 							</select>
 						</td>
 						<td>
-							<?php print __('OIDs');?>
+							<label for='rows'><?php print __('Rows');?></label>
 						</td>
 						<td>
 							<select id='rows'>
@@ -3360,7 +3360,7 @@ function snmpagent_utilities_run_eventlog(){
 							</select>
 						</td>
 						<td>
-							<?php print __('Entries');?>
+							<label for='rows'><?php print __('Rows');?></label>
 						</td>
 						<td>
 							<select id='rows'>

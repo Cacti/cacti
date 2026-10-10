@@ -25,29 +25,60 @@ on:
       - include/themes/sunrise/main.js
       - auth_login.php
       - auth_changepassword.php
-      - tests/integration/**
-      - tests/e2e/**
-      - lib/html.php
-      - tests/fixtures/Core/RowsFilterProbe.php
-      - pollers.php
-      - sites.php
-      - links.php
-      - user_domains.php
-      - managers.php
+      - install/install.php
+      - graph_realtime.php
+      - about.php
+      - include/content/iframe-example.html
       - cdef.php
-      - vdef.php
       - color.php
-      - gprint_presets.php
       - data_input.php
       - data_queries.php
       - data_source_profiles.php
       - data_templates.php
+      - gprint_presets.php
       - graph_templates.php
+      - vdef.php
       - host_templates.php
+      - host.php
+      - sites.php
+      - pollers.php
+      - plugins.php
+      - links.php
+      - user_domains.php
+      - managers.php
+      - lib/clog_webapi.php
+      - automation_devices.php
+      - automation_networks.php
       - automation_snmp.php
       - automation_templates.php
       - automation_graph_rules.php
       - automation_tree_rules.php
+      - user_admin.php
+      - user_group_admin.php
+      - graphs.php
+      - graphs_items.php
+      - graphs_new.php
+      - aggregate_graphs.php
+      - data_debug.php
+      - data_sources.php
+      - rrdcheck.php
+      - rrdcleaner.php
+      - lib/api_automation.php
+      - tree.php
+      - lib/html.php
+      - lib/html_tree.php
+      - lib/html_graph.php
+      - graph_view.php
+      - index.php
+      - include/top_header.php
+      - include/top_general_header.php
+      - utilities.php
+      - graph.php
+      - lib/html_form.php
+      - tests/fixtures/Core/GeneralMenuProbe.php
+      - tests/integration/**
+      - tests/e2e/**
+      - tests/fixtures/Core/RowsFilterProbe.php
       - .github/workflows/csp-e2e.yml
 
 permissions:
@@ -193,7 +224,6 @@ jobs:
         run: |
           docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti -e "UPDATE user_auth SET password_change='on' WHERE username='admin';"
           node ./node_modules/@playwright/test/cli.js test tests/auth-form-semantics.spec.ts
-
       - name: Run Playwright suite (plugin CSP -- thold + monitor)
         working-directory: tests/e2e
         # Separate step so a plugin-clone failure or a plugin-side CSP
@@ -203,23 +233,33 @@ jobs:
         # docker compose up --build above runs the clone.
         run: node node_modules/@playwright/test/cli.js test tests/csp-plugins.spec.ts
 
-      - name: Enable real-time popup in disposable fixture
-        working-directory: tests/e2e
-        run: |
-          docker compose exec -T php mkdir -p /var/www/html/cacti/cache/realtime
-          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti \
-            -e "REPLACE INTO settings (name,value) VALUES ('realtime_enabled','on'),('realtime_cache_path','/var/www/html/cacti/cache/realtime');"
-
       - name: Run client state browser regressions
         working-directory: tests/e2e
         run: node ./node_modules/@playwright/test/cli.js test tests/client-state.spec.ts
 
-      - name: Run native row-option regressions
+      - name: Run consolidated accessibility browser regressions
         working-directory: tests/e2e
+        env:
+          CACTI_GENERAL_MENU_FIXTURE: ${{ runner.temp }}/cacti-general-menu.html
+          CACTI_ROWS_FILTER_FIXTURE: ${{ runner.temp }}/cacti-row-filter.html
         run: |
-          docker compose exec -T php php tests/fixtures/Core/RowsFilterProbe.php > "$RUNNER_TEMP/cacti-row-filter.html"
-          export CACTI_ROWS_FILTER_FIXTURE="$RUNNER_TEMP/cacti-row-filter.html"
-          node node_modules/@playwright/test/cli.js test tests/row-filter-options.spec.ts
+          docker compose exec -T php php cli/import_package.php --filename=install/templates/Generic_SNMP_Device.xml.gz
+          # Restore package-carried files so the browser exercises the checkout.
+          git -C ../.. restore --source=HEAD --worktree -- scripts/ss_hstats.php scripts/ping.pl resource/snmp_queries/interface.xml
+          docker compose exec -T php php cli/add_device.php --description="E2E renderer device" --ip=127.0.0.1 --template=0 --version=0 --avail=none --disable=0
+          docker compose exec -T php php cli/add_graphs.php --graph-type=cg --graph-template-id=1 --host-id=1 --graph-title="E2E renderer graph"
+          docker compose exec -T php php cli/add_data_query.php --host-id=1 --data-query-id=1 --reindex-method=0
+          docker compose exec -T php mkdir -p /var/www/html/cacti/cache/realtime
+          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti \
+            -e "REPLACE INTO settings (name,value) VALUES ('realtime_enabled','on'),('realtime_cache_path','/var/www/html/cacti/cache/realtime'); UPDATE user_auth SET password_change='on' WHERE username='admin';"
+          docker compose exec -T php php tests/fixtures/Core/GeneralMenuProbe.php > "$CACTI_GENERAL_MENU_FIXTURE"
+          docker compose exec -T php php tests/fixtures/Core/RowsFilterProbe.php > "$CACTI_ROWS_FILTER_FIXTURE"
+          node node_modules/@playwright/test/cli.js test \
+            tests/account-filter-labels.spec.ts tests/admin-filter-labels.spec.ts \
+            tests/automation-filter-labels.spec.ts tests/document-semantics.spec.ts \
+            tests/editor-rendering-semantics.spec.ts tests/graph-data-filters.spec.ts \
+            tests/remaining-filter-labels.spec.ts tests/row-filter-options.spec.ts \
+            tests/shared-filter-semantics.spec.ts tests/template-filter-labels.spec.ts
 
       - name: Upload Playwright report
         if: failure()

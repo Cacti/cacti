@@ -52,7 +52,7 @@ if (!isset_request_var('headercontent')) {?>
 	<?php } ?>
 	<div id='cactiContent' class='cactiContent'>
 		<div class='cactiConsoleNavigationArea' style='display:none;' id='navigation'>
-			<table style='width:100%;'>
+			<table role='presentation' style='width:100%;'>
 				<?php draw_menu();?>
 				<tr>
 					<td style='text-align:center;'>

@@ -287,10 +287,10 @@ function gprint_presets() {
 	<tr class='even'>
 		<td>
 			<form id='form_gprint' action='gprint_presets.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<?php html_search_filter(true);?>
-					<?php html_rows_filter(__('GPRINTs'));?>
+					<?php html_rows_filter(__('Rows'));?>
 					<td>
 						<span>
 							<input type="checkbox" id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>

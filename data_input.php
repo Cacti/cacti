@@ -856,10 +856,10 @@ function data() {
 	<tr class='even noprint'>
 		<td class='noprint'>
 		<form id='form_data_input' method='get' action='data_input.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr class='noprint'>
 					<?php html_search_filter(true);?>
-					<?php html_rows_filter(__('Input Methods'), true);?>
+					<?php html_rows_filter(__('Rows'), true);?>
 					<td>
 						<span>
 							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php __esc('Set/Refresh Filters');?>'>

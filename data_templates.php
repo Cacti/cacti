@@ -667,7 +667,7 @@ function template_edit() {
 		$header_label = __esc('Data Templates [edit: %s]', $template['name']);
 
 		?>
-		<table style='width:100%'>
+		<table role='presentation' style='width:100%'>
 			<tr>
 				<td class='textInfo left' style='vertical-align:top;'>
 					<?php print html_escape($template['name']);?>
@@ -1073,11 +1073,11 @@ function template() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_data_template' action='data_templates.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<?php html_search_filter(true);?>
 					<td>
-						<?php print __('Profile');?>
+						<label for='profile'><?php print __('Profile');?></label>
 					</td>
 					<td>
 						<select id='profile'>
@@ -1092,7 +1092,7 @@ function template() {
 							?>
 						</select>
 					</td>
-					<?php html_rows_filter(__('Data Templates'), true);?>
+					<?php html_rows_filter(__('Rows'), true);?>
 					<td>
 						<span>
 							<input type='checkbox' id='has_data' <?php print (get_request_var('has_data') == 'true' ? 'checked':'');?>>

@@ -1491,10 +1491,10 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  */
 function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 	<br>
-	<table style="width:60%;">
+	<table role='presentation' style="width:60%;">
 		<tr>
 			<td class='even' colspan='10'>
-				<table>
+				<table role='presentation'>
 					<tr class='cactiTableTitle'>
 						<td class='textHeaderDark'><?php print $title_text;?></td>
 					</tr>
@@ -1574,7 +1574,7 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 	}
 
 	?>
-	<table style='width:100%;text-align:center;'>
+	<table role='presentation' style='width:100%;text-align:center;'>
 		<tr>
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
@@ -1598,7 +1598,7 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
  */
 function form_save_buttons($buttons) {
 	?>
-	<table style='width:100%;text-align:center;'>
+	<table role='presentation' style='width:100%;text-align:center;'>
 		<tr>
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>

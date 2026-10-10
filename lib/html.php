@@ -265,7 +265,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 			?>
 			<td class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>' style='width:<?php print round(100 / $columns, 2);?>%;'>
 				<div>
-				<table style='text-align:center;margin:auto;'>
+				<table role='presentation' style='text-align:center;margin:auto;'>
 					<tr>
 						<td>
 							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
@@ -403,7 +403,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 			?>
 			<td class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>' style='width:<?php print round(100 / $columns, 2);?>%;'>
 				<div>
-				<table style='text-align:center;margin:auto;'>
+				<table role='presentation' style='text-align:center;margin:auto;'>
 					<tr>
 						<td>
 							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width');?>' graph_height='<?php print read_user_setting('default_height');?>'></div>
@@ -2304,7 +2304,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 	if ($theme == 'classic' || !read_config_option('autocomplete_enabled')) {
 		?>
 		<td>
-			<?php print __('Device');?>
+			<label for='host_id'><?php print __('Device');?></label>
 		</td>
 		<td>
 			<select id='host_id' name='host_id'>

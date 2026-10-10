@@ -373,7 +373,7 @@ function color_import() {
 	html_start_box( __('Import Colors'), '100%', '', '3', 'center', '');
 
 	form_alternate_row();?>
-		<td width='50%'><font class='textEditTitle'><?php print __('Import Colors from Local File'); ?></font><br>
+		<td width='50%'><span class='textEditTitle'><?php print __('Import Colors from Local File'); ?></span><br>
 			<?php print __('Please specify the location of the CSV file containing your Color information.');?>
 		</td>
 		<td class='left'>
@@ -385,11 +385,11 @@ function color_import() {
 		</td>
 	</tr><?php
 	form_alternate_row();?>
-		<td width='50%'><font class='textEditTitle'><?php print __('Overwrite Existing Data?');?></font><br>
+		<td width='50%'><span class='textEditTitle'><?php print __('Overwrite Existing Data?');?></span><br>
 			<?php print __('Should the import process be allowed to overwrite existing data?  Please note, this does not mean delete old rows, only update duplicate rows.');?>
 		</td>
 		<td class='left'>
-			<input type='checkbox' name='allow_update' id='allow_update'><?php print __('Allow Existing Rows to be Updated?');?>
+			<input type='checkbox' name='allow_update' id='allow_update'><label for='allow_update'><?php print __('Allow Existing Rows to be Updated?');?></label>
 		</td><?php
 
 	html_end_box(false);
@@ -545,10 +545,10 @@ function color() {
 	<tr class='even'>
 		<td>
 			<form id='form_color' action='color.php'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr>
 					<?php html_search_filter(true);?>
-					<?php html_rows_filter(__('Colors'));?>
+					<?php html_rows_filter(__('Rows'));?>
 					<td>
 						<span>
 							<input type='checkbox' id='named' <?php print (get_request_var('named') == 'true' ? 'checked':'');?>>

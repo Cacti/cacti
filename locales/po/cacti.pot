@@ -3412,8 +3412,16 @@ msgstr ""
 msgid "Steps"
 msgstr ""
 
-#: data_source_profiles.php graphs_new.php include/global_form.php lib/html.php
-#: lib/html_filter.php lib/installer.php lib/rrd.php utilities.php
+#: aggregate_graphs.php automation_devices.php automation_graph_rules.php
+#: automation_networks.php automation_snmp.php automation_templates.php
+#: automation_tree_rules.php cdef.php color.php data_debug.php data_input.php
+#: data_queries.php data_source_profiles.php data_sources.php
+#: data_templates.php gprint_presets.php graph_templates.php graph_view.php
+#: graphs.php graphs_new.php host.php host_templates.php
+#: include/global_form.php lib/api_automation.php lib/html.php
+#: lib/html_filter.php lib/installer.php lib/rrd.php links.php managers.php
+#: plugins.php pollers.php rrdcheck.php rrdcleaner.php sites.php tree.php
+#: user_admin.php user_domains.php user_group_admin.php utilities.php vdef.php
 msgid "Rows"
 msgstr ""
 

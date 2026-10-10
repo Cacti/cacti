@@ -327,10 +327,10 @@ function pages() {
 	<tr class='even noprint'>
 		<td>
 			<form id='links' action='links.php' method='post'>
-			<table class='filterTable' cellpadding='2' cellspacing='0'>
+			<table role='presentation' class='filterTable' cellpadding='2' cellspacing='0'>
 				<tr>
 					<?php html_search_filter();?>
-					<?php html_rows_filter(__('Links'));?>
+					<?php html_rows_filter(__('Rows'));?>
 					<td>
 						<span>
 							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __('Go');?>' title='<?php print __esc('Apply Filter');?>'>

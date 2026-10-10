@@ -69,7 +69,7 @@ render_external_links('FRONTTOP');
 
 if (read_config_option('hide_console') != 'on') {
 ?>
-<table class='cactiTable'>
+<table role='presentation' class='cactiTable'>
 	<tr class='tableRow'>
 		<td class='textAreaNotes top left'>
 			<?php print __('You are now logged into <a href="%s"><b>Cacti</b></a>. You can follow these basic steps to get started.', 'about.php');?>

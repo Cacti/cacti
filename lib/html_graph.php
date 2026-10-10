@@ -200,11 +200,11 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 	<tr class='even noprint'>
 		<td class='noprint'>
 		<form id='form_graph_view'>
-			<table id='device' class='filterTable'>
+			<table role='presentation' id='device' class='filterTable'>
 				<tr>
 					<?php print html_host_filter(get_request_var('host_id'), 'applyGraphFilter', $devices_where);?>
 					<td>
-						<?php print __('Template');?>
+						<label for='graph_template_id'><?php print __('Template');?></label>
 					</td>
 					<td>
 						<select id='graph_template_id' multiple class='select2-multi-count'
@@ -256,7 +256,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					<td id='text'></td>
 				</tr>
 			</table>
-			<table id='search' class='filterTable'>
+			<table role='presentation' id='search' class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Search');?>
@@ -305,7 +305,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 	<tr class='even noprint'>
 		<td class='noprint'>
 		<form id='form_timespan_selector' action='<?php print $page;?>?action=preview' method='post' action='<?php print $page;?>'>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr id='timespan'>
 					<td>
 						<?php print __('Presets');?>
@@ -369,7 +369,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					</td>
 				</tr>
 			</table>
-			<table class='filterTable'>
+			<table role='presentation' class='filterTable'>
 				<tr id='realtime' style='display:none;'>
 					<td>
 						<?php print __('Window');?>

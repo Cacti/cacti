@@ -60,7 +60,8 @@ for (const route of [...routes, 'manager notifications']) {
             const searchNamed = ['cdef.php', 'color.php', 'gprint_presets.php', 'data_input.php', 'data_queries.php', 'data_source_profiles.php', 'data_templates.php', 'graph_templates.php'].includes(route);
             expect(await search.getAttribute('name')).toBe(searchNamed ? 'filter' : null);
             await expect(search).toHaveClass(route === 'graph_templates.php' ? 'ui-state-default' : 'ui-state-default ui-corner-all');
-            const select = page.locator('#rows');
+            const select = page.getByLabel('Rows', { exact: true });
+            await expect(select).toHaveAttribute('id', 'rows');
             await expect(select).toHaveValue(rows);
             expect(await select.evaluate(element => (element as HTMLSelectElement).labels?.length)).toBe(1);
             const named = ['cdef.php', 'data_input.php', 'data_queries.php', 'data_source_profiles.php', 'data_templates.php', 'graph_templates.php', 'manager notifications'].includes(route);
@@ -83,6 +84,7 @@ for (const route of [...routes, 'manager notifications']) {
 test('the native filter helpers render captions, options and search values as plain text', async ({ page }) => {
     const fixture = process.env.CACTI_ROWS_FILTER_FIXTURE;
     expect(fixture, 'The native PHP fixture output is required.').toBeTruthy();
+    await page.goto('about:blank');
     await page.setContent(fs.readFileSync(fixture!, 'utf8'));
     const rows = page.getByLabel('<b>Rows & counts</b>', { exact: true });
     await expect(rows).toHaveAttribute('id', 'rows');

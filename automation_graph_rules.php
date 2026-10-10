@@ -660,7 +660,7 @@ function automation_graph_rules_edit() {
 	 */
 	if (!isempty_request_var('id')) {
 		?>
-<table style='width:100%;text-align:center;'>
+<table role='presentation' style='width:100%;text-align:center;'>
 	<tr>
 		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_rule=') . ($_SESSION['automation_graph_rules_show_rule'] == true ? '0' : '1');?>'><?php print ($_SESSION['automation_graph_rules_show_rule'] == true ? __('Don\'t Show'):__('Show'));?> <?php print __('Rule Details.');?></a><br>
 		</td>
@@ -675,7 +675,7 @@ function automation_graph_rules_edit() {
 	 */
 	if (!isempty_request_var('id')) {
 		?>
-<table style='width:100%;text-align:center;'>
+<table role='presentation' style='width:100%;text-align:center;'>
 	<tr>
 		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_hosts']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Devices.');?></a><br>
 		</td>
@@ -690,7 +690,7 @@ function automation_graph_rules_edit() {
 	 */
 	if (!empty($rule['graph_type_id']) && $rule['graph_type_id'] > 0) {
 		?>
-<table style='width:100%;text-align:center;'>
+<table role='presentation' style='width:100%;text-align:center;'>
 	<tr>
 		<td class='textInfo right' style='vertical-align:top;'>
 			<span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_graphs']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Objects.');?></a><br>
@@ -859,11 +859,11 @@ function automation_graph_rules() {
 	<tr class='even'>
 		<td>
 			<form id='form_automation' action='automation_graph_rules.php'>
-				<table class='filterTable'>
+				<table role='presentation' class='filterTable'>
 					<tr>
 						<?php html_search_filter();?>
 						<td>
-							<?php print __('Data Query');?>
+							<label for='snmp_query_id'><?php print __('Data Query');?></label>
 						</td>
 						<td>
 							<select id='snmp_query_id'>
@@ -885,7 +885,7 @@ function automation_graph_rules() {
 							</select>
 						</td>
 						<td>
-							<?php print __('Status');?>
+							<label for='status'><?php print __('Status');?></label>
 						</td>
 						<td>
 							<select id='status'>
@@ -894,7 +894,7 @@ function automation_graph_rules() {
 								<option value='-3' <?php print (get_request_var('status') == '-3' ? ' selected':'');?>><?php print __('Disabled');?></option>
 							</select>
 						</td>
-						<?php html_rows_filter(__('Graph Rules'));?>
+						<?php html_rows_filter(__('Rows'));?>
 						<td>
 							<span>
 								<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' name='go' value='<?php print __esc('Go');?>'>
