@@ -411,6 +411,7 @@ Cacti CHANGELOG
 -feature#7372: Add installer domain foundation types and lifecycle tests
 -feature#7634: Add indexes for host-template and session lookup queries
 -feature#7681: Add fail2ban support with a stable authentication-failure log line and a bundled filter
+-feature#8281: Log user actions (create, delete, ...)
 
 1.2.32
 -security#GHSA-fq9x-x3vf-3vf2: Substitute data-input field tokens in a single pass so a composed value cannot re-inject an escaped payload into the script command line
@@ -598,6 +599,7 @@ Cacti CHANGELOG
 -feature#8166: Route SNMPv3 gets through the in-process php-snmp extension when it is available, bypassing the Net-SNMP binaries and their credential cache
 -feature#8166: Collect each device's SNMP data sources in cmd.php in a single max_oids-sized batched request over the persistent session, replacing one SNMP round trip per OID with one per max_get_size OIDs
 -feature#8166: Add an "Enable MD5 and DES for SNMPv3" setting (off by default) that removes the legacy MD5/DES algorithms from the Device and Automation SNMP Option pickers when disabled, matching hardened (FIPS) PHP and Net-SNMP builds
+feature#8257: Log user actions (create, delete, ...)
 
 1.2.31
 -security#GHSA-6RVG-2VM8-5WRF: CVE-2026-22802 Authentication Bypass leads to information disclosure
