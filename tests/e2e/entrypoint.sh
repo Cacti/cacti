@@ -54,7 +54,7 @@ if [ ! -f "${config_php}" ] || [ "${FORCE_CONFIG}" = "1" ]; then
     export DB_HOST DB_PORT DB_NAME DB_USER DB_PASS
     php /usr/local/lib/cacti-write-config.php \
         "${CACTI_ROOT}/include/config.php.dist" "${config_php}"
-    chown www-data:www-data "${config_php}"
+    chmod 600 "${config_php}"
 else
     log "include/config.php present; CACTI_FORCE_CONFIG unset. leaving it alone"
 fi
@@ -198,14 +198,11 @@ for plugin in thold monitor; do
     log "seeded plugin_config row for ${plugin} (status=1, installed)"
 done
 
-# 6. Make Cacti's writable directories world-writable. CI checks out the
-#    repo as the runner user; the php-fpm container runs as www-data. The
-#    bind mount preserves host UIDs, so without this Cacti dies on its
-#    very first log line with "System log file is not available for
-#    writing", killing emitHeaders() before it runs.
+# 6. Keep the fixture writable by its owner. The image UID matches the
+#    checkout owner, so application directories do not need global write access.
 for d in log cache rra resource; do
     if [ -d "${CACTI_ROOT}/${d}" ]; then
-        chmod -R a+w "${CACTI_ROOT}/${d}" 2>/dev/null || true
+        chmod -R u+rwX "${CACTI_ROOT}/${d}"
     fi
 done
 # Plugin dirs need to be readable by the php-fpm user; copy from the image
