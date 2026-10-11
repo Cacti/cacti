@@ -98,6 +98,47 @@ async function treeFixture(page: import('@playwright/test').Page) {
 	}), editorForceText);
 }
 
+test('Cacti dropdown builds labels as text and sanitizes menu HTML while preserving submenu navigation', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('purify.js', jquery).href });
+	await page.addScriptTag({ url: new URL('jquery.dropdown.js', jquery).href });
+	await page.evaluate(() => {
+		Reflect.get(window, '$').fx.off = true;
+		Reflect.get(window, '$')('#email').DropDownMenu({
+			name: 'dropdown-probe', auto_close: false,
+			title: '<img src=x onerror="window.dependencyExecuted=1">', subtitle: '<b>literal subtitle</b>',
+			html: '<h6><a href="#">Section</a><div><a id="unsafe" href="javascript:window.dependencyExecuted=1" onclick="window.dependencyExecuted=1">Unsafe URL</a><a href="https://example.org/">Valid link</a><strong>Formatting</strong><img src=x onerror="window.dependencyExecuted=1"><script>window.dependencyExecuted=1</script></div></h6>',
+		});
+	});
+	await expect(page.locator('#dropdown-probe')).toBeVisible();
+	await expect(page.locator('#dropdown-probe_title')).toHaveText('<img src=x onerror="window.dependencyExecuted=1">');
+	await expect(page.locator('#dropdown-probe_subtitle')).toHaveText('<b>literal subtitle</b>');
+	await expect(page.locator('#dropdown-probe img, #dropdown-probe script, #dropdown-probe [onclick], #dropdown-probe [id="unsafe"]')).toHaveCount(0);
+	await page.locator('#dropdown-probe_content > h6 > a').click();
+	await expect(page.locator('#dropdown-probe_content strong')).toHaveText('Formatting');
+	await expect(page.locator('#dropdown-probe_content a').filter({ hasText: 'Unsafe URL' })).not.toHaveAttribute('href');
+	await expect(page.locator('#dropdown-probe_content a').filter({ hasText: 'Valid link' })).toHaveAttribute('href', 'https://example.org/');
+	await page.locator('#dropdown-probe_back').click();
+	await expect(page.locator('#dropdown-probe_content > h6 > a')).toHaveText('Section');
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('Cacti dropdown falls back to text without a sanitizer and rejects unsafe menu identifiers', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('jquery.dropdown.js', jquery).href });
+	const payload = '<img src=x onerror="window.dependencyExecuted=1">';
+	await page.evaluate(payload => {
+		const $ = Reflect.get(window, '$');
+		$.fx.off = true;
+		$('#email').DropDownMenu({ name: '\"><img src=x onerror="window.dependencyExecuted=1">', html: payload, auto_close: false });
+		$('#email').DropDownMenu({ name: 'fallback-probe', html: payload, auto_close: false });
+	}, payload);
+	await expect(page.locator('.cacti_dd_menu')).toHaveCount(1);
+	await expect(page.locator('#fallback-probe_content')).toHaveText(payload);
+	await expect(page.locator('img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
 test('jsTree next/previous navigation wraps DOM siblings rather than label HTML (CodeQL 101-104)', async ({ page }) => {
 	await treeFixture(page);
 	const result = await page.evaluate(() => {
@@ -147,6 +188,99 @@ test('core datetimepicker parses field text separately from grid template option
 	});
 	expect(result).toEqual({ grid: true, value: '2026-10-10 12:30' });
 	await expect(page.locator('img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('jQuery selector scoping and single-tag parsing do not reinterpret field text (CodeQL 9/115/116)', async ({ page }) => {
+	await validationFixture(page);
+	const result = await page.evaluate(() => {
+		const $ = Reflect.get(window, '$');
+		const context = document.createElement('div');
+		context.id = '\"><img src=x onerror="window.dependencyExecuted=1">';
+		const child = document.createElement('span');
+		child.className = 'selector-probe';
+		context.append(child);
+		document.body.append(context);
+		const found = $(context).find('> .selector-probe')[0] === child;
+		const parsed = $.parseHTML('<img>')[0];
+		return { found, tag: parsed.tagName, attributes: parsed.attributes.length, children: parsed.childNodes.length };
+	});
+	expect(result).toEqual({ found: true, tag: 'IMG', attributes: 0, children: 0 });
+	await expect(page.locator('img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('tablesorter preserves escaped header and cell text through sorting and filtering', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('jquery.tablesorter.js', jquery).href });
+	await page.addScriptTag({ url: new URL('jquery.tablesorter.widgets.js', jquery).href });
+	const payload = '<img src=x onerror="window.dependencyExecuted=1">';
+	await page.evaluate(payload => {
+		const table = document.createElement('table');
+		table.id = 'sort-probe';
+		table.createTHead().insertRow().append(document.createElement('th'));
+		table.tHead!.rows[0].cells[0].textContent = payload;
+		const body = table.createTBody();
+		for (const label of ['z ' + payload, 'a ' + payload]) body.insertRow().insertCell().textContent = label;
+		document.body.append(table);
+		const $ = Reflect.get(window, '$');
+		$(table).tablesorter({ widgets: ['zebra', 'filter'], headerTemplate: '<div class="textSubHeaderDark">{content} {icon}</div>', sortList: [[0, 0]] });
+		// Core enables zebra; this controlled filter setup also exercises the
+		// reviewed table/node helper APIs without treating filter values as HTML.
+		$.tablesorter.setFilters(table, [payload], true);
+		$.tablesorter.storage(table, 'codeql-test', { value: payload });
+	}, payload);
+	await expect(page.locator('#sort-probe tbody tr').first()).toHaveText('a ' + payload);
+	await expect(page.locator('#sort-probe thead tr').first()).toHaveText(payload);
+	await expect(page.locator('#sort-probe img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('jQuery UI default button tooltip and dialog paths preserve text and constrain heading tags', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('jquery-ui.js', jquery).href });
+	const payload = '<img src=x onerror="window.dependencyExecuted=1">';
+	await page.evaluate(payload => {
+		const $ = Reflect.get(window, '$');
+		const button = document.createElement('button');
+		button.id = 'ui-probe';
+		button.textContent = payload;
+		button.title = payload;
+		document.body.append(button);
+		$(button).button().tooltip();
+		$(button).tooltip('open');
+		const dialog = document.createElement('div');
+		dialog.id = 'dialog-probe';
+		dialog.textContent = payload;
+		document.body.append(dialog);
+		$(dialog).dialog({ modal: true, title: payload, uiDialogTitleHeadingLevel: '\"><img src=x onerror="window.dependencyExecuted=1">' });
+	}, payload);
+	await expect(page.locator('#ui-probe')).toHaveText(payload);
+	await expect(page.locator('.ui-dialog-title')).toHaveText(payload);
+	await expect(page.locator('.ui-dialog-title')).toHaveJSProperty('tagName', 'SPAN');
+	await expect(page.locator('#dialog-probe')).toHaveText(payload);
+	await expect(page.locator('img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('Billboard tooltip sanitization rejects executable markup and encoded URI schemes (CodeQL 6/7)', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('d3.js', jquery).href });
+	await page.addScriptTag({ url: new URL('billboard.js', jquery).href });
+	await page.evaluate(() => {
+		const container = document.createElement('div');
+		container.id = 'tooltip-chart';
+		document.body.append(container);
+		const chart = Reflect.get(window, 'bb').generate({
+			bindto: '#tooltip-chart', data: { columns: [['data', 1, 2]] }, transition: { duration: 0 },
+			tooltip: { contents: () => '<strong>Valid format</strong><img src=x onerror="window.dependencyExecuted=1"><svg><g onload="window.dependencyExecuted=1"><a href="java&#x73;cript&colon;window.dependencyExecuted=1">unsafe</a></g></svg><scr<script>ipt>window.dependencyExecuted=1</scr<script>ipt>' },
+		});
+		chart.tooltip.show({ index: 0 });
+	});
+	await expect(page.locator('.bb-tooltip-container strong')).toHaveText('Valid format');
+	const unsafe = page.locator('.bb-tooltip-container script, .bb-tooltip-container [onload], .bb-tooltip-container [onerror]');
+	expect(await unsafe.evaluateAll(nodes => nodes.map(node => node.outerHTML))).toEqual([]);
+	expect(await page.evaluate(() => Array.from(document.querySelectorAll('.bb-tooltip-container [href]')).some(node => /^javascript:/i.test(node.getAttribute('href') || '')))).toBe(false);
 	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
 });
 

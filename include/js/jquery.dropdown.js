@@ -41,12 +41,47 @@
 
 	var timerref 		= null;
 	var menu 			= null;
+	var menu_head, menu_content, menu_back, menu_subhead, menu_html;
+	var menu_head_height, menu_back_height, menu_subhead_height;
 	var menuHeight 		= 0;
 	var options 		= $.extend(defaults, options);
 	var contentHeight	= 0;
 
+	if (typeof options.name !== 'string' || !/^[a-zA-Z][a-zA-Z0-9_-]*$/.test(options.name)) {
+		return this;
+	}
+
+	// This is the sole boundary for caller-provided menu HTML. Without the
+	// supported sanitizer, retain the content as text. DOM copies below only
+	// clone this sanitized tree and nodes constructed by this implementation.
+	function renderMenuHtml(target, html) {
+		var content = typeof html === 'string' ? html : '';
+		if (!window.DOMPurify || !window.DOMPurify.isSupported) {
+			target.text(content);
+			return;
+		}
+		var fragment = window.DOMPurify.sanitize(content, {
+			ALLOWED_TAGS: ['h6', 'div', 'a', 'span', 'p', 'br', 'ul', 'ol', 'li', 'strong', 'em', 'b', 'i'],
+			ALLOWED_ATTR: ['href', 'title'],
+			ALLOW_DATA_ATTR: false,
+			ALLOW_ARIA_ATTR: false,
+			RETURN_DOM_FRAGMENT: true
+		});
+		fragment.querySelectorAll('a[href]').forEach(function(link) {
+			try {
+				var url = new URL(link.getAttribute('href'), document.baseURI);
+				if (!['http:', 'https:', 'mailto:', 'tel:'].includes(url.protocol)) {
+					link.removeAttribute('href');
+				}
+			} catch (error) {
+				link.removeAttribute('href');
+			}
+		});
+		target.empty().append(fragment);
+	}
+
 	/* do nothing if requested menu is still loaded */
-	if($('#' + options.name).is(":visible")) { return; }
+	if($(document.getElementById(options.name)).is(":visible")) { return; }
 
 	/* remove all open menus from DOM if they should not stay in front at the same time */
 	var oldMenus = $(".cacti_dd_menu");
@@ -59,49 +94,51 @@
 	}
 
 	return this.each(function() {
-		obj = $(this);
-		newMenu = _init_menu(obj);
+		var obj = $(this);
+		var newMenu = _init_menu(obj);
 		_open_menu(newMenu);
 	});
 
 	function _init_menu(initiator){
-		/* create the main menu structure */
-		$("<div id='" + options.name + "' style='display: none;' class='cacti_dd_menu ui-widget ui-corner-all'>"
-			+ "<div id='" + options.name + "_title' class='title ui-state-default ui-corner-top'><h6>" + options.title + "</h6></div>"
-			+ "<div id='" + options.name + "_back' class='back ui-state-active'></div>"
-			+ "<div id='" + options.name + "_content' class='content ui-widget-content ui-state-highlight " + ((options.subtitle !== false) ? "" : "ui-corner-bottom" ) + "'></div>"
-			+ "<div id='" + options.name + "_subtitle' class='subtitle ui-state-default ui-corner-bottom'><h6>" + options.subtitle + "</h6></div>"
-			+ "<div id='" + options.name + "_html' class='html'></div>"
-		+ "</div>").appendTo("body");
-
-		/* define references to the menu and its different sections */
-		menu 			= $('#' + options.name);
-		menu_head 		= $('#' + options.name + '_title');
-		menu_content 	= $('#' + options.name + '_content');
-		menu_back 		= $('#' + options.name + '_back');
-		menu_subhead 	= $('#' + options.name + '_subtitle');
-		menu_html 		= $('#' + options.name + '_html');
-
-		/* while div container "myName_html" holds the raw data ... */
-		menu_html.append(options.html);
-		i=1;
+		/* create the main menu structure without parsing option values */
+		menu = $(document.createElement('div')).attr('id', options.name)
+			.addClass('cacti_dd_menu ui-widget ui-corner-all').hide();
+		menu_head = $(document.createElement('div')).attr('id', options.name + '_title')
+			.addClass('title ui-state-default ui-corner-top')
+			.append($(document.createElement('h6')).text(options.title === false ? '' : options.title));
+		menu_back = $(document.createElement('div')).attr('id', options.name + '_back')
+			.addClass('back ui-state-active');
+		menu_content = $(document.createElement('div')).attr('id', options.name + '_content')
+			.addClass('content ui-widget-content ui-state-highlight')
+			.toggleClass('ui-corner-bottom', options.subtitle === false);
+		menu_subhead = $(document.createElement('div')).attr('id', options.name + '_subtitle')
+			.addClass('subtitle ui-state-default ui-corner-bottom')
+			.append($(document.createElement('h6')).text(options.subtitle === false ? '' : options.subtitle));
+		menu_html = $(document.createElement('div')).attr('id', options.name + '_html').addClass('html').hide();
+		renderMenuHtml(menu_html, options.html);
+		menu.append(menu_head, menu_back, menu_content, menu_subhead, menu_html).appendTo(document.body);
+		var i=1;
 		menu_html.find("h6:has(div)").each(function() {
 			var subMenu = $(this);
 			var subMenuClass = options.name + '_' + i;
-			var subMenuTitle = subMenu.find('a:first').html();
+			var subMenuTitle = subMenu.find('a:first').text();
 			subMenu.addClass(subMenuClass);
-			$('.'+subMenuClass).die().live("click", function(){ _switch_layer( subMenuClass); } );
+			subMenu.data('cacti-menu-class', subMenuClass);
+			subMenu.on('click', function(event) { event.preventDefault(); event.stopPropagation(); _switch_layer(subMenuClass); });
 			subMenu.children("div").hide();
-			subMenu.find('a:first').html('<span style="float:left; min-width:80%;">' + subMenuTitle + '</span><span class="ui-icon ui-icon-triangle-1-e" style="float:right;"></span>');
+			subMenu.find('a:first').empty().append(
+				$(document.createElement('span')).css({display: 'inline-block', 'min-width': '80%'}).text(subMenuTitle),
+				$(document.createElement('span')).addClass('ui-icon ui-icon-triangle-1-e').css({float: 'right'})
+			);
 			i++;
 		});
 
 		/* ... "myName_content" will have the visible menu data */
-		menu_content.append(menu_html.html());
+		menu_content.append(menu_html.contents().clone(true));
 
 		/* if necessary show title, subtitle ... */
-		if(options.title 	!== false) { menu_head.show(); }
-		if(options.subtitle !== false) { menu_subhead.show(); }
+		menu_head.toggle(options.title !== false);
+		menu_subhead.toggle(options.subtitle !== false);
 
 		/* make content visible */
 		menu_content.show();
@@ -156,13 +193,13 @@
 			menu_back.show();
 		}
 
-		parentClass = menu_html.find('.' + subMenuClass).parents('h6').attr('class');
+		var parentClass = menu_html.find('.' + subMenuClass).parents('h6').first().data('cacti-menu-class');
 
-		menu_back.empty().append( menu_html.find('.' + subMenuClass + ' a:first').html() );
+		menu_back.empty().append(menu_html.find('.' + subMenuClass + ' a:first').contents().clone(true));
 		menu_back.find('span:last').removeClass('ui-icon-triangle-1-e').addClass('ui-icon-triangle-1-s');
 		menu_back.unbind('click').click( function() { _switch_layer( parentClass); });
 
-		menu_content.empty().append(content.html());
+		menu_content.empty().append(content.contents().clone(true));
 
 		/* re-calculate content height */
 		if(subMenuClass != null) {
@@ -190,7 +227,7 @@
 	}
 
 	function _close_menu(){
-		menu = $('#' + options.name);
+		menu = $(document.getElementById(options.name));
 		menu.slideUp(menuHeight*3);
 		menu.queue(function () {
 			menu.remove();
@@ -212,8 +249,8 @@
 
 				menu_content.height(menuHeight - menu_head_height - menu_back_height - menu_subhead_height);
 
-				contentHeight = $('#' + options.name + '_content').height();
-				$('#' + options.name + '_content').css({'overflow-y':'auto'});
+				contentHeight = menu_content.height();
+				menu_content.css({'overflow-y':'auto'});
 
 				obj.find('h6').eq(0).focus();
 				if(options.auto_close !== false) {
