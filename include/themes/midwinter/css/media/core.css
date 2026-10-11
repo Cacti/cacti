@@ -453,11 +453,6 @@ input, select {
     background: transparent;
 }
 
-label {
-    cursor: pointer;
-    white-space: nowrap;
-}
-
 .glyph_tab-console:before {
     margin-left: 17px;
     content: "\ec42";
@@ -468,6 +463,8 @@ label {
 }
 
 label {
+    cursor: pointer;
+    white-space: nowrap;
     white-space: nowrap;
 }
 

@@ -18,3 +18,19 @@ for (const [theme, selector, property, expected] of [
 		expect(await page.locator(selector).evaluate((element, property) => (getComputedStyle(element) as any)[property], property)).toBe(expected);
 	});
 }
+
+test('modern checked radio slider retains its effective display', async ({ page }) => {
+	await page.setContent('<input type="radio" checked><span class="radioSlider"></span>');
+	await page.addStyleTag({ content: readFileSync(resolve(root, 'include/themes/modern/main.css'), 'utf8') });
+	expect(await page.locator('.radioSlider').evaluate(element => getComputedStyle(element, ':before').display)).toBe('block');
+});
+
+test('midwinter labels retain their cursor and whitespace behavior', async ({ page }) => {
+	await page.setContent('<label>Device label</label>');
+	await page.addStyleTag({ content: readFileSync(resolve(root, 'include/themes/midwinter/css/media/core.css'), 'utf8') });
+	const styles = await page.locator('label').evaluate(element => {
+		const style = getComputedStyle(element);
+		return { cursor: style.cursor, whiteSpace: style.whiteSpace };
+	});
+	expect(styles).toEqual({ cursor: 'pointer', whiteSpace: 'nowrap' });
+});

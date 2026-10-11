@@ -2925,10 +2925,6 @@ input:checked + .radioSlider {
 	background-color: rgba(167,217,134,1);
 }
 
-input:checked + .radioSlider:before {
-	display: inline-block;
-}
-
 input:disabled + .radioSlider {
 	cursor: not-allowed;
 }
@@ -2938,6 +2934,7 @@ input:focus + .radioSlider {
 }
 
 input:checked + .radioSlider:before {
+	display: inline-block;
 	display: block;
 }
 
