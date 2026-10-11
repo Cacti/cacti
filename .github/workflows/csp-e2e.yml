@@ -23,6 +23,8 @@ on:
       - include/realtime.js
       - include/themes/midwinter/main.js
       - include/themes/sunrise/main.js
+      - auth_login.php
+      - auth_changepassword.php
       - tests/integration/**
       - tests/e2e/**
       - lib/functions.php
@@ -168,6 +170,12 @@ jobs:
         working-directory: tests/e2e
         run: node node_modules/@playwright/test/cli.js test tests/csp.spec.ts
 
+      - name: Run authentication form semantics regressions
+        working-directory: tests/e2e
+        run: |
+          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti -e "UPDATE user_auth SET password_change='on' WHERE username='admin';"
+          node ./node_modules/@playwright/test/cli.js test tests/auth-form-semantics.spec.ts
+
       - name: Run Playwright suite (plugin CSP -- thold + monitor)
         working-directory: tests/e2e
         # Separate step so a plugin-clone failure or a plugin-side CSP
@@ -176,6 +184,14 @@ jobs:
         # monitor sources baked into the image at build time; the
         # docker compose up --build above runs the clone.
         run: node node_modules/@playwright/test/cli.js test tests/csp-plugins.spec.ts
+
+      - name: Run native account audit regressions
+        working-directory: tests/e2e
+        env:
+          CACTI_USER_AUDIT_LOG: ../../log/cacti.log
+        run: |
+          bash test-user-action-log.sh
+          node node_modules/@playwright/test/cli.js test tests/user-action-audit.spec.ts
 
       - name: Enable real-time popup in disposable fixture
         working-directory: tests/e2e
@@ -187,14 +203,6 @@ jobs:
       - name: Run client state browser regressions
         working-directory: tests/e2e
         run: node ./node_modules/@playwright/test/cli.js test tests/client-state.spec.ts
-
-      - name: Run native account audit regressions
-        working-directory: tests/e2e
-        env:
-          CACTI_USER_AUDIT_LOG: ../../log/cacti.log
-        run: |
-          bash test-user-action-log.sh
-          node node_modules/@playwright/test/cli.js test tests/user-action-audit.spec.ts
 
       - name: Upload Playwright report
         if: failure()
