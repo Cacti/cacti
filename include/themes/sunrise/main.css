@@ -1555,7 +1555,9 @@ table.cactiTable {
 .ui-dialog.cactiFilterDialog .ui-dialog-titlebar {
 	border: 0;
 	border-radius: 0;
-	padding: 10px 14px;
+	padding: 0 14px;
+	height: 22px;
+	line-height: 22px;
 	background: #04335b;
 	color: #ffffff;
 	font-size: 14px;
@@ -1568,10 +1570,23 @@ table.cactiTable {
 .ui-dialog.cactiFilterDialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
 	background: transparent;
 	border: 0;
+	color: inherit;
 }
 
 .ui-dialog.cactiFilterDialog .ui-dialog-titlebar-close .ui-icon {
-	filter: invert(1) brightness(2);
+	background: none;
+	text-indent: 0;
+	color: inherit;
+}
+
+.ui-dialog.cactiFilterDialog .ui-dialog-titlebar-close .ui-icon::before {
+	content: '\00d7';
+	display: block;
+	width: 16px;
+	line-height: 16px;
+	font-size: 18px;
+	font-weight: bold;
+	text-align: center;
 }
 
 .ui-dialog.cactiFilterDialog .ui-dialog-content {
