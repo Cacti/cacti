@@ -65,6 +65,49 @@ try {
 		installer_fixture_check(count($pdo->query("SHOW TABLES LIKE 'user_domains%'")->fetchAll()) === 2, 'Failed read destroyed legacy authentication tables');
 		installer_fixture_check(in_array(DB_STATUS_ERROR, array_column($database_upgrade_status['1.3.0'] ?? [], 'status'), true), 'Failed read was not recorded in migration status');
 		installer_fixture_check((int) $pdo->query('SELECT COUNT(*) FROM user_domains')->fetchColumn() === 1, 'Legacy authentication row was lost');
+	} elseif ($scenario === 'forced-upgrade-replay') {
+		// Probe live metadata after each child process repairs the schema.
+		define('IN_CACTI_INSTALL', 1);
+		installer_fixture_check(!db_table_exists('user_domains') && !db_table_exists('user_domains_ldap'), 'Fixture is not an already upgraded schema');
+		db_execute_prepared('UPDATE version SET cacti = ?', [CACTI_VERSION_FULL]);
+		installer_fixture_check(db_execute_prepared('INSERT INTO login_providers (id, name, type, parameters) VALUES (?, ?, ?, ?)',
+			[9876, 'Forced replay fixture', 3, '{"fixture":"preserve"}']), 'Could not seed the migrated provider fixture');
+		installer_fixture_check(db_execute_prepared('INSERT INTO user_auth (id, username, realm) VALUES (?, ?, ?)',
+			[9876, 'forced-replay-fixture', 10876]), 'Could not seed the provider realm fixture');
+		installer_fixture_check(db_execute_prepared('INSERT INTO host_template (id, hash, name) VALUES (?, ?, ?)',
+			[9876, '0123456789abcdef0123456789abcdef', 'Forced replay template fixture']), 'Could not seed the host template fixture');
+		installer_fixture_check(db_execute_prepared('INSERT INTO host (id, host_template_id, description, hostname, disabled) VALUES (?, ?, ?, ?, ?)',
+			[9876, 9876, 'Forced replay host fixture', '127.0.0.1', 'on']), 'Could not seed the disabled host fixture');
+		$providers = db_fetch_assoc('SELECT * FROM login_providers ORDER BY id');
+		$users     = db_fetch_assoc('SELECT id, username, realm FROM user_auth ORDER BY id');
+		$hosts     = db_fetch_cell('SELECT COUNT(*) FROM host');
+		$templates = db_fetch_cell('SELECT COUNT(*) FROM host_template');
+		installer_fixture_check((int) $hosts > 0 && (int) $templates > 0, 'Monitoring fixture is not populated');
+
+		foreach (['1.2.31', '1.2.31', '1.2.28', '1.2.22'] as $forced_version) {
+			// A successful replay must still repair current schema changes.
+			db_execute('ALTER TABLE host DROP COLUMN snmp_retries');
+			$output = [];
+			exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(CACTI_PATH_CLI . '/upgrade_database.php') . ' --forcever=' . escapeshellarg($forced_version) . ' 2>&1', $output, $status);
+			installer_fixture_check($status === 0, 'Forced replay failed: ' . implode(PHP_EOL, $output));
+			installer_fixture_check(db_column_exists('host', 'snmp_retries', false), 'Forced replay skipped a required schema repair');
+			installer_fixture_check(db_fetch_cell('SELECT cacti FROM version') === CACTI_VERSION_FULL, 'Replay did not persist the current source version');
+			installer_fixture_check(db_fetch_assoc('SELECT * FROM login_providers ORDER BY id') === $providers, 'Replay changed migrated providers');
+			installer_fixture_check(db_fetch_assoc('SELECT id, username, realm FROM user_auth ORDER BY id') === $users, 'Replay changed authentication realms');
+			installer_fixture_check(db_fetch_cell('SELECT COUNT(*) FROM host') === $hosts && db_fetch_cell('SELECT COUNT(*) FROM host_template') === $templates, 'Replay lost populated monitoring data');
+			installer_fixture_check(!db_table_exists('user_domains') && !db_table_exists('user_domains_ldap'), 'Replay recreated obsolete authentication tables');
+			installer_fixture_check((int) db_fetch_cell("SELECT COUNT(*) FROM processes WHERE tasktype = 'install' AND taskname = 'master'") === 0, 'Replay retained the installer lock');
+		}
+	} elseif ($scenario === 'forced-cli-failure') {
+		$path           = CACTI_PATH_INSTALL . '/upgrades/1_2_30.php';
+		$backups[$path] = is_file($path) ? file_get_contents($path) : false;
+		file_put_contents($path, '<?php /* Fixture: missing migration function after a skipped version. */');
+		db_execute_prepared('UPDATE version SET cacti = ?', [CACTI_VERSION_FULL]);
+		$output = [];
+		exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(CACTI_PATH_CLI . '/upgrade_database.php') . ' --forcever=1.2.28 2>&1', $output, $status);
+		installer_fixture_check($status !== 0 && str_contains(implode(PHP_EOL, $output), 'not found'), 'Forced replay swallowed a genuine migration failure');
+		installer_fixture_check(db_fetch_cell('SELECT cacti FROM version') === CACTI_VERSION_FULL, 'Failed replay downgraded the installed version');
+		installer_fixture_check((int) db_fetch_cell("SELECT COUNT(*) FROM processes WHERE tasktype = 'install' AND taskname = 'master'") === 0, 'Failed replay retained the installer lock');
 	} elseif (in_array($scenario, ['upgrade-warning', 'cli-failure'], true)) {
 		foreach (['1_2_29', '1_2_30'] as $target) {
 			$path           = CACTI_PATH_INSTALL . '/upgrades/' . $target . '.php';
