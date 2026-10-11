@@ -225,34 +225,10 @@
         }
 
         &:has(.saveRowParent) {
-          /*  & #main {
-                margin-bottom: 4rem;
-            }
-*/
             & #main::-webkit-scrollbar-button {
                 width: 40px;
                 height: 40px;
             }
-/*
-            .saveRowParent & {
-                padding-bottom: 0.5rem;
-            }
-
-            & .saveRowParent {
-                width: 100%;
-                .saveRow {
-                    position: absolute;
-                    top:100%;
-                    width: 100%;
-                    -webkit-transform: translateY(-100%);
-                    -ms-transform: translateY(-100%);
-                    transform: translateY(-100%);
-                    border-top: 1px solid var(--border-color-semilight);
-                    right: 0;
-                }
-            }
-
- */
 
         }
 
@@ -454,7 +430,7 @@
                 .mdw-DockLeft & {
                     margin-right: 4px;
                     margin-left: -4px;
-                };
+                }
                 & > .ui-resizable-handle {
                     height: 0;
                     bottom: 0;
@@ -485,7 +461,7 @@
                 .mdw-DockLeft & {
                     margin-right: 4px;
                     margin-left: -4px;
-                };
+                }
             }
 
 
@@ -862,9 +838,6 @@
             grid-area: middle;
 
             justify-content: center;
-            @media screen and (max-width: 1024px) {
-
-            }
             .navBarNavigation {
                 justify-content: center;
             }

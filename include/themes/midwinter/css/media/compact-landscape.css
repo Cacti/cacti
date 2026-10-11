@@ -6,12 +6,6 @@ html {
         }
     }
 
-    &:not([data-controls-subtitle="on"]) {
-        /*.compact_nav_icon::after {
-            display: none !important;
-        }*/
-    }
-
     &[data-kiosk-mode="on"] {
 
         .mdw-GridContainer {
@@ -31,11 +25,6 @@ html {
             height: 100dvh;
             width: 100dvw;
             border-top: none;
-            /*
-                        &:has(.saveRowParent) {
-                            height: calc(100vh - 4rem);
-                        }
-              */
         }
 
         .saveRowParent {
@@ -249,18 +238,6 @@ html {
                 background: transparent url("./../../images/cacti_logo.svg") no-repeat scroll 50% 14% / min(1.5rem) auto;
             }
         }
-
-     /*   &[data-subtitle]:not([data-subtitle=""])::after {
-            display: block;
-            content: attr(data-subtitle);
-            font-size: var(--fs-small);
-            margin-top: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
-        }
-*/
         & > span {
             display: none;
         }

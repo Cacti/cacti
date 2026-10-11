@@ -640,10 +640,7 @@ label {
 }
 
 .even-alternate {
-	/* #background: none repeat scroll 0 0 #E7E9F2;
-	#background-color: #E7E9F2; */
 	border: none;
-	/* #box-shadow: 0 0 1px rgba(0, 0, 0, 0.1); */
 }
 
 .saveRow {
@@ -1808,7 +1805,6 @@ th.sortable {
 }
 
 .popupBox {
-	/* #z-index: 2; */
 	position: absolute;
 	padding: 0px;
 	display: none;

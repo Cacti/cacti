@@ -13,17 +13,6 @@ html {
     color-scheme: dark light;
 }
 
-body {
-
-}
-/*
-img, picture svg, video {
-    display: block;
-    max-width: 100%;
-}
-
-*/
-
 ul {
     padding: revert;
     &[class] {

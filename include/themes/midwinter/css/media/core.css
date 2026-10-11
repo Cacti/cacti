@@ -376,18 +376,6 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
             & tr.selected {
                 td {
                     background: var(--table-selected);
-                    /*
-                    &:first-of-type::before {
-                        background: var(--background-progress);
-                        border-radius: 4px;
-                        content: " ";
-                        display: block;
-                        height: 100%;
-                        position: absolute;
-                        width: 0.15rem;
-                        left: -0.4rem;
-                    }
-                    */
                 }
 
                 &:hover {
@@ -1277,15 +1265,6 @@ legend {
     align-items: flex-end;
     flex-direction: row;
 }
-/*
-legend::before {
-    display: block;
-    width: 75px;
-    height: 100px;
-    content: "";
-    background: transparent url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 60px auto;
-}
-*/
 .cactiAuthRight {
     display: none;
 }
