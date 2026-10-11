@@ -793,7 +793,28 @@ function api_plugin_install(string $plugin) : bool {
 	$function = 'plugin_' . $plugin . '_install';
 
 	if (function_exists($function)) {
-		$function();
+		try {
+			$installed = $function();
+		} catch (Throwable $e) {
+			cacti_log(sprintf("ERROR: Plugin '%s' install hook threw %s.", $plugin, get_class($e)), false, 'PLUGIN');
+			$installed = false;
+		}
+
+		// Legacy install hooks return null on success. Only strict false or
+		// an exception signals failure; retain tables for diagnosis/recovery.
+		if ($installed === false) {
+			db_execute_prepared('UPDATE plugin_config
+				SET status = 2
+				WHERE directory = ?',
+				[$plugin]);
+
+			api_plugin_disable_hooks_all($plugin);
+			cacti_log(sprintf("ERROR: Plugin '%s' installation failed. Its hooks are disabled and it needs configuration.", $plugin), false, 'PLUGIN');
+			raise_message('install_error', __esc('Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it.', $plugin), MESSAGE_LEVEL_ERROR);
+
+			return false;
+		}
+
 		$ready = api_plugin_check_config($plugin);
 
 		if ($ready) {

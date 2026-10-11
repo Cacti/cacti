@@ -25476,3 +25476,8 @@ msgstr ""
 #, php-format
 msgid "Plugin '%s' failed its configuration check. Review the plugin settings before enabling it."
 msgstr ""
+
+#: lib/plugins.php
+#, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
