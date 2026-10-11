@@ -28,6 +28,11 @@ if (php_sapi_name() !== 'cli') {
 	exit;
 }
 
+// Restore synchronous child exit statuses when launched by cactid with SIGCHLD ignored.
+if (function_exists('pcntl_signal') && defined('SIGCHLD') && defined('SIG_DFL')) {
+	pcntl_signal(SIGCHLD, SIG_DFL);
+}
+
 /* do NOT run this script through a web browser */
 define('CACTI_CLI_ONLY', true);
 

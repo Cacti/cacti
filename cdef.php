@@ -743,7 +743,7 @@ function cdef_edit() {
 
 					applySkin();
 
-					$('#continue').off('click').on('click', function(data) {
+					$('#continue').rebind('click', function(data) {
 						$.post('cdef.php?action=item_remove', {
 							__csrf_magic: csrfMagicToken,
 							cdef_id: $('#my_cdef_id').val(),
