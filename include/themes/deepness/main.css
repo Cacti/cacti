@@ -1542,7 +1542,8 @@ legend {
 
 .ui-dialog.cactiFilterDialog .ui-dialog-content input[type="text"]:focus,
 .ui-dialog.cactiFilterDialog .ui-dialog-content input.ui-state-default:focus,
-.ui-dialog.cactiFilterDialog .ui-dialog-content textarea:focus {
+.ui-dialog.cactiFilterDialog .ui-dialog-content textarea:focus,
+.ui-dialog.cactiFilterDialog .ui-dialog-content select:focus {
 	border-color: var(--dp-accent);
 }
 
