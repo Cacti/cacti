@@ -4113,6 +4113,12 @@ msgstr "Перегляд Графіка"
 msgid "The Graph you requested does not exist."
 msgstr "Доступні Агреговані Графіки не існують"
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Actions"
+msgid "Graph Actions"
+msgstr "Дії"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Деталі Графіку, Збільшення та Засоби Відлагодження"
