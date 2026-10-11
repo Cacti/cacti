@@ -2336,7 +2336,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 		?>
 		<td>
-			<?php print __('Device');?>
+			<label for='host_id'><?php print __('Device');?></label>
 		</td>
 		<td>
 			<select id='host_id' name='host_id' class='select2-callback' data-action='ajax_hosts' data-variables='site_id' data-callback='<?php print html_escape($call_back);?>'>
