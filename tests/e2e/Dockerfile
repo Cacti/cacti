@@ -73,6 +73,7 @@ RUN set -eux; \
     apk del --no-network .plugin-fetch
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY docker/write-config.php /usr/local/lib/cacti-write-config.php
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Match the checkout owner so the bind-mounted fixture remains writable without
