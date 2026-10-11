@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-issue#8310: Persist table column widths across request actions so a filter refresh no longer reverts resized columns
 -issue#8290: Apply requested CLI plugin realm permissions to existing realms and report failed grants
 -security#GHSA-x664-x4hf-p9xh: Require a POST request with a CSRF token for the User Log purge (utilities.php clear_user_log) so the state-changing action can no longer be triggered cross-site via a GET request
 -issue#8233: Harmonize all remaining Deepness theme greens to its emerald palette so info/success dialog text (.deviceUp), status text, the Up badge, tree border, reload icon, Pace bar and jQuery UI hover/active states no longer render as a clashing kelly/olive green
