@@ -4855,16 +4855,34 @@ function initGraphDrilldown() {
 	// close on a second click, on leaving the strip, or on an outside click.
 	$(document).off('.graphdd');
 
+	function closeGraphDrilldown(container) {
+		container.removeClass('open');
+		container.find('.graphDrillDownMenu').attr('aria-expanded', 'false');
+
+		// Close an open SpikeKill submenu so it is not orphaned with the strip.
+		if (typeof spikeKillClose == 'function') {
+			spikeKillClose();
+		}
+	}
+
 	$(document).on('click.graphdd', '.graphDrillDownToggle .graphDrillDownMenu', function (event) {
 		event.preventDefault();
 		event.stopPropagation();
 
-		var container = $(this).closest('.graphDrillDownToggle');
-		var isOpen    = container.hasClass('open');
+		var menu      = $(this);
+		var container = menu.closest('.graphDrillDownToggle');
+		var willOpen  = !container.hasClass('open');
 
-		$('.graphDrillDownToggle.open').not(container).removeClass('open');
+		$('.graphDrillDownToggle.open').not(container).each(function () {
+			closeGraphDrilldown($(this));
+		});
 
-		container.toggleClass('open', !isOpen);
+		if (willOpen) {
+			container.addClass('open');
+			menu.attr('aria-expanded', 'true');
+		} else {
+			closeGraphDrilldown(container);
+		}
 	});
 
 	$(document).on('keydown.graphdd', '.graphDrillDownToggle .graphDrillDownMenu', function (event) {
@@ -4875,12 +4893,14 @@ function initGraphDrilldown() {
 	});
 
 	$(document).on('mouseleave.graphdd', '.graphDrillDownToggle.open', function () {
-		$(this).removeClass('open');
+		closeGraphDrilldown($(this));
 	});
 
 	$(document).on('click.graphdd', function (event) {
 		if ($(event.target).closest('.graphDrillDownToggle').length == 0) {
-			$('.graphDrillDownToggle.open').removeClass('open');
+			$('.graphDrillDownToggle.open').each(function () {
+				closeGraphDrilldown($(this));
+			});
 		}
 	});
 }
