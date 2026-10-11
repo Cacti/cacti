@@ -132,6 +132,8 @@ if (cacti_sizeof($parms)) {
 
 print 'NOTE: ' . cacti_sizeof($plugins) . ' Plugins to be acted on.' . PHP_EOL;
 
+$success = true;
+
 if (cacti_sizeof($plugins)) {
 	foreach ($plugins as $plugin) {
 		print "NOTE: Plugin '$plugin' processing started" . PHP_EOL;
@@ -172,7 +174,9 @@ if (cacti_sizeof($plugins)) {
 			}
 
 			if ($installed && $allperms) {
-				plugin_manage_install_allrealms($plugin);
+				if (!plugin_manage_install_allrealms($plugin)) {
+					$success = false;
+				}
 			}
 		} elseif ($uninstall || $disable || $enable) {
 			if ($disable) {
@@ -193,17 +197,43 @@ if (cacti_sizeof($plugins)) {
 	}
 }
 
-function plugin_manage_install_allrealms(string $plugin) : void {
+exit($success ? 0 : 1);
+
+function plugin_manage_install_allrealms(string $plugin) : bool {
 	print "NOTE: Enabling Plugin '$plugin' permissions for administrative accounts" . PHP_EOL;
 
-	$realms = db_fetch_assoc_prepared('SELECT *
+	$realms = db_fetch_assoc_prepared('SELECT id
 		FROM plugin_realms
 		WHERE plugin = ?',
 		[$plugin]);
 
-	foreach ($realms as $realm) {
-		api_plugin_register_realm($plugin, $realm['file'], $realm['display'], 1);
+	if (!cacti_sizeof($realms)) {
+		return true;
 	}
+
+	$user_ids = [(int) read_config_option('admin_user')];
+
+	if (!empty($_SESSION['sess_user_id'])) {
+		$user_ids[] = (int) $_SESSION['sess_user_id'];
+	}
+
+	foreach (array_unique($user_ids) as $user_id) {
+		if ($user_id <= 0 || !db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', [$user_id])) {
+			print "ERROR: Plugin '$plugin' permissions could not be granted: administrative account not found." . PHP_EOL;
+
+			return false;
+		}
+
+		foreach ($realms as $realm) {
+			if (!db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id) VALUES (?, ?)', [$user_id, $realm['id'] + 100])) {
+				print "ERROR: Plugin '$plugin' permissions could not be granted. Review the Cacti log." . PHP_EOL;
+
+				return false;
+			}
+		}
+	}
+
+	return true;
 }
 
 /**
