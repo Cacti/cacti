@@ -4315,7 +4315,9 @@ function initGraphDrilldown() {
 			closeGraphDrilldown(toggle);
 		}
 
-		toggle.find('.graphDrillDownMenu:focus').trigger('blur');
+		// Keyboard focus is left intact: the menu is revealed for keyboard
+		// users via :focus-visible (not :focus), so a mouse click never latches
+		// the reveal and there is nothing to blur away on pointer exit.
 	}
 
 	$(document).on('mouseenter.graphdd', '.graphimage, .graphDrillDownToggle', function () {
