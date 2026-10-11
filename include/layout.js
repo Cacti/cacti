@@ -3847,6 +3847,8 @@ function cactiReady() {
 
 	applySkin();
 
+	initGraphDrilldown();
+
 	setupEllipsis();
 
 	handleUserMenu();
@@ -4844,6 +4846,42 @@ function refreshGraphs() {
 		$('#date1').val(data.date1);
 		$('#date2').val(data.date2);
 		initializeGraphs();
+	});
+}
+
+function initGraphDrilldown() {
+	// Common graph drilldown behaviour for every theme (styled in graph_drilldown.css).
+	// A hamburger glyph over the graph's top-right toggles the action icons; they
+	// close on a second click, on leaving the strip, or on an outside click.
+	$(document).off('.graphdd');
+
+	$(document).on('click.graphdd', '.graphDrillDownToggle .graphDrillDownMenu', function (event) {
+		event.preventDefault();
+		event.stopPropagation();
+
+		var container = $(this).closest('.graphDrillDownToggle');
+		var isOpen    = container.hasClass('open');
+
+		$('.graphDrillDownToggle.open').not(container).removeClass('open');
+
+		container.toggleClass('open', !isOpen);
+	});
+
+	$(document).on('keydown.graphdd', '.graphDrillDownToggle .graphDrillDownMenu', function (event) {
+		if (event.keyCode == 13 || event.keyCode == 32) {
+			event.preventDefault();
+			$(this).trigger('click');
+		}
+	});
+
+	$(document).on('mouseleave.graphdd', '.graphDrillDownToggle.open', function () {
+		$(this).removeClass('open');
+	});
+
+	$(document).on('click.graphdd', function (event) {
+		if ($(event.target).closest('.graphDrillDownToggle').length == 0) {
+			$('.graphDrillDownToggle.open').removeClass('open');
+		}
 	});
 }
 

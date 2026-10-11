@@ -380,7 +380,7 @@ function html_graph_area(array &$graph_array, string $no_graphs_message = '', st
 				<div>
 					<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width']; ?>' graph_height='<?php print $graph['height']; ?>' title_font_size='<?php print((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size')); ?>'></div>
 					<?php if (is_realm_allowed(27)) { ?>
-					<div id='dd<?php print $graph['local_graph_id']; ?>' class='noprint graphDrillDown'>
+					<div id='dd<?php print $graph['local_graph_id']; ?>' class='noprint graphDrillDown graphDrillDownToggle'>
 						<?php graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id); ?>
 					</div>
 					<?php } ?>
@@ -499,7 +499,7 @@ function html_graph_thumbnail_area(array &$graph_array, string $no_graphs_messag
 				<div>
 					<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width'); ?>' graph_height='<?php print read_user_setting('default_height'); ?>'></div>
 					<?php if (is_realm_allowed(27)) { ?>
-					<div id='dd<?php print $graph['local_graph_id']; ?>' class='noprint graphDrillDown'>
+					<div id='dd<?php print $graph['local_graph_id']; ?>' class='noprint graphDrillDown graphDrillDownToggle'>
 						<?php graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id); ?>
 					</div>
 					<?php } ?>
@@ -542,6 +542,7 @@ function graph_drilldown_icons(int $local_graph_id, string $type = 'graph_button
 		WHERE id = ?',
 		[$local_graph_id]);
 
+	print "<span class='graphDrillDownMenu noprint' role='button' tabindex='0' title='" . __esc('Graph Actions') . "'><i class='fa fa-bars'></i></span>";
 	print "<div class='iconWrapper'>";
 	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><i class='drillDown ti ti-settings-filled actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
 	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><i class='drillDown ti ti-file-type-csv fileCSV' title='" . __esc('CSV Export of Graph Data') . "'></i></a><br>";
@@ -3438,6 +3439,7 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 	// Global styles
 	print get_md5_include_css('include/themes/' . $selectedTheme . '/main.css');
 	print get_md5_include_css('include/themes/print.css');
+	print get_md5_include_css('include/css/graph_drilldown.css');
 
 	// Global scripts
 	print get_md5_include_js('include/js/screenfull.js', true);
