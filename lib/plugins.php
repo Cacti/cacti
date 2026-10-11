@@ -697,14 +697,18 @@ function api_plugin_can_install(string $plugin, string &$message) : bool {
 
 	if (is_array($dependencies) && cacti_sizeof($dependencies)) {
 		foreach ($dependencies as $dependency => $version) {
-			if (!plugin_valid_version_range($dependency, $version)) {
-				$message .= __('\'%s\' versions \'%s\' above or in range are required to install \'%s\'. ', ucwords($dependency), $version, ucwords($plugin));
-
-				$proceed = false;
-			} elseif (!api_plugin_installed($dependency)) {
+			if (!api_plugin_installed($dependency)) {
 				$message .= __('\'%s\' must first be installed before \'%s\' is installed. ', ucwords($dependency), ucwords($plugin));
 
 				$proceed = false;
+			} elseif ($version !== true) {
+				$installed_version = db_fetch_cell_prepared('SELECT version FROM plugin_config WHERE directory = ?', [$dependency]);
+
+				if (!is_string($installed_version) || !plugin_valid_version_range($version, $installed_version)) {
+					$message .= __('\'%s\' versions \'%s\' above or in range are required to install \'%s\'. ', ucwords($dependency), $version, ucwords($plugin));
+
+					$proceed = false;
+				}
 			}
 		}
 	}
@@ -927,7 +931,8 @@ function api_plugin_uninstall(string $plugin, bool $tables = true) : void {
 	}
 }
 
-function api_plugin_check_config(string $plugin) : bool {
+// Null is an invalid legacy hook response diagnosed by the plugin UI.
+function api_plugin_check_config(string $plugin) : ?bool {
 	clearstatcache();
 
 	if (file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")) {
