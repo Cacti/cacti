@@ -1,0 +1,989 @@
+{
+  "schemaVersion": 1,
+  "repository": "Cacti/cacti",
+  "reviewedCommit": "bcb4aaf4ae37ca6bc6b20398f7fdd054505c927c",
+  "scope": "Prioritized findings reviewed at source and application boundary; remaining library dismissals are inventoried for individual call-site review, not declared safe.",
+  "evidence": {
+    "browserTests": "tests/e2e/tests/frontend-dependency-security.spec.ts",
+    "codeqlBuild": "Managed assets are built before JavaScript extraction so generated libraries remain scanned.",
+    "branch": "develop; current 1.2.x does not contain the HTMX integration."
+  },
+  "alerts": [
+    {
+      "number": 622,
+      "rule": "js/xss",
+      "path": "include/js/htmx.js",
+      "observedState": "open",
+      "disposition": "false_positive",
+      "evidence": "URL and HTML are distinct history-item fields; serialization loses field-specific taint. Browser save/restore regression."
+    },
+    {
+      "number": 620,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.validate/jquery.validate.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 619,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.validate/jquery.validate.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 169,
+      "rule": "js/incomplete-sanitization",
+      "path": "include/js/htmx.js",
+      "observedState": "dismissed",
+      "disposition": "historical_requires_rescan",
+      "evidence": "No matching HTMX incomplete-sanitization result exists in the current default-branch SARIF; the last instance references an older commit."
+    },
+    {
+      "number": 168,
+      "rule": "js/xss",
+      "path": "include/js/htmx.js",
+      "observedState": "dismissed",
+      "disposition": "false_positive",
+      "evidence": "Same history-item URL/content field confusion, with DOMParser as the reported sink."
+    },
+    {
+      "number": 167,
+      "rule": "js/incomplete-url-scheme-check",
+      "path": "include/js/htmx.js",
+      "observedState": "dismissed",
+      "disposition": "false_positive",
+      "evidence": "js:/javascript: prefixes select expression evaluation in hx-vals/hx-vars; this is not a request URL scheme check. Cacti forbids evaluation and browser test verifies rejection."
+    },
+    {
+      "number": 131,
+      "rule": "js/prototype-pollution-utility",
+      "path": "include/js/pace.js",
+      "observedState": "dismissed",
+      "disposition": "fix_pending_merge",
+      "evidence": "Pace deep merge can follow prototype keys from option objects. Dependency patch blocks those keys; all three original-code mutation tests fail."
+    },
+    {
+      "number": 130,
+      "rule": "js/prototype-pollution-utility",
+      "path": "include/js/billboard.js",
+      "observedState": "dismissed",
+      "disposition": "false_positive",
+      "evidence": "bindThis is called with library-owned Chart.prototype and copies methods into its Chart instance, rather than merging caller options."
+    },
+    {
+      "number": 129,
+      "rule": "js/prototype-pollution-utility",
+      "path": "include/js/billboard.js",
+      "observedState": "dismissed",
+      "disposition": "false_positive",
+      "evidence": "mergeObj already rejects __proto__, constructor and prototype; browser test preserves valid data while rejecting prototype keys."
+    },
+    {
+      "number": 126,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 125,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 124,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 123,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 122,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 121,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 120,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.timepicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 119,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.timepicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 118,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 117,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 116,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 115,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 114,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.dropdown.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 113,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.dropdown.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 112,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.dropdown.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 111,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.dropdown.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 110,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.dropdown.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 109,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.dropdown.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 108,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.dropdown.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 107,
+      "rule": "js/html-constructed-from-input",
+      "path": "include/js/jquery.dropdown.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 106,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jstree.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 105,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jstree.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 104,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jstree.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 103,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jstree.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 102,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jstree.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 101,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jstree.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 100,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jstree.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 99,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/vendor/daterangepicker/daterangepicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 98,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/vendor/daterangepicker/daterangepicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 97,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/vendor/daterangepicker/daterangepicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 96,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/vendor/daterangepicker/daterangepicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 95,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/vendor/daterangepicker/daterangepicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 94,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/vendor/daterangepicker/daterangepicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 93,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/vendor/daterangepicker/daterangepicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 92,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.validate/jquery.validate.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 91,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.validate/jquery.validate.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 90,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 89,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 88,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 87,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 86,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 85,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 84,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 83,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 82,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 81,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 80,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 79,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 78,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 77,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 76,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 75,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 74,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 73,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 72,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 71,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 70,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 69,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 68,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 67,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 66,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 65,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablesorter.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 64,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.tablednd.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 63,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 62,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 61,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 60,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 59,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 58,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 57,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 56,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 55,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 54,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 53,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 52,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 51,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 50,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 49,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 48,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.contextMenu.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 47,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 46,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.contextMenu.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 45,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.contextMenu.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 44,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 43,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 42,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 41,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 40,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.contextMenu.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 39,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 38,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 37,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 36,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 35,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 34,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 33,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.colorpicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 32,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.colorpicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 31,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.colorpicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 30,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.colorpicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 29,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.colorpicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 28,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.colorpicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 27,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.colorpicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 26,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.colorpicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 25,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery.colorpicker.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 24,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 23,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 22,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 21,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 20,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 19,
+      "rule": "js/unsafe-jquery-plugin",
+      "path": "include/js/jquery-ui.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 9,
+      "rule": "js/xss-through-dom",
+      "path": "include/js/jquery.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 8,
+      "rule": "js/xss-through-dom",
+      "path": "include/js/jquery.multiselect.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 7,
+      "rule": "js/double-escaping",
+      "path": "include/js/billboard.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 6,
+      "rule": "js/incomplete-multi-character-sanitization",
+      "path": "include/js/billboard.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    },
+    {
+      "number": 5,
+      "rule": "js/identity-replacement",
+      "path": "include/js/jquery.tablesorter.widgets.js",
+      "observedState": "dismissed",
+      "disposition": "requires_callsite_evidence",
+      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+    }
+  ]
+}

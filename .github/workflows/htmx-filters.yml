@@ -30,6 +30,9 @@ on:
       - 'tests/integration/HtmxLoaderTest.php'
       - 'tests/integration/fixtures/htmx_fixture.php'
       - 'tests/e2e/tests/htmx-loader.spec.ts'
+      - 'tests/e2e/tests/frontend-dependency-security.spec.ts'
+      - 'patches/pace-js+1.2.4.patch'
+      - 'include/js/pace.js'
       - 'tests/e2e/tests/login-smoke.spec.ts'
       - 'tests/e2e/Dockerfile'
       - 'tests/e2e/docker-compose.yml'
@@ -55,6 +58,9 @@ on:
       - 'tests/integration/HtmxLoaderTest.php'
       - 'tests/integration/fixtures/htmx_fixture.php'
       - 'tests/e2e/tests/htmx-loader.spec.ts'
+      - 'tests/e2e/tests/frontend-dependency-security.spec.ts'
+      - 'patches/pace-js+1.2.4.patch'
+      - 'include/js/pace.js'
       - 'tests/e2e/tests/login-smoke.spec.ts'
       - 'tests/e2e/Dockerfile'
       - 'tests/e2e/docker-compose.yml'
@@ -197,7 +203,7 @@ jobs:
         working-directory: tests/e2e
         env:
           CACTI_BASE_URL: http://127.0.0.1:8080
-        run: npx --no-install playwright test tests/htmx-loader.spec.ts tests/login-smoke.spec.ts
+        run: npx --no-install playwright test tests/htmx-loader.spec.ts tests/login-smoke.spec.ts tests/frontend-dependency-security.spec.ts
 
       - name: Upload Playwright report
         if: always()

@@ -247,7 +247,13 @@ test('htmx_script_tag emits the htmx-config meta disabling eval and script tags'
 	$content = html_entity_decode($m[1] ?? '', ENT_QUOTES, 'UTF-8');
 	$decoded = json_decode($content, true);
 
-	expect($decoded)->toBe(['allowEval' => false, 'allowScriptTags' => false]);
+	expect($decoded)->toBe([
+		'allowEval'            => false,
+		'allowScriptTags'      => false,
+		'selfRequestsOnly'     => true,
+		'historyCacheSize'     => 0,
+		'refreshOnHistoryMiss' => true,
+	]);
 });
 
 test('htmx_script_tag wires the csrf-magic token onto htmx requests', function () {

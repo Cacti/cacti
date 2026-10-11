@@ -127,6 +127,11 @@ const HTMX_2_0_11_SRI = 'sha384-gmJEF2eAKY4e+FDN+qtKIivWyb6ANwDB7JUdUybKgQspPKyE
  *   - an htmx-config meta that disables allowEval/allowScriptTags. htmx 2.0.11
  *     defaults both to true, which Cacti's CSP (no unsafe-eval) forbids. The
  *     meta is read by htmx at load, so it must appear before the script.
+ *     HTML history snapshots are disabled, and history misses reload from
+ *     Cacti so authenticated content is not retained in browser storage.
+ *   - history cache cleanup and a cache-hit guard prevent stale or externally
+ *     reenabled snapshots from bypassing that policy. The guard cancels the
+ *     HTML swap and reloads the current URL through the server.
  *   - an htmx:configRequest listener that adds the csrf-magic token to
  *     body-based (POST/PUT/PATCH) htmx requests. Cacti validates the
  *     __csrf_magic field on POSTs; layout.js injects it into $.post payloads,
@@ -162,7 +167,7 @@ function htmx_script_tag(): string {
 	$nonce_attr = CactiSecureHeaders::getNonceAttribute();
 
 	$config_meta = "<meta name='htmx-config' content='"
-		. htmlspecialchars('{"allowEval":false,"allowScriptTags":false}', ENT_QUOTES, 'UTF-8')
+		. htmlspecialchars('{"allowEval":false,"allowScriptTags":false,"selfRequestsOnly":true,"historyCacheSize":0,"refreshOnHistoryMiss":true}', ENT_QUOTES, 'UTF-8')
 		. "'>\n";
 
 	// htmx:configRequest fires before each request and bubbles to document;
@@ -172,6 +177,13 @@ function htmx_script_tag(): string {
 	// the token: htmx puts GET and DELETE parameters into the URL, which would
 	// leak it (see the function doc).
 	$csrf_wiring = "<script type='text/javascript' $nonce_attr>\n"
+		// Authenticated DOM snapshots must not persist across logout or be
+		// restored from browser storage. Back navigation reloads from Cacti.
+		. "try { window.sessionStorage.removeItem('htmx-history-cache'); } catch (error) {}\n"
+		. "document.addEventListener('htmx:historyCacheHit', function(evt) {\n"
+		. "\tevt.preventDefault();\n"
+		. "\twindow.location.reload();\n"
+		. "});\n"
 		. "document.addEventListener('htmx:configRequest', function(evt) {\n"
 		. "\tvar verb = String(evt.detail.verb).toLowerCase();\n"
 		. "\tif (typeof csrfMagicToken !== 'undefined' && (verb === 'post' || verb === 'put' || verb === 'patch')) {\n"
