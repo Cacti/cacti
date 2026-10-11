@@ -47,7 +47,10 @@ jobs:
           cache-dependency-path: package-lock.json
       - name: Build patched browser assets
         if: matrix.language == 'javascript-typescript'
-        run: npm ci
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+          npm run postinstall --ignore-scripts
       - name: Initialize CodeQL
         uses: github/codeql-action/init@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v3
         with:
