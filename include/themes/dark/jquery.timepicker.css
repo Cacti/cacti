@@ -108,8 +108,8 @@
 }
 .ui-datepicker td a.ui-state-active,
 .ui-datepicker td.ui-datepicker-current-day a.ui-state-active {
-	background: #3f8b3a;
-	border: 1px solid #3f8b3a;
+	background: #2f6e2b;
+	border: 1px solid #2f6e2b;
 	color: #ffffff;
 }
 
@@ -125,8 +125,8 @@
 }
 .ui-datepicker .ui-datepicker-buttonpane button:hover,
 .ui-datepicker .ui-datepicker-buttonpane button:focus {
-	background: #3f8b3a;
-	border-color: #3f8b3a;
+	background: #2f6e2b;
+	border-color: #2f6e2b;
 	color: #ffffff;
 }
 

@@ -63,7 +63,7 @@
 	border: 1px solid #3a3b3c;
 }
 .ui-datepicker .ui-datepicker-header .ui-icon {
-	filter: none;
+	filter: brightness(0) invert(1);
 }
 
 /* Prev / next navigation */
