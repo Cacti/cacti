@@ -4912,14 +4912,31 @@ function initGraphDrilldown() {
 	});
 
 	// Close when the pointer leaves the whole graph, not merely the icon strip, so
-	// the action icons stay reachable while moving onto them from the hamburger.
-	$(document).on('mouseleave.graphdd', '.graphWrapperOuter', function () {
-		$(this).find('.graphDrillDownToggle.open').each(function () {
-			closeGraphDrilldown($(this));
-		});
+	// the action icons stay reachable while moving onto them from the hamburger.  A
+	// native tooltip over an icon can fire a spurious mouseleave (relatedTarget is
+	// null), so defer and re-check the graph is really not hovered before closing.
+	var graphDrilldownCloseTimer;
 
-		// Drop any lingering focus so the hamburger hides once the pointer is gone.
-		$(this).find('.graphDrillDownMenu:focus').trigger('blur');
+	$(document).on('mouseenter.graphdd', '.graphWrapperOuter', function () {
+		clearTimeout(graphDrilldownCloseTimer);
+	});
+
+	$(document).on('mouseleave.graphdd', '.graphWrapperOuter', function () {
+		var outer = $(this);
+
+		clearTimeout(graphDrilldownCloseTimer);
+
+		graphDrilldownCloseTimer = setTimeout(function () {
+			if (outer.is(':hover')) {
+				return;
+			}
+
+			outer.find('.graphDrillDownToggle.open').each(function () {
+				closeGraphDrilldown($(this));
+			});
+
+			outer.find('.graphDrillDownMenu:focus').trigger('blur');
+		}, 150);
 	});
 
 	$(document).on('click.graphdd', function (event) {
