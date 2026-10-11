@@ -38,8 +38,8 @@
       "rule": "js/incomplete-sanitization",
       "path": "include/js/htmx.js",
       "observedState": "dismissed",
-      "disposition": "historical_requires_rescan",
-      "evidence": "No matching HTMX incomplete-sanitization result exists in the current default-branch SARIF; the last instance references an older commit."
+      "disposition": "fixed_after_reopening",
+      "evidence": "Reopening the obsolete dismissal immediately returned state=fixed; no matching HTMX incomplete-sanitization result exists in current default-branch SARIF."
     },
     {
       "number": 168,
@@ -47,7 +47,8 @@
       "path": "include/js/htmx.js",
       "observedState": "dismissed",
       "disposition": "false_positive",
-      "evidence": "Same history-item URL/content field confusion, with DOMParser as the reported sink."
+      "evidence": "Same history-item URL/content field confusion, with DOMParser as the reported sink.",
+      "resolution": "Dismissal replaced with source-specific false-positive rationale and PR/browser evidence."
     },
     {
       "number": 167,
@@ -55,7 +56,8 @@
       "path": "include/js/htmx.js",
       "observedState": "dismissed",
       "disposition": "false_positive",
-      "evidence": "js:/javascript: prefixes select expression evaluation in hx-vals/hx-vars; this is not a request URL scheme check. Cacti forbids evaluation and browser test verifies rejection."
+      "evidence": "js:/javascript: prefixes select expression evaluation in hx-vals/hx-vars; this is not a request URL scheme check. Cacti forbids evaluation and browser test verifies rejection.",
+      "resolution": "Dismissal replaced with source-specific false-positive rationale and PR/browser evidence."
     },
     {
       "number": 131,
@@ -71,7 +73,8 @@
       "path": "include/js/billboard.js",
       "observedState": "dismissed",
       "disposition": "false_positive",
-      "evidence": "bindThis is called with library-owned Chart.prototype and copies methods into its Chart instance, rather than merging caller options."
+      "evidence": "bindThis is called with library-owned Chart.prototype and copies methods into its Chart instance, rather than merging caller options.",
+      "resolution": "Dismissal replaced with source-specific false-positive rationale and PR/browser evidence."
     },
     {
       "number": 129,
@@ -79,7 +82,8 @@
       "path": "include/js/billboard.js",
       "observedState": "dismissed",
       "disposition": "false_positive",
-      "evidence": "mergeObj already rejects __proto__, constructor and prototype; browser test preserves valid data while rejecting prototype keys."
+      "evidence": "mergeObj already rejects __proto__, constructor and prototype; browser test preserves valid data while rejecting prototype keys.",
+      "resolution": "Dismissal replaced with source-specific false-positive rationale and PR/browser evidence."
     },
     {
       "number": 126,
@@ -985,5 +989,8 @@
       "disposition": "requires_callsite_evidence",
       "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
     }
-  ]
+  ],
+  "followUpIssue": "https://github.com/Cacti/cacti/issues/8299",
+  "implementationPullRequest": "https://github.com/Cacti/cacti/pull/8298",
+  "snapshotNote": "observedState records the initial inventory, not live GitHub status. Follow-up actions are described separately."
 }
