@@ -86,6 +86,9 @@ test('Cacti rejects tampered history HTML and reloads from the server even when 
 	});
 	await page.goBack();
 	await expect.poll(() => documents).toBeGreaterThan(1);
+	// The navigation request can start before the new document's loader runs.
+	// Wait for its cache cleanup rather than inspecting the departing page.
+	await page.waitForFunction(() => sessionStorage.getItem('htmx-history-cache') === null);
 	await expect(page).toHaveURL(original);
 	await expect(page.locator('#tampered')).toHaveCount(0);
 	expect(await page.evaluate(() => sessionStorage.getItem('htmx-history-cache'))).toBeNull();
