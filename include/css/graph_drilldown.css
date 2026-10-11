@@ -38,6 +38,14 @@
 	z-index: 6;
 }
 
+/* While a strip is open, lift its graph above neighbours so the icons that
+   overflow a short (thumbnail) graph stay on top and clickable, and hovering them
+   does not fall through to the graph beneath. */
+.graphWrapperOuter.graphDrillActive {
+	position: relative;
+	z-index: 10;
+}
+
 .graphDrillDownToggle .graphDrillDownMenu {
 	display: inline-block;
 	opacity: 0;

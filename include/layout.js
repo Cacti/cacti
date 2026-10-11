@@ -4876,6 +4876,7 @@ function initGraphDrilldown() {
 
 	function closeGraphDrilldown(container) {
 		container.removeClass('open');
+		container.closest('.graphWrapperOuter').removeClass('graphDrillActive');
 		container.find('.graphDrillDownMenu').attr('aria-expanded', 'false');
 
 		// Close an open SpikeKill submenu so it is not orphaned with the strip.
@@ -4898,6 +4899,7 @@ function initGraphDrilldown() {
 
 		if (willOpen) {
 			container.addClass('open');
+			container.closest('.graphWrapperOuter').addClass('graphDrillActive');
 			menu.attr('aria-expanded', 'true');
 		} else {
 			closeGraphDrilldown(container);
