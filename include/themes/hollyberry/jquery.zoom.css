@@ -56,7 +56,6 @@
 	-khtml-opacity:0.4;
 	opacity:0.4;
 	overflow:hidden;
-	border:0;
 	padding:0;
 	margin:0;
 	box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
@@ -78,7 +77,6 @@
 	-khtml-opacity:0.3;
 	opacity:0.3;
 	overflow:hidden;
-	border:0;
 	padding:0;
 	margin:0;
 	box-shadow: 0 2px 6px rgba(0,0,0,0.75), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
@@ -102,7 +100,7 @@
 		top: -10px;
 	left: -4px;
 		content: "\f0d7";
-		font-family: "Font Awesome 5 Free";
+		font-family: "Font Awesome 5 Free", sans-serif;
 		font-weight: 600;
 }
 	&::after {
@@ -110,7 +108,7 @@
 		bottom: -10px;
 		position: inherit;
 		content: "\f0d8";
-		font-family: "Font Awesome 5 Free";
+		font-family: "Font Awesome 5 Free", sans-serif;
 		font-weight: 600;
 	}
 	.zoom-marker-tooltip {
@@ -130,7 +128,7 @@
 			color: rgba(0,0,0,0.75);
 			display: none;
 			content: "\f0d9";
-			font-family: "Font Awesome 5 Free";
+			font-family: "Font Awesome 5 Free", sans-serif;
 			font-weight: 600;
 			font-size: 1rem;
 			z-index:301;

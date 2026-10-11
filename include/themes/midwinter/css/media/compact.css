@@ -893,7 +893,7 @@
                     }
                     &::before {
                         font-size: var(--fs-semilarge);
-                        font-family: "tabler-icons";
+                        font-family: "tabler-icons", sans-serif;
                         font-weight: 900;
                         content: "\ea64";
                     }
@@ -915,7 +915,7 @@
                     }
                     &::before {
                         font-size: var(--fs-semilarge);
-                        font-family: "tabler-icons";
+                        font-family: "tabler-icons", sans-serif;
                         font-weight: 900;
                         content: "\ea65";
                     }

@@ -146,7 +146,7 @@ html {
         &:not(:last-child)::after {
             margin: 0 0.5rem;
             content: "\f105";
-            font-family: "Font Awesome 5 Free";
+            font-family: "Font Awesome 5 Free", sans-serif;
             font-weight: 600;
             display: block;
         }
@@ -704,7 +704,7 @@ html {
         .jstree-node.jstree-closed > .jstree-ocl {
             background: none;
             &:before {
-                font-family: 'tabler-icons';
+                font-family: 'tabler-icons', sans-serif;
             }
         }
 
@@ -966,7 +966,7 @@ html {
     }
 }
 @media screen and (max-width: 768px) {
-    &[data-auto-table-layout="on"] {
+    :root[data-auto-table-layout="on"] {
         .cactiTable:has(th) {
             th:nth-of-type(n+2):nth-last-of-type(n+2):not(.nohide),
             td:nth-of-type(n+2):nth-last-of-type(n+2):not(.nohide) {
@@ -976,7 +976,7 @@ html {
     }
 }
 @media screen and (min-width: 769px) and (max-width: 1023px) {
-    &[data-auto-table-layout="on"] {
+    :root[data-auto-table-layout="on"] {
         .cactiTable:has(th) {
             th:nth-of-type(n+3):nth-last-of-type(n+4):not(.nohide),
             td:nth-of-type(n+3):nth-last-of-type(n+4):not(.nohide) {
@@ -986,7 +986,7 @@ html {
     }
 }
 @media screen and (min-width: 1024px) and (max-width: 1280px) {
-    &[data-auto-table-layout="on"] {
+    :root[data-auto-table-layout="on"] {
         .cactiTable:has(th) {
             th:nth-of-type(n+4):nth-last-of-type(n+5):not(.nohide),
             td:nth-of-type(n+4):nth-last-of-type(n+5):not(.nohide) {

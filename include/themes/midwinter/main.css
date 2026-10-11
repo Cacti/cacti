@@ -270,7 +270,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 /* scoped to non-loading nodes so the AJAX loading throbber is preserved  */
 .jstree-default .jstree-node:not(.jstree-loading) > .jstree-ocl {
 	background: none !important;
-	font-family: "tabler-icons";
+	font-family: "tabler-icons", sans-serif;
 	font-size: 14px;
 	display: inline-flex;
 	align-items: center;

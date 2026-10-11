@@ -867,7 +867,6 @@ ul#breadcrumbs {
 	border-color: #161616;
 	border-radius: 5px;
 	white-space: nowrap;
-	max-width: 100%;
 	box-shadow: 0 0 2px rgba(0,0,0,.2);
 	overflow: hidden;
 	max-width: 60%;
@@ -1027,11 +1026,10 @@ ul#breadcrumbs {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	padding: 15px;
-	background-color: white;
 	top: 30%;
 	width: 360px;
 	max-height: 300px;
-	background: #363636;
+	background-color: #363636;
 	border: 1px solid #4a4a4a;
 	text-shadow: 1px 1px 1px rgba(9, 61, 16, 0.66);
 }
@@ -3451,7 +3449,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 /* scoped to non-loading nodes so the AJAX loading throbber is preserved  */
 .jstree-default .jstree-node:not(.jstree-loading) > .jstree-ocl {
 	background: none !important;
-	font-family: "tabler-icons";
+	font-family: "tabler-icons", sans-serif;
 	font-size: 14px;
 	display: inline-flex;
 	align-items: center;

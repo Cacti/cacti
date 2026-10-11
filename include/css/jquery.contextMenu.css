@@ -95,7 +95,7 @@
   top: 50%;
   left: 0;
   width: 2em; 
-  font-family: "context-menu-icons";
+  font-family: "context-menu-icons", sans-serif;
   font-size: 1em;
   font-style: normal;
   font-weight: normal;
@@ -130,7 +130,7 @@
   top: 50%;
   left: 0;
   width: 1.85rem;
-  font-family: "tabler-icons";
+  font-family: "tabler-icons", sans-serif;
   font-size: 1.25rem;
   font-style: normal;
   font-weight: normal;
@@ -155,7 +155,7 @@
   top: 50%;
   left: 0;
   width: 2em; 
-  font-family: FontAwesome;
+  font-family: FontAwesome, sans-serif;
   font-size: 1em;
   font-style: normal;
   font-weight: normal;

@@ -1280,7 +1280,7 @@ ul#breadcrumbs {
 legend {
     font-size: var(--fs-huge);
     font-weight: bold;
-    font-family: Courier;
+    font-family: Courier, monospace;
     display: flex;
     align-items: flex-end;
     flex-direction: row;
@@ -1817,7 +1817,7 @@ table.cactiTable {
     padding-left: 1px;
     text-align: left;
     color: var(--text-color-medium);
-    word-break-wrap: auto;
+    overflow-wrap: normal;
 }
 
 .formTooltip {
@@ -2002,7 +2002,7 @@ table.cactiTable {
     padding: 3px;
     text-align: left;
     vertical-align: middle;
-    color: #white;
+    color: white;
 }
 
 .tableSubHeaderCheckbox {
