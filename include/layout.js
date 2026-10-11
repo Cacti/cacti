@@ -4317,7 +4317,7 @@ function initGraphDrilldown() {
 			});
 
 			outer.find('.graphDrillDownMenu:focus').trigger('blur');
-		}, 150);
+		}, 500);
 	});
 
 	$(document).on('click.graphdd', function (event) {
