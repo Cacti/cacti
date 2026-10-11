@@ -6814,6 +6814,41 @@ function IgnoreErrorHandler($message) {
  *
  * @return bool True on success, false otherwise.
  */
+/**
+ * Attribute errors only to files within the resolved Cacti plugins directory.
+ * The first directory below that root owns nested vendor/plugin directories.
+ */
+function cacti_error_plugin($file) {
+	global $config;
+	$root = realpath($config['base_path'] . '/plugins');
+	$path = realpath($file);
+
+	if ($root === false || $path === false) {
+		return '';
+	}
+
+	$root           = str_replace('\\', '/', $root) . '/';
+	$path           = str_replace('\\', '/', $path);
+	$prefix_matches = DIRECTORY_SEPARATOR === '\\'
+		? strpos(strtolower($path), strtolower($root)) === 0
+		: strpos($path, $root) === 0;
+
+	if (!$prefix_matches) {
+		return '';
+	}
+
+	$relative  = substr($path, strlen($root));
+	$separator = strpos($relative, '/');
+
+	if ($separator === false) {
+		return '';
+	}
+
+	$plugin = substr($relative, 0, $separator);
+
+	return preg_match('/^[A-Za-z0-9_-]+$/D', $plugin) ? $plugin : '';
+}
+
 function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 	global $phperrors;
 
@@ -6829,9 +6864,7 @@ function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 		return true;
 	}
 
-	preg_match("/.*\/plugins\/([\w-]*)\/.*/", $file, $output_array);
-
-	$plugin = (is_array($output_array) && isset($output_array[1]) ? $output_array[1] : '');
+	$plugin = cacti_error_plugin($file);
 
 	if ($level !== null && isset($phperrors[$level])) {
 		$error  = 'PHP ' . $phperrors[$level] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
@@ -6903,9 +6936,7 @@ function CactiShutdownHandler() {
 				case E_CORE_WARNING:
 				case E_COMPILE_WARNING:
 				case E_PARSE:
-					preg_match('/.*\/plugins\/([\w-]*)\/.*/', $error['file'], $output_array);
-
-					$plugin = (isset($output_array[1]) ? $output_array[1] : '' );
+					$plugin = cacti_error_plugin($error['file']);
 
 					if ($error['type'] !== null && isset($phperrors[$error['type']])) {
 						$message = 'PHP ' . $phperrors[$error['type']] .

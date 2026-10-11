@@ -20047,3 +20047,8 @@ msgstr ""
 msgid ""
 "If you have SSD disks, set this to 0. Otherwise, do not set this setting."
 msgstr ""
+
+#: lib/plugins.php:835
+#, php-format
+msgid "Plugin %s installation failed. Its hooks are disabled. Review the plugin setup and Cacti log before enabling it."
+msgstr ""
