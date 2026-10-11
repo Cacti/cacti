@@ -6,20 +6,20 @@ FROM php:8.4-fpm-bookworm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         apache2 \
-        rrdtool \
-        librrd-dev \
-        snmp \
-        libsnmp-dev \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libpng-dev \
-        libgmp-dev \
-        libldap2-dev \
-        libicu-dev \
-        libxml2-dev \
-        libonig-dev \
-        default-mysql-client \
         cron \
+        default-mysql-client \
+        libfreetype6-dev \
+        libgmp-dev \
+        libicu-dev \
+        libjpeg62-turbo-dev \
+        libldap2-dev \
+        libonig-dev \
+        libpng-dev \
+        librrd-dev \
+        libsnmp-dev \
+        libxml2-dev \
+        rrdtool \
+        snmp \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
         gd gmp intl ldap mbstring \
@@ -67,7 +67,7 @@ RUN { \
         echo 'decorate_workers_output = no'; \
     } > /usr/local/etc/php-fpm.d/zz-docker.conf
 
-RUN mkdir -p /var/www/html/cacti/cache \
+RUN install -d -m 0755 /var/www/html/cacti/cache \
              /var/www/html/cacti/rra \
              /var/www/html/cacti/log \
     && chown -R www-data:www-data /var/www/html/cacti

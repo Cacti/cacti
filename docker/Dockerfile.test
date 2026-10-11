@@ -1,9 +1,10 @@
-FROM cacti-web
+ARG CACTI_TEST_BASE=cacti-web:1.3-dev
+FROM ${CACTI_TEST_BASE}
 
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
 RUN apt-get update \
-	&& apt-get install -y --no-install-recommends git unzip nodejs npm python3 ripgrep \
+	&& apt-get install -y --no-install-recommends git nodejs npm python3 ripgrep unzip \
 	&& pecl install xdebug \
 	&& docker-php-ext-enable xdebug \
 	&& apt-get clean \
@@ -18,7 +19,7 @@ COPY . ./
 RUN npm_config_cache=/tmp/.npm npm ci --ignore-scripts \
 	&& npm run postinstall --ignore-scripts \
 	&& composer install --prefer-dist --no-progress --no-interaction \
-	&& mkdir -p cache log rra \
+	&& install -d -m 0700 cache log rra \
 	&& touch log/cacti.log \
 	&& chmod -R u+rwX,go-rwx cache log rra \
 	&& cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
