@@ -65,10 +65,6 @@ test('a not-yet-created intermediate directory under the RRA directory is still 
 		$this->markTestSkipped('CACTI_PATH_RRA does not resolve to a directory this process can create fixtures under');
 	}
 
-	// A data source's host_id subdirectory does not exist until its first poll,
-	// so <path_rra>/<host_id>/<local_data_id>.rrd (e.g. host_id 0) must be
-	// treated as contained rather than reported as escaping the RRA directory
-	// just because the host_id folder has not been created yet.
 	$missing = data_source_path_test_base() . '/does_not_exist_' . bin2hex(random_bytes(4)) . '/4242.rrd';
 
 	expect(is_dir(dirname($missing)))->toBeFalse()
