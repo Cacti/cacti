@@ -53,8 +53,9 @@ jobs:
         if: env.HAS_KEY == 'true'
         run: |
           set -euo pipefail
-          git diff "origin/${GITHUB_BASE_REF}...HEAD" > /tmp/pr.diff
-          printf 'Diff: %d bytes\n' "$(wc -c < /tmp/pr.diff)"
+          mkdir -m 700 "$RUNNER_TEMP/cacti-security-review"
+          git diff "origin/${GITHUB_BASE_REF}...HEAD" > "$RUNNER_TEMP/cacti-security-review/pr.diff"
+          printf 'Diff: %d bytes\n' "$(wc -c < "$RUNNER_TEMP/cacti-security-review/pr.diff")"
 
       - name: Collect changed PHP files
         id: changed
@@ -75,7 +76,7 @@ jobs:
         if: env.HAS_KEY == 'true'
         run: |
           set -euo pipefail
-          out=/tmp/grep_hits.txt
+          out="$RUNNER_TEMP/cacti-security-review/grep_hits.txt"
           : > "$out"
 
           if [[ ! -s /tmp/changed_php_files.txt ]]; then
@@ -144,7 +145,7 @@ jobs:
         if: env.HAS_KEY == 'true'
         run: |
           set -euo pipefail
-          out=/tmp/hotspot_contents.txt
+          out="$RUNNER_TEMP/cacti-security-review/hotspot_contents.txt"
           : > "$out"
 
           # Files with a history of security issues in Cacti advisories
@@ -180,7 +181,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
           SECURITY_PROMPT_FILE: .github/prompts/security-review.md
-          PR_DIFF_FILE: /tmp/pr.diff
-          GREP_HITS_FILE: /tmp/grep_hits.txt
-          HOTSPOT_FILE: /tmp/hotspot_contents.txt
+          PR_DIFF_FILE: ${{ runner.temp }}/cacti-security-review/pr.diff
+          GREP_HITS_FILE: ${{ runner.temp }}/cacti-security-review/grep_hits.txt
+          HOTSPOT_FILE: ${{ runner.temp }}/cacti-security-review/hotspot_contents.txt
         run: python3 .github/scripts/security_review.py

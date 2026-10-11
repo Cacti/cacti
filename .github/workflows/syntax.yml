@@ -57,7 +57,8 @@ jobs:
     - name: Install managed JavaScript and test contracts
       run: |
         set -euo pipefail
-        npm ci
+        npm ci --ignore-scripts
+        npm run postinstall --ignore-scripts
         npm test
         npm run test:coverage
 
@@ -126,7 +127,10 @@ jobs:
         cache: npm
 
     - name: Build managed JavaScript
-      run: npm ci
+      run: |
+        set -euo pipefail
+        npm ci --ignore-scripts
+        npm run postinstall --ignore-scripts
 
     - name: Setup native PHP dependencies
       uses: ./.github/actions/setup-php-composer
@@ -146,7 +150,10 @@ jobs:
     - name: Resolve native dependencies
       env:
         COMPOSER: composer.compat.json
-      run: composer update --prefer-dist --no-progress --no-interaction
+      run: |
+        set -euo pipefail
+        composer update --no-install --no-scripts --no-plugins --prefer-dist --no-progress --no-interaction
+        composer install --no-scripts --prefer-dist --no-progress --no-interaction
 
     - name: Run unit tests
       run: include/vendor/bin/pest --display-warnings --testsuite=Unit
@@ -183,7 +190,10 @@ jobs:
         cache: npm
 
     - name: Build managed JavaScript
-      run: npm ci
+      run: |
+        set -euo pipefail
+        npm ci --ignore-scripts
+        npm run postinstall --ignore-scripts
 
     - name: Setup locked PHP 8.3 dependencies
       uses: ./.github/actions/setup-php-composer

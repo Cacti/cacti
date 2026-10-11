@@ -69,7 +69,7 @@ PATH_BADGES = [
     (re.compile(r"^images/"), "design"),
     (re.compile(r"^(\.github/|docker/|Dockerfile|docker-compose)"), "infra"),
     (re.compile(r"^(composer\.json|phpstan|rector\.php|\.php-cs-fixer\.php|\.pre-commit-config\.yaml)"), "maintenance"),
-    (re.compile(r"^docs/|\.md$"), "doc"),
+    (re.compile(r"(?:^docs/|\.md$)"), "doc"),
 ]
 
 SECURITY_MESSAGE_RE = re.compile(r"CVE-|GHSA|security|XSS|SQLi|vulnerab", re.IGNORECASE)

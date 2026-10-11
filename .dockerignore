@@ -18,3 +18,22 @@ log/
 !log/index.php
 rra/*.rrd
 *.log
+
+# Local runtime configuration and credentials never belong in build layers.
+.env.*
+!.env.example
+**/.env
+**/.env.*
+**/.ssh
+**/.aws
+**/.gnupg
+include/config.php
+include/config_local.php
+include/vendor/
+node_modules/
+**/node_modules/
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/.DS_Store

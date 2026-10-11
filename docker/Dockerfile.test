@@ -15,11 +15,12 @@ COPY . ./
 
 # include/js/htmx.js is generated from package.json rather than committed,
 # and the htmx suites fail without it.
-RUN npm_config_cache=/tmp/.npm npm ci \
+RUN npm_config_cache=/tmp/.npm npm ci --ignore-scripts \
+	&& npm run postinstall --ignore-scripts \
 	&& composer install --prefer-dist --no-progress --no-interaction \
 	&& mkdir -p cache log rra \
 	&& touch log/cacti.log \
-	&& chmod -R a+rwX cache log rra \
+	&& chmod -R u+rwX,go-rwx cache log rra \
 	&& cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
 	&& sed -i 's/^memory_limit = .*/memory_limit = 2G/' /usr/local/etc/php/php.ini \
 	&& git init \

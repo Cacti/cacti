@@ -94,7 +94,10 @@ jobs:
           cache: npm
 
       - name: Build managed JavaScript
-        run: npm ci
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+          npm run postinstall --ignore-scripts
 
       - name: Setup locked PHP dependencies
         uses: ./.github/actions/setup-php-composer
@@ -129,7 +132,10 @@ jobs:
           cache: npm
 
       - name: Build managed JavaScript
-        run: npm ci
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+          npm run postinstall --ignore-scripts
 
       - name: Setup locked PHP dependencies
         uses: ./.github/actions/setup-php-composer
@@ -167,7 +173,10 @@ jobs:
             tests/e2e/package-lock.json
 
       - name: Build managed JavaScript
-        run: npm ci
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+          npm run postinstall --ignore-scripts
 
       - name: Build and start the Cacti stack
         working-directory: tests/e2e
@@ -190,7 +199,7 @@ jobs:
         working-directory: tests/e2e
         run: |
           set -euo pipefail
-          npm ci
+          npm ci --ignore-scripts
           npx --no-install playwright install --with-deps chromium
 
       - name: Run Playwright specs

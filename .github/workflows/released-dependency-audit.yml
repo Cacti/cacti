@@ -30,7 +30,8 @@ jobs:
         with:
           persist-credentials: false
       - name: Install workflow parser
-        run: python3 -m pip install --disable-pip-version-check pyyaml==6.0.2
+        run: >-
+          python3 -m pip install --only-binary=:all: --disable-pip-version-check pyyaml==6.0.2
       - name: Verify audit reporting and failure handling
         run: python3 tests/tools/test_released_dependency_audit.py
 

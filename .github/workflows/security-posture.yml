@@ -177,7 +177,7 @@ jobs:
       - name: Install policy checker dependencies
         run: |
           set -euo pipefail
-          python3 -m pip install --disable-pip-version-check pyyaml==6.0.2
+          python3 -m pip install --only-binary=:all: --disable-pip-version-check pyyaml==6.0.2
 
       - name: Enforce workflow policy
         run: |

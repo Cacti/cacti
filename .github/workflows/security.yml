@@ -84,7 +84,7 @@ jobs:
       - name: Download and verify pinned Psalm phar
         run: |
           set -euo pipefail
-          curl -fsSL -o psalm.phar \
+          curl --proto '=https' --proto-redir '=https' -fsSL -o psalm.phar \
             "https://github.com/vimeo/psalm/releases/download/${PSALM_VERSION}/psalm.phar"
           echo "${PSALM_PHAR_SHA256}  psalm.phar" | sha256sum -c -
 
