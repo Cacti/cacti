@@ -262,7 +262,7 @@ test('realtime shutdown restores snapshots populated by the layout click handler
 		setFilters: () => { filters++; }, tuneFilter: () => {}, realtimeGrapher: () => {},
 	});
 	const layout = functionSource('include/layout.js', 'initializeGraphs');
-	const marker = "$(this).off('click').on('click', function(event) {";
+	const marker = "$(this).rebind('click', function(event) {";
 	const scope = layout.indexOf("$('a[id$=\"_realtime\"]')");
 	assert.notEqual(scope, -1);
 	const start = layout.indexOf(marker, scope) + marker.indexOf('function(event)');

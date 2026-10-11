@@ -201,6 +201,7 @@ Cacti CHANGELOG
 -feature#8166: Add an "Enable MD5 and DES for SNMPv3" setting (off by default) that removes the legacy MD5/DES algorithms from the Device and Automation SNMP Option pickers when disabled, matching hardened (FIPS) PHP and Net-SNMP builds
 -feature#8168: Add a two-year panel to the detailed graph view when archive retention supports it
 -feature#8257: Log user actions (create, delete, ...) 
+-feature#8280: Add a jQuery rebind() helper for the common off(events).on(events, ...) idiom and roll it out across the core JavaScript and inline PHP event handlers
 
 1.2.31
 -security#GHSA-23g4-vf2j-94w4: CVE-2026-39894 RRDtool metric shift via LC_NUMERIC locale comma decimal formatting

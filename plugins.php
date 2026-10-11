@@ -537,7 +537,7 @@ function update_show_current () {
 			applyFilter();
 		});
 
-		$('.piforceremove').off('click').on('click', function(event) {
+		$('.piforceremove').rebind('click', function(event) {
 			event.preventDefault();
 
 			var url  = $(this).attr('data-url');
