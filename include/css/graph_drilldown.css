@@ -54,7 +54,7 @@
 
 /* Keep the toggle focusable (never display:none) and reveal it on hover,
    keyboard focus, the open state, and on devices that cannot hover. */
-.graphWrapperOuter:hover .graphDrillDownToggle .graphDrillDownMenu,
+.graphDrillDownToggle.reveal .graphDrillDownMenu,
 .graphDrillDownToggle .graphDrillDownMenu:focus,
 .graphDrillDownToggle.open .graphDrillDownMenu {
 	opacity: 1;
