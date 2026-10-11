@@ -4055,6 +4055,12 @@ msgstr "Visa graf"
 msgid "The Graph you requested does not exist."
 msgstr "Grafen du begärde finns inte."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Grafikalternativ"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Grafikinformation, Zoomning och Debugging Utilities"

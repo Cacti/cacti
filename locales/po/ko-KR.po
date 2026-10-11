@@ -4049,6 +4049,12 @@ msgstr "그래프보기"
 msgid "The Graph you requested does not exist."
 msgstr "데이터 소스가 없습니다."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "그래프 옵션"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "그래프 세부 정보, 확대 / 축소 및 디버깅 유틸리티"

@@ -4084,6 +4084,12 @@ msgstr "Grafiği Görüntüleme"
 msgid "The Graph you requested does not exist."
 msgstr "Veri Kaynağı mevcut değil."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Grafik Seçenekleri"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Grafik Ayrıntıları, Yakınlaştırma ve Hata Ayıklama Araçları"

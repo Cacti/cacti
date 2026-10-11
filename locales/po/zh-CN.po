@@ -4049,6 +4049,12 @@ msgstr "查看图形"
 msgid "The Graph you requested does not exist."
 msgstr "数据源不存在."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "图形操作"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "图形细节,缩放和调试工具"

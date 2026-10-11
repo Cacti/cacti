@@ -4084,6 +4084,12 @@ msgstr "ग्राफ देखना"
 msgid "The Graph you requested does not exist."
 msgstr "डेटा स्रोत मौजूद नहीं है।"
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "ग्राफ विकल्प"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "ग्राफ विवरण, ज़ूमिंग और डिबगिंग यूटिलिटीज"

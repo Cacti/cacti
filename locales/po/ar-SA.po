@@ -4237,6 +4237,12 @@ msgstr "عرض الرسم البياني"
 msgid "The Graph you requested does not exist."
 msgstr "مصدر البيانات غير موجود."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "خيارات الرسم البياني"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "تفاصيل الرسم البياني ، وتصغير المرافق وتصحيح الأخطاء"
