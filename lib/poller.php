@@ -770,12 +770,15 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 		$limit");
 
 	if (!$rrd_field_names_loaded) {
-		$rrd_field_names = array_rekey(
-			db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
-				CONCAT(data_template_id, "_", data_name) AS keyname, data_source_names AS data_source_name
-				FROM poller_data_template_field_mappings'),
-			'keyname', ['data_source_name']);
-		$rrd_field_names_loaded = true;
+		$template_fields = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
+			CONCAT(data_template_id, "_", data_name) AS keyname, data_source_names AS data_source_name
+			FROM poller_data_template_field_mappings');
+
+		// A failed read is not an empty cache; retry on the next pass.
+		if ($template_fields !== false) {
+			$rrd_field_names        = array_rekey($template_fields, 'keyname', ['data_source_name']);
+			$rrd_field_names_loaded = true;
+		}
 	}
 
 	if (cacti_sizeof($results)) {

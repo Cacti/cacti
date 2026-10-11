@@ -17,6 +17,8 @@ rules if enforcement is desired; adding this workflow does not alter rules.
 Run from the repository root with a supported PHP runtime:
   php tests/performance/poller.php quick
   php tests/performance/poller.php empty
+  php tests/performance/poller.php recovery
+  php tests/performance/poller.php recovery-empty
   php tests/performance/poller.php exec
   php -d memory_limit=512M tests/performance/poller.php scale 2500000
   python3 tests/performance/test_ci_scope.py

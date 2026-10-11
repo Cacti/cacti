@@ -6,7 +6,7 @@
 $root = dirname(__DIR__, 2);
 $mode = $argv[1] ?? 'quick';
 
-if (!in_array($mode, ['quick', 'scale', 'empty', 'exec'], true)) {
+if (!in_array($mode, ['quick', 'scale', 'empty', 'recovery', 'recovery-empty', 'exec'], true)) {
 	throw new RuntimeException('Unknown performance scenario');
 }
 $state = ['rows' => [], 'queries' => [], 'writes' => [], 'updates' => [], 'boost' => false];
@@ -89,11 +89,17 @@ function perf_db_fetch_assoc($sql, ...$args) : array {
 
 	return $GLOBALS['state']['rows'];
 }
-function perf_db_fetch_assoc_prepared($sql, $params = [], ...$args) : array {
+function perf_db_fetch_assoc_prepared($sql, $params = [], ...$args) : array|false {
 	$GLOBALS['state']['queries'][] = ['sql' => $sql, 'params' => $params];
 
 	if (str_contains($sql, 'FROM poller_data_template_field_mappings')) {
-		return $GLOBALS['mode'] === 'empty' ? [] : [['keyname' => '1_a', 'data_source_name' => 'a'], ['keyname' => '1_b', 'data_source_name' => 'b']];
+		if (in_array($GLOBALS['mode'], ['recovery', 'recovery-empty'], true) && !isset($GLOBALS['state']['mapping_failed'])) {
+			$GLOBALS['state']['mapping_failed'] = true;
+
+			return false;
+		}
+
+		return in_array($GLOBALS['mode'], ['empty', 'recovery-empty'], true) ? [] : [['keyname' => '1_a', 'data_source_name' => 'a'], ['keyname' => '1_b', 'data_source_name' => 'b']];
 	}
 	perf_assert(count($params) === 1 && str_contains($sql, 'dtr.local_data_id = ?'), 'Metadata lookup must be bounded to one source');
 
@@ -195,7 +201,24 @@ foreach (['poller_get_unused_data_source_names', 'poller_get_nt_rrd_field_names'
 $pipe  = null;
 $start = hrtime(true);
 
-if ($mode === 'empty') {
+if (in_array($mode, ['recovery', 'recovery-empty'], true)) {
+	// Fail with an empty batch, then recover; an empty successful read is cached too.
+	perf_process_poller_output($pipe);
+	perf_assert(perf_metadata_count() === 1, 'First mapping read must fail once');
+	perf_process_poller_output($pipe);
+	perf_assert(perf_metadata_count() === 2, 'Failed mapping read was cached');
+
+	for ($pass = 0; $pass < 5; $pass++) {
+		perf_process_poller_output($pipe);
+		perf_assert(perf_metadata_count() === 2, 'Successful mapping read was not cached');
+	}
+
+	if ($mode === 'recovery') {
+		$state['rows'] = [perf_row(1, 'a:10 b:20', 1, 2)];
+		perf_process_poller_output($pipe);
+		perf_assert(perf_sample(1) === ['a' => '10', 'b' => '20'], 'MULTI output did not recover');
+	}
+} elseif ($mode === 'empty') {
 	for ($i = 0; $i < 5; $i++) {
 		perf_process_poller_output($pipe);
 	}

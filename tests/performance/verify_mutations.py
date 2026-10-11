@@ -8,12 +8,13 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 PHP = sys.argv[1] if len(sys.argv) > 1 else "php"
 cases = [
+    ("recovery", "lib/poller.php", "$template_fields !== false", "true"),
     ("empty", "lib/poller.php", "if (!$rrd_field_names_loaded)", "if (!cacti_sizeof($rrd_field_names))"),
     ("quick", "lib/poller.php", "if (!array_key_exists($local_data_id, $unused_cache))", "if (true)"),
 ]
 source = (ROOT / "lib/poller.php").read_text()
 if "function poller_get_unused_data_source_names(" in source:
-    cases[1] = ("quick", "lib/poller.php", "if (!array_key_exists($local_data_id, $cache))", "if (true)")
+    cases[2] = ("quick", "lib/poller.php", "if (!array_key_exists($local_data_id, $cache))", "if (true)")
 functions = (ROOT / "lib/functions.php").read_text()
 if "function cacti_exec(" in functions:
     cases.append(("exec", "lib/functions.php", "@stream_select($read, $write, $except, $sec, $usec);", "@stream_select($read, $write, $except, $sec, $usec);\n\t\tusleep(50000);"))
@@ -31,7 +32,7 @@ for mode, filename, old, new in cases:
             raise RuntimeError(f"Mutation anchor disappeared: {mode}")
         target.write_text(original.replace(old, new))
         result = subprocess.run([PHP, str(root / "tests/performance/poller.php"), mode], capture_output=True, text=True, timeout=30)
-        expected = {"empty": "Empty template map was reloaded", "quick": "Metadata lookups grew", "exec": "Median wrapper overhead exceeds"}[mode]
+        expected = {"recovery": "Failed mapping read was cached", "empty": "Empty template map was reloaded", "quick": "Metadata lookups grew", "exec": "Median wrapper overhead exceeds"}[mode]
         if result.returncode == 0 or expected not in result.stdout + result.stderr:
             raise RuntimeError(f"Guard did not reject {mode} mutation correctly: {result.stdout} {result.stderr}")
         print(f"{mode}: historical regression rejected")

@@ -71,6 +71,8 @@ jobs:
           set -euo pipefail
           php tests/performance/poller.php quick
           php tests/performance/poller.php empty
+          php tests/performance/poller.php recovery
+          php tests/performance/poller.php recovery-empty
           php tests/performance/poller.php exec
 
   scale:
