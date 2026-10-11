@@ -54,13 +54,35 @@ test('HTMX expression prefixes are not URL schemes and cannot enable evaluation 
 	expect(await page.evaluate(() => Reflect.get(window, 'codeqlExecuted'))).toBeUndefined();
 });
 
+test('Cacti history protection leaves non-HTMX popstate handlers intact', async ({ page }) => {
+	await page.goto('/');
+	const reached = await page.evaluate(() => {
+		let calls = 0;
+		const previous = window.onpopstate;
+		window.onpopstate = () => { calls++; };
+		try {
+			window.dispatchEvent(new PopStateEvent('popstate', { state: { cacti: true } }));
+			window.dispatchEvent(new PopStateEvent('popstate', { state: null }));
+			return calls;
+		} finally {
+			window.onpopstate = previous;
+		}
+	});
+	expect(reached).toBe(2);
+});
+
 test('Cacti rejects tampered history HTML and reloads from the server even when snapshots are reenabled', async ({ page }) => {
 	let documents = 0;
 	page.on('request', request => { if (request.isNavigationRequest()) documents++; });
 	await page.goto('/');
+	await page.waitForLoadState('networkidle');
+	documents = 0;
 	const original = page.url();
 	await page.route('**/__codeql-history-next', route => route.fulfill({ contentType: 'text/html', body: '<p id="marker">second</p>' }));
 	await page.evaluate(() => {
+		// Cacti's legacy navigation owns the initial state. Mark this fixture
+		// entry as HTMX-owned so Back actually exercises restoreHistory().
+		history.replaceState({ ...history.state, htmx: true }, document.title);
 		// Exercise stale/plugin-enabled caches rather than relying on size=0.
 		Reflect.get(window, 'htmx').config.historyCacheSize = 10;
 		Reflect.get(window, 'htmx').config.refreshOnHistoryMiss = false;
@@ -85,7 +107,7 @@ test('Cacti rejects tampered history HTML and reloads from the server even when 
 		document.body.setAttribute('hx-history', 'false');
 	});
 	await page.goBack();
-	await expect.poll(() => documents).toBeGreaterThan(1);
+	await expect.poll(() => documents).toBeGreaterThan(0);
 	// The navigation request can start before the new document's loader runs.
 	// Wait for its cache cleanup rather than inspecting the departing page.
 	await page.waitForFunction(() => sessionStorage.getItem('htmx-history-cache') === null);

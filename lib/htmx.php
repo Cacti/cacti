@@ -180,6 +180,15 @@ function htmx_script_tag(): string {
 		// Authenticated DOM snapshots must not persist across logout or be
 		// restored from browser storage. Back navigation reloads from Cacti.
 		. "try { window.sessionStorage.removeItem('htmx-history-cache'); } catch (error) {}\n"
+		// Cacti's legacy navigator assigns window.onpopstate after HTMX loads.
+		// Capture only HTMX-owned entries before either navigator can restore
+		// cached HTML; ordinary Cacti history still reaches its own handler.
+		. "window.addEventListener('popstate', function(evt) {\n"
+		. "\tif (evt.state && evt.state.htmx === true) {\n"
+		. "\t\tevt.stopImmediatePropagation();\n"
+		. "\t\twindow.location.reload();\n"
+		. "\t}\n"
+		. "}, true);\n"
 		. "document.addEventListener('htmx:historyCacheHit', function(evt) {\n"
 		. "\tevt.preventDefault();\n"
 		. "\twindow.location.reload();\n"
