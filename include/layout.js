@@ -3284,6 +3284,15 @@ function saveTableWidths(initial) {
 	$('.cactiTable').each(function(data) {
 		var table = $(this);
 
+		// The outer wrapper shares the cactiTable class but carries no
+		// data-colsizing key; its attributed child persists the widths, so skip
+		// the wrapper to avoid also writing its action-dependent DOM id.
+		// Standalone/plugin tables without an attributed child still fall through.
+		if (table.attr('data-colsizing') === undefined &&
+			table.find('.cactiTable[data-colsizing]').length > 0) {
+			return;
+		}
+
 		// Persist widths under the action-independent data-colsizing key when it
 		// is present, so a table keeps its column widths across reloads that
 		// change the request action/report/tab (e.g. a filter refresh). Fall back

@@ -90,10 +90,25 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 	}
 	$table_id = $table_prefix . $table_suffix;
 
-	// Action-independent id used only as the localStorage key for persisted
-	// column widths, so a table keeps its widths across reloads that change the
-	// request action/report/tab (e.g. a filter refresh).
-	$colsizing_id = basename(get_current_page(), '.php') . $table_suffix . '_child';
+	// localStorage key for persisted column widths.  Keep a stable logical
+	// discriminator (tab/report, or a non-transient action) so unrelated table
+	// schemas never share widths, while normalizing the transient filter-refresh
+	// actions so a table keeps its widths across a filter change / refresh.
+	$colsizing_view = '';
+
+	if (!isempty_request_var('action')) {
+		$colsizing_view = clean_up_name(get_nfilter_request_var('action'));
+
+		if (in_array($colsizing_view, array('go', 'change', 'clear', 'reset'), true)) {
+			$colsizing_view = '';
+		}
+	} elseif (!isempty_request_var('report')) {
+		$colsizing_view = clean_up_name(get_nfilter_request_var('report'));
+	} elseif (!isempty_request_var('tab')) {
+		$colsizing_view = clean_up_name(get_nfilter_request_var('tab'));
+	}
+
+	$colsizing_id = basename(get_current_page(), '.php') . ($colsizing_view != '' ? '_' . $colsizing_view : '') . $table_suffix . '_child';
 
 	if ($title != '') {
 		print "<div id='$table_id' class='cactiTable' style='width:$width;text-align:$align;'>";
