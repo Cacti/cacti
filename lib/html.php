@@ -3362,7 +3362,7 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 		var showHideFilter = '<?php print __esc('Click to Show/Hide Filter'); ?>';
 		var spikeKillResults = '<?php print __esc('SpikeKill Results'); ?>';
 		var standardGraphicalUserInterface = '<?php print __esc('Standard Mode'); ?>';
-		var tableConstraints = '<?php print __esc('Allow or limit the table columns to extend beyond the current windows limits.'); ?>';
+		var tableConstraints = <?php print cacti_js_encode(__esc('Allow or limit the table columns to extend beyond the current windows limits.')); ?>;
 		var testFailed = '<?php print __esc('Connection Failed'); ?>';
 		var testSuccessful = '<?php print __esc('Connection Successful'); ?>';
 		var theme = '<?php print $selectedTheme; ?>';
@@ -3407,7 +3407,7 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 		var zoom_i18n_zoom_out_factor = '<?php print __esc('Zoom Out Factor'); ?>';
 		var zoom_i18n_zoom_out_positioning = '<?php print __esc('Zoom Out Positioning'); ?>';
 		var zoom_outOfRangeTitle='<?php print __esc('Zoom Window Out of Range'); ?>';
-		var zoom_outOfRangeMessage='<?php print __esc('Zoom Dates before January 1, 1993 are not supported in Cacti!  Pick a more recent date.'); ?>';
+		var zoom_outOfRangeMessage= <?php print cacti_js_encode(__esc('Zoom Dates before January 1, 1993 are not supported in Cacti!  Pick a more recent date.')); ?>;
 	</script>
 	<?php
 	// Global icons
