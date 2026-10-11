@@ -1428,24 +1428,6 @@ legend::before {
 .graphWrapper {
     width: fit-content;
     position: relative;
-    &:hover {
-        &::after {
-            color: var(--text-color-normal);
-            background: var(--background-content);
-            content: "\22EE";
-            display: block;
-            position: absolute;
-            right: 0;
-            top: 0;
-            padding: 0.5rem;
-            border: 1px solid var(--border-color);
-            border-bottom-left-radius: 4px;
-            border-top-right-radius: 4px;
-            opacity: 0.98;
-            cursor: pointer;
-        }
-    }
-
 }
 
 .graphimage {

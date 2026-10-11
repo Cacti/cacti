@@ -92,43 +92,6 @@ function themeReady() {
 		}
 	});
 
-	// Hide the graph icons until you hover
-	$('.graphDrillDown').on('mouseenter', function() {
-			element = $(this);
-
-			// hide the previously shown element
-			if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
-				$('#dd'+graphMenuElement).find('.iconWrapper:first').hide(300);
-			}
-
-			clearTimeout(graphMenuTimer);
-			graphMenuTimer = setTimeout(function() { showGraphMenu(element); }, 400);
-		}).on('mouseleave', function() {
-			element = $(this);
-			clearTimeout(graphMenuTimer);
-			graphMenuTimer = setTimeout(function() { hideGraphMenu(element); }, 400);
-
-			if (typeof spikeKillClose == 'function') {
-				spikeKillClose();
-			}
-		});
-
-	function showGraphMenu(element) {
-		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').show(300, function() {
-			graphMenuElement = element.attr('id').replace('dd', '');;
-			$(this).find('.spikekillMenu').menu('enable');
-			$(this).css('display', 'block');
-		});
-	}
-
-	function hideGraphMenu(element) {
-		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').hide(300, function() {
-			$(this).find('.spikekillMenu').menu('enable');
-		});
-	}
-
 	setNavigationScroll();
 }
 

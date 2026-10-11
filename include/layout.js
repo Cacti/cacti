@@ -3607,8 +3607,18 @@ function saveTableWidths(initial) {
 
 	// Initialize table width on the page
 	$('table.cactiTable').each(function (data) {
-	var sizes, items;
-		var key = $(this).attr('id');
+		var sizes, items;
+		var table = $(this);
+
+		// Persist widths under the action-independent data-colsizing key when it
+		// is present, so a table keeps its column widths across reloads that
+		// change the request action/report/tab (e.g. a filter refresh). Fall back
+		// to the DOM id for any table without the attribute.
+		var key = table.attr('data-colsizing');
+
+		if (key === undefined || key === '') {
+			key = table.attr('id');
+		}
 
 		if (storage.isSet(key)) {
 			sizes = storage.get(key);
@@ -3643,7 +3653,7 @@ function saveTableWidths(initial) {
 
 		if (key !== undefined) {
 			if (initial && items.length > 1) {
-				$('#' + key).find('th.ui-resizable').each(function (data) {
+				table.find('th.ui-resizable').each(function (data) {
 					if (items[i] == 0) {
 						items[i] = $(this).width();
 						sizes[i] = items[i];
@@ -3656,7 +3666,7 @@ function saveTableWidths(initial) {
 					i++;
 				});
 			} else {
-				$('#' + key).find('th.ui-resizable').each(function (data) {
+				table.find('th.ui-resizable').each(function (data) {
 					sizes[i] = $(this).width();
 
 					if (sizes[i] != 0) {
@@ -3852,6 +3862,8 @@ function cactiReady() {
 	setupUserMenu();
 
 	applySkin();
+
+	initGraphDrilldown();
 
 	setupEllipsis();
 
@@ -4853,6 +4865,62 @@ function refreshGraphs() {
 		$('#date1').val(data.date1);
 		$('#date2').val(data.date2);
 		initializeGraphs();
+	});
+}
+
+function initGraphDrilldown() {
+	// Common graph drilldown behaviour for every theme (styled in graph_drilldown.css).
+	// A hamburger glyph over the graph's top-right toggles the action icons; they
+	// close on a second click, on leaving the strip, or on an outside click.
+	$(document).off('.graphdd');
+
+	function closeGraphDrilldown(container) {
+		container.removeClass('open');
+		container.find('.graphDrillDownMenu').attr('aria-expanded', 'false');
+
+		// Close an open SpikeKill submenu so it is not orphaned with the strip.
+		if (typeof spikeKillClose == 'function') {
+			spikeKillClose();
+		}
+	}
+
+	$(document).on('click.graphdd', '.graphDrillDownToggle .graphDrillDownMenu', function (event) {
+		event.preventDefault();
+		event.stopPropagation();
+
+		var menu      = $(this);
+		var container = menu.closest('.graphDrillDownToggle');
+		var willOpen  = !container.hasClass('open');
+
+		$('.graphDrillDownToggle.open').not(container).each(function () {
+			closeGraphDrilldown($(this));
+		});
+
+		if (willOpen) {
+			container.addClass('open');
+			menu.attr('aria-expanded', 'true');
+		} else {
+			closeGraphDrilldown(container);
+		}
+	});
+
+	$(document).on('keydown.graphdd', '.graphDrillDownToggle .graphDrillDownMenu', function (event) {
+		if (event.keyCode == 13 || event.keyCode == 32) {
+			event.preventDefault();
+			$(this).trigger('click');
+		}
+	});
+
+	$(document).on('mouseleave.graphdd', '.graphDrillDownToggle.open', function () {
+		closeGraphDrilldown($(this));
+	});
+
+	$(document).on('click.graphdd', function (event) {
+		if ($(event.target).closest('.graphDrillDownToggle').length == 0) {
+			$('.graphDrillDownToggle.open').each(function () {
+				closeGraphDrilldown($(this));
+			});
+		}
 	});
 }
 

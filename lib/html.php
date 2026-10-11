@@ -106,6 +106,26 @@ function html_start_box(string $title, string $width, bool $div, int $cell_paddi
 
 	$table_id = $table_prefix . $table_suffix;
 
+	// localStorage key for persisted column widths.  Keep a stable logical
+	// discriminator (tab/report, or a non-transient action) so unrelated table
+	// schemas never share widths, while normalizing the transient filter-refresh
+	// actions so a table keeps its widths across a filter change / refresh.
+	$colsizing_view = '';
+
+	if (!ierv('action')) {
+		$colsizing_view = clean_up_name(gnrv('action'));
+
+		if (in_array($colsizing_view, ['go', 'change', 'clear', 'reset'], true)) {
+			$colsizing_view = '';
+		}
+	} elseif (!ierv('report')) {
+		$colsizing_view = clean_up_name(gnrv('report'));
+	} elseif (!ierv('tab')) {
+		$colsizing_view = clean_up_name(gnrv('tab'));
+	}
+
+	$colsizing_id = basename(get_current_page(), '.php') . ($colsizing_view != '' ? '_' . $colsizing_view : '') . $table_suffix . '_child';
+
 	if ($title != '') {
 		print "<div id='$table_id' class='cactiTable' style='width:$width;text-align:$align;'>";
 		print '<div class="cactiTableTitleRow">';
@@ -186,17 +206,17 @@ function html_start_box(string $title, string $width, bool $div, int $cell_paddi
 		print '</div><div class="cactiTableAction"></div></div>';
 
 		if ($div === true) {
-			print "<div id='$table_id" . "_child' class='cactiTable'>";
+			print "<div id='$table_id" . "_child' class='cactiTable' data-colsizing='$colsizing_id'>";
 		} else {
-			print "<table id='$table_id" . "_child' class='cactiTable' style='padding:" . $cell_padding . "px;'>";
+			print "<table id='$table_id" . "_child' class='cactiTable' data-colsizing='$colsizing_id' style='padding:" . $cell_padding . "px;'>";
 		}
 	} else {
 		print "<div id='$table_id' class='cactiTable' style='width:$width;text-align:$align;'>";
 
 		if ($div === true) {
-			print "<div id='$table_id" . "_child' class='cactiTable'>";
+			print "<div id='$table_id" . "_child' class='cactiTable' data-colsizing='$colsizing_id'>";
 		} else {
-			print "<table id='$table_id" . "_child' class='cactiTable' style='padding:" . $cell_padding . "px;'>";
+			print "<table id='$table_id" . "_child' class='cactiTable' data-colsizing='$colsizing_id' style='padding:" . $cell_padding . "px;'>";
 		}
 	}
 
@@ -380,7 +400,7 @@ function html_graph_area(array &$graph_array, string $no_graphs_message = '', st
 				<div>
 					<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width']; ?>' graph_height='<?php print $graph['height']; ?>' title_font_size='<?php print((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size')); ?>'></div>
 					<?php if (is_realm_allowed(27)) { ?>
-					<div id='dd<?php print $graph['local_graph_id']; ?>' class='noprint graphDrillDown'>
+					<div id='dd<?php print $graph['local_graph_id']; ?>' class='noprint graphDrillDown graphDrillDownToggle'>
 						<?php graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id); ?>
 					</div>
 					<?php } ?>
@@ -499,7 +519,7 @@ function html_graph_thumbnail_area(array &$graph_array, string $no_graphs_messag
 				<div>
 					<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width'); ?>' graph_height='<?php print read_user_setting('default_height'); ?>'></div>
 					<?php if (is_realm_allowed(27)) { ?>
-					<div id='dd<?php print $graph['local_graph_id']; ?>' class='noprint graphDrillDown'>
+					<div id='dd<?php print $graph['local_graph_id']; ?>' class='noprint graphDrillDown graphDrillDownToggle'>
 						<?php graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id); ?>
 					</div>
 					<?php } ?>
@@ -542,6 +562,7 @@ function graph_drilldown_icons(int $local_graph_id, string $type = 'graph_button
 		WHERE id = ?',
 		[$local_graph_id]);
 
+	print "<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='" . __esc('Graph Actions') . "' title='" . __esc('Graph Actions') . "'><i class='fa fa-bars'></i></span>";
 	print "<div class='iconWrapper'>";
 	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><i class='drillDown ti ti-settings-filled actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
 	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><i class='drillDown ti ti-file-type-csv fileCSV' title='" . __esc('CSV Export of Graph Data') . "'></i></a><br>";
@@ -3440,6 +3461,7 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 	// Global styles
 	print get_md5_include_css('include/themes/' . $selectedTheme . '/main.css');
 	print get_md5_include_css('include/themes/print.css');
+	print get_md5_include_css('include/css/graph_drilldown.css');
 
 	// Global scripts
 	print get_md5_include_js('include/js/screenfull.js', true);
