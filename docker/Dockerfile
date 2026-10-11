@@ -27,18 +27,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         snmp pcntl posix sockets xml \
         opcache \
     && pecl install apcu && docker-php-ext-enable apcu \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Apache modules for php-fpm proxying
-RUN a2enmod rewrite headers proxy proxy_fcgi setenvif \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* \
+    && a2enmod rewrite headers proxy proxy_fcgi setenvif \
     && a2dismod mpm_prefork \
     && a2enmod mpm_event
 
 COPY apache.conf /etc/apache2/sites-available/cacti.conf
-RUN a2dissite 000-default && a2ensite cacti
-
 # Static PHP settings (runtime-tunable values are set in entrypoint.sh)
-RUN { \
+RUN a2dissite 000-default && a2ensite cacti \
+    && { \
         echo 'opcache.enable = 1'; \
         echo 'opcache.memory_consumption = 128'; \
         echo 'opcache.interned_strings_buffer = 16'; \
@@ -48,9 +45,8 @@ RUN { \
         echo 'apc.enabled = 1'; \
         echo 'apc.shm_size = 128M'; \
         echo 'expose_php = Off'; \
-    } > /usr/local/etc/php/conf.d/cacti-opcache.ini
-
-RUN { \
+    } > /usr/local/etc/php/conf.d/cacti-opcache.ini \
+    && { \
         echo '[global]'; \
         echo 'error_log = /proc/self/fd/2'; \
         echo '[www]'; \
@@ -65,9 +61,8 @@ RUN { \
         echo 'access.log = /proc/self/fd/2'; \
         echo 'catch_workers_output = yes'; \
         echo 'decorate_workers_output = no'; \
-    } > /usr/local/etc/php-fpm.d/zz-docker.conf
-
-RUN install -d -m 0755 /var/www/html/cacti/cache \
+    } > /usr/local/etc/php-fpm.d/zz-docker.conf \
+    && install -d -m 0755 /var/www/html/cacti/cache \
              /var/www/html/cacti/rra \
              /var/www/html/cacti/log \
     && chown -R www-data:www-data /var/www/html/cacti
