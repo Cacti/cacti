@@ -213,6 +213,7 @@ function color_import_processor(array &$colors) : array {
 						switch ($line_item) {
 							case 'hex':
 								$hexcol = $j;
+								// Fall through: retain the hex column alongside the name column.
 							case 'name':
 								if (!$first_column) {
 									$save_order .= ', ';

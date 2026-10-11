@@ -1141,7 +1141,8 @@ function profile_edit() : void {
 				form_selectable_cell(filter_value($rra['name'], '', $url), $i);
 
 				form_selectable_cell('<em>' . get_span($profile['step'] * $rra['steps'] * $rra['rows']) . '</em>', $i);
-				form_selectable_cell('<em>' . isset($timespans[$rra['timespan']]) ? $timespans[$rra['timespan']] : get_span($rra['timespan']) . '</em>', $i); // @phpstan-ignore-line
+				$retention = $timespans[$rra['timespan']] ?? get_span($rra['timespan']);
+				form_selectable_cell('<em>' . $retention . '</em>', $i);
 				form_selectable_cell('<em>' . $rra['steps'] . '</em>', $i);
 				form_selectable_cell('<em>' . $rra['rows'] . '</em>', $i);
 

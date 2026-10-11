@@ -1290,6 +1290,7 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 					(local_graph_id, graph_type_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
 					VALUES (?, 1, ?, '', '', 'on', 2, ?)", [$local_graph_id, $cf_id, $next_item_sequence++]);
 
+				// Fall through: all totals also need the common totalling graph items.
 			case AGGREGATE_TOTAL_ONLY:
 				// use the prefix for totalling GPRINTs as given by the user
 				switch ($_total_type) {
