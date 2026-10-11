@@ -18,13 +18,13 @@ $.toastPopup = function(options) {
 
     if (typeof options == "undefined") {
         options = {};
-    } else if (typeof options == "string" || typeof options == "String") {
+    } else if (typeof options === "string" || options instanceof String) {
         options = {
-            text: options
+            text: String(options)
         };
     }
 
-    toastOptions = $.extend(defaultOptions, options, fixedOptions);
+    const toastOptions = $.extend(defaultOptions, options, fixedOptions);
     return $.toast(toastOptions);
 }
 

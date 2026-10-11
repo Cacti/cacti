@@ -2376,7 +2376,6 @@ function tuneTable(object, width) {
 	tableChanged = false;
 
 	if (allSeenWidth < width) {
-		calculatedColumns = calculatedColumns.sort();
 
 		// Since we can show hidden columns now, let's go
 		// in reverse until we run out of space
@@ -2788,8 +2787,6 @@ function userMenuNavigationExists(url) {
 
 		return myFound;
 	}
-
-	return false;
 }
 
 function loadPageUsingPost(href, postData, returnLocation) {

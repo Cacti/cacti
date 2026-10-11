@@ -83,7 +83,7 @@ function imageOptionsChanged(action) {
 		url = `graph_realtime.php?action=${action}&top=0&left=0&local_graph_id=${local_graph_id}&graph_start=-${parseInt(graph_start) > 0 ? graph_start:'60'}&ds_step=${ds_step}&count=${count}&size=${size}&graph_nolegend=${isThumb}`;
 	}
 
-	Pace.stop;
+	Pace.stop();
 
 	$.getJSON(url)
 		.done(function(data) {

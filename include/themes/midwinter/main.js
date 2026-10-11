@@ -1063,9 +1063,9 @@ function togglePopOver(force) {
 
 function fullScreen(event) {
 	if (!document.fullscreenElement) {
-		document.documentElement.requestFullscreen().then( r => fullScreenChangeHandler() );
+		document.documentElement.requestFullscreen().then(() => fullScreenChangeHandler()).catch(() => fullScreenChangeHandler());
 	}else if (document.exitFullscreen) {
-		document.exitFullscreen().then( r => fullScreenChangeHandler() );
+		document.exitFullscreen().then(() => fullScreenChangeHandler()).catch(() => fullScreenChangeHandler());
 	}
 }
 
