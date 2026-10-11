@@ -106,6 +106,26 @@ function html_start_box(string $title, string $width, bool $div, int $cell_paddi
 
 	$table_id = $table_prefix . $table_suffix;
 
+	// localStorage key for persisted column widths.  Keep a stable logical
+	// discriminator (tab/report, or a non-transient action) so unrelated table
+	// schemas never share widths, while normalizing the transient filter-refresh
+	// actions so a table keeps its widths across a filter change / refresh.
+	$colsizing_view = '';
+
+	if (!ierv('action')) {
+		$colsizing_view = clean_up_name(gnrv('action'));
+
+		if (in_array($colsizing_view, ['go', 'change', 'clear', 'reset'], true)) {
+			$colsizing_view = '';
+		}
+	} elseif (!ierv('report')) {
+		$colsizing_view = clean_up_name(gnrv('report'));
+	} elseif (!ierv('tab')) {
+		$colsizing_view = clean_up_name(gnrv('tab'));
+	}
+
+	$colsizing_id = basename(get_current_page(), '.php') . ($colsizing_view != '' ? '_' . $colsizing_view : '') . $table_suffix . '_child';
+
 	if ($title != '') {
 		print "<div id='$table_id' class='cactiTable' style='width:$width;text-align:$align;'>";
 		print '<div class="cactiTableTitleRow">';
@@ -186,17 +206,17 @@ function html_start_box(string $title, string $width, bool $div, int $cell_paddi
 		print '</div><div class="cactiTableAction"></div></div>';
 
 		if ($div === true) {
-			print "<div id='$table_id" . "_child' class='cactiTable'>";
+			print "<div id='$table_id" . "_child' class='cactiTable' data-colsizing='$colsizing_id'>";
 		} else {
-			print "<table id='$table_id" . "_child' class='cactiTable' style='padding:" . $cell_padding . "px;'>";
+			print "<table id='$table_id" . "_child' class='cactiTable' data-colsizing='$colsizing_id' style='padding:" . $cell_padding . "px;'>";
 		}
 	} else {
 		print "<div id='$table_id' class='cactiTable' style='width:$width;text-align:$align;'>";
 
 		if ($div === true) {
-			print "<div id='$table_id" . "_child' class='cactiTable'>";
+			print "<div id='$table_id" . "_child' class='cactiTable' data-colsizing='$colsizing_id'>";
 		} else {
-			print "<table id='$table_id" . "_child' class='cactiTable' style='padding:" . $cell_padding . "px;'>";
+			print "<table id='$table_id" . "_child' class='cactiTable' data-colsizing='$colsizing_id' style='padding:" . $cell_padding . "px;'>";
 		}
 	}
 
