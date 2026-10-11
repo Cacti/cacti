@@ -32,8 +32,12 @@ $assert     = function ($condition, $message) use (&$assertions) {
 };
 $fixtures = [];
 $admin    = read_config_option('admin_user');
-$cli      = function ($names) use ($root) {
+$cli      = function ($names, $enable = false) use ($root) {
 	$command = [PHP_BINARY, '-d', 'auto_prepend_file=', $root . '/cli/plugin_manage.php', '--install', '--allperms'];
+
+	if ($enable) {
+		$command[] = '--enable';
+	}
 
 	foreach ($names as $name) {
 		$command[] = '--plugin=' . $name;
@@ -81,6 +85,32 @@ try {
 	}
 	[$code, $output] = $cli(['pgrant_one']);
 	$assert($code === 0 && $grants('pgrant_one') === 1, 'Repeated grants must be idempotent: ' . $output);
+
+	foreach (['pgrant_bad' => null, 'pgrant_cfg' => 'return false;', 'pgrant_flip' => 'static $checks = 0; return ++$checks === 1;'] as $name => $check) {
+		$directory = $root . '/plugins/' . $name;
+
+		if (file_exists($directory)) {
+			throw new RuntimeException('Fixture collision: ' . $name);
+		}
+		mkdir($directory);
+		$fixtures[] = $name;
+		file_put_contents($directory . '/INFO', "[info]\nname = $name\nversion = 1.0\n");
+		$install = $check === null ? '' : "function plugin_{$name}_install() { api_plugin_register_realm('$name', 'index.php', 'Grant fixture', false); }";
+		file_put_contents($directory . '/setup.php', '<?php function plugin_' . $name . '_version() { return ["longname" => "Grant fixture", "author" => "Cacti tests", "version" => "1.0"]; } ' . $install . ' function plugin_' . $name . '_check_config() {' . ($check ?? 'return true;') . '}');
+		[$code, $output] = $cli([$name], true);
+		$message         = $name === 'pgrant_bad' ? 'installation failed' : ($name === 'pgrant_cfg' ? 'needs configuration' : 'could not be enabled');
+		$assert($code === 1 && str_contains($output, $message), 'CLI must report failure: ' . $output);
+		$assert(!str_contains($output, "Plugin $name enabled.") && !str_contains($output, 'permissions for'), 'Failure must skip automatic grants');
+		$assert($grants($name) === 0, 'Failed plugin must have no grants');
+	}
+
+	// Retrying an existing plugin in configuration-issue status must not grant it.
+	db_execute_prepared('UPDATE plugin_config SET status = 2 WHERE directory = ?', ['pgrant_one']);
+	db_execute_prepared('DELETE uar FROM user_auth_realm AS uar INNER JOIN plugin_realms AS pr ON uar.realm_id = pr.id + 100 WHERE pr.plugin = ?', ['pgrant_one']);
+	[$code, $output] = $cli(['pgrant_one']);
+	$assert($code === 1 && str_contains($output, 'needs configuration'), 'Retry must report configuration failure');
+	$assert($grants('pgrant_one') === 0, 'Retry must not grant a plugin needing configuration');
+	db_execute_prepared('UPDATE plugin_config SET status = 4 WHERE directory = ?', ['pgrant_one']);
 
 	db_execute_prepared('DELETE uar FROM user_auth_realm AS uar INNER JOIN plugin_realms AS pr ON uar.realm_id = pr.id + 100 WHERE pr.plugin = ?', ['pgrant_one']);
 	set_config_option('admin_user', '9999999');

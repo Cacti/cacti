@@ -232,7 +232,7 @@ Cacti CHANGELOG
 -issue#8040: Regenerate the vendored DOMPurify asset to match the pinned 3.4.15 release and keep node_modules during CI
 -issue#8041: Detect a real TTY instead of a dead github_actions check before calling stty size
 -issue#8043: Regenerate the vendored DOMPurify asset to match the pinned 3.4.15 release and keep node_modules during CI
--issue#8290: Grant existing plugin realms when the CLI installer requests --allperms
+-issue#8290: Grant existing plugin realms for --allperms and stop automatic enable/grants after install or configuration failures
 -feature#8166: Add a cross-process shared SNMP authentication cache (disabled by default) that pre-hardens SNMPv3 credential arguments once per credential change and seals them with the per-installation AES-256-GCM key, so poller, cmd and script server processes reuse them instead of rebuilding them on every request
 -feature#8166: Route SNMPv3 get/getnext through the in-process php-snmp extension when the running PHP version supports the configured auth/privacy protocols and no context/engine id is set, bypassing a per-request Net-SNMP binary spawn
 -feature#8166: Add an "Enable MD5 and DES for SNMPv3" setting (off by default) that removes the legacy MD5/DES algorithms from the Device and Automation SNMP Option pickers when disabled, and default new Devices to SHA/AES
