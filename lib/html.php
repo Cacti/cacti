@@ -470,7 +470,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 		WHERE id = ?',
 		array($local_graph_id));
 
-	print "<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='" . __esc('Graph Actions') . "' title='" . __esc('Graph Actions') . "'><i class='fa fa-bars'></i></span>";
+	print "<span class='graphDrillDownMenu noprint' role='button' tabindex='0' aria-haspopup='true' aria-expanded='false' aria-label='" . __esc('Graph Actions') . "'><i class='fa fa-bars'></i></span>";
 	print "<div class='iconWrapper'>";
 	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><i class='drillDown fa fa-cog actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
 	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><i class='drillDown fa fa-file-csv fileCSV' title='" . __esc('CSV Export of Graph Data'). "'></i></a><br>";
