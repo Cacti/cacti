@@ -1,6 +1,6 @@
 # Cacti runtime image for the e2e harness. The repo is baked into the image.
 
-FROM php:8.2-apache
+FROM php:8.2.34-apache-trixie@sha256:06617d90f29b57b2aa200a9df03b3bafbfa5c66d2e2913fbb2b5f775a8358465
 
 ENV DEBIAN_FRONTEND=noninteractive
 
