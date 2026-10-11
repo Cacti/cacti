@@ -4121,6 +4121,12 @@ msgstr "Wykres przeglądania"
 msgid "The Graph you requested does not exist."
 msgstr "Źródło danych nie istnieje."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Opcje wykresów"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Szczegóły wykresu, narzędzia do powiększania i usuwania błędów"
