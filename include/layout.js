@@ -3553,6 +3553,8 @@ $(function() {
 
 	applySkin();
 
+	initGraphDrilldown();
+
 	setupEllipsis();
 
 	handleUserMenu();
@@ -4264,6 +4266,62 @@ function redrawGraph(graph_id) {
 			getPresentHTTPError(data);
 		}
 	);
+}
+
+function initGraphDrilldown() {
+	// Common graph drilldown behaviour for every theme (styled in graph_drilldown.css).
+	// A hamburger glyph over the graph's top-right toggles the action icons; they
+	// close on a second click, on leaving the strip, or on an outside click.
+	$(document).off('.graphdd');
+
+	function closeGraphDrilldown(container) {
+		container.removeClass('open');
+		container.find('.graphDrillDownMenu').attr('aria-expanded', 'false');
+
+		// Close an open SpikeKill submenu so it is not orphaned with the strip.
+		if (typeof spikeKillClose == 'function') {
+			spikeKillClose();
+		}
+	}
+
+	$(document).on('click.graphdd', '.graphDrillDownToggle .graphDrillDownMenu', function (event) {
+		event.preventDefault();
+		event.stopPropagation();
+
+		var menu      = $(this);
+		var container = menu.closest('.graphDrillDownToggle');
+		var willOpen  = !container.hasClass('open');
+
+		$('.graphDrillDownToggle.open').not(container).each(function () {
+			closeGraphDrilldown($(this));
+		});
+
+		if (willOpen) {
+			container.addClass('open');
+			menu.attr('aria-expanded', 'true');
+		} else {
+			closeGraphDrilldown(container);
+		}
+	});
+
+	$(document).on('keydown.graphdd', '.graphDrillDownToggle .graphDrillDownMenu', function (event) {
+		if (event.keyCode == 13 || event.keyCode == 32) {
+			event.preventDefault();
+			$(this).trigger('click');
+		}
+	});
+
+	$(document).on('mouseleave.graphdd', '.graphDrillDownToggle.open', function () {
+		closeGraphDrilldown($(this));
+	});
+
+	$(document).on('click.graphdd', function (event) {
+		if ($(event.target).closest('.graphDrillDownToggle').length == 0) {
+			$('.graphDrillDownToggle.open').each(function () {
+				closeGraphDrilldown($(this));
+			});
+		}
+	});
 }
 
 function initializeGraphs(disable_cache) {
