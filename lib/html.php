@@ -735,102 +735,24 @@ function html_header_sort_order(int $page_count) : array {
  */
 function html_header_sort_column(array $display_array, string $db_column, string $sort_column,
 	string $sort_direction, array $order_data, string $primarySort, string $default_icon) : array {
-	$new_sort_direction = $sort_direction == 'ASC' ? 'DESC' : 'ASC';
+	$named        = array_key_exists('display', $display_array);
+	$display_text = $named ? $display_array['display'] : $display_array[0];
+	$align        = $named ? ($display_array['align'] ?? 'left') : 'left';
+	$tip          = $named ? ($display_array['tip'] ?? '') : '';
+	$nohide       = isset($display_array['nohide']) ? 'nohide' : '';
+	$isSort       = '';
+	$icon         = '';
 
-	$isSort = '';
-
-	if (isset($display_array['nohide'])) {
-		$nohide = 'nohide';
+	if ($sort_column == $db_column) {
+		$icon      = $sort_direction;
+		$direction = $sort_direction == 'ASC' ? 'DESC' : 'ASC';
+		$isSort    = $db_column == $primarySort ? 'primarySort' : 'secondarySort';
+	} elseif (isset($order_data[$db_column])) {
+		$icon      = $order_data[$db_column];
+		$direction = $order_data[$db_column] == 'DESC' ? 'ASC' : 'DESC';
+		$isSort    = $db_column == $primarySort ? 'primarySort' : 'secondarySort';
 	} else {
-		$nohide = '';
-	}
-
-	if (array_key_exists('display', $display_array)) {
-		$display_text = $display_array['display'];
-
-		if ($sort_column == $db_column) {
-			$icon      = $sort_direction;
-			$direction = $new_sort_direction;
-
-			if ($db_column == $primarySort) {
-				$isSort = 'primarySort';
-			} else {
-				$isSort = 'secondarySort';
-			}
-		} else {
-			if (isset($order_data[$db_column])) {
-				$icon = $order_data[$db_column];
-
-				if ($order_data[$db_column] == 'DESC') {
-					$direction = 'ASC';
-				} else {
-					$direction = 'DESC';
-				}
-
-				if ($db_column == $primarySort) {
-					$isSort = 'primarySort';
-				} else {
-					$isSort = 'secondarySort';
-				}
-			} else {
-				$icon = '';
-
-				if (isset($display_array['sort'])) {
-					$direction = $display_array['sort'];
-				} else {
-					$direction = 'ASC';
-				}
-			}
-		}
-
-		if (isset($display_array['align'])) {
-			$align = $display_array['align'];
-		} else {
-			$align = 'left';
-		}
-
-		if (isset($display_array['tip'])) {
-			$tip = $display_array['tip'];
-		} else {
-			$tip = '';
-		}
-	} else {
-		// by default, you will always sort ascending, with the exception of an already sorted column
-		if ($sort_column == $db_column) {
-			$icon         = $sort_direction;
-			$direction    = $new_sort_direction;
-			$display_text = $display_array[0];
-
-			if ($db_column == $primarySort) {
-				$isSort = 'primarySort';
-			} else {
-				$isSort = 'secondarySort';
-			}
-		} else {
-			if (isset($order_data[$db_column])) {
-				$icon = $order_data[$db_column];
-
-				if ($order_data[$db_column] == 'DESC') {
-					$direction = 'ASC';
-				} else {
-					$direction = 'DESC';
-				}
-
-				if ($db_column == $primarySort) {
-					$isSort = 'primarySort';
-				} else {
-					$isSort = 'secondarySort';
-				}
-			} else {
-				$icon      = '';
-				$direction = $display_array[1];
-			}
-
-			$display_text = $display_array[0];
-		}
-
-		$align = 'left';
-		$tip   = '';
+		$direction = $named ? ($display_array['sort'] ?? 'ASC') : $display_array[1];
 	}
 
 	if (cacti_strtolower($icon) == 'asc') {
