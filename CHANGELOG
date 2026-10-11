@@ -101,6 +101,7 @@ Cacti CHANGELOG
 -issue#7338: Restore item-override saves and bulk-action input names
 -issue#7337: Map empty value to NULL for nullable numeric columns in sql_save
 -issue#7336: Drop duplicate --slope-mode emission
+-issue#7330: Honor skipped item sequences when selecting aggregate total and percentile items
 -issue#7254: Centralize items filter state
 -issue#7253: Render input attributes safely
 -issue#2205: Allow admins to disable RRDtool watermark
