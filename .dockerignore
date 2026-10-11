@@ -29,7 +29,15 @@ rra/*.rrd
 **/.gnupg
 include/config.php
 include/config_local.php
-include/vendor/
+# Keep shipped runtime libraries; omit locally installed Composer packages.
+include/vendor/*
+!include/vendor/GoogleAuthenticator/
+!include/vendor/parsedown/
+!include/vendor/phpgettext/
+!include/vendor/index.php
+!include/vendor/composer/
+include/vendor/composer/*
+!include/vendor/composer/index.php
 node_modules/
 **/node_modules/
 **/*.pem
