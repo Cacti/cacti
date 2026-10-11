@@ -90,6 +90,11 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 	}
 	$table_id = $table_prefix . $table_suffix;
 
+	// Action-independent id used only as the localStorage key for persisted
+	// column widths, so a table keeps its widths across reloads that change the
+	// request action/report/tab (e.g. a filter refresh).
+	$colsizing_id = basename(get_current_page(), '.php') . $table_suffix . '_child';
+
 	if ($title != '') {
 		print "<div id='$table_id' class='cactiTable' style='width:$width;text-align:$align;'>";
 		print '<div>';
@@ -158,17 +163,17 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		print '</div></div>';
 
 		if ($div === true) {
-			print "<div id='$table_id" . "_child' class='cactiTable'>";
+			print "<div id='$table_id" . "_child' class='cactiTable' data-colsizing='$colsizing_id'>";
 		} else {
-			print "<table id='$table_id" . "_child' class='cactiTable' style='padding:" . $cell_padding . "px;'>";
+			print "<table id='$table_id" . "_child' class='cactiTable' data-colsizing='$colsizing_id' style='padding:" . $cell_padding . "px;'>";
 		}
 	} else {
 		print "<div id='$table_id' class='cactiTable' style='width:$width;text-align:$align;'>";
 
 		if ($div === true) {
-			print "<div id='$table_id" . "_child' class='cactiTable'>";
+			print "<div id='$table_id" . "_child' class='cactiTable' data-colsizing='$colsizing_id'>";
 		} else {
-			print "<table id='$table_id" . "_child' class='cactiTable' style='padding:" . $cell_padding . "px;'>";
+			print "<table id='$table_id" . "_child' class='cactiTable' data-colsizing='$colsizing_id' style='padding:" . $cell_padding . "px;'>";
 		}
 	}
 

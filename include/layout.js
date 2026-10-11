@@ -3282,7 +3282,17 @@ function saveTableWidths(initial) {
 
 	// Initialize table width on the page
 	$('.cactiTable').each(function(data) {
-		var key    = $(this).attr('id');
+		var table = $(this);
+
+		// Persist widths under the action-independent data-colsizing key when it
+		// is present, so a table keeps its column widths across reloads that
+		// change the request action/report/tab (e.g. a filter refresh). Fall back
+		// to the DOM id for any table without the attribute.
+		var key = table.attr('data-colsizing');
+
+		if (key === undefined || key === '') {
+			key = table.attr('id');
+		}
 
 		if (storage.isSet(key)) {
 			var sizes = storage.get(key);
@@ -3317,7 +3327,7 @@ function saveTableWidths(initial) {
 
 		if (key !== undefined) {
 			if (initial && items.length) {
-				$('#'+key).find('th.ui-resizable').each(function(data) {
+				table.find('th.ui-resizable').each(function(data) {
 					if (items[i] == 0) {
 						items[i] = $(this).width();
 						sizes[i] = items[i];
@@ -3330,7 +3340,7 @@ function saveTableWidths(initial) {
 					i++;
 				});
 			} else {
-				$('#'+key).find('th.ui-resizable').each(function(data) {
+				table.find('th.ui-resizable').each(function(data) {
 					sizes[i] = $(this).width();
 
 					if (sizes[i] != 0) {
