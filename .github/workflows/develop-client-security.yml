@@ -25,6 +25,6 @@ jobs:
           set -euo pipefail
           npm ci --ignore-scripts
           npx --no-install playwright install --with-deps chromium
-      - name: Verify external popup isolation
+      - name: Verify popup isolation and navigation state
         working-directory: tests/e2e
-        run: npx --no-install playwright test tests/develop-client-security.spec.ts --project=chromium
+        run: npx --no-install playwright test tests/develop-client-security.spec.ts tests/develop-menu-state.spec.ts --project=chromium

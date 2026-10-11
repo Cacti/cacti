@@ -231,7 +231,7 @@ function getDefaultInstallData() {
 }
 
 function toggleHeader(key, initial) {
-	if (typeof initial === 'undefined') {
+	if (initial === undefined) {
 		initial = null;
 	}
 
@@ -254,7 +254,7 @@ function toggleHeader(key, initial) {
 }
 
 function toggleSection(key, initial) {
-	if (typeof initial === 'undefined') {
+	if (initial === undefined) {
 		initial = null;
 	}
 
@@ -559,7 +559,7 @@ function prepareInstallData(installStep, stepOnly) {
 	}
 
 	// No installation step if we have never started.
-	if (typeof installStep === 'undefined' && installData.Step == STEP_NONE) {
+	if (installStep === undefined && installData.Step == STEP_NONE) {
 		newData = [];
 	} else {
 		newData = getDefaultInstallData();
@@ -572,12 +572,12 @@ function prepareInstallData(installStep, stepOnly) {
 			}
 		}
 
-		if (typeof installStep !== 'undefined') {
+		if (installStep !== undefined) {
 			step = installData.Step;
 			if (step == STEP_WELCOME) prepareStepWelcome(newData);
 
 			// Assume we want all data if stepOnly not set
-			if (typeof stepOnly === 'undefined') {
+			if (stepOnly === undefined) {
 				if (step == STEP_INSTALL_TYPE) prepareStepInstallType(newData);
 				else if (step == STEP_BINARY_LOCATIONS) prepareStepBinaryLocations(newData);
 				else if (step == STEP_PROFILE_AND_AUTOMATION) prepareStepProfileAndAutomation(newData);
@@ -700,7 +700,7 @@ function performStep(installStep, suppressRefresh, forceReload, csrfRetry) {
 			$('#installContent').html(data.Html);
 			$('#installContent').show();
 
-			if (typeof $('#installData').data('debug') !== 'undefined') {
+			if ($('#installData').data('debug') !== undefined) {
 				debugData = data;
 				debugData.Html = '';
 				debug = $('#installDebug');
@@ -822,7 +822,7 @@ function performTestConnection(csrfRetry) {
 			$('#installContent').removeClass('cactiInstallLoaderBlur');
 
 			var isSuccessful = false, statusText = testFailed;
-			if (typeof data.status !== 'undefined') {
+			if (data.status !== undefined) {
 				if (data.status == 'true') {
 					isSuccessful = true;
 					statusText = testSuccessful;

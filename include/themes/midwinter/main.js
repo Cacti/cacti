@@ -670,7 +670,7 @@ function hideDropDownMenu() {
 function toggleTableColumn(event) {
 	let storage = Storages.localStorage;
 	let tableHash = event.target.dataset.table;
-	let cIndex = parseInt(event.target.dataset.column);
+	let cIndex = Number.parseInt(event.target.dataset.column);
 	let cClass = 'no-col'+cIndex;
 	let storage_table_headers = storage.get('midWinter_' + tableHash);
 
@@ -955,7 +955,7 @@ function changeGuiFontSize(change=true) {
         setDocumentAttribute('zoom-level', mdw.session.theme.font.zoom);
 	}
 	/* update output field beside input selector */
-	$('#mdw_themeFontSizeValue').val((parseFloat(mdw.session.theme.font.zoom) + 25).toFixed(1) + ' %');
+	$('#mdw_themeFontSizeValue').val((Number.parseFloat(mdw.session.theme.font.zoom) + 25).toFixed(1) + ' %');
 }
 
 function toggleGuiAnimations() {
@@ -1369,7 +1369,7 @@ registry.midwinter = {
 				let midWinter_Color_Mode_Auto = mdw.session.theme.color.auto;
 				let midWinter_Font_Size = mdw.session.theme.font.zoom;
 				let midWinter_Animations = mdw.session.theme.boxes.animated
-				let midWinter_ShownFontSizeValue = parseFloat(midWinter_Font_Size) + 25;
+				let midWinter_ShownFontSizeValue = Number.parseFloat(midWinter_Font_Size) + 25;
 				let midWinter_Auto_Table_Layout = mdw.session.theme.mobile.autoTableLayout;
 				let midWinter_Controls_SubTitle = mdw.session.theme.controls.subTitle;
 

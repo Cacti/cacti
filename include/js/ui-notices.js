@@ -16,7 +16,7 @@ $.toastPopup = function(options) {
         loader: true,
     }
 
-    if (typeof options == "undefined") {
+    if (options === undefined) {
         options = {};
     } else if (typeof options === "string" || options instanceof String) {
         options = {
