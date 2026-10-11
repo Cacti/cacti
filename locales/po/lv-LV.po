@@ -4123,6 +4123,12 @@ msgstr "Grafika apskate"
 msgid "The Graph you requested does not exist."
 msgstr "Datu avots nepastāv."
 
+#: lib/html.php
+#, fuzzy
+#| msgid "Graph Options"
+msgid "Graph Actions"
+msgstr "Grafika opcijas"
+
 #: graph.php lib/html.php
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Grafika informācija, tālummaiņas un atkļūdošanas utilītas"
