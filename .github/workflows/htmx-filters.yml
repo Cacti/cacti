@@ -18,6 +18,7 @@ on:
     branches: [develop]
     paths:
       - 'lib/htmx.php'
+      - 'include/layout.js'
       - 'include/global.php'
       - 'include/js/htmx.js'
       - 'include/js/htmx.js.version'
@@ -46,6 +47,7 @@ on:
     branches: [develop]
     paths:
       - 'lib/htmx.php'
+      - 'include/layout.js'
       - 'include/global.php'
       - 'include/js/htmx.js'
       - 'include/js/htmx.js.version'

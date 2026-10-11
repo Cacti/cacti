@@ -5969,6 +5969,7 @@ function formValidate(formId, href) {
 			$(this).find('input, textarea, select').prop('disabled', false);
 		}).validate({
 			rules: formRules[formId],
+			escapeHtml: true,
 			errorClass: 'txtErrorText',
 			validClass: 'success',
 			highlight: function (element, errorClass, validClass) {

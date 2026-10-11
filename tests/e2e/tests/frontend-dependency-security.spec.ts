@@ -1,4 +1,75 @@
 import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+const layoutSource = readFileSync(resolve(__dirname, '../../../include/layout.js'), 'utf8');
+const validationSource = layoutSource.slice(layoutSource.indexOf('function formValidate('), layoutSource.indexOf('function toggleFields('));
+const serializationSource = layoutSource.slice(layoutSource.indexOf('$.fn.serializeForm ='), layoutSource.indexOf('$.fn.serializeObject ='));
+
+async function validationFixture(page: import('@playwright/test').Page) {
+	await page.goto('/');
+	const asset = await page.locator('script[src*="htmx.js"]').getAttribute('src');
+	expect(asset).toBeTruthy();
+	const jquery = new URL('jquery.js', new URL(asset!, page.url())).href;
+	expect(jquery).toBeTruthy();
+	const validation = new URL('jquery.validate/jquery.validate.js', jquery).href;
+	await page.route('**/__codeql-validation', route => route.fulfill({
+		contentType: 'text/html',
+		body: '<!doctype html><html><body><form id="probe"><input id="email" name="email" type="email"></form></body></html>',
+	}));
+	await page.goto('/__codeql-validation');
+	await page.addScriptTag({ url: jquery! });
+	await page.addScriptTag({ url: validation });
+	// Use the production functions; only their page-level state is isolated.
+	await page.addScriptTag({ content: 'var changed=false; var formArray={}; var formRules={"#probe":{}};' + serializationSource + validationSource });
+}
+
+test('Cacti validation renders title and custom error messages as text on creation and update', async ({ page }) => {
+	await validationFixture(page);
+	const payload = '<img src=x onerror="window.validationExecuted=1">';
+	await page.evaluate(payload => {
+		const input = document.getElementById('email') as HTMLInputElement;
+		input.title = payload;
+		input.value = 'invalid';
+		Reflect.get(window, 'formValidate')('#probe', '/unused');
+		Reflect.get(window, '$')('#probe').data('validator').element(input);
+	}, payload);
+	await expect(page.locator('#email-error')).toHaveText(payload);
+	await expect(page.locator('#email-error *')).toHaveCount(0);
+	await page.evaluate(payload => Reflect.get(window, '$')('#probe').data('validator').showErrors({ email: payload }), payload + ' updated');
+	await expect(page.locator('#email-error')).toHaveText(payload + ' updated');
+	await expect(page.locator('#email-error *')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'validationExecuted'))).toBeUndefined();
+	await page.locator('#email').fill('valid@example.org');
+	await page.evaluate(() => Reflect.get(window, '$')('#probe').data('validator').element(document.getElementById('email')));
+	await expect(page.locator('#email-error')).toBeHidden();
+});
+
+test('validation lookup and ARIA paths retain DOM elements rather than parsing selector text (CodeQL 91/92/619/620)', async ({ page }) => {
+	await validationFixture(page);
+	const result = await page.evaluate(() => {
+		const $ = Reflect.get(window, '$');
+		Reflect.get(window, 'formValidate')('#probe', '/unused');
+		const validator = $('#probe').data('validator');
+		const input = document.getElementById('email') as HTMLInputElement;
+		const name = '\"><img src=x onerror="window.validationExecuted=1">';
+		input.name = name;
+		validator.groups[name] = 'group';
+		const error = document.createElement('label');
+		error.id = 'validation-error';
+		document.getElementById('probe')!.append(error);
+		validator.addErrorAriaDescribedBy(input, $(error), true);
+		return {
+			found: validator.findByName(name)[0] === input,
+			clean: validator.clean(validator.findByName(name)) === input,
+			target: validator.validationTargetFor(input) === input,
+			aria: input.getAttribute('aria-describedby'),
+		};
+	});
+	expect(result).toEqual({ found: true, clean: true, target: true, aria: 'validation-error' });
+	await expect(page.locator('img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'validationExecuted'))).toBeUndefined();
+});
 
 // These cases exercise generated dependencies in a real browser. Fixtures
 // isolate library behavior from CSP so blocked execution cannot hide a bug.

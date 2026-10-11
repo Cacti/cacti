@@ -6,7 +6,8 @@
   "evidence": {
     "browserTests": "tests/e2e/tests/frontend-dependency-security.spec.ts",
     "codeqlBuild": "Managed assets are built before JavaScript extraction so generated libraries remain scanned.",
-    "branch": "develop; current 1.2.x does not contain the HTMX integration."
+    "branch": "develop; current 1.2.x does not contain the HTMX integration.",
+    "validationMessages": "Cacti formValidate uses the dependency escapeHtml option for title/custom error messages. Browser regression checks initial creation, update, and successful validation; the original setup parses hostile title text as markup in the isolated fixture. No attacker-controlled Cacti title path is established."
   },
   "alerts": [
     {
@@ -22,16 +23,18 @@
       "rule": "js/unsafe-jquery-plugin",
       "path": "include/js/jquery.validate/jquery.validate.js",
       "observedState": "dismissed",
-      "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "disposition": "false_positive",
+      "evidence": "Current jquery-validation 1.22.1: findByName escapes the attribute selector and returns existing form DOM elements; clean, validationTargetFor and grouped ARIA paths receive those elements, not HTML strings. Browser regression covers hostile field names, all four paths, and preserved ARIA. This conclusion is scoped to the reported selector/element sinks, not message rendering or arbitrary plugin options.",
+      "resolution": "Replace ownership/static-rule rationale with DOM-element and escaped-selector evidence; independent message HTML boundary hardened in formValidate with escapeHtml=true."
     },
     {
       "number": 619,
       "rule": "js/unsafe-jquery-plugin",
       "path": "include/js/jquery.validate/jquery.validate.js",
       "observedState": "dismissed",
-      "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "disposition": "false_positive",
+      "evidence": "Current jquery-validation 1.22.1: findByName escapes the attribute selector and returns existing form DOM elements; clean, validationTargetFor and grouped ARIA paths receive those elements, not HTML strings. Browser regression covers hostile field names, all four paths, and preserved ARIA. This conclusion is scoped to the reported selector/element sinks, not message rendering or arbitrary plugin options.",
+      "resolution": "Replace ownership/static-rule rationale with DOM-element and escaped-selector evidence; independent message HTML boundary hardened in formValidate with escapeHtml=true."
     },
     {
       "number": 169,
@@ -362,16 +365,18 @@
       "rule": "js/unsafe-jquery-plugin",
       "path": "include/js/jquery.validate/jquery.validate.js",
       "observedState": "dismissed",
-      "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "disposition": "false_positive",
+      "evidence": "Current jquery-validation 1.22.1: findByName escapes the attribute selector and returns existing form DOM elements; clean, validationTargetFor and grouped ARIA paths receive those elements, not HTML strings. Browser regression covers hostile field names, all four paths, and preserved ARIA. This conclusion is scoped to the reported selector/element sinks, not message rendering or arbitrary plugin options.",
+      "resolution": "Replace ownership/static-rule rationale with DOM-element and escaped-selector evidence; independent message HTML boundary hardened in formValidate with escapeHtml=true."
     },
     {
       "number": 91,
       "rule": "js/unsafe-jquery-plugin",
       "path": "include/js/jquery.validate/jquery.validate.js",
       "observedState": "dismissed",
-      "disposition": "requires_callsite_evidence",
-      "evidence": "Existing dismissal retained pending per-sink analysis; third-party ownership alone is insufficient."
+      "disposition": "false_positive",
+      "evidence": "Current jquery-validation 1.22.1: findByName escapes the attribute selector and returns existing form DOM elements; clean, validationTargetFor and grouped ARIA paths receive those elements, not HTML strings. Browser regression covers hostile field names, all four paths, and preserved ARIA. This conclusion is scoped to the reported selector/element sinks, not message rendering or arbitrary plugin options.",
+      "resolution": "Replace ownership/static-rule rationale with DOM-element and escaped-selector evidence; independent message HTML boundary hardened in formValidate with escapeHtml=true."
     },
     {
       "number": 90,
