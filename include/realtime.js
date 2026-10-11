@@ -38,16 +38,17 @@ var url;
 var local_graph_id  = null;
 
 function realtimeDetectBrowser() {
+	var browser;
 	if (navigator.userAgent.indexOf('MSIE') >= 0) {
-		var browser = 'IE';
+		browser = 'IE';
 	} else if (navigator.userAgent.indexOf('Chrome') >= 0) {
-		var browser = 'Chrome';
+		browser = 'Chrome';
 	} else if (navigator.userAgent.indexOf('Mozilla') >= 0) {
-		var browser = 'FF';
+		browser = 'FF';
 	} else if (navigator.userAgent.indexOf('Opera') >= 0) {
-		var browser = 'Opera';
+		browser = 'Opera';
 	} else {
-		var browser = 'Other';
+		browser = 'Other';
 	}
 
 	return browser;

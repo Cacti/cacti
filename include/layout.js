@@ -448,11 +448,12 @@ $.fn.textWidth = function (text) {
  * without any wrapping.
  */
 $.fn.textBoxWidth = function () {
+	var text;
 	var org = $(this);
 	if (org.val()) {
-		var text = encodeURIComponent(org.val());
+		text = encodeURIComponent(org.val());
 	} else {
-		var text = encodeURIComponent(org.text());
+		text = encodeURIComponent(org.text());
 	}
 
 	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + text + '</span>');
@@ -1104,12 +1105,13 @@ function applySkin() {
 	$(document).tooltip({
 		items: 'div.cactiTooltipHint, span.cactiTooltipHint, .checkboxSlider',
 		content: function () {
+	var text;
 			var element = $(this);
 
 			if (element.is('div')) {
-				var text = DOMPurify.sanitize($(this).find('span').html());
+				text = DOMPurify.sanitize($(this).find('span').html());
 			} else if (element.is('span') || element.is('a')) {
-				var text = DOMPurify.sanitize($(this).prop('title'));
+				text = DOMPurify.sanitize($(this).prop('title'));
 			}
 			return text;
 		}
@@ -1617,6 +1619,7 @@ function sessionNoticesDisplay() {
 }
 
 function sessionMessageDisplay() {
+	var sessionMessageButtons;
 	var title = '';
 	var header = '';
 
@@ -1632,7 +1635,7 @@ function sessionMessageDisplay() {
 		if (sessionMessage.level == MESSAGE_LEVEL_ERROR) {
 			title = errorReasonTitle;
 			header = errorOnPage;
-			var sessionMessageButtons = {
+			sessionMessageButtons = {
 				'Ok': {
 					text: sessionMessageOk,
 					id: 'btnSessionMessageOk',
@@ -1646,7 +1649,7 @@ function sessionMessageDisplay() {
 		} else if (sessionMessage.level == MESSAGE_LEVEL_MIXED) {
 			title = mixedReasonTitle;
 			header = mixedOnPage;
-			var sessionMessageButtons = {
+			sessionMessageButtons = {
 				'Ok': {
 					text: sessionMessageOk,
 					id: 'btnSessionMessageOk',
@@ -1663,7 +1666,7 @@ function sessionMessageDisplay() {
 		} else {
 			title = sessionMessageTitle;
 			header = sessionMessageSave;
-			var sessionMessageButtons = {
+			sessionMessageButtons = {
 				'Pause': {
 					text: sessionMessagePause,
 					id: 'btnSessionMessagePause',
@@ -2006,10 +2009,11 @@ function responsiveUI(event) {
 
 	/* change textbox and textarea widths */
 	$('input[type="text"], textarea').each(function () {
+	var offset;
 		if ($(this).attr('type') == 'text') {
-			var offset = 20;
+			offset = 20;
 		} else {
-			var offset = 5;
+			offset = 5;
 		}
 
 		if (mainWidth != 100) {
@@ -2039,11 +2043,12 @@ function responsiveUI(event) {
 }
 
 function getMainWidth() {
+	var mainWidth;
 	// Subtract 15px for the scroll bar
 	if ($('#navigation').length && $('#navigation').is(':visible')) {
-		var mainWidth = $('body').outerWidth() - $('#navigation').width() - 15;
+		mainWidth = $('body').outerWidth() - $('#navigation').width() - 15;
 	} else {
-		var mainWidth = $('body').outerWidth() - 15;
+		mainWidth = $('body').outerWidth() - 15;
 	}
 
 	return mainWidth;
@@ -2060,19 +2065,20 @@ function getCactiHelp(cactiPage) {
 }
 
 function responsiveResizeGraphs(initialize) {
+	var graphRow, drillDown;
 	var mainWidth  = getMainWidth() - 30;
 	var myColumns  = $('#columns').val();
 
 	if ($('.tableRowGraph:first').length) {
-		var graphRow = $('.tableRowGraph:first').width();
+		graphRow = $('.tableRowGraph:first').width();
 	} else {
-		var graphRow = 0;
+		graphRow = 0;
 	}
 
 	if ($('.graphDrillDown:first').length) {
-		var drillDown = $('.graphDrillDown:first').outerWidth() + 15;
+		drillDown = $('.graphDrillDown:first').outerWidth() + 15;
 	} else {
-		var drillDown = 0;
+		drillDown = 0;
 	}
 
 	if (myColumns == null) {
@@ -2161,8 +2167,9 @@ function responsiveResizeGraphs(initialize) {
 }
 
 function resizeTreePanel() {
+	var navWidth;
 	var docHeight = $(window).outerHeight();
-	var navWidth = $('.cactiTreeNavigationArea').width();
+	navWidth = $('.cactiTreeNavigationArea').width();
 	var searchHeight = $('.cactiTreeSearch').outerHeight();
 	var pageHeadHeight = $('.cactiPageHead').outerHeight();
 	var breadCrHeight = $('.breadCrumbBar').outerHeight();
@@ -2212,7 +2219,7 @@ function resizeTreePanel() {
 		$('.cactiTreeNavigationArea').css('overflow-x', '');
 	}
 
-	var navWidth = $('#navigation').width();
+	navWidth = $('#navigation').width();
 	$('#searcher').css('width', getTreeSearchWidth(navWidth));
 }
 
@@ -2421,17 +2428,18 @@ function tuneTable(object, width) {
 }
 
 function tuneFilter(object, width) {
+	var timespan, clearWidth;
 	if ($(object).find('#timespan').length && $(object).find('#timespan').is(':visible')) {
-		var timespan = true;
+		timespan = true;
 
 		var timeShiftWidth = $(object).find('.shiftArrow').closest('td').width();
 		var dateWidth = $(object).find('#date1').closest('td').width() + $(object).find('#date1').closest('td').prev('td').width();
-		var clearWidth = $('#tsclear').width();
+		clearWidth = $('#tsclear').width();
 		var refreshWidth = $('#tsrefresh').width();
 	} else {
-		var timespan = false;
+		timespan = false;
 
-		var clearWidth = $(object).find('#clear').width();
+		clearWidth = $(object).find('#clear').width();
 		var saveWidth = $(object).find('#save').width();
 		var exportWidth = $(object).find('#export').width();
 		var importWidth = $(object).find('#import').width();
@@ -3231,10 +3239,11 @@ function getPresentHTTPError(data) {
 }
 
 function getPresentHTTPErrorOrRedirect(data, url) {
+	var errorSub, errorText;
 	if (data.status !== undefined) {
 		var errorStr = data.status;
-		var errorSub = data.statusText;
-		var errorText = errorReasonUnexpected;
+		errorSub = data.statusText;
+		errorText = errorReasonUnexpected;
 		var found = false;
 
 		if (data.responseText !== undefined) {
@@ -3245,22 +3254,22 @@ function getPresentHTTPErrorOrRedirect(data, url) {
 			var para_match = dataText.match(/<p>(.*?)<\/p>/);
 
 			if (title_match != null) {
-				var errorSub = title_match[1];
+				errorSub = title_match[1];
 				found = true;
 			}
 
 			if (head_match != null) {
-				var errorSub = head_match[1];
+				errorSub = head_match[1];
 				found = true;
 			}
 
 			if (para_match != null) {
-				var errorText = para_match[1];
+				errorText = para_match[1];
 				found = true;
 			}
 
 			if (!found && dataText != '') {
-				var errorText = dataText;
+				errorText = dataText;
 			}
 
 			var returnStr = '<div id="httperror" style="display:none">' +
@@ -3419,11 +3428,12 @@ function setupCollapsible() {
 	var storage = Storages.sessionStorage;
 
 	$('.collapsible').each(function (data) {
+	var state;
 		var id = $(this).attr('id') + '_cs';
 		if (storage.isSet(id)) {
-			var state = storage.get(id);
+			state = storage.get(id);
 		} else {
-			var state = 'show';
+			state = 'show';
 		}
 
 		if (state == 'hide') {
@@ -3597,30 +3607,31 @@ function saveTableWidths(initial) {
 
 	// Initialize table width on the page
 	$('table.cactiTable').each(function (data) {
+	var sizes, items;
 		var key = $(this).attr('id');
 
 		if (storage.isSet(key)) {
-			var sizes = storage.get(key);
+			sizes = storage.get(key);
 		} else {
-			var sizes = new Array();
+			sizes = new Array();
 		}
 
-		var items = sizes ? sizes : new Array();
+		items = sizes ? sizes : new Array();
 		var width = $(document).width();
 
 		// if the table width changes, reset the columns
 		if (key !== undefined && sizes == undefined) {
 			storage.remove(key);
 
-			var sizes = new Array();
-			var items = new Array();
+			sizes = new Array();
+			items = new Array();
 		} else if (key !== undefined && initial) {
 			if (items.length > 0) {
 				if (items[0] + 18 < width) {
 					storage.remove(key);
 
-					var sizes = new Array();
-					var items = new Array();
+					sizes = new Array();
+					items = new Array();
 				}
 			}
 		}
@@ -4002,6 +4013,7 @@ function setSelectMenus() {
 
 	$.widget('custom.dropicon', $.ui.selectmenu, {
 		_renderItem: function( ul, item ) {
+	var style;
 			var li = $('<li>');
 			var wrapper = $('<div>', {text: item.label});
 
@@ -4010,9 +4022,9 @@ function setSelectMenus() {
 			}
 
 			if (item.element.attr('data-style') != '') {
-				var style = item.element.attr('data-style')+';background:transparent;min-width:20px;';
+				style = item.element.attr('data-style')+';background:transparent;min-width:20px;';
 			} else {
-				var style = 'background:transparent;min-width:20px;';
+				style = 'background:transparent;min-width:20px;';
 			}
 
 			var iclass = item.element.attr('data-class');
@@ -4291,6 +4303,7 @@ function setupEllipsis() {
 function keepWindowSize() {
 	$(window).on('resize', function (event) {
 		waitForFinalEvent(function () {
+	var graphTabWidth, userTabs, items, done;
 			$('.cactiGraphContentArea').show();
 
 			var resizeTime = new Date();
@@ -4338,15 +4351,15 @@ function keepWindowSize() {
 			$('.dropdownMenu > ul').hide();
 
 			if ($('#gtabs > .tabs').is(':visible')) {
-				var graphTabWidth = $('#gtabs > .tabs').outerWidth();
+				graphTabWidth = $('#gtabs > .tabs').outerWidth();
 			} else {
-				var graphTabWidth = 0;
+				graphTabWidth = 0;
 			}
 
 			if ($('.usertabs').length) {
-				var userTabs = $('.usertabs').outerWidth();
+				userTabs = $('.usertabs').outerWidth();
 			} else {
-				var userTabs = 0;
+				userTabs = 0;
 			}
 
 			var bodyWidth = $('body').width();
@@ -4373,8 +4386,8 @@ function keepWindowSize() {
 
 			pageWidth = bodyWidth;
 
-			var items = $($('.maintabs nav ul li a.lefttab').get());
-			var done = false;
+			items = $($('.maintabs nav ul li a.lefttab').get());
+			done = false;
 			items.each(function () {
 				var id = $(this).attr('id');
 
@@ -4382,8 +4395,8 @@ function keepWindowSize() {
 			});
 
 			// Hide top menus if you have to
-			var items = $($('.maintabs nav ul li a.lefttab').get().reverse());
-			var done = false;
+			items = $($('.maintabs nav ul li a.lefttab').get().reverse());
+			done = false;
 			items.each(function () {
 				var id = $(this).attr('id');
 
@@ -4430,15 +4443,16 @@ function showCurrentTab(id) {
 }
 
 function tabsWrapping() {
+	var mainTabHeight, userTabPos, gtabsWidth, utabsWidth;
 	var mainTabPos = $('.maintabs:first').position();
 	var tabHeight = $('#tabs').height();
 
 	if ($('.usertabs').length) {
-		var mainTabHeight = tabHeight;
-		var userTabPos = $('.usertabs').position();
+		mainTabHeight = tabHeight;
+		userTabPos = $('.usertabs').position();
 	} else {
-		var mainTabHeight = $('.maintabs:first nav').height();
-		var userTabPos = mainTabPos;
+		mainTabHeight = $('.maintabs:first nav').height();
+		userTabPos = mainTabPos;
 	}
 
 	var bodyWidth = $('body').width();
@@ -4451,15 +4465,15 @@ function tabsWrapping() {
 	var mtabsWidth = $('.maintabs:not(.usertabs)').outerWidth();
 
 	if ($('#gtabs>.tabs').length) {
-		var gtabsWidth = $('#gtabs>.tabs').outerWidth();
+		gtabsWidth = $('#gtabs>.tabs').outerWidth();
 	} else {
-		var gtabsWidth = 0;
+		gtabsWidth = 0;
 	}
 
 	if ($('.usertabs').length) {
-		var utabsWidth = $('.usertabs').outerWidth();
+		utabsWidth = $('.usertabs').outerWidth();
 	} else {
-		var utabsWidth = 0;
+		utabsWidth = 0;
 	}
 
 	if (gtabsWidth + mtabsWidth + utabsWidth + otherWidth + ellipsisWidth > bodyWidth - 20) {
@@ -5748,16 +5762,17 @@ function setSNMP() {
 }
 
 function checkSNMPPassphrase(type) {
+	var pass, conf, span;
 	var minChars = 8;
 
 	if (type == 'priv') {
-		var pass = '#snmp_priv_passphrase';
-		var conf = '#snmp_priv_passphrase_confirm';
-		var span = 'priv';
+		pass = '#snmp_priv_passphrase';
+		conf = '#snmp_priv_passphrase_confirm';
+		span = 'priv';
 	} else {
-		var pass = '#snmp_password';
-		var conf = '#snmp_password_confirm';
-		var span = 'auth';
+		pass = '#snmp_password';
+		conf = '#snmp_password_confirm';
+		span = 'auth';
 	}
 
 	if ($(pass).val().length == 0) {
@@ -5775,18 +5790,19 @@ function checkSNMPPassphrase(type) {
 }
 
 function checkSNMPPassphraseConfirm(type) {
+	var pass, conf, span, spanconf;
 	var minChars = 8;
 
 	if (type == 'priv') {
-		var pass = '#snmp_priv_passphrase';
-		var conf = '#snmp_priv_passphrase_confirm';
-		var span = 'priv';
-		var spanconf = 'privconf';
+		pass = '#snmp_priv_passphrase';
+		conf = '#snmp_priv_passphrase_confirm';
+		span = 'priv';
+		spanconf = 'privconf';
 	} else {
-		var pass = '#snmp_password';
-		var conf = '#snmp_password_confirm';
-		var span = 'auth';
-		var spanconf = 'authconf';
+		pass = '#snmp_password';
+		conf = '#snmp_password_confirm';
+		span = 'auth';
+		spanconf = 'authconf';
 	}
 
 	if ($(conf).val().length < minChars) {
