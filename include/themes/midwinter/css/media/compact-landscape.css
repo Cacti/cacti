@@ -184,15 +184,6 @@ html {
     .compact_nav_icon.selected {
         color: var(--text-color-normal);
         background-color: rgba(0,0,0,0.2);
-        &::after {
-            /*
-            height: 25px;
-            width: 25px;
-            background-color: #bbb;
-            border-radius: 50%;
-            display: inline-block;
-            */
-        }
         &:hover {
             color: var(--text-color-white);
             background-color: rgba(0,0,0,0.3);
@@ -285,10 +276,8 @@ html {
     flex-direction: column;
     justify-content: flex-start;
     width: auto;
-    /* background: var(--background-navigation); */
     background: var(--background-content);
     align-items: center;
-    /* box-shadow: 3px 6px 5px 2px var(--box-shadow-color); */
     border-left: 1px solid var(--border-color-semilight);
 
     &:has( div[class^="mdw-Action"]:not(:empty) ) {     /* only show ActionBar with content */
@@ -476,10 +465,6 @@ html {
         }
     }
 
-    & input {
-        /*display: none;*/
-    }
-
     & ul.nav,
     & ul#nav {
         display: flex;
@@ -576,7 +561,6 @@ html {
     width: 2.5rem;
     height: 2.5rem;
     &[aria-pressed="true"] {
-        /*background: var(--background-active-section);*/
         box-shadow: 0 .33em 2em rgba(25,85,138,.67) inset,
                     1px 1px 0 rgba(255,255,255,.25) inset,
                     -1px -1px 0 rgba(255,255,255,.25) inset;
@@ -630,11 +614,7 @@ html {
     & a {
         display: block;
         padding: 0.5rem 1rem;
-        text-decoration: none;
-
-        &:hover {
-
-        }
+        text-decoration: none
     }
 }
 
@@ -802,7 +782,6 @@ html {
 
     [class^="mdw-ConsoleNavigationBox"] {
         top: 0;
-        /*width: calc(100vw - 4rem) !important;*/
         max-width: calc(100dvw - 4rem) !important;
         max-height: 100dvh;
         border-top: none;
@@ -934,12 +913,6 @@ html {
         left: 0;
         width: 100dvw;
         height: 4rem;
-    }
-
-    .cactiGraphContentArea, .cactiConsoleContentArea {
-        & #main {
-           /* padding: 0 0.5rem 1rem 0.5rem; */
-        }
     }
 
     html {

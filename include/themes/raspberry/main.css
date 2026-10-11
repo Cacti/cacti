@@ -1040,9 +1040,6 @@ legend {
 	text-decoration: none;
 }
 
-.iconLink {
-}
-
 .iconLink img {
 	padding-bottom: 2px;
 }
@@ -1479,9 +1476,6 @@ legend {
 .formSubCheckbox input {
 	margin: 0px;
 	vertical-align: -10%;
-}
-
-.formSubCheckbox label {
 }
 
 .formCheckbox {

@@ -27,4 +27,4 @@ jobs:
           npx --no-install playwright install --with-deps chromium
       - name: Verify theme parsing and computed rendering
         working-directory: tests/e2e
-        run: npx --no-install playwright test tests/develop-theme-correctness.spec.ts --project=chromium
+        run: npx --no-install playwright test tests/develop-theme-correctness.spec.ts tests/develop-theme-cleanup.spec.ts --project=chromium

@@ -836,10 +836,6 @@ label {
 	background-color: var(--dp-panel);
 }
 
-.graphItemGr1Cust {
-	background-color: var(--dp-panel-alt);
-}
-
 .graphItemGr2Alt1 {
 	background-color: var(--dp-panel-alt);
 }
@@ -1624,9 +1620,6 @@ legend {
 .formSubCheckbox input {
 	margin: 0px;
 	vertical-align: -10%;
-}
-
-.formSubCheckbox label {
 }
 
 .formCheckbox {

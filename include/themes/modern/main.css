@@ -769,9 +769,6 @@ label {
 	z-index: -1;
 }
 
-.navigation {
-}
-
 .debug td {
 	padding: 3px;
 	margin: 0px;
@@ -982,14 +979,6 @@ ul#breadcrumbs {
 .cactiAuthCenter {
 	width: 400px;
 	height: 350px;
-}
-
-.cactiAuthCenter legend {
-
-}
-
-.cactiAuthCenter legend div {
-
 }
 
 .cactiAuthLogo {
@@ -1686,9 +1675,6 @@ legend {
 .formSubCheckbox input {
 	margin: 0px;
 	vertical-align: -10%;
-}
-
-.formSubCheckbox label {
 }
 
 .formCheckboxLabel {
@@ -2748,7 +2734,7 @@ tr#realtime td:first-child {
 
 .graphWrapper {
 	padding-top:10px;
-	display: inline-block;;
+	display: inline-block;
 }
 
 .graphWrapperOuter[data-disabled="true"] {

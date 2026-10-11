@@ -52,10 +52,6 @@ body {
 	font-size: 12px;
 }
 
-li {
-
-}
-
 table, tr, td, textarea {
 	-ms-overflow-style: scrollbar;
 }
@@ -811,9 +807,6 @@ tr.selectable:hover:not(.selected) .deviceStatus {
 	z-index: -1;
 }
 
-.navigation {
-}
-
 .debug td {
 	padding: 3px;
 	margin: 0px;
@@ -1076,10 +1069,6 @@ legend {
 	width: 100%;
 	height: 100%;
 	background: #161616;
-}
-
-.cactiAuthPanel {
-	padding: 4px 0px;
 }
 
 .versionInfo {
@@ -1699,9 +1688,6 @@ legend {
 .formSubCheckbox input {
 	margin: 0px;
 	vertical-align: -10%;
-}
-
-.formSubCheckbox label {
 }
 
 .formCheckbox {
@@ -2883,14 +2869,8 @@ td.center > table {
 	white-space: nowrap;
 }
 
-.bb-chart {
-}
-
 .bb-chart-arc path {
 	fill: #A8A8A8;
-}
-
-.bb-tooltip {
 }
 
 .bb-legend-item {
@@ -3108,7 +3088,6 @@ td.center > table {
 
 .bb-chart-arc .bb-gauge-value {
 	fill: #000;
-	/*  font-size: 28px !important;*/
 }
 
 .bb-button .bb-zoom-reset {

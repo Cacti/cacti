@@ -295,10 +295,6 @@
   border-right: 1px solid var(--border-color);
 }
 
-.daterangepicker.show-ranges.ltr .drp-calendar.left {
-
-}
-
 .daterangepicker .ranges {
   float: none;
   text-align: left;

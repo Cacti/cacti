@@ -1044,9 +1044,6 @@ legend {
 	text-decoration: none;
 }
 
-.iconLink {
-}
-
 .iconLink img {
 	padding-bottom: 2px;
 }
@@ -1504,9 +1501,6 @@ legend {
 .formSubCheckbox input {
 	margin: 0px;
 	vertical-align: -10%;
-}
-
-.formSubCheckbox label {
 }
 
 .formCheckbox {
@@ -2466,9 +2460,6 @@ tr#realtime td:first-child {
 	width: 22px;
 	padding-right: 0px !important;
 	display: inline-block;
-}
-
-.menuitem span {
 }
 
 .ui-autocomplete {
