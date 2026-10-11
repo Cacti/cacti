@@ -911,6 +911,15 @@ class cactiBox extends cactiNavigation {
                 let newItem = { ...item };
                 const safeKey = `plugin_${key}`;
 
+                // Plugin labels are text. Explicit HTML items use the shared
+                // reviewed boundary and fall back to a text node if unavailable.
+                newItem.isHtmlName = false;
+                if (newItem.type === 'html') {
+                    newItem.html = window.CactiRenderer && typeof window.CactiRenderer.menuFragment === 'function'
+                        ? window.CactiRenderer.menuFragment(newItem.html)
+                        : document.createTextNode(typeof newItem.html === 'string' ? newItem.html : '');
+                }
+
                 // process sub-items if they exist
                 if (newItem.items && typeof newItem.items === 'object') {
                     newItem.items = processItems(newItem.items);

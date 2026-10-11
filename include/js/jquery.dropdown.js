@@ -55,28 +55,10 @@
 	// supported sanitizer, retain the content as text. DOM copies below only
 	// clone this sanitized tree and nodes constructed by this implementation.
 	function renderMenuHtml(target, html) {
-		var content = typeof html === 'string' ? html : '';
-		if (!window.DOMPurify || !window.DOMPurify.isSupported) {
-			target.text(content);
-			return;
-		}
-		var fragment = window.DOMPurify.sanitize(content, {
-			ALLOWED_TAGS: ['h6', 'div', 'a', 'span', 'p', 'br', 'ul', 'ol', 'li', 'strong', 'em', 'b', 'i'],
-			ALLOWED_ATTR: ['href', 'title'],
-			ALLOW_DATA_ATTR: false,
-			ALLOW_ARIA_ATTR: false,
-			RETURN_DOM_FRAGMENT: true
-		});
-		fragment.querySelectorAll('a[href]').forEach(function(link) {
-			try {
-				var url = new URL(link.getAttribute('href'), document.baseURI);
-				if (!['http:', 'https:', 'mailto:', 'tel:'].includes(url.protocol)) {
-					link.removeAttribute('href');
-				}
-			} catch (error) {
-				link.removeAttribute('href');
-			}
-		});
+		const content = typeof html === 'string' ? html : '';
+		const fragment = window.CactiRenderer && typeof window.CactiRenderer.menuFragment === 'function'
+			? window.CactiRenderer.menuFragment(content)
+			: document.createTextNode(content);
 		target.empty().append(fragment);
 	}
 

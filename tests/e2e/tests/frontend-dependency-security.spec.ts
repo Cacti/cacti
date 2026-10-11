@@ -2,6 +2,9 @@ import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+declare const cactiBox: new () => { add: (options: Record<string, unknown>) => unknown };
+declare const cactiNavigation: new () => unknown;
+
 const layoutSource = readFileSync(resolve(__dirname, '../../../include/layout.js'), 'utf8');
 const validationSource = layoutSource.slice(layoutSource.indexOf('function formValidate('), layoutSource.indexOf('function toggleFields('));
 const serializationSource = layoutSource.slice(layoutSource.indexOf('$.fn.serializeForm ='), layoutSource.indexOf('$.fn.serializeObject ='));
@@ -101,6 +104,7 @@ async function treeFixture(page: import('@playwright/test').Page) {
 test('Cacti dropdown builds labels as text and sanitizes menu HTML while preserving submenu navigation', async ({ page }) => {
 	const jquery = await validationFixture(page);
 	await page.addScriptTag({ url: new URL('purify.js', jquery).href });
+	await page.addScriptTag({ url: new URL('cacti-rendering.js', jquery).href });
 	await page.addScriptTag({ url: new URL('jquery.dropdown.js', jquery).href });
 	await page.evaluate(() => {
 		Reflect.get(window, '$').fx.off = true;
@@ -125,6 +129,7 @@ test('Cacti dropdown builds labels as text and sanitizes menu HTML while preserv
 
 test('Cacti dropdown falls back to text without a sanitizer and rejects unsafe menu identifiers', async ({ page }) => {
 	const jquery = await validationFixture(page);
+	await page.addScriptTag({ url: new URL('cacti-rendering.js', jquery).href });
 	await page.addScriptTag({ url: new URL('jquery.dropdown.js', jquery).href });
 	const payload = '<img src=x onerror="window.dependencyExecuted=1">';
 	await page.evaluate(payload => {
@@ -136,6 +141,32 @@ test('Cacti dropdown falls back to text without a sanitizer and rejects unsafe m
 	await expect(page.locator('.cacti_dd_menu')).toHaveCount(1);
 	await expect(page.locator('#fallback-probe_content')).toHaveText(payload);
 	await expect(page.locator('img')).toHaveCount(0);
+	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
+});
+
+test('navigation-box plugin menu labels stay text and explicit HTML uses the shared boundary', async ({ page }) => {
+	const jquery = await validationFixture(page);
+	for (const asset of ['jquery-ui.js', 'js.storage.js', 'purify.js', 'cacti-rendering.js', 'jquery.contextMenu.js', 'navigationBox.js']) {
+		await page.addScriptTag({ url: new URL(asset, jquery).href });
+	}
+	await page.evaluate(() => {
+		const container = document.createElement('div');
+		container.id = 'mdw-SideBarContainer';
+		document.body.append(container);
+		new cactiNavigation();
+		const box = new cactiBox();
+		box.add({
+			helper: 'menu-probe', title: 'Probe',
+			contextMenuItems: {
+				label: { name: '<img src=x onerror="window.dependencyExecuted=1">', isHtmlName: true },
+				markup: { type: 'html', html: '<strong>Valid format</strong><img src=x onerror="window.dependencyExecuted=1"><a href="javascript:window.dependencyExecuted=1">Unsafe</a>' },
+			},
+		});
+	});
+	await expect(page.locator('.context-menu-item').filter({ hasText: '<img src=x onerror="window.dependencyExecuted=1">' })).toHaveCount(1);
+	await expect(page.locator('.context-menu-html strong')).toHaveText('Valid format');
+	await expect(page.locator('.context-menu-html a')).not.toHaveAttribute('href');
+	await expect(page.locator('.context-menu-list img, .context-menu-list [onerror]')).toHaveCount(0);
 	expect(await page.evaluate(() => Reflect.get(window, 'dependencyExecuted'))).toBeUndefined();
 });
 

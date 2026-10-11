@@ -8,9 +8,11 @@
     "codeqlBuild": "Managed assets are built before JavaScript extraction so generated libraries remain scanned.",
     "branch": "develop; current 1.2.x does not contain the HTMX integration.",
     "validationMessages": "Cacti formValidate uses the dependency escapeHtml option for title/custom error messages. Browser regression checks initial creation, update, and successful validation; the original setup parses hostile title text as markup in the isolated fixture. No attacker-controlled Cacti title path is established.",
-    "browserCases": 22,
+    "browserCases": 23,
     "followUpScope": "Default-branch verification of pending fixes after maintainer merge. No scan exclusions or weakened rules; optional HTML APIs retain an explicit trusted-configuration contract.",
-    "branchComparison": "Recorded exact 1.2.x source presence/hashes. The dropdown utility is also present there, with no current core caller found on either branch. This develop PR is API hardening rather than a demonstrated remote vulnerability. The jQuery 4 collection-sort fix targets develop; 1.2.x runtime/CI differs and is not silently backported."
+    "branchComparison": "Recorded exact 1.2.x source presence/hashes. The dropdown utility is also present there, with no current core caller found on either branch. This develop PR is API hardening rather than a demonstrated remote vulnerability. The jQuery 4 collection-sort fix targets develop; 1.2.x runtime/CI differs and is not silently backported.",
+    "sharedRenderingBoundary": "include/js/cacti-rendering.js exposes one immutable synchronous menuFragment interface for legacy classic-script widgets. It uses minimal tag/attribute allowlists, explicit link protocol checks and text fallback; owned dropdown and navigation-box plugin HTML use it. Labels use text APIs. This does not sanitize unrelated plugin content APIs.",
+    "ciRepair": "The certificate display regression derives its expected date from the generated certificate validTo_time_t rather than +30 local-calendar days, which differs across daylight-saving transitions."
   },
   "alerts": [
     {
@@ -285,7 +287,7 @@
       "rule": "js/html-constructed-from-input",
       "path": "include/js/jquery.js",
       "observedState": "dismissed",
-      "disposition": "false_positive",
+      "disposition": "fixed_after_reopening",
       "evidence": "Scoped reported sink review: Reported selector-scoping values reach querySelectorAll, not HTML parsing. The single-tag branch creates an empty attribute-free element from a tag-name match in an inert parsing document. Browser tests cover escaped context IDs and the single-tag branch. General jQuery HTML-construction APIs remain intentional trusted-HTML APIs, not sanitizers.",
       "reportedLine": 1280,
       "inputContract": "Reported selector-scoping values reach querySelectorAll, not HTML parsing. The single-tag branch creates an empty attribute-free element from a tag-name match in an inert parsing document. Browser tests cover escaped context IDs and the single-tag branch. General jQuery HTML-construction APIs remain intentional trusted-HTML APIs, not sanitizers.",
@@ -296,14 +298,14 @@
         "reportedSourceExcerpt": "\t\t\t\t\tnewSelector = groups.join( \",\" );\n\t\t\t\t}\n\n\t\t\t\ttry {\n\t\t\t\t\tpush.apply( results,",
         "defaultBranchSha256": "f5fb077959ca06faa1dc50761d8bbb836c6c78067932537a2b3fea9e401257c5"
       },
-      "resolution": "Replace ownership-only rationale with the specific DOM/static-markup/normalization source contract in PR #8298. This conclusion does not apply to arbitrary HTML APIs in the same package."
+      "resolution": "Native alert returned state=fixed upon reopening; no dismissal rewrite was needed. Selector-scoping source/browser evidence remains recorded."
     },
     {
       "number": 115,
       "rule": "js/html-constructed-from-input",
       "path": "include/js/jquery.js",
       "observedState": "dismissed",
-      "disposition": "false_positive",
+      "disposition": "fixed_after_reopening",
       "evidence": "Scoped reported sink review: Reported selector-scoping values reach querySelectorAll, not HTML parsing. The single-tag branch creates an empty attribute-free element from a tag-name match in an inert parsing document. Browser tests cover escaped context IDs and the single-tag branch. General jQuery HTML-construction APIs remain intentional trusted-HTML APIs, not sanitizers.",
       "reportedLine": 1279,
       "inputContract": "Reported selector-scoping values reach querySelectorAll, not HTML parsing. The single-tag branch creates an empty attribute-free element from a tag-name match in an inert parsing document. Browser tests cover escaped context IDs and the single-tag branch. General jQuery HTML-construction APIs remain intentional trusted-HTML APIs, not sanitizers.",
@@ -314,7 +316,7 @@
         "reportedSourceExcerpt": "\t\t\t\t\t}\n\t\t\t\t\tnewSelector = groups.join( \",\" );\n\t\t\t\t}\n\n\t\t\t\ttry {",
         "defaultBranchSha256": "f5fb077959ca06faa1dc50761d8bbb836c6c78067932537a2b3fea9e401257c5"
       },
-      "resolution": "Replace ownership-only rationale with the specific DOM/static-markup/normalization source contract in PR #8298. This conclusion does not apply to arbitrary HTML APIs in the same package."
+      "resolution": "Native alert returned state=fixed upon reopening; no dismissal rewrite was needed. Selector-scoping source/browser evidence remains recorded."
     },
     {
       "number": 114,
@@ -328,7 +330,7 @@
       "sourceEvidence": {
         "path": "include/js/jquery.dropdown.js",
         "reportedLine": 74,
-        "builtSha256": "c560f117f1fa54ea592dd95c128766185f2ac602be2a7c5d20a12032df9fbe31",
+        "builtSha256": "87ba3f9173cec344b5c4b7b491f0b957b55b37f65800ed8a0c8fe2b321f2befb",
         "reportedSourceExcerpt": "\t\t\t+ \"<div id='\" + options.name + \"_content' class='content ui-widget-content ui-state-highlight \" + ((options.subtitle !== false) ? \"\" : \"ui-corner-bottom\" ) + \"'></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_subtitle' class='subtitle ui-state-default ui-corner-bottom'><h6>\" + options.subtitle + \"</h6></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_html' class='html'></div>\"\n\t\t+ \"</div>\").appendTo(\"body\");\n",
         "defaultBranchSha256": "66cc7af07e22c8c34e314d8d9769d298977a74175ce81e61a61a533671292d38"
       },
@@ -346,7 +348,7 @@
       "sourceEvidence": {
         "path": "include/js/jquery.dropdown.js",
         "reportedLine": 73,
-        "builtSha256": "c560f117f1fa54ea592dd95c128766185f2ac602be2a7c5d20a12032df9fbe31",
+        "builtSha256": "87ba3f9173cec344b5c4b7b491f0b957b55b37f65800ed8a0c8fe2b321f2befb",
         "reportedSourceExcerpt": "\t\t\t+ \"<div id='\" + options.name + \"_back' class='back ui-state-active'></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_content' class='content ui-widget-content ui-state-highlight \" + ((options.subtitle !== false) ? \"\" : \"ui-corner-bottom\" ) + \"'></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_subtitle' class='subtitle ui-state-default ui-corner-bottom'><h6>\" + options.subtitle + \"</h6></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_html' class='html'></div>\"\n\t\t+ \"</div>\").appendTo(\"body\");",
         "defaultBranchSha256": "66cc7af07e22c8c34e314d8d9769d298977a74175ce81e61a61a533671292d38"
       },
@@ -364,7 +366,7 @@
       "sourceEvidence": {
         "path": "include/js/jquery.dropdown.js",
         "reportedLine": 73,
-        "builtSha256": "c560f117f1fa54ea592dd95c128766185f2ac602be2a7c5d20a12032df9fbe31",
+        "builtSha256": "87ba3f9173cec344b5c4b7b491f0b957b55b37f65800ed8a0c8fe2b321f2befb",
         "reportedSourceExcerpt": "\t\t\t+ \"<div id='\" + options.name + \"_back' class='back ui-state-active'></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_content' class='content ui-widget-content ui-state-highlight \" + ((options.subtitle !== false) ? \"\" : \"ui-corner-bottom\" ) + \"'></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_subtitle' class='subtitle ui-state-default ui-corner-bottom'><h6>\" + options.subtitle + \"</h6></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_html' class='html'></div>\"\n\t\t+ \"</div>\").appendTo(\"body\");",
         "defaultBranchSha256": "66cc7af07e22c8c34e314d8d9769d298977a74175ce81e61a61a533671292d38"
       },
@@ -382,7 +384,7 @@
       "sourceEvidence": {
         "path": "include/js/jquery.dropdown.js",
         "reportedLine": 72,
-        "builtSha256": "c560f117f1fa54ea592dd95c128766185f2ac602be2a7c5d20a12032df9fbe31",
+        "builtSha256": "87ba3f9173cec344b5c4b7b491f0b957b55b37f65800ed8a0c8fe2b321f2befb",
         "reportedSourceExcerpt": "\t\t\t+ \"<div id='\" + options.name + \"_title' class='title ui-state-default ui-corner-top'><h6>\" + options.title + \"</h6></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_back' class='back ui-state-active'></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_content' class='content ui-widget-content ui-state-highlight \" + ((options.subtitle !== false) ? \"\" : \"ui-corner-bottom\" ) + \"'></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_subtitle' class='subtitle ui-state-default ui-corner-bottom'><h6>\" + options.subtitle + \"</h6></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_html' class='html'></div>\"",
         "defaultBranchSha256": "66cc7af07e22c8c34e314d8d9769d298977a74175ce81e61a61a533671292d38"
       },
@@ -400,7 +402,7 @@
       "sourceEvidence": {
         "path": "include/js/jquery.dropdown.js",
         "reportedLine": 71,
-        "builtSha256": "c560f117f1fa54ea592dd95c128766185f2ac602be2a7c5d20a12032df9fbe31",
+        "builtSha256": "87ba3f9173cec344b5c4b7b491f0b957b55b37f65800ed8a0c8fe2b321f2befb",
         "reportedSourceExcerpt": "\t\t$(\"<div id='\" + options.name + \"' style='display: none;' class='cacti_dd_menu ui-widget ui-corner-all'>\"\n\t\t\t+ \"<div id='\" + options.name + \"_title' class='title ui-state-default ui-corner-top'><h6>\" + options.title + \"</h6></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_back' class='back ui-state-active'></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_content' class='content ui-widget-content ui-state-highlight \" + ((options.subtitle !== false) ? \"\" : \"ui-corner-bottom\" ) + \"'></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_subtitle' class='subtitle ui-state-default ui-corner-bottom'><h6>\" + options.subtitle + \"</h6></div>\"",
         "defaultBranchSha256": "66cc7af07e22c8c34e314d8d9769d298977a74175ce81e61a61a533671292d38"
       },
@@ -418,7 +420,7 @@
       "sourceEvidence": {
         "path": "include/js/jquery.dropdown.js",
         "reportedLine": 70,
-        "builtSha256": "c560f117f1fa54ea592dd95c128766185f2ac602be2a7c5d20a12032df9fbe31",
+        "builtSha256": "87ba3f9173cec344b5c4b7b491f0b957b55b37f65800ed8a0c8fe2b321f2befb",
         "reportedSourceExcerpt": "\t\t/* create the main menu structure */\n\t\t$(\"<div id='\" + options.name + \"' style='display: none;' class='cacti_dd_menu ui-widget ui-corner-all'>\"\n\t\t\t+ \"<div id='\" + options.name + \"_title' class='title ui-state-default ui-corner-top'><h6>\" + options.title + \"</h6></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_back' class='back ui-state-active'></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_content' class='content ui-widget-content ui-state-highlight \" + ((options.subtitle !== false) ? \"\" : \"ui-corner-bottom\" ) + \"'></div>\"",
         "defaultBranchSha256": "66cc7af07e22c8c34e314d8d9769d298977a74175ce81e61a61a533671292d38"
       },
@@ -436,7 +438,7 @@
       "sourceEvidence": {
         "path": "include/js/jquery.dropdown.js",
         "reportedLine": 70,
-        "builtSha256": "c560f117f1fa54ea592dd95c128766185f2ac602be2a7c5d20a12032df9fbe31",
+        "builtSha256": "87ba3f9173cec344b5c4b7b491f0b957b55b37f65800ed8a0c8fe2b321f2befb",
         "reportedSourceExcerpt": "\t\t/* create the main menu structure */\n\t\t$(\"<div id='\" + options.name + \"' style='display: none;' class='cacti_dd_menu ui-widget ui-corner-all'>\"\n\t\t\t+ \"<div id='\" + options.name + \"_title' class='title ui-state-default ui-corner-top'><h6>\" + options.title + \"</h6></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_back' class='back ui-state-active'></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_content' class='content ui-widget-content ui-state-highlight \" + ((options.subtitle !== false) ? \"\" : \"ui-corner-bottom\" ) + \"'></div>\"",
         "defaultBranchSha256": "66cc7af07e22c8c34e314d8d9769d298977a74175ce81e61a61a533671292d38"
       },
@@ -454,7 +456,7 @@
       "sourceEvidence": {
         "path": "include/js/jquery.dropdown.js",
         "reportedLine": 69,
-        "builtSha256": "c560f117f1fa54ea592dd95c128766185f2ac602be2a7c5d20a12032df9fbe31",
+        "builtSha256": "87ba3f9173cec344b5c4b7b491f0b957b55b37f65800ed8a0c8fe2b321f2befb",
         "reportedSourceExcerpt": "\tfunction _init_menu(initiator){\n\t\t/* create the main menu structure */\n\t\t$(\"<div id='\" + options.name + \"' style='display: none;' class='cacti_dd_menu ui-widget ui-corner-all'>\"\n\t\t\t+ \"<div id='\" + options.name + \"_title' class='title ui-state-default ui-corner-top'><h6>\" + options.title + \"</h6></div>\"\n\t\t\t+ \"<div id='\" + options.name + \"_back' class='back ui-state-active'></div>\"",
         "defaultBranchSha256": "66cc7af07e22c8c34e314d8d9769d298977a74175ce81e61a61a533671292d38"
       },
@@ -1448,7 +1450,7 @@
       "disposition": "false_positive",
       "evidence": "Scoped reported sink review: No exact core contextMenu initializer was found. Access-key labels use text/createTextNode. Normalized context objects are DOM elements; generic context accepts a developer selector/DOM contract. isHtmlName explicitly opts into trusted HTML and must not receive raw plugin/database output. This generic API contract is not a remotely reachable Cacti defect.",
       "reportedLine": 1803,
-      "inputContract": "No exact core contextMenu initializer was found. Access-key labels use text/createTextNode. Normalized context objects are DOM elements; generic context accepts a developer selector/DOM contract. isHtmlName explicitly opts into trusted HTML and must not receive raw plugin/database output. This generic API contract is not a remotely reachable Cacti defect.",
+      "inputContract": "Midwinter navigationBox.js initializes contextMenu at its build boundary. Built-in and bundled tree/table-layout menu names are static text; the context uses the library default document and its selector is generated from box configuration. Access-key names use text/createTextNode, and normalized contexts are DOM nodes. This PR forces plugin menu labels to text and routes explicit HTML items through the shared CactiRenderer.menuFragment boundary with a plain-text fallback. Generic context/selector/HTML APIs still require developer-controlled targets and sanitized input.",
       "sourceEvidence": {
         "path": "include/js/jquery.contextMenu.js",
         "reportedLine": 1803,
@@ -1484,7 +1486,7 @@
       "disposition": "false_positive",
       "evidence": "Scoped reported sink review: No exact core contextMenu initializer was found. Access-key labels use text/createTextNode. Normalized context objects are DOM elements; generic context accepts a developer selector/DOM contract. isHtmlName explicitly opts into trusted HTML and must not receive raw plugin/database output. This generic API contract is not a remotely reachable Cacti defect.",
       "reportedLine": 1681,
-      "inputContract": "No exact core contextMenu initializer was found. Access-key labels use text/createTextNode. Normalized context objects are DOM elements; generic context accepts a developer selector/DOM contract. isHtmlName explicitly opts into trusted HTML and must not receive raw plugin/database output. This generic API contract is not a remotely reachable Cacti defect.",
+      "inputContract": "Midwinter navigationBox.js initializes contextMenu at its build boundary. Built-in and bundled tree/table-layout menu names are static text; the context uses the library default document and its selector is generated from box configuration. Access-key names use text/createTextNode, and normalized contexts are DOM nodes. This PR forces plugin menu labels to text and routes explicit HTML items through the shared CactiRenderer.menuFragment boundary with a plain-text fallback. Generic context/selector/HTML APIs still require developer-controlled targets and sanitized input.",
       "sourceEvidence": {
         "path": "include/js/jquery.contextMenu.js",
         "reportedLine": 1681,
@@ -1500,9 +1502,9 @@
       "path": "include/js/jquery.contextMenu.js",
       "observedState": "dismissed",
       "disposition": "reviewed_configuration_contract",
-      "evidence": "No exact core contextMenu initializer was found. Access-key labels use text/createTextNode. Normalized context objects are DOM elements; generic context accepts a developer selector/DOM contract. isHtmlName explicitly opts into trusted HTML and must not receive raw plugin/database output. This generic API contract is not a remotely reachable Cacti defect.",
+      "evidence": "Midwinter navigationBox.js initializes contextMenu at its build boundary. Built-in and bundled tree/table-layout menu names are static text; the context uses the library default document and its selector is generated from box configuration. Access-key names use text/createTextNode, and normalized contexts are DOM nodes. This PR forces plugin menu labels to text and routes explicit HTML items through the shared CactiRenderer.menuFragment boundary with a plain-text fallback. Generic context/selector/HTML APIs still require developer-controlled targets and sanitized input.",
       "reportedLine": 1679,
-      "inputContract": "No exact core contextMenu initializer was found. Access-key labels use text/createTextNode. Normalized context objects are DOM elements; generic context accepts a developer selector/DOM contract. isHtmlName explicitly opts into trusted HTML and must not receive raw plugin/database output. This generic API contract is not a remotely reachable Cacti defect.",
+      "inputContract": "Midwinter navigationBox.js initializes contextMenu at its build boundary. Built-in and bundled tree/table-layout menu names are static text; the context uses the library default document and its selector is generated from box configuration. Access-key names use text/createTextNode, and normalized contexts are DOM nodes. This PR forces plugin menu labels to text and routes explicit HTML items through the shared CactiRenderer.menuFragment boundary with a plain-text fallback. Generic context/selector/HTML APIs still require developer-controlled targets and sanitized input.",
       "sourceEvidence": {
         "path": "include/js/jquery.contextMenu.js",
         "reportedLine": 1679,
@@ -1592,7 +1594,7 @@
       "disposition": "false_positive",
       "evidence": "Scoped reported sink review: No exact core contextMenu initializer was found. Access-key labels use text/createTextNode. Normalized context objects are DOM elements; generic context accepts a developer selector/DOM contract. isHtmlName explicitly opts into trusted HTML and must not receive raw plugin/database output. This generic API contract is not a remotely reachable Cacti defect.",
       "reportedLine": 1150,
-      "inputContract": "No exact core contextMenu initializer was found. Access-key labels use text/createTextNode. Normalized context objects are DOM elements; generic context accepts a developer selector/DOM contract. isHtmlName explicitly opts into trusted HTML and must not receive raw plugin/database output. This generic API contract is not a remotely reachable Cacti defect.",
+      "inputContract": "Midwinter navigationBox.js initializes contextMenu at its build boundary. Built-in and bundled tree/table-layout menu names are static text; the context uses the library default document and its selector is generated from box configuration. Access-key names use text/createTextNode, and normalized contexts are DOM nodes. This PR forces plugin menu labels to text and routes explicit HTML items through the shared CactiRenderer.menuFragment boundary with a plain-text fallback. Generic context/selector/HTML APIs still require developer-controlled targets and sanitized input.",
       "sourceEvidence": {
         "path": "include/js/jquery.contextMenu.js",
         "reportedLine": 1150,
@@ -2118,7 +2120,7 @@
     "include/js/jquery.contextMenu.js": {
       "version": "Repository snapshot bcb4aaf4ae37ca6bc6b20398f7fdd054505c927c (upstream version not declared in this copy)",
       "builtSha256": "37bde1fa1ccc2e9233c9749193fb87be93e81c98f855b139a0938c6b633acb30",
-      "coreCallersAndContract": "No exact core contextMenu initializer was found. Access-key labels use text/createTextNode. Normalized context objects are DOM elements; generic context accepts a developer selector/DOM contract. isHtmlName explicitly opts into trusted HTML and must not receive raw plugin/database output. This generic API contract is not a remotely reachable Cacti defect.",
+      "coreCallersAndContract": "Midwinter navigationBox.js initializes contextMenu at its build boundary. Built-in and bundled tree/table-layout menu names are static text; the context uses the library default document and its selector is generated from box configuration. Access-key names use text/createTextNode, and normalized contexts are DOM nodes. This PR forces plugin menu labels to text and routes explicit HTML items through the shared CactiRenderer.menuFragment boundary with a plain-text fallback. Generic context/selector/HTML APIs still require developer-controlled targets and sanitized input.",
       "stableBranchSource": {
         "branch": "1.2.x",
         "present": false,
@@ -2187,7 +2189,7 @@
     },
     "include/js/jquery.dropdown.js": {
       "version": "Cacti-authored repository code",
-      "builtSha256": "c560f117f1fa54ea592dd95c128766185f2ac602be2a7c5d20a12032df9fbe31",
+      "builtSha256": "87ba3f9173cec344b5c4b7b491f0b957b55b37f65800ed8a0c8fe2b321f2befb",
       "coreCallersAndContract": "No current core DropDownMenu caller or loader was found. The owned compatibility API now creates structure and labels through DOM/text APIs, validates identifiers and sanitizes supplied menu HTML through one reviewed boundary with explicit protocol checks and plain-text fallback. Browser cases cover formatting, submenu/back navigation, invalid identifiers and sanitizer absence.",
       "stableBranchSource": {
         "branch": "1.2.x",
