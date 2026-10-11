@@ -2708,32 +2708,50 @@ function substitute_script_path($template, $escaped_values) {
 				$valLen     = strlen($value);
 				$selfQuoted = $valLen >= 2 && ($value[0] === '"' || $value[0] === "'") && $value[$valLen - 1] === $value[0];
 
-				if ($quote === '' || !$selfQuoted) {
-					// outside any template quote, or a raw value: substitute in place
-					// so the template's own quotes (if any) survive around the value
+				if (!$selfQuoted) {
+					// trusted raw value (path_* config): substitute in place so the
+					// template's own quotes (if any) survive around the value
+					$out .= $value;
+				} elseif ($quote === '') {
+					// outside any template quote the value stands on its own quotes.
+					// A dangling (odd) run of backslashes right before it would escape
+					// its opening quote (\'x' -> literal quote + unmatched quote); shed
+					// one so the run is even and the quote still opens
+					if ((strlen($out) - strlen(rtrim($out, '\\'))) % 2 === 1) {
+						$out = substr($out, 0, -1);
+					}
+
 					$out .= $value;
 				} elseif ($quoteEmpty && ($i + $tokenLen) < $len && $template[$i + $tokenLen] === $quote) {
 					// template wrapped the token exactly ("<arg>"): drop the pair
 					// so the already-escaped value stands on its own
 					$out   = substr($out, 0, -1);
-					$out  .= $value;
+					$out .= $value;
 					$i    += 1;
 					$quote = '';
 				} else {
 					// token sits inside a larger quoted word: close the template's
-					// quoting around the value so it cannot be re-interpreted
+					// quoting around the value so it cannot be re-interpreted. A
+					// dangling backslash inside double quotes would escape that closing
+					// quote. Inside single quotes every backslash is literal and must stay.
+					if ($quote === '"' && (strlen($out) - strlen(rtrim($out, '\\'))) % 2 === 1) {
+						$out = substr($out, 0, -1);
+					}
+
 					$out .= $quote . $value . $quote;
 				}
 
 				$i          += $tokenLen;
 				$quoteEmpty  = false;
+
 				continue;
 			}
 
 			// unknown token: leave intact for the caller's trailing cleanup
-			$out        .= $m[0];
+			$out .= $m[0];
 			$i          += $tokenLen;
 			$quoteEmpty  = false;
+
 			continue;
 		}
 
@@ -2741,8 +2759,9 @@ function substitute_script_path($template, $escaped_values) {
 			if ($ch === '"' || $ch === "'") {
 				$quote      = $ch;
 				$quoteEmpty = true;
-				$out       .= $ch;
+				$out .= $ch;
 				$i++;
+
 				continue;
 			}
 
@@ -2756,18 +2775,21 @@ function substitute_script_path($template, $escaped_values) {
 				if ($next === '"' || $next === "'" || $next === '\\') {
 					$out .= $ch . $next;
 					$i   += 2;
+
 					continue;
 				}
 
 				$out .= $ch;
 				$i++;
+
 				continue;
 			}
 		} elseif ($quote === '"') {
 			if ($ch === '"') {
 				$quote = '';
-				$out  .= $ch;
+				$out .= $ch;
 				$i++;
+
 				continue;
 			}
 
@@ -2775,25 +2797,28 @@ function substitute_script_path($template, $escaped_values) {
 				$next = $template[$i + 1];
 
 				if ($next === '"' || $next === "'" || $next === '\\') {
-					$out        .= $ch . $next;
+					$out .= $ch . $next;
 					$i          += 2;
 					$quoteEmpty  = false;
+
 					continue;
 				}
 
-				$out        .= $ch;
+				$out .= $ch;
 				$i++;
 				$quoteEmpty  = false;
+
 				continue;
 			}
 		} elseif ($ch === "'") { // inside a single-quoted region
 			$quote = '';
-			$out  .= $ch;
+			$out .= $ch;
 			$i++;
+
 			continue;
 		}
 
-		$out        .= $ch;
+		$out .= $ch;
 		$quoteEmpty  = false;
 		$i++;
 	}
